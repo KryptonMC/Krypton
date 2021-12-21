@@ -12,10 +12,6 @@ dependencies {
     api(projects.api)
     implementation(projects.annotationProcessor)
 
-    // Extra Kotlin stuff
-    api(libs.kotlin.stdlib.jdk7)
-    api(libs.kotlin.stdlib.jdk8)
-
     // Networking
     api(libs.bundles.netty)
     implementation(libs.netty.transport.native.epoll) {

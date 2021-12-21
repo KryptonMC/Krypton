@@ -23,7 +23,7 @@ import org.kryptonmc.api.entity.animal.Animal
 import org.kryptonmc.api.entity.animal.Wolf
 import org.kryptonmc.api.entity.attribute.AttributeTypes
 import org.kryptonmc.api.item.ItemStack
-import org.kryptonmc.api.item.meta.DyeColor
+import org.kryptonmc.api.item.data.DyeColor
 import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.krypton.entity.Neutral
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys

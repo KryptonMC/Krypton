@@ -18,9 +18,9 @@
  */
 package org.kryptonmc.krypton.command.arguments.item
 
-import org.kryptonmc.api.item.ItemStack
+import org.kryptonmc.krypton.item.KryptonItemStack
 
 fun interface ItemStackPredicate {
 
-    operator fun invoke(item: ItemStack): Boolean
+    operator fun invoke(item: KryptonItemStack): Boolean
 }

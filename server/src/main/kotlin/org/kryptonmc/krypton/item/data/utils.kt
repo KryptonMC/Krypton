@@ -16,30 +16,18 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.item.meta
+package org.kryptonmc.krypton.item.data
 
-import net.kyori.adventure.key.Key
-import net.kyori.adventure.text.format.TextColor
-import org.kryptonmc.api.item.meta.DyeColor
+import org.kryptonmc.api.item.data.FireworkEffect
+import org.kryptonmc.krypton.util.toIntArray
+import org.kryptonmc.nbt.CompoundTag
+import org.kryptonmc.nbt.compound
 import java.awt.Color
 
-@JvmRecord
-data class KryptonDyeColor(
-    private val key: Key,
-    override val color: Color,
-    override val fireworkColor: Color,
-    override val textColor: TextColor
-) : DyeColor {
-
-    override fun key(): Key = key
-
-    object Factory : DyeColor.Factory {
-
-        override fun of(
-            key: Key,
-            color: Color,
-            fireworkColor: Color,
-            textColor: TextColor
-        ): DyeColor = KryptonDyeColor(key, color, fireworkColor, textColor)
-    }
+fun FireworkEffect.save(): CompoundTag = compound {
+    intArray("Colors", colors.toIntArray(Color::getRGB))
+    intArray("FadeColors", colors.toIntArray(Color::getRGB))
+    boolean("Flicker", hasFlicker)
+    boolean("Trail", hasTrail)
+    byte("Type", type.ordinal.toByte())
 }

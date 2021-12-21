@@ -18,6 +18,7 @@
  */
 package org.kryptonmc.krypton.service
 
+import org.kryptonmc.api.plugin.PluginContainer
 import org.kryptonmc.api.service.AFKService
 import org.kryptonmc.api.service.ServiceProvider
 import org.kryptonmc.api.service.ServicesManager
@@ -26,6 +27,7 @@ import org.kryptonmc.api.service.register
 import org.kryptonmc.api.user.ban.BanService
 import org.kryptonmc.api.user.whitelist.WhitelistService
 import org.kryptonmc.krypton.KryptonServer
+import org.kryptonmc.krypton.plugin.KryptonPluginManager
 import org.kryptonmc.krypton.plugin.server.ServerPluginContainer
 import org.kryptonmc.krypton.server.ban.KryptonBanService
 import org.kryptonmc.krypton.server.whitelist.KryptonWhitelistService
@@ -42,8 +44,15 @@ class KryptonServicesManager(private val server: KryptonServer) : ServicesManage
         register<BanService>(ServerPluginContainer, KryptonBanService(server))
     }
 
-    override fun <T> register(plugin: Any, clazz: Class<T>, service: T) {
-        providers[clazz] = KryptonServiceProvider(plugin, clazz, service)
+    override fun <T> register(plugin: Any, type: Class<T>, service: T): ServiceProvider<T> {
+        val container = requireNotNull(KryptonPluginManager.fromInstance(plugin)) { "Provided plugin $plugin is not a valid plugin instance!" }
+        return register(container, type, service)
+    }
+
+    override fun <T> register(plugin: PluginContainer, type: Class<T>, service: T): ServiceProvider<T> {
+        val provider = KryptonServiceProvider(plugin, type, service)
+        providers[type] = provider
+        return provider
     }
 
     @Suppress("UNCHECKED_CAST")

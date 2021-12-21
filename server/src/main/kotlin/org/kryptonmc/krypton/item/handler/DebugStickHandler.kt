@@ -29,6 +29,7 @@ import org.kryptonmc.krypton.item.InteractionContext
 import org.kryptonmc.krypton.item.KryptonItemStack
 import org.kryptonmc.krypton.util.findRelative
 import org.kryptonmc.krypton.world.KryptonWorld
+import org.kryptonmc.nbt.CompoundTag
 
 object DebugStickHandler : ItemHandler {
 
@@ -68,7 +69,7 @@ object DebugStickHandler : ItemHandler {
             return false
         }
 
-        val tag = item.getOrCreateTag("DebugProperty")
+        val tag = CompoundTag.empty()
         val propertyKey = tag.getString(key)
         var property = properties.firstOrNull { tag.getString(propertyKey) == it.name } as? Property<Comparable<Any>>
 
@@ -84,7 +85,7 @@ object DebugStickHandler : ItemHandler {
         } else {
             property = properties.findRelative(property, player.isSneaking) as Property<Comparable<Any>>
             val name = property.name
-            tag.putString(key, name)
+//            tag.putString(key, name)
             player.sendMessage(Component.translatable(
                 "${ItemTypes.DEBUG_STICK.translation.key()}.select",
                 Component.text(name),

@@ -18,11 +18,12 @@
  */
 package org.kryptonmc.krypton.service
 
+import org.kryptonmc.api.plugin.PluginContainer
 import org.kryptonmc.api.service.ServiceProvider
 
 @JvmRecord
 data class KryptonServiceProvider<T>(
-    override val plugin: Any,
+    override val plugin: PluginContainer,
     override val type: Class<T>,
     override val service: T
 ) : ServiceProvider<T>

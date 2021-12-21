@@ -15,6 +15,7 @@ import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.block.Blocks
 import org.kryptonmc.api.entity.Entity
 import org.kryptonmc.api.entity.EntityType
+import org.kryptonmc.api.entity.player.Player
 import org.kryptonmc.api.fluid.Fluid
 import org.kryptonmc.api.fluid.Fluids
 import org.kryptonmc.api.resource.ResourceKey
@@ -71,16 +72,22 @@ public interface World : ForwardingAudience {
     public val spawnLocation: Vector3i
 
     /**
-     * The set of chunks currently loaded in this world.
+     * All of the chunks currently loaded in this world.
      */
     @get:JvmName("chunks")
     public val chunks: Collection<Chunk>
 
     /**
-     * All of the entities currently present within this world.
+     * All of the entities currently in this world.
      */
     @get:JvmName("entities")
     public val entities: Collection<Entity>
+
+    /**
+     * All of the players currently in this world.
+     */
+    @get:JvmName("players")
+    public val players: Collection<Player>
 
     /**
      * This world's border.

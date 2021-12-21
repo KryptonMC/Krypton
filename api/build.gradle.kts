@@ -10,8 +10,7 @@ sourceSets.main {
 
 dependencies {
     // Kotlin
-    api(libs.kotlin.stdlib)
-    api(libs.kotlin.reflect)
+    api(libs.bundles.kotlin)
     api(libs.kotlinx.coroutines)
 
     // Core

@@ -26,9 +26,7 @@ import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.assertThrows
 import org.kryptonmc.api.item.ItemTypes
 import org.kryptonmc.api.item.item
-import org.kryptonmc.api.item.meta.MetaKeys
 import org.kryptonmc.api.registry.Registries
-import org.kryptonmc.krypton.item.EmptyItemStack
 import org.kryptonmc.krypton.item.KryptonItemStack
 import org.kryptonmc.krypton.util.Bootstrap
 import org.kryptonmc.krypton.util.readAllAvailableBytes
@@ -205,7 +203,7 @@ class ByteBufTests {
     @Test
     fun `test item writing`() {
         val buffer = Unpooled.buffer()
-        buffer.writeItem(EmptyItemStack)
+        buffer.writeItem(KryptonItemStack.EMPTY)
         assertEquals(false, buffer.readBoolean())
         assertEquals(0, buffer.readableBytes())
         buffer.clear()
@@ -213,35 +211,31 @@ class ByteBufTests {
         val item = item {
             type(ItemTypes.STONE)
             amount(3)
-            meta {
-                set(MetaKeys.NAME, Component.text("Hello World!"))
-            }
+            meta { name(Component.text("Hello World!")) }
         } as KryptonItemStack
         buffer.writeItem(item)
         assertEquals(true, buffer.readBoolean())
         assertEquals(Registries.ITEM.idOf(ItemTypes.STONE), buffer.readVarInt())
         assertEquals(3, buffer.readByte())
-        assertEquals(item.meta.nbt, buffer.readNBT())
+        assertEquals(item.meta.save(), buffer.readNBT())
     }
 
     @Test
     fun `test item reading`() {
         val buffer = Unpooled.buffer()
         buffer.writeBoolean(false)
-        assertSame(EmptyItemStack, buffer.readItem())
+        assertSame(KryptonItemStack.EMPTY, buffer.readItem())
         buffer.clear()
 
         val item = item {
             type(ItemTypes.STONE)
             amount(3)
-            meta {
-                set(MetaKeys.NAME, Component.text("Hello World!"))
-            }
+            meta { name(Component.text("Hello World!")) }
         } as KryptonItemStack
         buffer.writeBoolean(true)
         buffer.writeVarInt(Registries.ITEM.idOf(ItemTypes.STONE))
         buffer.writeByte(3)
-        buffer.writeNBT(item.meta.nbt)
+        buffer.writeNBT(item.meta.save())
         assertEquals(item, buffer.readItem())
     }
 

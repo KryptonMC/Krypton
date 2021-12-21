@@ -24,26 +24,26 @@ import org.kryptonmc.api.item.ItemStack
 import org.kryptonmc.api.item.ItemType
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.item.KryptonItemStack
+import org.kryptonmc.krypton.item.meta.KryptonItemMeta
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.nbt.CompoundTag
 
 abstract class KryptonThrowableProjectile(
     world: KryptonWorld,
-    type: EntityType<out ThrowableProjectile>
+    type: EntityType<out ThrowableProjectile>,
+    private val defaultItem: KryptonItemStack
 ) : KryptonProjectile(world, type), ThrowableProjectile {
-
-    abstract val defaultItem: ItemType
 
     private var rawItem: KryptonItemStack
         get() = data[MetadataKeys.THROWABLE_PROJECTILE.ITEM]
         set(value) {
-            if (value.type === defaultItem && value.meta.nbt.isEmpty()) return
-            data[MetadataKeys.THROWABLE_PROJECTILE.ITEM] = value.copy().apply { amount = 1 }
+            if (value.type === defaultItem.type && value.meta == KryptonItemMeta.DEFAULT) return
+            data[MetadataKeys.THROWABLE_PROJECTILE.ITEM] = value.withAmount(1)
         }
     final override val item: ItemStack
         get() {
             val raw = rawItem
-            return if (raw.isEmpty()) KryptonItemStack(defaultItem, 1) else raw
+            return if (raw.isEmpty()) defaultItem else raw
         }
 
     init {
@@ -59,5 +59,11 @@ abstract class KryptonThrowableProjectile(
     override fun save(): CompoundTag.Builder = super.save().apply {
         val raw = rawItem
         if (!raw.isEmpty()) put("Item", raw.save(CompoundTag.builder()).build())
+    }
+
+    companion object {
+
+        @JvmStatic
+        protected fun createDefaultItem(type: ItemType): KryptonItemStack = KryptonItemStack(type, 1, KryptonItemMeta.DEFAULT)
     }
 }

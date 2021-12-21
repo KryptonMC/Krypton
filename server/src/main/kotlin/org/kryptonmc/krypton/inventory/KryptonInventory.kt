@@ -23,7 +23,6 @@ import org.kryptonmc.api.inventory.Inventory
 import org.kryptonmc.api.inventory.InventoryHolder
 import org.kryptonmc.api.inventory.InventoryType
 import org.kryptonmc.api.item.ItemStack
-import org.kryptonmc.krypton.item.EmptyItemStack
 import org.kryptonmc.krypton.item.KryptonItemStack
 import org.kryptonmc.krypton.util.FixedList
 
@@ -39,7 +38,7 @@ abstract class KryptonInventory(
 
     var stateId = 0
         private set
-    override val items = FixedList<KryptonItemStack>(totalItems, EmptyItemStack)
+    override val items = FixedList(totalItems, KryptonItemStack.EMPTY)
 
     fun incrementStateId(): Int {
         stateId = stateId + 1 and Short.MAX_VALUE.toInt()
@@ -57,14 +56,13 @@ abstract class KryptonInventory(
                 val initialAmount = element.amount
                 val maxAmount = element.type.maximumStackSize
                 if (initialAmount + item.amount <= maxAmount) {
-                    element.amount = initialAmount + item.amount
+                    items[index] = element.withAmount(initialAmount + item.amount)
                     return
                 } else if (element.amount != maxAmount) {
-                    element.amount = maxAmount
-                    item.amount = maxAmount - item.amount
+                    items[index] = element.withAmount(maxAmount)
                     if (item.amount == 0) return
                 }
-            } else if (element == EmptyItemStack) {
+            } else if (element.isEmpty()) {
                 items[index] = item
                 return
             }
@@ -74,13 +72,13 @@ abstract class KryptonInventory(
     override fun remove(item: ItemStack) {
         items.forEachIndexed { index, element ->
             if (element != item) return@forEachIndexed
-            items[index] = EmptyItemStack
+            items[index] = KryptonItemStack.EMPTY
             return
         }
     }
 
     override fun clear() {
-        items.forEachIndexed { index, _ -> items[index] = EmptyItemStack }
+        items.forEachIndexed { index, _ -> items[index] = KryptonItemStack.EMPTY }
     }
 
     override fun iterator(): Iterator<KryptonItemStack> = items.iterator()

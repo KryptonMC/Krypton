@@ -16,17 +16,30 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.item
+package org.kryptonmc.krypton.item.data
 
-enum class ItemFlag {
+import net.kyori.adventure.key.Key
+import net.kyori.adventure.text.format.TextColor
+import org.kryptonmc.api.item.data.DyeColor
+import java.awt.Color
 
-    ENCHANTMENTS,
-    ATTRIBUTES,
-    UNBREAKABLE,
-    CAN_DESTROY,
-    CAN_PLACE,
-    MISCELLANEOUS,
-    DYE;
+@JvmRecord
+data class KryptonDyeColor(
+    private val key: Key,
+    override val color: Color,
+    override val fireworkColor: Color,
+    override val textColor: TextColor
+) : DyeColor {
 
-    val mask = 1 shl ordinal
+    override fun key(): Key = key
+
+    object Factory : DyeColor.Factory {
+
+        override fun of(
+            key: Key,
+            color: Color,
+            fireworkColor: Color,
+            textColor: TextColor
+        ): DyeColor = KryptonDyeColor(key, color, fireworkColor, textColor)
+    }
 }

@@ -16,34 +16,34 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.item.meta
+package org.kryptonmc.krypton.util
 
-import net.kyori.adventure.key.Key
-import org.kryptonmc.api.item.meta.MetaKey
-import org.kryptonmc.nbt.CompoundTag
-import org.kryptonmc.nbt.MutableCompoundTag
-import java.util.function.Predicate
+import java.util.function.ToIntFunction
 
-@JvmRecord
-data class KryptonMetaKey<V : Any>(
-    private val key: Key,
-    private val type: Class<V>,
-    val reader: Reader<V>,
-    val writer: Writer<V>,
-    val predicate: Predicate<CompoundTag>
-) : MetaKey<V> {
-
-    override fun key(): Key = key
-
-    override fun type(): Class<V> = type
-
-    fun interface Reader<T> {
-
-        fun read(tag: CompoundTag): T
+fun <T> Iterable<T>.convertToList(): List<T> {
+    if (this is List<T>) {
+        if (isEmpty()) return emptyList()
+        return this
     }
+    if (this is Collection<T> && isEmpty()) return emptyList()
+    return toList()
+}
 
-    fun interface Writer<T> {
-
-        fun write(tag: CompoundTag, value: T): CompoundTag
+fun <T> Iterable<T>.convertToSet(): Set<T> {
+    if (this is Set<T>) {
+        if (isEmpty()) return emptySet()
+        return this
     }
+    if (this is Collection<T> && isEmpty()) return emptySet()
+    return toSet()
+}
+
+fun <T> List<T>.minus(index: Int): List<T> = minus(get(index))
+
+fun <T> List<T>.toIntArray(converter: ToIntFunction<T>): IntArray {
+    val array = IntArray(size)
+    for (i in indices) {
+        array[i] = converter.applyAsInt(get(i))
+    }
+    return array
 }

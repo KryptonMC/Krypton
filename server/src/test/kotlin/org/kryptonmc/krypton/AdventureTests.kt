@@ -30,10 +30,11 @@ import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.assertThrows
 import org.kryptonmc.api.adventure.toJsonString
 import org.kryptonmc.api.adventure.toPlainText
+import org.kryptonmc.api.item.meta
+import org.kryptonmc.api.item.meta.WrittenBookMeta
 import org.kryptonmc.krypton.adventure.KryptonAdventure
 import org.kryptonmc.krypton.adventure.NBTLegacyHoverEventSerializer
 import org.kryptonmc.krypton.util.Bootstrap
-import org.kryptonmc.nbt.StringTag
 import java.io.IOException
 import java.util.UUID
 import kotlin.test.Test
@@ -60,10 +61,10 @@ class AdventureTests {
         val title = Component.text("title")
         val author = Component.text("author")
         val pages = listOf(Component.text("Page 1"), Component.text("Page 2"), Component.text("Page 3"))
-        val nbt = KryptonAdventure.toItemStack(Book.book(title, author, pages)).meta.nbt
-        assertEquals("title", GsonComponentSerializer.gson().deserialize(nbt.getString("title")).toPlainText())
-        assertEquals("author", GsonComponentSerializer.gson().deserialize(nbt.getString("author")).toPlainText())
-        assertEquals(pages, nbt.getList("pages", StringTag.ID).map { GsonComponentSerializer.gson().deserialize((it as StringTag).value) })
+        val meta = KryptonAdventure.toItemStack(Book.book(title, author, pages)).meta<WrittenBookMeta>()!!
+        assertEquals("title", meta.title.toPlainText())
+        assertEquals("author", meta.author.toPlainText())
+        assertEquals(pages, meta.pages)
     }
 
     @Test

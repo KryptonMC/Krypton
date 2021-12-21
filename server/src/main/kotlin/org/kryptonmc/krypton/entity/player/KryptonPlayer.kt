@@ -26,7 +26,6 @@ import net.kyori.adventure.bossbar.BossBar
 import net.kyori.adventure.identity.Identity
 import net.kyori.adventure.inventory.Book
 import net.kyori.adventure.key.Key
-import net.kyori.adventure.key.Key.key
 import net.kyori.adventure.sound.Sound
 import net.kyori.adventure.sound.SoundStop
 import net.kyori.adventure.text.Component
@@ -48,7 +47,6 @@ import org.kryptonmc.api.entity.player.Player
 import org.kryptonmc.api.event.player.ChangeGameModeEvent
 import org.kryptonmc.api.event.player.PerformActionEvent
 import org.kryptonmc.api.item.ItemTypes
-import org.kryptonmc.api.item.meta.MetaKeys
 import org.kryptonmc.api.permission.PermissionFunction
 import org.kryptonmc.api.permission.PermissionProvider
 import org.kryptonmc.api.registry.Registries
@@ -64,7 +62,6 @@ import org.kryptonmc.api.world.GameMode
 import org.kryptonmc.api.world.World
 import org.kryptonmc.api.world.dimension.DimensionType
 import org.kryptonmc.krypton.KryptonPlatform
-import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.adventure.KryptonAdventure
 import org.kryptonmc.krypton.auth.KryptonGameProfile
 import org.kryptonmc.krypton.commands.KryptonPermission
@@ -74,7 +71,6 @@ import org.kryptonmc.krypton.entity.KryptonEquipable
 import org.kryptonmc.krypton.entity.KryptonLivingEntity
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.inventory.KryptonPlayerInventory
-import org.kryptonmc.krypton.item.EmptyItemStack
 import org.kryptonmc.krypton.item.KryptonItemStack
 import org.kryptonmc.krypton.item.handler
 import org.kryptonmc.krypton.network.SessionHandler
@@ -111,13 +107,11 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateViewPosition
 import org.kryptonmc.krypton.service.KryptonVanishService
 import org.kryptonmc.krypton.statistic.KryptonStatisticsTracker
 import org.kryptonmc.krypton.util.BossBarManager
-import org.kryptonmc.krypton.util.serialization.Codecs
 import org.kryptonmc.krypton.util.Directions
 import org.kryptonmc.krypton.util.InteractionResult
 import org.kryptonmc.krypton.util.Positioning
+import org.kryptonmc.krypton.util.serialization.Codecs
 import org.kryptonmc.krypton.util.serialization.encode
-import org.kryptonmc.krypton.util.logger
-import org.kryptonmc.krypton.util.tryCreateDirectory
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.krypton.world.chunk.ChunkPosition
 import org.kryptonmc.nbt.CompoundTag
@@ -211,10 +205,7 @@ class KryptonPlayer(
             }
             if (!isOnGround && !super.isGliding && !inWater) {
                 val chestplate = inventory.armor(ArmorSlot.CHESTPLATE)
-                val damage = chestplate.meta[MetaKeys.DAMAGE] ?: 0
-                if (chestplate.type === ItemTypes.ELYTRA && damage < chestplate.type.durability - 1) {
-                    super.isGliding = true
-                }
+                if (chestplate.type === ItemTypes.ELYTRA && chestplate.meta.damage < chestplate.type.durability - 1) super.isGliding = true
             }
         }
     override val inventory = KryptonPlayerInventory(this)
@@ -225,10 +216,7 @@ class KryptonPlayer(
 
     override val scoreboard = world.scoreboard
     override var locale: Locale? = null
-    override val statistics = KryptonStatisticsTracker(
-        this,
-        world.folder.resolve("stats").tryCreateDirectory().resolve("$uuid.json")
-    )
+    override val statistics = KryptonStatisticsTracker(this, server.worldManager.statsFolder.resolve("$uuid.json"))
     override val cooldowns = KryptonCooldownTracker(this)
     override val teamRepresentation = name
     override val pushedByFluid = !isFlying
@@ -375,7 +363,7 @@ class KryptonPlayer(
         slot == EquipmentSlot.MAIN_HAND -> inventory.mainHand
         slot == EquipmentSlot.OFF_HAND -> inventory.offHand
         slot.type == EquipmentSlot.Type.ARMOR -> inventory.armor[slot.index]
-        else -> EmptyItemStack
+        else -> KryptonItemStack.EMPTY
     }
 
     override fun setEquipment(slot: EquipmentSlot, item: KryptonItemStack) {
@@ -618,20 +606,24 @@ class KryptonPlayer(
             // TODO: Open spectator menu
             return InteractionResult.PASS
         }
+        // FIXME
+        /*
         var heldItem = heldItem(hand)
-        val heldCopy = heldItem.copy()
         val result = entity.interact(this, hand)
         if (result.consumesAction) {
-            if (canInstantlyBuild && heldItem === heldItem(hand) && heldItem.amount < heldCopy.amount) heldItem.amount = heldCopy.amount
+            if (canInstantlyBuild && heldItem === heldItem(hand)) {
+                setHeldItem(hand, heldItem.withAmount())
+                heldItem.amount = heldCopy.amount
+            }
             return result
         }
         if (heldItem.isEmpty() || entity !is KryptonLivingEntity) return InteractionResult.PASS
-        if (canInstantlyBuild) heldItem = heldCopy
         val interactResult = heldItem.type.handler().interactEntity(heldItem, this, entity, hand)
         if (interactResult.consumesAction) {
-            if (heldItem.isEmpty() && !canInstantlyBuild) setHeldItem(hand, EmptyItemStack)
+            if (heldItem.isEmpty() && !canInstantlyBuild) setHeldItem(hand, KryptonItemStack.EMPTY)
             return interactResult
         }
+         */
         return InteractionResult.PASS
     }
 

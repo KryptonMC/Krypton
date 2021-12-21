@@ -8,6 +8,8 @@
  */
 package org.kryptonmc.api.service
 
+import org.kryptonmc.api.plugin.PluginContainer
+
 /**
  * Represents a provider of a service of type [T].
  *
@@ -22,7 +24,7 @@ public interface ServiceProvider<T> {
      * The plugin that provided this service.
      */
     @get:JvmName("plugin")
-    public val plugin: Any
+    public val plugin: PluginContainer
 
     /**
      * The class of the service being provided.

@@ -24,6 +24,7 @@ import org.kryptonmc.api.entity.aquatic.Pufferfish
 import org.kryptonmc.api.item.ItemTypes
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.item.KryptonItemStack
+import org.kryptonmc.krypton.item.meta.KryptonItemMeta
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.nbt.CompoundTag
 
@@ -37,7 +38,7 @@ class KryptonPufferfish(world: KryptonWorld) : KryptonFish(world, EntityTypes.PU
         set(value) = data.set(MetadataKeys.PUFFERFISH.PUFF_STATE, value)
 
     override val bucketItem: KryptonItemStack
-        get() = KryptonItemStack(ItemTypes.PUFFERFISH_BUCKET, 1)
+        get() = BUCKET_ITEM
 
     init {
         data.add(MetadataKeys.PUFFERFISH.PUFF_STATE)
@@ -75,5 +76,10 @@ class KryptonPufferfish(world: KryptonWorld) : KryptonFish(world, EntityTypes.PU
 
     override fun save(): CompoundTag.Builder = super.save().apply {
         int("PuffState", puffState)
+    }
+
+    companion object {
+
+        private val BUCKET_ITEM = KryptonItemStack(ItemTypes.PUFFERFISH_BUCKET, 1, KryptonItemMeta.DEFAULT)
     }
 }

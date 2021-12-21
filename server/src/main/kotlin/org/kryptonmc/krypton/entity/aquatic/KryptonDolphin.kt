@@ -104,7 +104,7 @@ class KryptonDolphin(world: KryptonWorld) : KryptonAquaticAnimal(world, EntityTy
         if (heldItem.isEmpty() || !ItemTags.FISHES.contains(heldItem.type)) return super.mobInteract(player, hand)
         playSound(SoundEvents.DOLPHIN_EAT, 1F, 1F)
         gotFish = true
-        if (!player.canInstantlyBuild) heldItem.amount--
+        if (!player.canInstantlyBuild) player.setHeldItem(hand, heldItem.shrink(1))
         return InteractionResult.CONSUME
     }
 

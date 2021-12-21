@@ -30,7 +30,7 @@ import java.awt.Color
 import java.lang.reflect.Modifier
 import java.nio.file.Path
 
-class DyeColorGenerator(output: Path) : EnumRegistryGenerator(output) {
+class DyeColorGenerator(output: Path) : EnumRegistryGenerator<DyeColor>(output, DYE_COLORS, DYE_COLOR) {
 
     override fun generate(file: FileSpec.Builder, clazz: TypeSpec.Builder) {
         file.addImport("java.awt", "Color")
@@ -63,7 +63,8 @@ class DyeColorGenerator(output: Path) : EnumRegistryGenerator(output) {
 
     companion object {
 
-        val DYE_COLOR = ClassName("org.kryptonmc.api.item.meta", "DyeColor")
+        private val DYE_COLOR = ClassName("org.kryptonmc.api.item.data", "DyeColor")
+        private val DYE_COLORS = ClassName("org.kryptonmc.api.item.data", "DyeColors")
         private val COLOR = Color::class.asClassName()
     }
 }
