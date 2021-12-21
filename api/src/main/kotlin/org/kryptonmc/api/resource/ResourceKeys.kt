@@ -61,7 +61,7 @@ public object ResourceKeys {
     @JvmField public val DIMENSION: ResourceKey<out Registry<World>> = minecraft("dimension")
     @JvmField public val ATTRIBUTE: ResourceKey<out Registry<AttributeType>> = minecraft("attribute")
     @JvmField public val BIOME: ResourceKey<out Registry<Biome>> = minecraft("worldgen/biome")
-    @JvmField public val MENU: ResourceKey<out Registry<InventoryType>> = minecraft("menu")
+    @JvmField public val INVENTORY_TYPES: ResourceKey<out Registry<InventoryType>> = minecraft("menu")
     @JvmField public val STATISTIC_TYPE: ResourceKey<out Registry<StatisticType<*>>> = minecraft("stat_type")
     @JvmField public val CUSTOM_STATISTIC: ResourceKey<out Registry<Key>> = minecraft("custom_stat")
     @JvmField public val FLUID: ResourceKey<out Registry<Fluid>> = minecraft("fluid")

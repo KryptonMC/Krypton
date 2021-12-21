@@ -20,6 +20,7 @@ package org.kryptonmc.krypton.inventory
 
 import io.netty.buffer.ByteBuf
 import net.kyori.adventure.key.Key
+import net.kyori.adventure.text.Component
 import org.kryptonmc.api.entity.ArmorSlot
 import org.kryptonmc.api.entity.Hand
 import org.kryptonmc.api.inventory.PlayerInventory
@@ -36,7 +37,7 @@ import org.kryptonmc.nbt.ListTag
 import org.kryptonmc.nbt.MutableListTag
 import org.kryptonmc.nbt.compound
 
-class KryptonPlayerInventory(override val owner: KryptonPlayer) : KryptonInventory(0, TYPE, owner, SIZE, 36), PlayerInventory {
+class KryptonPlayerInventory(override val owner: KryptonPlayer) : KryptonInventory(0, TYPE, SIZE, 36), PlayerInventory {
 
     override val crafting = FixedList(5, KryptonItemStack.EMPTY)
     override val armor = FixedList(4, KryptonItemStack.EMPTY)
@@ -46,26 +47,26 @@ class KryptonPlayerInventory(override val owner: KryptonPlayer) : KryptonInvento
 
     override var helmet: ItemStack
         get() = armor(ArmorSlot.HELMET)
-        set(value) = armor(ArmorSlot.HELMET, value)
+        set(value) = setArmor(ArmorSlot.HELMET, value)
     override var chestplate: ItemStack
         get() = armor(ArmorSlot.CHESTPLATE)
-        set(value) = armor(ArmorSlot.CHESTPLATE, value)
+        set(value) = setArmor(ArmorSlot.CHESTPLATE, value)
     override var leggings: ItemStack
         get() = armor(ArmorSlot.LEGGINGS)
-        set(value) = armor(ArmorSlot.LEGGINGS, value)
+        set(value) = setArmor(ArmorSlot.LEGGINGS, value)
     override var boots: ItemStack
         get() = armor(ArmorSlot.BOOTS)
-        set(value) = armor(ArmorSlot.BOOTS, value)
-
-    override var heldSlot = 0
+        set(value) = setArmor(ArmorSlot.BOOTS, value)
 
     override val mainHand: KryptonItemStack
         get() = items[heldSlot]
     override var offHand: KryptonItemStack = KryptonItemStack.EMPTY
 
+    override var heldSlot = 0
+
     override fun armor(slot: ArmorSlot) = armor[slot.ordinal]
 
-    override fun armor(slot: ArmorSlot, item: ItemStack) {
+    override fun setArmor(slot: ArmorSlot, item: ItemStack) {
         if (item !is KryptonItemStack) return
         armor[slot.ordinal] = item
     }
@@ -161,6 +162,6 @@ class KryptonPlayerInventory(override val owner: KryptonPlayer) : KryptonInvento
     companion object {
 
         const val SIZE = 46
-        private val TYPE = KryptonInventoryType(Key.key("krypton", "inventory/player"), SIZE)
+        private val TYPE = KryptonInventoryType(Key.key("krypton", "inventory/player"), SIZE, Component.translatable("container.inventory"))
     }
 }

@@ -27,12 +27,6 @@ public interface Inventory : Iterable<ItemStack> {
     public val size: Int
 
     /**
-     * The holder that owns this inventory.
-     */
-    @get:JvmName("owner")
-    public val owner: InventoryHolder
-
-    /**
      * The type of this inventory.
      */
     @get:JvmName("type")

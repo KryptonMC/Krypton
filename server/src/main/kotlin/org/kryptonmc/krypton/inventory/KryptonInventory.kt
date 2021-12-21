@@ -18,7 +18,6 @@
  */
 package org.kryptonmc.krypton.inventory
 
-import org.kryptonmc.api.inventory.InventoryHolder
 import org.kryptonmc.api.inventory.InventoryType
 import org.kryptonmc.api.inventory.MutableInventory
 import org.kryptonmc.api.item.ItemStack
@@ -28,26 +27,25 @@ import org.kryptonmc.krypton.util.FixedList
 
 abstract class KryptonInventory(
     val id: Int,
-    override val type: InventoryType,
-    override val owner: InventoryHolder,
+    final override val type: InventoryType,
     final override val size: Int,
     totalItems: Int = size
 ) : MutableInventory, Writable {
 
     var stateId = 0
         private set
-    override val items = FixedList(totalItems, KryptonItemStack.EMPTY)
+    final override val items = FixedList(totalItems, KryptonItemStack.EMPTY)
 
     fun incrementStateId(): Int {
         stateId = stateId + 1 and Short.MAX_VALUE.toInt()
         return stateId
     }
 
-    override fun get(index: Int): KryptonItemStack = items[index]
+    final override fun get(index: Int): KryptonItemStack = items[index]
 
-    override fun contains(item: ItemStack): Boolean = items.contains(item)
+    final override fun contains(item: ItemStack): Boolean = items.contains(item)
 
-    override fun add(item: ItemStack) {
+    final override fun add(item: ItemStack) {
         if (item !is KryptonItemStack) return
         items.forEachIndexed { index, element ->
             if (element.type == item.type) {
@@ -67,7 +65,7 @@ abstract class KryptonInventory(
         }
     }
 
-    override fun remove(item: ItemStack) {
+    final override fun remove(item: ItemStack) {
         items.forEachIndexed { index, element ->
             if (element != item) return@forEachIndexed
             items[index] = KryptonItemStack.EMPTY
@@ -75,9 +73,9 @@ abstract class KryptonInventory(
         }
     }
 
-    override fun clear() {
+    final override fun clear() {
         items.forEachIndexed { index, _ -> items[index] = KryptonItemStack.EMPTY }
     }
 
-    override fun iterator(): Iterator<KryptonItemStack> = items.iterator()
+    final override fun iterator(): Iterator<KryptonItemStack> = items.iterator()
 }
