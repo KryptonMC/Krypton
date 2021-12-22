@@ -23,6 +23,7 @@ import org.kryptonmc.api.block.entity.BlockEntity
 import org.kryptonmc.api.block.entity.BlockEntityType
 import org.kryptonmc.api.world.World
 import org.kryptonmc.nbt.CompoundTag
+import org.kryptonmc.nbt.compound
 import org.spongepowered.math.vector.Vector3i
 
 abstract class KryptonBlockEntity(
@@ -39,14 +40,19 @@ abstract class KryptonBlockEntity(
         get() = false
 
     open fun load(tag: CompoundTag) {
-        // nothing to do for now
+        // nothing to do for the base type
     }
 
-    open fun save(tag: CompoundTag.Builder): CompoundTag.Builder = saveMetadata(tag)
+    fun save(full: Boolean): CompoundTag = compound {
+        saveAdditional(this)
+        if (full) saveMetadata(this)
+    }
 
     open fun remove() {
         isValid = false
     }
+
+    protected open fun saveAdditional(tag: CompoundTag.Builder): CompoundTag.Builder = tag
 
     private fun saveMetadata(tag: CompoundTag.Builder): CompoundTag.Builder = tag.apply {
         val key = type.key()
