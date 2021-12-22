@@ -18,7 +18,8 @@
  */
 package org.kryptonmc.krypton.world.block.property
 
-import com.google.common.collect.ImmutableSet
+import kotlinx.collections.immutable.ImmutableSet
+import kotlinx.collections.immutable.persistentSetOf
 
 class BooleanProperty(name: String) : KryptonProperty<Boolean>(name, Boolean::class.java, VALUES) {
 
@@ -27,6 +28,6 @@ class BooleanProperty(name: String) : KryptonProperty<Boolean>(name, Boolean::cl
     companion object {
 
         @JvmField
-        val VALUES: Set<Boolean> = ImmutableSet.of(true, false)
+        val VALUES: ImmutableSet<Boolean> = persistentSetOf(true, false)
     }
 }

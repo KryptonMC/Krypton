@@ -18,6 +18,7 @@
  */
 package org.kryptonmc.krypton
 
+import kotlinx.collections.immutable.persistentListOf
 import org.junit.jupiter.api.Test
 import org.kryptonmc.krypton.auth.KryptonGameProfile
 import org.kryptonmc.krypton.auth.KryptonProfileProperty
@@ -33,14 +34,14 @@ class ProfileSerializationTests {
 
     @Test
     fun `test profile holder serialization`() {
-        val result = ProfileHolder.Adapter.toJson(ProfileHolder(KryptonGameProfile(NAME, ID, emptyList()), TIME))
+        val result = ProfileHolder.Adapter.toJson(ProfileHolder(KryptonGameProfile(NAME, ID, persistentListOf()), TIME))
         val expected = "{\"name\":\"$NAME\",\"uuid\":\"$ID\",\"expiresOn\":\"$TIME_FORMATTED\"}"
         assertEquals(expected, result)
     }
 
     @Test
     fun `test profile holder deserialization`() {
-        val expected = ProfileHolder(KryptonGameProfile(NAME, ID, emptyList()), TIME)
+        val expected = ProfileHolder(KryptonGameProfile(NAME, ID, persistentListOf()), TIME)
         val result = ProfileHolder.Adapter.fromJson("{\"name\":\"$NAME\",\"uuid\":\"$ID\",\"expiresOn\":\"$TIME_FORMATTED\"}")
         assertEquals(expected, result)
         assertNull(ProfileHolder.Adapter.fromJson("{\"name\":\"$NAME\",\"uuid\":\"$ID\",\"expiresOn\":\"adacdgadsgdgdstgas\"}"))
@@ -48,7 +49,7 @@ class ProfileSerializationTests {
 
     @Test
     fun `test game profile serialization`() {
-        val result = KryptonGameProfile.toJson(KryptonGameProfile(NAME, ID, emptyList()))
+        val result = KryptonGameProfile.toJson(KryptonGameProfile(NAME, ID, persistentListOf()))
         assertEquals("{\"id\":\"${MojangUUIDTypeAdapter.toString(ID)}\",\"name\":\"$NAME\"}", result)
 
         // With properties
@@ -63,7 +64,7 @@ class ProfileSerializationTests {
     @Test
     fun `test game profile deserialization`() {
         val json = "{\"id\":\"${MojangUUIDTypeAdapter.toString(ID)}\",\"name\":\"$NAME\"}"
-        assertEquals(KryptonGameProfile(NAME, ID, emptyList()), KryptonGameProfile.fromJson(json))
+        assertEquals(KryptonGameProfile(NAME, ID, persistentListOf()), KryptonGameProfile.fromJson(json))
 
         // With properties
         val propertiesString = PROPERTIES.joinToString(",") { KryptonProfileProperty.toJson(it) }
@@ -87,7 +88,7 @@ class ProfileSerializationTests {
 
         private const val NAME = "Dave"
         private val ID = UUID.randomUUID()
-        private val PROPERTIES = listOf(
+        private val PROPERTIES = persistentListOf(
             KryptonProfileProperty("Hello", "World", "aaaabbbbccccdddd"),
             KryptonProfileProperty("World", "Hello", "ddddccccbbbbaaaa")
         )

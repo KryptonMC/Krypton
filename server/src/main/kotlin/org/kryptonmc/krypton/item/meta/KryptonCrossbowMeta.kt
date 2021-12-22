@@ -18,24 +18,30 @@
  */
 package org.kryptonmc.krypton.item.meta
 
+import kotlinx.collections.immutable.ImmutableSet
+import kotlinx.collections.immutable.PersistentList
+import kotlinx.collections.immutable.persistentListOf
+import kotlinx.collections.immutable.toPersistentList
 import net.kyori.adventure.text.Component
 import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.item.ItemStack
 import org.kryptonmc.api.item.meta.CrossbowMeta
 import org.kryptonmc.krypton.item.KryptonItemStack
+import org.kryptonmc.krypton.util.mapPersistentList
 import org.kryptonmc.nbt.CompoundTag
 
+@Suppress("EqualsOrHashCode")
 class KryptonCrossbowMeta(
     damage: Int,
     isUnbreakable: Boolean,
     customModelData: Int,
     name: Component?,
-    lore: List<Component>,
+    lore: PersistentList<Component>,
     hideFlags: Int,
-    canDestroy: Set<Block>,
-    canPlaceOn: Set<Block>,
+    canDestroy: ImmutableSet<Block>,
+    canPlaceOn: ImmutableSet<Block>,
     override val isCharged: Boolean,
-    override val projectiles: List<ItemStack>
+    override val projectiles: PersistentList<ItemStack>
 ) : AbstractItemMeta<KryptonCrossbowMeta>(damage, isUnbreakable, customModelData, name, lore, hideFlags, canDestroy, canPlaceOn), CrossbowMeta {
 
     constructor(tag: CompoundTag) : this(
@@ -48,7 +54,7 @@ class KryptonCrossbowMeta(
         tag.getBlocks("CanDestroy"),
         tag.getBlocks("CanPlaceOn"),
         tag.getBoolean("Charged"),
-        tag.getList("ChargedProjectiles", CompoundTag.ID).map { KryptonItemStack(it as CompoundTag) }
+        tag.getList("ChargedProjectiles", CompoundTag.ID).mapPersistentList { KryptonItemStack(it as CompoundTag) }
     )
 
     override fun copy(
@@ -56,10 +62,10 @@ class KryptonCrossbowMeta(
         isUnbreakable: Boolean,
         customModelData: Int,
         name: Component?,
-        lore: List<Component>,
+        lore: PersistentList<Component>,
         hideFlags: Int,
-        canDestroy: Set<Block>,
-        canPlaceOn: Set<Block>
+        canDestroy: ImmutableSet<Block>,
+        canPlaceOn: ImmutableSet<Block>
     ): KryptonCrossbowMeta = copy(damage, isUnbreakable, customModelData, name, lore, hideFlags, canDestroy, canPlaceOn)
 
     override fun saveData(): CompoundTag.Builder = super.saveData().apply {
@@ -69,13 +75,13 @@ class KryptonCrossbowMeta(
 
     override fun withCharged(charged: Boolean): KryptonCrossbowMeta = copy(charged = charged)
 
-    override fun withProjectiles(projectiles: List<ItemStack>): KryptonCrossbowMeta = copy(projectiles = projectiles)
+    override fun withProjectiles(projectiles: List<ItemStack>): KryptonCrossbowMeta = copy(projectiles = projectiles.toPersistentList())
 
-    override fun addProjectile(projectile: ItemStack): KryptonCrossbowMeta = withProjectiles(projectiles.plus(projectile))
+    override fun addProjectile(projectile: ItemStack): KryptonCrossbowMeta = withProjectiles(projectiles.add(projectile))
 
-    override fun removeProjectile(index: Int): KryptonCrossbowMeta = removeProjectile(projectiles[index])
+    override fun removeProjectile(index: Int): KryptonCrossbowMeta = withProjectiles(projectiles.removeAt(index))
 
-    override fun removeProjectile(projectile: ItemStack): KryptonCrossbowMeta = withProjectiles(projectiles.minus(projectile))
+    override fun removeProjectile(projectile: ItemStack): KryptonCrossbowMeta = withProjectiles(projectiles.remove(projectile))
 
     override fun toBuilder(): CrossbowMeta.Builder = Builder(this)
 
@@ -84,12 +90,12 @@ class KryptonCrossbowMeta(
         isUnbreakable: Boolean = this.isUnbreakable,
         customModelData: Int = this.customModelData,
         name: Component? = this.name,
-        lore: List<Component> = this.lore,
+        lore: PersistentList<Component> = this.lore,
         hideFlags: Int = this.hideFlags,
-        canDestroy: Set<Block> = this.canDestroy,
-        canPlaceOn: Set<Block> = this.canPlaceOn,
+        canDestroy: ImmutableSet<Block> = this.canDestroy,
+        canPlaceOn: ImmutableSet<Block> = this.canPlaceOn,
         charged: Boolean = isCharged,
-        projectiles: List<ItemStack> = this.projectiles
+        projectiles: PersistentList<ItemStack> = this.projectiles
     ): KryptonCrossbowMeta = KryptonCrossbowMeta(
         damage,
         isUnbreakable,
@@ -119,7 +125,7 @@ class KryptonCrossbowMeta(
     class Builder() : KryptonItemMetaBuilder<CrossbowMeta.Builder, CrossbowMeta>(), CrossbowMeta.Builder {
 
         private var charged = false
-        private val projectiles = mutableListOf<ItemStack>()
+        private val projectiles = persistentListOf<ItemStack>().builder()
 
         constructor(meta: CrossbowMeta) : this() {
             copyFrom(meta)
@@ -141,12 +147,12 @@ class KryptonCrossbowMeta(
             unbreakable,
             customModelData,
             name,
-            lore,
+            lore.build(),
             hideFlags,
-            canDestroy,
-            canPlaceOn,
+            canDestroy.build(),
+            canPlaceOn.build(),
             charged,
-            projectiles
+            projectiles.build()
         )
     }
 }

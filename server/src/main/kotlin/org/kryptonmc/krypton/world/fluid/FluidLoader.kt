@@ -18,9 +18,11 @@
  */
 package org.kryptonmc.krypton.world.fluid
 
-import com.google.common.collect.ImmutableMap
-import com.google.common.collect.ImmutableSet
 import com.google.gson.JsonObject
+import kotlinx.collections.immutable.ImmutableSet
+import kotlinx.collections.immutable.PersistentMap
+import kotlinx.collections.immutable.toImmutableSet
+import kotlinx.collections.immutable.toPersistentHashMap
 import net.kyori.adventure.key.Key
 import org.kryptonmc.api.block.property.Property
 import org.kryptonmc.api.registry.Registries
@@ -47,9 +49,9 @@ object FluidLoader : KryptonDataLoader("fluids") {
         data.entrySet().asSequence().map { it.key to it.value.asJsonObject }.forEach { (key, value) ->
             // Map properties
             val propertyEntry = PropertyEntry()
-            val availableProperties = ImmutableSet.copyOf(value["properties"].asJsonArray.mapTo(mutableSetOf()) {
+            val availableProperties = value["properties"].asJsonArray.mapTo(mutableSetOf()) {
                 KryptonPropertyFactory.PROPERTIES[it.asString]!!
-            })
+            }.toImmutableSet()
 
             // Iterate states
             value.remove("states").asJsonArray.forEach {
@@ -72,16 +74,16 @@ object FluidLoader : KryptonDataLoader("fluids") {
     @JvmStatic
     private fun JsonObject.retrieveState(
         key: String,
-        availableProperties: Set<Property<*>>,
+        availableProperties: ImmutableSet<Property<*>>,
         fluidObject: JsonObject
     ): Pair<Map<String, String>, KryptonFluid> {
         val stateId = get("stateId").asInt
-        val propertyMap = ImmutableMap.copyOf(get("properties").asJsonObject.entrySet().associate {
+        val properties = get("properties").asJsonObject.entrySet().associate {
             it.key to it.value.asString.lowercase()
-        })
-        val fluid = createFluid(Key.key(key), fluidObject, this, availableProperties, propertyMap)
+        }.toPersistentHashMap()
+        val fluid = createFluid(Key.key(key), fluidObject, this, availableProperties, properties)
         STATES[fluid] = stateId
-        return propertyMap to fluid
+        return properties to fluid
     }
 
     @JvmStatic
@@ -89,8 +91,8 @@ object FluidLoader : KryptonDataLoader("fluids") {
         key: Key,
         fluid: JsonObject,
         state: JsonObject,
-        availableProperties: Set<Property<*>>,
-        propertyMap: Map<String, String>
+        availableProperties: ImmutableSet<Property<*>>,
+        propertyMap: PersistentMap<String, String>
     ): KryptonFluid = KryptonFluid(
         key,
         fluid["id"].asInt,

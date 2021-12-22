@@ -21,6 +21,7 @@ package org.kryptonmc.krypton.entity.player
 import it.unimi.dsi.fastutil.longs.LongArrayList
 import it.unimi.dsi.fastutil.longs.LongArraySet
 import it.unimi.dsi.fastutil.longs.LongSet
+import kotlinx.collections.immutable.persistentListOf
 import net.kyori.adventure.audience.MessageType
 import net.kyori.adventure.bossbar.BossBar
 import net.kyori.adventure.identity.Identity
@@ -210,7 +211,7 @@ class KryptonPlayer(
         }
     override val inventory = KryptonPlayerInventory(this)
     override val handSlots: Iterable<KryptonItemStack>
-        get() = listOf(inventory.mainHand, inventory.offHand)
+        get() = sequenceOf(inventory.mainHand, inventory.offHand).asIterable()
     override val armorSlots: Iterable<KryptonItemStack>
         get() = inventory.armor
 
@@ -738,10 +739,6 @@ class KryptonPlayer(
 
     fun sendTitleTimes(fadeInTicks: Int, stayTicks: Int, fadeOutTicks: Int) {
         session.send(PacketOutTitleTimes(fadeInTicks, stayTicks, fadeOutTicks))
-    }
-
-    fun sendTitleTimes(fadeIn: Duration, stay: Duration, fadeOut: Duration) {
-        session.send(PacketOutTitleTimes(fadeIn, stay, fadeOut))
     }
 
     override fun clearTitle() {

@@ -12,6 +12,7 @@ dependencies {
     // Kotlin
     api(libs.bundles.kotlin)
     api(libs.kotlinx.coroutines)
+    api(libs.kotlinx.collections.immutable)
 
     // Core
     api(libs.guava)

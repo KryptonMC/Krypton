@@ -50,9 +50,9 @@ import org.kryptonmc.krypton.network.netty.SizeDecoder
 import org.kryptonmc.krypton.network.netty.SizeEncoder
 import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.util.threadFactory
-import org.kryptonmc.nbt.list
 import java.io.IOException
 import java.net.InetSocketAddress
+import java.util.concurrent.ConcurrentHashMap
 
 /**
  * The handler that starts up and shuts down the Netty connection handler.
@@ -62,7 +62,7 @@ object NettyProcess {
     private val LOGGER = logger<KryptonServer>()
     private val bossGroup: EventLoopGroup = bestLoopGroup()
     private val workerGroup: EventLoopGroup = bestLoopGroup()
-    private val listeners = mutableMapOf<Key, ChannelInitializeListener>()
+    private val listeners = ConcurrentHashMap<Key, ChannelInitializeListener>()
     private var future: ChannelFuture? = null
 
     @JvmStatic

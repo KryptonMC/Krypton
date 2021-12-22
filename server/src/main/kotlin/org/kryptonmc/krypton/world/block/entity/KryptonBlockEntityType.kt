@@ -18,6 +18,7 @@
  */
 package org.kryptonmc.krypton.world.block.entity
 
+import kotlinx.collections.immutable.ImmutableSet
 import net.kyori.adventure.key.Key
 import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.block.entity.BlockEntityType
@@ -25,7 +26,7 @@ import org.kryptonmc.api.block.entity.BlockEntityType
 @JvmRecord
 data class KryptonBlockEntityType(
     private val key: Key,
-    override val applicableBlocks: Set<Block>
+    override val applicableBlocks: ImmutableSet<Block>
 ) : BlockEntityType {
 
     override fun key(): Key = key

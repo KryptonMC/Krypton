@@ -33,17 +33,19 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutDisplayObjective
 import org.kryptonmc.krypton.packet.out.play.PacketOutObjective
 import org.kryptonmc.krypton.packet.out.play.PacketOutTeam
 import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateScore
+import java.util.Collections
+import java.util.concurrent.ConcurrentHashMap
 
 class KryptonScoreboard(private val server: KryptonServer) : Scoreboard {
 
-    private val objectivesByName = mutableMapOf<String, Objective>()
-    private val objectivesByCriterion = mutableMapOf<Criterion, MutableSet<Objective>>()
-    private val trackedObjectives = mutableSetOf<Objective>()
-    private val memberScores = mutableMapOf<Component, MutableMap<Objective, KryptonScore>>()
-    val displayObjectives = HashMap<DisplaySlot, Objective>(18)
-    private val teamsByName = mutableMapOf<String, Team>()
-    private val teamsByMember = mutableMapOf<Component, Team>()
-    private val listeners = mutableListOf<Runnable>()
+    private val objectivesByName = ConcurrentHashMap<String, Objective>()
+    private val objectivesByCriterion = ConcurrentHashMap<Criterion, MutableSet<Objective>>()
+    private val trackedObjectives = ConcurrentHashMap.newKeySet<Objective>()
+    private val memberScores = ConcurrentHashMap<Component, MutableMap<Objective, KryptonScore>>()
+    val displayObjectives = ConcurrentHashMap<DisplaySlot, Objective>(18)
+    private val teamsByName = ConcurrentHashMap<String, Team>()
+    private val teamsByMember = ConcurrentHashMap<Component, Team>()
+    private val listeners = Collections.synchronizedList(ArrayList<Runnable>())
 
     override val objectives: Collection<Objective>
         get() = objectivesByName.values

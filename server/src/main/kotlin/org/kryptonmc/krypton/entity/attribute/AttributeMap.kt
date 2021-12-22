@@ -31,7 +31,8 @@ class AttributeMap(private val supplier: AttributeSupplier) {
 
     private val attributes = mutableMapOf<AttributeType, KryptonAttribute>()
     private val dirty = mutableSetOf<KryptonAttribute>()
-    val syncable: Collection<KryptonAttribute> = attributes.values.filter { it.type.sendToClient }
+    val syncable: Collection<KryptonAttribute>
+        get() = attributes.values.filter { it.type.sendToClient }
 
     operator fun get(type: AttributeType): KryptonAttribute = attributes.computeIfAbsent(type) { supplier.create(type, ::onModify) }
 

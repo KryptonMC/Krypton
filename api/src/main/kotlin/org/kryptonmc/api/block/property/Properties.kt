@@ -8,6 +8,7 @@
  */
 package org.kryptonmc.api.block.property
 
+import kotlinx.collections.immutable.persistentSetOf
 import org.kryptonmc.api.block.Blocks
 import org.kryptonmc.api.block.meta.AttachFace
 import org.kryptonmc.api.block.meta.BambooLeaves
@@ -467,7 +468,7 @@ public object Properties {
     @JvmField
     public val HOPPER_FACING: Property<Direction> = Property.forEnum(
         "facing",
-        setOf(Direction.NORTH, Direction.SOUTH, Direction.EAST, Direction.WEST, Direction.DOWN)
+        persistentSetOf(Direction.NORTH, Direction.SOUTH, Direction.EAST, Direction.WEST, Direction.DOWN)
     )
 
     /**
@@ -478,7 +479,7 @@ public object Properties {
     @JvmField
     public val HORIZONTAL_AXIS: Property<Direction.Axis> = Property.forEnum(
         "axis",
-        setOf(Direction.Axis.X, Direction.Axis.Z)
+        persistentSetOf(Direction.Axis.X, Direction.Axis.Z)
     )
 
     /**
@@ -504,7 +505,7 @@ public object Properties {
     @JvmField
     public val HORIZONTAL_FACING: Property<Direction> = Property.forEnum(
         "facing",
-        setOf(Direction.NORTH, Direction.SOUTH, Direction.EAST, Direction.WEST)
+        persistentSetOf(Direction.NORTH, Direction.SOUTH, Direction.EAST, Direction.WEST)
     )
 
     /**
@@ -813,7 +814,7 @@ public object Properties {
     @JvmField
     public val STRAIGHT_RAIL_SHAPE: Property<RailShape> = Property.forEnum(
         "shape",
-        setOf(
+        persistentSetOf(
             RailShape.ASCENDING_NORTH,
             RailShape.ASCENDING_SOUTH,
             RailShape.ASCENDING_EAST,
@@ -860,7 +861,7 @@ public object Properties {
     @JvmField
     public val VERTICAL_DIRECTION: Property<Direction> = Property.forEnum(
         "vertical_direction",
-        setOf(Direction.UP, Direction.DOWN)
+        persistentSetOf(Direction.UP, Direction.DOWN)
     )
 
     /**

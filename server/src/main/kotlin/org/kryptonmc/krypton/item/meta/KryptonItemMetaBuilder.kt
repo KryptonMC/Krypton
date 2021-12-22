@@ -18,6 +18,8 @@
  */
 package org.kryptonmc.krypton.item.meta
 
+import kotlinx.collections.immutable.persistentListOf
+import kotlinx.collections.immutable.persistentSetOf
 import net.kyori.adventure.text.Component
 import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.item.data.ItemFlag
@@ -32,10 +34,10 @@ abstract class KryptonItemMetaBuilder<B : ItemMetaBuilder<B, I>, I : ItemMeta> :
     protected var unbreakable = false
     protected var customModelData = 0
     protected var name: Component? = null
-    protected val lore = mutableListOf<Component>()
+    protected val lore = persistentListOf<Component>().builder()
     protected var hideFlags = 0
-    protected val canDestroy = mutableSetOf<Block>()
-    protected val canPlaceOn = mutableSetOf<Block>()
+    protected val canDestroy = persistentSetOf<Block>().builder()
+    protected val canPlaceOn = persistentSetOf<Block>().builder()
 
     override fun damage(damage: Int): B = apply { this.damage = damage } as B
 

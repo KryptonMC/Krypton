@@ -18,18 +18,20 @@
  */
 package org.kryptonmc.krypton.world
 
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.persistentListOf
 import org.kryptonmc.krypton.util.serialization.Codecs
 import org.kryptonmc.krypton.util.serialization.CompoundEncoder
 import org.kryptonmc.krypton.util.serialization.encode
 import org.kryptonmc.nbt.compound
 
 @JvmRecord
-data class DataPackConfig(val enabled: List<String>, val disabled: List<String>) {
+data class DataPackConfig(val enabled: ImmutableList<String>, val disabled: ImmutableList<String>) {
 
     companion object {
 
         @JvmField
-        val DEFAULT: DataPackConfig = DataPackConfig(listOf("vanilla"), emptyList())
+        val DEFAULT: DataPackConfig = DataPackConfig(persistentListOf("vanilla"), persistentListOf())
 
         @JvmField
         val ENCODER: CompoundEncoder<DataPackConfig> = CompoundEncoder {

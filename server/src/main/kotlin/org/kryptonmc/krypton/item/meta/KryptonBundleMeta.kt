@@ -18,24 +18,29 @@
  */
 package org.kryptonmc.krypton.item.meta
 
+import kotlinx.collections.immutable.ImmutableSet
+import kotlinx.collections.immutable.PersistentList
+import kotlinx.collections.immutable.persistentListOf
+import kotlinx.collections.immutable.toPersistentList
 import net.kyori.adventure.text.Component
 import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.item.ItemStack
 import org.kryptonmc.api.item.meta.BundleMeta
 import org.kryptonmc.krypton.item.KryptonItemStack
+import org.kryptonmc.krypton.util.mapPersistentList
 import org.kryptonmc.nbt.CompoundTag
 
-@Suppress("UNCHECKED_CAST")
+@Suppress("EqualsOrHashCode")
 class KryptonBundleMeta(
     damage: Int,
     isUnbreakable: Boolean,
     customModelData: Int,
     name: Component?,
-    lore: List<Component>,
+    lore: PersistentList<Component>,
     hideFlags: Int,
-    canDestroy: Set<Block>,
-    canPlaceOn: Set<Block>,
-    override val items: List<ItemStack>
+    canDestroy: ImmutableSet<Block>,
+    canPlaceOn: ImmutableSet<Block>,
+    override val items: PersistentList<ItemStack>
 ) : AbstractItemMeta<KryptonBundleMeta>(damage, isUnbreakable, customModelData, name, lore, hideFlags, canDestroy, canPlaceOn), BundleMeta {
 
     constructor(tag: CompoundTag) : this(
@@ -47,7 +52,7 @@ class KryptonBundleMeta(
         tag.getInt("HideFlags"),
         tag.getBlocks("CanDestroy"),
         tag.getBlocks("CanPlaceOn"),
-        tag.getList("Items", CompoundTag.ID).map { KryptonItemStack(it as CompoundTag) }
+        tag.getList("Items", CompoundTag.ID).mapPersistentList { KryptonItemStack(it as CompoundTag) }
     )
 
     override fun copy(
@@ -55,10 +60,10 @@ class KryptonBundleMeta(
         isUnbreakable: Boolean,
         customModelData: Int,
         name: Component?,
-        lore: List<Component>,
+        lore: PersistentList<Component>,
         hideFlags: Int,
-        canDestroy: Set<Block>,
-        canPlaceOn: Set<Block>
+        canDestroy: ImmutableSet<Block>,
+        canPlaceOn: ImmutableSet<Block>
     ): KryptonBundleMeta = KryptonBundleMeta(damage, isUnbreakable, customModelData, name, lore, hideFlags, canDestroy, canPlaceOn, items)
 
     override fun saveData(): CompoundTag.Builder = super.saveData().apply {
@@ -74,14 +79,14 @@ class KryptonBundleMeta(
         hideFlags,
         canDestroy,
         canPlaceOn,
-        items as List<KryptonItemStack>
+        items.toPersistentList()
     )
 
-    override fun addItem(item: ItemStack): KryptonBundleMeta = withItems(items.plus(item))
+    override fun addItem(item: ItemStack): KryptonBundleMeta = withItems(items.add(item))
 
-    override fun removeItem(index: Int): KryptonBundleMeta = removeItem(items[index])
+    override fun removeItem(index: Int): KryptonBundleMeta = withItems(items.removeAt(index))
 
-    override fun removeItem(item: ItemStack): KryptonBundleMeta = withItems(items.minus(item))
+    override fun removeItem(item: ItemStack): KryptonBundleMeta = withItems(items.remove(item))
 
     override fun toBuilder(): BundleMeta.Builder = Builder(this)
 
@@ -97,7 +102,7 @@ class KryptonBundleMeta(
 
     class Builder() : KryptonItemMetaBuilder<BundleMeta.Builder, BundleMeta>(), BundleMeta.Builder {
 
-        private val items = mutableListOf<ItemStack>()
+        private val items = persistentListOf<ItemStack>().builder()
 
         constructor(meta: BundleMeta) : this() {
             copyFrom(meta)
@@ -116,11 +121,11 @@ class KryptonBundleMeta(
             unbreakable,
             customModelData,
             name,
-            lore,
+            lore.build(),
             hideFlags,
-            canDestroy,
-            canPlaceOn,
-            items
+            canDestroy.build(),
+            canPlaceOn.build(),
+            items.build()
         )
     }
 }

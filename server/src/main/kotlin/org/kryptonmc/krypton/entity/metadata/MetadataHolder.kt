@@ -22,42 +22,36 @@ import io.netty.buffer.ByteBuf
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 import org.kryptonmc.krypton.entity.KryptonEntity
 import org.kryptonmc.krypton.util.writeVarInt
+import space.vectrix.flare.fastutil.Int2ObjectSyncMap
 import java.util.concurrent.locks.ReentrantReadWriteLock
 import kotlin.concurrent.read
 import kotlin.concurrent.write
 
 class MetadataHolder(private val entity: KryptonEntity) {
 
-    private val itemsById = Int2ObjectOpenHashMap<Entry<*>>()
-    private val lock = ReentrantReadWriteLock()
+    private val itemsById = Int2ObjectSyncMap.hashmap<Entry<*>>()
 
     var isDirty = false
         private set
     var isEmpty = true
         private set
     val all: Sequence<Entry<*>>
-        get() = lock.read {
-            itemsById.int2ObjectEntrySet()
-                .fastIterator()
-                .asSequence()
-                .map { it.value.copy() }
-                .apply { invalidate() }
-        }
+        get() = itemsById.int2ObjectEntrySet()
+            .asSequence()
+            .map { it.value.copy() }
+            .apply { invalidate() }
     val dirty: Sequence<Entry<*>>
         get() {
             if (!isDirty) return emptySequence()
-            return lock.read {
-                val entries = itemsById.int2ObjectEntrySet()
-                    .fastIterator()
-                    .asSequence()
-                    .filter { it.value.isDirty }
-                    .map {
-                        it.value.isDirty = false
-                        it.value.copy()
-                    }
-                isDirty = false
-                entries
-            }
+            val entries = itemsById.int2ObjectEntrySet()
+                .asSequence()
+                .filter { it.value.isDirty }
+                .map {
+                    it.value.isDirty = false
+                    it.value.copy()
+                }
+            isDirty = false
+            return entries
         }
 
     fun <T> add(key: MetadataKey<T>, value: T = key.default) {
@@ -82,19 +76,17 @@ class MetadataHolder(private val entity: KryptonEntity) {
     }
 
     @Suppress("UNCHECKED_CAST")
-    private fun <T> entry(id: Int): Entry<T>? = lock.read { itemsById[id] as? Entry<T> }
+    private fun <T> entry(id: Int): Entry<T>? = itemsById[id] as? Entry<T>
 
     private fun invalidate() {
         isDirty = false
-        lock.read { itemsById.int2ObjectEntrySet().fastForEach { it.value.isDirty = false } }
+        itemsById.int2ObjectEntrySet().forEach { it.value.isDirty = false }
     }
 
     private fun <T> createItem(key: MetadataKey<T>, value: T) {
         val item = Entry(key, value)
-        lock.write {
-            itemsById[key.id] = item
-            isEmpty = false
-        }
+        itemsById[key.id] = item
+        isEmpty = false
     }
 
     data class Entry<T>(val key: MetadataKey<T>, var value: T) {

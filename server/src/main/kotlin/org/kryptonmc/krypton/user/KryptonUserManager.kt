@@ -35,12 +35,11 @@ import org.kryptonmc.nbt.io.TagCompression
 import org.kryptonmc.nbt.io.TagIO
 import java.util.UUID
 import java.util.concurrent.CompletableFuture
-import java.util.concurrent.ConcurrentMap
 import java.util.concurrent.Executors
 
 class KryptonUserManager(private val server: KryptonServer) : UserManager {
 
-    private val users: ConcurrentMap<UUID, KryptonUser> = MapMaker().weakValues().makeMap()
+    private val users: MutableMap<UUID, KryptonUser> = MapMaker().weakValues().makeMap()
     private val executor = Executors.newSingleThreadExecutor(threadFactory("Krypton User Data Loader") { daemon() })
 
     fun updateUser(uuid: UUID, data: CompoundTag) {

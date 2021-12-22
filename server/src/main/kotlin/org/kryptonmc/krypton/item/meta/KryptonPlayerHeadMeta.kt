@@ -18,6 +18,8 @@
  */
 package org.kryptonmc.krypton.item.meta
 
+import kotlinx.collections.immutable.ImmutableSet
+import kotlinx.collections.immutable.PersistentList
 import net.kyori.adventure.text.Component
 import org.kryptonmc.api.auth.GameProfile
 import org.kryptonmc.api.block.Block
@@ -31,10 +33,10 @@ class KryptonPlayerHeadMeta(
     isUnbreakable: Boolean,
     customModelData: Int,
     name: Component?,
-    lore: List<Component>,
+    lore: PersistentList<Component>,
     hideFlags: Int,
-    canDestroy: Set<Block>,
-    canPlaceOn: Set<Block>,
+    canDestroy: ImmutableSet<Block>,
+    canPlaceOn: ImmutableSet<Block>,
     override val owner: GameProfile?
 ) : AbstractItemMeta<KryptonPlayerHeadMeta>(damage, isUnbreakable, customModelData, name, lore, hideFlags, canDestroy, canPlaceOn), PlayerHeadMeta {
 
@@ -55,10 +57,10 @@ class KryptonPlayerHeadMeta(
         isUnbreakable: Boolean,
         customModelData: Int,
         name: Component?,
-        lore: List<Component>,
+        lore: PersistentList<Component>,
         hideFlags: Int,
-        canDestroy: Set<Block>,
-        canPlaceOn: Set<Block>
+        canDestroy: ImmutableSet<Block>,
+        canPlaceOn: ImmutableSet<Block>
     ): KryptonPlayerHeadMeta = KryptonPlayerHeadMeta(damage, isUnbreakable, customModelData, name, lore, hideFlags, canDestroy, canPlaceOn, owner)
 
     override fun saveData(): CompoundTag.Builder = super.saveData().apply {
@@ -95,10 +97,10 @@ class KryptonPlayerHeadMeta(
             unbreakable,
             customModelData,
             name,
-            lore,
+            lore.build(),
             hideFlags,
-            canDestroy,
-            canPlaceOn,
+            canDestroy.build(),
+            canPlaceOn.build(),
             owner
         )
     }

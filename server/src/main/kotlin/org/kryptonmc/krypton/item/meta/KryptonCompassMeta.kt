@@ -18,6 +18,8 @@
  */
 package org.kryptonmc.krypton.item.meta
 
+import kotlinx.collections.immutable.ImmutableSet
+import kotlinx.collections.immutable.PersistentList
 import net.kyori.adventure.text.Component
 import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.item.meta.CompassMeta
@@ -29,15 +31,16 @@ import org.kryptonmc.krypton.world.dimension.parseDimension
 import org.kryptonmc.nbt.CompoundTag
 import org.spongepowered.math.vector.Vector3i
 
+@Suppress("EqualsOrHashCode")
 class KryptonCompassMeta(
     damage: Int,
     isUnbreakable: Boolean,
     customModelData: Int,
     name: Component?,
-    lore: List<Component>,
+    lore: PersistentList<Component>,
     hideFlags: Int,
-    canDestroy: Set<Block>,
-    canPlaceOn: Set<Block>,
+    canDestroy: ImmutableSet<Block>,
+    canPlaceOn: ImmutableSet<Block>,
     override val isTrackingLodestone: Boolean,
     override val lodestoneDimension: ResourceKey<World>?,
     override val lodestonePosition: Vector3i?
@@ -62,10 +65,10 @@ class KryptonCompassMeta(
         isUnbreakable: Boolean,
         customModelData: Int,
         name: Component?,
-        lore: List<Component>,
+        lore: PersistentList<Component>,
         hideFlags: Int,
-        canDestroy: Set<Block>,
-        canPlaceOn: Set<Block>
+        canDestroy: ImmutableSet<Block>,
+        canPlaceOn: ImmutableSet<Block>
     ): KryptonCompassMeta = copy(damage, isUnbreakable, customModelData, name, lore, hideFlags, canDestroy, canPlaceOn)
 
     override fun saveData(): CompoundTag.Builder = super.saveData().apply {
@@ -88,10 +91,10 @@ class KryptonCompassMeta(
         isUnbreakable: Boolean = this.isUnbreakable,
         customModelData: Int = this.customModelData,
         name: Component? = this.name,
-        lore: List<Component> = this.lore,
+        lore: PersistentList<Component> = this.lore,
         hideFlags: Int = this.hideFlags,
-        canDestroy: Set<Block> = this.canDestroy,
-        canPlaceOn: Set<Block> = this.canPlaceOn,
+        canDestroy: ImmutableSet<Block> = this.canDestroy,
+        canPlaceOn: ImmutableSet<Block> = this.canPlaceOn,
         tracking: Boolean = isTrackingLodestone,
         dimension: ResourceKey<World>? = lodestoneDimension,
         position: Vector3i? = lodestonePosition
@@ -149,10 +152,10 @@ class KryptonCompassMeta(
             unbreakable,
             customModelData,
             name,
-            lore,
+            lore.build(),
             hideFlags,
-            canDestroy,
-            canPlaceOn,
+            canDestroy.build(),
+            canPlaceOn.build(),
             tracking,
             dimension,
             position

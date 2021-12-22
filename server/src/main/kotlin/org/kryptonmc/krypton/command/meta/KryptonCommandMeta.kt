@@ -18,13 +18,15 @@
  */
 package org.kryptonmc.krypton.command.meta
 
+import kotlinx.collections.immutable.ImmutableSet
+import kotlinx.collections.immutable.persistentSetOf
 import org.kryptonmc.api.command.meta.CommandMeta
 import org.kryptonmc.api.command.meta.SimpleCommandMeta
 
 @JvmRecord
 data class KryptonCommandMeta(
     override val name: String,
-    override val aliases: Set<String>
+    override val aliases: ImmutableSet<String>
 ) : CommandMeta {
 
     override fun toBuilder(): CommandMeta.Builder = Builder(this)
@@ -37,7 +39,7 @@ data class KryptonCommandMeta(
     @Suppress("UNCHECKED_CAST")
     abstract class AbstractBuilder<B : AbstractBuilder<B>>(protected var name: String) : CommandMeta.Builder {
 
-        protected val aliases = mutableSetOf<String>()
+        protected val aliases = persistentSetOf<String>().builder()
 
         final override fun name(name: String): B = apply { this.name = name } as B
 
@@ -54,7 +56,7 @@ data class KryptonCommandMeta(
             aliases.addAll(meta.aliases)
         }
 
-        override fun build(): CommandMeta = KryptonCommandMeta(name, aliases)
+        override fun build(): CommandMeta = KryptonCommandMeta(name, aliases.build())
     }
 
     object Factory : CommandMeta.Factory {

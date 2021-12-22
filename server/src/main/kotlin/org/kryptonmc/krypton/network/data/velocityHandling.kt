@@ -20,6 +20,8 @@ package org.kryptonmc.krypton.network.data
 
 import com.google.common.net.InetAddresses
 import io.netty.buffer.ByteBuf
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.persistentListOf
 import org.kryptonmc.krypton.auth.KryptonProfileProperty
 import org.kryptonmc.krypton.util.readAvailableBytes
 import org.kryptonmc.krypton.util.readString
@@ -46,15 +48,15 @@ fun ByteBuf.verifyVelocityIntegrity(secret: ByteArray): Boolean {
     return version == SUPPORTED_FORWARDING_VERSION
 }
 
-fun ByteBuf.readVelocityProperties(): List<KryptonProfileProperty> {
-    val properties = mutableListOf<KryptonProfileProperty>()
+fun ByteBuf.readVelocityProperties(): ImmutableList<KryptonProfileProperty> {
+    val properties = persistentListOf<KryptonProfileProperty>().builder()
     repeat(readVarInt()) {
         val name = readString()
         val value = readString()
         val signature = if (readBoolean()) readString() else null
         properties.add(KryptonProfileProperty(name, value, signature))
     }
-    return properties
+    return properties.build()
 }
 
 fun ByteBuf.readVelocityData(): VelocityForwardedData = VelocityForwardedData(

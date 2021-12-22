@@ -18,6 +18,8 @@
  */
 package org.kryptonmc.krypton.item.meta
 
+import kotlinx.collections.immutable.ImmutableSet
+import kotlinx.collections.immutable.PersistentList
 import net.kyori.adventure.text.Component
 import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.item.meta.ItemMeta
@@ -30,10 +32,10 @@ class KryptonItemMeta(
     isUnbreakable: Boolean,
     customModelData: Int,
     name: Component?,
-    lore: List<Component>,
+    lore: PersistentList<Component>,
     hideFlags: Int,
-    canDestroy: Set<Block>,
-    canPlaceOn: Set<Block>
+    canDestroy: ImmutableSet<Block>,
+    canPlaceOn: ImmutableSet<Block>
 ) : AbstractItemMeta<KryptonItemMeta>(damage, isUnbreakable, customModelData, name, lore, hideFlags, canDestroy, canPlaceOn), ItemMeta {
 
     constructor(tag: CompoundTag) : this(
@@ -52,17 +54,26 @@ class KryptonItemMeta(
         isUnbreakable: Boolean,
         customModelData: Int,
         name: Component?,
-        lore: List<Component>,
+        lore: PersistentList<Component>,
         hideFlags: Int,
-        canDestroy: Set<Block>,
-        canPlaceOn: Set<Block>
+        canDestroy: ImmutableSet<Block>,
+        canPlaceOn: ImmutableSet<Block>
     ): KryptonItemMeta = KryptonItemMeta(damage, isUnbreakable, customModelData, name, lore, hideFlags, canDestroy, canPlaceOn)
 
     override fun toString(): String = "KryptonItemMeta(${partialToString()})"
 
     class Builder : KryptonItemMetaBuilder<ItemMeta.Builder, ItemMeta>(), ItemMeta.Builder {
 
-        override fun build(): KryptonItemMeta = KryptonItemMeta(damage, unbreakable, customModelData, name, lore, hideFlags, canDestroy, canPlaceOn)
+        override fun build(): KryptonItemMeta = KryptonItemMeta(
+            damage,
+            unbreakable,
+            customModelData,
+            name,
+            lore.build(),
+            hideFlags,
+            canDestroy.build(),
+            canPlaceOn.build()
+        )
     }
 
     object Factory : ItemMeta.Factory {

@@ -18,7 +18,9 @@
  */
 package org.kryptonmc.krypton.entity
 
-import com.google.common.collect.ImmutableSet
+import kotlinx.collections.immutable.ImmutableSet
+import kotlinx.collections.immutable.persistentSetOf
+import kotlinx.collections.immutable.toImmutableSet
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.TranslatableComponent
@@ -40,7 +42,7 @@ data class KryptonEntityType<T : Entity>(
     override val clientTrackingRange: Int,
     override val updateInterval: Int,
     override val dimensions: EntityDimensions,
-    override val immuneTo: Set<Block>,
+    override val immuneTo: ImmutableSet<Block>,
     override val lootTable: Key,
     override val translation: TranslatableComponent
 ) : EntityType<T> {
@@ -59,7 +61,7 @@ data class KryptonEntityType<T : Entity>(
         private var fireImmune = false
         private var rideable = false
         private var dimensions = DEFAULT_DIMENSIONS
-        private val immuneTo = mutableSetOf<Block>()
+        private val immuneTo = persistentSetOf<Block>().builder()
         private var clientTrackingRange = 5
         private var updateInterval = 3
         private var lootTable: Key? = null
@@ -107,7 +109,7 @@ data class KryptonEntityType<T : Entity>(
             clientTrackingRange,
             updateInterval,
             dimensions,
-            ImmutableSet.copyOf(immuneTo),
+            immuneTo.build(),
             lootTable ?: Key.key(key.namespace(), "entities/${key.value()}"),
             translation ?: Component.translatable("entity.${key.namespace()}.${key.value().replace('/', '.')}")
         )
@@ -141,7 +143,7 @@ data class KryptonEntityType<T : Entity>(
             trackingRange,
             updateInterval,
             dimensions,
-            immuneTo,
+            immuneTo.toImmutableSet(),
             lootTable,
             translation
         )

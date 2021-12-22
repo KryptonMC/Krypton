@@ -18,27 +18,12 @@
  */
 package org.kryptonmc.krypton.util
 
+import kotlinx.collections.immutable.PersistentCollection
+import kotlinx.collections.immutable.PersistentList
+import kotlinx.collections.immutable.PersistentSet
+import kotlinx.collections.immutable.persistentListOf
+import kotlinx.collections.immutable.persistentSetOf
 import java.util.function.ToIntFunction
-
-fun <T> Iterable<T>.convertToList(): List<T> {
-    if (this is List<T>) {
-        if (isEmpty()) return emptyList()
-        return this
-    }
-    if (this is Collection<T> && isEmpty()) return emptyList()
-    return toList()
-}
-
-fun <T> Iterable<T>.convertToSet(): Set<T> {
-    if (this is Set<T>) {
-        if (isEmpty()) return emptySet()
-        return this
-    }
-    if (this is Collection<T> && isEmpty()) return emptySet()
-    return toSet()
-}
-
-fun <T> List<T>.minus(index: Int): List<T> = minus(get(index))
 
 fun <T> List<T>.toIntArray(converter: ToIntFunction<T>): IntArray {
     val array = IntArray(size)
@@ -46,4 +31,16 @@ fun <T> List<T>.toIntArray(converter: ToIntFunction<T>): IntArray {
         array[i] = converter.applyAsInt(get(i))
     }
     return array
+}
+
+fun <T, R> Iterable<T>.mapPersistentList(action: (T) -> R): PersistentList<R> = mapPersistentTo(persistentListOf<R>().builder(), action)
+
+fun <T, R> Iterable<T>.mapPersistentSet(action: (T) -> R): PersistentSet<R> = mapPersistentTo(persistentSetOf<R>().builder(), action)
+
+@Suppress("UNCHECKED_CAST")
+fun <T, R, B : PersistentCollection.Builder<R>, C : PersistentCollection<R>> Iterable<T>.mapPersistentTo(builder: B, action: (T) -> R): C {
+    for (element in this) {
+        builder.add(action(element))
+    }
+    return builder.build() as C
 }

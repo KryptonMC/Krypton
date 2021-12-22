@@ -18,12 +18,16 @@
  */
 package org.kryptonmc.krypton.item.meta
 
+import kotlinx.collections.immutable.ImmutableSet
+import kotlinx.collections.immutable.PersistentList
+import kotlinx.collections.immutable.persistentListOf
+import kotlinx.collections.immutable.toPersistentList
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer
 import org.kryptonmc.api.adventure.toJsonString
 import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.item.meta.WritableBookMeta
-import org.kryptonmc.krypton.util.convertToList
+import org.kryptonmc.krypton.util.mapPersistentList
 import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.StringTag
 
@@ -32,11 +36,11 @@ class KryptonWritableBookMeta(
     isUnbreakable: Boolean,
     customModelData: Int,
     name: Component?,
-    lore: List<Component>,
+    lore: PersistentList<Component>,
     hideFlags: Int,
-    canDestroy: Set<Block>,
-    canPlaceOn: Set<Block>,
-    override val pages: List<Component>
+    canDestroy: ImmutableSet<Block>,
+    canPlaceOn: ImmutableSet<Block>,
+    override val pages: PersistentList<Component>
 ) : AbstractItemMeta<KryptonWritableBookMeta>(damage, isUnbreakable, customModelData, name, lore, hideFlags, canDestroy, canPlaceOn),
     WritableBookMeta {
 
@@ -49,7 +53,7 @@ class KryptonWritableBookMeta(
         tag.getInt("HideFlags"),
         tag.getBlocks("CanDestroy"),
         tag.getBlocks("CanPlaceOn"),
-        tag.getList("pages", StringTag.ID).map { LegacyComponentSerializer.legacySection().deserialize((it as StringTag).value) },
+        tag.getList("pages", StringTag.ID).mapPersistentList { LegacyComponentSerializer.legacySection().deserialize((it as StringTag).value) },
     )
 
     override fun copy(
@@ -57,10 +61,10 @@ class KryptonWritableBookMeta(
         isUnbreakable: Boolean,
         customModelData: Int,
         name: Component?,
-        lore: List<Component>,
+        lore: PersistentList<Component>,
         hideFlags: Int,
-        canDestroy: Set<Block>,
-        canPlaceOn: Set<Block>
+        canDestroy: ImmutableSet<Block>,
+        canPlaceOn: ImmutableSet<Block>
     ): KryptonWritableBookMeta = KryptonWritableBookMeta(damage, isUnbreakable, customModelData, name, lore, hideFlags, canDestroy, canPlaceOn, pages)
 
     override fun saveData(): CompoundTag.Builder = super.saveData().apply {
@@ -76,20 +80,20 @@ class KryptonWritableBookMeta(
         hideFlags,
         canDestroy,
         canPlaceOn,
-        pages.convertToList()
+        pages.toPersistentList()
     )
 
-    override fun addPage(page: Component): KryptonWritableBookMeta = withPages(pages.plus(page))
+    override fun addPage(page: Component): KryptonWritableBookMeta = withPages(pages.add(page))
 
-    override fun removePage(index: Int): KryptonWritableBookMeta = removePage(pages[index])
+    override fun removePage(index: Int): KryptonWritableBookMeta = withPages(pages.removeAt(index))
 
-    override fun removePage(page: Component): KryptonWritableBookMeta = withPages(pages.minus(page))
+    override fun removePage(page: Component): KryptonWritableBookMeta = withPages(pages.remove(page))
 
     override fun toBuilder(): WritableBookMeta.Builder = Builder(this)
 
     class Builder() : KryptonItemMetaBuilder<WritableBookMeta.Builder, WritableBookMeta>(), WritableBookMeta.Builder {
 
-        private val pages = mutableListOf<Component>()
+        private val pages = persistentListOf<Component>().builder()
 
         constructor(meta: WritableBookMeta) : this() {
             copyFrom(meta)
@@ -108,11 +112,11 @@ class KryptonWritableBookMeta(
             unbreakable,
             customModelData,
             name,
-            lore,
+            lore.build(),
             hideFlags,
-            canDestroy,
-            canPlaceOn,
-            pages
+            canDestroy.build(),
+            canPlaceOn.build(),
+            pages.build()
         )
     }
 }

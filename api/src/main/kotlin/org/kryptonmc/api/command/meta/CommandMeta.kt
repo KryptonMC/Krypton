@@ -28,7 +28,7 @@ public interface CommandMeta : Buildable<CommandMeta, CommandMeta.Builder> {
     public val name: String
 
     /**
-     * The set of aliases of the command.
+     * All of the aliases of the command.
      */
     @get:JvmName("aliases")
     public val aliases: Set<String>

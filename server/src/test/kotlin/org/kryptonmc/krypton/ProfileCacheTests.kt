@@ -20,6 +20,7 @@ package org.kryptonmc.krypton
 
 import com.google.common.jimfs.Configuration
 import com.google.common.jimfs.Jimfs
+import kotlinx.collections.immutable.persistentListOf
 import org.kryptonmc.krypton.auth.KryptonGameProfile
 import org.kryptonmc.krypton.auth.KryptonProfileCache
 import org.kryptonmc.krypton.auth.ProfileHolder
@@ -65,7 +66,7 @@ class ProfileCacheTests {
     fun `test profile saving`() {
         val cache = KryptonProfileCache(OUTPUT_PATH)
         cache.add(PROFILE)
-        cache.add(KryptonGameProfile("Joe", UUID.randomUUID(), emptyList()))
+        cache.add(KryptonGameProfile("Joe", UUID.randomUUID(), persistentListOf()))
         cache.save()
         assertTrue(OUTPUT_PATH.readText().isNotBlank())
     }
@@ -81,7 +82,7 @@ class ProfileCacheTests {
         private val OUTPUT_PATH = FILE_SYSTEM.getPath("output")
 
         private val ID = UUID.randomUUID()
-        private val PROFILE = KryptonGameProfile("Dave", ID, emptyList())
+        private val PROFILE = KryptonGameProfile("Dave", ID, persistentListOf())
         private val TIME = ZonedDateTime.of(2021, 2, 13, 17, 2, 36, 0, ZoneOffset.UTC)
         private val TIME_FORMATTED = ProfileHolder.DATE_FORMATTER.format(TIME)
 

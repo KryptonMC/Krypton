@@ -18,12 +18,17 @@
  */
 package org.kryptonmc.krypton.item.meta
 
+import kotlinx.collections.immutable.ImmutableSet
+import kotlinx.collections.immutable.PersistentList
+import kotlinx.collections.immutable.persistentListOf
+import kotlinx.collections.immutable.toPersistentList
 import net.kyori.adventure.text.Component
 import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.item.data.FireworkEffect
 import org.kryptonmc.api.item.meta.FireworkRocketMeta
 import org.kryptonmc.krypton.item.data.KryptonFireworkEffect
 import org.kryptonmc.krypton.item.data.save
+import org.kryptonmc.krypton.util.mapPersistentList
 import org.kryptonmc.nbt.CompoundTag
 
 class KryptonFireworkRocketMeta(
@@ -31,11 +36,11 @@ class KryptonFireworkRocketMeta(
     isUnbreakable: Boolean,
     customModelData: Int,
     name: Component?,
-    lore: List<Component>,
+    lore: PersistentList<Component>,
     hideFlags: Int,
-    canDestroy: Set<Block>,
-    canPlaceOn: Set<Block>,
-    override val effects: List<FireworkEffect>,
+    canDestroy: ImmutableSet<Block>,
+    canPlaceOn: ImmutableSet<Block>,
+    override val effects: PersistentList<FireworkEffect>,
     override val flightDuration: Int
 ) : AbstractItemMeta<KryptonFireworkRocketMeta>(damage, isUnbreakable, customModelData, name, lore, hideFlags, canDestroy, canPlaceOn),
     FireworkRocketMeta {
@@ -49,7 +54,7 @@ class KryptonFireworkRocketMeta(
         tag.getInt("HideFlags"),
         tag.getBlocks("CanDestroy"),
         tag.getBlocks("CanPlaceOn"),
-        tag.getCompound("Fireworks").getList("Explosions", CompoundTag.ID).map { KryptonFireworkEffect(it as CompoundTag) },
+        tag.getCompound("Fireworks").getList("Explosions", CompoundTag.ID).mapPersistentList { KryptonFireworkEffect(it as CompoundTag) },
         tag.getCompound("Fireworks").getByte("Flight").toInt()
     )
 
@@ -58,10 +63,10 @@ class KryptonFireworkRocketMeta(
         isUnbreakable: Boolean,
         customModelData: Int,
         name: Component?,
-        lore: List<Component>,
+        lore: PersistentList<Component>,
         hideFlags: Int,
-        canDestroy: Set<Block>,
-        canPlaceOn: Set<Block>
+        canDestroy: ImmutableSet<Block>,
+        canPlaceOn: ImmutableSet<Block>
     ): KryptonFireworkRocketMeta = copy(damage, isUnbreakable, customModelData, name, lore, hideFlags, canDestroy, canPlaceOn)
 
     override fun saveData(): CompoundTag.Builder = super.saveData().apply {
@@ -71,13 +76,13 @@ class KryptonFireworkRocketMeta(
         }
     }
 
-    override fun withEffects(effects: List<FireworkEffect>): KryptonFireworkRocketMeta = copy(effects = effects)
+    override fun withEffects(effects: List<FireworkEffect>): KryptonFireworkRocketMeta = copy(effects = effects.toPersistentList())
 
-    override fun addEffect(effect: FireworkEffect): KryptonFireworkRocketMeta = withEffects(effects.plus(effect))
+    override fun addEffect(effect: FireworkEffect): KryptonFireworkRocketMeta = withEffects(effects.add(effect))
 
-    override fun removeEffect(index: Int): KryptonFireworkRocketMeta = removeEffect(effects[index])
+    override fun removeEffect(index: Int): KryptonFireworkRocketMeta = withEffects(effects.removeAt(index))
 
-    override fun removeEffect(effect: FireworkEffect): KryptonFireworkRocketMeta = withEffects(effects.minus(effect))
+    override fun removeEffect(effect: FireworkEffect): KryptonFireworkRocketMeta = withEffects(effects.remove(effect))
 
     override fun withFlightDuration(duration: Int): KryptonFireworkRocketMeta = copy(flightDuration = duration)
 
@@ -88,11 +93,11 @@ class KryptonFireworkRocketMeta(
         isUnbreakable: Boolean = this.isUnbreakable,
         customModelData: Int = this.customModelData,
         name: Component? = this.name,
-        lore: List<Component> = this.lore,
+        lore: PersistentList<Component> = this.lore,
         hideFlags: Int = this.hideFlags,
-        canDestroy: Set<Block> = this.canDestroy,
-        canPlaceOn: Set<Block> = this.canPlaceOn,
-        effects: List<FireworkEffect> = this.effects,
+        canDestroy: ImmutableSet<Block> = this.canDestroy,
+        canPlaceOn: ImmutableSet<Block> = this.canPlaceOn,
+        effects: PersistentList<FireworkEffect> = this.effects,
         flightDuration: Int = this.flightDuration
     ): KryptonFireworkRocketMeta = KryptonFireworkRocketMeta(
         damage,
@@ -109,7 +114,7 @@ class KryptonFireworkRocketMeta(
 
     class Builder() : KryptonItemMetaBuilder<FireworkRocketMeta.Builder, FireworkRocketMeta>(), FireworkRocketMeta.Builder {
 
-        private val effects = mutableListOf<FireworkEffect>()
+        private val effects = persistentListOf<FireworkEffect>().builder()
         private var flightDuration = 0
 
         constructor(meta: FireworkRocketMeta) : this() {
@@ -132,11 +137,11 @@ class KryptonFireworkRocketMeta(
             unbreakable,
             customModelData,
             name,
-            lore,
+            lore.build(),
             hideFlags,
-            canDestroy,
-            canPlaceOn,
-            effects,
+            canDestroy.build(),
+            canPlaceOn.build(),
+            effects.build(),
             flightDuration
         )
     }

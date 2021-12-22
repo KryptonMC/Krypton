@@ -47,15 +47,15 @@ import org.kryptonmc.nbt.MutableListTag
 import org.kryptonmc.nbt.StringTag
 import org.kryptonmc.nbt.buildCompound
 import org.kryptonmc.nbt.compound
+import space.vectrix.flare.fastutil.Long2ObjectSyncMap
 import java.util.EnumSet
 import java.util.concurrent.CompletableFuture
-import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.Executors
 
 class ChunkManager(private val world: KryptonWorld) {
 
-    val chunkMap: MutableMap<Long, KryptonChunk> = ConcurrentHashMap()
-    private val playersByChunk = ConcurrentHashMap<Long, ObjectSet<KryptonPlayer>>()
+    val chunkMap: MutableMap<Long, KryptonChunk> = Long2ObjectSyncMap.hashmap()
+    private val playersByChunk = Long2ObjectSyncMap.hashmap<ObjectSet<KryptonPlayer>>()
     private val executor = Executors.newFixedThreadPool(
         2,
         threadFactory("Chunk Loader #%d") {

@@ -18,6 +18,8 @@
  */
 package org.kryptonmc.krypton.item.meta
 
+import kotlinx.collections.immutable.ImmutableSet
+import kotlinx.collections.immutable.PersistentList
 import net.kyori.adventure.text.Component
 import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.item.data.FireworkEffect
@@ -31,10 +33,10 @@ class KryptonFireworkStarMeta(
     isUnbreakable: Boolean,
     customModelData: Int,
     name: Component?,
-    lore: List<Component>,
+    lore: PersistentList<Component>,
     hideFlags: Int,
-    canDestroy: Set<Block>,
-    canPlaceOn: Set<Block>,
+    canDestroy: ImmutableSet<Block>,
+    canPlaceOn: ImmutableSet<Block>,
     override val effect: FireworkEffect?
 ) : AbstractItemMeta<KryptonFireworkStarMeta>(damage, isUnbreakable, customModelData, name, lore, hideFlags, canDestroy, canPlaceOn),
     FireworkStarMeta {
@@ -56,10 +58,10 @@ class KryptonFireworkStarMeta(
         isUnbreakable: Boolean,
         customModelData: Int,
         name: Component?,
-        lore: List<Component>,
+        lore: PersistentList<Component>,
         hideFlags: Int,
-        canDestroy: Set<Block>,
-        canPlaceOn: Set<Block>
+        canDestroy: ImmutableSet<Block>,
+        canPlaceOn: ImmutableSet<Block>
     ): KryptonFireworkStarMeta = KryptonFireworkStarMeta(
         damage,
         isUnbreakable,
@@ -106,10 +108,10 @@ class KryptonFireworkStarMeta(
             unbreakable,
             customModelData,
             name,
-            lore,
+            lore.build(),
             hideFlags,
-            canDestroy,
-            canPlaceOn,
+            canDestroy.build(),
+            canPlaceOn.build(),
             effect
         )
     }

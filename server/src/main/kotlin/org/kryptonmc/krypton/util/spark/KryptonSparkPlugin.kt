@@ -18,6 +18,7 @@
  */
 package org.kryptonmc.krypton.util.spark
 
+import kotlinx.collections.immutable.persistentSetOf
 import me.lucko.spark.api.Spark
 import me.lucko.spark.common.SparkPlatform
 import me.lucko.spark.common.SparkPlugin
@@ -50,7 +51,7 @@ class KryptonSparkPlugin(
         "Spark",
         KryptonPlatform.sparkVersion,
         "spark is a performance profiling plugin/mod for Minecraft clients, servers and proxies.",
-        setOf("Luck"),
+        persistentSetOf("Luck"),
         emptySet(),
         folder
     )

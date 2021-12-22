@@ -40,9 +40,13 @@ dependencies {
     api(libs.nbt)
     implementation(libs.articData)
 
-    // Miscellaneous
-    implementation(libs.caffeine)
+    // Collections and caching
     implementation(libs.fastutil)
+    implementation(libs.flare)
+    implementation(libs.flare.fastutil)
+    implementation(libs.caffeine)
+
+    // Miscellaneous
     implementation(libs.clikt)
     implementation(libs.bstats)
     implementation(libs.spark.common)

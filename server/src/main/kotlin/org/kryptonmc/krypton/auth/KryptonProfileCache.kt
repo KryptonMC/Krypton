@@ -20,6 +20,8 @@ package org.kryptonmc.krypton.auth
 
 import com.google.gson.stream.JsonReader
 import com.google.gson.stream.JsonWriter
+import kotlinx.collections.immutable.ImmutableSet
+import kotlinx.collections.immutable.toImmutableSet
 import org.kryptonmc.api.auth.GameProfile
 import org.kryptonmc.api.auth.ProfileCache
 import org.kryptonmc.krypton.util.logger
@@ -39,11 +41,11 @@ class KryptonProfileCache(private val path: Path) : ProfileCache {
     private val profilesByName = ConcurrentHashMap<String, ProfileHolder>()
     private val profilesByUUID = ConcurrentHashMap<UUID, ProfileHolder>()
     private val operations = AtomicLong()
-    override val profiles: Set<GameProfile>
-        get() = profilesByUUID.values.mapTo(mutableSetOf()) {
-            it.lastAccess = operations.incrementAndGet()
-            it.profile
-        }
+    override val profiles: ImmutableSet<GameProfile>
+        get() = profilesByUUID.values.asSequence()
+            .onEach { it.lastAccess = operations.incrementAndGet() }
+            .map(ProfileHolder::profile)
+            .toImmutableSet()
 
     init {
         load().apply { reverse() }.forEach { add(it) }

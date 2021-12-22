@@ -21,6 +21,9 @@ package org.kryptonmc.krypton.auth
 import com.google.gson.TypeAdapter
 import com.google.gson.stream.JsonReader
 import com.google.gson.stream.JsonWriter
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.persistentListOf
+import kotlinx.collections.immutable.toImmutableList
 import org.kryptonmc.api.auth.GameProfile
 import org.kryptonmc.api.auth.ProfileProperty
 import org.kryptonmc.krypton.util.MojangUUIDTypeAdapter
@@ -30,14 +33,18 @@ import java.util.UUID
 data class KryptonGameProfile(
     override val name: String,
     override val uuid: UUID,
-    override val properties: List<ProfileProperty>
+    override val properties: ImmutableList<ProfileProperty>
 ) : GameProfile {
 
     override fun toString(): String = "KryptonGameProfile(name=$name,uuid=$uuid,properties=$properties)"
 
     object Factory : GameProfile.Factory {
 
-        override fun of(name: String, uuid: UUID, properties: List<ProfileProperty>): GameProfile = KryptonGameProfile(name, uuid, properties)
+        override fun of(
+            name: String,
+            uuid: UUID,
+            properties: List<ProfileProperty>
+        ): GameProfile = KryptonGameProfile(name, uuid, properties.toImmutableList())
     }
 
     companion object : TypeAdapter<KryptonGameProfile>() {
@@ -47,7 +54,7 @@ data class KryptonGameProfile(
 
             var uuid: UUID? = null
             var name: String? = null
-            val properties = mutableListOf<KryptonProfileProperty>()
+            val properties = persistentListOf<KryptonProfileProperty>().builder()
             while (reader.hasNext()) {
                 when (reader.nextName()) {
                     "id" -> uuid = MojangUUIDTypeAdapter.read(reader)
@@ -65,7 +72,7 @@ data class KryptonGameProfile(
 
             reader.endObject()
             if (uuid == null || name == null) return null
-            return KryptonGameProfile(name, uuid, properties)
+            return KryptonGameProfile(name, uuid, properties.build())
         }
 
         override fun write(writer: JsonWriter, value: KryptonGameProfile) {

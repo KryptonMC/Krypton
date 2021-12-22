@@ -24,6 +24,7 @@ import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer
 import org.kryptonmc.api.scoreboard.Team
 import org.kryptonmc.api.scoreboard.CollisionRule
 import org.kryptonmc.api.scoreboard.Visibility
+import java.util.concurrent.ConcurrentHashMap
 
 class KryptonTeam(
     var scoreboard: KryptonScoreboard?,
@@ -37,7 +38,7 @@ class KryptonTeam(
     nameTagVisibility: Visibility = Visibility.ALWAYS,
     deathMessagesVisibility: Visibility = Visibility.ALWAYS,
     collisionRule: CollisionRule = CollisionRule.ALWAYS,
-    override val members: MutableSet<Component> = mutableSetOf()
+    override val members: MutableSet<Component> = ConcurrentHashMap.newKeySet()
 ) : Team {
 
     override var displayName: Component = displayName

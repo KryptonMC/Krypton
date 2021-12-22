@@ -122,7 +122,7 @@ object Bootstrap {
         BiomeKeys
         KryptonBiomes
         Biomes
-        KryptonTagManager.bootstrap()
+        KryptonTagManager.tags
         KryptonDimensionTypes
         DimensionTypes
         BlockTags

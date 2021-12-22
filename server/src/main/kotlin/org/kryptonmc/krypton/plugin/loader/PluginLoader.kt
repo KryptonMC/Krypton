@@ -26,6 +26,7 @@ package org.kryptonmc.krypton.plugin.loader
 import com.google.gson.stream.JsonReader
 import com.google.inject.Guice
 import com.google.inject.Module
+import kotlinx.collections.immutable.toImmutableList
 import org.kryptonmc.api.plugin.InvalidPluginException
 import org.kryptonmc.api.plugin.PluginContainer
 import org.kryptonmc.api.plugin.PluginDescription
@@ -91,8 +92,8 @@ object PluginLoader {
         name,
         version,
         description,
-        authors,
-        dependencies.map { KryptonPluginDependency(it.id, it.optional) },
+        authors.toImmutableList(),
+        dependencies.map { KryptonPluginDependency(it.id, it.optional) }.toImmutableList(),
         source,
         main
     )

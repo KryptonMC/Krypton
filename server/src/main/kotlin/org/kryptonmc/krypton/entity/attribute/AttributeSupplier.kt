@@ -18,13 +18,12 @@
  */
 package org.kryptonmc.krypton.entity.attribute
 
-import com.google.common.collect.ImmutableMap
+import kotlinx.collections.immutable.ImmutableMap
+import kotlinx.collections.immutable.persistentMapOf
 import org.kryptonmc.api.entity.attribute.AttributeType
 import java.util.UUID
 
-class AttributeSupplier(attributes: Map<AttributeType, KryptonAttribute>) {
-
-    private val attributes = ImmutableMap.copyOf(attributes)
+class AttributeSupplier(private val attributes: ImmutableMap<AttributeType, KryptonAttribute>) {
 
     fun value(type: AttributeType): Double = attribute(type).value
 
@@ -49,7 +48,7 @@ class AttributeSupplier(attributes: Map<AttributeType, KryptonAttribute>) {
 
     class Builder {
 
-        private val attributes = mutableMapOf<AttributeType, KryptonAttribute>()
+        private val attributes = persistentMapOf<AttributeType, KryptonAttribute>().builder()
         private var frozen = false
 
         fun add(type: AttributeType): Builder = apply { create(type) }
@@ -58,7 +57,7 @@ class AttributeSupplier(attributes: Map<AttributeType, KryptonAttribute>) {
 
         fun build(): AttributeSupplier {
             frozen = true
-            return AttributeSupplier(attributes)
+            return AttributeSupplier(attributes.build())
         }
 
         private fun create(type: AttributeType): KryptonAttribute {

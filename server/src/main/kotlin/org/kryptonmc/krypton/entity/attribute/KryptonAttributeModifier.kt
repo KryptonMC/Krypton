@@ -19,9 +19,6 @@
 package org.kryptonmc.krypton.entity.attribute
 
 import org.kryptonmc.api.entity.attribute.AttributeModifier
-import org.kryptonmc.api.entity.attribute.ModifierOperation
-import org.kryptonmc.api.registry.Registries
-import org.kryptonmc.nbt.compound
 import java.util.UUID
 
 @JvmRecord

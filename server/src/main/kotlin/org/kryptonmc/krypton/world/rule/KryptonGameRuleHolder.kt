@@ -24,10 +24,11 @@ import org.kryptonmc.api.world.rule.GameRule
 import org.kryptonmc.api.world.rule.GameRuleHolder
 import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.compound
+import java.util.concurrent.ConcurrentHashMap
 
 class KryptonGameRuleHolder : GameRuleHolder {
 
-    override val rules = mutableMapOf<GameRule<out Any>, Any>()
+    override val rules = ConcurrentHashMap<GameRule<out Any>, Any>()
 
     constructor() {
         Registries.GAME_RULES.values.forEach { rules[it] = it.default }

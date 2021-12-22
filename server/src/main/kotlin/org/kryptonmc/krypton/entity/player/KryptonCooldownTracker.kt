@@ -23,10 +23,11 @@ import org.kryptonmc.api.event.player.CooldownEvent
 import org.kryptonmc.api.item.ItemType
 import org.kryptonmc.krypton.packet.out.play.PacketOutSetCooldown
 import org.kryptonmc.krypton.util.clamp
+import java.util.concurrent.ConcurrentHashMap
 
 class KryptonCooldownTracker(private val player: KryptonPlayer) : CooldownTracker {
 
-    private val cooldowns = mutableMapOf<ItemType, Cooldown>()
+    private val cooldowns = ConcurrentHashMap<ItemType, Cooldown>()
     private var tickCount = 0
 
     fun tick() {

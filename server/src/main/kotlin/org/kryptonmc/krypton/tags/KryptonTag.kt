@@ -18,6 +18,8 @@
  */
 package org.kryptonmc.krypton.tags
 
+import kotlinx.collections.immutable.ImmutableCollection
+import kotlinx.collections.immutable.toImmutableList
 import net.kyori.adventure.key.Key
 import org.kryptonmc.api.tags.Tag
 
@@ -25,10 +27,14 @@ import org.kryptonmc.api.tags.Tag
 data class KryptonTag<T : Any>(
     private val key: Key,
     override val type: KryptonTagType<T>,
-    override val values: Collection<T>
+    override val values: ImmutableCollection<T>
 ) : Tag<T> {
 
-    constructor(name: Key, type: KryptonTagType<T>, keys: Set<String>) : this(name, type, keys.map { type.registry[Key.key(it)]!! })
+    constructor(
+        name: Key,
+        type: KryptonTagType<T>,
+        keys: Set<String>
+    ) : this(name, type, keys.map { type.registry[Key.key(it)]!! }.toImmutableList())
 
     override fun key(): Key = key
 }

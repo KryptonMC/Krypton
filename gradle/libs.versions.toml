@@ -8,6 +8,7 @@ configurate = "4.1.2"
 log4j = "2.17.0"
 kotlin = "1.6.10"
 coroutines = "1.5.2"
+kotlinCollections = "0.3.4"
 guava = "31.0.1-jre"
 gson = "2.8.9"
 gsonKt = "1.3"
@@ -33,6 +34,7 @@ nbt = "2.5.1"
 articData = "1.18.1"
 caffeine = "3.0.5"
 fastutil = "8.5.6"
+flare = "2.0.0"
 clikt = "3.3.0"
 bstats = "2.2.1"
 spark = "1.6-SNAPSHOT"
@@ -53,6 +55,7 @@ kotlin-stdlib-jdk8 = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib-jdk
 kotlin-stdlib-jdk7 = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib-jdk7", version.ref = "kotlin" }
 kotlin-test-junit = { group = "org.jetbrains.kotlin", name = "kotlin-test-junit5", version.ref = "kotlin" }
 kotlinx-coroutines = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "coroutines" }
+kotlinx-collections-immutable = { group = "org.jetbrains.kotlinx", name = "kotlinx-collections-immutable", version.ref = "kotlinCollections" }
 
 # Adventure
 adventure-api = { group = "net.kyori", name = "adventure-api", version.ref = "adventure" }
@@ -106,6 +109,12 @@ spark-common = { group = "me.lucko", name = "spark-common", version.ref = "spark
 # Generation
 kotlinpoet = { group = "com.squareup", name = "kotlinpoet", version.ref = "kotlinpoet" }
 
+# Collections and caching
+fastutil = { group = "it.unimi.dsi", name = "fastutil", version.ref = "fastutil" }
+flare = { group = "space.vectrix.flare", name = "flare", version.ref = "flare" }
+flare-fastutil = { group = "space.vectrix.flare", name = "flare-fastutil", version.ref = "flare" }
+caffeine = { group = "com.github.ben-manes.caffeine", name = "caffeine", version.ref = "caffeine" }
+
 # Test
 junit-api = { group = "org.junit.jupiter", name = "junit-jupiter-api", version.ref = "junit-jupiter" }
 junit-engine = { group = "org.junit.jupiter", name = "junit-jupiter-engine", version.ref = "junit-jupiter" }
@@ -122,8 +131,6 @@ gsonKt = { group = "me.bardy", name = "gson-kt", version.ref = "gsonKt" }
 guice = { group = "com.google.inject", name = "guice", version.ref = "guice" }
 kotlinGuice = { group = "dev.misfitlabs.kotlinguice4", name = "kotlin-guice", version.ref = "kotlinGuice" }
 math = { group = "org.spongepowered", name = "math", version.ref = "math" }
-caffeine = { group = "com.github.ben-manes.caffeine", name = "caffeine", version.ref = "caffeine" }
-fastutil = { group = "it.unimi.dsi", name = "fastutil", version.ref = "fastutil" }
 bstats = { group = "org.bstats", name = "bstats-base", version.ref = "bstats" }
 
 [bundles]

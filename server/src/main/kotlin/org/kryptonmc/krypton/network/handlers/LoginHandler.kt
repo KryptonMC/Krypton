@@ -20,6 +20,8 @@ package org.kryptonmc.krypton.network.handlers
 
 import com.velocitypowered.natives.util.Natives
 import io.netty.buffer.Unpooled
+import kotlinx.collections.immutable.persistentListOf
+import kotlinx.collections.immutable.toImmutableList
 import net.kyori.adventure.text.Component
 import org.kryptonmc.api.event.auth.AuthenticationEvent
 import org.kryptonmc.api.event.player.LoginEvent
@@ -32,7 +34,6 @@ import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.packet.PacketState
 import org.kryptonmc.krypton.network.SessionHandler
 import org.kryptonmc.krypton.network.data.ForwardedData
-import org.kryptonmc.krypton.network.data.LegacyForwardedData
 import org.kryptonmc.krypton.network.data.readVelocityData
 import org.kryptonmc.krypton.network.data.verifyVelocityIntegrity
 import org.kryptonmc.krypton.network.netty.PacketCompressor
@@ -121,7 +122,7 @@ class LoginHandler(
             // Copy over the data from legacy forwarding
             // Note: Per the protocol, offline players use UUID v3, rather than UUID v4.
             val uuid = proxyForwardedData?.uuid ?: UUID.nameUUIDFromBytes("OfflinePlayer:${packet.name}".encodeToByteArray())
-            val profile = KryptonGameProfile(packet.name, uuid, proxyForwardedData?.properties ?: emptyList())
+            val profile = KryptonGameProfile(packet.name, uuid, proxyForwardedData?.properties?.toImmutableList() ?: persistentListOf())
 
             // Check the player can join and the login event was not cancelled.
             if (!canJoin(profile, address) || !callLoginEvent(profile)) return

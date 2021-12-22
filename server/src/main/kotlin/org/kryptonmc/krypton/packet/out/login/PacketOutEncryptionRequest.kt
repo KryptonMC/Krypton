@@ -47,7 +47,7 @@ data class PacketOutEncryptionRequest(
         if (this === other) return true
         if (javaClass != other?.javaClass || !super.equals(other)) return false
         other as PacketOutEncryptionRequest
-        return publicKey == other.publicKey && verifyToken.contentEquals(other.verifyToken)
+        return publicKey.contentEquals(other.publicKey) && verifyToken.contentEquals(other.verifyToken)
     }
 
     override fun hashCode(): Int {

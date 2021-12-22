@@ -22,6 +22,7 @@
  */
 package org.kryptonmc.krypton.plugin.loader
 
+import kotlinx.collections.immutable.ImmutableCollection
 import org.kryptonmc.api.plugin.PluginDependency
 import org.kryptonmc.api.plugin.PluginDescription
 import java.nio.file.Path
@@ -32,8 +33,8 @@ data class LoadedPluginDescriptionCandidate(
     override val name: String,
     override val version: String,
     override val description: String,
-    override val authors: Collection<String>,
-    override val dependencies: Collection<PluginDependency>,
+    override val authors: ImmutableCollection<String>,
+    override val dependencies: ImmutableCollection<PluginDependency>,
     override val source: Path,
     val mainClass: String
 ) : PluginDescription {

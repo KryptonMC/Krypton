@@ -18,6 +18,11 @@
  */
 package org.kryptonmc.krypton.item.meta
 
+import kotlinx.collections.immutable.ImmutableSet
+import kotlinx.collections.immutable.PersistentList
+import kotlinx.collections.immutable.persistentListOf
+import kotlinx.collections.immutable.toImmutableSet
+import kotlinx.collections.immutable.toPersistentList
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer
@@ -27,8 +32,8 @@ import org.kryptonmc.api.item.data.ItemFlag
 import org.kryptonmc.api.item.meta.ItemMeta
 import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.krypton.item.mask
-import org.kryptonmc.krypton.util.convertToList
-import org.kryptonmc.krypton.util.convertToSet
+import org.kryptonmc.krypton.util.mapPersistentList
+import org.kryptonmc.krypton.util.mapPersistentSet
 import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.ListTag
 import org.kryptonmc.nbt.StringTag
@@ -41,10 +46,10 @@ abstract class AbstractItemMeta<I : ItemMeta>(
     final override val isUnbreakable: Boolean,
     final override val customModelData: Int,
     final override val name: Component?,
-    final override val lore: List<Component>,
+    final override val lore: PersistentList<Component>,
     final override val hideFlags: Int,
-    final override val canDestroy: Set<Block>,
-    final override val canPlaceOn: Set<Block>
+    final override val canDestroy: ImmutableSet<Block>,
+    final override val canPlaceOn: ImmutableSet<Block>
 ) : ItemMeta {
 
     private var cachedNBT: CompoundTag? = null
@@ -54,10 +59,10 @@ abstract class AbstractItemMeta<I : ItemMeta>(
         isUnbreakable: Boolean = this.isUnbreakable,
         customModelData: Int = this.customModelData,
         name: Component? = this.name,
-        lore: List<Component> = this.lore,
+        lore: PersistentList<Component> = this.lore,
         hideFlags: Int = this.hideFlags,
-        canDestroy: Set<Block> = this.canDestroy,
-        canPlaceOn: Set<Block> = this.canPlaceOn
+        canDestroy: ImmutableSet<Block> = this.canDestroy,
+        canPlaceOn: ImmutableSet<Block> = this.canPlaceOn
     ): I
 
     fun save(): CompoundTag {
@@ -102,13 +107,13 @@ abstract class AbstractItemMeta<I : ItemMeta>(
         return copy(name = name)
     }
 
-    override fun withLore(lore: Iterable<Component>): I = copy(lore = lore.convertToList())
+    override fun withLore(lore: Iterable<Component>): I = copy(lore = lore.toPersistentList())
 
-    override fun addLore(lore: Component): I = copy(lore = this.lore.plus(lore))
+    override fun addLore(lore: Component): I = copy(lore = this.lore.add(lore))
 
-    override fun removeLore(index: Int): I = removeLore(lore[index])
+    override fun removeLore(index: Int): I = copy(lore = this.lore.removeAt(index))
 
-    override fun removeLore(lore: Component): I = copy(lore = this.lore.minus(lore))
+    override fun removeLore(lore: Component): I = copy(lore = this.lore.remove(lore))
 
     override fun withHideFlags(flags: Int): I {
         if (flags == hideFlags) return this as I
@@ -125,15 +130,9 @@ abstract class AbstractItemMeta<I : ItemMeta>(
         return copy(hideFlags = hideFlags and flag.mask().inv())
     }
 
-    override fun withCanDestroy(blocks: Iterable<Block>): I {
-        if (canDestroy == blocks) return this as I
-        return copy(canDestroy = blocks.convertToSet())
-    }
+    override fun withCanDestroy(blocks: Iterable<Block>): I = copy(canDestroy = blocks.toImmutableSet())
 
-    override fun withCanPlaceOn(blocks: Iterable<Block>): I {
-        if (canPlaceOn == blocks) return this as I
-        return copy(canPlaceOn = blocks.convertToSet())
-    }
+    override fun withCanPlaceOn(blocks: Iterable<Block>): I = copy(canPlaceOn = blocks.toImmutableSet())
 
     protected open fun equalTo(other: I): Boolean = damage == other.damage &&
             isUnbreakable == other.isUnbreakable &&
@@ -181,12 +180,14 @@ abstract class AbstractItemMeta<I : ItemMeta>(
         }
 
         @JvmStatic
-        protected fun CompoundTag.getLore(): List<Component> = getDisplay<ListTag, List<Component>>("Lore", ListTag.ID, emptyList()) { list ->
-            list.map { GsonComponentSerializer.gson().deserialize((it as StringTag).value) }
-        }!!
+        protected fun CompoundTag.getLore(): PersistentList<Component> = getDisplay<ListTag, PersistentList<Component>>(
+            "Lore",
+            ListTag.ID,
+            persistentListOf()
+        ) { list -> list.mapPersistentList { GsonComponentSerializer.gson().deserialize((it as StringTag).value) } }!!
 
         @JvmStatic
-        protected fun CompoundTag.getBlocks(key: String): Set<Block> = getList(key, StringTag.ID).mapTo(mutableSetOf()) {
+        protected fun CompoundTag.getBlocks(key: String): ImmutableSet<Block> = getList(key, StringTag.ID).mapPersistentSet {
             Registries.BLOCK[Key.key((it as StringTag).value)]!!
         }
     }
