@@ -20,6 +20,7 @@ package org.kryptonmc.krypton.world.chunk
 
 import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.block.Blocks
+import org.kryptonmc.api.block.entity.BlockEntity
 import org.kryptonmc.api.fluid.Fluid
 import org.kryptonmc.api.fluid.Fluids
 import org.kryptonmc.api.world.biome.Biome
@@ -28,6 +29,8 @@ import org.kryptonmc.krypton.packet.CachedPacket
 import org.kryptonmc.krypton.packet.out.play.PacketOutChunkDataAndLight
 import org.kryptonmc.krypton.world.Heightmap
 import org.kryptonmc.krypton.world.KryptonWorld
+import org.kryptonmc.krypton.world.block.entity.BlockEntityFactory
+import org.kryptonmc.krypton.world.block.entity.blockEntityType
 import org.kryptonmc.krypton.world.chunk.ticket.Ticket
 import org.kryptonmc.krypton.world.generation.DebugGenerator
 import org.kryptonmc.nbt.CompoundTag
@@ -76,6 +79,20 @@ class KryptonChunk(
     }
 
     override fun getBlock(position: Vector3i): Block = getBlock(position.x(), position.y(), position.z())
+
+    @Suppress("UNCHECKED_CAST")
+    override fun <T : BlockEntity> getBlockEntity(x: Int, y: Int, z: Int): T? {
+        var entity = blockEntities[encode(x, y, z)]
+        if (entity == null) {
+            val block = getBlock(x, y, z)
+            val type = block.blockEntityType() ?: return null
+            entity = BlockEntityFactory.create(type, world, block, Vector3i(x, y, z))
+            blockEntities[encode(x, y, z)] = entity
+        }
+        return entity as T
+    }
+
+    override fun <T : BlockEntity> getBlockEntity(position: Vector3i): T? = getBlockEntity(position.x(), position.y(), position.z())
 
     override fun getFluid(x: Int, y: Int, z: Int): Fluid {
         val sectionIndex = sectionIndex(y)

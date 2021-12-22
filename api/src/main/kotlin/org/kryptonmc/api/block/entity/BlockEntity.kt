@@ -31,11 +31,9 @@ public interface BlockEntity {
 
     /**
      * The world this block entity is in.
-     *
-     * This may be null if the block entity has not been placed in a world.
      */
     @get:JvmName("world")
-    public val world: World?
+    public val world: World
 
     /**
      * The block that this entity is bound to.
@@ -50,9 +48,4 @@ public interface BlockEntity {
      */
     @get:JvmName("position")
     public val position: Vector3i
-
-    /**
-     * If this block entity is currently valid.
-     */
-    public val isValid: Boolean
 }

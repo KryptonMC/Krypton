@@ -16,20 +16,19 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.world.block.entity.banner
+package org.kryptonmc.krypton.world.block.entity
 
-import org.kryptonmc.api.block.entity.banner.BannerPattern
-import org.kryptonmc.api.block.entity.banner.BannerPatternType
-import org.kryptonmc.api.item.data.DyeColor
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
+import org.kryptonmc.api.block.Block
+import org.kryptonmc.api.block.entity.BlockEntityType
+import org.kryptonmc.api.registry.Registries
 
-@JvmRecord
-data class KryptonBannerPattern(
-    override val type: BannerPatternType,
-    override val color: DyeColor
-) : BannerPattern {
-
-    object Factory : BannerPattern.Factory {
-
-        override fun of(type: BannerPatternType, color: DyeColor): BannerPattern = KryptonBannerPattern(type, color)
+private val BLOCK_ENTITY_TYPE_BY_BLOCK = Int2ObjectOpenHashMap<BlockEntityType>().apply {
+    Registries.BLOCK_ENTITY_TYPE.forEach { entry ->
+        entry.value.applicableBlocks.forEach {
+            put(it.id, entry.value)
+        }
     }
 }
+
+fun Block.blockEntityType(): BlockEntityType? = BLOCK_ENTITY_TYPE_BY_BLOCK[id]

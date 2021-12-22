@@ -20,6 +20,7 @@ package org.kryptonmc.krypton.world.generation
 
 import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.block.Blocks
+import org.kryptonmc.api.block.entity.BlockEntity
 import org.kryptonmc.api.fluid.Fluid
 import org.kryptonmc.api.fluid.Fluids
 import org.kryptonmc.api.world.biome.Biome
@@ -92,6 +93,9 @@ class GenerationRegion(
     }
 
     override fun getBlock(x: Int, y: Int, z: Int): Block = getChunk(x, z)?.getBlock(x, y, z) ?: Blocks.AIR
+
+    // We'll remove GenerationRegion eventually, so this doesn't matter
+    override fun <T : BlockEntity> getBlockEntity(x: Int, y: Int, z: Int): T? = null
 
     override fun getFluid(x: Int, y: Int, z: Int): Fluid = getChunk(x, z)?.getFluid(x, y, z) ?: Fluids.EMPTY
 

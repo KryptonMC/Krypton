@@ -18,42 +18,33 @@
  */
 package org.kryptonmc.krypton.world.block.entity
 
+import net.kyori.adventure.key.Key
 import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.block.entity.BlockEntity
 import org.kryptonmc.api.block.entity.BlockEntityType
+import org.kryptonmc.api.block.entity.BlockEntityTypes
+import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.krypton.world.KryptonWorld
+import org.kryptonmc.krypton.world.block.entity.banner.bannerColor
 import org.kryptonmc.nbt.CompoundTag
-import org.kryptonmc.nbt.compound
 import org.spongepowered.math.vector.Vector3i
 
-abstract class KryptonBlockEntity(
-    override val type: BlockEntityType,
-    override val world: KryptonWorld,
-    override val block: Block,
-    override val position: Vector3i
-) : BlockEntity {
+object BlockEntityFactory {
 
-    open val updateTag: CompoundTag
-        get() = saveMetadata(CompoundTag.builder()).build()
-    open val restrictModification: Boolean
-        get() = false
+    private val TYPE_MAP = mapOf<BlockEntityType, BlockEntityConstructor<out BlockEntity>>(
+        BlockEntityTypes.BANNER to BlockEntityConstructor { world, block, position -> KryptonBanner(world, block, position, block.bannerColor()) }
+    )
 
-    open fun load(tag: CompoundTag) {
-        // nothing to do for the base type
+    @JvmStatic
+    @Suppress("UNCHECKED_CAST")
+    fun <T : BlockEntity> create(type: BlockEntityType, world: KryptonWorld, block: Block, position: Vector3i): T? {
+        val constructor = TYPE_MAP[type] as? BlockEntityConstructor<T> ?: return null
+        return constructor.create(world, block, position)
     }
 
-    fun save(full: Boolean): CompoundTag = compound {
-        saveAdditional(this)
-        if (full) saveMetadata(this)
-    }
-
-    protected open fun saveAdditional(tag: CompoundTag.Builder): CompoundTag.Builder = tag
-
-    private fun saveMetadata(tag: CompoundTag.Builder): CompoundTag.Builder = tag.apply {
-        val key = type.key()
-        string("id", key.asString())
-        int("x", position.x())
-        int("y", position.y())
-        int("z", position.z())
+    @JvmStatic
+    fun <T : BlockEntity> create(world: KryptonWorld, block: Block, tag: CompoundTag): T? {
+        val type = Registries.BLOCK_ENTITY_TYPE[Key.key(tag.getString("id"))] ?: return null
+        return create(type, world, block, Vector3i(tag.getInt("x"), tag.getInt("y"), tag.getInt("z")))
     }
 }

@@ -16,20 +16,14 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.world.block.entity.banner
+package org.kryptonmc.krypton.world.block.entity
 
-import org.kryptonmc.api.block.entity.banner.BannerPattern
-import org.kryptonmc.api.block.entity.banner.BannerPatternType
-import org.kryptonmc.api.item.data.DyeColor
+import org.kryptonmc.api.block.Block
+import org.kryptonmc.api.block.entity.BlockEntity
+import org.kryptonmc.krypton.world.KryptonWorld
+import org.spongepowered.math.vector.Vector3i
 
-@JvmRecord
-data class KryptonBannerPattern(
-    override val type: BannerPatternType,
-    override val color: DyeColor
-) : BannerPattern {
+fun interface BlockEntityConstructor<T : BlockEntity> {
 
-    object Factory : BannerPattern.Factory {
-
-        override fun of(type: BannerPatternType, color: DyeColor): BannerPattern = KryptonBannerPattern(type, color)
-    }
+    fun create(world: KryptonWorld, block: Block, position: Vector3i): T
 }

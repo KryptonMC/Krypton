@@ -26,6 +26,8 @@ import org.kryptonmc.krypton.world.BlockAccessor
 import org.kryptonmc.krypton.world.HeightAccessor
 import org.kryptonmc.krypton.world.Heightmap
 import org.kryptonmc.krypton.world.biome.NoiseBiomeSource
+import org.kryptonmc.krypton.world.block.entity.KryptonBlockEntity
+import space.vectrix.flare.fastutil.Long2ObjectSyncMap
 import java.util.EnumMap
 import java.util.EnumSet
 
@@ -38,6 +40,7 @@ abstract class ChunkAccessor(
 
     abstract val status: ChunkStatus
 
+    protected val blockEntities = Long2ObjectSyncMap.hashmap<KryptonBlockEntity>()
     private val sectionArray = arrayOfNulls<ChunkSection>(heightAccessor.sectionCount)
     val heightmaps: MutableMap<Heightmap.Type, Heightmap> = EnumMap(Heightmap.Type::class.java)
 
@@ -104,5 +107,12 @@ abstract class ChunkAccessor(
                 if (sections[i] == null) sections[i] = ChunkSection(heightAccessor.sectionYFromIndex(i))
             }
         }
+
+        @JvmStatic
+        protected fun encode(
+            x: Int,
+            y: Int,
+            z: Int
+        ): Long = ((x.toLong() and 0x3FFFFFF) shl 38) or ((z.toLong() and 0x3FFFFFF) shl 12) or (y.toLong() and 0xFFF)
     }
 }

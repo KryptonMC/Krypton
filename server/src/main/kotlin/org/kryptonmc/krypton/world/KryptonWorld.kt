@@ -21,6 +21,7 @@ package org.kryptonmc.krypton.world
 import net.kyori.adventure.sound.Sound
 import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.block.Blocks
+import org.kryptonmc.api.block.entity.BlockEntity
 import org.kryptonmc.api.effect.sound.SoundEvent
 import org.kryptonmc.api.entity.Entity
 import org.kryptonmc.api.entity.EntityType
@@ -224,6 +225,11 @@ class KryptonWorld(
         return chunk.getBlock(x, y, z)
     }
 
+    override fun <T : BlockEntity> getBlockEntity(x: Int, y: Int, z: Int): T? {
+        if (isOutsideBuildHeight(y)) return null
+        return getChunk(x, y, z)?.getBlockEntity(x, y, z)
+    }
+
     override fun getFluid(x: Int, y: Int, z: Int): Fluid {
         if (isOutsideBuildHeight(y)) return Fluids.EMPTY
         val chunk = getChunkAt(x shr 4, z shr 4) ?: return Fluids.EMPTY
@@ -243,6 +249,8 @@ class KryptonWorld(
     override fun getUncachedNoiseBiome(x: Int, y: Int, z: Int): Biome = generator.biome(x, y, z)
 
     override fun getBlock(position: Vector3i): Block = getBlock(position.x(), position.y(), position.z())
+
+    override fun <T : BlockEntity> getBlockEntity(position: Vector3i): T? = getBlockEntity(position.x(), position.y(), position.z())
 
     override fun getFluid(position: Vector3i): Fluid = getFluid(position.x(), position.y(), position.z())
 

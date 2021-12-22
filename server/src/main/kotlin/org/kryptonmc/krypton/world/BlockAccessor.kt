@@ -19,6 +19,7 @@
 package org.kryptonmc.krypton.world
 
 import org.kryptonmc.api.block.Block
+import org.kryptonmc.api.block.entity.BlockEntity
 import org.kryptonmc.api.fluid.Fluid
 import org.spongepowered.math.vector.Vector3i
 
@@ -30,6 +31,10 @@ interface BlockAccessor : HeightAccessor {
     fun getBlock(x: Int, y: Int, z: Int): Block
 
     fun getBlock(position: Vector3i): Block = getBlock(position.x(), position.y(), position.z())
+
+    fun <T : BlockEntity> getBlockEntity(x: Int, y: Int, z: Int): T?
+
+    fun <T : BlockEntity> getBlockEntity(position: Vector3i): T? = getBlockEntity(position.x(), position.y(), position.z())
 
     fun getFluid(x: Int, y: Int, z: Int): Fluid
 
