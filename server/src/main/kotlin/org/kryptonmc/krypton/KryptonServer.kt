@@ -20,6 +20,10 @@ package org.kryptonmc.krypton
 
 import me.lucko.spark.api.Spark
 import net.kyori.adventure.audience.Audience
+import net.kyori.adventure.audience.MessageType
+import net.kyori.adventure.identity.Identified
+import net.kyori.adventure.identity.Identity
+import net.kyori.adventure.text.Component
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
 import org.kryptonmc.api.Server
@@ -30,6 +34,7 @@ import org.kryptonmc.api.event.server.TickStartEvent
 import org.kryptonmc.api.scoreboard.Scoreboard
 import org.kryptonmc.api.world.World
 import org.kryptonmc.api.world.rule.GameRules
+import org.kryptonmc.krypton.adventure.PacketGroupingAudience
 import org.kryptonmc.krypton.auth.KryptonProfileCache
 import org.kryptonmc.krypton.command.KryptonCommandManager
 import org.kryptonmc.krypton.commands.KryptonPermission
@@ -37,6 +42,7 @@ import org.kryptonmc.krypton.config.KryptonConfig
 import org.kryptonmc.krypton.config.category.ForwardingMode
 import org.kryptonmc.krypton.console.KryptonConsole
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
+import org.kryptonmc.krypton.network.SessionManager
 import org.kryptonmc.krypton.packet.PacketRegistry
 import org.kryptonmc.krypton.packet.out.play.PacketOutTimeUpdate
 import org.kryptonmc.krypton.plugin.KryptonEventManager
@@ -77,7 +83,7 @@ class KryptonServer(
     override val profileCache: KryptonProfileCache,
     private val configPath: Path,
     worldFolder: Path
-) : Server {
+) : Server, PacketGroupingAudience {
 
     override val platform = KryptonPlatform
     override val maxPlayers = config.status.maxPlayers
@@ -87,6 +93,7 @@ class KryptonServer(
 
     val playerManager = PlayerManager(this)
     override val players: List<KryptonPlayer> = Collections.unmodifiableList(playerManager.players)
+    override val sessionManager = SessionManager(this)
 
     override val console = KryptonConsole(this)
     override val scoreboard = KryptonScoreboard(this)
@@ -263,16 +270,13 @@ class KryptonServer(
         tickCount++
 
         val time = System.currentTimeMillis()
-        playerManager.tick(time)
+        sessionManager.update(time)
         if (playerManager.players.isEmpty()) return // don't tick if there are no players on the server
 
         worldManager.worlds.forEach { (_, world) ->
             if (tickCount % TICKS_PER_SECOND == 0) {
-                playerManager.sendToAll(PacketOutTimeUpdate(
-                    world.data.time,
-                    world.data.dayTime,
-                    world.data.gameRules[GameRules.DO_DAYLIGHT_CYCLE]
-                ), world)
+                val packet = PacketOutTimeUpdate(world.data.time, world.data.dayTime, world.data.gameRules[GameRules.DO_DAYLIGHT_CYCLE])
+                sessionManager.sendGrouped(packet) { it.world === world }
             }
             world.tick()
         }
@@ -309,6 +313,16 @@ class KryptonServer(
     override fun player(name: String): KryptonPlayer? = playerManager.playersByName[name]
 
     override fun audiences(): Iterable<Audience> = players.asSequence().plus(console).asIterable()
+
+    override fun sendMessage(source: Identified, message: Component, type: MessageType) {
+        super<PacketGroupingAudience>.sendMessage(source, message, type)
+        console.sendMessage(source, message, type)
+    }
+
+    override fun sendMessage(source: Identity, message: Component, type: MessageType) {
+        super<PacketGroupingAudience>.sendMessage(source, message, type)
+        console.sendMessage(source, message, type)
+    }
 
     fun stop(explicitExit: Boolean = true) {
         if (!isRunning) return // Ensure we cannot accidentally run this twice

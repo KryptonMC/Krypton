@@ -292,6 +292,20 @@ fun <T> ByteBuf.encode(encoder: CompoundEncoder<T>, value: T) {
     writeNBT(result)
 }
 
+fun ByteBuf.write3EmptyBytes(): Int {
+    val index = writerIndex()
+    writeMedium(0)
+    return index
+}
+
+fun ByteBuf.write3ByteVarInt(startIndex: Int, value: Int) {
+    val originalIndex = writerIndex()
+    writerIndex(startIndex)
+    val encoded = (((value and 0x7F) or 0x80) shl 16) or ((((value ushr 7) and 0x7F) or 0x80) shl 8) or (value ushr 14)
+    writeMedium(encoded)
+    writerIndex(originalIndex)
+}
+
 private val VARINT_EXACT_BYTE_LENGTHS = IntArray(33) { ceil((31.0 - (it - 1)) / 7.0).toInt() }.apply { this[32] = 1 }
 
 fun Int.varIntBytes(): Int = VARINT_EXACT_BYTE_LENGTHS[countLeadingZeroBits()]

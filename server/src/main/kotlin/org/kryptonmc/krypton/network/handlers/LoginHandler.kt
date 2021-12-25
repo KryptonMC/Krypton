@@ -36,14 +36,13 @@ import org.kryptonmc.krypton.network.SessionHandler
 import org.kryptonmc.krypton.network.data.ForwardedData
 import org.kryptonmc.krypton.network.data.readVelocityData
 import org.kryptonmc.krypton.network.data.verifyVelocityIntegrity
+import org.kryptonmc.krypton.network.netty.GroupedPacketHandler
 import org.kryptonmc.krypton.network.netty.PacketCompressor
 import org.kryptonmc.krypton.network.netty.PacketDecoder
 import org.kryptonmc.krypton.network.netty.PacketDecompressor
 import org.kryptonmc.krypton.network.netty.PacketDecrypter
 import org.kryptonmc.krypton.network.netty.PacketEncoder
 import org.kryptonmc.krypton.network.netty.PacketEncrypter
-import org.kryptonmc.krypton.network.netty.SizeDecoder
-import org.kryptonmc.krypton.network.netty.SizeEncoder
 import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.packet.`in`.login.PacketInEncryptionResponse
 import org.kryptonmc.krypton.packet.`in`.login.PacketInLoginStart
@@ -218,7 +217,7 @@ class LoginHandler(
 
     private fun finishLogin(player: KryptonPlayer) {
         enableCompression()
-        session.send(PacketOutLoginSuccess(player.profile))
+        session.writeAndFlush(PacketOutLoginSuccess(player.profile))
         session.handler = PlayHandler(server, session, player)
         session.currentState = PacketState.PLAY
         playerManager.add(player, session).whenComplete { _, exception ->
@@ -254,8 +253,8 @@ class LoginHandler(
         val cipher = Natives.cipher.get()
         val encrypter = PacketEncrypter(cipher.forEncryption(key))
         val decrypter = PacketDecrypter(cipher.forDecryption(key))
-        session.channel.pipeline().addBefore(SizeDecoder.NETTY_NAME, PacketDecrypter.NETTY_NAME, decrypter)
-        session.channel.pipeline().addBefore(SizeEncoder.NETTY_NAME, PacketEncrypter.NETTY_NAME, encrypter)
+        session.channel.pipeline().addBefore(GroupedPacketHandler.NETTY_NAME, PacketDecrypter.NETTY_NAME, decrypter)
+        session.channel.pipeline().addBefore(GroupedPacketHandler.NETTY_NAME, PacketEncrypter.NETTY_NAME, encrypter)
     }
 
     private fun enableCompression() {
@@ -271,7 +270,8 @@ class LoginHandler(
         }
 
         // Tell the client to update its compression threshold and create our compressor
-        session.send(PacketOutSetCompression(threshold))
+        session.writeAndFlush(PacketOutSetCompression(threshold))
+        session.compressionEnabled = true
         val compressor = Natives.compress.get().create(4)
         encoder = PacketCompressor(compressor, threshold)
         decoder = PacketDecompressor(compressor, threshold)
@@ -331,7 +331,7 @@ class LoginHandler(
     }
 
     private fun disconnect(reason: Component) {
-        session.send(PacketOutLoginDisconnect(reason))
+        session.writeAndFlush(PacketOutLoginDisconnect(reason))
         if (session.channel.isOpen) session.channel.close().awaitUninterruptibly()
     }
 

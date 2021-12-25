@@ -20,8 +20,6 @@ package org.kryptonmc.krypton.world.chunk
 
 import ca.spottedleaf.dataconverter.minecraft.MCDataConverter
 import ca.spottedleaf.dataconverter.minecraft.datatypes.MCTypeRegistry
-import it.unimi.dsi.fastutil.objects.ObjectArraySet
-import it.unimi.dsi.fastutil.objects.ObjectSet
 import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.block.Blocks
 import org.kryptonmc.api.world.biome.Biomes
@@ -50,12 +48,13 @@ import org.kryptonmc.nbt.compound
 import space.vectrix.flare.fastutil.Long2ObjectSyncMap
 import java.util.EnumSet
 import java.util.concurrent.CompletableFuture
+import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.Executors
 
 class ChunkManager(private val world: KryptonWorld) {
 
     val chunkMap: MutableMap<Long, KryptonChunk> = Long2ObjectSyncMap.hashmap()
-    private val playersByChunk = Long2ObjectSyncMap.hashmap<ObjectSet<KryptonPlayer>>()
+    private val playersByChunk = Long2ObjectSyncMap.hashmap<MutableSet<KryptonPlayer>>()
     private val executor = Executors.newFixedThreadPool(
         2,
         threadFactory("Chunk Loader #%d") {
@@ -100,12 +99,12 @@ class ChunkManager(private val world: KryptonWorld) {
         val pos = ChunkPosition.toLong(x, z)
         val oldPos = ChunkPosition.toLong(oldX, oldZ)
         if (pos == oldPos) {
-            if (!playersByChunk.containsKey(pos)) playersByChunk.getOrPut(pos) { ObjectArraySet() }.add(player)
+            if (!playersByChunk.containsKey(pos)) playersByChunk.getOrPut(pos) { ConcurrentHashMap.newKeySet() }.add(player)
             return@supplyAsync // They haven't changed chunks
         }
         val oldSet = playersByChunk[oldPos]?.apply { remove(player) }
         if (oldSet != null && oldSet.isEmpty()) playersByChunk.remove(oldPos)
-        playersByChunk.getOrPut(pos) { ObjectArraySet() }.add(player)
+        playersByChunk.getOrPut(pos) { ConcurrentHashMap.newKeySet() }.add(player)
     }, executor)
 
     fun removePlayer(player: KryptonPlayer, viewDistance: Int = world.server.config.world.viewDistance) {

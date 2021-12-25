@@ -22,10 +22,7 @@ import ca.spottedleaf.dataconverter.minecraft.MCDataConverter
 import ca.spottedleaf.dataconverter.minecraft.datatypes.MCTypeRegistry
 import org.kryptonmc.krypton.KryptonPlatform
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
-import org.kryptonmc.krypton.util.daemon
 import org.kryptonmc.krypton.util.logger
-import org.kryptonmc.krypton.util.threadFactory
-import org.kryptonmc.krypton.util.uncaughtExceptionHandler
 import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.io.TagCompression
 import org.kryptonmc.nbt.io.TagIO
@@ -34,24 +31,19 @@ import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.StandardCopyOption
 import java.util.concurrent.CompletableFuture
-import java.util.concurrent.Executors
+import java.util.concurrent.Executor
 
 /**
  * Responsible for loading and saving player data files
  */
-class PlayerDataManager(val folder: Path) {
+class PlayerDataManager(val folder: Path, private val serializeData: Boolean) {
 
-    private val executor = Executors.newFixedThreadPool(
-        2,
-        threadFactory("Player Data IO %d") {
-            daemon()
-            uncaughtExceptionHandler { thread, exception ->
-                LOGGER.error("Caught unhandled exception in thread ${thread.name}!", exception)
-            }
-        }
-    )
+    fun load(player: KryptonPlayer, executor: Executor): CompletableFuture<CompoundTag?> {
+        if (!serializeData) return CompletableFuture.completedFuture(null)
+        return loadData(player, executor)
+    }
 
-    fun load(player: KryptonPlayer): CompletableFuture<CompoundTag?> = CompletableFuture.supplyAsync({
+    private fun loadData(player: KryptonPlayer, executor: Executor): CompletableFuture<CompoundTag?> = CompletableFuture.supplyAsync({
         val playerFile = folder.resolve("${player.uuid}.dat")
         if (!Files.exists(playerFile)) {
             try {
@@ -90,7 +82,8 @@ class PlayerDataManager(val folder: Path) {
         data
     }, executor)
 
-    fun save(player: KryptonPlayer): CompoundTag {
+    fun save(player: KryptonPlayer): CompoundTag? {
+        if (!serializeData) return null
         val data = player.saveWithPassengers().build()
 
         // Create temp file and write data

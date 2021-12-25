@@ -16,19 +16,9 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.config.category
+package org.kryptonmc.krypton.packet
 
-import org.spongepowered.configurate.objectmapping.ConfigSerializable
-import org.spongepowered.configurate.objectmapping.meta.Comment
-import org.spongepowered.configurate.objectmapping.meta.Setting
+import io.netty.buffer.ByteBuf
 
-@ConfigSerializable
 @JvmRecord
-data class AdvancedCategory(
-    @Setting("synchronize-chunk-writes")
-    @Comment("Whether to use the DSYNC option for saving region files to disk.")
-    val synchronizeChunkWrites: Boolean = true,
-    @Setting("serialize-player-data")
-    @Comment("Whether the server should load and save player data to and from files")
-    val serializePlayerData: Boolean = true
-)
+data class FramedPacket(val body: ByteBuf) : GenericPacket

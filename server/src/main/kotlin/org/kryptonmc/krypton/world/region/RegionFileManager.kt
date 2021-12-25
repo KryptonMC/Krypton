@@ -21,13 +21,11 @@ package org.kryptonmc.krypton.world.region
 import it.unimi.dsi.fastutil.longs.Long2ObjectLinkedOpenHashMap
 import org.kryptonmc.krypton.world.chunk.ChunkPosition
 import org.kryptonmc.nbt.CompoundTag
-import org.kryptonmc.nbt.MutableCompoundTag
-import org.kryptonmc.nbt.io.TagCompression
 import org.kryptonmc.nbt.io.TagIO
 import java.nio.file.Files
 import java.nio.file.Path
-import kotlin.io.path.createDirectories
-import kotlin.io.path.exists
+import java.util.concurrent.locks.ReentrantLock
+import kotlin.concurrent.withLock
 
 /**
  * Manages region files. That's literally it.
@@ -38,6 +36,7 @@ class RegionFileManager(
 ) : AutoCloseable {
 
     private val regionCache = Long2ObjectLinkedOpenHashMap<RegionFile>()
+    private val regionCacheLock = ReentrantLock()
 
     fun read(x: Int, z: Int): CompoundTag? {
         val file = getRegionFile(x, z)
@@ -58,23 +57,23 @@ class RegionFileManager(
         val regionX = x shr 5
         val regionZ = z shr 5
         val serialized = ChunkPosition.toLong(regionX, regionZ)
-        val cachedFile = regionCache.getAndMoveToFirst(serialized)
+        val cachedFile = regionCacheLock.withLock { regionCache.getAndMoveToFirst(serialized) }
         if (cachedFile != null) return cachedFile
 
-        if (regionCache.size >= MAX_CACHE_SIZE) regionCache.removeLast().close()
+        if (regionCache.size >= MAX_CACHE_SIZE) regionCacheLock.withLock { regionCache.removeLast().close() }
         Files.createDirectories(folder)
         val path = folder.resolve("r.$regionX.$regionZ$ANVIL_EXTENSION")
         val regionFile = RegionFile(path, folder, synchronizeWrites)
-        regionCache.putAndMoveToFirst(serialized, regionFile)
+        regionCacheLock.withLock { regionCache.putAndMoveToFirst(serialized, regionFile) }
         return regionFile
     }
 
     fun flush() {
-        regionCache.values.forEach { it.flush() }
+        regionCacheLock.withLock { regionCache.values.forEach { it.flush() } }
     }
 
     override fun close() {
-        regionCache.values.forEach { it.close() }
+        regionCacheLock.withLock { regionCache.values.forEach { it.close() } }
     }
 
     companion object {

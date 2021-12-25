@@ -23,4 +23,4 @@ import org.kryptonmc.krypton.network.Writable
 /**
  * Super interface for all inbound and outbound packets.
  */
-interface Packet : Writable
+interface Packet : GenericPacket, Writable

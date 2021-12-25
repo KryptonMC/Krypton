@@ -18,6 +18,8 @@
  */
 package org.kryptonmc.krypton.network
 
+import io.netty.buffer.ByteBuf
+import io.netty.buffer.Unpooled
 import io.netty.channel.Channel
 import io.netty.channel.ChannelHandlerContext
 import io.netty.channel.SimpleChannelInboundHandler
@@ -26,11 +28,15 @@ import net.kyori.adventure.text.Component
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.network.handlers.HandshakeHandler
 import org.kryptonmc.krypton.network.handlers.PacketHandler
+import org.kryptonmc.krypton.packet.CachedPacket
+import org.kryptonmc.krypton.packet.FramedPacket
+import org.kryptonmc.krypton.packet.GenericPacket
 import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.packet.PacketState
 import org.kryptonmc.krypton.packet.out.login.PacketOutLoginDisconnect
 import org.kryptonmc.krypton.packet.out.play.PacketOutDisconnect
 import org.kryptonmc.krypton.util.logger
+import org.kryptonmc.krypton.util.writeFramedPacket
 import java.net.InetSocketAddress
 
 /**
@@ -53,9 +59,58 @@ class SessionHandler(private val server: KryptonServer) : SimpleChannelInboundHa
     var currentState: PacketState = PacketState.HANDSHAKE
     @Volatile
     var handler: PacketHandler? = null
+    @Volatile
+    var compressionEnabled = false
+    private val compressionThreshold: Int
+        get() = if (compressionEnabled) server.config.server.compressionThreshold else -1
+
+    @Volatile
+    var pendingKeepAlive = false
+
+    @Volatile
+    private var tickBuffer = Unpooled.directBuffer()
+    private val tickBufferLock = Any()
 
     fun send(packet: Packet) {
+        write(packet)
+    }
+
+    fun write(packet: GenericPacket) {
+        when (packet) {
+            is Packet -> {
+                synchronized(tickBufferLock) {
+                    if (tickBuffer.refCnt() <= 0) return
+                    tickBuffer.writeFramedPacket(packet, compressionThreshold)
+                }
+            }
+            is FramedPacket -> {
+                synchronized(tickBufferLock) {
+                    if (tickBuffer.refCnt() <= 0) return
+                    val body = packet.body
+                    tickBuffer.writeBytes(body, body.readerIndex(), body.readableBytes())
+                }
+            }
+            is CachedPacket -> {
+                synchronized(tickBufferLock) {
+                    if (tickBuffer.refCnt() <= 0) return
+                    val body = packet.body
+                    tickBuffer.writeBytes(body, body.readerIndex(), body.readableBytes())
+                }
+            }
+            else -> throw UnsupportedOperationException("Unsupported message type $packet!")
+        }
+    }
+
+    fun writeAndFlush(packet: Packet) {
+        writeWaitingPackets()
         channel.writeAndFlush(packet)
+    }
+
+    fun flush() {
+        val bufferSize = tickBuffer.writerIndex()
+        if (bufferSize <= 0 || !channel.isActive) return
+        writeWaitingPackets()
+        channel.flush()
     }
 
     fun disconnect(reason: Component) {
@@ -76,6 +131,7 @@ class SessionHandler(private val server: KryptonServer) : SimpleChannelInboundHa
 
     override fun channelInactive(ctx: ChannelHandlerContext) {
         disconnect(END_OF_STREAM)
+        synchronized(tickBufferLock) { tickBuffer.release() }
     }
 
     override fun channelRead0(ctx: ChannelHandlerContext, msg: Packet) {
@@ -96,6 +152,17 @@ class SessionHandler(private val server: KryptonServer) : SimpleChannelInboundHa
         LOGGER.debug("Failed to send or received invalid packet!", cause)
         disconnect(disconnectReason)
         ctx.channel().config().isAutoRead = false
+    }
+
+    private fun writeWaitingPackets() {
+        if (tickBuffer.writerIndex() == 0) return
+        val copy: ByteBuf
+        synchronized(tickBufferLock) {
+            if (tickBuffer.refCnt() <= 0) return
+            copy = tickBuffer
+            tickBuffer = tickBuffer.alloc().buffer(tickBuffer.writerIndex())
+        }
+        channel.write(FramedPacket(copy)).addListener { copy.release() }
     }
 
     companion object {

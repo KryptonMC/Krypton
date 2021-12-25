@@ -80,7 +80,7 @@ class EntityManager(val world: KryptonWorld) : AutoCloseable {
             val chunk = world.getChunk(entity.location.floorX(), entity.location.floorY(), entity.location.floorZ()) ?: return@thenAccept
             byId[entity.id] = entity
             byUUID[entity.uuid] = entity
-            byChunk.computeIfAbsent(chunk.position.toLong(), LongFunction { mutableSetOf() }).add(entity)
+            byChunk.computeIfAbsent(chunk.position.toLong(), LongFunction { ConcurrentHashMap.newKeySet() }).add(entity)
         }
     }
 
@@ -100,7 +100,7 @@ class EntityManager(val world: KryptonWorld) : AutoCloseable {
         val chunk = world.getChunk(player.location.floorX(), player.location.floorY(), player.location.floorZ()) ?: return
         byId[player.id] = player
         byUUID[player.uuid] = player
-        byChunk.computeIfAbsent(chunk.position.toLong(), LongFunction { mutableSetOf() }).add(player)
+        byChunk.computeIfAbsent(chunk.position.toLong(), LongFunction { ConcurrentHashMap.newKeySet() }).add(player)
     }
 
     fun remove(entity: KryptonEntity) {

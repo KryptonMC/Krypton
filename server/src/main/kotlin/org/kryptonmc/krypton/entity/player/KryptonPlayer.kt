@@ -21,7 +21,6 @@ package org.kryptonmc.krypton.entity.player
 import it.unimi.dsi.fastutil.longs.LongArrayList
 import it.unimi.dsi.fastutil.longs.LongArraySet
 import it.unimi.dsi.fastutil.longs.LongSet
-import kotlinx.collections.immutable.persistentListOf
 import net.kyori.adventure.audience.MessageType
 import net.kyori.adventure.bossbar.BossBar
 import net.kyori.adventure.identity.Identity
@@ -82,7 +81,6 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutActionBar
 import org.kryptonmc.krypton.packet.out.play.PacketOutCamera
 import org.kryptonmc.krypton.packet.out.play.PacketOutChangeGameState
 import org.kryptonmc.krypton.packet.out.play.PacketOutChat
-import org.kryptonmc.krypton.packet.out.play.PacketOutChunkDataAndLight
 import org.kryptonmc.krypton.packet.out.play.PacketOutClearTitles
 import org.kryptonmc.krypton.packet.out.play.PacketOutEntityPosition
 import org.kryptonmc.krypton.packet.out.play.PacketOutEntitySoundEffect
@@ -121,7 +119,6 @@ import org.kryptonmc.nbt.StringTag
 import org.spongepowered.math.vector.Vector3d
 import org.spongepowered.math.vector.Vector3i
 import java.net.InetSocketAddress
-import java.time.Duration
 import java.time.Instant
 import java.util.Locale
 import java.util.UUID
@@ -352,10 +349,7 @@ class KryptonPlayer(
         if (!isLoaded) return
         updateAbilities()
         onAbilitiesUpdate()
-        server.playerManager.sendToAll(PacketOutPlayerInfo(
-            PacketOutPlayerInfo.Action.UPDATE_GAMEMODE,
-            this
-        ))
+        server.sessionManager.sendGrouped(PacketOutPlayerInfo(PacketOutPlayerInfo.Action.UPDATE_GAMEMODE, this))
         session.send(PacketOutChangeGameState(GameState.CHANGE_GAMEMODE, mode.ordinal.toFloat()))
         if (mode != GameMode.SPECTATOR) camera = this
     }
@@ -749,11 +743,17 @@ class KryptonPlayer(
         session.send(PacketOutClearTitles(true))
     }
 
-    override fun showBossBar(bar: BossBar) = BossBarManager.addBar(bar, this)
+    override fun showBossBar(bar: BossBar) {
+        BossBarManager.addBar(bar, this)
+    }
 
-    override fun hideBossBar(bar: BossBar) = BossBarManager.removeBar(bar, this)
+    override fun hideBossBar(bar: BossBar) {
+        BossBarManager.removeBar(bar, this)
+    }
 
-    override fun playSound(sound: Sound) = playSound(sound, location.x(), location.y(), location.z())
+    override fun playSound(sound: Sound) {
+        playSound(sound, location.x(), location.y(), location.z())
+    }
 
     override fun playSound(sound: Sound, x: Double, y: Double, z: Double) {
         val type = Registries.SOUND_EVENT[sound.name()]
@@ -792,7 +792,10 @@ class KryptonPlayer(
     }
 
     override fun openBook(book: Book) {
-        val item = KryptonAdventure.toItemStack(book)
+        openBook(KryptonAdventure.toItemStack(book))
+    }
+
+    fun openBook(item: KryptonItemStack) {
         val slot = inventory.items.size + inventory.heldSlot
         val stateId = inventory.stateId
         session.send(PacketOutSetSlot(0, stateId, slot, item))
@@ -860,7 +863,7 @@ class KryptonPlayer(
             da.compareTo(db)
         }
 
-        visibleChunks += newChunks
+        visibleChunks.addAll(newChunks)
         world.chunkManager.addPlayer(
             this,
             centralX,
@@ -872,14 +875,15 @@ class KryptonPlayer(
             session.send(PacketOutUpdateViewPosition(centralX, centralZ))
             newChunks.forEach {
                 val chunk = world.chunkManager[it] ?: return@forEach
-                session.send(PacketOutChunkDataAndLight(chunk))
+                session.write(chunk.packet())
             }
 
-            previousChunks?.forEach {
+            if (previousChunks == null) return@thenRun
+            previousChunks.forEach {
                 session.send(PacketOutUnloadChunk(it.toInt(), (it shr 32).toInt()))
-                visibleChunks -= it
+                visibleChunks.remove(it)
             }
-            previousChunks?.clear()
+            previousChunks.clear()
         }
     }
 

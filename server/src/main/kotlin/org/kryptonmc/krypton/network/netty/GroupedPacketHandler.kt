@@ -16,19 +16,22 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.config.category
+package org.kryptonmc.krypton.network.netty
 
-import org.spongepowered.configurate.objectmapping.ConfigSerializable
-import org.spongepowered.configurate.objectmapping.meta.Comment
-import org.spongepowered.configurate.objectmapping.meta.Setting
+import io.netty.buffer.ByteBuf
+import io.netty.channel.ChannelHandler
+import io.netty.channel.ChannelHandlerContext
+import io.netty.handler.codec.MessageToByteEncoder
+import org.kryptonmc.krypton.packet.FramedPacket
 
-@ConfigSerializable
-@JvmRecord
-data class AdvancedCategory(
-    @Setting("synchronize-chunk-writes")
-    @Comment("Whether to use the DSYNC option for saving region files to disk.")
-    val synchronizeChunkWrites: Boolean = true,
-    @Setting("serialize-player-data")
-    @Comment("Whether the server should load and save player data to and from files")
-    val serializePlayerData: Boolean = true
-)
+@ChannelHandler.Sharable
+object GroupedPacketHandler : MessageToByteEncoder<FramedPacket>() {
+
+    const val NETTY_NAME = "grouped_packet_handler"
+
+    override fun encode(ctx: ChannelHandlerContext?, msg: FramedPacket?, out: ByteBuf?) {
+        // we just want to skip the pipeline and write the message directly
+    }
+
+    override fun allocateBuffer(ctx: ChannelHandlerContext?, msg: FramedPacket, preferDirect: Boolean): ByteBuf = msg.body.retainedSlice()
+}

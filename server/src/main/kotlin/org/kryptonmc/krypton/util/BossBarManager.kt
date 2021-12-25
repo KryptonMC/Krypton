@@ -21,6 +21,7 @@ package org.kryptonmc.krypton.util
 import com.google.common.collect.MapMaker
 import net.kyori.adventure.bossbar.BossBar
 import net.kyori.adventure.text.Component
+import org.kryptonmc.krypton.adventure.PacketGroupingAudience
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.packet.out.play.PacketOutBossBar
 import org.kryptonmc.krypton.packet.out.play.PacketOutBossBar.Action
@@ -36,9 +37,21 @@ object BossBarManager : BossBar.Listener {
         if (holder.subscribers.add(player)) player.session.send(PacketOutBossBar(Action.ADD, holder))
     }
 
+    fun addBar(bar: BossBar, audience: PacketGroupingAudience) {
+        val holder = getOrCreate(bar)
+        val addedPlayers = audience.players.filter { holder.subscribers.add(it) }
+        if (addedPlayers.isNotEmpty()) audience.sessionManager.sendGrouped(addedPlayers, PacketOutBossBar(Action.ADD, holder))
+    }
+
     fun removeBar(bar: BossBar, player: KryptonPlayer) {
         val holder = bars[bar] ?: return
         if (holder.subscribers.remove(player)) player.session.send(PacketOutBossBar(Action.REMOVE, holder))
+    }
+
+    fun removeBar(bar: BossBar, audience: PacketGroupingAudience) {
+        val holder = bars[bar] ?: return
+        val addedPlayers = audience.players.filter { holder.subscribers.add(it) }
+        if (addedPlayers.isNotEmpty()) audience.sessionManager.sendGrouped(addedPlayers, PacketOutBossBar(Action.REMOVE, holder))
     }
 
     override fun bossBarNameChanged(bar: BossBar, oldName: Component, newName: Component) {

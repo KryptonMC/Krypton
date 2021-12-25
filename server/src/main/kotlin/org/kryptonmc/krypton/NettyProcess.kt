@@ -43,6 +43,7 @@ import net.kyori.adventure.key.Key
 import org.kryptonmc.krypton.config.category.ForwardingMode
 import org.kryptonmc.krypton.network.SessionHandler
 import org.kryptonmc.krypton.network.netty.ChannelInitializeListener
+import org.kryptonmc.krypton.network.netty.GroupedPacketHandler
 import org.kryptonmc.krypton.network.netty.LegacyQueryHandler
 import org.kryptonmc.krypton.network.netty.PacketDecoder
 import org.kryptonmc.krypton.network.netty.PacketEncoder
@@ -98,14 +99,17 @@ object NettyProcess {
                 .childOption(ChannelOption.SO_KEEPALIVE, true)
                 .childHandler(object : ChannelInitializer<SocketChannel>() {
                     override fun initChannel(channel: SocketChannel) {
+                        val handler = SessionHandler(server)
                         channel.pipeline()
                             .addLast("timeout", ReadTimeoutHandler(30))
                             .addLast(LegacyQueryHandler.NETTY_NAME, legacyQueryHandler)
+                            .addLast(GroupedPacketHandler.NETTY_NAME, GroupedPacketHandler)
                             .addLast(SizeDecoder.NETTY_NAME, SizeDecoder())
                             .addLast(PacketDecoder.NETTY_NAME, PacketDecoder())
                             .addLast(SizeEncoder.NETTY_NAME, SizeEncoder)
                             .addLast(PacketEncoder.NETTY_NAME, PacketEncoder)
-                            .addLast(SessionHandler.NETTY_NAME, SessionHandler(server))
+                            .addLast(SessionHandler.NETTY_NAME, handler)
+                        server.sessionManager.add(handler)
                         if (listeners.isEmpty()) return
                         listeners.values.forEach { it.onInitialize(channel) }
                     }
