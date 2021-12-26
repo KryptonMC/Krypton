@@ -117,6 +117,7 @@ org.kryptonmc.krypton.packet.in.play
 org.kryptonmc.krypton.packet.in.status
 org.kryptonmc.krypton.packet.out.login
 org.kryptonmc.krypton.packet.out.play
+org.kryptonmc.krypton.packet.out.play.data
 org.kryptonmc.krypton.packet.out.status
 org.kryptonmc.krypton.plugin
 org.kryptonmc.krypton.plugin.loader
