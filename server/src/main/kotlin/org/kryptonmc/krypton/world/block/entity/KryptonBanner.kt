@@ -27,6 +27,9 @@ import org.kryptonmc.api.block.entity.banner.BannerPatternType
 import org.kryptonmc.api.item.ItemStack
 import org.kryptonmc.api.item.data.DyeColor
 import org.kryptonmc.api.registry.Registries
+import org.kryptonmc.krypton.packet.CachedPacket
+import org.kryptonmc.krypton.packet.GenericPacket
+import org.kryptonmc.krypton.packet.out.play.PacketOutBlockEntityData
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.krypton.world.block.entity.banner.save
 import org.kryptonmc.nbt.CompoundTag
@@ -41,28 +44,34 @@ class KryptonBanner(
 
     override val patterns = mutableListOf<BannerPattern>()
     private var cachedItem: ItemStack? = null
+    private val cachedPacket = CachedPacket(world.server.config.server.compressionThreshold) { PacketOutBlockEntityData(this) }
+
+    override val updatePacket: GenericPacket
+        get() = cachedPacket
+    override val updateTag: CompoundTag
+        get() = save(false)
 
     override fun pattern(index: Int): BannerPattern = patterns[index]
 
     override fun setPattern(index: Int, pattern: BannerPattern) {
         patterns[index] = pattern
-        cachedItem = null
+        invalidateCaches()
     }
 
     override fun patterns(patterns: Iterable<BannerPattern>) {
         this.patterns.clear()
         this.patterns.addAll(patterns)
-        cachedItem = null
+        invalidateCaches()
     }
 
     override fun addPattern(pattern: BannerPattern) {
         patterns.add(pattern)
-        cachedItem = null
+        invalidateCaches()
     }
 
     override fun removePattern(index: Int): BannerPattern {
         val removed = patterns.removeAt(index)
-        cachedItem = null
+        invalidateCaches()
         return removed
     }
 
@@ -80,6 +89,11 @@ class KryptonBanner(
     }
 
     override fun asItemStack(): ItemStack = ItemStack.empty() // TODO
+
+    private fun invalidateCaches() {
+        cachedItem = null
+        cachedPacket.invalidate()
+    }
 
     companion object {
 

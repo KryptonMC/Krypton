@@ -53,12 +53,7 @@ interface BlockHandler {
         return calculateDestroySpeed(player, block) / hardness.toFloat() / factor.toFloat()
     }
 
-    /**
-     * Called when the given [block] is placed by the given [player] at the
-     * given [x], [y], and [z] coordinates being placed on the given [face]
-     * (this will be facing the player).
-     */
-    fun onPlace(player: KryptonPlayer, block: Block, x: Int, y: Int, z: Int, face: BlockFace) {
+    fun onPlace(oldBlock: Block, newBlock: Block, world: KryptonWorld, x: Int, y: Int, z: Int, isMove: Boolean) {
         // This isn't what it may seem like. This is for reacting to block placements, which
         // most blocks don't need to do.
     }
@@ -86,6 +81,10 @@ interface BlockHandler {
         // Source: https://minecraft.fandom.com/wiki/Hunger#Exhaustion_level_increase
         player.foodExhaustionLevel += 0.005f
         player.statistics.increment(StatisticTypes.BLOCK_MINED[block])
+    }
+
+    fun onRemove(oldBlock: Block, newBlock: Block, world: KryptonWorld, x: Int, y: Int, z: Int, isMove: Boolean) {
+        if (oldBlock.hasBlockEntity && oldBlock !== newBlock) world.removeBlockEntity(x, y, z)
     }
 
     /**

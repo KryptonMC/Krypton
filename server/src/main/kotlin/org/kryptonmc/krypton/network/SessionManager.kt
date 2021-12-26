@@ -22,6 +22,7 @@ import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.network.handlers.PlayHandler
 import org.kryptonmc.krypton.packet.FramedPacket
+import org.kryptonmc.krypton.packet.GenericPacket
 import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.packet.out.status.ServerStatus
 import org.kryptonmc.krypton.util.Maths
@@ -51,19 +52,26 @@ class SessionManager(private val server: KryptonServer) {
         lock.write { sessions.remove(session) }
     }
 
-    fun sendGrouped(packet: Packet, predicate: Predicate<KryptonPlayer> = Predicate { true }) {
+    fun sendGrouped(packet: GenericPacket, predicate: Predicate<KryptonPlayer> = Predicate { true }) {
         sendGrouped(server.playerManager.players, packet, predicate)
     }
 
-    fun sendGrouped(players: Collection<KryptonPlayer>, packet: Packet, predicate: Predicate<KryptonPlayer> = Predicate { true }) {
+    fun sendGrouped(players: Collection<KryptonPlayer>, packet: GenericPacket, predicate: Predicate<KryptonPlayer> = Predicate { true }) {
         if (players.isEmpty()) return
-        val finalBuffer = packet.frame()
-        val framedPacket = FramedPacket(finalBuffer)
+        if (packet is Packet) {
+            val finalBuffer = packet.frame()
+            sendPacketToAll(players, FramedPacket(finalBuffer), predicate)
+            finalBuffer.release()
+            return
+        }
+        sendPacketToAll(players, packet, predicate)
+    }
+
+    private fun sendPacketToAll(players: Collection<KryptonPlayer>, packet: GenericPacket, predicate: Predicate<KryptonPlayer>) {
         players.forEach {
             if (!it.isOnline || !predicate.test(it)) return@forEach
-            it.session.write(framedPacket)
+            it.session.write(packet)
         }
-        finalBuffer.release()
     }
 
     fun update(time: Long) {

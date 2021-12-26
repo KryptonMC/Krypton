@@ -97,6 +97,10 @@ class GenerationRegion(
     // We'll remove GenerationRegion eventually, so this doesn't matter
     override fun <T : BlockEntity> getBlockEntity(x: Int, y: Int, z: Int): T? = null
 
+    override fun removeBlockEntity(x: Int, y: Int, z: Int) {
+        // same as getBlockEntity
+    }
+
     override fun getFluid(x: Int, y: Int, z: Int): Fluid = getChunk(x, z)?.getFluid(x, y, z) ?: Fluids.EMPTY
 
     override fun setBlock(x: Int, y: Int, z: Int, block: Block): Boolean {

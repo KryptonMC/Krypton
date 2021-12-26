@@ -21,6 +21,7 @@ package org.kryptonmc.krypton.world.block.entity
 import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.block.entity.BlockEntity
 import org.kryptonmc.api.block.entity.BlockEntityType
+import org.kryptonmc.krypton.packet.GenericPacket
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.compound
@@ -29,14 +30,16 @@ import org.spongepowered.math.vector.Vector3i
 abstract class KryptonBlockEntity(
     override val type: BlockEntityType,
     override val world: KryptonWorld,
-    override val block: Block,
+    override var block: Block,
     override val position: Vector3i
 ) : BlockEntity {
 
-    open val updateTag: CompoundTag
-        get() = saveMetadata(CompoundTag.builder()).build()
     open val restrictModification: Boolean
         get() = false
+    open val updatePacket: GenericPacket?
+        get() = null
+    open val updateTag: CompoundTag
+        get() = CompoundTag.empty()
 
     open fun load(tag: CompoundTag) {
         // nothing to do for the base type

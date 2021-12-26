@@ -109,7 +109,7 @@ abstract class ChunkAccessor(
         }
 
         @JvmStatic
-        protected fun encode(
+        protected fun encodePosition(
             x: Int,
             y: Int,
             z: Int

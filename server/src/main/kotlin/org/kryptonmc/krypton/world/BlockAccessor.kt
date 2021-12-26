@@ -43,4 +43,10 @@ interface BlockAccessor : HeightAccessor {
     fun setBlock(x: Int, y: Int, z: Int, block: Block): Boolean
 
     fun setBlock(position: Vector3i, block: Block): Boolean = setBlock(position.x(), position.y(), position.z(), block)
+
+    fun removeBlockEntity(x: Int, y: Int, z: Int)
+
+    fun removeBlockEntity(position: Vector3i) {
+        removeBlockEntity(position.x(), position.y(), position.z())
+    }
 }

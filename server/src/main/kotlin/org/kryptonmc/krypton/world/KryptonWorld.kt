@@ -54,6 +54,7 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutSoundEffect
 import org.kryptonmc.krypton.server.PlayerManager
 import org.kryptonmc.krypton.util.clamp
 import org.kryptonmc.krypton.world.biome.BiomeManager
+import org.kryptonmc.krypton.world.block.entity.KryptonBlockEntity
 import org.kryptonmc.krypton.world.chunk.ChunkAccessor
 import org.kryptonmc.krypton.world.chunk.ChunkManager
 import org.kryptonmc.krypton.world.chunk.ChunkPosition
@@ -272,10 +273,22 @@ class KryptonWorld(
         val chunk = getChunk(x, y, z) ?: return false
         if (!chunk.setBlock(x, y, z, block)) return false
         sessionManager.sendGrouped(PacketOutBlockChange(block, x, y, z))
+        if (block.hasBlockEntity) broadcastBlockEntity(x, y, z)
         return true
     }
 
     override fun setBlock(position: Vector3i, block: Block): Boolean = setBlock(position.x(), position.y(), position.z(), block)
+
+    override fun removeBlockEntity(x: Int, y: Int, z: Int) {
+        if (isOutsideBuildHeight(y)) return
+        getChunk(x, y, z)?.removeBlockEntity(x, y, z)
+    }
+
+    private fun broadcastBlockEntity(x: Int, y: Int, z: Int) {
+        val entity = getBlockEntity<KryptonBlockEntity>(x, y, z) ?: return
+        val updatePacket = entity.updatePacket ?: return
+        sessionManager.sendGrouped(updatePacket) { it.world === this }
+    }
 
     fun tick() {
         if (players.isEmpty()) return // don't tick the world if there's no players in it

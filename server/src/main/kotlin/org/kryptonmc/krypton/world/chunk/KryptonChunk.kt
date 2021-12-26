@@ -31,6 +31,7 @@ import org.kryptonmc.krypton.world.Heightmap
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.krypton.world.block.entity.BlockEntityFactory
 import org.kryptonmc.krypton.world.block.entity.blockEntityType
+import org.kryptonmc.krypton.world.block.handler
 import org.kryptonmc.krypton.world.chunk.ticket.Ticket
 import org.kryptonmc.krypton.world.generation.DebugGenerator
 import org.kryptonmc.nbt.CompoundTag
@@ -82,12 +83,12 @@ class KryptonChunk(
 
     @Suppress("UNCHECKED_CAST")
     override fun <T : BlockEntity> getBlockEntity(x: Int, y: Int, z: Int): T? {
-        var entity = blockEntities[encode(x, y, z)]
+        var entity = blockEntities[encodePosition(x, y, z)]
         if (entity == null) {
             val block = getBlock(x, y, z)
             val type = block.blockEntityType() ?: return null
             entity = BlockEntityFactory.create(type, world, block, Vector3i(x, y, z))
-            blockEntities[encode(x, y, z)] = entity
+            blockEntities[encodePosition(x, y, z)] = entity
         }
         return entity as T
     }
@@ -121,11 +122,31 @@ class KryptonChunk(
         heightmaps.getValue(Heightmap.Type.MOTION_BLOCKING_NO_LEAVES).update(localX, y, localZ, block)
         heightmaps.getValue(Heightmap.Type.OCEAN_FLOOR).update(localX, y, localZ, block)
         heightmaps.getValue(Heightmap.Type.WORLD_SURFACE).update(localX, y, localZ, block)
+
+        oldState.handler().onRemove(oldState, block, world, x, y, z, false)
+        if (section[x, y, z] !== block) return true
+        block.handler().onPlace(oldState, block, world, x, y, z, false)
+
+        if (block.hasBlockEntity) {
+            val encodedPosition = encodePosition(x, y, z)
+            var blockEntity = blockEntities[encodedPosition]
+            if (blockEntity == null) {
+                val type = block.blockEntityType() ?: return true
+                blockEntity = BlockEntityFactory.create(type, world, block, Vector3i(x, y, z))
+                blockEntities[encodedPosition] = blockEntity
+            } else {
+                blockEntity.block = block
+            }
+        }
         cachedPacket.invalidate()
         return true
     }
 
     override fun setBlock(position: Vector3i, block: Block): Boolean = setBlock(position.x(), position.y(), position.z(), block)
+
+    override fun removeBlockEntity(x: Int, y: Int, z: Int) {
+        blockEntities.remove(encodePosition(x, y, z))
+    }
 
     override fun getBiome(x: Int, y: Int, z: Int): Biome = getNoiseBiome(x, y, z)
 
