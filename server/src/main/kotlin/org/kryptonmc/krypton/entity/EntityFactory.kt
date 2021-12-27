@@ -67,6 +67,7 @@ import org.kryptonmc.krypton.entity.projectile.KryptonSpectralArrow
 import org.kryptonmc.krypton.entity.projectile.KryptonThrownPotion
 import org.kryptonmc.krypton.entity.projectile.KryptonTrident
 import org.kryptonmc.krypton.entity.projectile.KryptonWitherSkull
+import org.kryptonmc.krypton.entity.item.KryptonItemEntity
 import org.kryptonmc.krypton.registry.InternalRegistries
 import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.world.KryptonWorld
@@ -122,7 +123,8 @@ object EntityFactory {
         EntityTypes.WITHER_SKULL to ::KryptonWitherSkull,
         EntityTypes.WOLF to ::KryptonWolf,
         EntityTypes.ZOMBIE to ::KryptonZombie,
-        EntityTypes.FISHING_HOOK to ::KryptonFishingHook
+        EntityTypes.FISHING_HOOK to ::KryptonFishingHook,
+        EntityTypes.ITEM to ::KryptonItemEntity
     )
 
     @Suppress("UNCHECKED_CAST")

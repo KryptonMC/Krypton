@@ -18,6 +18,7 @@
  */
 package org.kryptonmc.krypton.util
 
+import org.kryptonmc.api.util.BoundingBox
 import org.kryptonmc.krypton.entity.EntityManager
 import org.kryptonmc.krypton.entity.KryptonEntity
 import org.kryptonmc.krypton.world.KryptonWorld
@@ -41,6 +42,11 @@ fun EntityManager.forEachEntityInRange(location: Vector3d, viewDistance: Int, ca
         val chunk = world.getChunkAt(it.chunkX(), it.chunkZ()) ?: return@forEach
         get(chunk).forEach(callback)
     }
+}
+
+fun EntityManager.forEachEntityInBounds(bounds: BoundingBox, callback: (KryptonEntity) -> Unit) {
+    val intersected = world.entities.stream().filter { bounds.intersects(it.boundingBox.move(it.location)) }
+    intersected.forEach(callback)
 }
 
 private fun Long.chunkX(): Int = (this and 4294967295L).toInt()

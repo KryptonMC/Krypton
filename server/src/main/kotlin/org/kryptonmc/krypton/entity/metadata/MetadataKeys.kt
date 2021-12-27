@@ -60,6 +60,7 @@ object MetadataKeys {
     @JvmField val AXOLOTL = AxolotlKeys
     @JvmField val BEE = BeeKeys
     @JvmField val CAT = CatKeys
+    @JvmField val ITEM = ItemKeys
     @JvmField val FOX = FoxKeys
     @JvmField val GOAT = GoatKeys
     @JvmField val MOOSHROOM = MooshroomKeys
@@ -225,6 +226,11 @@ object MetadataKeys {
         @JvmField val LYING = create(20, MetadataSerializers.BOOLEAN, false)
         @JvmField val RELAXED = create(21, MetadataSerializers.BOOLEAN, false)
         @JvmField val COLLAR_COLOR = create(22, MetadataSerializers.VAR_INT, Registries.DYE_COLORS.idOf(DyeColors.RED))
+    }
+
+    object ItemKeys {
+
+        @JvmField val ITEM = create(8, MetadataSerializers.SLOT, KryptonItemStack.Factory.empty())
     }
 
     object FoxKeys {

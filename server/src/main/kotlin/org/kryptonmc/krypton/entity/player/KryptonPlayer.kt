@@ -45,7 +45,9 @@ import org.kryptonmc.api.entity.attribute.AttributeTypes
 import org.kryptonmc.api.entity.player.ChatVisibility
 import org.kryptonmc.api.entity.player.Player
 import org.kryptonmc.api.event.player.ChangeGameModeEvent
+import org.kryptonmc.api.event.player.ItemDropEvent
 import org.kryptonmc.api.event.player.PerformActionEvent
+import org.kryptonmc.api.item.ItemStack
 import org.kryptonmc.api.item.ItemTypes
 import org.kryptonmc.api.permission.PermissionFunction
 import org.kryptonmc.api.permission.PermissionProvider
@@ -69,6 +71,7 @@ import org.kryptonmc.krypton.entity.EquipmentSlot
 import org.kryptonmc.krypton.entity.KryptonEntity
 import org.kryptonmc.krypton.entity.KryptonEquipable
 import org.kryptonmc.krypton.entity.KryptonLivingEntity
+import org.kryptonmc.krypton.entity.item.KryptonItemEntity
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.inventory.KryptonPlayerInventory
 import org.kryptonmc.krypton.item.KryptonItemStack
@@ -104,6 +107,7 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutUnloadChunk
 import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateHealth
 import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateViewPosition
 import org.kryptonmc.krypton.service.KryptonVanishService
+import org.kryptonmc.krypton.util.*
 import org.kryptonmc.krypton.statistic.KryptonStatisticsTracker
 import org.kryptonmc.krypton.util.BossBarManager
 import org.kryptonmc.krypton.util.Directions
@@ -122,6 +126,7 @@ import java.net.InetSocketAddress
 import java.time.Instant
 import java.util.Locale
 import java.util.UUID
+import java.util.concurrent.ThreadLocalRandom
 import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min
@@ -942,6 +947,52 @@ class KryptonPlayer(
             }
             return
         }
+    }
+
+    fun dropHeldItem() {
+        val heldItem = inventory.heldItem(Hand.MAIN)
+        if (heldItem.isEmpty()) return
+
+        // Update held item amount
+        heldItem.amount--
+        inventory.setHeldItem(Hand.MAIN, heldItem)
+
+        // drop the item
+        dropItem(heldItem)
+    }
+
+    fun dropItem(itemStack: ItemStack) {
+        server.eventManager.fire(ItemDropEvent(this, itemStack)).thenAcceptAsync({
+            if (!it.result.isAllowed) return@thenAcceptAsync
+            val singleStack = itemStack.copy() as KryptonItemStack
+            singleStack.amount = 1
+            val itemEntity = KryptonItemEntity(world)
+            itemEntity.thrower = uuid
+            itemEntity.item = singleStack
+            itemEntity.location = location.add(0.0, 1.62 - 0.3, 0.0) // eye height - some magic value??
+            val itemVelocity = getDirectionVector().mul(0.3)
+            // Glowstone's method. Seems sane however it uses guess work. I don't blame them. Just look at the vanilla source...
+            // https://github.com/GlowstoneMC/Glowstone/blob/dev/src/main/java/net/glowstone/entity/GlowHumanEntity.java
+            val random = ThreadLocalRandom.current()
+            val offset = 0.02
+            itemVelocity.add(
+                random.nextDouble(offset) - offset / 2,
+                random.nextDouble(0.12),
+                random.nextDouble(offset) - offset / 2
+            )
+            world.entityManager.spawn(itemEntity)
+            itemEntity.velocity = itemVelocity
+        }, session.channel.eventLoop())
+        return
+    }
+
+    private fun getDirectionVector(): Vector3d {
+        // Similar to wiki.vg/bukkit impl
+        val y = kotlin.math.sin(Math.toRadians(rotation.y().toDouble()))
+        val xz = kotlin.math.cos(Math.toRadians(rotation.y().toDouble()))
+        val x = -xz * kotlin.math.sin(Math.toRadians(rotation.x().toDouble()))
+        val z = xz * kotlin.math.cos(Math.toRadians(rotation.x().toDouble()))
+        return Vector3d.from(x, y, z)
     }
 
     companion object {

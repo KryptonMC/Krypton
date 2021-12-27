@@ -18,6 +18,8 @@
  */
 package org.kryptonmc.krypton.network.handlers
 
+
+import java.util.concurrent.ThreadLocalRandom
 import com.mojang.brigadier.StringReader
 import net.kyori.adventure.audience.MessageType
 import net.kyori.adventure.key.InvalidKeyException
@@ -41,6 +43,8 @@ import org.kryptonmc.api.resource.ResourcePack
 import org.kryptonmc.api.world.GameMode
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.commands.KryptonPermission
+import org.kryptonmc.krypton.entity.item.KryptonItemEntity
+import org.kryptonmc.krypton.entity.monster.KryptonCreeper
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.inventory.KryptonPlayerInventory
 import org.kryptonmc.krypton.item.handler
@@ -275,6 +279,9 @@ class PlayHandler(
         when (packet.status) {
             PacketInPlayerDigging.Status.STARTED, PacketInPlayerDigging.Status.FINISHED, PacketInPlayerDigging.Status.CANCELLED -> {
                 player.blockHandler.handleBlockBreak(packet)
+            }
+            PacketInPlayerDigging.Status.DROP_ITEM -> {
+                player.dropHeldItem()
             }
             PacketInPlayerDigging.Status.UPDATE_STATE -> {
                 val handler = player.inventory[player.inventory.heldSlot].type.handler()

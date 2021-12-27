@@ -19,6 +19,8 @@
 package org.kryptonmc.krypton.entity.player
 
 import org.kryptonmc.api.block.Block
+import org.kryptonmc.api.item.ItemStack
+import org.kryptonmc.krypton.entity.item.KryptonItemEntity
 import org.kryptonmc.api.entity.Hand
 import org.kryptonmc.api.event.player.PlaceBlockEvent
 import org.kryptonmc.api.util.Direction
@@ -36,6 +38,7 @@ import org.kryptonmc.krypton.world.block.BlockHitResult
 import org.kryptonmc.krypton.world.block.handler
 import org.kryptonmc.krypton.world.block.isGameMasterBlock
 import org.spongepowered.math.vector.Vector3d
+import java.util.concurrent.ThreadLocalRandom
 import org.spongepowered.math.vector.Vector3i
 
 class PlayerBlockHandler(private val player: KryptonPlayer) {
@@ -229,11 +232,27 @@ class PlayerBlockHandler(private val player: KryptonPlayer) {
         if (hasChanged) block.handler().destroy(world, x, y, z, block)
 
         if (isCreative) return true // We're done, since the bit after this is for mining, which doesn't happen in creative
+        dropLoot(block, x, y, z)
         val item = player.inventory.mainHand
         val hasCorrectTool = player.hasCorrectTool(block)
         item.type.handler().mineBlock(player, item, world, block, x, y, z)
         if (hasChanged && hasCorrectTool) block.handler().onDestroy(player, block, x, y, z, item)
         return true
+    }
+
+    private fun dropLoot(block: Block, x: Int, y: Int, z: Int) {
+        // TODO: Use loot tables
+        val itemEntity = KryptonItemEntity(world)
+        val blockItem = block.asItem() ?: return
+        itemEntity.item = ItemStack.of(blockItem) as KryptonItemStack
+        val entityHeight = itemEntity.dimensions.height
+        val random = ThreadLocalRandom.current()
+        itemEntity.location = Vector3d.from(
+            x.toDouble()+(0.5)+random.nextDouble(-0.25, 0.25),
+            y.toDouble()+(0.5)+random.nextDouble(-0.25, 0.25)-(entityHeight/2f),
+            z.toDouble()+(0.5)+random.nextDouble(-0.25, 0.25))
+        world.entityManager.spawn(itemEntity)
+        itemEntity.velocity = Vector3d.from(random.nextDouble() * 0.2 - 0.1, 0.2, random.nextDouble() * 0.2 - 0.1)
     }
 
     companion object {
