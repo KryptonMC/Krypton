@@ -21,12 +21,16 @@ package org.kryptonmc.krypton.world.block.entity.banner
 import org.kryptonmc.api.block.entity.banner.BannerPattern
 import org.kryptonmc.api.block.entity.banner.BannerPatternType
 import org.kryptonmc.api.item.data.DyeColor
+import org.kryptonmc.api.registry.Registries
+import org.kryptonmc.nbt.CompoundTag
 
 @JvmRecord
 data class KryptonBannerPattern(
     override val type: BannerPatternType,
     override val color: DyeColor
 ) : BannerPattern {
+
+    constructor(tag: CompoundTag) : this(BannerPatternType.fromCode(tag.getString("Pattern"))!!, Registries.DYE_COLORS[tag.getInt("Color")]!!)
 
     object Factory : BannerPattern.Factory {
 

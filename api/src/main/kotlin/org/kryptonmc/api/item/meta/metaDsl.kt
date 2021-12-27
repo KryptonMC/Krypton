@@ -59,6 +59,18 @@ public inline fun <B : ItemMetaBuilder<B, P>, reified P : ItemMetaBuilder.Provid
 public inline fun bundleMeta(builder: BundleMeta.Builder.() -> Unit): BundleMeta = BundleMeta.builder().apply(builder).build()
 
 /**
+ * Creates new banner metadata from the result of applying the given [builder]
+ * function.
+ *
+ * @param builder the builder
+ * @return new banner metadata
+ */
+@MetaDsl
+@JvmSynthetic
+@Contract("_ -> new", pure = true)
+public inline fun bannerMeta(builder: BannerMeta.Builder.() -> Unit): BannerMeta = BannerMeta.builder().apply(builder).build()
+
+/**
  * Creates new compass metadata from the result of applying the given
  * [builder] function.
  *
