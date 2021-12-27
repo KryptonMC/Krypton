@@ -27,8 +27,7 @@ object FoodHandler : ItemTimedHandler {
 
     override fun finishUse(player: KryptonPlayer, hand: Hand): UseItemResult {
         // TODO: Remove hardcoded values and add tick system
-        val stack = player.inventory.heldItem(hand)
-        stack.amount--
+        val stack = player.inventory.heldItem(hand).shrink(1)
         player.inventory.setHeldItem(hand, stack)
         // These are dummy values for testing, until saturation and food level values
         // can be pulled from item definitions, and once more thought is in put into

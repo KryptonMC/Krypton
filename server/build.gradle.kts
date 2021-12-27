@@ -12,10 +12,6 @@ dependencies {
     api(projects.api)
     implementation(projects.annotationProcessor)
 
-    // Extra Kotlin stuff
-    api(libs.kotlin.stdlib.jdk7)
-    api(libs.kotlin.stdlib.jdk8)
-
     // Networking
     api(libs.bundles.netty)
     implementation(libs.netty.transport.native.epoll) {
@@ -44,9 +40,13 @@ dependencies {
     api(libs.nbt)
     implementation(libs.articData)
 
-    // Miscellaneous
-    implementation(libs.caffeine)
+    // Collections and caching
     implementation(libs.fastutil)
+    implementation(libs.flare)
+    implementation(libs.flare.fastutil)
+    implementation(libs.caffeine)
+
+    // Miscellaneous
     implementation(libs.clikt)
     implementation(libs.bstats)
     implementation(libs.spark.common)
@@ -54,6 +54,7 @@ dependencies {
     testImplementation(libs.bundles.junit)
     testImplementation(libs.junit.platform.runner)
     testImplementation(libs.mockk)
+    testImplementation(libs.jimfs)
     testRuntimeOnly(libs.bytebuddy)
 }
 

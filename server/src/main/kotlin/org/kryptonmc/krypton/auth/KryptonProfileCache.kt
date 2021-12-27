@@ -18,15 +18,15 @@
  */
 package org.kryptonmc.krypton.auth
 
-import com.google.gson.JsonParseException
 import com.google.gson.stream.JsonReader
 import com.google.gson.stream.JsonWriter
+import kotlinx.collections.immutable.ImmutableSet
+import kotlinx.collections.immutable.toImmutableSet
 import org.kryptonmc.api.auth.GameProfile
 import org.kryptonmc.api.auth.ProfileCache
-import org.kryptonmc.krypton.util.tryCreateFile
 import org.kryptonmc.krypton.util.logger
-import java.io.FileNotFoundException
 import java.io.IOException
+import java.nio.file.Files
 import java.nio.file.Path
 import java.time.ZonedDateTime
 import java.util.UUID
@@ -41,11 +41,11 @@ class KryptonProfileCache(private val path: Path) : ProfileCache {
     private val profilesByName = ConcurrentHashMap<String, ProfileHolder>()
     private val profilesByUUID = ConcurrentHashMap<UUID, ProfileHolder>()
     private val operations = AtomicLong()
-    override val profiles: Set<GameProfile>
-        get() = profilesByUUID.values.mapTo(mutableSetOf()) {
-            it.lastAccess = operations.incrementAndGet()
-            it.profile
-        }
+    override val profiles: ImmutableSet<GameProfile>
+        get() = profilesByUUID.values.asSequence()
+            .onEach { it.lastAccess = operations.incrementAndGet() }
+            .map(ProfileHolder::profile)
+            .toImmutableSet()
 
     init {
         load().apply { reverse() }.forEach { add(it) }
@@ -76,7 +76,7 @@ class KryptonProfileCache(private val path: Path) : ProfileCache {
     private fun add(holder: ProfileHolder) {
         val profile = holder.profile
         holder.lastAccess = operations.incrementAndGet()
-        profilesByName[profile.name.lowercase()] = holder
+        profilesByName[profile.name] = holder
         profilesByUUID[profile.uuid] = holder
     }
 
@@ -92,17 +92,23 @@ class KryptonProfileCache(private val path: Path) : ProfileCache {
                 }
                 reader.endArray()
             }
-        } catch (ignored: FileNotFoundException) {
-        } catch (exception: JsonParseException) {
-            LOGGER.warn("Failed to parse JSON data from $path. You can delete it to force the server to recreate it.", exception)
         } catch (exception: IOException) {
             LOGGER.warn("Failed to read $path. You can delete it to force the server to recreate it.", exception)
+        } catch (exception: IllegalStateException) {
+            LOGGER.warn("Failed to parse JSON data from $path. You can delete it to force the server to recreate it.", exception)
         }
         return holders
     }
 
     fun save() {
-        path.tryCreateFile()
+        if (!Files.exists(path)) {
+            try {
+                Files.createFile(path)
+            } catch (exception: Exception) {
+                LOGGER.warn("Failed to create profile cache file $path.", exception)
+                return
+            }
+        }
         try {
             JsonWriter(path.writer()).use { writer ->
                 writer.beginArray()

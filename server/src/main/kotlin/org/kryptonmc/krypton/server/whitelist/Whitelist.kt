@@ -19,6 +19,7 @@
 package org.kryptonmc.krypton.server.whitelist
 
 import com.google.gson.stream.JsonReader
+import kotlinx.collections.immutable.persistentListOf
 import org.kryptonmc.api.auth.GameProfile
 import org.kryptonmc.krypton.auth.KryptonGameProfile
 import org.kryptonmc.krypton.server.ServerConfigList
@@ -41,7 +42,7 @@ class Whitelist(path: Path) : ServerConfigList<GameProfile, WhitelistEntry>(path
 
         reader.endObject()
         if (name == null || uuid == null) return null
-        return WhitelistEntry(KryptonGameProfile(name, uuid, emptyList()))
+        return WhitelistEntry(KryptonGameProfile(name, uuid, persistentListOf()))
     }
 
     override fun key(key: GameProfile): String = key.uuid.toString()

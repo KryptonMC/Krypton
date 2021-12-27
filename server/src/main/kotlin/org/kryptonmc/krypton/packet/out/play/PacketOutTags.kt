@@ -29,9 +29,8 @@ object PacketOutTags : Packet {
 
     @Suppress("UNCHECKED_CAST")
     override fun write(buf: ByteBuf) {
-        val tags = KryptonTagManager.tags
-        buf.writeVarInt(tags.size)
-        tags.forEach { (type, tags) ->
+        buf.writeVarInt(KryptonTagManager.tags.size)
+        KryptonTagManager.tags.forEach { (type, tags) ->
             buf.writeKey(type.key())
             buf.writeVarInt(tags.size)
             tags.forEach { tag ->

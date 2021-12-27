@@ -18,6 +18,7 @@
  */
 package org.kryptonmc.krypton.world.scoreboard
 
+import kotlinx.collections.immutable.ImmutableList
 import net.kyori.adventure.key.Key
 import org.kryptonmc.api.scoreboard.ObjectiveRenderType
 import org.kryptonmc.api.scoreboard.criteria.CompoundCriterion
@@ -26,7 +27,7 @@ import org.kryptonmc.api.scoreboard.criteria.CompoundCriterion
 data class KryptonCompoundCriterion(
     private val key: Key,
     override val name: String,
-    override val children: List<KryptonCriterion>,
+    override val children: ImmutableList<KryptonCriterion>,
     override val isMutable: Boolean = false,
     override val renderType: ObjectiveRenderType = ObjectiveRenderType.INTEGER
 ) : CompoundCriterion {

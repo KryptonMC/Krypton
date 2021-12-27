@@ -18,13 +18,11 @@
  */
 package org.kryptonmc.krypton.world.chunk.ticket
 
-import it.unimi.dsi.fastutil.longs.Long2ObjectMap
-import it.unimi.dsi.fastutil.longs.Long2ObjectMaps
-import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap
 import org.kryptonmc.krypton.util.Maths
 import org.kryptonmc.krypton.util.SortedArraySet
 import org.kryptonmc.krypton.world.chunk.ChunkManager
 import org.kryptonmc.krypton.world.chunk.ChunkPosition
+import space.vectrix.flare.fastutil.Long2ObjectSyncMap
 import java.util.UUID
 import kotlin.math.abs
 import kotlin.math.max
@@ -37,7 +35,7 @@ import kotlin.math.max
  */
 class TicketManager(private val chunkManager: ChunkManager) {
 
-    private val tickets: Long2ObjectMap<SortedArraySet<Ticket<*>>> = Long2ObjectMaps.synchronize(Long2ObjectOpenHashMap())
+    private val tickets = Long2ObjectSyncMap.hashmap<SortedArraySet<Ticket<*>>>()
 
     fun <T> addTicket(x: Int, z: Int, type: TicketType<T>, level: Int, key: T, onLoad: () -> Unit) {
         if (type === TicketTypes.PLAYER) return

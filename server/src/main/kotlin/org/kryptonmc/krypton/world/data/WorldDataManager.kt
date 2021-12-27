@@ -22,48 +22,59 @@ import ca.spottedleaf.dataconverter.minecraft.MCDataConverter
 import ca.spottedleaf.dataconverter.minecraft.datatypes.MCTypeRegistry
 import ca.spottedleaf.dataconverter.types.nbt.NBTMapType
 import org.kryptonmc.krypton.KryptonPlatform
-import org.kryptonmc.krypton.util.createTempFile
 import org.kryptonmc.krypton.util.logger
-import org.kryptonmc.krypton.util.tryCreateDirectories
 import org.kryptonmc.krypton.world.DataPackConfig
 import org.kryptonmc.krypton.world.generation.WorldGenerationSettings
 import org.kryptonmc.nbt.io.TagCompression
 import org.kryptonmc.nbt.io.TagIO
+import java.nio.file.Files
 import java.nio.file.Path
-import kotlin.io.path.deleteIfExists
-import kotlin.io.path.exists
-import kotlin.io.path.isDirectory
-import kotlin.io.path.moveTo
+import java.nio.file.StandardCopyOption
 
 class WorldDataManager(private val folder: Path, private val useDataConverter: Boolean) {
 
     fun load(name: String, dataPackConfig: DataPackConfig = DataPackConfig.DEFAULT): PrimaryWorldData? {
         val path = folder.resolve(name)
-        if (!path.exists() || !path.isDirectory()) return null
+        if (!Files.exists(path) || !Files.isDirectory(path)) return null
         val levelData = path.resolve("level.dat")
-        if (levelData.exists()) return read(path, levelData, dataPackConfig)
+        if (Files.exists(levelData)) return read(path, levelData, dataPackConfig)
         val oldLevelData = path.resolve("level.dat_old")
-        if (oldLevelData.exists()) return read(path, oldLevelData, dataPackConfig)
+        if (Files.exists(oldLevelData)) return read(path, oldLevelData, dataPackConfig)
         return null
     }
 
     fun save(name: String, data: PrimaryWorldData) {
         try {
             val path = folder.resolve(name)
-            if (!path.exists()) path.tryCreateDirectories()
-            val temp = path.createTempFile("level", ".dat")
+            if (!Files.exists(path)) Files.createDirectories(path)
+
+            val temp = Files.createTempFile(path, "level", ".dat")
             TagIO.write(temp, data.save(), TagCompression.GZIP)
+
             val dataPath = path.resolve("level.dat")
-            if (!dataPath.exists()) {
-                temp.moveTo(dataPath)
+            if (!Files.exists(dataPath)) {
+                Files.move(temp, dataPath, StandardCopyOption.REPLACE_EXISTING)
                 return
             }
-            val oldDataPath = path.resolve("level.dat_old").apply { deleteIfExists() }
-            dataPath.moveTo(oldDataPath)
-            dataPath.deleteIfExists()
-            temp.moveTo(dataPath)
+
+            val oldDataPath = path.resolve("level.dat_old")
+            Files.deleteIfExists(oldDataPath)
+            Files.move(dataPath, oldDataPath, StandardCopyOption.REPLACE_EXISTING)
+            Files.deleteIfExists(dataPath)
+            Files.move(temp, dataPath, StandardCopyOption.REPLACE_EXISTING)
         } catch (exception: Exception) {
             LOGGER.error("Failed to save data for world ${data.name}!", exception)
+        }
+    }
+
+    fun resolve(resource: String): Path {
+        try {
+            val path = folder.resolve(resource)
+            if (!Files.exists(path)) Files.createDirectory(path)
+            return path
+        } catch (exception: Exception) {
+            LOGGER.error("Failed to create necessary directory $resource in world folder!", exception)
+            throw exception
         }
     }
 

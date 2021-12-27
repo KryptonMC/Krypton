@@ -28,6 +28,7 @@ import com.mojang.brigadier.arguments.LongArgumentType
 import com.mojang.brigadier.arguments.StringArgumentType
 import io.netty.buffer.Unpooled
 import org.junit.jupiter.api.BeforeAll
+import org.kryptonmc.krypton.command.argument.ArgumentSerializers
 import org.kryptonmc.krypton.command.argument.serializer.DoubleArgumentSerializer
 import org.kryptonmc.krypton.command.argument.serializer.FlaggedArgumentSerializer
 import org.kryptonmc.krypton.command.argument.serializer.FloatArgumentSerializer
@@ -106,15 +107,20 @@ class ArgumentTests {
         assertEquals(2, buf.readVarInt())
     }
 
+    private class BogusArgumentType : ArgumentType<Nothing?> {
+
+        override fun parse(reader: StringReader?): Nothing? = null
+    }
+
     companion object {
 
         @BeforeAll
         @JvmStatic
-        @Suppress("unused")
         fun `preload needed classes`() {
-            Class.forName("org.kryptonmc.krypton.command.argument.ArgumentSerializers")
+            ArgumentSerializers
         }
 
+        @JvmStatic
         private fun FlaggedArgumentSerializer<*>.checkFlags() {
             assertEquals(0b00000011, createFlags(minimum = true, maximum = true))
             assertEquals(0b00000000, createFlags(minimum = false, maximum = false))
@@ -122,9 +128,4 @@ class ArgumentTests {
             assertEquals(0b00000001, createFlags(minimum = true, maximum = false))
         }
     }
-}
-
-private class BogusArgumentType : ArgumentType<Nothing?> {
-
-    override fun parse(reader: StringReader?): Nothing? = null
 }

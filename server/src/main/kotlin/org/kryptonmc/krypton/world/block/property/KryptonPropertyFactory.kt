@@ -18,6 +18,7 @@
  */
 package org.kryptonmc.krypton.world.block.property
 
+import kotlinx.collections.immutable.toImmutableSet
 import org.kryptonmc.api.block.property.Properties
 import org.kryptonmc.api.block.property.Property
 import org.kryptonmc.api.util.StringSerializable
@@ -28,6 +29,8 @@ object KryptonPropertyFactory : Property.Factory {
     @JvmField
     val PROPERTIES: MutableMap<String, Property<*>> = ConcurrentHashMap()
     // Rewrites from names in the Properties object to names from Mojang
+    // The way this entire thing works is pretty hacky. The reason why we do this in the first place is because ArticData uses Mojang names,
+    // and so we have to map those Mojang names to our names, since Krypton uses some more sensible names in places where they make more sense.
     // TODO: Check on update
     private val NAME_REWRITES = mapOf(
         "HAS_FIRST_BOTTLE" to "HAS_BOTTLE_0",
@@ -65,11 +68,11 @@ object KryptonPropertyFactory : Property.Factory {
 
     override fun forBoolean(name: String): Property<Boolean> = BooleanProperty(name)
 
-    override fun forInt(name: String, values: Set<Int>): Property<Int> = IntProperty(name, values)
+    override fun forInt(name: String, values: Set<Int>): Property<Int> = IntProperty(name, values.toImmutableSet())
 
     override fun <E> forEnum(
         name: String,
         type: Class<E>,
         values: Set<E>
-    ): Property<E> where E : Enum<E>, E : StringSerializable = EnumProperty(name, type, values)
+    ): Property<E> where E : Enum<E>, E : StringSerializable = EnumProperty(name, type, values.toImmutableSet())
 }

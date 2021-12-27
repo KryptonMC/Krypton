@@ -18,8 +18,10 @@
  */
 package org.kryptonmc.krypton.world.fluid
 
-import com.google.common.collect.ImmutableMap
-import com.google.common.collect.ImmutableSet
+import kotlinx.collections.immutable.ImmutableSet
+import kotlinx.collections.immutable.PersistentMap
+import kotlinx.collections.immutable.toImmutableSet
+import kotlinx.collections.immutable.toPersistentHashMap
 import net.kyori.adventure.key.Key
 import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.block.Blocks
@@ -42,19 +44,19 @@ data class KryptonFluid(
     override val height: Float,
     override val level: Int,
     val blockKey: Key,
-    override val availableProperties: Set<Property<*>>,
-    override val properties: Map<String, String>
+    override val availableProperties: ImmutableSet<Property<*>>,
+    override val properties: PersistentMap<String, String>
 ) : KryptonPropertyHolder<Fluid>, Fluid {
 
     override fun key(): Key = key
 
     override fun copy(key: String, value: String): Fluid {
-        val newProperties = properties + (key to value)
+        val newProperties = properties.put(key, value)
         return requireNotNull(FluidLoader.properties(key().asString(), newProperties)) { "Invalid property $key:$value for block ${key()}" }
     }
 
     override fun copy(newValues: Map<String, String>): Fluid {
-        val newProperties = properties + newValues
+        val newProperties = properties.putAll(newValues)
         return requireNotNull(FluidLoader.properties(key().asString(), newProperties)) { "Invalid properties $newValues for block ${key()}!" }
     }
 
@@ -115,8 +117,8 @@ data class KryptonFluid(
             height,
             level,
             block ?: AIR_KEY,
-            ImmutableSet.copyOf(availableProperties),
-            ImmutableMap.copyOf(properties)
+            availableProperties.toImmutableSet(),
+            properties.toPersistentHashMap()
         )
     }
 

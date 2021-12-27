@@ -18,8 +18,10 @@
  */
 package org.kryptonmc.krypton.world.block
 
-import com.google.common.collect.ImmutableMap
-import com.google.common.collect.ImmutableSet
+import kotlinx.collections.immutable.ImmutableSet
+import kotlinx.collections.immutable.PersistentMap
+import kotlinx.collections.immutable.toImmutableSet
+import kotlinx.collections.immutable.toPersistentHashMap
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.TranslatableComponent
@@ -76,17 +78,17 @@ data class KryptonBlock(
     override val pushReaction: PushReaction,
     val itemKey: Key?,
     val fluidKey: Key,
-    override val availableProperties: Set<Property<*>>,
-    override val properties: Map<String, String>
+    override val availableProperties: ImmutableSet<Property<*>>,
+    override val properties: PersistentMap<String, String>
 ) : KryptonPropertyHolder<Block>, Block {
 
     override fun copy(key: String, value: String): Block {
-        val newProperties = properties + (key to value)
+        val newProperties = properties.put(key, value)
         return requireNotNull(BlockLoader.properties(key().asString(), newProperties)) { "Invalid property $key:$value for block ${key()}!" }
     }
 
     override fun copy(newValues: Map<String, String>): KryptonBlock {
-        val newProperties = properties + newValues
+        val newProperties = properties.putAll(newValues)
         return requireNotNull(BlockLoader.properties(key().asString(), newProperties)) { "Invalid properties $newValues for block ${key()}!" }
     }
 
@@ -286,8 +288,8 @@ data class KryptonBlock(
             pushReaction,
             item,
             fluid ?: EMPTY_KEY,
-            ImmutableSet.copyOf(availableProperties),
-            ImmutableMap.copyOf(properties)
+            availableProperties.toImmutableSet(),
+            properties.toPersistentHashMap()
         )
     }
 

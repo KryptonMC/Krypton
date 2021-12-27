@@ -23,10 +23,11 @@ import org.kryptonmc.krypton.entity.KryptonLivingEntity
 import org.kryptonmc.krypton.registry.InternalRegistries
 import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.compound
+import java.util.concurrent.ConcurrentHashMap
 
 class Brain<E : KryptonLivingEntity> {
 
-    private val memories = mutableMapOf<MemoryKey<*>, Memory<*>?>()
+    private val memories = ConcurrentHashMap<MemoryKey<*>, Memory<*>?>()
 
     operator fun contains(key: MemoryKey<*>): Boolean = memories.containsKey(key)
 

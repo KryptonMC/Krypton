@@ -17,7 +17,7 @@ import java.util.UUID
 public interface ProfileCache : Iterable<GameProfile> {
 
     /**
-     * All the currently cached profiles.
+     * An immutable view of the currently cached profiles.
      */
     @get:JvmName("profiles")
     public val profiles: Set<GameProfile>

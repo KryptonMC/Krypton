@@ -19,18 +19,20 @@
 package org.kryptonmc.krypton.inventory
 
 import net.kyori.adventure.key.Key
+import net.kyori.adventure.text.Component
 import org.kryptonmc.api.inventory.InventoryType
 
 @JvmRecord
 data class KryptonInventoryType(
     private val key: Key,
-    override val size: Int
+    override val size: Int,
+    override val defaultTitle: Component
 ) : InventoryType {
 
     override fun key(): Key = key
 
     object Factory : InventoryType.Factory {
 
-        override fun of(key: Key, size: Int): InventoryType = KryptonInventoryType(key, size)
+        override fun of(key: Key, size: Int, defaultTitle: Component): InventoryType = KryptonInventoryType(key, size, defaultTitle)
     }
 }

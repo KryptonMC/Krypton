@@ -20,8 +20,6 @@ package org.kryptonmc.krypton.entity
 
 import ca.spottedleaf.dataconverter.minecraft.MCDataConverter
 import ca.spottedleaf.dataconverter.minecraft.datatypes.MCTypeRegistry
-import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
-import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap
 import net.kyori.adventure.key.InvalidKeyException
 import net.kyori.adventure.key.Key
 import org.kryptonmc.api.event.entity.EntityRemoveEvent
@@ -41,14 +39,17 @@ import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.IntTag
 import org.kryptonmc.nbt.MutableListTag
 import org.kryptonmc.nbt.compound
+import space.vectrix.flare.fastutil.Int2ObjectSyncMap
+import space.vectrix.flare.fastutil.Long2ObjectSyncMap
 import java.util.UUID
+import java.util.concurrent.ConcurrentHashMap
 import java.util.function.LongFunction
 
 class EntityManager(val world: KryptonWorld) : AutoCloseable {
 
-    private val byId = Int2ObjectOpenHashMap<KryptonEntity>()
-    private val byUUID = hashMapOf<UUID, KryptonEntity>()
-    private val byChunk = Long2ObjectOpenHashMap<MutableSet<KryptonEntity>>()
+    private val byId = Int2ObjectSyncMap.hashmap<KryptonEntity>()
+    private val byUUID = ConcurrentHashMap<UUID, KryptonEntity>()
+    private val byChunk = Long2ObjectSyncMap.hashmap<MutableSet<KryptonEntity>>()
     private val regionFileManager = RegionFileManager(world.folder.resolve("entities"), world.server.config.advanced.synchronizeChunkWrites)
     val entities: MutableCollection<KryptonEntity>
         get() = byId.values
@@ -59,7 +60,7 @@ class EntityManager(val world: KryptonWorld) : AutoCloseable {
 
     operator fun get(chunk: KryptonChunk): Set<KryptonEntity> = byChunk.computeIfAbsent(
         ChunkPosition.toLong(chunk.position.x, chunk.position.z),
-        LongFunction { mutableSetOf() }
+        LongFunction { ConcurrentHashMap.newKeySet() }
     )
 
     fun spawn(entity: KryptonEntity) {
@@ -79,7 +80,7 @@ class EntityManager(val world: KryptonWorld) : AutoCloseable {
             val chunk = world.getChunk(entity.location.floorX(), entity.location.floorY(), entity.location.floorZ()) ?: return@thenAccept
             byId[entity.id] = entity
             byUUID[entity.uuid] = entity
-            byChunk.computeIfAbsent(chunk.position.toLong(), LongFunction { mutableSetOf() }).add(entity)
+            byChunk.computeIfAbsent(chunk.position.toLong(), LongFunction { ConcurrentHashMap.newKeySet() }).add(entity)
         }
     }
 
@@ -99,7 +100,7 @@ class EntityManager(val world: KryptonWorld) : AutoCloseable {
         val chunk = world.getChunk(player.location.floorX(), player.location.floorY(), player.location.floorZ()) ?: return
         byId[player.id] = player
         byUUID[player.uuid] = player
-        byChunk.computeIfAbsent(chunk.position.toLong(), LongFunction { mutableSetOf() }).add(player)
+        byChunk.computeIfAbsent(chunk.position.toLong(), LongFunction { ConcurrentHashMap.newKeySet() }).add(player)
     }
 
     fun remove(entity: KryptonEntity) {

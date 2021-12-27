@@ -11,10 +11,11 @@ package org.kryptonmc.api.inventory
 import org.kryptonmc.api.item.ItemStack
 
 /**
- * Represents an inventory that holds [ItemStack]s.
+ * An inventory that contains items.
  *
- * All get operations in [Inventory] and **all of its subtypes** will return
- * [ItemStack.empty] to represent the absence of a value, rather than null.
+ * The absence of a value in an inventory will always be represented by
+ * [ItemStack.empty], not null. This includes the default values in lists of
+ * items, such as [items].
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
 public interface Inventory : Iterable<ItemStack> {
@@ -24,12 +25,6 @@ public interface Inventory : Iterable<ItemStack> {
      */
     @get:JvmName("size")
     public val size: Int
-
-    /**
-     * The holder that owns this inventory.
-     */
-    @get:JvmName("owner")
-    public val owner: InventoryHolder
 
     /**
      * The type of this inventory.
@@ -55,31 +50,10 @@ public interface Inventory : Iterable<ItemStack> {
     public operator fun get(index: Int): ItemStack
 
     /**
-     * Puts the specified item in the first available empty slot in this
-     * inventory, or does nothing if the inventory is full.
-     *
-     * @param item the item to add
-     */
-    public fun add(item: ItemStack)
-
-    /**
-     * Removes the specified [item] from the array, or does nothing if there
-     * isn't an element that matches this [item].
-     *
-     * @param item the item to remove
-     */
-    public fun remove(item: ItemStack)
-
-    /**
      * If this inventory contains the specified [item].
      *
      * @param item the item
      * @return true if the [item] is in this inventory, false otherwise
      */
     public operator fun contains(item: ItemStack): Boolean
-
-    /**
-     * Clears this inventory.
-     */
-    public fun clear()
 }

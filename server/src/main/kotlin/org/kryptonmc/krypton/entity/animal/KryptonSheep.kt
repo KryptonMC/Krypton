@@ -21,7 +21,7 @@ package org.kryptonmc.krypton.entity.animal
 import org.kryptonmc.api.entity.EntityTypes
 import org.kryptonmc.api.entity.animal.Sheep
 import org.kryptonmc.api.entity.attribute.AttributeTypes
-import org.kryptonmc.api.item.meta.DyeColor
+import org.kryptonmc.api.item.data.DyeColor
 import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.world.KryptonWorld

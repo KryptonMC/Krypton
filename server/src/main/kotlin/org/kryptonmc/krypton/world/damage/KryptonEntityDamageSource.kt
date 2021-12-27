@@ -19,14 +19,13 @@
 package org.kryptonmc.krypton.world.damage
 
 import net.kyori.adventure.text.Component
+import org.kryptonmc.api.entity.Hand
 import org.kryptonmc.api.entity.LivingEntity
 import org.kryptonmc.api.entity.player.Player
-import org.kryptonmc.api.item.meta.MetaKeys
 import org.kryptonmc.api.world.damage.EntityDamageSource
 import org.kryptonmc.api.world.damage.type.DamageType
 import org.kryptonmc.krypton.entity.KryptonEntity
 import org.kryptonmc.krypton.entity.KryptonLivingEntity
-import org.kryptonmc.krypton.item.EmptyItemStack
 import org.spongepowered.math.vector.Vector3d
 
 open class KryptonEntityDamageSource(
@@ -42,8 +41,8 @@ open class KryptonEntityDamageSource(
         get() = entity is LivingEntity && entity !is Player
 
     override fun formatDeathMessage(target: KryptonLivingEntity): Component {
-        val heldItem = EmptyItemStack // TODO: When living entities have hand items, use them here
-        val itemName = heldItem.meta[MetaKeys.NAME]
+        val heldItem = target.heldItem(Hand.MAIN)
+        val itemName = heldItem.meta.name
         if (!heldItem.isEmpty() && itemName != null) {
             return Component.translatable("${type.translationKey}.item", target.displayName, entity.displayName, itemName)
         }

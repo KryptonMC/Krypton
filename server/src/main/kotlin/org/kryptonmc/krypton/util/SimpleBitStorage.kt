@@ -54,7 +54,7 @@ class SimpleBitStorage(
         }
     }
 
-    constructor(bits: Int, size: Int, ids: IntArray) : this(bits, size) {
+    constructor(bits: Int, size: Int, values: IntArray) : this(bits, size) {
         var cellIndex = 0
 
         var dataIndex = 0
@@ -62,7 +62,7 @@ class SimpleBitStorage(
             var datum = 0L
             for (i in valuesPerLong - 1 downTo 0) {
                 datum = datum shl bits
-                datum = datum or (ids[dataIndex + i].toLong() and mask)
+                datum = datum or (values[dataIndex + i].toLong() and mask)
             }
             data[cellIndex++] = datum
             dataIndex += valuesPerLong
@@ -73,7 +73,7 @@ class SimpleBitStorage(
             var datum = 0L
             for (i in remaining - 1 downTo 0) {
                 datum = datum shl bits
-                datum = datum or (ids[dataIndex + i].toLong() and mask)
+                datum = datum or (values[dataIndex + i].toLong() and mask)
             }
             data[cellIndex] = datum
         }

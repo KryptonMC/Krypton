@@ -18,8 +18,8 @@
  */
 package org.kryptonmc.krypton.world.block.entity
 
-import com.google.common.collect.ImmutableSet
 import com.google.gson.JsonObject
+import kotlinx.collections.immutable.toImmutableSet
 import net.kyori.adventure.key.Key
 import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.krypton.util.KryptonDataLoader
@@ -37,7 +37,7 @@ object BlockEntityLoader : KryptonDataLoader("block_entities") {
             }
 
             if (Registries.BLOCK_ENTITY_TYPE.contains(namespacedKey)) return@forEach
-            Registries.BLOCK_ENTITY_TYPE.register(namespacedKey, KryptonBlockEntityType(namespacedKey, ImmutableSet.copyOf(blocks)))
+            Registries.BLOCK_ENTITY_TYPE.register(namespacedKey, KryptonBlockEntityType(namespacedKey, blocks.toImmutableSet()))
         }
     }
 }

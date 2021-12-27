@@ -18,7 +18,6 @@
  */
 package org.kryptonmc.krypton.world
 
-import net.kyori.adventure.audience.Audience
 import net.kyori.adventure.sound.Sound
 import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.block.Blocks
@@ -35,6 +34,7 @@ import org.kryptonmc.api.world.World
 import org.kryptonmc.api.world.biome.Biome
 import org.kryptonmc.api.world.rule.GameRules
 import org.kryptonmc.krypton.KryptonServer
+import org.kryptonmc.krypton.adventure.PacketGroupingAudience
 import org.kryptonmc.krypton.effect.Effect
 import org.kryptonmc.krypton.entity.EntityFactory
 import org.kryptonmc.krypton.entity.EntityManager
@@ -75,7 +75,7 @@ class KryptonWorld(
     val isDebug: Boolean,
     override val seed: Long,
     private val tickTime: Boolean
-) : World, WorldAccessor {
+) : World, WorldAccessor, PacketGroupingAudience {
 
     override val world = this
     override val biomeManager = BiomeManager(this, seed)
@@ -111,7 +111,8 @@ class KryptonWorld(
 
     override val chunkManager = ChunkManager(this)
     val playerManager = server.playerManager
-    val players: MutableSet<KryptonPlayer> = ConcurrentHashMap.newKeySet()
+    override val sessionManager = server.sessionManager
+    override val players: MutableSet<KryptonPlayer> = ConcurrentHashMap.newKeySet()
 
     override val height = dimensionType.height
     override val minimumBuildHeight = dimensionType.minimumY
@@ -179,11 +180,11 @@ class KryptonWorld(
         except: KryptonPlayer? = null
     ) {
         val finalVolume = if (volume > 1F) 16.0 * volume else 16.0
-        server.playerManager.broadcast(PacketOutSoundEffect(event, source, x, y, z, volume, pitch), this, x, y, z, finalVolume, except)
+        playerManager.broadcast(PacketOutSoundEffect(event, source, x, y, z, volume, pitch), this, x, y, z, finalVolume, except)
     }
 
     fun playSound(event: SoundEvent, source: Sound.Source, emitter: KryptonEntity, volume: Float, pitch: Float, except: KryptonPlayer? = null) {
-        server.playerManager.broadcast(
+        playerManager.broadcast(
             PacketOutEntitySoundEffect(event, source, emitter.id, volume, pitch),
             this,
             emitter.location.x(),
@@ -198,14 +199,13 @@ class KryptonWorld(
     fun canInteract(player: KryptonPlayer, x: Int, z: Int): Boolean = !server.isProtected(this, x, z, player)
 
     fun broadcastBlockDestroyProgress(sourceId: Int, x: Int, y: Int, z: Int, state: Int) {
-        server.playerManager.players.forEach {
-            if (it == null || it.world !== this || it.id == sourceId) return@forEach
+        val packet = PacketOutBlockBreakAnimation(sourceId, x, y, z, state)
+        sessionManager.sendGrouped(packet) {
+            if (it.world !== this || it.id == sourceId) return@sendGrouped false
             val distanceX = x - it.location.x()
             val distanceY = y - it.location.y()
             val distanceZ = z - it.location.z()
-            if (distanceX * distanceX + distanceY * distanceY + distanceZ * distanceZ < 1024.0) {
-                it.session.send(PacketOutBlockBreakAnimation(sourceId, x, y, z, state))
-            }
+            distanceX * distanceX + distanceY * distanceY + distanceZ * distanceZ < 1024.0
         }
     }
 
@@ -259,7 +259,7 @@ class KryptonWorld(
         if (isDebug) return false
         val chunk = getChunk(x, y, z) ?: return false
         if (!chunk.setBlock(x, y, z, block)) return false
-        playerManager.sendToAll(PacketOutBlockChange(block, x, y, z))
+        sessionManager.sendGrouped(PacketOutBlockChange(block, x, y, z))
         return true
     }
 
@@ -316,17 +316,16 @@ class KryptonWorld(
         }
 
         if (oldRainLevel != rainLevel) {
-            playerManager.sendToAll(PacketOutChangeGameState(GameState.RAIN_LEVEL_CHANGE, rainLevel), this)
+            sessionManager.sendGrouped(PacketOutChangeGameState(GameState.RAIN_LEVEL_CHANGE, rainLevel)) { it.world === this }
         }
         if (oldThunderLevel != thunderLevel) {
-            playerManager.sendToAll(PacketOutChangeGameState(GameState.THUNDER_LEVEL_CHANGE, thunderLevel), this)
+            sessionManager.sendGrouped(PacketOutChangeGameState(GameState.THUNDER_LEVEL_CHANGE, thunderLevel)) { it.world === this }
         }
         if (wasRaining != isRaining) {
-            playerManager.sendToAll(PacketOutChangeGameState(
-                if (wasRaining) GameState.END_RAINING else GameState.BEGIN_RAINING
-            ))
-            playerManager.sendToAll(PacketOutChangeGameState(GameState.RAIN_LEVEL_CHANGE, rainLevel))
-            playerManager.sendToAll(PacketOutChangeGameState(GameState.THUNDER_LEVEL_CHANGE, thunderLevel))
+            val newRainState = if (wasRaining) GameState.END_RAINING else GameState.BEGIN_RAINING
+            sessionManager.sendGrouped(PacketOutChangeGameState(newRainState)) { it.world === this }
+            sessionManager.sendGrouped(PacketOutChangeGameState(GameState.RAIN_LEVEL_CHANGE, rainLevel)) { it.world === this }
+            sessionManager.sendGrouped(PacketOutChangeGameState(GameState.THUNDER_LEVEL_CHANGE, thunderLevel)) { it.world === this }
         }
 
         tickTime()
@@ -348,8 +347,6 @@ class KryptonWorld(
         chunkManager.saveAll(shouldClose)
         if (shouldClose) entityManager.close() else entityManager.flush()
     }
-
-    override fun audiences(): Iterable<Audience> = players
 
     fun getRainLevel(delta: Float): Float = GenericMath.lerp(oldRainLevel, rainLevel, delta)
 

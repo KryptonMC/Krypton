@@ -19,18 +19,21 @@
 package org.kryptonmc.krypton.packet.out.play
 
 import io.netty.buffer.ByteBuf
+import org.kryptonmc.krypton.packet.Packet
+import org.kryptonmc.krypton.packet.out.play.data.LightPacketData
 import org.kryptonmc.krypton.util.writeVarInt
 import org.kryptonmc.krypton.world.chunk.KryptonChunk
 
-class PacketOutUpdateLight(
-    chunk: KryptonChunk,
-    trustEdges: Boolean = true
-) : PacketOutLight(chunk, trustEdges) {
+@JvmRecord
+data class PacketOutUpdateLight(
+    val x: Int,
+    val z: Int,
+    val lightData: LightPacketData
+) : Packet {
 
     override fun write(buf: ByteBuf) {
-        buf.writeVarInt(chunk.position.x)
-        buf.writeVarInt(chunk.position.z)
-
-        super.write(buf)
+        buf.writeVarInt(x)
+        buf.writeVarInt(z)
+        lightData.write(buf)
     }
 }

@@ -26,7 +26,6 @@ import net.kyori.adventure.key.InvalidKeyException
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.event.ClickEvent
-import net.kyori.adventure.text.format.NamedTextColor
 import org.kryptonmc.api.block.Blocks
 import org.kryptonmc.api.entity.Hand
 import org.kryptonmc.api.event.command.CommandExecuteEvent
@@ -40,9 +39,7 @@ import org.kryptonmc.api.event.player.PlaceBlockEvent
 import org.kryptonmc.api.event.player.PluginMessageEvent
 import org.kryptonmc.api.event.player.ResourcePackStatusEvent
 import org.kryptonmc.api.event.player.RotateEvent
-import org.kryptonmc.api.item.meta.MetaKeys
 import org.kryptonmc.api.resource.ResourcePack
-import org.kryptonmc.api.util.Direction
 import org.kryptonmc.api.world.GameMode
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.commands.KryptonPermission
@@ -50,7 +47,6 @@ import org.kryptonmc.krypton.entity.item.KryptonItemEntity
 import org.kryptonmc.krypton.entity.monster.KryptonCreeper
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.inventory.KryptonPlayerInventory
-import org.kryptonmc.krypton.item.KryptonItemStack
 import org.kryptonmc.krypton.item.handler
 import org.kryptonmc.krypton.item.handler.ItemTimedHandler
 import org.kryptonmc.krypton.network.SessionHandler
@@ -78,7 +74,6 @@ import org.kryptonmc.krypton.packet.`in`.play.PacketInSteerVehicle
 import org.kryptonmc.krypton.packet.`in`.play.PacketInTabComplete
 import org.kryptonmc.krypton.packet.out.play.EntityAnimation
 import org.kryptonmc.krypton.packet.out.play.PacketOutAnimation
-import org.kryptonmc.krypton.packet.out.play.PacketOutBlockChange
 import org.kryptonmc.krypton.packet.out.play.PacketOutEntityPosition
 import org.kryptonmc.krypton.packet.out.play.PacketOutEntityPositionAndRotation
 import org.kryptonmc.krypton.packet.out.play.PacketOutEntityRotation
@@ -111,6 +106,7 @@ class PlayHandler(
 ) : PacketHandler {
 
     private val playerManager = server.playerManager
+    private val sessionManager = server.sessionManager
     private var lastKeepAlive = 0L
     private var keepAliveChallenge = 0L
     private var pendingKeepAlive = false
@@ -156,7 +152,7 @@ class PlayHandler(
     }
 
     override fun onDisconnect() {
-        playerManager.invalidateStatus()
+        sessionManager.invalidateStatus()
         playerManager.remove(player)
     }
 
@@ -166,7 +162,7 @@ class PlayHandler(
             Hand.OFF -> EntityAnimation.SWING_OFFHAND
         }
 
-        playerManager.sendToAll(PacketOutAnimation(player.id, animation), player)
+        sessionManager.sendGrouped(PacketOutAnimation(player.id, animation)) { it !== player }
     }
 
     private fun handleChat(packet: PacketInChat) {
@@ -180,11 +176,11 @@ class PlayHandler(
         }
 
         // Fire the chat event
-        server.eventManager.fire(ChatEvent(player, packet.message)).thenAccept {
-            if (!it.result.isAllowed) return@thenAccept
+        server.eventManager.fire(ChatEvent(player, packet.message)).thenAcceptAsync({
+            if (!it.result.isAllowed) return@thenAcceptAsync
             if (it.result.reason != null) {
                 server.sendMessage(player, it.result.reason!!, MessageType.CHAT)
-                return@thenAccept
+                return@thenAcceptAsync
             }
 
             val name = player.profile.name
@@ -197,7 +193,7 @@ class PlayHandler(
                 Component.text(packet.message)
             )
             server.sendMessage(player, message, MessageType.CHAT)
-        }
+        }, session.channel.eventLoop())
     }
 
     private fun handleClientSettings(packet: PacketInClientSettings) {
@@ -212,10 +208,9 @@ class PlayHandler(
     private fun handleCreativeInventoryAction(packet: PacketInCreativeInventoryAction) {
         if (player.gameMode != GameMode.CREATIVE) return
         val item = packet.clickedItem
-        val inValidRange = packet.slot in 1 until KryptonPlayerInventory.SIZE
-        val hasDamage = MetaKeys.DAMAGE in item.meta && item.meta[MetaKeys.DAMAGE]!! >= 0
-        val isValid = item.isEmpty() || (hasDamage && item.amount <= 64 && !item.isEmpty())
-        if (inValidRange && isValid) player.inventory[packet.slot.toInt()] = packet.clickedItem
+        val inValidRange = packet.slot >= 1 && packet.slot < KryptonPlayerInventory.SIZE
+        val isValid = item.isEmpty() || item.meta.damage >= 0 && item.amount <= 64 && !item.isEmpty()
+        if (inValidRange && isValid) player.inventory[packet.slot] = packet.clickedItem
     }
 
     private fun handleEntityAction(packet: PacketInEntityAction) {
@@ -249,7 +244,7 @@ class PlayHandler(
             val latency = (System.currentTimeMillis() - lastKeepAlive).toInt()
             session.latency = (session.latency * 3 + latency) / 3
             pendingKeepAlive = false
-            playerManager.sendToAll(PacketOutPlayerInfo(PacketOutPlayerInfo.Action.UPDATE_LATENCY, player))
+            sessionManager.sendGrouped(PacketOutPlayerInfo(PacketOutPlayerInfo.Action.UPDATE_LATENCY, player))
             return
         }
         session.disconnect(Component.translatable("disconnect.timeout"))
@@ -346,7 +341,7 @@ class PlayHandler(
             Positioning.delta(newLocation.z(), oldLocation.z()),
             packet.onGround
         )
-        player.viewers.forEach { it.session.send(newPacket) }
+        sessionManager.sendGrouped(player.viewers, newPacket)
         onMove(newLocation, oldLocation)
     }
 
@@ -357,13 +352,8 @@ class PlayHandler(
         player.rotation = newRotation
         server.eventManager.fireAndForget(RotateEvent(player, oldRotation, newRotation))
 
-        playerManager.sendToAll(PacketOutEntityRotation(
-            player.id,
-            packet.yaw,
-            packet.pitch,
-            packet.onGround
-        ), player)
-        playerManager.sendToAll(PacketOutHeadLook(player.id, packet.yaw), player)
+        sessionManager.sendGrouped(PacketOutEntityRotation(player.id, packet.yaw, packet.pitch, packet.onGround)) { it !== player }
+        sessionManager.sendGrouped(PacketOutHeadLook(player.id, packet.yaw)) { it !== player }
     }
 
     private fun handlePositionAndRotationUpdate(packet: PacketInPlayerPositionAndRotation) {
@@ -379,16 +369,15 @@ class PlayHandler(
         server.eventManager.fireAndForget(RotateEvent(player, oldRotation, newRotation))
 
         // TODO: Look in to optimising this (rotation and head look updating) as much as we possibly can
-        playerManager.sendToAll(PacketOutEntityPositionAndRotation(
-            player.id,
-            Positioning.delta(newLocation.x(), oldLocation.x()),
-            Positioning.delta(newLocation.y(), oldLocation.y()),
-            Positioning.delta(newLocation.z(), oldLocation.z()),
-            newRotation.x(),
-            newRotation.y(),
-            packet.onGround
-        ), player)
-        playerManager.sendToAll(PacketOutHeadLook(player.id, newRotation.x()), player)
+        val deltaX = Positioning.delta(newLocation.x(), oldLocation.x())
+        val deltaY = Positioning.delta(newLocation.y(), oldLocation.y())
+        val deltaZ = Positioning.delta(newLocation.z(), oldLocation.z())
+        val newYaw = newRotation.x()
+        val newPitch = newRotation.y()
+        sessionManager.sendGrouped(PacketOutEntityPositionAndRotation(player.id, deltaX, deltaY, deltaZ, newYaw, newPitch, packet.onGround)) {
+            it !== player
+        }
+        sessionManager.sendGrouped(PacketOutHeadLook(player.id, newRotation.x())) { it !== player }
         onMove(newLocation, oldLocation)
     }
 
@@ -421,12 +410,12 @@ class PlayHandler(
     private fun handleEntityNBTQuery(packet: PacketInEntityNBTQuery) {
         if (!player.hasPermission(KryptonPermission.ENTITY_QUERY.node)) return
         val entity = player.world.entityManager[packet.entityId] ?: return
-        player.session.send(PacketOutNBTQueryResponse(packet.transactionId, entity.saveWithPassengers().build()))
+        session.send(PacketOutNBTQueryResponse(packet.transactionId, entity.saveWithPassengers().build()))
     }
 
     private fun handleResourcePackStatus(packet: PacketInResourcePackStatus) {
         if (packet.status == ResourcePack.Status.DECLINED && server.config.server.resourcePack.forced) {
-            player.session.disconnect(Component.translatable("multiplayer.requiredTexturePrompt.disconnect"))
+            session.disconnect(Component.translatable("multiplayer.requiredTexturePrompt.disconnect"))
             return
         }
         server.eventManager.fireAndForget(ResourcePackStatusEvent(player, packet.status))

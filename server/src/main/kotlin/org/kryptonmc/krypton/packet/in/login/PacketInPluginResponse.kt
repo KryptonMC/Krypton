@@ -38,4 +38,17 @@ data class PacketInPluginResponse(
         buf.writeBoolean(data != null)
         if (data != null) buf.writeVarIntByteArray(data)
     }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+        return messageId == (other as PacketInPluginResponse).messageId && data.contentEquals(other.data)
+    }
+
+    override fun hashCode(): Int {
+        var result = 1
+        result = 31 * result + messageId.hashCode()
+        result = 31 * result + data.contentHashCode()
+        return result
+    }
 }

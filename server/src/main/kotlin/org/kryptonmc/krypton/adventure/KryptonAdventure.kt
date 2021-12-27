@@ -24,14 +24,12 @@ import net.kyori.adventure.text.TranslatableComponent
 import net.kyori.adventure.text.flattener.ComponentFlattener
 import net.kyori.adventure.text.format.NamedTextColor
 import org.kryptonmc.api.adventure.complexMapper
-import org.kryptonmc.api.adventure.toJsonString
 import org.kryptonmc.api.item.ItemTypes
+import org.kryptonmc.api.item.meta
+import org.kryptonmc.api.item.meta.WrittenBookMeta
 import org.kryptonmc.krypton.item.KryptonItemStack
-import org.kryptonmc.krypton.item.meta.KryptonMetaHolder
+import org.kryptonmc.krypton.item.meta.KryptonWrittenBookMeta
 import org.kryptonmc.krypton.util.TranslationBootstrap
-import org.kryptonmc.nbt.MutableListTag
-import org.kryptonmc.nbt.StringTag
-import org.kryptonmc.nbt.mutableCompound
 import java.util.Locale
 
 /**
@@ -43,7 +41,8 @@ object KryptonAdventure {
      * This flattener adds the use of the official Minecraft translations from en_us.json
      * to render translatable components when they are flattened.
      */
-    val FLATTENER = ComponentFlattener.basic().toBuilder()
+    @JvmField
+    val FLATTENER: ComponentFlattener = ComponentFlattener.basic().toBuilder()
         .complexMapper<TranslatableComponent> { translatable, consumer ->
             consumer(TranslationBootstrap.RENDERER.render(translatable, Locale.ENGLISH))
         }
@@ -72,11 +71,15 @@ object KryptonAdventure {
 
     @JvmStatic
     fun toItemStack(book: Book): KryptonItemStack {
-        val tag = mutableCompound {
-            putString("title", book.title().toJsonString())
-            putString("author", book.author().toJsonString())
-            put("pages", MutableListTag(book.pages().mapTo(mutableListOf()) { StringTag.of(it.toJsonString()) }, StringTag.ID))
-        }
-        return KryptonItemStack(ItemTypes.WRITTEN_BOOK, 1, KryptonMetaHolder(tag))
+        if (book is KryptonWrittenBookMeta) return KryptonItemStack(ItemTypes.WRITTEN_BOOK, 1, book)
+        return KryptonItemStack.Builder()
+            .type(ItemTypes.WRITTEN_BOOK)
+            .amount(1)
+            .meta<WrittenBookMeta.Builder, WrittenBookMeta> {
+                title(book.title())
+                author(book.author())
+                pages(book.pages())
+            }
+            .build() as KryptonItemStack
     }
 }

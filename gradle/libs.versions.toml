@@ -5,9 +5,10 @@ metadata.format.version = "1.1"
 # API
 adventure = "4.9.3"
 configurate = "4.1.2"
-log4j = "2.15.0"
-kotlin = "1.6.0"
+log4j = "2.17.0"
+kotlin = "1.6.10"
 coroutines = "1.5.2"
+kotlinCollections = "0.3.4"
 guava = "31.0.1-jre"
 gson = "2.8.9"
 gsonKt = "1.3"
@@ -22,18 +23,18 @@ sparkApi = "0.1-SNAPSHOT"
 kotlinpoet = "1.10.2"
 
 # Server
-netty = "4.1.70.Final"
+netty = "4.1.72.Final"
 velocity = "3.0.1"
 event = "4.0.0-SNAPSHOT"
 asm = "9.2"
 tca = "1.3.0"
 jline = "3.21.0"
 dataConverter = "1.0.0-SNAPSHOT"
-dfu = "4.0"
-nbt = "2.5"
+nbt = "2.5.1"
 articData = "1.18.1"
-caffeine = "3.0.4"
+caffeine = "3.0.5"
 fastutil = "8.5.6"
+flare = "2.0.0"
 clikt = "3.3.0"
 bstats = "2.2.1"
 spark = "1.6-SNAPSHOT"
@@ -42,7 +43,8 @@ spark = "1.6-SNAPSHOT"
 junit-jupiter = "5.8.2"
 junit-platform = "1.8.2"
 mockk = "1.12.1"
-bytebuddy = "1.12.2"
+bytebuddy = "1.12.5"
+jimfs = "1.2"
 
 [libraries]
 
@@ -53,6 +55,7 @@ kotlin-stdlib-jdk8 = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib-jdk
 kotlin-stdlib-jdk7 = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib-jdk7", version.ref = "kotlin" }
 kotlin-test-junit = { group = "org.jetbrains.kotlin", name = "kotlin-test-junit5", version.ref = "kotlin" }
 kotlinx-coroutines = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "coroutines" }
+kotlinx-collections-immutable = { group = "org.jetbrains.kotlinx", name = "kotlinx-collections-immutable", version.ref = "kotlinCollections" }
 
 # Adventure
 adventure-api = { group = "net.kyori", name = "adventure-api", version.ref = "adventure" }
@@ -92,7 +95,6 @@ clikt = { group = "com.github.ajalt.clikt", name = "clikt", version.ref = "clikt
 
 # Data
 dataConverter = { group = "ca.spottedleaf", name = "dataconverter", version.ref = "dataConverter" }
-dfu = { group = "org.kryptonmc", name = "datafixerupper", version.ref = "dfu" }
 articData = { group = "de.articdive", name = "articdata", version.ref = "articData" }
 nbt = { group = "org.kryptonmc", name = "nbt-common-jvm", version.ref = "nbt" }
 
@@ -107,12 +109,19 @@ spark-common = { group = "me.lucko", name = "spark-common", version.ref = "spark
 # Generation
 kotlinpoet = { group = "com.squareup", name = "kotlinpoet", version.ref = "kotlinpoet" }
 
+# Collections and caching
+fastutil = { group = "it.unimi.dsi", name = "fastutil", version.ref = "fastutil" }
+flare = { group = "space.vectrix.flare", name = "flare", version.ref = "flare" }
+flare-fastutil = { group = "space.vectrix.flare", name = "flare-fastutil", version.ref = "flare" }
+caffeine = { group = "com.github.ben-manes.caffeine", name = "caffeine", version.ref = "caffeine" }
+
 # Test
 junit-api = { group = "org.junit.jupiter", name = "junit-jupiter-api", version.ref = "junit-jupiter" }
 junit-engine = { group = "org.junit.jupiter", name = "junit-jupiter-engine", version.ref = "junit-jupiter" }
 junit-platform-runner = { group = "org.junit.platform", name = "junit-platform-runner", version.ref = "junit-platform" }
 mockk = { group = "io.mockk", name = "mockk", version.ref = "mockk" }
 bytebuddy = { group = "net.bytebuddy", name = "byte-buddy", version.ref = "bytebuddy" }
+jimfs = { group = "com.google.jimfs", name = "jimfs", version.ref = "jimfs" }
 
 # Miscellaneous
 guava = { group = "com.google.guava", name = "guava", version.ref = "guava" }
@@ -122,8 +131,6 @@ gsonKt = { group = "me.bardy", name = "gson-kt", version.ref = "gsonKt" }
 guice = { group = "com.google.inject", name = "guice", version.ref = "guice" }
 kotlinGuice = { group = "dev.misfitlabs.kotlinguice4", name = "kotlin-guice", version.ref = "kotlinGuice" }
 math = { group = "org.spongepowered", name = "math", version.ref = "math" }
-caffeine = { group = "com.github.ben-manes.caffeine", name = "caffeine", version.ref = "caffeine" }
-fastutil = { group = "it.unimi.dsi", name = "fastutil", version.ref = "fastutil" }
 bstats = { group = "org.bstats", name = "bstats-base", version.ref = "bstats" }
 
 [bundles]
@@ -139,3 +146,4 @@ adventure = [
 configurate = ["configurate-core", "configurate-gson", "configurate-hocon", "configurate-yaml", "configurate-extra-kotlin", "configurate-extra-guice"]
 netty = ["netty-buffer", "netty-handler", "netty-transport"]
 junit = ["junit-api", "junit-engine", "kotlin-test-junit"]
+kotlin = ["kotlin-stdlib", "kotlin-stdlib-jdk7", "kotlin-stdlib-jdk8", "kotlin-reflect"]

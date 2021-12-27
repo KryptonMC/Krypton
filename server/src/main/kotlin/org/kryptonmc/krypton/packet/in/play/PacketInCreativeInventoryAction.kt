@@ -26,14 +26,14 @@ import org.kryptonmc.krypton.util.writeItem
 
 @JvmRecord
 data class PacketInCreativeInventoryAction(
-    val slot: Short,
+    val slot: Int,
     val clickedItem: KryptonItemStack
 ) : Packet {
 
-    constructor(buf: ByteBuf) : this(buf.readShort(), buf.readItem())
+    constructor(buf: ByteBuf) : this(buf.readShort().toInt(), buf.readItem())
 
     override fun write(buf: ByteBuf) {
-        buf.writeShort(slot.toInt())
+        buf.writeShort(slot)
         buf.writeItem(clickedItem)
     }
 }

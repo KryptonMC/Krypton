@@ -18,6 +18,7 @@
  */
 package org.kryptonmc.krypton.plugin.server
 
+import kotlinx.collections.immutable.persistentSetOf
 import org.kryptonmc.api.plugin.PluginDependency
 import org.kryptonmc.api.plugin.PluginDescription
 import org.kryptonmc.krypton.KryptonPlatform
@@ -32,7 +33,7 @@ object ServerPluginDescription : PluginDescription {
     override val name: String = "Krypton"
     override val version: String = KryptonPlatform.version
     override val description: String = "A plugin representing the server."
-    override val authors: Set<String> = setOf("KryptonMC")
+    override val authors: Set<String> = persistentSetOf("KryptonMC")
     override val dependencies: Set<PluginDependency> = emptySet()
     override val source: Path = Path.of("")
 }

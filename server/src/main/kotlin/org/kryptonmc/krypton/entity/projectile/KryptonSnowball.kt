@@ -24,7 +24,10 @@ import org.kryptonmc.api.item.ItemType
 import org.kryptonmc.api.item.ItemTypes
 import org.kryptonmc.krypton.world.KryptonWorld
 
-class KryptonSnowball(world: KryptonWorld) : KryptonThrowableProjectile(world, EntityTypes.SNOWBALL), Snowball {
+class KryptonSnowball(world: KryptonWorld) : KryptonThrowableProjectile(world, EntityTypes.SNOWBALL, DEFAULT_ITEM), Snowball {
 
-    override val defaultItem: ItemType = ItemTypes.SNOWBALL
+    companion object {
+
+        private val DEFAULT_ITEM = createDefaultItem(ItemTypes.SNOWBALL)
+    }
 }

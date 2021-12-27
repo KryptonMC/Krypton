@@ -132,9 +132,9 @@ object PacketRegistry {
     private val byEncoded = Int2ObjectOpenHashMap<(ByteBuf) -> Packet>()
     private val toId = Object2IntOpenCustomHashMap<Class<*>>(IdentityHashStrategy).apply { defaultReturnValue(-1) }
 
-    operator fun get(clazz: Class<*>) = toId.getInt(clazz)
+    fun lookup(clazz: Class<*>): Int = toId.getInt(clazz)
 
-    fun get(state: PacketState, id: Int, buf: ByteBuf) = byEncoded[encode(state, id)]?.invoke(buf)
+    fun lookup(state: PacketState, id: Int, buf: ByteBuf): Packet? = byEncoded[encode(state, id)]?.invoke(buf)
 
     fun bootstrap() {
         // Handshake

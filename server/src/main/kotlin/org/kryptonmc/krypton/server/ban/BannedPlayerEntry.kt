@@ -20,6 +20,7 @@ package org.kryptonmc.krypton.server.ban
 
 import com.google.gson.stream.JsonReader
 import com.google.gson.stream.JsonWriter
+import kotlinx.collections.immutable.persistentListOf
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer
 import org.kryptonmc.api.auth.GameProfile
@@ -81,7 +82,7 @@ class BannedPlayerEntry(
 
             reader.endObject()
             if (name == null || uuid == null) return null
-            return BannedPlayerEntry(KryptonGameProfile(name, uuid, emptyList()), creationDate, source, expires, reason)
+            return BannedPlayerEntry(KryptonGameProfile(name, uuid, persistentListOf()), creationDate, source, expires, reason)
         }
     }
 }

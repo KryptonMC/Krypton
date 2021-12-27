@@ -361,9 +361,9 @@ abstract class KryptonEntity(
         updateWater()
         updateUnderFluid()
         updateSwimming()
-        if (data.isDirty) viewers.forEach { it.session.send(PacketOutMetadata(id, data.dirty)) }
+        if (data.isDirty) server.sessionManager.sendGrouped(viewers, PacketOutMetadata(id, data.dirty))
         if (wasDamaged) {
-            viewers.forEach { it.session.send(PacketOutEntityVelocity(this)) }
+            server.sessionManager.sendGrouped(viewers, PacketOutEntityVelocity(this))
             wasDamaged = false
         }
     }
@@ -441,7 +441,7 @@ abstract class KryptonEntity(
                 offset = offset.mul(FLUID_VECTOR_MAGIC)
             }
             this.velocity = this.velocity.add(offset)
-            viewers.forEach { it.session.send(PacketOutEntityVelocity(this)) }
+            server.sessionManager.sendGrouped(viewers, PacketOutEntityVelocity(this))
         }
 
         fluidHeights[tag] = amount
@@ -535,7 +535,7 @@ abstract class KryptonEntity(
         if (passengers.contains(entity) || entity.passengers.contains(this)) return
         entity.vehicle = this
         passengers.add(entity)
-        world.playerManager.sendToAll(PacketOutSetPassengers(this))
+        server.sessionManager.sendGrouped(PacketOutSetPassengers(this))
     }
 
     override fun removePassenger(entity: Entity) {
@@ -543,7 +543,7 @@ abstract class KryptonEntity(
         if (!passengers.contains(entity)) return
         entity.vehicle = null
         passengers.remove(entity)
-        world.playerManager.sendToAll(PacketOutSetPassengers(this))
+        server.sessionManager.sendGrouped(PacketOutSetPassengers(this))
     }
 
     override fun ejectPassengers() {

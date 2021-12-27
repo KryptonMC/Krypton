@@ -33,9 +33,9 @@ import org.kryptonmc.krypton.plugin.loader.LoadedPluginDescription
 import org.kryptonmc.krypton.plugin.loader.PluginLoader
 import org.kryptonmc.krypton.util.forEachDirectoryEntry
 import org.kryptonmc.krypton.util.logger
+import java.nio.file.Files
 import java.nio.file.Path
 import java.util.IdentityHashMap
-import kotlin.io.path.isRegularFile
 
 @Suppress("INAPPLICABLE_JVM_NAME")
 object KryptonPluginManager : PluginManager {
@@ -49,7 +49,7 @@ object KryptonPluginManager : PluginManager {
     fun loadPlugins(directory: Path, server: KryptonServer) {
         val found = mutableListOf<PluginDescription>()
 
-        directory.forEachDirectoryEntry({ it.isRegularFile() && it.toString().endsWith(".jar") }, {
+        directory.forEachDirectoryEntry({ Files.isRegularFile(it) && it.toString().endsWith(".jar") }, {
             try {
                 val description = PluginLoader.loadDescription(it)
                 if (description.id == "spark") {

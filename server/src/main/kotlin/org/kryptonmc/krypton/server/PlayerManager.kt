@@ -18,8 +18,6 @@
  */
 package org.kryptonmc.krypton.server
 
-import net.kyori.adventure.audience.Audience
-import net.kyori.adventure.audience.ForwardingAudience
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
@@ -32,7 +30,6 @@ import org.kryptonmc.api.world.rule.GameRules
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.network.SessionHandler
-import org.kryptonmc.krypton.network.handlers.PlayHandler
 import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.packet.out.play.GameState
 import org.kryptonmc.krypton.packet.out.play.PacketOutAbilities
@@ -53,29 +50,31 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutTeam
 import org.kryptonmc.krypton.packet.out.play.PacketOutTimeUpdate
 import org.kryptonmc.krypton.packet.out.play.PacketOutUnlockRecipes
 import org.kryptonmc.krypton.packet.out.play.PacketOutWindowItems
-import org.kryptonmc.krypton.packet.out.status.ServerStatus
 import org.kryptonmc.krypton.server.ban.BannedIpList
 import org.kryptonmc.krypton.server.ban.BannedPlayerList
 import org.kryptonmc.krypton.server.whitelist.Whitelist
 import org.kryptonmc.krypton.server.whitelist.WhitelistedIps
-import org.kryptonmc.krypton.util.Maths
+import org.kryptonmc.krypton.util.daemon
 import org.kryptonmc.krypton.util.logger
+import org.kryptonmc.krypton.util.threadFactory
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.krypton.world.data.PlayerDataManager
 import org.kryptonmc.krypton.world.dimension.parseDimension
 import org.kryptonmc.krypton.world.scoreboard.KryptonScoreboard
 import org.spongepowered.math.vector.Vector3i
+import java.nio.file.Files
 import java.nio.file.Path
 import java.util.UUID
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.CopyOnWriteArrayList
-import kotlin.math.min
+import java.util.concurrent.Executors
 import kotlin.random.Random
 
-class PlayerManager(private val server: KryptonServer) : ForwardingAudience {
+class PlayerManager(private val server: KryptonServer) {
 
-    val dataManager = PlayerDataManager(Path.of(server.config.world.name).resolve("playerdata"))
+    private val executor = Executors.newFixedThreadPool(8, threadFactory("Player Executor #%d") { daemon() })
+    val dataManager: PlayerDataManager
     val players = CopyOnWriteArrayList<KryptonPlayer>()
     val playersByName = ConcurrentHashMap<String, KryptonPlayer>()
     val playersByUUID = ConcurrentHashMap<UUID, KryptonPlayer>()
@@ -90,10 +89,20 @@ class PlayerManager(private val server: KryptonServer) : ForwardingAudience {
             server.updateConfig("server.whitelist-enabled", value)
         }
 
-    val status = ServerStatus(server.motd, ServerStatus.Players(server.maxPlayers, players.size), null)
-    private var lastStatus = 0L
+    init {
+        val config = server.config
+        val playerDataFolder = Path.of(config.world.name).resolve("playerdata")
+        if (config.advanced.serializePlayerData && !Files.exists(playerDataFolder)) {
+            try {
+                Files.createDirectories(playerDataFolder)
+            } catch (exception: Exception) {
+                LOGGER.error("Unable to create player data directory!", exception)
+            }
+        }
+        dataManager = PlayerDataManager(playerDataFolder, config.advanced.serializePlayerData)
+    }
 
-    fun add(player: KryptonPlayer, session: SessionHandler): CompletableFuture<Void> = dataManager.load(player).thenAccept { nbt ->
+    fun add(player: KryptonPlayer, session: SessionHandler): CompletableFuture<Void> = dataManager.load(player, executor).thenAcceptAsync({ nbt ->
         val profile = player.profile
         val name = server.profileCache[profile.uuid]?.name ?: profile.name
         server.profileCache.add(profile)
@@ -142,7 +151,7 @@ class PlayerManager(private val server: KryptonServer) : ForwardingAudience {
         sendCommands(player)
         player.statistics.invalidate()
         updateScoreboard(world.scoreboard, player)
-        invalidateStatus()
+        server.sessionManager.invalidateStatus()
 
         // Add the player to the list and cache maps
         players.add(player)
@@ -155,7 +164,7 @@ class PlayerManager(private val server: KryptonServer) : ForwardingAudience {
             // Use default reason if denied without specified reason
             val reason = joinResult.message ?: Component.translatable("multiplayer.disconnect.kicked")
             session.disconnect(reason)
-            return@thenAccept
+            return@thenAcceptAsync
         }
         val joinMessage = joinResult.message ?: Component.translatable(
             if (joinResult.hasJoinedBefore) "multiplayer.player.joined.renamed" else "multiplayer.player.joined",
@@ -180,10 +189,10 @@ class PlayerManager(private val server: KryptonServer) : ForwardingAudience {
         // Send inventory data
         session.send(PacketOutWindowItems(player.inventory, player.inventory.mainHand))
         player.isLoaded = true
-    }
+    }, executor)
 
     fun remove(player: KryptonPlayer) {
-        server.eventManager.fire(QuitEvent(player)).thenAccept { event ->
+        server.eventManager.fire(QuitEvent(player)).thenAcceptAsync({ event ->
             player.statistics.increment(CustomStatistics.LEAVE_GAME)
             save(player)
             player.world.chunkManager.removePlayer(player)
@@ -196,31 +205,20 @@ class PlayerManager(private val server: KryptonServer) : ForwardingAudience {
             playersByUUID.remove(player.uuid)
 
             // Send info and quit message
-            invalidateStatus()
-            sendToAll(PacketOutPlayerInfo(PacketOutPlayerInfo.Action.REMOVE_PLAYER, player))
+            server.sessionManager.invalidateStatus()
+            server.sessionManager.sendGrouped(PacketOutPlayerInfo(PacketOutPlayerInfo.Action.REMOVE_PLAYER, player))
             if (event.result.reason != null) server.sendMessage(event.result.reason!!)
-        }
-    }
-
-    fun sendToAll(packet: Packet) {
-        players.forEach { it.session.send(packet) }
-    }
-
-    fun sendToAll(packet: Packet, except: KryptonPlayer) {
-        players.forEach { if (it != except) it.session.send(packet) }
-    }
-
-    fun sendToAll(packet: Packet, world: KryptonWorld) {
-        players.forEach { if (it.world == world) it.session.send(packet) }
+            server.sessionManager.remove(player.session)
+        }, executor)
     }
 
     fun broadcast(packet: Packet, world: KryptonWorld, x: Double, y: Double, z: Double, radius: Double, except: KryptonPlayer?) {
-        players.forEach {
-            if (it == except || it.world != world) return@forEach
+        server.sessionManager.sendGrouped(packet) {
+            if (it === except || it.world !== world) return@sendGrouped false
             val offsetX = x - it.location.x()
             val offsetY = y - it.location.y()
             val offsetZ = z - it.location.z()
-            if (offsetX * offsetX + offsetY * offsetY + offsetZ * offsetZ < radius * radius) it.session.send(packet)
+            offsetX * offsetX + offsetY * offsetY + offsetZ * offsetZ < radius * radius
         }
     }
 
@@ -246,24 +244,9 @@ class PlayerManager(private val server: KryptonServer) : ForwardingAudience {
     }
 
     private fun save(player: KryptonPlayer) {
-        server.userManager.updateUser(player.uuid, dataManager.save(player))
+        val playerData = dataManager.save(player)
+        if (playerData != null) server.userManager.updateUser(player.uuid, playerData)
         player.statistics.save()
-    }
-
-    fun tick(time: Long) {
-        if (time - lastStatus >= UPDATE_STATUS_INTERVAL) {
-            lastStatus = time
-            status.players.online = players.size
-            val sampleSize = min(players.size, MAXIMUM_SAMPLED_PLAYERS)
-            val playerOffset = Maths.randomBetween(Random, 0, players.size - sampleSize)
-            val sample = Array(sampleSize) { players[it + playerOffset].profile }.apply { shuffle() }
-            status.players.sample = sample
-        }
-        players.forEach { (it.session.handler as? PlayHandler)?.tick() }
-    }
-
-    fun invalidateStatus() {
-        lastStatus = 0L
     }
 
     private fun sendWorldInfo(world: KryptonWorld, player: KryptonPlayer) {
@@ -287,12 +270,8 @@ class PlayerManager(private val server: KryptonServer) : ForwardingAudience {
         }
     }
 
-    override fun audiences(): Iterable<Audience> = players
-
     companion object {
 
-        private const val UPDATE_STATUS_INTERVAL = 5000L
-        private const val MAXIMUM_SAMPLED_PLAYERS = 12
         private val LOGGER = logger<PlayerManager>()
         private val BRAND_KEY = Key.key("brand")
         // The word "Krypton" encoded in to UTF-8 and then prefixed with the length, which in this case is 7.

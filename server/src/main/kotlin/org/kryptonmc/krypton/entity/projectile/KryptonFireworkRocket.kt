@@ -25,6 +25,7 @@ import org.kryptonmc.api.item.ItemStack
 import org.kryptonmc.api.item.ItemTypes
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.item.KryptonItemStack
+import org.kryptonmc.krypton.item.meta.KryptonItemMeta
 import org.kryptonmc.krypton.world.KryptonWorld
 
 class KryptonFireworkRocket(world: KryptonWorld) : KryptonProjectile(world, EntityTypes.FIREWORK_ROCKET), FireworkRocket {
@@ -36,7 +37,7 @@ class KryptonFireworkRocket(world: KryptonWorld) : KryptonProjectile(world, Enti
     override val item: ItemStack
         get() {
             val raw = data[MetadataKeys.FIREWORK_ROCKET.ITEM]
-            return if (raw.isEmpty()) KryptonItemStack(ItemTypes.FIREWORK_ROCKET, 1) else raw
+            return if (raw.isEmpty()) DEFAULT_ITEM else raw
         }
 
     override var wasShotAtAngle: Boolean
@@ -47,5 +48,10 @@ class KryptonFireworkRocket(world: KryptonWorld) : KryptonProjectile(world, Enti
         data.add(MetadataKeys.FIREWORK_ROCKET.ITEM)
         data.add(MetadataKeys.FIREWORK_ROCKET.ATTACHED)
         data.add(MetadataKeys.FIREWORK_ROCKET.SHOT_AT_ANGLE)
+    }
+
+    companion object {
+
+        private val DEFAULT_ITEM = KryptonItemStack(ItemTypes.FIREWORK_ROCKET, 1, KryptonItemMeta.DEFAULT)
     }
 }

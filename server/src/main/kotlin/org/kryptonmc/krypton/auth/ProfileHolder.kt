@@ -21,6 +21,7 @@ package org.kryptonmc.krypton.auth
 import com.google.gson.TypeAdapter
 import com.google.gson.stream.JsonReader
 import com.google.gson.stream.JsonWriter
+import kotlinx.collections.immutable.persistentListOf
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 import java.time.format.DateTimeParseException
@@ -39,6 +40,21 @@ class ProfileHolder(
     val expiryDate: ZonedDateTime,
     @Volatile var lastAccess: Long = 0L
 ) {
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+        return profile == (other as ProfileHolder).profile && expiryDate == other.expiryDate
+    }
+
+    override fun hashCode(): Int {
+        var result = 1
+        result = 31 * result + profile.hashCode()
+        result = 31 * result + expiryDate.hashCode()
+        return result
+    }
+
+    override fun toString(): String = "ProfileHolder(profile=$profile, expiryDate=${expiryDate})"
 
     object Adapter : TypeAdapter<ProfileHolder>() {
 
@@ -62,7 +78,7 @@ class ProfileHolder(
 
             reader.endObject()
             if (name == null || uuid == null || expiryDate == null) return null
-            return ProfileHolder(KryptonGameProfile(name, uuid, emptyList()), expiryDate)
+            return ProfileHolder(KryptonGameProfile(name, uuid, persistentListOf()), expiryDate)
         }
 
         override fun write(writer: JsonWriter, value: ProfileHolder) {

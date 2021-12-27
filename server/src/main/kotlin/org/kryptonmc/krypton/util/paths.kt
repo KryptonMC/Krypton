@@ -20,26 +20,7 @@ package org.kryptonmc.krypton.util
 
 import java.nio.file.Files
 import java.nio.file.Path
-import java.nio.file.attribute.FileAttribute
-
-fun Path.createTempFile(
-    prefix: String? = null,
-    suffix: String? = null,
-    vararg attributes: FileAttribute<*>
-): Path = Files.createTempFile(this, prefix, suffix, *attributes)
-
-fun Path.tryCreateDirectories(): Path = catchAndReturnSelf { Files.createDirectories(this) }
-
-fun Path.tryCreateDirectory(): Path = catchAndReturnSelf { Files.createDirectory(this) }
-
-fun Path.tryCreateFile(): Path = catchAndReturnSelf { Files.createFile(this) }
 
 fun Path.forEachDirectoryEntry(predicate: (Path) -> Boolean, action: (Path) -> Unit) {
     Files.newDirectoryStream(this, predicate).use { it.forEach(action) }
-}
-
-private fun Path.catchAndReturnSelf(action: () -> Path): Path = try {
-    action()
-} catch (exception: Exception) {
-    this
 }

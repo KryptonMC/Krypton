@@ -18,6 +18,7 @@
  */
 package org.kryptonmc.krypton.command.meta
 
+import kotlinx.collections.immutable.ImmutableSet
 import org.kryptonmc.api.command.meta.SimpleCommandMeta
 
 /**
@@ -27,7 +28,7 @@ import org.kryptonmc.api.command.meta.SimpleCommandMeta
 @JvmRecord
 data class KryptonSimpleCommandMeta(
     override val name: String,
-    override val aliases: Set<String>,
+    override val aliases: ImmutableSet<String>,
     override val permission: String?
 ) : SimpleCommandMeta {
 
@@ -44,6 +45,6 @@ data class KryptonSimpleCommandMeta(
 
         override fun permission(permission: String?): SimpleCommandMeta.Builder = apply { this.permission = permission }
 
-        override fun build(): SimpleCommandMeta = KryptonSimpleCommandMeta(name, aliases, permission)
+        override fun build(): SimpleCommandMeta = KryptonSimpleCommandMeta(name, aliases.build(), permission)
     }
 }

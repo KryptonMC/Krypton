@@ -31,6 +31,7 @@ import org.kryptonmc.krypton.entity.BucketStorable
 import org.kryptonmc.krypton.entity.memory.MemoryKeys
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.item.KryptonItemStack
+import org.kryptonmc.krypton.item.meta.KryptonItemMeta
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.nbt.CompoundTag
 
@@ -53,7 +54,7 @@ class KryptonAxolotl(world: KryptonWorld) : KryptonAnimal(world, EntityTypes.AXO
     override val splashSound: SoundEvent
         get() = SoundEvents.AXOLOTL_SPLASH
     override val bucketItem: KryptonItemStack
-        get() = KryptonItemStack(ItemTypes.AXOLOTL_BUCKET, 1)
+        get() = KryptonItemStack(ItemTypes.AXOLOTL_BUCKET, 1, KryptonItemMeta.DEFAULT)
     override val maxAirTicks: Int
         get() = 6000
     override val pushedByFluid: Boolean
@@ -79,6 +80,8 @@ class KryptonAxolotl(world: KryptonWorld) : KryptonAnimal(world, EntityTypes.AXO
     }
 
     override fun saveToBucket(item: KryptonItemStack) {
+        // FIXME
+        /*
         saveDefaultsToBucket(this, item)
         item.meta.nbt.apply {
             putInt("Variant", data[MetadataKeys.AXOLOTL.VARIANT])
@@ -87,6 +90,7 @@ class KryptonAxolotl(world: KryptonWorld) : KryptonAnimal(world, EntityTypes.AXO
                 putLong("HuntingCooldown", brain.expiryTime(MemoryKeys.HAS_HUNTING_COOLDOWN))
             }
         }
+         */
     }
 
     override fun load(tag: CompoundTag) {

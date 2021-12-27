@@ -39,6 +39,7 @@ import org.kryptonmc.api.command.meta.CommandMeta
 import org.kryptonmc.api.command.meta.SimpleCommandMeta
 import org.kryptonmc.api.entity.player.Player
 import org.kryptonmc.api.event.command.CommandSendEvent
+import org.kryptonmc.krypton.command.meta.EmptyCommandMeta
 import org.kryptonmc.krypton.commands.BanCommand
 import org.kryptonmc.krypton.commands.BanIpCommand
 import org.kryptonmc.krypton.commands.ClearCommand
@@ -59,11 +60,11 @@ import org.kryptonmc.krypton.commands.StopCommand
 import org.kryptonmc.krypton.commands.SummonCommand
 import org.kryptonmc.krypton.commands.TeleportCommand
 import org.kryptonmc.krypton.commands.TitleCommand
-import org.kryptonmc.krypton.commands.VersionCommand
 import org.kryptonmc.krypton.commands.WhitelistCommand
 import org.kryptonmc.krypton.command.registrar.BrigadierCommandRegistrar
 import org.kryptonmc.krypton.command.registrar.RawCommandRegistrar
 import org.kryptonmc.krypton.command.registrar.SimpleCommandRegistrar
+import org.kryptonmc.krypton.commands.krypton.KryptonCommand
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.packet.out.play.PacketOutDeclareCommands
 import org.kryptonmc.krypton.util.logger
@@ -86,7 +87,7 @@ object KryptonCommandManager : CommandManager {
     private val rawCommandRegistrar = RawCommandRegistrar(lock.writeLock())
 
     override fun register(command: BrigadierCommand) {
-        brigadierCommandRegistrar.register(dispatcher.root, command, CommandMeta.builder(command).build())
+        brigadierCommandRegistrar.register(dispatcher.root, command, EmptyCommandMeta)
     }
 
     override fun register(command: SimpleCommand, meta: SimpleCommandMeta) {
@@ -175,7 +176,6 @@ object KryptonCommandManager : CommandManager {
         TitleCommand.register(dispatcher)
         DifficultyCommand.register(dispatcher)
         GameRuleCommand.register(dispatcher)
-        VersionCommand.register(dispatcher)
         KickCommand.register(dispatcher)
         BanCommand.register(dispatcher)
         PardonCommand.register(dispatcher)
@@ -184,6 +184,7 @@ object KryptonCommandManager : CommandManager {
         PardonIpCommand.register(dispatcher)
         GiveCommand.register(dispatcher)
         ClearCommand.register(dispatcher)
+        KryptonCommand.register(dispatcher)
     }
 
     fun parse(sender: Sender, input: String): ParseResults<Sender> = lock.read { dispatcher.parse(input, sender) }

@@ -6,13 +6,16 @@
  * This project is licensed under the terms of the MIT license.
  * For more details, please reference the LICENSE file in the api top-level directory.
  */
+@file:JvmSynthetic
 package org.kryptonmc.api.item
 
+import net.kyori.adventure.text.Component
 import net.kyori.adventure.util.Buildable
 import org.jetbrains.annotations.ApiStatus
 import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.Krypton
-import org.kryptonmc.api.item.meta.MetaHolder
+import org.kryptonmc.api.item.meta.ItemMeta
+import org.kryptonmc.api.item.meta.ItemMetaBuilder
 import org.kryptonmc.api.util.provide
 import java.util.function.Consumer
 
@@ -32,19 +35,177 @@ public interface ItemStack : Buildable<ItemStack, ItemStack.Builder> {
      * The amount of items in this stack.
      */
     @get:JvmName("amount")
-    public var amount: Int
+    public val amount: Int
 
     /**
-     * The holder for the stack's metadata.
+     * The metadata for this item stack.
      */
     @get:JvmName("meta")
-    public val meta: MetaHolder
+    public val meta: ItemMeta
 
     /**
-     * Creates a copy of this item stack.
+     * The name of this item stack.
+     */
+    public val name: Component?
+        @JvmName("name") get() = meta.name
+
+    /**
+     * The lore of this item stack.
+     */
+    public val lore: List<Component>
+        @JvmName("lore") get() = meta.lore
+
+    /**
+     * Gets the metadata for this item stack as the given type [I], or returns
+     * null if the metadata could not be casted to the given [type].
+     *
+     * @param type the type
+     * @return the metadata as the type, or null if the metadata is not of the
+     * type
+     */
+    public fun <I : ItemMeta> meta(type: Class<I>): I?
+
+    /**
+     * Creates a new item stack from the result of applying the given
+     * [builder].
+     *
+     * @param builder the builder to apply
+     * @return a new item stack
+     */
+    @JvmSynthetic
+    @Contract("_ -> new", pure = true)
+    public fun with(builder: Builder.() -> Unit): ItemStack
+
+    /**
+     * Creates a new item stack from the result of applying the given
+     * [builder].
+     *
+     * @param builder the builder to apply
+     * @return a new item stack
      */
     @Contract("_ -> new", pure = true)
-    public fun copy(): ItemStack
+    public fun with(builder: Consumer<Builder>): ItemStack = with { builder.accept(this) }
+
+    /**
+     * Creates a new item stack with the given [type].
+     *
+     * @param type the new type
+     * @return a new item stack
+     */
+    @Contract("_ -> new", pure = true)
+    public fun withType(type: ItemType): ItemStack
+
+    /**
+     * Creates a new item stack with the given [amount].
+     *
+     * @param amount the new amount
+     * @return a new item stack
+     */
+    @Contract("_ -> new", pure = true)
+    public fun withAmount(amount: Int): ItemStack
+
+    /**
+     * Grows the amount of this item stack by the given [amount] and returns
+     * the resulting item stack.
+     *
+     * This will calculate the new amount by adding the given [amount] to the
+     * current [ItemStack.amount].
+     *
+     * @param amount the amount to grow by
+     * @return the resulting item stack
+     */
+    @Contract("_ -> new", pure = true)
+    public fun grow(amount: Int): ItemStack = withAmount(this.amount + amount)
+
+    /**
+     * Shrinks the amount of this item stack by the given [amount] and returns
+     * the resulting item stack.
+     *
+     * This will calculate the new amount by taking the given [amount] away
+     * from the current [ItemStack.amount].
+     *
+     * @param amount the amount to shrink by
+     * @return the resulting item stack
+     */
+    @Contract("_ -> new", pure = true)
+    public fun shrink(amount: Int): ItemStack = withAmount(this.amount - amount)
+
+    /**
+     * Creates a new item stack with the given [meta].
+     *
+     * @param meta the new meta
+     * @return a new item stack
+     */
+    @Contract("_ -> new", pure = true)
+    public fun withMeta(meta: ItemMeta): ItemStack
+
+    /**
+     * Creates a new item stack with meta retrieved applying the given
+     * [builder] to a new item metadata builder.
+     *
+     * @param builder the builder to apply
+     * @return a new item stack
+     */
+    @JvmSynthetic
+    @Contract("_ -> new", pure = true)
+    public fun withMeta(builder: ItemMeta.Builder.() -> Unit): ItemStack
+
+    /**
+     * Creates a new item stack with meta retrieved applying the given
+     * [builder] to a new item metadata builder.
+     *
+     * @param builder the builder to apply
+     * @return a new item stack
+     */
+    @Contract("_ -> new", pure = true)
+    public fun withMeta(builder: Consumer<ItemMeta.Builder>): ItemStack = withMeta { builder.accept(this) }
+
+    /**
+     * Creates a new item stack with meta retrieved applying the given
+     * [builder] to a new meta builder created with the given [type].
+     *
+     * @param type the type
+     * @param builder the builder to apply
+     * @param B the builder type
+     * @param P the metadata type
+     * @return a new item stack
+     */
+    @JvmSynthetic
+    @Contract("_ -> new", pure = true)
+    public fun <B : ItemMetaBuilder<B, P>, P : ItemMetaBuilder.Provider<B>> withMeta(type: Class<P>, builder: B.() -> Unit): ItemStack
+
+    /**
+     * Creates a new item stack with meta retrieved applying the given
+     * [builder] to a new meta builder created with the given [type].
+     *
+     * @param type the type
+     * @param builder the builder to apply
+     * @param B the builder type
+     * @param P the metadata type
+     * @return a new item stack
+     */
+    @Contract("_ -> new", pure = true)
+    public fun <B : ItemMetaBuilder<B, P>, P : ItemMetaBuilder.Provider<B>> withMeta(
+        type: Class<P>,
+        builder: Consumer<B>
+    ): ItemStack = withMeta(type) { builder.accept(this) }
+
+    /**
+     * Creates a new item stack with the given [name].
+     *
+     * @param name the new name
+     * @return a new item stack
+     */
+    @Contract("_ -> new", pure = true)
+    public fun withName(name: Component?): ItemStack = withMeta(meta.withName(name))
+
+    /**
+     * Creates a new item stack with the given [lore].
+     *
+     * @param lore the new lore
+     * @return a new item stack
+     */
+    public fun withLore(lore: Iterable<Component>): ItemStack = withMeta(meta.withLore(lore))
 
     /**
      * For building new [ItemStack]s.
@@ -73,29 +234,72 @@ public interface ItemStack : Buildable<ItemStack, ItemStack.Builder> {
         public fun amount(amount: Int): Builder
 
         /**
-         * Applies the given [builder] function to the meta holder
-         * for this builder.
+         * Sets the metadata for the item stack to the given [meta].
          *
-         * @param builder the builder function to apply to the meta
-         * holder
+         * @param meta the metadata
+         * @return this builder
+         */
+        @ItemDsl
+        @Contract("_ -> this", mutates = "this")
+        public fun meta(meta: ItemMeta): Builder
+
+        /**
+         * Applies the given [builder] function to the metadata builder for
+         * this builder.
+         *
+         * @param builder the builder function to apply
          * @return this builder
          */
         @ItemDsl
         @JvmSynthetic
         @Contract("_ -> this", mutates = "this")
-        public fun meta(builder: MetaHolder.() -> Unit): Builder
+        public fun meta(builder: ItemMeta.Builder.() -> Unit): Builder
 
         /**
-         * Applies the given [builder] function to the meta holder
-         * for this builder.
+         * Applies the given [builder] function to the metadata builder for
+         * this builder.
          *
-         * @param builder the builder function to apply to the meta
-         * holder
+         * @param builder the builder function to apply
          * @return this builder
          */
         @ItemDsl
         @Contract("_ -> this", mutates = "this")
-        public fun meta(builder: Consumer<MetaHolder>): Builder = meta { builder.accept(this) }
+        public fun meta(builder: Consumer<ItemMeta.Builder>): Builder = meta { builder.accept(this) }
+
+        /**
+         * Applies the given [builder] function to the metadata builder for
+         * this builder.
+         *
+         * @param type the type of the metadata
+         * @param builder the builder function to apply
+         * @param B the builder type
+         * @param P the metadata type
+         * @return this builder
+         */
+        @ItemDsl
+        @JvmSynthetic
+        @Contract("_ -> this", mutates = "this")
+        public fun <B : ItemMetaBuilder<B, P>, P : ItemMetaBuilder.Provider<B>> meta(
+            type: Class<P>,
+            builder: B.() -> Unit
+        ): Builder
+
+        /**
+         * Applies the given [builder] function to the metadata builder for
+         * this builder.
+         *
+         * @param type the type of the metadata
+         * @param builder the builder function to apply
+         * @param B the builder type
+         * @param P the metadata type
+         * @return this builder
+         */
+        @ItemDsl
+        @Contract("_ -> this", mutates = "this")
+        public fun <B : ItemMetaBuilder<B, P>, P : ItemMetaBuilder.Provider<B>> meta(
+            type: Class<P>,
+            builder: Consumer<B>
+        ): Builder = meta(type) { builder.accept(this) }
 
         /**
          * Builds a new [ItemStack] with the settings retrieved from
@@ -148,53 +352,55 @@ public interface ItemStack : Buildable<ItemStack, ItemStack.Builder> {
         public fun of(type: ItemType, amount: Int): ItemStack = FACTORY.builder().type(type).amount(amount).build()
 
         /**
-         * Creates a new [ItemStack] with the given [type], [amount],
-         * and [metaBuilder].
-         *
-         * @param type the type of item
-         * @param amount the amount of items
-         * @param metaBuilder the meta builder
-         * @return a new [ItemStack]
-         */
-        @JvmStatic
-        @JvmSynthetic
-        @Contract("_ -> new", pure = true)
-        public fun of(
-            type: ItemType,
-            amount: Int,
-            metaBuilder: MetaHolder.() -> Unit
-        ): ItemStack = FACTORY.builder().type(type).amount(amount).meta(metaBuilder).build()
-
-        /**
-         * Creates a new [ItemStack] with the given [type], [amount],
-         * and [metaBuilder].
-         *
-         * @param type the type of item
-         * @param amount the amount of items
-         * @param metaBuilder the meta builder
-         * @return a new [ItemStack]
-         */
-        @JvmStatic
-        @Contract("_ -> new", pure = true)
-        public fun of(
-            type: ItemType,
-            amount: Int,
-            metaBuilder: Consumer<MetaHolder>
-        ): ItemStack = of(type, amount) { metaBuilder.accept(this) }
-
-        /**
          * Gets the empty [ItemStack] instance.
          *
          * This [ItemStack] is generally used as a default value in
          * place of using `null`. It has an [ItemType] of [air][ItemTypes.AIR],
          * an amount of `1`, and no metadata.
-         *
-         * This is also immutable, meaning it either keeps no state, or the
-         * state it keeps cannot be mutated. For example, attempting to set the
-         * amount or the metadata should do nothing.
          */
         @JvmStatic
         @Contract("_ -> new", pure = true)
         public fun empty(): ItemStack = FACTORY.empty()
     }
 }
+
+/**
+ * Gets the metadata for this item stack as the given type [I], or returns
+ * null if the metadata could not be casted to the given type [I].
+ *
+ * @return the metadata as the type, or null if the metadata is not of the
+ * type
+ */
+@JvmSynthetic
+public inline fun <reified I : ItemMeta> ItemStack.meta(): I? = meta(I::class.java)
+
+/**
+ * Creates a new item stack with meta retrieved applying the given
+ * [builder] to a new meta builder created with the given type [P].
+ *
+ * @param builder the builder to apply
+ * @param B the builder type
+ * @param P the metadata type
+ * @return a new item stack
+ */
+@JvmSynthetic
+@Contract("_ -> new", pure = true)
+public inline fun <B : ItemMetaBuilder<B, P>, reified P : ItemMetaBuilder.Provider<B>> ItemStack.withMeta(
+    noinline builder: B.() -> Unit
+): ItemStack = withMeta(P::class.java, builder)
+
+/**
+ * Applies the given [builder] function to the metadata builder for
+ * this builder.
+ *
+ * @param builder the builder function to apply
+ * @param B the builder type
+ * @param P the metadata type
+ * @return this builder
+ */
+@ItemDsl
+@JvmSynthetic
+@Contract("_ -> this", mutates = "this")
+public inline fun <B : ItemMetaBuilder<B, P>, reified P : ItemMetaBuilder.Provider<B>> ItemStack.Builder.meta(
+    noinline builder: B.() -> Unit
+): ItemStack.Builder = meta(P::class.java, builder)

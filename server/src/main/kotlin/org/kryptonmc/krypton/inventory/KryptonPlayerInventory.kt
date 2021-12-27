@@ -20,15 +20,14 @@ package org.kryptonmc.krypton.inventory
 
 import io.netty.buffer.ByteBuf
 import net.kyori.adventure.key.Key
+import net.kyori.adventure.text.Component
 import org.kryptonmc.api.entity.ArmorSlot
 import org.kryptonmc.api.entity.Hand
 import org.kryptonmc.api.inventory.PlayerInventory
 import org.kryptonmc.api.item.ItemStack
 import org.kryptonmc.api.item.ItemTypes
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
-import org.kryptonmc.krypton.item.EmptyItemStack
 import org.kryptonmc.krypton.item.KryptonItemStack
-import org.kryptonmc.krypton.packet.out.play.PacketOutChangeHeldItem
 import org.kryptonmc.krypton.packet.out.play.PacketOutSetSlot
 import org.kryptonmc.krypton.util.FixedList
 import org.kryptonmc.krypton.util.writeItem
@@ -38,36 +37,36 @@ import org.kryptonmc.nbt.ListTag
 import org.kryptonmc.nbt.MutableListTag
 import org.kryptonmc.nbt.compound
 
-class KryptonPlayerInventory(override val owner: KryptonPlayer) : KryptonInventory(0, TYPE, owner, SIZE, 36), PlayerInventory {
+class KryptonPlayerInventory(override val owner: KryptonPlayer) : KryptonInventory(0, TYPE, SIZE, 36), PlayerInventory {
 
-    override val crafting = FixedList<KryptonItemStack>(5, EmptyItemStack)
-    override val armor = FixedList<KryptonItemStack>(4, EmptyItemStack)
+    override val crafting = FixedList(5, KryptonItemStack.EMPTY)
+    override val armor = FixedList(4, KryptonItemStack.EMPTY)
 
     override val main: List<ItemStack> = items.subList(9, 35)
     override val hotbar: List<ItemStack> = items.subList(0, 8)
 
     override var helmet: ItemStack
         get() = armor(ArmorSlot.HELMET)
-        set(value) = armor(ArmorSlot.HELMET, value)
+        set(value) = setArmor(ArmorSlot.HELMET, value)
     override var chestplate: ItemStack
         get() = armor(ArmorSlot.CHESTPLATE)
-        set(value) = armor(ArmorSlot.CHESTPLATE, value)
+        set(value) = setArmor(ArmorSlot.CHESTPLATE, value)
     override var leggings: ItemStack
         get() = armor(ArmorSlot.LEGGINGS)
-        set(value) = armor(ArmorSlot.LEGGINGS, value)
+        set(value) = setArmor(ArmorSlot.LEGGINGS, value)
     override var boots: ItemStack
         get() = armor(ArmorSlot.BOOTS)
-        set(value) = armor(ArmorSlot.BOOTS, value)
-
-    override var heldSlot = 0
+        set(value) = setArmor(ArmorSlot.BOOTS, value)
 
     override val mainHand: KryptonItemStack
         get() = items[heldSlot]
-    override var offHand: KryptonItemStack = EmptyItemStack
+    override var offHand: KryptonItemStack = KryptonItemStack.EMPTY
+
+    override var heldSlot = 0
 
     override fun armor(slot: ArmorSlot) = armor[slot.ordinal]
 
-    override fun armor(slot: ArmorSlot, item: ItemStack) {
+    override fun setArmor(slot: ArmorSlot, item: ItemStack) {
         if (item !is KryptonItemStack) return
         armor[slot.ordinal] = item
     }
@@ -100,8 +99,22 @@ class KryptonPlayerInventory(override val owner: KryptonPlayer) : KryptonInvento
             45 -> offHand = item
         }
         owner.session.send(PacketOutSetSlot(id, incrementStateId(), index, item))
-        if (index == heldSlot) return
-        owner.session.send(PacketOutChangeHeldItem(index))
+    }
+
+    override fun write(buf: ByteBuf) {
+        buf.writeVarInt(SIZE)
+        buf.writeItem(crafting[4])
+        for (i in 0..3) {
+            buf.writeItem(crafting[i])
+        }
+        armor.forEach { buf.writeItem(it) }
+        for (i in 0..26) {
+            buf.writeItem(items[i + 9])
+        }
+        for (i in 0..8) {
+            buf.writeItem(items[i])
+        }
+        buf.writeItem(offHand)
     }
 
     fun load(tag: ListTag) {
@@ -146,19 +159,9 @@ class KryptonPlayerInventory(override val owner: KryptonPlayer) : KryptonInvento
         return list
     }
 
-    override val networkWriter: (ByteBuf) -> Unit = { buf ->
-        buf.writeVarInt(SIZE)
-        buf.writeItem(crafting[4])
-        for (i in 0..3) buf.writeItem(crafting[i])
-        armor.forEach { buf.writeItem(it) }
-        for (i in 0..26) buf.writeItem(items[i + 9])
-        for (i in 0..8) buf.writeItem(items[i])
-        buf.writeItem(offHand)
-    }
-
     companion object {
 
         const val SIZE = 46
-        private val TYPE = KryptonInventoryType(Key.key("krypton", "inventory/player"), SIZE)
+        private val TYPE = KryptonInventoryType(Key.key("krypton", "inventory/player"), SIZE, Component.translatable("container.inventory"))
     }
 }

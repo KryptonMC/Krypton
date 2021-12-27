@@ -18,7 +18,6 @@
  */
 package org.kryptonmc.krypton.entity.attribute
 
-import com.google.common.collect.ImmutableSet
 import it.unimi.dsi.fastutil.objects.Object2ObjectArrayMap
 import it.unimi.dsi.fastutil.objects.ObjectArraySet
 import org.kryptonmc.api.entity.attribute.Attribute

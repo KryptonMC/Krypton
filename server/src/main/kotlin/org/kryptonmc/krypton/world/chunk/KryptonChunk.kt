@@ -24,6 +24,10 @@ import org.kryptonmc.api.fluid.Fluid
 import org.kryptonmc.api.fluid.Fluids
 import org.kryptonmc.api.world.biome.Biome
 import org.kryptonmc.api.world.chunk.Chunk
+import org.kryptonmc.krypton.packet.CachedPacket
+import org.kryptonmc.krypton.packet.FramedPacket
+import org.kryptonmc.krypton.packet.GenericPacket
+import org.kryptonmc.krypton.packet.out.play.PacketOutChunkDataAndLight
 import org.kryptonmc.krypton.world.Heightmap
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.krypton.world.chunk.ticket.Ticket
@@ -55,6 +59,8 @@ class KryptonChunk(
         get() = position.x
     override val z: Int
         get() = position.z
+
+    private val packet = CachedPacket(world.server.config.server.compressionThreshold) { PacketOutChunkDataAndLight(this, true) }
 
     override fun getBlock(x: Int, y: Int, z: Int): Block {
         if (world.isDebug) {
@@ -100,6 +106,7 @@ class KryptonChunk(
         heightmaps.getValue(Heightmap.Type.MOTION_BLOCKING_NO_LEAVES).update(localX, y, localZ, block)
         heightmaps.getValue(Heightmap.Type.OCEAN_FLOOR).update(localX, y, localZ, block)
         heightmaps.getValue(Heightmap.Type.WORLD_SURFACE).update(localX, y, localZ, block)
+        packet.invalidate()
         return true
     }
 
@@ -112,4 +119,6 @@ class KryptonChunk(
     fun tick(playerCount: Int) {
         inhabitedTime += playerCount
     }
+
+    fun packet(): GenericPacket = packet.get()
 }

@@ -18,6 +18,7 @@
  */
 package org.kryptonmc.krypton.world.block.property
 
+import kotlinx.collections.immutable.ImmutableSet
 import org.kryptonmc.api.block.property.Property
 import org.kryptonmc.krypton.util.serialization.Codec
 import org.kryptonmc.krypton.util.serialization.Codecs
@@ -26,12 +27,14 @@ import org.kryptonmc.nbt.StringTag
 sealed class KryptonProperty<T : Comparable<T>>(
     override val name: String,
     override val type: Class<T>,
-    override val values: Set<T>
+    override val values: ImmutableSet<T>
 ) : Property<T> {
 
     val codec: Codec<StringTag, T> = Codecs.STRING.transform(::toString) {
         requireNotNull(fromString(it)) { "Unable to read property $this with value $it!" }
     }
+
+    override fun toString(value: T): String = value.toString()
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

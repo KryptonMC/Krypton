@@ -19,7 +19,6 @@
 package org.kryptonmc.krypton.entity
 
 import org.kryptonmc.api.effect.sound.SoundEvent
-import org.kryptonmc.api.item.meta.MetaKeys
 import org.kryptonmc.krypton.item.KryptonItemStack
 import org.kryptonmc.nbt.CompoundTag
 
@@ -43,7 +42,10 @@ interface BucketStorable {
     }
 
     fun saveDefaultsToBucket(mob: KryptonMob, item: KryptonItemStack) {
+        // FIXME
+        /*
         val nbt = item.meta.nbt
+        if (mob.customName != null)
         if (mob.customName != null) item.meta[MetaKeys.NAME] = mob.customName!!
         if (!mob.hasAI) nbt.putBoolean("NoAI", !mob.hasAI)
         if (mob.isSilent) nbt.putBoolean("Silent", mob.isSilent)
@@ -51,5 +53,6 @@ interface BucketStorable {
         if (mob.isGlowing) nbt.putBoolean("Glowing", mob.isGlowing)
         if (mob.isInvulnerable) nbt.putBoolean("Invulnerable", mob.isInvulnerable)
         nbt.putFloat("Health", mob.health)
+         */
     }
 }

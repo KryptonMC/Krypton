@@ -17,7 +17,7 @@ import org.kryptonmc.api.item.ItemStack
  * Represents a player's inventory.
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
-public interface PlayerInventory : Inventory {
+public interface PlayerInventory : MutableInventory {
 
     /**
      * The main inventory area, excluding the hotbar area. This has 27 slots,
@@ -91,46 +91,42 @@ public interface PlayerInventory : Inventory {
     @get:JvmName("heldSlot")
     public val heldSlot: Int
 
+    /**
+     * The owner of this player inventory.
+     */
     @get:JvmName("owner")
-    override val owner: Player
+    public val owner: Player
 
     /**
-     * Gets the armor item in the specified [slot].
+     * Gets the armour item in the given [slot].
      *
-     * @param slot the armor slot
-     * @return the armor item in the specified [slot]
+     * @param slot the armour slot
+     * @return the armour item in the given [slot]
      */
     public fun armor(slot: ArmorSlot): ItemStack
 
     /**
-     * Sets the armor item in the specified [slot] to the specified [item].
+     * Sets the armour item in the given [slot] to the give [item].
      *
-     * @param slot the armor slot
+     * @param slot the armour slot
      * @param item the new item
      */
-    public fun armor(slot: ArmorSlot, item: ItemStack)
+    public fun setArmor(slot: ArmorSlot, item: ItemStack)
 
     /**
-     * Gets the item the player is holding in the specified [hand].
+     * Gets the item the player is holding in the given [hand].
      *
      * @param hand the hand
-     * @return the item held in that hand
+     * @return the item
      */
     public fun heldItem(hand: Hand): ItemStack
 
     /**
-     * Set the item the player is holding in the specified [hand].
+     * Sets the item the player is holding in the given [hand] to the given
+     * [item].
      *
      * @param hand the hand
-     * @param item the item to set
+     * @param item the item
      */
     public fun setHeldItem(hand: Hand, item: ItemStack)
-
-    /**
-     * Set an item in this inventory at the specified [index].
-     *
-     * @param index the index (slot, starts from 0)
-     * @param item the item to set
-     */
-    public operator fun set(index: Int, item: ItemStack)
 }

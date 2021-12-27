@@ -27,5 +27,8 @@ import org.spongepowered.configurate.objectmapping.meta.Setting
 data class AdvancedCategory(
     @Setting("synchronize-chunk-writes")
     @Comment("Whether to use the DSYNC option for saving region files to disk.")
-    val synchronizeChunkWrites: Boolean = true
+    val synchronizeChunkWrites: Boolean = true,
+    @Setting("serialize-player-data")
+    @Comment("Whether the server should load and save player data to and from files")
+    val serializePlayerData: Boolean = true
 )

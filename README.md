@@ -19,103 +19,36 @@ feel free to ask in our Discord server.
 Or, if you prefer, you can clone the repository with `git clone https://github.com/KryptonMC/Krypton.git`
 and build from source with `gradle shadowJar` if you wish to run the server.
 
-**WARNING: Krypton is far from production ready. DO NOT USE ON PRODUCTION SERVERS! WILL CONTAIN BUGS! You have been
-warned.**
+Whilst Krypton is tested, and most features should work as intended, it is in no way as stable as other server software, such as Paper,
+which is much more thoroughly tested. Also, Krypton is still in development, so bugs are still likely to occur in places where we haven't
+looked.
+**Krypton is not liable for any damage caused by its usage in production environments.**
 
 ### API
 
-As of version 0.11, Krypton has an API. It is heavily in development, so expect to find bugs, but it is constantly evolving, with new features
-being added all the time.
-
-You can depend on it like this:
-
-* Gradle Kotlin DSL:
-
-```kotlin
-repositories {
-    maven("https://repo.kryptonmc.org/releases")
-}
-
-dependencies {
-    compileOnly("org.kryptonmc:krypton-api:LATEST")
-}
-```
-
-* Gradle Groovy DSL:
-
-```groovy
-repositories {
-    maven { url 'https://repo.kryptonmc.org/releases' }
-}
-
-dependencies {
-    compileOnly 'org.kryptonmc:krypton-api:LATEST'
-}
-```
-
-* Maven:
-
-```xml
-<repositories>
-    <repository>
-        <id>kryptonmc</id>
-        <url>https://repo.kryptonmc.org/releases</url>
-    </repository>
-</repositories>
-
-<dependencies>
-    <dependency>
-        <groupId>org.kryptonmc</groupId>
-        <artifactId>krypton-api</artifactId>
-        <version>LATEST</version>
-    </dependency>
-</dependencies>
-```
-
-The documentation for both the API and the server can now be found [here](https://docs.kryptonmc.org), and the wiki on how to use the API
-can be found [here](https://wiki.kryptonmc.org).
-
-Example usage:
-
-```kotlin
-@Plugin(id = "my-plugin")
-class MyPlugin @Inject constructor(commandManager: CommandManager) {
-
-    init {
-        commandManager.register(MyCommand()) // example command registration
-    }
-
-    @Listener
-    fun onStart(event: ServerStartEvent) {
-        // This is called after things like your plugin's container have finished initialising,
-        // so it is safe to use them here.
-    }
-}
-```
-
-If you have any questions about API usage, or any feedback about how the API could be improved, feel free to join the Discord server.
+For information on how to use the API, see the official wiki [here](https://wiki.kryptonmc.org), and the KDocs (Kotlin equivalent of
+JavaDocs) [here](https://docs.kryptonmc.org).
 
 ### Contributing
 
-Krypton is open-source for a reason. You are more than welcome to contribute, and we even encourage it. This project
-wouldn't be possible without contributions.
+Krypton is open-source for a reason. You are more than welcome to contribute, and we even encourage it.
 
-If you're interested, I highly recommend reading the [contribution guide](CONTRIBUTING.md) to learn how to get started,
-and know the best practices, and to talk to us on our official Discord server for help.
+If you're interested, I highly recommend coming and talking to us on our official Discord server. This is where you can talk to the
+development team, who know the most about the project, and they can offer you advice and information on where to start.
+You should also read the [contribution guide](CONTRIBUTING.md) for some common information, though this is incomplete, and needs more
+information in it.
 
 ### Credits
 
 - The project's [contributors](https://github.com/KryptonMC/Krypton/graphs/contributors) (of course)
 - [The Velocity project](https://velocitypowered.com/), for providing the fast networking and amazing plugin loading and event systems that
   the Krypton API contains derivatives of.
-- [The Sponge Project](https://spongepowered.org), for their amazing work creating an API that far exceeds anything that has been achieved
-  by its rivals, and for inspiring a significant amount of the design of the Krypton API.
+- [Minestom](https://minestom.net), for their support, API, and amazing community of welcoming individuals that have helped this project
+  since it's very beginning.
 - [The Minecraft Coalition](https://wiki.vg) for their hard work and effort documenting the protocol, allowing these projects to exist,
   and their amazing support.
 - [The Minecraft Wiki](https://minecraft.gamepedia.com), for their amazing efforts documenting just about everything
   there is to know about Minecraft, and making it available for everyone to use.
-- The project's dependencies, each and every one helping to make our lives as developers easier. Notable mentions: [Kotlin](https://kotlinlang.org),
-  [Adventure](https://github.com/KyoriPowered/Adventure), [Configurate](https://github.com/SpongePowered/Configurate), [Netty](https://netty.io),
-  [Log4J](https://logging.apache.org/log4j/2.x/).
+- The project's dependencies, each and every one helping to make our lives as developers easier.
 - [JProfiler](https://www.ej-technologies.com/products/jprofiler/overview.html), for being kind enough to grant us an
-  open-source license for their profiler.
+  open-source license for their profiler, helping to ensure that Krypton can perform well in production environments.

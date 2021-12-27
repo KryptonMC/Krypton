@@ -34,8 +34,6 @@ import net.minecraft.tags.FluidTags
 import net.minecraft.tags.ItemTags
 import net.minecraft.world.entity.ai.attributes.Attribute
 import net.minecraft.world.entity.ai.attributes.Attributes
-import net.minecraft.world.entity.decoration.Motive
-import net.minecraft.world.item.DyeColor
 import net.minecraft.world.item.Item
 import net.minecraft.world.item.Items
 import net.minecraft.world.level.biome.Biomes
@@ -107,10 +105,7 @@ fun main() {
         ClassName("org.kryptonmc.api.block.entity", "BlockEntityType"),
         "BLOCK_ENTITY_TYPE"
     )
-    DyeColorGenerator(output).run<DyeColor>(
-        ClassName("org.kryptonmc.api.item.meta", "DyeColors"),
-        DyeColorGenerator.DYE_COLOR
-    )
+    DyeColorGenerator(output).run()
     val tagGenerator = TagGenerator(output)
     tagGenerator.run(
         "BlockTags",

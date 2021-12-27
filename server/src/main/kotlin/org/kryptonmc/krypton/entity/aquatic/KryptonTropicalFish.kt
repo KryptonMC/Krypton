@@ -22,10 +22,11 @@ import org.kryptonmc.api.entity.EntityTypes
 import org.kryptonmc.api.entity.aquatic.TropicalFish
 import org.kryptonmc.api.entity.aquatic.TropicalFishShape
 import org.kryptonmc.api.item.ItemTypes
-import org.kryptonmc.api.item.meta.DyeColor
+import org.kryptonmc.api.item.data.DyeColor
 import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.item.KryptonItemStack
+import org.kryptonmc.krypton.item.meta.KryptonItemMeta
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.nbt.CompoundTag
 import kotlin.math.min
@@ -52,7 +53,7 @@ class KryptonTropicalFish(world: KryptonWorld) : KryptonSchoolingFish(world, Ent
         }
 
     override val bucketItem: KryptonItemStack
-        get() = KryptonItemStack(ItemTypes.TROPICAL_FISH_BUCKET, 1)
+        get() = KryptonItemStack(ItemTypes.TROPICAL_FISH_BUCKET, 1, KryptonItemMeta.DEFAULT)
 
     init {
         data.add(MetadataKeys.TROPICAL_FISH.VARIANT)
@@ -68,7 +69,8 @@ class KryptonTropicalFish(world: KryptonWorld) : KryptonSchoolingFish(world, Ent
     }
 
     override fun saveToBucket(item: KryptonItemStack) {
-        item.meta.nbt.putInt("BucketVariantTag", data[MetadataKeys.TROPICAL_FISH.VARIANT])
+        // FIXME
+//        item.meta.nbt = item.meta.nbt.putInt("BucketVariantTag", data[MetadataKeys.TROPICAL_FISH.VARIANT])
     }
 
     companion object {

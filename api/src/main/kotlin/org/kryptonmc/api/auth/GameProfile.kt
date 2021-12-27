@@ -35,7 +35,7 @@ public interface GameProfile {
     public val uuid: UUID
 
     /**
-     * The list of properties for this profile.
+     * All of the properties for this profile.
      */
     @get:JvmName("properties")
     public val properties: List<ProfileProperty>

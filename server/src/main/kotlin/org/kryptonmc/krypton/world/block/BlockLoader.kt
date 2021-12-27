@@ -18,9 +18,11 @@
  */
 package org.kryptonmc.krypton.world.block
 
-import com.google.common.collect.ImmutableMap
-import com.google.common.collect.ImmutableSet
 import com.google.gson.JsonObject
+import kotlinx.collections.immutable.ImmutableSet
+import kotlinx.collections.immutable.PersistentMap
+import kotlinx.collections.immutable.toImmutableSet
+import kotlinx.collections.immutable.toPersistentHashMap
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.text.Component
 import org.kryptonmc.api.block.Block
@@ -66,12 +68,11 @@ object BlockLoader : KryptonDataLoader("blocks") {
                 var string = element.asString
                 if (string == "LEVEL") string = "LEVEL_FLOWING"
                 KryptonPropertyFactory.PROPERTIES[string]!!
-            }
-            val immutableProperties = ImmutableSet.copyOf(availableProperties)
+            }.toImmutableSet()
 
             // Iterate states
             value.remove("states").asJsonArray.forEach {
-                val (properties, block) = it.asJsonObject.retrieveState(key, immutableProperties, value)
+                val (properties, block) = it.asJsonObject.retrieveState(key, availableProperties, value)
                 propertyEntry.properties[properties] = block
             }
 
@@ -91,12 +92,11 @@ object BlockLoader : KryptonDataLoader("blocks") {
     @JvmStatic
     private fun JsonObject.retrieveState(
         key: String,
-        availableProperties: Set<Property<*>>,
+        availableProperties: ImmutableSet<Property<*>>,
         blockObject: JsonObject
     ): Pair<Map<String, String>, KryptonBlock> {
         val stateId = get("stateId").asInt
-        val propertyMap = get("properties").asJsonObject.entrySet().associate { it.key to it.value.asString.lowercase() }
-        val properties = ImmutableMap.copyOf(propertyMap)
+        val properties = get("properties").asJsonObject.entrySet().associate { it.key to it.value.asString.lowercase() }.toPersistentHashMap()
         val block = createBlock(Key.key(key), blockObject, this, availableProperties, properties)
         STATES[block] = stateId
         return properties to block
@@ -107,8 +107,8 @@ object BlockLoader : KryptonDataLoader("blocks") {
         key: Key,
         block: JsonObject,
         state: JsonObject,
-        availableProperties: Set<Property<*>>,
-        propertyMap: Map<String, String>
+        availableProperties: ImmutableSet<Property<*>>,
+        propertyMap: PersistentMap<String, String>
     ): KryptonBlock = KryptonBlock(
         key,
         block["id"].asInt,

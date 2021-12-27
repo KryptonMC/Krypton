@@ -60,13 +60,7 @@ object MetadataSerializers {
     @JvmField
     val OPTIONAL_COMPONENT: MetadataSerializer<Component?> = create(5) { buf, item -> buf.writeOptional(item, buf::writeChat) }
     @JvmField
-    val SLOT: MetadataSerializer<KryptonItemStack> = object : MetadataSerializer<KryptonItemStack>(6) {
-        override fun write(buf: ByteBuf, item: KryptonItemStack) {
-            buf.writeItem(item)
-        }
-
-        override fun copy(item: KryptonItemStack) = item.copy()
-    }
+    val SLOT: MetadataSerializer<KryptonItemStack> = create(6, ByteBuf::writeItem)
     @JvmField
     val BOOLEAN: MetadataSerializer<Boolean> = create(7, ByteBuf::writeBoolean)
     @JvmField

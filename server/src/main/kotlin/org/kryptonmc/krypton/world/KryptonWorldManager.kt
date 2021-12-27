@@ -46,6 +46,7 @@ import org.kryptonmc.krypton.world.rule.KryptonGameRuleHolder
 import java.io.File
 import java.nio.file.Path
 import java.util.concurrent.CompletableFuture
+import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.SynchronousQueue
 import java.util.concurrent.ThreadPoolExecutor
 import java.util.concurrent.TimeUnit
@@ -71,11 +72,12 @@ class KryptonWorldManager(
             }
         }
     )
+    val statsFolder = storageManager.resolve("stats")
 
     private val name = server.config.world.name
     private val data = checkNotNull(storageManager.load(server.config.world.name)) { "You must provide an existing world for Krypton!" }
 
-    override val worlds = mutableMapOf<ResourceKey<World>, KryptonWorld>()
+    override val worlds = ConcurrentHashMap<ResourceKey<World>, KryptonWorld>()
     override val default: KryptonWorld
         get() = worlds[World.OVERWORLD] ?: error("The default world has not yet been loaded!")
 

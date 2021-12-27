@@ -60,7 +60,7 @@ data class EntityQuery(
                 if (entities.isEmpty()) throw EntityArgumentExceptions.ENTITY_NOT_FOUND.create()
                 entities
             } else {
-                source.server.players + source.world.entities
+                source.server.players.plus(source.world.entities)
             }
         }
         Selector.NEAREST_PLAYER -> {

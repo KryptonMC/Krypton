@@ -35,12 +35,11 @@ import org.kryptonmc.nbt.io.TagCompression
 import org.kryptonmc.nbt.io.TagIO
 import java.util.UUID
 import java.util.concurrent.CompletableFuture
-import java.util.concurrent.ConcurrentMap
 import java.util.concurrent.Executors
 
 class KryptonUserManager(private val server: KryptonServer) : UserManager {
 
-    private val users: ConcurrentMap<UUID, KryptonUser> = MapMaker().weakValues().makeMap()
+    private val users: MutableMap<UUID, KryptonUser> = MapMaker().weakValues().makeMap()
     private val executor = Executors.newSingleThreadExecutor(threadFactory("Krypton User Data Loader") { daemon() })
 
     fun updateUser(uuid: UUID, data: CompoundTag) {
@@ -73,7 +72,11 @@ class KryptonUserManager(private val server: KryptonServer) : UserManager {
     private fun loadUser(profile: GameProfile?): User? {
         if (profile == null) return null
         val file = server.playerManager.dataManager.folder.resolve("${profile.uuid}.dat")
-        val nbt = TagIO.read(file, TagCompression.GZIP)
+        val nbt = try {
+            TagIO.read(file, TagCompression.GZIP)
+        } catch (exception: Exception) {
+            return null
+        }
 
         val version = if (nbt.contains("DataVersion", IntTag.ID)) nbt.getInt("DataVersion") else -1
         val data = if (server.useDataConverter && version < KryptonPlatform.worldVersion) {

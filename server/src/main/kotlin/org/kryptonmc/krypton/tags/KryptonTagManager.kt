@@ -20,41 +20,42 @@ package org.kryptonmc.krypton.tags
 
 import com.google.gson.Gson
 import com.google.gson.JsonObject
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.ImmutableMap
+import kotlinx.collections.immutable.PersistentList
+import kotlinx.collections.immutable.persistentHashMapOf
+import kotlinx.collections.immutable.persistentListOf
 import net.kyori.adventure.key.Key
 import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.api.tags.Tag
 import org.kryptonmc.api.tags.TagManager
 import org.kryptonmc.api.tags.TagType
-import java.util.Collections
-import java.util.concurrent.ConcurrentHashMap
-import java.util.concurrent.CopyOnWriteArrayList
 
 @Suppress("UNCHECKED_CAST")
 object KryptonTagManager : TagManager {
 
-    private val GSON = Gson()
-    private val TAG_MAP = ConcurrentHashMap<TagType<out Any>, MutableList<KryptonTag<out Any>>>()
-    override val tags: Map<TagType<*>, List<Tag<*>>> = Collections.unmodifiableMap(TAG_MAP)
-
-    @JvmStatic
-    fun bootstrap() {
+    override val tags: ImmutableMap<TagType<*>, ImmutableList<Tag<*>>> by lazy {
+        val gson = Gson()
+        val tagMap = persistentHashMapOf<TagType<*>, PersistentList<Tag<*>>>().builder()
         Registries.TAG_TYPES.values.forEach { type ->
             if (type !is KryptonTagType) return@forEach
             val json = ClassLoader.getSystemResourceAsStream(type.path)!!.reader().use {
-                GSON.fromJson(it, JsonObject::class.java)
+                gson.fromJson(it, JsonObject::class.java)
             }
-            val identifierMap = TAG_MAP.getOrPut(type) { CopyOnWriteArrayList() }
+            val identifiers = persistentListOf<Tag<*>>().builder()
             json.keySet().forEach {
                 val tag = KryptonTag(Key.key(it), type, keys(json, it))
-                identifierMap.add(tag)
+                identifiers.add(tag)
             }
+            tagMap[type] = identifiers.build()
         }
+        tagMap.build()
     }
 
-    override fun <T : Any> get(type: TagType<T>): List<Tag<T>> = TAG_MAP[type] as? List<Tag<T>> ?: emptyList()
+    override fun <T : Any> get(type: TagType<T>): List<Tag<T>> = tags[type] as? List<Tag<T>> ?: emptyList()
 
     override fun <T : Any> get(type: TagType<T>, name: String): KryptonTag<T>? {
-        val tags = TAG_MAP[type] ?: return null
+        val tags = tags[type] ?: return null
         return tags.firstOrNull { it.key().asString() == name } as? KryptonTag<T>
     }
 

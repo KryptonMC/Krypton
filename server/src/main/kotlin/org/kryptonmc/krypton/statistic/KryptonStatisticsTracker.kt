@@ -40,14 +40,11 @@ import org.kryptonmc.krypton.KryptonPlatform
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.packet.out.play.PacketOutStatistics
 import org.kryptonmc.krypton.util.logger
-import org.kryptonmc.krypton.util.tryCreateFile
 import java.io.IOException
 import java.io.Reader
+import java.nio.file.Files
 import java.nio.file.Path
-import kotlin.io.path.exists
-import kotlin.io.path.isRegularFile
-import kotlin.io.path.reader
-import kotlin.io.path.writer
+import java.nio.file.StandardOpenOption
 import kotlin.math.max
 import kotlin.math.min
 
@@ -68,8 +65,15 @@ class KryptonStatisticsTracker(
 
     init {
         statistics.defaultReturnValue(0)
-        if (file.isRegularFile()) load(file.reader())
-        if (!file.exists()) file.tryCreateFile()
+        if (Files.isRegularFile(file)) load(Files.newInputStream(file, StandardOpenOption.READ).reader())
+        if (!Files.exists(file)) {
+            try {
+                Files.createFile(file)
+            } catch (exception: Exception) {
+                LOGGER.error("Failed to create statistics file ${file.toAbsolutePath()}!", exception)
+                throw exception
+            }
+        }
     }
 
     @Suppress("UNCHECKED_CAST")
@@ -88,7 +92,7 @@ class KryptonStatisticsTracker(
                 add("stats", statsJson)
                 addProperty("DataVersion", KryptonPlatform.worldVersion)
             }.toString()
-            file.writer().use { it.write(json) }
+            Files.newOutputStream(file).writer().use { it.write(json) }
         } catch (exception: IOException) {
             LOGGER.error("Failed to save statistics file $file!", exception)
         }

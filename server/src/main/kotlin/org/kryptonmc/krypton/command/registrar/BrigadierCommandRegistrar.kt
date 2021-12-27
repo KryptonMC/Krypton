@@ -35,9 +35,5 @@ class BrigadierCommandRegistrar(lock: Lock) : KryptonCommandRegistrar<BrigadierC
         val literal = command.node
         val name = literal.name
         if (name == name.lowercase()) register(root, literal)
-        meta.aliases.forEach {
-            if (it == name) return@forEach
-            register(root, literal, it)
-        }
     }
 }

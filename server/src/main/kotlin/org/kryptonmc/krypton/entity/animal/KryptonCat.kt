@@ -27,8 +27,8 @@ import org.kryptonmc.api.entity.animal.type.CatType
 import org.kryptonmc.api.entity.attribute.AttributeTypes
 import org.kryptonmc.api.item.ItemStack
 import org.kryptonmc.api.item.ItemTypes
-import org.kryptonmc.api.item.meta.DyeColor
-import org.kryptonmc.api.item.meta.DyeColors
+import org.kryptonmc.api.item.data.DyeColor
+import org.kryptonmc.api.item.data.DyeColors
 import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.world.KryptonWorld

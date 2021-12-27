@@ -43,8 +43,8 @@ class AttributeTests {
 
     companion object {
 
-        const val BASE = 3.0
-        val MODIFIERS = setOf(
+        private const val BASE = 3.0
+        private val MODIFIERS = setOf(
             KryptonAttributeModifier("1", UUID.randomUUID(), 2.0),
             KryptonAttributeModifier("2", UUID.randomUUID(), 4.0)
         )

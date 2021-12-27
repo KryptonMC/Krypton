@@ -25,12 +25,13 @@ import org.kryptonmc.api.item.ItemStack
 import org.kryptonmc.api.item.ItemTypes
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.item.KryptonItemStack
+import org.kryptonmc.krypton.item.meta.KryptonItemMeta
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.nbt.CompoundTag
 
 class KryptonTrident(world: KryptonWorld) : KryptonArrowLike(world, EntityTypes.TRIDENT, SoundEvents.TRIDENT_HIT_GROUND), Trident {
 
-    override var item: KryptonItemStack = KryptonItemStack(ItemTypes.TRIDENT, 1)
+    override var item: KryptonItemStack = DEFAULT_ITEM
     override var dealtDamage = false
 
     override var loyaltyLevel: Int
@@ -54,5 +55,10 @@ class KryptonTrident(world: KryptonWorld) : KryptonArrowLike(world, EntityTypes.
     override fun save(): CompoundTag.Builder = super.save().apply {
         boolean("DealtDamage", dealtDamage)
         put("Trident", item.save(CompoundTag.builder()).build())
+    }
+
+    companion object {
+
+        private val DEFAULT_ITEM = KryptonItemStack(ItemTypes.TRIDENT, 1, KryptonItemMeta.DEFAULT)
     }
 }

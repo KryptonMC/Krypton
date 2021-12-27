@@ -26,7 +26,6 @@ import net.kyori.adventure.bossbar.BossBar
 import net.kyori.adventure.identity.Identity
 import net.kyori.adventure.inventory.Book
 import net.kyori.adventure.key.Key
-import net.kyori.adventure.key.Key.key
 import net.kyori.adventure.sound.Sound
 import net.kyori.adventure.sound.SoundStop
 import net.kyori.adventure.text.Component
@@ -50,7 +49,6 @@ import org.kryptonmc.api.event.player.ItemDropEvent
 import org.kryptonmc.api.event.player.PerformActionEvent
 import org.kryptonmc.api.item.ItemStack
 import org.kryptonmc.api.item.ItemTypes
-import org.kryptonmc.api.item.meta.MetaKeys
 import org.kryptonmc.api.permission.PermissionFunction
 import org.kryptonmc.api.permission.PermissionProvider
 import org.kryptonmc.api.registry.Registries
@@ -66,7 +64,6 @@ import org.kryptonmc.api.world.GameMode
 import org.kryptonmc.api.world.World
 import org.kryptonmc.api.world.dimension.DimensionType
 import org.kryptonmc.krypton.KryptonPlatform
-import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.adventure.KryptonAdventure
 import org.kryptonmc.krypton.auth.KryptonGameProfile
 import org.kryptonmc.krypton.commands.KryptonPermission
@@ -77,7 +74,6 @@ import org.kryptonmc.krypton.entity.KryptonLivingEntity
 import org.kryptonmc.krypton.entity.item.KryptonItemEntity
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.inventory.KryptonPlayerInventory
-import org.kryptonmc.krypton.item.EmptyItemStack
 import org.kryptonmc.krypton.item.KryptonItemStack
 import org.kryptonmc.krypton.item.handler
 import org.kryptonmc.krypton.network.SessionHandler
@@ -88,7 +84,6 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutActionBar
 import org.kryptonmc.krypton.packet.out.play.PacketOutCamera
 import org.kryptonmc.krypton.packet.out.play.PacketOutChangeGameState
 import org.kryptonmc.krypton.packet.out.play.PacketOutChat
-import org.kryptonmc.krypton.packet.out.play.PacketOutChunkDataAndLight
 import org.kryptonmc.krypton.packet.out.play.PacketOutClearTitles
 import org.kryptonmc.krypton.packet.out.play.PacketOutEntityPosition
 import org.kryptonmc.krypton.packet.out.play.PacketOutEntitySoundEffect
@@ -115,10 +110,11 @@ import org.kryptonmc.krypton.service.KryptonVanishService
 import org.kryptonmc.krypton.util.*
 import org.kryptonmc.krypton.statistic.KryptonStatisticsTracker
 import org.kryptonmc.krypton.util.BossBarManager
+import org.kryptonmc.krypton.util.Directions
+import org.kryptonmc.krypton.util.InteractionResult
+import org.kryptonmc.krypton.util.Positioning
 import org.kryptonmc.krypton.util.serialization.Codecs
 import org.kryptonmc.krypton.util.serialization.encode
-import org.kryptonmc.krypton.util.logger
-import org.kryptonmc.krypton.util.tryCreateDirectory
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.krypton.world.chunk.ChunkPosition
 import org.kryptonmc.nbt.CompoundTag
@@ -127,7 +123,6 @@ import org.kryptonmc.nbt.StringTag
 import org.spongepowered.math.vector.Vector3d
 import org.spongepowered.math.vector.Vector3i
 import java.net.InetSocketAddress
-import java.time.Duration
 import java.time.Instant
 import java.util.Locale
 import java.util.UUID
@@ -213,24 +208,18 @@ class KryptonPlayer(
             }
             if (!isOnGround && !super.isGliding && !inWater) {
                 val chestplate = inventory.armor(ArmorSlot.CHESTPLATE)
-                val damage = chestplate.meta[MetaKeys.DAMAGE] ?: 0
-                if (chestplate.type === ItemTypes.ELYTRA && damage < chestplate.type.durability - 1) {
-                    super.isGliding = true
-                }
+                if (chestplate.type === ItemTypes.ELYTRA && chestplate.meta.damage < chestplate.type.durability - 1) super.isGliding = true
             }
         }
     override val inventory = KryptonPlayerInventory(this)
     override val handSlots: Iterable<KryptonItemStack>
-        get() = listOf(inventory.mainHand, inventory.offHand)
+        get() = sequenceOf(inventory.mainHand, inventory.offHand).asIterable()
     override val armorSlots: Iterable<KryptonItemStack>
         get() = inventory.armor
 
     override val scoreboard = world.scoreboard
     override var locale: Locale? = null
-    override val statistics = KryptonStatisticsTracker(
-        this,
-        world.folder.resolve("stats").tryCreateDirectory().resolve("$uuid.json")
-    )
+    override val statistics = KryptonStatisticsTracker(this, server.worldManager.statsFolder.resolve("$uuid.json"))
     override val cooldowns = KryptonCooldownTracker(this)
     override val teamRepresentation = name
     override val pushedByFluid = !isFlying
@@ -365,10 +354,7 @@ class KryptonPlayer(
         if (!isLoaded) return
         updateAbilities()
         onAbilitiesUpdate()
-        server.playerManager.sendToAll(PacketOutPlayerInfo(
-            PacketOutPlayerInfo.Action.UPDATE_GAMEMODE,
-            this
-        ))
+        server.sessionManager.sendGrouped(PacketOutPlayerInfo(PacketOutPlayerInfo.Action.UPDATE_GAMEMODE, this))
         session.send(PacketOutChangeGameState(GameState.CHANGE_GAMEMODE, mode.ordinal.toFloat()))
         if (mode != GameMode.SPECTATOR) camera = this
     }
@@ -377,7 +363,7 @@ class KryptonPlayer(
         slot == EquipmentSlot.MAIN_HAND -> inventory.mainHand
         slot == EquipmentSlot.OFF_HAND -> inventory.offHand
         slot.type == EquipmentSlot.Type.ARMOR -> inventory.armor[slot.index]
-        else -> EmptyItemStack
+        else -> KryptonItemStack.EMPTY
     }
 
     override fun setEquipment(slot: EquipmentSlot, item: KryptonItemStack) {
@@ -620,20 +606,24 @@ class KryptonPlayer(
             // TODO: Open spectator menu
             return InteractionResult.PASS
         }
+        // FIXME
+        /*
         var heldItem = heldItem(hand)
-        val heldCopy = heldItem.copy()
         val result = entity.interact(this, hand)
         if (result.consumesAction) {
-            if (canInstantlyBuild && heldItem === heldItem(hand) && heldItem.amount < heldCopy.amount) heldItem.amount = heldCopy.amount
+            if (canInstantlyBuild && heldItem === heldItem(hand)) {
+                setHeldItem(hand, heldItem.withAmount())
+                heldItem.amount = heldCopy.amount
+            }
             return result
         }
         if (heldItem.isEmpty() || entity !is KryptonLivingEntity) return InteractionResult.PASS
-        if (canInstantlyBuild) heldItem = heldCopy
         val interactResult = heldItem.type.handler().interactEntity(heldItem, this, entity, hand)
         if (interactResult.consumesAction) {
-            if (heldItem.isEmpty() && !canInstantlyBuild) setHeldItem(hand, EmptyItemStack)
+            if (heldItem.isEmpty() && !canInstantlyBuild) setHeldItem(hand, KryptonItemStack.EMPTY)
             return interactResult
         }
+         */
         return InteractionResult.PASS
     }
 
@@ -750,10 +740,6 @@ class KryptonPlayer(
         session.send(PacketOutTitleTimes(fadeInTicks, stayTicks, fadeOutTicks))
     }
 
-    fun sendTitleTimes(fadeIn: Duration, stay: Duration, fadeOut: Duration) {
-        session.send(PacketOutTitleTimes(fadeIn, stay, fadeOut))
-    }
-
     override fun clearTitle() {
         session.send(PacketOutClearTitles(false))
     }
@@ -762,11 +748,17 @@ class KryptonPlayer(
         session.send(PacketOutClearTitles(true))
     }
 
-    override fun showBossBar(bar: BossBar) = BossBarManager.addBar(bar, this)
+    override fun showBossBar(bar: BossBar) {
+        BossBarManager.addBar(bar, this)
+    }
 
-    override fun hideBossBar(bar: BossBar) = BossBarManager.removeBar(bar, this)
+    override fun hideBossBar(bar: BossBar) {
+        BossBarManager.removeBar(bar, this)
+    }
 
-    override fun playSound(sound: Sound) = playSound(sound, location.x(), location.y(), location.z())
+    override fun playSound(sound: Sound) {
+        playSound(sound, location.x(), location.y(), location.z())
+    }
 
     override fun playSound(sound: Sound, x: Double, y: Double, z: Double) {
         val type = Registries.SOUND_EVENT[sound.name()]
@@ -805,7 +797,10 @@ class KryptonPlayer(
     }
 
     override fun openBook(book: Book) {
-        val item = KryptonAdventure.toItemStack(book)
+        openBook(KryptonAdventure.toItemStack(book))
+    }
+
+    fun openBook(item: KryptonItemStack) {
         val slot = inventory.items.size + inventory.heldSlot
         val stateId = inventory.stateId
         session.send(PacketOutSetSlot(0, stateId, slot, item))
@@ -873,7 +868,7 @@ class KryptonPlayer(
             da.compareTo(db)
         }
 
-        visibleChunks += newChunks
+        visibleChunks.addAll(newChunks)
         world.chunkManager.addPlayer(
             this,
             centralX,
@@ -885,14 +880,15 @@ class KryptonPlayer(
             session.send(PacketOutUpdateViewPosition(centralX, centralZ))
             newChunks.forEach {
                 val chunk = world.chunkManager[it] ?: return@forEach
-                session.send(PacketOutChunkDataAndLight(chunk))
+                session.write(chunk.packet())
             }
 
-            previousChunks?.forEach {
+            if (previousChunks == null) return@thenRun
+            previousChunks.forEach {
                 session.send(PacketOutUnloadChunk(it.toInt(), (it shr 32).toInt()))
-                visibleChunks -= it
+                visibleChunks.remove(it)
             }
-            previousChunks?.clear()
+            previousChunks.clear()
         }
     }
 
