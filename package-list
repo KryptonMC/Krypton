@@ -86,6 +86,7 @@ org.kryptonmc.krypton.config.serializer
 org.kryptonmc.krypton.console
 org.kryptonmc.krypton.effect
 org.kryptonmc.krypton.effect.particle
+org.kryptonmc.krypton.effect.particle.builder
 org.kryptonmc.krypton.effect.particle.data
 org.kryptonmc.krypton.effect.sound
 org.kryptonmc.krypton.entity
@@ -100,6 +101,7 @@ org.kryptonmc.krypton.entity.metadata
 org.kryptonmc.krypton.entity.monster
 org.kryptonmc.krypton.entity.player
 org.kryptonmc.krypton.entity.projectile
+org.kryptonmc.krypton.event
 org.kryptonmc.krypton.inventory
 org.kryptonmc.krypton.item
 org.kryptonmc.krypton.item.data
