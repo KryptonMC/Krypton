@@ -52,7 +52,8 @@ class PluginAnnotationProcessor : AbstractProcessor() {
             val qualifiedName = element.qualifiedName.toString()
             if (pluginClassFound == qualifiedName) {
                 if (!warnedAboutMultiplePlugins) {
-                    processingEnv.messager.warn("Krypton does not currently support multiple plugins. We are using $pluginClassFound for your plugin's main class.")
+                    processingEnv.messager.warn("Krypton does not currently support multiple plugins. We are using $pluginClassFound for your " +
+                            "plugin's main class.")
                     warnedAboutMultiplePlugins = true
                 }
                 return false
@@ -60,7 +61,8 @@ class PluginAnnotationProcessor : AbstractProcessor() {
 
             val plugin = element.getAnnotation(Plugin::class.java)
             if (!plugin.id.matches(SerializedPluginDescription.ID_REGEX)) {
-                processingEnv.messager.error("Invalid ID for plugin $qualifiedName! IDs must start alphabetically, and only contain alphanumeric characters, dashes or underscores! (Regex: ${SerializedPluginDescription.ID_REGEX})")
+                processingEnv.messager.error("Invalid ID for plugin $qualifiedName! IDs must start alphabetically, and only contain alphanumeric " +
+                        "characters, dashes or underscores! (Regex: ${SerializedPluginDescription.ID_REGEX})")
                 return false
             }
 
@@ -79,8 +81,14 @@ class PluginAnnotationProcessor : AbstractProcessor() {
 
     companion object {
 
-        private fun Messager.warn(message: String) = printMessage(Diagnostic.Kind.WARNING, message)
+        @JvmStatic
+        private fun Messager.warn(message: String) {
+            printMessage(Diagnostic.Kind.WARNING, message)
+        }
 
-        private fun Messager.error(message: String) = printMessage(Diagnostic.Kind.ERROR, message)
+        @JvmStatic
+        private fun Messager.error(message: String) {
+            printMessage(Diagnostic.Kind.ERROR, message)
+        }
     }
 }

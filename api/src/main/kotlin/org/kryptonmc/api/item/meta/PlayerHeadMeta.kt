@@ -15,7 +15,7 @@ import org.kryptonmc.api.auth.GameProfile
  * Item metadata for a player head.
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
-public interface PlayerHeadMeta : ScopedItemMeta<PlayerHeadMeta>, ItemMetaBuilder.Provider<PlayerHeadMeta.Builder> {
+public interface PlayerHeadMeta : ScopedItemMeta<PlayerHeadMeta.Builder, PlayerHeadMeta> {
 
     /**
      * The profile of the player that the head belongs to.
@@ -29,11 +29,13 @@ public interface PlayerHeadMeta : ScopedItemMeta<PlayerHeadMeta>, ItemMetaBuilde
      * @param owner the new owner
      * @return new item metadata
      */
+    @Contract("_ -> new", pure = true)
     public fun withOwner(owner: GameProfile?): PlayerHeadMeta
 
     /**
      * A builder for building player head metadata.
      */
+    @MetaDsl
     public interface Builder : ItemMetaBuilder<Builder, PlayerHeadMeta> {
 
         /**
@@ -42,6 +44,7 @@ public interface PlayerHeadMeta : ScopedItemMeta<PlayerHeadMeta>, ItemMetaBuilde
          * @param owner the owner
          * @return this builder
          */
+        @MetaDsl
         @Contract("_ -> this", mutates = "this")
         public fun owner(owner: GameProfile?): Builder
     }
@@ -54,6 +57,7 @@ public interface PlayerHeadMeta : ScopedItemMeta<PlayerHeadMeta>, ItemMetaBuilde
          * @return a new builder
          */
         @JvmStatic
-        public fun builder(): Builder = ItemMeta.FACTORY.builder(PlayerHeadMeta::class.java)
+        @Contract("_ -> new", pure = true)
+        public fun builder(): Builder = ItemMeta.builder(PlayerHeadMeta::class.java)
     }
 }

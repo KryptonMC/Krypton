@@ -41,7 +41,15 @@ data class PacketOutBossBar(
 
     constructor(action: Action, bar: BossBarManager.BossBarHolder) : this(action, bar.id, bar.bar)
 
-    constructor(action: Action, uuid: UUID, bar: BossBar) : this(action, uuid, bar.name(), bar.progress(), bar.color(), bar.overlay(), bar.flagsToProtocol())
+    constructor(action: Action, uuid: UUID, bar: BossBar) : this(
+        action,
+        uuid,
+        bar.name(),
+        bar.progress(),
+        bar.color(),
+        bar.overlay(),
+        flagsToProtocol(bar)
+    )
 
     override fun write(buf: ByteBuf) {
         buf.writeUUID(uuid)
@@ -86,11 +94,12 @@ data class PacketOutBossBar(
 
     companion object {
 
-        private fun BossBar.flagsToProtocol(): Int {
+        @JvmStatic
+        private fun flagsToProtocol(bar: BossBar): Int {
             var byte = 0
-            if (hasFlag(BossBar.Flag.DARKEN_SCREEN)) byte = byte or 1
-            if (hasFlag(BossBar.Flag.PLAY_BOSS_MUSIC)) byte = byte or 2
-            if (hasFlag(BossBar.Flag.CREATE_WORLD_FOG)) byte = byte or 4
+            if (bar.hasFlag(BossBar.Flag.DARKEN_SCREEN)) byte = byte or 1
+            if (bar.hasFlag(BossBar.Flag.PLAY_BOSS_MUSIC)) byte = byte or 2
+            if (bar.hasFlag(BossBar.Flag.CREATE_WORLD_FOG)) byte = byte or 4
             return byte
         }
     }

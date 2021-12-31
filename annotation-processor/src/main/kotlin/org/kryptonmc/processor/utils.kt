@@ -20,7 +20,7 @@ package org.kryptonmc.processor
 
 import org.kryptonmc.api.plugin.annotation.Plugin
 
-fun Plugin.toDescription(qualifiedName: String) = SerializedPluginDescription(
+fun Plugin.toDescription(qualifiedName: String): SerializedPluginDescription = SerializedPluginDescription(
     id,
     name,
     version,

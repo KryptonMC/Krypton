@@ -25,7 +25,7 @@ import org.kryptonmc.nbt.CompoundTag
 
 class KryptonSpectralArrow(world: KryptonWorld) : KryptonArrowLike(world, EntityTypes.SPECTRAL_ARROW), SpectralArrow {
 
-    override var duration = 200
+    override var duration: Int = 200
 
     override fun load(tag: CompoundTag) {
         super.load(tag)

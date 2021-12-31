@@ -51,9 +51,11 @@ abstract class KryptonFish(world: KryptonWorld, type: EntityType<out Fish>) : Kr
         loadDefaultsFromBucket(this, tag)
     }
 
+    /* FIXME
     override fun saveToBucket(item: KryptonItemStack) {
         saveDefaultsToBucket(this, item)
     }
+     */
 
     override fun load(tag: CompoundTag) {
         super.load(tag)

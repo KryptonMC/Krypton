@@ -23,8 +23,8 @@ import net.kyori.adventure.inventory.Book
 import net.kyori.adventure.text.TranslatableComponent
 import net.kyori.adventure.text.flattener.ComponentFlattener
 import net.kyori.adventure.text.format.NamedTextColor
-import org.kryptonmc.api.adventure.complexMapper
 import org.kryptonmc.api.item.ItemTypes
+import org.kryptonmc.api.item.item
 import org.kryptonmc.api.item.meta
 import org.kryptonmc.api.item.meta.WrittenBookMeta
 import org.kryptonmc.krypton.item.KryptonItemStack
@@ -72,14 +72,14 @@ object KryptonAdventure {
     @JvmStatic
     fun toItemStack(book: Book): KryptonItemStack {
         if (book is KryptonWrittenBookMeta) return KryptonItemStack(ItemTypes.WRITTEN_BOOK, 1, book)
-        return KryptonItemStack.Builder()
-            .type(ItemTypes.WRITTEN_BOOK)
-            .amount(1)
-            .meta<WrittenBookMeta.Builder, WrittenBookMeta> {
+        return item {
+            type(ItemTypes.WRITTEN_BOOK)
+            amount(1)
+            meta<WrittenBookMeta.Builder, WrittenBookMeta> {
                 title(book.title())
                 author(book.author())
                 pages(book.pages())
             }
-            .build() as KryptonItemStack
+        } as KryptonItemStack
     }
 }

@@ -26,7 +26,7 @@ import kotlinx.collections.immutable.toPersistentList
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer
-import org.kryptonmc.api.adventure.toJsonString
+import org.kryptonmc.api.adventure.toJson
 import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.item.data.ItemFlag
 import org.kryptonmc.api.item.meta.ItemMeta
@@ -81,58 +81,58 @@ abstract class AbstractItemMeta<I : ItemMeta>(
     }
 
     protected open fun saveDisplay(): CompoundTag.Builder = buildCompound {
-        if (name != null) string("Name", name.toJsonString())
-        if (lore.isNotEmpty()) list("Lore", StringTag.ID, lore.map { StringTag.of(it.toJsonString()) })
+        if (name != null) string("Name", name.toJson())
+        if (lore.isNotEmpty()) list("Lore", StringTag.ID, lore.map { StringTag.of(it.toJson()) })
     }
 
-    override fun hasFlag(flag: ItemFlag): Boolean = hideFlags and flag.mask() != 0
+    final override fun hasFlag(flag: ItemFlag): Boolean = hideFlags and flag.mask() != 0
 
-    override fun withDamage(damage: Int): I {
+    final override fun withDamage(damage: Int): I {
         if (damage == this.damage) return this as I
         return copy(damage = damage)
     }
 
-    override fun withUnbreakable(unbreakable: Boolean): I {
+    final override fun withUnbreakable(unbreakable: Boolean): I {
         if (unbreakable == isUnbreakable) return this as I
         return copy(isUnbreakable = unbreakable)
     }
 
-    override fun withCustomModelData(data: Int): I {
+    final override fun withCustomModelData(data: Int): I {
         if (data == customModelData) return this as I
         return copy(customModelData = data)
     }
 
-    override fun withName(name: Component?): I {
+    final override fun withName(name: Component?): I {
         if (name == this.name) return this as I
         return copy(name = name)
     }
 
-    override fun withLore(lore: Iterable<Component>): I = copy(lore = lore.toPersistentList())
+    final override fun withLore(lore: Iterable<Component>): I = copy(lore = lore.toPersistentList())
 
-    override fun addLore(lore: Component): I = copy(lore = this.lore.add(lore))
+    final override fun addLore(lore: Component): I = copy(lore = this.lore.add(lore))
 
-    override fun removeLore(index: Int): I = copy(lore = this.lore.removeAt(index))
+    final override fun removeLore(index: Int): I = copy(lore = this.lore.removeAt(index))
 
-    override fun removeLore(lore: Component): I = copy(lore = this.lore.remove(lore))
+    final override fun removeLore(lore: Component): I = copy(lore = this.lore.remove(lore))
 
-    override fun withHideFlags(flags: Int): I {
+    final override fun withHideFlags(flags: Int): I {
         if (flags == hideFlags) return this as I
         return copy(hideFlags = flags)
     }
 
-    override fun withHideFlag(flag: ItemFlag): I {
+    final override fun withHideFlag(flag: ItemFlag): I {
         if (hideFlags and flag.mask() != 0) return this as I
         return withHideFlags(hideFlags or flag.mask())
     }
 
-    override fun withoutHideFlag(flag: ItemFlag): I {
+    final override fun withoutHideFlag(flag: ItemFlag): I {
         if (hideFlags and flag.mask() == 0) return this as I
         return copy(hideFlags = hideFlags and flag.mask().inv())
     }
 
-    override fun withCanDestroy(blocks: Iterable<Block>): I = copy(canDestroy = blocks.toImmutableSet())
+    final override fun withCanDestroy(blocks: Iterable<Block>): I = copy(canDestroy = blocks.toImmutableSet())
 
-    override fun withCanPlaceOn(blocks: Iterable<Block>): I = copy(canPlaceOn = blocks.toImmutableSet())
+    final override fun withCanPlaceOn(blocks: Iterable<Block>): I = copy(canPlaceOn = blocks.toImmutableSet())
 
     protected open fun equalTo(other: I): Boolean = damage == other.damage &&
             isUnbreakable == other.isUnbreakable &&
@@ -146,7 +146,7 @@ abstract class AbstractItemMeta<I : ItemMeta>(
     protected fun partialToString(): String = "damage=$damage, isUnbreakable=$isUnbreakable, customModelData=$customModelData, name=$name, " +
             "lore=$lore, hideFlags=$hideFlags, canDestroy=$canDestroy, canPlaceOn=$canPlaceOn"
 
-    override fun equals(other: Any?): Boolean {
+    final override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
         return equalTo(other as I)

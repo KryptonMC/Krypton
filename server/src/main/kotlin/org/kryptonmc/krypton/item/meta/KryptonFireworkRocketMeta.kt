@@ -67,7 +67,18 @@ class KryptonFireworkRocketMeta(
         hideFlags: Int,
         canDestroy: ImmutableSet<Block>,
         canPlaceOn: ImmutableSet<Block>
-    ): KryptonFireworkRocketMeta = copy(damage, isUnbreakable, customModelData, name, lore, hideFlags, canDestroy, canPlaceOn)
+    ): KryptonFireworkRocketMeta = copy(
+        damage,
+        isUnbreakable,
+        customModelData,
+        name,
+        lore,
+        hideFlags,
+        canDestroy,
+        canPlaceOn,
+        effects,
+        flightDuration
+    )
 
     override fun saveData(): CompoundTag.Builder = super.saveData().apply {
         compound("Fireworks") {

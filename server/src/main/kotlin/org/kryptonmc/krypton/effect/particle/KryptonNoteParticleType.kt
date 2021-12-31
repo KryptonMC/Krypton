@@ -16,20 +16,17 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.world.biome
+package org.kryptonmc.krypton.effect.particle
+
+import net.kyori.adventure.key.Key
+import org.kryptonmc.api.effect.particle.NoteParticleType
+import org.kryptonmc.api.effect.particle.builder.NoteParticleEffectBuilder
+import org.kryptonmc.krypton.effect.particle.builder.KryptonNoteParticleEffectBuilder
 
 @JvmRecord
-data class ClimateParameters(
-    val temperature: Float,
-    val humidity: Float,
-    val altitude: Float,
-    val weirdness: Float,
-    val offset: Float
-) {
+data class KryptonNoteParticleType(private val key: Key) : NoteParticleType {
 
-    fun fitness(other: ClimateParameters): Float = (temperature - other.temperature) * (temperature - other.temperature) +
-            (humidity - other.humidity) * (humidity - other.humidity) +
-            (altitude - other.altitude) * (altitude - other.altitude) +
-            (weirdness - other.weirdness) * (weirdness - other.weirdness) +
-            (offset - other.offset) * (offset - other.offset)
+    override fun key(): Key = key
+
+    override fun builder(): NoteParticleEffectBuilder = KryptonNoteParticleEffectBuilder(this)
 }

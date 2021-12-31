@@ -15,11 +15,13 @@ import org.kryptonmc.api.event.ResultedEvent
 /**
  * Called when the given [player] performs the given [action].
  */
+@Suppress("INAPPLICABLE_JVM_NAME")
 public data class PerformActionEvent(
-    public val player: Player,
-    public val action: Action
+    @get:JvmName("players") public val player: Player,
+    @get:JvmName("action") public val action: Action
 ) : ResultedEvent<GenericResult> {
 
+    @get:JvmName("result")
     override var result: GenericResult = GenericResult.allowed()
 
     /**

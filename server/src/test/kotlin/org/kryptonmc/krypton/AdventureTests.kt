@@ -28,7 +28,7 @@ import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer
 import net.kyori.adventure.util.Codec
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.assertThrows
-import org.kryptonmc.api.adventure.toJsonString
+import org.kryptonmc.api.adventure.toJson
 import org.kryptonmc.api.adventure.toPlainText
 import org.kryptonmc.api.item.meta
 import org.kryptonmc.api.item.meta.WrittenBookMeta
@@ -108,7 +108,7 @@ class AdventureTests {
         val name = Component.text("What a name")
 
         // Standard
-        val input = Component.text("{type:'minecraft:pig',id:'$uuid',name:'${name.toJsonString()}'}")
+        val input = Component.text("{type:'minecraft:pig',id:'$uuid',name:'${name.toJson()}'}")
         val entity = HoverEvent.ShowEntity.of(Key.key("pig"), uuid, name)
         assertEquals(entity, NBTLegacyHoverEventSerializer.deserializeShowEntity(input, DECODER))
 
@@ -123,7 +123,7 @@ class AdventureTests {
         val name = Component.text("What a name")
 
         // Standard
-        val output = Component.text("{id:\"$uuid\",name:'${name.toJsonString()}',type:\"minecraft:pig\"}")
+        val output = Component.text("{id:\"$uuid\",name:'${name.toJson()}',type:\"minecraft:pig\"}")
         val entity = HoverEvent.ShowEntity.of(Key.key("pig"), uuid, name)
         assertEquals(output, NBTLegacyHoverEventSerializer.serializeShowEntity(entity, ENCODER))
     }

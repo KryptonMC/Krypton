@@ -29,7 +29,7 @@ class SortedArraySet<T>(
 ) : AbstractMutableSet<T>() {
 
     private var contents = arrayOfNulls<Any>(initialCapacity) as Array<T?>
-    override var size = 0
+    override var size: Int = 0
 
     val first: T?
         get() = contents[0]

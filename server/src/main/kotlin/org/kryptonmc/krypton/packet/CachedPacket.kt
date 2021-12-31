@@ -24,10 +24,7 @@ import java.lang.ref.SoftReference
 import java.util.concurrent.atomic.AtomicIntegerFieldUpdater
 import java.util.function.Supplier
 
-class CachedPacket(
-    private val compressionThreshold: Int,
-    private val supplier: Supplier<Packet>
-) : GenericPacket {
+class CachedPacket(private val supplier: Supplier<Packet>) : GenericPacket {
 
     // 0 means that the reference needs to be updated
     // Anything else (currently 1) means that the packet is up-to-date
@@ -37,7 +34,7 @@ class CachedPacket(
 
     val body: ByteBuf
         get() {
-            val cache = updatedCache() ?: return supplier.get().frame(compressionThreshold)
+            val cache = updatedCache() ?: return supplier.get().frame()
             return cache.body
         }
 
@@ -56,7 +53,7 @@ class CachedPacket(
         val reference = packet
         var cached: FramedPacket? = null
         if (updated == 0 || reference == null || reference.get() == null) {
-            cached = FramedPacket(supplier.get().frame(compressionThreshold))
+            cached = FramedPacket(supplier.get().frame())
             packet = SoftReference(cached)
             UPDATER.compareAndSet(this, 0, 1)
         }

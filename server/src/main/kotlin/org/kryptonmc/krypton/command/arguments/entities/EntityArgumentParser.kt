@@ -25,7 +25,7 @@ import com.mojang.brigadier.StringReader
  */
 object EntityArgumentParser {
 
-    const val SELECTOR_CHAR = '@'
+    const val SELECTOR_CHAR: Char = '@'
     private const val OPENING_BRACKET = '['
     private const val CLOSING_BRACKET = ']'
     private const val SELECTOR_SEPARATOR = ','
@@ -33,13 +33,7 @@ object EntityArgumentParser {
     private const val KEY_VALUE_SEPARATOR = '='
 
     @JvmStatic
-    fun parse(
-        reader: StringReader,
-        operation: Char,
-        position: Int,
-        onlyPlayers: Boolean,
-        singleTarget: Boolean,
-    ): EntityQuery = when (operation) {
+    fun parse(reader: StringReader, operation: Char, position: Int, onlyPlayers: Boolean, singleTarget: Boolean): EntityQuery = when (operation) {
         EntityQuery.Selector.NEAREST_PLAYER_CHAR -> EntityQuery(emptyList(), EntityQuery.Selector.NEAREST_PLAYER)
         EntityQuery.Selector.ALL_ENTITIES_CHAR -> {
             if (singleTarget) {

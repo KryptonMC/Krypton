@@ -64,6 +64,6 @@ class NormalNoise(random: RandomSource, firstOctave: Int, amplitudes: DoubleList
         private const val TARGET_DEVIATION = 0.3333333333333333
 
         @JvmStatic
-        private fun Int.expectedDeviation() = 0.1 * (1.0 + 1.0 / (this + 1).toDouble())
+        private fun Int.expectedDeviation(): Double = 0.1 * (1.0 + 1.0 / (this + 1).toDouble())
     }
 }

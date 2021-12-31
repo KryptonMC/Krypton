@@ -20,17 +20,23 @@ package org.kryptonmc.krypton.packet.out.play
 
 import io.netty.buffer.ByteBuf
 import org.kryptonmc.api.registry.Registry
+import org.kryptonmc.api.tags.Tag
+import org.kryptonmc.api.tags.TagType
+import org.kryptonmc.krypton.packet.CachedPacket
 import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.tags.KryptonTagManager
 import org.kryptonmc.krypton.util.writeKey
 import org.kryptonmc.krypton.util.writeVarInt
 
-object PacketOutTags : Packet {
+@JvmRecord
+data class PacketOutTags(
+    val tags: Map<TagType<*>, List<Tag<*>>>
+) : Packet {
 
     @Suppress("UNCHECKED_CAST")
     override fun write(buf: ByteBuf) {
-        buf.writeVarInt(KryptonTagManager.tags.size)
-        KryptonTagManager.tags.forEach { (type, tags) ->
+        buf.writeVarInt(tags.size)
+        tags.forEach { (type, tags) ->
             buf.writeKey(type.key())
             buf.writeVarInt(tags.size)
             tags.forEach { tag ->
@@ -40,5 +46,11 @@ object PacketOutTags : Packet {
                 values.forEach { buf.writeVarInt((type.registry as Registry<Any>).idOf(it)) }
             }
         }
+    }
+
+    companion object {
+
+        @JvmField
+        val CACHED: CachedPacket = CachedPacket {  PacketOutTags(KryptonTagManager.tags) }
     }
 }

@@ -54,18 +54,15 @@ class SessionHandler(private val server: KryptonServer) : SimpleChannelInboundHa
     val channel: Channel
         get() = internalChannel ?: error("Cannot call channel before it is initialized!")
 
-    var latency = 0
+    var latency: Int = 0
     @Volatile
     var currentState: PacketState = PacketState.HANDSHAKE
     @Volatile
     var handler: PacketHandler? = null
     @Volatile
-    var compressionEnabled = false
+    var compressionEnabled: Boolean = false
     private val compressionThreshold: Int
         get() = if (compressionEnabled) server.config.server.compressionThreshold else -1
-
-    @Volatile
-    var pendingKeepAlive = false
 
     @Volatile
     private var tickBuffer = Unpooled.directBuffer()
@@ -167,7 +164,7 @@ class SessionHandler(private val server: KryptonServer) : SimpleChannelInboundHa
 
     companion object {
 
-        const val NETTY_NAME = "handler"
+        const val NETTY_NAME: String = "handler"
         private val LOGGER = logger<SessionHandler>()
         private val END_OF_STREAM = Component.translatable("disconnect.endOfStream")
         private val TIMEOUT = Component.translatable("disconnect.timeout")

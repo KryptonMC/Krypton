@@ -17,6 +17,24 @@ import org.kryptonmc.api.plugin.PluginContainer
 public interface ServicesManager {
 
     /**
+     * Gets the service for the given [clazz], or returns null if there is no
+     * service registered for the given [clazz].
+     *
+     * @param clazz the service class
+     * @return the service, or null if not present
+     */
+    public fun <T> provide(clazz: Class<T>): T?
+
+    /**
+     * Gets the service provider for the service of the given [clazz] type, or
+     * returns null if there is no service provider for the given [clazz].
+     *
+     * @param clazz the service class
+     * @return the service provider, or null if not present
+     */
+    public fun <T> provider(clazz: Class<T>): ServiceProvider<T>?
+
+    /**
      * Registers a new service to this services manager.
      *
      * @param plugin the plugin that registered the service
@@ -35,25 +53,27 @@ public interface ServicesManager {
      * @return the registered service provider
      */
     public fun <T> register(plugin: PluginContainer, type: Class<T>, service: T): ServiceProvider<T>
-
-    /**
-     * Gets the service for the given [clazz], or returns null if there is no
-     * service registered for the given [clazz].
-     *
-     * @param clazz the service class
-     * @return the service, or null if not present
-     */
-    public fun <T> provide(clazz: Class<T>): T?
-
-    /**
-     * Gets the service provider for the service of the given [clazz] type, or
-     * returns null if there is no service provider for the given [clazz].
-     *
-     * @param clazz the service class
-     * @return the service provider, or null if not present
-     */
-    public fun <T> provider(clazz: Class<T>): ServiceProvider<T>?
 }
+
+/**
+ * Gets the service for the given type [T], or returns null if there is no
+ * registered service for the given type [T].
+ *
+ * @param T the service type
+ * @return the service, or null if not present
+ */
+@JvmSynthetic
+public inline fun <reified T> ServicesManager.provide(): T? = provide(T::class.java)
+
+/**
+ * Gets the provider for the given type [T], or returns null if there is no
+ * provider for the given type [T].
+ *
+ * @param T the service type
+ * @return the service provider, or null if not present
+ */
+@JvmSynthetic
+public inline fun <reified T> ServicesManager.provider(): ServiceProvider<T>? = provider(T::class.java)
 
 /**
  * Registers a new service to this services manager.
@@ -78,23 +98,3 @@ public inline fun <reified T> ServicesManager.register(plugin: PluginContainer, 
 public inline fun <reified T> ServicesManager.register(plugin: Any, service: T) {
     register(plugin, T::class.java, service)
 }
-
-/**
- * Gets the service for the given type [T], or returns null if there is no
- * registered service for the given type [T].
- *
- * @param T the service type
- * @return the service, or null if not present
- */
-@JvmSynthetic
-public inline fun <reified T> ServicesManager.provide(): T? = provide(T::class.java)
-
-/**
- * Gets the provider for the given type [T], or returns null if there is no
- * provider for the given type [T].
- *
- * @param T the service type
- * @return the service provider, or null if not present
- */
-@JvmSynthetic
-public inline fun <reified T> ServicesManager.provider(): ServiceProvider<T>? = provider(T::class.java)

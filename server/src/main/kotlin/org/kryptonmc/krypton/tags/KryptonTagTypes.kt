@@ -19,21 +19,26 @@
 package org.kryptonmc.krypton.tags
 
 import net.kyori.adventure.key.Key
+import org.kryptonmc.api.block.Block
+import org.kryptonmc.api.entity.EntityType
+import org.kryptonmc.api.fluid.Fluid
+import org.kryptonmc.api.item.ItemType
 import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.api.registry.Registry
 import org.kryptonmc.krypton.KryptonPlatform
 import org.kryptonmc.krypton.registry.InternalRegistries
+import org.kryptonmc.krypton.world.event.GameEvent
 
 object KryptonTagTypes {
 
     private val MINECRAFT = KryptonPlatform.dataVersionPrefix
     private val PREFIX = "${MINECRAFT}_tags/${MINECRAFT}_"
 
-    @JvmField val BLOCKS = register("block", Registries.BLOCK)
-    @JvmField val ENTITY_TYPES = register("entity_type", Registries.ENTITY_TYPE)
-    @JvmField val FLUIDS = register("fluid", Registries.FLUID)
-    @JvmField val GAME_EVENTS = register("game_event", "gameplay", InternalRegistries.GAME_EVENT)
-    @JvmField val ITEMS = register("item", Registries.ITEM)
+    @JvmField val BLOCKS: KryptonTagType<Block> = register("block", Registries.BLOCK)
+    @JvmField val ENTITY_TYPES: KryptonTagType<EntityType<*>> = register("entity_type", Registries.ENTITY_TYPE)
+    @JvmField val FLUIDS: KryptonTagType<Fluid> = register("fluid", Registries.FLUID)
+    @JvmField val GAME_EVENTS: KryptonTagType<GameEvent> = register("game_event", "gameplay", InternalRegistries.GAME_EVENT)
+    @JvmField val ITEMS: KryptonTagType<ItemType> = register("item", Registries.ITEM)
 
     @JvmStatic
     private fun <T : Any> register(

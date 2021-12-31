@@ -36,9 +36,6 @@ object Climate {
     fun Float.quantize(): Long = (this * QUANTIZATION_FACTOR).toLong()
 
     @JvmStatic
-    fun Long.unquantize(): Float = this / QUANTIZATION_FACTOR
-
-    @JvmStatic
     fun parameters(
         temperature: Float,
         humidity: Float,
@@ -71,7 +68,7 @@ object Climate {
         val weirdness: Long
     ) {
 
-        val parameters = longArrayOf(temperature, humidity, continentalness, erosion, depth, weirdness)
+        val parameters: LongArray = longArrayOf(temperature, humidity, continentalness, erosion, depth, weirdness)
 
         companion object {
 

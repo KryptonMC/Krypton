@@ -8,6 +8,7 @@
  */
 package org.kryptonmc.api.effect.particle.data
 
+import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.item.ItemType
 
 /**
@@ -31,6 +32,7 @@ public interface ItemParticleData : ParticleData {
          * @return new item particle data
          */
         @JvmStatic
+        @Contract("_ -> new", pure = true)
         public fun of(item: ItemType): ItemParticleData = ParticleData.FACTORY.item(item)
     }
 }

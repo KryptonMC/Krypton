@@ -123,6 +123,7 @@ public interface Team : Buildable<Team, Team.Builder> {
     /**
      * A builder for building teams.
      */
+    @ScoreboardDsl
     public interface Builder : Buildable.Builder<Team> {
 
         /**
@@ -131,6 +132,7 @@ public interface Team : Buildable<Team, Team.Builder> {
          * @param name the name
          * @return this builder
          */
+        @ScoreboardDsl
         @Contract("_ -> this", mutates = "this")
         public fun name(name: String): Builder
 
@@ -140,6 +142,7 @@ public interface Team : Buildable<Team, Team.Builder> {
          * @param name the display name
          * @return this builder
          */
+        @ScoreboardDsl
         @Contract("_ -> this", mutates = "this")
         public fun displayName(name: Component): Builder
 
@@ -149,6 +152,7 @@ public interface Team : Buildable<Team, Team.Builder> {
          * @param prefix the prefix
          * @return this builder
          */
+        @ScoreboardDsl
         @Contract("_ -> this", mutates = "this")
         public fun prefix(prefix: Component): Builder
 
@@ -158,6 +162,7 @@ public interface Team : Buildable<Team, Team.Builder> {
          * @param suffix the suffix
          * @return this builder
          */
+        @ScoreboardDsl
         @Contract("_ -> this", mutates = "this")
         public fun suffix(suffix: Component): Builder
 
@@ -167,6 +172,7 @@ public interface Team : Buildable<Team, Team.Builder> {
          * @param color the colour
          * @return this builder
          */
+        @ScoreboardDsl
         @Contract("_ -> this", mutates = "this")
         public fun color(color: NamedTextColor): Builder
 
@@ -175,6 +181,7 @@ public interface Team : Buildable<Team, Team.Builder> {
          *
          * @return this builder
          */
+        @ScoreboardDsl
         @Contract("_ -> this", mutates = "this")
         public fun allowFriendlyFire(): Builder = friendlyFire(true)
 
@@ -183,6 +190,7 @@ public interface Team : Buildable<Team, Team.Builder> {
          *
          * @return this builder
          */
+        @ScoreboardDsl
         @Contract("_ -> this", mutates = "this")
         public fun disallowFriendlyFire(): Builder = friendlyFire(false)
 
@@ -192,6 +200,7 @@ public interface Team : Buildable<Team, Team.Builder> {
          * @param value the value of the setting
          * @return this builder
          */
+        @ScoreboardDsl
         @Contract("_ -> this", mutates = "this")
         public fun friendlyFire(value: Boolean): Builder
 
@@ -200,6 +209,7 @@ public interface Team : Buildable<Team, Team.Builder> {
          *
          * @return this builder
          */
+        @ScoreboardDsl
         @Contract("_ -> this", mutates = "this")
         public fun allowSeeingInvisibleMembers(): Builder = canSeeInvisibleMembers(true)
 
@@ -208,6 +218,7 @@ public interface Team : Buildable<Team, Team.Builder> {
          *
          * @return this builder
          */
+        @ScoreboardDsl
         @Contract("_ -> this", mutates = "this")
         public fun disallowSeeingInvisibleMembers(): Builder = canSeeInvisibleMembers(false)
 
@@ -218,6 +229,7 @@ public interface Team : Buildable<Team, Team.Builder> {
          * @param value the value of the setting
          * @return this builder
          */
+        @ScoreboardDsl
         @Contract("_ -> this", mutates = "this")
         public fun canSeeInvisibleMembers(value: Boolean): Builder
 
@@ -227,6 +239,7 @@ public interface Team : Buildable<Team, Team.Builder> {
          * @param visibility the visibility
          * @return this builder
          */
+        @ScoreboardDsl
         @Contract("_ -> this", mutates = "this")
         public fun nameTagVisibility(visibility: Visibility): Builder
 
@@ -237,6 +250,7 @@ public interface Team : Buildable<Team, Team.Builder> {
          * @param visibility the visibility
          * @return this builder
          */
+        @ScoreboardDsl
         @Contract("_ -> this", mutates = "this")
         public fun deathMessageVisibility(visibility: Visibility): Builder
 
@@ -246,6 +260,7 @@ public interface Team : Buildable<Team, Team.Builder> {
          * @param rule the collision rule
          * @return this builder
          */
+        @ScoreboardDsl
         @Contract("_ -> this", mutates = "this")
         public fun collisionRule(rule: CollisionRule): Builder
 
@@ -255,6 +270,7 @@ public interface Team : Buildable<Team, Team.Builder> {
          * @param member the member
          * @return this builder
          */
+        @ScoreboardDsl
         @Contract("_ -> this", mutates = "this")
         public fun addMember(member: Component): Builder
 
@@ -264,6 +280,7 @@ public interface Team : Buildable<Team, Team.Builder> {
          * @param member the member
          * @return this builder
          */
+        @ScoreboardDsl
         @Contract("_ -> this", mutates = "this")
         public fun removeMember(member: Component): Builder
     }

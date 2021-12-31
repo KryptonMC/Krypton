@@ -24,8 +24,9 @@ import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toPersistentList
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer
-import org.kryptonmc.api.adventure.toJsonString
+import org.kryptonmc.api.adventure.toJson
 import org.kryptonmc.api.block.Block
+import org.kryptonmc.api.item.meta.BundleMeta
 import org.kryptonmc.api.item.meta.WritableBookMeta
 import org.kryptonmc.krypton.util.mapPersistentList
 import org.kryptonmc.nbt.CompoundTag
@@ -68,7 +69,7 @@ class KryptonWritableBookMeta(
     ): KryptonWritableBookMeta = KryptonWritableBookMeta(damage, isUnbreakable, customModelData, name, lore, hideFlags, canDestroy, canPlaceOn, pages)
 
     override fun saveData(): CompoundTag.Builder = super.saveData().apply {
-        list("pages", StringTag.ID, pages.map { StringTag.of(it.toJsonString()) })
+        list("pages", StringTag.ID, pages.map { StringTag.of(it.toJson()) })
     }
 
     override fun withPages(pages: Iterable<Component>): KryptonWritableBookMeta = KryptonWritableBookMeta(

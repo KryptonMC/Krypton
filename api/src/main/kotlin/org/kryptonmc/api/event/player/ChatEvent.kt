@@ -18,10 +18,12 @@ import org.kryptonmc.api.event.ResultedEvent
  * @param player the player sending the message
  * @param message the message sent
  */
+@Suppress("INAPPLICABLE_JVM_NAME")
 public data class ChatEvent(
     @get:JvmName("player") public val player: Player,
     @get:JvmName("message") public val message: String
 ) : ResultedEvent<ComponentResult> {
 
+    @get:JvmName("result")
     override var result: ComponentResult = ComponentResult.allowed()
 }

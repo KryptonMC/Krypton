@@ -9,7 +9,6 @@
 @file:JvmSynthetic
 package org.kryptonmc.api.adventure
 
-import com.google.gson.JsonElement
 import com.mojang.brigadier.Message
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer
@@ -18,41 +17,13 @@ import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer
 import org.jetbrains.annotations.Contract
 
 /**
- * Converts this [Component] to a [JsonElement].
- *
- * Analogous with [GsonComponentSerializer.serializeToTree] called with this
- * as its argument.
- */
-@JvmSynthetic
-public fun Component.toJson(): JsonElement = GsonComponentSerializer.gson().serializeToTree(this)
-
-/**
- * Converts this [JsonElement] to a [Component].
- *
- * Analogous with [GsonComponentSerializer.deserializeFromTree] called with this
- * as its argument.
- */
-@JvmSynthetic
-public fun JsonElement.toComponent(): Component = GsonComponentSerializer.gson().deserializeFromTree(this)
-
-/**
  * Converts this [Component] to its JSON representation, as a string.
  *
  * Analogous with [GsonComponentSerializer.serialize] called with this
  * as its argument.
  */
 @JvmSynthetic
-public fun Component.toJsonString(): String = GsonComponentSerializer.gson().serialize(this)
-
-/**
- * Converts this [Component] to its legacy text representation, using the given
- * [char] as the translation character for the legacy text.
- *
- * Analogous with [LegacyComponentSerializer.serialize] called with this as its
- * argument.
- */
-@JvmSynthetic
-public fun Component.toLegacyText(char: Char): String = LegacyComponentSerializer.legacy(char).serialize(this)
+public fun Component.toJson(): String = GsonComponentSerializer.gson().serialize(this)
 
 /**
  * Converts this [Component] to its legacy section text representation, using the
@@ -90,4 +61,4 @@ public fun Component.toPlainText(): String = PlainTextComponentSerializer.plainT
  */
 @JvmSynthetic
 @Contract("_ -> new", pure = true)
-public fun Component.toMessage(): AdventureMessage = AdventureMessage(this)
+public fun Component.toMessage(): AdventureMessage = AdventureMessage.of(this)

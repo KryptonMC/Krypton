@@ -29,7 +29,7 @@ import java.util.concurrent.ConcurrentHashMap
 class KryptonVanishService : VanishService {
 
     private val hiddenPlayers: Multimap<UUID, UUID> = Multimaps.newSetMultimap(ConcurrentHashMap()) { ConcurrentHashMap.newKeySet() }
-    private val vanishedPlayers = mutableSetOf<UUID>()
+    private val vanishedPlayers = ConcurrentHashMap.newKeySet<UUID>()
 
     override fun isVanished(player: Player): Boolean = vanishedPlayers.contains(player.uuid)
 

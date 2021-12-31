@@ -11,6 +11,7 @@ package org.kryptonmc.api.statistic
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.key.Keyed
 import org.jetbrains.annotations.ApiStatus
+import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.Krypton
 import org.kryptonmc.api.registry.Registry
 import org.kryptonmc.api.util.CataloguedBy
@@ -82,6 +83,7 @@ public interface StatisticType<T : Any> : Iterable<Statistic<T>>, Keyed {
          * @return a new statistic type
          */
         @JvmStatic
+        @Contract("_ -> new", pure = true)
         public fun <T : Any> of(key: Key, registry: Registry<T>): StatisticType<T> = FACTORY.of(key, registry)
     }
 }

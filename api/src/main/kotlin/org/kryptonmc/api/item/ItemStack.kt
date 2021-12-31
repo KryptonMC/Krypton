@@ -9,7 +9,6 @@
 @file:JvmSynthetic
 package org.kryptonmc.api.item
 
-import net.kyori.adventure.text.Component
 import net.kyori.adventure.util.Buildable
 import org.jetbrains.annotations.ApiStatus
 import org.jetbrains.annotations.Contract
@@ -44,18 +43,6 @@ public interface ItemStack : Buildable<ItemStack, ItemStack.Builder> {
     public val meta: ItemMeta
 
     /**
-     * The name of this item stack.
-     */
-    public val name: Component?
-        @JvmName("name") get() = meta.name
-
-    /**
-     * The lore of this item stack.
-     */
-    public val lore: List<Component>
-        @JvmName("lore") get() = meta.lore
-
-    /**
      * Gets the metadata for this item stack as the given type [I], or returns
      * null if the metadata could not be casted to the given [type].
      *
@@ -74,7 +61,7 @@ public interface ItemStack : Buildable<ItemStack, ItemStack.Builder> {
      */
     @JvmSynthetic
     @Contract("_ -> new", pure = true)
-    public fun with(builder: Builder.() -> Unit): ItemStack
+    public fun with(builder: Builder.() -> Unit): ItemStack = toBuilder().apply(builder).build()
 
     /**
      * Creates a new item stack from the result of applying the given
@@ -191,23 +178,6 @@ public interface ItemStack : Buildable<ItemStack, ItemStack.Builder> {
     ): ItemStack = withMeta(type) { builder.accept(this) }
 
     /**
-     * Creates a new item stack with the given [name].
-     *
-     * @param name the new name
-     * @return a new item stack
-     */
-    @Contract("_ -> new", pure = true)
-    public fun withName(name: Component?): ItemStack = withMeta(meta.withName(name))
-
-    /**
-     * Creates a new item stack with the given [lore].
-     *
-     * @param lore the new lore
-     * @return a new item stack
-     */
-    public fun withLore(lore: Iterable<Component>): ItemStack = withMeta(meta.withLore(lore))
-
-    /**
      * For building new [ItemStack]s.
      */
     @ItemDsl
@@ -322,7 +292,7 @@ public interface ItemStack : Buildable<ItemStack, ItemStack.Builder> {
         private val FACTORY = Krypton.factoryProvider.provide<Factory>()
 
         /**
-         * Creates a new builder for building [ItemStack] instances.
+         * Creates a new builder for building an item stack.
          *
          * @return a new builder
          */
@@ -331,7 +301,7 @@ public interface ItemStack : Buildable<ItemStack, ItemStack.Builder> {
         public fun builder(): Builder = FACTORY.builder()
 
         /**
-         * Creates a new [ItemStack] with the given [type].
+         * Creates a new item stack with the given [type].
          *
          * @param type the type
          * @return a new item stack
@@ -341,22 +311,28 @@ public interface ItemStack : Buildable<ItemStack, ItemStack.Builder> {
         public fun of(type: ItemType): ItemStack = FACTORY.builder().type(type).build()
 
         /**
-         * Creates a new [ItemStack] with the given [type] and [amount].
+         * Creates a new item stack with the given [type] and [amount].
          *
-         * @param type the type of item
+         * @param type the item type
          * @param amount the amount of items
-         * @return a new [ItemStack]
+         * @return a new item stack
          */
         @JvmStatic
         @Contract("_ -> new", pure = true)
         public fun of(type: ItemType, amount: Int): ItemStack = FACTORY.builder().type(type).amount(amount).build()
 
         /**
-         * Gets the empty [ItemStack] instance.
+         * Gets the empty item stack.
          *
-         * This [ItemStack] is generally used as a default value in
-         * place of using `null`. It has an [ItemType] of [air][ItemTypes.AIR],
-         * an amount of `1`, and no metadata.
+         * This item stack is generally used as a default value instead of
+         * using `null`.
+         *
+         * It must satisfy the following requirements:
+         * * It's type must always be [air][ItemTypes.AIR].
+         * * It's amount must always be `1`.
+         * * It's metadata must always be empty. The definition of "empty" is
+         *   up to the implementation, but generally, it should be defined as
+         *   having all of its properties set to their default values.
          */
         @JvmStatic
         @Contract("_ -> new", pure = true)
@@ -368,8 +344,7 @@ public interface ItemStack : Buildable<ItemStack, ItemStack.Builder> {
  * Gets the metadata for this item stack as the given type [I], or returns
  * null if the metadata could not be casted to the given type [I].
  *
- * @return the metadata as the type, or null if the metadata is not of the
- * type
+ * @return the metadata as the type, or null if the metadata is not of the type
  */
 @JvmSynthetic
 public inline fun <reified I : ItemMeta> ItemStack.meta(): I? = meta(I::class.java)

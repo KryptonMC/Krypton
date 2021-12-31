@@ -33,17 +33,11 @@ abstract class KryptonFireball(
     type: EntityType<out Fireball>
 ) : KryptonAcceleratingProjectile(world, type), Fireball {
 
-    private var rawItem: KryptonItemStack
+    private var item: KryptonItemStack
         get() = data[MetadataKeys.FIREBALL.ITEM]
         set(value) {
             if (value.type === ItemTypes.FIRE_CHARGE && value.meta == KryptonItemMeta.DEFAULT) return
             data[MetadataKeys.FIREBALL.ITEM] = value.withAmount(1)
-        }
-    final override val item: ItemStack
-        get() {
-            val raw = rawItem
-            if (raw.isEmpty()) return DEFAULT_ITEM
-            return raw
         }
 
     init {
@@ -52,13 +46,18 @@ abstract class KryptonFireball(
 
     override fun load(tag: CompoundTag) {
         super.load(tag)
-        val item = KryptonItemStack(tag.getCompound("Item"))
-        rawItem = item
+        item = KryptonItemStack(tag.getCompound("Item"))
     }
 
     override fun save(): CompoundTag.Builder = super.save().apply {
-        val raw = rawItem
-        if (!raw.isEmpty()) put("Item", raw.save(CompoundTag.builder()).build())
+        val item = item
+        if (!item.isEmpty()) put("Item", item.save(CompoundTag.builder()).build())
+    }
+
+    final override fun asItem(): ItemStack {
+        val item = item
+        if (item.isEmpty()) return DEFAULT_ITEM
+        return item
     }
 
     companion object {

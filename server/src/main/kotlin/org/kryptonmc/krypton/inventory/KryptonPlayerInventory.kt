@@ -39,8 +39,8 @@ import org.kryptonmc.nbt.compound
 
 class KryptonPlayerInventory(override val owner: KryptonPlayer) : KryptonInventory(0, TYPE, SIZE, 36), PlayerInventory {
 
-    override val crafting = FixedList(5, KryptonItemStack.EMPTY)
-    override val armor = FixedList(4, KryptonItemStack.EMPTY)
+    override val crafting: FixedList<KryptonItemStack> = FixedList(5, KryptonItemStack.EMPTY)
+    override val armor: FixedList<KryptonItemStack> = FixedList(4, KryptonItemStack.EMPTY)
 
     override val main: List<ItemStack> = items.subList(9, 35)
     override val hotbar: List<ItemStack> = items.subList(0, 8)
@@ -62,18 +62,18 @@ class KryptonPlayerInventory(override val owner: KryptonPlayer) : KryptonInvento
         get() = items[heldSlot]
     override var offHand: KryptonItemStack = KryptonItemStack.EMPTY
 
-    override var heldSlot = 0
+    override var heldSlot: Int = 0
 
-    override fun armor(slot: ArmorSlot) = armor[slot.ordinal]
+    override fun armor(slot: ArmorSlot): KryptonItemStack = armor[slot.ordinal]
 
     override fun setArmor(slot: ArmorSlot, item: ItemStack) {
         if (item !is KryptonItemStack) return
         armor[slot.ordinal] = item
     }
 
-    override fun heldItem(hand: Hand): KryptonItemStack = when (hand) {
-        Hand.MAIN -> mainHand
-        Hand.OFF -> offHand
+    override fun heldItem(hand: Hand): KryptonItemStack {
+        if (hand == Hand.MAIN) return mainHand
+        return offHand
     }
 
     override fun setHeldItem(hand: Hand, item: ItemStack) {
@@ -121,7 +121,7 @@ class KryptonPlayerInventory(override val owner: KryptonPlayer) : KryptonInvento
         clear()
         for (i in tag.indices) {
             val compound = tag.getCompound(i)
-            val slot = compound.getByte("Slot").toInt() and 255
+            val slot = compound.getByte("Slot").toInt()
             val stack = KryptonItemStack(compound)
             if (stack.type === ItemTypes.AIR) continue
             when (slot) {
@@ -161,7 +161,7 @@ class KryptonPlayerInventory(override val owner: KryptonPlayer) : KryptonInvento
 
     companion object {
 
-        const val SIZE = 46
+        const val SIZE: Int = 46
         private val TYPE = KryptonInventoryType(Key.key("krypton", "inventory/player"), SIZE, Component.translatable("container.inventory"))
     }
 }

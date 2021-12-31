@@ -32,7 +32,7 @@ class ArrayPalette<T> private constructor(
     size: Int
 ) : Palette<T> {
 
-    override var size = size
+    override var size: Int = size
         private set
     override val serializedSize: Int
         get() {

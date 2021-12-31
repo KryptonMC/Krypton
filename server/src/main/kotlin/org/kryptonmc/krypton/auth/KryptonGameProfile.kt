@@ -21,9 +21,10 @@ package org.kryptonmc.krypton.auth
 import com.google.gson.TypeAdapter
 import com.google.gson.stream.JsonReader
 import com.google.gson.stream.JsonWriter
-import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.persistentListOf
-import kotlinx.collections.immutable.toImmutableList
+import kotlinx.collections.immutable.toPersistentList
+import net.kyori.adventure.identity.Identity
 import org.kryptonmc.api.auth.GameProfile
 import org.kryptonmc.api.auth.ProfileProperty
 import org.kryptonmc.krypton.util.MojangUUIDTypeAdapter
@@ -33,10 +34,50 @@ import java.util.UUID
 data class KryptonGameProfile(
     override val name: String,
     override val uuid: UUID,
-    override val properties: ImmutableList<ProfileProperty>
+    override val properties: PersistentList<ProfileProperty>
 ) : GameProfile {
 
-    override fun toString(): String = "KryptonGameProfile(name=$name,uuid=$uuid,properties=$properties)"
+    override fun with(builder: GameProfile.Builder.() -> Unit): GameProfile = Builder(this).apply(builder).build()
+
+    override fun withName(name: String): GameProfile = copy(name = name)
+
+    override fun withUUID(uuid: UUID): GameProfile = copy(uuid = uuid)
+
+    override fun withProperties(properties: Iterable<ProfileProperty>): GameProfile = copy(properties = properties.toPersistentList())
+
+    override fun withProperty(property: ProfileProperty): GameProfile = copy(properties = properties.add(property))
+
+    override fun withoutProperty(index: Int): GameProfile = copy(properties = properties.removeAt(index))
+
+    override fun withoutProperty(property: ProfileProperty): GameProfile = copy(properties = properties.remove(property))
+
+    override fun identity(): Identity = Identity.identity(uuid)
+
+    override fun toBuilder(): GameProfile.Builder = Builder(this)
+
+    class Builder(profile: GameProfile) : GameProfile.Builder {
+
+        private var name = profile.name
+        private var uuid = profile.uuid
+        private val properties = persistentListOf<ProfileProperty>().builder()
+
+        override fun name(name: String): GameProfile.Builder = apply { this.name = name }
+
+        override fun uuid(uuid: UUID): GameProfile.Builder = apply { this.uuid = uuid }
+
+        override fun properties(properties: Iterable<ProfileProperty>): GameProfile.Builder = apply {
+            this.properties.clear()
+            this.properties.addAll(properties)
+        }
+
+        override fun addProperty(property: ProfileProperty): GameProfile.Builder = apply { properties.add(property) }
+
+        override fun removeProperty(index: Int): GameProfile.Builder = apply { properties.removeAt(index) }
+
+        override fun removeProperty(property: ProfileProperty): GameProfile.Builder = apply { properties.remove(property) }
+
+        override fun build(): GameProfile = KryptonGameProfile(name, uuid, properties.build())
+    }
 
     object Factory : GameProfile.Factory {
 
@@ -44,7 +85,7 @@ data class KryptonGameProfile(
             name: String,
             uuid: UUID,
             properties: List<ProfileProperty>
-        ): GameProfile = KryptonGameProfile(name, uuid, properties.toImmutableList())
+        ): GameProfile = KryptonGameProfile(name, uuid, properties.toPersistentList())
     }
 
     companion object : TypeAdapter<KryptonGameProfile>() {

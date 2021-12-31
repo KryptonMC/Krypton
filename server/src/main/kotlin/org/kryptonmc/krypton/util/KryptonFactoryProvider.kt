@@ -19,12 +19,15 @@
 package org.kryptonmc.krypton.util
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap
+import org.kryptonmc.api.adventure.AdventureMessage
 import org.kryptonmc.api.auth.GameProfile
+import org.kryptonmc.api.auth.ProfileProperty
 import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.block.property.Property
 import org.kryptonmc.api.command.meta.CommandMeta
 import org.kryptonmc.api.effect.Music
 import org.kryptonmc.api.effect.particle.ParticleEffect
+import org.kryptonmc.api.effect.particle.ParticleType
 import org.kryptonmc.api.effect.particle.data.ParticleData
 import org.kryptonmc.api.effect.sound.SoundEvent
 import org.kryptonmc.api.entity.EntityDimensions
@@ -47,6 +50,7 @@ import org.kryptonmc.api.statistic.StatisticType
 import org.kryptonmc.api.util.BoundingBox
 import org.kryptonmc.api.util.FactoryNotFoundException
 import org.kryptonmc.api.util.FactoryProvider
+import org.kryptonmc.api.util.register
 import org.kryptonmc.api.world.biome.AmbientAdditionsSettings
 import org.kryptonmc.api.world.biome.AmbientMoodSettings
 import org.kryptonmc.api.world.biome.AmbientParticleSettings
@@ -54,12 +58,16 @@ import org.kryptonmc.api.world.biome.Biome
 import org.kryptonmc.api.world.biome.BiomeCategory
 import org.kryptonmc.api.world.biome.BiomeEffects
 import org.kryptonmc.api.world.biome.Climate
+import org.kryptonmc.api.world.damage.DamageSource
 import org.kryptonmc.api.world.dimension.DimensionType
 import org.kryptonmc.api.world.rule.GameRule
+import org.kryptonmc.krypton.adventure.KryptonAdventureMessage
 import org.kryptonmc.krypton.auth.KryptonGameProfile
+import org.kryptonmc.krypton.auth.KryptonProfileProperty
 import org.kryptonmc.krypton.command.meta.KryptonCommandMeta
 import org.kryptonmc.krypton.effect.KryptonMusic
 import org.kryptonmc.krypton.effect.particle.KryptonParticleEffect
+import org.kryptonmc.krypton.effect.particle.KryptonParticleTypeFactory
 import org.kryptonmc.krypton.effect.particle.data.KryptonParticleDataFactory
 import org.kryptonmc.krypton.effect.sound.KryptonSoundEvent
 import org.kryptonmc.krypton.entity.KryptonEntityDimensions
@@ -85,6 +93,7 @@ import org.kryptonmc.krypton.world.biome.KryptonBiomeEffects
 import org.kryptonmc.krypton.world.biome.KryptonClimate
 import org.kryptonmc.krypton.world.block.KryptonBlock
 import org.kryptonmc.krypton.world.block.property.KryptonPropertyFactory
+import org.kryptonmc.krypton.world.damage.KryptonDamageSourceFactory
 import org.kryptonmc.krypton.world.dimension.KryptonDimensionType
 import org.kryptonmc.krypton.world.fluid.KryptonFluid
 import org.kryptonmc.krypton.world.rule.KryptonGameRule
@@ -98,13 +107,14 @@ object KryptonFactoryProvider : FactoryProvider {
     @Suppress("UNCHECKED_CAST")
     override fun <T> provide(type: Class<T>): T = factories[type] as? T ?: throw FactoryNotFoundException("Type $type has no factory registered!")
 
-    fun <T> register(clazz: Class<T>, factory: T) {
-        require(clazz !in factories) { "Duplicate registration for type $clazz!" }
-        factories[clazz] = factory
+    override fun <T> register(type: Class<T>, factory: T) {
+        require(!factories.contains(type)) { "Duplicate registration for type $type!" }
+        factories[type] = factory
     }
 
     fun bootstrap() {
         register<ResourceKey.Factory>(KryptonResourceKey.Factory)
+        register<ParticleType.Factory>(KryptonParticleTypeFactory)
         register<ParticleData.Factory>(KryptonParticleDataFactory)
         register<ParticleEffect.Factory>(KryptonParticleEffect.Factory)
         register<AttributeModifier.Factory>(KryptonAttributeModifier.Factory)
@@ -114,6 +124,7 @@ object KryptonFactoryProvider : FactoryProvider {
         register<ItemType.Factory>(KryptonItemType.Factory)
         register<CommandMeta.Factory>(KryptonCommandMeta.Factory)
         register<GameProfile.Factory>(KryptonGameProfile.Factory)
+        register<ProfileProperty.Factory>(KryptonProfileProperty.Factory)
         register<SoundEvent.Factory>(KryptonSoundEvent.Factory)
         register<EntityDimensions.Factory>(KryptonEntityDimensions.Factory)
         register<InventoryType.Factory>(KryptonInventoryType.Factory)
@@ -139,9 +150,7 @@ object KryptonFactoryProvider : FactoryProvider {
         register<Picture.Factory>(KryptonPicture.Factory)
         register<StatisticType.Factory>(KryptonStatisticType.Factory)
         register<ItemMeta.Factory>(KryptonItemMeta.Factory)
+        register<DamageSource.Factory>(KryptonDamageSourceFactory)
+        register<AdventureMessage.Factory>(KryptonAdventureMessage.Factory)
     }
-}
-
-inline fun <reified T> KryptonFactoryProvider.register(factory: T) {
-    register(T::class.java, factory)
 }

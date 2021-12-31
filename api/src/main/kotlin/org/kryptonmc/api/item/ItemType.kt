@@ -17,6 +17,7 @@ import org.kryptonmc.api.Krypton
 import org.kryptonmc.api.block.BlockLike
 import org.kryptonmc.api.effect.sound.SoundEvent
 import org.kryptonmc.api.util.CataloguedBy
+import org.kryptonmc.api.util.KeyedBuilder
 import org.kryptonmc.api.util.TranslationHolder
 import org.kryptonmc.api.util.provide
 
@@ -89,7 +90,8 @@ public interface ItemType : Buildable<ItemType, ItemType.Builder>, ItemLike, Blo
     /**
      * A builder that can be used to build item type instances.
      */
-    public interface Builder : Buildable.Builder<ItemType> {
+    @ItemTypeDsl
+    public interface Builder : KeyedBuilder<ItemType, Builder>, TranslationHolder.Builder<Builder, ItemType> {
 
         /**
          * Sets the rarity of the item type.
@@ -97,6 +99,7 @@ public interface ItemType : Buildable<ItemType, ItemType.Builder>, ItemLike, Blo
          * @param rarity the rarity
          * @return this builder
          */
+        @ItemTypeDsl
         @Contract("_ -> this", mutates = "this")
         public fun rarity(rarity: ItemRarity): Builder
 
@@ -106,6 +109,7 @@ public interface ItemType : Buildable<ItemType, ItemType.Builder>, ItemLike, Blo
          * @param maximumStackSize the maximum stack size
          * @return this builder
          */
+        @ItemTypeDsl
         @Contract("_ -> this", mutates = "this")
         public fun stackable(maximumStackSize: Int): Builder
 
@@ -115,6 +119,7 @@ public interface ItemType : Buildable<ItemType, ItemType.Builder>, ItemLike, Blo
          *
          * @return this builder
          */
+        @ItemTypeDsl
         @Contract("_ -> this", mutates = "this")
         public fun unstackable(): Builder
 
@@ -123,6 +128,7 @@ public interface ItemType : Buildable<ItemType, ItemType.Builder>, ItemLike, Blo
          *
          * @return this builder
          */
+        @ItemTypeDsl
         @Contract("_ -> this", mutates = "this")
         public fun breakable(): Builder
 
@@ -133,6 +139,7 @@ public interface ItemType : Buildable<ItemType, ItemType.Builder>, ItemLike, Blo
          * @param durability the durability
          * @return this builder
          */
+        @ItemTypeDsl
         @Contract("_ -> this", mutates = "this")
         public fun breakable(durability: Int): Builder
 
@@ -142,6 +149,7 @@ public interface ItemType : Buildable<ItemType, ItemType.Builder>, ItemLike, Blo
          *
          * @return this builder
          */
+        @ItemTypeDsl
         @Contract("_ -> this", mutates = "this")
         public fun unbreakable(): Builder
 
@@ -151,6 +159,7 @@ public interface ItemType : Buildable<ItemType, ItemType.Builder>, ItemLike, Blo
          * @param durability the durability
          * @return this builder
          */
+        @ItemTypeDsl
         @Contract("_ -> this", mutates = "this")
         public fun durability(durability: Int): Builder
 
@@ -159,6 +168,7 @@ public interface ItemType : Buildable<ItemType, ItemType.Builder>, ItemLike, Blo
          *
          * @return this builder
          */
+        @ItemTypeDsl
         @Contract("_ -> this", mutates = "this")
         public fun edible(): Builder
 
@@ -167,6 +177,7 @@ public interface ItemType : Buildable<ItemType, ItemType.Builder>, ItemLike, Blo
          *
          * @return this builder
          */
+        @ItemTypeDsl
         @Contract("_ -> this", mutates = "this")
         public fun inedible(): Builder
 
@@ -175,6 +186,7 @@ public interface ItemType : Buildable<ItemType, ItemType.Builder>, ItemLike, Blo
          *
          * @return this builder
          */
+        @ItemTypeDsl
         @Contract("_ -> this", mutates = "this")
         public fun fireResistant(): Builder
 
@@ -183,6 +195,7 @@ public interface ItemType : Buildable<ItemType, ItemType.Builder>, ItemLike, Blo
          *
          * @return this builder
          */
+        @ItemTypeDsl
         @Contract("_ -> this", mutates = "this")
         public fun flammable(): Builder
 
@@ -192,6 +205,7 @@ public interface ItemType : Buildable<ItemType, ItemType.Builder>, ItemLike, Blo
          * @param eatingSound the eating sound
          * @return this builder
          */
+        @ItemTypeDsl
         @Contract("_ -> this", mutates = "this")
         public fun eatingSound(eatingSound: SoundEvent): Builder
 
@@ -201,6 +215,7 @@ public interface ItemType : Buildable<ItemType, ItemType.Builder>, ItemLike, Blo
          * @param drinkingSound the eating sound
          * @return this builder
          */
+        @ItemTypeDsl
         @Contract("_ -> this", mutates = "this")
         public fun drinkingSound(drinkingSound: SoundEvent): Builder
     }
@@ -222,6 +237,7 @@ public interface ItemType : Buildable<ItemType, ItemType.Builder>, ItemLike, Blo
          * @return a new builder
          */
         @JvmStatic
+        @Contract("_ -> new", pure = true)
         public fun builder(key: Key): Builder = FACTORY.builder(key)
     }
 }

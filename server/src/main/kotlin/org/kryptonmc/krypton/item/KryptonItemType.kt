@@ -28,6 +28,7 @@ import org.kryptonmc.api.item.ItemRarities
 import org.kryptonmc.api.item.ItemRarity
 import org.kryptonmc.api.item.ItemType
 import org.kryptonmc.api.registry.Registries
+import org.kryptonmc.krypton.util.normalizePath
 
 @JvmRecord
 data class KryptonItemType(
@@ -49,7 +50,7 @@ data class KryptonItemType(
 
     override fun toBuilder(): ItemType.Builder = Builder(this)
 
-    class Builder(private val key: Key) : ItemType.Builder {
+    class Builder(private var key: Key) : ItemType.Builder {
 
         private var rarity = ItemRarities.COMMON
         private var maximumStackSize = 64
@@ -59,6 +60,7 @@ data class KryptonItemType(
         private var isFireResistant = false
         private var eatingSound = SoundEvents.GENERIC_EAT
         private var drinkingSound = SoundEvents.GENERIC_DRINK
+        private var translation: TranslatableComponent? = null
 
         constructor(type: ItemType) : this(type.key()) {
             rarity = type.rarity
@@ -70,6 +72,8 @@ data class KryptonItemType(
             eatingSound = type.eatingSound
             drinkingSound = type.drinkingSound
         }
+
+        override fun key(key: Key): ItemType.Builder = apply { this.key = key }
 
         override fun rarity(rarity: ItemRarity): ItemType.Builder = apply { this.rarity = rarity }
 
@@ -103,6 +107,8 @@ data class KryptonItemType(
 
         override fun drinkingSound(drinkingSound: SoundEvent): ItemType.Builder = apply { this.drinkingSound = drinkingSound }
 
+        override fun translation(translation: TranslatableComponent): ItemType.Builder = apply { this.translation = translation }
+
         override fun build(): ItemType = KryptonItemType(
             key,
             rarity,
@@ -113,12 +119,22 @@ data class KryptonItemType(
             isFireResistant,
             eatingSound,
             drinkingSound,
-            Registries.BLOCK[key]?.translation ?: Component.translatable("item.${key.asString().replace(':', '.')}")
+            translation ?: createTranslation(key)
         )
     }
 
     object Factory : ItemType.Factory {
 
         override fun builder(key: Key): ItemType.Builder = Builder(key)
+    }
+
+    companion object {
+
+        @JvmStatic
+        private fun createTranslation(key: Key): TranslatableComponent {
+            val block = Registries.BLOCK[key]
+            if (block != null) return block.translation
+            return Component.translatable("item.${key.normalizePath()}")
+        }
     }
 }

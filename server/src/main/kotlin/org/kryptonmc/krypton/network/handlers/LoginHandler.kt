@@ -21,7 +21,6 @@ package org.kryptonmc.krypton.network.handlers
 import com.velocitypowered.natives.util.Natives
 import io.netty.buffer.Unpooled
 import kotlinx.collections.immutable.persistentListOf
-import kotlinx.collections.immutable.toImmutableList
 import net.kyori.adventure.text.Component
 import org.kryptonmc.api.event.auth.AuthenticationEvent
 import org.kryptonmc.api.event.player.LoginEvent
@@ -34,8 +33,7 @@ import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.packet.PacketState
 import org.kryptonmc.krypton.network.SessionHandler
 import org.kryptonmc.krypton.network.data.ForwardedData
-import org.kryptonmc.krypton.network.data.readVelocityData
-import org.kryptonmc.krypton.network.data.verifyVelocityIntegrity
+import org.kryptonmc.krypton.network.data.VelocityProxy
 import org.kryptonmc.krypton.network.netty.GroupedPacketHandler
 import org.kryptonmc.krypton.network.netty.PacketCompressor
 import org.kryptonmc.krypton.network.netty.PacketDecoder
@@ -121,7 +119,7 @@ class LoginHandler(
             // Copy over the data from legacy forwarding
             // Note: Per the protocol, offline players use UUID v3, rather than UUID v4.
             val uuid = proxyForwardedData?.uuid ?: UUID.nameUUIDFromBytes("OfflinePlayer:${packet.name}".encodeToByteArray())
-            val profile = KryptonGameProfile(packet.name, uuid, proxyForwardedData?.properties?.toImmutableList() ?: persistentListOf())
+            val profile = KryptonGameProfile(packet.name, uuid, proxyForwardedData?.properties ?: persistentListOf())
 
             // Check the player can join and the login event was not cancelled.
             if (!canJoin(profile, address) || !callLoginEvent(profile)) return
@@ -194,13 +192,13 @@ class LoginHandler(
 
         // Verify integrity
         val buffer = Unpooled.copiedBuffer(packet.data)
-        val hasValidIntegrity = buffer.verifyVelocityIntegrity(forwardingSecret)
+        val hasValidIntegrity = VelocityProxy.verifyIntegrity(buffer, forwardingSecret)
         if (!hasValidIntegrity) {
             disconnect(Component.text("Response received from Velocity could not be verified!"))
             return
         }
 
-        val data = buffer.readVelocityData()
+        val data = VelocityProxy.readData(buffer)
         val address = session.channel.remoteAddress() as InetSocketAddress
 
         // All good to go, let's construct our stuff
@@ -222,8 +220,7 @@ class LoginHandler(
         session.currentState = PacketState.PLAY
         playerManager.add(player, session).whenComplete { _, exception ->
             if (exception == null) return@whenComplete
-            LOGGER.error("Disconnecting player ${player.profile.name} due to exception caught whilst attempting to " +
-                    "load them in...", exception)
+            LOGGER.error("Disconnecting player ${player.profile.name} due to exception caught whilst attempting to load them in...", exception)
             player.disconnect(Component.text("An unexpected exception occurred. Please contact the system administrator."))
         }
     }

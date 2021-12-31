@@ -8,15 +8,18 @@
  */
 package org.kryptonmc.api.item.meta
 
+import org.jetbrains.annotations.Contract
+
 /**
  * Item metadata for a writable book (book and quill).
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
-public interface WritableBookMeta : BookMeta<WritableBookMeta>, ItemMetaBuilder.Provider<WritableBookMeta.Builder> {
+public interface WritableBookMeta : BookMeta<WritableBookMeta.Builder, WritableBookMeta> {
 
     /**
      * A builder for building writable book metadata.
      */
+    @MetaDsl
     public interface Builder : BookMeta.Builder<Builder, WritableBookMeta>
 
     public companion object {
@@ -27,6 +30,7 @@ public interface WritableBookMeta : BookMeta<WritableBookMeta>, ItemMetaBuilder.
          * @return a new builder
          */
         @JvmStatic
-        public fun builder(): Builder = ItemMeta.FACTORY.builder(WritableBookMeta::class.java)
+        @Contract("_ -> new", pure = true)
+        public fun builder(): Builder = ItemMeta.builder(WritableBookMeta::class.java)
     }
 }

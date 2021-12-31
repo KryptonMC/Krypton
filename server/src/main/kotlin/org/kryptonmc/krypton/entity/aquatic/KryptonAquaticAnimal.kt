@@ -32,7 +32,7 @@ abstract class KryptonAquaticAnimal(
     attributeSupplier: AttributeSupplier
 ) : KryptonMob(world, type, attributeSupplier), AquaticAnimal {
 
-    override val pushedByFluid: Boolean
+    final override val pushedByFluid: Boolean
         get() = false
 
     override fun tick() {

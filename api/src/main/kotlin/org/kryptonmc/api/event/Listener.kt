@@ -9,11 +9,9 @@
 package org.kryptonmc.api.event
 
 /**
- * This is used to indicate that the target function is a listener for an
- * event.
+ * Used to indicate that the target function is a listener for an event.
  *
- * @param priority the priority of the event (defaults to
- * [ListenerPriority.MEDIUM])
+ * @param priority the priority of the event (defaults to medium)
  */
 @Target(AnnotationTarget.FUNCTION)
 @Retention(AnnotationRetention.RUNTIME)

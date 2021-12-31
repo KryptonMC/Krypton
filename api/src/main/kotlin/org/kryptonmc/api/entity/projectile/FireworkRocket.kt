@@ -9,13 +9,13 @@
 package org.kryptonmc.api.entity.projectile
 
 import org.kryptonmc.api.entity.Entity
-import org.kryptonmc.api.item.ItemSupplier
+import org.kryptonmc.api.item.ItemStackLike
 
 /**
  * A fired firework rocket.
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
-public interface FireworkRocket : Projectile, ItemSupplier {
+public interface FireworkRocket : Projectile, ItemStackLike {
 
     /**
      * The number of ticks this rocket has been flying for.

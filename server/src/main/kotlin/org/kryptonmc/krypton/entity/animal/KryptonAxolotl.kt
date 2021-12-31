@@ -79,9 +79,8 @@ class KryptonAxolotl(world: KryptonWorld) : KryptonAnimal(world, EntityTypes.AXO
         }
     }
 
+    /* FIXME
     override fun saveToBucket(item: KryptonItemStack) {
-        // FIXME
-        /*
         saveDefaultsToBucket(this, item)
         item.meta.nbt.apply {
             putInt("Variant", data[MetadataKeys.AXOLOTL.VARIANT])
@@ -90,8 +89,8 @@ class KryptonAxolotl(world: KryptonWorld) : KryptonAnimal(world, EntityTypes.AXO
                 putLong("HuntingCooldown", brain.expiryTime(MemoryKeys.HAS_HUNTING_COOLDOWN))
             }
         }
-         */
     }
+     */
 
     override fun load(tag: CompoundTag) {
         super.load(tag)

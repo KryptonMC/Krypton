@@ -19,8 +19,10 @@ import org.kryptonmc.api.event.ResultedEvent
  *
  * @param player the player who quit
  */
+@Suppress("INAPPLICABLE_JVM_NAME")
 public data class QuitEvent(@get:JvmName("player") public val player: Player) : ResultedEvent<ComponentResult> {
 
+    @get:JvmName("result")
     override var result: ComponentResult = ComponentResult.allowed(Component.translatable(
         "multiplayer.player.left",
         NamedTextColor.YELLOW,

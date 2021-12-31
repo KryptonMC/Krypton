@@ -34,31 +34,31 @@ abstract class KryptonThrowableProjectile(
     private val defaultItem: KryptonItemStack
 ) : KryptonProjectile(world, type), ThrowableProjectile {
 
-    private var rawItem: KryptonItemStack
+    private var item: KryptonItemStack
         get() = data[MetadataKeys.THROWABLE_PROJECTILE.ITEM]
         set(value) {
             if (value.type === defaultItem.type && value.meta == KryptonItemMeta.DEFAULT) return
             data[MetadataKeys.THROWABLE_PROJECTILE.ITEM] = value.withAmount(1)
-        }
-    final override val item: ItemStack
-        get() {
-            val raw = rawItem
-            return if (raw.isEmpty()) defaultItem else raw
         }
 
     init {
         data.add(MetadataKeys.THROWABLE_PROJECTILE.ITEM)
     }
 
-    override fun load(tag: CompoundTag) {
+    final override fun load(tag: CompoundTag) {
         super.load(tag)
-        val item = KryptonItemStack(tag.getCompound("Item"))
-        rawItem = item
+        item = KryptonItemStack(tag.getCompound("Item"))
     }
 
-    override fun save(): CompoundTag.Builder = super.save().apply {
-        val raw = rawItem
-        if (!raw.isEmpty()) put("Item", raw.save(CompoundTag.builder()).build())
+    final override fun save(): CompoundTag.Builder = super.save().apply {
+        val item = item
+        if (!item.isEmpty()) put("Item", item.save(CompoundTag.builder()).build())
+    }
+
+    final override fun asItem(): ItemStack {
+        val item = item
+        if (item.isEmpty()) return defaultItem
+        return item
     }
 
     companion object {

@@ -72,10 +72,6 @@ class KryptonRabbit(world: KryptonWorld) : KryptonAnimal(world, EntityTypes.RABB
             .add(AttributeTypes.MAX_HEALTH, 3.0)
             .add(AttributeTypes.MOVEMENT_SPEED, 0.3)
             .build()
-        private val TEMPTING_ITEMS = setOf(
-            ItemTypes.CARROT,
-            ItemTypes.GOLDEN_CARROT,
-            ItemTypes.DANDELION
-        )
+        private val TEMPTING_ITEMS = setOf(ItemTypes.CARROT, ItemTypes.GOLDEN_CARROT, ItemTypes.DANDELION)
     }
 }

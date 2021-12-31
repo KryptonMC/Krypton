@@ -11,6 +11,8 @@
 package org.kryptonmc.api.item
 
 import org.jetbrains.annotations.Contract
+import org.kryptonmc.api.item.meta.ItemMeta
+import org.kryptonmc.api.item.meta.ItemMetaBuilder
 
 @Target(AnnotationTarget.CLASS, AnnotationTarget.FUNCTION)
 @Retention(AnnotationRetention.SOURCE)
@@ -62,3 +64,43 @@ public inline fun item(
     amount: Int,
     builder: ItemStack.Builder.() -> Unit
 ): ItemStack = ItemStack.builder().type(type).amount(amount).apply(builder).build()
+
+/**
+ * Creates a new item stack with the given [type], [amount], and meta built
+ * from the given [meta] builder.
+ *
+ * @param type the item type
+ * @param amount the amount of items
+ * @param meta the meta builder
+ * @return a new item stack
+ */
+@ItemDsl
+@JvmSynthetic
+@JvmName("itemWithMeta")
+@Contract("_ -> new", pure = true)
+public inline fun item(
+    type: ItemType,
+    amount: Int,
+    meta: ItemMeta.Builder.() -> Unit
+): ItemStack = ItemStack.builder().type(type).amount(amount).meta(ItemMeta.builder().apply(meta).build()).build()
+
+/**
+ * Creates a new item stack with the given [type], [amount], and meta of the
+ * given type [P] built from the given [meta] builder of the given type [B].
+ *
+ * @param type the item type
+ * @param amount the amount of items
+ * @param meta the meta builder
+ * @param B the type of the metadata builder
+ * @param P the type of the metadata
+ * @return a new item stack
+ */
+@ItemDsl
+@JvmSynthetic
+@JvmName("itemWithMetaGeneric")
+@Contract("_ -> new", pure = true)
+public inline fun <B : ItemMetaBuilder<B, P>, reified P : ItemMetaBuilder.Provider<B>> item(
+    type: ItemType,
+    amount: Int,
+    noinline meta: B.() -> Unit
+): ItemStack = ItemStack.builder().type(type).amount(amount).meta(meta).build()

@@ -28,7 +28,7 @@ import java.util.concurrent.ConcurrentHashMap
 
 class KryptonGameRuleHolder : GameRuleHolder {
 
-    override val rules = ConcurrentHashMap<GameRule<out Any>, Any>()
+    override val rules: MutableMap<GameRule<out Any>, Any> = ConcurrentHashMap()
 
     constructor() {
         Registries.GAME_RULES.values.forEach { rules[it] = it.default }

@@ -30,13 +30,13 @@ import org.kryptonmc.api.world.rule.GameRules
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.network.SessionHandler
+import org.kryptonmc.krypton.packet.FramedPacket
 import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.packet.out.play.GameState
 import org.kryptonmc.krypton.packet.out.play.PacketOutAbilities
 import org.kryptonmc.krypton.packet.out.play.PacketOutChangeGameState
 import org.kryptonmc.krypton.packet.out.play.PacketOutChangeHeldItem
 import org.kryptonmc.krypton.packet.out.play.PacketOutDeclareRecipes
-import org.kryptonmc.krypton.packet.out.play.PacketOutDifficulty
 import org.kryptonmc.krypton.packet.out.play.PacketOutEntityStatus
 import org.kryptonmc.krypton.packet.out.play.PacketOutInitializeWorldBorder
 import org.kryptonmc.krypton.packet.out.play.PacketOutJoinGame
@@ -54,9 +54,9 @@ import org.kryptonmc.krypton.server.ban.BannedIpList
 import org.kryptonmc.krypton.server.ban.BannedPlayerList
 import org.kryptonmc.krypton.server.whitelist.Whitelist
 import org.kryptonmc.krypton.server.whitelist.WhitelistedIps
-import org.kryptonmc.krypton.util.daemon
+import org.kryptonmc.krypton.util.daemonThreadFactory
+import org.kryptonmc.krypton.util.frame
 import org.kryptonmc.krypton.util.logger
-import org.kryptonmc.krypton.util.threadFactory
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.krypton.world.data.PlayerDataManager
 import org.kryptonmc.krypton.world.dimension.parseDimension
@@ -73,7 +73,7 @@ import kotlin.random.Random
 
 class PlayerManager(private val server: KryptonServer) {
 
-    private val executor = Executors.newFixedThreadPool(8, threadFactory("Player Executor #%d") { daemon() })
+    private val executor = Executors.newFixedThreadPool(8, daemonThreadFactory("Player Executor #%d"))
     val dataManager: PlayerDataManager
     val players = CopyOnWriteArrayList<KryptonPlayer>()
     val playersByName = ConcurrentHashMap<String, KryptonPlayer>()
@@ -88,6 +88,8 @@ class PlayerManager(private val server: KryptonServer) {
             field = value
             server.updateConfig("server.whitelist-enabled", value)
         }
+
+    private val brandPacket by lazy { FramedPacket(PacketOutPluginMessage(BRAND_KEY, BRAND_MESSAGE).frame()) }
 
     init {
         val config = server.config
@@ -138,15 +140,15 @@ class PlayerManager(private val server: KryptonServer) {
             false,
             false
         ))
-        session.send(PacketOutPluginMessage(BRAND_KEY, BRAND_MESSAGE))
-        session.send(PacketOutDifficulty(world.difficulty))
+        session.write(brandPacket)
+        session.write(world.cachedDifficultyPacket)
 
         // Player data stuff
         session.send(PacketOutAbilities(player))
         session.send(PacketOutChangeHeldItem(player.inventory.heldSlot))
-        session.send(PacketOutDeclareRecipes)
-        session.send(PacketOutUnlockRecipes(PacketOutUnlockRecipes.Action.INIT))
-        session.send(PacketOutTags)
+        session.write(PacketOutDeclareRecipes.CACHED)
+        session.write(PacketOutUnlockRecipes.CACHED_INIT)
+        session.write(PacketOutTags.CACHED)
         session.send(PacketOutEntityStatus(player.id, if (reducedDebugInfo) 22 else 23))
         sendCommands(player)
         player.statistics.invalidate()

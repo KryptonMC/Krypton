@@ -37,5 +37,9 @@ data class PacketOutDestroyEntities(val ids: IntArray) : Packet {
         return ids.contentEquals((other as PacketOutDestroyEntities).ids)
     }
 
-    override fun hashCode(): Int = 31 * super.hashCode() + ids.contentHashCode()
+    override fun hashCode(): Int {
+        var result = 1
+        result = 31 * result + ids.contentHashCode()
+        return result
+    }
 }

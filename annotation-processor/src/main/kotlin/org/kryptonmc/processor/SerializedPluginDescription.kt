@@ -39,7 +39,8 @@ data class SerializedPluginDescription(
 
     companion object : TypeAdapter<SerializedPluginDescription>() {
 
-        val ID_REGEX = "[a-z][a-z0-9-_]{0,63}".toRegex()
+        @JvmField
+        val ID_REGEX: Regex = "[a-z][a-z0-9-_]{0,63}".toRegex()
 
         override fun read(reader: JsonReader): SerializedPluginDescription? {
             reader.beginObject()

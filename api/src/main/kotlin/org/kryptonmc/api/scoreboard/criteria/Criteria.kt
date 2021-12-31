@@ -30,10 +30,11 @@ public object Criteria {
     @JvmField public val ARMOR: Criterion = get("armor")
     @JvmField public val EXPERIENCE: Criterion = get("experience")
     @JvmField public val LEVEL: Criterion = get("level")
-    @JvmField public val TEAM_KILL: CompoundCriterion = get("team_kill") as CompoundCriterion
-    @JvmField public val KILLED_BY_TEAM: CompoundCriterion = get("killed_by_team") as CompoundCriterion
+    @JvmField public val TEAM_KILL: CompoundCriterion = get("team_kill")
+    @JvmField public val KILLED_BY_TEAM: CompoundCriterion = get("killed_by_team")
 
     // @formatter:on
     @JvmStatic
-    private fun get(name: String) = Registries.CRITERIA[Key.key("krypton", name)]!!
+    @Suppress("UNCHECKED_CAST")
+    private fun <T : Criterion> get(name: String): T = Registries.CRITERIA[Key.key("krypton", name)]!! as T
 }

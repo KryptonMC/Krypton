@@ -128,12 +128,15 @@ import org.kryptonmc.krypton.util.IdentityHashStrategy
 
 object PacketRegistry {
 
-    private val byEncoded = Int2ObjectOpenHashMap<(ByteBuf) -> Packet>()
+    private val byEncoded = Int2ObjectOpenHashMap<PacketConstructor>()
     private val toId = Object2IntOpenCustomHashMap<Class<*>>(IdentityHashStrategy).apply { defaultReturnValue(-1) }
 
     fun lookup(clazz: Class<*>): Int = toId.getInt(clazz)
 
-    fun lookup(state: PacketState, id: Int, buf: ByteBuf): Packet? = byEncoded[encode(state, id)]?.invoke(buf)
+    fun lookup(state: PacketState, id: Int, buf: ByteBuf): Packet? {
+        val constructor = byEncoded[encode(state, id)] ?: return null
+        return constructor.create(buf)
+    }
 
     fun bootstrap() {
         // Handshake
@@ -252,7 +255,7 @@ object PacketRegistry {
     }
 
     @JvmStatic
-    private fun register(state: PacketState, id: Int, creator: (ByteBuf) -> Packet) {
+    private fun register(state: PacketState, id: Int, creator: PacketConstructor) {
         byEncoded[encode(state, id)] = creator
     }
 
@@ -263,4 +266,9 @@ object PacketRegistry {
 
     @JvmStatic
     private fun encode(state: PacketState, id: Int): Int = (state.ordinal shl 16) or (id and 0xFFFF)
+
+    private fun interface PacketConstructor {
+
+        fun create(buf: ByteBuf): Packet
+    }
 }

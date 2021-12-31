@@ -136,36 +136,12 @@ public interface Biome : Buildable<Biome, Biome.Builder>, Keyed {
     @ApiStatus.Internal
     public interface Factory {
 
-        public fun of(key: Key, climate: Climate, depth: Float, scale: Float, category: BiomeCategory, effects: BiomeEffects): Biome
-
         public fun builder(key: Key): Builder
     }
 
     public companion object {
 
         private val FACTORY = Krypton.factoryProvider.provide<Factory>()
-
-        /**
-         * Creates a new biome with the given values.
-         *
-         * @param key the key
-         * @param climate the climate
-         * @param depth the depth
-         * @param scale the scale
-         * @param category the category
-         * @param effects the effects
-         * @return a new biome
-         */
-        @JvmStatic
-        @Contract("_ -> new", pure = true)
-        public fun of(
-            key: Key,
-            climate: Climate,
-            depth: Float,
-            scale: Float,
-            category: BiomeCategory,
-            effects: BiomeEffects
-        ): Biome = FACTORY.of(key, climate, depth, scale, category, effects)
 
         /**
          * Creates a new builder for biomes with the given [key].

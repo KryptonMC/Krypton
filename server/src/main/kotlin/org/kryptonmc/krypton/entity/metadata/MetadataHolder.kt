@@ -18,22 +18,16 @@
  */
 package org.kryptonmc.krypton.entity.metadata
 
-import io.netty.buffer.ByteBuf
-import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 import org.kryptonmc.krypton.entity.KryptonEntity
-import org.kryptonmc.krypton.util.writeVarInt
 import space.vectrix.flare.fastutil.Int2ObjectSyncMap
-import java.util.concurrent.locks.ReentrantReadWriteLock
-import kotlin.concurrent.read
-import kotlin.concurrent.write
 
 class MetadataHolder(private val entity: KryptonEntity) {
 
     private val itemsById = Int2ObjectSyncMap.hashmap<Entry<*>>()
 
-    var isDirty = false
+    var isDirty: Boolean = false
         private set
-    var isEmpty = true
+    var isEmpty: Boolean = true
         private set
     val all: Sequence<Entry<*>>
         get() = itemsById.int2ObjectEntrySet()
@@ -62,12 +56,10 @@ class MetadataHolder(private val entity: KryptonEntity) {
         return createItem(key, value)
     }
 
-    operator fun <T> get(key: MetadataKey<T>): T = checkNotNull(entry<T>(key.id)) {
-        "Could not find key $key for entity of type ${entity.type}!"
-    }.value
+    operator fun <T> get(key: MetadataKey<T>): T = entry<T>(key).value
 
     operator fun <T> set(key: MetadataKey<T>, value: T) {
-        val existing = checkNotNull(entry<T>(key.id)) { "Could not find key $key for entity of type ${entity.type}!" }
+        val existing = entry(key)
         if (value === existing.value) return
         existing.value = value
         entity.onDataUpdate(key)
@@ -76,7 +68,9 @@ class MetadataHolder(private val entity: KryptonEntity) {
     }
 
     @Suppress("UNCHECKED_CAST")
-    private fun <T> entry(id: Int): Entry<T>? = itemsById[id] as? Entry<T>
+    private fun <T> entry(key: MetadataKey<T>): Entry<T> = checkNotNull(itemsById[key.id] as? Entry<T>) {
+        "Could not find key $key for entity of type ${entity.type}!"
+    }
 
     private fun invalidate() {
         isDirty = false
@@ -91,7 +85,7 @@ class MetadataHolder(private val entity: KryptonEntity) {
 
     data class Entry<T>(val key: MetadataKey<T>, var value: T) {
 
-        var isDirty = true
+        var isDirty: Boolean = true
 
         fun copy(): Entry<T> = Entry(key, value)
     }
@@ -99,18 +93,5 @@ class MetadataHolder(private val entity: KryptonEntity) {
     companion object {
 
         private const val MAX_ID_VALUE = 254
-        private const val EOF_MARKER = 255
-
-        fun Sequence<Entry<*>>.write(buf: ByteBuf) {
-            forEach { buf.writeEntry(it) }
-            buf.writeByte(EOF_MARKER)
-        }
-
-        private fun <T> ByteBuf.writeEntry(entry: Entry<T>) {
-            val key = entry.key
-            writeByte(key.id)
-            writeVarInt(key.serializer.id)
-            key.serializer.write(this, entry.value)
-        }
     }
 }

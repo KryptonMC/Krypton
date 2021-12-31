@@ -30,7 +30,7 @@ class KryptonScore(
 ) : Score {
 
     private var forceUpdate = true
-    val nameString = name.toLegacySectionText()
+    val nameString: String = name.toLegacySectionText()
     override var score = 0
         set(value) {
             val old = field

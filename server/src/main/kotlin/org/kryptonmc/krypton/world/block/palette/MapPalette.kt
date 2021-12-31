@@ -25,7 +25,7 @@ import org.kryptonmc.krypton.util.varIntBytes
 import org.kryptonmc.krypton.util.writeVarInt
 
 @JvmRecord
-data class MapPalette<T> private constructor(
+data class MapPalette<T>(
     private val registry: IntBiMap<T>,
     private val bits: Int,
     private val resizer: PaletteResizer<T>,

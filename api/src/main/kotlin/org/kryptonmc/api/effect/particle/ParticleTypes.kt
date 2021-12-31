@@ -116,29 +116,29 @@ public object ParticleTypes {
     private fun <T : ParticleType> register(particle: T): T = Registries.PARTICLE_TYPE.register(particle.key(), particle)
 
     @JvmStatic
-    private fun simple(name: String): SimpleParticleType = register(SimpleParticleType(Key.key(name)))
+    private fun simple(name: String): SimpleParticleType = register(SimpleParticleType.of(Key.key(name)))
 
     @JvmStatic
-    private fun directional(name: String): DirectionalParticleType = register(DirectionalParticleType(Key.key(name)))
+    private fun directional(name: String): DirectionalParticleType = register(DirectionalParticleType.of(Key.key(name)))
 
     @JvmStatic
-    private fun block(name: String): BlockParticleType = register(BlockParticleType(Key.key(name)))
+    private fun block(name: String): BlockParticleType = register(BlockParticleType.of(Key.key(name)))
 
     @JvmStatic
-    private fun item(name: String): ItemParticleType = register(ItemParticleType(Key.key(name)))
+    private fun item(name: String): ItemParticleType = register(ItemParticleType.of(Key.key(name)))
 
     @JvmStatic
-    private fun dust(name: String): DustParticleType = register(DustParticleType(Key.key(name)))
+    private fun dust(name: String): DustParticleType = register(DustParticleType.of(Key.key(name)))
 
     @JvmStatic
-    private fun transition(name: String): DustTransitionParticleType = register(DustTransitionParticleType(Key.key(name)))
+    private fun transition(name: String): DustTransitionParticleType = register(DustTransitionParticleType.of(Key.key(name)))
 
     @JvmStatic
-    private fun color(name: String): ColorParticleType = register(ColorParticleType(Key.key(name)))
+    private fun color(name: String): ColorParticleType = register(ColorParticleType.of(Key.key(name)))
 
     @JvmStatic
-    private fun note(name: String): NoteParticleType = register(NoteParticleType(Key.key(name)))
+    private fun note(name: String): NoteParticleType = register(NoteParticleType.of(Key.key(name)))
 
     @JvmStatic
-    private fun vibration(name: String): VibrationParticleType = register(VibrationParticleType(Key.key(name)))
+    private fun vibration(name: String): VibrationParticleType = register(VibrationParticleType.of(Key.key(name)))
 }

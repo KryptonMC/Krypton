@@ -27,7 +27,6 @@ import org.jline.reader.LineReader
 import org.jline.utils.AttributedString
 import org.jline.utils.AttributedStringBuilder
 import org.jline.utils.AttributedStyle
-import org.kryptonmc.krypton.command.KryptonCommandManager
 import org.kryptonmc.krypton.util.logger
 import java.util.regex.Pattern
 import kotlin.math.min
@@ -39,7 +38,7 @@ class BrigadierHighlighter(private val console: KryptonConsole) : Highlighter {
 
     override fun highlight(lineReader: LineReader, buffer: String): AttributedString {
         return try {
-            val results = KryptonCommandManager.parse(console, buffer)
+            val results = console.server.commandManager.parse(console, buffer)
             val reader = results.reader
             val builder = AttributedStringBuilder()
             var lastPos = 0

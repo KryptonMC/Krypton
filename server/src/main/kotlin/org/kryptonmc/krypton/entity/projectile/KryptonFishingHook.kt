@@ -35,8 +35,8 @@ class KryptonFishingHook(world: KryptonWorld) : KryptonProjectile(world, EntityT
             field = value
             data[MetadataKeys.FISHING_HOOK.HOOKED] = value?.id?.plus(1) ?: 0
         }
-    override var state = FishingHook.State.FLYING
-    override var isBiting = false
+    override var state: FishingHook.State = FishingHook.State.FLYING
+    override var isBiting: Boolean = false
 
     override fun onDataUpdate(key: MetadataKey<*>) {
         if (key === MetadataKeys.FISHING_HOOK.HOOKED) {

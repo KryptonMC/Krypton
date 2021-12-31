@@ -56,8 +56,7 @@ object NBTLegacyHoverEventSerializer : LegacyHoverEventSerializer {
 
     override fun deserializeShowItem(input: Component): HoverEvent.ShowItem {
         return try {
-            val raw = input.toPlainText()
-            val nbt = SNBT_CODEC.decode(raw)
+            val nbt = SNBT_CODEC.decode(input.toPlainText())
             val tag = nbt.getCompound(ITEM_TAG)
             val holder = if (!tag.isEmpty()) BinaryTagHolder.encode(tag, SNBT_CODEC) else null
             HoverEvent.ShowItem.of(Key.key(nbt.getString(ITEM_TYPE)), nbt.getByte(ITEM_COUNT).toInt(), holder)
@@ -68,8 +67,7 @@ object NBTLegacyHoverEventSerializer : LegacyHoverEventSerializer {
 
     override fun deserializeShowEntity(input: Component, decoder: Codec.Decoder<Component, String, out RuntimeException>): HoverEvent.ShowEntity {
         return try {
-            val raw = input.toPlainText()
-            val nbt = SNBT_CODEC.decode(raw)
+            val nbt = SNBT_CODEC.decode(input.toPlainText())
             HoverEvent.ShowEntity.of(
                 Key.key(nbt.getString(ENTITY_TYPE)),
                 UUID.fromString(nbt.getString(ENTITY_ID)),
@@ -86,8 +84,7 @@ object NBTLegacyHoverEventSerializer : LegacyHoverEventSerializer {
             byte(ITEM_COUNT, input.count().toByte())
         }
         try {
-            val nbt = input.nbt()
-            if (nbt != null) tag.put(ITEM_TAG, nbt.get(SNBT_CODEC))
+            if (input.nbt() != null) tag.put(ITEM_TAG, input.nbt()!!.get(SNBT_CODEC))
         } catch (exception: CommandSyntaxException) {
             throw IOException(exception)
         }
@@ -99,8 +96,7 @@ object NBTLegacyHoverEventSerializer : LegacyHoverEventSerializer {
             string(ENTITY_ID, input.id().toString())
             string(ENTITY_TYPE, input.type().asString())
         }
-        val name = input.name()
-        if (name != null) tag.string(ENTITY_NAME, encoder.encode(name))
+        if (input.name() != null) tag.string(ENTITY_NAME, encoder.encode(input.name()!!))
         return Component.text(SNBT_CODEC.encode(tag.build()))
     }
 }

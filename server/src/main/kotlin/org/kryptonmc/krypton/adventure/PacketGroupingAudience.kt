@@ -137,4 +137,16 @@ interface PacketGroupingAudience : ForwardingAudience {
     }
 
     override fun audiences(): Iterable<Audience> = players
+
+    companion object {
+
+        @JvmStatic
+        fun of(sessionManager: SessionManager, players: Collection<KryptonPlayer>): PacketGroupingAudience = object : PacketGroupingAudience {
+
+            override val sessionManager: SessionManager
+                get() = sessionManager
+            override val players: Collection<KryptonPlayer>
+                get() = players
+        }
+    }
 }

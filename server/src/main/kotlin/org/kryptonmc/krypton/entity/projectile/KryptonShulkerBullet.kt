@@ -30,12 +30,12 @@ import java.util.UUID
 class KryptonShulkerBullet(world: KryptonWorld) : KryptonProjectile(world, EntityTypes.SHULKER_BULLET), ShulkerBullet {
 
     private var targetId: UUID? = null
-    override var steps = 0
+    override var steps: Int = 0
     override var movingDirection: Direction? = null
     override var target: Entity? = null
-    override var targetDeltaX = 0.0
-    override var targetDeltaY = 0.0
-    override var targetDeltaZ = 0.0
+    override var targetDeltaX: Double = 0.0
+    override var targetDeltaY: Double = 0.0
+    override var targetDeltaZ: Double = 0.0
 
     override fun load(tag: CompoundTag) {
         super.load(tag)

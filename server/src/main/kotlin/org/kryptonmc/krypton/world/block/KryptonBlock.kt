@@ -20,8 +20,6 @@ package org.kryptonmc.krypton.world.block
 
 import kotlinx.collections.immutable.ImmutableSet
 import kotlinx.collections.immutable.PersistentMap
-import kotlinx.collections.immutable.toImmutableSet
-import kotlinx.collections.immutable.toPersistentHashMap
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.TranslatableComponent
@@ -32,12 +30,8 @@ import org.kryptonmc.api.block.property.Property
 import org.kryptonmc.api.fluid.Fluid
 import org.kryptonmc.api.item.ItemType
 import org.kryptonmc.api.registry.Registries
-import org.kryptonmc.krypton.util.serialization.Codecs
-import org.kryptonmc.krypton.util.serialization.CompoundCodec
-import org.kryptonmc.krypton.util.serialization.decode
-import org.kryptonmc.krypton.util.serialization.encode
+import org.kryptonmc.krypton.util.normalizePath
 import org.kryptonmc.krypton.world.block.property.KryptonPropertyHolder
-import org.kryptonmc.nbt.compound
 
 @JvmRecord
 data class KryptonBlock(
@@ -137,7 +131,7 @@ data class KryptonBlock(
         private var item: Key? = null
         private var fluid: Key? = null
 
-        constructor(block: Block) : this(block.key(), block.id, block.stateId) {
+        constructor(block: KryptonBlock) : this(block.key(), block.id, block.stateId) {
             hardness = block.hardness
             explosionResistance = block.explosionResistance
             friction = block.friction
@@ -167,8 +161,8 @@ data class KryptonBlock(
             requiresCorrectTool = block.requiresCorrectTool
             renderShape = block.renderShape
             pushReaction = block.pushReaction
-            item = block.asItem()?.key()
-            fluid = block.asFluid().key()
+            item = block.itemKey
+            fluid = block.fluidKey
         }
 
         override fun id(id: Int): Block.Builder = apply { this.id = id }
@@ -269,7 +263,7 @@ data class KryptonBlock(
             blocksMotion,
             flammable,
             gravity,
-            translation ?: Component.translatable("block.${key.namespace()}.${key.value()}"),
+            translation ?: Component.translatable("block.${key.normalizePath()}"),
             replaceable,
             dynamicShape,
             useShapeForOcclusion,
@@ -286,8 +280,8 @@ data class KryptonBlock(
             pushReaction,
             item,
             fluid ?: EMPTY_KEY,
-            availableProperties.toImmutableSet(),
-            properties.toPersistentHashMap()
+            availableProperties.build(),
+            properties.build()
         )
     }
 
@@ -303,17 +297,5 @@ data class KryptonBlock(
     companion object {
 
         private val EMPTY_KEY = Key.key("empty")
-        private val PROPERTIES_CODEC = Codecs.map(Codecs.STRING)
-
-        @JvmField
-        val CODEC: CompoundCodec<Block> = CompoundCodec.of(
-            {
-                compound {
-                    encode(Codecs.KEY, "Name", it.key())
-                    encode(PROPERTIES_CODEC, "Properties", it.properties)
-                }
-            },
-            { BlockLoader.fromKey(it.decode(Codecs.KEY, "Name")!!)!!.copy(it.decode(PROPERTIES_CODEC, "Properties")!!) }
-        )
     }
 }

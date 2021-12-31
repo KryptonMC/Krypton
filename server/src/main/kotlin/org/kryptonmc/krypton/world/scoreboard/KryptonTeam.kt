@@ -61,33 +61,33 @@ class KryptonTeam(
             field = value
             scoreboard?.onTeamUpdated(this)
         }
-    override var allowFriendlyFire = allowFriendlyFire
+    override var allowFriendlyFire: Boolean = allowFriendlyFire
         set(value) {
             field = value
             scoreboard?.onTeamUpdated(this)
         }
-    override var canSeeInvisibleMembers = canSeeInvisibleMembers
+    override var canSeeInvisibleMembers: Boolean = canSeeInvisibleMembers
         set(value) {
             field = value
             scoreboard?.onTeamUpdated(this)
         }
-    override var nameTagVisibility = nameTagVisibility
+    override var nameTagVisibility: Visibility = nameTagVisibility
         set(value) {
             field = value
             scoreboard?.onTeamUpdated(this)
         }
-    override var deathMessageVisibility = deathMessagesVisibility
+    override var deathMessageVisibility: Visibility = deathMessagesVisibility
         set(value) {
             field = value
             scoreboard?.onTeamUpdated(this)
         }
-    override var collisionRule = collisionRule
+    override var collisionRule: CollisionRule = collisionRule
         set(value) {
             field = value
             scoreboard?.onTeamUpdated(this)
         }
 
-    override fun formatName(name: Component): Component = Component.empty().toBuilder()
+    override fun formatName(name: Component): Component = Component.text()
         .append(prefix)
         .append(name)
         .append(suffix)
@@ -107,7 +107,7 @@ class KryptonTeam(
     class Builder(private var name: String) : Team.Builder {
 
         private var scoreboard: KryptonScoreboard? = null
-        private var displayName: Component = LegacyComponentSerializer.legacySection().deserialize(name)
+        private var displayName: Component? = null
         private var prefix: Component = Component.empty()
         private var suffix: Component = Component.empty()
         private var color: NamedTextColor = NamedTextColor.WHITE
@@ -159,7 +159,7 @@ class KryptonTeam(
         override fun build(): Team = KryptonTeam(
             scoreboard,
             name,
-            displayName,
+            displayName ?: LegacyComponentSerializer.legacySection().deserialize(name),
             prefix,
             suffix,
             color,

@@ -10,10 +10,5 @@ package org.kryptonmc.api.command
 
 /**
  * A command styled after the convention popularised by Bukkit and BungeeCord.
- *
- * It is highly recommended to use the new Brigadier command system.
- * See [BrigadierCommand].
- *
- * @see BrigadierCommand
  */
 public fun interface SimpleCommand : InvocableCommand<Array<String>>

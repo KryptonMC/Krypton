@@ -53,8 +53,8 @@ abstract class KryptonMob(
     override val armorSlots: Iterable<KryptonItemStack>
         get() = armorItems
 
-    final override var canPickUpLoot = false
-    final override var isPersistent = false
+    final override var canPickUpLoot: Boolean = false
+    final override var isPersistent: Boolean = false
     open var target: KryptonLivingEntity? = null
 
     final override var hasAI: Boolean
@@ -85,9 +85,11 @@ abstract class KryptonMob(
         EquipmentSlot.Type.ARMOR -> armorItems[slot.index]
     }
 
-    override fun setEquipment(slot: EquipmentSlot, item: KryptonItemStack) = when (slot.type) {
-        EquipmentSlot.Type.HAND -> handItems[slot.index] = item
-        EquipmentSlot.Type.ARMOR -> armorItems[slot.index] = item
+    override fun setEquipment(slot: EquipmentSlot, item: KryptonItemStack) {
+        when (slot.type) {
+            EquipmentSlot.Type.HAND -> handItems[slot.index] = item
+            EquipmentSlot.Type.ARMOR -> armorItems[slot.index] = item
+        }
     }
 
     override fun load(tag: CompoundTag) {

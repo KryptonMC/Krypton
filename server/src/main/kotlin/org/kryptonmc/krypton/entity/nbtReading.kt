@@ -25,7 +25,7 @@ import org.spongepowered.math.vector.Vector3i
 
 fun ListTag.readRotation(): Vector3f = Vector3f.from(getFloat(0), getFloat(1), getFloat(2))
 
-fun CompoundTag.Builder.rotation(key: String, rotation: Vector3f) = list(key) {
+fun CompoundTag.Builder.rotation(key: String, rotation: Vector3f): CompoundTag.Builder = list(key) {
     addFloat(rotation.x())
     addFloat(rotation.y())
     addFloat(rotation.z())

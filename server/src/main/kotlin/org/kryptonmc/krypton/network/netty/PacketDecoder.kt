@@ -52,7 +52,7 @@ class PacketDecoder : ByteToMessageDecoder() {
 
     companion object {
 
-        const val NETTY_NAME = "decoder"
+        const val NETTY_NAME: String = "decoder"
         private val LOGGER = logger<PacketDecoder>()
     }
 }

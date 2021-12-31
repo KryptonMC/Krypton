@@ -23,9 +23,7 @@ import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer
-import org.kryptonmc.api.adventure.toComponent
 import org.kryptonmc.api.adventure.toJson
-import org.kryptonmc.api.adventure.toJsonString
 import org.kryptonmc.api.adventure.toLegacyAmpersandText
 import org.kryptonmc.api.adventure.toLegacySectionText
 import org.kryptonmc.api.adventure.toMessage
@@ -45,21 +43,15 @@ class ComponentTests {
 
     @Test
     fun `test component conversions`() {
-        val component = Component.text("Hello", NamedTextColor.GREEN)
-            .append(Component.text(" World", NamedTextColor.BLUE))
+        val component = Component.text()
+            .append(Component.text("Hello", NamedTextColor.GREEN))
+            .append(Component.space())
+            .append(Component.text("World", NamedTextColor.RED))
             .append(Component.text("!", NamedTextColor.RED))
-        val json = GsonComponentSerializer.gson().serializeToTree(component)
-        assertEquals(json, component.toJson())
-        assertEquals(GsonComponentSerializer.gson().serialize(component), component.toJsonString())
+            .build()
+        assertEquals(GsonComponentSerializer.gson().serialize(component), component.toJson())
         assertEquals(PlainTextComponentSerializer.plainText().serialize(component), component.toPlainText())
-        assertEquals(
-            LegacyComponentSerializer.legacySection().serialize(component),
-            component.toLegacySectionText()
-        )
-        assertEquals(
-            LegacyComponentSerializer.legacyAmpersand().serialize(component),
-            component.toLegacyAmpersandText()
-        )
-        assertEquals(component, json.toComponent())
+        assertEquals(LegacyComponentSerializer.legacySection().serialize(component), component.toLegacySectionText())
+        assertEquals(LegacyComponentSerializer.legacyAmpersand().serialize(component), component.toLegacyAmpersandText())
     }
 }

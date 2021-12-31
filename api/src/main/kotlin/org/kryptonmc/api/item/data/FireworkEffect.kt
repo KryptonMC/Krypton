@@ -14,6 +14,7 @@ import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.Krypton
 import org.kryptonmc.api.util.provide
 import java.awt.Color
+import java.util.function.Consumer
 
 /**
  * An effect that may be produced from a firework star exploding.
@@ -50,6 +51,28 @@ public interface FireworkEffect : Buildable<FireworkEffect, FireworkEffect.Build
      */
     @get:JvmName("fadeColors")
     public val fadeColors: List<Color>
+
+    /**
+     * Creates a new firework effect by creating a new builder from this effect
+     * and applying the given [builder] function.
+     *
+     * @param builder the builder to apply
+     * @return a new firework effect
+     */
+    @JvmSynthetic
+    @Contract("_ -> new", pure = true)
+    public fun with(builder: Builder.() -> Unit): FireworkEffect
+
+    /**
+     * Creates a new firework effect by creating a new builder from this effect
+     * and applying the given [builder] function.
+     *
+     * @param builder the builder to apply
+     * @return a new firework effect
+     */
+    @JvmSynthetic
+    @Contract("_ -> new", pure = true)
+    public fun with(builder: Consumer<Builder>): FireworkEffect = with { builder.accept(this) }
 
     /**
      * Creates a new firework effect with the given [type].
@@ -159,6 +182,7 @@ public interface FireworkEffect : Buildable<FireworkEffect, FireworkEffect.Build
     /**
      * A builder for building firework effects.
      */
+    @FireworkEffectDsl
     public interface Builder : Buildable.Builder<FireworkEffect> {
 
         /**
@@ -167,6 +191,7 @@ public interface FireworkEffect : Buildable<FireworkEffect, FireworkEffect.Build
          * @param type the type
          * @return this builder
          */
+        @FireworkEffectDsl
         @Contract("_ -> this", mutates = "this")
         public fun type(type: FireworkEffectType): Builder
 
@@ -176,6 +201,7 @@ public interface FireworkEffect : Buildable<FireworkEffect, FireworkEffect.Build
          * @param value whether the effect flickers
          * @return this builder
          */
+        @FireworkEffectDsl
         @Contract("_ -> this", mutates = "this")
         public fun flicker(value: Boolean): Builder
 
@@ -184,6 +210,7 @@ public interface FireworkEffect : Buildable<FireworkEffect, FireworkEffect.Build
          *
          * @return this builder
          */
+        @FireworkEffectDsl
         @Contract("_ -> this", mutates = "this")
         public fun flickers(): Builder = flicker(true)
 
@@ -193,6 +220,7 @@ public interface FireworkEffect : Buildable<FireworkEffect, FireworkEffect.Build
          * @param value whether the effect has a trail
          * @return this builder
          */
+        @FireworkEffectDsl
         @Contract("_ -> this", mutates = "this")
         public fun trail(value: Boolean): Builder
 
@@ -201,6 +229,7 @@ public interface FireworkEffect : Buildable<FireworkEffect, FireworkEffect.Build
          *
          * @return this builder
          */
+        @FireworkEffectDsl
         @Contract("_ -> this", mutates = "this")
         public fun trail(): Builder = trail(true)
 
@@ -210,6 +239,7 @@ public interface FireworkEffect : Buildable<FireworkEffect, FireworkEffect.Build
          * @param colors the colors
          * @return this builder
          */
+        @FireworkEffectDsl
         @Contract("_ -> this", mutates = "this")
         public fun colors(colors: Iterable<Color>): Builder
 
@@ -220,6 +250,7 @@ public interface FireworkEffect : Buildable<FireworkEffect, FireworkEffect.Build
          * @param color the colour to add
          * @return this builder
          */
+        @FireworkEffectDsl
         @Contract("_ -> this", mutates = "this")
         public fun addColor(color: Color): Builder
 
@@ -229,6 +260,7 @@ public interface FireworkEffect : Buildable<FireworkEffect, FireworkEffect.Build
          * @param colors the fade colours
          * @return this builder
          */
+        @FireworkEffectDsl
         @Contract("_ -> this", mutates = "this")
         public fun fadeColors(colors: Iterable<Color>): Builder
 
@@ -239,6 +271,7 @@ public interface FireworkEffect : Buildable<FireworkEffect, FireworkEffect.Build
          * @param color the fade colour to add
          * @return this builder
          */
+        @FireworkEffectDsl
         @Contract("_ -> this", mutates = "this")
         public fun addFadeColor(color: Color): Builder
     }

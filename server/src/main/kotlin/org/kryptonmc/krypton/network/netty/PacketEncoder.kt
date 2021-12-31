@@ -35,7 +35,7 @@ import org.kryptonmc.krypton.util.writeVarInt
 @ChannelHandler.Sharable
 object PacketEncoder : MessageToByteEncoder<Packet>() {
 
-    const val NETTY_NAME = "encoder"
+    const val NETTY_NAME: String = "encoder"
     private val LOGGER = logger<PacketEncoder>()
 
     override fun encode(ctx: ChannelHandlerContext, msg: Packet, out: ByteBuf) {

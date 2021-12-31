@@ -22,9 +22,9 @@ import java.nio.file.Path
 import kotlin.io.path.createDirectories
 import kotlin.io.path.createFile
 
-fun Path.tryCreateDirectories() = catchAndReturnSelf { createDirectories() }
+fun Path.tryCreateDirectories(): Path = catchAndReturnSelf { createDirectories() }
 
-fun Path.tryCreateFile() = catchAndReturnSelf { createFile() }
+fun Path.tryCreateFile(): Path = catchAndReturnSelf { createFile() }
 
 private fun <T> T.catchAndReturnSelf(action: () -> Unit): T = try {
     action()

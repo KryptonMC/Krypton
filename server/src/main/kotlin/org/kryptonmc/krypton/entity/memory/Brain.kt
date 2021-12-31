@@ -51,7 +51,12 @@ class Brain<E : KryptonLivingEntity> {
         memories[key] = Memory(value, ttl)
     }
 
-    fun <T : Any> expiryTime(key: MemoryKey<T>): Long = memories[key]?.timeToLive ?: 0L
+    fun expiryTime(key: MemoryKey<*>): Long = memories[key]?.timeToLive ?: 0L
+
+    fun setExpiryTime(key: MemoryKey<*>, time: Long) {
+        val memory = memories[key] ?: return
+        memory.timeToLive = time
+    }
 
     fun load(tag: CompoundTag) {
         tag.getCompound("Memories").forEach {

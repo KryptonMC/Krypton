@@ -518,7 +518,9 @@ object OverworldBiomeBuilder {
         weirdness: Parameter,
         key: ResourceKey<Biome>,
         offset: Float = 0F,
-    ) = consumer.accept(ParameterPoint(temperature, humidity, continentalness, erosion, UNDERGROUND_DEPTH, weirdness, offset.quantize()), key)
+    ) {
+        consumer.accept(ParameterPoint(temperature, humidity, continentalness, erosion, UNDERGROUND_DEPTH, weirdness, offset.quantize()), key)
+    }
 
     @JvmStatic
     private fun selectMiddle(temperatureIndex: Int, humidityIndex: Int, weirdness: Parameter): ResourceKey<Biome> {

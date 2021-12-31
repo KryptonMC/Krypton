@@ -22,7 +22,7 @@ import java.util.Random
 
 class WorldGenRandom : Random, RandomSource {
 
-    var count = 0
+    var count: Int = 0
         private set
 
     constructor() : super()
@@ -30,7 +30,7 @@ class WorldGenRandom : Random, RandomSource {
     constructor(seed: Long) : super(seed)
 
     override fun next(bits: Int): Int {
-        ++count
+        count++
         return super.next(bits)
     }
 

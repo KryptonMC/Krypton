@@ -15,7 +15,7 @@ import org.kryptonmc.api.item.ItemStack
  * Item metadata for a crossbow.
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
-public interface CrossbowMeta : ScopedItemMeta<CrossbowMeta>, ItemMetaBuilder.Provider<CrossbowMeta.Builder> {
+public interface CrossbowMeta : ScopedItemMeta<CrossbowMeta.Builder, CrossbowMeta> {
 
     /**
      * If the crossbow is charged.
@@ -34,6 +34,7 @@ public interface CrossbowMeta : ScopedItemMeta<CrossbowMeta>, ItemMetaBuilder.Pr
      * @param charged the new charged setting
      * @return new item metadata
      */
+    @Contract("_ -> new", pure = true)
     public fun withCharged(charged: Boolean): CrossbowMeta
 
     /**
@@ -42,6 +43,7 @@ public interface CrossbowMeta : ScopedItemMeta<CrossbowMeta>, ItemMetaBuilder.Pr
      * @param projectiles the new projectiles
      * @return new item metadata
      */
+    @Contract("_ -> new", pure = true)
     public fun withProjectiles(projectiles: List<ItemStack>): CrossbowMeta
 
     /**
@@ -51,6 +53,7 @@ public interface CrossbowMeta : ScopedItemMeta<CrossbowMeta>, ItemMetaBuilder.Pr
      * @param projectile the projectile to add
      * @return new item metadata
      */
+    @Contract("_ -> new", pure = true)
     public fun addProjectile(projectile: ItemStack): CrossbowMeta
 
     /**
@@ -62,6 +65,7 @@ public interface CrossbowMeta : ScopedItemMeta<CrossbowMeta>, ItemMetaBuilder.Pr
      * @throws IllegalArgumentException if the index would result in an out of
      * bounds exception, i.e. when it is too small or too big
      */
+    @Contract("_ -> new", pure = true)
     public fun removeProjectile(index: Int): CrossbowMeta
 
     /**
@@ -71,11 +75,13 @@ public interface CrossbowMeta : ScopedItemMeta<CrossbowMeta>, ItemMetaBuilder.Pr
      * @param projectile the projectile to remove
      * @return new item metadata
      */
+    @Contract("_ -> new", pure = true)
     public fun removeProjectile(projectile: ItemStack): CrossbowMeta
 
     /**
      * A builder for building crossbow metadata.
      */
+    @MetaDsl
     public interface Builder : ItemMetaBuilder<Builder, CrossbowMeta> {
 
         /**
@@ -84,6 +90,7 @@ public interface CrossbowMeta : ScopedItemMeta<CrossbowMeta>, ItemMetaBuilder.Pr
          * @param value whether the crossbow is charged
          * @return this builder
          */
+        @MetaDsl
         @Contract("_ -> this", mutates = "this")
         public fun charged(value: Boolean): Builder
 
@@ -94,6 +101,7 @@ public interface CrossbowMeta : ScopedItemMeta<CrossbowMeta>, ItemMetaBuilder.Pr
          * @param projectiles the projectiles
          * @return this builder
          */
+        @MetaDsl
         @Contract("_ -> this", mutates = "this")
         public fun projectiles(projectiles: Iterable<ItemStack>): Builder
 
@@ -104,6 +112,7 @@ public interface CrossbowMeta : ScopedItemMeta<CrossbowMeta>, ItemMetaBuilder.Pr
          * @param projectiles the projectiles
          * @return this builder
          */
+        @MetaDsl
         @Contract("_ -> this", mutates = "this")
         public fun projectiles(vararg projectiles: ItemStack): Builder = projectiles(projectiles.asIterable())
 
@@ -114,6 +123,7 @@ public interface CrossbowMeta : ScopedItemMeta<CrossbowMeta>, ItemMetaBuilder.Pr
          * @param projectile the projectile to add
          * @return this builder
          */
+        @MetaDsl
         @Contract("_ -> this", mutates = "this")
         public fun addProjectile(projectile: ItemStack): Builder
     }
@@ -126,6 +136,7 @@ public interface CrossbowMeta : ScopedItemMeta<CrossbowMeta>, ItemMetaBuilder.Pr
          * @return a new builder
          */
         @JvmStatic
-        public fun builder(): Builder = ItemMeta.FACTORY.builder(CrossbowMeta::class.java)
+        @Contract("_ -> new", pure = true)
+        public fun builder(): Builder = ItemMeta.builder(CrossbowMeta::class.java)
     }
 }

@@ -30,7 +30,7 @@ import org.kryptonmc.krypton.util.writeVarInt
 @ChannelHandler.Sharable
 object SizeEncoder : MessageToByteEncoder<ByteBuf>() {
 
-    const val NETTY_NAME = "prepender"
+    const val NETTY_NAME: String = "prepender"
 
     override fun encode(ctx: ChannelHandlerContext, msg: ByteBuf, out: ByteBuf) {
         out.writeVarInt(msg.readableBytes())

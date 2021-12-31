@@ -271,11 +271,11 @@ data class EntityQuery(
 
         companion object {
 
-            const val RANDOM_PLAYER_CHAR = 'r'
-            const val ALL_PLAYERS_CHAR = 'a'
-            const val EXECUTOR_CHAR = 's'
-            const val ALL_ENTITIES_CHAR = 'e'
-            const val NEAREST_PLAYER_CHAR = 'p'
+            const val RANDOM_PLAYER_CHAR: Char = 'r'
+            const val ALL_PLAYERS_CHAR: Char = 'a'
+            const val EXECUTOR_CHAR: Char = 's'
+            const val ALL_ENTITIES_CHAR: Char = 'e'
+            const val NEAREST_PLAYER_CHAR: Char = 'p'
 
             /**
              * Gets the target selector from it's short name

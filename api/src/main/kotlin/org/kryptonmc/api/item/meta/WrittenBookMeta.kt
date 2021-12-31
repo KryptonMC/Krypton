@@ -17,7 +17,7 @@ import org.kryptonmc.api.item.data.WrittenBookGeneration
  * Item metadata for books that have been written.
  */
 @Suppress("INAPPLICABLE_JVM_NAME", "NonExtendableApiUsage")
-public interface WrittenBookMeta : BookMeta<WrittenBookMeta>, Book, ItemMetaBuilder.Provider<WrittenBookMeta.Builder> {
+public interface WrittenBookMeta : BookMeta<WrittenBookMeta.Builder, WrittenBookMeta>, Book {
 
     /**
      * The title of the written book.
@@ -46,6 +46,7 @@ public interface WrittenBookMeta : BookMeta<WrittenBookMeta>, Book, ItemMetaBuil
      * @param title the new title
      * @return new item metadata
      */
+    @Contract("_ -> new", pure = true)
     public fun withTitle(title: Component): WrittenBookMeta
 
     /**
@@ -54,6 +55,7 @@ public interface WrittenBookMeta : BookMeta<WrittenBookMeta>, Book, ItemMetaBuil
      * @param author the new author
      * @return new item metadata
      */
+    @Contract("_ -> new", pure = true)
     public fun withAuthor(author: Component): WrittenBookMeta
 
     /**
@@ -62,6 +64,7 @@ public interface WrittenBookMeta : BookMeta<WrittenBookMeta>, Book, ItemMetaBuil
      * @param generation the new generation
      * @return new item metadata
      */
+    @Contract("_ -> new", pure = true)
     public fun withGeneration(generation: WrittenBookGeneration): WrittenBookMeta
 
     override fun title(): Component = title
@@ -83,6 +86,7 @@ public interface WrittenBookMeta : BookMeta<WrittenBookMeta>, Book, ItemMetaBuil
     /**
      * A builder for building written book metadata.
      */
+    @MetaDsl
     public interface Builder : BookMeta.Builder<Builder, WrittenBookMeta>, Book.Builder {
 
         /**
@@ -91,17 +95,23 @@ public interface WrittenBookMeta : BookMeta<WrittenBookMeta>, Book, ItemMetaBuil
          * @param generation the generation
          * @return this builder
          */
+        @MetaDsl
         @Contract("_ -> this", mutates = "this")
         public fun generation(generation: WrittenBookGeneration): Builder
 
+        @MetaDsl
         override fun title(title: Component): Builder
 
+        @MetaDsl
         override fun author(author: Component): Builder
 
+        @MetaDsl
         override fun addPage(page: Component): Builder
 
+        @MetaDsl
         override fun pages(pages: Collection<Component>): Builder = pages(pages.asIterable())
 
+        @MetaDsl
         override fun pages(vararg pages: Component): Builder = pages(pages.asIterable())
     }
 
@@ -113,6 +123,7 @@ public interface WrittenBookMeta : BookMeta<WrittenBookMeta>, Book, ItemMetaBuil
          * @return a new builder
          */
         @JvmStatic
-        public fun builder(): Builder = ItemMeta.FACTORY.builder(WrittenBookMeta::class.java)
+        @Contract("_ -> new", pure = true)
+        public fun builder(): Builder = ItemMeta.builder(WrittenBookMeta::class.java)
     }
 }

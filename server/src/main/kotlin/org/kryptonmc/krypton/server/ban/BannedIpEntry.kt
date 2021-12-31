@@ -48,6 +48,7 @@ class BannedIpEntry(
 
     companion object {
 
+        @JvmStatic
         fun read(reader: JsonReader): BannedIpEntry? {
             reader.beginObject()
 

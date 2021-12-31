@@ -30,9 +30,8 @@ import org.kryptonmc.api.world.WorldManager
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.resource.InternalResourceKeys
 import org.kryptonmc.krypton.util.ChunkProgressListener
-import org.kryptonmc.krypton.util.daemon
+import org.kryptonmc.krypton.util.daemonThreadFactory
 import org.kryptonmc.krypton.util.logger
-import org.kryptonmc.krypton.util.threadFactory
 import org.kryptonmc.krypton.util.uncaughtExceptionHandler
 import org.kryptonmc.krypton.world.chunk.ChunkStatus
 import org.kryptonmc.krypton.world.data.DerivedWorldData
@@ -64,20 +63,19 @@ class KryptonWorldManager(
         60L,
         TimeUnit.SECONDS,
         SynchronousQueue(),
-        threadFactory("World Handler %d") {
-            daemon()
+        daemonThreadFactory("World Handler %d") {
             uncaughtExceptionHandler { thread, exception ->
                 LOGGER.error("Caught unhandled exception in thread ${thread.name}!", exception)
                 server.stop()
             }
         }
     )
-    val statsFolder = storageManager.resolve("stats")
+    val statsFolder: Path = storageManager.resolve("stats")
 
     private val name = server.config.world.name
     private val data = checkNotNull(storageManager.load(server.config.world.name)) { "You must provide an existing world for Krypton!" }
 
-    override val worlds = ConcurrentHashMap<ResourceKey<World>, KryptonWorld>()
+    override val worlds: MutableMap<ResourceKey<World>, KryptonWorld> = ConcurrentHashMap()
     override val default: KryptonWorld
         get() = worlds[World.OVERWORLD] ?: error("The default world has not yet been loaded!")
 
@@ -122,9 +120,10 @@ class KryptonWorldManager(
         }, worldExecutor)
     }
 
-    override fun save(world: World): CompletableFuture<Unit> = CompletableFuture.supplyAsync({
-        if (world is KryptonWorld) world.save(false)
-    }, worldExecutor)
+    override fun save(world: World): CompletableFuture<Unit> {
+        if (world !is KryptonWorld) return CompletableFuture.completedFuture(Unit)
+        return CompletableFuture.supplyAsync({ world.save(false) }, worldExecutor)
+    }
 
     override fun contains(key: Key): Boolean = worlds.containsKey(ResourceKey.of(ResourceKeys.DIMENSION, key))
 
@@ -207,7 +206,7 @@ class KryptonWorldManager(
         private val LOGGER = logger<KryptonWorldManager>()
 
         @JvmStatic
-        private fun Key.storageFolder() = when (this) {
+        private fun Key.storageFolder(): String = when (this) {
             World.OVERWORLD.location -> ""
             World.NETHER.location -> "DIM-1"
             World.END.location -> "DIM1"

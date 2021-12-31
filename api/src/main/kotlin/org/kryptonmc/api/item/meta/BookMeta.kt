@@ -15,7 +15,7 @@ import org.jetbrains.annotations.Contract
  * Contains shared metadata between [WritableBookMeta] and [WrittenBookMeta].
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
-public interface BookMeta<I : BookMeta<I>> : ScopedItemMeta<I> {
+public sealed interface BookMeta<B : BookMeta.Builder<B, I>, I : BookMeta<B, I>> : ScopedItemMeta<B, I> {
 
     /**
      * The pages written in the book.
@@ -29,6 +29,7 @@ public interface BookMeta<I : BookMeta<I>> : ScopedItemMeta<I> {
      * @param pages the new pages
      * @return new item metadata
      */
+    @Contract("_ -> new", pure = true)
     public fun withPages(pages: Iterable<Component>): I
 
     /**
@@ -38,6 +39,7 @@ public interface BookMeta<I : BookMeta<I>> : ScopedItemMeta<I> {
      * @param page the page to add
      * @return new item metadata
      */
+    @Contract("_ -> new", pure = true)
     public fun addPage(page: Component): I
 
     /**
@@ -49,6 +51,7 @@ public interface BookMeta<I : BookMeta<I>> : ScopedItemMeta<I> {
      * @throws IllegalArgumentException if the index would result in an out of
      * bounds exception, i.e. when it is too small or too big
      */
+    @Contract("_ -> new", pure = true)
     public fun removePage(index: Int): I
 
     /**
@@ -57,12 +60,14 @@ public interface BookMeta<I : BookMeta<I>> : ScopedItemMeta<I> {
      * @param page the page to remove
      * @return new item metadata
      */
+    @Contract("_ -> new", pure = true)
     public fun removePage(page: Component): I
 
     /**
      * A builder for building book metadata.
      */
-    public interface Builder<B : Builder<B, I>, I : BookMeta<I>> : ItemMetaBuilder<B, I> {
+    @MetaDsl
+    public interface Builder<B : Builder<B, I>, I : BookMeta<B, I>> : ItemMetaBuilder<B, I> {
 
         /**
          * Sets the pages the book has to the given [pages].

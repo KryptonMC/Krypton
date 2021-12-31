@@ -65,15 +65,6 @@ data class KryptonBiome(
 
     object Factory : Biome.Factory {
 
-        override fun of(
-            key: Key,
-            climate: Climate,
-            depth: Float,
-            scale: Float,
-            category: BiomeCategory,
-            effects: BiomeEffects
-        ): Biome = KryptonBiome(key, climate, category, effects)
-
         override fun builder(key: Key): Biome.Builder = Builder(key)
     }
 

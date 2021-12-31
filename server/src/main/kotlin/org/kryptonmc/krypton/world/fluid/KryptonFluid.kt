@@ -20,8 +20,6 @@ package org.kryptonmc.krypton.world.fluid
 
 import kotlinx.collections.immutable.ImmutableSet
 import kotlinx.collections.immutable.PersistentMap
-import kotlinx.collections.immutable.toImmutableSet
-import kotlinx.collections.immutable.toPersistentHashMap
 import net.kyori.adventure.key.Key
 import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.block.Blocks
@@ -106,7 +104,7 @@ data class KryptonFluid(
 
         override fun block(key: Key): Fluid.Builder = apply { block = key }
 
-        override fun build() = KryptonFluid(
+        override fun build(): KryptonFluid = KryptonFluid(
             key,
             id,
             stateId,
@@ -117,8 +115,8 @@ data class KryptonFluid(
             height,
             level,
             block ?: AIR_KEY,
-            availableProperties.toImmutableSet(),
-            properties.toPersistentHashMap()
+            availableProperties.build(),
+            properties.build()
         )
     }
 
@@ -126,7 +124,10 @@ data class KryptonFluid(
 
         override fun builder(key: Key, id: Int, stateId: Int): Builder = Builder(key, id, stateId)
 
-        override fun fromId(id: Int): Fluid? = Registries.FLUID[id]
+        override fun fromId(id: Int): Fluid? {
+            if (Registries.FLUID.contains(id)) return null
+            return Registries.FLUID[id]
+        }
 
         override fun fromStateId(id: Int): Fluid? = FluidLoader.STATES[id]
     }

@@ -35,7 +35,7 @@ abstract class KryptonAnimal(
 ) : KryptonAgeable(world, type, attributeSupplier), Animal {
 
     private var loveCauseId: UUID? = null
-    final override var inLoveTime = 0
+    final override var inLoveTime: Int = 0
     final override val inLove: Boolean
         get() = inLoveTime > 0
     override val canFallInLove: Boolean

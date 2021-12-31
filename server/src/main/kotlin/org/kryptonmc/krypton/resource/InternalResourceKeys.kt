@@ -18,22 +18,18 @@
  */
 package org.kryptonmc.krypton.resource
 
+import org.kryptonmc.api.registry.Registry
+import org.kryptonmc.api.resource.ResourceKey
 import org.kryptonmc.api.resource.ResourceKeys
 import org.kryptonmc.krypton.entity.memory.MemoryKey
-import org.kryptonmc.krypton.world.chunk.ChunkStatus
 import org.kryptonmc.krypton.world.dimension.Dimension
 import org.kryptonmc.krypton.world.event.GameEvent
-import org.kryptonmc.krypton.world.generation.feature.Structure
 import org.kryptonmc.krypton.world.generation.noise.NoiseGeneratorSettings
 
 object InternalResourceKeys {
 
-    @JvmField val MEMORIES = ResourceKeys.minecraft<MemoryKey<Any>>("memory_module_type")
-    @JvmField val DIMENSION = ResourceKeys.minecraft<Dimension>("dimension")
-    @JvmField val GAME_EVENT = ResourceKeys.minecraft<GameEvent>("game_event")
-
-    // World generation resources
-    @JvmField val STRUCTURE = ResourceKeys.minecraft<Structure<*>>("worldgen/structure_feature")
-    @JvmField val NOISE_GENERATOR_SETTINGS = ResourceKeys.minecraft<NoiseGeneratorSettings>("worldgen/noise_settings")
-    @JvmField val CHUNK_STATUS = ResourceKeys.minecraft<ChunkStatus>("chunk_status")
+    @JvmField val MEMORIES: ResourceKey<out Registry<MemoryKey<Any>>> = ResourceKeys.minecraft("memory_module_type")
+    @JvmField val DIMENSION: ResourceKey<out Registry<Dimension>> = ResourceKeys.minecraft("dimension")
+    @JvmField val GAME_EVENT: ResourceKey<out Registry<GameEvent>> = ResourceKeys.minecraft("game_event")
+    @JvmField val NOISE_GENERATOR_SETTINGS: ResourceKey<out Registry<NoiseGeneratorSettings>> = ResourceKeys.minecraft("worldgen/noise_settings")
 }

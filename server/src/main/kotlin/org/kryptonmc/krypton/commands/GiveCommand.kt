@@ -65,11 +65,13 @@ object GiveCommand : InternalCommand {
     }
 
     @JvmStatic
-    private fun give(targets: List<KryptonPlayer>, item: ItemStackArgument, count: Int) = targets.forEach { target ->
-        val items = item.createItemStacks(count)
-        items.forEach { target.inventory.add(it) }
+    private fun give(targets: List<KryptonPlayer>, item: ItemStackArgument, count: Int) {
+        targets.forEach { target ->
+            val items = item.createItemStacks(count)
+            items.forEach { target.inventory.add(it) }
 
-        target.playSound(Sound.sound(SoundEvents.ITEM_PICKUP, Sound.Source.PLAYER, 0.2F, 2F))
-        target.session.send(PacketOutWindowItems(target.inventory, target.inventory.mainHand))
+            target.playSound(Sound.sound(SoundEvents.ITEM_PICKUP, Sound.Source.PLAYER, 0.2F, 2F))
+            target.session.send(PacketOutWindowItems(target.inventory, target.inventory.mainHand))
+        }
     }
 }

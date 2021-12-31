@@ -28,7 +28,7 @@ import java.util.Optional
 
 class FlatGeneratorSettings(val structureSettings: StructureSettings) {
 
-    val layers = mutableListOf<FlatLayer>()
+    val layers: MutableList<FlatLayer> = mutableListOf()
     private val blockLayers = mutableListOf<Block>()
     var biome: Biome = Registries.BIOME[BiomeKeys.PLAINS]!!
         private set

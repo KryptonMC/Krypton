@@ -20,13 +20,13 @@ import org.kryptonmc.api.event.ResultedEvent.Result
  * @param player the player who joined
  * @param hasJoinedBefore if this player has joined before
  */
+@Suppress("INAPPLICABLE_JVM_NAME")
 public data class JoinEvent(
     @get:JvmName("player") public val player: Player,
     @get:JvmName("hasChangedName") public val hasJoinedBefore: Boolean
 ) : ResultedEvent<JoinResult> {
 
-    // The message here is the default translatable component that vanilla
-    // Minecraft sends when a player joins.
+    @get:JvmName("result")
     override var result: JoinResult = JoinResult.allowed(hasJoinedBefore)
 }
 

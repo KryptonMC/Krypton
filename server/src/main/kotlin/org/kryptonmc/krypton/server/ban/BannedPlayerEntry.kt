@@ -51,6 +51,7 @@ class BannedPlayerEntry(
 
     companion object {
 
+        @JvmStatic
         fun read(reader: JsonReader): BannedPlayerEntry? {
             reader.beginObject()
 

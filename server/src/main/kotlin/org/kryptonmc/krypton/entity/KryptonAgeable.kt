@@ -31,7 +31,7 @@ abstract class KryptonAgeable(
     attributeSupplier: AttributeSupplier
 ) : KryptonMob(world, type, attributeSupplier), Ageable {
 
-    final override var age = 0
+    final override var age: Int = 0
         set(value) {
             val old = field
             field = value
@@ -55,7 +55,9 @@ abstract class KryptonAgeable(
         data.add(MetadataKeys.AGEABLE.BABY)
     }
 
-    protected open fun onAgeTransformation() = Unit
+    protected open fun onAgeTransformation() {
+        // nothing to do by default
+    }
 
     fun age(amount: Int, forced: Boolean) {
         val old = age

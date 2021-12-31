@@ -9,6 +9,7 @@
 package org.kryptonmc.api.registry
 
 import net.kyori.adventure.key.Key
+import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.Krypton
 import org.kryptonmc.api.user.ban.BanType
 import org.kryptonmc.api.block.Block
@@ -110,6 +111,7 @@ public object Registries {
      * @return a registry for the given [key]
      */
     @JvmStatic
+    @Contract("_ -> new", pure = true)
     public fun <T : Any> create(key: ResourceKey<out Registry<T>>): Registry<T> = Krypton.registryManager.create(key)
 
     /**
@@ -124,6 +126,7 @@ public object Registries {
      * @return a defaulted registry for the given [key]
      */
     @JvmStatic
+    @Contract("_ -> new", pure = true)
     public fun <T : Any> createDefaulted(
         key: ResourceKey<out Registry<T>>,
         defaultKey: Key

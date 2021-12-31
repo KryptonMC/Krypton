@@ -112,24 +112,15 @@ object ClearCommand : InternalCommand {
     private fun clearList(
         predicate: ItemStackPredicate,
         originalRemaining: Int,
-        items: MutableList<KryptonItemStack>,
+        items: List<KryptonItemStack>,
         setItem: (Int, KryptonItemStack) -> Unit
-    ) : Int {
+    ): Int {
         var remaining = originalRemaining
         items.forEachIndexed { index, item ->
-            if (!predicate(item)) return@forEachIndexed
-            when {
-                remaining == -1 -> setItem(index, KryptonItemStack.EMPTY)
-                remaining > item.amount -> {
-                    setItem(index, KryptonItemStack.EMPTY)
-                    remaining -= item.amount
-                }
-                else -> {
-                    setItem(index, item.shrink(remaining))
-                    remaining = 0
-                    return remaining
-                }
-            }
+            val newRemaining = clearItem(predicate, remaining, item) { setItem(index, it) }
+            if (newRemaining == -1) return@forEachIndexed
+            if (newRemaining == 0) return 0
+            remaining = newRemaining
         }
         return remaining
     }
@@ -140,12 +131,21 @@ object ClearCommand : InternalCommand {
         remaining: Int,
         item: KryptonItemStack,
         setItem: (KryptonItemStack) -> Unit
-    ) {
-        if (!predicate(item)) return
-        when {
-            remaining == -1 -> setItem(KryptonItemStack.EMPTY)
-            remaining > item.amount -> setItem(KryptonItemStack.EMPTY)
-            else -> setItem(item.shrink(remaining))
+    ): Int {
+        if (!predicate(item)) return -1
+        return when {
+            remaining == -1 -> {
+                setItem(KryptonItemStack.EMPTY)
+                remaining
+            }
+            remaining > item.amount -> {
+                setItem(KryptonItemStack.EMPTY)
+                remaining - item.amount
+            }
+            else -> {
+                setItem(item.shrink(remaining))
+                0
+            }
         }
     }
 }

@@ -38,13 +38,13 @@ abstract class KryptonArrowLike(
     private val defaultHitGroundSound: SoundEvent = SoundEvents.ARROW_HIT
 ) : KryptonProjectile(world, type), ArrowLike {
 
-    final override var damage = 2.0
-    final override var isInGround = false
-    final override var life = 0
-    final override var shakeTime = 0
-    final override var sound = defaultHitGroundSound
+    final override var damage: Double = 2.0
+    final override var isInGround: Boolean = false
+    final override var life: Int = 0
+    final override var shakeTime: Int = 0
+    final override var sound: SoundEvent = defaultHitGroundSound
     final override var stuckInBlock: Block? = null
-    final override var pickup = ArrowLike.Pickup.DISALLOWED
+    final override var pickup: ArrowLike.Pickup = ArrowLike.Pickup.DISALLOWED
 
     final override var isCritical: Boolean
         get() = data[MetadataKeys.ARROW_LIKE.FLAGS].toInt() and 1 != 0
@@ -61,11 +61,6 @@ abstract class KryptonArrowLike(
     final override var piercingLevel: Int
         get() = data[MetadataKeys.ARROW_LIKE.PIERCING_LEVEL].toInt()
         set(value) = data.set(MetadataKeys.ARROW_LIKE.PIERCING_LEVEL, value.toByte())
-
-    private fun setFlag(flag: Int, value: Boolean) {
-        val old = data[MetadataKeys.ARROW_LIKE.FLAGS].toInt()
-        data[MetadataKeys.ARROW_LIKE.FLAGS] = (if (value) old or flag else old and flag.inv()).toByte()
-    }
 
     init {
         data.add(MetadataKeys.ARROW_LIKE.FLAGS)
@@ -105,6 +100,11 @@ abstract class KryptonArrowLike(
         byte("shake", shakeTime.toByte())
         boolean("ShotFromCrossbow", wasShotFromCrossbow)
         string("SoundEvent", sound.key().asString())
+    }
+
+    private fun setFlag(flag: Int, value: Boolean) {
+        val old = data[MetadataKeys.ARROW_LIKE.FLAGS].toInt()
+        data[MetadataKeys.ARROW_LIKE.FLAGS] = (if (value) old or flag else old and flag.inv()).toByte()
     }
 
     companion object {

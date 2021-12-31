@@ -19,11 +19,13 @@ import org.kryptonmc.api.event.ResultedEvent
  * @param player the player that performed the interaction
  * @param type the type of interaction performed
  */
+@Suppress("INAPPLICABLE_JVM_NAME")
 public sealed class InteractEvent(
-    public val player: Player,
-    public val type: Type,
+    @get:JvmName("player") public val player: Player,
+    @get:JvmName("type") public val type: Type,
 ) : ResultedEvent<GenericResult> {
 
+    @get:JvmName("result")
     override var result: GenericResult = GenericResult.allowed()
 
     /**

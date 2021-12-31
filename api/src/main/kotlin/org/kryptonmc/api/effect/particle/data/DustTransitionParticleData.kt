@@ -8,6 +8,8 @@
  */
 package org.kryptonmc.api.effect.particle.data
 
+import org.jetbrains.annotations.Contract
+
 /**
  * Holds data for dust colour transition particle effects.
  */
@@ -50,6 +52,7 @@ public interface DustTransitionParticleData : DustParticleData {
          * @return new dust color transition particle data
          */
         @JvmStatic
+        @Contract("_ -> new", pure = true)
         public fun of(
             fromRed: Short,
             fromGreen: Short,

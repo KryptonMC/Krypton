@@ -9,13 +9,14 @@
 package org.kryptonmc.api.item
 
 /**
- * Something that could be representable as an item.
+ * Something that can be represented by an item.
  */
 public fun interface ItemLike {
 
     /**
-     * Gets the item representation, or null if there is no item
-     * representation.
+     * Converts this object to its item representation.
+     *
+     * @return the item representation
      */
     public fun asItem(): ItemType?
 }

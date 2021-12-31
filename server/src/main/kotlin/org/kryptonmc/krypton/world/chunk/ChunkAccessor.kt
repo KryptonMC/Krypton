@@ -36,6 +36,8 @@ abstract class ChunkAccessor(
     sections: Array<ChunkSection?>?
 ) : BlockAccessor, NoiseBiomeSource {
 
+    abstract val status: ChunkStatus
+
     private val sectionArray = arrayOfNulls<ChunkSection>(heightAccessor.sectionCount)
     val heightmaps: MutableMap<Heightmap.Type, Heightmap> = EnumMap(Heightmap.Type::class.java)
 
@@ -55,8 +57,6 @@ abstract class ChunkAccessor(
         get() = heightAccessor.height
     override val minimumBuildHeight: Int
         get() = heightAccessor.minimumBuildHeight
-
-    abstract val status: ChunkStatus
 
     init {
         if (sections != null) {

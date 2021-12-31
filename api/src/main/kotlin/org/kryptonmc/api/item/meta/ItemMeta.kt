@@ -225,6 +225,7 @@ public interface ItemMeta {
     /**
      * A builder for building item metadata.
      */
+    @MetaDsl
     public interface Builder : ItemMetaBuilder<Builder, ItemMeta>
 
     @ApiStatus.Internal
@@ -246,6 +247,19 @@ public interface ItemMeta {
          * @return a new builder
          */
         @JvmStatic
+        @Contract("_ -> new", pure = true)
         public fun builder(): Builder = FACTORY.builder()
+
+        /**
+         * Creates a new builder of type [B] for building metadata of type [P].
+         *
+         * @param type the class of the metadata type
+         * @param B the builder type
+         * @param P the metadata type
+         * @return a new builder
+         */
+        @JvmStatic
+        @Contract("_ -> new", pure = true)
+        public fun <B : ItemMetaBuilder<B, P>, P : ItemMetaBuilder.Provider<B>> builder(type: Class<P>): B = FACTORY.builder(type)
     }
 }

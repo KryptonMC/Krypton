@@ -34,23 +34,25 @@ import org.kryptonmc.krypton.plugin.KryptonPluginContainer
 import org.kryptonmc.krypton.plugin.KryptonPluginDependency
 import org.kryptonmc.krypton.plugin.PluginClassLoader
 import org.kryptonmc.processor.SerializedPluginDescription
+import java.nio.file.Files
 import java.nio.file.Path
 import java.util.jar.JarInputStream
-import kotlin.io.path.inputStream
 
 /**
  * Various utilities for loading and creating plugins.
  */
 object PluginLoader {
 
+    @JvmStatic
     fun loadDescription(source: Path): LoadedPluginDescriptionCandidate {
-        val serialized = source.findMetadata() ?: throw InvalidPluginException("Could not find a valid krypton-plugin-meta.json file!")
+        val serialized = findMetadata(source) ?: throw InvalidPluginException("Could not find a valid krypton-plugin-meta.json file!")
         if (!serialized.id.matches(SerializedPluginDescription.ID_REGEX)) {
             throw InvalidPluginException("Plugin ID ${serialized.id} is invalid!")
         }
         return serialized.toCandidate(source)
     }
 
+    @JvmStatic
     fun loadPlugin(description: PluginDescription): LoadedPluginDescription {
         require(description is LoadedPluginDescriptionCandidate) { "Description provided isn't a loaded candidate!" }
         val loader = PluginClassLoader(description.source).addToLoaders()
@@ -58,6 +60,7 @@ object PluginLoader {
         return description.toFull(mainClass)
     }
 
+    @JvmStatic
     fun createPlugin(container: PluginContainer, vararg modules: Module) {
         require(container is KryptonPluginContainer) { "Container provided isn't compatible with this loader!" }
         val description = container.description
@@ -71,7 +74,8 @@ object PluginLoader {
         container.instance = instance
     }
 
-    private fun Path.findMetadata(): SerializedPluginDescription? = JarInputStream(inputStream()).use { input ->
+    @JvmStatic
+    private fun findMetadata(path: Path): SerializedPluginDescription? = JarInputStream(Files.newInputStream(path)).use { input ->
         var foundBungeeBukkitPluginFile = false
         generateSequence { input.nextJarEntry }.forEach { entry ->
             if (entry.name == "plugin.yml" || entry.name == "bungee.yml") foundBungeeBukkitPluginFile = true
@@ -81,12 +85,13 @@ object PluginLoader {
         }
 
         if (foundBungeeBukkitPluginFile) {
-            throw InvalidPluginException("The plugin file $fileName appears to be a Bukkit or BungeeCord plugin. " +
+            throw InvalidPluginException("The plugin file ${path.fileName} appears to be a Bukkit or BungeeCord plugin. " +
                     "Krypton does not support Bukkit or BungeeCord plugins.")
         }
         return null
     }
 
+    @JvmStatic
     private fun SerializedPluginDescription.toCandidate(source: Path): LoadedPluginDescriptionCandidate = LoadedPluginDescriptionCandidate(
         id,
         name,

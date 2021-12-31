@@ -37,12 +37,12 @@ class PluginClassLoader(vararg urls: URL) : URLClassLoader(urls) {
 
     fun addToLoaders(): PluginClassLoader = apply { loaders.add(this) }
 
-    internal fun addPath(path: Path) {
+    fun addPath(path: Path) {
         addURL(path.toUri().toURL())
     }
 
     override fun close() {
-        loaders -= this
+        loaders.remove(this)
         super.close()
     }
 

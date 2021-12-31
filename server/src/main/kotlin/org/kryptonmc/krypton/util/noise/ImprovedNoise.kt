@@ -27,7 +27,7 @@ class ImprovedNoise(random: RandomSource) {
 
     private val permutations = ByteArray(256) { it.toByte() }
     private val xOffset = random.nextDouble() * 256
-    val yOffset = random.nextDouble() * 256
+    val yOffset: Double = random.nextDouble() * 256
     private val zOffset = random.nextDouble() * 256
 
     init {

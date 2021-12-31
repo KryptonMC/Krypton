@@ -28,7 +28,7 @@ import org.kryptonmc.nbt.CompoundTag
 class KryptonCreeper(world: KryptonWorld) : KryptonMonster(world, EntityTypes.CREEPER, ATTRIBUTES), Creeper {
 
     override var fuse: Short = 0
-    override var explosionRadius = 0
+    override var explosionRadius: Int = 0
 
     override var isCharged: Boolean
         get() = data[MetadataKeys.CREEPER.CHARGED]

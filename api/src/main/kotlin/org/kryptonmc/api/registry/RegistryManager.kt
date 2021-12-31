@@ -9,6 +9,7 @@
 package org.kryptonmc.api.registry
 
 import net.kyori.adventure.key.Key
+import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.resource.ResourceKey
 
 /**
@@ -50,6 +51,7 @@ public interface RegistryManager {
      * @param key the registry key
      * @return a registry for the given [key]
      */
+    @Contract("_ -> new", pure = true)
     public fun <T : Any> create(key: ResourceKey<out Registry<T>>): Registry<T>
 
     /**
@@ -60,5 +62,6 @@ public interface RegistryManager {
      * @param defaultKey the default key
      * @return a defaulted registry for the given [key]
      */
+    @Contract("_ -> new", pure = true)
     public fun <T : Any> createDefaulted(key: ResourceKey<out Registry<T>>, defaultKey: Key): DefaultedRegistry<T>
 }

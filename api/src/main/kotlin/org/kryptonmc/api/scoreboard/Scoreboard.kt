@@ -163,6 +163,7 @@ public interface Scoreboard : Buildable<Scoreboard, Scoreboard.Builder> {
     /**
      * A builder for scoreboards.
      */
+    @ScoreboardDsl
     public interface Builder : Buildable.Builder<Scoreboard> {
 
         /**
@@ -172,6 +173,7 @@ public interface Scoreboard : Buildable<Scoreboard, Scoreboard.Builder> {
          * @param objective the objective
          * @return this builder
          */
+        @ScoreboardDsl
         @Contract("_ -> this", mutates = "this")
         public fun objective(objective: Objective): Builder
 
@@ -185,10 +187,14 @@ public interface Scoreboard : Buildable<Scoreboard, Scoreboard.Builder> {
          * @param builder the builder
          * @return this builder
          */
+        @ScoreboardDsl
         @JvmSynthetic
         @Contract("_ -> this", mutates = "this")
-        public fun objective(name: String, criterion: Criterion, builder: Objective.Builder.() -> Unit): Builder =
-            objective(Objective.builder(name, criterion).apply(builder).build())
+        public fun objective(
+            name: String,
+            criterion: Criterion,
+            builder: Objective.Builder.() -> Unit
+        ): Builder = objective(Objective.builder(name, criterion).apply(builder).build())
 
         /**
          * Creates a new objective builder with the given values, applies the
@@ -200,9 +206,13 @@ public interface Scoreboard : Buildable<Scoreboard, Scoreboard.Builder> {
          * @param builder the builder
          * @return this builder
          */
+        @ScoreboardDsl
         @Contract("_ -> this", mutates = "this")
-        public fun objective(name: String, criterion: Criterion, builder: Consumer<Objective.Builder>): Builder =
-            objective(name, criterion) { builder.accept(this) }
+        public fun objective(
+            name: String,
+            criterion: Criterion,
+            builder: Consumer<Objective.Builder>
+        ): Builder = objective(name, criterion) { builder.accept(this) }
 
         /**
          * Adds the given [objectives] to the list of objectives for the
@@ -211,6 +221,7 @@ public interface Scoreboard : Buildable<Scoreboard, Scoreboard.Builder> {
          * @param objectives the objectives
          * @return this builder
          */
+        @ScoreboardDsl
         @Contract("_ -> this", mutates = "this")
         public fun objectives(vararg objectives: Objective): Builder
 
@@ -221,6 +232,7 @@ public interface Scoreboard : Buildable<Scoreboard, Scoreboard.Builder> {
          * @param objectives the objectives
          * @return this builder
          */
+        @ScoreboardDsl
         @Contract("_ -> this", mutates = "this")
         public fun objectives(objectives: Iterable<Objective>): Builder
 
@@ -231,6 +243,7 @@ public interface Scoreboard : Buildable<Scoreboard, Scoreboard.Builder> {
          * @param team the team
          * @return this builder
          */
+        @ScoreboardDsl
         @Contract("_ -> this", mutates = "this")
         public fun team(team: Team): Builder
 
@@ -242,6 +255,7 @@ public interface Scoreboard : Buildable<Scoreboard, Scoreboard.Builder> {
          * @param builder the builder
          * @return this builder
          */
+        @ScoreboardDsl
         @JvmSynthetic
         @Contract("_ -> this", mutates = "this")
         public fun team(name: String, builder: Team.Builder.() -> Unit): Builder = team(Team.builder(name).apply(builder).build())
@@ -254,6 +268,7 @@ public interface Scoreboard : Buildable<Scoreboard, Scoreboard.Builder> {
          * @param builder the builder
          * @return this builder
          */
+        @ScoreboardDsl
         @Contract("_ -> this", mutates = "this")
         public fun team(name: String, builder: Consumer<Team.Builder>): Builder = team(name) { builder.accept(this) }
 
@@ -263,6 +278,7 @@ public interface Scoreboard : Buildable<Scoreboard, Scoreboard.Builder> {
          * @param teams the teams
          * @return this builder
          */
+        @ScoreboardDsl
         @Contract("_ -> this", mutates = "this")
         public fun teams(vararg teams: Team): Builder
 
@@ -272,6 +288,7 @@ public interface Scoreboard : Buildable<Scoreboard, Scoreboard.Builder> {
          * @param teams the teams
          * @return this builder
          */
+        @ScoreboardDsl
         @Contract("_ -> this", mutates = "this")
         public fun teams(teams: Iterable<Team>): Builder
     }

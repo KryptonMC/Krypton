@@ -123,7 +123,8 @@ object NettyProcess {
 
     @JvmStatic
     fun shutdown() {
-        future?.channel()?.close()?.sync()
+        val future = future ?: return
+        future.channel().close().sync()
     }
 
     /**

@@ -42,7 +42,7 @@ class KryptonScoreboard(private val server: KryptonServer) : Scoreboard {
     private val objectivesByCriterion = ConcurrentHashMap<Criterion, MutableSet<Objective>>()
     private val trackedObjectives = ConcurrentHashMap.newKeySet<Objective>()
     private val memberScores = ConcurrentHashMap<Component, MutableMap<Objective, KryptonScore>>()
-    val displayObjectives = ConcurrentHashMap<DisplaySlot, Objective>(18)
+    val displayObjectives: MutableMap<DisplaySlot, Objective> = ConcurrentHashMap(18)
     private val teamsByName = ConcurrentHashMap<String, Team>()
     private val teamsByMember = ConcurrentHashMap<Component, Team>()
     private val listeners = Collections.synchronizedList(ArrayList<Runnable>())
@@ -54,12 +54,12 @@ class KryptonScoreboard(private val server: KryptonServer) : Scoreboard {
     override val scores: Collection<KryptonScore>
         get() = memberScores.flatMap { it.value.values }
 
-    constructor(builder: Builder) : this(builder.server) {
-        builder.objectives.forEach {
+    private constructor(server: KryptonServer, objectives: Iterable<Objective>, teams: Iterable<Team>) : this(server) {
+        objectives.forEach {
             if (it is KryptonObjective) it.scoreboard = this
             addObjective(it)
         }
-        builder.teams.forEach {
+        teams.forEach {
             if (it is KryptonTeam) it.scoreboard = this
             addTeam(it)
         }
@@ -75,15 +75,19 @@ class KryptonScoreboard(private val server: KryptonServer) : Scoreboard {
         trackedObjectives.remove(objective)
     }
 
-    fun getStartTrackingPackets(objective: Objective): List<Packet> = mutableListOf<Packet>().apply {
-        add(PacketOutDisplayObjective(0, objective))
-        displayObjectives.forEach { if (it.value === objective) add(PacketOutDisplayObjective(it.key, it.value)) }
-        scores(objective).forEach { add(PacketOutUpdateScore(PacketOutUpdateScore.Action.CREATE_OR_UPDATE, it)) }
+    fun getStartTrackingPackets(objective: Objective): List<Packet> {
+        val packets = mutableListOf<Packet>()
+        packets.add(PacketOutDisplayObjective(0, objective))
+        displayObjectives.forEach { if (it.value === objective) packets.add(PacketOutDisplayObjective(it.key, it.value)) }
+        scores(objective).forEach { packets.add(PacketOutUpdateScore(PacketOutUpdateScore.Action.CREATE_OR_UPDATE, it)) }
+        return packets
     }
 
-    private fun getStopTrackingPackets(objective: Objective): List<Packet> = mutableListOf<Packet>().apply {
-        add(PacketOutDisplayObjective(1, objective))
-        displayObjectives.forEach { if (it.value === objective) add(PacketOutDisplayObjective(it.key, it.value)) }
+    private fun getStopTrackingPackets(objective: Objective): List<Packet> {
+        val packets = mutableListOf<Packet>()
+        packets.add(PacketOutDisplayObjective(1, objective))
+        displayObjectives.forEach { if (it.value === objective) packets.add(PacketOutDisplayObjective(it.key, it.value)) }
+        return packets
     }
 
     private fun scores(objective: Objective): Collection<KryptonScore> = memberScores.values
@@ -160,7 +164,7 @@ class KryptonScoreboard(private val server: KryptonServer) : Scoreboard {
 
     override fun addObjective(objective: Objective) {
         require(!objectivesByName.containsKey(objective.name)) { "An objective with the name ${objective.name} is already registered!" }
-        objectivesByCriterion.computeIfAbsent(objective.criterion) { mutableSetOf() }.add(objective)
+        objectivesByCriterion.computeIfAbsent(objective.criterion) { ConcurrentHashMap.newKeySet() }.add(objective)
         objectivesByName[objective.name] = objective
         makeDirty()
     }
@@ -278,8 +282,8 @@ class KryptonScoreboard(private val server: KryptonServer) : Scoreboard {
 
     class Builder(val server: KryptonServer) : Scoreboard.Builder {
 
-        val objectives = mutableListOf<Objective>()
-        val teams = mutableListOf<Team>()
+        private val objectives = mutableListOf<Objective>()
+        private val teams = mutableListOf<Team>()
 
         constructor(scoreboard: KryptonScoreboard) : this(scoreboard.server) {
             objectives.addAll(scoreboard.objectives)
@@ -298,7 +302,7 @@ class KryptonScoreboard(private val server: KryptonServer) : Scoreboard {
 
         override fun teams(teams: Iterable<Team>): Scoreboard.Builder = apply { this.teams.addAll(teams) }
 
-        override fun build(): Scoreboard = KryptonScoreboard(this)
+        override fun build(): Scoreboard = KryptonScoreboard(server, objectives, teams)
     }
 
     class Factory(private val server: KryptonServer) : Scoreboard.Factory {

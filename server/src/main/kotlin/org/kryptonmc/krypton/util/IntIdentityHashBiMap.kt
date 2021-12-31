@@ -35,7 +35,7 @@ class IntIdentityHashBiMap<K>(initialCapacity: Int) : IntBiMap<K> {
     private var byId: Array<K?>
 
     private var nextId = 0
-    override var size = 0
+    override var size: Int = 0
         private set
 
     init {
@@ -119,7 +119,7 @@ class IntIdentityHashBiMap<K>(initialCapacity: Int) : IntBiMap<K> {
 
     companion object {
 
-        const val NOT_FOUND = -1
+        const val NOT_FOUND: Int = -1
         private val EMPTY_SLOT = null
         private const val LOAD_FACTOR = 0.8F
 

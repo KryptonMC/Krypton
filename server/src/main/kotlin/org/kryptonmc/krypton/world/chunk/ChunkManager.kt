@@ -25,9 +25,8 @@ import org.kryptonmc.api.block.Blocks
 import org.kryptonmc.api.world.biome.Biomes
 import org.kryptonmc.krypton.KryptonPlatform
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
-import org.kryptonmc.krypton.util.daemon
+import org.kryptonmc.krypton.util.daemonThreadFactory
 import org.kryptonmc.krypton.util.logger
-import org.kryptonmc.krypton.util.threadFactory
 import org.kryptonmc.krypton.util.uncaughtExceptionHandler
 import org.kryptonmc.krypton.world.Heightmap
 import org.kryptonmc.krypton.world.KryptonWorld
@@ -57,8 +56,7 @@ class ChunkManager(private val world: KryptonWorld) {
     private val playersByChunk = Long2ObjectSyncMap.hashmap<MutableSet<KryptonPlayer>>()
     private val executor = Executors.newFixedThreadPool(
         2,
-        threadFactory("Chunk Loader #%d") {
-            daemon()
+        daemonThreadFactory("Chunk Loader #%d") {
             uncaughtExceptionHandler { thread, exception ->
                 LOGGER.error("Caught unhandled exception in thread ${thread.name}!", exception)
                 world.server.stop()
@@ -76,15 +74,7 @@ class ChunkManager(private val world: KryptonWorld) {
     operator fun get(position: Long): KryptonChunk? = chunkMap[position]
 
     fun addStartTicket(centerX: Int, centerZ: Int, onLoad: () -> Unit) {
-        addTicket(centerX, centerZ, TicketTypes.START, 22, Unit, onLoad)
-    }
-
-    fun <T> addTicket(x: Int, z: Int, type: TicketType<T>, level: Int, key: T, onLoad: () -> Unit) {
-        ticketManager.addTicket(x, z, type, level, key, onLoad)
-    }
-
-    fun <T> removeTicket(x: Int, z: Int, type: TicketType<T>, level: Int, key: T) {
-        ticketManager.removeTicket(x, z, type, level, key)
+        ticketManager.addTicket(centerX, centerZ, TicketTypes.START, 22, Unit, onLoad)
     }
 
     fun addPlayer(
@@ -207,7 +197,7 @@ class ChunkManager(private val world: KryptonWorld) {
     fun save(chunk: KryptonChunk) {
         val lastUpdate = world.time
         chunk.lastUpdate = lastUpdate
-        regionFileManager.write(chunk.x, chunk.z, chunk.serialize())
+        regionFileManager.write(chunk.x, chunk.z, serialize(chunk))
         world.entityManager.save(chunk)
     }
 
@@ -216,34 +206,34 @@ class ChunkManager(private val world: KryptonWorld) {
         private val LOGGER = logger<ChunkManager>()
 
         @JvmStatic
-        private fun KryptonChunk.serialize(): CompoundTag {
+        private fun serialize(chunk: KryptonChunk): CompoundTag {
             val data = buildCompound {
                 int("DataVersion", KryptonPlatform.worldVersion)
                 compound("CarvingMasks") {
-                    byteArray("AIR", carvingMasks.first)
-                    byteArray("LIQUID", carvingMasks.second)
+                    byteArray("AIR", chunk.carvingMasks.first)
+                    byteArray("LIQUID", chunk.carvingMasks.second)
                 }
-                long("LastUpdate", lastUpdate)
+                long("LastUpdate", chunk.lastUpdate)
                 list("Lights", ListTag.ID)
                 list("LiquidsToBeTicked", ListTag.ID)
                 list("LiquidTicks", ListTag.ID)
-                long("InhabitedTime", inhabitedTime)
+                long("InhabitedTime", chunk.inhabitedTime)
                 list("PostProcessing", ListTag.ID)
                 string("Status", "full")
                 list("TileEntities", CompoundTag.ID)
                 list("TileTicks", CompoundTag.ID)
                 list("ToBeTicked", ListTag.ID)
-                put("Structures", structures)
-                int("xPos", position.x)
-                int("zPos", position.z)
+                put("Structures", chunk.structures)
+                int("xPos", chunk.position.x)
+                int("zPos", chunk.position.z)
             }
 
             val sectionList = MutableListTag(elementType = CompoundTag.ID)
-            for (i in minimumLightSection until maximumLightSection) {
-                val sectionIndex = world.sectionIndexFromY(i)
+            for (i in chunk.minimumLightSection until chunk.maximumLightSection) {
+                val sectionIndex = chunk.world.sectionIndexFromY(i)
                 // TODO: Handle light sections below and above the world
-                if (sectionIndex >= 0 && sectionIndex < sections.size) {
-                    val section = sections[sectionIndex]
+                if (sectionIndex >= 0 && sectionIndex < chunk.sections.size) {
+                    val section = chunk.sections[sectionIndex]
                     val tag = compound {
                         byte("Y", i.toByte())
                         put("block_states", section.blocks.write(Block::toNBT))
@@ -257,7 +247,7 @@ class ChunkManager(private val world: KryptonWorld) {
             data.put("sections", sectionList)
 
             val heightmapData = CompoundTag.builder()
-            heightmaps.forEach { if (it.key in Heightmap.Type.POST_FEATURES) heightmapData.longArray(it.key.name, it.value.data.data) }
+            chunk.heightmaps.forEach { if (it.key in Heightmap.Type.POST_FEATURES) heightmapData.longArray(it.key.name, it.value.data.data) }
             data.put("Heightmaps", heightmapData.build())
             return data.build()
         }

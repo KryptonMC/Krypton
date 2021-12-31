@@ -9,6 +9,7 @@
 package org.kryptonmc.api.util
 
 import org.jetbrains.annotations.ApiStatus
+import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.Krypton
 import org.spongepowered.math.vector.Vector3d
 import org.spongepowered.math.vector.Vector3i
@@ -137,114 +138,122 @@ public interface BoundingBox {
     public fun maximum(axis: Direction.Axis): Double
 
     /**
-     * Inflates the border of this bounding box by the given [xFactor],
-     * [yFactor], and [zFactor], and returns a new bounding box with the
-     * applied changes.
+     * Creates a new bounding box with its border inflated by the given
+     * [xFactor], [yFactor], and [zFactor].
      *
      * @param xFactor the X factor to inflate the border by
      * @param xFactor the Y factor to inflate the border by
      * @param xFactor the Z factor to inflate the border by
-     * @return a new bounding box with its border inflated by the given factors
+     * @return a new bounding box
      */
+    @Contract("_ -> new", pure = true)
     public fun inflate(xFactor: Double, yFactor: Double, zFactor: Double): BoundingBox
 
     /**
-     * Inflates the border of this bounding box by the given [factor], and
-     * returns a new bounding box with the applied changes.
+     * Creates a new bounding box with its border inflated by the given
+     * [factor].
      *
      * @param factor the factor to inflate the border by
-     * @return a new bounding box with its border inflated by the given factor
+     * @return a new bounding box
      */
+    @Contract("_ -> new", pure = true)
     public fun inflate(factor: Double): BoundingBox = inflate(factor, factor, factor)
 
     /**
-     * Deflates the border of this bounding box by the given [xFactor],
-     * [yFactor], and [zFactor], and returns a new bounding box with the
-     * applied changes.
+     * Creates a new bounding box with its border deflated by the given
+     * [xFactor], [yFactor], and [zFactor].
      *
      * This is equivalent to calling `inflate(-xFactor, -yFactor, -zFactor)`
      *
      * @param xFactor the X factor to deflate the border by
      * @param xFactor the Y factor to deflate the border by
      * @param xFactor the Z factor to deflate the border by
-     * @return a new bounding box with its border deflated by the given factors
+     * @return a new bounding box
      */
+    @Contract("_ -> new", pure = true)
     public fun deflate(xFactor: Double, yFactor: Double, zFactor: Double): BoundingBox = inflate(-xFactor, -yFactor, -zFactor)
 
     /**
-     * Deflates the border of this bounding box by the given [factor], and
-     * returns a new bounding box with the applied changes.
+     * Creates a new bounding box with its border deflated by the given
+     * [factor].
      *
      * This is equivalent to calling `inflate(-factor)`
      *
      * @param factor the factor to deflate the border by
-     * @return a new bounding box with its border deflated by the given factor
+     * @return a new bounding box
      */
+    @Contract("_ -> new", pure = true)
     public fun deflate(factor: Double): BoundingBox = inflate(-factor)
 
     /**
-     * Intersects this bounding box with the given [other] bounding box, and
-     * returns a new bounding box with the resulted intersection.
+     * Creates a new bounding box that is the result of intersecting this box
+     * with the given [other] box.
      *
      * @param other the other box to intersect with
-     * @return a new bounding box with the resulting intersection
+     * @return a new bounding box
      */
+    @Contract("_ -> new", pure = true)
     public fun intersect(other: BoundingBox): BoundingBox
 
     /**
-     * Moves this bounding box by the specified [x], [y], and [z] amounts, and
-     * returns a new bounding box with the result of the move.
+     * Creates a new bounding box that is the result of moving this box by the
+     * given [x], [y], and [z] amounts.
      *
      * @param x the X amount
      * @param y the Y amount
      * @param z the Z amount
-     * @return a new bounding box with the result of the move
+     * @return a new bounding box
      */
+    @Contract("_ -> new", pure = true)
     public fun move(x: Double, y: Double, z: Double): BoundingBox
 
     /**
-     * Moves this bounding box by the specified [amount], and returns a new
-     * bounding box with the result of the move.
+     * Creates a new bounding box that is the result of moving this box by the
+     * given [amount].
      *
      * @param amount the amount
-     * @return a new bounding box with the result of the move
+     * @return a new bounding box
      */
+    @Contract("_ -> new", pure = true)
     public fun move(amount: Vector3d): BoundingBox = move(amount.x(), amount.y(), amount.z())
 
     /**
-     * Expands this bounding box out by the given [x], [y], and [z] amounts,
-     * and returns a new bounding box with the result of the expansion.
+     * Creates a new bounding box that is the result of expanding this box by
+     * the given [x], [y], and [z] amounts.
      *
      * @param x the X amount
      * @param y the Y amount
      * @param z the Z amount
-     * @return a new bounding box with the result of the expansion
+     * @return a new bounding box
      */
+    @Contract("_ -> new", pure = true)
     public fun expand(x: Double, y: Double, z: Double): BoundingBox
 
     /**
-     * Expands this bounding box out by the given [amount], and returns a new
-     * bounding box with the result of the expansion.
+     * Creates a new bounding box that is the result of expanding this box by
+     * the given [amount].
      *
      * @param amount the amount
-     * @return a new bounding box with the result of the expansion
+     * @return a new bounding box
      */
+    @Contract("_ -> new", pure = true)
     public fun expand(amount: Vector3d): BoundingBox = expand(amount.x(), amount.y(), amount.z())
 
     /**
-     * Contracts this bounding box by the given [x], [y], and [z] amounts, and
-     * returns a new bounding box with the result of the contraction.
+     * Creates a new bounding box that is the result of contracting this box by
+     * the given [x], [y], and [z] amounts.
      *
      * @param x the X amount
      * @param y the Y amount
      * @param z the Z amount
-     * @return a new bounding box with the result of the contraction
+     * @return a new bounding box
      */
+    @Contract("_ -> new", pure = true)
     public fun contract(x: Double, y: Double, z: Double): BoundingBox
 
     /**
-     * Returns true if this bounding box intersects with the given minimum and
-     * maximum values, false otherwise.
+     * Checks if this bounding box intersects with the given minimum and
+     * maximum values.
      *
      * @param minimumX the minimum X value
      * @param minimumY the minimum Y value
@@ -264,8 +273,7 @@ public interface BoundingBox {
     ): Boolean
 
     /**
-     * Returns true if this bounding box intersects with the given [other]
-     * bounding box, false otherwise.
+     * Checks if this bounding box intersects with the given [other] box.
      *
      * @param other the other bounding box
      * @return true if this box intersects with the other box, false otherwise
@@ -273,8 +281,8 @@ public interface BoundingBox {
     public fun intersects(other: BoundingBox): Boolean
 
     /**
-     * Returns true if the given [x], [y], and [z] values are inside the bounds
-     * of this box, false otherwise.
+     * Checks if the given [x], [y], and [z] values are inside the bounds of
+     * this box.
      *
      * @param x the X value
      * @param y the Y value
@@ -284,8 +292,7 @@ public interface BoundingBox {
     public fun contains(x: Double, y: Double, z: Double): Boolean
 
     /**
-     * Returns true if the given [position] is inside the bounds of this box,
-     * false otherwise.
+     * Checks if the given [position] is inside the bounds of this box.
      *
      * @param position the position
      * @return true if this box contains the position, false otherwise
@@ -316,6 +323,7 @@ public interface BoundingBox {
          * centre of 0.
          */
         @JvmStatic
+        @Contract("_ -> new", pure = true)
         public fun zero(): BoundingBox = FACTORY.zero()
 
         /**
@@ -324,6 +332,7 @@ public interface BoundingBox {
          * of 1, and a centre of 0.5, 0.5, 0.5.
          */
         @JvmStatic
+        @Contract("_ -> new", pure = true)
         public fun unit(): BoundingBox = FACTORY.unit()
 
         /**
@@ -340,6 +349,7 @@ public interface BoundingBox {
          * greater than the minimum X
          */
         @JvmStatic
+        @Contract("_ -> new", pure = true)
         public fun of(minimum: Vector3d, maximum: Vector3d): BoundingBox = FACTORY.of(minimum, maximum)
 
         /**
@@ -356,6 +366,7 @@ public interface BoundingBox {
          * greater than the minimum X
          */
         @JvmStatic
+        @Contract("_ -> new", pure = true)
         public fun of(minimum: Vector3i, maximum: Vector3i): BoundingBox = FACTORY.of(minimum, maximum)
 
         /**
@@ -376,6 +387,7 @@ public interface BoundingBox {
          * greater than the minimum X
          */
         @JvmStatic
+        @Contract("_ -> new", pure = true)
         public fun of(
             minimumX: Double,
             minimumY: Double,

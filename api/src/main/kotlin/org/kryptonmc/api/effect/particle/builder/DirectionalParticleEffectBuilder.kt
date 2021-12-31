@@ -10,54 +10,33 @@ package org.kryptonmc.api.effect.particle.builder
 
 import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.effect.particle.ParticleDsl
-import org.kryptonmc.api.effect.particle.ParticleEffect
-import org.kryptonmc.api.effect.particle.ParticleType
-import org.kryptonmc.api.effect.particle.data.DirectionalParticleData
 import org.spongepowered.math.vector.Vector3d
 
 /**
- * Allows building a [ParticleEffect] for directional particle effects using
- * method chaining.
+ * A builder for building directional particle effects.
  */
-public class DirectionalParticleEffectBuilder @JvmOverloads constructor(
-    type: ParticleType,
-    quantity: Int = 1,
-    offset: Vector3d = Vector3d.ZERO,
-    longDistance: Boolean = false,
-    private var direction: Vector3d? = null,
-    private var velocity: Float = 0.0F
-) : AbstractParticleEffectBuilder<DirectionalParticleEffectBuilder>(type, quantity, offset, longDistance) {
+public interface DirectionalParticleEffectBuilder : BaseParticleEffectBuilder<DirectionalParticleEffectBuilder> {
 
     /**
-     * Sets the direction of the particles.
+     * Sets the direction that the particle effect will travel.
      *
-     * @param direction the direction of the particles
+     * @param direction the direction
+     * @return this builder
      */
     @ParticleDsl
     @Contract("_ -> this", mutates = "this")
-    public fun direction(direction: Vector3d): DirectionalParticleEffectBuilder = apply { this.direction = direction }
+    public fun direction(direction: Vector3d): DirectionalParticleEffectBuilder
 
     /**
-     * Sets the velocity of the particles.
+     * Sets the velocity that the particle effect will travel with.
      *
      * The actual velocity tends to vary largely for each particle type, so
      * it's quite arbitrary what this means.
      *
-     * @param velocity the velocity of the particles
+     * @param velocity the velocity
+     * @return this builder
      */
     @ParticleDsl
     @Contract("_ -> this", mutates = "this")
-    public fun velocity(velocity: Float): DirectionalParticleEffectBuilder = apply { this.velocity = velocity }
-
-    /**
-     * Builds a new [ParticleEffect] from the settings of this builder.
-     */
-    @Contract("_ -> new", pure = true)
-    override fun build(): ParticleEffect = ParticleEffect.of(
-        type,
-        quantity,
-        offset,
-        longDistance,
-        DirectionalParticleData.of(direction, velocity)
-    )
+    public fun velocity(velocity: Float): DirectionalParticleEffectBuilder
 }

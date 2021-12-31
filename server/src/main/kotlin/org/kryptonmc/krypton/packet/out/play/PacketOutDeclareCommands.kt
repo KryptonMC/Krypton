@@ -23,6 +23,11 @@ import com.mojang.brigadier.tree.CommandNode
 import com.mojang.brigadier.tree.LiteralCommandNode
 import com.mojang.brigadier.tree.RootCommandNode
 import io.netty.buffer.ByteBuf
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
+import it.unimi.dsi.fastutil.objects.Object2IntMap
+import it.unimi.dsi.fastutil.objects.Object2IntMaps
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap
+import it.unimi.dsi.fastutil.objects.ObjectArrayList
 import org.kryptonmc.api.command.Sender
 import org.kryptonmc.krypton.command.SuggestionProviders
 import org.kryptonmc.krypton.packet.Packet
@@ -36,31 +41,34 @@ import org.kryptonmc.krypton.util.writeVarInt
 data class PacketOutDeclareCommands(val root: RootCommandNode<Sender>) : Packet {
 
     override fun write(buf: ByteBuf) {
-        val enumerations = root.enumerate()
-        val ordered = enumerations.entries.associate { it.value to it.key }
+        val enumerations = enumerate(root)
+        val ordered = ObjectArrayList<CommandNode<Sender>>().apply { size(enumerations.size) }
+        Object2IntMaps.fastForEach(enumerations) { ordered[it.intValue] = it.key }
         buf.writeVarInt(ordered.size)
-        ordered.forEach { buf.writeNode(it.value, enumerations) }
+        ordered.forEach { writeNode(buf, it, enumerations) }
         buf.writeVarInt(enumerations.getValue(root))
     }
 
     companion object {
 
-        private fun ByteBuf.writeNode(node: CommandNode<Sender>, enumerations: Map<CommandNode<Sender>, Int>) {
-            writeFlags(node)
-            writeCollection(node.children) { writeVarInt(enumerations.getValue(it)) }
-            if (node.redirect != null) writeVarInt(enumerations.getValue(node.redirect))
+        @JvmStatic
+        private fun writeNode(buf: ByteBuf, node: CommandNode<Sender>, enumerations: Map<CommandNode<Sender>, Int>) {
+            writeFlags(buf, node)
+            buf.writeCollection(node.children) { buf.writeVarInt(enumerations.getValue(it)) }
+            if (node.redirect != null) buf.writeVarInt(enumerations.getValue(node.redirect))
 
             if (node is ArgumentCommandNode<*, *>) {
                 node as ArgumentCommandNode<Sender, *>
-                writeString(node.name)
-                writeArgumentType(node.type)
-                if (node.customSuggestions != null) writeKey(SuggestionProviders.name(node.customSuggestions))
+                buf.writeString(node.name)
+                buf.writeArgumentType(node.type)
+                if (node.customSuggestions != null) buf.writeKey(SuggestionProviders.name(node.customSuggestions))
             } else if (node is LiteralCommandNode<*>) {
-                writeString(node.name)
+                buf.writeString(node.name)
             }
         }
 
-        private fun ByteBuf.writeFlags(node: CommandNode<Sender>) {
+        @JvmStatic
+        private fun writeFlags(buf: ByteBuf, node: CommandNode<Sender>) {
             var byte = 0
             if (node.redirect != null) byte = byte or 8
             if (node.command != null) byte = byte or 4
@@ -72,14 +80,15 @@ data class PacketOutDeclareCommands(val root: RootCommandNode<Sender>) : Packet 
                     if (node.customSuggestions != null) byte = byte or 0x10
                 }
             }
-            writeByte(byte)
+            buf.writeByte(byte)
         }
 
         // a breadth-first search algorithm to enumerate a root node
-        private fun RootCommandNode<Sender>.enumerate(): Map<CommandNode<Sender>, Int> {
-            val result = mutableMapOf<CommandNode<Sender>, Int>()
+        @JvmStatic
+        private fun enumerate(root: RootCommandNode<Sender>): Object2IntMap<CommandNode<Sender>> {
+            val result = Object2IntOpenHashMap<CommandNode<Sender>>()
             val queue = ArrayDeque<CommandNode<Sender>>()
-            queue.add(this)
+            queue.add(root)
 
             while (queue.isNotEmpty()) {
                 val element = queue.removeFirst()

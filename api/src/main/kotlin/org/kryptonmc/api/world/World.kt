@@ -12,11 +12,13 @@ import net.kyori.adventure.audience.ForwardingAudience
 import net.kyori.adventure.key.Key
 import org.kryptonmc.api.Server
 import org.kryptonmc.api.block.Block
+import org.kryptonmc.api.block.BlockContainer
 import org.kryptonmc.api.block.Blocks
 import org.kryptonmc.api.entity.Entity
 import org.kryptonmc.api.entity.EntityType
 import org.kryptonmc.api.entity.player.Player
 import org.kryptonmc.api.fluid.Fluid
+import org.kryptonmc.api.fluid.FluidContainer
 import org.kryptonmc.api.fluid.Fluids
 import org.kryptonmc.api.resource.ResourceKey
 import org.kryptonmc.api.resource.ResourceKeys
@@ -33,7 +35,7 @@ import java.nio.file.Path
  * Represents a loaded world.
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
-public interface World : ForwardingAudience {
+public interface World : BlockContainer, FluidContainer, ForwardingAudience {
 
     /**
      * The server this world was loaded on.
@@ -174,7 +176,7 @@ public interface World : ForwardingAudience {
      * @param z the Z coordinate
      * @return see above
      */
-    public fun getBlock(x: Int, y: Int, z: Int): Block
+    override fun getBlock(x: Int, y: Int, z: Int): Block
 
     /**
      * Gets the block at the given [position].
@@ -189,7 +191,7 @@ public interface World : ForwardingAudience {
      * @param position the position
      * @return see above
      */
-    public fun getBlock(position: Vector3i): Block
+    override fun getBlock(position: Vector3i): Block
 
     /**
      * Gets the fluid at the given coordinates.
@@ -205,7 +207,7 @@ public interface World : ForwardingAudience {
      * @param z the Z coordinate
      * @return see above
      */
-    public fun getFluid(x: Int, y: Int, z: Int): Fluid
+    override fun getFluid(x: Int, y: Int, z: Int): Fluid
 
     /**
      * Gets the fluid at the given [position].
@@ -220,27 +222,7 @@ public interface World : ForwardingAudience {
      * @param position the position
      * @return see above
      */
-    public fun getFluid(position: Vector3i): Fluid
-
-    /**
-     * Sets the block at the given coordinates to the given [block].
-     *
-     * @param x the X coordinate
-     * @param y the Y coordinate
-     * @param z the Z coordinate
-     * @param block the new block
-     * @return true if the block was set, false otherwise
-     */
-    public fun setBlock(x: Int, y: Int, z: Int, block: Block): Boolean
-
-    /**
-     * Sets the block at the given [position] to the given [block].
-     *
-     * @param position the position
-     * @param block the new block
-     * @return true if the block was set, false otherwise
-     */
-    public fun setBlock(position: Vector3i, block: Block): Boolean
+    override fun getFluid(position: Vector3i): Fluid
 
     /**
      * Gets a chunk from its **chunk** coordinates, or returns null if there is

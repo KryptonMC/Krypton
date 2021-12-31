@@ -67,7 +67,6 @@ import org.kryptonmc.krypton.entity.projectile.KryptonSpectralArrow
 import org.kryptonmc.krypton.entity.projectile.KryptonThrownPotion
 import org.kryptonmc.krypton.entity.projectile.KryptonTrident
 import org.kryptonmc.krypton.entity.projectile.KryptonWitherSkull
-import org.kryptonmc.krypton.registry.InternalRegistries
 import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.nbt.CompoundTag
@@ -126,13 +125,17 @@ object EntityFactory {
     )
 
     @Suppress("UNCHECKED_CAST")
+    @JvmStatic
     fun <T : Entity> create(type: EntityType<T>, world: KryptonWorld): T? = TYPE_MAP[type]?.invoke(world) as? T
 
+    @JvmStatic
     fun create(type: EntityType<out Entity>, world: KryptonWorld): KryptonEntity? = TYPE_MAP[type]?.invoke(world)
 
+    @JvmStatic
     fun create(world: KryptonWorld, id: String, nbt: CompoundTag?): KryptonEntity? {
         return try {
-            val entity = create(Registries.ENTITY_TYPE[Key.key(id)], world) ?: kotlin.run {
+            val entity = create(Registries.ENTITY_TYPE[Key.key(id)], world)
+            if (entity == null) {
                 LOGGER.warn("No entity found with ID $id!")
                 return null
             }

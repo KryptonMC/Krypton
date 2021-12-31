@@ -22,12 +22,13 @@ import com.velocitypowered.natives.compression.VelocityCompressor
 import com.velocitypowered.natives.util.Natives
 import io.netty.buffer.ByteBuf
 import io.netty.buffer.Unpooled
+import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.packet.PacketRegistry
 
-fun Packet.frame(compressionThreshold: Int): ByteBuf {
+fun Packet.frame(): ByteBuf {
     val buffer = Unpooled.directBuffer()
-    buffer.writeFramedPacket(this, compressionThreshold)
+    buffer.writeFramedPacket(this, KryptonServer.get().config.server.compressionThreshold)
     return buffer
 }
 

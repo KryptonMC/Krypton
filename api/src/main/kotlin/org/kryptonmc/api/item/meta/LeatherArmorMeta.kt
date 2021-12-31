@@ -15,7 +15,7 @@ import java.awt.Color
  * Item metadata for leather armour.
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
-public interface LeatherArmorMeta : ScopedItemMeta<LeatherArmorMeta>, ItemMetaBuilder.Provider<LeatherArmorMeta.Builder> {
+public interface LeatherArmorMeta : ScopedItemMeta<LeatherArmorMeta.Builder, LeatherArmorMeta> {
 
     /**
      * The displayed colour of the item.
@@ -29,11 +29,13 @@ public interface LeatherArmorMeta : ScopedItemMeta<LeatherArmorMeta>, ItemMetaBu
      * @param color the new colour
      * @return new item metadata
      */
+    @Contract("_ -> new", pure = true)
     public fun withColor(color: Color?): LeatherArmorMeta
 
     /**
      * A builder for building leather armour metadata.
      */
+    @MetaDsl
     public interface Builder : ItemMetaBuilder<Builder, LeatherArmorMeta> {
 
         /**
@@ -42,6 +44,7 @@ public interface LeatherArmorMeta : ScopedItemMeta<LeatherArmorMeta>, ItemMetaBu
          * @param color the colour
          * @return this builder
          */
+        @MetaDsl
         @Contract("_ -> this", mutates = "this")
         public fun color(color: Color?): Builder
     }
@@ -54,6 +57,7 @@ public interface LeatherArmorMeta : ScopedItemMeta<LeatherArmorMeta>, ItemMetaBu
          * @return a new builder
          */
         @JvmStatic
-        public fun builder(): Builder = ItemMeta.FACTORY.builder(LeatherArmorMeta::class.java)
+        @Contract("_ -> new", pure = true)
+        public fun builder(): Builder = ItemMeta.builder(LeatherArmorMeta::class.java)
     }
 }

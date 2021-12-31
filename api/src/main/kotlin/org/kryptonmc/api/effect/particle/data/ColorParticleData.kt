@@ -8,6 +8,8 @@
  */
 package org.kryptonmc.api.effect.particle.data
 
+import org.jetbrains.annotations.Contract
+
 /**
  * Holds data for coloured particle effects.
  */
@@ -44,6 +46,7 @@ public interface ColorParticleData : ParticleData {
          * @return new color particle data
          */
         @JvmStatic
+        @Contract("_ -> new", pure = true)
         public fun of(red: Short, green: Short, blue: Short): ColorParticleData = ParticleData.FACTORY.color(red, green, blue)
     }
 }

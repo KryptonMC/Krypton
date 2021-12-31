@@ -54,7 +54,7 @@ class ProfileHolder(
         return result
     }
 
-    override fun toString(): String = "ProfileHolder(profile=$profile, expiryDate=${expiryDate})"
+    override fun toString(): String = "ProfileHolder(profile=$profile, expiryDate=$expiryDate)"
 
     object Adapter : TypeAdapter<ProfileHolder>() {
 

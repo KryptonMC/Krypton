@@ -29,8 +29,8 @@ import kotlin.random.Random
 
 class KryptonChicken(world: KryptonWorld) : KryptonAnimal(world, EntityTypes.CHICKEN, ATTRIBUTES), Chicken {
 
-    override var eggTime = Random.nextInt(6000) + 6000
-    override var isJockey = false
+    override var eggTime: Int = Random.nextInt(6000) + 6000
+    override var isJockey: Boolean = false
 
     override fun isFood(item: ItemStack): Boolean = FOOD_ITEMS.contains(item.type)
 

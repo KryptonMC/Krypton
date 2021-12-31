@@ -38,7 +38,7 @@ sealed class BanEntry<T>(
     private val reasonString by lazy { reason.toLegacySectionText() }
     private val startFormatted by lazy { creationDate.format(DATE_FORMATTER) }
     private val endFormatted by lazy { expirationDate?.format(DATE_FORMATTER) ?: "forever" }
-    override val isInvalid: Boolean
+    final override val isInvalid: Boolean
         get() {
             val now = OffsetDateTime.now()
             if (expirationDate == null) return false

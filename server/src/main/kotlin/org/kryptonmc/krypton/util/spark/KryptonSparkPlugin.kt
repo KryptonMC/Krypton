@@ -34,7 +34,6 @@ import org.kryptonmc.api.command.meta.simpleCommandMeta
 import org.kryptonmc.api.plugin.PluginDescription
 import org.kryptonmc.krypton.KryptonPlatform
 import org.kryptonmc.krypton.KryptonServer
-import org.kryptonmc.krypton.command.KryptonCommandManager
 import org.kryptonmc.krypton.plugin.KryptonPluginDescription
 import org.kryptonmc.krypton.util.spark.ticking.KryptonSparkTickHook
 import org.kryptonmc.krypton.util.spark.ticking.KryptonSparkTickReporter
@@ -66,7 +65,7 @@ class KryptonSparkPlugin(
     fun start() {
         platform = SparkPlatform(this)
         platform.enable()
-        KryptonCommandManager.register(this, simpleCommandMeta("spark") {})
+        server.commandManager.register(this, simpleCommandMeta("spark") {})
     }
 
     fun stop() {

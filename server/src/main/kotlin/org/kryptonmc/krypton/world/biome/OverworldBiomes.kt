@@ -34,10 +34,9 @@ object OverworldBiomes {
 
     // Standard colours
     @JvmField
-    val OVERWORLD_WATER = Color(4159204)
-
+    val OVERWORLD_WATER: Color = Color(4159204)
     @JvmField
-    val OVERWORLD_WATER_FOG = Color(329011)
+    val OVERWORLD_WATER_FOG: Color = Color(329011)
 
     private val OVERWORLD_FOG = Color(12638463)
     private val COLD_WATER = Color(3750089)

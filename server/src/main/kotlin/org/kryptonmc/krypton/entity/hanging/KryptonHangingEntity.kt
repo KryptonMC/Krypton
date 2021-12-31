@@ -38,9 +38,9 @@ abstract class KryptonHangingEntity(
 
     abstract val height: Int
 
-    var centerPosition = Vector3i(location.floorX(), location.floorY(), location.floorZ())
+    var centerPosition: Vector3i = Vector3i(location.floorX(), location.floorY(), location.floorZ())
         private set
-    final override var direction = Direction.SOUTH
+    final override var direction: Direction = Direction.SOUTH
         set(value) {
             require(value.axis.isHorizontal)
             field = value

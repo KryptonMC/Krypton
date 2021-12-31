@@ -18,27 +18,19 @@
  */
 package org.kryptonmc.krypton.registry
 
-import net.kyori.adventure.key.Key
 import org.kryptonmc.api.registry.Registry
 import org.kryptonmc.api.resource.ResourceKey
+import org.kryptonmc.krypton.entity.memory.MemoryKey
 import org.kryptonmc.krypton.resource.InternalResourceKeys
+import org.kryptonmc.krypton.world.event.GameEvent
+import org.kryptonmc.krypton.world.generation.noise.NoiseGeneratorSettings
 
 object InternalRegistries {
 
-    @JvmField val MEMORIES = create(InternalResourceKeys.MEMORIES)
-    @JvmField val GAME_EVENT = create(InternalResourceKeys.GAME_EVENT)
-
-    // World generation registries
-    @JvmField val STRUCTURE = create(InternalResourceKeys.STRUCTURE)
-    @JvmField val NOISE_GENERATOR_SETTINGS = create(InternalResourceKeys.NOISE_GENERATOR_SETTINGS)
-    @JvmField val CHUNK_STATUS = createDefaulted(InternalResourceKeys.CHUNK_STATUS, Key.key("empty"))
+    @JvmField val MEMORIES: KryptonRegistry<MemoryKey<Any>> = create(InternalResourceKeys.MEMORIES)
+    @JvmField val GAME_EVENT: KryptonRegistry<GameEvent> = create(InternalResourceKeys.GAME_EVENT)
+    @JvmField val NOISE_GENERATOR_SETTINGS: KryptonRegistry<NoiseGeneratorSettings> = create(InternalResourceKeys.NOISE_GENERATOR_SETTINGS)
 
     @JvmStatic
     private fun <T : Any> create(key: ResourceKey<out Registry<T>>): KryptonRegistry<T> = KryptonRegistryManager.create(key)
-
-    @JvmStatic
-    private fun <T : Any> createDefaulted(
-        key: ResourceKey<out Registry<T>>,
-        defaultKey: Key
-    ): KryptonDefaultedRegistry<T> = KryptonRegistryManager.createDefaulted(key, defaultKey)
 }

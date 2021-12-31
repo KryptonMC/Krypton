@@ -23,6 +23,7 @@ import org.kryptonmc.api.block.Blocks
 import org.kryptonmc.api.fluid.Fluid
 import org.kryptonmc.api.fluid.Fluids
 import org.kryptonmc.api.world.biome.Biome
+import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.util.floor
 import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.world.Heightmap
@@ -30,8 +31,12 @@ import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.krypton.world.WorldAccessor
 import org.kryptonmc.krypton.world.biome.BiomeManager
 import org.kryptonmc.krypton.world.chunk.ChunkAccessor
+import org.kryptonmc.krypton.world.chunk.ChunkManager
 import org.kryptonmc.krypton.world.chunk.ChunkPosition
 import org.kryptonmc.krypton.world.chunk.ChunkStatus
+import org.kryptonmc.krypton.world.data.WorldData
+import org.kryptonmc.krypton.world.dimension.KryptonDimensionType
+import java.util.Random
 import kotlin.math.abs
 import kotlin.math.sqrt
 
@@ -48,17 +53,17 @@ class GenerationRegion(
     private val firstPosition: ChunkPosition
     private val lastPosition: ChunkPosition
     private var currentlyGenerating: (() -> String)? = null
-    override val seed = world.seed
-    override val random = world.random
-    override val dimensionType = world.dimensionType
-    override val biomeManager = BiomeManager(
+    override val seed: Long = world.seed
+    override val random: Random = world.random
+    override val dimensionType: KryptonDimensionType = world.dimensionType
+    override val biomeManager: BiomeManager = BiomeManager(
         this,
         BiomeManager.obfuscateSeed(seed)
     )
-    override val chunkManager = world.chunkManager
-    override val data = world.data
-    override val seaLevel = world.seaLevel
-    override val server = world.server
+    override val chunkManager: ChunkManager = world.chunkManager
+    override val data: WorldData = world.data
+    override val seaLevel: Int = world.seaLevel
+    override val server: KryptonServer = world.server
 
     init {
         val size = sqrt(cache.size.toDouble()).floor()

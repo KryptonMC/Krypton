@@ -22,6 +22,27 @@ import java.util.concurrent.CompletableFuture
 public interface EventManager {
 
     /**
+     * Fires the specified [event] to the event bus asynchronously, and returns
+     * its result as a [CompletableFuture].
+     *
+     * The asynchronous execution allows Krypton to continue functioning whilst
+     * listeners/handlers for this event are still executing, which avoids the
+     * possibility of the event handler holding up the server unnecessarily.
+     *
+     * @param event the event to fire
+     * @return the result of firing this event, as a [CompletableFuture]
+     */
+    public fun <E> fire(event: E): CompletableFuture<E>
+
+    /**
+     * Fires the specified [event] to the event bus asynchronously and discards
+     * the result.
+     *
+     * @param event the event to fire
+     */
+    public fun fireAndForget(event: Any)
+
+    /**
      * Requests that the specified [listener] be registered with this manager
      * to listen for events, and the listener will be associated with the
      * specified [plugin].
@@ -56,27 +77,6 @@ public interface EventManager {
      * @param E the type of the event
      */
     public fun <E> register(plugin: Any, eventClass: Class<E>, priority: ListenerPriority, handler: EventHandler<E>)
-
-    /**
-     * Fires the specified [event] to the event bus asynchronously, and returns
-     * its result as a [CompletableFuture].
-     *
-     * The asynchronous execution allows Krypton to continue functioning whilst
-     * listeners/handlers for this event are still executing, which avoids the
-     * possibility of the event handler holding up the server unnecessarily.
-     *
-     * @param event the event to fire
-     * @return the result of firing this event, as a [CompletableFuture]
-     */
-    public fun <E> fire(event: E): CompletableFuture<E>
-
-    /**
-     * Fires the specified [event] to the event bus asynchronously and discards
-     * the result.
-     *
-     * @param event the event to fire
-     */
-    public fun fireAndForget(event: Any)
 
     /**
      * Unregisters all registered listeners for the specified [plugin]
@@ -116,7 +116,7 @@ public interface EventManager {
  * @param E the type of the event
  */
 @JvmSynthetic
-public inline fun <reified E> EventManager.register(
+public inline fun <reified E> EventManager.registerHandler(
     plugin: Any,
     handler: EventHandler<E>
 ): Unit = register(plugin, E::class.java, handler)

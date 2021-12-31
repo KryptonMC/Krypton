@@ -8,9 +8,9 @@
  */
 package org.kryptonmc.api.entity.projectile
 
-import org.kryptonmc.api.item.ItemSupplier
+import org.kryptonmc.api.item.ItemStackLike
 
 /**
  * A fireball.
  */
-public interface Fireball : AcceleratingProjectile, ItemSupplier
+public interface Fireball : AcceleratingProjectile, ItemStackLike

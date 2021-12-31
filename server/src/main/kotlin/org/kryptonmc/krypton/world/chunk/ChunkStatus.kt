@@ -55,7 +55,7 @@ class ChunkStatus private constructor(
         private val EMPTY = create("empty", null, -1, PRE_FEATURES, Type.PROTO)
         private val STRUCTURE_STARTS = create("structure_starts", EMPTY, 0, PRE_FEATURES, Type.PROTO)
         private val STRUCTURE_REFERENCES = create("structure_references", STRUCTURE_STARTS, 8, PRE_FEATURES, Type.PROTO)
-        val BIOMES: ChunkStatus = create("biomes", STRUCTURE_REFERENCES, 0, PRE_FEATURES, Type.PROTO)
+        @JvmField val BIOMES: ChunkStatus = create("biomes", STRUCTURE_REFERENCES, 0, PRE_FEATURES, Type.PROTO)
         private val NOISE = create("noise", BIOMES, 8, PRE_FEATURES, Type.PROTO)
         private val SURFACE = create("surface", NOISE, 0, PRE_FEATURES, Type.PROTO)
         private val CARVERS = create("carvers", SURFACE, 0, PRE_FEATURES, Type.PROTO)
@@ -64,7 +64,7 @@ class ChunkStatus private constructor(
         private val LIGHT = create("light", FEATURES, 1, POST_FEATURES, Type.PROTO)
         private val SPAWN = create("spawn", LIGHT, 0, POST_FEATURES, Type.PROTO)
         private val HEIGHTMAPS = create("heightmaps", SPAWN, 0, POST_FEATURES, Type.PROTO)
-        val FULL: ChunkStatus = create("full", HEIGHTMAPS, 0, POST_FEATURES, Type.FULL)
+        @JvmField val FULL: ChunkStatus = create("full", HEIGHTMAPS, 0, POST_FEATURES, Type.FULL)
 
         @JvmStatic
         private fun create(

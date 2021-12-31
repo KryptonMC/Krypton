@@ -32,7 +32,7 @@ import org.kryptonmc.nbt.CompoundTag
 class KryptonTrident(world: KryptonWorld) : KryptonArrowLike(world, EntityTypes.TRIDENT, SoundEvents.TRIDENT_HIT_GROUND), Trident {
 
     override var item: KryptonItemStack = DEFAULT_ITEM
-    override var dealtDamage = false
+    override var dealtDamage: Boolean = false
 
     override var loyaltyLevel: Int
         get() = data[MetadataKeys.TRIDENT.LOYALTY_LEVEL]

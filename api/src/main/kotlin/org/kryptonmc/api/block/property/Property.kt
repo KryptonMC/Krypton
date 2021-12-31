@@ -30,16 +30,16 @@ public interface Property<T : Comparable<T>> {
     public val name: String
 
     /**
-     * The set of values this property key allows.
-     */
-    @get:JvmName("values")
-    public val values: Set<T>
-
-    /**
      * The type of this property key.
      */
     @get:JvmName("type")
     public val type: Class<T>
+
+    /**
+     * The set of values this property key allows.
+     */
+    @get:JvmName("values")
+    public val values: Set<T>
 
     /**
      * Parses the given string [value] to a value this property key allows,

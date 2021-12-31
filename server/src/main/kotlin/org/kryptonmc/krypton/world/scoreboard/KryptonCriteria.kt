@@ -18,12 +18,12 @@
  */
 package org.kryptonmc.krypton.world.scoreboard
 
-import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.ImmutableSet
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.text.format.NamedTextColor
 import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.api.scoreboard.ObjectiveRenderType
-import org.kryptonmc.krypton.util.mapPersistentList
+import org.kryptonmc.krypton.util.mapPersistentSet
 
 object KryptonCriteria {
 
@@ -41,12 +41,12 @@ object KryptonCriteria {
     @JvmField val TEAM_KILL: KryptonCompoundCriterion = register(
         "team_kill",
         "teamkill",
-        NamedTextColor.NAMES.keys().mapPersistentList { register("team_kill.$it", "teamkill.$it") }
+        NamedTextColor.NAMES.keys().mapPersistentSet { register("team_kill.$it", "teamkill.$it") }
     )
     @JvmField val KILLED_BY_TEAM: KryptonCompoundCriterion = register(
         "killed_by_team",
         "killedByTeam",
-        NamedTextColor.NAMES.keys().mapPersistentList { register("killed_by_team.$it", "killedByTeam.$it") }
+        NamedTextColor.NAMES.keys().mapPersistentSet { register("killed_by_team.$it", "killedByTeam.$it") }
     )
 
     @JvmStatic
@@ -67,7 +67,7 @@ object KryptonCriteria {
     private fun register(
         key: String,
         name: String,
-        children: ImmutableList<KryptonCriterion>,
+        children: ImmutableSet<KryptonCriterion>,
         isMutable: Boolean = false,
         renderType: ObjectiveRenderType = ObjectiveRenderType.INTEGER
     ): KryptonCompoundCriterion {

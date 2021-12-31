@@ -32,7 +32,7 @@ import kotlin.random.Random
 
 class KryptonPolarBear(world: KryptonWorld) : KryptonAnimal(world, EntityTypes.POLAR_BEAR, ATTRIBUTES), PolarBear, Neutral {
 
-    override var remainingAngerTime = 0
+    override var remainingAngerTime: Int = 0
     override var angerTarget: UUID? = null
 
     override var isStanding: Boolean

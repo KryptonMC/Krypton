@@ -23,7 +23,6 @@ import org.kryptonmc.api.resource.ResourceKey
 import java.util.Collections
 import java.util.IdentityHashMap
 
-@Suppress("DataClassPrivateConstructor")
 @JvmRecord
 data class KryptonResourceKey<T : Any> private constructor(
     override val registry: Key,
@@ -41,6 +40,6 @@ data class KryptonResourceKey<T : Any> private constructor(
 
     companion object {
 
-        private val VALUES: MutableMap<String, ResourceKey<*>> = Collections.synchronizedMap(IdentityHashMap())
+        private val VALUES = Collections.synchronizedMap(IdentityHashMap<String, ResourceKey<*>>())
     }
 }

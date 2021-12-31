@@ -38,7 +38,7 @@ class SessionManager(private val server: KryptonServer) {
     private val sessions = ConcurrentHashMap.newKeySet<SessionHandler>()
     private val lock = ReentrantReadWriteLock()
 
-    val status = ServerStatus(server.motd, ServerStatus.Players(server.maxPlayers, server.playerManager.players.size), null)
+    val status: ServerStatus = ServerStatus(server.motd, ServerStatus.Players(server.maxPlayers, server.playerManager.players.size), null)
     private var statusInvalidated = false
     private var statusInvalidatedTime = 0L
     private var lastStatus = 0L
@@ -57,7 +57,7 @@ class SessionManager(private val server: KryptonServer) {
 
     fun sendGrouped(players: Collection<KryptonPlayer>, packet: Packet, predicate: Predicate<KryptonPlayer> = Predicate { true }) {
         if (players.isEmpty()) return
-        val finalBuffer = packet.frame(server.config.server.compressionThreshold)
+        val finalBuffer = packet.frame()
         val framedPacket = FramedPacket(finalBuffer)
         players.forEach {
             if (!it.isOnline || !predicate.test(it)) return@forEach

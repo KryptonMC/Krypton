@@ -214,8 +214,6 @@ public interface Block : Buildable<Block, Block.Builder>, PropertyHolder<Block>,
     @get:JvmName("pushReaction")
     public val pushReaction: PushReaction
 
-    override fun asBlock(): Block = this
-
     /**
      * Compares this block to the given [other] block.
      *
@@ -233,6 +231,8 @@ public interface Block : Buildable<Block, Block.Builder>, PropertyHolder<Block>,
      * @return the result of the comparison
      */
     public fun compare(other: Block, comparator: Comparator): Boolean = comparator(this, other)
+
+    override fun asBlock(): Block = this
 
     /**
      * A comparator for comparing 2 blocks.
@@ -277,6 +277,7 @@ public interface Block : Buildable<Block, Block.Builder>, PropertyHolder<Block>,
     /**
      * A builder for building blocks.
      */
+    @BlockDsl
     public interface Builder : Buildable.Builder<Block>, PropertyHolder.Builder<Builder, Block>, TranslationHolder.Builder<Builder, Block> {
 
         /**
@@ -285,6 +286,7 @@ public interface Block : Buildable<Block, Block.Builder>, PropertyHolder<Block>,
          * @param id the block ID
          * @return this builder
          */
+        @BlockDsl
         @Contract("_ -> this", mutates = "this")
         public fun id(id: Int): Builder
 
@@ -294,6 +296,7 @@ public interface Block : Buildable<Block, Block.Builder>, PropertyHolder<Block>,
          * @param id the state ID
          * @return this builder
          */
+        @BlockDsl
         @Contract("_ -> this", mutates = "this")
         public fun stateId(id: Int): Builder
 
@@ -303,6 +306,7 @@ public interface Block : Buildable<Block, Block.Builder>, PropertyHolder<Block>,
          * @param hardness the hardness
          * @return this builder
          */
+        @BlockDsl
         @Contract("_ -> this", mutates = "this")
         public fun hardness(hardness: Double): Builder
 
@@ -313,6 +317,7 @@ public interface Block : Buildable<Block, Block.Builder>, PropertyHolder<Block>,
          * @param resistance the explosion resistance
          * @return this builder
          */
+        @BlockDsl
         @Contract("_ -> this", mutates = "this")
         public fun resistance(resistance: Double): Builder
 
@@ -322,6 +327,7 @@ public interface Block : Buildable<Block, Block.Builder>, PropertyHolder<Block>,
          * @param friction the friction
          * @return this builder
          */
+        @BlockDsl
         @Contract("_ -> this", mutates = "this")
         public fun friction(friction: Double): Builder
 
@@ -331,6 +337,7 @@ public interface Block : Buildable<Block, Block.Builder>, PropertyHolder<Block>,
          * @param factor the speed factor
          * @return this builder
          */
+        @BlockDsl
         @Contract("_ -> this", mutates = "this")
         public fun speedFactor(factor: Double): Builder
 
@@ -340,6 +347,7 @@ public interface Block : Buildable<Block, Block.Builder>, PropertyHolder<Block>,
          * @param factor the jump factor
          * @return this builder
          */
+        @BlockDsl
         @Contract("_ -> this", mutates = "this")
         public fun jumpFactor(factor: Double): Builder
 
@@ -349,6 +357,7 @@ public interface Block : Buildable<Block, Block.Builder>, PropertyHolder<Block>,
          * @param value whether the block is air
          * @return this builder
          */
+        @BlockDsl
         @Contract("_ -> this", mutates = "this")
         public fun air(value: Boolean): Builder
 
@@ -358,6 +367,7 @@ public interface Block : Buildable<Block, Block.Builder>, PropertyHolder<Block>,
          * @param value whether the block is solid
          * @return this builder
          */
+        @BlockDsl
         @Contract("_ -> this", mutates = "this")
         public fun solid(value: Boolean): Builder
 
@@ -367,6 +377,7 @@ public interface Block : Buildable<Block, Block.Builder>, PropertyHolder<Block>,
          * @param value whether the block is liquid
          * @return this builder
          */
+        @BlockDsl
         @Contract("_ -> this", mutates = "this")
         public fun liquid(value: Boolean): Builder
 
@@ -377,6 +388,7 @@ public interface Block : Buildable<Block, Block.Builder>, PropertyHolder<Block>,
          * @param value whether the block is solid blocking
          * @return this builder
          */
+        @BlockDsl
         @Contract("_ -> this", mutates = "this")
         public fun solidBlocking(value: Boolean): Builder
 
@@ -387,6 +399,7 @@ public interface Block : Buildable<Block, Block.Builder>, PropertyHolder<Block>,
          * @param value whether the block has a block entity
          * @return this builder
          */
+        @BlockDsl
         @Contract("_ -> this", mutates = "this")
         public fun hasBlockEntity(value: Boolean): Builder
 
@@ -396,6 +409,7 @@ public interface Block : Buildable<Block, Block.Builder>, PropertyHolder<Block>,
          * @param amount the light emission
          * @return this builder
          */
+        @BlockDsl
         @Contract("_ -> this", mutates = "this")
         public fun lightEmission(amount: Int): Builder
 
@@ -405,6 +419,7 @@ public interface Block : Buildable<Block, Block.Builder>, PropertyHolder<Block>,
          * @param value whether the block occludes light
          * @return this builder
          */
+        @BlockDsl
         @Contract("_ -> this", mutates = "this")
         public fun occludes(value: Boolean): Builder
 
@@ -414,6 +429,7 @@ public interface Block : Buildable<Block, Block.Builder>, PropertyHolder<Block>,
          * @param value whether the block blocks motion
          * @return this builder
          */
+        @BlockDsl
         @Contract("_ -> this", mutates = "this")
         public fun blocksMotion(value: Boolean): Builder
 
@@ -423,6 +439,7 @@ public interface Block : Buildable<Block, Block.Builder>, PropertyHolder<Block>,
          * @param value whether the block is flammable
          * @return this builder
          */
+        @BlockDsl
         @Contract("_ -> this", mutates = "this")
         public fun flammable(value: Boolean): Builder
 
@@ -432,6 +449,7 @@ public interface Block : Buildable<Block, Block.Builder>, PropertyHolder<Block>,
          * @param value whether the block has gravity
          * @return this builder
          */
+        @BlockDsl
         @Contract("_ -> this", mutates = "this")
         public fun gravity(value: Boolean): Builder
 
@@ -441,6 +459,7 @@ public interface Block : Buildable<Block, Block.Builder>, PropertyHolder<Block>,
          * @param value whether the block is replaceable
          * @return this builder
          */
+        @BlockDsl
         @Contract("_ -> this", mutates = "this")
         public fun replaceable(value: Boolean): Builder
 
@@ -451,6 +470,7 @@ public interface Block : Buildable<Block, Block.Builder>, PropertyHolder<Block>,
          * @param value whether the block has a dynamic shape
          * @return this builder
          */
+        @BlockDsl
         @Contract("_ -> this", mutates = "this")
         public fun dynamicShape(value: Boolean): Builder
 
@@ -461,6 +481,7 @@ public interface Block : Buildable<Block, Block.Builder>, PropertyHolder<Block>,
          * @param value whether the shape should be used for light occlusion
          * @return this builder
          */
+        @BlockDsl
         @Contract("_ -> this", mutates = "this")
         public fun useShapeForOcclusion(value: Boolean): Builder
 
@@ -471,6 +492,7 @@ public interface Block : Buildable<Block, Block.Builder>, PropertyHolder<Block>,
          * @param value whether the block propagates skylight down
          * @return this builder
          */
+        @BlockDsl
         @Contract("_ -> this", mutates = "this")
         public fun propagatesSkylightDown(value: Boolean): Builder
 
@@ -480,6 +502,7 @@ public interface Block : Buildable<Block, Block.Builder>, PropertyHolder<Block>,
          * @param value the amount of light the block blocks
          * @return this builder
          */
+        @BlockDsl
         @Contract("_ -> this", mutates = "this")
         public fun lightBlock(value: Int): Builder
 
@@ -490,6 +513,7 @@ public interface Block : Buildable<Block, Block.Builder>, PropertyHolder<Block>,
          * @param value whether the block is fully opaque in context
          * @return this builder
          */
+        @BlockDsl
         @Contract("_ -> this", mutates = "this")
         public fun conditionallyFullyOpaque(value: Boolean): Builder
 
@@ -499,6 +523,7 @@ public interface Block : Buildable<Block, Block.Builder>, PropertyHolder<Block>,
          * @param value whether the render of the block is solid
          * @return this builder
          */
+        @BlockDsl
         @Contract("_ -> this", mutates = "this")
         public fun solidRender(value: Boolean): Builder
 
@@ -508,6 +533,7 @@ public interface Block : Buildable<Block, Block.Builder>, PropertyHolder<Block>,
          * @param value the opacity
          * @return this builder
          */
+        @BlockDsl
         @Contract("_ -> this", mutates = "this")
         public fun opacity(value: Int): Builder
 
@@ -518,6 +544,7 @@ public interface Block : Buildable<Block, Block.Builder>, PropertyHolder<Block>,
          * @param value whether the block has a large collision shape
          * @return this builder
          */
+        @BlockDsl
         @Contract("_ -> this", mutates = "this")
         public fun largeCollisionShape(value: Boolean): Builder
 
@@ -528,6 +555,7 @@ public interface Block : Buildable<Block, Block.Builder>, PropertyHolder<Block>,
          * @param value whether the collision shape for the block is full
          * @return this builder
          */
+        @BlockDsl
         @Contract("_ -> this", mutates = "this")
         public fun collisionShapeFullBlock(value: Boolean): Builder
 
@@ -538,6 +566,7 @@ public interface Block : Buildable<Block, Block.Builder>, PropertyHolder<Block>,
          * @param value whether the block can be respawned in
          * @return this builder
          */
+        @BlockDsl
         @Contract("_ -> this", mutates = "this")
         public fun canRespawnIn(value: Boolean): Builder
 
@@ -548,6 +577,7 @@ public interface Block : Buildable<Block, Block.Builder>, PropertyHolder<Block>,
          * @param value whether the block requires the correct tool
          * @return this builder
          */
+        @BlockDsl
         @Contract("_ -> this", mutates = "this")
         public fun requiresCorrectTool(value: Boolean): Builder
 
@@ -557,6 +587,7 @@ public interface Block : Buildable<Block, Block.Builder>, PropertyHolder<Block>,
          * @param shape the render shape
          * @return this builder
          */
+        @BlockDsl
         @Contract("_ -> this", mutates = "this")
         public fun renderShape(shape: RenderShape): Builder
 
@@ -567,6 +598,7 @@ public interface Block : Buildable<Block, Block.Builder>, PropertyHolder<Block>,
          * @param reaction the push reaction
          * @return this builder
          */
+        @BlockDsl
         @Contract("_ -> this", mutates = "this")
         public fun pushReaction(reaction: PushReaction): Builder
 
@@ -579,6 +611,7 @@ public interface Block : Buildable<Block, Block.Builder>, PropertyHolder<Block>,
          * @param key the key
          * @return this builder
          */
+        @BlockDsl
         @Contract("_ -> this", mutates = "this")
         public fun item(key: Key): Builder
 
@@ -588,6 +621,7 @@ public interface Block : Buildable<Block, Block.Builder>, PropertyHolder<Block>,
          * @param item the corresponding item type
          * @return this builder
          */
+        @BlockDsl
         @Contract("_ -> this", mutates = "this")
         public fun item(item: ItemType): Builder = item(item.key())
 
@@ -600,6 +634,7 @@ public interface Block : Buildable<Block, Block.Builder>, PropertyHolder<Block>,
          * @param key the key
          * @return this builder
          */
+        @BlockDsl
         @Contract("_ -> this", mutates = "this")
         public fun fluid(key: Key): Builder
 
@@ -609,6 +644,7 @@ public interface Block : Buildable<Block, Block.Builder>, PropertyHolder<Block>,
          * @param fluid the corresponding fluid
          * @return this builder
          */
+        @BlockDsl
         @Contract("_ -> this", mutates = "this")
         public fun fluid(fluid: Fluid): Builder = fluid(fluid.key())
     }

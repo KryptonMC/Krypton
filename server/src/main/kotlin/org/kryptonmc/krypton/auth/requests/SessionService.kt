@@ -43,11 +43,13 @@ object SessionService {
     private val client = HttpClient.newHttpClient()
     private val profiles: Cache<String, KryptonGameProfile> = Caffeine.newBuilder()
         .expireAfterWrite(6, TimeUnit.HOURS)
+        .maximumSize(128)
         .build()
 
     /**
      * Authenticates a user with Mojang.
      */
+    @JvmStatic
     fun hasJoined(username: String, secret: ByteArray, ip: String): KryptonGameProfile? {
         val cachedProfile = profiles.getIfPresent(username)
         if (cachedProfile != null) return cachedProfile

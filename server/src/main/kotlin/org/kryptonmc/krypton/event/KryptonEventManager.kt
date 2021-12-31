@@ -1,8 +1,7 @@
 /*
- * This file is part of the Krypton project, and originates from the Velocity project,
- * licensed under the terms of the GNU General Public License v3.0
+ * This file is part of the Krypton project, licensed under the GNU General Public License v3.0
  *
- * Copyright (C) 2018 Velocity Contributors
+ * Copyright (C) 2021 KryptonMC and the contributors of the Krypton project
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,11 +15,8 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
- *
- * For the original file that this file is derived from, see here:
- * https://github.com/PaperMC/Velocity/blob/0097359a99c23de4fc6b92c59a401a10208b4c4a/proxy/src/main/java/com/velocitypowered/proxy/plugin/VelocityEventManager.java
  */
-package org.kryptonmc.krypton.plugin
+package org.kryptonmc.krypton.event
 
 import com.google.common.collect.Multimap
 import com.google.common.collect.Multimaps
@@ -34,9 +30,10 @@ import org.kryptonmc.api.event.EventHandler
 import org.kryptonmc.api.event.EventManager
 import org.kryptonmc.api.event.Listener
 import org.kryptonmc.api.event.ListenerPriority
-import org.kryptonmc.krypton.util.daemon
+import org.kryptonmc.krypton.plugin.KryptonPluginManager
+import org.kryptonmc.krypton.plugin.PluginClassLoader
+import org.kryptonmc.krypton.util.daemonThreadFactory
 import org.kryptonmc.krypton.util.logger
-import org.kryptonmc.krypton.util.threadFactory
 import java.lang.reflect.Method
 import java.util.IdentityHashMap
 import java.util.concurrent.CompletableFuture
@@ -57,7 +54,7 @@ object KryptonEventManager : EventManager {
     private val methodAdapter: MethodSubscriptionAdapter<Any>
     private val service: ExecutorService = Executors.newFixedThreadPool(
         Runtime.getRuntime().availableProcessors(),
-        threadFactory("Krypton Event Executor #%d") { daemon() }
+        daemonThreadFactory("Krypton Event Executor #%d")
     )
 
     init {
@@ -151,8 +148,8 @@ object KryptonEventManager : EventManager {
         bus.unregister { subscriber: EventSubscriber<*> -> subscriber is KyoriToKryptonHandler && subscriber.handler == handler }
     }
 
-    private fun checkPlugin(plugin: Any) = require(KryptonPluginManager.fromInstance(plugin) != null) {
-        "The specified plugin is not loaded!"
+    private fun checkPlugin(plugin: Any) {
+        require(KryptonPluginManager.fromInstance(plugin) != null) { "The specified plugin is not loaded!" }
     }
 
     private class KryptonMethodScanner : MethodScanner<Any> {
@@ -164,10 +161,7 @@ object KryptonEventManager : EventManager {
         override fun consumeCancelledEvents(listener: Any, method: Method): Boolean = true
     }
 
-    private class KyoriToKryptonHandler<E>(
-        val handler: EventHandler<E>,
-        val priority: ListenerPriority
-    ) : EventSubscriber<E> {
+    private class KyoriToKryptonHandler<E>(val handler: EventHandler<E>, val priority: ListenerPriority) : EventSubscriber<E> {
 
         override fun invoke(event: E) {
             handler.execute(event)

@@ -26,7 +26,7 @@ import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.event.HoverEvent
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer
 import net.kyori.adventure.util.TriState
-import org.kryptonmc.api.adventure.toJsonString
+import org.kryptonmc.api.adventure.toJson
 import org.kryptonmc.api.block.Blocks
 import org.kryptonmc.api.effect.sound.SoundEvent
 import org.kryptonmc.api.effect.sound.SoundEvents
@@ -43,6 +43,7 @@ import org.kryptonmc.api.util.BoundingBox
 import org.kryptonmc.krypton.util.InteractionResult
 import org.kryptonmc.api.world.damage.DamageSource
 import org.kryptonmc.api.world.damage.type.DamageTypes
+import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.entity.metadata.MetadataHolder
 import org.kryptonmc.krypton.entity.metadata.MetadataKey
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
@@ -72,6 +73,7 @@ import org.kryptonmc.nbt.StringTag
 import org.kryptonmc.nbt.buildCompound
 import org.spongepowered.math.vector.Vector2f
 import org.spongepowered.math.vector.Vector3d
+import java.util.UUID
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.atomic.AtomicInteger
 import java.util.function.UnaryOperator
@@ -85,54 +87,42 @@ abstract class KryptonEntity(
     override val type: EntityType<out Entity>
 ) : Entity {
 
-    final override val id = NEXT_ENTITY_ID.incrementAndGet()
-    override var uuid = Random.nextUUID()
-        set(value) {
-            field = value
-            uuidComponent = Component.text(value.toString())
-            identity = Identity.identity(value)
-        }
-    private var uuidComponent: Component? = null
-        get() {
-            if (field == null) field = Component.text(uuid.toString())
-            return field
-        }
-    private var identity: Identity? = null
-        get() {
-            if (field == null) field = Identity.identity(uuid)
-            return field
-        }
+    final override val id: Int = NEXT_ENTITY_ID.incrementAndGet()
+    override var uuid: UUID = Random.nextUUID()
     override val teamRepresentation: Component
-        get() = uuidComponent!!
+        get() = Component.text(uuid.toString())
     override val name: Component
         get() = customName ?: type.translation
     override val displayName: Component
-        get() = team?.formatName(name)?.style {
-            it.hoverEvent(asHoverEvent())
-            it.insertion(uuid.toString())
-        } ?: name
-    val data = MetadataHolder(this)
+        get() {
+            val team = team ?: return name
+            return team.formatName(name).style {
+                it.hoverEvent(asHoverEvent())
+                it.insertion(uuid.toString())
+            }
+        }
+    val data: MetadataHolder = MetadataHolder(this)
 
-    final override val server = world.server
+    final override val server: KryptonServer = world.server
 
     override val team: Team?
         get() = world.scoreboard.memberTeam(teamRepresentation)
     final override var location: Vector3d = Vector3d.ZERO
     final override var rotation: Vector2f = Vector2f.ZERO
     final override var velocity: Vector3d = Vector3d.ZERO
-    final override var boundingBox = BoundingBox.zero()
-    final override var dimensions = EntityDimensions.fixed(type.dimensions.width, type.dimensions.height)
-    final override var isOnGround = true
-    final override var ticksExisted = 0
+    final override var boundingBox: BoundingBox = BoundingBox.zero()
+    final override var dimensions: EntityDimensions = EntityDimensions.fixed(type.dimensions.width, type.dimensions.height)
+    final override var isOnGround: Boolean = true
+    final override var ticksExisted: Int = 0
     final override var fireTicks: Short = 0
-    override var isInvulnerable = false
-    final override var fallDistance = 0F
+    override var isInvulnerable: Boolean = false
+    final override var fallDistance: Float = 0F
 
     final override val isPassenger: Boolean
         get() = vehicle != null
     final override val isVehicle: Boolean
         get() = passengers.isNotEmpty()
-    final override val passengers = mutableListOf<Entity>()
+    final override val passengers: MutableList<Entity> = mutableListOf()
     final override var vehicle: Entity? = null
         set(value) {
             if (value !is KryptonEntity) return
@@ -148,7 +138,7 @@ abstract class KryptonEntity(
         }
     val hasExactlyOnePlayerPassenger: Boolean
         get() = indirectPassengersSequence.count { it is Player } == 1
-    val selfAndPassengers: Sequence<Entity>
+    private val selfAndPassengers: Sequence<Entity>
         get() = sequenceOf(this).plus(indirectPassengersSequence)
     val passengersAndSelf: Sequence<Entity>
         get() = indirectPassengersSequence.plus(this)
@@ -157,9 +147,9 @@ abstract class KryptonEntity(
     private val indirectPassengersSequence: Sequence<Entity>
         get() = passengers.asSequence().flatMap { (it as KryptonEntity).selfAndPassengers }
 
-    final override var inWater = false
-    final override var inLava = false
-    final override var underwater = false
+    final override var inWater: Boolean = false
+    final override var inLava: Boolean = false
+    final override var underwater: Boolean = false
     val inBubbleColumn: Boolean
         get() = world.getBlock(location.floorX(), location.floorY(), location.floorZ()) === Blocks.BUBBLE_COLUMN
 
@@ -191,13 +181,13 @@ abstract class KryptonEntity(
         get() = Iterables.concat(handSlots, armorSlots)
 
     val viewers: MutableSet<KryptonPlayer> = ConcurrentHashMap.newKeySet()
-    var noPhysics = false
+    var noPhysics: Boolean = false
     private var oldVelocity = Vector3d.ZERO
     private var eyeHeight = 0F
     private val fluidHeights = Object2DoubleArrayMap<Tag<Fluid>>(2)
     private var fluidOnEyes: Tag<Fluid>? = null
     private var portalCooldown = 0
-    var isRemoved = false
+    var isRemoved: Boolean = false
         private set
     private var wasDamaged = false
     private var tickCount = 0
@@ -295,10 +285,10 @@ abstract class KryptonEntity(
         if (tag.hasUUID("UUID")) uuid = tag.getUUID("UUID")!!
     }
 
-    open fun save() = buildCompound {
+    open fun save(): CompoundTag.Builder = buildCompound {
         // Display name
         if (isCustomNameVisible) boolean("CustomNameVisible", true)
-        customName?.let { string("CustomName", it.toJsonString()) }
+        customName?.let { string("CustomName", it.toJson()) }
 
         // Flags
         if (isGlowing) boolean("Glowing", true)
@@ -493,8 +483,8 @@ abstract class KryptonEntity(
         look(yaw, pitch)
     }
 
-    open fun isInvulnerableTo(source: KryptonDamageSource): Boolean =
-        isRemoved || isInvulnerable && source.type !== DamageTypes.VOID && !source.isCreativePlayer
+    open fun isInvulnerableTo(source: KryptonDamageSource): Boolean = isRemoved || isInvulnerable && source.type !== DamageTypes.VOID &&
+            !source.isCreativePlayer
 
     open fun damage(source: KryptonDamageSource, damage: Float): Boolean {
         if (isInvulnerableTo(source)) return false
@@ -521,7 +511,7 @@ abstract class KryptonEntity(
         world.removeEntity(this)
     }
 
-    override fun identity(): Identity = identity!!
+    override fun identity(): Identity = Identity.identity(uuid)
 
     override fun asHoverEvent(op: UnaryOperator<HoverEvent.ShowEntity>): HoverEvent<HoverEvent.ShowEntity> = HoverEvent.showEntity(
         op.apply(HoverEvent.ShowEntity.of(type.key(), uuid, displayName))

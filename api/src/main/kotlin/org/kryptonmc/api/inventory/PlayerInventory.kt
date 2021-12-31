@@ -17,7 +17,7 @@ import org.kryptonmc.api.item.ItemStack
  * Represents a player's inventory.
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
-public interface PlayerInventory : MutableInventory {
+public interface PlayerInventory : Inventory {
 
     /**
      * The main inventory area, excluding the hotbar area. This has 27 slots,

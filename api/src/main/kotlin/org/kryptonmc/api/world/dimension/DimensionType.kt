@@ -131,6 +131,7 @@ public interface DimensionType : Buildable<DimensionType, DimensionType.Builder>
     /**
      * A builder for dimension types.
      */
+    @DimensionTypeDsl
     public interface Builder : KeyedBuilder<DimensionType, Builder> {
 
         /**
@@ -139,6 +140,7 @@ public interface DimensionType : Buildable<DimensionType, DimensionType.Builder>
          * @return this builder
          * @see DimensionType.isPiglinSafe
          */
+        @DimensionTypeDsl
         @Contract("_ -> this", mutates = "this")
         public fun piglinSafe(): Builder = piglinSafe(true)
 
@@ -150,6 +152,7 @@ public interface DimensionType : Buildable<DimensionType, DimensionType.Builder>
          * @return this builder
          * @see DimensionType.isPiglinSafe
          */
+        @DimensionTypeDsl
         @Contract("_ -> this", mutates = "this")
         public fun notPiglinSafe(): Builder = piglinSafe(false)
 
@@ -160,6 +163,7 @@ public interface DimensionType : Buildable<DimensionType, DimensionType.Builder>
          * @return this builder
          * @see DimensionType.isPiglinSafe
          */
+        @DimensionTypeDsl
         @Contract("_ -> this", mutates = "this")
         public fun piglinSafe(safe: Boolean): Builder
 
@@ -169,6 +173,7 @@ public interface DimensionType : Buildable<DimensionType, DimensionType.Builder>
          * @return this builder
          * @see DimensionType.isNatural
          */
+        @DimensionTypeDsl
         @Contract("_ -> this", mutates = "this")
         public fun natural(): Builder = natural(true)
 
@@ -180,6 +185,7 @@ public interface DimensionType : Buildable<DimensionType, DimensionType.Builder>
          * @return this builder
          * @see DimensionType.isNatural
          */
+        @DimensionTypeDsl
         @Contract("_ -> this", mutates = "this")
         public fun unnatural(): Builder = natural(false)
 
@@ -190,6 +196,7 @@ public interface DimensionType : Buildable<DimensionType, DimensionType.Builder>
          * @return this builder
          * @see DimensionType.isNatural
          */
+        @DimensionTypeDsl
         @Contract("_ -> this", mutates = "this")
         public fun natural(natural: Boolean): Builder
 
@@ -199,6 +206,7 @@ public interface DimensionType : Buildable<DimensionType, DimensionType.Builder>
          * @return this builder
          * @see DimensionType.isUltrawarm
          */
+        @DimensionTypeDsl
         @Contract("_ -> this", mutates = "this")
         public fun ultrawarm(): Builder = ultrawarm(true)
 
@@ -210,6 +218,7 @@ public interface DimensionType : Buildable<DimensionType, DimensionType.Builder>
          * @return this builder
          * @see DimensionType.isUltrawarm
          */
+        @DimensionTypeDsl
         @Contract("_ -> this", mutates = "this")
         public fun notUltrawarm(): Builder = ultrawarm(false)
 
@@ -220,6 +229,7 @@ public interface DimensionType : Buildable<DimensionType, DimensionType.Builder>
          * @return this builder
          * @see DimensionType.isUltrawarm
          */
+        @DimensionTypeDsl
         @Contract("_ -> this", mutates = "this")
         public fun ultrawarm(ultrawarm: Boolean): Builder
 
@@ -229,6 +239,7 @@ public interface DimensionType : Buildable<DimensionType, DimensionType.Builder>
          * @return this builder
          * @see DimensionType.hasSkylight
          */
+        @DimensionTypeDsl
         @Contract("_ -> this", mutates = "this")
         public fun skylight(): Builder = skylight(true)
 
@@ -240,6 +251,7 @@ public interface DimensionType : Buildable<DimensionType, DimensionType.Builder>
          * @return this builder
          * @see DimensionType.hasSkylight
          */
+        @DimensionTypeDsl
         @Contract("_ -> this", mutates = "this")
         public fun noSkylight(): Builder = skylight(false)
 
@@ -250,6 +262,7 @@ public interface DimensionType : Buildable<DimensionType, DimensionType.Builder>
          * @return this builder
          * @see DimensionType.hasSkylight
          */
+        @DimensionTypeDsl
         @Contract("_ -> this", mutates = "this")
         public fun skylight(light: Boolean): Builder
 
@@ -259,6 +272,7 @@ public interface DimensionType : Buildable<DimensionType, DimensionType.Builder>
          * @return this builder
          * @see DimensionType.hasCeiling
          */
+        @DimensionTypeDsl
         @Contract("_ -> this", mutates = "this")
         public fun ceiling(): Builder = ceiling(true)
 
@@ -270,6 +284,7 @@ public interface DimensionType : Buildable<DimensionType, DimensionType.Builder>
          * @return this builder
          * @see DimensionType.hasCeiling
          */
+        @DimensionTypeDsl
         @Contract("_ -> this", mutates = "this")
         public fun noCeiling(): Builder = ceiling(false)
 
@@ -280,6 +295,7 @@ public interface DimensionType : Buildable<DimensionType, DimensionType.Builder>
          * @return this builder
          * @see DimensionType.hasCeiling
          */
+        @DimensionTypeDsl
         @Contract("_ -> this", mutates = "this")
         public fun ceiling(ceiling: Boolean): Builder
 
@@ -289,6 +305,7 @@ public interface DimensionType : Buildable<DimensionType, DimensionType.Builder>
          * @return this builder
          * @see DimensionType.hasRaids
          */
+        @DimensionTypeDsl
         @Contract("_ -> this", mutates = "this")
         public fun raids(): Builder = raids(true)
 
@@ -300,6 +317,7 @@ public interface DimensionType : Buildable<DimensionType, DimensionType.Builder>
          * @return this builder
          * @see DimensionType.hasRaids
          */
+        @DimensionTypeDsl
         @Contract("_ -> this", mutates = "this")
         public fun noRaids(): Builder = raids(false)
 
@@ -310,6 +328,7 @@ public interface DimensionType : Buildable<DimensionType, DimensionType.Builder>
          * @return this builder
          * @see DimensionType.hasRaids
          */
+        @DimensionTypeDsl
         @Contract("_ -> this", mutates = "this")
         public fun raids(raids: Boolean): Builder
 
@@ -319,6 +338,7 @@ public interface DimensionType : Buildable<DimensionType, DimensionType.Builder>
          * @return this builder
          * @see DimensionType.allowBeds
          */
+        @DimensionTypeDsl
         @Contract("_ -> this", mutates = "this")
         public fun allowBeds(): Builder = beds(true)
 
@@ -330,6 +350,7 @@ public interface DimensionType : Buildable<DimensionType, DimensionType.Builder>
          * @return this builder
          * @see DimensionType.allowBeds
          */
+        @DimensionTypeDsl
         @Contract("_ -> this", mutates = "this")
         public fun noBeds(): Builder = beds(false)
 
@@ -340,6 +361,7 @@ public interface DimensionType : Buildable<DimensionType, DimensionType.Builder>
          * @return this builder
          * @see DimensionType.allowBeds
          */
+        @DimensionTypeDsl
         @Contract("_ -> this", mutates = "this")
         public fun beds(beds: Boolean): Builder
 
@@ -349,6 +371,7 @@ public interface DimensionType : Buildable<DimensionType, DimensionType.Builder>
          * @return this builder
          * @see DimensionType.allowRespawnAnchors
          */
+        @DimensionTypeDsl
         @Contract("_ -> this", mutates = "this")
         public fun allowRespawnAnchors(): Builder = respawnAnchors(true)
 
@@ -360,6 +383,7 @@ public interface DimensionType : Buildable<DimensionType, DimensionType.Builder>
          * @return this builder
          * @see DimensionType.allowRespawnAnchors
          */
+        @DimensionTypeDsl
         @Contract("_ -> this", mutates = "this")
         public fun noRespawnAnchors(): Builder = respawnAnchors(false)
 
@@ -371,6 +395,7 @@ public interface DimensionType : Buildable<DimensionType, DimensionType.Builder>
          * @return this builder
          * @see DimensionType.allowRespawnAnchors
          */
+        @DimensionTypeDsl
         @Contract("_ -> this", mutates = "this")
         public fun respawnAnchors(respawnAnchors: Boolean): Builder
 
@@ -381,6 +406,7 @@ public interface DimensionType : Buildable<DimensionType, DimensionType.Builder>
          * @return this builder
          * @see DimensionType.ambientLight
          */
+        @DimensionTypeDsl
         @Contract("_ -> this", mutates = "this")
         public fun ambientLight(light: Float): Builder
 
@@ -391,6 +417,7 @@ public interface DimensionType : Buildable<DimensionType, DimensionType.Builder>
          * @return this builder
          * @see DimensionType.fixedTime
          */
+        @DimensionTypeDsl
         @Contract("_ -> this", mutates = "this")
         public fun fixedTime(time: Long): Builder
 
@@ -400,6 +427,7 @@ public interface DimensionType : Buildable<DimensionType, DimensionType.Builder>
          * @return this builder
          * @see DimensionType.fixedTime
          */
+        @DimensionTypeDsl
         @Contract("_ -> this", mutates = "this")
         public fun noFixedTime(): Builder
 
@@ -410,6 +438,7 @@ public interface DimensionType : Buildable<DimensionType, DimensionType.Builder>
          * @return this builder
          * @see DimensionType.infiniburn
          */
+        @DimensionTypeDsl
         @Contract("_ -> this", mutates = "this")
         public fun infiniburn(infiniburn: Key): Builder
 
@@ -420,6 +449,7 @@ public interface DimensionType : Buildable<DimensionType, DimensionType.Builder>
          * @return this builder
          * @see DimensionType.minimumY
          */
+        @DimensionTypeDsl
         @Contract("_ -> this", mutates = "this")
         public fun minimumY(level: Int): Builder
 
@@ -430,6 +460,7 @@ public interface DimensionType : Buildable<DimensionType, DimensionType.Builder>
          * @return this builder
          * @see DimensionType.height
          */
+        @DimensionTypeDsl
         @Contract("_ -> this", mutates = "this")
         public fun height(level: Int): Builder
 
@@ -440,6 +471,7 @@ public interface DimensionType : Buildable<DimensionType, DimensionType.Builder>
          * @return this builder
          * @see DimensionType.logicalHeight
          */
+        @DimensionTypeDsl
         @Contract("_ -> this", mutates = "this")
         public fun logicalHeight(level: Int): Builder
 
@@ -450,6 +482,7 @@ public interface DimensionType : Buildable<DimensionType, DimensionType.Builder>
          * @return this builder
          * @see DimensionType.coordinateScale
          */
+        @DimensionTypeDsl
         @Contract("_ -> this", mutates = "this")
         public fun coordinateScale(scale: Double): Builder
 
@@ -460,6 +493,7 @@ public interface DimensionType : Buildable<DimensionType, DimensionType.Builder>
          * @return this builder
          * @see DimensionType.effects
          */
+        @DimensionTypeDsl
         @Contract("_ -> this", mutates = "this")
         public fun effects(effects: DimensionEffect): Builder
     }
@@ -480,6 +514,8 @@ public interface DimensionType : Buildable<DimensionType, DimensionType.Builder>
          * @param key the key
          * @return a new builder
          */
+        @JvmStatic
+        @Contract("_ -> new", pure = true)
         public fun builder(key: Key): Builder = FACTORY.builder(key)
     }
 }

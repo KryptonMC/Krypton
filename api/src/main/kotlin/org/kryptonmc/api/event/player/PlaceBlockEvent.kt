@@ -32,11 +32,11 @@ import org.kryptonmc.api.util.Direction
  */
 public class PlaceBlockEvent(
     player: Player,
-    public val block: Block,
-    public val hand: Hand,
-    public val x: Int,
-    public val y: Int,
-    public val z: Int,
-    public val face: Direction,
+    @get:JvmName("block") public val block: Block,
+    @get:JvmName("hand") public val hand: Hand,
+    @get:JvmName("x") public val x: Int,
+    @get:JvmName("y") public val y: Int,
+    @get:JvmName("z") public val z: Int,
+    @get:JvmName("face") public val face: Direction,
     public val isInsideBlock: Boolean
 ) : InteractEvent(player, Type.PLACE_BLOCK)

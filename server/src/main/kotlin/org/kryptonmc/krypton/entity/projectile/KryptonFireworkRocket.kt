@@ -31,14 +31,8 @@ import org.kryptonmc.krypton.world.KryptonWorld
 class KryptonFireworkRocket(world: KryptonWorld) : KryptonProjectile(world, EntityTypes.FIREWORK_ROCKET), FireworkRocket {
 
     override var attachedEntity: Entity? = null
-    override var life = 0
-    override var lifetime = 0
-
-    override val item: ItemStack
-        get() {
-            val raw = data[MetadataKeys.FIREWORK_ROCKET.ITEM]
-            return if (raw.isEmpty()) DEFAULT_ITEM else raw
-        }
+    override var life: Int = 0
+    override var lifetime: Int = 0
 
     override var wasShotAtAngle: Boolean
         get() = data[MetadataKeys.FIREWORK_ROCKET.SHOT_AT_ANGLE]
@@ -48,6 +42,12 @@ class KryptonFireworkRocket(world: KryptonWorld) : KryptonProjectile(world, Enti
         data.add(MetadataKeys.FIREWORK_ROCKET.ITEM)
         data.add(MetadataKeys.FIREWORK_ROCKET.ATTACHED)
         data.add(MetadataKeys.FIREWORK_ROCKET.SHOT_AT_ANGLE)
+    }
+
+    override fun asItem(): ItemStack {
+        val item = data[MetadataKeys.FIREWORK_ROCKET.ITEM]
+        if (item.isEmpty()) return DEFAULT_ITEM
+        return item
     }
 
     companion object {

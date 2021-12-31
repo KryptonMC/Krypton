@@ -85,9 +85,7 @@ fun IntRange.randomValue(random: Random): Int {
     return random.nextInt(last - first + 1) + first
 }
 
-fun Int.toArea(): Int = (this * 2 + 1).square()
-
-fun Int.square(): Int = this * this
+fun Int.toArea(): Int = (this * 2 + 1) * (this * 2 + 1)
 
 fun Double.fade(): Double = this * this * this * (this * (this * 6 - 15) + 10)
 

@@ -8,72 +8,18 @@
  */
 package org.kryptonmc.api
 
-import org.kryptonmc.api.auth.ProfileCache
-import org.kryptonmc.api.command.CommandManager
-import org.kryptonmc.api.event.EventManager
-import org.kryptonmc.api.plugin.PluginManager
 import org.kryptonmc.api.registry.RegistryManager
-import org.kryptonmc.api.scheduling.Scheduler
-import org.kryptonmc.api.service.ServicesManager
 import org.kryptonmc.api.tags.TagManager
-import org.kryptonmc.api.user.UserManager
 import org.kryptonmc.api.util.FactoryProvider
-import org.kryptonmc.api.world.WorldManager
 
 /**
- * The static singleton accessor for Krypton. Provides static access to the
- * managers and platform, to make them easier to access.
+ * The static singleton accessor for various managers in Krypton that need to
+ * be statically accessible.
+ *
+ * Not recommended for usage. Please prefer the dependency injection methods
+ * or the various static accessors to work with these types.
  */
 public object Krypton {
-
-    /**
-     * The singleton server instance.
-     */
-    @JvmStatic
-    public val server: Server
-        @JvmName("server") get() = internalServer!!
-
-    /**
-     * The platform information for the implementation.
-     */
-    @JvmStatic
-    public val platform: Platform
-        @JvmName("platform") get() = server.platform
-
-    /**
-     * The world manager for the server.
-     */
-    @JvmStatic
-    public val worldManager: WorldManager
-        @JvmName("worldManager") get() = server.worldManager
-
-    /**
-     * The command manager for the server.
-     */
-    @JvmStatic
-    public val commandManager: CommandManager
-        @JvmName("commandManager") get() = server.commandManager
-
-    /**
-     * The plugin manager for the server.
-     */
-    @JvmStatic
-    public val pluginManager: PluginManager
-        @JvmName("pluginManager") get() = server.pluginManager
-
-    /**
-     * The services manager for the server.
-     */
-    @JvmStatic
-    public val servicesManager: ServicesManager
-        @JvmName("servicesManager") get() = server.servicesManager
-
-    /**
-     * The event manager for the server.
-     */
-    @JvmStatic
-    public val eventManager: EventManager
-        @JvmName("eventManager") get() = server.eventManager
 
     /**
      * The registry manager for the server.
@@ -90,35 +36,12 @@ public object Krypton {
         @JvmName("tagManager") get() = internalTagManager!!
 
     /**
-     * The profile cache for the server.
-     */
-    @JvmStatic
-    public val profileCache: ProfileCache
-        @JvmName("profileCache") get() = server.profileCache
-
-    /**
-     * The user manager for the server.
-     */
-    @JvmStatic
-    public val userManager: UserManager
-        @JvmName("userManager") get() = server.userManager
-
-    /**
-     * The scheduler for the server.
-     */
-    @JvmStatic
-    public val scheduler: Scheduler
-        @JvmName("scheduler") get() = server.scheduler
-
-    /**
      * The factory provider for the server.
      */
     @JvmStatic
     public val factoryProvider: FactoryProvider
         @JvmName("factoryProvider") get() = internalFactoryProvider!!
 
-    @JvmStatic
-    private var internalServer: Server? = null
     @JvmStatic
     private var internalFactoryProvider: FactoryProvider? = null
     @JvmStatic

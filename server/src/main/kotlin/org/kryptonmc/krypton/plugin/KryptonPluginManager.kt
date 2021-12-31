@@ -115,7 +115,7 @@ object KryptonPluginManager : PluginManager {
 
     override fun plugin(id: String): PluginContainer? = pluginMap[id]
 
-    override fun isLoaded(id: String): Boolean = id in pluginMap
+    override fun isLoaded(id: String): Boolean = pluginMap.containsKey(id)
 
     override fun addToClasspath(plugin: Any, path: Path) {
         val container = requireNotNull(fromInstance(plugin)) { "Plugin is not loaded!" }

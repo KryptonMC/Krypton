@@ -8,7 +8,7 @@
  */
 package org.kryptonmc.api.effect.particle.data
 
-import org.jetbrains.annotations.Range
+import org.jetbrains.annotations.Contract
 
 /**
  * Holds data for note particle effects.
@@ -20,7 +20,7 @@ public interface NoteParticleData : ParticleData {
      * The note that will be displayed. Must be between 0 and 24 (inclusive).
      */
     @get:JvmName("note")
-    public val note: @Range(from = 0L, to = 24) Byte
+    public val note: Byte
 
     public companion object {
 
@@ -31,6 +31,7 @@ public interface NoteParticleData : ParticleData {
          * @return new note particle data
          */
         @JvmStatic
+        @Contract("_ -> new", pure = true)
         public fun of(note: Byte): NoteParticleData = ParticleData.FACTORY.note(note)
     }
 }

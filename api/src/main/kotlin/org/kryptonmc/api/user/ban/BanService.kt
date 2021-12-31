@@ -9,6 +9,7 @@
 package org.kryptonmc.api.user.ban
 
 import net.kyori.adventure.text.Component
+import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.auth.GameProfile
 import java.net.InetAddress
 import java.time.OffsetDateTime
@@ -96,10 +97,12 @@ public interface BanService {
      * @param type the type of the ban
      * @return a new ban builder
      */
+    @Contract("_ -> new", pure = true)
     public fun createBuilder(type: BanType): Ban.Builder
 
     /**
-     * Creates a new profile ban for the given [profile], expiring on the given [expirationDate].
+     * Creates a new profile ban for the given [profile], expiring on the given
+     * [expirationDate].
      *
      * @param profile the profile to ban
      * @param source the source of the ban
@@ -107,6 +110,7 @@ public interface BanService {
      * @param expirationDate the date when the ban expires
      * @return a new profile ban for the profile
      */
+    @Contract("_ -> new", pure = true)
     public fun createProfileBan(
         profile: GameProfile,
         source: Component,
@@ -118,7 +122,8 @@ public interface BanService {
         .build()
 
     /**
-     * Creates a new IP ban for the given IP [address], expiring on the given [expirationDate].
+     * Creates a new IP ban for the given IP [address], expiring on the given
+     * [expirationDate].
      *
      * @param address the IP address to ban
      * @param source the source of the ban
@@ -126,6 +131,7 @@ public interface BanService {
      * @param expirationDate the date when the ban expires
      * @return a new IP ban for the IP address
      */
+    @Contract("_ -> new", pure = true)
     public fun createIPBan(
         address: InetAddress,
         source: Component,

@@ -13,7 +13,7 @@
 package org.kryptonmc.api.event
 
 import net.kyori.adventure.text.Component
-import org.kryptonmc.api.adventure.toPlainText
+import org.jetbrains.annotations.Contract
 
 /**
  * A result that contains a [reason] for allowing/denying the event, as a
@@ -24,46 +24,49 @@ import org.kryptonmc.api.adventure.toPlainText
 @JvmRecord
 public data class ComponentResult(override val isAllowed: Boolean, public val reason: Component?) : ResultedEvent.Result {
 
-    override fun toString(): String {
-        if (isAllowed) {
-            if (reason != null) return "allowed: ${reason.toPlainText()}"
-            return "allowed"
-        }
-        if (reason != null) return "denied: ${reason.toPlainText()}"
-        return "denied"
-    }
-
     public companion object {
 
         private val ALLOWED = ComponentResult(true, null)
+        private val DENIED = ComponentResult(false, null)
 
         /**
-         * Returns a result that represents the event being allowed with no
-         * reason.
+         * Gets the result that allows the event to continue as normal.
          *
-         * @return an allowed result
+         * @return the allowed result
          */
         @JvmStatic
+        @Contract(pure = true)
         public fun allowed(): ComponentResult = ALLOWED
 
         /**
-         * Returns a result that represents the event being allowed for the
-         * given [reason].
+         * Creates a new result that allows the event to continue, but
+         * silently replaces the reason with the given [reason].
          *
-         * @param reason the reason for allowing the event
-         * @return a new result
+         * @param reason the reason
+         * @return a new allowed result
          */
         @JvmStatic
+        @Contract("_ -> new", pure = true)
         public fun allowed(reason: Component): ComponentResult = ComponentResult(true, reason)
 
         /**
-         * Returns a result that represents the event being denied for the
-         * given [reason].
+         * Gets the result that denies the event from continuing.
+         *
+         * @return the denied result
+         */
+        @JvmStatic
+        @Contract(pure = true)
+        public fun denied(): ComponentResult = DENIED
+
+        /**
+         * Creates a new result that denies the event from continuing, with
+         * the given [reason].
          *
          * @param reason the reason for denying the event
          * @return a new result
          */
         @JvmStatic
+        @Contract("_ -> new", pure = true)
         public fun denied(reason: Component): ComponentResult = ComponentResult(false, reason)
     }
 }

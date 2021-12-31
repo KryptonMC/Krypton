@@ -20,7 +20,6 @@ package org.kryptonmc.krypton.packet.out.play
 
 import io.netty.buffer.ByteBuf
 import org.kryptonmc.krypton.entity.metadata.MetadataHolder
-import org.kryptonmc.krypton.entity.metadata.MetadataHolder.Companion.write
 import org.kryptonmc.krypton.packet.EntityPacket
 import org.kryptonmc.krypton.util.writeVarInt
 
@@ -41,6 +40,25 @@ data class PacketOutMetadata(
 
     override fun write(buf: ByteBuf) {
         buf.writeVarInt(entityId)
-        packedEntries.write(buf)
+        writeEntries(buf, packedEntries)
+    }
+
+    companion object {
+
+        private const val EOF_MARKER = 255
+
+        @JvmStatic
+        private fun writeEntries(buf: ByteBuf, entries: Sequence<MetadataHolder.Entry<*>>) {
+            entries.forEach { writeEntry(buf, it) }
+            buf.writeByte(EOF_MARKER)
+        }
+
+        @JvmStatic
+        private fun <T> writeEntry(buf: ByteBuf, entry: MetadataHolder.Entry<T>) {
+            val key = entry.key
+            buf.writeByte(key.id)
+            buf.writeVarInt(key.serializer.id)
+            key.serializer.write(buf, entry.value)
+        }
     }
 }

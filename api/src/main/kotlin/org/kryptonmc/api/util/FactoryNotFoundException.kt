@@ -9,7 +9,7 @@
 package org.kryptonmc.api.util
 
 /**
- * Thrown when a factory requested from the [FactoryProvider] was not found.
+ * Thrown when a factory requested from the factory provider was not found.
  */
 public class FactoryNotFoundException : RuntimeException {
 

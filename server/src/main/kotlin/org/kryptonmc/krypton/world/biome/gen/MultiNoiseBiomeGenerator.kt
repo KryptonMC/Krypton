@@ -36,26 +36,12 @@ class MultiNoiseBiomeGenerator private constructor(
     private val preset: Pair<Registry<Biome>, Preset>? = null
 ) : BiomeGenerator(parameters.biomes.map { it.second.get() }) {
 
-    private val presetInstance: PresetInstance? by lazy { if (preset != null) PresetInstance(preset.second, preset.first) else null }
-
     override fun get(x: Int, y: Int, z: Int, sampler: Climate.Sampler): Biome = get(sampler.sample(x, y, z))
 
     private fun get(target: Climate.TargetPoint): Biome = parameters.findBiome(target) { KryptonBiomes.THE_VOID }
 
-    private fun preset(): PresetInstance? = presetInstance
-
-    @JvmRecord
-    data class NoiseParameters(val firstOctave: Int, val amplitudes: DoubleList) {
-
-        constructor(firstOctave: Int, amplitudes: List<Double>) : this(firstOctave, DoubleArrayList(amplitudes))
-    }
-
     @JvmRecord
     data class Preset(val name: Key, val generator: Generator) {
-
-        init {
-            BY_KEY[name] = this
-        }
 
         fun createGenerator(biomes: Registry<Biome>): MultiNoiseBiomeGenerator = generator.create(this, biomes)
 
@@ -65,8 +51,6 @@ class MultiNoiseBiomeGenerator private constructor(
         }
 
         companion object {
-
-            private val BY_KEY = mutableMapOf<Key, Preset>()
 
             @JvmField
             val NETHER: Preset = Preset(Key.key("nether")) { preset, biomes ->
@@ -85,21 +69,12 @@ class MultiNoiseBiomeGenerator private constructor(
                     Pair(biomes, preset)
                 )
             }
-
             @JvmField
             val OVERWORLD: Preset = Preset(Key.key("overworld")) { preset, biomes ->
                 val parameters = ImmutableList.builder<Pair<Climate.ParameterPoint, Supplier<Biome>>>()
                 OverworldBiomeBuilder.addBiomes { point, key -> parameters.add(Pair(point, Supplier { biomes[key]!! })) }
                 MultiNoiseBiomeGenerator(ParameterList(parameters.build()), Pair(biomes, preset))
             }
-
-            @JvmStatic
-            fun fromKey(key: Key): Preset? = BY_KEY[key]
         }
-    }
-
-    class PresetInstance(val preset: Preset, val biomes: Registry<Biome>) {
-
-        val generator: MultiNoiseBiomeGenerator = preset.createGenerator(biomes)
     }
 }

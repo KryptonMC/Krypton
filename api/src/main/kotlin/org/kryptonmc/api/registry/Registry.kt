@@ -32,6 +32,22 @@ public interface Registry<T : Any> : Map<ResourceKey<T>, T> {
     public val keySet: Set<Key>
 
     /**
+     * Checks if the given [key] has a registered value in this registry.
+     *
+     * @param key the key
+     * @return true if the key has a registered value, false otherwise
+     */
+    public operator fun contains(key: Key): Boolean
+
+    /**
+     * Checks if the given [id] has a registered value in this registry.
+     *
+     * @param id the ID
+     * @return true if the ID has a registered value, false otherwise
+     */
+    public operator fun contains(id: Int): Boolean
+
+    /**
      * Gets a value by its namespaced [key], or null if there is no value
      * associated with the given [key].
      *
@@ -57,6 +73,24 @@ public interface Registry<T : Any> : Map<ResourceKey<T>, T> {
      * @return the key, or null if not present
      */
     public operator fun get(value: T): Key?
+
+    /**
+     * Gets the [ResourceKey] for the given [value], or null if there is no key
+     * associated with the given [value].
+     *
+     * @param value the value
+     * @return the resource key, or null if not present
+     */
+    public fun resourceKey(value: T): ResourceKey<T>?
+
+    /**
+     * Gets the ID for the given [value], or returns -1 if the given [value] is
+     * not registered.
+     *
+     * @param value the value
+     * @return the ID, or -1 if the [value] is not registered
+     */
+    public fun idOf(value: T): Int
 
     /**
      * Registers a new value to this registry with the given registry [key]
@@ -117,30 +151,4 @@ public interface Registry<T : Any> : Map<ResourceKey<T>, T> {
      * @param value the value
      */
     public fun <V : T> register(id: Int, key: Key, value: V): V
-
-    /**
-     * Returns true if the given [key] is registered, false otherwise.
-     *
-     * @param key the key
-     * @return true if registered, false otherwise
-     */
-    public operator fun contains(key: Key): Boolean
-
-    /**
-     * Gets the [ResourceKey] for the given [value], or null if there is no key
-     * associated with the given [value].
-     *
-     * @param value the value
-     * @return the resource key, or null if not present
-     */
-    public fun resourceKey(value: T): ResourceKey<T>?
-
-    /**
-     * Gets the ID for the given [value], or returns -1 if the given [value] is
-     * not registered.
-     *
-     * @param value the value
-     * @return the ID, or -1 if the [value] is not registered
-     */
-    public fun idOf(value: T): Int
 }

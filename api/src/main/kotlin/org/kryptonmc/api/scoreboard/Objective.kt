@@ -51,6 +51,7 @@ public interface Objective : Buildable<Objective, Objective.Builder> {
     /**
      * A builder for objectives.
      */
+    @ScoreboardDsl
     public interface Builder : Buildable.Builder<Objective> {
 
         /**
@@ -59,6 +60,7 @@ public interface Objective : Buildable<Objective, Objective.Builder> {
          * @param name the name
          * @return this builder
          */
+        @ScoreboardDsl
         @Contract("_ -> this", mutates = "this")
         public fun name(name: String): Builder
 
@@ -68,6 +70,7 @@ public interface Objective : Buildable<Objective, Objective.Builder> {
          * @param name the display name
          * @return this builder
          */
+        @ScoreboardDsl
         @Contract("_ -> this", mutates = "this")
         public fun displayName(name: Component): Builder
 
@@ -77,6 +80,7 @@ public interface Objective : Buildable<Objective, Objective.Builder> {
          * @param criterion the criterion
          * @return this builder
          */
+        @ScoreboardDsl
         @Contract("_ -> this", mutates = "this")
         public fun criterion(criterion: Criterion): Builder
 
@@ -86,6 +90,7 @@ public interface Objective : Buildable<Objective, Objective.Builder> {
          * @param type the render type
          * @return this builder
          */
+        @ScoreboardDsl
         @Contract("_ -> this", mutates = "this")
         public fun renderType(type: ObjectiveRenderType): Builder
     }

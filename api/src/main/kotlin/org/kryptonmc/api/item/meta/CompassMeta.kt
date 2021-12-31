@@ -17,7 +17,7 @@ import org.spongepowered.math.vector.Vector3i
  * Item metadata for a compass.
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
-public interface CompassMeta : ScopedItemMeta<CompassMeta>, ItemMetaBuilder.Provider<CompassMeta.Builder> {
+public interface CompassMeta : ScopedItemMeta<CompassMeta.Builder, CompassMeta> {
 
     /**
      * Whether the compass is tracking a lodestone.
@@ -25,7 +25,7 @@ public interface CompassMeta : ScopedItemMeta<CompassMeta>, ItemMetaBuilder.Prov
     public val isTrackingLodestone: Boolean
 
     /**
-     * The dimension that the tracked loadstone is in.
+     * The dimension that the tracked lodestone is in.
      */
     @get:JvmName("lodestoneDimension")
     public val lodestoneDimension: ResourceKey<World>?
@@ -46,6 +46,7 @@ public interface CompassMeta : ScopedItemMeta<CompassMeta>, ItemMetaBuilder.Prov
      * @param position the position the lodestone is at
      * @return new item metadata
      */
+    @Contract("_ -> new", pure = true)
     public fun withLodestone(dimension: ResourceKey<World>, position: Vector3i): CompassMeta
 
     /**
@@ -56,11 +57,13 @@ public interface CompassMeta : ScopedItemMeta<CompassMeta>, ItemMetaBuilder.Prov
      *
      * @return new item metadata
      */
+    @Contract("_ -> new", pure = true)
     public fun withoutLodestone(): CompassMeta
 
     /**
      * A builder for building compass metadata.
      */
+    @MetaDsl
     public interface Builder : ItemMetaBuilder<Builder, CompassMeta> {
 
         /**
@@ -71,6 +74,7 @@ public interface CompassMeta : ScopedItemMeta<CompassMeta>, ItemMetaBuilder.Prov
          * @param position the position the lodestone is at
          * @return this builder
          */
+        @MetaDsl
         @Contract("_, _ -> this", mutates = "this")
         public fun lodestone(dimension: ResourceKey<World>, position: Vector3i): Builder
     }
@@ -83,6 +87,7 @@ public interface CompassMeta : ScopedItemMeta<CompassMeta>, ItemMetaBuilder.Prov
          * @return a new builder
          */
         @JvmStatic
-        public fun builder(): Builder = ItemMeta.FACTORY.builder(CompassMeta::class.java)
+        @Contract("_ -> new", pure = true)
+        public fun builder(): Builder = ItemMeta.builder(CompassMeta::class.java)
     }
 }

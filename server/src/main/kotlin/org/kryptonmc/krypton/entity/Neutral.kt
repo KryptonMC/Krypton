@@ -58,7 +58,7 @@ interface Neutral {
         return target.uuid == angerTarget
     }
 
-    fun isAngryAtAllPlayers(world: KryptonWorld) = world.gameRules[GameRules.UNIVERSAL_ANGER] && isAngry && angerTarget == null
+    fun isAngryAtAllPlayers(world: KryptonWorld): Boolean = world.gameRules[GameRules.UNIVERSAL_ANGER] && isAngry && angerTarget == null
 
     fun loadAngerData(world: KryptonWorld, tag: CompoundTag) {
         remainingAngerTime = tag.getInt("AngerTime")

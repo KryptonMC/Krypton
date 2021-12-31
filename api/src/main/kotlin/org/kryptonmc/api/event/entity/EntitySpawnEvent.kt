@@ -19,10 +19,12 @@ import org.kryptonmc.api.world.World
  * @param entity the entity that is spawning
  * @param world the world that the entity is spawning in to
  */
+@Suppress("INAPPLICABLE_JVM_NAME")
 public data class EntitySpawnEvent(
     @get:JvmName("entity") public val entity: Entity,
     @get:JvmName("world") public val world: World
 ) : ResultedEvent<GenericResult> {
 
+    @get:JvmName("result")
     override var result: GenericResult = GenericResult.allowed()
 }

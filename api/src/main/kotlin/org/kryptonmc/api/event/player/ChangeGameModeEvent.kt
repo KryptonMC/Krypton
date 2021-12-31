@@ -8,6 +8,7 @@
  */
 package org.kryptonmc.api.event.player
 
+import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.entity.player.Player
 import org.kryptonmc.api.event.ResultedEvent
 import org.kryptonmc.api.world.GameMode
@@ -20,13 +21,15 @@ import org.kryptonmc.api.world.GameMode
  * @param newGameMode the new game mode of the player
  * @param cause the cause of the game mode change
  */
+@Suppress("INAPPLICABLE_JVM_NAME")
 public data class ChangeGameModeEvent(
-    public val player: Player,
-    public val oldGameMode: GameMode,
-    public val newGameMode: GameMode,
-    public val cause: Cause
+    @get:JvmName("player") public val player: Player,
+    @get:JvmName("oldGameMode") public val oldGameMode: GameMode,
+    @get:JvmName("newGameMode") public val newGameMode: GameMode,
+    @get:JvmName("cause") public val cause: Cause
 ) : ResultedEvent<GameModeResult> {
 
+    @get:JvmName("result")
     override var result: GameModeResult = GameModeResult.allowed()
 
     /**
@@ -74,6 +77,7 @@ public data class GameModeResult(
          * @return the allowed result
          */
         @JvmStatic
+        @Contract(pure = true)
         public fun allowed(): GameModeResult = ALLOWED
 
         /**
@@ -85,6 +89,7 @@ public data class GameModeResult(
          * @return a new allowed result
          */
         @JvmStatic
+        @Contract("_ -> new", pure = true)
         public fun allowed(newGameMode: GameMode): GameModeResult = GameModeResult(true, newGameMode)
 
         /**
@@ -93,6 +98,7 @@ public data class GameModeResult(
          * @return the denied result
          */
         @JvmStatic
+        @Contract(pure = true)
         public fun denied(): GameModeResult = DENIED
     }
 }

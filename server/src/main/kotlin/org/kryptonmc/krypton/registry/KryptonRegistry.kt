@@ -49,6 +49,26 @@ open class KryptonRegistry<T : Any>(override val key: ResourceKey<out Registry<T
     override val size: Int
         get() = storage.size
 
+    override fun contains(key: Key): Boolean = storage.containsKey(key)
+
+    override fun contains(id: Int): Boolean = id >= 0 && id < byId.size
+
+    override fun containsKey(key: ResourceKey<T>): Boolean = keyStorage.containsKey(key)
+
+    override fun containsValue(value: T): Boolean = storage.containsValue(value)
+
+    override fun get(key: Key): T? = storage[key]
+
+    override fun get(id: Int): T? = byId.getOrNull(id)
+
+    override fun get(value: T): Key? = storage.inverse()[value]
+
+    override fun get(key: ResourceKey<T>): T? = keyStorage[key]
+
+    override fun resourceKey(value: T): ResourceKey<T>? = keyStorage.inverse()[value]
+
+    override fun idOf(value: T): Int = toId.getInt(value)
+
     override fun <V : T> register(key: ResourceKey<T>, value: V): V = register(nextId, key, value)
 
     override fun <V : T> register(id: Int, key: ResourceKey<T>, value: V): V {
@@ -64,24 +84,6 @@ open class KryptonRegistry<T : Any>(override val key: ResourceKey<out Registry<T
     override fun <V : T> register(key: Key, value: V): V = register(ResourceKey.of(this.key, key), value)
 
     override fun <V : T> register(id: Int, key: Key, value: V): V = register(id, ResourceKey.of(this.key, key), value)
-
-    override fun get(key: Key): T? = storage[key]
-
-    override fun get(id: Int): T? = byId.getOrNull(id)
-
-    override fun get(value: T): Key? = storage.inverse()[value]
-
-    override fun get(key: ResourceKey<T>): T? = keyStorage[key]
-
-    override fun resourceKey(value: T): ResourceKey<T>? = keyStorage.inverse()[value]
-
-    override fun idOf(value: T): Int = toId.getInt(value)
-
-    override fun contains(key: Key): Boolean = storage.containsKey(key)
-
-    override fun containsKey(key: ResourceKey<T>): Boolean = keyStorage.containsKey(key)
-
-    override fun containsValue(value: T): Boolean = storage.containsValue(value)
 
     override fun isEmpty(): Boolean = storage.isEmpty()
 

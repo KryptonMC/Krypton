@@ -16,6 +16,7 @@ import org.kryptonmc.api.item.data.ItemFlag
 /**
  * The base builder for item metadata.
  */
+@MetaDsl
 @Suppress("INAPPLICABLE_JVM_NAME")
 public interface ItemMetaBuilder<B : ItemMetaBuilder<B, I>, I : ItemMeta> {
 
@@ -25,6 +26,7 @@ public interface ItemMetaBuilder<B : ItemMetaBuilder<B, I>, I : ItemMeta> {
      * @param damage the damage
      * @return this builder
      */
+    @MetaDsl
     @Contract("_ -> this", mutates = "this")
     public fun damage(damage: Int): B
 
@@ -34,6 +36,7 @@ public interface ItemMetaBuilder<B : ItemMetaBuilder<B, I>, I : ItemMeta> {
      * @param value whether the item is unbreakable
      * @return this builder
      */
+    @MetaDsl
     @Contract("_ -> this", mutates = "this")
     public fun unbreakable(value: Boolean): B
 
@@ -42,6 +45,7 @@ public interface ItemMetaBuilder<B : ItemMetaBuilder<B, I>, I : ItemMeta> {
      *
      * @return this builder
      */
+    @MetaDsl
     @Contract("_ -> this", mutates = "this")
     public fun unbreakable(): B = unbreakable(true)
 
@@ -51,6 +55,7 @@ public interface ItemMetaBuilder<B : ItemMetaBuilder<B, I>, I : ItemMeta> {
      * @param data the custom model data
      * @return this builder
      */
+    @MetaDsl
     @Contract("_ -> this", mutates = "this")
     public fun customModelData(data: Int): B
 
@@ -60,6 +65,7 @@ public interface ItemMetaBuilder<B : ItemMetaBuilder<B, I>, I : ItemMeta> {
      * @param name the name
      * @return this builder
      */
+    @MetaDsl
     @Contract("_ -> this", mutates = "this")
     public fun name(name: Component?): B
 
@@ -69,6 +75,7 @@ public interface ItemMetaBuilder<B : ItemMetaBuilder<B, I>, I : ItemMeta> {
      * @param lore the lore
      * @return this builder
      */
+    @MetaDsl
     @Contract("_ -> this", mutates = "this")
     public fun lore(lore: Iterable<Component>): B
 
@@ -78,6 +85,7 @@ public interface ItemMetaBuilder<B : ItemMetaBuilder<B, I>, I : ItemMeta> {
      * @param lore the lore
      * @return this builder
      */
+    @MetaDsl
     @Contract("_ -> this", mutates = "this")
     public fun lore(vararg lore: Component): B = lore(lore.asIterable())
 
@@ -87,6 +95,7 @@ public interface ItemMetaBuilder<B : ItemMetaBuilder<B, I>, I : ItemMeta> {
      * @param lore the lore line to add
      * @return this builder
      */
+    @MetaDsl
     @Contract("_ -> this", mutates = "this")
     public fun addLore(lore: Component): B
 
@@ -96,6 +105,7 @@ public interface ItemMetaBuilder<B : ItemMetaBuilder<B, I>, I : ItemMeta> {
      * @param flags the hide flags
      * @return this builder
      */
+    @MetaDsl
     @Contract("_ -> this", mutates = "this")
     public fun hideFlags(flags: Int): B
 
@@ -105,6 +115,7 @@ public interface ItemMetaBuilder<B : ItemMetaBuilder<B, I>, I : ItemMeta> {
      * @param flag the hide flag to set
      * @return this builder
      */
+    @MetaDsl
     @Contract("_ -> this", mutates = "this")
     public fun addFlag(flag: ItemFlag): B
 
@@ -114,6 +125,7 @@ public interface ItemMetaBuilder<B : ItemMetaBuilder<B, I>, I : ItemMeta> {
      * @param blocks the blocks
      * @return this builder
      */
+    @MetaDsl
     @Contract("_ -> this", mutates = "this")
     public fun canDestroy(blocks: Iterable<Block>): B
 
@@ -123,6 +135,7 @@ public interface ItemMetaBuilder<B : ItemMetaBuilder<B, I>, I : ItemMeta> {
      * @param blocks the blocks
      * @return this builder
      */
+    @MetaDsl
     @Contract("_ -> this", mutates = "this")
     public fun canDestroy(vararg blocks: Block): B = canDestroy(blocks.asIterable())
 
@@ -132,6 +145,7 @@ public interface ItemMetaBuilder<B : ItemMetaBuilder<B, I>, I : ItemMeta> {
      * @param block the block to add
      * @return this builder
      */
+    @MetaDsl
     @Contract("_ -> this", mutates = "this")
     public fun addCanDestroy(block: Block): B
 
@@ -142,6 +156,7 @@ public interface ItemMetaBuilder<B : ItemMetaBuilder<B, I>, I : ItemMeta> {
      * @param blocks the blocks
      * @return this builder
      */
+    @MetaDsl
     @Contract("_ -> this", mutates = "this")
     public fun canPlaceOn(blocks: Iterable<Block>): B
 
@@ -152,6 +167,7 @@ public interface ItemMetaBuilder<B : ItemMetaBuilder<B, I>, I : ItemMeta> {
      * @param blocks the blocks
      * @return this builder
      */
+    @MetaDsl
     @Contract("_ -> this", mutates = "this")
     public fun canPlaceOn(vararg blocks: Block): B = canPlaceOn(blocks.asIterable())
 
@@ -161,6 +177,7 @@ public interface ItemMetaBuilder<B : ItemMetaBuilder<B, I>, I : ItemMeta> {
      * @param block the block to add
      * @return this builder
      */
+    @MetaDsl
     @Contract("_ -> this", mutates = "this")
     public fun addCanPlaceOn(block: Block): B
 
@@ -169,6 +186,7 @@ public interface ItemMetaBuilder<B : ItemMetaBuilder<B, I>, I : ItemMeta> {
      *
      * @return the built item metadata
      */
+    @MetaDsl
     @Contract("_ -> new", pure = true)
     public fun build(): I
 
@@ -183,6 +201,7 @@ public interface ItemMetaBuilder<B : ItemMetaBuilder<B, I>, I : ItemMeta> {
          *
          * @return a new builder
          */
+        @Contract("_ -> new", pure = true)
         public fun toBuilder(): T
     }
 }

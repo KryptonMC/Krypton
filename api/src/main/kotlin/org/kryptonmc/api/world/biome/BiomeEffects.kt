@@ -372,77 +372,12 @@ public interface BiomeEffects : Buildable<BiomeEffects, BiomeEffects.Builder> {
     @ApiStatus.Internal
     public interface Factory {
 
-        public fun of(
-            fogColor: Color,
-            waterColor: Color,
-            waterFogColor: Color,
-            skyColor: Color,
-            grassColorModifier: GrassColorModifier,
-            foliageColor: Color?,
-            grassColor: Color?,
-            ambientParticleSettings: AmbientParticleSettings?,
-            ambientLoopSound: SoundEvent?,
-            ambientMoodSettings: AmbientMoodSettings?,
-            ambientAdditionsSettings: AmbientAdditionsSettings?,
-            backgroundMusic: Music?
-        ): BiomeEffects
-
         public fun builder(): Builder
     }
 
     public companion object {
 
         private val FACTORY = Krypton.factoryProvider.provide<Factory>()
-
-        /**
-         * Creates new biome effects with the given values.
-         *
-         * @param fogColor the colour of fog
-         * @param waterColor the colour of water
-         * @param waterFogColor the colour of foggy water
-         * @param skyColor the colour of the sky
-         * @param grassColorModifier the modifier for the grass colour
-         * @param foliageColor the colour of foliage, will be calculated if not
-         * present
-         * @param grassColor the colour of grass, will be calculated if not
-         * present
-         * @param ambientParticleSettings the settings for ambient particles
-         * @param ambientLoopSound the ambient sound that loops continuously
-         * @param ambientMoodSettings the settings for the mood sound
-         * @param ambientAdditionsSettings the settings for the addition sound
-         * @param backgroundMusic the background music that plays continuously
-         * @return new biome effects
-         */
-        @JvmStatic
-        @JvmOverloads
-        @Contract("_ -> new", pure = true)
-        public fun of(
-            fogColor: Color,
-            waterColor: Color,
-            waterFogColor: Color,
-            skyColor: Color,
-            grassColorModifier: GrassColorModifier,
-            foliageColor: Color? = null,
-            grassColor: Color? = null,
-            ambientParticleSettings: AmbientParticleSettings? = null,
-            ambientLoopSound: SoundEvent? = null,
-            ambientMoodSettings: AmbientMoodSettings? = null,
-            ambientAdditionsSettings: AmbientAdditionsSettings? = null,
-            backgroundMusic: Music? = null
-        ): BiomeEffects = FACTORY.of(
-            fogColor,
-            waterColor,
-            waterFogColor,
-            skyColor,
-            grassColorModifier,
-            foliageColor,
-            grassColor,
-            ambientParticleSettings,
-            ambientLoopSound,
-            ambientMoodSettings,
-            ambientAdditionsSettings,
-            backgroundMusic
-        )
 
         /**
          * Creates a new builder for biome effects.

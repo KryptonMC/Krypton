@@ -26,7 +26,7 @@ class GlobalPalette<T>(private val registry: IntBiMap<T>) : Palette<T> {
 
     override val size: Int
         get() = registry.size
-    override val serializedSize = 0.varIntBytes()
+    override val serializedSize: Int = 0.varIntBytes()
 
     override fun get(value: T): Int {
         val id = registry.idOf(value)

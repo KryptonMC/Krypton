@@ -48,7 +48,7 @@ class KryptonObjective(
     class Builder(private var name: String, private var criterion: Criterion) : Objective.Builder {
 
         private var scoreboard: KryptonScoreboard? = null
-        private var displayName: Component = LegacyComponentSerializer.legacySection().deserialize(name)
+        private var displayName: Component? = null
         private var renderType = ObjectiveRenderType.INTEGER
 
         constructor(objective: KryptonObjective) : this(objective.name, objective.criterion) {
@@ -65,7 +65,13 @@ class KryptonObjective(
 
         override fun renderType(type: ObjectiveRenderType): Objective.Builder = apply { renderType = type }
 
-        override fun build(): KryptonObjective = KryptonObjective(scoreboard, name, criterion, displayName, renderType)
+        override fun build(): KryptonObjective = KryptonObjective(
+            scoreboard,
+            name,
+            criterion,
+            displayName ?: LegacyComponentSerializer.legacySection().deserialize(name),
+            renderType
+        )
     }
 
     object Factory : Objective.Factory {

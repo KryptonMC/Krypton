@@ -73,9 +73,6 @@ public interface ResourceKey<T : Any> {
          */
         @JvmStatic
         @Contract("_ -> new", pure = true)
-        public fun <T : Any> of(
-            parent: ResourceKey<out Registry<T>>,
-            location: Key
-        ): ResourceKey<T> = of(parent.location, location)
+        public fun <T : Any> of(parent: ResourceKey<out Registry<T>>, location: Key): ResourceKey<T> = of(parent.location, location)
     }
 }

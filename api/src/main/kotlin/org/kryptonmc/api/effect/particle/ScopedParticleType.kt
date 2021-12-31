@@ -6,17 +6,14 @@
  * This project is licensed under the terms of the MIT license.
  * For more details, please reference the LICENSE file in the api top-level directory.
  */
-package org.kryptonmc.api.item
+package org.kryptonmc.api.effect.particle
+
+import org.kryptonmc.api.effect.particle.builder.BaseParticleEffectBuilder
 
 /**
- * Something that can supply items.
+ * A particle type that scopes the return of the builder.
  */
-@Suppress("INAPPLICABLE_JVM_NAME")
-public interface ItemSupplier {
+public sealed interface ScopedParticleType<B : BaseParticleEffectBuilder<B>> : ParticleType {
 
-    /**
-     * The supplied item.
-     */
-    @get:JvmName("item")
-    public val item: ItemStack
+    override fun builder(): B
 }

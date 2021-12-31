@@ -40,7 +40,7 @@ abstract class ServerConfigList<K, V : ServerConfigEntry<K>>(val path: Path) : I
 
     open fun key(key: K): String = key.toString()
 
-    open operator fun get(key: K) = map[key(key)]
+    open operator fun get(key: K): V? = map[key(key)]
 
     open fun validatePath() {
         if (!path.exists()) {

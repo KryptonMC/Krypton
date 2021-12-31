@@ -7,13 +7,16 @@
  * For more details, please reference the LICENSE file in the api top-level directory.
  */
 @file:JvmSynthetic
+@file:Suppress("MatchingDeclarationName")
 package org.kryptonmc.api.world.dimension
 
 import net.kyori.adventure.key.Key
 import org.jetbrains.annotations.Contract
 
+@Target(AnnotationTarget.CLASS, AnnotationTarget.FUNCTION)
+@Retention(AnnotationRetention.SOURCE)
 @DslMarker
-private annotation class DimensionTypeDsl
+internal annotation class DimensionTypeDsl
 
 /**
  * Creates a new dimension type with the given [key], applying the given

@@ -25,9 +25,9 @@ import kotlin.math.sqrt
 class SimplexNoise(random: RandomSource) {
 
     private val permutations = IntArray(512) { it }
-    val xOffset = random.nextDouble() * 256
-    val yOffset = random.nextDouble() * 256
-    val zOffset = random.nextDouble() * 256
+    val xOffset: Double = random.nextDouble() * 256
+    val yOffset: Double = random.nextDouble() * 256
+    val zOffset: Double = random.nextDouble() * 256
 
     init {
         // Randomise the permutation table
@@ -205,7 +205,7 @@ class SimplexNoise(random: RandomSource) {
         private val F2 = 0.5 * (SQRT_3 - 1.0)
         private val G2 = (3.0 - SQRT_3) / 6.0
         private const val F3 = 1.0 / 3.0
-        const val G3 = 1.0 / 6.0
+        const val G3: Double = 1.0 / 6.0
 
         @JvmField
         val GRADIENT: Array<IntArray> = arrayOf(

@@ -17,7 +17,9 @@ import java.net.InetAddress
  *
  * @param address the whitelisted IP address
  */
-public class WhitelistIpEvent(public val address: InetAddress) : ResultedEvent<GenericResult> {
+@Suppress("INAPPLICABLE_JVM_NAME")
+public class WhitelistIpEvent(@get:JvmName("address") public val address: InetAddress) : ResultedEvent<GenericResult> {
 
+    @get:JvmName("result")
     override var result: GenericResult = GenericResult.allowed()
 }

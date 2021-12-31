@@ -10,14 +10,12 @@ package org.kryptonmc.api.entity
 
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.key.Keyed
-import net.kyori.adventure.text.Component
-import net.kyori.adventure.text.TranslatableComponent
-import net.kyori.adventure.util.Buildable
 import org.jetbrains.annotations.ApiStatus
 import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.Krypton
 import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.util.CataloguedBy
+import org.kryptonmc.api.util.KeyedBuilder
 import org.kryptonmc.api.util.TranslationHolder
 import org.kryptonmc.api.util.provide
 
@@ -96,7 +94,8 @@ public interface EntityType<T : Entity> : Keyed, TranslationHolder {
     /**
      * A builder for building entity types.
      */
-    public interface Builder<T : Entity> : Buildable.Builder<EntityType<T>> {
+    @EntityTypeDsl
+    public interface Builder<T : Entity> : KeyedBuilder<EntityType<T>, Builder<T>>, TranslationHolder.Builder<Builder<T>, EntityType<T>> {
 
         /**
          * Sets the category for the entity type to the given [category].
@@ -104,6 +103,7 @@ public interface EntityType<T : Entity> : Keyed, TranslationHolder {
          * @param category the category
          * @return this builder
          */
+        @EntityTypeDsl
         @Contract("_ -> this", mutates = "this")
         public fun category(category: EntityCategory): Builder<T>
 
@@ -114,6 +114,7 @@ public interface EntityType<T : Entity> : Keyed, TranslationHolder {
          * @param value the value of the setting
          * @return this builder
          */
+        @EntityTypeDsl
         @Contract("_ -> this", mutates = "this")
         public fun summonable(value: Boolean): Builder<T>
 
@@ -122,6 +123,7 @@ public interface EntityType<T : Entity> : Keyed, TranslationHolder {
          *
          * @return this builder
          */
+        @EntityTypeDsl
         @Contract("_ -> this", mutates = "this")
         public fun summonable(): Builder<T> = summonable(true)
 
@@ -130,6 +132,7 @@ public interface EntityType<T : Entity> : Keyed, TranslationHolder {
          *
          * @return this builder
          */
+        @EntityTypeDsl
         @Contract("_ -> this", mutates = "this")
         public fun notSummonable(): Builder<T> = summonable(false)
 
@@ -140,6 +143,7 @@ public interface EntityType<T : Entity> : Keyed, TranslationHolder {
          * @param value the value of the setting
          * @return this builder
          */
+        @EntityTypeDsl
         @Contract("_ -> this", mutates = "this")
         public fun fireImmune(value: Boolean): Builder<T>
 
@@ -148,6 +152,7 @@ public interface EntityType<T : Entity> : Keyed, TranslationHolder {
          *
          * @return this builder
          */
+        @EntityTypeDsl
         @Contract("_ -> this", mutates = "this")
         public fun fireImmune(): Builder<T> = fireImmune(true)
 
@@ -157,6 +162,7 @@ public interface EntityType<T : Entity> : Keyed, TranslationHolder {
          * @param value the value of the setting
          * @return this builder
          */
+        @EntityTypeDsl
         @Contract("_ -> this", mutates = "this")
         public fun rideable(value: Boolean): Builder<T>
 
@@ -165,6 +171,7 @@ public interface EntityType<T : Entity> : Keyed, TranslationHolder {
          *
          * @return this builder
          */
+        @EntityTypeDsl
         @Contract("_ -> this", mutates = "this")
         public fun rideable(): Builder<T> = rideable(true)
 
@@ -173,6 +180,7 @@ public interface EntityType<T : Entity> : Keyed, TranslationHolder {
          *
          * @return this builder
          */
+        @EntityTypeDsl
         @Contract("_ -> this", mutates = "this")
         public fun flammable(): Builder<T> = fireImmune(false)
 
@@ -183,6 +191,7 @@ public interface EntityType<T : Entity> : Keyed, TranslationHolder {
          * @param range the range
          * @return this builder
          */
+        @EntityTypeDsl
         @Contract("_ -> this", mutates = "this")
         public fun clientTrackingRange(range: Int): Builder<T>
 
@@ -193,6 +202,7 @@ public interface EntityType<T : Entity> : Keyed, TranslationHolder {
          * @param interval the update interval
          * @return this builder
          */
+        @EntityTypeDsl
         @Contract("_ -> this", mutates = "this")
         public fun updateInterval(interval: Int): Builder<T>
 
@@ -203,6 +213,7 @@ public interface EntityType<T : Entity> : Keyed, TranslationHolder {
          * @param dimensions the dimensions
          * @return this builder
          */
+        @EntityTypeDsl
         @Contract("_ -> this", mutates = "this")
         public fun dimensions(dimensions: EntityDimensions): Builder<T>
 
@@ -214,6 +225,7 @@ public interface EntityType<T : Entity> : Keyed, TranslationHolder {
          * @param height the height
          * @return this builder
          */
+        @EntityTypeDsl
         @Contract("_ -> this", mutates = "this")
         public fun dimensions(width: Float, height: Float): Builder<T> = dimensions(EntityDimensions.scalable(width, height))
 
@@ -224,6 +236,7 @@ public interface EntityType<T : Entity> : Keyed, TranslationHolder {
          * @param block the block
          * @return this builder
          */
+        @EntityTypeDsl
         @Contract("_ -> this", mutates = "this")
         public fun immuneTo(block: Block): Builder<T>
 
@@ -234,6 +247,7 @@ public interface EntityType<T : Entity> : Keyed, TranslationHolder {
          * @param blocks the blocks
          * @return this builder
          */
+        @EntityTypeDsl
         @Contract("_ -> this", mutates = "this")
         public fun immuneTo(vararg blocks: Block): Builder<T>
 
@@ -244,6 +258,7 @@ public interface EntityType<T : Entity> : Keyed, TranslationHolder {
          * @param blocks the blocks
          * @return this builder
          */
+        @EntityTypeDsl
         @Contract("_ -> this", mutates = "this")
         public fun immuneTo(blocks: Iterable<Block>): Builder<T>
 
@@ -254,36 +269,13 @@ public interface EntityType<T : Entity> : Keyed, TranslationHolder {
          * @param identifier the loot table identifier
          * @return this builder
          */
+        @EntityTypeDsl
         @Contract("_ -> this", mutates = "this")
         public fun lootTable(identifier: Key): Builder<T>
-
-        /**
-         * Sets the translation to use when translating entities of the type
-         * client-side.
-         *
-         * @param translation the translation
-         * @return this builder
-         */
-        @Contract("_ -> this", mutates = "this")
-        public fun translation(translation: TranslatableComponent): Builder<T>
     }
 
     @ApiStatus.Internal
     public interface Factory {
-
-        public fun <T : Entity> of(
-            key: Key,
-            category: EntityCategory,
-            summonable: Boolean,
-            fireImmune: Boolean,
-            rideable: Boolean,
-            trackingRange: Int,
-            updateInterval: Int,
-            dimensions: EntityDimensions,
-            immuneTo: Set<Block>,
-            lootTable: Key,
-            translation: TranslatableComponent
-        ): EntityType<T>
 
         public fun <T : Entity> builder(key: Key, category: EntityCategory): Builder<T>
     }
@@ -291,52 +283,6 @@ public interface EntityType<T : Entity> : Keyed, TranslationHolder {
     public companion object {
 
         private val FACTORY = Krypton.factoryProvider.provide<Factory>()
-
-        /**
-         * Creates a new entity type with the given values.
-         *
-         * @param key the key
-         * @param category the category of the type
-         * @param summonable if entities of the type can be summoned
-         * @param fireImmune if the type is immune to fire
-         * @param clientTrackingRange the range the client will track movement
-         * @param updateInterval the interval between updates
-         * @param dimensions the base dimensions for the type
-         * @param immuneTo all blocks the type is immune to
-         * @param lootTable the identifier for the loot table
-         * @param translation the translation
-         * @return a new entity type
-         */
-        @JvmStatic
-        @JvmOverloads
-        @Contract("_ -> new", pure = true)
-        public fun <T : Entity> of(
-            key: Key,
-            category: EntityCategory,
-            summonable: Boolean,
-            fireImmune: Boolean,
-            rideable: Boolean,
-            clientTrackingRange: Int,
-            updateInterval: Int,
-            dimensions: EntityDimensions,
-            immuneTo: Set<Block>,
-            lootTable: Key,
-            translation: TranslatableComponent = Component.translatable(
-                "entity.${key.namespace()}.${key.value().replace('/', '.')}"
-            )
-        ): EntityType<T> = FACTORY.of(
-            key,
-            category,
-            summonable,
-            fireImmune,
-            rideable,
-            clientTrackingRange,
-            updateInterval,
-            dimensions,
-            immuneTo,
-            lootTable,
-            translation
-        )
 
         /**
          * Creates a new builder for building an entity type with the given

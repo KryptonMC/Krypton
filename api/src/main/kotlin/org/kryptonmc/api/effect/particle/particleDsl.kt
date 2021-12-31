@@ -18,7 +18,7 @@ import org.kryptonmc.api.effect.particle.builder.DustParticleEffectBuilder
 import org.kryptonmc.api.effect.particle.builder.DustTransitionParticleEffectBuilder
 import org.kryptonmc.api.effect.particle.builder.ItemParticleEffectBuilder
 import org.kryptonmc.api.effect.particle.builder.NoteParticleEffectBuilder
-import org.kryptonmc.api.effect.particle.builder.ParticleEffectBuilder
+import org.kryptonmc.api.effect.particle.builder.SimpleParticleEffectBuilder
 import org.kryptonmc.api.effect.particle.builder.VibrationParticleEffectBuilder
 
 @Target(AnnotationTarget.CLASS, AnnotationTarget.FUNCTION)
@@ -27,26 +27,28 @@ import org.kryptonmc.api.effect.particle.builder.VibrationParticleEffectBuilder
 internal annotation class ParticleDsl
 
 /**
- * DSL to create simple [ParticleEffect]s.
+ * Creates a new simple particle effect with the given [type] and the result
+ * of applying the given [builder].
  *
- * @param type the type of the simple particle
- * @param builder the builder to configure the particle effect with
- * @return a new [ParticleEffect] based on the given settings
+ * @param type the type
+ * @param builder the builder to apply
+ * @return a new simple particle effect
  */
 @ParticleDsl
 @JvmSynthetic
 @Contract("_ -> new", pure = true)
 public inline fun particleEffect(
     type: SimpleParticleType,
-    builder: ParticleEffectBuilder.() -> Unit = {}
+    builder: SimpleParticleEffectBuilder.() -> Unit = {}
 ): ParticleEffect = type.builder().apply(builder).build()
 
 /**
- * DSL to create directional [ParticleEffect]s.
+ * Creates a new directional particle effect with the given [type] and the
+ * result of applying the given [builder].
  *
- * @param type the type of the directional particle
- * @param builder the builder to configure the particle effect with
- * @return a new [ParticleEffect] based on the given settings
+ * @param type the type
+ * @param builder the builder to apply
+ * @return a new directional particle effect
  */
 @ParticleDsl
 @JvmSynthetic
@@ -57,11 +59,12 @@ public inline fun particleEffect(
 ): ParticleEffect = type.builder().apply(builder).build()
 
 /**
- * DSL to create block [ParticleEffect]s.
+ * Creates a new block particle effect with the given [type] and the result of
+ * applying the given [builder].
  *
- * @param type the type of the block particle
- * @param builder the builder to configure the particle effect with
- * @return a new [ParticleEffect] based on the given settings
+ * @param type the type
+ * @param builder the builder to apply
+ * @return a new block particle effect
  */
 @ParticleDsl
 @JvmSynthetic
@@ -72,11 +75,12 @@ public inline fun particleEffect(
 ): ParticleEffect = type.builder().apply(builder).build()
 
 /**
- * DSL to create item [ParticleEffect]s.
+ * Creates a new item particle effect with the given [type] and the result of
+ * applying the given [builder].
  *
- * @param type the type of the item particle
- * @param builder the builder to configure the particle effect with
- * @return a new [ParticleEffect] based on the given settings
+ * @param type the type
+ * @param builder the builder to apply
+ * @return a new item particle effect
  */
 @ParticleDsl
 @JvmSynthetic
@@ -87,11 +91,12 @@ public inline fun particleEffect(
 ): ParticleEffect = type.builder().apply(builder).build()
 
 /**
- * DSL to create colored [ParticleEffect]s.
+ * Creates a new colour particle effect with the given [type] and the result
+ * of applying the given [builder].
  *
- * @param type the type of the color particle
- * @param builder the builder to configure the particle effect with
- * @return a new [ParticleEffect] based on the given settings
+ * @param type the type
+ * @param builder the builder to apply
+ * @return a new colour particle effect
  */
 @ParticleDsl
 @JvmSynthetic
@@ -102,11 +107,12 @@ public inline fun particleEffect(
 ): ParticleEffect = type.builder().apply(builder).build()
 
 /**
- * DSL to create dust [ParticleEffect]s.
+ * Creates a new dust particle effect with the given [type] and the result of
+ * applying the given [builder].
  *
- * @param type the type of the dust particle
- * @param builder the builder to configure the particle effect with
- * @return a new [ParticleEffect] based on the given settings
+ * @param type the type
+ * @param builder the builder to apply
+ * @return a new dust particle effect
  */
 @ParticleDsl
 @JvmSynthetic
@@ -117,11 +123,12 @@ public inline fun particleEffect(
 ): ParticleEffect = type.builder().apply(builder).build()
 
 /**
- * DSL to create dust transition [ParticleEffect]s.
+ * Creates a new dust transition particle effect with the given [type] and the
+ * result of applying the given [builder].
  *
- * @param type the type of the dust transition particle
- * @param builder the builder to configure the particle effect with
- * @return a new [ParticleEffect] based on the given settings
+ * @param type the type
+ * @param builder the builder to apply
+ * @return a new dust transition particle effect
  */
 @ParticleDsl
 @JvmSynthetic
@@ -132,11 +139,12 @@ public inline fun particleEffect(
 ): ParticleEffect = type.builder().apply(builder).build()
 
 /**
- * DSL to create note [ParticleEffect]s.
+ * Creates a new note particle effect with the given [type] and the result of
+ * applying the given [builder].
  *
- * @param type the type of the note particle
- * @param builder the builder to configure the particle effect with
- * @return a new [ParticleEffect] based on the given settings
+ * @param type the type
+ * @param builder the builder to apply
+ * @return a new note particle effect
  */
 @ParticleDsl
 @JvmSynthetic
@@ -147,11 +155,12 @@ public inline fun particleEffect(
 ): ParticleEffect = type.builder().apply(builder).build()
 
 /**
- * DSL to create vibration [ParticleEffect]s.
+ * Creates a new vibration particle effect with the given [type] and the
+ * result of applying the given [builder].
  *
- * @param type the type of the vibration particle
- * @param builder the builder to configure the particle effect with
- * @return a new [ParticleEffect] based on the given settings
+ * @param type the type
+ * @param builder the builder to apply
+ * @return a new vibration particle effect
  */
 @ParticleDsl
 @JvmSynthetic

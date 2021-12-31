@@ -39,6 +39,14 @@ public interface Inventory : Iterable<ItemStack> {
     public val items: List<ItemStack>
 
     /**
+     * If this inventory contains the specified [item].
+     *
+     * @param item the item
+     * @return true if the [item] is in this inventory, false otherwise
+     */
+    public operator fun contains(item: ItemStack): Boolean
+
+    /**
      * Retrieve an item from this inventory at the specified [index].
      *
      * @param index the index (slot, starts from 0) of the item to retrieve
@@ -50,10 +58,31 @@ public interface Inventory : Iterable<ItemStack> {
     public operator fun get(index: Int): ItemStack
 
     /**
-     * If this inventory contains the specified [item].
+     * Sets the item at the given [index] to the given [item].
      *
-     * @param item the item
-     * @return true if the [item] is in this inventory, false otherwise
+     * @param index the index of the item
+     * @param item the new item
      */
-    public operator fun contains(item: ItemStack): Boolean
+    public operator fun set(index: Int, item: ItemStack)
+
+    /**
+     * Puts the specified item in the first available empty slot in this
+     * inventory, or does nothing if the inventory is full.
+     *
+     * @param item the item to add
+     */
+    public fun add(item: ItemStack)
+
+    /**
+     * Removes the specified [item] from the array, or does nothing if there
+     * isn't an element that matches this [item].
+     *
+     * @param item the item to remove
+     */
+    public fun remove(item: ItemStack)
+
+    /**
+     * Clears this inventory.
+     */
+    public fun clear()
 }

@@ -58,16 +58,16 @@ object SuggestionProviders {
     }
 
     @JvmStatic
-    fun register(key: Key, provider: SuggestionProvider<Sender>): SuggestionProvider<Sender> {
-        require(key !in PROVIDERS_BY_NAME) { "A command suggestion provider is already registered with the given key $key!" }
-        PROVIDERS_BY_NAME[key] = provider
-        return Wrapper(key, provider)
-    }
-
-    @JvmStatic
     fun name(provider: SuggestionProvider<Sender>): Key {
         if (provider is Wrapper) return provider.name
         return DEFAULT_NAME
+    }
+
+    @JvmStatic
+    private fun register(key: Key, provider: SuggestionProvider<Sender>): SuggestionProvider<Sender> {
+        require(key !in PROVIDERS_BY_NAME) { "A command suggestion provider is already registered with the given key $key!" }
+        PROVIDERS_BY_NAME[key] = provider
+        return Wrapper(key, provider)
     }
 
     @JvmRecord

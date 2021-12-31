@@ -52,16 +52,16 @@ abstract class KryptonLivingEntity(
 
     final override val maxHealth: Float
         get() = attributes.value(AttributeTypes.MAX_HEALTH).toFloat()
-    override var absorption = 0F
+    override var absorption: Float = 0F
     final override val isAlive: Boolean
         get() = super.isAlive && health > 0F
-    final override var isDead = false
+    final override var isDead: Boolean = false
     final override var deathTime: Short = 0
     final override var hurtTime: Short = 0
-    final override var lastHurtTimestamp = 0
-    override var isBaby = false
+    final override var lastHurtTimestamp: Int = 0
+    override var isBaby: Boolean = false
     private var tickCount = 0
-    val attributes = AttributeMap(attributeSupplier)
+    val attributes: AttributeMap = AttributeMap(attributeSupplier)
     open val brain: Brain<*> = Brain<KryptonLivingEntity>()
 
     val killer: KryptonLivingEntity?

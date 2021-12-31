@@ -26,14 +26,14 @@ object KryptonPlatform : Platform {
 
     private val versions = Properties().apply { load(ClassLoader.getSystemResourceAsStream("META-INF/versions.properties")) }
 
-    override val name = "Krypton"
+    override val name: String = "Krypton"
     override val version: String = versions.getProperty("krypton")
-    override val isStable = false
+    override val isStable: Boolean = false
     override val minecraftVersion: String = versions.getProperty("minecraft")
-    const val isStableMinecraft = true
-    override val worldVersion = 2860
-    override val protocolVersion = 757
-    override val dataPackVersion = 8
+    const val isStableMinecraft: Boolean = true
+    override val worldVersion: Int = 2860
+    override val protocolVersion: Int = 757
+    override val dataPackVersion: Int = 8
 
     @JvmField
     val sparkVersion: String = versions.getProperty("spark")

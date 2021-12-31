@@ -39,38 +39,38 @@ abstract class KryptonItemMetaBuilder<B : ItemMetaBuilder<B, I>, I : ItemMeta> :
     protected val canDestroy = persistentSetOf<Block>().builder()
     protected val canPlaceOn = persistentSetOf<Block>().builder()
 
-    override fun damage(damage: Int): B = apply { this.damage = damage } as B
+    final override fun damage(damage: Int): B = apply { this.damage = damage } as B
 
-    override fun unbreakable(value: Boolean): B = apply { unbreakable = value } as B
+    final override fun unbreakable(value: Boolean): B = apply { unbreakable = value } as B
 
-    override fun customModelData(data: Int): B = apply { customModelData = data } as B
+    final override fun customModelData(data: Int): B = apply { customModelData = data } as B
 
-    override fun name(name: Component?): B = apply { this.name = name } as B
+    final override fun name(name: Component?): B = apply { this.name = name } as B
 
-    override fun lore(lore: Iterable<Component>): B = apply {
+    final override fun lore(lore: Iterable<Component>): B = apply {
         this.lore.clear()
         this.lore.addAll(lore)
     } as B
 
-    override fun addLore(lore: Component): B = apply { this.lore.add(lore) } as B
+    final override fun addLore(lore: Component): B = apply { this.lore.add(lore) } as B
 
-    override fun hideFlags(flags: Int): B = apply { hideFlags = flags } as B
+    final override fun hideFlags(flags: Int): B = apply { hideFlags = flags } as B
 
-    override fun addFlag(flag: ItemFlag): B = apply { hideFlags = hideFlags or flag.mask() } as B
+    final override fun addFlag(flag: ItemFlag): B = apply { hideFlags = hideFlags or flag.mask() } as B
 
-    override fun canDestroy(blocks: Iterable<Block>): B = apply {
+    final override fun canDestroy(blocks: Iterable<Block>): B = apply {
         canDestroy.clear()
         canDestroy.addAll(blocks)
     } as B
 
-    override fun addCanDestroy(block: Block): B = apply { canDestroy.add(block) } as B
+    final override fun addCanDestroy(block: Block): B = apply { canDestroy.add(block) } as B
 
-    override fun canPlaceOn(blocks: Iterable<Block>): B = apply {
+    final override fun canPlaceOn(blocks: Iterable<Block>): B = apply {
         canPlaceOn.clear()
         canPlaceOn.addAll(blocks)
     } as B
 
-    override fun addCanPlaceOn(block: Block): B = apply { canPlaceOn.add(block) } as B
+    final override fun addCanPlaceOn(block: Block): B = apply { canPlaceOn.add(block) } as B
 
     protected fun copyFrom(meta: I) {
         damage = meta.damage

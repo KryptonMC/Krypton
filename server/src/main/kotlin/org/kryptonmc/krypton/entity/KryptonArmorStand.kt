@@ -99,9 +99,11 @@ class KryptonArmorStand(world: KryptonWorld) : KryptonLivingEntity(world, Entity
         EquipmentSlot.Type.ARMOR -> armorItems[slot.index]
     }
 
-    override fun setEquipment(slot: EquipmentSlot, item: KryptonItemStack) = when (slot.type) {
-        EquipmentSlot.Type.HAND -> handItems[slot.index] = item
-        EquipmentSlot.Type.ARMOR -> armorItems[slot.index] = item
+    override fun setEquipment(slot: EquipmentSlot, item: KryptonItemStack) {
+        when (slot.type) {
+            EquipmentSlot.Type.HAND -> handItems[slot.index] = item
+            EquipmentSlot.Type.ARMOR -> armorItems[slot.index] = item
+        }
     }
 
     override fun load(tag: CompoundTag) {

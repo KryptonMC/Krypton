@@ -19,10 +19,12 @@ import org.kryptonmc.api.event.ResultedEvent
  * @param player the player that damaged the block
  * @param block the block being broken
  */
+@Suppress("INAPPLICABLE_JVM_NAME")
 public data class BlockDamageEvent(
     @get:JvmName("player") public val player: Player,
     @get:JvmName("block") public val block: Block
 ) : ResultedEvent<GenericResult> {
 
+    @get:JvmName("result")
     override var result: GenericResult = GenericResult.allowed()
 }

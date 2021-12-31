@@ -54,12 +54,6 @@ public interface ResourcePack {
      */
     public fun send(player: Player)
 
-    @ApiStatus.Internal
-    public interface Factory {
-
-        public fun of(uri: URI, hash: String, isForced: Boolean, promptMessage: Component?): ResourcePack
-    }
-
     /**
      * The status of a resource pack.
      */
@@ -86,6 +80,12 @@ public interface ResourcePack {
          * it.
          */
         ACCEPTED
+    }
+
+    @ApiStatus.Internal
+    public interface Factory {
+
+        public fun of(uri: URI, hash: String, isForced: Boolean, promptMessage: Component?): ResourcePack
     }
 
     public companion object {

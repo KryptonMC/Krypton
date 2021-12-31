@@ -70,6 +70,7 @@ class TheEndBiomeGenerator private constructor(
         private const val ISLAND_THRESHOLD = -0.9
         private const val ISLAND_CHUNK_DISTANCE_SQ = 4096L
 
+        @JvmStatic
         fun SimplexNoise.getHeightValue(x: Int, z: Int): Float {
             val divX = x / 2
             val divZ = z / 2

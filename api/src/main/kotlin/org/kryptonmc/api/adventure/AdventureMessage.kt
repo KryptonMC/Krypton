@@ -10,6 +10,10 @@ package org.kryptonmc.api.adventure
 
 import com.mojang.brigadier.Message
 import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.ComponentLike
+import org.jetbrains.annotations.ApiStatus
+import org.kryptonmc.api.Krypton
+import org.kryptonmc.api.util.provide
 
 /**
  * A Brigadier [Message] that wraps a [Component].
@@ -21,8 +25,33 @@ import net.kyori.adventure.text.Component
  * You should use this class when you want to send a [Component] error message as
  * a response to a Brigadier command.
  */
-@JvmRecord
-public data class AdventureMessage(public val wrapped: Component) : Message {
+@Suppress("INAPPLICABLE_JVM_NAME")
+public interface AdventureMessage : Message, ComponentLike {
 
-    override fun getString(): String = wrapped.toPlainText()
+    /**
+     * The wrapped component.
+     */
+    @get:JvmName("wrapped")
+    public val wrapped: Component
+
+    @ApiStatus.Internal
+    public interface Factory {
+
+        public fun of(wrapped: Component): AdventureMessage
+    }
+
+    public companion object {
+
+        private val FACTORY = Krypton.factoryProvider.provide<Factory>()
+
+        /**
+         * Creates a new Brigadier message that wraps the given [wrapped]
+         * component.
+         *
+         * @param wrapped the wrapped component
+         * @return a new adventure message
+         */
+        @JvmStatic
+        public fun of(wrapped: Component): AdventureMessage = FACTORY.of(wrapped)
+    }
 }

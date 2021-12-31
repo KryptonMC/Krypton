@@ -10,24 +10,12 @@ package org.kryptonmc.api.effect.particle.builder
 
 import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.effect.particle.ParticleDsl
-import org.kryptonmc.api.effect.particle.ParticleEffect
-import org.kryptonmc.api.effect.particle.ParticleType
-import org.kryptonmc.api.effect.particle.data.ItemParticleData
 import org.kryptonmc.api.item.ItemType
-import org.kryptonmc.api.item.ItemTypes
-import org.spongepowered.math.vector.Vector3d
 
 /**
- * Allows building a [ParticleEffect] for item particle effects using method
- * chaining.
+ * A builder for building item particle effects.
  */
-public class ItemParticleEffectBuilder @JvmOverloads constructor(
-    type: ParticleType,
-    quantity: Int = 1,
-    offset: Vector3d = Vector3d.ZERO,
-    longDistance: Boolean = false,
-    private var item: ItemType = ItemTypes.AIR
-) : AbstractParticleEffectBuilder<ItemParticleEffectBuilder>(type, quantity, offset, longDistance) {
+public interface ItemParticleEffectBuilder : BaseParticleEffectBuilder<ItemParticleEffectBuilder> {
 
     /**
      * Sets the item data of the texture to be used.
@@ -36,11 +24,5 @@ public class ItemParticleEffectBuilder @JvmOverloads constructor(
      */
     @ParticleDsl
     @Contract("_ -> this", mutates = "this")
-    public fun item(item: ItemType): ItemParticleEffectBuilder = apply { this.item = item }
-
-    /**
-     * Builds a new [ParticleEffect] from the settings of this builder.
-     */
-    @Contract("_ -> new", pure = true)
-    override fun build(): ParticleEffect = ParticleEffect.of(type, quantity, offset, longDistance, ItemParticleData.of(item))
+    public fun item(item: ItemType): ItemParticleEffectBuilder
 }

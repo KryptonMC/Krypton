@@ -25,8 +25,6 @@ import org.kryptonmc.api.fluid.Fluids
 import org.kryptonmc.api.world.biome.Biome
 import org.kryptonmc.api.world.chunk.Chunk
 import org.kryptonmc.krypton.packet.CachedPacket
-import org.kryptonmc.krypton.packet.FramedPacket
-import org.kryptonmc.krypton.packet.GenericPacket
 import org.kryptonmc.krypton.packet.out.play.PacketOutChunkDataAndLight
 import org.kryptonmc.krypton.world.Heightmap
 import org.kryptonmc.krypton.world.KryptonWorld
@@ -48,19 +46,19 @@ class KryptonChunk(
 ) : ChunkAccessor(position, world, inhabitedTime, sections), Chunk {
 
     override val status: ChunkStatus = ChunkStatus.FULL
-    override val height = world.height
-    override val minimumBuildHeight = world.minimumBuildHeight
+    override val height: Int = world.height
+    override val minimumBuildHeight: Int = world.minimumBuildHeight
 
     private val lightSectionCount = sectionCount + 2
-    val minimumLightSection = minimumSection - 1
-    val maximumLightSection = minimumLightSection + lightSectionCount
+    val minimumLightSection: Int = minimumSection - 1
+    val maximumLightSection: Int = minimumLightSection + lightSectionCount
 
     override val x: Int
         get() = position.x
     override val z: Int
         get() = position.z
 
-    private val packet = CachedPacket(world.server.config.server.compressionThreshold) { PacketOutChunkDataAndLight(this, true) }
+    val cachedPacket: CachedPacket = CachedPacket { PacketOutChunkDataAndLight(this, true) }
 
     override fun getBlock(x: Int, y: Int, z: Int): Block {
         if (world.isDebug) {
@@ -106,7 +104,7 @@ class KryptonChunk(
         heightmaps.getValue(Heightmap.Type.MOTION_BLOCKING_NO_LEAVES).update(localX, y, localZ, block)
         heightmaps.getValue(Heightmap.Type.OCEAN_FLOOR).update(localX, y, localZ, block)
         heightmaps.getValue(Heightmap.Type.WORLD_SURFACE).update(localX, y, localZ, block)
-        packet.invalidate()
+        cachedPacket.invalidate()
         return true
     }
 
@@ -119,6 +117,4 @@ class KryptonChunk(
     fun tick(playerCount: Int) {
         inhabitedTime += playerCount
     }
-
-    fun packet(): GenericPacket = packet.get()
 }

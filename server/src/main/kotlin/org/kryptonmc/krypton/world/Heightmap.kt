@@ -90,12 +90,7 @@ class Heightmap(private val chunk: ChunkAccessor, val type: Type) {
         companion object {
 
             @JvmField
-            val POST_FEATURES: Set<Type> = EnumSet.of(
-                WORLD_SURFACE,
-                OCEAN_FLOOR,
-                MOTION_BLOCKING,
-                MOTION_BLOCKING_NO_LEAVES
-            )
+            val POST_FEATURES: Set<Type> = EnumSet.of(WORLD_SURFACE, OCEAN_FLOOR, MOTION_BLOCKING, MOTION_BLOCKING_NO_LEAVES)
         }
     }
 
@@ -104,14 +99,14 @@ class Heightmap(private val chunk: ChunkAccessor, val type: Type) {
         private val NOT_AIR: (Block) -> Boolean = { !it.isAir }
         private val BLOCKS_MOTION: (Block) -> Boolean = { it.blocksMotion }
         private val IS_LEAVES: (Block) -> Boolean = {
-            it.id == Blocks.OAK_LEAVES.id
-                    || it.id == Blocks.SPRUCE_LEAVES.id
-                    || it.id == Blocks.BIRCH_LEAVES.id
-                    || it.id == Blocks.JUNGLE_LEAVES.id
-                    || it.id == Blocks.ACACIA_LEAVES.id
-                    || it.id == Blocks.DARK_OAK_LEAVES.id
-                    || it.id == Blocks.AZALEA_LEAVES.id
-                    || it.id == Blocks.FLOWERING_AZALEA_LEAVES.id
+            it.id == Blocks.OAK_LEAVES.id ||
+                    it.id == Blocks.SPRUCE_LEAVES.id ||
+                    it.id == Blocks.BIRCH_LEAVES.id ||
+                    it.id == Blocks.JUNGLE_LEAVES.id ||
+                    it.id == Blocks.ACACIA_LEAVES.id ||
+                    it.id == Blocks.DARK_OAK_LEAVES.id ||
+                    it.id == Blocks.AZALEA_LEAVES.id ||
+                    it.id == Blocks.FLOWERING_AZALEA_LEAVES.id
         }
         private val LOGGER = logger<Heightmap>()
 

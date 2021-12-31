@@ -27,8 +27,7 @@ import org.kryptonmc.api.user.UserManager
 import org.kryptonmc.krypton.KryptonPlatform
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.auth.requests.ApiService
-import org.kryptonmc.krypton.util.daemon
-import org.kryptonmc.krypton.util.threadFactory
+import org.kryptonmc.krypton.util.daemonThreadFactory
 import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.IntTag
 import org.kryptonmc.nbt.io.TagCompression
@@ -40,7 +39,7 @@ import java.util.concurrent.Executors
 class KryptonUserManager(private val server: KryptonServer) : UserManager {
 
     private val users: MutableMap<UUID, KryptonUser> = MapMaker().weakValues().makeMap()
-    private val executor = Executors.newSingleThreadExecutor(threadFactory("Krypton User Data Loader") { daemon() })
+    private val executor = Executors.newSingleThreadExecutor(daemonThreadFactory("Krypton User Data Loader"))
 
     fun updateUser(uuid: UUID, data: CompoundTag) {
         users[uuid]?.data = data
@@ -58,7 +57,7 @@ class KryptonUserManager(private val server: KryptonServer) : UserManager {
         if (existing != null) return CompletableFuture.completedFuture(existing)
         val cachedProfile = server.profileCache[uuid]
         if (cachedProfile != null) return CompletableFuture.supplyAsync({ loadUser(cachedProfile) }, executor)
-        return ApiService.profile(uuid, executor).thenApplyAsync(::loadUser, executor)
+        return ApiService.profile(uuid).thenApplyAsync(::loadUser, executor)
     }
 
     override fun load(name: String): CompletableFuture<User?> {
@@ -66,7 +65,7 @@ class KryptonUserManager(private val server: KryptonServer) : UserManager {
         if (existing != null) return CompletableFuture.completedFuture(existing)
         val cachedProfile = server.profileCache[name]
         if (cachedProfile != null) return CompletableFuture.supplyAsync({ loadUser(cachedProfile) }, executor)
-        return ApiService.profile(name, executor).thenApplyAsync(::loadUser, executor)
+        return ApiService.profile(name).thenApplyAsync(::loadUser, executor)
     }
 
     private fun loadUser(profile: GameProfile?): User? {

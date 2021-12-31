@@ -30,6 +30,23 @@ internal annotation class MetaDsl
 public inline fun itemMeta(builder: ItemMeta.Builder.() -> Unit): ItemMeta = ItemMeta.builder().apply(builder).build()
 
 /**
+ * Creates new item metadata of the given type [P] from the result of applying
+ * the given [builder] function to a new builder of type [B].
+ *
+ * @param builder the builder
+ * @param B the type of the builder
+ * @param P the type of the metadata
+ * @return new item metadata
+ */
+@MetaDsl
+@JvmSynthetic
+@JvmName("itemMetaGeneric")
+@Contract("_ -> new", pure = true)
+public inline fun <B : ItemMetaBuilder<B, P>, reified P : ItemMetaBuilder.Provider<B>> itemMeta(
+    builder: B.() -> Unit
+): P = ItemMeta.builder(P::class.java).apply(builder).build()
+
+/**
  * Creates new bundle metadata from the result of applying the given [builder]
  * function.
  *

@@ -90,6 +90,20 @@ Also, when designing implementations, you should be careful to ensure that you a
 * Not introducing anything that may be liable to issues, such as throwing exceptions where they weren't expected
 * Testing your code quite thoroughly to ensure that it works the way you intend it to
 
+## Documentation
+
+The rules on documentation vary depending on what you're working on.
+
+For the API, everything has to be documented, regardless of what it is. This is to avoid the possibility of something not getting
+documented, and so being ambiguous for people trying to understand how it works.
+In addition, documentation should be clear and concise. You don't need to ramble on about every single detail about how something
+works, but don't be over ambiguous. Also, word choice is key. For functions like `contains`, the word "checks" is often used. For
+getters, use "Gets". For functions that should create a new object, the words "Creates a new {type}" should be used, where {type}
+should be replaced with the name of the thing you are creating, such as "Creates a new game profile".
+
+For the server, not everything has to be documented, though everything that you may deem ambiguous should be documented, to reduce
+the time that people have to spend trying to decipher your code.
+
 ## Formatting
 
 Your commit messages for Git should preferably be short and concise, and describe the changes that you have made in it.

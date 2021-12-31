@@ -46,8 +46,8 @@ abstract class KryptonProjectile(
             ownerId = value.uuid
             field = value
         }
-    final override var hasLeftOwner = false
-    final override var hasBeenShot = false
+    final override var hasLeftOwner: Boolean = false
+    final override var hasBeenShot: Boolean = false
 
     override fun load(tag: CompoundTag) {
         super.load(tag)

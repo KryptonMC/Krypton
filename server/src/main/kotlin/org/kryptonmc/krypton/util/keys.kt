@@ -39,6 +39,8 @@ fun StringReader.nextKey(): Key {
     }
 }
 
+fun Key.normalizePath(): String = asString().replace(':', '.')
+
 private val ZERO_TO_NINE_RANGE = '0'..'9'
 private val A_TO_Z_RANGE = 'a'..'z'
 

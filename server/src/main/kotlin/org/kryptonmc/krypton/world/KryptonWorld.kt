@@ -40,13 +40,17 @@ import org.kryptonmc.krypton.entity.EntityFactory
 import org.kryptonmc.krypton.entity.EntityManager
 import org.kryptonmc.krypton.entity.KryptonEntity
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
+import org.kryptonmc.krypton.network.SessionManager
+import org.kryptonmc.krypton.packet.CachedPacket
 import org.kryptonmc.krypton.packet.out.play.GameState
 import org.kryptonmc.krypton.packet.out.play.PacketOutBlockBreakAnimation
 import org.kryptonmc.krypton.packet.out.play.PacketOutBlockChange
 import org.kryptonmc.krypton.packet.out.play.PacketOutChangeGameState
+import org.kryptonmc.krypton.packet.out.play.PacketOutDifficulty
 import org.kryptonmc.krypton.packet.out.play.PacketOutEffect
 import org.kryptonmc.krypton.packet.out.play.PacketOutEntitySoundEffect
 import org.kryptonmc.krypton.packet.out.play.PacketOutSoundEffect
+import org.kryptonmc.krypton.server.PlayerManager
 import org.kryptonmc.krypton.util.clamp
 import org.kryptonmc.krypton.world.biome.BiomeManager
 import org.kryptonmc.krypton.world.chunk.ChunkAccessor
@@ -60,9 +64,11 @@ import org.kryptonmc.krypton.world.data.WorldData
 import org.kryptonmc.krypton.world.dimension.KryptonDimensionType
 import org.kryptonmc.krypton.world.generation.Generator
 import org.kryptonmc.krypton.world.rule.KryptonGameRuleHolder
+import org.kryptonmc.krypton.world.scoreboard.KryptonScoreboard
 import org.spongepowered.math.GenericMath
 import org.spongepowered.math.vector.Vector3d
 import org.spongepowered.math.vector.Vector3i
+import java.nio.file.Path
 import java.util.Random
 import java.util.concurrent.ConcurrentHashMap
 
@@ -77,15 +83,19 @@ class KryptonWorld(
     private val tickTime: Boolean
 ) : World, WorldAccessor, PacketGroupingAudience {
 
-    override val world = this
-    override val biomeManager = BiomeManager(this, seed)
-    override val random = Random()
-    override val border = KryptonWorldBorder.DEFAULT // FIXME
+    override val world: KryptonWorld = this
+    override val biomeManager: BiomeManager = BiomeManager(this, seed)
+    override val random: Random = Random()
+    override val border: KryptonWorldBorder = KryptonWorldBorder.DEFAULT // FIXME
     override val gameMode: GameMode
         get() = data.gameMode
     override var difficulty: Difficulty
         get() = data.difficulty
-        set(value) { data.difficulty = value }
+        set(value) {
+            data.difficulty = value
+            cachedDifficultyPacket.invalidate()
+        }
+    val cachedDifficultyPacket: CachedPacket = CachedPacket { PacketOutDifficulty(difficulty) }
     override val gameRules: KryptonGameRuleHolder
         get() = data.gameRules
     override val isHardcore: Boolean
@@ -100,33 +110,33 @@ class KryptonWorld(
         get() = Vector3i(data.spawnX, data.spawnY, data.spawnZ)
     override val time: Long
         get() = data.time
-    override val folder = data.folder
-    override val scoreboard = server.scoreboard
+    override val folder: Path = data.folder
+    override val scoreboard: KryptonScoreboard = server.scoreboard
 
     override val chunks: Collection<KryptonChunk>
         get() = chunkManager.chunkMap.values
 
-    val entityManager = EntityManager(this)
+    val entityManager: EntityManager = EntityManager(this)
     override val entities: MutableCollection<KryptonEntity> = entityManager.entities
 
-    override val chunkManager = ChunkManager(this)
-    val playerManager = server.playerManager
-    override val sessionManager = server.sessionManager
+    override val chunkManager: ChunkManager = ChunkManager(this)
+    val playerManager: PlayerManager = server.playerManager
+    override val sessionManager: SessionManager = server.sessionManager
     override val players: MutableSet<KryptonPlayer> = ConcurrentHashMap.newKeySet()
 
-    override val height = dimensionType.height
-    override val minimumBuildHeight = dimensionType.minimumY
-    override val seaLevel = 63 // TODO: Check on update
+    override val height: Int = dimensionType.height
+    override val minimumBuildHeight: Int = dimensionType.minimumY
+    override val seaLevel: Int = 63 // TODO: Check on update
 
     private var oldRainLevel = 0F
-    override var rainLevel = 0F
+    override var rainLevel: Float = 0F
         set(value) {
             val clamped = value.clamp(0F, 1F)
             oldRainLevel = clamped
             field = clamped
         }
     private var oldThunderLevel = 0F
-    override var thunderLevel = 0F
+    override var thunderLevel: Float = 0F
         set(value) {
             val clamped = value.clamp(0F, 1F)
             oldRainLevel = clamped
@@ -184,15 +194,9 @@ class KryptonWorld(
     }
 
     fun playSound(event: SoundEvent, source: Sound.Source, emitter: KryptonEntity, volume: Float, pitch: Float, except: KryptonPlayer? = null) {
-        playerManager.broadcast(
-            PacketOutEntitySoundEffect(event, source, emitter.id, volume, pitch),
-            this,
-            emitter.location.x(),
-            emitter.location.y(),
-            emitter.location.z(),
-            if (volume > 1F) 16.0 * volume else 16.0,
-            except
-        )
+        val packet = PacketOutEntitySoundEffect(event, source, emitter.id, volume, pitch)
+        val radius = if (volume > 1F) 16.0 * volume else 16.0
+        playerManager.broadcast(packet, this, emitter.location.x(), emitter.location.y(), emitter.location.z(), radius, except)
     }
 
     // TODO: Check world border bounds

@@ -36,7 +36,7 @@ import kotlin.random.Random
 
 class KryptonBee(world: KryptonWorld) : KryptonAnimal(world, EntityTypes.BEE, ATTRIBUTES), Bee, Neutral {
 
-    override var cannotEnterHiveTicks = 0
+    override var cannotEnterHiveTicks: Int = 0
     override var hive: Vector3i? = null
     override var flower: Vector3i? = null
     override var angerTarget: UUID? = null

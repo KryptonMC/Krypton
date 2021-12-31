@@ -8,36 +8,7 @@
  */
 package org.kryptonmc.api.effect.particle.builder
 
-import org.jetbrains.annotations.Contract
-import org.kryptonmc.api.effect.particle.ParticleEffect
-import org.kryptonmc.api.effect.particle.ParticleType
-import org.kryptonmc.api.effect.particle.data.DustParticleData
-import org.spongepowered.math.vector.Vector3d
-
 /**
- * Allows building a [ParticleEffect] for dust particle effects using method
- * chaining.
+ * A builder for building dust particle effects.
  */
-public class DustParticleEffectBuilder(
-    type: ParticleType,
-    quantity: Int = 1,
-    offset: Vector3d = Vector3d.ZERO,
-    longDistance: Boolean = false,
-    red: Short = 255,
-    green: Short = 0,
-    blue: Short = 0,
-    scale: Float = 0F
-) : AbstractDustParticleEffectBuilder<DustParticleEffectBuilder>(type, quantity, offset, longDistance, red, green, blue, scale) {
-
-    /**
-     * Builds a new [ParticleEffect] from the settings of this builder.
-     */
-    @Contract("_ -> new", pure = true)
-    override fun build(): ParticleEffect = ParticleEffect.of(
-        type,
-        quantity,
-        offset,
-        longDistance,
-        DustParticleData.of(red, green, blue, scale)
-    )
-}
+public interface DustParticleEffectBuilder : BaseDustParticleEffectBuilder<DustParticleEffectBuilder>

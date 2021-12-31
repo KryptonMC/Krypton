@@ -8,8 +8,8 @@
  */
 package org.kryptonmc.api.world.chunk
 
-import org.kryptonmc.api.block.Block
-import org.kryptonmc.api.fluid.Fluid
+import org.kryptonmc.api.block.BlockContainer
+import org.kryptonmc.api.fluid.FluidContainer
 import org.kryptonmc.api.world.World
 import org.kryptonmc.api.world.biome.Biome
 import org.spongepowered.math.vector.Vector3i
@@ -18,7 +18,7 @@ import org.spongepowered.math.vector.Vector3i
  * Represents a chunk, or a 16 x 16 x world height area of blocks.
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
-public interface Chunk {
+public interface Chunk : BlockContainer, FluidContainer {
 
     /**
      * The world this chunk is in.
@@ -65,62 +65,6 @@ public interface Chunk {
      */
     @get:JvmName("lastUpdate")
     public val lastUpdate: Long
-
-    /**
-     * Gets the block at the given [x], [y], and [z] coordinates.
-     *
-     * @param x the x coordinate
-     * @param y the y coordinate
-     * @param z the z coordinate
-     * @return the block at the given coordinates
-     */
-    public fun getBlock(x: Int, y: Int, z: Int): Block
-
-    /**
-     * Gets the block at the given [position].
-     *
-     * @param position the position
-     * @return the block at the given position
-     */
-    public fun getBlock(position: Vector3i): Block
-
-    /**
-     * Gets the fluid at the given [x], [y], and [z] coordinates.
-     *
-     * @param x the X coordinate
-     * @param y the Y coordinate
-     * @param z the Z coordinate
-     * @return the fluid at the given coordinates
-     */
-    public fun getFluid(x: Int, y: Int, z: Int): Fluid
-
-    /**
-     * Gets the fluid at the given [position].
-     *
-     * @param position the position
-     * @return the fluid at the given position
-     */
-    public fun getFluid(position: Vector3i): Fluid
-
-    /**
-     * Sets the block at the given coordinates to the given [block]
-     *
-     * @param x the X coordinate
-     * @param y the Y coordinate
-     * @param z the Z coordinate
-     * @param block the block
-     * @return true if the block was set, false otherwise
-     */
-    public fun setBlock(x: Int, y: Int, z: Int, block: Block): Boolean
-
-    /**
-     * Sets the block at the given [position] to the given [block]
-     *
-     * @param position the position
-     * @param block the block
-     * @return true if the block was set, false otherwise
-     */
-    public fun setBlock(position: Vector3i, block: Block): Boolean
 
     /**
      * Gets the biome at the given [x], [y], and [z] coordinates.

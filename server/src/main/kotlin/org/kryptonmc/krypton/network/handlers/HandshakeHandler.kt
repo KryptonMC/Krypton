@@ -127,10 +127,12 @@ class HandshakeHandler(
         handleStateChange(packet.nextState)
     }
 
-    private fun handleStateChange(state: PacketState, data: ForwardedData? = null) = when (state) {
-        PacketState.LOGIN -> handleLoginRequest(data)
-        PacketState.STATUS -> handleStatusRequest()
-        else -> throw UnsupportedOperationException("Invalid next login state $state sent in handshake!")
+    private fun handleStateChange(state: PacketState, data: ForwardedData? = null) {
+        when (state) {
+            PacketState.LOGIN -> handleLoginRequest(data)
+            PacketState.STATUS -> handleStatusRequest()
+            else -> throw UnsupportedOperationException("Invalid next login state $state sent in handshake!")
+        }
     }
 
     private fun handleLoginRequest(data: ForwardedData? = null) {

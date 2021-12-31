@@ -8,6 +8,7 @@
  */
 package org.kryptonmc.api.event.player
 
+import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.entity.player.Player
 import org.kryptonmc.api.event.ResultedEvent
 import org.kryptonmc.api.item.ItemType
@@ -20,12 +21,14 @@ import org.kryptonmc.api.item.ItemType
  * @param item the item the cooldown is set for
  * @param cooldown the cooldown amount, in ticks
  */
+@Suppress("INAPPLICABLE_JVM_NAME")
 public data class CooldownEvent(
-    public val player: Player,
-    public val item: ItemType,
-    public val cooldown: Int
+    @get:JvmName("player") public val player: Player,
+    @get:JvmName("item") public val item: ItemType,
+    @get:JvmName("cooldown") public val cooldown: Int
 ) : ResultedEvent<CooldownResult> {
 
+    @get:JvmName("result")
     override var result: CooldownResult = CooldownResult.allowed()
 }
 
@@ -46,33 +49,35 @@ public data class CooldownResult(
         private val DENIED = CooldownResult(false, 0)
 
         /**
-         * Returns a result that will allow the cooldown to be set without
-         * modifying the original cooldown value.
+         * Gets the result that allows the cooldown to be set as normal.
          *
          * @return the allowed result
          */
         @JvmStatic
+        @Contract(pure = true)
         public fun allowed(): CooldownResult = ALLOWED
 
         /**
-         * Returns a result that will allow the cooldown to be set, but will
+         * Creates a new result that allows the cooldown to be set, but will
          * silently replace the requested cooldown amount with the given
-         * [newCooldown] amount, in ticks.
+         * [newCooldown], in ticks.
          *
          * Note: Any cooldown value < 0 will be ignored.
          *
          * @param newCooldown the new cooldown amount
-         * @return the allowed result
+         * @return a new allowed result
          */
         @JvmStatic
+        @Contract("_ -> new", pure = true)
         public fun allowed(newCooldown: Int): CooldownResult = CooldownResult(true, newCooldown)
 
         /**
-         * Returns a result that will deny the cooldown being set.
+         * Gets the result that denies the cooldown from being set.
          *
          * @return the denied result
          */
         @JvmStatic
+        @Contract(pure = true)
         public fun denied(): CooldownResult = DENIED
     }
 }

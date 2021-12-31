@@ -18,6 +18,8 @@
  */
 package org.kryptonmc.krypton.world.block.property
 
+import kotlinx.collections.immutable.persistentMapOf
+import kotlinx.collections.immutable.persistentSetOf
 import org.kryptonmc.api.block.property.Property
 import org.kryptonmc.api.block.property.PropertyHolder
 
@@ -46,8 +48,8 @@ interface KryptonPropertyHolder<T : PropertyHolder<T>> : PropertyHolder<T> {
 
     abstract class Builder<B : PropertyHolder.Builder<B, T>, T : PropertyHolder<T>>() : PropertyHolder.Builder<B, T> {
 
-        protected val availableProperties = mutableSetOf<Property<*>>()
-        protected val properties = mutableMapOf<String, String>()
+        protected val availableProperties = persistentSetOf<Property<*>>().builder()
+        protected val properties = persistentMapOf<String, String>().builder()
 
         constructor(holder: T) : this() {
             availableProperties.addAll(holder.availableProperties)

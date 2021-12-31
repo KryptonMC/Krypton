@@ -26,8 +26,8 @@ import org.kryptonmc.nbt.CompoundTag
 
 class KryptonAreaEffectCloud(world: KryptonWorld) : KryptonEntity(world, EntityTypes.AREA_EFFECT_CLOUD), AreaEffectCloud {
 
-    override var age = 0
-    override var duration = 0
+    override var age: Int = 0
+    override var duration: Int = 0
 
     override var radius: Float
         get() = data[MetadataKeys.AREA_EFFECT_CLOUD.RADIUS]

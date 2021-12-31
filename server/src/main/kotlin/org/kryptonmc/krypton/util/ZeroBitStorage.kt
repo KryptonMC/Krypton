@@ -20,8 +20,8 @@ package org.kryptonmc.krypton.util
 
 class ZeroBitStorage(override val size: Int) : BitStorage {
 
-    override val bits = 0
-    override val data = RAW
+    override val bits: Int = 0
+    override val data: LongArray = RAW
 
     override fun getAndSet(index: Int, value: Int): Int {
         require(index in 0 until size) { "Index must be between 0 and $size, was $index" }

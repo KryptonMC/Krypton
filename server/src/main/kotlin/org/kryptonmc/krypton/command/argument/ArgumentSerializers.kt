@@ -67,7 +67,7 @@ object ArgumentSerializers {
 
     @Suppress("UNCHECKED_CAST")
     @JvmStatic
-    operator fun <T : ArgumentType<*>> get(type: T): Entry<T>? = ENTRIES[type::class.java] as? Entry<T>
+    fun <T : ArgumentType<*>> get(type: T): Entry<T>? = ENTRIES[type::class.java] as? Entry<T>
 
     @JvmStatic
     private inline fun <reified T : ArgumentType<*>> register(name: String, serializer: ArgumentSerializer<T>) {

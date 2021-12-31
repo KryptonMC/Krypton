@@ -38,7 +38,7 @@ class ChunkSection(
     val skyLight: ByteArray = ByteArray(2048)
 ) : NoiseBiomeSource {
 
-    val bottomBlockY = y shl 4
+    val bottomBlockY: Int = y shl 4
     private var nonEmptyBlockCount = 0
     val serializedSize: Int
         get() = 2 + blocks.serializedSize + biomes.serializedSize

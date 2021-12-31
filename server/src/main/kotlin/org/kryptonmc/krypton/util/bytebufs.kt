@@ -31,14 +31,13 @@ import io.netty.handler.codec.DecoderException
 import io.netty.handler.codec.EncoderException
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.text.Component
-import org.kryptonmc.api.adventure.toJsonString
+import org.kryptonmc.api.adventure.toJson
 import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.krypton.command.argument.ArgumentSerializers
 import org.kryptonmc.krypton.item.ItemFactory
 import org.kryptonmc.krypton.item.KryptonItemStack
 import org.kryptonmc.krypton.util.serialization.CompoundEncoder
 import org.kryptonmc.nbt.CompoundTag
-import org.kryptonmc.nbt.MutableCompoundTag
 import org.kryptonmc.nbt.io.TagCompression
 import org.kryptonmc.nbt.io.TagIO
 import org.spongepowered.math.vector.Vector3i
@@ -193,7 +192,7 @@ fun ByteBuf.writeNBT(tag: CompoundTag?) {
 fun ByteBuf.readNBT(): CompoundTag {
     val index = readerIndex()
     val type = readByte()
-    if (type == 0.toByte()) return MutableCompoundTag()
+    if (type == 0.toByte()) return CompoundTag.empty()
     readerIndex(index) // reset the head if it's not an end tag
 
     return try {
@@ -204,7 +203,7 @@ fun ByteBuf.readNBT(): CompoundTag {
 }
 
 fun ByteBuf.writeChat(component: Component) {
-    writeString(component.toJsonString())
+    writeString(component.toJson())
 }
 
 fun ByteBuf.readItem(): KryptonItemStack {
@@ -227,7 +226,7 @@ fun ByteBuf.writeItem(item: KryptonItemStack) {
     writeNBT(item.meta.save())
 }
 
-fun ByteBuf.readVector() = readLong().toVector()
+fun ByteBuf.readVector(): Vector3i = readLong().toVector()
 
 fun ByteBuf.writeVector(vector: Vector3i) {
     writeVector(vector.x(), vector.y(), vector.z())
@@ -247,7 +246,7 @@ fun ByteBuf.writeKey(key: Key) {
 
 @Suppress("UNCHECKED_CAST")
 fun <T : ArgumentType<*>> ByteBuf.writeArgumentType(type: T) {
-    val entry = ArgumentSerializers[type] ?: return writeKey(Key.key(""))
+    val entry = ArgumentSerializers.get(type) ?: return writeKey(Key.key(""))
     writeKey(entry.name)
     entry.serializer.write(this, type)
 }

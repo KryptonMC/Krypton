@@ -106,8 +106,5 @@ public object ResourceKeys {
      */
     @JvmStatic
     @Contract("_ -> new", pure = true)
-    public fun <T : Any> krypton(key: String): ResourceKey<out Registry<T>> = ResourceKey.of(
-        RegistryRoots.KRYPTON,
-        Key.key("krypton", key)
-    )
+    public fun <T : Any> krypton(key: String): ResourceKey<out Registry<T>> = ResourceKey.of(RegistryRoots.KRYPTON, Key.key("krypton", key))
 }

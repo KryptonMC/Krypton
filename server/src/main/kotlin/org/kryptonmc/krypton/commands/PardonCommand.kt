@@ -56,9 +56,11 @@ object PardonCommand : InternalCommand {
     }
 
     @JvmStatic
-    private fun unban(targets: List<KryptonGameProfile>, sender: Sender, server: KryptonServer) = targets.forEach {
-        if (!server.playerManager.bannedPlayers.contains(it)) return@forEach
-        server.playerManager.bannedPlayers.remove(it)
-        sender.sendMessage(Component.translatable("commands.pardon.success", Component.text(it.name)))
+    private fun unban(targets: List<KryptonGameProfile>, sender: Sender, server: KryptonServer) {
+        targets.forEach {
+            if (!server.playerManager.bannedPlayers.contains(it)) return@forEach
+            server.playerManager.bannedPlayers.remove(it)
+            sender.sendMessage(Component.translatable("commands.pardon.success", Component.text(it.name)))
+        }
     }
 }

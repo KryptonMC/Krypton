@@ -146,6 +146,7 @@ public interface Fluid : Buildable<Fluid, Fluid.Builder>, PropertyHolder<Fluid>,
     /**
      * A builder for building fluids.
      */
+    @FluidDsl
     public interface Builder : Buildable.Builder<Fluid>, PropertyHolder.Builder<Builder, Fluid> {
 
         /**
@@ -154,6 +155,7 @@ public interface Fluid : Buildable<Fluid, Fluid.Builder>, PropertyHolder<Fluid>,
          * @param id the fluid ID
          * @return this builder
          */
+        @FluidDsl
         @Contract("_ -> this", mutates = "this")
         public fun id(id: Int): Builder
 
@@ -163,6 +165,7 @@ public interface Fluid : Buildable<Fluid, Fluid.Builder>, PropertyHolder<Fluid>,
          * @param id the state ID
          * @return this builder
          */
+        @FluidDsl
         @Contract("_ -> this", mutates = "this")
         public fun stateId(id: Int): Builder
 
@@ -172,6 +175,7 @@ public interface Fluid : Buildable<Fluid, Fluid.Builder>, PropertyHolder<Fluid>,
          * @param type the bucket type
          * @return this builder
          */
+        @FluidDsl
         @Contract("_ -> this", mutates = "this")
         public fun bucket(type: ItemType): Builder
 
@@ -181,6 +185,7 @@ public interface Fluid : Buildable<Fluid, Fluid.Builder>, PropertyHolder<Fluid>,
          * @param value whether the fluid is an empty fluid
          * @return this builder
          */
+        @FluidDsl
         @Contract("_ -> this", mutates = "this")
         public fun empty(value: Boolean): Builder
 
@@ -191,6 +196,7 @@ public interface Fluid : Buildable<Fluid, Fluid.Builder>, PropertyHolder<Fluid>,
          * @param resistance the explosion resistance
          * @return this builder
          */
+        @FluidDsl
         @Contract("_ -> this", mutates = "this")
         public fun resistance(resistance: Double): Builder
 
@@ -200,6 +206,7 @@ public interface Fluid : Buildable<Fluid, Fluid.Builder>, PropertyHolder<Fluid>,
          * @param value whether the fluid is a source fluid
          * @return this builder
          */
+        @FluidDsl
         @Contract("_ -> this", mutates = "this")
         public fun source(value: Boolean): Builder
 
@@ -209,6 +216,7 @@ public interface Fluid : Buildable<Fluid, Fluid.Builder>, PropertyHolder<Fluid>,
          * @param height the height
          * @return this builder
          */
+        @FluidDsl
         @Contract("_ -> this", mutates = "this")
         public fun height(height: Float): Builder
 
@@ -218,6 +226,7 @@ public interface Fluid : Buildable<Fluid, Fluid.Builder>, PropertyHolder<Fluid>,
          * @param level the level
          * @return this builder
          */
+        @FluidDsl
         @Contract("_ -> this", mutates = "this")
         public fun level(level: Int): Builder
 
@@ -230,6 +239,7 @@ public interface Fluid : Buildable<Fluid, Fluid.Builder>, PropertyHolder<Fluid>,
          * @param key the key
          * @return this builder
          */
+        @FluidDsl
         @Contract("_ -> this", mutates = "this")
         public fun block(key: Key): Builder
 
@@ -239,6 +249,7 @@ public interface Fluid : Buildable<Fluid, Fluid.Builder>, PropertyHolder<Fluid>,
          * @param block the corresponding block
          * @return this builder
          */
+        @FluidDsl
         @Contract("_ -> this", mutates = "this")
         public fun block(block: Block): Builder = block(block.key())
     }

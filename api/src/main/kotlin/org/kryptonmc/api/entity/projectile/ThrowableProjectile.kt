@@ -8,9 +8,9 @@
  */
 package org.kryptonmc.api.entity.projectile
 
-import org.kryptonmc.api.item.ItemSupplier
+import org.kryptonmc.api.item.ItemStackLike
 
 /**
  * A projectile that was thrown from an item.
  */
-public interface ThrowableProjectile : Projectile, ItemSupplier
+public interface ThrowableProjectile : Projectile, ItemStackLike

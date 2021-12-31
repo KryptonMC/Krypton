@@ -157,19 +157,21 @@ object Bootstrap {
     }
 
     @JvmStatic
-    private fun <T> Iterable<T>.checkTranslations(missing: MutableSet<String>, getter: (T) -> String) = forEach {
-        val key = getter(it)
-        if (!TranslationBootstrap.REGISTRY.contains(key)) missing.add(key)
+    private fun missingTranslations(): Set<String> {
+        val missing = TreeSet<String>()
+        checkTranslations(Registries.ATTRIBUTE.values, missing) { it.translationKey() }
+        checkTranslations(Registries.ENTITY_TYPE.values, missing) { it.translationKey() }
+        checkTranslations(Registries.BLOCK.values, missing) { it.translationKey() }
+        checkTranslations(Registries.ITEM.values, missing) { it.translationKey() }
+        checkTranslations(Registries.GAME_RULES.values, missing) { it.translationKey() }
+        return missing
     }
 
     @JvmStatic
-    private fun missingTranslations(): Set<String> {
-        val missing = TreeSet<String>()
-        Registries.ATTRIBUTE.values.checkTranslations(missing) { it.translation.key() }
-        Registries.ENTITY_TYPE.values.checkTranslations(missing) { it.translation.key() }
-        Registries.BLOCK.values.checkTranslations(missing) { it.translation.key() }
-        Registries.ITEM.values.checkTranslations(missing) { it.translation.key() }
-        Registries.GAME_RULES.values.checkTranslations(missing) { it.translation.key() }
-        return missing
+    private fun <T> checkTranslations(values: Iterable<T>, missing: MutableSet<String>, getter: (T) -> String) {
+        values.forEach {
+            val key = getter(it)
+            if (!TranslationBootstrap.REGISTRY.contains(key)) missing.add(key)
+        }
     }
 }

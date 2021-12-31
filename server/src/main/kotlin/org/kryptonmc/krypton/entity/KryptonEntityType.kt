@@ -20,7 +20,6 @@ package org.kryptonmc.krypton.entity
 
 import kotlinx.collections.immutable.ImmutableSet
 import kotlinx.collections.immutable.persistentSetOf
-import kotlinx.collections.immutable.toImmutableSet
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.TranslatableComponent
@@ -55,7 +54,7 @@ data class KryptonEntityType<T : Entity>(
 
     override fun key(): Key = key
 
-    class Builder<T : Entity>(private val key: Key, private var category: EntityCategory) : EntityType.Builder<T> {
+    class Builder<T : Entity>(private var key: Key, private var category: EntityCategory) : EntityType.Builder<T> {
 
         private var summonable = true
         private var fireImmune = false
@@ -75,6 +74,8 @@ data class KryptonEntityType<T : Entity>(
             immuneTo.addAll(type.immuneTo)
             lootTable = type.lootTable
         }
+
+        override fun key(key: Key): EntityType.Builder<T> = apply { this.key = key }
 
         override fun category(category: EntityCategory): EntityType.Builder<T> = apply { this.category = category }
 
@@ -121,32 +122,6 @@ data class KryptonEntityType<T : Entity>(
     }
 
     object Factory : EntityType.Factory {
-
-        override fun <T : Entity> of(
-            key: Key,
-            category: EntityCategory,
-            summonable: Boolean,
-            fireImmune: Boolean,
-            rideable: Boolean,
-            trackingRange: Int,
-            updateInterval: Int,
-            dimensions: EntityDimensions,
-            immuneTo: Set<Block>,
-            lootTable: Key,
-            translation: TranslatableComponent
-        ): EntityType<T> = KryptonEntityType(
-            key,
-            category,
-            summonable,
-            fireImmune,
-            rideable,
-            trackingRange,
-            updateInterval,
-            dimensions,
-            immuneTo.toImmutableSet(),
-            lootTable,
-            translation
-        )
 
         override fun <T : Entity> builder(key: Key, category: EntityCategory): EntityType.Builder<T> = Builder(key, category)
     }

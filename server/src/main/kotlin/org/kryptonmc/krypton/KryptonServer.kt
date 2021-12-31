@@ -27,13 +27,16 @@ import net.kyori.adventure.text.Component
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
 import org.kryptonmc.api.Server
+import org.kryptonmc.api.adventure.Audiences
 import org.kryptonmc.api.event.server.ServerStartEvent
 import org.kryptonmc.api.event.server.ServerStopEvent
 import org.kryptonmc.api.event.server.TickEndEvent
 import org.kryptonmc.api.event.server.TickStartEvent
 import org.kryptonmc.api.scoreboard.Scoreboard
+import org.kryptonmc.api.util.register
 import org.kryptonmc.api.world.World
 import org.kryptonmc.api.world.rule.GameRules
+import org.kryptonmc.krypton.adventure.KryptonAudiencesFactory
 import org.kryptonmc.krypton.adventure.PacketGroupingAudience
 import org.kryptonmc.krypton.auth.KryptonProfileCache
 import org.kryptonmc.krypton.command.KryptonCommandManager
@@ -42,10 +45,10 @@ import org.kryptonmc.krypton.config.KryptonConfig
 import org.kryptonmc.krypton.config.category.ForwardingMode
 import org.kryptonmc.krypton.console.KryptonConsole
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
+import org.kryptonmc.krypton.event.KryptonEventManager
 import org.kryptonmc.krypton.network.SessionManager
 import org.kryptonmc.krypton.packet.PacketRegistry
 import org.kryptonmc.krypton.packet.out.play.PacketOutTimeUpdate
-import org.kryptonmc.krypton.plugin.KryptonEventManager
 import org.kryptonmc.krypton.plugin.KryptonPluginContainer
 import org.kryptonmc.krypton.plugin.KryptonPluginManager
 import org.kryptonmc.krypton.registry.KryptonRegistryManager
@@ -56,7 +59,6 @@ import org.kryptonmc.krypton.tags.KryptonTagManager
 import org.kryptonmc.krypton.user.KryptonUserManager
 import org.kryptonmc.krypton.util.KryptonFactoryProvider
 import org.kryptonmc.krypton.util.logger
-import org.kryptonmc.krypton.util.register
 import org.kryptonmc.krypton.util.spark.KryptonSparkPlugin
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.krypton.world.KryptonWorldManager
@@ -85,32 +87,32 @@ class KryptonServer(
     worldFolder: Path
 ) : Server, PacketGroupingAudience {
 
-    override val platform = KryptonPlatform
-    override val maxPlayers = config.status.maxPlayers
-    override val motd = config.status.motd
-    override val isOnline = config.server.onlineMode
-    override val address = InetSocketAddress(config.server.ip, config.server.port)
+    override val platform: KryptonPlatform = KryptonPlatform
+    override val maxPlayers: Int = config.status.maxPlayers
+    override val motd: Component = config.status.motd
+    override val isOnline: Boolean = config.server.onlineMode
+    override val address: InetSocketAddress = InetSocketAddress(config.server.ip, config.server.port)
 
-    val playerManager = PlayerManager(this)
+    val playerManager: PlayerManager = PlayerManager(this)
     override val players: List<KryptonPlayer> = Collections.unmodifiableList(playerManager.players)
-    override val sessionManager = SessionManager(this)
+    override val sessionManager: SessionManager = SessionManager(this)
 
-    override val console = KryptonConsole(this)
-    override val scoreboard = KryptonScoreboard(this)
+    override val console: KryptonConsole = KryptonConsole(this)
+    override val scoreboard: KryptonScoreboard = KryptonScoreboard(this)
 
-    override val worldManager = KryptonWorldManager(this, worldFolder)
-    override val commandManager = KryptonCommandManager
-    override val pluginManager = KryptonPluginManager
-    override val eventManager = KryptonEventManager
-    override val servicesManager = KryptonServicesManager(this)
-    override val registryManager = KryptonRegistryManager
-    override val tagManager = KryptonTagManager
-    override val scheduler = KryptonScheduler()
-    override val factoryProvider = KryptonFactoryProvider
-    override val userManager = KryptonUserManager(this)
+    override val worldManager: KryptonWorldManager = KryptonWorldManager(this, worldFolder)
+    override val commandManager: KryptonCommandManager = KryptonCommandManager
+    override val pluginManager: KryptonPluginManager = KryptonPluginManager
+    override val eventManager: KryptonEventManager = KryptonEventManager
+    override val servicesManager: KryptonServicesManager = KryptonServicesManager(this)
+    override val registryManager: KryptonRegistryManager = KryptonRegistryManager
+    override val tagManager: KryptonTagManager = KryptonTagManager
+    override val scheduler: KryptonScheduler = KryptonScheduler()
+    override val factoryProvider: KryptonFactoryProvider = KryptonFactoryProvider
+    override val userManager: KryptonUserManager = KryptonUserManager(this)
 
     @Volatile
-    var isRunning = true
+    var isRunning: Boolean = true
         private set
     private val sparkPlugin = KryptonSparkPlugin(this, Path.of("plugins").resolve("spark"))
     override val spark: Spark
@@ -124,7 +126,9 @@ class KryptonServer(
     private var oversleepFactor = 0L
 
     init {
+        instance = this
         KryptonFactoryProvider.register<Scoreboard.Factory>(KryptonScoreboard.Factory(this))
+        KryptonFactoryProvider.register<Audiences.Factory>(KryptonAudiencesFactory(this))
     }
 
     // The order of loading here is pretty important, as some things depend on
@@ -385,5 +389,15 @@ class KryptonServer(
 
         @JvmField
         val LOGGER: Logger = logger<KryptonServer>()
+
+        @Volatile
+        private var instance: KryptonServer? = null
+
+        // This is a massive hack, and even writing this makes me cringe, but we need static access in places.
+        // This is internal to stop dependents using it from Kotlin, and synthetic to stop dependents using it from Java.
+        // Seriously, don't use this.
+        @JvmStatic
+        @JvmSynthetic
+        internal fun get(): KryptonServer = requireNotNull(instance) { "KryptonServer.get() called before server was loaded!" }
     }
 }

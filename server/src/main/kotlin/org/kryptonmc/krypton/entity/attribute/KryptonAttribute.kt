@@ -36,14 +36,14 @@ data class KryptonAttribute(
     private val callback: (KryptonAttribute) -> Unit
 ) : Attribute {
 
-    val modifiersByOperation = mutableMapOf<ModifierOperation, MutableSet<AttributeModifier>>()
+    val modifiersByOperation: MutableMap<ModifierOperation, MutableSet<AttributeModifier>> = mutableMapOf()
     private val modifiersById = Object2ObjectArrayMap<UUID, AttributeModifier>()
     private val permanentModifiers = ObjectArraySet<AttributeModifier>()
     override val modifiers: Collection<AttributeModifier> = Collections.unmodifiableCollection(modifiersById.values)
 
     private var dirty = true
     private var cachedValue = 0.0
-    override var baseValue = type.defaultBase
+    override var baseValue: Double = type.defaultBase
         set(value) {
             if (field == value) return
             field = value
@@ -100,7 +100,7 @@ data class KryptonAttribute(
 
     override fun modifier(uuid: UUID): AttributeModifier? = modifiersById[uuid]
 
-    override fun modifiers(operation: ModifierOperation) = modifiersByOperation.getOrPut(operation) { mutableSetOf() }
+    override fun modifiers(operation: ModifierOperation): MutableSet<AttributeModifier> = modifiersByOperation.getOrPut(operation) { mutableSetOf() }
 
     override fun addModifier(operation: ModifierOperation, modifier: AttributeModifier) {
         require(modifiersById.putIfAbsent(modifier.uuid, modifier) == null) { "The modifier is already applied to this attribute!" }

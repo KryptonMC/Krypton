@@ -9,15 +9,38 @@
 package org.kryptonmc.api.item.meta
 
 import net.kyori.adventure.text.Component
+import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.item.data.ItemFlag
+import java.util.function.Consumer
 
 /**
  * An item meta subtype that changes all of the returns of functions in item
  * meta to a generic type to avoid all subtypes having to override all of the
  * functions.
  */
-public sealed interface ScopedItemMeta<I : ItemMeta> : ItemMeta {
+public sealed interface ScopedItemMeta<B : ItemMetaBuilder<B, I>, I : ItemMeta> : ItemMeta, ItemMetaBuilder.Provider<B> {
+
+    /**
+     * Creates new item metadata from the result of applying the given
+     * [builder].
+     *
+     * @param builder the builder function to apply
+     * @return new item metadata
+     */
+    @JvmSynthetic
+    @Contract("_ -> new", pure = true)
+    public fun with(builder: B.() -> Unit): I = toBuilder().apply(builder).build()
+
+    /**
+     * Creates new item metadata from the result of applying the given
+     * [builder].
+     *
+     * @param builder the builder function to apply
+     * @return new item metadata
+     */
+    @Contract("_ -> new", pure = true)
+    public fun with(builder: Consumer<B>): I = with { builder.accept(this) }
 
     override fun withDamage(damage: Int): I
 

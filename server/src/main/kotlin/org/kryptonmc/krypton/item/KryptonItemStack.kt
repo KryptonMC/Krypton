@@ -29,7 +29,8 @@ import org.kryptonmc.krypton.item.meta.AbstractItemMeta
 import org.kryptonmc.krypton.item.meta.KryptonItemMeta
 import org.kryptonmc.nbt.CompoundTag
 
-class KryptonItemStack(
+@JvmRecord
+data class KryptonItemStack(
     override val type: ItemType,
     override val amount: Int,
     override val meta: AbstractItemMeta<*>
@@ -61,8 +62,6 @@ class KryptonItemStack(
         return null
     }
 
-    override fun with(builder: ItemStack.Builder.() -> Unit): ItemStack = toBuilder().apply(builder).build()
-
     override fun withType(type: ItemType): KryptonItemStack {
         if (type == this.type) return this
         return KryptonItemStack(type, amount, meta)
@@ -90,22 +89,6 @@ class KryptonItemStack(
     }
 
     override fun toBuilder(): Builder = Builder(this)
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-        return type == (other as KryptonItemStack).type && amount == other.amount && meta == other.meta
-    }
-
-    override fun hashCode(): Int {
-        var result = 1
-        result = 31 * result + type.hashCode()
-        result = 31 * result + amount.hashCode()
-        result = 31 * result + meta.hashCode()
-        return result
-    }
-
-    override fun toString(): String = "KryptonItemStack(type=$type, amount=$amount, meta=$meta)"
 
     class Builder(
         private var type: ItemType = ItemTypes.AIR,

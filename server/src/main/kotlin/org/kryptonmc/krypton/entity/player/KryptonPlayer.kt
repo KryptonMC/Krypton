@@ -113,6 +113,7 @@ import org.kryptonmc.krypton.util.serialization.Codecs
 import org.kryptonmc.krypton.util.serialization.encode
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.krypton.world.chunk.ChunkPosition
+import org.kryptonmc.krypton.world.scoreboard.KryptonScoreboard
 import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.IntTag
 import org.kryptonmc.nbt.StringTag
@@ -136,48 +137,48 @@ class KryptonPlayer(
     override val address: InetSocketAddress
 ) : KryptonLivingEntity(world, EntityTypes.PLAYER, ATTRIBUTES), Player, KryptonEquipable {
 
-    var permissionFunction = PermissionFunction.ALWAYS_NOT_SET
+    var permissionFunction: PermissionFunction = DEFAULT_PERMISSION_FUNCTION
 
-    override val name = Component.text(profile.name)
+    override val name: Component = Component.text(profile.name)
     override var uuid: UUID
         get() = profile.uuid
         set(_) = Unit // Player UUIDs are read only.
 
     // This is a bit hacky, but ensures that data will never be sent in the wrong order for players.
     @Volatile
-    var isLoaded = false
+    var isLoaded: Boolean = false
 
-    override var canFly = false
+    override var canFly: Boolean = false
         set(value) {
             field = value
             if (!isLoaded) return
             onAbilitiesUpdate()
         }
-    override var canBuild = false
+    override var canBuild: Boolean = false
         set(value) {
             field = value
             if (!isLoaded) return
             onAbilitiesUpdate()
         }
-    override var canInstantlyBuild = false
+    override var canInstantlyBuild: Boolean = false
         set(value) {
             field = value
             if (!isLoaded) return
             onAbilitiesUpdate()
         }
-    override var walkingSpeed = 0.1F
+    override var walkingSpeed: Float = 0.1F
         set(value) {
             field = value
             if (!isLoaded) return
             onAbilitiesUpdate()
         }
-    override var flyingSpeed = 0.05F
+    override var flyingSpeed: Float = 0.05F
         set(value) {
             field = value
             if (!isLoaded) return
             onAbilitiesUpdate()
         }
-    override var isFlying = false
+    override var isFlying: Boolean = false
         set(value) {
             field = value
             if (!isLoaded) return
@@ -206,25 +207,26 @@ class KryptonPlayer(
                 if (chestplate.type === ItemTypes.ELYTRA && chestplate.meta.damage < chestplate.type.durability - 1) super.isGliding = true
             }
         }
-    override val inventory = KryptonPlayerInventory(this)
+    override val inventory: KryptonPlayerInventory = KryptonPlayerInventory(this)
     override val handSlots: Iterable<KryptonItemStack>
         get() = sequenceOf(inventory.mainHand, inventory.offHand).asIterable()
     override val armorSlots: Iterable<KryptonItemStack>
         get() = inventory.armor
 
-    override val scoreboard = world.scoreboard
+    override val scoreboard: KryptonScoreboard = world.scoreboard
     override var locale: Locale? = null
-    override val statistics = KryptonStatisticsTracker(this, server.worldManager.statsFolder.resolve("$uuid.json"))
-    override val cooldowns = KryptonCooldownTracker(this)
-    override val teamRepresentation = name
-    override val pushedByFluid = !isFlying
+    override val statistics: KryptonStatisticsTracker = KryptonStatisticsTracker(this, server.worldManager.statsFolder.resolve("$uuid.json"))
+    override val cooldowns: KryptonCooldownTracker = KryptonCooldownTracker(this)
+    override val teamRepresentation: Component = name
+    override val pushedByFluid: Boolean
+        get() = !isFlying
 
     // TODO: Per-player view distance, see issue #49
-    override val viewDistance = server.config.world.viewDistance
-    override var chatVisibility = ChatVisibility.FULL
-    override var filterText = false
-    override var allowsListing = true
-    override var time = 0L
+    override val viewDistance: Int = server.config.world.viewDistance
+    override var chatVisibility: ChatVisibility = ChatVisibility.FULL
+    override var filterText: Boolean = false
+    override var allowsListing: Boolean = true
+    override var time: Long = 0L
 
     private var camera: KryptonEntity = this
         set(value) {
@@ -269,7 +271,7 @@ class KryptonPlayer(
         get() = afkService.isAfk(this)
         set(value) = afkService.setAfk(this, value)
 
-    val blockHandler = PlayerBlockHandler(this)
+    val blockHandler: PlayerBlockHandler = PlayerBlockHandler(this)
 
     private var respawnPosition: Vector3i? = null
     private var respawnForced = false
@@ -298,7 +300,7 @@ class KryptonPlayer(
             session.send(PacketOutUpdateHealth(health, foodLevel, foodSaturationLevel))
         }
 
-    var foodTickTimer: Int = 0
+    private var foodTickTimer = 0
 
     // 0 is the default vanilla food exhaustion level
     override var foodExhaustionLevel: Float = 0f
@@ -323,10 +325,10 @@ class KryptonPlayer(
     override var mainHand: MainHand
         get() = if (data[MetadataKeys.PLAYER.MAIN_HAND] == 0.toByte()) MainHand.LEFT else MainHand.RIGHT
         set(value) = data.set(MetadataKeys.PLAYER.MAIN_HAND, if (value == MainHand.LEFT) 0 else 1)
-    var leftShoulder: CompoundTag
+    private var leftShoulder: CompoundTag
         get() = data[MetadataKeys.PLAYER.LEFT_SHOULDER]
         set(value) = data.set(MetadataKeys.PLAYER.LEFT_SHOULDER, value)
-    var rightShoulder: CompoundTag
+    private var rightShoulder: CompoundTag
         get() = data[MetadataKeys.PLAYER.RIGHT_SHOULDER]
         set(value) = data.set(MetadataKeys.PLAYER.RIGHT_SHOULDER, value)
 
@@ -711,16 +713,19 @@ class KryptonPlayer(
     }
 
     override fun showTitle(title: Title) {
-        title.times()?.let { session.send(PacketOutTitleTimes(it)) }
+        if (title.times() != null) session.send(PacketOutTitleTimes(title.times()!!))
         session.send(PacketOutSubTitle(title.subtitle()))
         session.send(PacketOutTitle(title.title()))
     }
 
     override fun <T> sendTitlePart(part: TitlePart<T>, value: T) {
-        if (part === TitlePart.TITLE) session.send(PacketOutTitle(value as Component))
-        if (part === TitlePart.SUBTITLE) session.send(PacketOutSubTitle(value as Component))
-        if (part === TitlePart.TIMES) session.send(PacketOutTitleTimes(value as Title.Times))
-        throw IllegalArgumentException("Unknown TitlePart")
+        val packet = when (part) {
+            TitlePart.TITLE -> PacketOutTitle(value as Component)
+            TitlePart.SUBTITLE -> PacketOutSubTitle(value as Component)
+            TitlePart.TIMES -> PacketOutTitleTimes(value as Title.Times)
+            else -> throw IllegalArgumentException("Unknown title part $part!")
+        }
+        session.send(packet)
     }
 
     fun sendTitle(title: Component) {
@@ -833,12 +838,16 @@ class KryptonPlayer(
 
         if (firstLoad) {
             for (x in centralX - radius..centralX + radius) {
-                for (z in centralZ - radius..centralZ + radius) newChunks.add(ChunkPosition.toLong(x, z))
+                for (z in centralZ - radius..centralZ + radius) {
+                    newChunks.add(ChunkPosition.toLong(x, z))
+                }
             }
         } else if (abs(centralX - previousCentralX) > radius || abs(centralZ - previousCentralZ) > radius) {
             visibleChunks.clear()
             for (x in centralX - radius..centralX + radius) {
-                for (z in centralZ - radius..centralZ + radius) newChunks.add(ChunkPosition.toLong(x, z))
+                for (z in centralZ - radius..centralZ + radius) {
+                    newChunks.add(ChunkPosition.toLong(x, z))
+                }
             }
         } else if (previousCentralX != centralX || previousCentralZ != centralZ) {
             previousChunks = LongArraySet(visibleChunks)
@@ -848,7 +857,9 @@ class KryptonPlayer(
                     if (visibleChunks.contains(pos)) previousChunks.remove(pos) else newChunks.add(pos)
                 }
             }
-        } else return
+        } else {
+            return
+        }
 
         previousCentralX = centralX
         previousCentralZ = centralZ
@@ -875,7 +886,7 @@ class KryptonPlayer(
             session.send(PacketOutUpdateViewPosition(centralX, centralZ))
             newChunks.forEach {
                 val chunk = world.chunkManager[it] ?: return@forEach
-                session.write(chunk.packet())
+                session.write(chunk.cachedPacket)
             }
 
             if (previousChunks == null) return@thenRun
@@ -954,7 +965,8 @@ class KryptonPlayer(
             .add(AttributeTypes.LUCK)
             .build()
 
+        private val DEFAULT_PERMISSION_FUNCTION = PermissionFunction.ALWAYS_NOT_SET
         @JvmField
-        val DEFAULT_PERMISSIONS: PermissionProvider = PermissionProvider { PermissionFunction.ALWAYS_NOT_SET }
+        val DEFAULT_PERMISSIONS: PermissionProvider = PermissionProvider { DEFAULT_PERMISSION_FUNCTION }
     }
 }

@@ -20,6 +20,6 @@ import org.kryptonmc.api.entity.player.Player
  */
 public class InteractEntityEvent(
     player: Player,
-    public val target: Entity,
-    public val hand: Hand
+    @get:JvmName("target") public val target: Entity,
+    @get:JvmName("hand") public val hand: Hand
 ) : InteractEvent(player, Type.INTERACT_ON_ENTITY)

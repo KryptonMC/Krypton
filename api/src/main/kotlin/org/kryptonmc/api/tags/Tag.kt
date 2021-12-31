@@ -14,16 +14,19 @@ import net.kyori.adventure.key.Keyed
  * A game tag that may be applied to certain objects to denote specific
  * features or categories that something may have or be placed in to.
  */
+@Suppress("INAPPLICABLE_JVM_NAME")
 public interface Tag<T : Any> : Keyed {
 
     /**
      * The type of tag this tag is.
      */
+    @get:JvmName("type")
     public val type: TagType<T>
 
     /**
      * All of the values that are under this tag.
      */
+    @get:JvmName("values")
     public val values: Collection<T>
 
     /**

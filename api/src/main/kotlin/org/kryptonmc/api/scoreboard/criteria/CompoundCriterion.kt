@@ -18,5 +18,5 @@ public interface CompoundCriterion : Criterion {
      * The children of this compound criterion.
      */
     @get:JvmName("children")
-    public val children: List<Criterion>
+    public val children: Set<Criterion>
 }

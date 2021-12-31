@@ -25,8 +25,8 @@ import org.kryptonmc.api.world.biome.Biome
 
 object KryptonBiomes {
 
-    @JvmField val THE_VOID = register(BiomeKeys.THE_VOID, OverworldBiomes::theVoid)
-    @JvmField val PLAINS = register(BiomeKeys.PLAINS, OverworldBiomes::plains)
+    @JvmField val THE_VOID: KryptonBiome = register(BiomeKeys.THE_VOID, OverworldBiomes::theVoid)
+    @JvmField val PLAINS: KryptonBiome = register(BiomeKeys.PLAINS, OverworldBiomes::plains)
 
     init {
         register(BiomeKeys.SUNFLOWER_PLAINS, OverworldBiomes::sunflowerPlains)

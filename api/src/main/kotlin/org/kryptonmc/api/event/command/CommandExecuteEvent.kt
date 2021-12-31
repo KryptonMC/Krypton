@@ -8,6 +8,7 @@
  */
 package org.kryptonmc.api.event.command
 
+import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.command.Sender
 import org.kryptonmc.api.event.ResultedEvent
 
@@ -17,11 +18,13 @@ import org.kryptonmc.api.event.ResultedEvent
  * @param sender the sender that executed the command
  * @param command the command that was executed
  */
-public class CommandExecuteEvent(
-    public val sender: Sender,
-    public val command: String
+@Suppress("INAPPLICABLE_JVM_NAME")
+public data class CommandExecuteEvent(
+    @get:JvmName("sender") public val sender: Sender,
+    @get:JvmName("command") public val command: String
 ) : ResultedEvent<CommandResult> {
 
+    @get:JvmName("result")
     override var result: CommandResult = CommandResult.allowed()
 }
 
@@ -36,8 +39,6 @@ public data class CommandResult(
     public val command: String? = null
 ) : ResultedEvent.Result {
 
-    override fun toString(): String = if (isAllowed) "allowed" else "denied"
-
     public companion object {
 
         private val ALLOWED = CommandResult(true, null)
@@ -50,6 +51,7 @@ public data class CommandResult(
          * @return the allowed result
          */
         @JvmStatic
+        @Contract(pure = true)
         public fun allowed(): CommandResult = ALLOWED
 
         /**
@@ -59,6 +61,7 @@ public data class CommandResult(
          * @return the denied result
          */
         @JvmStatic
+        @Contract(pure = true)
         public fun denied(): CommandResult = DENIED
 
         /**
@@ -69,6 +72,7 @@ public data class CommandResult(
          * @return a new allowed result
          */
         @JvmStatic
+        @Contract("_ -> new", pure = true)
         public fun command(newCommand: String): CommandResult = CommandResult(true, newCommand)
     }
 }

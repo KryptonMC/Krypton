@@ -10,62 +10,41 @@ package org.kryptonmc.api.effect.particle.builder
 
 import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.effect.particle.ParticleDsl
-import org.kryptonmc.api.effect.particle.ParticleEffect
-import org.kryptonmc.api.effect.particle.ParticleType
-import org.kryptonmc.api.effect.particle.data.VibrationParticleData
 import org.spongepowered.math.vector.Vector3d
 
 /**
- * Allows building a [ParticleEffect] for vibration particle effects using
- * method chaining.
+ * A builder for building vibration particle effects.
  */
-public class VibrationParticleEffectBuilder @JvmOverloads constructor(
-    type: ParticleType,
-    quantity: Int = 1,
-    offset: Vector3d = Vector3d.ZERO,
-    longDistance: Boolean = false,
-    private var origin: Vector3d = Vector3d.ZERO,
-    private var destination: Vector3d = Vector3d.ZERO,
-    private var ticks: Int = 0
-) : AbstractParticleEffectBuilder<VibrationParticleEffectBuilder>(type, quantity, offset, longDistance) {
+public interface VibrationParticleEffectBuilder : BaseParticleEffectBuilder<VibrationParticleEffectBuilder> {
 
     /**
      * Sets the origin location from the given [position].
      *
      * @param position the origin position
+     * @return this builder
      */
     @ParticleDsl
     @Contract("_ -> this", mutates = "this")
-    public fun origin(position: Vector3d): VibrationParticleEffectBuilder = apply { origin = position }
+    public fun origin(position: Vector3d): VibrationParticleEffectBuilder
 
     /**
      * Sets the destination location from the given [position].
      *
      * @param position the destination position
+     * @return this builder
      */
     @ParticleDsl
     @Contract("_ -> this", mutates = "this")
-    public fun destination(position: Vector3d): VibrationParticleEffectBuilder = apply { origin = position }
+    public fun destination(position: Vector3d): VibrationParticleEffectBuilder
 
     /**
      * Sets the amount of ticks it will take to vibrate from the
      * origin to the destination.
      *
      * @param ticks the amount of ticks
+     * @return this builder
      */
     @ParticleDsl
     @Contract("_ -> this", mutates = "this")
-    public fun ticks(ticks: Int): VibrationParticleEffectBuilder = apply { this.ticks = ticks }
-
-    /**
-     * Builds a new [ParticleEffect] from the settings of this builder.
-     */
-    @Contract("_ -> new", pure = true)
-    override fun build(): ParticleEffect = ParticleEffect.of(
-        type,
-        quantity,
-        offset,
-        longDistance,
-        VibrationParticleData.of(origin, destination, ticks)
-    )
+    public fun ticks(ticks: Int): VibrationParticleEffectBuilder
 }

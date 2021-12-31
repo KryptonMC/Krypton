@@ -21,6 +21,7 @@ package org.kryptonmc.krypton.config.category
 import org.spongepowered.configurate.objectmapping.ConfigSerializable
 import org.spongepowered.configurate.objectmapping.meta.Comment
 
+// Not a big fan of top-level properties, but this looks way better than the alternative.
 private const val MODE_COMMENT = """
 The method to use for forwarding a connecting user's information on
 to Krypton from a proxy server. Supported values are:

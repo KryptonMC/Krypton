@@ -68,7 +68,7 @@ class PacketDecompressor(private val compressor: VelocityCompressor, var thresho
 
     companion object {
 
-        const val NETTY_NAME = "decompressor"
+        const val NETTY_NAME: String = "decompressor"
         // Vanilla limit is 2 MB, but we use 16 MB because that's the maximum size we can get away with
         // This isn't just magic! Velocity supports 16 MB as an extended maximum, and so that's what we do as well.
         private const val PROTOCOL_MAX_SIZE = 16 * 1024 * 1024

@@ -8,6 +8,7 @@
  */
 package org.kryptonmc.api.effect.particle.data
 
+import org.jetbrains.annotations.Contract
 import org.spongepowered.math.vector.Vector3d
 
 /**
@@ -47,7 +48,11 @@ public interface VibrationParticleData : ParticleData {
          * @return new vibration particle effect data
          */
         @JvmStatic
-        public fun of(origin: Vector3d, destination: Vector3d, ticks: Int): VibrationParticleData =
-            ParticleData.FACTORY.vibration(origin, destination, ticks)
+        @Contract("_ -> new", pure = true)
+        public fun of(
+            origin: Vector3d,
+            destination: Vector3d,
+            ticks: Int
+        ): VibrationParticleData = ParticleData.FACTORY.vibration(origin, destination, ticks)
     }
 }

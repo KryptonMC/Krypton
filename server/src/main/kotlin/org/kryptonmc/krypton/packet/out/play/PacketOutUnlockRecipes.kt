@@ -20,6 +20,7 @@ package org.kryptonmc.krypton.packet.out.play
 
 import io.netty.buffer.ByteBuf
 import net.kyori.adventure.key.Key
+import org.kryptonmc.krypton.packet.CachedPacket
 import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.util.writeKey
 import org.kryptonmc.krypton.util.writeVarInt
@@ -74,5 +75,12 @@ data class PacketOutUnlockRecipes(
             @JvmStatic
             fun fromId(id: Int): Action? = BY_ID.getOrNull(id)
         }
+    }
+
+    companion object {
+
+        // TODO: Remove this when we actually bother with the recipe book
+        @JvmField
+        val CACHED_INIT: CachedPacket = CachedPacket {  PacketOutUnlockRecipes(Action.INIT) }
     }
 }

@@ -128,8 +128,6 @@ class EntityManager(val world: KryptonWorld) : AutoCloseable {
         if (version < KryptonPlatform.worldVersion && !world.server.useDataConverter) {
             LOGGER.error("The server attempted to load a chunk from a earlier version of Minecraft when data conversion is disabled!")
             LOGGER.info("If you would like to use data conversion, provide the --upgrade-data or --use-data-converter flag(s) to the JAR on startup.")
-            LOGGER.warn("Beware that this is an experimental tool and has known issues with pre-1.13 worlds.")
-            LOGGER.warn("USE THIS TOOL AT YOUR OWN RISK. If the tool corrupts your data, that is YOUR responsibility!")
             error("Tried to load old chunk from version $version when data conversion is disabled!")
         }
 

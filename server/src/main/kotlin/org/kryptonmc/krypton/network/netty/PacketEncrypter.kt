@@ -45,6 +45,6 @@ class PacketEncrypter(private val cipher: VelocityCipher) : MessageToMessageEnco
 
     companion object {
 
-        const val NETTY_NAME = "encrypter"
+        const val NETTY_NAME: String = "encrypter"
     }
 }

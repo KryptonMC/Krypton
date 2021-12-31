@@ -68,10 +68,11 @@ class KryptonTropicalFish(world: KryptonWorld) : KryptonSchoolingFish(world, Ent
         int("Variant", data[MetadataKeys.TROPICAL_FISH.VARIANT])
     }
 
+    /* FIXME
     override fun saveToBucket(item: KryptonItemStack) {
-        // FIXME
-//        item.meta.nbt = item.meta.nbt.putInt("BucketVariantTag", data[MetadataKeys.TROPICAL_FISH.VARIANT])
+        item.meta.nbt = item.meta.nbt.putInt("BucketVariantTag", data[MetadataKeys.TROPICAL_FISH.VARIANT])
     }
+     */
 
     companion object {
 

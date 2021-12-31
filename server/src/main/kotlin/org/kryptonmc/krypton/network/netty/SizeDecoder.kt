@@ -55,6 +55,6 @@ class SizeDecoder : ByteToMessageDecoder() {
 
     companion object {
 
-        const val NETTY_NAME = "splitter"
+        const val NETTY_NAME: String = "splitter"
     }
 }

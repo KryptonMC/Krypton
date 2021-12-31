@@ -19,10 +19,12 @@ import org.kryptonmc.api.world.World
  * @param entity the entity that was removed
  * @param world the world the entity was removed from
  */
+@Suppress("INAPPLICABLE_JVM_NAME")
 public data class EntityRemoveEvent(
     @get:JvmName("entity") public val entity: Entity,
     @get:JvmName("world") public val world: World
 ) : ResultedEvent<GenericResult> {
 
+    @get:JvmName("result")
     override var result: GenericResult = GenericResult.allowed()
 }

@@ -50,7 +50,7 @@ object BanIpCommand : InternalCommand {
             argument("target", StringArgumentType.string()) {
                 executes {
                     val server = it.source.server as? KryptonServer ?: return@executes 0
-                    banIp(server, it.argument("target"), it.source)
+                    banIp(server, it.argument("target"), it.source, "Banned by operator")
                     Command.SINGLE_SUCCESS
                 }
                 argument("reason", StringArgumentType.string()) {
@@ -65,7 +65,7 @@ object BanIpCommand : InternalCommand {
     }
 
     @JvmStatic
-    private fun banIp(server: KryptonServer, target: String, sender: Sender, reason: String = "Banned by operator") {
+    private fun banIp(server: KryptonServer, target: String, sender: Sender, reason: String) {
         val componentReason = LegacyComponentSerializer.legacySection().deserialize(reason)
         if (target.matches(IP_ADDRESS_PATTERN)) {
             // The target is an IP address

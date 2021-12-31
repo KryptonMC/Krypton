@@ -48,6 +48,6 @@ class PacketCompressor(private val compressor: VelocityCompressor, var threshold
 
     companion object {
 
-        const val NETTY_NAME = "compressor"
+        const val NETTY_NAME: String = "compressor"
     }
 }

@@ -30,7 +30,7 @@ import java.util.UUID
 
 object BossBarManager : BossBar.Listener {
 
-    private val bars: MutableMap<BossBar, BossBarHolder> = MapMaker().weakKeys().makeMap()
+    private val bars = MapMaker().weakKeys().makeMap<BossBar, BossBarHolder>()
 
     fun addBar(bar: BossBar, player: KryptonPlayer) {
         val holder = getOrCreate(bar)

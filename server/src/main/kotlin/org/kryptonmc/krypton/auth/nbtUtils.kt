@@ -30,9 +30,11 @@ fun CompoundTag.getGameProfile(key: String): GameProfile? {
     val tag = get(key) ?: return null
     if (tag is StringTag) return ApiService.profile(tag.value).get()
     if (tag !is CompoundTag) return null
+
     val name = tag.getString("Name")
     val uuid = checkNotNull(tag.getUUID("Id")) { "UUID for skull owner cannot be null!" }
     if (!tag.contains("Properties", CompoundTag.ID)) return KryptonGameProfile(name, uuid, persistentListOf())
+
     val properties = persistentListOf<ProfileProperty>().builder()
     tag.getCompound("Properties").forEachList { profileKey, list ->
         list.forEachCompound {

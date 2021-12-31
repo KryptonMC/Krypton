@@ -23,26 +23,28 @@ import org.kryptonmc.api.registry.Registry
 import org.kryptonmc.api.statistic.Statistic
 import org.kryptonmc.api.statistic.StatisticFormatter
 import org.kryptonmc.api.statistic.StatisticType
+import java.util.Collections
 import java.util.IdentityHashMap
 
 @JvmRecord
-data class KryptonStatisticType<T : Any>(
+data class KryptonStatisticType<T : Any> private constructor(
     private val key: Key,
     override val registry: Registry<T>,
-    override val statistics: MutableMap<T, Statistic<T>> = IdentityHashMap()
+    private val statisticMap: MutableMap<T, Statistic<T>> = IdentityHashMap(),
+    override val statistics: Map<T, Statistic<T>> = Collections.unmodifiableMap(statisticMap)
 ) : StatisticType<T> {
 
-    override fun contains(key: T): Boolean = statistics.containsKey(key)
+    override fun key(): Key = key
+
+    override fun contains(key: T): Boolean = statisticMap.containsKey(key)
 
     override fun get(key: T): Statistic<T> = get(key, StatisticFormatter.DEFAULT)
 
-    override fun get(key: T, formatter: StatisticFormatter): Statistic<T> = statistics.getOrPut(key) {
+    override fun get(key: T, formatter: StatisticFormatter): Statistic<T> = statisticMap.getOrPut(key) {
         KryptonStatistic(this, key, formatter)
     }
 
-    override fun iterator(): Iterator<Statistic<T>> = statistics.values.iterator()
-
-    override fun key(): Key = key
+    override fun iterator(): Iterator<Statistic<T>> = statisticMap.values.iterator()
 
     object Factory : StatisticType.Factory {
 

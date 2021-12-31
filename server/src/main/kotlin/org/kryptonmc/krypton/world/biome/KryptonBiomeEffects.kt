@@ -123,34 +123,6 @@ data class KryptonBiomeEffects(
 
     object Factory : BiomeEffects.Factory {
 
-        override fun of(
-            fogColor: Color,
-            waterColor: Color,
-            waterFogColor: Color,
-            skyColor: Color,
-            grassColorModifier: GrassColorModifier,
-            foliageColor: Color?,
-            grassColor: Color?,
-            ambientParticleSettings: AmbientParticleSettings?,
-            ambientLoopSound: SoundEvent?,
-            ambientMoodSettings: AmbientMoodSettings?,
-            ambientAdditionsSettings: AmbientAdditionsSettings?,
-            backgroundMusic: Music?
-        ): BiomeEffects = KryptonBiomeEffects(
-            fogColor,
-            waterColor,
-            waterFogColor,
-            skyColor,
-            grassColorModifier,
-            foliageColor,
-            grassColor,
-            ambientParticleSettings,
-            ambientLoopSound,
-            ambientMoodSettings,
-            ambientAdditionsSettings,
-            backgroundMusic
-        )
-
         override fun builder(): BiomeEffects.Builder = Builder()
     }
 

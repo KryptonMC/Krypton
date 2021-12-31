@@ -60,6 +60,6 @@ data class PacketOutInitializeWorldBorder(
 
     companion object {
 
-        private const val PORTAL_TELEPORT_BOUNDARY = 29_999_984
+        private const val PORTAL_TELEPORT_BOUNDARY = 29999984
     }
 }

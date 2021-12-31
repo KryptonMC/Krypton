@@ -68,10 +68,7 @@ class KryptonProfileCache(private val path: Path) : ProfileCache {
         return holder.profile
     }
 
-    override fun iterator(): Iterator<GameProfile> = profilesByUUID.values.asSequence()
-        .onEach { it.lastAccess = operations.incrementAndGet() }
-        .map(ProfileHolder::profile)
-        .iterator()
+    override fun iterator(): Iterator<GameProfile> = profiles.iterator()
 
     private fun add(holder: ProfileHolder) {
         val profile = holder.profile

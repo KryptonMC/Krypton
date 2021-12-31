@@ -32,11 +32,6 @@ class KryptonDefaultedRegistry<T : Any>(
     override val defaultValue: T
         get() = internalDefault ?: error("The default value has not been registered for registry ${key.location}!")
 
-    override fun <V : T> register(id: Int, key: ResourceKey<T>, value: V): V {
-        if (key.location == defaultKey) internalDefault = value
-        return super<KryptonRegistry>.register(id, key, value)
-    }
-
     override fun get(key: Key): T = super.get(key) ?: defaultValue
 
     override fun get(id: Int): T = super.get(id) ?: defaultValue
@@ -44,4 +39,9 @@ class KryptonDefaultedRegistry<T : Any>(
     override fun get(key: ResourceKey<T>): T = super.get(key) ?: defaultValue
 
     override fun get(value: T): Key = super.get(value) ?: defaultKey
+
+    override fun <V : T> register(id: Int, key: ResourceKey<T>, value: V): V {
+        if (key.location == defaultKey) internalDefault = value
+        return super<KryptonRegistry>.register(id, key, value)
+    }
 }

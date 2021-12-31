@@ -18,9 +18,8 @@
  */
 package org.kryptonmc.krypton.network.data
 
-import com.google.gson.GsonBuilder
-import me.bardy.gsonkt.fromJson
-import me.bardy.gsonkt.registerTypeHierarchyAdapter
+import kotlinx.collections.immutable.PersistentList
+import kotlinx.collections.immutable.persistentListOf
 import org.kryptonmc.krypton.auth.KryptonProfileProperty
 import org.kryptonmc.krypton.util.MojangUUIDTypeAdapter
 import java.util.UUID
@@ -30,20 +29,13 @@ data class LegacyForwardedData(
     val originalAddress: String,
     override val forwardedAddress: String,
     override val uuid: UUID,
-    override val properties: List<KryptonProfileProperty>
+    override val properties: PersistentList<KryptonProfileProperty>
 ) : ForwardedData {
 
     override val forwardedPort: Int
         get() = -1
 
     companion object {
-
-        // The reason why we register a final class as a hierarchy adapter is because the
-        // properties list above gets resolved as a List<? extends KryptonProfileProperty>
-        // on the JVM, and having this use the standard adapter gives us issues in deserialization.
-        private val GSON = GsonBuilder()
-            .registerTypeHierarchyAdapter<KryptonProfileProperty>(KryptonProfileProperty)
-            .create()
 
         @JvmStatic
         fun parse(string: String): LegacyForwardedData? {
@@ -54,7 +46,7 @@ data class LegacyForwardedData(
                 split[0],
                 split[1],
                 MojangUUIDTypeAdapter.fromString(split[2]),
-                if (split.size > 3) GSON.fromJson(split[3]) else emptyList()
+                if (split.size > 3) KryptonProfileProperty.fromJsonList(split[3]) else persistentListOf()
             )
         }
     }
