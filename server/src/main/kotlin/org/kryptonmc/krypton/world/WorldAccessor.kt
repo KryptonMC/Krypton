@@ -19,6 +19,7 @@
 package org.kryptonmc.krypton.world
 
 import org.kryptonmc.api.world.biome.Biome
+import org.kryptonmc.api.world.biome.BiomeContainer
 import org.kryptonmc.api.world.dimension.DimensionType
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.world.biome.BiomeManager
@@ -30,7 +31,7 @@ import org.kryptonmc.krypton.world.data.WorldData
 import org.spongepowered.math.vector.Vector3i
 import java.util.Random
 
-interface WorldAccessor : BlockAccessor, NoiseBiomeSource {
+interface WorldAccessor : BlockAccessor, NoiseBiomeSource, BiomeContainer {
 
     val server: KryptonServer
     val world: KryptonWorld
@@ -59,7 +60,9 @@ interface WorldAccessor : BlockAccessor, NoiseBiomeSource {
 
     fun getHeight(type: Heightmap.Type, x: Int, z: Int): Int
 
-    fun getBiome(x: Int, y: Int, z: Int): Biome = biomeManager[x, y, z]
+    override fun getBiome(x: Int, y: Int, z: Int): Biome = biomeManager[x, y, z]
+
+    override fun getBiome(position: Vector3i): Biome = getBiome(position.x(), position.y(), position.z())
 
     fun getUncachedNoiseBiome(x: Int, y: Int, z: Int): Biome
 

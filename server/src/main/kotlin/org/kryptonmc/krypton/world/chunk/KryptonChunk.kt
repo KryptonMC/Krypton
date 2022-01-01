@@ -79,8 +79,6 @@ class KryptonChunk(
         return Blocks.AIR
     }
 
-    override fun getBlock(position: Vector3i): Block = getBlock(position.x(), position.y(), position.z())
-
     @Suppress("UNCHECKED_CAST")
     override fun <T : BlockEntity> getBlockEntity(x: Int, y: Int, z: Int): T? {
         var entity = blockEntities[encodePosition(x, y, z)]
@@ -93,8 +91,6 @@ class KryptonChunk(
         return entity as T
     }
 
-    override fun <T : BlockEntity> getBlockEntity(position: Vector3i): T? = getBlockEntity(position.x(), position.y(), position.z())
-
     override fun getFluid(x: Int, y: Int, z: Int): Fluid {
         val sectionIndex = sectionIndex(y)
         if (sectionIndex >= 0 && sectionIndex < sections.size) {
@@ -103,8 +99,6 @@ class KryptonChunk(
         }
         return Fluids.EMPTY
     }
-
-    override fun getFluid(position: Vector3i): Fluid = getFluid(position.x(), position.y(), position.z())
 
     override fun setBlock(x: Int, y: Int, z: Int, block: Block): Boolean {
         val section = sections[sectionIndex(y)]
@@ -141,8 +135,6 @@ class KryptonChunk(
         cachedPacket.invalidate()
         return true
     }
-
-    override fun setBlock(position: Vector3i, block: Block): Boolean = setBlock(position.x(), position.y(), position.z(), block)
 
     override fun removeBlockEntity(x: Int, y: Int, z: Int) {
         blockEntities.remove(encodePosition(x, y, z))

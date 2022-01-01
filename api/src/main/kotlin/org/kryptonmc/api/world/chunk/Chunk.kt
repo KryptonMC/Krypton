@@ -10,16 +10,17 @@ package org.kryptonmc.api.world.chunk
 
 import org.kryptonmc.api.block.BlockContainer
 import org.kryptonmc.api.fluid.FluidContainer
-import org.kryptonmc.api.block.entity.BlockEntity
+import org.kryptonmc.api.block.entity.BlockEntityContainer
 import org.kryptonmc.api.world.World
 import org.kryptonmc.api.world.biome.Biome
+import org.kryptonmc.api.world.biome.BiomeContainer
 import org.spongepowered.math.vector.Vector3i
 
 /**
  * Represents a chunk, or a 16 x 16 x world height area of blocks.
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
-public interface Chunk : BlockContainer, FluidContainer {
+public interface Chunk : BlockContainer, FluidContainer, BlockEntityContainer, BiomeContainer {
 
     /**
      * The world this chunk is in.
@@ -66,43 +67,4 @@ public interface Chunk : BlockContainer, FluidContainer {
      */
     @get:JvmName("lastUpdate")
     public val lastUpdate: Long
-
-    /**
-     * Gets the block entity at the given [x], [y], and [z] coordinates, or
-     * returns null if there is no block entity at the given [x], [y], and [z]
-     * coordinates.
-     *
-     * @param x the X coordinate
-     * @param y the Y coordinate
-     * @param z the Z coordinate
-     * @return the block entity at the coordinates, or null if not present
-     */
-    public fun <T : BlockEntity> getBlockEntity(x: Int, y: Int, z: Int): T?
-
-    /**
-     * Gets the block entity at the given [position], or returns null if there
-     * is no block entity at the given [position].
-     *
-     * @param position the position of the block entity
-     * @return the block entity at the position, or null if not present
-     */
-    public fun <T : BlockEntity> getBlockEntity(position: Vector3i): T?
-
-    /**
-     * Gets the biome at the given [x], [y], and [z] coordinates.
-     *
-     * @param x the X coordinate
-     * @param y the Y coordinate
-     * @param z the Z coordinate
-     * @return the biome
-     */
-    public fun getBiome(x: Int, y: Int, z: Int): Biome
-
-    /**
-     * Gets the biome at the given [position].
-     *
-     * @param position the position
-     * @return the biome at the given position
-     */
-    public fun getBiome(position: Vector3i): Biome
 }
