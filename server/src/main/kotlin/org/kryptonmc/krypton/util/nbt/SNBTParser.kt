@@ -120,7 +120,7 @@ class SNBTParser(private val reader: StringReader) {
                 reader.cursor = cursor
                 throw ERROR_INSERT_MIXED_LIST.createWithContext(reader, tagType.name, Types.of(type).name)
             }
-            list += tag
+            list.add(tag)
             if (!reader.hasElementSeparator()) break
             if (!reader.canRead()) throw ERROR_EXPECTED_VALUE.createWithContext(reader)
         }
