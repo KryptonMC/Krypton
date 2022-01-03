@@ -3,7 +3,7 @@
  * licensed under the GNU General Public License v3.0
  *
  * Copyright (C) 2018 Velocity Contributors
- * Copyright (C) 2021 KryptonMC and the contributors of the Krypton project
+ * Copyright (C) 2021-2022 KryptonMC and the contributors of the Krypton project
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

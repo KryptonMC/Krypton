@@ -105,7 +105,7 @@ license {
         "**/*.conf",
         "**/*.json",
         // Velocity derivatives, with a special header
-        "**/plugin/KryptonEventManager.kt",
+        "**/event/KryptonEventManager.kt",
         "**/plugin/KryptonPluginContainer.kt",
         "**/plugin/KryptonPluginManager.kt",
         "**/plugin/PluginClassLoader.kt",
