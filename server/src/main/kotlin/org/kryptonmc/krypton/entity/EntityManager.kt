@@ -65,7 +65,7 @@ class EntityManager(val world: KryptonWorld) : AutoCloseable {
 
     fun spawn(entity: KryptonEntity) {
         if (entity.world != world) return
-        if (entity.uuid in byUUID.keys) {
+        if (byUUID.containsKey(entity.uuid)) {
             LOGGER.error("UUID collision! UUID for entity with ID ${entity.id} collided with entity with ID ${byUUID[entity.uuid]?.id}!")
             LOGGER.warn("Refusing to spawn entity with ID ${entity.id}.")
             return

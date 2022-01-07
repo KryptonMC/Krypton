@@ -92,6 +92,7 @@ class SessionHandler(private val server: KryptonServer) : SimpleChannelInboundHa
                     if (tickBuffer.refCnt() <= 0) return
                     val body = packet.body
                     tickBuffer.writeBytes(body, body.readerIndex(), body.readableBytes())
+                    body.release()
                 }
             }
             else -> throw UnsupportedOperationException("Unsupported message type $packet!")

@@ -20,42 +20,37 @@ package org.kryptonmc.krypton.packet
 
 import io.netty.buffer.ByteBuf
 import org.kryptonmc.krypton.util.frame
+import java.lang.invoke.MethodHandles
 import java.lang.ref.SoftReference
 import java.util.concurrent.atomic.AtomicIntegerFieldUpdater
 import java.util.function.Supplier
 
+@Suppress("UNCHECKED_CAST", "unused")
 class CachedPacket(private val supplier: Supplier<Packet>) : GenericPacket {
 
-    // 0 means that the reference needs to be updated
-    // Anything else (currently 1) means that the packet is up-to-date
-    @Volatile
-    private var updated = 0
     private var packet: SoftReference<FramedPacket>? = null
 
     val body: ByteBuf
         get() {
-            val cache = updatedCache() ?: return supplier.get().frame()
-            return cache.body
+            val cache = updatedCache()
+            return cache?.body ?: supplier.get().frame()
         }
 
     fun get(): GenericPacket {
-        if (updated != 1) return supplier.get()
-        val cached = packet?.get()
-        if (cached != null) return cached
-        return supplier.get()
+        val ref = PACKET.getAcquire(this) as? SoftReference<FramedPacket> ?: return supplier.get()
+        return ref.get() ?: supplier.get()
     }
 
     fun invalidate() {
-        updated = 0
+        PACKET.setRelease(this, null)
     }
 
     private fun updatedCache(): FramedPacket? {
-        val reference = packet
+        val ref = PACKET.getAcquire(this) as? SoftReference<FramedPacket>
         var cached: FramedPacket? = null
-        if (updated == 0 || reference == null || reference.get() == null) {
+        if (ref?.get() == null) {
             cached = FramedPacket(supplier.get().frame())
-            packet = SoftReference(cached)
-            UPDATER.compareAndSet(this, 0, 1)
+            PACKET.setRelease(this, SoftReference(cached))
         }
         return cached
     }
@@ -63,6 +58,6 @@ class CachedPacket(private val supplier: Supplier<Packet>) : GenericPacket {
     companion object {
 
         @JvmStatic
-        private val UPDATER = AtomicIntegerFieldUpdater.newUpdater(CachedPacket::class.java, "updated")
+        private val PACKET = MethodHandles.lookup().findVarHandle(CachedPacket::class.java, "packet", SoftReference::class.java)
     }
 }
