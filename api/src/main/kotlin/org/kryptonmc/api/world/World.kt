@@ -23,6 +23,7 @@ import org.kryptonmc.api.fluid.Fluids
 import org.kryptonmc.api.resource.ResourceKey
 import org.kryptonmc.api.resource.ResourceKeys
 import org.kryptonmc.api.scoreboard.Scoreboard
+import org.kryptonmc.api.world.biome.BiomeContainer
 import org.kryptonmc.api.world.chunk.Chunk
 import org.kryptonmc.api.world.dimension.DimensionType
 import org.kryptonmc.api.world.rule.GameRuleHolder
@@ -35,7 +36,7 @@ import java.nio.file.Path
  * Represents a loaded world.
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
-public interface World : BlockContainer, FluidContainer, ForwardingAudience {
+public interface World : BlockContainer, FluidContainer, BiomeContainer, ForwardingAudience {
 
     /**
      * The server this world was loaded on.

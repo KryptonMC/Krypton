@@ -18,13 +18,11 @@
  */
 package org.kryptonmc.krypton.world.data
 
-import ca.spottedleaf.dataconverter.minecraft.MCDataConverter
 import ca.spottedleaf.dataconverter.minecraft.datatypes.MCTypeRegistry
-import ca.spottedleaf.dataconverter.types.nbt.NBTMapType
 import org.kryptonmc.krypton.KryptonPlatform
 import org.kryptonmc.krypton.util.logger
-import org.kryptonmc.krypton.world.DataPackConfig
-import org.kryptonmc.krypton.world.generation.WorldGenerationSettings
+import org.kryptonmc.krypton.util.sendDataConversionWarning
+import org.kryptonmc.krypton.util.upgradeData
 import org.kryptonmc.nbt.io.TagCompression
 import org.kryptonmc.nbt.io.TagIO
 import java.nio.file.Files
@@ -33,13 +31,13 @@ import java.nio.file.StandardCopyOption
 
 class WorldDataManager(private val folder: Path, private val useDataConverter: Boolean) {
 
-    fun load(name: String, dataPackConfig: DataPackConfig = DataPackConfig.DEFAULT): PrimaryWorldData? {
+    fun load(name: String): PrimaryWorldData? {
         val path = folder.resolve(name)
         if (!Files.exists(path) || !Files.isDirectory(path)) return null
         val levelData = path.resolve("level.dat")
-        if (Files.exists(levelData)) return read(path, levelData, dataPackConfig)
+        if (Files.exists(levelData)) return read(path, levelData)
         val oldLevelData = path.resolve("level.dat_old")
-        if (Files.exists(oldLevelData)) return read(path, oldLevelData, dataPackConfig)
+        if (Files.exists(oldLevelData)) return read(path, oldLevelData)
         return null
     }
 
@@ -78,26 +76,17 @@ class WorldDataManager(private val folder: Path, private val useDataConverter: B
         }
     }
 
-    private fun read(folder: Path, path: Path, dataPackConfig: DataPackConfig): PrimaryWorldData? {
+    private fun read(folder: Path, path: Path): PrimaryWorldData? {
         return try {
             val tag = TagIO.read(path, TagCompression.GZIP).getCompound("Data")
             val version = if (tag.contains("DataVersion", 99)) tag.getInt("DataVersion") else -1
             // We won't upgrade data if use of the data converter is disabled.
             if (version < KryptonPlatform.worldVersion && !useDataConverter) {
-                LOGGER.error("The server attempted to load a world from an earlier version of Minecraft, but data conversion is disabled!")
-                LOGGER.info("If you would like to use data conversion, provide the --upgrade-data flag to the JAR on startup.")
-                LOGGER.warn("Beware that this is an experimental tool and has known issues with pre-1.13 worlds.")
-                LOGGER.warn("USE THIS TOOL AT YOUR OWN RISK. If the tool corrupts your data, that is YOUR responsibility!")
+                LOGGER.sendDataConversionWarning("data for world at ${path.toAbsolutePath()}")
                 error("Attempted to load old world data from version $version when data conversion is disabled!")
             }
 
-            // Don't use data converter if the data isn't older than our version.
-            val data = if (useDataConverter && version < KryptonPlatform.worldVersion) {
-                NBTMapType(MCDataConverter.convertTag(MCTypeRegistry.LEVEL, tag, version, KryptonPlatform.worldVersion))
-            } else {
-                NBTMapType(tag)
-            }
-            PrimaryWorldData.parse(folder, data, WorldGenerationSettings.default(), dataPackConfig)
+            PrimaryWorldData.parse(folder, tag.upgradeData(MCTypeRegistry.LEVEL, version))
         } catch (exception: Exception) {
             LOGGER.error("Error whilst trying to read world at $folder!", exception)
             null

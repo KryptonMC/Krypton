@@ -18,11 +18,11 @@
  */
 package org.kryptonmc.krypton.world.rule
 
-import ca.spottedleaf.dataconverter.types.MapType
 import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.api.world.rule.GameRule
 import org.kryptonmc.api.world.rule.GameRuleHolder
 import org.kryptonmc.nbt.CompoundTag
+import org.kryptonmc.nbt.StringTag
 import org.kryptonmc.nbt.compound
 import java.util.concurrent.ConcurrentHashMap
 
@@ -34,10 +34,10 @@ class KryptonGameRuleHolder : GameRuleHolder {
         Registries.GAME_RULES.values.forEach { rules[it] = it.default }
     }
 
-    constructor(tag: MapType<String>) : this() {
+    constructor(tag: CompoundTag) : this() {
         rules.forEach { (key, _) ->
-            val rule = tag.getString(key.name)
-            if (rule != null) rules[key] = deserialize(rule)
+            if (!tag.contains(key.name, StringTag.ID)) return@forEach
+            rules[key] = deserialize(tag.getString(key.name))
         }
     }
 

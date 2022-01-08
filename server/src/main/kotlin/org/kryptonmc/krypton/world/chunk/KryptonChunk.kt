@@ -29,7 +29,6 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutChunkDataAndLight
 import org.kryptonmc.krypton.world.Heightmap
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.krypton.world.chunk.ticket.Ticket
-import org.kryptonmc.krypton.world.generation.DebugGenerator
 import org.kryptonmc.nbt.CompoundTag
 import org.spongepowered.math.vector.Vector3i
 
@@ -61,12 +60,12 @@ class KryptonChunk(
     val cachedPacket: CachedPacket = CachedPacket { PacketOutChunkDataAndLight(this, true) }
 
     override fun getBlock(x: Int, y: Int, z: Int): Block {
-        if (world.isDebug) {
-            var block: Block? = null
-            if (y == 60) block = Blocks.BARRIER
-            if (y == 70) block = DebugGenerator.blockAt(x, z)
-            return block ?: Blocks.AIR
-        }
+//        if (world.isDebug) {
+//            var block: Block? = null
+//            if (y == 60) block = Blocks.BARRIER
+//            if (y == 70) block = DebugGenerator.blockAt(x, z)
+//            return block ?: Blocks.AIR
+//        }
         val sectionIndex = sectionIndex(y)
         if (sectionIndex >= 0 && sectionIndex < sections.size) {
             val section = sections[sectionIndex]

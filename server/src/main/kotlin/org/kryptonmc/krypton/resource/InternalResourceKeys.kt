@@ -22,14 +22,10 @@ import org.kryptonmc.api.registry.Registry
 import org.kryptonmc.api.resource.ResourceKey
 import org.kryptonmc.api.resource.ResourceKeys
 import org.kryptonmc.krypton.entity.memory.MemoryKey
-import org.kryptonmc.krypton.world.dimension.Dimension
 import org.kryptonmc.krypton.world.event.GameEvent
-import org.kryptonmc.krypton.world.generation.noise.NoiseGeneratorSettings
 
 object InternalResourceKeys {
 
     @JvmField val MEMORIES: ResourceKey<out Registry<MemoryKey<Any>>> = ResourceKeys.minecraft("memory_module_type")
-    @JvmField val DIMENSION: ResourceKey<out Registry<Dimension>> = ResourceKeys.minecraft("dimension")
     @JvmField val GAME_EVENT: ResourceKey<out Registry<GameEvent>> = ResourceKeys.minecraft("game_event")
-    @JvmField val NOISE_GENERATOR_SETTINGS: ResourceKey<out Registry<NoiseGeneratorSettings>> = ResourceKeys.minecraft("worldgen/noise_settings")
 }

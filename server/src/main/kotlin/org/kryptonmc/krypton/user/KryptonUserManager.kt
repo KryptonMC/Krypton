@@ -18,7 +18,6 @@
  */
 package org.kryptonmc.krypton.user
 
-import ca.spottedleaf.dataconverter.minecraft.MCDataConverter
 import ca.spottedleaf.dataconverter.minecraft.datatypes.MCTypeRegistry
 import com.google.common.collect.MapMaker
 import org.kryptonmc.api.auth.GameProfile
@@ -28,6 +27,9 @@ import org.kryptonmc.krypton.KryptonPlatform
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.auth.requests.ApiService
 import org.kryptonmc.krypton.util.daemonThreadFactory
+import org.kryptonmc.krypton.util.logger
+import org.kryptonmc.krypton.util.sendDataConversionWarning
+import org.kryptonmc.krypton.util.upgradeData
 import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.IntTag
 import org.kryptonmc.nbt.io.TagCompression
@@ -78,11 +80,17 @@ class KryptonUserManager(private val server: KryptonServer) : UserManager {
         }
 
         val version = if (nbt.contains("DataVersion", IntTag.ID)) nbt.getInt("DataVersion") else -1
-        val data = if (server.useDataConverter && version < KryptonPlatform.worldVersion) {
-            MCDataConverter.convertTag(MCTypeRegistry.PLAYER, nbt, version, KryptonPlatform.worldVersion)
-        } else {
-            nbt
+        // We won't upgrade data if use of the data converter is disabled.
+        if (version < KryptonPlatform.worldVersion && !server.useDataConverter) {
+            LOGGER.sendDataConversionWarning("data for user with UUID ${profile.uuid}")
+            error("Tried to load old user from version $version when data conversion is disabled!")
         }
-        return KryptonUser(profile, data, server)
+
+        return KryptonUser(profile, nbt.upgradeData(MCTypeRegistry.PLAYER, version), server)
+    }
+
+    companion object {
+
+        private val LOGGER = logger<KryptonUserManager>()
     }
 }

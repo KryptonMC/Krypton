@@ -18,7 +18,6 @@
  */
 package org.kryptonmc.krypton.world.chunk
 
-import ca.spottedleaf.dataconverter.minecraft.MCDataConverter
 import ca.spottedleaf.dataconverter.minecraft.datatypes.MCTypeRegistry
 import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.block.Blocks
@@ -27,7 +26,9 @@ import org.kryptonmc.krypton.KryptonPlatform
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.util.daemonThreadFactory
 import org.kryptonmc.krypton.util.logger
+import org.kryptonmc.krypton.util.sendDataConversionWarning
 import org.kryptonmc.krypton.util.uncaughtExceptionHandler
+import org.kryptonmc.krypton.util.upgradeData
 import org.kryptonmc.krypton.world.Heightmap
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.krypton.world.block.palette.PaletteHolder
@@ -117,19 +118,12 @@ class ChunkManager(private val world: KryptonWorld) {
         val version = if (nbt.contains("DataVersion", 99)) nbt.getInt("DataVersion") else -1
         // We won't upgrade data if use of the data converter is disabled.
         if (version < KryptonPlatform.worldVersion && !world.server.useDataConverter) {
-            LOGGER.error("The server attempted to load a chunk from a earlier version of Minecraft when data conversion is disabled!")
-            LOGGER.info("If you would like to use data conversion, provide the --upgrade-data or --use-data-converter flag(s) to the JAR on startup.")
-            LOGGER.warn("Beware that this is an experimental tool and has known issues with pre-1.13 worlds.")
-            LOGGER.warn("USE THIS TOOL AT YOUR OWN RISK. If the tool corrupts your data, that is YOUR responsibility!")
+            LOGGER.sendDataConversionWarning("chunk at $x, $z")
             error("Tried to load old chunk from version $version when data conversion is disabled!")
         }
 
         // Don't upgrade if the version is not older than our version.
-        val data = if (world.server.useDataConverter && version < KryptonPlatform.worldVersion && nbt.isNotEmpty()) {
-            MCDataConverter.convertTag(MCTypeRegistry.CHUNK, nbt.copy(), version, KryptonPlatform.worldVersion)
-        } else {
-            nbt
-        }
+        val data = nbt.upgradeData(MCTypeRegistry.CHUNK, version, true)
         val heightmaps = data.getCompound("Heightmaps")
 
         val sectionList = data.getList("sections", CompoundTag.ID)

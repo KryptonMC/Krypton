@@ -18,18 +18,14 @@
  */
 package org.kryptonmc.krypton.world.data
 
-import ca.spottedleaf.dataconverter.types.MapType
-import ca.spottedleaf.dataconverter.types.ObjectType
-import ca.spottedleaf.dataconverter.types.nbt.NBTMapType
+import kotlinx.collections.immutable.persistentSetOf
 import org.kryptonmc.api.world.Difficulty
 import org.kryptonmc.api.world.GameMode
 import org.kryptonmc.krypton.KryptonPlatform
-import org.kryptonmc.krypton.util.toUUID
-import org.kryptonmc.krypton.world.DataPackConfig
 import org.kryptonmc.krypton.world.generation.WorldGenerationSettings
 import org.kryptonmc.krypton.world.rule.KryptonGameRuleHolder
 import org.kryptonmc.nbt.CompoundTag
-import org.kryptonmc.nbt.MutableCompoundTag
+import org.kryptonmc.nbt.ListTag
 import org.kryptonmc.nbt.StringTag
 import org.kryptonmc.nbt.compound
 import java.nio.file.Path
@@ -43,8 +39,7 @@ class PrimaryWorldData(
     override var difficulty: Difficulty,
     override var isHardcore: Boolean,
     override var gameRules: KryptonGameRuleHolder,
-    override var dataPackConfig: DataPackConfig,
-    override val worldGenerationSettings: WorldGenerationSettings,
+    override val generationSettings: WorldGenerationSettings,
     override var spawnX: Int = 0,
     override var spawnY: Int = 0,
     override var spawnZ: Int = 0,
@@ -62,12 +57,8 @@ class PrimaryWorldData(
     override var wanderingTraderId: UUID? = null,
     private var customBossEvents: CompoundTag? = null,
     private var enderDragonFightData: CompoundTag = CompoundTag.empty(),
-    private val serverBrands: MutableSet<String> = mutableSetOf()
+    private val serverBrands: Set<String> = persistentSetOf()
 ) : WorldData {
-
-    init {
-        if (!serverBrands.contains("Krypton")) serverBrands.add("Krypton")
-    }
 
     fun save(): CompoundTag = compound {
         compound("Data") {
@@ -86,7 +77,7 @@ class PrimaryWorldData(
             byte("Difficulty", difficulty.ordinal.toByte())
             boolean("hardcore", isHardcore)
             put("GameRules", gameRules.save())
-            DataPackConfig.ENCODER.encodeNullable(dataPackConfig)?.let { put("DataPacks", it) }
+            put("WorldGenSettings", generationSettings.save())
             int("SpawnX", spawnX)
             int("SpawnY", spawnY)
             int("SpawnZ", spawnZ)
@@ -115,57 +106,64 @@ class PrimaryWorldData(
         private const val ANVIL_VERSION_ID = 19133
 
         @JvmStatic
-        fun parse(
-            folder: Path,
-            data: MapType<String>,
-            generationSettings: WorldGenerationSettings,
-            dataPackConfig: DataPackConfig
-        ): PrimaryWorldData {
-            val difficulty = if (data.getNumber("Difficulty") != null) Difficulty.fromId(data.getInt("Difficulty")) else Difficulty.NORMAL
+        fun parse(folder: Path, data: CompoundTag): PrimaryWorldData {
+            val generationSettings = WorldGenerationSettings.parse(data.getCompound("WorldGenSettings"))
             val time = data.getLong("Time", 0L)
-            val dragonFightData = data.getMap(
-                "DragonFightData",
-                data.getMap<String>("DimensionData")?.getMap<String>("1")?.getMap("DragonFight") ?: NBTMapType(MutableCompoundTag())
-            )
-            val customBossEvents = (data.getMap<String>("CustomBossEvents") as? NBTMapType)?.tag ?: MutableCompoundTag()
-            val brandData = data.getList("ServerBrands", ObjectType.STRING)
-            val brands = if (brandData != null) {
-                val set = mutableSetOf<String>()
-                for (i in 0 until brandData.size()) {
-                    set.add(brandData.getString(i))
-                }
-                set
-            } else {
-                mutableSetOf()
-            }
             return PrimaryWorldData(
-                data.getString("LevelName", "")!!,
+                data.getString("LevelName"),
                 folder,
                 GameMode.fromId(data.getInt("GameType", 0)) ?: GameMode.SURVIVAL,
-                difficulty ?: Difficulty.NORMAL,
+                resolveDifficulty(data),
                 data.getBoolean("hardcore", false),
-                KryptonGameRuleHolder(data.getMap("GameRules") ?: NBTMapType(MutableCompoundTag())),
-                dataPackConfig,
+                KryptonGameRuleHolder(data.getCompound("GameRules")),
                 generationSettings,
-                data.getInt("SpawnX", 0),
-                data.getInt("SpawnY", 0),
-                data.getInt("SpawnZ", 0),
-                data.getFloat("SpawnAngle", 0F),
+                data.getInt("SpawnX"),
+                data.getInt("SpawnY"),
+                data.getInt("SpawnZ"),
+                data.getFloat("SpawnAngle"),
                 time,
                 data.getLong("DayTime", time),
-                data.getInt("clearWeatherTime", 0),
-                data.getBoolean("raining", false),
-                data.getInt("rainTime", 0),
-                data.getBoolean("thundering", false),
-                data.getInt("thunderTime", 0),
-                data.getBoolean("initialized", false),
-                data.getInt("WanderingTraderSpawnChance", 0),
-                data.getInt("WanderingTraderSpawnDelay", 0),
-                data.getInts("WanderingTraderId")?.toUUID(),
-                customBossEvents,
-                (dragonFightData as NBTMapType).tag,
-                brands
+                data.getInt("clearWeatherTime"),
+                data.getBoolean("raining"),
+                data.getInt("rainTime"),
+                data.getBoolean("thundering"),
+                data.getInt("thunderTime"),
+                data.getBoolean("initialized"),
+                data.getInt("WanderingTraderSpawnChance"),
+                data.getInt("WanderingTraderSpawnDelay"),
+                data.getUUID("WanderingTraderId"),
+                data.getCompound("CustomBossEvents"),
+                resolveDragonFightData(data),
+                extractBrands(data)
             )
+        }
+
+        @JvmStatic
+        private fun extractBrands(data: CompoundTag): Set<String> {
+            if (!data.contains("ServerBrands", ListTag.ID)) return persistentSetOf()
+            val brandData = data.getList("ServerBrands", StringTag.ID)
+            if (brandData.isEmpty()) return persistentSetOf()
+            val result = persistentSetOf<String>().builder()
+            for (i in 0 until brandData.size) {
+                result.add(brandData.getString(i))
+            }
+
+            // Add ourselves
+            if (!result.contains(KryptonPlatform.name)) result.add(KryptonPlatform.name)
+            return result.build()
+        }
+
+        @JvmStatic
+        private fun resolveDragonFightData(data: CompoundTag): CompoundTag {
+            if (data.contains("DragonFightData", CompoundTag.ID)) return data.getCompound("DragonFightData")
+            return data.getCompound("DimensionData").getCompound("1").getCompound("DragonFight")
+        }
+
+        @JvmStatic
+        private fun resolveDifficulty(data: CompoundTag): Difficulty {
+            var difficulty: Difficulty? = null
+            if (data.contains("Difficulty", 99)) difficulty = Difficulty.fromId(data.getInt("Difficulty"))
+            return difficulty ?: Difficulty.NORMAL
         }
     }
 }

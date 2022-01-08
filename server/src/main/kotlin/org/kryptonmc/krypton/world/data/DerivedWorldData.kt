@@ -18,52 +18,76 @@
  */
 package org.kryptonmc.krypton.world.data
 
+import org.kryptonmc.api.world.Difficulty
+import org.kryptonmc.api.world.GameMode
 import org.kryptonmc.krypton.world.generation.WorldGenerationSettings
+import org.kryptonmc.krypton.world.rule.KryptonGameRuleHolder
+import java.nio.file.Path
 import java.util.UUID
 
-class DerivedWorldData(delegate: WorldData) : WorldData {
+class DerivedWorldData(private val delegate: WorldData) : WorldData {
 
-    override val name = delegate.name
-    override val folder = delegate.folder
-    override var gameMode = delegate.gameMode
+    override val name: String
+        get() = delegate.name
+    override val folder: Path
+        get() = delegate.folder
+    override var gameMode: GameMode
+        get() = delegate.gameMode
         set(_) = Unit
-    override var difficulty = delegate.difficulty
+    override var difficulty: Difficulty
+        get() = delegate.difficulty
         set(_) = Unit
-    override var isHardcore = delegate.isHardcore
+    override var isHardcore: Boolean
+        get() = delegate.isHardcore
         set(_) = Unit
-    override var gameRules = delegate.gameRules
+    override var gameRules: KryptonGameRuleHolder
+        get() = delegate.gameRules
         set(_) = Unit
-    override var dataPackConfig = delegate.dataPackConfig
+    override var spawnX: Int
+        get() = delegate.spawnX
         set(_) = Unit
-    override var spawnX = delegate.spawnX
+    override var spawnY: Int
+        get() = delegate.spawnY
         set(_) = Unit
-    override var spawnY = delegate.spawnY
+    override var spawnZ: Int
+        get() = delegate.spawnZ
         set(_) = Unit
-    override var spawnZ = delegate.spawnZ
+    override var spawnAngle: Float
+        get() = delegate.spawnAngle
         set(_) = Unit
-    override var spawnAngle = delegate.spawnAngle
+    override var time: Long
+        get() = delegate.time
         set(_) = Unit
-    override var time = delegate.time
+    override var dayTime: Long
+        get() = delegate.dayTime
         set(_) = Unit
-    override var dayTime = delegate.dayTime
+    override var clearWeatherTime: Int
+        get() = delegate.clearWeatherTime
         set(_) = Unit
-    override var clearWeatherTime = delegate.clearWeatherTime
+    override var isRaining: Boolean
+        get() = delegate.isRaining
         set(_) = Unit
-    override var isRaining = delegate.isRaining
+    override var rainTime: Int
+        get() = delegate.rainTime
         set(_) = Unit
-    override var rainTime = delegate.rainTime
+    override var isThundering: Boolean
+        get() = delegate.isThundering
         set(_) = Unit
-    override var isThundering = delegate.isThundering
+    override var thunderTime: Int
+        get() = delegate.thunderTime
         set(_) = Unit
-    override var thunderTime = delegate.thunderTime
+    override var isInitialized: Boolean
+        get() = delegate.isInitialized
         set(_) = Unit
-    override var isInitialized = delegate.isInitialized
+    override val generationSettings: WorldGenerationSettings
+        get() = delegate.generationSettings
+    override var wanderingTraderSpawnDelay: Int
+        get() = 0
         set(_) = Unit
-    override val worldGenerationSettings: WorldGenerationSettings = delegate.worldGenerationSettings
-    override var wanderingTraderSpawnDelay = 0
+    override var wanderingTraderSpawnChance: Int
+        get() = 0
         set(_) = Unit
-    override var wanderingTraderSpawnChance = 0
-        set(_) = Unit
-    override var wanderingTraderId: UUID? = null
+    override var wanderingTraderId: UUID?
+        get() = null
         set(_) = Unit
 }

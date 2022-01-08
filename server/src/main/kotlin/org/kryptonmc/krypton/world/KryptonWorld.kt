@@ -18,6 +18,7 @@
  */
 package org.kryptonmc.krypton.world
 
+import com.google.common.hash.Hashing
 import net.kyori.adventure.sound.Sound
 import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.block.Blocks
@@ -31,7 +32,6 @@ import org.kryptonmc.api.resource.ResourceKey
 import org.kryptonmc.api.world.Difficulty
 import org.kryptonmc.api.world.GameMode
 import org.kryptonmc.api.world.World
-import org.kryptonmc.api.world.biome.Biome
 import org.kryptonmc.api.world.rule.GameRules
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.adventure.PacketGroupingAudience
@@ -62,7 +62,6 @@ import org.kryptonmc.krypton.world.chunk.ticket.Ticket
 import org.kryptonmc.krypton.world.chunk.ticket.TicketTypes
 import org.kryptonmc.krypton.world.data.WorldData
 import org.kryptonmc.krypton.world.dimension.KryptonDimensionType
-import org.kryptonmc.krypton.world.generation.Generator
 import org.kryptonmc.krypton.world.rule.KryptonGameRuleHolder
 import org.kryptonmc.krypton.world.scoreboard.KryptonScoreboard
 import org.spongepowered.math.GenericMath
@@ -74,18 +73,16 @@ import java.util.concurrent.ConcurrentHashMap
 
 class KryptonWorld(
     override val server: KryptonServer,
-    override val data: WorldData,
+    val data: WorldData,
     override val dimension: ResourceKey<World>,
     override val dimensionType: KryptonDimensionType,
-    val generator: Generator,
-    val isDebug: Boolean,
     override val seed: Long,
     private val tickTime: Boolean
 ) : World, WorldAccessor, PacketGroupingAudience {
 
-    override val world: KryptonWorld = this
+    val hashedSeed: Long = Hashing.sha256().hashLong(seed).asLong()
     override val biomeManager: BiomeManager = BiomeManager(this, seed)
-    override val random: Random = Random()
+    val random: Random = Random()
     override val border: KryptonWorldBorder = KryptonWorldBorder.DEFAULT // FIXME
     override val gameMode: GameMode
         get() = data.gameMode
@@ -126,7 +123,6 @@ class KryptonWorld(
 
     override val height: Int = dimensionType.height
     override val minimumBuildHeight: Int = dimensionType.minimumY
-    override val seaLevel: Int = 63 // TODO: Check on update
 
     private var oldRainLevel = 0F
     override var rainLevel: Float = 0F
@@ -237,10 +233,8 @@ class KryptonWorld(
             if (hasChunk(x shr 4, z shr 4)) return getChunk(x shr 4, z shr 4)!!.getHeight(type, x and 15, z and 15) + 1
             return minimumBuildHeight
         }
-        return seaLevel + 1
+        return SEA_LEVEL + 1
     }
-
-    override fun getUncachedNoiseBiome(x: Int, y: Int, z: Int): Biome = generator.biome(x, y, z)
 
     override fun getBlock(position: Vector3i): Block = getBlock(position.x(), position.y(), position.z())
 
@@ -260,7 +254,7 @@ class KryptonWorld(
 
     override fun setBlock(x: Int, y: Int, z: Int, block: Block): Boolean {
         if (isOutsideBuildHeight(y)) return false
-        if (isDebug) return false
+//        if (isDebug) return false
         val chunk = getChunk(x, y, z) ?: return false
         if (!chunk.setBlock(x, y, z, block)) return false
         sessionManager.sendGrouped(PacketOutBlockChange(block, x, y, z))
@@ -360,5 +354,6 @@ class KryptonWorld(
 
         private const val MINIMUM_SIZE = -30000000
         private const val MAXIMUM_SIZE = -MINIMUM_SIZE
+        private const val SEA_LEVEL = 63
     }
 }

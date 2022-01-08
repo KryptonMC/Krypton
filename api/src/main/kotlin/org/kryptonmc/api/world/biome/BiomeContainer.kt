@@ -6,33 +6,33 @@
  * This project is licensed under the terms of the MIT license.
  * For more details, please reference the LICENSE file in the api top-level directory.
  */
-package org.kryptonmc.api.fluid
+package org.kryptonmc.api.world.biome
 
 import org.spongepowered.math.vector.Vector3i
 
 /**
- * Something that contains fluids.
+ * Something that contains biomes.
  *
- * The default value that will be returned instead of null if no fluid is
- * found is [Fluids.EMPTY].
+ * The default value that will be returned instead of null if no biome is
+ * found is [Biomes.PLAINS].
  */
-public interface FluidContainer {
+public interface BiomeContainer {
 
     /**
-     * Gets the fluid at the given [x], [y], and [z] coordinates.
+     * Gets the biome at the given [x], [y], and [z] coordinates.
      *
      * @param x the X coordinate
      * @param y the Y coordinate
      * @param z the Z coordinate
-     * @return the fluid at the given coordinates
+     * @return the biome
      */
-    public fun getFluid(x: Int, y: Int, z: Int): Fluid
+    public fun getBiome(x: Int, y: Int, z: Int): Biome
 
     /**
-     * Gets the fluid at the given [position].
+     * Gets the biome at the given [position].
      *
      * @param position the position
-     * @return the fluid at the given position
+     * @return the biome at the given position
      */
-    public fun getFluid(position: Vector3i): Fluid
+    public fun getBiome(position: Vector3i): Biome
 }

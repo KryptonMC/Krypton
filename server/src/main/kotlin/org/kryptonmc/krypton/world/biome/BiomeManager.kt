@@ -30,7 +30,7 @@ class BiomeManager(
     private val seed: Long
 ) {
 
-    operator fun get(x: Int, y: Int, z: Int): Biome {
+    fun getBiome(x: Int, y: Int, z: Int): Biome {
         val offsetX = x - ZOOM_BITS
         val offsetY = y - ZOOM_BITS
         val offsetZ = z - ZOOM_BITS

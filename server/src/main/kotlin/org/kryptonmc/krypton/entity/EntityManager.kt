@@ -18,7 +18,6 @@
  */
 package org.kryptonmc.krypton.entity
 
-import ca.spottedleaf.dataconverter.minecraft.MCDataConverter
 import ca.spottedleaf.dataconverter.minecraft.datatypes.MCTypeRegistry
 import net.kyori.adventure.key.InvalidKeyException
 import net.kyori.adventure.key.Key
@@ -31,6 +30,8 @@ import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.packet.out.play.PacketOutTimeUpdate
 import org.kryptonmc.krypton.util.forEachEntityInRange
 import org.kryptonmc.krypton.util.logger
+import org.kryptonmc.krypton.util.sendDataConversionWarning
+import org.kryptonmc.krypton.util.upgradeData
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.krypton.world.chunk.ChunkPosition
 import org.kryptonmc.krypton.world.chunk.KryptonChunk
@@ -91,7 +92,7 @@ class EntityManager(val world: KryptonWorld) : AutoCloseable {
         // TODO: World border
         player.session.send(PacketOutTimeUpdate(world.data.time, world.data.dayTime, world.data.gameRules[GameRules.DO_DAYLIGHT_CYCLE]))
         if (!player.isVanished) {
-            forEachEntityInRange(location, world.server.config.world.viewDistance) {
+            forEachEntityInRange(location, player.viewDistance) {
                 it.addViewer(player)
                 if (it is KryptonPlayer && !it.isVanished) player.addViewer(it)
             }
@@ -126,16 +127,11 @@ class EntityManager(val world: KryptonWorld) : AutoCloseable {
         val version = if (nbt.contains("DataVersion", IntTag.ID)) nbt.getInt("DataVersion") else -1
         // We won't upgrade data if use of the data converter is disabled.
         if (version < KryptonPlatform.worldVersion && !world.server.useDataConverter) {
-            LOGGER.error("The server attempted to load a chunk from a earlier version of Minecraft when data conversion is disabled!")
-            LOGGER.info("If you would like to use data conversion, provide the --upgrade-data or --use-data-converter flag(s) to the JAR on startup.")
+            LOGGER.sendDataConversionWarning("entities for chunk at ${chunk.x}, ${chunk.z}")
             error("Tried to load old chunk from version $version when data conversion is disabled!")
         }
 
-        val data = if (world.server.useDataConverter && version < KryptonPlatform.worldVersion) {
-            MCDataConverter.convertTag(MCTypeRegistry.ENTITY_CHUNK, nbt, version, KryptonPlatform.worldVersion)
-        } else {
-            nbt
-        }
+        val data = nbt.upgradeData(MCTypeRegistry.ENTITY_CHUNK, version)
         data.getList("Entities", CompoundTag.ID).forEachCompound {
             val id = it.getString("id")
             if (id.isBlank()) return@forEachCompound

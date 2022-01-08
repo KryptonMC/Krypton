@@ -118,14 +118,6 @@ private class KryptonCLI : CliktCommand(
             world = loadedConfig.world.copy(name = worldName ?: loadedConfig.world.name)
         )
 
-        // Warn about the data converter being kinda broken
-        if (useDataConverter) {
-            logger.warn("You have opted in to use the data converter to automatically convert old data to the current version.")
-            logger.warn("Beware that this is an experimental tool, and has known issues with pre-1.13 worlds, and may cause issues with newer " +
-                    "worlds as well.")
-            logger.warn("USE THIS TOOL AT YOUR OWN RISK! If this tool corrupts your data, that is YOUR responsibility!")
-        }
-
         // This logic comes from vanilla. We should probably just use the main thread, though this may greater ensure parity
         // with vanilla's buggy mess. Not sure if this is actually the case though.
         val reference = AtomicReference<KryptonServer>()

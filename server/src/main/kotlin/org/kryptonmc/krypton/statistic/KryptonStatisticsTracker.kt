@@ -18,7 +18,6 @@
  */
 package org.kryptonmc.krypton.statistic
 
-import ca.spottedleaf.dataconverter.minecraft.MCDataConverter
 import ca.spottedleaf.dataconverter.minecraft.datatypes.MCTypeRegistry
 import com.google.gson.JsonObject
 import com.google.gson.JsonParseException
@@ -40,6 +39,8 @@ import org.kryptonmc.krypton.KryptonPlatform
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.packet.out.play.PacketOutStatistics
 import org.kryptonmc.krypton.util.logger
+import org.kryptonmc.krypton.util.sendDataConversionWarning
+import org.kryptonmc.krypton.util.upgradeData
 import java.io.IOException
 import java.io.Reader
 import java.nio.file.Files
@@ -140,22 +141,14 @@ class KryptonStatisticsTracker(
                 json.addProperty("DataVersion", OLD_VERSION)
             }
             val version = json["DataVersion"].asInt
-            // We won't upgrade data if use of the data converter is old.
+            // We won't upgrade data if use of the data converter is disabled.
             if (version < KryptonPlatform.worldVersion && !player.server.useDataConverter) {
-                LOGGER.error("The server attempted to load a chunk from a earlier version of Minecraft when data conversion is disabled!")
-                LOGGER.info("If you would like to use data conversion, provide the --upgrade-data or --use-data-converter flag(s) to the JAR on " +
-                        "startup.")
-                LOGGER.warn("Beware that this is an experimental tool and has known issues with pre-1.13 worlds.")
-                LOGGER.warn("USE THIS TOOL AT YOUR OWN RISK. If the tool corrupts your data, that is YOUR responsibility!")
+                LOGGER.sendDataConversionWarning("statistics data for player with UUID ${player.uuid}")
                 error("Tried to load old statistics from version $version when data conversion is disabled!")
             }
 
             // Don't use data converter if the version isn't older than our version.
-            val data = if (player.server.useDataConverter && json["DataVersion"].asInt < KryptonPlatform.worldVersion) {
-                MCDataConverter.convertJson(MCTypeRegistry.STATS, json, false, json["DataVersion"].asInt, KryptonPlatform.worldVersion)
-            } else {
-                json
-            }
+            val data = json.upgradeData(MCTypeRegistry.STATS, json["DataVersion"].asInt)
             if (data["stats"].asJsonObject.size() == 0) return
 
             val stats = data["stats"]?.asJsonObject ?: JsonObject()

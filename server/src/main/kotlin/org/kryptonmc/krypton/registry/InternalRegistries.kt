@@ -23,13 +23,11 @@ import org.kryptonmc.api.resource.ResourceKey
 import org.kryptonmc.krypton.entity.memory.MemoryKey
 import org.kryptonmc.krypton.resource.InternalResourceKeys
 import org.kryptonmc.krypton.world.event.GameEvent
-import org.kryptonmc.krypton.world.generation.noise.NoiseGeneratorSettings
 
 object InternalRegistries {
 
     @JvmField val MEMORIES: KryptonRegistry<MemoryKey<Any>> = create(InternalResourceKeys.MEMORIES)
     @JvmField val GAME_EVENT: KryptonRegistry<GameEvent> = create(InternalResourceKeys.GAME_EVENT)
-    @JvmField val NOISE_GENERATOR_SETTINGS: KryptonRegistry<NoiseGeneratorSettings> = create(InternalResourceKeys.NOISE_GENERATOR_SETTINGS)
 
     @JvmStatic
     private fun <T : Any> create(key: ResourceKey<out Registry<T>>): KryptonRegistry<T> = KryptonRegistryManager.create(key)

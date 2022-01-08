@@ -19,6 +19,8 @@
 package org.kryptonmc.krypton.world
 
 import org.kryptonmc.api.world.biome.Biome
+import org.kryptonmc.api.world.biome.BiomeContainer
+import org.kryptonmc.api.world.biome.Biomes
 import org.kryptonmc.api.world.dimension.DimensionType
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.world.biome.BiomeManager
@@ -30,18 +32,12 @@ import org.kryptonmc.krypton.world.data.WorldData
 import org.spongepowered.math.vector.Vector3i
 import java.util.Random
 
-interface WorldAccessor : BlockAccessor, NoiseBiomeSource {
+interface WorldAccessor : BlockAccessor, NoiseBiomeSource, BiomeContainer {
 
-    val server: KryptonServer
-    val world: KryptonWorld
-    val data: WorldData
     val dimensionType: DimensionType
     val chunkManager: ChunkManager
     val biomeManager: BiomeManager
-    val random: Random
-    val seed: Long
 
-    val seaLevel: Int
     override val height: Int
         get() = dimensionType.height
     override val minimumBuildHeight: Int
@@ -49,24 +45,18 @@ interface WorldAccessor : BlockAccessor, NoiseBiomeSource {
 
     fun hasChunk(x: Int, z: Int): Boolean = chunkManager[x, z] != null
 
-    fun hasChunkAt(x: Int, z: Int): Boolean = hasChunk(x shr 4, z shr 4)
-
-    fun hasChunkAt(position: Vector3i): Boolean = hasChunkAt(position.x(), position.z())
-
     fun getChunk(position: Vector3i): ChunkAccessor? = getChunk(position.x() shr 4, position.z() shr 4)
 
     fun getChunk(x: Int, z: Int, status: ChunkStatus = ChunkStatus.FULL, shouldCreate: Boolean = true): ChunkAccessor?
 
     fun getHeight(type: Heightmap.Type, x: Int, z: Int): Int
 
-    fun getBiome(x: Int, y: Int, z: Int): Biome = biomeManager[x, y, z]
+    override fun getBiome(x: Int, y: Int, z: Int): Biome = biomeManager.getBiome(x, y, z)
 
-    fun getUncachedNoiseBiome(x: Int, y: Int, z: Int): Biome
+    override fun getBiome(position: Vector3i): Biome = getBiome(position.x(), position.y(), position.z())
 
     override fun getNoiseBiome(x: Int, y: Int, z: Int): Biome {
-        val chunk = getChunk(x shr 2, z shr 2, ChunkStatus.BIOMES, false) ?: return getUncachedNoiseBiome(x, y, z)
+        val chunk = getChunk(x shr 2, z shr 2, ChunkStatus.BIOMES, false) ?: return Biomes.PLAINS
         return chunk.getNoiseBiome(x, y, z)
     }
-
-    fun canWrite(x: Int, y: Int, z: Int): Boolean = true
 }

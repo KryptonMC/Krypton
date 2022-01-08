@@ -18,11 +18,12 @@
  */
 package org.kryptonmc.krypton.world.data
 
-import ca.spottedleaf.dataconverter.minecraft.MCDataConverter
 import ca.spottedleaf.dataconverter.minecraft.datatypes.MCTypeRegistry
 import org.kryptonmc.krypton.KryptonPlatform
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.util.logger
+import org.kryptonmc.krypton.util.sendDataConversionWarning
+import org.kryptonmc.krypton.util.upgradeData
 import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.io.TagCompression
 import org.kryptonmc.nbt.io.TagIO
@@ -64,20 +65,11 @@ class PlayerDataManager(val folder: Path, private val serializeData: Boolean) {
         val version = if (nbt.contains("DataVersion", 99)) nbt.getInt("DataVersion") else -1
         // We won't upgrade data if use of the data converter is disabled.
         if (version < KryptonPlatform.worldVersion && !player.server.useDataConverter) {
-            LOGGER.error("The server attempted to load a chunk from a earlier version of Minecraft when data conversion is disabled!")
-            LOGGER.info("If you would like to use data conversion, provide the --upgrade-data or --use-data-converter flag(s) to the " +
-                    "JAR on startup.")
-            LOGGER.warn("Beware that this is an experimental tool and has known issues with pre-1.13 worlds.")
-            LOGGER.warn("USE THIS TOOL AT YOUR OWN RISK. If the tool corrupts your data, that is YOUR responsibility!")
+            LOGGER.sendDataConversionWarning("data for player with UUID ${player.uuid}")
             error("Tried to load old player data from version $version when data conversion is disabled!")
         }
 
-        // Don't use data converter if the version is not older than our version.
-        val data = if (player.server.useDataConverter && version < KryptonPlatform.worldVersion) {
-            MCDataConverter.convertTag(MCTypeRegistry.PLAYER, nbt, version, KryptonPlatform.worldVersion)
-        } else {
-            nbt
-        }
+        val data = nbt.upgradeData(MCTypeRegistry.PLAYER, version)
         player.load(data)
         data
     }, executor)

@@ -75,15 +75,15 @@ class PlayerManager(private val server: KryptonServer) {
 
     private val executor = Executors.newFixedThreadPool(8, daemonThreadFactory("Player Executor #%d"))
     val dataManager: PlayerDataManager
-    val players = CopyOnWriteArrayList<KryptonPlayer>()
-    val playersByName = ConcurrentHashMap<String, KryptonPlayer>()
-    val playersByUUID = ConcurrentHashMap<UUID, KryptonPlayer>()
+    val players: MutableList<KryptonPlayer> = CopyOnWriteArrayList()
+    val playersByName: MutableMap<String, KryptonPlayer> = ConcurrentHashMap()
+    val playersByUUID: MutableMap<UUID, KryptonPlayer> = ConcurrentHashMap()
 
-    val bannedPlayers = BannedPlayerList(Path.of("banned-players.json"))
-    val whitelist = Whitelist(Path.of("whitelist.json"))
-    val bannedIps = BannedIpList(Path.of("banned-ips.json"))
-    val whitelistedIps = WhitelistedIps(Path.of("whitelisted-ips.json"))
-    var whitelistEnabled = server.config.server.whitelistEnabled
+    val bannedPlayers: BannedPlayerList = BannedPlayerList(Path.of("banned-players.json"))
+    val whitelist: Whitelist = Whitelist(Path.of("whitelist.json"))
+    val bannedIps: BannedIpList = BannedIpList(Path.of("banned-ips.json"))
+    val whitelistedIps: WhitelistedIps = WhitelistedIps(Path.of("whitelisted-ips.json"))
+    var whitelistEnabled: Boolean = server.config.server.whitelistEnabled
         set(value) {
             field = value
             server.updateConfig("server.whitelist-enabled", value)
@@ -111,13 +111,10 @@ class PlayerManager(private val server: KryptonServer) {
         val dimension = if (nbt != null) nbt["Dimension"]?.parseDimension() ?: World.OVERWORLD else World.OVERWORLD
         if (nbt != null) server.userManager.updateUser(profile.uuid, nbt)
 
-        val world = server.worldManager.worlds[dimension] ?: kotlin.run {
-            LOGGER.warn("Unknown respawn dimension $dimension! Defaulting to overworld...")
-            server.worldManager.default
-        }
+        val world = server.worldManager.worlds[dimension] ?: server.worldManager.default
         player.world = world
         world.players.add(player)
-        LOGGER.info("Player ${profile.name} logged in with entity ID ${player.id} at" +
+        LOGGER.info("Player ${profile.name} logged in with entity ID ${player.id} at " +
                 "(${player.location.x()}, ${player.location.y()}, ${player.location.z()})")
 
         // Join the game
@@ -131,7 +128,7 @@ class PlayerManager(private val server: KryptonServer) {
             server.worldManager.worlds.keys,
             world.dimensionType,
             world.dimension,
-            Random.nextLong(),
+            world.hashedSeed,
             server.maxPlayers,
             server.config.world.viewDistance,
             server.config.world.simulationDistance,
