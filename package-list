@@ -136,14 +136,11 @@ org.kryptonmc.krypton.tags
 org.kryptonmc.krypton.user
 org.kryptonmc.krypton.util
 org.kryptonmc.krypton.util.nbt
-org.kryptonmc.krypton.util.noise
-org.kryptonmc.krypton.util.random
 org.kryptonmc.krypton.util.serialization
 org.kryptonmc.krypton.util.spark
 org.kryptonmc.krypton.util.spark.ticking
 org.kryptonmc.krypton.world
 org.kryptonmc.krypton.world.biome
-org.kryptonmc.krypton.world.biome.gen
 org.kryptonmc.krypton.world.block
 org.kryptonmc.krypton.world.block.entity
 org.kryptonmc.krypton.world.block.handler
@@ -159,10 +156,6 @@ org.kryptonmc.krypton.world.event
 org.kryptonmc.krypton.world.fluid
 org.kryptonmc.krypton.world.fluid.handler
 org.kryptonmc.krypton.world.generation
-org.kryptonmc.krypton.world.generation.feature
-org.kryptonmc.krypton.world.generation.feature.config
-org.kryptonmc.krypton.world.generation.flat
-org.kryptonmc.krypton.world.generation.noise
 org.kryptonmc.krypton.world.region
 org.kryptonmc.krypton.world.rule
 org.kryptonmc.krypton.world.scoreboard
