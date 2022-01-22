@@ -34,6 +34,7 @@ import org.kryptonmc.api.tags.TagType
 import org.kryptonmc.api.util.Catalogue
 import org.kryptonmc.api.world.biome.Biome
 import org.kryptonmc.api.world.biome.BiomeCategory
+import org.kryptonmc.api.world.chunk.ChunkGenerationStatus
 import org.kryptonmc.api.world.damage.type.DamageType
 import org.kryptonmc.api.world.dimension.DimensionEffect
 import org.kryptonmc.api.world.dimension.DimensionType
@@ -82,6 +83,7 @@ public object Registries {
     @JvmField public val TAG_TYPES: Registry<TagType<*>> = create(ResourceKeys.TAG_TYPES)
     @JvmField public val BAN_TYPES: Registry<BanType> = create(ResourceKeys.BAN_TYPES)
     @JvmField public val DAMAGE_TYPES: Registry<DamageType> = create(ResourceKeys.DAMAGE_TYPES)
+    @JvmField public val CHUNK_GENERATION_STATUSES: Registry<ChunkGenerationStatus> = create(ResourceKeys.CHUNK_GENERATION_STATUSES)
 
     /**
      * Gets the existing registry with the given resource [key], or returns null

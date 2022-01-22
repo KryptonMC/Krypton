@@ -37,6 +37,7 @@ import org.kryptonmc.api.world.rule.GameRule
 import org.kryptonmc.api.scoreboard.criteria.Criterion
 import org.kryptonmc.api.tags.TagType
 import org.kryptonmc.api.util.Catalogue
+import org.kryptonmc.api.world.chunk.ChunkGenerationStatus
 import org.kryptonmc.api.world.damage.type.DamageType
 
 /**
@@ -83,6 +84,7 @@ public object ResourceKeys {
     @JvmField public val TAG_TYPES: ResourceKey<out Registry<TagType<*>>> = krypton("tag_types")
     @JvmField public val BAN_TYPES: ResourceKey<out Registry<BanType>> = krypton("ban_types")
     @JvmField public val DAMAGE_TYPES: ResourceKey<out Registry<DamageType>> = krypton("damage_types")
+    @JvmField public val CHUNK_GENERATION_STATUSES: ResourceKey<out Registry<ChunkGenerationStatus>> = krypton("chunk_generation_statuses")
 
     /**
      * Creates a new registry key with the given [key] as its base key.

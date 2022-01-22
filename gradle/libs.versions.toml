@@ -38,6 +38,7 @@ flare = "2.0.0"
 clikt = "3.3.0"
 bstats = "2.2.1"
 spark = "1.6-SNAPSHOT"
+jnoise = "3.0.1"
 
 # Test
 junit-jupiter = "5.8.2"
@@ -132,6 +133,7 @@ guice = { group = "com.google.inject", name = "guice", version.ref = "guice" }
 kotlinGuice = { group = "dev.misfitlabs.kotlinguice4", name = "kotlin-guice", version.ref = "kotlinGuice" }
 math = { group = "org.spongepowered", name = "math", version.ref = "math" }
 bstats = { group = "org.bstats", name = "bstats-base", version.ref = "bstats" }
+jnoise = { group = "com.github.Articdive", name = "JNoise", version.ref = "jnoise" }
 
 [bundles]
 
