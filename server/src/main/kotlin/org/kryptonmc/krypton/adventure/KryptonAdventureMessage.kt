@@ -23,14 +23,14 @@ import org.kryptonmc.api.adventure.AdventureMessage
 import org.kryptonmc.api.adventure.toPlainText
 
 @JvmRecord
-data class KryptonAdventureMessage(override val wrapped: Component) : AdventureMessage {
+data class KryptonAdventureMessage(private val component: Component) : AdventureMessage {
 
-    override fun getString(): String = wrapped.toPlainText()
+    override fun getString(): String = component.toPlainText()
 
-    override fun asComponent(): Component = wrapped
+    override fun asComponent(): Component = component
 
     object Factory : AdventureMessage.Factory {
 
-        override fun of(wrapped: Component): AdventureMessage = KryptonAdventureMessage(wrapped)
+        override fun of(component: Component): AdventureMessage = KryptonAdventureMessage(component)
     }
 }

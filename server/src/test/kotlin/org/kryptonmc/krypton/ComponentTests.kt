@@ -38,7 +38,7 @@ class ComponentTests {
         val component = Component.text("Hello World!")
         val message = component.toMessage()
         assertEquals("Hello World!", message.string)
-        assertEquals(component, message.wrapped)
+        assertEquals(component, message.asComponent())
     }
 
     @Test

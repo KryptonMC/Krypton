@@ -30,30 +30,9 @@ import java.io.StringReader
 @JvmRecord
 data class KryptonProfileProperty(override val name: String, override val value: String, override val signature: String?) : ProfileProperty {
 
-    override fun with(builder: ProfileProperty.Builder.() -> Unit): ProfileProperty = Builder(this).apply(builder).build()
-
-    override fun withName(name: String): ProfileProperty = copy(name = name)
-
-    override fun withValue(value: String): ProfileProperty = copy(value = value)
-
     override fun withSignature(signature: String?): ProfileProperty = copy(signature = signature)
 
-    override fun toBuilder(): ProfileProperty.Builder = Builder(this)
-
-    class Builder(property: ProfileProperty) : ProfileProperty.Builder {
-
-        private var name = property.name
-        private var value = property.value
-        private var signature = property.signature
-
-        override fun name(name: String): ProfileProperty.Builder = apply { this.name = name }
-
-        override fun value(value: String): ProfileProperty.Builder = apply { this.value = value }
-
-        override fun signature(signature: String?): ProfileProperty.Builder = apply { this.signature = signature }
-
-        override fun build(): ProfileProperty = KryptonProfileProperty(name, value, signature)
-    }
+    override fun withoutSignature(): ProfileProperty = copy(signature = null)
 
     object Factory : ProfileProperty.Factory {
 

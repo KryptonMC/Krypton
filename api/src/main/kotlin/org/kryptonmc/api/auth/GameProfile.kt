@@ -65,24 +65,6 @@ public interface GameProfile : Buildable<GameProfile, GameProfile.Builder>, Iden
     public fun with(builder: Consumer<Builder>): GameProfile = with { builder.accept(this) }
 
     /**
-     * Creates a new game profile with the given [name].
-     *
-     * @param name the new name
-     * @return a new game profile
-     */
-    @Contract("_ -> new", pure = true)
-    public fun withName(name: String): GameProfile
-
-    /**
-     * Creates a new game profile with the given [uuid].
-     *
-     * @param uuid the new UUID
-     * @return a new game profile
-     */
-    @Contract("_ -> new", pure = true)
-    public fun withUUID(uuid: UUID): GameProfile
-
-    /**
      * Creates a new game profile with the given [properties].
      *
      * @param properties the new properties
@@ -130,24 +112,6 @@ public interface GameProfile : Buildable<GameProfile, GameProfile.Builder>, Iden
     public interface Builder : Buildable.Builder<GameProfile> {
 
         /**
-         * Sets the name of the game profile to the given [name].
-         *
-         * @param name the name
-         * @return this builder
-         */
-        @Contract("_ -> this", mutates = "this")
-        public fun name(name: String): Builder
-
-        /**
-         * Sets the UUID of the game profile to the given [uuid].
-         *
-         * @param uuid the UUID
-         * @return this builder
-         */
-        @Contract("_ -> this", mutates = "this")
-        public fun uuid(uuid: UUID): Builder
-
-        /**
          * Sets the properties of the game profile to the given [properties].
          *
          * @param properties the properties
@@ -190,7 +154,7 @@ public interface GameProfile : Buildable<GameProfile, GameProfile.Builder>, Iden
     @ApiStatus.Internal
     public interface Factory {
 
-        public fun of(name: String, uuid: UUID, properties: List<ProfileProperty> = emptyList()): GameProfile
+        public fun of(name: String, uuid: UUID, properties: List<ProfileProperty>): GameProfile
     }
 
     public companion object {
@@ -198,19 +162,8 @@ public interface GameProfile : Buildable<GameProfile, GameProfile.Builder>, Iden
         private val FACTORY = Krypton.factoryProvider.provide<Factory>()
 
         /**
-         * Creates a new game profile with the given [name] and [uuid].
-         *
-         * @param name the name of the profile
-         * @param uuid the UUID of the profile
-         * @return a new profile
-         */
-        @JvmStatic
-        @Contract("_ -> new", pure = true)
-        public fun of(name: String, uuid: UUID): GameProfile = FACTORY.of(name, uuid)
-
-        /**
-         * Creates a new game profile with the given [name], [uuid], and list
-         * of profile [properties].
+         * Creates a new game profile with the given [name], [uuid], and
+         * optionally, list of profile [properties].
          *
          * @param name the name of the profile
          * @param uuid the UUID of the profile
@@ -218,11 +171,12 @@ public interface GameProfile : Buildable<GameProfile, GameProfile.Builder>, Iden
          * @return a new profile
          */
         @JvmStatic
-        @Contract("_ -> new", pure = true)
+        @JvmOverloads
+        @Contract("_, _, _ -> new", pure = true)
         public fun of(
             name: String,
             uuid: UUID,
-            properties: List<ProfileProperty>
+            properties: List<ProfileProperty> = emptyList()
         ): GameProfile = FACTORY.of(name, uuid, properties)
     }
 }

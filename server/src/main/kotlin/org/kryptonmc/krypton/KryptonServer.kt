@@ -26,7 +26,6 @@ import net.kyori.adventure.identity.Identity
 import net.kyori.adventure.text.Component
 import org.apache.logging.log4j.LogManager
 import org.kryptonmc.api.Server
-import org.kryptonmc.api.adventure.Audiences
 import org.kryptonmc.api.event.server.ServerStartEvent
 import org.kryptonmc.api.event.server.ServerStopEvent
 import org.kryptonmc.api.event.server.TickEndEvent
@@ -35,7 +34,6 @@ import org.kryptonmc.api.scoreboard.Scoreboard
 import org.kryptonmc.api.util.register
 import org.kryptonmc.api.world.World
 import org.kryptonmc.api.world.rule.GameRules
-import org.kryptonmc.krypton.adventure.KryptonAudiencesFactory
 import org.kryptonmc.krypton.adventure.PacketGroupingAudience
 import org.kryptonmc.krypton.auth.KryptonProfileCache
 import org.kryptonmc.krypton.command.KryptonCommandManager

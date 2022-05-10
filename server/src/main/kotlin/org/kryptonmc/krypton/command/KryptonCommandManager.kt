@@ -116,7 +116,7 @@ object KryptonCommandManager : CommandManager {
             // The exception formatting here is mostly based on that of vanilla, so we can actually report all of the useful
             // information that we may want for exception messages thrown by commands.
             val rawMessage = exception.rawMessage
-            val message = if (rawMessage is AdventureMessage) rawMessage.wrapped else Component.text(exception.message.orEmpty())
+            val message = if (rawMessage is AdventureMessage) rawMessage.asComponent() else Component.text(exception.message.orEmpty())
             sender.sendMessage(message.color(NamedTextColor.RED))
 
             // This will process extra stuff that we want for proper error reporting to clients.

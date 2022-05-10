@@ -12,6 +12,7 @@ import com.mojang.brigadier.Message
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.ComponentLike
 import org.jetbrains.annotations.ApiStatus
+import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.Krypton
 import org.kryptonmc.api.util.provide
 
@@ -28,16 +29,10 @@ import org.kryptonmc.api.util.provide
 @Suppress("INAPPLICABLE_JVM_NAME")
 public interface AdventureMessage : Message, ComponentLike {
 
-    /**
-     * The wrapped component.
-     */
-    @get:JvmName("wrapped")
-    public val wrapped: Component
-
     @ApiStatus.Internal
     public interface Factory {
 
-        public fun of(wrapped: Component): AdventureMessage
+        public fun of(component: Component): AdventureMessage
     }
 
     public companion object {
@@ -48,10 +43,11 @@ public interface AdventureMessage : Message, ComponentLike {
          * Creates a new Brigadier message that wraps the given [wrapped]
          * component.
          *
-         * @param wrapped the wrapped component
+         * @param component the component message
          * @return a new adventure message
          */
         @JvmStatic
-        public fun of(wrapped: Component): AdventureMessage = FACTORY.of(wrapped)
+        @Contract("_ -> new", pure = true)
+        public fun of(component: Component): AdventureMessage = FACTORY.of(component)
     }
 }
