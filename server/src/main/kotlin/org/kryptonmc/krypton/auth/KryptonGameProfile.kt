@@ -39,10 +39,6 @@ data class KryptonGameProfile(
 
     override fun with(builder: GameProfile.Builder.() -> Unit): GameProfile = Builder(this).apply(builder).build()
 
-    override fun withName(name: String): GameProfile = copy(name = name)
-
-    override fun withUUID(uuid: UUID): GameProfile = copy(uuid = uuid)
-
     override fun withProperties(properties: Iterable<ProfileProperty>): GameProfile = copy(properties = properties.toPersistentList())
 
     override fun withProperty(property: ProfileProperty): GameProfile = copy(properties = properties.add(property))
@@ -55,15 +51,9 @@ data class KryptonGameProfile(
 
     override fun toBuilder(): GameProfile.Builder = Builder(this)
 
-    class Builder(profile: GameProfile) : GameProfile.Builder {
+    class Builder(private val profile: GameProfile) : GameProfile.Builder {
 
-        private var name = profile.name
-        private var uuid = profile.uuid
         private val properties = persistentListOf<ProfileProperty>().builder()
-
-        override fun name(name: String): GameProfile.Builder = apply { this.name = name }
-
-        override fun uuid(uuid: UUID): GameProfile.Builder = apply { this.uuid = uuid }
 
         override fun properties(properties: Iterable<ProfileProperty>): GameProfile.Builder = apply {
             this.properties.clear()
@@ -76,7 +66,7 @@ data class KryptonGameProfile(
 
         override fun removeProperty(property: ProfileProperty): GameProfile.Builder = apply { properties.remove(property) }
 
-        override fun build(): GameProfile = KryptonGameProfile(name, uuid, properties.build())
+        override fun build(): GameProfile = KryptonGameProfile(profile.name, profile.uuid, properties.build())
     }
 
     object Factory : GameProfile.Factory {
