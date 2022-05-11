@@ -8,13 +8,20 @@
  */
 package org.kryptonmc.api.block.meta
 
-import org.kryptonmc.api.util.StringSerializable
-
 /**
- * The half of a block.
+ * Indicates which variant of a block that can attach to either the block
+ * above it or the block below it, such as stairs or trapdoors, a block this
+ * property is applied to represents.
  */
-public enum class Half(@get:JvmName("serialized") override val serialized: String) : StringSerializable {
+public enum class Half {
 
-    TOP("top"),
-    BOTTOM("bottom")
+    /**
+     * The block is attached to the block above it.
+     */
+    TOP,
+
+    /**
+     * The block is attached to the block below it.
+     */
+    BOTTOM
 }

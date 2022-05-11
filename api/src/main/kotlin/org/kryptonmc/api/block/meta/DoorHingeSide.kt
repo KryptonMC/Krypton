@@ -8,13 +8,21 @@
  */
 package org.kryptonmc.api.block.meta
 
-import org.kryptonmc.api.util.StringSerializable
-
 /**
- * The side of a door that it is hinged to.
+ * Indicates the side of the door that the hinges will appear on, and the
+ * direction the door will open in when it is opened.
  */
-public enum class DoorHingeSide(@get:JvmName("serialized") override val serialized: String) : StringSerializable {
+public enum class DoorHingeSide {
 
-    LEFT("left"),
-    RIGHT("right")
+    /**
+     * The hinges will appear on the left side of the door, and the door will
+     * open to the left.
+     */
+    LEFT,
+
+    /**
+     * The hinges will appear on the right side of the door, and the door will
+     * open to the right.
+     */
+    RIGHT
 }

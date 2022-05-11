@@ -28,8 +28,18 @@ public interface PropertyHolder<out T : PropertyHolder<T>> {
     /**
      * All the properties that are being held by this property holder.
      */
+    // TODO: Figure out what to do here.
+    // The problem is that having the properties be a string map exposes the
+    // string-based implementation, and makes it difficult for us to switch to
+    // other options if necessary in the future. It also doesn't really make
+    // sense when you look at the rest of the property API, and the fact that
+    // it's filled with wrappers and high-level abstractions. This feels out of
+    // place, but replacing it with a map of Property<*> to Comparable<*> will
+    // require some backend work, and may degrade performance.
+    /*
     @get:JvmName("properties")
     public val properties: Map<String, String>
+    */
 
     /**
      * Returns true if the specified [key] is in this holder, false otherwise.
@@ -60,7 +70,7 @@ public interface PropertyHolder<out T : PropertyHolder<T>> {
      * @return a new holder with the value of the key set to the given value
      */
     @Contract("_ -> new", pure = true)
-    public operator fun <V : Comparable<V>> set(key: Property<V>, value: V): T
+    public fun <V : Comparable<V>> set(key: Property<V>, value: V): T
 
     /**
      * A base builder for building property holders.

@@ -8,14 +8,13 @@
  */
 package org.kryptonmc.api.block.meta
 
-import org.kryptonmc.api.util.StringSerializable
-
 /**
- * Types of bamboo leaves.
+ * Indicates the type of bamboo leaves a block this property is applied to
+ * has.
  */
-public enum class BambooLeaves(@get:JvmName("serialized") override val serialized: String) : StringSerializable {
+public enum class BambooLeaves {
 
-    NONE("none"),
-    SMALL("small"),
-    LARGE("large")
+    NONE,
+    SMALL,
+    LARGE
 }

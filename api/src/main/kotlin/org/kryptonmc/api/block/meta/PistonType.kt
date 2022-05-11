@@ -8,13 +8,21 @@
  */
 package org.kryptonmc.api.block.meta
 
-import org.kryptonmc.api.util.StringSerializable
-
 /**
- * The type of a piston.
+ * Indicates the type of piston a piston block this property is applied to
+ * represents.
  */
-public enum class PistonType(@get:JvmName("serialized") override val serialized: String) : StringSerializable {
+public enum class PistonType {
 
-    NORMAL("normal"),
-    STICKY("sticky")
+    /**
+     * Normal pistons will push blocks on extension, and do nothing on
+     * retraction.
+     */
+    NORMAL,
+
+    /**
+     * Sticky pistons will push blocks on extension, and pull blocks on
+     * retraction, as blocks will stick to them.
+     */
+    STICKY
 }

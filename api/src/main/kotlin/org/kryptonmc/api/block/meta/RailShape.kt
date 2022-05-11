@@ -8,26 +8,34 @@
  */
 package org.kryptonmc.api.block.meta
 
-import org.kryptonmc.api.util.StringSerializable
-
 /**
- * The shape of a minecart rail.
+ * Indicates the shape of a minecart rail this property is applied to
+ * represents.
+ *
+ * Minecart rails can be in one of three layouts:
+ * * Straight flat, which will keep the Minecart on the same Y level and
+ *   direction of travel. These rails can either be north to south or east to
+ *   west.
+ * * Straight ascending, which will ascend the Minecart up by one Y level, and
+ *   maintain the same direction of travel.
+ * * Corner, which will change the Minecart's orientation by 90 degrees,
+ *   either clockwise or anticlockwise, depending on the direction change.
  */
-public enum class RailShape(@get:JvmName("serialized") override val serialized: String) : StringSerializable {
+public enum class RailShape {
 
-    NORTH_SOUTH("north_south"),
-    EAST_WEST("east_west"),
-    ASCENDING_NORTH("ascending_north"),
-    ASCENDING_SOUTH("ascending_south"),
-    ASCENDING_EAST("ascending_east"),
-    ASCENDING_WEST("ascending_west"),
-    NORTH_EAST("north_east"),
-    NORTH_WEST("north_west"),
-    SOUTH_EAST("south_east"),
-    SOUTH_WEST("south_west");
+    NORTH_SOUTH,
+    EAST_WEST,
+    ASCENDING_NORTH,
+    ASCENDING_SOUTH,
+    ASCENDING_EAST,
+    ASCENDING_WEST,
+    NORTH_EAST,
+    NORTH_WEST,
+    SOUTH_EAST,
+    SOUTH_WEST;
 
     /**
-     * If this rail shape is ascending.
+     * If this rail shape ascends the Minecart by one Y level.
      */
     public val isAscending: Boolean
         get() = this == ASCENDING_NORTH || this == ASCENDING_SOUTH || this == ASCENDING_EAST || this == ASCENDING_WEST

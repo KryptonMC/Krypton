@@ -8,13 +8,16 @@
  */
 package org.kryptonmc.api.block.meta
 
-import org.kryptonmc.api.util.StringSerializable
-
 /**
- * The part of a bed.
+ * Indicates which part of the two block bed a block this property is applied
+ * to represents.
+ *
+ * The head of the bed is the part with the pillow, and where the player's
+ * head is when the player lays down in the bed. The foot is the other end,
+ * where the player's feet are when laying down.
  */
-public enum class BedPart(@get:JvmName("serialized") override val serialized: String) : StringSerializable {
+public enum class BedPart {
 
-    HEAD("head"),
-    FOOT("foot")
+    HEAD,
+    FOOT
 }

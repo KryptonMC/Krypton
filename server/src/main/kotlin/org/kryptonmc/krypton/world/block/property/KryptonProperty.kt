@@ -37,13 +37,13 @@ sealed class KryptonProperty<T : Comparable<T>>(
 
     override fun toString(value: T): String = value.toString()
 
-    override fun equals(other: Any?): Boolean {
+    final override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
         return name == (other as KryptonProperty<*>).name && type == other.type
     }
 
-    override fun hashCode(): Int = Objects.hash(type, name)
+    final override fun hashCode(): Int = Objects.hash(type, name)
 
-    override fun toString(): String = "${javaClass.simpleName}(name=$name, type=${type.simpleName}, values=$values)"
+    final override fun toString(): String = "${javaClass.simpleName}(name=$name, type=${type.simpleName}, values=$values)"
 }

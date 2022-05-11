@@ -8,13 +8,19 @@
  */
 package org.kryptonmc.api.block.meta
 
-import org.kryptonmc.api.util.StringSerializable
-
 /**
- * The half of a 2 block tall block.
+ * Indicates the half of a two block tall block this property is applied to
+ * represents.
  */
-public enum class DoubleBlockHalf(@get:JvmName("serialized") override val serialized: String) : StringSerializable {
+public enum class DoubleBlockHalf {
 
-    UPPER("upper"),
-    LOWER("lower")
+    /**
+     * The upper half of the double block.
+     */
+    UPPER,
+
+    /**
+     * The lower half of the double block.
+     */
+    LOWER
 }

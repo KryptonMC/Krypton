@@ -13,7 +13,6 @@ import org.jetbrains.annotations.ApiStatus
 import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.Krypton
 import org.kryptonmc.api.util.CataloguedBy
-import org.kryptonmc.api.util.StringSerializable
 import org.kryptonmc.api.util.provide
 
 /**
@@ -65,11 +64,7 @@ public interface Property<T : Comparable<T>> {
 
         public fun forInt(name: String, values: Set<Int>): Property<Int>
 
-        public fun <E> forEnum(
-            name: String,
-            type: Class<E>,
-            values: Set<E>
-        ): Property<E> where E : Enum<E>, E : StringSerializable
+        public fun <E : Enum<E>> forEnum(name: String, type: Class<E>, values: Set<E>): Property<E>
     }
 
     public companion object {
@@ -125,8 +120,11 @@ public interface Property<T : Comparable<T>> {
         public fun forInt(name: String, range: IntRange): Property<Int> = forInt(name, range.toSet())
 
         /**
-         * Creates a new enum property with the given [name], [type], and the given
-         * set of accepted [values].
+         * Creates a new enum property with the given [name], [type], and the
+         * given set of accepted [values].
+         *
+         * Enum properties use the lowercase name of the constant as the value
+         * for the property.
          *
          * @param name the name
          * @param type the enum class
@@ -135,15 +133,18 @@ public interface Property<T : Comparable<T>> {
          */
         @JvmStatic
         @Contract("_ -> new", pure = true)
-        public fun <E> forEnum(
+        public fun <E : Enum<E>> forEnum(
             name: String,
             type: Class<E>,
             values: Set<E>
-        ): Property<E> where E : Enum<E>, E : StringSerializable = FACTORY.forEnum(name, type, values)
+        ): Property<E> = FACTORY.forEnum(name, type, values)
 
         /**
          * Creates a new enum property with the given [name], [type], and the given
          * array of accepted [values].
+         *
+         * Enum properties use the lowercase name of the constant as the value
+         * for the property.
          *
          * @param name the name
          * @param type the enum class
@@ -152,11 +153,11 @@ public interface Property<T : Comparable<T>> {
          */
         @JvmStatic
         @Contract("_ -> new", pure = true)
-        public fun <E> forEnum(
+        public fun <E : Enum<E>> forEnum(
             name: String,
             type: Class<E>,
             values: Array<E>
-        ): Property<E> where E : Enum<E>, E : StringSerializable = FACTORY.forEnum(name, type, values.toSet())
+        ): Property<E> = forEnum(name, type, values.toSet())
     }
 }
 
@@ -170,10 +171,10 @@ public interface Property<T : Comparable<T>> {
  */
 @JvmSynthetic
 @Contract("_ -> new", pure = true)
-public inline fun <reified E> Property.Companion.forEnum(
+public inline fun <reified E : Enum<E>> Property.Companion.forEnum(
     name: String,
     values: Set<E>
-): Property<E> where E : Enum<E>, E : StringSerializable = forEnum(name, E::class.java, values)
+): Property<E> = forEnum(name, E::class.java, values)
 
 /**
  * Creates a new enum property with the given [name] and the given array
@@ -185,7 +186,7 @@ public inline fun <reified E> Property.Companion.forEnum(
  */
 @JvmSynthetic
 @Contract("_ -> new", pure = true)
-public inline fun <reified E> Property.Companion.forEnum(
+public inline fun <reified E : Enum<E>> Property.Companion.forEnum(
     name: String,
     values: Array<E>
-): Property<E> where E : Enum<E>, E : StringSerializable = forEnum(name, E::class.java, values)
+): Property<E> = forEnum(name, E::class.java, values)

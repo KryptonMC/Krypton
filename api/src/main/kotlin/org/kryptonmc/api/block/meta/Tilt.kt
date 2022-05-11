@@ -8,20 +8,36 @@
  */
 package org.kryptonmc.api.block.meta
 
-import org.kryptonmc.api.util.StringSerializable
-
 /**
- * The tilt of a big dripleaf.
+ * Indicates the tilt of a big dripleaf this property is applied to.
  *
- * @param causesVibrations if this tilt causes vibrations
+ * Large dripleaf plants can tilt downwards when significant force is applied
+ * to the top of them, for example, when a player stands on them.
+ *
+ * @param causesVibrations if this tilt causes vibrations that the sculk sensor
+ * will pick up
  */
-public enum class Tilt(
-    @get:JvmName("serialized") override val serialized: String,
-    @get:JvmName("causesVibrations") public val causesVibrations: Boolean
-) : StringSerializable {
+public enum class Tilt(@get:JvmName("causesVibrations") public val causesVibrations: Boolean) {
 
-    NONE("none", true),
-    UNSTABLE("unstable", false),
-    PARTIAL("partial", true),
-    FULL("full", true)
+    /**
+     * The dripleaf is flat, and not tilting.
+     */
+    NONE(true),
+
+    /**
+     * The dripleaf is unstable, and will partially tilt after 10 ticks.
+     *
+     * This tilt state does not cause sculk vibrations.
+     */
+    UNSTABLE(false),
+
+    /**
+     * The dripleaf is partially tilted, and will fully tilt after 10 ticks.
+     */
+    PARTIAL(true),
+
+    /**
+     * The dripleaf will fully tilt, and will return to none after 100 ticks.
+     */
+    FULL(true)
 }

@@ -22,6 +22,7 @@ import net.kyori.adventure.key.Key
 import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.block.Blocks
 import org.kryptonmc.krypton.util.transform
+import org.kryptonmc.krypton.world.block.KryptonBlock
 import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.StringTag
 import org.kryptonmc.nbt.compound
@@ -35,5 +36,7 @@ fun CompoundTag.toBlock(): Block {
 
 fun Block.toNBT(): CompoundTag = compound {
     string("Name", key().asString())
-    if (properties.isNotEmpty()) compound("Properties") { properties.forEach { string(it.key, it.value) } }
+    if (this@toNBT is KryptonBlock && properties.isNotEmpty()) {
+        compound("Properties") { properties.forEach { string(it.key, it.value) } }
+    }
 }

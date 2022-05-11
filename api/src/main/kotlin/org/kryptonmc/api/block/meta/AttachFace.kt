@@ -8,14 +8,25 @@
  */
 package org.kryptonmc.api.block.meta
 
-import org.kryptonmc.api.util.StringSerializable
-
 /**
- * Faces of a block that another block can be attached to.
+ * Indicates the face of a connected block that a block this property is
+ * applied to is attached to.
  */
-public enum class AttachFace(@get:JvmName("serialized") override val serialized: String) : StringSerializable {
+public enum class AttachFace {
 
-    FLOOR("floor"),
-    WALL("wall"),
-    CEILING("ceiling")
+    /**
+     * The block is attached to the top face of the block below it.
+     */
+    FLOOR,
+
+    /**
+     * The block is attached to the north, south, east, or west face of the
+     * block to the north, south, east, or west of it.
+     */
+    WALL,
+
+    /**
+     * The block is attached to the bottom face of the block above it.
+     */
+    CEILING
 }
