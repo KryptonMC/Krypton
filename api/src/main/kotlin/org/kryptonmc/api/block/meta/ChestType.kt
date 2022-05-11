@@ -8,19 +8,37 @@
  */
 package org.kryptonmc.api.block.meta
 
-import org.kryptonmc.api.util.StringSerializable
-
 /**
- * Represents a type of chest.
+ * Indicates the type of chest a block this property is applied to represents.
+ *
+ * This is used to help the client properly attach chest models, and combine
+ * adjacent chest blocks where necessary, for example, with the double chest,
+ * where adjacent chests need to be attached across blocks.
  */
-public enum class ChestType(@get:JvmName("serialized") override val serialized: String) : StringSerializable {
+public enum class ChestType {
 
-    SINGLE("single"),
-    LEFT("left"),
-    RIGHT("right");
+    /**
+     * A single chest that is not connected to any other chest.
+     */
+    SINGLE,
+
+    /**
+     * The left half of a double chest.
+     */
+    LEFT,
+
+    /**
+     * The right half of a double chest.
+     */
+    RIGHT;
 
     /**
      * The chest type opposite to this chest type.
+     *
+     * If this chest is the left half of a double chest, the opposite will be
+     * the right half, and if it is the right half, the opposite will be the
+     * left half. If this chest is a single chest, it has no opposite type,
+     * and so the opposite will just be single.
      */
     @get:JvmName("opposite")
     public val opposite: ChestType by lazy {

@@ -10,32 +10,29 @@ package org.kryptonmc.api.block.meta
 
 import org.kryptonmc.api.effect.sound.SoundEvent
 import org.kryptonmc.api.effect.sound.SoundEvents
-import org.kryptonmc.api.util.StringSerializable
 
 /**
- * The instrument that a note block plays.
+ * Indicates the instrument that a note block this property is applied to will
+ * play when it is attacked or a redstone signal is applied to it.
  *
  * @param sound the corresponding sound event
  */
-public enum class NoteBlockInstrument(
-    @get:JvmName("serialized") override val serialized: String,
-    @get:JvmName("sound") public val sound: SoundEvent
-) : StringSerializable {
+public enum class NoteBlockInstrument(@get:JvmName("sound") public val sound: SoundEvent) {
 
-    HARP("harp", SoundEvents.NOTE_BLOCK_HARP),
-    BASE_DRUM("basedrum", SoundEvents.NOTE_BLOCK_BASEDRUM),
-    SNARE("snare", SoundEvents.NOTE_BLOCK_SNARE),
-    HAT("hat", SoundEvents.NOTE_BLOCK_HAT),
-    BASS("bass", SoundEvents.NOTE_BLOCK_BASS),
-    FLUTE("flute", SoundEvents.NOTE_BLOCK_FLUTE),
-    BELL("bell", SoundEvents.NOTE_BLOCK_BELL),
-    GUITAR("guitar", SoundEvents.NOTE_BLOCK_GUITAR),
-    CHIME("chime", SoundEvents.NOTE_BLOCK_CHIME),
-    XYLOPHONE("xylophone", SoundEvents.NOTE_BLOCK_XYLOPHONE),
-    IRON_XYLOPHONE("iron_xylophone", SoundEvents.NOTE_BLOCK_IRON_XYLOPHONE),
-    COW_BELL("cow_bell", SoundEvents.NOTE_BLOCK_COW_BELL),
-    DIDGERIDOO("didgeridoo", SoundEvents.NOTE_BLOCK_DIDGERIDOO),
-    BIT("bit", SoundEvents.NOTE_BLOCK_BIT),
-    BANJO("banjo", SoundEvents.NOTE_BLOCK_BANJO),
-    PLING("pling", SoundEvents.NOTE_BLOCK_PLING)
+    HARP(SoundEvents.NOTE_BLOCK_HARP),
+    BASEDRUM(SoundEvents.NOTE_BLOCK_BASEDRUM),
+    SNARE(SoundEvents.NOTE_BLOCK_SNARE),
+    HAT(SoundEvents.NOTE_BLOCK_HAT),
+    BASS(SoundEvents.NOTE_BLOCK_BASS),
+    FLUTE(SoundEvents.NOTE_BLOCK_FLUTE),
+    BELL(SoundEvents.NOTE_BLOCK_BELL),
+    GUITAR(SoundEvents.NOTE_BLOCK_GUITAR),
+    CHIME(SoundEvents.NOTE_BLOCK_CHIME),
+    XYLOPHONE(SoundEvents.NOTE_BLOCK_XYLOPHONE),
+    IRON_XYLOPHONE(SoundEvents.NOTE_BLOCK_IRON_XYLOPHONE),
+    COW_BELL(SoundEvents.NOTE_BLOCK_COW_BELL),
+    DIDGERIDOO(SoundEvents.NOTE_BLOCK_DIDGERIDOO),
+    BIT(SoundEvents.NOTE_BLOCK_BIT),
+    BANJO(SoundEvents.NOTE_BLOCK_BANJO),
+    PLING(SoundEvents.NOTE_BLOCK_PLING)
 }

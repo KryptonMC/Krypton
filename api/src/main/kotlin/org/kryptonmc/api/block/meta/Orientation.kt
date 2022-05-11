@@ -9,30 +9,29 @@
 package org.kryptonmc.api.block.meta
 
 import org.kryptonmc.api.util.Direction
-import org.kryptonmc.api.util.StringSerializable
 
 /**
- * The orientation of a block.
+ * Indicates the orientation of a block that may be oriented in two directions
+ * on two separate axes, such as a jigsaw block.
  *
  * @param top the top direction
  * @param front the front direction
  */
 public enum class Orientation(
-    @get:JvmName("serialized") override val serialized: String,
     @get:JvmName("top") public val top: Direction,
     @get:JvmName("front") public val front: Direction
-) : StringSerializable {
+) {
 
-    UP_NORTH("up_north", Direction.UP, Direction.NORTH),
-    UP_SOUTH("up_south", Direction.UP, Direction.SOUTH),
-    UP_EAST("up_east", Direction.UP, Direction.EAST),
-    UP_WEST("up_west", Direction.UP, Direction.WEST),
-    DOWN_NORTH("down_north", Direction.DOWN, Direction.NORTH),
-    DOWN_SOUTH("down_south", Direction.DOWN, Direction.SOUTH),
-    DOWN_EAST("down_east", Direction.DOWN, Direction.EAST),
-    DOWN_WEST("down_west", Direction.DOWN, Direction.WEST),
-    NORTH_UP("north_up", Direction.NORTH, Direction.UP),
-    SOUTH_UP("south_up", Direction.SOUTH, Direction.UP),
-    EAST_UP("east_up", Direction.EAST, Direction.UP),
-    WEST_UP("west_up", Direction.WEST, Direction.UP)
+    UP_NORTH(Direction.UP, Direction.NORTH),
+    UP_SOUTH(Direction.UP, Direction.SOUTH),
+    UP_EAST(Direction.UP, Direction.EAST),
+    UP_WEST(Direction.UP, Direction.WEST),
+    DOWN_NORTH(Direction.DOWN, Direction.NORTH),
+    DOWN_SOUTH(Direction.DOWN, Direction.SOUTH),
+    DOWN_EAST(Direction.DOWN, Direction.EAST),
+    DOWN_WEST(Direction.DOWN, Direction.WEST),
+    NORTH_UP(Direction.NORTH, Direction.UP),
+    SOUTH_UP(Direction.SOUTH, Direction.UP),
+    EAST_UP(Direction.EAST, Direction.UP),
+    WEST_UP(Direction.WEST, Direction.UP)
 }

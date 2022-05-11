@@ -8,16 +8,21 @@
  */
 package org.kryptonmc.api.block.meta
 
-import org.kryptonmc.api.util.StringSerializable
-
 /**
- * The thickness of a dripstone block.
+ * Indicates the thickness of a dripstone block that forms the multi block
+ * stalagmites and stalagtites.
+ *
+ * As stalagmites and stalagtites are spikes on the ceiling or the ground,
+ * and they vary in size, it is important to be able to track which part of it
+ * a specific block is. For example, a three block stalagmite may have a base,
+ * the part connected to the ground, a middle, the section between the base
+ * and the top, and the tip, the section at the top that ends the stalagmite.
  */
-public enum class DripstoneThickness(@get:JvmName("serialized") override val serialized: String) : StringSerializable {
+public enum class DripstoneThickness {
 
-    TIP_MERGE("tip_merge"),
-    TIP("tip"),
-    FRUSTUM("frustum"),
-    MIDDLE("middle"),
-    BASE("base")
+    TIP_MERGE,
+    TIP,
+    FRUSTUM,
+    MIDDLE,
+    BASE
 }

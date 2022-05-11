@@ -21,7 +21,6 @@ package org.kryptonmc.krypton.world.block.property
 import kotlinx.collections.immutable.toImmutableSet
 import org.kryptonmc.api.block.property.Properties
 import org.kryptonmc.api.block.property.Property
-import org.kryptonmc.api.util.StringSerializable
 import java.util.concurrent.ConcurrentHashMap
 
 object KryptonPropertyFactory : Property.Factory {
@@ -70,6 +69,6 @@ object KryptonPropertyFactory : Property.Factory {
 
     override fun forInt(name: String, values: Set<Int>): Property<Int> = IntProperty(name, values.toImmutableSet())
 
-    override fun <E> forEnum(name: String, type: Class<E>, values: Set<E>): Property<E> where E : Enum<E>, E : StringSerializable =
+    override fun <E : Enum<E>> forEnum(name: String, type: Class<E>, values: Set<E>): Property<E> =
         EnumProperty(name, type, values.toImmutableSet())
 }

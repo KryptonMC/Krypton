@@ -8,14 +8,14 @@
  */
 package org.kryptonmc.api.block.meta
 
-import org.kryptonmc.api.util.StringSerializable
-
 /**
- * The phase of a sculk sensor.
+ * Indicates the phase that a sculk sensor this property is applied to is
+ * currently in.
  */
-public enum class SculkSensorPhase(@get:JvmName("serialized") override val serialized: String) : StringSerializable {
+// TODO: Find out about sculk sensor phases
+public enum class SculkSensorPhase {
 
-    INACTIVE("inactive"),
-    ACTIVE("active"),
-    COOLDOWN("cooldown")
+    INACTIVE,
+    ACTIVE,
+    COOLDOWN
 }

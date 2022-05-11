@@ -8,14 +8,17 @@
  */
 package org.kryptonmc.api.block.meta
 
-import org.kryptonmc.api.util.StringSerializable
-
 /**
- * The side of a wall.
+ * Indicates how a wall this property is applied to connects to an adjacent
+ * wall or block on one of its faces.
  */
-public enum class WallSide(@get:JvmName("serialized") override val serialized: String) : StringSerializable {
+// TODO: Find out what low and tall are
+public enum class WallSide {
 
-    NONE("none"),
-    LOW("low"),
-    TALL("tall")
+    /**
+     * The wall has no connection.
+     */
+    NONE,
+    LOW,
+    TALL
 }
