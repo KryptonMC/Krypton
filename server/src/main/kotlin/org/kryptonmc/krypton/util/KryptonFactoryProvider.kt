@@ -25,6 +25,7 @@ import org.kryptonmc.api.auth.GameProfile
 import org.kryptonmc.api.auth.ProfileProperty
 import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.block.property.Property
+import org.kryptonmc.api.command.BrigadierCommand
 import org.kryptonmc.api.command.meta.CommandMeta
 import org.kryptonmc.api.effect.Music
 import org.kryptonmc.api.effect.particle.ParticleEffect
@@ -67,6 +68,7 @@ import org.kryptonmc.krypton.adventure.KryptonAdventureMessage
 import org.kryptonmc.krypton.adventure.KryptonAudiencesFactory
 import org.kryptonmc.krypton.auth.KryptonGameProfile
 import org.kryptonmc.krypton.auth.KryptonProfileProperty
+import org.kryptonmc.krypton.command.KryptonBrigadierCommand
 import org.kryptonmc.krypton.command.meta.KryptonCommandMeta
 import org.kryptonmc.krypton.effect.KryptonMusic
 import org.kryptonmc.krypton.effect.particle.KryptonParticleEffect
@@ -156,7 +158,7 @@ object KryptonFactoryProvider : FactoryProvider {
         register<ItemMeta.Factory>(KryptonItemMeta.Factory)
         register<DamageSource.Factory>(KryptonDamageSourceFactory)
         register<AdventureMessage.Factory>(KryptonAdventureMessage.Factory)
-        register<Audiences.Factory>(KryptonAudiencesFactory)
+        register<BrigadierCommand.Factory>(KryptonBrigadierCommand.Factory)
         register<Scoreboard.Factory>(KryptonScoreboard.Factory)
     }
 }

@@ -11,22 +11,52 @@ package org.kryptonmc.api.command
 
 import com.mojang.brigadier.builder.LiteralArgumentBuilder
 import com.mojang.brigadier.tree.LiteralCommandNode
+import org.jetbrains.annotations.ApiStatus
+import org.kryptonmc.api.Krypton
+import org.kryptonmc.api.util.provide
 
 /**
  * A command that is backed by a Brigadier [LiteralCommandNode].
  *
  * @param node the node that backs this command
  */
-@JvmRecord
-public data class BrigadierCommand(public val node: LiteralCommandNode<Sender>) : Command {
+public interface BrigadierCommand : Command {
 
     /**
-     * Constructs a command that is backed by a Brigadier [LiteralCommandNode] from
-     * the node's builder type [LiteralArgumentBuilder].
-     *
-     * @param builder the builder to build the backing node from
+     * The built command node representing the command tree for this specific
+     * command.
      */
-    public constructor(builder: LiteralArgumentBuilder<Sender>) : this(builder.build())
+    public val node: LiteralCommandNode<Sender>
+
+    @ApiStatus.Internal
+    public interface Factory {
+
+        public fun of(node: LiteralCommandNode<Sender>): BrigadierCommand
+    }
+
+    public companion object {
+
+        private val FACTORY = Krypton.factoryProvider.provide<Factory>()
+
+        /**
+         * Creates a new command backed by the given Brigadier command [node].
+         *
+         * @param node the backing command node
+         * @return a new Brigadier command
+         */
+        @JvmStatic
+        public fun of(node: LiteralCommandNode<Sender>): BrigadierCommand = FACTORY.of(node)
+
+        /**
+         * Creates a new command backed by the Brigadier command node built
+         * from the given [builder].
+         *
+         * @param builder the builder to build the backing command node from
+         * @return a new Brigadier command
+         */
+        @JvmStatic
+        public fun of(builder: LiteralArgumentBuilder<Sender>): BrigadierCommand = of(builder.build())
+    }
 }
 
 /**
@@ -40,4 +70,4 @@ public data class BrigadierCommand(public val node: LiteralCommandNode<Sender>) 
 public inline fun brigadierCommand(
     literal: String,
     builder: LiteralArgumentBuilder<Sender>.() -> Unit
-): BrigadierCommand = BrigadierCommand(LiteralArgumentBuilder.literal<Sender>(literal).apply(builder).build())
+): BrigadierCommand = BrigadierCommand.of(LiteralArgumentBuilder.literal<Sender>(literal).apply(builder).build())
