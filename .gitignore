@@ -22,6 +22,7 @@ nbactions.xml
 # Gradle
 .gradle/
 build/
+**/bin/
 
 # Temp/heap files
 .*.sw[a-p]
