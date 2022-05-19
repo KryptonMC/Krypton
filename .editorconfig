@@ -9,30 +9,13 @@ insert_final_newline = true
 
 ij_continuation_indent_size = 8
 ij_smart_tabs = true
-ij_any_block_brace_style = end_of_line
-ij_any_class_brace_style = end_of_line
-ij_any_lambda_brace_style = end_of_line
-ij_any_method_brace_style = end_of_line
-ij_any_blank_lines_after_class_header = 1
-ij_any_blank_lines_after_anonymous_class_header = 1
-ij_any_blank_lines_after_imports = 1
-ij_any_blank_lines_after_package = 1
-ij_any_blank_lines_before_package = 0
-ij_any_blank_lines_before_imports = 0
-ij_any_blank_lines_around_class = 0
-ij_any_blank_lines_around_field = 0
-ij_any_blank_lines_around_field_in_interface = 2
-ij_any_blank_lines_around_method = 2
-ij_any_blank_lines_around_method_in_interface = 2
-ij_any_blank_lines_before_method_body = 0
-ij_any_blank_lines_before_class_end = 0
 
-[{*.json, *.conf}]
+[*.{json,conf}]
 indent_size = 2
 insert_final_newline = false
 
-[{*.yaml, *.yml}]
+[*.{yaml,yml}]
 indent_size = 2
 
-[{*.xml, Dockerfile}]
+[{*.xml,Dockerfile}]
 insert_final_newline = false
