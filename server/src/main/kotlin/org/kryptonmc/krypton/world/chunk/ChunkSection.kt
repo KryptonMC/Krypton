@@ -24,6 +24,8 @@ import org.kryptonmc.api.block.Blocks
 import org.kryptonmc.api.world.biome.Biome
 import org.kryptonmc.api.world.biome.Biomes
 import org.kryptonmc.krypton.world.biome.NoiseBiomeSource
+import org.kryptonmc.krypton.world.block.downcast
+import org.kryptonmc.krypton.world.block.KryptonBlock
 import org.kryptonmc.krypton.world.block.palette.PaletteHolder
 
 /**
@@ -32,7 +34,7 @@ import org.kryptonmc.krypton.world.block.palette.PaletteHolder
  */
 class ChunkSection(
     y: Int,
-    val blocks: PaletteHolder<Block> = PaletteHolder(PaletteHolder.Strategy.BLOCKS, Blocks.AIR),
+    val blocks: PaletteHolder<KryptonBlock> = PaletteHolder(PaletteHolder.Strategy.BLOCKS, Blocks.AIR.downcast()),
     val biomes: PaletteHolder<Biome> = PaletteHolder(PaletteHolder.Strategy.BIOMES, Biomes.PLAINS),
     val blockLight: ByteArray = ByteArray(2048),
     val skyLight: ByteArray = ByteArray(2048)
@@ -47,9 +49,9 @@ class ChunkSection(
         recount()
     }
 
-    operator fun get(x: Int, y: Int, z: Int): Block = blocks[x, y, z]
+    operator fun get(x: Int, y: Int, z: Int): KryptonBlock = blocks[x, y, z]
 
-    operator fun set(x: Int, y: Int, z: Int, block: Block): Block {
+    operator fun set(x: Int, y: Int, z: Int, block: KryptonBlock): KryptonBlock {
         val oldBlock = blocks.getAndSet(x, y, z, block)
         if (!oldBlock.isAir) nonEmptyBlockCount--
         if (!block.isAir) nonEmptyBlockCount++

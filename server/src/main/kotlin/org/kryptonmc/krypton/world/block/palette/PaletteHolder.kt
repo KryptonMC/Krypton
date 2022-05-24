@@ -34,6 +34,7 @@ import org.kryptonmc.krypton.util.ceillog2
 import org.kryptonmc.krypton.util.varIntBytes
 import org.kryptonmc.krypton.util.writeLongArray
 import org.kryptonmc.krypton.world.block.BlockLoader
+import org.kryptonmc.krypton.world.block.KryptonBlock
 import org.kryptonmc.krypton.world.block.toBlock
 import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.StringTag
@@ -171,9 +172,9 @@ class PaletteHolder<T> : PaletteResizer<T> {
         companion object {
 
             @JvmField
-            val BLOCKS: Strategy<Block> = object : Strategy<Block>(BlockLoader.STATES, 4) {
+            val BLOCKS: Strategy<KryptonBlock> = object : Strategy<KryptonBlock>(BlockLoader.STATES, 4) {
 
-                override fun createConfiguration(bits: Int): Configuration<Block> = when (bits) {
+                override fun createConfiguration(bits: Int): Configuration<KryptonBlock> = when (bits) {
                     0 -> Configuration(SingleValuePalette.Factory, bits)
                     in 1..4 -> Configuration(ArrayPalette.Factory, 4)
                     in 5..8 -> Configuration(MapPalette.Factory, bits)
@@ -203,8 +204,8 @@ class PaletteHolder<T> : PaletteResizer<T> {
         private val DUMMY_RESIZER: PaletteResizer<Any?> = PaletteResizer { _, _ -> 0 }
 
         @JvmStatic
-        fun readBlocks(data: CompoundTag): PaletteHolder<Block> {
-            val entries = mutableListOf<Block>()
+        fun readBlocks(data: CompoundTag): PaletteHolder<KryptonBlock> {
+            val entries = mutableListOf<KryptonBlock>()
             data.getList("palette", CompoundTag.ID).forEachCompound { entries.add(it.toBlock()) }
             return read(Strategy.BLOCKS, entries, data.getLongArray("data"))
         }

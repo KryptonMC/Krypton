@@ -22,6 +22,7 @@ import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.block.BlockContainer
 import org.kryptonmc.api.fluid.Fluid
 import org.kryptonmc.api.fluid.FluidContainer
+import org.kryptonmc.krypton.world.block.KryptonBlock
 import org.spongepowered.math.vector.Vector3i
 
 interface BlockAccessor : BlockContainer, FluidContainer, HeightAccessor {
@@ -29,7 +30,9 @@ interface BlockAccessor : BlockContainer, FluidContainer, HeightAccessor {
     val maximumLightLevel: Int
         get() = 15
 
-    override fun getBlock(position: Vector3i): Block = getBlock(position.x(), position.y(), position.z())
+    override fun getBlock(x: Int, y: Int, z: Int): KryptonBlock
+
+    override fun getBlock(position: Vector3i): KryptonBlock = getBlock(position.x(), position.y(), position.z())
 
     override fun getFluid(position: Vector3i): Fluid = getFluid(position.x(), position.y(), position.z())
 

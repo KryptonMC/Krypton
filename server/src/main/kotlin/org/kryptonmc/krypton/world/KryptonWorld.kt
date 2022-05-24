@@ -52,6 +52,8 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutSoundEffect
 import org.kryptonmc.krypton.server.PlayerManager
 import org.kryptonmc.krypton.util.clamp
 import org.kryptonmc.krypton.world.biome.BiomeManager
+import org.kryptonmc.krypton.world.block.downcast
+import org.kryptonmc.krypton.world.block.KryptonBlock
 import org.kryptonmc.krypton.world.chunk.ChunkAccessor
 import org.kryptonmc.krypton.world.chunk.ChunkManager
 import org.kryptonmc.krypton.world.chunk.ChunkPosition
@@ -198,9 +200,9 @@ class KryptonWorld(
         return setBlock(x, y, z, fluid.asBlock())
     }
 
-    override fun getBlock(x: Int, y: Int, z: Int): Block {
-        if (isOutsideBuildHeight(y)) return Blocks.VOID_AIR
-        val chunk = getChunkAt(x shr 4, z shr 4) ?: return Blocks.AIR
+    override fun getBlock(x: Int, y: Int, z: Int): KryptonBlock {
+        if (isOutsideBuildHeight(y)) return Blocks.VOID_AIR.downcast()
+        val chunk = getChunkAt(x shr 4, z shr 4) ?: return Blocks.AIR.downcast()
         return chunk.getBlock(x, y, z)
     }
 
@@ -220,7 +222,7 @@ class KryptonWorld(
         return SEA_LEVEL + 1
     }
 
-    override fun getBlock(position: Vector3i): Block = getBlock(position.x(), position.y(), position.z())
+    override fun getBlock(position: Vector3i): KryptonBlock = getBlock(position.x(), position.y(), position.z())
 
     override fun getFluid(position: Vector3i): Fluid = getFluid(position.x(), position.y(), position.z())
 
@@ -237,6 +239,7 @@ class KryptonWorld(
     }
 
     override fun setBlock(x: Int, y: Int, z: Int, block: Block): Boolean {
+        require(block is KryptonBlock) { "Custom implementations of Block are not supported!" }
         if (isOutsideBuildHeight(y)) return false
 //        if (isDebug) return false
         val chunk = getChunk(x, y, z) ?: return false

@@ -31,6 +31,7 @@ import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.item.destroySpeed
 import org.kryptonmc.krypton.item.handler
 import org.kryptonmc.krypton.world.KryptonWorld
+import org.kryptonmc.krypton.world.block.KryptonBlock
 import org.spongepowered.math.vector.Vector3i
 
 /**
@@ -46,7 +47,7 @@ interface BlockHandler {
      * [x], [y], and [z] coordinates, being broken by the given [player] in
      * the given [world].
      */
-    fun calculateDestroyProgress(player: KryptonPlayer, world: KryptonWorld, block: Block, x: Int, y: Int, z: Int): Float {
+    fun calculateDestroyProgress(player: KryptonPlayer, world: KryptonWorld, block: KryptonBlock, x: Int, y: Int, z: Int): Float {
         val hardness = block.hardness
         if (hardness == -1.0) return 0F
         val factor = if (hasCorrectTool(player, block)) 30 else 100
@@ -58,11 +59,11 @@ interface BlockHandler {
      * the given [x], [y], and [z] coordinates in the given [world], but
      * hasn't yet.
      */
-    fun preDestroy(player: KryptonPlayer, world: KryptonWorld, block: Block, x: Int, y: Int, z: Int) {
+    fun preDestroy(player: KryptonPlayer, world: KryptonWorld, block: KryptonBlock, x: Int, y: Int, z: Int) {
         spawnDestroyParticles(world, player, x, y, z, block)
     }
 
-    fun destroy(world: KryptonWorld, x: Int, y: Int, z: Int, block: Block) {
+    fun destroy(world: KryptonWorld, x: Int, y: Int, z: Int, block: KryptonBlock) {
         // do nothing by default
     }
 
@@ -70,7 +71,7 @@ interface BlockHandler {
      * Called when the given [block] is destroyed by the given [player] at the
      * given [x], [y], and [z] coordinates, with the given [item].
      */
-    fun onDestroy(player: KryptonPlayer, block: Block, x: Int, y: Int, z: Int, item: ItemStack) {
+    fun onDestroy(player: KryptonPlayer, block: KryptonBlock, x: Int, y: Int, z: Int, item: ItemStack) {
         // TODO: drop items
         // 0.005/block is the vanilla food exhaustion per block to be added to the player
         // Source: https://minecraft.fandom.com/wiki/Hunger#Exhaustion_level_increase
@@ -82,20 +83,20 @@ interface BlockHandler {
      * Called when the given [player] attacks the given [block] at the given
      * [x], [y], and [z] coordinates in the given [world].
      */
-    fun attack(player: KryptonPlayer, world: KryptonWorld, block: Block, x: Int, y: Int, z: Int) {
+    fun attack(player: KryptonPlayer, world: KryptonWorld, block: KryptonBlock, x: Int, y: Int, z: Int) {
         // all blocks do nothing when attacked by default, breaking isn't handled here
     }
 
-    fun spawnDestroyParticles(world: KryptonWorld, player: KryptonPlayer, x: Int, y: Int, z: Int, block: Block) {
+    fun spawnDestroyParticles(world: KryptonWorld, player: KryptonPlayer, x: Int, y: Int, z: Int, block: KryptonBlock) {
         world.playEffect(Effect.DESTROY_BLOCK, x, y, z, block.stateId, player)
     }
 
     companion object {
 
-        private fun hasCorrectTool(player: KryptonPlayer, block: Block): Boolean = !block.requiresCorrectTool ||
+        private fun hasCorrectTool(player: KryptonPlayer, block: KryptonBlock): Boolean = !block.requiresCorrectTool ||
                 player.inventory.mainHand.type.handler().isCorrectTool(block)
 
-        private fun calculateDestroySpeed(player: KryptonPlayer, block: Block): Float {
+        private fun calculateDestroySpeed(player: KryptonPlayer, block: KryptonBlock): Float {
             var speed = player.inventory.mainHand.destroySpeed(block)
             if (player.underFluid(FluidTags.WATER)) speed /= 5F
             if (!player.isOnGround) speed /= 5F

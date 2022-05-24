@@ -24,14 +24,19 @@ import org.kryptonmc.api.effect.particle.BlockParticleType
 import org.kryptonmc.api.effect.particle.builder.BlockParticleEffectBuilder
 import org.kryptonmc.api.effect.particle.data.ParticleData
 import org.kryptonmc.krypton.effect.particle.data.KryptonBlockParticleData
+import org.kryptonmc.krypton.world.block.KryptonBlock
+import org.kryptonmc.krypton.world.block.downcast
 import org.spongepowered.math.vector.Vector3d
 
 class KryptonBlockParticleEffectBuilder(type: BlockParticleType) : AbstractParticleEffectBuilder<BlockParticleEffectBuilder>(type),
     BlockParticleEffectBuilder {
 
-    private var block: Block = Blocks.STONE
+    private var block: KryptonBlock = Blocks.STONE.downcast()
 
-    override fun block(block: Block): BlockParticleEffectBuilder = apply { this.block = block }
+    override fun block(block: Block): BlockParticleEffectBuilder = apply {
+        if (block !is KryptonBlock) throw IllegalArgumentException("Invalid block instance! You cannot provide custom Block implementations!")
+        this.block = block
+    }
 
     override fun buildData(): ParticleData = KryptonBlockParticleData(block)
 }

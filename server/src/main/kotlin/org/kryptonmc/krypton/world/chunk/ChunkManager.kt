@@ -35,6 +35,8 @@ import org.kryptonmc.krypton.util.pool.daemonThreadFactory
 import org.kryptonmc.krypton.util.pool.uncaughtExceptionHandler
 import org.kryptonmc.krypton.world.Heightmap
 import org.kryptonmc.krypton.world.KryptonWorld
+import org.kryptonmc.krypton.world.block.downcast
+import org.kryptonmc.krypton.world.block.KryptonBlock
 import org.kryptonmc.krypton.world.block.palette.PaletteHolder
 import org.kryptonmc.krypton.world.block.toNBT
 import org.kryptonmc.krypton.world.chunk.ticket.Ticket
@@ -130,7 +132,7 @@ class ChunkManager(private val world: KryptonWorld) {
                 val blocks = if (sectionData.contains("block_states", CompoundTag.ID)) {
                     PaletteHolder.readBlocks(sectionData.getCompound("block_states"))
                 } else {
-                    PaletteHolder(PaletteHolder.Strategy.BLOCKS, Blocks.AIR)
+                    PaletteHolder(PaletteHolder.Strategy.BLOCKS, Blocks.AIR.downcast())
                 }
                 val biomes = if (sectionData.contains("biomes", CompoundTag.ID)) {
                     PaletteHolder.readBiomes(sectionData.getCompound("biomes"))

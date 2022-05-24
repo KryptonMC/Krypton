@@ -43,7 +43,7 @@ class CommandTests {
                 argument("world", StringArgumentType.string()) {}
             }
         }.build()
-        BrigadierCommandRegistrar(ReentrantLock()).register(root, BrigadierCommand(node), CommandMeta.builder("test").build())
+        BrigadierCommandRegistrar(ReentrantLock()).register(root, BrigadierCommand.of(node), CommandMeta.builder("test").build())
         assertEquals(node, root.getChild("test"))
     }
 

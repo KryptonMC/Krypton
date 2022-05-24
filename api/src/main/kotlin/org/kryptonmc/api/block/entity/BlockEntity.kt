@@ -17,6 +17,10 @@ import org.spongepowered.math.vector.Vector3i
  * block can store information that would violate the functionality of blocks
  * on their own.
  *
+ * Despite the name, however, these do not behave anything like regular
+ * entities. They do not actually exist to the end user, cannot be seen, and
+ * only exist to hold data that blocks cannot.
+ *
  * These used to be known as tile entities, for all of you folks who remember
  * those days.
  */

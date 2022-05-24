@@ -23,7 +23,6 @@ import org.kryptonmc.api.adventure.AdventureMessage
 import org.kryptonmc.api.adventure.Audiences
 import org.kryptonmc.api.auth.GameProfile
 import org.kryptonmc.api.auth.ProfileProperty
-import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.block.property.Property
 import org.kryptonmc.api.command.BrigadierCommand
 import org.kryptonmc.api.command.meta.CommandMeta
@@ -96,7 +95,6 @@ import org.kryptonmc.krypton.world.biome.KryptonBiome
 import org.kryptonmc.krypton.world.biome.KryptonBiomeCategory
 import org.kryptonmc.krypton.world.biome.KryptonBiomeEffects
 import org.kryptonmc.krypton.world.biome.KryptonClimate
-import org.kryptonmc.krypton.world.block.KryptonBlock
 import org.kryptonmc.krypton.world.block.property.KryptonPropertyFactory
 import org.kryptonmc.krypton.world.damage.KryptonDamageSourceFactory
 import org.kryptonmc.krypton.world.dimension.KryptonDimensionType
@@ -150,7 +148,6 @@ object KryptonFactoryProvider : FactoryProvider {
         register<DimensionType.Factory>(KryptonDimensionType.Factory)
         register<ResourcePack.Factory>(KryptonResourcePack.Factory)
         register<Team.Factory>(KryptonTeam.Factory)
-        register<Block.Factory>(KryptonBlock.Factory)
         register<Fluid.Factory>(KryptonFluid.Factory)
         register<DyeColor.Factory>(KryptonDyeColor.Factory)
         register<Picture.Factory>(KryptonPicture.Factory)

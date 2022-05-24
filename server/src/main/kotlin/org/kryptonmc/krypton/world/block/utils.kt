@@ -23,3 +23,8 @@ import org.kryptonmc.krypton.world.block.handler.BlockHandler
 import org.kryptonmc.krypton.world.block.handler.DummyBlockHandler
 
 fun Block.handler(): BlockHandler = BlockManager.handler(this) ?: DummyBlockHandler
+
+fun Block.downcast(): KryptonBlock {
+    check(this is KryptonBlock) { "Custom implementations of Block are not supported or allowed!" }
+    return this
+}

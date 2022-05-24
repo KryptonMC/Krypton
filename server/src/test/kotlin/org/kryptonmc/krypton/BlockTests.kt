@@ -41,20 +41,6 @@ class BlockTests {
         assertEquals(BlockFace.WEST, BlockFace.EAST.opposite)
     }
 
-    @Test
-    fun `test comparisons`() {
-        val blockOne = KryptonBlock.Builder(Key.key("birch_wood"), 5, 78).build()
-        val blockTwo = KryptonBlock.Builder(Key.key("acacia_door"), 8, 97).build()
-        assertTrue(blockOne.compare(blockOne))
-        assertFalse(blockOne.compare(blockTwo))
-        assertTrue(blockOne.compare(blockOne, Block.Comparator.IDENTITY))
-        assertFalse(blockOne.compare(blockTwo, Block.Comparator.IDENTITY))
-        assertTrue(blockOne.compare(blockOne, Block.Comparator.ID))
-        assertFalse(blockOne.compare(blockTwo, Block.Comparator.ID))
-        assertTrue(blockOne.compare(blockOne, Block.Comparator.STATE))
-        assertFalse(blockOne.compare(blockTwo, Block.Comparator.STATE))
-    }
-
     companion object {
 
         @JvmStatic

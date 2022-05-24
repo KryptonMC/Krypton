@@ -28,6 +28,9 @@ import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.krypton.world.block.handler
 import org.kryptonmc.krypton.world.block.isGameMasterBlock
+import org.kryptonmc.krypton.world.block.KryptonBlock
+import org.spongepowered.math.vector.Vector3d
+import org.spongepowered.math.vector.Vector3i
 
 class PlayerBlockHandler(private val player: KryptonPlayer) {
 
@@ -175,7 +178,7 @@ class PlayerBlockHandler(private val player: KryptonPlayer) {
         }
     }
 
-    private fun incrementDestroyProgress(block: Block, x: Int, y: Int, z: Int, startTick: Int): Float {
+    private fun incrementDestroyProgress(block: KryptonBlock, x: Int, y: Int, z: Int, startTick: Int): Float {
         val tickDifference = currentTick - startTick
         val progress = block.handler().calculateDestroyProgress(player, world, block, x, y, z) * (tickDifference + 1).toFloat()
         val state = (progress * 10F).toInt()

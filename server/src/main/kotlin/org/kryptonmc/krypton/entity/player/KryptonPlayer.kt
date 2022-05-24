@@ -110,6 +110,7 @@ import org.kryptonmc.krypton.util.Positioning
 import org.kryptonmc.krypton.util.chunkX
 import org.kryptonmc.krypton.util.chunkZ
 import org.kryptonmc.krypton.world.KryptonWorld
+import org.kryptonmc.krypton.world.block.KryptonBlock
 import org.kryptonmc.krypton.world.chunk.ChunkPosition
 import org.kryptonmc.krypton.world.scoreboard.KryptonScoreboard
 import org.spongepowered.math.vector.Vector3d
@@ -463,7 +464,8 @@ class KryptonPlayer(
         return mainHand.isEmpty() // TODO: Check Adventure CanDestroy
     }
 
-    fun hasCorrectTool(block: Block): Boolean = !block.requiresCorrectTool || inventory.heldItem(Hand.MAIN).type.handler().isCorrectTool(block)
+    fun hasCorrectTool(block: KryptonBlock): Boolean = !block.requiresCorrectTool ||
+            inventory.heldItem(Hand.MAIN).type.handler().isCorrectTool(block)
 
     fun interactOn(entity: KryptonEntity, hand: Hand): InteractionResult {
         if (isSpectator) {
