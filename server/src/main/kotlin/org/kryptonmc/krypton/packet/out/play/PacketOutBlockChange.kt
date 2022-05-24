@@ -19,14 +19,16 @@
 package org.kryptonmc.krypton.packet.out.play
 
 import io.netty.buffer.ByteBuf
-import org.kryptonmc.api.block.Block
 import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.util.writeVarInt
 import org.kryptonmc.krypton.util.writeVector
+import org.kryptonmc.krypton.world.block.KryptonBlock
 import org.spongepowered.math.vector.Vector3i
 
 @JvmRecord
-data class PacketOutBlockChange(val block: Block, val x: Int, val y: Int, val z: Int) : Packet {
+data class PacketOutBlockChange(val block: KryptonBlock, val x: Int, val y: Int, val z: Int) : Packet {
+
+    constructor(block: KryptonBlock, location: Vector3i) : this(block, location.x(), location.y(), location.z())
 
     override fun write(buf: ByteBuf) {
         buf.writeVector(x, y, z)

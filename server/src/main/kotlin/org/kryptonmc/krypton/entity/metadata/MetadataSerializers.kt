@@ -38,6 +38,7 @@ import org.kryptonmc.krypton.util.writeOptional
 import org.kryptonmc.krypton.util.writeString
 import org.kryptonmc.krypton.util.writeUUID
 import org.kryptonmc.krypton.util.writeVarInt
+import org.kryptonmc.krypton.world.block.KryptonBlock
 import org.kryptonmc.nbt.CompoundTag
 import org.spongepowered.math.vector.Vector3f
 import org.spongepowered.math.vector.Vector3i
@@ -80,7 +81,7 @@ object MetadataSerializers {
     @JvmField
     val OPTIONAL_UUID: MetadataSerializer<UUID?> = create(12) { buf, item -> buf.writeOptional(item, buf::writeUUID) }
     @JvmField
-    val OPTIONAL_BLOCK: MetadataSerializer<Block?> = create(13) { buf, item -> buf.writeVarInt(item?.stateId ?: 0) }
+    val OPTIONAL_BLOCK: MetadataSerializer<KryptonBlock?> = create(13) { buf, item -> buf.writeVarInt(item?.stateId ?: 0) }
     @JvmField
     val NBT: MetadataSerializer<CompoundTag> = create(14, ByteBuf::writeNBT)
     @JvmField

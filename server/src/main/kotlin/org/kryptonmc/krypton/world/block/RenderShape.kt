@@ -16,19 +16,11 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.effect.particle.data
+package org.kryptonmc.krypton.world.block
 
-import io.netty.buffer.ByteBuf
-import org.kryptonmc.api.block.Block
-import org.kryptonmc.api.effect.particle.data.BlockParticleData
-import org.kryptonmc.krypton.network.Writable
-import org.kryptonmc.krypton.util.writeVarInt
-import org.kryptonmc.krypton.world.block.KryptonBlock
+enum class RenderShape {
 
-@JvmRecord
-data class KryptonBlockParticleData(override val block: KryptonBlock) : BlockParticleData, Writable {
-
-    override fun write(buf: ByteBuf) {
-        buf.writeVarInt(block.stateId)
-    }
+    INVISIBLE,
+    ANIMATED_ENTITY_BLOCK,
+    MODEL
 }

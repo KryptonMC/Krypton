@@ -24,6 +24,8 @@ import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.packet.`in`.play.PacketInPlayerDigging
 import org.kryptonmc.krypton.util.writeVarInt
 import org.kryptonmc.krypton.util.writeVector
+import org.kryptonmc.krypton.world.block.KryptonBlock
+import org.spongepowered.math.vector.Vector3i
 
 @JvmRecord
 data class PacketOutDiggingResponse(
@@ -35,14 +37,30 @@ data class PacketOutDiggingResponse(
     val successful: Boolean
 ) : Packet {
 
-    constructor(
-        x: Int,
-        y: Int,
-        z: Int,
-        block: Block,
-        status: PacketInPlayerDigging.Status,
-        successful: Boolean
-    ) : this(x, y, z, block.stateId, status, successful)
+    constructor(position: Vector3i, stateId: Int, status: PacketInPlayerDigging.Status, successful: Boolean) : this(
+        position.x(),
+        position.y(),
+        position.z(),
+        stateId,
+        status,
+        successful
+    )
+
+    constructor(position: Vector3i, block: KryptonBlock, status: PacketInPlayerDigging.Status, successful: Boolean) : this(
+        position,
+        block.stateId,
+        status,
+        successful
+    )
+
+    constructor(x: Int, y: Int, z: Int, block: KryptonBlock, status: PacketInPlayerDigging.Status, successful: Boolean) : this(
+        x,
+        y,
+        z,
+        block.stateId,
+        status,
+        successful
+    )
 
     override fun write(buf: ByteBuf) {
         buf.writeVector(x, y, z)

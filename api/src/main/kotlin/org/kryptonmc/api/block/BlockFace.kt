@@ -17,27 +17,25 @@ import org.kryptonmc.api.util.Direction
  */
 public enum class BlockFace(@get:JvmName("direction") public val direction: Direction) {
 
-    BOTTOM(Direction.DOWN),
     TOP(Direction.UP),
+    BOTTOM(Direction.DOWN),
     NORTH(Direction.NORTH),
     SOUTH(Direction.SOUTH),
-    WEST(Direction.WEST),
-    EAST(Direction.EAST);
+    EAST(Direction.EAST),
+    WEST(Direction.WEST);
 
     /**
      * The opposite of this face.
-     *
-     * Lazily computed to avoid circular dependencies.
      */
     @get:JvmName("opposite")
     public val opposite: BlockFace by lazy {
         when (this) {
-            BOTTOM -> TOP
             TOP -> BOTTOM
+            BOTTOM -> TOP
             NORTH -> SOUTH
             SOUTH -> NORTH
-            WEST -> EAST
             EAST -> WEST
+            WEST -> EAST
         }
     }
 }

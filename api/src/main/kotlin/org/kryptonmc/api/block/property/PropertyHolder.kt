@@ -36,10 +36,8 @@ public interface PropertyHolder<out T : PropertyHolder<T>> {
     // it's filled with wrappers and high-level abstractions. This feels out of
     // place, but replacing it with a map of Property<*> to Comparable<*> will
     // require some backend work, and may degrade performance.
-    /*
     @get:JvmName("properties")
     public val properties: Map<String, String>
-    */
 
     /**
      * Returns true if the specified [key] is in this holder, false otherwise.

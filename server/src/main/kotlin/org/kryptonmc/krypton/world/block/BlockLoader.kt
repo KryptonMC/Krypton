@@ -27,7 +27,6 @@ import net.kyori.adventure.key.Key
 import net.kyori.adventure.text.Component
 import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.block.PushReaction
-import org.kryptonmc.api.block.RenderShape
 import org.kryptonmc.api.block.property.Property
 import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.krypton.util.IntHashBiMap
@@ -41,7 +40,7 @@ object BlockLoader : KryptonDataLoader<Block>("blocks", Registries.BLOCK) {
     private val PROPERTY_MAP = mutableMapOf<String, PropertyEntry>()
 
     @JvmField
-    val STATES: IntHashBiMap<Block> = IntHashBiMap()
+    val STATES: IntHashBiMap<KryptonBlock> = IntHashBiMap()
 
     @JvmStatic
     fun fromKey(key: String): KryptonBlock? {
@@ -76,7 +75,7 @@ object BlockLoader : KryptonDataLoader<Block>("blocks", Registries.BLOCK) {
 
         // Get default state and add to map
         val defaultState = value["defaultStateId"].asInt
-        val defaultBlock = STATES[defaultState]!! as KryptonBlock
+        val defaultBlock = STATES[defaultState]!!
         KEY_MAP[key.asString()] = defaultBlock
         PROPERTY_MAP[key.asString()] = propertyEntry
         return defaultBlock

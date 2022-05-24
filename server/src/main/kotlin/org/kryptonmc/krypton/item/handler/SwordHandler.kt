@@ -18,29 +18,32 @@
  */
 package org.kryptonmc.krypton.item.handler
 
-import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.block.Blocks
 import org.kryptonmc.api.tags.BlockTags
 import org.kryptonmc.api.world.GameMode
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.item.KryptonItemStack
 import org.kryptonmc.krypton.world.KryptonWorld
+import org.kryptonmc.krypton.world.block.downcast
 import org.kryptonmc.krypton.world.block.isPlant
 import org.kryptonmc.krypton.world.block.isReplaceablePlant
 import org.kryptonmc.krypton.world.block.isVegetable
+import org.kryptonmc.krypton.world.block.KryptonBlock
 
 object SwordHandler : ItemHandler {
 
-    override fun canAttackBlock(player: KryptonPlayer, world: KryptonWorld, block: Block, x: Int, y: Int, z: Int): Boolean =
+    private val COBWEB_BLOCK_ID = Blocks.COBWEB.downcast().id
+
+    override fun canAttackBlock(player: KryptonPlayer, world: KryptonWorld, block: KryptonBlock, x: Int, y: Int, z: Int): Boolean =
         player.gameMode != GameMode.CREATIVE
 
-    override fun destroySpeed(item: KryptonItemStack, block: Block): Float {
-        if (block.id == Blocks.COBWEB.id) return 15F
+    override fun destroySpeed(item: KryptonItemStack, block: KryptonBlock): Float {
+        if (block.id == COBWEB_BLOCK_ID) return 15F
         if (block.isPlant() || block.isReplaceablePlant() || BlockTags.LEAVES.contains(block) || block.isVegetable()) return 1.5F
         return 1F
     }
 
-    override fun isCorrectTool(block: Block): Boolean = block.id == Blocks.COBWEB.id
+    override fun isCorrectTool(block: KryptonBlock): Boolean = block.id == COBWEB_BLOCK_ID
 
-    override fun mineBlock(player: KryptonPlayer, item: KryptonItemStack, world: KryptonWorld, block: Block, x: Int, y: Int, z: Int): Boolean = true
+    override fun mineBlock(player: KryptonPlayer, item: KryptonItemStack, world: KryptonWorld, block: KryptonBlock, x: Int, y: Int, z: Int): Boolean = true
 }

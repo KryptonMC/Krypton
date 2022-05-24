@@ -28,6 +28,8 @@ import org.kryptonmc.krypton.packet.CachedPacket
 import org.kryptonmc.krypton.packet.out.play.PacketOutChunkDataAndLight
 import org.kryptonmc.krypton.world.Heightmap
 import org.kryptonmc.krypton.world.KryptonWorld
+import org.kryptonmc.krypton.world.block.downcast
+import org.kryptonmc.krypton.world.block.KryptonBlock
 import org.kryptonmc.krypton.world.chunk.ticket.Ticket
 import org.kryptonmc.nbt.CompoundTag
 import org.spongepowered.math.vector.Vector3i
@@ -59,22 +61,22 @@ class KryptonChunk(
 
     val cachedPacket: CachedPacket = CachedPacket { PacketOutChunkDataAndLight(this, true) }
 
-    override fun getBlock(x: Int, y: Int, z: Int): Block {
+    override fun getBlock(x: Int, y: Int, z: Int): KryptonBlock {
 //        if (world.isDebug) {
-//            var block: Block? = null
-//            if (y == 60) block = Blocks.BARRIER
+//            var block: KryptonBlock? = null
+//            if (y == 60) block = Blocks.BARRIER.downcast()
 //            if (y == 70) block = DebugGenerator.blockAt(x, z)
-//            return block ?: Blocks.AIR
+//            return block ?: Blocks.AIR.downcast()
 //        }
         val sectionIndex = sectionIndex(y)
         if (sectionIndex >= 0 && sectionIndex < sections.size) {
             val section = sections[sectionIndex]
             if (!section.hasOnlyAir()) return section[x and 15, y and 15, z and 15]
         }
-        return Blocks.AIR
+        return Blocks.AIR.downcast()
     }
 
-    override fun getBlock(position: Vector3i): Block = getBlock(position.x(), position.y(), position.z())
+    override fun getBlock(position: Vector3i): KryptonBlock = getBlock(position.x(), position.y(), position.z())
 
     override fun getFluid(x: Int, y: Int, z: Int): Fluid {
         val sectionIndex = sectionIndex(y)
@@ -88,6 +90,7 @@ class KryptonChunk(
     override fun getFluid(position: Vector3i): Fluid = getFluid(position.x(), position.y(), position.z())
 
     override fun setBlock(x: Int, y: Int, z: Int, block: Block): Boolean {
+        require(block is KryptonBlock) { "Custom implementations of Block are not supported!" }
         val section = sections[sectionIndex(y)]
         if (section.hasOnlyAir() && block.isAir) return false
 

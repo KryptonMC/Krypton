@@ -19,7 +19,6 @@
 package org.kryptonmc.krypton.item.handler
 
 import net.kyori.adventure.text.Component
-import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.block.property.Property
 import org.kryptonmc.api.entity.Hand
 import org.kryptonmc.api.item.ItemTypes
@@ -27,10 +26,13 @@ import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.item.KryptonItemStack
 import org.kryptonmc.krypton.util.findRelative
 import org.kryptonmc.krypton.world.KryptonWorld
+import org.kryptonmc.krypton.world.block.KryptonBlock
+import org.kryptonmc.krypton.world.block.downcast
+import org.kryptonmc.nbt.CompoundTag
 
 object DebugStickHandler : ItemHandler {
 
-    override fun canAttackBlock(player: KryptonPlayer, world: KryptonWorld, block: Block, x: Int, y: Int, z: Int): Boolean {
+    override fun canAttackBlock(player: KryptonPlayer, world: KryptonWorld, block: KryptonBlock, x: Int, y: Int, z: Int): Boolean {
         handleInteraction(player, world, block, x, y, z, false, player.heldItem(Hand.MAIN))
         return false
     }
@@ -55,7 +57,7 @@ object DebugStickHandler : ItemHandler {
     private fun handleInteraction(
         player: KryptonPlayer,
         world: KryptonWorld,
-        block: Block,
+        block: KryptonBlock,
         x: Int,
         y: Int,
         z: Int,
@@ -91,6 +93,6 @@ object DebugStickHandler : ItemHandler {
     }
 
     @JvmStatic
-    private fun <T : Comparable<T>> Block.cycle(property: Property<T>, reversed: Boolean): Block =
-        set(property, property.values.findRelative(get(property), reversed)!!)
+    private fun <T : Comparable<T>> KryptonBlock.cycle(property: Property<T>, reversed: Boolean): KryptonBlock =
+        set(property, property.values.findRelative(get(property), reversed)!!).downcast()
 }
