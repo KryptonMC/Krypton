@@ -38,7 +38,7 @@ import org.kryptonmc.nbt.CompoundTag
 class KryptonAxolotl(world: KryptonWorld) : KryptonAnimal(world, EntityTypes.AXOLOTL, ATTRIBUTES), Axolotl, BucketStorable {
 
     override var variant: AxolotlVariant
-        get() = AxolotlVariant.fromId(data[MetadataKeys.AXOLOTL.VARIANT])!!
+        get() = VARIANTS.getOrNull(data[MetadataKeys.AXOLOTL.VARIANT]) ?: AxolotlVariant.LUCY
         set(value) = data.set(MetadataKeys.AXOLOTL.VARIANT, value.ordinal)
     override var isPlayingDead: Boolean
         get() = data[MetadataKeys.AXOLOTL.PLAYING_DEAD]
@@ -92,6 +92,7 @@ class KryptonAxolotl(world: KryptonWorld) : KryptonAnimal(world, EntityTypes.AXO
 
     companion object {
 
+        private val VARIANTS = AxolotlVariant.values()
         private val ATTRIBUTES = attributes()
             .add(AttributeTypes.MAX_HEALTH, 14.0)
             .add(AttributeTypes.MOVEMENT_SPEED, 1.0)

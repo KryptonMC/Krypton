@@ -8,39 +8,23 @@
  */
 package org.kryptonmc.api.entity.animal.type
 
-import org.kryptonmc.api.util.StringSerializable
+import org.kryptonmc.api.block.Block
+import org.kryptonmc.api.block.Blocks
+import org.kryptonmc.api.item.ItemType
+import org.kryptonmc.api.item.ItemTypes
 
 /**
- * A type of mooshroom.
+ * A type of mooshroom, which represents a particular type of mushroom, either
+ * brown mushrooms, or red mushrooms.
+ *
+ * @param item the mushroom item this mooshroom type represents
+ * @param block the mushroom block this mooshroom type represents
  */
-public enum class MooshroomType(@get:JvmName("serialized") override val serialized: String) : StringSerializable {
+public enum class MooshroomType(
+    public val item: ItemType,
+    public val block: Block
+) {
 
-    BROWN("brown"),
-    RED("red");
-
-    public companion object {
-
-        private val VALUES = values()
-        private val BY_NAME = VALUES.associateBy { it.serialized }
-
-        /**
-         * Gets the mooshroom type with the given [name], or returns null if
-         * there is no mooshroom type with the given [name].
-         *
-         * @param name the name
-         * @return the mooshroom type with the name, or null if not present
-         */
-        @JvmStatic
-        public fun fromName(name: String): MooshroomType? = BY_NAME[name]
-
-        /**
-         * Gets the mooshroom type with the given [id], or returns null if
-         * there is no mooshroom type with the given [id].
-         *
-         * @param id the ID
-         * @return the mooshroom type with the ID, or null if not present
-         */
-        @JvmStatic
-        public fun fromId(id: Int): MooshroomType? = VALUES.getOrNull(id)
-    }
+    BROWN(ItemTypes.BROWN_MUSHROOM, Blocks.BROWN_MUSHROOM_BLOCK),
+    RED(ItemTypes.RED_MUSHROOM, Blocks.RED_MUSHROOM_BLOCK)
 }

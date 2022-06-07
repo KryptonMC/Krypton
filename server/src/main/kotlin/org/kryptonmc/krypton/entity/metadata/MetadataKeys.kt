@@ -27,7 +27,7 @@ import org.kryptonmc.api.entity.animal.type.CatType
 import org.kryptonmc.api.entity.animal.type.FoxType
 import org.kryptonmc.api.entity.animal.type.MooshroomType
 import org.kryptonmc.api.entity.animal.type.ParrotType
-import org.kryptonmc.api.entity.aquatic.TropicalFishShape
+import org.kryptonmc.api.entity.aquatic.TropicalFishVariant
 import org.kryptonmc.api.item.data.DyeColors
 import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.api.util.Catalogue
@@ -353,7 +353,7 @@ object MetadataKeys {
     object MooshroomKeys {
 
         @JvmField
-        val TYPE: MetadataKey<String> = MetadataKey(17, MetadataSerializers.STRING, MooshroomType.RED.serialized)
+        val TYPE: MetadataKey<String> = MetadataKey(17, MetadataSerializers.STRING, MooshroomType.RED.name.lowercase())
     }
 
     object OcelotKeys {
@@ -467,6 +467,6 @@ object MetadataKeys {
     object TropicalFishKeys {
 
         @JvmField
-        val VARIANT: MetadataKey<Int> = MetadataKey(17, MetadataSerializers.VAR_INT, TropicalFishShape.KOB.ordinal)
+        val VARIANT: MetadataKey<Int> = MetadataKey(17, MetadataSerializers.VAR_INT, TropicalFishVariant.KOB.ordinal)
     }
 }

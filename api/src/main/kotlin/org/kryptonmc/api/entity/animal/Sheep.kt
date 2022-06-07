@@ -25,5 +25,5 @@ public interface Sheep : Animal {
      * The colour of this sheep's wool.
      */
     @get:JvmName("woolColor")
-    public var color: DyeColor
+    public var woolColor: DyeColor
 }

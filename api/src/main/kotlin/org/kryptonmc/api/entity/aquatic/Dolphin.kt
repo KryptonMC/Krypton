@@ -30,16 +30,30 @@ public interface Dolphin : AquaticAnimal {
     public var gotFish: Boolean
 
     /**
-     * The skin moisture of this dolphin.
+     * The skin moisture of this dolphin. This determines how long a dolphin
+     * can remain out of water for.
      *
-     * Vanilla sets the dolphin's skin moisture to 2400 when the entity is in
-     * water, being rained on, or in a bubble column. If they are not in one
-     * of these environments, the dolphin will lose one moisture per tick.
+     * Dolphins, despite being mostly sea creatures, cannot actually breathe
+     * underwater, meaning they need to rise out of the ocean to take another
+     * breath every eight to ten minutes (some species can do up to fifteen),
+     * so it should come as no surprise that dolphins are good at surviving on
+     * land.
+     * In the real world, dolphins can last a few hours on land if they are
+     * kept wet enough, which is what this property determines.
      *
-     * Once this value reaches 0, the dolphin will take one point of damage
-     * from [dryout][DamageTypes.DRY_OUT] per tick, until the dolphin
+     * A dolphin's skin moisture determines if it is wet enough to survive out
+     * of water, and how long it can last out of water for before it takes dry
+     * out damage and eventually dies.
+     *
+     * The dolphin's skin moisture will, by default, be set to 2400 when the
+     * dolphin is in water, being rained on, or in a bubble column, and it
+     * will decrease by one for every tick the dolphin is not in one of these
+     * environments.
+     *
+     * When this value is 0, the dolphin will take one point of
+     * [dry out][DamageTypes.DRY_OUT] damage every tick, until the dolphin
      * perishes.
      */
-    @get:JvmName("moistnessLevel")
+    @get:JvmName("skinMoisture")
     public var skinMoisture: Int
 }

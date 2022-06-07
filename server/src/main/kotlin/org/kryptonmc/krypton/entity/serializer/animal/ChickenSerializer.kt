@@ -28,11 +28,11 @@ object ChickenSerializer : EntitySerializer<KryptonChicken> {
     override fun load(entity: KryptonChicken, data: CompoundTag) {
         AgeableSerializer.load(entity, data)
         entity.isJockey = data.getBoolean("IsChickenJockey")
-        if (data.contains("EggLayTime", 99)) entity.eggTime = data.getInt("EggLayTime")
+        if (data.contains("EggLayTime", 99)) entity.eggCooldownTime = data.getInt("EggLayTime")
     }
 
     override fun save(entity: KryptonChicken): CompoundTag.Builder = AgeableSerializer.save(entity).apply {
         boolean("IsChickenJockey", entity.isJockey)
-        int("EggLayTime", entity.eggTime)
+        int("EggLayTime", entity.eggCooldownTime)
     }
 }

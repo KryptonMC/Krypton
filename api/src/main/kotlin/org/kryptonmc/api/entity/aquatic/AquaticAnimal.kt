@@ -12,5 +12,8 @@ import org.kryptonmc.api.entity.Mob
 
 /**
  * An animal that mostly lives underwater.
+ *
+ * Most aquatic animals cannot breathe on land, and so spend most of their
+ * time underwater.
  */
 public interface AquaticAnimal : Mob
