@@ -27,11 +27,9 @@ import org.kryptonmc.nbt.StringTag
 
 object MooshroomSerializer : EntitySerializer<KryptonMooshroom> {
 
-    private val TYPE_NAMES = MooshroomType.values().associateBy { it.name.lowercase() }
-
     override fun load(entity: KryptonMooshroom, data: CompoundTag) {
         AgeableSerializer.load(entity, data)
-        if (data.contains("Type", StringTag.ID)) entity.mooshroomType = TYPE_NAMES[data.getString("Type")]!!
+        if (data.contains("Type", StringTag.ID)) entity.mooshroomType = KryptonMooshroom.deserializeType(data.getString("Type"))
     }
 
     override fun save(entity: KryptonMooshroom): CompoundTag.Builder = AgeableSerializer.save(entity).apply {

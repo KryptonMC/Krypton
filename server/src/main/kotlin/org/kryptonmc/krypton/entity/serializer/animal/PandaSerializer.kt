@@ -27,12 +27,10 @@ import org.kryptonmc.nbt.StringTag
 
 object PandaSerializer : EntitySerializer<KryptonPanda> {
 
-    private val GENE_NAMES = PandaGene.values().associateBy { it.name.lowercase() }
-
     override fun load(entity: KryptonPanda, data: CompoundTag) {
         AgeableSerializer.load(entity, data)
-        if (data.contains("MainGene", StringTag.ID)) entity.knownGene = GENE_NAMES[data.getString("MainGene")]!!
-        if (data.contains("HiddenGene", StringTag.ID)) entity.hiddenGene = GENE_NAMES[data.getString("HiddenGene")]!!
+        if (data.contains("MainGene", StringTag.ID)) entity.knownGene = KryptonPanda.deserializeGene(data.getString("MainGene"))
+        if (data.contains("HiddenGene", StringTag.ID)) entity.hiddenGene = KryptonPanda.deserializeGene(data.getString("HiddenGene"))
     }
 
     override fun save(entity: KryptonPanda): CompoundTag.Builder = AgeableSerializer.save(entity).apply {

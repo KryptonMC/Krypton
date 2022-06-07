@@ -32,7 +32,7 @@ import kotlin.random.Random
 class KryptonParrot(world: KryptonWorld) : KryptonTamable(world, EntityTypes.PARROT, ATTRIBUTES), Parrot {
 
     override var parrotType: ParrotType
-        get() = ParrotType.fromId(data[MetadataKeys.PARROT.TYPE])!!
+        get() = TYPES.getOrNull(data[MetadataKeys.PARROT.TYPE]) ?: ParrotType.RED_AND_BLUE
         set(value) = data.set(MetadataKeys.PARROT.TYPE, value.ordinal)
 
     override val soundSource: Sound.Source
@@ -76,6 +76,7 @@ class KryptonParrot(world: KryptonWorld) : KryptonTamable(world, EntityTypes.PAR
 
     companion object {
 
+        private val TYPES = ParrotType.values()
         private val ATTRIBUTES = attributes()
             .add(AttributeTypes.MAX_HEALTH, 6.0)
             .add(AttributeTypes.FLYING_SPEED, 0.4)

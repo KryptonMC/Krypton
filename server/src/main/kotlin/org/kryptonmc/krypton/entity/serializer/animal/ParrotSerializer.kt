@@ -29,7 +29,7 @@ object ParrotSerializer : EntitySerializer<KryptonParrot> {
 
     override fun load(entity: KryptonParrot, data: CompoundTag) {
         TamableSerializer.load(entity, data)
-        entity.parrotType = TYPES[data.getInt("Variant")]
+        entity.parrotType = TYPES.getOrNull(data.getInt("Variant")) ?: ParrotType.RED_AND_BLUE
     }
 
     override fun save(entity: KryptonParrot): CompoundTag.Builder = TamableSerializer.save(entity).apply {

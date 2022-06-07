@@ -32,7 +32,7 @@ import java.util.UUID
 class KryptonFox(world: KryptonWorld) : KryptonAnimal(world, EntityTypes.FOX, ATTRIBUTES), Fox {
 
     override var foxType: FoxType
-        get() = FoxType.fromId(data[MetadataKeys.FOX.TYPE])!!
+        get() = TYPES.getOrNull(data[MetadataKeys.FOX.TYPE]) ?: FoxType.RED
         set(value) = data.set(MetadataKeys.FOX.TYPE, value.ordinal)
     override var isSitting: Boolean
         get() = getFlag(0)
@@ -86,6 +86,9 @@ class KryptonFox(world: KryptonWorld) : KryptonAnimal(world, EntityTypes.FOX, AT
     }
 
     companion object {
+
+        private val TYPES = FoxType.values()
+        private val TYPE_NAMES = TYPES.associateBy { it.name.lowercase() }
 
         private val ATTRIBUTES = attributes()
             .add(AttributeTypes.MOVEMENT_SPEED, 0.3)

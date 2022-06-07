@@ -34,8 +34,9 @@ class KryptonRabbit(world: KryptonWorld) : KryptonAnimal(world, EntityTypes.RABB
     override var rabbitType: RabbitType
         get() {
             val id = data[MetadataKeys.RABBIT.TYPE]
+            // Look, that rabbit's got a vicious streak a mile wide! It's a killer!
             if (id == 99) return RabbitType.KILLER
-            return RabbitType.fromId(data[MetadataKeys.RABBIT.TYPE])!!
+            return TYPES.getOrNull(data[MetadataKeys.RABBIT.TYPE]) ?: RabbitType.BROWN
         }
         set(value) {
             if (value == RabbitType.KILLER) {
@@ -56,6 +57,7 @@ class KryptonRabbit(world: KryptonWorld) : KryptonAnimal(world, EntityTypes.RABB
 
     companion object {
 
+        private val TYPES = RabbitType.values()
         private val ATTRIBUTES = attributes().add(AttributeTypes.MAX_HEALTH, 3.0).add(AttributeTypes.MOVEMENT_SPEED, 0.3).build()
         private val TEMPTING_ITEMS = setOf(ItemTypes.CARROT, ItemTypes.GOLDEN_CARROT, ItemTypes.DANDELION)
     }

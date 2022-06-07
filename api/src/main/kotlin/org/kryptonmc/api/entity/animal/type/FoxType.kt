@@ -8,39 +8,11 @@
  */
 package org.kryptonmc.api.entity.animal.type
 
-import org.kryptonmc.api.util.StringSerializable
-
 /**
  * A type of fox.
  */
-public enum class FoxType(@get:JvmName("serialized") override val serialized: String) : StringSerializable {
+public enum class FoxType {
 
-    RED("red"),
-    SNOW("snow");
-
-    public companion object {
-
-        private val VALUES = values()
-        private val BY_NAME = VALUES.associateBy { it.serialized }
-
-        /**
-         * Gets the fox type with the given [name], or returns null if there
-         * is no fox type with the given [name].
-         *
-         * @param name the name
-         * @return the fox type with the name, or null if not present
-         */
-        @JvmStatic
-        public fun fromName(name: String): FoxType? = BY_NAME[name]
-
-        /**
-         * Gets the fox type with the given [id], or returns null if there is
-         * no fox type with the given [id].
-         *
-         * @param id the ID
-         * @return the fox type with the ID, or null if not present
-         */
-        @JvmStatic
-        public fun fromId(id: Int): FoxType? = VALUES.getOrNull(id)
-    }
+    RED,
+    SNOW
 }

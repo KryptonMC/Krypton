@@ -30,10 +30,10 @@ import org.kryptonmc.krypton.world.KryptonWorld
 class KryptonPanda(world: KryptonWorld) : KryptonAnimal(world, EntityTypes.PANDA, ATTRIBUTES), Panda {
 
     override var knownGene: PandaGene
-        get() = PandaGene.fromId(data[MetadataKeys.PANDA.MAIN_GENE].toInt())!!
+        get() = GENES.getOrNull(data[MetadataKeys.PANDA.MAIN_GENE].toInt()) ?: PandaGene.NORMAL
         set(value) = data.set(MetadataKeys.PANDA.MAIN_GENE, value.ordinal.toByte())
     override var hiddenGene: PandaGene
-        get() = PandaGene.fromId(data[MetadataKeys.PANDA.HIDDEN_GENE].toInt())!!
+        get() = GENES.getOrNull(data[MetadataKeys.PANDA.HIDDEN_GENE].toInt()) ?: PandaGene.NORMAL
         set(value) = data.set(MetadataKeys.PANDA.HIDDEN_GENE, value.ordinal.toByte())
     override val isUnhappy: Boolean
         get() = unhappyTime > 0
@@ -92,7 +92,13 @@ class KryptonPanda(world: KryptonWorld) : KryptonAnimal(world, EntityTypes.PANDA
 
     companion object {
 
+        private val GENES = PandaGene.values()
+        private val GENE_NAMES = GENES.associateBy { it.name.lowercase() }
+
         private val ATTRIBUTES = attributes().add(AttributeTypes.MOVEMENT_SPEED, 0.15).add(AttributeTypes.ATTACK_DAMAGE, 6.0).build()
+
+        @JvmStatic
+        fun deserializeGene(name: String): PandaGene = GENE_NAMES.getOrDefault(name, PandaGene.NORMAL)
 
         @JvmStatic
         private fun variantFromGenes(main: PandaGene, hidden: PandaGene): PandaGene {

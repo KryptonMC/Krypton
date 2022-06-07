@@ -29,8 +29,9 @@ public interface TropicalFish : SchoolingFish {
     public var patternColor: DyeColor
 
     /**
-     * The shape of this tropical fish.
+     * The variant that this tropical fish is, which determines its shape and
+     * pattern.
      */
-    @get:JvmName("shape")
-    public var shape: TropicalFishShape
+    @get:JvmName("variant")
+    public var variant: TropicalFishVariant
 }
