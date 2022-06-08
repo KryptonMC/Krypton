@@ -19,16 +19,13 @@
 package org.kryptonmc.krypton.entity
 
 import org.kryptonmc.api.effect.sound.SoundEvent
+import org.kryptonmc.api.entity.Bucketable
 import org.kryptonmc.krypton.item.KryptonItemStack
 import org.kryptonmc.krypton.item.meta.AbstractItemMeta
 import org.kryptonmc.krypton.item.meta.KryptonItemMeta
 import org.kryptonmc.nbt.CompoundTag
 
-interface BucketStorable {
-
-    var spawnedFromBucket: Boolean
-    val bucketItem: KryptonItemStack
-    val pickupSound: SoundEvent
+interface BucketStorable : Bucketable {
 
     fun loadFromBucket(tag: CompoundTag)
 

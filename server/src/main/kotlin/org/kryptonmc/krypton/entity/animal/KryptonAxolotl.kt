@@ -26,6 +26,7 @@ import org.kryptonmc.api.entity.animal.type.AxolotlVariant
 import org.kryptonmc.api.entity.attribute.AttributeTypes
 import org.kryptonmc.api.item.ItemStack
 import org.kryptonmc.api.item.ItemTypes
+import org.kryptonmc.api.item.ItemType
 import org.kryptonmc.api.tags.ItemTags
 import org.kryptonmc.krypton.entity.BucketStorable
 import org.kryptonmc.krypton.entity.memory.MemoryKeys
@@ -47,14 +48,14 @@ class KryptonAxolotl(world: KryptonWorld) : KryptonAnimal(world, EntityTypes.AXO
         get() = data[MetadataKeys.AXOLOTL.FROM_BUCKET]
         set(value) = data.set(MetadataKeys.AXOLOTL.FROM_BUCKET, value)
 
-    override val pickupSound: SoundEvent
+    override val bucketType: ItemType = ItemTypes.AXOLOTL_BUCKET
+    override val bucketPickupSound: SoundEvent
         get() = SoundEvents.BUCKET_FILL_AXOLOTL
+
     override val swimSound: SoundEvent
         get() = SoundEvents.AXOLOTL_SWIM
     override val splashSound: SoundEvent
         get() = SoundEvents.AXOLOTL_SPLASH
-    override val bucketItem: KryptonItemStack
-        get() = KryptonItemStack(ItemTypes.AXOLOTL_BUCKET, 1, KryptonItemMeta.DEFAULT)
     override val maxAirTicks: Int
         get() = 6000
     override val pushedByFluid: Boolean
@@ -89,6 +90,9 @@ class KryptonAxolotl(world: KryptonWorld) : KryptonAnimal(world, EntityTypes.AXO
         }
     }
      */
+
+    // TODO: Implement proper bucket item meta
+    override fun asBucket(): KryptonItemStack = KryptonItemStack.EMPTY
 
     companion object {
 
