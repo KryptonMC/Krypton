@@ -8,8 +8,10 @@
  */
 package org.kryptonmc.api.entity.aquatic
 
+import org.kryptonmc.api.entity.Bucketable
+
 /**
  * A fish.
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
-public interface Fish : AquaticAnimal
+public interface Fish : AquaticAnimal, Bucketable

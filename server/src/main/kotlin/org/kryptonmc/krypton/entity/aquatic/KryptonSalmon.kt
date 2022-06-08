@@ -20,6 +20,11 @@ package org.kryptonmc.krypton.entity.aquatic
 
 import org.kryptonmc.api.entity.EntityTypes
 import org.kryptonmc.api.entity.aquatic.Salmon
+import org.kryptonmc.api.item.ItemType
+import org.kryptonmc.api.item.ItemTypes
 import org.kryptonmc.krypton.world.KryptonWorld
 
-class KryptonSalmon(world: KryptonWorld) : KryptonSchoolingFish(world, EntityTypes.SALMON), Salmon
+class KryptonSalmon(world: KryptonWorld) : KryptonSchoolingFish(world, EntityTypes.SALMON), Salmon {
+
+    override val bucketType: ItemType = ItemTypes.SALMON_BUCKET
+}

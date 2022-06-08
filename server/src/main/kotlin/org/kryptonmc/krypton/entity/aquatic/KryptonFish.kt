@@ -36,9 +36,7 @@ abstract class KryptonFish(world: KryptonWorld, type: EntityType<out Fish>) : Kr
     override var spawnedFromBucket: Boolean
         get() = data[MetadataKeys.FISH.FROM_BUCKET]
         set(value) = data.set(MetadataKeys.FISH.FROM_BUCKET, value)
-    override val bucketItem: KryptonItemStack
-        get() = BUCKET_ITEM
-    override val pickupSound: SoundEvent
+    override val bucketPickupSound: SoundEvent
         get() = SoundEvents.BUCKET_FILL_FISH
     override val swimSound: SoundEvent
         get() = SoundEvents.FISH_SWIM
@@ -57,9 +55,11 @@ abstract class KryptonFish(world: KryptonWorld, type: EntityType<out Fish>) : Kr
     }
      */
 
+    // TODO: Implement proper bucket item meta
+    override fun asBucket(): KryptonItemStack = KryptonItemStack.EMPTY
+
     companion object {
 
         private val ATTRIBUTES = attributes().add(AttributeTypes.MAX_HEALTH, 3.0).build()
-        private val BUCKET_ITEM = KryptonItemStack(ItemTypes.AXOLOTL_BUCKET, 1, KryptonItemMeta.DEFAULT)
     }
 }

@@ -9,13 +9,13 @@
 package org.kryptonmc.api.entity.animal
 
 import org.kryptonmc.api.entity.animal.type.AxolotlVariant
-import org.kryptonmc.api.item.ItemTypes
+import org.kryptonmc.api.entity.Bucketable
 
 /**
  * An axolotl.
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
-public interface Axolotl : Animal {
+public interface Axolotl : Animal, Bucketable {
 
     /**
      * The variant of this axolotl.
@@ -27,10 +27,4 @@ public interface Axolotl : Animal {
      * If this axolotl is currently playing dead.
      */
     public var isPlayingDead: Boolean
-
-    /**
-     * If this axolotl was spawned from a [bucket][ItemTypes.AXOLOTL_BUCKET].
-     */
-    @get:JvmName("spawnedFromBucket")
-    public var spawnedFromBucket: Boolean
 }

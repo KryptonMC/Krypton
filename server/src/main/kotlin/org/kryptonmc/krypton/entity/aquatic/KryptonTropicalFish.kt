@@ -23,6 +23,7 @@ import org.kryptonmc.api.entity.aquatic.TropicalFish
 import org.kryptonmc.api.entity.aquatic.TropicalFishVariant
 import org.kryptonmc.api.item.ItemTypes
 import org.kryptonmc.api.item.data.DyeColor
+import org.kryptonmc.api.item.ItemType
 import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.item.KryptonItemStack
@@ -51,8 +52,7 @@ class KryptonTropicalFish(world: KryptonWorld) : KryptonSchoolingFish(world, Ent
             data[MetadataKeys.TROPICAL_FISH.VARIANT] = modifyVariant(variant, value)
         }
 
-    override val bucketItem: KryptonItemStack
-        get() = KryptonItemStack(ItemTypes.TROPICAL_FISH_BUCKET, 1, KryptonItemMeta.DEFAULT)
+    override val bucketType: ItemType = ItemTypes.TROPICAL_FISH_BUCKET
 
     init {
         data.add(MetadataKeys.TROPICAL_FISH.VARIANT)

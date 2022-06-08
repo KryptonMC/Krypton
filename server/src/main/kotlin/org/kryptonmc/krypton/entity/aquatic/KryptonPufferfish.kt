@@ -22,6 +22,7 @@ import org.kryptonmc.api.effect.sound.SoundEvents
 import org.kryptonmc.api.entity.EntityTypes
 import org.kryptonmc.api.entity.aquatic.Pufferfish
 import org.kryptonmc.api.item.ItemTypes
+import org.kryptonmc.api.item.ItemType
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.item.KryptonItemStack
 import org.kryptonmc.krypton.item.meta.KryptonItemMeta
@@ -36,8 +37,7 @@ class KryptonPufferfish(world: KryptonWorld) : KryptonFish(world, EntityTypes.PU
         get() = data[MetadataKeys.PUFFERFISH.PUFF_STATE]
         set(value) = data.set(MetadataKeys.PUFFERFISH.PUFF_STATE, value)
 
-    override val bucketItem: KryptonItemStack
-        get() = BUCKET_ITEM
+    override val bucketType: ItemType = ItemTypes.PUFFERFISH_BUCKET
 
     init {
         data.add(MetadataKeys.PUFFERFISH.PUFF_STATE)
