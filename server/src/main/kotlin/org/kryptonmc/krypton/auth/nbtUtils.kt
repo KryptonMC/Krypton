@@ -46,14 +46,23 @@ fun CompoundTag.getGameProfile(key: String): GameProfile? {
     return KryptonGameProfile(name, uuid, properties.build())
 }
 
+fun CompoundTag.putGameProfile(key: String, profile: GameProfile?): CompoundTag {
+    if (profile == null) return CompoundTag.empty()
+    return put(key, profile.toCompound())
+}
+
 fun CompoundTag.Builder.gameProfile(key: String, profile: GameProfile?): CompoundTag.Builder = apply {
     if (profile == null) return@apply
-    compound(key) {
-        string("Name", profile.name)
-        uuid("Id", profile.uuid)
-        if (profile.properties.isNotEmpty()) {
+    put(key, profile.toCompound())
+}
+
+private fun GameProfile.toCompound(): CompoundTag {
+    return compound {
+        string("Name", name)
+        uuid("Id", uuid)
+        if (properties.isNotEmpty()) {
             put("Properties", compound {
-                profile.properties.forEach {
+                properties.forEach {
                     val tag = compound {
                         string("Value", it.value)
                         if (it.signature != null) string("Signature", it.signature!!)

@@ -18,66 +18,21 @@
  */
 package org.kryptonmc.krypton.item.meta
 
-import kotlinx.collections.immutable.ImmutableSet
-import kotlinx.collections.immutable.PersistentList
-import net.kyori.adventure.text.Component
-import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.item.meta.LeatherArmorMeta
 import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.IntTag
 import java.awt.Color
 
-class KryptonLeatherArmorMeta(
-    damage: Int,
-    isUnbreakable: Boolean,
-    customModelData: Int,
-    name: Component?,
-    lore: PersistentList<Component>,
-    hideFlags: Int,
-    canDestroy: ImmutableSet<Block>,
-    canPlaceOn: ImmutableSet<Block>,
-    override val color: Color?
-) : AbstractItemMeta<KryptonLeatherArmorMeta>(damage, isUnbreakable, customModelData, name, lore, hideFlags, canDestroy, canPlaceOn),
-    LeatherArmorMeta {
+class KryptonLeatherArmorMeta(data: CompoundTag) : AbstractItemMeta<KryptonLeatherArmorMeta>(data), LeatherArmorMeta {
 
-    constructor(tag: CompoundTag) : this(
-        tag.getInt("Damage"),
-        tag.getBoolean("Unbreakable"),
-        tag.getInt("CustomModelData"),
-        tag.getName(),
-        tag.getLore(),
-        tag.getInt("HideFlags"),
-        tag.getBlocks("CanDestroy"),
-        tag.getBlocks("CanPlaceOn"),
-        tag.getDisplay<IntTag, Color>("color", IntTag.ID, null) { Color(it.value) }
-    )
+    override val color: Color? = data.getDisplay<IntTag, _>("color", IntTag.ID, null) { Color(it.value) }
 
-    override fun copy(
-        damage: Int,
-        isUnbreakable: Boolean,
-        customModelData: Int,
-        name: Component?,
-        lore: PersistentList<Component>,
-        hideFlags: Int,
-        canDestroy: ImmutableSet<Block>,
-        canPlaceOn: ImmutableSet<Block>
-    ): KryptonLeatherArmorMeta = KryptonLeatherArmorMeta(damage, isUnbreakable, customModelData, name, lore, hideFlags, canDestroy, canPlaceOn, color)
+    override fun copy(data: CompoundTag): KryptonLeatherArmorMeta = KryptonLeatherArmorMeta(data)
 
-    override fun saveDisplay(): CompoundTag.Builder = super.saveDisplay().apply {
-        if (color != null) int("color", color.rgb)
+    override fun withColor(color: Color?): KryptonLeatherArmorMeta {
+        val newData = if (color == null) data.remove("color") else data.putInt("color", color.rgb)
+        return KryptonLeatherArmorMeta(newData)
     }
-
-    override fun withColor(color: Color?): KryptonLeatherArmorMeta = KryptonLeatherArmorMeta(
-        damage,
-        isUnbreakable,
-        customModelData,
-        name,
-        lore,
-        hideFlags,
-        canDestroy,
-        canPlaceOn,
-        color
-    )
 
     override fun toBuilder(): LeatherArmorMeta.Builder = Builder(this)
 
@@ -92,16 +47,10 @@ class KryptonLeatherArmorMeta(
 
         override fun color(color: Color?): LeatherArmorMeta.Builder = apply { this.color = color }
 
-        override fun build(): KryptonLeatherArmorMeta = KryptonLeatherArmorMeta(
-            damage,
-            unbreakable,
-            customModelData,
-            name,
-            lore.build(),
-            hideFlags,
-            canDestroy.build(),
-            canPlaceOn.build(),
-            color
-        )
+        override fun buildData(): CompoundTag.Builder = super.buildData().apply {
+            if (color != null) int("color", color!!.rgb)
+        }
+
+        override fun build(): KryptonLeatherArmorMeta = KryptonLeatherArmorMeta(buildData().build())
     }
 }

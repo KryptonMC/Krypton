@@ -27,9 +27,8 @@ import java.util.UUID
 
 class KryptonSparkCommandSender(sender: Sender) : AbstractCommandSender<Sender>(sender) {
 
-    @Suppress("DEPRECATED_SMARTCAST")
     override fun getName(): String {
-        if (delegate is Player) return delegate.profile.name
+        if (delegate is Player) return (delegate as Player).profile.name
         return delegate.name.toLegacySectionText()
     }
 

@@ -18,79 +18,26 @@
  */
 package org.kryptonmc.krypton.item.meta
 
-import kotlinx.collections.immutable.ImmutableSet
-import kotlinx.collections.immutable.PersistentList
-import net.kyori.adventure.text.Component
-import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.item.data.FireworkEffect
 import org.kryptonmc.api.item.meta.FireworkStarMeta
 import org.kryptonmc.krypton.item.data.KryptonFireworkEffect
 import org.kryptonmc.krypton.item.data.save
 import org.kryptonmc.nbt.CompoundTag
 
-class KryptonFireworkStarMeta(
-    damage: Int,
-    isUnbreakable: Boolean,
-    customModelData: Int,
-    name: Component?,
-    lore: PersistentList<Component>,
-    hideFlags: Int,
-    canDestroy: ImmutableSet<Block>,
-    canPlaceOn: ImmutableSet<Block>,
-    override val effect: FireworkEffect?
-) : AbstractItemMeta<KryptonFireworkStarMeta>(damage, isUnbreakable, customModelData, name, lore, hideFlags, canDestroy, canPlaceOn),
-    FireworkStarMeta {
+class KryptonFireworkStarMeta(data: CompoundTag) : AbstractItemMeta<KryptonFireworkStarMeta>(data), FireworkStarMeta {
 
-    constructor(tag: CompoundTag) : this(
-        tag.getInt("Damage"),
-        tag.getBoolean("Unbreakable"),
-        tag.getInt("CustomModelData"),
-        tag.getName(),
-        tag.getLore(),
-        tag.getInt("HideFlags"),
-        tag.getBlocks("CanDestroy"),
-        tag.getBlocks("CanPlaceOn"),
-        KryptonFireworkEffect(tag.getCompound("Explosion"))
-    )
+    override val effect: FireworkEffect? = data.getEffect()
 
-    override fun copy(
-        damage: Int,
-        isUnbreakable: Boolean,
-        customModelData: Int,
-        name: Component?,
-        lore: PersistentList<Component>,
-        hideFlags: Int,
-        canDestroy: ImmutableSet<Block>,
-        canPlaceOn: ImmutableSet<Block>
-    ): KryptonFireworkStarMeta = KryptonFireworkStarMeta(
-        damage,
-        isUnbreakable,
-        customModelData,
-        name,
-        lore,
-        hideFlags,
-        canDestroy,
-        canPlaceOn,
-        effect
-    )
+    override fun copy(data: CompoundTag): KryptonFireworkStarMeta = KryptonFireworkStarMeta(data)
 
-    override fun saveData(): CompoundTag.Builder = super.saveData().apply {
-        if (effect != null) put("Explosion", effect.save())
+    override fun withEffect(effect: FireworkEffect?): KryptonFireworkStarMeta {
+        val newData = if (effect == null) data.remove("Explosion") else data.put("Explosion", effect.save())
+        return KryptonFireworkStarMeta(newData)
     }
 
-    override fun withEffect(effect: FireworkEffect?): KryptonFireworkStarMeta = KryptonFireworkStarMeta(
-        damage,
-        isUnbreakable,
-        customModelData,
-        name,
-        lore,
-        hideFlags,
-        canDestroy,
-        canPlaceOn,
-        effect
-    )
-
     override fun toBuilder(): FireworkStarMeta.Builder = Builder(this)
+
+    override fun toString(): String = "KryptonFireworkStarMeta(${partialToString()}, effect=$effect)"
 
     class Builder() : KryptonItemMetaBuilder<FireworkStarMeta.Builder, FireworkStarMeta>(), FireworkStarMeta.Builder {
 
@@ -103,16 +50,15 @@ class KryptonFireworkStarMeta(
 
         override fun effect(effect: FireworkEffect?): FireworkStarMeta.Builder = apply { this.effect = effect }
 
-        override fun build(): KryptonFireworkStarMeta = KryptonFireworkStarMeta(
-            damage,
-            unbreakable,
-            customModelData,
-            name,
-            lore.build(),
-            hideFlags,
-            canDestroy.build(),
-            canPlaceOn.build(),
-            effect
-        )
+        override fun buildData(): CompoundTag.Builder = super.buildData().apply {
+            if (effect != null) put("Explosion", effect!!.save())
+        }
+
+        override fun build(): KryptonFireworkStarMeta = KryptonFireworkStarMeta(buildData().build())
     }
+}
+
+private fun CompoundTag.getEffect(): KryptonFireworkEffect? {
+    if (contains("Explosion", CompoundTag.ID)) return null
+    return KryptonFireworkEffect(getCompound("Explosion"))
 }

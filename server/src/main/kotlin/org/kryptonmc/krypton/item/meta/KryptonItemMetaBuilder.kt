@@ -21,23 +21,27 @@ package org.kryptonmc.krypton.item.meta
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.persistentSetOf
 import net.kyori.adventure.text.Component
+import org.kryptonmc.api.adventure.toJson
 import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.item.data.ItemFlag
 import org.kryptonmc.api.item.meta.ItemMeta
 import org.kryptonmc.api.item.meta.ItemMetaBuilder
 import org.kryptonmc.krypton.item.mask
+import org.kryptonmc.nbt.CompoundTag
+import org.kryptonmc.nbt.StringTag
+import org.kryptonmc.nbt.buildCompound
 
 @Suppress("UNCHECKED_CAST")
 abstract class KryptonItemMetaBuilder<B : ItemMetaBuilder<B, I>, I : ItemMeta> : ItemMetaBuilder<B, I> {
 
-    protected var damage = 0
-    protected var unbreakable = false
-    protected var customModelData = 0
-    protected var name: Component? = null
-    protected val lore = persistentListOf<Component>().builder()
-    protected var hideFlags = 0
-    protected val canDestroy = persistentSetOf<Block>().builder()
-    protected val canPlaceOn = persistentSetOf<Block>().builder()
+    private var damage = 0
+    private var unbreakable = false
+    private var customModelData = 0
+    private var name: Component? = null
+    private val lore = persistentListOf<Component>().builder()
+    private var hideFlags = 0
+    private val canDestroy = persistentSetOf<Block>().builder()
+    private val canPlaceOn = persistentSetOf<Block>().builder()
 
     final override fun damage(damage: Int): B = apply { this.damage = damage } as B
 
@@ -81,5 +85,18 @@ abstract class KryptonItemMetaBuilder<B : ItemMetaBuilder<B, I>, I : ItemMeta> :
         hideFlags = meta.hideFlags
         canDestroy.addAll(meta.canDestroy)
         canPlaceOn.addAll(meta.canPlaceOn)
+    }
+
+    protected open fun buildData(): CompoundTag.Builder = buildCompound {
+        int("Damage", damage)
+        boolean("Unbreakable", unbreakable)
+        int("CustomModelData", customModelData)
+        compound("display") {
+            if (name != null) string("Name", name!!.toJson())
+            if (lore.isNotEmpty()) list("Lore", StringTag.ID, lore.map { StringTag.of(it.toJson()) })
+        }
+        int("HideFlags", hideFlags)
+        list("CanDestroy", StringTag.ID, canDestroy.map { StringTag.of(it.key().asString()) })
+        list("CanPlaceOn", StringTag.ID, canPlaceOn.map { StringTag.of(it.key().asString()) })
     }
 }

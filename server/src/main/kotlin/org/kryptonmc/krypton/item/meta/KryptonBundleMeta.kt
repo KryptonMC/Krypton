@@ -18,69 +18,25 @@
  */
 package org.kryptonmc.krypton.item.meta
 
-import kotlinx.collections.immutable.ImmutableSet
 import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.persistentListOf
-import kotlinx.collections.immutable.toPersistentList
-import net.kyori.adventure.text.Component
-import org.kryptonmc.api.block.Block
+import kotlinx.collections.immutable.toImmutableList
 import org.kryptonmc.api.item.ItemStack
 import org.kryptonmc.api.item.meta.BundleMeta
 import org.kryptonmc.krypton.item.KryptonItemStack
 import org.kryptonmc.krypton.util.mapPersistentList
 import org.kryptonmc.nbt.CompoundTag
+import org.kryptonmc.nbt.list
 
 @Suppress("EqualsOrHashCode")
-class KryptonBundleMeta(
-    damage: Int,
-    isUnbreakable: Boolean,
-    customModelData: Int,
-    name: Component?,
-    lore: PersistentList<Component>,
-    hideFlags: Int,
-    canDestroy: ImmutableSet<Block>,
-    canPlaceOn: ImmutableSet<Block>,
-    override val items: PersistentList<ItemStack>
-) : AbstractItemMeta<KryptonBundleMeta>(damage, isUnbreakable, customModelData, name, lore, hideFlags, canDestroy, canPlaceOn), BundleMeta {
+class KryptonBundleMeta(data: CompoundTag) : AbstractItemMeta<KryptonBundleMeta>(data), BundleMeta {
 
-    constructor(tag: CompoundTag) : this(
-        tag.getInt("Damage"),
-        tag.getBoolean("Unbreakable"),
-        tag.getInt("CustomModelData"),
-        tag.getName(),
-        tag.getLore(),
-        tag.getInt("HideFlags"),
-        tag.getBlocks("CanDestroy"),
-        tag.getBlocks("CanPlaceOn"),
-        tag.getList("Items", CompoundTag.ID).mapPersistentList { KryptonItemStack(it as CompoundTag) }
-    )
+    override val items: PersistentList<ItemStack> = data.getList("Items", CompoundTag.ID)
+        .mapPersistentList { KryptonItemStack(it as CompoundTag) }
 
-    override fun copy(
-        damage: Int,
-        isUnbreakable: Boolean,
-        customModelData: Int,
-        name: Component?,
-        lore: PersistentList<Component>,
-        hideFlags: Int,
-        canDestroy: ImmutableSet<Block>,
-        canPlaceOn: ImmutableSet<Block>
-    ): KryptonBundleMeta = KryptonBundleMeta(damage, isUnbreakable, customModelData, name, lore, hideFlags, canDestroy, canPlaceOn, items)
+    override fun copy(data: CompoundTag): KryptonBundleMeta = KryptonBundleMeta(data)
 
-    override fun saveData(): CompoundTag.Builder = super.saveData().apply {
-        list("Items", CompoundTag.ID, items.map { (it as KryptonItemStack).save() })
-    }
-
-    override fun withItems(items: List<ItemStack>): KryptonBundleMeta = KryptonBundleMeta(
-        damage,
-        isUnbreakable,
-        customModelData,
-        name,
-        lore,
-        hideFlags,
-        canDestroy,
-        canPlaceOn,
-        items.toPersistentList()
-    )
+    override fun withItems(items: List<ItemStack>): KryptonBundleMeta = KryptonBundleMeta(data.setItems(items.toImmutableList()))
 
     override fun addItem(item: ItemStack): KryptonBundleMeta = withItems(items.add(item))
 
@@ -89,14 +45,6 @@ class KryptonBundleMeta(
     override fun removeItem(item: ItemStack): KryptonBundleMeta = withItems(items.remove(item))
 
     override fun toBuilder(): BundleMeta.Builder = Builder(this)
-
-    override fun equalTo(other: KryptonBundleMeta): Boolean = super.equalTo(other) && items == other.items
-
-    override fun hashCode(): Int {
-        var result = super.hashCode()
-        result = 31 * result + items.hashCode()
-        return result
-    }
 
     override fun toString(): String = "KryptonBundleMeta(${partialToString()}, items=$items)"
 
@@ -116,16 +64,15 @@ class KryptonBundleMeta(
 
         override fun addItem(item: ItemStack): BundleMeta.Builder = apply { items.add(item) }
 
-        override fun build(): BundleMeta = KryptonBundleMeta(
-            damage,
-            unbreakable,
-            customModelData,
-            name,
-            lore.build(),
-            hideFlags,
-            canDestroy.build(),
-            canPlaceOn.build(),
-            items.build()
-        )
+        override fun build(): BundleMeta = KryptonBundleMeta(buildData().build())
+
+        override fun buildData(): CompoundTag.Builder = super.buildData().apply {
+            if (items.isNotEmpty()) list("Items") { items.forEach { (it as KryptonItemStack).save() } }
+        }
     }
+}
+
+private fun CompoundTag.setItems(items: List<ItemStack>): CompoundTag {
+    if (items.isEmpty()) return remove("Items")
+    return put("Items", list { items.forEach { (it as KryptonItemStack).save() } })
 }

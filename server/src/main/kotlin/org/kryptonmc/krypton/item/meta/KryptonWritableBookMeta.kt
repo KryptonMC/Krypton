@@ -18,71 +18,26 @@
  */
 package org.kryptonmc.krypton.item.meta
 
-import kotlinx.collections.immutable.ImmutableSet
 import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.persistentListOf
-import kotlinx.collections.immutable.toPersistentList
+import kotlinx.collections.immutable.toImmutableList
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer
 import org.kryptonmc.api.adventure.toJson
-import org.kryptonmc.api.block.Block
-import org.kryptonmc.api.item.meta.BundleMeta
 import org.kryptonmc.api.item.meta.WritableBookMeta
 import org.kryptonmc.krypton.util.mapPersistentList
 import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.StringTag
+import org.kryptonmc.nbt.list
 
-class KryptonWritableBookMeta(
-    damage: Int,
-    isUnbreakable: Boolean,
-    customModelData: Int,
-    name: Component?,
-    lore: PersistentList<Component>,
-    hideFlags: Int,
-    canDestroy: ImmutableSet<Block>,
-    canPlaceOn: ImmutableSet<Block>,
-    override val pages: PersistentList<Component>
-) : AbstractItemMeta<KryptonWritableBookMeta>(damage, isUnbreakable, customModelData, name, lore, hideFlags, canDestroy, canPlaceOn),
-    WritableBookMeta {
+class KryptonWritableBookMeta(data: CompoundTag) : AbstractItemMeta<KryptonWritableBookMeta>(data), WritableBookMeta {
 
-    constructor(tag: CompoundTag) : this(
-        tag.getInt("Damage"),
-        tag.getBoolean("Unbreakable"),
-        tag.getInt("CustomModelData"),
-        tag.getName(),
-        tag.getLore(),
-        tag.getInt("HideFlags"),
-        tag.getBlocks("CanDestroy"),
-        tag.getBlocks("CanPlaceOn"),
-        tag.getList("pages", StringTag.ID).mapPersistentList { LegacyComponentSerializer.legacySection().deserialize((it as StringTag).value) },
-    )
+    override val pages: PersistentList<Component> = data.getList("pages", StringTag.ID)
+        .mapPersistentList { LegacyComponentSerializer.legacySection().deserialize((it as StringTag).value) }
 
-    override fun copy(
-        damage: Int,
-        isUnbreakable: Boolean,
-        customModelData: Int,
-        name: Component?,
-        lore: PersistentList<Component>,
-        hideFlags: Int,
-        canDestroy: ImmutableSet<Block>,
-        canPlaceOn: ImmutableSet<Block>
-    ): KryptonWritableBookMeta = KryptonWritableBookMeta(damage, isUnbreakable, customModelData, name, lore, hideFlags, canDestroy, canPlaceOn, pages)
+    override fun copy(data: CompoundTag): KryptonWritableBookMeta = KryptonWritableBookMeta(data)
 
-    override fun saveData(): CompoundTag.Builder = super.saveData().apply {
-        list("pages", StringTag.ID, pages.map { StringTag.of(it.toJson()) })
-    }
-
-    override fun withPages(pages: Iterable<Component>): KryptonWritableBookMeta = KryptonWritableBookMeta(
-        damage,
-        isUnbreakable,
-        customModelData,
-        name,
-        lore,
-        hideFlags,
-        canDestroy,
-        canPlaceOn,
-        pages.toPersistentList()
-    )
+    override fun withPages(pages: Iterable<Component>): KryptonWritableBookMeta = KryptonWritableBookMeta(data.putPages(pages.toImmutableList()))
 
     override fun addPage(page: Component): KryptonWritableBookMeta = withPages(pages.add(page))
 
@@ -108,16 +63,15 @@ class KryptonWritableBookMeta(
 
         override fun addPage(page: Component): WritableBookMeta.Builder = apply { pages.add(page) }
 
-        override fun build(): KryptonWritableBookMeta = KryptonWritableBookMeta(
-            damage,
-            unbreakable,
-            customModelData,
-            name,
-            lore.build(),
-            hideFlags,
-            canDestroy.build(),
-            canPlaceOn.build(),
-            pages.build()
-        )
+        override fun buildData(): CompoundTag.Builder = super.buildData().apply {
+            if (pages.isNotEmpty()) list("pages") { pages.forEach { addString(it.toJson()) } }
+        }
+
+        override fun build(): KryptonWritableBookMeta = KryptonWritableBookMeta(buildData().build())
     }
+}
+
+private fun CompoundTag.putPages(pages: List<Component>): CompoundTag {
+    if (pages.isEmpty()) return remove("pages")
+    return put("pages", list { pages.forEach { addString(it.toJson()) } })
 }
