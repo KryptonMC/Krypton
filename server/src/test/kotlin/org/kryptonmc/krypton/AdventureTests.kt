@@ -33,6 +33,8 @@ import org.kryptonmc.api.adventure.toPlainText
 import org.kryptonmc.api.item.meta
 import org.kryptonmc.api.item.meta.WrittenBookMeta
 import org.kryptonmc.krypton.adventure.KryptonAdventure
+import org.kryptonmc.krypton.adventure.id
+import org.kryptonmc.krypton.adventure.toItemStack
 import org.kryptonmc.krypton.adventure.NBTLegacyHoverEventSerializer
 import org.kryptonmc.krypton.util.Bootstrap
 import java.io.IOException
@@ -53,7 +55,7 @@ class AdventureTests {
     @Suppress("UNCHECKED_CAST")
     fun `ensure ids do not break on update`() {
         val values = NamedTextColor::class.java.getDeclaredField("VALUES").apply { isAccessible = true }.get(null) as List<NamedTextColor>
-        values.forEachIndexed { index, element -> assertEquals(index, KryptonAdventure.id(element)) }
+        values.forEachIndexed { index, element -> assertEquals(index, element.id()) }
     }
 
     @Test
@@ -61,7 +63,7 @@ class AdventureTests {
         val title = Component.text("title")
         val author = Component.text("author")
         val pages = listOf(Component.text("Page 1"), Component.text("Page 2"), Component.text("Page 3"))
-        val meta = KryptonAdventure.toItemStack(Book.book(title, author, pages)).meta<WrittenBookMeta>()!!
+        val meta = Book.book(title, author, pages).toItemStack().meta<WrittenBookMeta>()!!
         assertEquals("title", meta.title.toPlainText())
         assertEquals("author", meta.author.toPlainText())
         assertEquals(pages, meta.pages)

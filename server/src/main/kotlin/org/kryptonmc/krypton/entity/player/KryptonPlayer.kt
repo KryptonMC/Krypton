@@ -62,7 +62,8 @@ import org.kryptonmc.api.world.GameMode
 import org.kryptonmc.api.world.World
 import org.kryptonmc.api.world.dimension.DimensionType
 import org.kryptonmc.krypton.KryptonPlatform
-import org.kryptonmc.krypton.adventure.KryptonAdventure
+import org.kryptonmc.krypton.adventure.BossBarManager
+import org.kryptonmc.krypton.adventure.toItemStack
 import org.kryptonmc.krypton.auth.KryptonGameProfile
 import org.kryptonmc.krypton.commands.KryptonPermission
 import org.kryptonmc.krypton.entity.EquipmentSlot
@@ -105,7 +106,6 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateHealth
 import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateViewPosition
 import org.kryptonmc.krypton.service.KryptonVanishService
 import org.kryptonmc.krypton.statistic.KryptonStatisticsTracker
-import org.kryptonmc.krypton.util.BossBarManager
 import org.kryptonmc.krypton.util.Directions
 import org.kryptonmc.krypton.util.InteractionResult
 import org.kryptonmc.krypton.util.Positioning
@@ -797,7 +797,7 @@ class KryptonPlayer(
     }
 
     override fun openBook(book: Book) {
-        openBook(KryptonAdventure.toItemStack(book))
+        openBook(book.toItemStack())
     }
 
     fun openBook(item: KryptonItemStack) {

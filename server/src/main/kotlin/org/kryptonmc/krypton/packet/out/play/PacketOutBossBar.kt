@@ -21,11 +21,11 @@ package org.kryptonmc.krypton.packet.out.play
 import io.netty.buffer.ByteBuf
 import net.kyori.adventure.bossbar.BossBar
 import net.kyori.adventure.text.Component
+import org.kryptonmc.krypton.adventure.BossBarManager
 import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.util.writeChat
 import org.kryptonmc.krypton.util.writeUUID
 import org.kryptonmc.krypton.util.writeVarInt
-import org.kryptonmc.krypton.util.BossBarManager
 import java.util.UUID
 
 @JvmRecord

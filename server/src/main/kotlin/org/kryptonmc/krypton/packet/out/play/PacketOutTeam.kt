@@ -22,7 +22,7 @@ import io.netty.buffer.ByteBuf
 import net.kyori.adventure.text.Component
 import org.kryptonmc.api.adventure.toLegacySectionText
 import org.kryptonmc.api.scoreboard.Team
-import org.kryptonmc.krypton.adventure.KryptonAdventure
+import org.kryptonmc.krypton.adventure.id
 import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.util.writeChat
 import org.kryptonmc.krypton.util.writeString
@@ -51,7 +51,7 @@ data class PacketOutTeam(
         action,
         team.name,
         team.displayName,
-        KryptonAdventure.id(team.color),
+        team.color.id(),
         team.prefix,
         team.suffix,
         team.allowFriendlyFire,

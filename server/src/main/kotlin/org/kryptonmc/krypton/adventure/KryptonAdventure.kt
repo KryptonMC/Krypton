@@ -17,18 +17,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package org.kryptonmc.krypton.adventure
-
-import it.unimi.dsi.fastutil.objects.Object2IntArrayMap
-import net.kyori.adventure.inventory.Book
 import net.kyori.adventure.text.TranslatableComponent
 import net.kyori.adventure.text.flattener.ComponentFlattener
-import net.kyori.adventure.text.format.NamedTextColor
-import org.kryptonmc.api.item.ItemTypes
-import org.kryptonmc.api.item.item
-import org.kryptonmc.api.item.meta
-import org.kryptonmc.api.item.meta.WrittenBookMeta
-import org.kryptonmc.krypton.item.KryptonItemStack
-import org.kryptonmc.krypton.item.meta.KryptonWrittenBookMeta
 import org.kryptonmc.krypton.util.TranslationBootstrap
 import java.util.Locale
 
@@ -43,43 +33,8 @@ object KryptonAdventure {
      */
     @JvmField
     val FLATTENER: ComponentFlattener = ComponentFlattener.basic().toBuilder()
-        .complexMapper<TranslatableComponent> { translatable, consumer ->
-            consumer(TranslationBootstrap.RENDERER.render(translatable, Locale.ENGLISH))
+        .complexMapper<TranslatableComponent> { translatable, mapper ->
+            mapper(TranslationBootstrap.RENDERER.render(translatable, Locale.ENGLISH))
         }
         .build()
-    private val NAMED_TEXT_COLOR_ID_MAP = Object2IntArrayMap<NamedTextColor>(16).apply {
-        put(NamedTextColor.BLACK, 0)
-        put(NamedTextColor.DARK_BLUE, 1)
-        put(NamedTextColor.DARK_GREEN, 2)
-        put(NamedTextColor.DARK_AQUA, 3)
-        put(NamedTextColor.DARK_RED, 4)
-        put(NamedTextColor.DARK_PURPLE, 5)
-        put(NamedTextColor.GOLD, 6)
-        put(NamedTextColor.GRAY, 7)
-        put(NamedTextColor.DARK_GRAY, 8)
-        put(NamedTextColor.BLUE, 9)
-        put(NamedTextColor.GREEN, 10)
-        put(NamedTextColor.AQUA, 11)
-        put(NamedTextColor.RED, 12)
-        put(NamedTextColor.LIGHT_PURPLE, 13)
-        put(NamedTextColor.YELLOW, 14)
-        put(NamedTextColor.WHITE, 15)
-    }
-
-    @JvmStatic
-    fun id(color: NamedTextColor): Int = NAMED_TEXT_COLOR_ID_MAP.getInt(color)
-
-    @JvmStatic
-    fun toItemStack(book: Book): KryptonItemStack {
-        if (book is KryptonWrittenBookMeta) return KryptonItemStack(ItemTypes.WRITTEN_BOOK, 1, book)
-        return item {
-            type(ItemTypes.WRITTEN_BOOK)
-            amount(1)
-            meta<WrittenBookMeta.Builder, WrittenBookMeta> {
-                title(book.title())
-                author(book.author())
-                pages(book.pages())
-            }
-        } as KryptonItemStack
-    }
 }

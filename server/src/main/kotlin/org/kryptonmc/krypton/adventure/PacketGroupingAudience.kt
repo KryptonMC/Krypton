@@ -31,6 +31,7 @@ import net.kyori.adventure.text.Component
 import net.kyori.adventure.title.Title
 import net.kyori.adventure.title.TitlePart
 import org.kryptonmc.api.registry.Registries
+import org.kryptonmc.krypton.adventure.BossBarManager
 import org.kryptonmc.krypton.entity.KryptonEntity
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.network.SessionManager
@@ -46,7 +47,6 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutStopSound
 import org.kryptonmc.krypton.packet.out.play.PacketOutSubTitle
 import org.kryptonmc.krypton.packet.out.play.PacketOutTitle
 import org.kryptonmc.krypton.packet.out.play.PacketOutTitleTimes
-import org.kryptonmc.krypton.util.BossBarManager
 
 interface PacketGroupingAudience : ForwardingAudience {
 
@@ -132,7 +132,7 @@ interface PacketGroupingAudience : ForwardingAudience {
     }
 
     override fun openBook(book: Book) {
-        val item = KryptonAdventure.toItemStack(book)
+        val item = book.toItemStack()
         players.forEach { it.openBook(item) }
     }
 
