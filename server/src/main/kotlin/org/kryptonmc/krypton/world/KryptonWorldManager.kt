@@ -29,6 +29,7 @@ import org.kryptonmc.krypton.util.ChunkProgressListener
 import org.kryptonmc.krypton.util.daemonThreadFactory
 import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.util.uncaughtExceptionHandler
+import org.kryptonmc.krypton.world.chunk.ChunkManager
 import org.kryptonmc.krypton.world.chunk.ChunkStatus
 import org.kryptonmc.krypton.world.data.PrimaryWorldData
 import org.kryptonmc.krypton.world.data.WorldDataManager
@@ -139,16 +140,25 @@ class KryptonWorldManager(
 
     private fun prepare() {
         val listener = ChunkProgressListener(9)
-        LOGGER.info("Preparing start region for dimension ${default.dimension.location}...")
-        listener.tick()
-        default.chunkManager.addStartTicket(default.data.spawnX shr 4, default.data.spawnZ shr 4) {
-            listener.updateStatus(ChunkStatus.FULL)
+        val centerX = default.data.spawnX shr 4
+        val centerZ = default.data.spawnZ shr 4
+        LOGGER.info("Loading world spawn area for world ${default.dimension.location}...")
+        for (x in (centerX - START_CHUNKS_DISTANCE)..(centerX + START_CHUNKS_DISTANCE)) {
+            for (z in (centerZ - START_CHUNKS_DISTANCE)..(centerZ + START_CHUNKS_DISTANCE)) {
+                default.chunkManager.load(x, z)
+                listener.onProgressUpdate()
+            }
         }
         listener.stop()
     }
 
     companion object {
 
+        // The distance in one direction, excluding the centre. The same way render distance works.
+        // This distance is always 9, as the start ticket value is 22, and the maximum ticket value is 34.
+        // 34 - 22 = 12. However, we must subtract another 3, as 34, 33, and 32 levels are not fully loaded chunks, which gives us 9.
+        private const val START_CHUNKS_DISTANCE = 9
+        private val TOTAL_START_CHUNKS = ChunkManager.calculateChunkViewArea(START_CHUNKS_DISTANCE)
         private val LOGGER = logger<KryptonWorldManager>()
 
         @JvmStatic

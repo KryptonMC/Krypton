@@ -33,10 +33,6 @@ import org.kryptonmc.krypton.world.Heightmap
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.krypton.world.block.palette.PaletteHolder
 import org.kryptonmc.krypton.world.block.toNBT
-import org.kryptonmc.krypton.world.chunk.ticket.Ticket
-import org.kryptonmc.krypton.world.chunk.ticket.TicketManager
-import org.kryptonmc.krypton.world.chunk.ticket.TicketType
-import org.kryptonmc.krypton.world.chunk.ticket.TicketTypes
 import org.kryptonmc.krypton.world.region.RegionFileManager
 import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.ListTag
@@ -64,7 +60,6 @@ class ChunkManager(private val world: KryptonWorld) {
             }
         }
     )
-    private val ticketManager = TicketManager(this)
     private val regionFileManager = RegionFileManager(
         world.folder.resolve("region"),
         world.server.config.advanced.synchronizeChunkWrites
@@ -74,19 +69,12 @@ class ChunkManager(private val world: KryptonWorld) {
 
     operator fun get(position: Long): KryptonChunk? = chunkMap[position]
 
-    fun addStartTicket(centerX: Int, centerZ: Int, onLoad: () -> Unit) {
-        ticketManager.addTicket(centerX, centerZ, TicketTypes.START, 22, Unit, onLoad)
-    }
-
-    fun addPlayer(
-        player: KryptonPlayer,
-        x: Int,
-        z: Int,
-        oldX: Int,
-        oldZ: Int,
-        viewDistance: Int
-    ): CompletableFuture<Unit> = CompletableFuture.supplyAsync({
-        ticketManager.addPlayer(x, z, oldX, oldZ, player.uuid, viewDistance)
+    fun addPlayer(player: KryptonPlayer, x: Int, z: Int, oldX: Int, oldZ: Int, viewDistance: Int): CompletableFuture<Unit> = CompletableFuture.supplyAsync({
+        for (chunkX in (x - viewDistance)..(x + viewDistance)) {
+            for (chunkZ in (z - viewDistance)..(z + viewDistance)) {
+                load(chunkX, chunkZ)
+            }
+        }
         val pos = ChunkPosition.toLong(x, z)
         val oldPos = ChunkPosition.toLong(oldX, oldZ)
         if (pos == oldPos) {
@@ -101,7 +89,6 @@ class ChunkManager(private val world: KryptonWorld) {
     fun removePlayer(player: KryptonPlayer, viewDistance: Int = world.server.config.world.viewDistance) {
         val x = player.location.floorX() shr 4
         val z = player.location.floorZ() shr 4
-        ticketManager.removePlayer(x, z, player.uuid, viewDistance)
         val pos = ChunkPosition.toLong(x, z)
         val set = playersByChunk[pos]?.apply { remove(player) }
         if (set != null && set.isEmpty()) playersByChunk.remove(pos)
@@ -109,7 +96,7 @@ class ChunkManager(private val world: KryptonWorld) {
 
     fun players(position: Long): Set<KryptonPlayer> = playersByChunk[position] ?: emptySet()
 
-    fun load(x: Int, z: Int, ticket: Ticket<*>): KryptonChunk? {
+    fun load(x: Int, z: Int): KryptonChunk? {
         val pos = ChunkPosition.toLong(x, z)
         if (chunkMap.containsKey(pos)) return chunkMap[pos]!!
 
@@ -161,7 +148,6 @@ class ChunkManager(private val world: KryptonWorld) {
             sections,
             data.getLong("LastUpdate"),
             data.getLong("inhabitedTime"),
-            ticket,
             carvingMasks,
             data.getCompound("Structures")
         )
@@ -176,9 +162,8 @@ class ChunkManager(private val world: KryptonWorld) {
         return chunk
     }
 
-    fun unload(x: Int, z: Int, requiredType: TicketType<*>, force: Boolean) {
+    fun unload(x: Int, z: Int) {
         val loaded = get(x, z) ?: return
-        if (!force && loaded.ticket.type !== requiredType) return
         save(loaded)
         chunkMap.remove(loaded.position.toLong())
     }
@@ -198,6 +183,16 @@ class ChunkManager(private val world: KryptonWorld) {
     companion object {
 
         private val LOGGER = logger<ChunkManager>()
+
+        // Chunk render distance can be represented as a square area around a central point, and the render distance value represents
+        // the distance, in chunks, from the central chunk to the edge of the square, excluding the central chunk.
+        // Therefore, the calculations are as follows:
+        //   Let x be the render distance
+        //   Area of a square = length^2 = width^2 because length = width and area of a quadrilateral = length * width
+        //   Therefore, the area of chunks loaded with render distance x = (x * 2 + 1) * (x * 2 + 1)
+        // The +1 is from the centre being excluded from the distance.
+        @JvmStatic
+        fun calculateChunkViewArea(distance: Int): Int = (distance * 2 + 1) * (distance * 2 + 1)
 
         @JvmStatic
         private fun serialize(chunk: KryptonChunk): CompoundTag {

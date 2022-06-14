@@ -28,7 +28,6 @@ import org.kryptonmc.krypton.packet.CachedPacket
 import org.kryptonmc.krypton.packet.out.play.PacketOutChunkDataAndLight
 import org.kryptonmc.krypton.world.Heightmap
 import org.kryptonmc.krypton.world.KryptonWorld
-import org.kryptonmc.krypton.world.chunk.ticket.Ticket
 import org.kryptonmc.nbt.CompoundTag
 import org.spongepowered.math.vector.Vector3i
 
@@ -39,7 +38,6 @@ class KryptonChunk(
     sections: Array<ChunkSection?>,
     override var lastUpdate: Long,
     inhabitedTime: Long,
-    val ticket: Ticket<*>,
     val carvingMasks: Pair<ByteArray, ByteArray>,
     val structures: CompoundTag
 ) : ChunkAccessor(position, world, inhabitedTime, sections), Chunk {
