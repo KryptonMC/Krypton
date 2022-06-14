@@ -23,6 +23,7 @@
 package org.kryptonmc.krypton.plugin
 
 import com.google.inject.Module
+import org.apache.logging.log4j.LogManager
 import org.kryptonmc.api.plugin.PluginContainer
 import org.kryptonmc.api.plugin.PluginDescription
 import org.kryptonmc.api.plugin.PluginManager
@@ -32,7 +33,6 @@ import org.kryptonmc.krypton.module.PluginModule
 import org.kryptonmc.krypton.plugin.loader.LoadedPluginDescription
 import org.kryptonmc.krypton.plugin.loader.PluginLoader
 import org.kryptonmc.krypton.util.forEachDirectoryEntry
-import org.kryptonmc.krypton.util.logger
 import java.nio.file.Files
 import java.nio.file.Path
 import java.util.IdentityHashMap
@@ -40,7 +40,7 @@ import java.util.IdentityHashMap
 @Suppress("INAPPLICABLE_JVM_NAME")
 object KryptonPluginManager : PluginManager {
 
-    private val LOGGER = logger("PluginManager")
+    private val LOGGER = LogManager.getLogger("PluginManager")
     private val pluginMap = LinkedHashMap<String, PluginContainer>()
     private val pluginInstances = IdentityHashMap<Any, PluginContainer>()
     override val plugins: Collection<PluginContainer>

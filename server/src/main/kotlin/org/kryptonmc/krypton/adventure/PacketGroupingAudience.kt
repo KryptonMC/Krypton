@@ -81,7 +81,7 @@ interface PacketGroupingAudience : ForwardingAudience {
         sendGroupedPacket(PacketOutPlayerListHeaderFooter(header, footer))
     }
 
-    override fun <T> sendTitlePart(part: TitlePart<T>, value: T) {
+    override fun <T : Any> sendTitlePart(part: TitlePart<T>, value: T) {
         if (part === TitlePart.TITLE) sendGroupedPacket(PacketOutTitle(value as Component))
         if (part === TitlePart.SUBTITLE) sendGroupedPacket(PacketOutSubTitle(value as Component))
         if (part === TitlePart.TIMES) sendGroupedPacket(PacketOutTitleTimes(value as Title.Times))

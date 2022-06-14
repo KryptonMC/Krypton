@@ -21,7 +21,6 @@ package org.kryptonmc.krypton.adventure
 import com.google.common.collect.MapMaker
 import net.kyori.adventure.bossbar.BossBar
 import net.kyori.adventure.text.Component
-import org.kryptonmc.krypton.adventure.PacketGroupingAudience
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.packet.out.play.PacketOutBossBar
 import org.kryptonmc.krypton.packet.out.play.PacketOutBossBar.Action

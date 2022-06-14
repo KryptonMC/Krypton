@@ -20,10 +20,6 @@ package org.kryptonmc.krypton.world.biome
 
 import com.google.common.hash.Hashing
 import org.kryptonmc.api.world.biome.Biome
-import org.kryptonmc.krypton.util.LinearCongruentialGenerator
-import org.kryptonmc.krypton.util.Quart
-import org.kryptonmc.krypton.util.floor
-import org.spongepowered.math.vector.Vector3i
 
 class BiomeManager(
     private val source: NoiseBiomeSource,
@@ -66,43 +62,31 @@ class BiomeManager(
         return source.getNoiseBiome(finalX, finalY, finalZ)
     }
 
-    fun getNoiseBiome(x: Double, y: Double, z: Double): Biome {
-        val quartX = Quart.fromBlock(x.floor())
-        val quartY = Quart.fromBlock(y.floor())
-        val quartZ = Quart.fromBlock(z.floor())
-        return getNoiseBiome(quartX, quartY, quartZ)
-    }
-
-    fun getNoiseBiome(position: Vector3i): Biome {
-        val quartX = Quart.fromBlock(position.x())
-        val quartY = Quart.fromBlock(position.y())
-        val quartZ = Quart.fromBlock(position.z())
-        return getNoiseBiome(quartX, quartY, quartZ)
-    }
-
-    private fun getNoiseBiome(x: Int, y: Int, z: Int): Biome = source.getNoiseBiome(x, y, z)
-
     companion object {
 
         private const val ZOOM_BITS = 2
         private const val ZOOM = 4.0
         private const val ZOOM_MASK = 3
 
+        // LCG = Linear Congruential Generator
+        private const val LCG_MULTIPLIER = 6364136223846793005L
+        private const val LCG_INCREMENT = 1442695040888963407L
+
         @JvmStatic
         fun obfuscateSeed(seed: Long): Long = Hashing.sha256().hashLong(seed).asLong()
 
         @JvmStatic
         private fun fiddleDistance(seed: Long, x: Int, y: Int, z: Int, zoomedX: Double, zoomedY: Double, zoomedZ: Double): Double {
-            var random = LinearCongruentialGenerator.next(seed, x.toLong())
-            random = LinearCongruentialGenerator.next(random, y.toLong())
-            random = LinearCongruentialGenerator.next(random, z.toLong())
-            random = LinearCongruentialGenerator.next(random, x.toLong())
-            random = LinearCongruentialGenerator.next(random, y.toLong())
-            random = LinearCongruentialGenerator.next(random, z.toLong())
+            var random = nextRandom(seed, x.toLong())
+            random = nextRandom(random, y.toLong())
+            random = nextRandom(random, z.toLong())
+            random = nextRandom(random, x.toLong())
+            random = nextRandom(random, y.toLong())
+            random = nextRandom(random, z.toLong())
             val fiddleOne = fiddle(random)
-            random = LinearCongruentialGenerator.next(random, seed)
+            random = nextRandom(random, seed)
             val fiddleTwo = fiddle(random)
-            random = LinearCongruentialGenerator.next(random, seed)
+            random = nextRandom(random, seed)
             val fiddleThree = fiddle(random)
             val fiddledX = zoomedX + fiddleOne
             val fiddledY = zoomedY + fiddleTwo
@@ -112,5 +96,8 @@ class BiomeManager(
 
         @JvmStatic
         private fun fiddle(value: Long): Double = ((Math.floorMod(value shr 24, 1024) / 1024.0) - 0.5) * 0.9
+
+        @JvmStatic
+        private fun nextRandom(seed: Long, salt: Long): Long = (seed * (seed * LCG_MULTIPLIER * LCG_INCREMENT)) + salt
     }
 }

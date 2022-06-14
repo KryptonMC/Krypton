@@ -83,14 +83,8 @@ data class KryptonBoundingBox(
         return KryptonBoundingBox(newMinX, newMinY, newMinZ, newMaxX, newMaxY, newMaxZ)
     }
 
-    override fun move(x: Double, y: Double, z: Double): BoundingBox = KryptonBoundingBox(
-        minimumX + x,
-        minimumY + y,
-        minimumZ + z,
-        maximumX + x,
-        maximumY + y,
-        maximumZ + z
-    )
+    override fun move(x: Double, y: Double, z: Double): BoundingBox =
+        KryptonBoundingBox(minimumX + x, minimumY + y, minimumZ + z, maximumX + x, maximumY + y, maximumZ + z)
 
     override fun expand(x: Double, y: Double, z: Double): BoundingBox {
         var minX = minimumX
@@ -118,43 +112,27 @@ data class KryptonBoundingBox(
         return KryptonBoundingBox(minX, minY, minZ, maxX, maxY, maxZ)
     }
 
-    override fun intersects(
-        minimumX: Double,
-        minimumY: Double,
-        minimumZ: Double,
-        maximumX: Double,
-        maximumY: Double,
-        maximumZ: Double
-    ): Boolean = this.minimumX < maximumX && this.maximumX > minimumX &&
+    override fun intersects(minimumX: Double, minimumY: Double, minimumZ: Double, maximumX: Double, maximumY: Double, maximumZ: Double): Boolean =
+        this.minimumX < maximumX && this.maximumX > minimumX &&
             this.minimumY < maximumY && this.maximumY > minimumY &&
             this.minimumZ < maximumZ && this.maximumZ > minimumZ
 
-    override fun intersects(other: BoundingBox): Boolean = intersects(
-        other.minimumX,
-        other.minimumY,
-        other.minimumZ,
-        other.maximumX,
-        other.maximumY,
-        other.maximumZ
-    )
+    override fun intersects(other: BoundingBox): Boolean =
+        intersects(other.minimumX, other.minimumY, other.minimumZ, other.maximumX, other.maximumY, other.maximumZ)
 
-    override fun contains(x: Double, y: Double, z: Double): Boolean = x in minimumX..maximumX - 1 &&
+    override fun contains(x: Double, y: Double, z: Double): Boolean =
+        x in minimumX..maximumX - 1 &&
             y in minimumY..maximumY - 1 &&
             z in minimumZ..maximumZ - 1
 
     object Factory : BoundingBox.Factory {
 
-        private val ZERO by lazy { KryptonBoundingBox(0.0, 0.0, 0.0, 0.0, 0.0, 0.0) }
-        private val UNIT by lazy { KryptonBoundingBox(0.0, 0.0, 0.0, 1.0, 1.0, 1.0) }
-
         override fun zero(): BoundingBox = ZERO
 
         override fun unit(): BoundingBox = UNIT
 
-        override fun of(
-            minimum: Vector3d,
-            maximum: Vector3d
-        ): BoundingBox = of(minimum.x(), minimum.y(), minimum.z(), maximum.x(), maximum.y(), maximum.z())
+        override fun of(minimum: Vector3d, maximum: Vector3d): BoundingBox =
+            of(minimum.x(), minimum.y(), minimum.z(), maximum.x(), maximum.y(), maximum.z())
 
         override fun of(minimum: Vector3i, maximum: Vector3i): BoundingBox = of(
             minimum.x().toDouble(),
@@ -165,13 +143,13 @@ data class KryptonBoundingBox(
             maximum.z().toDouble()
         )
 
-        override fun of(
-            minimumX: Double,
-            minimumY: Double,
-            minimumZ: Double,
-            maximumX: Double,
-            maximumY: Double,
-            maximumZ: Double
-        ): BoundingBox = KryptonBoundingBox(minimumX, minimumY, minimumZ, maximumX, maximumY, maximumZ)
+        override fun of(minimumX: Double, minimumY: Double, minimumZ: Double, maximumX: Double, maximumY: Double, maximumZ: Double): BoundingBox =
+            KryptonBoundingBox(minimumX, minimumY, minimumZ, maximumX, maximumY, maximumZ)
+    }
+
+    companion object {
+
+        private val ZERO = KryptonBoundingBox(0.0, 0.0, 0.0, 0.0, 0.0, 0.0)
+        private val UNIT = KryptonBoundingBox(0.0, 0.0, 0.0, 1.0, 1.0, 1.0)
     }
 }

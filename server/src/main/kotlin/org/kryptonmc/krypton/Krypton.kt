@@ -27,11 +27,10 @@ import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.clikt.parameters.types.int
 import com.github.ajalt.clikt.parameters.types.path
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer
+import org.apache.logging.log4j.LogManager
 import org.kryptonmc.krypton.auth.KryptonProfileCache
 import org.kryptonmc.krypton.config.KryptonConfig
-import org.kryptonmc.krypton.network.SessionManager
 import org.kryptonmc.krypton.util.Bootstrap
-import org.kryptonmc.krypton.util.logger
 import java.nio.file.Path
 import java.util.concurrent.atomic.AtomicReference
 
@@ -93,7 +92,7 @@ private class KryptonCLI : CliktCommand(
             return
         }
 
-        val logger = logger("Krypton")
+        val logger = LogManager.getLogger("Krypton")
         logger.info("Starting Krypton server version ${KryptonPlatform.version} for Minecraft ${KryptonPlatform.minecraftVersion}...")
 
         // Run the bootstrap

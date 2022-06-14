@@ -24,13 +24,13 @@
 package org.kryptonmc.krypton.scheduling
 
 import com.google.common.collect.Multimaps
+import org.apache.logging.log4j.LogManager
 import org.kryptonmc.api.scheduling.Scheduler
 import org.kryptonmc.api.scheduling.Task
 import org.kryptonmc.api.scheduling.TaskRunnable
 import org.kryptonmc.api.scheduling.TaskState
 import org.kryptonmc.krypton.plugin.KryptonPluginManager
 import org.kryptonmc.krypton.util.daemonThreadFactory
-import org.kryptonmc.krypton.util.logger
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
@@ -122,6 +122,6 @@ class KryptonScheduler : Scheduler {
 
     companion object {
 
-        private val LOGGER = logger("Scheduler")
+        private val LOGGER = LogManager.getLogger("Scheduler")
     }
 }

@@ -192,12 +192,7 @@ class KryptonServer(
         LOGGER.info("Done (${"%.3fs".format(Locale.ROOT, (System.nanoTime() - startTime) / 1.0E9)})! Type \"help\" for help.")
 
         LOGGER.debug("Starting console handler")
-        Thread(console::start, "Console Handler").apply {
-            uncaughtExceptionHandler = Thread.UncaughtExceptionHandler { _, exception ->
-                KryptonConsole.LOGGER.error("Caught previously unhandled exception ", exception)
-            }
-            isDaemon = true
-        }.start()
+        console.run()
 
         run()
     }

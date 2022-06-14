@@ -20,12 +20,12 @@ package org.kryptonmc.krypton.module
 
 import com.google.inject.Scopes
 import dev.misfitlabs.kotlinguice4.KotlinModule
+import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
 import org.kryptonmc.api.plugin.PluginContainer
 import org.kryptonmc.api.plugin.PluginDescription
 import org.kryptonmc.api.plugin.annotation.DataFolder
 import org.kryptonmc.krypton.plugin.loader.LoadedPluginDescription
-import org.kryptonmc.krypton.util.logger
 import java.nio.file.Path
 
 class PluginModule(
@@ -37,7 +37,7 @@ class PluginModule(
     override fun configure() {
         bind(description.mainClass).`in`(Scopes.SINGLETON)
 
-        bind<Logger>().toInstance(logger(description.id))
+        bind<Logger>().toInstance(LogManager.getLogger(description.id))
         bind<Path>().annotatedWith<DataFolder>().toInstance(basePluginPath.resolve(description.id))
         bind<PluginDescription>().toInstance(description)
         bind<PluginContainer>().toInstance(container)

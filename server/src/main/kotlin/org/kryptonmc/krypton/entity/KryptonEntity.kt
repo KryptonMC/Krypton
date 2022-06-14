@@ -26,6 +26,7 @@ import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.event.HoverEvent
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer
 import net.kyori.adventure.util.TriState
+import org.apache.logging.log4j.LogManager
 import org.kryptonmc.api.adventure.toJson
 import org.kryptonmc.api.block.Blocks
 import org.kryptonmc.api.effect.sound.SoundEvent
@@ -40,7 +41,6 @@ import org.kryptonmc.api.scoreboard.Team
 import org.kryptonmc.api.tags.FluidTags
 import org.kryptonmc.api.tags.Tag
 import org.kryptonmc.api.util.BoundingBox
-import org.kryptonmc.krypton.util.InteractionResult
 import org.kryptonmc.api.world.damage.DamageSource
 import org.kryptonmc.api.world.damage.type.DamageTypes
 import org.kryptonmc.krypton.KryptonServer
@@ -58,6 +58,7 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutSetPassengers
 import org.kryptonmc.krypton.packet.out.play.PacketOutSpawnEntity
 import org.kryptonmc.krypton.tags.KryptonTagManager
 import org.kryptonmc.krypton.tags.KryptonTagTypes
+import org.kryptonmc.krypton.util.InteractionResult
 import org.kryptonmc.krypton.util.ceil
 import org.kryptonmc.krypton.util.floor
 import org.kryptonmc.krypton.util.logger
@@ -549,7 +550,7 @@ abstract class KryptonEntity(
 
         private val NEXT_ENTITY_ID = AtomicInteger(0)
         @JvmStatic
-        protected val LOGGER = logger("Entity")
+        protected val LOGGER = logger<KryptonEntity>()
 
         private const val FLUID_VECTOR_EPSILON = 0.003
         private const val FLUID_VECTOR_MAGIC = 0.0045000000000000005

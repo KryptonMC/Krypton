@@ -26,6 +26,7 @@ object Reflection {
     internal val LOGGER = logger<Reflection>()
 
     @JvmStatic
+    @Suppress("UNCHECKED_CAST")
     inline fun <reified T, R> accessField(name: String, instance: Any? = null): R? {
         return try {
             getField<T>(name)?.get(instance) as? R

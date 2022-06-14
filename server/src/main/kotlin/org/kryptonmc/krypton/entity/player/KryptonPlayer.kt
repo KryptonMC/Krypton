@@ -718,7 +718,7 @@ class KryptonPlayer(
         session.send(PacketOutTitle(title.title()))
     }
 
-    override fun <T> sendTitlePart(part: TitlePart<T>, value: T) {
+    override fun <T : Any> sendTitlePart(part: TitlePart<T>, value: T) {
         val packet = when (part) {
             TitlePart.TITLE -> PacketOutTitle(value as Component)
             TitlePart.SUBTITLE -> PacketOutSubTitle(value as Component)

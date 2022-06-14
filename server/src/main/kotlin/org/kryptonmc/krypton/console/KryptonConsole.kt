@@ -23,7 +23,7 @@ import net.kyori.adventure.identity.Identity
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.util.TriState
 import net.minecrell.terminalconsole.SimpleTerminalConsole
-import org.apache.logging.log4j.Logger
+import org.apache.logging.log4j.LogManager
 import org.jline.reader.LineReader
 import org.jline.reader.LineReaderBuilder
 import org.kryptonmc.api.adventure.toLegacySectionText
@@ -33,7 +33,6 @@ import org.kryptonmc.api.event.server.SetupPermissionsEvent
 import org.kryptonmc.api.permission.PermissionFunction
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.util.TranslationBootstrap
-import org.kryptonmc.krypton.util.logger
 import java.util.Locale
 import java.util.UUID
 
@@ -48,6 +47,16 @@ class KryptonConsole(override val server: KryptonServer) : SimpleTerminalConsole
     fun setupPermissions() {
         val event = SetupPermissionsEvent(this) { DEFAULT_PERMISSION_FUNCTION }
         permissionFunction = server.eventManager.fireSync(event).createFunction(this)
+    }
+
+    fun run() {
+        val thread = Thread(::start, "Console Handler").apply {
+            uncaughtExceptionHandler = Thread.UncaughtExceptionHandler { _, exception ->
+                LOGGER.error("Caught previously unhandled exception ", exception)
+            }
+            isDaemon = true
+        }
+        thread.start()
     }
 
     override fun sendMessage(source: Identity, message: Component, type: MessageType) {
@@ -80,8 +89,6 @@ class KryptonConsole(override val server: KryptonServer) : SimpleTerminalConsole
     companion object {
 
         private val DEFAULT_PERMISSION_FUNCTION = PermissionFunction.ALWAYS_TRUE
-
-        @JvmField
-        val LOGGER: Logger = logger("CONSOLE")
+        private val LOGGER = LogManager.getLogger("CONSOLE")
     }
 }
