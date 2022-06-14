@@ -90,9 +90,9 @@ object Bootstrap {
         // These are some kinda nasty hacks, but the tight coupling nature of Krypton requires it
         // The only 2 other alternatives here are to do away with the static singleton and revert back, or restructure
         // the entire project to use Guice's dependency inversion (something that should be looked in to at some point)
-        Krypton::class.java.getDeclaredField("internalFactoryProvider").apply { isAccessible = true }.set(null, KryptonFactoryProvider)
-        Krypton::class.java.getDeclaredField("internalRegistryManager").apply { isAccessible = true }.set(null, KryptonRegistryManager)
-        Krypton::class.java.getDeclaredField("internalTagManager").apply { isAccessible = true }.set(null, KryptonTagManager)
+        Reflection.modifyField<Krypton>("internalFactoryProvider", KryptonFactoryProvider)
+        Reflection.modifyField<Krypton>("internalRegistryManager", KryptonRegistryManager)
+        Reflection.modifyField<Krypton>("internalTagManager", KryptonTagManager)
         KryptonFactoryProvider.bootstrap()
         KryptonRegistryManager.parent // Force initialisation
 

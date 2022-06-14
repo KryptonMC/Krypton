@@ -37,6 +37,7 @@ import org.kryptonmc.krypton.adventure.id
 import org.kryptonmc.krypton.adventure.toItemStack
 import org.kryptonmc.krypton.adventure.NBTLegacyHoverEventSerializer
 import org.kryptonmc.krypton.util.Bootstrap
+import org.kryptonmc.krypton.util.Reflection
 import java.io.IOException
 import java.util.UUID
 import kotlin.test.Test
@@ -54,7 +55,7 @@ class AdventureTests {
     @Test
     @Suppress("UNCHECKED_CAST")
     fun `ensure ids do not break on update`() {
-        val values = NamedTextColor::class.java.getDeclaredField("VALUES").apply { isAccessible = true }.get(null) as List<NamedTextColor>
+        val values = Reflection.accessField<NamedTextColor, List<NamedTextColor>>("VALUES")!!
         values.forEachIndexed { index, element -> assertEquals(index, element.id()) }
     }
 
