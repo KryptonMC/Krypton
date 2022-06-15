@@ -42,11 +42,6 @@ class GlobalPalette<T>(private val registry: IntBiMap<T>) : Palette<T> {
 
     object Factory : Palette.Factory {
 
-        override fun <T> create(
-            bits: Int,
-            registry: IntBiMap<T>,
-            resizer: PaletteResizer<T>,
-            entries: List<T>
-        ): Palette<T> = GlobalPalette(registry)
+        override fun <T> create(bits: Int, registry: IntBiMap<T>, resizer: PaletteResizer<T>, entries: List<T>): Palette<T> = GlobalPalette(registry)
     }
 }

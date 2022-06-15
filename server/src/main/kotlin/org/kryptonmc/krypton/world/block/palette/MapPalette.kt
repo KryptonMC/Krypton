@@ -49,11 +49,7 @@ data class MapPalette<T>(
         entries.forEach(values::add)
     }
 
-    constructor(
-        registry: IntBiMap<T>,
-        bits: Int,
-        resizer: PaletteResizer<T>
-    ) : this(registry, bits, resizer, IntIdentityHashBiMap(1 shl bits))
+    constructor(registry: IntBiMap<T>, bits: Int, resizer: PaletteResizer<T>) : this(registry, bits, resizer, IntIdentityHashBiMap(1 shl bits))
 
     override fun get(value: T): Int {
         var id = values.idOf(value)
@@ -76,11 +72,7 @@ data class MapPalette<T>(
 
     object Factory : Palette.Factory {
 
-        override fun <T> create(
-            bits: Int,
-            registry: IntBiMap<T>,
-            resizer: PaletteResizer<T>,
-            entries: List<T>
-        ): Palette<T> = MapPalette(registry, bits, resizer, entries)
+        override fun <T> create(bits: Int, registry: IntBiMap<T>, resizer: PaletteResizer<T>, entries: List<T>): Palette<T> =
+            MapPalette(registry, bits, resizer, entries)
     }
 }

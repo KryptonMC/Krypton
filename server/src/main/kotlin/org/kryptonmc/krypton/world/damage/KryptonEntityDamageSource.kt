@@ -28,10 +28,7 @@ import org.kryptonmc.krypton.entity.KryptonEntity
 import org.kryptonmc.krypton.entity.KryptonLivingEntity
 import org.spongepowered.math.vector.Vector3d
 
-open class KryptonEntityDamageSource(
-    type: DamageType,
-    final override val entity: KryptonEntity
-) : KryptonDamageSource(type), EntityDamageSource {
+open class KryptonEntityDamageSource(type: DamageType, final override val entity: KryptonEntity) : KryptonDamageSource(type), EntityDamageSource {
 
     override val isCreativePlayer: Boolean
         get() = entity is Player && entity.canInstantlyBuild

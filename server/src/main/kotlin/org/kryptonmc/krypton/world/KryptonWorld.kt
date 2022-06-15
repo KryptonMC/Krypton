@@ -18,7 +18,6 @@
  */
 package org.kryptonmc.krypton.world
 
-import com.google.common.hash.Hashing
 import net.kyori.adventure.sound.Sound
 import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.block.Blocks
@@ -80,9 +79,8 @@ class KryptonWorld(
     private val tickTime: Boolean
 ) : World, WorldAccessor, PacketGroupingAudience {
 
-    val hashedSeed: Long = Hashing.sha256().hashLong(seed).asLong()
     override val biomeManager: BiomeManager = BiomeManager(this, seed)
-    val random: Random = Random()
+    private val random: Random = Random()
     override val border: KryptonWorldBorder = KryptonWorldBorder.DEFAULT // FIXME
     override val gameMode: GameMode
         get() = data.gameMode
@@ -117,7 +115,7 @@ class KryptonWorld(
     override val entities: MutableCollection<KryptonEntity> = entityManager.entities
 
     override val chunkManager: ChunkManager = ChunkManager(this)
-    val playerManager: PlayerManager = server.playerManager
+    private val playerManager: PlayerManager = server.playerManager
     override val sessionManager: SessionManager = server.sessionManager
     override val players: MutableSet<KryptonPlayer> = ConcurrentHashMap.newKeySet()
 
@@ -159,16 +157,8 @@ class KryptonWorld(
         entityManager.remove(entity)
     }
 
-    fun playEffect(effect: Effect, position: Vector3i, data: Int, except: KryptonPlayer) {
-        playerManager.broadcast(PacketOutEffect(effect, position, data, false), this, position, 64.0, except)
-    }
-
     fun playEffect(effect: Effect, x: Int, y: Int, z: Int, data: Int, except: KryptonPlayer) {
         playerManager.broadcast(PacketOutEffect(effect, x, y, z, data, false), this, x, y, z, 64.0, except)
-    }
-
-    fun playSound(position: Vector3i, event: SoundEvent, source: Sound.Source, volume: Float, pitch: Float, except: KryptonPlayer? = null) {
-        playSound(position.x() + 0.5, position.y() + 0.5, position.z() + 0.5, event, source, volume, pitch, except)
     }
 
     fun playSound(position: Vector3d, event: SoundEvent, source: Sound.Source, volume: Float, pitch: Float, except: KryptonPlayer? = null) {
@@ -187,12 +177,6 @@ class KryptonWorld(
     ) {
         val finalVolume = if (volume > 1F) 16.0 * volume else 16.0
         playerManager.broadcast(PacketOutSoundEffect(event, source, x, y, z, volume, pitch), this, x, y, z, finalVolume, except)
-    }
-
-    fun playSound(event: SoundEvent, source: Sound.Source, emitter: KryptonEntity, volume: Float, pitch: Float, except: KryptonPlayer? = null) {
-        val packet = PacketOutEntitySoundEffect(event, source, emitter.id, volume, pitch)
-        val radius = if (volume > 1F) 16.0 * volume else 16.0
-        playerManager.broadcast(packet, this, emitter.location.x(), emitter.location.y(), emitter.location.z(), radius, except)
     }
 
     // TODO: Check world border bounds

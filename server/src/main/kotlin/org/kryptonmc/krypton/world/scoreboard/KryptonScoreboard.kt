@@ -94,10 +94,6 @@ class KryptonScoreboard(private val server: KryptonServer) : Scoreboard {
         .mapNotNullTo(mutableListOf()) { it[objective] }
         .apply { sortWith(KryptonScore.COMPARATOR) }
 
-    fun addListener(listener: Runnable) {
-        listeners.add(listener)
-    }
-
     fun forEachObjective(criterion: Criterion, member: Component, action: (KryptonScore) -> Unit) {
         objectivesByCriterion.getOrDefault(criterion, emptyList()).forEach { action(getOrCreateScore(member, it)) }
     }
@@ -106,13 +102,6 @@ class KryptonScoreboard(private val server: KryptonServer) : Scoreboard {
         if (entity is KryptonPlayer || entity.isAlive) return
         resetScore(entity.teamRepresentation, null)
         removeMemberFromTeam(entity.teamRepresentation)
-    }
-
-    fun hasObjective(name: String): Boolean = objectivesByName.containsKey(name)
-
-    fun hasScore(member: Component, objective: Objective): Boolean {
-        val scores = memberScores[member] ?: return false
-        return scores.containsKey(objective)
     }
 
     private fun getOrCreateScore(member: Component, objective: Objective): KryptonScore {

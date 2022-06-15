@@ -21,28 +21,19 @@ package org.kryptonmc.krypton.entity.attribute
 import com.google.gson.JsonObject
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.text.Component
+import org.kryptonmc.api.entity.attribute.AttributeType
 import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.krypton.util.KryptonDataLoader
 
-object AttributeLoader : KryptonDataLoader("attributes") {
+object AttributeLoader : KryptonDataLoader<AttributeType>("attributes", Registries.ATTRIBUTE) {
 
-    override fun load(data: JsonObject) {
-        data.entrySet().forEach { (key, value) ->
-            val namespacedKey = Key.key(key)
-            value as JsonObject
-
-            val translationKey = value["translationKey"].asString
-            val defaultValue = value["defaultValue"].asDouble
-            val clientSync = value["clientSync"].asBoolean
-            val range = value["range"].asJsonObject
-            val min = range["minValue"].asDouble
-            val max = range["maxValue"].asDouble
-
-            if (Registries.ATTRIBUTE.contains(namespacedKey)) return@forEach
-            Registries.ATTRIBUTE.register(
-                namespacedKey,
-                KryptonAttributeType(namespacedKey, defaultValue, min, max, clientSync, Component.translatable(translationKey))
-            )
-        }
+    override fun create(key: Key, value: JsonObject): AttributeType {
+        val translationKey = value["translationKey"].asString
+        val defaultValue = value["defaultValue"].asDouble
+        val clientSync = value["clientSync"].asBoolean
+        val range = value["range"].asJsonObject
+        val min = range["minValue"].asDouble
+        val max = range["maxValue"].asDouble
+        return KryptonAttributeType(key, defaultValue, min, max, clientSync, Component.translatable(translationKey))
     }
 }

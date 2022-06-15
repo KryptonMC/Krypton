@@ -113,12 +113,11 @@ class SNBTParser(private val reader: StringReader) {
         while (reader.peek() != LIST_END) {
             val cursor = reader.cursor
             val tag = readValue()
-            val tagType = tag.type
             if (type == -1) {
                 type = tag.id
             } else if (tag.id != type) {
                 reader.cursor = cursor
-                throw ERROR_INSERT_MIXED_LIST.createWithContext(reader, tagType.name, Types.of(type).name)
+                throw ERROR_INSERT_MIXED_LIST.createWithContext(reader, tag.type.name, Types.of(type).name)
             }
             list.add(tag)
             if (!reader.hasElementSeparator()) break
@@ -203,7 +202,7 @@ class SNBTParser(private val reader: StringReader) {
         private const val BYTE_ARRAY_START = 'B'
         private const val LONG_ARRAY_START = 'L'
         private const val INT_ARRAY_START = 'I'
-        private const val ELEMENT_SEPARATOR = ','
+        internal const val ELEMENT_SEPARATOR = ','
 
         private val DOUBLE_REGEX_NO_SUFFIX = "[-+]?(?:[0-9]+[.]|[0-9]*[.][0-9]+)(?:e[-+]?[0-9]+)?".toRegex(RegexOption.IGNORE_CASE)
         private val DOUBLE_REGEX = "[-+]?(?:[0-9]+[.]?|[0-9]*[.][0-9]+)(?:e[-+]?[0-9]+)?d".toRegex(RegexOption.IGNORE_CASE)
@@ -225,16 +224,15 @@ class SNBTParser(private val reader: StringReader) {
         private val ERROR_INVALID_ARRAY = DynamicCommandExceptionType {
             Component.translatable("argument.nbt.array.invalid", Component.text(it.toString())).toMessage()
         }
-
-        @JvmStatic
-        private fun StringReader.hasElementSeparator(): Boolean {
-            skipWhitespace()
-            val hasSeparator = canRead() && peek() == ELEMENT_SEPARATOR
-            if (hasSeparator) {
-                skip()
-                skipWhitespace()
-            }
-            return hasSeparator
-        }
     }
+}
+
+private fun StringReader.hasElementSeparator(): Boolean {
+    skipWhitespace()
+    val hasSeparator = canRead() && peek() == SNBTParser.ELEMENT_SEPARATOR
+    if (hasSeparator) {
+        skip()
+        skipWhitespace()
+    }
+    return hasSeparator
 }

@@ -20,10 +20,7 @@ package org.kryptonmc.krypton.util
 
 import java.util.AbstractList
 
-class FixedList<E : Any>(
-    override val size: Int,
-    private val fillElement: E
-) : AbstractList<E>() {
+class FixedList<E : Any>(override val size: Int, private val fillElement: E) : AbstractList<E>() {
 
     @Suppress("UNCHECKED_CAST")
     private val array = Array<Any>(size) { fillElement } as Array<E>

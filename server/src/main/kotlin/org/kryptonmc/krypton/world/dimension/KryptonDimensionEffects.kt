@@ -29,13 +29,7 @@ object KryptonDimensionEffects {
     @JvmField val THE_END: DimensionEffect = register("the_end", false, false, false, true)
 
     @JvmStatic
-    private fun register(
-        name: String,
-        clouds: Boolean,
-        celestialBodies: Boolean,
-        fog: Boolean,
-        endSky: Boolean
-    ): KryptonDimensionEffect {
+    private fun register(name: String, clouds: Boolean, celestialBodies: Boolean, fog: Boolean, endSky: Boolean): KryptonDimensionEffect {
         val key = Key.key(name)
         return Registries.DIMENSION_EFFECTS.register(key, KryptonDimensionEffect(key, clouds, celestialBodies, fog, endSky))
     }

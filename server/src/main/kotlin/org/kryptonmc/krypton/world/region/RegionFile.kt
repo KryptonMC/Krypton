@@ -267,11 +267,7 @@ class RegionFile(
     private fun padToFullSector() {
         val size = channel.size().toInt()
         val sectors = sectorCountFromSize(size) * SECTOR_BYTES
-        if (size != sectors) {
-            val buffer = PADDING_BUFFER.duplicate()
-            buffer.position(0)
-            channel.write(buffer, (sectors - 1).toLong())
-        }
+        if (size != sectors) channel.write(PADDING_BUFFER.duplicate().position(0), (sectors - 1).toLong())
     }
 
     fun clear(x: Int, z: Int) {
@@ -306,9 +302,7 @@ class RegionFile(
         }
 
         override fun close() {
-            val buffer = ByteBuffer.wrap(buf, 0, count)
-            buffer.putInt(0, count - CHUNK_HEADER_SIZE + 1)
-            this@RegionFile.write(x, z, buffer)
+            this@RegionFile.write(x, z, ByteBuffer.wrap(buf, 0, count).putInt(0, count - CHUNK_HEADER_SIZE + 1))
         }
     }
 
@@ -329,9 +323,7 @@ class RegionFile(
             while (true) {
                 val nextClearBit = used.nextClearBit(i)
                 val nextSetBit = used.nextSetBit(nextClearBit)
-                if (nextSetBit == -1 || nextSetBit - nextClearBit >= bits) {
-                    return nextClearBit.apply { force(this, bits) }
-                }
+                if (nextSetBit == -1 || nextSetBit - nextClearBit >= bits) return nextClearBit.apply { force(this, bits) }
                 i = nextSetBit
             }
         }
@@ -350,17 +342,8 @@ class RegionFile(
         private const val EXTERNAL_CHUNK_THRESHOLD = 256
         private const val CHUNK_NOT_PRESENT = 0
 
-        private val DSYNC_FLAGS = setOf(
-            StandardOpenOption.CREATE,
-            StandardOpenOption.READ,
-            StandardOpenOption.WRITE,
-            StandardOpenOption.DSYNC,
-        )
-        private val STANDARD_FLAGS = setOf(
-            StandardOpenOption.CREATE,
-            StandardOpenOption.READ,
-            StandardOpenOption.WRITE
-        )
+        private val DSYNC_FLAGS = setOf(StandardOpenOption.CREATE, StandardOpenOption.READ, StandardOpenOption.WRITE, StandardOpenOption.DSYNC)
+        private val STANDARD_FLAGS = setOf(StandardOpenOption.CREATE, StandardOpenOption.READ, StandardOpenOption.WRITE)
 
         @JvmStatic
         private fun timestamp(): Int = (System.currentTimeMillis() / 1000L).toInt()
@@ -384,10 +367,8 @@ class RegionFile(
         private fun externalChunkVersion(compressionType: Byte): Byte = (compressionType.toInt() and 0xFFFFFF7F.toInt()).toByte()
 
         @JvmStatic
-        private fun createStream(
-            buffer: ByteBuffer,
-            length: Int
-        ): ByteArrayInputStream = ByteArrayInputStream(buffer.array(), buffer.position(), length)
+        private fun createStream(buffer: ByteBuffer, length: Int): ByteArrayInputStream =
+            ByteArrayInputStream(buffer.array(), buffer.position(), length)
 
         @JvmStatic
         private fun packSectorOffset(sectors: Int, requiredSectors: Int): Int = (sectors shl 8) or requiredSectors

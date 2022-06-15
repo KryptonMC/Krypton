@@ -21,10 +21,7 @@ package org.kryptonmc.krypton.world.biome
 import com.google.common.hash.Hashing
 import org.kryptonmc.api.world.biome.Biome
 
-class BiomeManager(
-    private val source: NoiseBiomeSource,
-    private val seed: Long
-) {
+class BiomeManager(private val source: NoiseBiomeSource, private val seed: Long) {
 
     fun getBiome(x: Int, y: Int, z: Int): Biome {
         val offsetX = x - ZOOM_BITS

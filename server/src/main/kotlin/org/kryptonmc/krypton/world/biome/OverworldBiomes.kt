@@ -70,13 +70,8 @@ object OverworldBiomes {
     fun oldGrowthSpruceTaiga(key: Key): KryptonBiome = oldGrowthTaiga(key, true)
 
     @JvmStatic
-    private fun oldGrowthTaiga(key: Key, spruce: Boolean): KryptonBiome = createBiome(
-        key,
-        Precipitation.RAIN,
-        BiomeCategories.TAIGA,
-        if (spruce) 0.25F else 0.3F,
-        0.8F
-    )
+    private fun oldGrowthTaiga(key: Key, spruce: Boolean): KryptonBiome =
+        createBiome(key, Precipitation.RAIN, BiomeCategories.TAIGA, if (spruce) 0.25F else 0.3F, 0.8F)
 
     @JvmStatic
     fun taiga(key: Key): KryptonBiome = taiga(key, false)
@@ -105,13 +100,8 @@ object OverworldBiomes {
     fun windsweptForest(key: Key): KryptonBiome = windsweptHills(key, true)
 
     @JvmStatic
-    private fun windsweptHills(key: Key, isEdge: Boolean): KryptonBiome = createBiome(
-        key,
-        Precipitation.RAIN,
-        BiomeCategories.EXTREME_HILLS,
-        0.2F,
-        0.3F
-    )
+    private fun windsweptHills(key: Key, isEdge: Boolean): KryptonBiome =
+        createBiome(key, Precipitation.RAIN, BiomeCategories.EXTREME_HILLS, 0.2F, 0.3F)
 
     // ==============================
     // Jungle
@@ -127,13 +117,8 @@ object OverworldBiomes {
     fun bambooJungle(key: Key): KryptonBiome = baseJungle(key, 0.9F, true, false, true)
 
     @JvmStatic
-    private fun baseJungle(key: Key, downfall: Float, isBamboo: Boolean, isEdge: Boolean, isLight: Boolean): KryptonBiome = createBiome(
-        key,
-        Precipitation.RAIN,
-        BiomeCategories.JUNGLE,
-        0.95F,
-        downfall
-    )
+    private fun baseJungle(key: Key, downfall: Float, isBamboo: Boolean, isEdge: Boolean, isLight: Boolean): KryptonBiome =
+        createBiome(key, Precipitation.RAIN, BiomeCategories.JUNGLE, 0.95F, downfall)
 
     // ==============================
     // Mesa
@@ -263,13 +248,8 @@ object OverworldBiomes {
     fun oldGrowthBirchForest(key: Key): KryptonBiome = forest(key, true, true, false)
 
     @JvmStatic
-    private fun forest(key: Key, birch: Boolean, tall: Boolean, flower: Boolean): KryptonBiome = createBiome(
-        key,
-        Precipitation.RAIN,
-        BiomeCategories.FOREST,
-        if (birch) 0.6F else 0.7F,
-        if (birch) 0.6F else 0.8F
-    )
+    private fun forest(key: Key, birch: Boolean, tall: Boolean, flower: Boolean): KryptonBiome =
+        createBiome(key, Precipitation.RAIN, BiomeCategories.FOREST, if (birch) 0.6F else 0.7F, if (birch) 0.6F else 0.8F)
 
     @JvmStatic
     fun darkForest(key: Key): KryptonBiome {
@@ -354,15 +334,8 @@ object OverworldBiomes {
     }
 
     @JvmStatic
-    private fun baseOcean(key: Key, waterColor: Color, waterFogColor: Color): KryptonBiome = createBiome(
-        key,
-        Precipitation.RAIN,
-        BiomeCategories.OCEAN,
-        0.5F,
-        0.5F,
-        waterColor,
-        waterFogColor
-    )
+    private fun baseOcean(key: Key, waterColor: Color, waterFogColor: Color): KryptonBiome =
+        createBiome(key, Precipitation.RAIN, BiomeCategories.OCEAN, 0.5F, 0.5F, waterColor, waterFogColor)
 
     // ==============================
     // Desert
@@ -552,8 +525,5 @@ object OverworldBiomes {
     }
 
     @JvmStatic
-    private fun biome(
-        key: Key,
-        builder: KryptonBiome.Builder.() -> Unit
-    ): KryptonBiome = KryptonBiome.Builder(key).apply(builder).build() as KryptonBiome
+    private inline fun biome(key: Key, builder: KryptonBiome.Builder.() -> Unit): KryptonBiome = KryptonBiome.Builder(key).apply(builder).build()
 }

@@ -66,9 +66,6 @@ class RegionFileVersion private constructor(
         fun fromId(id: Int): RegionFileVersion? = BY_ID[id]
 
         @JvmStatic
-        fun isValid(id: Int): Boolean = BY_ID.containsKey(id)
-
-        @JvmStatic
         private fun register(version: RegionFileVersion): RegionFileVersion = version.apply { BY_ID[version.id] = version }
     }
 }

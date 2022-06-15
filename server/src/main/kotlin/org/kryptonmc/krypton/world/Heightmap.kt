@@ -68,8 +68,6 @@ class Heightmap(private val chunk: ChunkAccessor, val type: Type) {
 
     fun firstAvailable(x: Int, z: Int): Int = firstAvailable(indexOf(x, z))
 
-    fun highestTaken(x: Int, z: Int): Int = firstAvailable(indexOf(x, z)) - 1
-
     private fun set(x: Int, z: Int, y: Int) {
         data[indexOf(x, z)] = y - chunk.minimumBuildHeight
     }

@@ -58,6 +58,7 @@ import org.kryptonmc.krypton.util.frame
 import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.util.pool.daemonThreadFactory
 import org.kryptonmc.krypton.world.KryptonWorld
+import org.kryptonmc.krypton.world.biome.BiomeManager
 import org.kryptonmc.krypton.world.data.PlayerDataManager
 import org.kryptonmc.krypton.world.dimension.parseDimension
 import org.kryptonmc.krypton.world.scoreboard.KryptonScoreboard
@@ -128,7 +129,7 @@ class PlayerManager(private val server: KryptonServer) {
             server.worldManager.worlds.keys,
             world.dimensionType,
             world.dimension,
-            world.hashedSeed,
+            BiomeManager.obfuscateSeed(world.seed),
             server.maxPlayers,
             server.config.world.viewDistance,
             server.config.world.simulationDistance,
@@ -219,10 +220,6 @@ class PlayerManager(private val server: KryptonServer) {
             val offsetZ = z - it.location.z()
             offsetX * offsetX + offsetY * offsetY + offsetZ * offsetZ < radius * radius
         }
-    }
-
-    fun broadcast(packet: Packet, world: KryptonWorld, position: Vector3i, radius: Double, except: KryptonPlayer?) {
-        broadcast(packet, world, position.x().toDouble(), position.y().toDouble(), position.z().toDouble(), radius, except)
     }
 
     fun broadcast(packet: Packet, world: KryptonWorld, x: Int, y: Int, z: Int, radius: Double, except: KryptonPlayer?) {

@@ -25,14 +25,12 @@ class ChunkStatus private constructor(
     val name: String,
     parent: ChunkStatus?,
     val range: Int,
-    val heightmapsAfter: EnumSet<Heightmap.Type>,
+    private val heightmapsAfter: EnumSet<Heightmap.Type>,
     val type: Type,
 ) {
 
-    val parent: ChunkStatus = parent ?: this
+    private val parent: ChunkStatus = parent ?: this
     val index: Int = if (parent == null) 0 else parent.index + 1
-
-    fun isOrAfter(other: ChunkStatus): Boolean = index >= other.index
 
     override fun toString(): String = "ChunkStatus(name=$name, parent=$parent, range=$range, heightmapsAfter=$heightmapsAfter, type=$type)"
 
@@ -52,27 +50,18 @@ class ChunkStatus private constructor(
             Heightmap.Type.MOTION_BLOCKING_NO_LEAVES
         )
 
-        private val EMPTY = create("empty", null, -1, PRE_FEATURES, Type.PROTO)
-        private val STRUCTURE_STARTS = create("structure_starts", EMPTY, 0, PRE_FEATURES, Type.PROTO)
-        private val STRUCTURE_REFERENCES = create("structure_references", STRUCTURE_STARTS, 8, PRE_FEATURES, Type.PROTO)
-        @JvmField val BIOMES: ChunkStatus = create("biomes", STRUCTURE_REFERENCES, 0, PRE_FEATURES, Type.PROTO)
-        private val NOISE = create("noise", BIOMES, 8, PRE_FEATURES, Type.PROTO)
-        private val SURFACE = create("surface", NOISE, 0, PRE_FEATURES, Type.PROTO)
-        private val CARVERS = create("carvers", SURFACE, 0, PRE_FEATURES, Type.PROTO)
-        private val LIQUID_CARVERS = create("liquid_carvers", CARVERS, 0, POST_FEATURES, Type.PROTO)
-        private val FEATURES = create("features", LIQUID_CARVERS, 8, POST_FEATURES, Type.PROTO)
-        private val LIGHT = create("light", FEATURES, 1, POST_FEATURES, Type.PROTO)
-        private val SPAWN = create("spawn", LIGHT, 0, POST_FEATURES, Type.PROTO)
-        private val HEIGHTMAPS = create("heightmaps", SPAWN, 0, POST_FEATURES, Type.PROTO)
-        @JvmField val FULL: ChunkStatus = create("full", HEIGHTMAPS, 0, POST_FEATURES, Type.FULL)
-
-        @JvmStatic
-        private fun create(
-            name: String,
-            parent: ChunkStatus?,
-            range: Int,
-            heightmapsAfter: EnumSet<Heightmap.Type>,
-            type: Type
-        ): ChunkStatus = ChunkStatus(name, parent, range, heightmapsAfter, type)
+        private val EMPTY = ChunkStatus("empty", null, -1, PRE_FEATURES, Type.PROTO)
+        private val STRUCTURE_STARTS = ChunkStatus("structure_starts", EMPTY, 0, PRE_FEATURES, Type.PROTO)
+        private val STRUCTURE_REFERENCES = ChunkStatus("structure_references", STRUCTURE_STARTS, 8, PRE_FEATURES, Type.PROTO)
+        @JvmField val BIOMES: ChunkStatus = ChunkStatus("biomes", STRUCTURE_REFERENCES, 0, PRE_FEATURES, Type.PROTO)
+        private val NOISE = ChunkStatus("noise", BIOMES, 8, PRE_FEATURES, Type.PROTO)
+        private val SURFACE = ChunkStatus("surface", NOISE, 0, PRE_FEATURES, Type.PROTO)
+        private val CARVERS = ChunkStatus("carvers", SURFACE, 0, PRE_FEATURES, Type.PROTO)
+        private val LIQUID_CARVERS = ChunkStatus("liquid_carvers", CARVERS, 0, POST_FEATURES, Type.PROTO)
+        private val FEATURES = ChunkStatus("features", LIQUID_CARVERS, 8, POST_FEATURES, Type.PROTO)
+        private val LIGHT = ChunkStatus("light", FEATURES, 1, POST_FEATURES, Type.PROTO)
+        private val SPAWN = ChunkStatus("spawn", LIGHT, 0, POST_FEATURES, Type.PROTO)
+        private val HEIGHTMAPS = ChunkStatus("heightmaps", SPAWN, 0, POST_FEATURES, Type.PROTO)
+        @JvmField val FULL: ChunkStatus = ChunkStatus("full", HEIGHTMAPS, 0, POST_FEATURES, Type.FULL)
     }
 }

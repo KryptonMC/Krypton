@@ -22,43 +22,24 @@ import com.google.gson.JsonObject
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.text.Component
 import org.kryptonmc.api.effect.sound.SoundEvents
+import org.kryptonmc.api.item.ItemType
 import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.krypton.util.KryptonDataLoader
 
-object ItemLoader : KryptonDataLoader("items") {
+object ItemLoader : KryptonDataLoader<ItemType>("items", Registries.ITEM) {
 
-    override fun load(data: JsonObject) {
-        data.entrySet().forEach { (key, value) ->
-            val namespacedKey = Key.key(key)
-            value as JsonObject
-
-            val rarity = value["rarity"]?.asString ?: "COMMON"
-            val translationKey = value["translationKey"]?.asString
-                ?: "item.${namespacedKey.namespace()}.${namespacedKey.value().replace('/', '.')}"
-            val depletes = value["depletes"].asBoolean
-            val maxStackSize = value["maxStackSize"].asInt
-            val maxDamage = value["maxDamage"].asInt
-            val edible = value["edible"].asBoolean
-            val fireResistant = value["fireResistant"].asBoolean
-            val eatingSound = value["eatingSound"].asString
-            val drinkingSound = value["drinkingSound"].asString
-
-            if (Registries.ITEM.contains(namespacedKey)) return@forEach
-            Registries.ITEM.register(
-                namespacedKey,
-                KryptonItemType(
-                    namespacedKey,
-                    Registries.ITEM_RARITIES[Key.key("krypton", rarity.lowercase())]!!,
-                    maxStackSize,
-                    depletes,
-                    maxDamage,
-                    edible,
-                    fireResistant,
-                    Registries.SOUND_EVENT[Key.key(eatingSound)] ?: SoundEvents.GENERIC_EAT,
-                    Registries.SOUND_EVENT[Key.key(drinkingSound)] ?: SoundEvents.GENERIC_DRINK,
-                    Component.translatable(translationKey)
-                )
-            )
-        }
+    override fun create(key: Key, value: JsonObject): ItemType {
+        val rarityName = value["rarity"]?.asString ?: "COMMON"
+        val rarity = Registries.ITEM_RARITIES[Key.key("krypton", rarityName.lowercase())]!!
+        val translationKey = value["translationKey"]?.asString ?: "item.${key.namespace()}.${key.value().replace('/', '.')}"
+        val depletes = value["depletes"].asBoolean
+        val maxStackSize = value["maxStackSize"].asInt
+        val maxDamage = value["maxDamage"].asInt
+        val edible = value["edible"].asBoolean
+        val fireResistant = value["fireResistant"].asBoolean
+        val eatingSound = Registries.SOUND_EVENT[Key.key(value["eatingSound"].asString)] ?: SoundEvents.GENERIC_EAT
+        val drinkingSound = Registries.SOUND_EVENT[Key.key(value["drinkingSound"].asString)] ?: SoundEvents.GENERIC_DRINK
+        val translation = Component.translatable(translationKey)
+        return KryptonItemType(key, rarity, maxStackSize, depletes, maxDamage, edible, fireResistant, eatingSound, drinkingSound, translation)
     }
 }

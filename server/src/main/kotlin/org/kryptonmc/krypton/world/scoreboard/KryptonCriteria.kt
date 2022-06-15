@@ -56,11 +56,8 @@ object KryptonCriteria {
         isMutable: Boolean = false,
         renderType: ObjectiveRenderType = ObjectiveRenderType.INTEGER
     ): KryptonCriterion {
-        val key1 = Key.key(key)
-        return Registries.CRITERIA.register(
-            key1,
-            KryptonCriterion(key1, name, isMutable, renderType)
-        )
+        val namespacedKey = Key.key(key)
+        return Registries.CRITERIA.register(namespacedKey, KryptonCriterion(namespacedKey, name, isMutable, renderType))
     }
 
     @JvmStatic
@@ -71,7 +68,7 @@ object KryptonCriteria {
         isMutable: Boolean = false,
         renderType: ObjectiveRenderType = ObjectiveRenderType.INTEGER
     ): KryptonCompoundCriterion {
-        val key1 = Key.key(key)
-        return Registries.CRITERIA.register(key1, KryptonCompoundCriterion(key1, name, children, isMutable, renderType))
+        val namespacedKey = Key.key(key)
+        return Registries.CRITERIA.register(namespacedKey, KryptonCompoundCriterion(namespacedKey, name, children, isMutable, renderType))
     }
 }

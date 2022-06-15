@@ -21,15 +21,25 @@ package org.kryptonmc.krypton.util
 import com.google.gson.Gson
 import com.google.gson.JsonObject
 import me.bardy.gsonkt.fromJson
+import net.kyori.adventure.key.Key
+import org.kryptonmc.api.registry.Registry
 import org.kryptonmc.krypton.KryptonPlatform
 
-abstract class KryptonDataLoader(fileSuffix: String) {
+abstract class KryptonDataLoader<T : Any>(fileSuffix: String, protected val registry: Registry<T>) {
 
     private val fileName = "${KryptonPlatform.dataVersionPrefix}_$fileSuffix.json"
     @Volatile
     private var isLoaded = false
 
-    protected abstract fun load(data: JsonObject)
+    protected abstract fun create(key: Key, value: JsonObject): T
+
+    protected open fun register(key: Key, value: T) {
+        registry.register(key, value)
+    }
+
+    protected open fun preload() {
+        // empty by default
+    }
 
     fun init() {
         if (isLoaded) {
@@ -40,14 +50,18 @@ abstract class KryptonDataLoader(fileSuffix: String) {
         val inputStream = checkNotNull(ClassLoader.getSystemResourceAsStream(fileName)) {
             "Could not find $fileName bundled in JAR! Please report to Krypton!"
         }
-        val data = GSON.fromJson<JsonObject>(inputStream.reader())
-        load(data)
+        preload()
+        GSON.fromJson<JsonObject>(inputStream.reader()).entrySet().forEach { (key, value) ->
+            val namespacedKey = Key.key(key)
+            if (registry.contains(namespacedKey)) return@forEach
+            register(namespacedKey, create(namespacedKey, value as JsonObject))
+        }
         isLoaded = true
     }
 
     companion object {
 
         protected val GSON = Gson()
-        private val LOGGER = logger<KryptonDataLoader>()
+        private val LOGGER = logger<KryptonDataLoader<*>>()
     }
 }

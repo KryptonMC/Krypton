@@ -23,14 +23,10 @@ import org.kryptonmc.api.adventure.toLegacySectionText
 import org.kryptonmc.api.scoreboard.Objective
 import org.kryptonmc.api.scoreboard.Score
 
-class KryptonScore(
-    var scoreboard: KryptonScoreboard?,
-    override val objective: Objective?,
-    override val name: Component
-) : Score {
+class KryptonScore(var scoreboard: KryptonScoreboard?, override val objective: Objective?, override val name: Component) : Score {
 
     private var forceUpdate = true
-    val nameString: String = name.toLegacySectionText()
+    private val nameString = name.toLegacySectionText()
     override var score = 0
         set(value) {
             val old = field
@@ -50,10 +46,6 @@ class KryptonScore(
     fun subtract(amount: Int) {
         if (objective == null || !objective.criterion.isMutable) return
         score -= amount
-    }
-
-    fun reset() {
-        score = 0
     }
 
     companion object {

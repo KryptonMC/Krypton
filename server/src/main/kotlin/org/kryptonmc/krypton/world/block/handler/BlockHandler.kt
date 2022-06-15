@@ -54,16 +54,6 @@ interface BlockHandler {
     }
 
     /**
-     * Called when the given [block] is placed by the given [player] at the
-     * given [x], [y], and [z] coordinates being placed on the given [face]
-     * (this will be facing the player).
-     */
-    fun onPlace(player: KryptonPlayer, block: Block, x: Int, y: Int, z: Int, face: BlockFace) {
-        // This isn't what it may seem like. This is for reacting to block placements, which
-        // most blocks don't need to do.
-    }
-
-    /**
      * Called when the given [player] is about to break the given [block] at
      * the given [x], [y], and [z] coordinates in the given [world], but
      * hasn't yet.
@@ -89,21 +79,6 @@ interface BlockHandler {
     }
 
     /**
-     * Called when the given [player] interacts with the given [block] at the
-     * given [x], [y], and [z] coordinates in the given [world], using the
-     * given interaction [hand].
-     */
-    fun interact(
-        player: KryptonPlayer,
-        world: KryptonWorld,
-        block: Block,
-        x: Int,
-        y: Int,
-        z: Int,
-        hand: Hand
-    ): InteractionResult = InteractionResult.PASS
-
-    /**
      * Called when the given [player] attacks the given [block] at the given
      * [x], [y], and [z] coordinates in the given [world].
      */
@@ -111,32 +86,14 @@ interface BlockHandler {
         // all blocks do nothing when attacked by default, breaking isn't handled here
     }
 
-    /**
-     * Called when the shape of the given [block] at the given [x], [y], and
-     * [z] coordinates facing the given [direction] needs its face updated,
-     * with the given [neighbour] at the given [neighbourPosition].
-     */
-    fun updateShape(
-        block: Block,
-        x: Int,
-        y: Int,
-        z: Int,
-        direction: Direction,
-        neighbour: Block,
-        neighbourPosition: Vector3i,
-        world: KryptonWorld
-    ): Block = block
-
     fun spawnDestroyParticles(world: KryptonWorld, player: KryptonPlayer, x: Int, y: Int, z: Int, block: Block) {
         world.playEffect(Effect.DESTROY_BLOCK, x, y, z, block.stateId, player)
     }
 
     companion object {
 
-        private fun hasCorrectTool(
-            player: KryptonPlayer,
-            block: Block
-        ): Boolean = !block.requiresCorrectTool || player.inventory.mainHand.type.handler().isCorrectTool(block)
+        private fun hasCorrectTool(player: KryptonPlayer, block: Block): Boolean = !block.requiresCorrectTool ||
+                player.inventory.mainHand.type.handler().isCorrectTool(block)
 
         private fun calculateDestroySpeed(player: KryptonPlayer, block: Block): Float {
             var speed = player.inventory.mainHand.destroySpeed(block)

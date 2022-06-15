@@ -30,10 +30,7 @@ import kotlin.concurrent.withLock
 /**
  * Manages region files. That's literally it.
  */
-class RegionFileManager(
-    private val folder: Path,
-    private val synchronizeWrites: Boolean
-) : AutoCloseable {
+class RegionFileManager(private val folder: Path, private val synchronizeWrites: Boolean) : AutoCloseable {
 
     private val regionCache = Long2ObjectLinkedOpenHashMap<RegionFile>()
     private val regionCacheLock = ReentrantLock()

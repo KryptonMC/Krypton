@@ -226,12 +226,6 @@ fun ByteBuf.writeItem(item: KryptonItemStack) {
     writeNBT(item.meta.save())
 }
 
-fun ByteBuf.readVector(): Vector3i = readLong().toVector()
-
-fun ByteBuf.writeVector(vector: Vector3i) {
-    writeVector(vector.x(), vector.y(), vector.z())
-}
-
 fun ByteBuf.writeVector(x: Int, y: Int, z: Int) {
     writeLong(((x.toLong() and 0x3FFFFFF) shl 38) or ((z.toLong() and 0x3FFFFFF) shl 12) or (y.toLong() and 0xFFF))
 }

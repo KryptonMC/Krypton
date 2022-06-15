@@ -52,20 +52,20 @@ data class KryptonBiome(
             effects = biome.effects
         }
 
-        override fun key(key: Key): Biome.Builder = apply { this.key = key }
+        override fun key(key: Key): Builder = apply { this.key = key }
 
-        override fun climate(climate: Climate): Biome.Builder = apply { this.climate = climate }
+        override fun climate(climate: Climate): Builder = apply { this.climate = climate }
 
-        override fun category(category: BiomeCategory): Biome.Builder = apply { this.category = category }
+        override fun category(category: BiomeCategory): Builder = apply { this.category = category }
 
-        override fun effects(effects: BiomeEffects): Biome.Builder = apply { this.effects = effects }
+        override fun effects(effects: BiomeEffects): Builder = apply { this.effects = effects }
 
-        override fun build(): Biome = KryptonBiome(key, climate, category, effects)
+        override fun build(): KryptonBiome = KryptonBiome(key, climate, category, effects)
     }
 
     object Factory : Biome.Factory {
 
-        override fun builder(key: Key): Biome.Builder = Builder(key)
+        override fun builder(key: Key): Builder = Builder(key)
     }
 
     companion object {

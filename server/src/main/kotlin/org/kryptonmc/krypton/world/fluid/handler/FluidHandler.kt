@@ -43,31 +43,10 @@ interface FluidHandler {
     fun height(fluid: Fluid, x: Int, y: Int, z: Int, world: KryptonWorld): Float = 0F
 
     /**
-     * Checks if the given [fluid] at the given [position] in the given [world]
-     * facing the given [direction] can be replaced with the given
-     * [replacement] fluid.
-     */
-    fun canReplaceWith(
-        fluid: Fluid,
-        position: Vector3i,
-        world: KryptonWorld,
-        direction: Direction,
-        replacement: Fluid
-    ): Boolean = true
-
-    /**
      * Called when the given [fluid] is ticked at the given [position] in the
      * given [world].
      */
     fun tick(fluid: Fluid, position: Vector3i, world: KryptonWorld) {
         // fluids don't tick by default
-    }
-
-    /**
-     * Called when the given [fluid] is randomly ticked at the given [position]
-     * in the given [world] with the given [random] number generator.
-     */
-    fun randomTick(fluid: Fluid, position: Vector3i, world: KryptonWorld, random: Random) {
-        // fluids don't randomly tick by default
     }
 }

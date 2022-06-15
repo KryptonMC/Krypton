@@ -34,11 +34,7 @@ data class KryptonGameRule<V : Any>(
 
     object Factory : GameRule.Factory {
 
-        override fun <V : Any> of(
-            key: Key,
-            name: String,
-            default: V,
-            translation: TranslatableComponent
-        ): GameRule<V> = KryptonGameRule(key, name, default, translation)
+        override fun <V : Any> of(key: Key, name: String, default: V, translation: TranslatableComponent): GameRule<V> =
+            KryptonGameRule(key, name, default, translation)
     }
 }

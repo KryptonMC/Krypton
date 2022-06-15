@@ -34,11 +34,7 @@ object KryptonDamageSourceFactory : DamageSource.Factory {
         return KryptonEntityDamageSource(type, entity)
     }
 
-    override fun indirectEntity(
-        type: DamageType,
-        entity: Entity,
-        indirectEntity: Entity?
-    ): IndirectEntityDamageSource {
+    override fun indirectEntity(type: DamageType, entity: Entity, indirectEntity: Entity?): IndirectEntityDamageSource {
         require(entity is KryptonEntity && indirectEntity is KryptonEntity) {
             "Cannot construct indirect entity damage source from custom entity types!"
         }

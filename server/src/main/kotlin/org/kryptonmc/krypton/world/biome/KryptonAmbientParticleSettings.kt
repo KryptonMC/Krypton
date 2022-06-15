@@ -62,11 +62,8 @@ data class KryptonAmbientParticleSettings(
 
     object Factory : AmbientParticleSettings.Factory {
 
-        override fun of(
-            type: ParticleType,
-            data: ParticleData?,
-            probability: Float
-        ): AmbientParticleSettings = KryptonAmbientParticleSettings(type, data, probability)
+        override fun of(type: ParticleType, data: ParticleData?, probability: Float): AmbientParticleSettings =
+            KryptonAmbientParticleSettings(type, data, probability)
 
         override fun builder(type: ParticleType): AmbientParticleSettings.Builder = Builder(type)
     }

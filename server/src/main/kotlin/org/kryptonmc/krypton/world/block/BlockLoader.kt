@@ -35,7 +35,7 @@ import org.kryptonmc.krypton.util.KryptonDataLoader
 import org.kryptonmc.krypton.world.block.property.KryptonPropertyFactory
 import java.util.concurrent.ConcurrentHashMap
 
-object BlockLoader : KryptonDataLoader("blocks") {
+object BlockLoader : KryptonDataLoader<Block>("blocks", Registries.BLOCK) {
 
     private val KEY_MAP = mutableMapOf<String, KryptonBlock>()
     private val PROPERTY_MAP = mutableMapOf<String, PropertyEntry>()
@@ -58,35 +58,35 @@ object BlockLoader : KryptonDataLoader("blocks") {
         properties: Map<String, String>
     ): KryptonBlock? = PROPERTY_MAP[key]?.properties?.get(properties)
 
-    override fun load(data: JsonObject) {
+    override fun preload() {
         KryptonPropertyFactory.bootstrap()
-        data.entrySet().forEach { (key, value) ->
-            value as JsonObject
-            // Map properties
-            val propertyEntry = PropertyEntry()
-            val availableProperties = value["properties"].asJsonArray.mapTo(mutableSetOf()) { element ->
-                var string = element.asString
-                if (string == "LEVEL") string = "LEVEL_FLOWING"
-                KryptonPropertyFactory.PROPERTIES[string]!!
-            }.toImmutableSet()
+    }
 
-            // Iterate states
-            value.remove("states").asJsonArray.forEach {
-                val (properties, block) = it.asJsonObject.retrieveState(key, availableProperties, value)
-                propertyEntry.properties[properties] = block
-            }
+    override fun create(key: Key, value: JsonObject): Block {
+        // Map properties
+        val propertyEntry = PropertyEntry()
+        val availableProperties = value["properties"].asJsonArray.mapTo(mutableSetOf()) { element ->
+            var string = element.asString
+            if (string == "LEVEL") string = "LEVEL_FLOWING"
+            KryptonPropertyFactory.PROPERTIES[string]!!
+        }.toImmutableSet()
 
-            // Get default state and add to map
-            val defaultState = value["defaultStateId"].asInt
-            val defaultBlock = STATES[defaultState]!! as KryptonBlock
-            KEY_MAP[key] = defaultBlock
-            PROPERTY_MAP[key] = propertyEntry
-
-            // Register to registry
-            val namespacedKey = Key.key(key)
-            if (Registries.BLOCK.contains(namespacedKey)) return@forEach
-            Registries.BLOCK.register(defaultBlock.id, namespacedKey, defaultBlock)
+        // Iterate states
+        value.remove("states").asJsonArray.forEach {
+            val (properties, block) = it.asJsonObject.retrieveState(key.asString(), availableProperties, value)
+            propertyEntry.properties[properties] = block
         }
+
+        // Get default state and add to map
+        val defaultState = value["defaultStateId"].asInt
+        val defaultBlock = STATES[defaultState]!! as KryptonBlock
+        KEY_MAP[key.asString()] = defaultBlock
+        PROPERTY_MAP[key.asString()] = propertyEntry
+        return defaultBlock
+    }
+
+    override fun register(key: Key, value: Block) {
+        registry.register((value as KryptonBlock).id, key, value)
     }
 
     @JvmStatic

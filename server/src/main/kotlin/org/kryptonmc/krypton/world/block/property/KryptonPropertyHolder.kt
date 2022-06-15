@@ -36,9 +36,7 @@ interface KryptonPropertyHolder<T : PropertyHolder<T>> : PropertyHolder<T> {
 
     @Suppress("UNCHECKED_CAST")
     override fun <V : Comparable<V>> set(key: Property<V>, value: V): T {
-        require(value in key.values) {
-            "Tried to set invalid property value $value for key $key! Accepted values: ${key.values}"
-        }
+        require(value in key.values) { "Tried to set invalid property value $value for key $key! Accepted values: ${key.values}" }
         val existing = properties[key.name]
         if (existing != null && existing == value) return this as T
         return copy(key.name, key.toString(value))

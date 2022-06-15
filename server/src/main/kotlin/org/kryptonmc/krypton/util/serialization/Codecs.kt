@@ -53,16 +53,9 @@ object Codecs {
     val DOUBLE: Codec<DoubleTag, Double> = Codec.of(DoubleTag::of, DoubleTag::value)
     @JvmField
     val STRING: StringCodec<String> = StringCodec.of({ it }, { it })
-    @JvmField
-    val STRING_LIST: ListCodec<String> = STRING.list()
 
     @JvmField
     val COLOR: IntCodec<Color> = IntCodec.of(Color::getRGB, ::Color)
-    @JvmField
-    val NON_NEGATIVE_INT: IntCodec<Int> = IntCodec.of(
-        { if (it >= 0) it else throw IllegalArgumentException("Value $it must be non-negative!") },
-        { if (it >= 0) it else throw IllegalArgumentException("Value $it must be non-negative!") }
-    )
     @JvmField
     val UUID: IntArrayCodec<UUID> = IntArrayCodec.of(
         {

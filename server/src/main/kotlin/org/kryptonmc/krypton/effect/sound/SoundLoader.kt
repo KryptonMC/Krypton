@@ -20,16 +20,11 @@ package org.kryptonmc.krypton.effect.sound
 
 import com.google.gson.JsonObject
 import net.kyori.adventure.key.Key
+import org.kryptonmc.api.effect.sound.SoundEvent
 import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.krypton.util.KryptonDataLoader
 
-object SoundLoader : KryptonDataLoader("sounds") {
+object SoundLoader : KryptonDataLoader<SoundEvent>("sounds", Registries.SOUND_EVENT) {
 
-    override fun load(data: JsonObject) {
-        data.keySet().forEach {
-            val key = Key.key(it)
-            if (Registries.SOUND_EVENT.contains(key)) return@forEach
-            Registries.SOUND_EVENT.register(key, KryptonSoundEvent(key))
-        }
-    }
+    override fun create(key: Key, value: JsonObject): SoundEvent = KryptonSoundEvent(key)
 }

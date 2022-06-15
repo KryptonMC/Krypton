@@ -24,10 +24,7 @@ import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.block.entity.BlockEntityType
 
 @JvmRecord
-data class KryptonBlockEntityType(
-    private val key: Key,
-    override val applicableBlocks: ImmutableSet<Block>
-) : BlockEntityType {
+data class KryptonBlockEntityType(private val key: Key, override val applicableBlocks: ImmutableSet<Block>) : BlockEntityType {
 
     override fun key(): Key = key
 

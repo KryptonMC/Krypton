@@ -23,11 +23,7 @@ import org.kryptonmc.krypton.util.IntBiMap
 import org.kryptonmc.krypton.util.varIntBytes
 import org.kryptonmc.krypton.util.writeVarInt
 
-class SingleValuePalette<T>(
-    private val registry: IntBiMap<T>,
-    private val resizer: PaletteResizer<T>,
-    entries: List<T>
-) : Palette<T> {
+class SingleValuePalette<T>(private val registry: IntBiMap<T>, private val resizer: PaletteResizer<T>, entries: List<T>) : Palette<T> {
 
     private var value: T? = null
     override val size: Int = 1
@@ -62,11 +58,7 @@ class SingleValuePalette<T>(
 
     object Factory : Palette.Factory {
 
-        override fun <T> create(
-            bits: Int,
-            registry: IntBiMap<T>,
-            resizer: PaletteResizer<T>,
-            entries: List<T>
-        ): Palette<T> = SingleValuePalette(registry, resizer, entries)
+        override fun <T> create(bits: Int, registry: IntBiMap<T>, resizer: PaletteResizer<T>, entries: List<T>): Palette<T> =
+            SingleValuePalette(registry, resizer, entries)
     }
 }

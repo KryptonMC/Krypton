@@ -23,12 +23,7 @@ import org.kryptonmc.nbt.compound
 import kotlin.random.Random
 
 @JvmRecord
-data class WorldGenerationSettings(
-    val seed: Long,
-    val generateFeatures: Boolean,
-    val bonusChest: Boolean,
-    val dimensions: CompoundTag
-) {
+data class WorldGenerationSettings(val seed: Long, val generateFeatures: Boolean, val bonusChest: Boolean, val dimensions: CompoundTag) {
 
     fun save(): CompoundTag = compound {
         long("seed", seed)

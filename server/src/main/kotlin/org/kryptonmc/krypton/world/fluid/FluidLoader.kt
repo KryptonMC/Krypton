@@ -25,13 +25,14 @@ import kotlinx.collections.immutable.toImmutableSet
 import kotlinx.collections.immutable.toPersistentHashMap
 import net.kyori.adventure.key.Key
 import org.kryptonmc.api.block.property.Property
+import org.kryptonmc.api.fluid.Fluid
 import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.krypton.util.IntHashBiMap
 import org.kryptonmc.krypton.util.KryptonDataLoader
 import org.kryptonmc.krypton.world.block.property.KryptonPropertyFactory
 import java.util.concurrent.ConcurrentHashMap
 
-object FluidLoader : KryptonDataLoader("fluids") {
+object FluidLoader : KryptonDataLoader<Fluid>("fluids", Registries.FLUID) {
 
     private val KEY_MAP = mutableMapOf<String, KryptonFluid>()
     private val PROPERTY_MAP = mutableMapOf<String, PropertyEntry>()
@@ -45,35 +46,30 @@ object FluidLoader : KryptonDataLoader("fluids") {
         properties: Map<String, String>
     ): KryptonFluid? = PROPERTY_MAP[key]?.properties?.get(properties)
 
-    override fun load(data: JsonObject) {
-        data.entrySet().asSequence().map { it.key to it.value.asJsonObject }.forEach { (key, value) ->
-            // Map properties
-            val propertyEntry = PropertyEntry()
-            val availableProperties = value["properties"].asJsonArray.mapTo(mutableSetOf()) {
-                KryptonPropertyFactory.PROPERTIES[it.asString]!!
-            }.toImmutableSet()
+    override fun create(key: Key, value: JsonObject): Fluid {
+        // Map properties
+        val propertyEntry = PropertyEntry()
+        val availableProperties = value["properties"].asJsonArray.mapTo(mutableSetOf()) {
+            KryptonPropertyFactory.PROPERTIES[it.asString]!!
+        }.toImmutableSet()
 
-            // Iterate states
-            value.remove("states").asJsonArray.forEach {
-                val (properties, fluid) = it.asJsonObject.retrieveState(key, availableProperties, value)
-                propertyEntry.properties[properties] = fluid
-            }
-
-            // Get default state and add to maps
-            val defaultState = value["defaultStateId"].asInt // FIXME: Update ArticData when this is always non-null
-            val defaultFluid = STATES[defaultState]!!
-            KEY_MAP[key] = defaultFluid
-            PROPERTY_MAP[key] = propertyEntry
-
-            // Register to registry
-            if (Registries.FLUID.contains(Key.key(key))) return@forEach
-            Registries.FLUID.register(key, defaultFluid)
+        // Iterate states
+        value.remove("states").asJsonArray.forEach {
+            val (properties, fluid) = it.asJsonObject.retrieveState(key, availableProperties, value)
+            propertyEntry.properties[properties] = fluid
         }
+
+        // Get default state and add to maps
+        val defaultState = value["defaultStateId"].asInt // FIXME: Update ArticData when this is always non-null
+        val defaultFluid = STATES[defaultState]!!
+        KEY_MAP[key.asString()] = defaultFluid
+        PROPERTY_MAP[key.asString()] = propertyEntry
+        return defaultFluid
     }
 
     @JvmStatic
     private fun JsonObject.retrieveState(
-        key: String,
+        key: Key,
         availableProperties: ImmutableSet<Property<*>>,
         fluidObject: JsonObject
     ): Pair<Map<String, String>, KryptonFluid> {
@@ -81,7 +77,7 @@ object FluidLoader : KryptonDataLoader("fluids") {
         val properties = get("properties").asJsonObject.entrySet().associate {
             it.key to it.value.asString.lowercase()
         }.toPersistentHashMap()
-        val fluid = createFluid(Key.key(key), fluidObject, this, availableProperties, properties)
+        val fluid = createFluid(key, fluidObject, this, availableProperties, properties)
         STATES[fluid] = stateId
         return properties to fluid
     }

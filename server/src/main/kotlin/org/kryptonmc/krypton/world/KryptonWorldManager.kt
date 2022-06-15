@@ -125,14 +125,7 @@ class KryptonWorldManager(
     }
 
     private fun create() {
-        val world = KryptonWorld(
-            server,
-            data,
-            World.OVERWORLD,
-            KryptonDimensionTypes.OVERWORLD,
-            data.generationSettings.seed,
-            true
-        )
+        val world = KryptonWorld(server, data, World.OVERWORLD, KryptonDimensionTypes.OVERWORLD, data.generationSettings.seed, true)
         worlds[World.OVERWORLD] = world
         if (!data.isInitialized) data.isInitialized = true
     }

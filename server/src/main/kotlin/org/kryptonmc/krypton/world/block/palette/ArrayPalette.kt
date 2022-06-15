@@ -82,11 +82,7 @@ class ArrayPalette<T> private constructor(
 
     object Factory : Palette.Factory {
 
-        override fun <T> create(
-            bits: Int,
-            registry: IntBiMap<T>,
-            resizer: PaletteResizer<T>,
-            entries: List<T>
-        ): Palette<T> = ArrayPalette(registry, bits, resizer, entries)
+        override fun <T> create(bits: Int, registry: IntBiMap<T>, resizer: PaletteResizer<T>, entries: List<T>): Palette<T> =
+            ArrayPalette(registry, bits, resizer, entries)
     }
 }

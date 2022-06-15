@@ -25,10 +25,9 @@ import org.kryptonmc.api.world.biome.Biome
 
 object KryptonBiomes {
 
-    @JvmField val THE_VOID: KryptonBiome = register(BiomeKeys.THE_VOID, OverworldBiomes::theVoid)
-    @JvmField val PLAINS: KryptonBiome = register(BiomeKeys.PLAINS, OverworldBiomes::plains)
-
     init {
+        register(BiomeKeys.THE_VOID, OverworldBiomes::theVoid)
+        register(BiomeKeys.PLAINS, OverworldBiomes::plains)
         register(BiomeKeys.SUNFLOWER_PLAINS, OverworldBiomes::sunflowerPlains)
         register(BiomeKeys.SNOWY_PLAINS, OverworldBiomes::snowyPlains)
         register(BiomeKeys.ICE_SPIKES, OverworldBiomes::iceSpikes)
@@ -91,8 +90,6 @@ object KryptonBiomes {
     }
 
     @JvmStatic
-    private fun register(key: ResourceKey<Biome>, provider: (Key) -> KryptonBiome): KryptonBiome = register(key, provider(key.location))
-
-    @JvmStatic
-    private fun register(key: ResourceKey<Biome>, biome: KryptonBiome): KryptonBiome = Registries.BIOME.register(key, biome)
+    private fun register(key: ResourceKey<Biome>, provider: (Key) -> KryptonBiome): KryptonBiome =
+        Registries.BIOME.register(key, provider(key.location))
 }

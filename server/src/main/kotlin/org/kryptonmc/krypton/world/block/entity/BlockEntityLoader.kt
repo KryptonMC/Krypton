@@ -19,25 +19,16 @@
 package org.kryptonmc.krypton.world.block.entity
 
 import com.google.gson.JsonObject
-import kotlinx.collections.immutable.toImmutableSet
 import net.kyori.adventure.key.Key
+import org.kryptonmc.api.block.entity.BlockEntityType
 import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.krypton.util.KryptonDataLoader
+import org.kryptonmc.krypton.util.mapPersistentSet
 
-object BlockEntityLoader : KryptonDataLoader("block_entities") {
+object BlockEntityLoader : KryptonDataLoader<BlockEntityType>("block_entities", Registries.BLOCK_ENTITY_TYPE) {
 
-    override fun load(data: JsonObject) {
-        data.entrySet().forEach { (key, value) ->
-            val namespacedKey = Key.key(key)
-            value as JsonObject
-
-            val blocks = value["blocks"].asJsonArray.map {
-                val id = Key.key(it.asJsonObject["id"].asString)
-                Registries.BLOCK[id]!!
-            }
-
-            if (Registries.BLOCK_ENTITY_TYPE.contains(namespacedKey)) return@forEach
-            Registries.BLOCK_ENTITY_TYPE.register(namespacedKey, KryptonBlockEntityType(namespacedKey, blocks.toImmutableSet()))
-        }
+    override fun create(key: Key, value: JsonObject): BlockEntityType {
+        val blocks = value["blocks"].asJsonArray.mapPersistentSet { Registries.BLOCK[Key.key(it.asJsonObject["id"].asString)]!! }
+        return KryptonBlockEntityType(key, blocks)
     }
 }

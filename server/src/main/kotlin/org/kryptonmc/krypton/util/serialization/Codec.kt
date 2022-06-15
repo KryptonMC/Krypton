@@ -22,10 +22,8 @@ import org.kryptonmc.nbt.Tag
 
 interface Codec<T : Tag, U> : Encoder<U, T>, Decoder<T, U> {
 
-    fun <V> transform(
-        encodeTransformer: (V) -> U,
-        decodeTransformer: (U) -> V
-    ): TransformingCodec<T, U, V> = TransformingCodec(this, encodeTransformer, decodeTransformer)
+    fun <V> transform(encodeTransformer: (V) -> U, decodeTransformer: (U) -> V): TransformingCodec<T, U, V> =
+        TransformingCodec(this, encodeTransformer, decodeTransformer)
 
     @Suppress("UNCHECKED_CAST")
     fun list(): ListCodec<U> = ListCodec(this as Codec<Tag, U>)

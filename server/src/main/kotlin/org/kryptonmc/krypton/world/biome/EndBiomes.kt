@@ -26,7 +26,7 @@ import java.awt.Color
 
 object EndBiomes {
 
-    private val FOG = Color(10518688)
+    private val FOG = Color(160, 128, 160)
 
     @JvmStatic
     fun endBarrens(key: Key): KryptonBiome = baseEnd(key)

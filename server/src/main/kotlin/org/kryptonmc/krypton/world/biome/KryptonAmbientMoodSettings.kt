@@ -61,12 +61,8 @@ data class KryptonAmbientMoodSettings(
 
     object Factory : AmbientMoodSettings.Factory {
 
-        override fun of(
-            sound: SoundEvent,
-            tickDelay: Int,
-            blockSearchExtent: Int,
-            offset: Double
-        ): AmbientMoodSettings = KryptonAmbientMoodSettings(sound, tickDelay, blockSearchExtent, offset)
+        override fun of(sound: SoundEvent, tickDelay: Int, blockSearchExtent: Int, offset: Double): AmbientMoodSettings =
+            KryptonAmbientMoodSettings(sound, tickDelay, blockSearchExtent, offset)
 
         override fun builder(sound: SoundEvent): AmbientMoodSettings.Builder = Builder(sound)
     }
