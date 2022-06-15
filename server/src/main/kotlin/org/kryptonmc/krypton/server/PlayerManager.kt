@@ -54,9 +54,9 @@ import org.kryptonmc.krypton.server.ban.BannedIpList
 import org.kryptonmc.krypton.server.ban.BannedPlayerList
 import org.kryptonmc.krypton.server.whitelist.Whitelist
 import org.kryptonmc.krypton.server.whitelist.WhitelistedIps
-import org.kryptonmc.krypton.util.daemonThreadFactory
 import org.kryptonmc.krypton.util.frame
 import org.kryptonmc.krypton.util.logger
+import org.kryptonmc.krypton.util.pool.daemonThreadFactory
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.krypton.world.data.PlayerDataManager
 import org.kryptonmc.krypton.world.dimension.parseDimension

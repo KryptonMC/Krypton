@@ -30,18 +30,17 @@ import org.kryptonmc.api.scheduling.Task
 import org.kryptonmc.api.scheduling.TaskRunnable
 import org.kryptonmc.api.scheduling.TaskState
 import org.kryptonmc.krypton.plugin.KryptonPluginManager
-import org.kryptonmc.krypton.util.daemonThreadFactory
+import org.kryptonmc.krypton.util.logger
+import org.kryptonmc.krypton.util.pool.daemonThreadFactory
+import org.kryptonmc.krypton.util.pool.ThreadPoolBuilder
 import java.util.concurrent.ConcurrentHashMap
-import java.util.concurrent.ExecutorService
-import java.util.concurrent.Executors
-import java.util.concurrent.ScheduledExecutorService
 import java.util.concurrent.ScheduledFuture
 import java.util.concurrent.TimeUnit
 
 class KryptonScheduler : Scheduler {
 
-    private val executor: ExecutorService = Executors.newCachedThreadPool(daemonThreadFactory("Krypton Scheduler #%d"))
-    private val timedExecutor: ScheduledExecutorService = Executors.newSingleThreadScheduledExecutor(daemonThreadFactory("Krypton Timed Scheduler"))
+    private val executor = ThreadPoolBuilder.cached().factory(daemonThreadFactory("Krypton Scheduler #%d")).build()
+    private val timedExecutor = ThreadPoolBuilder.scheduled(1).factory(daemonThreadFactory("Krypton Timed Scheduler")).build()
     private val tasksByPlugin = Multimaps.newMultimap(ConcurrentHashMap<Any, MutableCollection<KryptonTask>>()) { ConcurrentHashMap.newKeySet() }
 
     override fun run(plugin: Any, task: TaskRunnable): Task = schedule(plugin, 0, TimeUnit.MILLISECONDS, task)

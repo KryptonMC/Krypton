@@ -26,10 +26,10 @@ import org.kryptonmc.api.user.UserManager
 import org.kryptonmc.krypton.KryptonPlatform
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.auth.requests.ApiService
-import org.kryptonmc.krypton.util.daemonThreadFactory
 import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.util.sendDataConversionWarning
 import org.kryptonmc.krypton.util.upgradeData
+import org.kryptonmc.krypton.util.pool.daemonThreadFactory
 import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.IntTag
 import org.kryptonmc.nbt.io.TagCompression

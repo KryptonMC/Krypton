@@ -19,16 +19,20 @@
 package org.kryptonmc.krypton.world.chunk
 
 import ca.spottedleaf.dataconverter.minecraft.datatypes.MCTypeRegistry
+import java.util.EnumSet
+import java.util.concurrent.CompletableFuture
+import java.util.concurrent.ConcurrentHashMap
 import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.block.Blocks
 import org.kryptonmc.api.world.biome.Biomes
 import org.kryptonmc.krypton.KryptonPlatform
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
-import org.kryptonmc.krypton.util.daemonThreadFactory
 import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.util.sendDataConversionWarning
-import org.kryptonmc.krypton.util.uncaughtExceptionHandler
 import org.kryptonmc.krypton.util.upgradeData
+import org.kryptonmc.krypton.util.pool.ThreadPoolBuilder
+import org.kryptonmc.krypton.util.pool.daemonThreadFactory
+import org.kryptonmc.krypton.util.pool.uncaughtExceptionHandler
 import org.kryptonmc.krypton.world.Heightmap
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.krypton.world.block.palette.PaletteHolder
@@ -46,24 +50,17 @@ import org.kryptonmc.nbt.StringTag
 import org.kryptonmc.nbt.buildCompound
 import org.kryptonmc.nbt.compound
 import space.vectrix.flare.fastutil.Long2ObjectSyncMap
-import java.util.EnumSet
-import java.util.concurrent.CompletableFuture
-import java.util.concurrent.ConcurrentHashMap
-import java.util.concurrent.Executors
 
 class ChunkManager(private val world: KryptonWorld) {
 
     val chunkMap: MutableMap<Long, KryptonChunk> = Long2ObjectSyncMap.hashmap()
     private val playersByChunk = Long2ObjectSyncMap.hashmap<MutableSet<KryptonPlayer>>()
-    private val executor = Executors.newFixedThreadPool(
-        2,
-        daemonThreadFactory("Chunk Loader #%d") {
-            uncaughtExceptionHandler { thread, exception ->
-                LOGGER.error("Caught unhandled exception in thread ${thread.name}!", exception)
-                world.server.stop()
-            }
+    private val executor = ThreadPoolBuilder.fixed(2).factory(daemonThreadFactory("Chunk Loader #%d") {
+        uncaughtExceptionHandler { thread, exception ->
+            LOGGER.error("Caught unhandled exception in thread ${thread.name}!", exception)
+            world.server.stop()
         }
-    )
+    }).build()
     private val ticketManager = TicketManager(this)
     private val regionFileManager = RegionFileManager(
         world.folder.resolve("region"),

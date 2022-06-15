@@ -26,9 +26,9 @@ import org.kryptonmc.api.world.World
 import org.kryptonmc.api.world.WorldManager
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.util.ChunkProgressListener
-import org.kryptonmc.krypton.util.daemonThreadFactory
 import org.kryptonmc.krypton.util.logger
-import org.kryptonmc.krypton.util.uncaughtExceptionHandler
+import org.kryptonmc.krypton.util.pool.daemonThreadFactory
+import org.kryptonmc.krypton.util.pool.uncaughtExceptionHandler
 import org.kryptonmc.krypton.world.chunk.ChunkStatus
 import org.kryptonmc.krypton.world.data.PrimaryWorldData
 import org.kryptonmc.krypton.world.data.WorldDataManager

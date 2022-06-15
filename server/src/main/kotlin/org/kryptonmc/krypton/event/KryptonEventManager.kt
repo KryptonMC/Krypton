@@ -36,13 +36,12 @@ import org.kryptonmc.api.event.Listener
 import org.kryptonmc.api.event.ListenerPriority
 import org.kryptonmc.krypton.plugin.KryptonPluginManager
 import org.kryptonmc.krypton.plugin.PluginClassLoader
-import org.kryptonmc.krypton.util.daemonThreadFactory
 import org.kryptonmc.krypton.util.logger
+import org.kryptonmc.krypton.util.pool.daemonThreadFactory
+import org.kryptonmc.krypton.util.pool.ThreadPoolBuilder
 import java.lang.reflect.Method
 import java.util.IdentityHashMap
 import java.util.concurrent.CompletableFuture
-import java.util.concurrent.ExecutorService
-import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 
 object KryptonEventManager : EventManager {
@@ -56,10 +55,9 @@ object KryptonEventManager : EventManager {
     )
     private val bus: SimpleEventBus<Any>
     private val methodAdapter: MethodSubscriptionAdapter<Any>
-    private val service: ExecutorService = Executors.newFixedThreadPool(
-        Runtime.getRuntime().availableProcessors(),
-        daemonThreadFactory("Krypton Event Executor #%d")
-    )
+    private val service = ThreadPoolBuilder.fixed(Runtime.getRuntime().availableProcessors())
+        .factory(daemonThreadFactory("Krypton Event Executor %d"))
+        .build()
 
     init {
         val loader = PluginClassLoader().addToLoaders()
@@ -167,7 +165,7 @@ object KryptonEventManager : EventManager {
 
     private class KyoriToKryptonHandler<E>(val handler: EventHandler<E>, val priority: ListenerPriority) : EventSubscriber<E> {
 
-        override fun invoke(event: E) {
+        override fun invoke(event: E & Any) {
             handler.execute(event)
         }
 

@@ -50,7 +50,7 @@ import org.kryptonmc.krypton.network.netty.PacketEncoder
 import org.kryptonmc.krypton.network.netty.SizeDecoder
 import org.kryptonmc.krypton.network.netty.SizeEncoder
 import org.kryptonmc.krypton.util.logger
-import org.kryptonmc.krypton.util.threadFactory
+import org.kryptonmc.krypton.util.pool.threadFactory
 import java.io.IOException
 import java.net.InetSocketAddress
 import java.util.concurrent.ConcurrentHashMap

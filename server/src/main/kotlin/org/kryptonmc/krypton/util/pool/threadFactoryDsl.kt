@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.util
+package org.kryptonmc.krypton.util.pool
 
 import com.google.common.util.concurrent.ThreadFactoryBuilder
 import java.util.concurrent.ThreadFactory
@@ -37,6 +37,5 @@ inline fun threadFactory(
 ): ThreadFactory = ThreadFactoryBuilder().setNameFormat(nameFormat).apply(builder).build()
 
 @ThreadFactoryDsl
-fun ThreadFactoryBuilder.uncaughtExceptionHandler(
-    handler: Thread.UncaughtExceptionHandler
-): ThreadFactoryBuilder = setUncaughtExceptionHandler(handler)
+fun ThreadFactoryBuilder.uncaughtExceptionHandler(handler: Thread.UncaughtExceptionHandler): ThreadFactoryBuilder =
+    setUncaughtExceptionHandler(handler)
