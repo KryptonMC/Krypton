@@ -127,8 +127,6 @@ class KryptonServer(
 
     init {
         instance = this
-        KryptonFactoryProvider.register<Scoreboard.Factory>(KryptonScoreboard.Factory(this))
-        KryptonFactoryProvider.register<Audiences.Factory>(KryptonAudiencesFactory(this))
     }
 
     // The order of loading here is pretty important, as some things depend on
@@ -189,7 +187,8 @@ class KryptonServer(
         NettyProcess.run(this)
 
         Runtime.getRuntime().addShutdownHook(Thread({ stop(false) }, "Shutdown Handler").apply { isDaemon = false })
-        LOGGER.info("Done (${"%.3fs".format(Locale.ROOT, (System.nanoTime() - startTime) / 1.0E9)})! Type \"help\" for help.")
+        val doneTime = String.format(Locale.ROOT, "%.3fs", (System.nanoTime() - startTime) / 1.0E9)
+        LOGGER.info("Done ($doneTime)! Type \"help\" for help.")
 
         LOGGER.debug("Starting console handler")
         console.run()

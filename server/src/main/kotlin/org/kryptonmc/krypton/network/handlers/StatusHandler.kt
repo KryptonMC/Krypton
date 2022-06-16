@@ -36,10 +36,7 @@ import org.kryptonmc.krypton.network.SessionHandler
  * - [Ping][org.kryptonmc.krypton.packet. in.status.PacketInPing] -
  *   pings the server (to calculate latency on its end)
  */
-class StatusHandler(
-    override val server: KryptonServer,
-    override val session: SessionHandler
-) : PacketHandler {
+class StatusHandler(override val server: KryptonServer, override val session: SessionHandler) : PacketHandler {
 
     override fun handle(packet: Packet) {
         when (packet) {

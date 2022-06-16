@@ -24,16 +24,13 @@ import org.kryptonmc.api.entity.player.Player
 import org.kryptonmc.krypton.KryptonServer
 import java.util.function.Predicate
 
-class KryptonAudiencesFactory(private val server: KryptonServer) : Audiences.Factory {
+object KryptonAudiencesFactory : Audiences.Factory {
 
-    override fun server(): Audience = server
+    override fun server(): Audience = KryptonServer.get()
 
-    override fun players(): Audience = PacketGroupingAudience.of(server.sessionManager, server.players)
+    override fun players(): Audience = PacketGroupingAudience.of(KryptonServer.get().players)
 
-    override fun players(predicate: Predicate<Player>): Audience = PacketGroupingAudience.of(
-        server.sessionManager,
-        server.players.filter { predicate.test(it) }
-    )
+    override fun players(predicate: Predicate<Player>): Audience = PacketGroupingAudience.of(KryptonServer.get().players.filter(predicate::test))
 
-    override fun console(): Audience = server.console
+    override fun console(): Audience = KryptonServer.get().console
 }

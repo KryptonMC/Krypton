@@ -27,6 +27,7 @@ import org.kryptonmc.api.world.WorldManager
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.util.ChunkProgressListener
 import org.kryptonmc.krypton.util.logger
+import org.kryptonmc.krypton.util.pool.ThreadPoolBuilder
 import org.kryptonmc.krypton.util.pool.daemonThreadFactory
 import org.kryptonmc.krypton.util.pool.uncaughtExceptionHandler
 import org.kryptonmc.krypton.world.chunk.ChunkStatus
@@ -37,32 +38,25 @@ import org.kryptonmc.krypton.world.dimension.KryptonDimensionTypes
 import org.kryptonmc.krypton.world.rule.KryptonGameRuleHolder
 import java.io.File
 import java.nio.file.Path
+import java.time.Duration
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.ConcurrentHashMap
-import java.util.concurrent.SynchronousQueue
-import java.util.concurrent.ThreadPoolExecutor
-import java.util.concurrent.TimeUnit
 import kotlin.math.max
 
-class KryptonWorldManager(
-    override val server: KryptonServer,
-    private val worldFolder: Path
-) : WorldManager {
+class KryptonWorldManager(override val server: KryptonServer, private val worldFolder: Path) : WorldManager {
 
     private val storageManager = WorldDataManager(worldFolder, server.useDataConverter)
-    private val worldExecutor = ThreadPoolExecutor(
-        0,
-        max(1, Runtime.getRuntime().availableProcessors() / 2),
-        60L,
-        TimeUnit.SECONDS,
-        SynchronousQueue(),
-        daemonThreadFactory("World Handler %d") {
+    private val worldExecutor = ThreadPoolBuilder.create()
+        .coreSize(0)
+        .maximumSize(max(1, Runtime.getRuntime().availableProcessors() / 2))
+        .keepAlive(Duration.ofSeconds(60))
+        .factory(daemonThreadFactory("World Handler #%d") {
             uncaughtExceptionHandler { thread, exception ->
                 LOGGER.error("Caught unhandled exception in thread ${thread.name}!", exception)
                 server.stop()
             }
-        }
-    )
+        })
+        .build()
     val statsFolder: Path = storageManager.resolve("stats")
 
     private val name = server.config.world.name

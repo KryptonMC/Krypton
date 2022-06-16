@@ -39,14 +39,10 @@ class KryptonStatistic<T : Any>(
     override fun hashCode(): Int = name.hashCode()
 
     override fun toString(): String = "KryptonStatistic(name=$name, formatter=$formatter)"
+}
 
-    companion object {
-
-        @JvmStatic
-        private fun <T : Any> StatisticType<T>.criterionName(value: T): String {
-            val key = key().asString().replace(':', '.')
-            val path = registry[value]?.asString()?.replace(':', '.')
-            return "$key:$path"
-        }
-    }
+private fun <T : Any> StatisticType<T>.criterionName(value: T): String {
+    val key = key().asString().replace(':', '.')
+    val path = registry[value]?.asString()?.replace(':', '.')
+    return "$key:$path"
 }

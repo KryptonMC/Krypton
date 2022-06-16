@@ -27,7 +27,7 @@ import java.util.Collections
 import java.util.IdentityHashMap
 
 @JvmRecord
-data class KryptonStatisticType<T : Any> private constructor(
+data class KryptonStatisticType<T : Any>(
     private val key: Key,
     override val registry: Registry<T>,
     private val statisticMap: MutableMap<T, Statistic<T>> = IdentityHashMap(),
@@ -40,9 +40,7 @@ data class KryptonStatisticType<T : Any> private constructor(
 
     override fun get(key: T): Statistic<T> = get(key, StatisticFormatter.DEFAULT)
 
-    override fun get(key: T, formatter: StatisticFormatter): Statistic<T> = statisticMap.getOrPut(key) {
-        KryptonStatistic(this, key, formatter)
-    }
+    override fun get(key: T, formatter: StatisticFormatter): Statistic<T> = statisticMap.getOrPut(key) { KryptonStatistic(this, key, formatter) }
 
     override fun iterator(): Iterator<Statistic<T>> = statisticMap.values.iterator()
 

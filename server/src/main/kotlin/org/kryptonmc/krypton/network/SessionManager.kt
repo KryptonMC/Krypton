@@ -24,8 +24,8 @@ import org.kryptonmc.krypton.network.handlers.PlayHandler
 import org.kryptonmc.krypton.packet.FramedPacket
 import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.packet.out.status.ServerStatus
-import org.kryptonmc.krypton.util.Maths
 import org.kryptonmc.krypton.util.frame
+import org.kryptonmc.krypton.util.nextIntClamped
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.locks.ReentrantReadWriteLock
 import java.util.function.Predicate
@@ -74,7 +74,7 @@ class SessionManager(private val server: KryptonServer) {
             val playersOnline = server.playerManager.players.size
             status.players.online = playersOnline
             val sampleSize = min(playersOnline, MAXIMUM_SAMPLED_PLAYERS)
-            val playerOffset = Maths.randomBetween(Random, 0, playersOnline - sampleSize)
+            val playerOffset = Random.nextIntClamped(0, playersOnline - sampleSize)
             val sample = Array(sampleSize) { server.playerManager.players[it + playerOffset].profile }.apply { shuffle() }
             status.players.sample = sample
         }

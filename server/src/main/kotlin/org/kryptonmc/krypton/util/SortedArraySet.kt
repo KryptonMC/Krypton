@@ -23,10 +23,7 @@ import kotlin.math.max
 import kotlin.math.min
 
 @Suppress("UNCHECKED_CAST", "EqualsOrHashCode")
-class SortedArraySet<T>(
-    private val comparator: Comparator<T>,
-    initialCapacity: Int,
-) : AbstractMutableSet<T>() {
+class SortedArraySet<T>(private val comparator: Comparator<T>, initialCapacity: Int) : AbstractMutableSet<T>() {
 
     private var contents = arrayOfNulls<Any>(initialCapacity) as Array<T?>
     override var size: Int = 0
@@ -124,10 +121,7 @@ class SortedArraySet<T>(
     private fun grow(minCapacity: Int) {
         if (minCapacity <= contents.size) return
         val capacity = if (contents.isEmpty()) {
-            max(min(
-                contents.size.toLong() + (contents.size shr 1).toLong(),
-                2147483639L
-            ), minCapacity.toLong()).toInt()
+            max(min(contents.size.toLong() + (contents.size shr 1).toLong(), 2147483639L), minCapacity.toLong()).toInt()
         } else if (minCapacity < 10) {
             10
         } else {

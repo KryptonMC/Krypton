@@ -66,7 +66,7 @@ sealed class ThreadPoolBuilder<B : ThreadPoolBuilder<B, E>, E : ExecutorService>
     class Standard internal constructor() : ThreadPoolBuilder<Standard, ExecutorService>() {
 
         fun maximumSize(size: Int): Standard = apply { maximumPoolSize = size }
-    
+
         fun fixed(size: Int): Standard = apply {
             corePoolSize = size
             maximumPoolSize = size
@@ -102,6 +102,9 @@ sealed class ThreadPoolBuilder<B : ThreadPoolBuilder<B, E>, E : ExecutorService>
     }
 
     companion object {
+
+        @JvmStatic
+        fun create(): Standard = Standard()
 
         @JvmStatic
         fun fixed(size: Int): Standard = Standard().fixed(size)

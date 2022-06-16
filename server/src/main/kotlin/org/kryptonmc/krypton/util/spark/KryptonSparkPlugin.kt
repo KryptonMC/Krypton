@@ -40,10 +40,7 @@ import org.kryptonmc.krypton.util.spark.ticking.KryptonSparkTickReporter
 import java.nio.file.Path
 import java.util.stream.Stream
 
-class KryptonSparkPlugin(
-    private val server: KryptonServer,
-    private val folder: Path
-) : SparkPlugin, SimpleCommand {
+class KryptonSparkPlugin(private val server: KryptonServer, private val folder: Path) : SparkPlugin, SimpleCommand {
 
     val description: PluginDescription = KryptonPluginDescription(
         "spark",
@@ -80,10 +77,8 @@ class KryptonSparkPlugin(
 
     override fun getCommandName(): String = "spark"
 
-    override fun getCommandSenders(): Stream<out CommandSender> = Stream.concat(
-        server.players.stream(),
-        Stream.of(server.console)
-    ).map(::KryptonSparkCommandSender)
+    override fun getCommandSenders(): Stream<out CommandSender> = Stream.concat(server.players.stream(), Stream.of(server.console))
+        .map(::KryptonSparkCommandSender)
 
     override fun executeAsync(task: Runnable) {
         server.scheduler.run(this) { task.run() }

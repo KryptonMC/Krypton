@@ -41,11 +41,7 @@ object KryptonTagTypes {
     @JvmField val ITEMS: KryptonTagType<ItemType> = register("item", Registries.ITEM)
 
     @JvmStatic
-    private fun <T : Any> register(
-        name: String,
-        fileName: String,
-        registry: Registry<T>
-    ): KryptonTagType<T> {
+    private fun <T : Any> register(name: String, fileName: String, registry: Registry<T>): KryptonTagType<T> {
         val key = Key.key(name)
         return Registries.TAG_TYPES.register(key, KryptonTagType(key, "${PREFIX}${fileName}_tags.json", registry))
     }

@@ -18,9 +18,10 @@
  */
 package org.kryptonmc.krypton.util
 
+import java.nio.file.DirectoryStream
 import java.nio.file.Files
 import java.nio.file.Path
 
-fun Path.forEachDirectoryEntry(predicate: (Path) -> Boolean, action: (Path) -> Unit) {
+fun Path.forEachDirectoryEntry(predicate: DirectoryStream.Filter<Path>, action: (Path) -> Unit) {
     Files.newDirectoryStream(this, predicate).use { it.forEach(action) }
 }

@@ -33,8 +33,6 @@ import org.spongepowered.math.vector.Vector3i
  */
 fun Vector3i.asLong(): Long = ((x().toLong() and 0x3FFFFFF) shl 38) or ((z().toLong() and 0x3FFFFFF) shl 12) or (y().toLong() and 0xFFF)
 
-fun Long.toVector(): Vector3i = Vector3i((this shr 38).toInt(), (this and 0xFFF).toInt(), (this shl 26 shr 38).toInt())
-
 fun Long.decodeBlockX(): Int = (this shr 38).toInt()
 
 fun Long.decodeBlockY(): Int = (this and 0xFFF).toInt()

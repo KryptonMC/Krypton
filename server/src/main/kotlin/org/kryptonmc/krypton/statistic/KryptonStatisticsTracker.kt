@@ -137,9 +137,7 @@ class KryptonStatisticsTracker(
             }
 
             json as JsonObject
-            if (!json.has("DataVersion") || !json["DataVersion"].isJsonPrimitive) {
-                json.addProperty("DataVersion", OLD_VERSION)
-            }
+            if (!json.has("DataVersion") || !json["DataVersion"].isJsonPrimitive) json.addProperty("DataVersion", OLD_VERSION)
             val version = json["DataVersion"].asInt
             // We won't upgrade data if use of the data converter is disabled.
             if (version < KryptonPlatform.worldVersion && !player.server.useDataConverter) {

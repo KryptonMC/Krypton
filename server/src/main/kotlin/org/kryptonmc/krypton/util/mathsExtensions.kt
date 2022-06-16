@@ -27,11 +27,6 @@ private val MULTIPLY_DE_BRUIJN_BIT_POSITION = intArrayOf(
     31, 27, 13, 23, 21, 19, 16, 7, 26, 12, 18, 6, 11, 5, 10, 9
 )
 
-fun Double.floorl(): Long {
-    val value = toLong()
-    return if (this < value) value - 1L else value
-}
-
 fun Float.floor(): Int {
     val result = toInt()
     return if (this < result) result - 1 else result
@@ -48,11 +43,9 @@ fun Double.ceil(): Int {
 }
 
 fun Int.ceillog2(): Int {
-    val temp = if (isPowerOfTwo()) this else GenericMath.roundUpPow2(this)
+    val temp = if (GenericMath.isPowerOfTwo(this)) this else GenericMath.roundUpPow2(this)
     return MULTIPLY_DE_BRUIJN_BIT_POSITION[(temp.toLong() * 125613361L shr 27 and 31).toInt()]
 }
-
-fun Int.isPowerOfTwo(): Boolean = GenericMath.isPowerOfTwo(this)
 
 fun Random.nextUUID(): UUID {
     val most = nextLong() and -61441L or 16384L
@@ -78,7 +71,7 @@ fun Float.clamp(low: Float, high: Float): Float {
     return this
 }
 
-fun IntRange.sample(random: Random): Int = Maths.randomBetween(random, first, last)
+fun IntRange.sample(random: Random): Int = random.nextIntClamped(first, last)
 
 fun IntRange.randomValue(random: Random): Int {
     if (first == last) return first
@@ -87,15 +80,12 @@ fun IntRange.randomValue(random: Random): Int {
 
 fun Int.toArea(): Int = (this * 2 + 1) * (this * 2 + 1)
 
-fun Double.fade(): Double = this * this * this * (this * (this * 6 - 15) + 10)
-
-fun Double.clampedLerp(lower: Double, upper: Double): Double {
-    if (this < lower) return lower
-    if (this > upper) return upper
-    return GenericMath.lerp(lower, upper, this)
+fun Random.nextFloatClamped(lower: Float, upper: Float): Float {
+    if (lower >= upper) return lower
+    return nextFloat() * (upper - lower) + lower
 }
 
-fun Random.nextFloatClamped(a: Float, b: Float): Float {
-    if (a >= b) return a
-    return nextFloat() * (b - a) + a
+fun Random.nextIntClamped(lower: Int, upper: Int): Int {
+    if (lower >= upper) return lower
+    return nextInt(upper - lower + 1) + lower
 }

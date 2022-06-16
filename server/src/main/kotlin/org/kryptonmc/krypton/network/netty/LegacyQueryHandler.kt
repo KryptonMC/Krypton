@@ -63,17 +63,17 @@ class LegacyQueryHandler(private val server: KryptonServer) : ChannelInboundHand
             when (msg.readableBytes()) {
                 0 -> {
                     LOGGER.debug("Legacy server list ping (versions <=1.3.x) received from ${address.address}:${address.port}")
-                    reply(ctx, "§", motd, playerCount, maxPlayers)
+                    ctx.reply("§", motd, playerCount, maxPlayers)
                 }
                 1 -> {
                     if (msg.readUnsignedByte() != 1.toShort()) return
                     LOGGER.debug("Legacy server list ping (versions 1.4.x-1.5.x) received from ${address.address}:${address.port}")
-                    reply(ctx, "\u0000", "§1", "127", version, motd, playerCount, maxPlayers)
+                    ctx.reply("\u0000", "§1", "127", version, motd, playerCount, maxPlayers)
                 }
                 else -> {
                     var isValid = msg.readUnsignedByte() == 1.toShort()
                     isValid = isValid and (msg.readUnsignedByte() == 250.toShort())
-                    isValid = isValid and (readLegacyString(msg) == MC_1_6_CHANNEL)
+                    isValid = isValid and (msg.readLegacyString() == MC_1_6_CHANNEL)
                     val dataLength = msg.readUnsignedShort()
                     isValid = isValid and (msg.readUnsignedByte() >= 73)
                     isValid = isValid and (3 + msg.readAvailableBytes(msg.readShort() * 2).size + 4 == dataLength)
@@ -82,7 +82,7 @@ class LegacyQueryHandler(private val server: KryptonServer) : ChannelInboundHand
                     if (!isValid) return
 
                     LOGGER.debug("Legacy server list ping (version 1.6.x) received from ${address.address}:${address.port}")
-                    reply(ctx, "\u0000", "§1", "127", version, motd, playerCount, maxPlayers)
+                    ctx.reply("\u0000", "§1", "127", version, motd, playerCount, maxPlayers)
                 }
             }
             msg.release()
@@ -102,33 +102,25 @@ class LegacyQueryHandler(private val server: KryptonServer) : ChannelInboundHand
         private const val MC_1_6_CHANNEL = "MC|PingHost"
         private const val LEGACY_PING_PACKET_ID: Short = 0xFE
         private val LOGGER = logger<LegacyQueryHandler>()
-
-        @JvmStatic
-        private fun reply(context: ChannelHandlerContext, message: String) {
-            val buffer = Unpooled.buffer().writeByte(255)
-            val chars = message.toCharArray()
-            buffer.writeShort(chars.size)
-            chars.forEach { buffer.writeChar(it.code) }
-            context.pipeline().firstContext()
-                .writeAndFlush(buffer)
-                .addListener(ChannelFutureListener.CLOSE)
-                .addListener { buffer.release() }
-        }
-
-        @JvmStatic
-        private fun reply(context: ChannelHandlerContext, separator: String, vararg parts: Any) {
-            reply(context, parts.joinToString(separator))
-        }
-
-        @JvmStatic
-        private fun readLegacyString(buf: ByteBuf): String {
-            val length = buf.readShort() * Char.SIZE_BYTES
-            if (!buf.isReadable(length)) {
-                throw CorruptedFrameException("String length $length is too large for available bytes ${buf.readableBytes()}!")
-            }
-            val string = buf.toString(buf.readerIndex(), length, Charsets.UTF_16BE)
-            buf.skipBytes(length)
-            return string
-        }
     }
+}
+
+private fun ChannelHandlerContext.reply(message: String) {
+    val buffer = Unpooled.buffer().writeByte(255)
+    val chars = message.toCharArray()
+    buffer.writeShort(chars.size)
+    chars.forEach { buffer.writeChar(it.code) }
+    pipeline().firstContext().writeAndFlush(buffer).addListener(ChannelFutureListener.CLOSE).addListener { buffer.release() }
+}
+
+private fun ChannelHandlerContext.reply(separator: String, vararg parts: Any) {
+    reply(parts.joinToString(separator))
+}
+
+private fun ByteBuf.readLegacyString(): String {
+    val length = readShort() * Char.SIZE_BYTES
+    if (!isReadable(length)) throw CorruptedFrameException("String length $length is too large for available bytes ${readableBytes()}!")
+    val string = toString(readerIndex(), length, Charsets.UTF_16BE)
+    skipBytes(length)
+    return string
 }

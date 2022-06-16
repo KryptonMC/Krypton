@@ -28,17 +28,9 @@ import org.kryptonmc.krypton.KryptonPlatform
 import org.kryptonmc.krypton.auth.KryptonGameProfile
 
 @JvmRecord
-data class ServerStatus(
-    val motd: Component,
-    val players: Players,
-    val favicon: String?
-) {
+data class ServerStatus(val motd: Component, val players: Players, val favicon: String?) {
 
-    class Players(
-        val max: Int,
-        var online: Int,
-        var sample: Array<KryptonGameProfile> = emptyArray()
-    ) {
+    class Players(val max: Int, var online: Int, var sample: Array<KryptonGameProfile> = emptyArray()) {
 
         companion object : TypeAdapter<Players>() {
 

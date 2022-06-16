@@ -122,9 +122,7 @@ object KryptonPluginManager : PluginManager {
         val instance = requireNotNull(container.instance) { "Plugin has no instance!" }
 
         val loader = instance.javaClass.classLoader
-        if (loader !is PluginClassLoader) {
-            throw UnsupportedOperationException("Operation is not supported for non-Krypton plugins!")
-        }
+        if (loader !is PluginClassLoader) throw UnsupportedOperationException("Operation is not supported for non-Krypton plugins!")
         loader.addPath(path)
     }
 }

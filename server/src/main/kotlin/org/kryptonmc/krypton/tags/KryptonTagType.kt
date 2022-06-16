@@ -23,11 +23,7 @@ import org.kryptonmc.api.registry.Registry
 import org.kryptonmc.api.tags.TagType
 
 @JvmRecord
-data class KryptonTagType<T : Any>(
-    private val key: Key,
-    val path: String,
-    override val registry: Registry<T>
-) : TagType<T> {
+data class KryptonTagType<T : Any>(private val key: Key, val path: String, override val registry: Registry<T>) : TagType<T> {
 
     override fun key(): Key = key
 }

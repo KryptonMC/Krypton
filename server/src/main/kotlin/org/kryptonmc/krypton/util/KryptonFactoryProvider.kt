@@ -20,6 +20,7 @@ package org.kryptonmc.krypton.util
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap
 import org.kryptonmc.api.adventure.AdventureMessage
+import org.kryptonmc.api.adventure.Audiences
 import org.kryptonmc.api.auth.GameProfile
 import org.kryptonmc.api.auth.ProfileProperty
 import org.kryptonmc.api.block.Block
@@ -45,6 +46,7 @@ import org.kryptonmc.api.item.meta.ItemMeta
 import org.kryptonmc.api.resource.ResourceKey
 import org.kryptonmc.api.resource.ResourcePack
 import org.kryptonmc.api.scoreboard.Objective
+import org.kryptonmc.api.scoreboard.Scoreboard
 import org.kryptonmc.api.scoreboard.Team
 import org.kryptonmc.api.statistic.StatisticType
 import org.kryptonmc.api.util.BoundingBox
@@ -62,6 +64,7 @@ import org.kryptonmc.api.world.damage.DamageSource
 import org.kryptonmc.api.world.dimension.DimensionType
 import org.kryptonmc.api.world.rule.GameRule
 import org.kryptonmc.krypton.adventure.KryptonAdventureMessage
+import org.kryptonmc.krypton.adventure.KryptonAudiencesFactory
 import org.kryptonmc.krypton.auth.KryptonGameProfile
 import org.kryptonmc.krypton.auth.KryptonProfileProperty
 import org.kryptonmc.krypton.command.meta.KryptonCommandMeta
@@ -98,6 +101,7 @@ import org.kryptonmc.krypton.world.dimension.KryptonDimensionType
 import org.kryptonmc.krypton.world.fluid.KryptonFluid
 import org.kryptonmc.krypton.world.rule.KryptonGameRule
 import org.kryptonmc.krypton.world.scoreboard.KryptonObjective
+import org.kryptonmc.krypton.world.scoreboard.KryptonScoreboard
 import org.kryptonmc.krypton.world.scoreboard.KryptonTeam
 
 object KryptonFactoryProvider : FactoryProvider {
@@ -152,5 +156,7 @@ object KryptonFactoryProvider : FactoryProvider {
         register<ItemMeta.Factory>(KryptonItemMeta.Factory)
         register<DamageSource.Factory>(KryptonDamageSourceFactory)
         register<AdventureMessage.Factory>(KryptonAdventureMessage.Factory)
+        register<Audiences.Factory>(KryptonAudiencesFactory)
+        register<Scoreboard.Factory>(KryptonScoreboard.Factory)
     }
 }

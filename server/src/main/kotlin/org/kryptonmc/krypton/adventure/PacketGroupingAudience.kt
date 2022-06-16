@@ -31,7 +31,7 @@ import net.kyori.adventure.text.Component
 import net.kyori.adventure.title.Title
 import net.kyori.adventure.title.TitlePart
 import org.kryptonmc.api.registry.Registries
-import org.kryptonmc.krypton.adventure.BossBarManager
+import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.entity.KryptonEntity
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.network.SessionManager
@@ -141,10 +141,10 @@ interface PacketGroupingAudience : ForwardingAudience {
     companion object {
 
         @JvmStatic
-        fun of(sessionManager: SessionManager, players: Collection<KryptonPlayer>): PacketGroupingAudience = object : PacketGroupingAudience {
+        fun of(players: Collection<KryptonPlayer>): PacketGroupingAudience = object : PacketGroupingAudience {
 
             override val sessionManager: SessionManager
-                get() = sessionManager
+                get() = KryptonServer.get().sessionManager
             override val players: Collection<KryptonPlayer>
                 get() = players
         }
