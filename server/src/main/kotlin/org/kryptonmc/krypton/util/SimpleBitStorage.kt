@@ -18,6 +18,8 @@
  */
 package org.kryptonmc.krypton.util
 
+import java.util.Objects
+
 /**
  * This one is a strange one. This is essentially an array that allows arbitrarily-sized numbers of any
  * size in bits to be tightly packed into longs in a backing long array.
@@ -158,13 +160,7 @@ class SimpleBitStorage(
         return bits == (other as SimpleBitStorage).bits && size == other.size && data.contentEquals(other.data)
     }
 
-    override fun hashCode(): Int {
-        var result = 1
-        result = 31 * result + bits.hashCode()
-        result = 31 * result + size.hashCode()
-        result = 31 * result + data.contentHashCode()
-        return result
-    }
+    override fun hashCode(): Int = Objects.hash(bits, size, data)
 
     private fun cellIndex(index: Int): Int = ((index.toLong() * divideMultiply + divideAdd) shr 32 shr divideShift).toInt()
 

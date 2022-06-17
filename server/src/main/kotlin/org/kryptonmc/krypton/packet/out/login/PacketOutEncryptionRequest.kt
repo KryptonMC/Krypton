@@ -19,11 +19,12 @@
 package org.kryptonmc.krypton.packet.out.login
 
 import io.netty.buffer.ByteBuf
+import java.security.PublicKey
+import java.util.Objects
 import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.util.writeString
 import org.kryptonmc.krypton.util.writeVarInt
 import org.kryptonmc.krypton.util.writeVarIntByteArray
-import java.security.PublicKey
 
 /**
  * Sent to instruct the client that we wish to encrypt this connection. The
@@ -45,15 +46,9 @@ data class PacketOutEncryptionRequest(
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (javaClass != other?.javaClass || !super.equals(other)) return false
-        other as PacketOutEncryptionRequest
-        return publicKey.contentEquals(other.publicKey) && verifyToken.contentEquals(other.verifyToken)
+        if (javaClass != other?.javaClass) return false
+        return publicKey.contentEquals((other as PacketOutEncryptionRequest).publicKey) && verifyToken.contentEquals(other.verifyToken)
     }
 
-    override fun hashCode(): Int {
-        var result = super.hashCode()
-        result = 31 * result + publicKey.hashCode()
-        result = 31 * result + verifyToken.contentHashCode()
-        return result
-    }
+    override fun hashCode(): Int = Objects.hash(publicKey, verifyToken)
 }

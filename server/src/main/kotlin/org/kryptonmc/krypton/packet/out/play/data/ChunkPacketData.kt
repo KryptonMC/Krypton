@@ -20,6 +20,7 @@ package org.kryptonmc.krypton.packet.out.play.data
 
 import io.netty.buffer.ByteBuf
 import io.netty.buffer.Unpooled
+import java.util.Objects
 import org.kryptonmc.krypton.network.Writable
 import org.kryptonmc.krypton.util.writeNBT
 import org.kryptonmc.krypton.util.writeVarInt
@@ -52,12 +53,7 @@ data class ChunkPacketData(
         return heightmaps == (other as ChunkPacketData).heightmaps && data.contentEquals(other.data)
     }
 
-    override fun hashCode(): Int {
-        var result = 1
-        result = 31 * result + heightmaps.hashCode()
-        result = 31 * result + data.contentHashCode()
-        return result
-    }
+    override fun hashCode(): Int = Objects.hash(heightmaps, data)
 
     companion object {
 

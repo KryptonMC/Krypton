@@ -18,6 +18,7 @@
  */
 package org.kryptonmc.krypton.world.block.property
 
+import java.util.Objects
 import kotlinx.collections.immutable.ImmutableSet
 import org.kryptonmc.api.block.property.Property
 import org.kryptonmc.krypton.util.serialization.Codec
@@ -42,7 +43,7 @@ sealed class KryptonProperty<T : Comparable<T>>(
         return name == (other as KryptonProperty<*>).name && type == other.type
     }
 
-    override fun hashCode(): Int = 31 * type.hashCode() + name.hashCode()
+    override fun hashCode(): Int = Objects.hash(type, name)
 
     override fun toString(): String = "${javaClass.simpleName}(name=$name, type=${type.simpleName}, values=$values)"
 }

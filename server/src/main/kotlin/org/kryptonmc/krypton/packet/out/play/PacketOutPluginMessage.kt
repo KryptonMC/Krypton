@@ -19,6 +19,7 @@
 package org.kryptonmc.krypton.packet.out.play
 
 import io.netty.buffer.ByteBuf
+import java.util.Objects
 import net.kyori.adventure.key.Key
 import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.util.writeKey
@@ -40,10 +41,5 @@ data class PacketOutPluginMessage(
         return channel == (other as PacketOutPluginMessage).channel && content.contentEquals(other.content)
     }
 
-    override fun hashCode(): Int {
-        var result = 1
-        result = 31 * result + channel.hashCode()
-        result = 31 * result + content.contentHashCode()
-        return result
-    }
+    override fun hashCode(): Int = Objects.hash(channel, content)
 }

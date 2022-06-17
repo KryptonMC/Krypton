@@ -21,11 +21,12 @@ package org.kryptonmc.krypton.auth
 import com.google.gson.TypeAdapter
 import com.google.gson.stream.JsonReader
 import com.google.gson.stream.JsonWriter
-import kotlinx.collections.immutable.persistentListOf
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 import java.time.format.DateTimeParseException
+import java.util.Objects
 import java.util.UUID
+import kotlinx.collections.immutable.persistentListOf
 
 /**
  * This holds a game profile and other information that we need when storing
@@ -47,12 +48,7 @@ class ProfileHolder(
         return profile == (other as ProfileHolder).profile && expiryDate == other.expiryDate
     }
 
-    override fun hashCode(): Int {
-        var result = 1
-        result = 31 * result + profile.hashCode()
-        result = 31 * result + expiryDate.hashCode()
-        return result
-    }
+    override fun hashCode(): Int = Objects.hash(profile, expiryDate)
 
     override fun toString(): String = "ProfileHolder(profile=$profile, expiryDate=$expiryDate)"
 

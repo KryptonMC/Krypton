@@ -19,6 +19,7 @@
 package org.kryptonmc.krypton.packet.out.login
 
 import io.netty.buffer.ByteBuf
+import java.util.Objects
 import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.util.writeString
 import org.kryptonmc.krypton.util.writeVarInt
@@ -42,11 +43,5 @@ data class PacketOutPluginRequest(
         return id == (other as PacketOutPluginRequest).id && channel == other.channel && data.contentEquals(other.data)
     }
 
-    override fun hashCode(): Int {
-        var result = 1
-        result = 31 * result + id
-        result = 31 * result + channel.hashCode()
-        result = 31 * result + data.contentHashCode()
-        return result
-    }
+    override fun hashCode(): Int = Objects.hash(id, channel, data)
 }

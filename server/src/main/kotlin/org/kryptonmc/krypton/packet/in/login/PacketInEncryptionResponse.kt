@@ -19,6 +19,7 @@
 package org.kryptonmc.krypton.packet.`in`.login
 
 import io.netty.buffer.ByteBuf
+import java.util.Objects
 import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.util.readVarIntByteArray
 import org.kryptonmc.krypton.util.writeVarIntByteArray
@@ -42,10 +43,5 @@ data class PacketInEncryptionResponse(
         return secret.contentEquals((other as PacketInEncryptionResponse).secret) && verifyToken.contentEquals(other.verifyToken)
     }
 
-    override fun hashCode(): Int {
-        var result = 1
-        result = 31 * result + secret.contentHashCode()
-        result = 31 * result + verifyToken.contentHashCode()
-        return result
-    }
+    override fun hashCode(): Int = Objects.hash(secret, verifyToken)
 }

@@ -61,8 +61,7 @@ class SortedArraySet<T>(private val comparator: Comparator<T>, initialCapacity: 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
-        other as SortedArraySet<Any>
-        if (comparator == other.comparator) return size == other.size && contents.contentEquals(other.contents)
+        if (comparator == (other as SortedArraySet<Any>).comparator) return size == other.size && contents.contentEquals(other.contents)
         return super.equals(other)
     }
 
