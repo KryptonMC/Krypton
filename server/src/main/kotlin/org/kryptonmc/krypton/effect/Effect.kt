@@ -95,13 +95,5 @@ enum class Effect(val id: Int) {
     ELECTRIC_SPARK(3002),
     WAX_ON(3003),
     WAX_OFF(3004),
-    SCRAPE(3005);
-
-    companion object {
-
-        private val BY_ID = values()
-
-        @JvmStatic
-        fun fromId(id: Int): Effect? = BY_ID.getOrNull(id)
-    }
+    SCRAPE(3005)
 }

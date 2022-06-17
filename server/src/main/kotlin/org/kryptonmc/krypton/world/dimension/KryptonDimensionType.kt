@@ -19,6 +19,7 @@
 package org.kryptonmc.krypton.world.dimension
 
 import net.kyori.adventure.key.Key
+import org.kryptonmc.api.tags.BlockTags
 import org.kryptonmc.api.world.dimension.DimensionEffect
 import org.kryptonmc.api.world.dimension.DimensionEffects
 import org.kryptonmc.api.world.dimension.DimensionType
@@ -50,7 +51,7 @@ data class KryptonDimensionType(
 
     override fun key(): Key = key
 
-    override fun toBuilder(): DimensionType.Builder = Builder(this)
+    override fun toBuilder(): Builder = Builder(this)
 
     class Builder(private var key: Key) : DimensionType.Builder {
 
@@ -64,11 +65,11 @@ data class KryptonDimensionType(
         private var respawnAnchors = false
         private var ambientLight = 0F
         private var fixedTime: Long? = null
-        private var infiniburn = KryptonDimensionTypes.OVERWORLD.infiniburn
+        private var infiniburn = BlockTags.INFINIBURN_OVERWORLD.key()
         private var minimumY = 0
         private var height = 0
         private var logicalHeight = 0
-        private var coordinateScale = 0.0
+        private var coordinateScale = 1.0
         private var effects = DimensionEffects.OVERWORLD
 
         constructor(type: DimensionType) : this(type.key()) {
@@ -90,43 +91,46 @@ data class KryptonDimensionType(
             effects = type.effects
         }
 
-        override fun key(key: Key): DimensionType.Builder = apply { this.key = key }
+        override fun key(key: Key): Builder = apply { this.key = key }
 
-        override fun piglinSafe(safe: Boolean): DimensionType.Builder = apply { piglinSafe = safe }
+        override fun piglinSafe(safe: Boolean): Builder = apply { piglinSafe = safe }
 
-        override fun natural(natural: Boolean): DimensionType.Builder = apply { this.natural = natural }
+        override fun natural(natural: Boolean): Builder = apply { this.natural = natural }
 
-        override fun ultrawarm(ultrawarm: Boolean): DimensionType.Builder = apply { this.ultrawarm = ultrawarm }
+        override fun ultrawarm(ultrawarm: Boolean): Builder = apply { this.ultrawarm = ultrawarm }
 
-        override fun skylight(light: Boolean): DimensionType.Builder = apply { skylight = light }
+        override fun skylight(light: Boolean): Builder = apply { skylight = light }
 
-        override fun ceiling(ceiling: Boolean): DimensionType.Builder = apply { this.ceiling = ceiling }
+        override fun ceiling(ceiling: Boolean): Builder = apply { this.ceiling = ceiling }
 
-        override fun raids(raids: Boolean): DimensionType.Builder = apply { this.raids = raids }
+        override fun raids(raids: Boolean): Builder = apply { this.raids = raids }
 
-        override fun beds(beds: Boolean): DimensionType.Builder = apply { this.beds = beds }
+        override fun beds(beds: Boolean): Builder = apply { this.beds = beds }
 
-        override fun respawnAnchors(respawnAnchors: Boolean): DimensionType.Builder = apply { this.respawnAnchors = respawnAnchors }
+        override fun respawnAnchors(respawnAnchors: Boolean): Builder = apply { this.respawnAnchors = respawnAnchors }
 
-        override fun ambientLight(light: Float): DimensionType.Builder = apply { ambientLight = light }
+        override fun ambientLight(light: Float): Builder = apply { ambientLight = light }
 
-        override fun fixedTime(time: Long): DimensionType.Builder = apply { fixedTime = time }
+        override fun fixedTime(time: Long): Builder = apply { fixedTime = time }
 
-        override fun noFixedTime(): DimensionType.Builder = apply { fixedTime = null }
+        override fun noFixedTime(): Builder = apply { fixedTime = null }
 
-        override fun infiniburn(infiniburn: Key): DimensionType.Builder = apply { this.infiniburn = infiniburn }
+        override fun infiniburn(infiniburn: Key): Builder = apply { this.infiniburn = infiniburn }
 
-        override fun minimumY(level: Int): DimensionType.Builder = apply { minimumY = level }
+        override fun minimumY(level: Int): Builder = apply { minimumY = level }
 
-        override fun height(level: Int): DimensionType.Builder = apply { height = level }
+        override fun height(level: Int): Builder = apply {
+            height = level
+            logicalHeight = level
+        }
 
-        override fun logicalHeight(level: Int): DimensionType.Builder = apply { logicalHeight = level }
+        override fun logicalHeight(level: Int): Builder = apply { logicalHeight = level }
 
-        override fun coordinateScale(scale: Double): DimensionType.Builder = apply { coordinateScale = scale }
+        override fun coordinateScale(scale: Double): Builder = apply { coordinateScale = scale }
 
-        override fun effects(effects: DimensionEffect): DimensionType.Builder = apply { this.effects = effects }
+        override fun effects(effects: DimensionEffect): Builder = apply { this.effects = effects }
 
-        override fun build(): DimensionType = KryptonDimensionType(
+        override fun build(): KryptonDimensionType = KryptonDimensionType(
             key,
             piglinSafe,
             natural,

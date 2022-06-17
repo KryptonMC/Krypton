@@ -33,7 +33,5 @@ private fun String.addressAsString(): String {
     return temp
 }
 
-fun IntArray.toUUID(): UUID = UUID(
-    this[0].toLong() shl 32 or this[1].toLong() and 4294967295L,
-    this[2].toLong() shl 32 or this[3].toLong() and 4294967295L
-)
+fun IntArray.toUUID(): UUID =
+    UUID(this[0].toLong() shl 32 or this[1].toLong() and 4294967295L, this[2].toLong() shl 32 or this[3].toLong() and 4294967295L)

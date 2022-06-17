@@ -27,10 +27,7 @@ import org.kryptonmc.krypton.util.writeVarInt
 import org.kryptonmc.krypton.util.writeVarIntByteArray
 
 @JvmRecord
-data class PacketInPluginResponse(
-    val messageId: Int,
-    val data: ByteArray?
-) : Packet {
+data class PacketInPluginResponse(val messageId: Int, val data: ByteArray?) : Packet {
 
     constructor(buf: ByteBuf) : this(buf.readVarInt(), if (buf.readBoolean()) buf.readAllAvailableBytes() else null)
 

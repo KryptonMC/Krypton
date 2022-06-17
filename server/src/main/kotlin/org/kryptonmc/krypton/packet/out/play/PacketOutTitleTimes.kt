@@ -24,19 +24,15 @@ import org.kryptonmc.krypton.packet.Packet
 import java.time.Duration
 
 @JvmRecord
-data class PacketOutTitleTimes(
-    val fadeInTicks: Int,
-    val stayTicks: Int,
-    val fadeOutTicks: Int
-) : Packet {
+data class PacketOutTitleTimes(val fadeInTicks: Int, val stayTicks: Int, val fadeOutTicks: Int) : Packet {
 
     constructor(times: Title.Times) : this(times.fadeIn(), times.stay(), times.fadeOut())
 
-    constructor(fadeIn: Duration, stay: Duration, fadeOut: Duration) : this(
-        fadeIn.toSeconds().toInt() * 20,
-        stay.toSeconds().toInt() * 20,
-        fadeOut.toSeconds().toInt() * 20
-    )
+    constructor(
+        fadeIn: Duration,
+        stay: Duration,
+        fadeOut: Duration
+    ) : this(fadeIn.toSeconds().toInt() * 20, stay.toSeconds().toInt() * 20, fadeOut.toSeconds().toInt() * 20)
 
     override fun write(buf: ByteBuf) {
         buf.writeInt(fadeInTicks)

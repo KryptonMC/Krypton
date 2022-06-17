@@ -249,17 +249,16 @@ class ByteBufTests {
         fun `preload bootstrap`() {
             Bootstrap.preload()
         }
-
-        @JvmStatic
-        private fun ByteBuf.readVarLong(): Long {
-            var i = 0L
-            val maxRead = min(10, readableBytes())
-            for (j in 0 until maxRead) {
-                val next = readByte()
-                i = i or (next.toLong() and 0x7F shl j * 7)
-                if (next.toLong() and 0x80 != 128L) return i // If there's no more var long bytes after this, we're done
-            }
-            return Long.MAX_VALUE
-        }
     }
+}
+
+private fun ByteBuf.readVarLong(): Long {
+    var i = 0L
+    val maxRead = min(10, readableBytes())
+    for (j in 0 until maxRead) {
+        val next = readByte()
+        i = i or (next.toLong() and 0x7F shl j * 7)
+        if (next.toLong() and 0x80 != 128L) return i // If there's no more var long bytes after this, we're done
+    }
+    return Long.MAX_VALUE
 }

@@ -21,11 +21,8 @@ package org.kryptonmc.krypton.world.block.property
 import kotlinx.collections.immutable.ImmutableSet
 import org.kryptonmc.api.util.StringSerializable
 
-class EnumProperty<E>(
-    name: String,
-    type: Class<E>,
-    values: ImmutableSet<E>
-) : KryptonProperty<E>(name, type, values) where E : Enum<E>, E : StringSerializable {
+class EnumProperty<E>(name: String, type: Class<E>, values: ImmutableSet<E>) :
+    KryptonProperty<E>(name, type, values) where E : Enum<E>, E : StringSerializable {
 
     private val names = values.associateBy { it.serialized }
 

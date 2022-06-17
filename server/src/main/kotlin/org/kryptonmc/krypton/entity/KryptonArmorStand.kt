@@ -121,17 +121,17 @@ class KryptonArmorStand(world: KryptonWorld) : KryptonLivingEntity(world, Entity
 
         if (tag.contains("Pose", CompoundTag.ID)) {
             val headRotation = tag.getList("Head", FloatTag.ID)
-            headPose = if (headRotation.isEmpty()) MetadataKeys.ARMOR_STAND.HEAD_ROTATION.default else headRotation.readRotation()
+            headPose = if (headRotation.isEmpty()) DEFAULT_HEAD_ROTATION else headRotation.readRotation()
             val bodyRotation = tag.getList("Body", FloatTag.ID)
-            bodyPose = if (bodyRotation.isEmpty()) MetadataKeys.ARMOR_STAND.BODY_ROTATION.default else bodyRotation.readRotation()
+            bodyPose = if (bodyRotation.isEmpty()) DEFAULT_BODY_ROTATION else bodyRotation.readRotation()
             val leftArmRotation = tag.getList("LeftArm", FloatTag.ID)
-            leftArmPose = if (leftArmRotation.isEmpty()) MetadataKeys.ARMOR_STAND.LEFT_ARM_ROTATION.default else leftArmRotation.readRotation()
+            leftArmPose = if (leftArmRotation.isEmpty()) DEFAULT_LEFT_ARM_ROTATION else leftArmRotation.readRotation()
             val rightArmRotation = tag.getList("RightArm", FloatTag.ID)
-            rightArmPose = if (rightArmRotation.isEmpty()) MetadataKeys.ARMOR_STAND.RIGHT_ARM_ROTATION.default else rightArmRotation.readRotation()
+            rightArmPose = if (rightArmRotation.isEmpty()) DEFAULT_RIGHT_ARM_ROTATION else rightArmRotation.readRotation()
             val leftLegRotation = tag.getList("LeftLeg", FloatTag.ID)
-            leftLegPose = if (leftLegRotation.isEmpty()) MetadataKeys.ARMOR_STAND.LEFT_LEG_ROTATION.default else leftLegRotation.readRotation()
+            leftLegPose = if (leftLegRotation.isEmpty()) DEFAULT_LEFT_LEG_ROTATION else leftLegRotation.readRotation()
             val rightLegRotation = tag.getList("RightLeg", FloatTag.ID)
-            rightLegPose = if (rightLegRotation.isEmpty()) MetadataKeys.ARMOR_STAND.RIGHT_LEG_ROTATION.default else rightLegRotation.readRotation()
+            rightLegPose = if (rightLegRotation.isEmpty()) DEFAULT_RIGHT_LEG_ROTATION else rightLegRotation.readRotation()
         }
     }
 
@@ -147,12 +147,22 @@ class KryptonArmorStand(world: KryptonWorld) : KryptonLivingEntity(world, Entity
         if (isMarker) boolean("Marker", isMarker)
 
         compound("Pose") {
-            if (headPose != MetadataKeys.ARMOR_STAND.HEAD_ROTATION.default) rotation("Head", headPose)
-            if (bodyPose != MetadataKeys.ARMOR_STAND.BODY_ROTATION.default) rotation("Body", bodyPose)
-            if (leftArmPose != MetadataKeys.ARMOR_STAND.LEFT_ARM_ROTATION.default) rotation("LeftArm", leftArmPose)
-            if (rightArmPose != MetadataKeys.ARMOR_STAND.RIGHT_ARM_ROTATION.default) rotation("RightArm", rightArmPose)
-            if (leftLegPose != MetadataKeys.ARMOR_STAND.LEFT_LEG_ROTATION.default) rotation("LeftLeg", leftLegPose)
-            if (rightLegPose != MetadataKeys.ARMOR_STAND.RIGHT_LEG_ROTATION.default) rotation("RightLeg", rightLegPose)
+            if (headPose != DEFAULT_HEAD_ROTATION) rotation("Head", headPose)
+            if (bodyPose != DEFAULT_BODY_ROTATION) rotation("Body", bodyPose)
+            if (leftArmPose != DEFAULT_LEFT_ARM_ROTATION) rotation("LeftArm", leftArmPose)
+            if (rightArmPose != DEFAULT_RIGHT_ARM_ROTATION) rotation("RightArm", rightArmPose)
+            if (leftLegPose != DEFAULT_LEFT_LEG_ROTATION) rotation("LeftLeg", leftLegPose)
+            if (rightLegPose != DEFAULT_RIGHT_LEG_ROTATION) rotation("RightLeg", rightLegPose)
         }
+    }
+
+    companion object {
+
+        private val DEFAULT_HEAD_ROTATION = MetadataKeys.ARMOR_STAND.HEAD_ROTATION.default
+        private val DEFAULT_BODY_ROTATION = MetadataKeys.ARMOR_STAND.BODY_ROTATION.default
+        private val DEFAULT_LEFT_ARM_ROTATION = MetadataKeys.ARMOR_STAND.LEFT_ARM_ROTATION.default
+        private val DEFAULT_RIGHT_ARM_ROTATION = MetadataKeys.ARMOR_STAND.RIGHT_ARM_ROTATION.default
+        private val DEFAULT_LEFT_LEG_ROTATION = MetadataKeys.ARMOR_STAND.LEFT_LEG_ROTATION.default
+        private val DEFAULT_RIGHT_LEG_ROTATION = MetadataKeys.ARMOR_STAND.RIGHT_LEG_ROTATION.default
     }
 }

@@ -24,9 +24,8 @@ import org.kryptonmc.api.item.ItemType
 import org.kryptonmc.api.item.ItemTypes
 import org.kryptonmc.krypton.world.KryptonWorld
 
-class KryptonExperienceBottle(
-    world: KryptonWorld
-) : KryptonThrowableProjectile(world, EntityTypes.EXPERIENCE_BOTTLE, DEFAULT_ITEM), ExperienceBottle {
+class KryptonExperienceBottle(world: KryptonWorld) : KryptonThrowableProjectile(world, EntityTypes.EXPERIENCE_BOTTLE, DEFAULT_ITEM),
+    ExperienceBottle {
 
     companion object {
 

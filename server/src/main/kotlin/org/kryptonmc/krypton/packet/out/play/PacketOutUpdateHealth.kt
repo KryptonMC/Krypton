@@ -27,11 +27,7 @@ import org.kryptonmc.krypton.util.writeString
 import org.kryptonmc.krypton.util.writeVarInt
 
 @JvmRecord
-data class PacketOutUpdateHealth(
-    private val health: Float,
-    private val food: Int,
-    private val foodSaturation: Float
-) : Packet {
+data class PacketOutUpdateHealth(val health: Float, val food: Int, val foodSaturation: Float) : Packet {
 
     override fun write(buf: ByteBuf) {
         buf.writeFloat(health)

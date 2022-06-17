@@ -35,12 +35,8 @@ data class KryptonMusic(
 
     object Factory : Music.Factory {
 
-        override fun of(
-            sound: SoundEvent,
-            minimumDelay: Int,
-            maximumDelay: Int,
-            replaceCurrentMusic: Boolean
-        ): Music = KryptonMusic(sound, minimumDelay, maximumDelay, replaceCurrentMusic)
+        override fun of(sound: SoundEvent, minimumDelay: Int, maximumDelay: Int, replaceCurrentMusic: Boolean): Music =
+            KryptonMusic(sound, minimumDelay, maximumDelay, replaceCurrentMusic)
     }
 
     companion object {

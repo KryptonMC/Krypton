@@ -20,12 +20,10 @@ package org.kryptonmc.krypton.entity.memory
 
 import org.kryptonmc.nbt.CompoundTag
 
-class Memory<T : Any>(val value: T?, var timeToLive: Long = Long.MAX_VALUE) {
+class Memory<T : Any>(val value: T?, private var timeToLive: Long = Long.MAX_VALUE) {
 
     private val canExpire: Boolean
         get() = timeToLive != Long.MAX_VALUE
-    val hasExpired: Boolean
-        get() = timeToLive <= 0L
 
     fun tick() {
         if (canExpire) --timeToLive

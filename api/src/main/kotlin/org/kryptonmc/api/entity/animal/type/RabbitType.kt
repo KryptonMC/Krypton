@@ -21,6 +21,7 @@ public enum class RabbitType(@get:JvmName("serialized") override val serialized:
     BLACK_AND_WHITE("black_and_white"),
     GOLD("gold"),
     SALT_AND_PEPPER("salt_and_pepper"),
+    // That rabbit's got a vicious streak a mile wide! It's a killer!
     KILLER("killer");
 
     public companion object {

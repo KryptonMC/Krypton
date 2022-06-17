@@ -139,14 +139,13 @@ class KryptonWorldManager(override val server: KryptonServer, private val worldF
         private val LOGGER = logger<KryptonWorldManager>()
 
         @JvmStatic
-        private fun Key.storageFolder(): String = when (this) {
-            World.OVERWORLD.location -> ""
-            World.NETHER.location -> "DIM-1"
-            World.END.location -> "DIM1"
-            else -> value()
-        }
-
-        @JvmStatic
         private fun <T> failFuture(exception: Exception): CompletableFuture<T> = CompletableFuture.failedFuture(exception)
     }
+}
+
+private fun Key.storageFolder(): String = when (this) {
+    World.OVERWORLD.location -> ""
+    World.NETHER.location -> "DIM-1"
+    World.END.location -> "DIM1"
+    else -> value()
 }

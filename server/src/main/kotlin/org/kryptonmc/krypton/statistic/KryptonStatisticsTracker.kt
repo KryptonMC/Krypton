@@ -50,10 +50,7 @@ import kotlin.math.max
 import kotlin.math.min
 
 @Suppress("INAPPLICABLE_JVM_NAME")
-class KryptonStatisticsTracker(
-    private val player: KryptonPlayer,
-    private val file: Path
-) : StatisticsTracker {
+class KryptonStatisticsTracker(private val player: KryptonPlayer, private val file: Path) : StatisticsTracker {
 
     override val statistics: Object2IntMap<Statistic<*>> = Object2IntMaps.synchronize(Object2IntOpenHashMap())
     private val pendingUpdate = mutableSetOf<Statistic<*>>()
@@ -130,7 +127,7 @@ class KryptonStatisticsTracker(
 
     private fun load(reader: Reader) {
         try {
-            val json = JsonReader(reader).apply { isLenient = false }.use { Streams.parse(it) }
+            val json = JsonReader(reader).apply { isLenient = false }.use(Streams::parse)
             if (json.isJsonNull) {
                 LOGGER.error("Unable to parse statistics data from $file to JSON!")
                 return

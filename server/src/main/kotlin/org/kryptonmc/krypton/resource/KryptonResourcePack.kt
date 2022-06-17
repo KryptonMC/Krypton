@@ -37,11 +37,7 @@ data class KryptonResourcePack(
 
     object Factory : ResourcePack.Factory {
 
-        override fun of(
-            uri: URI,
-            hash: String,
-            isForced: Boolean,
-            promptMessage: Component?
-        ): ResourcePack = KryptonResourcePack(uri, hash, isForced, promptMessage)
+        override fun of(uri: URI, hash: String, isForced: Boolean, promptMessage: Component?): ResourcePack =
+            KryptonResourcePack(uri, hash, isForced, promptMessage)
     }
 }

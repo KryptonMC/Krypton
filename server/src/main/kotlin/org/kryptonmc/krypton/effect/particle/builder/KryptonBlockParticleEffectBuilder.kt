@@ -26,13 +26,10 @@ import org.kryptonmc.api.effect.particle.data.ParticleData
 import org.kryptonmc.krypton.effect.particle.data.KryptonBlockParticleData
 import org.spongepowered.math.vector.Vector3d
 
-class KryptonBlockParticleEffectBuilder(
-    type: BlockParticleType,
-    quantity: Int = 1,
-    offset: Vector3d = Vector3d.ZERO,
-    longDistance: Boolean = false,
+class KryptonBlockParticleEffectBuilder(type: BlockParticleType) : AbstractParticleEffectBuilder<BlockParticleEffectBuilder>(type),
+    BlockParticleEffectBuilder {
+
     private var block: Block = Blocks.STONE
-) : AbstractParticleEffectBuilder<BlockParticleEffectBuilder>(type, quantity, offset, longDistance), BlockParticleEffectBuilder {
 
     override fun block(block: Block): BlockParticleEffectBuilder = apply { this.block = block }
 

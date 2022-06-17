@@ -23,10 +23,7 @@ import org.kryptonmc.krypton.packet.EntityPacket
 import org.kryptonmc.krypton.util.writeVarInt
 
 @JvmRecord
-data class PacketOutAnimation(
-    override val entityId: Int,
-    val animation: EntityAnimation
-) : EntityPacket {
+data class PacketOutAnimation(override val entityId: Int, val animation: EntityAnimation) : EntityPacket {
 
     override fun write(buf: ByteBuf) {
         buf.writeVarInt(entityId)

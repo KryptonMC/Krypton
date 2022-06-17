@@ -34,13 +34,11 @@ data class KryptonDustTransitionParticleData(
 ) : DustTransitionParticleData, Writable {
 
     override fun write(buf: ByteBuf) {
-        val fromX = if (red == 0.toShort()) Float.MIN_VALUE else red.toFloat() / 255F
-        buf.writeFloat(fromX)
+        buf.writeFloat(if (red == 0.toShort()) Float.MIN_VALUE else red.toFloat() / 255F)
         buf.writeFloat(green.toFloat() / 255F)
         buf.writeFloat(blue.toFloat() / 255F)
         buf.writeFloat(scale)
-        val toX = if (toRed == 0.toShort()) Float.MIN_VALUE else toRed.toFloat() / 255F
-        buf.writeFloat(toX)
+        buf.writeFloat(if (toRed == 0.toShort()) Float.MIN_VALUE else toRed.toFloat() / 255F)
         buf.writeFloat(toGreen.toFloat() / 255F)
         buf.writeFloat(toBlue.toFloat() / 255F)
     }

@@ -59,12 +59,8 @@ interface ItemHandler {
      */
     fun interact(context: InteractionContext): InteractionResult = InteractionResult.PASS
 
-    fun interactEntity(
-        item: KryptonItemStack,
-        player: KryptonPlayer,
-        entity: KryptonLivingEntity,
-        hand: Hand
-    ): InteractionResult = InteractionResult.PASS
+    fun interactEntity(item: KryptonItemStack, player: KryptonPlayer, entity: KryptonLivingEntity, hand: Hand): InteractionResult =
+        InteractionResult.PASS
 
     /**
      * Called when the given [player] uses the item they are holding in the

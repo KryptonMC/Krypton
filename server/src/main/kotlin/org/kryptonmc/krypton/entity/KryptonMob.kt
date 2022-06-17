@@ -121,12 +121,8 @@ abstract class KryptonMob(
         boolean("PersistenceRequired", isPersistent)
         put("ArmorItems", saveItems(armorItems))
         put("HandItems", saveItems(handItems))
-        list("ArmorDropChances") {
-            armorDropChances.forEach(::addFloat)
-        }
-        list("HandDropChances") {
-            handDropChances.forEach(::addFloat)
-        }
+        list("ArmorDropChances") { armorDropChances.forEach(::addFloat) }
+        list("HandDropChances") { handDropChances.forEach(::addFloat) }
         boolean("LeftHanded", mainHand == MainHand.LEFT)
         if (!hasAI) boolean("NoAI", true)
     }

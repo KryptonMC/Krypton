@@ -31,10 +31,7 @@ import org.kryptonmc.nbt.compound
 import java.util.Collections
 import java.util.UUID
 
-data class KryptonAttribute(
-    override val type: AttributeType,
-    private val callback: (KryptonAttribute) -> Unit
-) : Attribute {
+data class KryptonAttribute(override val type: AttributeType, private val callback: (KryptonAttribute) -> Unit) : Attribute {
 
     val modifiersByOperation: MutableMap<ModifierOperation, MutableSet<AttributeModifier>> = mutableMapOf()
     private val modifiersById = Object2ObjectArrayMap<UUID, AttributeModifier>()
@@ -62,11 +59,8 @@ data class KryptonAttribute(
         baseValue = tag.getDouble("Base")
         if (tag.contains("Modifiers", ListTag.ID)) tag.getList("Modifiers", CompoundTag.ID).forEachCompound {
             val operation = Registries.MODIFIER_OPERATIONS[it.getInt("Operation")] ?: return@forEachCompound
-            val modifier = KryptonAttributeModifier(
-                it.getString("Name"),
-                it.getUUID("UUID") ?: return@forEachCompound,
-                it.getDouble("Amount")
-            )
+            val uuid = it.getUUID("UUID") ?: return@forEachCompound
+            val modifier = KryptonAttributeModifier(it.getString("Name"), uuid, it.getDouble("Amount"))
             modifiersById[modifier.uuid] = modifier
             modifiers(operation).add(modifier)
             permanentModifiers.add(modifier)
@@ -78,13 +72,6 @@ data class KryptonAttribute(
         string("Name", type.key().asString())
         double("Base", baseValue)
         put("Modifiers", modifiersByOperation.save())
-    }
-
-    fun hasModifier(modifier: AttributeModifier): Boolean = modifiersById[modifier.uuid] != null
-
-    fun addPermanentModifier(operation: ModifierOperation, modifier: AttributeModifier) {
-        addModifier(operation, modifier)
-        permanentModifiers.add(modifier)
     }
 
     fun replaceFrom(other: KryptonAttribute) {

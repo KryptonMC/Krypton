@@ -95,11 +95,7 @@ import java.util.Locale
  *
  * This handles all supported inbound packets in the play state.
  */
-class PlayHandler(
-    override val server: KryptonServer,
-    override val session: SessionHandler,
-    private val player: KryptonPlayer
-) : PacketHandler {
+class PlayHandler(override val server: KryptonServer, override val session: SessionHandler, private val player: KryptonPlayer) : PacketHandler {
 
     private val playerManager = server.playerManager
     private val sessionManager = server.sessionManager
@@ -416,16 +412,8 @@ class PlayHandler(
 
     private fun onMove(newLocation: Vector3d, oldLocation: Vector3d) {
         player.updateChunks()
-        player.updateMovementStatistics(
-            newLocation.x() - oldLocation.x(),
-            newLocation.y() - oldLocation.y(),
-            newLocation.z() - oldLocation.z()
-        )
-        player.updateMovementExhaustion(
-            newLocation.x() - oldLocation.x(),
-            newLocation.y() - oldLocation.y(),
-            newLocation.z() - oldLocation.z()
-        )
+        player.updateMovementStatistics(newLocation.x() - oldLocation.x(), newLocation.y() - oldLocation.y(), newLocation.z() - oldLocation.z())
+        player.updateMovementExhaustion(newLocation.x() - oldLocation.x(), newLocation.y() - oldLocation.y(), newLocation.z() - oldLocation.z())
     }
 
     companion object {

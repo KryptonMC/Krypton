@@ -24,10 +24,7 @@ import org.kryptonmc.krypton.util.writeAngle
 import org.kryptonmc.krypton.util.writeVarInt
 
 @JvmRecord
-data class PacketOutHeadLook(
-    override val entityId: Int,
-    val headYaw: Float
-) : EntityPacket {
+data class PacketOutHeadLook(override val entityId: Int, val headYaw: Float) : EntityPacket {
 
     override fun write(buf: ByteBuf) {
         buf.writeVarInt(entityId)

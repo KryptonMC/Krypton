@@ -32,11 +32,7 @@ import org.spongepowered.math.vector.Vector3d
  * and "forward" component to calculate where the player should be moved.
  */
 @JvmRecord
-data class LocalCoordinates(
-    private val left: Double,
-    private val up: Double,
-    private val forwards: Double
-) : Coordinates {
+data class LocalCoordinates(private val left: Double, private val up: Double, private val forwards: Double) : Coordinates {
 
     override fun position(player: Player): Vector3d {
         // All of this is some slightly complicated linear algebra that I don't really understand.

@@ -31,8 +31,8 @@ fun StringReader.nextKey(): Key {
     while (canRead() && peek().isAllowedInKey()) {
         skip()
     }
-    return try {
-        Key.key(string.substring(cursor, this.cursor))
+    try {
+        return Key.key(string.substring(cursor, this.cursor))
     } catch (exception: InvalidKeyException) {
         setCursor(cursor)
         throw ERROR_INVALID.createWithContext(this)

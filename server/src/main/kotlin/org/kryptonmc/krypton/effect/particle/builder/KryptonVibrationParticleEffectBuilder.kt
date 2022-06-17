@@ -24,15 +24,12 @@ import org.kryptonmc.api.effect.particle.data.ParticleData
 import org.kryptonmc.krypton.effect.particle.data.KryptonVibrationParticleData
 import org.spongepowered.math.vector.Vector3d
 
-class KryptonVibrationParticleEffectBuilder(
-    type: VibrationParticleType,
-    quantity: Int = 1,
-    offset: Vector3d = Vector3d.ZERO,
-    longDistance: Boolean = false,
-    private var origin: Vector3d = Vector3d.ZERO,
-    private var destination: Vector3d = Vector3d.ZERO,
-    private var ticks: Int = 0
-) : AbstractParticleEffectBuilder<VibrationParticleEffectBuilder>(type, quantity, offset, longDistance), VibrationParticleEffectBuilder {
+class KryptonVibrationParticleEffectBuilder(type: VibrationParticleType) : AbstractParticleEffectBuilder<VibrationParticleEffectBuilder>(type),
+    VibrationParticleEffectBuilder {
+
+    private var origin: Vector3d = Vector3d.ZERO
+    private var destination: Vector3d = Vector3d.ZERO
+    private var ticks = 0
 
     override fun origin(position: Vector3d): VibrationParticleEffectBuilder = apply { origin = position }
 

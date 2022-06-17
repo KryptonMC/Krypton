@@ -24,10 +24,7 @@ import org.kryptonmc.krypton.util.readVarInt
 import org.kryptonmc.krypton.util.writeVarInt
 
 @JvmRecord
-data class PacketInEntityNBTQuery(
-    val transactionId: Int,
-    val entityId: Int
-) : Packet {
+data class PacketInEntityNBTQuery(val transactionId: Int, val entityId: Int) : Packet {
 
     constructor(buf: ByteBuf) : this(buf.readVarInt(), buf.readVarInt())
 

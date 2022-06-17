@@ -62,13 +62,9 @@ class KryptonScheduler : Scheduler {
     }
 
     @Suppress("INAPPLICABLE_JVM_NAME")
-    private inner class KryptonTask(
-        override val plugin: Any,
-        val callable: TaskRunnable,
-        val delay: Long,
-        val period: Long,
-        val unit: TimeUnit
-    ) : Runnable, Task {
+    private inner class KryptonTask(override val plugin: Any, val callable: TaskRunnable, val delay: Long, val period: Long, val unit: TimeUnit) :
+        Runnable,
+        Task {
 
         private var future: ScheduledFuture<*>? = null
         private var currentTaskThread: Thread? = null

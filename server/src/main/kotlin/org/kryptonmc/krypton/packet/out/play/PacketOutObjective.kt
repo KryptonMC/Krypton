@@ -30,19 +30,9 @@ import org.kryptonmc.krypton.util.writeVarInt
  * Tells the client to perform an action to an objective for a scoreboard
  */
 @JvmRecord
-data class PacketOutObjective(
-    val action: Action,
-    val name: String,
-    val displayName: Component,
-    val renderType: Int
-) : Packet {
+data class PacketOutObjective(val action: Action, val name: String, val displayName: Component, val renderType: Int) : Packet {
 
-    constructor(action: Action, objective: Objective) : this(
-        action,
-        objective.name,
-        objective.displayName,
-        objective.renderType.ordinal
-    )
+    constructor(action: Action, objective: Objective) : this(action, objective.name, objective.displayName, objective.renderType.ordinal)
 
     override fun write(buf: ByteBuf) {
         buf.writeString(name, 16)

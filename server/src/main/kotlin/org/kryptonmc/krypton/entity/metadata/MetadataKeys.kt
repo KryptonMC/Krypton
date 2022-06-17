@@ -334,9 +334,5 @@ object MetadataKeys {
     }
 
     @JvmStatic
-    private fun <T> create(
-        id: Int,
-        serializer: MetadataSerializer<T>,
-        default: T
-    ): MetadataKey<T> = MetadataKey(id, serializer, default)
+    private fun <T> create(id: Int, serializer: MetadataSerializer<T>, default: T): MetadataKey<T> = MetadataKey(id, serializer, default)
 }

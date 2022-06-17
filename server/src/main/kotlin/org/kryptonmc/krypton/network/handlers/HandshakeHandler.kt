@@ -38,10 +38,7 @@ import org.kryptonmc.krypton.util.logger
  * state, so this is directly handled by the [handle] function, instead of
  * delegating to another function.
  */
-class HandshakeHandler(
-    override val server: KryptonServer,
-    override val session: SessionHandler
-) : PacketHandler {
+class HandshakeHandler(override val server: KryptonServer, override val session: SessionHandler) : PacketHandler {
 
     override fun handle(packet: Packet) {
         if (packet !is PacketInHandshake) return // Ignore if not a handshake packet
@@ -160,8 +157,7 @@ class HandshakeHandler(
             .append(Component.text("to support legacy forwarding. Please contact a server administrator."))
             .build()
         private val TCPSHIELD_FORWARDING_NOT_ENABLED = Component.text()
-            .content("It appears that you have been forwarded from TCPShield, but this server is not configured to support TCPShield " +
-                    "forwarding.")
+            .content("It appears that you have been forwarded from TCPShield, but this server is not configured to support TCPShield forwarding.")
             .append(Component.newline())
             .append(Component.text("Please contact a server administrator."))
             .build()

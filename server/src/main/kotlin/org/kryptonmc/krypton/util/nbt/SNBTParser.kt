@@ -224,6 +224,9 @@ class SNBTParser(private val reader: StringReader) {
         private val ERROR_INVALID_ARRAY = DynamicCommandExceptionType {
             Component.translatable("argument.nbt.array.invalid", Component.text(it.toString())).toMessage()
         }
+
+        @JvmStatic
+        fun parse(text: String): CompoundTag = SNBTParser(StringReader(text)).readSingleCompound()
     }
 }
 

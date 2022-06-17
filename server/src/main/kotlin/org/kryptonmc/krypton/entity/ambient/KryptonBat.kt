@@ -49,8 +49,6 @@ class KryptonBat(world: KryptonWorld) : KryptonAmbientCreature(world, EntityType
 
     companion object {
 
-        private val ATTRIBUTES = attributes()
-            .add(AttributeTypes.MAX_HEALTH, 6.0)
-            .build()
+        private val ATTRIBUTES = attributes().add(AttributeTypes.MAX_HEALTH, 6.0).build()
     }
 }

@@ -25,23 +25,7 @@ import org.kryptonmc.krypton.util.writeVector
 import org.spongepowered.math.vector.Vector3i
 
 @JvmRecord
-data class PacketOutEffect(
-    val effect: Effect,
-    val x: Int,
-    val y: Int,
-    val z: Int,
-    val data: Int,
-    val isGlobal: Boolean
-) : Packet {
-
-    constructor(effect: Effect, position: Vector3i, data: Int, isGlobal: Boolean) : this(
-        effect,
-        position.x(),
-        position.y(),
-        position.z(),
-        data,
-        isGlobal
-    )
+data class PacketOutEffect(val effect: Effect, val x: Int, val y: Int, val z: Int, val data: Int, val isGlobal: Boolean) : Packet {
 
     override fun write(buf: ByteBuf) {
         buf.writeInt(effect.id)

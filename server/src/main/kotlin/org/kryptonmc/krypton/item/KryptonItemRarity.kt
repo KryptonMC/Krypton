@@ -23,10 +23,7 @@ import net.kyori.adventure.text.format.TextColor
 import org.kryptonmc.api.item.ItemRarity
 
 @JvmRecord
-data class KryptonItemRarity(
-    private val key: Key,
-    override val color: TextColor
-) : ItemRarity {
+data class KryptonItemRarity(private val key: Key, override val color: TextColor) : ItemRarity {
 
     override fun key(): Key = key
 

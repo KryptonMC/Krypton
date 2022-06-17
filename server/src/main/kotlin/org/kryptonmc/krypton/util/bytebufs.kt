@@ -78,6 +78,9 @@ fun ByteBuf.writeVarInt(value: Int) {
     }
 }
 
+// This is my own completely crazy extension of the above `writeVarInt` function, created by Andrew Steinborn of Velocity,
+// to the 10-bit var long. This is pretty much completely unnecessary, but it functions as expected, and was a challenge in
+// the article cited on the above method, so I thought it was worth putting it in here.
 fun ByteBuf.writeVarLong(value: Long) {
     when {
         value and (0xFFFFFFFF shl 7) == 0L -> writeByte(value.toInt())
@@ -195,8 +198,8 @@ fun ByteBuf.readNBT(): CompoundTag {
     if (type == 0.toByte()) return CompoundTag.empty()
     readerIndex(index) // reset the head if it's not an end tag
 
-    return try {
-        TagIO.read(ByteBufInputStream(this), TagCompression.NONE)
+    try {
+        return TagIO.read(ByteBufInputStream(this), TagCompression.NONE)
     } catch (exception: IOException) {
         throw DecoderException(exception)
     }

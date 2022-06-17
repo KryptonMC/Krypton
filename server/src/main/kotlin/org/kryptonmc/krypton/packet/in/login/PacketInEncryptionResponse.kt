@@ -25,10 +25,7 @@ import org.kryptonmc.krypton.util.readVarIntByteArray
 import org.kryptonmc.krypton.util.writeVarIntByteArray
 
 @JvmRecord
-data class PacketInEncryptionResponse(
-    val secret: ByteArray,
-    val verifyToken: ByteArray
-) : Packet {
+data class PacketInEncryptionResponse(val secret: ByteArray, val verifyToken: ByteArray) : Packet {
 
     constructor(buf: ByteBuf) : this(buf.readVarIntByteArray(), buf.readVarIntByteArray())
 

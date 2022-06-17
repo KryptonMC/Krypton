@@ -68,9 +68,7 @@ abstract class KryptonFish(world: KryptonWorld, type: EntityType<out Fish>) : Kr
 
     companion object {
 
-        private val ATTRIBUTES = attributes()
-            .add(AttributeTypes.MAX_HEALTH, 3.0)
-            .build()
+        private val ATTRIBUTES = attributes().add(AttributeTypes.MAX_HEALTH, 3.0).build()
         private val BUCKET_ITEM = KryptonItemStack(ItemTypes.AXOLOTL_BUCKET, 1, KryptonItemMeta.DEFAULT)
     }
 }

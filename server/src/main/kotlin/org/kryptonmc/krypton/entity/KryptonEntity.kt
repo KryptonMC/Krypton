@@ -484,7 +484,9 @@ abstract class KryptonEntity(
         look(yaw, pitch)
     }
 
-    open fun isInvulnerableTo(source: KryptonDamageSource): Boolean = isRemoved || isInvulnerable && source.type !== DamageTypes.VOID &&
+    open fun isInvulnerableTo(source: KryptonDamageSource): Boolean = isRemoved ||
+            isInvulnerable &&
+            source.type !== DamageTypes.VOID &&
             !source.isCreativePlayer
 
     open fun damage(source: KryptonDamageSource, damage: Float): Boolean {
@@ -493,7 +495,7 @@ abstract class KryptonEntity(
         return false
     }
 
-    protected fun markDamaged() {
+    private fun markDamaged() {
         wasDamaged = true
     }
 
@@ -514,9 +516,8 @@ abstract class KryptonEntity(
 
     override fun identity(): Identity = Identity.identity(uuid)
 
-    override fun asHoverEvent(op: UnaryOperator<HoverEvent.ShowEntity>): HoverEvent<HoverEvent.ShowEntity> = HoverEvent.showEntity(
-        op.apply(HoverEvent.ShowEntity.of(type.key(), uuid, displayName))
-    )
+    override fun asHoverEvent(op: UnaryOperator<HoverEvent.ShowEntity>): HoverEvent<HoverEvent.ShowEntity> =
+        HoverEvent.showEntity(op.apply(HoverEvent.ShowEntity.of(type.key(), uuid, displayName)))
 
     override fun addPassenger(entity: Entity) {
         if (passengers.contains(entity) || entity.passengers.contains(this)) return

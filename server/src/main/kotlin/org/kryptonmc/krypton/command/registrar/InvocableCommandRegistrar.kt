@@ -45,12 +45,7 @@ sealed class InvocableCommandRegistrar<C : InvocableCommand<A>, M : CommandMeta,
 
     abstract fun execute(command: C, meta: M, context: CommandContext<Sender>): Int
 
-    abstract fun suggest(
-        command: C,
-        meta: M,
-        context: CommandContext<Sender>,
-        builder: SuggestionsBuilder
-    ): CompletableFuture<Suggestions>
+    abstract fun suggest(command: C, meta: M, context: CommandContext<Sender>, builder: SuggestionsBuilder): CompletableFuture<Suggestions>
 
     /**
      * This came from CraftBukkit. We create a copy of the suggestions builder

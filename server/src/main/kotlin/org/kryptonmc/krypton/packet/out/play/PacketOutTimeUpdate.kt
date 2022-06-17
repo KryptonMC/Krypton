@@ -22,15 +22,9 @@ import io.netty.buffer.ByteBuf
 import org.kryptonmc.krypton.packet.Packet
 
 @JvmRecord
-data class PacketOutTimeUpdate(
-    val time: Long,
-    val dayTime: Long
-) : Packet {
+data class PacketOutTimeUpdate(val time: Long, val dayTime: Long) : Packet {
 
-    constructor(time: Long, dayTime: Long, doDaylightCycle: Boolean) : this(
-        time,
-        calculateDayTime(dayTime, doDaylightCycle)
-    )
+    constructor(time: Long, dayTime: Long, doDaylightCycle: Boolean) : this(time, calculateDayTime(dayTime, doDaylightCycle))
 
     override fun write(buf: ByteBuf) {
         buf.writeLong(time)

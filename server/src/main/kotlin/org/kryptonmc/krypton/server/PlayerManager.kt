@@ -115,8 +115,8 @@ class PlayerManager(private val server: KryptonServer) {
         val world = server.worldManager.worlds[dimension] ?: server.worldManager.default
         player.world = world
         world.players.add(player)
-        LOGGER.info("Player ${profile.name} logged in with entity ID ${player.id} at " +
-                "(${player.location.x()}, ${player.location.y()}, ${player.location.z()})")
+        val location = player.location
+        LOGGER.info("Player ${profile.name} logged in with entity ID ${player.id} at (${location.x()}, ${location.y()}, ${location.z()})")
 
         // Join the game
         val reducedDebugInfo = world.gameRules[GameRules.REDUCED_DEBUG_INFO]
@@ -172,7 +172,7 @@ class PlayerManager(private val server: KryptonServer) {
             player.displayName
         )
         server.sendMessage(joinMessage)
-        session.send(PacketOutPlayerPositionAndLook(player.location, player.rotation))
+        session.send(PacketOutPlayerPositionAndLook(location, player.rotation))
         session.send(PacketOutPlayerInfo(PacketOutPlayerInfo.Action.ADD_PLAYER, player))
         world.spawnPlayer(player)
 

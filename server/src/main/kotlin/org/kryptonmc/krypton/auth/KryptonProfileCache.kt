@@ -52,8 +52,7 @@ class KryptonProfileCache(private val path: Path) : ProfileCache {
     }
 
     fun add(profile: KryptonGameProfile) {
-        val expiry = ZonedDateTime.now().plusMonths(1)
-        add(ProfileHolder(profile, expiry))
+        add(ProfileHolder(profile, ZonedDateTime.now().plusMonths(1)))
     }
 
     override fun get(name: String): KryptonGameProfile? {

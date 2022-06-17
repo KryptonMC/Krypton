@@ -22,11 +22,7 @@ import net.kyori.adventure.key.Key
 import org.kryptonmc.api.entity.hanging.Picture
 
 @JvmRecord
-data class KryptonPicture(
-    private val key: Key,
-    override val width: Int,
-    override val height: Int
-) : Picture {
+data class KryptonPicture(private val key: Key, override val width: Int, override val height: Int) : Picture {
 
     override fun key(): Key = key
 

@@ -54,9 +54,6 @@ object MemoryKeys {
     @JvmStatic
     private fun <T : Any> register(name: String, codec: Codec<out Tag, T>): MemoryKey<T> {
         val key = Key.key(name)
-        return InternalRegistries.MEMORIES.register(
-            key,
-            MemoryKey(key, codec as Codec<Tag, T>) as MemoryKey<Any>
-        ) as MemoryKey<T>
+        return InternalRegistries.MEMORIES.register(key, MemoryKey(key, codec as Codec<Tag, T>) as MemoryKey<Any>) as MemoryKey<T>
     }
 }

@@ -49,7 +49,7 @@ class RegionFile(
     private val folder: Path,
     private val externalFolder: Path,
     private val version: RegionFileVersion,
-    synchronizeWrites: Boolean,
+    synchronizeWrites: Boolean
 ) : AutoCloseable {
 
     private val channel: FileChannel
@@ -142,9 +142,7 @@ class RegionFile(
 
         val dataLength = length - 1
         if (isExternalStreamChunk(compressionType)) {
-            if (dataLength != 0) {
-                LOGGER.error("Chunk at $x, $z in region file $folder has both internal and external streams!")
-            }
+            if (dataLength != 0) LOGGER.error("Chunk at $x, $z in region file $folder has both internal and external streams!")
             return createExternalChunkInputStream(x, z, externalChunkVersion(compressionType))
         }
         if (dataLength > buffer.remaining()) {

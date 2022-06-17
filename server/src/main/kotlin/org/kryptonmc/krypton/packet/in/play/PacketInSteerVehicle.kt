@@ -22,11 +22,7 @@ import io.netty.buffer.ByteBuf
 import org.kryptonmc.krypton.packet.Packet
 
 @JvmRecord
-data class PacketInSteerVehicle(
-    val sideways: Float,
-    val forward: Float,
-    val flags: Byte
-) : Packet {
+data class PacketInSteerVehicle(val sideways: Float, val forward: Float, val flags: Byte) : Packet {
 
     val isJumping: Boolean
         get() = flags.toInt() and 1 > 0

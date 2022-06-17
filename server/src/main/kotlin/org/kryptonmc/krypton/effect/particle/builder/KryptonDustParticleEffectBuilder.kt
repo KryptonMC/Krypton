@@ -24,25 +24,8 @@ import org.kryptonmc.api.effect.particle.data.ParticleData
 import org.kryptonmc.krypton.effect.particle.data.KryptonDustParticleData
 import org.spongepowered.math.vector.Vector3d
 
-class KryptonDustParticleEffectBuilder(
-    type: DustParticleType,
-    quantity: Int = 1,
-    offset: Vector3d = Vector3d.ZERO,
-    longDistance: Boolean = false,
-    red: Short = 255,
-    green: Short = 0,
-    blue: Short = 0,
-    scale: Float = 0F
-) : AbstractDustParticleEffectBuilder<DustParticleEffectBuilder>(
-    type,
-    quantity,
-    offset,
-    longDistance,
-    red,
-    green,
-    blue,
-    scale
-), DustParticleEffectBuilder {
+class KryptonDustParticleEffectBuilder(type: DustParticleType) : AbstractDustParticleEffectBuilder<DustParticleEffectBuilder>(type),
+    DustParticleEffectBuilder {
 
     override fun buildData(): ParticleData = KryptonDustParticleData(red, green, blue, scale)
 }

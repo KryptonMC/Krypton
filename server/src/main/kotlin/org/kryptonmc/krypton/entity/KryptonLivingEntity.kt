@@ -71,13 +71,13 @@ abstract class KryptonLivingEntity(
             if (lastHurtByMob != null) return lastHurtByMob
             return null
         }
-    var lastHurtByMob: KryptonLivingEntity? = null
+    private var lastHurtByMob: KryptonLivingEntity? = null
         set(value) {
             field = value
             lastHurtByMobTime = tickCount
         }
     private var lastHurtByMobTime = 0
-    var lastHurtByPlayer: KryptonPlayer? = null
+    private var lastHurtByPlayer: KryptonPlayer? = null
         set(value) {
             field = value
             lastHurtByPlayerTime = tickCount
@@ -109,10 +109,10 @@ abstract class KryptonLivingEntity(
     override var health: Float
         get() = data[MetadataKeys.LIVING.HEALTH]
         set(value) = data.set(MetadataKeys.LIVING.HEALTH, value)
-    var potionEffectColor: Int
+    private var potionEffectColor: Int
         get() = data[MetadataKeys.LIVING.POTION_EFFECT_COLOR]
         set(value) = data.set(MetadataKeys.LIVING.POTION_EFFECT_COLOR, value)
-    var isPotionEffectAmbient: Boolean
+    private var isPotionEffectAmbient: Boolean
         get() = data[MetadataKeys.LIVING.POTION_EFFECT_AMBIENCE]
         set(value) = data.set(MetadataKeys.LIVING.POTION_EFFECT_AMBIENCE, value)
     var arrowCount: Int

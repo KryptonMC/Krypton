@@ -33,39 +33,40 @@ import java.nio.file.Path
 import kotlin.io.path.exists
 import kotlin.io.path.writeText
 
-class StandardGenerator(private val output: Path) {
+class StandardGenerator(@PublishedApi internal val output: Path) {
 
     @Suppress("UNCHECKED_CAST")
-    fun run(
-        source: Class<*>,
+    inline fun <reified S, reified T> run(
         registry: Registry<*>,
-        name: ClassName,
-        sourceType: Class<*>,
-        returnType: ClassName,
+        name: String,
+        returnType: String,
         registryName: String,
         keyGetter: (Field) -> ResourceLocation = { (registry as Registry<Any>).getKey(it.get(null))!! }
     ) {
-        val file = FileSpec.builder(name.packageName, name.simpleName)
+        val pkg = "org.kryptonmc.api"
+        val className = ClassName("$pkg.$name")
+        val classReturnType = ClassName("$pkg.$returnType")
+        val file = FileSpec.builder(className.packageName, className.simpleName)
             .indent("    ")
             .addImport("net.kyori.adventure.key", "Key")
-            .addImport("org.kryptonmc.api.registry", "Registries")
+            .addImport("$pkg.registry", "Registries")
         val outputClass = TypeSpec.objectBuilder(name)
             .addKdoc("This file is auto-generated. Do not edit this manually!")
             .addAnnotation(AnnotationSpec.builder(ClassName("org.kryptonmc.api.util", "Catalogue"))
-                .addMember("${returnType.simpleName}::class")
+                .addMember("${classReturnType.simpleName}::class")
                 .build())
             .addFunction(FunSpec.builder("get")
-                .returns(returnType)
+                .returns(classReturnType)
                 .addParameter("key", ClassName("kotlin", "String"))
                 .addAnnotation(JvmStatic::class)
                 .addModifiers(KModifier.PRIVATE)
                 .addCode("return Registries.$registryName[Key.key(key)]!!")
                 .build())
-        source.declaredFields.asSequence()
+        S::class.java.declaredFields.asSequence()
             .filter { Modifier.isStatic(it.modifiers) }
-            .filter { sourceType.isAssignableFrom(it.type) }
+            .filter { T::class.java.isAssignableFrom(it.type) }
             .forEach {
-                outputClass.addProperty(PropertySpec.builder(it.name, returnType)
+                outputClass.addProperty(PropertySpec.builder(it.name, classReturnType)
                     .addAnnotation(JvmField::class)
                     .initializer("get(\"${keyGetter(it).path}\")")
                     .build())
@@ -74,10 +75,10 @@ class StandardGenerator(private val output: Path) {
         file.addType(outputClass.build())
             .build()
             .writeTo(stringBuilder)
-        val outputFile = output.resolve(name.packageName.replace('.', '/'))
+        val outputFile = output.resolve(className.packageName.replace('.', '/'))
             .tryCreateDirectories()
-            .resolve("${name.simpleName}.kt")
+            .resolve("${className.simpleName}.kt")
         if (outputFile.exists()) return
-        outputFile.tryCreateFile().writeText(stringBuilder.toString().performReplacements(returnType.simpleName, name.simpleName))
+        outputFile.tryCreateFile().writeText(stringBuilder.toString().performReplacements(classReturnType.simpleName, className.simpleName))
     }
 }

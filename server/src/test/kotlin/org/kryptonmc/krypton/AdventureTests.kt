@@ -47,9 +47,7 @@ class AdventureTests {
 
     @Test
     fun `test flattening of translatable components`() {
-        KryptonAdventure.FLATTENER.flatten(Component.translatable("language.name")) {
-            assertEquals("English", it)
-        }
+        KryptonAdventure.FLATTENER.flatten(Component.translatable("language.name")) { assertEquals("English", it) }
     }
 
     @Test
@@ -73,12 +71,9 @@ class AdventureTests {
     @Test
     fun `test show item deserialization`() {
         // Standard
-        val input = Component.text("{Count:37B,id:'minecraft:air',tag:{Damage:34,Unbreakable:1B,CustomModelData:74}}")
-        val item = HoverEvent.ShowItem.of(
-            Key.key("air"),
-            37,
-            BinaryTagHolder.of("{CustomModelData:74,Damage:34,Unbreakable:1b}")
-        )
+        val nbt = "{CustomModelData:74,Damage:34,Unbreakable:1b}"
+        val input = Component.text("{Count:37B,id:'minecraft:air',tag:$nbt}")
+        val item = HoverEvent.ShowItem.of(Key.key("air"), 37, BinaryTagHolder.of(nbt))
         assertEquals(item, NBTLegacyHoverEventSerializer.deserializeShowItem(input))
 
         // No extra item data (`tag` in item NBT)
@@ -89,12 +84,9 @@ class AdventureTests {
     @Test
     fun `test show item serialization`() {
         // Standard
-        val item = HoverEvent.ShowItem.of(
-            Key.key("air"),
-            37,
-            BinaryTagHolder.of("{CustomModelData:74,Damage:34,Unbreakable:1b}")
-        )
-        val output = Component.text("{Count:37b,id:\"minecraft:air\",tag:{CustomModelData:74,Damage:34,Unbreakable:1b}}")
+        val nbt = "{CustomModelData:74,Damage:34,Unbreakable:1b}"
+        val item = HoverEvent.ShowItem.of(Key.key("air"), 37, BinaryTagHolder.of(nbt))
+        val output = Component.text("{Count:37b,id:\"minecraft:air\",tag:$nbt}")
         assertEquals(output, NBTLegacyHoverEventSerializer.serializeShowItem(item))
 
         // No extra item data (`tag` in item NBT)

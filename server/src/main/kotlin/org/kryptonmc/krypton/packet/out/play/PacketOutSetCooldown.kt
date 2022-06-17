@@ -25,10 +25,7 @@ import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.util.writeVarInt
 
 @JvmRecord
-data class PacketOutSetCooldown(
-    val itemId: Int,
-    val cooldownTicks: Int
-) : Packet {
+data class PacketOutSetCooldown(val itemId: Int, val cooldownTicks: Int) : Packet {
 
     constructor(item: ItemType, cooldownTicks: Int) : this(Registries.ITEM.idOf(item), cooldownTicks)
 

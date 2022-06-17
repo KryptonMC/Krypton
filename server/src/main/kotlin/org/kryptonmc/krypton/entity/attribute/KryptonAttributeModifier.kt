@@ -22,11 +22,7 @@ import org.kryptonmc.api.entity.attribute.AttributeModifier
 import java.util.UUID
 
 @JvmRecord
-data class KryptonAttributeModifier(
-    override val name: String,
-    override val uuid: UUID,
-    override val amount: Double
-) : AttributeModifier {
+data class KryptonAttributeModifier(override val name: String, override val uuid: UUID, override val amount: Double) : AttributeModifier {
 
     object Factory : AttributeModifier.Factory {
 

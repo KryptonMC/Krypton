@@ -27,19 +27,9 @@ import org.kryptonmc.krypton.util.writeItem
 import org.kryptonmc.krypton.util.writeVarInt
 
 @JvmRecord
-data class PacketOutWindowItems(
-    val id: Int,
-    val stateId: Int,
-    val itemWritable: Writable,
-    val heldItem: KryptonItemStack
-) : Packet {
+data class PacketOutWindowItems(val id: Int, val stateId: Int, val itemWritable: Writable, val heldItem: KryptonItemStack) : Packet {
 
-    constructor(inventory: KryptonInventory, heldItem: KryptonItemStack) : this(
-        inventory.id,
-        inventory.incrementStateId(),
-        inventory,
-        heldItem
-    )
+    constructor(inventory: KryptonInventory, heldItem: KryptonItemStack) : this(inventory.id, inventory.incrementStateId(), inventory, heldItem)
 
     override fun write(buf: ByteBuf) {
         buf.writeByte(id)

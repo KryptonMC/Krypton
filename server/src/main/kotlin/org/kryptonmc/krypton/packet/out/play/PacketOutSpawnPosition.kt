@@ -23,12 +23,7 @@ import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.util.writeVector
 
 @JvmRecord
-data class PacketOutSpawnPosition(
-    val x: Int,
-    val y: Int,
-    val z: Int,
-    val angle: Float = 0F
-) : Packet {
+data class PacketOutSpawnPosition(val x: Int, val y: Int, val z: Int, val angle: Float = 0F) : Packet {
 
     override fun write(buf: ByteBuf) {
         buf.writeVector(x, y, z)

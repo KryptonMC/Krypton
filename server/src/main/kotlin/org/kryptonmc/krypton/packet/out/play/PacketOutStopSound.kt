@@ -27,10 +27,7 @@ import org.kryptonmc.krypton.util.writeEnum
 import org.kryptonmc.krypton.util.writeKey
 
 @JvmRecord
-data class PacketOutStopSound(
-    val source: Sound.Source?,
-    val sound: Key?
-) : Packet {
+data class PacketOutStopSound(val source: Sound.Source?, val sound: Key?) : Packet {
 
     constructor(stop: SoundStop) : this(stop.source(), stop.sound())
 

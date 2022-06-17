@@ -30,19 +30,11 @@ import org.kryptonmc.krypton.item.meta.KryptonItemMeta
 import org.kryptonmc.nbt.CompoundTag
 
 @JvmRecord
-data class KryptonItemStack(
-    override val type: ItemType,
-    override val amount: Int,
-    override val meta: AbstractItemMeta<*>
-) : ItemStack {
+data class KryptonItemStack(override val type: ItemType, override val amount: Int, override val meta: AbstractItemMeta<*>) : ItemStack {
 
     constructor(tag: CompoundTag) : this(tag, Registries.ITEM[Key.key(tag.getString("id"))])
 
-    private constructor(tag: CompoundTag, type: ItemType) : this(
-        type,
-        tag.getInt("Count"),
-        ItemFactory.create(type, tag.getCompound("tag"))
-    )
+    private constructor(tag: CompoundTag, type: ItemType) : this(type, tag.getInt("Count"), ItemFactory.create(type, tag.getCompound("tag")))
 
     fun save(tag: CompoundTag.Builder): CompoundTag.Builder = tag.apply {
         string("id", type.key().asString())
@@ -101,9 +93,7 @@ data class KryptonItemStack(
         override fun type(type: ItemType): Builder = apply { this.type = type }
 
         override fun amount(amount: Int): Builder = apply {
-            require(amount in 1..type.maximumStackSize) {
-                "Item amount must be between 1 and ${type.maximumStackSize}, was $amount!"
-            }
+            require(amount in 1..type.maximumStackSize) { "Item amount must be between 1 and ${type.maximumStackSize}, was $amount!" }
             this.amount = amount
         }
 
@@ -113,10 +103,9 @@ data class KryptonItemStack(
 
         override fun meta(meta: ItemMeta): Builder = apply { this.meta = meta as AbstractItemMeta<*> }
 
-        override fun <B : ItemMetaBuilder<B, P>, P : ItemMetaBuilder.Provider<B>> meta(
-            type: Class<P>,
-            builder: B.() -> Unit
-        ): Builder = apply { meta = ItemFactory.builder(type).apply(builder).build() as AbstractItemMeta<*> }
+        override fun <B : ItemMetaBuilder<B, P>, P : ItemMetaBuilder.Provider<B>> meta(type: Class<P>, builder: B.() -> Unit): Builder = apply {
+            meta = ItemFactory.builder(type).apply(builder).build() as AbstractItemMeta<*>
+        }
 
         override fun build(): KryptonItemStack {
             if (type == EMPTY.type && amount == EMPTY.amount && meta == EMPTY.meta) return EMPTY

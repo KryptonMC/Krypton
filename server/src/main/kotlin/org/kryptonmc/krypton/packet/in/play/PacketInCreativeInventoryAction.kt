@@ -25,10 +25,7 @@ import org.kryptonmc.krypton.util.readItem
 import org.kryptonmc.krypton.util.writeItem
 
 @JvmRecord
-data class PacketInCreativeInventoryAction(
-    val slot: Int,
-    val clickedItem: KryptonItemStack
-) : Packet {
+data class PacketInCreativeInventoryAction(val slot: Int, val clickedItem: KryptonItemStack) : Packet {
 
     constructor(buf: ByteBuf) : this(buf.readShort().toInt(), buf.readItem())
 

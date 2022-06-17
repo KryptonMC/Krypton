@@ -91,9 +91,7 @@ class PaletteHolder<T> : PaletteResizer<T> {
         val bits = strategy.calculateSerializationBits(palette.size)
         val data = if (bits != 0) SimpleBitStorage(bits, size, ids).data else LongArray(0)
         return compound {
-            list("palette") {
-                palette.entries.forEach { add(encoder.encode(it)) }
-            }
+            list("palette") { palette.entries.forEach { add(encoder.encode(it)) } }
             longArray("data", data)
         }
     }

@@ -24,20 +24,8 @@ import kotlin.math.abs
 
 object Directions {
 
-    private val BY_3D_DATA = arrayOf(
-        Direction.DOWN,
-        Direction.UP,
-        Direction.NORTH,
-        Direction.SOUTH,
-        Direction.WEST,
-        Direction.EAST
-    )
-    private val BY_2D_DATA = arrayOf(
-        Direction.SOUTH,
-        Direction.WEST,
-        Direction.NORTH,
-        Direction.EAST
-    )
+    private val BY_3D_DATA = arrayOf(Direction.DOWN, Direction.UP, Direction.NORTH, Direction.SOUTH, Direction.WEST, Direction.EAST)
+    private val BY_2D_DATA = arrayOf(Direction.SOUTH, Direction.WEST, Direction.NORTH, Direction.EAST)
     private val TO_2D_DATA = Object2IntArrayMap<Direction>().apply {
         BY_2D_DATA.forEachIndexed { index, direction -> put(direction, index) }
     }

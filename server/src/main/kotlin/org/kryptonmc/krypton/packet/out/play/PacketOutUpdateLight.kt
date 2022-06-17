@@ -25,11 +25,7 @@ import org.kryptonmc.krypton.util.writeVarInt
 import org.kryptonmc.krypton.world.chunk.KryptonChunk
 
 @JvmRecord
-data class PacketOutUpdateLight(
-    val x: Int,
-    val z: Int,
-    val lightData: LightPacketData
-) : Packet {
+data class PacketOutUpdateLight(val x: Int, val z: Int, val lightData: LightPacketData) : Packet {
 
     override fun write(buf: ByteBuf) {
         buf.writeVarInt(x)

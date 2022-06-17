@@ -35,8 +35,7 @@ private fun Double.isOutsideSpawnableHeight(): Boolean = this < -20000000 || thi
 private fun Vector3d.isInHorizontalWorldBounds(): Boolean = x() >= -30000000 && z() >= -30000000 && x() < 30000000 && z() < 30000000
 
 fun EntityManager.forEachEntityInRange(location: Vector3d, viewDistance: Int, callback: (KryptonEntity) -> Unit) {
-    val chunksInRange = location.chunksInRange(viewDistance)
-    chunksInRange.forEach {
+    location.chunksInRange(viewDistance).forEach {
         val chunk = world.getChunkAt(it.chunkX(), it.chunkZ()) ?: return@forEach
         get(chunk).forEach(callback)
     }

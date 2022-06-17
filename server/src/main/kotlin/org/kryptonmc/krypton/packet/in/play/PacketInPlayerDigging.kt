@@ -31,15 +31,7 @@ import org.kryptonmc.krypton.util.writeVector
 import org.spongepowered.math.vector.Vector3i
 
 @JvmRecord
-data class PacketInPlayerDigging(
-    val status: Status,
-    val x: Int,
-    val y: Int,
-    val z: Int,
-    val direction: Direction
-) : Packet {
-
-    constructor(status: Status, location: Vector3i, direction: Direction) : this(status, location.x(), location.y(), location.z(), direction)
+data class PacketInPlayerDigging(val status: Status, val x: Int, val y: Int, val z: Int, val direction: Direction) : Packet {
 
     constructor(buf: ByteBuf) : this(buf.readEnum<Status>(), buf.readLong(), buf.readEnum())
 

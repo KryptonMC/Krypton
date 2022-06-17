@@ -22,11 +22,7 @@ import io.netty.buffer.ByteBuf
 import org.kryptonmc.krypton.packet.MovementPacket
 
 @JvmRecord
-data class PacketInPlayerRotation(
-    val yaw: Float,
-    val pitch: Float,
-    override val onGround: Boolean
-) : MovementPacket {
+data class PacketInPlayerRotation(val yaw: Float, val pitch: Float, override val onGround: Boolean) : MovementPacket {
 
     constructor(buf: ByteBuf) : this(buf.readFloat(), buf.readFloat(), buf.readBoolean())
 

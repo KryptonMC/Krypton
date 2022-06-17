@@ -37,12 +37,6 @@ data class InteractionContext(
 
     val position: Vector3i
         get() = hitResult.position
-    val clickedFace: Direction
-        get() = hitResult.direction
-    val clickLocation: Vector3d
-        get() = hitResult.clickLocation
-    val isInside: Boolean
-        get() = hitResult.isInside
     val pitch: Float
         get() = player.rotation.y()
 }

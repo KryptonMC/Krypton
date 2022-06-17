@@ -61,12 +61,10 @@ class KryptonBanService(private val server: KryptonServer) : BanService {
     override fun add(ban: Ban) {
         if (ban !is BanEntry<*>) return
         when (ban.type) {
-            BanTypes.PROFILE -> server.eventManager.fire(BanProfileEvent(ban as BannedPlayerEntry)).thenApplyAsync {
-                if (it.result.isAllowed) server.playerManager.bannedPlayers.add(ban)
-            }
-            BanTypes.IP -> server.eventManager.fire(BanIpEvent(ban as BannedIpEntry)).thenApplyAsync {
-                if (it.result.isAllowed) server.playerManager.bannedIps.add(ban)
-            }
+            BanTypes.PROFILE -> server.eventManager.fire(BanProfileEvent(ban as BannedPlayerEntry))
+                .thenApplyAsync { if (it.result.isAllowed) server.playerManager.bannedPlayers.add(ban) }
+            BanTypes.IP -> server.eventManager.fire(BanIpEvent(ban as BannedIpEntry))
+                .thenApplyAsync { if (it.result.isAllowed) server.playerManager.bannedIps.add(ban) }
             else -> error("Unsupported ban type ${ban.type}!")
         }
     }
@@ -74,12 +72,10 @@ class KryptonBanService(private val server: KryptonServer) : BanService {
     override fun remove(ban: Ban) {
         if (ban !is BanEntry<*>) return
         when (ban.type) {
-            BanTypes.PROFILE -> server.eventManager.fire(PardonProfileEvent(ban as BannedPlayerEntry)).thenApplyAsync {
-                if (it.result.isAllowed) server.playerManager.bannedPlayers.remove(ban.key)
-            }
-            BanTypes.IP -> server.eventManager.fire(PardonIpEvent(ban as BannedIpEntry)).thenApplyAsync {
-                if (it.result.isAllowed) server.playerManager.bannedIps.remove(ban.key)
-            }
+            BanTypes.PROFILE -> server.eventManager.fire(PardonProfileEvent(ban as BannedPlayerEntry))
+                .thenApplyAsync { if (it.result.isAllowed) server.playerManager.bannedPlayers.remove(ban.key) }
+            BanTypes.IP -> server.eventManager.fire(PardonIpEvent(ban as BannedIpEntry))
+                .thenApplyAsync { if (it.result.isAllowed) server.playerManager.bannedIps.remove(ban.key) }
             else -> error("Unsupported ban type ${ban.type}!")
         }
     }

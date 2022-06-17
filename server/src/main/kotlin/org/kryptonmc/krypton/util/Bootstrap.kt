@@ -19,6 +19,7 @@
 package org.kryptonmc.krypton.util
 
 import com.mojang.brigadier.exceptions.CommandSyntaxException
+import net.kyori.adventure.translation.Translatable
 import org.kryptonmc.api.Krypton
 import org.kryptonmc.api.block.Blocks
 import org.kryptonmc.api.block.entity.BlockEntityTypes
@@ -153,25 +154,22 @@ object Bootstrap {
     @JvmStatic
     fun validate() {
         require(bootstrapped) { "Bootstrap wasn't ran!" }
-        missingTranslations().forEach { LOGGER.warn("Missing translation: $it") }
+        collectMissingTranslations().forEach { LOGGER.warn("Missing translation: $it") }
     }
 
     @JvmStatic
-    private fun missingTranslations(): Set<String> {
+    private fun collectMissingTranslations(): Set<String> {
         val missing = TreeSet<String>()
-        checkTranslations(Registries.ATTRIBUTE.values, missing) { it.translationKey() }
-        checkTranslations(Registries.ENTITY_TYPE.values, missing) { it.translationKey() }
-        checkTranslations(Registries.BLOCK.values, missing) { it.translationKey() }
-        checkTranslations(Registries.ITEM.values, missing) { it.translationKey() }
-        checkTranslations(Registries.GAME_RULES.values, missing) { it.translationKey() }
+        checkTranslations(Registries.ATTRIBUTE.values, missing)
+        checkTranslations(Registries.ENTITY_TYPE.values, missing)
+        checkTranslations(Registries.BLOCK.values, missing)
+        checkTranslations(Registries.ITEM.values, missing)
+        checkTranslations(Registries.GAME_RULES.values, missing)
         return missing
     }
 
     @JvmStatic
-    private fun <T> checkTranslations(values: Iterable<T>, missing: MutableSet<String>, getter: (T) -> String) {
-        values.forEach {
-            val key = getter(it)
-            if (!TranslationBootstrap.REGISTRY.contains(key)) missing.add(key)
-        }
+    private fun <T : Translatable> checkTranslations(values: Iterable<T>, missing: MutableSet<String>) {
+        values.forEach { if (!TranslationBootstrap.REGISTRY.contains(it.translationKey())) missing.add(it.translationKey()) }
     }
 }

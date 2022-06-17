@@ -25,7 +25,4 @@ package org.kryptonmc.krypton.plugin
 import org.kryptonmc.api.plugin.PluginContainer
 import org.kryptonmc.api.plugin.PluginDescription
 
-data class KryptonPluginContainer(
-    override val description: PluginDescription,
-    override var instance: Any? = null
-) : PluginContainer
+data class KryptonPluginContainer(override val description: PluginDescription, override var instance: Any? = null) : PluginContainer

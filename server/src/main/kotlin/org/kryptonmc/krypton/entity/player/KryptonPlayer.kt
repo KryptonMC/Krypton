@@ -316,7 +316,7 @@ class KryptonPlayer(
     override var absorption: Float
         get() = data[MetadataKeys.PLAYER.ADDITIONAL_HEARTS]
         set(value) = data.set(MetadataKeys.PLAYER.ADDITIONAL_HEARTS, value)
-    var score: Int
+    private var score: Int
         get() = data[MetadataKeys.PLAYER.SCORE]
         set(value) = data.set(MetadataKeys.PLAYER.SCORE, value)
     var skinSettings: Byte
@@ -541,16 +541,8 @@ class KryptonPlayer(
                     health-- // deduct half a heart
                 }
             }
-            Difficulty.NORMAL -> {
-                if (health > 1 && foodLevel == 0 && foodTickTimer == 80) {
-                    health--
-                }
-            }
-            Difficulty.HARD -> {
-                if (foodLevel == 0 && foodTickTimer == 80) {
-                    health--
-                }
-            }
+            Difficulty.NORMAL -> if (health > 1 && foodLevel == 0 && foodTickTimer == 80) health--
+            Difficulty.HARD -> if (foodLevel == 0 && foodTickTimer == 80) health--
             Difficulty.PEACEFUL -> {
                 if (foodLevel < 20 && foodTickTimer % 20 == 0) {
                     foodLevel++ // increase player food level
@@ -596,7 +588,7 @@ class KryptonPlayer(
         return mainHand.isEmpty() // TODO: Check Adventure CanDestroy
     }
 
-    fun hasCorrectTool(block: Block): Boolean = !block.requiresCorrectTool || inventory.items[inventory.heldSlot].type.handler().isCorrectTool(block)
+    fun hasCorrectTool(block: Block): Boolean = !block.requiresCorrectTool || inventory.heldItem(Hand.MAIN).type.handler().isCorrectTool(block)
 
     fun interactOn(entity: KryptonEntity, hand: Hand): InteractionResult {
         if (isSpectator) {
@@ -640,9 +632,7 @@ class KryptonPlayer(
         val packet = PacketOutParticle(effect, location)
         when (effect.data) {
             // Send multiple packets based on the quantity
-            is DirectionalParticleData, is ColorParticleData, is NoteParticleData -> repeat(effect.quantity) {
-                session.send(packet)
-            }
+            is DirectionalParticleData, is ColorParticleData, is NoteParticleData -> repeat(effect.quantity) { session.send(packet) }
             // Send particles to player at location
             else -> session.send(packet)
         }
@@ -781,15 +771,10 @@ class KryptonPlayer(
             session.send(PacketOutEntitySoundEffect(event, sound.source(), entity.id, sound.volume(), sound.pitch()))
             return
         }
-        session.send(PacketOutNamedSoundEffect(
-            sound.name(),
-            sound.source(),
-            entity.location.x(),
-            entity.location.y(),
-            entity.location.z(),
-            sound.volume(),
-            sound.pitch()
-        ))
+        val x = entity.location.x()
+        val y = entity.location.y()
+        val z = entity.location.z()
+        session.send(PacketOutNamedSoundEffect(sound.name(), sound.source(), x, y, z, sound.volume(), sound.pitch()))
     }
 
     override fun stopSound(stop: SoundStop) {

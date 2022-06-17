@@ -92,11 +92,8 @@ data class KryptonBlock(
 
     override fun toBuilder(): Builder = Builder(this)
 
-    class Builder(
-        private val key: Key,
-        private var id: Int,
-        private var stateId: Int
-    ) : KryptonPropertyHolder.Builder<Block.Builder, Block>(), Block.Builder {
+    class Builder(private val key: Key, private var id: Int, private var stateId: Int) : KryptonPropertyHolder.Builder<Block.Builder, Block>(),
+        Block.Builder {
 
         private var hardness = 0.0
         private var explosionResistance = 0.0

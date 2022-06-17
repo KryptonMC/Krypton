@@ -21,8 +21,4 @@ package org.kryptonmc.krypton.effect.particle.data
 import org.kryptonmc.api.effect.particle.data.ColorParticleData
 
 @JvmRecord
-data class KryptonColorParticleData(
-    override val red: Short,
-    override val green: Short,
-    override val blue: Short
-) : ColorParticleData
+data class KryptonColorParticleData(override val red: Short, override val green: Short, override val blue: Short) : ColorParticleData

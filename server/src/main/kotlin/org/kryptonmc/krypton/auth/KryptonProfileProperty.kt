@@ -28,11 +28,7 @@ import org.kryptonmc.api.auth.ProfileProperty
 import java.io.StringReader
 
 @JvmRecord
-data class KryptonProfileProperty(
-    override val name: String,
-    override val value: String,
-    override val signature: String?
-) : ProfileProperty {
+data class KryptonProfileProperty(override val name: String, override val value: String, override val signature: String?) : ProfileProperty {
 
     override fun with(builder: ProfileProperty.Builder.() -> Unit): ProfileProperty = Builder(this).apply(builder).build()
 
@@ -67,10 +63,7 @@ data class KryptonProfileProperty(
     companion object : TypeAdapter<ProfileProperty>() {
 
         @JvmStatic
-        fun fromJsonList(json: String): PersistentList<KryptonProfileProperty> {
-            val reader = JsonReader(StringReader(json))
-            return readList(reader)
-        }
+        fun fromJsonList(json: String): PersistentList<KryptonProfileProperty> = readList(JsonReader(StringReader(json)))
 
         @JvmStatic
         fun readList(reader: JsonReader): PersistentList<KryptonProfileProperty> {

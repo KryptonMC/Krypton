@@ -37,12 +37,7 @@ abstract class KryptonAcceleratingProjectile(
         super.load(tag)
         if (tag.contains("power", ListTag.ID)) {
             val power = tag.getList("power", DoubleTag.ID)
-            if (power.size == 3) {
-                val x = power.getDouble(0)
-                val y = power.getDouble(1)
-                val z = power.getDouble(2)
-                acceleration = Vector3d(x, y, z)
-            }
+            if (power.size == 3) acceleration = Vector3d(power.getDouble(0), power.getDouble(1), power.getDouble(2))
         }
     }
 

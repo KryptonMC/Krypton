@@ -92,12 +92,7 @@ private val REPLACEABLE_PLANTS = persistentListOf(
     Blocks.LARGE_FERN
 )
 
-private val VEGETABLES = persistentListOf(
-    Blocks.PUMPKIN,
-    Blocks.CARVED_PUMPKIN,
-    Blocks.JACK_O_LANTERN,
-    Blocks.MELON
-)
+private val VEGETABLES = persistentListOf(Blocks.PUMPKIN, Blocks.CARVED_PUMPKIN, Blocks.JACK_O_LANTERN, Blocks.MELON)
 
 private val GAME_MASTER_BLOCKS = persistentListOf(
     Blocks.COMMAND_BLOCK,

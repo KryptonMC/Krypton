@@ -22,10 +22,7 @@ import io.netty.buffer.ByteBuf
 import org.kryptonmc.krypton.packet.Packet
 
 @JvmRecord
-data class PacketOutChangeGameState(
-    val state: GameState,
-    val value: Float = 0.0F
-) : Packet {
+data class PacketOutChangeGameState(val state: GameState, val value: Float = 0.0F) : Packet {
 
     override fun write(buf: ByteBuf) {
         buf.writeByte(state.ordinal)

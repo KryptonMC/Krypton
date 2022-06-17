@@ -27,12 +27,7 @@ import org.kryptonmc.krypton.util.writeString
 import org.kryptonmc.krypton.util.writeVarInt
 
 @JvmRecord
-data class PacketOutUpdateScore(
-    val action: Action,
-    val name: Component,
-    val objectiveName: String?,
-    val score: Int,
-) : Packet {
+data class PacketOutUpdateScore(val action: Action, val name: Component, val objectiveName: String?, val score: Int) : Packet {
 
     constructor(action: Action, score: Score) : this(action, score.name, score.objective?.name, score.score)
 

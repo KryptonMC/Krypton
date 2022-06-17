@@ -29,12 +29,7 @@ import org.kryptonmc.krypton.util.writeString
 import org.kryptonmc.krypton.util.writeVarInt
 
 @JvmRecord
-data class PacketInHandshake(
-    val protocol: Int,
-    val address: String,
-    val port: Int,
-    val nextState: PacketState
-) : Packet {
+data class PacketInHandshake(val protocol: Int, val address: String, val port: Int, val nextState: PacketState) : Packet {
 
     constructor(buf: ByteBuf) : this(buf.readVarInt(), buf.readString(), buf.readUnsignedShort(), buf.readEnum())
 

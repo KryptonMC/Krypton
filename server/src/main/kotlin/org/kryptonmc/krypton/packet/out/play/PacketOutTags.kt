@@ -29,9 +29,7 @@ import org.kryptonmc.krypton.util.writeKey
 import org.kryptonmc.krypton.util.writeVarInt
 
 @JvmRecord
-data class PacketOutTags(
-    val tags: Map<TagType<*>, List<Tag<*>>>
-) : Packet {
+data class PacketOutTags(val tags: Map<TagType<*>, List<Tag<*>>>) : Packet {
 
     @Suppress("UNCHECKED_CAST")
     override fun write(buf: ByteBuf) {

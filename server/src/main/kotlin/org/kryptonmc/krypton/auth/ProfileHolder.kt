@@ -36,11 +36,7 @@ import kotlinx.collections.immutable.persistentListOf
  * it, because we only store the [KryptonProfileCache.MRU_LIMIT] most recent
  * profiles to disk.
  */
-class ProfileHolder(
-    val profile: KryptonGameProfile,
-    val expiryDate: ZonedDateTime,
-    @Volatile var lastAccess: Long = 0L
-) {
+class ProfileHolder(val profile: KryptonGameProfile, val expiryDate: ZonedDateTime, @Volatile var lastAccess: Long = 0L) {
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

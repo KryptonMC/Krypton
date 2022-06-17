@@ -25,11 +25,7 @@ import org.kryptonmc.api.world.World
 import org.kryptonmc.nbt.CompoundTag
 import org.spongepowered.math.vector.Vector3i
 
-abstract class KryptonBlockEntity(
-    override val type: BlockEntityType,
-    override val position: Vector3i,
-    override val block: Block
-) : BlockEntity {
+abstract class KryptonBlockEntity(override val type: BlockEntityType, override val position: Vector3i, override val block: Block) : BlockEntity {
 
     override var world: World? = null
     override var isValid: Boolean = true
@@ -45,8 +41,7 @@ abstract class KryptonBlockEntity(
     }
 
     private fun saveMetadata(tag: CompoundTag.Builder): CompoundTag.Builder = tag.apply {
-        val key = type.key()
-        string("id", key.asString())
+        string("id", type.key().asString())
         int("x", position.x())
         int("y", position.y())
         int("z", position.z())

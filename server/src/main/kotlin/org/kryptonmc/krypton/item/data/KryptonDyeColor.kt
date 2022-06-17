@@ -35,11 +35,7 @@ data class KryptonDyeColor(
 
     object Factory : DyeColor.Factory {
 
-        override fun of(
-            key: Key,
-            color: Color,
-            fireworkColor: Color,
-            textColor: TextColor
-        ): DyeColor = KryptonDyeColor(key, color, fireworkColor, textColor)
+        override fun of(key: Key, color: Color, fireworkColor: Color, textColor: TextColor): DyeColor =
+            KryptonDyeColor(key, color, fireworkColor, textColor)
     }
 }

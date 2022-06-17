@@ -19,132 +19,55 @@
 package org.kryptonmc.krypton.world.dimension
 
 import net.kyori.adventure.key.Key
-import net.kyori.adventure.key.Key.key
 import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.api.tags.BlockTags
-import org.kryptonmc.api.world.dimension.DimensionEffect
 
 object KryptonDimensionTypes {
 
-    @JvmField val OVERWORLD: KryptonDimensionType = register(
-        "overworld",
-        false,
-        true,
-        false,
-        true,
-        false,
-        true,
-        true,
-        false,
-        0F,
-        null,
-        BlockTags.INFINIBURN_OVERWORLD.key(),
-        -64,
-        384,
-        384,
-        1.0,
-        KryptonDimensionEffects.OVERWORLD
-    )
-    @JvmField val OVERWORLD_CAVES: KryptonDimensionType = register(
-        "overworld_caves",
-        false,
-        true,
-        false,
-        true,
-        true,
-        true,
-        true,
-        false,
-        0F,
-        null,
-        BlockTags.INFINIBURN_OVERWORLD.key(),
-        -64,
-        384,
-        384,
-        1.0,
-        KryptonDimensionEffects.OVERWORLD
-    )
-    @JvmField val THE_NETHER: KryptonDimensionType = register(
-        "the_nether",
-        true,
-        false,
-        true,
-        false,
-        true,
-        false,
-        false,
-        true,
-        0.1F,
-        18000L,
-        BlockTags.INFINIBURN_NETHER.key(),
-        0,
-        256,
-        128,
-        8.0,
-        KryptonDimensionEffects.THE_NETHER
-    )
-    @JvmField val THE_END: KryptonDimensionType = register(
-        "the_end",
-        false,
-        false,
-        false,
-        false,
-        false,
-        true,
-        false,
-        false,
-        0F,
-        6000L,
-        BlockTags.INFINIBURN_END.key(),
-        0,
-        256,
-        256,
-        1.0,
-        KryptonDimensionEffects.THE_END
-    )
+    @JvmField
+    val OVERWORLD: KryptonDimensionType = register("overworld") {
+        natural()
+        skylight()
+        raids()
+        allowBeds()
+        allowRespawnAnchors()
+        infiniburn(BlockTags.INFINIBURN_OVERWORLD.key())
+        minimumY(-64)
+        height(384)
+        effects(KryptonDimensionEffects.OVERWORLD)
+    }
+    @JvmField
+    val OVERWORLD_CAVES: KryptonDimensionType = register(Key.key("overworld_caves"), OVERWORLD.toBuilder().ceiling(true))
+    @JvmField
+    val THE_NETHER: KryptonDimensionType = register("the_nether") {
+        piglinSafe()
+        ultrawarm()
+        ceiling()
+        allowRespawnAnchors()
+        ambientLight(0.1F)
+        fixedTime(18000L)
+        infiniburn(BlockTags.INFINIBURN_NETHER.key())
+        height(256)
+        logicalHeight(128)
+        coordinateScale(8.0)
+        effects(KryptonDimensionEffects.THE_NETHER)
+    }
+    @JvmField
+    val THE_END: KryptonDimensionType = register("the_end") {
+        raids()
+        fixedTime(6000L)
+        infiniburn(BlockTags.INFINIBURN_END.key())
+        height(256)
+        effects(KryptonDimensionEffects.THE_END)
+    }
 
     @JvmStatic
-    private fun register(
-        name: String,
-        isPiglinSafe: Boolean,
-        isNatural: Boolean,
-        isUltrawarm: Boolean,
-        hasSkylight: Boolean,
-        hasCeiling: Boolean,
-        hasRaids: Boolean,
-        bedWorks: Boolean,
-        respawnAnchorWorks: Boolean,
-        ambientLight: Float,
-        fixedTime: Long?,
-        infiniburn: Key,
-        minimumY: Int,
-        height: Int,
-        logicalHeight: Int,
-        coordinateScale: Double,
-        effects: DimensionEffect
-    ): KryptonDimensionType {
-        val key = key(name)
-        return Registries.DIMENSION_TYPE.register(
-            key,
-            KryptonDimensionType(
-                key,
-                isPiglinSafe,
-                isNatural,
-                isUltrawarm,
-                hasSkylight,
-                hasCeiling,
-                hasRaids,
-                bedWorks,
-                respawnAnchorWorks,
-                ambientLight,
-                fixedTime,
-                infiniburn,
-                minimumY,
-                height,
-                logicalHeight,
-                coordinateScale,
-                effects
-            )
-        )
+    private fun register(name: String, builder: KryptonDimensionType.Builder.() -> Unit): KryptonDimensionType {
+        val key = Key.key(name)
+        return register(key, KryptonDimensionType.Builder(key).apply(builder))
     }
+
+    @JvmStatic
+    private fun register(key: Key, builder: KryptonDimensionType.Builder): KryptonDimensionType =
+        Registries.DIMENSION_TYPE.register(key, builder.build())
 }

@@ -27,16 +27,6 @@ class AttributeSupplier(private val attributes: ImmutableMap<AttributeType, Kryp
 
     fun value(type: AttributeType): Double = attribute(type).value
 
-    fun baseValue(type: AttributeType): Double = attribute(type).baseValue
-
-    fun modifierValue(type: AttributeType, uuid: UUID): Double = requireNotNull(attribute(type).modifier(uuid)?.amount) {
-        "Cannot find modifier $uuid on attribute ${type.key()}!"
-    }
-
-    fun hasAttribute(type: AttributeType): Boolean = attributes.containsKey(type)
-
-    fun hasModifier(type: AttributeType, uuid: UUID): Boolean = attributes[type]?.modifier(uuid) != null
-
     fun create(type: AttributeType, callback: (KryptonAttribute) -> Unit): KryptonAttribute {
         val attribute = attributes[type] ?: return KryptonAttribute(type, callback)
         val copy = KryptonAttribute(type, callback)

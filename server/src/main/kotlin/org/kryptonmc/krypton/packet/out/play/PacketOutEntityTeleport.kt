@@ -37,15 +37,12 @@ data class PacketOutEntityTeleport(
     override val onGround: Boolean
 ) : EntityPacket, MovementPacket {
 
-    constructor(entityId: Int, position: Vector3d, rotation: Vector2f, isOnGround: Boolean) : this(
-        entityId,
-        position.x(),
-        position.y(),
-        position.z(),
-        rotation.x(),
-        rotation.y(),
-        isOnGround
-    )
+    constructor(
+        entityId: Int,
+        position: Vector3d,
+        rotation: Vector2f,
+        isOnGround: Boolean
+    ) : this(entityId, position.x(), position.y(), position.z(), rotation.x(), rotation.y(), isOnGround)
 
     override fun write(buf: ByteBuf) {
         buf.writeVarInt(entityId)

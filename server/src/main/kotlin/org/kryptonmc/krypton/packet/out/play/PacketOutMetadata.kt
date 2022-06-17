@@ -33,10 +33,7 @@ import org.kryptonmc.krypton.util.writeVarInt
  * @param packedEntries the list of packed metadata items to send
  */
 @JvmRecord
-data class PacketOutMetadata(
-    override val entityId: Int,
-    val packedEntries: Sequence<MetadataHolder.Entry<*>>
-) : EntityPacket {
+data class PacketOutMetadata(override val entityId: Int, val packedEntries: Sequence<MetadataHolder.Entry<*>>) : EntityPacket {
 
     override fun write(buf: ByteBuf) {
         buf.writeVarInt(entityId)

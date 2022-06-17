@@ -62,11 +62,8 @@ data class KryptonFluid(
 
     override fun toBuilder(): Builder = Builder(this)
 
-    class Builder(
-        private val key: Key,
-        private var id: Int,
-        private var stateId: Int
-    ) : KryptonPropertyHolder.Builder<Fluid.Builder, Fluid>(), Fluid.Builder {
+    class Builder(private val key: Key, private var id: Int, private var stateId: Int) : KryptonPropertyHolder.Builder<Fluid.Builder, Fluid>(),
+        Fluid.Builder {
 
         private var bucket = ItemTypes.AIR
         private var empty = false

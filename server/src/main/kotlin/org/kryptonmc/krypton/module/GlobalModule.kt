@@ -35,10 +35,7 @@ import org.kryptonmc.api.util.FactoryProvider
 import org.kryptonmc.api.world.WorldManager
 import org.kryptonmc.krypton.KryptonServer
 
-class GlobalModule(
-    private val server: KryptonServer,
-    private val pluginContainers: Collection<PluginContainer>
-) : KotlinModule() {
+class GlobalModule(private val server: KryptonServer, private val pluginContainers: Collection<PluginContainer>) : KotlinModule() {
 
     override fun configure() {
         bind<Server>().toInstance(server)
@@ -53,9 +50,6 @@ class GlobalModule(
         bind<ProfileCache>().toInstance(server.profileCache)
         bind<Scheduler>().toInstance(server.scheduler)
         bind<ConsoleSender>().toInstance(server.console)
-
-        pluginContainers.forEach {
-            bind<PluginContainer>().annotatedWith(Names.named(it.description.id)).toInstance(it)
-        }
+        pluginContainers.forEach { bind<PluginContainer>().annotatedWith(Names.named(it.description.id)).toInstance(it) }
     }
 }

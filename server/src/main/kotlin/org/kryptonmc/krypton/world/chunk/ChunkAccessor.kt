@@ -69,7 +69,7 @@ abstract class ChunkAccessor(
         replaceMissingSections(heightAccessor, this.sectionArray)
     }
 
-    fun section(index: Int): ChunkSection = sectionArray[index]!!
+    private fun section(index: Int): ChunkSection = sectionArray[index]!!
 
     fun getOrCreateHeightmap(type: Heightmap.Type): Heightmap = heightmaps.getOrPut(type) { Heightmap(this, type) }
 

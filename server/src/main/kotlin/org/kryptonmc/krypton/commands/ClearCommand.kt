@@ -62,12 +62,7 @@ object ClearCommand : InternalCommand {
 
     //-1 means that everything should be cleared (there is no limit)
     @JvmStatic
-    private fun clear(
-        targets: List<KryptonPlayer>,
-        sender: Sender,
-        predicate: ItemStackPredicate = ItemStackPredicate { true },
-        maxCount: Int = -1
-    ) {
+    private fun clear(targets: List<KryptonPlayer>, sender: Sender, predicate: ItemStackPredicate = ItemStackPredicate { true }, maxCount: Int = -1) {
         val amount = if (maxCount == -1) "all" else maxCount.toString()
         if (targets.size == 1) {
             val target = targets[0]
@@ -126,12 +121,7 @@ object ClearCommand : InternalCommand {
     }
 
     @JvmStatic
-    private fun clearItem(
-        predicate: ItemStackPredicate,
-        remaining: Int,
-        item: KryptonItemStack,
-        setItem: (KryptonItemStack) -> Unit
-    ): Int {
+    private fun clearItem(predicate: ItemStackPredicate, remaining: Int, item: KryptonItemStack, setItem: (KryptonItemStack) -> Unit): Int {
         if (!predicate(item)) return -1
         return when {
             remaining == -1 -> {

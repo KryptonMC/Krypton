@@ -26,14 +26,7 @@ import org.kryptonmc.krypton.util.writeVector
 import org.spongepowered.math.vector.Vector3i
 
 @JvmRecord
-data class PacketOutBlockChange(
-    val block: Block,
-    val x: Int,
-    val y: Int,
-    val z: Int
-) : Packet {
-
-    constructor(block: Block, location: Vector3i) : this(block, location.x(), location.y(), location.z())
+data class PacketOutBlockChange(val block: Block, val x: Int, val y: Int, val z: Int) : Packet {
 
     override fun write(buf: ByteBuf) {
         buf.writeVector(x, y, z)

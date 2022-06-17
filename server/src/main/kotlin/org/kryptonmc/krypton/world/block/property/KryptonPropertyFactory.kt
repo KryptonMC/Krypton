@@ -70,9 +70,6 @@ object KryptonPropertyFactory : Property.Factory {
 
     override fun forInt(name: String, values: Set<Int>): Property<Int> = IntProperty(name, values.toImmutableSet())
 
-    override fun <E> forEnum(
-        name: String,
-        type: Class<E>,
-        values: Set<E>
-    ): Property<E> where E : Enum<E>, E : StringSerializable = EnumProperty(name, type, values.toImmutableSet())
+    override fun <E> forEnum(name: String, type: Class<E>, values: Set<E>): Property<E> where E : Enum<E>, E : StringSerializable =
+        EnumProperty(name, type, values.toImmutableSet())
 }

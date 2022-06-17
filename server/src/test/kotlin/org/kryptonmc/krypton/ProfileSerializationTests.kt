@@ -55,10 +55,7 @@ class ProfileSerializationTests {
         // With properties
         val withProperties = KryptonGameProfile.toJson(KryptonGameProfile(NAME, ID, PROPERTIES))
         val propertiesString = PROPERTIES.joinToString(",") { KryptonProfileProperty.toJson(it) }
-        assertEquals(
-            "{\"id\":\"${MojangUUIDTypeAdapter.toString(ID)}\",\"name\":\"$NAME\",\"properties\":[$propertiesString]}",
-            withProperties
-        )
+        assertEquals("{\"id\":\"${MojangUUIDTypeAdapter.toString(ID)}\",\"name\":\"$NAME\",\"properties\":[$propertiesString]}", withProperties)
     }
 
     @Test

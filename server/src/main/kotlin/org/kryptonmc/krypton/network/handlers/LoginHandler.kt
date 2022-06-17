@@ -314,14 +314,12 @@ class LoginHandler(
             return false
         } else if (playerManager.bannedIps.isBanned(address)) { // Their IP is banned.
             val entry = playerManager.bannedIps[address]!!
-            var text = Component.translatable("multiplayer.disconnect.banned_ip.reason", entry.reason)
+            val text = Component.translatable().key("multiplayer.disconnect.banned_ip.reason").args(entry.reason)
             if (entry.expirationDate != null) {
-                text = text.append(Component.translatable(
-                    "multiplayer.disconnect.banned.expiration",
-                    Component.text(BanEntry.DATE_FORMATTER.format(entry.expirationDate))
-                ))
+                val expirationDate = Component.text(BanEntry.DATE_FORMATTER.format(entry.expirationDate))
+                text.append(Component.translatable("multiplayer.disconnect.banned.expiration", expirationDate))
             }
-            disconnect(text)
+            disconnect(text.build())
             LOGGER.info("${profile.name} disconnected. Reason: IP Banned")
         }
         return true

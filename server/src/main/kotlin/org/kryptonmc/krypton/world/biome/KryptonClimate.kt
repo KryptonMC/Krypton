@@ -64,12 +64,8 @@ data class KryptonClimate(
 
     object Factory : Climate.Factory {
 
-        override fun of(
-            precipitation: Precipitation,
-            temperature: Float,
-            downfall: Float,
-            temperatureModifier: TemperatureModifier
-        ): Climate = KryptonClimate(precipitation, temperature, downfall, temperatureModifier)
+        override fun of(precipitation: Precipitation, temperature: Float, downfall: Float, temperatureModifier: TemperatureModifier): Climate =
+            KryptonClimate(precipitation, temperature, downfall, temperatureModifier)
 
         override fun builder(): Climate.Builder = Builder()
     }

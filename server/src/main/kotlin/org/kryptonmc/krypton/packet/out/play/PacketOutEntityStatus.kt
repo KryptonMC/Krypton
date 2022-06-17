@@ -27,10 +27,7 @@ import org.kryptonmc.krypton.packet.EntityPacket
  * @param entityId the ID of the entity to set the status for
  */
 @JvmRecord
-data class PacketOutEntityStatus(
-    override val entityId: Int,
-    val action: Int
-) : EntityPacket {
+data class PacketOutEntityStatus(override val entityId: Int, val action: Int) : EntityPacket {
 
     override fun write(buf: ByteBuf) {
         buf.writeInt(entityId)

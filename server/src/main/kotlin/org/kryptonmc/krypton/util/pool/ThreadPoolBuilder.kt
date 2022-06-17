@@ -39,7 +39,7 @@ sealed class ThreadPoolBuilder<B : ThreadPoolBuilder<B, E>, E : ExecutorService>
     protected var unit = TimeUnit.MILLISECONDS
     protected var workQueue: BlockingQueue<Runnable>? = null
     protected var threadFactory: ThreadFactory? = null
-    protected var rejectedExecutionHandler: RejectedExecutionHandler? = null
+    private var rejectedExecutionHandler: RejectedExecutionHandler? = null
 
     fun coreSize(size: Int): B = apply { corePoolSize = size } as B
 
@@ -96,8 +96,8 @@ sealed class ThreadPoolBuilder<B : ThreadPoolBuilder<B, E>, E : ExecutorService>
         }
 
         override fun build(factory: ThreadFactory, handler: RejectedExecutionHandler?): ScheduledExecutorService {
-            if (handler != null) return ScheduledThreadPoolExecutor(corePoolSize, threadFactory, handler)
-            return ScheduledThreadPoolExecutor(corePoolSize, threadFactory)
+            if (handler != null) return ScheduledThreadPoolExecutor(corePoolSize, factory, handler)
+            return ScheduledThreadPoolExecutor(corePoolSize, factory)
         }
     }
 

@@ -71,9 +71,7 @@ abstract class KryptonArrowLike(
         super.load(tag)
         isCritical = tag.getBoolean("crit")
         if (tag.contains("damage", 99)) damage = tag.getDouble("damage")
-        if (tag.contains("inBlockState", CompoundTag.ID)) {
-            stuckInBlock = tag.getCompound("inBlockState").toBlock()
-        }
+        if (tag.contains("inBlockState", CompoundTag.ID)) stuckInBlock = tag.getCompound("inBlockState").toBlock()
         isInGround = tag.getBoolean("inGround")
         life = tag.getShort("life").toInt()
 
@@ -84,9 +82,7 @@ abstract class KryptonArrowLike(
         shakeTime = tag.getByte("shake").toInt() and 255
         wasShotFromCrossbow = tag.getBoolean("ShotFromCrossbow")
 
-        if (tag.contains("SoundEvent", StringTag.ID)) {
-            sound = Registries.SOUND_EVENT[Key.key(tag.getString("SoundEvent"))] ?: defaultHitGroundSound
-        }
+        if (tag.contains("SoundEvent", StringTag.ID)) sound = Registries.SOUND_EVENT[Key.key(tag.getString("SoundEvent"))] ?: defaultHitGroundSound
     }
 
     override fun save(): CompoundTag.Builder = super.save().apply {

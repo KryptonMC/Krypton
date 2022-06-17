@@ -27,11 +27,7 @@ import org.kryptonmc.krypton.util.writeUUID
 import java.util.UUID
 
 @JvmRecord
-data class PacketOutChat(
-    val message: Component,
-    val type: MessageType,
-    val senderId: UUID
-) : Packet {
+data class PacketOutChat(val message: Component, val type: MessageType, val senderId: UUID) : Packet {
 
     override fun write(buf: ByteBuf) {
         buf.writeChat(message)

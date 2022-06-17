@@ -59,10 +59,8 @@ class EntityManager(val world: KryptonWorld) : AutoCloseable {
 
     operator fun get(uuid: UUID): KryptonEntity? = byUUID[uuid]
 
-    operator fun get(chunk: KryptonChunk): Set<KryptonEntity> = byChunk.computeIfAbsent(
-        ChunkPosition.toLong(chunk.position.x, chunk.position.z),
-        LongFunction { ConcurrentHashMap.newKeySet() }
-    )
+    operator fun get(chunk: KryptonChunk): Set<KryptonEntity> =
+        byChunk.computeIfAbsent(ChunkPosition.toLong(chunk.position.x, chunk.position.z), LongFunction { ConcurrentHashMap.newKeySet() })
 
     fun spawn(entity: KryptonEntity) {
         if (entity.world != world) return

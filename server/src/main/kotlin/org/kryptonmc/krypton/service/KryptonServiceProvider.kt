@@ -22,8 +22,4 @@ import org.kryptonmc.api.plugin.PluginContainer
 import org.kryptonmc.api.service.ServiceProvider
 
 @JvmRecord
-data class KryptonServiceProvider<T>(
-    override val plugin: PluginContainer,
-    override val type: Class<T>,
-    override val service: T
-) : ServiceProvider<T>
+data class KryptonServiceProvider<T>(override val plugin: PluginContainer, override val type: Class<T>, override val service: T) : ServiceProvider<T>

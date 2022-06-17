@@ -24,13 +24,7 @@ import org.kryptonmc.krypton.packet.EntityPacket
 import org.kryptonmc.krypton.util.writeVarInt
 
 @JvmRecord
-data class PacketOutSpawnExperienceOrb(
-    override val entityId: Int,
-    val x: Double,
-    val y: Double,
-    val z: Double,
-    val count: Int
-) : EntityPacket {
+data class PacketOutSpawnExperienceOrb(override val entityId: Int, val x: Double, val y: Double, val z: Double, val count: Int) : EntityPacket {
 
     constructor(orb: KryptonExperienceOrb) : this(orb.id, orb.location.x(), orb.location.y(), orb.location.z(), orb.count)
 

@@ -70,9 +70,7 @@ class KryptonParrot(world: KryptonWorld) : KryptonTamable(world, EntityTypes.PAR
         val heldItem = player.heldItem(hand)
         if (!isTame && TAME_FOOD.contains(heldItem.type)) {
             if (!player.canInstantlyBuild) player.setHeldItem(hand, heldItem.shrink(1))
-            if (!isSilent) {
-                world.playSound(location, SoundEvents.PARROT_EAT, soundSource, 1F, 1F + (Random.nextFloat() - Random.nextFloat()) * 0.2F)
-            }
+            if (!isSilent) world.playSound(location, SoundEvents.PARROT_EAT, soundSource, 1F, 1F + (Random.nextFloat() - Random.nextFloat()) * 0.2F)
             // TODO: Send taming result
             if (Random.nextInt(10) == 0) tame(player)
             return InteractionResult.CONSUME

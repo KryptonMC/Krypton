@@ -31,6 +31,7 @@ import org.apache.logging.log4j.LogManager
 import org.kryptonmc.krypton.auth.KryptonProfileCache
 import org.kryptonmc.krypton.config.KryptonConfig
 import org.kryptonmc.krypton.util.Bootstrap
+import org.kryptonmc.krypton.util.logger
 import java.nio.file.Path
 import java.util.concurrent.atomic.AtomicReference
 
@@ -122,17 +123,11 @@ private class KryptonCLI : CliktCommand(
         val reference = AtomicReference<KryptonServer>()
         val serverThread = Thread({ reference.get().start() }, "Tick Thread").apply {
             setUncaughtExceptionHandler { _, exception ->
-                KryptonServer.LOGGER.error("Caught unhandled exception in ticking thread!", exception)
+                logger<KryptonServer>().error("Caught unhandled exception in ticking thread!", exception)
                 reference.get().stop()
             }
         }
-        val server = KryptonServer(
-            config,
-            useDataConverter,
-            KryptonProfileCache(userCacheFile),
-            configFile,
-            worldFolder
-        )
+        val server = KryptonServer(config, useDataConverter, KryptonProfileCache(userCacheFile), configFile, worldFolder)
         reference.set(server)
         serverThread.start()
     }

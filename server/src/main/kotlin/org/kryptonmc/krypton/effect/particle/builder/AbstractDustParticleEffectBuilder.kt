@@ -23,16 +23,11 @@ import org.kryptonmc.api.effect.particle.builder.BaseDustParticleEffectBuilder
 import org.spongepowered.math.vector.Vector3d
 
 @Suppress("UNCHECKED_CAST")
-abstract class AbstractDustParticleEffectBuilder<B : BaseDustParticleEffectBuilder<B>>(
-    type: ParticleType,
-    quantity: Int,
-    offset: Vector3d,
-    longDistance: Boolean,
-    red: Short,
-    green: Short,
-    blue: Short,
-    protected var scale: Float = 0F
-) : AbstractColorParticleEffectBuilder<B>(type, quantity, offset, longDistance, red, green, blue), BaseDustParticleEffectBuilder<B> {
+abstract class AbstractDustParticleEffectBuilder<B : BaseDustParticleEffectBuilder<B>>(type: ParticleType) :
+    AbstractColorParticleEffectBuilder<B>(type),
+    BaseDustParticleEffectBuilder<B> {
+
+    protected var scale = 0F
 
     override fun scale(scale: Float): B = apply { this.scale = scale } as B
 }

@@ -33,8 +33,6 @@ open class KryptonSquid(world: KryptonWorld, type: EntityType<out Squid>) : Kryp
 
     companion object {
 
-        private val ATTRIBUTES = attributes()
-            .add(AttributeTypes.MAX_HEALTH, 10.0)
-            .build()
+        private val ATTRIBUTES = attributes().add(AttributeTypes.MAX_HEALTH, 10.0).build()
     }
 }

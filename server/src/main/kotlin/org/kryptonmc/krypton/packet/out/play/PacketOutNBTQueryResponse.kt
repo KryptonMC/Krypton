@@ -25,10 +25,7 @@ import org.kryptonmc.krypton.util.writeVarInt
 import org.kryptonmc.nbt.CompoundTag
 
 @JvmRecord
-data class PacketOutNBTQueryResponse(
-    val transactionId: Int,
-    val nbt: CompoundTag
-) : Packet {
+data class PacketOutNBTQueryResponse(val transactionId: Int, val nbt: CompoundTag) : Packet {
 
     override fun write(buf: ByteBuf) {
         buf.writeVarInt(transactionId)

@@ -27,11 +27,7 @@ import org.kryptonmc.krypton.util.writeEnum
 import org.kryptonmc.krypton.util.writeVarInt
 
 @JvmRecord
-data class PacketInEntityAction(
-    val id: Int,
-    val action: PerformActionEvent.Action,
-    val data: Int
-) : Packet {
+data class PacketInEntityAction(val id: Int, val action: PerformActionEvent.Action, val data: Int) : Packet {
 
     constructor(buf: ByteBuf) : this(buf.readVarInt(), buf.readEnum<PerformActionEvent.Action>(), buf.readVarInt())
 

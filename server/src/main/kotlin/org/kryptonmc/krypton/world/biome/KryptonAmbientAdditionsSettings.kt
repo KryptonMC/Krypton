@@ -26,10 +26,7 @@ import org.kryptonmc.krypton.util.serialization.encode
 import org.kryptonmc.nbt.compound
 
 @JvmRecord
-data class KryptonAmbientAdditionsSettings(
-    override val sound: SoundEvent,
-    override val probability: Double
-) : AmbientAdditionsSettings {
+data class KryptonAmbientAdditionsSettings(override val sound: SoundEvent, override val probability: Double) : AmbientAdditionsSettings {
 
     override fun toBuilder(): AmbientAdditionsSettings.Builder = Builder(this)
 

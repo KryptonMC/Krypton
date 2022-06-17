@@ -24,23 +24,8 @@ import org.kryptonmc.api.effect.particle.data.ParticleData
 import org.kryptonmc.krypton.effect.particle.data.KryptonColorParticleData
 import org.spongepowered.math.vector.Vector3d
 
-class KryptonColorParticleEffectBuilder(
-    type: ColorParticleType,
-    quantity: Int = 1,
-    offset: Vector3d = Vector3d.ZERO,
-    longDistance: Boolean = false,
-    red: Short = 0,
-    green: Short = 0,
-    blue: Short = 0
-) : AbstractColorParticleEffectBuilder<ColorParticleEffectBuilder>(
-    type,
-    quantity,
-    offset,
-    longDistance,
-    red,
-    green,
-    blue
-), ColorParticleEffectBuilder {
+class KryptonColorParticleEffectBuilder(type: ColorParticleType) : AbstractColorParticleEffectBuilder<ColorParticleEffectBuilder>(type),
+    ColorParticleEffectBuilder {
 
     override fun buildData(): ParticleData = KryptonColorParticleData(red, green, blue)
 }

@@ -32,15 +32,9 @@ import org.kryptonmc.krypton.util.writeUUID
 import org.kryptonmc.krypton.util.writeVarInt
 
 @JvmRecord
-data class PacketOutAttributes(
-    override val entityId: Int,
-    val attributes: Collection<AttributeSnapshot>
-) : EntityPacket {
+data class PacketOutAttributes(override val entityId: Int, val attributes: Collection<AttributeSnapshot>) : EntityPacket {
 
-    constructor(
-        id: Int,
-        attributes: Iterable<KryptonAttribute>
-    ) : this(id, attributes.mapPersistentList { AttributeSnapshot(it.type, it.baseValue, it.modifiersByOperation) })
+    constructor(id: Int, attributes: Iterable<KryptonAttribute>) : this(id, attributes.mapPersistentList(AttributeSnapshot::from))
 
     override fun write(buf: ByteBuf) {
         buf.writeVarInt(entityId)
@@ -59,9 +53,12 @@ data class PacketOutAttributes(
     }
 
     @JvmRecord
-    data class AttributeSnapshot(
-        val type: AttributeType,
-        val base: Double,
-        val modifiers: Map<ModifierOperation, Set<AttributeModifier>>
-    )
+    data class AttributeSnapshot(val type: AttributeType, val base: Double, val modifiers: Map<ModifierOperation, Set<AttributeModifier>>) {
+
+        companion object {
+
+            @JvmStatic
+            fun from(attribute: KryptonAttribute): AttributeSnapshot = AttributeSnapshot(attribute.type, attribute.baseValue, attribute.modifiersByOperation)
+        }
+    }
 }

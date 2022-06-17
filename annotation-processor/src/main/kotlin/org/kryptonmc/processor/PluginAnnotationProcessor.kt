@@ -78,17 +78,12 @@ class PluginAnnotationProcessor : AbstractProcessor() {
         }
         return false
     }
+}
 
-    companion object {
+private fun Messager.warn(message: String) {
+    printMessage(Diagnostic.Kind.WARNING, message)
+}
 
-        @JvmStatic
-        private fun Messager.warn(message: String) {
-            printMessage(Diagnostic.Kind.WARNING, message)
-        }
-
-        @JvmStatic
-        private fun Messager.error(message: String) {
-            printMessage(Diagnostic.Kind.ERROR, message)
-        }
-    }
+private fun Messager.error(message: String) {
+    printMessage(Diagnostic.Kind.ERROR, message)
 }

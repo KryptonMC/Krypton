@@ -33,6 +33,7 @@ import org.kryptonmc.api.plugin.PluginDescription
 import org.kryptonmc.krypton.plugin.KryptonPluginContainer
 import org.kryptonmc.krypton.plugin.KryptonPluginDependency
 import org.kryptonmc.krypton.plugin.PluginClassLoader
+import org.kryptonmc.krypton.util.mapPersistentList
 import org.kryptonmc.processor.SerializedPluginDescription
 import java.nio.file.Files
 import java.nio.file.Path
@@ -46,9 +47,7 @@ object PluginLoader {
     @JvmStatic
     fun loadDescription(source: Path): LoadedPluginDescriptionCandidate {
         val serialized = findMetadata(source) ?: throw InvalidPluginException("Could not find a valid krypton-plugin-meta.json file!")
-        if (!serialized.id.matches(SerializedPluginDescription.ID_REGEX)) {
-            throw InvalidPluginException("Plugin ID ${serialized.id} is invalid!")
-        }
+        if (!serialized.id.matches(SerializedPluginDescription.ID_REGEX)) throw InvalidPluginException("Plugin ID ${serialized.id} is invalid!")
         return serialized.toCandidate(source)
     }
 
@@ -67,9 +66,7 @@ object PluginLoader {
         require(description is LoadedPluginDescription) { "Description provided isn't compatible with this loader!" }
 
         val injector = Guice.createInjector(*modules)
-        val instance = requireNotNull(injector.getInstance(description.mainClass)) {
-            "Got nothing from injector for plugin ${description.id}!"
-        }
+        val instance = requireNotNull(injector.getInstance(description.mainClass)) { "Got nothing from injector for plugin ${description.id}!" }
 
         container.instance = instance
     }
@@ -85,21 +82,14 @@ object PluginLoader {
         }
 
         if (foundBungeeBukkitPluginFile) {
-            throw InvalidPluginException("The plugin file ${path.fileName} appears to be a Bukkit or BungeeCord plugin. " +
-                    "Krypton does not support Bukkit or BungeeCord plugins.")
+            throw InvalidPluginException("The plugin file ${path.fileName} appears to be a Bukkit or BungeeCord plugin. Krypton does not support" +
+                    "Bukkit or BungeeCord plugins.")
         }
         return null
     }
+}
 
-    @JvmStatic
-    private fun SerializedPluginDescription.toCandidate(source: Path): LoadedPluginDescriptionCandidate = LoadedPluginDescriptionCandidate(
-        id,
-        name,
-        version,
-        description,
-        authors.toImmutableList(),
-        dependencies.map { KryptonPluginDependency(it.id, it.optional) }.toImmutableList(),
-        source,
-        main
-    )
+private fun SerializedPluginDescription.toCandidate(source: Path): LoadedPluginDescriptionCandidate {
+    val dependencies = dependencies.mapPersistentList { KryptonPluginDependency(it.id, it.optional) }
+    return LoadedPluginDescriptionCandidate(id, name, version, description, authors.toImmutableList(), dependencies, source, main)
 }

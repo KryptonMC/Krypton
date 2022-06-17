@@ -27,8 +27,6 @@ import org.kryptonmc.krypton.util.writeChat
 @JvmRecord
 data class PacketOutSubTitle(val subTitle: Component) : Packet {
 
-    constructor(title: Title) : this(title.subtitle())
-
     override fun write(buf: ByteBuf) {
         buf.writeChat(subTitle)
     }

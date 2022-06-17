@@ -75,8 +75,7 @@ object SessionService {
         profiles.put(profile.name, profile)
         return profile
     }
-
-    // This is Yggdrasil's strange way of digesting to hex.
-    @JvmStatic
-    private fun MessageDigest.hexDigest(): String = BigInteger(digest()).toString(16)
 }
+
+// This is Yggdrasil's strange way of digesting to hex.
+private fun MessageDigest.hexDigest(): String = BigInteger(digest()).toString(16)

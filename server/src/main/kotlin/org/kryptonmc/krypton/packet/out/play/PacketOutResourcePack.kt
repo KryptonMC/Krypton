@@ -26,12 +26,7 @@ import org.kryptonmc.krypton.util.writeChat
 import org.kryptonmc.krypton.util.writeString
 
 @JvmRecord
-data class PacketOutResourcePack(
-    val uri: String,
-    val hash: String,
-    val forced: Boolean,
-    val prompt: Component?
-) : Packet {
+data class PacketOutResourcePack(val uri: String, val hash: String, val forced: Boolean, val prompt: Component?) : Packet {
 
     constructor(pack: ResourcePack) : this(pack.uri.toString(), pack.hash, pack.isForced, pack.promptMessage)
 

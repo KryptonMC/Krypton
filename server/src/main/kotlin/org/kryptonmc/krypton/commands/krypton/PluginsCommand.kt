@@ -46,10 +46,10 @@ object PluginsCommand : KryptonSubCommand {
                 return@executes 1
             }
 
-            var message = Component.empty()
+            val message = Component.text()
             plugins.forEachIndexed { index, plugin ->
                 val authors = plugin.description.authors.joinToString(", ")
-                var pluginMessage = Component.empty()
+                val pluginMessage = Component.text()
                     .append(Component.text("ID: ", KryptonColors.DARK_ORCHID))
                     .append(Component.text(plugin.description.id, KryptonColors.VIVID_SKY_BLUE))
                     .append(Component.newline())
@@ -78,18 +78,17 @@ object PluginsCommand : KryptonSubCommand {
                             .append(CLOSED_BRACKET)
                         if (index < plugin.description.dependencies.size - 1) dependencies = dependencies.append(Component.newline())
                     }
-                    pluginMessage = pluginMessage.append(Component.newline()).append(dependencies)
+                    pluginMessage.append(Component.newline()).append(dependencies)
                 } else {
-                    pluginMessage = pluginMessage.append(Component.text("None", NamedTextColor.RED))
+                    pluginMessage.append(Component.text("None", NamedTextColor.RED))
                 }
-                message = message
-                    .append(Component.empty()
-                        .append(Component.text(plugin.description.id, KryptonColors.LIGHTER_PURPLE))
-                        .append(OPEN_BRACKET)
-                        .append(Component.text(plugin.description.version, NamedTextColor.GREEN))
-                        .append(CLOSED_BRACKET)
-                        .hoverEvent(HoverEvent.showText(pluginMessage)))
-                if (index < plugins.size - 1) message = message.append(SEPARATOR)
+                message.append(Component.empty()
+                    .append(Component.text(plugin.description.id, KryptonColors.LIGHTER_PURPLE))
+                    .append(OPEN_BRACKET)
+                    .append(Component.text(plugin.description.version, NamedTextColor.GREEN))
+                    .append(CLOSED_BRACKET)
+                    .hoverEvent(HoverEvent.showText(pluginMessage)))
+                if (index < plugins.size - 1) message.append(SEPARATOR)
             }
             sender.sendMessage(Component.empty()
                 .append(PREFIX)

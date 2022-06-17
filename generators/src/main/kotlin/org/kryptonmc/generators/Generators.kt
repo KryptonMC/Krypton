@@ -49,90 +49,26 @@ fun main() {
     Bootstrap.bootStrap()
     val output = Path.of("api/src/generated/kotlin")
     val generator = StandardGenerator(output)
-    generator.run(
-        Blocks::class.java,
-        Registry.BLOCK,
-        ClassName("org.kryptonmc.api.block", "Blocks"),
-        Block::class.java,
-        ClassName("org.kryptonmc.api.block", "Block"),
-        "BLOCK"
-    )
-    generator.run(
-        SoundEvents::class.java,
-        Registry.SOUND_EVENT,
-        ClassName("org.kryptonmc.api.effect.sound", "SoundEvents"),
-        SoundEvent::class.java,
-        ClassName("org.kryptonmc.api.effect.sound", "SoundEvent"),
-        "SOUND_EVENT"
-    )
-    generator.run(
-        Fluids::class.java,
-        Registry.FLUID,
-        ClassName("org.kryptonmc.api.fluid", "Fluids"),
-        Fluid::class.java,
-        ClassName("org.kryptonmc.api.fluid", "Fluid"),
-        "FLUID"
-    )
-    generator.run(
-        Items::class.java,
-        Registry.ITEM,
-        ClassName("org.kryptonmc.api.item", "ItemTypes"),
-        Item::class.java,
-        ClassName("org.kryptonmc.api.item", "ItemType"),
-        "ITEM"
-    )
-    generator.run(
-        Biomes::class.java,
-        BuiltinRegistries.BIOME,
-        ClassName("org.kryptonmc.api.world.biome", "Biomes"),
-        ResourceKey::class.java,
-        ClassName("org.kryptonmc.api.world.biome", "Biome"),
-        "BIOME"
-    ) { (it.get(null) as ResourceKey<*>).location() }
-    generator.run(
-        Attributes::class.java,
-        Registry.ATTRIBUTE,
-        ClassName("org.kryptonmc.api.entity.attribute", "AttributeTypes"),
-        Attribute::class.java,
-        ClassName("org.kryptonmc.api.entity.attribute", "AttributeType"),
-        "ATTRIBUTE"
-    )
-    generator.run(
-        BlockEntityType::class.java,
+    generator.run<Blocks, Block>(Registry.BLOCK, "block.Blocks", "block.Block", "BLOCK")
+    generator.run<SoundEvents, SoundEvent>(Registry.SOUND_EVENT, "effect.sound.SoundEvents", "effect.sound.SoundEvent", "SOUND_EVENT")
+    generator.run<Fluids, Fluid>(Registry.FLUID, "fluid.Fluids", "fluid.Fluid", "FLUID")
+    generator.run<Items, Item>(Registry.ITEM, "item.ItemTypes", "item.ItemType", "ITEM")
+    generator.run<Biomes, ResourceKey<*>>(BuiltinRegistries.BIOME, "world.biome.Biomes", "world.biome.Biome", "BIOME") {
+        (it.get(null) as ResourceKey<*>).location()
+    }
+    generator.run<Attributes, Attribute>(Registry.ATTRIBUTE, "entity.attribute.AttributeTypes", "entity.attribute.AttributeType", "ATTRIBUTE")
+    generator.run<BlockEntityType<*>, BlockEntityType<*>>(
         Registry.BLOCK_ENTITY_TYPE,
-        ClassName("org.kryptonmc.api.block.entity", "BlockEntityTypes"),
-        BlockEntityType::class.java,
-        ClassName("org.kryptonmc.api.block.entity", "BlockEntityType"),
+        "block.entity.BlockEntityTypes",
+        "block.entity.BlockEntityType",
         "BLOCK_ENTITY_TYPE"
     )
     DyeColorGenerator(output).run()
+    val pkg = "org.kryptonmc.api"
+    val entityType = ClassName("$pkg.entity", "EntityType").parameterizedBy(STAR)
     val tagGenerator = TagGenerator(output)
-    tagGenerator.run(
-        "BlockTags",
-        "BLOCKS",
-        ClassName("org.kryptonmc.api.block", "Block"),
-        "Block",
-        BlockTags::class.java
-    )
-    tagGenerator.run(
-        "EntityTypeTags",
-        "ENTITY_TYPES",
-        ClassName("org.kryptonmc.api.entity", "EntityType").parameterizedBy(STAR),
-        "EntityType<\\*>",
-        EntityTypeTags::class.java
-    )
-    tagGenerator.run(
-        "FluidTags",
-        "FLUIDS",
-        ClassName("org.kryptonmc.api.fluid", "Fluid"),
-        "Fluid",
-        FluidTags::class.java
-    )
-    tagGenerator.run(
-        "ItemTags",
-        "ITEMS",
-        ClassName("org.kryptonmc.api.item", "ItemType"),
-        "ItemType",
-        ItemTags::class.java
-    )
+    tagGenerator.run<BlockTags>("BlockTags", "BLOCKS", ClassName("org.kryptonmc.api.block", "Block"), "Block")
+    tagGenerator.run<EntityTypeTags>("EntityTypeTags", "ENTITY_TYPES", entityType, "EntityType<\\*>")
+    tagGenerator.run<FluidTags>("FluidTags", "FLUIDS", ClassName("org.kryptonmc.api.fluid", "Fluid"), "Fluid")
+    tagGenerator.run<ItemTags>("ItemTags", "ITEMS", ClassName("org.kryptonmc.api.item", "ItemType"), "ItemType")
 }

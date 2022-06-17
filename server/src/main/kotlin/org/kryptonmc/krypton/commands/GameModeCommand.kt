@@ -38,9 +38,7 @@ import org.kryptonmc.krypton.entity.player.KryptonPlayer
 object GameModeCommand : InternalCommand {
 
     override fun register(dispatcher: CommandDispatcher<Sender>) {
-        val command = literal<Sender>("gamemode") {
-            permission(KryptonPermission.GAME_MODE)
-        }
+        val command = literal("gamemode") { permission(KryptonPermission.GAME_MODE) }
         GameMode.values().forEach { mode ->
             command.then(literal(mode.serialized) {
                 executes { gameModeArgument(it, mode) }

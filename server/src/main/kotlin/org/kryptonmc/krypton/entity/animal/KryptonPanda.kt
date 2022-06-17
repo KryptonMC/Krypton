@@ -110,10 +110,7 @@ class KryptonPanda(world: KryptonWorld) : KryptonAnimal(world, EntityTypes.PANDA
 
     companion object {
 
-        private val ATTRIBUTES = attributes()
-            .add(AttributeTypes.MOVEMENT_SPEED, 0.15)
-            .add(AttributeTypes.ATTACK_DAMAGE, 6.0)
-            .build()
+        private val ATTRIBUTES = attributes().add(AttributeTypes.MOVEMENT_SPEED, 0.15).add(AttributeTypes.ATTACK_DAMAGE, 6.0).build()
 
         @JvmStatic
         private fun variantFromGenes(main: PandaGene, hidden: PandaGene): PandaGene {

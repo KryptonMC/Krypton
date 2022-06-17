@@ -53,10 +53,7 @@ object BlockLoader : KryptonDataLoader<Block>("blocks", Registries.BLOCK) {
     fun fromKey(key: Key): KryptonBlock? = fromKey(key.asString())
 
     @JvmStatic
-    fun properties(
-        key: String,
-        properties: Map<String, String>
-    ): KryptonBlock? = PROPERTY_MAP[key]?.properties?.get(properties)
+    fun properties(key: String, properties: Map<String, String>): KryptonBlock? = PROPERTY_MAP[key]?.properties?.get(properties)
 
     override fun preload() {
         KryptonPropertyFactory.bootstrap()

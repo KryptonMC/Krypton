@@ -62,10 +62,7 @@ class ChunkManager(private val world: KryptonWorld) {
         }
     }).build()
     private val ticketManager = TicketManager(this)
-    private val regionFileManager = RegionFileManager(
-        world.folder.resolve("region"),
-        world.server.config.advanced.synchronizeChunkWrites
-    )
+    private val regionFileManager = RegionFileManager(world.folder.resolve("region"), world.server.config.advanced.synchronizeChunkWrites)
 
     operator fun get(x: Int, z: Int): KryptonChunk? = chunkMap[ChunkPosition.toLong(x, z)]
 
@@ -140,13 +137,7 @@ class ChunkManager(private val world: KryptonWorld) {
                 } else {
                     PaletteHolder(PaletteHolder.Strategy.BIOMES, Biomes.PLAINS)
                 }
-                val section = ChunkSection(
-                    y,
-                    blocks,
-                    biomes,
-                    sectionData.getByteArray("BlockLight"),
-                    sectionData.getByteArray("SkyLight")
-                )
+                val section = ChunkSection(y, blocks, biomes, sectionData.getByteArray("BlockLight"), sectionData.getByteArray("SkyLight"))
                 sections[index] = section
             }
         }

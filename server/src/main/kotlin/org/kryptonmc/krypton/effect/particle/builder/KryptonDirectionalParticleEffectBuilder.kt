@@ -24,14 +24,11 @@ import org.kryptonmc.api.effect.particle.data.ParticleData
 import org.kryptonmc.krypton.effect.particle.data.KryptonDirectionalParticleData
 import org.spongepowered.math.vector.Vector3d
 
-class KryptonDirectionalParticleEffectBuilder(
-    type: DirectionalParticleType,
-    quantity: Int = 1,
-    offset: Vector3d = Vector3d.ZERO,
-    longDistance: Boolean = false,
-    private var direction: Vector3d? = null,
-    private var velocity: Float = 0F
-) : AbstractParticleEffectBuilder<DirectionalParticleEffectBuilder>(type, quantity, offset, longDistance), DirectionalParticleEffectBuilder {
+class KryptonDirectionalParticleEffectBuilder(type: DirectionalParticleType) : AbstractParticleEffectBuilder<DirectionalParticleEffectBuilder>(type),
+    DirectionalParticleEffectBuilder {
+
+    private var direction: Vector3d? = null
+    private var velocity = 0F
 
     override fun direction(direction: Vector3d): DirectionalParticleEffectBuilder = apply { this.direction = direction }
 

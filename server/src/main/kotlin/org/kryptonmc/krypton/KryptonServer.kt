@@ -25,7 +25,6 @@ import net.kyori.adventure.identity.Identified
 import net.kyori.adventure.identity.Identity
 import net.kyori.adventure.text.Component
 import org.apache.logging.log4j.LogManager
-import org.apache.logging.log4j.Logger
 import org.kryptonmc.api.Server
 import org.kryptonmc.api.adventure.Audiences
 import org.kryptonmc.api.event.server.ServerStartEvent
@@ -287,10 +286,7 @@ class KryptonServer(
     }
 
     fun updateConfig(path: String, value: Any?) {
-        val config = HoconConfigurationLoader.builder()
-            .path(configPath)
-            .defaultOptions(KryptonConfig.OPTIONS)
-            .build()
+        val config = HoconConfigurationLoader.builder().path(configPath).defaultOptions(KryptonConfig.OPTIONS).build()
         val node = config.load().node(path.split(".")).set(value)
         config.save(node)
     }
@@ -352,12 +348,7 @@ class KryptonServer(
             if (explicitExit) exitProcess(0)
         }
 
-        if (explicitExit) {
-            val thread = Thread(shutdownProcess)
-            thread.start()
-        } else {
-            shutdownProcess.run()
-        }
+        if (explicitExit) Thread(shutdownProcess).start() else shutdownProcess.run()
     }
 
     fun restart() {
@@ -381,8 +372,7 @@ class KryptonServer(
         private const val TICKS_PER_SECOND = 20
         private const val SAVE_PROFILE_CACHE_INTERVAL = 600
 
-        @JvmField
-        val LOGGER: Logger = logger<KryptonServer>()
+        private val LOGGER = logger<KryptonServer>()
 
         @Volatile
         private var instance: KryptonServer? = null

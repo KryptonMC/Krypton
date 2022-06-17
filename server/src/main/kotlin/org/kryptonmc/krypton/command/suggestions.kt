@@ -24,17 +24,14 @@ import com.mojang.brigadier.suggestion.SuggestionsBuilder
 import net.kyori.adventure.key.Key
 import org.kryptonmc.krypton.command.arguments.coordinates.TextCoordinates
 import java.util.concurrent.CompletableFuture
+import java.util.function.Predicate
 
-fun SuggestionsBuilder.suggestCoordinates(
-    text: String,
-    coordinates: TextCoordinates,
-    predicate: (String) -> Boolean
-): CompletableFuture<Suggestions> {
+fun SuggestionsBuilder.suggestCoordinates(text: String, coordinates: TextCoordinates, predicate: Predicate<String>): CompletableFuture<Suggestions> {
     if (text.isEmpty()) {
         val results = mutableListOf<String>()
         val (x, y, z) = coordinates
         val suggestion = "$x $y $z"
-        if (!predicate(suggestion)) return suggest(emptySet())
+        if (!predicate.test(suggestion)) return suggest(emptySet())
         results.add(x.toString())
         results.add("$x $y")
         results.add(suggestion)
@@ -45,7 +42,7 @@ fun SuggestionsBuilder.suggestCoordinates(
         val results = mutableListOf<String>()
         val (_, y, z) = coordinates
         val suggestion = "${components[0]} $y $z"
-        if (!predicate(suggestion)) return suggest(emptySet())
+        if (!predicate.test(suggestion)) return suggest(emptySet())
         results.add("${components[0]} $y")
         results.add(suggestion)
         return suggest(results)
@@ -53,7 +50,7 @@ fun SuggestionsBuilder.suggestCoordinates(
     if (components.size == 2) {
         val results = mutableListOf<String>()
         val suggestion = "${components[0]} ${components[1]} ${coordinates.z}"
-        if (!predicate(suggestion)) return suggest(emptySet())
+        if (!predicate.test(suggestion)) return suggest(emptySet())
         results.add(suggestion)
         return suggest(results)
     }

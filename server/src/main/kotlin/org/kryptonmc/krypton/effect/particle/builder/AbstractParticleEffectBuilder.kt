@@ -26,12 +26,11 @@ import org.kryptonmc.krypton.effect.particle.KryptonParticleEffect
 import org.spongepowered.math.vector.Vector3d
 
 @Suppress("UNCHECKED_CAST")
-abstract class AbstractParticleEffectBuilder<B : BaseParticleEffectBuilder<B>>(
-    protected val type: ParticleType,
-    protected var quantity: Int,
-    protected var offset: Vector3d,
-    protected var longDistance: Boolean
-) : BaseParticleEffectBuilder<B> {
+abstract class AbstractParticleEffectBuilder<B : BaseParticleEffectBuilder<B>>(protected val type: ParticleType) : BaseParticleEffectBuilder<B> {
+
+    protected var quantity = 1
+    protected var offset: Vector3d = Vector3d.ZERO
+    protected var longDistance = false
 
     abstract fun buildData(): ParticleData?
 

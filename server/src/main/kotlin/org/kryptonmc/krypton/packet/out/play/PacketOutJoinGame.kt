@@ -61,14 +61,8 @@ data class PacketOutJoinGame(
         buf.writeByte(oldGameMode?.ordinal ?: -1)
         buf.writeCollection(worlds) { buf.writeKey(it.location) }
         buf.writeNBT(compound {
-            put(
-                ResourceKeys.DIMENSION_TYPE.location.asString(),
-                Registries.DIMENSION_TYPE.encode(KryptonDimensionType.ENCODER)
-            )
-            put(
-                ResourceKeys.BIOME.location.asString(),
-                Registries.BIOME.encode(KryptonBiome.ENCODER)
-            )
+            put(ResourceKeys.DIMENSION_TYPE.location.asString(), Registries.DIMENSION_TYPE.encode(KryptonDimensionType.ENCODER))
+            put(ResourceKeys.BIOME.location.asString(), Registries.BIOME.encode(KryptonBiome.ENCODER))
         })
         buf.encode(KryptonDimensionType.ENCODER, dimensionType)
         buf.writeKey(dimension.location)

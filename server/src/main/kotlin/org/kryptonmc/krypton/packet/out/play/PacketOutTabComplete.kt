@@ -40,12 +40,7 @@ import org.kryptonmc.krypton.util.writeVarInt
  * @param suggestions the suggestions for the client
  */
 @JvmRecord
-data class PacketOutTabComplete(
-    val id: Int,
-    val start: Int,
-    val end: Int,
-    val suggestions: Collection<Suggestion>
-) : Packet {
+data class PacketOutTabComplete(val id: Int, val start: Int, val end: Int, val suggestions: Collection<Suggestion>) : Packet {
 
     constructor(id: Int, matches: Suggestions) : this(id, matches.range.start, matches.range.end, matches.list)
 

@@ -54,11 +54,7 @@ object TeleportCommand : InternalCommand {
                     if (players.size == 1) {
                         val player = players[0]
                         teleport(sender, player.location)
-                        sender.sendMessage(Component.translatable(
-                            "commands.teleport.success.entity.single",
-                            sender.displayName,
-                            player.displayName
-                        ))
+                        sender.sendMessage(Component.translatable("commands.teleport.success.entity.single", sender.displayName, player.displayName))
                     }
                     Command.SINGLE_SUCCESS
                 }
@@ -68,11 +64,8 @@ object TeleportCommand : InternalCommand {
                         val players = context.entityArgument("players").players(sender)
                         val target = context.entityArgument("target").players(sender)[0]
                         players.forEach { teleport(it, target.location) }
-                        sender.sendMessage(Component.translatable(
-                            "commands.teleport.success.entity.multiple",
-                            Component.text(players.size.toString()),
-                            target.displayName
-                        ))
+                        val playerCount = Component.text(players.size.toString())
+                        sender.sendMessage(Component.translatable("commands.teleport.success.entity.multiple", playerCount, target.displayName))
                         Command.SINGLE_SUCCESS
                     }
                 }
@@ -82,12 +75,13 @@ object TeleportCommand : InternalCommand {
                         val players = context.entityArgument("players").players(sender)
                         val location = context.argument<Coordinates>("location")
                         players.forEach { teleport(it, location) }
+                        val position = location.position(sender)
                         sender.sendMessage(Component.translatable(
                             "commands.teleport.success.location.multiple",
                             Component.text(players.size.toString()),
-                            Component.text(location.position(sender).floorX().toString()),
-                            Component.text(location.position(sender).floorY().toString()),
-                            Component.text(location.position(sender).floorZ().toString())
+                            Component.text(position.floorX().toString()),
+                            Component.text(position.floorY().toString()),
+                            Component.text(position.floorZ().toString())
                         ))
                         1
                     }

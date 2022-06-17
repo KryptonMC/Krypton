@@ -22,21 +22,14 @@ import com.mojang.brigadier.arguments.ArgumentType
 import com.mojang.brigadier.builder.LiteralArgumentBuilder
 import com.mojang.brigadier.builder.RequiredArgumentBuilder
 
-inline fun <S> literal(
-    name: String,
-    builder: LiteralArgumentBuilder<S>.() -> Unit
-): LiteralArgumentBuilder<S> = LiteralArgumentBuilder.literal<S>(name).apply(builder)
+inline fun <S> literal(name: String, builder: LiteralArgumentBuilder<S>.() -> Unit): LiteralArgumentBuilder<S> =
+    LiteralArgumentBuilder.literal<S>(name).apply(builder)
 
-inline fun <S, T> argument(
-    name: String,
-    type: ArgumentType<T>,
-    builder: RequiredArgumentBuilder<S, T>.() -> Unit
-): RequiredArgumentBuilder<S, T> = RequiredArgumentBuilder.argument<S, T>(name, type).apply(builder)
+inline fun <S, T> argument(name: String, type: ArgumentType<T>, builder: RequiredArgumentBuilder<S, T>.() -> Unit): RequiredArgumentBuilder<S, T> =
+    RequiredArgumentBuilder.argument<S, T>(name, type).apply(builder)
 
-fun <S> LiteralArgumentBuilder<S>.literal(
-    name: String,
-    builder: LiteralArgumentBuilder<S>.() -> Unit
-): LiteralArgumentBuilder<S> = then(LiteralArgumentBuilder.literal<S>(name).apply(builder))
+fun <S> LiteralArgumentBuilder<S>.literal(name: String, builder: LiteralArgumentBuilder<S>.() -> Unit): LiteralArgumentBuilder<S> =
+    then(LiteralArgumentBuilder.literal<S>(name).apply(builder))
 
 fun <S, T> LiteralArgumentBuilder<S>.argument(
     name: String,

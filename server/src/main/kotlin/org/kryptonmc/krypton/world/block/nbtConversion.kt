@@ -29,9 +29,7 @@ import org.kryptonmc.nbt.compound
 fun CompoundTag.toBlock(): Block {
     if (!contains("Name", StringTag.ID)) return Blocks.AIR
     var block = checkNotNull(BlockLoader.fromKey(Key.key(getString("Name")))) { "No block found with key ${getString("Name")}!" }
-    if (contains("Properties", CompoundTag.ID)) {
-        block = block.copy(getCompound("Properties").transform { it.key to (it.value as StringTag).value })
-    }
+    if (contains("Properties", CompoundTag.ID)) block = block.copy(getCompound("Properties").transform { it.key to (it.value as StringTag).value })
     return block
 }
 

@@ -28,12 +28,7 @@ import org.spongepowered.math.vector.Vector3d
  * Tells the client to spawn some particles around it
  */
 @JvmRecord
-data class PacketOutParticle(
-    val effect: ParticleEffect,
-    val x: Double,
-    val y: Double,
-    val z: Double
-) : Packet {
+data class PacketOutParticle(val effect: ParticleEffect, val x: Double, val y: Double, val z: Double) : Packet {
 
     constructor(effect: ParticleEffect, location: Vector3d) : this(effect, location.x(), location.y(), location.z())
 

@@ -25,12 +25,7 @@ import org.kryptonmc.krypton.packet.out.play.data.LightPacketData
 import org.kryptonmc.krypton.world.chunk.KryptonChunk
 
 @JvmRecord
-data class PacketOutChunkDataAndLight(
-    val x: Int,
-    val z: Int,
-    val chunkData: ChunkPacketData,
-    val lightData: LightPacketData
-) : Packet {
+data class PacketOutChunkDataAndLight(val x: Int, val z: Int, val chunkData: ChunkPacketData, val lightData: LightPacketData) : Packet {
 
     constructor(
         chunk: KryptonChunk,

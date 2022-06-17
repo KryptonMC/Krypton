@@ -38,14 +38,6 @@ class AttributeMap(private val supplier: AttributeSupplier) {
 
     fun value(type: AttributeType): Double = attributes[type]?.value ?: supplier.value(type)
 
-    fun baseValue(type: AttributeType): Double = attributes[type]?.baseValue ?: supplier.baseValue(type)
-
-    fun modifierValue(type: AttributeType, uuid: UUID): Double = attributes[type]?.modifier(uuid)?.amount ?: supplier.modifierValue(type, uuid)
-
-    fun hasAttribute(type: AttributeType): Boolean = attributes[type] != null || supplier.hasAttribute(type)
-
-    fun hasModifier(type: AttributeType, uuid: UUID): Boolean = attributes[type]?.modifier(uuid) != null || supplier.hasModifier(type, uuid)
-
     fun load(list: ListTag) {
         for (i in 0 until list.size) {
             val tag = list.getCompound(i)
@@ -56,9 +48,7 @@ class AttributeMap(private val supplier: AttributeSupplier) {
         }
     }
 
-    fun save(): ListTag = list {
-        attributes.values.forEach { add(it.save()) }
-    }
+    fun save(): ListTag = list { attributes.values.forEach { add(it.save()) } }
 
     private fun onModify(attribute: KryptonAttribute) {
         if (attribute.type.sendToClient) dirty.add(attribute)

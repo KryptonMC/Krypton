@@ -26,19 +26,12 @@ import org.kryptonmc.krypton.util.writeVarInt
 import org.spongepowered.math.vector.Vector3d
 
 @JvmRecord
-data class PacketOutEntityVelocity(
-    override val entityId: Int,
-    val x: Int,
-    val y: Int,
-    val z: Int
-) : EntityPacket {
+data class PacketOutEntityVelocity(override val entityId: Int, val x: Int, val y: Int, val z: Int) : EntityPacket {
 
-    constructor(entity: KryptonEntity, velocity: Vector3d = entity.velocity) : this(
-        entity.id,
-        Positioning.encodeVelocity(velocity.x()),
-        Positioning.encodeVelocity(velocity.y()),
-        Positioning.encodeVelocity(velocity.z())
-    )
+    constructor(
+        entity: KryptonEntity,
+        velocity: Vector3d = entity.velocity
+    ) : this(entity.id, Positioning.encodeVelocity(velocity.x()), Positioning.encodeVelocity(velocity.y()), Positioning.encodeVelocity(velocity.z()))
 
     override fun write(buf: ByteBuf) {
         buf.writeVarInt(entityId)

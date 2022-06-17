@@ -25,10 +25,7 @@ import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.util.writeKey
 
 @JvmRecord
-data class PacketOutPluginMessage(
-    val channel: Key,
-    val content: ByteArray
-) : Packet {
+data class PacketOutPluginMessage(val channel: Key, val content: ByteArray) : Packet {
 
     override fun write(buf: ByteBuf) {
         buf.writeKey(channel)

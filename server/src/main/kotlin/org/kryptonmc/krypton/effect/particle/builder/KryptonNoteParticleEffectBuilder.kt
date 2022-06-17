@@ -24,13 +24,10 @@ import org.kryptonmc.api.effect.particle.data.ParticleData
 import org.kryptonmc.krypton.effect.particle.data.KryptonNoteParticleData
 import org.spongepowered.math.vector.Vector3d
 
-class KryptonNoteParticleEffectBuilder(
-    type: NoteParticleType,
-    quantity: Int = 1,
-    offset: Vector3d = Vector3d.ZERO,
-    longDistance: Boolean = false,
+class KryptonNoteParticleEffectBuilder(type: NoteParticleType) : AbstractParticleEffectBuilder<NoteParticleEffectBuilder>(type),
+    NoteParticleEffectBuilder {
+
     private var note: Byte = 0
-) : AbstractParticleEffectBuilder<NoteParticleEffectBuilder>(type, quantity, offset, longDistance), NoteParticleEffectBuilder {
 
     override fun note(note: Int): NoteParticleEffectBuilder = apply {
         require(note in 0..24) { "Note must be between 0 and 24!" }

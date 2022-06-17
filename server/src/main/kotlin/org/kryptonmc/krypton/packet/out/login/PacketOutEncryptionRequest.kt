@@ -33,10 +33,7 @@ import org.kryptonmc.krypton.util.writeVarIntByteArray
  * hasn't been tampered with (no hackers listening in).
  */
 @JvmRecord
-data class PacketOutEncryptionRequest(
-    val publicKey: ByteArray,
-    val verifyToken: ByteArray
-) : Packet {
+data class PacketOutEncryptionRequest(val publicKey: ByteArray, val verifyToken: ByteArray) : Packet {
 
     override fun write(buf: ByteBuf) {
         buf.writeString("", 20)

@@ -22,10 +22,7 @@ import io.netty.buffer.ByteBuf
 import org.kryptonmc.krypton.packet.Packet
 
 @JvmRecord
-data class PacketOutUnloadChunk(
-    val x: Int,
-    val z: Int
-) : Packet {
+data class PacketOutUnloadChunk(val x: Int, val z: Int) : Packet {
 
     override fun write(buf: ByteBuf) {
         buf.writeInt(x)

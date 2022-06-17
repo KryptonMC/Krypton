@@ -81,11 +81,8 @@ data class KryptonGameProfile(
 
     object Factory : GameProfile.Factory {
 
-        override fun of(
-            name: String,
-            uuid: UUID,
-            properties: List<ProfileProperty>
-        ): GameProfile = KryptonGameProfile(name, uuid, properties.toPersistentList())
+        override fun of(name: String, uuid: UUID, properties: List<ProfileProperty>): GameProfile =
+            KryptonGameProfile(name, uuid, properties.toPersistentList())
     }
 
     companion object : TypeAdapter<KryptonGameProfile>() {

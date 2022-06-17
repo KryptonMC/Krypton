@@ -59,7 +59,7 @@ abstract class KryptonAgeable(
         // nothing to do by default
     }
 
-    fun age(amount: Int, forced: Boolean) {
+    private fun age(amount: Int, forced: Boolean) {
         val old = age
         var newAge = old + amount * 20
         if (newAge > 0) newAge = 0

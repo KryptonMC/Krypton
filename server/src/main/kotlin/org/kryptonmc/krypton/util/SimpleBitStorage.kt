@@ -27,11 +27,7 @@ import java.util.Objects
  * When instantiated, the [size] of this should always be 4096, as this is used to hold block states, and
  * there are always a maximum of 4096 blocks in a chunk section (16^3 = 4096)
  */
-class SimpleBitStorage(
-    override val bits: Int,
-    override val size: Int,
-    data: LongArray? = null
-) : BitStorage {
+class SimpleBitStorage(override val bits: Int, override val size: Int, data: LongArray? = null) : BitStorage {
 
     private val mask = (1L shl bits) - 1L
     private val valuesPerLong = Long.SIZE_BITS / bits

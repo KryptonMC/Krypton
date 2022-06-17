@@ -22,11 +22,7 @@ import org.kryptonmc.api.entity.EntityDimensions
 import org.kryptonmc.api.util.BoundingBox
 
 @JvmRecord
-data class KryptonEntityDimensions(
-    override val width: Float,
-    override val height: Float,
-    override val isFixed: Boolean
-) : EntityDimensions {
+data class KryptonEntityDimensions(override val width: Float, override val height: Float, override val isFixed: Boolean) : EntityDimensions {
 
     override fun scale(width: Float, height: Float): EntityDimensions {
         if (isFixed || width == 1F && height == 1F) return this

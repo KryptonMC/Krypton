@@ -38,27 +38,12 @@ interface Neutral {
 
     fun startAngerTimer()
 
-    fun forgetCurrentTarget() {
-        stopBeingAngry()
-        startAngerTimer()
-    }
-
     fun stopBeingAngry() {
         lastHurtByMob = null
         angerTarget = null
         target = null
         remainingAngerTime = 0
     }
-
-    fun canAttack(target: KryptonLivingEntity): Boolean
-
-    fun isAngryAt(target: KryptonLivingEntity): Boolean {
-        if (!canAttack(target)) return false
-        if (target.type === EntityTypes.PLAYER && isAngryAtAllPlayers(target.world)) return true
-        return target.uuid == angerTarget
-    }
-
-    fun isAngryAtAllPlayers(world: KryptonWorld): Boolean = world.gameRules[GameRules.UNIVERSAL_ANGER] && isAngry && angerTarget == null
 
     fun loadAngerData(world: KryptonWorld, tag: CompoundTag) {
         remainingAngerTime = tag.getInt("AngerTime")
@@ -77,22 +62,5 @@ interface Neutral {
     fun saveAngerData(tag: CompoundTag.Builder) {
         tag.int("AngerTime", remainingAngerTime)
         if (angerTarget != null) tag.uuid("AngryAt", angerTarget!!)
-    }
-
-    fun updateAnger(world: KryptonWorld, isNotBee: Boolean) {
-        val target = target
-        val angerTarget = angerTarget
-        if ((target == null || target.health <= 0F) && angerTarget != null && world.entityManager[angerTarget] is KryptonMob) {
-            stopBeingAngry()
-            return
-        }
-        if (target != null && target.uuid != angerTarget) {
-            this.angerTarget = target.uuid
-            startAngerTimer()
-        }
-        if (remainingAngerTime > 0 && (target == null || target.type !== EntityTypes.PLAYER || !isNotBee)) {
-            remainingAngerTime -= 1
-            if (remainingAngerTime == 0) stopBeingAngry()
-        }
     }
 }

@@ -33,9 +33,6 @@ open class KryptonCow(world: KryptonWorld, type: EntityType<out Cow>) : KryptonA
 
     companion object {
 
-        private val ATTRIBUTES = attributes()
-            .add(AttributeTypes.MAX_HEALTH, 10.0)
-            .add(AttributeTypes.MOVEMENT_SPEED, 0.2)
-            .build()
+        private val ATTRIBUTES = attributes().add(AttributeTypes.MAX_HEALTH, 10.0).add(AttributeTypes.MOVEMENT_SPEED, 0.2).build()
     }
 }

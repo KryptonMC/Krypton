@@ -38,11 +38,8 @@ object SayCommand : InternalCommand {
             argument("message", StringArgumentType.string()) {
                 executes {
                     val server = it.source.server as? KryptonServer ?: return@executes 0
-                    server.sendMessage(Component.translatable(
-                        "chat.type.announcement",
-                        it.source.name,
-                        Component.text(it.argument<String>("message"))
-                    ))
+                    val message = Component.text(it.argument<String>("message"))
+                    server.sendMessage(Component.translatable("chat.type.announcement", it.source.name, message))
                     Command.SINGLE_SUCCESS
                 }
             }

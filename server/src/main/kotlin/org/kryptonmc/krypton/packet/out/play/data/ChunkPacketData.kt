@@ -28,10 +28,7 @@ import org.kryptonmc.krypton.world.chunk.KryptonChunk
 import org.kryptonmc.nbt.CompoundTag
 
 @JvmRecord
-data class ChunkPacketData(
-    val heightmaps: CompoundTag,
-    val data: ByteArray
-) : Writable {
+data class ChunkPacketData(val heightmaps: CompoundTag, val data: ByteArray) : Writable {
 
     constructor(chunk: KryptonChunk) : this(extractHeightmaps(chunk), extractData(chunk))
 

@@ -29,14 +29,10 @@ object KryptonRegistryManager : RegistryManager {
     override val parent: KryptonRegistry<Registry<out Any>> by lazy { KryptonRegistry(ResourceKeys.PARENT) }
 
     @Suppress("UNCHECKED_CAST")
-    override fun <T : Any> create(key: ResourceKey<out Registry<T>>): KryptonRegistry<T> = parent.register(
-        key as ResourceKey<Registry<out Any>>,
-        KryptonRegistry(key as ResourceKey<out Registry<T>>)
-    )
+    override fun <T : Any> create(key: ResourceKey<out Registry<T>>): KryptonRegistry<T> =
+        parent.register(key as ResourceKey<Registry<out Any>>, KryptonRegistry(key as ResourceKey<out Registry<T>>))
 
     @Suppress("UNCHECKED_CAST")
-    override fun <T : Any> createDefaulted(key: ResourceKey<out Registry<T>>, defaultKey: Key): KryptonDefaultedRegistry<T> = parent.register(
-        key as ResourceKey<Registry<out Any>>,
-        KryptonDefaultedRegistry(key as ResourceKey<out Registry<T>>, defaultKey)
-    )
+    override fun <T : Any> createDefaulted(key: ResourceKey<out Registry<T>>, defaultKey: Key): KryptonDefaultedRegistry<T> =
+        parent.register(key as ResourceKey<Registry<out Any>>, KryptonDefaultedRegistry(key as ResourceKey<out Registry<T>>, defaultKey))
 }

@@ -51,8 +51,7 @@ object BanCommand : InternalCommand {
                 argument("reason", StringArgumentType.string()) {
                     executes {
                         val server = it.source.server as? KryptonServer ?: return@executes 0
-                        val reason = it.argument<String>("reason")
-                        ban(it.gameProfileArgument("targets").profiles(it.source), server, it.source, reason)
+                        ban(it.gameProfileArgument("targets").profiles(it.source), server, it.source, it.argument("reason"))
                         Command.SINGLE_SUCCESS
                     }
                 }
@@ -61,12 +60,7 @@ object BanCommand : InternalCommand {
     }
 
     @JvmStatic
-    private fun ban(
-        profiles: List<KryptonGameProfile>,
-        server: KryptonServer,
-        sender: Sender,
-        reason: String = "Banned by operator.",
-    ) {
+    private fun ban(profiles: List<KryptonGameProfile>, server: KryptonServer, sender: Sender, reason: String = "Banned by operator.") {
         profiles.forEach { profile ->
             if (server.playerManager.bannedPlayers.contains(profile)) return@forEach
             val entry = BannedPlayerEntry(profile, reason = LegacyComponentSerializer.legacySection().deserialize(reason))
@@ -80,10 +74,8 @@ object BanCommand : InternalCommand {
     private fun kick(entry: BannedPlayerEntry, player: KryptonPlayer) {
         val text = Component.translatable("multiplayer.disconnect.banned.reason", entry.reason)
         if (entry.expirationDate != null) {
-            text.append(Component.translatable(
-                "multiplayer.disconnect.banned.expiration",
-                Component.text(BanEntry.DATE_FORMATTER.format(entry.expirationDate))
-            ))
+            val expirationDate = Component.text(BanEntry.DATE_FORMATTER.format(entry.expirationDate))
+            text.append(Component.translatable("multiplayer.disconnect.banned.expiration", expirationDate))
         }
         player.disconnect(text)
     }

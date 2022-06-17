@@ -36,11 +36,8 @@ object MeCommand : InternalCommand {
             permission(KryptonPermission.ME)
             argument("action", StringArgumentType.string()) {
                 executes {
-                    it.source.server.sendMessage(Component.translatable(
-                        "chat.type.emote",
-                        it.source.name,
-                        Component.text(it.argument<String>("action"))
-                    ))
+                    val action = Component.text(it.argument<String>("action"))
+                    it.source.server.sendMessage(Component.translatable("chat.type.emote", it.source.name, action))
                     Command.SINGLE_SUCCESS
                 }
             }

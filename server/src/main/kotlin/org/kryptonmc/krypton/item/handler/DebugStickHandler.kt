@@ -34,16 +34,15 @@ import org.kryptonmc.nbt.CompoundTag
 object DebugStickHandler : ItemHandler {
 
     override fun canAttackBlock(player: KryptonPlayer, world: KryptonWorld, block: Block, x: Int, y: Int, z: Int): Boolean {
-        handleInteraction(player, world, block, x, y, z, false, player.inventory.heldItem(Hand.MAIN))
+        handleInteraction(player, world, block, x, y, z, false)
         return false
     }
 
     override fun interact(context: InteractionContext): InteractionResult {
         val player = context.player
-        val item = context.heldItem
         val world = context.world
         val position = context.position
-        if (!handleInteraction(player, world, world.getBlock(position), position.x(), position.y(), position.z(), true, item)) {
+        if (!handleInteraction(player, world, world.getBlock(position), position.x(), position.y(), position.z(), true)) {
             return InteractionResult.FAIL
         }
         return InteractionResult.CONSUME
@@ -51,16 +50,7 @@ object DebugStickHandler : ItemHandler {
 
     @Suppress("UNCHECKED_CAST") // Screw you too generics, no wonder you have no friends
     @JvmStatic
-    private fun handleInteraction(
-        player: KryptonPlayer,
-        world: KryptonWorld,
-        block: Block,
-        x: Int,
-        y: Int,
-        z: Int,
-        isUse: Boolean,
-        item: KryptonItemStack
-    ): Boolean {
+    private fun handleInteraction(player: KryptonPlayer, world: KryptonWorld, block: Block, x: Int, y: Int, z: Int, isUse: Boolean): Boolean {
         if (!player.canUseGameMasterBlocks) return false
         val properties = block.availableProperties
         val key = block.key().asString()
@@ -96,8 +86,6 @@ object DebugStickHandler : ItemHandler {
     }
 
     @JvmStatic
-    private fun <T : Comparable<T>> Block.cycle(
-        property: Property<T>,
-        reversed: Boolean
-    ): Block = set(property, property.values.findRelative(get(property), reversed)!!)
+    private fun <T : Comparable<T>> Block.cycle(property: Property<T>, reversed: Boolean): Block =
+        set(property, property.values.findRelative(get(property), reversed)!!)
 }

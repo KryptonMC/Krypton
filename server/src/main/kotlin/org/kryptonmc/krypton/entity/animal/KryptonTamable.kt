@@ -48,7 +48,7 @@ abstract class KryptonTamable(
             val existing = data[MetadataKeys.TAMABLE.FLAGS].toInt()
             data[MetadataKeys.TAMABLE.FLAGS] = if (value) (existing or 1).toByte() else (existing and -2).toByte()
         }
-    var ownerUUID: UUID?
+    private var ownerUUID: UUID?
         get() = data[MetadataKeys.TAMABLE.OWNER]
         set(value) = data.set(MetadataKeys.TAMABLE.OWNER, value)
     final override val owner: KryptonPlayer?

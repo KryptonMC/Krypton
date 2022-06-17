@@ -38,12 +38,7 @@ data class KryptonParticleEffect(
 
     object Factory : ParticleEffect.Factory {
 
-        override fun of(
-            type: ParticleType,
-            quantity: Int,
-            offset: Vector3d,
-            longDistance: Boolean,
-            data: ParticleData?
-        ): ParticleEffect = KryptonParticleEffect(type, quantity, offset, longDistance, data)
+        override fun of(type: ParticleType, quantity: Int, offset: Vector3d, longDistance: Boolean, data: ParticleData?): ParticleEffect =
+            KryptonParticleEffect(type, quantity, offset, longDistance, data)
     }
 }

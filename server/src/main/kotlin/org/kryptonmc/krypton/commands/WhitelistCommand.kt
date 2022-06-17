@@ -96,47 +96,6 @@ object WhitelistCommand : InternalCommand {
                 }
             }
         })
-
-    }
-
-    @JvmStatic
-    private fun LiteralArgumentBuilder<Sender>.toggle(
-        name: String,
-        enable: Boolean,
-        key: String,
-        alreadyKey: String
-    ): LiteralArgumentBuilder<Sender> = literal(name) {
-        executes {
-            val server = it.source.server as? KryptonServer ?: return@executes 0
-            val toggled = if (enable) !server.playerManager.whitelistEnabled else server.playerManager.whitelistEnabled
-            if (toggled) {
-                server.playerManager.whitelistEnabled = enable
-                it.source.sendMessage(Component.translatable("commands.whitelist.$key"))
-            } else {
-                it.source.sendMessage(Component.translatable("commands.whitelist.$alreadyKey"))
-            }
-            Command.SINGLE_SUCCESS
-        }
-    }
-
-    @JvmStatic
-    private fun LiteralArgumentBuilder<Sender>.addOrRemove(name: String, add: Boolean): LiteralArgumentBuilder<Sender> = literal(name) {
-        argument("targets", GameProfileArgument) {
-            executes { context ->
-                val server = context.source.server as? KryptonServer ?: return@executes 0
-                val whitelist = server.playerManager.whitelist
-                context.gameProfileArgument("targets").profiles(context.source).forEach {
-                    val state = if (add) !whitelist.contains(it) else whitelist.contains(it)
-                    if (state) {
-                        if (add) whitelist.add(WhitelistEntry(it)) else whitelist.remove(it)
-                        context.source.sendMessage(Component.translatable("commands.whitelist.$name.success", Component.text(it.name)))
-                        return@forEach
-                    }
-                    context.source.sendMessage(Component.translatable("commands.whitelist.$name.failed"))
-                }
-                Command.SINGLE_SUCCESS
-            }
-        }
     }
 
     @JvmStatic
@@ -164,5 +123,43 @@ object WhitelistCommand : InternalCommand {
             return
         }
         sender.sendMessage(Component.translatable("commands.banip.invalid"))
+    }
+}
+
+private fun LiteralArgumentBuilder<Sender>.toggle(
+    name: String,
+    enable: Boolean,
+    key: String,
+    alreadyKey: String
+): LiteralArgumentBuilder<Sender> = literal(name) {
+    executes {
+        val server = it.source.server as? KryptonServer ?: return@executes 0
+        val toggled = if (enable) !server.playerManager.whitelistEnabled else server.playerManager.whitelistEnabled
+        if (toggled) {
+            server.playerManager.whitelistEnabled = enable
+            it.source.sendMessage(Component.translatable("commands.whitelist.$key"))
+        } else {
+            it.source.sendMessage(Component.translatable("commands.whitelist.$alreadyKey"))
+        }
+        Command.SINGLE_SUCCESS
+    }
+}
+
+private fun LiteralArgumentBuilder<Sender>.addOrRemove(name: String, add: Boolean): LiteralArgumentBuilder<Sender> = literal(name) {
+    argument("targets", GameProfileArgument) {
+        executes { context ->
+            val server = context.source.server as? KryptonServer ?: return@executes 0
+            val whitelist = server.playerManager.whitelist
+            context.gameProfileArgument("targets").profiles(context.source).forEach {
+                val state = if (add) !whitelist.contains(it) else whitelist.contains(it)
+                if (state) {
+                    if (add) whitelist.add(WhitelistEntry(it)) else whitelist.remove(it)
+                    context.source.sendMessage(Component.translatable("commands.whitelist.$name.success", Component.text(it.name)))
+                    return@forEach
+                }
+                context.source.sendMessage(Component.translatable("commands.whitelist.$name.failed"))
+            }
+            Command.SINGLE_SUCCESS
+        }
     }
 }

@@ -26,13 +26,10 @@ import org.kryptonmc.api.item.ItemTypes
 import org.kryptonmc.krypton.effect.particle.data.KryptonItemParticleData
 import org.spongepowered.math.vector.Vector3d
 
-class KryptonItemParticleEffectBuilder(
-    type: ItemParticleType,
-    quantity: Int = 1,
-    offset: Vector3d = Vector3d.ZERO,
-    longDistance: Boolean = false,
+class KryptonItemParticleEffectBuilder(type: ItemParticleType) : AbstractParticleEffectBuilder<ItemParticleEffectBuilder>(type),
+    ItemParticleEffectBuilder {
+
     private var item: ItemType = ItemTypes.AIR
-) : AbstractParticleEffectBuilder<ItemParticleEffectBuilder>(type, quantity, offset, longDistance), ItemParticleEffectBuilder {
 
     override fun item(item: ItemType): ItemParticleEffectBuilder = apply { this.item = item }
 

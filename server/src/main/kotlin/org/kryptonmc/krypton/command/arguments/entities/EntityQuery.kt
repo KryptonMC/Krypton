@@ -36,11 +36,7 @@ import org.kryptonmc.krypton.entity.player.KryptonPlayer
  * Documentation [TODO]
  */
 @JvmRecord
-data class EntityQuery(
-    private val args: List<EntityArgument.EntityArg>,
-    val type: Selector,
-    private val playerName: String = ""
-) {
+data class EntityQuery(private val args: List<EntityArgument.EntityArg>, val type: Selector, private val playerName: String = "") {
 
     fun entities(source: KryptonPlayer): List<KryptonEntity> = when (type) {
         Selector.RANDOM_PLAYER -> listOf(source.server.players.random())
@@ -276,20 +272,6 @@ data class EntityQuery(
             const val EXECUTOR_CHAR: Char = 's'
             const val ALL_ENTITIES_CHAR: Char = 'e'
             const val NEAREST_PLAYER_CHAR: Char = 'p'
-
-            /**
-             * Gets the target selector from it's short name
-             * you can find these at the [Minecraft Wiki](https://minecraft.fandom.com/wiki/Target_selectors)
-             */
-            @JvmStatic
-            fun fromChar(selector: Char): Selector = when (selector) {
-                RANDOM_PLAYER_CHAR -> RANDOM_PLAYER
-                ALL_PLAYERS_CHAR -> ALL_PLAYERS
-                EXECUTOR_CHAR -> EXECUTOR
-                ALL_ENTITIES_CHAR -> ALL_ENTITIES
-                NEAREST_PLAYER_CHAR -> NEAREST_PLAYER
-                else -> UNKNOWN
-            }
         }
     }
 
@@ -297,15 +279,14 @@ data class EntityQuery(
 
         private val NOT_IMPLEMENTED = DynamicCommandExceptionType { Component.text(it.toString()).toMessage() }
         private val OUT_OF_RANGE = Component.translatable("argument.range.empty").toExceptionType()
-
-        @JvmStatic
-        private fun String.toIntRange(): IntRange? {
-            if (startsWith("...")) {
-                val string = replace("..", "").toIntOrNull() ?: return null
-                return IntRange(0, string)
-            }
-            val values = split("..")
-            return IntRange(values[0].toInt(), values[1].toIntOrNull() ?: return null)
-        }
     }
+}
+
+private fun String.toIntRange(): IntRange? {
+    if (startsWith("...")) {
+        val string = replace("..", "").toIntOrNull() ?: return null
+        return IntRange(0, string)
+    }
+    val values = split("..")
+    return IntRange(values[0].toInt(), values[1].toIntOrNull() ?: return null)
 }

@@ -68,31 +68,37 @@ data class PacketOutTeam(
 
         when (action) {
             Action.CREATE -> {
-                buf.writeTeamInfo()
+                writeTeamInfo(buf)
                 buf.writeVarInt(members.size)
-                for (member in members) buf.writeString(member.toLegacySectionText(), 40)
+                for (member in members) {
+                    buf.writeString(member.toLegacySectionText(), 40)
+                }
             }
             Action.REMOVE -> Unit
-            Action.UPDATE_INFO -> buf.writeTeamInfo()
+            Action.UPDATE_INFO -> writeTeamInfo(buf)
             Action.ADD_MEMBERS -> {
                 buf.writeVarInt(addedMembers.size)
-                for (member in addedMembers) buf.writeString(member.toLegacySectionText(), 40)
+                for (member in addedMembers) {
+                    buf.writeString(member.toLegacySectionText(), 40)
+                }
             }
             Action.REMOVE_MEMBERS -> {
                 buf.writeVarInt(addedMembers.size)
-                for (member in addedMembers) buf.writeString(member.toLegacySectionText(), 40)
+                for (member in addedMembers) {
+                    buf.writeString(member.toLegacySectionText(), 40)
+                }
             }
         }
     }
 
-    private fun ByteBuf.writeTeamInfo() {
-        writeChat(displayName)
-        writeByte(flagsToProtocol(allowFriendlyFire, canSeeInvisibleMembers))
-        writeString(nameTagVisibility, 32)
-        writeString(collisionRule, 32)
-        writeVarInt(color)
-        writeChat(prefix)
-        writeChat(suffix)
+    private fun writeTeamInfo(buf: ByteBuf) {
+        buf.writeChat(displayName)
+        buf.writeByte(flagsToProtocol(allowFriendlyFire, canSeeInvisibleMembers))
+        buf.writeString(nameTagVisibility, 32)
+        buf.writeString(collisionRule, 32)
+        buf.writeVarInt(color)
+        buf.writeChat(prefix)
+        buf.writeChat(suffix)
     }
 
     enum class Action {

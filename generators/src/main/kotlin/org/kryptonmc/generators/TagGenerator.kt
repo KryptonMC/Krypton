@@ -33,15 +33,9 @@ import java.nio.file.Path
 import kotlin.io.path.exists
 import kotlin.io.path.writeText
 
-class TagGenerator(private val output: Path) {
+class TagGenerator(@PublishedApi internal val output: Path) {
 
-    fun run(
-        name: String,
-        typeName: String,
-        parameterType: TypeName,
-        parameterTypeName: String,
-        source: Class<*>
-    ) {
+    inline fun <reified S> run(name: String, typeName: String, parameterType: TypeName, parameterTypeName: String) {
         val returnType = ClassName("org.kryptonmc.api.tags", "Tag").parameterizedBy(parameterType)
         val file = FileSpec.builder("org.kryptonmc.api.tags", name)
             .indent("    ")
@@ -58,7 +52,7 @@ class TagGenerator(private val output: Path) {
                 .addModifiers(KModifier.PRIVATE)
                 .addCode("return·Krypton.tagManager[TagTypes.$typeName,·\"minecraft:\$key\"]!!")
                 .build())
-        source.declaredFields.asSequence()
+        S::class.java.declaredFields.asSequence()
             .filter { Modifier.isStatic(it.modifiers) }
             .filter { Tag::class.java.isAssignableFrom(it.type) }
             .forEach {

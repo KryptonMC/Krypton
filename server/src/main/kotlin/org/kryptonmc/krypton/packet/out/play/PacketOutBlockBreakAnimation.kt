@@ -25,15 +25,7 @@ import org.kryptonmc.krypton.util.writeVector
 import org.spongepowered.math.vector.Vector3i
 
 @JvmRecord
-data class PacketOutBlockBreakAnimation(
-    override val entityId: Int,
-    val x: Int,
-    val y: Int,
-    val z: Int,
-    val destroyStage: Int
-) : EntityPacket {
-
-    constructor(entityId: Int, position: Vector3i, destroyStage: Int) : this(entityId, position.x(), position.y(), position.z(), destroyStage)
+data class PacketOutBlockBreakAnimation(override val entityId: Int, val x: Int, val y: Int, val z: Int, val destroyStage: Int) : EntityPacket {
 
     override fun write(buf: ByteBuf) {
         buf.writeVarInt(entityId)

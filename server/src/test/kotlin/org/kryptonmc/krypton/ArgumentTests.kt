@@ -119,13 +119,12 @@ class ArgumentTests {
         fun `preload needed classes`() {
             ArgumentSerializers
         }
-
-        @JvmStatic
-        private fun FlaggedArgumentSerializer<*>.checkFlags() {
-            assertEquals(0b00000011, createFlags(minimum = true, maximum = true))
-            assertEquals(0b00000000, createFlags(minimum = false, maximum = false))
-            assertEquals(0b00000010, createFlags(minimum = false, maximum = true))
-            assertEquals(0b00000001, createFlags(minimum = true, maximum = false))
-        }
     }
+}
+
+private fun FlaggedArgumentSerializer<*>.checkFlags() {
+    assertEquals(0b00000011, createFlags(minimum = true, maximum = true))
+    assertEquals(0b00000000, createFlags(minimum = false, maximum = false))
+    assertEquals(0b00000010, createFlags(minimum = false, maximum = true))
+    assertEquals(0b00000001, createFlags(minimum = true, maximum = false))
 }

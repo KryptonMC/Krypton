@@ -39,14 +39,6 @@ data class LoadedPluginDescriptionCandidate(
     val mainClass: String
 ) : PluginDescription {
 
-    fun toFull(mainClass: Class<*>): LoadedPluginDescription = LoadedPluginDescription(
-        id,
-        name,
-        version,
-        description,
-        authors,
-        dependencies,
-        source,
-        mainClass
-    )
+    fun toFull(mainClass: Class<*>): LoadedPluginDescription =
+        LoadedPluginDescription(id, name, version, description, authors, dependencies, source, mainClass)
 }

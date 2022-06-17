@@ -26,10 +26,7 @@ import org.kryptonmc.krypton.util.writeString
 import org.kryptonmc.krypton.util.writeVarInt
 
 @JvmRecord
-data class PacketInTabComplete(
-    val id: Int,
-    val command: String
-) : Packet {
+data class PacketInTabComplete(val id: Int, val command: String) : Packet {
 
     constructor(buf: ByteBuf) : this(buf.readVarInt(), buf.readString(32500))
 

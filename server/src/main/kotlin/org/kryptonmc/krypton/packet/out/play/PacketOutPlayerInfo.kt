@@ -38,20 +38,9 @@ import java.util.UUID
  * @param players a list of players, can be empty if not required by the [action]
  */
 @JvmRecord
-data class PacketOutPlayerInfo(
-    val action: Action,
-    val players: List<PlayerData> = emptyList()
-) : Packet {
+data class PacketOutPlayerInfo(val action: Action, val players: List<PlayerData> = emptyList()) : Packet {
 
-    constructor(action: Action, vararg players: KryptonPlayer) : this(
-        action,
-        players.map { PlayerData(it.profile.uuid, it.profile.name, it.profile.properties, it.gameMode, it.session.latency, it.displayName) }
-    )
-
-    constructor(action: Action, players: Collection<KryptonPlayer>) : this(
-        action,
-        players.map { PlayerData(it.profile.uuid, it.profile.name, it.profile.properties, it.gameMode, it.session.latency, it.displayName) }
-    )
+    constructor(action: Action, vararg players: KryptonPlayer) : this(action, players.map(PlayerData::from))
 
     override fun write(buf: ByteBuf) {
         buf.writeVarInt(action.ordinal)
@@ -96,7 +85,15 @@ data class PacketOutPlayerInfo(
         val gameMode: GameMode,
         val latency: Int,
         val displayName: Component?
-    )
+    ) {
+
+        companion object {
+
+            @JvmStatic
+            fun from(player: KryptonPlayer): PlayerData =
+                PlayerData(player.uuid, player.profile.name, player.profile.properties, player.gameMode, player.session.latency, player.displayName)
+        }
+    }
 
     enum class Action {
 

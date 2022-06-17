@@ -32,10 +32,7 @@ import java.util.UUID
  * it because they told us it in login start.
  */
 @JvmRecord
-data class PacketOutLoginSuccess(
-    val uuid: UUID,
-    val username: String
-) : Packet {
+data class PacketOutLoginSuccess(val uuid: UUID, val username: String) : Packet {
 
     constructor(profile: GameProfile) : this(profile.uuid, profile.name)
 

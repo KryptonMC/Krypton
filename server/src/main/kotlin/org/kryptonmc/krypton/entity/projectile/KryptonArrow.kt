@@ -39,7 +39,7 @@ class KryptonArrow(world: KryptonWorld) : KryptonArrowLike(world, EntityTypes.AR
         super.load(tag)
         if (tag.contains("Color", 99)) {
             val rgb = tag.getInt("Color")
-            if (rgb in 0..RGB_MAX_VALUE) color = tag.getInt("Color")
+            if (rgb in 0..RGB_MAX_VALUE) color = rgb
         }
     }
 

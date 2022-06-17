@@ -47,9 +47,6 @@ class KryptonPig(world: KryptonWorld) : KryptonAnimal(world, EntityTypes.PIG, AT
 
     companion object {
 
-        private val ATTRIBUTES = attributes()
-            .add(AttributeTypes.MAX_HEALTH, 10.0)
-            .add(AttributeTypes.MOVEMENT_SPEED, 0.25)
-            .build()
+        private val ATTRIBUTES = attributes().add(AttributeTypes.MAX_HEALTH, 10.0).add(AttributeTypes.MOVEMENT_SPEED, 0.25).build()
     }
 }

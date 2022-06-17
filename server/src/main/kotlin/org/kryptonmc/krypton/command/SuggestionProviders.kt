@@ -73,9 +73,7 @@ object SuggestionProviders {
     @JvmRecord
     private data class Wrapper(val name: Key, private val delegate: SuggestionProvider<Sender>) : SuggestionProvider<Sender> {
 
-        override fun getSuggestions(
-            context: CommandContext<Sender>?,
-            builder: SuggestionsBuilder?
-        ): CompletableFuture<Suggestions> = delegate.getSuggestions(context, builder)
+        override fun getSuggestions(context: CommandContext<Sender>?, builder: SuggestionsBuilder?): CompletableFuture<Suggestions> =
+            delegate.getSuggestions(context, builder)
     }
 }

@@ -24,10 +24,7 @@ import org.kryptonmc.api.command.meta.CommandMeta
 import org.kryptonmc.api.command.meta.SimpleCommandMeta
 
 @JvmRecord
-data class KryptonCommandMeta(
-    override val name: String,
-    override val aliases: ImmutableSet<String>
-) : CommandMeta {
+data class KryptonCommandMeta(override val name: String, override val aliases: ImmutableSet<String>) : CommandMeta {
 
     override fun toBuilder(): CommandMeta.Builder = Builder(this)
 

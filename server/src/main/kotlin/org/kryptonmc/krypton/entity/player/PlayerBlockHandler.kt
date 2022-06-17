@@ -19,24 +19,15 @@
 package org.kryptonmc.krypton.entity.player
 
 import org.kryptonmc.api.block.Block
-import org.kryptonmc.api.entity.Hand
-import org.kryptonmc.api.event.player.PlaceBlockEvent
-import org.kryptonmc.api.util.Direction
 import org.kryptonmc.api.world.GameMode
 import org.kryptonmc.krypton.KryptonServer
-import org.kryptonmc.krypton.item.KryptonItemStack
 import org.kryptonmc.krypton.item.handler
-import org.kryptonmc.krypton.packet.`in`.play.PacketInPlaceBlock
 import org.kryptonmc.krypton.packet.`in`.play.PacketInPlayerDigging
 import org.kryptonmc.krypton.packet.out.play.PacketOutDiggingResponse
-import org.kryptonmc.krypton.util.InteractionResult
 import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.world.KryptonWorld
-import org.kryptonmc.krypton.world.block.BlockHitResult
 import org.kryptonmc.krypton.world.block.handler
 import org.kryptonmc.krypton.world.block.isGameMasterBlock
-import org.spongepowered.math.vector.Vector3d
-import org.spongepowered.math.vector.Vector3i
 
 class PlayerBlockHandler(private val player: KryptonPlayer) {
 
@@ -133,14 +124,8 @@ class PlayerBlockHandler(private val player: KryptonPlayer) {
                     return
                 }
                 if (isDestroying) {
-                    player.session.send(PacketOutDiggingResponse(
-                        destroyingX,
-                        destroyingY,
-                        destroyingZ,
-                        world.getBlock(destroyingX, destroyingY, destroyingZ),
-                        PacketInPlayerDigging.Status.STARTED,
-                        false
-                    ))
+                    val destroyingBlock = world.getBlock(destroyingX, destroyingY, destroyingZ)
+                    player.session.send(PacketOutDiggingResponse(destroyingX, destroyingY, destroyingZ, destroyingBlock, status, false))
                 }
                 isDestroying = true
                 destroyingX = x
@@ -180,14 +165,8 @@ class PlayerBlockHandler(private val player: KryptonPlayer) {
                 if (x != destroyingX || y != destroyingY || z != destroyingZ) {
                     LOGGER.warn("Mismatched destroy position! Expected $destroyingX, $destroyingY, $destroyingZ and got $x, $y, $z!")
                     world.broadcastBlockDestroyProgress(player.id, destroyingX, destroyingY, destroyingZ, -1)
-                    player.session.send(PacketOutDiggingResponse(
-                        destroyingX,
-                        destroyingY,
-                        destroyingZ,
-                        world.getBlock(destroyingX, destroyingY, destroyingZ),
-                        status,
-                        true
-                    ))
+                    val destroyingBlock = world.getBlock(destroyingX, destroyingY, destroyingZ)
+                    player.session.send(PacketOutDiggingResponse(destroyingX, destroyingY, destroyingZ, destroyingBlock, status, true))
                 }
                 world.broadcastBlockDestroyProgress(player.id, x, y, z, -1)
                 player.session.send(PacketOutDiggingResponse(x, y, z, world.getBlock(x, y, z), status, true))

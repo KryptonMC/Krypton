@@ -36,7 +36,6 @@ class PluginModule(
 
     override fun configure() {
         bind(description.mainClass).`in`(Scopes.SINGLETON)
-
         bind<Logger>().toInstance(LogManager.getLogger(description.id))
         bind<Path>().annotatedWith<DataFolder>().toInstance(basePluginPath.resolve(description.id))
         bind<PluginDescription>().toInstance(description)

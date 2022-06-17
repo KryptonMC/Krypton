@@ -108,14 +108,11 @@ object Codecs {
     }
 
     @JvmStatic
-    fun <E : Keyed> forRegistry(registry: Registry<E>): StringCodec<E> = StringCodec.of(
-        { it.key().value() },
-        { requireNotNull(registry[Key.key(it)]) { "Could not find any element with name matching $it!" } }
-    )
+    fun <E : Keyed> forRegistry(registry: Registry<E>): StringCodec<E> =
+        StringCodec.of({ it.key().value() }, { requireNotNull(registry[Key.key(it)]) { "Could not find any element with name matching $it!" } })
+}
 
-    @JvmStatic
-    private fun IntArray.fixedSize(expected: Int): IntArray {
-        if (size == expected) return this
-        throw IllegalArgumentException("Input is not an array of integers with size $expected!")
-    }
+private fun IntArray.fixedSize(expected: Int): IntArray {
+    if (size == expected) return this
+    throw IllegalArgumentException("Input is not an array of integers with size $expected!")
 }

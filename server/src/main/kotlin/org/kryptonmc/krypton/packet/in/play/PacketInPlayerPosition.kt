@@ -23,12 +23,7 @@ import org.kryptonmc.krypton.packet.MovementPacket
 import org.kryptonmc.krypton.packet.Packet
 
 @JvmRecord
-data class PacketInPlayerPosition(
-    val x: Double,
-    val y: Double,
-    val z: Double,
-    override val onGround: Boolean
-) : MovementPacket {
+data class PacketInPlayerPosition(val x: Double, val y: Double, val z: Double, override val onGround: Boolean) : MovementPacket {
 
     constructor(buf: ByteBuf) : this(buf.readDouble(), buf.readDouble(), buf.readDouble(), buf.readBoolean())
 

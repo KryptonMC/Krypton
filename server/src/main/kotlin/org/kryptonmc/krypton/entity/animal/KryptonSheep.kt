@@ -63,9 +63,6 @@ class KryptonSheep(world: KryptonWorld) : KryptonAnimal(world, EntityTypes.SHEEP
 
     companion object {
 
-        private val ATTRIBUTES = attributes()
-            .add(AttributeTypes.MAX_HEALTH, 8.0)
-            .add(AttributeTypes.MOVEMENT_SPEED, 0.23)
-            .build()
+        private val ATTRIBUTES = attributes().add(AttributeTypes.MAX_HEALTH, 8.0).add(AttributeTypes.MOVEMENT_SPEED, 0.23).build()
     }
 }

@@ -23,10 +23,8 @@ import org.kryptonmc.api.registry.DefaultedRegistry
 import org.kryptonmc.api.registry.Registry
 import org.kryptonmc.api.resource.ResourceKey
 
-class KryptonDefaultedRegistry<T : Any>(
-    key: ResourceKey<out Registry<T>>,
-    override val defaultKey: Key
-) : KryptonRegistry<T>(key), DefaultedRegistry<T> {
+class KryptonDefaultedRegistry<T : Any>(key: ResourceKey<out Registry<T>>, override val defaultKey: Key) : KryptonRegistry<T>(key),
+    DefaultedRegistry<T> {
 
     private var internalDefault: T? = null
     override val defaultValue: T

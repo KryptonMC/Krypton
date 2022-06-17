@@ -80,8 +80,7 @@ data class KryptonConfig(
                         .build())
                     .outputStringComponents(true)
                     .build()
-                    .serializers()
-                )
+                    .serializers())
                 it.register(DifficultyTypeSerializer)
                 it.register(GameModeTypeSerializer)
                 it.register(LocaleTypeSerializer)
@@ -90,10 +89,7 @@ data class KryptonConfig(
 
         @JvmStatic
         fun load(path: Path): KryptonConfig {
-            val loader = HoconConfigurationLoader.builder()
-                .path(path)
-                .defaultOptions(OPTIONS)
-                .build()
+            val loader = HoconConfigurationLoader.builder().path(path).defaultOptions(OPTIONS).build()
             val node = loader.load()
             val config = node.get<KryptonConfig>() ?: throw IOException("Unable to load configuration!")
             loader.save(node)

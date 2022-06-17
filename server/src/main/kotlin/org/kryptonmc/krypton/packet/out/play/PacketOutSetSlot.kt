@@ -25,12 +25,7 @@ import org.kryptonmc.krypton.util.writeItem
 import org.kryptonmc.krypton.util.writeVarInt
 
 @JvmRecord
-data class PacketOutSetSlot(
-    val id: Int,
-    val stateId: Int,
-    val slot: Int,
-    val item: KryptonItemStack
-) : Packet {
+data class PacketOutSetSlot(val id: Int, val stateId: Int, val slot: Int, val item: KryptonItemStack) : Packet {
 
     override fun write(buf: ByteBuf) {
         buf.writeByte(id)

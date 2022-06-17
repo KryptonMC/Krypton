@@ -28,10 +28,7 @@ import org.kryptonmc.krypton.util.writeString
 import org.kryptonmc.krypton.util.writeVarIntByteArray
 
 @JvmRecord
-data class PacketInPluginMessage(
-    val channel: String,
-    val data: ByteArray
-) : Packet {
+data class PacketInPluginMessage(val channel: String, val data: ByteArray) : Packet {
 
     constructor(buf: ByteBuf) : this(buf.readString(), buf.readAllAvailableBytes())
 

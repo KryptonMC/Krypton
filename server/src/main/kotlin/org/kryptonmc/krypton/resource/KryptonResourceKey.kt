@@ -24,18 +24,13 @@ import java.util.Collections
 import java.util.IdentityHashMap
 
 @JvmRecord
-data class KryptonResourceKey<T : Any> private constructor(
-    override val registry: Key,
-    override val location: Key
-) : ResourceKey<T> {
+data class KryptonResourceKey<T : Any>(override val registry: Key, override val location: Key) : ResourceKey<T> {
 
     object Factory : ResourceKey.Factory {
 
         @Suppress("UNCHECKED_CAST")
-        override fun <T : Any> of(registry: Key, location: Key): ResourceKey<T> {
-            val key = "$registry:$location".intern()
-            return VALUES.getOrPut(key) { KryptonResourceKey<T>(registry, location) } as ResourceKey<T>
-        }
+        override fun <T : Any> of(registry: Key, location: Key): ResourceKey<T> =
+            VALUES.getOrPut("$registry:$location".intern()) { KryptonResourceKey<T>(registry, location) } as ResourceKey<T>
     }
 
     companion object {

@@ -97,9 +97,7 @@ class KryptonWolf(world: KryptonWorld) : KryptonTamable(world, EntityTypes.WOLF,
 
     override fun load(tag: CompoundTag) {
         super.load(tag)
-        if (tag.contains("CollarColor", 99)) {
-            data[MetadataKeys.WOLF.COLLAR_COLOR] = tag.getInt("CollarColor")
-        }
+        if (tag.contains("CollarColor", 99)) data[MetadataKeys.WOLF.COLLAR_COLOR] = tag.getInt("CollarColor")
         loadAngerData(world, tag)
     }
 

@@ -23,12 +23,8 @@ import org.kryptonmc.api.effect.particle.builder.SimpleParticleEffectBuilder
 import org.kryptonmc.api.effect.particle.data.ParticleData
 import org.spongepowered.math.vector.Vector3d
 
-class KryptonSimpleParticleEffectBuilder(
-    type: SimpleParticleType,
-    quantity: Int = 1,
-    offset: Vector3d = Vector3d.ZERO,
-    longDistance: Boolean = false
-) : AbstractParticleEffectBuilder<SimpleParticleEffectBuilder>(type, quantity, offset, longDistance), SimpleParticleEffectBuilder {
+class KryptonSimpleParticleEffectBuilder(type: SimpleParticleType) : AbstractParticleEffectBuilder<SimpleParticleEffectBuilder>(type),
+    SimpleParticleEffectBuilder {
 
     override fun buildData(): ParticleData? = null
 }

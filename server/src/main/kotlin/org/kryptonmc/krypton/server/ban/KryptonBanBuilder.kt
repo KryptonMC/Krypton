@@ -59,23 +59,12 @@ class KryptonBanBuilder(private var type: BanType) : Ban.Builder {
     override fun build(): Ban = when (type) {
         BanTypes.PROFILE -> {
             checkNotNull(profile) { "Profile cannot be null when type is PROFILE!" }
-            BannedPlayerEntry(
-                profile!!,
-                start ?: OffsetDateTime.now(),
-                source ?: BanEntry.DEFAULT_SOURCE,
-                end,
-                reason ?: BanEntry.DEFAULT_REASON
-            )
+            BannedPlayerEntry(profile!!, start ?: OffsetDateTime.now(), source ?: BanEntry.DEFAULT_SOURCE, end, reason ?: BanEntry.DEFAULT_REASON)
         }
         BanTypes.IP -> {
             checkNotNull(address) { "Address cannot be null when type is IP!" }
-            BannedIpEntry(
-                address!!.asString(),
-                start ?: OffsetDateTime.now(),
-                source ?: BanEntry.DEFAULT_SOURCE,
-                end,
-                reason ?: BanEntry.DEFAULT_REASON
-            )
+            val start = start ?: OffsetDateTime.now()
+            BannedIpEntry(address!!.asString(), start, source ?: BanEntry.DEFAULT_SOURCE, end, reason ?: BanEntry.DEFAULT_REASON)
         }
         else -> error("Unsupported ban type $type!")
     }

@@ -31,20 +31,12 @@ import org.kryptonmc.krypton.world.block.isVegetable
 
 object SwordHandler : ItemHandler {
 
-    override fun canAttackBlock(
-        player: KryptonPlayer,
-        world: KryptonWorld,
-        block: Block,
-        x: Int,
-        y: Int,
-        z: Int
-    ): Boolean = player.gameMode != GameMode.CREATIVE
+    override fun canAttackBlock(player: KryptonPlayer, world: KryptonWorld, block: Block, x: Int, y: Int, z: Int): Boolean =
+        player.gameMode != GameMode.CREATIVE
 
     override fun destroySpeed(item: KryptonItemStack, block: Block): Float {
         if (block.id == Blocks.COBWEB.id) return 15F
-        if (block.isPlant() || block.isReplaceablePlant() || BlockTags.LEAVES.contains(block) || block.isVegetable()) {
-            return 1.5F
-        }
+        if (block.isPlant() || block.isReplaceablePlant() || BlockTags.LEAVES.contains(block) || block.isVegetable()) return 1.5F
         return 1F
     }
 

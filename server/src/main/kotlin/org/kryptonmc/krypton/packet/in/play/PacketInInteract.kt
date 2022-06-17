@@ -37,11 +37,7 @@ data class PacketInInteract(
     val sneaking: Boolean
 ) : Packet {
 
-    constructor(buf: ByteBuf) : this(
-        buf,
-        buf.readVarInt(),
-        buf.readEnum<Type>()
-    )
+    constructor(buf: ByteBuf) : this(buf, buf.readVarInt(), buf.readEnum<Type>())
 
     private constructor(buf: ByteBuf, entityId: Int, type: Type) : this(
         entityId,

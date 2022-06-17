@@ -29,6 +29,7 @@ import org.kryptonmc.api.fluid.Fluid
 import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.krypton.util.IntHashBiMap
 import org.kryptonmc.krypton.util.KryptonDataLoader
+import org.kryptonmc.krypton.util.mapPersistentSet
 import org.kryptonmc.krypton.world.block.property.KryptonPropertyFactory
 import java.util.concurrent.ConcurrentHashMap
 
@@ -41,17 +42,12 @@ object FluidLoader : KryptonDataLoader<Fluid>("fluids", Registries.FLUID) {
     val STATES: IntHashBiMap<KryptonFluid> = IntHashBiMap()
 
     @JvmStatic
-    fun properties(
-        key: String,
-        properties: Map<String, String>
-    ): KryptonFluid? = PROPERTY_MAP[key]?.properties?.get(properties)
+    fun properties(key: String, properties: Map<String, String>): KryptonFluid? = PROPERTY_MAP[key]?.properties?.get(properties)
 
     override fun create(key: Key, value: JsonObject): Fluid {
         // Map properties
         val propertyEntry = PropertyEntry()
-        val availableProperties = value["properties"].asJsonArray.mapTo(mutableSetOf()) {
-            KryptonPropertyFactory.PROPERTIES[it.asString]!!
-        }.toImmutableSet()
+        val availableProperties = value["properties"].asJsonArray.mapPersistentSet { KryptonPropertyFactory.PROPERTIES[it.asString]!! }
 
         // Iterate states
         value.remove("states").asJsonArray.forEach {

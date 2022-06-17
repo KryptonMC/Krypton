@@ -122,22 +122,21 @@ object KryptonCommandManager : CommandManager {
             // This will process extra stuff that we want for proper error reporting to clients.
             if (exception.input != null && exception.cursor >= 0) {
                 val inputLength = min(exception.input.length, exception.cursor)
-                var errorMessage = Component.empty().style {
+                val errorMessage = Component.text().style {
                     it.color(NamedTextColor.GRAY)
                     it.clickEvent(ClickEvent.suggestCommand(command))
                 }
 
                 // If the length of the input is too long, we shorten it by appending ... at the beginning.
-                if (inputLength > 10) errorMessage = errorMessage.append(Component.text("..."))
-                errorMessage = errorMessage.append(Component.text(exception.input.substring(max(0, inputLength - 10), inputLength)))
+                if (inputLength > 10) errorMessage.append(Component.text("..."))
+                errorMessage.append(Component.text(exception.input.substring(max(0, inputLength - 10), inputLength)))
 
                 if (inputLength < exception.input.length) {
-                    val error = Component.text(exception.input.substring(inputLength), NamedTextColor.RED, TextDecoration.UNDERLINED)
-                    errorMessage = errorMessage.append(error)
+                    errorMessage.append(Component.text(exception.input.substring(inputLength), NamedTextColor.RED, TextDecoration.UNDERLINED))
                 }
 
                 // Append the "[HERE]" text (locale-specific) to the end, just like vanilla.
-                errorMessage = errorMessage.append(Component.translatable("command.context.here", NamedTextColor.RED, TextDecoration.ITALIC))
+                errorMessage.append(Component.translatable("command.context.here", NamedTextColor.RED, TextDecoration.ITALIC))
                 sender.sendMessage(Component.empty().append(errorMessage).color(NamedTextColor.RED))
             }
             false

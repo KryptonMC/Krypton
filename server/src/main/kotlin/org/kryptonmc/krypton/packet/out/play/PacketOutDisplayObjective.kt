@@ -25,10 +25,7 @@ import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.util.writeString
 
 @JvmRecord
-data class PacketOutDisplayObjective(
-    val slot: Int,
-    val name: String
-) : Packet {
+data class PacketOutDisplayObjective(val slot: Int, val name: String) : Packet {
 
     constructor(slot: DisplaySlot, objective: Objective?) : this(slot.ordinal, objective?.name ?: "")
 

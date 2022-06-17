@@ -20,12 +20,7 @@ package org.kryptonmc.processor
 
 import org.kryptonmc.api.plugin.annotation.Plugin
 
-fun Plugin.toDescription(qualifiedName: String): SerializedPluginDescription = SerializedPluginDescription(
-    id,
-    name,
-    version,
-    description,
-    authors.toList(),
-    dependencies.map { SerializedDependency(it.id, it.optional) },
-    qualifiedName
-)
+fun Plugin.toDescription(qualifiedName: String): SerializedPluginDescription {
+    val dependencies = dependencies.map { SerializedDependency(it.id, it.optional) }
+    return SerializedPluginDescription(id, name, version, description, authors.toList(), dependencies, qualifiedName)
+}
