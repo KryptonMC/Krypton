@@ -23,7 +23,6 @@ import org.kryptonmc.api.entity.Hand
 import org.kryptonmc.krypton.util.InteractionResult
 import org.kryptonmc.krypton.entity.KryptonLivingEntity
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
-import org.kryptonmc.krypton.item.InteractionContext
 import org.kryptonmc.krypton.item.KryptonItemStack
 import org.kryptonmc.krypton.item.UseItemResult
 import org.kryptonmc.krypton.world.KryptonWorld
@@ -52,12 +51,6 @@ interface ItemHandler {
      * [x], [y], and [z] coordinates in the given [world].
      */
     fun canAttackBlock(player: KryptonPlayer, world: KryptonWorld, block: Block, x: Int, y: Int, z: Int): Boolean = true
-
-    /**
-     * Called when a player interacts with a specific block, usually when they
-     * are attempting to dig it up (left click interaction).
-     */
-    fun interact(context: InteractionContext): InteractionResult = InteractionResult.PASS
 
     fun interactEntity(item: KryptonItemStack, player: KryptonPlayer, entity: KryptonLivingEntity, hand: Hand): InteractionResult =
         InteractionResult.PASS

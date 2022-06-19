@@ -82,6 +82,10 @@ import kotlin.math.abs
 import kotlin.math.max
 import kotlin.random.Random
 
+// TODO: If we keep doing this the vanilla way, this is going to end up with way too much in it.
+//  first, the loading and saving mechanism can probably be extracted to a separate system, to isolate entities.
+//  second, all of the entity processing logic can also be moved elsewhere
+//  third, there is a lot of vanilla stuff in here that is clearly just taken, which isn't allowed
 @Suppress("LeakingThis")
 abstract class KryptonEntity(override var world: KryptonWorld, override val type: EntityType<out Entity>) : Entity {
 

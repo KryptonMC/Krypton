@@ -19,8 +19,6 @@
 package org.kryptonmc.krypton.packet.`in`.play
 
 import io.netty.buffer.ByteBuf
-import org.kryptonmc.api.block.BlockFace
-import org.kryptonmc.krypton.world.block.BlockHitResult
 import org.kryptonmc.api.entity.Hand
 import org.kryptonmc.api.util.Direction
 import org.kryptonmc.krypton.packet.Packet

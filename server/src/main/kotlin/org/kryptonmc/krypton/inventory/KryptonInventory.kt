@@ -25,6 +25,8 @@ import org.kryptonmc.krypton.item.KryptonItemStack
 import org.kryptonmc.krypton.network.Writable
 import org.kryptonmc.krypton.util.FixedList
 
+// TODO: Sort out inventories. They don't work as intended, as we can't combine them in to a single view, and
+//  they are incomplete and messy.
 abstract class KryptonInventory(
     val id: Int,
     final override val type: InventoryType,

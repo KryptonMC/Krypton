@@ -23,9 +23,7 @@ import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.block.property.Property
 import org.kryptonmc.api.entity.Hand
 import org.kryptonmc.api.item.ItemTypes
-import org.kryptonmc.krypton.util.InteractionResult
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
-import org.kryptonmc.krypton.item.InteractionContext
 import org.kryptonmc.krypton.item.KryptonItemStack
 import org.kryptonmc.krypton.util.findRelative
 import org.kryptonmc.krypton.world.KryptonWorld
@@ -37,6 +35,7 @@ object DebugStickHandler : ItemHandler {
         return false
     }
 
+    /* FIXME fix this when we sort out interactions
     override fun interact(context: InteractionContext): InteractionResult {
         val player = context.player
         val item = context.heldItem
@@ -47,6 +46,7 @@ object DebugStickHandler : ItemHandler {
         }
         return InteractionResult.CONSUME
     }
+     */
 
     // TODO: We need to get information about where the item was so we can replace it with a copy that has the modified metadata,
     //  as all item stacks are immutable, so we can't just simply modify the data on the item like vanilla does.

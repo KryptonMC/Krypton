@@ -44,6 +44,8 @@ import java.util.IdentityHashMap
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.TimeUnit
 
+// TODO: Probably overhaul most of the event API as it's based on an older version of Velocity's event API
+//  that isn't even used by them anymore. It also has cases where it's unideal for us.
 object KryptonEventManager : EventManager {
 
     private val LOGGER = logger<KryptonEventManager>()

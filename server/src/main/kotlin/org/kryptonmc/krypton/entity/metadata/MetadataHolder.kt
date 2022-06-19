@@ -21,6 +21,7 @@ package org.kryptonmc.krypton.entity.metadata
 import org.kryptonmc.krypton.entity.KryptonEntity
 import space.vectrix.flare.fastutil.Int2ObjectSyncMap
 
+// TODO: Possibly change this up to be less vanilla-like
 class MetadataHolder(private val entity: KryptonEntity) {
 
     private val itemsById = Int2ObjectSyncMap.hashmap<Entry<*>>()

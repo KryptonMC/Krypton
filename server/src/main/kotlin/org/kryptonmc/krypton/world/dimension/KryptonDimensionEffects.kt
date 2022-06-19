@@ -24,9 +24,12 @@ import org.kryptonmc.api.world.dimension.DimensionEffect
 
 object KryptonDimensionEffects {
 
-    @JvmField val OVERWORLD: DimensionEffect = register("overworld", true, true, false, false)
-    @JvmField val THE_NETHER: DimensionEffect = register("the_nether", false, false, true, false)
-    @JvmField val THE_END: DimensionEffect = register("the_end", false, false, false, true)
+    @JvmField
+    val OVERWORLD: DimensionEffect = register("overworld", true, true, false, false)
+    @JvmField
+    val THE_NETHER: DimensionEffect = register("the_nether", false, false, true, false)
+    @JvmField
+    val THE_END: DimensionEffect = register("the_end", false, false, false, true)
 
     @JvmStatic
     private fun register(name: String, clouds: Boolean, celestialBodies: Boolean, fog: Boolean, endSky: Boolean): KryptonDimensionEffect {
