@@ -28,9 +28,9 @@ import org.spongepowered.math.vector.Vector3d
 @Suppress("UNCHECKED_CAST")
 abstract class AbstractParticleEffectBuilder<B : BaseParticleEffectBuilder<B>>(protected val type: ParticleType) : BaseParticleEffectBuilder<B> {
 
-    protected var quantity = 1
+    private var quantity = 1
     protected var offset: Vector3d = Vector3d.ZERO
-    protected var longDistance = false
+    private var longDistance = false
 
     abstract fun buildData(): ParticleData?
 

@@ -83,10 +83,7 @@ import kotlin.math.max
 import kotlin.random.Random
 
 @Suppress("LeakingThis")
-abstract class KryptonEntity(
-    override var world: KryptonWorld,
-    override val type: EntityType<out Entity>
-) : Entity {
+abstract class KryptonEntity(override var world: KryptonWorld, override val type: EntityType<out Entity>) : Entity {
 
     final override val id: Int = NEXT_ENTITY_ID.incrementAndGet()
     override var uuid: UUID = Random.nextUUID()
@@ -256,9 +253,7 @@ abstract class KryptonEntity(
 
     open fun load(tag: CompoundTag) {
         air = tag.getShort("Air").toInt()
-        if (tag.contains("CustomName", StringTag.ID)) {
-            customName = GsonComponentSerializer.gson().deserialize(tag.getString("CustomName"))
-        }
+        if (tag.contains("CustomName", StringTag.ID)) customName = GsonComponentSerializer.gson().deserialize(tag.getString("CustomName"))
         isCustomNameVisible = tag.getBoolean("CustomNameVisible")
         fallDistance = tag.getFloat("FallDistance")
         fireTicks = tag.getShort("Fire")

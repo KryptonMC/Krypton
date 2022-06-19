@@ -23,13 +23,20 @@ import org.kryptonmc.api.registry.Registries
 
 object KryptonEntityCategories {
 
-    @JvmField val MONSTER: KryptonEntityCategory = register("monster", 70, false, false, 128)
-    @JvmField val CREATURE: KryptonEntityCategory = register("creature", 10, true, true, 128)
-    @JvmField val AMBIENT: KryptonEntityCategory = register("ambient", 15, true, false, 128)
-    @JvmField val UNDERGROUND_WATER_CREATURE: KryptonEntityCategory = register("underground_water_creature", 5, true, false, 128)
-    @JvmField val WATER_CREATURE: KryptonEntityCategory = register("water_creature", 5, true, false, 128)
-    @JvmField val WATER_AMBIENT: KryptonEntityCategory = register("water_ambient", 20, true, false, 64)
-    @JvmField val MISC: KryptonEntityCategory = register("misc", -1, true, true, 128)
+    @JvmField
+    val MONSTER: KryptonEntityCategory = register("monster", 70, false, false, 128)
+    @JvmField
+    val CREATURE: KryptonEntityCategory = register("creature", 10, true, true, 128)
+    @JvmField
+    val AMBIENT: KryptonEntityCategory = register("ambient", 15, true, false, 128)
+    @JvmField
+    val UNDERGROUND_WATER_CREATURE: KryptonEntityCategory = register("underground_water_creature", 5, true, false, 128)
+    @JvmField
+    val WATER_CREATURE: KryptonEntityCategory = register("water_creature", 5, true, false, 128)
+    @JvmField
+    val WATER_AMBIENT: KryptonEntityCategory = register("water_ambient", 20, true, false, 64)
+    @JvmField
+    val MISC: KryptonEntityCategory = register("misc", -1, true, true, 128)
 
     @JvmStatic
     private fun register(name: String, max: Int, friendly: Boolean, persistent: Boolean, despawn: Int): KryptonEntityCategory {

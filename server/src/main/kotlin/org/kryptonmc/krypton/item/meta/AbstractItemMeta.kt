@@ -41,7 +41,7 @@ import org.kryptonmc.nbt.Tag
 import org.kryptonmc.nbt.list
 
 @Suppress("UNCHECKED_CAST")
-abstract class AbstractItemMeta<I : ItemMeta>(protected val data: CompoundTag) : ItemMeta {
+abstract class AbstractItemMeta<I : ItemMeta>(val data: CompoundTag) : ItemMeta {
 
     final override val damage: Int = data.getInt("Damage")
     final override val isUnbreakable: Boolean = data.getBoolean("Unbreakable")
@@ -53,8 +53,6 @@ abstract class AbstractItemMeta<I : ItemMeta>(protected val data: CompoundTag) :
     final override val canPlaceOn: ImmutableSet<Block> = data.getBlocks("CanPlaceOn")
 
     abstract fun copy(data: CompoundTag): I
-
-    fun save(): CompoundTag = data
 
     final override fun hasFlag(flag: ItemFlag): Boolean = hideFlags and flag.mask() != 0
 

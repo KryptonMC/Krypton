@@ -18,7 +18,6 @@
  */
 package org.kryptonmc.krypton.commands
 
-import com.mojang.brigadier.Command
 import com.mojang.brigadier.CommandDispatcher
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.text.Component
@@ -36,6 +35,7 @@ import org.kryptonmc.krypton.entity.EntityFactory
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.command.argument.argument
 import org.kryptonmc.krypton.command.literal
+import org.kryptonmc.krypton.command.runs
 import org.kryptonmc.krypton.command.toExceptionType
 import org.kryptonmc.krypton.util.isInSpawnableBounds
 import org.kryptonmc.nbt.CompoundTag
@@ -51,22 +51,19 @@ object SummonCommand : InternalCommand {
             permission(KryptonPermission.SUMMON)
             argument("entity", SummonEntityArgument) {
                 suggests(SuggestionProviders.SUMMONABLE_ENTITIES)
-                executes {
-                    val sender = it.source as? KryptonPlayer ?: return@executes 0
+                runs {
+                    val sender = it.source as? KryptonPlayer ?: return@runs
                     spawnEntity(sender, it.summonableEntity("entity"), sender.location)
-                    Command.SINGLE_SUCCESS
                 }
                 argument("position", VectorArgument.normal()) {
-                    executes {
-                        val sender = it.source as? KryptonPlayer ?: return@executes 0
+                    runs {
+                        val sender = it.source as? KryptonPlayer ?: return@runs
                         spawnEntity(sender, it.summonableEntity("entity"), it.vectorArgument("position"))
-                        Command.SINGLE_SUCCESS
                     }
                     argument("nbt", NBTCompoundArgument) {
-                        executes {
-                            val sender = it.source as? KryptonPlayer ?: return@executes 0
+                        runs {
+                            val sender = it.source as? KryptonPlayer ?: return@runs
                             spawnEntity(sender, it.summonableEntity("entity"), it.vectorArgument("position"), it.argument("nbt"))
-                            Command.SINGLE_SUCCESS
                         }
                     }
                 }

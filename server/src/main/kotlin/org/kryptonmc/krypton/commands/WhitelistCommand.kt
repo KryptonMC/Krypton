@@ -18,7 +18,6 @@
  */
 package org.kryptonmc.krypton.commands
 
-import com.mojang.brigadier.Command
 import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.arguments.StringArgumentType
 import com.mojang.brigadier.builder.LiteralArgumentBuilder
@@ -35,6 +34,7 @@ import org.kryptonmc.krypton.server.whitelist.WhitelistIpEntry
 import org.kryptonmc.krypton.command.argument.argument
 import org.kryptonmc.krypton.command.literal
 import org.kryptonmc.krypton.command.matchesSubString
+import org.kryptonmc.krypton.command.runs
 import org.kryptonmc.krypton.util.asString
 
 object WhitelistCommand : InternalCommand {
@@ -45,30 +45,24 @@ object WhitelistCommand : InternalCommand {
             toggle("on", true, "enabled", "alreadyOn")
             toggle("off", false, "disabled", "alreadyOff")
             literal("list") {
-                executes {
-                    val sender = it.source
-                    val server = it.source.server as? KryptonServer ?: return@executes 0
+                runs {
+                    val server = it.source.server as? KryptonServer ?: return@runs
                     val whitelist = server.playerManager.whitelist
                     if (whitelist.isEmpty()) {
-                        sender.sendMessage(Component.translatable("commands.whitelist.none"))
-                        return@executes Command.SINGLE_SUCCESS
+                        it.source.sendMessage(Component.translatable("commands.whitelist.none"))
+                        return@runs
                     }
-                    sender.sendMessage(Component.translatable(
-                        "commands.whitelist.list",
-                        Component.text(whitelist.size.toString()),
-                        Component.text(whitelist.joinToString())
-                    ))
-                    Command.SINGLE_SUCCESS
+                    val whitelistSize = Component.text(whitelist.size.toString())
+                    it.source.sendMessage(Component.translatable("commands.whitelist.list", whitelistSize, Component.text(whitelist.joinToString())))
                 }
             }
             addOrRemove("add", true)
             addOrRemove("remove", false)
             literal("add-ip") {
                 argument("target", StringArgumentType.string()) {
-                    executes {
-                        val server = it.source.server as? KryptonServer ?: return@executes 0
+                    runs {
+                        val server = it.source.server as? KryptonServer ?: return@runs
                         whitelistIp(server, it.argument("target"), it.source)
-                        Command.SINGLE_SUCCESS
                     }
                 }
             }
@@ -82,16 +76,15 @@ object WhitelistCommand : InternalCommand {
                         }
                         builder.buildFuture()
                     }
-                    executes {
-                        val server = it.source.server as? KryptonServer ?: return@executes 0
+                    runs {
+                        val server = it.source.server as? KryptonServer ?: return@runs
                         val ip = it.argument<String>("ip")
                         if (server.playerManager.whitelistedIps.contains(ip)) {
                             server.playerManager.whitelistedIps.remove(ip)
                             it.source.sendMessage(Component.translatable("commands.whitelist.remove.success", Component.text(ip)))
-                            return@executes Command.SINGLE_SUCCESS
+                            return@runs
                         }
                         it.source.sendMessage(Component.translatable("commands.whitelist.remove.failed"))
-                        Command.SINGLE_SUCCESS
                     }
                 }
             }
@@ -105,8 +98,7 @@ object WhitelistCommand : InternalCommand {
                 sender.sendMessage(Component.translatable("commands.whitelist.add.failed"))
                 return
             }
-            val entry = WhitelistIpEntry(target)
-            server.playerManager.whitelistedIps.add(entry)
+            server.playerManager.whitelistedIps.add(WhitelistIpEntry(target))
             sender.sendMessage(Component.translatable("commands.whitelist.add.success", Component.text(target)))
             return
         }
@@ -117,8 +109,7 @@ object WhitelistCommand : InternalCommand {
                 sender.sendMessage(Component.translatable("commands.whitelist.add.failed"))
                 return
             }
-            val entry = WhitelistIpEntry(address)
-            server.playerManager.whitelistedIps.add(entry)
+            server.playerManager.whitelistedIps.add(WhitelistIpEntry(address))
             sender.sendMessage(Component.translatable("commands.whitelist.add.success", Component.text(target)))
             return
         }
@@ -132,8 +123,8 @@ private fun LiteralArgumentBuilder<Sender>.toggle(
     key: String,
     alreadyKey: String
 ): LiteralArgumentBuilder<Sender> = literal(name) {
-    executes {
-        val server = it.source.server as? KryptonServer ?: return@executes 0
+    runs {
+        val server = it.source.server as? KryptonServer ?: return@runs
         val toggled = if (enable) !server.playerManager.whitelistEnabled else server.playerManager.whitelistEnabled
         if (toggled) {
             server.playerManager.whitelistEnabled = enable
@@ -141,14 +132,13 @@ private fun LiteralArgumentBuilder<Sender>.toggle(
         } else {
             it.source.sendMessage(Component.translatable("commands.whitelist.$alreadyKey"))
         }
-        Command.SINGLE_SUCCESS
     }
 }
 
 private fun LiteralArgumentBuilder<Sender>.addOrRemove(name: String, add: Boolean): LiteralArgumentBuilder<Sender> = literal(name) {
     argument("targets", GameProfileArgument) {
-        executes { context ->
-            val server = context.source.server as? KryptonServer ?: return@executes 0
+        runs { context ->
+            val server = context.source.server as? KryptonServer ?: return@runs
             val whitelist = server.playerManager.whitelist
             context.gameProfileArgument("targets").profiles(context.source).forEach {
                 val state = if (add) !whitelist.contains(it) else whitelist.contains(it)
@@ -159,7 +149,6 @@ private fun LiteralArgumentBuilder<Sender>.addOrRemove(name: String, add: Boolea
                 }
                 context.source.sendMessage(Component.translatable("commands.whitelist.$name.failed"))
             }
-            Command.SINGLE_SUCCESS
         }
     }
 }

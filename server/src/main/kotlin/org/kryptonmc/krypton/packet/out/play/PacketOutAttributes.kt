@@ -58,7 +58,8 @@ data class PacketOutAttributes(override val entityId: Int, val attributes: Colle
         companion object {
 
             @JvmStatic
-            fun from(attribute: KryptonAttribute): AttributeSnapshot = AttributeSnapshot(attribute.type, attribute.baseValue, attribute.modifiersByOperation)
+            fun from(attribute: KryptonAttribute): AttributeSnapshot =
+                AttributeSnapshot(attribute.type, attribute.baseValue, attribute.modifiersByOperation)
         }
     }
 }

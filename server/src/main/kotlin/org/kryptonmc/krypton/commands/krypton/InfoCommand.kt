@@ -18,7 +18,6 @@
  */
 package org.kryptonmc.krypton.commands.krypton
 
-import com.mojang.brigadier.Command
 import com.mojang.brigadier.builder.LiteralArgumentBuilder
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.event.ClickEvent
@@ -26,6 +25,7 @@ import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.text.format.TextDecoration
 import org.kryptonmc.api.command.Sender
 import org.kryptonmc.krypton.command.literal
+import org.kryptonmc.krypton.command.runs
 
 object InfoCommand : KryptonSubCommand {
 
@@ -38,14 +38,13 @@ object InfoCommand : KryptonSubCommand {
     override val aliases: Sequence<String> = sequenceOf("about", "version")
 
     override fun register(): LiteralArgumentBuilder<Sender> = literal("info") {
-        executes {
+        runs {
             it.source.sendMessage(Component.empty()
                 .append(Component.text("This server is running ", KryptonColors.LIGHTER_PURPLE))
                 .append(KRYPTON)
                 .append(Component.text(it.source.server.platform.version, NamedTextColor.GREEN))
                 .append(Component.text(" for Minecraft ", KryptonColors.LIGHTER_PURPLE))
                 .append(Component.text(it.source.server.platform.minecraftVersion, NamedTextColor.GREEN)))
-            Command.SINGLE_SUCCESS
         }
     }
 }

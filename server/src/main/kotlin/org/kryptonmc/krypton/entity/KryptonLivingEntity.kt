@@ -71,13 +71,15 @@ abstract class KryptonLivingEntity(
             if (lastHurtByMob != null) return lastHurtByMob
             return null
         }
-    private var lastHurtByMob: KryptonLivingEntity? = null
+    @Suppress("MemberVisibilityCanBePrivate")
+    var lastHurtByMob: KryptonLivingEntity? = null
         set(value) {
             field = value
             lastHurtByMobTime = tickCount
         }
     private var lastHurtByMobTime = 0
-    private var lastHurtByPlayer: KryptonPlayer? = null
+    @Suppress("MemberVisibilityCanBePrivate")
+    var lastHurtByPlayer: KryptonPlayer? = null
         set(value) {
             field = value
             lastHurtByPlayerTime = tickCount

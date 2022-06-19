@@ -26,8 +26,10 @@ import org.kryptonmc.krypton.world.event.GameEvent
 
 object InternalRegistries {
 
-    @JvmField val MEMORIES: KryptonRegistry<MemoryKey<Any>> = create(InternalResourceKeys.MEMORIES)
-    @JvmField val GAME_EVENT: KryptonRegistry<GameEvent> = create(InternalResourceKeys.GAME_EVENT)
+    @JvmField
+    val MEMORIES: KryptonRegistry<MemoryKey<Any>> = create(InternalResourceKeys.MEMORIES)
+    @JvmField
+    val GAME_EVENT: KryptonRegistry<GameEvent> = create(InternalResourceKeys.GAME_EVENT)
 
     @JvmStatic
     private fun <T : Any> create(key: ResourceKey<out Registry<T>>): KryptonRegistry<T> = KryptonRegistryManager.create(key)

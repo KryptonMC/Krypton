@@ -49,12 +49,8 @@ class KryptonCompassMeta(data: CompoundTag) : AbstractItemMeta<KryptonCompassMet
         return KryptonCompassMeta(newData)
     }
 
-    override fun withoutLodestone(): KryptonCompassMeta {
-        val newData = data.putBoolean("LodestoneTracked", false)
-            .remove("LodestoneDimension")
-            .remove("LodestonePos")
-        return KryptonCompassMeta(newData)
-    }
+    override fun withoutLodestone(): KryptonCompassMeta =
+        KryptonCompassMeta(data.putBoolean("LodestoneTracked", false).remove("LodestoneDimension").remove("LodestonePos"))
 
     override fun toBuilder(): CompassMeta.Builder = Builder(this)
 

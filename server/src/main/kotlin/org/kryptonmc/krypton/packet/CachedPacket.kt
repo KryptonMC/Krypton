@@ -30,15 +30,14 @@ class CachedPacket(private val supplier: Supplier<Packet>) : GenericPacket {
 
     private var packet: SoftReference<FramedPacket>? = null
 
-    val body: ByteBuf
-        get() {
-            val cache = updatedCache()
-            return cache?.body ?: supplier.get().frame()
-        }
-
     fun get(): GenericPacket {
         val ref = PACKET.getAcquire(this) as? SoftReference<FramedPacket> ?: return supplier.get()
         return ref.get() ?: supplier.get()
+    }
+
+    fun body(): ByteBuf {
+        val cache = updatedCache()
+        return cache?.body ?: supplier.get().frame()
     }
 
     fun invalidate() {

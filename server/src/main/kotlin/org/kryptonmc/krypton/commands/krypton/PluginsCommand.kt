@@ -25,6 +25,7 @@ import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.text.format.TextDecoration
 import org.kryptonmc.api.command.Sender
 import org.kryptonmc.krypton.command.literal
+import org.kryptonmc.krypton.command.runs
 
 object PluginsCommand : KryptonSubCommand {
 
@@ -38,12 +39,12 @@ object PluginsCommand : KryptonSubCommand {
     override val aliases: Sequence<String> = sequenceOf("pl")
 
     override fun register(): LiteralArgumentBuilder<Sender> = literal("plugins") {
-        executes { context ->
+        runs { context ->
             val sender = context.source
             val plugins = sender.server.pluginManager.plugins
             if (plugins.isEmpty()) {
                 sender.sendMessage(Component.text("No plugins are currently running on this server.", NamedTextColor.RED))
-                return@executes 1
+                return@runs
             }
 
             val message = Component.text()
@@ -67,16 +68,15 @@ object PluginsCommand : KryptonSubCommand {
                     .append(Component.newline())
                     .append(Component.text("Dependencies: ", KryptonColors.DARK_ORCHID))
                 if (plugin.description.dependencies.isNotEmpty()) {
-                    var dependencies = Component.empty()
+                    val dependencies = Component.text()
                     plugin.description.dependencies.forEachIndexed { index, dependency ->
-                        dependencies = dependencies
-                            .append(INDENT)
+                        dependencies.append(INDENT)
                             .append(Component.text(dependency.id, NamedTextColor.GREEN))
                             .append(OPEN_BRACKET)
                             .append(Component.text("optional: ", KryptonColors.DARK_ORCHID))
                             .append(Component.text(dependency.isOptional, NamedTextColor.GREEN))
                             .append(CLOSED_BRACKET)
-                        if (index < plugin.description.dependencies.size - 1) dependencies = dependencies.append(Component.newline())
+                        if (index < plugin.description.dependencies.size - 1) dependencies.append(Component.newline())
                     }
                     pluginMessage.append(Component.newline()).append(dependencies)
                 } else {
@@ -97,7 +97,6 @@ object PluginsCommand : KryptonSubCommand {
                 .append(CLOSED_BRACKET)
                 .append(COLON)
                 .append(message))
-            1
         }
     }
 }

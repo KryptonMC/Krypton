@@ -20,6 +20,7 @@ package org.kryptonmc.krypton.command
 
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType
 import net.kyori.adventure.text.Component
-import org.kryptonmc.api.adventure.toMessage
+import org.kryptonmc.krypton.adventure.KryptonAdventureMessage
 
-fun Component.toExceptionType(): SimpleCommandExceptionType = SimpleCommandExceptionType(toMessage())
+// Using toMessage() here breaks some tests that initialise things before the bootstrap is preloaded
+fun Component.toExceptionType(): SimpleCommandExceptionType = SimpleCommandExceptionType(KryptonAdventureMessage(this))

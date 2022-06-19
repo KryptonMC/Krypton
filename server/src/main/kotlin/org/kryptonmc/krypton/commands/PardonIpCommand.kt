@@ -18,7 +18,6 @@
  */
 package org.kryptonmc.krypton.commands
 
-import com.mojang.brigadier.Command
 import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.arguments.StringArgumentType
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType
@@ -32,6 +31,7 @@ import org.kryptonmc.krypton.command.permission
 import org.kryptonmc.krypton.command.argument.argument
 import org.kryptonmc.krypton.command.literal
 import org.kryptonmc.krypton.command.matchesSubString
+import org.kryptonmc.krypton.command.runs
 
 object PardonIpCommand : InternalCommand {
 
@@ -50,24 +50,19 @@ object PardonIpCommand : InternalCommand {
                     }
                     builder.buildFuture()
                 }
-                executes {
-                    unbanIp(it.source, it.argument("target"))
-                    Command.SINGLE_SUCCESS
+                runs {
+                    val server = it.source.server as? KryptonServer ?: return@runs
+                    val target = it.argument<String>("target")
+                    if (target.matches(BanIpCommand.IP_ADDRESS_PATTERN)) {
+                        if (server.playerManager.bannedIps.contains(target)) {
+                            server.playerManager.bannedIps.remove(target)
+                            return@runs
+                        }
+                        throw ALREADY_UNBANNED_EXCEPTION.create()
+                    }
+                    throw INVALID_IP_EXCEPTION.create()
                 }
             }
         })
-    }
-
-    @JvmStatic
-    private fun unbanIp(sender: Sender, target: String) {
-        val server = sender.server as? KryptonServer ?: return
-        if (target.matches(BanIpCommand.IP_ADDRESS_PATTERN)) {
-            if (server.playerManager.bannedIps.contains(target)) {
-                server.playerManager.bannedIps.remove(target)
-                return
-            }
-            throw ALREADY_UNBANNED_EXCEPTION.create()
-        }
-        throw INVALID_IP_EXCEPTION.create()
     }
 }

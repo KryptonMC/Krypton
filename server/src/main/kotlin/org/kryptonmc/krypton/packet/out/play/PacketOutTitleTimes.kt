@@ -28,11 +28,7 @@ data class PacketOutTitleTimes(val fadeInTicks: Int, val stayTicks: Int, val fad
 
     constructor(times: Title.Times) : this(times.fadeIn(), times.stay(), times.fadeOut())
 
-    constructor(
-        fadeIn: Duration,
-        stay: Duration,
-        fadeOut: Duration
-    ) : this(fadeIn.toSeconds().toInt() * 20, stay.toSeconds().toInt() * 20, fadeOut.toSeconds().toInt() * 20)
+    constructor(fadeIn: Duration, stay: Duration, fadeOut: Duration) : this(fadeIn.toTicks(), stay.toTicks(), fadeOut.toTicks())
 
     override fun write(buf: ByteBuf) {
         buf.writeInt(fadeInTicks)
@@ -40,3 +36,5 @@ data class PacketOutTitleTimes(val fadeInTicks: Int, val stayTicks: Int, val fad
         buf.writeInt(fadeOutTicks)
     }
 }
+
+private fun Duration.toTicks(): Int = toSeconds().toInt() * 20

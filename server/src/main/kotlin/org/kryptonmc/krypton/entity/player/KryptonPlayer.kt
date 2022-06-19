@@ -381,9 +381,7 @@ class KryptonPlayer(
     override fun load(tag: CompoundTag) {
         super.load(tag)
         updateGameMode(GameMode.fromId(tag.getInt("playerGameType")) ?: GameMode.SURVIVAL, ChangeGameModeEvent.Cause.LOAD)
-        if (tag.contains("previousPlayerGameType", IntTag.ID)) {
-            oldGameMode = GameMode.fromId(tag.getInt("previousPlayerGameType"))
-        }
+        if (tag.contains("previousPlayerGameType", IntTag.ID)) oldGameMode = GameMode.fromId(tag.getInt("previousPlayerGameType"))
         inventory.load(tag.getList("Inventory", CompoundTag.ID))
         inventory.heldSlot = tag.getInt("SelectedItemSlot")
         score = tag.getInt("Score")
@@ -405,12 +403,8 @@ class KryptonPlayer(
         attribute(AttributeTypes.MOVEMENT_SPEED)!!.baseValue = walkingSpeed.toDouble()
 
         // NBT data for entities sitting on the player's shoulders, e.g. parrots
-        if (tag.contains("ShoulderEntityLeft", CompoundTag.ID)) {
-            leftShoulder = tag.getCompound("ShoulderEntityLeft")
-        }
-        if (tag.contains("ShoulderEntityRight", CompoundTag.ID)) {
-            rightShoulder = tag.getCompound("ShoulderEntityRight")
-        }
+        if (tag.contains("ShoulderEntityLeft", CompoundTag.ID)) leftShoulder = tag.getCompound("ShoulderEntityLeft")
+        if (tag.contains("ShoulderEntityRight", CompoundTag.ID)) rightShoulder = tag.getCompound("ShoulderEntityRight")
 
         // Respawn data
         if (tag.contains("SpawnX", 99) && tag.contains("SpawnY", 99) && tag.contains("SpawnZ", 99)) {

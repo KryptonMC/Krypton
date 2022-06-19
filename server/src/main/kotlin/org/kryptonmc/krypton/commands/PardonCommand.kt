@@ -18,12 +18,10 @@
  */
 package org.kryptonmc.krypton.commands
 
-import com.mojang.brigadier.Command
 import com.mojang.brigadier.CommandDispatcher
 import net.kyori.adventure.text.Component
 import org.kryptonmc.api.command.Sender
 import org.kryptonmc.krypton.KryptonServer
-import org.kryptonmc.krypton.auth.KryptonGameProfile
 import org.kryptonmc.krypton.command.InternalCommand
 import org.kryptonmc.krypton.command.argument
 import org.kryptonmc.krypton.command.arguments.GameProfileArgument
@@ -31,6 +29,7 @@ import org.kryptonmc.krypton.command.arguments.gameProfileArgument
 import org.kryptonmc.krypton.command.literal
 import org.kryptonmc.krypton.command.matchesSubString
 import org.kryptonmc.krypton.command.permission
+import org.kryptonmc.krypton.command.runs
 
 object PardonCommand : InternalCommand {
 
@@ -46,21 +45,15 @@ object PardonCommand : InternalCommand {
                     }
                     builder.buildFuture()
                 }
-                executes {
-                    val server = it.source.server as? KryptonServer ?: return@executes Command.SINGLE_SUCCESS
-                    unban(it.gameProfileArgument("targets").profiles(it.source), it.source, server)
-                    Command.SINGLE_SUCCESS
+                runs { context ->
+                    val server = context.source.server as? KryptonServer ?: return@runs
+                    context.gameProfileArgument("targets").profiles(context.source).forEach {
+                        if (!server.playerManager.bannedPlayers.contains(it)) return@forEach
+                        server.playerManager.bannedPlayers.remove(it)
+                        context.source.sendMessage(Component.translatable("commands.pardon.success", Component.text(it.name)))
+                    }
                 }
             }
         })
-    }
-
-    @JvmStatic
-    private fun unban(targets: List<KryptonGameProfile>, sender: Sender, server: KryptonServer) {
-        targets.forEach {
-            if (!server.playerManager.bannedPlayers.contains(it)) return@forEach
-            server.playerManager.bannedPlayers.remove(it)
-            sender.sendMessage(Component.translatable("commands.pardon.success", Component.text(it.name)))
-        }
     }
 }

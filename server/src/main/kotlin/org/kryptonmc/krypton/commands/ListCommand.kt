@@ -18,7 +18,6 @@
  */
 package org.kryptonmc.krypton.commands
 
-import com.mojang.brigadier.Command
 import com.mojang.brigadier.CommandDispatcher
 import net.kyori.adventure.text.Component
 import org.kryptonmc.api.adventure.toPlainText
@@ -27,46 +26,30 @@ import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.command.InternalCommand
 import org.kryptonmc.krypton.command.literal
 import org.kryptonmc.krypton.command.permission
+import org.kryptonmc.krypton.command.runs
 
 object ListCommand : InternalCommand {
 
     override fun register(dispatcher: CommandDispatcher<Sender>) {
         dispatcher.register(literal("list") {
             permission(KryptonPermission.LIST)
-            executes {
-                val server = it.source.server as? KryptonServer ?: return@executes 0
-                sendNames(it.source, server)
-                Command.SINGLE_SUCCESS
+            runs { context ->
+                val server = context.source.server as? KryptonServer ?: return@runs
+                sendNames(context.source, server, server.players.map { it.displayName.toPlainText() })
             }
             literal("uuids") {
-                executes {
-                    val server = it.source.server as? KryptonServer ?: return@executes 0
-                    sendNamesWithUUID(it.source, server)
-                    Command.SINGLE_SUCCESS
+                runs { context ->
+                    val server = context.source.server as? KryptonServer ?: return@runs
+                    sendNames(context.source, server, server.players.map { "${it.displayName.toPlainText()} (${it.uuid})" })
                 }
             }
         })
     }
 
     @JvmStatic
-    private fun sendNames(sender: Sender, server: KryptonServer) {
-        val names = server.players.map { it.displayName.toPlainText() }
-        sender.sendMessage(Component.translatable(
-            "commands.list.players",
-            Component.text(names.size),
-            Component.text(server.maxPlayers),
-            Component.text(names.joinToString("\n"))
-        ))
-    }
-
-    @JvmStatic
-    private fun sendNamesWithUUID(sender: Sender, server: KryptonServer) {
-        val names = server.players.map { "${it.displayName.toPlainText()} (${it.uuid})" }
-        sender.sendMessage(Component.translatable(
-            "commands.list.players",
-            Component.text(names.size),
-            Component.text(server.maxPlayers),
-            Component.text(names.joinToString("\n"))
-        ))
+    private fun sendNames(sender: Sender, server: KryptonServer, names: List<String>) {
+        val maxPlayers = Component.text(server.maxPlayers)
+        val players = Component.text(names.joinToString("\n"))
+        sender.sendMessage(Component.translatable("commands.list.players", Component.text(names.size), maxPlayers, players))
     }
 }

@@ -52,12 +52,10 @@ object VelocityProxy {
     }
 
     @JvmStatic
-    fun readData(buf: ByteBuf): VelocityForwardedData = VelocityForwardedData(
-        InetAddresses.forString(buf.readString()),
-        UUID(buf.readLong(), buf.readLong()),
-        buf.readString(16),
-        readProperties(buf)
-    )
+    fun readData(buf: ByteBuf): VelocityForwardedData {
+        val address = InetAddresses.forString(buf.readString())
+        return VelocityForwardedData(address, UUID(buf.readLong(), buf.readLong()), buf.readString(16), readProperties(buf))
+    }
 
     @JvmStatic
     private fun readProperties(buf: ByteBuf): PersistentList<KryptonProfileProperty> {

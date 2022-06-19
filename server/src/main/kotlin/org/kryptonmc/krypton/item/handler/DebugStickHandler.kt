@@ -29,28 +29,39 @@ import org.kryptonmc.krypton.item.InteractionContext
 import org.kryptonmc.krypton.item.KryptonItemStack
 import org.kryptonmc.krypton.util.findRelative
 import org.kryptonmc.krypton.world.KryptonWorld
-import org.kryptonmc.nbt.CompoundTag
 
 object DebugStickHandler : ItemHandler {
 
     override fun canAttackBlock(player: KryptonPlayer, world: KryptonWorld, block: Block, x: Int, y: Int, z: Int): Boolean {
-        handleInteraction(player, world, block, x, y, z, false)
+        handleInteraction(player, world, block, x, y, z, false, player.heldItem(Hand.MAIN))
         return false
     }
 
     override fun interact(context: InteractionContext): InteractionResult {
         val player = context.player
+        val item = context.heldItem
         val world = context.world
         val position = context.position
-        if (!handleInteraction(player, world, world.getBlock(position), position.x(), position.y(), position.z(), true)) {
+        if (!handleInteraction(player, world, world.getBlock(position), position.x(), position.y(), position.z(), true, item)) {
             return InteractionResult.FAIL
         }
         return InteractionResult.CONSUME
     }
 
+    // TODO: We need to get information about where the item was so we can replace it with a copy that has the modified metadata,
+    //  as all item stacks are immutable, so we can't just simply modify the data on the item like vanilla does.
     @Suppress("UNCHECKED_CAST") // Screw you too generics, no wonder you have no friends
     @JvmStatic
-    private fun handleInteraction(player: KryptonPlayer, world: KryptonWorld, block: Block, x: Int, y: Int, z: Int, isUse: Boolean): Boolean {
+    private fun handleInteraction(
+        player: KryptonPlayer,
+        world: KryptonWorld,
+        block: Block,
+        x: Int,
+        y: Int,
+        z: Int,
+        isUse: Boolean,
+        item: KryptonItemStack
+    ): Boolean {
         if (!player.canUseGameMasterBlocks) return false
         val properties = block.availableProperties
         val key = block.key().asString()
@@ -59,7 +70,7 @@ object DebugStickHandler : ItemHandler {
             return false
         }
 
-        val tag = CompoundTag.empty()
+        var tag = item.meta.data.getCompound("DebugProperty")
         val propertyKey = tag.getString(key)
         var property = properties.firstOrNull { tag.getString(propertyKey) == it.name } as? Property<Comparable<Any>>
 
@@ -67,20 +78,14 @@ object DebugStickHandler : ItemHandler {
             if (property == null) property = properties.first() as Property<Comparable<Any>>
             val cycled = block.cycle(property, player.isSneaking)
             world.setBlock(x, y, z, cycled)
-            player.sendMessage(Component.translatable(
-                "${ItemTypes.DEBUG_STICK.translation.key()}.update",
-                Component.text(property.name),
-                Component.text(property.toString(cycled[property]!!))
-            ))
+            val cycledText = Component.text(property.toString(cycled[property]!!))
+            player.sendMessage(Component.translatable("${ItemTypes.DEBUG_STICK.translation.key()}.update", Component.text(property.name), cycledText))
         } else {
             property = properties.findRelative(property, player.isSneaking) as Property<Comparable<Any>>
             val name = property.name
-//            tag.putString(key, name)
-            player.sendMessage(Component.translatable(
-                "${ItemTypes.DEBUG_STICK.translation.key()}.select",
-                Component.text(name),
-                Component.text(property.toString(block[property]!!))
-            ))
+            tag = tag.putString(key, name)
+            val propertyText = Component.text(property.toString(block[property]!!))
+            player.sendMessage(Component.translatable("${ItemTypes.DEBUG_STICK.translation.key()}.select", Component.text(name), propertyText))
         }
         return true
     }

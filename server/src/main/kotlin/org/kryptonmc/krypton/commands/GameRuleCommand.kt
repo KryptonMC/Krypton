@@ -18,7 +18,6 @@
  */
 package org.kryptonmc.krypton.commands
 
-import com.mojang.brigadier.Command
 import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.arguments.BoolArgumentType
 import com.mojang.brigadier.arguments.IntegerArgumentType
@@ -32,50 +31,37 @@ import org.kryptonmc.krypton.command.permission
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.command.argument.argument
 import org.kryptonmc.krypton.command.literal
+import org.kryptonmc.krypton.command.runs
 
 object GameRuleCommand : InternalCommand {
 
     @Suppress("UNCHECKED_CAST")
     override fun register(dispatcher: CommandDispatcher<Sender>) {
-        val command = literal<Sender>("gamerule") {
-            permission(KryptonPermission.GAME_RULE)
-        }
+        val command = literal("gamerule") { permission(KryptonPermission.GAME_RULE) }
         Registries.GAME_RULES.values.forEach { rule ->
-            val gameRule = LiteralArgumentBuilder.literal<Sender>(rule.name).executes {
-                val sender = it.source as? KryptonPlayer ?: return@executes 0
-                sender.sendMessage(Component.translatable(
-                    "commands.gamerule.query",
-                    Component.text(rule.name),
-                    Component.text(sender.world.gameRules[rule].toString())
-                ))
-                Command.SINGLE_SUCCESS
+            val gameRule = LiteralArgumentBuilder.literal<Sender>(rule.name).runs {
+                val sender = it.source as? KryptonPlayer ?: return@runs
+                val gameRule = Component.text(sender.world.gameRules[rule].toString())
+                sender.sendMessage(Component.translatable("commands.gamerule.query", Component.text(rule.name), gameRule))
             }
             if (rule.default is Boolean) {
                 gameRule.then(argument("value", BoolArgumentType.bool()) {
-                    executes {
-                        val sender = it.source as? KryptonPlayer ?: return@executes 0
+                    runs {
+                        val sender = it.source as? KryptonPlayer ?: return@runs
                         val value = it.argument<Boolean>("value")
                         sender.world.gameRules[rule] = value
-                        sender.sendMessage(Component.translatable(
-                            "commands.gamerule.set",
-                            Component.text(rule.name),
-                            Component.text(value.toString())
-                        ))
-                        Command.SINGLE_SUCCESS
+                        val name = Component.text(rule.name)
+                        sender.sendMessage(Component.translatable("commands.gamerule.set", name, Component.text(value.toString())))
                     }
                 })
             } else if (rule.default is Int) {
                 gameRule.then(argument<Sender, Int>("value", IntegerArgumentType.integer()) {
-                    executes {
-                        val sender = it.source as? KryptonPlayer ?: return@executes 0
+                    runs {
+                        val sender = it.source as? KryptonPlayer ?: return@runs
                         val value = it.argument<Int>("value")
                         sender.world.gameRules[rule] = value
-                        sender.sendMessage(Component.translatable(
-                            "commands.gamerule.set",
-                            Component.text(rule.name),
-                            Component.text(value.toString())
-                        ))
-                        Command.SINGLE_SUCCESS
+                        val name = Component.text(rule.name)
+                        sender.sendMessage(Component.translatable("commands.gamerule.set", name, Component.text(value.toString())))
                     }
                 })
             }

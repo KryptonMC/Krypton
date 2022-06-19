@@ -26,6 +26,8 @@ import org.kryptonmc.krypton.world.event.GameEvent
 
 object InternalResourceKeys {
 
-    @JvmField val MEMORIES: ResourceKey<out Registry<MemoryKey<Any>>> = ResourceKeys.minecraft("memory_module_type")
-    @JvmField val GAME_EVENT: ResourceKey<out Registry<GameEvent>> = ResourceKeys.minecraft("game_event")
+    @JvmField
+    val MEMORIES: ResourceKey<out Registry<MemoryKey<Any>>> = ResourceKeys.minecraft("memory_module_type")
+    @JvmField
+    val GAME_EVENT: ResourceKey<out Registry<GameEvent>> = ResourceKeys.minecraft("game_event")
 }

@@ -50,7 +50,7 @@ class ItemStackParser(val reader: StringReader, private val allowTags: Boolean) 
 
         return ItemStackPredicate {
             if (item != null) {
-                if (nbt != null) return@ItemStackPredicate nbt == it.meta.save()
+                if (nbt != null) return@ItemStackPredicate nbt == it.meta.data
                 return@ItemStackPredicate it.type == item
             }
             if (tag != null) {

@@ -18,7 +18,6 @@
  */
 package org.kryptonmc.krypton.commands
 
-import com.mojang.brigadier.Command
 import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.arguments.StringArgumentType
 import net.kyori.adventure.text.Component
@@ -30,6 +29,7 @@ import org.kryptonmc.krypton.command.arguments.entities.entityArgument
 import org.kryptonmc.krypton.command.permission
 import org.kryptonmc.krypton.command.argument.argument
 import org.kryptonmc.krypton.command.literal
+import org.kryptonmc.krypton.command.runs
 
 object KickCommand : InternalCommand {
 
@@ -39,19 +39,15 @@ object KickCommand : InternalCommand {
         dispatcher.register(literal("kick") {
             permission(KryptonPermission.KICK)
             argument("targets", EntityArgument.players()) {
-                executes { context ->
-                    context.entityArgument("targets").players(context.source).forEach {
-                        it.disconnect(KICKED_MESSAGE)
-                    }
-                    Command.SINGLE_SUCCESS
+                runs { context ->
+                    context.entityArgument("targets").players(context.source).forEach { it.disconnect(KICKED_MESSAGE) }
                 }
                 argument("reason", StringArgumentType.string()) {
-                    executes { context ->
+                    runs { context ->
                         val reason = context.argument<String>("reason")
                         context.entityArgument("targets").players(context.source).forEach {
                             it.disconnect(KICKED_MESSAGE.append(Component.text(" Reason: $reason")))
                         }
-                        Command.SINGLE_SUCCESS
                     }
                 }
             }

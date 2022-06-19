@@ -18,7 +18,6 @@
  */
 package org.kryptonmc.krypton.commands
 
-import com.mojang.brigadier.Command
 import com.mojang.brigadier.CommandDispatcher
 import net.kyori.adventure.text.Component
 import org.kryptonmc.api.command.Sender
@@ -31,6 +30,7 @@ import org.kryptonmc.krypton.command.arguments.item.ItemStackPredicate
 import org.kryptonmc.krypton.command.arguments.item.ItemStackPredicateArgument
 import org.kryptonmc.krypton.command.literal
 import org.kryptonmc.krypton.command.permission
+import org.kryptonmc.krypton.command.runs
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.item.KryptonItemStack
 import org.kryptonmc.krypton.packet.out.play.PacketOutWindowItems
@@ -40,21 +40,14 @@ object ClearCommand : InternalCommand {
     override fun register(dispatcher: CommandDispatcher<Sender>) {
         dispatcher.register(literal("clear") {
             permission(KryptonPermission.CLEAR)
-            executes {
-                if (it.source !is KryptonPlayer) return@executes 0
+            runs {
+                if (it.source !is KryptonPlayer) return@runs
                 clear(listOf(it.source as KryptonPlayer), it.source)
-                Command.SINGLE_SUCCESS
             }
             argument("targets", EntityArgument.players()) {
-                executes {
-                    clear(it.entityArgument("targets").players(it.source), it.source)
-                    Command.SINGLE_SUCCESS
-                }
+                runs { clear(it.entityArgument("targets").players(it.source), it.source) }
                 argument("item", ItemStackPredicateArgument) {
-                    executes {
-                        clear(it.entityArgument("targets").players(it.source), it.source, it.argument("item"))
-                        Command.SINGLE_SUCCESS
-                    }
+                    runs { clear(it.entityArgument("targets").players(it.source), it.source, it.argument("item")) }
                 }
             }
         })
@@ -74,11 +67,8 @@ object ClearCommand : InternalCommand {
                 target.inventory.items.forEachIndexed { index, item -> if (predicate(item)) target.inventory[index] = KryptonItemStack.EMPTY }
                 target.session.send(PacketOutWindowItems(target.inventory, target.inventory.mainHand))
             }
-            sender.sendMessage(Component.translatable(
-                "commands.clear.success.multiple",
-                Component.text(amount),
-                Component.text(targets.size.toString())
-            ))
+            val targetSize = Component.text(targets.size.toString())
+            sender.sendMessage(Component.translatable("commands.clear.success.multiple", Component.text(amount), targetSize))
         }
     }
 

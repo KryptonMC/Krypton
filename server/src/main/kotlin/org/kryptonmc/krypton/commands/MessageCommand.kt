@@ -18,7 +18,6 @@
  */
 package org.kryptonmc.krypton.commands
 
-import com.mojang.brigadier.Command
 import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.arguments.StringArgumentType
 import com.mojang.brigadier.builder.LiteralArgumentBuilder
@@ -32,6 +31,7 @@ import org.kryptonmc.krypton.command.permission
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.command.argument.argument
 import org.kryptonmc.krypton.command.literal
+import org.kryptonmc.krypton.command.runs
 
 object MessageCommand : InternalCommand {
 
@@ -40,21 +40,12 @@ object MessageCommand : InternalCommand {
             permission(KryptonPermission.MESSAGE)
             argument("player", EntityArgument.players()) {
                 argument("message", StringArgumentType.string()) {
-                    executes {
-                        val source = it.source as? KryptonPlayer ?: return@executes 0
+                    runs {
+                        val source = it.source as? KryptonPlayer ?: return@runs
                         val player = it.entityArgument("player").players(source)[0]
-                        val message = it.argument<String>("message")
-                        source.sendMessage(Component.translatable(
-                            "commands.message.display.outgoing",
-                            player.displayName,
-                            Component.text(message)
-                        ))
-                        player.sendMessage(Component.translatable(
-                            "commands.message.display.incoming",
-                            source.displayName,
-                            Component.text(message)
-                        ))
-                        Command.SINGLE_SUCCESS
+                        val message = Component.text(it.argument<String>("message"))
+                        source.sendMessage(Component.translatable("commands.message.display.outgoing", player.displayName, message))
+                        player.sendMessage(Component.translatable("commands.message.display.incoming", source.displayName, message))
                     }
                 }
             }

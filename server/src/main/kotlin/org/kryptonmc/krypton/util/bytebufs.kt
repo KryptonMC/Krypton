@@ -226,7 +226,7 @@ fun ByteBuf.writeItem(item: KryptonItemStack) {
     writeBoolean(true)
     writeVarInt(Registries.ITEM.idOf(item.type))
     writeByte(item.amount)
-    writeNBT(item.meta.save())
+    writeNBT(item.meta.data)
 }
 
 fun ByteBuf.writeVector(x: Int, y: Int, z: Int) {

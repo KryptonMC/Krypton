@@ -217,7 +217,7 @@ class ByteBufTests {
         assertEquals(true, buffer.readBoolean())
         assertEquals(Registries.ITEM.idOf(ItemTypes.STONE), buffer.readVarInt())
         assertEquals(3, buffer.readByte())
-        assertEquals(item.meta.save(), buffer.readNBT())
+        assertEquals(item.meta.data, buffer.readNBT())
     }
 
     @Test
@@ -235,7 +235,7 @@ class ByteBufTests {
         buffer.writeBoolean(true)
         buffer.writeVarInt(Registries.ITEM.idOf(ItemTypes.STONE))
         buffer.writeByte(3)
-        buffer.writeNBT(item.meta.save())
+        buffer.writeNBT(item.meta.data)
         assertEquals(item, buffer.readItem())
     }
 

@@ -47,7 +47,7 @@ private fun <T> T.catchAndReturnSelf(action: () -> Unit): T = try {
  * is wrong.
  */
 fun String.performReplacements(type: String, name: String): String =
-    replace("@JvmField\n {4}public val (.*): $type =(\n {12})?(.*)(\n)?".toRegex(), "@JvmField public val $1: $type = $3")
+    replace("@JvmField\n {4}public val (.*): $type =(\n {12})?(.*)(\n)?".toRegex(), "@JvmField\n    public val $1: $type = $3")
         .replace("=  ", "= ")
         .replace("public object $name {\n", "public object $name {\n\n    // @formatter:off\n")
         .replace("\n    @JvmStatic", "\n\n    // @formatter:on\n    @JvmStatic")

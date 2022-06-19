@@ -49,6 +49,6 @@ data class PacketOutTags(val tags: Map<TagType<*>, List<Tag<*>>>) : Packet {
     companion object {
 
         @JvmField
-        val CACHED: CachedPacket = CachedPacket {  PacketOutTags(KryptonTagManager.tags) }
+        val CACHED: CachedPacket = CachedPacket { PacketOutTags(KryptonTagManager.tags) }
     }
 }

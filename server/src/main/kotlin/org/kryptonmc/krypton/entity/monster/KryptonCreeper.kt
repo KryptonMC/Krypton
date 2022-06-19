@@ -51,6 +51,13 @@ class KryptonCreeper(world: KryptonWorld) : KryptonMonster(world, EntityTypes.CR
         explosionRadius = tag.getInt("ExplosionRadius")
     }
 
+    override fun save(): CompoundTag.Builder = super.save().apply {
+        boolean("powered", isCharged)
+        boolean("ignited", isIgnited)
+        short("Fuse", fuse)
+        int("ExplosionRadius", explosionRadius)
+    }
+
     companion object {
 
         private val ATTRIBUTES = attributes().add(AttributeTypes.MOVEMENT_SPEED, 0.25).build()

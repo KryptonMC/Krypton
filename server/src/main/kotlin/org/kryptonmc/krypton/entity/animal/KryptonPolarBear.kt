@@ -54,9 +54,7 @@ class KryptonPolarBear(world: KryptonWorld) : KryptonAnimal(world, EntityTypes.P
         loadAngerData(world, tag)
     }
 
-    override fun save(): CompoundTag.Builder = super.save().apply {
-        saveAngerData(this)
-    }
+    override fun save(): CompoundTag.Builder = super.save().apply { saveAngerData(this) }
 
     companion object {
 

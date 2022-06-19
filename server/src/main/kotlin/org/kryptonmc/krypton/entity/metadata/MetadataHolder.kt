@@ -56,7 +56,7 @@ class MetadataHolder(private val entity: KryptonEntity) {
         return createItem(key, value)
     }
 
-    operator fun <T> get(key: MetadataKey<T>): T = entry<T>(key).value
+    operator fun <T> get(key: MetadataKey<T>): T = entry(key).value
 
     operator fun <T> set(key: MetadataKey<T>, value: T) {
         val existing = entry(key)

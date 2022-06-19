@@ -34,11 +34,16 @@ object KryptonTagTypes {
     private val MINECRAFT = KryptonPlatform.dataVersionPrefix
     private val PREFIX = "${MINECRAFT}_tags/${MINECRAFT}_"
 
-    @JvmField val BLOCKS: KryptonTagType<Block> = register("block", Registries.BLOCK)
-    @JvmField val ENTITY_TYPES: KryptonTagType<EntityType<*>> = register("entity_type", Registries.ENTITY_TYPE)
-    @JvmField val FLUIDS: KryptonTagType<Fluid> = register("fluid", Registries.FLUID)
-    @JvmField val GAME_EVENTS: KryptonTagType<GameEvent> = register("game_event", "gameplay", InternalRegistries.GAME_EVENT)
-    @JvmField val ITEMS: KryptonTagType<ItemType> = register("item", Registries.ITEM)
+    @JvmField
+    val BLOCKS: KryptonTagType<Block> = register("block", Registries.BLOCK)
+    @JvmField
+    val ENTITY_TYPES: KryptonTagType<EntityType<*>> = register("entity_type", Registries.ENTITY_TYPE)
+    @JvmField
+    val FLUIDS: KryptonTagType<Fluid> = register("fluid", Registries.FLUID)
+    @JvmField
+    val GAME_EVENTS: KryptonTagType<GameEvent> = register("game_event", "gameplay", InternalRegistries.GAME_EVENT)
+    @JvmField
+    val ITEMS: KryptonTagType<ItemType> = register("item", Registries.ITEM)
 
     @JvmStatic
     private fun <T : Any> register(name: String, fileName: String, registry: Registry<T>): KryptonTagType<T> {

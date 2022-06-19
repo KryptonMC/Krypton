@@ -232,10 +232,8 @@ class LoginHandler(
         val decryptedActual = Encryption.decrypt(actual)
         if (!decryptedActual.contentEquals(expected)) {
             LOGGER.error("Verify tokens for $name did not match! Their connection may have been intercepted.")
-            disconnect(Component.translatable(
-                "disconnect.loginFailedInfo",
-                Component.text("Verify tokens did not match! Your connection may have been intercepted.")
-            ))
+            val message = Component.text("Verify tokens did not match! Your connection may have been intercepted.")
+            disconnect(Component.translatable("disconnect.loginFailedInfo", message))
             return false
         }
         return true
@@ -289,26 +287,23 @@ class LoginHandler(
     }
 
     private fun canJoin(profile: KryptonGameProfile, address: SocketAddress): Boolean {
+        val whitelist = playerManager.whitelist
+        val whitelistedIps = playerManager.whitelistedIps
         if (playerManager.bannedPlayers.contains(profile)) { // We are banned
             val entry = playerManager.bannedPlayers[profile]!!
             val text = Component.translatable("multiplayer.disconnect.banned.reason", entry.reason)
             // Add the expiration date
             if (entry.expirationDate != null) {
-                text.append(Component.translatable(
-                    "multiplayer.disconnect.banned.expiration",
-                    Component.text(BanEntry.DATE_FORMATTER.format(entry.expirationDate))
-                ))
+                val expirationDate = Component.text(BanEntry.DATE_FORMATTER.format(entry.expirationDate))
+                text.append(Component.translatable("multiplayer.disconnect.banned.expiration", expirationDate))
             }
 
             // Inform the client that they are banned
             disconnect(text)
             LOGGER.info("${profile.name} was disconnected as they are banned from this server.")
             return false
-        } else if (
-            playerManager.whitelistEnabled &&
-            !playerManager.whitelist.contains(profile) &&
-            !playerManager.whitelistedIps.isWhitelisted(address)
-        ) { // We are not whitelisted
+        } else if (playerManager.whitelistEnabled && !whitelist.contains(profile) && !whitelistedIps.isWhitelisted(address)) {
+            // We are not whitelisted
             disconnect(Component.translatable("multiplayer.disconnect.not_whitelisted"))
             LOGGER.info("${profile.name} was disconnected as this server is whitelisted and they are not on the whitelist.")
             return false

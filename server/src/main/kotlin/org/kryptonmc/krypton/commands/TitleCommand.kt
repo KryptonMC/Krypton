@@ -33,6 +33,7 @@ import org.kryptonmc.krypton.command.arguments.entities.EntityArgument
 import org.kryptonmc.krypton.command.arguments.entities.entityArgument
 import org.kryptonmc.krypton.command.literal
 import org.kryptonmc.krypton.command.permission
+import org.kryptonmc.krypton.command.runs
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 
 object TitleCommand : InternalCommand {
@@ -50,15 +51,13 @@ object TitleCommand : InternalCommand {
             }
         })
     }
+}
 
-    @JvmStatic
-    private fun LiteralArgumentBuilder<Sender>.title(
-        name: String,
-        action: (KryptonPlayer, Component) -> Unit
-    ): LiteralArgumentBuilder<Sender> = literal(name) {
+private fun LiteralArgumentBuilder<Sender>.title(name: String, action: (KryptonPlayer, Component) -> Unit): LiteralArgumentBuilder<Sender> =
+    literal(name) {
         argument("message", StringArgumentType.string()) {
-            executes { context ->
-                val sender = context.source as? KryptonPlayer ?: return@executes 0
+            runs { context ->
+                val sender = context.source as? KryptonPlayer ?: return@runs
                 val targets = context.entityArgument("targets").players(sender)
                 val message = Component.text(context.argument<String>("message"))
                 targets.forEach { action(it, message) }
@@ -67,44 +66,36 @@ object TitleCommand : InternalCommand {
         }
     }
 
-    @JvmStatic
-    private fun LiteralArgumentBuilder<Sender>.clearOrReset(
-        name: String,
-        translationKey: String,
-        action: (KryptonPlayer) -> Unit
-    ): LiteralArgumentBuilder<Sender> = literal(name) {
-        executes { context ->
-            val sender = context.source as? KryptonPlayer ?: return@executes 0
-            val targets = context.entityArgument("targets").players(sender)
-            targets.forEach(action)
-            sender.sendFeedback("commands.title.$translationKey", targets.size)
-        }
+private fun LiteralArgumentBuilder<Sender>.clearOrReset(
+    name: String,
+    translationKey: String,
+    action: (KryptonPlayer) -> Unit
+): LiteralArgumentBuilder<Sender> = literal(name) {
+    runs { context ->
+        val sender = context.source as? KryptonPlayer ?: return@runs
+        val targets = context.entityArgument("targets").players(sender)
+        targets.forEach(action)
+        sender.sendFeedback("commands.title.$translationKey", targets.size)
     }
+}
 
-    @JvmStatic
-    private fun LiteralArgumentBuilder<Sender>.times(): LiteralArgumentBuilder<Sender> = literal("times") {
-        argument("fadeIn", IntegerArgumentType.integer()) {
-            argument("stay", IntegerArgumentType.integer()) {
-                argument("fadeOut", IntegerArgumentType.integer()) {
-                    executes { context ->
-                        val sender = context.source as? KryptonPlayer ?: return@executes 0
-                        val targets = context.entityArgument("targets").players(sender)
-                        val fadeIn = context.argument<Int>("fadeIn")
-                        val stay = context.argument<Int>("stay")
-                        val fadeOut = context.argument<Int>("fadeOut")
-                        targets.forEach { it.sendTitleTimes(fadeIn, stay, fadeOut) }
-                        sender.sendFeedback("commands.title.times", targets.size)
-                    }
+private fun LiteralArgumentBuilder<Sender>.times(): LiteralArgumentBuilder<Sender> = literal("times") {
+    argument("fadeIn", IntegerArgumentType.integer()) {
+        argument("stay", IntegerArgumentType.integer()) {
+            argument("fadeOut", IntegerArgumentType.integer()) {
+                runs { context ->
+                    val sender = context.source as? KryptonPlayer ?: return@runs
+                    val targets = context.entityArgument("targets").players(sender)
+                    targets.forEach { it.sendTitleTimes(context.argument("fadeIn"), context.argument("stay"), context.argument("fadeOut")) }
+                    sender.sendFeedback("commands.title.times", targets.size)
                 }
             }
         }
     }
+}
 
-    @JvmStatic
-    private fun Player.sendFeedback(key: String, targets: Int): Int {
-        val feedbackKey = if (targets == 1) "$key.single" else "$key.multiple"
-        val feedbackArgument = if (targets == 1) displayName else Component.text(targets)
-        sendMessage(Component.translatable(feedbackKey, feedbackArgument))
-        return Command.SINGLE_SUCCESS
-    }
+private fun Player.sendFeedback(key: String, targets: Int) {
+    val feedbackKey = if (targets == 1) "$key.single" else "$key.multiple"
+    val feedbackArgument = if (targets == 1) displayName else Component.text(targets)
+    sendMessage(Component.translatable(feedbackKey, feedbackArgument))
 }

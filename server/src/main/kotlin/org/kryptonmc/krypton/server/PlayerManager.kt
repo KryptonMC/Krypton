@@ -93,16 +93,15 @@ class PlayerManager(private val server: KryptonServer) {
     private val brandPacket by lazy { FramedPacket(PacketOutPluginMessage(BRAND_KEY, BRAND_MESSAGE).frame()) }
 
     init {
-        val config = server.config
-        val playerDataFolder = Path.of(config.world.name).resolve("playerdata")
-        if (config.advanced.serializePlayerData && !Files.exists(playerDataFolder)) {
+        val playerDataFolder = Path.of(server.config.world.name).resolve("playerdata")
+        if (server.config.advanced.serializePlayerData && !Files.exists(playerDataFolder)) {
             try {
                 Files.createDirectories(playerDataFolder)
             } catch (exception: Exception) {
                 LOGGER.error("Unable to create player data directory!", exception)
             }
         }
-        dataManager = PlayerDataManager(playerDataFolder, config.advanced.serializePlayerData)
+        dataManager = PlayerDataManager(playerDataFolder, server.config.advanced.serializePlayerData)
     }
 
     fun add(player: KryptonPlayer, session: SessionHandler): CompletableFuture<Void> = dataManager.load(player, executor).thenAcceptAsync({ nbt ->

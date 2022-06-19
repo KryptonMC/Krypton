@@ -20,11 +20,7 @@ package org.kryptonmc.krypton.entity
 
 import org.kryptonmc.api.entity.ArmorSlot
 
-enum class EquipmentSlot(
-    val type: Type,
-    val index: Int,
-    val displayName: String
-) {
+enum class EquipmentSlot(val type: Type, val index: Int, val displayName: String) {
 
     MAIN_HAND(Type.HAND, 0, "mainhand"),
     OFF_HAND(Type.HAND, 1, "offhand"),

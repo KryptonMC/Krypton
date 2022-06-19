@@ -18,7 +18,6 @@
  */
 package org.kryptonmc.krypton.commands
 
-import com.mojang.brigadier.Command
 import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.arguments.StringArgumentType
 import net.kyori.adventure.text.Component
@@ -29,6 +28,7 @@ import org.kryptonmc.krypton.command.argument
 import org.kryptonmc.krypton.command.permission
 import org.kryptonmc.krypton.command.argument.argument
 import org.kryptonmc.krypton.command.literal
+import org.kryptonmc.krypton.command.runs
 
 object SayCommand : InternalCommand {
 
@@ -36,11 +36,10 @@ object SayCommand : InternalCommand {
         dispatcher.register(literal("say") {
             permission(KryptonPermission.SAY)
             argument("message", StringArgumentType.string()) {
-                executes {
-                    val server = it.source.server as? KryptonServer ?: return@executes 0
+                runs {
+                    val server = it.source.server as? KryptonServer ?: return@runs
                     val message = Component.text(it.argument<String>("message"))
                     server.sendMessage(Component.translatable("chat.type.announcement", it.source.name, message))
-                    Command.SINGLE_SUCCESS
                 }
             }
         })

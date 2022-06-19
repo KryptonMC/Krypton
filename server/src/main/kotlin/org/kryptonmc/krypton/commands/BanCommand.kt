@@ -36,6 +36,7 @@ import org.kryptonmc.krypton.server.ban.BanEntry
 import org.kryptonmc.krypton.server.ban.BannedPlayerEntry
 import org.kryptonmc.krypton.command.argument.argument
 import org.kryptonmc.krypton.command.literal
+import org.kryptonmc.krypton.command.runs
 
 object BanCommand : InternalCommand {
 
@@ -43,14 +44,14 @@ object BanCommand : InternalCommand {
         dispatcher.register(literal("ban") {
             permission(KryptonPermission.BAN)
             argument("targets", GameProfileArgument) {
-                executes {
-                    val server = it.source.server as? KryptonServer ?: return@executes 0
+                runs {
+                    val server = it.source.server as? KryptonServer ?: return@runs
                     ban(it.gameProfileArgument("targets").profiles(it.source), server, it.source)
                     Command.SINGLE_SUCCESS
                 }
                 argument("reason", StringArgumentType.string()) {
-                    executes {
-                        val server = it.source.server as? KryptonServer ?: return@executes 0
+                    runs {
+                        val server = it.source.server as? KryptonServer ?: return@runs
                         ban(it.gameProfileArgument("targets").profiles(it.source), server, it.source, it.argument("reason"))
                         Command.SINGLE_SUCCESS
                     }

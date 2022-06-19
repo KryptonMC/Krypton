@@ -18,7 +18,6 @@
  */
 package org.kryptonmc.krypton.commands
 
-import com.mojang.brigadier.Command
 import com.mojang.brigadier.CommandDispatcher
 import net.kyori.adventure.text.Component
 import org.kryptonmc.api.command.Sender
@@ -26,17 +25,17 @@ import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.command.InternalCommand
 import org.kryptonmc.krypton.command.literal
 import org.kryptonmc.krypton.command.permission
+import org.kryptonmc.krypton.command.runs
 
 object StopCommand : InternalCommand {
 
     override fun register(dispatcher: CommandDispatcher<Sender>) {
         dispatcher.register(literal("stop") {
             permission(KryptonPermission.STOP)
-            executes {
-                val server = it.source.server as? KryptonServer ?: return@executes 0
+            runs {
+                val server = it.source.server as? KryptonServer ?: return@runs
                 it.source.sendMessage(Component.translatable("commands.stop.stopping"))
                 server.stop()
-                Command.SINGLE_SUCCESS
             }
         })
     }

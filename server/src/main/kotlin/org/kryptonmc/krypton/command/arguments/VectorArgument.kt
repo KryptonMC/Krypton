@@ -48,11 +48,7 @@ class VectorArgument private constructor(private val correctCenter: Boolean = tr
     override fun <S> listSuggestions(context: CommandContext<S>, builder: SuggestionsBuilder): CompletableFuture<Suggestions> {
         if (context.source !is Player) return Suggestions.empty()
         val remaining = builder.remaining
-        val suggestion = if (remaining.isNotEmpty() && remaining[0] == '^') {
-            TextCoordinates.CENTER_LOCAL
-        } else {
-            TextCoordinates.CENTER_GLOBAL
-        }
+        val suggestion = if (remaining.isNotEmpty() && remaining[0] == '^') TextCoordinates.CENTER_LOCAL else TextCoordinates.CENTER_GLOBAL
         return builder.suggestCoordinates(remaining, suggestion) {
             try {
                 parse(StringReader(it))

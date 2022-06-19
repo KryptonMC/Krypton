@@ -71,9 +71,7 @@ class KryptonCat(world: KryptonWorld) : KryptonTamable(world, EntityTypes.CAT, A
     override fun load(tag: CompoundTag) {
         super.load(tag)
         data[MetadataKeys.CAT.TYPE] = tag.getInt("CatType")
-        if (tag.contains("CollarColor", 99)) {
-            data[MetadataKeys.CAT.COLLAR_COLOR] = tag.getInt("CollarColor")
-        }
+        if (tag.contains("CollarColor", 99)) data[MetadataKeys.CAT.COLLAR_COLOR] = tag.getInt("CollarColor")
     }
 
     override fun save(): CompoundTag.Builder = super.save().apply {

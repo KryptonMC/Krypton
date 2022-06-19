@@ -18,7 +18,6 @@
  */
 package org.kryptonmc.krypton.commands
 
-import com.mojang.brigadier.Command
 import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.arguments.IntegerArgumentType
 import net.kyori.adventure.sound.Sound
@@ -36,6 +35,7 @@ import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.packet.out.play.PacketOutWindowItems
 import org.kryptonmc.krypton.command.argument.argument
 import org.kryptonmc.krypton.command.literal
+import org.kryptonmc.krypton.command.runs
 
 object GiveCommand : InternalCommand {
 
@@ -44,20 +44,9 @@ object GiveCommand : InternalCommand {
             permission(KryptonPermission.GIVE)
             argument("targets", EntityArgument.players()) {
                 argument("item", ItemStackArgumentType) {
-                    executes {
-                        val targets = it.entityArgument("targets").players(it.source)
-                        val item = it.itemStackArgument("item")
-                        give(targets, item, 1)
-                        Command.SINGLE_SUCCESS
-                    }
+                    runs { give(it.entityArgument("targets").players(it.source), it.itemStackArgument("item"), 1) }
                     argument("count", IntegerArgumentType.integer(1)) {
-                        executes {
-                            val targets = it.entityArgument("targets").players(it.source)
-                            val item = it.itemStackArgument("item")
-                            val count = it.argument<Int>("count")
-                            give(targets, item, count)
-                            Command.SINGLE_SUCCESS
-                        }
+                        runs { give(it.entityArgument("targets").players(it.source), it.itemStackArgument("item"), it.argument("count")) }
                     }
                 }
             }
@@ -67,9 +56,7 @@ object GiveCommand : InternalCommand {
     @JvmStatic
     private fun give(targets: List<KryptonPlayer>, item: ItemStackArgument, count: Int) {
         targets.forEach { target ->
-            val items = item.createItemStacks(count)
-            items.forEach { target.inventory.add(it) }
-
+            item.createItemStacks(count).forEach(target.inventory::add)
             target.playSound(Sound.sound(SoundEvents.ITEM_PICKUP, Sound.Source.PLAYER, 0.2F, 2F))
             target.session.send(PacketOutWindowItems(target.inventory, target.inventory.mainHand))
         }

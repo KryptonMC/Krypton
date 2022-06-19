@@ -90,7 +90,7 @@ class SessionHandler(private val server: KryptonServer) : SimpleChannelInboundHa
             is CachedPacket -> {
                 synchronized(tickBufferLock) {
                     if (tickBuffer.refCnt() <= 0) return
-                    val body = packet.body
+                    val body = packet.body()
                     tickBuffer.writeBytes(body, body.readerIndex(), body.readableBytes())
                     body.release()
                 }

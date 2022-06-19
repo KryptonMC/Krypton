@@ -20,6 +20,7 @@ package org.kryptonmc.krypton.packet.out.play
 
 import io.netty.buffer.ByteBuf
 import net.kyori.adventure.text.Component
+import org.kryptonmc.api.auth.GameProfile
 import org.kryptonmc.api.auth.ProfileProperty
 import org.kryptonmc.api.world.GameMode
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
@@ -47,13 +48,13 @@ data class PacketOutPlayerInfo(val action: Action, val players: List<PlayerData>
         buf.writeVarInt(players.size)
 
         players.forEach { update ->
-            buf.writeUUID(update.uuid)
+            buf.writeUUID(update.profile.uuid)
             when (action) {
                 Action.ADD_PLAYER -> {
-                    buf.writeString(update.name)
-                    buf.writeVarInt(update.properties.size)
+                    buf.writeString(update.profile.name)
+                    buf.writeVarInt(update.profile.properties.size)
 
-                    update.properties.forEach {
+                    update.profile.properties.forEach {
                         buf.writeString(it.name)
                         buf.writeString(it.value)
                         val signature = it.signature
@@ -78,20 +79,12 @@ data class PacketOutPlayerInfo(val action: Action, val players: List<PlayerData>
     }
 
     @JvmRecord
-    data class PlayerData(
-        val uuid: UUID,
-        val name: String,
-        val properties: List<ProfileProperty>,
-        val gameMode: GameMode,
-        val latency: Int,
-        val displayName: Component?
-    ) {
+    data class PlayerData(val profile: GameProfile, val gameMode: GameMode, val latency: Int, val displayName: Component?) {
 
         companion object {
 
             @JvmStatic
-            fun from(player: KryptonPlayer): PlayerData =
-                PlayerData(player.uuid, player.profile.name, player.profile.properties, player.gameMode, player.session.latency, player.displayName)
+            fun from(player: KryptonPlayer): PlayerData = PlayerData(player.profile, player.gameMode, player.session.latency, player.displayName)
         }
     }
 

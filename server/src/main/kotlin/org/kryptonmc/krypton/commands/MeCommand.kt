@@ -18,7 +18,6 @@
  */
 package org.kryptonmc.krypton.commands
 
-import com.mojang.brigadier.Command
 import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.arguments.StringArgumentType
 import net.kyori.adventure.text.Component
@@ -28,6 +27,7 @@ import org.kryptonmc.krypton.command.argument
 import org.kryptonmc.krypton.command.permission
 import org.kryptonmc.krypton.command.argument.argument
 import org.kryptonmc.krypton.command.literal
+import org.kryptonmc.krypton.command.runs
 
 object MeCommand : InternalCommand {
 
@@ -35,10 +35,9 @@ object MeCommand : InternalCommand {
         dispatcher.register(literal("me") {
             permission(KryptonPermission.ME)
             argument("action", StringArgumentType.string()) {
-                executes {
+                runs {
                     val action = Component.text(it.argument<String>("action"))
                     it.source.server.sendMessage(Component.translatable("chat.type.emote", it.source.name, action))
-                    Command.SINGLE_SUCCESS
                 }
             }
         })

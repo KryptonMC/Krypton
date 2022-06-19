@@ -34,6 +34,7 @@ import org.kryptonmc.krypton.server.ban.BanEntry
 import org.kryptonmc.krypton.server.ban.BannedIpEntry
 import org.kryptonmc.krypton.command.argument.argument
 import org.kryptonmc.krypton.command.literal
+import org.kryptonmc.krypton.command.runs
 import org.kryptonmc.krypton.util.asString
 
 object BanIpCommand : InternalCommand {
@@ -48,14 +49,14 @@ object BanIpCommand : InternalCommand {
         dispatcher.register(literal("ban-ip") {
             permission(KryptonPermission.BAN_IP)
             argument("target", StringArgumentType.string()) {
-                executes {
-                    val server = it.source.server as? KryptonServer ?: return@executes 0
+                runs {
+                    val server = it.source.server as? KryptonServer ?: return@runs
                     banIp(server, it.argument("target"), it.source, "Banned by operator")
                     Command.SINGLE_SUCCESS
                 }
                 argument("reason", StringArgumentType.string()) {
-                    executes {
-                        val server = it.source.server as? KryptonServer ?: return@executes 0
+                    runs {
+                        val server = it.source.server as? KryptonServer ?: return@runs
                         banIp(server, it.argument("target"), it.source, it.argument("reason"))
                         Command.SINGLE_SUCCESS
                     }
@@ -90,10 +91,8 @@ object BanIpCommand : InternalCommand {
             // Construct banned message and disconnect target
             val text = Component.translatable("multiplayer.disconnect.banned_ip.reason", entry.reason)
             if (entry.expirationDate != null) {
-                text.append(Component.translatable(
-                    "multiplayer.disconnect.banned.expiration",
-                    Component.text(BanEntry.DATE_FORMATTER.format(entry.expirationDate))
-                ))
+                val expirationDate = Component.text(BanEntry.DATE_FORMATTER.format(entry.expirationDate))
+                text.append(Component.translatable("multiplayer.disconnect.banned.expiration", expirationDate))
             }
             player.disconnect(text)
 

@@ -39,7 +39,7 @@ data class KryptonItemStack(override val type: ItemType, override val amount: In
     fun save(tag: CompoundTag.Builder): CompoundTag.Builder = tag.apply {
         string("id", type.key().asString())
         int("Count", amount)
-        put("tag", meta.save())
+        put("tag", meta.data)
     }
 
     fun save(): CompoundTag = save(CompoundTag.builder()).build()
@@ -82,13 +82,17 @@ data class KryptonItemStack(override val type: ItemType, override val amount: In
 
     override fun toBuilder(): Builder = Builder(this)
 
-    class Builder(
-        private var type: ItemType = ItemTypes.AIR,
-        private var amount: Int = 1,
-        private var meta: AbstractItemMeta<*> = KryptonItemMeta.DEFAULT
-    ) : ItemStack.Builder {
+    class Builder() : ItemStack.Builder {
 
-        constructor(item: KryptonItemStack) : this(item.type, item.amount, item.meta)
+        private var type: ItemType = ItemTypes.AIR
+        private var amount = 1
+        private var meta: AbstractItemMeta<*> = KryptonItemMeta.DEFAULT
+
+        constructor(item: KryptonItemStack) : this() {
+            type = item.type
+            amount = item.amount
+            meta = item.meta
+        }
 
         override fun type(type: ItemType): Builder = apply { this.type = type }
 

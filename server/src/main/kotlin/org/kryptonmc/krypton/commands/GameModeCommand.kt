@@ -18,7 +18,6 @@
  */
 package org.kryptonmc.krypton.commands
 
-import com.mojang.brigadier.Command
 import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.arguments.StringArgumentType
 import com.mojang.brigadier.context.CommandContext
@@ -33,6 +32,7 @@ import org.kryptonmc.krypton.command.arguments.entities.EntityArgument
 import org.kryptonmc.krypton.command.arguments.entities.entityArgument
 import org.kryptonmc.krypton.command.literal
 import org.kryptonmc.krypton.command.permission
+import org.kryptonmc.krypton.command.runs
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 
 object GameModeCommand : InternalCommand {
@@ -41,31 +41,31 @@ object GameModeCommand : InternalCommand {
         val command = literal("gamemode") { permission(KryptonPermission.GAME_MODE) }
         GameMode.values().forEach { mode ->
             command.then(literal(mode.serialized) {
-                executes { gameModeArgument(it, mode) }
+                runs { gameModeArgument(it, mode) }
                 argument("targets", EntityArgument.players()) {
-                    executes { targetArgument(it, mode) }
+                    runs { targetArgument(it, mode) }
                 }
             })
         }
 
         command.then(argument("gameMode", StringArgumentType.string()) {
-            executes {
+            runs {
                 var gameMode = GameMode.fromAbbreviation(it.argument("gameMode"))
                 if (gameMode == null) {
-                    val id = it.argument<String>("gameMode").toIntOrNull() ?: return@executes 0
+                    val id = it.argument<String>("gameMode").toIntOrNull() ?: return@runs
                     gameMode = GameMode.fromId(id)
                 }
-                if (gameMode == null) return@executes 0
+                if (gameMode == null) return@runs
                 gameModeArgument(it, gameMode)
             }
             argument("targets", EntityArgument.players()) {
-                executes {
+                runs {
                     var gameMode = GameMode.fromAbbreviation(it.argument("gameMode"))
                     if (gameMode == null) {
-                        val id = it.argument<String>("gameMode").toIntOrNull() ?: return@executes 0
+                        val id = it.argument<String>("gameMode").toIntOrNull() ?: return@runs
                         gameMode = GameMode.fromId(id)
                     }
-                    if (gameMode == null) return@executes 0
+                    if (gameMode == null) return@runs
                     gameModeArgument(it, gameMode!!)
                 }
             }
@@ -74,17 +74,15 @@ object GameModeCommand : InternalCommand {
     }
 
     @JvmStatic
-    private fun gameModeArgument(context: CommandContext<Sender>, gameMode: GameMode): Int {
-        val sender = context.source as? KryptonPlayer ?: return 0
+    private fun gameModeArgument(context: CommandContext<Sender>, gameMode: GameMode) {
+        val sender = context.source as? KryptonPlayer ?: return
         updateGameMode(listOf(sender), gameMode, sender)
-        return Command.SINGLE_SUCCESS
     }
 
+    @JvmStatic
     @Suppress("UNCHECKED_CAST")
-    private fun targetArgument(context: CommandContext<Sender>, gameMode: GameMode): Int {
-        val sender = context.source
-        updateGameMode(context.entityArgument("targets").players(sender), gameMode, sender)
-        return Command.SINGLE_SUCCESS
+    private fun targetArgument(context: CommandContext<Sender>, gameMode: GameMode) {
+        updateGameMode(context.entityArgument("targets").players(context.source), gameMode, context.source)
     }
 
     @JvmStatic

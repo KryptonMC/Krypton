@@ -81,6 +81,6 @@ data class PacketOutUnlockRecipes(
 
         // TODO: Remove this when we actually bother with the recipe book
         @JvmField
-        val CACHED_INIT: CachedPacket = CachedPacket {  PacketOutUnlockRecipes(Action.INIT) }
+        val CACHED_INIT: CachedPacket = CachedPacket { PacketOutUnlockRecipes(Action.INIT) }
     }
 }

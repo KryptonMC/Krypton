@@ -22,8 +22,10 @@ import org.kryptonmc.krypton.world.event.GameEvent
 
 object GameEventTags {
 
-    @JvmField val VIBRATIONS: KryptonTag<GameEvent> = get("vibrations")
-    @JvmField val IGNORE_VIBRATIONS_SNEAKING: KryptonTag<GameEvent> = get("ignore_vibrations_sneaking")
+    @JvmField
+    val VIBRATIONS: KryptonTag<GameEvent> = get("vibrations")
+    @JvmField
+    val IGNORE_VIBRATIONS_SNEAKING: KryptonTag<GameEvent> = get("ignore_vibrations_sneaking")
 
     @JvmStatic
     private fun get(name: String): KryptonTag<GameEvent> = KryptonTagManager[KryptonTagTypes.GAME_EVENTS, "minecraft:$name"]!!

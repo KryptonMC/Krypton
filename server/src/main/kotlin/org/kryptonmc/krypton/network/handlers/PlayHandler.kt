@@ -33,6 +33,7 @@ import org.kryptonmc.api.event.player.InteractAtEntityEvent
 import org.kryptonmc.api.event.player.InteractEntityEvent
 import org.kryptonmc.api.event.player.MoveEvent
 import org.kryptonmc.api.event.player.PerformActionEvent
+import org.kryptonmc.api.event.player.PerformActionEvent.Action as EntityAction
 import org.kryptonmc.api.event.player.PlaceBlockEvent
 import org.kryptonmc.api.event.player.PluginMessageEvent
 import org.kryptonmc.api.event.player.ResourcePackStatusEvent
@@ -57,9 +58,11 @@ import org.kryptonmc.krypton.packet.`in`.play.PacketInCreativeInventoryAction
 import org.kryptonmc.krypton.packet.`in`.play.PacketInEntityAction
 import org.kryptonmc.krypton.packet.`in`.play.PacketInEntityNBTQuery
 import org.kryptonmc.krypton.packet.`in`.play.PacketInInteract
+import org.kryptonmc.krypton.packet.`in`.play.PacketInInteract.Type as InteractType
 import org.kryptonmc.krypton.packet.`in`.play.PacketInKeepAlive
 import org.kryptonmc.krypton.packet.`in`.play.PacketInPlaceBlock
 import org.kryptonmc.krypton.packet.`in`.play.PacketInPlayerDigging
+import org.kryptonmc.krypton.packet.`in`.play.PacketInPlayerDigging.Status as DiggingStatus
 import org.kryptonmc.krypton.packet.`in`.play.PacketInPlayerPosition
 import org.kryptonmc.krypton.packet.`in`.play.PacketInPlayerPositionAndRotation
 import org.kryptonmc.krypton.packet.`in`.play.PacketInPlayerRotation
@@ -153,7 +156,6 @@ class PlayHandler(override val server: KryptonServer, override val session: Sess
             Hand.MAIN -> EntityAnimation.SWING_MAIN_ARM
             Hand.OFF -> EntityAnimation.SWING_OFFHAND
         }
-
         sessionManager.sendGrouped(PacketOutAnimation(player.id, animation)) { it !== player }
     }
 
@@ -176,15 +178,8 @@ class PlayHandler(override val server: KryptonServer, override val session: Sess
             }
 
             val name = player.profile.name
-            val message = Component.translatable(
-                "chat.type.text",
-                player.displayName
-                    .insertion(name)
-                    .clickEvent(ClickEvent.suggestCommand("/msg $name"))
-                    .hoverEvent(player),
-                Component.text(packet.message)
-            )
-            server.sendMessage(player, message, MessageType.CHAT)
+            val displayName = player.displayName.insertion(name).clickEvent(ClickEvent.suggestCommand("/msg $name")).hoverEvent(player)
+            server.sendMessage(player, Component.translatable("chat.type.text", displayName, Component.text(packet.message)), MessageType.CHAT)
         }, session.channel.eventLoop())
     }
 
@@ -209,16 +204,14 @@ class PlayHandler(override val server: KryptonServer, override val session: Sess
         server.eventManager.fire(PerformActionEvent(player, packet.action)).thenAcceptAsync({
             if (!it.result.isAllowed) return@thenAcceptAsync
             when (it.action) {
-                PerformActionEvent.Action.START_SNEAKING -> player.isSneaking = true
-                PerformActionEvent.Action.STOP_SNEAKING -> player.isSneaking = false
-                PerformActionEvent.Action.START_SPRINTING -> player.isSprinting = true
-                PerformActionEvent.Action.STOP_SPRINTING -> player.isSprinting = false
-                PerformActionEvent.Action.LEAVE_BED -> Unit // TODO: Sleeping
-                PerformActionEvent.Action.START_JUMP_WITH_HORSE,
-                PerformActionEvent.Action.STOP_JUMP_WITH_HORSE,
-                PerformActionEvent.Action.OPEN_HORSE_INVENTORY -> Unit // TODO: Horses
-                PerformActionEvent.Action.START_FLYING_WITH_ELYTRA -> player.isGliding = true
-                PerformActionEvent.Action.STOP_FLYING_WITH_ELYTRA -> player.isGliding = false
+                EntityAction.START_SNEAKING -> player.isSneaking = true
+                EntityAction.STOP_SNEAKING -> player.isSneaking = false
+                EntityAction.START_SPRINTING -> player.isSprinting = true
+                EntityAction.STOP_SPRINTING -> player.isSprinting = false
+                EntityAction.LEAVE_BED -> Unit // TODO: Sleeping
+                EntityAction.START_JUMP_WITH_HORSE, EntityAction.STOP_JUMP_WITH_HORSE, EntityAction.OPEN_HORSE_INVENTORY -> Unit // TODO: Horses
+                EntityAction.START_FLYING_WITH_ELYTRA -> player.isGliding = true
+                EntityAction.STOP_FLYING_WITH_ELYTRA -> player.isGliding = false
             }
         }, session.channel.eventLoop())
     }
@@ -233,8 +226,7 @@ class PlayHandler(override val server: KryptonServer, override val session: Sess
 
     private fun handleKeepAlive(packet: PacketInKeepAlive) {
         if (pendingKeepAlive && packet.id == keepAliveChallenge) {
-            val latency = (System.currentTimeMillis() - lastKeepAlive).toInt()
-            session.latency = (session.latency * 3 + latency) / 3
+            session.latency = (session.latency * 3 + (System.currentTimeMillis() - lastKeepAlive).toInt()) / 3
             pendingKeepAlive = false
             sessionManager.sendGrouped(PacketOutPlayerInfo(PacketOutPlayerInfo.Action.UPDATE_LATENCY, player))
             return
@@ -269,10 +261,8 @@ class PlayHandler(override val server: KryptonServer, override val session: Sess
 
     private fun handlePlayerDigging(packet: PacketInPlayerDigging) {
         when (packet.status) {
-            PacketInPlayerDigging.Status.STARTED, PacketInPlayerDigging.Status.FINISHED, PacketInPlayerDigging.Status.CANCELLED -> {
-                player.blockHandler.handleBlockBreak(packet)
-            }
-            PacketInPlayerDigging.Status.UPDATE_STATE -> {
+            DiggingStatus.STARTED, DiggingStatus.FINISHED, DiggingStatus.CANCELLED -> player.blockHandler.handleBlockBreak(packet)
+            DiggingStatus.UPDATE_STATE -> {
                 val handler = player.inventory[player.inventory.heldSlot].type.handler()
                 if (handler !is ItemTimedHandler) return
                 handler.finishUse(player, player.hand)
@@ -299,15 +289,15 @@ class PlayHandler(override val server: KryptonServer, override val session: Sess
         player.isSneaking = packet.sneaking
         if (player.location.distanceSquared(target.location) >= 36.0) return
         when (packet.type) {
-            PacketInInteract.Type.INTERACT -> {
+            InteractType.INTERACT -> {
                 server.eventManager.fire(InteractEntityEvent(player, target, hand!!)).thenAcceptAsync({
                     if (!it.result.isAllowed) return@thenAcceptAsync
                     target.tryRide(player)
                     player.interactOn(target, hand)
                 }, session.channel.eventLoop())
             }
-            PacketInInteract.Type.ATTACK -> server.eventManager.fireAndForget(AttackEntityEvent(player, target)) // TODO
-            PacketInInteract.Type.INTERACT_AT -> server.eventManager.fireAndForget(InteractAtEntityEvent(player, target, hand!!, x, y, z)) // TODO
+            InteractType.ATTACK -> server.eventManager.fireAndForget(AttackEntityEvent(player, target)) // TODO
+            InteractType.INTERACT_AT -> server.eventManager.fireAndForget(InteractAtEntityEvent(player, target, hand!!, x, y, z)) // TODO
         }
     }
 
@@ -363,9 +353,8 @@ class PlayHandler(override val server: KryptonServer, override val session: Sess
         val deltaZ = Positioning.delta(newLocation.z(), oldLocation.z())
         val newYaw = newRotation.x()
         val newPitch = newRotation.y()
-        sessionManager.sendGrouped(PacketOutEntityPositionAndRotation(player.id, deltaX, deltaY, deltaZ, newYaw, newPitch, packet.onGround)) {
-            it !== player
-        }
+        val positionPacket = PacketOutEntityPositionAndRotation(player.id, deltaX, deltaY, deltaZ, newYaw, newPitch, packet.onGround)
+        sessionManager.sendGrouped(positionPacket) { it !== player }
         sessionManager.sendGrouped(PacketOutHeadLook(player.id, newRotation.x())) { it !== player }
         onMove(newLocation, oldLocation)
     }
@@ -383,10 +372,8 @@ class PlayHandler(override val server: KryptonServer, override val session: Sess
     private fun handleTabComplete(packet: PacketInTabComplete) {
         val reader = StringReader(packet.command)
         if (reader.canRead() && reader.peek() == '/') reader.skip()
-
-        server.commandManager.suggest(player, reader).thenAcceptAsync({
-            session.send(PacketOutTabComplete(packet.id, it))
-        }, session.channel.eventLoop())
+        server.commandManager.suggest(player, reader)
+            .thenAcceptAsync({ session.send(PacketOutTabComplete(packet.id, it)) }, session.channel.eventLoop())
     }
 
     private fun handleClientStatus(packet: PacketInClientStatus) {
@@ -410,10 +397,10 @@ class PlayHandler(override val server: KryptonServer, override val session: Sess
         server.eventManager.fireAndForget(ResourcePackStatusEvent(player, packet.status))
     }
 
-    private fun onMove(newLocation: Vector3d, oldLocation: Vector3d) {
+    private fun onMove(new: Vector3d, old: Vector3d) {
         player.updateChunks()
-        player.updateMovementStatistics(newLocation.x() - oldLocation.x(), newLocation.y() - oldLocation.y(), newLocation.z() - oldLocation.z())
-        player.updateMovementExhaustion(newLocation.x() - oldLocation.x(), newLocation.y() - oldLocation.y(), newLocation.z() - oldLocation.z())
+        player.updateMovementStatistics(new.x() - old.x(), new.y() - old.y(), new.z() - old.z())
+        player.updateMovementExhaustion(new.x() - old.x(), new.y() - old.y(), new.z() - old.z())
     }
 
     companion object {

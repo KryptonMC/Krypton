@@ -41,11 +41,7 @@ data class PacketOutBossBar(
 
     constructor(action: Action, bar: BossBarManager.BossBarHolder) : this(action, bar.id, bar.bar)
 
-    constructor(
-        action: Action,
-        uuid: UUID,
-        bar: BossBar
-    ) : this(action, uuid, bar.name(), bar.progress(), bar.color(), bar.overlay(), bar.encodeFlags())
+    constructor(action: Action, uuid: UUID, bar: BossBar) : this(action, uuid, bar.name(), bar.progress(), bar.color(), bar.overlay(), bar.encodeFlags())
 
     override fun write(buf: ByteBuf) {
         buf.writeUUID(uuid)

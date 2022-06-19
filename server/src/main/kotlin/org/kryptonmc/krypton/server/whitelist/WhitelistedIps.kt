@@ -33,6 +33,7 @@ class WhitelistedIps(path: Path) : ServerConfigList<String, WhitelistIpEntry>(pa
         val nextName = reader.nextName()
         if (nextName != "ip") return null
         val ip = reader.nextString()
+        reader.endObject()
         return WhitelistIpEntry(ip)
     }
 

@@ -26,10 +26,7 @@ import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.nbt.CompoundTag
 import java.util.UUID
 
-abstract class KryptonProjectile(
-    world: KryptonWorld,
-    type: EntityType<out Projectile>
-) : KryptonEntity(world, type), Projectile {
+abstract class KryptonProjectile(world: KryptonWorld, type: EntityType<out Projectile>) : KryptonEntity(world, type), Projectile {
 
     private var ownerId: UUID? = null
     final override var owner: Entity? = null

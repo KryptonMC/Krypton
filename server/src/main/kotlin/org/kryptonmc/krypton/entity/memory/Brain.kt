@@ -63,8 +63,6 @@ class Brain<E : KryptonLivingEntity> {
 
     @Suppress("UNCHECKED_CAST")
     fun save(): CompoundTag = compound {
-        compound("memories") {
-            memories.forEach { (key, memory) -> memory?.save(key as MemoryKey<in Any>, this) }
-        }
+        compound("memories") { memories.forEach { (key, memory) -> memory?.save(key as MemoryKey<in Any>, this) } }
     }
 }

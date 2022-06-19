@@ -56,20 +56,17 @@ fun CompoundTag.Builder.gameProfile(key: String, profile: GameProfile?): Compoun
     put(key, profile.toCompound())
 }
 
-private fun GameProfile.toCompound(): CompoundTag {
-    return compound {
-        string("Name", name)
-        uuid("Id", uuid)
-        if (properties.isNotEmpty()) {
-            put("Properties", compound {
-                properties.forEach {
-                    val tag = compound {
-                        string("Value", it.value)
-                        if (it.signature != null) string("Signature", it.signature!!)
-                    }
-                    list(it.name, CompoundTag.ID, listOf(tag))
-                }
-            })
+private fun GameProfile.toCompound(): CompoundTag = compound {
+    string("Name", name)
+    uuid("Id", uuid)
+    if (properties.isEmpty()) return@compound
+    put("Properties", compound {
+        properties.forEach {
+            val tag = compound {
+                string("Value", it.value)
+                if (it.signature != null) string("Signature", it.signature!!)
+            }
+            list(it.name, CompoundTag.ID, listOf(tag))
         }
-    }
+    })
 }

@@ -18,7 +18,6 @@
  */
 package org.kryptonmc.krypton.commands
 
-import com.mojang.brigadier.Command
 import com.mojang.brigadier.CommandDispatcher
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.TextColor
@@ -26,6 +25,7 @@ import org.kryptonmc.api.command.Sender
 import org.kryptonmc.krypton.command.InternalCommand
 import org.kryptonmc.krypton.command.literal
 import org.kryptonmc.krypton.command.permission
+import org.kryptonmc.krypton.command.runs
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 
 object SeedCommand : InternalCommand {
@@ -35,11 +35,10 @@ object SeedCommand : InternalCommand {
     override fun register(dispatcher: CommandDispatcher<Sender>) {
         dispatcher.register(literal("seed") {
             permission(KryptonPermission.SEED)
-            executes {
-                val sender = it.source as? KryptonPlayer ?: return@executes 0
+            runs {
+                val sender = it.source as? KryptonPlayer ?: return@runs
                 val text = Component.text('[').append(Component.text(sender.world.seed, GREEN)).append(Component.text(']'))
                 sender.sendMessage(Component.translatable("commands.seed.success", text))
-                Command.SINGLE_SUCCESS
             }
         })
     }
