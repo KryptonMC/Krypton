@@ -43,18 +43,23 @@ interface KryptonEquipable : Equipable {
         setArmor(slot, item)
     }
 
-    fun loadItems(tag: CompoundTag, name: String, output: MutableList<KryptonItemStack>) {
-        if (!tag.contains(name, ListTag.ID)) return
-        val items = tag.getList(name, ListTag.ID)
-        for (i in items.indices) {
-            output[i] = KryptonItemStack(items.getCompound(i))
-        }
-    }
+    companion object {
 
-    fun saveItems(items: Iterable<KryptonItemStack>): ListTag = list {
-        items.forEach {
-            if (it.isEmpty()) return@forEach
-            add(it.save(CompoundTag.builder()).build())
+        @JvmStatic
+        fun loadItems(tag: CompoundTag, name: String, output: MutableList<KryptonItemStack>) {
+            if (!tag.contains(name, ListTag.ID)) return
+            val items = tag.getList(name, ListTag.ID)
+            for (i in items.indices) {
+                output[i] = KryptonItemStack(items.getCompound(i))
+            }
+        }
+
+        @JvmStatic
+        fun saveItems(items: Iterable<KryptonItemStack>): ListTag = list {
+            items.forEach {
+                if (it.isEmpty()) return@forEach
+                add(it.save(CompoundTag.builder()).build())
+            }
         }
     }
 }

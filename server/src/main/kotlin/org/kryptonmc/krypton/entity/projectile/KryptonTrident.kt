@@ -21,13 +21,11 @@ package org.kryptonmc.krypton.entity.projectile
 import org.kryptonmc.api.effect.sound.SoundEvents
 import org.kryptonmc.api.entity.EntityTypes
 import org.kryptonmc.api.entity.projectile.Trident
-import org.kryptonmc.api.item.ItemStack
 import org.kryptonmc.api.item.ItemTypes
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.item.KryptonItemStack
 import org.kryptonmc.krypton.item.meta.KryptonItemMeta
 import org.kryptonmc.krypton.world.KryptonWorld
-import org.kryptonmc.nbt.CompoundTag
 
 class KryptonTrident(world: KryptonWorld) : KryptonArrowLike(world, EntityTypes.TRIDENT, SoundEvents.TRIDENT_HIT_GROUND), Trident {
 
@@ -44,17 +42,6 @@ class KryptonTrident(world: KryptonWorld) : KryptonArrowLike(world, EntityTypes.
     init {
         data.add(MetadataKeys.TRIDENT.LOYALTY_LEVEL)
         data.add(MetadataKeys.TRIDENT.ENCHANTED)
-    }
-
-    override fun load(tag: CompoundTag) {
-        super.load(tag)
-        dealtDamage = tag.getBoolean("DealtDamage")
-        if (tag.contains("Trident", CompoundTag.ID)) item = KryptonItemStack(tag.getCompound("Trident"))
-    }
-
-    override fun save(): CompoundTag.Builder = super.save().apply {
-        boolean("DealtDamage", dealtDamage)
-        put("Trident", item.save(CompoundTag.builder()).build())
     }
 
     companion object {

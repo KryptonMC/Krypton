@@ -27,11 +27,10 @@ import org.kryptonmc.api.item.ItemStack
 import org.kryptonmc.api.item.ItemTypes
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.world.KryptonWorld
-import org.kryptonmc.nbt.CompoundTag
 
 class KryptonRabbit(world: KryptonWorld) : KryptonAnimal(world, EntityTypes.RABBIT, ATTRIBUTES), Rabbit {
 
-    private var moreCarrotTicks = 0
+    internal var moreCarrotTicks = 0
     override var rabbitType: RabbitType
         get() {
             val id = data[MetadataKeys.RABBIT.TYPE]
@@ -54,17 +53,6 @@ class KryptonRabbit(world: KryptonWorld) : KryptonAnimal(world, EntityTypes.RABB
     }
 
     override fun isFood(item: ItemStack): Boolean = TEMPTING_ITEMS.contains(item.type)
-
-    override fun load(tag: CompoundTag) {
-        super.load(tag)
-        data[MetadataKeys.RABBIT.TYPE] = tag.getInt("RabbitType")
-        moreCarrotTicks = tag.getInt("MoreCarrotTicks")
-    }
-
-    override fun save(): CompoundTag.Builder = super.save().apply {
-        int("RabbitType", data[MetadataKeys.RABBIT.TYPE])
-        int("MoreCarrotTicks", moreCarrotTicks)
-    }
 
     companion object {
 

@@ -19,23 +19,14 @@
 package org.kryptonmc.krypton.entity
 
 import org.kryptonmc.api.entity.EntityType
-import org.kryptonmc.api.entity.Hand
 import org.kryptonmc.api.entity.MainHand
 import org.kryptonmc.api.entity.Mob
 import org.kryptonmc.api.entity.attribute.AttributeTypes
-import org.kryptonmc.api.item.ItemTypes
 import org.kryptonmc.krypton.entity.attribute.AttributeSupplier
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
-import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.item.KryptonItemStack
-import org.kryptonmc.krypton.item.handler
 import org.kryptonmc.krypton.util.FixedList
-import org.kryptonmc.krypton.util.InteractionResult
 import org.kryptonmc.krypton.world.KryptonWorld
-import org.kryptonmc.nbt.ByteTag
-import org.kryptonmc.nbt.CompoundTag
-import org.kryptonmc.nbt.FloatTag
-import org.kryptonmc.nbt.ListTag
 
 abstract class KryptonMob(
     world: KryptonWorld,
@@ -43,10 +34,10 @@ abstract class KryptonMob(
     attributeSupplier: AttributeSupplier
 ) : KryptonLivingEntity(world, type, attributeSupplier), Mob, KryptonEquipable {
 
-    private val handItems = FixedList(2, KryptonItemStack.EMPTY)
-    private val armorItems = FixedList(4, KryptonItemStack.EMPTY)
-    private val handDropChances = FloatArray(2)
-    private val armorDropChances = FloatArray(4)
+    internal val handItems = FixedList(2, KryptonItemStack.EMPTY)
+    internal val armorItems = FixedList(4, KryptonItemStack.EMPTY)
+    internal val handDropChances = FloatArray(2)
+    internal val armorDropChances = FloatArray(4)
 
     override val handSlots: Iterable<KryptonItemStack>
         get() = handItems
@@ -81,41 +72,6 @@ abstract class KryptonMob(
             EquipmentSlot.Type.HAND -> handItems[slot.index] = item
             EquipmentSlot.Type.ARMOR -> armorItems[slot.index] = item
         }
-    }
-
-    override fun load(tag: CompoundTag) {
-        super.load(tag)
-        if (tag.contains("CanPickUpLoot", ByteTag.ID)) canPickUpLoot = tag.getBoolean("CanPickUpLoot")
-        isPersistent = tag.getBoolean("PersistenceRequired")
-
-        loadItems(tag, "ArmorItems", armorItems)
-        loadItems(tag, "HandItems", handItems)
-        if (tag.contains("ArmorDropChances", ListTag.ID)) {
-            val chances = tag.getList("ArmorDropChances", FloatTag.ID)
-            for (i in chances.indices) {
-                armorDropChances[i] = chances.getFloat(i)
-            }
-        }
-        if (tag.contains("HandDropChances", ListTag.ID)) {
-            val chances = tag.getList("HandDropChances", FloatTag.ID)
-            for (i in chances.indices) {
-                handDropChances[i] = chances.getFloat(i)
-            }
-        }
-
-        mainHand = if (tag.getBoolean("LeftHanded")) MainHand.LEFT else MainHand.RIGHT
-        hasAI = !tag.getBoolean("NoAI")
-    }
-
-    override fun save(): CompoundTag.Builder = super.save().apply {
-        boolean("CanPickUpLoot", canPickUpLoot)
-        boolean("PersistenceRequired", isPersistent)
-        put("ArmorItems", saveItems(armorItems))
-        put("HandItems", saveItems(handItems))
-        list("ArmorDropChances") { armorDropChances.forEach(::addFloat) }
-        list("HandDropChances") { handDropChances.forEach(::addFloat) }
-        boolean("LeftHanded", mainHand == MainHand.LEFT)
-        if (!hasAI) boolean("NoAI", true)
     }
 
     // TODO: Separate mob interactions

@@ -26,7 +26,6 @@ import org.kryptonmc.krypton.entity.attribute.AttributeSupplier
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.world.KryptonWorld
-import org.kryptonmc.nbt.CompoundTag
 import java.util.UUID
 
 abstract class KryptonTamable(
@@ -65,25 +64,6 @@ abstract class KryptonTamable(
         isTame = true
         ownerUUID = tamer.uuid
         // TODO: Trigger tame animal advancement criteria
-    }
-
-    override fun load(tag: CompoundTag) {
-        super.load(tag)
-        if (tag.hasUUID("Owner")) {
-            try {
-                ownerUUID = tag.getUUID("Owner")
-                isTame = true
-            } catch (exception: Throwable) {
-                isTame = false
-            }
-        }
-        isOrderedToSit = tag.getBoolean("Sitting")
-        isSitting = isOrderedToSit
-    }
-
-    override fun save(): CompoundTag.Builder = super.save().apply {
-        if (ownerUUID != null) uuid("Owner", ownerUUID!!)
-        boolean("Sitting", isOrderedToSit)
     }
 
     private fun getFlag(flag: Int): Boolean = getFlag(MetadataKeys.TAMABLE.FLAGS, flag)

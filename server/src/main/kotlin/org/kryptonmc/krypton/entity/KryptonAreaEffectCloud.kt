@@ -42,19 +42,4 @@ class KryptonAreaEffectCloud(world: KryptonWorld) : KryptonEntity(world, EntityT
         data.add(MetadataKeys.AREA_EFFECT_CLOUD.IGNORE_RADIUS)
         data.add(MetadataKeys.AREA_EFFECT_CLOUD.PARTICLE)
     }
-
-    override fun load(tag: CompoundTag) {
-        super.load(tag)
-        age = tag.getInt("Age")
-        duration = tag.getInt("Duration")
-        radius = tag.getFloat("Radius")
-        color = tag.getInt("Color")
-    }
-
-    override fun save(): CompoundTag.Builder = super.save().apply {
-        int("Age", age)
-        int("Duration", duration)
-        float("Radius", radius)
-        int("Color", color)
-    }
 }

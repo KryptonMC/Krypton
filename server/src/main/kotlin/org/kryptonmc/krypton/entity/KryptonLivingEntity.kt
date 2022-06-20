@@ -18,7 +18,6 @@
  */
 package org.kryptonmc.krypton.entity
 
-import org.kryptonmc.api.adventure.toPlainText
 import org.kryptonmc.api.entity.ArmorSlot
 import org.kryptonmc.api.entity.Entity
 import org.kryptonmc.api.entity.EntityType
@@ -38,9 +37,6 @@ import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.packet.out.play.PacketOutAttributes
 import org.kryptonmc.krypton.packet.out.play.PacketOutSpawnLivingEntity
 import org.kryptonmc.krypton.world.KryptonWorld
-import org.kryptonmc.nbt.CompoundTag
-import org.kryptonmc.nbt.ListTag
-import org.kryptonmc.nbt.StringTag
 import org.spongepowered.math.vector.Vector3i
 import kotlin.random.Random
 
@@ -173,52 +169,6 @@ abstract class KryptonLivingEntity(
     }
 
     override fun attribute(type: AttributeType): Attribute? = attributes[type]
-
-    override fun load(tag: CompoundTag) {
-        super.load(tag)
-        // AI stuff
-        if (tag.contains("Attributes", ListTag.ID)) attributes.load(tag.getList("Attributes", CompoundTag.ID))
-        if (tag.contains("Brain", CompoundTag.ID)) brain.load(tag.getCompound("Brain"))
-
-        // Values
-        if (tag.contains("Health", 99)) health = tag.getFloat("Health")
-        if (tag.getBoolean("FallFlying")) isGliding = true
-        absorption = tag.getFloat("AbsorptionAmount").coerceAtLeast(0F)
-        deathTime = tag.getShort("DeathTime")
-        lastHurtTimestamp = tag.getInt("HurtByTimestamp")
-        hurtTime = tag.getShort("HurtTime")
-
-        // Scoreboard stuff
-        if (tag.contains("Team", StringTag.ID)) {
-            val teamName = tag.getString("Team")
-            val team = world.scoreboard.team(teamName)
-            val wasAdded = team != null && world.scoreboard.addMemberToTeam(teamRepresentation, team)
-            if (!wasAdded) LOGGER.warn("Unable to add living entity ${name.toPlainText()} to team ${teamName}. This team may not exist.")
-        }
-
-        // Sleeping coordinates
-        if (tag.contains("SleepingX", 99) && tag.contains("SleepingY", 99) && tag.contains("SleepingZ", 99)) {
-            sleepingPosition = Vector3i(tag.getInt("SleepingX"), tag.getInt("SleepingY"), tag.getInt("SleepingZ"))
-            pose = Pose.SLEEPING
-        }
-    }
-
-    override fun save(): CompoundTag.Builder = super.save().apply {
-        float("AbsorptionAmount", absorption)
-        put("Attributes", attributes.save())
-        put("Brain", brain.save())
-        short("DeathTime", deathTime)
-        boolean("FallFlying", isGliding)
-        float("Health", health)
-        int("HurtByTimestamp", lastHurtTimestamp)
-        short("HurtTime", hurtTime)
-        val sleeping = sleepingPosition
-        if (sleeping != null) {
-            int("SleepingX", sleeping.x())
-            int("SleepingY", sleeping.y())
-            int("SleepingZ", sleeping.z())
-        }
-    }
 
     override fun addViewer(player: KryptonPlayer): Boolean {
         if (!super.addViewer(player)) return false

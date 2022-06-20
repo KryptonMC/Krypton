@@ -22,8 +22,6 @@ import org.kryptonmc.api.entity.EntityTypes
 import org.kryptonmc.api.entity.projectile.Arrow
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.world.KryptonWorld
-import org.kryptonmc.nbt.CompoundTag
-import java.awt.Color
 
 class KryptonArrow(world: KryptonWorld) : KryptonArrowLike(world, EntityTypes.ARROW), Arrow {
 
@@ -33,18 +31,6 @@ class KryptonArrow(world: KryptonWorld) : KryptonArrowLike(world, EntityTypes.AR
 
     init {
         data.add(MetadataKeys.ARROW.COLOR)
-    }
-
-    override fun load(tag: CompoundTag) {
-        super.load(tag)
-        if (tag.contains("Color", 99)) {
-            val rgb = tag.getInt("Color")
-            if (rgb in 0..RGB_MAX_VALUE) color = rgb
-        }
-    }
-
-    override fun save(): CompoundTag.Builder = super.save().apply {
-        int("Color", color)
     }
 
     companion object {

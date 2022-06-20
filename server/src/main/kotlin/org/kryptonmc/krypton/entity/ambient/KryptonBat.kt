@@ -23,7 +23,6 @@ import org.kryptonmc.api.entity.ambient.Bat
 import org.kryptonmc.api.entity.attribute.AttributeTypes
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.world.KryptonWorld
-import org.kryptonmc.nbt.CompoundTag
 
 class KryptonBat(world: KryptonWorld) : KryptonAmbientCreature(world, EntityTypes.BAT, ATTRIBUTES), Bat {
 
@@ -33,15 +32,6 @@ class KryptonBat(world: KryptonWorld) : KryptonAmbientCreature(world, EntityType
 
     init {
         data.add(MetadataKeys.BAT.FLAGS)
-    }
-
-    override fun load(tag: CompoundTag) {
-        super.load(tag)
-        data[MetadataKeys.BAT.FLAGS] = tag.getByte("BatFlags")
-    }
-
-    override fun save(): CompoundTag.Builder = super.save().apply {
-        byte("BatFlags", data[MetadataKeys.BAT.FLAGS])
     }
 
     companion object {

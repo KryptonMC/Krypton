@@ -46,7 +46,7 @@ abstract class KryptonAgeable(
             age = if (value) -24000 else 0
         }
 
-    private var forcedAge = 0
+    internal var forcedAge = 0
     private var forcedAgeTimer = 0
     override val canBreedNaturally: Boolean
         get() = false
@@ -75,16 +75,5 @@ abstract class KryptonAgeable(
 
     override fun age(amount: Int) {
         age(amount, false)
-    }
-
-    override fun load(tag: CompoundTag) {
-        super.load(tag)
-        age = tag.getInt("Age")
-        forcedAge = tag.getInt("ForcedAge")
-    }
-
-    override fun save(): CompoundTag.Builder = super.save().apply {
-        int("Age", age)
-        int("ForcedAge", forcedAge)
     }
 }

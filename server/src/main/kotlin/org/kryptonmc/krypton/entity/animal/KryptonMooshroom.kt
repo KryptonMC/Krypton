@@ -23,8 +23,6 @@ import org.kryptonmc.api.entity.animal.Mooshroom
 import org.kryptonmc.api.entity.animal.type.MooshroomType
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.world.KryptonWorld
-import org.kryptonmc.nbt.CompoundTag
-import org.kryptonmc.nbt.StringTag
 
 class KryptonMooshroom(world: KryptonWorld) : KryptonCow(world, EntityTypes.MOOSHROOM), Mooshroom {
 
@@ -34,14 +32,5 @@ class KryptonMooshroom(world: KryptonWorld) : KryptonCow(world, EntityTypes.MOOS
 
     init {
         data.add(MetadataKeys.MOOSHROOM.TYPE)
-    }
-
-    override fun load(tag: CompoundTag) {
-        super.load(tag)
-        if (tag.contains("Type", StringTag.ID)) mooshroomType = MooshroomType.fromName(tag.getString("Type"))!!
-    }
-
-    override fun save(): CompoundTag.Builder = super.save().apply {
-        string("Type", mooshroomType.serialized)
     }
 }

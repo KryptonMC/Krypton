@@ -23,7 +23,6 @@ import org.kryptonmc.api.entity.aquatic.GlowSquid
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.krypton.world.damage.KryptonDamageSource
-import org.kryptonmc.nbt.CompoundTag
 
 class KryptonGlowSquid(world: KryptonWorld) : KryptonSquid(world, EntityTypes.GLOW_SQUID), GlowSquid {
 
@@ -33,15 +32,6 @@ class KryptonGlowSquid(world: KryptonWorld) : KryptonSquid(world, EntityTypes.GL
 
     init {
         data.add(MetadataKeys.GLOW_SQUID.REMAINING_DARK_TICKS)
-    }
-
-    override fun load(tag: CompoundTag) {
-        super.load(tag)
-        remainingDarkTicks = tag.getInt("DarkTicksRemaining")
-    }
-
-    override fun save(): CompoundTag.Builder = super.save().apply {
-        int("DarkTicksRemaining", remainingDarkTicks)
     }
 
     override fun damage(source: KryptonDamageSource, damage: Float): Boolean {

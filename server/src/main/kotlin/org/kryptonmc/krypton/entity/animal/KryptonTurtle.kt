@@ -27,7 +27,6 @@ import org.kryptonmc.api.item.ItemStack
 import org.kryptonmc.api.item.ItemTypes
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.world.KryptonWorld
-import org.kryptonmc.nbt.CompoundTag
 import org.spongepowered.math.vector.Vector3i
 
 class KryptonTurtle(world: KryptonWorld) : KryptonAnimal(world, EntityTypes.TURTLE, ATTRIBUTES), Turtle {
@@ -68,29 +67,6 @@ class KryptonTurtle(world: KryptonWorld) : KryptonAnimal(world, EntityTypes.TURT
     }
 
     override fun isFood(item: ItemStack): Boolean = item.type === ItemTypes.SEAGRASS
-
-    override fun load(tag: CompoundTag) {
-        super.load(tag)
-        val homeX = tag.getInt("HomePosX")
-        val homeY = tag.getInt("HomePosY")
-        val homeZ = tag.getInt("HomePosZ")
-        home = Vector3i.from(homeX, homeY, homeZ)
-        val destinationX = tag.getInt("TravelPosX")
-        val destinationY = tag.getInt("TravelPosY")
-        val destinationZ = tag.getInt("TravelPosZ")
-        destination = Vector3i.from(destinationX, destinationY, destinationZ)
-        hasEgg = tag.getBoolean("HasEgg")
-    }
-
-    override fun save(): CompoundTag.Builder = super.save().apply {
-        int("HomePosX", home.x())
-        int("HomePosY", home.y())
-        int("HomePosZ", home.z())
-        boolean("HasEgg", hasEgg)
-        int("TravelPosX", destination.x())
-        int("TravelPosY", destination.y())
-        int("TravelPosZ", destination.z())
-    }
 
     companion object {
 

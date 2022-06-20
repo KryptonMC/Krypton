@@ -31,7 +31,6 @@ import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.util.InteractionResult
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.krypton.world.damage.KryptonDamageSource
-import org.kryptonmc.nbt.CompoundTag
 import org.spongepowered.math.vector.Vector2f
 import org.spongepowered.math.vector.Vector3i
 import kotlin.random.Random
@@ -82,21 +81,6 @@ class KryptonDolphin(world: KryptonWorld) : KryptonAquaticAnimal(world, EntityTy
             rotation = Vector2f(rotation.x(), Random.nextFloat() * 360F)
             isOnGround = false
         }
-    }
-
-    override fun load(tag: CompoundTag) {
-        super.load(tag)
-        treasurePosition = Vector3i(tag.getInt("TreasurePosX"), tag.getInt("TreasurePosY"), tag.getInt("TreasurePosZ"))
-        gotFish = tag.getBoolean("GotFish")
-        skinMoisture = tag.getInt("Moistness")
-    }
-
-    override fun save(): CompoundTag.Builder = super.save().apply {
-        int("TreasurePosX", treasurePosition.x())
-        int("TreasurePosY", treasurePosition.y())
-        int("TreasurePosZ", treasurePosition.z())
-        boolean("GotFish", gotFish)
-        int("Moistness", skinMoisture)
     }
 
     /*

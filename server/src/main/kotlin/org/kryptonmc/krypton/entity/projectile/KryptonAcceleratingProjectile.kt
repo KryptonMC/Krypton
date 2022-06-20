@@ -21,9 +21,6 @@ package org.kryptonmc.krypton.entity.projectile
 import org.kryptonmc.api.entity.EntityType
 import org.kryptonmc.api.entity.projectile.AcceleratingProjectile
 import org.kryptonmc.krypton.world.KryptonWorld
-import org.kryptonmc.nbt.CompoundTag
-import org.kryptonmc.nbt.DoubleTag
-import org.kryptonmc.nbt.ListTag
 import org.spongepowered.math.vector.Vector3d
 
 abstract class KryptonAcceleratingProjectile(
@@ -32,20 +29,4 @@ abstract class KryptonAcceleratingProjectile(
 ) : KryptonProjectile(world, type), AcceleratingProjectile {
 
     final override var acceleration: Vector3d = Vector3d.ZERO
-
-    override fun load(tag: CompoundTag) {
-        super.load(tag)
-        if (tag.contains("power", ListTag.ID)) {
-            val power = tag.getList("power", DoubleTag.ID)
-            if (power.size == 3) acceleration = Vector3d(power.getDouble(0), power.getDouble(1), power.getDouble(2))
-        }
-    }
-
-    override fun save(): CompoundTag.Builder = super.save().apply {
-        list("power") {
-            addDouble(acceleration.x())
-            addDouble(acceleration.y())
-            addDouble(acceleration.z())
-        }
-    }
 }

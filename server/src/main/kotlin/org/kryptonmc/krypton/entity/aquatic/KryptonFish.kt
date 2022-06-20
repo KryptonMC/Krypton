@@ -57,15 +57,6 @@ abstract class KryptonFish(world: KryptonWorld, type: EntityType<out Fish>) : Kr
     }
      */
 
-    override fun load(tag: CompoundTag) {
-        super.load(tag)
-        spawnedFromBucket = tag.getBoolean("FromBucket")
-    }
-
-    override fun save(): CompoundTag.Builder = super.save().apply {
-        boolean("FromBucket", spawnedFromBucket)
-    }
-
     companion object {
 
         private val ATTRIBUTES = attributes().add(AttributeTypes.MAX_HEALTH, 3.0).build()

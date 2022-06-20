@@ -19,23 +19,14 @@
 package org.kryptonmc.krypton.entity.animal
 
 import net.kyori.adventure.sound.Sound
-import org.kryptonmc.api.effect.sound.SoundEvents
 import org.kryptonmc.api.entity.EntityTypes
-import org.kryptonmc.api.entity.Hand
 import org.kryptonmc.api.entity.animal.Animal
 import org.kryptonmc.api.entity.animal.Parrot
 import org.kryptonmc.api.entity.animal.type.ParrotType
 import org.kryptonmc.api.entity.attribute.AttributeTypes
 import org.kryptonmc.api.item.ItemStack
-import org.kryptonmc.api.item.ItemTypes
-import org.kryptonmc.api.world.GameMode
-import org.kryptonmc.api.world.damage.type.DamageTypes
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
-import org.kryptonmc.krypton.entity.player.KryptonPlayer
-import org.kryptonmc.krypton.util.InteractionResult
 import org.kryptonmc.krypton.world.KryptonWorld
-import org.kryptonmc.krypton.world.damage.KryptonEntityDamageSource
-import org.kryptonmc.nbt.CompoundTag
 import kotlin.random.Random
 
 class KryptonParrot(world: KryptonWorld) : KryptonTamable(world, EntityTypes.PARROT, ATTRIBUTES), Parrot {
@@ -56,15 +47,6 @@ class KryptonParrot(world: KryptonWorld) : KryptonTamable(world, EntityTypes.PAR
     override fun isFood(item: ItemStack): Boolean = false
 
     override fun canMate(target: Animal): Boolean = false
-
-    override fun load(tag: CompoundTag) {
-        super.load(tag)
-        parrotType = ParrotType.fromId(tag.getInt("Variant"))!!
-    }
-
-    override fun save(): CompoundTag.Builder = super.save().apply {
-        int("Variant", parrotType.ordinal)
-    }
 
     /*
     override fun mobInteract(player: KryptonPlayer, hand: Hand): InteractionResult {
@@ -99,7 +81,7 @@ class KryptonParrot(world: KryptonWorld) : KryptonTamable(world, EntityTypes.PAR
             .add(AttributeTypes.FLYING_SPEED, 0.4)
             .add(AttributeTypes.MOVEMENT_SPEED, 0.2)
             .build()
-        private val TAME_FOOD = setOf(ItemTypes.WHEAT_SEEDS, ItemTypes.MELON_SEEDS, ItemTypes.PUMPKIN_SEEDS, ItemTypes.BEETROOT_SEEDS)
-        private val POISONOUS_FOOD = ItemTypes.COOKIE
+        //private val TAME_FOOD = setOf(ItemTypes.WHEAT_SEEDS, ItemTypes.MELON_SEEDS, ItemTypes.PUMPKIN_SEEDS, ItemTypes.BEETROOT_SEEDS)
+        //private val POISONOUS_FOOD = ItemTypes.COOKIE
     }
 }

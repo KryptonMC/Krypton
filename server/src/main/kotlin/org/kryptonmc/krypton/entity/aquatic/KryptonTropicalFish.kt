@@ -28,7 +28,6 @@ import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.item.KryptonItemStack
 import org.kryptonmc.krypton.item.meta.KryptonItemMeta
 import org.kryptonmc.krypton.world.KryptonWorld
-import org.kryptonmc.nbt.CompoundTag
 import kotlin.math.min
 
 class KryptonTropicalFish(world: KryptonWorld) : KryptonSchoolingFish(world, EntityTypes.TROPICAL_FISH), TropicalFish {
@@ -57,15 +56,6 @@ class KryptonTropicalFish(world: KryptonWorld) : KryptonSchoolingFish(world, Ent
 
     init {
         data.add(MetadataKeys.TROPICAL_FISH.VARIANT)
-    }
-
-    override fun load(tag: CompoundTag) {
-        super.load(tag)
-        data[MetadataKeys.TROPICAL_FISH.VARIANT] = tag.getInt("Variant")
-    }
-
-    override fun save(): CompoundTag.Builder = super.save().apply {
-        int("Variant", data[MetadataKeys.TROPICAL_FISH.VARIANT])
     }
 
     /* FIXME

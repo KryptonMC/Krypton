@@ -23,7 +23,6 @@ import org.kryptonmc.api.entity.attribute.AttributeTypes
 import org.kryptonmc.api.entity.monster.Creeper
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.world.KryptonWorld
-import org.kryptonmc.nbt.CompoundTag
 
 class KryptonCreeper(world: KryptonWorld) : KryptonMonster(world, EntityTypes.CREEPER, ATTRIBUTES), Creeper {
 
@@ -41,21 +40,6 @@ class KryptonCreeper(world: KryptonWorld) : KryptonMonster(world, EntityTypes.CR
         data.add(MetadataKeys.CREEPER.STATE)
         data.add(MetadataKeys.CREEPER.CHARGED)
         data.add(MetadataKeys.CREEPER.IGNITED)
-    }
-
-    override fun load(tag: CompoundTag) {
-        super.load(tag)
-        isCharged = tag.getBoolean("powered")
-        isIgnited = tag.getBoolean("ignited")
-        fuse = tag.getShort("Fuse")
-        explosionRadius = tag.getInt("ExplosionRadius")
-    }
-
-    override fun save(): CompoundTag.Builder = super.save().apply {
-        boolean("powered", isCharged)
-        boolean("ignited", isIgnited)
-        short("Fuse", fuse)
-        int("ExplosionRadius", explosionRadius)
     }
 
     companion object {

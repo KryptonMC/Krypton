@@ -67,6 +67,47 @@ import org.kryptonmc.krypton.entity.projectile.KryptonSpectralArrow
 import org.kryptonmc.krypton.entity.projectile.KryptonThrownPotion
 import org.kryptonmc.krypton.entity.projectile.KryptonTrident
 import org.kryptonmc.krypton.entity.projectile.KryptonWitherSkull
+import org.kryptonmc.krypton.entity.serializer.AgeableSerializer
+import org.kryptonmc.krypton.entity.serializer.AreaEffectCloudSerializer
+import org.kryptonmc.krypton.entity.serializer.ArmorStandSerializer
+import org.kryptonmc.krypton.entity.serializer.EntitySerializer
+import org.kryptonmc.krypton.entity.serializer.ExperienceOrbSerializer
+import org.kryptonmc.krypton.entity.serializer.MobSerializer
+import org.kryptonmc.krypton.entity.serializer.ambient.BatSerializer
+import org.kryptonmc.krypton.entity.serializer.animal.AxolotlSerializer
+import org.kryptonmc.krypton.entity.serializer.animal.BeeSerializer
+import org.kryptonmc.krypton.entity.serializer.animal.CatSerializer
+import org.kryptonmc.krypton.entity.serializer.animal.ChickenSerializer
+import org.kryptonmc.krypton.entity.serializer.animal.FoxSerializer
+import org.kryptonmc.krypton.entity.serializer.animal.GoatSerializer
+import org.kryptonmc.krypton.entity.serializer.animal.MooshroomSerializer
+import org.kryptonmc.krypton.entity.serializer.animal.OcelotSerializer
+import org.kryptonmc.krypton.entity.serializer.animal.PandaSerializer
+import org.kryptonmc.krypton.entity.serializer.animal.ParrotSerializer
+import org.kryptonmc.krypton.entity.serializer.animal.PigSerializer
+import org.kryptonmc.krypton.entity.serializer.animal.PolarBearSerializer
+import org.kryptonmc.krypton.entity.serializer.animal.RabbitSerializer
+import org.kryptonmc.krypton.entity.serializer.animal.SheepSerializer
+import org.kryptonmc.krypton.entity.serializer.animal.TurtleSerializer
+import org.kryptonmc.krypton.entity.serializer.animal.WolfSerializer
+import org.kryptonmc.krypton.entity.serializer.aquatic.DolphinSerializer
+import org.kryptonmc.krypton.entity.serializer.aquatic.FishSerializer
+import org.kryptonmc.krypton.entity.serializer.aquatic.GlowSquidSerializer
+import org.kryptonmc.krypton.entity.serializer.aquatic.PufferfishSerializer
+import org.kryptonmc.krypton.entity.serializer.aquatic.TropicalFishSerializer
+import org.kryptonmc.krypton.entity.serializer.hanging.PaintingSerializer
+import org.kryptonmc.krypton.entity.serializer.monster.CreeperSerializer
+import org.kryptonmc.krypton.entity.serializer.monster.ZombieSerializer
+import org.kryptonmc.krypton.entity.serializer.player.PlayerSerializer
+import org.kryptonmc.krypton.entity.serializer.projectile.AcceleratingProjectileSerializer
+import org.kryptonmc.krypton.entity.serializer.projectile.ArrowSerializer
+import org.kryptonmc.krypton.entity.serializer.projectile.FireballSerializer
+import org.kryptonmc.krypton.entity.serializer.projectile.LargeFireballSerializer
+import org.kryptonmc.krypton.entity.serializer.projectile.ProjectileSerializer
+import org.kryptonmc.krypton.entity.serializer.projectile.ShulkerBulletSerializer
+import org.kryptonmc.krypton.entity.serializer.projectile.SpectralArrowSerializer
+import org.kryptonmc.krypton.entity.serializer.projectile.ThrowableProjectileSerializer
+import org.kryptonmc.krypton.entity.serializer.projectile.TridentSerializer
 import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.nbt.CompoundTag
@@ -123,6 +164,56 @@ object EntityFactory {
         EntityTypes.ZOMBIE to ::KryptonZombie,
         EntityTypes.FISHING_HOOK to ::KryptonFishingHook
     )
+    private val SERIALIZERS = mapOf(
+        EntityTypes.AREA_EFFECT_CLOUD to AreaEffectCloudSerializer,
+        EntityTypes.ARMOR_STAND to ArmorStandSerializer,
+        EntityTypes.ARROW to ArrowSerializer,
+        EntityTypes.AXOLOTL to AxolotlSerializer,
+        EntityTypes.BAT to BatSerializer,
+        EntityTypes.BEE to BeeSerializer,
+        EntityTypes.CAT to CatSerializer,
+        EntityTypes.CHICKEN to ChickenSerializer,
+        EntityTypes.COD to FishSerializer,
+        EntityTypes.COW to AgeableSerializer,
+        EntityTypes.CREEPER to CreeperSerializer,
+        EntityTypes.DOLPHIN to DolphinSerializer,
+        EntityTypes.DRAGON_FIREBALL to AcceleratingProjectileSerializer,
+        EntityTypes.EGG to ThrowableProjectileSerializer,
+        EntityTypes.ENDER_PEARL to ThrowableProjectileSerializer,
+        EntityTypes.EXPERIENCE_BOTTLE to ThrowableProjectileSerializer,
+        EntityTypes.EXPERIENCE_ORB to ExperienceOrbSerializer,
+        EntityTypes.FIREWORK_ROCKET to ProjectileSerializer,
+        EntityTypes.FIREBALL to LargeFireballSerializer,
+        EntityTypes.FISHING_HOOK to ProjectileSerializer,
+        EntityTypes.FOX to FoxSerializer,
+        EntityTypes.GLOW_SQUID to GlowSquidSerializer,
+        EntityTypes.GOAT to GoatSerializer,
+        EntityTypes.LLAMA_SPIT to ProjectileSerializer,
+        EntityTypes.MOOSHROOM to MooshroomSerializer,
+        EntityTypes.OCELOT to OcelotSerializer,
+        EntityTypes.PAINTING to PaintingSerializer,
+        EntityTypes.PANDA to PandaSerializer,
+        EntityTypes.PARROT to ParrotSerializer,
+        EntityTypes.PIG to PigSerializer,
+        EntityTypes.PLAYER to PlayerSerializer,
+        EntityTypes.POLAR_BEAR to PolarBearSerializer,
+        EntityTypes.POTION to ThrowableProjectileSerializer,
+        EntityTypes.PUFFERFISH to PufferfishSerializer,
+        EntityTypes.RABBIT to RabbitSerializer,
+        EntityTypes.SALMON to FishSerializer,
+        EntityTypes.SHEEP to SheepSerializer,
+        EntityTypes.SHULKER_BULLET to ShulkerBulletSerializer,
+        EntityTypes.SMALL_FIREBALL to FireballSerializer,
+        EntityTypes.SNOWBALL to ThrowableProjectileSerializer,
+        EntityTypes.SPECTRAL_ARROW to SpectralArrowSerializer,
+        EntityTypes.SQUID to MobSerializer,
+        EntityTypes.TRIDENT to TridentSerializer,
+        EntityTypes.TROPICAL_FISH to TropicalFishSerializer,
+        EntityTypes.TURTLE to TurtleSerializer,
+        EntityTypes.WITHER_SKULL to AcceleratingProjectileSerializer,
+        EntityTypes.WOLF to WolfSerializer,
+        EntityTypes.ZOMBIE to ZombieSerializer
+    )
 
     @Suppress("UNCHECKED_CAST")
     @JvmStatic
@@ -134,16 +225,24 @@ object EntityFactory {
     @JvmStatic
     fun create(world: KryptonWorld, id: String, nbt: CompoundTag?): KryptonEntity? {
         return try {
-            val entity = create(Registries.ENTITY_TYPE[Key.key(id)], world)
+            val type = Registries.ENTITY_TYPE[Key.key(id)]
+            val entity = create(type, world)
             if (entity == null) {
                 LOGGER.warn("No entity found with ID $id!")
                 return null
             }
-            if (nbt != null) entity.load(nbt)
+            if (nbt != null) serializer(type).load(entity, nbt)
             return entity
         } catch (exception: RuntimeException) {
             LOGGER.warn("Exception loading entity", exception)
             null
         }
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    @JvmStatic
+    fun <E : Entity> serializer(type: EntityType<out E>): EntitySerializer<E> {
+        val serializer = requireNotNull(SERIALIZERS[type]) { "Cannot find serializer for type ${type.key().asString()}" }
+        return serializer as EntitySerializer<E>
     }
 }

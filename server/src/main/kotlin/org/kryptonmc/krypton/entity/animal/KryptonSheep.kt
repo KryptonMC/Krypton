@@ -25,7 +25,6 @@ import org.kryptonmc.api.item.data.DyeColor
 import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.world.KryptonWorld
-import org.kryptonmc.nbt.CompoundTag
 
 class KryptonSheep(world: KryptonWorld) : KryptonAnimal(world, EntityTypes.SHEEP, ATTRIBUTES), Sheep {
 
@@ -41,17 +40,6 @@ class KryptonSheep(world: KryptonWorld) : KryptonAnimal(world, EntityTypes.SHEEP
 
     init {
         data.add(MetadataKeys.SHEEP.FLAGS)
-    }
-
-    override fun load(tag: CompoundTag) {
-        super.load(tag)
-        isSheared = tag.getBoolean("Sheared")
-        color = Registries.DYE_COLORS[tag.getByte("Color").toInt()]!!
-    }
-
-    override fun save(): CompoundTag.Builder = super.save().apply {
-        boolean("Sheared", isSheared)
-        byte("Color", Registries.DYE_COLORS.idOf(color).toByte())
     }
 
     companion object {

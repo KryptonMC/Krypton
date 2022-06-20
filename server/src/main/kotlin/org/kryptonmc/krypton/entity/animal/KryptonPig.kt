@@ -23,7 +23,6 @@ import org.kryptonmc.api.entity.animal.Pig
 import org.kryptonmc.api.entity.attribute.AttributeTypes
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.world.KryptonWorld
-import org.kryptonmc.nbt.CompoundTag
 
 class KryptonPig(world: KryptonWorld) : KryptonAnimal(world, EntityTypes.PIG, ATTRIBUTES), Pig {
 
@@ -34,15 +33,6 @@ class KryptonPig(world: KryptonWorld) : KryptonAnimal(world, EntityTypes.PIG, AT
     init {
         data.add(MetadataKeys.PIG.SADDLE)
         data.add(MetadataKeys.PIG.BOOST_TIME)
-    }
-
-    override fun load(tag: CompoundTag) {
-        super.load(tag)
-        isSaddled = tag.getBoolean("Saddle")
-    }
-
-    override fun save(): CompoundTag.Builder = super.save().apply {
-        boolean("Saddle", isSaddled)
     }
 
     companion object {

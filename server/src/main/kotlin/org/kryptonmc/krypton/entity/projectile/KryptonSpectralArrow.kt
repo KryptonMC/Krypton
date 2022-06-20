@@ -21,18 +21,8 @@ package org.kryptonmc.krypton.entity.projectile
 import org.kryptonmc.api.entity.EntityTypes
 import org.kryptonmc.api.entity.projectile.SpectralArrow
 import org.kryptonmc.krypton.world.KryptonWorld
-import org.kryptonmc.nbt.CompoundTag
 
 class KryptonSpectralArrow(world: KryptonWorld) : KryptonArrowLike(world, EntityTypes.SPECTRAL_ARROW), SpectralArrow {
 
     override var duration: Int = 200
-
-    override fun load(tag: CompoundTag) {
-        super.load(tag)
-        duration = tag.getInt("Duration")
-    }
-
-    override fun save(): CompoundTag.Builder = super.save().apply {
-        int("Duration", duration)
-    }
 }

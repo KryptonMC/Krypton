@@ -25,7 +25,6 @@ import org.kryptonmc.api.item.ItemStack
 import org.kryptonmc.api.item.ItemTypes
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.world.KryptonWorld
-import org.kryptonmc.nbt.CompoundTag
 
 class KryptonOcelot(world: KryptonWorld) : KryptonAnimal(world, EntityTypes.OCELOT, ATTRIBUTES), Ocelot {
 
@@ -35,15 +34,6 @@ class KryptonOcelot(world: KryptonWorld) : KryptonAnimal(world, EntityTypes.OCEL
 
     init {
         data.add(MetadataKeys.OCELOT.TRUSTING)
-    }
-
-    override fun load(tag: CompoundTag) {
-        super.load(tag)
-        isTrusting = tag.getBoolean("Trusting")
-    }
-
-    override fun save(): CompoundTag.Builder = super.save().apply {
-        boolean("Trusting", isTrusting)
     }
 
     override fun isFood(item: ItemStack): Boolean = TEMPT_INGREDIENTS.contains(item.type)

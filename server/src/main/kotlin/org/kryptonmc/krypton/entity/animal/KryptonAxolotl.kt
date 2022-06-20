@@ -90,17 +90,6 @@ class KryptonAxolotl(world: KryptonWorld) : KryptonAnimal(world, EntityTypes.AXO
     }
      */
 
-    override fun load(tag: CompoundTag) {
-        super.load(tag)
-        data[MetadataKeys.AXOLOTL.VARIANT] = tag.getInt("Variant")
-        spawnedFromBucket = tag.getBoolean("FromBucket")
-    }
-
-    override fun save(): CompoundTag.Builder = super.save().apply {
-        int("Variant", data[MetadataKeys.AXOLOTL.VARIANT])
-        boolean("FromBucket", spawnedFromBucket)
-    }
-
     companion object {
 
         private val ATTRIBUTES = attributes()

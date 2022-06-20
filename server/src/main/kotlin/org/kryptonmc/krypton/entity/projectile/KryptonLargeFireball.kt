@@ -26,13 +26,4 @@ import org.kryptonmc.nbt.CompoundTag
 class KryptonLargeFireball(world: KryptonWorld) : KryptonFireball(world, EntityTypes.FIREBALL), LargeFireball {
 
     override var explosionPower: Int = 1
-
-    override fun load(tag: CompoundTag) {
-        super.load(tag)
-        if (tag.contains("ExplosionPower", 99)) explosionPower = tag.getByte("ExplosionPower").toInt()
-    }
-
-    override fun save(): CompoundTag.Builder = super.save().apply {
-        byte("ExplosionPower", explosionPower.toByte())
-    }
 }

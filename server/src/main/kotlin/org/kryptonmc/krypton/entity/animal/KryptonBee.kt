@@ -24,12 +24,9 @@ import org.kryptonmc.api.entity.attribute.AttributeTypes
 import org.kryptonmc.api.item.ItemStack
 import org.kryptonmc.api.tags.ItemTags
 import org.kryptonmc.krypton.entity.Neutral
-import org.kryptonmc.krypton.entity.getVector3i
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
-import org.kryptonmc.krypton.entity.vector3i
 import org.kryptonmc.krypton.util.sample
 import org.kryptonmc.krypton.world.KryptonWorld
-import org.kryptonmc.nbt.CompoundTag
 import org.spongepowered.math.vector.Vector3i
 import java.util.UUID
 import kotlin.random.Random
@@ -40,8 +37,8 @@ class KryptonBee(world: KryptonWorld) : KryptonAnimal(world, EntityTypes.BEE, AT
     override var hive: Vector3i? = null
     override var flower: Vector3i? = null
     override var angerTarget: UUID? = null
-    private var timeSincePollination = 0
-    private var cropsGrownSincePollination = 0
+    internal var timeSincePollination = 0
+    internal var cropsGrownSincePollination = 0
 
     override var isAngry: Boolean
         get() = getFlag(1)
@@ -72,29 +69,6 @@ class KryptonBee(world: KryptonWorld) : KryptonAnimal(world, EntityTypes.BEE, AT
     }
 
     override fun isFood(item: ItemStack): Boolean = ItemTags.FLOWERS.contains(item.type)
-
-    override fun load(tag: CompoundTag) {
-        super.load(tag)
-        hive = tag.getVector3i("HivePos")
-        flower = tag.getVector3i("FlowerPos")
-        hasNectar = tag.getBoolean("HasNectar")
-        hasStung = tag.getBoolean("HasStung")
-        timeSincePollination = tag.getInt("TicksSincePollination")
-        cannotEnterHiveTicks = tag.getInt("CannotEnterHiveTicks")
-        cropsGrownSincePollination = tag.getInt("CropsGrownSincePollination")
-        loadAngerData(world, tag)
-    }
-
-    override fun save(): CompoundTag.Builder = super.save().apply {
-        if (hive != null) vector3i("HivePos", hive!!)
-        if (flower != null) vector3i("FlowerPos", flower!!)
-        boolean("HasNectar", hasNectar)
-        boolean("HasStung", hasStung)
-        int("TicksSincePollination", timeSincePollination)
-        int("CannotEnterHiveTicks", cannotEnterHiveTicks)
-        int("CropsGrownSincePollination", cropsGrownSincePollination)
-        saveAngerData(this)
-    }
 
     private fun getFlag(flag: Int): Boolean = getFlag(MetadataKeys.BEE.FLAGS, flag)
 

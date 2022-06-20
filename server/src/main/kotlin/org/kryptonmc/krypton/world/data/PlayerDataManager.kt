@@ -21,6 +21,7 @@ package org.kryptonmc.krypton.world.data
 import ca.spottedleaf.dataconverter.minecraft.datatypes.MCTypeRegistry
 import org.kryptonmc.krypton.KryptonPlatform
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
+import org.kryptonmc.krypton.entity.serializer.player.PlayerSerializer
 import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.util.sendDataConversionWarning
 import org.kryptonmc.krypton.util.upgradeData
@@ -70,13 +71,13 @@ class PlayerDataManager(val folder: Path, private val serializeData: Boolean) {
         }
 
         val data = nbt.upgradeData(MCTypeRegistry.PLAYER, version)
-        player.load(data)
+        PlayerSerializer.load(player, data)
         data
     }, executor)
 
     fun save(player: KryptonPlayer): CompoundTag? {
         if (!serializeData) return null
-        val data = player.saveWithPassengers().build()
+        val data = PlayerSerializer.saveWithPassengers(player).build()
 
         // Create temp file and write data
         val temp = Files.createTempFile(folder, player.uuid.toString(), ".dat")

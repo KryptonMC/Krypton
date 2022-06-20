@@ -26,7 +26,6 @@ import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.item.KryptonItemStack
 import org.kryptonmc.krypton.item.meta.KryptonItemMeta
 import org.kryptonmc.krypton.world.KryptonWorld
-import org.kryptonmc.nbt.CompoundTag
 
 abstract class KryptonFireball(world: KryptonWorld, type: EntityType<out Fireball>) : KryptonAcceleratingProjectile(world, type), Fireball {
 
@@ -39,16 +38,6 @@ abstract class KryptonFireball(world: KryptonWorld, type: EntityType<out Firebal
 
     init {
         data.add(MetadataKeys.FIREBALL.ITEM)
-    }
-
-    override fun load(tag: CompoundTag) {
-        super.load(tag)
-        item = KryptonItemStack(tag.getCompound("Item"))
-    }
-
-    override fun save(): CompoundTag.Builder = super.save().apply {
-        val item = item
-        if (!item.isEmpty()) put("Item", item.save(CompoundTag.builder()).build())
     }
 
     final override fun asItem(): ItemStack {

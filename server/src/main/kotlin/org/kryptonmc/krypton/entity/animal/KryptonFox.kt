@@ -26,10 +26,7 @@ import org.kryptonmc.api.item.ItemStack
 import org.kryptonmc.api.tags.ItemTags
 import org.kryptonmc.krypton.entity.KryptonLivingEntity
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
-import org.kryptonmc.krypton.util.toUUID
 import org.kryptonmc.krypton.world.KryptonWorld
-import org.kryptonmc.nbt.CompoundTag
-import org.kryptonmc.nbt.IntArrayTag
 import java.util.UUID
 
 class KryptonFox(world: KryptonWorld) : KryptonAnimal(world, EntityTypes.FOX, ATTRIBUTES), Fox {
@@ -80,40 +77,12 @@ class KryptonFox(world: KryptonWorld) : KryptonAnimal(world, EntityTypes.FOX, AT
 
     override fun trusts(uuid: UUID): Boolean = uuid == firstTrusted || uuid == secondTrusted
 
-    override fun load(tag: CompoundTag) {
-        super.load(tag)
-        tag.getList("Trusted", IntArrayTag.ID).forEachIntArray { addTrustedId(it.toUUID()) }
-        isSleeping = tag.getBoolean("Sleeping")
-        if (tag.contains("Type")) foxType = FoxType.fromName(tag.getString("Type"))!!
-        isSitting = tag.getBoolean("Sitting")
-        isCrouching = tag.getBoolean("Crouching")
-    }
-
-    override fun save(): CompoundTag.Builder = super.save().apply {
-        list("Trusted") {
-            if (firstTrusted != null) addUUID(firstTrusted!!)
-            if (secondTrusted != null) addUUID(secondTrusted!!)
-        }
-        boolean("Sleeping", isSleeping)
-        string("Type", foxType.serialized)
-        boolean("Sitting", isSitting)
-        boolean("Crouching", isCrouching)
-    }
-
     override fun isFood(item: ItemStack): Boolean = ItemTags.FOX_FOOD.contains(item.type)
 
     private fun getFlag(flag: Int): Boolean = getFlag(MetadataKeys.FOX.FLAGS, flag)
 
     private fun setFlag(flag: Int, state: Boolean) {
         setFlag(MetadataKeys.FOX.FLAGS, flag, state)
-    }
-
-    private fun addTrustedId(uuid: UUID?) {
-        if (data[MetadataKeys.FOX.FIRST_TRUSTED] != null) {
-            data[MetadataKeys.FOX.SECOND_TRUSTED] = uuid
-        } else {
-            data[MetadataKeys.FOX.FIRST_TRUSTED] = uuid
-        }
     }
 
     companion object {

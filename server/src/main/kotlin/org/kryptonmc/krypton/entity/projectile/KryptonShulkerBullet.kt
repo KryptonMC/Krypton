@@ -22,37 +22,16 @@ import org.kryptonmc.api.entity.Entity
 import org.kryptonmc.api.entity.EntityTypes
 import org.kryptonmc.api.entity.projectile.ShulkerBullet
 import org.kryptonmc.api.util.Direction
-import org.kryptonmc.krypton.util.Directions
 import org.kryptonmc.krypton.world.KryptonWorld
-import org.kryptonmc.nbt.CompoundTag
 import java.util.UUID
 
 class KryptonShulkerBullet(world: KryptonWorld) : KryptonProjectile(world, EntityTypes.SHULKER_BULLET), ShulkerBullet {
 
-    private var targetId: UUID? = null
+    internal var targetId: UUID? = null
     override var steps: Int = 0
     override var movingDirection: Direction? = null
     override var target: Entity? = null
     override var targetDeltaX: Double = 0.0
     override var targetDeltaY: Double = 0.0
     override var targetDeltaZ: Double = 0.0
-
-    override fun load(tag: CompoundTag) {
-        super.load(tag)
-        steps = tag.getInt("Steps")
-        targetDeltaX = tag.getDouble("TXD")
-        targetDeltaY = tag.getDouble("TYD")
-        targetDeltaZ = tag.getDouble("TZD")
-        if (tag.contains("Dir", 99)) movingDirection = Directions.of3D(tag.getInt("Dir"))
-        if (tag.hasUUID("Target")) targetId = tag.getUUID("Target")
-    }
-
-    override fun save(): CompoundTag.Builder = super.save().apply {
-        int("Steps", steps)
-        double("TXD", targetDeltaX)
-        double("TYD", targetDeltaY)
-        double("TZD", targetDeltaZ)
-        if (target != null) uuid("Target", target!!.uuid)
-        if (movingDirection != null) int("Dir", movingDirection!!.ordinal)
-    }
 }

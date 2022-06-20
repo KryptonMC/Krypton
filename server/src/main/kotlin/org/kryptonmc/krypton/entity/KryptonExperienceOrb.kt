@@ -34,20 +34,5 @@ class KryptonExperienceOrb(world: KryptonWorld) : KryptonEntity(world, EntityTyp
     override var value: Int = 0
     override var following: KryptonPlayer? = null
 
-    override fun load(tag: CompoundTag) {
-        super.load(tag)
-        age = tag.getShort("Age").toInt()
-        count = tag.getInt("Count")
-        health = tag.getShort("Health").toInt()
-        value = tag.getShort("Value").toInt()
-    }
-
-    override fun save(): CompoundTag.Builder = super.save().apply {
-        short("Age", age.toShort())
-        int("Count", count)
-        short("Health", health.toShort())
-        short("Value", value.toShort())
-    }
-
     override fun getSpawnPacket(): Packet = PacketOutSpawnExperienceOrb(this)
 }

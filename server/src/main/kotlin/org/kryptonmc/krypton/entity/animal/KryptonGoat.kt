@@ -23,7 +23,6 @@ import org.kryptonmc.api.entity.animal.Goat
 import org.kryptonmc.api.entity.attribute.AttributeTypes
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.world.KryptonWorld
-import org.kryptonmc.nbt.CompoundTag
 
 class KryptonGoat(world: KryptonWorld) : KryptonAnimal(world, EntityTypes.GOAT, ATTRIBUTES), Goat {
 
@@ -37,15 +36,6 @@ class KryptonGoat(world: KryptonWorld) : KryptonAnimal(world, EntityTypes.GOAT, 
 
     override fun onAgeTransformation() {
         attribute(AttributeTypes.ATTACK_DAMAGE)?.baseValue = if (isBaby) 1.0 else 2.0
-    }
-
-    override fun load(tag: CompoundTag) {
-        super.load(tag)
-        canScream = tag.getBoolean("IsScreamingGoat")
-    }
-
-    override fun save(): CompoundTag.Builder = super.save().apply {
-        boolean("IsScreamingGoat", canScream)
     }
 
     companion object {

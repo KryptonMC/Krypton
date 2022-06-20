@@ -23,12 +23,11 @@ import org.kryptonmc.api.entity.EntityType
 import org.kryptonmc.api.entity.projectile.Projectile
 import org.kryptonmc.krypton.entity.KryptonEntity
 import org.kryptonmc.krypton.world.KryptonWorld
-import org.kryptonmc.nbt.CompoundTag
 import java.util.UUID
 
 abstract class KryptonProjectile(world: KryptonWorld, type: EntityType<out Projectile>) : KryptonEntity(world, type), Projectile {
 
-    private var ownerId: UUID? = null
+    internal var ownerId: UUID? = null
     final override var owner: Entity? = null
         get() {
             if (field != null) return field
@@ -45,17 +44,4 @@ abstract class KryptonProjectile(world: KryptonWorld, type: EntityType<out Proje
         }
     final override var hasLeftOwner: Boolean = false
     final override var hasBeenShot: Boolean = false
-
-    override fun load(tag: CompoundTag) {
-        super.load(tag)
-        if (tag.hasUUID("Owner")) ownerId = tag.getUUID("Owner")
-        hasLeftOwner = tag.getBoolean("LeftOwner")
-        hasBeenShot = tag.getBoolean("HasBeenShot")
-    }
-
-    override fun save(): CompoundTag.Builder = super.save().apply {
-        if (ownerId != null) uuid("Owner", ownerId!!)
-        if (hasLeftOwner) boolean("LeftOwner", true)
-        boolean("HasBeenShot", hasBeenShot)
-    }
 }

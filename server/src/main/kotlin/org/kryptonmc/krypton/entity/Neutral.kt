@@ -19,7 +19,6 @@
 package org.kryptonmc.krypton.entity
 
 import org.kryptonmc.api.entity.EntityTypes
-import org.kryptonmc.api.world.rule.GameRules
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.nbt.CompoundTag
@@ -45,22 +44,27 @@ interface Neutral {
         remainingAngerTime = 0
     }
 
-    fun loadAngerData(world: KryptonWorld, tag: CompoundTag) {
-        remainingAngerTime = tag.getInt("AngerTime")
-        if (!tag.hasUUID("AngryAt")) {
-            angerTarget = null
-            return
-        }
-        val targetId = tag.getUUID("AngryAt")
-        angerTarget = targetId
-        if (targetId == null) return
-        val target = world.entityManager[targetId] ?: return
-        if (target is KryptonMob) lastHurtByMob = target
-        if (target.type === EntityTypes.PLAYER) lastHurtByPlayer = target as KryptonPlayer
-    }
+    companion object {
 
-    fun saveAngerData(tag: CompoundTag.Builder) {
-        tag.int("AngerTime", remainingAngerTime)
-        if (angerTarget != null) tag.uuid("AngryAt", angerTarget!!)
+        @JvmStatic
+        fun <E> loadAngerData(entity: E, tag: CompoundTag) where E : KryptonEntity, E : Neutral {
+            entity.remainingAngerTime = tag.getInt("AngerTime")
+            if (!tag.hasUUID("AngryAt")) {
+                entity.angerTarget = null
+                return
+            }
+            val targetId = tag.getUUID("AngryAt")
+            entity.angerTarget = targetId
+            if (targetId == null) return
+            val target = entity.world.entityManager[targetId] ?: return
+            if (target is KryptonMob) entity.lastHurtByMob = target
+            if (target.type === EntityTypes.PLAYER) entity.lastHurtByPlayer = target as KryptonPlayer
+        }
+
+        @JvmStatic
+        fun saveAngerData(entity: Neutral, tag: CompoundTag.Builder) {
+            tag.int("AngerTime", entity.remainingAngerTime)
+            if (entity.angerTarget != null) tag.uuid("AngryAt", entity.angerTarget!!)
+        }
     }
 }

@@ -129,8 +129,7 @@ class EntityManager(val world: KryptonWorld) : AutoCloseable {
             error("Tried to load old chunk from version $version when data conversion is disabled!")
         }
 
-        val data = nbt.upgradeData(MCTypeRegistry.ENTITY_CHUNK, version)
-        data.getList("Entities", CompoundTag.ID).forEachCompound {
+        nbt.upgradeData(MCTypeRegistry.ENTITY_CHUNK, version).getList("Entities", CompoundTag.ID).forEachCompound {
             val id = it.getString("id")
             if (id.isBlank()) return@forEachCompound
             val key = try {
@@ -140,7 +139,7 @@ class EntityManager(val world: KryptonWorld) : AutoCloseable {
             }
             val type = Registries.ENTITY_TYPE[key]
             val entity = EntityFactory.create(type, world) ?: return@forEachCompound
-            entity.load(it)
+            EntityFactory.serializer(entity.type).load(entity, it)
             spawn(entity)
         }
     }
@@ -158,7 +157,7 @@ class EntityManager(val world: KryptonWorld) : AutoCloseable {
         }
         entities.forEach {
             if (it is KryptonPlayer) return@forEach // Do not save players in here.
-            entityList.add(it.saveWithPassengers().build())
+            entityList.add(EntityFactory.serializer(it.type).saveWithPassengers(it).build())
         }
         regionFileManager.write(chunk.x, chunk.z, root)
     }

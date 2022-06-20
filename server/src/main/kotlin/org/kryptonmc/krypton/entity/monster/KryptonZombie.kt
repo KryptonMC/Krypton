@@ -23,11 +23,10 @@ import org.kryptonmc.api.entity.attribute.AttributeTypes
 import org.kryptonmc.api.entity.monster.Zombie
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.world.KryptonWorld
-import org.kryptonmc.nbt.CompoundTag
 
 class KryptonZombie(world: KryptonWorld) : KryptonMonster(world, EntityTypes.ZOMBIE, ATTRIBUTES), Zombie {
 
-    private var conversionTime = 0
+    internal var conversionTime = 0
 
     override var isBaby: Boolean
         get() = data[MetadataKeys.ZOMBIE.BABY]
@@ -39,20 +38,6 @@ class KryptonZombie(world: KryptonWorld) : KryptonMonster(world, EntityTypes.ZOM
     init {
         data.add(MetadataKeys.ZOMBIE.BABY)
         data.add(MetadataKeys.ZOMBIE.CONVERTING)
-    }
-
-    override fun load(tag: CompoundTag) {
-        super.load(tag)
-        isBaby = tag.getBoolean("IsBaby")
-        if (tag.contains("DrownedConversionTime", 99) && tag.getInt("DrownedConversionTime") > -1) {
-            conversionTime = tag.getInt("DrownedConversionTime")
-            isConverting = true
-        }
-    }
-
-    override fun save(): CompoundTag.Builder = super.save().apply {
-        boolean("IsBaby", isBaby)
-        int("DrownedConversionTime", if (isConverting) conversionTime else -1)
     }
 
     companion object {

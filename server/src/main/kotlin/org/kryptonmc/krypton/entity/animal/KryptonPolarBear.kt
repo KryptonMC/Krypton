@@ -26,7 +26,6 @@ import org.kryptonmc.krypton.entity.Neutral
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.util.sample
 import org.kryptonmc.krypton.world.KryptonWorld
-import org.kryptonmc.nbt.CompoundTag
 import java.util.UUID
 import kotlin.random.Random
 
@@ -48,13 +47,6 @@ class KryptonPolarBear(world: KryptonWorld) : KryptonAnimal(world, EntityTypes.P
     }
 
     override fun isFood(item: ItemStack): Boolean = false
-
-    override fun load(tag: CompoundTag) {
-        super.load(tag)
-        loadAngerData(world, tag)
-    }
-
-    override fun save(): CompoundTag.Builder = super.save().apply { saveAngerData(this) }
 
     companion object {
 

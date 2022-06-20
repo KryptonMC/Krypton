@@ -1,0 +1,150 @@
+/*
+ * This file is part of the Krypton project, licensed under the GNU General Public License v3.0
+ *
+ * Copyright (C) 2021-2022 KryptonMC and the contributors of the Krypton project
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+package org.kryptonmc.krypton.entity.serializer.player
+
+import org.kryptonmc.api.entity.attribute.AttributeTypes
+import org.kryptonmc.api.event.player.ChangeGameModeEvent
+import org.kryptonmc.api.service.VanishService
+import org.kryptonmc.api.service.provide
+import org.kryptonmc.api.world.GameMode
+import org.kryptonmc.api.world.World
+import org.kryptonmc.krypton.KryptonPlatform
+import org.kryptonmc.krypton.KryptonServer
+import org.kryptonmc.krypton.entity.EntityFactory
+import org.kryptonmc.krypton.entity.metadata.MetadataKeys
+import org.kryptonmc.krypton.entity.player.KryptonPlayer
+import org.kryptonmc.krypton.entity.serializer.EntitySerializer
+import org.kryptonmc.krypton.entity.serializer.LivingEntitySerializer
+import org.kryptonmc.krypton.service.KryptonVanishService
+import org.kryptonmc.krypton.util.serialization.Codecs
+import org.kryptonmc.krypton.util.serialization.encode
+import org.kryptonmc.nbt.CompoundTag
+import org.kryptonmc.nbt.IntTag
+import org.kryptonmc.nbt.StringTag
+import org.spongepowered.math.vector.Vector3i
+import java.time.Instant
+
+object PlayerSerializer : EntitySerializer<KryptonPlayer> {
+
+    private val VANISH_SERVICE by lazy { KryptonServer.get().servicesManager.provide<VanishService>()!! }
+
+    override fun load(entity: KryptonPlayer, data: CompoundTag) {
+        LivingEntitySerializer.load(entity, data)
+        entity.updateGameMode(GameMode.fromId(data.getInt("playerGameType")) ?: GameMode.SURVIVAL, ChangeGameModeEvent.Cause.LOAD)
+        if (data.contains("previousPlayerGameType", IntTag.ID)) entity.oldGameMode = GameMode.fromId(data.getInt("previousPlayerGameType"))
+        entity.inventory.load(data.getList("Inventory", CompoundTag.ID))
+        entity.inventory.heldSlot = data.getInt("SelectedItemSlot")
+        entity.data[MetadataKeys.PLAYER.SCORE] = data.getInt("Score")
+        entity.foodLevel = data.getInt("foodLevel")
+        entity.foodTickTimer = data.getInt("foodTickTimer")
+        entity.foodExhaustionLevel = data.getFloat("foodExhaustionLevel")
+        entity.foodSaturationLevel = data.getFloat("foodSaturationLevel")
+
+        if (data.contains("abilities", CompoundTag.ID)) {
+            val abilitiesData = data.getCompound("abilities")
+            entity.isInvulnerable = abilitiesData.getBoolean("invulnerable")
+            entity.isFlying = abilitiesData.getBoolean("flying")
+            entity.canFly = abilitiesData.getBoolean("mayfly")
+            entity.canBuild = abilitiesData.getBoolean("mayBuild")
+            entity.canInstantlyBuild = abilitiesData.getBoolean("instabuild")
+            entity.walkingSpeed = abilitiesData.getFloat("walkSpeed")
+            entity.flyingSpeed = abilitiesData.getFloat("flySpeed")
+        }
+        entity.attribute(AttributeTypes.MOVEMENT_SPEED)!!.baseValue = entity.walkingSpeed.toDouble()
+
+        // NBT data for entities sitting on the player's shoulders, e.g. parrots
+        if (data.contains("ShoulderEntityLeft", CompoundTag.ID)) {
+            entity.data[MetadataKeys.PLAYER.LEFT_SHOULDER] = data.getCompound("ShoulderEntityLeft")
+        }
+        if (data.contains("ShoulderEntityRight", CompoundTag.ID)) {
+            entity.data[MetadataKeys.PLAYER.RIGHT_SHOULDER] = data.getCompound("ShoulderEntityRight")
+        }
+
+        // Respawn data
+        if (data.contains("SpawnX", 99) && data.contains("SpawnY", 99) && data.contains("SpawnZ", 99)) {
+            entity.respawnPosition = Vector3i(data.getInt("SpawnX"), data.getInt("SpawnY"), data.getInt("SpawnZ"))
+            entity.respawnForced = data.getBoolean("SpawnForced")
+            entity.respawnAngle = data.getFloat("SpawnAngle")
+            if (data.contains("SpawnDimension", StringTag.ID)) {
+                entity.respawnDimension = Codecs.DIMENSION.decodeNullable(data["SpawnDimension"] as StringTag) ?: World.OVERWORLD
+            }
+        }
+
+        if (data.contains("krypton", CompoundTag.ID)) {
+            entity.hasJoinedBefore = true
+            val kryptonData = data.getCompound("krypton")
+            if (VANISH_SERVICE is KryptonVanishService && kryptonData.getBoolean("vanished")) VANISH_SERVICE.vanish(entity)
+            entity.firstJoined = Instant.ofEpochMilli(kryptonData.getLong("firstJoined"))
+        }
+    }
+
+    override fun save(entity: KryptonPlayer): CompoundTag.Builder = LivingEntitySerializer.save(entity).apply {
+        int("playerGameType", entity.gameMode.ordinal)
+        if (entity.oldGameMode != null) int("previousPlayerGameType", entity.oldGameMode!!.ordinal)
+
+        int("DataVersion", KryptonPlatform.worldVersion)
+        put("Inventory", entity.inventory.save())
+        int("SelectedItemSlot", entity.inventory.heldSlot)
+        int("Score", entity.data[MetadataKeys.PLAYER.SCORE])
+        int("foodLevel", entity.foodLevel)
+        int("foodTickTimer", entity.foodTickTimer)
+        float("foodExhaustionLevel", entity.foodExhaustionLevel)
+        float("foodSaturationLevel", entity.foodSaturationLevel)
+
+        compound("abilities") {
+            boolean("flying", entity.isGliding)
+            boolean("invulnerable", entity.isInvulnerable)
+            boolean("mayfly", entity.canFly)
+            boolean("mayBuild", entity.canBuild)
+            boolean("instabuild", entity.canInstantlyBuild)
+            float("walkSpeed", entity.walkingSpeed)
+            float("flySpeed", entity.flyingSpeed)
+        }
+
+        val leftShoulder = entity.data[MetadataKeys.PLAYER.LEFT_SHOULDER]
+        val rightShoulder = entity.data[MetadataKeys.PLAYER.RIGHT_SHOULDER]
+        if (leftShoulder.isNotEmpty()) put("ShoulderEntityLeft", leftShoulder)
+        if (rightShoulder.isNotEmpty()) put("ShoulderEntityRight", rightShoulder)
+
+        string("Dimension", entity.dimension.location.asString())
+        entity.respawnPosition?.let { position ->
+            int("SpawnX", position.x())
+            int("SpawnY", position.y())
+            int("SpawnZ", position.z())
+            float("SpawnAngle", entity.respawnAngle)
+            boolean("SpawnForced", entity.respawnForced)
+            encode(Codecs.DIMENSION, "SpawnDimension", entity.respawnDimension)
+        }
+
+        val rootVehicle = entity.rootVehicle
+        val vehicle = entity.vehicle
+        if (vehicle != null && rootVehicle !== entity && rootVehicle.hasExactlyOnePlayerPassenger) {
+            compound("RootVehicle") {
+                uuid("Attach", vehicle.uuid)
+                put("Entity", EntityFactory.serializer(rootVehicle.type).save(rootVehicle).build())
+            }
+        }
+
+        compound("krypton") {
+            if (VANISH_SERVICE is KryptonVanishService) boolean("vanished", entity.isVanished)
+            long("firstJoined", entity.firstJoined.toEpochMilli())
+            long("lastJoined", entity.lastJoined.toEpochMilli())
+        }
+    }
+}

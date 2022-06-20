@@ -26,8 +26,6 @@ import org.kryptonmc.api.item.ItemStack
 import org.kryptonmc.api.item.ItemTypes
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.world.KryptonWorld
-import org.kryptonmc.nbt.CompoundTag
-import org.kryptonmc.nbt.StringTag
 
 class KryptonPanda(world: KryptonWorld) : KryptonAnimal(world, EntityTypes.PANDA, ATTRIBUTES), Panda {
 
@@ -85,17 +83,6 @@ class KryptonPanda(world: KryptonWorld) : KryptonAnimal(world, EntityTypes.PANDA
     }
 
     override fun isFood(item: ItemStack): Boolean = item.type === ItemTypes.BAMBOO
-
-    override fun load(tag: CompoundTag) {
-        super.load(tag)
-        if (tag.contains("MainGene", StringTag.ID)) knownGene = PandaGene.fromName(tag.getString("MainGene"))!!
-        if (tag.contains("HiddenGene", StringTag.ID)) hiddenGene = PandaGene.fromName(tag.getString("HiddenGene"))!!
-    }
-
-    override fun save(): CompoundTag.Builder = super.save().apply {
-        string("MainGene", knownGene.serialized)
-        string("HiddenGene", hiddenGene.serialized)
-    }
 
     private fun getFlag(flag: Int): Boolean = getFlag(MetadataKeys.PANDA.FLAGS, flag)
 

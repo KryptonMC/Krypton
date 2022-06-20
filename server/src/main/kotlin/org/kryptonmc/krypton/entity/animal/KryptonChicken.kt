@@ -24,7 +24,6 @@ import org.kryptonmc.api.entity.attribute.AttributeTypes
 import org.kryptonmc.api.item.ItemStack
 import org.kryptonmc.api.item.ItemTypes
 import org.kryptonmc.krypton.world.KryptonWorld
-import org.kryptonmc.nbt.CompoundTag
 import kotlin.random.Random
 
 class KryptonChicken(world: KryptonWorld) : KryptonAnimal(world, EntityTypes.CHICKEN, ATTRIBUTES), Chicken {
@@ -33,17 +32,6 @@ class KryptonChicken(world: KryptonWorld) : KryptonAnimal(world, EntityTypes.CHI
     override var isJockey: Boolean = false
 
     override fun isFood(item: ItemStack): Boolean = FOOD_ITEMS.contains(item.type)
-
-    override fun load(tag: CompoundTag) {
-        super.load(tag)
-        isJockey = tag.getBoolean("IsChickenJockey")
-        if (tag.contains("EggLayTime")) eggTime = tag.getInt("EggLayTime")
-    }
-
-    override fun save(): CompoundTag.Builder = super.save().apply {
-        boolean("IsChickenJockey", isJockey)
-        int("EggLayTime", eggTime)
-    }
 
     companion object {
 

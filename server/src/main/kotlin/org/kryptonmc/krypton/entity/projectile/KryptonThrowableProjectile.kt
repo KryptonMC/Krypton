@@ -26,7 +26,6 @@ import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.item.KryptonItemStack
 import org.kryptonmc.krypton.item.meta.KryptonItemMeta
 import org.kryptonmc.krypton.world.KryptonWorld
-import org.kryptonmc.nbt.CompoundTag
 
 abstract class KryptonThrowableProjectile(
     world: KryptonWorld,
@@ -43,16 +42,6 @@ abstract class KryptonThrowableProjectile(
 
     init {
         data.add(MetadataKeys.THROWABLE_PROJECTILE.ITEM)
-    }
-
-    final override fun load(tag: CompoundTag) {
-        super.load(tag)
-        item = KryptonItemStack(tag.getCompound("Item"))
-    }
-
-    final override fun save(): CompoundTag.Builder = super.save().apply {
-        val item = item
-        if (!item.isEmpty()) put("Item", item.save(CompoundTag.builder()).build())
     }
 
     final override fun asItem(): ItemStack {

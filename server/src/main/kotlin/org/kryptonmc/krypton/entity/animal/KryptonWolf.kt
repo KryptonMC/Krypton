@@ -29,7 +29,6 @@ import org.kryptonmc.krypton.entity.Neutral
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.util.randomValue
 import org.kryptonmc.krypton.world.KryptonWorld
-import org.kryptonmc.nbt.CompoundTag
 import java.util.UUID
 import kotlin.random.Random
 
@@ -93,17 +92,6 @@ class KryptonWolf(world: KryptonWorld) : KryptonTamable(world, EntityTypes.WOLF,
         if (!target.isTame) return false
         if (target.isSitting) return false
         return inLove && target.inLove
-    }
-
-    override fun load(tag: CompoundTag) {
-        super.load(tag)
-        if (tag.contains("CollarColor", 99)) data[MetadataKeys.WOLF.COLLAR_COLOR] = tag.getInt("CollarColor")
-        loadAngerData(world, tag)
-    }
-
-    override fun save(): CompoundTag.Builder = super.save().apply {
-        byte("CollarColor", data[MetadataKeys.WOLF.COLLAR_COLOR].toByte())
-        saveAngerData(this)
     }
 
     companion object {

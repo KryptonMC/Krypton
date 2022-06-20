@@ -24,21 +24,19 @@ import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.item.KryptonItemStack
 import org.kryptonmc.krypton.util.FixedList
 import org.kryptonmc.krypton.world.KryptonWorld
-import org.kryptonmc.nbt.CompoundTag
-import org.kryptonmc.nbt.FloatTag
 import org.spongepowered.math.vector.Vector3f
 
 class KryptonArmorStand(world: KryptonWorld) : KryptonLivingEntity(world, EntityTypes.ARMOR_STAND, ATTRIBUTES), ArmorStand, KryptonEquipable {
 
-    private val handItems = FixedList(2, KryptonItemStack.EMPTY)
-    private val armorItems = FixedList(4, KryptonItemStack.EMPTY)
-    private var disabledSlots = 0
+    internal val armorItems = FixedList(4, KryptonItemStack.EMPTY)
+    internal val handItems = FixedList(2, KryptonItemStack.EMPTY)
+    internal var disabledSlots = 0
 
     override val handSlots: Iterable<KryptonItemStack>
         get() = handItems
     override val armorSlots: Iterable<KryptonItemStack>
         get() = armorItems
-    private val hasPhysics: Boolean
+    internal val hasPhysics: Boolean
         get() = !isMarker && hasGravity
 
     override var isSmall: Boolean
@@ -94,69 +92,9 @@ class KryptonArmorStand(world: KryptonWorld) : KryptonLivingEntity(world, Entity
         }
     }
 
-    override fun load(tag: CompoundTag) {
-        super.load(tag)
-        loadItems(tag, "ArmorItems", armorItems)
-        loadItems(tag, "HandItems", handItems)
-
-        isInvisible = tag.getBoolean("Invisible")
-        isSmall = tag.getBoolean("Small")
-        hasArms = tag.getBoolean("ShowArms")
-        disabledSlots = tag.getInt("DisabledSlots")
-        hasBasePlate = !tag.getBoolean("NoBasePlate")
-        isMarker = tag.getBoolean("Marker")
-        noPhysics = !hasPhysics
-
-        if (tag.contains("Pose", CompoundTag.ID)) {
-            val headRotation = tag.getList("Head", FloatTag.ID)
-            headPose = if (headRotation.isEmpty()) DEFAULT_HEAD_ROTATION else headRotation.readRotation()
-            val bodyRotation = tag.getList("Body", FloatTag.ID)
-            bodyPose = if (bodyRotation.isEmpty()) DEFAULT_BODY_ROTATION else bodyRotation.readRotation()
-            val leftArmRotation = tag.getList("LeftArm", FloatTag.ID)
-            leftArmPose = if (leftArmRotation.isEmpty()) DEFAULT_LEFT_ARM_ROTATION else leftArmRotation.readRotation()
-            val rightArmRotation = tag.getList("RightArm", FloatTag.ID)
-            rightArmPose = if (rightArmRotation.isEmpty()) DEFAULT_RIGHT_ARM_ROTATION else rightArmRotation.readRotation()
-            val leftLegRotation = tag.getList("LeftLeg", FloatTag.ID)
-            leftLegPose = if (leftLegRotation.isEmpty()) DEFAULT_LEFT_LEG_ROTATION else leftLegRotation.readRotation()
-            val rightLegRotation = tag.getList("RightLeg", FloatTag.ID)
-            rightLegPose = if (rightLegRotation.isEmpty()) DEFAULT_RIGHT_LEG_ROTATION else rightLegRotation.readRotation()
-        }
-    }
-
-    override fun save(): CompoundTag.Builder = super.save().apply {
-        put("ArmorItems", saveItems(armorItems))
-        put("HandItems", saveItems(handItems))
-
-        boolean("Invisible", isInvisible)
-        boolean("Small", isSmall)
-        boolean("ShowArms", hasArms)
-        int("DisabledSlots", disabledSlots)
-        boolean("NoBasePlate", !hasBasePlate)
-        if (isMarker) boolean("Marker", isMarker)
-
-        compound("Pose") {
-            if (headPose != DEFAULT_HEAD_ROTATION) rotation("Head", headPose)
-            if (bodyPose != DEFAULT_BODY_ROTATION) rotation("Body", bodyPose)
-            if (leftArmPose != DEFAULT_LEFT_ARM_ROTATION) rotation("LeftArm", leftArmPose)
-            if (rightArmPose != DEFAULT_RIGHT_ARM_ROTATION) rotation("RightArm", rightArmPose)
-            if (leftLegPose != DEFAULT_LEFT_LEG_ROTATION) rotation("LeftLeg", leftLegPose)
-            if (rightLegPose != DEFAULT_RIGHT_LEG_ROTATION) rotation("RightLeg", rightLegPose)
-        }
-    }
-
     private fun getFlag(flag: Int): Boolean = getFlag(MetadataKeys.ARMOR_STAND.FLAGS, flag)
 
     private fun setFlag(flag: Int, state: Boolean) {
         setFlag(MetadataKeys.ARMOR_STAND.FLAGS, flag, state)
-    }
-
-    companion object {
-
-        private val DEFAULT_HEAD_ROTATION = MetadataKeys.ARMOR_STAND.HEAD_ROTATION.default
-        private val DEFAULT_BODY_ROTATION = MetadataKeys.ARMOR_STAND.BODY_ROTATION.default
-        private val DEFAULT_LEFT_ARM_ROTATION = MetadataKeys.ARMOR_STAND.LEFT_ARM_ROTATION.default
-        private val DEFAULT_RIGHT_ARM_ROTATION = MetadataKeys.ARMOR_STAND.RIGHT_ARM_ROTATION.default
-        private val DEFAULT_LEFT_LEG_ROTATION = MetadataKeys.ARMOR_STAND.LEFT_LEG_ROTATION.default
-        private val DEFAULT_RIGHT_LEG_ROTATION = MetadataKeys.ARMOR_STAND.RIGHT_LEG_ROTATION.default
     }
 }

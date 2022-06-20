@@ -61,7 +61,6 @@ import org.kryptonmc.api.world.Difficulty
 import org.kryptonmc.api.world.GameMode
 import org.kryptonmc.api.world.World
 import org.kryptonmc.api.world.dimension.DimensionType
-import org.kryptonmc.krypton.KryptonPlatform
 import org.kryptonmc.krypton.adventure.BossBarManager
 import org.kryptonmc.krypton.adventure.toItemStack
 import org.kryptonmc.krypton.auth.KryptonGameProfile
@@ -104,19 +103,13 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutTitleTimes
 import org.kryptonmc.krypton.packet.out.play.PacketOutUnloadChunk
 import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateHealth
 import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateViewPosition
-import org.kryptonmc.krypton.service.KryptonVanishService
 import org.kryptonmc.krypton.statistic.KryptonStatisticsTracker
 import org.kryptonmc.krypton.util.Directions
 import org.kryptonmc.krypton.util.InteractionResult
 import org.kryptonmc.krypton.util.Positioning
-import org.kryptonmc.krypton.util.serialization.Codecs
-import org.kryptonmc.krypton.util.serialization.encode
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.krypton.world.chunk.ChunkPosition
 import org.kryptonmc.krypton.world.scoreboard.KryptonScoreboard
-import org.kryptonmc.nbt.CompoundTag
-import org.kryptonmc.nbt.IntTag
-import org.kryptonmc.nbt.StringTag
 import org.spongepowered.math.vector.Vector3d
 import org.spongepowered.math.vector.Vector3i
 import java.net.InetSocketAddress
@@ -273,10 +266,10 @@ class KryptonPlayer(
 
     val blockHandler: PlayerBlockHandler = PlayerBlockHandler(this)
 
-    private var respawnPosition: Vector3i? = null
-    private var respawnForced = false
-    private var respawnAngle = 0F
-    private var respawnDimension = World.OVERWORLD
+    internal var respawnPosition: Vector3i? = null
+    internal var respawnForced = false
+    internal var respawnAngle = 0F
+    internal var respawnDimension = World.OVERWORLD
 
     private var previousCentralX = 0
     private var previousCentralZ = 0
@@ -300,7 +293,7 @@ class KryptonPlayer(
             session.send(PacketOutUpdateHealth(health, foodLevel, foodSaturationLevel))
         }
 
-    private var foodTickTimer = 0
+    internal var foodTickTimer = 0
 
     // 0 is the default vanilla food exhaustion level
     override var foodExhaustionLevel: Float = 0f
@@ -316,21 +309,12 @@ class KryptonPlayer(
     override var absorption: Float
         get() = data[MetadataKeys.PLAYER.ADDITIONAL_HEARTS]
         set(value) = data.set(MetadataKeys.PLAYER.ADDITIONAL_HEARTS, value)
-    private var score: Int
-        get() = data[MetadataKeys.PLAYER.SCORE]
-        set(value) = data.set(MetadataKeys.PLAYER.SCORE, value)
     var skinSettings: Byte
         get() = data[MetadataKeys.PLAYER.SKIN_FLAGS]
         set(value) = data.set(MetadataKeys.PLAYER.SKIN_FLAGS, value)
     override var mainHand: MainHand
         get() = if (data[MetadataKeys.PLAYER.MAIN_HAND] == 0.toByte()) MainHand.LEFT else MainHand.RIGHT
         set(value) = data.set(MetadataKeys.PLAYER.MAIN_HAND, if (value == MainHand.LEFT) 0 else 1)
-    private var leftShoulder: CompoundTag
-        get() = data[MetadataKeys.PLAYER.LEFT_SHOULDER]
-        set(value) = data.set(MetadataKeys.PLAYER.LEFT_SHOULDER, value)
-    private var rightShoulder: CompoundTag
-        get() = data[MetadataKeys.PLAYER.RIGHT_SHOULDER]
-        set(value) = data.set(MetadataKeys.PLAYER.RIGHT_SHOULDER, value)
 
     init {
         data.add(MetadataKeys.PLAYER.ADDITIONAL_HEARTS)
@@ -375,104 +359,6 @@ class KryptonPlayer(
         if (slot.type == EquipmentSlot.Type.ARMOR) {
             inventory.armor[slot.index] = item
             return
-        }
-    }
-
-    override fun load(tag: CompoundTag) {
-        super.load(tag)
-        updateGameMode(GameMode.fromId(tag.getInt("playerGameType")) ?: GameMode.SURVIVAL, ChangeGameModeEvent.Cause.LOAD)
-        if (tag.contains("previousPlayerGameType", IntTag.ID)) oldGameMode = GameMode.fromId(tag.getInt("previousPlayerGameType"))
-        inventory.load(tag.getList("Inventory", CompoundTag.ID))
-        inventory.heldSlot = tag.getInt("SelectedItemSlot")
-        score = tag.getInt("Score")
-        foodLevel = tag.getInt("foodLevel")
-        foodTickTimer = tag.getInt("foodTickTimer")
-        foodExhaustionLevel = tag.getFloat("foodExhaustionLevel")
-        foodSaturationLevel = tag.getFloat("foodSaturationLevel")
-
-        if (tag.contains("abilities", CompoundTag.ID)) {
-            val abilitiesData = tag.getCompound("abilities")
-            isInvulnerable = abilitiesData.getBoolean("invulnerable")
-            isFlying = abilitiesData.getBoolean("flying")
-            canFly = abilitiesData.getBoolean("mayfly")
-            canBuild = abilitiesData.getBoolean("mayBuild")
-            canInstantlyBuild = abilitiesData.getBoolean("instabuild")
-            walkingSpeed = abilitiesData.getFloat("walkSpeed")
-            flyingSpeed = abilitiesData.getFloat("flySpeed")
-        }
-        attribute(AttributeTypes.MOVEMENT_SPEED)!!.baseValue = walkingSpeed.toDouble()
-
-        // NBT data for entities sitting on the player's shoulders, e.g. parrots
-        if (tag.contains("ShoulderEntityLeft", CompoundTag.ID)) leftShoulder = tag.getCompound("ShoulderEntityLeft")
-        if (tag.contains("ShoulderEntityRight", CompoundTag.ID)) rightShoulder = tag.getCompound("ShoulderEntityRight")
-
-        // Respawn data
-        if (tag.contains("SpawnX", 99) && tag.contains("SpawnY", 99) && tag.contains("SpawnZ", 99)) {
-            respawnPosition = Vector3i(tag.getInt("SpawnX"), tag.getInt("SpawnY"), tag.getInt("SpawnZ"))
-            respawnForced = tag.getBoolean("SpawnForced")
-            respawnAngle = tag.getFloat("SpawnAngle")
-            if (tag.contains("SpawnDimension", StringTag.ID)) {
-                respawnDimension = Codecs.DIMENSION.decodeNullable(tag["SpawnDimension"] as StringTag) ?: World.OVERWORLD
-            }
-        }
-
-        if (tag.contains("krypton", CompoundTag.ID)) {
-            hasJoinedBefore = true
-            val kryptonData = tag.getCompound("krypton")
-            if (vanishService is KryptonVanishService && kryptonData.getBoolean("vanished")) vanishService.vanish(this)
-            firstJoined = Instant.ofEpochMilli(kryptonData.getLong("firstJoined"))
-        }
-    }
-
-    override fun save(): CompoundTag.Builder = super.save().apply {
-        int("playerGameType", gameMode.ordinal)
-        if (oldGameMode != null) int("previousPlayerGameType", oldGameMode!!.ordinal)
-
-        int("DataVersion", KryptonPlatform.worldVersion)
-        put("Inventory", inventory.save())
-        int("SelectedItemSlot", inventory.heldSlot)
-        int("Score", score)
-        int("foodLevel", foodLevel)
-        int("foodTickTimer", foodTickTimer)
-        float("foodExhaustionLevel", foodExhaustionLevel)
-        float("foodSaturationLevel", foodSaturationLevel)
-
-        compound("abilities") {
-            boolean("flying", isGliding)
-            boolean("invulnerable", isInvulnerable)
-            boolean("mayfly", canFly)
-            boolean("mayBuild", canBuild)
-            boolean("instabuild", canInstantlyBuild)
-            float("walkSpeed", walkingSpeed)
-            float("flySpeed", flyingSpeed)
-        }
-
-        if (leftShoulder.isNotEmpty()) put("ShoulderEntityLeft", leftShoulder)
-        if (rightShoulder.isNotEmpty()) put("ShoulderEntityRight", rightShoulder)
-
-        string("Dimension", dimension.location.asString())
-        respawnPosition?.let { position ->
-            int("SpawnX", position.x())
-            int("SpawnY", position.y())
-            int("SpawnZ", position.z())
-            float("SpawnAngle", respawnAngle)
-            boolean("SpawnForced", respawnForced)
-            encode(Codecs.DIMENSION, "SpawnDimension", respawnDimension)
-        }
-
-        val rootVehicle = rootVehicle
-        val vehicle = vehicle
-        if (vehicle != null && rootVehicle !== this@KryptonPlayer && rootVehicle.hasExactlyOnePlayerPassenger) {
-            compound("RootVehicle") {
-                uuid("Attach", vehicle.uuid)
-                put("Entity", rootVehicle.save().build())
-            }
-        }
-
-        compound("krypton") {
-            if (vanishService is KryptonVanishService) boolean("vanished", isVanished)
-            long("firstJoined", firstJoined.toEpochMilli())
-            long("lastJoined", lastJoined.toEpochMilli())
         }
     }
 

@@ -42,6 +42,7 @@ import org.kryptonmc.api.resource.ResourcePack
 import org.kryptonmc.api.world.GameMode
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.commands.KryptonPermission
+import org.kryptonmc.krypton.entity.EntityFactory
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.inventory.KryptonPlayerInventory
 import org.kryptonmc.krypton.item.handler
@@ -386,7 +387,7 @@ class PlayHandler(override val server: KryptonServer, override val session: Sess
     private fun handleEntityNBTQuery(packet: PacketInEntityNBTQuery) {
         if (!player.hasPermission(KryptonPermission.ENTITY_QUERY.node)) return
         val entity = player.world.entityManager[packet.entityId] ?: return
-        session.send(PacketOutNBTQueryResponse(packet.transactionId, entity.saveWithPassengers().build()))
+        session.send(PacketOutNBTQueryResponse(packet.transactionId, EntityFactory.serializer(entity.type).saveWithPassengers(entity).build()))
     }
 
     private fun handleResourcePackStatus(packet: PacketInResourcePackStatus) {

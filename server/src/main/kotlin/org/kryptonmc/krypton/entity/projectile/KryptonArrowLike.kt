@@ -18,24 +18,18 @@
  */
 package org.kryptonmc.krypton.entity.projectile
 
-import net.kyori.adventure.key.Key
 import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.effect.sound.SoundEvent
 import org.kryptonmc.api.effect.sound.SoundEvents
 import org.kryptonmc.api.entity.EntityType
 import org.kryptonmc.api.entity.projectile.ArrowLike
-import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.world.KryptonWorld
-import org.kryptonmc.krypton.world.block.toBlock
-import org.kryptonmc.krypton.world.block.toNBT
-import org.kryptonmc.nbt.CompoundTag
-import org.kryptonmc.nbt.StringTag
 
 abstract class KryptonArrowLike(
     world: KryptonWorld,
     type: EntityType<out ArrowLike>,
-    private val defaultHitGroundSound: SoundEvent = SoundEvents.ARROW_HIT
+    defaultHitGroundSound: SoundEvent = SoundEvents.ARROW_HIT
 ) : KryptonProjectile(world, type), ArrowLike {
 
     final override var damage: Double = 2.0
@@ -67,45 +61,9 @@ abstract class KryptonArrowLike(
         data.add(MetadataKeys.ARROW_LIKE.PIERCING_LEVEL)
     }
 
-    override fun load(tag: CompoundTag) {
-        super.load(tag)
-        isCritical = tag.getBoolean("crit")
-        if (tag.contains("damage", 99)) damage = tag.getDouble("damage")
-        if (tag.contains("inBlockState", CompoundTag.ID)) stuckInBlock = tag.getCompound("inBlockState").toBlock()
-        isInGround = tag.getBoolean("inGround")
-        life = tag.getShort("life").toInt()
-
-        val pickupOrdinal = tag.getInt("pickup")
-        val pickupIndex = if (pickupOrdinal in PICKUP_VALUES.indices) pickupOrdinal else 0
-        pickup = ArrowLike.Pickup.values()[pickupIndex]
-        piercingLevel = tag.getByte("PierceLevel").toInt()
-        shakeTime = tag.getByte("shake").toInt() and 255
-        wasShotFromCrossbow = tag.getBoolean("ShotFromCrossbow")
-
-        if (tag.contains("SoundEvent", StringTag.ID)) sound = Registries.SOUND_EVENT[Key.key(tag.getString("SoundEvent"))] ?: defaultHitGroundSound
-    }
-
-    override fun save(): CompoundTag.Builder = super.save().apply {
-        boolean("crit", isCritical)
-        double("damage", damage)
-        if (stuckInBlock != null) put("inBlockState", stuckInBlock!!.toNBT())
-        boolean("inGround", isInGround)
-        short("life", life.toShort())
-        byte("pickup", pickup.ordinal.toByte())
-        byte("PierceLevel", piercingLevel.toByte())
-        byte("shake", shakeTime.toByte())
-        boolean("ShotFromCrossbow", wasShotFromCrossbow)
-        string("SoundEvent", sound.key().asString())
-    }
-
     private fun getFlag(flag: Int): Boolean = getFlag(MetadataKeys.ARROW_LIKE.FLAGS, flag)
 
     private fun setFlag(flag: Int, value: Boolean) {
         setFlag(MetadataKeys.ARROW_LIKE.FLAGS, flag, value)
-    }
-
-    companion object {
-
-        private val PICKUP_VALUES = ArrowLike.Pickup.values()
     }
 }
