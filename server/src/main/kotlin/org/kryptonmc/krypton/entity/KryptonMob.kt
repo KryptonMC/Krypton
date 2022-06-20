@@ -58,23 +58,14 @@ abstract class KryptonMob(
     open var target: KryptonLivingEntity? = null
 
     final override var hasAI: Boolean
-        get() = data[MetadataKeys.MOB.FLAGS].toInt() and 1 == 0
-        set(value) {
-            val flags = data[MetadataKeys.MOB.FLAGS].toInt()
-            data[MetadataKeys.MOB.FLAGS] = (if (value) flags or 1 else flags and -2).toByte()
-        }
+        get() = getFlag(0)
+        set(value) = setFlag(0, value)
     final override var mainHand: MainHand
-        get() = if (data[MetadataKeys.MOB.FLAGS].toInt() and 2 != 0) MainHand.LEFT else MainHand.RIGHT
-        set(value) {
-            val flags = data[MetadataKeys.MOB.FLAGS].toInt()
-            data[MetadataKeys.MOB.FLAGS] = (if (value == MainHand.LEFT) flags or 1 else flags and -2).toByte()
-        }
+        get() = if (getFlag(1)) MainHand.LEFT else MainHand.RIGHT
+        set(value) = setFlag(1, value == MainHand.LEFT)
     final override var isAggressive: Boolean
-        get() = data[MetadataKeys.MOB.FLAGS].toInt() and 4 != 0
-        set(value) {
-            val flags = data[MetadataKeys.MOB.FLAGS].toInt()
-            data[MetadataKeys.MOB.FLAGS] = (if (value) flags or 4 else flags and -5).toByte()
-        }
+        get() = getFlag(2)
+        set(value) = setFlag(2, value)
 
     init {
         data.add(MetadataKeys.MOB.FLAGS)
@@ -127,8 +118,10 @@ abstract class KryptonMob(
         if (!hasAI) boolean("NoAI", true)
     }
 
-    protected open fun mobInteract(player: KryptonPlayer, hand: Hand): InteractionResult = InteractionResult.PASS
+    // TODO: Separate mob interactions
+    //protected open fun mobInteract(player: KryptonPlayer, hand: Hand): InteractionResult = InteractionResult.PASS
 
+    /*
     final override fun interact(player: KryptonPlayer, hand: Hand): InteractionResult {
         if (!isAlive) return InteractionResult.PASS
         var result = handleImportantInteractions(player, hand)
@@ -147,6 +140,13 @@ abstract class KryptonMob(
         }
         // TODO: Handle spawn egg
         return InteractionResult.PASS
+    }
+    */
+
+    private fun getFlag(flag: Int): Boolean = getFlag(MetadataKeys.MOB.FLAGS, flag)
+
+    private fun setFlag(flag: Int, state: Boolean) {
+        setFlag(MetadataKeys.MOB.FLAGS, flag, state)
     }
 
     companion object {

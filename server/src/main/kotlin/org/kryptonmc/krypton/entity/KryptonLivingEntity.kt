@@ -100,14 +100,14 @@ abstract class KryptonLivingEntity(
         }
 
     final override var isUsingItem: Boolean
-        get() = data[MetadataKeys.LIVING.FLAGS].toInt() and 1 > 0
-        set(value) = setLivingFlag(1, value)
+        get() = getLivingFlag(0)
+        set(value) = setLivingFlag(0, value)
     final override var hand: Hand
-        get() = if (data[MetadataKeys.LIVING.FLAGS].toInt() and 2 > 0) Hand.OFF else Hand.MAIN
-        set(value) = setLivingFlag(2, value == Hand.OFF)
+        get() = if (getLivingFlag(1)) Hand.OFF else Hand.MAIN
+        set(value) = setLivingFlag(1, value == Hand.OFF)
     final override var isInRiptideSpinAttack: Boolean
-        get() = data[MetadataKeys.LIVING.FLAGS].toInt() and 4 > 0
-        set(value) = setLivingFlag(4, value)
+        get() = getLivingFlag(2)
+        set(value) = setLivingFlag(2, value)
     override var health: Float
         get() = data[MetadataKeys.LIVING.HEALTH]
         set(value) = data.set(MetadataKeys.LIVING.HEALTH, value)
@@ -228,9 +228,10 @@ abstract class KryptonLivingEntity(
 
     override fun getSpawnPacket(): Packet = PacketOutSpawnLivingEntity(this)
 
+    private fun getLivingFlag(flag: Int): Boolean = getFlag(MetadataKeys.LIVING.FLAGS, flag)
+
     private fun setLivingFlag(flag: Int, state: Boolean) {
-        val flags = data[MetadataKeys.LIVING.FLAGS].toInt()
-        data[MetadataKeys.LIVING.FLAGS] = (if (state) flags or flag else flags and flag.inv()).toByte()
+        setFlag(MetadataKeys.LIVING.FLAGS, flag, state)
     }
 
     protected fun removeEffectParticles() {

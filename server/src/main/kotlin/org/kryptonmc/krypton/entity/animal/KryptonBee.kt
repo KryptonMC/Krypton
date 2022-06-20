@@ -44,16 +44,16 @@ class KryptonBee(world: KryptonWorld) : KryptonAnimal(world, EntityTypes.BEE, AT
     private var cropsGrownSincePollination = 0
 
     override var isAngry: Boolean
+        get() = getFlag(1)
+        set(value) = setFlag(1, value)
+    override var hasStung: Boolean
         get() = getFlag(2)
         set(value) = setFlag(2, value)
-    override var hasStung: Boolean
-        get() = getFlag(4)
-        set(value) = setFlag(4, value)
     override var hasNectar: Boolean
-        get() = getFlag(8)
+        get() = getFlag(3)
         set(value) {
             if (value) timeSincePollination = 0
-            setFlag(8, value)
+            setFlag(3, value)
         }
     override var remainingAngerTime: Int
         get() = data[MetadataKeys.BEE.ANGER_TIME]
@@ -96,15 +96,10 @@ class KryptonBee(world: KryptonWorld) : KryptonAnimal(world, EntityTypes.BEE, AT
         saveAngerData(this)
     }
 
-    private fun getFlag(index: Int): Boolean = data[MetadataKeys.BEE.FLAGS].toInt() and index != 0
+    private fun getFlag(flag: Int): Boolean = getFlag(MetadataKeys.BEE.FLAGS, flag)
 
-    private fun setFlag(index: Int, value: Boolean) {
-        val old = data[MetadataKeys.BEE.FLAGS].toInt()
-        if (value) {
-            data[MetadataKeys.BEE.FLAGS] = (old or index).toByte()
-        } else {
-            data[MetadataKeys.BEE.FLAGS] = (old and index.inv()).toByte()
-        }
+    private fun setFlag(flag: Int, state: Boolean) {
+        setFlag(MetadataKeys.BEE.FLAGS, flag, state)
     }
 
     companion object {

@@ -66,6 +66,7 @@ class KryptonParrot(world: KryptonWorld) : KryptonTamable(world, EntityTypes.PAR
         int("Variant", parrotType.ordinal)
     }
 
+    /*
     override fun mobInteract(player: KryptonPlayer, hand: Hand): InteractionResult {
         val heldItem = player.heldItem(hand)
         if (!isTame && TAME_FOOD.contains(heldItem.type)) {
@@ -89,6 +90,7 @@ class KryptonParrot(world: KryptonWorld) : KryptonTamable(world, EntityTypes.PAR
         }
         return super.mobInteract(player, hand)
     }
+    */
 
     companion object {
 

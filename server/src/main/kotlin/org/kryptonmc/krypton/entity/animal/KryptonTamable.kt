@@ -37,17 +37,11 @@ abstract class KryptonTamable(
 
     final override var isOrderedToSit: Boolean = false
     override var isTame: Boolean
-        get() = data[MetadataKeys.TAMABLE.FLAGS].toInt() and 4 != 0
-        set(value) {
-            val existing = data[MetadataKeys.TAMABLE.FLAGS].toInt()
-            data[MetadataKeys.TAMABLE.FLAGS] = if (value) (existing or 4).toByte() else (existing and -5).toByte()
-        }
+        get() = getFlag(2)
+        set(value) = setFlag(2, value)
     final override var isSitting: Boolean
-        get() = data[MetadataKeys.TAMABLE.FLAGS].toInt() and 1 != 0
-        set(value) {
-            val existing = data[MetadataKeys.TAMABLE.FLAGS].toInt()
-            data[MetadataKeys.TAMABLE.FLAGS] = if (value) (existing or 1).toByte() else (existing and -2).toByte()
-        }
+        get() = getFlag(0)
+        set(value) = setFlag(0, value)
     private var ownerUUID: UUID?
         get() = data[MetadataKeys.TAMABLE.OWNER]
         set(value) = data.set(MetadataKeys.TAMABLE.OWNER, value)
@@ -90,5 +84,11 @@ abstract class KryptonTamable(
     override fun save(): CompoundTag.Builder = super.save().apply {
         if (ownerUUID != null) uuid("Owner", ownerUUID!!)
         boolean("Sitting", isOrderedToSit)
+    }
+
+    private fun getFlag(flag: Int): Boolean = getFlag(MetadataKeys.TAMABLE.FLAGS, flag)
+
+    private fun setFlag(flag: Int, state: Boolean) {
+        setFlag(MetadataKeys.TAMABLE.FLAGS, flag, state)
     }
 }

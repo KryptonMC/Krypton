@@ -40,9 +40,9 @@ class KryptonPanda(world: KryptonWorld) : KryptonAnimal(world, EntityTypes.PANDA
     override val isUnhappy: Boolean
         get() = unhappyTime > 0
     override var isSneezing: Boolean
-        get() = getFlag(2)
+        get() = getFlag(1)
         set(value) {
-            setFlag(2, value)
+            setFlag(1, value)
             if (!value) sneezingTime = 0
         }
     override var isEating: Boolean
@@ -51,14 +51,14 @@ class KryptonPanda(world: KryptonWorld) : KryptonAnimal(world, EntityTypes.PANDA
             eatingTime = if (value) 1 else 0
         }
     override var isRolling: Boolean
+        get() = getFlag(2)
+        set(value) = setFlag(2, value)
+    override var isSitting: Boolean
+        get() = getFlag(3)
+        set(value) = setFlag(3, value)
+    override var isLyingOnBack: Boolean
         get() = getFlag(4)
         set(value) = setFlag(4, value)
-    override var isSitting: Boolean
-        get() = getFlag(8)
-        set(value) = setFlag(8, value)
-    override var isLyingOnBack: Boolean
-        get() = getFlag(16)
-        set(value) = setFlag(16, value)
     override var unhappyTime: Int
         get() = data[MetadataKeys.PANDA.UNHAPPY_TIMER]
         set(value) = data.set(MetadataKeys.PANDA.UNHAPPY_TIMER, value)
@@ -97,15 +97,10 @@ class KryptonPanda(world: KryptonWorld) : KryptonAnimal(world, EntityTypes.PANDA
         string("HiddenGene", hiddenGene.serialized)
     }
 
-    private fun getFlag(index: Int): Boolean = data[MetadataKeys.PANDA.FLAGS].toInt() and index != 0
+    private fun getFlag(flag: Int): Boolean = getFlag(MetadataKeys.PANDA.FLAGS, flag)
 
-    private fun setFlag(index: Int, value: Boolean) {
-        val old = data[MetadataKeys.PANDA.FLAGS].toInt()
-        if (value) {
-            data[MetadataKeys.PANDA.FLAGS] = (old or index).toByte()
-        } else {
-            data[MetadataKeys.PANDA.FLAGS] = (old and index.inv()).toByte()
-        }
+    private fun setFlag(flag: Int, state: Boolean) {
+        setFlag(MetadataKeys.PANDA.FLAGS, flag, state)
     }
 
     companion object {

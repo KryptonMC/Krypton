@@ -99,6 +99,7 @@ class KryptonDolphin(world: KryptonWorld) : KryptonAquaticAnimal(world, EntityTy
         int("Moistness", skinMoisture)
     }
 
+    /*
     override fun mobInteract(player: KryptonPlayer, hand: Hand): InteractionResult {
         val heldItem = player.heldItem(hand)
         if (heldItem.isEmpty() || !ItemTags.FISHES.contains(heldItem.type)) return super.mobInteract(player, hand)
@@ -107,6 +108,7 @@ class KryptonDolphin(world: KryptonWorld) : KryptonAquaticAnimal(world, EntityTy
         if (!player.canInstantlyBuild) player.setHeldItem(hand, heldItem.shrink(1))
         return InteractionResult.CONSUME
     }
+    */
 
     companion object {
 

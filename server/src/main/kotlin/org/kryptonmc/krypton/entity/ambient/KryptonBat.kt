@@ -28,11 +28,8 @@ import org.kryptonmc.nbt.CompoundTag
 class KryptonBat(world: KryptonWorld) : KryptonAmbientCreature(world, EntityTypes.BAT, ATTRIBUTES), Bat {
 
     override var isResting: Boolean
-        get() = data[MetadataKeys.BAT.FLAGS].toInt() and 1 != 0
-        set(value) {
-            val old = data[MetadataKeys.BAT.FLAGS].toInt()
-            data[MetadataKeys.BAT.FLAGS] = (if (value) old or 1 else old and -2).toByte()
-        }
+        get() = getFlag(MetadataKeys.BAT.FLAGS, 0)
+        set(value) = setFlag(MetadataKeys.BAT.FLAGS, 0, value)
 
     init {
         data.add(MetadataKeys.BAT.FLAGS)

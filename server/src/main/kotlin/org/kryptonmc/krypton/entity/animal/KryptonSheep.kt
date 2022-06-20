@@ -30,15 +30,8 @@ import org.kryptonmc.nbt.CompoundTag
 class KryptonSheep(world: KryptonWorld) : KryptonAnimal(world, EntityTypes.SHEEP, ATTRIBUTES), Sheep {
 
     override var isSheared: Boolean
-        get() = data[MetadataKeys.SHEEP.FLAGS].toInt() and 16 != 0
-        set(value) {
-            val old = data[MetadataKeys.SHEEP.FLAGS].toInt()
-            if (value) {
-                data[MetadataKeys.SHEEP.FLAGS] = (old or 16).toByte()
-            } else {
-                data[MetadataKeys.SHEEP.FLAGS] = (old and 16.inv()).toByte()
-            }
-        }
+        get() = getFlag(MetadataKeys.SHEEP.FLAGS, 4)
+        set(value) = setFlag(MetadataKeys.SHEEP.FLAGS, 4, value)
     override var color: DyeColor
         get() = Registries.DYE_COLORS[data[MetadataKeys.SHEEP.FLAGS].toInt() and 15]!!
         set(value) {

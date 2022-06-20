@@ -38,26 +38,26 @@ class KryptonFox(world: KryptonWorld) : KryptonAnimal(world, EntityTypes.FOX, AT
         get() = FoxType.fromId(data[MetadataKeys.FOX.TYPE])!!
         set(value) = data.set(MetadataKeys.FOX.TYPE, value.ordinal)
     override var isSitting: Boolean
-        get() = getFlag(1)
-        set(value) = setFlag(1, value)
+        get() = getFlag(0)
+        set(value) = setFlag(0, value)
     override var isCrouching: Boolean
+        get() = getFlag(2)
+        set(value) = setFlag(2, value)
+    override var isInterested: Boolean
+        get() = getFlag(3)
+        set(value) = setFlag(3, value)
+    override var isPouncing: Boolean
         get() = getFlag(4)
         set(value) = setFlag(4, value)
-    override var isInterested: Boolean
-        get() = getFlag(8)
-        set(value) = setFlag(8, value)
-    override var isPouncing: Boolean
-        get() = getFlag(16)
-        set(value) = setFlag(16, value)
     override var isSleeping: Boolean
-        get() = getFlag(32)
-        set(value) = setFlag(32, value)
+        get() = getFlag(5)
+        set(value) = setFlag(5, value)
     override var hasFaceplanted: Boolean
-        get() = getFlag(64)
-        set(value) = setFlag(64, value)
+        get() = getFlag(6)
+        set(value) = setFlag(6, value)
     override var isDefending: Boolean
-        get() = getFlag(128)
-        set(value) = setFlag(128, value)
+        get() = getFlag(7)
+        set(value) = setFlag(7, value)
     override var firstTrusted: UUID?
         get() = data[MetadataKeys.FOX.FIRST_TRUSTED]
         set(value) = data.set(MetadataKeys.FOX.FIRST_TRUSTED, value)
@@ -102,15 +102,10 @@ class KryptonFox(world: KryptonWorld) : KryptonAnimal(world, EntityTypes.FOX, AT
 
     override fun isFood(item: ItemStack): Boolean = ItemTags.FOX_FOOD.contains(item.type)
 
-    private fun getFlag(index: Int): Boolean = data[MetadataKeys.FOX.FLAGS].toInt() and index != 0
+    private fun getFlag(flag: Int): Boolean = getFlag(MetadataKeys.FOX.FLAGS, flag)
 
-    private fun setFlag(index: Int, value: Boolean) {
-        val old = data[MetadataKeys.FOX.FLAGS].toInt()
-        if (value) {
-            data[MetadataKeys.FOX.FLAGS] = (old or index).toByte()
-        } else {
-            data[MetadataKeys.FOX.FLAGS] = (old and index.inv()).toByte()
-        }
+    private fun setFlag(flag: Int, state: Boolean) {
+        setFlag(MetadataKeys.FOX.FLAGS, flag, state)
     }
 
     private fun addTrustedId(uuid: UUID?) {

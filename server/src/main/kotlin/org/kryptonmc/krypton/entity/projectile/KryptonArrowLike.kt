@@ -47,17 +47,17 @@ abstract class KryptonArrowLike(
     final override var pickup: ArrowLike.Pickup = ArrowLike.Pickup.DISALLOWED
 
     final override var isCritical: Boolean
-        get() = data[MetadataKeys.ARROW_LIKE.FLAGS].toInt() and 1 != 0
-        set(value) = setFlag(1, value)
+        get() = getFlag(0)
+        set(value) = setFlag(0, value)
     final override var ignoresPhysics: Boolean
-        get() = data[MetadataKeys.ARROW_LIKE.FLAGS].toInt() and 2 != 0
+        get() = getFlag(1)
         set(value) {
             noPhysics = value
-            setFlag(2, value)
+            setFlag(1, value)
         }
     final override var wasShotFromCrossbow: Boolean
-        get() = data[MetadataKeys.ARROW_LIKE.FLAGS].toInt() and 4 != 0
-        set(value) = setFlag(4, value)
+        get() = getFlag(2)
+        set(value) = setFlag(2, value)
     final override var piercingLevel: Int
         get() = data[MetadataKeys.ARROW_LIKE.PIERCING_LEVEL].toInt()
         set(value) = data.set(MetadataKeys.ARROW_LIKE.PIERCING_LEVEL, value.toByte())
@@ -98,9 +98,10 @@ abstract class KryptonArrowLike(
         string("SoundEvent", sound.key().asString())
     }
 
+    private fun getFlag(flag: Int): Boolean = getFlag(MetadataKeys.ARROW_LIKE.FLAGS, flag)
+
     private fun setFlag(flag: Int, value: Boolean) {
-        val old = data[MetadataKeys.ARROW_LIKE.FLAGS].toInt()
-        data[MetadataKeys.ARROW_LIKE.FLAGS] = (if (value) old or flag else old and flag.inv()).toByte()
+        setFlag(MetadataKeys.ARROW_LIKE.FLAGS, flag, value)
     }
 
     companion object {

@@ -352,11 +352,10 @@ abstract class KryptonEntity(override var world: KryptonWorld, override val type
 
     protected open fun getSpawnPacket(): Packet = PacketOutSpawnEntity(this)
 
-    private fun getSharedFlag(flag: Int): Boolean = data[MetadataKeys.FLAGS].toInt() and (1 shl flag) != 0
+    private fun getSharedFlag(flag: Int): Boolean = getFlag(MetadataKeys.FLAGS, flag)
 
     private fun setSharedFlag(flag: Int, state: Boolean) {
-        val flags = data[MetadataKeys.FLAGS].toInt()
-        data[MetadataKeys.FLAGS] = (if (state) flags or (1 shl flag) else flags and (1 shl flag).inv()).toByte()
+        setFlag(MetadataKeys.FLAGS, flag, state)
     }
 
     private fun updateWater(): Boolean {
@@ -451,7 +450,8 @@ abstract class KryptonEntity(override var world: KryptonWorld, override val type
 
     fun underFluid(fluid: Tag<Fluid>): Boolean = fluidOnEyes === fluid
 
-    open fun interact(player: KryptonPlayer, hand: Hand): InteractionResult = InteractionResult.PASS
+    // TODO: Separate interaction logic
+    //open fun interact(player: KryptonPlayer, hand: Hand): InteractionResult = InteractionResult.PASS
 
     private fun updateSwimming() {
         isSwimming = if (isSwimming) {
@@ -540,6 +540,14 @@ abstract class KryptonEntity(override var world: KryptonWorld, override val type
 
     override fun tryRide(entity: Entity) {
         if (isRideable) addPassenger(entity)
+    }
+
+    protected fun getFlag(key: MetadataKey<Byte>, flag: Int): Boolean = data[key].toInt() and (1 shl flag) != 0
+
+    protected fun setFlag(key: MetadataKey<Byte>, flag: Int, state: Boolean) {
+        val flags = data[key].toInt()
+        val value = if (state) flags or (1 shl flag) else flags and (1 shl flag).inv()
+        data[key] = value.toByte()
     }
 
     companion object {

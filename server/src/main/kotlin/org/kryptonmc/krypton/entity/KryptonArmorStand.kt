@@ -42,29 +42,17 @@ class KryptonArmorStand(world: KryptonWorld) : KryptonLivingEntity(world, Entity
         get() = !isMarker && hasGravity
 
     override var isSmall: Boolean
-        get() = data[MetadataKeys.ARMOR_STAND.FLAGS].toInt() and 1 > 0
-        set(value) {
-            val flags = data[MetadataKeys.ARMOR_STAND.FLAGS].toInt()
-            data[MetadataKeys.ARMOR_STAND.FLAGS] = (if (value) flags or 1 else flags and -2).toByte()
-        }
+        get() = getFlag(0)
+        set(value) = setFlag(0, value)
     override var hasArms: Boolean
-        get() = data[MetadataKeys.ARMOR_STAND.FLAGS].toInt() and 4 > 0
-        set(value) {
-            val flags = data[MetadataKeys.ARMOR_STAND.FLAGS].toInt()
-            data[MetadataKeys.ARMOR_STAND.FLAGS] = (if (value) flags or 4 else flags and -5).toByte()
-        }
+        get() = getFlag(2)
+        set(value) = setFlag(2, value)
     override var hasBasePlate: Boolean
-        get() = data[MetadataKeys.ARMOR_STAND.FLAGS].toInt() and 8 <= 0
-        set(value) {
-            val flags = data[MetadataKeys.ARMOR_STAND.FLAGS].toInt()
-            data[MetadataKeys.ARMOR_STAND.FLAGS] = (if (value) flags and -9 else flags or 8).toByte()
-        }
+        get() = getFlag(3)
+        set(value) = setFlag(3, value)
     override var isMarker: Boolean
-        get() = data[MetadataKeys.ARMOR_STAND.FLAGS].toInt() and 16 > 0
-        set(value) {
-            val flags = data[MetadataKeys.ARMOR_STAND.FLAGS].toInt()
-            data[MetadataKeys.ARMOR_STAND.FLAGS] = (if (value) flags or 16 else flags and -17).toByte()
-        }
+        get() = getFlag(4)
+        set(value) = setFlag(4, value)
     override var headPose: Vector3f
         get() = data[MetadataKeys.ARMOR_STAND.HEAD_ROTATION]
         set(value) = data.set(MetadataKeys.ARMOR_STAND.HEAD_ROTATION, value)
@@ -154,6 +142,12 @@ class KryptonArmorStand(world: KryptonWorld) : KryptonLivingEntity(world, Entity
             if (leftLegPose != DEFAULT_LEFT_LEG_ROTATION) rotation("LeftLeg", leftLegPose)
             if (rightLegPose != DEFAULT_RIGHT_LEG_ROTATION) rotation("RightLeg", rightLegPose)
         }
+    }
+
+    private fun getFlag(flag: Int): Boolean = getFlag(MetadataKeys.ARMOR_STAND.FLAGS, flag)
+
+    private fun setFlag(flag: Int, state: Boolean) {
+        setFlag(MetadataKeys.ARMOR_STAND.FLAGS, flag, state)
     }
 
     companion object {
