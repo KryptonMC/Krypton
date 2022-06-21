@@ -27,16 +27,16 @@ import org.kryptonmc.nbt.StringTag
 import org.kryptonmc.nbt.compound
 
 fun CompoundTag.getGameProfile(key: String): GameProfile? {
-    val tag = get(key) ?: return null
-    if (tag is StringTag) return ApiService.profile(tag.value).get()
-    if (tag !is CompoundTag) return null
+    val data = get(key) ?: return null
+    if (data is StringTag) return ApiService.profile(data.value).get()
+    if (data !is CompoundTag) return null
 
-    val name = tag.getString("Name")
-    val uuid = checkNotNull(tag.getUUID("Id")) { "UUID for skull owner cannot be null!" }
-    if (!tag.contains("Properties", CompoundTag.ID)) return KryptonGameProfile(name, uuid, persistentListOf())
+    val name = data.getString("Name")
+    val uuid = checkNotNull(data.getUUID("Id")) { "UUID for skull owner cannot be null!" }
+    if (!data.contains("Properties", CompoundTag.ID)) return KryptonGameProfile(name, uuid, persistentListOf())
 
     val properties = persistentListOf<ProfileProperty>().builder()
-    tag.getCompound("Properties").forEachList { profileKey, list ->
+    data.getCompound("Properties").forEachList { profileKey, list ->
         list.forEachCompound {
             val value = it.getString("Value")
             val signature = if (it.contains("Signature", StringTag.ID)) it.getString("Signature") else null
@@ -62,11 +62,11 @@ private fun GameProfile.toCompound(): CompoundTag = compound {
     if (properties.isEmpty()) return@compound
     put("Properties", compound {
         properties.forEach {
-            val tag = compound {
+            val data = compound {
                 string("Value", it.value)
                 if (it.signature != null) string("Signature", it.signature!!)
             }
-            list(it.name, CompoundTag.ID, listOf(tag))
+            list(it.name, CompoundTag.ID, listOf(data))
         }
     })
 }

@@ -32,7 +32,7 @@ class KryptonCrossbowMeta(data: CompoundTag) : AbstractItemMeta<KryptonCrossbowM
 
     override val isCharged: Boolean = data.getBoolean("Charged")
     override val projectiles: PersistentList<ItemStack> = data.getList("ChargedProjectiles", CompoundTag.ID)
-        .mapPersistentList { KryptonItemStack(it as CompoundTag) }
+        .mapPersistentList { KryptonItemStack.from(it as CompoundTag) }
 
     override fun copy(data: CompoundTag): KryptonCrossbowMeta = KryptonCrossbowMeta(data)
 

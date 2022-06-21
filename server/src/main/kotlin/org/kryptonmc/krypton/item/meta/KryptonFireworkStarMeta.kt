@@ -60,5 +60,5 @@ class KryptonFireworkStarMeta(data: CompoundTag) : AbstractItemMeta<KryptonFirew
 
 private fun CompoundTag.getEffect(): KryptonFireworkEffect? {
     if (contains("Explosion", CompoundTag.ID)) return null
-    return KryptonFireworkEffect(getCompound("Explosion"))
+    return KryptonFireworkEffect.from(getCompound("Explosion"))
 }

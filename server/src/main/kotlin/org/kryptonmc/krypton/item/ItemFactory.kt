@@ -73,7 +73,7 @@ object ItemFactory {
     )
 
     @JvmStatic
-    fun create(type: ItemType, tag: CompoundTag): AbstractItemMeta<*> = META_BY_TYPE[type]?.invoke(tag) ?: KryptonItemMeta(tag)
+    fun create(type: ItemType, data: CompoundTag): AbstractItemMeta<*> = META_BY_TYPE[type]?.invoke(data) ?: KryptonItemMeta(data)
 
     @JvmStatic
     @Suppress("UNCHECKED_CAST")

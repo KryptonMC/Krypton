@@ -78,15 +78,15 @@ class WorldDataManager(private val folder: Path, private val useDataConverter: B
 
     private fun read(folder: Path, path: Path): PrimaryWorldData? {
         return try {
-            val tag = TagIO.read(path, TagCompression.GZIP).getCompound("Data")
-            val version = if (tag.contains("DataVersion", 99)) tag.getInt("DataVersion") else -1
+            val data = TagIO.read(path, TagCompression.GZIP).getCompound("Data")
+            val version = if (data.contains("DataVersion", 99)) data.getInt("DataVersion") else -1
             // We won't upgrade data if use of the data converter is disabled.
             if (version < KryptonPlatform.worldVersion && !useDataConverter) {
                 LOGGER.sendDataConversionWarning("data for world at ${path.toAbsolutePath()}")
                 error("Attempted to load old world data from version $version when data conversion is disabled!")
             }
 
-            PrimaryWorldData.parse(folder, tag.upgradeData(MCTypeRegistry.LEVEL, version))
+            PrimaryWorldData.parse(folder, data.upgradeData(MCTypeRegistry.LEVEL, version))
         } catch (exception: Exception) {
             LOGGER.error("Error whilst trying to read world at $folder!", exception)
             null

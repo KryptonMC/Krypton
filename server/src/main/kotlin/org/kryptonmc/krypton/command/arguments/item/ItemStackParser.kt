@@ -43,14 +43,14 @@ class ItemStackParser(val reader: StringReader, private val allowTags: Boolean) 
     fun parsePredicate(): ItemStackPredicate {
         var tag: String? = null
         var item: ItemType? = null
-        var nbt: CompoundTag? = null
+        var data: CompoundTag? = null
 
         if (reader.canRead() && reader.peek() == '#') tag = readTag(reader) else item = readItem(reader)
-        if (reader.canRead() && reader.peek() == '{') nbt = readNBT(reader)
+        if (reader.canRead() && reader.peek() == '{') data = readNBT(reader)
 
         return ItemStackPredicate {
             if (item != null) {
-                if (nbt != null) return@ItemStackPredicate nbt == it.meta.data
+                if (data != null) return@ItemStackPredicate data == it.meta.data
                 return@ItemStackPredicate it.type == item
             }
             if (tag != null) {

@@ -32,10 +32,6 @@ import org.kryptonmc.nbt.CompoundTag
 @JvmRecord
 data class KryptonItemStack(override val type: ItemType, override val amount: Int, override val meta: AbstractItemMeta<*>) : ItemStack {
 
-    constructor(tag: CompoundTag) : this(tag, Registries.ITEM[Key.key(tag.getString("id"))])
-
-    private constructor(tag: CompoundTag, type: ItemType) : this(type, tag.getInt("Count"), ItemFactory.create(type, tag.getCompound("tag")))
-
     fun save(tag: CompoundTag.Builder): CompoundTag.Builder = tag.apply {
         string("id", type.key().asString())
         int("Count", amount)
@@ -128,5 +124,11 @@ data class KryptonItemStack(override val type: ItemType, override val amount: In
 
         @JvmField
         val EMPTY: KryptonItemStack = KryptonItemStack(ItemTypes.AIR, 1, KryptonItemMeta.DEFAULT)
+
+        @JvmStatic
+        fun from(data: CompoundTag): KryptonItemStack {
+            val type = Registries.ITEM[Key.key(data.getString("id"))]
+            return KryptonItemStack(type, data.getInt("Count"), ItemFactory.create(type, data.getCompound("tag")))
+        }
     }
 }

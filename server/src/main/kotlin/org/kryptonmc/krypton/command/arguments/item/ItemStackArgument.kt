@@ -27,25 +27,25 @@ import org.kryptonmc.nbt.CompoundTag
  * An argument that represents an item, optionally with some NBT data.
  */
 @JvmRecord
-data class ItemStackArgument(val item: ItemType, val tag: CompoundTag? = null) {
+data class ItemStackArgument(val type: ItemType, val data: CompoundTag? = null) {
 
     /**
      * Creates the item stacks from the data stored by this argument.
      */
     fun createItemStacks(amount: Int): List<KryptonItemStack> {
-        if (amount <= item.maximumStackSize) return listOf(createStack(amount))
+        if (amount <= type.maximumStackSize) return listOf(createStack(amount))
         val items = mutableListOf<KryptonItemStack>()
         var size = amount
-        while (size > item.maximumStackSize) {
-            items.add(createStack(item.maximumStackSize))
-            size -= item.maximumStackSize
+        while (size > type.maximumStackSize) {
+            items.add(createStack(type.maximumStackSize))
+            size -= type.maximumStackSize
         }
         items.add(createStack(size))
         return items
     }
 
     private fun createStack(amount: Int): KryptonItemStack {
-        val nbt = tag ?: CompoundTag.empty()
-        return KryptonItemStack(item, amount, ItemFactory.create(item, nbt))
+        val nbt = data ?: CompoundTag.empty()
+        return KryptonItemStack(type, amount, ItemFactory.create(type, nbt))
     }
 }

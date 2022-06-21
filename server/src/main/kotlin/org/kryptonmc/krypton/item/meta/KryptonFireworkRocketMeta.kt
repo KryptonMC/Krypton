@@ -32,7 +32,7 @@ class KryptonFireworkRocketMeta(data: CompoundTag) : AbstractItemMeta<KryptonFir
 
     override val effects: PersistentList<FireworkEffect> = data.getCompound("Fireworks")
         .getList("Explosions", CompoundTag.ID)
-        .mapPersistentList { KryptonFireworkEffect(it as CompoundTag) }
+        .mapPersistentList { KryptonFireworkEffect.from(it as CompoundTag) }
     override val flightDuration: Int = data.getCompound("Fireworks").getByte("Flight").toInt()
 
     override fun copy(data: CompoundTag): KryptonFireworkRocketMeta = KryptonFireworkRocketMeta(data)

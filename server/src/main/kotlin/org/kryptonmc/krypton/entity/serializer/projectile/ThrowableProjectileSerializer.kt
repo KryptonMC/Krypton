@@ -28,7 +28,7 @@ object ThrowableProjectileSerializer : EntitySerializer<KryptonThrowableProjecti
 
     override fun load(entity: KryptonThrowableProjectile, data: CompoundTag) {
         ProjectileSerializer.load(entity, data)
-        entity.data[MetadataKeys.THROWABLE_PROJECTILE.ITEM] = KryptonItemStack(data.getCompound("Item"))
+        entity.data[MetadataKeys.THROWABLE_PROJECTILE.ITEM] = KryptonItemStack.from(data.getCompound("Item"))
     }
 
     override fun save(entity: KryptonThrowableProjectile): CompoundTag.Builder = ProjectileSerializer.save(entity).apply {

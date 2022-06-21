@@ -50,7 +50,7 @@ interface KryptonEquipable : Equipable {
             if (!tag.contains(name, ListTag.ID)) return
             val items = tag.getList(name, ListTag.ID)
             for (i in items.indices) {
-                output[i] = KryptonItemStack(items.getCompound(i))
+                output[i] = KryptonItemStack.from(items.getCompound(i))
             }
         }
 

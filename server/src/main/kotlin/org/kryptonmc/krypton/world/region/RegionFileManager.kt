@@ -41,13 +41,13 @@ class RegionFileManager(private val folder: Path, private val synchronizeWrites:
         return input.use { TagIO.read(it) }
     }
 
-    fun write(x: Int, z: Int, tag: CompoundTag?) {
+    fun write(x: Int, z: Int, data: CompoundTag?) {
         val file = getRegionFile(x, z)
-        if (tag == null) {
+        if (data == null) {
             file.clear(x, z)
             return
         }
-        file.getChunkDataOutputStream(x, z).use { TagIO.write(it, tag) }
+        file.getChunkDataOutputStream(x, z).use { TagIO.write(it, data) }
     }
 
     private fun getRegionFile(x: Int, z: Int): RegionFile {

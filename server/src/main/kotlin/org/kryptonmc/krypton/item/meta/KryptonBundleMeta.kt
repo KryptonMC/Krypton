@@ -32,7 +32,7 @@ import org.kryptonmc.nbt.list
 class KryptonBundleMeta(data: CompoundTag) : AbstractItemMeta<KryptonBundleMeta>(data), BundleMeta {
 
     override val items: PersistentList<ItemStack> = data.getList("Items", CompoundTag.ID)
-        .mapPersistentList { KryptonItemStack(it as CompoundTag) }
+        .mapPersistentList { KryptonItemStack.from(it as CompoundTag) }
 
     override fun copy(data: CompoundTag): KryptonBundleMeta = KryptonBundleMeta(data)
 

@@ -28,7 +28,7 @@ object TridentSerializer : EntitySerializer<KryptonTrident> {
     override fun load(entity: KryptonTrident, data: CompoundTag) {
         ArrowLikeSerializer.load(entity, data)
         entity.dealtDamage = data.getBoolean("DealtDamage")
-        if (data.contains("Trident", CompoundTag.ID)) entity.item = KryptonItemStack(data.getCompound("Trident"))
+        if (data.contains("Trident", CompoundTag.ID)) entity.item = KryptonItemStack.from(data.getCompound("Trident"))
     }
 
     override fun save(entity: KryptonTrident): CompoundTag.Builder = ArrowLikeSerializer.save(entity).apply {

@@ -115,7 +115,7 @@ class PrimaryWorldData(
                 GameMode.fromId(data.getInt("GameType", 0)) ?: GameMode.SURVIVAL,
                 resolveDifficulty(data),
                 data.getBoolean("hardcore", false),
-                KryptonGameRuleHolder(data.getCompound("GameRules")),
+                KryptonGameRuleHolder.from(data.getCompound("GameRules")),
                 generationSettings,
                 data.getInt("SpawnX"),
                 data.getInt("SpawnY"),

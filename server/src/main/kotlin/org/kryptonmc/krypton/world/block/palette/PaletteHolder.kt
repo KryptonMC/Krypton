@@ -203,20 +203,20 @@ class PaletteHolder<T> : PaletteResizer<T> {
         private val DUMMY_RESIZER: PaletteResizer<Any?> = PaletteResizer { _, _ -> 0 }
 
         @JvmStatic
-        fun readBlocks(tag: CompoundTag): PaletteHolder<Block> {
+        fun readBlocks(data: CompoundTag): PaletteHolder<Block> {
             val entries = mutableListOf<Block>()
-            tag.getList("palette", CompoundTag.ID).forEachCompound { entries.add(it.toBlock()) }
-            return read(Strategy.BLOCKS, entries, tag.getLongArray("data"))
+            data.getList("palette", CompoundTag.ID).forEachCompound { entries.add(it.toBlock()) }
+            return read(Strategy.BLOCKS, entries, data.getLongArray("data"))
         }
 
         @JvmStatic
-        fun readBiomes(tag: CompoundTag): PaletteHolder<Biome> {
+        fun readBiomes(data: CompoundTag): PaletteHolder<Biome> {
             val entries = mutableListOf<Biome>()
-            tag.getList("palette", StringTag.ID).forEachString {
+            data.getList("palette", StringTag.ID).forEachString {
                 val biome = checkNotNull(Registries.BIOME[Key.key(it)]) { "Invalid palette data! Failed to find biome with key $it!" }
                 entries.add(biome)
             }
-            return read(Strategy.BIOMES, entries, tag.getLongArray("data"))
+            return read(Strategy.BIOMES, entries, data.getLongArray("data"))
         }
 
         @Suppress("UNCHECKED_CAST")

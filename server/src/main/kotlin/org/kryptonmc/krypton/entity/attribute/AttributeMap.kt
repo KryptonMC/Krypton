@@ -39,12 +39,14 @@ class AttributeMap(private val supplier: AttributeSupplier) {
     fun value(type: AttributeType): Double = attributes[type]?.value ?: supplier.value(type)
 
     fun load(list: ListTag) {
-        for (i in 0 until list.size) {
-            val tag = list.getCompound(i)
-            val name = tag.getString("Name")
-            val key = Key.key(name)
-            val type = Registries.ATTRIBUTE[key]?.apply { get(this).load(tag) }
-            if (type == null) LOGGER.warn("Ignoring unknown attribute $key.")
+        list.forEachCompound {
+            val key = Key.key(it.getString("Name"))
+            val type = Registries.ATTRIBUTE[key]
+            if (type == null) {
+                LOGGER.warn("Ignoring unknown attribute $key.")
+                return@forEachCompound
+            }
+            get(type).load(it)
         }
     }
 

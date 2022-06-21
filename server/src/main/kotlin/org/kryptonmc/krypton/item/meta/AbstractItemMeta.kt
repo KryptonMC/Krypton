@@ -119,8 +119,8 @@ abstract class AbstractItemMeta<I : ItemMeta>(val data: CompoundTag) : ItemMeta 
 @Suppress("UNCHECKED_CAST")
 fun <T : Tag, R> CompoundTag.getDisplay(key: String, type: Int, default: R?, mapper: (T) -> R): R? {
     if (!contains("display", CompoundTag.ID) || !getCompound("display").contains(key, type)) return default
-    val tag = getCompound("display")[key] as? T ?: return default
-    return mapper(tag)
+    val display = getCompound("display")[key] as? T ?: return default
+    return mapper(display)
 }
 
 private fun CompoundTag.getName(): Component? = getDisplay<StringTag, _>("Name", StringTag.ID, null) {

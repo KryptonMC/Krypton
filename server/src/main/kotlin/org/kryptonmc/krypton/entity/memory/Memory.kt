@@ -29,7 +29,7 @@ class Memory<T : Any>(val value: T?, private var timeToLive: Long = Long.MAX_VAL
         if (canExpire) --timeToLive
     }
 
-    fun save(key: MemoryKey<in T>, tag: CompoundTag.Builder): CompoundTag.Builder = tag.apply {
+    fun save(key: MemoryKey<in T>, data: CompoundTag.Builder): CompoundTag.Builder = data.apply {
         compound(key.key.asString()) {
             if (value != null) put("value", key.codec.encode(value))
             if (canExpire) long("ttl", timeToLive)

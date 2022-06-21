@@ -26,20 +26,10 @@ import org.kryptonmc.nbt.StringTag
 import org.kryptonmc.nbt.compound
 import java.util.concurrent.ConcurrentHashMap
 
-class KryptonGameRuleHolder : GameRuleHolder {
+class KryptonGameRuleHolder private constructor(override val rules: MutableMap<GameRule<out Any>, Any>) : GameRuleHolder {
 
-    override val rules: MutableMap<GameRule<out Any>, Any> = ConcurrentHashMap()
-
-    constructor() {
-        Registries.GAME_RULES.values.forEach { rules[it] = it.default }
-    }
-
-    constructor(tag: CompoundTag) : this() {
-        rules.forEach { (key, _) ->
-            if (!tag.contains(key.name, StringTag.ID)) return@forEach
-            rules[key] = deserialize(tag.getString(key.name))
-        }
-    }
+    @Suppress("UNCHECKED_CAST")
+    constructor() : this(Registries.GAME_RULES.values.associateWith { it.default } as MutableMap<GameRule<out Any>, Any>)
 
     fun save(): CompoundTag = compound {
         rules.forEach { (rule, value) -> string(rule.name, value.toString()) }
@@ -53,6 +43,16 @@ class KryptonGameRuleHolder : GameRuleHolder {
     }
 
     companion object {
+
+        @JvmStatic
+        fun from(data: CompoundTag): KryptonGameRuleHolder {
+            val rules = ConcurrentHashMap<GameRule<out Any>, Any>()
+            Registries.GAME_RULES.values.forEach {
+                if (!data.contains(it.name, StringTag.ID)) return@forEach
+                rules[it] = deserialize(data.getString(it.name))
+            }
+            return KryptonGameRuleHolder(rules)
+        }
 
         @JvmStatic
         private fun deserialize(input: String): Any {

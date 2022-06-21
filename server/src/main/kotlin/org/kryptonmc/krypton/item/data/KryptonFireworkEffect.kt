@@ -35,14 +35,6 @@ data class KryptonFireworkEffect(
     override val fadeColors: PersistentList<Color>
 ) : FireworkEffect {
 
-    constructor(tag: CompoundTag) : this(
-        FireworkEffectType.fromId(tag.getByte("Type").toInt())!!,
-        tag.getBoolean("Flicker"),
-        tag.getBoolean("Trail"),
-        tag.getIntArray("Colors").map(::Color).toPersistentList(),
-        tag.getIntArray("FadeColors").map(::Color).toPersistentList()
-    )
-
     override fun with(builder: FireworkEffect.Builder.() -> Unit): FireworkEffect = toBuilder().apply(builder).build()
 
     override fun withType(type: FireworkEffectType): FireworkEffect = copy(type = type)
@@ -110,4 +102,19 @@ data class KryptonFireworkEffect(
 
         override fun builder(type: FireworkEffectType): FireworkEffect.Builder = Builder(type)
     }
+
+    companion object {
+
+        private val EFFECT_TYPES = FireworkEffectType.values()
+
+        @JvmStatic
+        fun from(data: CompoundTag): KryptonFireworkEffect {
+            val type = EFFECT_TYPES[data.getByte("Type").toInt()]
+            val colors = data.getColors("Colors")
+            val fadeColors = data.getColors("FadeColors")
+            return KryptonFireworkEffect(type, data.getBoolean("Flicker"), data.getBoolean("Trail"), colors, fadeColors)
+        }
+    }
 }
+
+private fun CompoundTag.getColors(name: String): PersistentList<Color> = getIntArray(name).map(::Color).toPersistentList()

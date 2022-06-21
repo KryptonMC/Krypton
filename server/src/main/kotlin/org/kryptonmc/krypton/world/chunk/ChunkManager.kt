@@ -216,14 +216,14 @@ class ChunkManager(private val world: KryptonWorld) {
                 // TODO: Handle light sections below and above the world
                 if (sectionIndex >= 0 && sectionIndex < chunk.sections.size) {
                     val section = chunk.sections[sectionIndex]
-                    val tag = compound {
+                    val sectionData = compound {
                         byte("Y", i.toByte())
                         put("block_states", section.blocks.write(Block::toNBT))
                         put("biomes", section.biomes.write { StringTag.of(it.key().asString()) })
                         if (section.blockLight.isNotEmpty()) byteArray("BlockLight", section.blockLight)
                         if (section.skyLight.isNotEmpty()) byteArray("SkyLight", section.skyLight)
                     }
-                    sectionList.add(tag)
+                    sectionList.add(sectionData)
                 }
             }
             data.put("sections", sectionList)

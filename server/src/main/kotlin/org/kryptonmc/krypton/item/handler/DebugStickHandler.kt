@@ -70,9 +70,9 @@ object DebugStickHandler : ItemHandler {
             return false
         }
 
-        var tag = item.meta.data.getCompound("DebugProperty")
-        val propertyKey = tag.getString(key)
-        var property = properties.firstOrNull { tag.getString(propertyKey) == it.name } as? Property<Comparable<Any>>
+        var debugProperty = item.meta.data.getCompound("DebugProperty")
+        val propertyKey = debugProperty.getString(key)
+        var property = properties.firstOrNull { debugProperty.getString(propertyKey) == it.name } as? Property<Comparable<Any>>
 
         if (isUse) {
             if (property == null) property = properties.first() as Property<Comparable<Any>>
@@ -83,7 +83,7 @@ object DebugStickHandler : ItemHandler {
         } else {
             property = properties.findRelative(property, player.isSneaking) as Property<Comparable<Any>>
             val name = property.name
-            tag = tag.putString(key, name)
+            debugProperty = debugProperty.putString(key, name)
             val propertyText = Component.text(property.toString(block[property]!!))
             player.sendMessage(Component.translatable("${ItemTypes.DEBUG_STICK.translation.key()}.select", Component.text(name), propertyText))
         }

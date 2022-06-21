@@ -117,13 +117,13 @@ class KryptonPlayerInventory(override val owner: KryptonPlayer) : KryptonInvento
         buf.writeItem(offHand)
     }
 
-    fun load(tag: ListTag) {
+    fun load(data: ListTag) {
         clear()
-        for (i in tag.indices) {
-            val compound = tag.getCompound(i)
-            val slot = compound.getByte("Slot").toInt()
-            val stack = KryptonItemStack(compound)
-            if (stack.type === ItemTypes.AIR) continue
+        data.forEachCompound {
+            // No point creating the item stack just to throw it away if it's air
+            if (it.getString("id") == ItemTypes.AIR.key().asString()) return@forEachCompound
+            val slot = it.getByte("Slot").toInt()
+            val stack = KryptonItemStack.from(it)
             when (slot) {
                 in items.indices -> items[slot] = stack
                 100 -> armor[3] = stack

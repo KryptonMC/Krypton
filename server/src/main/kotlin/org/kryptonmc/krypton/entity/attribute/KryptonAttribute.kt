@@ -55,15 +55,17 @@ data class KryptonAttribute(override val type: AttributeType, private val callba
             return cachedValue
         }
 
-    fun load(tag: CompoundTag) {
-        baseValue = tag.getDouble("Base")
-        if (tag.contains("Modifiers", ListTag.ID)) tag.getList("Modifiers", CompoundTag.ID).forEachCompound {
-            val operation = Registries.MODIFIER_OPERATIONS[it.getInt("Operation")] ?: return@forEachCompound
-            val uuid = it.getUUID("UUID") ?: return@forEachCompound
-            val modifier = KryptonAttributeModifier(it.getString("Name"), uuid, it.getDouble("Amount"))
-            modifiersById[modifier.uuid] = modifier
-            modifiers(operation).add(modifier)
-            permanentModifiers.add(modifier)
+    fun load(data: CompoundTag) {
+        baseValue = data.getDouble("Base")
+        if (data.contains("Modifiers", ListTag.ID)) {
+            data.getList("Modifiers", CompoundTag.ID).forEachCompound {
+                val operation = Registries.MODIFIER_OPERATIONS[it.getInt("Operation")] ?: return@forEachCompound
+                val uuid = it.getUUID("UUID") ?: return@forEachCompound
+                val modifier = KryptonAttributeModifier(it.getString("Name"), uuid, it.getDouble("Amount"))
+                modifiersById[modifier.uuid] = modifier
+                modifiers(operation).add(modifier)
+                permanentModifiers.add(modifier)
+            }
         }
         makeDirty()
     }
