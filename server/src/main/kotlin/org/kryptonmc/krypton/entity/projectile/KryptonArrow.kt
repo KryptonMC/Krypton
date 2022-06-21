@@ -32,9 +32,4 @@ class KryptonArrow(world: KryptonWorld) : KryptonArrowLike(world, EntityTypes.AR
     init {
         data.add(MetadataKeys.ARROW.COLOR)
     }
-
-    companion object {
-
-        private const val RGB_MAX_VALUE = 16777215
-    }
 }

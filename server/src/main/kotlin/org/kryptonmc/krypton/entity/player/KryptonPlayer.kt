@@ -107,6 +107,8 @@ import org.kryptonmc.krypton.statistic.KryptonStatisticsTracker
 import org.kryptonmc.krypton.util.Directions
 import org.kryptonmc.krypton.util.InteractionResult
 import org.kryptonmc.krypton.util.Positioning
+import org.kryptonmc.krypton.util.chunkX
+import org.kryptonmc.krypton.util.chunkZ
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.krypton.world.chunk.ChunkPosition
 import org.kryptonmc.krypton.world.scoreboard.KryptonScoreboard
@@ -348,17 +350,10 @@ class KryptonPlayer(
     }
 
     override fun setEquipment(slot: EquipmentSlot, item: KryptonItemStack) {
-        if (slot == EquipmentSlot.MAIN_HAND) {
-            inventory.setHeldItem(Hand.MAIN, item)
-            return
-        }
-        if (slot == EquipmentSlot.OFF_HAND) {
-            inventory.setHeldItem(Hand.OFF, item)
-            return
-        }
-        if (slot.type == EquipmentSlot.Type.ARMOR) {
-            inventory.armor[slot.index] = item
-            return
+        when {
+            slot == EquipmentSlot.MAIN_HAND -> inventory.setHeldItem(Hand.MAIN, item)
+            slot == EquipmentSlot.OFF_HAND -> inventory.setHeldItem(Hand.OFF, item)
+            slot.type == EquipmentSlot.Type.ARMOR -> inventory.armor[slot.index] = item
         }
     }
 
@@ -470,6 +465,7 @@ class KryptonPlayer(
 
     fun hasCorrectTool(block: Block): Boolean = !block.requiresCorrectTool || inventory.heldItem(Hand.MAIN).type.handler().isCorrectTool(block)
 
+    /*
     fun interactOn(entity: KryptonEntity, hand: Hand): InteractionResult {
         if (isSpectator) {
             // TODO: Open spectator menu
@@ -495,6 +491,7 @@ class KryptonPlayer(
          */
         return InteractionResult.PASS
     }
+    */
 
     override fun addViewer(player: KryptonPlayer): Boolean {
         if (player === this) return false
@@ -697,8 +694,8 @@ class KryptonPlayer(
 
         val oldCentralX = previousCentralX
         val oldCentralZ = previousCentralZ
-        val centralX = location.floorX() shr 4
-        val centralZ = location.floorZ() shr 4
+        val centralX = location.chunkX()
+        val centralZ = location.chunkZ()
         val radius = server.config.world.viewDistance
 
         if (firstLoad) {

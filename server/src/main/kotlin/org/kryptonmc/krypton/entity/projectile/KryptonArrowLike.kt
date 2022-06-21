@@ -45,10 +45,7 @@ abstract class KryptonArrowLike(
         set(value) = setFlag(0, value)
     final override var ignoresPhysics: Boolean
         get() = getFlag(1)
-        set(value) {
-            noPhysics = value
-            setFlag(1, value)
-        }
+        set(value) = setFlag(1, value)
     final override var wasShotFromCrossbow: Boolean
         get() = getFlag(2)
         set(value) = setFlag(2, value)

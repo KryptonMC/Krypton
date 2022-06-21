@@ -46,7 +46,6 @@ object ArmorStandSerializer : EntitySerializer<KryptonArmorStand> {
         entity.disabledSlots = data.getInt("DisabledSlots")
         entity.hasBasePlate = !data.getBoolean("NoBasePlate")
         entity.isMarker = data.getBoolean("Marker")
-        entity.noPhysics = !entity.hasPhysics
 
         if (!data.contains("Pose", CompoundTag.ID)) return
         val headRotation = data.getList("Head", FloatTag.ID)

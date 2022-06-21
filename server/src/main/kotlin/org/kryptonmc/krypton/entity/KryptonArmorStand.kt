@@ -36,8 +36,6 @@ class KryptonArmorStand(world: KryptonWorld) : KryptonLivingEntity(world, Entity
         get() = handItems
     override val armorSlots: Iterable<KryptonItemStack>
         get() = armorItems
-    internal val hasPhysics: Boolean
-        get() = !isMarker && hasGravity
 
     override var isSmall: Boolean
         get() = getFlag(0)

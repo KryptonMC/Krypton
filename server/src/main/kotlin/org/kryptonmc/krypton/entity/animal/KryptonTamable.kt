@@ -26,7 +26,6 @@ import org.kryptonmc.krypton.entity.attribute.AttributeSupplier
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.world.KryptonWorld
-import java.util.UUID
 
 abstract class KryptonTamable(
     world: KryptonWorld,
@@ -41,14 +40,8 @@ abstract class KryptonTamable(
     final override var isSitting: Boolean
         get() = getFlag(0)
         set(value) = setFlag(0, value)
-    private var ownerUUID: UUID?
-        get() = data[MetadataKeys.TAMABLE.OWNER]
-        set(value) = data.set(MetadataKeys.TAMABLE.OWNER, value)
     final override val owner: KryptonPlayer?
-        get() {
-            val uuid = ownerUUID ?: return null
-            return world.players.firstOrNull { it.uuid == uuid }
-        }
+        get() = world.players.firstOrNull { it.uuid == data[MetadataKeys.TAMABLE.OWNER] }
     final override val team: Team?
         get() {
             if (isTame) return owner?.team
@@ -62,7 +55,7 @@ abstract class KryptonTamable(
 
     final override fun tame(tamer: Player) {
         isTame = true
-        ownerUUID = tamer.uuid
+        data[MetadataKeys.TAMABLE.OWNER] = tamer.uuid
         // TODO: Trigger tame animal advancement criteria
     }
 

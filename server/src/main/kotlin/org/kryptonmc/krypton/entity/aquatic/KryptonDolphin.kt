@@ -21,14 +21,10 @@ package org.kryptonmc.krypton.entity.aquatic
 import org.kryptonmc.api.effect.sound.SoundEvent
 import org.kryptonmc.api.effect.sound.SoundEvents
 import org.kryptonmc.api.entity.EntityTypes
-import org.kryptonmc.api.entity.Hand
 import org.kryptonmc.api.entity.aquatic.Dolphin
 import org.kryptonmc.api.entity.attribute.AttributeTypes
-import org.kryptonmc.api.tags.ItemTags
 import org.kryptonmc.api.world.damage.type.DamageTypes
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
-import org.kryptonmc.krypton.entity.player.KryptonPlayer
-import org.kryptonmc.krypton.util.InteractionResult
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.krypton.world.damage.KryptonDamageSource
 import org.spongepowered.math.vector.Vector2f

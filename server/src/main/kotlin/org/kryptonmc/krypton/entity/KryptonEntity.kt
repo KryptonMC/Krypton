@@ -142,10 +142,6 @@ abstract class KryptonEntity(override var world: KryptonWorld, override val type
         get() = indirectPassengersSequence.count { it is Player } == 1
     private val selfAndPassengers: Sequence<Entity>
         get() = sequenceOf(this).plus(indirectPassengersSequence)
-    val passengersAndSelf: Sequence<Entity>
-        get() = indirectPassengersSequence.plus(this)
-    val indirectPassengers: Iterable<Entity>
-        get() = Iterable { indirectPassengersSequence.iterator() }
     private val indirectPassengersSequence: Sequence<Entity>
         get() = passengers.asSequence().flatMap { (it as KryptonEntity).selfAndPassengers }
 
@@ -183,17 +179,12 @@ abstract class KryptonEntity(override var world: KryptonWorld, override val type
         get() = Iterables.concat(handSlots, armorSlots)
 
     val viewers: MutableSet<KryptonPlayer> = ConcurrentHashMap.newKeySet()
-    var noPhysics: Boolean = false
-    private var oldVelocity = Vector3d.ZERO
     private var eyeHeight = 0F
     private val fluidHeights = Object2DoubleArrayMap<Tag<Fluid>>(2)
     private var fluidOnEyes: Tag<Fluid>? = null
-    private var portalCooldown = 0
     var isRemoved: Boolean = false
         private set
     private var wasDamaged = false
-    private var tickCount = 0
-    private var gravityTickCount = 0
 
     final override var isOnFire: Boolean
         get() = getSharedFlag(0)
@@ -237,8 +228,6 @@ abstract class KryptonEntity(override var world: KryptonWorld, override val type
     final override var frozenTicks: Int
         get() = data[MetadataKeys.FROZEN_TICKS]
         set(value) = data.set(MetadataKeys.FROZEN_TICKS, value)
-    val hasVelocity: Boolean
-        get() = velocity.x() != 0.0 && velocity.y() != 0.0 && velocity.z() != 0.0
 
     init {
         data.add(MetadataKeys.FLAGS)
@@ -488,8 +477,6 @@ abstract class KryptonEntity(override var world: KryptonWorld, override val type
     companion object {
 
         private val NEXT_ENTITY_ID = AtomicInteger(0)
-        @JvmStatic
-        protected val LOGGER = logger<KryptonEntity>()
 
         private const val FLUID_VECTOR_EPSILON = 0.003
         private const val FLUID_VECTOR_MAGIC = 0.0045000000000000005

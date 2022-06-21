@@ -145,16 +145,12 @@ abstract class KryptonLivingEntity(
     }
 
     fun setHeldItem(hand: Hand, item: KryptonItemStack) {
-        if (hand == Hand.MAIN) {
-            setEquipment(EquipmentSlot.MAIN_HAND, item)
-            return
+        when (hand) {
+            Hand.MAIN -> setEquipment(EquipmentSlot.MAIN_HAND, item)
+            Hand.OFF -> setEquipment(EquipmentSlot.OFF_HAND, item)
+            else -> error("Tried to set held item for hand $hand that should not exist! Please sure that no plugins are injecting " +
+                    "entries in to enums!")
         }
-        if (hand == Hand.OFF) {
-            setEquipment(EquipmentSlot.OFF_HAND, item)
-            return
-        }
-        error("Tried to set held item for hand $hand to item $item, when this hand should not exist! Please sure that no plugins are injecting " +
-                "entries in to enums!")
     }
 
     fun armor(slot: ArmorSlot): KryptonItemStack = equipment(EquipmentSlot.fromArmorSlot(slot))

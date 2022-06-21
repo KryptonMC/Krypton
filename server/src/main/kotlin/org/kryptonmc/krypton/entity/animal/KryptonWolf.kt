@@ -38,11 +38,7 @@ class KryptonWolf(world: KryptonWorld) : KryptonTamable(world, EntityTypes.WOLF,
     override var isAngry: Boolean
         get() = remainingAngerTime > 0
         set(value) {
-            if (value) {
-                startAngerTimer()
-            } else {
-                stopBeingAngry()
-            }
+            if (value) startAngerTimer() else stopBeingAngry()
         }
 
     override var collarColor: DyeColor
