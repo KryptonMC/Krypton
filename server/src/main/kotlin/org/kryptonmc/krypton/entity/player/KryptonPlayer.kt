@@ -465,7 +465,6 @@ class KryptonPlayer(
 
     fun hasCorrectTool(block: Block): Boolean = !block.requiresCorrectTool || inventory.heldItem(Hand.MAIN).type.handler().isCorrectTool(block)
 
-    /*
     fun interactOn(entity: KryptonEntity, hand: Hand): InteractionResult {
         if (isSpectator) {
             // TODO: Open spectator menu
@@ -491,7 +490,6 @@ class KryptonPlayer(
          */
         return InteractionResult.PASS
     }
-    */
 
     override fun addViewer(player: KryptonPlayer): Boolean {
         if (player === this) return false
