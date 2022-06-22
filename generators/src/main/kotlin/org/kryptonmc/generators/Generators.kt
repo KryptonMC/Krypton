@@ -49,18 +49,18 @@ fun main() {
     Bootstrap.bootStrap()
     val output = Path.of("api/src/generated/kotlin")
     val generator = StandardGenerator(output)
-    generator.run<Blocks, Block>(Registry.BLOCK, "block.Blocks", "block.Block", "BLOCK")
-    generator.run<SoundEvents, SoundEvent>(Registry.SOUND_EVENT, "effect.sound.SoundEvents", "effect.sound.SoundEvent", "SOUND_EVENT")
-    generator.run<Fluids, Fluid>(Registry.FLUID, "fluid.Fluids", "fluid.Fluid", "FLUID")
-    generator.run<Items, Item>(Registry.ITEM, "item.ItemTypes", "item.ItemType", "ITEM")
-    generator.run<Biomes, ResourceKey<*>>(BuiltinRegistries.BIOME, "world.biome.Biomes", "world.biome.Biome", "BIOME") {
+    generator.run<Blocks, Block>(Registry.BLOCK, "block/Blocks", "block/Block", "BLOCK")
+    generator.run<SoundEvents, SoundEvent>(Registry.SOUND_EVENT, "effect.sound/SoundEvents", "effect.sound/SoundEvent", "SOUND_EVENT")
+    generator.run<Fluids, Fluid>(Registry.FLUID, "fluid/Fluids", "fluid/Fluid", "FLUID")
+    generator.run<Items, Item>(Registry.ITEM, "item/ItemTypes", "item/ItemType", "ITEM")
+    generator.run<Biomes, ResourceKey<*>>(BuiltinRegistries.BIOME, "world.biome/Biomes", "world.biome/Biome", "BIOME") {
         (it.get(null) as ResourceKey<*>).location()
     }
-    generator.run<Attributes, Attribute>(Registry.ATTRIBUTE, "entity.attribute.AttributeTypes", "entity.attribute.AttributeType", "ATTRIBUTE")
+    generator.run<Attributes, Attribute>(Registry.ATTRIBUTE, "entity.attribute/AttributeTypes", "entity.attribute/AttributeType", "ATTRIBUTE")
     generator.run<BlockEntityType<*>, BlockEntityType<*>>(
         Registry.BLOCK_ENTITY_TYPE,
-        "block.entity.BlockEntityTypes",
-        "block.entity.BlockEntityType",
+        "block.entity/BlockEntityTypes",
+        "block.entity/BlockEntityType",
         "BLOCK_ENTITY_TYPE"
     )
     DyeColorGenerator(output).run()

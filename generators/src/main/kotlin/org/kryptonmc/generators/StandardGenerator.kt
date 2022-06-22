@@ -44,13 +44,13 @@ class StandardGenerator(@PublishedApi internal val output: Path) {
         keyGetter: (Field) -> ResourceLocation = { (registry as Registry<Any>).getKey(it.get(null))!! }
     ) {
         val pkg = "org.kryptonmc.api"
-        val className = ClassName("$pkg.$name")
-        val classReturnType = ClassName("$pkg.$returnType")
+        val className = className(name)
+        val classReturnType = className(returnType)
         val file = FileSpec.builder(className.packageName, className.simpleName)
             .indent("    ")
             .addImport("net.kyori.adventure.key", "Key")
             .addImport("$pkg.registry", "Registries")
-        val outputClass = TypeSpec.objectBuilder(name)
+        val outputClass = TypeSpec.objectBuilder(className)
             .addKdoc("This file is auto-generated. Do not edit this manually!")
             .addAnnotation(AnnotationSpec.builder(ClassName("org.kryptonmc.api.util", "Catalogue"))
                 .addMember("${classReturnType.simpleName}::class")
@@ -80,5 +80,15 @@ class StandardGenerator(@PublishedApi internal val output: Path) {
             .resolve("${className.simpleName}.kt")
         if (outputFile.exists()) return
         outputFile.tryCreateFile().writeText(stringBuilder.toString().performReplacements(classReturnType.simpleName, className.simpleName))
+    }
+
+    companion object {
+
+        @JvmStatic
+        @PublishedApi
+        internal fun className(name: String): ClassName {
+            val parts = name.split("/")
+            return ClassName("org.kryptonmc.api.${parts[0]}", parts[1])
+        }
     }
 }
