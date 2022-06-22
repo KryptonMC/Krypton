@@ -20,7 +20,6 @@ package org.kryptonmc.krypton.util
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap
 import org.kryptonmc.api.adventure.AdventureMessage
-import org.kryptonmc.api.adventure.Audiences
 import org.kryptonmc.api.auth.GameProfile
 import org.kryptonmc.api.auth.ProfileProperty
 import org.kryptonmc.api.block.property.Property
@@ -64,7 +63,6 @@ import org.kryptonmc.api.world.damage.DamageSource
 import org.kryptonmc.api.world.dimension.DimensionType
 import org.kryptonmc.api.world.rule.GameRule
 import org.kryptonmc.krypton.adventure.KryptonAdventureMessage
-import org.kryptonmc.krypton.adventure.KryptonAudiencesFactory
 import org.kryptonmc.krypton.auth.KryptonGameProfile
 import org.kryptonmc.krypton.auth.KryptonProfileProperty
 import org.kryptonmc.krypton.command.KryptonBrigadierCommand

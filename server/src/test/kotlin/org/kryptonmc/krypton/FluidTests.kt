@@ -19,7 +19,9 @@
 package org.kryptonmc.krypton
 
 import net.kyori.adventure.key.Key
+import org.junit.jupiter.api.BeforeAll
 import org.kryptonmc.api.fluid.Fluid
+import org.kryptonmc.krypton.util.Bootstrap
 import org.kryptonmc.krypton.world.fluid.KryptonFluid
 import kotlin.test.Test
 import kotlin.test.assertFalse
@@ -39,5 +41,14 @@ class FluidTests {
         assertFalse(fluidOne.compare(fluidTwo, Fluid.Comparator.ID))
         assertTrue(fluidOne.compare(fluidOne, Fluid.Comparator.STATE))
         assertFalse(fluidOne.compare(fluidTwo, Fluid.Comparator.STATE))
+    }
+
+    companion object {
+
+        @JvmStatic
+        @BeforeAll
+        fun bootstrap() {
+            Bootstrap.preload()
+        }
     }
 }

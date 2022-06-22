@@ -29,11 +29,11 @@ object SheepSerializer : EntitySerializer<KryptonSheep> {
     override fun load(entity: KryptonSheep, data: CompoundTag) {
         AgeableSerializer.load(entity, data)
         entity.isSheared = data.getBoolean("Sheared")
-        entity.color = Registries.DYE_COLORS[data.getByte("Color").toInt()]!!
+        entity.woolColor = Registries.DYE_COLORS[data.getByte("Color").toInt()]!!
     }
 
     override fun save(entity: KryptonSheep): CompoundTag.Builder = AgeableSerializer.save(entity).apply {
         boolean("Sheared", entity.isSheared)
-        byte("Color", Registries.DYE_COLORS.idOf(entity.color).toByte())
+        byte("Color", Registries.DYE_COLORS.idOf(entity.woolColor).toByte())
     }
 }
