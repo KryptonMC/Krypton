@@ -23,6 +23,7 @@ import org.kryptonmc.api.effect.sound.SoundEvents
 import org.kryptonmc.api.entity.EntityType
 import org.kryptonmc.api.entity.aquatic.Fish
 import org.kryptonmc.api.entity.attribute.AttributeTypes
+import org.kryptonmc.api.item.ItemStack
 import org.kryptonmc.api.item.ItemTypes
 import org.kryptonmc.krypton.entity.BucketStorable
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
@@ -57,6 +58,11 @@ abstract class KryptonFish(world: KryptonWorld, type: EntityType<out Fish>) : Kr
 
     // TODO: Implement proper bucket item meta
     override fun asBucket(): KryptonItemStack = KryptonItemStack.EMPTY
+
+    override fun bucket(): KryptonItemStack {
+        remove()
+        return asBucket()
+    }
 
     companion object {
 

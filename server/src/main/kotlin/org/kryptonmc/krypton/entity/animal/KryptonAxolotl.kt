@@ -94,6 +94,11 @@ class KryptonAxolotl(world: KryptonWorld) : KryptonAnimal(world, EntityTypes.AXO
     // TODO: Implement proper bucket item meta
     override fun asBucket(): KryptonItemStack = KryptonItemStack.EMPTY
 
+    override fun bucket(): KryptonItemStack {
+        remove()
+        return asBucket()
+    }
+
     companion object {
 
         private val VARIANTS = AxolotlVariant.values()
