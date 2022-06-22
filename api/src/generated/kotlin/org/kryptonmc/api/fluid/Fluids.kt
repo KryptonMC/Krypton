@@ -19,11 +19,16 @@ import org.kryptonmc.api.util.Catalogue
 public object Fluids {
 
     // @formatter:off
-    @JvmField public val EMPTY: Fluid = get("empty")
-    @JvmField public val FLOWING_WATER: Fluid = get("flowing_water")
-    @JvmField public val WATER: Fluid = get("water")
-    @JvmField public val FLOWING_LAVA: Fluid = get("flowing_lava")
-    @JvmField public val LAVA: Fluid = get("lava")
+    @JvmField
+    public val EMPTY: Fluid = get("empty")
+    @JvmField
+    public val FLOWING_WATER: Fluid = get("flowing_water")
+    @JvmField
+    public val WATER: Fluid = get("water")
+    @JvmField
+    public val FLOWING_LAVA: Fluid = get("flowing_lava")
+    @JvmField
+    public val LAVA: Fluid = get("lava")
 
     // @formatter:on
     @JvmStatic

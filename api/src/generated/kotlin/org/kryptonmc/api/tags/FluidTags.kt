@@ -19,8 +19,10 @@ import org.kryptonmc.api.util.Catalogue
 public object FluidTags {
 
     // @formatter:off
-    @JvmField public val WATER: Tag<Fluid> = get("water")
-    @JvmField public val LAVA: Tag<Fluid> = get("lava")
+    @JvmField
+    public val WATER: Tag<Fluid> = get("water")
+    @JvmField
+    public val LAVA: Tag<Fluid> = get("lava")
 
     // @formatter:on
     @JvmStatic
