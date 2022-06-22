@@ -26,15 +26,14 @@ import org.kryptonmc.api.block.Blocks
 import org.kryptonmc.api.block.property.Property
 import org.kryptonmc.api.fluid.Fluid
 import org.kryptonmc.api.item.ItemType
-import org.kryptonmc.api.item.ItemTypes
 import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.krypton.world.block.property.KryptonPropertyHolder
 
 @JvmRecord
 data class KryptonFluid(
     private val key: Key,
-    override val id: Int,
-    override val stateId: Int,
+    val id: Int,
+    val stateId: Int,
     override val bucket: ItemType,
     override val isEmpty: Boolean,
     override val explosionResistance: Double,
@@ -59,78 +58,4 @@ data class KryptonFluid(
     }
 
     override fun asBlock(): Block = Registries.BLOCK[blockKey] ?: Blocks.AIR
-
-    override fun toBuilder(): Builder = Builder(this)
-
-    class Builder(private val key: Key, private var id: Int, private var stateId: Int) : KryptonPropertyHolder.Builder<Fluid.Builder, Fluid>(),
-        Fluid.Builder {
-
-        private var bucket = ItemTypes.AIR
-        private var empty = false
-        private var resistance = 0.0
-        private var source = false
-        private var height = 0F
-        private var level = 0
-        private var block: Key? = null
-
-        constructor(fluid: Fluid) : this(fluid.key(), fluid.id, fluid.stateId) {
-            bucket = fluid.bucket
-            empty = fluid.isEmpty
-            resistance = fluid.explosionResistance
-            source = fluid.isSource
-            height = fluid.height
-            level = fluid.level
-            block = fluid.asBlock().key()
-        }
-
-        override fun id(id: Int): Fluid.Builder = apply { this.id = id }
-
-        override fun stateId(id: Int): Fluid.Builder = apply { stateId = id }
-
-        override fun bucket(type: ItemType): Fluid.Builder = apply { bucket = type }
-
-        override fun empty(value: Boolean): Fluid.Builder = apply { empty = value }
-
-        override fun resistance(resistance: Double): Fluid.Builder = apply { this.resistance = resistance }
-
-        override fun source(value: Boolean): Fluid.Builder = apply { source = value }
-
-        override fun height(height: Float): Fluid.Builder = apply { this.height = height }
-
-        override fun level(level: Int): Fluid.Builder = apply { this.level = level }
-
-        override fun block(key: Key): Fluid.Builder = apply { block = key }
-
-        override fun build(): KryptonFluid = KryptonFluid(
-            key,
-            id,
-            stateId,
-            bucket,
-            empty,
-            resistance,
-            source,
-            height,
-            level,
-            block ?: AIR_KEY,
-            availableProperties.build(),
-            properties.build()
-        )
-    }
-
-    object Factory : Fluid.Factory {
-
-        override fun builder(key: Key, id: Int, stateId: Int): Builder = Builder(key, id, stateId)
-
-        override fun fromId(id: Int): Fluid? {
-            if (Registries.FLUID.contains(id)) return null
-            return Registries.FLUID[id]
-        }
-
-        override fun fromStateId(id: Int): Fluid? = FluidLoader.STATES[id]
-    }
-
-    companion object {
-
-        private val AIR_KEY = Key.key("air")
-    }
 }

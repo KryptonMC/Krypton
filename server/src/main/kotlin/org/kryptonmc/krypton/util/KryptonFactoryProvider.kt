@@ -35,7 +35,6 @@ import org.kryptonmc.api.entity.EntityType
 import org.kryptonmc.api.entity.attribute.AttributeModifier
 import org.kryptonmc.api.entity.attribute.AttributeType
 import org.kryptonmc.api.entity.hanging.Picture
-import org.kryptonmc.api.fluid.Fluid
 import org.kryptonmc.api.inventory.InventoryType
 import org.kryptonmc.api.item.ItemRarity
 import org.kryptonmc.api.item.ItemStack
@@ -96,7 +95,6 @@ import org.kryptonmc.krypton.world.biome.KryptonClimate
 import org.kryptonmc.krypton.world.block.property.KryptonPropertyFactory
 import org.kryptonmc.krypton.world.damage.KryptonDamageSourceFactory
 import org.kryptonmc.krypton.world.dimension.KryptonDimensionType
-import org.kryptonmc.krypton.world.fluid.KryptonFluid
 import org.kryptonmc.krypton.world.rule.KryptonGameRule
 import org.kryptonmc.krypton.world.scoreboard.KryptonObjective
 import org.kryptonmc.krypton.world.scoreboard.KryptonScoreboard
@@ -146,7 +144,6 @@ object KryptonFactoryProvider : FactoryProvider {
         register<DimensionType.Factory>(KryptonDimensionType.Factory)
         register<ResourcePack.Factory>(KryptonResourcePack.Factory)
         register<Team.Factory>(KryptonTeam.Factory)
-        register<Fluid.Factory>(KryptonFluid.Factory)
         register<DyeColor.Factory>(KryptonDyeColor.Factory)
         register<Picture.Factory>(KryptonPicture.Factory)
         register<StatisticType.Factory>(KryptonStatisticType.Factory)
