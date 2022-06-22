@@ -101,6 +101,14 @@ org.kryptonmc.krypton.entity.metadata
 org.kryptonmc.krypton.entity.monster
 org.kryptonmc.krypton.entity.player
 org.kryptonmc.krypton.entity.projectile
+org.kryptonmc.krypton.entity.serializer
+org.kryptonmc.krypton.entity.serializer.ambient
+org.kryptonmc.krypton.entity.serializer.animal
+org.kryptonmc.krypton.entity.serializer.aquatic
+org.kryptonmc.krypton.entity.serializer.hanging
+org.kryptonmc.krypton.entity.serializer.monster
+org.kryptonmc.krypton.entity.serializer.player
+org.kryptonmc.krypton.entity.serializer.projectile
 org.kryptonmc.krypton.event
 org.kryptonmc.krypton.inventory
 org.kryptonmc.krypton.item
@@ -136,6 +144,7 @@ org.kryptonmc.krypton.tags
 org.kryptonmc.krypton.user
 org.kryptonmc.krypton.util
 org.kryptonmc.krypton.util.nbt
+org.kryptonmc.krypton.util.pool
 org.kryptonmc.krypton.util.serialization
 org.kryptonmc.krypton.util.spark
 org.kryptonmc.krypton.util.spark.ticking
