@@ -61,13 +61,7 @@ public interface ParticleEffect {
     @ApiStatus.Internal
     public interface Factory {
 
-        public fun of(
-            type: ParticleType,
-            quantity: Int,
-            offset: Vector3d,
-            longDistance: Boolean,
-            data: ParticleData?
-        ): ParticleEffect
+        public fun of(type: ParticleType, quantity: Int, offset: Vector3d, longDistance: Boolean, data: ParticleData?): ParticleEffect
     }
 
     public companion object {
@@ -88,12 +82,7 @@ public interface ParticleEffect {
         @JvmOverloads
         @JvmStatic
         @Contract("_ -> new", pure = true)
-        public fun of(
-            type: ParticleType,
-            quantity: Int,
-            offset: Vector3d,
-            longDistance: Boolean,
-            data: ParticleData? = null
-        ): ParticleEffect = FACTORY.of(type, quantity, offset, longDistance, data)
+        public fun of(type: ParticleType, quantity: Int, offset: Vector3d, longDistance: Boolean, data: ParticleData? = null): ParticleEffect =
+            FACTORY.of(type, quantity, offset, longDistance, data)
     }
 }

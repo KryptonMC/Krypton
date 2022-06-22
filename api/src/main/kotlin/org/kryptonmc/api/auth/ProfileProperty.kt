@@ -79,10 +79,6 @@ public interface ProfileProperty {
         @JvmStatic
         @JvmOverloads
         @Contract("_, _, _ -> new", pure = true)
-        public fun of(
-            name: String,
-            value: String,
-            signature: String? = null
-        ): ProfileProperty = FACTORY.of(name, value, signature)
+        public fun of(name: String, value: String, signature: String? = null): ProfileProperty = FACTORY.of(name, value, signature)
     }
 }

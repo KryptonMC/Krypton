@@ -124,12 +124,8 @@ public interface AmbientMoodSettings : Buildable<AmbientMoodSettings, AmbientMoo
          */
         @JvmStatic
         @Contract("_ -> new", pure = true)
-        public fun of(
-            sound: SoundEvent,
-            tickDelay: Int,
-            blockSearchExtent: Int,
-            offset: Double
-        ): AmbientMoodSettings = FACTORY.of(sound, tickDelay, blockSearchExtent, offset)
+        public fun of(sound: SoundEvent, tickDelay: Int, blockSearchExtent: Int, offset: Double): AmbientMoodSettings =
+            FACTORY.of(sound, tickDelay, blockSearchExtent, offset)
 
         /**
          * Creates a new builder for ambient mood settings.

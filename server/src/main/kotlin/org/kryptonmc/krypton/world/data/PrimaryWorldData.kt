@@ -22,6 +22,8 @@ import kotlinx.collections.immutable.persistentSetOf
 import org.kryptonmc.api.world.Difficulty
 import org.kryptonmc.api.world.GameMode
 import org.kryptonmc.krypton.KryptonPlatform
+import org.kryptonmc.krypton.util.Difficulties
+import org.kryptonmc.krypton.util.GameModes
 import org.kryptonmc.krypton.world.generation.WorldGenerationSettings
 import org.kryptonmc.krypton.world.rule.KryptonGameRuleHolder
 import org.kryptonmc.nbt.CompoundTag
@@ -112,7 +114,7 @@ class PrimaryWorldData(
             return PrimaryWorldData(
                 data.getString("LevelName"),
                 folder,
-                GameMode.fromId(data.getInt("GameType", 0)) ?: GameMode.SURVIVAL,
+                GameModes.fromId(data.getInt("GameType", 0)) ?: GameMode.SURVIVAL,
                 resolveDifficulty(data),
                 data.getBoolean("hardcore", false),
                 KryptonGameRuleHolder.from(data.getCompound("GameRules")),
@@ -162,7 +164,7 @@ class PrimaryWorldData(
         @JvmStatic
         private fun resolveDifficulty(data: CompoundTag): Difficulty {
             var difficulty: Difficulty? = null
-            if (data.contains("Difficulty", 99)) difficulty = Difficulty.fromId(data.getInt("Difficulty"))
+            if (data.contains("Difficulty", 99)) difficulty = Difficulties.fromId(data.getInt("Difficulty"))
             return difficulty ?: Difficulty.NORMAL
         }
     }

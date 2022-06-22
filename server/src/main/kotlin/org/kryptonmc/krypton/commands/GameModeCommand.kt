@@ -34,13 +34,14 @@ import org.kryptonmc.krypton.command.literal
 import org.kryptonmc.krypton.command.permission
 import org.kryptonmc.krypton.command.runs
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
+import org.kryptonmc.krypton.util.GameModes
 
 object GameModeCommand : InternalCommand {
 
     override fun register(dispatcher: CommandDispatcher<Sender>) {
         val command = literal("gamemode") { permission(KryptonPermission.GAME_MODE) }
-        GameMode.values().forEach { mode ->
-            command.then(literal(mode.serialized) {
+        GameModes.VALUES.forEach { mode ->
+            command.then(literal(mode.name.lowercase()) {
                 runs { gameModeArgument(it, mode) }
                 argument("targets", EntityArgument.players()) {
                     runs { targetArgument(it, mode) }
@@ -50,20 +51,20 @@ object GameModeCommand : InternalCommand {
 
         command.then(argument("gameMode", StringArgumentType.string()) {
             runs {
-                var gameMode = GameMode.fromAbbreviation(it.argument("gameMode"))
+                var gameMode = GameModes.fromAbbreviation(it.argument("gameMode"))
                 if (gameMode == null) {
                     val id = it.argument<String>("gameMode").toIntOrNull() ?: return@runs
-                    gameMode = GameMode.fromId(id)
+                    gameMode = GameModes.fromId(id)
                 }
                 if (gameMode == null) return@runs
                 gameModeArgument(it, gameMode)
             }
             argument("targets", EntityArgument.players()) {
                 runs {
-                    var gameMode = GameMode.fromAbbreviation(it.argument("gameMode"))
+                    var gameMode = GameModes.fromAbbreviation(it.argument("gameMode"))
                     if (gameMode == null) {
                         val id = it.argument<String>("gameMode").toIntOrNull() ?: return@runs
-                        gameMode = GameMode.fromId(id)
+                        gameMode = GameModes.fromId(id)
                     }
                     if (gameMode == null) return@runs
                     gameModeArgument(it, gameMode!!)

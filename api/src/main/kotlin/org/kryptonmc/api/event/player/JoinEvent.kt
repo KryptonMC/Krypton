@@ -37,11 +37,7 @@ public data class JoinEvent(
  * @param hasJoinedBefore if the player joining has joined before
  */
 @JvmRecord
-public data class JoinResult(
-    override val isAllowed: Boolean,
-    public val message: Component?,
-    public val hasJoinedBefore: Boolean
-) : Result {
+public data class JoinResult(override val isAllowed: Boolean, public val message: Component?, public val hasJoinedBefore: Boolean) : Result {
 
     public companion object {
 
@@ -75,10 +71,7 @@ public data class JoinResult(
          */
         @JvmStatic
         @JvmOverloads
-        public fun allowed(
-            message: Component,
-            hasJoinedBefore: Boolean = false
-        ): JoinResult = JoinResult(true, message, hasJoinedBefore)
+        public fun allowed(message: Component, hasJoinedBefore: Boolean = false): JoinResult = JoinResult(true, message, hasJoinedBefore)
 
         /**
          * Creates a new join result that denies the player from joining,
@@ -106,9 +99,6 @@ public data class JoinResult(
          */
         @JvmStatic
         @JvmOverloads
-        public fun denied(
-            message: Component,
-            hasJoinedBefore: Boolean = false
-        ): JoinResult = JoinResult(false, message, hasJoinedBefore)
+        public fun denied(message: Component, hasJoinedBefore: Boolean = false): JoinResult = JoinResult(false, message, hasJoinedBefore)
     }
 }

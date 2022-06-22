@@ -19,8 +19,4 @@ import org.spongepowered.math.vector.Vector2f
  * @param newRotation the new rotation of the player
  */
 @JvmRecord
-public data class RotateEvent(
-    public val player: Player,
-    public val oldRotation: Vector2f,
-    public val newRotation: Vector2f
-)
+public data class RotateEvent(public val player: Player, public val oldRotation: Vector2f, public val newRotation: Vector2f)

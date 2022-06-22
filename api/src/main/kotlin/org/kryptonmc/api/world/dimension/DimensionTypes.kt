@@ -19,10 +19,14 @@ import org.kryptonmc.api.util.Catalogue
 public object DimensionTypes {
 
     // @formatter:off
-    @JvmField public val OVERWORLD: DimensionType = get("overworld")
-    @JvmField public val OVERWORLD_CAVES: DimensionType = get("overworld_caves")
-    @JvmField public val THE_NETHER: DimensionType = get("the_nether")
-    @JvmField public val THE_END: DimensionType = get("the_end")
+    @JvmField
+    public val OVERWORLD: DimensionType = get("overworld")
+    @JvmField
+    public val OVERWORLD_CAVES: DimensionType = get("overworld_caves")
+    @JvmField
+    public val THE_NETHER: DimensionType = get("the_nether")
+    @JvmField
+    public val THE_END: DimensionType = get("the_end")
 
     // @formatter:on
     @JvmStatic

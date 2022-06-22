@@ -21,10 +21,14 @@ import org.kryptonmc.api.util.Catalogue
 public object ItemRarities {
 
     // @formatter:off
-    @JvmField public val COMMON: ItemRarity = register("common", NamedTextColor.WHITE)
-    @JvmField public val UNCOMMON: ItemRarity = register("uncommon", NamedTextColor.YELLOW)
-    @JvmField public val RARE: ItemRarity = register("rare", NamedTextColor.AQUA)
-    @JvmField public val EPIC: ItemRarity = register("epic", NamedTextColor.LIGHT_PURPLE)
+    @JvmField
+    public val COMMON: ItemRarity = register("common", NamedTextColor.WHITE)
+    @JvmField
+    public val UNCOMMON: ItemRarity = register("uncommon", NamedTextColor.YELLOW)
+    @JvmField
+    public val RARE: ItemRarity = register("rare", NamedTextColor.AQUA)
+    @JvmField
+    public val EPIC: ItemRarity = register("epic", NamedTextColor.LIGHT_PURPLE)
 
     // @formatter:on
     @JvmStatic

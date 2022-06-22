@@ -54,7 +54,7 @@ class KryptonBanBuilder(private var type: BanType) : Ban.Builder {
 
     override fun creationDate(date: OffsetDateTime): Ban.Builder = apply { start = date }
 
-    override fun expirationDate(date: OffsetDateTime): Ban.Builder = apply { end = date }
+    override fun expirationDate(date: OffsetDateTime?): Ban.Builder = apply { end = date }
 
     override fun build(): Ban = when (type) {
         BanTypes.PROFILE -> {

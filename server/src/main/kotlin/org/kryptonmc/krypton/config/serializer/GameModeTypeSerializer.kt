@@ -19,5 +19,6 @@
 package org.kryptonmc.krypton.config.serializer
 
 import org.kryptonmc.api.world.GameMode
+import org.kryptonmc.krypton.util.GameModes
 
-object GameModeTypeSerializer : EnumSerializer<GameMode>(GameMode::class, "game mode", GameMode::fromId, GameMode::fromName)
+object GameModeTypeSerializer : EnumSerializer<GameMode>(GameMode::class, "game mode", GameModes::fromId, GameModes::fromName)

@@ -155,6 +155,6 @@ public interface Ban {
          * @return this builder
          */
         @Contract("_ -> this", mutates = "this")
-        public fun expirationDate(date: OffsetDateTime): Builder
+        public fun expirationDate(date: OffsetDateTime?): Builder
     }
 }

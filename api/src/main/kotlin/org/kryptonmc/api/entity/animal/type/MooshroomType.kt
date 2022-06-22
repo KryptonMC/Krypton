@@ -20,10 +20,7 @@ import org.kryptonmc.api.item.ItemTypes
  * @param item the mushroom item this mooshroom type represents
  * @param block the mushroom block this mooshroom type represents
  */
-public enum class MooshroomType(
-    public val item: ItemType,
-    public val block: Block
-) {
+public enum class MooshroomType(public val item: ItemType, public val block: Block) {
 
     BROWN(ItemTypes.BROWN_MUSHROOM, Blocks.BROWN_MUSHROOM_BLOCK),
     RED(ItemTypes.RED_MUSHROOM, Blocks.RED_MUSHROOM_BLOCK)

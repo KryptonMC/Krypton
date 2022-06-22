@@ -38,10 +38,7 @@ public interface IndirectEntityDamageSource : EntityDamageSource {
          */
         @JvmStatic
         @Contract("_ -> new", pure = true)
-        public fun of(
-            type: DamageType,
-            entity: Entity,
-            indirectEntity: Entity
-        ): IndirectEntityDamageSource = DamageSource.FACTORY.indirectEntity(type, entity, indirectEntity)
+        public fun of(type: DamageType, entity: Entity, indirectEntity: Entity): IndirectEntityDamageSource =
+            DamageSource.FACTORY.indirectEntity(type, entity, indirectEntity)
     }
 }

@@ -23,10 +23,14 @@ import org.kryptonmc.api.util.Catalogue
 public object TagTypes {
 
     // @formatter:off
-    @JvmField public val BLOCKS: TagType<Block> = get("block")
-    @JvmField public val ENTITY_TYPES: TagType<EntityType<*>> = get("entity_type")
-    @JvmField public val FLUIDS: TagType<Fluid> = get("fluid")
-    @JvmField public val ITEMS: TagType<ItemType> = get("item")
+    @JvmField
+    public val BLOCKS: TagType<Block> = get("block")
+    @JvmField
+    public val ENTITY_TYPES: TagType<EntityType<*>> = get("entity_type")
+    @JvmField
+    public val FLUIDS: TagType<Fluid> = get("fluid")
+    @JvmField
+    public val ITEMS: TagType<ItemType> = get("item")
 
     // @formatter:on
     @Suppress("UNCHECKED_CAST")

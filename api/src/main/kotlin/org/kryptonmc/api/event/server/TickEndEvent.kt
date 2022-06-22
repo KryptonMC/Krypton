@@ -16,8 +16,4 @@ package org.kryptonmc.api.event.server
  * @param timeEnd the time this tick ended in milliseconds
  */
 @JvmRecord
-public data class TickEndEvent(
-    public val tickNumber: Int,
-    public val tickDuration: Long,
-    public val timeEnd: Long
-)
+public data class TickEndEvent(public val tickNumber: Int, public val tickDuration: Long, public val timeEnd: Long)

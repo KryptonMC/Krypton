@@ -30,8 +30,5 @@ internal annotation class EntityTypeDsl
 @EntityTypeDsl
 @JvmSynthetic
 @Contract("_ -> new", pure = true)
-public inline fun <T : Entity> entityType(
-    key: Key,
-    category: EntityCategory,
-    builder: EntityType.Builder<T>.() -> Unit
-): EntityType<T> = EntityType.builder<T>(key, category).apply(builder).build()
+public inline fun <T : Entity> entityType(key: Key, category: EntityCategory, builder: EntityType.Builder<T>.() -> Unit): EntityType<T> =
+    EntityType.builder<T>(key, category).apply(builder).build()

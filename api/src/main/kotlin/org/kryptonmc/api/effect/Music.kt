@@ -69,11 +69,7 @@ public interface Music {
          */
         @JvmStatic
         @Contract("_ -> new", pure = true)
-        public fun of(
-            sound: SoundEvent,
-            minimumDelay: Int,
-            maximumDelay: Int,
-            replaceCurrentMusic: Boolean
-        ): Music = FACTORY.of(sound, minimumDelay, maximumDelay, replaceCurrentMusic)
+        public fun of(sound: SoundEvent, minimumDelay: Int, maximumDelay: Int, replaceCurrentMusic: Boolean): Music =
+            FACTORY.of(sound, minimumDelay, maximumDelay, replaceCurrentMusic)
     }
 }

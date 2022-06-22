@@ -39,7 +39,7 @@ class KryptonWrittenBookMeta(data: CompoundTag) : AbstractItemMeta<KryptonWritte
     override val author: Component = LegacyComponentSerializer.legacySection().deserialize(data.getString("author"))
     override val pages: PersistentList<Component> = data.getList("pages", StringTag.ID)
         .mapPersistentList { GsonComponentSerializer.gson().deserialize((it as StringTag).value) }
-    override val generation: WrittenBookGeneration = WrittenBookGeneration.fromId(data.getInt("generation")) ?: WrittenBookGeneration.ORIGINAL
+    override val generation: WrittenBookGeneration = GENERATIONS.getOrNull(data.getInt("generation")) ?: WrittenBookGeneration.ORIGINAL
 
     override fun copy(data: CompoundTag): KryptonWrittenBookMeta = KryptonWrittenBookMeta(data)
 
@@ -95,6 +95,11 @@ class KryptonWrittenBookMeta(data: CompoundTag) : AbstractItemMeta<KryptonWritte
         }
 
         override fun build(): KryptonWrittenBookMeta = KryptonWrittenBookMeta(buildData().build())
+    }
+
+    companion object {
+
+        private val GENERATIONS = WrittenBookGeneration.values()
     }
 }
 

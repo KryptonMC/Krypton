@@ -19,8 +19,4 @@ import org.spongepowered.math.vector.Vector3d
  * @param newLocation the new location of the player
  */
 @JvmRecord
-public data class MoveEvent(
-    public val player: Player,
-    public val oldLocation: Vector3d,
-    public val newLocation: Vector3d,
-)
+public data class MoveEvent(public val player: Player, public val oldLocation: Vector3d, public val newLocation: Vector3d)

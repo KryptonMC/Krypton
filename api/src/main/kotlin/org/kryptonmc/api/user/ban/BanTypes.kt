@@ -19,8 +19,10 @@ import org.kryptonmc.api.util.Catalogue
 public object BanTypes {
 
     // @formatter:off
-    @JvmField public val IP: BanType = register<Ban.IP>("ip")
-    @JvmField public val PROFILE: BanType = register<Ban.Profile>("profile")
+    @JvmField
+    public val IP: BanType = register<Ban.IP>("ip")
+    @JvmField
+    public val PROFILE: BanType = register<Ban.Profile>("profile")
 
     // @formatter:on
     @JvmStatic

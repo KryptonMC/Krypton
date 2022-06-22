@@ -14,54 +14,22 @@ import org.spongepowered.math.vector.Vector3i
  * Represents a three-dimensional
  * [Cardinal direction](https://en.wikipedia.org/wiki/Cardinal_direction).
  *
- * @param serialized the name
  * @param axis the axis of this direction
  * @param axisDirection the direction of the axis of this direction
  * @param normal the normal of this direction
  */
 public enum class Direction(
-    @get:JvmName("serialized") override val serialized: String,
     @get:JvmName("axis") public val axis: Axis,
     @get:JvmName("axisDirection") public val axisDirection: AxisDirection,
     @get:JvmName("normal") public val normal: Vector3i
-) : StringSerializable {
+) {
 
-    DOWN(
-        "down",
-        Axis.Y,
-        AxisDirection.NEGATIVE,
-        Vector3i(0, -1, 0)
-    ),
-    UP(
-        "up",
-        Axis.Y,
-        AxisDirection.POSITIVE,
-        Vector3i(0, 1, 0)
-    ),
-    NORTH(
-        "north",
-        Axis.Z,
-        AxisDirection.NEGATIVE,
-        Vector3i(0, 0, -1)
-    ),
-    SOUTH(
-        "south",
-        Axis.Z,
-        AxisDirection.POSITIVE,
-        Vector3i(0, 0, 1)
-    ),
-    WEST(
-        "west",
-        Axis.X,
-        AxisDirection.NEGATIVE,
-        Vector3i(-1, 0, 0)
-    ),
-    EAST(
-        "east",
-        Axis.X,
-        AxisDirection.POSITIVE,
-        Vector3i(1, 0, 0)
-    );
+    DOWN(Axis.Y, AxisDirection.NEGATIVE, Vector3i(0, -1, 0)),
+    UP(Axis.Y, AxisDirection.POSITIVE, Vector3i(0, 1, 0)),
+    NORTH(Axis.Z, AxisDirection.NEGATIVE, Vector3i(0, 0, -1)),
+    SOUTH(Axis.Z, AxisDirection.POSITIVE, Vector3i(0, 0, 1)),
+    WEST(Axis.X, AxisDirection.NEGATIVE, Vector3i(-1, 0, 0)),
+    EAST(Axis.X, AxisDirection.POSITIVE, Vector3i(1, 0, 0));
 
     /**
      * The normal on the X axis.
@@ -100,24 +68,22 @@ public enum class Direction(
 
     /**
      * Axes that a direction may be on.
-     *
-     * @param serialized the name
      */
-    public enum class Axis(@get:JvmName("serialized") override val serialized: String) : StringSerializable {
+    public enum class Axis {
 
-        X("x") {
+        X {
 
             override fun select(x: Int, y: Int, z: Int): Int = x
 
             override fun select(x: Double, y: Double, z: Double): Double = x
         },
-        Y("y") {
+        Y {
 
             override fun select(x: Int, y: Int, z: Int): Int = y
 
             override fun select(x: Double, y: Double, z: Double): Double = y
         },
-        Z("z") {
+        Z {
 
             override fun select(x: Int, y: Int, z: Int): Int = z
 
@@ -163,15 +129,11 @@ public enum class Direction(
      * The direction of an [Axis] on a plane.
      *
      * @param step the step
-     * @param serialized the name
      */
-    public enum class AxisDirection(
-        @get:JvmName("step") public val step: Int,
-        @get:JvmName("serialized") override val serialized: String
-    ) : StringSerializable {
+    public enum class AxisDirection(@get:JvmName("step") public val step: Int) {
 
-        POSITIVE(1, "Towards positive"),
-        NEGATIVE(-1, "Towards negative");
+        POSITIVE(1),
+        NEGATIVE(-1);
 
         /**
          * The opposite direction.

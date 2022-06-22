@@ -18,13 +18,20 @@ import org.kryptonmc.api.util.Catalogue
 @Catalogue(EntityCategory::class)
 public object EntityCategories {
 
-    @JvmField public val MONSTER: EntityCategory = get("monster")
-    @JvmField public val CREATURE: EntityCategory = get("creature")
-    @JvmField public val AMBIENT: EntityCategory = get("ambient")
-    @JvmField public val UNDERGROUND_WATER_CREATURE: EntityCategory = get("underground_water_creature")
-    @JvmField public val WATER_CREATURE: EntityCategory = get("water_creature")
-    @JvmField public val WATER_AMBIENT: EntityCategory = get("water_ambient")
-    @JvmField public val MISC: EntityCategory = get("misc")
+    @JvmField
+    public val MONSTER: EntityCategory = get("monster")
+    @JvmField
+    public val CREATURE: EntityCategory = get("creature")
+    @JvmField
+    public val AMBIENT: EntityCategory = get("ambient")
+    @JvmField
+    public val UNDERGROUND_WATER_CREATURE: EntityCategory = get("underground_water_creature")
+    @JvmField
+    public val WATER_CREATURE: EntityCategory = get("water_creature")
+    @JvmField
+    public val WATER_AMBIENT: EntityCategory = get("water_ambient")
+    @JvmField
+    public val MISC: EntityCategory = get("misc")
 
     @JvmStatic
     private fun get(name: String) = Registries.ENTITY_CATEGORIES[Key.key(name)]!!

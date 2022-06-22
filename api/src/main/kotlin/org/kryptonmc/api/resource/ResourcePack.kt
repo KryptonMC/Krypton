@@ -103,11 +103,7 @@ public interface ResourcePack {
          */
         @JvmStatic
         @Contract("_ -> new", pure = true)
-        public fun of(
-            uri: URI,
-            hash: String,
-            isForced: Boolean,
-            promptMessage: Component?
-        ): ResourcePack = FACTORY.of(uri, hash, isForced, promptMessage)
+        public fun of(uri: URI, hash: String, isForced: Boolean, promptMessage: Component?): ResourcePack =
+            FACTORY.of(uri, hash, isForced, promptMessage)
     }
 }

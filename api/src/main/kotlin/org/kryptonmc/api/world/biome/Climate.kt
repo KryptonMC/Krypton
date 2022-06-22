@@ -122,12 +122,8 @@ public interface Climate : Buildable<Climate, Climate.Builder> {
          */
         @JvmStatic
         @Contract("_ -> new", pure = true)
-        public fun of(
-            precipitation: Precipitation,
-            temperature: Float,
-            downfall: Float,
-            temperatureModifier: TemperatureModifier
-        ): Climate = FACTORY.of(precipitation, temperature, downfall, temperatureModifier)
+        public fun of(precipitation: Precipitation, temperature: Float, downfall: Float, temperatureModifier: TemperatureModifier): Climate =
+            FACTORY.of(precipitation, temperature, downfall, temperatureModifier)
 
         /**
          * Creates a new builder for climates.

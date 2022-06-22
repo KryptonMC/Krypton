@@ -39,7 +39,7 @@ object DifficultyCommand : InternalCommand {
             }
         }
         Difficulty.values().forEach { difficulty ->
-            command.then(literal(difficulty.serialized) {
+            command.then(literal(difficulty.name.lowercase()) {
                 runs {
                     val sender = it.source as? KryptonPlayer ?: return@runs
                     if (sender.world.difficulty == difficulty) {

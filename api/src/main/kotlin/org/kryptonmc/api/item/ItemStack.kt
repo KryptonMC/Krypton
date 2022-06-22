@@ -172,10 +172,8 @@ public interface ItemStack : Buildable<ItemStack, ItemStack.Builder> {
      * @return a new item stack
      */
     @Contract("_ -> new", pure = true)
-    public fun <B : ItemMetaBuilder<B, P>, P : ItemMetaBuilder.Provider<B>> withMeta(
-        type: Class<P>,
-        builder: Consumer<B>
-    ): ItemStack = withMeta(type) { builder.accept(this) }
+    public fun <B : ItemMetaBuilder<B, P>, P : ItemMetaBuilder.Provider<B>> withMeta(type: Class<P>, builder: Consumer<B>): ItemStack =
+        withMeta(type) { builder.accept(this) }
 
     /**
      * For building new [ItemStack]s.
@@ -249,10 +247,7 @@ public interface ItemStack : Buildable<ItemStack, ItemStack.Builder> {
         @ItemDsl
         @JvmSynthetic
         @Contract("_ -> this", mutates = "this")
-        public fun <B : ItemMetaBuilder<B, P>, P : ItemMetaBuilder.Provider<B>> meta(
-            type: Class<P>,
-            builder: B.() -> Unit
-        ): Builder
+        public fun <B : ItemMetaBuilder<B, P>, P : ItemMetaBuilder.Provider<B>> meta(type: Class<P>, builder: B.() -> Unit): Builder
 
         /**
          * Applies the given [builder] function to the metadata builder for
@@ -266,10 +261,8 @@ public interface ItemStack : Buildable<ItemStack, ItemStack.Builder> {
          */
         @ItemDsl
         @Contract("_ -> this", mutates = "this")
-        public fun <B : ItemMetaBuilder<B, P>, P : ItemMetaBuilder.Provider<B>> meta(
-            type: Class<P>,
-            builder: Consumer<B>
-        ): Builder = meta(type) { builder.accept(this) }
+        public fun <B : ItemMetaBuilder<B, P>, P : ItemMetaBuilder.Provider<B>> meta(type: Class<P>, builder: Consumer<B>): Builder =
+            meta(type) { builder.accept(this) }
 
         /**
          * Builds a new [ItemStack] with the settings retrieved from

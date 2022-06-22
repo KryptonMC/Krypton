@@ -190,11 +190,8 @@ public interface Scoreboard : Buildable<Scoreboard, Scoreboard.Builder> {
         @ScoreboardDsl
         @JvmSynthetic
         @Contract("_ -> this", mutates = "this")
-        public fun objective(
-            name: String,
-            criterion: Criterion,
-            builder: Objective.Builder.() -> Unit
-        ): Builder = objective(Objective.builder(name, criterion).apply(builder).build())
+        public fun objective(name: String, criterion: Criterion, builder: Objective.Builder.() -> Unit): Builder =
+            objective(Objective.builder(name, criterion).apply(builder).build())
 
         /**
          * Creates a new objective builder with the given values, applies the
@@ -208,11 +205,8 @@ public interface Scoreboard : Buildable<Scoreboard, Scoreboard.Builder> {
          */
         @ScoreboardDsl
         @Contract("_ -> this", mutates = "this")
-        public fun objective(
-            name: String,
-            criterion: Criterion,
-            builder: Consumer<Objective.Builder>
-        ): Builder = objective(name, criterion) { builder.accept(this) }
+        public fun objective(name: String, criterion: Criterion, builder: Consumer<Objective.Builder>): Builder =
+            objective(name, criterion) { builder.accept(this) }
 
         /**
          * Adds the given [objectives] to the list of objectives for the

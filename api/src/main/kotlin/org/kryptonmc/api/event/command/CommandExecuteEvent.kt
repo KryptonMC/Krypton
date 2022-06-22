@@ -11,6 +11,7 @@ package org.kryptonmc.api.event.command
 import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.command.Sender
 import org.kryptonmc.api.event.ResultedEvent
+import org.kryptonmc.api.event.ResultedEvent.Result
 
 /**
  * Called when the given [command] is executed by the given [sender].
@@ -34,10 +35,7 @@ public data class CommandExecuteEvent(
  * @param command the command to forward
  */
 @JvmRecord
-public data class CommandResult(
-    override val isAllowed: Boolean,
-    public val command: String? = null
-) : ResultedEvent.Result {
+public data class CommandResult(override val isAllowed: Boolean, public val command: String? = null) : Result {
 
     public companion object {
 

@@ -34,20 +34,5 @@ public enum class WrittenBookGeneration {
     /**
      * Unused in vanilla, and functions the same as [COPY_OF_COPY].
      */
-    TATTERED;
-
-    public companion object {
-
-        private val VALUES = values()
-
-        /**
-         * Gets the written book generation with the given [id], or returns
-         * null if there is no written book generation with the given [id].
-         *
-         * @param id the ID
-         * @return the generation with the ID, or null if not present
-         */
-        @JvmStatic
-        public fun fromId(id: Int): WrittenBookGeneration? = VALUES.getOrNull(id)
-    }
+    TATTERED
 }

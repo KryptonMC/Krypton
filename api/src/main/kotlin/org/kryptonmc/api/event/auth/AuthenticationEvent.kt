@@ -30,10 +30,7 @@ public data class AuthenticationEvent(@get:JvmName("username") public val userna
  * @param profile the optional profile for a successful result
  */
 @JvmRecord
-public data class AuthenticationResult(
-    override val isAllowed: Boolean,
-    public val profile: GameProfile?
-) : Result {
+public data class AuthenticationResult(override val isAllowed: Boolean, public val profile: GameProfile?) : Result {
 
     public companion object {
 

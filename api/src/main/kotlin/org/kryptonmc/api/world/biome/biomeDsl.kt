@@ -29,7 +29,4 @@ internal annotation class BiomeDsl
 @BiomeDsl
 @JvmSynthetic
 @Contract("_ -> new", pure = true)
-public inline fun biome(
-    key: Key,
-    builder: Biome.Builder.() -> Unit
-): Biome = Biome.builder(key).apply(builder).build()
+public inline fun biome(key: Key, builder: Biome.Builder.() -> Unit): Biome = Biome.builder(key).apply(builder).build()

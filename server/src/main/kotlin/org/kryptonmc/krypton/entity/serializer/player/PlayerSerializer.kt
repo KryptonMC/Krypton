@@ -32,6 +32,7 @@ import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.entity.serializer.EntitySerializer
 import org.kryptonmc.krypton.entity.serializer.LivingEntitySerializer
 import org.kryptonmc.krypton.service.KryptonVanishService
+import org.kryptonmc.krypton.util.GameModes
 import org.kryptonmc.krypton.util.serialization.Codecs
 import org.kryptonmc.krypton.util.serialization.encode
 import org.kryptonmc.nbt.CompoundTag
@@ -46,8 +47,8 @@ object PlayerSerializer : EntitySerializer<KryptonPlayer> {
 
     override fun load(entity: KryptonPlayer, data: CompoundTag) {
         LivingEntitySerializer.load(entity, data)
-        entity.updateGameMode(GameMode.fromId(data.getInt("playerGameType")) ?: GameMode.SURVIVAL, ChangeGameModeEvent.Cause.LOAD)
-        if (data.contains("previousPlayerGameType", IntTag.ID)) entity.oldGameMode = GameMode.fromId(data.getInt("previousPlayerGameType"))
+        entity.updateGameMode(GameModes.fromId(data.getInt("playerGameType")) ?: GameMode.SURVIVAL, ChangeGameModeEvent.Cause.LOAD)
+        if (data.contains("previousPlayerGameType", IntTag.ID)) entity.oldGameMode = GameModes.fromId(data.getInt("previousPlayerGameType"))
         entity.inventory.load(data.getList("Inventory", CompoundTag.ID))
         entity.inventory.heldSlot = data.getInt("SelectedItemSlot")
         entity.data[MetadataKeys.PLAYER.SCORE] = data.getInt("Score")

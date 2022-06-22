@@ -19,7 +19,4 @@ import org.kryptonmc.api.resource.ResourcePack
  * @param status the status the client reported
  */
 @JvmRecord
-public data class ResourcePackStatusEvent(
-    public val player: Player,
-    public val status: ResourcePack.Status
-)
+public data class ResourcePackStatusEvent(public val player: Player, public val status: ResourcePack.Status)
