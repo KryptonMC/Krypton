@@ -10,7 +10,6 @@ package org.kryptonmc.api.world
 
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.TranslatableComponent
-import org.kryptonmc.api.util.StringSerializable
 import org.kryptonmc.api.util.TranslationHolder
 import org.kryptonmc.api.world.damage.type.DamageType
 
@@ -24,17 +23,13 @@ import org.kryptonmc.api.world.damage.type.DamageType
  * @param canBuild whether players in this game mode can build
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
-public enum class GameMode(
-    @get:JvmName("serialized") override val serialized: String,
-    public val abbreviation: String,
-    public val canBuild: Boolean
-) : StringSerializable, TranslationHolder {
+public enum class GameMode(public val abbreviation: String, public val canBuild: Boolean) : TranslationHolder {
 
     /**
      * Survival mode is the default game mode. In it, you can access most
      * gameplay features, but you will take damage, and cannot fly.
      */
-    SURVIVAL("survival", "s", true),
+    SURVIVAL("s", true),
 
     /**
      * Creative mode grants you access to spawn in any block in the game. It
@@ -42,14 +37,14 @@ public enum class GameMode(
      * blocks instantly, and you can only take damage from types that
      * [bypass invulnerability][DamageType.bypassesInvulnerability].
      */
-    CREATIVE("creative", "c", true),
+    CREATIVE("c", true),
 
     /**
      * Adventure mode is designed for custom maps. In it, your block breaking
      * and placing are restricted, you still take damage like normal, and you
      * cannot fly.
      */
-    ADVENTURE("adventure", "a", false),
+    ADVENTURE("a", false),
 
     /**
      * Spectator mode is designed for spectating things. In it, you will take
@@ -58,45 +53,8 @@ public enum class GameMode(
      * world, including breaking and placing blocks, attacking entities, and
      * opening containers.
      */
-    SPECTATOR("spectator", "sp", false);
+    SPECTATOR("sp", false);
 
     @get:JvmName("translation")
-    override val translation: TranslatableComponent = Component.translatable("gameMode.$serialized")
-
-    public companion object {
-
-        private val VALUES = values()
-        private val BY_NAME = VALUES.associateBy { it.serialized }
-        private val BY_ABBREVIATION = VALUES.associateBy { it.abbreviation }
-
-        /**
-         * Gets the game mode with the given [name], or returns null if there
-         * is no game mode with the given [name].
-         *
-         * @param name the name
-         * @return the game mode with the name, or null if not present
-         */
-        @JvmStatic
-        public fun fromName(name: String): GameMode? = BY_NAME[name]
-
-        /**
-         * Gets the game mode with the given [abbreviation], or returns null
-         * if there is no game mode with the given [abbreviation].
-         *
-         * @param abbreviation the abbreviation
-         * @return the game mode with the abbreviation, or null if not present
-         */
-        @JvmStatic
-        public fun fromAbbreviation(abbreviation: String): GameMode? = BY_ABBREVIATION[abbreviation]
-
-        /**
-         * Gets the game mode with the given [id], or returns null if there is
-         * no game mode with the given [id].
-         *
-         * @param id the ID
-         * @return the game mode with the ID, or null if not present
-         */
-        @JvmStatic
-        public fun fromId(id: Int): GameMode? = VALUES.getOrNull(id)
-    }
+    override val translation: TranslatableComponent = Component.translatable("gameMode.${name.lowercase()}")
 }

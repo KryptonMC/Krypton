@@ -19,9 +19,9 @@ import org.kryptonmc.api.util.provide
 /**
  * A Brigadier [Message] that wraps a [Component].
  *
- * This class is special, as it should be is checked for internally by the command
- * manager when a command syntax exception is thrown, so that the [wrapped]
- * component is correctly serialized in to JSON.
+ * This class is special, as it should be is checked for internally by the
+ * command manager when a command syntax exception is thrown, so that the
+ * wrapped component is correctly serialized in to JSON.
  *
  * You should use this class when you want to send a [Component] error message as
  * a response to a Brigadier command.
@@ -40,8 +40,7 @@ public interface AdventureMessage : Message, ComponentLike {
         private val FACTORY = Krypton.factoryProvider.provide<Factory>()
 
         /**
-         * Creates a new Brigadier message that wraps the given [wrapped]
-         * component.
+         * Creates a new Brigadier message that wraps the given [component].
          *
          * @param component the component message
          * @return a new adventure message

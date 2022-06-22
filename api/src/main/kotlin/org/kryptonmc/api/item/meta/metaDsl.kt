@@ -42,9 +42,8 @@ public inline fun itemMeta(builder: ItemMeta.Builder.() -> Unit): ItemMeta = Ite
 @JvmSynthetic
 @JvmName("itemMetaGeneric")
 @Contract("_ -> new", pure = true)
-public inline fun <B : ItemMetaBuilder<B, P>, reified P : ItemMetaBuilder.Provider<B>> itemMeta(
-    builder: B.() -> Unit
-): P = ItemMeta.builder(P::class.java).apply(builder).build()
+public inline fun <B : ItemMetaBuilder<B, P>, reified P : ItemMetaBuilder.Provider<B>> itemMeta(builder: B.() -> Unit): P =
+    ItemMeta.builder(P::class.java).apply(builder).build()
 
 /**
  * Creates new bundle metadata from the result of applying the given [builder]
@@ -92,9 +91,8 @@ public inline fun crossbowMeta(builder: CrossbowMeta.Builder.() -> Unit): Crossb
 @MetaDsl
 @JvmSynthetic
 @Contract("_ -> new", pure = true)
-public inline fun fireworkRocketMeta(
-    builder: FireworkRocketMeta.Builder.() -> Unit
-): FireworkRocketMeta = FireworkRocketMeta.builder().apply(builder).build()
+public inline fun fireworkRocketMeta(builder: FireworkRocketMeta.Builder.() -> Unit): FireworkRocketMeta =
+    FireworkRocketMeta.builder().apply(builder).build()
 
 /**
  * Creates new firework star metadata from the result of applying the given
@@ -106,7 +104,8 @@ public inline fun fireworkRocketMeta(
 @MetaDsl
 @JvmSynthetic
 @Contract("_ -> new", pure = true)
-public inline fun fireworkStarMeta(builder: FireworkStarMeta.Builder.() -> Unit): FireworkStarMeta = FireworkStarMeta.builder().apply(builder).build()
+public inline fun fireworkStarMeta(builder: FireworkStarMeta.Builder.() -> Unit): FireworkStarMeta =
+    FireworkStarMeta.builder().apply(builder).build()
 
 /**
  * Creates new leather armour metadata from the result of applying the given
@@ -118,7 +117,8 @@ public inline fun fireworkStarMeta(builder: FireworkStarMeta.Builder.() -> Unit)
 @MetaDsl
 @JvmSynthetic
 @Contract("_ -> new", pure = true)
-public inline fun leatherArmorMeta(builder: LeatherArmorMeta.Builder.() -> Unit): LeatherArmorMeta = LeatherArmorMeta.builder().apply(builder).build()
+public inline fun leatherArmorMeta(builder: LeatherArmorMeta.Builder.() -> Unit): LeatherArmorMeta =
+    LeatherArmorMeta.builder().apply(builder).build()
 
 /**
  * Creates new player head metadata from the result of applying the given
@@ -142,7 +142,8 @@ public inline fun playerHeadMeta(builder: PlayerHeadMeta.Builder.() -> Unit): Pl
 @MetaDsl
 @JvmSynthetic
 @Contract("_ -> new", pure = true)
-public inline fun writableBookMeta(builder: WritableBookMeta.Builder.() -> Unit): WritableBookMeta = WritableBookMeta.builder().apply(builder).build()
+public inline fun writableBookMeta(builder: WritableBookMeta.Builder.() -> Unit): WritableBookMeta =
+    WritableBookMeta.builder().apply(builder).build()
 
 /**
  * Creates new written book metadata from the result of applying the given

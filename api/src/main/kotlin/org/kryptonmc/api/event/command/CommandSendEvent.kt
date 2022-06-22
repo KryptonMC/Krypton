@@ -21,7 +21,4 @@ import org.kryptonmc.api.entity.player.Player
  * @param rootNode the root of the command node tree
  */
 @JvmRecord
-public data class CommandSendEvent(
-    public val player: Player,
-    public val rootNode: RootCommandNode<Sender>
-)
+public data class CommandSendEvent(public val player: Player, public val rootNode: RootCommandNode<Sender>)

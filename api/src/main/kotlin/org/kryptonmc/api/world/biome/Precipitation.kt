@@ -8,14 +8,12 @@
  */
 package org.kryptonmc.api.world.biome
 
-import org.kryptonmc.api.util.StringSerializable
-
 /**
  * A form of precipitation that applies in a climate.
  */
-public enum class Precipitation(@get:JvmName("serialized") override val serialized: String) : StringSerializable {
+public enum class Precipitation {
 
-    NONE("none"),
-    RAIN("rain"),
-    SNOW("snow")
+    NONE,
+    RAIN,
+    SNOW
 }

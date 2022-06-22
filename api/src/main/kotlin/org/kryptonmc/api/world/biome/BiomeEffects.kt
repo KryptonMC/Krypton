@@ -229,10 +229,8 @@ public interface BiomeEffects : Buildable<BiomeEffects, BiomeEffects.Builder> {
         @BiomeDsl
         @JvmSynthetic
         @Contract("_ -> this", mutates = "this")
-        public fun particles(
-            type: ParticleType,
-            builder: AmbientParticleSettings.Builder.() -> Unit
-        ): Builder = particles(AmbientParticleSettings.builder(type).apply(builder).build())
+        public fun particles(type: ParticleType, builder: AmbientParticleSettings.Builder.() -> Unit): Builder =
+            particles(AmbientParticleSettings.builder(type).apply(builder).build())
 
         /**
          * Applies the given [builder] to an ambient particle settings builder,
@@ -246,10 +244,8 @@ public interface BiomeEffects : Buildable<BiomeEffects, BiomeEffects.Builder> {
          */
         @BiomeDsl
         @Contract("_ -> this", mutates = "this")
-        public fun particles(
-            type: ParticleType,
-            builder: Consumer<AmbientParticleSettings.Builder>
-        ): Builder = particles(type) { builder.accept(this) }
+        public fun particles(type: ParticleType, builder: Consumer<AmbientParticleSettings.Builder>): Builder =
+            particles(type) { builder.accept(this) }
 
         /**
          * Sets the ambient loop sound of the biome effects to the given
@@ -288,10 +284,8 @@ public interface BiomeEffects : Buildable<BiomeEffects, BiomeEffects.Builder> {
         @BiomeDsl
         @JvmSynthetic
         @Contract("_ -> this", mutates = "this")
-        public fun mood(
-            sound: SoundEvent,
-            builder: AmbientMoodSettings.Builder.() -> Unit
-        ): Builder = mood(AmbientMoodSettings.builder(sound).apply(builder).build())
+        public fun mood(sound: SoundEvent, builder: AmbientMoodSettings.Builder.() -> Unit): Builder =
+            mood(AmbientMoodSettings.builder(sound).apply(builder).build())
 
         /**
          * Applies the given [builder] to an ambient mood settings builder,
@@ -305,10 +299,7 @@ public interface BiomeEffects : Buildable<BiomeEffects, BiomeEffects.Builder> {
          */
         @BiomeDsl
         @Contract("_ -> this", mutates = "this")
-        public fun mood(
-            sound: SoundEvent,
-            builder: Consumer<AmbientMoodSettings.Builder>
-        ): Builder = mood(sound) { builder.accept(this) }
+        public fun mood(sound: SoundEvent, builder: Consumer<AmbientMoodSettings.Builder>): Builder = mood(sound) { builder.accept(this) }
 
         /**
          * Sets the ambient additions settings of the biome effects to the
@@ -335,10 +326,8 @@ public interface BiomeEffects : Buildable<BiomeEffects, BiomeEffects.Builder> {
         @BiomeDsl
         @JvmSynthetic
         @Contract("_ -> this", mutates = "this")
-        public fun additions(
-            sound: SoundEvent,
-            builder: AmbientAdditionsSettings.Builder.() -> Unit
-        ): Builder = additions(AmbientAdditionsSettings.builder(sound).apply(builder).build())
+        public fun additions(sound: SoundEvent, builder: AmbientAdditionsSettings.Builder.() -> Unit): Builder =
+            additions(AmbientAdditionsSettings.builder(sound).apply(builder).build())
 
         /**
          * Applies the given [builder] to an ambient additions settings
@@ -352,10 +341,8 @@ public interface BiomeEffects : Buildable<BiomeEffects, BiomeEffects.Builder> {
          */
         @BiomeDsl
         @Contract("_ -> this", mutates = "this")
-        public fun additions(
-            sound: SoundEvent,
-            builder: Consumer<AmbientAdditionsSettings.Builder>
-        ): Builder = additions(sound) { builder.accept(this) }
+        public fun additions(sound: SoundEvent, builder: Consumer<AmbientAdditionsSettings.Builder>): Builder =
+            additions(sound) { builder.accept(this) }
 
         /**
          * Sets the background music of the biome effects to the given [music].

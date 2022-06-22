@@ -42,10 +42,7 @@ public inline fun item(builder: ItemStack.Builder.() -> Unit): ItemStack = ItemS
 @ItemDsl
 @JvmSynthetic
 @Contract("_ -> new", pure = true)
-public inline fun item(
-    type: ItemType,
-    builder: ItemStack.Builder.() -> Unit
-): ItemStack = ItemStack.builder().type(type).apply(builder).build()
+public inline fun item(type: ItemType, builder: ItemStack.Builder.() -> Unit): ItemStack = ItemStack.builder().type(type).apply(builder).build()
 
 /**
  * Creates a new item stack with the given [type], [amount], and the result of
@@ -59,11 +56,8 @@ public inline fun item(
 @ItemDsl
 @JvmSynthetic
 @Contract("_ -> new", pure = true)
-public inline fun item(
-    type: ItemType,
-    amount: Int,
-    builder: ItemStack.Builder.() -> Unit
-): ItemStack = ItemStack.builder().type(type).amount(amount).apply(builder).build()
+public inline fun item(type: ItemType, amount: Int, builder: ItemStack.Builder.() -> Unit): ItemStack =
+    ItemStack.builder().type(type).amount(amount).apply(builder).build()
 
 /**
  * Creates a new item stack with the given [type], [amount], and meta built
@@ -78,11 +72,8 @@ public inline fun item(
 @JvmSynthetic
 @JvmName("itemWithMeta")
 @Contract("_ -> new", pure = true)
-public inline fun item(
-    type: ItemType,
-    amount: Int,
-    meta: ItemMeta.Builder.() -> Unit
-): ItemStack = ItemStack.builder().type(type).amount(amount).meta(ItemMeta.builder().apply(meta).build()).build()
+public inline fun item(type: ItemType, amount: Int, meta: ItemMeta.Builder.() -> Unit): ItemStack =
+    ItemStack.builder().type(type).amount(amount).meta(ItemMeta.builder().apply(meta).build()).build()
 
 /**
  * Creates a new item stack with the given [type], [amount], and meta of the

@@ -20,8 +20,4 @@ import org.kryptonmc.api.entity.player.Player
  */
 @Suppress("ArrayInDataClass")
 @JvmRecord
-public data class PluginMessageEvent(
-    public val player: Player,
-    public val channel: Key,
-    public val message: ByteArray
-)
+public data class PluginMessageEvent(public val player: Player, public val channel: Key, public val message: ByteArray)

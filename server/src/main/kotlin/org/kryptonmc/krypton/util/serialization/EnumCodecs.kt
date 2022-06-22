@@ -25,9 +25,9 @@ import org.kryptonmc.api.world.biome.TemperatureModifier
 object EnumCodecs {
 
     @JvmField
-    val TEMPERATURE_MODIFIER: StringEncoder<TemperatureModifier> = StringEncoder { it.serialized }
+    val TEMPERATURE_MODIFIER: StringEncoder<TemperatureModifier> = StringEncoder { it.name.lowercase() }
     @JvmField
-    val PRECIPITATION: StringEncoder<Precipitation> = StringEncoder { it.serialized }
+    val PRECIPITATION: StringEncoder<Precipitation> = StringEncoder { it.name.lowercase() }
     @JvmField
-    val GRASS_COLOR_MODIFIER: StringEncoder<GrassColorModifier> = StringEncoder { it.serialized }
+    val GRASS_COLOR_MODIFIER: StringEncoder<GrassColorModifier> = StringEncoder { it.name.lowercase() }
 }

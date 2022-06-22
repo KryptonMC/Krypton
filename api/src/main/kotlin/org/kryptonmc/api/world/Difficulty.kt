@@ -10,7 +10,6 @@ package org.kryptonmc.api.world
 
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.TranslatableComponent
-import org.kryptonmc.api.util.StringSerializable
 import org.kryptonmc.api.util.TranslationHolder
 
 /**
@@ -18,7 +17,7 @@ import org.kryptonmc.api.util.TranslationHolder
  * it is to play the game (though this is not always accurate).
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
-public enum class Difficulty(@get:JvmName("serialized") override val serialized: String) : StringSerializable, TranslationHolder {
+public enum class Difficulty : TranslationHolder {
 
     /**
      * In peaceful mode, no hostile monsters will spawn in the world.
@@ -26,55 +25,29 @@ public enum class Difficulty(@get:JvmName("serialized") override val serialized:
      * Players will also regain health over time, and the hunger bar
      * does not deplete.
      */
-    PEACEFUL("peaceful"),
+    PEACEFUL,
 
     /**
      * In easy mode, hostile mobs spawn at normal rates, but they deal less
      * damage than on normal difficulty. The hunger bar does deplete, and
      * starving can deal up to 5 hears of damage.
      */
-    EASY("easy"),
+    EASY,
 
     /**
      * In normal mode, hostile mobs spawn at normal rates, and they deal normal
      * amounts of damage. The hunger bar does deplete, and starving can deal up
      * to 9.5 hearts of damage.
      */
-    NORMAL("normal"),
+    NORMAL,
 
     /**
      * In hard mode, hostile mobs spawn at normal rates, but they deal much
      * greater damage than on normal difficulty. The hunger bar does deplete,
      * and starving can kill players.
      */
-    HARD("hard");
+    HARD;
 
     @get:JvmName("translation")
-    override val translation: TranslatableComponent = Component.translatable("options.difficulty.$serialized")
-
-    public companion object {
-
-        private val VALUES = values()
-        private val BY_NAME = VALUES.associateBy { it.serialized }
-
-        /**
-         * Gets the difficulty with the given [name], or returns null if there
-         * is no difficulty with the given [name].
-         *
-         * @param name the name
-         * @return the difficulty with the name, or null if not present
-         */
-        @JvmStatic
-        public fun fromName(name: String): Difficulty? = BY_NAME[name]
-
-        /**
-         * Gets the difficulty with the given [id], or returns null if there is
-         * no difficulty with the given [id].
-         *
-         * @param id the ID
-         * @return the difficulty with the ID, or null if not present
-         */
-        @JvmStatic
-        public fun fromId(id: Int): Difficulty? = VALUES.getOrNull(id)
-    }
+    override val translation: TranslatableComponent = Component.translatable("options.difficulty.${name.lowercase()}")
 }

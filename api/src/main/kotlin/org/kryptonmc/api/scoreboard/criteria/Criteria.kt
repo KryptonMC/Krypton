@@ -19,19 +19,32 @@ import org.kryptonmc.api.util.Catalogue
 public object Criteria {
 
     // @formatter:off
-    @JvmField public val DUMMY: Criterion = get("dummy")
-    @JvmField public val TRIGGER: Criterion = get("trigger")
-    @JvmField public val DEATH_COUNT: Criterion = get("death_count")
-    @JvmField public val PLAYER_KILL_COUNT: Criterion = get("player_kill_count")
-    @JvmField public val TOTAL_KILL_COUNT: Criterion = get("kill_count")
-    @JvmField public val HEALTH: Criterion = get("health")
-    @JvmField public val FOOD: Criterion = get("food")
-    @JvmField public val AIR: Criterion = get("air")
-    @JvmField public val ARMOR: Criterion = get("armor")
-    @JvmField public val EXPERIENCE: Criterion = get("experience")
-    @JvmField public val LEVEL: Criterion = get("level")
-    @JvmField public val TEAM_KILL: CompoundCriterion = get("team_kill")
-    @JvmField public val KILLED_BY_TEAM: CompoundCriterion = get("killed_by_team")
+    @JvmField
+    public val DUMMY: Criterion = get("dummy")
+    @JvmField
+    public val TRIGGER: Criterion = get("trigger")
+    @JvmField
+    public val DEATH_COUNT: Criterion = get("death_count")
+    @JvmField
+    public val PLAYER_KILL_COUNT: Criterion = get("player_kill_count")
+    @JvmField
+    public val TOTAL_KILL_COUNT: Criterion = get("kill_count")
+    @JvmField
+    public val HEALTH: Criterion = get("health")
+    @JvmField
+    public val FOOD: Criterion = get("food")
+    @JvmField
+    public val AIR: Criterion = get("air")
+    @JvmField
+    public val ARMOR: Criterion = get("armor")
+    @JvmField
+    public val EXPERIENCE: Criterion = get("experience")
+    @JvmField
+    public val LEVEL: Criterion = get("level")
+    @JvmField
+    public val TEAM_KILL: CompoundCriterion = get("team_kill")
+    @JvmField
+    public val KILLED_BY_TEAM: CompoundCriterion = get("killed_by_team")
 
     // @formatter:on
     @JvmStatic

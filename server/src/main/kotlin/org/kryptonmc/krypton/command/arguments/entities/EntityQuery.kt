@@ -24,13 +24,13 @@ import org.kryptonmc.api.adventure.toMessage
 import org.kryptonmc.api.adventure.toPlainText
 import org.kryptonmc.api.command.Sender
 import org.kryptonmc.api.entity.player.Player
-import org.kryptonmc.api.world.GameMode
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.auth.KryptonGameProfile
 import org.kryptonmc.krypton.command.BrigadierExceptions
 import org.kryptonmc.krypton.command.toExceptionType
 import org.kryptonmc.krypton.entity.KryptonEntity
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
+import org.kryptonmc.krypton.util.GameModes
 
 /**
  * Documentation [TODO]
@@ -168,7 +168,7 @@ data class EntityQuery(private val args: List<EntityArgument.EntityArg>, val typ
                 "gamemode" -> {
                     entities = entities.filter {
                         if (it !is KryptonPlayer) return@filter true
-                        val mode = GameMode.fromName(value.toString())
+                        val mode = GameModes.fromName(value.toString())
                         if (exclude) it.gameMode != mode else it.gameMode == mode
                     }
                 }

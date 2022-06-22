@@ -65,11 +65,7 @@ public interface DyeColor : Keyed {
          */
         @JvmStatic
         @Contract("_ -> new", pure = true)
-        public fun of(
-            key: Key,
-            color: Color,
-            fireworkColor: Color,
-            textColor: TextColor
-        ): DyeColor = FACTORY.of(key, color, fireworkColor, textColor)
+        public fun of(key: Key, color: Color, fireworkColor: Color, textColor: TextColor): DyeColor =
+            FACTORY.of(key, color, fireworkColor, textColor)
     }
 }

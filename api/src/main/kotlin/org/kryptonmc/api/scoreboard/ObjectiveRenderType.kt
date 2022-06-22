@@ -8,41 +8,11 @@
  */
 package org.kryptonmc.api.scoreboard
 
-import org.kryptonmc.api.util.StringSerializable
-
 /**
  * A type representing a method of rendering an objective to a client.
  */
-public enum class ObjectiveRenderType(@get:JvmName("serialized") override val serialized: String) : StringSerializable {
+public enum class ObjectiveRenderType {
 
-    INTEGER("integer"),
-    HEARTS("hearts");
-
-    public companion object {
-
-        private val VALUES = values()
-        private val BY_NAME = VALUES.associateBy { it.serialized }
-
-        /**
-         * Gets the objective render type with the given [name], or returns
-         * null if there is no objective render type with the given [name].
-         *
-         * @param name the name
-         * @return the objective render type with the name, or null if not
-         * present
-         */
-        @JvmStatic
-        public fun fromName(name: String): ObjectiveRenderType? = BY_NAME[name]
-
-        /**
-         * Gets the objective render type with the given [id], or returns null
-         * if there is no objective render type with the given [id].
-         *
-         * @param id the ID
-         * @return the objective render type with the ID, or null if not
-         * present
-         */
-        @JvmStatic
-        public fun fromId(id: Int): ObjectiveRenderType? = VALUES.getOrNull(id)
-    }
+    INTEGER,
+    HEARTS
 }

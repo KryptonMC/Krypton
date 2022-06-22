@@ -116,10 +116,9 @@ public interface EventManager {
  * @param E the type of the event
  */
 @JvmSynthetic
-public inline fun <reified E> EventManager.registerHandler(
-    plugin: Any,
-    handler: EventHandler<E>
-): Unit = register(plugin, E::class.java, handler)
+public inline fun <reified E> EventManager.registerHandler(plugin: Any, handler: EventHandler<E>) {
+    register(plugin, E::class.java, handler)
+}
 
 /**
  * Requests that the specified [handler] be registered with this manager to
@@ -132,8 +131,6 @@ public inline fun <reified E> EventManager.registerHandler(
  * @param E the type of the event
  */
 @JvmSynthetic
-public inline fun <reified E> EventManager.register(
-    plugin: Any,
-    priority: ListenerPriority,
-    handler: EventHandler<E>
-): Unit = register(plugin, E::class.java, priority, handler)
+public inline fun <reified E> EventManager.register(plugin: Any, priority: ListenerPriority, handler: EventHandler<E>) {
+    register(plugin, E::class.java, priority, handler)
+}

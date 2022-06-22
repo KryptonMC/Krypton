@@ -11,6 +11,7 @@ package org.kryptonmc.api.event.player
 import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.entity.player.Player
 import org.kryptonmc.api.event.ResultedEvent
+import org.kryptonmc.api.event.ResultedEvent.Result
 import org.kryptonmc.api.world.GameMode
 
 /**
@@ -60,10 +61,7 @@ public data class ChangeGameModeEvent(
  * @param newGameMode the new game mode to change to
  */
 @JvmRecord
-public data class GameModeResult(
-    override val isAllowed: Boolean,
-    public val newGameMode: GameMode?
-) : ResultedEvent.Result {
+public data class GameModeResult(override val isAllowed: Boolean, public val newGameMode: GameMode?) : Result {
 
     public companion object {
 

@@ -12,20 +12,21 @@ package org.kryptonmc.api.command
 import com.mojang.brigadier.builder.LiteralArgumentBuilder
 import com.mojang.brigadier.tree.LiteralCommandNode
 import org.jetbrains.annotations.ApiStatus
+import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.Krypton
 import org.kryptonmc.api.util.provide
 
 /**
  * A command that is backed by a Brigadier [LiteralCommandNode].
- *
- * @param node the node that backs this command
  */
+@Suppress("INAPPLICABLE_JVM_NAME")
 public interface BrigadierCommand : Command {
 
     /**
      * The built command node representing the command tree for this specific
      * command.
      */
+    @get:JvmName("node")
     public val node: LiteralCommandNode<Sender>
 
     @ApiStatus.Internal
@@ -45,6 +46,7 @@ public interface BrigadierCommand : Command {
          * @return a new Brigadier command
          */
         @JvmStatic
+        @Contract("_ -> new", pure = true)
         public fun of(node: LiteralCommandNode<Sender>): BrigadierCommand = FACTORY.of(node)
 
         /**
@@ -55,6 +57,7 @@ public interface BrigadierCommand : Command {
          * @return a new Brigadier command
          */
         @JvmStatic
+        @Contract("_ -> new", pure = true)
         public fun of(builder: LiteralArgumentBuilder<Sender>): BrigadierCommand = of(builder.build())
     }
 }
@@ -67,7 +70,5 @@ public interface BrigadierCommand : Command {
  * @return the built Brigadier command
  */
 @JvmSynthetic
-public inline fun brigadierCommand(
-    literal: String,
-    builder: LiteralArgumentBuilder<Sender>.() -> Unit
-): BrigadierCommand = BrigadierCommand.of(LiteralArgumentBuilder.literal<Sender>(literal).apply(builder).build())
+public inline fun brigadierCommand(literal: String, builder: LiteralArgumentBuilder<Sender>.() -> Unit): BrigadierCommand =
+    BrigadierCommand.of(LiteralArgumentBuilder.literal<Sender>(literal).apply(builder).build())

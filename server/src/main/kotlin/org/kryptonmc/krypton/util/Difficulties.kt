@@ -16,9 +16,18 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.config.serializer
+package org.kryptonmc.krypton.util
 
 import org.kryptonmc.api.world.Difficulty
-import org.kryptonmc.krypton.util.Difficulties
 
-object DifficultyTypeSerializer : EnumSerializer<Difficulty>(Difficulty::class, "difficulty", Difficulties::fromId, Difficulties::fromName)
+object Difficulties {
+
+    private val VALUES = Difficulty.values()
+    private val BY_NAME = VALUES.associateBy { it.name.lowercase() }
+
+    @JvmStatic
+    fun fromId(id: Int): Difficulty? = VALUES.getOrNull(id)
+
+    @JvmStatic
+    fun fromName(name: String): Difficulty? = BY_NAME[name]
+}

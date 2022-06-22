@@ -11,6 +11,7 @@ package org.kryptonmc.api.event.player
 import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.entity.player.Player
 import org.kryptonmc.api.event.ResultedEvent
+import org.kryptonmc.api.event.ResultedEvent.Result
 import org.kryptonmc.api.item.ItemType
 
 /**
@@ -38,10 +39,7 @@ public data class CooldownEvent(
  * @param cooldown the cooldown amount, in ticks
  */
 @JvmRecord
-public data class CooldownResult(
-    override val isAllowed: Boolean,
-    public val cooldown: Int
-) : ResultedEvent.Result {
+public data class CooldownResult(override val isAllowed: Boolean, public val cooldown: Int) : Result {
 
     public companion object {
 

@@ -316,10 +316,7 @@ public object Properties {
      * property is applied to
      */
     @JvmField
-    public val DRIPSTONE_THICKNESS: Property<DripstoneThickness> = Property.forEnum(
-        "thickness",
-        DripstoneThickness.values()
-    )
+    public val DRIPSTONE_THICKNESS: Property<DripstoneThickness> = Property.forEnum("thickness", DripstoneThickness.values())
 
     /**
      * Whether the [Chorus Plant][Blocks.CHORUS_PLANT] this property is applied
@@ -477,10 +474,7 @@ public object Properties {
      * This property only permits axes on the horizontal plane.
      */
     @JvmField
-    public val HORIZONTAL_AXIS: Property<Direction.Axis> = Property.forEnum(
-        "axis",
-        persistentSetOf(Direction.Axis.X, Direction.Axis.Z)
-    )
+    public val HORIZONTAL_AXIS: Property<Direction.Axis> = Property.forEnum("axis", persistentSetOf(Direction.Axis.X, Direction.Axis.Z))
 
     /**
      * The direction that the block this property is applied to is facing.
@@ -513,10 +507,7 @@ public object Properties {
      * applied to will play when attacked.
      */
     @JvmField
-    public val INSTRUMENT: Property<NoteBlockInstrument> = Property.forEnum(
-        "instrument",
-        NoteBlockInstrument.values()
-    )
+    public val INSTRUMENT: Property<NoteBlockInstrument> = Property.forEnum("instrument", NoteBlockInstrument.values())
 
     /**
      * Whether the [Daylight Detector][Blocks.DAYLIGHT_DETECTOR] this property
@@ -726,13 +717,10 @@ public object Properties {
      * represents.
      */
     @JvmField
-    public val SCULK_SENSOR_PHASE: Property<SculkSensorPhase> = Property.forEnum(
-        "sculk_sensor_phase",
-        SculkSensorPhase.values()
-    )
+    public val SCULK_SENSOR_PHASE: Property<SculkSensorPhase> = Property.forEnum("sculk_sensor_phase", SculkSensorPhase.values())
 
     /**
-     * Whether the [Piston Head][Blocks.PISTON_HEAD] this properti is applied
+     * Whether the [Piston Head][Blocks.PISTON_HEAD] this property is applied
      * to is shorter by 4 pixels.
      */
     @JvmField
@@ -859,10 +847,7 @@ public object Properties {
      * to.
      */
     @JvmField
-    public val VERTICAL_DIRECTION: Property<Direction> = Property.forEnum(
-        "vertical_direction",
-        persistentSetOf(Direction.UP, Direction.DOWN)
-    )
+    public val VERTICAL_DIRECTION: Property<Direction> = Property.forEnum("vertical_direction", persistentSetOf(Direction.UP, Direction.DOWN))
 
     /**
      * This property is currently unused by the vanilla Minecraft server.

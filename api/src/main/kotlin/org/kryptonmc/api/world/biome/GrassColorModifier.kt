@@ -8,14 +8,12 @@
  */
 package org.kryptonmc.api.world.biome
 
-import org.kryptonmc.api.util.StringSerializable
-
 /**
  * A modifier for the colouring of grass within a biome.
  */
-public enum class GrassColorModifier(@get:JvmName("serialized") override val serialized: String) : StringSerializable {
+public enum class GrassColorModifier {
 
-    NONE("none"),
-    DARK_FOREST("dark_forest"),
-    SWAMP("swamp")
+    NONE,
+    DARK_FOREST,
+    SWAMP
 }

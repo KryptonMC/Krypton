@@ -173,10 +173,6 @@ public interface GameProfile : Buildable<GameProfile, GameProfile.Builder>, Iden
         @JvmStatic
         @JvmOverloads
         @Contract("_, _, _ -> new", pure = true)
-        public fun of(
-            name: String,
-            uuid: UUID,
-            properties: List<ProfileProperty> = emptyList()
-        ): GameProfile = FACTORY.of(name, uuid, properties)
+        public fun of(name: String, uuid: UUID, properties: List<ProfileProperty> = emptyList()): GameProfile = FACTORY.of(name, uuid, properties)
     }
 }

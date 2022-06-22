@@ -56,8 +56,8 @@ data class PacketOutTeam(
         team.suffix,
         team.allowFriendlyFire,
         team.canSeeInvisibleMembers,
-        team.nameTagVisibility.serialized,
-        team.collisionRule.serialized,
+        team.nameTagVisibility.name.lowercase(),
+        team.collisionRule.name.lowercase(),
         team.members,
         addedMembers
     )

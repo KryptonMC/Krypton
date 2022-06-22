@@ -18,7 +18,6 @@
  */
 package org.kryptonmc.krypton.config.serializer
 
-import org.kryptonmc.api.util.StringSerializable
 import org.spongepowered.configurate.serialize.ScalarSerializer
 import org.spongepowered.configurate.serialize.SerializationException
 import java.lang.reflect.Type
@@ -26,14 +25,14 @@ import java.util.function.IntFunction
 import java.util.function.Predicate
 import kotlin.reflect.KClass
 
-sealed class EnumSerializer<E>(
+sealed class EnumSerializer<E : Enum<E>>(
     type: KClass<E>,
     private val typeName: String,
     private val fromId: IntFunction<E?>,
     private val fromName: (String) -> E?
-) : ScalarSerializer<E>(type.java) where E : Enum<E>, E : StringSerializable {
+) : ScalarSerializer<E>(type.java) {
 
-    override fun serialize(item: E, typeSupported: Predicate<Class<*>>?): Any = item.serialized
+    override fun serialize(item: E, typeSupported: Predicate<Class<*>>?): Any = item.name.lowercase()
 
     override fun deserialize(type: Type, source: Any): E = when (source) {
         is Int -> fromId.apply(source) ?: throw SerializationException("$source is not a valid $typeName ID!")

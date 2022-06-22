@@ -18,10 +18,7 @@ package org.kryptonmc.api.entity.animal.type
  * other pandas may randomly mutate this gene
  * @param isRecessive if this gene is a recessive allele
  */
-public enum class PandaGene(
-    public val mutationProbability: Float,
-    public val isRecessive: Boolean
-) {
+public enum class PandaGene(public val mutationProbability: Float, public val isRecessive: Boolean) {
 
     /**
      * Normal pandas have no unique personality traits.

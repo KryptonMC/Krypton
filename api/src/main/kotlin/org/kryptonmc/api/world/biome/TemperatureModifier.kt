@@ -8,13 +8,11 @@
  */
 package org.kryptonmc.api.world.biome
 
-import org.kryptonmc.api.util.StringSerializable
-
 /**
  * A modifier for temperature in a climate.
  */
-public enum class TemperatureModifier(@get:JvmName("serialized") override val serialized: String) : StringSerializable {
+public enum class TemperatureModifier {
 
-    NONE("none"),
-    FROZEN("frozen")
+    NONE,
+    FROZEN
 }

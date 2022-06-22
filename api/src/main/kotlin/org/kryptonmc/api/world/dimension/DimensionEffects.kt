@@ -19,9 +19,12 @@ import org.kryptonmc.api.util.Catalogue
 public object DimensionEffects {
 
     // @formatter:off
-    @JvmField public val OVERWORLD: DimensionEffect = get("overworld")
-    @JvmField public val THE_NETHER: DimensionEffect = get("the_nether")
-    @JvmField public val THE_END: DimensionEffect = get("the_end")
+    @JvmField
+    public val OVERWORLD: DimensionEffect = get("overworld")
+    @JvmField
+    public val THE_NETHER: DimensionEffect = get("the_nether")
+    @JvmField
+    public val THE_END: DimensionEffect = get("the_end")
 
     // @formatter:on
     @JvmStatic

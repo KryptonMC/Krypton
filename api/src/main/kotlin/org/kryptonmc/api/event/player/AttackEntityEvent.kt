@@ -16,7 +16,4 @@ import org.kryptonmc.api.entity.player.Player
  *
  * @param target the entity that was attacked
  */
-public class AttackEntityEvent(
-    player: Player,
-    @get:JvmName("target") public val target: Entity
-) : InteractEvent(player, Type.ATTACK_ENTITY)
+public class AttackEntityEvent(player: Player, @get:JvmName("target") public val target: Entity) : InteractEvent(player, Type.ATTACK_ENTITY)

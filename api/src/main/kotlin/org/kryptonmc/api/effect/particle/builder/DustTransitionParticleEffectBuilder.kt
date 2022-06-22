@@ -59,7 +59,7 @@ public interface DustTransitionParticleEffectBuilder : BaseDustParticleEffectBui
     @ParticleDsl
     @Contract("_ -> this", mutates = "this")
     @Suppress("MagicNumber")
-    public fun toRGB(rgb: Int): DustTransitionParticleEffectBuilder = rgb(rgb shr 16, rgb shr 8, rgb)
+    public fun toRGB(rgb: Int): DustTransitionParticleEffectBuilder = toRGB(rgb shr 16, rgb shr 8, rgb)
 
     /**
      * Sets the colour to transition the particle to to the given [rgb]
@@ -73,7 +73,7 @@ public interface DustTransitionParticleEffectBuilder : BaseDustParticleEffectBui
      */
     @ParticleDsl
     @Contract("_ -> this", mutates = "this")
-    public fun toRGB(rgb: RGBLike): DustTransitionParticleEffectBuilder = rgb(rgb.red(), rgb.green(), rgb.blue())
+    public fun toRGB(rgb: RGBLike): DustTransitionParticleEffectBuilder = toRGB(rgb.red(), rgb.green(), rgb.blue())
 
     /**
      * Sets the colour to transition the particle to to the given [hsv]
@@ -86,7 +86,7 @@ public interface DustTransitionParticleEffectBuilder : BaseDustParticleEffectBui
      */
     @ParticleDsl
     @Contract("_ -> this", mutates = "this")
-    public fun toHSV(hsv: HSVLike): DustTransitionParticleEffectBuilder = hsv(hsv.h(), hsv.s(), hsv.v())
+    public fun toHSV(hsv: HSVLike): DustTransitionParticleEffectBuilder = toHSV(hsv.h(), hsv.s(), hsv.v())
 
     /**
      * Sets the colour to transition the particle to to the given [hue],
@@ -106,6 +106,6 @@ public interface DustTransitionParticleEffectBuilder : BaseDustParticleEffectBui
         require(hue in 0F..1F) { "Hue must be between 0 and 1!" }
         require(saturation in 0F..1F) { "Saturation must be between 0 and 1!" }
         require(value in 0F..1F) { "Value must be between 0 and 1!" }
-        return rgb(Color.HSBtoRGB(hue, saturation, value))
+        return toRGB(Color.HSBtoRGB(hue, saturation, value))
     }
 }

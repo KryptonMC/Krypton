@@ -50,11 +50,7 @@ public object GameRules {
      * This is a boolean game rule, with a default value of `false`.
      */
     @JvmField
-    public val DISABLE_ELYTRA_MOVEMENT_CHECK: GameRule<Boolean> = register(
-        "disable_elytra_movement_check",
-        "disableElytraMovementCheck",
-        false
-    )
+    public val DISABLE_ELYTRA_MOVEMENT_CHECK: GameRule<Boolean> = register("disable_elytra_movement_check", "disableElytraMovementCheck", false)
 
     /**
      * Whether raids are disabled.
@@ -313,11 +309,7 @@ public object GameRules {
      * This is a boolean game rule, with a default value of `true`.
      */
     @JvmField
-    public val SPECTATORS_GENERATE_CHUNKS: GameRule<Boolean> = register(
-        "spectators_generate_chunks",
-        "spectatorsGenerateChunks",
-        true
-    )
+    public val SPECTATORS_GENERATE_CHUNKS: GameRule<Boolean> = register("spectators_generate_chunks", "spectatorsGenerateChunks", true)
 
     /**
      * Makes angered neutral mobs attack any nearby player, not just the player
@@ -331,10 +323,10 @@ public object GameRules {
     @Suppress("UNCHECKED_CAST")
     @JvmStatic
     private fun <V : Any> register(key: String, name: String, default: V): GameRule<V> {
-        val key1 = Key.key(key)
+        val namespacedKey = Key.key(key)
         return Registries.GAME_RULES.register(
-            key1,
-            GameRule.of(key1, name, default, Component.translatable("gamerule.$name"))
+            namespacedKey,
+            GameRule.of(namespacedKey, name, default, Component.translatable("gamerule.$name"))
         ) as GameRule<V>
     }
 }

@@ -125,11 +125,7 @@ public interface AmbientParticleSettings : Buildable<AmbientParticleSettings, Am
          */
         @JvmStatic
         @Contract("_ -> new", pure = true)
-        public fun of(
-            type: ParticleType,
-            data: ParticleData?,
-            probability: Float
-        ): AmbientParticleSettings = FACTORY.of(type, data, probability)
+        public fun of(type: ParticleType, data: ParticleData?, probability: Float): AmbientParticleSettings = FACTORY.of(type, data, probability)
 
         /**
          * Creates a new builder for ambient particle settings.

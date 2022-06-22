@@ -263,14 +263,7 @@ public interface BoundingBox {
      * @param maximumZ the maximum Z value
      * @return true if this box intersects with the values, false otherwise
      */
-    public fun intersects(
-        minimumX: Double,
-        minimumY: Double,
-        minimumZ: Double,
-        maximumX: Double,
-        maximumY: Double,
-        maximumZ: Double
-    ): Boolean
+    public fun intersects(minimumX: Double, minimumY: Double, minimumZ: Double, maximumX: Double, maximumY: Double, maximumZ: Double): Boolean
 
     /**
      * Checks if this bounding box intersects with the given [other] box.
@@ -388,13 +381,7 @@ public interface BoundingBox {
          */
         @JvmStatic
         @Contract("_ -> new", pure = true)
-        public fun of(
-            minimumX: Double,
-            minimumY: Double,
-            minimumZ: Double,
-            maximumX: Double,
-            maximumY: Double,
-            maximumZ: Double
-        ): BoundingBox = FACTORY.of(minimumX, minimumY, minimumZ, maximumX, maximumY, maximumZ)
+        public fun of(minimumX: Double, minimumY: Double, minimumZ: Double, maximumX: Double, maximumY: Double, maximumZ: Double): BoundingBox =
+            FACTORY.of(minimumX, minimumY, minimumZ, maximumX, maximumY, maximumZ)
     }
 }

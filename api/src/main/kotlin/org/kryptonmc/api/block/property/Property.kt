@@ -133,11 +133,7 @@ public interface Property<T : Comparable<T>> {
          */
         @JvmStatic
         @Contract("_ -> new", pure = true)
-        public fun <E : Enum<E>> forEnum(
-            name: String,
-            type: Class<E>,
-            values: Set<E>
-        ): Property<E> = FACTORY.forEnum(name, type, values)
+        public fun <E : Enum<E>> forEnum(name: String, type: Class<E>, values: Set<E>): Property<E> = FACTORY.forEnum(name, type, values)
 
         /**
          * Creates a new enum property with the given [name], [type], and the given
@@ -153,11 +149,7 @@ public interface Property<T : Comparable<T>> {
          */
         @JvmStatic
         @Contract("_ -> new", pure = true)
-        public fun <E : Enum<E>> forEnum(
-            name: String,
-            type: Class<E>,
-            values: Array<E>
-        ): Property<E> = forEnum(name, type, values.toSet())
+        public fun <E : Enum<E>> forEnum(name: String, type: Class<E>, values: Array<E>): Property<E> = forEnum(name, type, values.toSet())
     }
 }
 
@@ -171,10 +163,7 @@ public interface Property<T : Comparable<T>> {
  */
 @JvmSynthetic
 @Contract("_ -> new", pure = true)
-public inline fun <reified E : Enum<E>> Property.Companion.forEnum(
-    name: String,
-    values: Set<E>
-): Property<E> = forEnum(name, E::class.java, values)
+public inline fun <reified E : Enum<E>> Property.Companion.forEnum(name: String, values: Set<E>): Property<E> = forEnum(name, E::class.java, values)
 
 /**
  * Creates a new enum property with the given [name] and the given array
@@ -186,7 +175,5 @@ public inline fun <reified E : Enum<E>> Property.Companion.forEnum(
  */
 @JvmSynthetic
 @Contract("_ -> new", pure = true)
-public inline fun <reified E : Enum<E>> Property.Companion.forEnum(
-    name: String,
-    values: Array<E>
-): Property<E> = forEnum(name, E::class.java, values)
+public inline fun <reified E : Enum<E>> Property.Companion.forEnum(name: String, values: Array<E>): Property<E> =
+    forEnum(name, E::class.java, values)
