@@ -24,17 +24,17 @@ public object InventoryTypes {
 
     // @formatter:off
     @JvmField
-    public val GENERIC_9x1: InventoryType = register("generic_9x1", 9, Component.translatable("container.chest"))
+    public val CHEST_ONE_ROW: InventoryType = register("chest_one_row", 9, Component.translatable("container.chest"))
     @JvmField
-    public val GENERIC_9x2: InventoryType = register("generic_9x2", 18, GENERIC_9x1.defaultTitle)
+    public val CHEST_TWO_ROWS: InventoryType = register("chest_two_rows", 18, CHEST_ONE_ROW.defaultTitle)
     @JvmField
-    public val GENERIC_9x3: InventoryType = register("generic_9x3", 27, GENERIC_9x1.defaultTitle)
+    public val CHEST_THREE_ROWS: InventoryType = register("chest_three_rows", 27, CHEST_ONE_ROW.defaultTitle)
     @JvmField
-    public val GENERIC_9x4: InventoryType = register("generic_9x4", 36, Component.translatable("container.chestDouble"))
+    public val CHEST_FOUR_ROWS: InventoryType = register("chest_four_rows", 36, Component.translatable("container.chestDouble"))
     @JvmField
-    public val GENERIC_9x5: InventoryType = register("generic_9x5", 45, GENERIC_9x4.defaultTitle)
+    public val CHEST_FIVE_ROWS: InventoryType = register("chest_five_rows", 45, CHEST_FOUR_ROWS.defaultTitle)
     @JvmField
-    public val GENERIC_9x6: InventoryType = register("generic_9x6", 54, GENERIC_9x4.defaultTitle)
+    public val CHEST_SIX_ROWS: InventoryType = register("chest_six_rows", 54, CHEST_FOUR_ROWS.defaultTitle)
     @JvmField
     public val GENERIC_3x3: InventoryType = register("generic_3x3", 9, Component.translatable("container.dispenser"))
     @JvmField
