@@ -28,6 +28,7 @@ org.kryptonmc.api.entity.hanging
 org.kryptonmc.api.entity.monster
 org.kryptonmc.api.entity.player
 org.kryptonmc.api.entity.projectile
+org.kryptonmc.api.entity.vehicle
 org.kryptonmc.api.event
 org.kryptonmc.api.event.auth
 org.kryptonmc.api.event.block
@@ -109,6 +110,8 @@ org.kryptonmc.krypton.entity.serializer.hanging
 org.kryptonmc.krypton.entity.serializer.monster
 org.kryptonmc.krypton.entity.serializer.player
 org.kryptonmc.krypton.entity.serializer.projectile
+org.kryptonmc.krypton.entity.serializer.vehicle
+org.kryptonmc.krypton.entity.vehicle
 org.kryptonmc.krypton.event
 org.kryptonmc.krypton.inventory
 org.kryptonmc.krypton.item
