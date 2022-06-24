@@ -46,6 +46,7 @@ import org.kryptonmc.api.entity.player.ChatVisibility
 import org.kryptonmc.api.entity.player.Player
 import org.kryptonmc.api.event.player.ChangeGameModeEvent
 import org.kryptonmc.api.event.player.PerformActionEvent
+import org.kryptonmc.api.inventory.Inventory
 import org.kryptonmc.api.item.ItemTypes
 import org.kryptonmc.api.permission.PermissionFunction
 import org.kryptonmc.api.permission.PermissionProvider
@@ -204,6 +205,7 @@ class KryptonPlayer(
             }
         }
     override val inventory: KryptonPlayerInventory = KryptonPlayerInventory(this)
+    override var openInventory: Inventory? = null
     override val handSlots: Iterable<KryptonItemStack>
         get() = sequenceOf(inventory.mainHand, inventory.offHand).asIterable()
     override val armorSlots: Iterable<KryptonItemStack>

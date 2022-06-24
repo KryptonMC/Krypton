@@ -14,7 +14,7 @@ import org.kryptonmc.api.effect.particle.ParticleEffect
 import org.kryptonmc.api.entity.Equipable
 import org.kryptonmc.api.entity.LivingEntity
 import org.kryptonmc.api.entity.MainHand
-import org.kryptonmc.api.inventory.InventoryHolder
+import org.kryptonmc.api.inventory.Inventory
 import org.kryptonmc.api.inventory.PlayerInventory
 import org.kryptonmc.api.plugin.PluginMessageRecipient
 import org.kryptonmc.api.resource.ResourceKey
@@ -34,7 +34,7 @@ import java.util.Locale
  * A player that is connected to the server and playing the game.
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
-public interface Player : LivingEntity, Equipable, InventoryHolder, PluginMessageRecipient {
+public interface Player : LivingEntity, Equipable, PluginMessageRecipient {
 
     /**
      * The address that the player is currently connected from.
@@ -205,7 +205,13 @@ public interface Player : LivingEntity, Equipable, InventoryHolder, PluginMessag
      * this player.
      */
     @get:JvmName("inventory")
-    override val inventory: PlayerInventory
+    public val inventory: PlayerInventory
+
+    /**
+     * The inventory that this player currently has open.
+     */
+    @get:JvmName("openInventory")
+    public var openInventory: Inventory?
 
     /**
      * The locale of this player.
