@@ -108,6 +108,16 @@ import org.kryptonmc.krypton.entity.serializer.projectile.ShulkerBulletSerialize
 import org.kryptonmc.krypton.entity.serializer.projectile.SpectralArrowSerializer
 import org.kryptonmc.krypton.entity.serializer.projectile.ThrowableProjectileSerializer
 import org.kryptonmc.krypton.entity.serializer.projectile.TridentSerializer
+import org.kryptonmc.krypton.entity.serializer.vehicle.BoatSerializer
+import org.kryptonmc.krypton.entity.serializer.vehicle.CommandBlockMinecartSerializer
+import org.kryptonmc.krypton.entity.serializer.vehicle.FurnaceMinecartSerializer
+import org.kryptonmc.krypton.entity.serializer.vehicle.MinecartLikeSerializer
+import org.kryptonmc.krypton.entity.serializer.vehicle.TNTMinecartSerializer
+import org.kryptonmc.krypton.entity.vehicle.KryptonBoat
+import org.kryptonmc.krypton.entity.vehicle.KryptonCommandBlockMinecart
+import org.kryptonmc.krypton.entity.vehicle.KryptonFurnaceMinecart
+import org.kryptonmc.krypton.entity.vehicle.KryptonMinecart
+import org.kryptonmc.krypton.entity.vehicle.KryptonTNTMinecart
 import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.nbt.CompoundTag
@@ -122,6 +132,7 @@ object EntityFactory {
         EntityTypes.AXOLOTL to ::KryptonAxolotl,
         EntityTypes.BAT to ::KryptonBat,
         EntityTypes.BEE to ::KryptonBee,
+        EntityTypes.BOAT to ::KryptonBoat,
         EntityTypes.CAT to ::KryptonCat,
         EntityTypes.CHICKEN to ::KryptonChicken,
         EntityTypes.COD to ::KryptonCod,
@@ -136,6 +147,10 @@ object EntityFactory {
         EntityTypes.GLOW_SQUID to ::KryptonGlowSquid,
         EntityTypes.GOAT to ::KryptonGoat,
         EntityTypes.LLAMA_SPIT to ::KryptonLlamaSpit,
+        EntityTypes.MINECART to ::KryptonMinecart,
+        EntityTypes.COMMAND_BLOCK_MINECART to ::KryptonCommandBlockMinecart,
+        EntityTypes.FURNACE_MINECART to ::KryptonFurnaceMinecart,
+        EntityTypes.TNT_MINECART to ::KryptonTNTMinecart,
         EntityTypes.MOOSHROOM to ::KryptonMooshroom,
         EntityTypes.OCELOT to ::KryptonOcelot,
         EntityTypes.PAINTING to ::KryptonPainting,
@@ -171,9 +186,11 @@ object EntityFactory {
         EntityTypes.AXOLOTL to AxolotlSerializer,
         EntityTypes.BAT to BatSerializer,
         EntityTypes.BEE to BeeSerializer,
+        EntityTypes.BOAT to BoatSerializer,
         EntityTypes.CAT to CatSerializer,
         EntityTypes.CHICKEN to ChickenSerializer,
         EntityTypes.COD to FishSerializer,
+        EntityTypes.COMMAND_BLOCK_MINECART to CommandBlockMinecartSerializer,
         EntityTypes.COW to AgeableSerializer,
         EntityTypes.CREEPER to CreeperSerializer,
         EntityTypes.DOLPHIN to DolphinSerializer,
@@ -186,9 +203,11 @@ object EntityFactory {
         EntityTypes.FIREBALL to LargeFireballSerializer,
         EntityTypes.FISHING_HOOK to ProjectileSerializer,
         EntityTypes.FOX to FoxSerializer,
+        EntityTypes.FURNACE_MINECART to FurnaceMinecartSerializer,
         EntityTypes.GLOW_SQUID to GlowSquidSerializer,
         EntityTypes.GOAT to GoatSerializer,
         EntityTypes.LLAMA_SPIT to ProjectileSerializer,
+        EntityTypes.MINECART to MinecartLikeSerializer,
         EntityTypes.MOOSHROOM to MooshroomSerializer,
         EntityTypes.OCELOT to OcelotSerializer,
         EntityTypes.PAINTING to PaintingSerializer,
@@ -207,6 +226,7 @@ object EntityFactory {
         EntityTypes.SNOWBALL to ThrowableProjectileSerializer,
         EntityTypes.SPECTRAL_ARROW to SpectralArrowSerializer,
         EntityTypes.SQUID to MobSerializer,
+        EntityTypes.TNT_MINECART to TNTMinecartSerializer,
         EntityTypes.TRIDENT to TridentSerializer,
         EntityTypes.TROPICAL_FISH to TropicalFishSerializer,
         EntityTypes.TURTLE to TurtleSerializer,

@@ -19,6 +19,7 @@
 package org.kryptonmc.krypton.entity.metadata
 
 import net.kyori.adventure.text.Component
+import org.kryptonmc.api.block.Blocks
 import org.kryptonmc.api.effect.particle.ParticleEffect
 import org.kryptonmc.api.effect.particle.ParticleTypes
 import org.kryptonmc.api.effect.particle.particleEffect
@@ -28,11 +29,13 @@ import org.kryptonmc.api.entity.animal.type.FoxType
 import org.kryptonmc.api.entity.animal.type.MooshroomType
 import org.kryptonmc.api.entity.animal.type.ParrotType
 import org.kryptonmc.api.entity.aquatic.TropicalFishVariant
+import org.kryptonmc.api.entity.vehicle.BoatType
 import org.kryptonmc.api.item.data.DyeColors
 import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.api.util.Catalogue
 import org.kryptonmc.krypton.entity.Pose
 import org.kryptonmc.krypton.item.KryptonItemStack
+import org.kryptonmc.krypton.world.block.downcast
 import org.kryptonmc.nbt.CompoundTag
 import org.spongepowered.math.vector.Vector3f
 import org.spongepowered.math.vector.Vector3i
@@ -48,6 +51,8 @@ object MetadataKeys {
     val LIVING: LivingEntityKeys = LivingEntityKeys
     @JvmField
     val BAT: BatKeys = BatKeys
+    @JvmField
+    val BOAT: BoatKeys = BoatKeys
     @JvmField
     val ARMOR_STAND: ArmorStandKeys = ArmorStandKeys
     @JvmField
@@ -66,6 +71,12 @@ object MetadataKeys {
     val THROWABLE_PROJECTILE: ThrowableProjectileKeys = ThrowableProjectileKeys
     @JvmField
     val WITHER_SKULL: WitherSkullKeys = WitherSkullKeys
+    @JvmField
+    val MINECART_LIKE: MinecartLikeKeys = MinecartLikeKeys
+    @JvmField
+    val COMMAND_BLOCK_MINECART: CommandBlockMinecartKeys = CommandBlockMinecartKeys
+    @JvmField
+    val FURNACE_MINECART: FurnaceMinecartKeys = FurnaceMinecartKeys
     @JvmField
     val MOB: MobKeys = MobKeys
     @JvmField
@@ -230,6 +241,36 @@ object MetadataKeys {
         val DANGEROUS: MetadataKey<Boolean> = MetadataKey(8, MetadataSerializers.BOOLEAN, false)
     }
 
+    object MinecartLikeKeys {
+
+        @JvmField
+        val HURT_TIMER: MetadataKey<Int> = MetadataKey(8, MetadataSerializers.VAR_INT, 0)
+        @JvmField
+        val HURT_DIRECTION: MetadataKey<Int> = MetadataKey(9, MetadataSerializers.VAR_INT, 1)
+        @JvmField
+        val DAMAGE: MetadataKey<Float> = MetadataKey(10, MetadataSerializers.FLOAT, 0F)
+        @JvmField
+        val CUSTOM_BLOCK_ID: MetadataKey<Int> = MetadataKey(11, MetadataSerializers.VAR_INT, Blocks.AIR.downcast().id)
+        @JvmField
+        val CUSTOM_BLOCK_OFFSET: MetadataKey<Int> = MetadataKey(12, MetadataSerializers.VAR_INT, 6)
+        @JvmField
+        val SHOW_CUSTOM_BLOCK: MetadataKey<Boolean> = MetadataKey(13, MetadataSerializers.BOOLEAN, false)
+    }
+
+    object CommandBlockMinecartKeys {
+
+        @JvmField
+        val COMMAND: MetadataKey<String> = MetadataKey(14, MetadataSerializers.STRING, "")
+        @JvmField
+        val LAST_OUTPUT: MetadataKey<Component> = MetadataKey(15, MetadataSerializers.COMPONENT, Component.empty())
+    }
+
+    object FurnaceMinecartKeys {
+
+        @JvmField
+        val HAS_FUEL: MetadataKey<Boolean> = MetadataKey(14, MetadataSerializers.BOOLEAN, false)
+    }
+
     object MobKeys {
 
         @JvmField
@@ -286,6 +327,24 @@ object MetadataKeys {
 
         @JvmField
         val FLAGS: MetadataKey<Byte> = MetadataKey(16, MetadataSerializers.BYTE, 0)
+    }
+
+    object BoatKeys {
+
+        @JvmField
+        val HURT_TIMER: MetadataKey<Int> = MetadataKey(8, MetadataSerializers.VAR_INT, 0)
+        @JvmField
+        val HURT_DIRECTION: MetadataKey<Int> = MetadataKey(9, MetadataSerializers.VAR_INT, 1)
+        @JvmField
+        val DAMAGE: MetadataKey<Float> = MetadataKey(10, MetadataSerializers.FLOAT, 0F)
+        @JvmField
+        val TYPE: MetadataKey<Int> = MetadataKey(11, MetadataSerializers.VAR_INT, BoatType.OAK.ordinal)
+        @JvmField
+        val LEFT_PADDLE_TURNING: MetadataKey<Boolean> = MetadataKey(12, MetadataSerializers.BOOLEAN, false)
+        @JvmField
+        val RIGHT_PADDLE_TURNING: MetadataKey<Boolean> = MetadataKey(13, MetadataSerializers.BOOLEAN, false)
+        @JvmField
+        val SPLASH_TIMER: MetadataKey<Int> = MetadataKey(14, MetadataSerializers.VAR_INT, 0)
     }
 
     object AgeableKeys {

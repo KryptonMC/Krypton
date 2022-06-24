@@ -414,7 +414,7 @@ abstract class KryptonEntity(override var world: KryptonWorld, override val type
         return false
     }
 
-    private fun markDamaged() {
+    protected fun markDamaged() {
         wasDamaged = true
     }
 

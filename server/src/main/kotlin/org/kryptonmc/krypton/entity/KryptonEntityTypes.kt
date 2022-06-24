@@ -35,6 +35,7 @@ import org.kryptonmc.api.entity.animal.Chicken
 import org.kryptonmc.api.entity.animal.Cow
 import org.kryptonmc.api.entity.animal.Fox
 import org.kryptonmc.api.entity.animal.Goat
+import org.kryptonmc.api.entity.animal.Mooshroom
 import org.kryptonmc.api.entity.animal.Ocelot
 import org.kryptonmc.api.entity.animal.Panda
 import org.kryptonmc.api.entity.animal.Parrot
@@ -71,6 +72,11 @@ import org.kryptonmc.api.entity.projectile.SpectralArrow
 import org.kryptonmc.api.entity.projectile.ThrownPotion
 import org.kryptonmc.api.entity.projectile.Trident
 import org.kryptonmc.api.entity.projectile.WitherSkull
+import org.kryptonmc.api.entity.vehicle.Boat
+import org.kryptonmc.api.entity.vehicle.CommandBlockMinecart
+import org.kryptonmc.api.entity.vehicle.FurnaceMinecart
+import org.kryptonmc.api.entity.vehicle.Minecart
+import org.kryptonmc.api.entity.vehicle.TNTMinecart
 import org.kryptonmc.api.registry.Registries
 
 object KryptonEntityTypes {
@@ -118,7 +124,7 @@ object KryptonEntityTypes {
         clientTrackingRange(8)
     }
     @JvmField
-    val BOAT: KryptonEntityType<Entity> = register("boat", EntityCategories.MISC) {
+    val BOAT: KryptonEntityType<Boat> = register("boat", EntityCategories.MISC) {
         dimensions(1.375F, 0.5625F)
         clientTrackingRange(10)
     }
@@ -351,26 +357,26 @@ object KryptonEntityTypes {
         clientTrackingRange(0)
     }
     @JvmField
-    val MINECART: KryptonEntityType<Entity> = minecart("minecart")
+    val MINECART: KryptonEntityType<Minecart> = minecart("minecart")
     @JvmField
     val CHEST_MINECART: KryptonEntityType<Entity> = minecart("chest_minecart")
     @JvmField
-    val COMMAND_BLOCK_MINECART: KryptonEntityType<Entity> = minecart("command_block_minecart")
+    val COMMAND_BLOCK_MINECART: KryptonEntityType<CommandBlockMinecart> = minecart("command_block_minecart")
     @JvmField
-    val FURNACE_MINECART: KryptonEntityType<Entity> = minecart("furnace_minecart")
+    val FURNACE_MINECART: KryptonEntityType<FurnaceMinecart> = minecart("furnace_minecart")
     @JvmField
     val HOPPER_MINECART: KryptonEntityType<Entity> = minecart("hopper_minecart")
     @JvmField
     val SPAWNER_MINECART: KryptonEntityType<Entity> = minecart("spawner_minecart")
     @JvmField
-    val TNT_MINECART: KryptonEntityType<Entity> = minecart("tnt_minecart")
+    val TNT_MINECART: KryptonEntityType<TNTMinecart> = minecart("tnt_minecart")
     @JvmField
     val MULE: KryptonEntityType<Entity> = register("mule", EntityCategories.CREATURE) {
         dimensions(MAGIC_HORSE_WIDTH, 1.6F)
         clientTrackingRange(8)
     }
     @JvmField
-    val MOOSHROOM: KryptonEntityType<Entity> = register("mooshroom", EntityCategories.CREATURE) {
+    val MOOSHROOM: KryptonEntityType<Mooshroom> = register("mooshroom", EntityCategories.CREATURE) {
         dimensions(0.9F, 1.4F)
         clientTrackingRange(10)
     }
