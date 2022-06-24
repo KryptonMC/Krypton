@@ -20,6 +20,7 @@ package org.kryptonmc.krypton.command
 
 import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.ParseResults
+import com.mojang.brigadier.ResultConsumer
 import com.mojang.brigadier.StringReader
 import com.mojang.brigadier.exceptions.CommandSyntaxException
 import com.mojang.brigadier.suggestion.Suggestions
@@ -106,11 +107,15 @@ object KryptonCommandManager : CommandManager {
         lock.write { dispatcher.root.removeChildByName(alias.lowercase()) }
     }
 
-    override fun dispatch(sender: Sender, command: String): Boolean {
+    override fun dispatch(sender: Sender, command: String): Boolean = dispatch(sender, command, null)
+
+    fun dispatch(sender: Sender, command: String, resultCallback: ResultConsumer<Sender>?): Boolean {
         val normalized = command.normalize(true)
         return try {
             val parseResults = parse(sender, normalized)
+            if (resultCallback != null) lock.read { dispatcher.setConsumer(resultCallback) }
             dispatcher.execute(parseResults)
+            lock.read { dispatcher.setConsumer { _, _, _ -> } }
             true
         } catch (exception: CommandSyntaxException) {
             // The exception formatting here is mostly based on that of vanilla, so we can actually report all of the useful

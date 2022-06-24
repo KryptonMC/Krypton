@@ -26,6 +26,7 @@ import kotlinx.collections.immutable.toPersistentHashMap
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.text.Component
 import org.kryptonmc.api.block.Block
+import org.kryptonmc.api.block.Blocks
 import org.kryptonmc.api.block.PushReaction
 import org.kryptonmc.api.block.property.Property
 import org.kryptonmc.api.registry.Registries
@@ -50,6 +51,9 @@ object BlockLoader : KryptonDataLoader<Block>("blocks", Registries.BLOCK) {
 
     @JvmStatic
     fun fromKey(key: Key): KryptonBlock? = fromKey(key.asString())
+
+    @JvmStatic
+    fun fromState(state: Int): Block = STATES[state] ?: Blocks.AIR
 
     @JvmStatic
     fun properties(key: String, properties: Map<String, String>): KryptonBlock? = PROPERTY_MAP[key]?.properties?.get(properties)

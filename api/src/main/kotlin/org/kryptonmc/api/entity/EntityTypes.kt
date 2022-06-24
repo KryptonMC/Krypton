@@ -54,6 +54,11 @@ import org.kryptonmc.api.entity.projectile.SpectralArrow
 import org.kryptonmc.api.entity.projectile.ThrownPotion
 import org.kryptonmc.api.entity.projectile.Trident
 import org.kryptonmc.api.entity.projectile.WitherSkull
+import org.kryptonmc.api.entity.vehicle.Boat
+import org.kryptonmc.api.entity.vehicle.CommandBlockMinecart
+import org.kryptonmc.api.entity.vehicle.FurnaceMinecart
+import org.kryptonmc.api.entity.vehicle.Minecart
+import org.kryptonmc.api.entity.vehicle.TNTMinecart
 import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.api.util.Catalogue
 
@@ -80,7 +85,7 @@ public object EntityTypes {
     @JvmField
     public val BLAZE: EntityType<Entity> = get("blaze")
     @JvmField
-    public val BOAT: EntityType<Entity> = get("boat")
+    public val BOAT: EntityType<Boat> = get("boat")
     @JvmField
     public val CAT: EntityType<Cat> = get("cat")
     @JvmField
@@ -166,19 +171,19 @@ public object EntityTypes {
     @JvmField
     public val MARKER: EntityType<Entity> = get("marker")
     @JvmField
-    public val MINECART: EntityType<Entity> = get("minecart")
+    public val MINECART: EntityType<Minecart> = get("minecart")
     @JvmField
     public val CHEST_MINECART: EntityType<Entity> = get("chest_minecart")
     @JvmField
-    public val COMMAND_BLOCK_MINECART: EntityType<Entity> = get("command_block_minecart")
+    public val COMMAND_BLOCK_MINECART: EntityType<CommandBlockMinecart> = get("command_block_minecart")
     @JvmField
-    public val FURNACE_MINECART: EntityType<Entity> = get("furnace_minecart")
+    public val FURNACE_MINECART: EntityType<FurnaceMinecart> = get("furnace_minecart")
     @JvmField
     public val HOPPER_MINECART: EntityType<Entity> = get("hopper_minecart")
     @JvmField
     public val SPAWNER_MINECART: EntityType<Entity> = get("spawner_minecart")
     @JvmField
-    public val TNT_MINECART: EntityType<Entity> = get("tnt_minecart")
+    public val TNT_MINECART: EntityType<TNTMinecart> = get("tnt_minecart")
     @JvmField
     public val MULE: EntityType<Entity> = get("mule")
     @JvmField

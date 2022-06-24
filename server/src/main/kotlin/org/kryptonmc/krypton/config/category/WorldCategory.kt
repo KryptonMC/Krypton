@@ -43,6 +43,9 @@ data class WorldCategory(
     val difficulty: Difficulty = Difficulty.NORMAL,
     @Comment("If this server is in hardcore mode. Currently does nothing.")
     val hardcore: Boolean = false,
+    @Setting("allow-command-blocks")
+    @Comment("If command blocks are allowed to be used by players.")
+    val allowCommandBlocks: Boolean = false,
     @Setting("view-distance")
     @Comment("The render distance of the server. This is how many chunks you can see in front of you, excluding the one you are in.")
     val viewDistance: Int = 10,
