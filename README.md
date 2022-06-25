@@ -1,4 +1,4 @@
-[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![License: GPL3](https://img.shields.io/badge/license-GPL3-blue.svg)](LICENSE)
 [![Build Status](https://img.shields.io/jenkins/build?jobUrl=https%3A%2F%2Fci.kryptonmc.org%2Fjob%2FKrypton)](https://ci.kryptonmc.org/job/Krypton)
 [![Discord](https://img.shields.io/discord/815157416563834881?color=%237289da&label=discord)](https://discord.gg/4QuwYACDRX)
 
