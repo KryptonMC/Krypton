@@ -49,7 +49,7 @@ object NBTLegacyHoverEventSerializer : LegacyHoverEventSerializer {
     private const val ENTITY_NAME = "name"
     private const val ENTITY_ID = "id"
 
-    private val SNBT_CODEC: Codec<CompoundTag, String, CommandSyntaxException, RuntimeException> = Codec.of(SNBTParser::parse, Tag::asString)
+    private val SNBT_CODEC: Codec<CompoundTag, String, CommandSyntaxException, RuntimeException> = Codec.codec(SNBTParser::parse, Tag::asString)
 
     override fun deserializeShowItem(input: Component): HoverEvent.ShowItem {
         return try {

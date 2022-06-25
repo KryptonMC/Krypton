@@ -8,11 +8,11 @@
  */
 package org.kryptonmc.api.util
 
+import net.kyori.adventure.builder.AbstractBuilder
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.ComponentLike
 import net.kyori.adventure.text.TranslatableComponent
 import net.kyori.adventure.translation.Translatable
-import net.kyori.adventure.util.Buildable
 import org.jetbrains.annotations.Contract
 
 /**
@@ -35,7 +35,7 @@ public interface TranslationHolder : Translatable, ComponentLike {
     /**
      * A base builder for building translation holders.
      */
-    public interface Builder<B : Builder<B, T>, T : TranslationHolder> : Buildable.Builder<T> {
+    public interface Builder<B : Builder<B, T>, T : TranslationHolder> : AbstractBuilder<T> {
 
         /**
          * Sets the translation of the translation holder to the given

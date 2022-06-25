@@ -3,47 +3,47 @@ metadata.format.version = "1.1"
 [versions]
 
 # API
-adventure = "4.9.3"
+adventure = "4.12.0-SNAPSHOT"
 configurate = "4.1.2"
-log4j = "2.17.0"
-kotlin = "1.6.10"
-coroutines = "1.5.2"
-kotlinCollections = "0.3.4"
-guava = "31.0.1-jre"
-gson = "2.8.9"
+log4j = "2.17.2"
+kotlin = "1.7.0"
+coroutines = "1.6.3"
+kotlinCollections = "0.3.5"
+guava = "31.1-jre"
+gson = "2.9.0"
 gsonKt = "1.3"
 commonsLang = "3.12.0"
-guice = "5.0.1"
-kotlinGuice = "1.5.0"
+guice = "5.1.0"
+kotlinGuice = "1.6.0"
 velocityBrigadier = "1.0.0-SNAPSHOT"
 math = "2.0.1"
 sparkApi = "0.1-SNAPSHOT"
 
 # Generation
-kotlinpoet = "1.10.2"
+kotlinpoet = "1.12.0"
 
 # Server
-netty = "4.1.72.Final"
-velocity = "3.0.1"
+netty = "4.1.78.Final"
+velocity = "3.1.0"
 event = "4.0.0-SNAPSHOT"
-asm = "9.2"
+asm = "9.3"
 tca = "1.3.0"
 jline = "3.21.0"
 dataConverter = "1.0.0-SNAPSHOT"
 nbt = "2.6"
 articData = "1.18.1"
-caffeine = "3.0.5"
-fastutil = "8.5.6"
-flare = "2.0.0"
-clikt = "3.3.0"
-bstats = "2.2.1"
+caffeine = "3.1.1"
+fastutil = "8.5.8"
+flare = "2.0.1"
+clikt = "3.5.0"
+bstats = "3.0.0"
 spark = "1.6-SNAPSHOT"
 
 # Test
 junit-jupiter = "5.8.2"
 junit-platform = "1.8.2"
-mockk = "1.12.1"
-bytebuddy = "1.12.5"
+mockk = "1.12.4"
+bytebuddy = "1.12.11"
 jimfs = "1.2"
 
 [libraries]
@@ -60,6 +60,7 @@ kotlinx-collections-immutable = { group = "org.jetbrains.kotlinx", name = "kotli
 # Adventure
 adventure-api = { group = "net.kyori", name = "adventure-api", version.ref = "adventure" }
 adventure-extraKotlin = { group = "net.kyori", name = "adventure-extra-kotlin", version.ref = "adventure" }
+adventure-minimessage = { group = "net.kyori", name = "adventure-text-minimessage", version.ref = "adventure" }
 adventure-serializer-gson = { group = "net.kyori", name = "adventure-text-serializer-gson", version.ref = "adventure" }
 adventure-serializer-legacy = { group = "net.kyori", name = "adventure-text-serializer-legacy", version.ref = "adventure" }
 adventure-serializer-plain = { group = "net.kyori", name = "adventure-text-serializer-plain", version.ref = "adventure" }
@@ -138,6 +139,7 @@ bstats = { group = "org.bstats", name = "bstats-base", version.ref = "bstats" }
 adventure = [
   "adventure-api",
   "adventure-extraKotlin",
+  "adventure-minimessage",
   "adventure-serializer-gson",
   "adventure-serializer-legacy",
   "adventure-serializer-plain",

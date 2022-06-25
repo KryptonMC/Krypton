@@ -132,7 +132,7 @@ public interface DimensionType : Buildable<DimensionType, DimensionType.Builder>
      * A builder for dimension types.
      */
     @DimensionTypeDsl
-    public interface Builder : KeyedBuilder<DimensionType, Builder> {
+    public interface Builder : Buildable.Builder<DimensionType>, KeyedBuilder<DimensionType, Builder> {
 
         /**
          * Makes the dimension type safe for piglins.
