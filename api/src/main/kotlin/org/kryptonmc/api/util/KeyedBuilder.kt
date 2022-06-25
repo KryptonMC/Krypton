@@ -8,15 +8,15 @@
  */
 package org.kryptonmc.api.util
 
+import net.kyori.adventure.builder.AbstractBuilder
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.key.Keyed
-import net.kyori.adventure.util.Buildable
 import org.jetbrains.annotations.Contract
 
 /**
  * A builder for keyed objects.
  */
-public interface KeyedBuilder<R : Keyed, B : KeyedBuilder<R, B>> : Buildable.Builder<R> {
+public interface KeyedBuilder<R : Keyed, B : KeyedBuilder<R, B>> : AbstractBuilder<R> {
 
     /**
      * Sets the key for the object that is being built to the given [key].

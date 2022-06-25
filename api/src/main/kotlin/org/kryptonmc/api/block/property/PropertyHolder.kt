@@ -8,7 +8,7 @@
  */
 package org.kryptonmc.api.block.property
 
-import net.kyori.adventure.util.Buildable
+import net.kyori.adventure.builder.AbstractBuilder
 import org.jetbrains.annotations.Contract
 
 /**
@@ -73,7 +73,7 @@ public interface PropertyHolder<out T : PropertyHolder<T>> {
     /**
      * A base builder for building property holders.
      */
-    public interface Builder<B : Builder<B, T>, T : PropertyHolder<T>> : Buildable.Builder<T> {
+    public interface Builder<B : Builder<B, T>, T : PropertyHolder<T>> : AbstractBuilder<T> {
 
         /**
          * Adds the given property [key] to the list of available properties

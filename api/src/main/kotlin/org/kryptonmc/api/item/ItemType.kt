@@ -91,7 +91,7 @@ public interface ItemType : Buildable<ItemType, ItemType.Builder>, ItemLike, Blo
      * A builder that can be used to build item type instances.
      */
     @ItemTypeDsl
-    public interface Builder : KeyedBuilder<ItemType, Builder>, TranslationHolder.Builder<Builder, ItemType> {
+    public interface Builder : Buildable.Builder<ItemType>, KeyedBuilder<ItemType, Builder>, TranslationHolder.Builder<Builder, ItemType> {
 
         /**
          * Sets the rarity of the item type.

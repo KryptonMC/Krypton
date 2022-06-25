@@ -73,7 +73,7 @@ class AdventureTests {
         // Standard
         val nbt = "{CustomModelData:74,Damage:34,Unbreakable:1b}"
         val input = Component.text("{Count:37B,id:'minecraft:air',tag:$nbt}")
-        val item = HoverEvent.ShowItem.of(Key.key("air"), 37, BinaryTagHolder.of(nbt))
+        val item = HoverEvent.ShowItem.of(Key.key("air"), 37, BinaryTagHolder.binaryTagHolder(nbt))
         assertEquals(item, NBTLegacyHoverEventSerializer.deserializeShowItem(input))
 
         // No extra item data (`tag` in item NBT)
@@ -85,7 +85,7 @@ class AdventureTests {
     fun `test show item serialization`() {
         // Standard
         val nbt = "{CustomModelData:74,Damage:34,Unbreakable:1b}"
-        val item = HoverEvent.ShowItem.of(Key.key("air"), 37, BinaryTagHolder.of(nbt))
+        val item = HoverEvent.ShowItem.of(Key.key("air"), 37, BinaryTagHolder.binaryTagHolder(nbt))
         val output = Component.text("{Count:37b,id:\"minecraft:air\",tag:$nbt}")
         assertEquals(output, NBTLegacyHoverEventSerializer.serializeShowItem(item))
 
@@ -94,7 +94,7 @@ class AdventureTests {
         assertEquals(noTag, NBTLegacyHoverEventSerializer.serializeShowItem(item.nbt(null)))
 
         // Bogus NBT
-        assertThrows<IOException> { NBTLegacyHoverEventSerializer.serializeShowItem(item.nbt(BinaryTagHolder.of("hello world"))) }
+        assertThrows<IOException> { NBTLegacyHoverEventSerializer.serializeShowItem(item.nbt(BinaryTagHolder.binaryTagHolder("hello world"))) }
     }
 
     @Test

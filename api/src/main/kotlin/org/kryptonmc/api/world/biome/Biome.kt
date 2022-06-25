@@ -48,7 +48,7 @@ public interface Biome : Buildable<Biome, Biome.Builder>, Keyed {
      * A builder for biomes.
      */
     @BiomeDsl
-    public interface Builder : KeyedBuilder<Biome, Builder> {
+    public interface Builder : Buildable.Builder<Biome>, KeyedBuilder<Biome, Builder> {
 
         /**
          * Sets the climate of the biome to the given [climate] and returns

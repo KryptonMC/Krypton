@@ -8,8 +8,8 @@
  */
 package org.kryptonmc.api.user.ban
 
+import net.kyori.adventure.builder.AbstractBuilder
 import net.kyori.adventure.text.Component
-import net.kyori.adventure.util.Buildable
 import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.auth.GameProfile
 import java.net.InetAddress
@@ -82,7 +82,7 @@ public interface Ban {
      *
      * A new builder can be created with [BanService.createBuilder].
      */
-    public interface Builder : Buildable.Builder<Ban> {
+    public interface Builder : AbstractBuilder<Ban> {
 
         /**
          * Sets the target profile for the ban to the given [profile].

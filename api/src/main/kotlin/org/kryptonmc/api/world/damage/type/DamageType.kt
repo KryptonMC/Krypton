@@ -8,9 +8,9 @@
  */
 package org.kryptonmc.api.world.damage.type
 
+import net.kyori.adventure.builder.AbstractBuilder
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.key.Keyed
-import net.kyori.adventure.util.Buildable
 import org.jetbrains.annotations.ApiStatus
 import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.Krypton
@@ -110,7 +110,7 @@ public interface DamageType : Keyed {
     /**
      * A builder for damage types.
      */
-    public interface Builder : Buildable.Builder<DamageType> {
+    public interface Builder : AbstractBuilder<DamageType> {
 
         /**
          * Sets the key for the damage type to the given [key].
