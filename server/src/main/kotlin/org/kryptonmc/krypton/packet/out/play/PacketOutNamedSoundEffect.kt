@@ -24,6 +24,7 @@ import net.kyori.adventure.sound.Sound
 import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.util.writeEnum
 import org.kryptonmc.krypton.util.writeKey
+import java.util.concurrent.ThreadLocalRandom
 
 @JvmRecord
 data class PacketOutNamedSoundEffect(
@@ -33,10 +34,17 @@ data class PacketOutNamedSoundEffect(
     val y: Double,
     val z: Double,
     val volume: Float,
-    val pitch: Float
+    val pitch: Float,
+    val seed: Long
 ) : Packet {
 
-    constructor(sound: Sound, x: Double, y: Double, z: Double) : this(sound.name(), sound.source(), x, y, z, sound.volume(), sound.pitch())
+    // TODO: Review if we should use a better source of randomness
+    constructor(
+        sound: Sound,
+        x: Double,
+        y: Double,
+        z: Double
+    ) : this(sound.name(), sound.source(), x, y, z, sound.volume(), sound.pitch(), sound.seed().orElse(ThreadLocalRandom.current().nextLong()))
 
     override fun write(buf: ByteBuf) {
         buf.writeKey(name)

@@ -135,7 +135,8 @@ class PlayerManager(private val server: KryptonServer) {
             reducedDebugInfo,
             doImmediateRespawn,
             false,
-            false
+            false,
+            null
         ))
         session.write(brandPacket)
         session.write(world.cachedDifficultyPacket)

@@ -16,33 +16,26 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.packet.`in`.play
+package org.kryptonmc.krypton.command.argument
 
 import io.netty.buffer.ByteBuf
-import org.kryptonmc.krypton.packet.Packet
+import org.kryptonmc.krypton.network.Writable
+import org.kryptonmc.krypton.util.readMap
 import org.kryptonmc.krypton.util.readString
 import org.kryptonmc.krypton.util.readVarIntByteArray
+import org.kryptonmc.krypton.util.writeMap
 import org.kryptonmc.krypton.util.writeString
-import java.util.Objects
+import org.kryptonmc.krypton.util.writeVarIntByteArray
 
 @JvmRecord
-data class PacketInChat(val message: String, val timestamp: Long, val salt: Long, val signature: ByteArray, val signedPreview: Boolean) : Packet {
+data class ArgumentSignatures(val salt: Long, val signatures: Map<String, ByteArray>) : Writable {
 
-    constructor(buf: ByteBuf) : this(buf.readString(), buf.readLong(), buf.readLong(), buf.readVarIntByteArray(), buf.readBoolean())
+    constructor(buf: ByteBuf) : this(buf.readLong(), buf.readMap({ buf.readString(16) }, { buf.readVarIntByteArray() }))
+
+    fun get(argument: String): ByteArray? = signatures[argument]
 
     override fun write(buf: ByteBuf) {
-        buf.writeString(message)
+        buf.writeLong(salt)
+        buf.writeMap(signatures, { _, value -> buf.writeString(value, 16) }, { _, value -> buf.writeVarIntByteArray(value) })
     }
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-        return message == (other as PacketInChat).message &&
-                timestamp == other.timestamp &&
-                salt == other.salt &&
-                signature.contentEquals(other.signature) &&
-                signedPreview == other.signedPreview
-    }
-
-    override fun hashCode(): Int = Objects.hash(message, timestamp, salt, signature, signedPreview)
 }

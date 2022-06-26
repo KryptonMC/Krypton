@@ -16,33 +16,35 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.packet.`in`.play
+package org.kryptonmc.krypton.entity.player
 
 import io.netty.buffer.ByteBuf
-import org.kryptonmc.krypton.packet.Packet
-import org.kryptonmc.krypton.util.readString
+import org.kryptonmc.krypton.network.Writable
+import org.kryptonmc.krypton.util.readInstant
+import org.kryptonmc.krypton.util.readPublicKey
 import org.kryptonmc.krypton.util.readVarIntByteArray
-import org.kryptonmc.krypton.util.writeString
+import org.kryptonmc.krypton.util.writeInstant
+import org.kryptonmc.krypton.util.writeVarIntByteArray
+import java.security.PublicKey
+import java.time.Instant
 import java.util.Objects
 
 @JvmRecord
-data class PacketInChat(val message: String, val timestamp: Long, val salt: Long, val signature: ByteArray, val signedPreview: Boolean) : Packet {
+data class PlayerPublicKey(val expiryTime: Instant, val key: PublicKey, val signature: ByteArray) : Writable {
 
-    constructor(buf: ByteBuf) : this(buf.readString(), buf.readLong(), buf.readLong(), buf.readVarIntByteArray(), buf.readBoolean())
+    constructor(buf: ByteBuf) : this(buf.readInstant(), buf.readPublicKey(), buf.readVarIntByteArray())
 
     override fun write(buf: ByteBuf) {
-        buf.writeString(message)
+        buf.writeInstant(expiryTime)
+        buf.writeVarIntByteArray(key.encoded)
+        buf.writeVarIntByteArray(signature)
     }
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
-        return message == (other as PacketInChat).message &&
-                timestamp == other.timestamp &&
-                salt == other.salt &&
-                signature.contentEquals(other.signature) &&
-                signedPreview == other.signedPreview
+        return expiryTime == (other as PlayerPublicKey).expiryTime && key == other.key && signature.contentEquals(other.signature)
     }
 
-    override fun hashCode(): Int = Objects.hash(message, timestamp, salt, signature, signedPreview)
+    override fun hashCode(): Int = Objects.hash(expiryTime, key, signature)
 }

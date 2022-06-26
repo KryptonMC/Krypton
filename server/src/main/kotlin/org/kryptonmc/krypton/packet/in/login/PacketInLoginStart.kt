@@ -19,16 +19,19 @@
 package org.kryptonmc.krypton.packet.`in`.login
 
 import io.netty.buffer.ByteBuf
+import org.kryptonmc.krypton.entity.player.PlayerPublicKey
 import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.util.readString
 import org.kryptonmc.krypton.util.writeString
 
 @JvmRecord
-data class PacketInLoginStart(val name: String) : Packet {
+data class PacketInLoginStart(val name: String, val publicKey: PlayerPublicKey?) : Packet {
 
-    constructor(buf: ByteBuf) : this(buf.readString(16))
+    constructor(buf: ByteBuf) : this(buf.readString(16), if (buf.readBoolean()) PlayerPublicKey(buf) else null)
 
     override fun write(buf: ByteBuf) {
         buf.writeString(name, 16)
+        buf.writeBoolean(publicKey != null)
+        publicKey?.write(buf)
     }
 }

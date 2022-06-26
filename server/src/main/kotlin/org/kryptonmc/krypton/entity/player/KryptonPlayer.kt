@@ -34,7 +34,6 @@ import net.kyori.adventure.text.Component
 import net.kyori.adventure.title.Title
 import net.kyori.adventure.title.TitlePart
 import net.kyori.adventure.util.TriState
-import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.effect.particle.ParticleEffect
 import org.kryptonmc.api.effect.particle.data.ColorParticleData
 import org.kryptonmc.api.effect.particle.data.DirectionalParticleData
@@ -84,7 +83,7 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutAbilities
 import org.kryptonmc.krypton.packet.out.play.PacketOutActionBar
 import org.kryptonmc.krypton.packet.out.play.PacketOutCamera
 import org.kryptonmc.krypton.packet.out.play.PacketOutChangeGameState
-import org.kryptonmc.krypton.packet.out.play.PacketOutChat
+import org.kryptonmc.krypton.packet.out.play.PacketOutPlayerChat
 import org.kryptonmc.krypton.packet.out.play.PacketOutClearTitles
 import org.kryptonmc.krypton.packet.out.play.PacketOutEntityPosition
 import org.kryptonmc.krypton.packet.out.play.PacketOutEntitySoundEffect
@@ -123,6 +122,7 @@ import java.net.InetSocketAddress
 import java.time.Instant
 import java.util.Locale
 import java.util.UUID
+import java.util.concurrent.ThreadLocalRandom
 import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min
@@ -573,7 +573,8 @@ class KryptonPlayer(
     }
 
     override fun sendMessage(source: Identity, message: Component, type: MessageType) {
-        session.send(PacketOutChat(message, type, source.uuid()))
+        // TODO
+        //session.send(PacketOutPlayerChat(message, type, source.uuid()))
     }
 
     override fun sendActionBar(message: Component) {
@@ -656,7 +657,8 @@ class KryptonPlayer(
         val x = entity.location.x()
         val y = entity.location.y()
         val z = entity.location.z()
-        session.send(PacketOutNamedSoundEffect(sound.name(), sound.source(), x, y, z, sound.volume(), sound.pitch()))
+        val seed = sound.seed().orElse(ThreadLocalRandom.current().nextLong())
+        session.send(PacketOutNamedSoundEffect(sound.name(), sound.source(), x, y, z, sound.volume(), sound.pitch(), seed))
     }
 
     override fun stopSound(stop: SoundStop) {

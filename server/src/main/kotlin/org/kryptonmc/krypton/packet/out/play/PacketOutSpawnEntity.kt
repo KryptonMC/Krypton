@@ -21,8 +21,8 @@ package org.kryptonmc.krypton.packet.out.play
 import io.netty.buffer.ByteBuf
 import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.krypton.entity.KryptonEntity
+import org.kryptonmc.krypton.entity.KryptonLivingEntity
 import org.kryptonmc.krypton.packet.EntityPacket
-import org.kryptonmc.krypton.registry.InternalRegistries
 import org.kryptonmc.krypton.util.Positioning
 import org.kryptonmc.krypton.util.writeAngle
 import org.kryptonmc.krypton.util.writeUUID
@@ -37,23 +37,29 @@ data class PacketOutSpawnEntity(
     val x: Double,
     val y: Double,
     val z: Double,
-    val yaw: Float,
     val pitch: Float,
+    val yaw: Float,
+    val headYaw: Float,
     val data: Int,
     val velocityX: Int,
     val velocityY: Int,
     val velocityZ: Int
 ) : EntityPacket {
 
-    constructor(entity: KryptonEntity) : this(
+    constructor(entity: KryptonEntity) : this(entity, 0F)
+
+    constructor(entity: KryptonLivingEntity) : this(entity, entity.headYaw)
+
+    private constructor(entity: KryptonEntity, headYaw: Float) : this(
         entity.id,
         entity.uuid,
         Registries.ENTITY_TYPE.idOf(entity.type),
         entity.location.x(),
         entity.location.y(),
         entity.location.z(),
-        entity.rotation.x(),
         entity.rotation.y(),
+        entity.rotation.x(),
+        headYaw,
         0,
         Positioning.encodeVelocity(entity.velocity.x()),
         Positioning.encodeVelocity(entity.velocity.y()),
@@ -69,6 +75,7 @@ data class PacketOutSpawnEntity(
         buf.writeDouble(z)
         buf.writeAngle(yaw)
         buf.writeAngle(pitch)
+        buf.writeAngle(headYaw)
         buf.writeInt(data)
         buf.writeShort(velocityX)
         buf.writeShort(velocityY)
