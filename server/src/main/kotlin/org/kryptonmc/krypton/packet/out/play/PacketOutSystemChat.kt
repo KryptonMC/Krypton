@@ -16,18 +16,19 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.entity.hanging
+package org.kryptonmc.krypton.packet.out.play
 
-import org.kryptonmc.api.entity.EntityTypes
-import org.kryptonmc.api.entity.hanging.Picture
-import org.kryptonmc.api.entity.hanging.Painting
-import org.kryptonmc.krypton.world.KryptonWorld
+import io.netty.buffer.ByteBuf
+import net.kyori.adventure.text.Component
+import org.kryptonmc.krypton.packet.Packet
+import org.kryptonmc.krypton.util.writeChat
+import org.kryptonmc.krypton.util.writeVarInt
 
-class KryptonPainting(world: KryptonWorld) : KryptonHangingEntity(world, EntityTypes.PAINTING), Painting {
+@JvmRecord
+data class PacketOutSystemChat(val message: Component, val typeId: Int) : Packet {
 
-    override var picture: Picture? = null
-    override val width: Int
-        get() = picture?.width ?: 1
-    override val height: Int
-        get() = picture?.height ?: 1
+    override fun write(buf: ByteBuf) {
+        buf.writeChat(message)
+        buf.writeVarInt(typeId)
+    }
 }

@@ -35,6 +35,7 @@ import org.kryptonmc.api.world.rule.GameRules
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.adventure.PacketGroupingAudience
 import org.kryptonmc.krypton.effect.Effect
+import org.kryptonmc.krypton.effect.sound.calculateDistance
 import org.kryptonmc.krypton.entity.EntityFactory
 import org.kryptonmc.krypton.entity.EntityManager
 import org.kryptonmc.krypton.entity.KryptonEntity
@@ -177,8 +178,7 @@ class KryptonWorld(
         pitch: Float,
         except: KryptonPlayer? = null
     ) {
-        val finalVolume = if (volume > 1F) 16.0 * volume else 16.0
-        playerManager.broadcast(PacketOutSoundEffect(event, source, x, y, z, volume, pitch), this, x, y, z, finalVolume, except)
+        playerManager.broadcast(PacketOutSoundEffect(event, source, x, y, z, volume, pitch), this, x, y, z, event.calculateDistance(volume), except)
     }
 
     // TODO: Check world border bounds

@@ -22,12 +22,12 @@ import net.kyori.adventure.key.Key
 import org.kryptonmc.api.effect.sound.SoundEvent
 
 @JvmRecord
-data class KryptonSoundEvent(private val key: Key) : SoundEvent {
+data class KryptonSoundEvent(private val key: Key, override val range: Float) : SoundEvent {
 
     override fun key(): Key = key
 
     object Factory : SoundEvent.Factory {
 
-        override fun of(key: Key): SoundEvent = KryptonSoundEvent(key)
+        override fun of(key: Key, range: Float): SoundEvent = KryptonSoundEvent(key, range)
     }
 }

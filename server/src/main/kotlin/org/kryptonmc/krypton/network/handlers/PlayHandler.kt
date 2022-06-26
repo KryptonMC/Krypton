@@ -263,7 +263,7 @@ class PlayHandler(override val server: KryptonServer, override val session: Sess
     private fun handlePlayerDigging(packet: PacketInPlayerDigging) {
         when (packet.status) {
             DiggingStatus.STARTED, DiggingStatus.FINISHED, DiggingStatus.CANCELLED -> player.blockHandler.handleBlockBreak(packet)
-            DiggingStatus.UPDATE_STATE -> {
+            DiggingStatus.RELEASE_USE_ITEM -> {
                 val handler = player.inventory[player.inventory.heldSlot].type.handler()
                 if (handler !is ItemTimedHandler) return
                 handler.finishUse(player, player.hand)

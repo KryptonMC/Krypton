@@ -60,6 +60,7 @@ abstract class KryptonLivingEntity(
     private var tickCount = 0
     val attributes: AttributeMap = AttributeMap(attributeSupplier)
     open val brain: Brain<*> = Brain<KryptonLivingEntity>()
+    var headYaw: Float = rotation.x()
 
     val killer: KryptonLivingEntity?
         get() {
@@ -170,8 +171,6 @@ abstract class KryptonLivingEntity(
         player.session.send(PacketOutAttributes(id, attributes.syncable))
         return true
     }
-
-    override fun getSpawnPacket(): Packet = PacketOutSpawnLivingEntity(this)
 
     private fun getLivingFlag(flag: Int): Boolean = getFlag(MetadataKeys.LIVING.FLAGS, flag)
 
