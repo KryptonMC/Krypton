@@ -18,20 +18,14 @@ import org.spongepowered.math.vector.Vector3d
 public interface VibrationParticleData : ParticleData {
 
     /**
-     * The starting position of the vibration.
-     */
-    @get:JvmName("origin")
-    public val origin: Vector3d
-
-    /**
      * The ending position of the vibration.
      */
     @get:JvmName("destination")
     public val destination: Vector3d
 
     /**
-     * The time, in ticks, it will take for the vibration to vibrate from
-     * the [origin] to the [destination].
+     * The time, in ticks, it will take for the vibration to vibrate from its
+     * starting position to the [destination].
      */
     @get:JvmName("ticks")
     public val ticks: Int
@@ -39,20 +33,15 @@ public interface VibrationParticleData : ParticleData {
     public companion object {
 
         /**
-         * Creates new vibration particle effect data with the given [origin],
-         * [destination], and [ticks].
+         * Creates new vibration particle effect data with the given
+         * [destination] and [ticks].
          *
-         * @param origin the starting position
          * @param destination the ending position
          * @param ticks the time, in ticks, it takes for the vibration to finish
          * @return new vibration particle effect data
          */
         @JvmStatic
         @Contract("_ -> new", pure = true)
-        public fun of(
-            origin: Vector3d,
-            destination: Vector3d,
-            ticks: Int
-        ): VibrationParticleData = ParticleData.FACTORY.vibration(origin, destination, ticks)
+        public fun of(destination: Vector3d, ticks: Int): VibrationParticleData = ParticleData.FACTORY.vibration(destination, ticks)
     }
 }

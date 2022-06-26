@@ -19,13 +19,22 @@ import org.kryptonmc.api.util.provide
 /**
  * A type of sound.
  */
+@Suppress("INAPPLICABLE_JVM_NAME")
 @CataloguedBy(SoundEvents::class)
 public interface SoundEvent : Sound.Type {
+
+    /**
+     * The range that this sound can be heard from.
+     *
+     * A value of 0 indicates the sound does not have a range.
+     */
+    @get:JvmName("range")
+    public val range: Float
 
     @ApiStatus.Internal
     public interface Factory {
 
-        public fun of(key: Key): SoundEvent
+        public fun of(key: Key, range: Float): SoundEvent
     }
 
     public companion object {
@@ -40,6 +49,17 @@ public interface SoundEvent : Sound.Type {
          */
         @JvmStatic
         @Contract("_ -> new", pure = true)
-        public fun of(key: Key): SoundEvent = FACTORY.of(key)
+        public fun of(key: Key): SoundEvent = of(key, 0F)
+
+        /**
+         * Creates a new sound event with the given [key] and [range].
+         *
+         * @param key the key
+         * @param range the range the sound can be heard
+         * @return a new sound event
+         */
+        @JvmStatic
+        @Contract("_, _ -> new", pure = true)
+        public fun of(key: Key, range: Float): SoundEvent = FACTORY.of(key, range)
     }
 }

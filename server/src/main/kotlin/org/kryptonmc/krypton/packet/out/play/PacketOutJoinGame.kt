@@ -26,6 +26,8 @@ import org.kryptonmc.api.world.GameMode
 import org.kryptonmc.api.world.World
 import org.kryptonmc.krypton.packet.EntityPacket
 import org.kryptonmc.krypton.registry.encode
+import org.kryptonmc.krypton.util.GlobalPosition
+import org.kryptonmc.krypton.util.asLong
 import org.kryptonmc.krypton.util.encode
 import org.kryptonmc.krypton.util.writeCollection
 import org.kryptonmc.krypton.util.writeKey
@@ -49,9 +51,10 @@ data class PacketOutJoinGame(
     val viewDistance: Int,
     val simulationDistance: Int,
     val reducedDebugInfo: Boolean,
-    val doImmediateRespawn: Boolean,
+    val enableRespawnScreen: Boolean,
     val isDebug: Boolean,
-    val isFlat: Boolean
+    val isFlat: Boolean,
+    val deathLocation: GlobalPosition?
 ) : EntityPacket {
 
     override fun write(buf: ByteBuf) {
@@ -63,6 +66,7 @@ data class PacketOutJoinGame(
         buf.writeNBT(compound {
             put(ResourceKeys.DIMENSION_TYPE.location.asString(), Registries.DIMENSION_TYPE.encode(KryptonDimensionType.ENCODER))
             put(ResourceKeys.BIOME.location.asString(), Registries.BIOME.encode(KryptonBiome.ENCODER))
+            // TODO: Add chat type codec to this
         })
         buf.encode(KryptonDimensionType.ENCODER, dimensionType)
         buf.writeKey(dimension.location)
@@ -71,8 +75,13 @@ data class PacketOutJoinGame(
         buf.writeVarInt(viewDistance)
         buf.writeVarInt(simulationDistance)
         buf.writeBoolean(reducedDebugInfo)
-        buf.writeBoolean(!doImmediateRespawn)
+        buf.writeBoolean(!enableRespawnScreen)
         buf.writeBoolean(isDebug)
         buf.writeBoolean(isFlat)
+        buf.writeBoolean(deathLocation != null)
+        if (deathLocation != null) {
+            buf.writeKey(deathLocation.dimension.location)
+            buf.writeLong(deathLocation.position.asLong())
+        }
     }
 }

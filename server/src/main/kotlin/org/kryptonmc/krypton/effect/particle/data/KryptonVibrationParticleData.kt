@@ -24,16 +24,10 @@ import org.kryptonmc.krypton.network.Writable
 import org.spongepowered.math.vector.Vector3d
 
 @JvmRecord
-data class KryptonVibrationParticleData(
-    override val origin: Vector3d,
-    override val destination: Vector3d,
-    override val ticks: Int
-) : VibrationParticleData, Writable {
+data class KryptonVibrationParticleData(override val destination: Vector3d, override val ticks: Int) : VibrationParticleData, Writable {
 
     override fun write(buf: ByteBuf) {
-        buf.writeDouble(origin.x())
-        buf.writeDouble(origin.y())
-        buf.writeDouble(origin.z())
+        // TODO: Sort this out when we have a new position source mechanism
         buf.writeDouble(destination.x())
         buf.writeDouble(destination.y())
         buf.writeDouble(destination.z())

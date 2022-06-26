@@ -37,7 +37,7 @@ import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.network.SessionManager
 import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.packet.out.play.PacketOutActionBar
-import org.kryptonmc.krypton.packet.out.play.PacketOutChat
+import org.kryptonmc.krypton.packet.out.play.PacketOutPlayerChat
 import org.kryptonmc.krypton.packet.out.play.PacketOutClearTitles
 import org.kryptonmc.krypton.packet.out.play.PacketOutEntitySoundEffect
 import org.kryptonmc.krypton.packet.out.play.PacketOutNamedSoundEffect
@@ -58,11 +58,13 @@ interface PacketGroupingAudience : ForwardingAudience {
     }
 
     override fun sendMessage(source: Identified, message: Component, type: MessageType) {
-        sendGroupedPacket(PacketOutChat(message, type, source.identity().uuid()))
+        // TODO
+        //sendGroupedPacket(PacketOutPlayerChat(message, type, source.identity().uuid()))
     }
 
     override fun sendMessage(source: Identity, message: Component, type: MessageType) {
-        sendGroupedPacket(PacketOutChat(message, type, source.uuid()))
+        // TODO
+        //sendGroupedPacket(PacketOutPlayerChat(message, type, source.uuid()))
     }
 
     override fun sendActionBar(message: Component) {
