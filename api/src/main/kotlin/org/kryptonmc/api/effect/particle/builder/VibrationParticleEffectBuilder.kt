@@ -18,16 +18,6 @@ import org.spongepowered.math.vector.Vector3d
 public interface VibrationParticleEffectBuilder : BaseParticleEffectBuilder<VibrationParticleEffectBuilder> {
 
     /**
-     * Sets the origin location from the given [position].
-     *
-     * @param position the origin position
-     * @return this builder
-     */
-    @ParticleDsl
-    @Contract("_ -> this", mutates = "this")
-    public fun origin(position: Vector3d): VibrationParticleEffectBuilder
-
-    /**
      * Sets the destination location from the given [position].
      *
      * @param position the destination position

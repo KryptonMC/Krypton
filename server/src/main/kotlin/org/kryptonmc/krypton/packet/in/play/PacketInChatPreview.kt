@@ -21,28 +21,15 @@ package org.kryptonmc.krypton.packet.`in`.play
 import io.netty.buffer.ByteBuf
 import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.util.readString
-import org.kryptonmc.krypton.util.readVarIntByteArray
 import org.kryptonmc.krypton.util.writeString
-import java.util.Objects
 
 @JvmRecord
-data class PacketInChat(val message: String, val timestamp: Long, val salt: Long, val signature: ByteArray, val signedPreview: Boolean) : Packet {
+data class PacketInChatPreview(val queryId: Int, val query: String) : Packet {
 
-    constructor(buf: ByteBuf) : this(buf.readString(), buf.readLong(), buf.readLong(), buf.readVarIntByteArray(), buf.readBoolean())
+    constructor(buf: ByteBuf) : this(buf.readInt(), buf.readString(256))
 
     override fun write(buf: ByteBuf) {
-        buf.writeString(message)
+        buf.writeInt(queryId)
+        buf.writeString(query, 256)
     }
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-        return message == (other as PacketInChat).message &&
-                timestamp == other.timestamp &&
-                salt == other.salt &&
-                signature.contentEquals(other.signature) &&
-                signedPreview == other.signedPreview
-    }
-
-    override fun hashCode(): Int = Objects.hash(message, timestamp, salt, signature, signedPreview)
 }

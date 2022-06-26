@@ -59,6 +59,5 @@ object KryptonParticleDataFactory : ParticleData.Factory {
         toBlue: Short
     ): DustTransitionParticleData = KryptonDustTransitionParticleData(fromRed, fromGreen, fromBlue, scale, toRed, toGreen, toBlue)
 
-    override fun vibration(origin: Vector3d, destination: Vector3d, ticks: Int): VibrationParticleData =
-        KryptonVibrationParticleData(origin, destination, ticks)
+    override fun vibration(destination: Vector3d, ticks: Int): VibrationParticleData = KryptonVibrationParticleData(destination, ticks)
 }

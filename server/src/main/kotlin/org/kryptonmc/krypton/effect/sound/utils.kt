@@ -16,22 +16,12 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.packet.out.play
+package org.kryptonmc.krypton.effect.sound
 
-import io.netty.buffer.ByteBuf
-import net.kyori.adventure.audience.MessageType
-import net.kyori.adventure.text.Component
-import org.kryptonmc.krypton.packet.Packet
-import org.kryptonmc.krypton.util.writeChat
-import org.kryptonmc.krypton.util.writeUUID
-import java.util.UUID
+import org.kryptonmc.api.effect.sound.SoundEvent
 
-@JvmRecord
-data class PacketOutChat(val message: Component, val type: MessageType, val senderId: UUID) : Packet {
-
-    override fun write(buf: ByteBuf) {
-        buf.writeChat(message)
-        buf.writeByte(type.ordinal)
-        buf.writeUUID(senderId)
-    }
+fun SoundEvent.calculateDistance(volume: Float): Double {
+    if (range != 0F) return range.toDouble()
+    if (volume > 1F) return 16.0 * volume
+    return 16.0
 }

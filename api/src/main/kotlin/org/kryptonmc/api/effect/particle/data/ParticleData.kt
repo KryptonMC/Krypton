@@ -46,7 +46,7 @@ public interface ParticleData {
 
         public fun note(note: Byte): NoteParticleData
 
-        public fun vibration(origin: Vector3d, destination: Vector3d, ticks: Int): VibrationParticleData
+        public fun vibration(destination: Vector3d, ticks: Int): VibrationParticleData
     }
 
     public companion object {

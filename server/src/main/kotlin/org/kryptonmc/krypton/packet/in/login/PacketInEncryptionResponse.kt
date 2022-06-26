@@ -23,22 +23,23 @@ import java.util.Objects
 import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.util.readVarIntByteArray
 import org.kryptonmc.krypton.util.writeVarIntByteArray
+import java.util.OptionalLong
 
 @JvmRecord
-data class PacketInEncryptionResponse(val secret: ByteArray, val verifyToken: ByteArray) : Packet {
+data class PacketInEncryptionResponse(val secret: ByteArray, val verificationData: VerificationData) : Packet {
 
-    constructor(buf: ByteBuf) : this(buf.readVarIntByteArray(), buf.readVarIntByteArray())
+    constructor(buf: ByteBuf) : this(buf.readVarIntByteArray(), VerificationData.read(buf))
 
     override fun write(buf: ByteBuf) {
         buf.writeVarIntByteArray(secret)
-        buf.writeVarIntByteArray(verifyToken)
+        verificationData.write(buf)
     }
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
-        return secret.contentEquals((other as PacketInEncryptionResponse).secret) && verifyToken.contentEquals(other.verifyToken)
+        return secret.contentEquals((other as PacketInEncryptionResponse).secret) && verificationData == other.verificationData
     }
 
-    override fun hashCode(): Int = Objects.hash(secret, verifyToken)
+    override fun hashCode(): Int = Objects.hash(secret, verificationData)
 }

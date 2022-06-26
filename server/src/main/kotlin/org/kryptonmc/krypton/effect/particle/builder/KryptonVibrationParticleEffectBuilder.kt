@@ -27,15 +27,12 @@ import org.spongepowered.math.vector.Vector3d
 class KryptonVibrationParticleEffectBuilder(type: VibrationParticleType) : AbstractParticleEffectBuilder<VibrationParticleEffectBuilder>(type),
     VibrationParticleEffectBuilder {
 
-    private var origin: Vector3d = Vector3d.ZERO
     private var destination: Vector3d = Vector3d.ZERO
     private var ticks = 0
-
-    override fun origin(position: Vector3d): VibrationParticleEffectBuilder = apply { origin = position }
 
     override fun destination(position: Vector3d): VibrationParticleEffectBuilder = apply { destination = position }
 
     override fun ticks(ticks: Int): VibrationParticleEffectBuilder = apply { this.ticks = ticks }
 
-    override fun buildData(): ParticleData = KryptonVibrationParticleData(origin, destination, ticks)
+    override fun buildData(): ParticleData = KryptonVibrationParticleData(destination, ticks)
 }

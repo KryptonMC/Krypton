@@ -29,6 +29,7 @@ import io.netty.buffer.ByteBufInputStream
 import io.netty.buffer.ByteBufOutputStream
 import io.netty.handler.codec.DecoderException
 import io.netty.handler.codec.EncoderException
+import kotlinx.collections.immutable.persistentMapOf
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.text.Component
 import org.kryptonmc.api.adventure.toJson
@@ -42,6 +43,10 @@ import org.kryptonmc.nbt.io.TagCompression
 import org.kryptonmc.nbt.io.TagIO
 import org.spongepowered.math.vector.Vector3i
 import java.io.IOException
+import java.security.KeyFactory
+import java.security.PublicKey
+import java.security.spec.X509EncodedKeySpec
+import java.time.Instant
 import java.util.UUID
 import kotlin.math.ceil
 import kotlin.math.min
@@ -272,6 +277,14 @@ fun <K, V> ByteBuf.writeMap(map: Map<K, V>, keyAction: (ByteBuf, K) -> Unit, val
     }
 }
 
+fun <K, V> ByteBuf.readMap(keyReader: (ByteBuf) -> K, valueReader: (ByteBuf) -> V): Map<K, V> {
+    val map = persistentMapOf<K, V>().builder()
+    for (i in 0 until readVarInt()) {
+        map[keyReader(this)] = valueReader(this)
+    }
+    return map.build()
+}
+
 fun ByteBuf.writeIntArray(array: IntArray) {
     writeVarInt(array.size)
     for (i in array.indices) {
@@ -286,6 +299,21 @@ fun <T> ByteBuf.encode(encoder: CompoundEncoder<T>, value: T) {
         throw EncoderException("Failed to encode value $value with encoder $encoder!", exception)
     }
     writeNBT(result)
+}
+
+fun ByteBuf.readInstant(): Instant = Instant.ofEpochMilli(readLong())
+
+fun ByteBuf.writeInstant(instant: Instant) {
+    writeLong(instant.toEpochMilli())
+}
+
+fun ByteBuf.readPublicKey(): PublicKey {
+    try {
+        val spec = X509EncodedKeySpec(readVarIntByteArray())
+        return KeyFactory.getInstance("RSA").generatePublic(spec)
+    } catch (exception: Exception) {
+        throw DecoderException("Failed to decode public key!", exception)
+    }
 }
 
 fun ByteBuf.write3EmptyBytes(): Int {

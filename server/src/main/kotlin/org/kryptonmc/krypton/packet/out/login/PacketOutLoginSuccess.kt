@@ -20,7 +20,9 @@ package org.kryptonmc.krypton.packet.out.login
 
 import io.netty.buffer.ByteBuf
 import org.kryptonmc.api.auth.GameProfile
+import org.kryptonmc.api.auth.ProfileProperty
 import org.kryptonmc.krypton.packet.Packet
+import org.kryptonmc.krypton.util.writeCollection
 import org.kryptonmc.krypton.util.writeString
 import org.kryptonmc.krypton.util.writeUUID
 import java.util.UUID
@@ -32,12 +34,18 @@ import java.util.UUID
  * it because they told us it in login start.
  */
 @JvmRecord
-data class PacketOutLoginSuccess(val uuid: UUID, val username: String) : Packet {
+data class PacketOutLoginSuccess(val uuid: UUID, val username: String, val properties: List<ProfileProperty>) : Packet {
 
-    constructor(profile: GameProfile) : this(profile.uuid, profile.name)
+    constructor(profile: GameProfile) : this(profile.uuid, profile.name, profile.properties)
 
     override fun write(buf: ByteBuf) {
         buf.writeUUID(uuid)
         buf.writeString(username)
+        buf.writeCollection(properties) { property ->
+            buf.writeString(property.name)
+            buf.writeString(property.value)
+            buf.writeBoolean(property.signature != null)
+            if (property.signature != null) buf.writeString(property.signature!!)
+        }
     }
 }

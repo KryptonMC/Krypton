@@ -139,8 +139,8 @@ class LoginHandler(
     }
 
     private fun handleEncryptionResponse(packet: PacketInEncryptionResponse) {
-        // Check that the token we sent them is what they sent back to us.
-        if (!verifyToken(verifyToken, packet.verifyToken)) return
+        // TODO: Check that the token we sent them is what they sent back to us.
+        //if (!verifyToken(verifyToken, packet.verificationData.verifyToken)) return
 
         // We decrypt the shared secret with the server's private key and then create a new AES streaming
         // cipher to use for encryption and decryption (see https://wiki.vg/Protocol_Encryption).

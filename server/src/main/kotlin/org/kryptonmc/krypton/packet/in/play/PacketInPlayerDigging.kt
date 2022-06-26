@@ -26,27 +26,31 @@ import org.kryptonmc.krypton.util.decodeBlockX
 import org.kryptonmc.krypton.util.decodeBlockY
 import org.kryptonmc.krypton.util.decodeBlockZ
 import org.kryptonmc.krypton.util.readEnum
+import org.kryptonmc.krypton.util.readVarInt
 import org.kryptonmc.krypton.util.writeEnum
+import org.kryptonmc.krypton.util.writeVarInt
 import org.kryptonmc.krypton.util.writeVector
 import org.spongepowered.math.vector.Vector3i
 
 @JvmRecord
-data class PacketInPlayerDigging(val status: Status, val x: Int, val y: Int, val z: Int, val direction: Direction) : Packet {
+data class PacketInPlayerDigging(val status: Status, val x: Int, val y: Int, val z: Int, val direction: Direction, val sequence: Int) : Packet {
 
-    constructor(buf: ByteBuf) : this(buf.readEnum<Status>(), buf.readLong(), buf.readEnum())
+    constructor(buf: ByteBuf) : this(buf.readEnum<Status>(), buf.readLong(), buf.readEnum(), buf.readVarInt())
 
-    private constructor(status: Status, location: Long, direction: Direction) : this(
+    private constructor(status: Status, location: Long, direction: Direction, sequence: Int) : this(
         status,
         location.decodeBlockX(),
         location.decodeBlockY(),
         location.decodeBlockZ(),
-        direction
+        direction,
+        sequence
     )
 
     override fun write(buf: ByteBuf) {
         buf.writeEnum(status)
         buf.writeVector(x, y, z)
         buf.writeEnum(direction)
+        buf.writeVarInt(sequence)
     }
 
     enum class Status {
@@ -56,7 +60,7 @@ data class PacketInPlayerDigging(val status: Status, val x: Int, val y: Int, val
         FINISHED,
         DROP_ITEM_STACK,
         DROP_ITEM,
-        UPDATE_STATE,
+        RELEASE_USE_ITEM,
         SWAP_ITEM_IN_HAND
     }
 }
