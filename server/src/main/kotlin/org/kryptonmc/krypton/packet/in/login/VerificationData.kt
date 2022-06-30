@@ -18,8 +18,11 @@
  */
 package org.kryptonmc.krypton.packet.`in`.login
 
+import com.google.common.primitives.Longs
 import io.netty.buffer.ByteBuf
+import org.kryptonmc.krypton.entity.player.PlayerPublicKey
 import org.kryptonmc.krypton.network.Writable
+import org.kryptonmc.krypton.util.crypto.Encryption
 import org.kryptonmc.krypton.util.readVarIntByteArray
 import org.kryptonmc.krypton.util.writeVarIntByteArray
 import java.util.Objects
@@ -38,11 +41,21 @@ data class VerificationData(val verifyToken: ByteArray?, val salt: OptionalLong,
         }
     }
 
+    fun isTokenValid(expected: ByteArray): Boolean = verifyToken != null && expected.contentEquals(Encryption.decrypt(verifyToken))
+
+    fun isSignatureValid(expected: ByteArray, publicKey: PlayerPublicKey): Boolean {
+        if (verifyToken != null) return false
+        return publicKey.createSignatureValidator().validate(signature!!) { output ->
+            output.update(expected)
+            output.update(Longs.toByteArray(salt.orElseThrow()))
+        }
+    }
+
     override fun write(buf: ByteBuf) {
         buf.writeBoolean(verifyToken != null)
         if (verifyToken != null) buf.writeVarIntByteArray(verifyToken)
         if (verifyToken == null) {
-            buf.writeLong(salt.orElseThrow { IllegalStateException("Salt must be present if verify token is not!") })
+            buf.writeLong(salt.orElseThrow())
             buf.writeVarIntByteArray(signature!!)
         }
     }

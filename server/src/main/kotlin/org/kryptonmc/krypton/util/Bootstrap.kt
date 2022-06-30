@@ -62,6 +62,7 @@ import org.kryptonmc.krypton.registry.KryptonRegistryManager
 import org.kryptonmc.krypton.tags.GameEventTags
 import org.kryptonmc.krypton.tags.KryptonTagManager
 import org.kryptonmc.krypton.tags.KryptonTagTypes
+import org.kryptonmc.krypton.util.crypto.Encryption
 import org.kryptonmc.krypton.world.biome.BiomeKeys
 import org.kryptonmc.krypton.world.biome.KryptonBiomes
 import org.kryptonmc.krypton.world.block.BlockLoader
