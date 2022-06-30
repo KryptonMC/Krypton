@@ -41,6 +41,9 @@ data class ServerCategory(
     @Setting("op-permission-level")
     @Comment("The permission level operators will get")
     val opPermissionLevel: Int = 4,
+    @Setting("use-data-converter")
+    @Comment("If worlds from previous versions should be upgraded to the current version.")
+    val useDataConverter: Boolean = true,
     @Setting("resource-pack")
     @Comment("Settings for the server resource pack")
     val resourcePack: ResourcePackCategory = ResourcePackCategory()

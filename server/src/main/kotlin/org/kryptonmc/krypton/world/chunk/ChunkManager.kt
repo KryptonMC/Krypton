@@ -113,7 +113,7 @@ class ChunkManager(private val world: KryptonWorld) {
         val nbt = regionFileManager.read(x, z) ?: return null
         val version = if (nbt.contains("DataVersion", 99)) nbt.getInt("DataVersion") else -1
         // We won't upgrade data if use of the data converter is disabled.
-        if (version < KryptonPlatform.worldVersion && !world.server.useDataConverter) {
+        if (version < KryptonPlatform.worldVersion && !world.server.config.server.useDataConverter) {
             LOGGER.sendDataConversionWarning("chunk at $x, $z")
             error("Tried to load old chunk from version $version when data conversion is disabled!")
         }
