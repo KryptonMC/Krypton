@@ -28,7 +28,7 @@ fun interface SignatureValidator {
 
     fun validate(payload: ByteArray, updater: SignatureUpdater): Boolean
 
-    fun validate(payload: ByteArray, signature: ByteArray): Boolean = validate(signature) { it.update(signature) }
+    fun validate(payload: ByteArray, signature: ByteArray): Boolean = validate(signature) { it.update(payload) }
 
     companion object {
 
