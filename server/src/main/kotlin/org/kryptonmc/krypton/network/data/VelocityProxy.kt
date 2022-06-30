@@ -23,6 +23,7 @@ import io.netty.buffer.ByteBuf
 import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.persistentListOf
 import org.kryptonmc.krypton.auth.KryptonProfileProperty
+import org.kryptonmc.krypton.entity.player.PlayerPublicKey
 import org.kryptonmc.krypton.util.readAvailableBytes
 import org.kryptonmc.krypton.util.readString
 import org.kryptonmc.krypton.util.readVarInt
@@ -33,7 +34,8 @@ import javax.crypto.spec.SecretKeySpec
 
 object VelocityProxy {
 
-    private const val SUPPORTED_FORWARDING_VERSION = 1
+    const val MODERN_FORWARDING_WITH_KEY: Int = 2
+    const val MAX_SUPPORTED_FORWARDING_VERSION: Int = MODERN_FORWARDING_WITH_KEY
 
     @JvmStatic
     fun verifyIntegrity(buf: ByteBuf, secret: ByteArray): Boolean {
@@ -45,16 +47,13 @@ object VelocityProxy {
         val mac = Mac.getInstance("HmacSHA256")
         mac.init(SecretKeySpec(secret, "HmacSHA256"))
         val mySignature = mac.doFinal(data)
-        if (!MessageDigest.isEqual(signature, mySignature)) return false
-
-        val version = buf.readVarInt()
-        return version == SUPPORTED_FORWARDING_VERSION
+        return MessageDigest.isEqual(signature, mySignature)
     }
 
     @JvmStatic
     fun readData(buf: ByteBuf): VelocityForwardedData {
         val address = InetAddresses.forString(buf.readString())
-        return VelocityForwardedData(address, UUID(buf.readLong(), buf.readLong()), buf.readString(16), readProperties(buf))
+        return VelocityForwardedData(address, UUID(buf.readLong(), buf.readLong()), buf.readString(16), readProperties(buf), readKey(buf))
     }
 
     @JvmStatic
@@ -68,4 +67,7 @@ object VelocityProxy {
         }
         return properties.build()
     }
+
+    @JvmStatic
+    private fun readKey(buf: ByteBuf): PlayerPublicKey.Data = PlayerPublicKey.Data(buf)
 }

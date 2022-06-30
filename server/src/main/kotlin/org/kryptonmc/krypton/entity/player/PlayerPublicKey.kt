@@ -20,6 +20,10 @@ package org.kryptonmc.krypton.entity.player
 
 import io.netty.buffer.ByteBuf
 import org.kryptonmc.krypton.network.Writable
+import org.kryptonmc.krypton.util.crypto.Encryption
+import org.kryptonmc.krypton.util.crypto.InsecurePublicKeyException
+import org.kryptonmc.krypton.util.crypto.SignatureValidator
+import org.kryptonmc.krypton.util.crypto.toRSAString
 import org.kryptonmc.krypton.util.readInstant
 import org.kryptonmc.krypton.util.readPublicKey
 import org.kryptonmc.krypton.util.readVarIntByteArray
@@ -27,24 +31,39 @@ import org.kryptonmc.krypton.util.writeInstant
 import org.kryptonmc.krypton.util.writeVarIntByteArray
 import java.security.PublicKey
 import java.time.Instant
-import java.util.Objects
 
 @JvmRecord
-data class PlayerPublicKey(val expiryTime: Instant, val key: PublicKey, val signature: ByteArray) : Writable {
+data class PlayerPublicKey(val data: Data) {
 
-    constructor(buf: ByteBuf) : this(buf.readInstant(), buf.readPublicKey(), buf.readVarIntByteArray())
+    fun createSignatureValidator(): SignatureValidator = SignatureValidator.from(data.key, Encryption.SIGNATURE_ALGORITHM)
 
-    override fun write(buf: ByteBuf) {
-        buf.writeInstant(expiryTime)
-        buf.writeVarIntByteArray(key.encoded)
-        buf.writeVarIntByteArray(signature)
+    @Suppress("ArrayInDataClass")
+    @JvmRecord
+    data class Data(val expiryTime: Instant, val key: PublicKey, val signature: ByteArray) : Writable {
+
+        constructor(buf: ByteBuf) : this(buf.readInstant(), buf.readPublicKey(), buf.readVarIntByteArray())
+
+        fun hasExpired(): Boolean = expiryTime.isBefore(Instant.now())
+
+        fun validateSignature(validator: SignatureValidator): Boolean =
+            validator.validate(createSignedPayload().toByteArray(Charsets.US_ASCII), signature)
+
+        private fun createSignedPayload(): String = expiryTime.toEpochMilli().toString() + key.toRSAString()
+
+        override fun write(buf: ByteBuf) {
+            buf.writeInstant(expiryTime)
+            buf.writeVarIntByteArray(key.encoded)
+            buf.writeVarIntByteArray(signature)
+        }
     }
 
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-        return expiryTime == (other as PlayerPublicKey).expiryTime && key == other.key && signature.contentEquals(other.signature)
-    }
+    companion object {
 
-    override fun hashCode(): Int = Objects.hash(expiryTime, key, signature)
+        @JvmStatic
+        fun create(validator: SignatureValidator, data: Data): PlayerPublicKey {
+            if (data.hasExpired()) throw InsecurePublicKeyException.Invalid("Player public key has expired!")
+            if (!data.validateSignature(validator)) throw InsecurePublicKeyException.Invalid("Invalid signature for player public key!")
+            return PlayerPublicKey(data)
+        }
+    }
 }

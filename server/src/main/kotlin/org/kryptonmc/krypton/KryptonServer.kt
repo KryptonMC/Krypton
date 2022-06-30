@@ -55,6 +55,7 @@ import org.kryptonmc.krypton.service.KryptonServicesManager
 import org.kryptonmc.krypton.tags.KryptonTagManager
 import org.kryptonmc.krypton.user.KryptonUserManager
 import org.kryptonmc.krypton.util.KryptonFactoryProvider
+import org.kryptonmc.krypton.util.crypto.YggdrasilSessionKey
 import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.util.spark.KryptonSparkPlugin
 import org.kryptonmc.krypton.world.KryptonWorld
@@ -123,6 +124,7 @@ class KryptonServer(
 
     init {
         instance = this
+        YggdrasilSessionKey.get()
     }
 
     // The order of loading here is pretty important, as some things depend on
