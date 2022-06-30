@@ -30,6 +30,7 @@ import org.kryptonmc.krypton.auth.KryptonGameProfile
 import org.kryptonmc.krypton.auth.requests.SessionService
 import org.kryptonmc.krypton.config.category.ForwardingMode
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
+import org.kryptonmc.krypton.entity.player.PlayerPublicKey
 import org.kryptonmc.krypton.packet.PacketState
 import org.kryptonmc.krypton.network.SessionHandler
 import org.kryptonmc.krypton.network.data.ForwardedData
@@ -45,14 +46,19 @@ import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.packet.`in`.login.PacketInEncryptionResponse
 import org.kryptonmc.krypton.packet.`in`.login.PacketInLoginStart
 import org.kryptonmc.krypton.packet.`in`.login.PacketInPluginResponse
+import org.kryptonmc.krypton.packet.`in`.login.VerificationData
 import org.kryptonmc.krypton.packet.out.login.PacketOutEncryptionRequest
 import org.kryptonmc.krypton.packet.out.login.PacketOutLoginDisconnect
 import org.kryptonmc.krypton.packet.out.login.PacketOutLoginSuccess
 import org.kryptonmc.krypton.packet.out.login.PacketOutPluginRequest
 import org.kryptonmc.krypton.packet.out.login.PacketOutSetCompression
 import org.kryptonmc.krypton.server.ban.BanEntry
-import org.kryptonmc.krypton.util.Encryption
+import org.kryptonmc.krypton.util.ComponentException
+import org.kryptonmc.krypton.util.crypto.Encryption
+import org.kryptonmc.krypton.util.crypto.InsecurePublicKeyException
+import org.kryptonmc.krypton.util.crypto.SignatureValidator
 import org.kryptonmc.krypton.util.logger
+import org.kryptonmc.krypton.util.readVarInt
 import java.net.InetSocketAddress
 import java.net.SocketAddress
 import java.security.SecureRandom
@@ -79,15 +85,13 @@ class LoginHandler(
 
     private val playerManager = server.playerManager
 
-    private val velocityMessageId = ThreadLocalRandom.current().nextInt(Short.MAX_VALUE.toInt()) // Doesn't really matter what this is.
+    // Doesn't really matter what this is, just needs to be unique.
+    private val velocityMessageId = ThreadLocalRandom.current().nextInt(Short.MAX_VALUE.toInt())
     private val forwardingSecret = server.config.proxy.secret.encodeToByteArray()
 
     private var name = "" // We cache the name here to avoid late initialization of the KryptonPlayer object.
-    private val verifyToken by lazy {
-        val bytes = ByteArray(4)
-        RANDOM.nextBytes(bytes)
-        bytes
-    }
+    private val verifyToken = generateVerifyToken()
+    private var publicKey: PlayerPublicKey? = null
 
     override fun handle(packet: Packet) {
         when (packet) {
@@ -100,6 +104,13 @@ class LoginHandler(
 
     private fun handleLoginStart(packet: PacketInLoginStart) {
         name = packet.name
+        try {
+            publicKey = validatePublicKey(packet.publicKey, SignatureValidator.YGGDRASIL, server.config.server.enforceSecureProfiles)
+        } catch (exception: PublicKeyParseException) {
+            LOGGER.error(exception.message, exception.cause)
+            disconnect(exception.asComponent())
+            return
+        }
 
         // Ignore online mode if we want proxy forwarding
         if (!server.isOnline || server.config.proxy.mode.authenticatesUsers) {
@@ -108,16 +119,9 @@ class LoginHandler(
                 return
             }
 
-            val rawAddress = session.channel.remoteAddress() as InetSocketAddress // TODO: UNIX domain socket support
-            val address = if (proxyForwardedData != null) {
-                val port = if (proxyForwardedData.forwardedPort == -1) rawAddress.port else proxyForwardedData.forwardedPort
-                InetSocketAddress(proxyForwardedData.forwardedAddress, port)
-            } else {
-                rawAddress
-            }
-
             // Copy over the data from legacy forwarding
             // Note: Per the protocol, offline players use UUID v3, rather than UUID v4.
+            val address = createAddress()
             val uuid = proxyForwardedData?.uuid ?: UUID.nameUUIDFromBytes("OfflinePlayer:${packet.name}".encodeToByteArray())
             val profile = KryptonGameProfile(packet.name, uuid, proxyForwardedData?.properties ?: persistentListOf())
 
@@ -126,11 +130,8 @@ class LoginHandler(
 
             // Initialize the player and setup their permissions.
             val player = KryptonPlayer(session, profile, server.worldManager.default, address)
-            server.eventManager.fire(SetupPermissionsEvent(player, KryptonPlayer.DEFAULT_PERMISSIONS)).thenApplyAsync({
-                val function = it.createFunction(player)
-                player.permissionFunction = function
-                finishLogin(player)
-            }, session.channel.eventLoop())
+            server.eventManager.fire(SetupPermissionsEvent(player, KryptonPlayer.DEFAULT_PERMISSIONS))
+                .thenApplyAsync({ finishLogin(it, player) }, session.channel.eventLoop())
             return
         }
 
@@ -139,28 +140,21 @@ class LoginHandler(
     }
 
     private fun handleEncryptionResponse(packet: PacketInEncryptionResponse) {
-        // TODO: Check that the token we sent them is what they sent back to us.
-        //if (!verifyToken(verifyToken, packet.verificationData.verifyToken)) return
+        // Check that the token we sent them is what they sent back to us.
+        if (!verifyToken(packet.verificationData)) return
 
         // We decrypt the shared secret with the server's private key and then create a new AES streaming
         // cipher to use for encryption and decryption (see https://wiki.vg/Protocol_Encryption).
         val sharedSecret = Encryption.decrypt(packet.secret)
-        val secretKey = SecretKeySpec(sharedSecret, "AES")
-        enableEncryption(secretKey)
+        enableEncryption(SecretKeySpec(sharedSecret, Encryption.SYMMETRIC_ALGORITHM))
 
-        val rawAddress = session.channel.remoteAddress() as InetSocketAddress
-        val address = if (proxyForwardedData != null) {
-            val port = if (proxyForwardedData.forwardedPort != -1) proxyForwardedData.forwardedPort else rawAddress.port
-            InetSocketAddress(proxyForwardedData.forwardedAddress, port)
-        } else {
-            rawAddress
-        }
-
+        val address = createAddress()
         // Fire the authentication event.
         server.eventManager.fire(AuthenticationEvent(name)).thenApplyAsync({
             if (!it.result.isAllowed) return@thenApplyAsync null
 
-            val profile = SessionService.hasJoined(name, sharedSecret, server.config.server.ip) ?: kotlin.run {
+            val profile = SessionService.hasJoined(name, sharedSecret, server.config.server.ip)
+            if (profile == null) {
                 session.disconnect(Component.translatable("multiplayer.disconnect.unverified_username"))
                 return@thenApplyAsync null
             }
@@ -173,16 +167,17 @@ class LoginHandler(
         }, session.channel.eventLoop()).thenApplyAsync({
             if (it == null) return@thenApplyAsync
             // Setup permissions.
-            val event = server.eventManager.fireSync(SetupPermissionsEvent(it, KryptonPlayer.DEFAULT_PERMISSIONS))
-            it.permissionFunction = event.createFunction(it)
-            finishLogin(it)
+            finishLogin(server.eventManager.fireSync(SetupPermissionsEvent(it, KryptonPlayer.DEFAULT_PERMISSIONS)), it)
         }, session.channel.eventLoop())
     }
 
     private fun handlePluginResponse(packet: PacketInPluginResponse) {
-        if (packet.data == null) return // Not successful, we don't care
         if (packet.messageId != velocityMessageId || server.config.proxy.mode != ForwardingMode.MODERN) {
-            // Not Velocity, ignore
+            disconnect(Component.translatable("multiplayer.disconnect.unexpected_query_response"))
+            return
+        }
+        if (packet.data == null) {
+            disconnect(Component.text("You must connect to this server through a Velocity proxy!"))
             return
         }
         if (packet.data.isEmpty()) { // For whatever reason, there was no data sent by Velocity
@@ -192,14 +187,27 @@ class LoginHandler(
 
         // Verify integrity
         val buffer = Unpooled.copiedBuffer(packet.data)
-        val hasValidIntegrity = VelocityProxy.verifyIntegrity(buffer, forwardingSecret)
-        if (!hasValidIntegrity) {
+        if (!VelocityProxy.verifyIntegrity(buffer, forwardingSecret)) {
             disconnect(Component.text("Response received from Velocity could not be verified!"))
             return
         }
 
+        val version = buffer.readVarInt()
+        check(version <= VelocityProxy.MAX_SUPPORTED_FORWARDING_VERSION) {
+            "Unsupported forwarding version $version! Supported up to: ${VelocityProxy.MAX_SUPPORTED_FORWARDING_VERSION}, version: $version"
+        }
+
         val data = VelocityProxy.readData(buffer)
         val address = session.channel.remoteAddress() as InetSocketAddress
+
+        if (version >= VelocityProxy.MODERN_FORWARDING_WITH_KEY && publicKey == null) {
+            try {
+                publicKey = PlayerPublicKey.create(SignatureValidator.YGGDRASIL, data.key)
+            } catch (exception: Exception) {
+                disconnect(Component.text("Could not validate public key forwarded from Velocity!"))
+                return
+            }
+        }
 
         // All good to go, let's construct our stuff
         LOGGER.debug("Detected Velocity login for ${data.uuid}")
@@ -207,13 +215,12 @@ class LoginHandler(
         val player = KryptonPlayer(session, profile, server.worldManager.default, InetSocketAddress(data.remoteAddress, address.port))
 
         // Setup permissions for the player
-        server.eventManager.fire(SetupPermissionsEvent(player, KryptonPlayer.DEFAULT_PERMISSIONS)).thenApplyAsync({
-            player.permissionFunction = it.createFunction(player)
-            finishLogin(player)
-        }, session.channel.eventLoop())
+        server.eventManager.fire(SetupPermissionsEvent(player, KryptonPlayer.DEFAULT_PERMISSIONS))
+            .thenApplyAsync({ finishLogin(it, player) }, session.channel.eventLoop())
     }
 
-    private fun finishLogin(player: KryptonPlayer) {
+    private fun finishLogin(event: SetupPermissionsEvent, player: KryptonPlayer) {
+        player.permissionFunction = event.createFunction(player)
         enableCompression()
         session.writeAndFlush(PacketOutLoginSuccess(player.profile))
         session.handler = PlayHandler(server, session, player)
@@ -225,12 +232,14 @@ class LoginHandler(
         }
     }
 
-    /**
-     * Ensures that the given [expected] and [actual] arrays are the same.
-     */
-    private fun verifyToken(expected: ByteArray, actual: ByteArray): Boolean {
-        val decryptedActual = Encryption.decrypt(actual)
-        if (!decryptedActual.contentEquals(expected)) {
+    private fun verifyToken(verificationData: VerificationData): Boolean {
+        if (publicKey != null && !verificationData.isSignatureValid(verifyToken, publicKey!!)) {
+            LOGGER.error("Signature for public key was invalid for $name! Their connection may have been intercepted.")
+            val message = Component.text("Signature for public key was invalid! Your connection may have been intercepted.")
+            disconnect(Component.translatable("disconnect.loginFailedInfo", message))
+            return false
+        }
+        if (publicKey == null && !verificationData.isTokenValid(verifyToken)) {
             LOGGER.error("Verify tokens for $name did not match! Their connection may have been intercepted.")
             val message = Component.text("Verify tokens did not match! Your connection may have been intercepted.")
             disconnect(Component.translatable("disconnect.loginFailedInfo", message))
@@ -320,15 +329,55 @@ class LoginHandler(
         return true
     }
 
+    private fun createAddress(): InetSocketAddress {
+        val rawAddress = session.channel.remoteAddress() as InetSocketAddress
+        return if (proxyForwardedData != null) {
+            val port = if (proxyForwardedData.forwardedPort != -1) proxyForwardedData.forwardedPort else rawAddress.port
+            InetSocketAddress(proxyForwardedData.forwardedAddress, port)
+        } else {
+            rawAddress
+        }
+    }
+
     private fun disconnect(reason: Component) {
         session.writeAndFlush(PacketOutLoginDisconnect(reason))
         if (session.channel.isOpen) session.channel.close().awaitUninterruptibly()
     }
+
+    class PublicKeyParseException(message: Component, cause: Throwable? = null) : ComponentException(message, cause)
 
     companion object {
 
         private const val VELOCITY_CHANNEL_ID = "velocity:player_info"
         private val RANDOM = SecureRandom()
         private val LOGGER = logger<LoginHandler>()
+
+        private val MISSING_PUBLIC_KEY = Component.translatable("multiplayer.disconnect.missing_public_key")
+        private val INVALID_SIGNATURE = Component.translatable("multiplayer.disconnect.invalid_public_key_signature")
+        private val INVALID_PUBLIC_KEY = Component.translatable("multiplayer.disconnect.invalid_public_key")
+
+        @JvmStatic
+        private fun generateVerifyToken(): ByteArray {
+            val bytes = ByteArray(4)
+            RANDOM.nextBytes(bytes)
+            return bytes
+        }
+
+        @JvmStatic
+        private fun validatePublicKey(keyData: PlayerPublicKey.Data?, validator: SignatureValidator, requireValid: Boolean): PlayerPublicKey? {
+            try {
+                if (keyData == null) {
+                    if (requireValid) throw PublicKeyParseException(MISSING_PUBLIC_KEY)
+                    return null
+                }
+                return PlayerPublicKey.create(validator, keyData)
+            } catch (exception: InsecurePublicKeyException.Missing) {
+                if (requireValid) throw PublicKeyParseException(INVALID_SIGNATURE, exception) else return null
+            } catch (exception: InsecurePublicKeyException.Invalid) {
+                throw PublicKeyParseException(INVALID_PUBLIC_KEY, exception)
+            } catch (exception: Exception) {
+                throw PublicKeyParseException(INVALID_SIGNATURE, exception)
+            }
+        }
     }
 }

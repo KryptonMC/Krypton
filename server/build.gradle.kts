@@ -84,12 +84,14 @@ tasks {
         relocate("org.bstats", "org.kryptonmc.krypton.bstats")
     }
     withType<ProcessResources> {
-        filter<ReplaceTokens>("tokens" to mapOf(
-            "version" to project.version.toString(),
-            "minecraft" to global.versions.minecraft.get(),
-            "spark" to libs.versions.spark.get(),
-            "data" to global.versions.minecraft.get().replace('.', '_')
-        ))
+        filesMatching("**/versions.properties") {
+            filter<ReplaceTokens>("tokens" to mapOf(
+                "version" to project.version.toString(),
+                "minecraft" to global.versions.minecraft.get(),
+                "spark" to libs.versions.spark.get(),
+                "data" to global.versions.minecraft.get().replace('.', '_')
+            ))
+        }
     }
 }
 

@@ -16,10 +16,11 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.util
+package org.kryptonmc.krypton.util.crypto
 
 import java.security.KeyPair
 import java.security.KeyPairGenerator
+import java.security.PrivateKey
 import java.security.PublicKey
 import javax.crypto.Cipher
 
@@ -31,22 +32,25 @@ import javax.crypto.Cipher
  */
 object Encryption {
 
-    private const val PAIR_ALGORITHM = "RSA"
+    const val SYMMETRIC_ALGORITHM: String = "AES"
+    private const val ASYMMETRIC_ALGORITHM: String = "RSA"
+    private const val ASYMMETRIC_BITS: Int = 1024
+    const val SIGNATURE_ALGORITHM: String = "SHA256withRSA"
 
     private val keyPair = generateKeyPair()
     val publicKey: PublicKey = keyPair.public
 
     @JvmStatic
     fun decrypt(encryptedData: ByteArray): ByteArray {
-        val cipher = Cipher.getInstance(PAIR_ALGORITHM)
+        val cipher = Cipher.getInstance(ASYMMETRIC_ALGORITHM)
         cipher.init(Cipher.DECRYPT_MODE, keyPair.private)
         return cipher.doFinal(encryptedData)
     }
 
     @JvmStatic
     private fun generateKeyPair(): KeyPair {
-        val generator = KeyPairGenerator.getInstance(PAIR_ALGORITHM)
-        generator.initialize(1024)
+        val generator = KeyPairGenerator.getInstance(ASYMMETRIC_ALGORITHM)
+        generator.initialize(ASYMMETRIC_BITS)
         return generator.generateKeyPair()
     }
 }

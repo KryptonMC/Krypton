@@ -17,6 +17,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package org.kryptonmc.krypton.adventure
+
 import net.kyori.adventure.text.TranslatableComponent
 import net.kyori.adventure.text.flattener.ComponentFlattener
 import org.kryptonmc.krypton.util.TranslationBootstrap
