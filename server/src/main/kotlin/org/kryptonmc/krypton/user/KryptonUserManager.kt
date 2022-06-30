@@ -81,7 +81,7 @@ class KryptonUserManager(private val server: KryptonServer) : UserManager {
 
         val version = if (nbt.contains("DataVersion", IntTag.ID)) nbt.getInt("DataVersion") else -1
         // We won't upgrade data if use of the data converter is disabled.
-        if (version < KryptonPlatform.worldVersion && !server.useDataConverter) {
+        if (version < KryptonPlatform.worldVersion && !server.config.server.useDataConverter) {
             LOGGER.sendDataConversionWarning("data for user with UUID ${profile.uuid}")
             error("Tried to load old user from version $version when data conversion is disabled!")
         }

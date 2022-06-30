@@ -54,9 +54,6 @@ private class KryptonCLI : CliktCommand(
     private val configOnly by option("--init", "--config-only", "--init-settings")
         .flag()
         .help("Creates the config file and exits")
-    private val useDataConverter by option("--upgrade-data", "--use-data-converter")
-        .flag(default = true)
-        .help("Whether data from older versions of Minecraft should be automatically upgraded or not.")
 
     // Config options
     private val ip by option()
@@ -127,7 +124,7 @@ private class KryptonCLI : CliktCommand(
                 reference.get().stop()
             }
         }
-        val server = KryptonServer(config, useDataConverter, KryptonProfileCache(userCacheFile), configFile, worldFolder)
+        val server = KryptonServer(config, KryptonProfileCache(userCacheFile), configFile, worldFolder)
         reference.set(server)
         serverThread.start()
     }

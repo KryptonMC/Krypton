@@ -78,7 +78,6 @@ import kotlin.system.measureTimeMillis
  */
 class KryptonServer(
     val config: KryptonConfig,
-    val useDataConverter: Boolean,
     override val profileCache: KryptonProfileCache,
     private val configPath: Path,
     worldFolder: Path
