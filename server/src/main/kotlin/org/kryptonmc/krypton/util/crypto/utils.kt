@@ -16,19 +16,21 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.network.data
+package org.kryptonmc.krypton.util.crypto
 
-import kotlinx.collections.immutable.PersistentList
-import org.kryptonmc.krypton.auth.KryptonProfileProperty
-import org.kryptonmc.krypton.entity.player.PlayerPublicKey
-import java.net.InetAddress
-import java.util.UUID
+import java.security.KeyFactory
+import java.security.PublicKey
+import java.security.spec.X509EncodedKeySpec
+import java.util.Base64
 
-@JvmRecord
-data class VelocityForwardedData(
-    val remoteAddress: InetAddress,
-    val uuid: UUID,
-    val username: String,
-    val properties: PersistentList<KryptonProfileProperty>,
-    val key: PlayerPublicKey.Data
-)
+private const val RSA_PUBLIC_KEY_HEADER = "-----BEGIN RSA PUBLIC KEY-----"
+private const val RSA_PUBLIC_KEY_FOOTER = "-----END RSA PUBLIC KEY-----"
+private val MIME_ENCODER = Base64.getMimeEncoder(76, "\n".toByteArray())
+private val RSA_KEY_FACTORY = KeyFactory.getInstance("RSA")
+
+fun PublicKey.toRSAString(): String {
+    require(algorithm == "RSA") { "Public key must be an RSA key to be converted to an RSA string!" }
+    return RSA_PUBLIC_KEY_HEADER + "\n" + MIME_ENCODER.encodeToString(encoded) + "\n" + RSA_PUBLIC_KEY_FOOTER + "\n"
+}
+
+fun ByteArray.decodeToPublicKey(): PublicKey = RSA_KEY_FACTORY.generatePublic(X509EncodedKeySpec(this))

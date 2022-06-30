@@ -44,6 +44,9 @@ data class ServerCategory(
     @Setting("use-data-converter")
     @Comment("If worlds from previous versions should be upgraded to the current version.")
     val useDataConverter: Boolean = true,
+    @Comment("If the server should enforce that all game profiles have properties with valid signatures.")
+    @Setting("enforce-secure-profiles")
+    val enforceSecureProfiles: Boolean = true,
     @Setting("resource-pack")
     @Comment("Settings for the server resource pack")
     val resourcePack: ResourcePackCategory = ResourcePackCategory()

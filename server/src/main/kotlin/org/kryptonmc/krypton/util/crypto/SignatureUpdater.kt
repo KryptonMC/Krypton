@@ -16,19 +16,14 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.network.data
+package org.kryptonmc.krypton.util.crypto
 
-import kotlinx.collections.immutable.PersistentList
-import org.kryptonmc.krypton.auth.KryptonProfileProperty
-import org.kryptonmc.krypton.entity.player.PlayerPublicKey
-import java.net.InetAddress
-import java.util.UUID
+fun interface SignatureUpdater {
 
-@JvmRecord
-data class VelocityForwardedData(
-    val remoteAddress: InetAddress,
-    val uuid: UUID,
-    val username: String,
-    val properties: PersistentList<KryptonProfileProperty>,
-    val key: PlayerPublicKey.Data
-)
+    fun update(output: Output)
+
+    fun interface Output {
+
+        fun update(signature: ByteArray)
+    }
+}

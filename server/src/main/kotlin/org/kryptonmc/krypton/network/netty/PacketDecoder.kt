@@ -45,6 +45,7 @@ class PacketDecoder : ByteToMessageDecoder() {
             buf.skipBytes(buf.readableBytes())
             return
         }
+        println("Decoded packet ${packet::class.java.simpleName} with ID $id")
 
         if (buf.readableBytes() != 0) LOGGER.debug("$packet has more bytes available to read.")
         out.add(packet)

@@ -37,6 +37,7 @@ import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.krypton.command.argument.ArgumentSerializers
 import org.kryptonmc.krypton.item.ItemFactory
 import org.kryptonmc.krypton.item.KryptonItemStack
+import org.kryptonmc.krypton.util.crypto.decodeToPublicKey
 import org.kryptonmc.krypton.util.serialization.CompoundEncoder
 import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.io.TagCompression
@@ -309,8 +310,7 @@ fun ByteBuf.writeInstant(instant: Instant) {
 
 fun ByteBuf.readPublicKey(): PublicKey {
     try {
-        val spec = X509EncodedKeySpec(readVarIntByteArray())
-        return KeyFactory.getInstance("RSA").generatePublic(spec)
+        return readVarIntByteArray().decodeToPublicKey()
     } catch (exception: Exception) {
         throw DecoderException("Failed to decode public key!", exception)
     }

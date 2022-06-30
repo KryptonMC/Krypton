@@ -21,7 +21,7 @@ package org.kryptonmc.krypton.auth.requests
 import com.github.benmanes.caffeine.cache.Cache
 import com.github.benmanes.caffeine.cache.Caffeine
 import org.kryptonmc.krypton.auth.KryptonGameProfile
-import org.kryptonmc.krypton.util.Encryption
+import org.kryptonmc.krypton.util.crypto.Encryption
 import org.kryptonmc.krypton.util.logger
 import java.math.BigInteger
 import java.net.URI
