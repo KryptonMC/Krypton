@@ -9,6 +9,7 @@ org.kryptonmc.api.adventure
 org.kryptonmc.api.auth
 org.kryptonmc.api.block
 org.kryptonmc.api.block.entity
+org.kryptonmc.api.block.entity.banner
 org.kryptonmc.api.block.meta
 org.kryptonmc.api.block.property
 org.kryptonmc.api.command
@@ -155,6 +156,7 @@ org.kryptonmc.krypton.world
 org.kryptonmc.krypton.world.biome
 org.kryptonmc.krypton.world.block
 org.kryptonmc.krypton.world.block.entity
+org.kryptonmc.krypton.world.block.entity.banner
 org.kryptonmc.krypton.world.block.handler
 org.kryptonmc.krypton.world.block.palette
 org.kryptonmc.krypton.world.block.property
