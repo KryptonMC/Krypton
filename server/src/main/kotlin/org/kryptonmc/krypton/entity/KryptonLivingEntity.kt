@@ -21,6 +21,7 @@ package org.kryptonmc.krypton.entity
 import org.kryptonmc.api.entity.ArmorSlot
 import org.kryptonmc.api.entity.Entity
 import org.kryptonmc.api.entity.EntityType
+import org.kryptonmc.api.entity.EquipmentSlot
 import org.kryptonmc.api.entity.Hand
 import org.kryptonmc.api.entity.LivingEntity
 import org.kryptonmc.api.entity.attribute.Attribute
@@ -44,7 +45,7 @@ abstract class KryptonLivingEntity(
     world: KryptonWorld,
     type: EntityType<out LivingEntity>,
     attributeSupplier: AttributeSupplier
-) : KryptonEntity(world, type), LivingEntity {
+) : KryptonEntity(world, type), LivingEntity, KryptonEquipable {
 
     final override val maxHealth: Float
         get() = attributes.value(AttributeTypes.MAX_HEALTH).toFloat()
@@ -134,17 +135,15 @@ abstract class KryptonLivingEntity(
         data[MetadataKeys.LIVING.HEALTH] = maxHealth
     }
 
-    abstract fun equipment(slot: EquipmentSlot): KryptonItemStack
+    abstract override fun equipment(slot: EquipmentSlot): KryptonItemStack
 
-    abstract fun setEquipment(slot: EquipmentSlot, item: KryptonItemStack)
-
-    fun heldItem(hand: Hand): KryptonItemStack {
+    override fun heldItem(hand: Hand): KryptonItemStack {
         if (hand == Hand.MAIN) return equipment(EquipmentSlot.MAIN_HAND)
         if (hand == Hand.OFF) return equipment(EquipmentSlot.OFF_HAND)
         error("Tried to get held item for hand $hand that should not exist! Please sure that no plugins are injecting entries in to enums!")
     }
 
-    fun setHeldItem(hand: Hand, item: KryptonItemStack) {
+    override fun setHeldItem(hand: Hand, item: KryptonItemStack) {
         when (hand) {
             Hand.MAIN -> setEquipment(EquipmentSlot.MAIN_HAND, item)
             Hand.OFF -> setEquipment(EquipmentSlot.OFF_HAND, item)
@@ -153,10 +152,10 @@ abstract class KryptonLivingEntity(
         }
     }
 
-    fun armor(slot: ArmorSlot): KryptonItemStack = equipment(EquipmentSlot.fromArmorSlot(slot))
+    override fun armor(slot: ArmorSlot): KryptonItemStack = equipment(EquipmentSlots.fromArmorSlot(slot))
 
-    fun setArmor(slot: ArmorSlot, item: KryptonItemStack) {
-        setEquipment(EquipmentSlot.fromArmorSlot(slot), item)
+    override fun setArmor(slot: ArmorSlot, item: KryptonItemStack) {
+        setEquipment(EquipmentSlots.fromArmorSlot(slot), item)
     }
 
     fun canAttack(target: KryptonLivingEntity): Boolean {

@@ -18,14 +18,27 @@
  */
 package org.kryptonmc.krypton.item
 
+import org.kryptonmc.api.item.ItemAttribute
 import org.kryptonmc.krypton.item.handler.ItemHandler
 import org.kryptonmc.api.item.ItemType
 import org.kryptonmc.api.item.data.ItemFlag
+import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.krypton.item.handler.DummyItemHandler
 import org.kryptonmc.krypton.world.block.KryptonBlock
+import org.kryptonmc.nbt.CompoundTag
+import org.kryptonmc.nbt.compound
 
 fun ItemType.handler(): ItemHandler = ItemManager.handler(this) ?: DummyItemHandler
 
 fun KryptonItemStack.destroySpeed(block: KryptonBlock): Float = type.handler().destroySpeed(this, block)
 
 fun ItemFlag.mask(): Int = 1 shl ordinal
+
+fun ItemAttribute.save(): CompoundTag = compound {
+    string("AttributeName", type.key().asString())
+    string("Slot", slot.name.lowercase())
+    string("Name", modifier.name)
+    uuid("UUID", modifier.uuid)
+    double("Amount", modifier.amount)
+    int("Operation", Registries.MODIFIER_OPERATIONS.idOf(modifier.operation))
+}

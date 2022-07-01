@@ -59,22 +59,18 @@ public interface Attribute {
     public fun modifiers(operation: ModifierOperation): Set<AttributeModifier>
 
     /**
-     * Adds the given [modifier] to the list of modifiers under the given
-     * [operation].
+     * Adds the given [modifier] to the list of modifiers.
      *
-     * @param operation the operation
      * @param modifier the modifier to add
      */
-    public fun addModifier(operation: ModifierOperation, modifier: AttributeModifier)
+    public fun addModifier(modifier: AttributeModifier)
 
     /**
-     * Removes the given [modifier] from the list of modifiers under the given
-     * [operation].
+     * Removes the given [modifier] from the list of modifiers.
      *
-     * @param operation the operation
      * @param modifier the modifier to remove
      */
-    public fun removeModifier(operation: ModifierOperation, modifier: AttributeModifier)
+    public fun removeModifier(modifier: AttributeModifier)
 
     /**
      * Clears all modifiers for this attribute.

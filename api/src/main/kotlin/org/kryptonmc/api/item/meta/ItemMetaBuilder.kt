@@ -11,6 +11,7 @@ package org.kryptonmc.api.item.meta
 import net.kyori.adventure.text.Component
 import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.block.Block
+import org.kryptonmc.api.item.ItemAttribute
 import org.kryptonmc.api.item.data.ItemFlag
 
 /**
@@ -180,6 +181,15 @@ public interface ItemMetaBuilder<B : ItemMetaBuilder<B, I>, I : ItemMeta> {
     @MetaDsl
     @Contract("_ -> this", mutates = "this")
     public fun addCanPlaceOn(block: Block): B
+
+    /**
+     * Sets the list of attribute modifiers applied to entities wearing items
+     * that the metadata is applied to to the given [attributes].
+     *
+     * @param attributes the attributes
+     * @return this builder
+     */
+    public fun attributeModifiers(attributes: Set<ItemAttribute>): B
 
     /**
      * Builds the resulting item metadata.

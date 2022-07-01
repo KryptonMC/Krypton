@@ -20,6 +20,7 @@ package org.kryptonmc.krypton.entity
 
 import org.kryptonmc.api.entity.ArmorStand
 import org.kryptonmc.api.entity.EntityTypes
+import org.kryptonmc.api.entity.EquipmentSlot
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.item.KryptonItemStack
 import org.kryptonmc.krypton.util.FixedList
@@ -79,14 +80,14 @@ class KryptonArmorStand(world: KryptonWorld) : KryptonLivingEntity(world, Entity
     }
 
     override fun equipment(slot: EquipmentSlot): KryptonItemStack = when (slot.type) {
-        EquipmentSlot.Type.HAND -> handItems[slot.index]
-        EquipmentSlot.Type.ARMOR -> armorItems[slot.index]
+        EquipmentSlot.Type.HAND -> handItems[EquipmentSlots.index(slot)]
+        EquipmentSlot.Type.ARMOR -> armorItems[EquipmentSlots.index(slot)]
     }
 
     override fun setEquipment(slot: EquipmentSlot, item: KryptonItemStack) {
         when (slot.type) {
-            EquipmentSlot.Type.HAND -> handItems[slot.index] = item
-            EquipmentSlot.Type.ARMOR -> armorItems[slot.index] = item
+            EquipmentSlot.Type.HAND -> handItems[EquipmentSlots.index(slot)] = item
+            EquipmentSlot.Type.ARMOR -> armorItems[EquipmentSlots.index(slot)] = item
         }
     }
 

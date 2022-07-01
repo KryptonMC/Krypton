@@ -19,13 +19,32 @@
 package org.kryptonmc.krypton.entity.attribute
 
 import org.kryptonmc.api.entity.attribute.AttributeModifier
+import org.kryptonmc.api.entity.attribute.ModifierOperation
+import org.kryptonmc.api.registry.Registries
+import org.kryptonmc.nbt.CompoundTag
 import java.util.UUID
 
 @JvmRecord
-data class KryptonAttributeModifier(override val name: String, override val uuid: UUID, override val amount: Double) : AttributeModifier {
+data class KryptonAttributeModifier(
+    override val name: String,
+    override val uuid: UUID,
+    override val amount: Double,
+    override val operation: ModifierOperation
+) : AttributeModifier {
 
     object Factory : AttributeModifier.Factory {
 
-        override fun of(name: String, uuid: UUID, amount: Double): AttributeModifier = KryptonAttributeModifier(name, uuid, amount)
+        override fun of(name: String, uuid: UUID, amount: Double, operation: ModifierOperation): AttributeModifier =
+            KryptonAttributeModifier(name, uuid, amount, operation)
+    }
+
+    companion object {
+
+        @JvmStatic
+        fun from(data: CompoundTag): KryptonAttributeModifier? {
+            val operation = Registries.MODIFIER_OPERATIONS[data.getInt("Operation")] ?: return null
+            val uuid = data.getUUID("UUID") ?: return null
+            return KryptonAttributeModifier(data.getString("Name"), uuid, data.getDouble("Amount"), operation)
+        }
     }
 }

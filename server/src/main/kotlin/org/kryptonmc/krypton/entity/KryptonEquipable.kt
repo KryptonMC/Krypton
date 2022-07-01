@@ -20,6 +20,7 @@ package org.kryptonmc.krypton.entity
 
 import org.kryptonmc.api.entity.ArmorSlot
 import org.kryptonmc.api.entity.Equipable
+import org.kryptonmc.api.entity.EquipmentSlot
 import org.kryptonmc.api.entity.Hand
 import org.kryptonmc.api.item.ItemStack
 import org.kryptonmc.krypton.item.KryptonItemStack
@@ -33,6 +34,8 @@ interface KryptonEquipable : Equipable {
 
     fun setArmor(slot: ArmorSlot, item: KryptonItemStack)
 
+    fun setEquipment(slot: EquipmentSlot, item: KryptonItemStack)
+
     override fun setHeldItem(hand: Hand, item: ItemStack) {
         if (item !is KryptonItemStack) return
         setHeldItem(hand, item)
@@ -41,6 +44,11 @@ interface KryptonEquipable : Equipable {
     override fun setArmor(slot: ArmorSlot, item: ItemStack) {
         if (item !is KryptonItemStack) return
         setArmor(slot, item)
+    }
+
+    override fun setEquipment(slot: EquipmentSlot, item: ItemStack) {
+        if (item !is KryptonItemStack) return
+        setEquipment(slot, item)
     }
 
     companion object {

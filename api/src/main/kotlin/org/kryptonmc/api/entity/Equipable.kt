@@ -53,4 +53,24 @@ public interface Equipable {
      * @param item the item
      */
     public fun setArmor(slot: ArmorSlot, item: ItemStack)
+
+    /**
+     * Gets the equipment item that this mob has equipped in the given [slot].
+     *
+     * This may return [ItemStack.empty] if this mob does not have any armour
+     * equipped in the given [slot].
+     *
+     * @param slot the slot
+     * @return the item in the given slot
+     */
+    public fun equipment(slot: EquipmentSlot): ItemStack
+
+    /**
+     * Sets the equipment item that this mob has equipped in the given [slot] to
+     * the given [item].
+     *
+     * @param slot the slot
+     * @param item the item
+     */
+    public fun setEquipment(slot: EquipmentSlot, item: ItemStack)
 }

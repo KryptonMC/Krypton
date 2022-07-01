@@ -23,10 +23,12 @@ import kotlinx.collections.immutable.persistentSetOf
 import net.kyori.adventure.text.Component
 import org.kryptonmc.api.adventure.toJson
 import org.kryptonmc.api.block.Block
+import org.kryptonmc.api.item.ItemAttribute
 import org.kryptonmc.api.item.data.ItemFlag
 import org.kryptonmc.api.item.meta.ItemMeta
 import org.kryptonmc.api.item.meta.ItemMetaBuilder
 import org.kryptonmc.krypton.item.mask
+import org.kryptonmc.krypton.item.save
 import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.StringTag
 import org.kryptonmc.nbt.buildCompound
@@ -42,6 +44,7 @@ abstract class KryptonItemMetaBuilder<B : ItemMetaBuilder<B, I>, I : ItemMeta> :
     private var hideFlags = 0
     private val canDestroy = persistentSetOf<Block>().builder()
     private val canPlaceOn = persistentSetOf<Block>().builder()
+    private val attributes = persistentSetOf<ItemAttribute>().builder()
 
     final override fun damage(damage: Int): B = apply { this.damage = damage } as B
 
@@ -76,6 +79,11 @@ abstract class KryptonItemMetaBuilder<B : ItemMetaBuilder<B, I>, I : ItemMeta> :
 
     final override fun addCanPlaceOn(block: Block): B = apply { canPlaceOn.add(block) } as B
 
+    final override fun attributeModifiers(attributes: Set<ItemAttribute>): B = apply {
+        this.attributes.clear()
+        this.attributes.addAll(attributes)
+    } as B
+
     protected fun copyFrom(meta: I) {
         damage = meta.damage
         unbreakable = meta.isUnbreakable
@@ -85,6 +93,7 @@ abstract class KryptonItemMetaBuilder<B : ItemMetaBuilder<B, I>, I : ItemMeta> :
         hideFlags = meta.hideFlags
         canDestroy.addAll(meta.canDestroy)
         canPlaceOn.addAll(meta.canPlaceOn)
+        attributes.addAll(meta.attributeModifiers)
     }
 
     protected open fun buildData(): CompoundTag.Builder = buildCompound {
@@ -98,5 +107,6 @@ abstract class KryptonItemMetaBuilder<B : ItemMetaBuilder<B, I>, I : ItemMeta> :
         int("HideFlags", hideFlags)
         list("CanDestroy", StringTag.ID, canDestroy.map { StringTag.of(it.key().asString()) })
         list("CanPlaceOn", StringTag.ID, canPlaceOn.map { StringTag.of(it.key().asString()) })
+        if (attributes.isNotEmpty()) list("AttributeModifiers") { attributes.forEach { add(it.save()) } }
     }
 }

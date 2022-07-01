@@ -39,6 +39,7 @@ import org.kryptonmc.api.effect.particle.data.DirectionalParticleData
 import org.kryptonmc.api.effect.particle.data.NoteParticleData
 import org.kryptonmc.api.entity.ArmorSlot
 import org.kryptonmc.api.entity.EntityTypes
+import org.kryptonmc.api.entity.EquipmentSlot
 import org.kryptonmc.api.entity.Hand
 import org.kryptonmc.api.entity.MainHand
 import org.kryptonmc.api.entity.attribute.AttributeTypes
@@ -66,7 +67,7 @@ import org.kryptonmc.krypton.adventure.BossBarManager
 import org.kryptonmc.krypton.adventure.toItemStack
 import org.kryptonmc.krypton.auth.KryptonGameProfile
 import org.kryptonmc.krypton.commands.KryptonPermission
-import org.kryptonmc.krypton.entity.EquipmentSlot
+import org.kryptonmc.krypton.entity.EquipmentSlots
 import org.kryptonmc.krypton.entity.KryptonEntity
 import org.kryptonmc.krypton.entity.KryptonEquipable
 import org.kryptonmc.krypton.entity.KryptonLivingEntity
@@ -348,7 +349,7 @@ class KryptonPlayer(
     override fun equipment(slot: EquipmentSlot): KryptonItemStack = when {
         slot == EquipmentSlot.MAIN_HAND -> inventory.mainHand
         slot == EquipmentSlot.OFF_HAND -> inventory.offHand
-        slot.type == EquipmentSlot.Type.ARMOR -> inventory.armor[slot.index]
+        slot.type == EquipmentSlot.Type.ARMOR -> inventory.armor[EquipmentSlots.index(slot)]
         else -> KryptonItemStack.EMPTY
     }
 
@@ -356,7 +357,7 @@ class KryptonPlayer(
         when {
             slot == EquipmentSlot.MAIN_HAND -> inventory.setHeldItem(Hand.MAIN, item)
             slot == EquipmentSlot.OFF_HAND -> inventory.setHeldItem(Hand.OFF, item)
-            slot.type == EquipmentSlot.Type.ARMOR -> inventory.armor[slot.index] = item
+            slot.type == EquipmentSlot.Type.ARMOR -> inventory.armor[EquipmentSlots.index(slot)] = item
         }
     }
 

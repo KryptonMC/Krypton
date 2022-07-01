@@ -19,20 +19,13 @@
 package org.kryptonmc.krypton.entity.attribute
 
 import org.kryptonmc.api.entity.attribute.AttributeModifier
-import org.kryptonmc.api.entity.attribute.ModifierOperation
 import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.nbt.CompoundTag
-import org.kryptonmc.nbt.ListTag
 import org.kryptonmc.nbt.compound
-import org.kryptonmc.nbt.list
 
-fun AttributeModifier.save(operation: ModifierOperation): CompoundTag = compound {
+fun AttributeModifier.save(): CompoundTag = compound {
     string("Name", name)
     uuid("UUID", uuid)
     double("Amount", amount)
     int("Operation", Registries.MODIFIER_OPERATIONS.idOf(operation))
-}
-
-fun Map<ModifierOperation, Set<AttributeModifier>>.save(): ListTag = list {
-    this@save.forEach { (operation, modifiers) -> modifiers.forEach { add(it.save(operation)) } }
 }
