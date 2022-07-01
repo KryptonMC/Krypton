@@ -22,6 +22,7 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap
 import org.kryptonmc.api.adventure.AdventureMessage
 import org.kryptonmc.api.auth.GameProfile
 import org.kryptonmc.api.auth.ProfileProperty
+import org.kryptonmc.api.block.entity.banner.BannerPattern
 import org.kryptonmc.api.block.property.Property
 import org.kryptonmc.api.command.BrigadierCommand
 import org.kryptonmc.api.command.meta.CommandMeta
@@ -94,6 +95,7 @@ import org.kryptonmc.krypton.world.biome.KryptonBiome
 import org.kryptonmc.krypton.world.biome.KryptonBiomeCategory
 import org.kryptonmc.krypton.world.biome.KryptonBiomeEffects
 import org.kryptonmc.krypton.world.biome.KryptonClimate
+import org.kryptonmc.krypton.world.block.entity.banner.KryptonBannerPattern
 import org.kryptonmc.krypton.world.block.property.KryptonPropertyFactory
 import org.kryptonmc.krypton.world.damage.KryptonDamageSourceFactory
 import org.kryptonmc.krypton.world.dimension.KryptonDimensionType
@@ -155,5 +157,6 @@ object KryptonFactoryProvider : FactoryProvider {
         register<BrigadierCommand.Factory>(KryptonBrigadierCommand.Factory)
         register<Scoreboard.Factory>(KryptonScoreboard.Factory)
         register<ItemAttribute.Factory>(KryptonItemAttribute.Factory)
+        register<BannerPattern.Factory>(KryptonBannerPattern.Factory)
     }
 }
