@@ -20,6 +20,7 @@ package org.kryptonmc.krypton.item
 
 import org.kryptonmc.api.item.ItemType
 import org.kryptonmc.api.item.ItemTypes
+import org.kryptonmc.api.item.meta.BannerMeta
 import org.kryptonmc.api.item.meta.BundleMeta
 import org.kryptonmc.api.item.meta.CompassMeta
 import org.kryptonmc.api.item.meta.CrossbowMeta
@@ -31,6 +32,7 @@ import org.kryptonmc.api.item.meta.PlayerHeadMeta
 import org.kryptonmc.api.item.meta.WritableBookMeta
 import org.kryptonmc.api.item.meta.WrittenBookMeta
 import org.kryptonmc.krypton.item.meta.AbstractItemMeta
+import org.kryptonmc.krypton.item.meta.KryptonBannerMeta
 import org.kryptonmc.krypton.item.meta.KryptonBundleMeta
 import org.kryptonmc.krypton.item.meta.KryptonCompassMeta
 import org.kryptonmc.krypton.item.meta.KryptonCrossbowMeta
@@ -59,8 +61,25 @@ object ItemFactory {
         ItemTypes.CROSSBOW to ::KryptonCrossbowMeta,
         ItemTypes.COMPASS to ::KryptonCompassMeta,
         ItemTypes.BUNDLE to ::KryptonBundleMeta,
+        ItemTypes.WHITE_BANNER to ::KryptonBannerMeta,
+        ItemTypes.ORANGE_BANNER to ::KryptonBannerMeta,
+        ItemTypes.MAGENTA_BANNER to ::KryptonBannerMeta,
+        ItemTypes.LIGHT_BLUE_BANNER to ::KryptonBannerMeta,
+        ItemTypes.YELLOW_BANNER to ::KryptonBannerMeta,
+        ItemTypes.LIME_BANNER to ::KryptonBannerMeta,
+        ItemTypes.PINK_BANNER to ::KryptonBannerMeta,
+        ItemTypes.GRAY_BANNER to ::KryptonBannerMeta,
+        ItemTypes.LIGHT_GRAY_BANNER to ::KryptonBannerMeta,
+        ItemTypes.CYAN_BANNER to ::KryptonBannerMeta,
+        ItemTypes.PURPLE_BANNER to ::KryptonBannerMeta,
+        ItemTypes.BLUE_BANNER to ::KryptonBannerMeta,
+        ItemTypes.BROWN_BANNER to ::KryptonBannerMeta,
+        ItemTypes.GREEN_BANNER to ::KryptonBannerMeta,
+        ItemTypes.RED_BANNER to ::KryptonBannerMeta,
+        ItemTypes.BLACK_BANNER to ::KryptonBannerMeta
     )
     private val BUILDERS_BY_TYPE: Map<Class<out ItemMetaBuilder.Provider<*>>, () -> ItemMetaBuilder<*, *>> = mapOf(
+        BannerMeta::class.java to { KryptonBannerMeta.Builder() },
         BundleMeta::class.java to { KryptonBundleMeta.Builder() },
         CompassMeta::class.java to { KryptonCompassMeta.Builder() },
         CrossbowMeta::class.java to { KryptonCrossbowMeta.Builder() },
