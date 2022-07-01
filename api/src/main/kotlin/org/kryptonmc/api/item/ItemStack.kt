@@ -9,6 +9,8 @@
 @file:JvmSynthetic
 package org.kryptonmc.api.item
 
+import net.kyori.adventure.text.event.HoverEvent
+import net.kyori.adventure.text.event.HoverEventSource
 import net.kyori.adventure.util.Buildable
 import org.jetbrains.annotations.ApiStatus
 import org.jetbrains.annotations.Contract
@@ -22,7 +24,7 @@ import java.util.function.Consumer
  * A stack of items in an inventory.
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
-public interface ItemStack : Buildable<ItemStack, ItemStack.Builder> {
+public interface ItemStack : Buildable<ItemStack, ItemStack.Builder>, HoverEventSource<HoverEvent.ShowItem> {
 
     /**
      * The type of item in this stack.
