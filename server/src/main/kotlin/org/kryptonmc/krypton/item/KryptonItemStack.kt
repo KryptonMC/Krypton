@@ -19,6 +19,8 @@
 package org.kryptonmc.krypton.item
 
 import net.kyori.adventure.key.Key
+import net.kyori.adventure.nbt.api.BinaryTagHolder
+import net.kyori.adventure.text.event.HoverEvent
 import org.kryptonmc.api.item.ItemStack
 import org.kryptonmc.api.item.ItemType
 import org.kryptonmc.api.item.ItemTypes
@@ -28,6 +30,7 @@ import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.krypton.item.meta.AbstractItemMeta
 import org.kryptonmc.krypton.item.meta.KryptonItemMeta
 import org.kryptonmc.nbt.CompoundTag
+import java.util.function.UnaryOperator
 
 @JvmRecord
 data class KryptonItemStack(override val type: ItemType, override val amount: Int, override val meta: AbstractItemMeta<*>) : ItemStack {
@@ -77,6 +80,9 @@ data class KryptonItemStack(override val type: ItemType, override val amount: In
     }
 
     override fun toBuilder(): Builder = Builder(this)
+
+    override fun asHoverEvent(op: UnaryOperator<HoverEvent.ShowItem>): HoverEvent<HoverEvent.ShowItem> =
+        HoverEvent.showItem(op.apply(HoverEvent.ShowItem.of(type.key(), amount, BinaryTagHolder.binaryTagHolder(meta.data.asString()))))
 
     class Builder() : ItemStack.Builder {
 
