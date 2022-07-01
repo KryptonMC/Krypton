@@ -19,34 +19,27 @@
 package org.kryptonmc.krypton.entity
 
 import org.kryptonmc.api.entity.ArmorSlot
+import org.kryptonmc.api.entity.EquipmentSlot
 
-enum class EquipmentSlot(val type: Type, val index: Int, val displayName: String) {
+object EquipmentSlots {
 
-    MAIN_HAND(Type.HAND, 0, "mainhand"),
-    OFF_HAND(Type.HAND, 1, "offhand"),
-    FEET(Type.ARMOR, 0, "feet"),
-    LEGS(Type.ARMOR, 1, "legs"),
-    CHEST(Type.ARMOR, 2, "chest"),
-    HEAD(Type.ARMOR, 3, "head");
+    private val BY_ARMOR_SLOT = mapOf(
+        ArmorSlot.BOOTS to EquipmentSlot.FEET,
+        ArmorSlot.LEGGINGS to EquipmentSlot.LEGS,
+        ArmorSlot.CHESTPLATE to EquipmentSlot.CHEST,
+        ArmorSlot.HELMET to EquipmentSlot.HEAD
+    )
+    private val BY_NAME = EquipmentSlot.values().associateBy { it.name.lowercase() }
 
-    fun index(offset: Int): Int = offset + index
+    @JvmStatic
+    fun fromArmorSlot(slot: ArmorSlot): EquipmentSlot = BY_ARMOR_SLOT[slot]!!
 
-    enum class Type {
+    @JvmStatic
+    fun fromName(name: String): EquipmentSlot? = BY_NAME[name]
 
-        HAND,
-        ARMOR
-    }
-
-    companion object {
-
-        private val BY_ARMOR_SLOT = mapOf(
-            ArmorSlot.HELMET to HEAD,
-            ArmorSlot.CHESTPLATE to CHEST,
-            ArmorSlot.LEGGINGS to LEGS,
-            ArmorSlot.BOOTS to FEET
-        )
-
-        @JvmStatic
-        fun fromArmorSlot(slot: ArmorSlot): EquipmentSlot = BY_ARMOR_SLOT[slot]!!
+    @JvmStatic
+    fun index(slot: EquipmentSlot): Int = when (slot.type) {
+        EquipmentSlot.Type.HAND -> slot.ordinal
+        EquipmentSlot.Type.ARMOR -> slot.ordinal - 2
     }
 }

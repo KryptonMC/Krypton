@@ -61,7 +61,7 @@ data class KryptonAttribute(override val type: AttributeType, private val callba
             data.getList("Modifiers", CompoundTag.ID).forEachCompound {
                 val operation = Registries.MODIFIER_OPERATIONS[it.getInt("Operation")] ?: return@forEachCompound
                 val uuid = it.getUUID("UUID") ?: return@forEachCompound
-                val modifier = KryptonAttributeModifier(it.getString("Name"), uuid, it.getDouble("Amount"))
+                val modifier = KryptonAttributeModifier(it.getString("Name"), uuid, it.getDouble("Amount"), operation)
                 modifiersById[modifier.uuid] = modifier
                 modifiers(operation).add(modifier)
                 permanentModifiers.add(modifier)
@@ -73,7 +73,7 @@ data class KryptonAttribute(override val type: AttributeType, private val callba
     fun save(): CompoundTag = compound {
         string("Name", type.key().asString())
         double("Base", baseValue)
-        put("Modifiers", modifiersByOperation.save())
+        list("Modifiers") { modifiersByOperation.values.forEach { modifiers -> modifiers.forEach { add(it.save()) } } }
     }
 
     fun replaceFrom(other: KryptonAttribute) {
@@ -91,14 +91,14 @@ data class KryptonAttribute(override val type: AttributeType, private val callba
 
     override fun modifiers(operation: ModifierOperation): MutableSet<AttributeModifier> = modifiersByOperation.getOrPut(operation) { mutableSetOf() }
 
-    override fun addModifier(operation: ModifierOperation, modifier: AttributeModifier) {
+    override fun addModifier(modifier: AttributeModifier) {
         require(modifiersById.putIfAbsent(modifier.uuid, modifier) == null) { "The modifier is already applied to this attribute!" }
-        modifiers(operation).add(modifier)
+        modifiers(modifier.operation).add(modifier)
         makeDirty()
     }
 
-    override fun removeModifier(operation: ModifierOperation, modifier: AttributeModifier) {
-        modifiers(operation).remove(modifier)
+    override fun removeModifier(modifier: AttributeModifier) {
+        modifiers(modifier.operation).remove(modifier)
         modifiersById[modifier.uuid] = modifier
         makeDirty()
     }

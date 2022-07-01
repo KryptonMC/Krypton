@@ -21,7 +21,6 @@ package org.kryptonmc.krypton.packet.out.play
 import io.netty.buffer.ByteBuf
 import org.kryptonmc.api.entity.attribute.AttributeModifier
 import org.kryptonmc.api.entity.attribute.AttributeType
-import org.kryptonmc.api.entity.attribute.ModifierOperation
 import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.krypton.entity.attribute.KryptonAttribute
 import org.kryptonmc.krypton.packet.EntityPacket
@@ -30,6 +29,7 @@ import org.kryptonmc.krypton.util.writeCollection
 import org.kryptonmc.krypton.util.writeKey
 import org.kryptonmc.krypton.util.writeUUID
 import org.kryptonmc.krypton.util.writeVarInt
+import java.util.Collections
 
 @JvmRecord
 data class PacketOutAttributes(override val entityId: Int, val attributes: Collection<AttributeSnapshot>) : EntityPacket {
@@ -41,25 +41,23 @@ data class PacketOutAttributes(override val entityId: Int, val attributes: Colle
         buf.writeCollection(attributes) { attribute ->
             buf.writeKey(Registries.ATTRIBUTE[attribute.type]!!)
             buf.writeDouble(attribute.base)
-            buf.writeVarInt(attribute.modifiers.values.sumOf { it.size })
-            attribute.modifiers.forEach { (operation, modifiers) ->
-                modifiers.forEach {
-                    buf.writeUUID(it.uuid)
-                    buf.writeDouble(it.amount)
-                    buf.writeByte(Registries.MODIFIER_OPERATIONS.idOf(operation))
-                }
+            buf.writeVarInt(attribute.modifiers.size)
+            attribute.modifiers.forEach {
+                buf.writeUUID(it.uuid)
+                buf.writeDouble(it.amount)
+                buf.writeByte(Registries.MODIFIER_OPERATIONS.idOf(it.operation))
             }
         }
     }
 
     @JvmRecord
-    data class AttributeSnapshot(val type: AttributeType, val base: Double, val modifiers: Map<ModifierOperation, Set<AttributeModifier>>) {
+    data class AttributeSnapshot(val type: AttributeType, val base: Double, val modifiers: Collection<AttributeModifier>) {
 
         companion object {
 
             @JvmStatic
             fun from(attribute: KryptonAttribute): AttributeSnapshot =
-                AttributeSnapshot(attribute.type, attribute.baseValue, attribute.modifiersByOperation)
+                AttributeSnapshot(attribute.type, attribute.baseValue, Collections.unmodifiableCollection(attribute.modifiers))
         }
     }
 }

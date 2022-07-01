@@ -38,10 +38,16 @@ public interface AttributeModifier {
     @get:JvmName("amount")
     public val amount: Double
 
+    /**
+     * The operation to perform on the modifier.
+     */
+    @get:JvmName("operation")
+    public val operation: ModifierOperation
+
     @ApiStatus.Internal
     public interface Factory {
 
-        public fun of(name: String, uuid: UUID, amount: Double): AttributeModifier
+        public fun of(name: String, uuid: UUID, amount: Double, operation: ModifierOperation): AttributeModifier
     }
 
     public companion object {
@@ -54,10 +60,12 @@ public interface AttributeModifier {
          * @param name the name of the modifier
          * @param uuid the unique ID of the modifier
          * @param amount the amount to modify attribute values by
+         * @param operation the operation to perform on the modifier
          * @return a new attribute modifier
          */
         @JvmStatic
         @Contract("_ -> new", pure = true)
-        public fun of(name: String, uuid: UUID, amount: Double): AttributeModifier = FACTORY.of(name, uuid, amount)
+        public fun of(name: String, uuid: UUID, amount: Double, operation: ModifierOperation): AttributeModifier =
+            FACTORY.of(name, uuid, amount, operation)
     }
 }

@@ -11,6 +11,10 @@ package org.kryptonmc.api.item.meta
 import net.kyori.adventure.text.Component
 import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.block.Block
+import org.kryptonmc.api.entity.EquipmentSlot
+import org.kryptonmc.api.entity.attribute.AttributeModifier
+import org.kryptonmc.api.entity.attribute.AttributeType
+import org.kryptonmc.api.item.ItemAttribute
 import org.kryptonmc.api.item.data.ItemFlag
 import java.util.function.Consumer
 
@@ -67,4 +71,18 @@ public sealed interface ScopedItemMeta<B : ItemMetaBuilder<B, I>, I : ItemMeta> 
     override fun withCanDestroy(blocks: Iterable<Block>): I
 
     override fun withCanPlaceOn(blocks: Iterable<Block>): I
+
+    override fun withAttributeModifiers(attributes: Set<ItemAttribute>): I
+
+    override fun withAttributeModifiers(type: AttributeType, slot: EquipmentSlot, modifiers: Set<AttributeModifier>): I
+
+    override fun addAttributeModifiers(type: AttributeType, slot: EquipmentSlot, modifiers: Iterable<AttributeModifier>): I
+
+    override fun removeAttributeModifiers(type: AttributeType, slot: EquipmentSlot, modifiers: Iterable<AttributeModifier>): I
+
+    override fun removeAttributeModifiers(type: AttributeType, slot: EquipmentSlot): I
+
+    override fun addAttributeModifier(type: AttributeType, slot: EquipmentSlot, modifier: AttributeModifier): I
+
+    override fun removeAttributeModifier(type: AttributeType, slot: EquipmentSlot, modifier: AttributeModifier): I
 }
