@@ -43,6 +43,10 @@ import org.kryptonmc.api.item.ItemStack
 import org.kryptonmc.api.item.ItemType
 import org.kryptonmc.api.item.data.DyeColor
 import org.kryptonmc.api.item.meta.ItemMeta
+import org.kryptonmc.api.map.MapInfo
+import org.kryptonmc.api.map.decoration.MapDecoration
+import org.kryptonmc.api.map.marker.BannerMarker
+import org.kryptonmc.api.map.marker.ItemFrameMarker
 import org.kryptonmc.api.resource.ResourceKey
 import org.kryptonmc.api.resource.ResourcePack
 import org.kryptonmc.api.scoreboard.Objective
@@ -85,6 +89,10 @@ import org.kryptonmc.krypton.item.KryptonItemStack
 import org.kryptonmc.krypton.item.KryptonItemType
 import org.kryptonmc.krypton.item.data.KryptonDyeColor
 import org.kryptonmc.krypton.item.meta.KryptonItemMeta
+import org.kryptonmc.krypton.map.KryptonMapDecoration
+import org.kryptonmc.krypton.map.KryptonMapInfo
+import org.kryptonmc.krypton.map.marker.KryptonBannerMarker
+import org.kryptonmc.krypton.map.marker.KryptonItemFrameMarker
 import org.kryptonmc.krypton.resource.KryptonResourceKey
 import org.kryptonmc.krypton.resource.KryptonResourcePack
 import org.kryptonmc.krypton.statistic.KryptonStatisticType
@@ -158,5 +166,9 @@ object KryptonFactoryProvider : FactoryProvider {
         register<Scoreboard.Factory>(KryptonScoreboard.Factory)
         register<ItemAttribute.Factory>(KryptonItemAttribute.Factory)
         register<BannerPattern.Factory>(KryptonBannerPattern.Factory)
+        register<MapDecoration.Factory>(KryptonMapDecoration.Factory)
+        register<BannerMarker.Factory>(KryptonBannerMarker.Factory)
+        register<ItemFrameMarker.Factory>(KryptonItemFrameMarker.Factory)
+        register<MapInfo.Factory>(KryptonMapInfo.Factory)
     }
 }
