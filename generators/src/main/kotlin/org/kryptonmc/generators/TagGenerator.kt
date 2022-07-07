@@ -27,7 +27,7 @@ import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeSpec
-import net.minecraft.tags.Tag
+import net.minecraft.tags.TagKey
 import java.lang.reflect.Modifier
 import java.nio.file.Path
 import kotlin.io.path.exists
@@ -54,12 +54,12 @@ class TagGenerator(@PublishedApi internal val output: Path) {
                 .build())
         S::class.java.declaredFields.asSequence()
             .filter { Modifier.isStatic(it.modifiers) }
-            .filter { Tag::class.java.isAssignableFrom(it.type) }
+            .filter { TagKey::class.java.isAssignableFrom(it.type) }
             .forEach {
-                val value = it[null] as Tag.Named<*>
+                val value = it[null] as TagKey<*>
                 outputClass.addProperty(PropertySpec.builder(it.name, returnType)
                     .addAnnotation(JvmField::class)
-                    .initializer("get(\"${value.name.path}\")")
+                    .initializer("get(\"${value.location.path}\")")
                     .build())
             }
         val stringBuilder = StringBuilder()

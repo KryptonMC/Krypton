@@ -26,22 +26,28 @@ import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeSpec
 import net.minecraft.core.Registry
-import net.minecraft.resources.ResourceLocation
-import java.lang.reflect.Field
 import java.lang.reflect.Modifier
 import java.nio.file.Path
 import kotlin.io.path.exists
 import kotlin.io.path.writeText
 
-class StandardGenerator(@PublishedApi internal val output: Path) {
+open class StandardGenerator(@PublishedApi internal val output: Path) {
+
+    protected open fun <S, T> collectFields(catalogueType: Class<S>, type: Class<T>): Sequence<CollectedField> =
+        catalogueType.declaredFields.asSequence()
+            .filter { Modifier.isStatic(it.modifiers) }
+            .filter { type.isAssignableFrom(it.type) }
+            .map(::CollectedField)
 
     @Suppress("UNCHECKED_CAST")
-    inline fun <reified S, reified T> run(
+    fun <S, T> run(
+        catalogueType: Class<S>,
+        type: Class<T>,
         registry: Registry<*>,
         name: String,
         returnType: String,
         registryName: String,
-        keyGetter: (Field) -> ResourceLocation = { (registry as Registry<Any>).getKey(it.get(null))!! }
+        keyGetter: KeyGetter = KeyGetter { (registry as Registry<Any>).getKey(it.value)!! }
     ) {
         val pkg = "org.kryptonmc.api"
         val className = className(name)
@@ -62,15 +68,12 @@ class StandardGenerator(@PublishedApi internal val output: Path) {
                 .addModifiers(KModifier.PRIVATE)
                 .addCode("return Registries.$registryName[Key.key(key)]!!")
                 .build())
-        S::class.java.declaredFields.asSequence()
-            .filter { Modifier.isStatic(it.modifiers) }
-            .filter { T::class.java.isAssignableFrom(it.type) }
-            .forEach {
-                outputClass.addProperty(PropertySpec.builder(it.name, classReturnType)
-                    .addAnnotation(JvmField::class)
-                    .initializer("get(\"${keyGetter(it).path}\")")
-                    .build())
-            }
+        collectFields(catalogueType, type).forEach {
+            outputClass.addProperty(PropertySpec.builder(it.name, classReturnType)
+                .addAnnotation(JvmField::class)
+                .initializer("get(\"${keyGetter.key(it).path}\")")
+                .build())
+        }
         val stringBuilder = StringBuilder()
         file.addType(outputClass.build())
             .build()
@@ -85,10 +88,19 @@ class StandardGenerator(@PublishedApi internal val output: Path) {
     companion object {
 
         @JvmStatic
-        @PublishedApi
-        internal fun className(name: String): ClassName {
+        private fun className(name: String): ClassName {
             val parts = name.split("/")
             return ClassName("org.kryptonmc.api.${parts[0]}", parts[1])
         }
     }
+}
+
+inline fun <reified S, reified T> StandardGenerator.run(
+    registry: Registry<*>,
+    name: String,
+    returnType: String,
+    registryName: String,
+    keyGetter: KeyGetter = KeyGetter { (registry as Registry<Any>).getKey(it.value)!! }
+) {
+    run(S::class.java, T::class.java, registry, name, returnType, registryName, keyGetter)
 }

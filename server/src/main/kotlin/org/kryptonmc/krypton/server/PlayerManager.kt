@@ -23,6 +23,7 @@ import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
 import org.kryptonmc.api.event.player.JoinEvent
 import org.kryptonmc.api.event.player.QuitEvent
+import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.api.scoreboard.Objective
 import org.kryptonmc.api.statistic.CustomStatistics
 import org.kryptonmc.api.world.World
@@ -126,7 +127,7 @@ class PlayerManager(private val server: KryptonServer) {
             player.gameMode,
             player.oldGameMode,
             server.worldManager.worlds.keys,
-            world.dimensionType,
+            Registries.DIMENSION_TYPE.resourceKey(world.dimensionType)!!,
             world.dimension,
             BiomeManager.obfuscateSeed(world.seed),
             server.maxPlayers,

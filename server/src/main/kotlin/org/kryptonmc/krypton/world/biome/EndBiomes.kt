@@ -19,7 +19,6 @@
 package org.kryptonmc.krypton.world.biome
 
 import net.kyori.adventure.key.Key
-import org.kryptonmc.api.world.biome.BiomeCategories
 import org.kryptonmc.api.world.biome.Precipitation
 import org.kryptonmc.api.world.biome.biome
 import java.awt.Color
@@ -50,7 +49,6 @@ object EndBiomes {
             temperature(0.5F)
             downfall(0.5F)
         }
-        category(BiomeCategories.THE_END)
         effects {
             waterColor(OverworldBiomes.OVERWORLD_WATER)
             waterFogColor(OverworldBiomes.OVERWORLD_WATER_FOG)

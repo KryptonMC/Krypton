@@ -21,7 +21,9 @@ package org.kryptonmc.krypton.registry
 import org.kryptonmc.api.registry.Registry
 import org.kryptonmc.api.resource.ResourceKey
 import org.kryptonmc.krypton.entity.memory.MemoryKey
+import org.kryptonmc.krypton.item.Instrument
 import org.kryptonmc.krypton.resource.InternalResourceKeys
+import org.kryptonmc.krypton.util.provider.IntProviderType
 import org.kryptonmc.krypton.world.event.GameEvent
 
 object InternalRegistries {
@@ -30,6 +32,10 @@ object InternalRegistries {
     val MEMORIES: KryptonRegistry<MemoryKey<Any>> = create(InternalResourceKeys.MEMORIES)
     @JvmField
     val GAME_EVENT: KryptonRegistry<GameEvent> = create(InternalResourceKeys.GAME_EVENT)
+    @JvmField
+    val INT_PROVIDER_TYPES: KryptonRegistry<IntProviderType<*>> = create(InternalResourceKeys.INT_PROVIDER_TYPES)
+    @JvmField
+    val INSTRUMENTS: KryptonRegistry<Instrument> = create(InternalResourceKeys.INSTRUMENTS)
 
     @JvmStatic
     private fun <T : Any> create(key: ResourceKey<out Registry<T>>): KryptonRegistry<T> = KryptonRegistryManager.create(key)

@@ -77,6 +77,9 @@ public object Properties {
     @JvmField
     public val AGE_3: Property<Int> = Property.forInt("age", 0..3)
 
+    @JvmField
+    public val AGE_4: Property<Int> = Property.forInt("age", 0..4)
+
     /**
      * The current age of the block this property is applied to. This is a
      * generic property for certain types of plants. This has a range of 0-5.
@@ -194,6 +197,9 @@ public object Properties {
     @JvmField
     public val BITES: Property<Int> = Property.forInt("bites", 0..6)
 
+    @JvmField
+    public val BLOOM: Property<Boolean> = Property.forBoolean("bloom")
+
     /**
      * Whether the [Scaffolding][Blocks.SCAFFOLDING] block this property is
      * applied to is floating or is on the bottom.
@@ -208,19 +214,15 @@ public object Properties {
     @JvmField
     public val CANDLES: Property<Int> = Property.forInt("candles", 1..4)
 
+    @JvmField
+    public val CAN_SUMMON: Property<Boolean> = Property.forBoolean("can_summon")
+
     /**
      * The level of the cauldron this property is applied to. This is
      * applicable to all types of cauldrons.
      */
     @JvmField
     public val CAULDRON_LEVEL: Property<Int> = Property.forInt("level", 0..3)
-
-    /**
-     * The amount of charges the [Respawn Anchor][Blocks.RESPAWN_ANCHOR] this
-     * property is applied to has.
-     */
-    @JvmField
-    public val CHARGES: Property<Int> = Property.forInt("charges", 0..4)
 
     /**
      * The type of the [Chest][Blocks.CHEST], [Trapped Chest][Blocks.TRAPPED_CHEST],
@@ -698,6 +700,13 @@ public object Properties {
     public val RAIL_SHAPE: Property<RailShape> = Property.forEnum("shape", RailShape.values())
 
     /**
+     * The amount of charges the [Respawn Anchor][Blocks.RESPAWN_ANCHOR] this
+     * property is applied to has.
+     */
+    @JvmField
+    public val RESPAWN_ANCHOR_CHARGES: Property<Int> = Property.forInt("charges", 0..4)
+
+    /**
      * The rotation of the sign this property is applied to. This is applicable
      * to all types of signs.
      */
@@ -725,6 +734,9 @@ public object Properties {
      */
     @JvmField
     public val SHORT: Property<Boolean> = Property.forBoolean("short")
+
+    @JvmField
+    public val SHRIEKING: Property<Boolean> = Property.forBoolean("shrieking")
 
     /**
      * Whether the [Campfire][Blocks.CAMPFIRE] or [Soul Campfire][Blocks.SOUL_CAMPFIRE]

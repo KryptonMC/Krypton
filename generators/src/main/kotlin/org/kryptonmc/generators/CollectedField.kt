@@ -16,20 +16,22 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.tags
+package org.kryptonmc.generators
 
-import kotlinx.collections.immutable.ImmutableCollection
-import net.kyori.adventure.key.Key
-import org.kryptonmc.api.tags.Tag
-import org.kryptonmc.krypton.util.mapPersistentList
+import java.lang.reflect.Field
 
+/**
+ * This class exists to bridge the gap between actual fields and synthetic
+ * fields.
+ *
+ * When generating sound events, we need to account for the really annoying
+ * "GOAT_HORN_SOUND_VARIANTS" field, which is a generated list of sound events.
+ * What we do with this is collect all the normal fields, then get that
+ * specific list and turn it in to a list of collected fields, all with names
+ * like "GOAT_HORN_SOUND_VARIANT_{index}" and the event as the value.
+ */
 @JvmRecord
-data class KryptonTag<T : Any>(private val key: Key, override val type: KryptonTagType<T>, override val values: ImmutableCollection<T>) : Tag<T> {
+data class CollectedField(val name: String, val value: Any) {
 
-    constructor(name: Key, type: KryptonTagType<T>, keys: Set<String>) : this(name, type, keys.mapPersistentList {
-        val key = Key.key(it)
-        requireNotNull(type.registry[key]) { "Could not find registry entry for key $key in registry ${type.registry.key}!" }
-    })
-
-    override fun key(): Key = key
+    constructor(field: Field) : this(field.name, field.get(null))
 }

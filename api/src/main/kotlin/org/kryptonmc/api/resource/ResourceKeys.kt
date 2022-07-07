@@ -13,6 +13,7 @@ import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.user.ban.BanType
 import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.block.entity.BlockEntityType
+import org.kryptonmc.api.block.entity.banner.BannerPatternType
 import org.kryptonmc.api.effect.particle.ParticleType
 import org.kryptonmc.api.effect.sound.SoundEvent
 import org.kryptonmc.api.entity.EntityType
@@ -30,7 +31,6 @@ import org.kryptonmc.api.registry.RegistryRoots
 import org.kryptonmc.api.statistic.StatisticType
 import org.kryptonmc.api.world.World
 import org.kryptonmc.api.world.biome.Biome
-import org.kryptonmc.api.world.biome.BiomeCategory
 import org.kryptonmc.api.world.dimension.DimensionEffect
 import org.kryptonmc.api.world.dimension.DimensionType
 import org.kryptonmc.api.world.rule.GameRule
@@ -82,6 +82,8 @@ public object ResourceKeys {
     public val DIMENSION_TYPE: ResourceKey<out Registry<DimensionType>> = minecraft("dimension_type")
     @JvmField
     public val BLOCK_ENTITY_TYPE: ResourceKey<out Registry<BlockEntityType>> = minecraft("block_entity")
+    @JvmField
+    public val BANNER_PATTERN: ResourceKey<out Registry<BannerPatternType>> = minecraft("banner_pattern")
 
     /**
      * Custom built-in registries.
@@ -96,8 +98,6 @@ public object ResourceKeys {
     public val CRITERIA: ResourceKey<out Registry<Criterion>> = krypton("criteria")
     @JvmField
     public val DIMENSION_EFFECTS: ResourceKey<out Registry<DimensionEffect>> = krypton("dimension_effects")
-    @JvmField
-    public val BIOME_CATEGORIES: ResourceKey<out Registry<BiomeCategory>> = krypton("biome_categories")
     @JvmField
     public val ITEM_RARITIES: ResourceKey<out Registry<ItemRarity>> = krypton("item_rarities")
     @JvmField

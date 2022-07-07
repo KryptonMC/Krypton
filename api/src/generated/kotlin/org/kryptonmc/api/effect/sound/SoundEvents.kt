@@ -20,6 +20,20 @@ public object SoundEvents {
 
     // @formatter:off
     @JvmField
+    public val ALLAY_AMBIENT_WITH_ITEM: SoundEvent = get("entity.allay.ambient_with_item")
+    @JvmField
+    public val ALLAY_AMBIENT_WITHOUT_ITEM: SoundEvent = get("entity.allay.ambient_without_item")
+    @JvmField
+    public val ALLAY_DEATH: SoundEvent = get("entity.allay.death")
+    @JvmField
+    public val ALLAY_HURT: SoundEvent = get("entity.allay.hurt")
+    @JvmField
+    public val ALLAY_ITEM_GIVEN: SoundEvent = get("entity.allay.item_given")
+    @JvmField
+    public val ALLAY_ITEM_TAKEN: SoundEvent = get("entity.allay.item_taken")
+    @JvmField
+    public val ALLAY_THROW: SoundEvent = get("entity.allay.item_thrown")
+    @JvmField
     public val AMBIENT_CAVE: SoundEvent = get("ambient.cave")
     @JvmField
     public val AMBIENT_BASALT_DELTAS_ADDITIONS: SoundEvent = get("ambient.basalt_deltas.additions")
@@ -328,6 +342,8 @@ public object SoundEvents {
     @JvmField
     public val BUCKET_EMPTY_POWDER_SNOW: SoundEvent = get("item.bucket.empty_powder_snow")
     @JvmField
+    public val BUCKET_EMPTY_TADPOLE: SoundEvent = get("item.bucket.empty_tadpole")
+    @JvmField
     public val BUCKET_FILL: SoundEvent = get("item.bucket.fill")
     @JvmField
     public val BUCKET_FILL_AXOLOTL: SoundEvent = get("item.bucket.fill_axolotl")
@@ -337,6 +353,8 @@ public object SoundEvents {
     public val BUCKET_FILL_LAVA: SoundEvent = get("item.bucket.fill_lava")
     @JvmField
     public val BUCKET_FILL_POWDER_SNOW: SoundEvent = get("item.bucket.fill_powder_snow")
+    @JvmField
+    public val BUCKET_FILL_TADPOLE: SoundEvent = get("item.bucket.fill_tadpole")
     @JvmField
     public val BUNDLE_DROP_CONTENTS: SoundEvent = get("item.bundle.drop_contents")
     @JvmField
@@ -802,6 +820,44 @@ public object SoundEvents {
     @JvmField
     public val FOX_TELEPORT: SoundEvent = get("entity.fox.teleport")
     @JvmField
+    public val FROGLIGHT_BREAK: SoundEvent = get("block.froglight.break")
+    @JvmField
+    public val FROGLIGHT_FALL: SoundEvent = get("block.froglight.fall")
+    @JvmField
+    public val FROGLIGHT_HIT: SoundEvent = get("block.froglight.hit")
+    @JvmField
+    public val FROGLIGHT_PLACE: SoundEvent = get("block.froglight.place")
+    @JvmField
+    public val FROGLIGHT_STEP: SoundEvent = get("block.froglight.step")
+    @JvmField
+    public val FROGSPAWNSTEP: SoundEvent = get("block.frogspawn.step")
+    @JvmField
+    public val FROGSPAWN_BREAK: SoundEvent = get("block.frogspawn.break")
+    @JvmField
+    public val FROGSPAWN_FALL: SoundEvent = get("block.frogspawn.fall")
+    @JvmField
+    public val FROGSPAWN_HATCH: SoundEvent = get("block.frogspawn.hatch")
+    @JvmField
+    public val FROGSPAWN_HIT: SoundEvent = get("block.frogspawn.hit")
+    @JvmField
+    public val FROGSPAWN_PLACE: SoundEvent = get("block.frogspawn.place")
+    @JvmField
+    public val FROG_AMBIENT: SoundEvent = get("entity.frog.ambient")
+    @JvmField
+    public val FROG_DEATH: SoundEvent = get("entity.frog.death")
+    @JvmField
+    public val FROG_EAT: SoundEvent = get("entity.frog.eat")
+    @JvmField
+    public val FROG_HURT: SoundEvent = get("entity.frog.hurt")
+    @JvmField
+    public val FROG_LAY_SPAWN: SoundEvent = get("entity.frog.lay_spawn")
+    @JvmField
+    public val FROG_LONG_JUMP: SoundEvent = get("entity.frog.long_jump")
+    @JvmField
+    public val FROG_STEP: SoundEvent = get("entity.frog.step")
+    @JvmField
+    public val FROG_TONGUE: SoundEvent = get("entity.frog.tongue")
+    @JvmField
     public val ROOTS_BREAK: SoundEvent = get("block.roots.break")
     @JvmField
     public val ROOTS_STEP: SoundEvent = get("block.roots.step")
@@ -904,6 +960,10 @@ public object SoundEvents {
     @JvmField
     public val GOAT_RAM_IMPACT: SoundEvent = get("entity.goat.ram_impact")
     @JvmField
+    public val GOAT_HORN_BREAK: SoundEvent = get("entity.goat.horn_break")
+    @JvmField
+    public val GOAT_HORN_PLAY: SoundEvent = get("item.goat_horn.play")
+    @JvmField
     public val GOAT_SCREAMING_AMBIENT: SoundEvent = get("entity.goat.screaming.ambient")
     @JvmField
     public val GOAT_SCREAMING_DEATH: SoundEvent = get("entity.goat.screaming.death")
@@ -919,6 +979,8 @@ public object SoundEvents {
     public val GOAT_SCREAMING_PREPARE_RAM: SoundEvent = get("entity.goat.screaming.prepare_ram")
     @JvmField
     public val GOAT_SCREAMING_RAM_IMPACT: SoundEvent = get("entity.goat.screaming.ram_impact")
+    @JvmField
+    public val GOAT_SCREAMING_HORN_BREAK: SoundEvent = get("entity.goat.screaming.horn_break")
     @JvmField
     public val GOAT_STEP: SoundEvent = get("entity.goat.step")
     @JvmField
@@ -1190,6 +1252,16 @@ public object SoundEvents {
     @JvmField
     public val MAGMA_CUBE_SQUISH_SMALL: SoundEvent = get("entity.magma_cube.squish_small")
     @JvmField
+    public val MANGROVE_ROOTS_BREAK: SoundEvent = get("block.mangrove_roots.break")
+    @JvmField
+    public val MANGROVE_ROOTS_FALL: SoundEvent = get("block.mangrove_roots.fall")
+    @JvmField
+    public val MANGROVE_ROOTS_HIT: SoundEvent = get("block.mangrove_roots.hit")
+    @JvmField
+    public val MANGROVE_ROOTS_PLACE: SoundEvent = get("block.mangrove_roots.place")
+    @JvmField
+    public val MANGROVE_ROOTS_STEP: SoundEvent = get("block.mangrove_roots.step")
+    @JvmField
     public val MEDIUM_AMETHYST_BUD_BREAK: SoundEvent = get("block.medium_amethyst_bud.break")
     @JvmField
     public val MEDIUM_AMETHYST_BUD_PLACE: SoundEvent = get("block.medium_amethyst_bud.place")
@@ -1244,6 +1316,36 @@ public object SoundEvents {
     @JvmField
     public val MOSS_STEP: SoundEvent = get("block.moss.step")
     @JvmField
+    public val MUD_BREAK: SoundEvent = get("block.mud.break")
+    @JvmField
+    public val MUD_FALL: SoundEvent = get("block.mud.fall")
+    @JvmField
+    public val MUD_HIT: SoundEvent = get("block.mud.hit")
+    @JvmField
+    public val MUD_PLACE: SoundEvent = get("block.mud.place")
+    @JvmField
+    public val MUD_STEP: SoundEvent = get("block.mud.step")
+    @JvmField
+    public val MUD_BRICKS_BREAK: SoundEvent = get("block.mud_bricks.break")
+    @JvmField
+    public val MUD_BRICKS_FALL: SoundEvent = get("block.mud_bricks.fall")
+    @JvmField
+    public val MUD_BRICKS_HIT: SoundEvent = get("block.mud_bricks.hit")
+    @JvmField
+    public val MUD_BRICKS_PLACE: SoundEvent = get("block.mud_bricks.place")
+    @JvmField
+    public val MUD_BRICKS_STEP: SoundEvent = get("block.mud_bricks.step")
+    @JvmField
+    public val MUDDY_MANGROVE_ROOTS_BREAK: SoundEvent = get("block.muddy_mangrove_roots.break")
+    @JvmField
+    public val MUDDY_MANGROVE_ROOTS_FALL: SoundEvent = get("block.muddy_mangrove_roots.fall")
+    @JvmField
+    public val MUDDY_MANGROVE_ROOTS_HIT: SoundEvent = get("block.muddy_mangrove_roots.hit")
+    @JvmField
+    public val MUDDY_MANGROVE_ROOTS_PLACE: SoundEvent = get("block.muddy_mangrove_roots.place")
+    @JvmField
+    public val MUDDY_MANGROVE_ROOTS_STEP: SoundEvent = get("block.muddy_mangrove_roots.step")
+    @JvmField
     public val MULE_AMBIENT: SoundEvent = get("entity.mule.ambient")
     @JvmField
     public val MULE_ANGRY: SoundEvent = get("entity.mule.angry")
@@ -1259,6 +1361,8 @@ public object SoundEvents {
     public val MUSIC_CREATIVE: SoundEvent = get("music.creative")
     @JvmField
     public val MUSIC_CREDITS: SoundEvent = get("music.credits")
+    @JvmField
+    public val MUSIC_DISC_5: SoundEvent = get("music_disc.5")
     @JvmField
     public val MUSIC_DISC_11: SoundEvent = get("music_disc.11")
     @JvmField
@@ -1300,6 +1404,8 @@ public object SoundEvents {
     @JvmField
     public val MUSIC_BIOME_CRIMSON_FOREST: SoundEvent = get("music.nether.crimson_forest")
     @JvmField
+    public val MUSIC_BIOME_DEEP_DARK: SoundEvent = get("music.overworld.deep_dark")
+    @JvmField
     public val MUSIC_BIOME_DRIPSTONE_CAVES: SoundEvent = get("music.overworld.dripstone_caves")
     @JvmField
     public val MUSIC_BIOME_GROVE: SoundEvent = get("music.overworld.grove")
@@ -1307,6 +1413,12 @@ public object SoundEvents {
     public val MUSIC_BIOME_JAGGED_PEAKS: SoundEvent = get("music.overworld.jagged_peaks")
     @JvmField
     public val MUSIC_BIOME_LUSH_CAVES: SoundEvent = get("music.overworld.lush_caves")
+    @JvmField
+    public val MUSIC_BIOME_SWAMP: SoundEvent = get("music.overworld.swamp")
+    @JvmField
+    public val MUSIC_BIOME_JUNGLE_AND_FOREST: SoundEvent = get("music.overworld.jungle_and_forest")
+    @JvmField
+    public val MUSIC_BIOME_OLD_GROWTH_TAIGA: SoundEvent = get("music.overworld.old_growth_taiga")
     @JvmField
     public val MUSIC_BIOME_MEADOW: SoundEvent = get("music.overworld.meadow")
     @JvmField
@@ -1337,6 +1449,16 @@ public object SoundEvents {
     public val NETHER_WART_BREAK: SoundEvent = get("block.nether_wart.break")
     @JvmField
     public val NETHER_WART_PLANTED: SoundEvent = get("item.nether_wart.plant")
+    @JvmField
+    public val PACKED_MUD_BREAK: SoundEvent = get("block.packed_mud.break")
+    @JvmField
+    public val PACKED_MUD_FALL: SoundEvent = get("block.packed_mud.fall")
+    @JvmField
+    public val PACKED_MUD_HIT: SoundEvent = get("block.packed_mud.hit")
+    @JvmField
+    public val PACKED_MUD_PLACE: SoundEvent = get("block.packed_mud.place")
+    @JvmField
+    public val PACKED_MUD_STEP: SoundEvent = get("block.packed_mud.step")
     @JvmField
     public val STEM_BREAK: SoundEvent = get("block.stem.break")
     @JvmField
@@ -1543,6 +1665,8 @@ public object SoundEvents {
     public val PARROT_IMITATE_VEX: SoundEvent = get("entity.parrot.imitate.vex")
     @JvmField
     public val PARROT_IMITATE_VINDICATOR: SoundEvent = get("entity.parrot.imitate.vindicator")
+    @JvmField
+    public val PARROT_IMITATE_WARDEN: SoundEvent = get("entity.parrot.imitate.warden")
     @JvmField
     public val PARROT_IMITATE_WITCH: SoundEvent = get("entity.parrot.imitate.witch")
     @JvmField
@@ -1814,6 +1938,32 @@ public object SoundEvents {
     @JvmField
     public val SCAFFOLDING_STEP: SoundEvent = get("block.scaffolding.step")
     @JvmField
+    public val SCULK_BLOCK_SPREAD: SoundEvent = get("block.sculk.spread")
+    @JvmField
+    public val SCULK_BLOCK_CHARGE: SoundEvent = get("block.sculk.charge")
+    @JvmField
+    public val SCULK_BLOCK_BREAK: SoundEvent = get("block.sculk.break")
+    @JvmField
+    public val SCULK_BLOCK_FALL: SoundEvent = get("block.sculk.fall")
+    @JvmField
+    public val SCULK_BLOCK_HIT: SoundEvent = get("block.sculk.hit")
+    @JvmField
+    public val SCULK_BLOCK_PLACE: SoundEvent = get("block.sculk.place")
+    @JvmField
+    public val SCULK_BLOCK_STEP: SoundEvent = get("block.sculk.step")
+    @JvmField
+    public val SCULK_CATALYST_BLOOM: SoundEvent = get("block.sculk_catalyst.bloom")
+    @JvmField
+    public val SCULK_CATALYST_BREAK: SoundEvent = get("block.sculk_catalyst.break")
+    @JvmField
+    public val SCULK_CATALYST_FALL: SoundEvent = get("block.sculk_catalyst.fall")
+    @JvmField
+    public val SCULK_CATALYST_HIT: SoundEvent = get("block.sculk_catalyst.hit")
+    @JvmField
+    public val SCULK_CATALYST_PLACE: SoundEvent = get("block.sculk_catalyst.place")
+    @JvmField
+    public val SCULK_CATALYST_STEP: SoundEvent = get("block.sculk_catalyst.step")
+    @JvmField
     public val SCULK_CLICKING: SoundEvent = get("block.sculk_sensor.clicking")
     @JvmField
     public val SCULK_CLICKING_STOP: SoundEvent = get("block.sculk_sensor.clicking_stop")
@@ -1827,6 +1977,28 @@ public object SoundEvents {
     public val SCULK_SENSOR_PLACE: SoundEvent = get("block.sculk_sensor.place")
     @JvmField
     public val SCULK_SENSOR_STEP: SoundEvent = get("block.sculk_sensor.step")
+    @JvmField
+    public val SCULK_SHRIEKER_BREAK: SoundEvent = get("block.sculk_shrieker.break")
+    @JvmField
+    public val SCULK_SHRIEKER_FALL: SoundEvent = get("block.sculk_shrieker.fall")
+    @JvmField
+    public val SCULK_SHRIEKER_HIT: SoundEvent = get("block.sculk_shrieker.hit")
+    @JvmField
+    public val SCULK_SHRIEKER_PLACE: SoundEvent = get("block.sculk_shrieker.place")
+    @JvmField
+    public val SCULK_SHRIEKER_SHRIEK: SoundEvent = get("block.sculk_shrieker.shriek")
+    @JvmField
+    public val SCULK_SHRIEKER_STEP: SoundEvent = get("block.sculk_shrieker.step")
+    @JvmField
+    public val SCULK_VEIN_BREAK: SoundEvent = get("block.sculk_vein.break")
+    @JvmField
+    public val SCULK_VEIN_FALL: SoundEvent = get("block.sculk_vein.fall")
+    @JvmField
+    public val SCULK_VEIN_HIT: SoundEvent = get("block.sculk_vein.hit")
+    @JvmField
+    public val SCULK_VEIN_PLACE: SoundEvent = get("block.sculk_vein.place")
+    @JvmField
+    public val SCULK_VEIN_STEP: SoundEvent = get("block.sculk_vein.step")
     @JvmField
     public val SHEEP_AMBIENT: SoundEvent = get("entity.sheep.ambient")
     @JvmField
@@ -2088,6 +2260,14 @@ public object SoundEvents {
     @JvmField
     public val SWEET_BERRY_BUSH_PICK_BERRIES: SoundEvent = get("block.sweet_berry_bush.pick_berries")
     @JvmField
+    public val TADPOLE_DEATH: SoundEvent = get("entity.tadpole.death")
+    @JvmField
+    public val TADPOLE_FLOP: SoundEvent = get("entity.tadpole.flop")
+    @JvmField
+    public val TADPOLE_GROW_UP: SoundEvent = get("entity.tadpole.grow_up")
+    @JvmField
+    public val TADPOLE_HURT: SoundEvent = get("entity.tadpole.hurt")
+    @JvmField
     public val THORNS_HIT: SoundEvent = get("enchant.thorns.hit")
     @JvmField
     public val TNT_PRIMED: SoundEvent = get("entity.tnt.primed")
@@ -2266,6 +2446,46 @@ public object SoundEvents {
     @JvmField
     public val WANDERING_TRADER_YES: SoundEvent = get("entity.wandering_trader.yes")
     @JvmField
+    public val WARDEN_AGITATED: SoundEvent = get("entity.warden.agitated")
+    @JvmField
+    public val WARDEN_AMBIENT: SoundEvent = get("entity.warden.ambient")
+    @JvmField
+    public val WARDEN_ANGRY: SoundEvent = get("entity.warden.angry")
+    @JvmField
+    public val WARDEN_ATTACK_IMPACT: SoundEvent = get("entity.warden.attack_impact")
+    @JvmField
+    public val WARDEN_DEATH: SoundEvent = get("entity.warden.death")
+    @JvmField
+    public val WARDEN_DIG: SoundEvent = get("entity.warden.dig")
+    @JvmField
+    public val WARDEN_EMERGE: SoundEvent = get("entity.warden.emerge")
+    @JvmField
+    public val WARDEN_HEARTBEAT: SoundEvent = get("entity.warden.heartbeat")
+    @JvmField
+    public val WARDEN_HURT: SoundEvent = get("entity.warden.hurt")
+    @JvmField
+    public val WARDEN_LISTENING: SoundEvent = get("entity.warden.listening")
+    @JvmField
+    public val WARDEN_LISTENING_ANGRY: SoundEvent = get("entity.warden.listening_angry")
+    @JvmField
+    public val WARDEN_NEARBY_CLOSE: SoundEvent = get("entity.warden.nearby_close")
+    @JvmField
+    public val WARDEN_NEARBY_CLOSER: SoundEvent = get("entity.warden.nearby_closer")
+    @JvmField
+    public val WARDEN_NEARBY_CLOSEST: SoundEvent = get("entity.warden.nearby_closest")
+    @JvmField
+    public val WARDEN_ROAR: SoundEvent = get("entity.warden.roar")
+    @JvmField
+    public val WARDEN_SNIFF: SoundEvent = get("entity.warden.sniff")
+    @JvmField
+    public val WARDEN_SONIC_BOOM: SoundEvent = get("entity.warden.sonic_boom")
+    @JvmField
+    public val WARDEN_SONIC_CHARGE: SoundEvent = get("entity.warden.sonic_charge")
+    @JvmField
+    public val WARDEN_STEP: SoundEvent = get("entity.warden.step")
+    @JvmField
+    public val WARDEN_TENDRIL_CLICKS: SoundEvent = get("entity.warden.tendril_clicks")
+    @JvmField
     public val WATER_AMBIENT: SoundEvent = get("block.water.ambient")
     @JvmField
     public val WEATHER_RAIN: SoundEvent = get("weather.rain")
@@ -2425,6 +2645,22 @@ public object SoundEvents {
     public val ZOMBIE_VILLAGER_HURT: SoundEvent = get("entity.zombie_villager.hurt")
     @JvmField
     public val ZOMBIE_VILLAGER_STEP: SoundEvent = get("entity.zombie_villager.step")
+    @JvmField
+    public val GOAT_HORN_0: SoundEvent = get("item.goat_horn.sound.0")
+    @JvmField
+    public val GOAT_HORN_1: SoundEvent = get("item.goat_horn.sound.1")
+    @JvmField
+    public val GOAT_HORN_2: SoundEvent = get("item.goat_horn.sound.2")
+    @JvmField
+    public val GOAT_HORN_3: SoundEvent = get("item.goat_horn.sound.3")
+    @JvmField
+    public val GOAT_HORN_4: SoundEvent = get("item.goat_horn.sound.4")
+    @JvmField
+    public val GOAT_HORN_5: SoundEvent = get("item.goat_horn.sound.5")
+    @JvmField
+    public val GOAT_HORN_6: SoundEvent = get("item.goat_horn.sound.6")
+    @JvmField
+    public val GOAT_HORN_7: SoundEvent = get("item.goat_horn.sound.7")
 
     // @formatter:on
     @JvmStatic

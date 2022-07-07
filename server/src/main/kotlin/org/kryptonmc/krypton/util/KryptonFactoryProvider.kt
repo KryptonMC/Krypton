@@ -23,6 +23,7 @@ import org.kryptonmc.api.adventure.AdventureMessage
 import org.kryptonmc.api.auth.GameProfile
 import org.kryptonmc.api.auth.ProfileProperty
 import org.kryptonmc.api.block.entity.banner.BannerPattern
+import org.kryptonmc.api.block.entity.banner.BannerPatternType
 import org.kryptonmc.api.block.property.Property
 import org.kryptonmc.api.command.BrigadierCommand
 import org.kryptonmc.api.command.meta.CommandMeta
@@ -57,7 +58,6 @@ import org.kryptonmc.api.world.biome.AmbientAdditionsSettings
 import org.kryptonmc.api.world.biome.AmbientMoodSettings
 import org.kryptonmc.api.world.biome.AmbientParticleSettings
 import org.kryptonmc.api.world.biome.Biome
-import org.kryptonmc.api.world.biome.BiomeCategory
 import org.kryptonmc.api.world.biome.BiomeEffects
 import org.kryptonmc.api.world.biome.Climate
 import org.kryptonmc.api.world.damage.DamageSource
@@ -92,10 +92,10 @@ import org.kryptonmc.krypton.world.biome.KryptonAmbientAdditionsSettings
 import org.kryptonmc.krypton.world.biome.KryptonAmbientMoodSettings
 import org.kryptonmc.krypton.world.biome.KryptonAmbientParticleSettings
 import org.kryptonmc.krypton.world.biome.KryptonBiome
-import org.kryptonmc.krypton.world.biome.KryptonBiomeCategory
 import org.kryptonmc.krypton.world.biome.KryptonBiomeEffects
 import org.kryptonmc.krypton.world.biome.KryptonClimate
 import org.kryptonmc.krypton.world.block.entity.banner.KryptonBannerPattern
+import org.kryptonmc.krypton.world.block.entity.banner.KryptonBannerPatternType
 import org.kryptonmc.krypton.world.block.property.KryptonPropertyFactory
 import org.kryptonmc.krypton.world.damage.KryptonDamageSourceFactory
 import org.kryptonmc.krypton.world.dimension.KryptonDimensionType
@@ -139,7 +139,6 @@ object KryptonFactoryProvider : FactoryProvider {
         register<AmbientMoodSettings.Factory>(KryptonAmbientMoodSettings.Factory)
         register<AmbientParticleSettings.Factory>(KryptonAmbientParticleSettings.Factory)
         register<Biome.Factory>(KryptonBiome.Factory)
-        register<BiomeCategory.Factory>(KryptonBiomeCategory.Factory)
         register<BiomeEffects.Factory>(KryptonBiomeEffects.Factory)
         register<Climate.Factory>(KryptonClimate.Factory)
         register<BoundingBox.Factory>(KryptonBoundingBox.Factory)
@@ -158,5 +157,6 @@ object KryptonFactoryProvider : FactoryProvider {
         register<Scoreboard.Factory>(KryptonScoreboard.Factory)
         register<ItemAttribute.Factory>(KryptonItemAttribute.Factory)
         register<BannerPattern.Factory>(KryptonBannerPattern.Factory)
+        register<BannerPatternType.Factory>(KryptonBannerPatternType.Factory)
     }
 }

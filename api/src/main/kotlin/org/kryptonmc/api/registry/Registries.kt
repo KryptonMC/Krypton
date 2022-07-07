@@ -11,9 +11,9 @@ package org.kryptonmc.api.registry
 import net.kyori.adventure.key.Key
 import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.Krypton
-import org.kryptonmc.api.user.ban.BanType
 import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.block.entity.BlockEntityType
+import org.kryptonmc.api.block.entity.banner.BannerPatternType
 import org.kryptonmc.api.effect.particle.ParticleType
 import org.kryptonmc.api.effect.sound.SoundEvent
 import org.kryptonmc.api.entity.EntityCategory
@@ -31,9 +31,9 @@ import org.kryptonmc.api.resource.ResourceKeys
 import org.kryptonmc.api.scoreboard.criteria.Criterion
 import org.kryptonmc.api.statistic.StatisticType
 import org.kryptonmc.api.tags.TagType
+import org.kryptonmc.api.user.ban.BanType
 import org.kryptonmc.api.util.Catalogue
 import org.kryptonmc.api.world.biome.Biome
-import org.kryptonmc.api.world.biome.BiomeCategory
 import org.kryptonmc.api.world.damage.type.DamageType
 import org.kryptonmc.api.world.dimension.DimensionEffect
 import org.kryptonmc.api.world.dimension.DimensionType
@@ -80,6 +80,8 @@ public object Registries {
     public val DIMENSION_TYPE: Registry<DimensionType> = create(ResourceKeys.DIMENSION_TYPE)
     @JvmField
     public val BLOCK_ENTITY_TYPE: Registry<BlockEntityType> = create(ResourceKeys.BLOCK_ENTITY_TYPE)
+    @JvmField
+    public val BANNER_PATTERN: Registry<BannerPatternType> = create(ResourceKeys.BANNER_PATTERN)
 
     /**
      * Custom built-in registries.
@@ -94,8 +96,6 @@ public object Registries {
     public val CRITERIA: Registry<Criterion> = create(ResourceKeys.CRITERIA)
     @JvmField
     public val DIMENSION_EFFECTS: Registry<DimensionEffect> = create(ResourceKeys.DIMENSION_EFFECTS)
-    @JvmField
-    public val BIOME_CATEGORIES: Registry<BiomeCategory> = create(ResourceKeys.BIOME_CATEGORIES)
     @JvmField
     public val ITEM_RARITIES: Registry<ItemRarity> = create(ResourceKeys.ITEM_RARITIES)
     @JvmField

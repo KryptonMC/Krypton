@@ -14,9 +14,12 @@ import net.kyori.adventure.util.Buildable
 import org.jetbrains.annotations.ApiStatus
 import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.Krypton
+import org.kryptonmc.api.block.Block
+import org.kryptonmc.api.tags.Tag
 import org.kryptonmc.api.util.CataloguedBy
 import org.kryptonmc.api.util.KeyedBuilder
 import org.kryptonmc.api.util.provide
+import java.util.OptionalLong
 
 /**
  * Represents data for a dimension.
@@ -82,13 +85,13 @@ public interface DimensionType : Buildable<DimensionType, DimensionType.Builder>
      * The time it will always be. If null, the time will progress normally.
      */
     @get:JvmName("fixedTime")
-    public val fixedTime: Long?
+    public val fixedTime: OptionalLong
 
     /**
      * The settings used to define which blocks burn infinitely.
      */
     @get:JvmName("infiniburn")
-    public val infiniburn: Key
+    public val infiniburn: Tag<Block>
 
     /**
      * The minimum Y level that can be built at.
@@ -127,6 +130,24 @@ public interface DimensionType : Buildable<DimensionType, DimensionType.Builder>
      */
     @get:JvmName("effects")
     public val effects: DimensionEffect
+
+    /**
+     * The minimum light level that monsters can spawn at.
+     */
+    @get:JvmName("minimumMonsterSpawnLightLevel")
+    public val minimumMonsterSpawnLightLevel: Int
+
+    /**
+     * The maximum light level that monsters can spawn at.
+     */
+    @get:JvmName("maximumMonsterSpawnLightLevel")
+    public val maximumMonsterSpawnLightLevel: Int
+
+    /**
+     * The minimum block light level that is required for monsters to spawn.
+     */
+    @get:JvmName("monsterSpawnBlockLightLimit")
+    public val monsterSpawnBlockLightLimit: Int
 
     /**
      * A builder for dimension types.
@@ -440,7 +461,7 @@ public interface DimensionType : Buildable<DimensionType, DimensionType.Builder>
          */
         @DimensionTypeDsl
         @Contract("_ -> this", mutates = "this")
-        public fun infiniburn(infiniburn: Key): Builder
+        public fun infiniburn(infiniburn: Tag<Block>): Builder
 
         /**
          * Sets the minimum Y level for the dimension type.
@@ -496,6 +517,59 @@ public interface DimensionType : Buildable<DimensionType, DimensionType.Builder>
         @DimensionTypeDsl
         @Contract("_ -> this", mutates = "this")
         public fun effects(effects: DimensionEffect): Builder
+
+        /**
+         * Sets the minimum monster spawn light level for the dimension type to
+         * the given [level].
+         *
+         * @param level the level
+         * @return this builder
+         * @see DimensionType.minimumMonsterSpawnLightLevel
+         */
+        @DimensionTypeDsl
+        @Contract("_ -> this", mutates = "this")
+        public fun minimumMonsterSpawnLightLevel(level: Int): Builder
+
+        /**
+         * Sets the maximum monster spawn light level for the dimension type to
+         * the given [level].
+         *
+         * @param level the level
+         * @return this builder
+         * @see DimensionType.maximumMonsterSpawnLightLevel
+         */
+        @DimensionTypeDsl
+        @Contract("_ -> this", mutates = "this")
+        public fun maximumMonsterSpawnLightLevel(level: Int): Builder
+
+        /**
+         * Sets the light level range at which monsters will spawn for the
+         * dimension type to the given [minimum] and [maximum].
+         *
+         * @param minimum the minimum level
+         * @param maximum the maximum level
+         * @return this builder
+         * @see minimumMonsterSpawnLightLevel
+         * @see maximumMonsterSpawnLightLevel
+         */
+        @DimensionTypeDsl
+        @Contract("_ -> this", mutates = "this")
+        public fun monsterSpawnLightLevels(minimum: Int, maximum: Int): Builder = apply {
+            minimumMonsterSpawnLightLevel(minimum)
+            maximumMonsterSpawnLightLevel(maximum)
+        }
+
+        /**
+         * Sets the monster spawn block light limit for the dimension type to
+         * the given [limit].
+         *
+         * @param limit the limit
+         * @return this builder
+         * @see DimensionType.monsterSpawnBlockLightLimit
+         */
+        @DimensionTypeDsl
+        @Contract("_ -> this", mutates = "this")
+        public fun monsterSpawnBlockLightLimit(limit: Int): Builder
     }
 
     @ApiStatus.Internal

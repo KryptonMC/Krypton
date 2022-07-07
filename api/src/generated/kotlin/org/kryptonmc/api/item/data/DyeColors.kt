@@ -57,7 +57,12 @@ public object DyeColors {
 
     // @formatter:on
     @JvmStatic
-    private fun register(name: String, color: Color, fireworkColor: Color, textColor: Int): DyeColor {
+    private fun register(
+        name: String,
+        color: Color,
+        fireworkColor: Color,
+        textColor: Int,
+    ): DyeColor {
         val key = Key.key(name)
         return Registries.DYE_COLORS.register(key, DyeColor.of(key, color, fireworkColor, TextColor.color(textColor)))
     }

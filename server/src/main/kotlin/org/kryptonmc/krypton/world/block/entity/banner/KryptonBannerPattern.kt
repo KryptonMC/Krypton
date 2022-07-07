@@ -35,7 +35,8 @@ data class KryptonBannerPattern(override val type: BannerPatternType, override v
 
     companion object {
 
-        private val PATTERN_TYPE_BY_CODE = BannerPatternType.values().associateBy { it.code }
+        // TODO: Since this is dynamic now, maybe this can't be constant anymore
+        private val PATTERN_TYPE_BY_CODE = Registries.BANNER_PATTERN.values.associateBy { it.code }
 
         @JvmStatic
         fun from(tag: CompoundTag): KryptonBannerPattern {

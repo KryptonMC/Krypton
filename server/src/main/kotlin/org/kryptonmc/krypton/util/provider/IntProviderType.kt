@@ -16,20 +16,12 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.tags
+package org.kryptonmc.krypton.util.provider
 
-import kotlinx.collections.immutable.ImmutableCollection
-import net.kyori.adventure.key.Key
-import org.kryptonmc.api.tags.Tag
-import org.kryptonmc.krypton.util.mapPersistentList
+import org.kryptonmc.krypton.util.serialization.Encoder
+import org.kryptonmc.nbt.Tag
 
-@JvmRecord
-data class KryptonTag<T : Any>(private val key: Key, override val type: KryptonTagType<T>, override val values: ImmutableCollection<T>) : Tag<T> {
+fun interface IntProviderType<P : IntProvider> {
 
-    constructor(name: Key, type: KryptonTagType<T>, keys: Set<String>) : this(name, type, keys.mapPersistentList {
-        val key = Key.key(it)
-        requireNotNull(type.registry[key]) { "Could not find registry entry for key $key in registry ${type.registry.key}!" }
-    })
-
-    override fun key(): Key = key
+    fun encoder(): Encoder<P, out Tag>
 }

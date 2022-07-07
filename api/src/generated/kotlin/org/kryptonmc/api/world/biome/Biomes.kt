@@ -34,6 +34,8 @@ public object Biomes {
     @JvmField
     public val SWAMP: Biome = get("swamp")
     @JvmField
+    public val MANGROVE_SWAMP: Biome = get("mangrove_swamp")
+    @JvmField
     public val FOREST: Biome = get("forest")
     @JvmField
     public val FLOWER_FOREST: Biome = get("flower_forest")
@@ -121,6 +123,8 @@ public object Biomes {
     public val DRIPSTONE_CAVES: Biome = get("dripstone_caves")
     @JvmField
     public val LUSH_CAVES: Biome = get("lush_caves")
+    @JvmField
+    public val DEEP_DARK: Biome = get("deep_dark")
     @JvmField
     public val NETHER_WASTES: Biome = get("nether_wastes")
     @JvmField
