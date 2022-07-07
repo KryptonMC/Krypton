@@ -30,7 +30,7 @@ public object BlockTags {
     @JvmField
     public val BUTTONS: Tag<Block> = get("buttons")
     @JvmField
-    public val CARPETS: Tag<Block> = get("carpets")
+    public val WOOL_CARPETS: Tag<Block> = get("wool_carpets")
     @JvmField
     public val WOODEN_DOORS: Tag<Block> = get("wooden_doors")
     @JvmField
@@ -54,6 +54,8 @@ public object BlockTags {
     @JvmField
     public val LOGS_THAT_BURN: Tag<Block> = get("logs_that_burn")
     @JvmField
+    public val OVERWORLD_NATURAL_LOGS: Tag<Block> = get("overworld_natural_logs")
+    @JvmField
     public val LOGS: Tag<Block> = get("logs")
     @JvmField
     public val DARK_OAK_LOGS: Tag<Block> = get("dark_oak_logs")
@@ -68,9 +70,13 @@ public object BlockTags {
     @JvmField
     public val SPRUCE_LOGS: Tag<Block> = get("spruce_logs")
     @JvmField
+    public val MANGROVE_LOGS: Tag<Block> = get("mangrove_logs")
+    @JvmField
     public val CRIMSON_STEMS: Tag<Block> = get("crimson_stems")
     @JvmField
     public val WARPED_STEMS: Tag<Block> = get("warped_stems")
+    @JvmField
+    public val WART_BLOCKS: Tag<Block> = get("wart_blocks")
     @JvmField
     public val BANNERS: Tag<Block> = get("banners")
     @JvmField
@@ -126,6 +132,8 @@ public object BlockTags {
     @JvmField
     public val TERRACOTTA: Tag<Block> = get("terracotta")
     @JvmField
+    public val COMPLETES_FIND_TREE_TUTORIAL: Tag<Block> = get("completes_find_tree_tutorial")
+    @JvmField
     public val FLOWER_POTS: Tag<Block> = get("flower_pots")
     @JvmField
     public val ENDERMAN_HOLDABLE: Tag<Block> = get("enderman_holdable")
@@ -156,6 +164,8 @@ public object BlockTags {
     @JvmField
     public val DRAGON_IMMUNE: Tag<Block> = get("dragon_immune")
     @JvmField
+    public val DRAGON_TRANSPARENT: Tag<Block> = get("dragon_transparent")
+    @JvmField
     public val WITHER_IMMUNE: Tag<Block> = get("wither_immune")
     @JvmField
     public val WITHER_SUMMON_BASE_BLOCKS: Tag<Block> = get("wither_summon_base_blocks")
@@ -172,8 +182,6 @@ public object BlockTags {
     @JvmField
     public val NYLIUM: Tag<Block> = get("nylium")
     @JvmField
-    public val WART_BLOCKS: Tag<Block> = get("wart_blocks")
-    @JvmField
     public val BEACON_BASE_BLOCKS: Tag<Block> = get("beacon_base_blocks")
     @JvmField
     public val SOUL_SPEED_BLOCKS: Tag<Block> = get("soul_speed_blocks")
@@ -181,6 +189,8 @@ public object BlockTags {
     public val WALL_POST_OVERRIDE: Tag<Block> = get("wall_post_override")
     @JvmField
     public val CLIMBABLE: Tag<Block> = get("climbable")
+    @JvmField
+    public val FALL_DAMAGE_RESETTING: Tag<Block> = get("fall_damage_resetting")
     @JvmField
     public val SHULKER_BOXES: Tag<Block> = get("shulker_boxes")
     @JvmField
@@ -216,6 +226,10 @@ public object BlockTags {
     @JvmField
     public val BASE_STONE_NETHER: Tag<Block> = get("base_stone_nether")
     @JvmField
+    public val OVERWORLD_CARVER_REPLACEABLES: Tag<Block> = get("overworld_carver_replaceables")
+    @JvmField
+    public val NETHER_CARVER_REPLACEABLES: Tag<Block> = get("nether_carver_replaceables")
+    @JvmField
     public val CANDLE_CAKES: Tag<Block> = get("candle_cakes")
     @JvmField
     public val CAULDRONS: Tag<Block> = get("cauldrons")
@@ -225,6 +239,8 @@ public object BlockTags {
     public val INSIDE_STEP_SOUND_BLOCKS: Tag<Block> = get("inside_step_sound_blocks")
     @JvmField
     public val OCCLUDES_VIBRATION_SIGNALS: Tag<Block> = get("occludes_vibration_signals")
+    @JvmField
+    public val DAMPENS_VIBRATIONS: Tag<Block> = get("dampens_vibrations")
     @JvmField
     public val DRIPSTONE_REPLACEABLE: Tag<Block> = get("dripstone_replaceable_blocks")
     @JvmField
@@ -262,6 +278,14 @@ public object BlockTags {
     @JvmField
     public val GEODE_INVALID_BLOCKS: Tag<Block> = get("geode_invalid_blocks")
     @JvmField
+    public val FROG_PREFER_JUMP_TO: Tag<Block> = get("frog_prefer_jump_to")
+    @JvmField
+    public val SCULK_REPLACEABLE: Tag<Block> = get("sculk_replaceable")
+    @JvmField
+    public val SCULK_REPLACEABLE_WORLD_GEN: Tag<Block> = get("sculk_replaceable_world_gen")
+    @JvmField
+    public val ANCIENT_CITY_REPLACEABLE: Tag<Block> = get("ancient_city_replaceable")
+    @JvmField
     public val ANIMALS_SPAWNABLE_ON: Tag<Block> = get("animals_spawnable_on")
     @JvmField
     public val AXOLOTLS_SPAWNABLE_ON: Tag<Block> = get("axolotls_spawnable_on")
@@ -272,7 +296,7 @@ public object BlockTags {
     @JvmField
     public val PARROTS_SPAWNABLE_ON: Tag<Block> = get("parrots_spawnable_on")
     @JvmField
-    public val POLAR_BEARS_SPAWNABLE_ON_IN_FROZEN_OCEAN: Tag<Block> = get("polar_bears_spawnable_on_in_frozen_ocean")
+    public val POLAR_BEARS_SPAWNABLE_ON_ALTERNATE: Tag<Block> = get("polar_bears_spawnable_on_alternate")
     @JvmField
     public val RABBITS_SPAWNABLE_ON: Tag<Block> = get("rabbits_spawnable_on")
     @JvmField
@@ -280,9 +304,25 @@ public object BlockTags {
     @JvmField
     public val WOLVES_SPAWNABLE_ON: Tag<Block> = get("wolves_spawnable_on")
     @JvmField
+    public val FROGS_SPAWNABLE_ON: Tag<Block> = get("frogs_spawnable_on")
+    @JvmField
     public val AZALEA_GROWS_ON: Tag<Block> = get("azalea_grows_on")
     @JvmField
     public val REPLACEABLE_PLANTS: Tag<Block> = get("replaceable_plants")
+    @JvmField
+    public val CONVERTABLE_TO_MUD: Tag<Block> = get("convertable_to_mud")
+    @JvmField
+    public val MANGROVE_LOGS_CAN_GROW_THROUGH: Tag<Block> = get("mangrove_logs_can_grow_through")
+    @JvmField
+    public val MANGROVE_ROOTS_CAN_GROW_THROUGH: Tag<Block> = get("mangrove_roots_can_grow_through")
+    @JvmField
+    public val DEAD_BUSH_MAY_PLACE_ON: Tag<Block> = get("dead_bush_may_place_on")
+    @JvmField
+    public val SNAPS_GOAT_HORN: Tag<Block> = get("snaps_goat_horn")
+    @JvmField
+    public val SNOW_LAYER_CANNOT_SURVIVE_ON: Tag<Block> = get("snow_layer_cannot_survive_on")
+    @JvmField
+    public val SNOW_LAYER_CAN_SURVIVE_ON: Tag<Block> = get("snow_layer_can_survive_on")
 
     // @formatter:on
     @JvmStatic

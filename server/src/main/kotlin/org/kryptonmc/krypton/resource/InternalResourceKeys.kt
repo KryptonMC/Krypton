@@ -22,6 +22,8 @@ import org.kryptonmc.api.registry.Registry
 import org.kryptonmc.api.resource.ResourceKey
 import org.kryptonmc.api.resource.ResourceKeys
 import org.kryptonmc.krypton.entity.memory.MemoryKey
+import org.kryptonmc.krypton.item.Instrument
+import org.kryptonmc.krypton.util.provider.IntProviderType
 import org.kryptonmc.krypton.world.event.GameEvent
 
 object InternalResourceKeys {
@@ -30,4 +32,8 @@ object InternalResourceKeys {
     val MEMORIES: ResourceKey<out Registry<MemoryKey<Any>>> = ResourceKeys.minecraft("memory_module_type")
     @JvmField
     val GAME_EVENT: ResourceKey<out Registry<GameEvent>> = ResourceKeys.minecraft("game_event")
+    @JvmField
+    val INT_PROVIDER_TYPES: ResourceKey<out Registry<IntProviderType<*>>> = ResourceKeys.minecraft("int_provider_type")
+    @JvmField
+    val INSTRUMENTS: ResourceKey<out Registry<Instrument>> = ResourceKeys.minecraft("instrument")
 }

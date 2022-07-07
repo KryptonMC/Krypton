@@ -40,7 +40,8 @@ object KryptonTagManager : TagManager {
         val tagMap = persistentHashMapOf<TagType<*>, PersistentList<Tag<*>>>().builder()
         Registries.TAG_TYPES.values.forEach { type ->
             if (type !is KryptonTagType) return@forEach
-            val json = ClassLoader.getSystemResourceAsStream(type.path)!!.reader().use { gson.fromJson<JsonObject>(it) }
+            val stream = requireNotNull(ClassLoader.getSystemResourceAsStream(type.path)) { "Could not get stream for path ${type.path}!" }
+            val json = stream.reader().use { gson.fromJson<JsonObject>(it) }
             val identifiers = persistentListOf<Tag<*>>().builder()
             json.keySet().forEach {
                 val tag = KryptonTag(Key.key(it), type, keys(json, it))

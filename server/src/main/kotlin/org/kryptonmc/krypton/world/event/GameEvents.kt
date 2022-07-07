@@ -25,11 +25,15 @@ import org.kryptonmc.krypton.registry.InternalRegistries
 object GameEvents {
 
     @JvmField
+    val BLOCK_ACTIVATE: GameEvent = register("block_activate")
+    @JvmField
     val BLOCK_ATTACH: GameEvent = register("block_attach")
     @JvmField
     val BLOCK_CHANGE: GameEvent = register("block_change")
     @JvmField
     val BLOCK_CLOSE: GameEvent = register("block_close")
+    @JvmField
+    val BLOCK_DEACTIVATE: GameEvent = register("block_deactivate")
     @JvmField
     val BLOCK_DESTROY: GameEvent = register("block_destroy")
     @JvmField
@@ -39,39 +43,33 @@ object GameEvents {
     @JvmField
     val BLOCK_PLACE: GameEvent = register("block_place")
     @JvmField
-    val BLOCK_PRESS: GameEvent = register("block_press")
-    @JvmField
-    val BLOCK_SWITCH: GameEvent = register("block_switch")
-    @JvmField
-    val BLOCK_UNPRESS: GameEvent = register("block_unpress")
-    @JvmField
-    val BLOCK_UNSWITCH: GameEvent = register("block_unswitch")
-    @JvmField
     val CONTAINER_CLOSE: GameEvent = register("container_close")
     @JvmField
     val CONTAINER_OPEN: GameEvent = register("container_open")
     @JvmField
     val DISPENSE_FAIL: GameEvent = register("dispense_fail")
     @JvmField
-    val DRINKING_FINISH: GameEvent = register("drinking_finish")
+    val DRINK: GameEvent = register("drink")
     @JvmField
     val EAT: GameEvent = register("eat")
     @JvmField
-    val ELYTRA_FREE_FALL: GameEvent = register("elytra_free_fall")
+    val ELYTRA_GLIDE: GameEvent = register("elytra_glide")
     @JvmField
-    val ENTITY_DAMAGED: GameEvent = register("entity_damaged")
+    val ENTITY_DAMAGE: GameEvent = register("entity_damage")
     @JvmField
-    val ENTITY_KILLED: GameEvent = register("entity_killed")
+    val ENTITY_DIE: GameEvent = register("entity_die")
+    @JvmField
+    val ENTITY_INTERACT: GameEvent = register("entity_interact")
     @JvmField
     val ENTITY_PLACE: GameEvent = register("entity_place")
+    @JvmField
+    val ENTITY_ROAR: GameEvent = register("entity_roar")
+    @JvmField
+    val ENTITY_SHAKE: GameEvent = register("entity_shake")
     @JvmField
     val EQUIP: GameEvent = register("equip")
     @JvmField
     val EXPLODE: GameEvent = register("explode")
-    @JvmField
-    val FISHING_ROD_CAST: GameEvent = register("fishing_rod_cast")
-    @JvmField
-    val FISHING_ROD_REEL_IN: GameEvent = register("fishing_rod_reel_in")
     @JvmField
     val FLAP: GameEvent = register("flap")
     @JvmField
@@ -81,11 +79,15 @@ object GameEvents {
     @JvmField
     val HIT_GROUND: GameEvent = register("hit_ground")
     @JvmField
-    val MOB_INTERACT: GameEvent = register("mob_interact")
+    val INSTRUMENT_PLAY: GameEvent = register("instrument_play")
+    @JvmField
+    val ITEM_INTERACT_FINISH: GameEvent = register("item_interact_finish")
+    @JvmField
+    val ITEM_INTERACT_START: GameEvent = register("item_interact_start")
     @JvmField
     val LIGHTNING_STRIKE: GameEvent = register("lightning_strike")
     @JvmField
-    val MINECART_MOVING: GameEvent = register("minecart_moving")
+    val NOTE_BLOCK_PLAY: GameEvent = register("note_block_play")
     @JvmField
     val PISTON_CONTRACT: GameEvent = register("piston_contract")
     @JvmField
@@ -97,15 +99,11 @@ object GameEvents {
     @JvmField
     val PROJECTILE_SHOOT: GameEvent = register("projectile_shoot")
     @JvmField
-    val RAVAGER_ROAR: GameEvent = register("ravager_roar")
-    @JvmField
-    val RING_BELL: GameEvent = register("ring_bell")
+    val SCULK_SENSOR_TENDRILS_CLICKING: GameEvent = register("sculk_sensor_tendrils_clicking")
     @JvmField
     val SHEAR: GameEvent = register("shear")
     @JvmField
-    val SHULKER_CLOSE: GameEvent = register("shulker_close")
-    @JvmField
-    val SHULKER_OPEN: GameEvent = register("shulker_open")
+    val SHRIEK: GameEvent = register("shriek")
     @JvmField
     val SPLASH: GameEvent = register("splash")
     @JvmField
@@ -113,7 +111,7 @@ object GameEvents {
     @JvmField
     val SWIM: GameEvent = register("swim")
     @JvmField
-    val WOLF_SHAKING: GameEvent = register("wolf_shaking")
+    val TELEPORT: GameEvent = register("teleport")
 
     @JvmStatic
     private fun register(name: String): GameEvent {
