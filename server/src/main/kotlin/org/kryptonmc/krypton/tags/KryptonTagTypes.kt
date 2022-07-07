@@ -20,12 +20,16 @@ package org.kryptonmc.krypton.tags
 
 import net.kyori.adventure.key.Key
 import org.kryptonmc.api.block.Block
+import org.kryptonmc.api.block.entity.banner.BannerPatternType
 import org.kryptonmc.api.entity.EntityType
+import org.kryptonmc.api.entity.hanging.Picture
 import org.kryptonmc.api.fluid.Fluid
 import org.kryptonmc.api.item.ItemType
 import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.api.registry.Registry
+import org.kryptonmc.api.world.biome.Biome
 import org.kryptonmc.krypton.KryptonPlatform
+import org.kryptonmc.krypton.item.Instrument
 import org.kryptonmc.krypton.registry.InternalRegistries
 import org.kryptonmc.krypton.world.event.GameEvent
 
@@ -35,6 +39,10 @@ object KryptonTagTypes {
     private val PREFIX = "${MINECRAFT}_tags/${MINECRAFT}_"
 
     @JvmField
+    val BANNER_PATTERNS: KryptonTagType<BannerPatternType> = register("banner_pattern", Registries.BANNER_PATTERN)
+    @JvmField
+    val BIOMES: KryptonTagType<Biome> = register("biome", "worldgen_biome", Registries.BIOME)
+    @JvmField
     val BLOCKS: KryptonTagType<Block> = register("block", Registries.BLOCK)
     @JvmField
     val ENTITY_TYPES: KryptonTagType<EntityType<*>> = register("entity_type", Registries.ENTITY_TYPE)
@@ -43,7 +51,11 @@ object KryptonTagTypes {
     @JvmField
     val GAME_EVENTS: KryptonTagType<GameEvent> = register("game_event", "gameplay", InternalRegistries.GAME_EVENT)
     @JvmField
+    val INSTRUMENTS: KryptonTagType<Instrument> = register("instrument", InternalRegistries.INSTRUMENTS)
+    @JvmField
     val ITEMS: KryptonTagType<ItemType> = register("item", Registries.ITEM)
+    @JvmField
+    val PICTURES: KryptonTagType<Picture> = register("picture", "painting_variant", Registries.PICTURES)
 
     @JvmStatic
     private fun <T : Any> register(name: String, fileName: String, registry: Registry<T>): KryptonTagType<T> {

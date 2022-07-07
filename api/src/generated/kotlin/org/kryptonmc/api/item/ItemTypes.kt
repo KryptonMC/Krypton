@@ -58,6 +58,8 @@ public object ItemTypes {
     @JvmField
     public val ROOTED_DIRT: ItemType = get("rooted_dirt")
     @JvmField
+    public val MUD: ItemType = get("mud")
+    @JvmField
     public val CRIMSON_NYLIUM: ItemType = get("crimson_nylium")
     @JvmField
     public val WARPED_NYLIUM: ItemType = get("warped_nylium")
@@ -76,6 +78,8 @@ public object ItemTypes {
     @JvmField
     public val DARK_OAK_PLANKS: ItemType = get("dark_oak_planks")
     @JvmField
+    public val MANGROVE_PLANKS: ItemType = get("mangrove_planks")
+    @JvmField
     public val CRIMSON_PLANKS: ItemType = get("crimson_planks")
     @JvmField
     public val WARPED_PLANKS: ItemType = get("warped_planks")
@@ -91,6 +95,8 @@ public object ItemTypes {
     public val ACACIA_SAPLING: ItemType = get("acacia_sapling")
     @JvmField
     public val DARK_OAK_SAPLING: ItemType = get("dark_oak_sapling")
+    @JvmField
+    public val MANGROVE_PROPAGULE: ItemType = get("mangrove_propagule")
     @JvmField
     public val BEDROCK: ItemType = get("bedrock")
     @JvmField
@@ -234,6 +240,12 @@ public object ItemTypes {
     @JvmField
     public val DARK_OAK_LOG: ItemType = get("dark_oak_log")
     @JvmField
+    public val MANGROVE_LOG: ItemType = get("mangrove_log")
+    @JvmField
+    public val MANGROVE_ROOTS: ItemType = get("mangrove_roots")
+    @JvmField
+    public val MUDDY_MANGROVE_ROOTS: ItemType = get("muddy_mangrove_roots")
+    @JvmField
     public val CRIMSON_STEM: ItemType = get("crimson_stem")
     @JvmField
     public val WARPED_STEM: ItemType = get("warped_stem")
@@ -249,6 +261,8 @@ public object ItemTypes {
     public val STRIPPED_ACACIA_LOG: ItemType = get("stripped_acacia_log")
     @JvmField
     public val STRIPPED_DARK_OAK_LOG: ItemType = get("stripped_dark_oak_log")
+    @JvmField
+    public val STRIPPED_MANGROVE_LOG: ItemType = get("stripped_mangrove_log")
     @JvmField
     public val STRIPPED_CRIMSON_STEM: ItemType = get("stripped_crimson_stem")
     @JvmField
@@ -266,6 +280,8 @@ public object ItemTypes {
     @JvmField
     public val STRIPPED_DARK_OAK_WOOD: ItemType = get("stripped_dark_oak_wood")
     @JvmField
+    public val STRIPPED_MANGROVE_WOOD: ItemType = get("stripped_mangrove_wood")
+    @JvmField
     public val STRIPPED_CRIMSON_HYPHAE: ItemType = get("stripped_crimson_hyphae")
     @JvmField
     public val STRIPPED_WARPED_HYPHAE: ItemType = get("stripped_warped_hyphae")
@@ -282,6 +298,8 @@ public object ItemTypes {
     @JvmField
     public val DARK_OAK_WOOD: ItemType = get("dark_oak_wood")
     @JvmField
+    public val MANGROVE_WOOD: ItemType = get("mangrove_wood")
+    @JvmField
     public val CRIMSON_HYPHAE: ItemType = get("crimson_hyphae")
     @JvmField
     public val WARPED_HYPHAE: ItemType = get("warped_hyphae")
@@ -297,6 +315,8 @@ public object ItemTypes {
     public val ACACIA_LEAVES: ItemType = get("acacia_leaves")
     @JvmField
     public val DARK_OAK_LEAVES: ItemType = get("dark_oak_leaves")
+    @JvmField
+    public val MANGROVE_LEAVES: ItemType = get("mangrove_leaves")
     @JvmField
     public val AZALEA_LEAVES: ItemType = get("azalea_leaves")
     @JvmField
@@ -440,6 +460,8 @@ public object ItemTypes {
     @JvmField
     public val DARK_OAK_SLAB: ItemType = get("dark_oak_slab")
     @JvmField
+    public val MANGROVE_SLAB: ItemType = get("mangrove_slab")
+    @JvmField
     public val CRIMSON_SLAB: ItemType = get("crimson_slab")
     @JvmField
     public val WARPED_SLAB: ItemType = get("warped_slab")
@@ -459,6 +481,8 @@ public object ItemTypes {
     public val BRICK_SLAB: ItemType = get("brick_slab")
     @JvmField
     public val STONE_BRICK_SLAB: ItemType = get("stone_brick_slab")
+    @JvmField
+    public val MUD_BRICK_SLAB: ItemType = get("mud_brick_slab")
     @JvmField
     public val NETHER_BRICK_SLAB: ItemType = get("nether_brick_slab")
     @JvmField
@@ -508,8 +532,6 @@ public object ItemTypes {
     @JvmField
     public val SPAWNER: ItemType = get("spawner")
     @JvmField
-    public val OAK_STAIRS: ItemType = get("oak_stairs")
-    @JvmField
     public val CHEST: ItemType = get("chest")
     @JvmField
     public val CRAFTING_TABLE: ItemType = get("crafting_table")
@@ -545,6 +567,8 @@ public object ItemTypes {
     public val ACACIA_FENCE: ItemType = get("acacia_fence")
     @JvmField
     public val DARK_OAK_FENCE: ItemType = get("dark_oak_fence")
+    @JvmField
+    public val MANGROVE_FENCE: ItemType = get("mangrove_fence")
     @JvmField
     public val CRIMSON_FENCE: ItemType = get("crimson_fence")
     @JvmField
@@ -594,6 +618,10 @@ public object ItemTypes {
     @JvmField
     public val CHISELED_STONE_BRICKS: ItemType = get("chiseled_stone_bricks")
     @JvmField
+    public val PACKED_MUD: ItemType = get("packed_mud")
+    @JvmField
+    public val MUD_BRICKS: ItemType = get("mud_bricks")
+    @JvmField
     public val DEEPSLATE_BRICKS: ItemType = get("deepslate_bricks")
     @JvmField
     public val CRACKED_DEEPSLATE_BRICKS: ItemType = get("cracked_deepslate_bricks")
@@ -603,6 +631,8 @@ public object ItemTypes {
     public val CRACKED_DEEPSLATE_TILES: ItemType = get("cracked_deepslate_tiles")
     @JvmField
     public val CHISELED_DEEPSLATE: ItemType = get("chiseled_deepslate")
+    @JvmField
+    public val REINFORCED_DEEPSLATE: ItemType = get("reinforced_deepslate")
     @JvmField
     public val BROWN_MUSHROOM_BLOCK: ItemType = get("brown_mushroom_block")
     @JvmField
@@ -626,6 +656,8 @@ public object ItemTypes {
     @JvmField
     public val STONE_BRICK_STAIRS: ItemType = get("stone_brick_stairs")
     @JvmField
+    public val MUD_BRICK_STAIRS: ItemType = get("mud_brick_stairs")
+    @JvmField
     public val MYCELIUM: ItemType = get("mycelium")
     @JvmField
     public val LILY_PAD: ItemType = get("lily_pad")
@@ -639,6 +671,14 @@ public object ItemTypes {
     public val NETHER_BRICK_FENCE: ItemType = get("nether_brick_fence")
     @JvmField
     public val NETHER_BRICK_STAIRS: ItemType = get("nether_brick_stairs")
+    @JvmField
+    public val SCULK: ItemType = get("sculk")
+    @JvmField
+    public val SCULK_VEIN: ItemType = get("sculk_vein")
+    @JvmField
+    public val SCULK_CATALYST: ItemType = get("sculk_catalyst")
+    @JvmField
+    public val SCULK_SHRIEKER: ItemType = get("sculk_shrieker")
     @JvmField
     public val ENCHANTING_TABLE: ItemType = get("enchanting_table")
     @JvmField
@@ -656,11 +696,19 @@ public object ItemTypes {
     @JvmField
     public val EMERALD_BLOCK: ItemType = get("emerald_block")
     @JvmField
+    public val OAK_STAIRS: ItemType = get("oak_stairs")
+    @JvmField
     public val SPRUCE_STAIRS: ItemType = get("spruce_stairs")
     @JvmField
     public val BIRCH_STAIRS: ItemType = get("birch_stairs")
     @JvmField
     public val JUNGLE_STAIRS: ItemType = get("jungle_stairs")
+    @JvmField
+    public val ACACIA_STAIRS: ItemType = get("acacia_stairs")
+    @JvmField
+    public val DARK_OAK_STAIRS: ItemType = get("dark_oak_stairs")
+    @JvmField
+    public val MANGROVE_STAIRS: ItemType = get("mangrove_stairs")
     @JvmField
     public val CRIMSON_STAIRS: ItemType = get("crimson_stairs")
     @JvmField
@@ -685,6 +733,8 @@ public object ItemTypes {
     public val GRANITE_WALL: ItemType = get("granite_wall")
     @JvmField
     public val STONE_BRICK_WALL: ItemType = get("stone_brick_wall")
+    @JvmField
+    public val MUD_BRICK_WALL: ItemType = get("mud_brick_wall")
     @JvmField
     public val NETHER_BRICK_WALL: ItemType = get("nether_brick_wall")
     @JvmField
@@ -801,10 +851,6 @@ public object ItemTypes {
     public val TERRACOTTA: ItemType = get("terracotta")
     @JvmField
     public val PACKED_ICE: ItemType = get("packed_ice")
-    @JvmField
-    public val ACACIA_STAIRS: ItemType = get("acacia_stairs")
-    @JvmField
-    public val DARK_OAK_STAIRS: ItemType = get("dark_oak_stairs")
     @JvmField
     public val DIRT_PATH: ItemType = get("dirt_path")
     @JvmField
@@ -1254,6 +1300,8 @@ public object ItemTypes {
     @JvmField
     public val DARK_OAK_BUTTON: ItemType = get("dark_oak_button")
     @JvmField
+    public val MANGROVE_BUTTON: ItemType = get("mangrove_button")
+    @JvmField
     public val CRIMSON_BUTTON: ItemType = get("crimson_button")
     @JvmField
     public val WARPED_BUTTON: ItemType = get("warped_button")
@@ -1278,6 +1326,8 @@ public object ItemTypes {
     @JvmField
     public val DARK_OAK_PRESSURE_PLATE: ItemType = get("dark_oak_pressure_plate")
     @JvmField
+    public val MANGROVE_PRESSURE_PLATE: ItemType = get("mangrove_pressure_plate")
+    @JvmField
     public val CRIMSON_PRESSURE_PLATE: ItemType = get("crimson_pressure_plate")
     @JvmField
     public val WARPED_PRESSURE_PLATE: ItemType = get("warped_pressure_plate")
@@ -1295,6 +1345,8 @@ public object ItemTypes {
     public val ACACIA_DOOR: ItemType = get("acacia_door")
     @JvmField
     public val DARK_OAK_DOOR: ItemType = get("dark_oak_door")
+    @JvmField
+    public val MANGROVE_DOOR: ItemType = get("mangrove_door")
     @JvmField
     public val CRIMSON_DOOR: ItemType = get("crimson_door")
     @JvmField
@@ -1314,6 +1366,8 @@ public object ItemTypes {
     @JvmField
     public val DARK_OAK_TRAPDOOR: ItemType = get("dark_oak_trapdoor")
     @JvmField
+    public val MANGROVE_TRAPDOOR: ItemType = get("mangrove_trapdoor")
+    @JvmField
     public val CRIMSON_TRAPDOOR: ItemType = get("crimson_trapdoor")
     @JvmField
     public val WARPED_TRAPDOOR: ItemType = get("warped_trapdoor")
@@ -1329,6 +1383,8 @@ public object ItemTypes {
     public val ACACIA_FENCE_GATE: ItemType = get("acacia_fence_gate")
     @JvmField
     public val DARK_OAK_FENCE_GATE: ItemType = get("dark_oak_fence_gate")
+    @JvmField
+    public val MANGROVE_FENCE_GATE: ItemType = get("mangrove_fence_gate")
     @JvmField
     public val CRIMSON_FENCE_GATE: ItemType = get("crimson_fence_gate")
     @JvmField
@@ -1362,15 +1418,31 @@ public object ItemTypes {
     @JvmField
     public val OAK_BOAT: ItemType = get("oak_boat")
     @JvmField
+    public val OAK_CHEST_BOAT: ItemType = get("oak_chest_boat")
+    @JvmField
     public val SPRUCE_BOAT: ItemType = get("spruce_boat")
+    @JvmField
+    public val SPRUCE_CHEST_BOAT: ItemType = get("spruce_chest_boat")
     @JvmField
     public val BIRCH_BOAT: ItemType = get("birch_boat")
     @JvmField
+    public val BIRCH_CHEST_BOAT: ItemType = get("birch_chest_boat")
+    @JvmField
     public val JUNGLE_BOAT: ItemType = get("jungle_boat")
+    @JvmField
+    public val JUNGLE_CHEST_BOAT: ItemType = get("jungle_chest_boat")
     @JvmField
     public val ACACIA_BOAT: ItemType = get("acacia_boat")
     @JvmField
+    public val ACACIA_CHEST_BOAT: ItemType = get("acacia_chest_boat")
+    @JvmField
     public val DARK_OAK_BOAT: ItemType = get("dark_oak_boat")
+    @JvmField
+    public val DARK_OAK_CHEST_BOAT: ItemType = get("dark_oak_chest_boat")
+    @JvmField
+    public val MANGROVE_BOAT: ItemType = get("mangrove_boat")
+    @JvmField
+    public val MANGROVE_CHEST_BOAT: ItemType = get("mangrove_chest_boat")
     @JvmField
     public val STRUCTURE_BLOCK: ItemType = get("structure_block")
     @JvmField
@@ -1568,6 +1640,8 @@ public object ItemTypes {
     @JvmField
     public val DARK_OAK_SIGN: ItemType = get("dark_oak_sign")
     @JvmField
+    public val MANGROVE_SIGN: ItemType = get("mangrove_sign")
+    @JvmField
     public val CRIMSON_SIGN: ItemType = get("crimson_sign")
     @JvmField
     public val WARPED_SIGN: ItemType = get("warped_sign")
@@ -1596,6 +1670,8 @@ public object ItemTypes {
     @JvmField
     public val AXOLOTL_BUCKET: ItemType = get("axolotl_bucket")
     @JvmField
+    public val TADPOLE_BUCKET: ItemType = get("tadpole_bucket")
+    @JvmField
     public val BRICK: ItemType = get("brick")
     @JvmField
     public val CLAY_BALL: ItemType = get("clay_ball")
@@ -1611,6 +1687,8 @@ public object ItemTypes {
     public val EGG: ItemType = get("egg")
     @JvmField
     public val COMPASS: ItemType = get("compass")
+    @JvmField
+    public val RECOVERY_COMPASS: ItemType = get("recovery_compass")
     @JvmField
     public val BUNDLE: ItemType = get("bundle")
     @JvmField
@@ -1766,6 +1844,8 @@ public object ItemTypes {
     @JvmField
     public val GLISTERING_MELON_SLICE: ItemType = get("glistering_melon_slice")
     @JvmField
+    public val ALLAY_SPAWN_EGG: ItemType = get("allay_spawn_egg")
+    @JvmField
     public val AXOLOTL_SPAWN_EGG: ItemType = get("axolotl_spawn_egg")
     @JvmField
     public val BAT_SPAWN_EGG: ItemType = get("bat_spawn_egg")
@@ -1801,6 +1881,8 @@ public object ItemTypes {
     public val EVOKER_SPAWN_EGG: ItemType = get("evoker_spawn_egg")
     @JvmField
     public val FOX_SPAWN_EGG: ItemType = get("fox_spawn_egg")
+    @JvmField
+    public val FROG_SPAWN_EGG: ItemType = get("frog_spawn_egg")
     @JvmField
     public val GHAST_SPAWN_EGG: ItemType = get("ghast_spawn_egg")
     @JvmField
@@ -1870,6 +1952,8 @@ public object ItemTypes {
     @JvmField
     public val STRIDER_SPAWN_EGG: ItemType = get("strider_spawn_egg")
     @JvmField
+    public val TADPOLE_SPAWN_EGG: ItemType = get("tadpole_spawn_egg")
+    @JvmField
     public val TRADER_LLAMA_SPAWN_EGG: ItemType = get("trader_llama_spawn_egg")
     @JvmField
     public val TROPICAL_FISH_SPAWN_EGG: ItemType = get("tropical_fish_spawn_egg")
@@ -1883,6 +1967,8 @@ public object ItemTypes {
     public val VINDICATOR_SPAWN_EGG: ItemType = get("vindicator_spawn_egg")
     @JvmField
     public val WANDERING_TRADER_SPAWN_EGG: ItemType = get("wandering_trader_spawn_egg")
+    @JvmField
+    public val WARDEN_SPAWN_EGG: ItemType = get("warden_spawn_egg")
     @JvmField
     public val WITCH_SPAWN_EGG: ItemType = get("witch_spawn_egg")
     @JvmField
@@ -2076,7 +2162,11 @@ public object ItemTypes {
     @JvmField
     public val MUSIC_DISC_OTHERSIDE: ItemType = get("music_disc_otherside")
     @JvmField
+    public val MUSIC_DISC_5: ItemType = get("music_disc_5")
+    @JvmField
     public val MUSIC_DISC_PIGSTEP: ItemType = get("music_disc_pigstep")
+    @JvmField
+    public val DISC_FRAGMENT_5: ItemType = get("disc_fragment_5")
     @JvmField
     public val TRIDENT: ItemType = get("trident")
     @JvmField
@@ -2103,6 +2193,8 @@ public object ItemTypes {
     public val GLOBE_BANNER_PATTERN: ItemType = get("globe_banner_pattern")
     @JvmField
     public val PIGLIN_BANNER_PATTERN: ItemType = get("piglin_banner_pattern")
+    @JvmField
+    public val GOAT_HORN: ItemType = get("goat_horn")
     @JvmField
     public val COMPOSTER: ItemType = get("composter")
     @JvmField
@@ -2221,6 +2313,16 @@ public object ItemTypes {
     public val AMETHYST_CLUSTER: ItemType = get("amethyst_cluster")
     @JvmField
     public val POINTED_DRIPSTONE: ItemType = get("pointed_dripstone")
+    @JvmField
+    public val OCHRE_FROGLIGHT: ItemType = get("ochre_froglight")
+    @JvmField
+    public val VERDANT_FROGLIGHT: ItemType = get("verdant_froglight")
+    @JvmField
+    public val PEARLESCENT_FROGLIGHT: ItemType = get("pearlescent_froglight")
+    @JvmField
+    public val FROGSPAWN: ItemType = get("frogspawn")
+    @JvmField
+    public val ECHO_SHARD: ItemType = get("echo_shard")
 
     // @formatter:on
     @JvmStatic

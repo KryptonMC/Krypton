@@ -23,6 +23,7 @@ import net.kyori.adventure.translation.Translatable
 import org.kryptonmc.api.Krypton
 import org.kryptonmc.api.block.Blocks
 import org.kryptonmc.api.block.entity.BlockEntityTypes
+import org.kryptonmc.api.block.entity.banner.BannerPatternTypes
 import org.kryptonmc.api.effect.particle.ParticleTypes
 import org.kryptonmc.api.effect.sound.SoundEvents
 import org.kryptonmc.api.entity.EntityCategories
@@ -35,12 +36,13 @@ import org.kryptonmc.api.item.ItemTypes
 import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.api.statistic.CustomStatistics
 import org.kryptonmc.api.statistic.StatisticTypes
+import org.kryptonmc.api.tags.BannerPatternTags
+import org.kryptonmc.api.tags.BiomeTags
 import org.kryptonmc.api.tags.BlockTags
 import org.kryptonmc.api.tags.EntityTypeTags
 import org.kryptonmc.api.tags.FluidTags
 import org.kryptonmc.api.tags.ItemTags
 import org.kryptonmc.api.tags.TagTypes
-import org.kryptonmc.api.world.biome.BiomeCategories
 import org.kryptonmc.api.world.biome.Biomes
 import org.kryptonmc.api.world.damage.type.DamageTypes
 import org.kryptonmc.api.world.dimension.DimensionEffects
@@ -55,6 +57,7 @@ import org.kryptonmc.krypton.entity.KryptonEntityCategories
 import org.kryptonmc.krypton.entity.KryptonEntityTypes
 import org.kryptonmc.krypton.entity.attribute.AttributeLoader
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
+import org.kryptonmc.krypton.item.Instruments
 import org.kryptonmc.krypton.item.ItemLoader
 import org.kryptonmc.krypton.item.ItemManager
 import org.kryptonmc.krypton.registry.InternalRegistries
@@ -122,10 +125,12 @@ object Bootstrap {
         ItemTypes
         FluidLoader.init()
         Fluids
-        BiomeCategories
         BiomeKeys
         KryptonBiomes
         Biomes
+        BannerPatternTypes
+        Pictures
+        Instruments
         KryptonTagManager.tags
         KryptonDimensionEffects
         DimensionEffects
@@ -136,13 +141,14 @@ object Bootstrap {
         FluidTags
         GameEventTags
         ItemTags
+        BannerPatternTags
+        BiomeTags
         GameRules
         AttributeLoader.init()
         AttributeTypes
         MetadataKeys
         StatisticTypes
         CustomStatistics
-        Pictures
         KryptonDamageTypes
         DamageTypes
 

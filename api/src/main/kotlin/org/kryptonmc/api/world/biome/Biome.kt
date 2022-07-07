@@ -33,12 +33,6 @@ public interface Biome : Buildable<Biome, Biome.Builder>, Keyed {
     public val climate: Climate
 
     /**
-     * The category of this biome.
-     */
-    @get:JvmName("category")
-    public val category: BiomeCategory
-
-    /**
      * The effects of this biome.
      */
     @get:JvmName("effects")
@@ -84,18 +78,6 @@ public interface Biome : Buildable<Biome, Biome.Builder>, Keyed {
         @BiomeDsl
         @Contract("_ -> this", mutates = "this")
         public fun climate(builder: Consumer<Climate.Builder>): Builder = climate { builder.accept(this) }
-
-        /**
-         * Sets the category the biome is in to the given [category] and
-         * returns this builder.
-         *
-         * @param category the category
-         * @return this builder
-         * @see Biome.category
-         */
-        @BiomeDsl
-        @Contract("_ -> this", mutates = "this")
-        public fun category(category: BiomeCategory): Builder
 
         /**
          * Sets the effects settings for the biome to the given [effects]

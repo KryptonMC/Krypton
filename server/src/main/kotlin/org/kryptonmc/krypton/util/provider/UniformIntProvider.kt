@@ -16,20 +16,25 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.tags
+package org.kryptonmc.krypton.util.provider
 
-import kotlinx.collections.immutable.ImmutableCollection
-import net.kyori.adventure.key.Key
-import org.kryptonmc.api.tags.Tag
-import org.kryptonmc.krypton.util.mapPersistentList
+import org.kryptonmc.krypton.util.serialization.CompoundEncoder
+import org.kryptonmc.nbt.compound
 
 @JvmRecord
-data class KryptonTag<T : Any>(private val key: Key, override val type: KryptonTagType<T>, override val values: ImmutableCollection<T>) : Tag<T> {
+data class UniformIntProvider(override val minimumValue: Int, override val maximumValue: Int) : IntProvider {
 
-    constructor(name: Key, type: KryptonTagType<T>, keys: Set<String>) : this(name, type, keys.mapPersistentList {
-        val key = Key.key(it)
-        requireNotNull(type.registry[key]) { "Could not find registry entry for key $key in registry ${type.registry.key}!" }
-    })
+    override val type: IntProviderType<*>
+        get() = IntProviderTypes.UNIFORM
 
-    override fun key(): Key = key
+    companion object {
+
+        @JvmField
+        val ENCODER: CompoundEncoder<UniformIntProvider> = CompoundEncoder {
+            compound {
+                int("min_inclusive", it.minimumValue)
+                int("max_inclusive", it.maximumValue)
+            }
+        }
+    }
 }

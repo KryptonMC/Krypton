@@ -21,6 +21,8 @@ package org.kryptonmc.krypton.world.dimension
 import net.kyori.adventure.key.Key
 import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.api.tags.BlockTags
+import org.kryptonmc.krypton.util.provider.ConstantIntProvider
+import org.kryptonmc.krypton.util.provider.UniformIntProvider
 
 object KryptonDimensionTypes {
 
@@ -31,10 +33,12 @@ object KryptonDimensionTypes {
         raids()
         allowBeds()
         allowRespawnAnchors()
-        infiniburn(BlockTags.INFINIBURN_OVERWORLD.key())
+        infiniburn(BlockTags.INFINIBURN_OVERWORLD)
         minimumY(-64)
         height(384)
         effects(KryptonDimensionEffects.OVERWORLD)
+        monsterSpawnLightLevel(UniformIntProvider(0, 7))
+        monsterSpawnBlockLightLimit(0)
     }
     @JvmField
     val OVERWORLD_CAVES: KryptonDimensionType = register(Key.key("overworld_caves"), OVERWORLD.toBuilder().ceiling(true))
@@ -46,19 +50,23 @@ object KryptonDimensionTypes {
         allowRespawnAnchors()
         ambientLight(0.1F)
         fixedTime(18000L)
-        infiniburn(BlockTags.INFINIBURN_NETHER.key())
+        infiniburn(BlockTags.INFINIBURN_NETHER)
         height(256)
         logicalHeight(128)
         coordinateScale(8.0)
         effects(KryptonDimensionEffects.THE_NETHER)
+        monsterSpawnLightLevel(ConstantIntProvider(11))
+        monsterSpawnBlockLightLimit(15)
     }
     @JvmField
     val THE_END: KryptonDimensionType = register("the_end") {
         raids()
         fixedTime(6000L)
-        infiniburn(BlockTags.INFINIBURN_END.key())
+        infiniburn(BlockTags.INFINIBURN_END)
         height(256)
         effects(KryptonDimensionEffects.THE_END)
+        monsterSpawnLightLevel(UniformIntProvider(0, 7))
+        monsterSpawnBlockLightLimit(0)
     }
 
     @JvmStatic

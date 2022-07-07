@@ -16,27 +16,21 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.world.biome
+package org.kryptonmc.krypton.util.provider
 
 import net.kyori.adventure.key.Key
-import org.kryptonmc.api.registry.Registries
-import org.kryptonmc.api.world.biome.BiomeCategory
-import org.kryptonmc.krypton.util.serialization.Codecs
-import org.kryptonmc.krypton.util.serialization.StringCodec
+import org.kryptonmc.krypton.registry.InternalRegistries
+import org.kryptonmc.krypton.util.serialization.Encoder
+import org.kryptonmc.nbt.Tag
 
-@JvmRecord
-data class KryptonBiomeCategory(private val key: Key) : BiomeCategory {
+object IntProviderTypes {
 
-    override fun key(): Key = key
+    @JvmField
+    val CONSTANT: IntProviderType<ConstantIntProvider> = register("constant", ConstantIntProvider.ENCODER)
+    @JvmField
+    val UNIFORM: IntProviderType<UniformIntProvider> = register("uniform", UniformIntProvider.ENCODER)
 
-    object Factory : BiomeCategory.Factory {
-
-        override fun of(key: Key): BiomeCategory = KryptonBiomeCategory(key)
-    }
-
-    companion object {
-
-        @JvmField
-        val CODEC: StringCodec<BiomeCategory> = Codecs.forRegistry(Registries.BIOME_CATEGORIES)
-    }
+    @JvmStatic
+    private fun <P : IntProvider> register(name: String, encoder: Encoder<P, out Tag>): IntProviderType<P> =
+        InternalRegistries.INT_PROVIDER_TYPES.register(Key.key(name), IntProviderType { encoder })
 }

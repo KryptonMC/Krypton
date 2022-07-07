@@ -58,6 +58,8 @@ public object Blocks {
     @JvmField
     public val DARK_OAK_PLANKS: Block = get("dark_oak_planks")
     @JvmField
+    public val MANGROVE_PLANKS: Block = get("mangrove_planks")
+    @JvmField
     public val OAK_SAPLING: Block = get("oak_sapling")
     @JvmField
     public val SPRUCE_SAPLING: Block = get("spruce_sapling")
@@ -69,6 +71,8 @@ public object Blocks {
     public val ACACIA_SAPLING: Block = get("acacia_sapling")
     @JvmField
     public val DARK_OAK_SAPLING: Block = get("dark_oak_sapling")
+    @JvmField
+    public val MANGROVE_PROPAGULE: Block = get("mangrove_propagule")
     @JvmField
     public val BEDROCK: Block = get("bedrock")
     @JvmField
@@ -108,6 +112,12 @@ public object Blocks {
     @JvmField
     public val DARK_OAK_LOG: Block = get("dark_oak_log")
     @JvmField
+    public val MANGROVE_LOG: Block = get("mangrove_log")
+    @JvmField
+    public val MANGROVE_ROOTS: Block = get("mangrove_roots")
+    @JvmField
+    public val MUDDY_MANGROVE_ROOTS: Block = get("muddy_mangrove_roots")
+    @JvmField
     public val STRIPPED_SPRUCE_LOG: Block = get("stripped_spruce_log")
     @JvmField
     public val STRIPPED_BIRCH_LOG: Block = get("stripped_birch_log")
@@ -119,6 +129,8 @@ public object Blocks {
     public val STRIPPED_DARK_OAK_LOG: Block = get("stripped_dark_oak_log")
     @JvmField
     public val STRIPPED_OAK_LOG: Block = get("stripped_oak_log")
+    @JvmField
+    public val STRIPPED_MANGROVE_LOG: Block = get("stripped_mangrove_log")
     @JvmField
     public val OAK_WOOD: Block = get("oak_wood")
     @JvmField
@@ -132,6 +144,8 @@ public object Blocks {
     @JvmField
     public val DARK_OAK_WOOD: Block = get("dark_oak_wood")
     @JvmField
+    public val MANGROVE_WOOD: Block = get("mangrove_wood")
+    @JvmField
     public val STRIPPED_OAK_WOOD: Block = get("stripped_oak_wood")
     @JvmField
     public val STRIPPED_SPRUCE_WOOD: Block = get("stripped_spruce_wood")
@@ -144,6 +158,8 @@ public object Blocks {
     @JvmField
     public val STRIPPED_DARK_OAK_WOOD: Block = get("stripped_dark_oak_wood")
     @JvmField
+    public val STRIPPED_MANGROVE_WOOD: Block = get("stripped_mangrove_wood")
+    @JvmField
     public val OAK_LEAVES: Block = get("oak_leaves")
     @JvmField
     public val SPRUCE_LEAVES: Block = get("spruce_leaves")
@@ -155,6 +171,8 @@ public object Blocks {
     public val ACACIA_LEAVES: Block = get("acacia_leaves")
     @JvmField
     public val DARK_OAK_LEAVES: Block = get("dark_oak_leaves")
+    @JvmField
+    public val MANGROVE_LEAVES: Block = get("mangrove_leaves")
     @JvmField
     public val AZALEA_LEAVES: Block = get("azalea_leaves")
     @JvmField
@@ -356,6 +374,8 @@ public object Blocks {
     @JvmField
     public val DARK_OAK_SIGN: Block = get("dark_oak_sign")
     @JvmField
+    public val MANGROVE_SIGN: Block = get("mangrove_sign")
+    @JvmField
     public val OAK_DOOR: Block = get("oak_door")
     @JvmField
     public val LADDER: Block = get("ladder")
@@ -376,6 +396,8 @@ public object Blocks {
     @JvmField
     public val DARK_OAK_WALL_SIGN: Block = get("dark_oak_wall_sign")
     @JvmField
+    public val MANGROVE_WALL_SIGN: Block = get("mangrove_wall_sign")
+    @JvmField
     public val LEVER: Block = get("lever")
     @JvmField
     public val STONE_PRESSURE_PLATE: Block = get("stone_pressure_plate")
@@ -393,6 +415,8 @@ public object Blocks {
     public val ACACIA_PRESSURE_PLATE: Block = get("acacia_pressure_plate")
     @JvmField
     public val DARK_OAK_PRESSURE_PLATE: Block = get("dark_oak_pressure_plate")
+    @JvmField
+    public val MANGROVE_PRESSURE_PLATE: Block = get("mangrove_pressure_plate")
     @JvmField
     public val REDSTONE_ORE: Block = get("redstone_ore")
     @JvmField
@@ -492,6 +516,8 @@ public object Blocks {
     @JvmField
     public val DARK_OAK_TRAPDOOR: Block = get("dark_oak_trapdoor")
     @JvmField
+    public val MANGROVE_TRAPDOOR: Block = get("mangrove_trapdoor")
+    @JvmField
     public val STONE_BRICKS: Block = get("stone_bricks")
     @JvmField
     public val MOSSY_STONE_BRICKS: Block = get("mossy_stone_bricks")
@@ -499,6 +525,10 @@ public object Blocks {
     public val CRACKED_STONE_BRICKS: Block = get("cracked_stone_bricks")
     @JvmField
     public val CHISELED_STONE_BRICKS: Block = get("chiseled_stone_bricks")
+    @JvmField
+    public val PACKED_MUD: Block = get("packed_mud")
+    @JvmField
+    public val MUD_BRICKS: Block = get("mud_bricks")
     @JvmField
     public val INFESTED_STONE: Block = get("infested_stone")
     @JvmField
@@ -543,6 +573,8 @@ public object Blocks {
     public val BRICK_STAIRS: Block = get("brick_stairs")
     @JvmField
     public val STONE_BRICK_STAIRS: Block = get("stone_brick_stairs")
+    @JvmField
+    public val MUD_BRICK_STAIRS: Block = get("mud_brick_stairs")
     @JvmField
     public val MYCELIUM: Block = get("mycelium")
     @JvmField
@@ -622,6 +654,8 @@ public object Blocks {
     @JvmField
     public val POTTED_DARK_OAK_SAPLING: Block = get("potted_dark_oak_sapling")
     @JvmField
+    public val POTTED_MANGROVE_PROPAGULE: Block = get("potted_mangrove_propagule")
+    @JvmField
     public val POTTED_FERN: Block = get("potted_fern")
     @JvmField
     public val POTTED_DANDELION: Block = get("potted_dandelion")
@@ -673,6 +707,8 @@ public object Blocks {
     public val ACACIA_BUTTON: Block = get("acacia_button")
     @JvmField
     public val DARK_OAK_BUTTON: Block = get("dark_oak_button")
+    @JvmField
+    public val MANGROVE_BUTTON: Block = get("mangrove_button")
     @JvmField
     public val SKELETON_SKULL: Block = get("skeleton_skull")
     @JvmField
@@ -799,6 +835,8 @@ public object Blocks {
     public val ACACIA_STAIRS: Block = get("acacia_stairs")
     @JvmField
     public val DARK_OAK_STAIRS: Block = get("dark_oak_stairs")
+    @JvmField
+    public val MANGROVE_STAIRS: Block = get("mangrove_stairs")
     @JvmField
     public val SLIME_BLOCK: Block = get("slime_block")
     @JvmField
@@ -964,6 +1002,8 @@ public object Blocks {
     @JvmField
     public val DARK_OAK_SLAB: Block = get("dark_oak_slab")
     @JvmField
+    public val MANGROVE_SLAB: Block = get("mangrove_slab")
+    @JvmField
     public val STONE_SLAB: Block = get("stone_slab")
     @JvmField
     public val SMOOTH_STONE_SLAB: Block = get("smooth_stone_slab")
@@ -979,6 +1019,8 @@ public object Blocks {
     public val BRICK_SLAB: Block = get("brick_slab")
     @JvmField
     public val STONE_BRICK_SLAB: Block = get("stone_brick_slab")
+    @JvmField
+    public val MUD_BRICK_SLAB: Block = get("mud_brick_slab")
     @JvmField
     public val NETHER_BRICK_SLAB: Block = get("nether_brick_slab")
     @JvmField
@@ -1008,6 +1050,8 @@ public object Blocks {
     @JvmField
     public val DARK_OAK_FENCE_GATE: Block = get("dark_oak_fence_gate")
     @JvmField
+    public val MANGROVE_FENCE_GATE: Block = get("mangrove_fence_gate")
+    @JvmField
     public val SPRUCE_FENCE: Block = get("spruce_fence")
     @JvmField
     public val BIRCH_FENCE: Block = get("birch_fence")
@@ -1018,6 +1062,8 @@ public object Blocks {
     @JvmField
     public val DARK_OAK_FENCE: Block = get("dark_oak_fence")
     @JvmField
+    public val MANGROVE_FENCE: Block = get("mangrove_fence")
+    @JvmField
     public val SPRUCE_DOOR: Block = get("spruce_door")
     @JvmField
     public val BIRCH_DOOR: Block = get("birch_door")
@@ -1027,6 +1073,8 @@ public object Blocks {
     public val ACACIA_DOOR: Block = get("acacia_door")
     @JvmField
     public val DARK_OAK_DOOR: Block = get("dark_oak_door")
+    @JvmField
+    public val MANGROVE_DOOR: Block = get("mangrove_door")
     @JvmField
     public val END_ROD: Block = get("end_rod")
     @JvmField
@@ -1368,6 +1416,8 @@ public object Blocks {
     @JvmField
     public val STONE_BRICK_WALL: Block = get("stone_brick_wall")
     @JvmField
+    public val MUD_BRICK_WALL: Block = get("mud_brick_wall")
+    @JvmField
     public val NETHER_BRICK_WALL: Block = get("nether_brick_wall")
     @JvmField
     public val ANDESITE_WALL: Block = get("andesite_wall")
@@ -1664,6 +1714,14 @@ public object Blocks {
     @JvmField
     public val SCULK_SENSOR: Block = get("sculk_sensor")
     @JvmField
+    public val SCULK: Block = get("sculk")
+    @JvmField
+    public val SCULK_VEIN: Block = get("sculk_vein")
+    @JvmField
+    public val SCULK_CATALYST: Block = get("sculk_catalyst")
+    @JvmField
+    public val SCULK_SHRIEKER: Block = get("sculk_shrieker")
+    @JvmField
     public val OXIDIZED_COPPER: Block = get("oxidized_copper")
     @JvmField
     public val WEATHERED_COPPER: Block = get("weathered_copper")
@@ -1762,6 +1820,8 @@ public object Blocks {
     @JvmField
     public val ROOTED_DIRT: Block = get("rooted_dirt")
     @JvmField
+    public val MUD: Block = get("mud")
+    @JvmField
     public val DEEPSLATE: Block = get("deepslate")
     @JvmField
     public val COBBLED_DEEPSLATE: Block = get("cobbled_deepslate")
@@ -1815,6 +1875,16 @@ public object Blocks {
     public val POTTED_AZALEA: Block = get("potted_azalea_bush")
     @JvmField
     public val POTTED_FLOWERING_AZALEA: Block = get("potted_flowering_azalea_bush")
+    @JvmField
+    public val OCHRE_FROGLIGHT: Block = get("ochre_froglight")
+    @JvmField
+    public val VERDANT_FROGLIGHT: Block = get("verdant_froglight")
+    @JvmField
+    public val PEARLESCENT_FROGLIGHT: Block = get("pearlescent_froglight")
+    @JvmField
+    public val FROGSPAWN: Block = get("frogspawn")
+    @JvmField
+    public val REINFORCED_DEEPSLATE: Block = get("reinforced_deepslate")
 
     // @formatter:on
     @JvmStatic
