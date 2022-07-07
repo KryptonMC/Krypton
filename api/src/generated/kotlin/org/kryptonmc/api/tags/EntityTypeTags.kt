@@ -39,6 +39,8 @@ public object EntityTypeTags {
     public val FREEZE_IMMUNE_ENTITY_TYPES: Tag<EntityType<*>> = get("freeze_immune_entity_types")
     @JvmField
     public val FREEZE_HURTS_EXTRA_TYPES: Tag<EntityType<*>> = get("freeze_hurts_extra_types")
+    @JvmField
+    public val FROG_FOOD: Tag<EntityType<*>> = get("frog_food")
 
     // @formatter:on
     @JvmStatic

@@ -36,6 +36,7 @@ import org.kryptonmc.krypton.command.arguments.VectorArgument
 import org.kryptonmc.krypton.command.arguments.item.ItemStackArgumentType
 import org.kryptonmc.krypton.command.arguments.item.ItemStackPredicateArgument
 import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.atomic.AtomicInteger
 
 /**
  * Holds all of the built-in argument serializers for all of the argument
@@ -43,43 +44,44 @@ import java.util.concurrent.ConcurrentHashMap
  */
 object ArgumentSerializers {
 
-    private val ENTRIES = ConcurrentHashMap<Class<*>, Entry<*>>()
+    private val BY_CLASS = ConcurrentHashMap<Class<*>, Entry<*>>()
+    private val ENTRY_COUNTER = AtomicInteger()
 
     init {
         // Brigadier serializers
-        empty<BoolArgumentType>("brigadier:bool")
-        register("brigadier:double", DoubleArgumentSerializer)
-        register("brigadier:float", FloatArgumentSerializer)
-        register("brigadier:integer", IntegerArgumentSerializer)
-        register("brigadier:long", LongArgumentSerializer)
-        register("brigadier:string", StringArgumentSerializer)
+        empty<BoolArgumentType>(0, "brigadier:bool")
+        register(1, "brigadier:float", FloatArgumentSerializer)
+        register(2, "brigadier:double", DoubleArgumentSerializer)
+        register(3, "brigadier:integer", IntegerArgumentSerializer)
+        register(4, "brigadier:long", LongArgumentSerializer)
+        register(5, "brigadier:string", StringArgumentSerializer)
 
         // Built-in serializers
-        empty<NBTArgument>("nbt_tag")
-        empty<NBTCompoundArgument>("nbt_compound_tag")
-        empty<SummonEntityArgument>("entity_summon")
-        empty<VectorArgument>("vec3")
-        register("entity", EntityArgumentSerializer)
-        empty<GameProfileArgument>("game_profile")
-        empty<ItemStackArgumentType>("item_stack")
-        empty<ItemStackPredicateArgument>("item_predicate")
+        register(6, "entity", EntityArgumentSerializer)
+        empty<GameProfileArgument>(7, "game_profile")
+        empty<VectorArgument>(10, "vec3")
+        empty<ItemStackArgumentType>(14, "item_stack")
+        empty<ItemStackPredicateArgument>(15, "item_predicate")
+        empty<NBTCompoundArgument>(19, "nbt_compound_tag")
+        empty<NBTArgument>(20, "nbt_tag")
+        empty<SummonEntityArgument>(40, "entity_summon")
     }
 
     @Suppress("UNCHECKED_CAST")
     @JvmStatic
-    fun <T : ArgumentType<*>> get(type: T): Entry<T>? = ENTRIES[type::class.java] as? Entry<T>
+    fun <T : ArgumentType<*>> get(type: T): Entry<T>? = BY_CLASS[type::class.java] as? Entry<T>
 
     @JvmStatic
-    private inline fun <reified T : ArgumentType<*>> register(name: String, serializer: ArgumentSerializer<T>) {
-        ENTRIES[T::class.java] = Entry(Key.key(name), T::class.java, serializer)
+    private inline fun <reified T : ArgumentType<*>> register(id: Int, name: String, serializer: ArgumentSerializer<T>) {
+        BY_CLASS[T::class.java] = Entry(id, Key.key(name), T::class.java, serializer)
     }
 
     @Suppress("UNCHECKED_CAST")
     @JvmStatic
-    private inline fun <reified T : ArgumentType<*>> empty(name: String) {
-        register(name, ArgumentSerializer.Empty as ArgumentSerializer<T>)
+    private inline fun <reified T : ArgumentType<*>> empty(id: Int, name: String) {
+        register(id, name, ArgumentSerializer.Empty as ArgumentSerializer<T>)
     }
 
     @JvmRecord
-    data class Entry<T : ArgumentType<*>>(val name: Key, val clazz: Class<T>, val serializer: ArgumentSerializer<T>)
+    data class Entry<T : ArgumentType<*>>(val id: Int, val name: Key, val clazz: Class<T>, val serializer: ArgumentSerializer<T>)
 }

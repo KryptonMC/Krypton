@@ -30,7 +30,7 @@ public object ItemTags {
     @JvmField
     public val BUTTONS: Tag<ItemType> = get("buttons")
     @JvmField
-    public val CARPETS: Tag<ItemType> = get("carpets")
+    public val WOOL_CARPETS: Tag<ItemType> = get("wool_carpets")
     @JvmField
     public val WOODEN_DOORS: Tag<ItemType> = get("wooden_doors")
     @JvmField
@@ -50,6 +50,8 @@ public object ItemTags {
     @JvmField
     public val LOGS_THAT_BURN: Tag<ItemType> = get("logs_that_burn")
     @JvmField
+    public val OVERWORLD_NATURAL_LOGS: Tag<ItemType> = get("overworld_natural_logs")
+    @JvmField
     public val LOGS: Tag<ItemType> = get("logs")
     @JvmField
     public val DARK_OAK_LOGS: Tag<ItemType> = get("dark_oak_logs")
@@ -64,9 +66,13 @@ public object ItemTags {
     @JvmField
     public val SPRUCE_LOGS: Tag<ItemType> = get("spruce_logs")
     @JvmField
+    public val MANGROVE_LOGS: Tag<ItemType> = get("mangrove_logs")
+    @JvmField
     public val CRIMSON_STEMS: Tag<ItemType> = get("crimson_stems")
     @JvmField
     public val WARPED_STEMS: Tag<ItemType> = get("warped_stems")
+    @JvmField
+    public val WART_BLOCKS: Tag<ItemType> = get("wart_blocks")
     @JvmField
     public val BANNERS: Tag<ItemType> = get("banners")
     @JvmField
@@ -132,7 +138,11 @@ public object ItemTags {
     @JvmField
     public val TERRACOTTA: Tag<ItemType> = get("terracotta")
     @JvmField
+    public val COMPLETES_FIND_TREE_TUTORIAL: Tag<ItemType> = get("completes_find_tree_tutorial")
+    @JvmField
     public val BOATS: Tag<ItemType> = get("boats")
+    @JvmField
+    public val CHEST_BOATS: Tag<ItemType> = get("chest_boats")
     @JvmField
     public val FISHES: Tag<ItemType> = get("fishes")
     @JvmField
@@ -158,9 +168,11 @@ public object ItemTags {
     @JvmField
     public val AXOLOTL_TEMPT_ITEMS: Tag<ItemType> = get("axolotl_tempt_items")
     @JvmField
-    public val OCCLUDES_VIBRATION_SIGNALS: Tag<ItemType> = get("occludes_vibration_signals")
+    public val DAMPENS_VIBRATIONS: Tag<ItemType> = get("dampens_vibrations")
     @JvmField
     public val CLUSTER_MAX_HARVESTABLES: Tag<ItemType> = get("cluster_max_harvestables")
+    @JvmField
+    public val COMPASSES: Tag<ItemType> = get("compasses")
 
     // @formatter:on
     @JvmStatic

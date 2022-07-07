@@ -24,6 +24,7 @@ import org.kryptonmc.api.resource.ResourceKey
 import org.kryptonmc.api.resource.ResourceKeys
 import org.kryptonmc.api.world.GameMode
 import org.kryptonmc.api.world.World
+import org.kryptonmc.api.world.dimension.DimensionType
 import org.kryptonmc.krypton.packet.EntityPacket
 import org.kryptonmc.krypton.registry.encode
 import org.kryptonmc.krypton.util.GlobalPosition
@@ -44,7 +45,7 @@ data class PacketOutJoinGame(
     val gameMode: GameMode,
     val oldGameMode: GameMode?,
     val worlds: Set<ResourceKey<World>>,
-    val dimensionType: KryptonDimensionType,
+    val dimensionType: ResourceKey<DimensionType>,
     val dimension: ResourceKey<World>,
     val seed: Long,
     val maxPlayers: Int,
@@ -68,7 +69,7 @@ data class PacketOutJoinGame(
             put(ResourceKeys.BIOME.location.asString(), Registries.BIOME.encode(KryptonBiome.ENCODER))
             // TODO: Add chat type codec to this
         })
-        buf.encode(KryptonDimensionType.ENCODER, dimensionType)
+        buf.writeKey(dimensionType.location)
         buf.writeKey(dimension.location)
         buf.writeLong(seed)
         buf.writeVarInt(maxPlayers)

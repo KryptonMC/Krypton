@@ -87,6 +87,10 @@ public object BlockEntityTypes {
     public val BEEHIVE: BlockEntityType = get("beehive")
     @JvmField
     public val SCULK_SENSOR: BlockEntityType = get("sculk_sensor")
+    @JvmField
+    public val SCULK_CATALYST: BlockEntityType = get("sculk_catalyst")
+    @JvmField
+    public val SCULK_SHRIEKER: BlockEntityType = get("sculk_shrieker")
 
     // @formatter:on
     @JvmStatic

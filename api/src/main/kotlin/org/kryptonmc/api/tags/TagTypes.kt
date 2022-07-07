@@ -10,11 +10,14 @@ package org.kryptonmc.api.tags
 
 import net.kyori.adventure.key.Key
 import org.kryptonmc.api.block.Block
+import org.kryptonmc.api.block.entity.banner.BannerPatternType
 import org.kryptonmc.api.entity.EntityType
+import org.kryptonmc.api.entity.hanging.Picture
 import org.kryptonmc.api.fluid.Fluid
 import org.kryptonmc.api.item.ItemType
 import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.api.util.Catalogue
+import org.kryptonmc.api.world.biome.Biome
 
 /**
  * All of the built-in vanilla tag types.
@@ -24,6 +27,10 @@ public object TagTypes {
 
     // @formatter:off
     @JvmField
+    public val BANNER_PATTERNS: TagType<BannerPatternType> = get("banner_pattern")
+    @JvmField
+    public val BIOMES: TagType<Biome> = get("biome")
+    @JvmField
     public val BLOCKS: TagType<Block> = get("block")
     @JvmField
     public val ENTITY_TYPES: TagType<EntityType<*>> = get("entity_type")
@@ -31,6 +38,8 @@ public object TagTypes {
     public val FLUIDS: TagType<Fluid> = get("fluid")
     @JvmField
     public val ITEMS: TagType<ItemType> = get("item")
+    @JvmField
+    public val PICTURES: TagType<Picture> = get("picture")
 
     // @formatter:on
     @Suppress("UNCHECKED_CAST")

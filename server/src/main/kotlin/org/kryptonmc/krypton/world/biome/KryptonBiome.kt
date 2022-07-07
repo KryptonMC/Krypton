@@ -20,8 +20,6 @@ package org.kryptonmc.krypton.world.biome
 
 import net.kyori.adventure.key.Key
 import org.kryptonmc.api.world.biome.Biome
-import org.kryptonmc.api.world.biome.BiomeCategories
-import org.kryptonmc.api.world.biome.BiomeCategory
 import org.kryptonmc.api.world.biome.BiomeEffects
 import org.kryptonmc.api.world.biome.Climate
 import org.kryptonmc.krypton.util.serialization.CompoundEncoder
@@ -29,12 +27,7 @@ import org.kryptonmc.krypton.util.serialization.encode
 import org.kryptonmc.nbt.compound
 
 @JvmRecord
-data class KryptonBiome(
-    private val key: Key,
-    override val climate: Climate,
-    override val category: BiomeCategory,
-    override val effects: BiomeEffects
-) : Biome {
+data class KryptonBiome(private val key: Key, override val climate: Climate, override val effects: BiomeEffects) : Biome {
 
     override fun key(): Key = key
 
@@ -43,12 +36,10 @@ data class KryptonBiome(
     class Builder(private var key: Key) : Biome.Builder {
 
         private var climate = KryptonClimate.DEFAULT
-        private var category = BiomeCategories.NONE
         private var effects = KryptonBiomeEffects.DEFAULT
 
         constructor(biome: Biome) : this(biome.key()) {
             climate = biome.climate
-            category = biome.category
             effects = biome.effects
         }
 
@@ -56,11 +47,9 @@ data class KryptonBiome(
 
         override fun climate(climate: Climate): Builder = apply { this.climate = climate }
 
-        override fun category(category: BiomeCategory): Builder = apply { this.category = category }
-
         override fun effects(effects: BiomeEffects): Builder = apply { this.effects = effects }
 
-        override fun build(): KryptonBiome = KryptonBiome(key, climate, category, effects)
+        override fun build(): KryptonBiome = KryptonBiome(key, climate, effects)
     }
 
     object Factory : Biome.Factory {
@@ -74,7 +63,6 @@ data class KryptonBiome(
         val ENCODER: CompoundEncoder<Biome> = CompoundEncoder {
             compound {
                 encode(KryptonClimate.ENCODER, it.climate)
-                encode(KryptonBiomeCategory.CODEC, "category", it.category)
                 encode(KryptonBiomeEffects.ENCODER, "effects", it.effects)
             }
         }
