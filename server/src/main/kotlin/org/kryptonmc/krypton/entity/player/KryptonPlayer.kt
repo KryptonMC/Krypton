@@ -78,34 +78,33 @@ import org.kryptonmc.krypton.item.KryptonItemStack
 import org.kryptonmc.krypton.item.handler
 import org.kryptonmc.krypton.network.SessionHandler
 import org.kryptonmc.krypton.packet.Packet
-import org.kryptonmc.krypton.packet.out.play.GameState
+import org.kryptonmc.krypton.packet.out.play.GameEvent
 import org.kryptonmc.krypton.packet.out.play.PacketOutAbilities
-import org.kryptonmc.krypton.packet.out.play.PacketOutActionBar
-import org.kryptonmc.krypton.packet.out.play.PacketOutCamera
-import org.kryptonmc.krypton.packet.out.play.PacketOutChangeGameState
-import org.kryptonmc.krypton.packet.out.play.PacketOutPlayerChat
 import org.kryptonmc.krypton.packet.out.play.PacketOutClearTitles
-import org.kryptonmc.krypton.packet.out.play.PacketOutEntityPosition
+import org.kryptonmc.krypton.packet.out.play.PacketOutCustomSoundEffect
 import org.kryptonmc.krypton.packet.out.play.PacketOutEntitySoundEffect
-import org.kryptonmc.krypton.packet.out.play.PacketOutEntityTeleport
-import org.kryptonmc.krypton.packet.out.play.PacketOutMetadata
-import org.kryptonmc.krypton.packet.out.play.PacketOutNamedSoundEffect
+import org.kryptonmc.krypton.packet.out.play.PacketOutGameEvent
 import org.kryptonmc.krypton.packet.out.play.PacketOutOpenBook
 import org.kryptonmc.krypton.packet.out.play.PacketOutParticle
 import org.kryptonmc.krypton.packet.out.play.PacketOutPlayerInfo
-import org.kryptonmc.krypton.packet.out.play.PacketOutPlayerListHeaderFooter
 import org.kryptonmc.krypton.packet.out.play.PacketOutPluginMessage
 import org.kryptonmc.krypton.packet.out.play.PacketOutResourcePack
-import org.kryptonmc.krypton.packet.out.play.PacketOutSetSlot
+import org.kryptonmc.krypton.packet.out.play.PacketOutSetActionBarText
+import org.kryptonmc.krypton.packet.out.play.PacketOutSetCamera
+import org.kryptonmc.krypton.packet.out.play.PacketOutSetCenterChunk
+import org.kryptonmc.krypton.packet.out.play.PacketOutSetContainerSlot
+import org.kryptonmc.krypton.packet.out.play.PacketOutSetEntityMetadata
+import org.kryptonmc.krypton.packet.out.play.PacketOutSetHealth
+import org.kryptonmc.krypton.packet.out.play.PacketOutSetSubtitleText
+import org.kryptonmc.krypton.packet.out.play.PacketOutSetTabListHeaderAndFooter
+import org.kryptonmc.krypton.packet.out.play.PacketOutSetTitleAnimationTimes
+import org.kryptonmc.krypton.packet.out.play.PacketOutSetTitleText
 import org.kryptonmc.krypton.packet.out.play.PacketOutSoundEffect
 import org.kryptonmc.krypton.packet.out.play.PacketOutSpawnPlayer
 import org.kryptonmc.krypton.packet.out.play.PacketOutStopSound
-import org.kryptonmc.krypton.packet.out.play.PacketOutSubTitle
-import org.kryptonmc.krypton.packet.out.play.PacketOutTitle
-import org.kryptonmc.krypton.packet.out.play.PacketOutTitleTimes
+import org.kryptonmc.krypton.packet.out.play.PacketOutTeleportEntity
 import org.kryptonmc.krypton.packet.out.play.PacketOutUnloadChunk
-import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateHealth
-import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateViewPosition
+import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateEntityPosition
 import org.kryptonmc.krypton.statistic.KryptonStatisticsTracker
 import org.kryptonmc.krypton.util.Directions
 import org.kryptonmc.krypton.util.InteractionResult
@@ -116,6 +115,7 @@ import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.krypton.world.block.KryptonBlock
 import org.kryptonmc.krypton.world.chunk.ChunkPosition
 import org.kryptonmc.krypton.world.scoreboard.KryptonScoreboard
+import org.kryptonmc.nbt.CompoundTag
 import org.spongepowered.math.vector.Vector3d
 import org.spongepowered.math.vector.Vector3i
 import java.net.InetSocketAddress
@@ -134,7 +134,8 @@ class KryptonPlayer(
     val session: SessionHandler,
     override val profile: KryptonGameProfile,
     world: KryptonWorld,
-    override val address: InetSocketAddress
+    override val address: InetSocketAddress,
+    val publicKey: PlayerPublicKey?
 ) : KryptonLivingEntity(world, EntityTypes.PLAYER, ATTRIBUTES), Player, KryptonEquipable {
 
     var permissionFunction: PermissionFunction = DEFAULT_PERMISSION_FUNCTION
@@ -234,7 +235,7 @@ class KryptonPlayer(
             val old = field
             field = value
             if (old != field) {
-                session.send(PacketOutCamera(field.id))
+                session.send(PacketOutSetCamera(field.id))
                 teleport(field.location)
             }
         }
@@ -288,7 +289,7 @@ class KryptonPlayer(
         set(value) {
             super.health = value
             if (!isLoaded) return
-            session.send(PacketOutUpdateHealth(health, foodLevel, foodSaturationLevel))
+            session.send(PacketOutSetHealth(health, foodLevel, foodSaturationLevel))
         }
 
     // Sources for vanilla hunger system values:
@@ -298,7 +299,7 @@ class KryptonPlayer(
         set(value) {
             field = value
             if (!isLoaded) return
-            session.send(PacketOutUpdateHealth(health, foodLevel, foodSaturationLevel))
+            session.send(PacketOutSetHealth(health, foodLevel, foodSaturationLevel))
         }
 
     internal var foodTickTimer = 0
@@ -311,7 +312,7 @@ class KryptonPlayer(
         set(value) {
             field = value
             if (!isLoaded) return
-            session.send(PacketOutUpdateHealth(health, foodLevel, foodSaturationLevel))
+            session.send(PacketOutSetHealth(health, foodLevel, foodSaturationLevel))
         }
 
     override var absorption: Float
@@ -325,12 +326,12 @@ class KryptonPlayer(
         set(value) = data.set(MetadataKeys.PLAYER.MAIN_HAND, if (value == MainHand.LEFT) 0 else 1)
 
     init {
-        data.add(MetadataKeys.PLAYER.ADDITIONAL_HEARTS)
-        data.add(MetadataKeys.PLAYER.SCORE)
-        data.add(MetadataKeys.PLAYER.SKIN_FLAGS)
-        data.add(MetadataKeys.PLAYER.MAIN_HAND)
-        data.add(MetadataKeys.PLAYER.LEFT_SHOULDER)
-        data.add(MetadataKeys.PLAYER.RIGHT_SHOULDER)
+        data.add(MetadataKeys.PLAYER.ADDITIONAL_HEARTS, 0F)
+        data.add(MetadataKeys.PLAYER.SCORE, 0)
+        data.add(MetadataKeys.PLAYER.SKIN_FLAGS, 0)
+        data.add(MetadataKeys.PLAYER.MAIN_HAND, 1)
+        data.add(MetadataKeys.PLAYER.LEFT_SHOULDER, CompoundTag.empty())
+        data.add(MetadataKeys.PLAYER.RIGHT_SHOULDER, CompoundTag.empty())
     }
 
     fun updateGameMode(mode: GameMode, cause: ChangeGameModeEvent.Cause) {
@@ -344,7 +345,7 @@ class KryptonPlayer(
         updateAbilities()
         onAbilitiesUpdate()
         server.sessionManager.sendGrouped(PacketOutPlayerInfo(PacketOutPlayerInfo.Action.UPDATE_GAMEMODE, this))
-        session.send(PacketOutChangeGameState(GameState.CHANGE_GAMEMODE, mode.ordinal.toFloat()))
+        session.send(PacketOutGameEvent(GameEvent.CHANGE_GAMEMODE, mode.ordinal.toFloat()))
         if (mode != GameMode.SPECTATOR) camera = this
     }
 
@@ -368,7 +369,7 @@ class KryptonPlayer(
         blockHandler.tick()
         hungerMechanic()
         cooldowns.tick()
-        if (data.isDirty) session.send(PacketOutMetadata(id, data.dirty))
+        if (data.isDirty) session.send(PacketOutSetEntityMetadata(id, data.collectDirty()))
     }
 
     private fun hungerMechanic() {
@@ -511,7 +512,7 @@ class KryptonPlayer(
     }
 
     override fun spawnParticles(effect: ParticleEffect, location: Vector3d) {
-        val packet = PacketOutParticle(effect, location)
+        val packet = PacketOutParticle.from(effect, location.x(), location.y(), location.z())
         when (effect.data) {
             // Send multiple packets based on the quantity
             is DirectionalParticleData, is ColorParticleData, is NoteParticleData -> repeat(effect.quantity) { session.send(packet) }
@@ -525,9 +526,9 @@ class KryptonPlayer(
         location = position
 
         if (Positioning.deltaInMoveRange(oldLocation, location)) {
-            session.send(PacketOutEntityTeleport(id, location, rotation, isOnGround))
+            session.send(PacketOutTeleportEntity(id, location, rotation, isOnGround))
         } else {
-            session.send(PacketOutEntityPosition(
+            session.send(PacketOutUpdateEntityPosition(
                 id,
                 Positioning.delta(location.x(), oldLocation.x()),
                 Positioning.delta(location.y(), oldLocation.y()),
@@ -574,43 +575,43 @@ class KryptonPlayer(
 
     override fun sendMessage(source: Identity, message: Component, type: MessageType) {
         // TODO
-        //session.send(PacketOutPlayerChat(message, type, source.uuid()))
+        //session.send(PacketOutPlayerChatMessage(message, type, source.uuid()))
     }
 
     override fun sendActionBar(message: Component) {
-        session.send(PacketOutActionBar(message))
+        session.send(PacketOutSetActionBarText(message))
     }
 
     override fun sendPlayerListHeaderAndFooter(header: Component, footer: Component) {
-        session.send(PacketOutPlayerListHeaderFooter(header, footer))
+        session.send(PacketOutSetTabListHeaderAndFooter(header, footer))
     }
 
     override fun showTitle(title: Title) {
-        if (title.times() != null) session.send(PacketOutTitleTimes(title.times()!!))
-        session.send(PacketOutSubTitle(title.subtitle()))
-        session.send(PacketOutTitle(title.title()))
+        if (title.times() != null) session.send(PacketOutSetTitleAnimationTimes(title.times()!!))
+        session.send(PacketOutSetSubtitleText(title.subtitle()))
+        session.send(PacketOutSetTitleText(title.title()))
     }
 
     override fun <T : Any> sendTitlePart(part: TitlePart<T>, value: T) {
         val packet = when (part) {
-            TitlePart.TITLE -> PacketOutTitle(value as Component)
-            TitlePart.SUBTITLE -> PacketOutSubTitle(value as Component)
-            TitlePart.TIMES -> PacketOutTitleTimes(value as Title.Times)
+            TitlePart.TITLE -> PacketOutSetTitleText(value as Component)
+            TitlePart.SUBTITLE -> PacketOutSetSubtitleText(value as Component)
+            TitlePart.TIMES -> PacketOutSetTitleAnimationTimes(value as Title.Times)
             else -> throw IllegalArgumentException("Unknown title part $part!")
         }
         session.send(packet)
     }
 
     fun sendTitle(title: Component) {
-        session.send(PacketOutTitle(title))
+        session.send(PacketOutSetTitleText(title))
     }
 
     fun sendSubtitle(subtitle: Component) {
-        session.send(PacketOutSubTitle(subtitle))
+        session.send(PacketOutSetSubtitleText(subtitle))
     }
 
     fun sendTitleTimes(fadeInTicks: Int, stayTicks: Int, fadeOutTicks: Int) {
-        session.send(PacketOutTitleTimes(fadeInTicks, stayTicks, fadeOutTicks))
+        session.send(PacketOutSetTitleAnimationTimes(fadeInTicks, stayTicks, fadeOutTicks))
     }
 
     override fun clearTitle() {
@@ -639,7 +640,7 @@ class KryptonPlayer(
             session.send(PacketOutSoundEffect(sound, type, x, y, z))
             return
         }
-        session.send(PacketOutNamedSoundEffect(sound, x, y, z))
+        session.send(PacketOutCustomSoundEffect(sound, x, y, z))
     }
 
     override fun playSound(sound: Sound, emitter: Sound.Emitter) {
@@ -658,7 +659,7 @@ class KryptonPlayer(
         val y = entity.location.y()
         val z = entity.location.z()
         val seed = sound.seed().orElse(ThreadLocalRandom.current().nextLong())
-        session.send(PacketOutNamedSoundEffect(sound.name(), sound.source(), x, y, z, sound.volume(), sound.pitch(), seed))
+        session.send(PacketOutCustomSoundEffect(sound.name(), sound.source(), x, y, z, sound.volume(), sound.pitch(), seed))
     }
 
     override fun stopSound(stop: SoundStop) {
@@ -672,9 +673,9 @@ class KryptonPlayer(
     fun openBook(item: KryptonItemStack) {
         val slot = inventory.items.size + inventory.heldSlot
         val stateId = inventory.stateId
-        session.send(PacketOutSetSlot(0, stateId, slot, item))
+        session.send(PacketOutSetContainerSlot(0, stateId, slot, item))
         session.send(PacketOutOpenBook(hand))
-        session.send(PacketOutSetSlot(0, stateId, slot, inventory.mainHand))
+        session.send(PacketOutSetContainerSlot(0, stateId, slot, inventory.mainHand))
     }
 
     override fun pointers(): Pointers {
@@ -765,7 +766,7 @@ class KryptonPlayer(
             if (firstLoad) centralZ else oldCentralZ,
             radius
         ).thenRun {
-            session.send(PacketOutUpdateViewPosition(centralX, centralZ))
+            session.send(PacketOutSetCenterChunk(centralX, centralZ))
             newChunks.forEach {
                 val chunk = world.chunkManager[it] ?: return@forEach
                 session.write(chunk.cachedPacket)

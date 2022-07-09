@@ -58,12 +58,12 @@ class KryptonTurtle(world: KryptonWorld) : KryptonAnimal(world, EntityTypes.TURT
         get() = super.canFallInLove && !hasEgg
 
     init {
-        data.add(MetadataKeys.TURTLE.HOME)
-        data.add(MetadataKeys.TURTLE.HAS_EGG)
-        data.add(MetadataKeys.TURTLE.LAYING_EGG)
-        data.add(MetadataKeys.TURTLE.DESTINATION)
-        data.add(MetadataKeys.TURTLE.GOING_HOME)
-        data.add(MetadataKeys.TURTLE.TRAVELLING)
+        data.add(MetadataKeys.TURTLE.HOME, Vector3i.ZERO)
+        data.add(MetadataKeys.TURTLE.HAS_EGG, false)
+        data.add(MetadataKeys.TURTLE.LAYING_EGG, false)
+        data.add(MetadataKeys.TURTLE.DESTINATION, Vector3i.ZERO)
+        data.add(MetadataKeys.TURTLE.GOING_HOME, false)
+        data.add(MetadataKeys.TURTLE.TRAVELLING, false)
     }
 
     override fun isFood(item: ItemStack): Boolean = item.type === ItemTypes.SEAGRASS

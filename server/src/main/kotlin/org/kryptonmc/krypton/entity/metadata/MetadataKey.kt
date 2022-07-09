@@ -22,4 +22,4 @@ import org.kryptonmc.api.util.CataloguedBy
 
 @JvmRecord
 @CataloguedBy(MetadataKeys::class)
-data class MetadataKey<T>(val id: Int, val serializer: MetadataSerializer<T>, val default: T)
+data class MetadataKey<T>(val id: Int, val serializer: MetadataSerializer<T>)

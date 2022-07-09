@@ -30,6 +30,6 @@ class KryptonArrow(world: KryptonWorld) : KryptonArrowLike(world, EntityTypes.AR
         set(value) = data.set(MetadataKeys.ARROW.COLOR, value)
 
     init {
-        data.add(MetadataKeys.ARROW.COLOR)
+        data.add(MetadataKeys.ARROW.COLOR, -1)
     }
 }

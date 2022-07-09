@@ -41,7 +41,7 @@ abstract class KryptonThrowableProjectile(
         }
 
     init {
-        data.add(MetadataKeys.THROWABLE_PROJECTILE.ITEM)
+        data.add(MetadataKeys.THROWABLE_PROJECTILE.ITEM, KryptonItemStack.EMPTY)
     }
 
     final override fun asItem(): ItemStack {

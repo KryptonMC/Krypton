@@ -20,24 +20,36 @@ package org.kryptonmc.krypton.entity.metadata
 
 import io.netty.buffer.ByteBuf
 import net.kyori.adventure.text.Component
-import org.kryptonmc.api.block.Block
-import org.kryptonmc.api.effect.particle.ParticleEffect
+import org.kryptonmc.api.entity.animal.type.CatVariant
+import org.kryptonmc.api.entity.animal.type.FrogVariant
+import org.kryptonmc.api.entity.hanging.Picture
 import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.api.util.Catalogue
 import org.kryptonmc.api.util.Direction
+import org.kryptonmc.krypton.effect.particle.ParticleOptions
 import org.kryptonmc.krypton.entity.Pose
 import org.kryptonmc.krypton.entity.data.VillagerData
 import org.kryptonmc.krypton.item.KryptonItemStack
-import org.kryptonmc.krypton.network.Writable
-import org.kryptonmc.krypton.util.asLong
-import org.kryptonmc.krypton.util.writeChat
-import org.kryptonmc.krypton.util.writeEnum
+import org.kryptonmc.krypton.util.GlobalPosition
+import org.kryptonmc.krypton.util.IntIdentityHashBiMap
+import org.kryptonmc.krypton.util.readComponent
+import org.kryptonmc.krypton.util.readGlobalPosition
+import org.kryptonmc.krypton.util.readItem
+import org.kryptonmc.krypton.util.readNBT
+import org.kryptonmc.krypton.util.readString
+import org.kryptonmc.krypton.util.readUUID
+import org.kryptonmc.krypton.util.readVarInt
+import org.kryptonmc.krypton.util.readVector
+import org.kryptonmc.krypton.util.writeComponent
+import org.kryptonmc.krypton.util.writeGlobalPosition
+import org.kryptonmc.krypton.util.writeId
 import org.kryptonmc.krypton.util.writeItem
 import org.kryptonmc.krypton.util.writeNBT
-import org.kryptonmc.krypton.util.writeOptional
 import org.kryptonmc.krypton.util.writeString
 import org.kryptonmc.krypton.util.writeUUID
 import org.kryptonmc.krypton.util.writeVarInt
+import org.kryptonmc.krypton.util.writeVector
+import org.kryptonmc.krypton.world.block.BlockLoader
 import org.kryptonmc.krypton.world.block.KryptonBlock
 import org.kryptonmc.nbt.CompoundTag
 import org.spongepowered.math.vector.Vector3f
@@ -48,63 +60,107 @@ import java.util.UUID
 @Catalogue(MetadataSerializer::class)
 object MetadataSerializers {
 
+    private val SERIALIZERS = IntIdentityHashBiMap<MetadataSerializer<*>>(16)
+
     @JvmField
-    val BYTE: MetadataSerializer<Byte> = create(0) { buf, item -> buf.writeByte(item.toInt()) }
+    val BYTE: MetadataSerializer<Byte> = MetadataSerializer.simple({ buf, item -> buf.writeByte(item.toInt()) }, ByteBuf::readByte)
     @JvmField
-    val VAR_INT: MetadataSerializer<Int> = create(1, ByteBuf::writeVarInt)
+    val INT: MetadataSerializer<Int> = MetadataSerializer.simple(ByteBuf::writeVarInt, ByteBuf::readVarInt)
     @JvmField
-    val FLOAT: MetadataSerializer<Float> = create(2, ByteBuf::writeFloat)
+    val FLOAT: MetadataSerializer<Float> = MetadataSerializer.simple(ByteBuf::writeFloat, ByteBuf::readFloat)
     @JvmField
-    val STRING: MetadataSerializer<String> = create(3, ByteBuf::writeString)
+    val STRING: MetadataSerializer<String> = MetadataSerializer.simple(ByteBuf::writeString, ByteBuf::readString)
     @JvmField
-    val COMPONENT: MetadataSerializer<Component> = create(4, ByteBuf::writeChat)
+    val COMPONENT: MetadataSerializer<Component> = MetadataSerializer.simple(ByteBuf::writeComponent, ByteBuf::readComponent)
     @JvmField
-    val OPTIONAL_COMPONENT: MetadataSerializer<Component?> = create(5) { buf, item -> buf.writeOptional(item, buf::writeChat) }
+    val OPTIONAL_COMPONENT: MetadataSerializer<Component?> = MetadataSerializer.optional(ByteBuf::writeComponent, ByteBuf::readComponent)
     @JvmField
-    val SLOT: MetadataSerializer<KryptonItemStack> = create(6, ByteBuf::writeItem)
+    val ITEM_STACK: MetadataSerializer<KryptonItemStack> = MetadataSerializer.simple(ByteBuf::writeItem, ByteBuf::readItem)
     @JvmField
-    val BOOLEAN: MetadataSerializer<Boolean> = create(7, ByteBuf::writeBoolean)
+    val BOOLEAN: MetadataSerializer<Boolean> = MetadataSerializer.simple(ByteBuf::writeBoolean, ByteBuf::readBoolean)
     @JvmField
-    val ROTATION: MetadataSerializer<Vector3f> = create(8) { buf, item ->
+    val ROTATION: MetadataSerializer<Vector3f> = MetadataSerializer.simple({ buf, item ->
         buf.writeFloat(item.x())
         buf.writeFloat(item.y())
         buf.writeFloat(item.z())
-    }
+    }, { Vector3f(it.readFloat(), it.readFloat(), it.readFloat()) })
     @JvmField
-    val POSITION: MetadataSerializer<Vector3i> = create(9) { buf, item -> buf.writeLong(item.asLong()) }
+    val POSITION: MetadataSerializer<Vector3i> = MetadataSerializer.simple(ByteBuf::writeVector, ByteBuf::readVector)
     @JvmField
-    val OPTIONAL_POSITION: MetadataSerializer<Vector3i?> = create(10) { buf, item ->
-        buf.writeOptional(item) { buf.writeLong(it.asLong()) }
-    }
+    val OPTIONAL_POSITION: MetadataSerializer<Vector3i?> = MetadataSerializer.optional(ByteBuf::writeVector, ByteBuf::readVector)
     @JvmField
-    val DIRECTION: MetadataSerializer<Direction> = create(11, ByteBuf::writeEnum)
+    val DIRECTION: MetadataSerializer<Direction> = MetadataSerializer.simpleEnum(Direction::class.java)
     @JvmField
-    val OPTIONAL_UUID: MetadataSerializer<UUID?> = create(12) { buf, item -> buf.writeOptional(item, buf::writeUUID) }
+    val OPTIONAL_UUID: MetadataSerializer<UUID?> = MetadataSerializer.optional(ByteBuf::writeUUID, ByteBuf::readUUID)
     @JvmField
-    val OPTIONAL_BLOCK: MetadataSerializer<KryptonBlock?> = create(13) { buf, item -> buf.writeVarInt(item?.stateId ?: 0) }
+    val OPTIONAL_BLOCK: MetadataSerializer<KryptonBlock?> = MetadataSerializer.simple(
+        { buf, item -> if (item != null) buf.writeVarInt(item.stateId) else buf.writeVarInt(0) },
+        {
+            val stateId = it.readVarInt()
+            if (stateId == 0) null else BlockLoader.fromState(stateId)
+        }
+    )
     @JvmField
-    val NBT: MetadataSerializer<CompoundTag> = create(14, ByteBuf::writeNBT)
+    val NBT: MetadataSerializer<CompoundTag> = MetadataSerializer.simple(ByteBuf::writeNBT, ByteBuf::readNBT)
     @JvmField
-    val PARTICLE: MetadataSerializer<ParticleEffect> = create(15) { buf, item ->
-        buf.writeVarInt(Registries.PARTICLE_TYPE.idOf(item.type))
-        val data = item.data
-        if (data is Writable) data.write(buf)
-    }
+    val PARTICLE: MetadataSerializer<ParticleOptions> = MetadataSerializer.simple(
+        { buf, item ->
+            buf.writeId(Registries.PARTICLE_TYPE, item.type)
+            item.write(buf)
+        },
+        ::ParticleOptions
+    )
     @JvmField
-    val VILLAGER_DATA: MetadataSerializer<VillagerData> = create(16) { buf, item ->
-        buf.writeVarInt(item.type.ordinal)
-        buf.writeVarInt(item.profession.ordinal)
-        buf.writeVarInt(item.level)
-    }
+    val VILLAGER_DATA: MetadataSerializer<VillagerData> = MetadataSerializer.simple({ buf, item -> item.write(buf) }, ::VillagerData)
     @JvmField
-    val OPTIONAL_VAR_INT: MetadataSerializer<OptionalInt> = create(17) { buf, item -> buf.writeVarInt(item.orElse(-1) + 1) }
+    val OPTIONAL_INT: MetadataSerializer<OptionalInt> = MetadataSerializer.simple(
+        { buf, item -> buf.writeVarInt(item.orElse(-1) + 1) },
+        {
+            val value = it.readVarInt()
+            if (value == 0) OptionalInt.empty() else OptionalInt.of(value - 1)
+        }
+    )
     @JvmField
-    val POSE: MetadataSerializer<Pose> = create(18, ByteBuf::writeEnum)
+    val POSE: MetadataSerializer<Pose> = MetadataSerializer.simpleEnum(Pose::class.java)
+    @JvmField
+    val CAT_VARIANT: MetadataSerializer<CatVariant> = MetadataSerializer.simpleId(Registries.CAT_VARIANT)
+    @JvmField
+    val FROG_VARIANT: MetadataSerializer<FrogVariant> = MetadataSerializer.simpleId(Registries.FROG_VARIANT)
+    @JvmField
+    val OPTIONAL_GLOBAL_POSITION: MetadataSerializer<GlobalPosition?> =
+        MetadataSerializer.optional(ByteBuf::writeGlobalPosition, ByteBuf::readGlobalPosition)
+    @JvmField
+    val PICTURE: MetadataSerializer<Picture> = MetadataSerializer.simpleId(Registries.PICTURES)
 
     @JvmStatic
-    private inline fun <T> create(id: Int, crossinline writer: (ByteBuf, T) -> Unit): MetadataSerializer<T> = object : MetadataSerializer<T>(id) {
-        override fun write(buf: ByteBuf, item: T) {
-            writer(buf, item)
-        }
+    fun get(id: Int): MetadataSerializer<*>? = SERIALIZERS[id]
+
+    @JvmStatic
+    fun idOf(serializer: MetadataSerializer<*>): Int = SERIALIZERS.idOf(serializer)
+
+    init {
+        SERIALIZERS.add(BYTE)
+        SERIALIZERS.add(INT)
+        SERIALIZERS.add(FLOAT)
+        SERIALIZERS.add(STRING)
+        SERIALIZERS.add(COMPONENT)
+        SERIALIZERS.add(OPTIONAL_COMPONENT)
+        SERIALIZERS.add(ITEM_STACK)
+        SERIALIZERS.add(BOOLEAN)
+        SERIALIZERS.add(ROTATION)
+        SERIALIZERS.add(POSITION)
+        SERIALIZERS.add(OPTIONAL_POSITION)
+        SERIALIZERS.add(DIRECTION)
+        SERIALIZERS.add(OPTIONAL_UUID)
+        SERIALIZERS.add(OPTIONAL_BLOCK)
+        SERIALIZERS.add(NBT)
+        SERIALIZERS.add(PARTICLE)
+        SERIALIZERS.add(VILLAGER_DATA)
+        SERIALIZERS.add(OPTIONAL_INT)
+        SERIALIZERS.add(POSE)
+        SERIALIZERS.add(CAT_VARIANT)
+        SERIALIZERS.add(FROG_VARIANT)
+        SERIALIZERS.add(OPTIONAL_GLOBAL_POSITION)
+        SERIALIZERS.add(PICTURE)
     }
 }

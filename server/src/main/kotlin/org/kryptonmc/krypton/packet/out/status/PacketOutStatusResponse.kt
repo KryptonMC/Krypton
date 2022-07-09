@@ -23,16 +23,21 @@ import me.bardy.gsonkt.newBuilder
 import me.bardy.gsonkt.registerTypeAdapter
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer
 import org.kryptonmc.krypton.packet.Packet
+import org.kryptonmc.krypton.util.readString
 import org.kryptonmc.krypton.util.writeString
 
 /**
  * Response to the client's earlier [status request][org.kryptonmc.krypton.packet.in.status.PacketInStatusRequest] packet.
  */
 @JvmRecord
-data class PacketOutStatusResponse(val status: ServerStatus) : Packet {
+data class PacketOutStatusResponse(val response: String) : Packet {
+
+    constructor(status: ServerStatus) : this(GSON.toJson(status))
+
+    constructor(buf: ByteBuf) : this(buf.readString())
 
     override fun write(buf: ByteBuf) {
-        buf.writeString(GSON.toJson(status))
+        buf.writeString(response)
     }
 
     companion object {

@@ -24,6 +24,8 @@ import org.kryptonmc.krypton.packet.Packet
 @JvmRecord
 data class PacketOutUnloadChunk(val x: Int, val z: Int) : Packet {
 
+    constructor(buf: ByteBuf) : this(buf.readInt(), buf.readInt())
+
     override fun write(buf: ByteBuf) {
         buf.writeInt(x)
         buf.writeInt(z)

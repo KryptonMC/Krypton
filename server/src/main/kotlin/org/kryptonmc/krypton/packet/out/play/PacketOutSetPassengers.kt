@@ -22,17 +22,23 @@ import io.netty.buffer.ByteBuf
 import org.kryptonmc.api.entity.Entity
 import org.kryptonmc.krypton.entity.KryptonEntity
 import org.kryptonmc.krypton.packet.EntityPacket
-import org.kryptonmc.krypton.util.writeIntArray
+import org.kryptonmc.krypton.util.readVarInt
+import org.kryptonmc.krypton.util.readVarIntArray
 import org.kryptonmc.krypton.util.writeVarInt
+import org.kryptonmc.krypton.util.writeVarIntArray
 
+@Suppress("ArrayInDataClass")
 @JvmRecord
-data class PacketOutSetPassengers(override val entityId: Int, val passengers: List<Entity>) : EntityPacket {
+data class PacketOutSetPassengers(override val entityId: Int, val passengers: IntArray) : EntityPacket {
 
-    constructor(entity: KryptonEntity) : this(entity.id, entity.passengers)
+    constructor(entity: KryptonEntity) : this(entity.id, entity.passengers.toIdArray())
+
+    constructor(buf: ByteBuf) : this(buf.readVarInt(), buf.readVarIntArray())
 
     override fun write(buf: ByteBuf) {
         buf.writeVarInt(entityId)
-        buf.writeVarInt(passengers.size)
-        passengers.forEach { buf.writeVarInt(it.id) }
+        buf.writeVarIntArray(passengers)
     }
 }
+
+private fun List<Entity>.toIdArray(): IntArray = IntArray(size) { get(it).id }

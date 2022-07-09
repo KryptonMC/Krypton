@@ -41,14 +41,33 @@ data class PacketOutAbilities(
         player.walkingSpeed
     )
 
+    constructor(buf: ByteBuf) : this(buf.readByte().toInt(), buf.readFloat(), buf.readFloat())
+
+    private constructor(flags: Int, flyingSpeed: Float, walkingSpeed: Float) : this(
+        (flags and FLAG_INVULNERABLE) != 0,
+        (flags and FLAG_FLYING) != 0,
+        (flags and FLAG_CAN_FLY) != 0,
+        (flags and FLAG_CAN_INSTANTLY_BUILD) != 0,
+        flyingSpeed,
+        walkingSpeed
+    )
+
     override fun write(buf: ByteBuf) {
         var flags = 0
-        if (isInvulnerable) flags = flags or 1
-        if (isFlying) flags = flags or 2
-        if (canFly) flags = flags or 4
-        if (canInstantlyBuild) flags = flags or 8
+        if (isInvulnerable) flags = flags or FLAG_INVULNERABLE
+        if (isFlying) flags = flags or FLAG_FLYING
+        if (canFly) flags = flags or FLAG_CAN_FLY
+        if (canInstantlyBuild) flags = flags or FLAG_CAN_INSTANTLY_BUILD
         buf.writeByte(flags)
         buf.writeFloat(flyingSpeed)
         buf.writeFloat(walkingSpeed)
+    }
+
+    companion object {
+
+        private const val FLAG_INVULNERABLE = 0x01
+        private const val FLAG_FLYING = 0x02
+        private const val FLAG_CAN_FLY = 0x04
+        private const val FLAG_CAN_INSTANTLY_BUILD = 0x08
     }
 }

@@ -51,9 +51,9 @@ class KryptonDolphin(world: KryptonWorld) : KryptonAquaticAnimal(world, EntityTy
         get() = SoundEvents.DOLPHIN_SPLASH
 
     init {
-        data.add(MetadataKeys.DOLPHIN.TREASURE_POSITION)
-        data.add(MetadataKeys.DOLPHIN.GOT_FISH)
-        data.add(MetadataKeys.DOLPHIN.MOISTURE)
+        data.add(MetadataKeys.DOLPHIN.TREASURE_POSITION, Vector3i.ZERO)
+        data.add(MetadataKeys.DOLPHIN.GOT_FISH, false)
+        data.add(MetadataKeys.DOLPHIN.MOISTURE, 2400)
     }
 
     override fun handleAir(amount: Int) {

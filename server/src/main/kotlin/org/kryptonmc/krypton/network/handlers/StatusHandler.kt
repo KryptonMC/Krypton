@@ -20,9 +20,9 @@ package org.kryptonmc.krypton.network.handlers
 
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.packet.Packet
-import org.kryptonmc.krypton.packet.`in`.status.PacketInPing
+import org.kryptonmc.krypton.packet.`in`.status.PacketInPingRequest
 import org.kryptonmc.krypton.packet.`in`.status.PacketInStatusRequest
-import org.kryptonmc.krypton.packet.out.status.PacketOutPong
+import org.kryptonmc.krypton.packet.out.status.PacketOutPingResponse
 import org.kryptonmc.krypton.packet.out.status.PacketOutStatusResponse
 import org.kryptonmc.krypton.network.SessionHandler
 
@@ -41,7 +41,7 @@ class StatusHandler(override val server: KryptonServer, override val session: Se
     override fun handle(packet: Packet) {
         when (packet) {
             is PacketInStatusRequest -> handleStatusRequest()
-            is PacketInPing -> handlePing(packet)
+            is PacketInPingRequest -> handlePing(packet)
             else -> Unit
         }
     }
@@ -50,7 +50,7 @@ class StatusHandler(override val server: KryptonServer, override val session: Se
         session.send(PacketOutStatusResponse(server.sessionManager.status))
     }
 
-    private fun handlePing(packet: PacketInPing) {
-        session.send(PacketOutPong(packet.payload))
+    private fun handlePing(packet: PacketInPingRequest) {
+        session.send(PacketOutPingResponse(packet.payload))
     }
 }

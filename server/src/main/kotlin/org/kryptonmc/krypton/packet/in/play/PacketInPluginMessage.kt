@@ -19,29 +19,21 @@
 package org.kryptonmc.krypton.packet.`in`.play
 
 import io.netty.buffer.ByteBuf
-import java.util.Objects
 import net.kyori.adventure.key.Key
 import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.util.readAllAvailableBytes
-import org.kryptonmc.krypton.util.readString
-import org.kryptonmc.krypton.util.writeString
+import org.kryptonmc.krypton.util.readKey
+import org.kryptonmc.krypton.util.writeKey
 import org.kryptonmc.krypton.util.writeVarIntByteArray
 
+@Suppress("ArrayInDataClass")
 @JvmRecord
-data class PacketInPluginMessage(val channel: String, val data: ByteArray) : Packet {
+data class PacketInPluginMessage(val channel: Key, val data: ByteArray) : Packet {
 
-    constructor(buf: ByteBuf) : this(buf.readString(), buf.readAllAvailableBytes())
+    constructor(buf: ByteBuf) : this(buf.readKey(), buf.readAllAvailableBytes())
 
     override fun write(buf: ByteBuf) {
-        buf.writeString(channel)
+        buf.writeKey(channel)
         buf.writeVarIntByteArray(data)
     }
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-        return channel == (other as PacketInPluginMessage).channel && data.contentEquals(other.data)
-    }
-
-    override fun hashCode(): Int = Objects.hash(channel, data)
 }

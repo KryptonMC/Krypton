@@ -23,7 +23,6 @@ import net.kyori.adventure.bossbar.BossBar
 import net.kyori.adventure.text.Component
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.packet.out.play.PacketOutBossBar
-import org.kryptonmc.krypton.packet.out.play.PacketOutBossBar.Action
 import java.util.Collections
 import java.util.UUID
 
@@ -33,60 +32,63 @@ object BossBarManager : BossBar.Listener {
 
     fun addBar(bar: BossBar, player: KryptonPlayer) {
         val holder = getOrCreate(bar)
-        if (holder.subscribers.add(player)) player.session.send(PacketOutBossBar(Action.ADD, holder))
+        if (holder.subscribers.add(player)) player.session.send(PacketOutBossBar(holder.id, PacketOutBossBar.AddAction(holder.bar)))
     }
 
     fun addBar(bar: BossBar, audience: PacketGroupingAudience) {
         val holder = getOrCreate(bar)
         val addedPlayers = audience.players.filter { holder.subscribers.add(it) }
-        if (addedPlayers.isNotEmpty()) audience.sessionManager.sendGrouped(addedPlayers, PacketOutBossBar(Action.ADD, holder))
+        if (addedPlayers.isNotEmpty()) {
+            audience.sessionManager.sendGrouped(addedPlayers, PacketOutBossBar(holder.id, PacketOutBossBar.AddAction(holder.bar)))
+        }
     }
 
     fun removeBar(bar: BossBar, player: KryptonPlayer) {
         val holder = bars[bar] ?: return
-        if (holder.subscribers.remove(player)) player.session.send(PacketOutBossBar(Action.REMOVE, holder))
+        if (holder.subscribers.remove(player)) player.session.send(PacketOutBossBar(holder.id, PacketOutBossBar.RemoveAction))
     }
 
     fun removeBar(bar: BossBar, audience: PacketGroupingAudience) {
         val holder = bars[bar] ?: return
         val addedPlayers = audience.players.filter { holder.subscribers.add(it) }
-        if (addedPlayers.isNotEmpty()) audience.sessionManager.sendGrouped(addedPlayers, PacketOutBossBar(Action.REMOVE, holder))
+        if (addedPlayers.isNotEmpty()) {
+            audience.sessionManager.sendGrouped(addedPlayers, PacketOutBossBar(holder.id, PacketOutBossBar.RemoveAction))
+        }
     }
 
     override fun bossBarNameChanged(bar: BossBar, oldName: Component, newName: Component) {
-        update(bar, Action.UPDATE_TITLE)
+        update(bar, PacketOutBossBar.UpdateTitleAction(newName))
     }
 
     override fun bossBarProgressChanged(bar: BossBar, oldProgress: Float, newProgress: Float) {
-        update(bar, Action.UPDATE_HEALTH)
+        update(bar, PacketOutBossBar.UpdateProgressAction(newProgress))
     }
 
     override fun bossBarColorChanged(bar: BossBar, oldColor: BossBar.Color, newColor: BossBar.Color) {
-        update(bar, Action.UPDATE_STYLE)
+        update(bar, PacketOutBossBar.UpdateStyleAction(newColor, bar.overlay()))
     }
 
     override fun bossBarOverlayChanged(bar: BossBar, oldOverlay: BossBar.Overlay, newOverlay: BossBar.Overlay) {
-        update(bar, Action.UPDATE_STYLE)
+        update(bar, PacketOutBossBar.UpdateStyleAction(bar.color(), newOverlay))
     }
 
     override fun bossBarFlagsChanged(bar: BossBar, flagsAdded: MutableSet<BossBar.Flag>, flagsRemoved: MutableSet<BossBar.Flag>) {
-        update(bar, Action.UPDATE_FLAGS)
+        update(bar, PacketOutBossBar.UpdateFlagsAction(bar.flags()))
     }
 
-    private fun getOrCreate(bar: BossBar): BossBarHolder = bars.getOrPut(bar) { BossBarHolder(bar) }.apply { register() }
+    private fun getOrCreate(bar: BossBar): BossBarHolder = bars.getOrPut(bar) { BossBarHolder(bar) }.register()
 
-    private fun update(bar: BossBar, action: Action) {
+    private fun update(bar: BossBar, action: PacketOutBossBar.Action) {
         val holder = bars[bar] ?: return
-        holder.subscribers.forEach { it.session.send(PacketOutBossBar(action, holder)) }
+        val packet = PacketOutBossBar(holder.id, action)
+        holder.subscribers.forEach { it.session.send(packet) }
     }
 
-    class BossBarHolder(val bar: BossBar) {
+    private class BossBarHolder(val bar: BossBar) {
 
         val id: UUID = UUID.randomUUID()
         val subscribers: MutableSet<KryptonPlayer> = Collections.newSetFromMap(MapMaker().weakKeys().makeMap())
 
-        fun register() {
-            bar.addListener(BossBarManager)
-        }
+        fun register(): BossBarHolder = apply { bar.addListener(BossBarManager) }
     }
 }

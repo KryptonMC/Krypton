@@ -21,12 +21,18 @@ package org.kryptonmc.krypton.packet.out.play
 import io.netty.buffer.ByteBuf
 import org.kryptonmc.krypton.entity.KryptonExperienceOrb
 import org.kryptonmc.krypton.packet.EntityPacket
+import org.kryptonmc.krypton.util.readVarInt
 import org.kryptonmc.krypton.util.writeVarInt
+import org.spongepowered.math.vector.Vector3d
 
 @JvmRecord
 data class PacketOutSpawnExperienceOrb(override val entityId: Int, val x: Double, val y: Double, val z: Double, val count: Int) : EntityPacket {
 
+    constructor(entityId: Int, location: Vector3d, count: Int) : this(entityId, location.x(), location.y(), location.z(), count)
+
     constructor(orb: KryptonExperienceOrb) : this(orb.id, orb.location.x(), orb.location.y(), orb.location.z(), orb.count)
+
+    constructor(buf: ByteBuf) : this(buf.readVarInt(), buf.readDouble(), buf.readDouble(), buf.readDouble(), buf.readShort().toInt())
 
     override fun write(buf: ByteBuf) {
         buf.writeVarInt(entityId)

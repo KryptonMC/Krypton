@@ -32,7 +32,7 @@ import org.kryptonmc.krypton.command.arguments.item.ItemStackArgumentType
 import org.kryptonmc.krypton.command.arguments.item.itemStackArgument
 import org.kryptonmc.krypton.command.permission
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
-import org.kryptonmc.krypton.packet.out.play.PacketOutWindowItems
+import org.kryptonmc.krypton.packet.out.play.PacketOutSetContainerContent
 import org.kryptonmc.krypton.command.argument.argument
 import org.kryptonmc.krypton.command.literal
 import org.kryptonmc.krypton.command.runs
@@ -58,7 +58,7 @@ object GiveCommand : InternalCommand {
         targets.forEach { target ->
             item.createItemStacks(count).forEach(target.inventory::add)
             target.playSound(Sound.sound(SoundEvents.ITEM_PICKUP, Sound.Source.PLAYER, 0.2F, 2F))
-            target.session.send(PacketOutWindowItems(target.inventory, target.inventory.mainHand))
+            target.session.send(PacketOutSetContainerContent(target.inventory, target.inventory.mainHand))
         }
     }
 }

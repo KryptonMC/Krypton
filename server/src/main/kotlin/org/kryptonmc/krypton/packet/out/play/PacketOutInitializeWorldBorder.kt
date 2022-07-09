@@ -20,6 +20,8 @@ package org.kryptonmc.krypton.packet.out.play
 
 import io.netty.buffer.ByteBuf
 import org.kryptonmc.krypton.packet.Packet
+import org.kryptonmc.krypton.util.readVarInt
+import org.kryptonmc.krypton.util.readVarLong
 import org.kryptonmc.krypton.util.writeVarInt
 import org.kryptonmc.krypton.util.writeVarLong
 import org.kryptonmc.krypton.world.KryptonWorldBorder
@@ -45,6 +47,17 @@ data class PacketOutInitializeWorldBorder(
         PORTAL_TELEPORT_BOUNDARY,
         border.warningBlocks,
         border.warningTime
+    )
+
+    constructor(buf: ByteBuf) : this(
+        buf.readDouble(),
+        buf.readDouble(),
+        buf.readDouble(),
+        buf.readDouble(),
+        buf.readVarLong(),
+        buf.readVarInt(),
+        buf.readVarInt(),
+        buf.readVarInt()
     )
 
     override fun write(buf: ByteBuf) {

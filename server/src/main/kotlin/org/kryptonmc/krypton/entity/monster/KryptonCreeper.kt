@@ -37,9 +37,9 @@ class KryptonCreeper(world: KryptonWorld) : KryptonMonster(world, EntityTypes.CR
         set(value) = data.set(MetadataKeys.CREEPER.IGNITED, value)
 
     init {
-        data.add(MetadataKeys.CREEPER.STATE)
-        data.add(MetadataKeys.CREEPER.CHARGED)
-        data.add(MetadataKeys.CREEPER.IGNITED)
+        data.add(MetadataKeys.CREEPER.STATE, -1)
+        data.add(MetadataKeys.CREEPER.CHARGED, false)
+        data.add(MetadataKeys.CREEPER.IGNITED, false)
     }
 
     companion object {

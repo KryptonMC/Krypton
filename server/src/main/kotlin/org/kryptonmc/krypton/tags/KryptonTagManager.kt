@@ -35,13 +35,25 @@ import org.kryptonmc.api.tags.TagType
 @Suppress("UNCHECKED_CAST")
 object KryptonTagManager : TagManager {
 
-    override val tags: ImmutableMap<TagType<*>, ImmutableList<Tag<*>>> by lazy {
-        val gson = Gson()
+    private val GSON = Gson()
+
+    override val tags: ImmutableMap<TagType<*>, ImmutableList<Tag<*>>> by lazy { readTags() }
+
+    override fun <T : Any> get(type: TagType<T>): List<Tag<T>> = tags[type] as? List<Tag<T>> ?: emptyList()
+
+    override fun <T : Any> get(type: TagType<T>, name: String): KryptonTag<T>? {
+        val tags = tags[type] ?: return null
+        return tags.firstOrNull { it.key().asString() == name } as? KryptonTag<T>
+    }
+
+
+    @JvmStatic
+    private fun readTags(): ImmutableMap<TagType<*>, ImmutableList<Tag<*>>> {
         val tagMap = persistentHashMapOf<TagType<*>, PersistentList<Tag<*>>>().builder()
         Registries.TAG_TYPES.values.forEach { type ->
             if (type !is KryptonTagType) return@forEach
             val stream = requireNotNull(ClassLoader.getSystemResourceAsStream(type.path)) { "Could not get stream for path ${type.path}!" }
-            val json = stream.reader().use { gson.fromJson<JsonObject>(it) }
+            val json = stream.reader().use { GSON.fromJson<JsonObject>(it) }
             val identifiers = persistentListOf<Tag<*>>().builder()
             json.keySet().forEach {
                 val tag = KryptonTag(Key.key(it), type, keys(json, it))
@@ -49,14 +61,7 @@ object KryptonTagManager : TagManager {
             }
             tagMap[type] = identifiers.build()
         }
-        tagMap.build()
-    }
-
-    override fun <T : Any> get(type: TagType<T>): List<Tag<T>> = tags[type] as? List<Tag<T>> ?: emptyList()
-
-    override fun <T : Any> get(type: TagType<T>, name: String): KryptonTag<T>? {
-        val tags = tags[type] ?: return null
-        return tags.firstOrNull { it.key().asString() == name } as? KryptonTag<T>
+        return tagMap.build()
     }
 
     @JvmStatic

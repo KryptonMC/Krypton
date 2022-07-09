@@ -18,21 +18,15 @@
  */
 package org.kryptonmc.krypton.world.block.handler
 
-import org.kryptonmc.api.block.Block
-import org.kryptonmc.api.block.BlockFace
-import org.kryptonmc.api.entity.Hand
 import org.kryptonmc.api.item.ItemStack
 import org.kryptonmc.api.statistic.StatisticTypes
 import org.kryptonmc.api.tags.FluidTags
-import org.kryptonmc.api.util.Direction
-import org.kryptonmc.krypton.util.InteractionResult
-import org.kryptonmc.krypton.effect.Effect
+import org.kryptonmc.krypton.world.WorldEvent
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.item.destroySpeed
 import org.kryptonmc.krypton.item.handler
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.krypton.world.block.KryptonBlock
-import org.spongepowered.math.vector.Vector3i
 
 /**
  * A handler for a block.
@@ -88,7 +82,7 @@ interface BlockHandler {
     }
 
     fun spawnDestroyParticles(world: KryptonWorld, player: KryptonPlayer, x: Int, y: Int, z: Int, block: KryptonBlock) {
-        world.playEffect(Effect.DESTROY_BLOCK, x, y, z, block.stateId, player)
+        world.worldEvent(WorldEvent.DESTROY_BLOCK, x, y, z, block.stateId, player)
     }
 
     companion object {

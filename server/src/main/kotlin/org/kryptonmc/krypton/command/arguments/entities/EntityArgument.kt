@@ -58,6 +58,16 @@ data class EntityArgument(val onlyPlayers: Boolean, val singleTarget: Boolean) :
         private val ENTITY = EntityArgument(false, true)
         private val ENTITIES = EntityArgument(false, false)
 
+        @JvmStatic
+        fun from(players: Boolean, singleTarget: Boolean): EntityArgument {
+            if (players) {
+                if (singleTarget) return PLAYER
+                return PLAYERS
+            }
+            if (singleTarget) return ENTITY
+            return ENTITIES
+        }
+
         /**
          * An argument that will only attempt to parse a single player.
          */

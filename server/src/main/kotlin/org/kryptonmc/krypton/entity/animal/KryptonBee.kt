@@ -60,8 +60,8 @@ class KryptonBee(world: KryptonWorld) : KryptonAnimal(world, EntityTypes.BEE, AT
         get() = 0.4F
 
     init {
-        data.add(MetadataKeys.BEE.FLAGS)
-        data.add(MetadataKeys.BEE.ANGER_TIME)
+        data.add(MetadataKeys.BEE.FLAGS, 0)
+        data.add(MetadataKeys.BEE.ANGER_TIME, 0)
     }
 
     override fun startAngerTimer() {

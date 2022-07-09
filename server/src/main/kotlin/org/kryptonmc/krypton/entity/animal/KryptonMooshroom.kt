@@ -31,7 +31,7 @@ class KryptonMooshroom(world: KryptonWorld) : KryptonCow(world, EntityTypes.MOOS
         set(value) = data.set(MetadataKeys.MOOSHROOM.TYPE, value.name.lowercase())
 
     init {
-        data.add(MetadataKeys.MOOSHROOM.TYPE)
+        data.add(MetadataKeys.MOOSHROOM.TYPE, MooshroomType.RED.name.lowercase())
     }
 
     companion object {

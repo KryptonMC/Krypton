@@ -32,6 +32,8 @@ data class PacketOutChunkDataAndLight(val x: Int, val z: Int, val chunkData: Chu
         trustEdges: Boolean
     ) : this(chunk.position.x, chunk.position.z, ChunkPacketData(chunk), LightPacketData.create(chunk, trustEdges))
 
+    constructor(buf: ByteBuf) : this(buf.readInt(), buf.readInt(), ChunkPacketData(buf), LightPacketData(buf))
+
     override fun write(buf: ByteBuf) {
         buf.writeInt(x)
         buf.writeInt(z)

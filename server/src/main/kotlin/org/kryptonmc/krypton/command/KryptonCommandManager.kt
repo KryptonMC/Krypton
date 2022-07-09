@@ -67,7 +67,7 @@ import org.kryptonmc.krypton.command.registrar.RawCommandRegistrar
 import org.kryptonmc.krypton.command.registrar.SimpleCommandRegistrar
 import org.kryptonmc.krypton.commands.krypton.KryptonCommand
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
-import org.kryptonmc.krypton.packet.out.play.PacketOutDeclareCommands
+import org.kryptonmc.krypton.packet.out.play.PacketOutCommands
 import org.kryptonmc.krypton.util.logger
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.locks.ReentrantReadWriteLock
@@ -162,7 +162,7 @@ object KryptonCommandManager : CommandManager {
         lock.read {
             dispatcher.root.children.forEach { if (it.requirement.test(player)) node.addChild(it) }
             player.server.eventManager.fireAndForget(CommandSendEvent(player, node))
-            player.session.send(PacketOutDeclareCommands(node))
+            player.session.send(PacketOutCommands(node))
         }
     }
 

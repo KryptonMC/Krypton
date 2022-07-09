@@ -20,19 +20,19 @@ package org.kryptonmc.krypton.world.scoreboard
 
 import net.kyori.adventure.text.Component
 import org.kryptonmc.api.adventure.toPlainText
+import org.kryptonmc.api.scoreboard.DisplaySlot
 import org.kryptonmc.api.scoreboard.Objective
 import org.kryptonmc.api.scoreboard.Scoreboard
 import org.kryptonmc.api.scoreboard.Team
-import org.kryptonmc.api.scoreboard.DisplaySlot
 import org.kryptonmc.api.scoreboard.criteria.Criterion
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.entity.KryptonEntity
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.packet.out.play.PacketOutDisplayObjective
-import org.kryptonmc.krypton.packet.out.play.PacketOutObjective
-import org.kryptonmc.krypton.packet.out.play.PacketOutTeam
+import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateObjectives
 import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateScore
+import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateTeams
 import java.util.Collections
 import java.util.concurrent.ConcurrentHashMap
 
@@ -128,8 +128,8 @@ class KryptonScoreboard(private val server: KryptonServer) : Scoreboard {
     fun addMemberToTeam(member: Component, team: Team): Boolean {
         if (memberTeam(member) != null) removeMemberFromTeam(member)
         teamsByMember[member] = team
-        if (team.members.contains(member)) return false
-        team.addMember(member)
+        if (!team.addMember(member)) return false
+        server.sessionManager.sendGrouped(PacketOutUpdateTeams.addOrRemoveMember(team, member, true))
         return true
     }
 
@@ -143,6 +143,7 @@ class KryptonScoreboard(private val server: KryptonServer) : Scoreboard {
         check(memberTeam(member) === team) { "Cannot remove member ${member.toPlainText()} from team ${team.name}! Member is not on the team!" }
         teamsByMember.remove(member)
         team.removeMember(member)
+        server.sessionManager.sendGrouped(PacketOutUpdateTeams.addOrRemoveMember(team, member, false))
     }
 
     override fun objective(name: String): Objective? = objectivesByName[name]
@@ -225,7 +226,7 @@ class KryptonScoreboard(private val server: KryptonServer) : Scoreboard {
 
     fun onObjectiveUpdated(objective: Objective) {
         if (trackedObjectives.contains(objective)) {
-            server.sessionManager.sendGrouped(PacketOutObjective(PacketOutObjective.Action.UPDATE_TEXT, objective))
+            server.sessionManager.sendGrouped(PacketOutUpdateObjectives(PacketOutUpdateObjectives.Action.UPDATE_TEXT, objective))
         }
         makeDirty()
     }
@@ -243,29 +244,29 @@ class KryptonScoreboard(private val server: KryptonServer) : Scoreboard {
     }
 
     private fun onMemberRemoved(member: Component) {
-        server.sessionManager.sendGrouped(PacketOutUpdateScore(PacketOutUpdateScore.Action.REMOVE, member, null, 0))
+        server.sessionManager.sendGrouped(PacketOutUpdateScore(member, PacketOutUpdateScore.Action.REMOVE, null, 0))
         makeDirty()
     }
 
     private fun onMemberScoreRemoved(member: Component, objective: Objective) {
         if (trackedObjectives.contains(objective)) {
-            server.sessionManager.sendGrouped(PacketOutUpdateScore(PacketOutUpdateScore.Action.REMOVE, member, objective.name, 0))
+            server.sessionManager.sendGrouped(PacketOutUpdateScore(member, PacketOutUpdateScore.Action.REMOVE, objective.name, 0))
         }
         makeDirty()
     }
 
     private fun onTeamAdded(team: Team) {
-        server.sessionManager.sendGrouped(PacketOutTeam(PacketOutTeam.Action.CREATE, team))
+        server.sessionManager.sendGrouped(PacketOutUpdateTeams.create(team))
         makeDirty()
     }
 
     fun onTeamUpdated(team: Team) {
-        server.sessionManager.sendGrouped(PacketOutTeam(PacketOutTeam.Action.UPDATE_INFO, team))
+        server.sessionManager.sendGrouped(PacketOutUpdateTeams.update(team))
         makeDirty()
     }
 
     private fun onTeamRemoved(team: Team) {
-        server.sessionManager.sendGrouped(PacketOutTeam(PacketOutTeam.Action.REMOVE, team))
+        server.sessionManager.sendGrouped(PacketOutUpdateTeams.remove(team))
         makeDirty()
     }
 

@@ -49,8 +49,8 @@ abstract class KryptonTamable(
         }
 
     init {
-        data.add(MetadataKeys.TAMABLE.FLAGS)
-        data.add(MetadataKeys.TAMABLE.OWNER)
+        data.add(MetadataKeys.TAMABLE.FLAGS, 0)
+        data.add(MetadataKeys.TAMABLE.OWNER, null)
     }
 
     final override fun tame(tamer: Player) {

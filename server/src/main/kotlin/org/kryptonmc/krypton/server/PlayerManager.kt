@@ -33,24 +33,24 @@ import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.network.SessionHandler
 import org.kryptonmc.krypton.packet.FramedPacket
 import org.kryptonmc.krypton.packet.Packet
-import org.kryptonmc.krypton.packet.out.play.GameState
+import org.kryptonmc.krypton.packet.out.play.GameEvent
 import org.kryptonmc.krypton.packet.out.play.PacketOutAbilities
-import org.kryptonmc.krypton.packet.out.play.PacketOutChangeGameState
-import org.kryptonmc.krypton.packet.out.play.PacketOutChangeHeldItem
-import org.kryptonmc.krypton.packet.out.play.PacketOutDeclareRecipes
-import org.kryptonmc.krypton.packet.out.play.PacketOutEntityStatus
+import org.kryptonmc.krypton.packet.out.play.PacketOutGameEvent
+import org.kryptonmc.krypton.packet.out.play.PacketOutSetHeldItem
+import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateRecipes
+import org.kryptonmc.krypton.packet.out.play.PacketOutEntityEvent
 import org.kryptonmc.krypton.packet.out.play.PacketOutInitializeWorldBorder
-import org.kryptonmc.krypton.packet.out.play.PacketOutJoinGame
+import org.kryptonmc.krypton.packet.out.play.PacketOutLogin
 import org.kryptonmc.krypton.packet.out.play.PacketOutPlayerInfo
-import org.kryptonmc.krypton.packet.out.play.PacketOutPlayerPositionAndLook
+import org.kryptonmc.krypton.packet.out.play.PacketOutSynchronizePlayerPosition
 import org.kryptonmc.krypton.packet.out.play.PacketOutPluginMessage
 import org.kryptonmc.krypton.packet.out.play.PacketOutResourcePack
-import org.kryptonmc.krypton.packet.out.play.PacketOutSpawnPosition
-import org.kryptonmc.krypton.packet.out.play.PacketOutTags
-import org.kryptonmc.krypton.packet.out.play.PacketOutTeam
-import org.kryptonmc.krypton.packet.out.play.PacketOutTimeUpdate
-import org.kryptonmc.krypton.packet.out.play.PacketOutUnlockRecipes
-import org.kryptonmc.krypton.packet.out.play.PacketOutWindowItems
+import org.kryptonmc.krypton.packet.out.play.PacketOutSetDefaultSpawnPosition
+import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateTags
+import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateTeams
+import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateTime
+import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateRecipeBook
+import org.kryptonmc.krypton.packet.out.play.PacketOutSetContainerContent
 import org.kryptonmc.krypton.server.ban.BannedIpList
 import org.kryptonmc.krypton.server.ban.BannedPlayerList
 import org.kryptonmc.krypton.server.whitelist.Whitelist
@@ -63,7 +63,6 @@ import org.kryptonmc.krypton.world.biome.BiomeManager
 import org.kryptonmc.krypton.world.data.PlayerDataManager
 import org.kryptonmc.krypton.world.dimension.parseDimension
 import org.kryptonmc.krypton.world.scoreboard.KryptonScoreboard
-import org.spongepowered.math.vector.Vector3i
 import java.nio.file.Files
 import java.nio.file.Path
 import java.util.UUID
@@ -71,7 +70,6 @@ import java.util.concurrent.CompletableFuture
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.CopyOnWriteArrayList
 import java.util.concurrent.Executors
-import kotlin.random.Random
 
 class PlayerManager(private val server: KryptonServer) {
 
@@ -121,12 +119,13 @@ class PlayerManager(private val server: KryptonServer) {
         // Join the game
         val reducedDebugInfo = world.gameRules[GameRules.REDUCED_DEBUG_INFO]
         val doImmediateRespawn = world.gameRules[GameRules.DO_IMMEDIATE_RESPAWN]
-        session.send(PacketOutJoinGame(
+        session.send(PacketOutLogin(
             player.id,
             world.data.isHardcore,
             player.gameMode,
             player.oldGameMode,
             server.worldManager.worlds.keys,
+            PacketOutLogin.createRegistryCodec(),
             Registries.DIMENSION_TYPE.resourceKey(world.dimensionType)!!,
             world.dimension,
             BiomeManager.obfuscateSeed(world.seed),
@@ -144,11 +143,11 @@ class PlayerManager(private val server: KryptonServer) {
 
         // Player data stuff
         session.send(PacketOutAbilities(player))
-        session.send(PacketOutChangeHeldItem(player.inventory.heldSlot))
-        session.write(PacketOutDeclareRecipes.CACHED)
-        session.write(PacketOutUnlockRecipes.CACHED_INIT)
-        session.write(PacketOutTags.CACHED)
-        session.send(PacketOutEntityStatus(player.id, if (reducedDebugInfo) 22 else 23))
+        session.send(PacketOutSetHeldItem(player.inventory.heldSlot))
+        session.write(PacketOutUpdateRecipes.CACHED)
+        session.write(PacketOutUpdateRecipeBook.CACHED_INIT)
+        session.write(PacketOutUpdateTags.CACHED)
+        session.send(PacketOutEntityEvent(player.id, if (reducedDebugInfo) 22 else 23))
         sendCommands(player)
         player.statistics.invalidate()
         updateScoreboard(world.scoreboard, player)
@@ -173,7 +172,7 @@ class PlayerManager(private val server: KryptonServer) {
             player.displayName
         )
         server.sendMessage(joinMessage)
-        session.send(PacketOutPlayerPositionAndLook(location, player.rotation))
+        session.send(PacketOutSynchronizePlayerPosition(location, player.rotation))
         session.send(PacketOutPlayerInfo(PacketOutPlayerInfo.Action.ADD_PLAYER, player))
         world.spawnPlayer(player)
 
@@ -188,7 +187,7 @@ class PlayerManager(private val server: KryptonServer) {
         }
 
         // Send inventory data
-        session.send(PacketOutWindowItems(player.inventory, player.inventory.mainHand))
+        session.send(PacketOutSetContainerContent(player.inventory, player.inventory.mainHand))
         player.isLoaded = true
     }, executor)
 
@@ -236,7 +235,7 @@ class PlayerManager(private val server: KryptonServer) {
     }
 
     private fun sendCommands(player: KryptonPlayer) {
-        player.session.send(PacketOutEntityStatus(player.id, 28))
+        player.session.send(PacketOutEntityEvent(player.id, 28))
         server.commandManager.updateCommands(player)
     }
 
@@ -248,18 +247,18 @@ class PlayerManager(private val server: KryptonServer) {
 
     private fun sendWorldInfo(world: KryptonWorld, player: KryptonPlayer) {
         player.session.send(PacketOutInitializeWorldBorder(world.border))
-        player.session.send(PacketOutTimeUpdate(world.data.time, world.data.dayTime, world.data.gameRules[GameRules.DO_DAYLIGHT_CYCLE]))
-        player.session.send(PacketOutSpawnPosition(world.data.spawnX, world.data.spawnY, world.data.spawnZ, world.data.spawnAngle))
+        player.session.send(PacketOutUpdateTime(world.data.time, world.data.dayTime, world.data.gameRules[GameRules.DO_DAYLIGHT_CYCLE]))
+        player.session.send(PacketOutSetDefaultSpawnPosition(world.data.spawnX, world.data.spawnY, world.data.spawnZ, world.data.spawnAngle))
         if (world.isRaining) {
-            player.session.send(PacketOutChangeGameState(GameState.BEGIN_RAINING))
-            player.session.send(PacketOutChangeGameState(GameState.RAIN_LEVEL_CHANGE, world.getRainLevel(1F)))
-            player.session.send(PacketOutChangeGameState(GameState.THUNDER_LEVEL_CHANGE, world.getThunderLevel(1F)))
+            player.session.send(PacketOutGameEvent(GameEvent.BEGIN_RAINING))
+            player.session.send(PacketOutGameEvent(GameEvent.RAIN_LEVEL_CHANGE, world.getRainLevel(1F)))
+            player.session.send(PacketOutGameEvent(GameEvent.THUNDER_LEVEL_CHANGE, world.getThunderLevel(1F)))
         }
     }
 
     private fun updateScoreboard(scoreboard: KryptonScoreboard, player: KryptonPlayer) {
         val objectives = mutableSetOf<Objective>()
-        scoreboard.teams.forEach { player.session.send(PacketOutTeam(PacketOutTeam.Action.CREATE, it, it.members)) }
+        scoreboard.teams.forEach { player.session.send(PacketOutUpdateTeams.create(it)) }
         scoreboard.displayObjectives.forEach { (_, objective) ->
             if (objectives.contains(objective)) return@forEach
             scoreboard.getStartTrackingPackets(objective).forEach { player.session.send(it) }

@@ -33,7 +33,7 @@ class KryptonOcelot(world: KryptonWorld) : KryptonAnimal(world, EntityTypes.OCEL
         set(value) = data.set(MetadataKeys.OCELOT.TRUSTING, value)
 
     init {
-        data.add(MetadataKeys.OCELOT.TRUSTING)
+        data.add(MetadataKeys.OCELOT.TRUSTING, false)
     }
 
     override fun isFood(item: ItemStack): Boolean = TEMPT_INGREDIENTS.contains(item.type)

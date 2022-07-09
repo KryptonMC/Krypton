@@ -37,7 +37,7 @@ import org.kryptonmc.api.statistic.StatisticTypes
 import org.kryptonmc.api.statistic.StatisticsTracker
 import org.kryptonmc.krypton.KryptonPlatform
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
-import org.kryptonmc.krypton.packet.out.play.PacketOutStatistics
+import org.kryptonmc.krypton.packet.out.play.PacketOutAwardStatistics
 import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.util.sendDataConversionWarning
 import org.kryptonmc.krypton.util.upgradeData
@@ -99,7 +99,7 @@ class KryptonStatisticsTracker(private val player: KryptonPlayer, private val fi
     fun send() {
         val map = Object2IntOpenHashMap<Statistic<*>>()
         pendingUpdating.forEach { map[it] = get(it) }
-        player.session.send(PacketOutStatistics(map))
+        player.session.send(PacketOutAwardStatistics(map))
     }
 
     override fun invalidate() {

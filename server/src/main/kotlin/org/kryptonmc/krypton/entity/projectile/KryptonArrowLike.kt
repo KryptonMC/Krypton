@@ -54,8 +54,8 @@ abstract class KryptonArrowLike(
         set(value) = data.set(MetadataKeys.ARROW_LIKE.PIERCING_LEVEL, value.toByte())
 
     init {
-        data.add(MetadataKeys.ARROW_LIKE.FLAGS)
-        data.add(MetadataKeys.ARROW_LIKE.PIERCING_LEVEL)
+        data.add(MetadataKeys.ARROW_LIKE.FLAGS, 0)
+        data.add(MetadataKeys.ARROW_LIKE.PIERCING_LEVEL, 0)
     }
 
     private fun getFlag(flag: Int): Boolean = getFlag(MetadataKeys.ARROW_LIKE.FLAGS, flag)

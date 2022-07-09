@@ -30,6 +30,8 @@ data class KryptonDustParticleData(
     override val scale: Float
 ) : DustParticleData, Writable {
 
+    constructor(buf: ByteBuf) : this(buf.readColor(), buf.readColor(), buf.readColor(), buf.readFloat())
+
     override fun write(buf: ByteBuf) {
         buf.writeFloat(if (red == 0.toShort()) Float.MIN_VALUE else red.toFloat() / 255F)
         buf.writeFloat(green.toFloat() / 255F)
@@ -37,3 +39,5 @@ data class KryptonDustParticleData(
         buf.writeFloat(scale)
     }
 }
+
+private fun ByteBuf.readColor(): Short = (readFloat() * 255F).toInt().toShort()

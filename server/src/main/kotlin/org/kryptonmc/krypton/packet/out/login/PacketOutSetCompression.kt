@@ -20,6 +20,7 @@ package org.kryptonmc.krypton.packet.out.login
 
 import io.netty.buffer.ByteBuf
 import org.kryptonmc.krypton.packet.Packet
+import org.kryptonmc.krypton.util.readVarInt
 import org.kryptonmc.krypton.util.writeVarInt
 
 /**
@@ -28,6 +29,8 @@ import org.kryptonmc.krypton.util.writeVarInt
  */
 @JvmRecord
 data class PacketOutSetCompression(val threshold: Int) : Packet {
+
+    constructor(buf: ByteBuf) : this(buf.readVarInt())
 
     override fun write(buf: ByteBuf) {
         buf.writeVarInt(threshold)

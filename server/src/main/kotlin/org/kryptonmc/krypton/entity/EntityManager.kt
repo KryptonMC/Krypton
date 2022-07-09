@@ -27,7 +27,7 @@ import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.api.world.rule.GameRules
 import org.kryptonmc.krypton.KryptonPlatform
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
-import org.kryptonmc.krypton.packet.out.play.PacketOutTimeUpdate
+import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateTime
 import org.kryptonmc.krypton.util.forEachEntityInRange
 import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.util.sendDataConversionWarning
@@ -88,7 +88,7 @@ class EntityManager(val world: KryptonWorld) : AutoCloseable {
         val location = player.location
 
         // TODO: World border
-        player.session.send(PacketOutTimeUpdate(world.data.time, world.data.dayTime, world.data.gameRules[GameRules.DO_DAYLIGHT_CYCLE]))
+        player.session.send(PacketOutUpdateTime(world.data.time, world.data.dayTime, world.data.gameRules[GameRules.DO_DAYLIGHT_CYCLE]))
         if (!player.isVanished) {
             forEachEntityInRange(location, player.viewDistance) {
                 it.addViewer(player)
