@@ -16,42 +16,34 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.packet.out.play
+package org.kryptonmc.krypton.network.chat
 
 import io.netty.buffer.ByteBuf
+import net.kyori.adventure.identity.Identity
 import net.kyori.adventure.text.Component
-import org.kryptonmc.krypton.network.chat.ChatSender
-import org.kryptonmc.krypton.network.chat.MessageSignature
-import org.kryptonmc.krypton.packet.Packet
+import org.kryptonmc.krypton.network.Writable
 import org.kryptonmc.krypton.util.readComponent
 import org.kryptonmc.krypton.util.readNullable
-import org.kryptonmc.krypton.util.readVarInt
+import org.kryptonmc.krypton.util.readUUID
 import org.kryptonmc.krypton.util.writeComponent
 import org.kryptonmc.krypton.util.writeNullable
-import org.kryptonmc.krypton.util.writeVarInt
+import org.kryptonmc.krypton.util.writeUUID
+import java.util.UUID
 
 @JvmRecord
-data class PacketOutPlayerChatMessage(
-    val signedMessage: Component,
-    val unsignedMessage: Component?,
-    val typeId: Int,
-    val sender: ChatSender,
-    val signature: MessageSignature
-) : Packet {
+data class ChatSender(val uuid: UUID, val name: Component, val teamName: Component? = null) : Writable {
 
-    constructor(buf: ByteBuf) : this(
-        buf.readComponent(),
-        buf.readNullable { buf.readComponent() },
-        buf.readVarInt(),
-        ChatSender(buf),
-        MessageSignature(buf)
-    )
+    constructor(buf: ByteBuf) : this(buf.readUUID(), buf.readComponent(), buf.readNullable { buf.readComponent() })
 
     override fun write(buf: ByteBuf) {
-        buf.writeComponent(signedMessage)
-        buf.writeNullable(unsignedMessage, ByteBuf::writeComponent)
-        buf.writeVarInt(typeId)
-        sender.write(buf)
-        signature.write(buf)
+        buf.writeUUID(uuid)
+        buf.writeComponent(name)
+        buf.writeNullable(teamName, ByteBuf::writeComponent)
+    }
+
+    companion object {
+
+        @JvmStatic
+        fun fromIdentity(identity: Identity): ChatSender = ChatSender(identity.uuid(), Component.empty(), null)
     }
 }
