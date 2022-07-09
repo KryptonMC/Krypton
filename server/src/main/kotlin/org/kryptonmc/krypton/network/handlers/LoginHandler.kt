@@ -105,7 +105,7 @@ class LoginHandler(
     private fun handleLoginStart(packet: PacketInLoginStart) {
         name = packet.name
         try {
-            publicKey = validatePublicKey(packet.publicKey, SignatureValidator.YGGDRASIL, server.config.server.enforceSecureProfiles)
+            publicKey = validatePublicKey(packet.publicKey, server.config.server.enforceSecureProfiles)
         } catch (exception: PublicKeyParseException) {
             LOGGER.error(exception.message, exception.cause)
             disconnect(exception.asComponent())
@@ -364,13 +364,13 @@ class LoginHandler(
         }
 
         @JvmStatic
-        private fun validatePublicKey(keyData: PlayerPublicKey.Data?, validator: SignatureValidator, requireValid: Boolean): PlayerPublicKey? {
+        private fun validatePublicKey(keyData: PlayerPublicKey.Data?, requireValid: Boolean): PlayerPublicKey? {
             try {
                 if (keyData == null) {
                     if (requireValid) throw PublicKeyParseException(MISSING_PUBLIC_KEY)
                     return null
                 }
-                return PlayerPublicKey.create(validator, keyData)
+                return PlayerPublicKey.create(SignatureValidator.YGGDRASIL, keyData)
             } catch (exception: InsecurePublicKeyException.Missing) {
                 if (requireValid) throw PublicKeyParseException(INVALID_SIGNATURE, exception) else return null
             } catch (exception: InsecurePublicKeyException.Invalid) {

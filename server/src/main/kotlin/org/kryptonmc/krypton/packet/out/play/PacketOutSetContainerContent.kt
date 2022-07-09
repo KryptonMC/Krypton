@@ -21,7 +21,6 @@ package org.kryptonmc.krypton.packet.out.play
 import io.netty.buffer.ByteBuf
 import org.kryptonmc.krypton.inventory.KryptonInventory
 import org.kryptonmc.krypton.item.KryptonItemStack
-import org.kryptonmc.krypton.network.Writable
 import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.util.readItem
 import org.kryptonmc.krypton.util.readList
