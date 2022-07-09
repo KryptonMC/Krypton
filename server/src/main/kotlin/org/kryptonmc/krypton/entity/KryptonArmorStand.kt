@@ -22,6 +22,7 @@ import org.kryptonmc.api.entity.ArmorStand
 import org.kryptonmc.api.entity.EntityTypes
 import org.kryptonmc.api.entity.EquipmentSlot
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
+import org.kryptonmc.krypton.entity.serializer.ArmorStandSerializer
 import org.kryptonmc.krypton.item.KryptonItemStack
 import org.kryptonmc.krypton.util.FixedList
 import org.kryptonmc.krypton.world.KryptonWorld
@@ -70,13 +71,13 @@ class KryptonArmorStand(world: KryptonWorld) : KryptonLivingEntity(world, Entity
         set(value) = data.set(MetadataKeys.ARMOR_STAND.RIGHT_LEG_ROTATION, value)
 
     init {
-        data.add(MetadataKeys.ARMOR_STAND.FLAGS)
-        data.add(MetadataKeys.ARMOR_STAND.HEAD_ROTATION)
-        data.add(MetadataKeys.ARMOR_STAND.BODY_ROTATION)
-        data.add(MetadataKeys.ARMOR_STAND.LEFT_ARM_ROTATION)
-        data.add(MetadataKeys.ARMOR_STAND.RIGHT_ARM_ROTATION)
-        data.add(MetadataKeys.ARMOR_STAND.LEFT_LEG_ROTATION)
-        data.add(MetadataKeys.ARMOR_STAND.RIGHT_LEG_ROTATION)
+        data.add(MetadataKeys.ARMOR_STAND.FLAGS, 0)
+        data.add(MetadataKeys.ARMOR_STAND.HEAD_ROTATION, ArmorStandSerializer.DEFAULT_HEAD_ROTATION)
+        data.add(MetadataKeys.ARMOR_STAND.BODY_ROTATION, ArmorStandSerializer.DEFAULT_BODY_ROTATION)
+        data.add(MetadataKeys.ARMOR_STAND.LEFT_ARM_ROTATION, ArmorStandSerializer.DEFAULT_LEFT_ARM_ROTATION)
+        data.add(MetadataKeys.ARMOR_STAND.RIGHT_ARM_ROTATION, ArmorStandSerializer.DEFAULT_RIGHT_ARM_ROTATION)
+        data.add(MetadataKeys.ARMOR_STAND.LEFT_LEG_ROTATION, ArmorStandSerializer.DEFAULT_LEFT_LEG_ROTATION)
+        data.add(MetadataKeys.ARMOR_STAND.RIGHT_LEG_ROTATION, ArmorStandSerializer.DEFAULT_RIGHT_LEG_ROTATION)
     }
 
     override fun equipment(slot: EquipmentSlot): KryptonItemStack = when (slot.type) {

@@ -52,7 +52,7 @@ abstract class KryptonAgeable(
         get() = false
 
     init {
-        data.add(MetadataKeys.AGEABLE.BABY)
+        data.add(MetadataKeys.AGEABLE.BABY, false)
     }
 
     protected open fun onAgeTransformation() {

@@ -21,15 +21,20 @@ package org.kryptonmc.krypton.packet.out.play
 import io.netty.buffer.ByteBuf
 import net.kyori.adventure.text.Component
 import org.kryptonmc.krypton.packet.Packet
-import org.kryptonmc.krypton.util.writeChat
+import org.kryptonmc.krypton.util.readComponent
+import org.kryptonmc.krypton.util.readNullable
+import org.kryptonmc.krypton.util.readVarInt
+import org.kryptonmc.krypton.util.writeComponent
+import org.kryptonmc.krypton.util.writeNullable
 import org.kryptonmc.krypton.util.writeVarInt
 
 @JvmRecord
 data class PacketOutChatPreview(val queryId: Int, val previewMessage: Component?) : Packet {
 
+    constructor(buf: ByteBuf) : this(buf.readVarInt(), buf.readNullable { buf.readComponent() })
+
     override fun write(buf: ByteBuf) {
         buf.writeVarInt(queryId)
-        buf.writeBoolean(previewMessage != null)
-        if (previewMessage != null) buf.writeChat(previewMessage)
+        buf.writeNullable(previewMessage, ByteBuf::writeComponent)
     }
 }

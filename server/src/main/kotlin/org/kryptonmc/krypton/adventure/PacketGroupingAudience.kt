@@ -36,17 +36,16 @@ import org.kryptonmc.krypton.entity.KryptonEntity
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.network.SessionManager
 import org.kryptonmc.krypton.packet.Packet
-import org.kryptonmc.krypton.packet.out.play.PacketOutActionBar
-import org.kryptonmc.krypton.packet.out.play.PacketOutPlayerChat
+import org.kryptonmc.krypton.packet.out.play.PacketOutSetActionBarText
 import org.kryptonmc.krypton.packet.out.play.PacketOutClearTitles
 import org.kryptonmc.krypton.packet.out.play.PacketOutEntitySoundEffect
-import org.kryptonmc.krypton.packet.out.play.PacketOutNamedSoundEffect
-import org.kryptonmc.krypton.packet.out.play.PacketOutPlayerListHeaderFooter
+import org.kryptonmc.krypton.packet.out.play.PacketOutCustomSoundEffect
+import org.kryptonmc.krypton.packet.out.play.PacketOutSetTabListHeaderAndFooter
 import org.kryptonmc.krypton.packet.out.play.PacketOutSoundEffect
 import org.kryptonmc.krypton.packet.out.play.PacketOutStopSound
-import org.kryptonmc.krypton.packet.out.play.PacketOutSubTitle
-import org.kryptonmc.krypton.packet.out.play.PacketOutTitle
-import org.kryptonmc.krypton.packet.out.play.PacketOutTitleTimes
+import org.kryptonmc.krypton.packet.out.play.PacketOutSetSubtitleText
+import org.kryptonmc.krypton.packet.out.play.PacketOutSetTitleText
+import org.kryptonmc.krypton.packet.out.play.PacketOutSetTitleAnimationTimes
 
 interface PacketGroupingAudience : ForwardingAudience {
 
@@ -59,16 +58,16 @@ interface PacketGroupingAudience : ForwardingAudience {
 
     override fun sendMessage(source: Identified, message: Component, type: MessageType) {
         // TODO
-        //sendGroupedPacket(PacketOutPlayerChat(message, type, source.identity().uuid()))
+        //sendGroupedPacket(PacketOutPlayerChatMessage(message, type, source.identity().uuid()))
     }
 
     override fun sendMessage(source: Identity, message: Component, type: MessageType) {
         // TODO
-        //sendGroupedPacket(PacketOutPlayerChat(message, type, source.uuid()))
+        //sendGroupedPacket(PacketOutPlayerChatMessage(message, type, source.uuid()))
     }
 
     override fun sendActionBar(message: Component) {
-        sendGroupedPacket(PacketOutActionBar(message))
+        sendGroupedPacket(PacketOutSetActionBarText(message))
     }
 
     override fun sendPlayerListHeader(header: Component) {
@@ -80,13 +79,13 @@ interface PacketGroupingAudience : ForwardingAudience {
     }
 
     override fun sendPlayerListHeaderAndFooter(header: Component, footer: Component) {
-        sendGroupedPacket(PacketOutPlayerListHeaderFooter(header, footer))
+        sendGroupedPacket(PacketOutSetTabListHeaderAndFooter(header, footer))
     }
 
     override fun <T : Any> sendTitlePart(part: TitlePart<T>, value: T) {
-        if (part === TitlePart.TITLE) sendGroupedPacket(PacketOutTitle(value as Component))
-        if (part === TitlePart.SUBTITLE) sendGroupedPacket(PacketOutSubTitle(value as Component))
-        if (part === TitlePart.TIMES) sendGroupedPacket(PacketOutTitleTimes(value as Title.Times))
+        if (part === TitlePart.TITLE) sendGroupedPacket(PacketOutSetTitleText(value as Component))
+        if (part === TitlePart.SUBTITLE) sendGroupedPacket(PacketOutSetSubtitleText(value as Component))
+        if (part === TitlePart.TIMES) sendGroupedPacket(PacketOutSetTitleAnimationTimes(value as Title.Times))
         throw IllegalArgumentException("Unknown TitlePart")
     }
 
@@ -112,7 +111,7 @@ interface PacketGroupingAudience : ForwardingAudience {
             sendGroupedPacket(PacketOutSoundEffect(sound, type, x, y, z))
             return
         }
-        sendGroupedPacket(PacketOutNamedSoundEffect(sound, x, y, z))
+        sendGroupedPacket(PacketOutCustomSoundEffect(sound, x, y, z))
     }
 
     override fun playSound(sound: Sound, emitter: Sound.Emitter) {
@@ -123,7 +122,7 @@ interface PacketGroupingAudience : ForwardingAudience {
                 sendGroupedPacket(PacketOutEntitySoundEffect(event, sound.source(), entity.id, sound.volume(), sound.pitch()))
                 return
             }
-            sendGroupedPacket(PacketOutNamedSoundEffect(sound, entity.location.x(), entity.location.y(), entity.location.z()))
+            sendGroupedPacket(PacketOutCustomSoundEffect(sound, entity.location.x(), entity.location.y(), entity.location.z()))
             return
         }
         // If we're playing on self, we need to delegate to each audience member

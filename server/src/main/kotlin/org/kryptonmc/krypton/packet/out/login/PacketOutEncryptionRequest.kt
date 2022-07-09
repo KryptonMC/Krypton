@@ -19,11 +19,11 @@
 package org.kryptonmc.krypton.packet.out.login
 
 import io.netty.buffer.ByteBuf
-import java.security.PublicKey
 import java.util.Objects
 import org.kryptonmc.krypton.packet.Packet
+import org.kryptonmc.krypton.util.readString
+import org.kryptonmc.krypton.util.readVarIntByteArray
 import org.kryptonmc.krypton.util.writeString
-import org.kryptonmc.krypton.util.writeVarInt
 import org.kryptonmc.krypton.util.writeVarIntByteArray
 
 /**
@@ -33,10 +33,14 @@ import org.kryptonmc.krypton.util.writeVarIntByteArray
  * hasn't been tampered with (no hackers listening in).
  */
 @JvmRecord
-data class PacketOutEncryptionRequest(val publicKey: ByteArray, val verifyToken: ByteArray) : Packet {
+data class PacketOutEncryptionRequest(val serverId: String, val publicKey: ByteArray, val verifyToken: ByteArray) : Packet {
+
+    constructor(publicKey: ByteArray, verifyToken: ByteArray) : this("", publicKey, verifyToken)
+
+    constructor(buf: ByteBuf) : this(buf.readString(), buf.readVarIntByteArray(), buf.readVarIntByteArray())
 
     override fun write(buf: ByteBuf) {
-        buf.writeString("", 20)
+        buf.writeString(serverId, 20)
         buf.writeVarIntByteArray(publicKey)
         buf.writeVarIntByteArray(verifyToken)
     }

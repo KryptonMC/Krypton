@@ -27,12 +27,12 @@ object CatSerializer : EntitySerializer<KryptonCat> {
 
     override fun load(entity: KryptonCat, data: CompoundTag) {
         TamableSerializer.load(entity, data)
-        entity.data[MetadataKeys.CAT.TYPE] = data.getInt("CatType")
+        entity.data[MetadataKeys.CAT.VARIANT] = data.getInt("CatType")
         if (data.contains("CollarColor", 99)) entity.data[MetadataKeys.CAT.COLLAR_COLOR] = data.getInt("CollarColor")
     }
 
     override fun save(entity: KryptonCat): CompoundTag.Builder = TamableSerializer.save(entity).apply {
-        int("CatType", entity.data[MetadataKeys.CAT.TYPE])
+        int("CatType", entity.data[MetadataKeys.CAT.VARIANT])
         byte("CollarColor", entity.data[MetadataKeys.CAT.COLLAR_COLOR].toByte())
     }
 }

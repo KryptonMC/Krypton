@@ -33,7 +33,6 @@ import org.kryptonmc.api.adventure.toPlainText
 import org.kryptonmc.api.item.meta
 import org.kryptonmc.api.item.meta.WrittenBookMeta
 import org.kryptonmc.krypton.adventure.KryptonAdventure
-import org.kryptonmc.krypton.adventure.id
 import org.kryptonmc.krypton.adventure.toItemStack
 import org.kryptonmc.krypton.adventure.NBTLegacyHoverEventSerializer
 import org.kryptonmc.krypton.util.Bootstrap
@@ -54,7 +53,7 @@ class AdventureTests {
     @Suppress("UNCHECKED_CAST")
     fun `ensure ids do not break on update`() {
         val values = Reflection.accessField<NamedTextColor, List<NamedTextColor>>("VALUES")!!
-        values.forEachIndexed { index, element -> assertEquals(index, element.id()) }
+        values.forEachIndexed { index, element -> assertEquals(index, KryptonAdventure.colorId(element)) }
     }
 
     @Test

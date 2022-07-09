@@ -53,7 +53,7 @@ object BlockLoader : KryptonDataLoader<Block>("blocks", Registries.BLOCK) {
     fun fromKey(key: Key): KryptonBlock? = fromKey(key.asString())
 
     @JvmStatic
-    fun fromState(state: Int): Block = STATES[state] ?: Blocks.AIR
+    fun fromState(state: Int): KryptonBlock = STATES[state] ?: Blocks.AIR.downcast()
 
     @JvmStatic
     fun properties(key: String, properties: Map<String, String>): KryptonBlock? = PROPERTY_MAP[key]?.properties?.get(properties)

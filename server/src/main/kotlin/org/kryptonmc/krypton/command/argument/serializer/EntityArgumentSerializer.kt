@@ -29,6 +29,8 @@ import org.kryptonmc.krypton.command.arguments.entities.EntityArgument
  */
 object EntityArgumentSerializer : FlaggedArgumentSerializer<EntityArgument> {
 
+    override fun read(buf: ByteBuf, flags: Int): EntityArgument = EntityArgument.from(flags and 1 != 0, flags and 2 != 0)
+
     override fun write(buf: ByteBuf, value: EntityArgument) {
         buf.writeByte(createFlags(value.singleTarget, value.onlyPlayers))
     }

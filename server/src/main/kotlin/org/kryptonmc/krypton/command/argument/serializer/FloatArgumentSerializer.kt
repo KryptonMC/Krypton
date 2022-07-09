@@ -34,6 +34,13 @@ import io.netty.buffer.ByteBuf
  */
 object FloatArgumentSerializer : FlaggedArgumentSerializer<FloatArgumentType> {
 
+    override fun read(buf: ByteBuf, flags: Int): FloatArgumentType {
+        if (flags == 0) return FloatArgumentType.floatArg() // No flags, so both min and max are absent
+        val minimum = if (flags and 1 != 0) buf.readFloat() else -Float.MAX_VALUE
+        val maximum = if (flags and 2 != 0) buf.readFloat() else Float.MAX_VALUE
+        return FloatArgumentType.floatArg(minimum, maximum)
+    }
+
     override fun write(buf: ByteBuf, value: FloatArgumentType) {
         val writeMin = value.minimum != -Float.MAX_VALUE
         val writeMax = value.maximum != Float.MAX_VALUE

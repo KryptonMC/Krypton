@@ -55,7 +55,7 @@ class KryptonTropicalFish(world: KryptonWorld) : KryptonSchoolingFish(world, Ent
     override val bucketType: ItemType = ItemTypes.TROPICAL_FISH_BUCKET
 
     init {
-        data.add(MetadataKeys.TROPICAL_FISH.VARIANT)
+        data.add(MetadataKeys.TROPICAL_FISH.VARIANT, TropicalFishVariant.KOB.ordinal)
     }
 
     /* FIXME

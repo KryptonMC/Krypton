@@ -64,9 +64,9 @@ class KryptonAxolotl(world: KryptonWorld) : KryptonAnimal(world, EntityTypes.AXO
         get() = !isPlayingDead && super.canBeSeenAsEnemy
 
     init {
-        data.add(MetadataKeys.AXOLOTL.VARIANT)
-        data.add(MetadataKeys.AXOLOTL.PLAYING_DEAD)
-        data.add(MetadataKeys.AXOLOTL.FROM_BUCKET)
+        data.add(MetadataKeys.AXOLOTL.VARIANT, AxolotlVariant.LUCY.ordinal)
+        data.add(MetadataKeys.AXOLOTL.PLAYING_DEAD, false)
+        data.add(MetadataKeys.AXOLOTL.FROM_BUCKET, false)
     }
 
     override fun isFood(item: ItemStack): Boolean = ItemTags.AXOLOTL_TEMPT_ITEMS.contains(item.type)

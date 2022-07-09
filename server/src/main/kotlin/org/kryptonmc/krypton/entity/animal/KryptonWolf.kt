@@ -24,6 +24,7 @@ import org.kryptonmc.api.entity.animal.Wolf
 import org.kryptonmc.api.entity.attribute.AttributeTypes
 import org.kryptonmc.api.item.ItemStack
 import org.kryptonmc.api.item.data.DyeColor
+import org.kryptonmc.api.item.data.DyeColors
 import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.krypton.entity.Neutral
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
@@ -68,9 +69,9 @@ class KryptonWolf(world: KryptonWorld) : KryptonTamable(world, EntityTypes.WOLF,
         get() = 0.4F
 
     init {
-        data.add(MetadataKeys.WOLF.BEGGING)
-        data.add(MetadataKeys.WOLF.COLLAR_COLOR)
-        data.add(MetadataKeys.WOLF.ANGER_TIME)
+        data.add(MetadataKeys.WOLF.BEGGING, false)
+        data.add(MetadataKeys.WOLF.COLLAR_COLOR, Registries.DYE_COLORS.idOf(DyeColors.RED))
+        data.add(MetadataKeys.WOLF.ANGER_TIME, 0)
         isTame = false
     }
 

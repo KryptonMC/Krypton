@@ -34,6 +34,13 @@ import io.netty.buffer.ByteBuf
  */
 object LongArgumentSerializer : FlaggedArgumentSerializer<LongArgumentType> {
 
+    override fun read(buf: ByteBuf, flags: Int): LongArgumentType {
+        if (flags == 0) return LongArgumentType.longArg()
+        val minimum = if (flags and 1 != 0) buf.readLong() else Long.MIN_VALUE
+        val maximum = if (flags and 2 != 0) buf.readLong() else Long.MAX_VALUE
+        return LongArgumentType.longArg(minimum, maximum)
+    }
+
     override fun write(buf: ByteBuf, value: LongArgumentType) {
         val writeMin = value.minimum != Long.MIN_VALUE
         val writeMax = value.maximum != Long.MAX_VALUE

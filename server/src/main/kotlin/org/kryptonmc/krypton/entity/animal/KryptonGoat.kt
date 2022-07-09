@@ -31,7 +31,7 @@ class KryptonGoat(world: KryptonWorld) : KryptonAnimal(world, EntityTypes.GOAT, 
         set(value) = data.set(MetadataKeys.GOAT.SCREAMING, value)
 
     init {
-        data.add(MetadataKeys.GOAT.SCREAMING)
+        data.add(MetadataKeys.GOAT.SCREAMING, false)
     }
 
     override fun onAgeTransformation() {

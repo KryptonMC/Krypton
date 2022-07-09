@@ -22,7 +22,11 @@ import io.netty.buffer.ByteBuf
 import net.kyori.adventure.text.Component
 import org.kryptonmc.api.resource.ResourcePack
 import org.kryptonmc.krypton.packet.Packet
-import org.kryptonmc.krypton.util.writeChat
+import org.kryptonmc.krypton.util.readComponent
+import org.kryptonmc.krypton.util.readNullable
+import org.kryptonmc.krypton.util.readString
+import org.kryptonmc.krypton.util.writeComponent
+import org.kryptonmc.krypton.util.writeNullable
 import org.kryptonmc.krypton.util.writeString
 
 @JvmRecord
@@ -30,11 +34,12 @@ data class PacketOutResourcePack(val uri: String, val hash: String, val forced: 
 
     constructor(pack: ResourcePack) : this(pack.uri.toString(), pack.hash, pack.isForced, pack.promptMessage)
 
+    constructor(buf: ByteBuf) : this(buf.readString(), buf.readString(), buf.readBoolean(), buf.readNullable { buf.readComponent() })
+
     override fun write(buf: ByteBuf) {
         buf.writeString(uri)
         buf.writeString(hash)
         buf.writeBoolean(forced)
-        buf.writeBoolean(prompt != null)
-        if (prompt != null) buf.writeChat(prompt)
+        buf.writeNullable(prompt, ByteBuf::writeComponent)
     }
 }

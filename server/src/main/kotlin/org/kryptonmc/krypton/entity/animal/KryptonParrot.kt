@@ -41,7 +41,7 @@ class KryptonParrot(world: KryptonWorld) : KryptonTamable(world, EntityTypes.PAR
         get() = (Random.nextFloat() - Random.nextFloat()) * 0.2F + 1F
 
     init {
-        data.add(MetadataKeys.PARROT.TYPE)
+        data.add(MetadataKeys.PARROT.TYPE, ParrotType.RED_AND_BLUE.ordinal)
     }
 
     override fun isFood(item: ItemStack): Boolean = false

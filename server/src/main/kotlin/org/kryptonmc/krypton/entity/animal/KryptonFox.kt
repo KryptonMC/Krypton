@@ -69,10 +69,10 @@ class KryptonFox(world: KryptonWorld) : KryptonAnimal(world, EntityTypes.FOX, AT
         }
 
     init {
-        data.add(MetadataKeys.FOX.FIRST_TRUSTED)
-        data.add(MetadataKeys.FOX.SECOND_TRUSTED)
-        data.add(MetadataKeys.FOX.TYPE)
-        data.add(MetadataKeys.FOX.FLAGS)
+        data.add(MetadataKeys.FOX.TYPE, FoxType.RED.ordinal)
+        data.add(MetadataKeys.FOX.FLAGS, 0)
+        data.add(MetadataKeys.FOX.FIRST_TRUSTED, null)
+        data.add(MetadataKeys.FOX.SECOND_TRUSTED, null)
     }
 
     override fun trusts(uuid: UUID): Boolean = uuid == firstTrusted || uuid == secondTrusted
@@ -88,7 +88,6 @@ class KryptonFox(world: KryptonWorld) : KryptonAnimal(world, EntityTypes.FOX, AT
     companion object {
 
         private val TYPES = FoxType.values()
-        private val TYPE_NAMES = TYPES.associateBy { it.name.lowercase() }
 
         private val ATTRIBUTES = attributes()
             .add(AttributeTypes.MOVEMENT_SPEED, 0.3)

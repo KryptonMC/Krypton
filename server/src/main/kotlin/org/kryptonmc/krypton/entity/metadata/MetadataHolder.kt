@@ -18,6 +18,8 @@
  */
 package org.kryptonmc.krypton.entity.metadata
 
+import kotlinx.collections.immutable.PersistentList
+import kotlinx.collections.immutable.persistentListOf
 import org.kryptonmc.krypton.entity.KryptonEntity
 import space.vectrix.flare.fastutil.Int2ObjectSyncMap
 
@@ -30,30 +32,12 @@ class MetadataHolder(private val entity: KryptonEntity) {
         private set
     var isEmpty: Boolean = true
         private set
-    val all: Sequence<Entry<*>>
-        get() = itemsById.int2ObjectEntrySet()
-            .asSequence()
-            .map { it.value.copy() }
-            .apply { invalidate() }
-    val dirty: Sequence<Entry<*>>
-        get() {
-            if (!isDirty) return emptySequence()
-            val entries = itemsById.int2ObjectEntrySet()
-                .asSequence()
-                .filter { it.value.isDirty }
-                .map {
-                    it.value.isDirty = false
-                    it.value.copy()
-                }
-            isDirty = false
-            return entries
-        }
 
-    fun <T> add(key: MetadataKey<T>, value: T = key.default) {
+    fun <T> add(key: MetadataKey<T>, value: T) {
         val id = key.id
         require(id <= MAX_ID_VALUE) { "Data value id is too big! Maximum size is $MAX_ID_VALUE, value was $id!" }
         require(!itemsById.containsKey(id)) { "Duplicate id value for $id!" }
-        require(key.serializer.id >= 0) { "Unregistered serializer ${key.serializer} for $id!" }
+        require(MetadataSerializers.idOf(key.serializer) >= 0) { "Unregistered serializer ${key.serializer} for $id!" }
         return createItem(key, value)
     }
 
@@ -61,7 +45,7 @@ class MetadataHolder(private val entity: KryptonEntity) {
 
     operator fun <T> set(key: MetadataKey<T>, value: T) {
         val existing = entry(key)
-        if (value === existing.value) return
+        if (value == existing.value) return
         existing.value = value
         entity.onDataUpdate(key)
         existing.isDirty = true
@@ -73,15 +57,33 @@ class MetadataHolder(private val entity: KryptonEntity) {
         "Could not find key $key for entity of type ${entity.type}!"
     }
 
-    private fun invalidate() {
-        isDirty = false
-        itemsById.int2ObjectEntrySet().forEach { it.value.isDirty = false }
-    }
-
     private fun <T> createItem(key: MetadataKey<T>, value: T) {
         val item = Entry(key, value)
         itemsById[key.id] = item
         isEmpty = false
+    }
+
+    fun collectAll(): List<Entry<*>>? {
+        var entries: PersistentList.Builder<Entry<*>>? = null
+        itemsById.values.forEach {
+            if (entries == null) entries = persistentListOf<Entry<*>>().builder()
+            entries!!.add(it.copy())
+        }
+        return entries?.build()
+    }
+
+    fun collectDirty(): List<Entry<*>>? {
+        var entries: PersistentList.Builder<Entry<*>>? = null
+        if (isDirty) {
+            itemsById.values.forEach {
+                if (!it.isDirty) return@forEach
+                it.isDirty = false
+                if (entries == null) entries = persistentListOf<Entry<*>>().builder()
+                entries!!.add(it.copy())
+            }
+        }
+        isDirty = false
+        return entries?.build()
     }
 
     data class Entry<T>(val key: MetadataKey<T>, var value: T) {

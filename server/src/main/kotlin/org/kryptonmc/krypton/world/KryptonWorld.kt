@@ -34,7 +34,6 @@ import org.kryptonmc.api.world.World
 import org.kryptonmc.api.world.rule.GameRules
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.adventure.PacketGroupingAudience
-import org.kryptonmc.krypton.effect.Effect
 import org.kryptonmc.krypton.effect.sound.calculateDistance
 import org.kryptonmc.krypton.entity.EntityFactory
 import org.kryptonmc.krypton.entity.EntityManager
@@ -42,13 +41,12 @@ import org.kryptonmc.krypton.entity.KryptonEntity
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.network.SessionManager
 import org.kryptonmc.krypton.packet.CachedPacket
-import org.kryptonmc.krypton.packet.out.play.GameState
-import org.kryptonmc.krypton.packet.out.play.PacketOutBlockBreakAnimation
-import org.kryptonmc.krypton.packet.out.play.PacketOutBlockChange
-import org.kryptonmc.krypton.packet.out.play.PacketOutChangeGameState
-import org.kryptonmc.krypton.packet.out.play.PacketOutDifficulty
-import org.kryptonmc.krypton.packet.out.play.PacketOutEffect
-import org.kryptonmc.krypton.packet.out.play.PacketOutEntitySoundEffect
+import org.kryptonmc.krypton.packet.out.play.GameEvent
+import org.kryptonmc.krypton.packet.out.play.PacketOutSetBlockDestroyStage
+import org.kryptonmc.krypton.packet.out.play.PacketOutBlockUpdate
+import org.kryptonmc.krypton.packet.out.play.PacketOutGameEvent
+import org.kryptonmc.krypton.packet.out.play.PacketOutChangeDifficulty
+import org.kryptonmc.krypton.packet.out.play.PacketOutWorldEvent
 import org.kryptonmc.krypton.packet.out.play.PacketOutSoundEffect
 import org.kryptonmc.krypton.server.PlayerManager
 import org.kryptonmc.krypton.util.clamp
@@ -93,7 +91,7 @@ class KryptonWorld(
             data.difficulty = value
             cachedDifficultyPacket.invalidate()
         }
-    val cachedDifficultyPacket: CachedPacket = CachedPacket { PacketOutDifficulty(difficulty) }
+    val cachedDifficultyPacket: CachedPacket = CachedPacket { PacketOutChangeDifficulty(difficulty) }
     override val gameRules: KryptonGameRuleHolder
         get() = data.gameRules
     override val isHardcore: Boolean
@@ -160,8 +158,8 @@ class KryptonWorld(
         entityManager.remove(entity)
     }
 
-    fun playEffect(effect: Effect, x: Int, y: Int, z: Int, data: Int, except: KryptonPlayer) {
-        playerManager.broadcast(PacketOutEffect(effect, x, y, z, data, false), this, x, y, z, 64.0, except)
+    fun worldEvent(event: WorldEvent, x: Int, y: Int, z: Int, data: Int, except: KryptonPlayer) {
+        playerManager.broadcast(PacketOutWorldEvent(event, x, y, z, data, false), this, x, y, z, 64.0, except)
     }
 
     fun playSound(position: Vector3d, event: SoundEvent, source: Sound.Source, volume: Float, pitch: Float, except: KryptonPlayer? = null) {
@@ -185,7 +183,7 @@ class KryptonWorld(
     fun canInteract(player: KryptonPlayer, x: Int, z: Int): Boolean = !server.isProtected(this, x, z, player)
 
     fun broadcastBlockDestroyProgress(sourceId: Int, x: Int, y: Int, z: Int, state: Int) {
-        val packet = PacketOutBlockBreakAnimation(sourceId, x, y, z, state)
+        val packet = PacketOutSetBlockDestroyStage(sourceId, x, y, z, state)
         sessionManager.sendGrouped(packet) {
             if (it.world !== this || it.id == sourceId) return@sendGrouped false
             val distanceX = x - it.location.x()
@@ -244,7 +242,7 @@ class KryptonWorld(
 //        if (isDebug) return false
         val chunk = getChunk(x, y, z) ?: return false
         if (!chunk.setBlock(x, y, z, block)) return false
-        sessionManager.sendGrouped(PacketOutBlockChange(block, x, y, z))
+        sessionManager.sendGrouped(PacketOutBlockUpdate(block, x, y, z))
         return true
     }
 
@@ -301,16 +299,16 @@ class KryptonWorld(
         }
 
         if (oldRainLevel != rainLevel) {
-            sessionManager.sendGrouped(PacketOutChangeGameState(GameState.RAIN_LEVEL_CHANGE, rainLevel)) { it.world === this }
+            sessionManager.sendGrouped(PacketOutGameEvent(GameEvent.RAIN_LEVEL_CHANGE, rainLevel)) { it.world === this }
         }
         if (oldThunderLevel != thunderLevel) {
-            sessionManager.sendGrouped(PacketOutChangeGameState(GameState.THUNDER_LEVEL_CHANGE, thunderLevel)) { it.world === this }
+            sessionManager.sendGrouped(PacketOutGameEvent(GameEvent.THUNDER_LEVEL_CHANGE, thunderLevel)) { it.world === this }
         }
         if (wasRaining != isRaining) {
-            val newRainState = if (wasRaining) GameState.END_RAINING else GameState.BEGIN_RAINING
-            sessionManager.sendGrouped(PacketOutChangeGameState(newRainState)) { it.world === this }
-            sessionManager.sendGrouped(PacketOutChangeGameState(GameState.RAIN_LEVEL_CHANGE, rainLevel)) { it.world === this }
-            sessionManager.sendGrouped(PacketOutChangeGameState(GameState.THUNDER_LEVEL_CHANGE, thunderLevel)) { it.world === this }
+            val newRainState = if (wasRaining) GameEvent.END_RAINING else GameEvent.BEGIN_RAINING
+            sessionManager.sendGrouped(PacketOutGameEvent(newRainState)) { it.world === this }
+            sessionManager.sendGrouped(PacketOutGameEvent(GameEvent.RAIN_LEVEL_CHANGE, rainLevel)) { it.world === this }
+            sessionManager.sendGrouped(PacketOutGameEvent(GameEvent.THUNDER_LEVEL_CHANGE, thunderLevel)) { it.world === this }
         }
 
         tickTime()

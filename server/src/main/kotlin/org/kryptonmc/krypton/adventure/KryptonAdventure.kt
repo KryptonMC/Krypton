@@ -18,8 +18,11 @@
  */
 package org.kryptonmc.krypton.adventure
 
+import it.unimi.dsi.fastutil.objects.Object2IntArrayMap
 import net.kyori.adventure.text.TranslatableComponent
 import net.kyori.adventure.text.flattener.ComponentFlattener
+import net.kyori.adventure.text.format.NamedTextColor
+import org.kryptonmc.krypton.util.Reflection
 import org.kryptonmc.krypton.util.TranslationBootstrap
 import java.util.Locale
 
@@ -38,4 +41,18 @@ object KryptonAdventure {
             mapper(TranslationBootstrap.RENDERER.render(translatable, Locale.ENGLISH))
         }
         .build()
+    private val NAMED_TEXT_COLORS = requireNotNull(Reflection.accessField<NamedTextColor, List<NamedTextColor>>("VALUES")) {
+        "Could not access NamedTextColor internal VALUES list! Did internals change on update?"
+    }
+    private val NAMED_TEXT_COLOR_ID_MAP = Object2IntArrayMap<NamedTextColor>(NAMED_TEXT_COLORS.size).apply {
+        for (i in NAMED_TEXT_COLORS.indices) {
+            put(NAMED_TEXT_COLORS[i], i)
+        }
+    }
+
+    @JvmStatic
+    fun colorId(color: NamedTextColor): Int = NAMED_TEXT_COLOR_ID_MAP.getInt(color)
+
+    @JvmStatic
+    fun colorFromId(id: Int): NamedTextColor = NAMED_TEXT_COLORS[id]
 }

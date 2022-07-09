@@ -21,11 +21,16 @@ package org.kryptonmc.krypton.packet.out.login
 import io.netty.buffer.ByteBuf
 import java.util.Objects
 import org.kryptonmc.krypton.packet.Packet
+import org.kryptonmc.krypton.util.readAllAvailableBytes
+import org.kryptonmc.krypton.util.readString
+import org.kryptonmc.krypton.util.readVarInt
 import org.kryptonmc.krypton.util.writeString
 import org.kryptonmc.krypton.util.writeVarInt
 
 @JvmRecord
 data class PacketOutPluginRequest(val id: Int, val channel: String, val data: ByteArray) : Packet {
+
+    constructor(buf: ByteBuf) : this(buf.readVarInt(), buf.readString(), buf.readAllAvailableBytes())
 
     override fun write(buf: ByteBuf) {
         buf.writeVarInt(id)

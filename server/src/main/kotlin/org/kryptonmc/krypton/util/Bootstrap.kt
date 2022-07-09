@@ -33,6 +33,7 @@ import org.kryptonmc.api.entity.hanging.Pictures
 import org.kryptonmc.api.fluid.Fluids
 import org.kryptonmc.api.item.ItemRarities
 import org.kryptonmc.api.item.ItemTypes
+import org.kryptonmc.api.item.data.DyeColors
 import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.api.statistic.CustomStatistics
 import org.kryptonmc.api.statistic.StatisticTypes
@@ -151,6 +152,7 @@ object Bootstrap {
         CustomStatistics
         KryptonDamageTypes
         DamageTypes
+        DyeColors
 
         // Preload some other things that would otherwise load on first player join or some other time
         Encryption

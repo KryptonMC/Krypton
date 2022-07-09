@@ -24,6 +24,8 @@ import org.kryptonmc.krypton.packet.Packet
 @JvmRecord
 data class PacketOutClearTitles(val reset: Boolean) : Packet {
 
+    constructor(buf: ByteBuf) : this(buf.readBoolean())
+
     override fun write(buf: ByteBuf) {
         buf.writeBoolean(reset)
     }

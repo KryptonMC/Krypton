@@ -36,8 +36,8 @@ class KryptonZombie(world: KryptonWorld) : KryptonMonster(world, EntityTypes.ZOM
         set(value) = data.set(MetadataKeys.ZOMBIE.CONVERTING, value)
 
     init {
-        data.add(MetadataKeys.ZOMBIE.BABY)
-        data.add(MetadataKeys.ZOMBIE.CONVERTING)
+        data.add(MetadataKeys.ZOMBIE.BABY, false)
+        data.add(MetadataKeys.ZOMBIE.CONVERTING, false)
     }
 
     companion object {

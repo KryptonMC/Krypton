@@ -31,8 +31,8 @@ class KryptonPig(world: KryptonWorld) : KryptonAnimal(world, EntityTypes.PIG, AT
         set(value) = data.set(MetadataKeys.PIG.SADDLE, value)
 
     init {
-        data.add(MetadataKeys.PIG.SADDLE)
-        data.add(MetadataKeys.PIG.BOOST_TIME)
+        data.add(MetadataKeys.PIG.SADDLE, false)
+        data.add(MetadataKeys.PIG.BOOST_TIME, 0)
     }
 
     companion object {

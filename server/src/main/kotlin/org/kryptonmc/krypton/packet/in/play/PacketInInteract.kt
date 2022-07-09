@@ -20,52 +20,101 @@ package org.kryptonmc.krypton.packet.`in`.play
 
 import io.netty.buffer.ByteBuf
 import org.kryptonmc.api.entity.Hand
+import org.kryptonmc.krypton.network.Writable
 import org.kryptonmc.krypton.packet.Packet
+import org.kryptonmc.krypton.util.ByteBufReader
 import org.kryptonmc.krypton.util.readEnum
 import org.kryptonmc.krypton.util.readVarInt
 import org.kryptonmc.krypton.util.writeEnum
 import org.kryptonmc.krypton.util.writeVarInt
 
 @JvmRecord
-data class PacketInInteract(
-    val entityId: Int,
-    val type: Type,
-    val x: Float,
-    val y: Float,
-    val z: Float,
-    val hand: Hand?,
-    val sneaking: Boolean
-) : Packet {
+data class PacketInInteract(val entityId: Int, val action: Action, val sneaking: Boolean) : Packet {
 
-    constructor(buf: ByteBuf) : this(buf, buf.readVarInt(), buf.readEnum<Type>())
+    constructor(buf: ByteBuf) : this(buf, buf.readVarInt(), buf.readEnum<ActionType>())
 
-    private constructor(buf: ByteBuf, entityId: Int, type: Type) : this(
-        entityId,
-        type,
-        if (type == Type.INTERACT_AT) buf.readFloat() else 0F,
-        if (type == Type.INTERACT_AT) buf.readFloat() else 0F,
-        if (type == Type.INTERACT_AT) buf.readFloat() else 0F,
-        if (type == Type.INTERACT || type == Type.INTERACT_AT) buf.readEnum<Hand>() else null,
-        buf.readBoolean()
-    )
+    private constructor(buf: ByteBuf, entityId: Int, type: ActionType) : this(entityId, type.read(buf), buf.readBoolean())
 
     override fun write(buf: ByteBuf) {
         buf.writeVarInt(entityId)
-        buf.writeEnum(type)
-        if (type != Type.ATTACK) {
-            if (type == Type.INTERACT_AT) {
-                buf.writeFloat(x)
-                buf.writeFloat(y)
-                buf.writeFloat(z)
-            }
-            buf.writeEnum(requireNotNull(hand) { "Hand must be present for non-attacking interactions!" })
+        buf.writeEnum(action.type)
+        action.write(buf)
+        buf.writeBoolean(sneaking)
+    }
+
+    sealed interface Action : Writable {
+
+        val type: ActionType
+
+        fun handle(handler: Handler)
+    }
+
+    @JvmRecord
+    data class InteractAction(val hand: Hand) : Action {
+
+        override val type: ActionType
+            get() = ActionType.INTERACT
+
+        constructor(buf: ByteBuf) : this(buf.readEnum<Hand>())
+
+        override fun handle(handler: Handler) {
+            handler.onInteract(hand)
+        }
+
+        override fun write(buf: ByteBuf) {
+            buf.writeEnum(hand)
         }
     }
 
-    enum class Type {
+    object AttackAction : Action {
 
-        INTERACT,
-        ATTACK,
-        INTERACT_AT
+        override val type: ActionType
+            get() = ActionType.ATTACK
+
+        override fun handle(handler: Handler) {
+            handler.onAttack()
+        }
+
+        override fun write(buf: ByteBuf) {
+            // Nothing to write for the attack action
+        }
+    }
+
+    @JvmRecord
+    data class InteractAtAction(val x: Float, val y: Float, val z: Float, val hand: Hand) : Action {
+
+        override val type: ActionType
+            get() = ActionType.INTERACT_AT
+
+        constructor(buf: ByteBuf) : this(buf.readFloat(), buf.readFloat(), buf.readFloat(), buf.readEnum<Hand>())
+
+        override fun handle(handler: Handler) {
+            handler.onInteractAt(hand, x, y, z)
+        }
+
+        override fun write(buf: ByteBuf) {
+            buf.writeFloat(x)
+            buf.writeFloat(y)
+            buf.writeFloat(z)
+            buf.writeEnum(hand)
+        }
+    }
+
+    interface Handler {
+
+        fun onInteract(hand: Hand)
+
+        fun onInteractAt(hand: Hand, x: Float, y: Float, z: Float)
+
+        fun onAttack()
+    }
+
+    enum class ActionType(private val reader: ByteBufReader<Action>) {
+
+        INTERACT(::InteractAction),
+        ATTACK({ AttackAction }),
+        INTERACT_AT(::InteractAtAction);
+
+        fun read(buf: ByteBuf): Action = reader.read(buf)
     }
 }
