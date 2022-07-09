@@ -19,20 +19,174 @@
 package org.kryptonmc.krypton.packet.out.play
 
 import io.netty.buffer.ByteBuf
+import io.netty.util.internal.ThreadLocalRandom
+import org.kryptonmc.api.effect.particle.BlockParticleType
+import org.kryptonmc.api.effect.particle.DustParticleType
+import org.kryptonmc.api.effect.particle.DustTransitionParticleType
+import org.kryptonmc.api.effect.particle.ItemParticleType
 import org.kryptonmc.api.effect.particle.ParticleEffect
-import org.kryptonmc.krypton.effect.particle.write
+import org.kryptonmc.api.effect.particle.VibrationParticleType
+import org.kryptonmc.api.effect.particle.data.ColorParticleData
+import org.kryptonmc.api.effect.particle.data.DirectionalParticleData
+import org.kryptonmc.api.effect.particle.data.NoteParticleData
+import org.kryptonmc.api.effect.particle.data.ParticleData
+import org.kryptonmc.api.registry.Registries
+import org.kryptonmc.krypton.effect.particle.createData
+import org.kryptonmc.krypton.effect.particle.data.KryptonBlockParticleData
+import org.kryptonmc.krypton.effect.particle.data.KryptonDustParticleData
+import org.kryptonmc.krypton.effect.particle.data.KryptonDustTransitionParticleData
+import org.kryptonmc.krypton.effect.particle.data.KryptonItemParticleData
+import org.kryptonmc.krypton.effect.particle.data.KryptonVibrationParticleData
+import org.kryptonmc.krypton.network.Writable
 import org.kryptonmc.krypton.packet.Packet
+import org.kryptonmc.krypton.util.readItem
+import org.kryptonmc.krypton.util.readVarInt
+import org.kryptonmc.krypton.util.writeVarInt
+import org.kryptonmc.krypton.world.block.BlockLoader
 import org.spongepowered.math.vector.Vector3d
+import org.spongepowered.math.vector.Vector3f
 
 /**
  * Tells the client to spawn some particles around it
  */
 @JvmRecord
-data class PacketOutParticle(val effect: ParticleEffect, val x: Double, val y: Double, val z: Double) : Packet {
+data class PacketOutParticle(
+    val typeId: Int,
+    val longDistance: Boolean,
+    val x: Double,
+    val y: Double,
+    val z: Double,
+    val offsetX: Float,
+    val offsetY: Float,
+    val offsetZ: Float,
+    val maxSpeed: Float,
+    val count: Int,
+    val data: ParticleData?
+) : Packet {
 
-    constructor(effect: ParticleEffect, location: Vector3d) : this(effect, location.x(), location.y(), location.z())
+    constructor(
+        typeId: Int,
+        longDistance: Boolean,
+        location: Vector3d,
+        offset: Vector3f,
+        maxSpeed: Float,
+        count: Int,
+        data: ParticleData?
+    ) : this(typeId, longDistance, location.x(), location.y(), location.z(), offset.x(), offset.y(), offset.z(), maxSpeed, count, data)
+
+    constructor(buf: ByteBuf) : this(
+        buf,
+        buf.readVarInt(),
+        buf.readBoolean(),
+        buf.readDouble(),
+        buf.readDouble(),
+        buf.readDouble(),
+        buf.readFloat(),
+        buf.readFloat(),
+        buf.readFloat(),
+        buf.readFloat(),
+        buf.readVarInt()
+    )
+
+    private constructor(
+        buf: ByteBuf,
+        typeId: Int,
+        longDistance: Boolean,
+        x: Double,
+        y: Double,
+        z: Double,
+        offsetX: Float,
+        offsetY: Float,
+        offsetZ: Float,
+        maxSpeed: Float,
+        count: Int
+    ) : this(typeId, longDistance, x, y, z, offsetX, offsetY, offsetZ, maxSpeed, count, readData(typeId, buf))
 
     override fun write(buf: ByteBuf) {
-        effect.write(buf, x, y, z)
+        buf.writeVarInt(typeId)
+        buf.writeBoolean(longDistance)
+        buf.writeDouble(x)
+        buf.writeDouble(y)
+        buf.writeDouble(z)
+        buf.writeFloat(offsetX)
+        buf.writeFloat(offsetY)
+        buf.writeFloat(offsetZ)
+        buf.writeFloat(maxSpeed)
+        buf.writeInt(count)
+        if (data != null && data is Writable) data.write(buf)
+    }
+
+    companion object {
+
+        @JvmStatic
+        fun from(effect: ParticleEffect, location: Vector3d): PacketOutParticle = from(effect, location.x(), location.y(), location.z())
+
+        @JvmStatic
+        fun from(effect: ParticleEffect, x: Double, y: Double, z: Double): PacketOutParticle {
+            val typeId = Registries.PARTICLE_TYPE.idOf(effect.type)
+            var tempX = x
+            var tempY = y
+            var tempZ = z
+            var offsetX = effect.offset.x().toFloat()
+            var offsetY = effect.offset.y().toFloat()
+            var offsetZ = effect.offset.z().toFloat()
+            var maxSpeed = 1F
+            var count = effect.quantity
+
+            val data = effect.data
+            val random = ThreadLocalRandom.current()
+
+            /**
+             * This may seem strange, but the randomness here is actually present with all particles.
+             * The client applies this randomness to all particles with a count that isn't 0, which is
+             * why we have to manually apply it server-side for certain particle types, as those types
+             * have a count of 0, but we still want this randomness applied.
+             */
+            fun offsetPosition() {
+                tempX = x + effect.offset.x() * random.nextGaussian()
+                tempY = y + effect.offset.y() * random.nextGaussian()
+                tempZ = z + effect.offset.z() * random.nextGaussian()
+            }
+
+            /*
+             * Write location. If the particle is directional, colorable, or a note, then we need
+             * to manually apply the offsets first.
+             *
+             * The way this even works is really hacky. What we do is write the data in
+             * the offsets. This goes all the way back to old versions of Minecraft,
+             * and somehow still works in the newest versions.
+             *
+             * Understanding some of this requires knowledge of how the notchian client actually
+             * processes particle packets.
+             */
+            when (data) {
+                is DirectionalParticleData -> {
+                    offsetPosition()
+                    offsetX = (data.direction?.x() ?: random.nextGaussian()).toFloat()
+                    offsetY = (data.direction?.y() ?: random.nextGaussian()).toFloat()
+                    offsetZ = (data.direction?.z() ?: random.nextGaussian()).toFloat()
+                    maxSpeed = data.velocity
+                    count = 0
+                }
+                is ColorParticleData -> {
+                    offsetPosition()
+                    offsetX = data.red.toFloat() / 255F
+                    offsetY = data.green.toFloat() / 255F
+                    offsetZ = data.blue.toFloat() / 255F
+                    count = 0
+                }
+                is NoteParticleData -> {
+                    offsetPosition()
+                    offsetX = data.note.toFloat() / 24F
+                    offsetY = 0F
+                    offsetZ = 0F
+                    count = 0
+                }
+            }
+            return PacketOutParticle(typeId, effect.longDistance, tempX, tempY, tempZ, offsetX, offsetY, offsetZ, maxSpeed, count, data)
+        }
+
+        @JvmStatic
+        private fun readData(typeId: Int, buf: ByteBuf): ParticleData? = Registries.PARTICLE_TYPE[typeId]!!.createData(buf)
     }
 }

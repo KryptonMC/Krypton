@@ -21,7 +21,8 @@ package org.kryptonmc.krypton.packet.out.login
 import io.netty.buffer.ByteBuf
 import net.kyori.adventure.text.Component
 import org.kryptonmc.krypton.packet.Packet
-import org.kryptonmc.krypton.util.writeChat
+import org.kryptonmc.krypton.util.readComponent
+import org.kryptonmc.krypton.util.writeComponent
 
 /**
  * Informs the client that they have been disconnected for the specified
@@ -33,7 +34,9 @@ import org.kryptonmc.krypton.util.writeChat
 @JvmRecord
 data class PacketOutLoginDisconnect(val reason: Component) : Packet {
 
+    constructor(buf: ByteBuf) : this(buf.readComponent())
+
     override fun write(buf: ByteBuf) {
-        buf.writeChat(reason)
+        buf.writeComponent(reason)
     }
 }

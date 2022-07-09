@@ -23,13 +23,24 @@ import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer
 import org.kryptonmc.api.scoreboard.Score
 import org.kryptonmc.krypton.packet.Packet
+import org.kryptonmc.krypton.util.readString
+import org.kryptonmc.krypton.util.readVarInt
 import org.kryptonmc.krypton.util.writeString
 import org.kryptonmc.krypton.util.writeVarInt
 
 @JvmRecord
-data class PacketOutUpdateScore(val action: Action, val name: Component, val objectiveName: String?, val score: Int) : Packet {
+data class PacketOutUpdateScore(val name: Component, val action: Action, val objectiveName: String?, val score: Int) : Packet {
 
-    constructor(action: Action, score: Score) : this(action, score.name, score.objective?.name, score.score)
+    constructor(action: Action, score: Score) : this(score.name, action, score.objective?.name, score.score)
+
+    constructor(buf: ByteBuf) : this(buf, buf.readLegacyComponent(), Action.fromId(buf.readByte().toInt())!!, buf.readString(16))
+
+    private constructor(
+        buf: ByteBuf,
+        name: Component,
+        action: Action,
+        objectiveName: String
+    ) : this(name, action, objectiveName.ifEmpty { null }, if (action != Action.REMOVE) buf.readVarInt() else 0)
 
     override fun write(buf: ByteBuf) {
         buf.writeString(LegacyComponentSerializer.legacySection().serialize(name), 40)
@@ -52,3 +63,5 @@ data class PacketOutUpdateScore(val action: Action, val name: Component, val obj
         }
     }
 }
+
+private fun ByteBuf.readLegacyComponent(): Component = LegacyComponentSerializer.legacySection().deserialize(readString(40))

@@ -31,7 +31,7 @@ class KryptonBat(world: KryptonWorld) : KryptonAmbientCreature(world, EntityType
         set(value) = setFlag(MetadataKeys.BAT.FLAGS, 0, value)
 
     init {
-        data.add(MetadataKeys.BAT.FLAGS)
+        data.add(MetadataKeys.BAT.FLAGS, 0)
     }
 
     companion object {

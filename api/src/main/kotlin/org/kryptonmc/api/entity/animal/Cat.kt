@@ -9,7 +9,7 @@
 package org.kryptonmc.api.entity.animal
 
 import org.kryptonmc.api.effect.sound.SoundEvents
-import org.kryptonmc.api.entity.animal.type.CatType
+import org.kryptonmc.api.entity.animal.type.CatVariant
 import org.kryptonmc.api.item.data.DyeColor
 
 /**
@@ -19,10 +19,10 @@ import org.kryptonmc.api.item.data.DyeColor
 public interface Cat : Tamable {
 
     /**
-     * The type of cat this cat is.
+     * The variant of this cat.
      */
     @get:JvmName("catType")
-    public var catType: CatType
+    public var variant: CatVariant
 
     /**
      * If this cat is currently lying down.

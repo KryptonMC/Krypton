@@ -18,6 +18,8 @@ import org.kryptonmc.api.effect.particle.ParticleType
 import org.kryptonmc.api.effect.sound.SoundEvent
 import org.kryptonmc.api.entity.EntityType
 import org.kryptonmc.api.entity.EntityCategory
+import org.kryptonmc.api.entity.animal.type.CatVariant
+import org.kryptonmc.api.entity.animal.type.FrogVariant
 import org.kryptonmc.api.entity.attribute.AttributeType
 import org.kryptonmc.api.entity.attribute.ModifierOperation
 import org.kryptonmc.api.entity.hanging.Picture
@@ -84,6 +86,10 @@ public object ResourceKeys {
     public val BLOCK_ENTITY_TYPE: ResourceKey<out Registry<BlockEntityType>> = minecraft("block_entity")
     @JvmField
     public val BANNER_PATTERN: ResourceKey<out Registry<BannerPatternType>> = minecraft("banner_pattern")
+    @JvmField
+    public val CAT_VARIANT: ResourceKey<out Registry<CatVariant>> = minecraft("cat_variant")
+    @JvmField
+    public val FROG_VARIANT: ResourceKey<out Registry<FrogVariant>> = minecraft("frog_variant")
 
     /**
      * Custom built-in registries.

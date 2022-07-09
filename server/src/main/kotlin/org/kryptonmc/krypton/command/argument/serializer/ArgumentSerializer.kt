@@ -27,18 +27,12 @@ import io.netty.buffer.ByteBuf
 interface ArgumentSerializer<T : ArgumentType<*>> {
 
     /**
+     * Reads the given [buf] and returns the argument type.
+     */
+    fun read(buf: ByteBuf): T
+
+    /**
      * Writes the given [value] to the given [buf].
      */
     fun write(buf: ByteBuf, value: T)
-
-    /**
-     * A constant serializer used for argument types that have no data to
-     * serialize, hence the name "Empty".
-     */
-    object Empty : ArgumentSerializer<ArgumentType<*>> {
-
-        override fun write(buf: ByteBuf, value: ArgumentType<*>) {
-            // nothing to write for an empty serializer
-        }
-    }
 }

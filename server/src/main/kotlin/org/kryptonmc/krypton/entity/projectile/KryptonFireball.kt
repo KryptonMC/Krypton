@@ -37,7 +37,7 @@ abstract class KryptonFireball(world: KryptonWorld, type: EntityType<out Firebal
         }
 
     init {
-        data.add(MetadataKeys.FIREBALL.ITEM)
+        data.add(MetadataKeys.FIREBALL.ITEM, KryptonItemStack.EMPTY)
     }
 
     final override fun asItem(): ItemStack {

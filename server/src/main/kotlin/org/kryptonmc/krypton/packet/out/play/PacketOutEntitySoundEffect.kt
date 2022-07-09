@@ -23,6 +23,9 @@ import net.kyori.adventure.sound.Sound
 import org.kryptonmc.api.effect.sound.SoundEvent
 import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.krypton.packet.EntityPacket
+import org.kryptonmc.krypton.util.readById
+import org.kryptonmc.krypton.util.readEnum
+import org.kryptonmc.krypton.util.readVarInt
 import org.kryptonmc.krypton.util.writeEnum
 import org.kryptonmc.krypton.util.writeVarInt
 
@@ -34,6 +37,8 @@ data class PacketOutEntitySoundEffect(
     val volume: Float,
     val pitch: Float
 ) : EntityPacket {
+
+    constructor(buf: ByteBuf) : this(buf.readById(Registries.SOUND_EVENT)!!, buf.readEnum(), buf.readVarInt(), buf.readFloat(), buf.readFloat())
 
     override fun write(buf: ByteBuf) {
         buf.writeVarInt(Registries.SOUND_EVENT.idOf(event))

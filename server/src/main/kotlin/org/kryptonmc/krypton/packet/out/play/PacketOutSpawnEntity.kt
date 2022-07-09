@@ -24,9 +24,14 @@ import org.kryptonmc.krypton.entity.KryptonEntity
 import org.kryptonmc.krypton.entity.KryptonLivingEntity
 import org.kryptonmc.krypton.packet.EntityPacket
 import org.kryptonmc.krypton.util.Positioning
+import org.kryptonmc.krypton.util.readAngle
+import org.kryptonmc.krypton.util.readUUID
+import org.kryptonmc.krypton.util.readVarInt
 import org.kryptonmc.krypton.util.writeAngle
 import org.kryptonmc.krypton.util.writeUUID
 import org.kryptonmc.krypton.util.writeVarInt
+import org.spongepowered.math.vector.Vector2f
+import org.spongepowered.math.vector.Vector3d
 import java.util.UUID
 
 @JvmRecord
@@ -46,24 +51,45 @@ data class PacketOutSpawnEntity(
     val velocityZ: Int
 ) : EntityPacket {
 
+    constructor(id: Int, uuid: UUID, type: Int, location: Vector3d, rotation: Vector2f, headYaw: Float, data: Int, velocity: Vector3d) : this(
+        id,
+        uuid,
+        type,
+        location.x(),
+        location.y(),
+        location.z(),
+        rotation.x(),
+        rotation.y(),
+        headYaw,
+        data,
+        Positioning.encodeVelocity(velocity.x()),
+        Positioning.encodeVelocity(velocity.y()),
+        Positioning.encodeVelocity(velocity.z())
+    )
+
     constructor(entity: KryptonEntity) : this(entity, 0F)
 
     constructor(entity: KryptonLivingEntity) : this(entity, entity.headYaw)
 
-    private constructor(entity: KryptonEntity, headYaw: Float) : this(
-        entity.id,
-        entity.uuid,
-        Registries.ENTITY_TYPE.idOf(entity.type),
-        entity.location.x(),
-        entity.location.y(),
-        entity.location.z(),
-        entity.rotation.y(),
-        entity.rotation.x(),
-        headYaw,
-        0,
-        Positioning.encodeVelocity(entity.velocity.x()),
-        Positioning.encodeVelocity(entity.velocity.y()),
-        Positioning.encodeVelocity(entity.velocity.z())
+    private constructor(
+        entity: KryptonEntity,
+        headYaw: Float
+    ) : this(entity.id, entity.uuid, Registries.ENTITY_TYPE.idOf(entity.type), entity.location, entity.rotation, headYaw, 0, entity.velocity)
+
+    constructor(buf: ByteBuf) : this(
+        buf.readVarInt(),
+        buf.readUUID(),
+        buf.readVarInt(),
+        buf.readDouble(),
+        buf.readDouble(),
+        buf.readDouble(),
+        buf.readAngle(),
+        buf.readAngle(),
+        buf.readAngle(),
+        buf.readInt(),
+        buf.readShort().toInt(),
+        buf.readShort().toInt(),
+        buf.readShort().toInt()
     )
 
     override fun write(buf: ByteBuf) {

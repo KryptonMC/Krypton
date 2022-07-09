@@ -20,10 +20,13 @@ package org.kryptonmc.krypton.packet.out.play
 
 import io.netty.buffer.ByteBuf
 import org.kryptonmc.krypton.packet.Packet
+import org.kryptonmc.krypton.util.readVarInt
 import org.kryptonmc.krypton.util.writeVarInt
 
 @JvmRecord
 data class PacketOutAcknowledgeBlockChange(val sequence: Int) : Packet {
+
+    constructor(buf: ByteBuf) : this(buf.readVarInt())
 
     override fun write(buf: ByteBuf) {
         buf.writeVarInt(sequence)

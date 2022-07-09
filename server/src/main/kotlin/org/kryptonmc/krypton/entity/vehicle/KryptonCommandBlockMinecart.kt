@@ -45,8 +45,8 @@ class KryptonCommandBlockMinecart(world: KryptonWorld) : KryptonMinecartLike(wor
         get() = Blocks.COMMAND_BLOCK
 
     init {
-        data.add(MetadataKeys.COMMAND_BLOCK_MINECART.COMMAND)
-        data.add(MetadataKeys.COMMAND_BLOCK_MINECART.LAST_OUTPUT)
+        data.add(MetadataKeys.COMMAND_BLOCK_MINECART.COMMAND, "")
+        data.add(MetadataKeys.COMMAND_BLOCK_MINECART.LAST_OUTPUT, Component.empty())
     }
 
     override fun onDataUpdate(key: MetadataKey<*>) {

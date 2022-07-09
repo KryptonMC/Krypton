@@ -65,12 +65,12 @@ abstract class KryptonMinecartLike(world: KryptonWorld, type: EntityType<out Min
         get() = 0
 
     init {
-        data.add(MetadataKeys.MINECART_LIKE.HURT_TIMER)
-        data.add(MetadataKeys.MINECART_LIKE.HURT_DIRECTION)
-        data.add(MetadataKeys.MINECART_LIKE.DAMAGE)
-        data.add(MetadataKeys.MINECART_LIKE.CUSTOM_BLOCK_ID)
-        data.add(MetadataKeys.MINECART_LIKE.CUSTOM_BLOCK_OFFSET)
-        data.add(MetadataKeys.MINECART_LIKE.SHOW_CUSTOM_BLOCK)
+        data.add(MetadataKeys.MINECART_LIKE.HURT_TIMER, 0)
+        data.add(MetadataKeys.MINECART_LIKE.HURT_DIRECTION, 1)
+        data.add(MetadataKeys.MINECART_LIKE.DAMAGE, 0F)
+        data.add(MetadataKeys.MINECART_LIKE.CUSTOM_BLOCK_ID, Blocks.AIR.downcast().id)
+        data.add(MetadataKeys.MINECART_LIKE.CUSTOM_BLOCK_OFFSET, 6)
+        data.add(MetadataKeys.MINECART_LIKE.SHOW_CUSTOM_BLOCK, false)
     }
 
     override fun damage(source: KryptonDamageSource, damage: Float): Boolean {

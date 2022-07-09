@@ -21,11 +21,14 @@ package org.kryptonmc.krypton.packet.out.play
 import io.netty.buffer.ByteBuf
 import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.packet.out.play.data.LightPacketData
+import org.kryptonmc.krypton.util.readVarInt
 import org.kryptonmc.krypton.util.writeVarInt
 import org.kryptonmc.krypton.world.chunk.KryptonChunk
 
 @JvmRecord
 data class PacketOutUpdateLight(val x: Int, val z: Int, val lightData: LightPacketData) : Packet {
+
+    constructor(buf: ByteBuf) : this(buf.readVarInt(), buf.readVarInt(), LightPacketData(buf))
 
     override fun write(buf: ByteBuf) {
         buf.writeVarInt(x)

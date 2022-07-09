@@ -18,19 +18,16 @@
  */
 package org.kryptonmc.krypton.entity.player
 
-import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.world.GameMode
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.item.handler
-import org.kryptonmc.krypton.packet.`in`.play.PacketInPlayerDigging
-import org.kryptonmc.krypton.packet.out.play.PacketOutDiggingResponse
+import org.kryptonmc.krypton.packet.`in`.play.PacketInPlayerAction
+import org.kryptonmc.krypton.packet.out.play.PacketOutBlockUpdate
 import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.krypton.world.block.handler
 import org.kryptonmc.krypton.world.block.isGameMasterBlock
 import org.kryptonmc.krypton.world.block.KryptonBlock
-import org.spongepowered.math.vector.Vector3d
-import org.spongepowered.math.vector.Vector3i
 
 class PlayerBlockHandler(private val player: KryptonPlayer) {
 
@@ -82,36 +79,36 @@ class PlayerBlockHandler(private val player: KryptonPlayer) {
         }
     }
 
-    fun handleBlockBreak(packet: PacketInPlayerDigging) {
-        handleBlockBreak(packet.x, packet.y, packet.z, packet.status, world.maximumBuildHeight)
+    fun handleBlockBreak(packet: PacketInPlayerAction) {
+        handleBlockBreak(packet.x, packet.y, packet.z, packet.action, world.maximumBuildHeight)
     }
 
-    private fun handleBlockBreak(x: Int, y: Int, z: Int, status: PacketInPlayerDigging.Status, maxHeight: Int) {
+    private fun handleBlockBreak(x: Int, y: Int, z: Int, action: PacketInPlayerAction.Action, maxHeight: Int) {
         val distanceX = player.location.x() - (x.toDouble() + 0.5)
         val distanceY = player.location.y() - (y.toDouble() + 0.5) + 1.5
         val distanceZ = player.location.z() - (z.toDouble() + 0.5)
         val distanceSquared = distanceX * distanceX + distanceY * distanceY + distanceZ * distanceZ
         if (distanceSquared > MAXIMUM_DISTANCE_FROM_BLOCK) {
-            player.session.send(PacketOutDiggingResponse(x, y, z, world.getBlock(x, y, z), status, false))
+            logBlockBreakUpdate(x, y, z, false, "cannot break blocks further than 6 blocks away")
             return
         }
         if (y >= maxHeight) {
-            player.session.send(PacketOutDiggingResponse(x, y, z, world.getBlock(x, y, z), status, false))
+            logBlockBreakUpdate(x, y, z, false, "cannot break blocks above $maxHeight")
             return
         }
-        when (status) {
-            PacketInPlayerDigging.Status.STARTED -> {
+        when (action) {
+            PacketInPlayerAction.Action.START_DIGGING -> {
                 if (!world.canInteract(player, x, z)) {
                     if (server.config.world.sendSpawnProtectionMessage) player.sendActionBar(server.config.world.spawnProtectionMessage)
-                    player.session.send(PacketOutDiggingResponse(x, y, z, world.getBlock(x, y, z), status, false))
+                    logBlockBreakUpdate(x, y, z, false, "cannot break blocks in spawn protection")
                     return
                 }
                 if (isCreative) {
-                    destroyAndAcknowledge(x, y, z, status)
+                    destroyAndAcknowledge(x, y, z, "creative block break")
                     return
                 }
                 if (player.isBlockActionRestricted(x, y, z)) {
-                    player.session.send(PacketOutDiggingResponse(x, y, z, world.getBlock(x, y, z), status, false))
+                    logBlockBreakUpdate(x, y, z, false, "cannot break blocks while in this state!")
                     return
                 }
                 startingDestroyProgress = currentTick
@@ -123,12 +120,12 @@ class PlayerBlockHandler(private val player: KryptonPlayer) {
                 }
 
                 if (!block.isAir && destroyProgress >= 1F) {
-                    destroyAndAcknowledge(x, y, z, status)
+                    destroyAndAcknowledge(x, y, z, "instant mine")
                     return
                 }
                 if (isDestroying) {
-                    val destroyingBlock = world.getBlock(destroyingX, destroyingY, destroyingZ)
-                    player.session.send(PacketOutDiggingResponse(destroyingX, destroyingY, destroyingZ, destroyingBlock, status, false))
+                    val reason = "aborted because another block is already being destroyed (client instantly mined block, we didn't like that)"
+                    logBlockBreakUpdate(x, y, z, false, reason)
                 }
                 isDestroying = true
                 destroyingX = x
@@ -136,10 +133,10 @@ class PlayerBlockHandler(private val player: KryptonPlayer) {
                 destroyingZ = z
                 val state = (destroyProgress * 10F).toInt()
                 world.broadcastBlockDestroyProgress(player.id, x, y, z, state)
-                player.session.send(PacketOutDiggingResponse(x, y, z, world.getBlock(x, y, z), status, true))
+                logBlockBreakUpdate(x, y, z, true, "started breaking block")
                 lastSentState = state
             }
-            PacketInPlayerDigging.Status.FINISHED -> {
+            PacketInPlayerAction.Action.FINISH_DIGGING -> {
                 if (x == destroyingX && y == destroyingY && z == destroyingZ) {
                     val tickDifference = currentTick - startingDestroyProgress
                     val block = world.getBlock(x, y, z)
@@ -148,7 +145,7 @@ class PlayerBlockHandler(private val player: KryptonPlayer) {
                         if (destroyProgress >= 0.7F) {
                             isDestroying = false
                             world.broadcastBlockDestroyProgress(player.id, x, y, z, -1)
-                            destroyAndAcknowledge(x, y, z, status)
+                            destroyAndAcknowledge(x, y, z, "block broke")
                             return
                         }
                         if (!hasDelayedDestroy) {
@@ -161,18 +158,17 @@ class PlayerBlockHandler(private val player: KryptonPlayer) {
                         }
                     }
                 }
-                player.session.send(PacketOutDiggingResponse(x, y, z, world.getBlock(x, y, z), status, true))
+                logBlockBreakUpdate(x, y, z, true, "stopped breaking block")
             }
-            PacketInPlayerDigging.Status.CANCELLED -> {
+            PacketInPlayerAction.Action.CANCEL_DIGGING -> {
                 isDestroying = false
                 if (x != destroyingX || y != destroyingY || z != destroyingZ) {
                     LOGGER.warn("Mismatched destroy position! Expected $destroyingX, $destroyingY, $destroyingZ and got $x, $y, $z!")
                     world.broadcastBlockDestroyProgress(player.id, destroyingX, destroyingY, destroyingZ, -1)
-                    val destroyingBlock = world.getBlock(destroyingX, destroyingY, destroyingZ)
-                    player.session.send(PacketOutDiggingResponse(destroyingX, destroyingY, destroyingZ, destroyingBlock, status, true))
+                    logBlockBreakUpdate(x, y, z, true, "aborted mismatched block breaking")
                 }
                 world.broadcastBlockDestroyProgress(player.id, x, y, z, -1)
-                player.session.send(PacketOutDiggingResponse(x, y, z, world.getBlock(x, y, z), status, true))
+                logBlockBreakUpdate(x, y, z, true, "aborted block breaking")
             }
             else -> Unit
         }
@@ -189,11 +185,12 @@ class PlayerBlockHandler(private val player: KryptonPlayer) {
         return progress
     }
 
-    private fun destroyAndAcknowledge(x: Int, y: Int, z: Int, status: PacketInPlayerDigging.Status) {
+    private fun destroyAndAcknowledge(x: Int, y: Int, z: Int, message: String) {
         if (destroyBlock(x, y, z)) {
-            player.session.send(PacketOutDiggingResponse(x, y, z, world.getBlock(x, y, z), status, true))
+            logBlockBreakUpdate(x, y, z, true, message)
         } else {
-            player.session.send(PacketOutDiggingResponse(x, y, z, world.getBlock(x, y, z), status, false))
+            player.session.send(PacketOutBlockUpdate(world.getBlock(x, y, z), x, y, z))
+            logBlockBreakUpdate(x, y, z, false, message)
         }
     }
 
@@ -218,9 +215,17 @@ class PlayerBlockHandler(private val player: KryptonPlayer) {
         return true
     }
 
+    private fun logBlockBreakUpdate(x: Int, y: Int, z: Int, success: Boolean, message: String) {
+        if (success) {
+            LOGGER.debug("Player ${player.profile.name} updated block break progress at $x, $y, $z: $message")
+        } else {
+            LOGGER.debug("Player ${player.profile.name} attempted to break block at $x, $y, $z but could not. Reason: $message")
+        }
+    }
+
     companion object {
 
-        private const val MAXIMUM_DISTANCE_FROM_BLOCK = 36.0
+        private const val MAXIMUM_DISTANCE_FROM_BLOCK = 6.0 * 6.0
         private val LOGGER = logger<PlayerBlockHandler>()
     }
 }

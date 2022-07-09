@@ -73,12 +73,12 @@ class KryptonPanda(world: KryptonWorld) : KryptonAnimal(world, EntityTypes.PANDA
         get() = variantFromGenes(knownGene, hiddenGene)
 
     init {
-        data.add(MetadataKeys.PANDA.UNHAPPY_TIMER)
-        data.add(MetadataKeys.PANDA.SNEEZE_TIMER)
-        data.add(MetadataKeys.PANDA.EATING_TIMER)
-        data.add(MetadataKeys.PANDA.MAIN_GENE)
-        data.add(MetadataKeys.PANDA.HIDDEN_GENE)
-        data.add(MetadataKeys.PANDA.FLAGS)
+        data.add(MetadataKeys.PANDA.UNHAPPY_TIMER, 0)
+        data.add(MetadataKeys.PANDA.SNEEZE_TIMER, 0)
+        data.add(MetadataKeys.PANDA.EATING_TIMER, 0)
+        data.add(MetadataKeys.PANDA.MAIN_GENE, 0)
+        data.add(MetadataKeys.PANDA.HIDDEN_GENE, 0)
+        data.add(MetadataKeys.PANDA.FLAGS, 0)
         if (!isBaby) canPickUpLoot = false
     }
 

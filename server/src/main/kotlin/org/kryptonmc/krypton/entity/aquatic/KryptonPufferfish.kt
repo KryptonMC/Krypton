@@ -40,7 +40,7 @@ class KryptonPufferfish(world: KryptonWorld) : KryptonFish(world, EntityTypes.PU
     override val bucketType: ItemType = ItemTypes.PUFFERFISH_BUCKET
 
     init {
-        data.add(MetadataKeys.PUFFERFISH.PUFF_STATE)
+        data.add(MetadataKeys.PUFFERFISH.PUFF_STATE, 0)
     }
 
     override fun tick() {

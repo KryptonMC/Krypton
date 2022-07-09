@@ -27,7 +27,7 @@ class KryptonScore(var scoreboard: KryptonScoreboard?, override val objective: O
 
     private var forceUpdate = true
     private val nameString = name.toLegacySectionText()
-    override var score = 0
+    override var score: Int = 0
         set(value) {
             val old = field
             field = value
@@ -36,7 +36,7 @@ class KryptonScore(var scoreboard: KryptonScoreboard?, override val objective: O
                 scoreboard?.onScoreUpdated(this)
             }
         }
-    override var isLocked = true
+    override var isLocked: Boolean = true
 
     fun add(amount: Int) {
         if (objective == null || !objective.criterion.isMutable) return

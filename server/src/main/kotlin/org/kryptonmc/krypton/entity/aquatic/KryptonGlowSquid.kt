@@ -31,7 +31,7 @@ class KryptonGlowSquid(world: KryptonWorld) : KryptonSquid(world, EntityTypes.GL
         set(value) = data.set(MetadataKeys.GLOW_SQUID.REMAINING_DARK_TICKS, value)
 
     init {
-        data.add(MetadataKeys.GLOW_SQUID.REMAINING_DARK_TICKS)
+        data.add(MetadataKeys.GLOW_SQUID.REMAINING_DARK_TICKS, 0)
     }
 
     override fun damage(source: KryptonDamageSource, damage: Float): Boolean {

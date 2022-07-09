@@ -48,13 +48,13 @@ class KryptonBoat(world: KryptonWorld) : KryptonEntity(world, EntityTypes.BOAT),
         set(value) = data.set(MetadataKeys.BOAT.HURT_DIRECTION, value)
 
     init {
-        data.add(MetadataKeys.BOAT.HURT_TIMER)
-        data.add(MetadataKeys.BOAT.HURT_DIRECTION)
-        data.add(MetadataKeys.BOAT.DAMAGE)
-        data.add(MetadataKeys.BOAT.TYPE)
-        data.add(MetadataKeys.BOAT.LEFT_PADDLE_TURNING)
-        data.add(MetadataKeys.BOAT.RIGHT_PADDLE_TURNING)
-        data.add(MetadataKeys.BOAT.SPLASH_TIMER)
+        data.add(MetadataKeys.BOAT.HURT_TIMER, 0)
+        data.add(MetadataKeys.BOAT.HURT_DIRECTION, 1)
+        data.add(MetadataKeys.BOAT.DAMAGE, 0F)
+        data.add(MetadataKeys.BOAT.TYPE, BoatType.OAK.ordinal)
+        data.add(MetadataKeys.BOAT.LEFT_PADDLE_TURNING, false)
+        data.add(MetadataKeys.BOAT.RIGHT_PADDLE_TURNING, false)
+        data.add(MetadataKeys.BOAT.SPLASH_TIMER, 0)
     }
 
     override fun damage(source: KryptonDamageSource, damage: Float): Boolean {

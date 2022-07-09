@@ -129,7 +129,7 @@ class LoginHandler(
             if (!canJoin(profile, address) || !callLoginEvent(profile)) return
 
             // Initialize the player and setup their permissions.
-            val player = KryptonPlayer(session, profile, server.worldManager.default, address)
+            val player = KryptonPlayer(session, profile, server.worldManager.default, address, publicKey)
             server.eventManager.fire(SetupPermissionsEvent(player, KryptonPlayer.DEFAULT_PERMISSIONS))
                 .thenApplyAsync({ finishLogin(it, player) }, session.channel.eventLoop())
             return
@@ -163,7 +163,7 @@ class LoginHandler(
             // Check the profile from the event and construct the player.
             val resultProfile = it.result.profile
             val finalProfile = if (resultProfile != null && resultProfile is KryptonGameProfile) resultProfile else profile
-            KryptonPlayer(session, finalProfile, server.worldManager.default, address)
+            KryptonPlayer(session, finalProfile, server.worldManager.default, address, publicKey)
         }, session.channel.eventLoop()).thenApplyAsync({
             if (it == null) return@thenApplyAsync
             // Setup permissions.
@@ -212,7 +212,7 @@ class LoginHandler(
         // All good to go, let's construct our stuff
         LOGGER.debug("Detected Velocity login for ${data.uuid}")
         val profile = KryptonGameProfile(data.username, data.uuid, data.properties)
-        val player = KryptonPlayer(session, profile, server.worldManager.default, InetSocketAddress(data.remoteAddress, address.port))
+        val player = KryptonPlayer(session, profile, server.worldManager.default, InetSocketAddress(data.remoteAddress, address.port), publicKey)
 
         // Setup permissions for the player
         server.eventManager.fire(SetupPermissionsEvent(player, KryptonPlayer.DEFAULT_PERMISSIONS))

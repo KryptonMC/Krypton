@@ -33,7 +33,7 @@ import org.kryptonmc.krypton.command.permission
 import org.kryptonmc.krypton.command.runs
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.item.KryptonItemStack
-import org.kryptonmc.krypton.packet.out.play.PacketOutWindowItems
+import org.kryptonmc.krypton.packet.out.play.PacketOutSetContainerContent
 
 object ClearCommand : InternalCommand {
 
@@ -61,11 +61,11 @@ object ClearCommand : InternalCommand {
             val target = targets[0]
             clear(target, predicate, maxCount)
             sender.sendMessage(Component.translatable("commands.clear.success.single", Component.text(amount), target.displayName))
-            target.session.send(PacketOutWindowItems(target.inventory, target.inventory.mainHand))
+            target.session.send(PacketOutSetContainerContent(target.inventory, target.inventory.mainHand))
         } else {
             targets.forEach { target ->
                 target.inventory.items.forEachIndexed { index, item -> if (predicate(item)) target.inventory[index] = KryptonItemStack.EMPTY }
-                target.session.send(PacketOutWindowItems(target.inventory, target.inventory.mainHand))
+                target.session.send(PacketOutSetContainerContent(target.inventory, target.inventory.mainHand))
             }
             val targetSize = Component.text(targets.size.toString())
             sender.sendMessage(Component.translatable("commands.clear.success.multiple", Component.text(amount), targetSize))

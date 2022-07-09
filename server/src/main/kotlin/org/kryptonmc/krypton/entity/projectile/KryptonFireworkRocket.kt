@@ -27,6 +27,7 @@ import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.item.KryptonItemStack
 import org.kryptonmc.krypton.item.meta.KryptonItemMeta
 import org.kryptonmc.krypton.world.KryptonWorld
+import java.util.OptionalInt
 
 class KryptonFireworkRocket(world: KryptonWorld) : KryptonProjectile(world, EntityTypes.FIREWORK_ROCKET), FireworkRocket {
 
@@ -39,9 +40,9 @@ class KryptonFireworkRocket(world: KryptonWorld) : KryptonProjectile(world, Enti
         set(value) = data.set(MetadataKeys.FIREWORK_ROCKET.SHOT_AT_ANGLE, value)
 
     init {
-        data.add(MetadataKeys.FIREWORK_ROCKET.ITEM)
-        data.add(MetadataKeys.FIREWORK_ROCKET.ATTACHED)
-        data.add(MetadataKeys.FIREWORK_ROCKET.SHOT_AT_ANGLE)
+        data.add(MetadataKeys.FIREWORK_ROCKET.ITEM, KryptonItemStack.EMPTY)
+        data.add(MetadataKeys.FIREWORK_ROCKET.ATTACHED, OptionalInt.empty())
+        data.add(MetadataKeys.FIREWORK_ROCKET.SHOT_AT_ANGLE, false)
     }
 
     override fun asItem(): ItemStack {

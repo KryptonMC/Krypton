@@ -20,6 +20,7 @@ package org.kryptonmc.krypton.command.argument
 
 import com.mojang.brigadier.arguments.ArgumentType
 import com.mojang.brigadier.arguments.BoolArgumentType
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 import net.kyori.adventure.key.Key
 import org.kryptonmc.krypton.command.argument.serializer.ArgumentSerializer
 import org.kryptonmc.krypton.command.argument.serializer.DoubleArgumentSerializer
@@ -27,6 +28,7 @@ import org.kryptonmc.krypton.command.argument.serializer.EntityArgumentSerialize
 import org.kryptonmc.krypton.command.argument.serializer.FloatArgumentSerializer
 import org.kryptonmc.krypton.command.argument.serializer.IntegerArgumentSerializer
 import org.kryptonmc.krypton.command.argument.serializer.LongArgumentSerializer
+import org.kryptonmc.krypton.command.argument.serializer.SingletonArgumentSerializer
 import org.kryptonmc.krypton.command.argument.serializer.StringArgumentSerializer
 import org.kryptonmc.krypton.command.arguments.GameProfileArgument
 import org.kryptonmc.krypton.command.arguments.NBTArgument
@@ -36,20 +38,20 @@ import org.kryptonmc.krypton.command.arguments.VectorArgument
 import org.kryptonmc.krypton.command.arguments.item.ItemStackArgumentType
 import org.kryptonmc.krypton.command.arguments.item.ItemStackPredicateArgument
 import java.util.concurrent.ConcurrentHashMap
-import java.util.concurrent.atomic.AtomicInteger
 
 /**
  * Holds all of the built-in argument serializers for all of the argument
  * types that we use that need to be sent to the client.
  */
+@Suppress("UNCHECKED_CAST")
 object ArgumentSerializers {
 
     private val BY_CLASS = ConcurrentHashMap<Class<*>, Entry<*>>()
-    private val ENTRY_COUNTER = AtomicInteger()
+    private val BY_ID = Int2ObjectOpenHashMap<Entry<*>>()
 
     init {
         // Brigadier serializers
-        empty<BoolArgumentType>(0, "brigadier:bool")
+        singleton(0, "brigadier:bool", BoolArgumentType.bool())
         register(1, "brigadier:float", FloatArgumentSerializer)
         register(2, "brigadier:double", DoubleArgumentSerializer)
         register(3, "brigadier:integer", IntegerArgumentSerializer)
@@ -58,28 +60,31 @@ object ArgumentSerializers {
 
         // Built-in serializers
         register(6, "entity", EntityArgumentSerializer)
-        empty<GameProfileArgument>(7, "game_profile")
-        empty<VectorArgument>(10, "vec3")
-        empty<ItemStackArgumentType>(14, "item_stack")
-        empty<ItemStackPredicateArgument>(15, "item_predicate")
-        empty<NBTCompoundArgument>(19, "nbt_compound_tag")
-        empty<NBTArgument>(20, "nbt_tag")
-        empty<SummonEntityArgument>(40, "entity_summon")
+        singleton(7, "game_profile", GameProfileArgument)
+        singleton(10, "vec3", VectorArgument.normal())
+        singleton(14, "item_stack", ItemStackArgumentType)
+        singleton(15, "item_predicate", ItemStackPredicateArgument)
+        singleton(19, "nbt_compound_tag", NBTCompoundArgument)
+        singleton(20, "nbt_tag", NBTArgument)
+        singleton(40, "entity_summon", SummonEntityArgument)
     }
 
-    @Suppress("UNCHECKED_CAST")
     @JvmStatic
     fun <T : ArgumentType<*>> get(type: T): Entry<T>? = BY_CLASS[type::class.java] as? Entry<T>
 
     @JvmStatic
+    fun <T : ArgumentType<*>> get(id: Int): Entry<T>? = BY_ID[id] as? Entry<T>
+
+    @JvmStatic
     private inline fun <reified T : ArgumentType<*>> register(id: Int, name: String, serializer: ArgumentSerializer<T>) {
-        BY_CLASS[T::class.java] = Entry(id, Key.key(name), T::class.java, serializer)
+        val entry = Entry(id, Key.key(name), T::class.java, serializer)
+        BY_CLASS[T::class.java] = entry
+        BY_ID[id] = entry
     }
 
-    @Suppress("UNCHECKED_CAST")
     @JvmStatic
-    private inline fun <reified T : ArgumentType<*>> empty(id: Int, name: String) {
-        register(id, name, ArgumentSerializer.Empty as ArgumentSerializer<T>)
+    private inline fun <reified T : ArgumentType<*>> singleton(id: Int, name: String, value: T) {
+        register(id, name, SingletonArgumentSerializer(value))
     }
 
     @JvmRecord

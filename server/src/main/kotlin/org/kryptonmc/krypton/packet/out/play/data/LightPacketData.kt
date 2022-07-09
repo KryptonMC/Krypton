@@ -21,8 +21,12 @@ package org.kryptonmc.krypton.packet.out.play.data
 import io.netty.buffer.ByteBuf
 import kotlinx.collections.immutable.persistentListOf
 import org.kryptonmc.krypton.network.Writable
+import org.kryptonmc.krypton.util.readList
+import org.kryptonmc.krypton.util.readLongArray
+import org.kryptonmc.krypton.util.readVarIntByteArray
+import org.kryptonmc.krypton.util.writeCollection
 import org.kryptonmc.krypton.util.writeLongArray
-import org.kryptonmc.krypton.util.writeVarInt
+import org.kryptonmc.krypton.util.writeVarIntByteArray
 import org.kryptonmc.krypton.world.chunk.KryptonChunk
 import java.util.BitSet
 
@@ -37,6 +41,16 @@ data class LightPacketData(
     val blockLights: List<ByteArray>
 ) : Writable {
 
+    constructor(buf: ByteBuf) : this(
+        buf.readBoolean(),
+        BitSet.valueOf(buf.readLongArray()),
+        BitSet.valueOf(buf.readLongArray()),
+        BitSet.valueOf(buf.readLongArray()),
+        BitSet.valueOf(buf.readLongArray()),
+        buf.readList { buf.readVarIntByteArray() },
+        buf.readList { buf.readVarIntByteArray() }
+    )
+
     override fun write(buf: ByteBuf) {
         buf.writeBoolean(trustEdges)
 
@@ -45,19 +59,8 @@ data class LightPacketData(
         buf.writeLongArray(emptySkyMask.toLongArray())
         buf.writeLongArray(emptyBlockMask.toLongArray())
 
-        buf.writeVarInt(skyLights.size)
-        for (i in skyLights.indices) {
-            val light = skyLights[i]
-            buf.writeVarInt(light.size)
-            buf.writeBytes(light)
-        }
-
-        buf.writeVarInt(blockLights.size)
-        for (i in blockLights.indices) {
-            val light = blockLights[i]
-            buf.writeVarInt(light.size)
-            buf.writeBytes(light)
-        }
+        buf.writeCollection(skyLights) { buf.writeVarIntByteArray(it) }
+        buf.writeCollection(blockLights) { buf.writeVarIntByteArray(it) }
     }
 
     companion object {

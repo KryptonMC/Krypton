@@ -60,7 +60,7 @@ abstract class KryptonMob(
         set(value) = setFlag(2, value)
 
     init {
-        data.add(MetadataKeys.MOB.FLAGS)
+        data.add(MetadataKeys.MOB.FLAGS, 0)
     }
 
     override fun equipment(slot: EquipmentSlot): KryptonItemStack = when (slot.type) {

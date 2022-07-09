@@ -39,7 +39,7 @@ class KryptonSheep(world: KryptonWorld) : KryptonAnimal(world, EntityTypes.SHEEP
         }
 
     init {
-        data.add(MetadataKeys.SHEEP.FLAGS)
+        data.add(MetadataKeys.SHEEP.FLAGS, 0)
     }
 
     companion object {

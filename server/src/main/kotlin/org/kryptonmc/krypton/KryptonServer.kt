@@ -30,8 +30,6 @@ import org.kryptonmc.api.event.server.ServerStartEvent
 import org.kryptonmc.api.event.server.ServerStopEvent
 import org.kryptonmc.api.event.server.TickEndEvent
 import org.kryptonmc.api.event.server.TickStartEvent
-import org.kryptonmc.api.scoreboard.Scoreboard
-import org.kryptonmc.api.util.register
 import org.kryptonmc.api.world.World
 import org.kryptonmc.api.world.rule.GameRules
 import org.kryptonmc.krypton.adventure.PacketGroupingAudience
@@ -45,7 +43,7 @@ import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.event.KryptonEventManager
 import org.kryptonmc.krypton.network.SessionManager
 import org.kryptonmc.krypton.packet.PacketRegistry
-import org.kryptonmc.krypton.packet.out.play.PacketOutTimeUpdate
+import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateTime
 import org.kryptonmc.krypton.plugin.KryptonPluginContainer
 import org.kryptonmc.krypton.plugin.KryptonPluginManager
 import org.kryptonmc.krypton.registry.KryptonRegistryManager
@@ -273,7 +271,7 @@ class KryptonServer(
 
         worldManager.worlds.forEach { (_, world) ->
             if (tickCount % TICKS_PER_SECOND == 0) {
-                val packet = PacketOutTimeUpdate(world.data.time, world.data.dayTime, world.data.gameRules[GameRules.DO_DAYLIGHT_CYCLE])
+                val packet = PacketOutUpdateTime(world.data.time, world.data.dayTime, world.data.gameRules[GameRules.DO_DAYLIGHT_CYCLE])
                 sessionManager.sendGrouped(packet) { it.world === world }
             }
             world.tick()

@@ -28,7 +28,7 @@ import org.kryptonmc.api.item.ItemStack
 import org.kryptonmc.api.item.ItemTypes
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.item.KryptonItemStack
-import org.kryptonmc.krypton.packet.out.play.PacketOutSetSlot
+import org.kryptonmc.krypton.packet.out.play.PacketOutSetContainerSlot
 import org.kryptonmc.krypton.util.FixedList
 import org.kryptonmc.krypton.util.writeItem
 import org.kryptonmc.krypton.util.writeVarInt
@@ -98,7 +98,7 @@ class KryptonPlayerInventory(override val owner: KryptonPlayer) : KryptonInvento
             in 36..44 -> items[index - 36] = item
             45 -> offHand = item
         }
-        owner.session.send(PacketOutSetSlot(id, incrementStateId(), index, item))
+        owner.session.send(PacketOutSetContainerSlot(id, incrementStateId(), index, item))
     }
 
     override fun write(buf: ByteBuf) {

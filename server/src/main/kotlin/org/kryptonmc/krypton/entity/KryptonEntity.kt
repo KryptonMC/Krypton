@@ -26,17 +26,13 @@ import net.kyori.adventure.pointer.Pointers
 import net.kyori.adventure.sound.Sound
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.event.HoverEvent
-import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer
 import net.kyori.adventure.util.TriState
-import org.apache.logging.log4j.LogManager
-import org.kryptonmc.api.adventure.toJson
 import org.kryptonmc.api.block.Blocks
 import org.kryptonmc.api.effect.sound.SoundEvent
 import org.kryptonmc.api.effect.sound.SoundEvents
 import org.kryptonmc.api.entity.Entity
 import org.kryptonmc.api.entity.EntityDimensions
 import org.kryptonmc.api.entity.EntityType
-import org.kryptonmc.api.entity.Hand
 import org.kryptonmc.api.entity.player.Player
 import org.kryptonmc.api.fluid.Fluid
 import org.kryptonmc.api.scoreboard.Team
@@ -52,28 +48,20 @@ import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.item.KryptonItemStack
 import org.kryptonmc.krypton.packet.Packet
-import org.kryptonmc.krypton.packet.out.play.PacketOutDestroyEntities
-import org.kryptonmc.krypton.packet.out.play.PacketOutEntityVelocity
-import org.kryptonmc.krypton.packet.out.play.PacketOutHeadLook
-import org.kryptonmc.krypton.packet.out.play.PacketOutMetadata
+import org.kryptonmc.krypton.packet.out.play.PacketOutRemoveEntities
+import org.kryptonmc.krypton.packet.out.play.PacketOutSetEntityVelocity
+import org.kryptonmc.krypton.packet.out.play.PacketOutSetHeadRotation
+import org.kryptonmc.krypton.packet.out.play.PacketOutSetEntityMetadata
 import org.kryptonmc.krypton.packet.out.play.PacketOutSetPassengers
 import org.kryptonmc.krypton.packet.out.play.PacketOutSpawnEntity
 import org.kryptonmc.krypton.tags.KryptonTagManager
 import org.kryptonmc.krypton.tags.KryptonTagTypes
-import org.kryptonmc.krypton.util.InteractionResult
 import org.kryptonmc.krypton.util.ceil
 import org.kryptonmc.krypton.util.floor
-import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.util.nextUUID
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.krypton.world.damage.KryptonDamageSource
 import org.kryptonmc.krypton.world.fluid.handler
-import org.kryptonmc.nbt.CompoundTag
-import org.kryptonmc.nbt.DoubleTag
-import org.kryptonmc.nbt.FloatTag
-import org.kryptonmc.nbt.MutableListTag
-import org.kryptonmc.nbt.StringTag
-import org.kryptonmc.nbt.buildCompound
 import org.spongepowered.math.vector.Vector2f
 import org.spongepowered.math.vector.Vector3d
 import java.util.UUID
@@ -233,14 +221,14 @@ abstract class KryptonEntity(override var world: KryptonWorld, override val type
         set(value) = data.set(MetadataKeys.FROZEN_TICKS, value)
 
     init {
-        data.add(MetadataKeys.FLAGS)
+        data.add(MetadataKeys.FLAGS, 0)
         data.add(MetadataKeys.AIR_TICKS, maxAirTicks)
-        data.add(MetadataKeys.CUSTOM_NAME)
-        data.add(MetadataKeys.CUSTOM_NAME_VISIBILITY)
-        data.add(MetadataKeys.SILENT)
-        data.add(MetadataKeys.NO_GRAVITY)
-        data.add(MetadataKeys.POSE)
-        data.add(MetadataKeys.FROZEN_TICKS)
+        data.add(MetadataKeys.CUSTOM_NAME, null)
+        data.add(MetadataKeys.CUSTOM_NAME_VISIBILITY, false)
+        data.add(MetadataKeys.SILENT, false)
+        data.add(MetadataKeys.NO_GRAVITY, false)
+        data.add(MetadataKeys.POSE, Pose.STANDING)
+        data.add(MetadataKeys.FROZEN_TICKS, 0)
     }
 
     open fun onDataUpdate(key: MetadataKey<*>) {
@@ -250,14 +238,14 @@ abstract class KryptonEntity(override var world: KryptonWorld, override val type
     open fun addViewer(player: KryptonPlayer): Boolean {
         if (!viewers.add(player)) return false
         player.session.send(getSpawnPacket())
-        player.session.send(PacketOutMetadata(id, data.all))
-        player.session.send(PacketOutHeadLook(id, rotation.x()))
+        player.session.send(PacketOutSetEntityMetadata(id, data.collectAll()))
+        player.session.send(PacketOutSetHeadRotation(id, rotation.x()))
         return true
     }
 
     open fun removeViewer(player: KryptonPlayer): Boolean {
         if (!viewers.remove(player)) return false
-        player.session.send(PacketOutDestroyEntities(id))
+        player.session.send(PacketOutRemoveEntities(id))
         return true
     }
 
@@ -270,9 +258,9 @@ abstract class KryptonEntity(override var world: KryptonWorld, override val type
         updateWater()
         updateUnderFluid()
         updateSwimming()
-        if (data.isDirty) server.sessionManager.sendGrouped(viewers, PacketOutMetadata(id, data.dirty))
+        if (data.isDirty) server.sessionManager.sendGrouped(viewers, PacketOutSetEntityMetadata(id, data.collectDirty()))
         if (wasDamaged) {
-            server.sessionManager.sendGrouped(viewers, PacketOutEntityVelocity(this))
+            server.sessionManager.sendGrouped(viewers, PacketOutSetEntityVelocity(this))
             wasDamaged = false
         }
     }
@@ -349,7 +337,7 @@ abstract class KryptonEntity(override var world: KryptonWorld, override val type
                 offset = offset.mul(FLUID_VECTOR_MAGIC)
             }
             this.velocity = this.velocity.add(offset)
-            server.sessionManager.sendGrouped(viewers, PacketOutEntityVelocity(this))
+            server.sessionManager.sendGrouped(viewers, PacketOutSetEntityVelocity(this))
         }
 
         fluidHeights[tag] = amount
