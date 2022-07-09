@@ -19,6 +19,7 @@
 package org.kryptonmc.krypton.tags
 
 import io.netty.buffer.ByteBuf
+import it.unimi.dsi.fastutil.ints.IntArrayList
 import kotlinx.collections.immutable.persistentMapOf
 import net.kyori.adventure.key.Key
 import org.kryptonmc.api.registry.Registries
@@ -45,11 +46,9 @@ object TagSerializer {
     private fun <T : Any> serializeTags(type: TagType<T>): NetworkPayload {
         val tags = persistentMapOf<Key, IntArray>().builder()
         KryptonTagManager[type].forEach { tag ->
-            val array = IntArray(tag.values.size)
-            tag.values.forEach {
-                array[type.registry.idOf(it)]
-            }
-            tags[tag.key()] = array
+            val list = IntArrayList(tag.values.size)
+            tag.values.forEach { list.add(type.registry.idOf(it)) }
+            tags[tag.key()] = list.toIntArray()
         }
         return NetworkPayload(tags.build())
     }

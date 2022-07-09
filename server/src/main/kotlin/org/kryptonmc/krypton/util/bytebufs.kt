@@ -251,10 +251,9 @@ fun ByteBuf.readComponent(): Component {
 
 fun ByteBuf.readItem(): KryptonItemStack {
     if (!readBoolean()) return KryptonItemStack.EMPTY
-    val id = readVarInt()
+    val type = readById(Registries.ITEM)!!
     val count = readByte()
     val nbt = readNBT()
-    val type = Registries.ITEM[id]
     return KryptonItemStack(type, count.toInt(), ItemFactory.create(type, nbt))
 }
 
