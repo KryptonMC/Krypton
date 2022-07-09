@@ -19,22 +19,16 @@
 package org.kryptonmc.krypton.packet.`in`.play
 
 import io.netty.buffer.ByteBuf
+import org.kryptonmc.krypton.network.chat.MessageSignature
 import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.util.readString
-import org.kryptonmc.krypton.util.readVarIntByteArray
 import org.kryptonmc.krypton.util.writeString
 
 @Suppress("ArrayInDataClass")
 @JvmRecord
-data class PacketInChatMessage(
-    val message: String,
-    val timestamp: Long,
-    val salt: Long,
-    val signature: ByteArray,
-    val signedPreview: Boolean
-) : Packet {
+data class PacketInChatMessage(val message: String, val signature: MessageSignature, val signedPreview: Boolean) : Packet {
 
-    constructor(buf: ByteBuf) : this(buf.readString(), buf.readLong(), buf.readLong(), buf.readVarIntByteArray(), buf.readBoolean())
+    constructor(buf: ByteBuf) : this(buf.readString(), MessageSignature(buf), buf.readBoolean())
 
     override fun write(buf: ByteBuf) {
         buf.writeString(message)

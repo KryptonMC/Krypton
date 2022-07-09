@@ -16,23 +16,9 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.packet.`in`.login
+package org.kryptonmc.krypton.network.chat
 
-import io.netty.buffer.ByteBuf
-import org.kryptonmc.krypton.entity.player.PlayerPublicKey
-import org.kryptonmc.krypton.packet.Packet
-import org.kryptonmc.krypton.util.readString
-import org.kryptonmc.krypton.util.writeNullable
-import org.kryptonmc.krypton.util.writeString
+interface ChatSenderLike {
 
-@Suppress("ArrayInDataClass")
-@JvmRecord
-data class PacketInLoginStart(val name: String, val publicKey: PlayerPublicKey.Data?) : Packet {
-
-    constructor(buf: ByteBuf) : this(buf.readString(16), if (buf.readBoolean()) PlayerPublicKey.Data(buf) else null)
-
-    override fun write(buf: ByteBuf) {
-        buf.writeString(name, 16)
-        buf.writeNullable(publicKey) { _, key -> key.write(buf) }
-    }
+    fun asChatSender(): ChatSender
 }

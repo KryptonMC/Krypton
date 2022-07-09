@@ -21,12 +21,17 @@ package org.kryptonmc.krypton.adventure
 import net.kyori.adventure.inventory.Book
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.flattener.ComponentFlattener
+import net.kyori.adventure.text.format.NamedTextColor
+import net.kyori.adventure.text.format.TextColor
+import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer
 import org.kryptonmc.api.item.ItemTypes
 import org.kryptonmc.api.item.item
 import org.kryptonmc.api.item.meta
 import org.kryptonmc.api.item.meta.WrittenBookMeta
 import org.kryptonmc.krypton.item.KryptonItemStack
 import org.kryptonmc.krypton.item.meta.KryptonWrittenBookMeta
+import org.kryptonmc.krypton.util.StableOrderGson
+import java.util.Locale
 
 inline fun <reified T : Component> ComponentFlattener.Builder.complexMapper(
     noinline converter: (T, (Component) -> Unit) -> Unit
@@ -45,3 +50,10 @@ fun Book.toItemStack(): KryptonItemStack {
         }
     } as KryptonItemStack
 }
+
+fun TextColor.serialize(): String {
+    if (this is NamedTextColor) return NamedTextColor.NAMES.key(this)!!
+    return String.format(Locale.ROOT, "#%06X", value())
+}
+
+fun Component.toStableJson(): String = StableOrderGson.toStableString(GsonComponentSerializer.gson().serializeToTree(this))

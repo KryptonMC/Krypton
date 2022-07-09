@@ -77,6 +77,11 @@ import org.kryptonmc.krypton.inventory.KryptonPlayerInventory
 import org.kryptonmc.krypton.item.KryptonItemStack
 import org.kryptonmc.krypton.item.handler
 import org.kryptonmc.krypton.network.SessionHandler
+import org.kryptonmc.krypton.network.chat.ChatType
+import org.kryptonmc.krypton.network.chat.MessageSignature
+import org.kryptonmc.krypton.network.chat.ChatSender
+import org.kryptonmc.krypton.network.chat.ChatSenderLike
+import org.kryptonmc.krypton.network.chat.ChatTypes
 import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.packet.out.play.GameEvent
 import org.kryptonmc.krypton.packet.out.play.PacketOutAbilities
@@ -86,6 +91,7 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutEntitySoundEffect
 import org.kryptonmc.krypton.packet.out.play.PacketOutGameEvent
 import org.kryptonmc.krypton.packet.out.play.PacketOutOpenBook
 import org.kryptonmc.krypton.packet.out.play.PacketOutParticle
+import org.kryptonmc.krypton.packet.out.play.PacketOutPlayerChatMessage
 import org.kryptonmc.krypton.packet.out.play.PacketOutPlayerInfo
 import org.kryptonmc.krypton.packet.out.play.PacketOutPluginMessage
 import org.kryptonmc.krypton.packet.out.play.PacketOutResourcePack
@@ -105,6 +111,7 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutStopSound
 import org.kryptonmc.krypton.packet.out.play.PacketOutTeleportEntity
 import org.kryptonmc.krypton.packet.out.play.PacketOutUnloadChunk
 import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateEntityPosition
+import org.kryptonmc.krypton.registry.InternalRegistries
 import org.kryptonmc.krypton.statistic.KryptonStatisticsTracker
 import org.kryptonmc.krypton.util.Directions
 import org.kryptonmc.krypton.util.InteractionResult
@@ -136,7 +143,7 @@ class KryptonPlayer(
     world: KryptonWorld,
     override val address: InetSocketAddress,
     val publicKey: PlayerPublicKey?
-) : KryptonLivingEntity(world, EntityTypes.PLAYER, ATTRIBUTES), Player, KryptonEquipable {
+) : KryptonLivingEntity(world, EntityTypes.PLAYER, ATTRIBUTES), Player, KryptonEquipable, ChatSenderLike {
 
     var permissionFunction: PermissionFunction = DEFAULT_PERMISSION_FUNCTION
 
@@ -229,6 +236,8 @@ class KryptonPlayer(
     override var filterText: Boolean = false
     override var allowsListing: Boolean = true
     override var time: Long = 0L
+    private val chatSender = ChatSender(uuid, name, teamRepresentation)
+    private var lastActionTime = System.currentTimeMillis()
 
     private var camera: KryptonEntity = this
         set(value) {
@@ -574,8 +583,24 @@ class KryptonPlayer(
     }
 
     override fun sendMessage(source: Identity, message: Component, type: MessageType) {
-        // TODO
-        //session.send(PacketOutPlayerChatMessage(message, type, source.uuid()))
+        // TODO: Update this when Adventure updates - still a few things wrong here, the sender's name is always empty.
+        val chatType = when (type) {
+            MessageType.CHAT -> ChatTypes.CHAT
+            MessageType.SYSTEM -> ChatTypes.SYSTEM
+        }
+        if (!acceptsChatType(chatType)) return
+        sendMessage(message, MessageSignature.unsigned(), ChatSender.fromIdentity(source), chatType)
+    }
+
+    fun sendMessage(message: Component, signature: MessageSignature, sender: ChatSender, type: ChatType) {
+        if (!acceptsChatType(type)) return
+        session.send(PacketOutPlayerChatMessage(message, null, InternalRegistries.CHAT_TYPE.idOf(type), sender, signature))
+    }
+
+    private fun acceptsChatType(type: ChatType): Boolean = when (chatVisibility) {
+        ChatVisibility.HIDDEN -> type == ChatTypes.GAME_INFO
+        ChatVisibility.SYSTEM -> type == ChatTypes.SYSTEM || type == ChatTypes.GAME_INFO
+        else -> true
     }
 
     override fun sendActionBar(message: Component) {
@@ -837,6 +862,12 @@ class KryptonPlayer(
             return
         }
     }
+
+    fun resetLastActionTime() {
+        lastActionTime = System.currentTimeMillis()
+    }
+
+    override fun asChatSender(): ChatSender = chatSender
 
     companion object {
 
