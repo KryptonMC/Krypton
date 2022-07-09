@@ -19,8 +19,13 @@
 package org.kryptonmc.krypton.command.argument.serializer
 
 import com.mojang.brigadier.arguments.ArgumentType
+import io.netty.buffer.ByteBuf
 
 sealed interface FlaggedArgumentSerializer<T : ArgumentType<*>> : ArgumentSerializer<T> {
+
+    fun read(buf: ByteBuf, flags: Int): T
+
+    override fun read(buf: ByteBuf): T = read(buf, buf.readByte().toInt())
 
     /**
      * Packs the minimum and maximum values in to a byte, where the first bit

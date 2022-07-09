@@ -33,6 +33,16 @@ data class KryptonDustTransitionParticleData(
     override val toBlue: Short
 ) : DustTransitionParticleData, Writable {
 
+    constructor(buf: ByteBuf) : this(
+        buf.readColor(),
+        buf.readColor(),
+        buf.readColor(),
+        buf.readFloat(),
+        buf.readColor(),
+        buf.readColor(),
+        buf.readColor()
+    )
+
     override fun write(buf: ByteBuf) {
         buf.writeFloat(if (red == 0.toShort()) Float.MIN_VALUE else red.toFloat() / 255F)
         buf.writeFloat(green.toFloat() / 255F)
@@ -43,3 +53,5 @@ data class KryptonDustTransitionParticleData(
         buf.writeFloat(toBlue.toFloat() / 255F)
     }
 }
+
+private fun ByteBuf.readColor(): Short = (readFloat() * 255F).toInt().toShort()

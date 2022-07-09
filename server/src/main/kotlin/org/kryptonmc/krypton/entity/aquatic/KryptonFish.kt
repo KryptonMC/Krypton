@@ -43,7 +43,7 @@ abstract class KryptonFish(world: KryptonWorld, type: EntityType<out Fish>) : Kr
         get() = SoundEvents.FISH_SWIM
 
     init {
-        data.add(MetadataKeys.FISH.FROM_BUCKET)
+        data.add(MetadataKeys.FISH.FROM_BUCKET, false)
     }
 
     override fun loadFromBucket(tag: CompoundTag) {

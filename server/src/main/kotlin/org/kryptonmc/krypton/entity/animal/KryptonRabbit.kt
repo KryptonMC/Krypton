@@ -50,7 +50,7 @@ class KryptonRabbit(world: KryptonWorld) : KryptonAnimal(world, EntityTypes.RABB
         get() = if (rabbitType == RabbitType.KILLER) Sound.Source.HOSTILE else Sound.Source.NEUTRAL
 
     init {
-        data.add(MetadataKeys.RABBIT.TYPE)
+        data.add(MetadataKeys.RABBIT.TYPE, 0)
     }
 
     override fun isFood(item: ItemStack): Boolean = TEMPTING_ITEMS.contains(item.type)

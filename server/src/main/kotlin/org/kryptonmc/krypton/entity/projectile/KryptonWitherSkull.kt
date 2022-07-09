@@ -28,4 +28,8 @@ class KryptonWitherSkull(world: KryptonWorld) : KryptonAcceleratingProjectile(wo
     override var isDangerous: Boolean
         get() = data[MetadataKeys.WITHER_SKULL.DANGEROUS]
         set(value) = data.set(MetadataKeys.WITHER_SKULL.DANGEROUS, value)
+
+    init {
+        data.add(MetadataKeys.WITHER_SKULL.DANGEROUS, false)
+    }
 }

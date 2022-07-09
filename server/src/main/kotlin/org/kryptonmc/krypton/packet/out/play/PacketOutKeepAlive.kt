@@ -31,6 +31,8 @@ import org.kryptonmc.krypton.packet.Packet
 @JvmRecord
 data class PacketOutKeepAlive(val keepAliveId: Long) : Packet {
 
+    constructor(buf: ByteBuf) : this(buf.readLong())
+
     override fun write(buf: ByteBuf) {
         buf.writeLong(keepAliveId)
     }

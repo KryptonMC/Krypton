@@ -18,11 +18,12 @@
  */
 package org.kryptonmc.krypton.entity
 
+import org.kryptonmc.api.effect.particle.ParticleTypes
 import org.kryptonmc.api.entity.AreaEffectCloud
 import org.kryptonmc.api.entity.EntityTypes
+import org.kryptonmc.krypton.effect.particle.ParticleOptions
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.world.KryptonWorld
-import org.kryptonmc.nbt.CompoundTag
 
 class KryptonAreaEffectCloud(world: KryptonWorld) : KryptonEntity(world, EntityTypes.AREA_EFFECT_CLOUD), AreaEffectCloud {
 
@@ -37,9 +38,9 @@ class KryptonAreaEffectCloud(world: KryptonWorld) : KryptonEntity(world, EntityT
         set(value) = data.set(MetadataKeys.AREA_EFFECT_CLOUD.COLOR, value)
 
     init {
-        data.add(MetadataKeys.AREA_EFFECT_CLOUD.RADIUS)
-        data.add(MetadataKeys.AREA_EFFECT_CLOUD.COLOR)
-        data.add(MetadataKeys.AREA_EFFECT_CLOUD.IGNORE_RADIUS)
-        data.add(MetadataKeys.AREA_EFFECT_CLOUD.PARTICLE)
+        data.add(MetadataKeys.AREA_EFFECT_CLOUD.RADIUS, 0.5F)
+        data.add(MetadataKeys.AREA_EFFECT_CLOUD.COLOR, 0)
+        data.add(MetadataKeys.AREA_EFFECT_CLOUD.IGNORE_RADIUS, false)
+        data.add(MetadataKeys.AREA_EFFECT_CLOUD.PARTICLE, ParticleOptions(ParticleTypes.EFFECT, null))
     }
 }

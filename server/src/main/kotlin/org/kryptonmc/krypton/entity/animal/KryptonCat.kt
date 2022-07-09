@@ -23,7 +23,8 @@ import org.kryptonmc.api.effect.sound.SoundEvents
 import org.kryptonmc.api.entity.EntityTypes
 import org.kryptonmc.api.entity.animal.Animal
 import org.kryptonmc.api.entity.animal.Cat
-import org.kryptonmc.api.entity.animal.type.CatType
+import org.kryptonmc.api.entity.animal.type.CatVariant
+import org.kryptonmc.api.entity.animal.type.CatVariants
 import org.kryptonmc.api.entity.attribute.AttributeTypes
 import org.kryptonmc.api.item.ItemStack
 import org.kryptonmc.api.item.ItemTypes
@@ -35,9 +36,9 @@ import org.kryptonmc.krypton.world.KryptonWorld
 
 class KryptonCat(world: KryptonWorld) : KryptonTamable(world, EntityTypes.CAT, ATTRIBUTES), Cat {
 
-    override var catType: CatType
-        get() = CAT_TYPES[data[MetadataKeys.CAT.TYPE]]
-        set(value) = data.set(MetadataKeys.CAT.TYPE, value.ordinal)
+    override var variant: CatVariant
+        get() = Registries.CAT_VARIANT[data[MetadataKeys.CAT.VARIANT]]!!
+        set(value) = data.set(MetadataKeys.CAT.VARIANT, Registries.CAT_VARIANT.idOf(value))
     override var isLying: Boolean
         get() = data[MetadataKeys.CAT.LYING]
         set(value) = data.set(MetadataKeys.CAT.LYING, value)
@@ -49,10 +50,10 @@ class KryptonCat(world: KryptonWorld) : KryptonTamable(world, EntityTypes.CAT, A
         set(value) = data.set(MetadataKeys.CAT.COLLAR_COLOR, Registries.DYE_COLORS.idOf(value))
 
     init {
-        data.add(MetadataKeys.CAT.TYPE)
-        data.add(MetadataKeys.CAT.LYING)
-        data.add(MetadataKeys.CAT.RELAXED)
-        data.add(MetadataKeys.CAT.COLLAR_COLOR)
+        data.add(MetadataKeys.CAT.VARIANT, Registries.CAT_VARIANT.idOf(CatVariants.BLACK))
+        data.add(MetadataKeys.CAT.LYING, false)
+        data.add(MetadataKeys.CAT.RELAXED, false)
+        data.add(MetadataKeys.CAT.COLLAR_COLOR, Registries.DYE_COLORS.idOf(DyeColors.RED))
     }
 
     override fun hiss() {
@@ -69,7 +70,6 @@ class KryptonCat(world: KryptonWorld) : KryptonTamable(world, EntityTypes.CAT, A
 
     companion object {
 
-        private val CAT_TYPES = CatType.values()
         private val ATTRIBUTES = attributes()
             .add(AttributeTypes.MAX_HEALTH, 10.0)
             .add(AttributeTypes.MOVEMENT_SPEED, 0.3)

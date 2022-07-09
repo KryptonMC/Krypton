@@ -18,8 +18,24 @@
  */
 package org.kryptonmc.krypton.entity.data
 
+import io.netty.buffer.ByteBuf
+import org.kryptonmc.krypton.network.Writable
+import org.kryptonmc.krypton.util.readEnum
+import org.kryptonmc.krypton.util.readVarInt
+import org.kryptonmc.krypton.util.writeEnum
+import org.kryptonmc.krypton.util.writeVarInt
+
 /**
  * Various data for villagers. Used for entity metadata.
  */
 @JvmRecord
-data class VillagerData(val type: VillagerType, val profession: VillagerProfession, val level: Int)
+data class VillagerData(val type: VillagerType, val profession: VillagerProfession, val level: Int) : Writable {
+
+    constructor(buf: ByteBuf) : this(buf.readEnum(), buf.readEnum(), buf.readVarInt())
+
+    override fun write(buf: ByteBuf) {
+        buf.writeEnum(type)
+        buf.writeEnum(profession)
+        buf.writeVarInt(level)
+    }
+}

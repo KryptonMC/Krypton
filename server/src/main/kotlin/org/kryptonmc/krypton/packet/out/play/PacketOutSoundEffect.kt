@@ -23,19 +23,40 @@ import net.kyori.adventure.sound.Sound
 import org.kryptonmc.api.effect.sound.SoundEvent
 import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.krypton.packet.Packet
+import org.kryptonmc.krypton.util.readById
+import org.kryptonmc.krypton.util.readEnum
 import org.kryptonmc.krypton.util.writeEnum
 import org.kryptonmc.krypton.util.writeVarInt
+import org.spongepowered.math.vector.Vector3d
 
 @JvmRecord
 data class PacketOutSoundEffect(
     val event: SoundEvent,
     val source: Sound.Source,
-    val x: Double,
-    val y: Double,
-    val z: Double,
+    val x: Int,
+    val y: Int,
+    val z: Int,
     val volume: Float,
     val pitch: Float
 ) : Packet {
+
+    constructor(
+        event: SoundEvent,
+        source: Sound.Source,
+        x: Double,
+        y: Double,
+        z: Double,
+        volume: Float,
+        pitch: Float
+    ) : this(event, source, (x * 8.0).toInt(), (y * 8.0).toInt(), (z * 8.0).toInt(), volume, pitch)
+
+    constructor(
+        event: SoundEvent,
+        source: Sound.Source,
+        location: Vector3d,
+        volume: Float,
+        pitch: Float
+    ) : this(event, source, location.x(), location.y(), location.z(), volume, pitch)
 
     constructor(
         sound: Sound,
@@ -45,13 +66,19 @@ data class PacketOutSoundEffect(
         z: Double
     ) : this(event, sound.source(), x, y, z, sound.volume(), sound.pitch())
 
+    constructor(sound: Sound, event: SoundEvent, location: Vector3d) : this(sound, event, location.x(), location.y(), location.z())
+
+    constructor(buf: ByteBuf) : this(buf.readEvent(), buf.readEnum(), buf.readInt(), buf.readInt(), buf.readInt(), buf.readFloat(), buf.readFloat())
+
     override fun write(buf: ByteBuf) {
         buf.writeVarInt(Registries.SOUND_EVENT.idOf(event))
         buf.writeEnum(source)
-        buf.writeInt((x * 8.0).toInt())
-        buf.writeInt((y * 8.0).toInt())
-        buf.writeInt((z * 8.0).toInt())
+        buf.writeInt(x)
+        buf.writeInt(y)
+        buf.writeInt(z)
         buf.writeFloat(volume)
         buf.writeFloat(pitch)
     }
 }
+
+private fun ByteBuf.readEvent(): SoundEvent = readById(Registries.SOUND_EVENT)!!

@@ -22,6 +22,7 @@ import io.netty.buffer.ByteBuf
 import org.kryptonmc.api.scoreboard.Objective
 import org.kryptonmc.api.scoreboard.DisplaySlot
 import org.kryptonmc.krypton.packet.Packet
+import org.kryptonmc.krypton.util.readString
 import org.kryptonmc.krypton.util.writeString
 
 @JvmRecord
@@ -30,6 +31,8 @@ data class PacketOutDisplayObjective(val slot: Int, val name: String) : Packet {
     constructor(slot: DisplaySlot, objective: Objective?) : this(slot.ordinal, objective?.name ?: "")
 
     constructor(slot: Int, objective: Objective?) : this(slot, objective?.name ?: "")
+
+    constructor(buf: ByteBuf) : this(buf.readByte().toInt(), buf.readString())
 
     override fun write(buf: ByteBuf) {
         buf.writeByte(slot)

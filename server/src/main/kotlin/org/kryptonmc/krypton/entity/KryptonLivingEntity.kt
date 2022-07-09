@@ -34,9 +34,7 @@ import org.kryptonmc.krypton.entity.memory.Brain
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.item.KryptonItemStack
-import org.kryptonmc.krypton.packet.Packet
-import org.kryptonmc.krypton.packet.out.play.PacketOutAttributes
-import org.kryptonmc.krypton.packet.out.play.PacketOutSpawnLivingEntity
+import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateAttributes
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.spongepowered.math.vector.Vector3i
 import kotlin.random.Random
@@ -126,13 +124,13 @@ abstract class KryptonLivingEntity(
         set(value) = data.set(MetadataKeys.LIVING.BED_LOCATION, value)
 
     init {
-        data.add(MetadataKeys.LIVING.FLAGS)
-        data.add(MetadataKeys.LIVING.HEALTH)
-        data.add(MetadataKeys.LIVING.POTION_EFFECT_COLOR)
-        data.add(MetadataKeys.LIVING.POTION_EFFECT_AMBIENCE)
-        data.add(MetadataKeys.LIVING.ARROWS)
-        data.add(MetadataKeys.LIVING.STINGERS)
-        data.add(MetadataKeys.LIVING.BED_LOCATION)
+        data.add(MetadataKeys.LIVING.FLAGS, 0)
+        data.add(MetadataKeys.LIVING.HEALTH, 1F)
+        data.add(MetadataKeys.LIVING.POTION_EFFECT_COLOR, 0)
+        data.add(MetadataKeys.LIVING.POTION_EFFECT_AMBIENCE, false)
+        data.add(MetadataKeys.LIVING.ARROWS, 0)
+        data.add(MetadataKeys.LIVING.STINGERS, 0)
+        data.add(MetadataKeys.LIVING.BED_LOCATION, null)
         data[MetadataKeys.LIVING.HEALTH] = maxHealth
     }
 
@@ -168,7 +166,7 @@ abstract class KryptonLivingEntity(
 
     override fun addViewer(player: KryptonPlayer): Boolean {
         if (!super.addViewer(player)) return false
-        player.session.send(PacketOutAttributes(id, attributes.syncable))
+        player.session.send(PacketOutUpdateAttributes(id, attributes.syncable))
         return true
     }
 

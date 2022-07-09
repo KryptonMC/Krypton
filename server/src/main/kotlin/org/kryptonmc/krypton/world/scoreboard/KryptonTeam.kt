@@ -94,13 +94,9 @@ class KryptonTeam(
         .color(color)
         .build()
 
-    override fun addMember(member: Component) {
-        members.add(member)
-    }
+    override fun addMember(member: Component): Boolean = members.add(member)
 
-    override fun removeMember(member: Component) {
-        members.remove(member)
-    }
+    override fun removeMember(member: Component): Boolean = members.remove(member)
 
     override fun toBuilder(): Team.Builder = Builder(this)
 

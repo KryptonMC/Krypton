@@ -23,6 +23,8 @@ import net.kyori.adventure.key.Key
 import net.kyori.adventure.sound.Sound
 import net.kyori.adventure.sound.SoundStop
 import org.kryptonmc.krypton.packet.Packet
+import org.kryptonmc.krypton.util.readEnum
+import org.kryptonmc.krypton.util.readKey
 import org.kryptonmc.krypton.util.writeEnum
 import org.kryptonmc.krypton.util.writeKey
 
@@ -30,6 +32,13 @@ import org.kryptonmc.krypton.util.writeKey
 data class PacketOutStopSound(val source: Sound.Source?, val sound: Key?) : Packet {
 
     constructor(stop: SoundStop) : this(stop.source(), stop.sound())
+
+    constructor(buf: ByteBuf) : this(buf, buf.readByte().toInt())
+
+    private constructor(buf: ByteBuf, flags: Int) : this(
+        if (flags and 1 > 0) buf.readEnum<Sound.Source>() else null,
+        if (flags and 2 > 0) buf.readKey() else null
+    )
 
     override fun write(buf: ByteBuf) {
         if (source != null) {

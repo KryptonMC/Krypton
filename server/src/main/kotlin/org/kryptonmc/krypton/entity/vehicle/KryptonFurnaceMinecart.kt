@@ -34,6 +34,6 @@ class KryptonFurnaceMinecart(world: KryptonWorld) : KryptonMinecartLike(world, E
     override var fuel: Int = 0
 
     init {
-        data.add(MetadataKeys.FURNACE_MINECART.HAS_FUEL)
+        data.add(MetadataKeys.FURNACE_MINECART.HAS_FUEL, false)
     }
 }

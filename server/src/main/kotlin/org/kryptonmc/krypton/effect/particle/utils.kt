@@ -19,71 +19,27 @@
 package org.kryptonmc.krypton.effect.particle
 
 import io.netty.buffer.ByteBuf
-import io.netty.util.internal.ThreadLocalRandom
-import org.kryptonmc.api.effect.particle.ParticleEffect
-import org.kryptonmc.api.effect.particle.data.ColorParticleData
-import org.kryptonmc.api.effect.particle.data.DirectionalParticleData
-import org.kryptonmc.api.effect.particle.data.NoteParticleData
-import org.kryptonmc.api.registry.Registries
-import org.kryptonmc.krypton.network.Writable
+import org.kryptonmc.api.effect.particle.BlockParticleType
+import org.kryptonmc.api.effect.particle.DustParticleType
+import org.kryptonmc.api.effect.particle.DustTransitionParticleType
+import org.kryptonmc.api.effect.particle.ItemParticleType
+import org.kryptonmc.api.effect.particle.ParticleType
+import org.kryptonmc.api.effect.particle.VibrationParticleType
+import org.kryptonmc.api.effect.particle.data.ParticleData
+import org.kryptonmc.krypton.effect.particle.data.KryptonBlockParticleData
+import org.kryptonmc.krypton.effect.particle.data.KryptonDustParticleData
+import org.kryptonmc.krypton.effect.particle.data.KryptonDustTransitionParticleData
+import org.kryptonmc.krypton.effect.particle.data.KryptonItemParticleData
+import org.kryptonmc.krypton.effect.particle.data.KryptonVibrationParticleData
+import org.kryptonmc.krypton.util.readItem
+import org.kryptonmc.krypton.util.readVarInt
+import org.kryptonmc.krypton.world.block.BlockLoader
 
-fun ParticleEffect.write(buf: ByteBuf, x: Double, y: Double, z: Double) {
-    buf.writeInt(Registries.PARTICLE_TYPE.idOf(type))
-    buf.writeBoolean(longDistance)
-
-    /*
-     * Write location. If the particle is directional, colorable, or a note, then we need
-     * to manually apply the offsets first.
-     *
-     * The way this even works is really hacky. What we do is write the data in
-     * the offsets. This goes all the way back to old versions of Minecraft,
-     * and somehow still works in the newest versions.
-     */
-    val data = data
-    when (data) {
-        is DirectionalParticleData -> {
-            writeOffsetPosition(buf, x, y, z)
-            val random = ThreadLocalRandom.current()
-            val directionX = data.direction?.x() ?: random.nextGaussian()
-            val directionY = data.direction?.y() ?: random.nextGaussian()
-            val directionZ = data.direction?.z() ?: random.nextGaussian()
-            buf.writeOffset(directionX.toFloat(), directionY.toFloat(), directionZ.toFloat())
-            buf.writeFloat(data.velocity)
-            buf.writeInt(0)
-        }
-        is ColorParticleData -> {
-            writeOffsetPosition(buf, x, y, z)
-            buf.writeOffset(data.red.toFloat() / 255F, data.green.toFloat() / 255F, data.blue.toFloat() / 255F)
-            buf.writeFloat(1F)
-            buf.writeInt(0)
-        }
-        is NoteParticleData -> {
-            writeOffsetPosition(buf, x, y, z)
-            buf.writeOffset(data.note.toFloat() / 24F, 0F, 0F)
-            buf.writeFloat(1F)
-            buf.writeInt(0)
-        }
-        else -> {
-            buf.writeDouble(x)
-            buf.writeDouble(y)
-            buf.writeDouble(z)
-            buf.writeOffset(offset.x().toFloat(), offset.y().toFloat(), offset.z().toFloat())
-            buf.writeFloat(1F)
-            buf.writeInt(quantity)
-        }
-    }
-    if (data is Writable) data.write(buf)
-}
-
-private fun ParticleEffect.writeOffsetPosition(buf: ByteBuf, x: Double, y: Double, z: Double) {
-    val random = ThreadLocalRandom.current()
-    buf.writeDouble(x + offset.x() * random.nextGaussian())
-    buf.writeDouble(y + offset.y() * random.nextGaussian())
-    buf.writeDouble(z + offset.z() * random.nextGaussian())
-}
-
-private fun ByteBuf.writeOffset(x: Float, y: Float, z: Float) {
-    writeFloat(x)
-    writeFloat(y)
-    writeFloat(z)
+fun ParticleType.createData(buf: ByteBuf): ParticleData? = when (this) {
+    is BlockParticleType -> KryptonBlockParticleData(BlockLoader.fromState(buf.readVarInt()))
+    is DustParticleType -> KryptonDustParticleData(buf)
+    is DustTransitionParticleType -> KryptonDustTransitionParticleData(buf)
+    is ItemParticleType -> KryptonItemParticleData(buf.readItem().type) // TODO: Use an item stack, not just a type
+    is VibrationParticleType -> KryptonVibrationParticleData(buf)
+    else -> null
 }

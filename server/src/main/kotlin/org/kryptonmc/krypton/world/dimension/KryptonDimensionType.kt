@@ -28,7 +28,9 @@ import org.kryptonmc.api.world.dimension.DimensionType
 import org.kryptonmc.krypton.util.provider.IntProvider
 import org.kryptonmc.krypton.util.provider.UniformIntProvider
 import org.kryptonmc.krypton.util.serialization.Codecs
+import org.kryptonmc.krypton.util.serialization.CompoundDecoder
 import org.kryptonmc.krypton.util.serialization.CompoundEncoder
+import org.kryptonmc.krypton.util.serialization.decode
 import org.kryptonmc.krypton.util.serialization.encode
 import org.kryptonmc.nbt.compound
 import java.util.OptionalLong

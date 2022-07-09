@@ -26,6 +26,8 @@ import org.spongepowered.math.vector.Vector3d
 @JvmRecord
 data class KryptonVibrationParticleData(override val destination: Vector3d, override val ticks: Int) : VibrationParticleData, Writable {
 
+    constructor(buf: ByteBuf) : this(Vector3d(buf.readDouble(), buf.readDouble(), buf.readDouble()), buf.readInt())
+
     override fun write(buf: ByteBuf) {
         // TODO: Sort this out when we have a new position source mechanism
         buf.writeDouble(destination.x())

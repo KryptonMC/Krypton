@@ -20,20 +20,26 @@ package org.kryptonmc.krypton.entity.serializer
 
 import org.kryptonmc.krypton.entity.KryptonArmorStand
 import org.kryptonmc.krypton.entity.KryptonEquipable
-import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.entity.readRotation
 import org.kryptonmc.krypton.entity.rotation
 import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.FloatTag
+import org.spongepowered.math.vector.Vector3f
 
 object ArmorStandSerializer : EntitySerializer<KryptonArmorStand> {
 
-    private val DEFAULT_HEAD_ROTATION = MetadataKeys.ARMOR_STAND.HEAD_ROTATION.default
-    private val DEFAULT_BODY_ROTATION = MetadataKeys.ARMOR_STAND.BODY_ROTATION.default
-    private val DEFAULT_LEFT_ARM_ROTATION = MetadataKeys.ARMOR_STAND.LEFT_ARM_ROTATION.default
-    private val DEFAULT_RIGHT_ARM_ROTATION = MetadataKeys.ARMOR_STAND.RIGHT_ARM_ROTATION.default
-    private val DEFAULT_LEFT_LEG_ROTATION = MetadataKeys.ARMOR_STAND.LEFT_LEG_ROTATION.default
-    private val DEFAULT_RIGHT_LEG_ROTATION = MetadataKeys.ARMOR_STAND.RIGHT_LEG_ROTATION.default
+    @JvmField
+    val DEFAULT_HEAD_ROTATION: Vector3f = Vector3f.ZERO
+    @JvmField
+    val DEFAULT_BODY_ROTATION: Vector3f = Vector3f.ZERO
+    @JvmField
+    val DEFAULT_LEFT_ARM_ROTATION: Vector3f = Vector3f(-10F, 0F, -10F)
+    @JvmField
+    val DEFAULT_RIGHT_ARM_ROTATION: Vector3f = Vector3f(-15F, 0F, 10F)
+    @JvmField
+    val DEFAULT_LEFT_LEG_ROTATION: Vector3f = Vector3f(-1F, 0F, -1F)
+    @JvmField
+    val DEFAULT_RIGHT_LEG_ROTATION: Vector3f = Vector3f(1F, 0F, 1F)
 
     override fun load(entity: KryptonArmorStand, data: CompoundTag) {
         LivingEntitySerializer.load(entity, data)

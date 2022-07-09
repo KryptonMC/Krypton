@@ -97,13 +97,16 @@ public interface Team : Buildable<Team, Team.Builder> {
      * Adds a member to the list of members in this team.
      *
      * @param member the member to add
+     * @return whether the member was added
      */
-    public fun addMember(member: Component)
+    public fun addMember(member: Component): Boolean
 
     /**
      * Removes a member from the list of members in this team.
+     *
+     * @return whether the member was removed
      */
-    public fun removeMember(member: Component)
+    public fun removeMember(member: Component): Boolean
 
     /**
      * Formats the given [name] according to the options in this team.

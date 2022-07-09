@@ -22,7 +22,12 @@ import io.netty.buffer.ByteBuf
 import org.kryptonmc.api.auth.GameProfile
 import org.kryptonmc.api.auth.ProfileProperty
 import org.kryptonmc.krypton.packet.Packet
+import org.kryptonmc.krypton.util.readList
+import org.kryptonmc.krypton.util.readProfileProperty
+import org.kryptonmc.krypton.util.readString
+import org.kryptonmc.krypton.util.readUUID
 import org.kryptonmc.krypton.util.writeCollection
+import org.kryptonmc.krypton.util.writeProfileProperty
 import org.kryptonmc.krypton.util.writeString
 import org.kryptonmc.krypton.util.writeUUID
 import java.util.UUID
@@ -38,14 +43,11 @@ data class PacketOutLoginSuccess(val uuid: UUID, val username: String, val prope
 
     constructor(profile: GameProfile) : this(profile.uuid, profile.name, profile.properties)
 
+    constructor(buf: ByteBuf) : this(buf.readUUID(), buf.readString(), buf.readList { buf.readProfileProperty() })
+
     override fun write(buf: ByteBuf) {
         buf.writeUUID(uuid)
         buf.writeString(username)
-        buf.writeCollection(properties) { property ->
-            buf.writeString(property.name)
-            buf.writeString(property.value)
-            buf.writeBoolean(property.signature != null)
-            if (property.signature != null) buf.writeString(property.signature!!)
-        }
+        buf.writeCollection(properties) { buf.writeProfileProperty(it) }
     }
 }

@@ -20,6 +20,7 @@ package org.kryptonmc.krypton.command.argument.serializer
 
 import com.mojang.brigadier.arguments.StringArgumentType
 import io.netty.buffer.ByteBuf
+import org.kryptonmc.krypton.util.readEnum
 import org.kryptonmc.krypton.util.writeEnum
 
 /**
@@ -34,6 +35,12 @@ import org.kryptonmc.krypton.util.writeEnum
  * See [here](https://wiki.vg/Command_Data#brigadier:string)
  */
 object StringArgumentSerializer : ArgumentSerializer<StringArgumentType> {
+
+    override fun read(buf: ByteBuf): StringArgumentType = when (buf.readEnum<StringArgumentType.StringType>()) {
+        StringArgumentType.StringType.SINGLE_WORD -> StringArgumentType.word()
+        StringArgumentType.StringType.QUOTABLE_PHRASE -> StringArgumentType.string()
+        StringArgumentType.StringType.GREEDY_PHRASE -> StringArgumentType.greedyString()
+    }
 
     override fun write(buf: ByteBuf, value: StringArgumentType) {
         buf.writeEnum(value.type)

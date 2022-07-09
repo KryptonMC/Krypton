@@ -22,8 +22,11 @@ import io.netty.buffer.ByteBuf
 import io.netty.buffer.Unpooled
 import java.util.Objects
 import org.kryptonmc.krypton.network.Writable
+import org.kryptonmc.krypton.util.readNBT
+import org.kryptonmc.krypton.util.readVarIntByteArray
 import org.kryptonmc.krypton.util.writeNBT
 import org.kryptonmc.krypton.util.writeVarInt
+import org.kryptonmc.krypton.util.writeVarIntByteArray
 import org.kryptonmc.krypton.world.chunk.KryptonChunk
 import org.kryptonmc.nbt.CompoundTag
 
@@ -32,13 +35,11 @@ data class ChunkPacketData(val heightmaps: CompoundTag, val data: ByteArray) : W
 
     constructor(chunk: KryptonChunk) : this(extractHeightmaps(chunk), extractData(chunk))
 
-    override fun write(buf: ByteBuf) {
-        // Heightmaps
-        buf.writeNBT(heightmaps)
+    constructor(buf: ByteBuf) : this(buf.readNBT(), buf.readVarIntByteArray())
 
-        // Actual chunk data
-        buf.writeVarInt(data.size)
-        buf.writeBytes(data)
+    override fun write(buf: ByteBuf) {
+        buf.writeNBT(heightmaps) // Heightmaps
+        buf.writeVarIntByteArray(data) // Actual chunk data
 
         // TODO: When block entities are added, make use of this here
         buf.writeVarInt(0) // Number of block entities

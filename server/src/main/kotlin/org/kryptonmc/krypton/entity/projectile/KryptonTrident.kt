@@ -40,8 +40,8 @@ class KryptonTrident(world: KryptonWorld) : KryptonArrowLike(world, EntityTypes.
         set(value) = data.set(MetadataKeys.TRIDENT.ENCHANTED, value)
 
     init {
-        data.add(MetadataKeys.TRIDENT.LOYALTY_LEVEL)
-        data.add(MetadataKeys.TRIDENT.ENCHANTED)
+        data.add(MetadataKeys.TRIDENT.LOYALTY_LEVEL, 0)
+        data.add(MetadataKeys.TRIDENT.ENCHANTED, false)
     }
 
     companion object {

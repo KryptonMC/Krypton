@@ -39,7 +39,7 @@ class KryptonPolarBear(world: KryptonWorld) : KryptonAnimal(world, EntityTypes.P
         set(value) = data.set(MetadataKeys.POLAR_BEAR.STANDING, value)
 
     init {
-        data.add(MetadataKeys.POLAR_BEAR.STANDING)
+        data.add(MetadataKeys.POLAR_BEAR.STANDING, false)
     }
 
     override fun startAngerTimer() {
