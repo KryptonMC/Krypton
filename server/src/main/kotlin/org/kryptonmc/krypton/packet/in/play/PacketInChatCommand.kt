@@ -21,21 +21,24 @@ package org.kryptonmc.krypton.packet.`in`.play
 import io.netty.buffer.ByteBuf
 import org.kryptonmc.krypton.command.argument.ArgumentSignatures
 import org.kryptonmc.krypton.packet.Packet
+import org.kryptonmc.krypton.util.readInstant
 import org.kryptonmc.krypton.util.readString
+import org.kryptonmc.krypton.util.writeInstant
 import org.kryptonmc.krypton.util.writeString
+import java.time.Instant
 
 @JvmRecord
 data class PacketInChatCommand(
     val command: String,
-    val timestamp: Long,
+    val timestamp: Instant,
     val argumentSignatures: ArgumentSignatures,
     val signedPreview: Boolean
 ) : Packet {
 
-    constructor(buf: ByteBuf) : this(buf.readString(), buf.readLong(), ArgumentSignatures(buf), buf.readBoolean())
+    constructor(buf: ByteBuf) : this(buf.readString(), buf.readInstant(), ArgumentSignatures(buf), buf.readBoolean())
 
     override fun write(buf: ByteBuf) {
         buf.writeString(command)
-        buf.writeLong(timestamp)
+        buf.writeInstant(timestamp)
     }
 }
