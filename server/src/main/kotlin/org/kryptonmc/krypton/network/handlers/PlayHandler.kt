@@ -26,6 +26,7 @@ import net.kyori.adventure.text.format.NamedTextColor
 import org.kryptonmc.api.block.Blocks
 import org.kryptonmc.api.entity.Hand
 import org.kryptonmc.api.entity.player.ChatVisibility
+import org.kryptonmc.api.event.command.CommandExecuteEvent
 import org.kryptonmc.api.event.player.ChatEvent
 import org.kryptonmc.api.event.player.MoveEvent
 import org.kryptonmc.api.event.player.PerformActionEvent
@@ -48,6 +49,7 @@ import org.kryptonmc.krypton.network.chat.Chat
 import org.kryptonmc.krypton.network.chat.ChatTypes
 import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.packet.`in`.play.PacketInAbilities
+import org.kryptonmc.krypton.packet.`in`.play.PacketInChatCommand
 import org.kryptonmc.krypton.packet.`in`.play.PacketInSwingArm
 import org.kryptonmc.krypton.packet.`in`.play.PacketInSetHeldItem
 import org.kryptonmc.krypton.packet.`in`.play.PacketInChatMessage
@@ -127,6 +129,7 @@ class PlayHandler(override val server: KryptonServer, override val session: Sess
     override fun handle(packet: Packet) {
         when (packet) {
             is PacketInSwingArm -> handleSwingArm(packet)
+            is PacketInChatCommand -> handleChatCommand(packet)
             is PacketInChatMessage -> handleChatMessage(packet)
             is PacketInClientInformation -> handleClientInformation(packet)
             is PacketInSetCreativeModeSlot -> handleSetCreativeModeSlot(packet)
@@ -164,16 +167,16 @@ class PlayHandler(override val server: KryptonServer, override val session: Sess
         sessionManager.sendGrouped(PacketOutAnimation(player.id, animation)) { it !== player }
     }
 
-    private fun handleChatMessage(packet: PacketInChatMessage) {
-//        if (packet.message.startsWith("/")) { // This is a command, process it as one.
-//            val command = packet.message.substring(1)
-//            server.eventManager.fire(CommandExecuteEvent(player, command)).thenAcceptAsync({
-//                if (!it.result.isAllowed) return@thenAcceptAsync
-//                server.commandManager.dispatch(player, command)
-//            }, player.session.channel.eventLoop())
-//            return
-//        }
+    private fun handleChatCommand(packet: PacketInChatCommand) {
+        if (!Chat.isValidMessage(packet.command)) session.disconnect(ILLEGAL_CHAT_CHARACTERS_MESSAGE)
+        if (!verifyChatMessage(packet.command, packet.timestamp)) return
+        server.eventManager.fire(CommandExecuteEvent(player, packet.command)).thenAcceptAsync({
+            if (!it.result.isAllowed) return@thenAcceptAsync
+            server.commandManager.dispatch(player, packet.command)
+        }, session.channel.eventLoop())
+    }
 
+    private fun handleChatMessage(packet: PacketInChatMessage) {
         // Sanity check message content
         if (!Chat.isValidMessage(packet.message)) session.disconnect(ILLEGAL_CHAT_CHARACTERS_MESSAGE)
         // Fire the chat event
