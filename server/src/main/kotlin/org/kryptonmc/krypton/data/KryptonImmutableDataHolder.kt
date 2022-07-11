@@ -16,15 +16,24 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.util
+package org.kryptonmc.krypton.data
 
-fun <K, V, K1, V1> Map<K, V>.transform(transformer: (Map.Entry<K, V>) -> Pair<K1, V1>): Map<K1, V1> = transformTo(mutableMapOf(), transformer)
+import org.kryptonmc.api.data.ImmutableDataHolder
+import org.kryptonmc.api.data.Key
+import kotlin.properties.ReadOnlyProperty
 
-fun <C : MutableMap<K1, V1>, K, V, K1, V1> Map<K, V>.transformTo(destination: C, transformer: (Map.Entry<K, V>) -> Pair<K1, V1>): C {
-    for (entry in this) {
-        destination += transformer(entry)
+@Suppress("UNCHECKED_CAST")
+interface KryptonImmutableDataHolder<T : ImmutableDataHolder<T>> : KryptonDataHolder, ImmutableDataHolder<T> {
+
+    override fun <E> set(key: Key<E>, value: E): T = getProvider(key, this).set(this as T, value)
+
+    override fun remove(key: Key<*>): T = getProvider(key, this).remove(this as T)
+
+    override fun <E> transform(key: Key<E>, transformation: (E) -> E): T {
+        val provider = getProvider(key, this)
+        val value = provider[this as T] ?: return this
+        return provider.set(this, value)
     }
-    return destination
-}
 
-fun <K, V> Map<K, V>.ensureMutable(): MutableMap<K, V> = if (this is MutableMap<K, V>) this else HashMap(this)
+    override fun <E> delegate(key: Key<E>): ReadOnlyProperty<T, E?> = ValueDelegate(key)
+}

@@ -21,6 +21,7 @@ package org.kryptonmc.krypton.inventory
 import org.kryptonmc.api.inventory.Inventory
 import org.kryptonmc.api.inventory.InventoryType
 import org.kryptonmc.api.item.ItemStack
+import org.kryptonmc.krypton.data.KryptonMutableDataHolder
 import org.kryptonmc.krypton.item.KryptonItemStack
 import org.kryptonmc.krypton.network.Writable
 import org.kryptonmc.krypton.util.FixedList
@@ -30,7 +31,7 @@ abstract class KryptonInventory(
     final override val type: InventoryType,
     final override val size: Int,
     totalItems: Int = size
-) : Inventory, Writable {
+) : Inventory, KryptonMutableDataHolder, Writable {
 
     var stateId: Int = 0
         private set

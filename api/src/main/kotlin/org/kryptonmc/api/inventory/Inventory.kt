@@ -8,6 +8,7 @@
  */
 package org.kryptonmc.api.inventory
 
+import org.kryptonmc.api.data.MutableDataHolder
 import org.kryptonmc.api.item.ItemStack
 
 /**
@@ -18,7 +19,7 @@ import org.kryptonmc.api.item.ItemStack
  * items, such as [items].
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
-public interface Inventory : Iterable<ItemStack> {
+public interface Inventory : MutableDataHolder, Iterable<ItemStack> {
 
     /**
      * The size of this inventory.

@@ -10,6 +10,7 @@ package org.kryptonmc.api.block
 
 import net.kyori.adventure.key.Keyed
 import org.kryptonmc.api.block.property.PropertyHolder
+import org.kryptonmc.api.data.ImmutableDataHolder
 import org.kryptonmc.api.fluid.Fluid
 import org.kryptonmc.api.fluid.FluidLike
 import org.kryptonmc.api.item.ItemLike
@@ -29,7 +30,7 @@ import org.kryptonmc.api.util.TranslationHolder
 // or any we've kept need to be removed.
 @Suppress("INAPPLICABLE_JVM_NAME")
 @CataloguedBy(Blocks::class)
-public interface Block : PropertyHolder<Block>, BlockLike, ItemLike, FluidLike, TranslationHolder, Keyed {
+public interface Block : ImmutableDataHolder<Block>, PropertyHolder<Block>, BlockLike, ItemLike, FluidLike, TranslationHolder, Keyed {
 
     /**
      * The hardness of this block.

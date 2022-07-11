@@ -41,7 +41,7 @@ object BaseEntitySerializer : EntitySerializer<KryptonEntity> {
         }
         entity.isCustomNameVisible = data.getBoolean("CustomNameVisible")
         entity.fallDistance = data.getFloat("FallDistance")
-        entity.fireTicks = data.getShort("Fire")
+        entity.fireTicks = data.getShort("Fire").toInt()
         entity.isGlowing = data.getBoolean("Glowing")
         entity.isInvulnerable = data.getBoolean("Invulnerable")
 
@@ -85,7 +85,7 @@ object BaseEntitySerializer : EntitySerializer<KryptonEntity> {
 
         // Miscellaneous
         short("Air", entity.air.toShort())
-        short("Fire", entity.fireTicks)
+        short("Fire", entity.fireTicks.toShort())
         int("TicksFrozen", entity.frozenTicks)
         float("FallDistance", entity.fallDistance)
     }

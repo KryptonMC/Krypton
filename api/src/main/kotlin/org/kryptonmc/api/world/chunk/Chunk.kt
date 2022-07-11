@@ -9,6 +9,7 @@
 package org.kryptonmc.api.world.chunk
 
 import org.kryptonmc.api.block.BlockContainer
+import org.kryptonmc.api.data.MutableDataHolder
 import org.kryptonmc.api.fluid.FluidContainer
 import org.kryptonmc.api.world.World
 import org.kryptonmc.api.world.biome.BiomeContainer
@@ -17,7 +18,7 @@ import org.kryptonmc.api.world.biome.BiomeContainer
  * Represents a chunk, or a 16 x 16 x world height area of blocks.
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
-public interface Chunk : BlockContainer, FluidContainer, BiomeContainer {
+public interface Chunk : BlockContainer, FluidContainer, BiomeContainer, MutableDataHolder {
 
     /**
      * The world this chunk is in.

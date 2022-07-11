@@ -27,6 +27,9 @@ import org.kryptonmc.api.block.entity.banner.BannerPatternType
 import org.kryptonmc.api.block.property.Property
 import org.kryptonmc.api.command.BrigadierCommand
 import org.kryptonmc.api.command.meta.CommandMeta
+import org.kryptonmc.api.data.DataProvider
+import org.kryptonmc.api.data.DataRegistration
+import org.kryptonmc.api.data.Key
 import org.kryptonmc.api.effect.Music
 import org.kryptonmc.api.effect.particle.ParticleEffect
 import org.kryptonmc.api.effect.particle.ParticleType
@@ -68,6 +71,9 @@ import org.kryptonmc.krypton.auth.KryptonGameProfile
 import org.kryptonmc.krypton.auth.KryptonProfileProperty
 import org.kryptonmc.krypton.command.KryptonBrigadierCommand
 import org.kryptonmc.krypton.command.meta.KryptonCommandMeta
+import org.kryptonmc.krypton.data.KryptonDataRegistration
+import org.kryptonmc.krypton.data.KryptonKey
+import org.kryptonmc.krypton.data.provider.AbstractDataProvider
 import org.kryptonmc.krypton.effect.KryptonMusic
 import org.kryptonmc.krypton.effect.particle.KryptonParticleEffect
 import org.kryptonmc.krypton.effect.particle.KryptonParticleTypeFactory
@@ -158,5 +164,8 @@ object KryptonFactoryProvider : FactoryProvider {
         register<ItemAttribute.Factory>(KryptonItemAttribute.Factory)
         register<BannerPattern.Factory>(KryptonBannerPattern.Factory)
         register<BannerPatternType.Factory>(KryptonBannerPatternType.Factory)
+        register<DataProvider.Factory>(AbstractDataProvider.Factory)
+        register<DataRegistration.Factory>(KryptonDataRegistration.Factory)
+        register<Key.Factory>(KryptonKey.Factory)
     }
 }

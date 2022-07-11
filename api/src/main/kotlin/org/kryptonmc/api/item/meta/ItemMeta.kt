@@ -13,6 +13,7 @@ import org.jetbrains.annotations.ApiStatus
 import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.Krypton
 import org.kryptonmc.api.block.Block
+import org.kryptonmc.api.data.ImmutableDataHolder
 import org.kryptonmc.api.entity.EquipmentSlot
 import org.kryptonmc.api.entity.attribute.AttributeModifier
 import org.kryptonmc.api.entity.attribute.AttributeType
@@ -26,7 +27,7 @@ import org.kryptonmc.api.world.GameMode
  * Holder for various item metadata values for an item stack.
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
-public interface ItemMeta {
+public interface ItemMeta : ImmutableDataHolder<ItemMeta> {
 
     /**
      * The current damage on the item.

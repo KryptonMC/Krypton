@@ -24,6 +24,7 @@ import org.kryptonmc.api.fluid.Fluid
 import org.kryptonmc.api.fluid.Fluids
 import org.kryptonmc.api.world.biome.Biome
 import org.kryptonmc.api.world.chunk.Chunk
+import org.kryptonmc.krypton.data.KryptonMutableDataHolder
 import org.kryptonmc.krypton.packet.CachedPacket
 import org.kryptonmc.krypton.packet.out.play.PacketOutChunkDataAndLight
 import org.kryptonmc.krypton.world.Heightmap
@@ -44,7 +45,7 @@ class KryptonChunk(
     val ticket: Ticket<*>,
     val carvingMasks: Pair<ByteArray, ByteArray>,
     val structures: CompoundTag
-) : ChunkAccessor(position, world, inhabitedTime, sections), Chunk {
+) : ChunkAccessor(position, world, inhabitedTime, sections), Chunk, KryptonMutableDataHolder {
 
     override val status: ChunkStatus = ChunkStatus.FULL
     override val height: Int = world.height

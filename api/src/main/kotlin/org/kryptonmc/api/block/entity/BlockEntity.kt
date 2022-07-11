@@ -9,6 +9,7 @@
 package org.kryptonmc.api.block.entity
 
 import org.kryptonmc.api.block.Block
+import org.kryptonmc.api.data.MutableDataHolder
 import org.kryptonmc.api.world.World
 import org.spongepowered.math.vector.Vector3i
 
@@ -25,7 +26,7 @@ import org.spongepowered.math.vector.Vector3i
  * those days.
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
-public interface BlockEntity {
+public interface BlockEntity : MutableDataHolder {
 
     /**
      * The type of this block entity.

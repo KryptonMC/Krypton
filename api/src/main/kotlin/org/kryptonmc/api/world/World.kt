@@ -14,6 +14,7 @@ import org.kryptonmc.api.Server
 import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.block.BlockContainer
 import org.kryptonmc.api.block.Blocks
+import org.kryptonmc.api.data.MutableDataHolder
 import org.kryptonmc.api.entity.Entity
 import org.kryptonmc.api.entity.EntityType
 import org.kryptonmc.api.entity.player.Player
@@ -36,7 +37,7 @@ import java.nio.file.Path
  * Represents a loaded world.
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
-public interface World : BlockContainer, FluidContainer, BiomeContainer, ForwardingAudience {
+public interface World : BlockContainer, FluidContainer, BiomeContainer, MutableDataHolder, ForwardingAudience {
 
     /**
      * The server this world was loaded on.

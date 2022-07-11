@@ -12,8 +12,8 @@ import net.kyori.adventure.sound.Sound
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.event.HoverEvent
 import net.kyori.adventure.text.event.HoverEventSource
-import org.jetbrains.annotations.Range
 import org.kryptonmc.api.command.Sender
+import org.kryptonmc.api.data.MutableDataHolder
 import org.kryptonmc.api.scoreboard.TeamMember
 import org.kryptonmc.api.util.BoundingBox
 import org.kryptonmc.api.world.World
@@ -25,7 +25,7 @@ import org.spongepowered.math.vector.Vector3d
  * An entity somewhere in a world.
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
-public interface Entity : Sender, HoverEventSource<HoverEvent.ShowEntity>, Sound.Emitter, TeamMember {
+public interface Entity : Sender, MutableDataHolder, HoverEventSource<HoverEvent.ShowEntity>, Sound.Emitter, TeamMember {
 
     /**
      * The ID of this entity.
@@ -96,12 +96,6 @@ public interface Entity : Sender, HoverEventSource<HoverEvent.ShowEntity>, Sound
      */
     @get:JvmName("boundingBox")
     public var boundingBox: BoundingBox
-
-    /**
-     * The current dimensions of this entity.
-     */
-    @get:JvmName("dimensions")
-    public var dimensions: EntityDimensions
 
     /**
      * If this entity is a passenger of another entity.
@@ -218,7 +212,7 @@ public interface Entity : Sender, HoverEventSource<HoverEvent.ShowEntity>, Sound
      * This will be increased by 1 for every tick this entity exists for.
      */
     @get:JvmName("ticksExisted")
-    public val ticksExisted: @Range(from = 0L, to = Int.MAX_VALUE.toLong()) Int
+    public val ticksExisted: Int
 
     /**
      * How much air this entity has, in ticks.
@@ -231,7 +225,7 @@ public interface Entity : Sender, HoverEventSource<HoverEvent.ShowEntity>, Sound
      * it remains underwater.
      */
     @get:JvmName("air")
-    public val air: @Range(from = 0L, to = Int.MAX_VALUE.toLong()) Int
+    public val air: Int
 
     /**
      * This value can mean one of two things, depending on if the value is
@@ -244,7 +238,7 @@ public interface Entity : Sender, HoverEventSource<HoverEvent.ShowEntity>, Sound
      * entity can survive in fire for before burning.
      */
     @get:JvmName("fireTicks")
-    public val fireTicks: Short
+    public val fireTicks: Int
 
     /**
      * The amount of ticks this entity has been freezing for.

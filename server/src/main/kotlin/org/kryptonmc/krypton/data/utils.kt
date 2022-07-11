@@ -16,15 +16,11 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.util
+package org.kryptonmc.krypton.data
 
-fun <K, V, K1, V1> Map<K, V>.transform(transformer: (Map.Entry<K, V>) -> Pair<K1, V1>): Map<K1, V1> = transformTo(mutableMapOf(), transformer)
+import org.kryptonmc.api.data.Key
 
-fun <C : MutableMap<K1, V1>, K, V, K1, V1> Map<K, V>.transformTo(destination: C, transformer: (Map.Entry<K, V>) -> Pair<K1, V1>): C {
-    for (entry in this) {
-        destination += transformer(entry)
-    }
-    return destination
+fun <V> Key<V>.downcast(): KryptonKey<V> {
+    require(this is KryptonKey<V>) { "Custom implementations of Key are not supported!" }
+    return this
 }
-
-fun <K, V> Map<K, V>.ensureMutable(): MutableMap<K, V> = if (this is MutableMap<K, V>) this else HashMap(this)

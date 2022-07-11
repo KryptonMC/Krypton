@@ -28,6 +28,7 @@ import org.kryptonmc.api.item.ItemRarities
 import org.kryptonmc.api.item.ItemRarity
 import org.kryptonmc.api.item.ItemType
 import org.kryptonmc.api.registry.Registries
+import org.kryptonmc.krypton.data.KryptonImmutableDataHolder
 import org.kryptonmc.krypton.util.normalizePath
 
 @JvmRecord
@@ -42,7 +43,7 @@ data class KryptonItemType(
     override val eatingSound: SoundEvent,
     override val drinkingSound: SoundEvent,
     override val translation: TranslatableComponent
-) : ItemType {
+) : ItemType, KryptonImmutableDataHolder<ItemType> {
 
     override fun key(): Key = key
 

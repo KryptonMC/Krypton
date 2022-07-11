@@ -15,6 +15,7 @@ import net.kyori.adventure.util.Buildable
 import org.jetbrains.annotations.ApiStatus
 import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.Krypton
+import org.kryptonmc.api.data.ImmutableDataHolder
 import org.kryptonmc.api.item.meta.ItemMeta
 import org.kryptonmc.api.item.meta.ItemMetaBuilder
 import org.kryptonmc.api.util.provide
@@ -24,7 +25,7 @@ import java.util.function.Consumer
  * A stack of items in an inventory.
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
-public interface ItemStack : Buildable<ItemStack, ItemStack.Builder>, HoverEventSource<HoverEvent.ShowItem> {
+public interface ItemStack : Buildable<ItemStack, ItemStack.Builder>, ImmutableDataHolder<ItemStack>, HoverEventSource<HoverEvent.ShowItem> {
 
     /**
      * The type of item in this stack.

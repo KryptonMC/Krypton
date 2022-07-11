@@ -40,6 +40,7 @@ import org.kryptonmc.api.util.BoundingBox
 import org.kryptonmc.api.world.damage.DamageSource
 import org.kryptonmc.api.world.damage.type.DamageTypes
 import org.kryptonmc.krypton.KryptonServer
+import org.kryptonmc.krypton.data.KryptonMutableDataHolder
 import org.kryptonmc.krypton.entity.metadata.MetadataHolder
 import org.kryptonmc.krypton.entity.metadata.MetadataKey
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
@@ -75,7 +76,7 @@ import kotlin.random.Random
 //  second, all of the entity processing logic can also be moved elsewhere
 //  third, there is a lot of vanilla stuff in here that is clearly just taken, which isn't allowed
 @Suppress("LeakingThis")
-abstract class KryptonEntity(override var world: KryptonWorld, override val type: EntityType<out Entity>) : Entity {
+abstract class KryptonEntity(override var world: KryptonWorld, override val type: EntityType<out Entity>) : Entity, KryptonMutableDataHolder {
 
     final override val id: Int = NEXT_ENTITY_ID.incrementAndGet()
     override var uuid: UUID = Random.nextUUID()
@@ -101,10 +102,10 @@ abstract class KryptonEntity(override var world: KryptonWorld, override val type
     final override var rotation: Vector2f = Vector2f.ZERO
     final override var velocity: Vector3d = Vector3d.ZERO
     final override var boundingBox: BoundingBox = BoundingBox.zero()
-    final override var dimensions: EntityDimensions = EntityDimensions.fixed(type.dimensions.width, type.dimensions.height)
+    private var dimensions = EntityDimensions.fixed(type.dimensions.width, type.dimensions.height)
     final override var isOnGround: Boolean = true
     final override var ticksExisted: Int = 0
-    final override var fireTicks: Short = 0
+    final override var fireTicks: Int = 0
     override var isInvulnerable: Boolean = false
     final override var fallDistance: Float = 0F
 
@@ -264,9 +265,9 @@ abstract class KryptonEntity(override var world: KryptonWorld, override val type
 
     protected open fun getSpawnPacket(): Packet = PacketOutSpawnEntity(this)
 
-    private fun getSharedFlag(flag: Int): Boolean = getFlag(MetadataKeys.FLAGS, flag)
+    fun getSharedFlag(flag: Int): Boolean = getFlag(MetadataKeys.FLAGS, flag)
 
-    private fun setSharedFlag(flag: Int, state: Boolean) {
+    fun setSharedFlag(flag: Int, state: Boolean) {
         setFlag(MetadataKeys.FLAGS, flag, state)
     }
 

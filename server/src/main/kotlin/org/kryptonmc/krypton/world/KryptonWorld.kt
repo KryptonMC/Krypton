@@ -34,6 +34,7 @@ import org.kryptonmc.api.world.World
 import org.kryptonmc.api.world.rule.GameRules
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.adventure.PacketGroupingAudience
+import org.kryptonmc.krypton.data.KryptonMutableDataHolder
 import org.kryptonmc.krypton.effect.sound.calculateDistance
 import org.kryptonmc.krypton.entity.EntityFactory
 import org.kryptonmc.krypton.entity.EntityManager
@@ -78,7 +79,7 @@ class KryptonWorld(
     override val dimensionType: KryptonDimensionType,
     override val seed: Long,
     private val tickTime: Boolean
-) : World, WorldAccessor, PacketGroupingAudience {
+) : World, WorldAccessor, KryptonMutableDataHolder, PacketGroupingAudience {
 
     override val biomeManager: BiomeManager = BiomeManager(this, seed)
     private val random: Random = Random()

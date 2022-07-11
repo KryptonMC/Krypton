@@ -44,3 +44,14 @@ fun <T, R, B : PersistentCollection.Builder<R>, C : PersistentCollection<R>> Ite
     }
     return builder.build() as C
 }
+
+fun <E> Collection<E>.ensureMutable(): MutableCollection<E> = when (this) {
+    is MutableCollection<E> -> this
+    is List<E> -> ensureMutable()
+    is Set<E> -> ensureMutable()
+    else -> ArrayList(this)
+}
+
+fun <E> List<E>.ensureMutable(): MutableList<E> = if (this is MutableList<E>) this else ArrayList(this)
+
+fun <E> Set<E>.ensureMutable(): MutableSet<E> = if (this is MutableSet<E>) this else HashSet(this)

@@ -12,6 +12,7 @@ import net.kyori.adventure.key.Keyed
 import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.block.BlockLike
 import org.kryptonmc.api.block.property.PropertyHolder
+import org.kryptonmc.api.data.ImmutableDataHolder
 import org.kryptonmc.api.item.ItemType
 import org.kryptonmc.api.util.CataloguedBy
 
@@ -22,7 +23,7 @@ import org.kryptonmc.api.util.CataloguedBy
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
 @CataloguedBy(Fluids::class)
-public interface Fluid : PropertyHolder<Fluid>, FluidLike, BlockLike, Keyed {
+public interface Fluid : ImmutableDataHolder<Fluid>, PropertyHolder<Fluid>, FluidLike, BlockLike, Keyed {
 
     /**
      * The type of the bucket this fluid can be held in.

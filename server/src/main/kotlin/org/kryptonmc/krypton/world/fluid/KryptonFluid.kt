@@ -27,6 +27,7 @@ import org.kryptonmc.api.block.property.Property
 import org.kryptonmc.api.fluid.Fluid
 import org.kryptonmc.api.item.ItemType
 import org.kryptonmc.api.registry.Registries
+import org.kryptonmc.krypton.data.KryptonImmutableDataHolder
 import org.kryptonmc.krypton.world.block.property.KryptonPropertyHolder
 
 @JvmRecord
@@ -43,7 +44,7 @@ data class KryptonFluid(
     val blockKey: Key,
     override val availableProperties: ImmutableSet<Property<*>>,
     override val properties: PersistentMap<String, String>
-) : KryptonPropertyHolder<Fluid>, Fluid {
+) : KryptonPropertyHolder<Fluid>, Fluid, KryptonImmutableDataHolder<Fluid> {
 
     override fun key(): Key = key
 

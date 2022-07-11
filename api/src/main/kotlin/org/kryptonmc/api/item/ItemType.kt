@@ -15,6 +15,7 @@ import org.jetbrains.annotations.ApiStatus
 import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.Krypton
 import org.kryptonmc.api.block.BlockLike
+import org.kryptonmc.api.data.ImmutableDataHolder
 import org.kryptonmc.api.effect.sound.SoundEvent
 import org.kryptonmc.api.util.CataloguedBy
 import org.kryptonmc.api.util.KeyedBuilder
@@ -26,7 +27,7 @@ import org.kryptonmc.api.util.provide
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
 @CataloguedBy(ItemTypes::class)
-public interface ItemType : Buildable<ItemType, ItemType.Builder>, ItemLike, BlockLike, TranslationHolder, Keyed {
+public interface ItemType : Buildable<ItemType, ItemType.Builder>, ImmutableDataHolder<ItemType>, ItemLike, BlockLike, TranslationHolder, Keyed {
 
     /**
      * The rarity of the item.

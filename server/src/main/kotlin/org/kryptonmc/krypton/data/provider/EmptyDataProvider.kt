@@ -16,15 +16,30 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.util
+package org.kryptonmc.krypton.data.provider
 
-fun <K, V, K1, V1> Map<K, V>.transform(transformer: (Map.Entry<K, V>) -> Pair<K1, V1>): Map<K1, V1> = transformTo(mutableMapOf(), transformer)
+import org.kryptonmc.api.data.DataHolder
+import org.kryptonmc.api.data.DataProvider
+import org.kryptonmc.api.data.ImmutableDataHolder
+import org.kryptonmc.api.data.Key
+import org.kryptonmc.api.data.MutableDataHolder
 
-fun <C : MutableMap<K1, V1>, K, V, K1, V1> Map<K, V>.transformTo(destination: C, transformer: (Map.Entry<K, V>) -> Pair<K1, V1>): C {
-    for (entry in this) {
-        destination += transformer(entry)
+@JvmRecord
+data class EmptyDataProvider<E>(override val key: Key<E>) : DataProvider<E> {
+
+    override fun isSupported(holder: DataHolder): Boolean = false
+
+    override fun get(holder: DataHolder): E? = null
+
+    override fun set(holder: MutableDataHolder, value: E) {
+        // Nothing to do
     }
-    return destination
-}
 
-fun <K, V> Map<K, V>.ensureMutable(): MutableMap<K, V> = if (this is MutableMap<K, V>) this else HashMap(this)
+    override fun remove(holder: MutableDataHolder) {
+        // Nothing to do
+    }
+
+    override fun <I : ImmutableDataHolder<I>> set(holder: I, value: E): I = holder
+
+    override fun <I : ImmutableDataHolder<I>> remove(holder: I): I = holder
+}

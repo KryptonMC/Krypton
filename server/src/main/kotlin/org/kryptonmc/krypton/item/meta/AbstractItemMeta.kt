@@ -38,6 +38,7 @@ import org.kryptonmc.api.item.ItemAttribute
 import org.kryptonmc.api.item.data.ItemFlag
 import org.kryptonmc.api.item.meta.ItemMeta
 import org.kryptonmc.api.registry.Registries
+import org.kryptonmc.krypton.data.KryptonImmutableDataHolder
 import org.kryptonmc.krypton.item.KryptonItemAttribute
 import org.kryptonmc.krypton.item.mask
 import org.kryptonmc.krypton.item.save
@@ -48,9 +49,10 @@ import org.kryptonmc.nbt.ListTag
 import org.kryptonmc.nbt.StringTag
 import org.kryptonmc.nbt.Tag
 import org.kryptonmc.nbt.list
+import java.util.function.Function
 
 @Suppress("UNCHECKED_CAST")
-abstract class AbstractItemMeta<I : ItemMeta>(val data: CompoundTag) : ItemMeta {
+abstract class AbstractItemMeta<I : ItemMeta>(val data: CompoundTag) : ItemMeta, KryptonImmutableDataHolder<ItemMeta> {
 
     final override val damage: Int = data.getInt("Damage")
     final override val isUnbreakable: Boolean = data.getBoolean("Unbreakable")
@@ -148,6 +150,16 @@ abstract class AbstractItemMeta<I : ItemMeta>(val data: CompoundTag) : ItemMeta 
 
     final override fun removeAttributeModifier(type: AttributeType, slot: EquipmentSlot, modifier: AttributeModifier): I =
         withAttributeModifiers(attributeModifiers.removeAll { it.type == type && it.slot == slot && it.modifier == modifier })
+
+    override fun <E> set(key: org.kryptonmc.api.data.Key<E>, value: E): I = super.set(key, value) as I
+
+    override fun remove(key: org.kryptonmc.api.data.Key<*>): I = super.remove(key) as I
+
+    override fun <E> transform(key: org.kryptonmc.api.data.Key<E>, transformation: (E) -> E): I =
+        super<KryptonImmutableDataHolder>.transform(key, transformation) as I
+
+    override fun <E> transform(key: org.kryptonmc.api.data.Key<E>, transformation: Function<E, E>): I =
+        super<KryptonImmutableDataHolder>.transform(key, transformation) as I
 
     protected fun partialToString(): String = "damage=$damage, isUnbreakable=$isUnbreakable, customModelData=$customModelData, name=$name, " +
             "lore=$lore, hideFlags=$hideFlags, canDestroy=$canDestroy, canPlaceOn=$canPlaceOn"
