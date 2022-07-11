@@ -28,6 +28,7 @@ import com.mojang.brigadier.arguments.LongArgumentType
 import com.mojang.brigadier.arguments.StringArgumentType
 import io.netty.buffer.Unpooled
 import org.junit.jupiter.api.BeforeAll
+import org.junit.jupiter.api.assertThrows
 import org.kryptonmc.krypton.command.argument.ArgumentSerializers
 import org.kryptonmc.krypton.command.argument.serializer.DoubleArgumentSerializer
 import org.kryptonmc.krypton.command.argument.serializer.FlaggedArgumentSerializer
@@ -35,7 +36,6 @@ import org.kryptonmc.krypton.command.argument.serializer.FloatArgumentSerializer
 import org.kryptonmc.krypton.command.argument.serializer.IntegerArgumentSerializer
 import org.kryptonmc.krypton.command.argument.serializer.LongArgumentSerializer
 import org.kryptonmc.krypton.command.argument.serializer.StringArgumentSerializer
-import org.kryptonmc.krypton.util.readString
 import org.kryptonmc.krypton.util.readVarInt
 import org.kryptonmc.krypton.util.writeArgumentType
 import kotlin.test.Test
@@ -46,22 +46,23 @@ class ArgumentTests {
 
     @Test
     fun `argument types write calls error when entry is null`() {
-        val buffer = Unpooled.buffer().apply { writeArgumentType(BogusArgumentType()) }
-        assertEquals("minecraft:", buffer.readString())
+        val buffer = Unpooled.buffer()
+        assertThrows<IllegalStateException> { buffer.writeArgumentType(BogusArgumentType) }
         assertFalse(buffer.isReadable)
+
     }
 
     @Test
     fun `valid argument type writing for empty serializer`() {
         val buffer = Unpooled.buffer().apply { writeArgumentType(BoolArgumentType.bool()) }
-        assertEquals("brigadier:bool", buffer.readString())
+        assertEquals(0, buffer.readVarInt())
         assertFalse(buffer.isReadable)
     }
 
     @Test
     fun `valid argument type writing for integer serializer`() {
         val buffer = Unpooled.buffer().apply { writeArgumentType(IntegerArgumentType.integer(10, 20)) }
-        assertEquals("brigadier:integer", buffer.readString())
+        assertEquals(3, buffer.readVarInt())
         assertEquals(0b00000011, buffer.readByte())
         assertEquals(10, buffer.readInt())
         assertEquals(20, buffer.readInt())
@@ -107,7 +108,7 @@ class ArgumentTests {
         assertEquals(2, buf.readVarInt())
     }
 
-    private class BogusArgumentType : ArgumentType<Nothing?> {
+    private object BogusArgumentType : ArgumentType<Nothing?> {
 
         override fun parse(reader: StringReader?): Nothing? = null
     }
