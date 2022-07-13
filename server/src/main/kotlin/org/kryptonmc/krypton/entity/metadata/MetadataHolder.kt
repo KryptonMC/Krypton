@@ -52,6 +52,14 @@ class MetadataHolder(private val entity: KryptonEntity) {
         isDirty = true
     }
 
+    fun getFlag(key: MetadataKey<Byte>, flag: Int): Boolean = get(key).toInt() and (1 shl flag) != 0
+
+    fun setFlag(key: MetadataKey<Byte>, flag: Int, value: Boolean) {
+        val flags = get(key).toInt()
+        val value = if (value) flags or (1 shl flag) else flags and (1 shl flag).inv()
+        set(key, value.toByte())
+    }
+
     @Suppress("UNCHECKED_CAST")
     private fun <T> entry(key: MetadataKey<T>): Entry<T> = checkNotNull(itemsById[key.id] as? Entry<T>) {
         "Could not find key $key for entity of type ${entity.type}!"

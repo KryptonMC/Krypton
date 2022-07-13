@@ -26,13 +26,13 @@ import org.kryptonmc.krypton.world.KryptonWorld
 
 class KryptonCreeper(world: KryptonWorld) : KryptonMonster(world, EntityTypes.CREEPER, ATTRIBUTES), Creeper {
 
-    override var fuse: Short = 0
+    override var fuse: Int = 0
     override var explosionRadius: Int = 0
 
     override var isCharged: Boolean
         get() = data[MetadataKeys.CREEPER.CHARGED]
         set(value) = data.set(MetadataKeys.CREEPER.CHARGED, value)
-    override var isIgnited: Boolean
+    override var isPrimed: Boolean
         get() = data[MetadataKeys.CREEPER.IGNITED]
         set(value) = data.set(MetadataKeys.CREEPER.IGNITED, value)
 

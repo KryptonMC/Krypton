@@ -54,8 +54,8 @@ object PlayerSerializer : EntitySerializer<KryptonPlayer> {
         entity.data[MetadataKeys.PLAYER.SCORE] = data.getInt("Score")
         entity.foodLevel = data.getInt("foodLevel")
         entity.foodTickTimer = data.getInt("foodTickTimer")
-        entity.foodExhaustionLevel = data.getFloat("foodExhaustionLevel")
-        entity.foodSaturationLevel = data.getFloat("foodSaturationLevel")
+        entity.exhaustion = data.getFloat("foodExhaustionLevel")
+        entity.saturation = data.getFloat("foodSaturationLevel")
 
         if (data.contains("abilities", CompoundTag.ID)) {
             val abilitiesData = data.getCompound("abilities")
@@ -105,8 +105,8 @@ object PlayerSerializer : EntitySerializer<KryptonPlayer> {
         int("Score", entity.data[MetadataKeys.PLAYER.SCORE])
         int("foodLevel", entity.foodLevel)
         int("foodTickTimer", entity.foodTickTimer)
-        float("foodExhaustionLevel", entity.foodExhaustionLevel)
-        float("foodSaturationLevel", entity.foodSaturationLevel)
+        float("foodExhaustionLevel", entity.exhaustion)
+        float("foodSaturationLevel", entity.saturation)
 
         compound("abilities") {
             boolean("flying", entity.isGliding)
@@ -123,7 +123,7 @@ object PlayerSerializer : EntitySerializer<KryptonPlayer> {
         if (leftShoulder.isNotEmpty()) put("ShoulderEntityLeft", leftShoulder)
         if (rightShoulder.isNotEmpty()) put("ShoulderEntityRight", rightShoulder)
 
-        string("Dimension", entity.dimension.location.asString())
+        string("Dimension", entity.world.dimension.location.asString())
         entity.respawnPosition?.let { position ->
             int("SpawnX", position.x())
             int("SpawnY", position.y())

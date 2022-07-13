@@ -41,9 +41,9 @@ object LivingEntitySerializer : EntitySerializer<KryptonLivingEntity> {
         if (data.contains("Health", 99)) entity.health = data.getFloat("Health")
         if (data.getBoolean("FallFlying")) entity.isGliding = true
         entity.absorption = data.getFloat("AbsorptionAmount").coerceAtLeast(0F)
-        entity.deathTime = data.getShort("DeathTime")
+        entity.deathTime = data.getShort("DeathTime").toInt()
         entity.lastHurtTimestamp = data.getInt("HurtByTimestamp")
-        entity.hurtTime = data.getShort("HurtTime")
+        entity.hurtTime = data.getShort("HurtTime").toInt()
 
         // Scoreboard
         if (data.contains("Team", StringTag.ID)) {
@@ -64,11 +64,11 @@ object LivingEntitySerializer : EntitySerializer<KryptonLivingEntity> {
         float("AbsorptionAmount", entity.absorption)
         put("Attributes", entity.attributes.save())
         put("Brain", entity.brain.save())
-        short("DeathTime", entity.deathTime)
+        short("DeathTime", entity.deathTime.toShort())
         boolean("FallFlying", entity.isGliding)
         float("Health", entity.health)
         int("HurtByTimestamp", entity.lastHurtTimestamp)
-        short("HurtTime", entity.hurtTime)
+        short("HurtTime", entity.hurtTime.toShort())
         val sleeping = entity.sleepingPosition
         if (sleeping != null) {
             int("SleepingX", sleeping.x())

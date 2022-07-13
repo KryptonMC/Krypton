@@ -17,6 +17,6 @@ public interface SpectralArrow : ArrowLike {
     /**
      * The time, in ticks, that the glowing effect will persist for.
      */
-    @get:JvmName("duration")
-    public var duration: Int
+    @get:JvmName("glowingDuration")
+    public var glowingDuration: Int
 }

@@ -29,7 +29,7 @@ import org.kryptonmc.krypton.world.KryptonWorld
 
 class KryptonTrident(world: KryptonWorld) : KryptonArrowLike(world, EntityTypes.TRIDENT, SoundEvents.TRIDENT_HIT_GROUND), Trident {
 
-    override var item: KryptonItemStack = DEFAULT_ITEM
+    var item: KryptonItemStack = DEFAULT_ITEM
     override var dealtDamage: Boolean = false
 
     override var loyaltyLevel: Int
@@ -43,6 +43,8 @@ class KryptonTrident(world: KryptonWorld) : KryptonArrowLike(world, EntityTypes.
         data.add(MetadataKeys.TRIDENT.LOYALTY_LEVEL, 0)
         data.add(MetadataKeys.TRIDENT.ENCHANTED, false)
     }
+
+    override fun asItem(): KryptonItemStack = item
 
     companion object {
 

@@ -26,20 +26,43 @@ import org.kryptonmc.api.data.Key
 import org.kryptonmc.api.data.MutableDataHolder
 import org.kryptonmc.api.data.immutableBuilder
 import org.kryptonmc.api.data.mutableBuilder
+import java.util.function.BiConsumer
+import java.util.function.BiFunction
+import java.util.function.Function
 
 class DataProviderRegistrar {
 
     private val dataRegistrationBuilder = DataRegistration.builder()
 
-    inline fun <reified H : MutableDataHolder, E> registerMutable(
-        key: Key<E>,
-        builder: DataProvider.MutableBuilder<H, E>.() -> Unit
-    ): DataProviderRegistrar = register(DataProvider.mutableBuilder<H, E>(key).apply(builder))
+    inline fun <reified H : MutableDataHolder, E> registerMutable(key: Key<E>, getter: Function<H, E?>, setter: BiConsumer<H, E>? = null) {
+        registerMutable(key) {
+            get(getter)
+            if (setter != null) set(setter)
+        }
+    }
 
-    inline fun <reified H : ImmutableDataHolder<H>, E> registerImmutable(
-        key: Key<E>,
-        builder: DataProvider.ImmutableBuilder<H, E>.() -> Unit
-    ): DataProviderRegistrar = register(DataProvider.immutableBuilder<H, E>(key).apply(builder))
+    inline fun <reified H : MutableDataHolder, E> registerMutableNoSet(key: Key<E>, getter: Function<H, E?>) {
+        registerMutable(key, getter, null)
+    }
+
+    inline fun <reified H : MutableDataHolder, E> registerMutable(key: Key<E>, builder: DataProvider.MutableBuilder<H, E>.() -> Unit) {
+        register(DataProvider.mutableBuilder<H, E>(key).apply(builder))
+    }
+
+    inline fun <reified H : ImmutableDataHolder<H>, E> registerImmutable(key: Key<E>, getter: Function<H, E?>, setter: BiFunction<H, E, H>? = null) {
+        registerImmutable<H, E>(key) {
+            get(getter)
+            if (setter != null) set(setter)
+        }
+    }
+
+    inline fun <reified H : ImmutableDataHolder<H>, E> registerImmutableNoSet(key: Key<E>, getter: Function<H, E?>) {
+        registerImmutable(key, getter, null)
+    }
+
+    inline fun <reified H : ImmutableDataHolder<H>, E> registerImmutable(key: Key<E>, builder: DataProvider.ImmutableBuilder<H, E>.() -> Unit) {
+        register(DataProvider.immutableBuilder<H, E>(key).apply(builder))
+    }
 
     fun buildAndRegister() {
         val registration = dataRegistrationBuilder.build()
@@ -48,7 +71,7 @@ class DataProviderRegistrar {
         }
     }
 
-    fun <H : DataHolder, E> register(builder: DataProvider.BaseBuilder<*, H, E>): DataProviderRegistrar = apply {
+    fun <H : DataHolder, E> register(builder: DataProvider.BaseBuilder<*, H, E>) {
         val provider = builder.build()
         dataRegistrationBuilder.key(provider.key).provider(provider)
     }

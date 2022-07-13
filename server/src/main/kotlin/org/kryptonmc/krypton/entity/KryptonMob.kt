@@ -45,13 +45,13 @@ abstract class KryptonMob(
     override val armorSlots: Iterable<KryptonItemStack>
         get() = armorItems
 
-    final override var canPickUpLoot: Boolean = false
+    var canPickUpLoot: Boolean = false
     final override var isPersistent: Boolean = false
     open var target: KryptonLivingEntity? = null
 
     final override var hasAI: Boolean
-        get() = getFlag(0)
-        set(value) = setFlag(0, value)
+        get() = !getFlag(0)
+        set(value) = setFlag(0, !value)
     final override var mainHand: MainHand
         get() = if (getFlag(1)) MainHand.LEFT else MainHand.RIGHT
         set(value) = setFlag(1, value == MainHand.LEFT)
@@ -100,10 +100,10 @@ abstract class KryptonMob(
     }
     */
 
-    private fun getFlag(flag: Int): Boolean = getFlag(MetadataKeys.MOB.FLAGS, flag)
+    private fun getFlag(flag: Int): Boolean = data.getFlag(MetadataKeys.MOB.FLAGS, flag)
 
     private fun setFlag(flag: Int, state: Boolean) {
-        setFlag(MetadataKeys.MOB.FLAGS, flag, state)
+        data.setFlag(MetadataKeys.MOB.FLAGS, flag, state)
     }
 
     companion object {

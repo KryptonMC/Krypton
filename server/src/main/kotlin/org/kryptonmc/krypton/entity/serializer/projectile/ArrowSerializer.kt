@@ -31,10 +31,10 @@ object ArrowSerializer : EntitySerializer<KryptonArrow> {
         ArrowLikeSerializer.load(entity, data)
         if (!data.contains("Color", 99)) return
         val rgb = data.getInt("Color")
-        if (rgb in 0..RGB_MAX_VALUE) entity.color = rgb
+        if (rgb in 0..RGB_MAX_VALUE) entity.color = Color(rgb)
     }
 
     override fun save(entity: KryptonArrow): CompoundTag.Builder = ArrowLikeSerializer.save(entity).apply {
-        int("Color", entity.color)
+        int("Color", entity.color.rgb)
     }
 }

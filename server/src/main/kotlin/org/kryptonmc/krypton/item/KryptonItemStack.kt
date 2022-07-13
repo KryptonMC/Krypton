@@ -27,6 +27,7 @@ import org.kryptonmc.api.item.ItemTypes
 import org.kryptonmc.api.item.meta.ItemMeta
 import org.kryptonmc.api.item.meta.ItemMetaBuilder
 import org.kryptonmc.api.registry.Registries
+import org.kryptonmc.krypton.data.KryptonDataHolder
 import org.kryptonmc.krypton.data.KryptonImmutableDataHolder
 import org.kryptonmc.krypton.item.meta.AbstractItemMeta
 import org.kryptonmc.krypton.item.meta.KryptonItemMeta
@@ -39,6 +40,9 @@ data class KryptonItemStack(
     override val amount: Int,
     override val meta: AbstractItemMeta<*>
 ) : ItemStack, KryptonImmutableDataHolder<ItemStack> {
+
+    override val delegates: List<KryptonDataHolder>
+        get() = listOf(this, meta)
 
     fun save(tag: CompoundTag.Builder): CompoundTag.Builder = tag.apply {
         string("id", type.key().asString())

@@ -18,9 +18,9 @@ import org.kryptonmc.api.entity.player.Player
 public interface Tamable : Animal {
 
     /**
-     * If this tamable animal is currently tame.
+     * If this tamable animal is currently tamed by an entity.
      */
-    public var isTame: Boolean
+    public var isTamed: Boolean
 
     /**
      * If this tamable animal is in the sitting position.
@@ -28,16 +28,11 @@ public interface Tamable : Animal {
     public var isSitting: Boolean
 
     /**
-     * If the owner of this animal has ordered it to sit.
-     */
-    public var isOrderedToSit: Boolean
-
-    /**
      * The entity that has tamed this animal, or null, if no entities own this
      * tamable animal.
      */
-    @get:JvmName("owner")
-    public val owner: LivingEntity?
+    @get:JvmName("tamer")
+    public val tamer: LivingEntity?
 
     /**
      * Tames this animal, making the owner the given [tamer].

@@ -17,10 +17,10 @@ public interface Creeper : Monster {
     /**
      * The fuse timer (time until the creeper will explode).
      *
-     * Will be 0 if this creeper is not [ignited][isIgnited].
+     * Will be 0 if this creeper is not [primed][isPrimed].
      */
     @get:JvmName("fuse")
-    public var fuse: Short
+    public var fuse: Int
 
     /**
      * The radius of the explosion this creeper will produce when it explodes.
@@ -41,8 +41,8 @@ public interface Creeper : Monster {
     public var isCharged: Boolean
 
     /**
-     * If this creeper has been ignited, meaning it will explode when the
-     * [fuse] reaches 0.
+     * If this creeper is primed for explosion, meaning it will explode when
+     * the [fuse] reaches 0.
      */
-    public var isIgnited: Boolean
+    public var isPrimed: Boolean
 }

@@ -27,13 +27,13 @@ object ProjectileSerializer : EntitySerializer<KryptonProjectile> {
 
     override fun load(entity: KryptonProjectile, data: CompoundTag) {
         BaseEntitySerializer.load(entity, data)
-        if (data.hasUUID("Owner")) entity.ownerId = data.getUUID("Owner")
+        if (data.hasUUID("Owner")) entity.shooterId = data.getUUID("Owner")
         entity.hasLeftOwner = data.getBoolean("LeftOwner")
         entity.hasBeenShot = data.getBoolean("HasBeenShot")
     }
 
     override fun save(entity: KryptonProjectile): CompoundTag.Builder = BaseEntitySerializer.save(entity).apply {
-        if (entity.ownerId != null) uuid("Owner", entity.ownerId!!)
+        if (entity.shooterId != null) uuid("Owner", entity.shooterId!!)
         if (entity.hasLeftOwner) boolean("LeftOwner", true)
         boolean("HasBeenShot", entity.hasBeenShot)
     }

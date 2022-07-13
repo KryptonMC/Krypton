@@ -16,13 +16,17 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.data.provider.impl
+package org.kryptonmc.krypton.data.provider.entity
 
-import org.kryptonmc.krypton.data.provider.DataProviderRegistrarBuilder
+import org.kryptonmc.api.data.Keys
+import org.kryptonmc.krypton.data.provider.DataProviderRegistrar
+import org.kryptonmc.krypton.entity.animal.KryptonOcelot
+import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 
-object EntityDataProviders : DataProviderRegistrarBuilder() {
+object OcelotData {
 
-    override fun registerProviders() {
-        EntityData.register(registrar)
+    @JvmStatic
+    fun register(registrar: DataProviderRegistrar) {
+        registrar.registerMetadata<KryptonOcelot, _>(Keys.IS_TRUSTING, MetadataKeys.OCELOT.TRUSTING)
     }
 }

@@ -48,9 +48,9 @@ import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.item.KryptonItemStack
 import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.packet.out.play.PacketOutRemoveEntities
+import org.kryptonmc.krypton.packet.out.play.PacketOutSetEntityMetadata
 import org.kryptonmc.krypton.packet.out.play.PacketOutSetEntityVelocity
 import org.kryptonmc.krypton.packet.out.play.PacketOutSetHeadRotation
-import org.kryptonmc.krypton.packet.out.play.PacketOutSetEntityMetadata
 import org.kryptonmc.krypton.packet.out.play.PacketOutSetPassengers
 import org.kryptonmc.krypton.packet.out.play.PacketOutSpawnEntity
 import org.kryptonmc.krypton.tags.KryptonTagManager
@@ -265,10 +265,10 @@ abstract class KryptonEntity(override var world: KryptonWorld, override val type
 
     protected open fun getSpawnPacket(): Packet = PacketOutSpawnEntity(this)
 
-    fun getSharedFlag(flag: Int): Boolean = getFlag(MetadataKeys.FLAGS, flag)
+    private fun getSharedFlag(flag: Int): Boolean = data.getFlag(MetadataKeys.FLAGS, flag)
 
-    fun setSharedFlag(flag: Int, state: Boolean) {
-        setFlag(MetadataKeys.FLAGS, flag, state)
+    private fun setSharedFlag(flag: Int, state: Boolean) {
+        data.setFlag(MetadataKeys.FLAGS, flag, state)
     }
 
     private fun updateWater(): Boolean {
@@ -453,14 +453,6 @@ abstract class KryptonEntity(override var world: KryptonWorld, override val type
 
     override fun tryRide(entity: Entity) {
         if (isRideable) addPassenger(entity)
-    }
-
-    protected fun getFlag(key: MetadataKey<Byte>, flag: Int): Boolean = data[key].toInt() and (1 shl flag) != 0
-
-    protected fun setFlag(key: MetadataKey<Byte>, flag: Int, state: Boolean) {
-        val flags = data[key].toInt()
-        val value = if (state) flags or (1 shl flag) else flags and (1 shl flag).inv()
-        data[key] = value.toByte()
     }
 
     companion object {

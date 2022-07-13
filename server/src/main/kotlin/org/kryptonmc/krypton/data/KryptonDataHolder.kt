@@ -29,12 +29,21 @@ interface KryptonDataHolder : DataHolder {
 
     override val keys: Set<Key<*>>
         get() = DataProviderRegistry.getProviders(javaClass).filter { it[this] != null }.map { it.key }.toSet()
+    val delegates: List<KryptonDataHolder>
+        get() = emptyList()
 
     fun <E> getProvider(key: Key<E>, holder: DataHolder): DataProvider<E> = DataProviderRegistry.getProvider(key, holder.javaClass)
 
     fun <E, T> apply(key: Key<E>, function: BiFunction<DataProvider<E>, DataHolder, T>, default: Supplier<T>): T {
-        val provider = getProvider(key, this)
-        if (provider.isSupported(this)) return function.apply(provider, this)
+        if (delegates.isEmpty()) {
+            val provider = getProvider(key, this)
+            if (provider.isSupported(this)) return function.apply(provider, this)
+        } else {
+            delegates.forEach {
+                val provider = getProvider(key, it)
+                if (provider.isSupported(it)) return function.apply(provider, it)
+            }
+        }
         return default.get()
     }
 

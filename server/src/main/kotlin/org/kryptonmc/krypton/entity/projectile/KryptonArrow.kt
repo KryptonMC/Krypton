@@ -22,12 +22,13 @@ import org.kryptonmc.api.entity.EntityTypes
 import org.kryptonmc.api.entity.projectile.Arrow
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.world.KryptonWorld
+import java.awt.Color
 
 class KryptonArrow(world: KryptonWorld) : KryptonArrowLike(world, EntityTypes.ARROW), Arrow {
 
-    override var color: Int
-        get() = data[MetadataKeys.ARROW.COLOR]
-        set(value) = data.set(MetadataKeys.ARROW.COLOR, value)
+    override var color: Color
+        get() = Color(data[MetadataKeys.ARROW.COLOR])
+        set(value) = data.set(MetadataKeys.ARROW.COLOR, value.rgb)
 
     init {
         data.add(MetadataKeys.ARROW.COLOR, -1)

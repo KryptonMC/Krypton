@@ -69,7 +69,7 @@ interface BlockHandler {
         // TODO: drop items
         // 0.005/block is the vanilla food exhaustion per block to be added to the player
         // Source: https://minecraft.fandom.com/wiki/Hunger#Exhaustion_level_increase
-        player.foodExhaustionLevel += 0.005f
+        player.exhaustion += 0.005f
         player.statistics.increment(StatisticTypes.BLOCK_MINED[block])
     }
 

@@ -24,18 +24,18 @@ import org.kryptonmc.api.entity.EntityTypes
 import org.kryptonmc.krypton.effect.particle.ParticleOptions
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.world.KryptonWorld
+import java.awt.Color
 
 class KryptonAreaEffectCloud(world: KryptonWorld) : KryptonEntity(world, EntityTypes.AREA_EFFECT_CLOUD), AreaEffectCloud {
 
-    override var age: Int = 0
     override var duration: Int = 0
 
     override var radius: Float
         get() = data[MetadataKeys.AREA_EFFECT_CLOUD.RADIUS]
         set(value) = data.set(MetadataKeys.AREA_EFFECT_CLOUD.RADIUS, value)
-    override var color: Int
-        get() = data[MetadataKeys.AREA_EFFECT_CLOUD.COLOR]
-        set(value) = data.set(MetadataKeys.AREA_EFFECT_CLOUD.COLOR, value)
+    override var color: Color
+        get() = Color(data[MetadataKeys.AREA_EFFECT_CLOUD.COLOR])
+        set(value) = data.set(MetadataKeys.AREA_EFFECT_CLOUD.COLOR, value.rgb)
 
     init {
         data.add(MetadataKeys.AREA_EFFECT_CLOUD.RADIUS, 0.5F)

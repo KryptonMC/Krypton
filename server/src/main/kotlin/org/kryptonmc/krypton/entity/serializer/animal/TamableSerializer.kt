@@ -31,7 +31,7 @@ object TamableSerializer : EntitySerializer<KryptonTamable> {
         // TODO: Fix this. The vanilla implementation is weird, and this doesn't make any sense. It also needs old
         //  user conversion stuff that we don't have yet.
         entity.data[MetadataKeys.TAMABLE.OWNER] = data.getUUID("Owner")
-        entity.isTame = data.hasUUID("Owner")
+        entity.isTamed = data.hasUUID("Owner")
         entity.isOrderedToSit = data.getBoolean("Sitting")
         entity.isSitting = entity.isOrderedToSit
     }

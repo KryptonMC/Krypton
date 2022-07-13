@@ -35,7 +35,7 @@ object MinecartLikeSerializer : EntitySerializer<KryptonMinecartLike> {
     }
 
     override fun save(entity: KryptonMinecartLike): CompoundTag.Builder = BaseEntitySerializer.save(entity).apply {
-        if (!entity.hasCustomBlock) return@apply
+        if (!entity.showCustomBlock) return@apply
         boolean("CustomDisplayTile", true)
         put("DisplayState", entity.customBlock.toNBT())
         int("DisplayOffset", entity.customBlockOffset)

@@ -52,6 +52,7 @@ import org.kryptonmc.api.world.rule.GameRules
 import org.kryptonmc.krypton.auth.requests.SessionService
 import org.kryptonmc.krypton.command.BrigadierExceptions
 import org.kryptonmc.krypton.command.argument.ArgumentSerializers
+import org.kryptonmc.krypton.data.provider.DataProviderRegistry
 import org.kryptonmc.krypton.effect.sound.SoundLoader
 import org.kryptonmc.krypton.entity.EntityFactory
 import org.kryptonmc.krypton.entity.KryptonEntityCategories
@@ -162,6 +163,8 @@ object Bootstrap {
         ItemManager
         BlockManager
         CommandSyntaxException.BUILT_IN_EXCEPTIONS = BrigadierExceptions
+
+        DataProviderRegistry.registerDefaultProviders()
     }
 
     @JvmStatic

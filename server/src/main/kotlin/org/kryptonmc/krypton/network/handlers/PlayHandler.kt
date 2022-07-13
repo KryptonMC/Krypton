@@ -233,7 +233,7 @@ class PlayHandler(override val server: KryptonServer, override val session: Sess
         player.chatVisibility = packet.chatVisibility
         player.skinSettings = packet.skinSettings.toByte()
         player.mainHand = packet.mainHand
-        player.filterText = packet.filterText
+        player.isTextFilteringEnabled = packet.textFilteringEnabled
         player.allowsListing = packet.allowsListing
     }
 

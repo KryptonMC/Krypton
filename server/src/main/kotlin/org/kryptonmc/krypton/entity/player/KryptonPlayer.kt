@@ -51,7 +51,6 @@ import org.kryptonmc.api.item.ItemTypes
 import org.kryptonmc.api.permission.PermissionFunction
 import org.kryptonmc.api.permission.PermissionProvider
 import org.kryptonmc.api.registry.Registries
-import org.kryptonmc.api.resource.ResourceKey
 import org.kryptonmc.api.resource.ResourcePack
 import org.kryptonmc.api.service.AFKService
 import org.kryptonmc.api.service.VanishService
@@ -61,7 +60,6 @@ import org.kryptonmc.api.util.Direction
 import org.kryptonmc.api.world.Difficulty
 import org.kryptonmc.api.world.GameMode
 import org.kryptonmc.api.world.World
-import org.kryptonmc.api.world.dimension.DimensionType
 import org.kryptonmc.krypton.adventure.BossBarManager
 import org.kryptonmc.krypton.adventure.toItemStack
 import org.kryptonmc.krypton.auth.KryptonGameProfile
@@ -231,9 +229,8 @@ class KryptonPlayer(
     // TODO: Per-player view distance, see issue #49
     override val viewDistance: Int = server.config.world.viewDistance
     override var chatVisibility: ChatVisibility = ChatVisibility.FULL
-    override var filterText: Boolean = false
+    var isTextFilteringEnabled: Boolean = false
     override var allowsListing: Boolean = true
-    override var time: Long = 0L
     private val chatSender = ChatSender(uuid, name, teamRepresentation)
     private var lastActionTime = System.currentTimeMillis()
 
@@ -259,11 +256,6 @@ class KryptonPlayer(
         get() = Directions.ofPitch(rotation.y().toDouble())
     val canUseGameMasterBlocks: Boolean
         get() = canInstantlyBuild && hasPermission(KryptonPermission.USE_GAME_MASTER_BLOCKS.node)
-
-    override val dimensionType: DimensionType
-        get() = world.dimensionType
-    override val dimension: ResourceKey<World>
-        get() = world.dimension
 
     override val isOnline: Boolean
         get() = server.player(uuid) === this
@@ -296,7 +288,7 @@ class KryptonPlayer(
         set(value) {
             super.health = value
             if (!isLoaded) return
-            session.send(PacketOutSetHealth(health, foodLevel, foodSaturationLevel))
+            session.send(PacketOutSetHealth(health, foodLevel, saturation))
         }
 
     // Sources for vanilla hunger system values:
@@ -306,20 +298,20 @@ class KryptonPlayer(
         set(value) {
             field = value
             if (!isLoaded) return
-            session.send(PacketOutSetHealth(health, foodLevel, foodSaturationLevel))
+            session.send(PacketOutSetHealth(health, foodLevel, saturation))
         }
 
     internal var foodTickTimer = 0
 
     // 0 is the default vanilla food exhaustion level
-    override var foodExhaustionLevel: Float = 0f
+    override var exhaustion: Float = 0F
 
     // 5 is the default vanilla food saturation level
-    override var foodSaturationLevel: Float = 5f
+    override var saturation: Float = 5F
         set(value) {
             field = value
             if (!isLoaded) return
-            session.send(PacketOutSetHealth(health, foodLevel, foodSaturationLevel))
+            session.send(PacketOutSetHealth(health, foodLevel, saturation))
         }
 
     override var absorption: Float
@@ -405,10 +397,10 @@ class KryptonPlayer(
         // -> Saturation ↓
         // -> If Saturation Threshold of 0
         // -> Food Level ↓
-        if (foodExhaustionLevel > 4f) {
-            foodExhaustionLevel -= 4f
-            if (foodSaturationLevel > 0) {
-                foodSaturationLevel = max(foodSaturationLevel - 1, 0f)
+        if (exhaustion > 4f) {
+            exhaustion -= 4f
+            if (saturation > 0) {
+                saturation = max(saturation - 1, 0f)
             } else {
                 foodLevel = max(foodLevel - 1, 0)
             }
@@ -455,12 +447,12 @@ class KryptonPlayer(
                     // Once a half-heart has been added, increase the exhaustion by 3,
                     // or if that operation were to exceed the threshold, instead, set it to the
                     // threshold value of 4.
-                    foodExhaustionLevel = min(foodExhaustionLevel + 3f, 4f)
+                    exhaustion = min(exhaustion + 3f, 4f)
                     // Force the saturation level to deplete by 3.
                     // So as health comes up, the food "buffer" comes down,
                     // eventually causing the food level to decrease, when saturation
                     // reaches zero.
-                    foodSaturationLevel -= 3
+                    saturation -= 3
                 } else {
                     health = maxHealth
                 }
@@ -834,14 +826,14 @@ class KryptonPlayer(
         // Source: https://minecraft.fandom.com/wiki/Hunger#Exhaustion_level_increase
         if (isSwimming) {
             val value = sqrt(deltaX * deltaX + deltaY * deltaY + deltaZ * deltaZ)
-            if (value > 0) foodExhaustionLevel += 0.01F * value.toFloat()
+            if (value > 0) exhaustion += 0.01F * value.toFloat()
             // 0.01/u is the vanilla level of exhaustion per unit for swimming
             return
         }
         if (isOnGround) {
             val value = sqrt(deltaX * deltaX + deltaZ * deltaZ)
             if (value > 0) when {
-                isSprinting -> foodExhaustionLevel += 0.1F * value.toFloat()
+                isSprinting -> exhaustion += 0.1F * value.toFloat()
                 // 0.1/u is the vanilla level of exhaustion per unit for sprinting
             }
             return

@@ -8,18 +8,14 @@
  */
 package org.kryptonmc.api.entity
 
+import java.awt.Color
+
 /**
  * Represents an area effect cloud, such as that of the lingering effect
  * that appears when a lingering potion is thrown.
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
 public interface AreaEffectCloud : Entity {
-
-    /**
-     * The amount of ticks this cloud has lived for.
-     */
-    @get:JvmName("age")
-    public val age: Int
 
     /**
      * The duration, in ticks, that this area effect cloud will exist for.
@@ -37,5 +33,5 @@ public interface AreaEffectCloud : Entity {
      * The color of this area effect cloud.
      */
     @get:JvmName("color")
-    public val color: Int
+    public val color: Color
 }

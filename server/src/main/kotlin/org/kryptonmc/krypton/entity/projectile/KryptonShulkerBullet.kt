@@ -29,9 +29,9 @@ class KryptonShulkerBullet(world: KryptonWorld) : KryptonProjectile(world, Entit
 
     internal var targetId: UUID? = null
     override var steps: Int = 0
-    override var movingDirection: Direction? = null
     override var target: Entity? = null
-    override var targetDeltaX: Double = 0.0
-    override var targetDeltaY: Double = 0.0
-    override var targetDeltaZ: Double = 0.0
+    var movingDirection: Direction? = null
+    var targetDeltaX: Double = 0.0
+    var targetDeltaY: Double = 0.0
+    var targetDeltaZ: Double = 0.0
 }

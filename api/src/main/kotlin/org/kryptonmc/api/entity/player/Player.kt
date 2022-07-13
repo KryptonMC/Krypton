@@ -17,12 +17,9 @@ import org.kryptonmc.api.entity.MainHand
 import org.kryptonmc.api.inventory.Inventory
 import org.kryptonmc.api.inventory.PlayerInventory
 import org.kryptonmc.api.plugin.PluginMessageRecipient
-import org.kryptonmc.api.resource.ResourceKey
 import org.kryptonmc.api.resource.ResourcePack
 import org.kryptonmc.api.util.Direction
 import org.kryptonmc.api.statistic.StatisticsTracker
-import org.kryptonmc.api.world.World
-import org.kryptonmc.api.world.dimension.DimensionType
 import org.kryptonmc.api.scoreboard.Scoreboard
 import org.kryptonmc.api.world.GameMode
 import org.spongepowered.math.vector.Vector3d
@@ -109,18 +106,6 @@ public interface Player : LivingEntity, Equipable, PluginMessageRecipient {
     public var isFlying: Boolean
 
     /**
-     * The dimension resource key for the world the player is currently in.
-     */
-    @get:JvmName("dimension")
-    public val dimension: ResourceKey<World>
-
-    /**
-     * The dimension the player is currently in.
-     */
-    @get:JvmName("dimensionType")
-    public val dimensionType: DimensionType
-
-    /**
      * The view distance of this player.
      */
     @get:JvmName("viewDistance")
@@ -133,19 +118,6 @@ public interface Player : LivingEntity, Equipable, PluginMessageRecipient {
     public val chatVisibility: ChatVisibility
 
     /**
-     * If this player wants their text filtered before it is sent to them.
-     *
-     * This filtering is usually meant to be done by Mojang, and is designed to
-     * protect underage players from receiving any naughty words, like swear
-     * words.
-     *
-     * It is recommended that plugins that wish to filter text for players,
-     * such as chat plugins, respect this option, and allow players to opt-out
-     * of chat filtering if they wish to do so.
-     */
-    public val filterText: Boolean
-
-    /**
      * If this player wants to be listed in the server status' player list.
      *
      * All plugins that override the MOTD settings with their own custom MOTDs
@@ -154,14 +126,6 @@ public interface Player : LivingEntity, Equipable, PluginMessageRecipient {
      */
     @get:JvmName("allowsListing")
     public val allowsListing: Boolean
-
-    /**
-     * The current time of this player.
-     *
-     * Will always be the time of the server.
-     */
-    @get:JvmName("time")
-    public val time: Long
 
     /**
      * If this player is currently vanished, meaning no other player on the
@@ -230,16 +194,16 @@ public interface Player : LivingEntity, Equipable, PluginMessageRecipient {
     public var foodLevel: Int
 
     /**
-     * The food exhaustion level of this player.
+     * The exhaustion of this player.
      */
-    @get:JvmName("foodExhaustionLevel")
-    public var foodExhaustionLevel: Float
+    @get:JvmName("exhaustion")
+    public var exhaustion: Float
 
     /**
-     * The food saturation level of this player.
+     * The saturation of this player.
      */
-    @get:JvmName("foodSaturationLevel")
-    public var foodSaturationLevel: Float
+    @get:JvmName("saturation")
+    public var saturation: Float
 
     /**
      * The statistics tracker for this player.

@@ -24,5 +24,5 @@ import org.kryptonmc.krypton.world.KryptonWorld
 
 class KryptonSpectralArrow(world: KryptonWorld) : KryptonArrowLike(world, EntityTypes.SPECTRAL_ARROW), SpectralArrow {
 
-    override var duration: Int = 200
+    override var glowingDuration: Int = 200
 }

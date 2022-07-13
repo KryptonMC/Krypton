@@ -9,7 +9,6 @@
 package org.kryptonmc.api.entity.projectile
 
 import org.kryptonmc.api.block.Block
-import org.kryptonmc.api.effect.sound.SoundEvent
 
 /**
  * Something that shares some (or all) functionality with that of an [Arrow].
@@ -25,8 +24,8 @@ public interface ArrowLike : Projectile {
     /**
      * The damage multiplier of this arrow like object.
      */
-    @get:JvmName("damage")
-    public var damage: Double
+    @get:JvmName("baseDamage")
+    public var baseDamage: Double
 
     /**
      * The block this arrow like object is currently stuck in, or null if this
@@ -41,15 +40,6 @@ public interface ArrowLike : Projectile {
     public var isInGround: Boolean
 
     /**
-     * The life of this arrow like object.
-     *
-     * This will increase by 1 for every tick this object is not moving.
-     * When this value reaches 1200, it will despawn.
-     */
-    @get:JvmName("life")
-    public val life: Int
-
-    /**
      * The amount of remaining times that this arrow like object can pierce
      * through an entity.
      *
@@ -57,15 +47,6 @@ public interface ArrowLike : Projectile {
      */
     @get:JvmName("piercingLevel")
     public val piercingLevel: Int
-
-    /**
-     * The amount of ticks this arrow like object will shake for until it can
-     * be picked up by players.
-     *
-     * When it hits a block, this value will be initially set to 7.
-     */
-    @get:JvmName("shakeTime")
-    public val shakeTime: Int
 
     /**
      * If this arrow like object ignores physics.
@@ -80,21 +61,15 @@ public interface ArrowLike : Projectile {
     public var wasShotFromCrossbow: Boolean
 
     /**
-     * The sound event to play when hitting a block/mob.
-     */
-    @get:JvmName("sound")
-    public val sound: SoundEvent
-
-    /**
      * The current pickup state of this arrow like object.
      */
     @get:JvmName("pickup")
-    public val pickup: Pickup
+    public val pickupState: PickupState
 
     /**
      * Arrow like pickup state.
      */
-    public enum class Pickup {
+    public enum class PickupState {
 
         DISALLOWED,
         ALLOWED,

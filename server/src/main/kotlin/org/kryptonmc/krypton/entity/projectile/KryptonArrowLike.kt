@@ -32,13 +32,13 @@ abstract class KryptonArrowLike(
     defaultHitGroundSound: SoundEvent = SoundEvents.ARROW_HIT
 ) : KryptonProjectile(world, type), ArrowLike {
 
-    final override var damage: Double = 2.0
+    final override var baseDamage: Double = 2.0
     final override var isInGround: Boolean = false
-    final override var life: Int = 0
-    final override var shakeTime: Int = 0
-    final override var sound: SoundEvent = defaultHitGroundSound
+    var life: Int = 0
+    var shakeTime: Int = 0
+    var sound: SoundEvent = defaultHitGroundSound
     final override var stuckInBlock: Block? = null
-    final override var pickup: ArrowLike.Pickup = ArrowLike.Pickup.DISALLOWED
+    final override var pickupState: ArrowLike.PickupState = ArrowLike.PickupState.DISALLOWED
 
     final override var isCritical: Boolean
         get() = getFlag(0)
@@ -58,9 +58,9 @@ abstract class KryptonArrowLike(
         data.add(MetadataKeys.ARROW_LIKE.PIERCING_LEVEL, 0)
     }
 
-    private fun getFlag(flag: Int): Boolean = getFlag(MetadataKeys.ARROW_LIKE.FLAGS, flag)
+    private fun getFlag(flag: Int): Boolean = data.getFlag(MetadataKeys.ARROW_LIKE.FLAGS, flag)
 
     private fun setFlag(flag: Int, value: Boolean) {
-        setFlag(MetadataKeys.ARROW_LIKE.FLAGS, flag, value)
+        data.setFlag(MetadataKeys.ARROW_LIKE.FLAGS, flag, value)
     }
 }

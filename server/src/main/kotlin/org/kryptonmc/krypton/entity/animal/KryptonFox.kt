@@ -79,10 +79,10 @@ class KryptonFox(world: KryptonWorld) : KryptonAnimal(world, EntityTypes.FOX, AT
 
     override fun isFood(item: ItemStack): Boolean = ItemTags.FOX_FOOD.contains(item.type)
 
-    private fun getFlag(flag: Int): Boolean = getFlag(MetadataKeys.FOX.FLAGS, flag)
+    private fun getFlag(flag: Int): Boolean = data.getFlag(MetadataKeys.FOX.FLAGS, flag)
 
     private fun setFlag(flag: Int, state: Boolean) {
-        setFlag(MetadataKeys.FOX.FLAGS, flag, state)
+        data.setFlag(MetadataKeys.FOX.FLAGS, flag, state)
     }
 
     companion object {

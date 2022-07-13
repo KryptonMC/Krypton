@@ -35,7 +35,7 @@ data class PacketInClientInformation(
     val chatColors: Boolean,
     val skinSettings: Short,
     val mainHand: MainHand,
-    val filterText: Boolean,
+    val textFilteringEnabled: Boolean,
     val allowsListing: Boolean
 ) : Packet {
 
@@ -57,7 +57,7 @@ data class PacketInClientInformation(
         buf.writeBoolean(chatColors)
         buf.writeByte(skinSettings.toInt())
         buf.writeEnum(mainHand)
-        buf.writeBoolean(filterText)
+        buf.writeBoolean(textFilteringEnabled)
         buf.writeBoolean(allowsListing)
     }
 }

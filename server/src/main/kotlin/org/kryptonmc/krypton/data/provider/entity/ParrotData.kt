@@ -16,13 +16,23 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.data.provider.impl
+package org.kryptonmc.krypton.data.provider.entity
 
-import org.kryptonmc.krypton.data.provider.DataProviderRegistrarBuilder
+import org.kryptonmc.api.data.Keys
+import org.kryptonmc.api.entity.animal.type.ParrotType
+import org.kryptonmc.krypton.data.provider.DataProviderRegistrar
+import org.kryptonmc.krypton.entity.animal.KryptonParrot
+import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 
-object BlockDataProviders : DataProviderRegistrarBuilder() {
+object ParrotData {
 
-    override fun registerProviders() {
-        BlockData.register(registrar)
+    private val TYPES = ParrotType.values()
+
+    @JvmStatic
+    fun register(registrar: DataProviderRegistrar) {
+        registrar.registerMetadata<KryptonParrot, _, _>(Keys.PARROT_TYPE, MetadataKeys.PARROT.TYPE, ::type, ParrotType::ordinal)
     }
+
+    @JvmStatic
+    private fun type(id: Int): ParrotType = TYPES.getOrNull(id) ?: ParrotType.RED_AND_BLUE
 }

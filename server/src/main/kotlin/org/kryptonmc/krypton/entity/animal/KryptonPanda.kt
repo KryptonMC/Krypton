@@ -84,10 +84,10 @@ class KryptonPanda(world: KryptonWorld) : KryptonAnimal(world, EntityTypes.PANDA
 
     override fun isFood(item: ItemStack): Boolean = item.type === ItemTypes.BAMBOO
 
-    private fun getFlag(flag: Int): Boolean = getFlag(MetadataKeys.PANDA.FLAGS, flag)
+    private fun getFlag(flag: Int): Boolean = data.getFlag(MetadataKeys.PANDA.FLAGS, flag)
 
     private fun setFlag(flag: Int, state: Boolean) {
-        setFlag(MetadataKeys.PANDA.FLAGS, flag, state)
+        data.setFlag(MetadataKeys.PANDA.FLAGS, flag, state)
     }
 
     companion object {

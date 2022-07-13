@@ -27,19 +27,19 @@ import java.util.UUID
 
 abstract class KryptonProjectile(world: KryptonWorld, type: EntityType<out Projectile>) : KryptonEntity(world, type), Projectile {
 
-    internal var ownerId: UUID? = null
-    final override var owner: Entity? = null
+    internal var shooterId: UUID? = null
+    final override var shooter: Entity? = null
         get() {
             if (field != null) return field
-            if (ownerId != null) {
-                field = world.entityManager[ownerId!!]
+            if (shooterId != null) {
+                field = world.entityManager[shooterId!!]
                 return field
             }
             return null
         }
         set(value) {
             if (value == null) return
-            ownerId = value.uuid
+            shooterId = value.uuid
             field = value
         }
     final override var hasLeftOwner: Boolean = false

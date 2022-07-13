@@ -70,10 +70,10 @@ class KryptonBee(world: KryptonWorld) : KryptonAnimal(world, EntityTypes.BEE, AT
 
     override fun isFood(item: ItemStack): Boolean = ItemTags.FLOWERS.contains(item.type)
 
-    private fun getFlag(flag: Int): Boolean = getFlag(MetadataKeys.BEE.FLAGS, flag)
+    private fun getFlag(flag: Int): Boolean = data.getFlag(MetadataKeys.BEE.FLAGS, flag)
 
     private fun setFlag(flag: Int, state: Boolean) {
-        setFlag(MetadataKeys.BEE.FLAGS, flag, state)
+        data.setFlag(MetadataKeys.BEE.FLAGS, flag, state)
     }
 
     companion object {

@@ -9,13 +9,12 @@
 package org.kryptonmc.api.entity.vehicle
 
 import org.kryptonmc.api.block.Block
-import org.kryptonmc.api.entity.Entity
 
 /**
  * Something that shares some (or all) functionality with that of a [Minecart].
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
-public interface MinecartLike : Entity {
+public interface MinecartLike : DamageableVehicle {
 
     /**
      * The type of this minecart like object.
@@ -24,16 +23,10 @@ public interface MinecartLike : Entity {
     public val minecartType: MinecartType
 
     /**
-     * The amount of damage that this minecart like object has taken.
-     */
-    @get:JvmName("damageTaken")
-    public var damageTaken: Float
-
-    /**
      * If the custom block is shown on the minecart.
      */
     @get:JvmName("showCustomBlock")
-    public var hasCustomBlock: Boolean
+    public var showCustomBlock: Boolean
 
     /**
      * The custom block shown within the minecart.

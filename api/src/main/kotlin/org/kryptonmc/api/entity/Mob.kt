@@ -20,14 +20,6 @@ public interface Mob : LivingEntity, Equipable {
     public val isPersistent: Boolean
 
     /**
-     * If this mob can pick up loot.
-     *
-     * For example, if this mob can wear armour/use weapons it picks up.
-     */
-    @get:JvmName("canPickUpLoot")
-    public val canPickUpLoot: Boolean
-
-    /**
      * If this mob has artificial intelligence.
      */
     @get:JvmName("hasAI")

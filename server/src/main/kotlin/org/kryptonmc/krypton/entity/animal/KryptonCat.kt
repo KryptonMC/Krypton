@@ -61,9 +61,9 @@ class KryptonCat(world: KryptonWorld) : KryptonTamable(world, EntityTypes.CAT, A
     }
 
     override fun canMate(target: Animal): Boolean {
-        if (!isTame) return false
+        if (!isTamed) return false
         if (target !is Cat) return false
-        return target.isTame && super.canMate(target)
+        return target.isTamed && super.canMate(target)
     }
 
     override fun isFood(item: ItemStack): Boolean = item.type === ItemTypes.COD || item.type === ItemTypes.SALMON

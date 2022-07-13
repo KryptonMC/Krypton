@@ -21,7 +21,7 @@ public interface Projectile : Entity {
      * an owner yet.
      */
     @get:JvmName("owner")
-    public val owner: Entity?
+    public val shooter: Entity?
 
     /**
      * If this projectile has left its owner's hitbox.

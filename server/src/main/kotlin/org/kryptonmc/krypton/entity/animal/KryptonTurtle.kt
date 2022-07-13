@@ -55,7 +55,7 @@ class KryptonTurtle(world: KryptonWorld) : KryptonAnimal(world, EntityTypes.TURT
     override val swimSound: SoundEvent
         get() = SoundEvents.TURTLE_SWIM
     override val canFallInLove: Boolean
-        get() = super.canFallInLove && !hasEgg
+        get() = super<KryptonAnimal>.canFallInLove && !hasEgg
 
     init {
         data.add(MetadataKeys.TURTLE.HOME, Vector3i.ZERO)

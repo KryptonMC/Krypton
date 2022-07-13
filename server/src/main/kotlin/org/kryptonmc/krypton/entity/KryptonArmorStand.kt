@@ -92,9 +92,9 @@ class KryptonArmorStand(world: KryptonWorld) : KryptonLivingEntity(world, Entity
         }
     }
 
-    private fun getFlag(flag: Int): Boolean = getFlag(MetadataKeys.ARMOR_STAND.FLAGS, flag)
+    private fun getFlag(flag: Int): Boolean = data.getFlag(MetadataKeys.ARMOR_STAND.FLAGS, flag)
 
     private fun setFlag(flag: Int, state: Boolean) {
-        setFlag(MetadataKeys.ARMOR_STAND.FLAGS, flag, state)
+        data.setFlag(MetadataKeys.ARMOR_STAND.FLAGS, flag, state)
     }
 }

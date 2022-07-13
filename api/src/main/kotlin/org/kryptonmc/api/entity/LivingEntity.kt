@@ -52,33 +52,6 @@ public interface LivingEntity : Entity, AttributeHolder {
     public val isInRiptideSpinAttack: Boolean
 
     /**
-     * If this entity is dead or not.
-     */
-    public val isDead: Boolean
-
-    /**
-     * If this entity is considered a baby.
-     */
-    public var isBaby: Boolean
-
-    /**
-     * The number of ticks this entity has been dead for.
-     * This is used to control death animations.
-     *
-     * Will be 0 whilst this entity is alive.
-     */
-    @get:JvmName("deathTime")
-    public val deathTime: Short
-
-    /**
-     * The number of ticks this entity will turn red for after being hit.
-     *
-     * Will be 0 when not recently hit.
-     */
-    @get:JvmName("hurtTime")
-    public val hurtTime: Short
-
-    /**
      * The last time, in ticks, this entity was damaged.
      *
      * Calculated as the

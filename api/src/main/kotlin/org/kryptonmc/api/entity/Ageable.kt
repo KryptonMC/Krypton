@@ -21,6 +21,11 @@ public interface Ageable : Mob {
     public var age: Int
 
     /**
+     * If this ageable mob is considered a baby.
+     */
+    public var isBaby: Boolean
+
+    /**
      * Whether this ageable mob can naturally breed with others of its kind.
      */
     @get:JvmName("canBreedNaturally")

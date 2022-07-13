@@ -52,10 +52,10 @@ class KryptonWolf(world: KryptonWorld) : KryptonTamable(world, EntityTypes.WOLF,
         get() = data[MetadataKeys.WOLF.ANGER_TIME]
         set(value) = data.set(MetadataKeys.WOLF.ANGER_TIME, value)
 
-    override var isTame: Boolean
-        get() = super.isTame
+    override var isTamed: Boolean
+        get() = super.isTamed
         set(value) {
-            super.isTame = value
+            super.isTamed = value
             if (value) {
                 attribute(AttributeTypes.MAX_HEALTH)?.baseValue = 20.0
                 health = 20F
@@ -72,7 +72,7 @@ class KryptonWolf(world: KryptonWorld) : KryptonTamable(world, EntityTypes.WOLF,
         data.add(MetadataKeys.WOLF.BEGGING, false)
         data.add(MetadataKeys.WOLF.COLLAR_COLOR, Registries.DYE_COLORS.idOf(DyeColors.RED))
         data.add(MetadataKeys.WOLF.ANGER_TIME, 0)
-        isTame = false
+        isTamed = false
     }
 
     override fun startAngerTimer() {
@@ -84,11 +84,11 @@ class KryptonWolf(world: KryptonWorld) : KryptonTamable(world, EntityTypes.WOLF,
 
     override fun canMate(target: Animal): Boolean {
         if (target === this) return false
-        if (!isTame) return false
+        if (!isTamed) return false
         if (target !is Wolf) return false
-        if (!target.isTame) return false
+        if (!target.isTamed) return false
         if (target.isSitting) return false
-        return inLove && target.inLove
+        return isInLove && target.isInLove
     }
 
     companion object {

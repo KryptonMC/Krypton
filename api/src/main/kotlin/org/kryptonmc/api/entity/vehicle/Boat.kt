@@ -12,25 +12,13 @@ package org.kryptonmc.api.entity.vehicle
  * A boat.
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
-public interface Boat : Vehicle {
+public interface Boat : DamageableVehicle {
 
     /**
      * The type of the boat.
      */
     @get:JvmName("boatType")
     public var boatType: BoatType
-
-    /**
-     * The amount of damage that this boat has taken.
-     */
-    @get:JvmName("damageTaken")
-    public var damageTaken: Float
-
-    /**
-     * The time since this boat last took damage.
-     */
-    @get:JvmName("damageTimer")
-    public var damageTimer: Int
 
     /**
      * If the left paddle of this boat is turning, thus making the boat turn

@@ -50,11 +50,9 @@ abstract class KryptonLivingEntity(
     override var absorption: Float = 0F
     final override val isAlive: Boolean
         get() = super.isAlive && health > 0F
-    final override var isDead: Boolean = false
-    final override var deathTime: Short = 0
-    final override var hurtTime: Short = 0
+    var deathTime: Int = 0
+    var hurtTime: Int = 0
     final override var lastHurtTimestamp: Int = 0
-    override var isBaby: Boolean = false
     private var tickCount = 0
     val attributes: AttributeMap = AttributeMap(attributeSupplier)
     open val brain: Brain<*> = Brain<KryptonLivingEntity>()
@@ -83,6 +81,8 @@ abstract class KryptonLivingEntity(
     private var lastHurtByPlayerTime = 0
 
     abstract override val armorSlots: Iterable<KryptonItemStack>
+    open val isBaby: Boolean
+        get() = false
     open val canBeSeenAsEnemy: Boolean
         get() = !isInvulnerable && canBeSeenByAnyone
     open val canBeSeenByAnyone: Boolean
@@ -170,10 +170,10 @@ abstract class KryptonLivingEntity(
         return true
     }
 
-    private fun getLivingFlag(flag: Int): Boolean = getFlag(MetadataKeys.LIVING.FLAGS, flag)
+    private fun getLivingFlag(flag: Int): Boolean = data.getFlag(MetadataKeys.LIVING.FLAGS, flag)
 
     private fun setLivingFlag(flag: Int, state: Boolean) {
-        setFlag(MetadataKeys.LIVING.FLAGS, flag, state)
+        data.setFlag(MetadataKeys.LIVING.FLAGS, flag, state)
     }
 
     protected fun removeEffectParticles() {

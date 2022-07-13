@@ -24,6 +24,8 @@ import java.util.concurrent.ConcurrentHashMap
 import org.kryptonmc.api.data.DataProvider
 import org.kryptonmc.api.data.Key
 import org.kryptonmc.krypton.data.downcast
+import org.kryptonmc.krypton.data.provider.block.BlockDataProviders
+import org.kryptonmc.krypton.data.provider.entity.EntityDataProviders
 
 @Suppress("UNCHECKED_CAST")
 object DataProviderRegistry {
@@ -52,7 +54,8 @@ object DataProviderRegistry {
 
     @JvmStatic
     fun registerDefaultProviders() {
-        // None yet
+        BlockDataProviders.register()
+        EntityDataProviders.register()
     }
 
     @JvmStatic

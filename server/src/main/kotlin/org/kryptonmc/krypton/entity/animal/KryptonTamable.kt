@@ -33,18 +33,18 @@ abstract class KryptonTamable(
     attributeSupplier: AttributeSupplier
 ) : KryptonAnimal(world, type, attributeSupplier), Tamable {
 
-    final override var isOrderedToSit: Boolean = false
-    override var isTame: Boolean
+    var isOrderedToSit: Boolean = false
+    override var isTamed: Boolean
         get() = getFlag(2)
         set(value) = setFlag(2, value)
     final override var isSitting: Boolean
         get() = getFlag(0)
         set(value) = setFlag(0, value)
-    final override val owner: KryptonPlayer?
+    final override val tamer: KryptonPlayer?
         get() = world.players.firstOrNull { it.uuid == data[MetadataKeys.TAMABLE.OWNER] }
     final override val team: Team?
         get() {
-            if (isTame) return owner?.team
+            if (isTamed) return tamer?.team
             return super.team
         }
 
@@ -54,14 +54,14 @@ abstract class KryptonTamable(
     }
 
     final override fun tame(tamer: Player) {
-        isTame = true
+        isTamed = true
         data[MetadataKeys.TAMABLE.OWNER] = tamer.uuid
         // TODO: Trigger tame animal advancement criteria
     }
 
-    private fun getFlag(flag: Int): Boolean = getFlag(MetadataKeys.TAMABLE.FLAGS, flag)
+    private fun getFlag(flag: Int): Boolean = data.getFlag(MetadataKeys.TAMABLE.FLAGS, flag)
 
     private fun setFlag(flag: Int, state: Boolean) {
-        setFlag(MetadataKeys.TAMABLE.FLAGS, flag, state)
+        data.setFlag(MetadataKeys.TAMABLE.FLAGS, flag, state)
     }
 }

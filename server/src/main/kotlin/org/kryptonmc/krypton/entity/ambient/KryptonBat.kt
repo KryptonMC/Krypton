@@ -27,8 +27,8 @@ import org.kryptonmc.krypton.world.KryptonWorld
 class KryptonBat(world: KryptonWorld) : KryptonAmbientCreature(world, EntityTypes.BAT, ATTRIBUTES), Bat {
 
     override var isResting: Boolean
-        get() = getFlag(MetadataKeys.BAT.FLAGS, 0)
-        set(value) = setFlag(MetadataKeys.BAT.FLAGS, 0, value)
+        get() = data.getFlag(MetadataKeys.BAT.FLAGS, 0)
+        set(value) = data.setFlag(MetadataKeys.BAT.FLAGS, 0, value)
 
     init {
         data.add(MetadataKeys.BAT.FLAGS, 0)

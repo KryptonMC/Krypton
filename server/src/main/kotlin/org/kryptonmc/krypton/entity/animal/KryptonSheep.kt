@@ -29,8 +29,8 @@ import org.kryptonmc.krypton.world.KryptonWorld
 class KryptonSheep(world: KryptonWorld) : KryptonAnimal(world, EntityTypes.SHEEP, ATTRIBUTES), Sheep {
 
     override var isSheared: Boolean
-        get() = getFlag(MetadataKeys.SHEEP.FLAGS, 4)
-        set(value) = setFlag(MetadataKeys.SHEEP.FLAGS, 4, value)
+        get() = data.getFlag(MetadataKeys.SHEEP.FLAGS, 4)
+        set(value) = data.setFlag(MetadataKeys.SHEEP.FLAGS, 4, value)
     override var woolColor: DyeColor
         get() = Registries.DYE_COLORS[data[MetadataKeys.SHEEP.FLAGS].toInt() and 15]!!
         set(value) {

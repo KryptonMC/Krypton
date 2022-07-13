@@ -29,10 +29,9 @@ import org.kryptonmc.nbt.CompoundTag
 class KryptonExperienceOrb(world: KryptonWorld) : KryptonEntity(world, EntityTypes.EXPERIENCE_ORB), ExperienceOrb {
 
     override var age: Int = 0
-    override var count: Int = 1
-    override var health: Int = 5
-    override var value: Int = 0
-    override var following: KryptonPlayer? = null
+    var count: Int = 1
+    var health: Int = 5
+    override var experience: Int = 0
 
     override fun getSpawnPacket(): Packet = PacketOutSpawnExperienceOrb(this)
 }
