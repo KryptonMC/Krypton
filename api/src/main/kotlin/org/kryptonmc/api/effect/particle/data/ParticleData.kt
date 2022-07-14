@@ -12,6 +12,7 @@ import org.jetbrains.annotations.ApiStatus
 import org.kryptonmc.api.Krypton
 import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.item.ItemType
+import org.kryptonmc.api.util.Color
 import org.kryptonmc.api.util.provide
 import org.spongepowered.math.vector.Vector3d
 
@@ -30,19 +31,11 @@ public interface ParticleData {
 
         public fun block(block: Block): BlockParticleData
 
-        public fun color(red: Short, green: Short, blue: Short): ColorParticleData
+        public fun color(color: Color): ColorParticleData
 
-        public fun dust(red: Short, green: Short, blue: Short, scale: Float): DustParticleData
+        public fun dust(color: Color, scale: Float): DustParticleData
 
-        public fun transition(
-            fromRed: Short,
-            fromGreen: Short,
-            fromBlue: Short,
-            scale: Float,
-            toRed: Short,
-            toGreen: Short,
-            toBlue: Short
-        ): DustTransitionParticleData
+        public fun transition(from: Color, scale: Float, to: Color): DustTransitionParticleData
 
         public fun note(note: Byte): NoteParticleData
 

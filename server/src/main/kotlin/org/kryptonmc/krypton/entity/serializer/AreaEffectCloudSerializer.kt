@@ -18,6 +18,7 @@
  */
 package org.kryptonmc.krypton.entity.serializer
 
+import org.kryptonmc.api.util.Color
 import org.kryptonmc.krypton.entity.KryptonAreaEffectCloud
 import org.kryptonmc.nbt.CompoundTag
 
@@ -28,13 +29,13 @@ object AreaEffectCloudSerializer : EntitySerializer<KryptonAreaEffectCloud> {
         entity.age = data.getInt("Age")
         entity.duration = data.getInt("Duration")
         entity.radius = data.getFloat("Radius")
-        entity.color = data.getInt("Color")
+        entity.color = Color.of(data.getInt("Color"))
     }
 
     override fun save(entity: KryptonAreaEffectCloud): CompoundTag.Builder = BaseEntitySerializer.save(entity).apply {
         int("Age", entity.age)
         int("Duration", entity.duration)
         float("Radius", entity.radius)
-        int("Color", entity.color)
+        int("Color", entity.color.value)
     }
 }

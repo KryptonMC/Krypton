@@ -47,7 +47,6 @@ dependencies {
     // Miscellaneous
     implementation(libs.clikt)
     implementation(libs.bstats)
-    implementation(libs.spark.common)
 
     testImplementation(libs.bundles.junit)
     testImplementation(libs.junit.platform.runner)

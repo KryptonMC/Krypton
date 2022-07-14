@@ -9,6 +9,7 @@
 package org.kryptonmc.api.effect.particle.data
 
 import org.jetbrains.annotations.Contract
+import org.kryptonmc.api.util.Color
 
 /**
  * Holds data for coloured particle effects.
@@ -17,27 +18,46 @@ import org.jetbrains.annotations.Contract
 public interface ColorParticleData : ParticleData {
 
     /**
+     * The colour of the particle.
+     */
+    @get:JvmName("color")
+    public val color: Color
+
+    /**
      * The red component of the RGB colour.
      */
     @get:JvmName("red")
-    public val red: Short
+    public val red: Int
+        get() = color.red
 
     /**
      * The green component of the RGB colour.
      */
     @get:JvmName("green")
-    public val green: Short
+    public val green: Int
+        get() = color.green
 
     /**
      * The blue component of the RGB colour.
      */
     @get:JvmName("blue")
-    public val blue: Short
+    public val blue: Int
+        get() = color.blue
 
     public companion object {
 
         /**
-         * Creates new color particle data with the given [red], [green], and
+         * Creates new colour particle data with the given [color].
+         *
+         * @param color the colour
+         * @return new colour particle data
+         */
+        @JvmStatic
+        @Contract("_ -> new", pure = true)
+        public fun of(color: Color): ColorParticleData = ParticleData.FACTORY.color(color)
+
+        /**
+         * Creates new colour particle data with the given [red], [green], and
          * [blue] RGB components.
          *
          * @param red the red component
@@ -46,7 +66,7 @@ public interface ColorParticleData : ParticleData {
          * @return new color particle data
          */
         @JvmStatic
-        @Contract("_ -> new", pure = true)
-        public fun of(red: Short, green: Short, blue: Short): ColorParticleData = ParticleData.FACTORY.color(red, green, blue)
+        @Contract("_, _, _ -> new", pure = true)
+        public fun of(red: Int, green: Int, blue: Int): ColorParticleData = of(Color.of(red, green, blue))
     }
 }

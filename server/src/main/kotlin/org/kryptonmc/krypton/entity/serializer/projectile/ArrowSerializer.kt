@@ -18,23 +18,23 @@
  */
 package org.kryptonmc.krypton.entity.serializer.projectile
 
+import org.kryptonmc.api.util.Color
 import org.kryptonmc.krypton.entity.projectile.KryptonArrow
 import org.kryptonmc.krypton.entity.serializer.EntitySerializer
 import org.kryptonmc.nbt.CompoundTag
-import java.awt.Color
 
 object ArrowSerializer : EntitySerializer<KryptonArrow> {
 
-    private const val RGB_MAX_VALUE = Color.BITMASK
+    private const val RGB_MAX_VALUE = java.awt.Color.BITMASK
 
     override fun load(entity: KryptonArrow, data: CompoundTag) {
         ArrowLikeSerializer.load(entity, data)
         if (!data.contains("Color", 99)) return
         val rgb = data.getInt("Color")
-        if (rgb in 0..RGB_MAX_VALUE) entity.color = rgb
+        if (rgb in 0..RGB_MAX_VALUE) entity.color = Color.of(rgb)
     }
 
     override fun save(entity: KryptonArrow): CompoundTag.Builder = ArrowLikeSerializer.save(entity).apply {
-        int("Color", entity.color)
+        int("Color", entity.color.value)
     }
 }

@@ -21,6 +21,7 @@ package org.kryptonmc.krypton.world.biome
 import org.kryptonmc.api.effect.Music
 import org.kryptonmc.krypton.effect.KryptonMusic
 import org.kryptonmc.api.effect.sound.SoundEvent
+import org.kryptonmc.api.util.Color
 import org.kryptonmc.api.world.biome.AmbientAdditionsSettings
 import org.kryptonmc.api.world.biome.AmbientMoodSettings
 import org.kryptonmc.api.world.biome.AmbientParticleSettings
@@ -31,7 +32,6 @@ import org.kryptonmc.krypton.util.serialization.CompoundEncoder
 import org.kryptonmc.krypton.util.serialization.EnumCodecs
 import org.kryptonmc.krypton.util.serialization.encode
 import org.kryptonmc.nbt.compound
-import java.awt.Color
 
 @JvmRecord
 data class KryptonBiomeEffects(

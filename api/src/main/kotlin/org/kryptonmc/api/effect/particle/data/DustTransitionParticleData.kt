@@ -9,6 +9,7 @@
 package org.kryptonmc.api.effect.particle.data
 
 import org.jetbrains.annotations.Contract
+import org.kryptonmc.api.util.Color
 
 /**
  * Holds data for dust colour transition particle effects.
@@ -17,24 +18,46 @@ import org.jetbrains.annotations.Contract
 public interface DustTransitionParticleData : DustParticleData {
 
     /**
+     * The destination colour of the particle.
+     */
+    @get:JvmName("to")
+    public val to: Color
+
+    /**
      * The red component of the destination RGB colour.
      */
     @get:JvmName("toRed")
-    public val toRed: Short
+    public val toRed: Int
+        get() = to.red
 
     /**
      * The green component of the destination RGB colour.
      */
     @get:JvmName("toGreen")
-    public val toGreen: Short
+    public val toGreen: Int
+        get() = to.green
 
     /**
      * The blue component of the destination RGB colour.
      */
     @get:JvmName("toBlue")
-    public val toBlue: Short
+    public val toBlue: Int
+        get() = to.blue
 
     public companion object {
+
+        /**
+         * Creates new dust colour transition particle data with the given
+         * [from] source colour, [scale], and [to] destination colour.
+         *
+         * @param from the from colour
+         * @param scale the scale
+         * @param to the to colour
+         * @return new dust transition particle data
+         */
+        @JvmStatic
+        @Contract("_, _, _ -> new", pure = true)
+        public fun of(from: Color, scale: Float, to: Color): DustTransitionParticleData = ParticleData.FACTORY.transition(from, scale, to)
 
         /**
          * Creates new dust color transition particle data with the given
@@ -52,15 +75,8 @@ public interface DustTransitionParticleData : DustParticleData {
          * @return new dust color transition particle data
          */
         @JvmStatic
-        @Contract("_ -> new", pure = true)
-        public fun of(
-            fromRed: Short,
-            fromGreen: Short,
-            fromBlue: Short,
-            scale: Float,
-            toRed: Short,
-            toGreen: Short,
-            toBlue: Short
-        ): DustTransitionParticleData = ParticleData.FACTORY.transition(fromRed, fromGreen, fromBlue, scale, toRed, toGreen, toBlue)
+        @Contract("_, _, _, _, _, _, _ -> new", pure = true)
+        public fun of(fromRed: Int, fromGreen: Int, fromBlue: Int, scale: Float, toRed: Int, toGreen: Int, toBlue: Int): DustTransitionParticleData =
+            of(Color.of(fromRed, fromGreen, fromBlue), scale, Color.of(toRed, toGreen, toBlue))
     }
 }

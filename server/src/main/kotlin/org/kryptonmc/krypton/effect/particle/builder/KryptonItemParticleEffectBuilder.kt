@@ -24,7 +24,6 @@ import org.kryptonmc.api.effect.particle.data.ParticleData
 import org.kryptonmc.api.item.ItemType
 import org.kryptonmc.api.item.ItemTypes
 import org.kryptonmc.krypton.effect.particle.data.KryptonItemParticleData
-import org.spongepowered.math.vector.Vector3d
 
 class KryptonItemParticleEffectBuilder(type: ItemParticleType) : AbstractParticleEffectBuilder<ItemParticleEffectBuilder>(type),
     ItemParticleEffectBuilder {

@@ -21,22 +21,16 @@ package org.kryptonmc.krypton.effect.particle.builder
 import org.kryptonmc.api.effect.particle.DustTransitionParticleType
 import org.kryptonmc.api.effect.particle.builder.DustTransitionParticleEffectBuilder
 import org.kryptonmc.api.effect.particle.data.ParticleData
+import org.kryptonmc.api.util.Color
 import org.kryptonmc.krypton.effect.particle.data.KryptonDustTransitionParticleData
-import org.spongepowered.math.vector.Vector3d
 
 class KryptonDustTransitionParticleEffectBuilder(type: DustTransitionParticleType) :
     AbstractDustParticleEffectBuilder<DustTransitionParticleEffectBuilder>(type),
     DustTransitionParticleEffectBuilder {
 
-    private var toRed: Short = 0
-    private var toGreen: Short = 0
-    private var toBlue: Short = 0
+    private var to: Color = Color.BLACK
 
-    override fun toRGB(red: Int, green: Int, blue: Int): DustTransitionParticleEffectBuilder = apply {
-        toRed = (red and 0xFF).toShort()
-        toGreen = (green and 0xFF).toShort()
-        toBlue = (blue and 0xFF).toShort()
-    }
+    override fun toColor(color: Color): DustTransitionParticleEffectBuilder = apply { to = color }
 
-    override fun buildData(): ParticleData = KryptonDustTransitionParticleData(red, green, blue, scale, toRed, toGreen, toBlue)
+    override fun buildData(): ParticleData = KryptonDustTransitionParticleData(color, scale, to)
 }

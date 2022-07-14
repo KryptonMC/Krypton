@@ -19,13 +19,13 @@
 package org.kryptonmc.krypton.world.biome
 
 import net.kyori.adventure.key.Key
+import org.kryptonmc.api.util.Color
 import org.kryptonmc.api.world.biome.Precipitation
 import org.kryptonmc.api.world.biome.biome
-import java.awt.Color
 
 object EndBiomes {
 
-    private val FOG = Color(160, 128, 160)
+    private val FOG = Color.of(160, 128, 160)
 
     @JvmStatic
     fun endBarrens(key: Key): KryptonBiome = baseEnd(key)

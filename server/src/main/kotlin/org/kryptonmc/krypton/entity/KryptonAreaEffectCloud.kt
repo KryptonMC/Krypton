@@ -21,6 +21,7 @@ package org.kryptonmc.krypton.entity
 import org.kryptonmc.api.effect.particle.ParticleTypes
 import org.kryptonmc.api.entity.AreaEffectCloud
 import org.kryptonmc.api.entity.EntityTypes
+import org.kryptonmc.api.util.Color
 import org.kryptonmc.krypton.effect.particle.ParticleOptions
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.world.KryptonWorld
@@ -33,9 +34,9 @@ class KryptonAreaEffectCloud(world: KryptonWorld) : KryptonEntity(world, EntityT
     override var radius: Float
         get() = data[MetadataKeys.AREA_EFFECT_CLOUD.RADIUS]
         set(value) = data.set(MetadataKeys.AREA_EFFECT_CLOUD.RADIUS, value)
-    override var color: Int
-        get() = data[MetadataKeys.AREA_EFFECT_CLOUD.COLOR]
-        set(value) = data.set(MetadataKeys.AREA_EFFECT_CLOUD.COLOR, value)
+    override var color: Color
+        get() = Color.of(data[MetadataKeys.AREA_EFFECT_CLOUD.COLOR])
+        set(value) = data.set(MetadataKeys.AREA_EFFECT_CLOUD.COLOR, value.value)
 
     init {
         data.add(MetadataKeys.AREA_EFFECT_CLOUD.RADIUS, 0.5F)

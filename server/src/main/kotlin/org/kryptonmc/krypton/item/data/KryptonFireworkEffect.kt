@@ -23,8 +23,8 @@ import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toPersistentList
 import org.kryptonmc.api.item.data.FireworkEffect
 import org.kryptonmc.api.item.data.FireworkEffectType
+import org.kryptonmc.api.util.Color
 import org.kryptonmc.nbt.CompoundTag
-import java.awt.Color
 
 @JvmRecord
 data class KryptonFireworkEffect(
@@ -117,4 +117,4 @@ data class KryptonFireworkEffect(
     }
 }
 
-private fun CompoundTag.getColors(name: String): PersistentList<Color> = getIntArray(name).map(::Color).toPersistentList()
+private fun CompoundTag.getColors(name: String): PersistentList<Color> = getIntArray(name).map(Color::of).toPersistentList()

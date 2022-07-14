@@ -20,7 +20,6 @@ package org.kryptonmc.krypton.effect.particle.builder
 
 import org.kryptonmc.api.effect.particle.ParticleType
 import org.kryptonmc.api.effect.particle.builder.BaseDustParticleEffectBuilder
-import org.spongepowered.math.vector.Vector3d
 
 @Suppress("UNCHECKED_CAST")
 abstract class AbstractDustParticleEffectBuilder<B : BaseDustParticleEffectBuilder<B>>(type: ParticleType) :

@@ -26,6 +26,7 @@ import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.api.registry.Registry
 import org.kryptonmc.api.resource.ResourceKey
 import org.kryptonmc.api.resource.ResourceKeys
+import org.kryptonmc.api.util.Color
 import org.kryptonmc.api.world.World
 import org.kryptonmc.krypton.util.toUUID
 import org.kryptonmc.nbt.ByteTag
@@ -36,7 +37,6 @@ import org.kryptonmc.nbt.LongTag
 import org.kryptonmc.nbt.StringTag
 import org.kryptonmc.nbt.Tag
 import org.spongepowered.math.vector.Vector3i
-import java.awt.Color
 import java.util.UUID
 
 object Codecs {
@@ -55,7 +55,7 @@ object Codecs {
     val STRING: StringCodec<String> = StringCodec.of({ it }, { it })
 
     @JvmField
-    val COLOR: IntCodec<Color> = IntCodec.of(Color::getRGB, ::Color)
+    val COLOR: IntCodec<Color> = IntCodec.of(Color::value, Color::of)
     @JvmField
     val UUID: IntArrayCodec<UUID> = IntArrayCodec.of(
         {
