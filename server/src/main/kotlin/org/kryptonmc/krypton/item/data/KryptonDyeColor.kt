@@ -21,7 +21,7 @@ package org.kryptonmc.krypton.item.data
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.text.format.TextColor
 import org.kryptonmc.api.item.data.DyeColor
-import java.awt.Color
+import org.kryptonmc.api.util.Color
 
 @JvmRecord
 data class KryptonDyeColor(

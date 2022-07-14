@@ -12,12 +12,22 @@ import net.kyori.adventure.util.HSVLike
 import net.kyori.adventure.util.RGBLike
 import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.effect.particle.ParticleDsl
-import java.awt.Color
+import org.kryptonmc.api.util.Color
 
 /**
  * A builder for building dust transition particle effects.
  */
 public interface DustTransitionParticleEffectBuilder : BaseDustParticleEffectBuilder<DustTransitionParticleEffectBuilder> {
+
+    /**
+     * Sets the colour to transition the particle to to the given [color].
+     *
+     * @param color the colour
+     * @return this builder
+     */
+    @ParticleDsl
+    @Contract("_ -> this", mutates = "this")
+    public fun toColor(color: Color): DustTransitionParticleEffectBuilder
 
     /**
      * Sets the colour to transition the particle to to the given [red],
@@ -34,17 +44,7 @@ public interface DustTransitionParticleEffectBuilder : BaseDustParticleEffectBui
     @ParticleDsl
     @Contract("_ -> this", mutates = "this")
     @Suppress("MagicNumber")
-    public fun toRGB(red: Int, green: Int, blue: Int): DustTransitionParticleEffectBuilder
-
-    /**
-     * Sets the colour to transition the particle to to the given [color].
-     *
-     * @param color the colour
-     * @return this builder
-     */
-    @ParticleDsl
-    @Contract("_ -> this", mutates = "this")
-    public fun toColor(color: Color): DustTransitionParticleEffectBuilder = toRGB(color.red, color.green, color.blue)
+    public fun toRGB(red: Int, green: Int, blue: Int): DustTransitionParticleEffectBuilder = toColor(Color.of(red, green, blue))
 
     /**
      * Sets the colour to transition the particle to to the given [rgb]
@@ -59,7 +59,7 @@ public interface DustTransitionParticleEffectBuilder : BaseDustParticleEffectBui
     @ParticleDsl
     @Contract("_ -> this", mutates = "this")
     @Suppress("MagicNumber")
-    public fun toRGB(rgb: Int): DustTransitionParticleEffectBuilder = toRGB(rgb shr 16, rgb shr 8, rgb)
+    public fun toRGB(rgb: Int): DustTransitionParticleEffectBuilder = color(Color.of(rgb))
 
     /**
      * Sets the colour to transition the particle to to the given [rgb]
@@ -73,20 +73,7 @@ public interface DustTransitionParticleEffectBuilder : BaseDustParticleEffectBui
      */
     @ParticleDsl
     @Contract("_ -> this", mutates = "this")
-    public fun toRGB(rgb: RGBLike): DustTransitionParticleEffectBuilder = toRGB(rgb.red(), rgb.green(), rgb.blue())
-
-    /**
-     * Sets the colour to transition the particle to to the given [hsv]
-     * like object.
-     *
-     * Note: if any of the decoded HSV values are > 1, they will become 1.
-     *
-     * @param hsv the HSV value
-     * @return this builder
-     */
-    @ParticleDsl
-    @Contract("_ -> this", mutates = "this")
-    public fun toHSV(hsv: HSVLike): DustTransitionParticleEffectBuilder = toHSV(hsv.h(), hsv.s(), hsv.v())
+    public fun toRGB(rgb: RGBLike): DustTransitionParticleEffectBuilder = color(Color.of(rgb))
 
     /**
      * Sets the colour to transition the particle to to the given [hue],
@@ -106,6 +93,19 @@ public interface DustTransitionParticleEffectBuilder : BaseDustParticleEffectBui
         require(hue in 0F..1F) { "Hue must be between 0 and 1!" }
         require(saturation in 0F..1F) { "Saturation must be between 0 and 1!" }
         require(value in 0F..1F) { "Value must be between 0 and 1!" }
-        return toRGB(Color.HSBtoRGB(hue, saturation, value))
+        return color(Color.of(hue, saturation, value))
     }
+
+    /**
+     * Sets the colour to transition the particle to to the given [hsv]
+     * like object.
+     *
+     * Note: if any of the decoded HSV values are > 1, they will become 1.
+     *
+     * @param hsv the HSV value
+     * @return this builder
+     */
+    @ParticleDsl
+    @Contract("_ -> this", mutates = "this")
+    public fun toHSV(hsv: HSVLike): DustTransitionParticleEffectBuilder = toHSV(hsv.h(), hsv.s(), hsv.v())
 }

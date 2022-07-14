@@ -16,19 +16,31 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.util.spark
+package org.kryptonmc.krypton.util
 
-import me.lucko.spark.common.platform.AbstractPlatformInfo
-import me.lucko.spark.common.platform.PlatformInfo
-import org.kryptonmc.krypton.KryptonPlatform
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
+import org.kryptonmc.api.util.Color
+import java.util.function.IntFunction
 
-object KryptonSparkPlatformInfo : AbstractPlatformInfo() {
+@JvmRecord
+data class KryptonColor(override val value: Int) : Color {
 
-    override fun getType(): PlatformInfo.Type = PlatformInfo.Type.SERVER
+    object Factory : Color.Factory {
 
-    override fun getName(): String = KryptonPlatform.name
+        override fun of(value: Int): Color = VALUES.computeIfAbsent(value, IntFunction(::KryptonColor))
 
-    override fun getVersion(): String = KryptonPlatform.version
+        override fun of(hue: Float, saturation: Float, brightness: Float): Color = of(java.awt.Color.HSBtoRGB(hue, saturation, brightness))
+    }
 
-    override fun getMinecraftVersion(): String = KryptonPlatform.minecraftVersion
+    companion object {
+
+        private val VALUES = Int2ObjectOpenHashMap<KryptonColor>(512)
+
+        init {
+            // Preload the values with some common, small constants
+            for (i in -128..127) {
+                VALUES.put(i, KryptonColor(i))
+            }
+        }
+    }
 }

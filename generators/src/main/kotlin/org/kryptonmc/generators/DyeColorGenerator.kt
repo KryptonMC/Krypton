@@ -24,9 +24,7 @@ import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeSpec
-import com.squareup.kotlinpoet.asClassName
 import net.minecraft.world.item.DyeColor
-import java.awt.Color
 import java.lang.reflect.Modifier
 import java.nio.file.Path
 
@@ -65,6 +63,6 @@ class DyeColorGenerator(output: Path) : EnumRegistryGenerator<DyeColor>(output, 
 
         private val DYE_COLOR = ClassName("org.kryptonmc.api.item.data", "DyeColor")
         private val DYE_COLORS = ClassName("org.kryptonmc.api.item.data", "DyeColors")
-        private val COLOR = Color::class.asClassName()
+        private val COLOR = ClassName("org.kryptonmc.api.util", "Color")
     }
 }

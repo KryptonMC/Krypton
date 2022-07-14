@@ -9,7 +9,7 @@
 package org.kryptonmc.api.item.meta
 
 import org.jetbrains.annotations.Contract
-import java.awt.Color
+import org.kryptonmc.api.util.Color
 
 /**
  * Item metadata for leather armour.

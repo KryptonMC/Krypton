@@ -21,37 +21,37 @@ package org.kryptonmc.krypton.world.biome
 import net.kyori.adventure.key.Key
 import org.kryptonmc.api.effect.sound.SoundEvent
 import org.kryptonmc.api.effect.sound.SoundEvents
+import org.kryptonmc.api.util.Color
 import org.kryptonmc.api.world.biome.Precipitation
 import org.kryptonmc.api.world.biome.GrassColorModifier
 import org.kryptonmc.api.world.biome.TemperatureModifier
 import org.kryptonmc.krypton.effect.KryptonMusic
 import org.kryptonmc.krypton.util.clamp
-import java.awt.Color
 
 object OverworldBiomes {
 
     // Standard colours
     @JvmField
-    val OVERWORLD_WATER: Color = Color(4159204)
+    val OVERWORLD_WATER: Color = Color.of(4159204)
     @JvmField
-    val OVERWORLD_WATER_FOG: Color = Color(329011)
+    val OVERWORLD_WATER_FOG: Color = Color.of(329011)
 
-    private val OVERWORLD_FOG = Color(12638463)
-    private val COLD_WATER = Color(3750089)
-    private val LUKEWARM_WATER = Color(4566514)
-    private val LUKEWARM_WATER_FOG = Color(267827)
-    private val WARM_WATER = Color(4445678)
-    private val WARM_WATER_FOG = Color(270131)
-    private val BADLANDS_FOLIAGE = Color(10387789)
-    private val BADLANDS_GRASS = Color(9470285)
-    private val SNOWY_WATER = Color(4020182)
-    private val SWAMP_WATER = Color(6388580)
-    private val SWAMP_WATER_FOG = Color(2302743)
-    private val SWAMP_FOLIAGE = Color(6975545)
-    private val MEADOW_WATER = Color(937679)
-    private val MANGROVE_SWAMP_WATER = Color(3832426)
-    private val MANGROVE_SWAMP_WATER_FOG = Color(5077600)
-    private val MANGROVE_SWAMP_FOLIAGE = Color(9285927)
+    private val OVERWORLD_FOG = Color.of(12638463)
+    private val COLD_WATER = Color.of(3750089)
+    private val LUKEWARM_WATER = Color.of(4566514)
+    private val LUKEWARM_WATER_FOG = Color.of(267827)
+    private val WARM_WATER = Color.of(4445678)
+    private val WARM_WATER_FOG = Color.of(270131)
+    private val BADLANDS_FOLIAGE = Color.of(10387789)
+    private val BADLANDS_GRASS = Color.of(9470285)
+    private val SNOWY_WATER = Color.of(4020182)
+    private val SWAMP_WATER = Color.of(6388580)
+    private val SWAMP_WATER_FOG = Color.of(2302743)
+    private val SWAMP_FOLIAGE = Color.of(6975545)
+    private val MEADOW_WATER = Color.of(937679)
+    private val MANGROVE_SWAMP_WATER = Color.of(3832426)
+    private val MANGROVE_SWAMP_WATER_FOG = Color.of(5077600)
+    private val MANGROVE_SWAMP_FOLIAGE = Color.of(9285927)
 
     // ==============================
     // None
@@ -453,7 +453,7 @@ object OverworldBiomes {
     @JvmStatic
     fun calculateSkyColor(temperature: Float): Color {
         val value = (temperature / 3F).clamp(-1F, 1F)
-        return Color(Color.HSBtoRGB(0.62222224F - value * 0.05F, 0.5F + value * 0.1F, 1F))
+        return Color.of(0.62222224F - value * 0.05F, 0.5F + value * 0.1F, 1F)
     }
 
     @JvmStatic
