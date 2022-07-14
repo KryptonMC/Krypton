@@ -20,20 +20,14 @@ package org.kryptonmc.krypton.effect.particle.builder
 
 import org.kryptonmc.api.effect.particle.ParticleType
 import org.kryptonmc.api.effect.particle.builder.BaseColorParticleEffectBuilder
-import org.spongepowered.math.vector.Vector3d
+import org.kryptonmc.api.util.Color
 
 @Suppress("UNCHECKED_CAST")
 abstract class AbstractColorParticleEffectBuilder<B : BaseColorParticleEffectBuilder<B>>(type: ParticleType) :
     AbstractParticleEffectBuilder<B>(type),
     BaseColorParticleEffectBuilder<B> {
 
-    protected var red: Short = 0
-    protected var green: Short = 0
-    protected var blue: Short = 0
+    protected var color: Color = Color.BLACK
 
-    override fun rgb(red: Int, green: Int, blue: Int): B = apply {
-        this.red = (red and 0xFF).toShort()
-        this.green = (green and 0xFF).toShort()
-        this.blue = (blue and 0xFF).toShort()
-    } as B
+    override fun color(color: Color): B = apply { this.color = color } as B
 }

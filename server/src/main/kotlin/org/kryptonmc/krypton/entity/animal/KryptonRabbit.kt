@@ -34,7 +34,11 @@ class KryptonRabbit(world: KryptonWorld) : KryptonAnimal(world, EntityTypes.RABB
     override var rabbitType: RabbitType
         get() {
             val id = data[MetadataKeys.RABBIT.TYPE]
-            // Look, that rabbit's got a vicious streak a mile wide! It's a killer!
+            // It'll do you a treat mate!
+            // Oh yeah?
+            // Manky scot's git!
+            // I'm warning you!
+            // What's he do? Nibble ya bum?
             if (id == 99) return RabbitType.KILLER
             return TYPES.getOrNull(data[MetadataKeys.RABBIT.TYPE]) ?: RabbitType.BROWN
         }

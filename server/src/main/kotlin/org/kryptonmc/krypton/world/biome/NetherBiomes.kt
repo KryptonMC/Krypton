@@ -19,15 +19,14 @@
 package org.kryptonmc.krypton.world.biome
 
 import net.kyori.adventure.key.Key
-import org.kryptonmc.api.effect.Music
 import org.kryptonmc.api.effect.particle.ParticleTypes
 import org.kryptonmc.api.effect.sound.SoundEvent
 import org.kryptonmc.api.effect.sound.SoundEvents
+import org.kryptonmc.api.util.Color
 import org.kryptonmc.api.world.biome.AmbientParticleSettings
 import org.kryptonmc.api.world.biome.Precipitation
 import org.kryptonmc.api.world.biome.biome
 import org.kryptonmc.krypton.effect.KryptonMusic
-import java.awt.Color
 
 object NetherBiomes {
 
@@ -106,7 +105,7 @@ object NetherBiomes {
         effects {
             waterColor(OverworldBiomes.OVERWORLD_WATER)
             waterFogColor(OverworldBiomes.OVERWORLD_WATER_FOG)
-            fogColor(Color(fogColor))
+            fogColor(Color.of(fogColor))
             skyColor(SKY_COLOR)
             particles(particles)
             loopSound(loopSound)

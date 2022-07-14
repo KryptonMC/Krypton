@@ -19,18 +19,18 @@
 package org.kryptonmc.krypton.item.meta
 
 import org.kryptonmc.api.item.meta.LeatherArmorMeta
+import org.kryptonmc.api.util.Color
 import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.IntTag
-import java.awt.Color
 
 class KryptonLeatherArmorMeta(data: CompoundTag) : AbstractItemMeta<KryptonLeatherArmorMeta>(data), LeatherArmorMeta {
 
-    override val color: Color? = data.getDisplay<IntTag, _>("color", IntTag.ID, null) { Color(it.value) }
+    override val color: Color? = data.getDisplay<IntTag, _>("color", IntTag.ID, null) { Color.of(it.value) }
 
     override fun copy(data: CompoundTag): KryptonLeatherArmorMeta = KryptonLeatherArmorMeta(data)
 
     override fun withColor(color: Color?): KryptonLeatherArmorMeta {
-        val newData = if (color == null) data.remove("color") else data.putInt("color", color.rgb)
+        val newData = if (color == null) data.remove("color") else data.putInt("color", color.value)
         return KryptonLeatherArmorMeta(newData)
     }
 
@@ -48,7 +48,7 @@ class KryptonLeatherArmorMeta(data: CompoundTag) : AbstractItemMeta<KryptonLeath
         override fun color(color: Color?): LeatherArmorMeta.Builder = apply { this.color = color }
 
         override fun buildData(): CompoundTag.Builder = super.buildData().apply {
-            if (color != null) int("color", color!!.rgb)
+            if (color != null) int("color", color!!.value)
         }
 
         override fun build(): KryptonLeatherArmorMeta = KryptonLeatherArmorMeta(buildData().build())

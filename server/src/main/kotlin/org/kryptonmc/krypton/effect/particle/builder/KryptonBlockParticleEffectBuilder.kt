@@ -26,7 +26,6 @@ import org.kryptonmc.api.effect.particle.data.ParticleData
 import org.kryptonmc.krypton.effect.particle.data.KryptonBlockParticleData
 import org.kryptonmc.krypton.world.block.KryptonBlock
 import org.kryptonmc.krypton.world.block.downcast
-import org.spongepowered.math.vector.Vector3d
 
 class KryptonBlockParticleEffectBuilder(type: BlockParticleType) : AbstractParticleEffectBuilder<BlockParticleEffectBuilder>(type),
     BlockParticleEffectBuilder {

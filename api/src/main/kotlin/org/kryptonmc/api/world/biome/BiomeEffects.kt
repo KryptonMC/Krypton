@@ -15,8 +15,8 @@ import org.kryptonmc.api.Krypton
 import org.kryptonmc.api.effect.Music
 import org.kryptonmc.api.effect.particle.ParticleType
 import org.kryptonmc.api.effect.sound.SoundEvent
+import org.kryptonmc.api.util.Color
 import org.kryptonmc.api.util.provide
-import java.awt.Color
 import java.util.function.Consumer
 
 /**

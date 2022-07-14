@@ -18,7 +18,6 @@
  */
 package org.kryptonmc.krypton.adventure
 
-import com.mojang.brigadier.StringReader
 import com.mojang.brigadier.exceptions.CommandSyntaxException
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.nbt.api.BinaryTagHolder

@@ -9,6 +9,7 @@
 package org.kryptonmc.api.effect.particle.data
 
 import org.jetbrains.annotations.Contract
+import org.kryptonmc.api.util.Color
 
 /**
  * Holds data for dust particle effects.
@@ -25,17 +26,28 @@ public interface DustParticleData : ColorParticleData {
     public companion object {
 
         /**
+         * Creates new dust particle data with the given [color] and [scale].
+         *
+         * @param color the colour
+         * @param scale the scale
+         * @return new dust particle data
+         */
+        @JvmStatic
+        @Contract("_, _ -> new", pure = true)
+        public fun of(color: Color, scale: Float): DustParticleData = ParticleData.FACTORY.dust(color, scale)
+
+        /**
          * Creates new dust particle data with the given [red], [green], and
          * [blue] RGB components, and the given [scale].
          *
          * @param red the red component
          * @param green the green component
          * @param blue the blue component
-         * @param scale the scale of the dust
+         * @param scale the scale
          * @return new dust particle data
          */
         @JvmStatic
-        @Contract("_ -> new", pure = true)
-        public fun of(red: Short, green: Short, blue: Short, scale: Float): DustParticleData = ParticleData.FACTORY.dust(red, green, blue, scale)
+        @Contract("_, _, _, _ -> new", pure = true)
+        public fun of(red: Int, green: Int, blue: Int, scale: Float): DustParticleData = of(Color.of(red, green, blue), scale)
     }
 }

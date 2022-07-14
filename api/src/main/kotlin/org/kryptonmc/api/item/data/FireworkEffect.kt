@@ -12,8 +12,8 @@ import net.kyori.adventure.util.Buildable
 import org.jetbrains.annotations.ApiStatus
 import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.Krypton
+import org.kryptonmc.api.util.Color
 import org.kryptonmc.api.util.provide
-import java.awt.Color
 import java.util.function.Consumer
 
 /**

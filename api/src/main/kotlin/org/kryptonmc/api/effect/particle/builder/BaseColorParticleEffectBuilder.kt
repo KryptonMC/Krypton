@@ -12,12 +12,22 @@ import net.kyori.adventure.util.HSVLike
 import net.kyori.adventure.util.RGBLike
 import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.effect.particle.ParticleDsl
-import java.awt.Color
+import org.kryptonmc.api.util.Color
 
 /**
  * The base builder for building colour particle effects.
  */
 public interface BaseColorParticleEffectBuilder<B : BaseColorParticleEffectBuilder<B>> : BaseParticleEffectBuilder<B> {
+
+    /**
+     * Sets the color of the particle to the given [color].
+     *
+     * @param color the color
+     * @return this builder
+     */
+    @ParticleDsl
+    @Contract("_ -> this", mutates = "this")
+    public fun color(color: Color): B
 
     /**
      * Sets the color of the particle to the given [red], [green], and [blue]
@@ -35,17 +45,7 @@ public interface BaseColorParticleEffectBuilder<B : BaseColorParticleEffectBuild
     @ParticleDsl
     @Contract("_ -> this", mutates = "this")
     @Suppress("MagicNumber")
-    public fun rgb(red: Int, green: Int, blue: Int): B
-
-    /**
-     * Sets the color of the particle to the given [color].
-     *
-     * @param color the color
-     * @return this builder
-     */
-    @ParticleDsl
-    @Contract("_ -> this", mutates = "this")
-    public fun color(color: Color): B = rgb(color.red, color.green, color.blue)
+    public fun rgb(red: Int, green: Int, blue: Int): B = color(Color.of(red, green, blue))
 
     /**
      * Sets the color of the particle to the given [rgb] value.
@@ -60,7 +60,7 @@ public interface BaseColorParticleEffectBuilder<B : BaseColorParticleEffectBuild
     @ParticleDsl
     @Contract("_ -> this", mutates = "this")
     @Suppress("MagicNumber")
-    public fun rgb(rgb: Int): B = rgb(rgb shr 16 and 0xFF, rgb shr 8 and 0xFF, rgb and 0xFF)
+    public fun rgb(rgb: Int): B = color(Color.of(rgb))
 
     /**
      * Sets the color of the particle to the given [rgb] like object.
@@ -72,7 +72,7 @@ public interface BaseColorParticleEffectBuilder<B : BaseColorParticleEffectBuild
      */
     @ParticleDsl
     @Contract("_ -> this", mutates = "this")
-    public fun rgb(rgb: RGBLike): B = rgb(rgb.red(), rgb.green(), rgb.blue())
+    public fun rgb(rgb: RGBLike): B = color(Color.of(rgb))
 
     /**
      * Sets the color of the particle to the given [hue], [saturation], and
@@ -94,7 +94,7 @@ public interface BaseColorParticleEffectBuilder<B : BaseColorParticleEffectBuild
         require(hue in 0F..1F) { "Hue must be between 0 and 1!" }
         require(saturation in 0F..1F) { "Saturation must be between 0 and 1!" }
         require(value in 0F..1F) { "Value must be between 0 and 1!" }
-        return rgb(Color.HSBtoRGB(hue, saturation, value))
+        return color(Color.of(hue, saturation, value))
     }
 
     /**
@@ -110,5 +110,5 @@ public interface BaseColorParticleEffectBuilder<B : BaseColorParticleEffectBuild
      */
     @ParticleDsl
     @Contract("_ -> this", mutates = "this")
-    public fun hsv(hsv: HSVLike): B = hsv(hsv.h(), hsv.s(), hsv.v())
+    public fun hsv(hsv: HSVLike): B = color(Color.of(hsv.h(), hsv.s(), hsv.v()))
 }

@@ -22,17 +22,17 @@ import io.mockk.every
 import io.mockk.mockk
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.text.format.TextColor
-import net.kyori.adventure.util.HSVLike
 import org.junit.jupiter.api.assertDoesNotThrow
 import org.junit.jupiter.api.assertThrows
 import org.kryptonmc.api.effect.particle.ParticleType
 import org.kryptonmc.api.effect.particle.ParticleTypes
 import org.kryptonmc.api.effect.particle.data.ColorParticleData
+import org.kryptonmc.api.util.Color
 import org.kryptonmc.krypton.effect.particle.KryptonParticleEffect
 import org.kryptonmc.krypton.effect.particle.data.KryptonNoteParticleData
 import org.kryptonmc.krypton.util.Bootstrap
 import org.spongepowered.math.vector.Vector3d
-import java.awt.Color
+import java.awt.Color as AwtColor
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -68,23 +68,23 @@ class ParticleEffectTests {
 
         // Check HSV conversion matches up with Color.HSBToRGB
         val colorDataFromHSV = dust.hsv(1F, 0.5F, 0.3F).build().data as ColorParticleData
-        val hsvToRGB = Color.HSBtoRGB(1F, 0.5F, 0.3F)
-        assertEquals(colorDataFromHSV.red.toInt(), hsvToRGB shr 16 and 0xFF)
-        assertEquals(colorDataFromHSV.green.toInt(), hsvToRGB shr 8 and 0xFF)
-        assertEquals(colorDataFromHSV.blue.toInt(), hsvToRGB and 0xFF)
+        val hsvToRGB = AwtColor.HSBtoRGB(1F, 0.5F, 0.3F)
+        assertEquals(colorDataFromHSV.red, hsvToRGB shr 16 and 0xFF)
+        assertEquals(colorDataFromHSV.green, hsvToRGB shr 8 and 0xFF)
+        assertEquals(colorDataFromHSV.blue, hsvToRGB and 0xFF)
 
         // Check that colour set from RGB matches up with colour set from java.awt.Color
-        val colorDataFromRGB = dust.rgb(Color.ORANGE.rgb).build().data as ColorParticleData
-        val colorDataFromColor = dust.color(Color.ORANGE).build().data as ColorParticleData
+        val colorDataFromRGB = dust.rgb(AwtColor.ORANGE.rgb).build().data as ColorParticleData
+        val colorDataFromColor = dust.color(Color.of(AwtColor.ORANGE.rgb)).build().data as ColorParticleData
         assertEquals(colorDataFromRGB.red, colorDataFromColor.red)
         assertEquals(colorDataFromRGB.green, colorDataFromColor.green)
         assertEquals(colorDataFromRGB.blue, colorDataFromColor.blue)
 
         // Check that RGB values above 255 are cut off
         val colorDataFromValues = dust.rgb(287, 200, 132).build().data as ColorParticleData
-        assertEquals((287 and 0xFF).toShort(), colorDataFromValues.red)
+        assertEquals(287 and 0xFF, colorDataFromValues.red)
         val colorDataFromRGBLike = dust.rgb(TextColor.color(287, 200, 132)).build().data as ColorParticleData
-        assertEquals((287 and 0xFF).toShort(), colorDataFromRGBLike.red)
+        assertEquals(287 and 0xFF, colorDataFromRGBLike.red)
     }
 
     @Test

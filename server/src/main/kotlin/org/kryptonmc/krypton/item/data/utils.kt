@@ -19,14 +19,14 @@
 package org.kryptonmc.krypton.item.data
 
 import org.kryptonmc.api.item.data.FireworkEffect
+import org.kryptonmc.api.util.Color
 import org.kryptonmc.krypton.util.toIntArray
 import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.compound
-import java.awt.Color
 
 fun FireworkEffect.save(): CompoundTag = compound {
-    intArray("Colors", colors.toIntArray(Color::getRGB))
-    intArray("FadeColors", colors.toIntArray(Color::getRGB))
+    intArray("Colors", colors.toIntArray(Color::value))
+    intArray("FadeColors", colors.toIntArray(Color::value))
     boolean("Flicker", hasFlicker)
     boolean("Trail", hasTrail)
     byte("Type", type.ordinal.toByte())

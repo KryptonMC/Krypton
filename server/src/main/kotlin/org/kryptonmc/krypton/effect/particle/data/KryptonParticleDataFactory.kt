@@ -29,6 +29,7 @@ import org.kryptonmc.api.effect.particle.data.NoteParticleData
 import org.kryptonmc.api.effect.particle.data.ParticleData
 import org.kryptonmc.api.effect.particle.data.VibrationParticleData
 import org.kryptonmc.api.item.ItemType
+import org.kryptonmc.api.util.Color
 import org.kryptonmc.krypton.world.block.KryptonBlock
 import org.spongepowered.math.vector.Vector3d
 
@@ -39,25 +40,17 @@ object KryptonParticleDataFactory : ParticleData.Factory {
         return KryptonBlockParticleData(block)
     }
 
-    override fun color(red: Short, green: Short, blue: Short): ColorParticleData = KryptonColorParticleData(red, green, blue)
+    override fun color(color: Color): ColorParticleData = KryptonColorParticleData(color)
 
     override fun directional(direction: Vector3d?, velocity: Float): DirectionalParticleData = KryptonDirectionalParticleData(direction, velocity)
 
-    override fun dust(red: Short, green: Short, blue: Short, scale: Float): DustParticleData = KryptonDustParticleData(red, green, blue, scale)
+    override fun dust(color: Color, scale: Float): DustParticleData = KryptonDustParticleData(color, scale)
 
     override fun item(item: ItemType): ItemParticleData = KryptonItemParticleData(item)
 
     override fun note(note: Byte): NoteParticleData = KryptonNoteParticleData(note)
 
-    override fun transition(
-        fromRed: Short,
-        fromGreen: Short,
-        fromBlue: Short,
-        scale: Float,
-        toRed: Short,
-        toGreen: Short,
-        toBlue: Short
-    ): DustTransitionParticleData = KryptonDustTransitionParticleData(fromRed, fromGreen, fromBlue, scale, toRed, toGreen, toBlue)
+    override fun transition(from: Color, scale: Float, to: Color): DustTransitionParticleData = KryptonDustTransitionParticleData(from, scale, to)
 
     override fun vibration(destination: Vector3d, ticks: Int): VibrationParticleData = KryptonVibrationParticleData(destination, ticks)
 }

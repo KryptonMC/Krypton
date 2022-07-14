@@ -19,7 +19,6 @@
 package org.kryptonmc.krypton.effect.particle.data
 
 import io.netty.buffer.ByteBuf
-import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.effect.particle.data.BlockParticleData
 import org.kryptonmc.krypton.network.Writable
 import org.kryptonmc.krypton.util.writeVarInt

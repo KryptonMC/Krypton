@@ -51,6 +51,7 @@ import org.kryptonmc.api.scoreboard.Scoreboard
 import org.kryptonmc.api.scoreboard.Team
 import org.kryptonmc.api.statistic.StatisticType
 import org.kryptonmc.api.util.BoundingBox
+import org.kryptonmc.api.util.Color
 import org.kryptonmc.api.util.FactoryNotFoundException
 import org.kryptonmc.api.util.FactoryProvider
 import org.kryptonmc.api.util.register
@@ -158,5 +159,6 @@ object KryptonFactoryProvider : FactoryProvider {
         register<ItemAttribute.Factory>(KryptonItemAttribute.Factory)
         register<BannerPattern.Factory>(KryptonBannerPattern.Factory)
         register<BannerPatternType.Factory>(KryptonBannerPatternType.Factory)
+        register<Color.Factory>(KryptonColor.Factory)
     }
 }

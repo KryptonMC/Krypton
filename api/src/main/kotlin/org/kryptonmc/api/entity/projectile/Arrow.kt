@@ -8,6 +8,8 @@
  */
 package org.kryptonmc.api.entity.projectile
 
+import org.kryptonmc.api.util.Color
+
 /**
  * An arrow or tipped arrow.
  */
@@ -18,5 +20,5 @@ public interface Arrow : ArrowLike {
      * The colour of this arrow.
      */
     @get:JvmName("color")
-    public var color: Int
+    public var color: Color
 }

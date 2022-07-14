@@ -18,35 +18,16 @@
  */
 package org.kryptonmc.krypton.util.crypto
 
-import org.kryptonmc.api.auth.ProfileProperty
-import org.kryptonmc.krypton.util.logger
-import java.security.KeyFactory
 import java.security.PublicKey
 import java.security.Signature
-import java.security.SignatureException
-import java.security.spec.X509EncodedKeySpec
-import java.util.Base64
 
 @JvmRecord
 data class YggdrasilSessionKey(val publicKey: PublicKey) {
 
     fun createSignature(): Signature = Signature.getInstance("SHA1withRSA").apply { initVerify(publicKey) }
 
-    fun validateProperty(property: ProfileProperty): Boolean {
-        val signature = createSignature()
-        val expected = Base64.getDecoder().decode(property.signature)
-        try {
-            signature.update(property.value.encodeToByteArray())
-            return signature.verify(expected)
-        } catch (exception: SignatureException) {
-            LOGGER.error("Failed to verify signature for property $property!", exception)
-        }
-        return false
-    }
-
     companion object {
 
-        private val LOGGER = logger<YggdrasilSessionKey>()
         private val INSTANCE = load()
 
         @JvmStatic
