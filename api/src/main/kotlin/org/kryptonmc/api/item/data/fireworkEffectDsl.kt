@@ -27,6 +27,6 @@ internal annotation class FireworkEffectDsl
  */
 @FireworkEffectDsl
 @JvmSynthetic
-@Contract("_ -> new", pure = true)
+@Contract("_, _ -> new", pure = true)
 public inline fun fireworkEffect(type: FireworkEffectType, builder: FireworkEffect.Builder.() -> Unit): FireworkEffect =
     FireworkEffect.builder(type).apply(builder).build()

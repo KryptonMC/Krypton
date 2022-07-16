@@ -33,7 +33,7 @@ class GlobalPalette<T>(private val registry: IntBiMap<T>) : Palette<T> {
         return if (id == -1) 0 else id
     }
 
-    override fun get(id: Int): T = registry[id] ?: throw MissingPaletteEntryException(id)
+    override fun get(id: Int): T = registry.get(id) ?: throw MissingPaletteEntryException(id)
 
     override fun write(buf: ByteBuf) {
         // The global palette has nothing to write because the client assumes that

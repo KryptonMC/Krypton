@@ -237,12 +237,12 @@ class KryptonWorld(
     }
 
     override fun setBlock(x: Int, y: Int, z: Int, block: Block): Boolean {
-        require(block is KryptonBlock) { "Custom implementations of Block are not supported!" }
+        val kryptonBlock = block.downcast()
         if (isOutsideBuildHeight(y)) return false
 //        if (isDebug) return false
         val chunk = getChunk(x, y, z) ?: return false
-        if (!chunk.setBlock(x, y, z, block)) return false
-        sessionManager.sendGrouped(PacketOutBlockUpdate(block, x, y, z))
+        if (!chunk.setBlock(x, y, z, kryptonBlock)) return false
+        sessionManager.sendGrouped(PacketOutBlockUpdate(kryptonBlock, x, y, z))
         return true
     }
 

@@ -20,7 +20,7 @@ package org.kryptonmc.krypton.entity.animal
 
 import org.kryptonmc.api.entity.EntityTypes
 import org.kryptonmc.api.entity.animal.Fox
-import org.kryptonmc.api.entity.animal.type.FoxType
+import org.kryptonmc.api.entity.animal.type.FoxVariant
 import org.kryptonmc.api.entity.attribute.AttributeTypes
 import org.kryptonmc.api.item.ItemStack
 import org.kryptonmc.api.tags.ItemTags
@@ -31,8 +31,8 @@ import java.util.UUID
 
 class KryptonFox(world: KryptonWorld) : KryptonAnimal(world, EntityTypes.FOX, ATTRIBUTES), Fox {
 
-    override var foxType: FoxType
-        get() = TYPES.getOrNull(data[MetadataKeys.FOX.TYPE]) ?: FoxType.RED
+    override var variant: FoxVariant
+        get() = TYPES.getOrNull(data[MetadataKeys.FOX.TYPE]) ?: FoxVariant.RED
         set(value) = data.set(MetadataKeys.FOX.TYPE, value.ordinal)
     override var isSitting: Boolean
         get() = getFlag(0)
@@ -69,7 +69,7 @@ class KryptonFox(world: KryptonWorld) : KryptonAnimal(world, EntityTypes.FOX, AT
         }
 
     init {
-        data.add(MetadataKeys.FOX.TYPE, FoxType.RED.ordinal)
+        data.add(MetadataKeys.FOX.TYPE, FoxVariant.RED.ordinal)
         data.add(MetadataKeys.FOX.FLAGS, 0)
         data.add(MetadataKeys.FOX.FIRST_TRUSTED, null)
         data.add(MetadataKeys.FOX.SECOND_TRUSTED, null)
@@ -87,7 +87,7 @@ class KryptonFox(world: KryptonWorld) : KryptonAnimal(world, EntityTypes.FOX, AT
 
     companion object {
 
-        private val TYPES = FoxType.values()
+        private val TYPES = FoxVariant.values()
 
         private val ATTRIBUTES = attributes()
             .add(AttributeTypes.MOVEMENT_SPEED, 0.3)

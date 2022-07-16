@@ -29,7 +29,6 @@ import org.kryptonmc.api.block.Blocks
 import org.kryptonmc.api.effect.sound.SoundEvent
 import org.kryptonmc.api.effect.sound.SoundEvents
 import org.kryptonmc.api.entity.Entity
-import org.kryptonmc.api.entity.EntityDimensions
 import org.kryptonmc.api.entity.EntityType
 import org.kryptonmc.api.entity.player.Player
 import org.kryptonmc.api.fluid.Fluid
@@ -101,7 +100,6 @@ abstract class KryptonEntity(override var world: KryptonWorld, override val type
     final override var rotation: Vector2f = Vector2f.ZERO
     final override var velocity: Vector3d = Vector3d.ZERO
     final override var boundingBox: BoundingBox = BoundingBox.zero()
-    final override var dimensions: EntityDimensions = EntityDimensions.fixed(type.dimensions.width, type.dimensions.height)
     final override var isOnGround: Boolean = true
     final override var ticksExisted: Int = 0
     final override var fireTicks: Short = 0
@@ -192,9 +190,6 @@ abstract class KryptonEntity(override var world: KryptonWorld, override val type
     final override var isGlowing: Boolean
         get() = getSharedFlag(6)
         set(value) = setSharedFlag(6, value)
-    override var isGliding: Boolean
-        get() = getSharedFlag(7)
-        set(value) = setSharedFlag(7, value)
     final override var air: Int
         get() = data[MetadataKeys.AIR_TICKS]
         set(value) = data.set(MetadataKeys.AIR_TICKS, value)

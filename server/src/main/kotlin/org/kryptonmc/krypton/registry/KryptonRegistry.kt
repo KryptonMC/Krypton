@@ -27,7 +27,10 @@ import org.kryptonmc.api.resource.ResourceKey
 import org.kryptonmc.krypton.util.serialization.Codecs
 import org.kryptonmc.krypton.util.IdentityHashStrategy
 import org.kryptonmc.krypton.util.IntBiMap
+import org.kryptonmc.krypton.util.serialization.Encoder
 import org.kryptonmc.krypton.util.serialization.StringCodec
+import org.kryptonmc.nbt.CompoundTag
+import org.kryptonmc.nbt.compound
 import kotlin.math.max
 
 open class KryptonRegistry<T : Any>(override val key: ResourceKey<out Registry<T>>) : Registry<T>, StringCodec<T>, IntBiMap<T> {
@@ -51,7 +54,7 @@ open class KryptonRegistry<T : Any>(override val key: ResourceKey<out Registry<T
 
     override fun contains(key: Key): Boolean = storage.containsKey(key)
 
-    override fun contains(id: Int): Boolean = id >= 0 && id < byId.size
+    fun contains(id: Int): Boolean = id >= 0 && id < byId.size
 
     override fun containsKey(key: ResourceKey<T>): Boolean = keyStorage.containsKey(key)
 
@@ -71,7 +74,11 @@ open class KryptonRegistry<T : Any>(override val key: ResourceKey<out Registry<T
 
     override fun <V : T> register(key: ResourceKey<T>, value: V): V = register(nextId, key, value)
 
-    override fun <V : T> register(id: Int, key: ResourceKey<T>, value: V): V {
+    override fun <V : T> register(key: Key, value: V): V = register(ResourceKey.of(this.key, key), value)
+
+    fun <V : T> register(id: Int, key: Key, value: V): V = register(id, ResourceKey.of(this.key, key), value)
+
+    protected open fun <V : T> register(id: Int, key: ResourceKey<T>, value: V): V {
         byId.size(max(byId.size, id + 1))
         byId[id] = value
         toId[value] = id
@@ -81,10 +88,6 @@ open class KryptonRegistry<T : Any>(override val key: ResourceKey<out Registry<T
         return value
     }
 
-    override fun <V : T> register(key: Key, value: V): V = register(ResourceKey.of(this.key, key), value)
-
-    override fun <V : T> register(id: Int, key: Key, value: V): V = register(id, ResourceKey.of(this.key, key), value)
-
     override fun isEmpty(): Boolean = storage.isEmpty()
 
     override fun iterator(): Iterator<T> = storage.values.iterator()
@@ -93,5 +96,16 @@ open class KryptonRegistry<T : Any>(override val key: ResourceKey<out Registry<T
 
     override fun decodeString(value: String): T = requireNotNull(get(Codecs.KEY.decodeString(value))) {
         "Could not find element with key $value in registry $key!"
+    }
+
+    fun encode(elementEncoder: Encoder<T, CompoundTag>): CompoundTag = compound {
+        string("type", key.location.asString())
+        list("value", CompoundTag.ID, values.map {
+            compound {
+                string("name", get(it)!!.asString())
+                int("id", idOf(it))
+                put("element", elementEncoder.encode(it))
+            }
+        })
     }
 }

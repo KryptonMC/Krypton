@@ -57,7 +57,7 @@ public interface FireworkStarMeta : ScopedItemMeta<FireworkStarMeta.Builder, Fir
          * @return a new builder
          */
         @JvmStatic
-        @Contract("_ -> new", pure = true)
+        @Contract("-> new", pure = true)
         public fun builder(): Builder = ItemMeta.builder(FireworkStarMeta::class.java)
     }
 }

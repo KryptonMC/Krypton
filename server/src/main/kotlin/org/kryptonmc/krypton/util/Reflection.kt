@@ -27,37 +27,41 @@ object Reflection {
 
     @JvmStatic
     @Suppress("UNCHECKED_CAST")
-    inline fun <reified T, R> accessField(name: String, instance: Any? = null): R? {
+    inline fun <reified T, R> accessField(name: String, instance: Any? = null): R? = accessField(T::class.java, name, instance)
+
+    @JvmStatic
+    @Suppress("UNCHECKED_CAST")
+    fun <R> accessField(clazz: Class<*>, name: String, instance: Any? = null): R? {
         return try {
-            getField<T>(name)?.get(instance) as? R
+            getField(clazz, name)?.get(instance) as? R
         } catch (exception: IllegalArgumentException) {
-            LOGGER.warn("Attempted to get the value of field $name of class ${T::class.java.canonicalName} on invalid instance $instance")
+            LOGGER.warn("Attempted to get the value of field $name of class ${clazz.canonicalName} on invalid instance $instance")
             null
         }
     }
 
     @JvmStatic
-    inline fun <reified T> modifyField(name: String, instance: Any?, value: Any) {
+    fun modifyField(clazz: Class<*>, name: String, instance: Any?, value: Any) {
         try {
-            getField<T>(name)?.set(instance, value)
+            getField(clazz, name)?.set(instance, value)
         } catch (exception: IllegalArgumentException) {
-            LOGGER.warn("Attempted to set the value of field $name of class ${T::class.java.canonicalName} on invalid instance $instance")
+            LOGGER.warn("Attempted to set the value of field $name of class ${clazz.canonicalName} on invalid instance $instance")
         } catch (exception: IllegalAccessException) {
-            LOGGER.warn("Attempted to set the value of field $name of class ${T::class.java.canonicalName} that is static and final")
+            LOGGER.warn("Attempted to set the value of field $name of class ${clazz.canonicalName} that is static and final")
         }
     }
 
     @JvmStatic
-    inline fun <reified T> modifyField(name: String, value: Any) {
-        modifyField<T>(name, null, value)
+    fun modifyField(clazz: Class<*>, name: String, value: Any) {
+        modifyField(clazz, name, null, value)
     }
 
     @JvmStatic
-    inline fun <reified T> getField(name: String): Field? {
+    private fun getField(clazz: Class<*>, name: String): Field? {
         return try {
-            T::class.java.getDeclaredField(name).apply { isAccessible = true }
+            clazz.getDeclaredField(name).apply { isAccessible = true }
         } catch (exception: NoSuchFieldException) {
-            LOGGER.warn("Attempted to access non-existent field $name on class ${T::class.java.canonicalName}.")
+            LOGGER.warn("Attempted to access non-existent field $name on class ${clazz.canonicalName}.")
             null
         }
     }

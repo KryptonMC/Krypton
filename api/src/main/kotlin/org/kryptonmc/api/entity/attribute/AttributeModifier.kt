@@ -64,7 +64,7 @@ public interface AttributeModifier {
          * @return a new attribute modifier
          */
         @JvmStatic
-        @Contract("_ -> new", pure = true)
+        @Contract("_, _, _, _ -> new", pure = true)
         public fun of(name: String, uuid: UUID, amount: Double, operation: ModifierOperation): AttributeModifier =
             FACTORY.of(name, uuid, amount, operation)
     }

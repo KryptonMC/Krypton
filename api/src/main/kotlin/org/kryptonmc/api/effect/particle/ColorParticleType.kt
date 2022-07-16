@@ -27,6 +27,6 @@ public interface ColorParticleType : ScopedParticleType<ColorParticleEffectBuild
          */
         @JvmStatic
         @Contract("_ -> new", pure = true)
-        public fun of(key: Key): ColorParticleType = ParticleType.FACTORY.color(key)
+        public fun of(key: Key): ColorParticleType = ParticleType.of(key)
     }
 }

@@ -64,10 +64,16 @@ public interface EntityType<T : Entity> : Keyed, TranslationHolder {
     public val updateInterval: Int
 
     /**
-     * The base dimensions for entities of this type.
+     * The base width of entities of this type.
      */
-    @get:JvmName("dimensions")
-    public val dimensions: EntityDimensions
+    @get:JvmName("width")
+    public val width: Float
+
+    /**
+     * The base height of entities of this type.
+     */
+    @get:JvmName("height")
+    public val height: Float
 
     /**
      * All blocks that entities of this type will not take damage from.
@@ -79,6 +85,7 @@ public interface EntityType<T : Entity> : Keyed, TranslationHolder {
      * The identifier for the loot table that entities of this type will use to
      * determine what drops they will have when they are killed.
      */
+    // TODO: Ideally, replace this with something better when loot tables are implemented
     @get:JvmName("lootTable")
     public val lootTable: Key
 
@@ -207,27 +214,24 @@ public interface EntityType<T : Entity> : Keyed, TranslationHolder {
         public fun updateInterval(interval: Int): Builder<T>
 
         /**
-         * Sets the base dimensions for the entity type to the given
-         * [dimensions].
+         * Sets the base width for the entity type to the given [width].
          *
-         * @param dimensions the dimensions
+         * @param width the base width
          * @return this builder
          */
         @EntityTypeDsl
         @Contract("_ -> this", mutates = "this")
-        public fun dimensions(dimensions: EntityDimensions): Builder<T>
+        public fun width(width: Float): Builder<T>
 
         /**
-         * Sets the base dimensions for the entity type to the given [width]
-         * and [height].
+         * Sets the base height for the entity type to the given [height].
          *
-         * @param width the width
-         * @param height the height
+         * @param height the base height
          * @return this builder
          */
         @EntityTypeDsl
         @Contract("_ -> this", mutates = "this")
-        public fun dimensions(width: Float, height: Float): Builder<T> = dimensions(EntityDimensions.scalable(width, height))
+        public fun height(height: Float): Builder<T>
 
         /**
          * Adds the given [block] to the list of blocks that entities of the

@@ -28,6 +28,6 @@ public interface NoteParticleType : ScopedParticleType<NoteParticleEffectBuilder
          */
         @JvmStatic
         @Contract("_ -> new", pure = true)
-        public fun of(key: Key): NoteParticleType = ParticleType.FACTORY.note(key)
+        public fun of(key: Key): NoteParticleType = ParticleType.of(key)
     }
 }

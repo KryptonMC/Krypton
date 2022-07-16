@@ -109,7 +109,7 @@ public interface BundleMeta : ScopedItemMeta<BundleMeta.Builder, BundleMeta> {
          * @return a new builder
          */
         @JvmStatic
-        @Contract("_ -> new", pure = true)
+        @Contract("-> new", pure = true)
         public fun builder(): Builder = ItemMeta.builder(BundleMeta::class.java)
     }
 }

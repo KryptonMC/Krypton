@@ -8,7 +8,7 @@
  */
 package org.kryptonmc.api.entity.animal
 
-import org.kryptonmc.api.entity.animal.type.RabbitType
+import org.kryptonmc.api.entity.animal.type.RabbitVariant
 
 /**
  * A rabbit.
@@ -19,6 +19,6 @@ public interface Rabbit : Animal {
     /**
      * The type of this rabbit.
      */
-    @get:JvmName("rabbitType")
-    public var rabbitType: RabbitType
+    @get:JvmName("variant")
+    public var variant: RabbitVariant
 }

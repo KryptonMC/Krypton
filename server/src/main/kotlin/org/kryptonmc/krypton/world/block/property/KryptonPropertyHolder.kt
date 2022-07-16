@@ -18,8 +18,6 @@
  */
 package org.kryptonmc.krypton.world.block.property
 
-import kotlinx.collections.immutable.persistentMapOf
-import kotlinx.collections.immutable.persistentSetOf
 import org.kryptonmc.api.block.property.Property
 import org.kryptonmc.api.block.property.PropertyHolder
 
@@ -43,22 +41,4 @@ interface KryptonPropertyHolder<T : PropertyHolder<T>> : PropertyHolder<T> {
     }
 
     override fun contains(key: Property<*>): Boolean = properties.containsKey(key.name)
-
-    // TODO
-    abstract class Builder<B : PropertyHolder.Builder<B, T>, T : PropertyHolder<T>>() : PropertyHolder.Builder<B, T> {
-
-        protected val availableProperties = persistentSetOf<Property<*>>().builder()
-        protected val properties = persistentMapOf<String, String>().builder()
-
-        constructor(holder: T) : this() {
-            availableProperties.addAll(holder.availableProperties)
-            properties.putAll(holder.properties)
-        }
-
-        @Suppress("UNCHECKED_CAST")
-        override fun <V : Comparable<V>> property(key: Property<V>, value: V): B = apply {
-            availableProperties.add(key)
-            properties[key.name] = key.toString(value)
-        } as B
-    }
 }

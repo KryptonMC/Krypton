@@ -27,6 +27,6 @@ public interface BlockParticleType : ScopedParticleType<BlockParticleEffectBuild
          */
         @JvmStatic
         @Contract("_ -> new", pure = true)
-        public fun of(key: Key): BlockParticleType = ParticleType.FACTORY.block(key)
+        public fun of(key: Key): BlockParticleType = ParticleType.of(key)
     }
 }

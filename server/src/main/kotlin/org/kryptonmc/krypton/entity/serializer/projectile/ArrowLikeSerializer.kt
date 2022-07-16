@@ -32,19 +32,19 @@ import org.kryptonmc.nbt.StringTag
 
 object ArrowLikeSerializer : EntitySerializer<KryptonArrowLike> {
 
-    private val PICKUP_VALUES = ArrowLike.Pickup.values()
+    private val PICKUP_RULES = ArrowLike.PickupRule.values()
 
     override fun load(entity: KryptonArrowLike, data: CompoundTag) {
         ProjectileSerializer.load(entity, data)
         entity.isCritical = data.getBoolean("crit")
-        if (data.contains("damage", 99)) entity.damage = data.getDouble("damage")
+        if (data.contains("damage", 99)) entity.baseDamage = data.getDouble("damage")
         if (data.contains("inBlockState", CompoundTag.ID)) entity.stuckInBlock = data.getCompound("inBlockState").toBlock()
         entity.isInGround = data.getBoolean("inGround")
         entity.life = data.getShort("life").toInt()
 
         val pickupOrdinal = data.getInt("pickup")
-        val pickupIndex = if (pickupOrdinal in PICKUP_VALUES.indices) pickupOrdinal else 0
-        entity.pickup = PICKUP_VALUES[pickupIndex]
+        val pickupIndex = if (pickupOrdinal in PICKUP_RULES.indices) pickupOrdinal else 0
+        entity.pickupRule = PICKUP_RULES[pickupIndex]
         entity.piercingLevel = data.getByte("PierceLevel").toInt()
         entity.shakeTime = data.getByte("shake").toInt() and 255
         entity.wasShotFromCrossbow = data.getBoolean("ShotFromCrossbow")
@@ -57,11 +57,11 @@ object ArrowLikeSerializer : EntitySerializer<KryptonArrowLike> {
 
     override fun save(entity: KryptonArrowLike): CompoundTag.Builder = ProjectileSerializer.save(entity).apply {
         boolean("crit", entity.isCritical)
-        double("damage", entity.damage)
+        double("damage", entity.baseDamage)
         if (entity.stuckInBlock != null) put("inBlockState", entity.stuckInBlock!!.toNBT())
         boolean("inGround", entity.isInGround)
         short("life", entity.life.toShort())
-        byte("pickup", entity.pickup.ordinal.toByte())
+        byte("pickup", entity.pickupRule.ordinal.toByte())
         byte("PierceLevel", entity.piercingLevel.toByte())
         byte("shake", entity.shakeTime.toByte())
         boolean("ShotFromCrossbow", entity.wasShotFromCrossbow)

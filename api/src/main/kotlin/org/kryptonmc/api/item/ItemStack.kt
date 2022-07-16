@@ -160,7 +160,7 @@ public interface ItemStack : Buildable<ItemStack, ItemStack.Builder>, HoverEvent
      * @return a new item stack
      */
     @JvmSynthetic
-    @Contract("_ -> new", pure = true)
+    @Contract("_, _ -> new", pure = true)
     public fun <B : ItemMetaBuilder<B, P>, P : ItemMetaBuilder.Provider<B>> withMeta(type: Class<P>, builder: B.() -> Unit): ItemStack
 
     /**
@@ -173,7 +173,7 @@ public interface ItemStack : Buildable<ItemStack, ItemStack.Builder>, HoverEvent
      * @param P the metadata type
      * @return a new item stack
      */
-    @Contract("_ -> new", pure = true)
+    @Contract("_, _ -> new", pure = true)
     public fun <B : ItemMetaBuilder<B, P>, P : ItemMetaBuilder.Provider<B>> withMeta(type: Class<P>, builder: Consumer<B>): ItemStack =
         withMeta(type) { builder.accept(this) }
 
@@ -248,7 +248,7 @@ public interface ItemStack : Buildable<ItemStack, ItemStack.Builder>, HoverEvent
          */
         @ItemDsl
         @JvmSynthetic
-        @Contract("_ -> this", mutates = "this")
+        @Contract("_, _ -> this", mutates = "this")
         public fun <B : ItemMetaBuilder<B, P>, P : ItemMetaBuilder.Provider<B>> meta(type: Class<P>, builder: B.() -> Unit): Builder
 
         /**
@@ -262,7 +262,7 @@ public interface ItemStack : Buildable<ItemStack, ItemStack.Builder>, HoverEvent
          * @return this builder
          */
         @ItemDsl
-        @Contract("_ -> this", mutates = "this")
+        @Contract("_, _ -> this", mutates = "this")
         public fun <B : ItemMetaBuilder<B, P>, P : ItemMetaBuilder.Provider<B>> meta(type: Class<P>, builder: Consumer<B>): Builder =
             meta(type) { builder.accept(this) }
 
@@ -292,7 +292,7 @@ public interface ItemStack : Buildable<ItemStack, ItemStack.Builder>, HoverEvent
          * @return a new builder
          */
         @JvmStatic
-        @Contract("_ -> new", pure = true)
+        @Contract("-> new", pure = true)
         public fun builder(): Builder = FACTORY.builder()
 
         /**
@@ -313,7 +313,7 @@ public interface ItemStack : Buildable<ItemStack, ItemStack.Builder>, HoverEvent
          * @return a new item stack
          */
         @JvmStatic
-        @Contract("_ -> new", pure = true)
+        @Contract("_, _ -> new", pure = true)
         public fun of(type: ItemType, amount: Int): ItemStack = FACTORY.builder().type(type).amount(amount).build()
 
         /**
@@ -330,7 +330,7 @@ public interface ItemStack : Buildable<ItemStack, ItemStack.Builder>, HoverEvent
          *   having all of its properties set to their default values.
          */
         @JvmStatic
-        @Contract("_ -> new", pure = true)
+        @Contract(pure = true)
         public fun empty(): ItemStack = FACTORY.empty()
     }
 }

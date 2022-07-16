@@ -25,8 +25,6 @@ import org.kryptonmc.api.util.TranslationHolder
  * technical standpoint, reduces allocations, but also makes
  * them much more thread-safe.
  */
-// TODO: Review the fields in here and see if any we've removed need to be added,
-// or any we've kept need to be removed.
 @Suppress("INAPPLICABLE_JVM_NAME")
 @CataloguedBy(Blocks::class)
 public interface Block : PropertyHolder<Block>, BlockLike, ItemLike, FluidLike, TranslationHolder, Keyed {

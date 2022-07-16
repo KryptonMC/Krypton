@@ -20,25 +20,25 @@ package org.kryptonmc.krypton.entity.animal
 
 import org.kryptonmc.api.entity.EntityTypes
 import org.kryptonmc.api.entity.animal.Mooshroom
-import org.kryptonmc.api.entity.animal.type.MooshroomType
+import org.kryptonmc.api.entity.animal.type.MooshroomVariant
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.world.KryptonWorld
 
 class KryptonMooshroom(world: KryptonWorld) : KryptonCow(world, EntityTypes.MOOSHROOM), Mooshroom {
 
-    override var mooshroomType: MooshroomType
+    override var variant: MooshroomVariant
         get() = deserializeType(data[MetadataKeys.MOOSHROOM.TYPE])
         set(value) = data.set(MetadataKeys.MOOSHROOM.TYPE, value.name.lowercase())
 
     init {
-        data.add(MetadataKeys.MOOSHROOM.TYPE, MooshroomType.RED.name.lowercase())
+        data.add(MetadataKeys.MOOSHROOM.TYPE, MooshroomVariant.RED.name.lowercase())
     }
 
     companion object {
 
-        private val TYPE_NAMES = MooshroomType.values().associateBy { it.name.lowercase() }
+        private val TYPE_NAMES = MooshroomVariant.values().associateBy { it.name.lowercase() }
 
         @JvmStatic
-        fun deserializeType(name: String): MooshroomType = TYPE_NAMES.getOrDefault(name, MooshroomType.RED)
+        fun deserializeType(name: String): MooshroomVariant = TYPE_NAMES.getOrDefault(name, MooshroomVariant.RED)
     }
 }

@@ -36,10 +36,10 @@ import org.kryptonmc.krypton.util.readVarInt
 import org.kryptonmc.krypton.world.block.BlockLoader
 
 fun ParticleType.createData(buf: ByteBuf): ParticleData? = when (this) {
-    is BlockParticleType -> KryptonBlockParticleData(BlockLoader.fromState(buf.readVarInt()))
+    is BlockParticleType -> KryptonBlockParticleData(BlockLoader.fromStateId(buf.readVarInt()))
     is DustParticleType -> KryptonDustParticleData(buf)
     is DustTransitionParticleType -> KryptonDustTransitionParticleData(buf)
-    is ItemParticleType -> KryptonItemParticleData(buf.readItem().type) // TODO: Use an item stack, not just a type
+    is ItemParticleType -> KryptonItemParticleData(buf.readItem())
     is VibrationParticleType -> KryptonVibrationParticleData(buf)
     else -> null
 }

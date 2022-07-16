@@ -250,7 +250,6 @@ public interface ItemMeta {
      * @param slot the slot
      * @return the modifiers associated with the given type
      */
-    @Contract("_, _ -> new", pure = true)
     public fun attributeModifiers(type: AttributeType, slot: EquipmentSlot): Set<AttributeModifier>
 
     /**
@@ -260,7 +259,7 @@ public interface ItemMeta {
      * @param attributes the attributes
      * @return new item metadata
      */
-    @Contract("_, _ -> new", pure = true)
+    @Contract("_ -> new", pure = true)
     public fun withAttributeModifiers(attributes: Set<ItemAttribute>): ItemMeta
 
     /**
@@ -354,8 +353,7 @@ public interface ItemMeta {
 
     public companion object {
 
-        @JvmSynthetic
-        internal val FACTORY = Krypton.factoryProvider.provide<Factory>()
+        private val FACTORY = Krypton.factoryProvider.provide<Factory>()
 
         /**
          * Creates a new builder for building item metadata.
@@ -363,19 +361,11 @@ public interface ItemMeta {
          * @return a new builder
          */
         @JvmStatic
-        @Contract("_ -> new", pure = true)
+        @Contract("-> new", pure = true)
         public fun builder(): Builder = FACTORY.builder()
 
-        /**
-         * Creates a new builder of type [B] for building metadata of type [P].
-         *
-         * @param type the class of the metadata type
-         * @param B the builder type
-         * @param P the metadata type
-         * @return a new builder
-         */
-        @JvmStatic
-        @Contract("_ -> new", pure = true)
-        public fun <B : ItemMetaBuilder<B, P>, P : ItemMetaBuilder.Provider<B>> builder(type: Class<P>): B = FACTORY.builder(type)
+        @JvmSynthetic
+        @PublishedApi
+        internal fun <B : ItemMetaBuilder<B, P>, P : ItemMetaBuilder.Provider<B>> builder(type: Class<P>): B = FACTORY.builder(type)
     }
 }

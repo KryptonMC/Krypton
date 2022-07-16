@@ -9,26 +9,21 @@
 package org.kryptonmc.api.entity.vehicle
 
 /**
- * A boat.
+ * A vehicle that can be damaged by a player hitting it, causing it to
+ * eventually break when it takes enough damage.
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
-public interface Boat : DamageableVehicle {
+public interface DamageableVehicle : Vehicle {
 
     /**
-     * The variant of the boat.
+     * The amount of damage that this damageable vehicle has taken.
      */
-    @get:JvmName("variant")
-    public var variant: BoatVariant
+    @get:JvmName("damageTaken")
+    public var damageTaken: Float
 
     /**
-     * If the left paddle of this boat is turning, thus making the boat turn
-     * left.
+     * The time since this damageable vehicle last took damage.
      */
-    public var isLeftPaddleTurning: Boolean
-
-    /**
-     * If the right paddle of this boat is turning, thus making the boat turn
-     * right.
-     */
-    public var isRightPaddleTurning: Boolean
+    @get:JvmName("damageTimer")
+    public var damageTimer: Int
 }

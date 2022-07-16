@@ -28,6 +28,6 @@ public interface DustTransitionParticleType : ScopedParticleType<DustTransitionP
          */
         @JvmStatic
         @Contract("_ -> new", pure = true)
-        public fun of(key: Key): DustTransitionParticleType = ParticleType.FACTORY.dustTransition(key)
+        public fun of(key: Key): DustTransitionParticleType = ParticleType.of(key)
     }
 }

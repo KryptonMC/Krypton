@@ -6,16 +6,18 @@
  * This project is licensed under the terms of the MIT license.
  * For more details, please reference the LICENSE file in the api top-level directory.
  */
-package org.kryptonmc.api.entity.animal.type
+package org.kryptonmc.api.entity.vehicle
 
 /**
- * A type of parrot.
+ * A variant of Minecart.
  */
-public enum class ParrotType {
+public enum class MinecartVariant {
 
-    RED_AND_BLUE,
-    BLUE,
-    GREEN,
-    YELLOW_AND_BLUE,
-    GREY
+    RIDEABLE,
+    CHEST,
+    FURNACE,
+    TNT,
+    SPAWNER,
+    HOPPER,
+    COMMAND_BLOCK
 }

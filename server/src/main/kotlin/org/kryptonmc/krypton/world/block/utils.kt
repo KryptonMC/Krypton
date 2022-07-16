@@ -19,12 +19,10 @@
 package org.kryptonmc.krypton.world.block
 
 import org.kryptonmc.api.block.Block
+import org.kryptonmc.krypton.util.downcastApiType
 import org.kryptonmc.krypton.world.block.handler.BlockHandler
 import org.kryptonmc.krypton.world.block.handler.DummyBlockHandler
 
 fun Block.handler(): BlockHandler = BlockManager.handler(this) ?: DummyBlockHandler
 
-fun Block.downcast(): KryptonBlock {
-    check(this is KryptonBlock) { "Custom implementations of Block are not supported or allowed!" }
-    return this
-}
+fun Block.downcast(): KryptonBlock = downcastApiType("Block")

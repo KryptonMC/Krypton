@@ -23,13 +23,13 @@ import net.kyori.adventure.text.Component
 import org.kryptonmc.api.entity.animal.type.CatVariant
 import org.kryptonmc.api.entity.animal.type.FrogVariant
 import org.kryptonmc.api.entity.hanging.Picture
-import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.api.util.Catalogue
 import org.kryptonmc.api.util.Direction
 import org.kryptonmc.krypton.effect.particle.ParticleOptions
 import org.kryptonmc.krypton.entity.Pose
 import org.kryptonmc.krypton.entity.data.VillagerData
 import org.kryptonmc.krypton.item.KryptonItemStack
+import org.kryptonmc.krypton.registry.KryptonRegistries
 import org.kryptonmc.krypton.util.GlobalPosition
 import org.kryptonmc.krypton.util.IntIdentityHashBiMap
 import org.kryptonmc.krypton.util.readComponent
@@ -97,7 +97,7 @@ object MetadataSerializers {
         { buf, item -> if (item != null) buf.writeVarInt(item.stateId) else buf.writeVarInt(0) },
         {
             val stateId = it.readVarInt()
-            if (stateId == 0) null else BlockLoader.fromState(stateId)
+            if (stateId == 0) null else BlockLoader.fromStateId(stateId)
         }
     )
     @JvmField
@@ -105,7 +105,7 @@ object MetadataSerializers {
     @JvmField
     val PARTICLE: MetadataSerializer<ParticleOptions> = MetadataSerializer.simple(
         { buf, item ->
-            buf.writeId(Registries.PARTICLE_TYPE, item.type)
+            buf.writeId(KryptonRegistries.PARTICLE_TYPE, item.type)
             item.write(buf)
         },
         ::ParticleOptions
@@ -123,17 +123,17 @@ object MetadataSerializers {
     @JvmField
     val POSE: MetadataSerializer<Pose> = MetadataSerializer.simpleEnum(Pose::class.java)
     @JvmField
-    val CAT_VARIANT: MetadataSerializer<CatVariant> = MetadataSerializer.simpleId(Registries.CAT_VARIANT)
+    val CAT_VARIANT: MetadataSerializer<CatVariant> = MetadataSerializer.simpleId(KryptonRegistries.CAT_VARIANT)
     @JvmField
-    val FROG_VARIANT: MetadataSerializer<FrogVariant> = MetadataSerializer.simpleId(Registries.FROG_VARIANT)
+    val FROG_VARIANT: MetadataSerializer<FrogVariant> = MetadataSerializer.simpleId(KryptonRegistries.FROG_VARIANT)
     @JvmField
     val OPTIONAL_GLOBAL_POSITION: MetadataSerializer<GlobalPosition?> =
         MetadataSerializer.optional(ByteBuf::writeGlobalPosition, ByteBuf::readGlobalPosition)
     @JvmField
-    val PICTURE: MetadataSerializer<Picture> = MetadataSerializer.simpleId(Registries.PICTURES)
+    val PICTURE: MetadataSerializer<Picture> = MetadataSerializer.simpleId(KryptonRegistries.PICTURES)
 
     @JvmStatic
-    fun get(id: Int): MetadataSerializer<*>? = SERIALIZERS[id]
+    fun get(id: Int): MetadataSerializer<*>? = SERIALIZERS.get(id)
 
     @JvmStatic
     fun idOf(serializer: MetadataSerializer<*>): Int = SERIALIZERS.idOf(serializer)

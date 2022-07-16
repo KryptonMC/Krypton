@@ -20,7 +20,6 @@ package org.kryptonmc.krypton.util
 
 import com.mojang.brigadier.exceptions.CommandSyntaxException
 import net.kyori.adventure.translation.Translatable
-import org.kryptonmc.api.Krypton
 import org.kryptonmc.api.block.Blocks
 import org.kryptonmc.api.block.entity.BlockEntityTypes
 import org.kryptonmc.api.block.entity.banner.BannerPatternTypes
@@ -98,9 +97,10 @@ object Bootstrap {
         // These are some kinda nasty hacks, but the tight coupling nature of Krypton requires it
         // The only 2 other alternatives here are to do away with the static singleton and revert back, or restructure
         // the entire project to use Guice's dependency inversion (something that should be looked in to at some point)
-        Reflection.modifyField<Krypton>("internalFactoryProvider", KryptonFactoryProvider)
-        Reflection.modifyField<Krypton>("internalRegistryManager", KryptonRegistryManager)
-        Reflection.modifyField<Krypton>("internalTagManager", KryptonTagManager)
+        val kryptonClass = Class.forName("org.kryptonmc.api.Krypton")
+        Reflection.modifyField(kryptonClass, "internalFactoryProvider", KryptonFactoryProvider)
+        Reflection.modifyField(kryptonClass, "internalRegistryManager", KryptonRegistryManager)
+        Reflection.modifyField(kryptonClass, "internalTagManager", KryptonTagManager)
         KryptonFactoryProvider.bootstrap()
         KryptonRegistryManager.parent // Force initialisation
 

@@ -32,5 +32,5 @@ internal annotation class ItemTypeDsl
  */
 @ItemTypeDsl
 @JvmSynthetic
-@Contract("_ -> new", pure = true)
+@Contract("_, _ -> new", pure = true)
 public inline fun itemType(key: Key, builder: ItemType.Builder.() -> Unit): ItemType = ItemType.builder(key).apply(builder).build()

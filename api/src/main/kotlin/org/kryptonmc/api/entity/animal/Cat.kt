@@ -21,7 +21,7 @@ public interface Cat : Tamable {
     /**
      * The variant of this cat.
      */
-    @get:JvmName("catType")
+    @get:JvmName("variant")
     public var variant: CatVariant
 
     /**

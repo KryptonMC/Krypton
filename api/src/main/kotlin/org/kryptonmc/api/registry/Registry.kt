@@ -40,14 +40,6 @@ public interface Registry<T : Any> : Map<ResourceKey<T>, T> {
     public operator fun contains(key: Key): Boolean
 
     /**
-     * Checks if the given [id] has a registered value in this registry.
-     *
-     * @param id the ID
-     * @return true if the ID has a registered value, false otherwise
-     */
-    public operator fun contains(id: Int): Boolean
-
-    /**
      * Gets a value by its namespaced [key], or null if there is no value
      * associated with the given [key].
      *
@@ -55,15 +47,6 @@ public interface Registry<T : Any> : Map<ResourceKey<T>, T> {
      * @return the value, or null if not present
      */
     public operator fun get(key: Key): T?
-
-    /**
-     * Gets a value by its [id], or null if there is no value associated with
-     * the given key.
-     *
-     * @param id the ID
-     * @return the value, or null if not present
-     */
-    public operator fun get(id: Int): T?
 
     /**
      * Gets a namespaced [Key] by its [value], or null if there is no key
@@ -84,15 +67,6 @@ public interface Registry<T : Any> : Map<ResourceKey<T>, T> {
     public fun resourceKey(value: T): ResourceKey<T>?
 
     /**
-     * Gets the ID for the given [value], or returns -1 if the given [value] is
-     * not registered.
-     *
-     * @param value the value
-     * @return the ID, or -1 if the [value] is not registered
-     */
-    public fun idOf(value: T): Int
-
-    /**
      * Registers a new value to this registry with the given registry [key]
      * and value.
      *
@@ -101,17 +75,6 @@ public interface Registry<T : Any> : Map<ResourceKey<T>, T> {
      * @return the value
      */
     public fun <V : T> register(key: ResourceKey<T>, value: V): V
-
-    /**
-     * Registers a new value to this registry with the given registry [key]
-     * and value.
-     *
-     * @param id the ID of the entry in the registry
-     * @param key the registry key
-     * @param value the value
-     * @return the value
-     */
-    public fun <V : T> register(id: Int, key: ResourceKey<T>, value: V): V
 
     /**
      * Registers a new value to this registry with the given registry [key]
@@ -131,24 +94,4 @@ public interface Registry<T : Any> : Map<ResourceKey<T>, T> {
      * @return the value
      */
     public fun <V : T> register(key: Key, value: V): V
-
-    /**
-     * Registers a new value to this registry with the given registry [key]
-     * and value.
-     *
-     * @param id the ID of the entry in the registry
-     * @param key the key
-     * @param value the value
-     */
-    public fun <V : T> register(id: Int, key: String, value: V): V = register(id, Key.key(key), value)
-
-    /**
-     * Registers a new value to this registry with the given registry [key]
-     * and value.
-     *
-     * @param id the ID of the entry in the registry
-     * @param key the key
-     * @param value the value
-     */
-    public fun <V : T> register(id: Int, key: Key, value: V): V
 }

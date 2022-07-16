@@ -19,14 +19,18 @@
 package org.kryptonmc.krypton.item
 
 import org.kryptonmc.api.item.ItemAttribute
+import org.kryptonmc.api.item.ItemStack
 import org.kryptonmc.krypton.item.handler.ItemHandler
 import org.kryptonmc.api.item.ItemType
 import org.kryptonmc.api.item.data.ItemFlag
-import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.krypton.item.handler.DummyItemHandler
+import org.kryptonmc.krypton.registry.KryptonRegistries
+import org.kryptonmc.krypton.util.downcastApiType
 import org.kryptonmc.krypton.world.block.KryptonBlock
 import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.compound
+
+fun ItemStack.downcast(): KryptonItemStack = downcastApiType("ItemStack")
 
 fun ItemType.handler(): ItemHandler = ItemManager.handler(this) ?: DummyItemHandler
 
@@ -40,5 +44,5 @@ fun ItemAttribute.save(): CompoundTag = compound {
     string("Name", modifier.name)
     uuid("UUID", modifier.uuid)
     double("Amount", modifier.amount)
-    int("Operation", Registries.MODIFIER_OPERATIONS.idOf(modifier.operation))
+    int("Operation", KryptonRegistries.MODIFIER_OPERATIONS.idOf(modifier.operation))
 }

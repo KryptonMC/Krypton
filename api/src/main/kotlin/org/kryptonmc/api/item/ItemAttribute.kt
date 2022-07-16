@@ -9,6 +9,7 @@
 package org.kryptonmc.api.item
 
 import org.jetbrains.annotations.ApiStatus
+import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.Krypton
 import org.kryptonmc.api.entity.EquipmentSlot
 import org.kryptonmc.api.entity.attribute.AttributeModifier
@@ -60,6 +61,7 @@ public interface ItemAttribute {
          * @param modifier the modifier
          */
         @JvmStatic
+        @Contract("_, _, _ -> new", pure = true)
         public fun of(type: AttributeType, slot: EquipmentSlot, modifier: AttributeModifier): ItemAttribute = FACTORY.of(type, slot, modifier)
     }
 }

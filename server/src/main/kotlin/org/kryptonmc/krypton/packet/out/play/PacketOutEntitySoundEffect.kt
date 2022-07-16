@@ -21,12 +21,13 @@ package org.kryptonmc.krypton.packet.out.play
 import io.netty.buffer.ByteBuf
 import net.kyori.adventure.sound.Sound
 import org.kryptonmc.api.effect.sound.SoundEvent
-import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.krypton.packet.EntityPacket
+import org.kryptonmc.krypton.registry.KryptonRegistries
 import org.kryptonmc.krypton.util.readById
 import org.kryptonmc.krypton.util.readEnum
 import org.kryptonmc.krypton.util.readVarInt
 import org.kryptonmc.krypton.util.writeEnum
+import org.kryptonmc.krypton.util.writeId
 import org.kryptonmc.krypton.util.writeVarInt
 
 @JvmRecord
@@ -38,13 +39,15 @@ data class PacketOutEntitySoundEffect(
     val pitch: Float
 ) : EntityPacket {
 
-    constructor(buf: ByteBuf) : this(buf.readById(Registries.SOUND_EVENT)!!, buf.readEnum(), buf.readVarInt(), buf.readFloat(), buf.readFloat())
+    constructor(buf: ByteBuf) : this(buf.readEvent(), buf.readEnum(), buf.readVarInt(), buf.readFloat(), buf.readFloat())
 
     override fun write(buf: ByteBuf) {
-        buf.writeVarInt(Registries.SOUND_EVENT.idOf(event))
+        buf.writeId(KryptonRegistries.SOUND_EVENT, event)
         buf.writeEnum(source)
         buf.writeVarInt(entityId)
         buf.writeFloat(volume)
         buf.writeFloat(pitch)
     }
 }
+
+private fun ByteBuf.readEvent(): SoundEvent = readById(KryptonRegistries.SOUND_EVENT)!!

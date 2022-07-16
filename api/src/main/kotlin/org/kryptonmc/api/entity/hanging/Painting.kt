@@ -18,6 +18,6 @@ public interface Painting : HangingEntity {
      * The picture displayed on this painting, or null if this painting is
      * blank.
      */
-    @get:JvmName("canvas")
+    @get:JvmName("picture")
     public val picture: Picture?
 }

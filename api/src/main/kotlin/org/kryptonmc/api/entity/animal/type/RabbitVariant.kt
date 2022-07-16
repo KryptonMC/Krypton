@@ -9,9 +9,9 @@
 package org.kryptonmc.api.entity.animal.type
 
 /**
- * A type of rabbit.
+ * A variant of rabbit.
  */
-public enum class RabbitType {
+public enum class RabbitVariant {
 
     BROWN,
     WHITE,

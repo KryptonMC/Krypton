@@ -25,6 +25,7 @@ import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.krypton.entity.attribute.KryptonAttribute
 import org.kryptonmc.krypton.entity.attribute.KryptonAttributeModifier
 import org.kryptonmc.krypton.packet.EntityPacket
+import org.kryptonmc.krypton.registry.KryptonRegistries
 import org.kryptonmc.krypton.util.mapPersistentList
 import org.kryptonmc.krypton.util.readKey
 import org.kryptonmc.krypton.util.readList
@@ -49,7 +50,9 @@ data class PacketOutUpdateAttributes(override val entityId: Int, val attributes:
             val uuid = buf.readUUID()
             val amount = buf.readDouble()
             val operationId = buf.readByte().toInt()
-            val operation = requireNotNull(Registries.MODIFIER_OPERATIONS[operationId]) { "Cannot find modifier operation with ID $operationId!" }
+            val operation = requireNotNull(KryptonRegistries.MODIFIER_OPERATIONS.get(operationId)) {
+                "Cannot find modifier operation with ID $operationId!"
+            }
             KryptonAttributeModifier("Unknown read attribute", uuid, amount, operation)
         }
         AttributeSnapshot(type, base, modifiers)
@@ -63,7 +66,7 @@ data class PacketOutUpdateAttributes(override val entityId: Int, val attributes:
             buf.writeCollection(attribute.modifiers) {
                 buf.writeUUID(it.uuid)
                 buf.writeDouble(it.amount)
-                buf.writeByte(Registries.MODIFIER_OPERATIONS.idOf(it.operation))
+                buf.writeByte(KryptonRegistries.MODIFIER_OPERATIONS.idOf(it.operation))
             }
         }
     }

@@ -18,7 +18,7 @@
  */
 package org.kryptonmc.krypton.entity.serializer.animal
 
-import org.kryptonmc.api.entity.animal.type.FoxType
+import org.kryptonmc.api.entity.animal.type.FoxVariant
 import org.kryptonmc.krypton.entity.animal.KryptonFox
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.entity.serializer.AgeableSerializer
@@ -31,13 +31,13 @@ import java.util.UUID
 
 object FoxSerializer : EntitySerializer<KryptonFox> {
 
-    private val TYPE_NAMES = FoxType.values().associateBy { it.name.lowercase() }
+    private val TYPE_NAMES = FoxVariant.values().associateBy { it.name.lowercase() }
 
     override fun load(entity: KryptonFox, data: CompoundTag) {
         AgeableSerializer.load(entity, data)
         data.getList("Trusted", IntArrayTag.ID).forEachIntArray { addTrustedId(entity, it.toUUID()) }
         entity.isSleeping = data.getBoolean("Sleeping")
-        if (data.contains("Type", StringTag.ID)) entity.foxType = TYPE_NAMES[data.getString("Type")]!!
+        if (data.contains("Type", StringTag.ID)) entity.variant = TYPE_NAMES[data.getString("Type")]!!
         entity.isSitting = data.getBoolean("Sitting")
         entity.isCrouching = data.getBoolean("Crouching")
     }
@@ -48,7 +48,7 @@ object FoxSerializer : EntitySerializer<KryptonFox> {
             if (entity.secondTrusted != null) addUUID(entity.secondTrusted!!)
         }
         boolean("Sleeping", entity.isSleeping)
-        string("Type", entity.foxType.name.lowercase())
+        string("Type", entity.variant.name.lowercase())
         boolean("Sitting", entity.isSitting)
         boolean("Crouching", entity.isCrouching)
     }

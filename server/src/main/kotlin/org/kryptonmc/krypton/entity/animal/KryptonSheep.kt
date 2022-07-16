@@ -22,8 +22,8 @@ import org.kryptonmc.api.entity.EntityTypes
 import org.kryptonmc.api.entity.animal.Sheep
 import org.kryptonmc.api.entity.attribute.AttributeTypes
 import org.kryptonmc.api.item.data.DyeColor
-import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
+import org.kryptonmc.krypton.registry.KryptonRegistries
 import org.kryptonmc.krypton.world.KryptonWorld
 
 class KryptonSheep(world: KryptonWorld) : KryptonAnimal(world, EntityTypes.SHEEP, ATTRIBUTES), Sheep {
@@ -32,10 +32,10 @@ class KryptonSheep(world: KryptonWorld) : KryptonAnimal(world, EntityTypes.SHEEP
         get() = getFlag(MetadataKeys.SHEEP.FLAGS, 4)
         set(value) = setFlag(MetadataKeys.SHEEP.FLAGS, 4, value)
     override var woolColor: DyeColor
-        get() = Registries.DYE_COLORS[data[MetadataKeys.SHEEP.FLAGS].toInt() and 15]!!
+        get() = KryptonRegistries.DYE_COLORS.get(data[MetadataKeys.SHEEP.FLAGS].toInt() and 15)!!
         set(value) {
             val old = data[MetadataKeys.SHEEP.FLAGS].toInt()
-            data[MetadataKeys.SHEEP.FLAGS] = ((old and 240) or (Registries.DYE_COLORS.idOf(value) and 15)).toByte()
+            data[MetadataKeys.SHEEP.FLAGS] = ((old and 240) or (KryptonRegistries.DYE_COLORS.idOf(value) and 15)).toByte()
         }
 
     init {

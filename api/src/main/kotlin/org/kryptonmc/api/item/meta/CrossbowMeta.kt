@@ -136,7 +136,7 @@ public interface CrossbowMeta : ScopedItemMeta<CrossbowMeta.Builder, CrossbowMet
          * @return a new builder
          */
         @JvmStatic
-        @Contract("_ -> new", pure = true)
+        @Contract("-> new", pure = true)
         public fun builder(): Builder = ItemMeta.builder(CrossbowMeta::class.java)
     }
 }

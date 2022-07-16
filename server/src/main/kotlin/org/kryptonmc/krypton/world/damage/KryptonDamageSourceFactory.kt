@@ -23,21 +23,14 @@ import org.kryptonmc.api.world.damage.DamageSource
 import org.kryptonmc.api.world.damage.EntityDamageSource
 import org.kryptonmc.api.world.damage.IndirectEntityDamageSource
 import org.kryptonmc.api.world.damage.type.DamageType
-import org.kryptonmc.krypton.entity.KryptonEntity
+import org.kryptonmc.krypton.entity.downcast
 
 object KryptonDamageSourceFactory : DamageSource.Factory {
 
     override fun of(type: DamageType): DamageSource = KryptonDamageSource(type)
 
-    override fun entity(type: DamageType, entity: Entity): EntityDamageSource {
-        require(entity is KryptonEntity) { "Cannot construct entity damage source from custom entity types!" }
-        return KryptonEntityDamageSource(type, entity)
-    }
+    override fun entity(type: DamageType, entity: Entity): EntityDamageSource = KryptonEntityDamageSource(type, entity.downcast())
 
-    override fun indirectEntity(type: DamageType, entity: Entity, indirectEntity: Entity?): IndirectEntityDamageSource {
-        require(entity is KryptonEntity && indirectEntity is KryptonEntity) {
-            "Cannot construct indirect entity damage source from custom entity types!"
-        }
-        return KryptonIndirectEntityDamageSource(type, entity, indirectEntity)
-    }
+    override fun indirectEntity(type: DamageType, entity: Entity, indirectEntity: Entity): IndirectEntityDamageSource =
+        KryptonIndirectEntityDamageSource(type, entity.downcast(), indirectEntity.downcast())
 }

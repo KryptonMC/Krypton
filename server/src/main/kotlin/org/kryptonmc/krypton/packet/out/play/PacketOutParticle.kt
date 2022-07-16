@@ -20,29 +20,17 @@ package org.kryptonmc.krypton.packet.out.play
 
 import io.netty.buffer.ByteBuf
 import io.netty.util.internal.ThreadLocalRandom
-import org.kryptonmc.api.effect.particle.BlockParticleType
-import org.kryptonmc.api.effect.particle.DustParticleType
-import org.kryptonmc.api.effect.particle.DustTransitionParticleType
-import org.kryptonmc.api.effect.particle.ItemParticleType
 import org.kryptonmc.api.effect.particle.ParticleEffect
-import org.kryptonmc.api.effect.particle.VibrationParticleType
 import org.kryptonmc.api.effect.particle.data.ColorParticleData
 import org.kryptonmc.api.effect.particle.data.DirectionalParticleData
 import org.kryptonmc.api.effect.particle.data.NoteParticleData
 import org.kryptonmc.api.effect.particle.data.ParticleData
-import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.krypton.effect.particle.createData
-import org.kryptonmc.krypton.effect.particle.data.KryptonBlockParticleData
-import org.kryptonmc.krypton.effect.particle.data.KryptonDustParticleData
-import org.kryptonmc.krypton.effect.particle.data.KryptonDustTransitionParticleData
-import org.kryptonmc.krypton.effect.particle.data.KryptonItemParticleData
-import org.kryptonmc.krypton.effect.particle.data.KryptonVibrationParticleData
 import org.kryptonmc.krypton.network.Writable
 import org.kryptonmc.krypton.packet.Packet
-import org.kryptonmc.krypton.util.readItem
+import org.kryptonmc.krypton.registry.KryptonRegistries
 import org.kryptonmc.krypton.util.readVarInt
 import org.kryptonmc.krypton.util.writeVarInt
-import org.kryptonmc.krypton.world.block.BlockLoader
 import org.spongepowered.math.vector.Vector3d
 import org.spongepowered.math.vector.Vector3f
 
@@ -123,7 +111,7 @@ data class PacketOutParticle(
 
         @JvmStatic
         fun from(effect: ParticleEffect, x: Double, y: Double, z: Double): PacketOutParticle {
-            val typeId = Registries.PARTICLE_TYPE.idOf(effect.type)
+            val typeId = KryptonRegistries.PARTICLE_TYPE.idOf(effect.type)
             var tempX = x
             var tempY = y
             var tempZ = z
@@ -187,6 +175,6 @@ data class PacketOutParticle(
         }
 
         @JvmStatic
-        private fun readData(typeId: Int, buf: ByteBuf): ParticleData? = Registries.PARTICLE_TYPE[typeId]!!.createData(buf)
+        private fun readData(typeId: Int, buf: ByteBuf): ParticleData? = KryptonRegistries.PARTICLE_TYPE.get(typeId)!!.createData(buf)
     }
 }

@@ -11,6 +11,7 @@ package org.kryptonmc.api.entity.animal.type
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.key.Keyed
 import org.jetbrains.annotations.ApiStatus
+import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.Krypton
 import org.kryptonmc.api.util.CataloguedBy
 import org.kryptonmc.api.util.provide
@@ -38,6 +39,7 @@ public interface FrogVariant : Keyed {
          * @return a new frog variant
          */
         @JvmStatic
+        @Contract("_ -> new", pure = true)
         public fun of(key: Key): FrogVariant = FACTORY.of(key)
     }
 }

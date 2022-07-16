@@ -27,6 +27,6 @@ public interface DustParticleType : ScopedParticleType<DustParticleEffectBuilder
          */
         @JvmStatic
         @Contract("_ -> new", pure = true)
-        public fun of(key: Key): DustParticleType = ParticleType.FACTORY.dust(key)
+        public fun of(key: Key): DustParticleType = ParticleType.of(key)
     }
 }

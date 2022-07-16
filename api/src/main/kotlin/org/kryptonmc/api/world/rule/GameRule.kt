@@ -61,7 +61,7 @@ public interface GameRule<V : Any> : TranslationHolder, Keyed {
          */
         @JvmStatic
         @JvmOverloads
-        @Contract("_ -> new", pure = true)
+        @Contract("_, _, _, _ -> new", pure = true)
         public fun <V : Any> of(
             key: Key,
             name: String,

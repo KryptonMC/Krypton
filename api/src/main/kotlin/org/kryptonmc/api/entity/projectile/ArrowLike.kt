@@ -9,7 +9,6 @@
 package org.kryptonmc.api.entity.projectile
 
 import org.kryptonmc.api.block.Block
-import org.kryptonmc.api.effect.sound.SoundEvent
 
 /**
  * Something that shares some (or all) functionality with that of an [Arrow].
@@ -18,15 +17,11 @@ import org.kryptonmc.api.effect.sound.SoundEvent
 public interface ArrowLike : Projectile {
 
     /**
-     * If this arrow like object is critical.
+     * The base damage that this arrow like object will do to an entity it
+     * comes in to contact with.
      */
-    public var isCritical: Boolean
-
-    /**
-     * The damage multiplier of this arrow like object.
-     */
-    @get:JvmName("damage")
-    public var damage: Double
+    @get:JvmName("baseDamage")
+    public var baseDamage: Double
 
     /**
      * The block this arrow like object is currently stuck in, or null if this
@@ -41,31 +36,9 @@ public interface ArrowLike : Projectile {
     public var isInGround: Boolean
 
     /**
-     * The life of this arrow like object.
-     *
-     * This will increase by 1 for every tick this object is not moving.
-     * When this value reaches 1200, it will despawn.
+     * If this arrow like object is critical.
      */
-    @get:JvmName("life")
-    public val life: Int
-
-    /**
-     * The amount of remaining times that this arrow like object can pierce
-     * through an entity.
-     *
-     * When this value reaches 0, it will no longer pierce through entities.
-     */
-    @get:JvmName("piercingLevel")
-    public val piercingLevel: Int
-
-    /**
-     * The amount of ticks this arrow like object will shake for until it can
-     * be picked up by players.
-     *
-     * When it hits a block, this value will be initially set to 7.
-     */
-    @get:JvmName("shakeTime")
-    public val shakeTime: Int
+    public var isCritical: Boolean
 
     /**
      * If this arrow like object ignores physics.
@@ -80,24 +53,38 @@ public interface ArrowLike : Projectile {
     public var wasShotFromCrossbow: Boolean
 
     /**
-     * The sound event to play when hitting a block/mob.
+     * The amount of remaining times that this arrow like object can pierce
+     * through an entity.
+     *
+     * When this value reaches 0, it will no longer pierce through entities.
      */
-    @get:JvmName("sound")
-    public val sound: SoundEvent
+    @get:JvmName("piercingLevel")
+    public val piercingLevel: Int
 
     /**
      * The current pickup state of this arrow like object.
      */
-    @get:JvmName("pickup")
-    public val pickup: Pickup
+    @get:JvmName("pickupRule")
+    public val pickupRule: PickupRule
 
     /**
-     * Arrow like pickup state.
+     * A rule that determines whether an arrow like object can be picked up.
      */
-    public enum class Pickup {
+    public enum class PickupRule {
 
+        /**
+         * The arrow like object cannot ever be picked up.
+         */
         DISALLOWED,
+
+        /**
+         * The arrow like object can always be picked up.
+         */
         ALLOWED,
+
+        /**
+         * The arrow like object can only be picked up in creative mode.
+         */
         CREATIVE_ONLY
     }
 }

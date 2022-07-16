@@ -24,14 +24,13 @@ import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.packet.out.play.PacketOutSpawnExperienceOrb
 import org.kryptonmc.krypton.world.KryptonWorld
-import org.kryptonmc.nbt.CompoundTag
 
 class KryptonExperienceOrb(world: KryptonWorld) : KryptonEntity(world, EntityTypes.EXPERIENCE_ORB), ExperienceOrb {
 
-    override var age: Int = 0
+    var age: Int = 0
     override var count: Int = 1
     override var health: Int = 5
-    override var value: Int = 0
+    override var experience: Int = 0
     override var following: KryptonPlayer? = null
 
     override fun getSpawnPacket(): Packet = PacketOutSpawnExperienceOrb(this)

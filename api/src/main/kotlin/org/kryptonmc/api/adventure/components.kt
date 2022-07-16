@@ -60,5 +60,5 @@ public fun Component.toPlainText(): String = PlainTextComponentSerializer.plainT
  * Converts this component to a wrapper for a Brigadier [Message].
  */
 @JvmSynthetic
-@Contract("_ -> new", pure = true)
+@Contract("-> new", pure = true)
 public fun Component.toMessage(): AdventureMessage = AdventureMessage.of(this)

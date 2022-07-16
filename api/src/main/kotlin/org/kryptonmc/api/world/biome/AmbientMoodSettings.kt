@@ -8,18 +8,19 @@
  */
 package org.kryptonmc.api.world.biome
 
-import net.kyori.adventure.util.Buildable
+import net.kyori.adventure.builder.AbstractBuilder
 import org.jetbrains.annotations.ApiStatus
 import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.Krypton
 import org.kryptonmc.api.effect.sound.SoundEvent
+import org.kryptonmc.api.util.Buildable
 import org.kryptonmc.api.util.provide
 
 /**
  * Settings for ambient mood sounds that will play whilst in certain biomes.
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
-public interface AmbientMoodSettings : Buildable<AmbientMoodSettings, AmbientMoodSettings.Builder> {
+public interface AmbientMoodSettings : Buildable<AmbientMoodSettings.Builder, AmbientMoodSettings> {
 
     /**
      * The sound that will be played.
@@ -53,7 +54,7 @@ public interface AmbientMoodSettings : Buildable<AmbientMoodSettings, AmbientMoo
      * A builder for ambient mood settings.
      */
     @BiomeDsl
-    public interface Builder : Buildable.Builder<AmbientMoodSettings> {
+    public interface Builder : AbstractBuilder<AmbientMoodSettings> {
 
         /**
          * Sets the sound for the ambient mood settings.
@@ -123,7 +124,7 @@ public interface AmbientMoodSettings : Buildable<AmbientMoodSettings, AmbientMoo
          * @return new ambient mood sound settings
          */
         @JvmStatic
-        @Contract("_ -> new", pure = true)
+        @Contract("_, _, _, _ -> new", pure = true)
         public fun of(sound: SoundEvent, tickDelay: Int, blockSearchExtent: Int, offset: Double): AmbientMoodSettings =
             FACTORY.of(sound, tickDelay, blockSearchExtent, offset)
 

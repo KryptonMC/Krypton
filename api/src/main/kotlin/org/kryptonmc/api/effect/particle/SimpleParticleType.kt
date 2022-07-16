@@ -27,6 +27,6 @@ public interface SimpleParticleType : ScopedParticleType<SimpleParticleEffectBui
          */
         @JvmStatic
         @Contract("_ -> new", pure = true)
-        public fun of(key: Key): SimpleParticleType = ParticleType.FACTORY.simple(key)
+        public fun of(key: Key): SimpleParticleType = ParticleType.of(key)
     }
 }

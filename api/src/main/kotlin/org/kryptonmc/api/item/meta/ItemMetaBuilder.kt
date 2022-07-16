@@ -47,7 +47,7 @@ public interface ItemMetaBuilder<B : ItemMetaBuilder<B, I>, I : ItemMeta> {
      * @return this builder
      */
     @MetaDsl
-    @Contract("_ -> this", mutates = "this")
+    @Contract("-> this", mutates = "this")
     public fun unbreakable(): B = unbreakable(true)
 
     /**
@@ -189,6 +189,8 @@ public interface ItemMetaBuilder<B : ItemMetaBuilder<B, I>, I : ItemMeta> {
      * @param attributes the attributes
      * @return this builder
      */
+    @MetaDsl
+    @Contract("_ -> this", mutates = "this")
     public fun attributeModifiers(attributes: Set<ItemAttribute>): B
 
     /**
@@ -197,7 +199,7 @@ public interface ItemMetaBuilder<B : ItemMetaBuilder<B, I>, I : ItemMeta> {
      * @return the built item metadata
      */
     @MetaDsl
-    @Contract("_ -> new", pure = true)
+    @Contract("-> new", pure = true)
     public fun build(): I
 
     /**
@@ -211,7 +213,7 @@ public interface ItemMetaBuilder<B : ItemMetaBuilder<B, I>, I : ItemMeta> {
          *
          * @return a new builder
          */
-        @Contract("_ -> new", pure = true)
+        @Contract("-> new", pure = true)
         public fun toBuilder(): T
     }
 }

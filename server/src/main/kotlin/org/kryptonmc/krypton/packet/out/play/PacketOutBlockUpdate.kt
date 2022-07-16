@@ -40,7 +40,7 @@ data class PacketOutBlockUpdate(val block: KryptonBlock, val x: Int, val y: Int,
     private constructor(
         encoded: Long,
         stateId: Int
-    ) : this(BlockLoader.fromState(stateId), encoded.decodeBlockX(), encoded.decodeBlockY(), encoded.decodeBlockZ())
+    ) : this(BlockLoader.fromStateId(stateId), encoded.decodeBlockX(), encoded.decodeBlockY(), encoded.decodeBlockZ())
 
     override fun write(buf: ByteBuf) {
         buf.writeVector(x, y, z)

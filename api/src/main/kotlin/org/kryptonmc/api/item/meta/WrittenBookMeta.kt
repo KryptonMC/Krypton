@@ -123,7 +123,7 @@ public interface WrittenBookMeta : BookMeta<WrittenBookMeta.Builder, WrittenBook
          * @return a new builder
          */
         @JvmStatic
-        @Contract("_ -> new", pure = true)
+        @Contract("-> new", pure = true)
         public fun builder(): Builder = ItemMeta.builder(WrittenBookMeta::class.java)
     }
 }
