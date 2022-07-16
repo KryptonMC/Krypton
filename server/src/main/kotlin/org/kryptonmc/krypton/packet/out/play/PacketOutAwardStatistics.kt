@@ -21,10 +21,11 @@ package org.kryptonmc.krypton.packet.out.play
 import io.netty.buffer.ByteBuf
 import it.unimi.dsi.fastutil.objects.Object2IntMap
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap
-import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.api.statistic.Statistic
 import org.kryptonmc.api.statistic.StatisticType
 import org.kryptonmc.krypton.packet.Packet
+import org.kryptonmc.krypton.registry.KryptonRegistries
+import org.kryptonmc.krypton.registry.downcast
 import org.kryptonmc.krypton.util.readById
 import org.kryptonmc.krypton.util.readMap
 import org.kryptonmc.krypton.util.readVarInt
@@ -43,11 +44,11 @@ data class PacketOutAwardStatistics(val statistics: Object2IntMap<Statistic<*>>)
     }
 }
 
-private fun ByteBuf.readStatistic(): Statistic<*> = readStatistic(readById(Registries.STATISTIC_TYPE)!!)
+private fun ByteBuf.readStatistic(): Statistic<*> = readStatistic(readById(KryptonRegistries.STATISTIC_TYPE)!!)
 
-private fun <T : Any> ByteBuf.readStatistic(type: StatisticType<T>): Statistic<T> = type[readById(type.registry)!!]
+private fun <T : Any> ByteBuf.readStatistic(type: StatisticType<T>): Statistic<T> = type[readById(type.registry.downcast())!!]
 
 private fun <T : Any> ByteBuf.writeStatistic(statistic: Statistic<T>) {
-    writeId(Registries.STATISTIC_TYPE, statistic.type)
-    writeId(statistic.type.registry, statistic.value)
+    writeId(KryptonRegistries.STATISTIC_TYPE, statistic.type)
+    writeId(statistic.type.registry.downcast(), statistic.value)
 }

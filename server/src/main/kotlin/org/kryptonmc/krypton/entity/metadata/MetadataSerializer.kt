@@ -21,10 +21,10 @@ package org.kryptonmc.krypton.entity.metadata
 import io.netty.buffer.ByteBuf
 import org.kryptonmc.api.registry.Registry
 import org.kryptonmc.api.util.CataloguedBy
+import org.kryptonmc.krypton.registry.KryptonRegistry
 import org.kryptonmc.krypton.util.ByteBufReader
 import org.kryptonmc.krypton.util.ByteBufWriter
 import org.kryptonmc.krypton.util.readById
-import org.kryptonmc.krypton.util.readEnum
 import org.kryptonmc.krypton.util.readNullable
 import org.kryptonmc.krypton.util.readVarInt
 import org.kryptonmc.krypton.util.writeEnum
@@ -60,7 +60,7 @@ interface MetadataSerializer<T> {
         fun <E : Enum<E>> simpleEnum(type: Class<E>): MetadataSerializer<E> = simple(ByteBuf::writeEnum) { type.enumConstants[it.readVarInt()] }
 
         @JvmStatic
-        fun <T : Any> simpleId(registry: Registry<T>): MetadataSerializer<T> =
+        fun <T : Any> simpleId(registry: KryptonRegistry<T>): MetadataSerializer<T> =
             simple({ buf, value -> buf.writeId(registry, value) }, { it.readById(registry)!! })
     }
 }

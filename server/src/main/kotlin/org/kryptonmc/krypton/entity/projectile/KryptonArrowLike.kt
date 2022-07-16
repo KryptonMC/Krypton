@@ -32,13 +32,13 @@ abstract class KryptonArrowLike(
     defaultHitGroundSound: SoundEvent = SoundEvents.ARROW_HIT
 ) : KryptonProjectile(world, type), ArrowLike {
 
-    final override var damage: Double = 2.0
+    final override var baseDamage: Double = 2.0
     final override var isInGround: Boolean = false
-    final override var life: Int = 0
-    final override var shakeTime: Int = 0
-    final override var sound: SoundEvent = defaultHitGroundSound
+    var life: Int = 0
+    var shakeTime: Int = 0
+    var sound: SoundEvent = defaultHitGroundSound
     final override var stuckInBlock: Block? = null
-    final override var pickup: ArrowLike.Pickup = ArrowLike.Pickup.DISALLOWED
+    final override var pickupRule: ArrowLike.PickupRule = ArrowLike.PickupRule.DISALLOWED
 
     final override var isCritical: Boolean
         get() = getFlag(0)

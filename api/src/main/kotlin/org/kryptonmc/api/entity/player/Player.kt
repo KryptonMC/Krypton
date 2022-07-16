@@ -314,6 +314,32 @@ public interface Player : LivingEntity, Equipable, PluginMessageRecipient {
     public fun canSee(player: Player): Boolean
 
     /**
+     * Makes this player start gliding (elytra flying).
+     *
+     * This should call the
+     * [org.kryptonmc.api.event.player.PerformActionEvent], which may cause
+     * this action to get cancelled, meaning the player will keep its previous
+     * gliding status.
+     *
+     * This can be verified by checking if [isGliding] returns true, which will
+     * indicate that the player did actually start gliding.
+     */
+    public fun startGliding()
+
+    /**
+     * Makes this player stop gliding (elytra flying).
+     *
+     * This should call the
+     * [org.kryptonmc.api.event.player.PerformActionEvent], which may cause
+     * this action to get cancelled, meaning the player will keep its previous
+     * gliding status.
+     *
+     * This can be verified by checking if [isGliding] returns false, which
+     * will indicate that the player did actually stop gliding.
+     */
+    public fun stopGliding()
+
+    /**
      * Kicks the player with the given text shown
      */
     public fun disconnect(text: Component)

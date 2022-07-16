@@ -26,17 +26,17 @@ public object InventoryTypes {
     @JvmField
     public val CHEST_ONE_ROW: InventoryType = register("chest_one_row", 9, Component.translatable("container.chest"))
     @JvmField
-    public val CHEST_TWO_ROWS: InventoryType = register("chest_two_rows", 18, CHEST_ONE_ROW.defaultTitle)
+    public val CHEST_TWO_ROWS: InventoryType = register("chest_two_rows", 9 * 2, CHEST_ONE_ROW.defaultTitle)
     @JvmField
-    public val CHEST_THREE_ROWS: InventoryType = register("chest_three_rows", 27, CHEST_ONE_ROW.defaultTitle)
+    public val CHEST_THREE_ROWS: InventoryType = register("chest_three_rows", 9 * 3, CHEST_ONE_ROW.defaultTitle)
     @JvmField
-    public val CHEST_FOUR_ROWS: InventoryType = register("chest_four_rows", 36, Component.translatable("container.chestDouble"))
+    public val CHEST_FOUR_ROWS: InventoryType = register("chest_four_rows", 9 * 4, Component.translatable("container.chestDouble"))
     @JvmField
-    public val CHEST_FIVE_ROWS: InventoryType = register("chest_five_rows", 45, CHEST_FOUR_ROWS.defaultTitle)
+    public val CHEST_FIVE_ROWS: InventoryType = register("chest_five_rows", 9 * 5, CHEST_FOUR_ROWS.defaultTitle)
     @JvmField
-    public val CHEST_SIX_ROWS: InventoryType = register("chest_six_rows", 54, CHEST_FOUR_ROWS.defaultTitle)
+    public val CHEST_SIX_ROWS: InventoryType = register("chest_six_rows", 9 * 6, CHEST_FOUR_ROWS.defaultTitle)
     @JvmField
-    public val GENERIC_3x3: InventoryType = register("generic_3x3", 9, Component.translatable("container.dispenser"))
+    public val GENERIC_3x3: InventoryType = register("generic_3x3", 3 * 3, Component.translatable("container.dispenser"))
     @JvmField
     public val ANVIL: InventoryType = register("anvil", 3, Component.translatable("container.repair"))
     @JvmField
@@ -46,7 +46,7 @@ public object InventoryTypes {
     @JvmField
     public val BREWING_STAND: InventoryType = register("brewing_stand", 5, Component.translatable("container"))
     @JvmField
-    public val CRAFTING_TABLE: InventoryType = register("crafting", 10, Component.translatable("container.crafting"))
+    public val CRAFTING_TABLE: InventoryType = register("crafting", 3 * 3 + 1, Component.translatable("container.crafting"))
     @JvmField
     public val ENCHANTING_TABLE: InventoryType = register("enchantment", 2, Component.translatable("container.enchant"))
     @JvmField
@@ -62,7 +62,7 @@ public object InventoryTypes {
     @JvmField
     public val MERCHANT: InventoryType = register("merchant", 3, Component.translatable("merchant.trades"))
     @JvmField
-    public val SHULKER_BOX: InventoryType = register("shulker_box", 27, Component.translatable("container.shulkerBox"))
+    public val SHULKER_BOX: InventoryType = register("shulker_box", 9 * 3, Component.translatable("container.shulkerBox"))
     @JvmField
     public val SMITHING_TABLE: InventoryType = register("smithing", 3, Component.translatable("container.upgrade"))
     @JvmField

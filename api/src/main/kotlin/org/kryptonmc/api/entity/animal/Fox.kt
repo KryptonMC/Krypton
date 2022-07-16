@@ -8,7 +8,7 @@
  */
 package org.kryptonmc.api.entity.animal
 
-import org.kryptonmc.api.entity.animal.type.FoxType
+import org.kryptonmc.api.entity.animal.type.FoxVariant
 import java.util.UUID
 
 /**
@@ -18,10 +18,10 @@ import java.util.UUID
 public interface Fox : Animal {
 
     /**
-     * The fox type of this fox.
+     * The variant of this fox.
      */
-    @get:JvmName("foxType")
-    public var foxType: FoxType
+    @get:JvmName("variant")
+    public var variant: FoxVariant
 
     /**
      * If this fox is currently sitting.

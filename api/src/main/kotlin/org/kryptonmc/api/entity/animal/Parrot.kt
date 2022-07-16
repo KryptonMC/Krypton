@@ -8,7 +8,7 @@
  */
 package org.kryptonmc.api.entity.animal
 
-import org.kryptonmc.api.entity.animal.type.ParrotType
+import org.kryptonmc.api.entity.animal.type.ParrotVariant
 
 /**
  * A parrot.
@@ -17,8 +17,8 @@ import org.kryptonmc.api.entity.animal.type.ParrotType
 public interface Parrot : Tamable {
 
     /**
-     * The type of this parrot.
+     * The variant of this parrot.
      */
-    @get:JvmName("parrotType")
-    public var parrotType: ParrotType
+    @get:JvmName("variant")
+    public var variant: ParrotVariant
 }

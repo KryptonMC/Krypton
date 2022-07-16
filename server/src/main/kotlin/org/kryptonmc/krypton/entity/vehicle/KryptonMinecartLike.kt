@@ -22,7 +22,6 @@ import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.block.Blocks
 import org.kryptonmc.api.entity.EntityType
 import org.kryptonmc.api.entity.vehicle.MinecartLike
-import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.krypton.entity.KryptonEntity
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
@@ -37,11 +36,14 @@ abstract class KryptonMinecartLike(world: KryptonWorld, type: EntityType<out Min
     override var damageTaken: Float
         get() = data[MetadataKeys.MINECART_LIKE.DAMAGE]
         set(value) = data.set(MetadataKeys.MINECART_LIKE.DAMAGE, value)
+    override var damageTimer: Int
+        get() = data[MetadataKeys.MINECART_LIKE.HURT_TIMER]
+        set(value) = data.set(MetadataKeys.MINECART_LIKE.HURT_TIMER, value)
     override var hasCustomBlock: Boolean
         get() = data[MetadataKeys.MINECART_LIKE.SHOW_CUSTOM_BLOCK]
         set(value) = data.set(MetadataKeys.MINECART_LIKE.SHOW_CUSTOM_BLOCK, value)
     override var customBlock: Block
-        get() = if (!hasCustomBlock) defaultCustomBlock else BlockLoader.fromState(data[MetadataKeys.MINECART_LIKE.CUSTOM_BLOCK_ID])
+        get() = if (!hasCustomBlock) defaultCustomBlock else BlockLoader.fromStateId(data[MetadataKeys.MINECART_LIKE.CUSTOM_BLOCK_ID])
         set(value) {
             data[MetadataKeys.MINECART_LIKE.CUSTOM_BLOCK_ID] = value.downcast().stateId
             hasCustomBlock = value !== defaultCustomBlock
@@ -52,9 +54,6 @@ abstract class KryptonMinecartLike(world: KryptonWorld, type: EntityType<out Min
             data[MetadataKeys.MINECART_LIKE.CUSTOM_BLOCK_OFFSET] = value
             hasCustomBlock = value != defaultCustomBlockOffset
         }
-    private var hurtTimer: Int
-        get() = data[MetadataKeys.MINECART_LIKE.HURT_TIMER]
-        set(value) = data.set(MetadataKeys.MINECART_LIKE.HURT_TIMER, value)
     private var hurtDirection: Int
         get() = data[MetadataKeys.MINECART_LIKE.HURT_DIRECTION]
         set(value) = data.set(MetadataKeys.MINECART_LIKE.HURT_DIRECTION, value)
@@ -77,7 +76,7 @@ abstract class KryptonMinecartLike(world: KryptonWorld, type: EntityType<out Min
         if (isRemoved) return true
         if (isInvulnerableTo(source)) return false
         hurtDirection = -hurtDirection
-        hurtTimer = 10
+        damageTimer = 10
         markDamaged()
         damageTaken += damage * 10F
         val canInstantlyBuild = source is KryptonEntityDamageSource && source.entity is KryptonPlayer && source.entity.canInstantlyBuild

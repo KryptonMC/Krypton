@@ -211,7 +211,7 @@ public interface FireworkEffect : Buildable<FireworkEffect, FireworkEffect.Build
          * @return this builder
          */
         @FireworkEffectDsl
-        @Contract("_ -> this", mutates = "this")
+        @Contract("-> this", mutates = "this")
         public fun flickers(): Builder = flicker(true)
 
         /**
@@ -230,7 +230,7 @@ public interface FireworkEffect : Buildable<FireworkEffect, FireworkEffect.Build
          * @return this builder
          */
         @FireworkEffectDsl
-        @Contract("_ -> this", mutates = "this")
+        @Contract("-> this", mutates = "this")
         public fun trail(): Builder = trail(true)
 
         /**

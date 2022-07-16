@@ -26,8 +26,8 @@ import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.assertThrows
 import org.kryptonmc.api.item.ItemTypes
 import org.kryptonmc.api.item.item
-import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.krypton.item.KryptonItemStack
+import org.kryptonmc.krypton.registry.KryptonRegistries
 import org.kryptonmc.krypton.util.Bootstrap
 import org.kryptonmc.krypton.util.readAllAvailableBytes
 import org.kryptonmc.krypton.util.readAvailableBytes
@@ -215,7 +215,7 @@ class ByteBufTests {
         } as KryptonItemStack
         buffer.writeItem(item)
         assertEquals(true, buffer.readBoolean())
-        assertEquals(Registries.ITEM.idOf(ItemTypes.STONE), buffer.readVarInt())
+        assertEquals(KryptonRegistries.ITEM.idOf(ItemTypes.STONE), buffer.readVarInt())
         assertEquals(3, buffer.readByte())
         assertEquals(item.meta.data, buffer.readNBT())
     }
@@ -233,7 +233,7 @@ class ByteBufTests {
             meta { name(Component.text("Hello World!")) }
         } as KryptonItemStack
         buffer.writeBoolean(true)
-        buffer.writeVarInt(Registries.ITEM.idOf(ItemTypes.STONE))
+        buffer.writeVarInt(KryptonRegistries.ITEM.idOf(ItemTypes.STONE))
         buffer.writeByte(3)
         buffer.writeNBT(item.meta.data)
         assertEquals(item, buffer.readItem())

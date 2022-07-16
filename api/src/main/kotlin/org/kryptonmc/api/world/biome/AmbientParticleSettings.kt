@@ -8,19 +8,20 @@
  */
 package org.kryptonmc.api.world.biome
 
-import net.kyori.adventure.util.Buildable
+import net.kyori.adventure.builder.AbstractBuilder
 import org.jetbrains.annotations.ApiStatus
 import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.Krypton
 import org.kryptonmc.api.effect.particle.ParticleType
 import org.kryptonmc.api.effect.particle.data.ParticleData
+import org.kryptonmc.api.util.Buildable
 import org.kryptonmc.api.util.provide
 
 /**
  * Settings for ambient particles in biomes.
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
-public interface AmbientParticleSettings : Buildable<AmbientParticleSettings, AmbientParticleSettings.Builder> {
+public interface AmbientParticleSettings : Buildable<AmbientParticleSettings.Builder, AmbientParticleSettings> {
 
     /**
      * The type of the particle for these settings.
@@ -50,7 +51,7 @@ public interface AmbientParticleSettings : Buildable<AmbientParticleSettings, Am
      * particle type will throw an [IllegalStateException].
      */
     @BiomeDsl
-    public interface Builder : Buildable.Builder<AmbientParticleSettings> {
+    public interface Builder : AbstractBuilder<AmbientParticleSettings> {
 
         /**
          * Sets the type of the particle for the ambient particle settings to
@@ -87,7 +88,7 @@ public interface AmbientParticleSettings : Buildable<AmbientParticleSettings, Am
          * @see Builder.data
          */
         @BiomeDsl
-        @Contract("_ -> this", mutates = "this")
+        @Contract("_, _ -> this", mutates = "this")
         public fun particle(type: ParticleType, data: ParticleData?): Builder
 
         /**
@@ -124,7 +125,7 @@ public interface AmbientParticleSettings : Buildable<AmbientParticleSettings, Am
          * @return new ambient particle settings
          */
         @JvmStatic
-        @Contract("_ -> new", pure = true)
+        @Contract("_, _, _ -> new", pure = true)
         public fun of(type: ParticleType, data: ParticleData?, probability: Float): AmbientParticleSettings = FACTORY.of(type, data, probability)
 
         /**

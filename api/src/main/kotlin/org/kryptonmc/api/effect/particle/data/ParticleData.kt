@@ -11,7 +11,7 @@ package org.kryptonmc.api.effect.particle.data
 import org.jetbrains.annotations.ApiStatus
 import org.kryptonmc.api.Krypton
 import org.kryptonmc.api.block.Block
-import org.kryptonmc.api.item.ItemType
+import org.kryptonmc.api.item.ItemStack
 import org.kryptonmc.api.util.Color
 import org.kryptonmc.api.util.provide
 import org.spongepowered.math.vector.Vector3d
@@ -27,7 +27,7 @@ public interface ParticleData {
 
         public fun directional(direction: Vector3d?, velocity: Float): DirectionalParticleData
 
-        public fun item(item: ItemType): ItemParticleData
+        public fun item(item: ItemStack): ItemParticleData
 
         public fun block(block: Block): BlockParticleData
 

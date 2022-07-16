@@ -30,7 +30,7 @@ public interface WritableBookMeta : BookMeta<WritableBookMeta.Builder, WritableB
          * @return a new builder
          */
         @JvmStatic
-        @Contract("_ -> new", pure = true)
+        @Contract("-> new", pure = true)
         public fun builder(): Builder = ItemMeta.builder(WritableBookMeta::class.java)
     }
 }

@@ -29,24 +29,25 @@ import org.kryptonmc.api.effect.particle.NoteParticleType
 import org.kryptonmc.api.effect.particle.ParticleType
 import org.kryptonmc.api.effect.particle.SimpleParticleType
 import org.kryptonmc.api.effect.particle.VibrationParticleType
+import java.util.function.Function
+import java.util.function.Supplier
 
 object KryptonParticleTypeFactory : ParticleType.Factory {
 
-    override fun block(key: Key): BlockParticleType = KryptonBlockParticleType(key)
+    private val FACTORIES = mapOf<Class<out ParticleType>, Function<Key, out ParticleType>>(
+        BlockParticleType::class.java to Function(::KryptonBlockParticleType),
+        ColorParticleType::class.java to Function(::KryptonColorParticleType),
+        DirectionalParticleType::class.java to Function(::KryptonDirectionalParticleType),
+        DustParticleType::class.java to Function(::KryptonDustParticleType),
+        DustTransitionParticleType::class.java to Function(::KryptonDustTransitionParticleType),
+        ItemParticleType::class.java to Function(::KryptonItemParticleType),
+        NoteParticleType::class.java to Function(::KryptonNoteParticleType),
+        SimpleParticleType::class.java to Function(::KryptonSimpleParticleType),
+        VibrationParticleType::class.java to Function(::KryptonVibrationParticleType)
+    )
 
-    override fun color(key: Key): ColorParticleType = KryptonColorParticleType(key)
-
-    override fun directional(key: Key): DirectionalParticleType = KryptonDirectionalParticleType(key)
-
-    override fun dust(key: Key): DustParticleType = KryptonDustParticleType(key)
-
-    override fun dustTransition(key: Key): DustTransitionParticleType = KryptonDustTransitionParticleType(key)
-
-    override fun item(key: Key): ItemParticleType = KryptonItemParticleType(key)
-
-    override fun note(key: Key): NoteParticleType = KryptonNoteParticleType(key)
-
-    override fun simple(key: Key): SimpleParticleType = KryptonSimpleParticleType(key)
-
-    override fun vibration(key: Key): VibrationParticleType = KryptonVibrationParticleType(key)
+    @Suppress("UNCHECKED_CAST")
+    override fun <T : ParticleType> of(type: Class<T>, key: Key): T = requireNotNull(FACTORIES[type]) {
+        "Could not find factory for type $type!"
+    }.apply(key) as T
 }

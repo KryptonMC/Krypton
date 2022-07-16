@@ -8,13 +8,14 @@
  */
 package org.kryptonmc.api.world.biome
 
-import net.kyori.adventure.util.Buildable
+import net.kyori.adventure.builder.AbstractBuilder
 import org.jetbrains.annotations.ApiStatus
 import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.Krypton
 import org.kryptonmc.api.effect.Music
 import org.kryptonmc.api.effect.particle.ParticleType
 import org.kryptonmc.api.effect.sound.SoundEvent
+import org.kryptonmc.api.util.Buildable
 import org.kryptonmc.api.util.Color
 import org.kryptonmc.api.util.provide
 import java.util.function.Consumer
@@ -24,7 +25,7 @@ import java.util.function.Consumer
  * ambient particles, sounds, and music.
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
-public interface BiomeEffects : Buildable<BiomeEffects, BiomeEffects.Builder> {
+public interface BiomeEffects : Buildable<BiomeEffects.Builder, BiomeEffects> {
 
     /**
      * The colour that fog will appear when in the biome.
@@ -124,7 +125,7 @@ public interface BiomeEffects : Buildable<BiomeEffects, BiomeEffects.Builder> {
      * A builder for biome effects.
      */
     @BiomeDsl
-    public interface Builder : Buildable.Builder<BiomeEffects> {
+    public interface Builder : AbstractBuilder<BiomeEffects> {
 
         /**
          * Sets the fog colour of the biome effects to the given [color].
@@ -228,7 +229,7 @@ public interface BiomeEffects : Buildable<BiomeEffects, BiomeEffects.Builder> {
          */
         @BiomeDsl
         @JvmSynthetic
-        @Contract("_ -> this", mutates = "this")
+        @Contract("_, _ -> this", mutates = "this")
         public fun particles(type: ParticleType, builder: AmbientParticleSettings.Builder.() -> Unit): Builder =
             particles(AmbientParticleSettings.builder(type).apply(builder).build())
 
@@ -243,7 +244,7 @@ public interface BiomeEffects : Buildable<BiomeEffects, BiomeEffects.Builder> {
          * @see BiomeEffects.ambientParticleSettings
          */
         @BiomeDsl
-        @Contract("_ -> this", mutates = "this")
+        @Contract("_, _ -> this", mutates = "this")
         public fun particles(type: ParticleType, builder: Consumer<AmbientParticleSettings.Builder>): Builder =
             particles(type) { builder.accept(this) }
 
@@ -283,7 +284,7 @@ public interface BiomeEffects : Buildable<BiomeEffects, BiomeEffects.Builder> {
          */
         @BiomeDsl
         @JvmSynthetic
-        @Contract("_ -> this", mutates = "this")
+        @Contract("_, _ -> this", mutates = "this")
         public fun mood(sound: SoundEvent, builder: AmbientMoodSettings.Builder.() -> Unit): Builder =
             mood(AmbientMoodSettings.builder(sound).apply(builder).build())
 
@@ -298,7 +299,7 @@ public interface BiomeEffects : Buildable<BiomeEffects, BiomeEffects.Builder> {
          * @see BiomeEffects.ambientMoodSettings
          */
         @BiomeDsl
-        @Contract("_ -> this", mutates = "this")
+        @Contract("_, _ -> this", mutates = "this")
         public fun mood(sound: SoundEvent, builder: Consumer<AmbientMoodSettings.Builder>): Builder = mood(sound) { builder.accept(this) }
 
         /**
@@ -325,7 +326,7 @@ public interface BiomeEffects : Buildable<BiomeEffects, BiomeEffects.Builder> {
          */
         @BiomeDsl
         @JvmSynthetic
-        @Contract("_ -> this", mutates = "this")
+        @Contract("_, _ -> this", mutates = "this")
         public fun additions(sound: SoundEvent, builder: AmbientAdditionsSettings.Builder.() -> Unit): Builder =
             additions(AmbientAdditionsSettings.builder(sound).apply(builder).build())
 
@@ -340,7 +341,7 @@ public interface BiomeEffects : Buildable<BiomeEffects, BiomeEffects.Builder> {
          * @see BiomeEffects.ambientAdditionsSettings
          */
         @BiomeDsl
-        @Contract("_ -> this", mutates = "this")
+        @Contract("_, _ -> this", mutates = "this")
         public fun additions(sound: SoundEvent, builder: Consumer<AmbientAdditionsSettings.Builder>): Builder =
             additions(sound) { builder.accept(this) }
 
@@ -372,7 +373,7 @@ public interface BiomeEffects : Buildable<BiomeEffects, BiomeEffects.Builder> {
          * @return a new builder
          */
         @JvmStatic
-        @Contract("_ -> new", pure = true)
+        @Contract("-> new", pure = true)
         public fun builder(): Builder = FACTORY.builder()
     }
 }

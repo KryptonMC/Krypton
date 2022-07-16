@@ -20,7 +20,7 @@ package org.kryptonmc.krypton.entity.vehicle
 
 import org.kryptonmc.api.entity.EntityTypes
 import org.kryptonmc.api.entity.vehicle.Boat
-import org.kryptonmc.api.entity.vehicle.BoatType
+import org.kryptonmc.api.entity.vehicle.BoatVariant
 import org.kryptonmc.krypton.entity.KryptonEntity
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.world.KryptonWorld
@@ -28,8 +28,8 @@ import org.kryptonmc.krypton.world.damage.KryptonDamageSource
 
 class KryptonBoat(world: KryptonWorld) : KryptonEntity(world, EntityTypes.BOAT), Boat {
 
-    override var boatType: BoatType
-        get() = TYPES.getOrNull(data[MetadataKeys.BOAT.TYPE]) ?: BoatType.OAK
+    override var variant: BoatVariant
+        get() = TYPES.getOrNull(data[MetadataKeys.BOAT.TYPE]) ?: BoatVariant.OAK
         set(value) = data.set(MetadataKeys.BOAT.TYPE, value.ordinal)
     override var damageTaken: Float
         get() = data[MetadataKeys.BOAT.DAMAGE]
@@ -51,7 +51,7 @@ class KryptonBoat(world: KryptonWorld) : KryptonEntity(world, EntityTypes.BOAT),
         data.add(MetadataKeys.BOAT.HURT_TIMER, 0)
         data.add(MetadataKeys.BOAT.HURT_DIRECTION, 1)
         data.add(MetadataKeys.BOAT.DAMAGE, 0F)
-        data.add(MetadataKeys.BOAT.TYPE, BoatType.OAK.ordinal)
+        data.add(MetadataKeys.BOAT.TYPE, BoatVariant.OAK.ordinal)
         data.add(MetadataKeys.BOAT.LEFT_PADDLE_TURNING, false)
         data.add(MetadataKeys.BOAT.RIGHT_PADDLE_TURNING, false)
         data.add(MetadataKeys.BOAT.SPLASH_TIMER, 0)
@@ -69,6 +69,6 @@ class KryptonBoat(world: KryptonWorld) : KryptonEntity(world, EntityTypes.BOAT),
 
     companion object {
 
-        internal val TYPES = BoatType.values()
+        internal val TYPES = BoatVariant.values()
     }
 }

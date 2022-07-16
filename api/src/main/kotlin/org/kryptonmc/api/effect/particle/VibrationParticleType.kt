@@ -28,6 +28,6 @@ public interface VibrationParticleType : ScopedParticleType<VibrationParticleEff
          */
         @JvmStatic
         @Contract("_ -> new", pure = true)
-        public fun of(key: Key): VibrationParticleType = ParticleType.FACTORY.vibration(key)
+        public fun of(key: Key): VibrationParticleType = ParticleType.of(key)
     }
 }

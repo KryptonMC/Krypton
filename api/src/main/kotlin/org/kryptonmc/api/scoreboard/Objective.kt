@@ -8,12 +8,13 @@
  */
 package org.kryptonmc.api.scoreboard
 
+import net.kyori.adventure.builder.AbstractBuilder
 import net.kyori.adventure.text.Component
-import net.kyori.adventure.util.Buildable
 import org.jetbrains.annotations.ApiStatus
 import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.Krypton
 import org.kryptonmc.api.scoreboard.criteria.Criterion
+import org.kryptonmc.api.util.Buildable
 import org.kryptonmc.api.util.provide
 
 /**
@@ -21,7 +22,7 @@ import org.kryptonmc.api.util.provide
  * and information about what it's called and how it should be rendered.
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
-public interface Objective : Buildable<Objective, Objective.Builder> {
+public interface Objective : Buildable<Objective.Builder, Objective> {
 
     /**
      * The name of this objective.
@@ -52,7 +53,7 @@ public interface Objective : Buildable<Objective, Objective.Builder> {
      * A builder for objectives.
      */
     @ScoreboardDsl
-    public interface Builder : Buildable.Builder<Objective> {
+    public interface Builder : AbstractBuilder<Objective> {
 
         /**
          * Sets the name of the objective to the given [name].
@@ -113,7 +114,7 @@ public interface Objective : Buildable<Objective, Objective.Builder> {
          * @return a new builder
          */
         @JvmStatic
-        @Contract("-> new", pure = true)
+        @Contract("_, _ -> new", pure = true)
         public fun builder(name: String, criterion: Criterion): Builder = FACTORY.builder(name, criterion)
     }
 }

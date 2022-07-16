@@ -8,11 +8,8 @@
  */
 package org.kryptonmc.api.effect.particle
 
-import org.jetbrains.annotations.ApiStatus
-import org.jetbrains.annotations.Contract
-import org.kryptonmc.api.Krypton
+import org.kryptonmc.api.effect.particle.builder.BaseParticleEffectBuilder
 import org.kryptonmc.api.effect.particle.data.ParticleData
-import org.kryptonmc.api.util.provide
 import org.spongepowered.math.vector.Vector3d
 
 /**
@@ -20,6 +17,9 @@ import org.spongepowered.math.vector.Vector3d
  *
  * This effect is entirely immutable, and so is safe for both storage and
  * reuse.
+ *
+ * Effect instances can only be created through particle effect builders (any
+ * subclass of [BaseParticleEffectBuilder]).
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
 public interface ParticleEffect {
@@ -31,7 +31,7 @@ public interface ParticleEffect {
     public val type: ParticleType
 
     /**
-     * The amount of this effect that should be spawned. Must be >= 1.
+     * The amount of this effect that should be spawned.
      */
     @get:JvmName("quantity")
     public val quantity: Int
@@ -57,32 +57,4 @@ public interface ParticleEffect {
      */
     @get:JvmName("data")
     public val data: ParticleData?
-
-    @ApiStatus.Internal
-    public interface Factory {
-
-        public fun of(type: ParticleType, quantity: Int, offset: Vector3d, longDistance: Boolean, data: ParticleData?): ParticleEffect
-    }
-
-    public companion object {
-
-        private val FACTORY = Krypton.factoryProvider.provide<Factory>()
-
-        /**
-         * Creates a new particle effect with the given values.
-         *
-         * @param type the type of the effect
-         * @param quantity the amount of the effect to be spawned
-         * @param offset the offset of the effect from the centre
-         * @param longDistance if the distance is long
-         * @param data optional type-specific data
-         * @throws IllegalArgumentException if the [quantity] is less than 1
-         * @return a new particle effect
-         */
-        @JvmOverloads
-        @JvmStatic
-        @Contract("_ -> new", pure = true)
-        public fun of(type: ParticleType, quantity: Int, offset: Vector3d, longDistance: Boolean, data: ParticleData? = null): ParticleEffect =
-            FACTORY.of(type, quantity, offset, longDistance, data)
-    }
 }

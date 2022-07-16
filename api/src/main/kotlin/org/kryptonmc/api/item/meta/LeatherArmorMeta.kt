@@ -57,7 +57,7 @@ public interface LeatherArmorMeta : ScopedItemMeta<LeatherArmorMeta.Builder, Lea
          * @return a new builder
          */
         @JvmStatic
-        @Contract("_ -> new", pure = true)
+        @Contract("-> new", pure = true)
         public fun builder(): Builder = ItemMeta.builder(LeatherArmorMeta::class.java)
     }
 }

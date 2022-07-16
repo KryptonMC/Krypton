@@ -10,7 +10,7 @@ package org.kryptonmc.api.effect.particle.builder
 
 import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.effect.particle.ParticleDsl
-import org.kryptonmc.api.item.ItemType
+import org.kryptonmc.api.item.ItemStack
 
 /**
  * A builder for building item particle effects.
@@ -24,5 +24,5 @@ public interface ItemParticleEffectBuilder : BaseParticleEffectBuilder<ItemParti
      */
     @ParticleDsl
     @Contract("_ -> this", mutates = "this")
-    public fun item(item: ItemType): ItemParticleEffectBuilder
+    public fun item(item: ItemStack): ItemParticleEffectBuilder
 }

@@ -110,7 +110,7 @@ public interface BanService {
      * @param expirationDate the date when the ban expires
      * @return a new profile ban for the profile
      */
-    @Contract("_ -> new", pure = true)
+    @Contract("_, _, _, _ -> new", pure = true)
     public fun createProfileBan(profile: GameProfile, source: Component, reason: Component?, expirationDate: OffsetDateTime?): Ban =
         createBuilder(BanTypes.PROFILE).profile(profile).expirationDate(expirationDate).build()
 
@@ -124,7 +124,7 @@ public interface BanService {
      * @param expirationDate the date when the ban expires
      * @return a new IP ban for the IP address
      */
-    @Contract("_ -> new", pure = true)
+    @Contract("_, _, _, _ -> new", pure = true)
     public fun createIPBan(address: InetAddress, source: Component, reason: Component?, expirationDate: OffsetDateTime?): Ban =
         createBuilder(BanTypes.PROFILE).address(address).expirationDate(expirationDate).build()
 }

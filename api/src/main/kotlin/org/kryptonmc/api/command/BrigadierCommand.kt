@@ -70,5 +70,6 @@ public interface BrigadierCommand : Command {
  * @return the built Brigadier command
  */
 @JvmSynthetic
+@Contract("_, _ -> new", pure = true)
 public inline fun brigadierCommand(literal: String, builder: LiteralArgumentBuilder<Sender>.() -> Unit): BrigadierCommand =
     BrigadierCommand.of(LiteralArgumentBuilder.literal<Sender>(literal).apply(builder).build())

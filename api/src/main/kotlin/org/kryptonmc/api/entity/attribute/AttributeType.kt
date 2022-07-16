@@ -84,7 +84,7 @@ public interface AttributeType : TranslationHolder, Keyed {
          * @return a new type of attribute
          */
         @JvmStatic
-        @Contract("_ -> new", pure = true)
+        @Contract("_, _, _, _, _ -> new", pure = true)
         public fun of(key: Key, defaultBase: Double, minimum: Double, maximum: Double, sendToClient: Boolean): AttributeType =
             of(key, defaultBase, minimum, maximum, sendToClient, translatable("attribute.name.${key.value()}"))
 
@@ -99,7 +99,7 @@ public interface AttributeType : TranslationHolder, Keyed {
          * @return a new type of attribute
          */
         @JvmStatic
-        @Contract("_ -> new", pure = true)
+        @Contract("_, _, _, _, _, _ -> new", pure = true)
         public fun of(
             key: Key,
             defaultBase: Double,

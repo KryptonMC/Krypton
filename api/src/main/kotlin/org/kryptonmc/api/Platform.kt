@@ -29,15 +29,6 @@ public interface Platform {
     public val version: String
 
     /**
-     * If the platform is considered "stable".
-     *
-     * What counts as "stable" will vary from platform to platform, but
-     * generally, it should be defined by
-     * [semantic versioning](https://semver.org/).
-     */
-    public val isStable: Boolean
-
-    /**
      * The version of vanilla Minecraft that this platform targets.
      */
     @get:JvmName("minecraftVersion")

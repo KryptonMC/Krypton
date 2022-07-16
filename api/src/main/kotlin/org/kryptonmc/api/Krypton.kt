@@ -12,36 +12,24 @@ import org.kryptonmc.api.registry.RegistryManager
 import org.kryptonmc.api.tags.TagManager
 import org.kryptonmc.api.util.FactoryProvider
 
-/**
- * The static singleton accessor for various managers in Krypton that need to
- * be statically accessible.
- *
- * Not recommended for usage. Please prefer the dependency injection methods
- * or the various static accessors to work with these types.
- */
-public object Krypton {
+internal object Krypton {
 
-    /**
-     * The registry manager for the server.
-     */
     @JvmStatic
-    public val registryManager: RegistryManager
-        @JvmName("registryManager") get() = internalRegistryManager!!
+    @get:JvmSynthetic
+    internal val registryManager: RegistryManager
+        get() = internalRegistryManager!!
 
-    /**
-     * The tag manager for the server.
-     */
     @JvmStatic
-    public val tagManager: TagManager
-        @JvmName("tagManager") get() = internalTagManager!!
+    @get:JvmSynthetic
+    internal val tagManager: TagManager
+        get() = internalTagManager!!
 
-    /**
-     * The factory provider for the server.
-     */
     @JvmStatic
-    public val factoryProvider: FactoryProvider
-        @JvmName("factoryProvider") get() = internalFactoryProvider!!
+    @get:JvmSynthetic
+    internal val factoryProvider: FactoryProvider
+        get() = internalFactoryProvider!!
 
+    // Implementation note: All three of these need to be set reflectively.
     @JvmStatic
     private var internalFactoryProvider: FactoryProvider? = null
     @JvmStatic

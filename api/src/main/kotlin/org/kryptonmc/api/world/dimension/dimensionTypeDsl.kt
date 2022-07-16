@@ -27,6 +27,6 @@ internal annotation class DimensionTypeDsl
  * @return a new dimension type
  */
 @DimensionTypeDsl
-@Contract("_ -> new", pure = true)
+@Contract("_, _ -> new", pure = true)
 public inline fun dimensionType(key: Key, builder: DimensionType.Builder.() -> Unit): DimensionType =
     DimensionType.builder(key).apply(builder).build()

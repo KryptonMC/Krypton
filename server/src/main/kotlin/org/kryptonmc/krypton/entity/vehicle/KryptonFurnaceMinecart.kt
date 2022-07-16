@@ -20,14 +20,14 @@ package org.kryptonmc.krypton.entity.vehicle
 
 import org.kryptonmc.api.entity.EntityTypes
 import org.kryptonmc.api.entity.vehicle.FurnaceMinecart
-import org.kryptonmc.api.entity.vehicle.MinecartType
+import org.kryptonmc.api.entity.vehicle.MinecartVariant
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.world.KryptonWorld
 
 class KryptonFurnaceMinecart(world: KryptonWorld) : KryptonMinecartLike(world, EntityTypes.FURNACE_MINECART), FurnaceMinecart {
 
-    override val minecartType: MinecartType
-        get() = MinecartType.FURNACE
+    override val variant: MinecartVariant
+        get() = MinecartVariant.FURNACE
     override var hasFuel: Boolean
         get() = data[MetadataKeys.FURNACE_MINECART.HAS_FUEL]
         set(value) = data.set(MetadataKeys.FURNACE_MINECART.HAS_FUEL, value)

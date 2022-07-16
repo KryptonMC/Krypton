@@ -77,6 +77,13 @@ public object Properties {
     @JvmField
     public val AGE_3: Property<Int> = Property.forInt("age", 0..3)
 
+    /**
+     * The current age of the block this property is applied to. This is a
+     * generic property for certain types of plants. This has a range of 0-4.
+     *
+     * This is applicable to:
+     * - [Mangrove Propagules][Blocks.MANGROVE_PROPAGULE] - see [here](https://minecraft.fandom.com/wiki/Sapling#Block_states)
+     */
     @JvmField
     public val AGE_4: Property<Int> = Property.forInt("age", 0..4)
 
@@ -197,6 +204,10 @@ public object Properties {
     @JvmField
     public val BITES: Property<Int> = Property.forInt("bites", 0..6)
 
+    /**
+     * Whether the [Sculk Catalyst][Blocks.SCULK_CATALYST] this property is
+     * applied to is actively spreading sculk or not.
+     */
     @JvmField
     public val BLOOM: Property<Boolean> = Property.forBoolean("bloom")
 
@@ -214,6 +225,11 @@ public object Properties {
     @JvmField
     public val CANDLES: Property<Int> = Property.forInt("candles", 1..4)
 
+    /**
+     * Whether the [Sculk Shrieker][Blocks.SCULK_SHRIEKER] this property is
+     * applied to can summon a warden if the warning level reaches the
+     * spawning threshold or not.
+     */
     @JvmField
     public val CAN_SUMMON: Property<Boolean> = Property.forBoolean("can_summon")
 
@@ -735,6 +751,10 @@ public object Properties {
     @JvmField
     public val SHORT: Property<Boolean> = Property.forBoolean("short")
 
+    /**
+     * Whether the [Sculk Shrieker][Blocks.SCULK_SHRIEKER] this property is
+     * applied to is shrieking or not, which will happen when it is stepped on.
+     */
     @JvmField
     public val SHRIEKING: Property<Boolean> = Property.forBoolean("shrieking")
 

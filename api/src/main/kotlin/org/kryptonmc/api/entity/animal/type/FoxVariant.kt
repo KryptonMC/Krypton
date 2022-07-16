@@ -6,18 +6,13 @@
  * This project is licensed under the terms of the MIT license.
  * For more details, please reference the LICENSE file in the api top-level directory.
  */
-package org.kryptonmc.api.entity.vehicle
+package org.kryptonmc.api.entity.animal.type
 
 /**
- * A type of Minecart.
+ * A variant of fox.
  */
-public enum class MinecartType {
+public enum class FoxVariant {
 
-    RIDEABLE,
-    CHEST,
-    FURNACE,
-    TNT,
-    SPAWNER,
-    HOPPER,
-    COMMAND_BLOCK
+    RED,
+    SNOW
 }

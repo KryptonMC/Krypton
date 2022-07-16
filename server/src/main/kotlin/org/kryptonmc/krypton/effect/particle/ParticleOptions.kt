@@ -21,14 +21,14 @@ package org.kryptonmc.krypton.effect.particle
 import io.netty.buffer.ByteBuf
 import org.kryptonmc.api.effect.particle.ParticleType
 import org.kryptonmc.api.effect.particle.data.ParticleData
-import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.krypton.network.Writable
+import org.kryptonmc.krypton.registry.KryptonRegistries
 import org.kryptonmc.krypton.util.readById
 
 @JvmRecord
 data class ParticleOptions(val type: ParticleType, val data: ParticleData?) : Writable {
 
-    constructor(buf: ByteBuf) : this(buf, buf.readById(Registries.PARTICLE_TYPE)!!)
+    constructor(buf: ByteBuf) : this(buf, buf.readById(KryptonRegistries.PARTICLE_TYPE)!!)
 
     private constructor(buf: ByteBuf, type: ParticleType) : this(type, type.createData(buf))
 

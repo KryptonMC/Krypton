@@ -135,7 +135,7 @@ public interface FireworkRocketMeta : ScopedItemMeta<FireworkRocketMeta.Builder,
          * @return a new builder
          */
         @JvmStatic
-        @Contract("_ -> new", pure = true)
+        @Contract("-> new", pure = true)
         public fun builder(): Builder = ItemMeta.builder(FireworkRocketMeta::class.java)
     }
 }

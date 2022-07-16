@@ -20,7 +20,7 @@ package org.kryptonmc.krypton.entity.attribute
 
 import org.kryptonmc.api.entity.attribute.AttributeModifier
 import org.kryptonmc.api.entity.attribute.ModifierOperation
-import org.kryptonmc.api.registry.Registries
+import org.kryptonmc.krypton.registry.KryptonRegistries
 import org.kryptonmc.nbt.CompoundTag
 import java.util.UUID
 
@@ -42,7 +42,7 @@ data class KryptonAttributeModifier(
 
         @JvmStatic
         fun from(data: CompoundTag): KryptonAttributeModifier? {
-            val operation = Registries.MODIFIER_OPERATIONS[data.getInt("Operation")] ?: return null
+            val operation = KryptonRegistries.MODIFIER_OPERATIONS.get(data.getInt("Operation")) ?: return null
             val uuid = data.getUUID("UUID") ?: return null
             return KryptonAttributeModifier(data.getString("Name"), uuid, data.getDouble("Amount"), operation)
         }

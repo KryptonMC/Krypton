@@ -29,13 +29,14 @@ import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.block.Blocks
 import org.kryptonmc.api.block.PushReaction
 import org.kryptonmc.api.block.property.Property
-import org.kryptonmc.api.registry.Registries
+import org.kryptonmc.krypton.registry.KryptonRegistries
+import org.kryptonmc.krypton.registry.KryptonRegistry
 import org.kryptonmc.krypton.util.IntHashBiMap
 import org.kryptonmc.krypton.util.KryptonDataLoader
 import org.kryptonmc.krypton.world.block.property.KryptonPropertyFactory
 import java.util.concurrent.ConcurrentHashMap
 
-object BlockLoader : KryptonDataLoader<Block>("blocks", Registries.BLOCK) {
+object BlockLoader : KryptonDataLoader<Block>("blocks", KryptonRegistries.BLOCK) {
 
     private val KEY_MAP = mutableMapOf<String, KryptonBlock>()
     private val PROPERTY_MAP = mutableMapOf<String, PropertyEntry>()
@@ -53,7 +54,7 @@ object BlockLoader : KryptonDataLoader<Block>("blocks", Registries.BLOCK) {
     fun fromKey(key: Key): KryptonBlock? = fromKey(key.asString())
 
     @JvmStatic
-    fun fromState(state: Int): KryptonBlock = STATES[state] ?: Blocks.AIR.downcast()
+    fun fromStateId(stateId: Int): KryptonBlock = STATES.get(stateId) ?: Blocks.AIR.downcast()
 
     @JvmStatic
     fun properties(key: String, properties: Map<String, String>): KryptonBlock? = PROPERTY_MAP[key]?.properties?.get(properties)
@@ -79,14 +80,14 @@ object BlockLoader : KryptonDataLoader<Block>("blocks", Registries.BLOCK) {
 
         // Get default state and add to map
         val defaultState = value["defaultStateId"].asInt
-        val defaultBlock = STATES[defaultState]!!
+        val defaultBlock = STATES.get(defaultState)!!
         KEY_MAP[key.asString()] = defaultBlock
         PROPERTY_MAP[key.asString()] = propertyEntry
         return defaultBlock
     }
 
     override fun register(key: Key, value: Block) {
-        registry.register((value as KryptonBlock).id, key, value)
+        (registry as KryptonRegistry<Block>).register((value as KryptonBlock).id, key, value)
     }
 
     @JvmStatic

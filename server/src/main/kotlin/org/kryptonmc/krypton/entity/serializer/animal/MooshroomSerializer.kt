@@ -18,7 +18,6 @@
  */
 package org.kryptonmc.krypton.entity.serializer.animal
 
-import org.kryptonmc.api.entity.animal.type.MooshroomType
 import org.kryptonmc.krypton.entity.animal.KryptonMooshroom
 import org.kryptonmc.krypton.entity.serializer.AgeableSerializer
 import org.kryptonmc.krypton.entity.serializer.EntitySerializer
@@ -29,10 +28,10 @@ object MooshroomSerializer : EntitySerializer<KryptonMooshroom> {
 
     override fun load(entity: KryptonMooshroom, data: CompoundTag) {
         AgeableSerializer.load(entity, data)
-        if (data.contains("Type", StringTag.ID)) entity.mooshroomType = KryptonMooshroom.deserializeType(data.getString("Type"))
+        if (data.contains("Type", StringTag.ID)) entity.variant = KryptonMooshroom.deserializeType(data.getString("Type"))
     }
 
     override fun save(entity: KryptonMooshroom): CompoundTag.Builder = AgeableSerializer.save(entity).apply {
-        string("Type", entity.mooshroomType.name.lowercase())
+        string("Type", entity.variant.name.lowercase())
     }
 }

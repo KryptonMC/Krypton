@@ -38,8 +38,6 @@ import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer
 import org.kryptonmc.api.adventure.toJson
 import org.kryptonmc.api.auth.GameProfile
 import org.kryptonmc.api.auth.ProfileProperty
-import org.kryptonmc.api.registry.Registries
-import org.kryptonmc.api.registry.Registry
 import org.kryptonmc.api.resource.ResourceKey
 import org.kryptonmc.api.resource.ResourceKeys
 import org.kryptonmc.krypton.auth.KryptonGameProfile
@@ -47,6 +45,8 @@ import org.kryptonmc.krypton.auth.KryptonProfileProperty
 import org.kryptonmc.krypton.command.argument.ArgumentSerializers
 import org.kryptonmc.krypton.item.ItemFactory
 import org.kryptonmc.krypton.item.KryptonItemStack
+import org.kryptonmc.krypton.registry.KryptonRegistries
+import org.kryptonmc.krypton.registry.KryptonRegistry
 import org.kryptonmc.krypton.util.crypto.decodeToPublicKey
 import org.kryptonmc.krypton.util.serialization.CompoundEncoder
 import org.kryptonmc.nbt.CompoundTag
@@ -251,7 +251,7 @@ fun ByteBuf.readComponent(): Component {
 
 fun ByteBuf.readItem(): KryptonItemStack {
     if (!readBoolean()) return KryptonItemStack.EMPTY
-    val type = readById(Registries.ITEM)!!
+    val type = readById(KryptonRegistries.ITEM)!!
     val count = readByte()
     val nbt = readNBT()
     return KryptonItemStack(type, count.toInt(), ItemFactory.create(type, nbt))
@@ -263,7 +263,7 @@ fun ByteBuf.writeItem(item: KryptonItemStack) {
         return
     }
     writeBoolean(true)
-    writeVarInt(Registries.ITEM.idOf(item.type))
+    writeVarInt(KryptonRegistries.ITEM.idOf(item.type))
     writeByte(item.amount)
     writeNBT(item.meta.data)
 }
@@ -388,11 +388,11 @@ fun ByteBuf.writeProfileProperty(property: ProfileProperty) {
 
 fun ByteBuf.readProfileProperty(): ProfileProperty = KryptonProfileProperty(readString(), readString(), readNullable { readString() })
 
-fun <T : Any> ByteBuf.writeId(registry: Registry<T>, value: T) {
+fun <T : Any> ByteBuf.writeId(registry: KryptonRegistry<T>, value: T) {
     writeVarInt(registry.idOf(value))
 }
 
-fun <T : Any> ByteBuf.readById(registry: Registry<T>): T? = registry[readVarInt()]
+fun <T : Any> ByteBuf.readById(registry: KryptonRegistry<T>): T? = registry.get(readVarInt())
 
 fun ByteBuf.writeVarIntArray(array: IntArray) {
     writeVarInt(array.size)

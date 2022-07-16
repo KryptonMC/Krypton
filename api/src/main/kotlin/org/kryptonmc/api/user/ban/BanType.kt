@@ -47,7 +47,7 @@ public interface BanType : Keyed {
          * @return a new ban type
          */
         @JvmStatic
-        @Contract("_ -> new", pure = true)
+        @Contract("_, _ -> new", pure = true)
         public fun of(key: Key, clazz: Class<out Ban>): BanType = FACTORY.of(key, clazz)
     }
 }

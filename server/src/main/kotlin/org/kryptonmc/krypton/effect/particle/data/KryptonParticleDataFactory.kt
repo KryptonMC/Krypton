@@ -28,8 +28,10 @@ import org.kryptonmc.api.effect.particle.data.ItemParticleData
 import org.kryptonmc.api.effect.particle.data.NoteParticleData
 import org.kryptonmc.api.effect.particle.data.ParticleData
 import org.kryptonmc.api.effect.particle.data.VibrationParticleData
+import org.kryptonmc.api.item.ItemStack
 import org.kryptonmc.api.item.ItemType
 import org.kryptonmc.api.util.Color
+import org.kryptonmc.krypton.item.downcast
 import org.kryptonmc.krypton.world.block.KryptonBlock
 import org.spongepowered.math.vector.Vector3d
 
@@ -46,7 +48,7 @@ object KryptonParticleDataFactory : ParticleData.Factory {
 
     override fun dust(color: Color, scale: Float): DustParticleData = KryptonDustParticleData(color, scale)
 
-    override fun item(item: ItemType): ItemParticleData = KryptonItemParticleData(item)
+    override fun item(item: ItemStack): ItemParticleData = KryptonItemParticleData(item.downcast())
 
     override fun note(note: Byte): NoteParticleData = KryptonNoteParticleData(note)
 

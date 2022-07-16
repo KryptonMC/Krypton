@@ -11,7 +11,6 @@ package org.kryptonmc.api.event.command
 import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.command.Sender
 import org.kryptonmc.api.event.ResultedEvent
-import org.kryptonmc.api.event.ResultedEvent.Result
 
 /**
  * Called when the given [command] is executed by the given [sender].
@@ -23,54 +22,54 @@ import org.kryptonmc.api.event.ResultedEvent.Result
 public data class CommandExecuteEvent(
     @get:JvmName("sender") public val sender: Sender,
     @get:JvmName("command") public val command: String
-) : ResultedEvent<CommandResult> {
+) : ResultedEvent<CommandExecuteEvent.Result> {
 
     @get:JvmName("result")
-    override var result: CommandResult = CommandResult.allowed()
-}
+    override var result: Result = Result.allowed()
 
-/**
- * The result of a [CommandExecuteEvent].
- *
- * @param command the command to forward
- */
-@JvmRecord
-public data class CommandResult(override val isAllowed: Boolean, public val command: String? = null) : Result {
+    /**
+     * The result of a [CommandExecuteEvent].
+     *
+     * @param command the command to forward
+     */
+    @JvmRecord
+    public data class Result(override val isAllowed: Boolean, public val command: String? = null) : ResultedEvent.Result {
 
-    public companion object {
+        public companion object {
 
-        private val ALLOWED = CommandResult(true, null)
-        private val DENIED = CommandResult(false, null)
+            private val ALLOWED = Result(true, null)
+            private val DENIED = Result(false, null)
 
-        /**
-         * Returns a result that allows the command without any modifications,
-         * and without forwarding it to the backend server.
-         *
-         * @return the allowed result
-         */
-        @JvmStatic
-        @Contract(pure = true)
-        public fun allowed(): CommandResult = ALLOWED
+            /**
+             * Returns a result that allows the command without any modifications,
+             * and without forwarding it to the backend server.
+             *
+             * @return the allowed result
+             */
+            @JvmStatic
+            @Contract(pure = true)
+            public fun allowed(): Result = ALLOWED
 
-        /**
-         * Returns a result that denies the command from being executed by the
-         * server.
-         *
-         * @return the denied result
-         */
-        @JvmStatic
-        @Contract(pure = true)
-        public fun denied(): CommandResult = DENIED
+            /**
+             * Returns a result that denies the command from being executed by the
+             * server.
+             *
+             * @return the denied result
+             */
+            @JvmStatic
+            @Contract(pure = true)
+            public fun denied(): Result = DENIED
 
-        /**
-         * Creates a new result that allows the command to be executed, but
-         * silently replaces it with the given [newCommand].
-         *
-         * @param newCommand the replacement command
-         * @return a new allowed result
-         */
-        @JvmStatic
-        @Contract("_ -> new", pure = true)
-        public fun command(newCommand: String): CommandResult = CommandResult(true, newCommand)
+            /**
+             * Creates a new result that allows the command to be executed, but
+             * silently replaces it with the given [newCommand].
+             *
+             * @param newCommand the replacement command
+             * @return a new allowed result
+             */
+            @JvmStatic
+            @Contract("_ -> new", pure = true)
+            public fun command(newCommand: String): Result = Result(true, newCommand)
+        }
     }
 }

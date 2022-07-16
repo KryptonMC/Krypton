@@ -68,7 +68,7 @@ public interface Music {
          * @param replaceCurrentMusic if the current music should be replaced
          */
         @JvmStatic
-        @Contract("_ -> new", pure = true)
+        @Contract("_, _, _, _ -> new", pure = true)
         public fun of(sound: SoundEvent, minimumDelay: Int, maximumDelay: Int, replaceCurrentMusic: Boolean): Music =
             FACTORY.of(sound, minimumDelay, maximumDelay, replaceCurrentMusic)
     }

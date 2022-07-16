@@ -9,7 +9,7 @@
 package org.kryptonmc.api.effect.particle.data
 
 import org.jetbrains.annotations.Contract
-import org.kryptonmc.api.item.ItemType
+import org.kryptonmc.api.item.ItemStack
 
 /**
  * Holds data for item particle effects.
@@ -21,7 +21,7 @@ public interface ItemParticleData : ParticleData {
      * The item that is shown.
      */
     @get:JvmName("item")
-    public val item: ItemType
+    public val item: ItemStack
 
     public companion object {
 
@@ -33,6 +33,6 @@ public interface ItemParticleData : ParticleData {
          */
         @JvmStatic
         @Contract("_ -> new", pure = true)
-        public fun of(item: ItemType): ItemParticleData = ParticleData.FACTORY.item(item)
+        public fun of(item: ItemStack): ItemParticleData = ParticleData.FACTORY.item(item)
     }
 }

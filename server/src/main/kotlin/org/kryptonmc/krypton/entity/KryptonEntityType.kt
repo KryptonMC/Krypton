@@ -27,7 +27,6 @@ import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.block.Blocks
 import org.kryptonmc.api.entity.Entity
 import org.kryptonmc.api.entity.EntityCategory
-import org.kryptonmc.api.entity.EntityDimensions
 import org.kryptonmc.api.entity.EntityType
 import org.kryptonmc.krypton.world.block.isBurning
 
@@ -40,7 +39,8 @@ data class KryptonEntityType<T : Entity>(
     override val isRideable: Boolean,
     override val clientTrackingRange: Int,
     override val updateInterval: Int,
-    override val dimensions: EntityDimensions,
+    override val width: Float,
+    override val height: Float,
     override val immuneTo: ImmutableSet<Block>,
     override val lootTable: Key,
     override val translation: TranslatableComponent
@@ -59,10 +59,11 @@ data class KryptonEntityType<T : Entity>(
         private var summonable = true
         private var fireImmune = false
         private var rideable = false
-        private var dimensions = DEFAULT_DIMENSIONS
+        private var width = DEFAULT_WIDTH
+        private var height = DEFAULT_HEIGHT
         private val immuneTo = persistentSetOf<Block>().builder()
-        private var clientTrackingRange = 5
-        private var updateInterval = 3
+        private var clientTrackingRange = DEFAULT_CLIENT_TRACKING_RANGE
+        private var updateInterval = DEFAULT_UPDATE_INTERVAL
         private var lootTable: Key? = null
         private var translation: TranslatableComponent? = null
 
@@ -70,36 +71,37 @@ data class KryptonEntityType<T : Entity>(
             summonable = type.isSummonable
             fireImmune = type.isImmuneToFire
             rideable = type.isRideable
-            dimensions = type.dimensions
             immuneTo.addAll(type.immuneTo)
             lootTable = type.lootTable
         }
 
-        override fun key(key: Key): EntityType.Builder<T> = apply { this.key = key }
+        override fun key(key: Key): Builder<T> = apply { this.key = key }
 
-        override fun category(category: EntityCategory): EntityType.Builder<T> = apply { this.category = category }
+        override fun category(category: EntityCategory): Builder<T> = apply { this.category = category }
 
-        override fun summonable(value: Boolean): EntityType.Builder<T> = apply { summonable = value }
+        override fun summonable(value: Boolean): Builder<T> = apply { summonable = value }
 
-        override fun fireImmune(value: Boolean): EntityType.Builder<T> = apply { fireImmune = value }
+        override fun fireImmune(value: Boolean): Builder<T> = apply { fireImmune = value }
 
-        override fun rideable(value: Boolean): EntityType.Builder<T> = apply { rideable = value }
+        override fun rideable(value: Boolean): Builder<T> = apply { rideable = value }
 
-        override fun clientTrackingRange(range: Int): EntityType.Builder<T> = apply { clientTrackingRange = range }
+        override fun clientTrackingRange(range: Int): Builder<T> = apply { clientTrackingRange = range }
 
-        override fun updateInterval(interval: Int): EntityType.Builder<T> = apply { updateInterval = interval }
+        override fun updateInterval(interval: Int): Builder<T> = apply { updateInterval = interval }
 
-        override fun dimensions(dimensions: EntityDimensions): EntityType.Builder<T> = apply { this.dimensions = dimensions }
+        override fun width(width: Float): Builder<T> = apply { this.width = width }
 
-        override fun immuneTo(block: Block): EntityType.Builder<T> = apply { immuneTo.add(block) }
+        override fun height(height: Float): Builder<T> = apply { this.height = height }
 
-        override fun immuneTo(vararg blocks: Block): EntityType.Builder<T> = apply { blocks.forEach { immuneTo.add(it) } }
+        override fun immuneTo(block: Block): Builder<T> = apply { immuneTo.add(block) }
 
-        override fun immuneTo(blocks: Iterable<Block>): EntityType.Builder<T> = apply { immuneTo.addAll(blocks) }
+        override fun immuneTo(vararg blocks: Block): Builder<T> = apply { blocks.forEach { immuneTo.add(it) } }
 
-        override fun lootTable(identifier: Key): EntityType.Builder<T> = apply { lootTable = identifier }
+        override fun immuneTo(blocks: Iterable<Block>): Builder<T> = apply { immuneTo.addAll(blocks) }
 
-        override fun translation(translation: TranslatableComponent): EntityType.Builder<T> = apply { this.translation = translation }
+        override fun lootTable(identifier: Key): Builder<T> = apply { lootTable = identifier }
+
+        override fun translation(translation: TranslatableComponent): Builder<T> = apply { this.translation = translation }
 
         override fun build(): KryptonEntityType<T> = KryptonEntityType(
             key,
@@ -109,7 +111,8 @@ data class KryptonEntityType<T : Entity>(
             rideable,
             clientTrackingRange,
             updateInterval,
-            dimensions,
+            width,
+            height,
             immuneTo.build(),
             lootTable ?: Key.key(key.namespace(), "entities/${key.value()}"),
             translation ?: Component.translatable("entity.${key.namespace()}.${key.value().replace('/', '.')}")
@@ -117,7 +120,10 @@ data class KryptonEntityType<T : Entity>(
 
         companion object {
 
-            private val DEFAULT_DIMENSIONS = EntityDimensions.scalable(0.6F, 1.8F)
+            private const val DEFAULT_WIDTH = 0.6F
+            private const val DEFAULT_HEIGHT = 1.8F
+            private const val DEFAULT_CLIENT_TRACKING_RANGE = 5
+            private const val DEFAULT_UPDATE_INTERVAL = 3
         }
     }
 

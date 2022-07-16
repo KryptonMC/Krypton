@@ -32,23 +32,7 @@ public interface ParticleType : Keyed {
     @ApiStatus.Internal
     public interface Factory {
 
-        public fun block(key: Key): BlockParticleType
-
-        public fun color(key: Key): ColorParticleType
-
-        public fun directional(key: Key): DirectionalParticleType
-
-        public fun dust(key: Key): DustParticleType
-
-        public fun dustTransition(key: Key): DustTransitionParticleType
-
-        public fun item(key: Key): ItemParticleType
-
-        public fun note(key: Key): NoteParticleType
-
-        public fun simple(key: Key): SimpleParticleType
-
-        public fun vibration(key: Key): VibrationParticleType
+        public fun <T : ParticleType> of(type: Class<T>, key: Key): T
     }
 
     public companion object {
@@ -57,3 +41,6 @@ public interface ParticleType : Keyed {
         internal val FACTORY = Krypton.factoryProvider.provide<Factory>()
     }
 }
+
+@JvmSynthetic
+internal inline fun <reified T : ParticleType> ParticleType.Companion.of(key: Key): T = FACTORY.of(T::class.java, key)

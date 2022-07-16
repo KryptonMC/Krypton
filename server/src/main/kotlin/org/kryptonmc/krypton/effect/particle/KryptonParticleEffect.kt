@@ -35,10 +35,4 @@ data class KryptonParticleEffect(
     init {
         require(quantity >= 1) { "Quantity must be >= 1!" }
     }
-
-    object Factory : ParticleEffect.Factory {
-
-        override fun of(type: ParticleType, quantity: Int, offset: Vector3d, longDistance: Boolean, data: ParticleData?): ParticleEffect =
-            KryptonParticleEffect(type, quantity, offset, longDistance, data)
-    }
 }

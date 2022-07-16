@@ -83,7 +83,7 @@ public interface StatisticType<T : Any> : Iterable<Statistic<T>>, Keyed {
          * @return a new statistic type
          */
         @JvmStatic
-        @Contract("_ -> new", pure = true)
+        @Contract("_, _ -> new", pure = true)
         public fun <T : Any> of(key: Key, registry: Registry<T>): StatisticType<T> = FACTORY.of(key, registry)
     }
 }

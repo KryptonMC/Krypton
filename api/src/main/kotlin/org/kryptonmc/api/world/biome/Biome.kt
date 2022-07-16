@@ -8,12 +8,13 @@
  */
 package org.kryptonmc.api.world.biome
 
+import net.kyori.adventure.builder.AbstractBuilder
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.key.Keyed
-import net.kyori.adventure.util.Buildable
 import org.jetbrains.annotations.ApiStatus
 import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.Krypton
+import org.kryptonmc.api.util.Buildable
 import org.kryptonmc.api.util.CataloguedBy
 import org.kryptonmc.api.util.KeyedBuilder
 import org.kryptonmc.api.util.provide
@@ -24,7 +25,7 @@ import java.util.function.Consumer
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
 @CataloguedBy(Biomes::class)
-public interface Biome : Buildable<Biome, Biome.Builder>, Keyed {
+public interface Biome : Buildable<Biome.Builder, Biome>, Keyed {
 
     /**
      * The climate of this biome.
@@ -42,7 +43,7 @@ public interface Biome : Buildable<Biome, Biome.Builder>, Keyed {
      * A builder for biomes.
      */
     @BiomeDsl
-    public interface Builder : Buildable.Builder<Biome>, KeyedBuilder<Biome, Builder> {
+    public interface Builder : AbstractBuilder<Biome>, KeyedBuilder<Biome, Builder> {
 
         /**
          * Sets the climate of the biome to the given [climate] and returns

@@ -58,7 +58,7 @@ public interface ResourceKey<T : Any> {
          * @return a resource key
          */
         @JvmStatic
-        @Contract("_ -> new", pure = true)
+        @Contract("_, _ -> new", pure = true)
         public fun <T : Any> of(registry: Key, location: Key): ResourceKey<T> = FACTORY.of(registry, location)
 
         /**
