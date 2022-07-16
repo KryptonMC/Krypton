@@ -27,6 +27,7 @@ import org.kryptonmc.api.registry.Registry
 import org.kryptonmc.api.resource.ResourceKey
 import org.kryptonmc.api.tags.TagType
 import org.kryptonmc.krypton.network.Writable
+import org.kryptonmc.krypton.registry.downcast
 import org.kryptonmc.krypton.util.readKey
 import org.kryptonmc.krypton.util.readMap
 import org.kryptonmc.krypton.util.readVarIntArray
@@ -47,7 +48,7 @@ object TagSerializer {
         val tags = persistentMapOf<Key, IntArray>().builder()
         KryptonTagManager[type].forEach { tag ->
             val list = IntArrayList(tag.values.size)
-            tag.values.forEach { list.add(type.registry.idOf(it)) }
+            tag.values.forEach { list.add(type.registry.downcast().idOf(it)) }
             tags[tag.key()] = list.toIntArray()
         }
         return NetworkPayload(tags.build())

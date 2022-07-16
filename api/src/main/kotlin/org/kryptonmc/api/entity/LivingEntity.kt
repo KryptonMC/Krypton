@@ -52,14 +52,19 @@ public interface LivingEntity : Entity, AttributeHolder {
     public val isInRiptideSpinAttack: Boolean
 
     /**
+     * If this entity is gliding with an elytra.
+     *
+     * This can be used to detect when the player is gliding without using
+     * scoreboard statistics.
+     *
+     * This field can only
+     */
+    public val isGliding: Boolean
+
+    /**
      * If this entity is dead or not.
      */
     public val isDead: Boolean
-
-    /**
-     * If this entity is considered a baby.
-     */
-    public var isBaby: Boolean
 
     /**
      * The number of ticks this entity has been dead for.

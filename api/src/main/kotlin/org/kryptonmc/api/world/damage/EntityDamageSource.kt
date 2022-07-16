@@ -35,7 +35,7 @@ public interface EntityDamageSource : DamageSource {
          * @return a new entity damage source
          */
         @JvmStatic
-        @Contract("_ -> new", pure = true)
+        @Contract("_, _ -> new", pure = true)
         public fun of(type: DamageType, entity: Entity): EntityDamageSource = DamageSource.FACTORY.entity(type, entity)
     }
 }

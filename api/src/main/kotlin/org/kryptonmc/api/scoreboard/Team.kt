@@ -8,12 +8,13 @@
  */
 package org.kryptonmc.api.scoreboard
 
+import net.kyori.adventure.builder.AbstractBuilder
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
-import net.kyori.adventure.util.Buildable
 import org.jetbrains.annotations.ApiStatus
 import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.Krypton
+import org.kryptonmc.api.util.Buildable
 import org.kryptonmc.api.util.provide
 
 /**
@@ -23,7 +24,7 @@ import org.kryptonmc.api.util.provide
  * and a specific set of rules they follow.
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
-public interface Team : Buildable<Team, Team.Builder> {
+public interface Team : Buildable<Team.Builder, Team> {
 
     /**
      * The name of this team.
@@ -127,7 +128,7 @@ public interface Team : Buildable<Team, Team.Builder> {
      * A builder for building teams.
      */
     @ScoreboardDsl
-    public interface Builder : Buildable.Builder<Team> {
+    public interface Builder : AbstractBuilder<Team> {
 
         /**
          * Sets the name for the team to the given [name].
@@ -185,7 +186,7 @@ public interface Team : Buildable<Team, Team.Builder> {
          * @return this builder
          */
         @ScoreboardDsl
-        @Contract("_ -> this", mutates = "this")
+        @Contract("-> this", mutates = "this")
         public fun allowFriendlyFire(): Builder = friendlyFire(true)
 
         /**
@@ -194,7 +195,7 @@ public interface Team : Buildable<Team, Team.Builder> {
          * @return this builder
          */
         @ScoreboardDsl
-        @Contract("_ -> this", mutates = "this")
+        @Contract("-> this", mutates = "this")
         public fun disallowFriendlyFire(): Builder = friendlyFire(false)
 
         /**
@@ -213,7 +214,7 @@ public interface Team : Buildable<Team, Team.Builder> {
          * @return this builder
          */
         @ScoreboardDsl
-        @Contract("_ -> this", mutates = "this")
+        @Contract("-> this", mutates = "this")
         public fun allowSeeingInvisibleMembers(): Builder = canSeeInvisibleMembers(true)
 
         /**
@@ -222,7 +223,7 @@ public interface Team : Buildable<Team, Team.Builder> {
          * @return this builder
          */
         @ScoreboardDsl
-        @Contract("_ -> this", mutates = "this")
+        @Contract("-> this", mutates = "this")
         public fun disallowSeeingInvisibleMembers(): Builder = canSeeInvisibleMembers(false)
 
         /**
@@ -305,7 +306,7 @@ public interface Team : Buildable<Team, Team.Builder> {
          * @return a new builder
          */
         @JvmStatic
-        @Contract("-> new", pure = true)
+        @Contract("_ -> new", pure = true)
         public fun builder(name: String): Builder = FACTORY.builder(name)
     }
 }

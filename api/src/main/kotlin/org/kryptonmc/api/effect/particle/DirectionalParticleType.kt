@@ -27,6 +27,6 @@ public interface DirectionalParticleType : ScopedParticleType<DirectionalParticl
          */
         @JvmStatic
         @Contract("_ -> new", pure = true)
-        public fun of(key: Key): DirectionalParticleType = ParticleType.FACTORY.directional(key)
+        public fun of(key: Key): DirectionalParticleType = ParticleType.of(key)
     }
 }

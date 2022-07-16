@@ -32,8 +32,10 @@ public interface Entity : Sender, HoverEventSource<HoverEvent.ShowEntity>, Sound
      *
      * This should be unique whilst the server is running, however it should
      * not be persisted in any way, shape, or form, as it is retrieved when the
-     * entity object is first created.
+     * entity object is first created, and discarded when the entity is
+     * removed.
      */
+    @get:JvmName("id")
     public val id: Int
 
     /**
@@ -96,12 +98,6 @@ public interface Entity : Sender, HoverEventSource<HoverEvent.ShowEntity>, Sound
      */
     @get:JvmName("boundingBox")
     public var boundingBox: BoundingBox
-
-    /**
-     * The current dimensions of this entity.
-     */
-    @get:JvmName("dimensions")
-    public var dimensions: EntityDimensions
 
     /**
      * If this entity is a passenger of another entity.
@@ -177,18 +173,6 @@ public interface Entity : Sender, HoverEventSource<HoverEvent.ShowEntity>, Sound
      * If this entity has a glowing outline.
      */
     public var isGlowing: Boolean
-
-    /**
-     * If this entity is gliding with an elytra.
-     *
-     * Setting this value to true for non-player entities will cause this
-     * entity to glide as long as they are wearing an elytra in their
-     * chestplate slot.
-     *
-     * This can be used to detect when the player is gliding without using
-     * scoreboard statistics.
-     */
-    public var isGliding: Boolean
 
     /**
      * If this entity is silenced, meaning it does not produce any sounds.

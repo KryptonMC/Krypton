@@ -21,7 +21,7 @@ package org.kryptonmc.krypton.entity.animal
 import net.kyori.adventure.sound.Sound
 import org.kryptonmc.api.entity.EntityTypes
 import org.kryptonmc.api.entity.animal.Rabbit
-import org.kryptonmc.api.entity.animal.type.RabbitType
+import org.kryptonmc.api.entity.animal.type.RabbitVariant
 import org.kryptonmc.api.entity.attribute.AttributeTypes
 import org.kryptonmc.api.item.ItemStack
 import org.kryptonmc.api.item.ItemTypes
@@ -31,7 +31,7 @@ import org.kryptonmc.krypton.world.KryptonWorld
 class KryptonRabbit(world: KryptonWorld) : KryptonAnimal(world, EntityTypes.RABBIT, ATTRIBUTES), Rabbit {
 
     internal var moreCarrotTicks = 0
-    override var rabbitType: RabbitType
+    override var variant: RabbitVariant
         get() {
             val id = data[MetadataKeys.RABBIT.TYPE]
             // It'll do you a treat mate!
@@ -39,11 +39,11 @@ class KryptonRabbit(world: KryptonWorld) : KryptonAnimal(world, EntityTypes.RABB
             // Manky scot's git!
             // I'm warning you!
             // What's he do? Nibble ya bum?
-            if (id == 99) return RabbitType.KILLER
-            return TYPES.getOrNull(data[MetadataKeys.RABBIT.TYPE]) ?: RabbitType.BROWN
+            if (id == 99) return RabbitVariant.KILLER
+            return TYPES.getOrNull(data[MetadataKeys.RABBIT.TYPE]) ?: RabbitVariant.BROWN
         }
         set(value) {
-            if (value == RabbitType.KILLER) {
+            if (value == RabbitVariant.KILLER) {
                 data[MetadataKeys.RABBIT.TYPE] = 99
                 return
             }
@@ -51,7 +51,7 @@ class KryptonRabbit(world: KryptonWorld) : KryptonAnimal(world, EntityTypes.RABB
         }
 
     override val soundSource: Sound.Source
-        get() = if (rabbitType == RabbitType.KILLER) Sound.Source.HOSTILE else Sound.Source.NEUTRAL
+        get() = if (variant == RabbitVariant.KILLER) Sound.Source.HOSTILE else Sound.Source.NEUTRAL
 
     init {
         data.add(MetadataKeys.RABBIT.TYPE, 0)
@@ -61,7 +61,7 @@ class KryptonRabbit(world: KryptonWorld) : KryptonAnimal(world, EntityTypes.RABB
 
     companion object {
 
-        private val TYPES = RabbitType.values()
+        private val TYPES = RabbitVariant.values()
         private val ATTRIBUTES = attributes().add(AttributeTypes.MAX_HEALTH, 3.0).add(AttributeTypes.MOVEMENT_SPEED, 0.3).build()
         private val TEMPTING_ITEMS = setOf(ItemTypes.CARROT, ItemTypes.GOLDEN_CARROT, ItemTypes.DANDELION)
     }

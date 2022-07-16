@@ -20,15 +20,15 @@ package org.kryptonmc.krypton.packet.out.play
 
 import io.netty.buffer.ByteBuf
 import org.kryptonmc.api.item.ItemType
-import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.krypton.packet.Packet
+import org.kryptonmc.krypton.registry.KryptonRegistries
 import org.kryptonmc.krypton.util.readVarInt
 import org.kryptonmc.krypton.util.writeVarInt
 
 @JvmRecord
 data class PacketOutSetCooldown(val itemId: Int, val cooldownTicks: Int) : Packet {
 
-    constructor(item: ItemType, cooldownTicks: Int) : this(Registries.ITEM.idOf(item), cooldownTicks)
+    constructor(item: ItemType, cooldownTicks: Int) : this(KryptonRegistries.ITEM.idOf(item), cooldownTicks)
 
     constructor(buf: ByteBuf) : this(buf.readVarInt(), buf.readVarInt())
 

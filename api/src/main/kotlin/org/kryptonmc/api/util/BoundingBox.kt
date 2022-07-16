@@ -316,7 +316,7 @@ public interface BoundingBox {
          * centre of 0.
          */
         @JvmStatic
-        @Contract("_ -> new", pure = true)
+        @Contract(pure = true)
         public fun zero(): BoundingBox = FACTORY.zero()
 
         /**
@@ -325,7 +325,7 @@ public interface BoundingBox {
          * of 1, and a centre of 0.5, 0.5, 0.5.
          */
         @JvmStatic
-        @Contract("_ -> new", pure = true)
+        @Contract(pure = true)
         public fun unit(): BoundingBox = FACTORY.unit()
 
         /**
@@ -342,7 +342,7 @@ public interface BoundingBox {
          * greater than the minimum X
          */
         @JvmStatic
-        @Contract("_ -> new", pure = true)
+        @Contract("_, _ -> new", pure = true)
         public fun of(minimum: Vector3d, maximum: Vector3d): BoundingBox = FACTORY.of(minimum, maximum)
 
         /**
@@ -359,7 +359,7 @@ public interface BoundingBox {
          * greater than the minimum X
          */
         @JvmStatic
-        @Contract("_ -> new", pure = true)
+        @Contract("_, _ -> new", pure = true)
         public fun of(minimum: Vector3i, maximum: Vector3i): BoundingBox = FACTORY.of(minimum, maximum)
 
         /**
@@ -380,7 +380,7 @@ public interface BoundingBox {
          * greater than the minimum X
          */
         @JvmStatic
-        @Contract("_ -> new", pure = true)
+        @Contract("_, _, _, _, _, _ -> new", pure = true)
         public fun of(minimumX: Double, minimumY: Double, minimumZ: Double, maximumX: Double, maximumY: Double, maximumZ: Double): BoundingBox =
             FACTORY.of(minimumX, minimumY, minimumZ, maximumX, maximumY, maximumZ)
     }

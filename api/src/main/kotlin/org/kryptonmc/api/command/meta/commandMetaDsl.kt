@@ -10,6 +10,8 @@
 @file:Suppress("MatchingDeclarationName")
 package org.kryptonmc.api.command.meta
 
+import org.jetbrains.annotations.Contract
+
 @Target(AnnotationTarget.CLASS, AnnotationTarget.FUNCTION)
 @Retention(AnnotationRetention.SOURCE)
 @DslMarker
@@ -24,6 +26,7 @@ internal annotation class CommandMetaDsl
  */
 @CommandMetaDsl
 @JvmSynthetic
+@Contract("_, _ -> new", pure = true)
 public inline fun commandMeta(name: String, builder: CommandMeta.Builder.() -> Unit): CommandMeta =
     CommandMeta.builder(name).apply(builder).build()
 
@@ -36,5 +39,6 @@ public inline fun commandMeta(name: String, builder: CommandMeta.Builder.() -> U
  */
 @CommandMetaDsl
 @JvmSynthetic
+@Contract("_, _ -> new", pure = true)
 public inline fun simpleCommandMeta(name: String, builder: SimpleCommandMeta.Builder.() -> Unit): SimpleCommandMeta =
     SimpleCommandMeta.builder(name).apply(builder).build()

@@ -40,7 +40,7 @@ data class MapPalette<T>(
         get() {
             var temp = size.varIntBytes()
             for (i in 0 until size) {
-                temp += registry.idOf(values[i]!!).varIntBytes()
+                temp += registry.idOf(values.get(i)!!).varIntBytes()
             }
             return temp
         }
@@ -60,13 +60,13 @@ data class MapPalette<T>(
         return id
     }
 
-    override fun get(id: Int): T = values[id] ?: throw MissingPaletteEntryException(id)
+    override fun get(id: Int): T = values.get(id) ?: throw MissingPaletteEntryException(id)
 
     override fun write(buf: ByteBuf) {
         val size = size
         buf.writeVarInt(size)
         for (i in 0 until size) {
-            buf.writeVarInt(registry.idOf(values[i]!!))
+            buf.writeVarInt(registry.idOf(values.get(i)!!))
         }
     }
 

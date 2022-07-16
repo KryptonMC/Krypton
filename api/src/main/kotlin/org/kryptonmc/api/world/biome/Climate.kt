@@ -8,17 +8,18 @@
  */
 package org.kryptonmc.api.world.biome
 
-import net.kyori.adventure.util.Buildable
+import net.kyori.adventure.builder.AbstractBuilder
 import org.jetbrains.annotations.ApiStatus
 import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.Krypton
+import org.kryptonmc.api.util.Buildable
 import org.kryptonmc.api.util.provide
 
 /**
  * The climate for a biome.
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
-public interface Climate : Buildable<Climate, Climate.Builder> {
+public interface Climate : Buildable<Climate.Builder, Climate> {
 
     /**
      * The precipitation settings for this climate.
@@ -48,7 +49,7 @@ public interface Climate : Buildable<Climate, Climate.Builder> {
      * A builder for climates.
      */
     @BiomeDsl
-    public interface Builder : Buildable.Builder<Climate> {
+    public interface Builder : AbstractBuilder<Climate> {
 
         /**
          * Sets the precipitation for the climate to the given [precipitation]
@@ -121,7 +122,7 @@ public interface Climate : Buildable<Climate, Climate.Builder> {
          * @return a new climate
          */
         @JvmStatic
-        @Contract("_ -> new", pure = true)
+        @Contract("_, _, _, _ -> new", pure = true)
         public fun of(precipitation: Precipitation, temperature: Float, downfall: Float, temperatureModifier: TemperatureModifier): Climate =
             FACTORY.of(precipitation, temperature, downfall, temperatureModifier)
 
@@ -131,7 +132,7 @@ public interface Climate : Buildable<Climate, Climate.Builder> {
          * @return a new builder
          */
         @JvmStatic
-        @Contract("_ -> new", pure = true)
+        @Contract("-> new", pure = true)
         public fun builder(): Builder = FACTORY.builder()
     }
 }

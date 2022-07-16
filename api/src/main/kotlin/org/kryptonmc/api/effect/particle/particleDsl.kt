@@ -36,7 +36,7 @@ internal annotation class ParticleDsl
  */
 @ParticleDsl
 @JvmSynthetic
-@Contract("_ -> new", pure = true)
+@Contract("_, _ -> new", pure = true)
 public inline fun particleEffect(type: SimpleParticleType, builder: SimpleParticleEffectBuilder.() -> Unit = {}): ParticleEffect =
     type.builder().apply(builder).build()
 
@@ -50,7 +50,7 @@ public inline fun particleEffect(type: SimpleParticleType, builder: SimplePartic
  */
 @ParticleDsl
 @JvmSynthetic
-@Contract("_ -> new", pure = true)
+@Contract("_, _ -> new", pure = true)
 public inline fun particleEffect(type: DirectionalParticleType, builder: DirectionalParticleEffectBuilder.() -> Unit = {}): ParticleEffect =
     type.builder().apply(builder).build()
 
@@ -64,7 +64,7 @@ public inline fun particleEffect(type: DirectionalParticleType, builder: Directi
  */
 @ParticleDsl
 @JvmSynthetic
-@Contract("_ -> new", pure = true)
+@Contract("_, _ -> new", pure = true)
 public inline fun particleEffect(type: BlockParticleType, builder: BlockParticleEffectBuilder.() -> Unit = {}): ParticleEffect =
     type.builder().apply(builder).build()
 
@@ -78,7 +78,7 @@ public inline fun particleEffect(type: BlockParticleType, builder: BlockParticle
  */
 @ParticleDsl
 @JvmSynthetic
-@Contract("_ -> new", pure = true)
+@Contract("_, _ -> new", pure = true)
 public inline fun particleEffect(type: ItemParticleType, builder: ItemParticleEffectBuilder.() -> Unit = {}): ParticleEffect =
     type.builder().apply(builder).build()
 
@@ -92,7 +92,7 @@ public inline fun particleEffect(type: ItemParticleType, builder: ItemParticleEf
  */
 @ParticleDsl
 @JvmSynthetic
-@Contract("_ -> new", pure = true)
+@Contract("_, _ -> new", pure = true)
 public inline fun particleEffect(type: ColorParticleType, builder: ColorParticleEffectBuilder.() -> Unit = {}): ParticleEffect =
     type.builder().apply(builder).build()
 
@@ -106,7 +106,7 @@ public inline fun particleEffect(type: ColorParticleType, builder: ColorParticle
  */
 @ParticleDsl
 @JvmSynthetic
-@Contract("_ -> new", pure = true)
+@Contract("_, _ -> new", pure = true)
 public inline fun particleEffect(type: DustParticleType, builder: DustParticleEffectBuilder.() -> Unit = {}): ParticleEffect =
     type.builder().apply(builder).build()
 
@@ -120,7 +120,7 @@ public inline fun particleEffect(type: DustParticleType, builder: DustParticleEf
  */
 @ParticleDsl
 @JvmSynthetic
-@Contract("_ -> new", pure = true)
+@Contract("_, _ -> new", pure = true)
 public inline fun particleEffect(type: DustTransitionParticleType, builder: DustTransitionParticleEffectBuilder.() -> Unit = {}): ParticleEffect =
     type.builder().apply(builder).build()
 
@@ -134,7 +134,7 @@ public inline fun particleEffect(type: DustTransitionParticleType, builder: Dust
  */
 @ParticleDsl
 @JvmSynthetic
-@Contract("_ -> new", pure = true)
+@Contract("_, _ -> new", pure = true)
 public inline fun particleEffect(type: NoteParticleType, builder: NoteParticleEffectBuilder.() -> Unit = {}): ParticleEffect =
     type.builder().apply(builder).build()
 
@@ -148,6 +148,6 @@ public inline fun particleEffect(type: NoteParticleType, builder: NoteParticleEf
  */
 @ParticleDsl
 @JvmSynthetic
-@Contract("_ -> new", pure = true)
+@Contract("_, _ -> new", pure = true)
 public inline fun particleEffect(type: VibrationParticleType, builder: VibrationParticleEffectBuilder.() -> Unit = {}): ParticleEffect =
     type.builder().apply(builder).build()

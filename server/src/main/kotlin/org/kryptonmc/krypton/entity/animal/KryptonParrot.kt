@@ -22,7 +22,7 @@ import net.kyori.adventure.sound.Sound
 import org.kryptonmc.api.entity.EntityTypes
 import org.kryptonmc.api.entity.animal.Animal
 import org.kryptonmc.api.entity.animal.Parrot
-import org.kryptonmc.api.entity.animal.type.ParrotType
+import org.kryptonmc.api.entity.animal.type.ParrotVariant
 import org.kryptonmc.api.entity.attribute.AttributeTypes
 import org.kryptonmc.api.item.ItemStack
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
@@ -31,8 +31,8 @@ import kotlin.random.Random
 
 class KryptonParrot(world: KryptonWorld) : KryptonTamable(world, EntityTypes.PARROT, ATTRIBUTES), Parrot {
 
-    override var parrotType: ParrotType
-        get() = TYPES.getOrNull(data[MetadataKeys.PARROT.TYPE]) ?: ParrotType.RED_AND_BLUE
+    override var variant: ParrotVariant
+        get() = TYPES.getOrNull(data[MetadataKeys.PARROT.TYPE]) ?: ParrotVariant.RED_AND_BLUE
         set(value) = data.set(MetadataKeys.PARROT.TYPE, value.ordinal)
 
     override val soundSource: Sound.Source
@@ -41,7 +41,7 @@ class KryptonParrot(world: KryptonWorld) : KryptonTamable(world, EntityTypes.PAR
         get() = (Random.nextFloat() - Random.nextFloat()) * 0.2F + 1F
 
     init {
-        data.add(MetadataKeys.PARROT.TYPE, ParrotType.RED_AND_BLUE.ordinal)
+        data.add(MetadataKeys.PARROT.TYPE, ParrotVariant.RED_AND_BLUE.ordinal)
     }
 
     override fun isFood(item: ItemStack): Boolean = false
@@ -76,7 +76,7 @@ class KryptonParrot(world: KryptonWorld) : KryptonTamable(world, EntityTypes.PAR
 
     companion object {
 
-        private val TYPES = ParrotType.values()
+        private val TYPES = ParrotVariant.values()
         private val ATTRIBUTES = attributes()
             .add(AttributeTypes.MAX_HEALTH, 6.0)
             .add(AttributeTypes.FLYING_SPEED, 0.4)

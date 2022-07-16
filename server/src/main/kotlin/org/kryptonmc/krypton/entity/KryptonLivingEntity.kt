@@ -54,12 +54,13 @@ abstract class KryptonLivingEntity(
     final override var deathTime: Short = 0
     final override var hurtTime: Short = 0
     final override var lastHurtTimestamp: Int = 0
-    override var isBaby: Boolean = false
     private var tickCount = 0
     val attributes: AttributeMap = AttributeMap(attributeSupplier)
     open val brain: Brain<*> = Brain<KryptonLivingEntity>()
     var headYaw: Float = rotation.x()
 
+    open val isBaby: Boolean
+        get() = false
     val killer: KryptonLivingEntity?
         get() {
             // TODO: Check combat tracker here
@@ -95,6 +96,9 @@ abstract class KryptonLivingEntity(
             return (Random.nextFloat() - Random.nextFloat()) * 0.2F + babyFactor
         }
 
+    final override var isGliding: Boolean
+        get() = getFlag(MetadataKeys.FLAGS, 7)
+        set(value) = setFlag(MetadataKeys.FLAGS, 7, value)
     final override var isUsingItem: Boolean
         get() = getLivingFlag(0)
         set(value) = setLivingFlag(0, value)

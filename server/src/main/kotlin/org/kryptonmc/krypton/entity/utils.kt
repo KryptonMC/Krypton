@@ -16,20 +16,9 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.registry
+package org.kryptonmc.krypton.entity
 
-import org.kryptonmc.api.registry.Registry
-import org.kryptonmc.krypton.util.serialization.Encoder
-import org.kryptonmc.nbt.CompoundTag
-import org.kryptonmc.nbt.compound
+import org.kryptonmc.api.entity.Entity
+import org.kryptonmc.krypton.util.downcastApiType
 
-fun <T : Any> Registry<T>.encode(elementEncoder: Encoder<T, CompoundTag>): CompoundTag = compound {
-    string("type", key.location.asString())
-    list("value", CompoundTag.ID, values.map {
-        compound {
-            string("name", get(it)!!.asString())
-            int("id", idOf(it))
-            put("element", elementEncoder.encode(it))
-        }
-    })
-}
+inline fun <A : Entity, reified I : KryptonEntity> A.downcast(): I = downcastApiType("Entity")

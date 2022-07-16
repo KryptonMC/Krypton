@@ -9,10 +9,13 @@
 package org.kryptonmc.api.entity.animal.type
 
 /**
- * A type of fox.
+ * A variant of parrot.
  */
-public enum class FoxType {
+public enum class ParrotVariant {
 
-    RED,
-    SNOW
+    RED_AND_BLUE,
+    BLUE,
+    GREEN,
+    YELLOW_AND_BLUE,
+    GREY
 }

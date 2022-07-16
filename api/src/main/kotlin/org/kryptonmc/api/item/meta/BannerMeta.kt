@@ -83,7 +83,7 @@ public interface BannerMeta : ScopedItemMeta<BannerMeta.Builder, BannerMeta> {
          * @param pattern the pattern to add
          * @return this builder
          */
-        @Contract("_ -> new", pure = true)
+        @Contract("_ -> this", mutates = "this")
         public fun addPattern(pattern: BannerPattern): Builder
     }
 
@@ -95,6 +95,7 @@ public interface BannerMeta : ScopedItemMeta<BannerMeta.Builder, BannerMeta> {
          * @return a new builder
          */
         @JvmStatic
-        public fun builder(): Builder = ItemMeta.FACTORY.builder(BannerMeta::class.java)
+        @Contract("-> new", pure = true)
+        public fun builder(): Builder = ItemMeta.builder(BannerMeta::class.java)
     }
 }

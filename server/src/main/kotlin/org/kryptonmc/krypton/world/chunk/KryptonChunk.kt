@@ -90,7 +90,7 @@ class KryptonChunk(
     override fun getFluid(position: Vector3i): Fluid = getFluid(position.x(), position.y(), position.z())
 
     override fun setBlock(x: Int, y: Int, z: Int, block: Block): Boolean {
-        require(block is KryptonBlock) { "Custom implementations of Block are not supported!" }
+        val kryptonBlock = block.downcast()
         val section = sections[sectionIndex(y)]
         if (section.hasOnlyAir() && block.isAir) return false
 
@@ -98,14 +98,14 @@ class KryptonChunk(
         val localX = x and 15
         val localY = y and 15
         val localZ = z and 15
-        val oldState = section.set(localX, localY, localZ, block)
-        if (oldState === block) return false
+        val oldState = section.set(localX, localY, localZ, kryptonBlock)
+        if (oldState === kryptonBlock) return false
 
         // Update the heightmaps
-        heightmaps.getValue(Heightmap.Type.MOTION_BLOCKING).update(localX, y, localZ, block)
-        heightmaps.getValue(Heightmap.Type.MOTION_BLOCKING_NO_LEAVES).update(localX, y, localZ, block)
-        heightmaps.getValue(Heightmap.Type.OCEAN_FLOOR).update(localX, y, localZ, block)
-        heightmaps.getValue(Heightmap.Type.WORLD_SURFACE).update(localX, y, localZ, block)
+        heightmaps.getValue(Heightmap.Type.MOTION_BLOCKING).update(localX, y, localZ, kryptonBlock)
+        heightmaps.getValue(Heightmap.Type.MOTION_BLOCKING_NO_LEAVES).update(localX, y, localZ, kryptonBlock)
+        heightmaps.getValue(Heightmap.Type.OCEAN_FLOOR).update(localX, y, localZ, kryptonBlock)
+        heightmaps.getValue(Heightmap.Type.WORLD_SURFACE).update(localX, y, localZ, kryptonBlock)
         cachedPacket.invalidate()
         return true
     }

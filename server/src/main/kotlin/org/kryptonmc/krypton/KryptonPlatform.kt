@@ -28,15 +28,11 @@ object KryptonPlatform : Platform {
 
     override val name: String = "Krypton"
     override val version: String = versions.getProperty("krypton")
-    override val isStable: Boolean = false
     override val minecraftVersion: String = versions.getProperty("minecraft")
     const val isStableMinecraft: Boolean = true
     override val worldVersion: Int = 3105
     override val protocolVersion: Int = 759
     override val dataPackVersion: Int = 10
-
-    @JvmField
-    val sparkVersion: String = versions.getProperty("spark")
     @JvmField
     val dataVersionPrefix: String = versions.getProperty("data")
 }

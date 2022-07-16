@@ -199,22 +199,6 @@ class KryptonPlayer(
             if (!isLoaded) return
             onAbilitiesUpdate()
         }
-    override var isGliding: Boolean
-        get() = super.isGliding
-        set(value) {
-            val action = if (value) PerformActionEvent.Action.START_FLYING_WITH_ELYTRA else PerformActionEvent.Action.STOP_FLYING_WITH_ELYTRA
-            val event = server.eventManager.fireSync(PerformActionEvent(this, action))
-            if (!event.result.isAllowed) return
-
-            if (action == PerformActionEvent.Action.STOP_FLYING_WITH_ELYTRA) {
-                super.isGliding = false
-                return
-            }
-            if (!isOnGround && !super.isGliding && !inWater) {
-                val chestplate = inventory.armor(ArmorSlot.CHESTPLATE)
-                if (chestplate.type === ItemTypes.ELYTRA && chestplate.meta.damage < chestplate.type.durability - 1) super.isGliding = true
-            }
-        }
     override val inventory: KryptonPlayerInventory = KryptonPlayerInventory(this)
     override var openInventory: Inventory? = null
     override val handSlots: Iterable<KryptonItemStack>
@@ -506,6 +490,36 @@ class KryptonPlayer(
         }
          */
         return InteractionResult.PASS
+    }
+
+    // This has vanilla logic in it that we don't want present in the API.
+    fun tryStartGliding(): Boolean {
+        // TODO: Check for levitation effect
+        if (isOnGround || isGliding || inWater) return false
+        val item = inventory.armor(ArmorSlot.CHESTPLATE)
+        if (item.type == ItemTypes.ELYTRA && item.meta.damage < item.type.durability - 1) {
+            startGliding()
+            return true
+        }
+        return false
+    }
+
+    override fun startGliding() {
+        if (server.eventManager.fireSync(PerformActionEvent(this, PerformActionEvent.Action.START_FLYING_WITH_ELYTRA)).result.isAllowed) {
+            isGliding = true
+        } else {
+            // Took this from Spigot. It seems like it's taken from the vanilla thing below, but if you don't have this,
+            // it can cause issues like https://hub.spigotmc.org/jira/browse/SPIGOT-5542.
+            isGliding = true
+            isGliding = false
+        }
+    }
+
+    override fun stopGliding() {
+        if (!server.eventManager.fireSync(PerformActionEvent(this, PerformActionEvent.Action.STOP_FLYING_WITH_ELYTRA)).result.isAllowed) return
+        // This is a vanilla thing
+        isGliding = true
+        isGliding = false
     }
 
     override fun addViewer(player: KryptonPlayer): Boolean {

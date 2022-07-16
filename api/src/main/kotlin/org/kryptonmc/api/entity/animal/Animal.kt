@@ -10,6 +10,7 @@ package org.kryptonmc.api.entity.animal
 
 import org.kryptonmc.api.entity.Ageable
 import org.kryptonmc.api.item.ItemStack
+import java.util.UUID
 
 /**
  * A creature that can fall in love with others of its kind, breed, and
@@ -26,11 +27,16 @@ import org.kryptonmc.api.item.ItemStack
 public interface Animal : Ageable {
 
     /**
+     * If this animal can fall in love.
+     */
+    @get:JvmName("canFallInLove")
+    public val canFallInLove: Boolean
+
+    /**
      * Whether this animal is currently in love, meaning it is looking for a
      * mate.
      */
-    @get:JvmName("inLove")
-    public val inLove: Boolean
+    public val isInLove: Boolean
 
     /**
      * The time remaining that this animal will be in love for.
@@ -39,10 +45,12 @@ public interface Animal : Ageable {
     public val inLoveTime: Int
 
     /**
-     * If this animal can fall in love.
+     * The cause of this animal being in love, if it is currently in love.
+     *
+     * If it is not in love, this will always be null.
      */
-    @get:JvmName("canFallInLove")
-    public val canFallInLove: Boolean
+    @get:JvmName("loveCause")
+    public var loveCause: UUID?
 
     /**
      * Returns true if this animal is eligible to mate with the given [target]

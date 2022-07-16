@@ -25,9 +25,9 @@ import org.kryptonmc.api.entity.attribute.AttributeTypes
 import org.kryptonmc.api.item.ItemStack
 import org.kryptonmc.api.item.data.DyeColor
 import org.kryptonmc.api.item.data.DyeColors
-import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.krypton.entity.Neutral
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
+import org.kryptonmc.krypton.registry.KryptonRegistries
 import org.kryptonmc.krypton.util.randomValue
 import org.kryptonmc.krypton.world.KryptonWorld
 import java.util.UUID
@@ -43,8 +43,8 @@ class KryptonWolf(world: KryptonWorld) : KryptonTamable(world, EntityTypes.WOLF,
         }
 
     override var collarColor: DyeColor
-        get() = Registries.DYE_COLORS[data[MetadataKeys.WOLF.COLLAR_COLOR]]!!
-        set(value) = data.set(MetadataKeys.WOLF.COLLAR_COLOR, Registries.DYE_COLORS.idOf(value))
+        get() = KryptonRegistries.DYE_COLORS.get(data[MetadataKeys.WOLF.COLLAR_COLOR])!!
+        set(value) = data.set(MetadataKeys.WOLF.COLLAR_COLOR, KryptonRegistries.DYE_COLORS.idOf(value))
     override var isBeggingForFood: Boolean
         get() = data[MetadataKeys.WOLF.BEGGING]
         set(value) = data.set(MetadataKeys.WOLF.BEGGING, value)
@@ -70,7 +70,7 @@ class KryptonWolf(world: KryptonWorld) : KryptonTamable(world, EntityTypes.WOLF,
 
     init {
         data.add(MetadataKeys.WOLF.BEGGING, false)
-        data.add(MetadataKeys.WOLF.COLLAR_COLOR, Registries.DYE_COLORS.idOf(DyeColors.RED))
+        data.add(MetadataKeys.WOLF.COLLAR_COLOR, KryptonRegistries.DYE_COLORS.idOf(DyeColors.RED))
         data.add(MetadataKeys.WOLF.ANGER_TIME, 0)
         isTame = false
     }
@@ -88,7 +88,7 @@ class KryptonWolf(world: KryptonWorld) : KryptonTamable(world, EntityTypes.WOLF,
         if (target !is Wolf) return false
         if (!target.isTame) return false
         if (target.isSitting) return false
-        return inLove && target.inLove
+        return isInLove && target.isInLove
     }
 
     companion object {

@@ -18,12 +18,6 @@ import org.kryptonmc.api.util.Color
 public interface AreaEffectCloud : Entity {
 
     /**
-     * The amount of ticks this cloud has lived for.
-     */
-    @get:JvmName("age")
-    public val age: Int
-
-    /**
      * The duration, in ticks, that this area effect cloud will exist for.
      */
     @get:JvmName("duration")

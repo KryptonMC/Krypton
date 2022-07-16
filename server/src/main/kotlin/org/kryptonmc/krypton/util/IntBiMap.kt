@@ -25,7 +25,7 @@ interface IntBiMap<T> : Iterable<T> {
 
     val size: Int
 
-    operator fun get(id: Int): T?
+    fun get(id: Int): T?
 
     fun idOf(value: T): Int
 }

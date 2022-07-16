@@ -47,7 +47,7 @@ public interface ItemRarity : Keyed {
          * @return a new item rarity
          */
         @JvmStatic
-        @Contract("_ -> new", pure = true)
+        @Contract("_, _ -> new", pure = true)
         public fun of(key: Key, color: TextColor): ItemRarity = FACTORY.of(key, color)
     }
 }

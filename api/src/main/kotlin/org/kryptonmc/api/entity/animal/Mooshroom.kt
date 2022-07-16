@@ -8,7 +8,7 @@
  */
 package org.kryptonmc.api.entity.animal
 
-import org.kryptonmc.api.entity.animal.type.MooshroomType
+import org.kryptonmc.api.entity.animal.type.MooshroomVariant
 
 /**
  * A mooshroom.
@@ -17,8 +17,8 @@ import org.kryptonmc.api.entity.animal.type.MooshroomType
 public interface Mooshroom : Cow {
 
     /**
-     * The type of this mooshroom.
+     * The variant of this mooshroom.
      */
-    @get:JvmName("mooshroomType")
-    public var mooshroomType: MooshroomType
+    @get:JvmName("variant")
+    public var variant: MooshroomVariant
 }

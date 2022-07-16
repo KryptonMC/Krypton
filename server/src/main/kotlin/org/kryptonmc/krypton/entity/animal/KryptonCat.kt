@@ -30,15 +30,15 @@ import org.kryptonmc.api.item.ItemStack
 import org.kryptonmc.api.item.ItemTypes
 import org.kryptonmc.api.item.data.DyeColor
 import org.kryptonmc.api.item.data.DyeColors
-import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
+import org.kryptonmc.krypton.registry.KryptonRegistries
 import org.kryptonmc.krypton.world.KryptonWorld
 
 class KryptonCat(world: KryptonWorld) : KryptonTamable(world, EntityTypes.CAT, ATTRIBUTES), Cat {
 
     override var variant: CatVariant
-        get() = Registries.CAT_VARIANT[data[MetadataKeys.CAT.VARIANT]]!!
-        set(value) = data.set(MetadataKeys.CAT.VARIANT, Registries.CAT_VARIANT.idOf(value))
+        get() = KryptonRegistries.CAT_VARIANT.get(data[MetadataKeys.CAT.VARIANT])!!
+        set(value) = data.set(MetadataKeys.CAT.VARIANT, KryptonRegistries.CAT_VARIANT.idOf(value))
     override var isLying: Boolean
         get() = data[MetadataKeys.CAT.LYING]
         set(value) = data.set(MetadataKeys.CAT.LYING, value)
@@ -46,14 +46,14 @@ class KryptonCat(world: KryptonWorld) : KryptonTamable(world, EntityTypes.CAT, A
         get() = data[MetadataKeys.CAT.RELAXED]
         set(value) = data.set(MetadataKeys.CAT.RELAXED, value)
     override var collarColor: DyeColor
-        get() = Registries.DYE_COLORS[data[MetadataKeys.CAT.COLLAR_COLOR]] ?: DyeColors.WHITE
-        set(value) = data.set(MetadataKeys.CAT.COLLAR_COLOR, Registries.DYE_COLORS.idOf(value))
+        get() = KryptonRegistries.DYE_COLORS.get(data[MetadataKeys.CAT.COLLAR_COLOR]) ?: DyeColors.WHITE
+        set(value) = data.set(MetadataKeys.CAT.COLLAR_COLOR, KryptonRegistries.DYE_COLORS.idOf(value))
 
     init {
-        data.add(MetadataKeys.CAT.VARIANT, Registries.CAT_VARIANT.idOf(CatVariants.BLACK))
+        data.add(MetadataKeys.CAT.VARIANT, KryptonRegistries.CAT_VARIANT.idOf(CatVariants.BLACK))
         data.add(MetadataKeys.CAT.LYING, false)
         data.add(MetadataKeys.CAT.RELAXED, false)
-        data.add(MetadataKeys.CAT.COLLAR_COLOR, Registries.DYE_COLORS.idOf(DyeColors.RED))
+        data.add(MetadataKeys.CAT.COLLAR_COLOR, KryptonRegistries.DYE_COLORS.idOf(DyeColors.RED))
     }
 
     override fun hiss() {

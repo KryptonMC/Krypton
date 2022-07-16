@@ -158,7 +158,7 @@ public object Registries {
      * @return a defaulted registry for the given [key]
      */
     @JvmStatic
-    @Contract("_ -> new", pure = true)
+    @Contract("_, _ -> new", pure = true)
     public fun <T : Any> createDefaulted(key: ResourceKey<out Registry<T>>, defaultKey: Key): DefaultedRegistry<T> =
         Krypton.registryManager.createDefaulted(key, defaultKey)
 }

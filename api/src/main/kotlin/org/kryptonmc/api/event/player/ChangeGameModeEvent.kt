@@ -11,7 +11,6 @@ package org.kryptonmc.api.event.player
 import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.entity.player.Player
 import org.kryptonmc.api.event.ResultedEvent
-import org.kryptonmc.api.event.ResultedEvent.Result
 import org.kryptonmc.api.world.GameMode
 
 /**
@@ -28,10 +27,10 @@ public data class ChangeGameModeEvent(
     @get:JvmName("oldGameMode") public val oldGameMode: GameMode,
     @get:JvmName("newGameMode") public val newGameMode: GameMode,
     @get:JvmName("cause") public val cause: Cause
-) : ResultedEvent<GameModeResult> {
+) : ResultedEvent<ChangeGameModeEvent.Result> {
 
     @get:JvmName("result")
-    override var result: GameModeResult = GameModeResult.allowed()
+    override var result: Result = Result.allowed()
 
     /**
      * The cause of the game mode change.
@@ -53,50 +52,50 @@ public data class ChangeGameModeEvent(
          */
         LOAD
     }
-}
 
-/**
- * The result of a [ChangeGameModeEvent].
- *
- * @param newGameMode the new game mode to change to
- */
-@JvmRecord
-public data class GameModeResult(override val isAllowed: Boolean, public val newGameMode: GameMode?) : Result {
+    /**
+     * The result of an attempt to change a player's game mode.
+     *
+     * @param newGameMode the new game mode to change to
+     */
+    @JvmRecord
+    public data class Result(override val isAllowed: Boolean, public val newGameMode: GameMode?) : ResultedEvent.Result {
 
-    public companion object {
+        public companion object {
 
-        private val ALLOWED = GameModeResult(true, null)
-        private val DENIED = GameModeResult(false, null)
+            private val ALLOWED = Result(true, null)
+            private val DENIED = Result(false, null)
 
-        /**
-         * Gets the result that allows the game mode change to continue as
-         * normal, using the original old and new game mode values.
-         *
-         * @return the allowed result
-         */
-        @JvmStatic
-        @Contract(pure = true)
-        public fun allowed(): GameModeResult = ALLOWED
+            /**
+             * Gets the result that allows the game mode change to continue as
+             * normal, using the original old and new game mode values.
+             *
+             * @return the allowed result
+             */
+            @JvmStatic
+            @Contract(pure = true)
+            public fun allowed(): Result = ALLOWED
 
-        /**
-         * Creates a new result that allows the game mode change to continue,
-         * but silently replaces the new game mode with the given
-         * [newGameMode].
-         *
-         * @param newGameMode the new game mode for the player
-         * @return a new allowed result
-         */
-        @JvmStatic
-        @Contract("_ -> new", pure = true)
-        public fun allowed(newGameMode: GameMode): GameModeResult = GameModeResult(true, newGameMode)
+            /**
+             * Creates a new result that allows the game mode change to continue,
+             * but silently replaces the new game mode with the given
+             * [newGameMode].
+             *
+             * @param newGameMode the new game mode for the player
+             * @return a new allowed result
+             */
+            @JvmStatic
+            @Contract("_ -> new", pure = true)
+            public fun allowed(newGameMode: GameMode): Result = Result(true, newGameMode)
 
-        /**
-         * Gets the result that denies the game mode change from continuing.
-         *
-         * @return the denied result
-         */
-        @JvmStatic
-        @Contract(pure = true)
-        public fun denied(): GameModeResult = DENIED
+            /**
+             * Gets the result that denies the game mode change from continuing.
+             *
+             * @return the denied result
+             */
+            @JvmStatic
+            @Contract(pure = true)
+            public fun denied(): Result = DENIED
+        }
     }
 }

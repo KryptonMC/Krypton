@@ -8,11 +8,12 @@
  */
 package org.kryptonmc.api.world.biome
 
-import net.kyori.adventure.util.Buildable
+import net.kyori.adventure.builder.AbstractBuilder
 import org.jetbrains.annotations.ApiStatus
 import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.Krypton
 import org.kryptonmc.api.effect.sound.SoundEvent
+import org.kryptonmc.api.util.Buildable
 import org.kryptonmc.api.util.provide
 
 /**
@@ -20,7 +21,7 @@ import org.kryptonmc.api.util.provide
  * a fixed chance.
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
-public interface AmbientAdditionsSettings : Buildable<AmbientAdditionsSettings, AmbientAdditionsSettings.Builder> {
+public interface AmbientAdditionsSettings : Buildable<AmbientAdditionsSettings.Builder, AmbientAdditionsSettings> {
 
     /**
      * The sound that might be played.
@@ -38,7 +39,7 @@ public interface AmbientAdditionsSettings : Buildable<AmbientAdditionsSettings, 
      * A builder for ambient additions settings.
      */
     @BiomeDsl
-    public interface Builder : Buildable.Builder<AmbientAdditionsSettings> {
+    public interface Builder : AbstractBuilder<AmbientAdditionsSettings> {
 
         /**
          * Sets the sound for the ambient additions settings to the given
@@ -85,7 +86,7 @@ public interface AmbientAdditionsSettings : Buildable<AmbientAdditionsSettings, 
          * @return new ambient addition sound settings
          */
         @JvmStatic
-        @Contract("_ -> new", pure = true)
+        @Contract("_, _ -> new", pure = true)
         public fun of(sound: SoundEvent, probability: Double): AmbientAdditionsSettings = FACTORY.of(sound, probability)
 
         /**

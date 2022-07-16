@@ -8,18 +8,19 @@
  */
 package org.kryptonmc.api.command.meta
 
-import net.kyori.adventure.util.Buildable
+import net.kyori.adventure.builder.AbstractBuilder
 import org.jetbrains.annotations.ApiStatus
 import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.Krypton
 import org.kryptonmc.api.command.BrigadierCommand
+import org.kryptonmc.api.util.Buildable
 import org.kryptonmc.api.util.provide
 
 /**
  * Holds metadata for a [org.kryptonmc.api.command.Command].
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
-public interface CommandMeta : Buildable<CommandMeta, CommandMeta.Builder> {
+public interface CommandMeta : Buildable<CommandMeta.Builder, CommandMeta> {
 
     /**
      * The name of the command.
@@ -37,7 +38,7 @@ public interface CommandMeta : Buildable<CommandMeta, CommandMeta.Builder> {
      * A builder for [CommandMeta].
      */
     @CommandMetaDsl
-    public interface Builder : Buildable.Builder<CommandMeta> {
+    public interface Builder : AbstractBuilder<CommandMeta> {
 
         /**
          * Sets the name of the command to the given [name].

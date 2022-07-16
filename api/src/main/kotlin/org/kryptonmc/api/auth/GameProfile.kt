@@ -8,11 +8,12 @@
  */
 package org.kryptonmc.api.auth
 
+import net.kyori.adventure.builder.AbstractBuilder
 import net.kyori.adventure.identity.Identified
-import net.kyori.adventure.util.Buildable
 import org.jetbrains.annotations.ApiStatus
 import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.Krypton
+import org.kryptonmc.api.util.Buildable
 import org.kryptonmc.api.util.provide
 import java.util.UUID
 import java.util.function.Consumer
@@ -23,7 +24,7 @@ import java.util.function.Consumer
  * implementation.
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
-public interface GameProfile : Buildable<GameProfile, GameProfile.Builder>, Identified {
+public interface GameProfile : Buildable<GameProfile.Builder, GameProfile>, Identified {
 
     /**
      * The name of the profile.
@@ -109,7 +110,7 @@ public interface GameProfile : Buildable<GameProfile, GameProfile.Builder>, Iden
      * This is designed for bulk modification, and so cannot be constructed
      * without an existing instance.
      */
-    public interface Builder : Buildable.Builder<GameProfile> {
+    public interface Builder : AbstractBuilder<GameProfile> {
 
         /**
          * Sets the properties of the game profile to the given [properties].

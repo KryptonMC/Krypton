@@ -24,7 +24,7 @@ import org.kryptonmc.api.entity.attribute.Attribute
 import org.kryptonmc.api.entity.attribute.AttributeModifier
 import org.kryptonmc.api.entity.attribute.AttributeType
 import org.kryptonmc.api.entity.attribute.ModifierOperation
-import org.kryptonmc.api.registry.Registries
+import org.kryptonmc.krypton.registry.KryptonRegistries
 import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.ListTag
 import org.kryptonmc.nbt.compound
@@ -33,7 +33,7 @@ import java.util.UUID
 
 data class KryptonAttribute(override val type: AttributeType, private val callback: (KryptonAttribute) -> Unit) : Attribute {
 
-    val modifiersByOperation: MutableMap<ModifierOperation, MutableSet<AttributeModifier>> = mutableMapOf()
+    private val modifiersByOperation = mutableMapOf<ModifierOperation, MutableSet<AttributeModifier>>()
     private val modifiersById = Object2ObjectArrayMap<UUID, AttributeModifier>()
     private val permanentModifiers = ObjectArraySet<AttributeModifier>()
     override val modifiers: Collection<AttributeModifier> = Collections.unmodifiableCollection(modifiersById.values)
@@ -59,7 +59,7 @@ data class KryptonAttribute(override val type: AttributeType, private val callba
         baseValue = data.getDouble("Base")
         if (data.contains("Modifiers", ListTag.ID)) {
             data.getList("Modifiers", CompoundTag.ID).forEachCompound {
-                val operation = Registries.MODIFIER_OPERATIONS[it.getInt("Operation")] ?: return@forEachCompound
+                val operation = KryptonRegistries.MODIFIER_OPERATIONS.get(it.getInt("Operation")) ?: return@forEachCompound
                 val uuid = it.getUUID("UUID") ?: return@forEachCompound
                 val modifier = KryptonAttributeModifier(it.getString("Name"), uuid, it.getDouble("Amount"), operation)
                 modifiersById[modifier.uuid] = modifier

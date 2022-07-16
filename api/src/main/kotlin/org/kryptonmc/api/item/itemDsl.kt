@@ -41,7 +41,7 @@ public inline fun item(builder: ItemStack.Builder.() -> Unit): ItemStack = ItemS
  */
 @ItemDsl
 @JvmSynthetic
-@Contract("_ -> new", pure = true)
+@Contract("_, _ -> new", pure = true)
 public inline fun item(type: ItemType, builder: ItemStack.Builder.() -> Unit): ItemStack = ItemStack.builder().type(type).apply(builder).build()
 
 /**
@@ -55,7 +55,7 @@ public inline fun item(type: ItemType, builder: ItemStack.Builder.() -> Unit): I
  */
 @ItemDsl
 @JvmSynthetic
-@Contract("_ -> new", pure = true)
+@Contract("_, _, _ -> new", pure = true)
 public inline fun item(type: ItemType, amount: Int, builder: ItemStack.Builder.() -> Unit): ItemStack =
     ItemStack.builder().type(type).amount(amount).apply(builder).build()
 
@@ -71,7 +71,7 @@ public inline fun item(type: ItemType, amount: Int, builder: ItemStack.Builder.(
 @ItemDsl
 @JvmSynthetic
 @JvmName("itemWithMeta")
-@Contract("_ -> new", pure = true)
+@Contract("_, _, _ -> new", pure = true)
 public inline fun item(type: ItemType, amount: Int, meta: ItemMeta.Builder.() -> Unit): ItemStack =
     ItemStack.builder().type(type).amount(amount).meta(ItemMeta.builder().apply(meta).build()).build()
 
@@ -89,7 +89,7 @@ public inline fun item(type: ItemType, amount: Int, meta: ItemMeta.Builder.() ->
 @ItemDsl
 @JvmSynthetic
 @JvmName("itemWithMetaGeneric")
-@Contract("_ -> new", pure = true)
+@Contract("_, _, _ -> new", pure = true)
 public inline fun <B : ItemMetaBuilder<B, P>, reified P : ItemMetaBuilder.Provider<B>> item(
     type: ItemType,
     amount: Int,

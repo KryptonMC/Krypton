@@ -23,15 +23,15 @@ import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.block.Blocks
 import org.kryptonmc.api.effect.sound.SoundEvents
 import org.kryptonmc.api.entity.EntityTypes
-import org.kryptonmc.api.entity.vehicle.MinecartType
+import org.kryptonmc.api.entity.vehicle.MinecartVariant
 import org.kryptonmc.api.entity.vehicle.TNTMinecart
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.krypton.world.damage.KryptonDamageSource
 
 class KryptonTNTMinecart(world: KryptonWorld) : KryptonMinecartLike(world, EntityTypes.TNT_MINECART), TNTMinecart {
 
-    override val minecartType: MinecartType
-        get() = MinecartType.TNT
+    override val variant: MinecartVariant
+        get() = MinecartVariant.TNT
     override val isPrimed: Boolean
         get() = fuse > -1
     override var fuse: Int = -1

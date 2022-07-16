@@ -24,10 +24,8 @@ import org.kryptonmc.api.entity.aquatic.TropicalFishVariant
 import org.kryptonmc.api.item.ItemTypes
 import org.kryptonmc.api.item.data.DyeColor
 import org.kryptonmc.api.item.ItemType
-import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
-import org.kryptonmc.krypton.item.KryptonItemStack
-import org.kryptonmc.krypton.item.meta.KryptonItemMeta
+import org.kryptonmc.krypton.registry.KryptonRegistries
 import org.kryptonmc.krypton.world.KryptonWorld
 import kotlin.math.min
 
@@ -91,8 +89,8 @@ class KryptonTropicalFish(world: KryptonWorld) : KryptonSchoolingFish(world, Ent
          */
         @JvmStatic
         private fun encodeVariant(variant: TropicalFishVariant, baseColor: DyeColor, patternColor: DyeColor): Int {
-            val baseId = Registries.DYE_COLORS.idOf(baseColor)
-            val patternId = Registries.DYE_COLORS.idOf(patternColor)
+            val baseId = KryptonRegistries.DYE_COLORS.idOf(baseColor)
+            val patternId = KryptonRegistries.DYE_COLORS.idOf(patternColor)
             return variant.shape and 255 or ((variant.pattern and 255) shl 8) or ((baseId and 255) shl 16) or ((patternId and 255) shl 24)
         }
 
@@ -106,24 +104,24 @@ class KryptonTropicalFish(world: KryptonWorld) : KryptonSchoolingFish(world, Ent
         // -16711681 = 11111111 00000000 11111111 11111111 (clear bits 16-23)
         @JvmStatic
         private fun modifyBaseColor(encoded: Int, baseColor: DyeColor): Int {
-            val colorId = Registries.DYE_COLORS.idOf(baseColor)
+            val colorId = KryptonRegistries.DYE_COLORS.idOf(baseColor)
             return (encoded and -16711681) or ((colorId and 255) shl 16)
         }
 
         // 16777215 = 00000000 11111111 11111111 11111111 (clear bits 24-31)
         @JvmStatic
         private fun modifyPatternColor(encoded: Int, patternColor: DyeColor): Int {
-            val colorId = Registries.DYE_COLORS.idOf(patternColor)
+            val colorId = KryptonRegistries.DYE_COLORS.idOf(patternColor)
             return (encoded and 16777215) or ((colorId and 255) shl 24)
         }
 
         // 16711680 = 00000000 11111111 00000000 00000000 (clear all bits except 16-23)
         @JvmStatic
-        private fun extractBaseColor(variant: Int): DyeColor = Registries.DYE_COLORS[(variant and 16711680) shr 16]!!
+        private fun extractBaseColor(variant: Int): DyeColor = KryptonRegistries.DYE_COLORS.get((variant and 16711680) shr 16)!!
 
         // -16777216 = 11111111 00000000 00000000 00000000 (clear all bits except 24-31)
         @JvmStatic
-        private fun extractPatternColor(encoded: Int): DyeColor = Registries.DYE_COLORS[(encoded and -16777216) shr 24]!!
+        private fun extractPatternColor(encoded: Int): DyeColor = KryptonRegistries.DYE_COLORS.get((encoded and -16777216) shr 24)!!
 
         // 255 = 00000000 00000000 00000000 11111111 (clear all bits except 0-7)
         // 65280 = 00000000 00000000 11111111 00000000 (clear all bits except 8-15)

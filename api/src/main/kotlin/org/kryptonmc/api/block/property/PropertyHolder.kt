@@ -8,7 +8,6 @@
  */
 package org.kryptonmc.api.block.property
 
-import net.kyori.adventure.builder.AbstractBuilder
 import org.jetbrains.annotations.Contract
 
 /**
@@ -28,14 +27,6 @@ public interface PropertyHolder<out T : PropertyHolder<T>> {
     /**
      * All the properties that are being held by this property holder.
      */
-    // TODO: Figure out what to do here.
-    // The problem is that having the properties be a string map exposes the
-    // string-based implementation, and makes it difficult for us to switch to
-    // other options if necessary in the future. It also doesn't really make
-    // sense when you look at the rest of the property API, and the fact that
-    // it's filled with wrappers and high-level abstractions. This feels out of
-    // place, but replacing it with a map of Property<*> to Comparable<*> will
-    // require some backend work, and may degrade performance.
     @get:JvmName("properties")
     public val properties: Map<String, String>
 
@@ -69,22 +60,4 @@ public interface PropertyHolder<out T : PropertyHolder<T>> {
      */
     @Contract("_ -> new", pure = true)
     public fun <V : Comparable<V>> set(key: Property<V>, value: V): T
-
-    /**
-     * A base builder for building property holders.
-     */
-    public interface Builder<B : Builder<B, T>, T : PropertyHolder<T>> : AbstractBuilder<T> {
-
-        /**
-         * Adds the given property [key] to the list of available properties
-         * for the property holder and sets the value of the property to the
-         * given [value] in the properties map.
-         *
-         * @param key the key
-         * @param value the value
-         * @return this builder
-         */
-        @Contract("_ -> this", mutates = "this")
-        public fun <V : Comparable<V>> property(key: Property<V>, value: V): B
-    }
 }

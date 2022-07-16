@@ -146,7 +146,7 @@ public interface DamageType : Keyed {
          *
          * @return this builder
          */
-        @Contract("_ -> this", mutates = "this")
+        @Contract("-> this", mutates = "this")
         public fun damagesHelmet(): Builder = damagesHelmet(true)
 
         /**
@@ -164,7 +164,7 @@ public interface DamageType : Keyed {
          *
          * @return this builder
          */
-        @Contract("_ -> this", mutates = "this")
+        @Contract("-> this", mutates = "this")
         public fun bypassesArmor(): Builder = bypassesArmor(true)
 
         /**
@@ -182,7 +182,7 @@ public interface DamageType : Keyed {
          *
          * @return this builder
          */
-        @Contract("_ -> this", mutates = "this")
+        @Contract("-> this", mutates = "this")
         public fun bypassesInvulnerability(): Builder = bypassesInvulnerability(true)
 
         /**
@@ -200,7 +200,7 @@ public interface DamageType : Keyed {
          *
          * @return this builder
          */
-        @Contract("_ -> this", mutates = "this")
+        @Contract("-> this", mutates = "this")
         public fun bypassesMagic(): Builder = bypassesMagic(true)
 
         /**
@@ -228,7 +228,7 @@ public interface DamageType : Keyed {
          *
          * @return this builder
          */
-        @Contract("_ -> this", mutates = "this")
+        @Contract("-> this", mutates = "this")
         public fun fire(): Builder = fire(true)
 
         /**
@@ -246,7 +246,7 @@ public interface DamageType : Keyed {
          *
          * @return this builder
          */
-        @Contract("_ -> this", mutates = "this")
+        @Contract("-> this", mutates = "this")
         public fun projectile(): Builder = projectile(true)
 
         /**
@@ -264,7 +264,7 @@ public interface DamageType : Keyed {
          *
          * @return this builder
          */
-        @Contract("_ -> this", mutates = "this")
+        @Contract("-> this", mutates = "this")
         public fun scalesWithDifficulty(): Builder = scalesWithDifficulty(true)
 
         /**
@@ -282,7 +282,7 @@ public interface DamageType : Keyed {
          *
          * @return this builder
          */
-        @Contract("_ -> this", mutates = "this")
+        @Contract("-> this", mutates = "this")
         public fun magic(): Builder = magic(true)
 
         /**
@@ -300,7 +300,7 @@ public interface DamageType : Keyed {
          *
          * @return this builder
          */
-        @Contract("_ -> this", mutates = "this")
+        @Contract("-> this", mutates = "this")
         public fun explosion(): Builder = explosion(true)
 
         /**
@@ -318,7 +318,7 @@ public interface DamageType : Keyed {
          *
          * @return this builder
          */
-        @Contract("_ -> this", mutates = "this")
+        @Contract("-> this", mutates = "this")
         public fun fall(): Builder = fall(true)
 
         /**
@@ -336,7 +336,7 @@ public interface DamageType : Keyed {
          *
          * @return this builder
          */
-        @Contract("_ -> this", mutates = "this")
+        @Contract("-> this", mutates = "this")
         public fun thorns(): Builder = thorns(true)
 
         /**
@@ -354,7 +354,7 @@ public interface DamageType : Keyed {
          *
          * @return this builder
          */
-        @Contract("_ -> this", mutates = "this")
+        @Contract("-> this", mutates = "this")
         public fun aggravatesTarget(): Builder = aggravatesTarget(true)
     }
 
@@ -376,6 +376,7 @@ public interface DamageType : Keyed {
          * @return a new builder
          */
         @JvmStatic
+        @Contract("_, _ -> new", pure = true)
         public fun builder(key: Key, translationKey: String): Builder = FACTORY.builder(key, translationKey)
     }
 }

@@ -41,7 +41,7 @@ public inline fun scoreboard(builder: Scoreboard.Builder.() -> Unit): Scoreboard
  */
 @ScoreboardDsl
 @JvmSynthetic
-@Contract("_ -> new", pure = true)
+@Contract("_, _, _ -> new", pure = true)
 public inline fun objective(name: String, criterion: Criterion, builder: Objective.Builder.() -> Unit): Objective =
     Objective.builder(name, criterion).apply(builder).build()
 
@@ -55,5 +55,5 @@ public inline fun objective(name: String, criterion: Criterion, builder: Objecti
  */
 @ScoreboardDsl
 @JvmSynthetic
-@Contract("_ -> new", pure = true)
+@Contract("_, _ -> new", pure = true)
 public inline fun team(name: String, builder: Team.Builder.() -> Unit): Team = Team.builder(name).apply(builder).build()

@@ -23,7 +23,7 @@ import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.block.Blocks
 import org.kryptonmc.api.entity.EntityTypes
 import org.kryptonmc.api.entity.vehicle.CommandBlockMinecart
-import org.kryptonmc.api.entity.vehicle.MinecartType
+import org.kryptonmc.api.entity.vehicle.MinecartVariant
 import org.kryptonmc.krypton.entity.metadata.MetadataKey
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.world.CommandBlockHandler
@@ -32,8 +32,8 @@ import org.kryptonmc.krypton.world.KryptonWorld
 class KryptonCommandBlockMinecart(world: KryptonWorld) : KryptonMinecartLike(world, EntityTypes.COMMAND_BLOCK_MINECART), CommandBlockMinecart {
 
     internal val commandBlock = Handler()
-    override val minecartType: MinecartType
-        get() = MinecartType.COMMAND_BLOCK
+    override val variant: MinecartVariant
+        get() = MinecartVariant.COMMAND_BLOCK
     override var command: String
         get() = data[MetadataKeys.COMMAND_BLOCK_MINECART.COMMAND]
         set(value) = data.set(MetadataKeys.COMMAND_BLOCK_MINECART.COMMAND, value)

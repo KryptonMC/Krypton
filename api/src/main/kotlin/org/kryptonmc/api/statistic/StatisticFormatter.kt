@@ -26,15 +26,6 @@ public fun interface StatisticFormatter {
     public companion object {
 
         /**
-         * The decimal format used for formatting decimals in various built-in
-         * formatters.
-         */
-        @JvmField
-        public val DECIMAL_FORMAT: DecimalFormat = DecimalFormat("########0.00").apply {
-            decimalFormatSymbols = DecimalFormatSymbols.getInstance(Locale.ROOT)
-        }
-
-        /**
          * The default formatter. Simply converts the value to a number format.
          */
         @JvmField
@@ -95,3 +86,5 @@ public fun interface StatisticFormatter {
         }
     }
 }
+
+private val DECIMAL_FORMAT = DecimalFormat("########0.00").apply { decimalFormatSymbols = DecimalFormatSymbols.getInstance(Locale.ROOT) }

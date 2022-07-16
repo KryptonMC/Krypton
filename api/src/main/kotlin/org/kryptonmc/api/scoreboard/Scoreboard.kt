@@ -8,12 +8,13 @@
  */
 package org.kryptonmc.api.scoreboard
 
+import net.kyori.adventure.builder.AbstractBuilder
 import net.kyori.adventure.text.Component
-import net.kyori.adventure.util.Buildable
 import org.jetbrains.annotations.ApiStatus
 import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.Krypton
 import org.kryptonmc.api.scoreboard.criteria.Criterion
+import org.kryptonmc.api.util.Buildable
 import org.kryptonmc.api.util.provide
 import java.util.function.Consumer
 
@@ -22,7 +23,7 @@ import java.util.function.Consumer
  * These are primarily for use in minigames.
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
-public interface Scoreboard : Buildable<Scoreboard, Scoreboard.Builder> {
+public interface Scoreboard : Buildable<Scoreboard.Builder, Scoreboard> {
 
     /**
      * All objectives registered on this scoreboard.
@@ -164,7 +165,7 @@ public interface Scoreboard : Buildable<Scoreboard, Scoreboard.Builder> {
      * A builder for scoreboards.
      */
     @ScoreboardDsl
-    public interface Builder : Buildable.Builder<Scoreboard> {
+    public interface Builder : AbstractBuilder<Scoreboard> {
 
         /**
          * Adds the given [objective] to the list of registered objectives for
@@ -189,7 +190,7 @@ public interface Scoreboard : Buildable<Scoreboard, Scoreboard.Builder> {
          */
         @ScoreboardDsl
         @JvmSynthetic
-        @Contract("_ -> this", mutates = "this")
+        @Contract("_, _, _ -> this", mutates = "this")
         public fun objective(name: String, criterion: Criterion, builder: Objective.Builder.() -> Unit): Builder =
             objective(Objective.builder(name, criterion).apply(builder).build())
 
@@ -204,7 +205,7 @@ public interface Scoreboard : Buildable<Scoreboard, Scoreboard.Builder> {
          * @return this builder
          */
         @ScoreboardDsl
-        @Contract("_ -> this", mutates = "this")
+        @Contract("_, _, _ -> this", mutates = "this")
         public fun objective(name: String, criterion: Criterion, builder: Consumer<Objective.Builder>): Builder =
             objective(name, criterion) { builder.accept(this) }
 
@@ -251,7 +252,7 @@ public interface Scoreboard : Buildable<Scoreboard, Scoreboard.Builder> {
          */
         @ScoreboardDsl
         @JvmSynthetic
-        @Contract("_ -> this", mutates = "this")
+        @Contract("_, _ -> this", mutates = "this")
         public fun team(name: String, builder: Team.Builder.() -> Unit): Builder = team(Team.builder(name).apply(builder).build())
 
         /**
@@ -263,7 +264,7 @@ public interface Scoreboard : Buildable<Scoreboard, Scoreboard.Builder> {
          * @return this builder
          */
         @ScoreboardDsl
-        @Contract("_ -> this", mutates = "this")
+        @Contract("_, _ -> this", mutates = "this")
         public fun team(name: String, builder: Consumer<Team.Builder>): Builder = team(name) { builder.accept(this) }
 
         /**
@@ -305,7 +306,7 @@ public interface Scoreboard : Buildable<Scoreboard, Scoreboard.Builder> {
          * @return a new scoreboard
          */
         @JvmStatic
-        @Contract("_ -> new", pure = true)
+        @Contract("-> new", pure = true)
         public fun empty(): Scoreboard = FACTORY.empty()
 
         /**
@@ -314,7 +315,7 @@ public interface Scoreboard : Buildable<Scoreboard, Scoreboard.Builder> {
          * @return a new builder
          */
         @JvmStatic
-        @Contract("_ -> new", pure = true)
+        @Contract("-> new", pure = true)
         public fun builder(): Builder = FACTORY.builder()
     }
 }

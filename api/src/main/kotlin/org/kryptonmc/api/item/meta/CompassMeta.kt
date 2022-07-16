@@ -46,7 +46,7 @@ public interface CompassMeta : ScopedItemMeta<CompassMeta.Builder, CompassMeta> 
      * @param position the position the lodestone is at
      * @return new item metadata
      */
-    @Contract("_ -> new", pure = true)
+    @Contract("_, _ -> new", pure = true)
     public fun withLodestone(dimension: ResourceKey<World>, position: Vector3i): CompassMeta
 
     /**
@@ -57,7 +57,7 @@ public interface CompassMeta : ScopedItemMeta<CompassMeta.Builder, CompassMeta> 
      *
      * @return new item metadata
      */
-    @Contract("_ -> new", pure = true)
+    @Contract("-> new", pure = true)
     public fun withoutLodestone(): CompassMeta
 
     /**
@@ -87,7 +87,7 @@ public interface CompassMeta : ScopedItemMeta<CompassMeta.Builder, CompassMeta> 
          * @return a new builder
          */
         @JvmStatic
-        @Contract("_ -> new", pure = true)
+        @Contract("-> new", pure = true)
         public fun builder(): Builder = ItemMeta.builder(CompassMeta::class.java)
     }
 }

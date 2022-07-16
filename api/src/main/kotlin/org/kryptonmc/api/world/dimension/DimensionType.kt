@@ -8,14 +8,15 @@
  */
 package org.kryptonmc.api.world.dimension
 
+import net.kyori.adventure.builder.AbstractBuilder
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.key.Keyed
-import net.kyori.adventure.util.Buildable
 import org.jetbrains.annotations.ApiStatus
 import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.Krypton
 import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.tags.Tag
+import org.kryptonmc.api.util.Buildable
 import org.kryptonmc.api.util.CataloguedBy
 import org.kryptonmc.api.util.KeyedBuilder
 import org.kryptonmc.api.util.provide
@@ -26,7 +27,7 @@ import java.util.OptionalLong
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
 @CataloguedBy(DimensionTypes::class)
-public interface DimensionType : Buildable<DimensionType, DimensionType.Builder>, Keyed {
+public interface DimensionType : Buildable<DimensionType.Builder, DimensionType>, Keyed {
 
     /**
      * If [Piglin]s will transform in to [ZombifiedPiglin]s over time.
@@ -153,7 +154,7 @@ public interface DimensionType : Buildable<DimensionType, DimensionType.Builder>
      * A builder for dimension types.
      */
     @DimensionTypeDsl
-    public interface Builder : Buildable.Builder<DimensionType>, KeyedBuilder<DimensionType, Builder> {
+    public interface Builder : AbstractBuilder<DimensionType>, KeyedBuilder<DimensionType, Builder> {
 
         /**
          * Makes the dimension type safe for piglins.
@@ -162,7 +163,7 @@ public interface DimensionType : Buildable<DimensionType, DimensionType.Builder>
          * @see DimensionType.isPiglinSafe
          */
         @DimensionTypeDsl
-        @Contract("_ -> this", mutates = "this")
+        @Contract("-> this", mutates = "this")
         public fun piglinSafe(): Builder = piglinSafe(true)
 
         /**
@@ -174,7 +175,7 @@ public interface DimensionType : Buildable<DimensionType, DimensionType.Builder>
          * @see DimensionType.isPiglinSafe
          */
         @DimensionTypeDsl
-        @Contract("_ -> this", mutates = "this")
+        @Contract("-> this", mutates = "this")
         public fun notPiglinSafe(): Builder = piglinSafe(false)
 
         /**
@@ -195,7 +196,7 @@ public interface DimensionType : Buildable<DimensionType, DimensionType.Builder>
          * @see DimensionType.isNatural
          */
         @DimensionTypeDsl
-        @Contract("_ -> this", mutates = "this")
+        @Contract("-> this", mutates = "this")
         public fun natural(): Builder = natural(true)
 
         /**
@@ -207,7 +208,7 @@ public interface DimensionType : Buildable<DimensionType, DimensionType.Builder>
          * @see DimensionType.isNatural
          */
         @DimensionTypeDsl
-        @Contract("_ -> this", mutates = "this")
+        @Contract("-> this", mutates = "this")
         public fun unnatural(): Builder = natural(false)
 
         /**
@@ -228,7 +229,7 @@ public interface DimensionType : Buildable<DimensionType, DimensionType.Builder>
          * @see DimensionType.isUltrawarm
          */
         @DimensionTypeDsl
-        @Contract("_ -> this", mutates = "this")
+        @Contract("-> this", mutates = "this")
         public fun ultrawarm(): Builder = ultrawarm(true)
 
         /**
@@ -240,7 +241,7 @@ public interface DimensionType : Buildable<DimensionType, DimensionType.Builder>
          * @see DimensionType.isUltrawarm
          */
         @DimensionTypeDsl
-        @Contract("_ -> this", mutates = "this")
+        @Contract("-> this", mutates = "this")
         public fun notUltrawarm(): Builder = ultrawarm(false)
 
         /**
@@ -261,7 +262,7 @@ public interface DimensionType : Buildable<DimensionType, DimensionType.Builder>
          * @see DimensionType.hasSkylight
          */
         @DimensionTypeDsl
-        @Contract("_ -> this", mutates = "this")
+        @Contract("-> this", mutates = "this")
         public fun skylight(): Builder = skylight(true)
 
         /**
@@ -273,7 +274,7 @@ public interface DimensionType : Buildable<DimensionType, DimensionType.Builder>
          * @see DimensionType.hasSkylight
          */
         @DimensionTypeDsl
-        @Contract("_ -> this", mutates = "this")
+        @Contract("-> this", mutates = "this")
         public fun noSkylight(): Builder = skylight(false)
 
         /**
@@ -294,7 +295,7 @@ public interface DimensionType : Buildable<DimensionType, DimensionType.Builder>
          * @see DimensionType.hasCeiling
          */
         @DimensionTypeDsl
-        @Contract("_ -> this", mutates = "this")
+        @Contract("-> this", mutates = "this")
         public fun ceiling(): Builder = ceiling(true)
 
         /**
@@ -306,7 +307,7 @@ public interface DimensionType : Buildable<DimensionType, DimensionType.Builder>
          * @see DimensionType.hasCeiling
          */
         @DimensionTypeDsl
-        @Contract("_ -> this", mutates = "this")
+        @Contract("-> this", mutates = "this")
         public fun noCeiling(): Builder = ceiling(false)
 
         /**
@@ -327,7 +328,7 @@ public interface DimensionType : Buildable<DimensionType, DimensionType.Builder>
          * @see DimensionType.hasRaids
          */
         @DimensionTypeDsl
-        @Contract("_ -> this", mutates = "this")
+        @Contract("-> this", mutates = "this")
         public fun raids(): Builder = raids(true)
 
         /**
@@ -339,7 +340,7 @@ public interface DimensionType : Buildable<DimensionType, DimensionType.Builder>
          * @see DimensionType.hasRaids
          */
         @DimensionTypeDsl
-        @Contract("_ -> this", mutates = "this")
+        @Contract("-> this", mutates = "this")
         public fun noRaids(): Builder = raids(false)
 
         /**
@@ -360,7 +361,7 @@ public interface DimensionType : Buildable<DimensionType, DimensionType.Builder>
          * @see DimensionType.allowBeds
          */
         @DimensionTypeDsl
-        @Contract("_ -> this", mutates = "this")
+        @Contract("-> this", mutates = "this")
         public fun allowBeds(): Builder = beds(true)
 
         /**
@@ -372,7 +373,7 @@ public interface DimensionType : Buildable<DimensionType, DimensionType.Builder>
          * @see DimensionType.allowBeds
          */
         @DimensionTypeDsl
-        @Contract("_ -> this", mutates = "this")
+        @Contract("-> this", mutates = "this")
         public fun noBeds(): Builder = beds(false)
 
         /**
@@ -393,7 +394,7 @@ public interface DimensionType : Buildable<DimensionType, DimensionType.Builder>
          * @see DimensionType.allowRespawnAnchors
          */
         @DimensionTypeDsl
-        @Contract("_ -> this", mutates = "this")
+        @Contract("-> this", mutates = "this")
         public fun allowRespawnAnchors(): Builder = respawnAnchors(true)
 
         /**
@@ -405,7 +406,7 @@ public interface DimensionType : Buildable<DimensionType, DimensionType.Builder>
          * @see DimensionType.allowRespawnAnchors
          */
         @DimensionTypeDsl
-        @Contract("_ -> this", mutates = "this")
+        @Contract("-> this", mutates = "this")
         public fun noRespawnAnchors(): Builder = respawnAnchors(false)
 
         /**
@@ -449,7 +450,7 @@ public interface DimensionType : Buildable<DimensionType, DimensionType.Builder>
          * @see DimensionType.fixedTime
          */
         @DimensionTypeDsl
-        @Contract("_ -> this", mutates = "this")
+        @Contract("-> this", mutates = "this")
         public fun noFixedTime(): Builder
 
         /**
@@ -553,7 +554,7 @@ public interface DimensionType : Buildable<DimensionType, DimensionType.Builder>
          * @see maximumMonsterSpawnLightLevel
          */
         @DimensionTypeDsl
-        @Contract("_ -> this", mutates = "this")
+        @Contract("_, _ -> this", mutates = "this")
         public fun monsterSpawnLightLevels(minimum: Int, maximum: Int): Builder = apply {
             minimumMonsterSpawnLightLevel(minimum)
             maximumMonsterSpawnLightLevel(maximum)

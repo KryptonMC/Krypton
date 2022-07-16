@@ -34,26 +34,26 @@ abstract class KryptonAnimal(
     attributeSupplier: AttributeSupplier
 ) : KryptonAgeable(world, type, attributeSupplier), Animal {
 
-    private var loveCauseId: UUID? = null
+    final override var loveCause: UUID? = null
     final override var inLoveTime: Int = 0
-    final override val inLove: Boolean
+    final override val isInLove: Boolean
         get() = inLoveTime > 0
     override val canFallInLove: Boolean
         get() = inLoveTime <= 0
-    var loveCause: KryptonPlayer?
+    var loveCausePlayer: KryptonPlayer?
         get() {
-            if (loveCauseId == null) return null
-            return world.players.firstOrNull { it.uuid == loveCauseId }
+            val cause = loveCause ?: return null
+            return world.entityManager[cause] as? KryptonPlayer
         }
         set(value) {
             inLoveTime = 600
-            loveCauseId = value?.uuid
+            loveCause = value?.uuid
         }
 
     override fun canMate(target: Animal): Boolean {
         if (target === this) return false
         if (target.javaClass != javaClass) return false
-        return inLove && target.inLove
+        return isInLove && target.isInLove
     }
 
     override fun isFood(item: ItemStack): Boolean = item.type === ItemTypes.WHEAT

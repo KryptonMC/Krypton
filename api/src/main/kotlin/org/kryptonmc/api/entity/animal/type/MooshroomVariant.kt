@@ -14,13 +14,13 @@ import org.kryptonmc.api.item.ItemType
 import org.kryptonmc.api.item.ItemTypes
 
 /**
- * A type of mooshroom, which represents a particular type of mushroom, either
- * brown mushrooms, or red mushrooms.
+ * A variant of mooshroom, which represents a particular type of mushroom,
+ * either brown mushrooms, or red mushrooms.
  *
- * @param item the mushroom item this mooshroom type represents
- * @param block the mushroom block this mooshroom type represents
+ * @param item the mushroom item this mooshroom variant represents
+ * @param block the mushroom block this mooshroom variant represents
  */
-public enum class MooshroomType(public val item: ItemType, public val block: Block) {
+public enum class MooshroomVariant(public val item: ItemType, public val block: Block) {
 
     BROWN(ItemTypes.BROWN_MUSHROOM, Blocks.BROWN_MUSHROOM_BLOCK),
     RED(ItemTypes.RED_MUSHROOM, Blocks.RED_MUSHROOM_BLOCK)

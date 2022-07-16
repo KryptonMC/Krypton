@@ -43,7 +43,7 @@ public interface BaseColorParticleEffectBuilder<B : BaseColorParticleEffectBuild
      * @return this builder
      */
     @ParticleDsl
-    @Contract("_ -> this", mutates = "this")
+    @Contract("_, _, _ -> this", mutates = "this")
     @Suppress("MagicNumber")
     public fun rgb(red: Int, green: Int, blue: Int): B = color(Color.of(red, green, blue))
 
@@ -89,7 +89,7 @@ public interface BaseColorParticleEffectBuilder<B : BaseColorParticleEffectBuild
      * and 1
      */
     @ParticleDsl
-    @Contract("_ -> this", mutates = "this")
+    @Contract("_, _, _ -> this", mutates = "this")
     public fun hsv(hue: Float, saturation: Float, value: Float): B {
         require(hue in 0F..1F) { "Hue must be between 0 and 1!" }
         require(saturation in 0F..1F) { "Saturation must be between 0 and 1!" }

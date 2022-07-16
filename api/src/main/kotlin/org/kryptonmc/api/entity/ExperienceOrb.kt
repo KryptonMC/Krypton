@@ -17,12 +17,6 @@ import org.kryptonmc.api.entity.player.Player
 public interface ExperienceOrb : Entity {
 
     /**
-     * The amount of ticks this orb has not been touched for.
-     */
-    @get:JvmName("age")
-    public val age: Int
-
-    /**
      * The remaining amount of times this orb can be picked up.
      *
      * When this orb is picked up, this value will decrease by 1.
@@ -45,8 +39,8 @@ public interface ExperienceOrb : Entity {
     /**
      * The amount of experience given by this orb when it is picked up.
      */
-    @get:JvmName("value")
-    public val value: Int
+    @get:JvmName("experience")
+    public val experience: Int
 
     /**
      * The player this orb is currently following, or null if this orb is not

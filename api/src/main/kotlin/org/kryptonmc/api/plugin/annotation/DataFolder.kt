@@ -15,8 +15,9 @@ package org.kryptonmc.api.plugin.annotation
 import com.google.inject.BindingAnnotation
 
 /**
- * This is a marker annotation to signal that you want to inject the
- * [java.nio.file.Path] object for your plugin's folder.
+ * This is a marker annotation to signal that the requested
+ * [java.nio.file.Path] to be injected should be the path to the plugin's data
+ * folder.
  */
 @Target(AnnotationTarget.VALUE_PARAMETER)
 @BindingAnnotation

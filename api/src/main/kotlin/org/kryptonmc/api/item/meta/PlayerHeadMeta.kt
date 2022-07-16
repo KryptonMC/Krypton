@@ -57,7 +57,7 @@ public interface PlayerHeadMeta : ScopedItemMeta<PlayerHeadMeta.Builder, PlayerH
          * @return a new builder
          */
         @JvmStatic
-        @Contract("_ -> new", pure = true)
+        @Contract("-> new", pure = true)
         public fun builder(): Builder = ItemMeta.builder(PlayerHeadMeta::class.java)
     }
 }

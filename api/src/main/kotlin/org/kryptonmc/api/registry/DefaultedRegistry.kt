@@ -31,8 +31,6 @@ public interface DefaultedRegistry<T : Any> : Registry<T> {
 
     override fun get(key: Key): T
 
-    override fun get(id: Int): T
-
     override fun get(value: T): Key
 
     override fun get(key: ResourceKey<T>): T

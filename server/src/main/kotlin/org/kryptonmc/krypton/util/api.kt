@@ -16,14 +16,16 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.entity.vehicle
+package org.kryptonmc.krypton.util
 
-import org.kryptonmc.api.entity.EntityTypes
-import org.kryptonmc.api.entity.vehicle.MinecartVariant
-import org.kryptonmc.krypton.world.KryptonWorld
-
-class KryptonMinecart(world: KryptonWorld) : KryptonMinecartLike(world, EntityTypes.MINECART) {
-
-    override val variant: MinecartVariant
-        get() = MinecartVariant.RIDEABLE
+/**
+ * Downcasts the given API type [A] to its implementation type [I].
+ *
+ * This is a common implementation shared between specific downcast functions
+ * that are used to downcast a specific API type to its implementation
+ * equivalent when implementation-specific information is required.
+ */
+inline fun <A, reified I : A> A.downcastApiType(name: String): I {
+    check(this is I) { "Custom implementations of $name are not supported!" }
+    return this
 }

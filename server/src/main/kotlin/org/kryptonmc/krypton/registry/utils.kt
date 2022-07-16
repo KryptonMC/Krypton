@@ -16,14 +16,12 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.entity.vehicle
+package org.kryptonmc.krypton.registry
 
-import org.kryptonmc.api.entity.EntityTypes
-import org.kryptonmc.api.entity.vehicle.MinecartVariant
-import org.kryptonmc.krypton.world.KryptonWorld
+import org.kryptonmc.api.registry.DefaultedRegistry
+import org.kryptonmc.api.registry.Registry
+import org.kryptonmc.krypton.util.downcastApiType
 
-class KryptonMinecart(world: KryptonWorld) : KryptonMinecartLike(world, EntityTypes.MINECART) {
+fun <T : Any> Registry<T>.downcast(): KryptonRegistry<T> = downcastApiType("Registry")
 
-    override val variant: MinecartVariant
-        get() = MinecartVariant.RIDEABLE
-}
+fun <T : Any> DefaultedRegistry<T>.downcast(): KryptonDefaultedRegistry<T> = downcastApiType("DefaultedRegistry")

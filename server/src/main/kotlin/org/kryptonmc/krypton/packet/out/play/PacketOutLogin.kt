@@ -20,14 +20,13 @@ package org.kryptonmc.krypton.packet.out.play
 
 import com.google.common.collect.Sets
 import io.netty.buffer.ByteBuf
-import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.api.resource.ResourceKey
 import org.kryptonmc.api.resource.ResourceKeys
 import org.kryptonmc.api.world.GameMode
 import org.kryptonmc.api.world.World
 import org.kryptonmc.api.world.dimension.DimensionType
 import org.kryptonmc.krypton.packet.EntityPacket
-import org.kryptonmc.krypton.registry.encode
+import org.kryptonmc.krypton.registry.KryptonRegistries
 import org.kryptonmc.krypton.util.GameModes
 import org.kryptonmc.krypton.util.GlobalPosition
 import org.kryptonmc.krypton.util.asLong
@@ -114,8 +113,8 @@ data class PacketOutLogin(
 
         @JvmStatic
         fun createRegistryCodec(): CompoundTag = compound {
-            put(ResourceKeys.DIMENSION_TYPE.location.asString(), Registries.DIMENSION_TYPE.encode(KryptonDimensionType.ENCODER))
-            put(ResourceKeys.BIOME.location.asString(), Registries.BIOME.encode(KryptonBiome.ENCODER))
+            put(ResourceKeys.DIMENSION_TYPE.location.asString(), KryptonRegistries.DIMENSION_TYPE.encode(KryptonDimensionType.ENCODER))
+            put(ResourceKeys.BIOME.location.asString(), KryptonRegistries.BIOME.encode(KryptonBiome.ENCODER))
         }
     }
 }

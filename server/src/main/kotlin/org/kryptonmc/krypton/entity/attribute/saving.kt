@@ -19,7 +19,7 @@
 package org.kryptonmc.krypton.entity.attribute
 
 import org.kryptonmc.api.entity.attribute.AttributeModifier
-import org.kryptonmc.api.registry.Registries
+import org.kryptonmc.krypton.registry.KryptonRegistries
 import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.compound
 
@@ -27,5 +27,5 @@ fun AttributeModifier.save(): CompoundTag = compound {
     string("Name", name)
     uuid("UUID", uuid)
     double("Amount", amount)
-    int("Operation", Registries.MODIFIER_OPERATIONS.idOf(operation))
+    int("Operation", KryptonRegistries.MODIFIER_OPERATIONS.idOf(operation))
 }

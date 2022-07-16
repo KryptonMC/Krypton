@@ -34,7 +34,7 @@ public interface DamageSource {
 
         public fun entity(type: DamageType, entity: Entity): EntityDamageSource
 
-        public fun indirectEntity(type: DamageType, entity: Entity, indirectEntity: Entity?): IndirectEntityDamageSource
+        public fun indirectEntity(type: DamageType, entity: Entity, indirectEntity: Entity): IndirectEntityDamageSource
     }
 
     public companion object {

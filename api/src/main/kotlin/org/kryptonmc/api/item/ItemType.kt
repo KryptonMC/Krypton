@@ -120,7 +120,7 @@ public interface ItemType : Buildable<ItemType, ItemType.Builder>, ItemLike, Blo
          * @return this builder
          */
         @ItemTypeDsl
-        @Contract("_ -> this", mutates = "this")
+        @Contract("-> this", mutates = "this")
         public fun unstackable(): Builder
 
         /**
@@ -129,7 +129,7 @@ public interface ItemType : Buildable<ItemType, ItemType.Builder>, ItemLike, Blo
          * @return this builder
          */
         @ItemTypeDsl
-        @Contract("_ -> this", mutates = "this")
+        @Contract("-> this", mutates = "this")
         public fun breakable(): Builder
 
         /**
@@ -150,7 +150,7 @@ public interface ItemType : Buildable<ItemType, ItemType.Builder>, ItemLike, Blo
          * @return this builder
          */
         @ItemTypeDsl
-        @Contract("_ -> this", mutates = "this")
+        @Contract("-> this", mutates = "this")
         public fun unbreakable(): Builder
 
         /**
@@ -169,7 +169,7 @@ public interface ItemType : Buildable<ItemType, ItemType.Builder>, ItemLike, Blo
          * @return this builder
          */
         @ItemTypeDsl
-        @Contract("_ -> this", mutates = "this")
+        @Contract("-> this", mutates = "this")
         public fun edible(): Builder
 
         /**
@@ -178,7 +178,7 @@ public interface ItemType : Buildable<ItemType, ItemType.Builder>, ItemLike, Blo
          * @return this builder
          */
         @ItemTypeDsl
-        @Contract("_ -> this", mutates = "this")
+        @Contract("-> this", mutates = "this")
         public fun inedible(): Builder
 
         /**
@@ -187,7 +187,7 @@ public interface ItemType : Buildable<ItemType, ItemType.Builder>, ItemLike, Blo
          * @return this builder
          */
         @ItemTypeDsl
-        @Contract("_ -> this", mutates = "this")
+        @Contract("-> this", mutates = "this")
         public fun fireResistant(): Builder
 
         /**
@@ -196,7 +196,7 @@ public interface ItemType : Buildable<ItemType, ItemType.Builder>, ItemLike, Blo
          * @return this builder
          */
         @ItemTypeDsl
-        @Contract("_ -> this", mutates = "this")
+        @Contract("-> this", mutates = "this")
         public fun flammable(): Builder
 
         /**

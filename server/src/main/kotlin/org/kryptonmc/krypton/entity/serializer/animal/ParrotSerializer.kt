@@ -18,21 +18,21 @@
  */
 package org.kryptonmc.krypton.entity.serializer.animal
 
-import org.kryptonmc.api.entity.animal.type.ParrotType
+import org.kryptonmc.api.entity.animal.type.ParrotVariant
 import org.kryptonmc.krypton.entity.animal.KryptonParrot
 import org.kryptonmc.krypton.entity.serializer.EntitySerializer
 import org.kryptonmc.nbt.CompoundTag
 
 object ParrotSerializer : EntitySerializer<KryptonParrot> {
 
-    private val TYPES = ParrotType.values()
+    private val TYPES = ParrotVariant.values()
 
     override fun load(entity: KryptonParrot, data: CompoundTag) {
         TamableSerializer.load(entity, data)
-        entity.parrotType = TYPES.getOrNull(data.getInt("Variant")) ?: ParrotType.RED_AND_BLUE
+        entity.variant = TYPES.getOrNull(data.getInt("Variant")) ?: ParrotVariant.RED_AND_BLUE
     }
 
     override fun save(entity: KryptonParrot): CompoundTag.Builder = TamableSerializer.save(entity).apply {
-        int("Variant", entity.parrotType.ordinal)
+        int("Variant", entity.variant.ordinal)
     }
 }
