@@ -124,7 +124,7 @@ class EntityManager(val world: KryptonWorld) : AutoCloseable {
         val nbt = regionFileManager.read(chunk.x, chunk.z) ?: return
         val version = if (nbt.contains("DataVersion", IntTag.ID)) nbt.getInt("DataVersion") else -1
         // We won't upgrade data if use of the data converter is disabled.
-        if (version < KryptonPlatform.worldVersion && !world.server.config.server.useDataConverter) {
+        if (version < KryptonPlatform.worldVersion && !world.server.config.advanced.useDataConverter) {
             LOGGER.sendDataConversionWarning("entities for chunk at ${chunk.x}, ${chunk.z}")
             error("Tried to load old chunk from version $version when data conversion is disabled!")
         }

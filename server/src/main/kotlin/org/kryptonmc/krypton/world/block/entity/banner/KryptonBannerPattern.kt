@@ -36,13 +36,12 @@ data class KryptonBannerPattern(override val type: BannerPatternType, override v
 
     companion object {
 
-        // TODO: Since this is dynamic now, maybe this can't be constant anymore
-        private val PATTERN_TYPE_BY_CODE = Registries.BANNER_PATTERN.values.associateBy { it.code }
-
         @JvmStatic
         fun from(tag: CompoundTag): KryptonBannerPattern {
             val patternCode = tag.getString("Pattern")
-            val type = requireNotNull(PATTERN_TYPE_BY_CODE[patternCode]) { "Could not find pattern type with code $patternCode" }
+            val type = requireNotNull(Registries.BANNER_PATTERN.values.firstOrNull { it.code == patternCode }) {
+                "Could not find pattern type with code $patternCode!"
+            }
             return KryptonBannerPattern(type, KryptonRegistries.DYE_COLORS.get(tag.getInt("Color")) ?: DyeColors.WHITE)
         }
     }

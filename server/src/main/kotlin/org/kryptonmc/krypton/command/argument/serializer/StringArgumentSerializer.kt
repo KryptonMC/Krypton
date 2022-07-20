@@ -20,7 +20,7 @@ package org.kryptonmc.krypton.command.argument.serializer
 
 import com.mojang.brigadier.arguments.StringArgumentType
 import io.netty.buffer.ByteBuf
-import org.kryptonmc.krypton.util.readEnum
+import org.kryptonmc.krypton.util.readVarInt
 import org.kryptonmc.krypton.util.writeEnum
 
 /**
@@ -36,10 +36,11 @@ import org.kryptonmc.krypton.util.writeEnum
  */
 object StringArgumentSerializer : ArgumentSerializer<StringArgumentType> {
 
-    override fun read(buf: ByteBuf): StringArgumentType = when (buf.readEnum<StringArgumentType.StringType>()) {
-        StringArgumentType.StringType.SINGLE_WORD -> StringArgumentType.word()
-        StringArgumentType.StringType.QUOTABLE_PHRASE -> StringArgumentType.string()
-        StringArgumentType.StringType.GREEDY_PHRASE -> StringArgumentType.greedyString()
+    override fun read(buf: ByteBuf): StringArgumentType = when (val type = buf.readVarInt()) {
+        StringArgumentType.StringType.SINGLE_WORD.ordinal -> StringArgumentType.word()
+        StringArgumentType.StringType.QUOTABLE_PHRASE.ordinal -> StringArgumentType.string()
+        StringArgumentType.StringType.GREEDY_PHRASE.ordinal -> StringArgumentType.greedyString()
+        else -> throw IllegalArgumentException("Cannot get type with ID $type!")
     }
 
     override fun write(buf: ByteBuf, value: StringArgumentType) {

@@ -18,7 +18,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  * For the original file that this file is derived from, see here:
- * https://github.com/PaperMC/Velocity/blob/0097359a99c23de4fc6b92c59a401a10208b4c4a/proxy/src/main/java/com/velocitypowered/proxy/plugin/util/PluginDependencyUtils.java
+ * https://github.com/PaperMC/Velocity/blob/e8bf6ab5222d8bbf4e59e7c4d5400b10ab4c7e81/proxy/src/main/java/com/velocitypowered/proxy/plugin/util/PluginDependencyUtils.java
  */
 package org.kryptonmc.krypton.plugin
 
@@ -30,13 +30,9 @@ import java.util.ArrayDeque
 import java.util.Deque
 
 fun List<PluginDescription>.sortCandidates(): List<PluginDescription> {
-    val sortedCandidates = sortedBy { it.id }
-
-    val graph = GraphBuilder.directed()
-        .allowsSelfLoops(false)
-        .expectedNodeCount(sortedCandidates.size)
-        .build<PluginDescription>()
-    val candidateMap: Map<String, PluginDescription> = Maps.uniqueIndex(sortedCandidates) { it?.id }
+    val sortedCandidates = sortedBy(PluginDescription::id)
+    val graph = GraphBuilder.directed().allowsSelfLoops(false).expectedNodeCount(sortedCandidates.size).build<PluginDescription>()
+    val candidateMap = Maps.uniqueIndex(sortedCandidates, PluginDescription::id)
 
     sortedCandidates.forEach { description ->
         graph.addNode(description)
@@ -46,40 +42,39 @@ fun List<PluginDescription>.sortCandidates(): List<PluginDescription> {
         }
     }
 
-    val sorted = mutableListOf<PluginDescription>()
-    val marks = mutableMapOf<PluginDescription, Mark>()
+    val sorted = ArrayList<PluginDescription>()
+    val marks = HashMap<PluginDescription, Mark>()
     graph.nodes().forEach { graph.visitNode(it, marks, sorted, ArrayDeque()) }
     return sorted
 }
 
 private fun Graph<PluginDescription>.visitNode(
-    node: PluginDescription,
-    marks: MutableMap<PluginDescription, Mark>,
+    current: PluginDescription,
+    visited: MutableMap<PluginDescription, Mark>,
     sorted: MutableList<PluginDescription>,
-    currentIteration: Deque<PluginDescription>
+    currentDependencyScanStack: Deque<PluginDescription>
 ) {
-    val mark = marks.getOrDefault(node, Mark.NOT_VISITED)
-    if (mark == Mark.PERMANENT) return
-    if (mark == Mark.TEMPORARY) {
-        currentIteration.addLast(node)
-        val errorMessage = buildString {
-            currentIteration.forEach { append("${it.id} -> ") }
-            setLength(length - 4)
-        }
-        error("Circular dependency detected: $errorMessage")
+    val mark = visited.getOrDefault(current, Mark.NOT_VISITED)
+    if (mark == Mark.VISITED) return // Already visited this node, nothing to do
+    if (mark == Mark.VISITING) {
+        // A circular dependency has been detected. (Specifically, if we are visiting any dependency and a dependency we are
+        // looking at depends on any dependency being visited, we have a circular dependency, thus we do not have a directed
+        // acyclic graph and therefore no topological sort is possible).
+        currentDependencyScanStack.addLast(current)
+        error("Circular dependency detected: ${currentDependencyScanStack.joinToString(" -> ") { it.id }}")
     }
 
-    currentIteration.addLast(node)
-    marks[node] = mark
-    successors(node).forEach { visitNode(it, marks, sorted, currentIteration) }
-    marks[node] = Mark.PERMANENT
-    currentIteration.removeLast()
-    sorted.add(node)
+    currentDependencyScanStack.addLast(current)
+    visited[current] = Mark.VISITING
+    successors(current).forEach { visitNode(it, visited, sorted, currentDependencyScanStack) }
+    visited[current] = Mark.VISITED
+    currentDependencyScanStack.removeLast()
+    sorted.add(current)
 }
 
 private enum class Mark {
 
     NOT_VISITED,
-    TEMPORARY,
-    PERMANENT
+    VISITING,
+    VISITED
 }

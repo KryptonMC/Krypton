@@ -25,13 +25,14 @@ import org.kryptonmc.nbt.ListTag
 interface Palette<T> {
 
     val size: Int
-    val serializedSize: Int
 
-    operator fun get(value: T): Int
+    fun get(value: T): Int
 
-    operator fun get(id: Int): T
+    fun get(id: Int): T
 
     fun write(buf: ByteBuf)
+
+    fun calculateSerializedSize(): Int
 
     interface Factory {
 

@@ -27,18 +27,21 @@ import org.kryptonmc.krypton.world.KryptonWorld
 class KryptonGoat(world: KryptonWorld) : KryptonAnimal(world, EntityTypes.GOAT, ATTRIBUTES), Goat {
 
     override var canScream: Boolean
-        get() = data[MetadataKeys.GOAT.SCREAMING]
-        set(value) = data.set(MetadataKeys.GOAT.SCREAMING, value)
+        get() = data.get(MetadataKeys.Goat.SCREAMING)
+        set(value) = data.set(MetadataKeys.Goat.SCREAMING, value)
 
     init {
-        data.add(MetadataKeys.GOAT.SCREAMING, false)
+        data.add(MetadataKeys.Goat.SCREAMING, false)
     }
 
     override fun onAgeTransformation() {
-        attribute(AttributeTypes.ATTACK_DAMAGE)?.baseValue = if (isBaby) 1.0 else 2.0
+        attribute(AttributeTypes.ATTACK_DAMAGE)?.baseValue = if (isBaby) BABY_ATTACK_DAMAGE else ADULT_ATTACK_DAMAGE
     }
 
     companion object {
+
+        private const val BABY_ATTACK_DAMAGE = 1.0
+        private const val ADULT_ATTACK_DAMAGE = 2.0
 
         private val ATTRIBUTES = attributes()
             .add(AttributeTypes.MAX_HEALTH, 10.0)

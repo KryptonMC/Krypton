@@ -21,7 +21,7 @@ package org.kryptonmc.krypton.network.handlers
 import net.kyori.adventure.text.Component
 import org.kryptonmc.krypton.KryptonPlatform
 import org.kryptonmc.krypton.KryptonServer
-import org.kryptonmc.krypton.config.category.ForwardingMode
+import org.kryptonmc.krypton.config.category.ProxyCategory
 import org.kryptonmc.krypton.network.SessionHandler
 import org.kryptonmc.krypton.network.data.ForwardedData
 import org.kryptonmc.krypton.network.data.LegacyForwardedData
@@ -51,8 +51,7 @@ class HandshakeHandler(override val server: KryptonServer, override val session:
                 packet.protocol > KryptonPlatform.protocolVersion -> "multiplayer.disconnect.outdated_server"
                 else -> "multiplayer.disconnect.incompatible" // This should be impossible
             }
-            val reason = Component.translatable(key, Component.text(KryptonPlatform.minecraftVersion))
-            disconnect(reason)
+            disconnect(Component.translatable(key, Component.text(KryptonPlatform.minecraftVersion)))
             return
         }
 
@@ -64,7 +63,7 @@ class HandshakeHandler(override val server: KryptonServer, override val session:
 
         // This split here is checking for a null split list of strings, which will be sent by BungeeCord
         // (and can also be sent by Velocity) as part of their legacy forwarding mechanisms.
-        if (packet.address.contains('\u0000') && server.config.proxy.mode != ForwardingMode.LEGACY) {
+        if (packet.address.contains('\u0000') && server.config.proxy.mode != ProxyCategory.Mode.LEGACY) {
             LOGGER.error("User attempted legacy forwarded connection (most likely from a proxy such as BungeeCord " +
                     "or Velocity), but this server is not configured to use legacy forwarding!")
             LOGGER.info("If you wish to enable legacy forwarding, please do so in the configuration file by setting \"mode\" to \"LEGACY\" " +
@@ -74,7 +73,7 @@ class HandshakeHandler(override val server: KryptonServer, override val session:
         }
         // This split here is checking for a triple slash split list of strings, which will be sent by TCPShield
         // as part of its real IP forwarding mechanism.
-        if (packet.address.contains("///") && server.config.proxy.mode != ForwardingMode.TCPSHIELD) {
+        if (packet.address.contains("///") && server.config.proxy.mode != ProxyCategory.Mode.TCPSHIELD) {
             LOGGER.error("User attempted TCPShield forwarded connection, but this server is not configured to use TCPShield forwarding!")
             LOGGER.info("If you wish to enable TCPShield forwarding, please do so in the configuration file by setting \"mode\" to \"TCPSHIELD\" " +
                     "under the \"proxy\" section.")
@@ -82,7 +81,7 @@ class HandshakeHandler(override val server: KryptonServer, override val session:
             return
         }
 
-        if (server.config.proxy.mode == ForwardingMode.LEGACY && packet.nextState == PacketState.LOGIN) {
+        if (server.config.proxy.mode == ProxyCategory.Mode.LEGACY && packet.nextState == PacketState.LOGIN) {
             val data = try {
                 LegacyForwardedData.parse(packet.address)
             } catch (exception: Exception) {
@@ -101,7 +100,7 @@ class HandshakeHandler(override val server: KryptonServer, override val session:
                 return
             }
         }
-        if (server.config.proxy.mode == ForwardingMode.TCPSHIELD && packet.nextState == PacketState.LOGIN) {
+        if (server.config.proxy.mode == ProxyCategory.Mode.TCPSHIELD && packet.nextState == PacketState.LOGIN) {
             val data = try {
                 TCPShieldForwardedData.parse(packet.address)
             } catch (exception: Exception) {

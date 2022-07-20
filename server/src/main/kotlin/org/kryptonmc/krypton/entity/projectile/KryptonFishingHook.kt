@@ -33,24 +33,24 @@ class KryptonFishingHook(world: KryptonWorld) : KryptonProjectile(world, EntityT
     override var hooked: KryptonEntity? = null
         set(value) {
             field = value
-            data[MetadataKeys.FISHING_HOOK.HOOKED] = value?.id?.plus(1) ?: 0
+            data.set(MetadataKeys.FishingHook.HOOKED, if (value != null) value.id + 1 else 0)
         }
     override var state: FishingHook.State = FishingHook.State.FLYING
     override var isBiting: Boolean = false
 
     init {
-        data.add(MetadataKeys.FISHING_HOOK.HOOKED, 0)
-        data.add(MetadataKeys.FISHING_HOOK.BITING, false)
+        data.add(MetadataKeys.FishingHook.HOOKED, 0)
+        data.add(MetadataKeys.FishingHook.BITING, false)
     }
 
     override fun onDataUpdate(key: MetadataKey<*>) {
-        if (key === MetadataKeys.FISHING_HOOK.HOOKED) {
-            val id = data[MetadataKeys.FISHING_HOOK.HOOKED]
+        if (key === MetadataKeys.FishingHook.HOOKED) {
+            val id = data.get(MetadataKeys.FishingHook.HOOKED)
             hooked = if (id > 0) world.entityManager[id - 1] else null
         }
 
-        if (key === MetadataKeys.FISHING_HOOK.BITING) {
-            isBiting = data[MetadataKeys.FISHING_HOOK.BITING]
+        if (key === MetadataKeys.FishingHook.BITING) {
+            isBiting = data.get(MetadataKeys.FishingHook.BITING)
             if (isBiting) velocity = Vector3d(velocity.x(), (-0.4F * Random.nextFloatClamped(0.6F, 1F)).toDouble(), velocity.z())
         }
 

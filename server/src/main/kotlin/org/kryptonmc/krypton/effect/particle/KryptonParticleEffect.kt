@@ -30,9 +30,4 @@ data class KryptonParticleEffect(
     override val offset: Vector3d,
     override val longDistance: Boolean,
     override val data: ParticleData? = null
-) : ParticleEffect {
-
-    init {
-        require(quantity >= 1) { "Quantity must be >= 1!" }
-    }
-}
+) : ParticleEffect

@@ -27,12 +27,12 @@ import org.kryptonmc.krypton.world.KryptonWorld
 class KryptonPig(world: KryptonWorld) : KryptonAnimal(world, EntityTypes.PIG, ATTRIBUTES), Pig {
 
     override var isSaddled: Boolean
-        get() = data[MetadataKeys.PIG.SADDLE]
-        set(value) = data.set(MetadataKeys.PIG.SADDLE, value)
+        get() = data.get(MetadataKeys.Pig.SADDLE)
+        set(value) = data.set(MetadataKeys.Pig.SADDLE, value)
 
     init {
-        data.add(MetadataKeys.PIG.SADDLE, false)
-        data.add(MetadataKeys.PIG.BOOST_TIME, 0)
+        data.add(MetadataKeys.Pig.SADDLE, false)
+        data.add(MetadataKeys.Pig.BOOST_TIME, 0)
     }
 
     companion object {

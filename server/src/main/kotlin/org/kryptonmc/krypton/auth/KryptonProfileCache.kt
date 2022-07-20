@@ -43,8 +43,10 @@ class KryptonProfileCache(private val path: Path) : ProfileCache {
     private val operations = AtomicLong()
     override val profiles: ImmutableSet<GameProfile>
         get() = profilesByUUID.values.asSequence()
-            .onEach { it.lastAccess = operations.incrementAndGet() }
-            .map(ProfileHolder::profile)
+            .map {
+                it.lastAccess = operations.incrementAndGet()
+                it.profile
+            }
             .toImmutableSet()
 
     init {

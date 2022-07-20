@@ -36,7 +36,7 @@ import org.kryptonmc.krypton.auth.KryptonProfileCache
 import org.kryptonmc.krypton.command.KryptonCommandManager
 import org.kryptonmc.krypton.commands.KryptonPermission
 import org.kryptonmc.krypton.config.KryptonConfig
-import org.kryptonmc.krypton.config.category.ForwardingMode
+import org.kryptonmc.krypton.config.category.ProxyCategory
 import org.kryptonmc.krypton.console.KryptonConsole
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.event.KryptonEventManager
@@ -142,7 +142,7 @@ class KryptonServer(
         KryptonMetrics.initialize(this, config.other.metrics)
 
         // Warn about piracy being unsupported if proxy forwarding is not enabled, because video game piracy is bad.
-        if (!config.server.onlineMode && config.proxy.mode == ForwardingMode.NONE) {
+        if (!config.server.onlineMode && config.proxy.mode == ProxyCategory.Mode.NONE) {
             LOGGER.warn("-----------------------------------------------------------------------------------")
             LOGGER.warn("THIS SERVER IS IN OFFLINE MODE! NO ATTEMPTS WILL BE MADE TO AUTHENTICATE USERS!")
             LOGGER.warn("While this may allow players without full Minecraft accounts to connect, it also allows hackers to connect with any " +

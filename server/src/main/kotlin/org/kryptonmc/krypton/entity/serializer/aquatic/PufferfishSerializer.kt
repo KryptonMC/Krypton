@@ -27,10 +27,10 @@ object PufferfishSerializer : EntitySerializer<KryptonPufferfish> {
 
     override fun load(entity: KryptonPufferfish, data: CompoundTag) {
         FishSerializer.load(entity, data)
-        entity.data[MetadataKeys.PUFFERFISH.PUFF_STATE] = data.getInt("PuffState")
+        entity.data.set(MetadataKeys.Pufferfish.PUFF_STATE, data.getInt("PuffState"))
     }
 
     override fun save(entity: KryptonPufferfish): CompoundTag.Builder = FishSerializer.save(entity).apply {
-        int("PuffState", entity.data[MetadataKeys.PUFFERFISH.PUFF_STATE])
+        int("PuffState", entity.data.get(MetadataKeys.Pufferfish.PUFF_STATE))
     }
 }

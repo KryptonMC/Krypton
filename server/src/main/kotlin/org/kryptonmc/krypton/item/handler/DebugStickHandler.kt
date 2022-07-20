@@ -18,6 +18,7 @@
  */
 package org.kryptonmc.krypton.item.handler
 
+import kotlinx.collections.immutable.ImmutableSet
 import net.kyori.adventure.text.Component
 import org.kryptonmc.api.block.property.Property
 import org.kryptonmc.api.entity.Hand
@@ -28,7 +29,6 @@ import org.kryptonmc.krypton.util.findRelative
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.krypton.world.block.KryptonBlock
 import org.kryptonmc.krypton.world.block.downcast
-import org.kryptonmc.nbt.CompoundTag
 
 object DebugStickHandler : ItemHandler {
 
@@ -65,7 +65,7 @@ object DebugStickHandler : ItemHandler {
         item: KryptonItemStack
     ): Boolean {
         if (!player.canUseGameMasterBlocks) return false
-        val properties = block.availableProperties
+        val properties = block.availableProperties as ImmutableSet<Property<Comparable<Any>>>
         val key = block.key().asString()
         if (properties.isEmpty()) {
             player.sendActionBar(Component.translatable("${ItemTypes.DEBUG_STICK.translation.key()}.empty", Component.text(key)))
@@ -74,16 +74,16 @@ object DebugStickHandler : ItemHandler {
 
         var debugProperty = item.meta.data.getCompound("DebugProperty")
         val propertyKey = debugProperty.getString(key)
-        var property = properties.firstOrNull { debugProperty.getString(propertyKey) == it.name } as? Property<Comparable<Any>>
+        var property = properties.firstOrNull { debugProperty.getString(propertyKey) == it.name }
 
         if (isUse) {
-            if (property == null) property = properties.first() as Property<Comparable<Any>>
+            if (property == null) property = properties.first()
             val cycled = block.cycle(property, player.isSneaking)
             world.setBlock(x, y, z, cycled)
             val cycledText = Component.text(property.toString(cycled[property]!!))
             player.sendMessage(Component.translatable("${ItemTypes.DEBUG_STICK.translation.key()}.update", Component.text(property.name), cycledText))
         } else {
-            property = properties.findRelative(property, player.isSneaking) as Property<Comparable<Any>>
+            property = properties.findRelative(property, player.isSneaking)!!
             val name = property.name
             debugProperty = debugProperty.putString(key, name)
             val propertyText = Component.text(property.toString(block[property]!!))

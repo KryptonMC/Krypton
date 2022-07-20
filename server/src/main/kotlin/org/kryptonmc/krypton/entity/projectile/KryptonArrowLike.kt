@@ -41,26 +41,27 @@ abstract class KryptonArrowLike(
     final override var pickupRule: ArrowLike.PickupRule = ArrowLike.PickupRule.DISALLOWED
 
     final override var isCritical: Boolean
-        get() = getFlag(0)
-        set(value) = setFlag(0, value)
+        get() = getFlag(MetadataKeys.ArrowLike.FLAGS, FLAG_CRITICAL)
+        set(value) = setFlag(MetadataKeys.ArrowLike.FLAGS, FLAG_CRITICAL, value)
     final override var ignoresPhysics: Boolean
-        get() = getFlag(1)
-        set(value) = setFlag(1, value)
+        get() = getFlag(MetadataKeys.ArrowLike.FLAGS, FLAG_IGNORES_PHYSICS)
+        set(value) = setFlag(MetadataKeys.ArrowLike.FLAGS, FLAG_IGNORES_PHYSICS, value)
     final override var wasShotFromCrossbow: Boolean
-        get() = getFlag(2)
-        set(value) = setFlag(2, value)
+        get() = getFlag(MetadataKeys.ArrowLike.FLAGS, FLAG_WAS_SHOT_FROM_CROSSBOW)
+        set(value) = setFlag(MetadataKeys.ArrowLike.FLAGS, FLAG_WAS_SHOT_FROM_CROSSBOW, value)
     final override var piercingLevel: Int
-        get() = data[MetadataKeys.ARROW_LIKE.PIERCING_LEVEL].toInt()
-        set(value) = data.set(MetadataKeys.ARROW_LIKE.PIERCING_LEVEL, value.toByte())
+        get() = data.get(MetadataKeys.ArrowLike.PIERCING_LEVEL).toInt()
+        set(value) = data.set(MetadataKeys.ArrowLike.PIERCING_LEVEL, value.toByte())
 
     init {
-        data.add(MetadataKeys.ARROW_LIKE.FLAGS, 0)
-        data.add(MetadataKeys.ARROW_LIKE.PIERCING_LEVEL, 0)
+        data.add(MetadataKeys.ArrowLike.FLAGS, 0)
+        data.add(MetadataKeys.ArrowLike.PIERCING_LEVEL, 0)
     }
 
-    private fun getFlag(flag: Int): Boolean = getFlag(MetadataKeys.ARROW_LIKE.FLAGS, flag)
+    companion object {
 
-    private fun setFlag(flag: Int, value: Boolean) {
-        setFlag(MetadataKeys.ARROW_LIKE.FLAGS, flag, value)
+        private const val FLAG_CRITICAL = 0
+        private const val FLAG_IGNORES_PHYSICS = 1
+        private const val FLAG_WAS_SHOT_FROM_CROSSBOW = 2
     }
 }

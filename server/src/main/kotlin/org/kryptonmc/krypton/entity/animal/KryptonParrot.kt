@@ -32,8 +32,8 @@ import kotlin.random.Random
 class KryptonParrot(world: KryptonWorld) : KryptonTamable(world, EntityTypes.PARROT, ATTRIBUTES), Parrot {
 
     override var variant: ParrotVariant
-        get() = TYPES.getOrNull(data[MetadataKeys.PARROT.TYPE]) ?: ParrotVariant.RED_AND_BLUE
-        set(value) = data.set(MetadataKeys.PARROT.TYPE, value.ordinal)
+        get() = TYPES.getOrNull(data.get(MetadataKeys.Parrot.TYPE)) ?: ParrotVariant.RED_AND_BLUE
+        set(value) = data.set(MetadataKeys.Parrot.TYPE, value.ordinal)
 
     override val soundSource: Sound.Source
         get() = Sound.Source.NEUTRAL
@@ -41,7 +41,7 @@ class KryptonParrot(world: KryptonWorld) : KryptonTamable(world, EntityTypes.PAR
         get() = (Random.nextFloat() - Random.nextFloat()) * 0.2F + 1F
 
     init {
-        data.add(MetadataKeys.PARROT.TYPE, ParrotVariant.RED_AND_BLUE.ordinal)
+        data.add(MetadataKeys.Parrot.TYPE, ParrotVariant.RED_AND_BLUE.ordinal)
     }
 
     override fun isFood(item: ItemStack): Boolean = false

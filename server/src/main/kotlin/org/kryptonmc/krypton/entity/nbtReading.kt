@@ -37,8 +37,8 @@ fun CompoundTag.getVector3i(key: String): Vector3i? {
     return Vector3i(position.getInt("X"), position.getInt("Y"), position.getInt("Z"))
 }
 
-fun CompoundTag.Builder.vector3i(key: String, vector: Vector3i): CompoundTag.Builder = compound(key) {
-    int("X", vector.x())
-    int("Y", vector.y())
-    int("Z", vector.z())
-}
+fun CompoundTag.putVector3i(key: String, vector: Vector3i): CompoundTag = put(key, vector.toCompound())
+
+fun CompoundTag.Builder.vector3i(key: String, vector: Vector3i): CompoundTag.Builder = put(key, vector.toCompound())
+
+private fun Vector3i.toCompound(): CompoundTag = CompoundTag.builder().int("X", x()).int("Y", y()).int("Z", z()).build()

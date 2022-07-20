@@ -29,20 +29,24 @@ import org.kryptonmc.krypton.world.KryptonWorld
 class KryptonSheep(world: KryptonWorld) : KryptonAnimal(world, EntityTypes.SHEEP, ATTRIBUTES), Sheep {
 
     override var isSheared: Boolean
-        get() = getFlag(MetadataKeys.SHEEP.FLAGS, 4)
-        set(value) = setFlag(MetadataKeys.SHEEP.FLAGS, 4, value)
+        get() = getFlag(MetadataKeys.Sheep.FLAGS, FLAG_SHEARED)
+        set(value) = setFlag(MetadataKeys.Sheep.FLAGS, FLAG_SHEARED, value)
     override var woolColor: DyeColor
-        get() = KryptonRegistries.DYE_COLORS.get(data[MetadataKeys.SHEEP.FLAGS].toInt() and 15)!!
+        get() = KryptonRegistries.DYE_COLORS.get(data.get(MetadataKeys.Sheep.FLAGS).toInt() and WOOL_COLOR_MASK)!!
         set(value) {
-            val old = data[MetadataKeys.SHEEP.FLAGS].toInt()
-            data[MetadataKeys.SHEEP.FLAGS] = ((old and 240) or (KryptonRegistries.DYE_COLORS.idOf(value) and 15)).toByte()
+            val old = data.get(MetadataKeys.Sheep.FLAGS).toInt() and CLEAR_WOOL_COLOR_MASK
+            data.set(MetadataKeys.Sheep.FLAGS, (old or (KryptonRegistries.DYE_COLORS.idOf(value) and WOOL_COLOR_MASK)).toByte())
         }
 
     init {
-        data.add(MetadataKeys.SHEEP.FLAGS, 0)
+        data.add(MetadataKeys.Sheep.FLAGS, 0)
     }
 
     companion object {
+
+        private const val FLAG_SHEARED = 4
+        private const val WOOL_COLOR_MASK = 15
+        private const val CLEAR_WOOL_COLOR_MASK = 240
 
         private val ATTRIBUTES = attributes().add(AttributeTypes.MAX_HEALTH, 8.0).add(AttributeTypes.MOVEMENT_SPEED, 0.23).build()
     }

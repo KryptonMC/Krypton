@@ -41,27 +41,27 @@ class KryptonBee(world: KryptonWorld) : KryptonAnimal(world, EntityTypes.BEE, AT
     internal var cropsGrownSincePollination = 0
 
     override var isAngry: Boolean
-        get() = getFlag(1)
-        set(value) = setFlag(1, value)
+        get() = getFlag(MetadataKeys.Bee.FLAGS, FLAG_ANGRY)
+        set(value) = setFlag(MetadataKeys.Bee.FLAGS, FLAG_ANGRY, value)
     override var hasStung: Boolean
-        get() = getFlag(2)
-        set(value) = setFlag(2, value)
+        get() = getFlag(MetadataKeys.Bee.FLAGS, FLAG_STUNG)
+        set(value) = setFlag(MetadataKeys.Bee.FLAGS, FLAG_STUNG, value)
     override var hasNectar: Boolean
-        get() = getFlag(3)
+        get() = getFlag(MetadataKeys.Bee.FLAGS, FLAG_NECTAR)
         set(value) {
             if (value) timeSincePollination = 0
-            setFlag(3, value)
+            setFlag(MetadataKeys.Bee.FLAGS, FLAG_NECTAR, value)
         }
     override var remainingAngerTime: Int
-        get() = data[MetadataKeys.BEE.ANGER_TIME]
-        set(value) = data.set(MetadataKeys.BEE.ANGER_TIME, value)
+        get() = data.get(MetadataKeys.Bee.ANGER_TIME)
+        set(value) = data.set(MetadataKeys.Bee.ANGER_TIME, value)
 
     override val soundVolume: Float
         get() = 0.4F
 
     init {
-        data.add(MetadataKeys.BEE.FLAGS, 0)
-        data.add(MetadataKeys.BEE.ANGER_TIME, 0)
+        data.add(MetadataKeys.Bee.FLAGS, 0)
+        data.add(MetadataKeys.Bee.ANGER_TIME, 0)
     }
 
     override fun startAngerTimer() {
@@ -70,13 +70,11 @@ class KryptonBee(world: KryptonWorld) : KryptonAnimal(world, EntityTypes.BEE, AT
 
     override fun isFood(item: ItemStack): Boolean = ItemTags.FLOWERS.contains(item.type)
 
-    private fun getFlag(flag: Int): Boolean = getFlag(MetadataKeys.BEE.FLAGS, flag)
-
-    private fun setFlag(flag: Int, state: Boolean) {
-        setFlag(MetadataKeys.BEE.FLAGS, flag, state)
-    }
-
     companion object {
+
+        private const val FLAG_ANGRY = 1
+        private const val FLAG_STUNG = 2
+        private const val FLAG_NECTAR = 3
 
         private val ATTRIBUTES = attributes()
             .add(AttributeTypes.MAX_HEALTH, 10.0)

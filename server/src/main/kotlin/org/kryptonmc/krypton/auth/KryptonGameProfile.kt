@@ -75,7 +75,7 @@ data class KryptonGameProfile(
             KryptonGameProfile(name, uuid, properties.toPersistentList())
     }
 
-    companion object : TypeAdapter<KryptonGameProfile>() {
+    object Adapter : TypeAdapter<KryptonGameProfile>() {
 
         override fun read(reader: JsonReader): KryptonGameProfile? {
             reader.beginObject()
@@ -90,7 +90,7 @@ data class KryptonGameProfile(
                     "properties" -> {
                         reader.beginArray()
                         while (reader.hasNext()) {
-                            val property = KryptonProfileProperty.read(reader)
+                            val property = KryptonProfileProperty.Adapter.read(reader)
                             if (property != null) properties.add(property)
                         }
                         reader.endArray()
@@ -113,7 +113,7 @@ data class KryptonGameProfile(
             if (value.properties.isNotEmpty()) {
                 writer.name("properties")
                 writer.beginArray()
-                value.properties.forEach { KryptonProfileProperty.write(writer, it) }
+                value.properties.forEach { KryptonProfileProperty.Adapter.write(writer, it) }
                 writer.endArray()
             }
             writer.endObject()

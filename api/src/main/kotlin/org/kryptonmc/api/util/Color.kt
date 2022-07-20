@@ -154,6 +154,8 @@ public interface Color : RGBLike {
          * @param saturation the saturation component
          * @param brightness the brightness component
          * @return a new colour
+         * @throws IllegalArgumentException if hue, saturation, and brightness
+         * are not between 0 and 1
          */
         @JvmStatic
         public fun of(hue: Float, saturation: Float, brightness: Float): Color = FACTORY.of(hue, saturation, brightness)

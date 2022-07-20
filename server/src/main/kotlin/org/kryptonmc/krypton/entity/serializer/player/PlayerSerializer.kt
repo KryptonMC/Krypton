@@ -51,7 +51,7 @@ object PlayerSerializer : EntitySerializer<KryptonPlayer> {
         if (data.contains("previousPlayerGameType", IntTag.ID)) entity.oldGameMode = GameModes.fromId(data.getInt("previousPlayerGameType"))
         entity.inventory.load(data.getList("Inventory", CompoundTag.ID))
         entity.inventory.heldSlot = data.getInt("SelectedItemSlot")
-        entity.data[MetadataKeys.PLAYER.SCORE] = data.getInt("Score")
+        entity.data.set(MetadataKeys.Player.SCORE, data.getInt("Score"))
         entity.foodLevel = data.getInt("foodLevel")
         entity.foodTickTimer = data.getInt("foodTickTimer")
         entity.foodExhaustionLevel = data.getFloat("foodExhaustionLevel")
@@ -71,10 +71,10 @@ object PlayerSerializer : EntitySerializer<KryptonPlayer> {
 
         // NBT data for entities sitting on the player's shoulders, e.g. parrots
         if (data.contains("ShoulderEntityLeft", CompoundTag.ID)) {
-            entity.data[MetadataKeys.PLAYER.LEFT_SHOULDER] = data.getCompound("ShoulderEntityLeft")
+            entity.data.set(MetadataKeys.Player.LEFT_SHOULDER, data.getCompound("ShoulderEntityLeft"))
         }
         if (data.contains("ShoulderEntityRight", CompoundTag.ID)) {
-            entity.data[MetadataKeys.PLAYER.RIGHT_SHOULDER] = data.getCompound("ShoulderEntityRight")
+            entity.data.set(MetadataKeys.Player.RIGHT_SHOULDER, data.getCompound("ShoulderEntityRight"))
         }
 
         // Respawn data
@@ -83,7 +83,7 @@ object PlayerSerializer : EntitySerializer<KryptonPlayer> {
             entity.respawnForced = data.getBoolean("SpawnForced")
             entity.respawnAngle = data.getFloat("SpawnAngle")
             if (data.contains("SpawnDimension", StringTag.ID)) {
-                entity.respawnDimension = Codecs.DIMENSION.decodeNullable(data["SpawnDimension"] as StringTag) ?: World.OVERWORLD
+                entity.respawnDimension = Codecs.DIMENSION.decodeNullable(data.get("SpawnDimension") as StringTag) ?: World.OVERWORLD
             }
         }
 
@@ -102,7 +102,7 @@ object PlayerSerializer : EntitySerializer<KryptonPlayer> {
         int("DataVersion", KryptonPlatform.worldVersion)
         put("Inventory", entity.inventory.save())
         int("SelectedItemSlot", entity.inventory.heldSlot)
-        int("Score", entity.data[MetadataKeys.PLAYER.SCORE])
+        int("Score", entity.data.get(MetadataKeys.Player.SCORE))
         int("foodLevel", entity.foodLevel)
         int("foodTickTimer", entity.foodTickTimer)
         float("foodExhaustionLevel", entity.foodExhaustionLevel)
@@ -118,8 +118,8 @@ object PlayerSerializer : EntitySerializer<KryptonPlayer> {
             float("flySpeed", entity.flyingSpeed)
         }
 
-        val leftShoulder = entity.data[MetadataKeys.PLAYER.LEFT_SHOULDER]
-        val rightShoulder = entity.data[MetadataKeys.PLAYER.RIGHT_SHOULDER]
+        val leftShoulder = entity.data.get(MetadataKeys.Player.LEFT_SHOULDER)
+        val rightShoulder = entity.data.get(MetadataKeys.Player.RIGHT_SHOULDER)
         if (leftShoulder.isNotEmpty()) put("ShoulderEntityLeft", leftShoulder)
         if (rightShoulder.isNotEmpty()) put("ShoulderEntityRight", rightShoulder)
 

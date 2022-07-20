@@ -53,7 +53,7 @@ data class KryptonItemType(
     class Builder(private var key: Key) : ItemType.Builder {
 
         private var rarity = ItemRarities.COMMON
-        private var maximumStackSize = 64
+        private var maximumStackSize = DEFAULT_MAXIMUM_STACK_SIZE
         private var canBreak = false
         private var durability = 0
         private var isEdible = false
@@ -129,6 +129,8 @@ data class KryptonItemType(
     }
 
     companion object {
+
+        private const val DEFAULT_MAXIMUM_STACK_SIZE = 64
 
         @JvmStatic
         private fun createTranslation(key: Key): TranslatableComponent {

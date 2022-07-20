@@ -28,11 +28,11 @@ object FireballSerializer : EntitySerializer<KryptonFireball> {
 
     override fun load(entity: KryptonFireball, data: CompoundTag) {
         AcceleratingProjectileSerializer.load(entity, data)
-        entity.data[MetadataKeys.FIREBALL.ITEM] = KryptonItemStack.from(data.getCompound("Item"))
+        entity.data.set(MetadataKeys.Fireball.ITEM, KryptonItemStack.from(data.getCompound("Item")))
     }
 
     override fun save(entity: KryptonFireball): CompoundTag.Builder = AcceleratingProjectileSerializer.save(entity).apply {
-        val item = entity.data[MetadataKeys.FIREBALL.ITEM]
+        val item = entity.data.get(MetadataKeys.Fireball.ITEM)
         if (!item.isEmpty()) put("Item", item.save())
     }
 }

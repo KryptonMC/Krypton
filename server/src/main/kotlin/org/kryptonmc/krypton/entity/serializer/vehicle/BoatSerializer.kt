@@ -27,7 +27,7 @@ import org.kryptonmc.nbt.StringTag
 
 object BoatSerializer : EntitySerializer<KryptonBoat> {
 
-    private val TYPE_NAMES = KryptonBoat.TYPES.associateBy { it.name.lowercase() }
+    private val TYPE_NAMES = BoatVariant.values().associateBy { it.name.lowercase() }
 
     override fun load(entity: KryptonBoat, data: CompoundTag) {
         BaseEntitySerializer.load(entity, data)

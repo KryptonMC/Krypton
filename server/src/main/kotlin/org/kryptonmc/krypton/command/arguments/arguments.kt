@@ -31,6 +31,4 @@ fun CommandContext<Sender>.gameProfileArgument(name: String): EntityQuery = argu
 
 fun CommandContext<Sender>.summonableEntity(name: String): Key = SummonEntityArgument.ensureSummonable(argument(name))
 
-fun CommandContext<Sender>.entityArgument(name: String): Key = SummonEntityArgument.ensureSummonable(argument(name))
-
 fun CommandContext<Sender>.vectorArgument(name: String): Vector3d = argument<Coordinates>(name).position(source as Player)

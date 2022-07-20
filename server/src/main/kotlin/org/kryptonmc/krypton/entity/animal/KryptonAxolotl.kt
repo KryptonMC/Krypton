@@ -32,21 +32,20 @@ import org.kryptonmc.krypton.entity.BucketStorable
 import org.kryptonmc.krypton.entity.memory.MemoryKeys
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.item.KryptonItemStack
-import org.kryptonmc.krypton.item.meta.KryptonItemMeta
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.nbt.CompoundTag
 
 class KryptonAxolotl(world: KryptonWorld) : KryptonAnimal(world, EntityTypes.AXOLOTL, ATTRIBUTES), Axolotl, BucketStorable {
 
     override var variant: AxolotlVariant
-        get() = VARIANTS.getOrNull(data[MetadataKeys.AXOLOTL.VARIANT]) ?: AxolotlVariant.LUCY
-        set(value) = data.set(MetadataKeys.AXOLOTL.VARIANT, value.ordinal)
+        get() = VARIANTS.getOrNull(data.get(MetadataKeys.Axolotl.VARIANT)) ?: AxolotlVariant.LUCY
+        set(value) = data.set(MetadataKeys.Axolotl.VARIANT, value.ordinal)
     override var isPlayingDead: Boolean
-        get() = data[MetadataKeys.AXOLOTL.PLAYING_DEAD]
-        set(value) = data.set(MetadataKeys.AXOLOTL.PLAYING_DEAD, value)
+        get() = data.get(MetadataKeys.Axolotl.PLAYING_DEAD)
+        set(value) = data.set(MetadataKeys.Axolotl.PLAYING_DEAD, value)
     override var spawnedFromBucket: Boolean
-        get() = data[MetadataKeys.AXOLOTL.FROM_BUCKET]
-        set(value) = data.set(MetadataKeys.AXOLOTL.FROM_BUCKET, value)
+        get() = data.get(MetadataKeys.Axolotl.FROM_BUCKET)
+        set(value) = data.set(MetadataKeys.Axolotl.FROM_BUCKET, value)
 
     override val bucketType: ItemType = ItemTypes.AXOLOTL_BUCKET
     override val bucketPickupSound: SoundEvent
@@ -57,23 +56,23 @@ class KryptonAxolotl(world: KryptonWorld) : KryptonAnimal(world, EntityTypes.AXO
     override val splashSound: SoundEvent
         get() = SoundEvents.AXOLOTL_SPLASH
     override val maxAirTicks: Int
-        get() = 6000
+        get() = MAX_AIR_TICKS
     override val pushedByFluid: Boolean
         get() = false
     override val canBeSeenAsEnemy: Boolean
         get() = !isPlayingDead && super.canBeSeenAsEnemy
 
     init {
-        data.add(MetadataKeys.AXOLOTL.VARIANT, AxolotlVariant.LUCY.ordinal)
-        data.add(MetadataKeys.AXOLOTL.PLAYING_DEAD, false)
-        data.add(MetadataKeys.AXOLOTL.FROM_BUCKET, false)
+        data.add(MetadataKeys.Axolotl.VARIANT, AxolotlVariant.LUCY.ordinal)
+        data.add(MetadataKeys.Axolotl.PLAYING_DEAD, false)
+        data.add(MetadataKeys.Axolotl.FROM_BUCKET, false)
     }
 
     override fun isFood(item: ItemStack): Boolean = ItemTags.AXOLOTL_TEMPT_ITEMS.contains(item.type)
 
     override fun loadFromBucket(tag: CompoundTag) {
         loadDefaultsFromBucket(this, tag)
-        data[MetadataKeys.AXOLOTL.VARIANT] = tag.getInt("Variant")
+        data.set(MetadataKeys.Axolotl.VARIANT, tag.getInt("Variant"))
         if (tag.contains("Age")) age = tag.getInt("Age")
         if (tag.contains("HuntingCooldown")) brain.set(MemoryKeys.HAS_HUNTING_COOLDOWN, true, tag.getLong("HuntingCooldown"))
     }
@@ -82,7 +81,7 @@ class KryptonAxolotl(world: KryptonWorld) : KryptonAnimal(world, EntityTypes.AXO
     override fun saveToBucket(item: KryptonItemStack) {
         saveDefaultsToBucket(this, item)
         item.meta.nbt.apply {
-            putInt("Variant", data[MetadataKeys.AXOLOTL.VARIANT])
+            putInt("Variant", data.get(MetadataKeys.AXOLOTL.VARIANT))
             putInt("Age", age)
             if (brain.contains(MemoryKeys.HAS_HUNTING_COOLDOWN)) {
                 putLong("HuntingCooldown", brain.expiryTime(MemoryKeys.HAS_HUNTING_COOLDOWN))
@@ -101,6 +100,7 @@ class KryptonAxolotl(world: KryptonWorld) : KryptonAnimal(world, EntityTypes.AXO
 
     companion object {
 
+        private val MAX_AIR_TICKS = 5 * 60 * 20 // 5 minutes in ticks
         private val VARIANTS = AxolotlVariant.values()
         private val ATTRIBUTES = attributes()
             .add(AttributeTypes.MAX_HEALTH, 14.0)

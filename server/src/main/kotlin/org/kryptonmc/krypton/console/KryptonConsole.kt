@@ -60,7 +60,7 @@ class KryptonConsole(override val server: KryptonServer) : SimpleTerminalConsole
     }
 
     override fun sendMessage(source: Identity, message: Component, type: MessageType) {
-        LOGGER.info(TranslationBootstrap.RENDERER.render(message, Locale.ENGLISH).toLegacySectionText())
+        LOGGER.info(TranslationBootstrap.render(message).toLegacySectionText())
     }
 
     override fun getPermissionValue(permission: String): TriState = permissionFunction[permission]
@@ -70,9 +70,10 @@ class KryptonConsole(override val server: KryptonServer) : SimpleTerminalConsole
     override fun isRunning(): Boolean = server.isRunning
 
     override fun runCommand(command: String) {
-        val result = server.eventManager.fireSync(CommandExecuteEvent(this, command)).result
-        if (!result.isAllowed) return
-        server.commandManager.dispatch(this, result.command ?: command)
+        server.eventManager.fire(CommandExecuteEvent(this, command)).thenAcceptAsync {
+            if (!it.result.isAllowed) return@thenAcceptAsync
+            server.commandManager.dispatch(this, it.result.command ?: command)
+        }
     }
 
     override fun shutdown() {

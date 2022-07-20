@@ -43,16 +43,8 @@ abstract class ChunkAccessor(
 
     val sections: Array<ChunkSection>
         @Suppress("UNCHECKED_CAST") get() = sectionArray as Array<ChunkSection>
-    private val highestSection: ChunkSection?
-        get() {
-            for (i in sectionArray.size - 1 downTo 0) {
-                val section = sectionArray[i]
-                if (!section!!.hasOnlyAir()) return section
-            }
-            return null
-        }
     val highestSectionY: Int
-        get() = highestSection?.bottomBlockY ?: minimumBuildHeight
+        get() = highestSection()?.bottomBlockY ?: minimumBuildHeight
     override val height: Int
         get() = heightAccessor.height
     override val minimumBuildHeight: Int
@@ -92,6 +84,14 @@ abstract class ChunkAccessor(
         val actualY = y.clamp(minimumQuart, maximumQuart)
         val sectionIndex = sectionIndex(Quart.toBlock(actualY))
         return section(sectionIndex).getNoiseBiome(x and 3, actualY and 3, z and 3)
+    }
+
+    private fun highestSection(): ChunkSection? {
+        for (i in sectionArray.size - 1 downTo 0) {
+            val section = sectionArray[i]
+            if (!section!!.hasOnlyAir()) return section
+        }
+        return null
     }
 
     companion object {

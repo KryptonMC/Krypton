@@ -40,7 +40,7 @@ class KryptonTNTMinecart(world: KryptonWorld) : KryptonMinecartLike(world, Entit
         get() = Blocks.TNT
 
     override fun prime() {
-        fuse = 80
+        fuse = PRIMED_FUSE
         if (!isSilent) world.playSound(location, SoundEvents.TNT_PRIMED, Sound.Source.BLOCK, 1F, 1F)
     }
 
@@ -51,5 +51,10 @@ class KryptonTNTMinecart(world: KryptonWorld) : KryptonMinecartLike(world, Entit
         }
          */
         return super.damage(source, damage)
+    }
+
+    companion object {
+
+        private const val PRIMED_FUSE = 80
     }
 }

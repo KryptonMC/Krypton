@@ -32,35 +32,35 @@ import java.util.UUID
 class KryptonFox(world: KryptonWorld) : KryptonAnimal(world, EntityTypes.FOX, ATTRIBUTES), Fox {
 
     override var variant: FoxVariant
-        get() = TYPES.getOrNull(data[MetadataKeys.FOX.TYPE]) ?: FoxVariant.RED
-        set(value) = data.set(MetadataKeys.FOX.TYPE, value.ordinal)
+        get() = TYPES.getOrNull(data.get(MetadataKeys.Fox.TYPE)) ?: FoxVariant.RED
+        set(value) = data.set(MetadataKeys.Fox.TYPE, value.ordinal)
     override var isSitting: Boolean
-        get() = getFlag(0)
-        set(value) = setFlag(0, value)
+        get() = getFlag(MetadataKeys.Fox.FLAGS, FLAG_SITTING)
+        set(value) = setFlag(MetadataKeys.Fox.FLAGS, FLAG_SITTING, value)
     override var isCrouching: Boolean
-        get() = getFlag(2)
-        set(value) = setFlag(2, value)
+        get() = getFlag(MetadataKeys.Fox.FLAGS, FLAG_CROUCHING)
+        set(value) = setFlag(MetadataKeys.Fox.FLAGS, FLAG_CROUCHING, value)
     override var isInterested: Boolean
-        get() = getFlag(3)
-        set(value) = setFlag(3, value)
+        get() = getFlag(MetadataKeys.Fox.FLAGS, FLAG_INTERESTED)
+        set(value) = setFlag(MetadataKeys.Fox.FLAGS, FLAG_INTERESTED, value)
     override var isPouncing: Boolean
-        get() = getFlag(4)
-        set(value) = setFlag(4, value)
+        get() = getFlag(MetadataKeys.Fox.FLAGS, FLAG_POUNCING)
+        set(value) = setFlag(MetadataKeys.Fox.FLAGS, FLAG_POUNCING, value)
     override var isSleeping: Boolean
-        get() = getFlag(5)
-        set(value) = setFlag(5, value)
+        get() = getFlag(MetadataKeys.Fox.FLAGS, FLAG_SLEEPING)
+        set(value) = setFlag(MetadataKeys.Fox.FLAGS, FLAG_SLEEPING, value)
     override var hasFaceplanted: Boolean
-        get() = getFlag(6)
-        set(value) = setFlag(6, value)
+        get() = getFlag(MetadataKeys.Fox.FLAGS, FLAG_FACEPLANTED)
+        set(value) = setFlag(MetadataKeys.Fox.FLAGS, FLAG_FACEPLANTED, value)
     override var isDefending: Boolean
-        get() = getFlag(7)
-        set(value) = setFlag(7, value)
+        get() = getFlag(MetadataKeys.Fox.FLAGS, FLAG_DEFENDING)
+        set(value) = setFlag(MetadataKeys.Fox.FLAGS, FLAG_DEFENDING, value)
     override var firstTrusted: UUID?
-        get() = data[MetadataKeys.FOX.FIRST_TRUSTED]
-        set(value) = data.set(MetadataKeys.FOX.FIRST_TRUSTED, value)
+        get() = data.get(MetadataKeys.Fox.FIRST_TRUSTED)
+        set(value) = data.set(MetadataKeys.Fox.FIRST_TRUSTED, value)
     override var secondTrusted: UUID?
-        get() = data[MetadataKeys.FOX.SECOND_TRUSTED]
-        set(value) = data.set(MetadataKeys.FOX.SECOND_TRUSTED, value)
+        get() = data.get(MetadataKeys.Fox.SECOND_TRUSTED)
+        set(value) = data.set(MetadataKeys.Fox.SECOND_TRUSTED, value)
     override var target: KryptonLivingEntity?
         get() = super.target
         set(value) {
@@ -69,26 +69,27 @@ class KryptonFox(world: KryptonWorld) : KryptonAnimal(world, EntityTypes.FOX, AT
         }
 
     init {
-        data.add(MetadataKeys.FOX.TYPE, FoxVariant.RED.ordinal)
-        data.add(MetadataKeys.FOX.FLAGS, 0)
-        data.add(MetadataKeys.FOX.FIRST_TRUSTED, null)
-        data.add(MetadataKeys.FOX.SECOND_TRUSTED, null)
+        data.add(MetadataKeys.Fox.TYPE, FoxVariant.RED.ordinal)
+        data.add(MetadataKeys.Fox.FLAGS, 0)
+        data.add(MetadataKeys.Fox.FIRST_TRUSTED, null)
+        data.add(MetadataKeys.Fox.SECOND_TRUSTED, null)
     }
 
     override fun trusts(uuid: UUID): Boolean = uuid == firstTrusted || uuid == secondTrusted
 
     override fun isFood(item: ItemStack): Boolean = ItemTags.FOX_FOOD.contains(item.type)
 
-    private fun getFlag(flag: Int): Boolean = getFlag(MetadataKeys.FOX.FLAGS, flag)
-
-    private fun setFlag(flag: Int, state: Boolean) {
-        setFlag(MetadataKeys.FOX.FLAGS, flag, state)
-    }
-
     companion object {
 
-        private val TYPES = FoxVariant.values()
+        private const val FLAG_SITTING = 0
+        private const val FLAG_CROUCHING = 2
+        private const val FLAG_INTERESTED = 3
+        private const val FLAG_POUNCING = 4
+        private const val FLAG_SLEEPING = 5
+        private const val FLAG_FACEPLANTED = 6
+        private const val FLAG_DEFENDING = 7
 
+        private val TYPES = FoxVariant.values()
         private val ATTRIBUTES = attributes()
             .add(AttributeTypes.MOVEMENT_SPEED, 0.3)
             .add(AttributeTypes.MAX_HEALTH, 10.0)

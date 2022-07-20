@@ -138,7 +138,7 @@ abstract class KryptonEntity(override var world: KryptonWorld, override val type
         get() = world.getBlock(location.floorX(), location.floorY(), location.floorZ()) === Blocks.BUBBLE_COLUMN
 
     open val maxAirTicks: Int
-        get() = 300
+        get() = DEFAULT_MAX_AIR
     open val isAlive: Boolean
         get() = !isRemoved
     open val isSpectator: Boolean
@@ -173,58 +173,58 @@ abstract class KryptonEntity(override var world: KryptonWorld, override val type
     private var wasDamaged = false
 
     final override var isOnFire: Boolean
-        get() = getSharedFlag(0)
-        set(value) = setSharedFlag(0, value)
+        get() = getFlag(MetadataKeys.Entity.FLAGS, FLAG_ON_FIRE)
+        set(value) = setFlag(MetadataKeys.Entity.FLAGS, FLAG_ON_FIRE, value)
     final override var isSneaking: Boolean
-        get() = getSharedFlag(1)
-        set(value) = setSharedFlag(1, value)
+        get() = getFlag(MetadataKeys.Entity.FLAGS, FLAG_SNEAKING)
+        set(value) = setFlag(MetadataKeys.Entity.FLAGS, FLAG_SNEAKING, value)
     final override var isSprinting: Boolean
-        get() = getSharedFlag(3)
-        set(value) = setSharedFlag(3, value)
+        get() = getFlag(MetadataKeys.Entity.FLAGS, FLAG_SPRINTING)
+        set(value) = setFlag(MetadataKeys.Entity.FLAGS, FLAG_SPRINTING, value)
     final override var isSwimming: Boolean
-        get() = getSharedFlag(4)
-        set(value) = setSharedFlag(4, value)
+        get() = getFlag(MetadataKeys.Entity.FLAGS, FLAG_SWIMMING)
+        set(value) = setFlag(MetadataKeys.Entity.FLAGS, FLAG_SWIMMING, value)
     final override var isInvisible: Boolean
-        get() = getSharedFlag(5)
-        set(value) = setSharedFlag(5, value)
+        get() = getFlag(MetadataKeys.Entity.FLAGS, FLAG_INVISIBLE)
+        set(value) = setFlag(MetadataKeys.Entity.FLAGS, FLAG_INVISIBLE, value)
     final override var isGlowing: Boolean
-        get() = getSharedFlag(6)
-        set(value) = setSharedFlag(6, value)
+        get() = getFlag(MetadataKeys.Entity.FLAGS, FLAG_GLOWING)
+        set(value) = setFlag(MetadataKeys.Entity.FLAGS, FLAG_GLOWING, value)
     final override var air: Int
-        get() = data[MetadataKeys.AIR_TICKS]
-        set(value) = data.set(MetadataKeys.AIR_TICKS, value)
+        get() = data.get(MetadataKeys.Entity.AIR_TICKS)
+        set(value) = data.set(MetadataKeys.Entity.AIR_TICKS, value)
     final override var customName: Component?
-        get() = data[MetadataKeys.CUSTOM_NAME]
-        set(value) = data.set(MetadataKeys.CUSTOM_NAME, value)
+        get() = data.get(MetadataKeys.Entity.CUSTOM_NAME)
+        set(value) = data.set(MetadataKeys.Entity.CUSTOM_NAME, value)
     final override var isCustomNameVisible: Boolean
-        get() = data[MetadataKeys.CUSTOM_NAME_VISIBILITY]
-        set(value) = data.set(MetadataKeys.CUSTOM_NAME_VISIBILITY, value)
+        get() = data.get(MetadataKeys.Entity.CUSTOM_NAME_VISIBILITY)
+        set(value) = data.set(MetadataKeys.Entity.CUSTOM_NAME_VISIBILITY, value)
     final override var isSilent: Boolean
-        get() = data[MetadataKeys.SILENT]
-        set(value) = data.set(MetadataKeys.SILENT, value)
+        get() = data.get(MetadataKeys.Entity.SILENT)
+        set(value) = data.set(MetadataKeys.Entity.SILENT, value)
     final override var hasGravity: Boolean
-        get() = !data[MetadataKeys.NO_GRAVITY]
-        set(value) = data.set(MetadataKeys.NO_GRAVITY, !value)
+        get() = !data.get(MetadataKeys.Entity.NO_GRAVITY)
+        set(value) = data.set(MetadataKeys.Entity.NO_GRAVITY, !value)
     var pose: Pose
-        get() = data[MetadataKeys.POSE]
-        set(value) = data.set(MetadataKeys.POSE, value)
+        get() = data.get(MetadataKeys.Entity.POSE)
+        set(value) = data.set(MetadataKeys.Entity.POSE, value)
     final override var frozenTicks: Int
-        get() = data[MetadataKeys.FROZEN_TICKS]
-        set(value) = data.set(MetadataKeys.FROZEN_TICKS, value)
+        get() = data.get(MetadataKeys.Entity.FROZEN_TICKS)
+        set(value) = data.set(MetadataKeys.Entity.FROZEN_TICKS, value)
 
     init {
-        data.add(MetadataKeys.FLAGS, 0)
-        data.add(MetadataKeys.AIR_TICKS, maxAirTicks)
-        data.add(MetadataKeys.CUSTOM_NAME, null)
-        data.add(MetadataKeys.CUSTOM_NAME_VISIBILITY, false)
-        data.add(MetadataKeys.SILENT, false)
-        data.add(MetadataKeys.NO_GRAVITY, false)
-        data.add(MetadataKeys.POSE, Pose.STANDING)
-        data.add(MetadataKeys.FROZEN_TICKS, 0)
+        data.add(MetadataKeys.Entity.FLAGS, 0)
+        data.add(MetadataKeys.Entity.AIR_TICKS, maxAirTicks)
+        data.add(MetadataKeys.Entity.CUSTOM_NAME, null)
+        data.add(MetadataKeys.Entity.CUSTOM_NAME_VISIBILITY, false)
+        data.add(MetadataKeys.Entity.SILENT, false)
+        data.add(MetadataKeys.Entity.NO_GRAVITY, false)
+        data.add(MetadataKeys.Entity.POSE, Pose.STANDING)
+        data.add(MetadataKeys.Entity.FROZEN_TICKS, 0)
     }
 
     open fun onDataUpdate(key: MetadataKey<*>) {
-        // TODO: Data updating
+        // TODO: Update dimensions when key is pose
     }
 
     open fun addViewer(player: KryptonPlayer): Boolean {
@@ -258,12 +258,6 @@ abstract class KryptonEntity(override var world: KryptonWorld, override val type
     }
 
     protected open fun getSpawnPacket(): Packet = PacketOutSpawnEntity(this)
-
-    private fun getSharedFlag(flag: Int): Boolean = getFlag(MetadataKeys.FLAGS, flag)
-
-    private fun setSharedFlag(flag: Int, state: Boolean) {
-        setFlag(MetadataKeys.FLAGS, flag, state)
-    }
 
     private fun updateWater(): Boolean {
         fluidHeights.clear()
@@ -449,17 +443,25 @@ abstract class KryptonEntity(override var world: KryptonWorld, override val type
         if (isRideable) addPassenger(entity)
     }
 
-    protected fun getFlag(key: MetadataKey<Byte>, flag: Int): Boolean = data[key].toInt() and (1 shl flag) != 0
+    protected fun getFlag(key: MetadataKey<Byte>, flag: Int): Boolean = data.get(key).toInt() and (1 shl flag) != 0
 
     protected fun setFlag(key: MetadataKey<Byte>, flag: Int, state: Boolean) {
-        val flags = data[key].toInt()
+        val flags = data.get(key).toInt()
         val value = if (state) flags or (1 shl flag) else flags and (1 shl flag).inv()
-        data[key] = value.toByte()
+        data.set(key, value.toByte())
     }
 
     companion object {
 
         private val NEXT_ENTITY_ID = AtomicInteger(0)
+
+        private const val FLAG_ON_FIRE = 0
+        private const val FLAG_SNEAKING = 1
+        private const val FLAG_SPRINTING = 3
+        private const val FLAG_SWIMMING = 4
+        private const val FLAG_INVISIBLE = 5
+        private const val FLAG_GLOWING = 6
+        private const val DEFAULT_MAX_AIR = 15 * 20 // 15 seconds in ticks
 
         private const val FLUID_VECTOR_EPSILON = 0.003
         private const val FLUID_VECTOR_MAGIC = 0.0045000000000000005

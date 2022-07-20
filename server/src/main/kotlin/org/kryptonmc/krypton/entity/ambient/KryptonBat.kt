@@ -27,15 +27,16 @@ import org.kryptonmc.krypton.world.KryptonWorld
 class KryptonBat(world: KryptonWorld) : KryptonAmbientCreature(world, EntityTypes.BAT, ATTRIBUTES), Bat {
 
     override var isResting: Boolean
-        get() = getFlag(MetadataKeys.BAT.FLAGS, 0)
-        set(value) = setFlag(MetadataKeys.BAT.FLAGS, 0, value)
+        get() = getFlag(MetadataKeys.Bat.FLAGS, FLAG_RESTING)
+        set(value) = setFlag(MetadataKeys.Bat.FLAGS, FLAG_RESTING, value)
 
     init {
-        data.add(MetadataKeys.BAT.FLAGS, 0)
+        data.add(MetadataKeys.Bat.FLAGS, 0)
     }
 
     companion object {
 
+        private const val FLAG_RESTING = 0
         private val ATTRIBUTES = attributes().add(AttributeTypes.MAX_HEALTH, 6.0).build()
     }
 }

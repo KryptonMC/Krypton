@@ -24,53 +24,50 @@ import com.mojang.brigadier.suggestion.SuggestionsBuilder
 import net.kyori.adventure.key.Key
 import org.kryptonmc.krypton.command.arguments.coordinates.TextCoordinates
 import java.util.concurrent.CompletableFuture
+import java.util.function.Consumer
+import java.util.function.Function
 import java.util.function.Predicate
 
 fun SuggestionsBuilder.suggestCoordinates(text: String, coordinates: TextCoordinates, predicate: Predicate<String>): CompletableFuture<Suggestions> {
     if (text.isEmpty()) {
-        val results = mutableListOf<String>()
         val (x, y, z) = coordinates
         val suggestion = "$x $y $z"
         if (!predicate.test(suggestion)) return suggest(emptySet())
-        results.add(x.toString())
-        results.add("$x $y")
-        results.add(suggestion)
-        return suggest(results)
+        return suggest(setOf(x.toString(), "$x $y", suggestion))
     }
     val components = text.split(" ")
     if (components.size == 1) {
-        val results = mutableListOf<String>()
         val (_, y, z) = coordinates
         val suggestion = "${components[0]} $y $z"
         if (!predicate.test(suggestion)) return suggest(emptySet())
-        results.add("${components[0]} $y")
-        results.add(suggestion)
-        return suggest(results)
+        return suggest(setOf("${components[0]} $y", suggestion))
     }
     if (components.size == 2) {
-        val results = mutableListOf<String>()
         val suggestion = "${components[0]} ${components[1]} ${coordinates.z}"
         if (!predicate.test(suggestion)) return suggest(emptySet())
-        results.add(suggestion)
-        return suggest(results)
+        return suggest(setOf(suggestion))
     }
     return suggest(emptyList())
 }
 
-fun <T> Sequence<T>.suggestKey(builder: SuggestionsBuilder, provider: (T) -> Key, messageProvider: (T) -> Message): CompletableFuture<Suggestions> {
+fun <T> Sequence<T>.suggestKey(
+    builder: SuggestionsBuilder,
+    provider: Function<T, Key>,
+    messageProvider: Function<T, Message>
+): CompletableFuture<Suggestions> {
     val remaining = builder.remaining.lowercase()
-    filterResources(remaining, provider) { builder.suggest(provider(it).toString(), messageProvider(it)) }
+    filterResources(remaining, provider) { builder.suggest(provider.apply(it).toString(), messageProvider.apply(it)) }
     return builder.buildFuture()
 }
 
-fun <T> Sequence<T>.filterResources(text: String, provider: (T) -> Key, consumer: (T) -> Unit) {
+fun <T> Sequence<T>.filterResources(text: String, provider: Function<T, Key>, consumer: Consumer<T>) {
     val hasColon = text.indexOf(':') > -1
     forEach {
-        val key = provider(it)
+        val key = provider.apply(it)
         if (hasColon && text.matchesSubString(key.asString())) {
-            consumer(it)
+            consumer.accept(it)
         } else if (text.matchesSubString(key.namespace()) || key.namespace() == Key.MINECRAFT_NAMESPACE && text.matchesSubString(key.value())) {
-            consumer(it)
+            consumer.accept(it)
         }
     }
 }

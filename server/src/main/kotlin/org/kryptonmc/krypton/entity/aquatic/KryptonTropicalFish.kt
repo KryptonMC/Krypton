@@ -32,41 +32,36 @@ import kotlin.math.min
 class KryptonTropicalFish(world: KryptonWorld) : KryptonSchoolingFish(world, EntityTypes.TROPICAL_FISH), TropicalFish {
 
     override var baseColor: DyeColor
-        get() = extractBaseColor(data[MetadataKeys.TROPICAL_FISH.VARIANT])
-        set(value) {
-            val variant = data[MetadataKeys.TROPICAL_FISH.VARIANT]
-            data[MetadataKeys.TROPICAL_FISH.VARIANT] = modifyBaseColor(variant, value)
-        }
+        get() = extractBaseColor(data.get(MetadataKeys.TropicalFish.VARIANT))
+        set(value) = updateVariant(::modifyBaseColor, value)
     override var patternColor: DyeColor
-        get() = extractPatternColor(data[MetadataKeys.TROPICAL_FISH.VARIANT])
-        set(value) {
-            val variant = data[MetadataKeys.TROPICAL_FISH.VARIANT]
-            data[MetadataKeys.TROPICAL_FISH.VARIANT] = modifyPatternColor(variant, value)
-        }
+        get() = extractPatternColor(data.get(MetadataKeys.TropicalFish.VARIANT))
+        set(value) = updateVariant(::modifyPatternColor, value)
     override var variant: TropicalFishVariant
-        get() = extractVariant(data[MetadataKeys.TROPICAL_FISH.VARIANT])
-        set(value) {
-            val variant = data[MetadataKeys.TROPICAL_FISH.VARIANT]
-            data[MetadataKeys.TROPICAL_FISH.VARIANT] = modifyVariant(variant, value)
-        }
+        get() = extractVariant(data.get(MetadataKeys.TropicalFish.VARIANT))
+        set(value) = updateVariant(::modifyVariant, value)
 
     override val bucketType: ItemType = ItemTypes.TROPICAL_FISH_BUCKET
 
     init {
-        data.add(MetadataKeys.TROPICAL_FISH.VARIANT, TropicalFishVariant.KOB.ordinal)
+        data.add(MetadataKeys.TropicalFish.VARIANT, TropicalFishVariant.KOB.ordinal)
     }
 
     /* FIXME
     override fun saveToBucket(item: KryptonItemStack) {
-        item.meta.nbt = item.meta.nbt.putInt("BucketVariantTag", data[MetadataKeys.TROPICAL_FISH.VARIANT])
+        item.meta.nbt = item.meta.nbt.putInt("BucketVariantTag", data.get(MetadataKeys.TROPICAL_FISH.VARIANT))
     }
      */
+
+    private inline fun <T> updateVariant(modifier: (Int, T) -> Int, value: T) {
+        data.set(MetadataKeys.TropicalFish.VARIANT, modifier(data.get(MetadataKeys.TropicalFish.VARIANT), value))
+    }
 
     companion object {
 
         private val VARIANTS = TropicalFishVariant.values()
 
-        /**
+        /*
          * Tropical fish data is all packed in to a single 32-bit integer, with 8 bits being
          * used to represent each part that combine to make the variant.
          *
@@ -84,15 +79,9 @@ class KryptonTropicalFish(world: KryptonWorld) : KryptonSchoolingFish(world, Ent
          *
          * For the modifications, we use AND mechanics to clear the bits we want to replace.
          * Because of the way AND works, the following are always true, where a is any binary digit:
-         * * a AND 1 = a
-         * * a AND 0 = 0
+         * - a AND 1 = a
+         * - a AND 0 = 0
          */
-        @JvmStatic
-        private fun encodeVariant(variant: TropicalFishVariant, baseColor: DyeColor, patternColor: DyeColor): Int {
-            val baseId = KryptonRegistries.DYE_COLORS.idOf(baseColor)
-            val patternId = KryptonRegistries.DYE_COLORS.idOf(patternColor)
-            return variant.shape and 255 or ((variant.pattern and 255) shl 8) or ((baseId and 255) shl 16) or ((patternId and 255) shl 24)
-        }
 
         // -65536 = 11111111 11111111 00000000 00000000 (clear bits 0-15)
         @JvmStatic

@@ -32,9 +32,7 @@ data class ChatType(val chat: TextDisplay?, val overlay: TextDisplay?, val narra
 
             @JvmField
             val ENCODER: CompoundEncoder<TextDisplay> = CompoundEncoder {
-                compound {
-                    encode(ChatDecoration.ENCODER, "decoration", it.decoration)
-                }
+                compound { encode(ChatDecoration.ENCODER, "decoration", it.decoration) }
             }
         }
     }

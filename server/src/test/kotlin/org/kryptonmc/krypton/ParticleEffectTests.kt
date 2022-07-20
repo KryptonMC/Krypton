@@ -18,17 +18,13 @@
  */
 package org.kryptonmc.krypton
 
-import io.mockk.every
-import io.mockk.mockk
-import net.kyori.adventure.key.Key
 import net.kyori.adventure.text.format.TextColor
+import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.assertDoesNotThrow
 import org.junit.jupiter.api.assertThrows
-import org.kryptonmc.api.effect.particle.ParticleType
 import org.kryptonmc.api.effect.particle.ParticleTypes
 import org.kryptonmc.api.effect.particle.data.ColorParticleData
 import org.kryptonmc.api.util.Color
-import org.kryptonmc.krypton.effect.particle.KryptonParticleEffect
 import org.kryptonmc.krypton.effect.particle.data.KryptonNoteParticleData
 import org.kryptonmc.krypton.util.Bootstrap
 import org.spongepowered.math.vector.Vector3d
@@ -40,11 +36,6 @@ class ParticleEffectTests {
 
     @Test
     fun `test bounds`() {
-        val particle = mockk<ParticleType> {
-            every { key() } returns Key.key("krypton", "test")
-        }
-        assertThrows<IllegalArgumentException> { KryptonParticleEffect(particle, -1, Vector3d.ZERO, false) }
-        assertThrows<IllegalArgumentException> { KryptonParticleEffect(particle, 0, Vector3d.ZERO, false) }
         assertThrows<IllegalArgumentException> { KryptonNoteParticleData(100) }
         assertDoesNotThrow { KryptonNoteParticleData(0) }
         assertDoesNotThrow { KryptonNoteParticleData(24) }
@@ -92,5 +83,14 @@ class ParticleEffectTests {
         val note = ParticleTypes.NOTE.builder()
         assertThrows<IllegalArgumentException> { note.note(25) }
         assertThrows<IllegalArgumentException> { note.note(-1) }
+    }
+
+    companion object {
+
+        @JvmStatic
+        @BeforeAll
+        fun `preload bootstrap`() {
+            Bootstrap.preload()
+        }
     }
 }

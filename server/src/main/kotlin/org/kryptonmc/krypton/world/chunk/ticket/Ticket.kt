@@ -19,11 +19,7 @@
 package org.kryptonmc.krypton.world.chunk.ticket
 
 @JvmRecord
-data class Ticket<T>(
-    val type: TicketType<T>,
-    val level: Int,
-    val key: T
-) : Comparable<Ticket<*>> {
+data class Ticket<T>(val type: TicketType<T>, val level: Int, val key: T) : Comparable<Ticket<*>> {
 
     @Suppress("UNCHECKED_CAST")
     override fun compareTo(other: Ticket<*>): Int {

@@ -32,7 +32,7 @@ object ServerPluginDescription : PluginDescription {
     override val id: String = "krypton"
     override val name: String = "Krypton"
     override val version: String = KryptonPlatform.version
-    override val description: String = "A plugin representing the server."
+    override val description: String = "A plugin representing the server. Used for internal things, such as service implementations."
     override val authors: Set<String> = persistentSetOf("KryptonMC")
     override val dependencies: Set<PluginDependency> = emptySet()
     override val source: Path = Path.of("")

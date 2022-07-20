@@ -57,7 +57,7 @@ object KryptonPluginManager : PluginManager {
                     LOGGER.warn("Ignoring attempt to load standalone Spark plugin, as this plugin is already bundled.")
                     return@forEachDirectoryEntry
                 }
-                found.add(PluginLoader.loadDescription(it))
+                found.add(description)
             } catch (exception: Exception) {
                 LOGGER.error("Failed to load plugin at $it!", exception)
             }
@@ -103,7 +103,7 @@ object KryptonPluginManager : PluginManager {
         }
     }
 
-    fun registerPlugin(plugin: PluginContainer) {
+    private fun registerPlugin(plugin: PluginContainer) {
         pluginMap[plugin.description.id] = plugin
         plugin.instance?.let { pluginInstances[it] = plugin }
     }

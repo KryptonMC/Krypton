@@ -23,29 +23,35 @@ import com.mojang.brigadier.builder.ArgumentBuilder
 import com.mojang.brigadier.builder.LiteralArgumentBuilder
 import com.mojang.brigadier.builder.RequiredArgumentBuilder
 import com.mojang.brigadier.context.CommandContext
+import org.kryptonmc.api.command.Sender
+import java.util.function.Consumer
 
-inline fun <S> literal(name: String, builder: LiteralArgumentBuilder<S>.() -> Unit): LiteralArgumentBuilder<S> =
-    LiteralArgumentBuilder.literal<S>(name).apply(builder)
+inline fun literal(name: String, builder: LiteralArgumentBuilder<Sender>.() -> Unit): LiteralArgumentBuilder<Sender> =
+    LiteralArgumentBuilder.literal<Sender>(name).apply(builder)
 
-inline fun <S, T> argument(name: String, type: ArgumentType<T>, builder: RequiredArgumentBuilder<S, T>.() -> Unit): RequiredArgumentBuilder<S, T> =
-    RequiredArgumentBuilder.argument<S, T>(name, type).apply(builder)
-
-fun <S> LiteralArgumentBuilder<S>.literal(name: String, builder: LiteralArgumentBuilder<S>.() -> Unit): LiteralArgumentBuilder<S> =
-    then(LiteralArgumentBuilder.literal<S>(name).apply(builder))
-
-fun <S, T> LiteralArgumentBuilder<S>.argument(
+inline fun <T> argument(
     name: String,
     type: ArgumentType<T>,
-    builder: RequiredArgumentBuilder<S, T>.() -> Unit
-): LiteralArgumentBuilder<S> = then(RequiredArgumentBuilder.argument<S, T>(name, type).apply(builder))
+    builder: RequiredArgumentBuilder<Sender, T>.() -> Unit
+): RequiredArgumentBuilder<Sender, T> = RequiredArgumentBuilder.argument<Sender, T>(name, type).apply(builder)
 
-fun <S, T, T1> RequiredArgumentBuilder<S, T>.argument(
+fun LiteralArgumentBuilder<Sender>.literal(name: String, builder: LiteralArgumentBuilder<Sender>.() -> Unit): LiteralArgumentBuilder<Sender> =
+    then(LiteralArgumentBuilder.literal<Sender>(name).apply(builder))
+
+fun <T> LiteralArgumentBuilder<Sender>.argument(
+    name: String,
+    type: ArgumentType<T>,
+    builder: RequiredArgumentBuilder<Sender, T>.() -> Unit
+): LiteralArgumentBuilder<Sender> = then(RequiredArgumentBuilder.argument<Sender, T>(name, type).apply(builder))
+
+fun <T, T1> RequiredArgumentBuilder<Sender, T>.argument(
     name: String,
     type: ArgumentType<T1>,
-    builder: RequiredArgumentBuilder<S, T1>.() -> Unit
-): RequiredArgumentBuilder<S, T> = then(RequiredArgumentBuilder.argument<S, T1>(name, type).apply(builder))
+    builder: RequiredArgumentBuilder<Sender, T1>.() -> Unit
+): RequiredArgumentBuilder<Sender, T> = then(RequiredArgumentBuilder.argument<Sender, T1>(name, type).apply(builder))
 
-fun <S, T : ArgumentBuilder<S, T>> ArgumentBuilder<S, T>.runs(action: (CommandContext<S>) -> Unit): ArgumentBuilder<S, T> = executes {
-    action(it)
-    com.mojang.brigadier.Command.SINGLE_SUCCESS
-}
+fun <T : ArgumentBuilder<Sender, T>> ArgumentBuilder<Sender, T>.runs(action: Consumer<CommandContext<Sender>>): ArgumentBuilder<Sender, T> =
+    executes {
+        action.accept(it)
+        com.mojang.brigadier.Command.SINGLE_SUCCESS
+    }

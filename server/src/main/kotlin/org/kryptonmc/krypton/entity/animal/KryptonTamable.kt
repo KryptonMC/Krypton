@@ -34,34 +34,37 @@ abstract class KryptonTamable(
 ) : KryptonAnimal(world, type, attributeSupplier), Tamable {
 
     final override var isOrderedToSit: Boolean = false
-    override var isTame: Boolean
-        get() = getFlag(2)
-        set(value) = setFlag(2, value)
     final override var isSitting: Boolean
-        get() = getFlag(0)
-        set(value) = setFlag(0, value)
+        get() = getFlag(MetadataKeys.Tamable.FLAGS, FLAG_SITTING)
+        set(value) = setFlag(MetadataKeys.Tamable.FLAGS, FLAG_SITTING, value)
+    override var isTamed: Boolean
+        get() = getFlag(MetadataKeys.Tamable.FLAGS, FLAG_TAMED)
+        set(value) = setFlag(MetadataKeys.Tamable.FLAGS, FLAG_TAMED, value)
     final override val owner: KryptonPlayer?
-        get() = world.players.firstOrNull { it.uuid == data[MetadataKeys.TAMABLE.OWNER] }
+        get() {
+            val uuid = data.get(MetadataKeys.Tamable.OWNER) ?: return null
+            return world.entityManager[uuid] as? KryptonPlayer
+        }
     final override val team: Team?
         get() {
-            if (isTame) return owner?.team
+            if (isTamed) return owner?.team
             return super.team
         }
 
     init {
-        data.add(MetadataKeys.TAMABLE.FLAGS, 0)
-        data.add(MetadataKeys.TAMABLE.OWNER, null)
+        data.add(MetadataKeys.Tamable.FLAGS, 0)
+        data.add(MetadataKeys.Tamable.OWNER, null)
     }
 
     final override fun tame(tamer: Player) {
-        isTame = true
-        data[MetadataKeys.TAMABLE.OWNER] = tamer.uuid
+        isTamed = true
+        data.set(MetadataKeys.Tamable.OWNER, tamer.uuid)
         // TODO: Trigger tame animal advancement criteria
     }
 
-    private fun getFlag(flag: Int): Boolean = getFlag(MetadataKeys.TAMABLE.FLAGS, flag)
+    companion object {
 
-    private fun setFlag(flag: Int, state: Boolean) {
-        setFlag(MetadataKeys.TAMABLE.FLAGS, flag, state)
+        private const val FLAG_SITTING = 0
+        private const val FLAG_TAMED = 2
     }
 }

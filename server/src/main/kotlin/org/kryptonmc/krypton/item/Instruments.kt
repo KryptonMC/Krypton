@@ -25,6 +25,9 @@ import org.kryptonmc.krypton.registry.InternalRegistries
 
 object Instruments {
 
+    private const val DEFAULT_USE_DURATION = 140
+    private const val DEFAULT_RANGE = 256F
+
     @JvmField
     val PONDER_GOAT_HORN: Instrument = register("ponder_goat_horn", SoundEvents.GOAT_HORN_0)
     @JvmField
@@ -44,5 +47,5 @@ object Instruments {
 
     @JvmStatic
     private fun register(name: String, sound: SoundEvent): Instrument =
-        InternalRegistries.INSTRUMENTS.register(Key.key(name), Instrument(sound, 140, 256F))
+        InternalRegistries.INSTRUMENTS.register(Key.key(name), Instrument(sound, DEFAULT_USE_DURATION, DEFAULT_RANGE))
 }

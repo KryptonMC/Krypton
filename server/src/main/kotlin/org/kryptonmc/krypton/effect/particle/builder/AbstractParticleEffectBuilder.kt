@@ -29,12 +29,15 @@ import org.spongepowered.math.vector.Vector3d
 abstract class AbstractParticleEffectBuilder<B : BaseParticleEffectBuilder<B>>(protected val type: ParticleType) : BaseParticleEffectBuilder<B> {
 
     private var quantity = 1
-    protected var offset: Vector3d = Vector3d.ZERO
+    private var offset: Vector3d = Vector3d.ZERO
     private var longDistance = false
 
     abstract fun buildData(): ParticleData?
 
-    override fun quantity(quantity: Int): B = apply { this.quantity = quantity } as B
+    override fun quantity(quantity: Int): B = apply {
+        require(quantity >= 1) { "Quantity must be >= 1!" }
+        this.quantity = quantity
+    } as B
 
     override fun offset(offset: Vector3d): B = apply { this.offset = offset } as B
 

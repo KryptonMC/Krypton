@@ -46,6 +46,10 @@ object KryptonTagManager : TagManager {
         return tags.firstOrNull { it.key().asString() == name } as? KryptonTag<T>
     }
 
+    @JvmStatic
+    fun bootstrap() {
+        tags
+    }
 
     @JvmStatic
     private fun readTags(): ImmutableMap<TagType<*>, ImmutableList<Tag<*>>> {

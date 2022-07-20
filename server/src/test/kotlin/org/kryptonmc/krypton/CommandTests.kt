@@ -38,7 +38,7 @@ class CommandTests {
     @Test
     fun `test brigadier command registrar`() {
         val root = RootCommandNode<Sender>()
-        val node = literal<Sender>("test") {
+        val node = literal("test") {
             argument("hello", IntegerArgumentType.integer()) {
                 argument("world", StringArgumentType.string()) {}
             }

@@ -30,42 +30,42 @@ import org.kryptonmc.krypton.world.KryptonWorld
 class KryptonPanda(world: KryptonWorld) : KryptonAnimal(world, EntityTypes.PANDA, ATTRIBUTES), Panda {
 
     override var knownGene: PandaGene
-        get() = GENES.getOrNull(data[MetadataKeys.PANDA.MAIN_GENE].toInt()) ?: PandaGene.NORMAL
-        set(value) = data.set(MetadataKeys.PANDA.MAIN_GENE, value.ordinal.toByte())
+        get() = GENES.getOrNull(data.get(MetadataKeys.Panda.MAIN_GENE).toInt()) ?: PandaGene.NORMAL
+        set(value) = data.set(MetadataKeys.Panda.MAIN_GENE, value.ordinal.toByte())
     override var hiddenGene: PandaGene
-        get() = GENES.getOrNull(data[MetadataKeys.PANDA.HIDDEN_GENE].toInt()) ?: PandaGene.NORMAL
-        set(value) = data.set(MetadataKeys.PANDA.HIDDEN_GENE, value.ordinal.toByte())
+        get() = GENES.getOrNull(data.get(MetadataKeys.Panda.HIDDEN_GENE).toInt()) ?: PandaGene.NORMAL
+        set(value) = data.set(MetadataKeys.Panda.HIDDEN_GENE, value.ordinal.toByte())
     override val isUnhappy: Boolean
         get() = unhappyTime > 0
-    override var isSneezing: Boolean
-        get() = getFlag(1)
-        set(value) {
-            setFlag(1, value)
-            if (!value) sneezingTime = 0
-        }
     override var isEating: Boolean
         get() = eatingTime > 0
         set(value) {
             eatingTime = if (value) 1 else 0
         }
+    override var isSneezing: Boolean
+        get() = getFlag(MetadataKeys.Panda.FLAGS, FLAG_SNEEZING)
+        set(value) {
+            setFlag(MetadataKeys.Panda.FLAGS, FLAG_SNEEZING, value)
+            if (!value) sneezingTime = 0
+        }
     override var isRolling: Boolean
-        get() = getFlag(2)
-        set(value) = setFlag(2, value)
+        get() = getFlag(MetadataKeys.Panda.FLAGS, FLAG_ROLLING)
+        set(value) = setFlag(MetadataKeys.Panda.FLAGS, FLAG_ROLLING, value)
     override var isSitting: Boolean
-        get() = getFlag(3)
-        set(value) = setFlag(3, value)
+        get() = getFlag(MetadataKeys.Panda.FLAGS, FLAG_SITTING)
+        set(value) = setFlag(MetadataKeys.Panda.FLAGS, FLAG_SITTING, value)
     override var isLyingOnBack: Boolean
-        get() = getFlag(4)
-        set(value) = setFlag(4, value)
+        get() = getFlag(MetadataKeys.Panda.FLAGS, FLAG_LYING_ON_BACK)
+        set(value) = setFlag(MetadataKeys.Panda.FLAGS, FLAG_LYING_ON_BACK, value)
     override var unhappyTime: Int
-        get() = data[MetadataKeys.PANDA.UNHAPPY_TIMER]
-        set(value) = data.set(MetadataKeys.PANDA.UNHAPPY_TIMER, value)
+        get() = data.get(MetadataKeys.Panda.UNHAPPY_TIMER)
+        set(value) = data.set(MetadataKeys.Panda.UNHAPPY_TIMER, value)
     override var sneezingTime: Int
-        get() = data[MetadataKeys.PANDA.SNEEZE_TIMER]
-        set(value) = data.set(MetadataKeys.PANDA.SNEEZE_TIMER, value)
+        get() = data.get(MetadataKeys.Panda.SNEEZE_TIMER)
+        set(value) = data.set(MetadataKeys.Panda.SNEEZE_TIMER, value)
     override var eatingTime: Int
-        get() = data[MetadataKeys.PANDA.EATING_TIMER]
-        set(value) = data.set(MetadataKeys.PANDA.EATING_TIMER, value)
+        get() = data.get(MetadataKeys.Panda.EATING_TIMER)
+        set(value) = data.set(MetadataKeys.Panda.EATING_TIMER, value)
     override val isScared: Boolean
         get() = variant == PandaGene.WORRIED && world.isThundering
 
@@ -73,28 +73,26 @@ class KryptonPanda(world: KryptonWorld) : KryptonAnimal(world, EntityTypes.PANDA
         get() = variantFromGenes(knownGene, hiddenGene)
 
     init {
-        data.add(MetadataKeys.PANDA.UNHAPPY_TIMER, 0)
-        data.add(MetadataKeys.PANDA.SNEEZE_TIMER, 0)
-        data.add(MetadataKeys.PANDA.EATING_TIMER, 0)
-        data.add(MetadataKeys.PANDA.MAIN_GENE, 0)
-        data.add(MetadataKeys.PANDA.HIDDEN_GENE, 0)
-        data.add(MetadataKeys.PANDA.FLAGS, 0)
+        data.add(MetadataKeys.Panda.UNHAPPY_TIMER, 0)
+        data.add(MetadataKeys.Panda.SNEEZE_TIMER, 0)
+        data.add(MetadataKeys.Panda.EATING_TIMER, 0)
+        data.add(MetadataKeys.Panda.MAIN_GENE, 0)
+        data.add(MetadataKeys.Panda.HIDDEN_GENE, 0)
+        data.add(MetadataKeys.Panda.FLAGS, 0)
         if (!isBaby) canPickUpLoot = false
     }
 
     override fun isFood(item: ItemStack): Boolean = item.type === ItemTypes.BAMBOO
 
-    private fun getFlag(flag: Int): Boolean = getFlag(MetadataKeys.PANDA.FLAGS, flag)
-
-    private fun setFlag(flag: Int, state: Boolean) {
-        setFlag(MetadataKeys.PANDA.FLAGS, flag, state)
-    }
-
     companion object {
+
+        private const val FLAG_SNEEZING = 1
+        private const val FLAG_ROLLING = 2
+        private const val FLAG_SITTING = 3
+        private const val FLAG_LYING_ON_BACK = 4
 
         private val GENES = PandaGene.values()
         private val GENE_NAMES = GENES.associateBy { it.name.lowercase() }
-
         private val ATTRIBUTES = attributes().add(AttributeTypes.MOVEMENT_SPEED, 0.15).add(AttributeTypes.ATTACK_DAMAGE, 6.0).build()
 
         @JvmStatic

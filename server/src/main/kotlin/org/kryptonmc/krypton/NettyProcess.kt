@@ -40,7 +40,7 @@ import io.netty.channel.socket.nio.NioServerSocketChannel
 import io.netty.channel.unix.DomainSocketAddress
 import io.netty.handler.timeout.ReadTimeoutHandler
 import net.kyori.adventure.key.Key
-import org.kryptonmc.krypton.config.category.ForwardingMode
+import org.kryptonmc.krypton.config.category.ProxyCategory
 import org.kryptonmc.krypton.network.SessionHandler
 import org.kryptonmc.krypton.network.netty.ChannelInitializeListener
 import org.kryptonmc.krypton.network.netty.GroupedPacketHandler
@@ -75,7 +75,7 @@ object NettyProcess {
                 server.stop()
                 return
             }
-            if (server.config.proxy.mode == ForwardingMode.NONE) {
+            if (server.config.proxy.mode == ProxyCategory.Mode.NONE) {
                 LOGGER.error("UNIX domain sockets require IPs to be forwarded from a proxy!")
                 server.stop()
                 return

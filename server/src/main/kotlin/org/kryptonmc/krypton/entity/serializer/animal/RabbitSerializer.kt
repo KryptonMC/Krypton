@@ -28,12 +28,12 @@ object RabbitSerializer : EntitySerializer<KryptonRabbit> {
 
     override fun load(entity: KryptonRabbit, data: CompoundTag) {
         AgeableSerializer.load(entity, data)
-        entity.data[MetadataKeys.RABBIT.TYPE] = data.getInt("RabbitType")
+        entity.data.set(MetadataKeys.Rabbit.TYPE, data.getInt("RabbitType"))
         entity.moreCarrotTicks = data.getInt("MoreCarrotTicks")
     }
 
     override fun save(entity: KryptonRabbit): CompoundTag.Builder = AgeableSerializer.save(entity).apply {
-        int("RabbitType", entity.data[MetadataKeys.RABBIT.TYPE])
+        int("RabbitType", entity.data.get(MetadataKeys.Rabbit.TYPE))
         int("MoreCarrotTicks", entity.moreCarrotTicks)
     }
 }

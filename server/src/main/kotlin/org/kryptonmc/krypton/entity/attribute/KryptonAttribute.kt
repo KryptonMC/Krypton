@@ -30,8 +30,9 @@ import org.kryptonmc.nbt.ListTag
 import org.kryptonmc.nbt.compound
 import java.util.Collections
 import java.util.UUID
+import java.util.function.Consumer
 
-data class KryptonAttribute(override val type: AttributeType, private val callback: (KryptonAttribute) -> Unit) : Attribute {
+class KryptonAttribute(override val type: AttributeType, private val callback: Consumer<KryptonAttribute>) : Attribute {
 
     private val modifiersByOperation = mutableMapOf<ModifierOperation, MutableSet<AttributeModifier>>()
     private val modifiersById = Object2ObjectArrayMap<UUID, AttributeModifier>()
@@ -118,6 +119,6 @@ data class KryptonAttribute(override val type: AttributeType, private val callba
 
     private fun makeDirty() {
         dirty = true
-        callback(this)
+        callback.accept(this)
     }
 }

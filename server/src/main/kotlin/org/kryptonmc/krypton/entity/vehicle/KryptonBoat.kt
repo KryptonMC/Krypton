@@ -29,46 +29,49 @@ import org.kryptonmc.krypton.world.damage.KryptonDamageSource
 class KryptonBoat(world: KryptonWorld) : KryptonEntity(world, EntityTypes.BOAT), Boat {
 
     override var variant: BoatVariant
-        get() = TYPES.getOrNull(data[MetadataKeys.BOAT.TYPE]) ?: BoatVariant.OAK
-        set(value) = data.set(MetadataKeys.BOAT.TYPE, value.ordinal)
+        get() = TYPES.getOrNull(data.get(MetadataKeys.Boat.TYPE)) ?: BoatVariant.OAK
+        set(value) = data.set(MetadataKeys.Boat.TYPE, value.ordinal)
     override var damageTaken: Float
-        get() = data[MetadataKeys.BOAT.DAMAGE]
-        set(value) = data.set(MetadataKeys.BOAT.DAMAGE, value)
+        get() = data.get(MetadataKeys.Boat.DAMAGE)
+        set(value) = data.set(MetadataKeys.Boat.DAMAGE, value)
     override var damageTimer: Int
-        get() = data[MetadataKeys.BOAT.HURT_TIMER]
-        set(value) = data.set(MetadataKeys.BOAT.HURT_TIMER, value)
+        get() = data.get(MetadataKeys.Boat.HURT_TIMER)
+        set(value) = data.set(MetadataKeys.Boat.HURT_TIMER, value)
     override var isLeftPaddleTurning: Boolean
-        get() = data[MetadataKeys.BOAT.LEFT_PADDLE_TURNING]
-        set(value) = data.set(MetadataKeys.BOAT.LEFT_PADDLE_TURNING, value)
+        get() = data.get(MetadataKeys.Boat.LEFT_PADDLE_TURNING)
+        set(value) = data.set(MetadataKeys.Boat.LEFT_PADDLE_TURNING, value)
     override var isRightPaddleTurning: Boolean
-        get() = data[MetadataKeys.BOAT.RIGHT_PADDLE_TURNING]
-        set(value) = data.set(MetadataKeys.BOAT.RIGHT_PADDLE_TURNING, value)
+        get() = data.get(MetadataKeys.Boat.RIGHT_PADDLE_TURNING)
+        set(value) = data.set(MetadataKeys.Boat.RIGHT_PADDLE_TURNING, value)
     private var damageDirection: Int
-        get() = data[MetadataKeys.BOAT.HURT_DIRECTION]
-        set(value) = data.set(MetadataKeys.BOAT.HURT_DIRECTION, value)
+        get() = data.get(MetadataKeys.Boat.HURT_DIRECTION)
+        set(value) = data.set(MetadataKeys.Boat.HURT_DIRECTION, value)
 
     init {
-        data.add(MetadataKeys.BOAT.HURT_TIMER, 0)
-        data.add(MetadataKeys.BOAT.HURT_DIRECTION, 1)
-        data.add(MetadataKeys.BOAT.DAMAGE, 0F)
-        data.add(MetadataKeys.BOAT.TYPE, BoatVariant.OAK.ordinal)
-        data.add(MetadataKeys.BOAT.LEFT_PADDLE_TURNING, false)
-        data.add(MetadataKeys.BOAT.RIGHT_PADDLE_TURNING, false)
-        data.add(MetadataKeys.BOAT.SPLASH_TIMER, 0)
+        data.add(MetadataKeys.Boat.HURT_TIMER, 0)
+        data.add(MetadataKeys.Boat.HURT_DIRECTION, 1)
+        data.add(MetadataKeys.Boat.DAMAGE, 0F)
+        data.add(MetadataKeys.Boat.TYPE, BoatVariant.OAK.ordinal)
+        data.add(MetadataKeys.Boat.LEFT_PADDLE_TURNING, false)
+        data.add(MetadataKeys.Boat.RIGHT_PADDLE_TURNING, false)
+        data.add(MetadataKeys.Boat.SPLASH_TIMER, 0)
     }
 
     override fun damage(source: KryptonDamageSource, damage: Float): Boolean {
         if (isInvulnerableTo(source)) return false
         if (isRemoved) return true
         damageDirection = -damageDirection
-        damageTimer = 10
-        damageTaken += damage * 10F
+        damageTimer = DEFAULT_DAMAGE_TIMER
+        damageTaken += damage * DAMAGE_INCREASE_MULTIPLIER
         markDamaged()
         return true
     }
 
     companion object {
 
-        internal val TYPES = BoatVariant.values()
+        private const val DEFAULT_DAMAGE_TIMER = 10
+        private const val DAMAGE_INCREASE_MULTIPLIER = 10F
+
+        private val TYPES = BoatVariant.values()
     }
 }

@@ -95,10 +95,10 @@ class PrimaryWorldData(
             boolean("initialized", isInitialized)
             int("WanderingTraderSpawnChance", wanderingTraderSpawnChance)
             int("WanderingTraderSpawnDelay", wanderingTraderSpawnDelay)
-            wanderingTraderId?.let { uuid("WanderingTraderId", it) }
-            customBossEvents?.let { put("CustomBossEvents", it) }
+            if (wanderingTraderId != null) uuid("WanderingTraderId", wanderingTraderId!!)
+            if (customBossEvents != null) put("CustomBossEvents", customBossEvents!!)
             put("DragonFight", enderDragonFightData)
-            list("ServerBrands", StringTag.ID, serverBrands.map { StringTag.of(it) })
+            list("ServerBrands", StringTag.ID, serverBrands.map(StringTag::of))
             boolean("WasModded", true)
         }
     }

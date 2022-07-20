@@ -33,34 +33,35 @@ class KryptonRabbit(world: KryptonWorld) : KryptonAnimal(world, EntityTypes.RABB
     internal var moreCarrotTicks = 0
     override var variant: RabbitVariant
         get() {
-            val id = data[MetadataKeys.RABBIT.TYPE]
+            val id = data.get(MetadataKeys.Rabbit.TYPE)
             // It'll do you a treat mate!
             // Oh yeah?
             // Manky scot's git!
             // I'm warning you!
             // What's he do? Nibble ya bum?
-            if (id == 99) return RabbitVariant.KILLER
-            return TYPES.getOrNull(data[MetadataKeys.RABBIT.TYPE]) ?: RabbitVariant.BROWN
+            if (id == KILLER_TYPE) return RabbitVariant.KILLER
+            return TYPES.getOrNull(data.get(MetadataKeys.Rabbit.TYPE)) ?: RabbitVariant.BROWN
         }
         set(value) {
             if (value == RabbitVariant.KILLER) {
-                data[MetadataKeys.RABBIT.TYPE] = 99
+                data.set(MetadataKeys.Rabbit.TYPE, KILLER_TYPE)
                 return
             }
-            data[MetadataKeys.RABBIT.TYPE] = value.ordinal
+            data.set(MetadataKeys.Rabbit.TYPE, value.ordinal)
         }
 
     override val soundSource: Sound.Source
         get() = if (variant == RabbitVariant.KILLER) Sound.Source.HOSTILE else Sound.Source.NEUTRAL
 
     init {
-        data.add(MetadataKeys.RABBIT.TYPE, 0)
+        data.add(MetadataKeys.Rabbit.TYPE, 0)
     }
 
     override fun isFood(item: ItemStack): Boolean = TEMPTING_ITEMS.contains(item.type)
 
     companion object {
 
+        private const val KILLER_TYPE = 99
         private val TYPES = RabbitVariant.values()
         private val ATTRIBUTES = attributes().add(AttributeTypes.MAX_HEALTH, 3.0).add(AttributeTypes.MOVEMENT_SPEED, 0.3).build()
         private val TEMPTING_ITEMS = setOf(ItemTypes.CARROT, ItemTypes.GOLDEN_CARROT, ItemTypes.DANDELION)

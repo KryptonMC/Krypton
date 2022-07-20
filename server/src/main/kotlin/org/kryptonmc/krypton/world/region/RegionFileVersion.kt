@@ -48,17 +48,9 @@ class RegionFileVersion private constructor(
         private val BY_ID = Int2ObjectOpenHashMap<RegionFileVersion>()
 
         @JvmField
-        val GZIP: RegionFileVersion = register(RegionFileVersion(
-            1,
-            { FastBufferedInputStream(GZIPInputStream(it)) },
-            { BufferedOutputStream(GZIPOutputStream(it)) }
-        ))
+        val GZIP: RegionFileVersion = register(1, ::GZIPInputStream, ::GZIPOutputStream)
         @JvmField
-        val ZLIB: RegionFileVersion = register(RegionFileVersion(
-            2,
-            { FastBufferedInputStream(InflaterInputStream(it)) },
-            { BufferedOutputStream(DeflaterOutputStream(it)) }
-        ))
+        val ZLIB: RegionFileVersion = register(2, ::InflaterInputStream, ::DeflaterOutputStream)
         @JvmField
         val NONE: RegionFileVersion = register(RegionFileVersion(3, { it }, { it }))
 
@@ -67,5 +59,9 @@ class RegionFileVersion private constructor(
 
         @JvmStatic
         private fun register(version: RegionFileVersion): RegionFileVersion = version.apply { BY_ID[version.id] = version }
+
+        @JvmStatic
+        private fun register(id: Int, decompressor: Converter<InputStream>, compressor: Converter<OutputStream>): RegionFileVersion =
+            register(RegionFileVersion(id, { FastBufferedInputStream(decompressor.convert(it)) }, { BufferedOutputStream(compressor.convert(it)) }))
     }
 }

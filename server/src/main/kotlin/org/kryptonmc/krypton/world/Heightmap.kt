@@ -70,12 +70,12 @@ class Heightmap(private val chunk: ChunkAccessor, val type: Type) {
     fun firstAvailable(x: Int, z: Int): Int = firstAvailable(indexOf(x, z))
 
     private fun set(x: Int, z: Int, y: Int) {
-        data[indexOf(x, z)] = y - chunk.minimumBuildHeight
+        data.set(indexOf(x, z), y - chunk.minimumBuildHeight)
     }
 
     private fun indexOf(x: Int, z: Int): Int = x + z * 16
 
-    private fun firstAvailable(index: Int): Int = data[index] + chunk.minimumBuildHeight
+    private fun firstAvailable(index: Int): Int = data.get(index) + chunk.minimumBuildHeight
 
     enum class Type(val isOpaque: (KryptonBlock) -> Boolean, val sendToClient: Boolean = false) {
 

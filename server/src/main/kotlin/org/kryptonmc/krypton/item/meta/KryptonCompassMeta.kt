@@ -22,10 +22,10 @@ import org.kryptonmc.api.item.meta.CompassMeta
 import org.kryptonmc.api.resource.ResourceKey
 import org.kryptonmc.api.world.World
 import org.kryptonmc.krypton.entity.getVector3i
+import org.kryptonmc.krypton.entity.putVector3i
 import org.kryptonmc.krypton.entity.vector3i
 import org.kryptonmc.krypton.world.dimension.parseDimension
 import org.kryptonmc.nbt.CompoundTag
-import org.kryptonmc.nbt.compound
 import org.spongepowered.math.vector.Vector3i
 
 @Suppress("EqualsOrHashCode")
@@ -38,19 +38,12 @@ class KryptonCompassMeta(data: CompoundTag) : AbstractItemMeta<KryptonCompassMet
     override fun copy(data: CompoundTag): KryptonCompassMeta = KryptonCompassMeta(data)
 
     override fun withLodestone(dimension: ResourceKey<World>, position: Vector3i): KryptonCompassMeta {
-        val positionData = compound {
-            int("X", position.x())
-            int("Y", position.y())
-            int("Z", position.z())
-        }
-        val newData = data.putBoolean("LodestoneTracked", true)
-            .putString("LodestoneDimension", dimension.location.asString())
-            .put("LodestonePos", positionData)
-        return KryptonCompassMeta(newData)
+        val dimensionKey = dimension.location.asString()
+        return copy(data.putBoolean("LodestoneTracked", false).putString("LodestoneDimension", dimensionKey).putVector3i("LodestonePos", position))
     }
 
     override fun withoutLodestone(): KryptonCompassMeta =
-        KryptonCompassMeta(data.putBoolean("LodestoneTracked", false).remove("LodestoneDimension").remove("LodestonePos"))
+        copy(data.putBoolean("LodestoneTracked", false).remove("LodestoneDimension").remove("LodestonePos"))
 
     override fun toBuilder(): CompassMeta.Builder = Builder(this)
 
