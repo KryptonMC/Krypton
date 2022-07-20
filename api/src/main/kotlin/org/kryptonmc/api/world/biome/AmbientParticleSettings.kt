@@ -89,7 +89,7 @@ public interface AmbientParticleSettings : Buildable<AmbientParticleSettings.Bui
          */
         @BiomeDsl
         @Contract("_, _ -> this", mutates = "this")
-        public fun particle(type: ParticleType, data: ParticleData?): Builder
+        public fun particle(type: ParticleType, data: ParticleData?): Builder = type(type).data(data)
 
         /**
          * Sets the probability for the ambient particle settings to the given

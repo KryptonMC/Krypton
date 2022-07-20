@@ -32,16 +32,16 @@ class KryptonAreaEffectCloud(world: KryptonWorld) : KryptonEntity(world, EntityT
     override var duration: Int = 0
 
     override var radius: Float
-        get() = data[MetadataKeys.AREA_EFFECT_CLOUD.RADIUS]
-        set(value) = data.set(MetadataKeys.AREA_EFFECT_CLOUD.RADIUS, value)
+        get() = data.get(MetadataKeys.AreaEffectCloud.RADIUS)
+        set(value) = data.set(MetadataKeys.AreaEffectCloud.RADIUS, value)
     override var color: Color
-        get() = Color.of(data[MetadataKeys.AREA_EFFECT_CLOUD.COLOR])
-        set(value) = data.set(MetadataKeys.AREA_EFFECT_CLOUD.COLOR, value.value)
+        get() = Color.of(data.get(MetadataKeys.AreaEffectCloud.COLOR))
+        set(value) = data.set(MetadataKeys.AreaEffectCloud.COLOR, value.value)
 
     init {
-        data.add(MetadataKeys.AREA_EFFECT_CLOUD.RADIUS, 0.5F)
-        data.add(MetadataKeys.AREA_EFFECT_CLOUD.COLOR, 0)
-        data.add(MetadataKeys.AREA_EFFECT_CLOUD.IGNORE_RADIUS, false)
-        data.add(MetadataKeys.AREA_EFFECT_CLOUD.PARTICLE, ParticleOptions(ParticleTypes.EFFECT, null))
+        data.add(MetadataKeys.AreaEffectCloud.RADIUS, 0.5F)
+        data.add(MetadataKeys.AreaEffectCloud.COLOR, 0)
+        data.add(MetadataKeys.AreaEffectCloud.IGNORE_RADIUS, false)
+        data.add(MetadataKeys.AreaEffectCloud.PARTICLE, ParticleOptions(ParticleTypes.EFFECT, null))
     }
 }

@@ -18,8 +18,11 @@
  */
 package org.kryptonmc.krypton.util
 
+import io.netty.buffer.ByteBuf
 import org.kryptonmc.api.resource.ResourceKey
+import org.kryptonmc.api.resource.ResourceKeys
 import org.kryptonmc.api.world.World
+import org.kryptonmc.krypton.network.Writable
 import org.kryptonmc.krypton.util.serialization.Codecs
 import org.kryptonmc.krypton.util.serialization.CompoundCodec
 import org.kryptonmc.krypton.util.serialization.decode
@@ -28,7 +31,14 @@ import org.kryptonmc.nbt.compound
 import org.spongepowered.math.vector.Vector3i
 
 @JvmRecord
-data class GlobalPosition(val dimension: ResourceKey<World>, val position: Vector3i) {
+data class GlobalPosition(val dimension: ResourceKey<World>, val position: Vector3i) : Writable {
+
+    constructor(buf: ByteBuf) : this(ResourceKey.of(ResourceKeys.DIMENSION, buf.readKey()), buf.readVector())
+
+    override fun write(buf: ByteBuf) {
+        buf.writeKey(dimension.location)
+        buf.writeVector(position)
+    }
 
     companion object {
 

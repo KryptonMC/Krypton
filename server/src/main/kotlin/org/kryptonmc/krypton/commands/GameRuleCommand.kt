@@ -55,7 +55,7 @@ object GameRuleCommand : InternalCommand {
                     }
                 })
             } else if (rule.default is Int) {
-                gameRule.then(argument<Sender, Int>("value", IntegerArgumentType.integer()) {
+                gameRule.then(argument<Int>("value", IntegerArgumentType.integer()) {
                     runs {
                         val sender = it.source as? KryptonPlayer ?: return@runs
                         val value = it.argument<Int>("value")

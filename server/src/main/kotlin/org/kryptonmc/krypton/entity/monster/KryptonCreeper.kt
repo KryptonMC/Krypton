@@ -30,16 +30,16 @@ class KryptonCreeper(world: KryptonWorld) : KryptonMonster(world, EntityTypes.CR
     override var explosionRadius: Int = 0
 
     override var isCharged: Boolean
-        get() = data[MetadataKeys.CREEPER.CHARGED]
-        set(value) = data.set(MetadataKeys.CREEPER.CHARGED, value)
+        get() = data.get(MetadataKeys.Creeper.CHARGED)
+        set(value) = data.set(MetadataKeys.Creeper.CHARGED, value)
     override var isIgnited: Boolean
-        get() = data[MetadataKeys.CREEPER.IGNITED]
-        set(value) = data.set(MetadataKeys.CREEPER.IGNITED, value)
+        get() = data.get(MetadataKeys.Creeper.IGNITED)
+        set(value) = data.set(MetadataKeys.Creeper.IGNITED, value)
 
     init {
-        data.add(MetadataKeys.CREEPER.STATE, -1)
-        data.add(MetadataKeys.CREEPER.CHARGED, false)
-        data.add(MetadataKeys.CREEPER.IGNITED, false)
+        data.add(MetadataKeys.Creeper.STATE, -1)
+        data.add(MetadataKeys.Creeper.CHARGED, false)
+        data.add(MetadataKeys.Creeper.IGNITED, false)
     }
 
     companion object {

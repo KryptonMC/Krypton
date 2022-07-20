@@ -34,29 +34,29 @@ import org.kryptonmc.krypton.world.damage.KryptonEntityDamageSource
 abstract class KryptonMinecartLike(world: KryptonWorld, type: EntityType<out MinecartLike>) : KryptonEntity(world, type), MinecartLike {
 
     override var damageTaken: Float
-        get() = data[MetadataKeys.MINECART_LIKE.DAMAGE]
-        set(value) = data.set(MetadataKeys.MINECART_LIKE.DAMAGE, value)
+        get() = data.get(MetadataKeys.MinecartLike.DAMAGE)
+        set(value) = data.set(MetadataKeys.MinecartLike.DAMAGE, value)
     override var damageTimer: Int
-        get() = data[MetadataKeys.MINECART_LIKE.HURT_TIMER]
-        set(value) = data.set(MetadataKeys.MINECART_LIKE.HURT_TIMER, value)
+        get() = data.get(MetadataKeys.MinecartLike.HURT_TIMER)
+        set(value) = data.set(MetadataKeys.MinecartLike.HURT_TIMER, value)
     override var hasCustomBlock: Boolean
-        get() = data[MetadataKeys.MINECART_LIKE.SHOW_CUSTOM_BLOCK]
-        set(value) = data.set(MetadataKeys.MINECART_LIKE.SHOW_CUSTOM_BLOCK, value)
+        get() = data.get(MetadataKeys.MinecartLike.SHOW_CUSTOM_BLOCK)
+        set(value) = data.set(MetadataKeys.MinecartLike.SHOW_CUSTOM_BLOCK, value)
     override var customBlock: Block
-        get() = if (!hasCustomBlock) defaultCustomBlock else BlockLoader.fromStateId(data[MetadataKeys.MINECART_LIKE.CUSTOM_BLOCK_ID])
+        get() = if (!hasCustomBlock) defaultCustomBlock else BlockLoader.fromStateId(data.get(MetadataKeys.MinecartLike.CUSTOM_BLOCK_ID))
         set(value) {
-            data[MetadataKeys.MINECART_LIKE.CUSTOM_BLOCK_ID] = value.downcast().stateId
+            data.set(MetadataKeys.MinecartLike.CUSTOM_BLOCK_ID, value.downcast().stateId)
             hasCustomBlock = value !== defaultCustomBlock
         }
     override var customBlockOffset: Int
-        get() = data[MetadataKeys.MINECART_LIKE.CUSTOM_BLOCK_OFFSET]
+        get() = data.get(MetadataKeys.MinecartLike.CUSTOM_BLOCK_OFFSET)
         set(value) {
-            data[MetadataKeys.MINECART_LIKE.CUSTOM_BLOCK_OFFSET] = value
+            data.set(MetadataKeys.MinecartLike.CUSTOM_BLOCK_OFFSET, value)
             hasCustomBlock = value != defaultCustomBlockOffset
         }
     private var hurtDirection: Int
-        get() = data[MetadataKeys.MINECART_LIKE.HURT_DIRECTION]
-        set(value) = data.set(MetadataKeys.MINECART_LIKE.HURT_DIRECTION, value)
+        get() = data.get(MetadataKeys.MinecartLike.HURT_DIRECTION)
+        set(value) = data.set(MetadataKeys.MinecartLike.HURT_DIRECTION, value)
 
     protected open val defaultCustomBlock: Block
         get() = Blocks.AIR
@@ -64,27 +64,34 @@ abstract class KryptonMinecartLike(world: KryptonWorld, type: EntityType<out Min
         get() = 0
 
     init {
-        data.add(MetadataKeys.MINECART_LIKE.HURT_TIMER, 0)
-        data.add(MetadataKeys.MINECART_LIKE.HURT_DIRECTION, 1)
-        data.add(MetadataKeys.MINECART_LIKE.DAMAGE, 0F)
-        data.add(MetadataKeys.MINECART_LIKE.CUSTOM_BLOCK_ID, Blocks.AIR.downcast().id)
-        data.add(MetadataKeys.MINECART_LIKE.CUSTOM_BLOCK_OFFSET, 6)
-        data.add(MetadataKeys.MINECART_LIKE.SHOW_CUSTOM_BLOCK, false)
+        data.add(MetadataKeys.MinecartLike.HURT_TIMER, 0)
+        data.add(MetadataKeys.MinecartLike.HURT_DIRECTION, 1)
+        data.add(MetadataKeys.MinecartLike.DAMAGE, 0F)
+        data.add(MetadataKeys.MinecartLike.CUSTOM_BLOCK_ID, Blocks.AIR.downcast().id)
+        data.add(MetadataKeys.MinecartLike.CUSTOM_BLOCK_OFFSET, 6)
+        data.add(MetadataKeys.MinecartLike.SHOW_CUSTOM_BLOCK, false)
     }
 
     override fun damage(source: KryptonDamageSource, damage: Float): Boolean {
         if (isRemoved) return true
         if (isInvulnerableTo(source)) return false
         hurtDirection = -hurtDirection
-        damageTimer = 10
+        damageTimer = DEFAULT_DAMAGE_TIMER
         markDamaged()
-        damageTaken += damage * 10F
+        damageTaken += damage * DAMAGE_INCREASE_MULTIPLIER
         val canInstantlyBuild = source is KryptonEntityDamageSource && source.entity is KryptonPlayer && source.entity.canInstantlyBuild
-        if (canInstantlyBuild || damageTaken > 40F) {
+        if (canInstantlyBuild || damageTaken > MAX_DAMAGE) {
             ejectPassengers()
             remove()
             //if (canInstantlyBuild && customName == null) remove()
         }
         return true
+    }
+
+    companion object {
+
+        private const val DEFAULT_DAMAGE_TIMER = 10
+        private const val DAMAGE_INCREASE_MULTIPLIER = 10F
+        private const val MAX_DAMAGE = 40F
     }
 }

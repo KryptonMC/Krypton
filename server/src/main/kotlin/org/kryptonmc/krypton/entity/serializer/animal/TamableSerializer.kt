@@ -30,14 +30,14 @@ object TamableSerializer : EntitySerializer<KryptonTamable> {
         AgeableSerializer.load(entity, data)
         // TODO: Fix this. The vanilla implementation is weird, and this doesn't make any sense. It also needs old
         //  user conversion stuff that we don't have yet.
-        entity.data[MetadataKeys.TAMABLE.OWNER] = data.getUUID("Owner")
-        entity.isTame = data.hasUUID("Owner")
+        entity.data.set(MetadataKeys.Tamable.OWNER, data.getUUID("Owner"))
+        entity.isTamed = data.hasUUID("Owner")
         entity.isOrderedToSit = data.getBoolean("Sitting")
         entity.isSitting = entity.isOrderedToSit
     }
 
     override fun save(entity: KryptonTamable): CompoundTag.Builder = AgeableSerializer.save(entity).apply {
-        val ownerUUID = entity.data[MetadataKeys.TAMABLE.OWNER]
+        val ownerUUID = entity.data.get(MetadataKeys.Tamable.OWNER)
         if (ownerUUID != null) uuid("Owner", ownerUUID)
         boolean("Sitting", entity.isOrderedToSit)
     }

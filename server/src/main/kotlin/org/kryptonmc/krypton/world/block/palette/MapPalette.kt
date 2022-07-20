@@ -36,20 +36,16 @@ data class MapPalette<T>(
         get() = values.asSequence()
     override val size: Int
         get() = values.size
-    override val serializedSize: Int
-        get() {
-            var temp = size.varIntBytes()
-            for (i in 0 until size) {
-                temp += registry.idOf(values.get(i)!!).varIntBytes()
-            }
-            return temp
-        }
 
     constructor(registry: IntBiMap<T>, bits: Int, resizer: PaletteResizer<T>, entries: List<T>) : this(registry, bits, resizer) {
         entries.forEach(values::add)
     }
 
-    constructor(registry: IntBiMap<T>, bits: Int, resizer: PaletteResizer<T>) : this(registry, bits, resizer, IntIdentityHashBiMap(1 shl bits))
+    constructor(
+        registry: IntBiMap<T>,
+        bits: Int,
+        resizer: PaletteResizer<T>
+    ) : this(registry, bits, resizer, IntIdentityHashBiMap.create(1 shl bits))
 
     override fun get(value: T): Int {
         var id = values.idOf(value)
@@ -68,6 +64,14 @@ data class MapPalette<T>(
         for (i in 0 until size) {
             buf.writeVarInt(registry.idOf(values.get(i)!!))
         }
+    }
+
+    override fun calculateSerializedSize(): Int {
+        var size = size.varIntBytes()
+        for (i in 0 until this.size) {
+            size += registry.idOf(values.get(i)!!).varIntBytes()
+        }
+        return size
     }
 
     object Factory : Palette.Factory {

@@ -28,12 +28,15 @@ object KryptonCommand : InternalCommand {
 
     override fun register(dispatcher: CommandDispatcher<Sender>) {
         dispatcher.register(literal("krypton") {
-            val pluginsNode = PluginsCommand.register().build()
-            then(pluginsNode)
-            PluginsCommand.aliases.forEach { then(LiteralArgumentBuilder.literal<Sender>(it).redirect(pluginsNode)) }
-            val versionNode = InfoCommand.register().build()
-            then(versionNode)
-            InfoCommand.aliases.forEach { then(LiteralArgumentBuilder.literal<Sender>(it).redirect(versionNode)) }
+            registerSubCommand(this, PluginsCommand)
+            registerSubCommand(this, InfoCommand)
         })
+    }
+
+    @JvmStatic
+    private fun registerSubCommand(context: LiteralArgumentBuilder<Sender>, command: KryptonSubCommand) {
+        val node = command.register().build()
+        context.then(node)
+        command.aliases.forEach { context.then(LiteralArgumentBuilder.literal<Sender>(it).redirect(node)) }
     }
 }

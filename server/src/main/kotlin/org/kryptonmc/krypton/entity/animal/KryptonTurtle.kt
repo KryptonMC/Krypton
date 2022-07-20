@@ -32,23 +32,23 @@ import org.spongepowered.math.vector.Vector3i
 class KryptonTurtle(world: KryptonWorld) : KryptonAnimal(world, EntityTypes.TURTLE, ATTRIBUTES), Turtle {
 
     override var hasEgg: Boolean
-        get() = data[MetadataKeys.TURTLE.HAS_EGG]
-        set(value) = data.set(MetadataKeys.TURTLE.HAS_EGG, value)
+        get() = data.get(MetadataKeys.Turtle.HAS_EGG)
+        set(value) = data.set(MetadataKeys.Turtle.HAS_EGG, value)
     override var isLayingEgg: Boolean
-        get() = data[MetadataKeys.TURTLE.LAYING_EGG]
-        set(value) = data.set(MetadataKeys.TURTLE.LAYING_EGG, value)
+        get() = data.get(MetadataKeys.Turtle.LAYING_EGG)
+        set(value) = data.set(MetadataKeys.Turtle.LAYING_EGG, value)
     override var isGoingHome: Boolean
-        get() = data[MetadataKeys.TURTLE.GOING_HOME]
-        set(value) = data.set(MetadataKeys.TURTLE.GOING_HOME, value)
+        get() = data.get(MetadataKeys.Turtle.GOING_HOME)
+        set(value) = data.set(MetadataKeys.Turtle.GOING_HOME, value)
     override var isTravelling: Boolean
-        get() = data[MetadataKeys.TURTLE.TRAVELLING]
-        set(value) = data.set(MetadataKeys.TURTLE.TRAVELLING, value)
+        get() = data.get(MetadataKeys.Turtle.TRAVELLING)
+        set(value) = data.set(MetadataKeys.Turtle.TRAVELLING, value)
     override var home: Vector3i
-        get() = data[MetadataKeys.TURTLE.HOME]
-        set(value) = data.set(MetadataKeys.TURTLE.HOME, value)
+        get() = data.get(MetadataKeys.Turtle.HOME)
+        set(value) = data.set(MetadataKeys.Turtle.HOME, value)
     override var destination: Vector3i
-        get() = data[MetadataKeys.TURTLE.DESTINATION]
-        set(value) = data.set(MetadataKeys.TURTLE.DESTINATION, value)
+        get() = data.get(MetadataKeys.Turtle.DESTINATION)
+        set(value) = data.set(MetadataKeys.Turtle.DESTINATION, value)
 
     override val pushedByFluid: Boolean
         get() = false
@@ -58,12 +58,12 @@ class KryptonTurtle(world: KryptonWorld) : KryptonAnimal(world, EntityTypes.TURT
         get() = super.canFallInLove && !hasEgg
 
     init {
-        data.add(MetadataKeys.TURTLE.HOME, Vector3i.ZERO)
-        data.add(MetadataKeys.TURTLE.HAS_EGG, false)
-        data.add(MetadataKeys.TURTLE.LAYING_EGG, false)
-        data.add(MetadataKeys.TURTLE.DESTINATION, Vector3i.ZERO)
-        data.add(MetadataKeys.TURTLE.GOING_HOME, false)
-        data.add(MetadataKeys.TURTLE.TRAVELLING, false)
+        data.add(MetadataKeys.Turtle.HOME, Vector3i.ZERO)
+        data.add(MetadataKeys.Turtle.HAS_EGG, false)
+        data.add(MetadataKeys.Turtle.LAYING_EGG, false)
+        data.add(MetadataKeys.Turtle.DESTINATION, Vector3i.ZERO)
+        data.add(MetadataKeys.Turtle.GOING_HOME, false)
+        data.add(MetadataKeys.Turtle.TRAVELLING, false)
     }
 
     override fun isFood(item: ItemStack): Boolean = item.type === ItemTypes.SEAGRASS

@@ -55,7 +55,6 @@ class ConfigTests {
         // World settings
         assertEquals("world", config.world.name)
         assertSame(GameMode.SURVIVAL, config.world.gameMode)
-        assertFalse(config.world.forceDefaultGamemode)
         assertEquals(Difficulty.NORMAL, config.world.difficulty)
         assertFalse(config.world.hardcore)
         assertEquals(10, config.world.viewDistance)
@@ -63,10 +62,6 @@ class ConfigTests {
 
         // Advanced settings
         assertTrue(config.advanced.synchronizeChunkWrites)
-
-        // Query settings
-        assertFalse(config.query.enabled)
-        assertEquals(25566, config.query.port)
 
         // Other settings
         assertTrue(config.other.metrics)
@@ -90,7 +85,6 @@ class ConfigTests {
         // World settings
         assertEquals("world", config.world.name)
         assertEquals(GameMode.SURVIVAL, config.world.gameMode)
-        assertFalse(config.world.forceDefaultGamemode)
         assertEquals(Difficulty.NORMAL, config.world.difficulty)
         assertFalse(config.world.hardcore)
         assertEquals(10, config.world.viewDistance)
@@ -98,10 +92,6 @@ class ConfigTests {
 
         // Advanced settings
         assertTrue(config.advanced.synchronizeChunkWrites)
-
-        // Query settings
-        assertFalse(config.query.enabled)
-        assertEquals(25566, config.query.port)
 
         // Other settings
         assertTrue(config.other.metrics)

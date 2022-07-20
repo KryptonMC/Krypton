@@ -24,7 +24,10 @@ import java.util.UUID
 @Catalogue(TicketType::class)
 object TicketTypes {
 
-    @JvmField val START: TicketType<Unit> = TicketType("start") { _, _ -> 0 }
-    @JvmField val PLAYER: TicketType<UUID> = TicketType("player", UUID::compareTo)
-    @JvmField val API_LOAD: TicketType<Long> = TicketType("api_load", Long::compareTo)
+    @JvmField
+    val START: TicketType<Unit> = TicketType("start") { _, _ -> 0 }
+    @JvmField
+    val PLAYER: TicketType<UUID> = TicketType("player", UUID::compareTo)
+    @JvmField
+    val API_LOAD: TicketType<Long> = TicketType("api_load", Long::compareTo)
 }

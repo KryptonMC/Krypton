@@ -22,7 +22,4 @@ import org.kryptonmc.api.util.CataloguedBy
 
 @JvmRecord
 @CataloguedBy(TicketTypes::class)
-data class TicketType<T>(
-    val name: String,
-    val comparator: Comparator<T>
-)
+data class TicketType<T>(val name: String, val comparator: Comparator<T>)

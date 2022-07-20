@@ -53,13 +53,13 @@ data class KryptonBiomeEffects(
 
     class Builder() : BiomeEffects.Builder {
 
-        private var fogColor = Color.BLACK
-        private var waterColor = Color.BLACK
-        private var waterFogColor = Color.BLACK
-        private var skyColor = Color.BLACK
-        private var grassColorModifier = GrassColorModifier.NONE
-        private var foliageColor: Color? = null
-        private var grassColor: Color? = null
+        private var fog = Color.BLACK
+        private var water = Color.BLACK
+        private var waterFog = Color.BLACK
+        private var sky = Color.BLACK
+        private var grassModifier = GrassColorModifier.NONE
+        private var foliage: Color? = null
+        private var grass: Color? = null
         private var particles: AmbientParticleSettings? = null
         private var loopSound: SoundEvent? = null
         private var mood: AmbientMoodSettings? = null
@@ -67,13 +67,13 @@ data class KryptonBiomeEffects(
         private var backgroundMusic: Music? = null
 
         constructor(effects: BiomeEffects) : this() {
-            fogColor = effects.fogColor
-            waterColor = effects.waterColor
-            waterFogColor = effects.waterFogColor
-            skyColor = effects.skyColor
-            grassColorModifier = effects.grassColorModifier
-            foliageColor = effects.foliageColor
-            grassColor = effects.grassColor
+            fog = effects.fogColor
+            water = effects.waterColor
+            waterFog = effects.waterFogColor
+            sky = effects.skyColor
+            grassModifier = effects.grassColorModifier
+            foliage = effects.foliageColor
+            grass = effects.grassColor
             particles = effects.ambientParticleSettings
             loopSound = effects.ambientLoopSound
             mood = effects.ambientMoodSettings
@@ -81,19 +81,19 @@ data class KryptonBiomeEffects(
             backgroundMusic = effects.backgroundMusic
         }
 
-        override fun fogColor(color: Color): BiomeEffects.Builder = apply { fogColor = color }
+        override fun fogColor(color: Color): BiomeEffects.Builder = apply { fog = color }
 
-        override fun waterColor(color: Color): BiomeEffects.Builder = apply { waterColor = color }
+        override fun waterColor(color: Color): BiomeEffects.Builder = apply { water = color }
 
-        override fun waterFogColor(color: Color): BiomeEffects.Builder = apply { waterFogColor = color }
+        override fun waterFogColor(color: Color): BiomeEffects.Builder = apply { waterFog = color }
 
-        override fun skyColor(color: Color): BiomeEffects.Builder = apply { skyColor = color }
+        override fun skyColor(color: Color): BiomeEffects.Builder = apply { sky = color }
 
-        override fun grassColorModifier(modifier: GrassColorModifier): BiomeEffects.Builder = apply { grassColorModifier = modifier }
+        override fun grassColorModifier(modifier: GrassColorModifier): BiomeEffects.Builder = apply { grassModifier = modifier }
 
-        override fun foliageColor(color: Color?): BiomeEffects.Builder = apply { foliageColor = color }
+        override fun foliageColor(color: Color?): BiomeEffects.Builder = apply { foliage = color }
 
-        override fun grassColor(color: Color?): BiomeEffects.Builder = apply { grassColor = color }
+        override fun grassColor(color: Color?): BiomeEffects.Builder = apply { grass = color }
 
         override fun particles(settings: AmbientParticleSettings?): BiomeEffects.Builder = apply { particles = settings }
 
@@ -105,20 +105,8 @@ data class KryptonBiomeEffects(
 
         override fun backgroundMusic(music: Music?): BiomeEffects.Builder = apply { backgroundMusic = music }
 
-        override fun build(): BiomeEffects = KryptonBiomeEffects(
-            fogColor,
-            waterColor,
-            waterFogColor,
-            skyColor,
-            grassColorModifier,
-            foliageColor,
-            grassColor,
-            particles,
-            loopSound,
-            mood,
-            additions,
-            backgroundMusic
-        )
+        override fun build(): BiomeEffects =
+            KryptonBiomeEffects(fog, water, waterFog, sky, grassModifier, foliage, grass, particles, loopSound, mood, additions, backgroundMusic)
     }
 
     object Factory : BiomeEffects.Factory {

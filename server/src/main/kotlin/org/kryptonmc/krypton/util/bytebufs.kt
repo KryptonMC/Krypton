@@ -38,8 +38,6 @@ import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer
 import org.kryptonmc.api.adventure.toJson
 import org.kryptonmc.api.auth.GameProfile
 import org.kryptonmc.api.auth.ProfileProperty
-import org.kryptonmc.api.resource.ResourceKey
-import org.kryptonmc.api.resource.ResourceKeys
 import org.kryptonmc.krypton.auth.KryptonGameProfile
 import org.kryptonmc.krypton.auth.KryptonProfileProperty
 import org.kryptonmc.krypton.command.argument.ArgumentSerializers
@@ -52,6 +50,7 @@ import org.kryptonmc.krypton.util.serialization.CompoundEncoder
 import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.io.TagCompression
 import org.kryptonmc.nbt.io.TagIO
+import org.spongepowered.math.vector.Vector3f
 import org.spongepowered.math.vector.Vector3i
 import java.io.IOException
 import java.security.PublicKey
@@ -281,12 +280,7 @@ fun ByteBuf.readVector(): Vector3i {
     return Vector3i((value shr 38).toInt(), (value and 0xFFF).toInt(), ((value shr 12) and 0x3FFFFFF).toInt())
 }
 
-fun ByteBuf.writeGlobalPosition(position: GlobalPosition) {
-    writeKey(position.dimension.location)
-    writeVector(position.position)
-}
-
-fun ByteBuf.readGlobalPosition(): GlobalPosition = GlobalPosition(ResourceKey.of(ResourceKeys.DIMENSION, readKey()), readVector())
+fun ByteBuf.readVector3f(): Vector3f = Vector3f(readFloat(), readFloat(), readFloat())
 
 fun ByteBuf.writeAngle(angle: Float) {
     writeByte((angle * 256F / 360F).toInt())

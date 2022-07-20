@@ -36,17 +36,17 @@ class KryptonFireworkRocket(world: KryptonWorld) : KryptonProjectile(world, Enti
     override var lifetime: Int = 0
 
     override var wasShotAtAngle: Boolean
-        get() = data[MetadataKeys.FIREWORK_ROCKET.SHOT_AT_ANGLE]
-        set(value) = data.set(MetadataKeys.FIREWORK_ROCKET.SHOT_AT_ANGLE, value)
+        get() = data.get(MetadataKeys.FireworkRocket.SHOT_AT_ANGLE)
+        set(value) = data.set(MetadataKeys.FireworkRocket.SHOT_AT_ANGLE, value)
 
     init {
-        data.add(MetadataKeys.FIREWORK_ROCKET.ITEM, KryptonItemStack.EMPTY)
-        data.add(MetadataKeys.FIREWORK_ROCKET.ATTACHED, OptionalInt.empty())
-        data.add(MetadataKeys.FIREWORK_ROCKET.SHOT_AT_ANGLE, false)
+        data.add(MetadataKeys.FireworkRocket.ITEM, KryptonItemStack.EMPTY)
+        data.add(MetadataKeys.FireworkRocket.ATTACHED, OptionalInt.empty())
+        data.add(MetadataKeys.FireworkRocket.SHOT_AT_ANGLE, false)
     }
 
     override fun asItem(): ItemStack {
-        val item = data[MetadataKeys.FIREWORK_ROCKET.ITEM]
+        val item = data.get(MetadataKeys.FireworkRocket.ITEM)
         if (item.isEmpty()) return DEFAULT_ITEM
         return item
     }

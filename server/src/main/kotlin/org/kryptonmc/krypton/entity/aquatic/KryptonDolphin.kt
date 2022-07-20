@@ -34,30 +34,30 @@ import kotlin.random.Random
 class KryptonDolphin(world: KryptonWorld) : KryptonAquaticAnimal(world, EntityTypes.DOLPHIN, ATTRIBUTES), Dolphin {
 
     override var treasurePosition: Vector3i
-        get() = data[MetadataKeys.DOLPHIN.TREASURE_POSITION]
-        set(value) = data.set(MetadataKeys.DOLPHIN.TREASURE_POSITION, value)
+        get() = data.get(MetadataKeys.Dolphin.TREASURE_POSITION)
+        set(value) = data.set(MetadataKeys.Dolphin.TREASURE_POSITION, value)
     override var gotFish: Boolean
-        get() = data[MetadataKeys.DOLPHIN.GOT_FISH]
-        set(value) = data.set(MetadataKeys.DOLPHIN.GOT_FISH, value)
+        get() = data.get(MetadataKeys.Dolphin.GOT_FISH)
+        set(value) = data.set(MetadataKeys.Dolphin.GOT_FISH, value)
     override var skinMoisture: Int
-        get() = data[MetadataKeys.DOLPHIN.MOISTURE]
-        set(value) = data.set(MetadataKeys.DOLPHIN.MOISTURE, value)
+        get() = data.get(MetadataKeys.Dolphin.MOISTURE)
+        set(value) = data.set(MetadataKeys.Dolphin.MOISTURE, value)
 
     override val maxAirTicks: Int
-        get() = 4800
+        get() = MAX_AIR
     override val swimSound: SoundEvent
         get() = SoundEvents.DOLPHIN_SWIM
     override val splashSound: SoundEvent
         get() = SoundEvents.DOLPHIN_SPLASH
 
     init {
-        data.add(MetadataKeys.DOLPHIN.TREASURE_POSITION, Vector3i.ZERO)
-        data.add(MetadataKeys.DOLPHIN.GOT_FISH, false)
-        data.add(MetadataKeys.DOLPHIN.MOISTURE, 2400)
+        data.add(MetadataKeys.Dolphin.TREASURE_POSITION, Vector3i.ZERO)
+        data.add(MetadataKeys.Dolphin.GOT_FISH, false)
+        data.add(MetadataKeys.Dolphin.MOISTURE, FULL_SKIN_MOISTURE)
     }
 
     override fun handleAir(amount: Int) {
-        // Dolphins apparently don't handle air in the same way other water animals do
+        // Dolphins have special air handling logic that is in the tick function directly.
     }
 
     override fun tick() {
@@ -66,15 +66,21 @@ class KryptonDolphin(world: KryptonWorld) : KryptonAquaticAnimal(world, EntityTy
             air = maxAirTicks
             return
         }
-        if (inWater || inBubbleColumn) {
-            skinMoisture = 2400
+        // Dolphins don't immediately start to suffocate out of water, as they can survive out of water for extended periods of time.
+        // In real life, dolphins can't breathe underwater, so they have to resurface. In Minecraft, this behaviour isn't
+        // simulated, but what is simulated is the ability for dolphins to survive for extended periods of time out of water.
+        if (inWater || inBubbleColumn) { // TODO: Also check for being in rain
+            // If the dolphin is in water, rain, or a bubble column then it has full moisture.
+            skinMoisture = FULL_SKIN_MOISTURE
             return
         }
+        // For every tick the dolphin is not in water, its moisture decreases by 1.
         skinMoisture--
-        if (skinMoisture <= 0) damage(KryptonDamageSource(DamageTypes.DRY_OUT), 0F)
+        // When the moisture reaches 0, the dolphin takes one damage every tick from dry out.
+        if (skinMoisture <= 0) damage(KryptonDamageSource(DamageTypes.DRY_OUT), 1F)
         if (isOnGround) {
-            velocity = velocity.add(((Random.nextFloat() * 2F - 1F) * 0.2F).toDouble(), 0.5, ((Random.nextFloat() * 2F - 1F) * 0.2F).toDouble())
-            rotation = Vector2f(rotation.x(), Random.nextFloat() * 360F)
+            velocity = velocity.add(randomVelocityModifier(), GROUND_Y_VELOCITY_INCREASE, randomVelocityModifier())
+            rotation = Vector2f(rotation.x(), Random.nextFloat() * MAX_ANGLE)
             isOnGround = false
         }
     }
@@ -92,10 +98,21 @@ class KryptonDolphin(world: KryptonWorld) : KryptonAquaticAnimal(world, EntityTy
 
     companion object {
 
+        private const val MAX_AIR = 4 * 60 * 20 // 4 minutes in ticks
+        private const val FULL_SKIN_MOISTURE = 2 * 60 * 20 // 2 minutes in ticks
+        private const val MAX_ANGLE = 360F
+        private const val GROUND_Y_VELOCITY_INCREASE = 0.5
+
         private val ATTRIBUTES = attributes()
             .add(AttributeTypes.MAX_HEALTH, 10.0)
             .add(AttributeTypes.MOVEMENT_SPEED, 1.2)
             .add(AttributeTypes.ATTACK_DAMAGE, 3.0)
             .build()
+
+        // this will always produce a value between -0.2 and 0.2
+        // Broken down: Random.nextFloat() produces a value between 0 and 1, multiplied by 2 produces a value between 0 and 2
+        // taking 1 away produces a value between -1 and 1, then multiplying by 0.2 produces a value between -0.2 and 0.2
+        @JvmStatic
+        private fun randomVelocityModifier(): Double = ((Random.nextFloat() * 2F - 1F) * 0.2F).toDouble()
     }
 }

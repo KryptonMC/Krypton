@@ -70,7 +70,7 @@ object SessionService {
             return null
         }
 
-        val profile = KryptonGameProfile.fromJson(response.body())
+        val profile = KryptonGameProfile.Adapter.fromJson(response.body())
         LOGGER.info("UUID of player ${profile.name} is ${profile.uuid}.")
         profiles.put(profile.name, profile)
         return profile

@@ -43,13 +43,23 @@ abstract class KryptonAquaticAnimal(
 
     protected open fun handleAir(amount: Int) {
         if (isAlive && !inWater && !inBubbleColumn) {
+            // Aquatic creatures must be underwater to breathe. If they are out of water, they start to run out of air,
+            // and eventually suffocate.
             air = amount - 1
-            if (air == -20) {
+            if (air == DROWNING_THRESHOLD) {
+                // If the creature is out of air, it takes 2 points of drowning damage every tick.
                 air = 0
-                damage(KryptonDamageSource(DamageTypes.DROWNING), 2F)
+                damage(KryptonDamageSource(DamageTypes.DROWNING), DROWNING_DAMAGE)
             }
             return
         }
-        air = 300
+        air = AIR_RESET_AMOUNT
+    }
+
+    companion object {
+
+        private const val DROWNING_THRESHOLD = -20
+        private const val DROWNING_DAMAGE = 2F
+        private const val AIR_RESET_AMOUNT = 300
     }
 }

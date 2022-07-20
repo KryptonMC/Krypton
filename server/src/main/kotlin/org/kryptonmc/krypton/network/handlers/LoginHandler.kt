@@ -28,7 +28,7 @@ import org.kryptonmc.api.event.server.SetupPermissionsEvent
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.auth.KryptonGameProfile
 import org.kryptonmc.krypton.auth.requests.SessionService
-import org.kryptonmc.krypton.config.category.ForwardingMode
+import org.kryptonmc.krypton.config.category.ProxyCategory
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.entity.player.PlayerPublicKey
 import org.kryptonmc.krypton.packet.PacketState
@@ -105,7 +105,7 @@ class LoginHandler(
     private fun handleLoginStart(packet: PacketInLoginStart) {
         name = packet.name
         try {
-            publicKey = validatePublicKey(packet.publicKey, server.config.server.enforceSecureProfiles)
+            publicKey = validatePublicKey(packet.publicKey, server.config.advanced.enforceSecureProfiles)
         } catch (exception: PublicKeyParseException) {
             LOGGER.error(exception.message, exception.cause)
             disconnect(exception.asComponent())
@@ -114,7 +114,7 @@ class LoginHandler(
 
         // Ignore online mode if we want proxy forwarding
         if (!server.isOnline || server.config.proxy.mode.authenticatesUsers) {
-            if (server.config.proxy.mode == ForwardingMode.MODERN) {
+            if (server.config.proxy.mode == ProxyCategory.Mode.MODERN) {
                 session.send(PacketOutPluginRequest(velocityMessageId, VELOCITY_CHANNEL_ID, ByteArray(0)))
                 return
             }
@@ -172,7 +172,7 @@ class LoginHandler(
     }
 
     private fun handlePluginResponse(packet: PacketInPluginResponse) {
-        if (packet.messageId != velocityMessageId || server.config.proxy.mode != ForwardingMode.MODERN) {
+        if (packet.messageId != velocityMessageId || server.config.proxy.mode != ProxyCategory.Mode.MODERN) {
             disconnect(Component.translatable("multiplayer.disconnect.unexpected_query_response"))
             return
         }

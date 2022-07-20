@@ -50,11 +50,8 @@ object KryptonCriteria {
     @JvmField
     val LEVEL: KryptonCriterion = register("level", isMutable = true)
     @JvmField
-    val TEAM_KILL: KryptonCompoundCriterion = register(
-        "team_kill",
-        "teamkill",
-        NamedTextColor.NAMES.keys().mapPersistentSet { register("team_kill.$it", "teamkill.$it") }
-    )
+    val TEAM_KILL: KryptonCompoundCriterion =
+        register("team_kill", "teamkill", NamedTextColor.NAMES.keys().mapPersistentSet { register("team_kill.$it", "teamkill.$it") })
     @JvmField
     val KILLED_BY_TEAM: KryptonCompoundCriterion = register(
         "killed_by_team",

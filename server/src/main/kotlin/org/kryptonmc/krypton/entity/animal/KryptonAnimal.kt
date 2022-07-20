@@ -46,7 +46,7 @@ abstract class KryptonAnimal(
             return world.entityManager[cause] as? KryptonPlayer
         }
         set(value) {
-            inLoveTime = 600
+            inLoveTime = DEFAULT_IN_LOVE_TIME
             loveCause = value?.uuid
         }
 
@@ -57,4 +57,9 @@ abstract class KryptonAnimal(
     }
 
     override fun isFood(item: ItemStack): Boolean = item.type === ItemTypes.WHEAT
+
+    companion object {
+
+        private const val DEFAULT_IN_LOVE_TIME = 30 * 20 // 30 seconds in ticks
+    }
 }

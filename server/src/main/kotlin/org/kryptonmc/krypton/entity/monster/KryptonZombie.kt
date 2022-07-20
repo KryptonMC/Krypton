@@ -29,15 +29,15 @@ class KryptonZombie(world: KryptonWorld) : KryptonMonster(world, EntityTypes.ZOM
     internal var conversionTime = 0
 
     override var isBaby: Boolean
-        get() = data[MetadataKeys.ZOMBIE.BABY]
-        set(value) = data.set(MetadataKeys.ZOMBIE.BABY, value)
+        get() = data.get(MetadataKeys.Zombie.BABY)
+        set(value) = data.set(MetadataKeys.Zombie.BABY, value)
     override var isConverting: Boolean
-        get() = data[MetadataKeys.ZOMBIE.CONVERTING]
-        set(value) = data.set(MetadataKeys.ZOMBIE.CONVERTING, value)
+        get() = data.get(MetadataKeys.Zombie.CONVERTING)
+        set(value) = data.set(MetadataKeys.Zombie.CONVERTING, value)
 
     init {
-        data.add(MetadataKeys.ZOMBIE.BABY, false)
-        data.add(MetadataKeys.ZOMBIE.CONVERTING, false)
+        data.add(MetadataKeys.Zombie.BABY, false)
+        data.add(MetadataKeys.Zombie.CONVERTING, false)
     }
 
     companion object {

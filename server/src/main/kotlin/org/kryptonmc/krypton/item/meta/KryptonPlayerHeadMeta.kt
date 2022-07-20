@@ -46,9 +46,7 @@ class KryptonPlayerHeadMeta(data: CompoundTag) : AbstractItemMeta<KryptonPlayerH
 
         override fun owner(owner: GameProfile?): PlayerHeadMeta.Builder = apply { this.owner = owner }
 
-        override fun buildData(): CompoundTag.Builder = super.buildData().apply {
-            gameProfile("SkullOwner", owner)
-        }
+        override fun buildData(): CompoundTag.Builder = super.buildData().gameProfile("SkullOwner", owner)
 
         override fun build(): KryptonPlayerHeadMeta = KryptonPlayerHeadMeta(buildData().build())
     }

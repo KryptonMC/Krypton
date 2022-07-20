@@ -34,18 +34,20 @@ import javax.crypto.spec.SecretKeySpec
 
 object VelocityProxy {
 
+    private const val SIGNATURE_ALGORITHM = "HmacSHA256"
+    private const val SIGNATURE_BYTES = 32
     const val MODERN_FORWARDING_WITH_KEY: Int = 2
     const val MAX_SUPPORTED_FORWARDING_VERSION: Int = MODERN_FORWARDING_WITH_KEY
 
     @JvmStatic
     fun verifyIntegrity(buf: ByteBuf, secret: ByteArray): Boolean {
-        val signature = buf.readAvailableBytes(32)
+        val signature = buf.readAvailableBytes(SIGNATURE_BYTES)
 
         val data = ByteArray(buf.readableBytes())
         buf.getBytes(buf.readerIndex(), data, 0, buf.readableBytes())
 
-        val mac = Mac.getInstance("HmacSHA256")
-        mac.init(SecretKeySpec(secret, "HmacSHA256"))
+        val mac = Mac.getInstance(SIGNATURE_ALGORITHM)
+        mac.init(SecretKeySpec(secret, SIGNATURE_ALGORITHM))
         val mySignature = mac.doFinal(data)
         return MessageDigest.isEqual(signature, mySignature)
     }

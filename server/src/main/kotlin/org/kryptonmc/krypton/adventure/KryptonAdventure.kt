@@ -38,9 +38,11 @@ object KryptonAdventure {
     @JvmField
     val FLATTENER: ComponentFlattener = ComponentFlattener.basic().toBuilder()
         .complexMapper<TranslatableComponent> { translatable, mapper ->
-            mapper(TranslationBootstrap.RENDERER.render(translatable, Locale.ENGLISH))
+            mapper(TranslationBootstrap.render(translatable))
         }
         .build()
+    // We need to do this because the only other solution, which is to use the NAMES index, doesn't have the guaranteed ordering
+    // that we require to map the IDs properly. This internal list has the ordering we need.
     private val NAMED_TEXT_COLORS = requireNotNull(Reflection.accessField<NamedTextColor, List<NamedTextColor>>("VALUES")) {
         "Could not access NamedTextColor internal VALUES list! Did internals change on update?"
     }

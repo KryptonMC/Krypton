@@ -85,6 +85,8 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateEntityPositionAndRot
 import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateEntityRotation
 import org.kryptonmc.krypton.registry.InternalRegistries
 import org.kryptonmc.krypton.util.Positioning
+import org.kryptonmc.krypton.util.chunkX
+import org.kryptonmc.krypton.util.chunkZ
 import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.world.block.BlockLoader
 import org.kryptonmc.krypton.world.chunk.ChunkPosition
@@ -255,8 +257,8 @@ class PlayHandler(override val server: KryptonServer, override val session: Sess
                 EntityAction.STOP_SPRINTING -> player.isSprinting = false
                 EntityAction.LEAVE_BED -> Unit // TODO: Sleeping
                 EntityAction.START_JUMP_WITH_HORSE, EntityAction.STOP_JUMP_WITH_HORSE, EntityAction.OPEN_HORSE_INVENTORY -> Unit // TODO: Horses
-                EntityAction.START_FLYING_WITH_ELYTRA -> player.isGliding = true
-                EntityAction.STOP_FLYING_WITH_ELYTRA -> player.isGliding = false
+                EntityAction.START_FLYING_WITH_ELYTRA -> if (!player.tryStartGliding()) player.stopGliding()
+                else -> error("This should be impossible! Action for player command was not a valid action! Action: ${it.action}")
             }
         }, session.channel.eventLoop())
     }
@@ -294,8 +296,8 @@ class PlayHandler(override val server: KryptonServer, override val session: Sess
         val event = server.eventManager.fireSync(PlaceBlockEvent(player, worldBlock, packet.hand, x, y, z, packet.face, packet.isInside))
         if (!event.result.isAllowed) return
 
-        val chunkX = player.location.floorX() shr 4
-        val chunkZ = player.location.floorZ() shr 4
+        val chunkX = player.location.chunkX()
+        val chunkZ = player.location.chunkZ()
         val chunk = world.chunkManager[ChunkPosition.toLong(chunkX, chunkZ)] ?: return
         val existingBlock = chunk.getBlock(x, y, z)
         if (existingBlock != Blocks.AIR) return
@@ -330,7 +332,7 @@ class PlayHandler(override val server: KryptonServer, override val session: Sess
         val target = player.world.entityManager[packet.entityId]
         player.isSneaking = packet.sneaking
         if (target == null) return
-        if (player.location.distanceSquared(target.location) >= 36.0) return
+        if (player.location.distanceSquared(target.location) >= INTERACTION_RANGE_SQUARED) return
         packet.action.handle(InteractionHandler())
     }
 
@@ -444,6 +446,7 @@ class PlayHandler(override val server: KryptonServer, override val session: Sess
 
     companion object {
 
+        private const val INTERACTION_RANGE_SQUARED = 6.0 * 6.0
         private const val KEEP_ALIVE_INTERVAL = 15000L
         private val LOGGER = logger<PlayHandler>()
 

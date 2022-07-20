@@ -18,14 +18,14 @@ import org.kryptonmc.api.entity.player.Player
 public interface Tamable : Animal {
 
     /**
-     * If this tamable animal is currently tame.
-     */
-    public var isTame: Boolean
-
-    /**
      * If this tamable animal is in the sitting position.
      */
     public var isSitting: Boolean
+
+    /**
+     * If this tamable animal is currently tamed.
+     */
+    public var isTamed: Boolean
 
     /**
      * If the owner of this animal has ordered it to sit.

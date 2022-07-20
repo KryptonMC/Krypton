@@ -20,6 +20,7 @@ package org.kryptonmc.krypton.util
 
 import com.google.gson.stream.JsonReader
 import net.kyori.adventure.key.Key
+import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.renderer.TranslatableComponentRenderer
 import net.kyori.adventure.translation.TranslationRegistry
 import java.text.MessageFormat
@@ -33,9 +34,9 @@ object TranslationBootstrap {
 
     @JvmField
     val REGISTRY: TranslationRegistry = TranslationRegistry.create(Key.key("krypton", "minecraft_translations"))
-    @JvmField
-    val RENDERER: TranslatableComponentRenderer<Locale> = TranslatableComponentRenderer.usingTranslationSource(REGISTRY)
+    private val RENDERER = TranslatableComponentRenderer.usingTranslationSource(REGISTRY)
 
+    @JvmStatic
     fun init() {
         val inputStream = checkNotNull(ClassLoader.getSystemResourceAsStream("en_us.json")) {
             "Unable to find built-in Minecraft locale file in JAR!"
@@ -50,4 +51,7 @@ object TranslationBootstrap {
             reader.endObject()
         }
     }
+
+    @JvmStatic
+    fun render(message: Component): Component = RENDERER.render(message, Locale.ENGLISH)
 }

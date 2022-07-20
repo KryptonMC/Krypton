@@ -44,7 +44,6 @@ public interface BaseColorParticleEffectBuilder<B : BaseColorParticleEffectBuild
      */
     @ParticleDsl
     @Contract("_, _, _ -> this", mutates = "this")
-    @Suppress("MagicNumber")
     public fun rgb(red: Int, green: Int, blue: Int): B = color(Color.of(red, green, blue))
 
     /**
@@ -59,7 +58,6 @@ public interface BaseColorParticleEffectBuilder<B : BaseColorParticleEffectBuild
      */
     @ParticleDsl
     @Contract("_ -> this", mutates = "this")
-    @Suppress("MagicNumber")
     public fun rgb(rgb: Int): B = color(Color.of(rgb))
 
     /**
@@ -90,12 +88,7 @@ public interface BaseColorParticleEffectBuilder<B : BaseColorParticleEffectBuild
      */
     @ParticleDsl
     @Contract("_, _, _ -> this", mutates = "this")
-    public fun hsv(hue: Float, saturation: Float, value: Float): B {
-        require(hue in 0F..1F) { "Hue must be between 0 and 1!" }
-        require(saturation in 0F..1F) { "Saturation must be between 0 and 1!" }
-        require(value in 0F..1F) { "Value must be between 0 and 1!" }
-        return color(Color.of(hue, saturation, value))
-    }
+    public fun hsv(hue: Float, saturation: Float, value: Float): B = color(Color.of(hue, saturation, value))
 
     /**
      * Sets the color of the particle to the given [hsv] like object.

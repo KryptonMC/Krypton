@@ -8,6 +8,7 @@
  */
 package org.kryptonmc.api.effect.particle.builder
 
+import net.kyori.adventure.builder.AbstractBuilder
 import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.effect.particle.ParticleDsl
 import org.kryptonmc.api.effect.particle.ParticleEffect
@@ -17,7 +18,7 @@ import org.spongepowered.math.vector.Vector3d
  * The base builder for building particle effects.
  */
 @ParticleDsl
-public interface BaseParticleEffectBuilder<B : BaseParticleEffectBuilder<B>> {
+public interface BaseParticleEffectBuilder<B : BaseParticleEffectBuilder<B>> : AbstractBuilder<ParticleEffect> {
 
     /**
      * Sets the number of particles to be spawned by the particle effect.
@@ -26,6 +27,7 @@ public interface BaseParticleEffectBuilder<B : BaseParticleEffectBuilder<B>> {
      *
      * @param quantity the quantity
      * @return this builder
+     * @throws IllegalArgumentException if the quantity is < 1
      */
     @ParticleDsl
     @Contract("_ -> this", mutates = "this")
@@ -57,10 +59,4 @@ public interface BaseParticleEffectBuilder<B : BaseParticleEffectBuilder<B>> {
     @ParticleDsl
     @Contract("_ -> this", mutates = "this")
     public fun longDistance(longDistance: Boolean): B
-
-    /**
-     * Builds the particle effect.
-     */
-    @Contract("_ -> new", pure = true)
-    public fun build(): ParticleEffect
 }

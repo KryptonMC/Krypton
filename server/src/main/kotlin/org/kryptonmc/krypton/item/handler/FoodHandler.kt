@@ -32,7 +32,7 @@ object FoodHandler : ItemTimedHandler {
         // can be pulled from item definitions, and once more thought is in put into
         // fleshing out the handling of food consumption, etc.
         player.foodLevel += 8
-        player.foodSaturationLevel += 12.8f
+        player.foodSaturationLevel += 12.8F
         return UseItemResult(InteractionResult.PASS, player.inventory.heldItem(hand))
     }
 }

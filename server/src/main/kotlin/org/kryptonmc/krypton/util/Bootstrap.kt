@@ -132,7 +132,7 @@ object Bootstrap {
         BannerPatternTypes
         Pictures
         Instruments
-        KryptonTagManager.tags
+        KryptonTagManager.bootstrap()
         KryptonDimensionEffects
         DimensionEffects
         KryptonDimensionTypes

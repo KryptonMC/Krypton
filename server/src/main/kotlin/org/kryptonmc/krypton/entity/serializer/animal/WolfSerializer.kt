@@ -28,12 +28,12 @@ object WolfSerializer : EntitySerializer<KryptonWolf> {
 
     override fun load(entity: KryptonWolf, data: CompoundTag) {
         TamableSerializer.load(entity, data)
-        if (data.contains("CollarColor", 99)) entity.data[MetadataKeys.WOLF.COLLAR_COLOR] = data.getInt("CollarColor")
+        if (data.contains("CollarColor", 99)) entity.data.set(MetadataKeys.Wolf.COLLAR_COLOR, data.getInt("CollarColor"))
         Neutral.loadAngerData(entity, data)
     }
 
     override fun save(entity: KryptonWolf): CompoundTag.Builder = TamableSerializer.save(entity).apply {
-        int("CollarColor", entity.data[MetadataKeys.WOLF.COLLAR_COLOR])
+        int("CollarColor", entity.data.get(MetadataKeys.Wolf.COLLAR_COLOR))
         Neutral.saveAngerData(entity, this)
     }
 }

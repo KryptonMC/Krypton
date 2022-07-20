@@ -31,7 +31,7 @@ import org.kryptonmc.krypton.entity.player.KryptonPlayer
 object DifficultyCommand : InternalCommand {
 
     override fun register(dispatcher: CommandDispatcher<Sender>) {
-        val command = literal<Sender>("difficulty") {
+        val command = literal("difficulty") {
             permission(KryptonPermission.DIFFICULTY)
             runs {
                 val sender = it.source as? KryptonPlayer ?: return@runs

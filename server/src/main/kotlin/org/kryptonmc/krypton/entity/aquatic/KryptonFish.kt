@@ -35,15 +35,15 @@ import org.kryptonmc.nbt.CompoundTag
 abstract class KryptonFish(world: KryptonWorld, type: EntityType<out Fish>) : KryptonAquaticAnimal(world, type, ATTRIBUTES), Fish, BucketStorable {
 
     override var spawnedFromBucket: Boolean
-        get() = data[MetadataKeys.FISH.FROM_BUCKET]
-        set(value) = data.set(MetadataKeys.FISH.FROM_BUCKET, value)
+        get() = data.get(MetadataKeys.Fish.FROM_BUCKET)
+        set(value) = data.set(MetadataKeys.Fish.FROM_BUCKET, value)
     override val bucketPickupSound: SoundEvent
         get() = SoundEvents.BUCKET_FILL_FISH
     override val swimSound: SoundEvent
         get() = SoundEvents.FISH_SWIM
 
     init {
-        data.add(MetadataKeys.FISH.FROM_BUCKET, false)
+        data.add(MetadataKeys.Fish.FROM_BUCKET, false)
     }
 
     override fun loadFromBucket(tag: CompoundTag) {

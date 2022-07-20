@@ -66,7 +66,8 @@ object BanCommand : InternalCommand {
             if (server.playerManager.bannedPlayers.contains(profile)) return@forEach
             val entry = BannedPlayerEntry(profile, reason = LegacyComponentSerializer.legacySection().deserialize(reason))
             server.playerManager.bannedPlayers.add(entry)
-            server.player(profile.uuid)?.let { kick(entry, it) }
+            val player = server.player(profile.uuid)
+            if (player != null) kick(entry, player)
             sender.sendMessage(Component.translatable("commands.ban.success", Component.text(profile.name), Component.text(reason)))
         }
     }

@@ -42,7 +42,7 @@ data class LegacyForwardedData(
             val split = string.split('\u0000')
             // We need to have the original IP, forwarded IP, and the UUID at bare minimum.
             if (split.size < 3) return null
-            val properties = if (split.size > 3) KryptonProfileProperty.fromJsonList(split[3]) else persistentListOf()
+            val properties = if (split.size > 3) KryptonProfileProperty.Adapter.fromJsonList(split[3]) else persistentListOf()
             return LegacyForwardedData(split[0], split[1], MojangUUIDTypeAdapter.fromString(split[2]), properties)
         }
     }

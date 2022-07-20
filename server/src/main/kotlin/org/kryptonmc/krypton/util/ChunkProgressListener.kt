@@ -30,7 +30,7 @@ class ChunkProgressListener(radius: Int) {
     private var startTime = 0L
     private var nextTickTime = Long.MAX_VALUE
     private val progress: Int
-        get() = (count.toFloat() * 100F / area.toFloat()).floor()
+        get() = (count.toFloat() * FRACTION_TO_PERCENTAGE / area.toFloat()).floor()
 
     fun stop() {
         LOGGER.info("Time elapsed: ${System.currentTimeMillis() - startTime} ms")
@@ -46,14 +46,16 @@ class ChunkProgressListener(radius: Int) {
         if (status === ChunkStatus.FULL) ++count
         val progress = progress
         if (System.currentTimeMillis() > nextTickTime) {
-            nextTickTime += 50L
+            nextTickTime += MILLISECONDS_PER_TICK
             val message = Component.translatable("menu.preparingSpawn", Component.text(progress.clamp(0, 100)))
-            LOGGER.info(TranslationBootstrap.RENDERER.render(message, Locale.ENGLISH).toPlainText())
+            LOGGER.info(TranslationBootstrap.render(message).toPlainText())
         }
     }
 
     companion object {
 
         private val LOGGER = logger<ChunkProgressListener>()
+        private const val MILLISECONDS_PER_TICK = 50L
+        private const val FRACTION_TO_PERCENTAGE = 100F
     }
 }
