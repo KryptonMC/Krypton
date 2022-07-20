@@ -22,7 +22,6 @@ import org.kryptonmc.api.effect.particle.ParticleType
 import org.kryptonmc.api.effect.particle.data.ParticleData
 import org.kryptonmc.api.world.biome.AmbientParticleSettings
 import org.kryptonmc.krypton.util.serialization.Codecs
-import org.kryptonmc.krypton.util.serialization.Codec
 import org.kryptonmc.krypton.util.serialization.CompoundEncoder
 import org.kryptonmc.krypton.util.serialization.encode
 import org.kryptonmc.nbt.compound
@@ -49,11 +48,6 @@ data class KryptonAmbientParticleSettings(
         override fun type(type: ParticleType): AmbientParticleSettings.Builder = apply { this.type = type }
 
         override fun data(data: ParticleData?): AmbientParticleSettings.Builder = apply { this.data = data }
-
-        override fun particle(type: ParticleType, data: ParticleData?): AmbientParticleSettings.Builder = apply {
-            type(type)
-            data(data)
-        }
 
         override fun probability(probability: Float): AmbientParticleSettings.Builder = apply { this.probability = probability }
 

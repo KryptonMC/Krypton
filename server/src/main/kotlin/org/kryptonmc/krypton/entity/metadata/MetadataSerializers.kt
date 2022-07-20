@@ -33,15 +33,14 @@ import org.kryptonmc.krypton.registry.KryptonRegistries
 import org.kryptonmc.krypton.util.GlobalPosition
 import org.kryptonmc.krypton.util.IntIdentityHashBiMap
 import org.kryptonmc.krypton.util.readComponent
-import org.kryptonmc.krypton.util.readGlobalPosition
 import org.kryptonmc.krypton.util.readItem
 import org.kryptonmc.krypton.util.readNBT
 import org.kryptonmc.krypton.util.readString
 import org.kryptonmc.krypton.util.readUUID
 import org.kryptonmc.krypton.util.readVarInt
 import org.kryptonmc.krypton.util.readVector
+import org.kryptonmc.krypton.util.readVector3f
 import org.kryptonmc.krypton.util.writeComponent
-import org.kryptonmc.krypton.util.writeGlobalPosition
 import org.kryptonmc.krypton.util.writeId
 import org.kryptonmc.krypton.util.writeItem
 import org.kryptonmc.krypton.util.writeNBT
@@ -60,75 +59,73 @@ import java.util.UUID
 @Catalogue(MetadataSerializer::class)
 object MetadataSerializers {
 
-    private val SERIALIZERS = IntIdentityHashBiMap<MetadataSerializer<*>>(16)
+    private val SERIALIZERS = IntIdentityHashBiMap.create<MetadataSerializer<*>>(16)
 
     @JvmField
-    val BYTE: MetadataSerializer<Byte> = MetadataSerializer.simple({ buf, item -> buf.writeByte(item.toInt()) }, ByteBuf::readByte)
+    val BYTE: MetadataSerializer<Byte> = MetadataSerializer.simple(ByteBuf::readByte) { buf, item -> buf.writeByte(item.toInt()) }
     @JvmField
-    val INT: MetadataSerializer<Int> = MetadataSerializer.simple(ByteBuf::writeVarInt, ByteBuf::readVarInt)
+    val INT: MetadataSerializer<Int> = MetadataSerializer.simple(ByteBuf::readVarInt, ByteBuf::writeVarInt)
     @JvmField
-    val FLOAT: MetadataSerializer<Float> = MetadataSerializer.simple(ByteBuf::writeFloat, ByteBuf::readFloat)
+    val FLOAT: MetadataSerializer<Float> = MetadataSerializer.simple(ByteBuf::readFloat, ByteBuf::writeFloat)
     @JvmField
-    val STRING: MetadataSerializer<String> = MetadataSerializer.simple(ByteBuf::writeString, ByteBuf::readString)
+    val STRING: MetadataSerializer<String> = MetadataSerializer.simple(ByteBuf::readString, ByteBuf::writeString)
     @JvmField
-    val COMPONENT: MetadataSerializer<Component> = MetadataSerializer.simple(ByteBuf::writeComponent, ByteBuf::readComponent)
+    val COMPONENT: MetadataSerializer<Component> = MetadataSerializer.simple(ByteBuf::readComponent, ByteBuf::writeComponent)
     @JvmField
-    val OPTIONAL_COMPONENT: MetadataSerializer<Component?> = MetadataSerializer.optional(ByteBuf::writeComponent, ByteBuf::readComponent)
+    val OPTIONAL_COMPONENT: MetadataSerializer<Component?> = MetadataSerializer.nullable(ByteBuf::readComponent, ByteBuf::writeComponent)
     @JvmField
-    val ITEM_STACK: MetadataSerializer<KryptonItemStack> = MetadataSerializer.simple(ByteBuf::writeItem, ByteBuf::readItem)
+    val ITEM_STACK: MetadataSerializer<KryptonItemStack> = MetadataSerializer.simple(ByteBuf::readItem, ByteBuf::writeItem)
     @JvmField
-    val BOOLEAN: MetadataSerializer<Boolean> = MetadataSerializer.simple(ByteBuf::writeBoolean, ByteBuf::readBoolean)
+    val BOOLEAN: MetadataSerializer<Boolean> = MetadataSerializer.simple(ByteBuf::readBoolean, ByteBuf::writeBoolean)
     @JvmField
-    val ROTATION: MetadataSerializer<Vector3f> = MetadataSerializer.simple({ buf, item ->
+    val ROTATION: MetadataSerializer<Vector3f> = MetadataSerializer.simple(ByteBuf::readVector3f) { buf, item ->
         buf.writeFloat(item.x())
         buf.writeFloat(item.y())
         buf.writeFloat(item.z())
-    }, { Vector3f(it.readFloat(), it.readFloat(), it.readFloat()) })
+    }
     @JvmField
-    val POSITION: MetadataSerializer<Vector3i> = MetadataSerializer.simple(ByteBuf::writeVector, ByteBuf::readVector)
+    val POSITION: MetadataSerializer<Vector3i> = MetadataSerializer.simple(ByteBuf::readVector, ByteBuf::writeVector)
     @JvmField
-    val OPTIONAL_POSITION: MetadataSerializer<Vector3i?> = MetadataSerializer.optional(ByteBuf::writeVector, ByteBuf::readVector)
+    val OPTIONAL_POSITION: MetadataSerializer<Vector3i?> = MetadataSerializer.nullable(ByteBuf::readVector, ByteBuf::writeVector)
     @JvmField
-    val DIRECTION: MetadataSerializer<Direction> = MetadataSerializer.simpleEnum(Direction::class.java)
+    val DIRECTION: MetadataSerializer<Direction> = MetadataSerializer.simpleEnum()
     @JvmField
-    val OPTIONAL_UUID: MetadataSerializer<UUID?> = MetadataSerializer.optional(ByteBuf::writeUUID, ByteBuf::readUUID)
+    val OPTIONAL_UUID: MetadataSerializer<UUID?> = MetadataSerializer.nullable(ByteBuf::readUUID, ByteBuf::writeUUID)
     @JvmField
     val OPTIONAL_BLOCK: MetadataSerializer<KryptonBlock?> = MetadataSerializer.simple(
-        { buf, item -> if (item != null) buf.writeVarInt(item.stateId) else buf.writeVarInt(0) },
         {
             val stateId = it.readVarInt()
             if (stateId == 0) null else BlockLoader.fromStateId(stateId)
-        }
-    )
-    @JvmField
-    val NBT: MetadataSerializer<CompoundTag> = MetadataSerializer.simple(ByteBuf::writeNBT, ByteBuf::readNBT)
-    @JvmField
-    val PARTICLE: MetadataSerializer<ParticleOptions> = MetadataSerializer.simple(
-        { buf, item ->
-            buf.writeId(KryptonRegistries.PARTICLE_TYPE, item.type)
-            item.write(buf)
         },
-        ::ParticleOptions
+        { buf, item -> if (item != null) buf.writeVarInt(item.stateId) else buf.writeVarInt(0) }
     )
     @JvmField
-    val VILLAGER_DATA: MetadataSerializer<VillagerData> = MetadataSerializer.simple({ buf, item -> item.write(buf) }, ::VillagerData)
+    val NBT: MetadataSerializer<CompoundTag> = MetadataSerializer.simple(ByteBuf::readNBT, ByteBuf::writeNBT)
+    @JvmField
+    val PARTICLE: MetadataSerializer<ParticleOptions> = MetadataSerializer.simple(::ParticleOptions) { buf, item ->
+        buf.writeId(KryptonRegistries.PARTICLE_TYPE, item.type)
+        item.write(buf)
+    }
+    @JvmField
+    val VILLAGER_DATA: MetadataSerializer<VillagerData> = MetadataSerializer.simple(::VillagerData) { buf, item -> item.write(buf) }
     @JvmField
     val OPTIONAL_INT: MetadataSerializer<OptionalInt> = MetadataSerializer.simple(
-        { buf, item -> buf.writeVarInt(item.orElse(-1) + 1) },
         {
             val value = it.readVarInt()
             if (value == 0) OptionalInt.empty() else OptionalInt.of(value - 1)
-        }
+        },
+        { buf, item -> buf.writeVarInt(item.orElse(-1) + 1) }
     )
     @JvmField
-    val POSE: MetadataSerializer<Pose> = MetadataSerializer.simpleEnum(Pose::class.java)
+    val POSE: MetadataSerializer<Pose> = MetadataSerializer.simpleEnum()
     @JvmField
     val CAT_VARIANT: MetadataSerializer<CatVariant> = MetadataSerializer.simpleId(KryptonRegistries.CAT_VARIANT)
     @JvmField
     val FROG_VARIANT: MetadataSerializer<FrogVariant> = MetadataSerializer.simpleId(KryptonRegistries.FROG_VARIANT)
     @JvmField
-    val OPTIONAL_GLOBAL_POSITION: MetadataSerializer<GlobalPosition?> =
-        MetadataSerializer.optional(ByteBuf::writeGlobalPosition, ByteBuf::readGlobalPosition)
+    val OPTIONAL_GLOBAL_POSITION: MetadataSerializer<GlobalPosition?> = MetadataSerializer.nullable(::GlobalPosition) { buf, position ->
+        position.write(buf)
+    }
     @JvmField
     val PICTURE: MetadataSerializer<Picture> = MetadataSerializer.simpleId(KryptonRegistries.PICTURES)
 

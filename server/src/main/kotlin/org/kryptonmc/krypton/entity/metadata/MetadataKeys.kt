@@ -32,109 +32,27 @@ import java.util.UUID
 @Catalogue(MetadataKey::class)
 object MetadataKeys {
 
-    @JvmField
-    val AREA_EFFECT_CLOUD: AreaEffectCloudKeys = AreaEffectCloudKeys
-    @JvmField
-    val LIVING: LivingEntityKeys = LivingEntityKeys
-    @JvmField
-    val BAT: BatKeys = BatKeys
-    @JvmField
-    val BOAT: BoatKeys = BoatKeys
-    @JvmField
-    val ARMOR_STAND: ArmorStandKeys = ArmorStandKeys
-    @JvmField
-    val ARROW_LIKE: ArrowLikeKeys = ArrowLikeKeys
-    @JvmField
-    val ARROW: ArrowKeys = ArrowKeys
-    @JvmField
-    val TRIDENT: TridentKeys = TridentKeys
-    @JvmField
-    val FIREBALL: FireballKeys = FireballKeys
-    @JvmField
-    val FIREWORK_ROCKET: FireworkRocketKeys = FireworkRocketKeys
-    @JvmField
-    val FISHING_HOOK: FishingHookKeys = FishingHookKeys
-    @JvmField
-    val THROWABLE_PROJECTILE: ThrowableProjectileKeys = ThrowableProjectileKeys
-    @JvmField
-    val WITHER_SKULL: WitherSkullKeys = WitherSkullKeys
-    @JvmField
-    val MINECART_LIKE: MinecartLikeKeys = MinecartLikeKeys
-    @JvmField
-    val COMMAND_BLOCK_MINECART: CommandBlockMinecartKeys = CommandBlockMinecartKeys
-    @JvmField
-    val FURNACE_MINECART: FurnaceMinecartKeys = FurnaceMinecartKeys
-    @JvmField
-    val MOB: MobKeys = MobKeys
-    @JvmField
-    val CREEPER: CreeperKeys = CreeperKeys
-    @JvmField
-    val ZOMBIE: ZombieKeys = ZombieKeys
-    @JvmField
-    val PLAYER: PlayerKeys = PlayerKeys
-    @JvmField
-    val AGEABLE: AgeableKeys = AgeableKeys
-    @JvmField
-    val TAMABLE: TamableKeys = TamableKeys
-    @JvmField
-    val AXOLOTL: AxolotlKeys = AxolotlKeys
-    @JvmField
-    val BEE: BeeKeys = BeeKeys
-    @JvmField
-    val CAT: CatKeys = CatKeys
-    @JvmField
-    val FOX: FoxKeys = FoxKeys
-    @JvmField
-    val GOAT: GoatKeys = GoatKeys
-    @JvmField
-    val MOOSHROOM: MooshroomKeys = MooshroomKeys
-    @JvmField
-    val OCELOT: OcelotKeys = OcelotKeys
-    @JvmField
-    val PANDA: PandaKeys = PandaKeys
-    @JvmField
-    val PARROT: ParrotKeys = ParrotKeys
-    @JvmField
-    val PIG: PigKeys = PigKeys
-    @JvmField
-    val POLAR_BEAR: PolarBearKeys = PolarBearKeys
-    @JvmField
-    val RABBIT: RabbitKeys = RabbitKeys
-    @JvmField
-    val SHEEP: SheepKeys = SheepKeys
-    @JvmField
-    val TURTLE: TurtleKeys = TurtleKeys
-    @JvmField
-    val WOLF: WolfKeys = WolfKeys
-    @JvmField
-    val FISH: FishKeys = FishKeys
-    @JvmField
-    val DOLPHIN: DolphinKeys = DolphinKeys
-    @JvmField
-    val PUFFERFISH: PufferfishKeys = PufferfishKeys
-    @JvmField
-    val GLOW_SQUID: GlowSquidKeys = GlowSquidKeys
-    @JvmField
-    val TROPICAL_FISH: TropicalFishKeys = TropicalFishKeys
+    object Entity {
 
-    @JvmField
-    val FLAGS: MetadataKey<Byte> = MetadataKey(0, MetadataSerializers.BYTE)
-    @JvmField
-    val AIR_TICKS: MetadataKey<Int> = MetadataKey(1, MetadataSerializers.INT)
-    @JvmField
-    val CUSTOM_NAME: MetadataKey<Component?> = MetadataKey(2, MetadataSerializers.OPTIONAL_COMPONENT)
-    @JvmField
-    val CUSTOM_NAME_VISIBILITY: MetadataKey<Boolean> = MetadataKey(3, MetadataSerializers.BOOLEAN)
-    @JvmField
-    val SILENT: MetadataKey<Boolean> = MetadataKey(4, MetadataSerializers.BOOLEAN)
-    @JvmField
-    val NO_GRAVITY: MetadataKey<Boolean> = MetadataKey(5, MetadataSerializers.BOOLEAN)
-    @JvmField
-    val POSE: MetadataKey<Pose> = MetadataKey(6, MetadataSerializers.POSE)
-    @JvmField
-    val FROZEN_TICKS: MetadataKey<Int> = MetadataKey(7, MetadataSerializers.INT)
+        @JvmField
+        val FLAGS: MetadataKey<Byte> = MetadataKey(0, MetadataSerializers.BYTE)
+        @JvmField
+        val AIR_TICKS: MetadataKey<Int> = MetadataKey(1, MetadataSerializers.INT)
+        @JvmField
+        val CUSTOM_NAME: MetadataKey<Component?> = MetadataKey(2, MetadataSerializers.OPTIONAL_COMPONENT)
+        @JvmField
+        val CUSTOM_NAME_VISIBILITY: MetadataKey<Boolean> = MetadataKey(3, MetadataSerializers.BOOLEAN)
+        @JvmField
+        val SILENT: MetadataKey<Boolean> = MetadataKey(4, MetadataSerializers.BOOLEAN)
+        @JvmField
+        val NO_GRAVITY: MetadataKey<Boolean> = MetadataKey(5, MetadataSerializers.BOOLEAN)
+        @JvmField
+        val POSE: MetadataKey<Pose> = MetadataKey(6, MetadataSerializers.POSE)
+        @JvmField
+        val FROZEN_TICKS: MetadataKey<Int> = MetadataKey(7, MetadataSerializers.INT)
+    }
 
-    object LivingEntityKeys {
+    object LivingEntity {
 
         @JvmField
         val FLAGS: MetadataKey<Byte> = MetadataKey(8, MetadataSerializers.BYTE)
@@ -152,7 +70,7 @@ object MetadataKeys {
         val BED_LOCATION: MetadataKey<Vector3i?> = MetadataKey(14, MetadataSerializers.OPTIONAL_POSITION)
     }
 
-    object ArmorStandKeys {
+    object ArmorStand {
 
         @JvmField
         val FLAGS: MetadataKey<Byte> = MetadataKey(15, MetadataSerializers.BYTE)
@@ -170,7 +88,7 @@ object MetadataKeys {
         val RIGHT_LEG_ROTATION: MetadataKey<Vector3f> = MetadataKey(21, MetadataSerializers.ROTATION)
     }
 
-    object ArrowLikeKeys {
+    object ArrowLike {
 
         @JvmField
         val FLAGS: MetadataKey<Byte> = MetadataKey(8, MetadataSerializers.BYTE)
@@ -178,13 +96,13 @@ object MetadataKeys {
         val PIERCING_LEVEL: MetadataKey<Byte> = MetadataKey(9, MetadataSerializers.BYTE)
     }
 
-    object ArrowKeys {
+    object Arrow {
 
         @JvmField
         val COLOR: MetadataKey<Int> = MetadataKey(10, MetadataSerializers.INT)
     }
 
-    object TridentKeys {
+    object Trident {
 
         @JvmField
         val LOYALTY_LEVEL: MetadataKey<Int> = MetadataKey(10, MetadataSerializers.INT)
@@ -192,13 +110,13 @@ object MetadataKeys {
         val ENCHANTED: MetadataKey<Boolean> = MetadataKey(11, MetadataSerializers.BOOLEAN)
     }
 
-    object FireballKeys {
+    object Fireball {
 
         @JvmField
         val ITEM: MetadataKey<KryptonItemStack> = MetadataKey(8, MetadataSerializers.ITEM_STACK)
     }
 
-    object FireworkRocketKeys {
+    object FireworkRocket {
 
         @JvmField
         val ITEM: MetadataKey<KryptonItemStack> = MetadataKey(8, MetadataSerializers.ITEM_STACK)
@@ -208,7 +126,7 @@ object MetadataKeys {
         val SHOT_AT_ANGLE: MetadataKey<Boolean> = MetadataKey(10, MetadataSerializers.BOOLEAN)
     }
 
-    object FishingHookKeys {
+    object FishingHook {
 
         @JvmField
         val HOOKED: MetadataKey<Int> = MetadataKey(8, MetadataSerializers.INT)
@@ -216,19 +134,19 @@ object MetadataKeys {
         val BITING: MetadataKey<Boolean> = MetadataKey(9, MetadataSerializers.BOOLEAN)
     }
 
-    object ThrowableProjectileKeys {
+    object ThrowableProjectile {
 
         @JvmField
         val ITEM: MetadataKey<KryptonItemStack> = MetadataKey(8, MetadataSerializers.ITEM_STACK)
     }
 
-    object WitherSkullKeys {
+    object WitherSkull {
 
         @JvmField
         val DANGEROUS: MetadataKey<Boolean> = MetadataKey(8, MetadataSerializers.BOOLEAN)
     }
 
-    object MinecartLikeKeys {
+    object MinecartLike {
 
         @JvmField
         val HURT_TIMER: MetadataKey<Int> = MetadataKey(8, MetadataSerializers.INT)
@@ -244,7 +162,7 @@ object MetadataKeys {
         val SHOW_CUSTOM_BLOCK: MetadataKey<Boolean> = MetadataKey(13, MetadataSerializers.BOOLEAN)
     }
 
-    object CommandBlockMinecartKeys {
+    object CommandBlockMinecart {
 
         @JvmField
         val COMMAND: MetadataKey<String> = MetadataKey(14, MetadataSerializers.STRING)
@@ -252,19 +170,19 @@ object MetadataKeys {
         val LAST_OUTPUT: MetadataKey<Component> = MetadataKey(15, MetadataSerializers.COMPONENT)
     }
 
-    object FurnaceMinecartKeys {
+    object FurnaceMinecart {
 
         @JvmField
         val HAS_FUEL: MetadataKey<Boolean> = MetadataKey(14, MetadataSerializers.BOOLEAN)
     }
 
-    object MobKeys {
+    object Mob {
 
         @JvmField
         val FLAGS: MetadataKey<Byte> = MetadataKey(15, MetadataSerializers.BYTE)
     }
 
-    object CreeperKeys {
+    object Creeper {
 
         @JvmField
         val STATE: MetadataKey<Int> = MetadataKey(16, MetadataSerializers.INT)
@@ -274,7 +192,7 @@ object MetadataKeys {
         val IGNITED: MetadataKey<Boolean> = MetadataKey(18, MetadataSerializers.BOOLEAN)
     }
 
-    object ZombieKeys {
+    object Zombie {
 
         @JvmField
         val BABY: MetadataKey<Boolean> = MetadataKey(16, MetadataSerializers.BOOLEAN)
@@ -282,7 +200,7 @@ object MetadataKeys {
         val CONVERTING: MetadataKey<Boolean> = MetadataKey(18, MetadataSerializers.BOOLEAN)
     }
 
-    object PlayerKeys {
+    object Player {
 
         @JvmField
         val ADDITIONAL_HEARTS: MetadataKey<Float> = MetadataKey(15, MetadataSerializers.FLOAT)
@@ -298,7 +216,7 @@ object MetadataKeys {
         val RIGHT_SHOULDER: MetadataKey<CompoundTag> = MetadataKey(20, MetadataSerializers.NBT)
     }
 
-    object AreaEffectCloudKeys {
+    object AreaEffectCloud {
 
         @JvmField
         val RADIUS: MetadataKey<Float> = MetadataKey(8, MetadataSerializers.FLOAT)
@@ -310,13 +228,13 @@ object MetadataKeys {
         val PARTICLE: MetadataKey<ParticleOptions> = MetadataKey(11, MetadataSerializers.PARTICLE)
     }
 
-    object BatKeys {
+    object Bat {
 
         @JvmField
         val FLAGS: MetadataKey<Byte> = MetadataKey(16, MetadataSerializers.BYTE)
     }
 
-    object BoatKeys {
+    object Boat {
 
         @JvmField
         val HURT_TIMER: MetadataKey<Int> = MetadataKey(8, MetadataSerializers.INT)
@@ -334,13 +252,13 @@ object MetadataKeys {
         val SPLASH_TIMER: MetadataKey<Int> = MetadataKey(14, MetadataSerializers.INT)
     }
 
-    object AgeableKeys {
+    object Ageable {
 
         @JvmField
         val BABY: MetadataKey<Boolean> = MetadataKey(16, MetadataSerializers.BOOLEAN)
     }
 
-    object TamableKeys {
+    object Tamable {
 
         @JvmField
         val FLAGS: MetadataKey<Byte> = MetadataKey(17, MetadataSerializers.BYTE)
@@ -348,7 +266,7 @@ object MetadataKeys {
         val OWNER: MetadataKey<UUID?> = MetadataKey(18, MetadataSerializers.OPTIONAL_UUID)
     }
 
-    object AxolotlKeys {
+    object Axolotl {
 
         @JvmField
         val VARIANT: MetadataKey<Int> = MetadataKey(17, MetadataSerializers.INT)
@@ -358,7 +276,7 @@ object MetadataKeys {
         val FROM_BUCKET: MetadataKey<Boolean> = MetadataKey(19, MetadataSerializers.BOOLEAN)
     }
 
-    object BeeKeys {
+    object Bee {
 
         @JvmField
         val FLAGS: MetadataKey<Byte> = MetadataKey(17, MetadataSerializers.BYTE)
@@ -366,7 +284,7 @@ object MetadataKeys {
         val ANGER_TIME: MetadataKey<Int> = MetadataKey(18, MetadataSerializers.INT)
     }
 
-    object CatKeys {
+    object Cat {
 
         @JvmField
         val VARIANT: MetadataKey<Int> = MetadataKey(19, MetadataSerializers.INT)
@@ -378,7 +296,7 @@ object MetadataKeys {
         val COLLAR_COLOR: MetadataKey<Int> = MetadataKey(22, MetadataSerializers.INT)
     }
 
-    object FoxKeys {
+    object Fox {
 
         @JvmField
         val TYPE: MetadataKey<Int> = MetadataKey(17, MetadataSerializers.INT)
@@ -390,25 +308,25 @@ object MetadataKeys {
         val SECOND_TRUSTED: MetadataKey<UUID?> = MetadataKey(20, MetadataSerializers.OPTIONAL_UUID)
     }
 
-    object GoatKeys {
+    object Goat {
 
         @JvmField
         val SCREAMING: MetadataKey<Boolean> = MetadataKey(17, MetadataSerializers.BOOLEAN)
     }
 
-    object MooshroomKeys {
+    object Mooshroom {
 
         @JvmField
         val TYPE: MetadataKey<String> = MetadataKey(17, MetadataSerializers.STRING)
     }
 
-    object OcelotKeys {
+    object Ocelot {
 
         @JvmField
         val TRUSTING: MetadataKey<Boolean> = MetadataKey(17, MetadataSerializers.BOOLEAN)
     }
 
-    object PandaKeys {
+    object Panda {
 
         @JvmField
         val UNHAPPY_TIMER: MetadataKey<Int> = MetadataKey(17, MetadataSerializers.INT)
@@ -424,13 +342,13 @@ object MetadataKeys {
         val FLAGS: MetadataKey<Byte> = MetadataKey(22, MetadataSerializers.BYTE)
     }
 
-    object ParrotKeys {
+    object Parrot {
 
         @JvmField
         val TYPE: MetadataKey<Int> = MetadataKey(19, MetadataSerializers.INT)
     }
 
-    object PigKeys {
+    object Pig {
 
         @JvmField
         val SADDLE: MetadataKey<Boolean> = MetadataKey(17, MetadataSerializers.BOOLEAN)
@@ -438,25 +356,25 @@ object MetadataKeys {
         val BOOST_TIME: MetadataKey<Int> = MetadataKey(18, MetadataSerializers.INT)
     }
 
-    object PolarBearKeys {
+    object PolarBear {
 
         @JvmField
         val STANDING: MetadataKey<Boolean> = MetadataKey(17, MetadataSerializers.BOOLEAN)
     }
 
-    object RabbitKeys {
+    object Rabbit {
 
         @JvmField
         val TYPE: MetadataKey<Int> = MetadataKey(17, MetadataSerializers.INT)
     }
 
-    object SheepKeys {
+    object Sheep {
 
         @JvmField
         val FLAGS: MetadataKey<Byte> = MetadataKey(17, MetadataSerializers.BYTE)
     }
 
-    object TurtleKeys {
+    object Turtle {
 
         @JvmField
         val HOME: MetadataKey<Vector3i> = MetadataKey(17, MetadataSerializers.POSITION)
@@ -472,7 +390,7 @@ object MetadataKeys {
         val TRAVELLING: MetadataKey<Boolean> = MetadataKey(22, MetadataSerializers.BOOLEAN)
     }
 
-    object WolfKeys {
+    object Wolf {
 
         @JvmField
         val BEGGING: MetadataKey<Boolean> = MetadataKey(19, MetadataSerializers.BOOLEAN)
@@ -482,13 +400,13 @@ object MetadataKeys {
         val ANGER_TIME: MetadataKey<Int> = MetadataKey(21, MetadataSerializers.INT)
     }
 
-    object FishKeys {
+    object Fish {
 
         @JvmField
         val FROM_BUCKET: MetadataKey<Boolean> = MetadataKey(16, MetadataSerializers.BOOLEAN)
     }
 
-    object DolphinKeys {
+    object Dolphin {
 
         @JvmField
         val TREASURE_POSITION: MetadataKey<Vector3i> = MetadataKey(16, MetadataSerializers.POSITION)
@@ -498,19 +416,19 @@ object MetadataKeys {
         val MOISTURE: MetadataKey<Int> = MetadataKey(18, MetadataSerializers.INT)
     }
 
-    object PufferfishKeys {
+    object Pufferfish {
 
         @JvmField
         val PUFF_STATE: MetadataKey<Int> = MetadataKey(17, MetadataSerializers.INT)
     }
 
-    object GlowSquidKeys {
+    object GlowSquid {
 
         @JvmField
         val REMAINING_DARK_TICKS: MetadataKey<Int> = MetadataKey(16, MetadataSerializers.INT)
     }
 
-    object TropicalFishKeys {
+    object TropicalFish {
 
         @JvmField
         val VARIANT: MetadataKey<Int> = MetadataKey(17, MetadataSerializers.INT)

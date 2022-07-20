@@ -38,6 +38,7 @@ data class LocalCoordinates(private val left: Double, private val up: Double, pr
         // All of this is some slightly complicated linear algebra that I don't really understand.
         // What this does is determine absolute coordinates from the local forwards, up, and left components, which are relative
         // to the direction that a player is facing.
+        // TODO: Document all this in detail
         val rotation = player.rotation
         val pitch1 = TrigMath.cos(Math.toRadians(rotation.y() + 90.0))
         val pitch2 = TrigMath.sin(Math.toRadians(rotation.y() + 90.0))
@@ -78,16 +79,15 @@ data class LocalCoordinates(private val left: Double, private val up: Double, pr
             val forwards = reader.readPositionalDouble(resetPosition)
             return LocalCoordinates(left, up, forwards)
         }
-
-        @JvmStatic
-        private fun StringReader.readPositionalDouble(resetPosition: Int): Double {
-            if (!canRead()) throw CoordinateExceptions.POSITION_EXPECTED_DOUBLE.createWithContext(this)
-            if (peek() != TextCoordinates.LOCAL_MODIFIER) {
-                cursor = resetPosition
-                throw CoordinateExceptions.POSITION_MIXED_TYPE.createWithContext(this)
-            }
-            skip()
-            return if (canRead() && peek() != CommandDispatcher.ARGUMENT_SEPARATOR_CHAR) readDouble() else 0.0
-        }
     }
+}
+
+private fun StringReader.readPositionalDouble(resetPosition: Int): Double {
+    if (!canRead()) throw CoordinateExceptions.POSITION_EXPECTED_DOUBLE.createWithContext(this)
+    if (peek() != TextCoordinates.LOCAL_MODIFIER) {
+        cursor = resetPosition
+        throw CoordinateExceptions.POSITION_MIXED_TYPE.createWithContext(this)
+    }
+    skip()
+    return if (canRead() && peek() != CommandDispatcher.ARGUMENT_SEPARATOR_CHAR) readDouble() else 0.0
 }

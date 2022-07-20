@@ -34,14 +34,6 @@ class ArrayPalette<T> private constructor(
 
     override var size: Int = size
         private set
-    override val serializedSize: Int
-        get() {
-            var temp = size.varIntBytes()
-            for (i in 0 until size) {
-                temp += registry.idOf(values[i]!!).varIntBytes()
-            }
-            return temp
-        }
 
     private constructor(
         registry: IntBiMap<T>,
@@ -78,6 +70,14 @@ class ArrayPalette<T> private constructor(
         for (i in 0 until size) {
             buf.writeVarInt(registry.idOf(values[i]!!))
         }
+    }
+
+    override fun calculateSerializedSize(): Int {
+        var size = size.varIntBytes()
+        for (i in 0 until this.size) {
+            size += registry.idOf(values[i]!!).varIntBytes()
+        }
+        return size
     }
 
     object Factory : Palette.Factory {

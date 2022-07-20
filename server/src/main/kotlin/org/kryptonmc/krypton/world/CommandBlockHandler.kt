@@ -34,6 +34,10 @@ import java.util.UUID
 abstract class CommandBlockHandler(override val server: KryptonServer) : Sender {
 
     var command: String = ""
+        set(value) {
+            field = value
+            successCount = 0
+        }
     private var lastExecution = -1L
     private var updateLastExecution = true
     private var successCount = 0

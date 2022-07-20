@@ -56,7 +56,7 @@ object FluidLoader : KryptonDataLoader<Fluid>("fluids", Registries.FLUID) {
         }
 
         // Get default state and add to maps
-        val defaultState = value["defaultStateId"].asInt // FIXME: Update ArticData when this is always non-null
+        val defaultState = value["defaultStateId"].asInt
         val defaultFluid = STATES.get(defaultState)!!
         KEY_MAP[key.asString()] = defaultFluid
         PROPERTY_MAP[key.asString()] = propertyEntry

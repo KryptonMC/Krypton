@@ -29,7 +29,12 @@ data class KryptonColor(override val value: Int) : Color {
 
         override fun of(value: Int): Color = VALUES.computeIfAbsent(value, IntFunction(::KryptonColor))
 
-        override fun of(hue: Float, saturation: Float, brightness: Float): Color = of(java.awt.Color.HSBtoRGB(hue, saturation, brightness))
+        override fun of(hue: Float, saturation: Float, brightness: Float): Color {
+            require(hue in 0F..1F) { "Hue must be between 0 and 1!" }
+            require(saturation in 0F..1F) { "Saturation must be between 0 and 1!" }
+            require(brightness in 0F..1F) { "Brightness must be between 0 and 1!" }
+            return of(java.awt.Color.HSBtoRGB(hue, saturation, brightness))
+        }
     }
 
     companion object {

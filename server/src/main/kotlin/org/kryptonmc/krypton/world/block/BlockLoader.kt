@@ -21,6 +21,7 @@ package org.kryptonmc.krypton.world.block
 import com.google.gson.JsonObject
 import kotlinx.collections.immutable.ImmutableSet
 import kotlinx.collections.immutable.PersistentMap
+import kotlinx.collections.immutable.persistentSetOf
 import kotlinx.collections.immutable.toImmutableSet
 import kotlinx.collections.immutable.toPersistentHashMap
 import net.kyori.adventure.key.Key
@@ -66,11 +67,11 @@ object BlockLoader : KryptonDataLoader<Block>("blocks", KryptonRegistries.BLOCK)
     override fun create(key: Key, value: JsonObject): Block {
         // Map properties
         val propertyEntry = PropertyEntry()
-        val availableProperties = value["properties"].asJsonArray.mapTo(mutableSetOf()) { element ->
+        val availableProperties = value["properties"].asJsonArray.mapTo(persistentSetOf<Property<*>>().builder()) { element ->
             var string = element.asString
             if (string == "LEVEL") string = "LEVEL_FLOWING"
             KryptonPropertyFactory.PROPERTIES[string]!!
-        }.toImmutableSet()
+        }.build()
 
         // Iterate states
         value.remove("states").asJsonArray.forEach {
@@ -144,7 +145,7 @@ object BlockLoader : KryptonDataLoader<Block>("blocks", KryptonRegistries.BLOCK)
         state["toolRequired"].asBoolean,
         convertRenderShape(state["renderShape"]?.asString),
         PushReaction.valueOf(state["pushReaction"].asString),
-        block["correspondingItem"]?.asString?.let { Key.key(it) },
+        block["correspondingItem"]?.asString?.toKey(),
         Key.key(state["fluidState"].asString),
         availableProperties,
         propertyMap
@@ -162,3 +163,5 @@ object BlockLoader : KryptonDataLoader<Block>("blocks", KryptonRegistries.BLOCK)
         val properties: MutableMap<Map<String, String>, KryptonBlock> = ConcurrentHashMap()
     }
 }
+
+private fun String.toKey(): Key = Key.key(this)

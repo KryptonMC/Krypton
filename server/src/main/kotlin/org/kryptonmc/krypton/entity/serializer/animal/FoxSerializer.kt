@@ -55,10 +55,10 @@ object FoxSerializer : EntitySerializer<KryptonFox> {
 
     @JvmStatic
     private fun addTrustedId(entity: KryptonFox, uuid: UUID?) {
-        if (entity.data[MetadataKeys.FOX.FIRST_TRUSTED] != null) {
-            entity.data[MetadataKeys.FOX.SECOND_TRUSTED] = uuid
+        if (entity.data.get(MetadataKeys.Fox.FIRST_TRUSTED) != null) {
+            entity.data.set(MetadataKeys.Fox.SECOND_TRUSTED, uuid)
         } else {
-            entity.data[MetadataKeys.FOX.FIRST_TRUSTED] = uuid
+            entity.data.set(MetadataKeys.Fox.FIRST_TRUSTED, uuid)
         }
     }
 }

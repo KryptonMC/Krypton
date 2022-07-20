@@ -30,7 +30,10 @@ import org.kryptonmc.api.plugin.PluginContainer
 import org.kryptonmc.api.plugin.PluginManager
 import org.kryptonmc.api.registry.RegistryManager
 import org.kryptonmc.api.scheduling.Scheduler
+import org.kryptonmc.api.scoreboard.Scoreboard
 import org.kryptonmc.api.service.ServicesManager
+import org.kryptonmc.api.tags.TagManager
+import org.kryptonmc.api.user.UserManager
 import org.kryptonmc.api.util.FactoryProvider
 import org.kryptonmc.api.world.WorldManager
 import org.kryptonmc.krypton.KryptonServer
@@ -46,10 +49,13 @@ class GlobalModule(private val server: KryptonServer, private val pluginContaine
         bind<ServicesManager>().toInstance(server.servicesManager)
         bind<EventManager>().toInstance(server.eventManager)
         bind<RegistryManager>().toInstance(server.registryManager)
+        bind<TagManager>().toInstance(server.tagManager)
         bind<FactoryProvider>().toInstance(server.factoryProvider)
         bind<ProfileCache>().toInstance(server.profileCache)
+        bind<UserManager>().toInstance(server.userManager)
         bind<Scheduler>().toInstance(server.scheduler)
         bind<ConsoleSender>().toInstance(server.console)
+        bind<Scoreboard>().toInstance(server.scoreboard)
         pluginContainers.forEach { bind<PluginContainer>().annotatedWith(Names.named(it.description.id)).toInstance(it) }
     }
 }

@@ -23,7 +23,6 @@ import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer
 import org.kryptonmc.krypton.config.category.AdvancedCategory
 import org.kryptonmc.krypton.config.category.OtherCategory
 import org.kryptonmc.krypton.config.category.ProxyCategory
-import org.kryptonmc.krypton.config.category.QueryCategory
 import org.kryptonmc.krypton.config.category.ServerCategory
 import org.kryptonmc.krypton.config.category.StatusCategory
 import org.kryptonmc.krypton.config.category.WorldCategory
@@ -50,8 +49,6 @@ data class KryptonConfig(
     val world: WorldCategory = WorldCategory(),
     @Comment("Advanced settings. Don't touch these unless you know what you're doing.")
     val advanced: AdvancedCategory = AdvancedCategory(),
-    @Comment("Settings for the GS4 query protocol listener. If you don't know what that means, don't touch these :)")
-    val query: QueryCategory = QueryCategory(),
     @Comment("Proxy IP forwarding settings.")
     val proxy: ProxyCategory = ProxyCategory(),
     @Comment("Other settings that don't quite fit in anywhere else.")

@@ -66,7 +66,7 @@ interface KryptonEquipable : Equipable {
         fun saveItems(items: Iterable<KryptonItemStack>): ListTag = list {
             items.forEach {
                 if (it.isEmpty()) return@forEach
-                add(it.save(CompoundTag.immutableBuilder()).build())
+                add(it.save())
             }
         }
     }

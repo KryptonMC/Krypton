@@ -33,15 +33,15 @@ class KryptonTrident(world: KryptonWorld) : KryptonArrowLike(world, EntityTypes.
     override var dealtDamage: Boolean = false
 
     override var loyaltyLevel: Int
-        get() = data[MetadataKeys.TRIDENT.LOYALTY_LEVEL]
-        set(value) = data.set(MetadataKeys.TRIDENT.LOYALTY_LEVEL, value)
+        get() = data.get(MetadataKeys.Trident.LOYALTY_LEVEL)
+        set(value) = data.set(MetadataKeys.Trident.LOYALTY_LEVEL, value)
     override var isEnchanted: Boolean
-        get() = data[MetadataKeys.TRIDENT.ENCHANTED]
-        set(value) = data.set(MetadataKeys.TRIDENT.ENCHANTED, value)
+        get() = data.get(MetadataKeys.Trident.ENCHANTED)
+        set(value) = data.set(MetadataKeys.Trident.ENCHANTED, value)
 
     init {
-        data.add(MetadataKeys.TRIDENT.LOYALTY_LEVEL, 0)
-        data.add(MetadataKeys.TRIDENT.ENCHANTED, false)
+        data.add(MetadataKeys.Trident.LOYALTY_LEVEL, 0)
+        data.add(MetadataKeys.Trident.ENCHANTED, false)
     }
 
     companion object {

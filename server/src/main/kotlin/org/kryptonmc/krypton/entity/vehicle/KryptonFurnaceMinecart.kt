@@ -29,11 +29,11 @@ class KryptonFurnaceMinecart(world: KryptonWorld) : KryptonMinecartLike(world, E
     override val variant: MinecartVariant
         get() = MinecartVariant.FURNACE
     override var hasFuel: Boolean
-        get() = data[MetadataKeys.FURNACE_MINECART.HAS_FUEL]
-        set(value) = data.set(MetadataKeys.FURNACE_MINECART.HAS_FUEL, value)
+        get() = data.get(MetadataKeys.FurnaceMinecart.HAS_FUEL)
+        set(value) = data.set(MetadataKeys.FurnaceMinecart.HAS_FUEL, value)
     override var fuel: Int = 0
 
     init {
-        data.add(MetadataKeys.FURNACE_MINECART.HAS_FUEL, false)
+        data.add(MetadataKeys.FurnaceMinecart.HAS_FUEL, false)
     }
 }

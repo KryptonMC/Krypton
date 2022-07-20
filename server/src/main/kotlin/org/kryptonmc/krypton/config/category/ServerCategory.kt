@@ -38,15 +38,6 @@ data class ServerCategory(
     @Setting("whitelist-enabled")
     @Comment("Whether only specific users can join the server or not")
     val whitelistEnabled: Boolean = false,
-    @Setting("op-permission-level")
-    @Comment("The permission level operators will get")
-    val opPermissionLevel: Int = 4,
-    @Setting("use-data-converter")
-    @Comment("If worlds from previous versions should be upgraded to the current version.")
-    val useDataConverter: Boolean = true,
-    @Comment("If the server should enforce that all game profiles have properties with valid signatures.")
-    @Setting("enforce-secure-profiles")
-    val enforceSecureProfiles: Boolean = true,
     @Setting("resource-pack")
     @Comment("Settings for the server resource pack")
     val resourcePack: ResourcePackCategory = ResourcePackCategory()

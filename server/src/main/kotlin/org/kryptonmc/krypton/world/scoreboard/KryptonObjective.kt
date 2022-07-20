@@ -65,13 +65,14 @@ class KryptonObjective(
 
         override fun renderType(type: ObjectiveRenderType): Objective.Builder = apply { renderType = type }
 
-        override fun build(): KryptonObjective = KryptonObjective(
-            scoreboard,
-            name,
-            criterion,
-            displayName ?: LegacyComponentSerializer.legacySection().deserialize(name),
-            renderType
-        )
+        override fun build(): KryptonObjective = KryptonObjective(scoreboard, name, criterion, getName(displayName, name), renderType)
+
+        companion object {
+
+            @JvmStatic
+            private fun getName(displayName: Component?, name: String): Component =
+                displayName ?: LegacyComponentSerializer.legacySection().deserialize(name)
+        }
     }
 
     object Factory : Objective.Factory {

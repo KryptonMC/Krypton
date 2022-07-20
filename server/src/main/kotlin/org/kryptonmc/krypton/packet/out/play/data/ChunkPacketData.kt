@@ -65,7 +65,7 @@ data class ChunkPacketData(val heightmaps: CompoundTag, val data: ByteArray) : W
 
         @JvmStatic
         private fun extractData(chunk: KryptonChunk): ByteArray {
-            val result = ByteArray(chunk.sections.sumOf { it.serializedSize })
+            val result = ByteArray(chunk.sections.sumOf { it.calculateSerializedSize() })
             val buffer = Unpooled.wrappedBuffer(result).writerIndex(0)
             chunk.sections.forEach { it.write(buffer) }
             return result

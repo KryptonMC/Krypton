@@ -36,14 +36,14 @@ abstract class KryptonAgeable(
             val old = field
             field = value
             if (old < 0 && value >= 0 || old >= 0 && value < 0) {
-                data[MetadataKeys.AGEABLE.BABY] = value < 0
+                data.set(MetadataKeys.Ageable.BABY, value < 0)
                 onAgeTransformation()
             }
         }
     final override var isBaby: Boolean
         get() = age < 0
         set(value) {
-            age = if (value) -24000 else 0
+            age = if (value) BABY_AGE else 0
         }
 
     internal var forcedAge = 0
@@ -52,7 +52,7 @@ abstract class KryptonAgeable(
         get() = false
 
     init {
-        data.add(MetadataKeys.AGEABLE.BABY, false)
+        data.add(MetadataKeys.Ageable.BABY, false)
     }
 
     protected open fun onAgeTransformation() {
@@ -68,12 +68,18 @@ abstract class KryptonAgeable(
 
         if (forced) {
             forcedAge += difference
-            if (forcedAgeTimer == 0) forcedAgeTimer = 40
+            if (forcedAgeTimer == 0) forcedAgeTimer = FORCED_AGE_TIME
         }
         if (age == 0) age = forcedAge
     }
 
     override fun age(amount: Int) {
         age(amount, false)
+    }
+
+    companion object {
+
+        private const val BABY_AGE = -24000
+        private const val FORCED_AGE_TIME = 40
     }
 }

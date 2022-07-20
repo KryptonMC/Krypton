@@ -27,10 +27,10 @@ import org.kryptonmc.krypton.world.KryptonWorld
 class KryptonArrow(world: KryptonWorld) : KryptonArrowLike(world, EntityTypes.ARROW), Arrow {
 
     override var color: Color
-        get() = Color.of(data[MetadataKeys.ARROW.COLOR])
-        set(value) = data.set(MetadataKeys.ARROW.COLOR, value.value)
+        get() = Color.of(data.get(MetadataKeys.Arrow.COLOR))
+        set(value) = data.set(MetadataKeys.Arrow.COLOR, value.value)
 
     init {
-        data.add(MetadataKeys.ARROW.COLOR, -1)
+        data.add(MetadataKeys.Arrow.COLOR, -1)
     }
 }

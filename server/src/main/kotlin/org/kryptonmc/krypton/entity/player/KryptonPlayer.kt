@@ -77,11 +77,11 @@ import org.kryptonmc.krypton.inventory.KryptonPlayerInventory
 import org.kryptonmc.krypton.item.KryptonItemStack
 import org.kryptonmc.krypton.item.handler
 import org.kryptonmc.krypton.network.SessionHandler
-import org.kryptonmc.krypton.network.chat.ChatType
-import org.kryptonmc.krypton.network.chat.MessageSignature
 import org.kryptonmc.krypton.network.chat.ChatSender
 import org.kryptonmc.krypton.network.chat.ChatSenderLike
+import org.kryptonmc.krypton.network.chat.ChatType
 import org.kryptonmc.krypton.network.chat.ChatTypes
+import org.kryptonmc.krypton.network.chat.MessageSignature
 import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.packet.out.play.GameEvent
 import org.kryptonmc.krypton.packet.out.play.PacketOutAbilities
@@ -108,6 +108,7 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutSetTitleText
 import org.kryptonmc.krypton.packet.out.play.PacketOutSoundEffect
 import org.kryptonmc.krypton.packet.out.play.PacketOutSpawnPlayer
 import org.kryptonmc.krypton.packet.out.play.PacketOutStopSound
+import org.kryptonmc.krypton.packet.out.play.PacketOutSystemChatMessage
 import org.kryptonmc.krypton.packet.out.play.PacketOutTeleportEntity
 import org.kryptonmc.krypton.packet.out.play.PacketOutUnloadChunk
 import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateEntityPosition
@@ -174,13 +175,13 @@ class KryptonPlayer(
             if (!isLoaded) return
             onAbilitiesUpdate()
         }
-    override var walkingSpeed: Float = 0.1F
+    override var walkingSpeed: Float = DEFAULT_WALKING_SPEED
         set(value) {
             field = value
             if (!isLoaded) return
             onAbilitiesUpdate()
         }
-    override var flyingSpeed: Float = 0.05F
+    override var flyingSpeed: Float = DEFAULT_FLYING_SPEED
         set(value) {
             field = value
             if (!isLoaded) return
@@ -298,10 +299,10 @@ class KryptonPlayer(
     internal var foodTickTimer = 0
 
     // 0 is the default vanilla food exhaustion level
-    override var foodExhaustionLevel: Float = 0f
+    override var foodExhaustionLevel: Float = 0F
 
     // 5 is the default vanilla food saturation level
-    override var foodSaturationLevel: Float = 5f
+    override var foodSaturationLevel: Float = 5F
         set(value) {
             field = value
             if (!isLoaded) return
@@ -309,22 +310,22 @@ class KryptonPlayer(
         }
 
     override var absorption: Float
-        get() = data[MetadataKeys.PLAYER.ADDITIONAL_HEARTS]
-        set(value) = data.set(MetadataKeys.PLAYER.ADDITIONAL_HEARTS, value)
+        get() = data.get(MetadataKeys.Player.ADDITIONAL_HEARTS)
+        set(value) = data.set(MetadataKeys.Player.ADDITIONAL_HEARTS, value)
     var skinSettings: Byte
-        get() = data[MetadataKeys.PLAYER.SKIN_FLAGS]
-        set(value) = data.set(MetadataKeys.PLAYER.SKIN_FLAGS, value)
+        get() = data.get(MetadataKeys.Player.SKIN_FLAGS)
+        set(value) = data.set(MetadataKeys.Player.SKIN_FLAGS, value)
     override var mainHand: MainHand
-        get() = if (data[MetadataKeys.PLAYER.MAIN_HAND] == 0.toByte()) MainHand.LEFT else MainHand.RIGHT
-        set(value) = data.set(MetadataKeys.PLAYER.MAIN_HAND, if (value == MainHand.LEFT) 0 else 1)
+        get() = if (data.get(MetadataKeys.Player.MAIN_HAND) == 0.toByte()) MainHand.LEFT else MainHand.RIGHT
+        set(value) = data.set(MetadataKeys.Player.MAIN_HAND, if (value == MainHand.LEFT) 0 else 1)
 
     init {
-        data.add(MetadataKeys.PLAYER.ADDITIONAL_HEARTS, 0F)
-        data.add(MetadataKeys.PLAYER.SCORE, 0)
-        data.add(MetadataKeys.PLAYER.SKIN_FLAGS, 0)
-        data.add(MetadataKeys.PLAYER.MAIN_HAND, 1)
-        data.add(MetadataKeys.PLAYER.LEFT_SHOULDER, CompoundTag.empty())
-        data.add(MetadataKeys.PLAYER.RIGHT_SHOULDER, CompoundTag.empty())
+        data.add(MetadataKeys.Player.ADDITIONAL_HEARTS, 0F)
+        data.add(MetadataKeys.Player.SCORE, 0)
+        data.add(MetadataKeys.Player.SKIN_FLAGS, 0)
+        data.add(MetadataKeys.Player.MAIN_HAND, 1)
+        data.add(MetadataKeys.Player.LEFT_SHOULDER, CompoundTag.empty())
+        data.add(MetadataKeys.Player.RIGHT_SHOULDER, CompoundTag.empty())
     }
 
     fun updateGameMode(mode: GameMode, cause: ChangeGameModeEvent.Cause) {
@@ -391,10 +392,10 @@ class KryptonPlayer(
         // -> Saturation ↓
         // -> If Saturation Threshold of 0
         // -> Food Level ↓
-        if (foodExhaustionLevel > 4f) {
-            foodExhaustionLevel -= 4f
+        if (foodExhaustionLevel > 4F) {
+            foodExhaustionLevel -= 4F
             if (foodSaturationLevel > 0) {
-                foodSaturationLevel = max(foodSaturationLevel - 1, 0f)
+                foodSaturationLevel = max(foodSaturationLevel - 1, 0F)
             } else {
                 foodLevel = max(foodLevel - 1, 0)
             }
@@ -410,7 +411,7 @@ class KryptonPlayer(
         // the food level regenerates instead of deducting a half-heart.
         // NOTE: 80 are 20 ticks are the vanilla timings for hunger and
         // peaceful food regeneration respectively.
-        when (server.config.world.difficulty) {
+        when (world.difficulty) {
             Difficulty.EASY -> {
                 if (health > 10 && foodLevel == 0 && foodTickTimer == 80) { // starving
                     health-- // deduct half a heart
@@ -441,7 +442,7 @@ class KryptonPlayer(
                     // Once a half-heart has been added, increase the exhaustion by 3,
                     // or if that operation were to exceed the threshold, instead, set it to the
                     // threshold value of 4.
-                    foodExhaustionLevel = min(foodExhaustionLevel + 3f, 4f)
+                    foodExhaustionLevel = min(foodExhaustionLevel + 3F, 4F)
                     // Force the saturation level to deplete by 3.
                     // So as health comes up, the food "buffer" comes down,
                     // eventually causing the food level to decrease, when saturation
@@ -602,16 +603,21 @@ class KryptonPlayer(
             MessageType.CHAT -> ChatTypes.CHAT
             MessageType.SYSTEM -> ChatTypes.SYSTEM
         }
-        if (!acceptsChatType(chatType)) return
         sendMessage(message, MessageSignature.unsigned(), ChatSender.fromIdentity(source), chatType)
     }
 
     fun sendMessage(message: Component, signature: MessageSignature, sender: ChatSender, type: ChatType) {
         if (!acceptsChatType(type)) return
-        session.send(PacketOutPlayerChatMessage(message, null, InternalRegistries.CHAT_TYPE.idOf(type), sender, signature))
+        val typeId = InternalRegistries.CHAT_TYPE.idOf(type)
+        val packet = when (type) {
+            ChatTypes.SYSTEM -> PacketOutSystemChatMessage(message, typeId)
+            ChatTypes.CHAT, ChatTypes.GAME_INFO -> PacketOutPlayerChatMessage(message, null, typeId, sender, signature)
+            else -> throw IllegalArgumentException("Chat type $type is not a message type!")
+        }
+        session.send(packet)
     }
 
-    private fun acceptsChatType(type: ChatType): Boolean = when (chatVisibility) {
+    fun acceptsChatType(type: ChatType): Boolean = when (chatVisibility) {
         ChatVisibility.HIDDEN -> type == ChatTypes.GAME_INFO
         ChatVisibility.SYSTEM -> type == ChatTypes.SYSTEM || type == ChatTypes.GAME_INFO
         else -> true
@@ -826,10 +832,6 @@ class KryptonPlayer(
 
     private fun onAbilitiesUpdate() {
         session.send(PacketOutAbilities(this))
-        updateInvisibility()
-    }
-
-    private fun updateInvisibility() {
         removeEffectParticles()
         isInvisible = gameMode == GameMode.SPECTATOR
     }
@@ -863,14 +865,14 @@ class KryptonPlayer(
         // Source: https://minecraft.fandom.com/wiki/Hunger#Exhaustion_level_increase
         if (isSwimming) {
             val value = sqrt(deltaX * deltaX + deltaY * deltaY + deltaZ * deltaZ)
-            if (value > 0) foodExhaustionLevel += 0.01F * value.toFloat()
+            if (value > 0) foodExhaustionLevel += SWIMMING_EXHAUSTION_MODIFIER * value.toFloat()
             // 0.01/u is the vanilla level of exhaustion per unit for swimming
             return
         }
         if (isOnGround) {
             val value = sqrt(deltaX * deltaX + deltaZ * deltaZ)
             if (value > 0) when {
-                isSprinting -> foodExhaustionLevel += 0.1F * value.toFloat()
+                isSprinting -> foodExhaustionLevel += SPRINTING_EXHAUSTION_MODIFIER * value.toFloat()
                 // 0.1/u is the vanilla level of exhaustion per unit for sprinting
             }
             return
@@ -885,7 +887,12 @@ class KryptonPlayer(
 
     companion object {
 
+        private const val DEFAULT_WALKING_SPEED = 0.1F
+        private const val DEFAULT_FLYING_SPEED = 0.05F
         private const val FLYING_ACHIEVEMENT_MINIMUM_SPEED = 25
+        private const val SWIMMING_EXHAUSTION_MODIFIER = 0.01F
+        private const val SPRINTING_EXHAUSTION_MODIFIER = 0.1F
+
         private val ATTRIBUTES = attributes()
             .add(AttributeTypes.ATTACK_DAMAGE, 1.0)
             .add(AttributeTypes.MOVEMENT_SPEED, 0.1)

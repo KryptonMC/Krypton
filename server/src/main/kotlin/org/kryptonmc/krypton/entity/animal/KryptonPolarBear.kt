@@ -35,11 +35,11 @@ class KryptonPolarBear(world: KryptonWorld) : KryptonAnimal(world, EntityTypes.P
     override var angerTarget: UUID? = null
 
     override var isStanding: Boolean
-        get() = data[MetadataKeys.POLAR_BEAR.STANDING]
-        set(value) = data.set(MetadataKeys.POLAR_BEAR.STANDING, value)
+        get() = data.get(MetadataKeys.PolarBear.STANDING)
+        set(value) = data.set(MetadataKeys.PolarBear.STANDING, value)
 
     init {
-        data.add(MetadataKeys.POLAR_BEAR.STANDING, false)
+        data.add(MetadataKeys.PolarBear.STANDING, false)
     }
 
     override fun startAngerTimer() {

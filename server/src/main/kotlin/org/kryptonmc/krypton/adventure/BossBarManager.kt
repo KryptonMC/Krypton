@@ -26,6 +26,11 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutBossBar
 import java.util.Collections
 import java.util.UUID
 
+/**
+ * This is based on Velocity's boss bar manager. It's a way to handle boss bars
+ * requiring UUIDs, and allows for multiple players to view a boss bar. We need
+ * this because Adventure does not provide a way to do this itself.
+ */
 object BossBarManager : BossBar.Listener {
 
     private val bars = MapMaker().weakKeys().makeMap<BossBar, BossBarHolder>()

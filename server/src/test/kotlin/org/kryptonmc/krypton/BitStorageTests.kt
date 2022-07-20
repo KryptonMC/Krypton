@@ -33,10 +33,10 @@ class BitStorageTests {
     fun `test retrieval`() {
         val data = longArrayOf(6148914691236517205, 6148914691236517205)
         val storage = SimpleBitStorage(BITS, SIZE, data)
-        assertThrows<IllegalArgumentException> { storage[32] }
-        assertThrows<IllegalArgumentException> { storage[-1] }
+        assertThrows<IllegalArgumentException> { storage.get(32) }
+        assertThrows<IllegalArgumentException> { storage.get(-1) }
         for (i in 0..31) {
-            assertEquals(5, storage[i])
+            assertEquals(5, storage.get(i))
         }
     }
 
@@ -52,12 +52,12 @@ class BitStorageTests {
     @Test
     fun `test setting of data`() {
         val storage = SimpleBitStorage(BITS, SIZE)
-        assertThrows<IllegalArgumentException> { storage[32] = 0 }
-        assertThrows<IllegalArgumentException> { storage[-1] = 0 }
-        assertThrows<IllegalArgumentException> { storage[0] = 16 }
-        assertThrows<IllegalArgumentException> { storage[0] = -1 }
-        storage[0] = 5
-        assertEquals(5, storage[0])
+        assertThrows<IllegalArgumentException> { storage.set(32, 0) }
+        assertThrows<IllegalArgumentException> { storage.set(-1, 0) }
+        assertThrows<IllegalArgumentException> { storage.set(0, 16) }
+        assertThrows<IllegalArgumentException> { storage.set(0, -1) }
+        storage.set(0, 5)
+        assertEquals(5, storage.get(0))
     }
 
     @Test
@@ -68,7 +68,7 @@ class BitStorageTests {
         assertThrows<IllegalArgumentException> { storage.getAndSet(0, 16) }
         assertThrows<IllegalArgumentException> { storage.getAndSet(0, -1) }
         assertEquals(0, storage.getAndSet(0, 5))
-        assertEquals(5, storage[0])
+        assertEquals(5, storage.get(0))
     }
 
     @Test
@@ -76,7 +76,7 @@ class BitStorageTests {
         val data = longArrayOf(6148914691236517205, 6148914691236517205)
         val storage = SimpleBitStorage(BITS, SIZE, data)
         storage.forEach { _, value -> assertEquals(5, value) }
-        storage[0] = 12
+        storage.set(0, 12)
         storage.forEach { index, value -> if (index == 0) assertEquals(12, value) }
     }
 

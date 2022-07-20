@@ -31,13 +31,13 @@ import org.kryptonmc.krypton.util.writeInstant
 import org.kryptonmc.krypton.util.writeVarIntByteArray
 import java.security.PublicKey
 import java.time.Instant
+import java.util.Objects
 
 @JvmRecord
 data class PlayerPublicKey(val data: Data) {
 
     fun createSignatureValidator(): SignatureValidator = SignatureValidator.from(data.key, Encryption.SIGNATURE_ALGORITHM)
 
-    @Suppress("ArrayInDataClass")
     @JvmRecord
     data class Data(val expiryTime: Instant, val key: PublicKey, val signature: ByteArray) : Writable {
 
@@ -55,6 +55,14 @@ data class PlayerPublicKey(val data: Data) {
             buf.writeVarIntByteArray(key.encoded)
             buf.writeVarIntByteArray(signature)
         }
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) return true
+            if (javaClass != other?.javaClass) return false
+            return expiryTime == (other as Data).expiryTime && key == other.key && signature.contentEquals(other.signature)
+        }
+
+        override fun hashCode(): Int = Objects.hash(expiryTime, key, signature)
     }
 
     companion object {

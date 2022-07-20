@@ -23,100 +23,93 @@ import org.kryptonmc.api.effect.particle.ParticleTypes
 import org.kryptonmc.api.effect.sound.SoundEvent
 import org.kryptonmc.api.effect.sound.SoundEvents
 import org.kryptonmc.api.util.Color
+import org.kryptonmc.api.world.biome.AmbientAdditionsSettings
+import org.kryptonmc.api.world.biome.AmbientMoodSettings
 import org.kryptonmc.api.world.biome.AmbientParticleSettings
+import org.kryptonmc.api.world.biome.Climate
 import org.kryptonmc.api.world.biome.Precipitation
+import org.kryptonmc.api.world.biome.TemperatureModifier
 import org.kryptonmc.api.world.biome.biome
 import org.kryptonmc.krypton.effect.KryptonMusic
 
 object NetherBiomes {
 
-    private const val TEMPERATURE = 2F
     private val SKY_COLOR = OverworldBiomes.calculateSkyColor(2F)
 
-    @JvmStatic
-    fun netherWastes(key: Key): KryptonBiome = baseNether(
-        key,
-        3344392,
-        SoundEvents.AMBIENT_NETHER_WASTES_LOOP,
-        SoundEvents.AMBIENT_NETHER_WASTES_MOOD,
-        SoundEvents.AMBIENT_NETHER_WASTES_ADDITIONS,
-        SoundEvents.MUSIC_BIOME_NETHER_WASTES
-    )
+    private const val WASTES_FOG = 3344392 // Red: 51, Green: 8, Blue: 8
+    private const val VALLEY_FOG = 1787717 // Red: 27, Green: 71, Blue: 69
+    private const val DELTAS_FOG = 6840176 // Red: 104, Green: 95, Blue: 112
+    private const val CRIMSON_FOG = 3343107 // Red: 51, Green: 3, Blue: 3
+    private const val WARPED_FOG = 1705242 // Red: 26, Green: 5, Blue: 26
+
+    private val WASTES_LOOP = SoundEvents.AMBIENT_NETHER_WASTES_LOOP
+    private val VALLEY_LOOP = SoundEvents.AMBIENT_SOUL_SAND_VALLEY_LOOP
+    private val DELTAS_LOOP = SoundEvents.AMBIENT_BASALT_DELTAS_LOOP
+    private val CRIMSON_LOOP = SoundEvents.AMBIENT_CRIMSON_FOREST_LOOP
+    private val WARPED_LOOP = SoundEvents.AMBIENT_WARPED_FOREST_LOOP
+
+    private val WASTES_MOOD = SoundEvents.AMBIENT_NETHER_WASTES_MOOD
+    private val VALLEY_MOOD = SoundEvents.AMBIENT_SOUL_SAND_VALLEY_MOOD
+    private val DELTAS_MOOD = SoundEvents.AMBIENT_BASALT_DELTAS_MOOD
+    private val CRIMSON_MOOD = SoundEvents.AMBIENT_CRIMSON_FOREST_MOOD
+    private val WARPED_MOOD = SoundEvents.AMBIENT_WARPED_FOREST_MOOD
+
+    private val WASTES_ADDITIONS = SoundEvents.AMBIENT_NETHER_WASTES_ADDITIONS
+    private val VALLEY_ADDITIONS = SoundEvents.AMBIENT_SOUL_SAND_VALLEY_ADDITIONS
+    private val DELTAS_ADDITIONS = SoundEvents.AMBIENT_BASALT_DELTAS_ADDITIONS
+    private val CRIMSON_ADDITIONS = SoundEvents.AMBIENT_CRIMSON_FOREST_ADDITIONS
+    private val WARPED_ADDITIONS = SoundEvents.AMBIENT_WARPED_FOREST_ADDITIONS
+
+    private val WASTES_MUSIC = SoundEvents.MUSIC_BIOME_NETHER_WASTES
+    private val VALLEY_MUSIC = SoundEvents.MUSIC_BIOME_SOUL_SAND_VALLEY
+    private val DELTAS_MUSIC = SoundEvents.MUSIC_BIOME_BASALT_DELTAS
+    private val CRIMSON_MUSIC = SoundEvents.MUSIC_BIOME_CRIMSON_FOREST
+    private val WARPED_MUSIC = SoundEvents.MUSIC_BIOME_WARPED_FOREST
+
+    private val VALLEY_PARTICLES = AmbientParticleSettings.of(ParticleTypes.ASH, null, 0.00625F)
+    private val DELTAS_PARTICLES = AmbientParticleSettings.of(ParticleTypes.WHITE_ASH, null, 0.118093334F)
+    private val CRIMSON_PARTICLES = AmbientParticleSettings.of(ParticleTypes.CRIMSON_SPORE, null, 0.025F)
+    private val WARPED_PARTICLES = AmbientParticleSettings.of(ParticleTypes.WARPED_SPORE, null, 0.01428F)
 
     @JvmStatic
-    fun soulSandValley(key: Key): KryptonBiome = baseNether(
-        key,
-        1787717,
-        SoundEvents.AMBIENT_SOUL_SAND_VALLEY_LOOP,
-        SoundEvents.AMBIENT_SOUL_SAND_VALLEY_MOOD,
-        SoundEvents.AMBIENT_SOUL_SAND_VALLEY_ADDITIONS,
-        SoundEvents.MUSIC_BIOME_SOUL_SAND_VALLEY,
-        AmbientParticleSettings.of(ParticleTypes.ASH, null, 0.00625F)
-    )
+    fun netherWastes(key: Key): KryptonBiome = baseNether(key, WASTES_FOG, WASTES_LOOP, WASTES_MOOD, WASTES_ADDITIONS, WASTES_MUSIC)
 
     @JvmStatic
-    fun basaltDeltas(key: Key): KryptonBiome = baseNether(
-        key,
-        6840176,
-        SoundEvents.AMBIENT_BASALT_DELTAS_LOOP,
-        SoundEvents.AMBIENT_BASALT_DELTAS_MOOD,
-        SoundEvents.AMBIENT_BASALT_DELTAS_ADDITIONS,
-        SoundEvents.MUSIC_BIOME_BASALT_DELTAS,
-        AmbientParticleSettings.of(ParticleTypes.WHITE_ASH, null, 0.118093334F)
-    )
+    fun soulSandValley(key: Key): KryptonBiome =
+        baseNether(key, VALLEY_FOG, VALLEY_LOOP, VALLEY_MOOD, VALLEY_ADDITIONS, VALLEY_MUSIC, VALLEY_PARTICLES)
 
     @JvmStatic
-    fun crimsonForest(key: Key): KryptonBiome = baseNether(
-        key,
-        3343107,
-        SoundEvents.AMBIENT_CRIMSON_FOREST_LOOP,
-        SoundEvents.AMBIENT_CRIMSON_FOREST_MOOD,
-        SoundEvents.AMBIENT_CRIMSON_FOREST_ADDITIONS,
-        SoundEvents.MUSIC_BIOME_CRIMSON_FOREST,
-        AmbientParticleSettings.of(ParticleTypes.CRIMSON_SPORE, null, 0.025F)
-    )
+    fun basaltDeltas(key: Key): KryptonBiome =
+        baseNether(key, DELTAS_FOG, DELTAS_LOOP, DELTAS_MOOD, DELTAS_ADDITIONS, DELTAS_MUSIC, DELTAS_PARTICLES)
 
     @JvmStatic
-    fun warpedForest(key: Key): KryptonBiome = baseNether(
-        key,
-        1705242,
-        SoundEvents.AMBIENT_WARPED_FOREST_LOOP,
-        SoundEvents.AMBIENT_WARPED_FOREST_MOOD,
-        SoundEvents.AMBIENT_WARPED_FOREST_ADDITIONS,
-        SoundEvents.MUSIC_BIOME_WARPED_FOREST,
-        AmbientParticleSettings.of(ParticleTypes.WARPED_SPORE, null, 0.01428F)
-    )
+    fun crimsonForest(key: Key): KryptonBiome =
+        baseNether(key, CRIMSON_FOG, CRIMSON_LOOP, CRIMSON_MOOD, CRIMSON_ADDITIONS, CRIMSON_MUSIC, CRIMSON_PARTICLES)
+
+    @JvmStatic
+    fun warpedForest(key: Key): KryptonBiome =
+        baseNether(key, WARPED_FOG, WARPED_LOOP, WARPED_MOOD, WARPED_ADDITIONS, WARPED_MUSIC, WARPED_PARTICLES)
 
     @JvmStatic
     private fun baseNether(
         key: Key,
-        fogColor: Int,
-        loopSound: SoundEvent,
-        moodSound: SoundEvent,
-        additionsSound: SoundEvent,
+        fog: Int,
+        loop: SoundEvent,
+        mood: SoundEvent,
+        additions: SoundEvent,
         music: SoundEvent,
         particles: AmbientParticleSettings? = null
     ): KryptonBiome = biome(key) {
-        climate {
-            precipitation(Precipitation.NONE)
-            temperature(TEMPERATURE)
-            downfall(0F)
-        }
+        climate(Climate.of(Precipitation.NONE, 2F, 0F, TemperatureModifier.NONE))
         effects {
             waterColor(OverworldBiomes.OVERWORLD_WATER)
             waterFogColor(OverworldBiomes.OVERWORLD_WATER_FOG)
-            fogColor(Color.of(fogColor))
+            fogColor(Color.of(fog))
             skyColor(SKY_COLOR)
             particles(particles)
-            loopSound(loopSound)
-            mood(moodSound) {
-                delay(6000)
-                searchExtent(8)
-                offset(2.0)
-            }
-            additions(additionsSound) {
-                probability(0.0111)
-            }
+            loopSound(loop)
+            mood(AmbientMoodSettings.of(mood, 6000, 8, 2.0))
+            additions(AmbientAdditionsSettings.of(additions, 0.0111))
             backgroundMusic(KryptonMusic.game(music))
         }
     } as KryptonBiome

@@ -50,17 +50,17 @@ abstract class KryptonMob(
     open var target: KryptonLivingEntity? = null
 
     final override var hasAI: Boolean
-        get() = getFlag(0)
-        set(value) = setFlag(0, value)
+        get() = !getFlag(MetadataKeys.Mob.FLAGS, FLAG_NO_AI)
+        set(value) = setFlag(MetadataKeys.Mob.FLAGS, FLAG_NO_AI, !value)
     final override var mainHand: MainHand
-        get() = if (getFlag(1)) MainHand.LEFT else MainHand.RIGHT
-        set(value) = setFlag(1, value == MainHand.LEFT)
+        get() = if (getFlag(MetadataKeys.Mob.FLAGS, FLAG_LEFT_HANDED)) MainHand.LEFT else MainHand.RIGHT
+        set(value) = setFlag(MetadataKeys.Mob.FLAGS, FLAG_LEFT_HANDED, value == MainHand.LEFT)
     final override var isAggressive: Boolean
-        get() = getFlag(2)
-        set(value) = setFlag(2, value)
+        get() = getFlag(MetadataKeys.Mob.FLAGS, FLAG_AGGRESSIVE)
+        set(value) = setFlag(MetadataKeys.Mob.FLAGS, FLAG_AGGRESSIVE, value)
 
     init {
-        data.add(MetadataKeys.MOB.FLAGS, 0)
+        data.add(MetadataKeys.Mob.FLAGS, 0)
     }
 
     override fun equipment(slot: EquipmentSlot): KryptonItemStack = when (slot.type) {
@@ -100,13 +100,11 @@ abstract class KryptonMob(
     }
     */
 
-    private fun getFlag(flag: Int): Boolean = getFlag(MetadataKeys.MOB.FLAGS, flag)
-
-    private fun setFlag(flag: Int, state: Boolean) {
-        setFlag(MetadataKeys.MOB.FLAGS, flag, state)
-    }
-
     companion object {
+
+        private const val FLAG_NO_AI = 0
+        private const val FLAG_LEFT_HANDED = 1
+        private const val FLAG_AGGRESSIVE = 2
 
         @JvmStatic
         fun attributes(): AttributeSupplier.Builder = KryptonLivingEntity.attributes()

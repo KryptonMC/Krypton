@@ -26,11 +26,13 @@ interface BitStorage {
 
     fun getAndSet(index: Int, value: Int): Int
 
-    operator fun get(index: Int): Int
+    fun get(index: Int): Int
 
-    operator fun set(index: Int, value: Int)
+    fun set(index: Int, value: Int)
 
     fun forEach(consumer: StorageConsumer)
 
     fun unpack(output: IntArray)
+
+    fun sizeBytes(): Int = size * Long.SIZE_BYTES
 }

@@ -19,12 +19,12 @@
 package org.kryptonmc.krypton.entity.metadata
 
 import io.netty.buffer.ByteBuf
-import org.kryptonmc.api.registry.Registry
 import org.kryptonmc.api.util.CataloguedBy
 import org.kryptonmc.krypton.registry.KryptonRegistry
 import org.kryptonmc.krypton.util.ByteBufReader
 import org.kryptonmc.krypton.util.ByteBufWriter
 import org.kryptonmc.krypton.util.readById
+import org.kryptonmc.krypton.util.readEnum
 import org.kryptonmc.krypton.util.readNullable
 import org.kryptonmc.krypton.util.readVarInt
 import org.kryptonmc.krypton.util.writeEnum
@@ -34,33 +34,33 @@ import org.kryptonmc.krypton.util.writeNullable
 @CataloguedBy(MetadataSerializers::class)
 interface MetadataSerializer<T> {
 
-    fun write(buf: ByteBuf, item: T)
-
     fun read(buf: ByteBuf): T
+
+    fun write(buf: ByteBuf, item: T)
 
     fun createKey(id: Int): MetadataKey<T> = MetadataKey(id, this)
 
     companion object {
 
         @JvmStatic
-        fun <T> simple(writer: ByteBufWriter<T>, reader: ByteBufReader<T>): MetadataSerializer<T> = object : MetadataSerializer<T> {
+        fun <T> simple(reader: ByteBufReader<T>, writer: ByteBufWriter<T>): MetadataSerializer<T> = object : MetadataSerializer<T> {
+
+            override fun read(buf: ByteBuf): T = reader.read(buf)
 
             override fun write(buf: ByteBuf, item: T) {
                 writer.write(buf, item)
             }
-
-            override fun read(buf: ByteBuf): T = reader.read(buf)
         }
 
         @JvmStatic
-        fun <T> optional(writer: ByteBufWriter<T>, reader: ByteBufReader<T>): MetadataSerializer<T?> =
-            simple({ buf, value -> buf.writeNullable(value, writer) }, { it.readNullable(reader) })
+        fun <T> nullable(reader: ByteBufReader<T>, writer: ByteBufWriter<T>): MetadataSerializer<T?> =
+            simple({ it.readNullable(reader) }, { buf, value -> buf.writeNullable(value, writer) })
 
         @JvmStatic
-        fun <E : Enum<E>> simpleEnum(type: Class<E>): MetadataSerializer<E> = simple(ByteBuf::writeEnum) { type.enumConstants[it.readVarInt()] }
+        inline fun <reified E : Enum<E>> simpleEnum(): MetadataSerializer<E> = simple(ByteBuf::readEnum, ByteBuf::writeEnum)
 
         @JvmStatic
         fun <T : Any> simpleId(registry: KryptonRegistry<T>): MetadataSerializer<T> =
-            simple({ buf, value -> buf.writeId(registry, value) }, { it.readById(registry)!! })
+            simple({ it.readById(registry)!! }, { buf, value -> buf.writeId(registry, value) })
     }
 }

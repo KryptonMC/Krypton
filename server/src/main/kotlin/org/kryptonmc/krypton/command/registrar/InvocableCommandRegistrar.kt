@@ -67,11 +67,7 @@ sealed class InvocableCommandRegistrar<C : InvocableCommand<A>, M : CommandMeta,
 
     override fun register(root: RootCommandNode<Sender>, command: C, meta: M) {
         val name = meta.name.lowercase()
-        val node = buildRawArgumentsLiteral(
-            name,
-            { execute(command, meta, it) },
-            { context, builder -> suggest(command, meta, context, builder) }
-        )
+        val node = buildRawArgumentsLiteral(name, { execute(command, meta, it) }, { context, builder -> suggest(command, meta, context, builder) })
         register(root, node)
         meta.aliases.forEach {
             val value = it.lowercase()

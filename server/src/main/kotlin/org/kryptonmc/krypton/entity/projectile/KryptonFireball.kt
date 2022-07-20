@@ -29,19 +29,12 @@ import org.kryptonmc.krypton.world.KryptonWorld
 
 abstract class KryptonFireball(world: KryptonWorld, type: EntityType<out Fireball>) : KryptonAcceleratingProjectile(world, type), Fireball {
 
-    private var item: KryptonItemStack
-        get() = data[MetadataKeys.FIREBALL.ITEM]
-        set(value) {
-            if (value.type === ItemTypes.FIRE_CHARGE && value.meta == KryptonItemMeta.DEFAULT) return
-            data[MetadataKeys.FIREBALL.ITEM] = value.withAmount(1)
-        }
-
     init {
-        data.add(MetadataKeys.FIREBALL.ITEM, KryptonItemStack.EMPTY)
+        data.add(MetadataKeys.Fireball.ITEM, KryptonItemStack.EMPTY)
     }
 
     final override fun asItem(): ItemStack {
-        val item = item
+        val item = data.get(MetadataKeys.Fireball.ITEM)
         if (item.isEmpty()) return DEFAULT_ITEM
         return item
     }

@@ -22,6 +22,7 @@ import org.kryptonmc.api.entity.EntityType
 import org.kryptonmc.api.entity.hanging.HangingEntity
 import org.kryptonmc.api.util.Direction
 import org.kryptonmc.krypton.entity.KryptonEntity
+import org.kryptonmc.krypton.util.KryptonBoundingBox
 import org.kryptonmc.krypton.util.antiClockwise
 import org.kryptonmc.krypton.util.data2D
 import org.kryptonmc.krypton.world.KryptonWorld
@@ -38,38 +39,54 @@ abstract class KryptonHangingEntity(
 
     abstract val height: Int
 
-    var centerPosition: Vector3i = Vector3i(location.floorX(), location.floorY(), location.floorZ())
-        private set
+    private var centerPosition = Vector3i(location.floorX(), location.floorY(), location.floorZ())
     final override var direction: Direction = Direction.SOUTH
         set(value) {
             require(value.axis.isHorizontal)
             field = value
-            rotation = Vector2f(rotation.x(), (direction.data2D() * 90).toFloat())
+            // Each horizontal direction is a half turn (90 degrees) away from each other.
+            // The 2D data value is 0 = south, 1 = west, 2 = north, 3 = east.
+            rotation = Vector2f(rotation.x(), value.data2D() * HALF_TURN_DEGREES)
             recalculateBoundingBox()
         }
 
     private fun recalculateBoundingBox() {
-        var x = centerPosition.x() + 0.5
-        var y = centerPosition.y() + 0.5
-        var z = centerPosition.z() + 0.5
-        val offWidth = offset(width)
-        val offHeight = offset(height)
-        x -= direction.normalX * 0.46875
-        z -= direction.normalZ * 0.46875
-        y += offHeight
+        var x = centerPosition.x() + BLOCK_CENTER_OFFSET
+        var y = centerPosition.y() + BLOCK_CENTER_OFFSET
+        var z = centerPosition.z() + BLOCK_CENTER_OFFSET
+        // for EAST, the x becomes centerX + 1/32, and for WEST, the x becomes centerX + 31/32
+        x -= direction.normalX * ALMOST_TWO_BLOCKS_PIXELS
+        // for SOUTH, the z becomes centerZ + 1/32, and for NORTH, the z becomes centerZ + 31/32
+        z -= direction.normalZ * ALMOST_TWO_BLOCKS_PIXELS
+        if (height % TWO_BLOCKS_PICTURE_PIXELS == 0) y += BLOCK_CENTER_OFFSET
         val antiClockwise = direction.antiClockwise()
-        x += offWidth * antiClockwise.normalX
-        z += offWidth * antiClockwise.normalZ
+        if (width % TWO_BLOCKS_PICTURE_PIXELS == 0) {
+            // for direction NORTH (anti clockwise WEST), the x becomes centerX
+            // for direction SOUTH (anti clockwise EAST), the x becomes centerX + 1
+            x += BLOCK_CENTER_OFFSET * antiClockwise.normalX
+        }
+        if (width % TWO_BLOCKS_PICTURE_PIXELS == 0) {
+            // for direction EAST (anti clockwise NORTH), the z becomes centerZ
+            // for direction WEST (anti clockwise SOUTH), the z becomes centerZ + 1
+            z += BLOCK_CENTER_OFFSET * antiClockwise.normalZ
+        }
         location = Vector3d(x, y, z)
-        var width1 = width.toDouble()
+        var xWidth = width.toDouble()
         var height = height.toDouble()
-        var width2 = width.toDouble()
-        if (direction.axis == Direction.Axis.Z) width2 = 1.0 else width1 = 1.0
-        width1 /= 32.0
-        height /= 32.0
-        width2 /= 32.0
-        // TODO: Set bounding box when it exists for entities
+        var zWidth = width.toDouble()
+        if (direction.axis == Direction.Axis.Z) zWidth = 1.0 else xWidth = 1.0
+        xWidth /= TWO_BLOCKS_PICTURE_PIXELS
+        height /= TWO_BLOCKS_PICTURE_PIXELS
+        zWidth /= TWO_BLOCKS_PICTURE_PIXELS
+        boundingBox = KryptonBoundingBox(x - xWidth, y - height, z - zWidth, x + xWidth, y + height, z + zWidth)
     }
 
-    private fun offset(value: Int): Double = if (value % 32 == 0) 0.5 else 0.0
+    companion object {
+
+        // The offset to add to a block coordinate to make it in the centre of the block.
+        private const val BLOCK_CENTER_OFFSET = 0.5
+        private const val TWO_BLOCKS_PICTURE_PIXELS = 16 * 2 // 16 pixels on a picture = 1 block.
+        private const val ALMOST_TWO_BLOCKS_PIXELS = 31 / 32 // Wish I had a better name for this
+        private const val HALF_TURN_DEGREES = 90F
+    }
 }

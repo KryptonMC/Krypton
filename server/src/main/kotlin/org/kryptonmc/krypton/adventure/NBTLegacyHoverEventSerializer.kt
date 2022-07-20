@@ -64,11 +64,8 @@ object NBTLegacyHoverEventSerializer : LegacyHoverEventSerializer {
     override fun deserializeShowEntity(input: Component, decoder: Codec.Decoder<Component, String, out RuntimeException>): HoverEvent.ShowEntity {
         return try {
             val nbt = SNBT_CODEC.decode(input.toPlainText())
-            HoverEvent.ShowEntity.of(
-                Key.key(nbt.getString(ENTITY_TYPE)),
-                UUID.fromString(nbt.getString(ENTITY_ID)),
-                decoder.decode(nbt.getString(ENTITY_NAME))
-            )
+            val name = decoder.decode(nbt.getString(ENTITY_NAME))
+            HoverEvent.ShowEntity.of(Key.key(nbt.getString(ENTITY_TYPE)), UUID.fromString(nbt.getString(ENTITY_ID)), name)
         } catch (exception: CommandSyntaxException) {
             throw IOException(exception)
         }

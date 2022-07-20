@@ -38,41 +38,39 @@ class KryptonWolf(world: KryptonWorld) : KryptonTamable(world, EntityTypes.WOLF,
     override var angerTarget: UUID? = null
     override var isAngry: Boolean
         get() = remainingAngerTime > 0
-        set(value) {
-            if (value) startAngerTimer() else stopBeingAngry()
-        }
+        set(value) = if (value) startAngerTimer() else stopBeingAngry()
 
     override var collarColor: DyeColor
-        get() = KryptonRegistries.DYE_COLORS.get(data[MetadataKeys.WOLF.COLLAR_COLOR])!!
-        set(value) = data.set(MetadataKeys.WOLF.COLLAR_COLOR, KryptonRegistries.DYE_COLORS.idOf(value))
+        get() = KryptonRegistries.DYE_COLORS.get(data.get(MetadataKeys.Wolf.COLLAR_COLOR))!!
+        set(value) = data.set(MetadataKeys.Wolf.COLLAR_COLOR, KryptonRegistries.DYE_COLORS.idOf(value))
     override var isBeggingForFood: Boolean
-        get() = data[MetadataKeys.WOLF.BEGGING]
-        set(value) = data.set(MetadataKeys.WOLF.BEGGING, value)
+        get() = data.get(MetadataKeys.Wolf.BEGGING)
+        set(value) = data.set(MetadataKeys.Wolf.BEGGING, value)
     override var remainingAngerTime: Int
-        get() = data[MetadataKeys.WOLF.ANGER_TIME]
-        set(value) = data.set(MetadataKeys.WOLF.ANGER_TIME, value)
+        get() = data.get(MetadataKeys.Wolf.ANGER_TIME)
+        set(value) = data.set(MetadataKeys.Wolf.ANGER_TIME, value)
 
-    override var isTame: Boolean
-        get() = super.isTame
+    override var isTamed: Boolean
+        get() = super.isTamed
         set(value) {
-            super.isTame = value
+            super.isTamed = value
             if (value) {
-                attribute(AttributeTypes.MAX_HEALTH)?.baseValue = 20.0
-                health = 20F
+                attribute(AttributeTypes.MAX_HEALTH)?.baseValue = TAMED_HEALTH
+                health = TAMED_HEALTH.toFloat()
             } else {
-                attribute(AttributeTypes.MAX_HEALTH)?.baseValue = 8.0
+                attribute(AttributeTypes.MAX_HEALTH)?.baseValue = UNTAMED_HEALTH
             }
-            attribute(AttributeTypes.ATTACK_DAMAGE)?.baseValue = 4.0
+            attribute(AttributeTypes.ATTACK_DAMAGE)?.baseValue = TAME_UPDATE_ATTACK_DAMAGE
         }
 
     override val soundVolume: Float
         get() = 0.4F
 
     init {
-        data.add(MetadataKeys.WOLF.BEGGING, false)
-        data.add(MetadataKeys.WOLF.COLLAR_COLOR, KryptonRegistries.DYE_COLORS.idOf(DyeColors.RED))
-        data.add(MetadataKeys.WOLF.ANGER_TIME, 0)
-        isTame = false
+        data.add(MetadataKeys.Wolf.BEGGING, false)
+        data.add(MetadataKeys.Wolf.COLLAR_COLOR, KryptonRegistries.DYE_COLORS.idOf(DyeColors.RED))
+        data.add(MetadataKeys.Wolf.ANGER_TIME, 0)
+        isTamed = false
     }
 
     override fun startAngerTimer() {
@@ -84,14 +82,18 @@ class KryptonWolf(world: KryptonWorld) : KryptonTamable(world, EntityTypes.WOLF,
 
     override fun canMate(target: Animal): Boolean {
         if (target === this) return false
-        if (!isTame) return false
+        if (!isTamed) return false
         if (target !is Wolf) return false
-        if (!target.isTame) return false
+        if (!target.isTamed) return false
         if (target.isSitting) return false
         return isInLove && target.isInLove
     }
 
     companion object {
+
+        private const val TAMED_HEALTH = 20.0
+        private const val UNTAMED_HEALTH = 8.0
+        private const val TAME_UPDATE_ATTACK_DAMAGE = 4.0
 
         private val ATTRIBUTES = attributes()
             .add(AttributeTypes.MOVEMENT_SPEED, 0.3)

@@ -35,29 +35,31 @@ class KryptonCommandBlockMinecart(world: KryptonWorld) : KryptonMinecartLike(wor
     override val variant: MinecartVariant
         get() = MinecartVariant.COMMAND_BLOCK
     override var command: String
-        get() = data[MetadataKeys.COMMAND_BLOCK_MINECART.COMMAND]
-        set(value) = data.set(MetadataKeys.COMMAND_BLOCK_MINECART.COMMAND, value)
+        get() = data.get(MetadataKeys.CommandBlockMinecart.COMMAND)
+        set(value) = data.set(MetadataKeys.CommandBlockMinecart.COMMAND, value)
     override var lastOutput: Component
-        get() = data[MetadataKeys.COMMAND_BLOCK_MINECART.LAST_OUTPUT]
-        set(value) = data.set(MetadataKeys.COMMAND_BLOCK_MINECART.LAST_OUTPUT, value)
+        get() = data.get(MetadataKeys.CommandBlockMinecart.LAST_OUTPUT)
+        set(value) = data.set(MetadataKeys.CommandBlockMinecart.LAST_OUTPUT, value)
 
     override val defaultCustomBlock: Block
         get() = Blocks.COMMAND_BLOCK
 
     init {
-        data.add(MetadataKeys.COMMAND_BLOCK_MINECART.COMMAND, "")
-        data.add(MetadataKeys.COMMAND_BLOCK_MINECART.LAST_OUTPUT, Component.empty())
+        data.add(MetadataKeys.CommandBlockMinecart.COMMAND, "")
+        data.add(MetadataKeys.CommandBlockMinecart.LAST_OUTPUT, Component.empty())
     }
 
     override fun onDataUpdate(key: MetadataKey<*>) {
         super.onDataUpdate(key)
         when (key) {
-            MetadataKeys.COMMAND_BLOCK_MINECART.LAST_OUTPUT -> {
+            MetadataKeys.CommandBlockMinecart.LAST_OUTPUT -> {
                 try {
                     commandBlock.lastOutput = lastOutput
-                } catch (_: Exception) {}
+                } catch (_: Exception) {
+                    // Nothing to do, just ignore it if it fails
+                }
             }
-            MetadataKeys.COMMAND_BLOCK_MINECART.COMMAND -> commandBlock.command = command
+            MetadataKeys.CommandBlockMinecart.COMMAND -> commandBlock.command = command
         }
     }
 

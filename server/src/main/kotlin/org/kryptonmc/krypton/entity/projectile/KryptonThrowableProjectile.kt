@@ -33,19 +33,12 @@ abstract class KryptonThrowableProjectile(
     private val defaultItem: KryptonItemStack
 ) : KryptonProjectile(world, type), ThrowableProjectile {
 
-    private var item: KryptonItemStack
-        get() = data[MetadataKeys.THROWABLE_PROJECTILE.ITEM]
-        set(value) {
-            if (value.type === defaultItem.type && value.meta == KryptonItemMeta.DEFAULT) return
-            data[MetadataKeys.THROWABLE_PROJECTILE.ITEM] = value.withAmount(1)
-        }
-
     init {
-        data.add(MetadataKeys.THROWABLE_PROJECTILE.ITEM, KryptonItemStack.EMPTY)
+        data.add(MetadataKeys.ThrowableProjectile.ITEM, KryptonItemStack.EMPTY)
     }
 
     final override fun asItem(): ItemStack {
-        val item = item
+        val item = data.get(MetadataKeys.ThrowableProjectile.ITEM)
         if (item.isEmpty()) return defaultItem
         return item
     }

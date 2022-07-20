@@ -39,7 +39,7 @@ data class KryptonProfileProperty(override val name: String, override val value:
         override fun of(name: String, value: String, signature: String?): ProfileProperty = KryptonProfileProperty(name, value, signature)
     }
 
-    companion object : TypeAdapter<ProfileProperty>() {
+    object Adapter : TypeAdapter<ProfileProperty>() {
 
         @JvmStatic
         fun fromJsonList(json: String): PersistentList<KryptonProfileProperty> = readList(JsonReader(StringReader(json)))

@@ -97,45 +97,45 @@ abstract class KryptonLivingEntity(
         }
 
     final override var isGliding: Boolean
-        get() = getFlag(MetadataKeys.FLAGS, 7)
-        set(value) = setFlag(MetadataKeys.FLAGS, 7, value)
+        get() = getFlag(MetadataKeys.Entity.FLAGS, FLAG_ENTITY_GLIDING)
+        set(value) = setFlag(MetadataKeys.Entity.FLAGS, FLAG_ENTITY_GLIDING, value)
     final override var isUsingItem: Boolean
-        get() = getLivingFlag(0)
-        set(value) = setLivingFlag(0, value)
+        get() = getFlag(MetadataKeys.LivingEntity.FLAGS, FLAG_USING_ITEM)
+        set(value) = setFlag(MetadataKeys.LivingEntity.FLAGS, FLAG_USING_ITEM, value)
     final override var hand: Hand
-        get() = if (getLivingFlag(1)) Hand.OFF else Hand.MAIN
-        set(value) = setLivingFlag(1, value == Hand.OFF)
+        get() = if (getFlag(MetadataKeys.LivingEntity.FLAGS, FLAG_OFFHAND)) Hand.OFF else Hand.MAIN
+        set(value) = setFlag(MetadataKeys.LivingEntity.FLAGS, FLAG_OFFHAND, value == Hand.OFF)
     final override var isInRiptideSpinAttack: Boolean
-        get() = getLivingFlag(2)
-        set(value) = setLivingFlag(2, value)
+        get() = getFlag(MetadataKeys.LivingEntity.FLAGS, FLAG_IN_RIPTIDE_SPIN_ATTACK)
+        set(value) = setFlag(MetadataKeys.LivingEntity.FLAGS, FLAG_IN_RIPTIDE_SPIN_ATTACK, value)
     override var health: Float
-        get() = data[MetadataKeys.LIVING.HEALTH]
-        set(value) = data.set(MetadataKeys.LIVING.HEALTH, value)
+        get() = data.get(MetadataKeys.LivingEntity.HEALTH)
+        set(value) = data.set(MetadataKeys.LivingEntity.HEALTH, value)
     private var potionEffectColor: Int
-        get() = data[MetadataKeys.LIVING.POTION_EFFECT_COLOR]
-        set(value) = data.set(MetadataKeys.LIVING.POTION_EFFECT_COLOR, value)
+        get() = data.get(MetadataKeys.LivingEntity.POTION_EFFECT_COLOR)
+        set(value) = data.set(MetadataKeys.LivingEntity.POTION_EFFECT_COLOR, value)
     private var isPotionEffectAmbient: Boolean
-        get() = data[MetadataKeys.LIVING.POTION_EFFECT_AMBIENCE]
-        set(value) = data.set(MetadataKeys.LIVING.POTION_EFFECT_AMBIENCE, value)
+        get() = data.get(MetadataKeys.LivingEntity.POTION_EFFECT_AMBIENCE)
+        set(value) = data.set(MetadataKeys.LivingEntity.POTION_EFFECT_AMBIENCE, value)
     var arrowCount: Int
-        get() = data[MetadataKeys.LIVING.ARROWS]
-        set(value) = data.set(MetadataKeys.LIVING.ARROWS, value)
+        get() = data.get(MetadataKeys.LivingEntity.ARROWS)
+        set(value) = data.set(MetadataKeys.LivingEntity.ARROWS, value)
     var stingerCount: Int
-        get() = data[MetadataKeys.LIVING.STINGERS]
-        set(value) = data.set(MetadataKeys.LIVING.STINGERS, value)
+        get() = data.get(MetadataKeys.LivingEntity.STINGERS)
+        set(value) = data.set(MetadataKeys.LivingEntity.STINGERS, value)
     final override var sleepingPosition: Vector3i?
-        get() = data[MetadataKeys.LIVING.BED_LOCATION]
-        set(value) = data.set(MetadataKeys.LIVING.BED_LOCATION, value)
+        get() = data.get(MetadataKeys.LivingEntity.BED_LOCATION)
+        set(value) = data.set(MetadataKeys.LivingEntity.BED_LOCATION, value)
 
     init {
-        data.add(MetadataKeys.LIVING.FLAGS, 0)
-        data.add(MetadataKeys.LIVING.HEALTH, 1F)
-        data.add(MetadataKeys.LIVING.POTION_EFFECT_COLOR, 0)
-        data.add(MetadataKeys.LIVING.POTION_EFFECT_AMBIENCE, false)
-        data.add(MetadataKeys.LIVING.ARROWS, 0)
-        data.add(MetadataKeys.LIVING.STINGERS, 0)
-        data.add(MetadataKeys.LIVING.BED_LOCATION, null)
-        data[MetadataKeys.LIVING.HEALTH] = maxHealth
+        data.add(MetadataKeys.LivingEntity.FLAGS, 0)
+        data.add(MetadataKeys.LivingEntity.HEALTH, 1F)
+        data.add(MetadataKeys.LivingEntity.POTION_EFFECT_COLOR, 0)
+        data.add(MetadataKeys.LivingEntity.POTION_EFFECT_AMBIENCE, false)
+        data.add(MetadataKeys.LivingEntity.ARROWS, 0)
+        data.add(MetadataKeys.LivingEntity.STINGERS, 0)
+        data.add(MetadataKeys.LivingEntity.BED_LOCATION, null)
+        data.set(MetadataKeys.LivingEntity.HEALTH, maxHealth)
     }
 
     abstract override fun equipment(slot: EquipmentSlot): KryptonItemStack
@@ -166,18 +166,12 @@ abstract class KryptonLivingEntity(
         return target.canBeSeenAsEnemy
     }
 
-    override fun attribute(type: AttributeType): Attribute? = attributes[type]
+    override fun attribute(type: AttributeType): Attribute? = attributes.get(type)
 
     override fun addViewer(player: KryptonPlayer): Boolean {
         if (!super.addViewer(player)) return false
         player.session.send(PacketOutUpdateAttributes(id, attributes.syncable))
         return true
-    }
-
-    private fun getLivingFlag(flag: Int): Boolean = getFlag(MetadataKeys.LIVING.FLAGS, flag)
-
-    private fun setLivingFlag(flag: Int, state: Boolean) {
-        setFlag(MetadataKeys.LIVING.FLAGS, flag, state)
     }
 
     protected fun removeEffectParticles() {
@@ -191,6 +185,11 @@ abstract class KryptonLivingEntity(
     }
 
     companion object {
+
+        private const val FLAG_ENTITY_GLIDING = 7
+        private const val FLAG_USING_ITEM = 0
+        private const val FLAG_OFFHAND = 1
+        private const val FLAG_IN_RIPTIDE_SPIN_ATTACK = 2
 
         @JvmField
         val ATTRIBUTES: AttributeSupplier = attributes().build()

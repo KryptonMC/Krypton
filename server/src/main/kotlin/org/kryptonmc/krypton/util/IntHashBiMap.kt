@@ -26,13 +26,14 @@ import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap
  */
 class IntHashBiMap<T>(values: Map<out T, Int>? = null) : IntBiMap<T> {
 
-    private val byT = Object2IntOpenHashMap<T>().apply { defaultReturnValue(-1) }
+    private val byT = Object2IntOpenHashMap<T>()
     private val byId = ArrayList<T?>()
     private var nextId = 0
     override val size: Int
         get() = byT.size
 
     init {
+        byT.defaultReturnValue(-1)
         if (values != null) {
             byT.putAll(values)
             byId += values.keys
@@ -41,7 +42,7 @@ class IntHashBiMap<T>(values: Map<out T, Int>? = null) : IntBiMap<T> {
 
     operator fun set(value: T, id: Int) {
         byT[value] = id
-        while (byId.size <= id) byId += null
+        while (byId.size <= id) byId.add(null)
         byId[id] = value
         if (nextId <= id) nextId = id + 1
     }

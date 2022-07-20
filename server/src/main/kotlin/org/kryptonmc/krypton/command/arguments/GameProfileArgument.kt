@@ -21,11 +21,8 @@ package org.kryptonmc.krypton.command.arguments
 import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.StringReader
 import com.mojang.brigadier.arguments.ArgumentType
-import com.mojang.brigadier.context.CommandContext
-import org.kryptonmc.api.command.Sender
 import org.kryptonmc.krypton.command.arguments.entities.EntityArgumentParser
 import org.kryptonmc.krypton.command.arguments.entities.EntityQuery
-import org.kryptonmc.krypton.command.argument.argument
 
 /**
  * Parses game profiles as entity selectors for single player targets.

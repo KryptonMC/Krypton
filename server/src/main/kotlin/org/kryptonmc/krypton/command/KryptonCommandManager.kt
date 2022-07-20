@@ -80,8 +80,9 @@ import kotlin.math.min
 object KryptonCommandManager : CommandManager {
 
     private val LOGGER = logger<CommandManager>()
+    private const val ERROR_MESSAGE_CUTOFF_THRESHOLD = 10
 
-    @GuardedBy("lock") private val dispatcher = CommandDispatcher<Sender>() // Reads and writes MUST be locked by the lock below!
+    @GuardedBy("lock") private val dispatcher = CommandDispatcher<Sender>() // Reads and writes MUST be locked by this lock!
     private val lock = ReentrantReadWriteLock()
     private val brigadierCommandRegistrar = BrigadierCommandRegistrar(lock.writeLock())
     private val simpleCommandRegistrar = SimpleCommandRegistrar(lock.writeLock())
@@ -133,8 +134,8 @@ object KryptonCommandManager : CommandManager {
                 }
 
                 // If the length of the input is too long, we shorten it by appending ... at the beginning.
-                if (inputLength > 10) errorMessage.append(Component.text("..."))
-                errorMessage.append(Component.text(exception.input.substring(max(0, inputLength - 10), inputLength)))
+                if (inputLength > ERROR_MESSAGE_CUTOFF_THRESHOLD) errorMessage.append(Component.text("..."))
+                errorMessage.append(Component.text(exception.input.substring(max(0, inputLength - ERROR_MESSAGE_CUTOFF_THRESHOLD), inputLength)))
 
                 if (inputLength < exception.input.length) {
                     errorMessage.append(Component.text(exception.input.substring(inputLength), NamedTextColor.RED, TextDecoration.UNDERLINED))

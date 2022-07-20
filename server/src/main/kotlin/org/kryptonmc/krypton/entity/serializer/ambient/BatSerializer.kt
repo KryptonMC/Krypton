@@ -28,10 +28,10 @@ object BatSerializer : EntitySerializer<KryptonBat> {
 
     override fun load(entity: KryptonBat, data: CompoundTag) {
         MobSerializer.load(entity, data)
-        entity.data[MetadataKeys.BAT.FLAGS] = data.getByte("BatFlags")
+        entity.data.set(MetadataKeys.Bat.FLAGS, data.getByte("BatFlags"))
     }
 
     override fun save(entity: KryptonBat): CompoundTag.Builder = MobSerializer.save(entity).apply {
-        byte("BatFlags", entity.data[MetadataKeys.BAT.FLAGS])
+        byte("BatFlags", entity.data.get(MetadataKeys.Bat.FLAGS))
     }
 }

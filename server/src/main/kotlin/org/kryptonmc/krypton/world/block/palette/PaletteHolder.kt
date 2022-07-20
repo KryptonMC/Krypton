@@ -47,8 +47,6 @@ class PaletteHolder<T> : PaletteResizer<T> {
     private val strategy: Strategy<T>
     @Volatile
     private var data: Data<T>
-    val serializedSize: Int
-        get() = data.serializedSize
 
     constructor(strategy: Strategy<T>, configuration: Configuration<T>, storage: BitStorage, entries: List<T>) {
         this.strategy = strategy
@@ -58,23 +56,23 @@ class PaletteHolder<T> : PaletteResizer<T> {
     constructor(strategy: Strategy<T>, value: T) {
         this.strategy = strategy
         data = createOrReuseData(null, 0)
-        data.palette[value] // Preload
+        data.palette.get(value) // Preload
     }
 
     @Synchronized
     fun getAndSet(x: Int, y: Int, z: Int, value: T): T {
-        val id = data.palette[value]
+        val id = data.palette.get(value)
         val newId = data.storage.getAndSet(strategy.indexOf(x, y, z), id)
-        return data.palette[newId]
+        return data.palette.get(newId)
     }
 
-    operator fun get(x: Int, y: Int, z: Int): T = data.palette[data.storage[strategy.indexOf(x, y, z)]]
+    operator fun get(x: Int, y: Int, z: Int): T = data.palette.get(data.storage.get(strategy.indexOf(x, y, z)))
 
-    operator fun get(index: Int): T = data.palette[data.storage[index]]
+    operator fun get(index: Int): T = data.palette.get(data.storage.get(index))
 
     @Synchronized
     operator fun set(x: Int, y: Int, z: Int, value: T) {
-        data.storage[strategy.indexOf(x, y, z)] = data.palette[value]
+        data.storage.set(strategy.indexOf(x, y, z), data.palette.get(value))
     }
 
     @Synchronized
@@ -85,10 +83,10 @@ class PaletteHolder<T> : PaletteResizer<T> {
     @Synchronized
     fun write(encoder: ValueEncoder<T>): CompoundTag {
         val palette = MapPalette(strategy.registry, data.storage.bits, dummyResizer())
-        val size = strategy.size
+        val size = strategy.calculateSize()
         val ids = IntArray(size)
         data.storage.unpack(ids)
-        swapPalette(ids) { palette[data.palette[it]] }
+        swapPalette(ids) { palette.get(data.palette.get(it)) }
         val bits = strategy.calculateSerializationBits(palette.size)
         val data = if (bits != 0) SimpleBitStorage(bits, size, ids).data else LongArray(0)
         return compound {
@@ -97,8 +95,10 @@ class PaletteHolder<T> : PaletteResizer<T> {
         }
     }
 
+    fun calculateSerializedSize(): Int = data.calculateSerializedSize()
+
     fun forEachLocation(consumer: PaletteConsumer<T>) {
-        data.storage.forEach { location, data -> consumer(this.data.palette[data]!!, location) }
+        data.storage.forEach { location, data -> consumer(this.data.palette.get(data)!!, location) }
     }
 
     override fun onResize(newBits: Int, value: T): Int {
@@ -106,13 +106,13 @@ class PaletteHolder<T> : PaletteResizer<T> {
         val new = createOrReuseData(old, newBits)
         new.copyFrom(data.palette, data.storage)
         data = new
-        return new.palette[value]
+        return new.palette.get(value)
     }
 
     private fun createOrReuseData(old: Data<T>?, bits: Int): Data<T> {
         val config = strategy.configuration(bits)
         if (old != null && config == old.configuration) return old
-        return config.createData(strategy.registry, this, strategy.size)
+        return config.createData(strategy.registry, this, strategy.calculateSize())
     }
 
     fun interface PaletteConsumer<T> {
@@ -133,13 +133,10 @@ class PaletteHolder<T> : PaletteResizer<T> {
     @JvmRecord
     data class Data<T>(val configuration: Configuration<T>, val storage: BitStorage, val palette: Palette<T>) {
 
-        val serializedSize: Int
-            get() = 1 + palette.serializedSize + storage.size.varIntBytes() + storage.data.size * Long.SIZE_BYTES
-
         fun copyFrom(oldPalette: Palette<T>, oldStorage: BitStorage) {
             for (i in 0 until oldStorage.size) {
-                val value = oldPalette[oldStorage[i]]!!
-                storage[i] = palette[value]
+                val value = oldPalette.get(oldStorage.get(i))!!
+                storage.set(i, palette.get(value))
             }
         }
 
@@ -148,19 +145,21 @@ class PaletteHolder<T> : PaletteResizer<T> {
             palette.write(buf)
             buf.writeLongArray(storage.data)
         }
+
+        fun calculateSerializedSize(): Int = 1 + palette.calculateSerializedSize() + storage.size.varIntBytes() + storage.sizeBytes()
     }
 
     abstract class Strategy<T>(val registry: IntBiMap<T>, private val sizeBits: Int) {
 
         private val cache = Int2ObjectOpenHashMap<Configuration<T>>()
-        val size: Int
-            get() = 1 shl sizeBits * 3
 
         protected abstract fun createConfiguration(bits: Int): Configuration<T>
 
         fun configuration(bits: Int): Configuration<T> = cache.computeIfAbsent(bits, Int2ObjectFunction(::createConfiguration))
 
         fun indexOf(x: Int, y: Int, z: Int): Int = (((y shl sizeBits) or z) shl sizeBits) or x
+
+        fun calculateSize(): Int = 1 shl sizeBits * 3
 
         fun calculateSerializationBits(size: Int): Int {
             val sizeBits = size.ceillog2()
@@ -181,7 +180,6 @@ class PaletteHolder<T> : PaletteResizer<T> {
                     else -> Configuration(GlobalPalette.Factory, registry.size.ceillog2())
                 }
             }
-
             @JvmField
             val BIOMES: Strategy<Biome> = object : Strategy<Biome>(Registries.BIOME as KryptonRegistry<Biome>, 2) {
 
@@ -226,7 +224,7 @@ class PaletteHolder<T> : PaletteResizer<T> {
 
         @JvmStatic
         private fun <T> read(strategy: Strategy<T>, entries: List<T>, values: LongArray): PaletteHolder<T> {
-            val size = strategy.size
+            val size = strategy.calculateSize()
             val bits = strategy.calculateSerializationBits(entries.size)
             val config = strategy.configuration(bits)
             if (bits == 0) return PaletteHolder(strategy, config, ZeroBitStorage(size), entries)
@@ -237,7 +235,7 @@ class PaletteHolder<T> : PaletteResizer<T> {
                 val storage = SimpleBitStorage(bits, size, values)
                 val ids = IntArray(size)
                 storage.unpack(ids)
-                swapPalette(ids) { strategy.registry.idOf(palette[it]) }
+                swapPalette(ids) { strategy.registry.idOf(palette.get(it)) }
                 return PaletteHolder(strategy, config, SimpleBitStorage(config.bits, size, ids), entries)
             }
             return PaletteHolder(strategy, config, SimpleBitStorage(config.bits, size, values), entries)

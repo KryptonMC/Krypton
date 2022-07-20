@@ -36,22 +36,20 @@ class ChunkSection(
     y: Int,
     val blocks: PaletteHolder<KryptonBlock> = PaletteHolder(PaletteHolder.Strategy.BLOCKS, Blocks.AIR.downcast()),
     val biomes: PaletteHolder<Biome> = PaletteHolder(PaletteHolder.Strategy.BIOMES, Biomes.PLAINS),
-    val blockLight: ByteArray = ByteArray(2048),
-    val skyLight: ByteArray = ByteArray(2048)
+    val blockLight: ByteArray = ByteArray(LIGHTS_SIZE),
+    val skyLight: ByteArray = ByteArray(LIGHTS_SIZE)
 ) : NoiseBiomeSource {
 
     val bottomBlockY: Int = y shl 4
     private var nonEmptyBlockCount = 0
-    val serializedSize: Int
-        get() = 2 + blocks.serializedSize + biomes.serializedSize
 
     init {
         recount()
     }
 
-    operator fun get(x: Int, y: Int, z: Int): KryptonBlock = blocks[x, y, z]
+    fun get(x: Int, y: Int, z: Int): KryptonBlock = blocks[x, y, z]
 
-    operator fun set(x: Int, y: Int, z: Int, block: KryptonBlock): KryptonBlock {
+    fun set(x: Int, y: Int, z: Int, block: KryptonBlock): KryptonBlock {
         val oldBlock = blocks.getAndSet(x, y, z, block)
         if (!oldBlock.isAir) nonEmptyBlockCount--
         if (!block.isAir) nonEmptyBlockCount++
@@ -59,6 +57,8 @@ class ChunkSection(
     }
 
     fun hasOnlyAir(): Boolean = nonEmptyBlockCount == 0
+
+    fun calculateSerializedSize(): Int = 2 + blocks.calculateSerializedSize() + biomes.calculateSerializedSize()
 
     private fun recount() {
         nonEmptyBlockCount = 0
@@ -76,4 +76,9 @@ class ChunkSection(
     }
 
     override fun getNoiseBiome(x: Int, y: Int, z: Int): Biome = biomes[x, y, z]
+
+    companion object {
+
+        private const val LIGHTS_SIZE = 2048
+    }
 }

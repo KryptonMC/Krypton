@@ -18,14 +18,6 @@
  */
 package org.kryptonmc.krypton.registry
 
-import org.kryptonmc.api.effect.particle.ParticleType
-import org.kryptonmc.api.effect.sound.SoundEvent
-import org.kryptonmc.api.entity.EntityType
-import org.kryptonmc.api.entity.animal.type.CatVariant
-import org.kryptonmc.api.entity.attribute.ModifierOperation
-import org.kryptonmc.api.item.ItemType
-import org.kryptonmc.api.item.data.DyeColor
-import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.api.registry.Registry
 import org.kryptonmc.api.resource.ResourceKey
 import org.kryptonmc.krypton.entity.memory.MemoryKey

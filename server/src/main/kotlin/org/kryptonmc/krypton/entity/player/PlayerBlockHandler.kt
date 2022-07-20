@@ -60,22 +60,23 @@ class PlayerBlockHandler(private val player: KryptonPlayer) {
             val block = world.getBlock(x, y, z)
             if (block.isAir) {
                 hasDelayedDestroy = false
-            } else {
-                val destroyProgress = incrementDestroyProgress(block, x, y, z, delayedDestroyTickStart)
-                if (destroyProgress >= 1F) {
-                    hasDelayedDestroy = false
-                    destroyBlock(x, y, z)
-                }
+                return
             }
-        } else if (isDestroying) {
+            if (incrementDestroyProgress(block, x, y, z, delayedDestroyTickStart) >= 1F) {
+                hasDelayedDestroy = false
+                destroyBlock(x, y, z)
+            }
+            return
+        }
+        if (isDestroying) {
             val block = world.getBlock(destroyingX, destroyingY, destroyingZ)
-            if (block.isAir) {
-                world.broadcastBlockDestroyProgress(player.id, destroyingX, destroyingY, destroyingZ, -1)
-                lastSentState = -1
-                isDestroying = false
-            } else {
+            if (!block.isAir) {
                 incrementDestroyProgress(block, destroyingX, destroyingY, destroyingZ, startingDestroyProgress)
+                return
             }
+            world.broadcastBlockDestroyProgress(player.id, destroyingX, destroyingY, destroyingZ, -1)
+            lastSentState = -1
+            isDestroying = false
         }
     }
 
@@ -137,26 +138,24 @@ class PlayerBlockHandler(private val player: KryptonPlayer) {
                 lastSentState = state
             }
             PacketInPlayerAction.Action.FINISH_DIGGING -> {
-                if (x == destroyingX && y == destroyingY && z == destroyingZ) {
-                    val tickDifference = currentTick - startingDestroyProgress
-                    val block = world.getBlock(x, y, z)
-                    if (!block.isAir) {
-                        val destroyProgress = block.handler().calculateDestroyProgress(player, world, block, x, y, z) * (tickDifference + 1).toFloat()
-                        if (destroyProgress >= 0.7F) {
-                            isDestroying = false
-                            world.broadcastBlockDestroyProgress(player.id, x, y, z, -1)
-                            destroyAndAcknowledge(x, y, z, "block broke")
-                            return
-                        }
-                        if (!hasDelayedDestroy) {
-                            isDestroying = false
-                            hasDelayedDestroy = true
-                            delayedDestroyingX = x
-                            delayedDestroyingY = y
-                            delayedDestroyingZ = z
-                            delayedDestroyTickStart = startingDestroyProgress
-                        }
-                    }
+                if (x != destroyingX || y != destroyingY || z != destroyingZ) return
+                val tickDifference = currentTick - startingDestroyProgress
+                val block = world.getBlock(x, y, z)
+                if (block.isAir) return
+                val destroyProgress = block.handler().calculateDestroyProgress(player, world, block, x, y, z) * (tickDifference + 1).toFloat()
+                if (destroyProgress >= 0.7F) {
+                    isDestroying = false
+                    world.broadcastBlockDestroyProgress(player.id, x, y, z, -1)
+                    destroyAndAcknowledge(x, y, z, "block broke")
+                    return
+                }
+                if (!hasDelayedDestroy) {
+                    isDestroying = false
+                    hasDelayedDestroy = true
+                    delayedDestroyingX = x
+                    delayedDestroyingY = y
+                    delayedDestroyingZ = z
+                    delayedDestroyTickStart = startingDestroyProgress
                 }
                 logBlockBreakUpdate(x, y, z, true, "stopped breaking block")
             }
@@ -186,12 +185,9 @@ class PlayerBlockHandler(private val player: KryptonPlayer) {
     }
 
     private fun destroyAndAcknowledge(x: Int, y: Int, z: Int, message: String) {
-        if (destroyBlock(x, y, z)) {
-            logBlockBreakUpdate(x, y, z, true, message)
-        } else {
-            player.session.send(PacketOutBlockUpdate(world.getBlock(x, y, z), x, y, z))
-            logBlockBreakUpdate(x, y, z, false, message)
-        }
+        val success = destroyBlock(x, y, z)
+        logBlockBreakUpdate(x, y, z, success, message)
+        if (success) player.session.send(PacketOutBlockUpdate(world.getBlock(x, y, z), x, y, z))
     }
 
     private fun destroyBlock(x: Int, y: Int, z: Int): Boolean {

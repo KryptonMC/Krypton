@@ -62,10 +62,7 @@ object ApiService {
     fun profile(uuid: UUID): CompletableFuture<KryptonGameProfile?> = uuidCache[uuid]
 
     @JvmStatic
-    private fun loadProfile(url: String, executor: Executor): CompletableFuture<KryptonGameProfile?> {
-        val request = HttpRequest.newBuilder()
-            .uri(URI(url))
-            .build()
-        return client.sendAsync(request, HttpResponse.BodyHandlers.ofString()).thenApplyAsync({ KryptonGameProfile.fromJson(it.body()) }, executor)
-    }
+    private fun loadProfile(url: String, executor: Executor): CompletableFuture<KryptonGameProfile?> =
+        client.sendAsync(HttpRequest.newBuilder(URI(url)).build(), HttpResponse.BodyHandlers.ofString())
+            .thenApplyAsync({ KryptonGameProfile.Adapter.fromJson(it.body()) }, executor)
 }

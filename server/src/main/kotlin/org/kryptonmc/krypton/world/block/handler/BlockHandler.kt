@@ -44,8 +44,8 @@ interface BlockHandler {
     fun calculateDestroyProgress(player: KryptonPlayer, world: KryptonWorld, block: KryptonBlock, x: Int, y: Int, z: Int): Float {
         val hardness = block.hardness
         if (hardness == -1.0) return 0F
-        val factor = if (hasCorrectTool(player, block)) 30 else 100
-        return calculateDestroySpeed(player, block) / hardness.toFloat() / factor.toFloat()
+        val factor = if (player.isCorrectTool(block)) 30 else 100
+        return player.calculateDestroySpeed(block) / hardness.toFloat() / factor.toFloat()
     }
 
     /**
@@ -84,17 +84,14 @@ interface BlockHandler {
     fun spawnDestroyParticles(world: KryptonWorld, player: KryptonPlayer, x: Int, y: Int, z: Int, block: KryptonBlock) {
         world.worldEvent(WorldEvent.DESTROY_BLOCK, x, y, z, block.stateId, player)
     }
+}
 
-    companion object {
+private fun KryptonPlayer.isCorrectTool(block: KryptonBlock): Boolean = !block.requiresCorrectTool ||
+        inventory.mainHand.type.handler().isCorrectTool(block)
 
-        private fun hasCorrectTool(player: KryptonPlayer, block: KryptonBlock): Boolean = !block.requiresCorrectTool ||
-                player.inventory.mainHand.type.handler().isCorrectTool(block)
-
-        private fun calculateDestroySpeed(player: KryptonPlayer, block: KryptonBlock): Float {
-            var speed = player.inventory.mainHand.destroySpeed(block)
-            if (player.underFluid(FluidTags.WATER)) speed /= 5F
-            if (!player.isOnGround) speed /= 5F
-            return speed
-        }
-    }
+private fun KryptonPlayer.calculateDestroySpeed(block: KryptonBlock): Float {
+    var speed = inventory.mainHand.destroySpeed(block)
+    if (underFluid(FluidTags.WATER)) speed /= 5F
+    if (!isOnGround) speed /= 5F
+    return speed
 }

@@ -29,11 +29,11 @@ import org.kryptonmc.krypton.world.KryptonWorld
 class KryptonOcelot(world: KryptonWorld) : KryptonAnimal(world, EntityTypes.OCELOT, ATTRIBUTES), Ocelot {
 
     override var isTrusting: Boolean
-        get() = data[MetadataKeys.OCELOT.TRUSTING]
-        set(value) = data.set(MetadataKeys.OCELOT.TRUSTING, value)
+        get() = data.get(MetadataKeys.Ocelot.TRUSTING)
+        set(value) = data.set(MetadataKeys.Ocelot.TRUSTING, value)
 
     init {
-        data.add(MetadataKeys.OCELOT.TRUSTING, false)
+        data.add(MetadataKeys.Ocelot.TRUSTING, false)
     }
 
     override fun isFood(item: ItemStack): Boolean = TEMPT_INGREDIENTS.contains(item.type)

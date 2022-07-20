@@ -37,23 +37,23 @@ import org.kryptonmc.krypton.world.KryptonWorld
 class KryptonCat(world: KryptonWorld) : KryptonTamable(world, EntityTypes.CAT, ATTRIBUTES), Cat {
 
     override var variant: CatVariant
-        get() = KryptonRegistries.CAT_VARIANT.get(data[MetadataKeys.CAT.VARIANT])!!
-        set(value) = data.set(MetadataKeys.CAT.VARIANT, KryptonRegistries.CAT_VARIANT.idOf(value))
+        get() = KryptonRegistries.CAT_VARIANT.get(data.get(MetadataKeys.Cat.VARIANT))!!
+        set(value) = data.set(MetadataKeys.Cat.VARIANT, KryptonRegistries.CAT_VARIANT.idOf(value))
     override var isLying: Boolean
-        get() = data[MetadataKeys.CAT.LYING]
-        set(value) = data.set(MetadataKeys.CAT.LYING, value)
+        get() = data.get(MetadataKeys.Cat.LYING)
+        set(value) = data.set(MetadataKeys.Cat.LYING, value)
     override var isRelaxed: Boolean
-        get() = data[MetadataKeys.CAT.RELAXED]
-        set(value) = data.set(MetadataKeys.CAT.RELAXED, value)
+        get() = data.get(MetadataKeys.Cat.RELAXED)
+        set(value) = data.set(MetadataKeys.Cat.RELAXED, value)
     override var collarColor: DyeColor
-        get() = KryptonRegistries.DYE_COLORS.get(data[MetadataKeys.CAT.COLLAR_COLOR]) ?: DyeColors.WHITE
-        set(value) = data.set(MetadataKeys.CAT.COLLAR_COLOR, KryptonRegistries.DYE_COLORS.idOf(value))
+        get() = KryptonRegistries.DYE_COLORS.get(data.get(MetadataKeys.Cat.COLLAR_COLOR)) ?: DyeColors.WHITE
+        set(value) = data.set(MetadataKeys.Cat.COLLAR_COLOR, KryptonRegistries.DYE_COLORS.idOf(value))
 
     init {
-        data.add(MetadataKeys.CAT.VARIANT, KryptonRegistries.CAT_VARIANT.idOf(CatVariants.BLACK))
-        data.add(MetadataKeys.CAT.LYING, false)
-        data.add(MetadataKeys.CAT.RELAXED, false)
-        data.add(MetadataKeys.CAT.COLLAR_COLOR, KryptonRegistries.DYE_COLORS.idOf(DyeColors.RED))
+        data.add(MetadataKeys.Cat.VARIANT, KryptonRegistries.CAT_VARIANT.idOf(CatVariants.BLACK))
+        data.add(MetadataKeys.Cat.LYING, false)
+        data.add(MetadataKeys.Cat.RELAXED, false)
+        data.add(MetadataKeys.Cat.COLLAR_COLOR, KryptonRegistries.DYE_COLORS.idOf(DyeColors.RED))
     }
 
     override fun hiss() {
@@ -61,9 +61,9 @@ class KryptonCat(world: KryptonWorld) : KryptonTamable(world, EntityTypes.CAT, A
     }
 
     override fun canMate(target: Animal): Boolean {
-        if (!isTame) return false
+        if (!isTamed) return false
         if (target !is Cat) return false
-        return target.isTame && super.canMate(target)
+        return target.isTamed && super.canMate(target)
     }
 
     override fun isFood(item: ItemStack): Boolean = item.type === ItemTypes.COD || item.type === ItemTypes.SALMON

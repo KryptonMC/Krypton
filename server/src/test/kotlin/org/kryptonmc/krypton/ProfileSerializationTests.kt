@@ -49,36 +49,36 @@ class ProfileSerializationTests {
 
     @Test
     fun `test game profile serialization`() {
-        val result = KryptonGameProfile.toJson(KryptonGameProfile(NAME, ID, persistentListOf()))
+        val result = KryptonGameProfile.Adapter.toJson(KryptonGameProfile(NAME, ID, persistentListOf()))
         assertEquals("{\"id\":\"${MojangUUIDTypeAdapter.toString(ID)}\",\"name\":\"$NAME\"}", result)
 
         // With properties
-        val withProperties = KryptonGameProfile.toJson(KryptonGameProfile(NAME, ID, PROPERTIES))
-        val propertiesString = PROPERTIES.joinToString(",") { KryptonProfileProperty.toJson(it) }
+        val withProperties = KryptonGameProfile.Adapter.toJson(KryptonGameProfile(NAME, ID, PROPERTIES))
+        val propertiesString = PROPERTIES.joinToString(",") { KryptonProfileProperty.Adapter.toJson(it) }
         assertEquals("{\"id\":\"${MojangUUIDTypeAdapter.toString(ID)}\",\"name\":\"$NAME\",\"properties\":[$propertiesString]}", withProperties)
     }
 
     @Test
     fun `test game profile deserialization`() {
         val json = "{\"id\":\"${MojangUUIDTypeAdapter.toString(ID)}\",\"name\":\"$NAME\"}"
-        assertEquals(KryptonGameProfile(NAME, ID, persistentListOf()), KryptonGameProfile.fromJson(json))
+        assertEquals(KryptonGameProfile(NAME, ID, persistentListOf()), KryptonGameProfile.Adapter.fromJson(json))
 
         // With properties
-        val propertiesString = PROPERTIES.joinToString(",") { KryptonProfileProperty.toJson(it) }
+        val propertiesString = PROPERTIES.joinToString(",") { KryptonProfileProperty.Adapter.toJson(it) }
         val propertiesJson = "{\"id\":\"${MojangUUIDTypeAdapter.toString(ID)}\",\"name\":\"$NAME\",\"properties\":[$propertiesString]}"
-        assertEquals(KryptonGameProfile(NAME, ID, PROPERTIES), KryptonGameProfile.fromJson(propertiesJson))
+        assertEquals(KryptonGameProfile(NAME, ID, PROPERTIES), KryptonGameProfile.Adapter.fromJson(propertiesJson))
     }
 
     @Test
     fun `test property serialization`() {
-        val result = KryptonProfileProperty.toJson(KryptonProfileProperty("Hello", "World", "aaaabbbbccccdddd"))
+        val result = KryptonProfileProperty.Adapter.toJson(KryptonProfileProperty("Hello", "World", "aaaabbbbccccdddd"))
         assertEquals("{\"name\":\"Hello\",\"value\":\"World\",\"signature\":\"aaaabbbbccccdddd\"}", result)
     }
 
     @Test
     fun `test property deserialization`() {
         val json = "{\"name\":\"Hello\",\"value\":\"World\",\"signature\":\"aaaabbbbccccdddd\"}"
-        assertEquals(KryptonProfileProperty("Hello", "World", "aaaabbbbccccdddd"), KryptonProfileProperty.fromJson(json))
+        assertEquals(KryptonProfileProperty("Hello", "World", "aaaabbbbccccdddd"), KryptonProfileProperty.Adapter.fromJson(json))
     }
 
     companion object {

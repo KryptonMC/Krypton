@@ -89,12 +89,7 @@ public interface DustTransitionParticleEffectBuilder : BaseDustParticleEffectBui
      */
     @ParticleDsl
     @Contract("_ -> this", mutates = "this")
-    public fun toHSV(hue: Float, saturation: Float, value: Float): DustTransitionParticleEffectBuilder {
-        require(hue in 0F..1F) { "Hue must be between 0 and 1!" }
-        require(saturation in 0F..1F) { "Saturation must be between 0 and 1!" }
-        require(value in 0F..1F) { "Value must be between 0 and 1!" }
-        return toColor(Color.of(hue, saturation, value))
-    }
+    public fun toHSV(hue: Float, saturation: Float, value: Float): DustTransitionParticleEffectBuilder = toColor(Color.of(hue, saturation, value))
 
     /**
      * Sets the colour to transition the particle to to the given [hsv]
@@ -107,5 +102,5 @@ public interface DustTransitionParticleEffectBuilder : BaseDustParticleEffectBui
      */
     @ParticleDsl
     @Contract("_ -> this", mutates = "this")
-    public fun toHSV(hsv: HSVLike): DustTransitionParticleEffectBuilder = toHSV(hsv.h(), hsv.s(), hsv.v())
+    public fun toHSV(hsv: HSVLike): DustTransitionParticleEffectBuilder = toColor(Color.of(hsv.h(), hsv.s(), hsv.v()))
 }

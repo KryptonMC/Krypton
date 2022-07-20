@@ -27,11 +27,11 @@ import org.kryptonmc.krypton.world.KryptonWorld
 class KryptonMooshroom(world: KryptonWorld) : KryptonCow(world, EntityTypes.MOOSHROOM), Mooshroom {
 
     override var variant: MooshroomVariant
-        get() = deserializeType(data[MetadataKeys.MOOSHROOM.TYPE])
-        set(value) = data.set(MetadataKeys.MOOSHROOM.TYPE, value.name.lowercase())
+        get() = deserializeType(data.get(MetadataKeys.Mooshroom.TYPE))
+        set(value) = data.set(MetadataKeys.Mooshroom.TYPE, value.name.lowercase())
 
     init {
-        data.add(MetadataKeys.MOOSHROOM.TYPE, MooshroomVariant.RED.name.lowercase())
+        data.add(MetadataKeys.Mooshroom.TYPE, MooshroomVariant.RED.name.lowercase())
     }
 
     companion object {

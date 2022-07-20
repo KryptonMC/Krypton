@@ -34,7 +34,7 @@ class AttributeMap(private val supplier: AttributeSupplier) {
     val syncable: Collection<KryptonAttribute>
         get() = attributes.values.filter { it.type.sendToClient }
 
-    operator fun get(type: AttributeType): KryptonAttribute = attributes.computeIfAbsent(type) { supplier.create(type, ::onModify) }
+    fun get(type: AttributeType): KryptonAttribute = attributes.computeIfAbsent(type) { supplier.create(type, ::onModify) }
 
     fun value(type: AttributeType): Double = attributes[type]?.value ?: supplier.value(type)
 

@@ -27,16 +27,22 @@ import org.kryptonmc.krypton.world.damage.KryptonDamageSource
 class KryptonGlowSquid(world: KryptonWorld) : KryptonSquid(world, EntityTypes.GLOW_SQUID), GlowSquid {
 
     override var remainingDarkTicks: Int
-        get() = data[MetadataKeys.GLOW_SQUID.REMAINING_DARK_TICKS]
-        set(value) = data.set(MetadataKeys.GLOW_SQUID.REMAINING_DARK_TICKS, value)
+        get() = data.get(MetadataKeys.GlowSquid.REMAINING_DARK_TICKS)
+        set(value) = data.set(MetadataKeys.GlowSquid.REMAINING_DARK_TICKS, value)
 
     init {
-        data.add(MetadataKeys.GLOW_SQUID.REMAINING_DARK_TICKS, 0)
+        data.add(MetadataKeys.GlowSquid.REMAINING_DARK_TICKS, 0)
     }
 
     override fun damage(source: KryptonDamageSource, damage: Float): Boolean {
         val wasDamaged = super.damage(source, damage)
-        if (wasDamaged) remainingDarkTicks = 100
+        // Glow squids will stop glowing for 5 seconds when they are damaged.
+        if (wasDamaged) remainingDarkTicks = DAMAGED_DARK_TICKS
         return wasDamaged
+    }
+
+    companion object {
+
+        private const val DAMAGED_DARK_TICKS = 5 * 20 // 5 seconds in ticks
     }
 }

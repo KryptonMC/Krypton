@@ -22,8 +22,7 @@ import java.lang.reflect.Field
 
 object Reflection {
 
-    @PublishedApi
-    internal val LOGGER = logger<Reflection>()
+    private val LOGGER = logger<Reflection>()
 
     @JvmStatic
     @Suppress("UNCHECKED_CAST")

@@ -28,12 +28,14 @@ import kotlin.random.Random
 
 class KryptonChicken(world: KryptonWorld) : KryptonAnimal(world, EntityTypes.CHICKEN, ATTRIBUTES), Chicken {
 
-    override var eggCooldownTime: Int = Random.nextInt(6000) + 6000
+    override var eggCooldownTime: Int = Random.nextInt(FIVE_MINUTES_TICKS) + FIVE_MINUTES_TICKS
     override var isJockey: Boolean = false
 
     override fun isFood(item: ItemStack): Boolean = FOOD_ITEMS.contains(item.type)
 
     companion object {
+
+        private const val FIVE_MINUTES_TICKS = 6000
 
         private val ATTRIBUTES = attributes().add(AttributeTypes.MAX_HEALTH, 4.0).add(AttributeTypes.MOVEMENT_SPEED, 0.25).build()
         private val FOOD_ITEMS = setOf(ItemTypes.WHEAT_SEEDS, ItemTypes.MELON_SEEDS, ItemTypes.PUMPKIN_SEEDS, ItemTypes.BEETROOT_SEEDS)
