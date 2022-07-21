@@ -49,7 +49,7 @@ class KryptonConsole(override val server: KryptonServer) : SimpleTerminalConsole
 
     fun setupPermissions() {
         val event = SetupPermissionsEvent(this) { DEFAULT_PERMISSION_FUNCTION }
-        permissionFunction = server.eventManager.fireSync(event).createFunction(this)
+        permissionFunction = server.eventManager.fire(event).get().createFunction(this)
     }
 
     fun run() {

@@ -8,18 +8,22 @@
  * For more details, please reference the LICENSE file in the api top-level directory.
  *
  * For the original file that this file is derived from, see here:
- * https://github.com/VelocityPowered/Velocity/blob/dev/1.1.0/api/src/main/java/com/velocitypowered/api/event/EventHandler.java
+ * https://github.com/PaperMC/Velocity/blob/1761755d4dfc16cd020aee90c48761d98552531b/api/src/main/java/com/velocitypowered/api/event/EventHandler.java
  */
 package org.kryptonmc.api.event
 
 /**
- * Represents a handler for a given event type [E]. This makes it easier to
- * integrate the event system in to third-party event systems.
+ * A handler for a given event type [E]. This is designed to make it easier to
+ * integrate the event system in to third-party event systems, such as reactor,
+ * coroutines, or other event-based systems.
  */
 public fun interface EventHandler<E> {
 
     /**
-     * The action to take when this event is fired.
+     * Handles the given [event].
+     *
+     * @param event the event that was fired
+     * @return the task to execute to handle the event
      */
-    public fun execute(event: E)
+    public fun execute(event: E): EventTask?
 }
