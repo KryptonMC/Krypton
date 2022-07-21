@@ -27,6 +27,7 @@ dependencies {
     // Events
     implementation(libs.event)
     implementation(libs.asm)
+    implementation(libs.lmbda)
 
     // Logging and console
     runtimeOnly(libs.log4j.core)
@@ -61,7 +62,10 @@ license {
         "**/*.conf",
         "**/*.json",
         // Velocity derivatives, with a special header
+        "**/event/CustomHandlerAdapter.kt",
+        "**/event/EventTypeTracker.kt",
         "**/event/KryptonEventManager.kt",
+        "**/event/UntargetedEventHandler.kt",
         "**/plugin/KryptonPluginContainer.kt",
         "**/plugin/KryptonPluginManager.kt",
         "**/plugin/PluginClassLoader.kt",
