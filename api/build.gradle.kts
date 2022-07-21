@@ -42,8 +42,10 @@ license {
     exclude(
         // Velocity derivatives, with a special header
         "**/event/ComponentResult.kt",
+        "**/event/Continuation.kt",
         "**/event/EventHandler.kt",
         "**/event/EventManager.kt",
+        "**/event/EventTask.kt",
         "**/event/GenericResult.kt",
         "**/event/ResultedEvent.kt",
         "**/event/server/SetupPermissionsEvent.kt",

@@ -11,8 +11,10 @@ package org.kryptonmc.api.event
 /**
  * Used to indicate that the target function is a listener for an event.
  *
- * @param priority the priority of the event (defaults to medium)
+ * @property priority the priority of the event (defaults to medium).
+ * @property mustBeAsync whether the event handler this annotation is on must
+ * be called asynchronously.
  */
 @Target(AnnotationTarget.FUNCTION)
 @Retention(AnnotationRetention.RUNTIME)
-public annotation class Listener(public val priority: ListenerPriority = ListenerPriority.MEDIUM)
+public annotation class Listener(public val priority: ListenerPriority = ListenerPriority.MEDIUM, public val mustBeAsync: Boolean = false)

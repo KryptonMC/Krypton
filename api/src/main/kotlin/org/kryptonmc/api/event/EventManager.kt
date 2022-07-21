@@ -8,7 +8,7 @@
  * For more details, please reference the LICENSE file in the api top-level directory.
  *
  * For the original file that this file is derived from, see here:
- * https://github.com/VelocityPowered/Velocity/blob/dev/1.1.0/api/src/main/java/com/velocitypowered/api/event/EventManager.java
+ * https://github.com/PaperMC/Velocity/blob/6be344d919020544466c23112c3672710ceffb30/api/src/main/java/com/velocitypowered/api/event/EventManager.java
  */
 @file:JvmSynthetic
 package org.kryptonmc.api.event
@@ -22,7 +22,7 @@ import java.util.concurrent.CompletableFuture
 public interface EventManager {
 
     /**
-     * Fires the specified [event] to the event bus asynchronously, and returns
+     * Fires the given [event] to the event bus asynchronously, and returns
      * its result as a [CompletableFuture].
      *
      * The asynchronous execution allows Krypton to continue functioning whilst
@@ -35,83 +35,87 @@ public interface EventManager {
     public fun <E> fire(event: E): CompletableFuture<E>
 
     /**
-     * Fires the specified [event] to the event bus asynchronously and discards
+     * Fires the given [event] to the event bus asynchronously and discards
      * the result.
      *
      * @param event the event to fire
      */
-    public fun fireAndForget(event: Any)
+    public fun fireAndForget(event: Any) {
+        fire(event)
+    }
 
     /**
-     * Requests that the specified [listener] be registered with this manager
-     * to listen for events, and the listener will be associated with the
-     * specified [plugin].
+     * Requests that the given [listener] be registered with this manager
+     * to listen for and handle events for the given [plugin].
      *
-     * @param plugin the plugin to associate with the listener
+     * @param plugin the plugin the listener handles events for
      * @param listener the listener to register
      */
     public fun register(plugin: Any, listener: Any)
 
     /**
-     * Requests that the specified [handler] be registered with this manager to
+     * Requests that the given [handler] be registered with this manager to
      * listen for and handle events of type [E] at
-     * [medium priority][ListenerPriority.MEDIUM], and the handler will be
-     * associated with the specified [plugin].
+     * [medium priority][ListenerPriority.MEDIUM] for the given [plugin].
      *
-     * @param plugin the plugin to associate the handler with
+     * @param plugin the plugin the listener handles events for
      * @param eventClass the class of the event
      * @param handler the handler to register
      * @param E the type of the event
      */
-    public fun <E> register(plugin: Any, eventClass: Class<E>, handler: EventHandler<E>)
+    public fun <E> register(plugin: Any, eventClass: Class<E>, handler: EventHandler<E>) {
+        register(plugin, eventClass, ListenerPriority.MEDIUM, handler)
+    }
 
     /**
-     * Requests that the specified [handler] be registered with this manager to
-     * listen for and handle events of type [E], and the handler will be
-     * associated with the specified [plugin].
+     * Requests that the given [handler] be registered with this manager to
+     * listen for and handle events of type [E] for the given [plugin].
      *
-     * @param plugin the plugin to associate the handler with
+     * @param plugin the plugin the listener handles events for
      * @param eventClass the class of the event
-     * @param priority the priority of this handler
+     * @param priority the priority the handler will be executed with
      * @param handler the handler to register
      * @param E the type of the event
      */
     public fun <E> register(plugin: Any, eventClass: Class<E>, priority: ListenerPriority, handler: EventHandler<E>)
 
     /**
-     * Unregisters all registered listeners for the specified [plugin]
-     * from the event bus.
+     * Unregisters all registered listeners listening for events for the given
+     * [plugin] from this event manager. After this function is called, all
+     * listeners set up for the plugin will no longer function.
      *
      * @param plugin the plugin to unregister all listeners for
      */
     public fun unregisterListeners(plugin: Any)
 
     /**
-     * Unregisters the specified [listener] for the specified [plugin]
-     * from the event bus.
+     * Unregisters the given [listener] for the given [plugin] from this event
+     * manager. After this function is called, the given [listener] will no
+     * longer function.
      *
-     * @param plugin the plugin the listener is associated with
-     * @param listener the listener to unregister
+     * @param plugin the plugin the listener is handling events for
+     * @param listener the listener
      */
     public fun unregisterListener(plugin: Any, listener: Any)
 
     /**
-     * Unregisters the specified [handler] for the specified [plugin]
-     * from the event bus.
+     * Unregisters the given [handler] for the given [plugin] from this event
+     * manager. After this function is called, the given [handler] will no
+     * longer function.
      *
-     * @param plugin the plugin this handler is associated with
+     * @param plugin the plugin the handler handles events for
      * @param handler the handler to unregister
+     * @param E the type of the event
      */
     public fun <E> unregister(plugin: Any, handler: EventHandler<E>)
 }
 
 /**
- * Requests that the specified [handler] be registered with this manager to
- * listen for and handle events of type [E] at
- * [medium priority][ListenerPriority.MEDIUM], and the handler will be
- * associated with the specified [plugin].
+ * Requests that the given [handler] be registered with this manager to listen
+ * for and handle events of type [E] at
+ * [medium priority][ListenerPriority.MEDIUM] for the given [plugin].
  *
- * @param plugin the plugin to associate the handler with
+ * @param plugin the plugin the handler handles events for
  * @param handler the handler to register
  * @param E the type of the event
  */
@@ -121,12 +125,11 @@ public inline fun <reified E> EventManager.registerHandler(plugin: Any, handler:
 }
 
 /**
- * Requests that the specified [handler] be registered with this manager to
- * listen for and handle events of type [E], and the handler will be associated
- * with the specified [plugin].
+ * Requests that the given [handler] be registered with this manager to listen
+ * for and handle events of type [E] for the given [plugin].
  *
- * @param plugin the plugin to associate the handler with
- * @param priority the priority of this handler
+ * @param plugin the plugin the handler handles events for
+ * @param priority the priority the handler will be executed with
  * @param handler the handler to register
  * @param E the type of the event
  */

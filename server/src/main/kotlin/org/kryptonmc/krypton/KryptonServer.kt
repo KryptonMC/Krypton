@@ -95,7 +95,7 @@ class KryptonServer(
     override val worldManager: KryptonWorldManager = KryptonWorldManager(this, worldFolder)
     override val commandManager: KryptonCommandManager = KryptonCommandManager
     override val pluginManager: KryptonPluginManager = KryptonPluginManager
-    override val eventManager: KryptonEventManager = KryptonEventManager
+    override val eventManager: KryptonEventManager = KryptonEventManager(pluginManager)
     override val servicesManager: KryptonServicesManager = KryptonServicesManager(this)
     override val registryManager: KryptonRegistryManager = KryptonRegistryManager
     override val tagManager: KryptonTagManager = KryptonTagManager
