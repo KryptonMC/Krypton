@@ -16,14 +16,11 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton
+package org.kryptonmc.krypton.auth
 
 import com.google.common.jimfs.Configuration
 import com.google.common.jimfs.Jimfs
 import kotlinx.collections.immutable.persistentListOf
-import org.kryptonmc.krypton.auth.KryptonGameProfile
-import org.kryptonmc.krypton.auth.KryptonProfileCache
-import org.kryptonmc.krypton.auth.ProfileHolder
 import java.time.ZoneOffset
 import java.time.ZonedDateTime
 import java.util.UUID

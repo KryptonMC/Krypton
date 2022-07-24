@@ -23,7 +23,6 @@ import net.kyori.adventure.text.Component
 import org.junit.jupiter.api.BeforeEach
 import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.packet.out.play.PacketOutBossBar
-import org.kryptonmc.krypton.util.MockPacketGroupingAudience
 import java.util.concurrent.ThreadLocalRandom
 import java.util.function.Consumer
 import kotlin.properties.Delegates

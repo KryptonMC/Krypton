@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton
+package org.kryptonmc.krypton.adventure
 
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
@@ -31,7 +31,7 @@ import org.kryptonmc.api.adventure.toMessage
 import org.kryptonmc.api.adventure.toPlainText
 import org.kryptonmc.krypton.api.InitializerExtension
 import org.kryptonmc.krypton.api.Initializers
-import org.kryptonmc.krypton.util.FactoryProviderInitializer
+import org.kryptonmc.krypton.api.FactoryProviderInitializer
 import kotlin.test.Test
 import kotlin.test.assertEquals
 

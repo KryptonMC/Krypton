@@ -16,13 +16,10 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton
+package org.kryptonmc.krypton.auth
 
 import kotlinx.collections.immutable.persistentListOf
 import org.junit.jupiter.api.Test
-import org.kryptonmc.krypton.auth.KryptonGameProfile
-import org.kryptonmc.krypton.auth.KryptonProfileProperty
-import org.kryptonmc.krypton.auth.ProfileHolder
 import org.kryptonmc.krypton.util.MojangUUIDTypeAdapter
 import java.time.ZoneOffset
 import java.time.ZonedDateTime

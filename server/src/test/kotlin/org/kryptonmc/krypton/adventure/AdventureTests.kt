@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton
+package org.kryptonmc.krypton.adventure
 
 import net.kyori.adventure.inventory.Book
 import net.kyori.adventure.key.Key
@@ -32,16 +32,13 @@ import org.kryptonmc.api.adventure.toJson
 import org.kryptonmc.api.adventure.toPlainText
 import org.kryptonmc.api.item.meta
 import org.kryptonmc.api.item.meta.WrittenBookMeta
-import org.kryptonmc.krypton.adventure.KryptonAdventure
-import org.kryptonmc.krypton.adventure.NBTLegacyHoverEventSerializer
-import org.kryptonmc.krypton.adventure.toItemStack
 import org.kryptonmc.krypton.api.InitializerExtension
 import org.kryptonmc.krypton.api.Initializers
-import org.kryptonmc.krypton.util.FactoryProviderInitializer
-import org.kryptonmc.krypton.util.ItemTypeInitializer
+import org.kryptonmc.krypton.api.FactoryProviderInitializer
+import org.kryptonmc.krypton.api.ItemTypeInitializer
 import org.kryptonmc.krypton.util.Reflection
-import org.kryptonmc.krypton.util.RegistryInitializer
-import org.kryptonmc.krypton.util.TranslationInitializer
+import org.kryptonmc.krypton.api.RegistryInitializer
+import org.kryptonmc.krypton.api.TranslationInitializer
 import java.io.IOException
 import java.util.UUID
 import kotlin.test.Test

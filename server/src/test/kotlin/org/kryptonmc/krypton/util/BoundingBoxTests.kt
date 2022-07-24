@@ -16,38 +16,31 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton
+package org.kryptonmc.krypton.util
 
-import org.kryptonmc.api.entity.attribute.ModifierOperation
-import org.kryptonmc.krypton.entity.attribute.KryptonAttributeModifier
-import java.util.UUID
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-class AttributeTests {
+class BoundingBoxTests {
 
     @Test
-    fun add() {
-        assertEquals(9.0, ModifierOperation.ADD.apply(BASE, MODIFIERS))
+    fun `test size of box calculations`() {
+        val box = KryptonBoundingBox(-3.0, -3.0, -3.0, 3.0, 3.0, 3.0)
+        assertEquals(6.0, box.size)
     }
 
     @Test
-    fun `multiply base`() {
-        assertEquals(21.0, ModifierOperation.MULTIPLY_BASE.apply(BASE, MODIFIERS))
+    fun `test volume calculation`() {
+        val box = KryptonBoundingBox(-3.0, -3.0, -3.0, 3.0, 3.0, 3.0)
+        val expectedVolume = 6.0 * 6.0 * 6.0 // size.x * size.y * size.z
+        assertEquals(expectedVolume, box.volume)
     }
 
     @Test
-    fun `multiply total`() {
-        assertEquals(45.0, ModifierOperation.MULTIPLY_TOTAL.apply(BASE, MODIFIERS))
-    }
-
-    companion object {
-
-        private const val BASE = 3.0
-        private val OPERATION = ModifierOperation { _, _ -> 0.0 }
-        private val MODIFIERS = setOf(
-            KryptonAttributeModifier("1", UUID.randomUUID(), 2.0, OPERATION),
-            KryptonAttributeModifier("2", UUID.randomUUID(), 4.0, OPERATION)
-        )
+    fun `test center calculation`() {
+        val box = KryptonBoundingBox(-3.0, -3.0, -3.0, 3.0, 3.0, 3.0)
+        assertEquals(0.0, box.centerX)
+        assertEquals(0.0, box.centerY)
+        assertEquals(0.0, box.centerZ)
     }
 }

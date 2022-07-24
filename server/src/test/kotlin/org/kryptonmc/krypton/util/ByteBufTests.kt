@@ -1,22 +1,4 @@
-/*
- * This file is part of the Krypton project, licensed under the GNU General Public License v3.0
- *
- * Copyright (C) 2021-2022 KryptonMC and the contributors of the Krypton project
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
- */
-package org.kryptonmc.krypton
+package org.kryptonmc.krypton.util
 
 import io.netty.buffer.ByteBuf
 import io.netty.buffer.Unpooled
@@ -25,29 +7,13 @@ import net.kyori.adventure.text.Component
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
 import org.kryptonmc.api.item.ItemTypes
+import org.kryptonmc.krypton.api.FactoryProviderInitializer
 import org.kryptonmc.krypton.api.InitializerExtension
 import org.kryptonmc.krypton.api.Initializers
+import org.kryptonmc.krypton.api.ItemTypeInitializer
+import org.kryptonmc.krypton.api.RegistryInitializer
 import org.kryptonmc.krypton.item.KryptonItemStack
 import org.kryptonmc.krypton.registry.KryptonRegistries
-import org.kryptonmc.krypton.util.FactoryProviderInitializer
-import org.kryptonmc.krypton.util.ItemTypeInitializer
-import org.kryptonmc.krypton.util.RegistryInitializer
-import org.kryptonmc.krypton.util.readAllAvailableBytes
-import org.kryptonmc.krypton.util.readAvailableBytes
-import org.kryptonmc.krypton.util.readItem
-import org.kryptonmc.krypton.util.readNBT
-import org.kryptonmc.krypton.util.readString
-import org.kryptonmc.krypton.util.readVarInt
-import org.kryptonmc.krypton.util.readVarIntByteArray
-import org.kryptonmc.krypton.util.writeItem
-import org.kryptonmc.krypton.util.writeLongArray
-import org.kryptonmc.krypton.util.writeNBT
-import org.kryptonmc.krypton.util.writeSingletonLongArray
-import org.kryptonmc.krypton.util.writeString
-import org.kryptonmc.krypton.util.writeUUID
-import org.kryptonmc.krypton.util.writeVarInt
-import org.kryptonmc.krypton.util.writeVarIntByteArray
-import org.kryptonmc.krypton.util.writeVarLong
 import java.io.IOException
 import java.util.UUID
 import kotlin.math.min
@@ -55,7 +21,6 @@ import kotlin.random.Random
 import kotlin.test.Test
 import kotlin.test.assertContentEquals
 import kotlin.test.assertEquals
-import kotlin.test.assertSame
 import kotlin.test.assertTrue
 
 @ExtendWith(InitializerExtension::class)

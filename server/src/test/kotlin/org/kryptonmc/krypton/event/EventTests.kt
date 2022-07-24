@@ -26,7 +26,7 @@ import org.kryptonmc.api.event.EventTask
 import org.kryptonmc.api.event.Listener
 import org.kryptonmc.api.event.ListenerPriority
 import org.kryptonmc.api.event.registerHandler
-import org.kryptonmc.krypton.util.MockPluginManager
+import org.kryptonmc.krypton.plugin.MockPluginManager
 import java.lang.reflect.Method
 import java.util.concurrent.atomic.AtomicInteger
 import java.util.concurrent.atomic.AtomicLong

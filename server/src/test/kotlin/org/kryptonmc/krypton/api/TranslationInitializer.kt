@@ -16,27 +16,19 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.util
+package org.kryptonmc.krypton.api
 
-import org.kryptonmc.api.item.ItemRarities
-import org.kryptonmc.api.item.ItemRarity
-import org.kryptonmc.api.registry.Registries
-import org.kryptonmc.krypton.api.Initializer
-import org.kryptonmc.krypton.item.ItemLoader
-import org.kryptonmc.krypton.registry.KryptonRegistries
-import org.kryptonmc.krypton.registry.KryptonRegistry
+import org.kryptonmc.krypton.util.Reflection
+import org.kryptonmc.krypton.util.TranslationBootstrap
 
-object ItemTypeInitializer : Initializer {
+object TranslationInitializer : Initializer {
 
     override fun initialize() {
-        ItemRarities
-        SoundEventInitializer.initialize()
-        ItemLoader.init()
+        TranslationBootstrap.init()
     }
 
     override fun tearDown() {
-        KryptonRegistries.ITEM.reset()
-        (Registries.ITEM_RARITIES as KryptonRegistry<ItemRarity>).reset()
-        SoundEventInitializer.tearDown()
+        val implClass = Class.forName("net.kyori.adventure.translation.TranslationRegistryImpl")!!
+        Reflection.accessField<MutableMap<*, *>>(implClass, "translations", TranslationBootstrap.REGISTRY)?.clear()
     }
 }

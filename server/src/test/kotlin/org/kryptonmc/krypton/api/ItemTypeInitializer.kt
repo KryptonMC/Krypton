@@ -16,21 +16,26 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.util
+package org.kryptonmc.krypton.api
 
-import org.kryptonmc.api.effect.sound.SoundEvents
-import org.kryptonmc.krypton.api.Initializer
-import org.kryptonmc.krypton.effect.sound.SoundLoader
+import org.kryptonmc.api.item.ItemRarities
+import org.kryptonmc.api.item.ItemRarity
+import org.kryptonmc.api.registry.Registries
+import org.kryptonmc.krypton.item.ItemLoader
 import org.kryptonmc.krypton.registry.KryptonRegistries
+import org.kryptonmc.krypton.registry.KryptonRegistry
 
-object SoundEventInitializer : Initializer {
+object ItemTypeInitializer : Initializer {
 
     override fun initialize() {
-        SoundLoader.init()
-        SoundEvents
+        ItemRarities
+        SoundEventInitializer.initialize()
+        ItemLoader.init()
     }
 
     override fun tearDown() {
-        KryptonRegistries.SOUND_EVENT.reset()
+        KryptonRegistries.ITEM.reset()
+        (Registries.ITEM_RARITIES as KryptonRegistry<ItemRarity>).reset()
+        SoundEventInitializer.tearDown()
     }
 }

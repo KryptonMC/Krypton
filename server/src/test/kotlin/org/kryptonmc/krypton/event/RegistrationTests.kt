@@ -30,7 +30,7 @@ import org.kryptonmc.api.event.Listener
 import org.kryptonmc.api.event.registerHandler
 import org.kryptonmc.krypton.event.RegistrationTests.EventGenerator
 import org.kryptonmc.krypton.event.RegistrationTests.TestFunction
-import org.kryptonmc.krypton.util.MockPluginManager
+import org.kryptonmc.krypton.plugin.MockPluginManager
 import kotlin.properties.Delegates
 import kotlin.test.assertEquals
 import kotlin.test.assertSame

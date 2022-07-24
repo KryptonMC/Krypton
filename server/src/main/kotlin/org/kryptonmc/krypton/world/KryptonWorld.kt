@@ -249,7 +249,7 @@ class KryptonWorld(
     override fun setBlock(position: Vector3i, block: Block): Boolean = setBlock(position.x(), position.y(), position.z(), block)
 
     fun tick() {
-        if (members.isEmpty()) return // don't tick the world if there's no players in it
+        if (players.isEmpty()) return // don't tick the world if there's no players in it
 
         // tick rain
         val wasRaining = isRaining
@@ -314,7 +314,7 @@ class KryptonWorld(
         tickTime()
         chunkManager.chunkMap.values.forEach { it.tick(chunkManager.players(it.position.toLong()).size) }
 
-        if (members.isNotEmpty()) entities.forEach {
+        if (players.isNotEmpty()) entities.forEach {
             if (it.isRemoved) return@forEach
             it.tick()
         }

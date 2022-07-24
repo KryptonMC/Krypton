@@ -16,11 +16,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.util
+package org.kryptonmc.krypton.adventure
 
-import org.kryptonmc.krypton.adventure.GroupedPacketSender
-import org.kryptonmc.krypton.adventure.NetworkAudienceMember
-import org.kryptonmc.krypton.adventure.PacketGroupingAudience
 import org.kryptonmc.krypton.network.chat.ChatType
 import org.kryptonmc.krypton.packet.Packet
 import java.util.function.Predicate

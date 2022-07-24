@@ -72,7 +72,7 @@ object KryptonMetrics {
             config.isLogResponseStatusTextEnabled
         )
 
-        metrics.addCustomChart(SingleLineChart("players", server.members::size))
+        metrics.addCustomChart(SingleLineChart("players", server.players::size))
         metrics.addCustomChart(SimplePie("online_mode") { if (server.config.server.onlineMode) "online" else "offline" })
         metrics.addCustomChart(SimplePie("krypton_version", KryptonPlatform::version))
         metrics.addCustomChart(SimplePie("minecraft_version", KryptonPlatform::minecraftVersion))

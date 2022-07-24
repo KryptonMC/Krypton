@@ -36,13 +36,13 @@ class KryptonVanishService : VanishService {
     override fun vanish(player: Player) {
         if (player !is KryptonPlayer || isVanished(player)) return
         vanishedPlayers.add(player.uuid)
-        player.world.members.forEach(player::removeViewer)
+        player.world.players.forEach(player::removeViewer)
     }
 
     override fun unvanish(player: Player) {
         if (player !is KryptonPlayer || !isVanished(player)) return
         vanishedPlayers.remove(player.uuid)
-        player.world.members.forEach(player::addViewer)
+        player.world.players.forEach(player::addViewer)
     }
 
     override fun show(player: Player, target: Player) {

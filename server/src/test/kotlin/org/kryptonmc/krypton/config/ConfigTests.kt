@@ -16,11 +16,10 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton
+package org.kryptonmc.krypton.config
 
 import org.kryptonmc.api.world.Difficulty
 import org.kryptonmc.api.world.GameMode
-import org.kryptonmc.krypton.config.KryptonConfig
 import org.kryptonmc.krypton.config.category.StatusCategory
 import org.spongepowered.configurate.hocon.HoconConfigurationLoader
 import org.spongepowered.configurate.kotlin.extensions.get

@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton
+package org.kryptonmc.krypton.command
 
 import com.mojang.brigadier.arguments.IntegerArgumentType
 import com.mojang.brigadier.arguments.StringArgumentType
@@ -29,11 +29,9 @@ import org.kryptonmc.api.command.Sender
 import org.kryptonmc.api.command.meta.CommandMeta
 import org.kryptonmc.krypton.api.InitializerExtension
 import org.kryptonmc.krypton.api.Initializers
-import org.kryptonmc.krypton.command.argument
-import org.kryptonmc.krypton.command.literal
 import org.kryptonmc.krypton.command.registrar.BrigadierCommandRegistrar
 import org.kryptonmc.krypton.util.Bootstrap
-import org.kryptonmc.krypton.util.FactoryProviderInitializer
+import org.kryptonmc.krypton.api.FactoryProviderInitializer
 import java.util.concurrent.locks.ReentrantLock
 import kotlin.test.assertEquals
 

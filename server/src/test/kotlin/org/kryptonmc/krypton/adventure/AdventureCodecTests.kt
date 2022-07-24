@@ -23,12 +23,11 @@ import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.text.format.Style
 import net.kyori.adventure.text.format.TextColor
 import net.kyori.adventure.text.format.TextDecoration
-import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
 import org.kryptonmc.krypton.api.InitializerExtension
 import org.kryptonmc.krypton.api.Initializers
-import org.kryptonmc.krypton.util.FactoryProviderInitializer
+import org.kryptonmc.krypton.api.FactoryProviderInitializer
 import org.kryptonmc.krypton.util.serialization.encode
 import org.kryptonmc.nbt.StringTag
 import org.kryptonmc.nbt.compound

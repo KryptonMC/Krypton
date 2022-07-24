@@ -16,18 +16,21 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.util
+package org.kryptonmc.krypton.api
 
-import org.kryptonmc.krypton.api.Initializer
+import org.kryptonmc.krypton.util.KryptonFactoryProvider
+import org.kryptonmc.krypton.util.Reflection
 
-object TranslationInitializer : Initializer {
+object FactoryProviderInitializer : Initializer {
+
+    private var fieldInitialized = false
 
     override fun initialize() {
-        TranslationBootstrap.init()
+        if (!fieldInitialized) Reflection.modifyField(Class.forName("org.kryptonmc.api.Krypton"), "internalFactoryProvider", KryptonFactoryProvider)
+        KryptonFactoryProvider.bootstrap()
     }
 
     override fun tearDown() {
-        val implClass = Class.forName("net.kyori.adventure.translation.TranslationRegistryImpl")!!
-        Reflection.accessField<MutableMap<*, *>>(implClass, "translations", TranslationBootstrap.REGISTRY)?.clear()
+        KryptonFactoryProvider.reset()
     }
 }

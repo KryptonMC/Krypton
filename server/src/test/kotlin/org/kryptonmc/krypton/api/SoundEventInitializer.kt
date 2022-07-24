@@ -16,20 +16,20 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.util
+package org.kryptonmc.krypton.api
 
-import org.kryptonmc.krypton.api.Initializer
+import org.kryptonmc.api.effect.sound.SoundEvents
+import org.kryptonmc.krypton.effect.sound.SoundLoader
+import org.kryptonmc.krypton.registry.KryptonRegistries
 
-object FactoryProviderInitializer : Initializer {
-
-    private var fieldInitialized = false
+object SoundEventInitializer : Initializer {
 
     override fun initialize() {
-        if (!fieldInitialized) Reflection.modifyField(Class.forName("org.kryptonmc.api.Krypton"), "internalFactoryProvider", KryptonFactoryProvider)
-        KryptonFactoryProvider.bootstrap()
+        SoundLoader.init()
+        SoundEvents
     }
 
     override fun tearDown() {
-        KryptonFactoryProvider.reset()
+        KryptonRegistries.SOUND_EVENT.reset()
     }
 }

@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton
+package org.kryptonmc.krypton.effect.particle
 
 import net.kyori.adventure.text.format.TextColor
 import org.junit.jupiter.api.assertDoesNotThrow
@@ -29,7 +29,7 @@ import org.kryptonmc.krypton.api.InitializerExtension
 import org.kryptonmc.krypton.api.Initializers
 import org.kryptonmc.krypton.effect.particle.data.KryptonNoteParticleData
 import org.kryptonmc.krypton.util.Bootstrap
-import org.kryptonmc.krypton.util.FactoryProviderInitializer
+import org.kryptonmc.krypton.api.FactoryProviderInitializer
 import org.spongepowered.math.vector.Vector3d
 import java.awt.Color as AwtColor
 import kotlin.test.Test

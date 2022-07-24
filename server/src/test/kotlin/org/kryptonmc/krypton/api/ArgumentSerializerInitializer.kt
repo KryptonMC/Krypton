@@ -16,32 +16,17 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton
+package org.kryptonmc.krypton.api
 
-import org.kryptonmc.krypton.util.KryptonBoundingBox
-import kotlin.test.Test
-import kotlin.test.assertEquals
+import org.kryptonmc.krypton.command.argument.ArgumentSerializers
 
-class BoundingBoxTests {
+object ArgumentSerializerInitializer : Initializer {
 
-    @Test
-    fun `test size of box calculations`() {
-        val box = KryptonBoundingBox(-3.0, -3.0, -3.0, 3.0, 3.0, 3.0)
-        assertEquals(6.0, box.size)
+    override fun initialize() {
+        ArgumentSerializers.init()
     }
 
-    @Test
-    fun `test volume calculation`() {
-        val box = KryptonBoundingBox(-3.0, -3.0, -3.0, 3.0, 3.0, 3.0)
-        val expectedVolume = 6.0 * 6.0 * 6.0 // size.x * size.y * size.z
-        assertEquals(expectedVolume, box.volume)
-    }
-
-    @Test
-    fun `test center calculation`() {
-        val box = KryptonBoundingBox(-3.0, -3.0, -3.0, 3.0, 3.0, 3.0)
-        assertEquals(0.0, box.centerX)
-        assertEquals(0.0, box.centerY)
-        assertEquals(0.0, box.centerZ)
+    override fun tearDown() {
+        ArgumentSerializers.reset()
     }
 }

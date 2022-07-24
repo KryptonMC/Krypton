@@ -16,18 +16,19 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.util
+package org.kryptonmc.krypton.api
 
-import org.kryptonmc.krypton.api.Initializer
-import org.kryptonmc.krypton.command.argument.ArgumentSerializers
+import org.kryptonmc.krypton.registry.KryptonRegistryManager
+import org.kryptonmc.krypton.util.Reflection
 
-object ArgumentSerializerInitializer : Initializer {
+object RegistryInitializer : Initializer {
 
     override fun initialize() {
-        ArgumentSerializers.init()
+        Reflection.modifyField(Class.forName("org.kryptonmc.api.Krypton"), "internalRegistryManager", KryptonRegistryManager)
+        KryptonRegistryManager.parent
     }
 
     override fun tearDown() {
-        ArgumentSerializers.reset()
+        KryptonRegistryManager.parent.reset()
     }
 }

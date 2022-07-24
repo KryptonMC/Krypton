@@ -82,7 +82,9 @@ object KryptonCommandManager : CommandManager {
     private val LOGGER = logger<CommandManager>()
     private const val ERROR_MESSAGE_CUTOFF_THRESHOLD = 10
 
-    @GuardedBy("lock") private val dispatcher = CommandDispatcher<Sender>() // Reads and writes MUST be locked by this lock!
+    @GuardedBy("lock")
+    val dispatcher: CommandDispatcher<Sender> = CommandDispatcher()
+    // Reads and writes MUST be locked by this lock!
     private val lock = ReentrantReadWriteLock()
     private val brigadierCommandRegistrar = BrigadierCommandRegistrar(lock.writeLock())
     private val simpleCommandRegistrar = SimpleCommandRegistrar(lock.writeLock())
