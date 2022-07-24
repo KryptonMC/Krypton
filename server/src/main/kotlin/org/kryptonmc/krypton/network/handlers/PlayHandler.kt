@@ -26,21 +26,20 @@ import net.kyori.adventure.text.format.NamedTextColor
 import org.kryptonmc.api.block.Blocks
 import org.kryptonmc.api.entity.Hand
 import org.kryptonmc.api.entity.player.ChatVisibility
-import org.kryptonmc.api.event.command.CommandExecuteEvent
-import org.kryptonmc.api.event.player.ChatEvent
-import org.kryptonmc.api.event.player.MoveEvent
-import org.kryptonmc.api.event.player.PerformActionEvent
-import org.kryptonmc.api.event.player.PerformActionEvent.Action as EntityAction
-import org.kryptonmc.api.event.player.PlaceBlockEvent
-import org.kryptonmc.api.event.player.PluginMessageEvent
-import org.kryptonmc.api.event.player.ResourcePackStatusEvent
-import org.kryptonmc.api.event.player.RotateEvent
 import org.kryptonmc.api.resource.ResourcePack
 import org.kryptonmc.api.world.GameMode
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.commands.KryptonPermission
 import org.kryptonmc.krypton.entity.EntityFactory
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
+import org.kryptonmc.krypton.event.command.KryptonCommandExecuteEvent
+import org.kryptonmc.krypton.event.player.KryptonChatEvent
+import org.kryptonmc.krypton.event.player.KryptonMoveEvent
+import org.kryptonmc.krypton.event.player.KryptonPerformActionEvent
+import org.kryptonmc.krypton.event.player.KryptonPlaceBlockEvent
+import org.kryptonmc.krypton.event.player.KryptonPluginMessageEvent
+import org.kryptonmc.krypton.event.player.KryptonResourcePackStatusEvent
+import org.kryptonmc.krypton.event.player.KryptonRotateEvent
 import org.kryptonmc.krypton.inventory.KryptonPlayerInventory
 import org.kryptonmc.krypton.item.handler
 import org.kryptonmc.krypton.item.handler.ItemTimedHandler
@@ -50,27 +49,26 @@ import org.kryptonmc.krypton.network.chat.ChatTypes
 import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.packet.`in`.play.PacketInAbilities
 import org.kryptonmc.krypton.packet.`in`.play.PacketInChatCommand
-import org.kryptonmc.krypton.packet.`in`.play.PacketInSwingArm
-import org.kryptonmc.krypton.packet.`in`.play.PacketInSetHeldItem
 import org.kryptonmc.krypton.packet.`in`.play.PacketInChatMessage
-import org.kryptonmc.krypton.packet.`in`.play.PacketInClientInformation
 import org.kryptonmc.krypton.packet.`in`.play.PacketInClientCommand
-import org.kryptonmc.krypton.packet.`in`.play.PacketInSetCreativeModeSlot
-import org.kryptonmc.krypton.packet.`in`.play.PacketInPlayerCommand
-import org.kryptonmc.krypton.packet.`in`.play.PacketInQueryEntityTag
+import org.kryptonmc.krypton.packet.`in`.play.PacketInClientInformation
+import org.kryptonmc.krypton.packet.`in`.play.PacketInCommandSuggestionsRequest
 import org.kryptonmc.krypton.packet.`in`.play.PacketInInteract
 import org.kryptonmc.krypton.packet.`in`.play.PacketInKeepAlive
-import org.kryptonmc.krypton.packet.`in`.play.PacketInUseItemOn
 import org.kryptonmc.krypton.packet.`in`.play.PacketInPlayerAction
-import org.kryptonmc.krypton.packet.`in`.play.PacketInPlayerAction.Action as PlayerAction
+import org.kryptonmc.krypton.packet.`in`.play.PacketInPlayerCommand
+import org.kryptonmc.krypton.packet.`in`.play.PacketInPlayerInput
+import org.kryptonmc.krypton.packet.`in`.play.PacketInPluginMessage
+import org.kryptonmc.krypton.packet.`in`.play.PacketInQueryEntityTag
+import org.kryptonmc.krypton.packet.`in`.play.PacketInResourcePack
+import org.kryptonmc.krypton.packet.`in`.play.PacketInSetCreativeModeSlot
+import org.kryptonmc.krypton.packet.`in`.play.PacketInSetHeldItem
 import org.kryptonmc.krypton.packet.`in`.play.PacketInSetPlayerPosition
 import org.kryptonmc.krypton.packet.`in`.play.PacketInSetPlayerPositionAndRotation
 import org.kryptonmc.krypton.packet.`in`.play.PacketInSetPlayerRotation
+import org.kryptonmc.krypton.packet.`in`.play.PacketInSwingArm
 import org.kryptonmc.krypton.packet.`in`.play.PacketInUseItem
-import org.kryptonmc.krypton.packet.`in`.play.PacketInPluginMessage
-import org.kryptonmc.krypton.packet.`in`.play.PacketInResourcePack
-import org.kryptonmc.krypton.packet.`in`.play.PacketInPlayerInput
-import org.kryptonmc.krypton.packet.`in`.play.PacketInCommandSuggestionsRequest
+import org.kryptonmc.krypton.packet.`in`.play.PacketInUseItemOn
 import org.kryptonmc.krypton.packet.out.play.EntityAnimation
 import org.kryptonmc.krypton.packet.out.play.PacketOutAnimation
 import org.kryptonmc.krypton.packet.out.play.PacketOutCommandSuggestionsResponse
@@ -96,6 +94,8 @@ import java.time.Duration
 import java.time.Instant
 import java.util.Locale
 import java.util.concurrent.atomic.AtomicReference
+import org.kryptonmc.api.event.player.PerformActionEvent.Action as EntityAction
+import org.kryptonmc.krypton.packet.`in`.play.PacketInPlayerAction.Action as PlayerAction
 
 /**
  * This is the largest and most important of the four packet handlers, as the
@@ -172,7 +172,7 @@ class PlayHandler(override val server: KryptonServer, override val session: Sess
     private fun handleChatCommand(packet: PacketInChatCommand) {
         if (!Chat.isValidMessage(packet.command)) session.disconnect(ILLEGAL_CHAT_CHARACTERS_MESSAGE)
         if (!verifyChatMessage(packet.command, packet.timestamp)) return
-        server.eventManager.fire(CommandExecuteEvent(player, packet.command)).thenAcceptAsync({
+        server.eventManager.fire(KryptonCommandExecuteEvent(player, packet.command)).thenAcceptAsync({
             if (!it.result.isAllowed) return@thenAcceptAsync
             server.commandManager.dispatch(player, packet.command)
         }, session.channel.eventLoop())
@@ -182,7 +182,7 @@ class PlayHandler(override val server: KryptonServer, override val session: Sess
         // Sanity check message content
         if (!Chat.isValidMessage(packet.message)) session.disconnect(ILLEGAL_CHAT_CHARACTERS_MESSAGE)
         // Fire the chat event
-        server.eventManager.fire(ChatEvent(player, packet.message)).thenAcceptAsync({ event ->
+        server.eventManager.fire(KryptonChatEvent(player, packet.message)).thenAcceptAsync({ event ->
             if (!event.result.isAllowed) return@thenAcceptAsync
             if (!verifyChatMessage(packet.message, packet.signature.timestamp)) return@thenAcceptAsync
 
@@ -248,7 +248,7 @@ class PlayHandler(override val server: KryptonServer, override val session: Sess
     }
 
     private fun handlePlayerCommand(packet: PacketInPlayerCommand) {
-        server.eventManager.fire(PerformActionEvent(player, packet.action)).thenAcceptAsync({
+        server.eventManager.fire(KryptonPerformActionEvent(player, packet.action)).thenAcceptAsync({
             if (!it.result.isAllowed) return@thenAcceptAsync
             when (it.action) {
                 EntityAction.START_SNEAKING -> player.isSneaking = true
@@ -293,7 +293,7 @@ class PlayHandler(override val server: KryptonServer, override val session: Sess
         val y = packet.y
         val z = packet.z
         val worldBlock = world.getBlock(x, y, z)
-        val event = server.eventManager.fireSync(PlaceBlockEvent(player, worldBlock, packet.hand, x, y, z, packet.face, packet.isInside))
+        val event = server.eventManager.fireSync(KryptonPlaceBlockEvent(player, worldBlock, packet.hand, x, y, z, packet.face, packet.isInside))
         if (!event.result.isAllowed) return
 
         val chunkX = player.location.chunkX()
@@ -346,7 +346,7 @@ class PlayHandler(override val server: KryptonServer, override val session: Sess
         val newLocation = Vector3d(packet.x, packet.y, packet.z)
 
         player.location = newLocation
-        server.eventManager.fireAndForget(MoveEvent(player, oldLocation, newLocation))
+        server.eventManager.fireAndForget(KryptonMoveEvent(player, oldLocation, newLocation))
 
         val deltaX = Positioning.delta(newLocation.x(), oldLocation.x())
         val deltaY = Positioning.delta(newLocation.y(), oldLocation.y())
@@ -361,7 +361,7 @@ class PlayHandler(override val server: KryptonServer, override val session: Sess
         val newRotation = Vector2f(packet.yaw, packet.pitch)
 
         player.rotation = newRotation
-        server.eventManager.fireAndForget(RotateEvent(player, oldRotation, newRotation))
+        server.eventManager.fireAndForget(KryptonRotateEvent(player, oldRotation, newRotation))
 
         sessionManager.sendGrouped(PacketOutUpdateEntityRotation(player.id, packet.yaw, packet.pitch, packet.onGround)) { it !== player }
         sessionManager.sendGrouped(PacketOutSetHeadRotation(player.id, packet.yaw)) { it !== player }
@@ -376,8 +376,8 @@ class PlayHandler(override val server: KryptonServer, override val session: Sess
 
         player.location = newLocation
         player.rotation = newRotation
-        server.eventManager.fireAndForget(MoveEvent(player, oldLocation, newLocation))
-        server.eventManager.fireAndForget(RotateEvent(player, oldRotation, newRotation))
+        server.eventManager.fireAndForget(KryptonMoveEvent(player, oldLocation, newLocation))
+        server.eventManager.fireAndForget(KryptonRotateEvent(player, oldRotation, newRotation))
 
         // TODO: Look in to optimising this (rotation and head look updating) as much as we possibly can
         val deltaX = Positioning.delta(newLocation.x(), oldLocation.x())
@@ -392,7 +392,7 @@ class PlayHandler(override val server: KryptonServer, override val session: Sess
     }
 
     private fun handlePluginMessage(packet: PacketInPluginMessage) {
-        server.eventManager.fireAndForget(PluginMessageEvent(player, packet.channel, packet.data))
+        server.eventManager.fireAndForget(KryptonPluginMessageEvent(player, packet.channel, packet.data))
     }
 
     private fun handleCommandSuggestionsRequest(packet: PacketInCommandSuggestionsRequest) {
@@ -420,7 +420,7 @@ class PlayHandler(override val server: KryptonServer, override val session: Sess
             session.disconnect(Component.translatable("multiplayer.requiredTexturePrompt.disconnect"))
             return
         }
-        server.eventManager.fireAndForget(ResourcePackStatusEvent(player, packet.status))
+        server.eventManager.fireAndForget(KryptonResourcePackStatusEvent(player, packet.status))
     }
 
     private fun onMove(new: Vector3d, old: Vector3d) {

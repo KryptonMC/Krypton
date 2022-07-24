@@ -14,17 +14,20 @@ import org.kryptonmc.api.event.ResultedEvent
 import org.kryptonmc.api.world.World
 
 /**
- * Called when the given [entity] spawns in to the given [world].
- *
- * @param entity the entity that is spawning
- * @param world the world that the entity is spawning in to
+ * Called when the given [entity] is removed from the given [world].
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
-public data class EntitySpawnEvent(
-    @get:JvmName("entity") public val entity: Entity,
-    @get:JvmName("world") public val world: World
-) : ResultedEvent<GenericResult> {
+public interface RemoveEntityEvent : ResultedEvent<GenericResult> {
 
-    @get:JvmName("result")
-    override var result: GenericResult = GenericResult.allowed()
+    /**
+     * The entity that was removed from the world.
+     */
+    @get:JvmName("entity")
+    public val entity: Entity
+
+    /**
+     * The world that the entity was removed from.
+     */
+    @get:JvmName("world")
+    public val world: World
 }

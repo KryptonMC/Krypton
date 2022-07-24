@@ -39,7 +39,6 @@ import org.kryptonmc.api.command.SimpleCommand
 import org.kryptonmc.api.command.meta.CommandMeta
 import org.kryptonmc.api.command.meta.SimpleCommandMeta
 import org.kryptonmc.api.entity.player.Player
-import org.kryptonmc.api.event.command.CommandSendEvent
 import org.kryptonmc.krypton.command.meta.EmptyCommandMeta
 import org.kryptonmc.krypton.commands.BanCommand
 import org.kryptonmc.krypton.commands.BanIpCommand
@@ -67,6 +66,7 @@ import org.kryptonmc.krypton.command.registrar.RawCommandRegistrar
 import org.kryptonmc.krypton.command.registrar.SimpleCommandRegistrar
 import org.kryptonmc.krypton.commands.krypton.KryptonCommand
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
+import org.kryptonmc.krypton.event.command.KryptonCommandSendEvent
 import org.kryptonmc.krypton.packet.out.play.PacketOutCommands
 import org.kryptonmc.krypton.util.logger
 import java.util.concurrent.CompletableFuture
@@ -162,7 +162,7 @@ object KryptonCommandManager : CommandManager {
         val node = RootCommandNode<Sender>()
         lock.read {
             dispatcher.root.children.forEach { if (it.requirement.test(player)) node.addChild(it) }
-            player.server.eventManager.fireAndForget(CommandSendEvent(player, node))
+            player.server.eventManager.fireAndForget(KryptonCommandSendEvent(player, node))
             player.session.send(PacketOutCommands(node))
         }
     }

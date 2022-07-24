@@ -17,10 +17,13 @@ import org.kryptonmc.api.event.ResultedEvent
  * the given [username].
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
-public data class AuthenticationEvent(@get:JvmName("username") public val username: String) : ResultedEvent<AuthenticationEvent.Result> {
+public interface AuthenticationEvent : ResultedEvent<AuthenticationEvent.Result> {
 
-    @get:JvmName("result")
-    override var result: Result = Result.allowed()
+    /**
+     * The username of the player that is being authenticated.
+     */
+    @get:JvmName("username")
+    public val username: String
 
     /**
      * The result of a request to authenticate a player.
@@ -55,8 +58,7 @@ public data class AuthenticationEvent(@get:JvmName("username") public val userna
              */
             @JvmStatic
             @Contract("_ -> new", pure = true)
-            public fun allowed(profile: GameProfile): Result =
-                Result(true, profile)
+            public fun allowed(profile: GameProfile): Result = Result(true, profile)
 
             /**
              * Gets the result that denies the authenticating player from joining

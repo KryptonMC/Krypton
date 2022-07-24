@@ -19,8 +19,8 @@
 package org.kryptonmc.krypton.entity.player
 
 import org.kryptonmc.api.entity.player.CooldownTracker
-import org.kryptonmc.api.event.player.CooldownEvent
 import org.kryptonmc.api.item.ItemType
+import org.kryptonmc.krypton.event.player.KryptonCooldownEvent
 import org.kryptonmc.krypton.packet.out.play.PacketOutSetCooldown
 import org.kryptonmc.krypton.util.clamp
 import java.util.concurrent.ConcurrentHashMap
@@ -58,7 +58,7 @@ class KryptonCooldownTracker(private val player: KryptonPlayer) : CooldownTracke
 
     override fun set(item: ItemType, ticks: Int) {
         if (ticks < 0) return
-        val result = player.server.eventManager.fireSync(CooldownEvent(player, item, ticks)).result
+        val result = player.server.eventManager.fireSync(KryptonCooldownEvent(player, item, ticks)).result
         if (!result.isAllowed) return
         val cooldownAmount = if (result.cooldown > 0) result.cooldown else ticks
         cooldowns[item] = Cooldown(tickCount, cooldownAmount)

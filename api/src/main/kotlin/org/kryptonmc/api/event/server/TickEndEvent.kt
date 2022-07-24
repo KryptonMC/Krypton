@@ -8,12 +8,24 @@
  */
 package org.kryptonmc.api.event.server
 
+import org.kryptonmc.api.event.annotation.PerformanceSensitive
+
 /**
  * Called when a tick ends.
- *
- * @param tickNumber the tick number
- * @param tickDuration the duration of the tick
- * @param timeEnd the time this tick ended in milliseconds
  */
-@JvmRecord
-public data class TickEndEvent(public val tickNumber: Int, public val tickDuration: Long, public val timeEnd: Long)
+@Suppress("INAPPLICABLE_JVM_NAME")
+@PerformanceSensitive
+public interface TickEndEvent : TickEvent {
+
+    /**
+     * The estimated duration, in milliseconds, of the tick that ended.
+     */
+    @get:JvmName("tickDuration")
+    public val tickDuration: Long
+
+    /**
+     * The estimated time, in milliseconds, when the tick ended.
+     */
+    @get:JvmName("endTime")
+    public val endTime: Long
+}

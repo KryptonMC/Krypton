@@ -73,6 +73,8 @@ import org.kryptonmc.krypton.entity.KryptonEntity
 import org.kryptonmc.krypton.entity.KryptonEquipable
 import org.kryptonmc.krypton.entity.KryptonLivingEntity
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
+import org.kryptonmc.krypton.event.player.KryptonChangeGameModeEvent
+import org.kryptonmc.krypton.event.player.KryptonPerformActionEvent
 import org.kryptonmc.krypton.inventory.KryptonPlayerInventory
 import org.kryptonmc.krypton.item.KryptonItemStack
 import org.kryptonmc.krypton.item.handler
@@ -330,7 +332,7 @@ class KryptonPlayer(
 
     fun updateGameMode(mode: GameMode, cause: ChangeGameModeEvent.Cause) {
         if (mode === gameMode) return
-        val result = server.eventManager.fireSync(ChangeGameModeEvent(this, gameMode, mode, cause)).result
+        val result = server.eventManager.fireSync(KryptonChangeGameModeEvent(this, gameMode, mode, cause)).result
         if (!result.isAllowed) return
 
         oldGameMode = gameMode
@@ -506,7 +508,8 @@ class KryptonPlayer(
     }
 
     override fun startGliding() {
-        if (server.eventManager.fireSync(PerformActionEvent(this, PerformActionEvent.Action.START_FLYING_WITH_ELYTRA)).result.isAllowed) {
+        val result = server.eventManager.fireSync(KryptonPerformActionEvent(this, PerformActionEvent.Action.START_FLYING_WITH_ELYTRA)).result
+        if (result.isAllowed) {
             isGliding = true
         } else {
             // Took this from Spigot. It seems like it's taken from the vanilla thing below, but if you don't have this,
@@ -517,7 +520,8 @@ class KryptonPlayer(
     }
 
     override fun stopGliding() {
-        if (!server.eventManager.fireSync(PerformActionEvent(this, PerformActionEvent.Action.STOP_FLYING_WITH_ELYTRA)).result.isAllowed) return
+        val result = server.eventManager.fireSync(KryptonPerformActionEvent(this, PerformActionEvent.Action.STOP_FLYING_WITH_ELYTRA)).result
+        if (!result.isAllowed) return
         // This is a vanilla thing
         isGliding = true
         isGliding = false

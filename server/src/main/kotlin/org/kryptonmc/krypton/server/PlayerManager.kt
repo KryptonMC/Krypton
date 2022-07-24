@@ -21,8 +21,6 @@ package org.kryptonmc.krypton.server
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
-import org.kryptonmc.api.event.player.JoinEvent
-import org.kryptonmc.api.event.player.QuitEvent
 import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.api.scoreboard.Objective
 import org.kryptonmc.api.statistic.CustomStatistics
@@ -30,27 +28,29 @@ import org.kryptonmc.api.world.World
 import org.kryptonmc.api.world.rule.GameRules
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
+import org.kryptonmc.krypton.event.player.KryptonJoinEvent
+import org.kryptonmc.krypton.event.player.KryptonQuitEvent
 import org.kryptonmc.krypton.network.SessionHandler
 import org.kryptonmc.krypton.packet.FramedPacket
 import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.packet.out.play.GameEvent
 import org.kryptonmc.krypton.packet.out.play.PacketOutAbilities
-import org.kryptonmc.krypton.packet.out.play.PacketOutGameEvent
-import org.kryptonmc.krypton.packet.out.play.PacketOutSetHeldItem
-import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateRecipes
 import org.kryptonmc.krypton.packet.out.play.PacketOutEntityEvent
+import org.kryptonmc.krypton.packet.out.play.PacketOutGameEvent
 import org.kryptonmc.krypton.packet.out.play.PacketOutInitializeWorldBorder
 import org.kryptonmc.krypton.packet.out.play.PacketOutLogin
 import org.kryptonmc.krypton.packet.out.play.PacketOutPlayerInfo
-import org.kryptonmc.krypton.packet.out.play.PacketOutSynchronizePlayerPosition
 import org.kryptonmc.krypton.packet.out.play.PacketOutPluginMessage
 import org.kryptonmc.krypton.packet.out.play.PacketOutResourcePack
+import org.kryptonmc.krypton.packet.out.play.PacketOutSetContainerContent
 import org.kryptonmc.krypton.packet.out.play.PacketOutSetDefaultSpawnPosition
+import org.kryptonmc.krypton.packet.out.play.PacketOutSetHeldItem
+import org.kryptonmc.krypton.packet.out.play.PacketOutSynchronizePlayerPosition
+import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateRecipeBook
+import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateRecipes
 import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateTags
 import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateTeams
 import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateTime
-import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateRecipeBook
-import org.kryptonmc.krypton.packet.out.play.PacketOutSetContainerContent
 import org.kryptonmc.krypton.server.ban.BannedIpList
 import org.kryptonmc.krypton.server.ban.BannedPlayerList
 import org.kryptonmc.krypton.server.whitelist.Whitelist
@@ -159,7 +159,7 @@ class PlayerManager(private val server: KryptonServer) {
         playersByUUID[player.uuid] = player
 
         // Fire join event and send result message
-        val joinResult = server.eventManager.fireSync(JoinEvent(player, !profile.name.equals(name, true))).result
+        val joinResult = server.eventManager.fireSync(KryptonJoinEvent(player, !profile.name.equals(name, true))).result
         if (!joinResult.isAllowed) {
             // Use default reason if denied without specified reason
             val reason = joinResult.message ?: Component.translatable("multiplayer.disconnect.kicked")
@@ -192,7 +192,7 @@ class PlayerManager(private val server: KryptonServer) {
     }, executor)
 
     fun remove(player: KryptonPlayer) {
-        server.eventManager.fire(QuitEvent(player)).thenAcceptAsync({ event ->
+        server.eventManager.fire(KryptonQuitEvent(player)).thenAcceptAsync({ event ->
             player.statistics.increment(CustomStatistics.LEAVE_GAME)
             save(player)
             player.world.chunkManager.removePlayer(player)
@@ -207,7 +207,7 @@ class PlayerManager(private val server: KryptonServer) {
             // Send info and quit message
             server.sessionManager.invalidateStatus()
             server.sessionManager.sendGrouped(PacketOutPlayerInfo(PacketOutPlayerInfo.Action.REMOVE_PLAYER, player))
-            if (event.result.reason != null) server.sendMessage(event.result.reason!!)
+            if (event.quitMessage != null) server.sendMessage(event.quitMessage!!)
             server.sessionManager.remove(player.session)
         }, executor)
     }

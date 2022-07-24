@@ -8,18 +8,20 @@
  */
 package org.kryptonmc.api.event.player
 
-import org.kryptonmc.api.entity.Entity
 import org.kryptonmc.api.entity.Hand
-import org.kryptonmc.api.entity.player.Player
 
 /**
  * Called when a player interacts on an entity.
- *
- * @param target the entity that was interacted on
- * @param hand the hand the player used to interact with the target
  */
-public class InteractEntityEvent(
-    player: Player,
-    @get:JvmName("target") public val target: Entity,
-    @get:JvmName("hand") public val hand: Hand
-) : InteractEvent(player, Type.INTERACT_ON_ENTITY)
+@Suppress("INAPPLICABLE_JVM_NAME")
+public interface InteractEntityEvent : EntityInteractEvent {
+
+    /**
+     * The hand that the player used to interact with the target.
+     */
+    @get:JvmName("hand")
+    public val hand: Hand
+
+    override val type: InteractEvent.Type
+        get() = InteractEvent.Type.INTERACT_ON_ENTITY
+}

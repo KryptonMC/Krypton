@@ -9,28 +9,32 @@
 package org.kryptonmc.api.event.player
 
 import org.jetbrains.annotations.Contract
-import org.kryptonmc.api.entity.player.Player
 import org.kryptonmc.api.event.ResultedEvent
 import org.kryptonmc.api.world.GameMode
 
 /**
  * Called when the given [player] changes game mode.
- *
- * @param player the player who's game mode is changing
- * @param oldGameMode the old game mode of the player
- * @param newGameMode the new game mode of the player
- * @param cause the cause of the game mode change
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
-public data class ChangeGameModeEvent(
-    @get:JvmName("player") public val player: Player,
-    @get:JvmName("oldGameMode") public val oldGameMode: GameMode,
-    @get:JvmName("newGameMode") public val newGameMode: GameMode,
-    @get:JvmName("cause") public val cause: Cause
-) : ResultedEvent<ChangeGameModeEvent.Result> {
+public interface ChangeGameModeEvent : PlayerEvent, ResultedEvent<ChangeGameModeEvent.Result> {
 
-    @get:JvmName("result")
-    override var result: Result = Result.allowed()
+    /**
+     * The game mode that the player was in before the change.
+     */
+    @get:JvmName("oldGameMode")
+    public val oldGameMode: GameMode
+
+    /**
+     * The game mode that the player will be in after the change.
+     */
+    @get:JvmName("newGameMode")
+    public val newGameMode: GameMode
+
+    /**
+     * The cause of the game mode being changed for the player.
+     */
+    @get:JvmName("cause")
+    public val cause: Cause
 
     /**
      * The cause of the game mode change.
@@ -38,7 +42,8 @@ public data class ChangeGameModeEvent(
     public enum class Cause {
 
         /**
-         * The game mode was changed through the API, by using [Player.gameMode].
+         * The game mode was changed through the API, by using
+         * [org.kryptonmc.api.entity.player.Player.gameMode].
          */
         API,
 

@@ -8,24 +8,38 @@
  */
 package org.kryptonmc.api.event.player
 
-import org.kryptonmc.api.entity.Entity
 import org.kryptonmc.api.entity.Hand
-import org.kryptonmc.api.entity.player.Player
 
 /**
  * Called when a player interacts at an entity.
- *
- * @param hand the hand the player used to interact with the target
- * @param target the entity that was interacted at
- * @param clickedX the X coordinate of the clicked position on the entity
- * @param clickedY the Y coordinate of the clicked position on the entity
- * @param clickedZ the Z coordinate of the clicked position on the entity
  */
-public class InteractAtEntityEvent(
-    player: Player,
-    @get:JvmName("target") public val target: Entity,
-    @get:JvmName("hand") public val hand: Hand,
-    @get:JvmName("clickedX") public val clickedX: Double,
-    @get:JvmName("clickedY") public val clickedY: Double,
-    @get:JvmName("clickedZ") public val clickedZ: Double
-) : InteractEvent(player, Type.INTERACT_AT_ENTITY)
+@Suppress("INAPPLICABLE_JVM_NAME")
+public interface InteractAtEntityEvent : EntityInteractEvent {
+
+    /**
+     * The hand the player used to interact with the target.
+     */
+    @get:JvmName("hand")
+    public val hand: Hand
+
+    /**
+     * The X coordinate of the position that the player clicked on the entity.
+     */
+    @get:JvmName("clickedX")
+    public val clickedX: Double
+
+    /**
+     * The Y coordinate of the position that the player clicked on the entity.
+     */
+    @get:JvmName("clickedY")
+    public val clickedY: Double
+
+    /**
+     * The Z coordinate of the position that the player clicked on the entity.
+     */
+    @get:JvmName("clickedZ")
+    public val clickedZ: Double
+
+    override val type: InteractEvent.Type
+        get() = InteractEvent.Type.INTERACT_AT_ENTITY
+}

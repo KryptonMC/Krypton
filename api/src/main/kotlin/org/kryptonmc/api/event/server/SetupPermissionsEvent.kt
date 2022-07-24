@@ -18,30 +18,34 @@ import org.kryptonmc.api.permission.Subject
 
 /**
  * Called when the given [subject]'s permissions are initially being set up.
- *
- * @param subject the subject
- * @param defaultProvider the default permission provider
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
-public data class SetupPermissionsEvent(
-    @get:JvmName("subject") public val subject: Subject,
-    @get:JvmName("defaultProvider") public val defaultProvider: PermissionProvider
-) {
+public interface SetupPermissionsEvent {
 
     /**
-     * The permission provider to use for the subject.
+     * The subject that is having their permissions set up.
+     */
+    @get:JvmName("subject")
+    public val subject: Subject
+
+    /**
+     * The provider that should be used to provide permissions for the subject.
      */
     @get:JvmName("provider")
-    public var provider: PermissionProvider = defaultProvider
+    public var provider: PermissionProvider
 
     /**
-     * Creates a [org.kryptonmc.api.permission.PermissionFunction] for the
-     * given [subject] using the [provider] from this event.
-     *
-     * @param subject the subject
-     * @return a permission function for the given subject
+     * Resets the provider back to the default provider that the server would
+     * use if this event did not modify the provider.
      */
-    public fun createFunction(subject: Subject): PermissionFunction = provider.createFunction(subject)
+    public fun resetProvider()
 
-    override fun toString(): String = "SetupPermissionsEvent(subject=$subject, defaultProvider=$defaultProvider, provider=$provider)"
+    /**
+     * Gets a permission function for the given [subject] using the provider
+     * from this event.
+     *
+     * @param subject the subject to get a function for
+     * @return the permission function
+     */
+    public fun createFunction(subject: Subject): PermissionFunction
 }

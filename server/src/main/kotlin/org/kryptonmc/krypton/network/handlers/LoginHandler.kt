@@ -22,16 +22,15 @@ import com.velocitypowered.natives.util.Natives
 import io.netty.buffer.Unpooled
 import kotlinx.collections.immutable.persistentListOf
 import net.kyori.adventure.text.Component
-import org.kryptonmc.api.event.auth.AuthenticationEvent
-import org.kryptonmc.api.event.player.LoginEvent
-import org.kryptonmc.api.event.server.SetupPermissionsEvent
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.auth.KryptonGameProfile
 import org.kryptonmc.krypton.auth.requests.SessionService
 import org.kryptonmc.krypton.config.category.ProxyCategory
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.entity.player.PlayerPublicKey
-import org.kryptonmc.krypton.packet.PacketState
+import org.kryptonmc.krypton.event.auth.KryptonAuthenticationEvent
+import org.kryptonmc.krypton.event.player.KryptonLoginEvent
+import org.kryptonmc.krypton.event.server.KryptonSetupPermissionsEvent
 import org.kryptonmc.krypton.network.SessionHandler
 import org.kryptonmc.krypton.network.data.ForwardedData
 import org.kryptonmc.krypton.network.data.VelocityProxy
@@ -43,6 +42,7 @@ import org.kryptonmc.krypton.network.netty.PacketDecrypter
 import org.kryptonmc.krypton.network.netty.PacketEncoder
 import org.kryptonmc.krypton.network.netty.PacketEncrypter
 import org.kryptonmc.krypton.packet.Packet
+import org.kryptonmc.krypton.packet.PacketState
 import org.kryptonmc.krypton.packet.`in`.login.PacketInEncryptionResponse
 import org.kryptonmc.krypton.packet.`in`.login.PacketInLoginStart
 import org.kryptonmc.krypton.packet.`in`.login.PacketInPluginResponse
@@ -130,7 +130,7 @@ class LoginHandler(
 
             // Initialize the player and setup their permissions.
             val player = KryptonPlayer(session, profile, server.worldManager.default, address, publicKey)
-            server.eventManager.fire(SetupPermissionsEvent(player, KryptonPlayer.DEFAULT_PERMISSIONS))
+            server.eventManager.fire(KryptonSetupPermissionsEvent(player, KryptonPlayer.DEFAULT_PERMISSIONS))
                 .thenApplyAsync({ finishLogin(it, player) }, session.channel.eventLoop())
             return
         }
@@ -150,7 +150,7 @@ class LoginHandler(
 
         val address = createAddress()
         // Fire the authentication event.
-        server.eventManager.fire(AuthenticationEvent(name)).thenApplyAsync({
+        server.eventManager.fire(KryptonAuthenticationEvent(name)).thenApplyAsync({
             if (!it.result.isAllowed) return@thenApplyAsync null
 
             val profile = SessionService.hasJoined(name, sharedSecret, server.config.server.ip)
@@ -167,7 +167,7 @@ class LoginHandler(
         }, session.channel.eventLoop()).thenApplyAsync({
             if (it == null) return@thenApplyAsync
             // Setup permissions.
-            finishLogin(server.eventManager.fireSync(SetupPermissionsEvent(it, KryptonPlayer.DEFAULT_PERMISSIONS)), it)
+            finishLogin(server.eventManager.fireSync(KryptonSetupPermissionsEvent(it, KryptonPlayer.DEFAULT_PERMISSIONS)), it)
         }, session.channel.eventLoop())
     }
 
@@ -215,11 +215,11 @@ class LoginHandler(
         val player = KryptonPlayer(session, profile, server.worldManager.default, InetSocketAddress(data.remoteAddress, address.port), publicKey)
 
         // Setup permissions for the player
-        server.eventManager.fire(SetupPermissionsEvent(player, KryptonPlayer.DEFAULT_PERMISSIONS))
+        server.eventManager.fire(KryptonSetupPermissionsEvent(player, KryptonPlayer.DEFAULT_PERMISSIONS))
             .thenApplyAsync({ finishLogin(it, player) }, session.channel.eventLoop())
     }
 
-    private fun finishLogin(event: SetupPermissionsEvent, player: KryptonPlayer) {
+    private fun finishLogin(event: KryptonSetupPermissionsEvent, player: KryptonPlayer) {
         player.permissionFunction = event.createFunction(player)
         enableCompression()
         session.writeAndFlush(PacketOutLoginSuccess(player.profile))
@@ -286,7 +286,7 @@ class LoginHandler(
     }
 
     private fun callLoginEvent(profile: KryptonGameProfile): Boolean {
-        val event = LoginEvent(profile.name, profile.uuid, session.channel.remoteAddress() as InetSocketAddress)
+        val event = KryptonLoginEvent(profile.name, profile.uuid, session.channel.remoteAddress() as InetSocketAddress)
         val result = server.eventManager.fireSync(event).result
         if (!result.isAllowed) {
             disconnect(result.reason ?: Component.translatable("multiplayer.disconnect.kicked"))

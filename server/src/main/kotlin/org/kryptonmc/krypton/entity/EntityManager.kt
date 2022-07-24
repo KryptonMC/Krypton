@@ -21,12 +21,12 @@ package org.kryptonmc.krypton.entity
 import ca.spottedleaf.dataconverter.minecraft.datatypes.MCTypeRegistry
 import net.kyori.adventure.key.InvalidKeyException
 import net.kyori.adventure.key.Key
-import org.kryptonmc.api.event.entity.EntityRemoveEvent
-import org.kryptonmc.api.event.entity.EntitySpawnEvent
 import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.api.world.rule.GameRules
 import org.kryptonmc.krypton.KryptonPlatform
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
+import org.kryptonmc.krypton.event.entity.KryptonRemoveEntityEvent
+import org.kryptonmc.krypton.event.entity.KryptonSpawnEntityEvent
 import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateTime
 import org.kryptonmc.krypton.util.forEachEntityInRange
 import org.kryptonmc.krypton.util.logger
@@ -69,7 +69,7 @@ class EntityManager(val world: KryptonWorld) : AutoCloseable {
             LOGGER.warn("Refusing to spawn entity with ID ${entity.id}.")
             return
         }
-        world.server.eventManager.fire(EntitySpawnEvent(entity, world)).thenAccept { event ->
+        world.server.eventManager.fire(KryptonSpawnEntityEvent(entity, world)).thenAccept { event ->
             if (!event.result.isAllowed) return@thenAccept
             val location = entity.location
 
@@ -104,7 +104,7 @@ class EntityManager(val world: KryptonWorld) : AutoCloseable {
 
     fun remove(entity: KryptonEntity) {
         if (entity.world != world) return
-        world.server.eventManager.fire(EntityRemoveEvent(entity, world)).thenAccept { event ->
+        world.server.eventManager.fire(KryptonRemoveEntityEvent(entity, world)).thenAccept { event ->
             if (!event.result.isAllowed) return@thenAccept
             forEachEntityInRange(entity.location, world.server.config.world.viewDistance) {
                 if (it is KryptonPlayer) entity.removeViewer(it)

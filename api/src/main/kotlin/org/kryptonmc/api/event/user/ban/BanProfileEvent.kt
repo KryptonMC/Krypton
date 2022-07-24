@@ -8,18 +8,10 @@
  */
 package org.kryptonmc.api.event.user.ban
 
-import org.kryptonmc.api.event.GenericResult
-import org.kryptonmc.api.event.ResultedEvent
 import org.kryptonmc.api.user.ban.Ban
 
 /**
  * Called when a game profile is banned.
- *
- * @param ban the issued ban
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
-public class BanProfileEvent(@get:JvmName("ban") public val ban: Ban.Profile) : ResultedEvent<GenericResult> {
-
-    @get:JvmName("result")
-    override var result: GenericResult = GenericResult.allowed()
-}
+public interface BanProfileEvent : BanEvent<Ban.Profile>

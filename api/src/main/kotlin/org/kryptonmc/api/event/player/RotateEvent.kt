@@ -8,15 +8,23 @@
  */
 package org.kryptonmc.api.event.player
 
-import org.kryptonmc.api.entity.player.Player
 import org.spongepowered.math.vector.Vector2f
 
 /**
  * Called when a player rotates their head.
- *
- * @param player the player who rotated their head
- * @param oldRotation the old rotation of the player
- * @param newRotation the new rotation of the player
  */
-@JvmRecord
-public data class RotateEvent(public val player: Player, public val oldRotation: Vector2f, public val newRotation: Vector2f)
+@Suppress("INAPPLICABLE_JVM_NAME")
+public interface RotateEvent : PlayerEvent {
+
+    /**
+     * The rotation of the player before the change in rotation.
+     */
+    @get:JvmName("oldRotation")
+    public val oldRotation: Vector2f
+
+    /**
+     * The rotation of the player after the change in rotation.
+     */
+    @get:JvmName("newRotation")
+    public val newRotation: Vector2f
+}
