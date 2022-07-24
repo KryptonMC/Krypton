@@ -8,7 +8,6 @@
  */
 package org.kryptonmc.api.event.player
 
-import org.kryptonmc.api.entity.player.Player
 import org.kryptonmc.api.event.GenericResult
 import org.kryptonmc.api.event.ResultedEvent
 
@@ -16,13 +15,13 @@ import org.kryptonmc.api.event.ResultedEvent
  * Called when the given [player] performs the given [action].
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
-public data class PerformActionEvent(
-    @get:JvmName("players") public val player: Player,
-    @get:JvmName("action") public val action: Action
-) : ResultedEvent<GenericResult> {
+public interface PerformActionEvent : PlayerEvent, ResultedEvent<GenericResult> {
 
-    @get:JvmName("result")
-    override var result: GenericResult = GenericResult.allowed()
+    /**
+     * The action that is being performed by the player.
+     */
+    @get:JvmName("action")
+    public val action: Action
 
     /**
      * Actions that a player may take.

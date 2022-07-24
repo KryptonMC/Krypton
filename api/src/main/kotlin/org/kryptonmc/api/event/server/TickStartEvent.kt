@@ -10,8 +10,6 @@ package org.kryptonmc.api.event.server
 
 /**
  * Called when a tick begins.
- *
- * @param tickNumber the tick number
  */
-@JvmRecord
-public data class TickStartEvent(public val tickNumber: Int)
+@Suppress("INAPPLICABLE_JVM_NAME")
+public interface TickStartEvent : TickEvent

@@ -8,25 +8,21 @@
  */
 package org.kryptonmc.api.event.player
 
-import org.kryptonmc.api.entity.player.Player
 import org.kryptonmc.api.event.GenericResult
 import org.kryptonmc.api.event.ResultedEvent
 
 /**
  * The superclass for all events involving a player's interaction with
  * something in a world.
- *
- * @param player the player that performed the interaction
- * @param type the type of interaction performed
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
-public sealed class InteractEvent(
-    @get:JvmName("player") public val player: Player,
-    @get:JvmName("type") public val type: Type,
-) : ResultedEvent<GenericResult> {
+public sealed interface InteractEvent : PlayerEvent, ResultedEvent<GenericResult> {
 
-    @get:JvmName("result")
-    override var result: GenericResult = GenericResult.allowed()
+    /**
+     * The type of interaction that the player performed.
+     */
+    @get:JvmName("type")
+    public val type: Type
 
     /**
      * The type of interaction made by the player.

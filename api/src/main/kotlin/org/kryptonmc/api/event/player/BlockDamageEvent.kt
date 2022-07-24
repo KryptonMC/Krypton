@@ -6,25 +6,21 @@
  * This project is licensed under the terms of the MIT license.
  * For more details, please reference the LICENSE file in the api top-level directory.
  */
-package org.kryptonmc.api.event.block
+package org.kryptonmc.api.event.player
 
 import org.kryptonmc.api.block.Block
-import org.kryptonmc.api.entity.player.Player
 import org.kryptonmc.api.event.GenericResult
 import org.kryptonmc.api.event.ResultedEvent
 
 /**
  * Called when a block is damaged.
- *
- * @param player the player that damaged the block
- * @param block the block being broken
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
-public data class BlockDamageEvent(
-    @get:JvmName("player") public val player: Player,
-    @get:JvmName("block") public val block: Block
-) : ResultedEvent<GenericResult> {
+public interface BlockDamageEvent : PlayerEvent, ResultedEvent<GenericResult> {
 
-    @get:JvmName("result")
-    override var result: GenericResult = GenericResult.allowed()
+    /**
+     * The block that is being broken by the player.
+     */
+    @get:JvmName("block")
+    public val block: Block
 }

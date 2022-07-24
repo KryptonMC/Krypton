@@ -19,14 +19,12 @@
 package org.kryptonmc.krypton.server.whitelist
 
 import org.kryptonmc.api.auth.GameProfile
-import org.kryptonmc.api.event.user.whitelist.RemoveWhitelistedIpEvent
-import org.kryptonmc.api.event.user.whitelist.RemoveWhitelistedProfileEvent
-import org.kryptonmc.api.event.user.whitelist.WhitelistIpEvent
-import org.kryptonmc.api.event.user.whitelist.WhitelistProfileEvent
 import org.kryptonmc.api.user.whitelist.WhitelistService
 import org.kryptonmc.krypton.KryptonServer
-import org.kryptonmc.krypton.server.whitelist.WhitelistEntry
-import org.kryptonmc.krypton.server.whitelist.WhitelistIpEntry
+import org.kryptonmc.krypton.event.user.whitelist.KryptonRemoveWhitelistedIpEvent
+import org.kryptonmc.krypton.event.user.whitelist.KryptonRemoveWhitelistedProfileEvent
+import org.kryptonmc.krypton.event.user.whitelist.KryptonWhitelistIpEvent
+import org.kryptonmc.krypton.event.user.whitelist.KryptonWhitelistProfileEvent
 import org.kryptonmc.krypton.util.asString
 import java.net.InetAddress
 
@@ -40,22 +38,22 @@ class KryptonWhitelistService(private val server: KryptonServer) : WhitelistServ
     override fun isWhitelisted(address: InetAddress): Boolean = server.playerManager.whitelistedIps.contains(address.asString())
 
     override fun add(profile: GameProfile) {
-        server.eventManager.fire(WhitelistProfileEvent(profile))
+        server.eventManager.fire(KryptonWhitelistProfileEvent(profile))
             .thenApplyAsync { if (it.result.isAllowed) server.playerManager.whitelist.add(WhitelistEntry(profile)) }
     }
 
     override fun add(address: InetAddress) {
-        server.eventManager.fire(WhitelistIpEvent(address))
+        server.eventManager.fire(KryptonWhitelistIpEvent(address))
             .thenApplyAsync { if (it.result.isAllowed) server.playerManager.whitelistedIps.add(WhitelistIpEntry(address.asString())) }
     }
 
     override fun remove(profile: GameProfile) {
-        server.eventManager.fire(RemoveWhitelistedProfileEvent(profile))
+        server.eventManager.fire(KryptonRemoveWhitelistedProfileEvent(profile))
             .thenApplyAsync { if (it.result.isAllowed) server.playerManager.whitelist.remove(profile) }
     }
 
     override fun remove(address: InetAddress) {
-        server.eventManager.fire(RemoveWhitelistedIpEvent(address))
+        server.eventManager.fire(KryptonRemoveWhitelistedIpEvent(address))
             .thenApplyAsync { if (it.result.isAllowed) server.playerManager.whitelistedIps.remove(address.asString()) }
     }
 }

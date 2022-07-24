@@ -28,12 +28,11 @@ import org.jline.reader.LineReader
 import org.jline.reader.LineReaderBuilder
 import org.kryptonmc.api.adventure.toLegacySectionText
 import org.kryptonmc.api.command.ConsoleSender
-import org.kryptonmc.api.event.command.CommandExecuteEvent
-import org.kryptonmc.api.event.server.SetupPermissionsEvent
 import org.kryptonmc.api.permission.PermissionFunction
 import org.kryptonmc.krypton.KryptonServer
+import org.kryptonmc.krypton.event.command.KryptonCommandExecuteEvent
+import org.kryptonmc.krypton.event.server.KryptonSetupPermissionsEvent
 import org.kryptonmc.krypton.util.TranslationBootstrap
-import java.util.Locale
 import java.util.UUID
 
 class KryptonConsole(override val server: KryptonServer) : SimpleTerminalConsole(), ConsoleSender {
@@ -45,8 +44,8 @@ class KryptonConsole(override val server: KryptonServer) : SimpleTerminalConsole
     override val uuid: UUID = Identity.nil().uuid()
 
     fun setupPermissions() {
-        val event = SetupPermissionsEvent(this) { DEFAULT_PERMISSION_FUNCTION }
-        permissionFunction = server.eventManager.fire(event).get().createFunction(this)
+        val event = KryptonSetupPermissionsEvent(this) { DEFAULT_PERMISSION_FUNCTION }
+        permissionFunction = server.eventManager.fireSync(event).createFunction(this)
     }
 
     fun run() {
@@ -70,7 +69,7 @@ class KryptonConsole(override val server: KryptonServer) : SimpleTerminalConsole
     override fun isRunning(): Boolean = server.isRunning
 
     override fun runCommand(command: String) {
-        server.eventManager.fire(CommandExecuteEvent(this, command)).thenAcceptAsync {
+        server.eventManager.fire(KryptonCommandExecuteEvent(this, command)).thenAcceptAsync {
             if (!it.result.isAllowed) return@thenAcceptAsync
             server.commandManager.dispatch(this, it.result.command ?: command)
         }

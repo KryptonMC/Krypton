@@ -14,18 +14,21 @@ import org.kryptonmc.api.event.ResultedEvent
 
 /**
  * Called when the given [command] is executed by the given [sender].
- *
- * @param sender the sender that executed the command
- * @param command the command that was executed
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
-public data class CommandExecuteEvent(
-    @get:JvmName("sender") public val sender: Sender,
-    @get:JvmName("command") public val command: String
-) : ResultedEvent<CommandExecuteEvent.Result> {
+public interface CommandExecuteEvent : ResultedEvent<CommandExecuteEvent.Result> {
 
-    @get:JvmName("result")
-    override var result: Result = Result.allowed()
+    /**
+     * The sender that executed the command.
+     */
+    @get:JvmName("sender")
+    public val sender: Sender
+
+    /**
+     * The command that was executed.
+     */
+    @get:JvmName("command")
+    public val command: String
 
     /**
      * The result of a [CommandExecuteEvent].

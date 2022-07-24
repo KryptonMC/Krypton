@@ -8,18 +8,10 @@
  */
 package org.kryptonmc.api.event.user.ban
 
-import org.kryptonmc.api.event.GenericResult
-import org.kryptonmc.api.event.ResultedEvent
 import org.kryptonmc.api.user.ban.Ban
 
 /**
- * Called when an IP is pardoned
- *
- * @param ban the pardoned ban
+ * Called when an IP is pardoned.
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
-public class PardonIpEvent(@get:JvmName("ban") public val ban: Ban.IP) : ResultedEvent<GenericResult> {
-
-    @get:JvmName("result")
-    override var result: GenericResult = GenericResult.allowed()
-}
+public interface PardonIpEvent : BanEvent<Ban.IP>

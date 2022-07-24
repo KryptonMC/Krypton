@@ -9,15 +9,22 @@
 package org.kryptonmc.api.event.player
 
 import net.kyori.adventure.key.Key
-import org.kryptonmc.api.entity.player.Player
 
 /**
  * Called when a plugin message is received from a client.
- *
- * @param player the player who's client sent the message
- * @param channel the channel the message came from
- * @param message the message received
  */
-@Suppress("ArrayInDataClass")
-@JvmRecord
-public data class PluginMessageEvent(public val player: Player, public val channel: Key, public val message: ByteArray)
+@Suppress("INAPPLICABLE_JVM_NAME")
+public interface PluginMessageEvent : PlayerEvent {
+
+    /**
+     * The channel that the message was received on.
+     */
+    @get:JvmName("channel")
+    public val channel: Key
+
+    /**
+     * The message that was received from the sender.
+     */
+    @get:JvmName("message")
+    public val message: ByteArray
+}

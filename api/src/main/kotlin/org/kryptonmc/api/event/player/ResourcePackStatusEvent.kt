@@ -8,15 +8,18 @@
  */
 package org.kryptonmc.api.event.player
 
-import org.kryptonmc.api.entity.player.Player
 import org.kryptonmc.api.resource.ResourcePack
 
 /**
  * Called when the given [player] updates the server about the status of the
  * resource pack that the server has sent them.
- *
- * @param player the player
- * @param status the status the client reported
  */
-@JvmRecord
-public data class ResourcePackStatusEvent(public val player: Player, public val status: ResourcePack.Status)
+@Suppress("INAPPLICABLE_JVM_NAME")
+public interface ResourcePackStatusEvent : PlayerEvent {
+
+    /**
+     * The status of the player's resource pack.
+     */
+    @get:JvmName("status")
+    public val status: ResourcePack.Status
+}
