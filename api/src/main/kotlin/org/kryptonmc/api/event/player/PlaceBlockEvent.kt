@@ -10,7 +10,6 @@ package org.kryptonmc.api.event.player
 
 import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.entity.Hand
-import org.kryptonmc.api.entity.player.Player
 import org.kryptonmc.api.util.Direction
 
 /**
@@ -21,22 +20,51 @@ import org.kryptonmc.api.util.Direction
  * player is able to place the block.
  * This event signals when the player places a block, **not** when the server
  * handles that block placement.
- *
- * @param block the block that was placed
- * @param hand the hand that the placed block is in
- * @param x the X coordinate of the block
- * @param y the Y coordinate of the block
- * @param z the Z coordinate of the block
- * @param face the face on which the block was placed
- * @param isInsideBlock whether the player's head is inside a block
  */
-public class PlaceBlockEvent(
-    player: Player,
-    @get:JvmName("block") public val block: Block,
-    @get:JvmName("hand") public val hand: Hand,
-    @get:JvmName("x") public val x: Int,
-    @get:JvmName("y") public val y: Int,
-    @get:JvmName("z") public val z: Int,
-    @get:JvmName("face") public val face: Direction,
+@Suppress("INAPPLICABLE_JVM_NAME")
+public interface PlaceBlockEvent : InteractEvent {
+
+    /**
+     * The block that was placed.
+     */
+    @get:JvmName("block")
+    public val block: Block
+
+    /**
+     * The hand that the player used to place the block.
+     */
+    @get:JvmName("hand")
+    public val hand: Hand
+
+    /**
+     * The X coordinate of the position where the block was placed.
+     */
+    @get:JvmName("x")
+    public val x: Int
+
+    /**
+     * The Y coordinate of the position where the block was placed.
+     */
+    @get:JvmName("y")
+    public val y: Int
+
+    /**
+     * The Z coordinate of the position where the block was placed.
+     */
+    @get:JvmName("z")
+    public val z: Int
+
+    /**
+     * The face of the block on which the block was placed.
+     */
+    @get:JvmName("face")
+    public val face: Direction
+
+    /**
+     * Whether the player's head is inside the block.
+     */
     public val isInsideBlock: Boolean
-) : InteractEvent(player, Type.PLACE_BLOCK)
+
+    override val type: InteractEvent.Type
+        get() = InteractEvent.Type.PLACE_BLOCK
+}

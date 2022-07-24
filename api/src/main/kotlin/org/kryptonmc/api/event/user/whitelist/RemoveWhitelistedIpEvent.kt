@@ -14,12 +14,13 @@ import java.net.InetAddress
 
 /**
  * Called when a whitelisted IP address is removed from the whitelist.
- *
- * @param address the whitelisted IP address
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
-public class RemoveWhitelistedIpEvent(@get:JvmName("address") public val address: InetAddress) : ResultedEvent<GenericResult> {
+public interface RemoveWhitelistedIpEvent : ResultedEvent<GenericResult> {
 
-    @get:JvmName("result")
-    override var result: GenericResult = GenericResult.allowed()
+    /**
+     * The whitelisted IP address.
+     */
+    @get:JvmName("address")
+    public val address: InetAddress
 }

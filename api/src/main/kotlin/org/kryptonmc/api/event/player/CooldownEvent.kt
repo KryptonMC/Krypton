@@ -9,27 +9,27 @@
 package org.kryptonmc.api.event.player
 
 import org.jetbrains.annotations.Contract
-import org.kryptonmc.api.entity.player.Player
 import org.kryptonmc.api.event.ResultedEvent
 import org.kryptonmc.api.item.ItemType
 
 /**
  * Called when a cooldown is set on usage of the given [item] for the given
  * [player].
- *
- * @param player the player
- * @param item the item the cooldown is set for
- * @param cooldown the cooldown amount, in ticks
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
-public data class CooldownEvent(
-    @get:JvmName("player") public val player: Player,
-    @get:JvmName("item") public val item: ItemType,
-    @get:JvmName("cooldown") public val cooldown: Int
-) : ResultedEvent<CooldownEvent.Result> {
+public interface CooldownEvent : PlayerEvent, ResultedEvent<CooldownEvent.Result> {
 
-    @get:JvmName("result")
-    override var result: Result = Result.allowed()
+    /**
+     * The item type that the cooldown is being applied to.
+     */
+    @get:JvmName("item")
+    public val item: ItemType
+
+    /**
+     * The time, in ticks, that the cooldown will be in effect for.
+     */
+    @get:JvmName("cooldown")
+    public val cooldown: Int
 
     /**
      * The result of a [CooldownEvent].

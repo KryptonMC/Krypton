@@ -25,10 +25,6 @@ import net.kyori.adventure.identity.Identity
 import net.kyori.adventure.text.Component
 import org.apache.logging.log4j.LogManager
 import org.kryptonmc.api.Server
-import org.kryptonmc.api.event.server.ServerStartEvent
-import org.kryptonmc.api.event.server.ServerStopEvent
-import org.kryptonmc.api.event.server.TickEndEvent
-import org.kryptonmc.api.event.server.TickStartEvent
 import org.kryptonmc.api.world.World
 import org.kryptonmc.api.world.rule.GameRules
 import org.kryptonmc.krypton.adventure.PacketGroupingAudience
@@ -40,6 +36,10 @@ import org.kryptonmc.krypton.config.category.ProxyCategory
 import org.kryptonmc.krypton.console.KryptonConsole
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.event.KryptonEventManager
+import org.kryptonmc.krypton.event.server.KryptonServerStartEvent
+import org.kryptonmc.krypton.event.server.KryptonServerStopEvent
+import org.kryptonmc.krypton.event.server.KryptonTickEndEvent
+import org.kryptonmc.krypton.event.server.KryptonTickStartEvent
 import org.kryptonmc.krypton.network.SessionManager
 import org.kryptonmc.krypton.packet.PacketRegistry
 import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateTime
@@ -162,7 +162,7 @@ class KryptonServer(
 
         // Fire the event that signals the server starting. We fire it here so that plugins can listen to it as part of their lifecycle,
         // and we call it sync so plugins can finish initialising before we do.
-        eventManager.fireAndForgetSync(ServerStartEvent)
+        eventManager.fireAndForgetSync(KryptonServerStartEvent)
 
         // Initialize console permissions after plugins are loaded. We do this here so plugins have had a chance to register their listeners
         // so they can actually catch this event and set up their own permission providers for the console.
@@ -194,11 +194,11 @@ class KryptonServer(
                     lastOverloadWarning = lastTickTime
                 }
 
-                eventManager.fireAndForgetSync(TickStartEvent(tickCount))
+                eventManager.fireAndForgetSync(KryptonTickStartEvent(tickCount))
                 val tickTime = measureTimeMillis(::tick)
 
                 val finishTime = System.currentTimeMillis()
-                eventManager.fireAndForgetSync(TickEndEvent(tickCount, tickTime, finishTime))
+                eventManager.fireAndForgetSync(KryptonTickEndEvent(tickCount, tickTime, finishTime))
                 lastTickTime = finishTime
 
                 // This logic ensures that ticking isn't delayed by the overhead from Thread.sleep, which seems to be up to 10 ms,
@@ -320,7 +320,7 @@ class KryptonServer(
 
             // Shut down plugins and unregister listeners
             LOGGER.info("Shutting down plugins and unregistering listeners...")
-            eventManager.fireAndForgetSync(ServerStopEvent)
+            eventManager.fireAndForgetSync(KryptonServerStopEvent)
             eventManager.shutdown()
 
             // Shut down scheduler

@@ -8,12 +8,12 @@
  */
 package org.kryptonmc.api.event.player
 
-import org.kryptonmc.api.entity.Entity
-import org.kryptonmc.api.entity.player.Player
-
 /**
  * Called when a player attacks an entity.
- *
- * @param target the entity that was attacked
  */
-public class AttackEntityEvent(player: Player, @get:JvmName("target") public val target: Entity) : InteractEvent(player, Type.ATTACK_ENTITY)
+@Suppress("INAPPLICABLE_JVM_NAME")
+public interface AttackEntityEvent : EntityInteractEvent {
+
+    override val type: InteractEvent.Type
+        get() = InteractEvent.Type.ATTACK_ENTITY
+}

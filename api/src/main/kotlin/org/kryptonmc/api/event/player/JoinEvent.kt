@@ -9,24 +9,20 @@
 package org.kryptonmc.api.event.player
 
 import net.kyori.adventure.text.Component
-import org.kryptonmc.api.entity.player.Player
 import org.kryptonmc.api.event.ResultedEvent
 
 /**
- * Called when a player logs in and a player object has been
- * constructed for them (just before the state is switched to PLAY).
- *
- * @param player the player who joined
- * @param hasJoinedBefore if this player has joined before
+ * Called when a player logs in and a player object has been constructed for
+ * them.
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
-public data class JoinEvent(
-    @get:JvmName("player") public val player: Player,
-    @get:JvmName("hasChangedName") public val hasJoinedBefore: Boolean
-) : ResultedEvent<JoinEvent.Result> {
+public interface JoinEvent : PlayerEvent, ResultedEvent<JoinEvent.Result> {
 
-    @get:JvmName("result")
-    override var result: Result = Result.allowed(hasJoinedBefore)
+    /**
+     * If the player has joined the server before.
+     */
+    @get:JvmName("hasJoinedBefore")
+    public val hasJoinedBefore: Boolean
 
     /**
      * The result of a [JoinEvent].
@@ -54,6 +50,7 @@ public data class JoinEvent(
              * defaulting to false if not specified.
              *
              * @param hasJoinedBefore if the player has joined before
+             * @return an allowed join result
              */
             @JvmStatic
             @JvmOverloads
@@ -70,6 +67,7 @@ public data class JoinEvent(
              *
              * @param message the join message
              * @param hasJoinedBefore if the player has joined before
+             * @return a new allowed join result
              */
             @JvmStatic
             @JvmOverloads
@@ -82,6 +80,7 @@ public data class JoinEvent(
              * specified.
              *
              * @param hasJoinedBefore if the player has joined before
+             * @return a denied join result
              */
             @JvmStatic
             @JvmOverloads
@@ -98,6 +97,7 @@ public data class JoinEvent(
              *
              * @param message the join message
              * @param hasJoinedBefore if the player has joined before
+             * @return a new denied join result
              */
             @JvmStatic
             @JvmOverloads
