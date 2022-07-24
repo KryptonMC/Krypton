@@ -50,8 +50,12 @@ abstract class KryptonDataLoader<T : Any>(fileSuffix: String, protected val regi
         val inputStream = checkNotNull(ClassLoader.getSystemResourceAsStream(fileName)) {
             "Could not find $fileName bundled in JAR! Please report to Krypton!"
         }
+        load(GSON.fromJson(inputStream.reader()))
+    }
+
+    fun load(data: JsonObject) {
         preload()
-        GSON.fromJson<JsonObject>(inputStream.reader()).entrySet().forEach { (key, value) ->
+        data.entrySet().forEach { (key, value) ->
             val namespacedKey = Key.key(key)
             if (registry.contains(namespacedKey)) return@forEach
             register(namespacedKey, create(namespacedKey, value as JsonObject))

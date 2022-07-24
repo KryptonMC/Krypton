@@ -31,7 +31,9 @@ import org.kryptonmc.api.event.server.TickEndEvent
 import org.kryptonmc.api.event.server.TickStartEvent
 import org.kryptonmc.api.world.World
 import org.kryptonmc.api.world.rule.GameRules
+import org.kryptonmc.krypton.adventure.GroupedPacketSender
 import org.kryptonmc.krypton.adventure.PacketGroupingAudience
+import org.kryptonmc.krypton.adventure.PlayerPacketGroupingAudience
 import org.kryptonmc.krypton.auth.KryptonProfileCache
 import org.kryptonmc.krypton.command.KryptonCommandManager
 import org.kryptonmc.krypton.commands.KryptonPermission
@@ -41,6 +43,7 @@ import org.kryptonmc.krypton.console.KryptonConsole
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.event.KryptonEventManager
 import org.kryptonmc.krypton.network.SessionManager
+import org.kryptonmc.krypton.network.chat.ChatType
 import org.kryptonmc.krypton.packet.PacketRegistry
 import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateTime
 import org.kryptonmc.krypton.plugin.KryptonPluginManager
@@ -77,7 +80,7 @@ class KryptonServer(
     override val profileCache: KryptonProfileCache,
     private val configPath: Path,
     worldFolder: Path
-) : Server, PacketGroupingAudience {
+) : Server, PlayerPacketGroupingAudience {
 
     override val platform: KryptonPlatform = KryptonPlatform
     override val maxPlayers: Int = config.status.maxPlayers
@@ -291,15 +294,15 @@ class KryptonServer(
 
     override fun player(name: String): KryptonPlayer? = playerManager.playersByName[name]
 
-    override fun audiences(): Iterable<Audience> = players.asSequence().plus(console).asIterable()
+    override fun audiences(): Iterable<Audience> = members.asSequence().plus(console).asIterable()
 
     override fun sendMessage(source: Identified, message: Component, type: MessageType) {
-        super<PacketGroupingAudience>.sendMessage(source, message, type)
+        super<PlayerPacketGroupingAudience>.sendMessage(source, message, type)
         console.sendMessage(source, message, type)
     }
 
     override fun sendMessage(source: Identity, message: Component, type: MessageType) {
-        super<PacketGroupingAudience>.sendMessage(source, message, type)
+        super<PlayerPacketGroupingAudience>.sendMessage(source, message, type)
         console.sendMessage(source, message, type)
     }
 
@@ -349,6 +352,8 @@ class KryptonServer(
             Runtime.getRuntime().exec(runCommand + config.other.restartScript)
         }
     }
+
+    override fun acceptsChatType(member: KryptonPlayer, chatType: ChatType): Boolean = member.acceptsChatType(chatType)
 
     companion object {
 

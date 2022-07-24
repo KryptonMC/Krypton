@@ -18,12 +18,10 @@
  */
 package org.kryptonmc.krypton
 
-import org.junit.jupiter.api.BeforeAll
 import org.kryptonmc.api.world.Difficulty
 import org.kryptonmc.api.world.GameMode
 import org.kryptonmc.krypton.config.KryptonConfig
 import org.kryptonmc.krypton.config.category.StatusCategory
-import org.kryptonmc.krypton.util.Bootstrap
 import org.spongepowered.configurate.hocon.HoconConfigurationLoader
 import org.spongepowered.configurate.kotlin.extensions.get
 import kotlin.test.Test
@@ -97,14 +95,5 @@ class ConfigTests {
         assertTrue(config.other.metrics)
         assertEquals(5, config.other.saveThreshold)
         assertEquals("./start.sh", config.other.restartScript)
-    }
-
-    companion object {
-
-        @JvmStatic
-        @BeforeAll
-        fun bootstrap() {
-            Bootstrap.preload()
-        }
     }
 }

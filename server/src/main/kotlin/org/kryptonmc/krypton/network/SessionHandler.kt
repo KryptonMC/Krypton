@@ -44,7 +44,7 @@ import java.net.InetSocketAddress
  * both in one class, and offers minor improvements over the previous two, such
  * as the absence of `lateinit` values.
  */
-class SessionHandler(private val server: KryptonServer) : SimpleChannelInboundHandler<Packet>() {
+class SessionHandler(private val server: KryptonServer) : SimpleChannelInboundHandler<Packet>(), Session {
 
     private var internalChannel: Channel? = null
         set(value) {
@@ -68,11 +68,7 @@ class SessionHandler(private val server: KryptonServer) : SimpleChannelInboundHa
     private var tickBuffer = Unpooled.directBuffer()
     private val tickBufferLock = Any()
 
-    fun send(packet: Packet) {
-        write(packet)
-    }
-
-    fun write(packet: GenericPacket) {
+    override fun write(packet: GenericPacket) {
         when (packet) {
             is Packet -> {
                 synchronized(tickBufferLock) {
@@ -99,7 +95,7 @@ class SessionHandler(private val server: KryptonServer) : SimpleChannelInboundHa
         }
     }
 
-    fun writeAndFlush(packet: Packet) {
+    override fun writeAndFlush(packet: Packet) {
         writeWaitingPackets()
         channel.writeAndFlush(packet)
     }
@@ -111,7 +107,7 @@ class SessionHandler(private val server: KryptonServer) : SimpleChannelInboundHa
         channel.flush()
     }
 
-    fun disconnect(reason: Component) {
+    override fun disconnect(reason: Component) {
         when (currentState) {
             PacketState.PLAY -> send(PacketOutDisconnect(reason))
             PacketState.LOGIN -> send(PacketOutLoginDisconnect(reason))

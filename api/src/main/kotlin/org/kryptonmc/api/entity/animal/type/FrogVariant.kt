@@ -30,8 +30,6 @@ public interface FrogVariant : Keyed {
 
     public companion object {
 
-        private val FACTORY = Krypton.factoryProvider.provide<Factory>()
-
         /**
          * Creates a new frog variant with the given [key].
          *
@@ -40,6 +38,6 @@ public interface FrogVariant : Keyed {
          */
         @JvmStatic
         @Contract("_ -> new", pure = true)
-        public fun of(key: Key): FrogVariant = FACTORY.of(key)
+        public fun of(key: Key): FrogVariant = Krypton.factoryProvider.provide<Factory>().of(key)
     }
 }

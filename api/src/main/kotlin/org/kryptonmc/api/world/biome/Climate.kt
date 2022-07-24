@@ -110,8 +110,6 @@ public interface Climate : Buildable<Climate.Builder, Climate> {
 
     public companion object {
 
-        private val FACTORY = Krypton.factoryProvider.provide<Factory>()
-
         /**
          * Creates a new climate with the given values.
          *
@@ -124,7 +122,7 @@ public interface Climate : Buildable<Climate.Builder, Climate> {
         @JvmStatic
         @Contract("_, _, _, _ -> new", pure = true)
         public fun of(precipitation: Precipitation, temperature: Float, downfall: Float, temperatureModifier: TemperatureModifier): Climate =
-            FACTORY.of(precipitation, temperature, downfall, temperatureModifier)
+            Krypton.factoryProvider.provide<Factory>().of(precipitation, temperature, downfall, temperatureModifier)
 
         /**
          * Creates a new builder for climates.
@@ -133,6 +131,6 @@ public interface Climate : Buildable<Climate.Builder, Climate> {
          */
         @JvmStatic
         @Contract("-> new", pure = true)
-        public fun builder(): Builder = FACTORY.builder()
+        public fun builder(): Builder = Krypton.factoryProvider.provide<Factory>().builder()
     }
 }

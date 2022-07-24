@@ -35,12 +35,12 @@ object ListCommand : InternalCommand {
             permission(KryptonPermission.LIST)
             runs { context ->
                 val server = context.source.server as? KryptonServer ?: return@runs
-                sendNames(context.source, server, server.players.map { it.displayName.toPlainText() })
+                sendNames(context.source, server, server.members.map { it.displayName.toPlainText() })
             }
             literal("uuids") {
                 runs { context ->
                     val server = context.source.server as? KryptonServer ?: return@runs
-                    sendNames(context.source, server, server.players.map { "${it.displayName.toPlainText()} (${it.uuid})" })
+                    sendNames(context.source, server, server.members.map { "${it.displayName.toPlainText()} (${it.uuid})" })
                 }
             }
         })

@@ -33,7 +33,7 @@ import org.kryptonmc.api.world.GameMode
 import org.kryptonmc.api.world.World
 import org.kryptonmc.api.world.rule.GameRules
 import org.kryptonmc.krypton.KryptonServer
-import org.kryptonmc.krypton.adventure.PacketGroupingAudience
+import org.kryptonmc.krypton.adventure.PlayerPacketGroupingAudience
 import org.kryptonmc.krypton.effect.sound.calculateDistance
 import org.kryptonmc.krypton.entity.EntityFactory
 import org.kryptonmc.krypton.entity.EntityManager
@@ -78,7 +78,7 @@ class KryptonWorld(
     override val dimensionType: KryptonDimensionType,
     override val seed: Long,
     private val tickTime: Boolean
-) : World, WorldAccessor, PacketGroupingAudience {
+) : World, WorldAccessor, PlayerPacketGroupingAudience {
 
     override val biomeManager: BiomeManager = BiomeManager(this, seed)
     private val random: Random = Random()
@@ -249,7 +249,7 @@ class KryptonWorld(
     override fun setBlock(position: Vector3i, block: Block): Boolean = setBlock(position.x(), position.y(), position.z(), block)
 
     fun tick() {
-        if (players.isEmpty()) return // don't tick the world if there's no players in it
+        if (members.isEmpty()) return // don't tick the world if there's no players in it
 
         // tick rain
         val wasRaining = isRaining
@@ -314,7 +314,7 @@ class KryptonWorld(
         tickTime()
         chunkManager.chunkMap.values.forEach { it.tick(chunkManager.players(it.position.toLong()).size) }
 
-        if (players.isNotEmpty()) entities.forEach {
+        if (members.isNotEmpty()) entities.forEach {
             if (it.isRemoved) return@forEach
             it.tick()
         }

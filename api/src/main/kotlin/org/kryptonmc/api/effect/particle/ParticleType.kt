@@ -38,9 +38,6 @@ public interface ParticleType : Keyed {
     public companion object {
 
         @JvmSynthetic
-        internal val FACTORY = Krypton.factoryProvider.provide<Factory>()
+        internal inline fun <reified T : ParticleType> of(key: Key): T = Krypton.factoryProvider.provide<Factory>().of(T::class.java, key)
     }
 }
-
-@JvmSynthetic
-internal inline fun <reified T : ParticleType> ParticleType.Companion.of(key: Key): T = FACTORY.of(T::class.java, key)

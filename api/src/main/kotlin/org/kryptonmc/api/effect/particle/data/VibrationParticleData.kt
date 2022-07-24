@@ -9,6 +9,8 @@
 package org.kryptonmc.api.effect.particle.data
 
 import org.jetbrains.annotations.Contract
+import org.kryptonmc.api.Krypton
+import org.kryptonmc.api.util.provide
 import org.spongepowered.math.vector.Vector3d
 
 /**
@@ -42,6 +44,7 @@ public interface VibrationParticleData : ParticleData {
          */
         @JvmStatic
         @Contract("_ -> new", pure = true)
-        public fun of(destination: Vector3d, ticks: Int): VibrationParticleData = ParticleData.FACTORY.vibration(destination, ticks)
+        public fun of(destination: Vector3d, ticks: Int): VibrationParticleData =
+            Krypton.factoryProvider.provide<ParticleData.Factory>().vibration(destination, ticks)
     }
 }

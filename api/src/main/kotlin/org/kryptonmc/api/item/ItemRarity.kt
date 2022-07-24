@@ -37,8 +37,6 @@ public interface ItemRarity : Keyed {
 
     public companion object {
 
-        private val FACTORY = Krypton.factoryProvider.provide<Factory>()
-
         /**
          * Creates a new item rarity with the given values.
          *
@@ -48,6 +46,6 @@ public interface ItemRarity : Keyed {
          */
         @JvmStatic
         @Contract("_, _ -> new", pure = true)
-        public fun of(key: Key, color: TextColor): ItemRarity = FACTORY.of(key, color)
+        public fun of(key: Key, color: TextColor): ItemRarity = Krypton.factoryProvider.provide<Factory>().of(key, color)
     }
 }

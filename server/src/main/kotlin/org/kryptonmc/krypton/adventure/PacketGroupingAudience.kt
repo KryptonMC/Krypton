@@ -30,12 +30,12 @@ import net.kyori.adventure.sound.SoundStop
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.title.Title
 import net.kyori.adventure.title.TitlePart
+import org.kryptonmc.api.effect.sound.SoundEvent
 import org.kryptonmc.api.registry.Registries
-import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.entity.KryptonEntity
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
-import org.kryptonmc.krypton.network.SessionManager
 import org.kryptonmc.krypton.network.chat.ChatSender
+import org.kryptonmc.krypton.network.chat.ChatType
 import org.kryptonmc.krypton.network.chat.ChatTypes
 import org.kryptonmc.krypton.network.chat.MessageSignature
 import org.kryptonmc.krypton.packet.Packet
@@ -52,21 +52,29 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutSetTitleText
 import org.kryptonmc.krypton.packet.out.play.PacketOutSetTitleAnimationTimes
 import org.kryptonmc.krypton.packet.out.play.PacketOutSystemChatMessage
 import org.kryptonmc.krypton.registry.InternalRegistries
+import java.util.function.Predicate
+import java.util.function.Supplier
 
-interface PacketGroupingAudience : ForwardingAudience {
+interface PacketGroupingAudience<M : NetworkAudienceMember> : ForwardingAudience {
 
-    val sessionManager: SessionManager
-    val players: Collection<KryptonPlayer>
+    val sender: GroupedPacketSender<M>
+    val members: Collection<M>
 
-    fun sendGroupedPacket(packet: Packet) {
-        sessionManager.sendGrouped(players, packet)
+    fun sendGroupedPacket(packet: Packet, predicate: Predicate<M> = Predicate { true }) {
+        sender.sendGrouped(members, packet)
     }
+
+    fun acceptsChatType(member: M, chatType: ChatType): Boolean
 
     override fun sendMessage(source: Identified, message: Component, type: MessageType) {
         sendMessage(source.identity(), message, type)
     }
 
     override fun sendMessage(source: Identity, message: Component, type: MessageType) {
+        sendMessage(source, message, type, MessageSignature::unsigned)
+    }
+
+    fun sendMessage(source: Identity, message: Component, type: MessageType, signature: Supplier<MessageSignature>) {
         val chatType = when (type) {
             MessageType.CHAT -> ChatTypes.CHAT
             MessageType.SYSTEM -> ChatTypes.SYSTEM
@@ -74,10 +82,10 @@ interface PacketGroupingAudience : ForwardingAudience {
         val typeId = InternalRegistries.CHAT_TYPE.idOf(chatType)
         val packet = when (chatType) {
             ChatTypes.SYSTEM -> PacketOutSystemChatMessage(message, typeId)
-            ChatTypes.CHAT -> PacketOutPlayerChatMessage(message, null, typeId, ChatSender.fromIdentity(source), MessageSignature.unsigned())
+            ChatTypes.CHAT -> PacketOutPlayerChatMessage(message, null, typeId, ChatSender.fromIdentity(source), signature.get())
             else -> throw IllegalArgumentException("Somehow chat type is not supported, this should be impossible! Type was $chatType.")
         }
-        sessionManager.sendGrouped(players, packet) { it.acceptsChatType(chatType) }
+        sendGroupedPacket(packet) { acceptsChatType(it, chatType) }
     }
 
     override fun sendActionBar(message: Component) {
@@ -97,10 +105,12 @@ interface PacketGroupingAudience : ForwardingAudience {
     }
 
     override fun <T : Any> sendTitlePart(part: TitlePart<T>, value: T) {
-        if (part === TitlePart.TITLE) sendGroupedPacket(PacketOutSetTitleText(value as Component))
-        if (part === TitlePart.SUBTITLE) sendGroupedPacket(PacketOutSetSubtitleText(value as Component))
-        if (part === TitlePart.TIMES) sendGroupedPacket(PacketOutSetTitleAnimationTimes(value as Title.Times))
-        throw IllegalArgumentException("Unknown TitlePart")
+        when (part) {
+            TitlePart.TITLE -> sendGroupedPacket(PacketOutSetTitleText(value as Component))
+            TitlePart.SUBTITLE -> sendGroupedPacket(PacketOutSetSubtitleText(value as Component))
+            TitlePart.TIMES -> sendGroupedPacket(PacketOutSetTitleAnimationTimes(value as Title.Times))
+            else -> throw IllegalArgumentException("Unknown TitlePart")
+        }
     }
 
     override fun clearTitle() {
@@ -120,23 +130,27 @@ interface PacketGroupingAudience : ForwardingAudience {
     }
 
     override fun playSound(sound: Sound, x: Double, y: Double, z: Double) {
-        val type = Registries.SOUND_EVENT[sound.name()]
-        if (type != null) {
-            sendGroupedPacket(PacketOutSoundEffect(sound, type, x, y, z))
-            return
-        }
-        sendGroupedPacket(PacketOutCustomSoundEffect(sound, x, y, z))
+        playSound(sound, Registries.SOUND_EVENT[sound.name()], x, y, z)
+    }
+
+    fun playSound(sound: Sound, event: SoundEvent?, x: Double, y: Double, z: Double) {
+        val packet = if (event != null) PacketOutSoundEffect(sound, event, x, y, z) else PacketOutCustomSoundEffect(sound, x, y, z)
+        sendGroupedPacket(packet)
     }
 
     override fun playSound(sound: Sound, emitter: Sound.Emitter) {
+        playSound(sound, Registries.SOUND_EVENT[sound.name()], emitter)
+    }
+
+    fun playSound(sound: Sound, event: SoundEvent?, emitter: Sound.Emitter) {
         if (emitter !== Sound.Emitter.self()) {
-            val entity = if (emitter is KryptonEntity) emitter else error("Sound emitter must be an entity or self(), was $emitter!")
-            val event = Registries.SOUND_EVENT[sound.name()]
-            if (event != null) {
-                sendGroupedPacket(PacketOutEntitySoundEffect(event, sound.source(), entity.id, sound.volume(), sound.pitch()))
-                return
+            check(emitter is KryptonEntity) { "Sound emitter must be an entity or self(), was $emitter!" }
+            val packet = if (event != null) {
+                PacketOutEntitySoundEffect(event, sound.source(), emitter.id, sound.volume(), sound.pitch())
+            } else {
+                PacketOutCustomSoundEffect(sound, emitter.location.x(), emitter.location.y(), emitter.location.z())
             }
-            sendGroupedPacket(PacketOutCustomSoundEffect(sound, entity.location.x(), entity.location.y(), entity.location.z()))
+            sendGroupedPacket(packet)
             return
         }
         // If we're playing on self, we need to delegate to each audience member
@@ -149,20 +163,8 @@ interface PacketGroupingAudience : ForwardingAudience {
 
     override fun openBook(book: Book) {
         val item = book.toItemStack()
-        players.forEach { it.openBook(item) }
+        members.forEach { it.openBook(item) }
     }
 
-    override fun audiences(): Iterable<Audience> = players
-
-    companion object {
-
-        @JvmStatic
-        fun of(players: Collection<KryptonPlayer>): PacketGroupingAudience = object : PacketGroupingAudience {
-
-            override val sessionManager: SessionManager
-                get() = KryptonServer.get().sessionManager
-            override val players: Collection<KryptonPlayer>
-                get() = players
-        }
-    }
+    override fun audiences(): Iterable<Audience> = members
 }

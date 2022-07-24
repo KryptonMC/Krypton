@@ -73,8 +73,6 @@ public interface StatisticType<T : Any> : Iterable<Statistic<T>>, Keyed {
 
     public companion object {
 
-        private val FACTORY = Krypton.factoryProvider.provide<Factory>()
-
         /**
          * Creates a new statistic type with the given values.
          *
@@ -84,6 +82,6 @@ public interface StatisticType<T : Any> : Iterable<Statistic<T>>, Keyed {
          */
         @JvmStatic
         @Contract("_, _ -> new", pure = true)
-        public fun <T : Any> of(key: Key, registry: Registry<T>): StatisticType<T> = FACTORY.of(key, registry)
+        public fun <T : Any> of(key: Key, registry: Registry<T>): StatisticType<T> = Krypton.factoryProvider.provide<Factory>().of(key, registry)
     }
 }

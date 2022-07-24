@@ -157,7 +157,7 @@ object Bootstrap {
         // Preload some other things that would otherwise load on first player join or some other time
         Encryption
         SessionService
-        ArgumentSerializers
+        ArgumentSerializers.init()
         EntityFactory
         ItemManager
         BlockManager

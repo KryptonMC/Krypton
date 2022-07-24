@@ -9,6 +9,8 @@
 package org.kryptonmc.api.command.meta
 
 import org.jetbrains.annotations.Contract
+import org.kryptonmc.api.Krypton
+import org.kryptonmc.api.util.provide
 
 /**
  * Command metadata for a [org.kryptonmc.api.command.SimpleCommand].
@@ -61,6 +63,6 @@ public interface SimpleCommandMeta : CommandMeta {
          */
         @JvmStatic
         @Contract("_ -> new", pure = true)
-        public fun builder(name: String): Builder = CommandMeta.FACTORY.simpleBuilder(name)
+        public fun builder(name: String): Builder = Krypton.factoryProvider.provide<CommandMeta.Factory>().simpleBuilder(name)
     }
 }

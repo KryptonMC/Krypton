@@ -21,7 +21,7 @@ package org.kryptonmc.krypton.adventure
 import com.google.common.collect.MapMaker
 import net.kyori.adventure.bossbar.BossBar
 import net.kyori.adventure.text.Component
-import org.kryptonmc.krypton.entity.player.KryptonPlayer
+import org.jetbrains.annotations.VisibleForTesting
 import org.kryptonmc.krypton.packet.out.play.PacketOutBossBar
 import java.util.Collections
 import java.util.UUID
@@ -35,29 +35,29 @@ object BossBarManager : BossBar.Listener {
 
     private val bars = MapMaker().weakKeys().makeMap<BossBar, BossBarHolder>()
 
-    fun addBar(bar: BossBar, player: KryptonPlayer) {
+    fun addBar(bar: BossBar, viewer: NetworkAudienceMember) {
         val holder = getOrCreate(bar)
-        if (holder.subscribers.add(player)) player.session.send(PacketOutBossBar(holder.id, PacketOutBossBar.AddAction(holder.bar)))
+        if (holder.subscribers.add(viewer)) viewer.sendPacket(PacketOutBossBar(holder.id, PacketOutBossBar.AddAction(holder.bar)))
     }
 
-    fun addBar(bar: BossBar, audience: PacketGroupingAudience) {
+    fun <M : NetworkAudienceMember> addBar(bar: BossBar, audience: PacketGroupingAudience<M>) {
         val holder = getOrCreate(bar)
-        val addedPlayers = audience.players.filter { holder.subscribers.add(it) }
+        val addedPlayers = audience.members.filter { holder.subscribers.add(it) }
         if (addedPlayers.isNotEmpty()) {
-            audience.sessionManager.sendGrouped(addedPlayers, PacketOutBossBar(holder.id, PacketOutBossBar.AddAction(holder.bar)))
+            audience.sender.sendGrouped(addedPlayers, PacketOutBossBar(holder.id, PacketOutBossBar.AddAction(holder.bar)))
         }
     }
 
-    fun removeBar(bar: BossBar, player: KryptonPlayer) {
+    fun removeBar(bar: BossBar, viewer: NetworkAudienceMember) {
         val holder = bars[bar] ?: return
-        if (holder.subscribers.remove(player)) player.session.send(PacketOutBossBar(holder.id, PacketOutBossBar.RemoveAction))
+        if (holder.subscribers.remove(viewer)) viewer.sendPacket(PacketOutBossBar(holder.id, PacketOutBossBar.RemoveAction))
     }
 
-    fun removeBar(bar: BossBar, audience: PacketGroupingAudience) {
+    fun <M : NetworkAudienceMember> removeBar(bar: BossBar, audience: PacketGroupingAudience<M>) {
         val holder = bars[bar] ?: return
-        val addedPlayers = audience.players.filter { holder.subscribers.add(it) }
-        if (addedPlayers.isNotEmpty()) {
-            audience.sessionManager.sendGrouped(addedPlayers, PacketOutBossBar(holder.id, PacketOutBossBar.RemoveAction))
+        val removedPlayers = audience.members.filter { holder.subscribers.remove(it) }
+        if (removedPlayers.isNotEmpty()) {
+            audience.sender.sendGrouped(removedPlayers, PacketOutBossBar(holder.id, PacketOutBossBar.RemoveAction))
         }
     }
 
@@ -81,18 +81,20 @@ object BossBarManager : BossBar.Listener {
         update(bar, PacketOutBossBar.UpdateFlagsAction(bar.flags()))
     }
 
-    private fun getOrCreate(bar: BossBar): BossBarHolder = bars.getOrPut(bar) { BossBarHolder(bar) }.register()
+    @VisibleForTesting
+    fun getOrCreate(bar: BossBar): BossBarHolder = bars.getOrPut(bar) { BossBarHolder(bar) }.register()
 
     private fun update(bar: BossBar, action: PacketOutBossBar.Action) {
         val holder = bars[bar] ?: return
         val packet = PacketOutBossBar(holder.id, action)
-        holder.subscribers.forEach { it.session.send(packet) }
+        holder.subscribers.forEach { it.sendPacket(packet) }
     }
 
-    private class BossBarHolder(val bar: BossBar) {
+    @VisibleForTesting
+    class BossBarHolder(val bar: BossBar) {
 
         val id: UUID = UUID.randomUUID()
-        val subscribers: MutableSet<KryptonPlayer> = Collections.newSetFromMap(MapMaker().weakKeys().makeMap())
+        val subscribers: MutableSet<NetworkAudienceMember> = Collections.newSetFromMap(MapMaker().weakKeys().makeMap())
 
         fun register(): BossBarHolder = apply { bar.addListener(BossBarManager) }
     }

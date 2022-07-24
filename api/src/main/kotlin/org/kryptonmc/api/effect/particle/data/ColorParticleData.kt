@@ -9,7 +9,9 @@
 package org.kryptonmc.api.effect.particle.data
 
 import org.jetbrains.annotations.Contract
+import org.kryptonmc.api.Krypton
 import org.kryptonmc.api.util.Color
+import org.kryptonmc.api.util.provide
 
 /**
  * Holds data for coloured particle effects.
@@ -54,7 +56,7 @@ public interface ColorParticleData : ParticleData {
          */
         @JvmStatic
         @Contract("_ -> new", pure = true)
-        public fun of(color: Color): ColorParticleData = ParticleData.FACTORY.color(color)
+        public fun of(color: Color): ColorParticleData = Krypton.factoryProvider.provide<ParticleData.Factory>().color(color)
 
         /**
          * Creates new colour particle data with the given [red], [green], and

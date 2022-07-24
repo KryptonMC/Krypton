@@ -49,7 +49,8 @@ object ArgumentSerializers {
     private val BY_CLASS = ConcurrentHashMap<Class<*>, Entry<*>>()
     private val BY_ID = Int2ObjectOpenHashMap<Entry<*>>()
 
-    init {
+    @JvmStatic
+    fun init() {
         // Brigadier serializers
         singleton(0, "brigadier:bool", BoolArgumentType.bool())
         register(1, "brigadier:float", FloatArgumentSerializer)
@@ -67,6 +68,12 @@ object ArgumentSerializers {
         singleton(19, "nbt_compound_tag", NBTCompoundArgument)
         singleton(20, "nbt_tag", NBTArgument)
         singleton(40, "entity_summon", SummonEntityArgument)
+    }
+
+    @JvmStatic
+    fun reset() {
+        BY_CLASS.clear()
+        BY_ID.clear()
     }
 
     @JvmStatic

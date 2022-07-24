@@ -52,8 +52,6 @@ public interface DyeColor : Keyed {
 
     public companion object {
 
-        private val FACTORY = Krypton.factoryProvider.provide<Factory>()
-
         /**
          * Creates a new dye colour with the given values.
          *
@@ -66,6 +64,6 @@ public interface DyeColor : Keyed {
         @JvmStatic
         @Contract("_, _, _, _ -> new", pure = true)
         public fun of(key: Key, color: Color, fireworkColor: Color, textColor: TextColor): DyeColor =
-            FACTORY.of(key, color, fireworkColor, textColor)
+            Krypton.factoryProvider.provide<Factory>().of(key, color, fireworkColor, textColor)
     }
 }

@@ -126,7 +126,7 @@ data class PacketOutBossBar(val uuid: UUID, val action: Action) : Packet {
         override val type: ActionType
             get() = ActionType.UPDATE_FLAGS
 
-        constructor(flags: Set<BossBar.Flag>) : this(flags.fold(0) { acc, flag -> acc or flag.ordinal })
+        constructor(flags: Set<BossBar.Flag>) : this(flags.fold(0) { acc, flag -> acc or (1 shl flag.ordinal) })
 
         override fun write(buf: ByteBuf) {
             buf.writeByte(flags)

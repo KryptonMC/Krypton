@@ -19,6 +19,7 @@
 package org.kryptonmc.krypton.network
 
 import org.kryptonmc.krypton.KryptonServer
+import org.kryptonmc.krypton.adventure.GroupedPacketSender
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.network.handlers.PlayHandler
 import org.kryptonmc.krypton.packet.FramedPacket
@@ -33,7 +34,7 @@ import kotlin.concurrent.write
 import kotlin.math.min
 import kotlin.random.Random
 
-class SessionManager(private val server: KryptonServer) {
+class SessionManager(private val server: KryptonServer) : GroupedPacketSender<KryptonPlayer> {
 
     private val sessions = ConcurrentHashMap.newKeySet<SessionHandler>()
     private val lock = ReentrantReadWriteLock()
@@ -51,15 +52,15 @@ class SessionManager(private val server: KryptonServer) {
         lock.write { sessions.remove(session) }
     }
 
-    fun sendGrouped(packet: Packet, predicate: Predicate<KryptonPlayer> = Predicate { true }) {
+    override fun sendGrouped(packet: Packet, predicate: Predicate<KryptonPlayer>) {
         sendGrouped(server.playerManager.players, packet, predicate)
     }
 
-    fun sendGrouped(players: Collection<KryptonPlayer>, packet: Packet, predicate: Predicate<KryptonPlayer> = Predicate { true }) {
-        if (players.isEmpty()) return
+    override fun sendGrouped(members: Collection<KryptonPlayer>, packet: Packet, predicate: Predicate<KryptonPlayer>) {
+        if (members.isEmpty()) return
         val finalBuffer = packet.frame()
         val framedPacket = FramedPacket(finalBuffer)
-        players.forEach {
+        members.forEach {
             if (!it.isOnline || !predicate.test(it)) return@forEach
             it.session.write(framedPacket)
         }

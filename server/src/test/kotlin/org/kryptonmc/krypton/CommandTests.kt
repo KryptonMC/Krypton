@@ -23,16 +23,22 @@ import com.mojang.brigadier.arguments.StringArgumentType
 import com.mojang.brigadier.tree.RootCommandNode
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
 import org.kryptonmc.api.command.BrigadierCommand
 import org.kryptonmc.api.command.Sender
 import org.kryptonmc.api.command.meta.CommandMeta
+import org.kryptonmc.krypton.api.InitializerExtension
+import org.kryptonmc.krypton.api.Initializers
 import org.kryptonmc.krypton.command.argument
 import org.kryptonmc.krypton.command.literal
 import org.kryptonmc.krypton.command.registrar.BrigadierCommandRegistrar
 import org.kryptonmc.krypton.util.Bootstrap
+import org.kryptonmc.krypton.util.FactoryProviderInitializer
 import java.util.concurrent.locks.ReentrantLock
 import kotlin.test.assertEquals
 
+@ExtendWith(InitializerExtension::class)
+@Initializers(FactoryProviderInitializer::class)
 class CommandTests {
 
     @Test

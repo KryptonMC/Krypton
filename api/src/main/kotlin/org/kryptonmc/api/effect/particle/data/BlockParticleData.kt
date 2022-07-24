@@ -9,7 +9,9 @@
 package org.kryptonmc.api.effect.particle.data
 
 import org.jetbrains.annotations.Contract
+import org.kryptonmc.api.Krypton
 import org.kryptonmc.api.block.Block
+import org.kryptonmc.api.util.provide
 
 /**
  * Holds data for block particle effects.
@@ -33,6 +35,6 @@ public interface BlockParticleData : ParticleData {
          */
         @JvmStatic
         @Contract("_ -> new", pure = true)
-        public fun of(block: Block): BlockParticleData = ParticleData.FACTORY.block(block)
+        public fun of(block: Block): BlockParticleData = Krypton.factoryProvider.provide<ParticleData.Factory>().block(block)
     }
 }

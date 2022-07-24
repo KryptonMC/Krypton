@@ -48,8 +48,6 @@ public interface GameRule<V : Any> : TranslationHolder, Keyed {
 
     public companion object {
 
-        private val FACTORY = Krypton.factoryProvider.provide<Factory>()
-
         /**
          * Creates a new game rule with the given values.
          *
@@ -67,6 +65,6 @@ public interface GameRule<V : Any> : TranslationHolder, Keyed {
             name: String,
             default: V,
             translation: TranslatableComponent = Component.translatable("gamerule.$name")
-        ): GameRule<V> = FACTORY.of(key, name, default, translation)
+        ): GameRule<V> = Krypton.factoryProvider.provide<Factory>().of(key, name, default, translation)
     }
 }

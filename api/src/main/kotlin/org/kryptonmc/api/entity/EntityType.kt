@@ -286,8 +286,6 @@ public interface EntityType<T : Entity> : Keyed, TranslationHolder {
 
     public companion object {
 
-        private val FACTORY = Krypton.factoryProvider.provide<Factory>()
-
         /**
          * Creates a new builder for building an entity type with the given
          * values.
@@ -298,6 +296,7 @@ public interface EntityType<T : Entity> : Keyed, TranslationHolder {
          */
         @JvmStatic
         @Contract("_ -> new", pure = true)
-        public fun <T : Entity> builder(key: Key, category: EntityCategory): Builder<T> = FACTORY.builder(key, category)
+        public fun <T : Entity> builder(key: Key, category: EntityCategory): Builder<T> =
+            Krypton.factoryProvider.provide<Factory>().builder(key, category)
     }
 }

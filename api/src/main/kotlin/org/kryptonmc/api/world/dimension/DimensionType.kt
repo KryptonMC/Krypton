@@ -581,8 +581,6 @@ public interface DimensionType : Buildable<DimensionType.Builder, DimensionType>
 
     public companion object {
 
-        private val FACTORY = Krypton.factoryProvider.provide<Factory>()
-
         /**
          * Creates a new builder for building dimension types.
          *
@@ -591,6 +589,6 @@ public interface DimensionType : Buildable<DimensionType.Builder, DimensionType>
          */
         @JvmStatic
         @Contract("_ -> new", pure = true)
-        public fun builder(key: Key): Builder = FACTORY.builder(key)
+        public fun builder(key: Key): Builder = Krypton.factoryProvider.provide<Factory>().builder(key)
     }
 }

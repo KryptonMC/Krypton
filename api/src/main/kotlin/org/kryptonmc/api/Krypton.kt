@@ -17,23 +17,27 @@ internal object Krypton {
     @JvmStatic
     @get:JvmSynthetic
     internal val registryManager: RegistryManager
-        get() = internalRegistryManager!!
+        get() = checkNotNull(internalRegistryManager) { "Registry manager was not initialized!" }
 
     @JvmStatic
     @get:JvmSynthetic
     internal val tagManager: TagManager
-        get() = internalTagManager!!
+        get() = checkNotNull(internalTagManager) { "Tag manager was not initialized!" }
 
     @JvmStatic
     @get:JvmSynthetic
     internal val factoryProvider: FactoryProvider
-        get() = internalFactoryProvider!!
+        get() = checkNotNull(internalFactoryProvider) { "Factory provider was not initialized!" }
 
     // Implementation note: All three of these need to be set reflectively.
     @JvmStatic
     private var internalFactoryProvider: FactoryProvider? = null
     @JvmStatic
     private var internalRegistryManager: RegistryManager? = null
+        set(value) {
+            field = value
+            println("Set registry manager")
+        }
     @JvmStatic
     private var internalTagManager: TagManager? = null
 }

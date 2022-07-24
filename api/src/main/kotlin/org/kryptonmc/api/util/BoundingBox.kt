@@ -299,16 +299,10 @@ public interface BoundingBox {
 
         public fun unit(): BoundingBox
 
-        public fun of(minimum: Vector3d, maximum: Vector3d): BoundingBox
-
-        public fun of(minimum: Vector3i, maximum: Vector3i): BoundingBox
-
         public fun of(minimumX: Double, minimumY: Double, minimumZ: Double, maximumX: Double, maximumY: Double, maximumZ: Double): BoundingBox
     }
 
     public companion object {
-
-        private val FACTORY = Krypton.factoryProvider.provide<Factory>()
 
         /**
          * Gets the bounding box that has minimum and maximum values all set
@@ -317,7 +311,7 @@ public interface BoundingBox {
          */
         @JvmStatic
         @Contract(pure = true)
-        public fun zero(): BoundingBox = FACTORY.zero()
+        public fun zero(): BoundingBox = Krypton.factoryProvider.provide<Factory>().zero()
 
         /**
          * Gets the bounding box that has minimum values set to 0, and maximum
@@ -326,7 +320,7 @@ public interface BoundingBox {
          */
         @JvmStatic
         @Contract(pure = true)
-        public fun unit(): BoundingBox = FACTORY.unit()
+        public fun unit(): BoundingBox = Krypton.factoryProvider.provide<Factory>().unit()
 
         /**
          * Creates a new bounding box from the given values.
@@ -343,7 +337,8 @@ public interface BoundingBox {
          */
         @JvmStatic
         @Contract("_, _ -> new", pure = true)
-        public fun of(minimum: Vector3d, maximum: Vector3d): BoundingBox = FACTORY.of(minimum, maximum)
+        public fun of(minimum: Vector3d, maximum: Vector3d): BoundingBox =
+            Krypton.factoryProvider.provide<Factory>().of(minimum.x(), minimum.y(), minimum.z(), maximum.x(), maximum.y(), maximum.z())
 
         /**
          * Creates a new bounding box from the given values.
@@ -360,7 +355,14 @@ public interface BoundingBox {
          */
         @JvmStatic
         @Contract("_, _ -> new", pure = true)
-        public fun of(minimum: Vector3i, maximum: Vector3i): BoundingBox = FACTORY.of(minimum, maximum)
+        public fun of(minimum: Vector3i, maximum: Vector3i): BoundingBox = Krypton.factoryProvider.provide<Factory>().of(
+            minimum.x().toDouble(),
+            minimum.y().toDouble(),
+            minimum.z().toDouble(),
+            maximum.x().toDouble(),
+            maximum.y().toDouble(),
+            maximum.z().toDouble()
+        )
 
         /**
          * Creates a new bounding box from the given values.
@@ -382,6 +384,6 @@ public interface BoundingBox {
         @JvmStatic
         @Contract("_, _, _, _, _, _ -> new", pure = true)
         public fun of(minimumX: Double, minimumY: Double, minimumZ: Double, maximumX: Double, maximumY: Double, maximumZ: Double): BoundingBox =
-            FACTORY.of(minimumX, minimumY, minimumZ, maximumX, maximumY, maximumZ)
+            Krypton.factoryProvider.provide<Factory>().of(minimumX, minimumY, minimumZ, maximumX, maximumY, maximumZ)
     }
 }

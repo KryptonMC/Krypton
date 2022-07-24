@@ -26,22 +26,29 @@ import net.kyori.adventure.text.event.HoverEvent
 import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer
 import net.kyori.adventure.util.Codec
-import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.assertThrows
+import org.junit.jupiter.api.extension.ExtendWith
 import org.kryptonmc.api.adventure.toJson
 import org.kryptonmc.api.adventure.toPlainText
 import org.kryptonmc.api.item.meta
 import org.kryptonmc.api.item.meta.WrittenBookMeta
 import org.kryptonmc.krypton.adventure.KryptonAdventure
-import org.kryptonmc.krypton.adventure.toItemStack
 import org.kryptonmc.krypton.adventure.NBTLegacyHoverEventSerializer
-import org.kryptonmc.krypton.util.Bootstrap
+import org.kryptonmc.krypton.adventure.toItemStack
+import org.kryptonmc.krypton.api.InitializerExtension
+import org.kryptonmc.krypton.api.Initializers
+import org.kryptonmc.krypton.util.FactoryProviderInitializer
+import org.kryptonmc.krypton.util.ItemTypeInitializer
 import org.kryptonmc.krypton.util.Reflection
+import org.kryptonmc.krypton.util.RegistryInitializer
+import org.kryptonmc.krypton.util.TranslationInitializer
 import java.io.IOException
 import java.util.UUID
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
+@ExtendWith(InitializerExtension::class)
+@Initializers(FactoryProviderInitializer::class, RegistryInitializer::class, ItemTypeInitializer::class, TranslationInitializer::class)
 class AdventureTests {
 
     @Test
@@ -126,11 +133,5 @@ class AdventureTests {
 
         private val ENCODER = Codec.Encoder<Component, String, RuntimeException>(GsonComponentSerializer.gson()::serialize)
         private val DECODER = Codec.Decoder<Component, String, RuntimeException>(GsonComponentSerializer.gson()::deserialize)
-
-        @JvmStatic
-        @BeforeAll
-        fun `preload bootstrap`() {
-            Bootstrap.preload()
-        }
     }
 }

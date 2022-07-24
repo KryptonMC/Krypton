@@ -39,9 +39,6 @@ public interface DamageSource {
 
     public companion object {
 
-        @JvmSynthetic
-        internal val FACTORY = Krypton.factoryProvider.provide<Factory>()
-
         /**
          * Creates a new damage source with the given [type].
          *
@@ -50,6 +47,6 @@ public interface DamageSource {
          */
         @JvmStatic
         @Contract("_ -> new", pure = true)
-        public fun of(type: DamageType): DamageSource = FACTORY.of(type)
+        public fun of(type: DamageType): DamageSource = Krypton.factoryProvider.provide<Factory>().of(type)
     }
 }

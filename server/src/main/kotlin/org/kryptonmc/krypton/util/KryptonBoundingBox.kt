@@ -131,18 +131,6 @@ data class KryptonBoundingBox(
 
         override fun unit(): BoundingBox = UNIT
 
-        override fun of(minimum: Vector3d, maximum: Vector3d): BoundingBox =
-            of(minimum.x(), minimum.y(), minimum.z(), maximum.x(), maximum.y(), maximum.z())
-
-        override fun of(minimum: Vector3i, maximum: Vector3i): BoundingBox = of(
-            minimum.x().toDouble(),
-            minimum.y().toDouble(),
-            minimum.z().toDouble(),
-            maximum.x().toDouble(),
-            maximum.y().toDouble(),
-            maximum.z().toDouble()
-        )
-
         override fun of(minimumX: Double, minimumY: Double, minimumZ: Double, maximumX: Double, maximumY: Double, maximumZ: Double): BoundingBox =
             KryptonBoundingBox(minimumX, minimumY, minimumZ, maximumX, maximumY, maximumZ)
     }

@@ -72,8 +72,6 @@ public interface AttributeType : TranslationHolder, Keyed {
 
     public companion object {
 
-        private val FACTORY = Krypton.factoryProvider.provide<Factory>()
-
         /**
          * Creates a new type of attribute with the given values.
          *
@@ -107,6 +105,6 @@ public interface AttributeType : TranslationHolder, Keyed {
             maximum: Double,
             sendToClient: Boolean,
             translation: TranslatableComponent
-        ): AttributeType = FACTORY.of(key, defaultBase, minimum, maximum, sendToClient, translation)
+        ): AttributeType = Krypton.factoryProvider.provide<Factory>().of(key, defaultBase, minimum, maximum, sendToClient, translation)
     }
 }

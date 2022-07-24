@@ -57,8 +57,6 @@ public interface Music {
 
     public companion object {
 
-        private val FACTORY = Krypton.factoryProvider.provide<Factory>()
-
         /**
          * Creates new music with the given values.
          *
@@ -70,6 +68,6 @@ public interface Music {
         @JvmStatic
         @Contract("_, _, _, _ -> new", pure = true)
         public fun of(sound: SoundEvent, minimumDelay: Int, maximumDelay: Int, replaceCurrentMusic: Boolean): Music =
-            FACTORY.of(sound, minimumDelay, maximumDelay, replaceCurrentMusic)
+            Krypton.factoryProvider.provide<Factory>().of(sound, minimumDelay, maximumDelay, replaceCurrentMusic)
     }
 }

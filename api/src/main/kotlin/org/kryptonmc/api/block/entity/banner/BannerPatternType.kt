@@ -37,8 +37,6 @@ public interface BannerPatternType : Keyed {
 
     public companion object {
 
-        private val FACTORY = Krypton.factoryProvider.provide<Factory>()
-
         /**
          * Creates a new banner pattern type with the given [key] and
          * shortened [code].
@@ -48,6 +46,6 @@ public interface BannerPatternType : Keyed {
          * @return a new banner pattern type
          */
         @JvmStatic
-        public fun of(key: Key, code: String): BannerPatternType = FACTORY.of(key, code)
+        public fun of(key: Key, code: String): BannerPatternType = Krypton.factoryProvider.provide<Factory>().of(key, code)
     }
 }

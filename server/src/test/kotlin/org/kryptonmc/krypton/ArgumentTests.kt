@@ -29,6 +29,9 @@ import com.mojang.brigadier.arguments.StringArgumentType
 import io.netty.buffer.Unpooled
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.assertThrows
+import org.junit.jupiter.api.extension.ExtendWith
+import org.kryptonmc.krypton.api.InitializerExtension
+import org.kryptonmc.krypton.api.Initializers
 import org.kryptonmc.krypton.command.argument.ArgumentSerializers
 import org.kryptonmc.krypton.command.argument.serializer.DoubleArgumentSerializer
 import org.kryptonmc.krypton.command.argument.serializer.FlaggedArgumentSerializer
@@ -36,12 +39,15 @@ import org.kryptonmc.krypton.command.argument.serializer.FloatArgumentSerializer
 import org.kryptonmc.krypton.command.argument.serializer.IntegerArgumentSerializer
 import org.kryptonmc.krypton.command.argument.serializer.LongArgumentSerializer
 import org.kryptonmc.krypton.command.argument.serializer.StringArgumentSerializer
+import org.kryptonmc.krypton.util.ArgumentSerializerInitializer
 import org.kryptonmc.krypton.util.readVarInt
 import org.kryptonmc.krypton.util.writeArgumentType
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 
+@ExtendWith(InitializerExtension::class)
+@Initializers(ArgumentSerializerInitializer::class)
 class ArgumentTests {
 
     @Test
@@ -111,15 +117,6 @@ class ArgumentTests {
     private object BogusArgumentType : ArgumentType<Nothing?> {
 
         override fun parse(reader: StringReader?): Nothing? = null
-    }
-
-    companion object {
-
-        @BeforeAll
-        @JvmStatic
-        fun `preload needed classes`() {
-            ArgumentSerializers
-        }
     }
 }
 

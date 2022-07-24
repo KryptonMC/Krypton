@@ -76,8 +76,6 @@ public interface AmbientAdditionsSettings : Buildable<AmbientAdditionsSettings.B
 
     public companion object {
 
-        private val FACTORY = Krypton.factoryProvider.provide<Factory>()
-
         /**
          * Creates new ambient addition sound settings with the given values.
          *
@@ -87,7 +85,8 @@ public interface AmbientAdditionsSettings : Buildable<AmbientAdditionsSettings.B
          */
         @JvmStatic
         @Contract("_, _ -> new", pure = true)
-        public fun of(sound: SoundEvent, probability: Double): AmbientAdditionsSettings = FACTORY.of(sound, probability)
+        public fun of(sound: SoundEvent, probability: Double): AmbientAdditionsSettings =
+            Krypton.factoryProvider.provide<Factory>().of(sound, probability)
 
         /**
          * Creates a new builder for ambient additions settings.
@@ -97,6 +96,6 @@ public interface AmbientAdditionsSettings : Buildable<AmbientAdditionsSettings.B
          */
         @JvmStatic
         @Contract("_ -> new", pure = true)
-        public fun builder(sound: SoundEvent): Builder = FACTORY.builder(sound)
+        public fun builder(sound: SoundEvent): Builder = Krypton.factoryProvider.provide<Factory>().builder(sound)
     }
 }

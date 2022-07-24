@@ -65,8 +65,6 @@ public interface ProfileProperty {
 
     public companion object {
 
-        private val FACTORY = Krypton.factoryProvider.provide<Factory>()
-
         /**
          * Creates a new profile property with the given [name], [value], and
          * optionally, [signature].
@@ -79,6 +77,7 @@ public interface ProfileProperty {
         @JvmStatic
         @JvmOverloads
         @Contract("_, _, _ -> new", pure = true)
-        public fun of(name: String, value: String, signature: String? = null): ProfileProperty = FACTORY.of(name, value, signature)
+        public fun of(name: String, value: String, signature: String? = null): ProfileProperty =
+            Krypton.factoryProvider.provide<Factory>().of(name, value, signature)
     }
 }

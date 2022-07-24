@@ -111,8 +111,6 @@ public interface AmbientMoodSettings : Buildable<AmbientMoodSettings.Builder, Am
 
     public companion object {
 
-        private val FACTORY = Krypton.factoryProvider.provide<Factory>()
-
         /**
          * Creates new ambient mood sound settings with the given values.
          *
@@ -126,7 +124,7 @@ public interface AmbientMoodSettings : Buildable<AmbientMoodSettings.Builder, Am
         @JvmStatic
         @Contract("_, _, _, _ -> new", pure = true)
         public fun of(sound: SoundEvent, tickDelay: Int, blockSearchExtent: Int, offset: Double): AmbientMoodSettings =
-            FACTORY.of(sound, tickDelay, blockSearchExtent, offset)
+            Krypton.factoryProvider.provide<Factory>().of(sound, tickDelay, blockSearchExtent, offset)
 
         /**
          * Creates a new builder for ambient mood settings.
@@ -136,6 +134,6 @@ public interface AmbientMoodSettings : Buildable<AmbientMoodSettings.Builder, Am
          */
         @JvmStatic
         @Contract("_ -> new", pure = true)
-        public fun builder(sound: SoundEvent): Builder = FACTORY.builder(sound)
+        public fun builder(sound: SoundEvent): Builder = Krypton.factoryProvider.provide<Factory>().builder(sound)
     }
 }

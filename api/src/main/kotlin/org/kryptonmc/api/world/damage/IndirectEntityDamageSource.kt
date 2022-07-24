@@ -9,7 +9,9 @@
 package org.kryptonmc.api.world.damage
 
 import org.jetbrains.annotations.Contract
+import org.kryptonmc.api.Krypton
 import org.kryptonmc.api.entity.Entity
+import org.kryptonmc.api.util.provide
 import org.kryptonmc.api.world.damage.type.DamageType
 
 /**
@@ -39,6 +41,6 @@ public interface IndirectEntityDamageSource : EntityDamageSource {
         @JvmStatic
         @Contract("_, _, _ -> new", pure = true)
         public fun of(type: DamageType, entity: Entity, indirectEntity: Entity): IndirectEntityDamageSource =
-            DamageSource.FACTORY.indirectEntity(type, entity, indirectEntity)
+            Krypton.factoryProvider.provide<DamageSource.Factory>().indirectEntity(type, entity, indirectEntity)
     }
 }

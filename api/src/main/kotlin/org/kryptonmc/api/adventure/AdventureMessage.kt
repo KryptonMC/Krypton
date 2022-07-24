@@ -37,8 +37,6 @@ public interface AdventureMessage : Message, ComponentLike {
 
     public companion object {
 
-        private val FACTORY = Krypton.factoryProvider.provide<Factory>()
-
         /**
          * Creates a new Brigadier message that wraps the given [component].
          *
@@ -47,6 +45,6 @@ public interface AdventureMessage : Message, ComponentLike {
          */
         @JvmStatic
         @Contract("_ -> new", pure = true)
-        public fun of(component: Component): AdventureMessage = FACTORY.of(component)
+        public fun of(component: Component): AdventureMessage = Krypton.factoryProvider.provide<Factory>().of(component)
     }
 }

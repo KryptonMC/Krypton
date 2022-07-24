@@ -19,19 +19,24 @@
 package org.kryptonmc.krypton
 
 import net.kyori.adventure.text.format.TextColor
-import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.assertDoesNotThrow
 import org.junit.jupiter.api.assertThrows
+import org.junit.jupiter.api.extension.ExtendWith
 import org.kryptonmc.api.effect.particle.ParticleTypes
 import org.kryptonmc.api.effect.particle.data.ColorParticleData
 import org.kryptonmc.api.util.Color
+import org.kryptonmc.krypton.api.InitializerExtension
+import org.kryptonmc.krypton.api.Initializers
 import org.kryptonmc.krypton.effect.particle.data.KryptonNoteParticleData
 import org.kryptonmc.krypton.util.Bootstrap
+import org.kryptonmc.krypton.util.FactoryProviderInitializer
 import org.spongepowered.math.vector.Vector3d
 import java.awt.Color as AwtColor
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
+@ExtendWith(InitializerExtension::class)
+@Initializers(FactoryProviderInitializer::class)
 class ParticleEffectTests {
 
     @Test
@@ -83,14 +88,5 @@ class ParticleEffectTests {
         val note = ParticleTypes.NOTE.builder()
         assertThrows<IllegalArgumentException> { note.note(25) }
         assertThrows<IllegalArgumentException> { note.note(-1) }
-    }
-
-    companion object {
-
-        @JvmStatic
-        @BeforeAll
-        fun `preload bootstrap`() {
-            Bootstrap.preload()
-        }
     }
 }

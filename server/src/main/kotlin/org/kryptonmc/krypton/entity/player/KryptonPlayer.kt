@@ -63,6 +63,7 @@ import org.kryptonmc.api.world.GameMode
 import org.kryptonmc.api.world.World
 import org.kryptonmc.api.world.dimension.DimensionType
 import org.kryptonmc.krypton.adventure.BossBarManager
+import org.kryptonmc.krypton.adventure.NetworkAudienceMember
 import org.kryptonmc.krypton.adventure.toItemStack
 import org.kryptonmc.krypton.auth.KryptonGameProfile
 import org.kryptonmc.krypton.commands.KryptonPermission
@@ -142,7 +143,7 @@ class KryptonPlayer(
     world: KryptonWorld,
     override val address: InetSocketAddress,
     val publicKey: PlayerPublicKey?
-) : KryptonLivingEntity(world, EntityTypes.PLAYER, ATTRIBUTES), Player, KryptonEquipable, ChatSenderLike {
+) : KryptonLivingEntity(world, EntityTypes.PLAYER, ATTRIBUTES), Player, KryptonEquipable, ChatSenderLike, NetworkAudienceMember {
 
     var permissionFunction: PermissionFunction = DEFAULT_PERMISSION_FUNCTION
 
@@ -713,12 +714,16 @@ class KryptonPlayer(
         openBook(book.toItemStack())
     }
 
-    fun openBook(item: KryptonItemStack) {
+    override fun openBook(item: KryptonItemStack) {
         val slot = inventory.items.size + inventory.heldSlot
         val stateId = inventory.stateId
         session.send(PacketOutSetContainerSlot(0, stateId, slot, item))
         session.send(PacketOutOpenBook(hand))
         session.send(PacketOutSetContainerSlot(0, stateId, slot, inventory.mainHand))
+    }
+
+    override fun sendPacket(packet: Packet) {
+        session.send(packet)
     }
 
     private fun updateAbilities() {

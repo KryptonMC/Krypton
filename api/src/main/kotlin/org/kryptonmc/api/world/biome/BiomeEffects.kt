@@ -365,8 +365,6 @@ public interface BiomeEffects : Buildable<BiomeEffects.Builder, BiomeEffects> {
 
     public companion object {
 
-        private val FACTORY = Krypton.factoryProvider.provide<Factory>()
-
         /**
          * Creates a new builder for biome effects.
          *
@@ -374,6 +372,6 @@ public interface BiomeEffects : Buildable<BiomeEffects.Builder, BiomeEffects> {
          */
         @JvmStatic
         @Contract("-> new", pure = true)
-        public fun builder(): Builder = FACTORY.builder()
+        public fun builder(): Builder = Krypton.factoryProvider.provide<Factory>().builder()
     }
 }

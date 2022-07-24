@@ -74,7 +74,7 @@ import kotlin.random.Random
 //  second, all of the entity processing logic can also be moved elsewhere
 //  third, there is a lot of vanilla stuff in here that is clearly just taken, which isn't allowed
 @Suppress("LeakingThis")
-abstract class KryptonEntity(override var world: KryptonWorld, override val type: EntityType<out Entity>) : Entity {
+abstract class KryptonEntity(override var world: KryptonWorld, override val type: EntityType<out Entity>) : Entity, Sound.Source.Provider {
 
     final override val id: Int = NEXT_ENTITY_ID.incrementAndGet()
     override var uuid: UUID = Random.nextUUID()
@@ -148,8 +148,6 @@ abstract class KryptonEntity(override var world: KryptonWorld, override val type
     override val isRideable: Boolean
         get() = type.isRideable
 
-    open val soundSource: Sound.Source
-        get() = Sound.Source.NEUTRAL
     protected open val swimSound: SoundEvent
         get() = SoundEvents.GENERIC_SWIM
     protected open val splashSound: SoundEvent
@@ -243,7 +241,7 @@ abstract class KryptonEntity(override var world: KryptonWorld, override val type
 
     fun playSound(event: SoundEvent, volume: Float, pitch: Float) {
         if (isSilent) return
-        world.playSound(location.x(), location.y(), location.z(), event, soundSource, volume, pitch)
+        world.playSound(location.x(), location.y(), location.z(), event, soundSource(), volume, pitch)
     }
 
     open fun tick() {
@@ -442,6 +440,8 @@ abstract class KryptonEntity(override var world: KryptonWorld, override val type
     override fun tryRide(entity: Entity) {
         if (isRideable) addPassenger(entity)
     }
+
+    override fun soundSource(): Sound.Source = Sound.Source.NEUTRAL
 
     protected fun getFlag(key: MetadataKey<Byte>, flag: Int): Boolean = data.get(key).toInt() and (1 shl flag) != 0
 

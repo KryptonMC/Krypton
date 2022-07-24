@@ -298,8 +298,6 @@ public interface Scoreboard : Buildable<Scoreboard.Builder, Scoreboard> {
 
     public companion object {
 
-        private val FACTORY = Krypton.factoryProvider.provide<Factory>()
-
         /**
          * Creates a new empty scoreboard.
          *
@@ -307,7 +305,7 @@ public interface Scoreboard : Buildable<Scoreboard.Builder, Scoreboard> {
          */
         @JvmStatic
         @Contract("-> new", pure = true)
-        public fun empty(): Scoreboard = FACTORY.empty()
+        public fun empty(): Scoreboard = Krypton.factoryProvider.provide<Factory>().empty()
 
         /**
          * Creates a new builder for building a scoreboard.
@@ -316,6 +314,6 @@ public interface Scoreboard : Buildable<Scoreboard.Builder, Scoreboard> {
          */
         @JvmStatic
         @Contract("-> new", pure = true)
-        public fun builder(): Builder = FACTORY.builder()
+        public fun builder(): Builder = Krypton.factoryProvider.provide<Factory>().builder()
     }
 }

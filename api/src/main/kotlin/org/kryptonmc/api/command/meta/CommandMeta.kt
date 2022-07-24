@@ -79,9 +79,6 @@ public interface CommandMeta : Buildable<CommandMeta.Builder, CommandMeta> {
 
     public companion object {
 
-        @JvmSynthetic
-        internal val FACTORY = Krypton.factoryProvider.provide<Factory>()
-
         /**
          * Creates a new builder for constructing command metadata.
          *
@@ -90,7 +87,7 @@ public interface CommandMeta : Buildable<CommandMeta.Builder, CommandMeta> {
          */
         @JvmStatic
         @Contract("_ -> new", pure = true)
-        public fun builder(name: String): Builder = FACTORY.builder(name)
+        public fun builder(name: String): Builder = Krypton.factoryProvider.provide<Factory>().builder(name)
 
         /**
          * Creates a new builder for constructing command metadata from the given

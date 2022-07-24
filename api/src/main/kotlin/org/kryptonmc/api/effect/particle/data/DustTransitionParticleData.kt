@@ -9,7 +9,9 @@
 package org.kryptonmc.api.effect.particle.data
 
 import org.jetbrains.annotations.Contract
+import org.kryptonmc.api.Krypton
 import org.kryptonmc.api.util.Color
+import org.kryptonmc.api.util.provide
 
 /**
  * Holds data for dust colour transition particle effects.
@@ -57,7 +59,8 @@ public interface DustTransitionParticleData : DustParticleData {
          */
         @JvmStatic
         @Contract("_, _, _ -> new", pure = true)
-        public fun of(from: Color, scale: Float, to: Color): DustTransitionParticleData = ParticleData.FACTORY.transition(from, scale, to)
+        public fun of(from: Color, scale: Float, to: Color): DustTransitionParticleData =
+            Krypton.factoryProvider.provide<ParticleData.Factory>().transition(from, scale, to)
 
         /**
          * Creates new dust color transition particle data with the given

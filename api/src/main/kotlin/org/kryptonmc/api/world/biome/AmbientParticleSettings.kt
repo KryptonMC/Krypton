@@ -114,8 +114,6 @@ public interface AmbientParticleSettings : Buildable<AmbientParticleSettings.Bui
 
     public companion object {
 
-        private val FACTORY = Krypton.factoryProvider.provide<Factory>()
-
         /**
          * Creates new ambient particle settings with the given values.
          *
@@ -126,7 +124,8 @@ public interface AmbientParticleSettings : Buildable<AmbientParticleSettings.Bui
          */
         @JvmStatic
         @Contract("_, _, _ -> new", pure = true)
-        public fun of(type: ParticleType, data: ParticleData?, probability: Float): AmbientParticleSettings = FACTORY.of(type, data, probability)
+        public fun of(type: ParticleType, data: ParticleData?, probability: Float): AmbientParticleSettings =
+            Krypton.factoryProvider.provide<Factory>().of(type, data, probability)
 
         /**
          * Creates a new builder for ambient particle settings.
@@ -136,6 +135,6 @@ public interface AmbientParticleSettings : Buildable<AmbientParticleSettings.Bui
          */
         @JvmStatic
         @Contract("_ -> new", pure = true)
-        public fun builder(type: ParticleType): Builder = FACTORY.builder(type)
+        public fun builder(type: ParticleType): Builder = Krypton.factoryProvider.provide<Factory>().builder(type)
     }
 }

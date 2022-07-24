@@ -284,8 +284,6 @@ public interface FireworkEffect : Buildable<FireworkEffect, FireworkEffect.Build
 
     public companion object {
 
-        private val FACTORY = Krypton.factoryProvider.provide<Factory>()
-
         /**
          * Creates a new builder for building a firework effect with the given
          * [type].
@@ -295,6 +293,6 @@ public interface FireworkEffect : Buildable<FireworkEffect, FireworkEffect.Build
          */
         @JvmStatic
         @Contract("_ -> new", pure = true)
-        public fun builder(type: FireworkEffectType): Builder = FACTORY.builder(type)
+        public fun builder(type: FireworkEffectType): Builder = Krypton.factoryProvider.provide<Factory>().builder(type)
     }
 }

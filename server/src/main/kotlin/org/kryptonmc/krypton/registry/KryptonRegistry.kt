@@ -108,4 +108,12 @@ open class KryptonRegistry<T : Any>(override val key: ResourceKey<out Registry<T
             }
         })
     }
+
+    fun reset() {
+        byId.clear()
+        toId.clear()
+        storage.clear()
+        keyStorage.clear()
+        nextId = 0
+    }
 }

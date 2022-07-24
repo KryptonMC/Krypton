@@ -18,8 +18,6 @@
  */
 package org.kryptonmc.krypton
 
-import org.junit.jupiter.api.BeforeAll
-import org.kryptonmc.krypton.util.Bootstrap
 import org.kryptonmc.krypton.util.KryptonBoundingBox
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -45,14 +43,5 @@ class BoundingBoxTests {
         assertEquals(0.0, box.centerX)
         assertEquals(0.0, box.centerY)
         assertEquals(0.0, box.centerZ)
-    }
-
-    companion object {
-
-        @JvmStatic
-        @BeforeAll
-        fun bootstrap() {
-            Bootstrap.preload()
-        }
     }
 }

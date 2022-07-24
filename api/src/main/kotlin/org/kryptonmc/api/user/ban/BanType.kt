@@ -37,8 +37,6 @@ public interface BanType : Keyed {
 
     public companion object {
 
-        private val FACTORY = Krypton.factoryProvider.provide<Factory>()
-
         /**
          * Creates a new ban type with the given values.
          *
@@ -48,6 +46,6 @@ public interface BanType : Keyed {
          */
         @JvmStatic
         @Contract("_, _ -> new", pure = true)
-        public fun of(key: Key, clazz: Class<out Ban>): BanType = FACTORY.of(key, clazz)
+        public fun of(key: Key, clazz: Class<out Ban>): BanType = Krypton.factoryProvider.provide<Factory>().of(key, clazz)
     }
 }

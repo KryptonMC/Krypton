@@ -45,8 +45,6 @@ public interface ResourceKey<T : Any> {
 
     public companion object {
 
-        private val FACTORY = Krypton.factoryProvider.provide<Factory>()
-
         /**
          * Creates a new resource key, or returns an existing one if one with
          * the given parameters has already been created, with the given
@@ -59,7 +57,7 @@ public interface ResourceKey<T : Any> {
          */
         @JvmStatic
         @Contract("_, _ -> new", pure = true)
-        public fun <T : Any> of(registry: Key, location: Key): ResourceKey<T> = FACTORY.of(registry, location)
+        public fun <T : Any> of(registry: Key, location: Key): ResourceKey<T> = Krypton.factoryProvider.provide<Factory>().of(registry, location)
 
         /**
          * Creates a new resource key, or returns an existing one if one with

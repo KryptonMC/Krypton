@@ -37,8 +37,6 @@ public interface BrigadierCommand : Command {
 
     public companion object {
 
-        private val FACTORY = Krypton.factoryProvider.provide<Factory>()
-
         /**
          * Creates a new command backed by the given Brigadier command [node].
          *
@@ -47,7 +45,7 @@ public interface BrigadierCommand : Command {
          */
         @JvmStatic
         @Contract("_ -> new", pure = true)
-        public fun of(node: LiteralCommandNode<Sender>): BrigadierCommand = FACTORY.of(node)
+        public fun of(node: LiteralCommandNode<Sender>): BrigadierCommand = Krypton.factoryProvider.provide<Factory>().of(node)
 
         /**
          * Creates a new command backed by the Brigadier command node built

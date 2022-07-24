@@ -9,6 +9,8 @@
 package org.kryptonmc.api.effect.particle.data
 
 import org.jetbrains.annotations.Contract
+import org.kryptonmc.api.Krypton
+import org.kryptonmc.api.util.provide
 
 /**
  * Holds data for note particle effects.
@@ -32,6 +34,6 @@ public interface NoteParticleData : ParticleData {
          */
         @JvmStatic
         @Contract("_ -> new", pure = true)
-        public fun of(note: Byte): NoteParticleData = ParticleData.FACTORY.note(note)
+        public fun of(note: Byte): NoteParticleData = Krypton.factoryProvider.provide<ParticleData.Factory>().note(note)
     }
 }

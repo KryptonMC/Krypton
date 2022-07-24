@@ -39,8 +39,6 @@ public interface BannerPattern {
 
     public companion object {
 
-        private val FACTORY = Krypton.factoryProvider.provide<Factory>()
-
         /**
          * Creates a new banner pattern with the given values.
          *
@@ -49,6 +47,6 @@ public interface BannerPattern {
          * @return a new banner pattern
          */
         @JvmStatic
-        public fun of(type: BannerPatternType, color: DyeColor): BannerPattern = FACTORY.of(type, color)
+        public fun of(type: BannerPatternType, color: DyeColor): BannerPattern = Krypton.factoryProvider.provide<Factory>().of(type, color)
     }
 }

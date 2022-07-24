@@ -160,8 +160,6 @@ public interface GameProfile : Buildable<GameProfile.Builder, GameProfile>, Iden
 
     public companion object {
 
-        private val FACTORY = Krypton.factoryProvider.provide<Factory>()
-
         /**
          * Creates a new game profile with the given [name], [uuid], and
          * optionally, list of profile [properties].
@@ -174,6 +172,7 @@ public interface GameProfile : Buildable<GameProfile.Builder, GameProfile>, Iden
         @JvmStatic
         @JvmOverloads
         @Contract("_, _, _ -> new", pure = true)
-        public fun of(name: String, uuid: UUID, properties: List<ProfileProperty> = emptyList()): GameProfile = FACTORY.of(name, uuid, properties)
+        public fun of(name: String, uuid: UUID, properties: List<ProfileProperty> = emptyList()): GameProfile =
+            Krypton.factoryProvider.provide<Factory>().of(name, uuid, properties)
     }
 }

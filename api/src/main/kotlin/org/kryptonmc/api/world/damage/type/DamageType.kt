@@ -366,8 +366,6 @@ public interface DamageType : Keyed {
 
     public companion object {
 
-        private val FACTORY = Krypton.factoryProvider.provide<Factory>()
-
         /**
          * Creates a new builder to build a dimension type.
          *
@@ -377,6 +375,6 @@ public interface DamageType : Keyed {
          */
         @JvmStatic
         @Contract("_, _ -> new", pure = true)
-        public fun builder(key: Key, translationKey: String): Builder = FACTORY.builder(key, translationKey)
+        public fun builder(key: Key, translationKey: String): Builder = Krypton.factoryProvider.provide<Factory>().builder(key, translationKey)
     }
 }

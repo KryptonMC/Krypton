@@ -54,8 +54,6 @@ public interface Picture : Keyed {
 
     public companion object {
 
-        private val FACTORY = Krypton.factoryProvider.provide<Factory>()
-
         /**
          * Creates a new picture with the given values.
          *
@@ -66,6 +64,6 @@ public interface Picture : Keyed {
          */
         @JvmStatic
         @Contract("_ -> new", pure = true)
-        public fun of(key: Key, width: Int, height: Int): Picture = FACTORY.of(key, width, height)
+        public fun of(key: Key, width: Int, height: Int): Picture = Krypton.factoryProvider.provide<Factory>().of(key, width, height)
     }
 }

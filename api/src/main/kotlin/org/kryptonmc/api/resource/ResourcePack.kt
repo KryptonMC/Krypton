@@ -90,8 +90,6 @@ public interface ResourcePack {
 
     public companion object {
 
-        private val FACTORY = Krypton.factoryProvider.provide<Factory>()
-
         /**
          * Creates a new resource pack with the given values.
          *
@@ -104,6 +102,6 @@ public interface ResourcePack {
         @JvmStatic
         @Contract("_, _, _, _ -> new", pure = true)
         public fun of(uri: URI, hash: String, isForced: Boolean, promptMessage: Component?): ResourcePack =
-            FACTORY.of(uri, hash, isForced, promptMessage)
+            Krypton.factoryProvider.provide<Factory>().of(uri, hash, isForced, promptMessage)
     }
 }

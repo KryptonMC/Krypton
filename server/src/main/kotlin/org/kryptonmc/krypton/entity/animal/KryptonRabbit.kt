@@ -50,14 +50,16 @@ class KryptonRabbit(world: KryptonWorld) : KryptonAnimal(world, EntityTypes.RABB
             data.set(MetadataKeys.Rabbit.TYPE, value.ordinal)
         }
 
-    override val soundSource: Sound.Source
-        get() = if (variant == RabbitVariant.KILLER) Sound.Source.HOSTILE else Sound.Source.NEUTRAL
-
     init {
         data.add(MetadataKeys.Rabbit.TYPE, 0)
     }
 
     override fun isFood(item: ItemStack): Boolean = TEMPTING_ITEMS.contains(item.type)
+
+    override fun soundSource(): Sound.Source {
+        if (variant == RabbitVariant.KILLER) return Sound.Source.HOSTILE
+        return Sound.Source.NEUTRAL
+    }
 
     companion object {
 

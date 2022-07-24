@@ -50,8 +50,6 @@ public interface ItemAttribute {
 
     public companion object {
 
-        private val FACTORY = Krypton.factoryProvider.provide<Factory>()
-
         /**
          * Creates a new item attribute with the given [type], [slot], and
          * [modifier].
@@ -62,6 +60,7 @@ public interface ItemAttribute {
          */
         @JvmStatic
         @Contract("_, _, _ -> new", pure = true)
-        public fun of(type: AttributeType, slot: EquipmentSlot, modifier: AttributeModifier): ItemAttribute = FACTORY.of(type, slot, modifier)
+        public fun of(type: AttributeType, slot: EquipmentSlot, modifier: AttributeModifier): ItemAttribute =
+            Krypton.factoryProvider.provide<Factory>().of(type, slot, modifier)
     }
 }

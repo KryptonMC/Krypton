@@ -52,8 +52,6 @@ public interface AttributeModifier {
 
     public companion object {
 
-        private val FACTORY = Krypton.factoryProvider.provide<Factory>()
-
         /**
          * Creates a new attribute modifier with the given values.
          *
@@ -66,6 +64,6 @@ public interface AttributeModifier {
         @JvmStatic
         @Contract("_, _, _, _ -> new", pure = true)
         public fun of(name: String, uuid: UUID, amount: Double, operation: ModifierOperation): AttributeModifier =
-            FACTORY.of(name, uuid, amount, operation)
+            Krypton.factoryProvider.provide<Factory>().of(name, uuid, amount, operation)
     }
 }

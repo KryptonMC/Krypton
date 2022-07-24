@@ -104,8 +104,6 @@ public interface Objective : Buildable<Objective.Builder, Objective> {
 
     public companion object {
 
-        private val FACTORY = Krypton.factoryProvider.provide<Factory>()
-
         /**
          * Creates a new builder for building an objective.
          *
@@ -115,6 +113,6 @@ public interface Objective : Buildable<Objective.Builder, Objective> {
          */
         @JvmStatic
         @Contract("_, _ -> new", pure = true)
-        public fun builder(name: String, criterion: Criterion): Builder = FACTORY.builder(name, criterion)
+        public fun builder(name: String, criterion: Criterion): Builder = Krypton.factoryProvider.provide<Factory>().builder(name, criterion)
     }
 }

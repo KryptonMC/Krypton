@@ -35,8 +35,6 @@ class KryptonParrot(world: KryptonWorld) : KryptonTamable(world, EntityTypes.PAR
         get() = TYPES.getOrNull(data.get(MetadataKeys.Parrot.TYPE)) ?: ParrotVariant.RED_AND_BLUE
         set(value) = data.set(MetadataKeys.Parrot.TYPE, value.ordinal)
 
-    override val soundSource: Sound.Source
-        get() = Sound.Source.NEUTRAL
     override val voicePitch: Float
         get() = (Random.nextFloat() - Random.nextFloat()) * 0.2F + 1F
 
@@ -73,6 +71,8 @@ class KryptonParrot(world: KryptonWorld) : KryptonTamable(world, EntityTypes.PAR
         return super.mobInteract(player, hand)
     }
     */
+
+    override fun soundSource(): Sound.Source = Sound.Source.NEUTRAL
 
     companion object {
 

@@ -104,6 +104,8 @@ import org.kryptonmc.krypton.world.scoreboard.KryptonTeam
 object KryptonFactoryProvider : FactoryProvider {
 
     private val factories = Object2ObjectOpenHashMap<Class<*>, Any>()
+    @Volatile
+    private var bootstrapped = false
 
     @Suppress("UNCHECKED_CAST")
     override fun <T> provide(type: Class<T>): T = factories[type] as? T ?: throw FactoryNotFoundException("Type $type has no factory registered!")
@@ -114,6 +116,7 @@ object KryptonFactoryProvider : FactoryProvider {
     }
 
     fun bootstrap() {
+        if (bootstrapped) return
         register<ResourceKey.Factory>(KryptonResourceKey.Factory)
         register<ParticleType.Factory>(KryptonParticleTypeFactory)
         register<ParticleData.Factory>(KryptonParticleDataFactory)
@@ -154,5 +157,11 @@ object KryptonFactoryProvider : FactoryProvider {
         register<BannerPattern.Factory>(KryptonBannerPattern.Factory)
         register<BannerPatternType.Factory>(KryptonBannerPatternType.Factory)
         register<Color.Factory>(KryptonColor.Factory)
+        bootstrapped = true
+    }
+
+    fun reset() {
+        factories.clear()
+        bootstrapped = false
     }
 }

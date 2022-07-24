@@ -23,14 +23,20 @@ import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer
+import org.junit.jupiter.api.extension.ExtendWith
 import org.kryptonmc.api.adventure.toJson
 import org.kryptonmc.api.adventure.toLegacyAmpersandText
 import org.kryptonmc.api.adventure.toLegacySectionText
 import org.kryptonmc.api.adventure.toMessage
 import org.kryptonmc.api.adventure.toPlainText
+import org.kryptonmc.krypton.api.InitializerExtension
+import org.kryptonmc.krypton.api.Initializers
+import org.kryptonmc.krypton.util.FactoryProviderInitializer
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
+@ExtendWith(InitializerExtension::class)
+@Initializers(FactoryProviderInitializer::class)
 class ComponentTests {
 
     @Test

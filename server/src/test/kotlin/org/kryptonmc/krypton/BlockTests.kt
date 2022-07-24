@@ -18,16 +18,9 @@
  */
 package org.kryptonmc.krypton
 
-import net.kyori.adventure.key.Key
-import org.junit.jupiter.api.BeforeAll
-import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.block.BlockFace
-import org.kryptonmc.krypton.util.Bootstrap
-import org.kryptonmc.krypton.world.block.KryptonBlock
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertFalse
-import kotlin.test.assertTrue
 
 class BlockTests {
 
@@ -39,14 +32,5 @@ class BlockTests {
         assertEquals(BlockFace.NORTH, BlockFace.SOUTH.opposite)
         assertEquals(BlockFace.EAST, BlockFace.WEST.opposite)
         assertEquals(BlockFace.WEST, BlockFace.EAST.opposite)
-    }
-
-    companion object {
-
-        @JvmStatic
-        @BeforeAll
-        fun bootstrap() {
-            Bootstrap.preload()
-        }
     }
 }

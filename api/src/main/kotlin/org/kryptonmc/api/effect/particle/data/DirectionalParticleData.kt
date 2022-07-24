@@ -9,6 +9,8 @@
 package org.kryptonmc.api.effect.particle.data
 
 import org.jetbrains.annotations.Contract
+import org.kryptonmc.api.Krypton
+import org.kryptonmc.api.util.provide
 import org.spongepowered.math.vector.Vector3d
 
 /**
@@ -45,6 +47,7 @@ public interface DirectionalParticleData : ParticleData {
          */
         @JvmStatic
         @Contract("_, _ -> new", pure = true)
-        public fun of(direction: Vector3d?, velocity: Float): DirectionalParticleData = ParticleData.FACTORY.directional(direction, velocity)
+        public fun of(direction: Vector3d?, velocity: Float): DirectionalParticleData =
+            Krypton.factoryProvider.provide<ParticleData.Factory>().directional(direction, velocity)
     }
 }

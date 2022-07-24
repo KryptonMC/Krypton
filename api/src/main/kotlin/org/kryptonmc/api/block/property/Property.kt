@@ -69,8 +69,6 @@ public interface Property<T : Comparable<T>> {
 
     public companion object {
 
-        private val FACTORY = Krypton.factoryProvider.provide<Factory>()
-
         /**
          * Creates a new boolean property with the given [name].
          *
@@ -81,7 +79,7 @@ public interface Property<T : Comparable<T>> {
          */
         @JvmStatic
         @Contract("_ -> new", pure = true)
-        public fun forBoolean(name: String): Property<Boolean> = FACTORY.forBoolean(name)
+        public fun forBoolean(name: String): Property<Boolean> = Krypton.factoryProvider.provide<Factory>().forBoolean(name)
 
         /**
          * Creates a new integer property with the given [name] and the given
@@ -93,7 +91,7 @@ public interface Property<T : Comparable<T>> {
          */
         @JvmStatic
         @Contract("_ -> new", pure = true)
-        public fun forInt(name: String, values: Set<Int>): Property<Int> = FACTORY.forInt(name, values)
+        public fun forInt(name: String, values: Set<Int>): Property<Int> = Krypton.factoryProvider.provide<Factory>().forInt(name, values)
 
         /**
          * Creates a new integer property with the given [name] and the given
@@ -133,7 +131,8 @@ public interface Property<T : Comparable<T>> {
          */
         @JvmStatic
         @Contract("_ -> new", pure = true)
-        public fun <E : Enum<E>> forEnum(name: String, type: Class<E>, values: Set<E>): Property<E> = FACTORY.forEnum(name, type, values)
+        public fun <E : Enum<E>> forEnum(name: String, type: Class<E>, values: Set<E>): Property<E> =
+            Krypton.factoryProvider.provide<Factory>().forEnum(name, type, values)
 
         /**
          * Creates a new enum property with the given [name], [type], and the given

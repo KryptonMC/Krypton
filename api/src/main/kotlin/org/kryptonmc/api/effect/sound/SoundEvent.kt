@@ -39,8 +39,6 @@ public interface SoundEvent : Sound.Type {
 
     public companion object {
 
-        private val FACTORY = Krypton.factoryProvider.provide<Factory>()
-
         /**
          * Creates a new sound event with the given [key].
          *
@@ -60,6 +58,6 @@ public interface SoundEvent : Sound.Type {
          */
         @JvmStatic
         @Contract("_, _ -> new", pure = true)
-        public fun of(key: Key, range: Float): SoundEvent = FACTORY.of(key, range)
+        public fun of(key: Key, range: Float): SoundEvent = Krypton.factoryProvider.provide<Factory>().of(key, range)
     }
 }

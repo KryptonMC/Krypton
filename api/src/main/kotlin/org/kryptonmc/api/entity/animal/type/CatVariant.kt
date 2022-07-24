@@ -30,8 +30,6 @@ public interface CatVariant : Keyed {
 
     public companion object {
 
-        private val FACTORY = Krypton.factoryProvider.provide<Factory>()
-
         /**
          * Creates a new cat variant with the given [key].
          *
@@ -40,6 +38,6 @@ public interface CatVariant : Keyed {
          */
         @JvmStatic
         @Contract("_ -> new", pure = true)
-        public fun of(key: Key): CatVariant = FACTORY.of(key)
+        public fun of(key: Key): CatVariant = Krypton.factoryProvider.provide<Factory>().of(key)
     }
 }

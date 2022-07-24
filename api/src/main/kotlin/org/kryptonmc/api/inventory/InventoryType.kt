@@ -45,8 +45,6 @@ public interface InventoryType : Keyed {
 
     public companion object {
 
-        private val FACTORY = Krypton.factoryProvider.provide<Factory>()
-
         /**
          * Creates a new inventory type with the given values.
          *
@@ -57,6 +55,7 @@ public interface InventoryType : Keyed {
          */
         @JvmStatic
         @Contract("_ -> new", pure = true)
-        public fun of(key: Key, size: Int, defaultTitle: Component): InventoryType = FACTORY.of(key, size, defaultTitle)
+        public fun of(key: Key, size: Int, defaultTitle: Component): InventoryType =
+            Krypton.factoryProvider.provide<Factory>().of(key, size, defaultTitle)
     }
 }

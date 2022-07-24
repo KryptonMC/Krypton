@@ -35,9 +35,12 @@ object TranslationBootstrap {
     @JvmField
     val REGISTRY: TranslationRegistry = TranslationRegistry.create(Key.key("krypton", "minecraft_translations"))
     private val RENDERER = TranslatableComponentRenderer.usingTranslationSource(REGISTRY)
+    @Volatile
+    private var bootstrapped = false
 
     @JvmStatic
     fun init() {
+        if (bootstrapped) return
         val inputStream = checkNotNull(ClassLoader.getSystemResourceAsStream("en_us.json")) {
             "Unable to find built-in Minecraft locale file in JAR!"
         }
@@ -50,6 +53,7 @@ object TranslationBootstrap {
             }
             reader.endObject()
         }
+        bootstrapped = true
     }
 
     @JvmStatic
