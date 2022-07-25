@@ -6,25 +6,41 @@
  * This project is licensed under the terms of the MIT license.
  * For more details, please reference the LICENSE file in the api top-level directory.
  */
-package org.kryptonmc.api.entity.vehicle
+package org.kryptonmc.api.block.entity
 
 import net.kyori.adventure.text.Component
 
 /**
- * A minecart with a command block in it.
+ * A command block.
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
-public interface CommandBlockMinecart : MinecartLike {
+public interface CommandBlock : BlockEntity {
 
     /**
-     * The command that this command block Minecart will run.
+     * The command that this command block will run.
      */
     @get:JvmName("command")
     public var command: String
 
     /**
-     * The last output from the command block Minecart running the command.
+     * The last output from the command block running the command.
      */
     @get:JvmName("lastOutput")
     public var lastOutput: Component
+
+    /**
+     * Whether this command block is powered.
+     */
+    public val isPowered: Boolean
+
+    /**
+     * Whether this command block executes automatically, not requiring a
+     * redstone signal.
+     */
+    public val isAutomatic: Boolean
+
+    /**
+     * Executes this command block.
+     */
+    public fun execute()
 }
