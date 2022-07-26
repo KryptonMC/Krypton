@@ -30,7 +30,7 @@ class MapCodec<K, V>(private val keyCodec: StringCodec<K>, private val valueCode
 
     override fun decode(tag: CompoundTag): Map<K, V> {
         val map = mutableMapOf<K, V>()
-        tag.forEach { map[keyCodec.decodeString(it.key)] = valueCodec.decode(it.value) }
+        tag.data.forEach { map[keyCodec.decodeString(it.key)] = valueCodec.decode(it.value) }
         return map
     }
 }

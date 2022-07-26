@@ -120,8 +120,8 @@ object PlayerSerializer : EntitySerializer<KryptonPlayer> {
 
         val leftShoulder = entity.data.get(MetadataKeys.Player.LEFT_SHOULDER)
         val rightShoulder = entity.data.get(MetadataKeys.Player.RIGHT_SHOULDER)
-        if (leftShoulder.isNotEmpty()) put("ShoulderEntityLeft", leftShoulder)
-        if (rightShoulder.isNotEmpty()) put("ShoulderEntityRight", rightShoulder)
+        if (!leftShoulder.isEmpty()) put("ShoulderEntityLeft", leftShoulder)
+        if (!rightShoulder.isEmpty()) put("ShoulderEntityRight", rightShoulder)
 
         string("Dimension", entity.dimension.location.asString())
         entity.respawnPosition?.let { position ->

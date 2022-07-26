@@ -32,7 +32,7 @@ import org.spongepowered.math.vector.Vector3i
 class KryptonCompassMeta(data: CompoundTag) : AbstractItemMeta<KryptonCompassMeta>(data), CompassMeta {
 
     override val isTrackingLodestone: Boolean = data.getBoolean("LodestoneTracking")
-    override val lodestoneDimension: ResourceKey<World>? = data["LodestoneDimension"]?.parseDimension()
+    override val lodestoneDimension: ResourceKey<World>? = data.get("LodestoneDimension")?.parseDimension()
     override val lodestonePosition: Vector3i? = data.getVector3i("LodestonePos")
 
     override fun copy(data: CompoundTag): KryptonCompassMeta = KryptonCompassMeta(data)

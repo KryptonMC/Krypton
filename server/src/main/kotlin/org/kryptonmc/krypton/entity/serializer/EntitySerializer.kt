@@ -37,7 +37,7 @@ interface EntitySerializer<E : Entity> {
                 if (it !is KryptonEntity) return@forEach
                 passengerList.add(EntityFactory.serializer(entity.type).saveWithPassengers(entity).build())
             }
-            if (passengerList.isNotEmpty()) put("Passengers", passengerList)
+            if (!passengerList.isEmpty()) put("Passengers", passengerList)
         }
     }
 }

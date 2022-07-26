@@ -54,7 +54,7 @@ class Brain<E : KryptonLivingEntity> {
     fun load(data: CompoundTag) {
         data.getCompound("Memories").forEachCompound { memoryKey, memory ->
             val key = InternalRegistries.MEMORIES[Key.key(memoryKey)] ?: return@forEachCompound
-            val value = memory["value"] ?: return@forEachCompound
+            val value = memory.get("value") ?: return@forEachCompound
             val decoded = key.codec.decodeNullable(value) ?: return@forEachCompound
             memories[key] = Memory(decoded, memory.getLong("ttl"))
         }
