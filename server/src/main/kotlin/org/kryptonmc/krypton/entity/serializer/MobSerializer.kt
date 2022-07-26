@@ -57,7 +57,7 @@ object MobSerializer : EntitySerializer<KryptonMob> {
     private fun loadChances(data: CompoundTag, name: String, chances: FloatArray) {
         if (!data.contains(name, ListTag.ID)) return
         val chancesData = data.getList(name, FloatTag.ID)
-        for (i in chancesData.indices) {
+        for (i in 0 until chancesData.size) {
             chances[i] = chancesData.getFloat(i)
         }
     }

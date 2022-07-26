@@ -124,7 +124,7 @@ class ChunkManager(private val world: KryptonWorld) {
 
         val sectionList = data.getList("sections", CompoundTag.ID)
         val sections = arrayOfNulls<ChunkSection>(world.sectionCount)
-        for (i in sectionList.indices) {
+        for (i in 0 until sectionList.size) {
             val sectionData = sectionList.getCompound(i)
             val y = sectionData.getByte("Y").toInt()
             val index = world.sectionIndexFromY(y)
