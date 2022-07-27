@@ -25,6 +25,10 @@ import org.kryptonmc.krypton.world.WorldEvent
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.item.destroySpeed
 import org.kryptonmc.krypton.item.handler
+import org.kryptonmc.krypton.shapes.CollisionContext
+import org.kryptonmc.krypton.shapes.Shapes
+import org.kryptonmc.krypton.shapes.VoxelShape
+import org.kryptonmc.krypton.world.BlockAccessor
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.krypton.world.block.KryptonBlock
 
@@ -37,9 +41,7 @@ import org.kryptonmc.krypton.world.block.KryptonBlock
 interface BlockHandler {
 
     /**
-     * Calculates the destroy progress of the given [block] at the given
-     * [x], [y], and [z] coordinates, being broken by the given [player] in
-     * the given [world].
+     * Calculates the destroy progress of the block being broken by the player.
      */
     fun calculateDestroyProgress(player: KryptonPlayer, world: KryptonWorld, block: KryptonBlock, x: Int, y: Int, z: Int): Float {
         val hardness = block.hardness
@@ -49,9 +51,7 @@ interface BlockHandler {
     }
 
     /**
-     * Called when the given [player] is about to break the given [block] at
-     * the given [x], [y], and [z] coordinates in the given [world], but
-     * hasn't yet.
+     * Called when the player is about to break the block but hasn't yet.
      */
     fun preDestroy(player: KryptonPlayer, world: KryptonWorld, block: KryptonBlock, x: Int, y: Int, z: Int) {
         spawnDestroyParticles(world, player, x, y, z, block)
@@ -62,8 +62,7 @@ interface BlockHandler {
     }
 
     /**
-     * Called when the given [block] is destroyed by the given [player] at the
-     * given [x], [y], and [z] coordinates, with the given [item].
+     * Called when the block is destroyed by the player with the item.
      */
     fun onDestroy(player: KryptonPlayer, block: KryptonBlock, x: Int, y: Int, z: Int, item: ItemStack) {
         // TODO: drop items
@@ -74,12 +73,13 @@ interface BlockHandler {
     }
 
     /**
-     * Called when the given [player] attacks the given [block] at the given
-     * [x], [y], and [z] coordinates in the given [world].
+     * Called when the player attacks the block.
      */
     fun attack(player: KryptonPlayer, world: KryptonWorld, block: KryptonBlock, x: Int, y: Int, z: Int) {
         // all blocks do nothing when attacked by default, breaking isn't handled here
     }
+
+    fun getShape(block: KryptonBlock, accessor: BlockAccessor, x: Int, y: Int, z: Int, context: CollisionContext): VoxelShape = Shapes.block()
 
     fun spawnDestroyParticles(world: KryptonWorld, player: KryptonPlayer, x: Int, y: Int, z: Int, block: KryptonBlock) {
         world.worldEvent(WorldEvent.DESTROY_BLOCK, x, y, z, block.stateId, player)

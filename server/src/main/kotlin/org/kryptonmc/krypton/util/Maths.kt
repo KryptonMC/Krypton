@@ -25,6 +25,8 @@ import kotlin.math.sqrt
 
 object Maths {
 
+    const val EPSILON: Float = 1.0E-5F
+
     /**
      * Calculates a chunk position from a given [id] in a spiral pattern.
      *

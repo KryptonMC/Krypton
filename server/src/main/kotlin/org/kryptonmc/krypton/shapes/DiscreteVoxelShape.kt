@@ -39,6 +39,9 @@ abstract class DiscreteVoxelShape protected constructor(val sizeX: Int, val size
         return false
     }
 
+    fun isFullWide(cycle: AxisCycle, x: Int, y: Int, z: Int): Boolean =
+        isFullWide(cycle.cycle(x, y, x, Direction.Axis.X), cycle.cycle(x, y, z, Direction.Axis.Y), cycle.cycle(x, y, z, Direction.Axis.Z))
+
     abstract fun fill(x: Int, y: Int, z: Int)
 
     open fun isEmpty(): Boolean {
