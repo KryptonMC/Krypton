@@ -18,21 +18,26 @@
  */
 package org.kryptonmc.krypton.shapes
 
+import com.google.common.math.DoubleMath
 import it.unimi.dsi.fastutil.doubles.DoubleArrayList
 import it.unimi.dsi.fastutil.doubles.DoubleList
+import org.kryptonmc.api.util.BoundingBox
+import org.kryptonmc.api.util.Direction
 import org.kryptonmc.api.util.Direction.Axis
+import org.kryptonmc.krypton.util.Collisions
+import org.kryptonmc.krypton.util.KryptonBoundingBox
 import org.kryptonmc.krypton.util.Maths
 import java.util.Objects
-import kotlin.math.abs
-import kotlin.math.roundToInt
 
 object Shapes {
 
     const val EPSILON: Double = 1.0E-7
     private const val P_INFINITY = Double.POSITIVE_INFINITY
     private const val N_INFINITY = Double.NEGATIVE_INFINITY
-    private val BLOCK = CubeVoxelShape(BitSetDiscreteVoxelShape(1, 1, 1).apply { fill(0, 0, 0) })
+    private val UNOPTIMIZED_BLOCK = CubeVoxelShape(BitSetDiscreteVoxelShape(1, 1, 1).apply { fill(0, 0, 0) })
     private val EMPTY = ArrayVoxelShape(BitSetDiscreteVoxelShape(0, 0, 0), emptyList(), emptyList(), emptyList())
+    @JvmField
+    val OPTIMIZED_BLOCK: BoundingBoxVoxelShape = BoundingBoxVoxelShape(KryptonBoundingBox(0.0, 0.0, 0.0, 1.0, 1.0, 1.0))
     @JvmField
     val INFINITY: VoxelShape = box(N_INFINITY, N_INFINITY, N_INFINITY, P_INFINITY, P_INFINITY, P_INFINITY)
 
@@ -40,7 +45,10 @@ object Shapes {
     fun empty(): VoxelShape = EMPTY
 
     @JvmStatic
-    fun block(): VoxelShape = BLOCK
+    fun unoptimizedBlock(): VoxelShape = UNOPTIMIZED_BLOCK
+
+    @JvmStatic
+    fun block(): VoxelShape = OPTIMIZED_BLOCK
 
     @JvmStatic
     fun box(minX: Double, minY: Double, minZ: Double, maxX: Double, maxY: Double, maxZ: Double): VoxelShape {
@@ -51,26 +59,15 @@ object Shapes {
     }
 
     @JvmStatic
+    fun create(box: BoundingBox): VoxelShape = BoundingBoxVoxelShape(box)
+
+    @JvmStatic
     fun create(minX: Double, minY: Double, minZ: Double, maxX: Double, maxY: Double, maxZ: Double): VoxelShape {
         @Suppress("SimplifyNegatedBinaryExpression") // Any of these could be NaN
-        if (!(!(maxX - minX < EPSILON) && !(maxY - minY < EPSILON) && !(maxZ - minZ < EPSILON))) return empty()
-        val bitsX = findBits(minX, maxX)
-        val bitsY = findBits(minY, maxY)
-        val bitsZ = findBits(minZ, maxZ)
-        if (!(bitsX >= 0 && bitsY >= 0 && bitsZ >= 0)) {
-            return ArrayVoxelShape(BLOCK.shape, minMaxList(minX, maxX), minMaxList(minY, maxY), minMaxList(minZ, maxZ))
+        if (!(maxX - minX < EPSILON) && !(maxY - minY < EPSILON) && !(maxZ - minZ < EPSILON)) {
+            return BoundingBoxVoxelShape(KryptonBoundingBox(minX, minY, minZ, maxX, maxY, maxZ))
         }
-        if (bitsX == 0 && bitsY == 0 && bitsZ == 0) return block()
-        val x = 1 shl bitsX
-        val y = 1 shl bitsY
-        val z = 1 shl bitsZ
-        val minimumX = (minX * x.toDouble()).roundToInt()
-        val minimumY = (minY * y.toDouble()).roundToInt()
-        val minimumZ = (minZ * z.toDouble()).roundToInt()
-        val maximumX = (maxX * x.toDouble()).roundToInt()
-        val maximumY = (maxY * y.toDouble()).roundToInt()
-        val maximumZ = (maxZ * z.toDouble()).roundToInt()
-        return CubeVoxelShape(BitSetDiscreteVoxelShape.withFilledBounds(x, y, z, minimumX, minimumY, minimumZ, maximumX, maximumY, maximumZ))
+        return empty()
     }
 
     @JvmStatic
@@ -111,6 +108,18 @@ object Shapes {
 
     @JvmStatic
     fun joinIsNotEmpty(mainShape: VoxelShape, otherShape: VoxelShape, operator: BooleanOperator): Boolean {
+        if (operator == BooleanOperator.AND) {
+            if (mainShape is BoundingBoxVoxelShape && otherShape is BoundingBoxVoxelShape) {
+                return Collisions.voxelShapeIntersect(mainShape.box, otherShape.box)
+            }
+            if (mainShape is BoundingBoxVoxelShape && otherShape is ArrayVoxelShape) return otherShape.intersects(mainShape.box)
+            if (mainShape is ArrayVoxelShape && otherShape is BoundingBoxVoxelShape) return mainShape.intersects(otherShape.box)
+        }
+        return defaultJoinIsNotEmpty(mainShape, otherShape, operator)
+    }
+
+    @JvmStatic
+    private fun defaultJoinIsNotEmpty(mainShape: VoxelShape, otherShape: VoxelShape, operator: BooleanOperator): Boolean {
         require(!operator.apply(false, false)) { "Cannot use operator that evaluates to true with two false values!" }
         val mainEmpty = mainShape.isEmpty()
         val otherEmpty = otherShape.isEmpty()
@@ -136,39 +145,86 @@ object Shapes {
     }
 
     @JvmStatic
-    private fun findBits(minBits: Double, maxBits: Double): Int {
-        @Suppress("SimplifyNegatedBinaryExpression") // Any of these could be NaN
-        if (!(!(minBits < -EPSILON) && !(maxBits > 1.0 + EPSILON))) return -1
-        for (i in 0..3) {
-            val bitIndex = 1 shl i
-            val minValue = minBits * bitIndex
-            val maxValue = maxBits * bitIndex
-            val minValueZero = abs(minValue - minValue.roundToInt()) < EPSILON * bitIndex
-            val maxValueZero = abs(maxValue - maxValue.roundToInt()) < EPSILON * bitIndex
-            if (minValueZero && maxValueZero) return i
+    fun faceShape(shape: VoxelShape, direction: Direction): VoxelShape {
+        if (shape === UNOPTIMIZED_BLOCK || shape === OPTIMIZED_BLOCK) return OPTIMIZED_BLOCK
+        if (shape === empty()) return empty()
+        if (shape is BoundingBoxVoxelShape) {
+            val box = shape.box
+            when (direction) {
+                Direction.WEST, Direction.EAST -> { // -X, +X
+                    val useEmpty = if (direction == Direction.EAST) {
+                        !DoubleMath.fuzzyEquals(box.maximumX, 1.0, Collisions.EPSILON)
+                    } else {
+                        !DoubleMath.fuzzyEquals(box.minimumX, 0.0, Collisions.EPSILON)
+                    }
+                    if (useEmpty) return empty()
+                    return BoundingBoxVoxelShape(KryptonBoundingBox(0.0, box.minimumY, box.minimumZ, 1.0, box.maximumY, box.maximumZ)).optimize()
+                }
+                Direction.DOWN, Direction.UP -> { // -Y, +Y
+                    val useEmpty = if (direction == Direction.UP) {
+                        !DoubleMath.fuzzyEquals(box.maximumY, 1.0, Collisions.EPSILON)
+                    } else {
+                        !DoubleMath.fuzzyEquals(box.minimumY, 0.0, Collisions.EPSILON)
+                    }
+                    if (useEmpty) return empty()
+                    return BoundingBoxVoxelShape(KryptonBoundingBox(box.minimumX, 0.0, box.minimumZ, box.maximumX, 1.0, box.maximumZ)).optimize()
+                }
+                Direction.NORTH, Direction.SOUTH -> { // -Z, +Z
+                    val useEmpty = if (direction == Direction.SOUTH) {
+                        !DoubleMath.fuzzyEquals(box.maximumZ, 1.0, Collisions.EPSILON)
+                    } else {
+                        !DoubleMath.fuzzyEquals(box.minimumZ, 0.0, Collisions.EPSILON)
+                    }
+                    if (useEmpty) return empty()
+                    return BoundingBoxVoxelShape(KryptonBoundingBox(box.minimumX, box.minimumY, 0.0, box.maximumX, box.maximumY, 1.0)).optimize()
+                }
+            }
         }
-        return -1
+        return defaultFaceShape(shape, direction)
+    }
+
+    @JvmStatic
+    private fun defaultFaceShape(shape: VoxelShape, direction: Direction): VoxelShape {
+        if (shape === block()) return block()
+        val axis = direction.axis
+        val boundIsBlock: Boolean
+        val index: Int
+        if (direction.axisDirection == Direction.AxisDirection.POSITIVE) {
+            boundIsBlock = DoubleMath.fuzzyEquals(shape.max(axis), 1.0, EPSILON)
+            index = shape.shape.size(axis) - 1
+        } else {
+            boundIsBlock = DoubleMath.fuzzyEquals(shape.min(axis), 0.0, EPSILON)
+            index = 0
+        }
+        if (!boundIsBlock) return empty()
+        // First optimize converts to ArrayVoxelShape, second may convert to BoundingBoxVoxelShape
+        return SliceShape(shape, axis, index).optimize().optimize()
     }
 
     @JvmStatic
     private fun createIndexMerger(size: Int, lower: DoubleList, upper: DoubleList, firstOnly: Boolean, secondOnly: Boolean): IndexMerger {
+        if (lower.getDouble(0) == N_INFINITY && lower.getDouble(lower.size - 1) == P_INFINITY) {
+            return IndirectMerger(lower, upper, firstOnly, secondOnly)
+        }
+        return lessCommonMerge(size, lower, upper, firstOnly, secondOnly)
+    }
+
+    @JvmStatic
+    private fun lessCommonMerge(size: Int, lower: DoubleList, upper: DoubleList, firstOnly: Boolean, secondOnly: Boolean): IndexMerger {
         val lowerMaxIndex = lower.size - 1
         val upperMaxIndex = upper.size - 1
         if (lower is CubePointRange && upper is CubePointRange) {
             val lcm = Maths.lcm(lowerMaxIndex, upperMaxIndex)
             if (size * lcm <= 256L) return DiscreteCubeMerger(lowerMaxIndex, upperMaxIndex)
         }
+        if (lowerMaxIndex == upperMaxIndex && Objects.equals(lower, upper)) return IdenticalMerger(lower)
         if (lower.getDouble(lowerMaxIndex) < upper.getDouble(0) - EPSILON) return NonOverlappingMerger(lower, upper, false)
         if (upper.getDouble(upperMaxIndex) < lower.getDouble(0) - EPSILON) return NonOverlappingMerger(upper, lower, true)
-        if (lowerMaxIndex == upperMaxIndex && Objects.equals(lower, upper)) return IdenticalMerger(lower)
         return IndirectMerger(lower, upper, firstOnly, secondOnly)
     }
 
     @JvmStatic
     private fun emptyList(): DoubleList = DoubleArrayList(doubleArrayOf(0.0))
-
-    @JvmStatic
-    private fun minMaxList(min: Double, max: Double): DoubleList = DoubleArrayList.wrap(doubleArrayOf(min, max))
 
     fun interface DoubleLineConsumer {
 

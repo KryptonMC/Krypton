@@ -27,6 +27,7 @@ import org.kryptonmc.api.entity.LivingEntity
 import org.kryptonmc.api.entity.attribute.Attribute
 import org.kryptonmc.api.entity.attribute.AttributeType
 import org.kryptonmc.api.entity.attribute.AttributeTypes
+import org.kryptonmc.api.fluid.Fluid
 import org.kryptonmc.api.world.Difficulty
 import org.kryptonmc.krypton.entity.attribute.AttributeMap
 import org.kryptonmc.krypton.entity.attribute.AttributeSupplier
@@ -165,6 +166,8 @@ abstract class KryptonLivingEntity(
         if (target is KryptonPlayer && world.difficulty === Difficulty.PEACEFUL) return false
         return target.canBeSeenAsEnemy
     }
+
+    fun canStandOnFluid(fluid: Fluid): Boolean = false
 
     override fun attribute(type: AttributeType): Attribute? = attributes.get(type)
 

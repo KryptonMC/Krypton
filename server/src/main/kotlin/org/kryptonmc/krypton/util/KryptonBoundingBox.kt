@@ -121,9 +121,7 @@ data class KryptonBoundingBox(
         intersects(other.minimumX, other.minimumY, other.minimumZ, other.maximumX, other.maximumY, other.maximumZ)
 
     override fun contains(x: Double, y: Double, z: Double): Boolean =
-        x in minimumX..maximumX - 1 &&
-            y in minimumY..maximumY - 1 &&
-            z in minimumZ..maximumZ - 1
+        x >= minimumX && x < maximumX && y >= minimumY && y < maximumY && z >= minimumZ && z < maximumZ
 
     object Factory : BoundingBox.Factory {
 
