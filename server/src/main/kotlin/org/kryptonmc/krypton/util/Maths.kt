@@ -18,10 +18,10 @@
  */
 package org.kryptonmc.krypton.util
 
+import com.google.common.math.IntMath
 import org.kryptonmc.krypton.world.chunk.ChunkPosition
-import org.spongepowered.math.GenericMath
+import java.util.function.IntPredicate
 import kotlin.math.sqrt
-import kotlin.random.Random
 
 object Maths {
 
@@ -75,5 +75,25 @@ object Maths {
             3 -> ChunkPosition.toLong(-radius + xOffset, radius - a % en + zOffset)
             else -> ChunkPosition.ZERO.toLong()
         }
+    }
+
+    @JvmStatic
+    fun lcm(a: Int, b: Int): Long = a.toLong() * (b / IntMath.gcd(a, b))
+
+    @JvmStatic
+    fun fastBinarySearch(minimum: Int, maximum: Int, predicate: IntPredicate): Int {
+        var range = maximum - minimum
+        var tempMinimum = minimum
+        while (range > 0) {
+            val halfRange = range / 2
+            val halfOffset = tempMinimum + halfRange
+            if (predicate.test(halfOffset)) {
+                range = halfRange
+            } else {
+                tempMinimum = halfOffset + 1
+                range -= halfRange + 1
+            }
+        }
+        return tempMinimum
     }
 }
