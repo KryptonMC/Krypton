@@ -16,25 +16,20 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.resource
+package org.kryptonmc.krypton.pack.resources
 
-import net.kyori.adventure.key.Key
-import org.kryptonmc.api.resource.ResourceKey
-import java.util.Collections
-import java.util.IdentityHashMap
+import java.util.concurrent.CompletableFuture
+import java.util.concurrent.Executor
 
-@JvmRecord
-data class KryptonResourceKey<T>(override val registry: Key, override val location: Key) : ResourceKey<T> {
+fun interface ReloadListener {
 
-    object Factory : ResourceKey.Factory {
+    val name: String
+        get() = javaClass.simpleName
 
-        @Suppress("UNCHECKED_CAST")
-        override fun <T> of(registry: Key, location: Key): ResourceKey<T> =
-            VALUES.getOrPut("$registry:$location".intern()) { KryptonResourceKey<T>(registry, location) } as ResourceKey<T>
-    }
+    fun reload(barrier: PreparationBarrier, manager: ResourceManager, backgroundExecutor: Executor, mainExecutor: Executor): CompletableFuture<Void>
 
-    companion object {
+    interface PreparationBarrier {
 
-        private val VALUES = Collections.synchronizedMap(IdentityHashMap<String, ResourceKey<*>>())
+        fun <T> wait(backgroundResult: T): CompletableFuture<T>
     }
 }

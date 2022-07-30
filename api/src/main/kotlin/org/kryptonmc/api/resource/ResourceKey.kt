@@ -23,7 +23,7 @@ import org.kryptonmc.api.util.provide
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
 @CataloguedBy(ResourceKeys::class)
-public interface ResourceKey<T : Any> {
+public interface ResourceKey<T> {
 
     /**
      * The key of the parent registry.
@@ -40,7 +40,7 @@ public interface ResourceKey<T : Any> {
     @ApiStatus.Internal
     public interface Factory {
 
-        public fun <T : Any> of(registry: Key, location: Key): ResourceKey<T>
+        public fun <T> of(registry: Key, location: Key): ResourceKey<T>
     }
 
     public companion object {
@@ -59,7 +59,7 @@ public interface ResourceKey<T : Any> {
          */
         @JvmStatic
         @Contract("_, _ -> new", pure = true)
-        public fun <T : Any> of(registry: Key, location: Key): ResourceKey<T> = FACTORY.of(registry, location)
+        public fun <T> of(registry: Key, location: Key): ResourceKey<T> = FACTORY.of(registry, location)
 
         /**
          * Creates a new resource key, or returns an existing one if one with
@@ -73,6 +73,6 @@ public interface ResourceKey<T : Any> {
          */
         @JvmStatic
         @Contract("_ -> new", pure = true)
-        public fun <T : Any> of(parent: ResourceKey<out Registry<T>>, location: Key): ResourceKey<T> = of(parent.location, location)
+        public fun <T> of(parent: ResourceKey<out Registry<T>>, location: Key): ResourceKey<T> = of(parent.location, location)
     }
 }

@@ -16,25 +16,26 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.resource
+package org.kryptonmc.krypton.pack.repository
 
-import net.kyori.adventure.key.Key
-import org.kryptonmc.api.resource.ResourceKey
-import java.util.Collections
-import java.util.IdentityHashMap
+import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.format.NamedTextColor
 
-@JvmRecord
-data class KryptonResourceKey<T>(override val registry: Key, override val location: Key) : ResourceKey<T> {
+fun interface PackSource {
 
-    object Factory : ResourceKey.Factory {
-
-        @Suppress("UNCHECKED_CAST")
-        override fun <T> of(registry: Key, location: Key): ResourceKey<T> =
-            VALUES.getOrPut("$registry:$location".intern()) { KryptonResourceKey<T>(registry, location) } as ResourceKey<T>
-    }
+    fun decorate(text: Component): Component
 
     companion object {
 
-        private val VALUES = Collections.synchronizedMap(IdentityHashMap<String, ResourceKey<*>>())
+        @JvmField
+        val BUILT_IN: PackSource = decorating("pack.source.builtin")
+        @JvmField
+        val WORLD: PackSource = decorating("pack.source.world")
+
+        @JvmStatic
+        fun decorating(translationKey: String): PackSource {
+            val translation = Component.translatable(translationKey)
+            return PackSource { Component.translatable("pack.nameAndSource", NamedTextColor.GRAY, it, translation) }
+        }
     }
 }

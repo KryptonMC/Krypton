@@ -16,25 +16,32 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.resource
+package org.kryptonmc.krypton.pack
 
 import net.kyori.adventure.key.Key
-import org.kryptonmc.api.resource.ResourceKey
-import java.util.Collections
-import java.util.IdentityHashMap
+import org.kryptonmc.krypton.pack.metadata.MetadataSerializer
+import java.io.InputStream
+import java.util.function.Predicate
 
-@JvmRecord
-data class KryptonResourceKey<T>(override val registry: Key, override val location: Key) : ResourceKey<T> {
+interface PackResources : AutoCloseable {
 
-    object Factory : ResourceKey.Factory {
+    val name: String
+    val namespaces: Set<String>
 
-        @Suppress("UNCHECKED_CAST")
-        override fun <T> of(registry: Key, location: Key): ResourceKey<T> =
-            VALUES.getOrPut("$registry:$location".intern()) { KryptonResourceKey<T>(registry, location) } as ResourceKey<T>
-    }
+    fun hasResource(location: Key): Boolean
+
+    fun getRootResource(fileName: String): InputStream?
+
+    fun getResource(location: Key): InputStream
+
+    fun getResources(namespace: String, path: String, predicate: Predicate<Key>): Collection<Key>
+
+    fun <T> getMetadata(serializer: MetadataSerializer<T>): T?
 
     companion object {
 
-        private val VALUES = Collections.synchronizedMap(IdentityHashMap<String, ResourceKey<*>>())
+        const val METADATA_EXTENSION: String = ".mcmeta"
+        const val PACK_META: String = "pack$METADATA_EXTENSION"
+        const val DATA_FOLDER_NAME: String = "data"
     }
 }

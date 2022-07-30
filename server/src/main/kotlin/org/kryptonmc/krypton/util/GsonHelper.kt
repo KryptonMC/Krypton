@@ -18,13 +18,35 @@
  */
 package org.kryptonmc.krypton.util
 
+import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 import com.google.gson.JsonElement
+import com.google.gson.JsonObject
+import com.google.gson.JsonParseException
 import com.google.gson.JsonPrimitive
+import com.google.gson.stream.JsonReader
 import com.google.gson.stream.JsonWriter
+import me.bardy.gsonkt.getAdapter
 import java.io.IOException
+import java.io.Reader
 import java.io.StringWriter
 
-object StableOrderGson {
+object GsonHelper {
+
+    @JvmField
+    val GSON: Gson = GsonBuilder().create()
+
+    @JvmStatic
+    fun parse(reader: Reader): JsonObject = parse(reader, false)
+
+    @JvmStatic
+    fun parse(reader: Reader, lenient: Boolean): JsonObject {
+        try {
+            return GSON.getAdapter<JsonObject>().read(JsonReader(reader).apply { isLenient = lenient })
+        } catch (exception: IOException) {
+            throw JsonParseException(exception)
+        }
+    }
 
     @JvmStatic
     fun toStableString(value: JsonElement): String {

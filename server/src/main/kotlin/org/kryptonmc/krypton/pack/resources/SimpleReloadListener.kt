@@ -16,25 +16,21 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.resource
+package org.kryptonmc.krypton.pack.resources
 
-import net.kyori.adventure.key.Key
-import org.kryptonmc.api.resource.ResourceKey
-import java.util.Collections
-import java.util.IdentityHashMap
+import org.kryptonmc.krypton.pack.resources.ReloadListener.PreparationBarrier
+import java.util.concurrent.CompletableFuture
+import java.util.concurrent.Executor
 
-@JvmRecord
-data class KryptonResourceKey<T>(override val registry: Key, override val location: Key) : ResourceKey<T> {
+abstract class SimpleReloadListener<T> : ReloadListener {
 
-    object Factory : ResourceKey.Factory {
+    protected abstract fun prepare(manager: ResourceManager): T
 
-        @Suppress("UNCHECKED_CAST")
-        override fun <T> of(registry: Key, location: Key): ResourceKey<T> =
-            VALUES.getOrPut("$registry:$location".intern()) { KryptonResourceKey<T>(registry, location) } as ResourceKey<T>
-    }
+    protected abstract fun apply(prepared: T, manager: ResourceManager)
 
-    companion object {
-
-        private val VALUES = Collections.synchronizedMap(IdentityHashMap<String, ResourceKey<*>>())
-    }
+    @Suppress("PARAMETER_NAME_CHANGED_ON_OVERRIDE")
+    override fun reload(barrier: PreparationBarrier, manager: ResourceManager, background: Executor, main: Executor): CompletableFuture<Void> =
+        CompletableFuture.supplyAsync({ prepare(manager) }, background)
+            .thenCompose(barrier::wait)
+            .thenAcceptAsync({ apply(it, manager) }, main)
 }

@@ -16,25 +16,13 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.resource
+package org.kryptonmc.krypton.pack.metadata
 
-import net.kyori.adventure.key.Key
-import org.kryptonmc.api.resource.ResourceKey
-import java.util.Collections
-import java.util.IdentityHashMap
+import com.google.gson.JsonObject
 
-@JvmRecord
-data class KryptonResourceKey<T>(override val registry: Key, override val location: Key) : ResourceKey<T> {
+interface MetadataSerializer<T> {
 
-    object Factory : ResourceKey.Factory {
+    val name: String
 
-        @Suppress("UNCHECKED_CAST")
-        override fun <T> of(registry: Key, location: Key): ResourceKey<T> =
-            VALUES.getOrPut("$registry:$location".intern()) { KryptonResourceKey<T>(registry, location) } as ResourceKey<T>
-    }
-
-    companion object {
-
-        private val VALUES = Collections.synchronizedMap(IdentityHashMap<String, ResourceKey<*>>())
-    }
+    fun fromJson(json: JsonObject): T
 }
