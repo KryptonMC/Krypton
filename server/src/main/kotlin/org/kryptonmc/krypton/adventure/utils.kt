@@ -30,7 +30,7 @@ import org.kryptonmc.api.item.meta
 import org.kryptonmc.api.item.meta.WrittenBookMeta
 import org.kryptonmc.krypton.item.KryptonItemStack
 import org.kryptonmc.krypton.item.meta.KryptonWrittenBookMeta
-import org.kryptonmc.krypton.util.StableOrderGson
+import org.kryptonmc.krypton.util.GsonHelper
 import java.util.Locale
 
 inline fun <reified T : Component> ComponentFlattener.Builder.complexMapper(
@@ -56,4 +56,4 @@ fun TextColor.serialize(): String {
     return String.format(Locale.ROOT, "#%06X", value())
 }
 
-fun Component.toStableJson(): String = StableOrderGson.toStableString(GsonComponentSerializer.gson().serializeToTree(this))
+fun Component.toStableJson(): String = GsonHelper.toStableString(GsonComponentSerializer.gson().serializeToTree(this))

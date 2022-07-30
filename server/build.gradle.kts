@@ -85,10 +85,11 @@ tasks {
     }
     withType<ProcessResources> {
         filesMatching("**/versions.properties") {
+            val minecraftVersion = global.versions.minecraft.get()
             filter<ReplaceTokens>("tokens" to mapOf(
-                "version" to project.version.toString(),
-                "minecraft" to global.versions.minecraft.get(),
-                "data" to global.versions.minecraft.get().replace('.', '_')
+                "krypton" to project.version.toString(),
+                "minecraft" to minecraftVersion,
+                "data" to minecraftVersion.replace('.', '_')
             ))
         }
     }

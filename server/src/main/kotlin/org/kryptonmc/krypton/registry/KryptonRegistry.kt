@@ -33,7 +33,7 @@ import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.compound
 import kotlin.math.max
 
-open class KryptonRegistry<T : Any>(override val key: ResourceKey<out Registry<T>>) : Registry<T>, StringCodec<T>, IntBiMap<T> {
+open class KryptonRegistry<T>(override val key: ResourceKey<out Registry<T>>) : Registry<T>, StringCodec<T>, IntBiMap<T> {
 
     private val byId = ObjectArrayList<T>(256)
     private val toId = Object2IntOpenCustomHashMap(IdentityHashStrategy.get<T>())

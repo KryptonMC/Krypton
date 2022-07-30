@@ -17,7 +17,7 @@ import org.kryptonmc.api.util.CataloguedBy
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
 @CataloguedBy(Registries::class)
-public interface Registry<T : Any> : Map<ResourceKey<T>, T> {
+public interface Registry<T> : Map<ResourceKey<T>, T> {
 
     /**
      * The registry key for this registry.

@@ -15,7 +15,7 @@ import org.kryptonmc.api.resource.ResourceKey
  * A registry with a default key-value pair.
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
-public interface DefaultedRegistry<T : Any> : Registry<T> {
+public interface DefaultedRegistry<T> : Registry<T> {
 
     /**
      * The default key for this defaulted registry.
