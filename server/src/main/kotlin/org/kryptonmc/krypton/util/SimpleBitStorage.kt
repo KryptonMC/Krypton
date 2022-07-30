@@ -146,6 +146,8 @@ class SimpleBitStorage(override val bits: Int, override val size: Int, data: Lon
         }
     }
 
+    override fun copy(): BitStorage = SimpleBitStorage(bits, size, data.clone())
+
     fun isEmpty(): Boolean = data.isEmpty()
 
     fun isNotEmpty(): Boolean = !isEmpty()

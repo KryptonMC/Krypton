@@ -47,13 +47,22 @@ class SingleValuePalette<T>(private val registry: IntBiMap<T>, private val resiz
     }
 
     override fun write(buf: ByteBuf) {
-        checkNotNull(value) { "Attempted to use an uninitialised palette!" }
+        checkInit()
         buf.writeVarInt(registry.idOf(value!!))
     }
 
     override fun calculateSerializedSize(): Int {
-        checkNotNull(value) { "Attempted to use an uninitialised single value palette!" }
+        checkInit()
         return registry.idOf(value!!).varIntBytes()
+    }
+
+    override fun copy(): Palette<T> {
+        checkInit()
+        return this
+    }
+
+    private fun checkInit() {
+        checkNotNull(value) { "Attempted to use an uninitialised single value palette!" }
     }
 
     object Factory : Palette.Factory {

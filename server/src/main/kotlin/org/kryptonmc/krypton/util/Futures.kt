@@ -42,7 +42,6 @@ object Futures {
                 if (exception != null) consumer.accept(exception) else result[size] = value
             }
         }
-        // God damn you Kotlin. Why can't you just be like Java here and pass arrays as-is to vararg parameters instead of copying the array?
-        return CompletableFuture.allOf(*resultFutures).thenApply { result as ArrayList<V> }
+        return NoSpread.completableFutureAllOf(resultFutures).thenApply { result as ArrayList<V> }
     }
 }
