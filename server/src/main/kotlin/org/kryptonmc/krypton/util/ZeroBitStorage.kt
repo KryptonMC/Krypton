@@ -49,6 +49,8 @@ class ZeroBitStorage(override val size: Int) : BitStorage {
         output.fill(0)
     }
 
+    override fun copy(): BitStorage = this
+
     companion object {
 
         private val RAW = LongArray(0)

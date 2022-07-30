@@ -48,6 +48,11 @@ class PaletteHolder<T> : PaletteResizer<T> {
     @Volatile
     private var data: Data<T>
 
+    private constructor(strategy: Strategy<T>, data: Data<T>) {
+        this.strategy = strategy
+        this.data = data
+    }
+
     constructor(strategy: Strategy<T>, configuration: Configuration<T>, storage: BitStorage, entries: List<T>) {
         this.strategy = strategy
         data = Data(configuration, storage, configuration.factory.create(configuration.bits, strategy.registry, this, entries))
@@ -115,6 +120,8 @@ class PaletteHolder<T> : PaletteResizer<T> {
         return config.createData(strategy.registry, this, strategy.calculateSize())
     }
 
+    fun copy(): PaletteHolder<T> = PaletteHolder(strategy, data.copy())
+
     fun interface PaletteConsumer<T> {
 
         operator fun invoke(element: T, location: Int)
@@ -147,6 +154,8 @@ class PaletteHolder<T> : PaletteResizer<T> {
         }
 
         fun calculateSerializedSize(): Int = 1 + palette.calculateSerializedSize() + storage.size.varIntBytes() + storage.sizeBytes()
+
+        fun copy(): Data<T> = Data(configuration, storage.copy(), palette.copy())
     }
 
     abstract class Strategy<T>(val registry: IntBiMap<T>, private val sizeBits: Int) {

@@ -16,28 +16,19 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.world.block.palette
+package org.kryptonmc.krypton.util
 
-import io.netty.buffer.ByteBuf
-import org.kryptonmc.krypton.util.IntBiMap
-import org.kryptonmc.nbt.ListTag
+import net.kyori.adventure.key.InvalidKeyException
+import net.kyori.adventure.key.Key
 
-interface Palette<T> {
+object Keys {
 
-    val size: Int
-
-    fun get(value: T): Int
-
-    fun get(id: Int): T
-
-    fun write(buf: ByteBuf)
-
-    fun calculateSerializedSize(): Int
-
-    fun copy(): Palette<T>
-
-    interface Factory {
-
-        fun <T> create(bits: Int, registry: IntBiMap<T>, resizer: PaletteResizer<T>, entries: List<T>): Palette<T>
+    @JvmStatic
+    fun create(namespace: String, path: String): Key? {
+        return try {
+            Key.key(namespace, path)
+        } catch (exception: InvalidKeyException) {
+            null
+        }
     }
 }

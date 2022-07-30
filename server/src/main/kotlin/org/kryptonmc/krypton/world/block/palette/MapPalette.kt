@@ -74,6 +74,8 @@ data class MapPalette<T>(
         return size
     }
 
+    override fun copy(): Palette<T> = MapPalette(registry, bits, resizer, values.copy())
+
     object Factory : Palette.Factory {
 
         override fun <T> create(bits: Int, registry: IntBiMap<T>, resizer: PaletteResizer<T>, entries: List<T>): Palette<T> =

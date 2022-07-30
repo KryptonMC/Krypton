@@ -80,6 +80,8 @@ class ArrayPalette<T> private constructor(
         return size
     }
 
+    override fun copy(): Palette<T> = ArrayPalette(registry, values.clone(), resizer, bits, size)
+
     object Factory : Palette.Factory {
 
         override fun <T> create(bits: Int, registry: IntBiMap<T>, resizer: PaletteResizer<T>, entries: List<T>): Palette<T> =

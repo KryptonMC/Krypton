@@ -33,6 +33,7 @@ import org.kryptonmc.api.plugin.PluginDescription
 import org.kryptonmc.krypton.plugin.KryptonPluginContainer
 import org.kryptonmc.krypton.plugin.KryptonPluginDependency
 import org.kryptonmc.krypton.plugin.PluginClassLoader
+import org.kryptonmc.krypton.util.NoSpread
 import org.kryptonmc.krypton.util.mapPersistentList
 import org.kryptonmc.processor.SerializedPluginDescription
 import java.nio.file.Files
@@ -65,7 +66,7 @@ object PluginLoader {
         val description = container.description
         require(description is LoadedPluginDescription) { "Description provided isn't compatible with this loader!" }
 
-        val injector = Guice.createInjector(*modules)
+        val injector = NoSpread.guiceCreateInjector(modules)
         val instance = requireNotNull(injector.getInstance(description.mainClass)) { "Got nothing from injector for plugin ${description.id}!" }
 
         container.instance = instance

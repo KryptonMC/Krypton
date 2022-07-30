@@ -41,6 +41,8 @@ class GlobalPalette<T>(private val registry: IntBiMap<T>) : Palette<T> {
 
     override fun calculateSerializedSize(): Int = 0.varIntBytes()
 
+    override fun copy(): Palette<T> = this
+
     object Factory : Palette.Factory {
 
         override fun <T> create(bits: Int, registry: IntBiMap<T>, resizer: PaletteResizer<T>, entries: List<T>): Palette<T> = GlobalPalette(registry)
