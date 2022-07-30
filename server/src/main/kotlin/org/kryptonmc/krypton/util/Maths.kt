@@ -98,4 +98,15 @@ object Maths {
         }
         return tempMinimum
     }
+
+    // The magic values in here are from the mixer parts of MurmurHash3
+    @JvmStatic
+    fun murmurHash3Mixer(value: Int): Int {
+        var temp = value
+        temp = temp xor (temp ushr 16)
+        temp *= -2048144789
+        temp = temp xor (temp ushr 13)
+        temp *= -1028477387
+        return temp xor (temp ushr 16)
+    }
 }

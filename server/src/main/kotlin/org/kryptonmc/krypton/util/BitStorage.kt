@@ -35,4 +35,6 @@ interface BitStorage {
     fun unpack(output: IntArray)
 
     fun sizeBytes(): Int = size * Long.SIZE_BYTES
+
+    fun copy(): BitStorage
 }

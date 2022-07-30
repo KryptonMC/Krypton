@@ -54,40 +54,42 @@ class IntIdentityHashBiMap<K> : IntBiMap<K> {
         this.size = size
     }
 
-    fun add(key: K): Int = nextId().apply { set(key, this) }
+    fun add(key: K): Int {
+        val id = nextId()
+        set(key, id)
+        return id
+    }
 
     fun set(key: K, value: Int) {
         val max = max(value, size + 1)
-        if (max >= keys.size * LOAD_FACTOR) {
+        if (max.toFloat() >= keys.size.toFloat() * LOAD_FACTOR) {
             var newSize = keys.size shl 1
-            while (newSize < value) newSize = newSize shl 1
+            while (newSize < value) {
+                newSize = newSize shl 1
+            }
             grow(newSize)
         }
         val firstEmpty = findEmpty(hash(key))
         keys[firstEmpty] = key
         values[firstEmpty] = value
         byId[value] = key
-        size++
-        if (value == nextId) nextId++
-    }
-
-    fun clear() {
-        keys.fill(null)
-        byId.fill(null)
-        nextId = 0
-        size = 0
+        ++size
+        if (value == nextId) ++nextId
     }
 
     override fun idOf(value: K): Int = getValue(indexOf(value, hash(value)))
 
-    override fun get(id: Int): K? = byId.getOrNull(id)
-
-    override fun iterator(): Iterator<K> = Iterators.filter(Iterators.forArray(byId), Predicates.notNull()) as Iterator<K>
+    override fun get(id: Int): K? {
+        if (id >= 0 && id < byId.size) return byId[id]
+        return null
+    }
 
     private fun getValue(id: Int): Int = if (id == -1) -1 else values[id]
 
     private fun nextId(): Int {
-        while (nextId < byId.size && byId[nextId] != null) nextId++
+        while (nextId < byId.size && byId[nextId] != null) {
+            ++nextId
+        }
         return nextId
     }
 
@@ -96,7 +98,8 @@ class IntIdentityHashBiMap<K> : IntBiMap<K> {
         val oldValues = values
         val map = IntIdentityHashBiMap<K>(newSize)
         for (i in oldKeys.indices) {
-            if (oldKeys[i] != null) map.set(oldKeys[i]!!, oldValues[i])
+            val key = oldKeys[i]
+            if (key != null) map.set(key, oldValues[i])
         }
         keys = map.keys
         values = map.values
@@ -105,48 +108,49 @@ class IntIdentityHashBiMap<K> : IntBiMap<K> {
         size = map.size
     }
 
-    private fun hash(key: K): Int = (murmurHash3Mixer(System.identityHashCode(key)) and Int.MAX_VALUE) % keys.size
+    private fun hash(key: K): Int = (Maths.murmurHash3Mixer(System.identityHashCode(key)) and Int.MAX_VALUE) % keys.size
 
-    private fun indexOf(key: K, value: Int): Int {
-        for (i in value until keys.size) {
+    private fun indexOf(key: K, startIndex: Int): Int {
+        for (i in startIndex until keys.size) {
             if (keys[i] == key) return i
             if (keys[i] == EMPTY_SLOT) return NOT_FOUND
         }
-        for (i in 0 until value) {
+        for (i in 0 until startIndex) {
             if (keys[i] == key) return i
             if (keys[i] == EMPTY_SLOT) return NOT_FOUND
         }
         return NOT_FOUND
     }
 
-    private fun findEmpty(value: Int): Int {
-        for (i in value until keys.size) {
+    private fun findEmpty(startIndex: Int): Int {
+        for (i in startIndex until keys.size) {
             if (keys[i] == EMPTY_SLOT) return i
         }
-        for (i in 0 until value) {
+        for (i in 0 until startIndex) {
             if (keys[i] == EMPTY_SLOT) return i
         }
         throw RuntimeException("Overflowed :(")
     }
 
+    override fun iterator(): Iterator<K> = Iterators.filter(NoSpread.iteratorsForArray(byId), Predicates.notNull()) as Iterator<K>
+
+    fun clear() {
+        keys.fill(null)
+        byId.fill(null)
+        nextId = 0
+        size = 0
+    }
+
+    fun copy(): IntIdentityHashBiMap<K> = IntIdentityHashBiMap(keys.clone(), values.clone(), byId.clone(), nextId, size)
+
     companion object {
 
         const val NOT_FOUND: Int = -1
-        private val EMPTY_SLOT = null
+        private val EMPTY_SLOT: Any? = null
         private const val LOAD_FACTOR = 0.8F
 
         @JvmStatic
         fun <T> create(initialCapacity: Int): IntIdentityHashBiMap<T> = IntIdentityHashBiMap((initialCapacity.toFloat() / LOAD_FACTOR).toInt())
-
-        // The magic values in here are from the mixer parts of MurmurHash3
-        @JvmStatic
-        private fun murmurHash3Mixer(value: Int): Int {
-            var temp = value xor value ushr 16
-            temp *= -2048144789
-            temp = temp xor temp ushr 13
-            temp *= -1028477387
-            return temp xor temp ushr 16
-        }
 
         @JvmStatic
         private fun <T> newArray(size: Int): Array<T?> = arrayOfNulls<Any>(size) as Array<T?>

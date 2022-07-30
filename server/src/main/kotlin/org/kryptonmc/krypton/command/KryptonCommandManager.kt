@@ -116,7 +116,7 @@ object KryptonCommandManager : CommandManager {
             val parseResults = parse(sender, normalized)
             if (resultCallback != null) lock.read { dispatcher.setConsumer(resultCallback) }
             dispatcher.execute(parseResults)
-            lock.read { dispatcher.setConsumer { _, _, _ -> } }
+            if (resultCallback != null) lock.read { dispatcher.setConsumer { _, _, _ -> } }
             true
         } catch (exception: CommandSyntaxException) {
             // The exception formatting here is mostly based on that of vanilla, so we can actually report all of the useful
