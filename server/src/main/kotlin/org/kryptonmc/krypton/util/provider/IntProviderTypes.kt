@@ -20,17 +20,16 @@ package org.kryptonmc.krypton.util.provider
 
 import net.kyori.adventure.key.Key
 import org.kryptonmc.krypton.registry.InternalRegistries
-import org.kryptonmc.krypton.util.serialization.Encoder
-import org.kryptonmc.nbt.Tag
+import org.kryptonmc.serialization.Codec
 
 object IntProviderTypes {
 
     @JvmField
-    val CONSTANT: IntProviderType<ConstantIntProvider> = register("constant", ConstantIntProvider.ENCODER)
+    val CONSTANT: IntProviderType<ConstantInt> = register("constant", ConstantInt.CODEC)
     @JvmField
-    val UNIFORM: IntProviderType<UniformIntProvider> = register("uniform", UniformIntProvider.ENCODER)
+    val UNIFORM: IntProviderType<UniformInt> = register("uniform", UniformInt.CODEC)
 
     @JvmStatic
-    private fun <P : IntProvider> register(name: String, encoder: Encoder<P, out Tag>): IntProviderType<P> =
-        InternalRegistries.INT_PROVIDER_TYPES.register(Key.key(name), IntProviderType { encoder })
+    private fun <P : IntProvider> register(name: String, codec: Codec<P>): IntProviderType<P> =
+        InternalRegistries.INT_PROVIDER_TYPES.register(Key.key(name), IntProviderType { codec })
 }

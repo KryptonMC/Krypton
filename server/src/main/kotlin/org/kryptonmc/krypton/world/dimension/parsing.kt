@@ -27,7 +27,7 @@ import org.kryptonmc.nbt.Tag
 
 fun Tag.parseDimension(): ResourceKey<World>? {
     if (this is NumberTag) {
-        when (value.toInt()) {
+        when (toInt()) {
             -1 -> return World.NETHER
             0 -> return World.OVERWORLD
             1 -> return World.END

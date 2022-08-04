@@ -144,7 +144,7 @@ class KryptonPlayer(
     world: KryptonWorld,
     override val address: InetSocketAddress,
     val publicKey: PlayerPublicKey?
-) : KryptonLivingEntity(world, EntityTypes.PLAYER, ATTRIBUTES), Player, KryptonEquipable, ChatSenderLike {
+) : KryptonLivingEntity(world, EntityTypes.PLAYER, ATTRIBUTES), Player, KryptonEquipable {
 
     var permissionFunction: PermissionFunction = DEFAULT_PERMISSION_FUNCTION
 
@@ -221,7 +221,7 @@ class KryptonPlayer(
     override var filterText: Boolean = false
     override var allowsListing: Boolean = true
     override var time: Long = 0L
-    private val chatSender = ChatSender(uuid, name, teamRepresentation)
+    private val chatSender = ChatSender(uuid, publicKey)
     private var lastActionTime = System.currentTimeMillis()
 
     private var camera: KryptonEntity = this
@@ -601,28 +601,23 @@ class KryptonPlayer(
 
     override fun sendMessage(source: Identity, message: Component, type: MessageType) {
         // TODO: Update this when Adventure updates - still a few things wrong here, the sender's name is always empty.
-        val chatType = when (type) {
-            MessageType.CHAT -> ChatTypes.CHAT
-            MessageType.SYSTEM -> ChatTypes.SYSTEM
-        }
-        sendMessage(message, MessageSignature.unsigned(), ChatSender.fromIdentity(source), chatType)
+//        val chatType = when (type) {
+//            MessageType.CHAT -> ChatTypes.CHAT
+//            MessageType.SYSTEM -> ChatTypes.SYSTEM
+//        }
+//        sendMessage(message, MessageSignature.unsigned(), ChatSender.fromIdentity(source), chatType)
     }
 
     fun sendMessage(message: Component, signature: MessageSignature, sender: ChatSender, type: ChatType) {
-        if (!acceptsChatType(type)) return
-        val typeId = InternalRegistries.CHAT_TYPE.idOf(type)
-        val packet = when (type) {
-            ChatTypes.SYSTEM -> PacketOutSystemChatMessage(message, typeId)
-            ChatTypes.CHAT, ChatTypes.GAME_INFO -> PacketOutPlayerChatMessage(message, null, typeId, sender, signature)
-            else -> throw IllegalArgumentException("Chat type $type is not a message type!")
-        }
-        session.send(packet)
-    }
-
-    fun acceptsChatType(type: ChatType): Boolean = when (chatVisibility) {
-        ChatVisibility.HIDDEN -> type == ChatTypes.GAME_INFO
-        ChatVisibility.SYSTEM -> type == ChatTypes.SYSTEM || type == ChatTypes.GAME_INFO
-        else -> true
+        if (chatVisibility != ChatVisibility.FULL) return
+        // TODO: Fix chat (again)
+//        val typeId = InternalRegistries.CHAT_TYPE.idOf(type)
+//        val packet = when (type) {
+//            ChatTypes.SYSTEM -> PacketOutSystemChatMessage(message, typeId)
+//            ChatTypes.CHAT, ChatTypes.GAME_INFO -> PacketOutPlayerChatMessage(message, null, typeId, sender, signature)
+//            else -> throw IllegalArgumentException("Chat type $type is not a message type!")
+//        }
+//        session.send(packet)
     }
 
     override fun sendActionBar(message: Component) {

@@ -67,17 +67,18 @@ interface PacketGroupingAudience : ForwardingAudience {
     }
 
     override fun sendMessage(source: Identity, message: Component, type: MessageType) {
-        val chatType = when (type) {
-            MessageType.CHAT -> ChatTypes.CHAT
-            MessageType.SYSTEM -> ChatTypes.SYSTEM
-        }
-        val typeId = InternalRegistries.CHAT_TYPE.idOf(chatType)
-        val packet = when (chatType) {
-            ChatTypes.SYSTEM -> PacketOutSystemChatMessage(message, typeId)
-            ChatTypes.CHAT -> PacketOutPlayerChatMessage(message, null, typeId, ChatSender.fromIdentity(source), MessageSignature.unsigned())
-            else -> throw IllegalArgumentException("Somehow chat type is not supported, this should be impossible! Type was $chatType.")
-        }
-        sessionManager.sendGrouped(players, packet) { it.acceptsChatType(chatType) }
+        // TODO: Fix chat (again)
+//        val chatType = when (type) {
+//            MessageType.CHAT -> ChatTypes.CHAT
+//            MessageType.SYSTEM -> ChatTypes.SYSTEM
+//        }
+//        val typeId = InternalRegistries.CHAT_TYPE.idOf(chatType)
+//        val packet = when (chatType) {
+//            ChatTypes.SYSTEM -> PacketOutSystemChatMessage(message, typeId)
+//            ChatTypes.CHAT -> PacketOutPlayerChatMessage(message, null, typeId, ChatSender.fromIdentity(source), MessageSignature.unsigned())
+//            else -> throw IllegalArgumentException("Somehow chat type is not supported, this should be impossible! Type was $chatType.")
+//        }
+//        sessionManager.sendGrouped(players, packet) { it.acceptsChatType(chatType) }
     }
 
     override fun sendActionBar(message: Component) {

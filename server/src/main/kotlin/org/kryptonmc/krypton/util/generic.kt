@@ -35,3 +35,9 @@ private fun String.addressAsString(): String {
 
 fun IntArray.toUUID(): UUID =
     UUID(this[0].toLong() shl 32 or this[1].toLong() and 4294967295L, this[2].toLong() shl 32 or this[3].toLong() and 4294967295L)
+
+fun UUID.toIntArray(): IntArray {
+    val most = mostSignificantBits
+    val least = leastSignificantBits
+    return intArrayOf((most shr 32).toInt(), most.toInt(), (least shr 32).toInt(), least.toInt())
+}

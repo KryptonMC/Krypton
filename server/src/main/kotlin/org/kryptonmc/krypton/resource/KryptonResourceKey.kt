@@ -19,7 +19,10 @@
 package org.kryptonmc.krypton.resource
 
 import net.kyori.adventure.key.Key
+import org.kryptonmc.api.registry.Registry
 import org.kryptonmc.api.resource.ResourceKey
+import org.kryptonmc.krypton.util.serialization.Codecs
+import org.kryptonmc.serialization.Codec
 import java.util.Collections
 import java.util.IdentityHashMap
 
@@ -28,13 +31,22 @@ data class KryptonResourceKey<T>(override val registry: Key, override val locati
 
     object Factory : ResourceKey.Factory {
 
-        @Suppress("UNCHECKED_CAST")
-        override fun <T> of(registry: Key, location: Key): ResourceKey<T> =
-            VALUES.getOrPut("$registry:$location".intern()) { KryptonResourceKey<T>(registry, location) } as ResourceKey<T>
+        override fun <T> of(registry: Key, location: Key): ResourceKey<T> = KryptonResourceKey.of(registry, location)
     }
 
     companion object {
 
         private val VALUES = Collections.synchronizedMap(IdentityHashMap<String, ResourceKey<*>>())
+
+        @JvmStatic
+        @Suppress("UNCHECKED_CAST")
+        fun <T> of(registry: Key, location: Key): ResourceKey<T> =
+            VALUES.computeIfAbsent("$registry:$location".intern()) { KryptonResourceKey<T>(registry, location) } as ResourceKey<T>
+
+        @JvmStatic
+        fun <T> of(parent: ResourceKey<out Registry<T>>, location: Key): ResourceKey<T> = of(parent.location, location)
+
+        @JvmStatic
+        fun <T> codec(key: ResourceKey<out Registry<T>>): Codec<ResourceKey<T>> = Codecs.KEY.xmap({ of(key, it) }, ResourceKey<T>::location)
     }
 }

@@ -33,7 +33,6 @@ import org.kryptonmc.api.registry.RegistryRoots
 import org.kryptonmc.api.statistic.StatisticType
 import org.kryptonmc.api.world.World
 import org.kryptonmc.api.world.biome.Biome
-import org.kryptonmc.api.world.dimension.DimensionEffect
 import org.kryptonmc.api.world.dimension.DimensionType
 import org.kryptonmc.api.world.rule.GameRule
 import org.kryptonmc.api.scoreboard.criteria.Criterion
@@ -102,8 +101,6 @@ public object ResourceKeys {
     public val MODIFIER_OPERATIONS: ResourceKey<out Registry<ModifierOperation>> = krypton("attribute_modifier_operations")
     @JvmField
     public val CRITERIA: ResourceKey<out Registry<Criterion>> = krypton("criteria")
-    @JvmField
-    public val DIMENSION_EFFECTS: ResourceKey<out Registry<DimensionEffect>> = krypton("dimension_effects")
     @JvmField
     public val ITEM_RARITIES: ResourceKey<out Registry<ItemRarity>> = krypton("item_rarities")
     @JvmField

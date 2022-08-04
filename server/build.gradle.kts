@@ -39,6 +39,7 @@ dependencies {
     // Data
     api(libs.dataConverter)
     api(libs.nbt)
+    api(libs.nbt.codec)
     implementation(libs.articData)
 
     // Collections and caching

@@ -19,37 +19,34 @@
 package org.kryptonmc.krypton.network.chat
 
 import net.kyori.adventure.key.Key
-import org.kryptonmc.krypton.network.chat.ChatType.Narration
-import org.kryptonmc.krypton.network.chat.ChatType.Narration.Priority
-import org.kryptonmc.krypton.network.chat.ChatType.TextDisplay
 import org.kryptonmc.krypton.registry.InternalRegistries
 
 object ChatTypes {
 
+    private val DEFAULT_DECORATION = ChatTypeDecoration.withSender("chat.type.text")
+    private val DEFAULT_NARRATION = ChatTypeDecoration.withSender("chat.type.text.narrate")
+
     @JvmField
-    val CHAT: ChatType = registerChat("chat", ChatDecoration.withSender("chat.type.text"))
+    val CHAT: ChatType = register("chat", DEFAULT_DECORATION, DEFAULT_NARRATION)
     @JvmField
-    val SYSTEM: ChatType = register("system", TextDisplay(null), null, Narration(null, Priority.SYSTEM))
+    val SAY_COMMAND: ChatType = register("say_command", ChatTypeDecoration.withSender("chat.type.announcement"), DEFAULT_NARRATION)
     @JvmField
-    val GAME_INFO: ChatType = register("game_info", null, TextDisplay(null), null)
+    val INCOMING_MESSAGE_COMMAND: ChatType =
+        register("msg_command_incoming", ChatTypeDecoration.incomingDirectMessage("commands.message.display.incoming"), DEFAULT_NARRATION)
     @JvmField
-    val SAY_COMMAND: ChatType = registerChat("say_command", ChatDecoration.withSender("chat.type.announcement"))
+    val OUTGOING_MESSAGE_COMMAND: ChatType =
+        register("msg_command_outgoing", ChatTypeDecoration.outgoingDirectMessage("commands.message.display.outgoing"), DEFAULT_NARRATION)
     @JvmField
-    val MESSAGE_COMMAND: ChatType = registerChat("msg_command", ChatDecoration.directMessage("commands.message.display.incoming"))
+    val INCOMING_TEAM_MESSAGE_COMMAND: ChatType =
+        register("team_msg_command_incoming", ChatTypeDecoration.teamMessage("chat.type.team.text"), DEFAULT_NARRATION)
     @JvmField
-    val TEAM_MESSAGE_COMMAND: ChatType = registerChat("team_msg_command", ChatDecoration.teamMessage("chat.type.team.text"))
+    val OUTGOING_TEAM_MESSAGE_COMMAND: ChatType =
+        register("team_msg_command_outgoing", ChatTypeDecoration.teamMessage("chat.type.team.sent"), DEFAULT_NARRATION)
     @JvmField
-    val EMOTE_COMMAND: ChatType = registerChat("emote_command", ChatDecoration.withSender("chat.type.emote"), "chat.type.emote")
-    @JvmField
-    val TELLRAW_COMMAND: ChatType = register("tellraw_command", TextDisplay(null), null, Narration(null, Priority.CHAT))
+    val EMOTE_COMMAND: ChatType =
+        register("emote_command", ChatTypeDecoration.withSender("chat.type.emote"), ChatTypeDecoration.withSender("chat.type.emote"))
 
     @JvmStatic
-    private fun register(name: String, chat: TextDisplay?, overlay: TextDisplay?, narration: Narration?): ChatType {
-        val key = Key.key(name)
-        return InternalRegistries.CHAT_TYPE.register(key, ChatType(chat, overlay, narration))
-    }
-
-    @JvmStatic
-    private fun registerChat(name: String, chatDecoration: ChatDecoration, narrationKey: String = "chat.type.text.narrate"): ChatType =
-        register(name, TextDisplay(chatDecoration), null, Narration(ChatDecoration.withSender(narrationKey), Priority.CHAT))
+    private fun register(name: String, chat: ChatTypeDecoration, narration: ChatTypeDecoration): ChatType =
+        InternalRegistries.CHAT_TYPE.register(Key.key(name), ChatType(chat, narration))
 }

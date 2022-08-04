@@ -18,23 +18,28 @@
  */
 package org.kryptonmc.krypton.util.provider
 
-import org.kryptonmc.krypton.util.serialization.IntEncoder
+import org.kryptonmc.serialization.Codec
+import org.kryptonmc.serialization.codecs.CompoundCodecBuilder
+import java.util.function.Function
 
-@JvmRecord
-data class ConstantIntProvider(val value: Int) : IntProvider {
+class UniformInt(override val minimumValue: Int, override val maximumValue: Int) : IntProvider() {
 
     override val type: IntProviderType<*>
-        get() = IntProviderTypes.CONSTANT
-    override val minimumValue: Int
-        get() = value
-    override val maximumValue: Int
-        get() = value
+        get() = IntProviderTypes.UNIFORM
+
+    override fun toString(): String = "[$minimumValue-$maximumValue]"
 
     companion object {
 
         @JvmField
-        val ZERO: ConstantIntProvider = ConstantIntProvider(0)
-        @JvmField
-        val ENCODER: IntEncoder<ConstantIntProvider> = IntEncoder { it.value }
+        val CODEC: Codec<UniformInt> = CompoundCodecBuilder.create {
+            it.group(
+                Codec.INT.field("min_inclusive").getting(UniformInt::minimumValue),
+                Codec.INT.field("max_inclusive").getting(UniformInt::maximumValue)
+            ).apply(it, ::UniformInt)
+        }.xmap({
+            check(it.minimumValue <= it.maximumValue) { "Maximum must be >= minimum! Maximum: ${it.maximumValue}, minimum: ${it.minimumValue}" }
+            it
+        }, Function.identity())
     }
 }

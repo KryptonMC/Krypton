@@ -230,7 +230,7 @@ class ChunkManager(private val world: KryptonWorld) {
             }
             data.put("sections", sectionList)
 
-            val heightmapData = CompoundTag.builder()
+            val heightmapData = CompoundTag.immutableBuilder()
             chunk.heightmaps.forEach { if (it.key in Heightmap.Type.POST_FEATURES) heightmapData.longArray(it.key.name, it.value.data.data) }
             data.put("Heightmaps", heightmapData.build())
             return data.build()

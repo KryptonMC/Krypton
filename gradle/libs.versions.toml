@@ -6,7 +6,7 @@ metadata.format.version = "1.1"
 adventure = "4.12.0-SNAPSHOT"
 configurate = "4.1.2"
 log4j = "2.18.0"
-kotlin = "1.7.0"
+kotlin = "1.7.20-Beta"
 coroutines = "1.6.3"
 kotlinCollections = "0.3.5"
 guava = "31.1-jre"
@@ -29,7 +29,7 @@ asm = "9.3"
 tca = "1.3.0"
 jline = "3.21.0"
 dataConverter = "1.0.0-SNAPSHOT"
-nbt = "2.8"
+nbt = "3.0"
 articData = "1.19-aaa3687c"
 caffeine = "3.1.1"
 fastutil = "8.5.8"
@@ -96,7 +96,8 @@ clikt = { group = "com.github.ajalt.clikt", name = "clikt", version.ref = "clikt
 # Data
 dataConverter = { group = "ca.spottedleaf", name = "dataconverter", version.ref = "dataConverter" }
 articData = { group = "de.articdive", name = "articdata", version.ref = "articData" }
-nbt = { group = "org.kryptonmc", name = "nbt-common-jvm", version.ref = "nbt" }
+nbt = { group = "org.kryptonmc", name = "nbt-common", version.ref = "nbt" }
+nbt-codec = { group = "org.kryptonmc", name = "nbt-codec", version.ref = "nbt" }
 
 # Events
 event = { group = "net.kyori", name = "event-method-asm", version.ref = "event" }

@@ -22,58 +22,51 @@ import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.text.format.Style
 import net.kyori.adventure.text.format.TextColor
 import net.kyori.adventure.text.format.TextDecoration
-import org.kryptonmc.krypton.util.serialization.Codec
 import org.kryptonmc.krypton.util.serialization.Codecs
-import org.kryptonmc.krypton.util.serialization.CompoundCodec
-import org.kryptonmc.krypton.util.serialization.decode
-import org.kryptonmc.krypton.util.serialization.encode
-import org.kryptonmc.nbt.ByteTag
-import org.kryptonmc.nbt.CompoundTag
-import org.kryptonmc.nbt.StringTag
-import org.kryptonmc.nbt.compound
+import org.kryptonmc.serialization.Codec
+import org.kryptonmc.serialization.MapCodec
+import org.kryptonmc.serialization.codecs.CompoundCodecBuilder
+import java.util.Optional
 
 object AdventureCodecs {
 
     @JvmField
-    val STYLE_FORMATTING: CompoundCodec<Style> = CompoundCodec.of(
-        {
-            compound {
-                encode(TEXT_COLOR, "color", it.color())
-                decoration("bold", it.decoration(TextDecoration.BOLD))
-                decoration("italic", it.decoration(TextDecoration.ITALIC))
-                decoration("underlined", it.decoration(TextDecoration.UNDERLINED))
-                decoration("strikethrough", it.decoration(TextDecoration.STRIKETHROUGH))
-                decoration("obfuscated", it.decoration(TextDecoration.OBFUSCATED))
-                encode(Codecs.STRING, "insertion", it.insertion())
-                encode(Codecs.KEY, "font", it.font())
-            }
-        },
-        {
+    val STYLE_FORMATTING: Codec<Style> = CompoundCodecBuilder.create { instance ->
+        instance.group(
+            TEXT_COLOR.nullableField("color").getting(Style::color),
+            decorationStateCodec("bold").getting { it.decoration(TextDecoration.BOLD) },
+            decorationStateCodec("italic").getting { it.decoration(TextDecoration.ITALIC) },
+            decorationStateCodec("underlined").getting { it.decoration(TextDecoration.UNDERLINED) },
+            decorationStateCodec("strikethrough").getting { it.decoration(TextDecoration.STRIKETHROUGH) },
+            decorationStateCodec("obfuscated").getting { it.decoration(TextDecoration.OBFUSCATED) },
+            Codec.STRING.nullableField("insertion").getting(Style::insertion),
+            Codecs.KEY.nullableField("font").getting(Style::font)
+        ).apply(instance) { color, bold, italic, underlined, strikethrough, obfuscated, insertion, font ->
             Style.style()
-                .color(it.decode(TEXT_COLOR, "color"))
-                .decoration(TextDecoration.BOLD, it.getDecorationState("bold"))
-                .decoration(TextDecoration.BOLD, it.getDecorationState("italic"))
-                .decoration(TextDecoration.BOLD, it.getDecorationState("underlined"))
-                .decoration(TextDecoration.BOLD, it.getDecorationState("strikethrough"))
-                .decoration(TextDecoration.BOLD, it.getDecorationState("obfuscated"))
-                .insertion(it.decode(Codecs.STRING, "insertion"))
-                .font(it.decode(Codecs.KEY, "font"))
+                .color(color)
+                .decoration(TextDecoration.BOLD, bold)
+                .decoration(TextDecoration.ITALIC, italic)
+                .decoration(TextDecoration.UNDERLINED, underlined)
+                .decoration(TextDecoration.STRIKETHROUGH, strikethrough)
+                .decoration(TextDecoration.OBFUSCATED, obfuscated)
+                .insertion(insertion)
+                .font(font)
                 .build()
         }
-    )
+    }
     @JvmField
-    val TEXT_COLOR: Codec<StringTag, TextColor> = Codecs.STRING.transform(TextColor::serialize) {
+    val TEXT_COLOR: Codec<TextColor> = Codec.STRING.xmap({
         val value = if (it.startsWith("#")) TextColor.fromHexString(it) else NamedTextColor.NAMES.value(it)
         requireNotNull(value) { "No text colour could be found for string $it!" }
-    }
+    }, TextColor::serialize)
+
+    @JvmStatic
+    private fun decorationStateCodec(name: String): MapCodec<TextDecoration.State> = Codec.BOOLEAN.optionalField(name)
+        .xmap({ it.map(TextDecoration.State::byBoolean).orElse(TextDecoration.State.NOT_SET) }, TextDecoration.State::asBoolean)
 }
 
-private fun CompoundTag.getDecorationState(name: String): TextDecoration.State {
-    if (!contains(name, ByteTag.ID)) return TextDecoration.State.NOT_SET
-    return TextDecoration.State.byBoolean(getBoolean(name))
-}
-
-private fun CompoundTag.Builder.decoration(name: String, state: TextDecoration.State) {
-    if (state == TextDecoration.State.NOT_SET) return
-    boolean(name, state == TextDecoration.State.TRUE)
+private fun TextDecoration.State.asBoolean(): Optional<Boolean> = when (this) {
+    TextDecoration.State.NOT_SET -> Optional.empty()
+    TextDecoration.State.FALSE -> Optional.of(false)
+    TextDecoration.State.TRUE -> Optional.of(true)
 }

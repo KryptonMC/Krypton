@@ -18,32 +18,18 @@
  */
 package org.kryptonmc.krypton.network.chat
 
-import io.netty.buffer.ByteBuf
 import net.kyori.adventure.identity.Identity
-import net.kyori.adventure.text.Component
-import org.kryptonmc.krypton.network.Writable
-import org.kryptonmc.krypton.util.readComponent
-import org.kryptonmc.krypton.util.readNullable
-import org.kryptonmc.krypton.util.readUUID
-import org.kryptonmc.krypton.util.writeComponent
-import org.kryptonmc.krypton.util.writeNullable
-import org.kryptonmc.krypton.util.writeUUID
+import org.kryptonmc.krypton.entity.player.PlayerPublicKey
 import java.util.UUID
 
 @JvmRecord
-data class ChatSender(val uuid: UUID, val name: Component, val teamName: Component? = null) : Writable {
+data class ChatSender(val id: UUID, val publicKey: PlayerPublicKey?) {
 
-    constructor(buf: ByteBuf) : this(buf.readUUID(), buf.readComponent(), buf.readNullable { buf.readComponent() })
-
-    override fun write(buf: ByteBuf) {
-        buf.writeUUID(uuid)
-        buf.writeComponent(name)
-        buf.writeNullable(teamName, ByteBuf::writeComponent)
-    }
+    fun isSystem(): Boolean = this == SYSTEM
 
     companion object {
 
-        @JvmStatic
-        fun fromIdentity(identity: Identity): ChatSender = ChatSender(identity.uuid(), Component.empty(), null)
+        @JvmField
+        val SYSTEM: ChatSender = ChatSender(Identity.nil().uuid(), null)
     }
 }

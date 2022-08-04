@@ -18,55 +18,20 @@
  */
 package org.kryptonmc.krypton.network.chat
 
-import org.kryptonmc.krypton.util.serialization.CompoundEncoder
-import org.kryptonmc.krypton.util.serialization.encode
-import org.kryptonmc.nbt.compound
+import org.kryptonmc.serialization.Codec
+import org.kryptonmc.serialization.codecs.CompoundCodecBuilder
 
 @JvmRecord
-data class ChatType(val chat: TextDisplay?, val overlay: TextDisplay?, val narration: Narration?) {
-
-    @JvmRecord
-    data class TextDisplay(val decoration: ChatDecoration?) {
-
-        companion object {
-
-            @JvmField
-            val ENCODER: CompoundEncoder<TextDisplay> = CompoundEncoder {
-                compound { encode(ChatDecoration.ENCODER, "decoration", it.decoration) }
-            }
-        }
-    }
-
-    @JvmRecord
-    data class Narration(val decoration: ChatDecoration?, val priority: Priority) {
-
-        enum class Priority {
-
-            CHAT,
-            SYSTEM
-        }
-
-        companion object {
-
-            @JvmField
-            val ENCODER: CompoundEncoder<Narration> = CompoundEncoder {
-                compound {
-                    encode(ChatDecoration.ENCODER, "decoration", it.decoration)
-                    string("priority", it.priority.name.lowercase())
-                }
-            }
-        }
-    }
+data class ChatType(val chat: ChatTypeDecoration, val narration: ChatTypeDecoration) {
 
     companion object {
 
         @JvmField
-        val ENCODER: CompoundEncoder<ChatType> = CompoundEncoder {
-            compound {
-                encode(TextDisplay.ENCODER, "chat", it.chat)
-                encode(TextDisplay.ENCODER, "overlay", it.overlay)
-                encode(Narration.ENCODER, "narration", it.narration)
-            }
+        val CODEC: Codec<ChatType> = CompoundCodecBuilder.create {
+            it.group(
+                ChatTypeDecoration.CODEC.field("chat").getting(ChatType::chat),
+                ChatTypeDecoration.CODEC.field("narration").getting(ChatType::narration)
+            ).apply(it, ::ChatType)
         }
     }
 }

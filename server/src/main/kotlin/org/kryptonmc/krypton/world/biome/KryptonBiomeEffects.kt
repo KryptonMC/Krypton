@@ -28,10 +28,9 @@ import org.kryptonmc.api.world.biome.AmbientParticleSettings
 import org.kryptonmc.api.world.biome.BiomeEffects
 import org.kryptonmc.api.world.biome.GrassColorModifier
 import org.kryptonmc.krypton.util.serialization.Codecs
-import org.kryptonmc.krypton.util.serialization.CompoundEncoder
 import org.kryptonmc.krypton.util.serialization.EnumCodecs
-import org.kryptonmc.krypton.util.serialization.encode
-import org.kryptonmc.nbt.compound
+import org.kryptonmc.serialization.Codec
+import org.kryptonmc.serialization.codecs.CompoundCodecBuilder
 
 @JvmRecord
 data class KryptonBiomeEffects(
@@ -118,23 +117,22 @@ data class KryptonBiomeEffects(
 
         @JvmField
         val DEFAULT: BiomeEffects = Builder().build()
-
         @JvmField
-        val ENCODER: CompoundEncoder<BiomeEffects> = CompoundEncoder {
-            compound {
-                encode(Codecs.COLOR, "fog_color", it.fogColor)
-                encode(Codecs.COLOR, "water_color", it.waterColor)
-                encode(Codecs.COLOR, "water_fog_color", it.waterFogColor)
-                encode(Codecs.COLOR, "sky_color", it.skyColor)
-                encode(EnumCodecs.GRASS_COLOR_MODIFIER, "grass_color_modifier", it.grassColorModifier)
-                encode(Codecs.COLOR, "foliage_color", it.foliageColor)
-                encode(Codecs.COLOR, "grass_color", it.grassColor)
-                encode(KryptonAmbientParticleSettings.ENCODER, "particle", it.ambientParticleSettings)
-                encode(Codecs.SOUND_EVENT, "ambient_sound", it.ambientLoopSound)
-                encode(KryptonAmbientMoodSettings.ENCODER, "mood_sound", it.ambientMoodSettings)
-                encode(KryptonAmbientAdditionsSettings.ENCODER, "additions_sound", it.ambientAdditionsSettings)
-                encode(KryptonMusic.ENCODER, "music", it.backgroundMusic)
-            }
+        val CODEC: Codec<BiomeEffects> = CompoundCodecBuilder.create { instance ->
+            instance.group(
+                Codecs.COLOR.field("fog_color").getting(BiomeEffects::fogColor),
+                Codecs.COLOR.field("water_color").getting(BiomeEffects::waterColor),
+                Codecs.COLOR.field("water_fog_color").getting(BiomeEffects::waterFogColor),
+                Codecs.COLOR.field("sky_color").getting(BiomeEffects::skyColor),
+                EnumCodecs.GRASS_COLOR_MODIFIER.field("grass_color_modifier").getting(BiomeEffects::grassColorModifier),
+                Codecs.COLOR.nullableField("foliage_color").getting(BiomeEffects::foliageColor),
+                Codecs.COLOR.nullableField("grass_color").getting(BiomeEffects::grassColor),
+                KryptonAmbientParticleSettings.CODEC.nullableField("particle").getting(BiomeEffects::ambientParticleSettings),
+                Codecs.SOUND_EVENT.nullableField("ambient_sound").getting(BiomeEffects::ambientLoopSound),
+                KryptonAmbientMoodSettings.CODEC.nullableField("mood_sound").getting(BiomeEffects::ambientMoodSettings),
+                KryptonAmbientAdditionsSettings.CODEC.nullableField("additions_sound").getting(BiomeEffects::ambientAdditionsSettings),
+                KryptonMusic.CODEC.nullableField("music").getting(BiomeEffects::backgroundMusic)
+            ).apply(instance, ::KryptonBiomeEffects)
         }
     }
 }

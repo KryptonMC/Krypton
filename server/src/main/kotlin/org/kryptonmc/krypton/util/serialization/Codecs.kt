@@ -18,101 +18,97 @@
  */
 package org.kryptonmc.krypton.util.serialization
 
+import kotlinx.collections.immutable.persistentListOf
 import net.kyori.adventure.key.Key
-import net.kyori.adventure.key.Keyed
 import org.kryptonmc.api.effect.particle.ParticleType
 import org.kryptonmc.api.effect.sound.SoundEvent
 import org.kryptonmc.api.registry.Registries
-import org.kryptonmc.api.registry.Registry
 import org.kryptonmc.api.resource.ResourceKey
 import org.kryptonmc.api.resource.ResourceKeys
 import org.kryptonmc.api.util.Color
 import org.kryptonmc.api.world.World
+import org.kryptonmc.krypton.effect.sound.KryptonSoundEvent
+import org.kryptonmc.krypton.resource.KryptonResourceKey
+import org.kryptonmc.krypton.util.toIntArray
 import org.kryptonmc.krypton.util.toUUID
-import org.kryptonmc.nbt.ByteTag
-import org.kryptonmc.nbt.DoubleTag
-import org.kryptonmc.nbt.FloatTag
-import org.kryptonmc.nbt.IntTag
-import org.kryptonmc.nbt.LongTag
-import org.kryptonmc.nbt.StringTag
-import org.kryptonmc.nbt.Tag
+import org.kryptonmc.serialization.Codec
+import org.kryptonmc.serialization.codecs.CompoundCodecBuilder
+import org.kryptonmc.serialization.codecs.EitherCodec
+import org.kryptonmc.util.Either
+import org.kryptonmc.util.Pair
 import org.spongepowered.math.vector.Vector3i
+import java.util.Arrays
+import java.util.Objects
 import java.util.UUID
+import java.util.function.BiFunction
+import java.util.function.Function
+import java.util.stream.IntStream
 
 object Codecs {
 
     @JvmField
-    val BOOLEAN: Codec<ByteTag, Boolean> = Codec.of(ByteTag::of) { it.value != 0.toByte() }
+    val COLOR: Codec<Color> = Codec.INT.xmap(Color::of, Color::value)
     @JvmField
-    val INTEGER: IntCodec<Int> = IntCodec.of({ it }, { it })
+    val UUID: Codec<UUID> = Codec.INT_STREAM.xmap({ fixedSize(it, 4).toUUID() }, { Arrays.stream(it.toIntArray()) })
     @JvmField
-    val LONG: Codec<LongTag, Long> = Codec.of(LongTag::of, LongTag::value)
+    val KEY: Codec<Key> = Codec.STRING.xmap(Key::key, Key::asString)
     @JvmField
-    val FLOAT: Codec<FloatTag, Float> = Codec.of(FloatTag::of, FloatTag::value)
+    val VECTOR3I_ARRAY: Codec<Vector3i> = Codec.INT_STREAM.xmap({
+        val array = fixedSize(it, 3)
+        Vector3i(array[0], array[1], array[2])
+    }, { IntStream.of(it.x(), it.y(), it.z()) })
     @JvmField
-    val DOUBLE: Codec<DoubleTag, Double> = Codec.of(DoubleTag::of, DoubleTag::value)
+    val SOUND_EVENT: Codec<SoundEvent> = KEY.xmap(::KryptonSoundEvent, SoundEvent::key)
+    // TODO: Look at the particle type codec, since it's not that great here
     @JvmField
-    val STRING: StringCodec<String> = StringCodec.of({ it }, { it })
-
+    val PARTICLE: Codec<ParticleType> = KEY.xmap({ Registries.PARTICLE_TYPE[it]!! }, ParticleType::key)
     @JvmField
-    val COLOR: IntCodec<Color> = IntCodec.of(Color::value, Color::of)
-    @JvmField
-    val UUID: IntArrayCodec<UUID> = IntArrayCodec.of(
-        {
-            val most = it.mostSignificantBits
-            val least = it.leastSignificantBits
-            intArrayOf((most shr 32).toInt(), most.toInt(), (least shr 32).toInt(), least.toInt())
-        },
-        { it.fixedSize(4).toUUID() }
-    )
-    @JvmField
-    val KEY: StringCodec<Key> = StringCodec.of(Key::asString, Key::key)
-    @JvmField
-    val VECTOR3I_ARRAY: IntArrayCodec<Vector3i> = IntArrayCodec.of(
-        { intArrayOf(it.x(), it.y(), it.z()) },
-        {
-            val array = it.fixedSize(3)
-            Vector3i(array[0], array[1], array[2])
-        }
-    )
-    @JvmField
-    val SOUND_EVENT: Codec<StringTag, SoundEvent> = KEY.transform(SoundEvent::key) { Registries.SOUND_EVENT[it]!! }
-    @JvmField
-    val PARTICLE: Codec<StringTag, ParticleType> = KEY.transform(ParticleType::key) { Registries.PARTICLE_TYPE[it]!! }
-    @JvmField
-    val DIMENSION: Codec<StringTag, ResourceKey<World>> = KEY.transform(ResourceKey<World>::location) { ResourceKey.of(ResourceKeys.DIMENSION, it) }
+    val DIMENSION: Codec<ResourceKey<World>> = KryptonResourceKey.codec(ResourceKeys.DIMENSION)
 
     @JvmStatic
-    @Suppress("UNCHECKED_CAST")
-    fun <K, V> map(keyCodec: StringCodec<K>, valueCodec: Codec<out Tag, V>): MapCodec<K, V> = MapCodec(keyCodec, valueCodec as Codec<Tag, V>)
-
-    @JvmStatic
-    fun <T> map(valueCodec: Codec<out Tag, T>): MapCodec<String, T> = map(STRING, valueCodec)
-
-    @JvmStatic
-    fun range(minimum: Int, maximum: Int): Codec<IntTag, Int> {
-        val checker: (Int) -> Int = {
-            require(it in minimum..maximum) { "Value $it is outside of expected range $minimum to $maximum!" }
-            it
-        }
-        return INTEGER.transform(checker, checker)
+    fun fixedSize(stream: IntStream, size: Int): IntArray {
+        val array = stream.limit((size + 1).toLong()).toArray()
+        check(array.size == size) { "Input is not an array of exactly $size integers! Array: $array, size: ${array.size}" }
+        return array
     }
 
     @JvmStatic
-    fun range(minimum: Double, maximum: Double): Codec<DoubleTag, Double> {
-        val checker: (Double) -> Double = {
-            require(it in minimum..maximum) { "Value $it is outside of expected range $minimum to $maximum!" }
-            it
-        }
-        return DOUBLE.transform(checker, checker)
+    fun <E> fixedSize(list: List<E>, size: Int): List<E> {
+        check(list.size == size) { "Input is not a list of exactly $size values! List: $list, size: ${list.size}" }
+        return list
     }
 
     @JvmStatic
-    fun <E : Keyed> forRegistry(registry: Registry<E>): StringCodec<E> =
-        StringCodec.of({ it.key().value() }, { requireNotNull(registry[Key.key(it)]) { "Could not find any element with name matching $it!" } })
-}
+    fun <P, I> interval(
+        elementCodec: Codec<P>,
+        firstName: String,
+        secondName: String,
+        mapper: BiFunction<P, P, I>,
+        firstGetter: Function<I, P>,
+        secondGetter: Function<I, P>
+    ): Codec<I> {
+        val codec = Codec.list(elementCodec).xmap({
+            val list = fixedSize(it, 2)
+            mapper.apply(list[0], list[1])
+        }, { persistentListOf(firstGetter.apply(it), secondGetter.apply(it)) })
+        @Suppress("RemoveExplicitTypeArguments") // Without the type arguments, we get errors, so idk what Kotlin is on about here
+        val fieldCodec: Codec<I> = CompoundCodecBuilder.create<Pair<P, P>> { instance ->
+            instance.group(
+                elementCodec.field(firstName).getting { it.first },
+                elementCodec.field(secondName).getting { it.second }
+            ).apply(instance, ::Pair)
+        }.xmap({ mapper.apply(it.first, it.second) }, { Pair.of(firstGetter.apply(it), secondGetter.apply(it)) })
+        val eitherCodec = EitherCodec(codec, fieldCodec).xmap({ either -> either.map({ it }, { it }) }, { Either.left(it) })
+        return Codec.either(elementCodec, eitherCodec).xmap({ either -> either.map({ mapper.apply(it, it) }, { it }) }, {
+            val first = firstGetter.apply(it)
+            val second = secondGetter.apply(it)
+            if (Objects.equals(first, second)) Either.left(first) else Either.right(it)
+        })
+    }
 
-private fun IntArray.fixedSize(expected: Int): IntArray {
-    if (size == expected) return this
-    throw IllegalArgumentException("Input is not an array of integers with size $expected!")
+    @JvmStatic
+    fun <E> stringResolver(toString: Function<E, String?>, fromString: Function<String, E?>): Codec<E> = Codec.STRING.xmap(
+        { checkNotNull(fromString.apply(it)) { "Unknown element name $it!" } },
+        { checkNotNull(toString.apply(it)) { "Element with unknown name $it!" } }
+    )
 }

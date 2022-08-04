@@ -41,7 +41,7 @@ data class KryptonItemStack(override val type: ItemType, override val amount: In
         put("tag", meta.data)
     }
 
-    fun save(): CompoundTag = save(CompoundTag.builder()).build()
+    fun save(): CompoundTag = save(CompoundTag.immutableBuilder()).build()
 
     fun isEmpty(): Boolean {
         if (type !== ItemTypes.AIR) return amount <= 0

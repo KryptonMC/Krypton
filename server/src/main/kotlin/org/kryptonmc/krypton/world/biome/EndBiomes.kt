@@ -18,7 +18,6 @@
  */
 package org.kryptonmc.krypton.world.biome
 
-import net.kyori.adventure.key.Key
 import org.kryptonmc.api.util.Color
 import org.kryptonmc.api.world.biome.Climate
 import org.kryptonmc.api.world.biome.Precipitation
@@ -32,22 +31,22 @@ object EndBiomes {
     private val FOG = Color.of(160, 128, 160)
 
     @JvmStatic
-    fun endBarrens(key: Key): KryptonBiome = baseEnd(key)
+    fun endBarrens(): KryptonBiome = baseEnd()
 
     @JvmStatic
-    fun theEnd(key: Key): KryptonBiome = baseEnd(key)
+    fun theEnd(): KryptonBiome = baseEnd()
 
     @JvmStatic
-    fun endMidlands(key: Key): KryptonBiome = baseEnd(key)
+    fun endMidlands(): KryptonBiome = baseEnd()
 
     @JvmStatic
-    fun endHighlands(key: Key): KryptonBiome = baseEnd(key)
+    fun endHighlands(): KryptonBiome = baseEnd()
 
     @JvmStatic
-    fun smallEndIslands(key: Key): KryptonBiome = baseEnd(key)
+    fun smallEndIslands(): KryptonBiome = baseEnd()
 
     @JvmStatic
-    private fun baseEnd(key: Key): KryptonBiome = biome(key) {
+    private fun baseEnd(): KryptonBiome = biome {
         climate(Climate.of(Precipitation.NONE, TEMPERATURE, DOWNFALL, TemperatureModifier.NONE))
         effects {
             waterColor(OverworldBiomes.OVERWORLD_WATER)
