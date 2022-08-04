@@ -43,7 +43,8 @@ data class PacketOutPlayerChatMessage(
         buf.readComponent(),
         buf.readNullable { buf.readComponent() },
         buf.readVarInt(),
-        ChatSender(buf),
+        // FIXME: When we fix chat, this needs to be sorted
+        ChatSender.SYSTEM,
         MessageSignature(buf)
     )
 
@@ -51,7 +52,8 @@ data class PacketOutPlayerChatMessage(
         buf.writeComponent(signedMessage)
         buf.writeNullable(unsignedMessage, ByteBuf::writeComponent)
         buf.writeVarInt(typeId)
-        sender.write(buf)
+        // FIXME: When we fix chat, this needs to be sorted
+        //sender.write(buf)
         signature.write(buf)
     }
 }

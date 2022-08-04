@@ -21,11 +21,10 @@ package org.kryptonmc.krypton.world.biome
 import org.kryptonmc.api.world.biome.Climate
 import org.kryptonmc.api.world.biome.Precipitation
 import org.kryptonmc.api.world.biome.TemperatureModifier
-import org.kryptonmc.krypton.util.serialization.Codecs
-import org.kryptonmc.krypton.util.serialization.CompoundEncoder
 import org.kryptonmc.krypton.util.serialization.EnumCodecs
-import org.kryptonmc.krypton.util.serialization.encode
-import org.kryptonmc.nbt.compound
+import org.kryptonmc.serialization.Codec
+import org.kryptonmc.serialization.MapCodec
+import org.kryptonmc.serialization.codecs.CompoundCodecBuilder
 
 @JvmRecord
 data class KryptonClimate(
@@ -76,13 +75,13 @@ data class KryptonClimate(
         val DEFAULT: Climate = Builder().build()
 
         @JvmField
-        val ENCODER: CompoundEncoder<Climate> = CompoundEncoder {
-            compound {
-                encode(EnumCodecs.PRECIPITATION, "precipitation", it.precipitation)
-                encode(Codecs.FLOAT, "temperature", it.temperature)
-                encode(Codecs.FLOAT, "downfall", it.downfall)
-                encode(EnumCodecs.TEMPERATURE_MODIFIER, "temperature_modifier", it.temperatureModifier)
-            }
+        val CODEC: MapCodec<Climate> = CompoundCodecBuilder.createMap { instance ->
+            instance.group(
+                EnumCodecs.PRECIPITATION.field("precipitation").getting(Climate::precipitation),
+                Codec.FLOAT.field("temperature").getting(Climate::temperature),
+                Codec.FLOAT.field("downfall").getting(Climate::downfall),
+                EnumCodecs.TEMPERATURE_MODIFIER.field("temperature_modifier").getting(Climate::temperatureModifier)
+            ).apply(instance, ::KryptonClimate)
         }
     }
 }

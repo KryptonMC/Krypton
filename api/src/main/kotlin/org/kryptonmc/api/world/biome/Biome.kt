@@ -9,14 +9,12 @@
 package org.kryptonmc.api.world.biome
 
 import net.kyori.adventure.builder.AbstractBuilder
-import net.kyori.adventure.key.Key
 import net.kyori.adventure.key.Keyed
 import org.jetbrains.annotations.ApiStatus
 import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.Krypton
 import org.kryptonmc.api.util.Buildable
 import org.kryptonmc.api.util.CataloguedBy
-import org.kryptonmc.api.util.KeyedBuilder
 import org.kryptonmc.api.util.provide
 import java.util.function.Consumer
 
@@ -43,7 +41,7 @@ public interface Biome : Buildable<Biome.Builder, Biome>, Keyed {
      * A builder for biomes.
      */
     @BiomeDsl
-    public interface Builder : AbstractBuilder<Biome>, KeyedBuilder<Biome, Builder> {
+    public interface Builder : AbstractBuilder<Biome> {
 
         /**
          * Sets the climate of the biome to the given [climate] and returns
@@ -119,7 +117,7 @@ public interface Biome : Buildable<Biome.Builder, Biome>, Keyed {
     @ApiStatus.Internal
     public interface Factory {
 
-        public fun builder(key: Key): Builder
+        public fun builder(): Builder
     }
 
     public companion object {
@@ -127,13 +125,12 @@ public interface Biome : Buildable<Biome.Builder, Biome>, Keyed {
         private val FACTORY = Krypton.factoryProvider.provide<Factory>()
 
         /**
-         * Creates a new builder for biomes with the given [key].
+         * Creates a new builder for building a new biome.
          *
-         * @param key the key
          * @return a new builder
          */
         @JvmStatic
         @Contract("_ -> new", pure = true)
-        public fun builder(key: Key): Builder = FACTORY.builder(key)
+        public fun builder(): Builder = FACTORY.builder()
     }
 }

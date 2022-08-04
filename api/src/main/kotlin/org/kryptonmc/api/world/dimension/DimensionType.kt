@@ -18,7 +18,6 @@ import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.tags.Tag
 import org.kryptonmc.api.util.Buildable
 import org.kryptonmc.api.util.CataloguedBy
-import org.kryptonmc.api.util.KeyedBuilder
 import org.kryptonmc.api.util.provide
 import java.util.OptionalLong
 
@@ -126,11 +125,11 @@ public interface DimensionType : Buildable<DimensionType.Builder, DimensionType>
     public val coordinateScale: Double
 
     /**
-     * The settings for specific effects that may or may not occur in the
-     * dimension, depending on what this is set to.
+     * The location where the client can find the settings for the effects this
+     * dimension type will have on the environment.
      */
     @get:JvmName("effects")
-    public val effects: DimensionEffect
+    public val effects: Key
 
     /**
      * The minimum light level that monsters can spawn at.
@@ -154,7 +153,7 @@ public interface DimensionType : Buildable<DimensionType.Builder, DimensionType>
      * A builder for dimension types.
      */
     @DimensionTypeDsl
-    public interface Builder : AbstractBuilder<DimensionType>, KeyedBuilder<DimensionType, Builder> {
+    public interface Builder : AbstractBuilder<DimensionType> {
 
         /**
          * Makes the dimension type safe for piglins.
@@ -509,15 +508,16 @@ public interface DimensionType : Buildable<DimensionType.Builder, DimensionType>
         public fun coordinateScale(scale: Double): Builder
 
         /**
-         * Sets the effects settings for the dimension type.
+         * Sets the location that will be used by the client to look up the
+         * effects for the dimension type.
          *
-         * @param effects the effects settings
+         * @param effects the effects settings location
          * @return this builder
          * @see DimensionType.effects
          */
         @DimensionTypeDsl
         @Contract("_ -> this", mutates = "this")
-        public fun effects(effects: DimensionEffect): Builder
+        public fun effects(effects: Key): Builder
 
         /**
          * Sets the minimum monster spawn light level for the dimension type to
@@ -576,7 +576,7 @@ public interface DimensionType : Buildable<DimensionType.Builder, DimensionType>
     @ApiStatus.Internal
     public interface Factory {
 
-        public fun builder(key: Key): Builder
+        public fun builder(): Builder
     }
 
     public companion object {
@@ -586,11 +586,10 @@ public interface DimensionType : Buildable<DimensionType.Builder, DimensionType>
         /**
          * Creates a new builder for building dimension types.
          *
-         * @param key the key
          * @return a new builder
          */
         @JvmStatic
         @Contract("_ -> new", pure = true)
-        public fun builder(key: Key): Builder = FACTORY.builder(key)
+        public fun builder(): Builder = FACTORY.builder()
     }
 }

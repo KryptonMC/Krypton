@@ -207,7 +207,7 @@ class PlayHandler(override val server: KryptonServer, override val session: Sess
         if (isChatExpired(timestamp)) {
             LOGGER.warn("Expired chat message $message received from ${player.profile.name}. Are we out of sync with the client?")
         }
-        return resetLastActionTime()
+        return true
     }
 
     private fun updateChatOrder(timestamp: Instant): Boolean {
@@ -221,9 +221,10 @@ class PlayHandler(override val server: KryptonServer, override val session: Sess
     private fun isChatExpired(timestamp: Instant): Boolean = Instant.now().isAfter(timestamp.plus(CHAT_EXPIRE_DURATION))
 
     private fun resetLastActionTime(): Boolean {
+        // TODO: Fix chat (again)
         if (player.chatVisibility == ChatVisibility.HIDDEN) {
-            val systemTypeId = InternalRegistries.CHAT_TYPE.idOf(ChatTypes.SYSTEM)
-            session.send(PacketOutSystemChatMessage(Component.translatable("chat.disabled.options", NamedTextColor.RED), systemTypeId))
+//            val systemTypeId = InternalRegistries.CHAT_TYPE.idOf(ChatTypes.SYSTEM)
+//            session.send(PacketOutSystemChatMessage(Component.translatable("chat.disabled.options", NamedTextColor.RED), systemTypeId))
             return false
         }
         player.resetLastActionTime()

@@ -37,7 +37,6 @@ import org.kryptonmc.api.user.ban.BanType
 import org.kryptonmc.api.util.Catalogue
 import org.kryptonmc.api.world.biome.Biome
 import org.kryptonmc.api.world.damage.type.DamageType
-import org.kryptonmc.api.world.dimension.DimensionEffect
 import org.kryptonmc.api.world.dimension.DimensionType
 import org.kryptonmc.api.world.rule.GameRule
 
@@ -100,8 +99,6 @@ public object Registries {
     public val MODIFIER_OPERATIONS: Registry<ModifierOperation> = create(ResourceKeys.MODIFIER_OPERATIONS)
     @JvmField
     public val CRITERIA: Registry<Criterion> = create(ResourceKeys.CRITERIA)
-    @JvmField
-    public val DIMENSION_EFFECTS: Registry<DimensionEffect> = create(ResourceKeys.DIMENSION_EFFECTS)
     @JvmField
     public val ITEM_RARITIES: Registry<ItemRarity> = create(ResourceKeys.ITEM_RARITIES)
     @JvmField

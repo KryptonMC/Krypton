@@ -20,54 +20,78 @@ package org.kryptonmc.krypton.world.dimension
 
 import net.kyori.adventure.key.Key
 import org.kryptonmc.api.block.Block
+import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.api.tags.BlockTags
 import org.kryptonmc.api.tags.Tag
-import org.kryptonmc.api.world.dimension.DimensionEffect
-import org.kryptonmc.api.world.dimension.DimensionEffects
 import org.kryptonmc.api.world.dimension.DimensionType
+import org.kryptonmc.krypton.tags.KryptonTagManager
+import org.kryptonmc.krypton.util.provider.ConstantInt
 import org.kryptonmc.krypton.util.provider.IntProvider
-import org.kryptonmc.krypton.util.provider.UniformIntProvider
+import org.kryptonmc.krypton.util.provider.UniformInt
 import org.kryptonmc.krypton.util.serialization.Codecs
-import org.kryptonmc.krypton.util.serialization.CompoundDecoder
-import org.kryptonmc.krypton.util.serialization.CompoundEncoder
-import org.kryptonmc.krypton.util.serialization.decode
-import org.kryptonmc.krypton.util.serialization.encode
-import org.kryptonmc.nbt.compound
+import org.kryptonmc.krypton.util.serialization.asOptionalLong
+import org.kryptonmc.serialization.Codec
+import org.kryptonmc.serialization.MapCodec
+import org.kryptonmc.serialization.codecs.CompoundCodecBuilder
 import java.util.OptionalLong
 
 @JvmRecord
 data class KryptonDimensionType(
-    private val key: Key,
-    override val isPiglinSafe: Boolean,
-    override val isNatural: Boolean,
-    override val isUltrawarm: Boolean,
+    override val fixedTime: OptionalLong,
     override val hasSkylight: Boolean,
     override val hasCeiling: Boolean,
-    override val hasRaids: Boolean,
+    override val isUltrawarm: Boolean,
+    override val isNatural: Boolean,
+    override val coordinateScale: Double,
     override val allowBeds: Boolean,
     override val allowRespawnAnchors: Boolean,
-    override val ambientLight: Float,
-    override val fixedTime: OptionalLong,
-    override val infiniburn: Tag<Block>,
     override val minimumY: Int,
     override val height: Int,
     override val logicalHeight: Int,
-    override val coordinateScale: Double,
-    override val effects: DimensionEffect,
-    val monsterSpawnLightLevel: IntProvider,
-    override val monsterSpawnBlockLightLimit: Int
+    override val infiniburn: Tag<Block>,
+    override val effects: Key,
+    override val ambientLight: Float,
+    val monsterSettings: MonsterSettings
 ) : DimensionType {
 
+    override val isPiglinSafe: Boolean
+        get() = monsterSettings.piglinSafe
+    override val hasRaids: Boolean
+        get() = monsterSettings.hasRaids
     override val minimumMonsterSpawnLightLevel: Int
-        get() = monsterSpawnLightLevel.minimumValue
+        get() = monsterSettings.monsterSpawnLightLevel.minimumValue
     override val maximumMonsterSpawnLightLevel: Int
-        get() = monsterSpawnLightLevel.maximumValue
+        get() = monsterSettings.monsterSpawnLightLevel.maximumValue
+    override val monsterSpawnBlockLightLimit: Int
+        get() = monsterSettings.monsterSpawnBlockLightLimit
 
-    override fun key(): Key = key
+    override fun key(): Key = Registries.DIMENSION_TYPE[this] ?: UNREGISTERED_KEY
 
     override fun toBuilder(): Builder = Builder(this)
 
-    class Builder(private var key: Key) : DimensionType.Builder {
+    @JvmRecord
+    data class MonsterSettings(
+        val piglinSafe: Boolean,
+        val hasRaids: Boolean,
+        val monsterSpawnLightLevel: IntProvider,
+        val monsterSpawnBlockLightLimit: Int
+    ) {
+
+        companion object {
+
+            @JvmField
+            val CODEC: MapCodec<MonsterSettings> = CompoundCodecBuilder.createMap {
+                it.group(
+                    Codec.BOOLEAN.field("piglin_safe").getting(MonsterSettings::piglinSafe),
+                    Codec.BOOLEAN.field("has_raids").getting(MonsterSettings::hasRaids),
+                    IntProvider.codec(0, 15).field("monster_spawn_light_level").getting(MonsterSettings::monsterSpawnLightLevel),
+                    Codec.intRange(0, 15).field("monster_spawn_block_light_limit").getting(MonsterSettings::monsterSpawnBlockLightLimit)
+                ).apply(it, ::MonsterSettings)
+            }
+        }
+    }
+
+    class Builder() : DimensionType.Builder {
 
         private var piglinSafe = false
         private var natural = false
@@ -84,13 +108,12 @@ data class KryptonDimensionType(
         private var height = 0
         private var logicalHeight = 0
         private var coordinateScale = 1.0
-        private var effects = DimensionEffects.OVERWORLD
-        private var monsterSpawnLightLevel: IntProvider? = null
+        private var effects = KryptonDimensionTypes.OVERWORLD_EFFECTS
         private var minimumMonsterSpawnLightLevel = 0
         private var maximumMonsterSpawnLightLevel = 0
         private var monsterSpawnBlockLightLimit = 0
 
-        constructor(type: DimensionType) : this(type.key()) {
+        constructor(type: DimensionType) : this() {
             piglinSafe = type.isPiglinSafe
             natural = type.isNatural
             ultrawarm = type.isUltrawarm
@@ -108,8 +131,6 @@ data class KryptonDimensionType(
             coordinateScale = type.coordinateScale
             effects = type.effects
         }
-
-        override fun key(key: Key): Builder = apply { this.key = key }
 
         override fun piglinSafe(safe: Boolean): Builder = apply { piglinSafe = safe }
 
@@ -146,7 +167,7 @@ data class KryptonDimensionType(
 
         override fun coordinateScale(scale: Double): Builder = apply { coordinateScale = scale }
 
-        override fun effects(effects: DimensionEffect): Builder = apply { this.effects = effects }
+        override fun effects(effects: Key): Builder = apply { this.effects = effects }
 
         override fun minimumMonsterSpawnLightLevel(level: Int): Builder = apply { minimumMonsterSpawnLightLevel = level }
 
@@ -154,38 +175,38 @@ data class KryptonDimensionType(
 
         override fun monsterSpawnBlockLightLimit(limit: Int): Builder = apply { monsterSpawnBlockLightLimit = limit }
 
-        fun monsterSpawnLightLevel(provider: IntProvider): Builder = apply { this.monsterSpawnLightLevel = provider }
-
         override fun build(): KryptonDimensionType = KryptonDimensionType(
-            key,
-            piglinSafe,
-            natural,
-            ultrawarm,
+            fixedTime,
             skylight,
             ceiling,
-            raids,
+            ultrawarm,
+            natural,
+            coordinateScale,
             beds,
             respawnAnchors,
-            ambientLight,
-            fixedTime,
-            infiniburn,
             minimumY,
             height,
             logicalHeight,
-            coordinateScale,
+            infiniburn,
             effects,
-            monsterSpawnLightLevel ?: UniformIntProvider(minimumMonsterSpawnLightLevel, maximumMonsterSpawnLightLevel),
-            monsterSpawnBlockLightLimit
+            ambientLight,
+            MonsterSettings(piglinSafe, raids, createSpawnLightLevelProvider(), monsterSpawnBlockLightLimit)
         )
+
+        private fun createSpawnLightLevelProvider(): IntProvider {
+            if (minimumMonsterSpawnLightLevel == maximumMonsterSpawnLightLevel) return ConstantInt.of(minimumMonsterSpawnLightLevel)
+            return UniformInt(minimumMonsterSpawnLightLevel, maximumMonsterSpawnLightLevel)
+        }
     }
 
     object Factory : DimensionType.Factory {
 
-        override fun builder(key: Key): DimensionType.Builder = Builder(key)
+        override fun builder(): DimensionType.Builder = Builder()
     }
 
     companion object {
 
+        private val UNREGISTERED_KEY = Key.key("krypton", "unregistered_dimension_type")
         private const val MINIMUM_COORDINATE_SCALE = 1.0E-5
         private const val MAXIMUM_COORDINATE_SCALE = 3.0E7
         private const val MINIMUM_HEIGHT = 16
@@ -195,35 +216,29 @@ data class KryptonDimensionType(
         private const val Y_SIZE = (1 shl ENCODED_Y_BITS) - 32
         private const val MAX_Y = (Y_SIZE shr 1) - 1
         private const val MIN_Y = MAX_Y - Y_SIZE + 1
-        private val MINIMUM_Y_CODEC = Codecs.range(MIN_Y, MAX_Y)
-        private val HEIGHT_CODEC = Codecs.range(MINIMUM_HEIGHT, Y_SIZE)
-        private val LOGICAL_HEIGHT_CODEC = Codecs.range(0, Y_SIZE)
-        private val COORDINATE_SCALE_CODEC = Codecs.range(MINIMUM_COORDINATE_SCALE, MAXIMUM_COORDINATE_SCALE)
-
-        private val MONSTER_SPAWN_LIGHT_LEVEL_ENCODER = IntProvider.encoder(0, 15)
         @JvmField
         @Suppress("UNCHECKED_CAST")
-        val ENCODER: CompoundEncoder<DimensionType> = CompoundEncoder {
-            compound {
-                boolean("piglin_safe", it.isPiglinSafe)
-                boolean("natural", it.isNatural)
-                boolean("ultrawarm", it.isUltrawarm)
-                boolean("has_skylight", it.hasSkylight)
-                boolean("has_ceiling", it.hasCeiling)
-                boolean("has_raids", it.hasRaids)
-                boolean("bed_works", it.allowBeds)
-                boolean("respawn_anchor_works", it.allowRespawnAnchors)
-                float("ambient_light", it.ambientLight)
-                it.fixedTime.ifPresent { long("fixed_time", it) }
-                string("infiniburn", "#${it.infiniburn.key().asString()}")
-                encode(MINIMUM_Y_CODEC, "min_y", it.minimumY)
-                encode(HEIGHT_CODEC, "height", it.height)
-                encode(LOGICAL_HEIGHT_CODEC, "logical_height", it.logicalHeight)
-                encode(COORDINATE_SCALE_CODEC, "coordinate_scale", it.coordinateScale)
-                encode(Codecs.KEY, "effects", it.effects.key())
-                if (it is KryptonDimensionType) encode(MONSTER_SPAWN_LIGHT_LEVEL_ENCODER, "monster_spawn_light_level", it.monsterSpawnLightLevel)
-                int("monster_spawn_block_light_limit", it.monsterSpawnBlockLightLimit)
-            }
+        val DIRECT_CODEC: Codec<DimensionType> = CompoundCodecBuilder.create { instance ->
+            instance.group(
+                Codec.LONG.optionalField("fixed_time").asOptionalLong().getting(DimensionType::fixedTime),
+                Codec.BOOLEAN.field("has_skylight").getting(DimensionType::hasSkylight),
+                Codec.BOOLEAN.field("has_ceiling").getting(DimensionType::hasCeiling),
+                Codec.BOOLEAN.field("ultrawarm").getting(DimensionType::isUltrawarm),
+                Codec.BOOLEAN.field("natural").getting(DimensionType::isNatural),
+                Codec.doubleRange(MINIMUM_COORDINATE_SCALE, MAXIMUM_COORDINATE_SCALE).field("coordinate_scale")
+                    .getting(DimensionType::coordinateScale),
+                Codec.BOOLEAN.field("bed_works").getting(DimensionType::allowBeds),
+                Codec.BOOLEAN.field("respawn_anchor_works").getting(DimensionType::allowRespawnAnchors),
+                Codec.intRange(MIN_Y, MAX_Y).field("min_y").getting(DimensionType::minimumY),
+                Codec.intRange(MINIMUM_HEIGHT, Y_SIZE).field("height").getting(DimensionType::height),
+                Codec.intRange(0, Y_SIZE).field("logical_height").getting(DimensionType::logicalHeight),
+                // TODO: This codec is complete rubbish, but it'll be changed in the next version when we rewrite the tag API
+                Codecs.KEY.xmap({ KryptonTagManager.tags[Registries.TAG_TYPES[it]]!![0] as Tag<Block> }, { it.key() }).field("infiniburn")
+                    .getting(DimensionType::infiniburn),
+                Codecs.KEY.field("effects").getting(DimensionType::effects),
+                Codec.FLOAT.field("ambient_light").getting(DimensionType::ambientLight),
+                MonsterSettings.CODEC.getting { (it as KryptonDimensionType).monsterSettings }
+            ).apply(instance, ::KryptonDimensionType)
         }
     }
 }

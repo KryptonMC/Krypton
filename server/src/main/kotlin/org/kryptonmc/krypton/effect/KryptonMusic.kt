@@ -21,9 +21,8 @@ package org.kryptonmc.krypton.effect
 import org.kryptonmc.api.effect.Music
 import org.kryptonmc.api.effect.sound.SoundEvent
 import org.kryptonmc.krypton.util.serialization.Codecs
-import org.kryptonmc.krypton.util.serialization.CompoundEncoder
-import org.kryptonmc.krypton.util.serialization.encode
-import org.kryptonmc.nbt.compound
+import org.kryptonmc.serialization.Codec
+import org.kryptonmc.serialization.codecs.CompoundCodecBuilder
 
 @JvmRecord
 data class KryptonMusic(
@@ -46,13 +45,13 @@ data class KryptonMusic(
         private const val TWENTY_MINUTES = 24000
 
         @JvmField
-        val ENCODER: CompoundEncoder<Music> = CompoundEncoder {
-            compound {
-                encode(Codecs.SOUND_EVENT, "sound", it.sound)
-                encode(Codecs.INTEGER, "min_delay", it.minimumDelay)
-                encode(Codecs.INTEGER, "max_delay", it.maximumDelay)
-                encode(Codecs.BOOLEAN, "replace_current_music", it.replaceCurrentMusic)
-            }
+        val CODEC: Codec<Music> = CompoundCodecBuilder.create { instance ->
+            instance.group(
+                Codecs.SOUND_EVENT.field("sound").getting(Music::sound),
+                Codec.INT.field("min_delay").getting(Music::minimumDelay),
+                Codec.INT.field("max_delay").getting(Music::maximumDelay),
+                Codec.BOOLEAN.field("replace_current_music").getting(Music::replaceCurrentMusic)
+            ).apply(instance, ::KryptonMusic)
         }
 
         @JvmStatic

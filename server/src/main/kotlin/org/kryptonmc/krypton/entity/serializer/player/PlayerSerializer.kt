@@ -34,7 +34,6 @@ import org.kryptonmc.krypton.entity.serializer.LivingEntitySerializer
 import org.kryptonmc.krypton.service.KryptonVanishService
 import org.kryptonmc.krypton.util.GameModes
 import org.kryptonmc.krypton.util.serialization.Codecs
-import org.kryptonmc.krypton.util.serialization.encode
 import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.IntTag
 import org.kryptonmc.nbt.StringTag
@@ -130,7 +129,7 @@ object PlayerSerializer : EntitySerializer<KryptonPlayer> {
             int("SpawnZ", position.z())
             float("SpawnAngle", entity.respawnAngle)
             boolean("SpawnForced", entity.respawnForced)
-            encode(Codecs.DIMENSION, "SpawnDimension", entity.respawnDimension)
+            put("SpawnDimension", Codecs.DIMENSION.encode(entity.respawnDimension))
         }
 
         val rootVehicle = entity.rootVehicle

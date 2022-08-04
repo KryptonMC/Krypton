@@ -10,7 +10,6 @@
 @file:Suppress("MatchingDeclarationName")
 package org.kryptonmc.api.world.biome
 
-import net.kyori.adventure.key.Key
 import org.jetbrains.annotations.Contract
 
 @Target(AnnotationTarget.CLASS, AnnotationTarget.FUNCTION)
@@ -19,14 +18,13 @@ import org.jetbrains.annotations.Contract
 internal annotation class BiomeDsl
 
 /**
- * Creates a new biome with the given [key] and applies the given [builder] to
- * a new builder, then builds the result.
+ * Creates a new biome by applying the given [builder] to a new builder, then
+ * building the result.
  *
- * @param key the key
  * @param builder the builder
  * @return a new biome
  */
 @BiomeDsl
 @JvmSynthetic
 @Contract("_, _ -> new", pure = true)
-public inline fun biome(key: Key, builder: Biome.Builder.() -> Unit): Biome = Biome.builder(key).apply(builder).build()
+public inline fun biome(builder: Biome.Builder.() -> Unit): Biome = Biome.builder().apply(builder).build()

@@ -41,4 +41,4 @@ fun CompoundTag.putVector3i(key: String, vector: Vector3i): CompoundTag = put(ke
 
 fun CompoundTag.Builder.vector3i(key: String, vector: Vector3i): CompoundTag.Builder = put(key, vector.toCompound())
 
-private fun Vector3i.toCompound(): CompoundTag = CompoundTag.builder().int("X", x()).int("Y", y()).int("Z", z()).build()
+private fun Vector3i.toCompound(): CompoundTag = CompoundTag.immutableBuilder().int("X", x()).int("Y", y()).int("Z", z()).build()

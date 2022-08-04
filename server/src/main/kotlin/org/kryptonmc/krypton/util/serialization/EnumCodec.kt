@@ -16,24 +16,17 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.world.dimension
+package org.kryptonmc.krypton.util.serialization
 
-import net.kyori.adventure.key.Key
-import org.kryptonmc.api.registry.Registries
-import org.kryptonmc.api.world.dimension.DimensionEffect
+import org.kryptonmc.nbt.Tag
+import org.kryptonmc.serialization.Codec
+import java.util.function.Function
 
-object KryptonDimensionEffects {
+class EnumCodec<E : Enum<E>>(resolver: Function<String, E?>) : Codec<E> {
 
-    @JvmField
-    val OVERWORLD: DimensionEffect = register("overworld", true, true, false, false)
-    @JvmField
-    val THE_NETHER: DimensionEffect = register("the_nether", false, false, true, false)
-    @JvmField
-    val THE_END: DimensionEffect = register("the_end", false, false, false, true)
+    private val codec = Codecs.stringResolver({ it.name.lowercase() }, resolver)
 
-    @JvmStatic
-    private fun register(name: String, clouds: Boolean, celestialBodies: Boolean, fog: Boolean, endSky: Boolean): KryptonDimensionEffect {
-        val key = Key.key(name)
-        return Registries.DIMENSION_EFFECTS.register(key, KryptonDimensionEffect(key, clouds, celestialBodies, fog, endSky))
-    }
+    override fun decode(tag: Tag): E = codec.decode(tag)
+
+    override fun encode(value: E): Tag = codec.encode(value)
 }

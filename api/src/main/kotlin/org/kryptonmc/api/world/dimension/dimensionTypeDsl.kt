@@ -10,7 +10,6 @@
 @file:Suppress("MatchingDeclarationName")
 package org.kryptonmc.api.world.dimension
 
-import net.kyori.adventure.key.Key
 import org.jetbrains.annotations.Contract
 
 @Target(AnnotationTarget.CLASS, AnnotationTarget.FUNCTION)
@@ -19,14 +18,12 @@ import org.jetbrains.annotations.Contract
 internal annotation class DimensionTypeDsl
 
 /**
- * Creates a new dimension type with the given [key], applying the given
- * [builder] to a new dimension type builder and building the instance.
+ * Creates a new dimension type by applying the given [builder] to a new
+ * dimension type builder and building the instance.
  *
- * @param key the key
  * @param builder the builder to apply
  * @return a new dimension type
  */
 @DimensionTypeDsl
 @Contract("_, _ -> new", pure = true)
-public inline fun dimensionType(key: Key, builder: DimensionType.Builder.() -> Unit): DimensionType =
-    DimensionType.builder(key).apply(builder).build()
+public inline fun dimensionType(builder: DimensionType.Builder.() -> Unit): DimensionType = DimensionType.builder().apply(builder).build()

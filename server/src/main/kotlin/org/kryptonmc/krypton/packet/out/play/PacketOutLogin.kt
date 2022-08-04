@@ -113,8 +113,8 @@ data class PacketOutLogin(
 
         @JvmStatic
         fun createRegistryCodec(): CompoundTag = compound {
-            put(ResourceKeys.DIMENSION_TYPE.location.asString(), KryptonRegistries.DIMENSION_TYPE.encode(KryptonDimensionType.ENCODER))
-            put(ResourceKeys.BIOME.location.asString(), KryptonRegistries.BIOME.encode(KryptonBiome.ENCODER))
+            put(ResourceKeys.DIMENSION_TYPE.location.asString(), KryptonRegistries.DIMENSION_TYPE.encode(KryptonDimensionType.DIRECT_CODEC))
+            put(ResourceKeys.BIOME.location.asString(), KryptonRegistries.BIOME.encode(KryptonBiome.DIRECT_CODEC))
         }
     }
 }
