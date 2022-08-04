@@ -18,26 +18,12 @@
  */
 package org.kryptonmc.krypton.util.serialization
 
-import org.kryptonmc.nbt.Tag
+import org.kryptonmc.serialization.MapCodec
+import java.util.Optional
+import java.util.OptionalLong
+import java.util.function.Function
 
-interface Codec<T : Tag, U> : Encoder<U, T>, Decoder<T, U> {
+private val TO_OPTIONAL_LONG = Function<Optional<Long>, OptionalLong> { it.map(OptionalLong::of).orElseGet(OptionalLong::empty) }
+private val FROM_OPTIONAL_LONG = Function<OptionalLong, Optional<Long>> { if (it.isPresent) Optional.of(it.asLong) else Optional.empty() }
 
-    fun <V> transform(encodeTransformer: (V) -> U, decodeTransformer: (U) -> V): TransformingCodec<T, U, V> =
-        TransformingCodec(this, encodeTransformer, decodeTransformer)
-
-    @Suppress("UNCHECKED_CAST")
-    fun list(): ListCodec<U> = ListCodec(this as Codec<Tag, U>)
-
-    private class Passthrough<T : Tag, U>(private val encoder: Encoder<U, T>, private val decoder: Decoder<T, U>) : Codec<T, U> {
-
-        override fun encode(value: U): T = encoder.encode(value)
-
-        override fun decode(tag: T): U = decoder.decode(tag)
-    }
-
-    companion object {
-
-        @JvmStatic
-        fun <T : Tag, U> of(encoder: Encoder<U, T>, decoder: Decoder<T, U>): Codec<T, U> = Passthrough(encoder, decoder)
-    }
-}
+fun MapCodec<Optional<Long>>.asOptionalLong(): MapCodec<OptionalLong> = xmap(TO_OPTIONAL_LONG, FROM_OPTIONAL_LONG)

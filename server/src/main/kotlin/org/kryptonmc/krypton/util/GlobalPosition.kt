@@ -24,10 +24,8 @@ import org.kryptonmc.api.resource.ResourceKeys
 import org.kryptonmc.api.world.World
 import org.kryptonmc.krypton.network.Writable
 import org.kryptonmc.krypton.util.serialization.Codecs
-import org.kryptonmc.krypton.util.serialization.CompoundCodec
-import org.kryptonmc.krypton.util.serialization.decode
-import org.kryptonmc.krypton.util.serialization.encode
-import org.kryptonmc.nbt.compound
+import org.kryptonmc.serialization.Codec
+import org.kryptonmc.serialization.codecs.CompoundCodecBuilder
 import org.spongepowered.math.vector.Vector3i
 
 @JvmRecord
@@ -43,14 +41,11 @@ data class GlobalPosition(val dimension: ResourceKey<World>, val position: Vecto
     companion object {
 
         @JvmField
-        val CODEC: CompoundCodec<GlobalPosition> = CompoundCodec.of(
-            {
-                compound {
-                    encode(Codecs.DIMENSION, "dimension", it.dimension)
-                    encode(Codecs.VECTOR3I_ARRAY, "pos", it.position)
-                }
-            },
-            { GlobalPosition(it.decode(Codecs.DIMENSION, "dimension")!!, it.decode(Codecs.VECTOR3I_ARRAY, "pos")!!) }
-        )
+        val CODEC: Codec<GlobalPosition> = CompoundCodecBuilder.create {
+            it.group(
+                Codecs.DIMENSION.field("dimension").getting(GlobalPosition::dimension),
+                Codecs.VECTOR3I_ARRAY.field("pos").getting(GlobalPosition::position)
+            ).apply(it, ::GlobalPosition)
+        }
     }
 }

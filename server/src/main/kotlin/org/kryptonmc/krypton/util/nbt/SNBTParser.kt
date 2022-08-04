@@ -158,11 +158,12 @@ class SNBTParser(private val reader: StringReader) {
                     reader.cursor = cursor
                     throw ERROR_INSERT_MIXED_ARRAY.createWithContext(reader, Types.of(type).name, Types.of(arrayType).name)
                 }
-                list += when (elementType) {
+                val value = when (elementType) {
                     ByteTag.ID -> (tag as ByteTag).value as T
                     LongTag.ID -> (tag as LongTag).value as T
                     else -> (tag as NumberTag).asNumber() as T
                 }
+                list.add(value)
                 if (reader.hasElementSeparator()) {
                     if (!reader.canRead()) throw ERROR_EXPECTED_VALUE.createWithContext(reader)
                     continue

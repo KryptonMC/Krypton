@@ -18,23 +18,33 @@
  */
 package org.kryptonmc.krypton.util.provider
 
-import org.kryptonmc.krypton.util.serialization.CompoundEncoder
-import org.kryptonmc.nbt.compound
+import org.kryptonmc.serialization.Codec
+import org.kryptonmc.serialization.codecs.CompoundCodecBuilder
+import org.kryptonmc.util.Either
+import java.util.function.Function
 
-@JvmRecord
-data class UniformIntProvider(override val minimumValue: Int, override val maximumValue: Int) : IntProvider {
+class ConstantInt private constructor(val value: Int) : IntProvider() {
 
     override val type: IntProviderType<*>
-        get() = IntProviderTypes.UNIFORM
+        get() = IntProviderTypes.CONSTANT
+    override val minimumValue: Int
+        get() = value
+    override val maximumValue: Int
+        get() = value
+
+    override fun toString(): String = value.toString()
 
     companion object {
 
         @JvmField
-        val ENCODER: CompoundEncoder<UniformIntProvider> = CompoundEncoder {
-            compound {
-                int("min_inclusive", it.minimumValue)
-                int("max_inclusive", it.maximumValue)
-            }
-        }
+        val ZERO: ConstantInt = ConstantInt(0)
+        @JvmField
+        val CODEC: Codec<Either<Int, ConstantInt>> = Codec.either(
+            Codec.INT,
+            CompoundCodecBuilder.create { it.group(Codec.INT.field("value").getting(ConstantInt::value)).apply(it, ConstantInt::of) }
+        )/*.xmap({ it.map(ConstantInt::of, Function.identity()) }, { Either.left(it.value) })*/
+
+        @JvmStatic
+        fun of(value: Int): ConstantInt = ConstantInt(value)
     }
 }

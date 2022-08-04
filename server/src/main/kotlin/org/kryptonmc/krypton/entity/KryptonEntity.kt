@@ -46,6 +46,7 @@ import org.kryptonmc.krypton.entity.metadata.MetadataKey
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.item.KryptonItemStack
+import org.kryptonmc.krypton.network.chat.ChatSender
 import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.packet.out.play.PacketOutRemoveEntities
 import org.kryptonmc.krypton.packet.out.play.PacketOutSetEntityVelocity
@@ -428,6 +429,8 @@ abstract class KryptonEntity(override var world: KryptonWorld, override val type
 
     override fun asHoverEvent(op: UnaryOperator<HoverEvent.ShowEntity>): HoverEvent<HoverEvent.ShowEntity> =
         HoverEvent.showEntity(op.apply(HoverEvent.ShowEntity.of(type.key(), uuid, displayName)))
+
+    open fun asChatSender(): ChatSender = ChatSender.SYSTEM
 
     override fun addPassenger(entity: Entity) {
         if (passengers.contains(entity) || entity.passengers.contains(this)) return

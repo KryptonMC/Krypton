@@ -46,10 +46,10 @@ import org.kryptonmc.krypton.item.KryptonItemStack
 import org.kryptonmc.krypton.registry.KryptonRegistries
 import org.kryptonmc.krypton.registry.KryptonRegistry
 import org.kryptonmc.krypton.util.crypto.decodeToPublicKey
-import org.kryptonmc.krypton.util.serialization.CompoundEncoder
 import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.io.TagCompression
 import org.kryptonmc.nbt.io.TagIO
+import org.kryptonmc.serialization.Encoder
 import org.spongepowered.math.vector.Vector3f
 import org.spongepowered.math.vector.Vector3i
 import java.io.IOException
@@ -397,13 +397,13 @@ fun ByteBuf.writeVarIntArray(array: IntArray) {
 
 fun ByteBuf.readVarIntArray(): IntArray = IntArray(readVarInt()) { readVarInt() }
 
-fun <T> ByteBuf.encode(encoder: CompoundEncoder<T>, value: T) {
+fun <T> ByteBuf.encode(encoder: Encoder<T>, value: T) {
     val result = try {
         encoder.encode(value)
     } catch (exception: Exception) {
         throw EncoderException("Failed to encode value $value with encoder $encoder!", exception)
     }
-    writeNBT(result)
+    writeNBT(result as CompoundTag)
 }
 
 fun ByteBuf.readInstant(): Instant = Instant.ofEpochMilli(readLong())

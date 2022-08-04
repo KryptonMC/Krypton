@@ -19,52 +19,60 @@
 package org.kryptonmc.krypton.world.biome
 
 import net.kyori.adventure.key.Key
+import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.api.world.biome.Biome
 import org.kryptonmc.api.world.biome.BiomeEffects
 import org.kryptonmc.api.world.biome.Climate
-import org.kryptonmc.krypton.util.serialization.CompoundEncoder
-import org.kryptonmc.krypton.util.serialization.encode
-import org.kryptonmc.nbt.compound
+import org.kryptonmc.serialization.Codec
+import org.kryptonmc.serialization.codecs.CompoundCodecBuilder
 
 @JvmRecord
-data class KryptonBiome(private val key: Key, override val climate: Climate, override val effects: BiomeEffects) : Biome {
+data class KryptonBiome(override val climate: Climate, override val effects: BiomeEffects) : Biome {
 
-    override fun key(): Key = key
+    override fun key(): Key = Registries.BIOME[this] ?: UNREGISTERED_KEY
 
     override fun toBuilder(): Biome.Builder = Builder(this)
 
-    class Builder(private var key: Key) : Biome.Builder {
+    class Builder() : Biome.Builder {
 
         private var climate = KryptonClimate.DEFAULT
         private var effects = KryptonBiomeEffects.DEFAULT
 
-        constructor(biome: Biome) : this(biome.key()) {
+        constructor(biome: Biome) : this() {
             climate = biome.climate
             effects = biome.effects
         }
-
-        override fun key(key: Key): Builder = apply { this.key = key }
 
         override fun climate(climate: Climate): Builder = apply { this.climate = climate }
 
         override fun effects(effects: BiomeEffects): Builder = apply { this.effects = effects }
 
-        override fun build(): KryptonBiome = KryptonBiome(key, climate, effects)
+        override fun build(): KryptonBiome = KryptonBiome(climate, effects)
     }
 
     object Factory : Biome.Factory {
 
-        override fun builder(key: Key): Builder = Builder(key)
+        override fun builder(): Builder = Builder()
     }
 
     companion object {
 
+        private val UNREGISTERED_KEY = Key.key("krypton", "unregistered_biome")
+
+        // When we add mob spawn and biome generation settings, this will actually differ from the network codec
         @JvmField
-        val ENCODER: CompoundEncoder<Biome> = CompoundEncoder {
-            compound {
-                encode(KryptonClimate.ENCODER, it.climate)
-                encode(KryptonBiomeEffects.ENCODER, "effects", it.effects)
-            }
+        val DIRECT_CODEC: Codec<Biome> = CompoundCodecBuilder.create { instance ->
+            instance.group(
+                KryptonClimate.CODEC.getting(Biome::climate),
+                KryptonBiomeEffects.CODEC.field("effects").getting(Biome::effects)
+            ).apply(instance, ::KryptonBiome)
+        }
+        @JvmField
+        val NETWORK_CODEC: Codec<Biome> = CompoundCodecBuilder.create { instance ->
+            instance.group(
+                KryptonClimate.CODEC.getting(Biome::climate),
+                KryptonBiomeEffects.CODEC.field("effects").getting(Biome::effects)
+            ).apply(instance, ::KryptonBiome)
         }
     }
 }

@@ -27,13 +27,13 @@ import org.kryptonmc.api.resource.ResourceKey
 import org.kryptonmc.krypton.util.serialization.Codecs
 import org.kryptonmc.krypton.util.IdentityHashStrategy
 import org.kryptonmc.krypton.util.IntBiMap
-import org.kryptonmc.krypton.util.serialization.Encoder
-import org.kryptonmc.krypton.util.serialization.StringCodec
 import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.compound
+import org.kryptonmc.serialization.Codec
+import org.kryptonmc.serialization.Encoder
 import kotlin.math.max
 
-open class KryptonRegistry<T>(override val key: ResourceKey<out Registry<T>>) : Registry<T>, StringCodec<T>, IntBiMap<T> {
+open class KryptonRegistry<T>(override val key: ResourceKey<out Registry<T>>) : Registry<T>, IntBiMap<T> {
 
     private val byId = ObjectArrayList<T>(256)
     private val toId = Object2IntOpenCustomHashMap(IdentityHashStrategy.get<T>())
@@ -92,13 +92,12 @@ open class KryptonRegistry<T>(override val key: ResourceKey<out Registry<T>>) : 
 
     override fun iterator(): Iterator<T> = storage.values.iterator()
 
-    override fun encodeString(value: T): String = requireNotNull(get(value)) { "Unknown registry element $value!" }.asString()
+    fun byNameCodec(): Codec<T> = Codecs.KEY.xmap(
+        { checkNotNull(get(it)) { "Unknown registry key $it in $key!" } },
+        { checkNotNull(resourceKey(it)) { "Unknown registry element $it in $key!" }.location }
+    )
 
-    override fun decodeString(value: String): T = requireNotNull(get(Codecs.KEY.decodeString(value))) {
-        "Could not find element with key $value in registry $key!"
-    }
-
-    fun encode(elementEncoder: Encoder<T, CompoundTag>): CompoundTag = compound {
+    fun encode(elementEncoder: Encoder<T>): CompoundTag = compound {
         string("type", key.location.asString())
         list("value", CompoundTag.ID, values.map {
             compound {

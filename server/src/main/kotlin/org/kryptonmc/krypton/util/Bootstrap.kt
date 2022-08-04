@@ -45,7 +45,6 @@ import org.kryptonmc.api.tags.ItemTags
 import org.kryptonmc.api.tags.TagTypes
 import org.kryptonmc.api.world.biome.Biomes
 import org.kryptonmc.api.world.damage.type.DamageTypes
-import org.kryptonmc.api.world.dimension.DimensionEffects
 import org.kryptonmc.api.world.dimension.DimensionTypes
 import org.kryptonmc.api.world.rule.GameRules
 import org.kryptonmc.krypton.auth.requests.SessionService
@@ -72,7 +71,6 @@ import org.kryptonmc.krypton.world.block.BlockLoader
 import org.kryptonmc.krypton.world.block.BlockManager
 import org.kryptonmc.krypton.world.block.entity.BlockEntityLoader
 import org.kryptonmc.krypton.world.damage.type.KryptonDamageTypes
-import org.kryptonmc.krypton.world.dimension.KryptonDimensionEffects
 import org.kryptonmc.krypton.world.dimension.KryptonDimensionTypes
 import org.kryptonmc.krypton.world.event.GameEvents
 import org.kryptonmc.krypton.world.fluid.FluidLoader
@@ -133,8 +131,6 @@ object Bootstrap {
         Pictures
         Instruments
         KryptonTagManager.bootstrap()
-        KryptonDimensionEffects
-        DimensionEffects
         KryptonDimensionTypes
         DimensionTypes
         BlockTags

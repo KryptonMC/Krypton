@@ -19,35 +19,38 @@
 package org.kryptonmc.krypton.util.provider
 
 import org.kryptonmc.krypton.registry.InternalRegistries
-import org.kryptonmc.krypton.util.serialization.Encoder
-import org.kryptonmc.nbt.IntTag
-import org.kryptonmc.nbt.Tag
-import org.kryptonmc.nbt.compound
+import org.kryptonmc.serialization.Codec
+import org.kryptonmc.util.Either
+import java.util.function.Function
+import java.util.function.UnaryOperator
 
-interface IntProvider {
+abstract class IntProvider {
 
-    val type: IntProviderType<*>
-    val minimumValue: Int
-    val maximumValue: Int
+    abstract val type: IntProviderType<*>
+    abstract val minimumValue: Int
+    abstract val maximumValue: Int
 
     companion object {
 
-        @JvmField
         @Suppress("UNCHECKED_CAST")
-        val ENCODER: Encoder<IntProvider, Tag> = Encoder {
-            if (it.type == IntProviderTypes.CONSTANT) return@Encoder IntTag.of((it as ConstantIntProvider).value)
-            compound {
-                val type = (it.type as IntProviderType<IntProvider>)
-                put("value", type.encoder().encode(it))
-                string("type", InternalRegistries.INT_PROVIDER_TYPES[type]!!.asString())
-            }
-        }
+        private val CONSTANT_OR_DISPATCH_CODEC: Codec<Either<Int, IntProvider>> = Codec.either(
+            Codec.INT,
+            InternalRegistries.INT_PROVIDER_TYPES.byNameCodec().dispatch(IntProvider::type) { it.codec() as Codec<IntProvider> }
+        )
+        @JvmField
+        val CODEC: Codec<IntProvider> = CONSTANT_OR_DISPATCH_CODEC.xmap(
+            { it.map(ConstantInt::of, Function.identity()) },
+            { if (it.type === IntProviderTypes.CONSTANT) Either.left((it as ConstantInt).value) else Either.right(it) }
+        )
 
         @JvmStatic
-        fun encoder(minimum: Int, maximum: Int): Encoder<IntProvider, Tag> = Encoder {
-            require(it.minimumValue >= minimum) { "Int provider lower bound too low! Minimum value must be >= $minimum!" }
-            require(it.maximumValue <= maximum) { "Int provider upper bound too high! Maximum value must be <= $maximum!" }
-            ENCODER.encode(it)
+        fun codec(minimum: Int, maximum: Int): Codec<IntProvider> {
+            val checker = UnaryOperator<IntProvider> {
+                check(it.minimumValue >= minimum) { "Int provider lower bound too low! Minimum value must be >= $minimum!" }
+                check(it.maximumValue <= maximum) { "Int provider upper bound too high! Maximum value must be <= $maximum!" }
+                it
+            }
+            return CODEC.xmap(checker, checker)
         }
     }
 }

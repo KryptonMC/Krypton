@@ -24,6 +24,8 @@ import org.kryptonmc.api.effect.sound.SoundEvent
 @JvmRecord
 data class KryptonSoundEvent(private val key: Key, override val range: Float) : SoundEvent {
 
+    constructor(key: Key) : this(key, 16F)
+
     override fun key(): Key = key
 
     object Factory : SoundEvent.Factory {

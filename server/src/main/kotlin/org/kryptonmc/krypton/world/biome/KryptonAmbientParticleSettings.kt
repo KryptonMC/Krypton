@@ -22,9 +22,8 @@ import org.kryptonmc.api.effect.particle.ParticleType
 import org.kryptonmc.api.effect.particle.data.ParticleData
 import org.kryptonmc.api.world.biome.AmbientParticleSettings
 import org.kryptonmc.krypton.util.serialization.Codecs
-import org.kryptonmc.krypton.util.serialization.CompoundEncoder
-import org.kryptonmc.krypton.util.serialization.encode
-import org.kryptonmc.nbt.compound
+import org.kryptonmc.serialization.Codec
+import org.kryptonmc.serialization.codecs.CompoundCodecBuilder
 
 @JvmRecord
 data class KryptonAmbientParticleSettings(
@@ -32,6 +31,8 @@ data class KryptonAmbientParticleSettings(
     override val data: ParticleData?,
     override val probability: Float
 ) : AmbientParticleSettings {
+
+    constructor(type: ParticleType, probability: Float) : this(type, null, probability)
 
     override fun toBuilder(): AmbientParticleSettings.Builder = Builder(this)
 
@@ -65,11 +66,11 @@ data class KryptonAmbientParticleSettings(
     companion object {
 
         @JvmField
-        val ENCODER: CompoundEncoder<AmbientParticleSettings> = CompoundEncoder {
-            compound {
-                encode(Codecs.PARTICLE, "particle", it.type)
-                encode(Codecs.FLOAT, "probability", it.probability)
-            }
+        val CODEC: Codec<AmbientParticleSettings> = CompoundCodecBuilder.create { instance ->
+            instance.group(
+                Codecs.PARTICLE.field("particle").getting(AmbientParticleSettings::type),
+                Codec.FLOAT.field("probability").getting(AmbientParticleSettings::probability)
+            ).apply(instance, ::KryptonAmbientParticleSettings)
         }
     }
 }

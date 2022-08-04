@@ -18,10 +18,9 @@
  */
 package org.kryptonmc.krypton.util.provider
 
-import org.kryptonmc.krypton.util.serialization.Encoder
-import org.kryptonmc.nbt.Tag
+import org.kryptonmc.serialization.Codec
 
 fun interface IntProviderType<P : IntProvider> {
 
-    fun encoder(): Encoder<P, out Tag>
+    fun codec(): Codec<P>
 }
