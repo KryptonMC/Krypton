@@ -24,7 +24,7 @@ import org.kryptonmc.api.auth.GameProfile
 import org.kryptonmc.api.auth.ProfileProperty
 import org.kryptonmc.api.block.entity.banner.BannerPattern
 import org.kryptonmc.api.block.entity.banner.BannerPatternType
-import org.kryptonmc.api.block.property.Property
+import org.kryptonmc.api.state.Property
 import org.kryptonmc.api.command.BrigadierCommand
 import org.kryptonmc.api.command.meta.CommandMeta
 import org.kryptonmc.api.effect.Music
@@ -39,7 +39,6 @@ import org.kryptonmc.api.inventory.InventoryType
 import org.kryptonmc.api.item.ItemAttribute
 import org.kryptonmc.api.item.ItemRarity
 import org.kryptonmc.api.item.ItemStack
-import org.kryptonmc.api.item.ItemType
 import org.kryptonmc.api.item.data.DyeColor
 import org.kryptonmc.api.item.meta.ItemMeta
 import org.kryptonmc.api.resource.ResourceKey
@@ -79,7 +78,6 @@ import org.kryptonmc.krypton.inventory.KryptonInventoryType
 import org.kryptonmc.krypton.item.KryptonItemAttribute
 import org.kryptonmc.krypton.item.KryptonItemRarity
 import org.kryptonmc.krypton.item.KryptonItemStack
-import org.kryptonmc.krypton.item.KryptonItemType
 import org.kryptonmc.krypton.item.data.KryptonDyeColor
 import org.kryptonmc.krypton.item.meta.KryptonItemMeta
 import org.kryptonmc.krypton.resource.KryptonResourceKey
@@ -93,7 +91,7 @@ import org.kryptonmc.krypton.world.biome.KryptonBiomeEffects
 import org.kryptonmc.krypton.world.biome.KryptonClimate
 import org.kryptonmc.krypton.world.block.entity.banner.KryptonBannerPattern
 import org.kryptonmc.krypton.world.block.entity.banner.KryptonBannerPatternType
-import org.kryptonmc.krypton.world.block.property.KryptonPropertyFactory
+import org.kryptonmc.krypton.state.property.KryptonPropertyFactory
 import org.kryptonmc.krypton.world.damage.KryptonDamageSourceFactory
 import org.kryptonmc.krypton.world.dimension.KryptonDimensionType
 import org.kryptonmc.krypton.world.rule.KryptonGameRule
@@ -121,7 +119,6 @@ object KryptonFactoryProvider : FactoryProvider {
         register<AttributeType.Factory>(KryptonAttributeType.Factory)
         register<Property.Factory>(KryptonPropertyFactory)
         register<ItemStack.Factory>(KryptonItemStack.Factory)
-        register<ItemType.Factory>(KryptonItemType.Factory)
         register<CommandMeta.Factory>(KryptonCommandMeta.Factory)
         register<GameProfile.Factory>(KryptonGameProfile.Factory)
         register<ProfileProperty.Factory>(KryptonProfileProperty.Factory)

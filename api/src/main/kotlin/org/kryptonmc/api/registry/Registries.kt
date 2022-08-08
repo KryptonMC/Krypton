@@ -62,7 +62,7 @@ public object Registries {
     @JvmField
     public val PARTICLE_TYPE: Registry<ParticleType> = create(ResourceKeys.PARTICLE_TYPE)
     @JvmField
-    public val BLOCK: Registry<Block> = create(ResourceKeys.BLOCK)
+    public val BLOCK: DefaultedRegistry<Block> = createDefaulted(ResourceKeys.BLOCK, Key.key("air"))
     @JvmField
     public val ITEM: DefaultedRegistry<ItemType> = createDefaulted(ResourceKeys.ITEM, Key.key("air"))
     @JvmField

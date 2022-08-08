@@ -26,7 +26,7 @@ public interface FluidContainer {
      * @param z the Z coordinate
      * @return the fluid at the given coordinates
      */
-    public fun getFluid(x: Int, y: Int, z: Int): Fluid
+    public fun getFluid(x: Int, y: Int, z: Int): FluidState
 
     /**
      * Gets the fluid at the given [position].
@@ -34,5 +34,5 @@ public interface FluidContainer {
      * @param position the position
      * @return the fluid at the given position
      */
-    public fun getFluid(position: Vector3i): Fluid
+    public fun getFluid(position: Vector3i): FluidState
 }

@@ -48,8 +48,8 @@ import org.kryptonmc.krypton.util.writeString
 import org.kryptonmc.krypton.util.writeUUID
 import org.kryptonmc.krypton.util.writeVarInt
 import org.kryptonmc.krypton.util.writeVector
-import org.kryptonmc.krypton.world.block.BlockLoader
 import org.kryptonmc.krypton.world.block.KryptonBlock
+import org.kryptonmc.krypton.world.block.state.KryptonBlockState
 import org.kryptonmc.nbt.CompoundTag
 import org.spongepowered.math.vector.Vector3f
 import org.spongepowered.math.vector.Vector3i
@@ -92,12 +92,12 @@ object MetadataSerializers {
     @JvmField
     val OPTIONAL_UUID: MetadataSerializer<UUID?> = MetadataSerializer.nullable(ByteBuf::readUUID, ByteBuf::writeUUID)
     @JvmField
-    val OPTIONAL_BLOCK: MetadataSerializer<KryptonBlock?> = MetadataSerializer.simple(
+    val OPTIONAL_BLOCK: MetadataSerializer<KryptonBlockState?> = MetadataSerializer.simple(
         {
             val stateId = it.readVarInt()
-            if (stateId == 0) null else BlockLoader.fromStateId(stateId)
+            if (stateId == 0) null else KryptonBlock.stateFromId(stateId)
         },
-        { buf, item -> if (item != null) buf.writeVarInt(item.stateId) else buf.writeVarInt(0) }
+        { buf, item -> if (item != null) buf.writeVarInt(KryptonBlock.idOf(item)) else buf.writeVarInt(0) }
     )
     @JvmField
     val NBT: MetadataSerializer<CompoundTag> = MetadataSerializer.simple(ByteBuf::readNBT, ByteBuf::writeNBT)

@@ -26,24 +26,24 @@ import org.kryptonmc.krypton.util.decodeBlockZ
 import org.kryptonmc.krypton.util.readVarInt
 import org.kryptonmc.krypton.util.writeVarInt
 import org.kryptonmc.krypton.util.writeVector
-import org.kryptonmc.krypton.world.block.BlockLoader
 import org.kryptonmc.krypton.world.block.KryptonBlock
+import org.kryptonmc.krypton.world.block.state.KryptonBlockState
 import org.spongepowered.math.vector.Vector3i
 
 @JvmRecord
-data class PacketOutBlockUpdate(val block: KryptonBlock, val x: Int, val y: Int, val z: Int) : Packet {
+data class PacketOutBlockUpdate(val block: KryptonBlockState, val x: Int, val y: Int, val z: Int) : Packet {
 
-    constructor(block: KryptonBlock, location: Vector3i) : this(block, location.x(), location.y(), location.z())
+    constructor(block: KryptonBlockState, location: Vector3i) : this(block, location.x(), location.y(), location.z())
 
     constructor(buf: ByteBuf) : this(buf.readLong(), buf.readVarInt())
 
     private constructor(
         encoded: Long,
         stateId: Int
-    ) : this(BlockLoader.fromStateId(stateId), encoded.decodeBlockX(), encoded.decodeBlockY(), encoded.decodeBlockZ())
+    ) : this(KryptonBlock.stateFromId(stateId), encoded.decodeBlockX(), encoded.decodeBlockY(), encoded.decodeBlockZ())
 
     override fun write(buf: ByteBuf) {
         buf.writeVector(x, y, z)
-        buf.writeVarInt(block.stateId)
+        buf.writeVarInt(KryptonBlock.idOf(block))
     }
 }

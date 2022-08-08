@@ -22,7 +22,6 @@ import ca.spottedleaf.dataconverter.minecraft.datatypes.MCTypeRegistry
 import java.util.EnumSet
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.ConcurrentHashMap
-import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.block.Blocks
 import org.kryptonmc.api.world.biome.Biomes
 import org.kryptonmc.krypton.KryptonPlatform
@@ -36,9 +35,8 @@ import org.kryptonmc.krypton.util.pool.uncaughtExceptionHandler
 import org.kryptonmc.krypton.world.Heightmap
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.krypton.world.block.downcast
-import org.kryptonmc.krypton.world.block.KryptonBlock
+import org.kryptonmc.krypton.world.block.state.KryptonBlockState
 import org.kryptonmc.krypton.world.block.palette.PaletteHolder
-import org.kryptonmc.krypton.world.block.toNBT
 import org.kryptonmc.krypton.world.chunk.ticket.Ticket
 import org.kryptonmc.krypton.world.chunk.ticket.TicketManager
 import org.kryptonmc.krypton.world.chunk.ticket.TicketType
@@ -132,7 +130,7 @@ class ChunkManager(private val world: KryptonWorld) {
                 val blocks = if (sectionData.contains("block_states", CompoundTag.ID)) {
                     PaletteHolder.readBlocks(sectionData.getCompound("block_states"))
                 } else {
-                    PaletteHolder(PaletteHolder.Strategy.BLOCKS, Blocks.AIR.downcast())
+                    PaletteHolder(PaletteHolder.Strategy.BLOCKS, Blocks.AIR.defaultState.downcast())
                 }
                 val biomes = if (sectionData.contains("biomes", CompoundTag.ID)) {
                     PaletteHolder.readBiomes(sectionData.getCompound("biomes"))
@@ -220,7 +218,7 @@ class ChunkManager(private val world: KryptonWorld) {
                     val section = chunk.sections[sectionIndex]
                     val sectionData = compound {
                         byte("Y", i.toByte())
-                        put("block_states", section.blocks.write(Block::toNBT))
+                        put("block_states", section.blocks.write(KryptonBlockState.CODEC::encode))
                         put("biomes", section.biomes.write { StringTag.of(it.key().asString()) })
                         if (section.blockLight.isNotEmpty()) byteArray("BlockLight", section.blockLight)
                         if (section.skyLight.isNotEmpty()) byteArray("SkyLight", section.skyLight)
@@ -231,7 +229,7 @@ class ChunkManager(private val world: KryptonWorld) {
             data.put("sections", sectionList)
 
             val heightmapData = CompoundTag.immutableBuilder()
-            chunk.heightmaps.forEach { if (it.key in Heightmap.Type.POST_FEATURES) heightmapData.longArray(it.key.name, it.value.data.data) }
+            chunk.heightmaps.forEach { if (it.key in Heightmap.Type.POST_FEATURES) heightmapData.longArray(it.key.name, it.value.rawData) }
             data.put("Heightmaps", heightmapData.build())
             return data.build()
         }

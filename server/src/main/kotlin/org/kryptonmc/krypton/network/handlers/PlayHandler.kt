@@ -22,10 +22,10 @@ import com.mojang.brigadier.StringReader
 import net.kyori.adventure.audience.MessageType
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.event.ClickEvent
-import net.kyori.adventure.text.format.NamedTextColor
 import org.kryptonmc.api.block.Blocks
 import org.kryptonmc.api.entity.Hand
 import org.kryptonmc.api.entity.player.ChatVisibility
+import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.api.resource.ResourcePack
 import org.kryptonmc.api.world.GameMode
 import org.kryptonmc.krypton.KryptonServer
@@ -76,7 +76,6 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutKeepAlive
 import org.kryptonmc.krypton.packet.out.play.PacketOutPlayerChatMessage
 import org.kryptonmc.krypton.packet.out.play.PacketOutPlayerInfo
 import org.kryptonmc.krypton.packet.out.play.PacketOutSetHeadRotation
-import org.kryptonmc.krypton.packet.out.play.PacketOutSystemChatMessage
 import org.kryptonmc.krypton.packet.out.play.PacketOutTagQueryResponse
 import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateEntityPosition
 import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateEntityPositionAndRotation
@@ -86,7 +85,7 @@ import org.kryptonmc.krypton.util.Positioning
 import org.kryptonmc.krypton.util.chunkX
 import org.kryptonmc.krypton.util.chunkZ
 import org.kryptonmc.krypton.util.logger
-import org.kryptonmc.krypton.world.block.BlockLoader
+import org.kryptonmc.krypton.world.block.downcast
 import org.kryptonmc.krypton.world.chunk.ChunkPosition
 import org.spongepowered.math.vector.Vector2f
 import org.spongepowered.math.vector.Vector3d
@@ -286,6 +285,7 @@ class PlayHandler(override val server: KryptonServer, override val session: Sess
         player.isGliding = packet.isFlying && player.canFly
     }
 
+    // TODO: This entire thing needs to be rewritten
     private fun handleUseItemOn(packet: PacketInUseItemOn) {
         if (!player.canBuild) return // If they can't place blocks, they are irrelevant :)
 
@@ -293,19 +293,19 @@ class PlayHandler(override val server: KryptonServer, override val session: Sess
         val x = packet.x
         val y = packet.y
         val z = packet.z
-        val worldBlock = world.getBlock(x, y, z)
-        val event = server.eventManager.fireSync(KryptonPlaceBlockEvent(player, worldBlock, packet.hand, x, y, z, packet.face, packet.isInside))
+        val state = world.getBlock(x, y, z)
+        val event = server.eventManager.fireSync(KryptonPlaceBlockEvent(player, state, packet.hand, x, y, z, packet.face, packet.isInside))
         if (!event.result.isAllowed) return
 
         val chunkX = player.location.chunkX()
         val chunkZ = player.location.chunkZ()
         val chunk = world.chunkManager[ChunkPosition.toLong(chunkX, chunkZ)] ?: return
         val existingBlock = chunk.getBlock(x, y, z)
-        if (existingBlock != Blocks.AIR) return
+        if (existingBlock != Blocks.AIR.defaultState) return
 
         val item = player.inventory.mainHand
-        val block = BlockLoader.fromKey(item.type.key()) ?: return
-        chunk.setBlock(x, y, z, block)
+        val block = Registries.BLOCK[item.type.key()].downcast()
+        chunk.setBlock(x, y, z, block.defaultState)
     }
 
     private fun handlePlayerAction(packet: PacketInPlayerAction) {

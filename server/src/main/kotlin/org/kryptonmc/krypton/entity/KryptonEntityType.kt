@@ -24,11 +24,14 @@ import net.kyori.adventure.key.Key
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.TranslatableComponent
 import org.kryptonmc.api.block.Block
+import org.kryptonmc.api.block.BlockState
 import org.kryptonmc.api.block.Blocks
 import org.kryptonmc.api.entity.Entity
 import org.kryptonmc.api.entity.EntityCategory
 import org.kryptonmc.api.entity.EntityType
+import org.kryptonmc.krypton.world.block.downcast
 import org.kryptonmc.krypton.world.block.isBurning
+import org.kryptonmc.krypton.world.block.state.KryptonBlockState
 
 @JvmRecord
 data class KryptonEntityType<T : Entity>(
@@ -46,10 +49,12 @@ data class KryptonEntityType<T : Entity>(
     override val translation: TranslatableComponent
 ) : EntityType<T> {
 
-    override fun isImmuneTo(block: Block): Boolean {
-        if (immuneTo.contains(block)) return true
+    override fun isImmuneTo(block: BlockState): Boolean = isImmuneTo(block.downcast())
+
+    fun isImmuneTo(block: KryptonBlockState): Boolean {
+        if (immuneTo.contains(block.block)) return true
         if (!isImmuneToFire && block.isBurning()) return false
-        return block !== Blocks.WITHER_ROSE && block !== Blocks.SWEET_BERRY_BUSH && block !== Blocks.CACTUS && block !== Blocks.POWDER_SNOW
+        return block.eq(Blocks.WITHER_ROSE) || block.eq(Blocks.SWEET_BERRY_BUSH) || block.eq(Blocks.CACTUS) || block.eq(Blocks.POWDER_SNOW)
     }
 
     override fun key(): Key = key

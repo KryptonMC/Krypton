@@ -19,33 +19,37 @@
 package org.kryptonmc.krypton.world
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList
-import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.block.Blocks
 import org.kryptonmc.krypton.util.BitStorage
 import org.kryptonmc.krypton.util.ceillog2
 import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.util.SimpleBitStorage
-import org.kryptonmc.krypton.world.block.downcast
-import org.kryptonmc.krypton.world.block.KryptonBlock
+import org.kryptonmc.krypton.util.serialization.EnumCodecs
+import org.kryptonmc.krypton.world.block.state.KryptonBlockState
 import org.kryptonmc.krypton.world.chunk.ChunkAccessor
+import org.kryptonmc.serialization.Codec
 import java.util.EnumSet
+import java.util.function.Predicate
 
 class Heightmap(private val chunk: ChunkAccessor, val type: Type) {
 
-    val data: BitStorage = SimpleBitStorage((chunk.height + 1).ceillog2(), 256)
+    private val data: BitStorage = SimpleBitStorage((chunk.height + 1).ceillog2(), 256)
+    private val isOpaque = type.isOpaque
+    val rawData: LongArray
+        get() = data.data
 
-    fun update(x: Int, y: Int, z: Int, block: KryptonBlock): Boolean {
+    fun update(x: Int, y: Int, z: Int, block: KryptonBlockState): Boolean {
         val firstAvailable = firstAvailable(x, z)
         if (y <= firstAvailable - 2) return false
 
-        if (type.isOpaque(block)) {
+        if (type.isOpaque.test(block)) {
             if (y >= firstAvailable) {
                 set(x, z, y + 1)
                 return true
             }
         } else if (firstAvailable - 1 == y) {
             for (i in y - 1 downTo chunk.minimumBuildHeight) {
-                if (type.isOpaque(chunk.getBlock(x, i, z))) {
+                if (type.isOpaque.test(chunk.getBlock(x, i, z))) {
                     set(x, z, i + 1)
                     return true
                 }
@@ -58,13 +62,13 @@ class Heightmap(private val chunk: ChunkAccessor, val type: Type) {
 
     fun setData(chunk: ChunkAccessor, type: Type, rawData: LongArray) {
         val current = data.data
-        if (current.size == rawData.size) {
-            System.arraycopy(rawData, 0, current, 0, rawData.size)
-        } else {
+        if (current.size != rawData.size) {
             LOGGER.warn("Ignoring heightmap data for chunk ${chunk.position} as the size is not what was expected. " +
                     "Expected ${current.size}, got ${rawData.size}.")
             prime(chunk, setOf(type))
+            return
         }
+        System.arraycopy(rawData, 0, current, 0, rawData.size)
     }
 
     fun firstAvailable(x: Int, z: Int): Int = firstAvailable(indexOf(x, z))
@@ -77,36 +81,38 @@ class Heightmap(private val chunk: ChunkAccessor, val type: Type) {
 
     private fun firstAvailable(index: Int): Int = data.get(index) + chunk.minimumBuildHeight
 
-    enum class Type(val isOpaque: (KryptonBlock) -> Boolean, val sendToClient: Boolean = false) {
+    enum class Type(private val usage: Usage, val isOpaque: Predicate<KryptonBlockState>) {
 
-        WORLD_SURFACE(NOT_AIR, true),
-        WORLD_SURFACE_WG(NOT_AIR),
-        OCEAN_FLOOR(BLOCKS_MOTION),
-        OCEAN_FLOOR_WG(BLOCKS_MOTION),
-        MOTION_BLOCKING({ it.blocksMotion || it.isLiquid }, true),
-        MOTION_BLOCKING_NO_LEAVES({ (it.blocksMotion || it.isLiquid) && !IS_LEAVES(it) });
+        WORLD_SURFACE_WG(Usage.WORLD_GENERATION, NOT_AIR),
+        WORLD_SURFACE(Usage.CLIENT, NOT_AIR),
+        OCEAN_FLOOR_WG(Usage.WORLD_GENERATION, BLOCKS_MOTION),
+        OCEAN_FLOOR(Usage.LIVE_WORLD, BLOCKS_MOTION),
+        MOTION_BLOCKING(Usage.CLIENT, { it.blocksMotion || !it.asFluid().isEmpty }),
+        // FIXME: Check if block not instance of LeavesBlock
+        MOTION_BLOCKING_NO_LEAVES(Usage.LIVE_WORLD, { (it.blocksMotion || !it.asFluid().isEmpty) });
+
+        fun sendToClient(): Boolean = usage == Usage.CLIENT
 
         companion object {
 
+            @JvmField
+            val CODEC: Codec<Type> = EnumCodecs.of(Type::values)
             @JvmField
             val POST_FEATURES: Set<Type> = EnumSet.of(WORLD_SURFACE, OCEAN_FLOOR, MOTION_BLOCKING, MOTION_BLOCKING_NO_LEAVES)
         }
     }
 
+    enum class Usage {
+
+        WORLD_GENERATION,
+        LIVE_WORLD,
+        CLIENT
+    }
+
     companion object {
 
-        private val NOT_AIR: (KryptonBlock) -> Boolean = { !it.isAir }
-        private val BLOCKS_MOTION: (KryptonBlock) -> Boolean = { it.blocksMotion }
-        private val IS_LEAVES: (KryptonBlock) -> Boolean = {
-            it.id == Blocks.OAK_LEAVES.downcast().id ||
-                    it.id == Blocks.SPRUCE_LEAVES.downcast().id ||
-                    it.id == Blocks.BIRCH_LEAVES.downcast().id ||
-                    it.id == Blocks.JUNGLE_LEAVES.downcast().id ||
-                    it.id == Blocks.ACACIA_LEAVES.downcast().id ||
-                    it.id == Blocks.DARK_OAK_LEAVES.downcast().id ||
-                    it.id == Blocks.AZALEA_LEAVES.downcast().id ||
-                    it.id == Blocks.FLOWERING_AZALEA_LEAVES.downcast().id
-        }
+        private val NOT_AIR: Predicate<KryptonBlockState> = Predicate { !it.isAir }
+        private val BLOCKS_MOTION: Predicate<KryptonBlockState> = Predicate { it.blocksMotion }
         private val LOGGER = logger<Heightmap>()
 
         @JvmStatic
@@ -118,17 +124,18 @@ class Heightmap(private val chunk: ChunkAccessor, val type: Type) {
             for (x in 0 until 16) {
                 for (z in 0 until 16) {
                     toPrime.forEach { heightmaps.add(chunk.getOrCreateHeightmap(it)) }
-                    y@ for (y in highest - 1 downTo chunk.minimumBuildHeight) {
+                    for (y in highest - 1 downTo chunk.minimumBuildHeight) {
                         val block = chunk.getBlock(x, y, z)
-                        if (block === Blocks.AIR) continue@y
-                        iterator@ while (iterator.hasNext()) {
-                            val heightmap = iterator.next()
-                            if (!heightmap.type.isOpaque(block)) continue@iterator
-                            heightmap.set(x, z, y + 1)
-                            iterator.remove()
+                        if (!block.eq(Blocks.AIR)) {
+                            while (iterator.hasNext()) {
+                                val heightmap = iterator.next()
+                                if (!heightmap.type.isOpaque.test(block)) continue
+                                heightmap.set(x, z, y + 1)
+                                iterator.remove()
+                            }
+                            if (heightmaps.isEmpty) break
+                            iterator.back(size)
                         }
-                        if (heightmaps.isEmpty) break@y
-                        iterator.back(size)
                     }
                 }
             }

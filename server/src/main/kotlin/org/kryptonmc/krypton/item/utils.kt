@@ -26,15 +26,14 @@ import org.kryptonmc.api.item.data.ItemFlag
 import org.kryptonmc.krypton.item.handler.DummyItemHandler
 import org.kryptonmc.krypton.registry.KryptonRegistries
 import org.kryptonmc.krypton.util.downcastApiType
-import org.kryptonmc.krypton.world.block.KryptonBlock
 import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.compound
 
 fun ItemStack.downcast(): KryptonItemStack = downcastApiType("ItemStack")
 
-fun ItemType.handler(): ItemHandler = ItemManager.handler(this) ?: DummyItemHandler
+fun ItemType.downcast(): KryptonItemType = downcastApiType("ItemType")
 
-fun KryptonItemStack.destroySpeed(block: KryptonBlock): Float = type.handler().destroySpeed(this, block)
+fun ItemType.handler(): ItemHandler = ItemManager.handler(this) ?: DummyItemHandler
 
 fun ItemFlag.mask(): Int = 1 shl ordinal
 

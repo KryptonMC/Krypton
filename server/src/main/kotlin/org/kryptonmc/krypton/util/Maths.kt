@@ -109,4 +109,11 @@ object Maths {
         temp *= -1028477387
         return temp xor (temp ushr 16)
     }
+
+    @JvmStatic
+    fun getSeed(x: Int, y: Int, z: Int): Long {
+        var seed = (x * 3129871).toLong() xor (y.toLong() * 116129781L) xor z.toLong()
+        seed = seed * seed * 42317861L + seed * 11L
+        return seed shr 16
+    }
 }

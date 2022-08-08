@@ -21,6 +21,7 @@ package org.kryptonmc.krypton.item
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.nbt.api.BinaryTagHolder
 import net.kyori.adventure.text.event.HoverEvent
+import org.kryptonmc.api.item.ItemLike
 import org.kryptonmc.api.item.ItemStack
 import org.kryptonmc.api.item.ItemType
 import org.kryptonmc.api.item.ItemTypes
@@ -35,6 +36,8 @@ import java.util.function.UnaryOperator
 @JvmRecord
 data class KryptonItemStack(override val type: ItemType, override val amount: Int, override val meta: AbstractItemMeta<*>) : ItemStack {
 
+    constructor(like: ItemLike) : this(like.asItem(), 1, KryptonItemMeta.DEFAULT)
+
     fun save(tag: CompoundTag.Builder): CompoundTag.Builder = tag.apply {
         string("id", type.key().asString())
         int("Count", amount)
@@ -47,6 +50,8 @@ data class KryptonItemStack(override val type: ItemType, override val amount: In
         if (type !== ItemTypes.AIR) return amount <= 0
         return true
     }
+
+    fun eq(type: ItemType): Boolean = this.type === type
 
     override fun <I : ItemMeta> meta(type: Class<I>): I? {
         if (type.isInstance(meta)) return type.cast(meta)

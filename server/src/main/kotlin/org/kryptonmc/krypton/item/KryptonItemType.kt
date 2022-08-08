@@ -19,20 +19,16 @@
 package org.kryptonmc.krypton.item
 
 import net.kyori.adventure.key.Key
-import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.TranslatableComponent
 import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.effect.sound.SoundEvent
-import org.kryptonmc.api.effect.sound.SoundEvents
-import org.kryptonmc.api.item.ItemRarities
 import org.kryptonmc.api.item.ItemRarity
 import org.kryptonmc.api.item.ItemType
+import org.kryptonmc.api.item.ItemTypes
 import org.kryptonmc.api.registry.Registries
-import org.kryptonmc.krypton.util.normalizePath
+import org.kryptonmc.krypton.world.block.KryptonBlock
 
-@JvmRecord
-data class KryptonItemType(
-    private val key: Key,
+class KryptonItemType(
     override val rarity: ItemRarity,
     override val maximumStackSize: Int,
     override val canBreak: Boolean,
@@ -44,99 +40,16 @@ data class KryptonItemType(
     override val translation: TranslatableComponent
 ) : ItemType {
 
-    override fun key(): Key = key
+    override fun key(): Key = Registries.ITEM[this]
 
-    override fun asBlock(): Block? = Registries.BLOCK[key]
-
-    override fun toBuilder(): ItemType.Builder = Builder(this)
-
-    class Builder(private var key: Key) : ItemType.Builder {
-
-        private var rarity = ItemRarities.COMMON
-        private var maximumStackSize = DEFAULT_MAXIMUM_STACK_SIZE
-        private var canBreak = false
-        private var durability = 0
-        private var isEdible = false
-        private var isFireResistant = false
-        private var eatingSound = SoundEvents.GENERIC_EAT
-        private var drinkingSound = SoundEvents.GENERIC_DRINK
-        private var translation: TranslatableComponent? = null
-
-        constructor(type: ItemType) : this(type.key()) {
-            rarity = type.rarity
-            maximumStackSize = type.maximumStackSize
-            canBreak = type.canBreak
-            durability = type.durability
-            isEdible = type.isEdible
-            isFireResistant = type.isFireResistant
-            eatingSound = type.eatingSound
-            drinkingSound = type.drinkingSound
-        }
-
-        override fun key(key: Key): ItemType.Builder = apply { this.key = key }
-
-        override fun rarity(rarity: ItemRarity): ItemType.Builder = apply { this.rarity = rarity }
-
-        override fun stackable(maximumStackSize: Int): ItemType.Builder = apply { this.maximumStackSize = maximumStackSize }
-
-        override fun unstackable(): ItemType.Builder = apply { maximumStackSize = 1 }
-
-        override fun breakable(): ItemType.Builder = apply { canBreak = true }
-
-        override fun breakable(durability: Int): ItemType.Builder = apply {
-            canBreak = true
-            this.durability = durability
-        }
-
-        override fun unbreakable(): ItemType.Builder = apply {
-            canBreak = false
-            durability = 0
-        }
-
-        override fun durability(durability: Int): ItemType.Builder = apply { this.durability = durability }
-
-        override fun edible(): ItemType.Builder = apply { isEdible = true }
-
-        override fun inedible(): ItemType.Builder = apply { isEdible = false }
-
-        override fun fireResistant(): ItemType.Builder = apply { isFireResistant = true }
-
-        override fun flammable(): ItemType.Builder = apply { isFireResistant = false }
-
-        override fun eatingSound(eatingSound: SoundEvent): ItemType.Builder = apply { this.eatingSound = eatingSound }
-
-        override fun drinkingSound(drinkingSound: SoundEvent): ItemType.Builder = apply { this.drinkingSound = drinkingSound }
-
-        override fun translation(translation: TranslatableComponent): ItemType.Builder = apply { this.translation = translation }
-
-        override fun build(): ItemType = KryptonItemType(
-            key,
-            rarity,
-            maximumStackSize,
-            canBreak,
-            durability,
-            isEdible,
-            isFireResistant,
-            eatingSound,
-            drinkingSound,
-            translation ?: createTranslation(key)
-        )
-    }
-
-    object Factory : ItemType.Factory {
-
-        override fun builder(key: Key): ItemType.Builder = Builder(key)
-    }
+    override fun asBlock(): Block = Registries.BLOCK[key()]
 
     companion object {
 
-        private const val DEFAULT_MAXIMUM_STACK_SIZE = 64
+        @JvmField
+        val BY_BLOCK: HashMap<KryptonBlock, KryptonItemType> = HashMap()
 
         @JvmStatic
-        private fun createTranslation(key: Key): TranslatableComponent {
-            val block = Registries.BLOCK[key]
-            if (block != null) return block.translation
-            return Component.translatable("item.${key.normalizePath()}")
-        }
+        fun fromBlock(block: KryptonBlock): KryptonItemType = BY_BLOCK.getOrDefault(block, ItemTypes.AIR.downcast())
     }
 }

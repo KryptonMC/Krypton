@@ -26,8 +26,7 @@ import org.kryptonmc.api.world.biome.Climate
 import org.kryptonmc.serialization.Codec
 import org.kryptonmc.serialization.codecs.CompoundCodecBuilder
 
-@JvmRecord
-data class KryptonBiome(override val climate: Climate, override val effects: BiomeEffects) : Biome {
+class KryptonBiome(override val climate: Climate, override val effects: BiomeEffects) : Biome {
 
     override fun key(): Key = Registries.BIOME[this] ?: UNREGISTERED_KEY
 

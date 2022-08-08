@@ -26,6 +26,7 @@ import org.kryptonmc.api.entity.animal.type.CatVariant
 import org.kryptonmc.api.entity.animal.type.FrogVariant
 import org.kryptonmc.api.entity.attribute.ModifierOperation
 import org.kryptonmc.api.entity.hanging.Picture
+import org.kryptonmc.api.fluid.Fluid
 import org.kryptonmc.api.item.ItemType
 import org.kryptonmc.api.item.data.DyeColor
 import org.kryptonmc.api.registry.Registries
@@ -55,6 +56,8 @@ object KryptonRegistries {
     val BIOME: KryptonRegistry<Biome> = Registries.BIOME.downcastUnchecked()
     @JvmField
     val STATISTIC_TYPE: KryptonRegistry<StatisticType<*>> = Registries.STATISTIC_TYPE.downcastUnchecked()
+    @JvmField
+    val FLUID: KryptonRegistry<Fluid> = Registries.FLUID.downcastUnchecked()
     @JvmField
     val DIMENSION_TYPE: KryptonRegistry<DimensionType> = Registries.DIMENSION_TYPE.downcastUnchecked()
     @JvmField

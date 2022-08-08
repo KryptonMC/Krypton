@@ -19,13 +19,12 @@
 package org.kryptonmc.krypton.world.chunk
 
 import io.netty.buffer.ByteBuf
-import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.block.Blocks
 import org.kryptonmc.api.world.biome.Biome
 import org.kryptonmc.api.world.biome.Biomes
 import org.kryptonmc.krypton.world.biome.NoiseBiomeSource
 import org.kryptonmc.krypton.world.block.downcast
-import org.kryptonmc.krypton.world.block.KryptonBlock
+import org.kryptonmc.krypton.world.block.state.KryptonBlockState
 import org.kryptonmc.krypton.world.block.palette.PaletteHolder
 
 /**
@@ -34,7 +33,7 @@ import org.kryptonmc.krypton.world.block.palette.PaletteHolder
  */
 class ChunkSection(
     y: Int,
-    val blocks: PaletteHolder<KryptonBlock> = PaletteHolder(PaletteHolder.Strategy.BLOCKS, Blocks.AIR.downcast()),
+    val blocks: PaletteHolder<KryptonBlockState> = PaletteHolder(PaletteHolder.Strategy.BLOCKS, Blocks.AIR.defaultState.downcast()),
     val biomes: PaletteHolder<Biome> = PaletteHolder(PaletteHolder.Strategy.BIOMES, Biomes.PLAINS),
     val blockLight: ByteArray = ByteArray(LIGHTS_SIZE),
     val skyLight: ByteArray = ByteArray(LIGHTS_SIZE)
@@ -47,9 +46,9 @@ class ChunkSection(
         recount()
     }
 
-    fun get(x: Int, y: Int, z: Int): KryptonBlock = blocks[x, y, z]
+    fun get(x: Int, y: Int, z: Int): KryptonBlockState = blocks[x, y, z]
 
-    fun set(x: Int, y: Int, z: Int, block: KryptonBlock): KryptonBlock {
+    fun set(x: Int, y: Int, z: Int, block: KryptonBlockState): KryptonBlockState {
         val oldBlock = blocks.getAndSet(x, y, z, block)
         if (!oldBlock.isAir) nonEmptyBlockCount--
         if (!block.isAir) nonEmptyBlockCount++

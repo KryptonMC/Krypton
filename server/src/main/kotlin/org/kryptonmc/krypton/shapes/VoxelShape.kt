@@ -26,6 +26,7 @@ import org.kryptonmc.api.util.Direction
 import org.kryptonmc.api.util.Direction.Axis
 import org.kryptonmc.krypton.util.KryptonBoundingBox
 import org.kryptonmc.krypton.util.Maths
+import org.kryptonmc.krypton.util.math.AxisCycle
 import kotlin.math.abs
 
 /**

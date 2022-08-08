@@ -19,6 +19,7 @@
 package org.kryptonmc.krypton.shapes
 
 import org.kryptonmc.api.util.Direction
+import org.kryptonmc.krypton.util.math.AxisCycle
 
 abstract class DiscreteVoxelShape protected constructor(val sizeX: Int, val sizeY: Int, val sizeZ: Int) {
 

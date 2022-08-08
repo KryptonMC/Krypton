@@ -8,7 +8,7 @@
  */
 package org.kryptonmc.api.entity.projectile
 
-import org.kryptonmc.api.block.Block
+import org.kryptonmc.api.block.BlockState
 
 /**
  * Something that shares some (or all) functionality with that of an [Arrow].
@@ -28,7 +28,7 @@ public interface ArrowLike : Projectile {
      * object is not currently stuck in a block.
      */
     @get:JvmName("stuckInBlock")
-    public var stuckInBlock: Block?
+    public var stuckInBlock: BlockState?
 
     /**
      * If this arrow like object is currently stuck in the ground.

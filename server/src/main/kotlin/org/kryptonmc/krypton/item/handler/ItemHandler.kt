@@ -25,7 +25,7 @@ import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.item.KryptonItemStack
 import org.kryptonmc.krypton.item.UseItemResult
 import org.kryptonmc.krypton.world.KryptonWorld
-import org.kryptonmc.krypton.world.block.KryptonBlock
+import org.kryptonmc.krypton.world.block.state.KryptonBlockState
 
 /**
  * A handler for a type of item.
@@ -39,18 +39,18 @@ interface ItemHandler {
      * Gets the destroy speed of the given [block] when destroyed with the
      * given [item].
      */
-    fun destroySpeed(item: KryptonItemStack, block: KryptonBlock): Float = 1F
+    fun destroySpeed(item: KryptonItemStack, block: KryptonBlockState): Float = 1F
 
     /**
      * Checks if this item type is the correct tool to break the given [block].
      */
-    fun isCorrectTool(block: KryptonBlock): Boolean = true
+    fun isCorrectTool(block: KryptonBlockState): Boolean = true
 
     /**
      * Checks if the given [player] can attack the given [block] at the given
      * [x], [y], and [z] coordinates in the given [world].
      */
-    fun canAttackBlock(player: KryptonPlayer, world: KryptonWorld, block: KryptonBlock, x: Int, y: Int, z: Int): Boolean = true
+    fun canAttackBlock(player: KryptonPlayer, world: KryptonWorld, block: KryptonBlockState, x: Int, y: Int, z: Int): Boolean = true
 
     fun interactEntity(item: KryptonItemStack, player: KryptonPlayer, entity: KryptonLivingEntity, hand: Hand): InteractionResult =
         InteractionResult.PASS
@@ -66,5 +66,13 @@ interface ItemHandler {
      * the given [position] in the given [world], using the given [item] to
      * destroy it.
      */
-    fun mineBlock(player: KryptonPlayer, item: KryptonItemStack, world: KryptonWorld, block: KryptonBlock, x: Int, y: Int, z: Int): Boolean = false
+    fun mineBlock(
+        player: KryptonPlayer,
+        item: KryptonItemStack,
+        world: KryptonWorld,
+        block: KryptonBlockState,
+        x: Int,
+        y: Int,
+        z: Int
+    ): Boolean = false
 }

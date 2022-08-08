@@ -18,6 +18,7 @@
  */
 package org.kryptonmc.krypton.util
 
+import org.kryptonmc.api.util.Direction
 import org.spongepowered.math.vector.Vector3d
 import org.spongepowered.math.vector.Vector3i
 
@@ -30,3 +31,5 @@ fun Vector3i.chunkX(): Int = x().toChunk()
 fun Vector3i.chunkZ(): Int = z().toChunk()
 
 private fun Int.toChunk(): Int = this shr 4
+
+fun Vector3i.relative(direction: Direction): Vector3i = Vector3i(x() + direction.normalX, y() + direction.normalY, z() + direction.normalZ)

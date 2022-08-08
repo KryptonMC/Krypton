@@ -18,38 +18,39 @@
  */
 package org.kryptonmc.krypton.util
 
-import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap
+import com.google.common.collect.Lists
+import it.unimi.dsi.fastutil.objects.Object2IntOpenCustomHashMap
 
 /**
  * The most basic IntBiMap implementation, that uses a map to store T -> Int,
  * and an array to store Int -> T.
  */
-class IntHashBiMap<T>(values: Map<out T, Int>? = null) : IntBiMap<T> {
+class IntHashBiMap<T>(expectedSize: Int) : IntBiMap<T> {
 
-    private val byT = Object2IntOpenHashMap<T>()
-    private val byId = ArrayList<T?>()
+    private val idByValue = Object2IntOpenCustomHashMap<T>(expectedSize, IdentityHashStrategy.get()).apply { defaultReturnValue(-1) }
+    private val valueById = Lists.newArrayListWithExpectedSize<T?>(expectedSize)
     private var nextId = 0
     override val size: Int
-        get() = byT.size
+        get() = idByValue.size
 
-    init {
-        byT.defaultReturnValue(-1)
-        if (values != null) {
-            byT.putAll(values)
-            byId += values.keys
+    constructor() : this(512)
+
+    fun set(key: T, value: Int) {
+        idByValue[key] = value
+        while (valueById.size <= value) {
+            valueById.add(null)
         }
+        valueById[value] = key
+        if (nextId <= value) nextId = value + 1
     }
 
-    operator fun set(value: T, id: Int) {
-        byT[value] = id
-        while (byId.size <= id) byId.add(null)
-        byId[id] = value
-        if (nextId <= id) nextId = id + 1
+    fun add(key: T) {
+        set(key, nextId)
     }
 
-    override fun idOf(value: T): Int = byT.getInt(value)
+    override fun idOf(value: T): Int = idByValue.getInt(value)
 
-    override fun get(id: Int): T? = byId.getOrNull(id)
+    override fun get(id: Int): T? = valueById.getOrNull(id)
 
-    override fun iterator(): Iterator<T> = byId.iterator().asSequence().filterNotNull().iterator()
+    override fun iterator(): Iterator<T> = valueById.iterator().asSequence().filterNotNull().iterator()
 }

@@ -18,8 +18,7 @@
  */
 package org.kryptonmc.krypton.world.fluid
 
-import org.kryptonmc.api.fluid.Fluid
-import org.kryptonmc.krypton.world.fluid.handler.FluidHandler
-import org.kryptonmc.krypton.world.fluid.handler.EmptyFluidHandler
+import org.kryptonmc.api.fluid.FluidState
+import org.kryptonmc.krypton.util.downcastApiType
 
-fun Fluid.handler(): FluidHandler = FluidManager.handler(this) ?: EmptyFluidHandler
+fun FluidState.downcast(): KryptonFluidState = downcastApiType("FluidState")

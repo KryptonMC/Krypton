@@ -18,7 +18,7 @@
  */
 package org.kryptonmc.krypton.entity.projectile
 
-import org.kryptonmc.api.block.Block
+import org.kryptonmc.api.block.BlockState
 import org.kryptonmc.api.effect.sound.SoundEvent
 import org.kryptonmc.api.effect.sound.SoundEvents
 import org.kryptonmc.api.entity.EntityType
@@ -37,7 +37,7 @@ abstract class KryptonArrowLike(
     var life: Int = 0
     var shakeTime: Int = 0
     var sound: SoundEvent = defaultHitGroundSound
-    final override var stuckInBlock: Block? = null
+    final override var stuckInBlock: BlockState? = null
     final override var pickupRule: ArrowLike.PickupRule = ArrowLike.PickupRule.DISALLOWED
 
     final override var isCritical: Boolean

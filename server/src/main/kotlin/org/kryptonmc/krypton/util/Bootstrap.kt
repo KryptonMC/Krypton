@@ -20,17 +20,21 @@ package org.kryptonmc.krypton.util
 
 import com.mojang.brigadier.exceptions.CommandSyntaxException
 import net.kyori.adventure.translation.Translatable
+import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.block.Blocks
 import org.kryptonmc.api.block.entity.BlockEntityTypes
 import org.kryptonmc.api.block.entity.banner.BannerPatternTypes
 import org.kryptonmc.api.effect.particle.ParticleTypes
 import org.kryptonmc.api.effect.sound.SoundEvents
 import org.kryptonmc.api.entity.EntityCategories
+import org.kryptonmc.api.entity.EntityType
 import org.kryptonmc.api.entity.EntityTypes
+import org.kryptonmc.api.entity.attribute.AttributeType
 import org.kryptonmc.api.entity.attribute.AttributeTypes
 import org.kryptonmc.api.entity.hanging.Pictures
 import org.kryptonmc.api.fluid.Fluids
 import org.kryptonmc.api.item.ItemRarities
+import org.kryptonmc.api.item.ItemType
 import org.kryptonmc.api.item.ItemTypes
 import org.kryptonmc.api.item.data.DyeColors
 import org.kryptonmc.api.registry.Registries
@@ -46,6 +50,7 @@ import org.kryptonmc.api.tags.TagTypes
 import org.kryptonmc.api.world.biome.Biomes
 import org.kryptonmc.api.world.damage.type.DamageTypes
 import org.kryptonmc.api.world.dimension.DimensionTypes
+import org.kryptonmc.api.world.rule.GameRule
 import org.kryptonmc.api.world.rule.GameRules
 import org.kryptonmc.krypton.auth.requests.SessionService
 import org.kryptonmc.krypton.command.BrigadierExceptions
@@ -67,14 +72,14 @@ import org.kryptonmc.krypton.tags.KryptonTagTypes
 import org.kryptonmc.krypton.util.crypto.Encryption
 import org.kryptonmc.krypton.world.biome.BiomeKeys
 import org.kryptonmc.krypton.world.biome.KryptonBiomes
-import org.kryptonmc.krypton.world.block.BlockLoader
-import org.kryptonmc.krypton.world.block.BlockManager
+import org.kryptonmc.krypton.world.block.KryptonBlocks
 import org.kryptonmc.krypton.world.block.entity.BlockEntityLoader
 import org.kryptonmc.krypton.world.damage.type.KryptonDamageTypes
 import org.kryptonmc.krypton.world.dimension.KryptonDimensionTypes
 import org.kryptonmc.krypton.world.event.GameEvents
-import org.kryptonmc.krypton.world.fluid.FluidLoader
+import org.kryptonmc.krypton.world.fluid.KryptonFluids
 import java.util.TreeSet
+import java.util.function.Function
 
 object Bootstrap {
 
@@ -109,8 +114,8 @@ object Bootstrap {
         TagTypes
         SoundLoader.init()
         SoundEvents
-        BlockLoader.init()
-        Blocks
+        KryptonBlocks
+        //Blocks
         BlockEntityLoader.init()
         BlockEntityTypes
         GameEvents
@@ -122,7 +127,7 @@ object Bootstrap {
         ItemRarities
         ItemLoader.init()
         ItemTypes
-        FluidLoader.init()
+        KryptonFluids
         Fluids
         BiomeKeys
         KryptonBiomes
@@ -156,7 +161,6 @@ object Bootstrap {
         ArgumentSerializers
         EntityFactory
         ItemManager
-        BlockManager
         CommandSyntaxException.BUILT_IN_EXCEPTIONS = BrigadierExceptions
     }
 
@@ -169,16 +173,20 @@ object Bootstrap {
     @JvmStatic
     private fun collectMissingTranslations(): Set<String> {
         val missing = TreeSet<String>()
-        checkTranslations(Registries.ATTRIBUTE.values, missing)
-        checkTranslations(Registries.ENTITY_TYPE.values, missing)
-        checkTranslations(Registries.BLOCK.values, missing)
-        checkTranslations(Registries.ITEM.values, missing)
-        checkTranslations(Registries.GAME_RULES.values, missing)
+        checkTranslations(Registries.ATTRIBUTE.values, AttributeType::translationKey, missing)
+        checkTranslations(Registries.ENTITY_TYPE.values, EntityType<*>::translationKey, missing)
+        checkTranslations(Registries.ITEM.values, ItemType::translationKey, missing)
+        checkTranslations(Registries.BLOCK.values, Block::translationKey, missing)
+        checkTranslations(Registries.CUSTOM_STATISTIC.values, { "stat.${it.asString().replace(':', '.')}" }, missing)
+        checkTranslations(Registries.GAME_RULES.values, GameRule<*>::translationKey, missing)
         return missing
     }
 
     @JvmStatic
-    private fun <T : Translatable> checkTranslations(values: Iterable<T>, missing: MutableSet<String>) {
-        values.forEach { if (!TranslationBootstrap.REGISTRY.contains(it.translationKey())) missing.add(it.translationKey()) }
+    private fun <T> checkTranslations(values: Iterable<T>, keyGetter: Function<T, String>, missing: MutableSet<String>) {
+        values.forEach {
+            val key = keyGetter.apply(it)
+            if (!TranslationBootstrap.REGISTRY.contains(key)) missing.add(key)
+        }
     }
 }

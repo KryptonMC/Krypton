@@ -18,5 +18,5 @@ public fun interface ItemLike {
      *
      * @return the item representation
      */
-    public fun asItem(): ItemType?
+    public fun asItem(): ItemType
 }

@@ -26,7 +26,7 @@ public interface BlockContainer {
      * @param z the z coordinate
      * @return the block at the given coordinates
      */
-    public fun getBlock(x: Int, y: Int, z: Int): Block
+    public fun getBlock(x: Int, y: Int, z: Int): BlockState
 
     /**
      * Gets the block at the given [position].
@@ -34,7 +34,7 @@ public interface BlockContainer {
      * @param position the position
      * @return the block at the given position
      */
-    public fun getBlock(position: Vector3i): Block
+    public fun getBlock(position: Vector3i): BlockState
 
     /**
      * Sets the block at the given coordinates to the given [block].
@@ -45,7 +45,7 @@ public interface BlockContainer {
      * @param block the block
      * @return true if the block was set, false otherwise
      */
-    public fun setBlock(x: Int, y: Int, z: Int, block: Block): Boolean
+    public fun setBlock(x: Int, y: Int, z: Int, block: BlockState): Boolean
 
     /**
      * Sets the block at the given [position] to the given [block].
@@ -54,5 +54,5 @@ public interface BlockContainer {
      * @param block the block
      * @return true if the block was set, false otherwise
      */
-    public fun setBlock(position: Vector3i, block: Block): Boolean
+    public fun setBlock(position: Vector3i, block: BlockState): Boolean
 }

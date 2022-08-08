@@ -45,6 +45,7 @@ import org.kryptonmc.krypton.entity.metadata.MetadataHolder
 import org.kryptonmc.krypton.entity.metadata.MetadataKey
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
+import org.kryptonmc.krypton.entity.vehicle.KryptonBoat
 import org.kryptonmc.krypton.item.KryptonItemStack
 import org.kryptonmc.krypton.network.chat.ChatSender
 import org.kryptonmc.krypton.packet.Packet
@@ -61,7 +62,6 @@ import org.kryptonmc.krypton.util.floor
 import org.kryptonmc.krypton.util.nextUUID
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.krypton.world.damage.KryptonDamageSource
-import org.kryptonmc.krypton.world.fluid.handler
 import org.spongepowered.math.vector.Vector2f
 import org.spongepowered.math.vector.Vector3d
 import java.util.UUID
@@ -138,8 +138,10 @@ abstract class KryptonEntity(override var world: KryptonWorld, override val type
     final override var inWater: Boolean = false
     final override var inLava: Boolean = false
     final override var underwater: Boolean = false
+    // FIXME: change this in the next version, when we add all the KryptonBlock implementations. This can be an `is` check.
     val inBubbleColumn: Boolean
-        get() = world.getBlock(location.floorX(), location.floorY(), location.floorZ()) === Blocks.BUBBLE_COLUMN
+        get() = false
+//        get() = world.getBlock(location.floorX(), location.floorY(), location.floorZ()) === Blocks.BUBBLE_COLUMN.defaultState
 
     open val maxAirTicks: Int
         get() = DEFAULT_MAX_AIR
@@ -171,7 +173,7 @@ abstract class KryptonEntity(override var world: KryptonWorld, override val type
     val viewers: MutableSet<KryptonPlayer> = ConcurrentHashMap.newKeySet()
     private var eyeHeight = 0F
     private val fluidHeights = Object2DoubleArrayMap<Tag<Fluid>>(2)
-    private var fluidOnEyes: Tag<Fluid>? = null
+    private val fluidOnEyes = HashSet<Tag<Fluid>>()
     var isRemoved: Boolean = false
         private set
     private var wasDamaged = false
@@ -298,13 +300,13 @@ abstract class KryptonEntity(override var world: KryptonWorld, override val type
             for (y in minY..maxY) {
                 for (z in minZ..maxZ) {
                     val fluid = world.getFluid(x, y, z)
-                    if (!tag.contains(fluid)) continue
-                    val height = y.toDouble() + fluid.handler().height(fluid, x, y, z, world)
+                    if (!fluid.eq(tag)) continue
+                    val height = (y.toFloat() + fluid.getHeight(world, x, y, z)).toDouble()
                     if (height < minY) continue
                     shouldPush = true
                     amount = max(height - minY, amount)
                     if (!pushed) continue
-                    var flow = fluid.handler().flow(fluid, x, y, z, world)
+                    var flow = fluid.getFlow(world, x, y, z)
                     if (amount < 0.4) flow = flow.mul(amount)
                     offset = offset.add(flow)
                     ++pushes
@@ -314,17 +316,12 @@ abstract class KryptonEntity(override var world: KryptonWorld, override val type
 
         if (offset.length() > 0.0) {
             if (pushes > 0) offset = offset.mul(1.0 / pushes)
-            var wasNormalized = false
-            if (this !is KryptonPlayer) {
-                offset = offset.normalize()
-                wasNormalized = true
-            }
+            if (this !is KryptonPlayer) offset = offset.normalize()
 
             val velocity = velocity
             offset = offset.mul(flowScale * 1.0)
             if (abs(velocity.x()) < FLUID_VECTOR_EPSILON && abs(velocity.z()) < FLUID_VECTOR_EPSILON && offset.length() < FLUID_VECTOR_MAGIC) {
-                if (!wasNormalized) offset = offset.normalize()
-                offset = offset.mul(FLUID_VECTOR_MAGIC)
+                offset = offset.normalize().mul(FLUID_VECTOR_MAGIC)
             }
             this.velocity = this.velocity.add(offset)
             server.sessionManager.sendGrouped(viewers, PacketOutSetEntityVelocity(this))
@@ -337,32 +334,32 @@ abstract class KryptonEntity(override var world: KryptonWorld, override val type
     @Suppress("UNCHECKED_CAST")
     private fun updateUnderFluid() {
         underwater = underFluid(FluidTags.WATER)
-        fluidOnEyes = null
+        fluidOnEyes.clear()
+
+        val y = (location.y() + eyeHeight) - BREATHING_DISTANCE_BELOW_EYES
+        val vehicle: KryptonEntity? = vehicle?.downcast()
+        if (vehicle is KryptonBoat && !vehicle.underwater && vehicle.boundingBox.maximumY >= y && vehicle.boundingBox.minimumY <= y) return
 
         val x = location.floorX()
-        val y = (location.y() + eyeHeight) - BREATHING_DISTANCE_BELOW_EYES
+        val blockY = y.floor()
         val z = location.floorZ()
-        val fluid = world.getFluid(x, y.floor(), z)
+        val fluid = world.getFluid(x, blockY, z)
 
-        KryptonTagManager.tags[KryptonTagTypes.FLUIDS]!!.forEach {
-            it as Tag<Fluid>
-            if (!it.contains(fluid)) return@forEach
-            val height = y + fluid.handler().height(fluid, x, y.floor(), z, world)
-            if (height > y) fluidOnEyes = it
-            return
-        }
+        val height = (blockY.toFloat() + fluid.getHeight(world, x, blockY, z))
+        if (height <= y) return
+        KryptonTagManager.tags[KryptonTagTypes.FLUIDS]!!.forEach { fluidOnEyes.add(it as Tag<Fluid>) }
     }
 
-    fun underFluid(fluid: Tag<Fluid>): Boolean = fluidOnEyes === fluid
+    fun underFluid(fluid: Tag<Fluid>): Boolean = fluidOnEyes.contains(fluid)
 
     // TODO: Separate interaction logic
     //open fun interact(player: KryptonPlayer, hand: Hand): InteractionResult = InteractionResult.PASS
 
     private fun updateSwimming() {
         isSwimming = if (isSwimming) {
-            isSprinting && inWater
+            isSprinting && inWater && !isPassenger
         } else {
-            isSprinting && underwater && FluidTags.WATER.contains(world.getFluid(location.floorX(), location.floorY(), location.floorZ()))
+            isSprinting && underwater && !isPassenger && world.getFluid(location.floorX(), location.floorY(), location.floorZ()).eq(FluidTags.WATER)
         }
     }
 
@@ -485,6 +482,6 @@ abstract class KryptonEntity(override var world: KryptonWorld, override val type
         private const val WATER_FLOW_SCALE = 0.014
         private const val FAST_LAVA_FLOW_SCALE = 0.007
         private const val SLOW_LAVA_FLOW_SCALE = 0.0023333333333333335
-        private const val BREATHING_DISTANCE_BELOW_EYES = 0.11111111F
+        const val BREATHING_DISTANCE_BELOW_EYES: Float = 0.11111111F
     }
 }

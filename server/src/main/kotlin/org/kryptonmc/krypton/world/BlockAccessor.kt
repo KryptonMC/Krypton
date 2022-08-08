@@ -18,11 +18,14 @@
  */
 package org.kryptonmc.krypton.world
 
-import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.block.BlockContainer
-import org.kryptonmc.api.fluid.Fluid
+import org.kryptonmc.api.block.BlockState
+import org.kryptonmc.api.block.Blocks
 import org.kryptonmc.api.fluid.FluidContainer
-import org.kryptonmc.krypton.world.block.KryptonBlock
+import org.kryptonmc.krypton.world.block.state.KryptonBlockState
+import org.kryptonmc.krypton.world.block.downcast
+import org.kryptonmc.krypton.world.fluid.KryptonFluidState
+import org.kryptonmc.krypton.world.fluid.KryptonFluids
 import org.spongepowered.math.vector.Vector3i
 
 interface BlockAccessor : BlockContainer, FluidContainer, HeightAccessor {
@@ -30,11 +33,33 @@ interface BlockAccessor : BlockContainer, FluidContainer, HeightAccessor {
     val maximumLightLevel: Int
         get() = 15
 
-    override fun getBlock(x: Int, y: Int, z: Int): KryptonBlock
+    override fun getBlock(x: Int, y: Int, z: Int): KryptonBlockState
 
-    override fun getBlock(position: Vector3i): KryptonBlock = getBlock(position.x(), position.y(), position.z())
+    override fun getBlock(position: Vector3i): KryptonBlockState = getBlock(position.x(), position.y(), position.z())
 
-    override fun getFluid(position: Vector3i): Fluid = getFluid(position.x(), position.y(), position.z())
+    override fun getFluid(x: Int, y: Int, z: Int): KryptonFluidState
 
-    override fun setBlock(position: Vector3i, block: Block): Boolean = setBlock(position.x(), position.y(), position.z(), block)
+    override fun getFluid(position: Vector3i): KryptonFluidState = getFluid(position.x(), position.y(), position.z())
+
+    override fun setBlock(x: Int, y: Int, z: Int, block: BlockState): Boolean = setBlock(x, y, z, block.downcast())
+
+    override fun setBlock(position: Vector3i, block: BlockState): Boolean = setBlock(position, block.downcast())
+
+    fun setBlock(x: Int, y: Int, z: Int, block: KryptonBlockState): Boolean
+
+    fun setBlock(position: Vector3i, block: KryptonBlockState): Boolean = setBlock(position.x(), position.y(), position.z(), block)
+
+    object Empty : BlockAccessor {
+
+        override val height: Int
+            get() = 0
+        override val minimumBuildHeight: Int
+            get() = 0
+
+        override fun getBlock(x: Int, y: Int, z: Int): KryptonBlockState = Blocks.AIR.defaultState.downcast()
+
+        override fun setBlock(x: Int, y: Int, z: Int, block: KryptonBlockState): Boolean = false
+
+        override fun getFluid(x: Int, y: Int, z: Int): KryptonFluidState = KryptonFluids.EMPTY.defaultState
+    }
 }

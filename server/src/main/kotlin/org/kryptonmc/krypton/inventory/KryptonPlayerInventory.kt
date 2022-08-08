@@ -28,10 +28,12 @@ import org.kryptonmc.api.item.ItemStack
 import org.kryptonmc.api.item.ItemTypes
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.item.KryptonItemStack
+import org.kryptonmc.krypton.item.handler
 import org.kryptonmc.krypton.packet.out.play.PacketOutSetContainerSlot
 import org.kryptonmc.krypton.util.FixedList
 import org.kryptonmc.krypton.util.writeItem
 import org.kryptonmc.krypton.util.writeVarInt
+import org.kryptonmc.krypton.world.block.state.KryptonBlockState
 import org.kryptonmc.nbt.ListTag
 import org.kryptonmc.nbt.compound
 import org.kryptonmc.nbt.list
@@ -114,6 +116,11 @@ class KryptonPlayerInventory(override val owner: KryptonPlayer) : KryptonInvento
             buf.writeItem(items[i])
         }
         buf.writeItem(offHand)
+    }
+
+    fun getDestroySpeed(state: KryptonBlockState): Float {
+        val item = items[heldSlot]
+        return item.type.handler().destroySpeed(item, state)
     }
 
     fun load(data: ListTag) {

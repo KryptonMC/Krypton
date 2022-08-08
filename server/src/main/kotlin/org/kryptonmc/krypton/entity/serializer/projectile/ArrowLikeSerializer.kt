@@ -25,7 +25,7 @@ import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.krypton.entity.projectile.KryptonArrowLike
 import org.kryptonmc.krypton.entity.projectile.KryptonTrident
 import org.kryptonmc.krypton.entity.serializer.EntitySerializer
-import org.kryptonmc.krypton.world.block.toBlock
+import org.kryptonmc.krypton.world.block.toBlockState
 import org.kryptonmc.krypton.world.block.toNBT
 import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.StringTag
@@ -38,7 +38,7 @@ object ArrowLikeSerializer : EntitySerializer<KryptonArrowLike> {
         ProjectileSerializer.load(entity, data)
         entity.isCritical = data.getBoolean("crit")
         if (data.contains("damage", 99)) entity.baseDamage = data.getDouble("damage")
-        if (data.contains("inBlockState", CompoundTag.ID)) entity.stuckInBlock = data.getCompound("inBlockState").toBlock()
+        if (data.contains("inBlockState", CompoundTag.ID)) entity.stuckInBlock = data.getCompound("inBlockState").toBlockState()
         entity.isInGround = data.getBoolean("inGround")
         entity.life = data.getShort("life").toInt()
 

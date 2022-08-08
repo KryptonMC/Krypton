@@ -18,24 +18,21 @@
  */
 package org.kryptonmc.krypton.effect.particle.builder
 
-import org.kryptonmc.api.block.Block
+import org.kryptonmc.api.block.BlockState
 import org.kryptonmc.api.block.Blocks
 import org.kryptonmc.api.effect.particle.BlockParticleType
 import org.kryptonmc.api.effect.particle.builder.BlockParticleEffectBuilder
 import org.kryptonmc.api.effect.particle.data.ParticleData
 import org.kryptonmc.krypton.effect.particle.data.KryptonBlockParticleData
-import org.kryptonmc.krypton.world.block.KryptonBlock
+import org.kryptonmc.krypton.world.block.state.KryptonBlockState
 import org.kryptonmc.krypton.world.block.downcast
 
 class KryptonBlockParticleEffectBuilder(type: BlockParticleType) : AbstractParticleEffectBuilder<BlockParticleEffectBuilder>(type),
     BlockParticleEffectBuilder {
 
-    private var block: KryptonBlock = Blocks.STONE.downcast()
+    private var block: KryptonBlockState = Blocks.STONE.defaultState.downcast()
 
-    override fun block(block: Block): BlockParticleEffectBuilder = apply {
-        if (block !is KryptonBlock) throw IllegalArgumentException("Invalid block instance! You cannot provide custom Block implementations!")
-        this.block = block
-    }
+    override fun block(block: BlockState): BlockParticleEffectBuilder = apply { this.block = block.downcast() }
 
     override fun buildData(): ParticleData = KryptonBlockParticleData(block)
 }

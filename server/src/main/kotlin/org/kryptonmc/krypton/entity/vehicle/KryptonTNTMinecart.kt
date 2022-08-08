@@ -20,6 +20,7 @@ package org.kryptonmc.krypton.entity.vehicle
 
 import net.kyori.adventure.sound.Sound
 import org.kryptonmc.api.block.Block
+import org.kryptonmc.api.block.BlockState
 import org.kryptonmc.api.block.Blocks
 import org.kryptonmc.api.effect.sound.SoundEvents
 import org.kryptonmc.api.entity.EntityTypes
@@ -36,8 +37,8 @@ class KryptonTNTMinecart(world: KryptonWorld) : KryptonMinecartLike(world, Entit
         get() = fuse > -1
     override var fuse: Int = -1
 
-    override val defaultCustomBlock: Block
-        get() = Blocks.TNT
+    override val defaultCustomBlock: BlockState
+        get() = Blocks.TNT.defaultState
 
     override fun prime() {
         fuse = PRIMED_FUSE

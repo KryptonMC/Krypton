@@ -10,7 +10,7 @@ package org.kryptonmc.api.effect.particle.data
 
 import org.jetbrains.annotations.ApiStatus
 import org.kryptonmc.api.Krypton
-import org.kryptonmc.api.block.Block
+import org.kryptonmc.api.block.BlockState
 import org.kryptonmc.api.item.ItemStack
 import org.kryptonmc.api.util.Color
 import org.kryptonmc.api.util.provide
@@ -29,7 +29,7 @@ public interface ParticleData {
 
         public fun item(item: ItemStack): ItemParticleData
 
-        public fun block(block: Block): BlockParticleData
+        public fun block(block: BlockState): BlockParticleData
 
         public fun color(color: Color): ColorParticleData
 
