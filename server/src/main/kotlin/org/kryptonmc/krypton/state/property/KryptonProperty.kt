@@ -23,17 +23,20 @@ import org.kryptonmc.krypton.state.KryptonState
 import org.kryptonmc.serialization.Codec
 import java.util.concurrent.atomic.AtomicInteger
 
-sealed class KryptonProperty<T : Comparable<T>>(final override val name: String, final override val type: Class<T>) : Property<T> {
+abstract class KryptonProperty<T : Comparable<T>>(final override val name: String, final override val type: Class<T>) : Property<T> {
 
     val id: Int = ID_COUNTER.getAndIncrement()
     val codec: Codec<T> = Codec.STRING
         .xmap({ requireNotNull(fromString(it)) { "Unable to read property $this with value $it!" } }, ::toString)
     val valueCodec: Codec<Value<T>> = codec.xmap(::value, Value<T>::value)
+    // We cache the hash code because we frequently look up by property in maps, and computing the hash code is expensive.
     private var hashCode: Int? = null
 
-    abstract fun idFor(value: T): Int
+    abstract fun fromString(value: String): T?
 
-    override fun toString(value: T): String = value.toString()
+    abstract fun toString(value: T): String
+
+    abstract fun idFor(value: T): Int
 
     fun value(value: T): Value<T> = Value(this, value)
 

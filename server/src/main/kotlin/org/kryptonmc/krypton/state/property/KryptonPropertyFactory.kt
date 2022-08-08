@@ -18,15 +18,49 @@
  */
 package org.kryptonmc.krypton.state.property
 
-import kotlinx.collections.immutable.toImmutableSet
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap
+import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.api.state.Property
+import org.kryptonmc.krypton.world.block.downcast
+import java.util.IdentityHashMap
+import java.util.function.ToIntFunction
 
 object KryptonPropertyFactory : Property.Factory {
 
-    override fun forBoolean(name: String): Property<Boolean> = BooleanProperty(name)
+    private val PROPERTIES: Map<String, KryptonProperty<*>> by lazy {
+        val builtins = collectFieldProperties()
+        val propertyUsages = HashMap<String, KryptonProperty<*>>()
+        val propertyCount = Object2IntOpenHashMap<String>()
+        Registries.BLOCK.values.forEach { block ->
+            block.downcast().defaultState.availableProperties.forEach { property ->
+                val name = builtins.computeIfAbsent(property) {
+                    val count = propertyCount.computeIfAbsent(property.name, ToIntFunction { 0 }) + 1
+                    "${property.name}_$count"
+                }
+                propertyUsages[name] = property
+            }
+        }
+        propertyUsages
+    }
 
-    override fun forInt(name: String, minimum: Int, maximum: Int): Property<Int> = IntProperty(name, minimum, maximum)
+    override fun forBoolean(name: String): Property<Boolean> = PROPERTIES[name] as BooleanProperty
 
-    override fun <E : Enum<E>> forEnum(name: String, type: Class<E>, values: Set<E>): Property<E> =
-        EnumProperty(name, type, values.toImmutableSet())
+    override fun forInt(name: String): Property<Int> = PROPERTIES[name] as IntProperty
+
+    @Suppress("UNCHECKED_CAST")
+    override fun <E : Enum<E>> forEnum(name: String): Property<E> = PROPERTIES[name] as EnumProperty<E>
+
+    @JvmStatic
+    private fun collectFieldProperties(): MutableMap<KryptonProperty<*>, String> {
+        val map = IdentityHashMap<KryptonProperty<*>, String>()
+        KryptonProperties::class.java.declaredFields.forEach { field ->
+            try {
+                val property = field.get(null)
+                if (property is KryptonProperty<*>) map[property] = field.name
+            } catch (exception: IllegalAccessException) {
+                exception.printStackTrace()
+            }
+        }
+        return map
+    }
 }

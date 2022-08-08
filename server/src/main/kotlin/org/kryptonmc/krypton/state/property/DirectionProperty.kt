@@ -19,22 +19,25 @@
 package org.kryptonmc.krypton.state.property
 
 import com.google.common.collect.ImmutableSet
+import org.kryptonmc.api.util.Direction
+import java.util.function.Predicate
 
-class BooleanProperty(name: String) : KryptonProperty<Boolean>(name, Boolean::class.java) {
-
-    override val values: Collection<Boolean>
-        get() = VALUES
-
-    override fun idFor(value: Boolean): Int = if (value) 1 else 0
-
-    override fun fromString(value: String): Boolean? = value.toBooleanStrictOrNull()
-
-    override fun toString(value: Boolean): String = value.toString()
-
-    override fun generateHashCode(): Int = 31 * super.generateHashCode() + VALUES.hashCode()
+class DirectionProperty(name: String, values: Collection<Direction>) : EnumProperty<Direction>(name, Direction::class.java, values) {
 
     companion object {
 
-        private val VALUES = ImmutableSet.of(true, false)
+        private val VALUES = Direction.values().toList()
+
+        @JvmStatic
+        fun of(name: String): DirectionProperty = DirectionProperty(name, VALUES)
+
+        @JvmStatic
+        fun of(name: String, predicate: Predicate<Direction>): DirectionProperty = DirectionProperty(name, VALUES.filter(predicate::test))
+
+        @JvmStatic
+        fun of(name: String, vararg values: Direction): DirectionProperty = DirectionProperty(name, ImmutableSet.copyOf(values))
+
+        @JvmStatic
+        fun of(name: String, values: Collection<Direction>): DirectionProperty = DirectionProperty(name, values)
     }
 }

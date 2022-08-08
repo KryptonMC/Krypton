@@ -18,30 +18,30 @@
  */
 package org.kryptonmc.krypton.state.property
 
-import it.unimi.dsi.fastutil.ints.IntArraySet
-import kotlinx.collections.immutable.ImmutableSet
-import kotlinx.collections.immutable.toImmutableSet
+import com.google.common.collect.ImmutableSet
 
 class IntProperty(name: String, private val minimum: Int, private val maximum: Int) : KryptonProperty<Int>(name, Int::class.java) {
 
-    override val values: ImmutableSet<Int>
+    override val values: Collection<Int>
 
     init {
         require(minimum >= 0) { "Minimum value $minimum of $name must be 0 or greater!" }
         require(maximum > minimum) { "Maximum value $maximum of $name must be greater than minimum value $minimum!" }
-        val valueSet = IntArraySet()
+        val valueSet = HashSet<Int>()
         for (i in minimum..maximum) {
             valueSet.add(i)
         }
-        values = valueSet.toImmutableSet()
+        values = ImmutableSet.copyOf(valueSet)
     }
+
+    override fun fromString(value: String): Int? = value.toIntOrNull()
+
+    override fun toString(value: Int): String = value.toString()
 
     override fun idFor(value: Int): Int {
         val result = value - minimum
         return result or ((maximum - result) shr 31)
     }
-
-    override fun fromString(value: String): Int? = value.toIntOrNull()
 
     override fun generateHashCode(): Int = 31 * super.generateHashCode() + values.hashCode()
 }
