@@ -11,14 +11,14 @@ package org.kryptonmc.api.world
 import net.kyori.adventure.audience.ForwardingAudience
 import net.kyori.adventure.key.Key
 import org.kryptonmc.api.Server
-import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.block.BlockContainer
+import org.kryptonmc.api.block.BlockState
 import org.kryptonmc.api.block.Blocks
 import org.kryptonmc.api.entity.Entity
 import org.kryptonmc.api.entity.EntityType
 import org.kryptonmc.api.entity.player.Player
-import org.kryptonmc.api.fluid.Fluid
 import org.kryptonmc.api.fluid.FluidContainer
+import org.kryptonmc.api.fluid.FluidState
 import org.kryptonmc.api.fluid.Fluids
 import org.kryptonmc.api.resource.ResourceKey
 import org.kryptonmc.api.resource.ResourceKeys
@@ -167,9 +167,9 @@ public interface World : BlockContainer, FluidContainer, BiomeContainer, Forward
      *
      * This function will return the following in specific cases:
      * - If the given [y] coordinate is greater than the maximum height of this
-     * world, this will return [Blocks.VOID_AIR].
+     * world, this will return the default state of [Blocks.VOID_AIR].
      * - If there is no chunk loaded at the given coordinates ([getChunkAt] was
-     * null), this will return [Blocks.AIR].
+     * null), this will return the default state of [Blocks.AIR].
      * - Else it will return the block at the given coordinates.
      *
      * @param x the X coordinate
@@ -177,7 +177,7 @@ public interface World : BlockContainer, FluidContainer, BiomeContainer, Forward
      * @param z the Z coordinate
      * @return see above
      */
-    override fun getBlock(x: Int, y: Int, z: Int): Block
+    override fun getBlock(x: Int, y: Int, z: Int): BlockState
 
     /**
      * Gets the block at the given [position].
@@ -192,7 +192,7 @@ public interface World : BlockContainer, FluidContainer, BiomeContainer, Forward
      * @param position the position
      * @return see above
      */
-    override fun getBlock(position: Vector3i): Block
+    override fun getBlock(position: Vector3i): BlockState
 
     /**
      * Gets the fluid at the given coordinates.
@@ -208,7 +208,7 @@ public interface World : BlockContainer, FluidContainer, BiomeContainer, Forward
      * @param z the Z coordinate
      * @return see above
      */
-    override fun getFluid(x: Int, y: Int, z: Int): Fluid
+    override fun getFluid(x: Int, y: Int, z: Int): FluidState
 
     /**
      * Gets the fluid at the given [position].
@@ -223,7 +223,7 @@ public interface World : BlockContainer, FluidContainer, BiomeContainer, Forward
      * @param position the position
      * @return see above
      */
-    override fun getFluid(position: Vector3i): Fluid
+    override fun getFluid(position: Vector3i): FluidState
 
     /**
      * Gets a chunk from its **chunk** coordinates, or returns null if there is

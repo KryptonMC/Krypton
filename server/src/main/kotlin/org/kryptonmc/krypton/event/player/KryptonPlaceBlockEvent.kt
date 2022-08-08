@@ -18,7 +18,7 @@
  */
 package org.kryptonmc.krypton.event.player
 
-import org.kryptonmc.api.block.Block
+import org.kryptonmc.api.block.BlockState
 import org.kryptonmc.api.entity.Hand
 import org.kryptonmc.api.entity.player.Player
 import org.kryptonmc.api.event.GenericResult
@@ -27,7 +27,7 @@ import org.kryptonmc.api.util.Direction
 
 data class KryptonPlaceBlockEvent(
     override val player: Player,
-    override val block: Block,
+    override val block: BlockState,
     override val hand: Hand,
     override val x: Int,
     override val y: Int,

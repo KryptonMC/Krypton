@@ -27,6 +27,7 @@ import org.kryptonmc.api.util.Direction.Axis
 import org.kryptonmc.krypton.util.Collisions
 import org.kryptonmc.krypton.util.KryptonBoundingBox
 import org.kryptonmc.krypton.util.Maths
+import org.kryptonmc.krypton.util.math.AxisCycle
 import java.util.Objects
 
 object Shapes {

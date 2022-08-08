@@ -24,37 +24,35 @@ import org.kryptonmc.api.world.GameMode
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.item.KryptonItemStack
 import org.kryptonmc.krypton.world.KryptonWorld
-import org.kryptonmc.krypton.world.block.downcast
-import org.kryptonmc.krypton.world.block.isPlant
-import org.kryptonmc.krypton.world.block.isReplaceablePlant
-import org.kryptonmc.krypton.world.block.isVegetable
-import org.kryptonmc.krypton.world.block.KryptonBlock
+import org.kryptonmc.krypton.world.block.state.KryptonBlockState
+import org.kryptonmc.krypton.world.material.Materials
 
 object SwordHandler : ItemHandler {
 
-    private val COBWEB_BLOCK_ID = Blocks.COBWEB.downcast().id
     private const val COBWEB_DESTROY_SPEED = 15F
     private const val PLANT_LEAVES_VEGETABLE_DESTROY_SPEED = 1.5F
     private const val DEFAULT_DESTROY_SPEED = 1F
 
-    override fun canAttackBlock(player: KryptonPlayer, world: KryptonWorld, block: KryptonBlock, x: Int, y: Int, z: Int): Boolean =
+    override fun canAttackBlock(player: KryptonPlayer, world: KryptonWorld, block: KryptonBlockState, x: Int, y: Int, z: Int): Boolean =
         player.gameMode != GameMode.CREATIVE
 
-    override fun destroySpeed(item: KryptonItemStack, block: KryptonBlock): Float {
-        if (block.id == COBWEB_BLOCK_ID) return COBWEB_DESTROY_SPEED
-        if (block.isPlant() || block.isReplaceablePlant() || BlockTags.LEAVES.contains(block) || block.isVegetable()) {
-            return PLANT_LEAVES_VEGETABLE_DESTROY_SPEED
+    override fun destroySpeed(item: KryptonItemStack, block: KryptonBlockState): Float {
+        if (block.eq(Blocks.COBWEB)) return COBWEB_DESTROY_SPEED
+        val material = block.material
+        val isNotLeaves = !block.eq(BlockTags.LEAVES)
+        if (material != Materials.PLANT && material != Materials.REPLACEABLE_PLANT && isNotLeaves && material != Materials.VEGETABLE) {
+            return DEFAULT_DESTROY_SPEED
         }
-        return DEFAULT_DESTROY_SPEED
+        return PLANT_LEAVES_VEGETABLE_DESTROY_SPEED
     }
 
-    override fun isCorrectTool(block: KryptonBlock): Boolean = block.id == COBWEB_BLOCK_ID
+    override fun isCorrectTool(block: KryptonBlockState): Boolean = block.eq(Blocks.COBWEB)
 
     override fun mineBlock(
         player: KryptonPlayer,
         item: KryptonItemStack,
         world: KryptonWorld,
-        block: KryptonBlock,
+        block: KryptonBlockState,
         x: Int,
         y: Int,
         z: Int

@@ -14,6 +14,7 @@ import org.jetbrains.annotations.ApiStatus
 import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.Krypton
 import org.kryptonmc.api.block.Block
+import org.kryptonmc.api.block.BlockState
 import org.kryptonmc.api.util.CataloguedBy
 import org.kryptonmc.api.util.KeyedBuilder
 import org.kryptonmc.api.util.TranslationHolder
@@ -96,7 +97,7 @@ public interface EntityType<T : Entity> : Keyed, TranslationHolder {
      * @param block the block to check
      * @return true if entities are immune to the block, false otherwise
      */
-    public fun isImmuneTo(block: Block): Boolean
+    public fun isImmuneTo(block: BlockState): Boolean
 
     /**
      * A builder for building entity types.

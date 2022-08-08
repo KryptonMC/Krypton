@@ -25,9 +25,7 @@ import org.kryptonmc.krypton.packet.`in`.play.PacketInPlayerAction
 import org.kryptonmc.krypton.packet.out.play.PacketOutBlockUpdate
 import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.world.KryptonWorld
-import org.kryptonmc.krypton.world.block.handler
-import org.kryptonmc.krypton.world.block.isGameMasterBlock
-import org.kryptonmc.krypton.world.block.KryptonBlock
+import org.kryptonmc.krypton.world.block.state.KryptonBlockState
 
 class PlayerBlockHandler(private val player: KryptonPlayer) {
 
@@ -109,6 +107,7 @@ class PlayerBlockHandler(private val player: KryptonPlayer) {
                     return
                 }
                 if (player.isBlockActionRestricted(x, y, z)) {
+                    player.session.send(PacketOutBlockUpdate(world.getBlock(x, y, z), x, y, z))
                     logBlockBreakUpdate(x, y, z, false, "cannot break blocks while in this state!")
                     return
                 }
@@ -116,8 +115,8 @@ class PlayerBlockHandler(private val player: KryptonPlayer) {
                 var destroyProgress = 1F
                 val block = world.getBlock(x, y, z)
                 if (!block.isAir) {
-                    block.handler().attack(player, world, block, x, y, z)
-                    destroyProgress = block.handler().calculateDestroyProgress(player, world, block, x, y, z)
+                    block.attack(world, x, y, z, player)
+                    destroyProgress = block.getDestroyProgress(player, player.world, x, y, z)
                 }
 
                 if (!block.isAir && destroyProgress >= 1F) {
@@ -125,6 +124,8 @@ class PlayerBlockHandler(private val player: KryptonPlayer) {
                     return
                 }
                 if (isDestroying) {
+                    val state = world.getBlock(destroyingX, destroyingY, destroyingZ)
+                    player.session.send(PacketOutBlockUpdate(state, destroyingX, destroyingY, destroyingZ))
                     val reason = "aborted because another block is already being destroyed (client instantly mined block, we didn't like that)"
                     logBlockBreakUpdate(x, y, z, false, reason)
                 }
@@ -142,7 +143,7 @@ class PlayerBlockHandler(private val player: KryptonPlayer) {
                 val tickDifference = currentTick - startingDestroyProgress
                 val block = world.getBlock(x, y, z)
                 if (block.isAir) return
-                val destroyProgress = block.handler().calculateDestroyProgress(player, world, block, x, y, z) * (tickDifference + 1).toFloat()
+                val destroyProgress = block.getDestroyProgress(player, player.world, x, y, z) * (tickDifference + 1).toFloat()
                 if (destroyProgress >= 0.7F) {
                     isDestroying = false
                     world.broadcastBlockDestroyProgress(player.id, x, y, z, -1)
@@ -173,9 +174,9 @@ class PlayerBlockHandler(private val player: KryptonPlayer) {
         }
     }
 
-    private fun incrementDestroyProgress(block: KryptonBlock, x: Int, y: Int, z: Int, startTick: Int): Float {
+    private fun incrementDestroyProgress(block: KryptonBlockState, x: Int, y: Int, z: Int, startTick: Int): Float {
         val tickDifference = currentTick - startTick
-        val progress = block.handler().calculateDestroyProgress(player, world, block, x, y, z) * (tickDifference + 1).toFloat()
+        val progress = block.getDestroyProgress(player, player.world, x, y, z) * (tickDifference + 1).toFloat()
         val state = (progress * 10F).toInt()
         if (state != lastSentState) {
             player.world.broadcastBlockDestroyProgress(player.id, x, y, z, state)
@@ -191,23 +192,24 @@ class PlayerBlockHandler(private val player: KryptonPlayer) {
     }
 
     private fun destroyBlock(x: Int, y: Int, z: Int): Boolean {
-        val block = world.getBlock(x, y, z)
+        val state = world.getBlock(x, y, z)
+        val block = state.block
 
         // Check some conditions first
-        if (!player.inventory.mainHand.type.handler().canAttackBlock(player, world, block, x, y, z)) return false
-        if (block.isGameMasterBlock() && !player.canUseGameMasterBlocks) return false
+        if (!player.inventory.mainHand.type.handler().canAttackBlock(player, world, state, x, y, z)) return false
+        if (!player.canUseGameMasterBlocks) return false // FIXME: Check if is instance of GameMasterBlock
         if (player.isBlockActionRestricted(x, y, z)) return false
 
         // Call pre-destroy, try and remove the block, and if we changed the block, call destroy
-        block.handler().preDestroy(player, world, block, x, y, z)
+        block.playerWillDestroy(world, x, y, z, state, player)
         val hasChanged = world.removeBlock(x, y, z)
-        if (hasChanged) block.handler().destroy(world, x, y, z, block)
+        if (hasChanged) block.destroy(world, x, y, z, state)
 
         if (isCreative) return true // We're done, since the bit after this is for mining, which doesn't happen in creative
         val item = player.inventory.mainHand
-        val hasCorrectTool = player.hasCorrectTool(block)
-        item.type.handler().mineBlock(player, item, world, block, x, y, z)
-        if (hasChanged && hasCorrectTool) block.handler().onDestroy(player, block, x, y, z, item)
+        val hasCorrectTool = player.hasCorrectTool(state)
+        item.type.handler().mineBlock(player, item, world, state, x, y, z)
+        if (hasChanged && hasCorrectTool) block.playerDestroy(world, player, x, y, z, state, null, item)
         return true
     }
 

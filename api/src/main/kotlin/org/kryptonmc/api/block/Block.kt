@@ -9,10 +9,8 @@
 package org.kryptonmc.api.block
 
 import net.kyori.adventure.key.Keyed
-import org.kryptonmc.api.block.property.PropertyHolder
-import org.kryptonmc.api.fluid.Fluid
-import org.kryptonmc.api.fluid.FluidLike
 import org.kryptonmc.api.item.ItemLike
+import org.kryptonmc.api.state.StateHolder
 import org.kryptonmc.api.util.CataloguedBy
 import org.kryptonmc.api.util.TranslationHolder
 
@@ -27,16 +25,7 @@ import org.kryptonmc.api.util.TranslationHolder
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
 @CataloguedBy(Blocks::class)
-public interface Block : PropertyHolder<Block>, BlockLike, ItemLike, FluidLike, TranslationHolder, Keyed {
-
-    /**
-     * The hardness of this block.
-     *
-     * This is used in determining the mining time of this block when a player
-     * attempts to mine it.
-     */
-    @get:JvmName("hardness")
-    public val hardness: Double
+public interface Block : StateHolder<BlockState>, BlockLike, ItemLike, TranslationHolder, Keyed {
 
     /**
      * How resistant this block is to explosions. Higher
@@ -50,50 +39,6 @@ public interface Block : PropertyHolder<Block>, BlockLike, ItemLike, FluidLike, 
      */
     @get:JvmName("friction")
     public val friction: Double
-
-    /**
-     * If this block is air.
-     */
-    public val isAir: Boolean
-
-    /**
-     * If this block is a solid object with collision, meaning entities cannot
-     * pass through it.
-     */
-    public val isSolid: Boolean
-
-    /**
-     * If this block represents a liquid rather than a solid object.
-     *
-     * All blocks that are liquids are also [Fluid]s.
-     */
-    public val isLiquid: Boolean
-
-    /**
-     * If this block can be set on fire.
-     */
-    public val isFlammable: Boolean
-
-    /**
-     * If this block can be replaced with another block when attempting to
-     * place a block on this block.
-     *
-     * For example, when a player places a block on grass, instead of the block
-     * being placed on the side in which the player clicked, the target grass
-     * will be replaced with the block the player was placing.
-     */
-    public val isReplaceable: Boolean
-
-    /**
-     * If this block is opaque, not allowing any light to pass through it.
-     */
-    public val isOpaque: Boolean
-
-    /**
-     * Whether this block can be moved through.
-     */
-    @get:JvmName("blocksMotion")
-    public val blocksMotion: Boolean
 
     /**
      * If this block has gravity, meaning that, when placed with one or more
@@ -111,16 +56,16 @@ public interface Block : PropertyHolder<Block>, BlockLike, ItemLike, FluidLike, 
     public val canRespawnIn: Boolean
 
     /**
-     * How this block reacts to being pushed or pulled by pistons.
-     */
-    @get:JvmName("pushReaction")
-    public val pushReaction: PushReaction
-
-    /**
      * If this block has an associated block entity.
      */
     @get:JvmName("hasBlockEntity")
     public val hasBlockEntity: Boolean
+
+    /**
+     * The group of sounds for this block.
+     */
+    @get:JvmName("soundGroup")
+    public val soundGroup: BlockSoundGroup
 
     override fun asBlock(): Block = this
 }

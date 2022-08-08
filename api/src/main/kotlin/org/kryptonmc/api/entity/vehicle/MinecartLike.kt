@@ -8,7 +8,7 @@
  */
 package org.kryptonmc.api.entity.vehicle
 
-import org.kryptonmc.api.block.Block
+import org.kryptonmc.api.block.BlockState
 
 /**
  * Something that shares some (or all) functionality with that of a [Minecart].
@@ -29,10 +29,10 @@ public interface MinecartLike : DamageableVehicle {
     public var hasCustomBlock: Boolean
 
     /**
-     * The custom block shown within the minecart.
+     * The custom block state shown within the minecart.
      */
     @get:JvmName("customBlock")
-    public var customBlock: Block
+    public var customBlock: BlockState
 
     /**
      * The offset of the custom block.

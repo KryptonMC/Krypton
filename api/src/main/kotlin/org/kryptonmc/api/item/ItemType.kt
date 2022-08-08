@@ -8,25 +8,18 @@
  */
 package org.kryptonmc.api.item
 
-import net.kyori.adventure.key.Key
 import net.kyori.adventure.key.Keyed
-import net.kyori.adventure.util.Buildable
-import org.jetbrains.annotations.ApiStatus
-import org.jetbrains.annotations.Contract
-import org.kryptonmc.api.Krypton
 import org.kryptonmc.api.block.BlockLike
 import org.kryptonmc.api.effect.sound.SoundEvent
 import org.kryptonmc.api.util.CataloguedBy
-import org.kryptonmc.api.util.KeyedBuilder
 import org.kryptonmc.api.util.TranslationHolder
-import org.kryptonmc.api.util.provide
 
 /**
  * Represents a type of item.
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
 @CataloguedBy(ItemTypes::class)
-public interface ItemType : Buildable<ItemType, ItemType.Builder>, ItemLike, BlockLike, TranslationHolder, Keyed {
+public interface ItemType : ItemLike, BlockLike, TranslationHolder, Keyed {
 
     /**
      * The rarity of the item.
@@ -86,158 +79,4 @@ public interface ItemType : Buildable<ItemType, ItemType.Builder>, ItemLike, Blo
     public val drinkingSound: SoundEvent
 
     override fun asItem(): ItemType = this
-
-    /**
-     * A builder that can be used to build item type instances.
-     */
-    @ItemTypeDsl
-    public interface Builder : Buildable.Builder<ItemType>, KeyedBuilder<ItemType, Builder>, TranslationHolder.Builder<Builder, ItemType> {
-
-        /**
-         * Sets the rarity of the item type.
-         *
-         * @param rarity the rarity
-         * @return this builder
-         */
-        @ItemTypeDsl
-        @Contract("_ -> this", mutates = "this")
-        public fun rarity(rarity: ItemRarity): Builder
-
-        /**
-         * Makes this item type stackable, with the given [maximumStackSize].
-         *
-         * @param maximumStackSize the maximum stack size
-         * @return this builder
-         */
-        @ItemTypeDsl
-        @Contract("_ -> this", mutates = "this")
-        public fun stackable(maximumStackSize: Int): Builder
-
-        /**
-         * Makes this item type unstackable.
-         * This also sets the maximum stack size back to 0.
-         *
-         * @return this builder
-         */
-        @ItemTypeDsl
-        @Contract("-> this", mutates = "this")
-        public fun unstackable(): Builder
-
-        /**
-         * Makes this item type breakable.
-         *
-         * @return this builder
-         */
-        @ItemTypeDsl
-        @Contract("-> this", mutates = "this")
-        public fun breakable(): Builder
-
-        /**
-         * Makes this item type breakable, setting the durability to the given
-         * [durability].
-         *
-         * @param durability the durability
-         * @return this builder
-         */
-        @ItemTypeDsl
-        @Contract("_ -> this", mutates = "this")
-        public fun breakable(durability: Int): Builder
-
-        /**
-         * Makes this item type unbreakable.
-         * This will also set the durability to 0.
-         *
-         * @return this builder
-         */
-        @ItemTypeDsl
-        @Contract("-> this", mutates = "this")
-        public fun unbreakable(): Builder
-
-        /**
-         * Sets the durability of this item type.
-         *
-         * @param durability the durability
-         * @return this builder
-         */
-        @ItemTypeDsl
-        @Contract("_ -> this", mutates = "this")
-        public fun durability(durability: Int): Builder
-
-        /**
-         * Makes this item type edible.
-         *
-         * @return this builder
-         */
-        @ItemTypeDsl
-        @Contract("-> this", mutates = "this")
-        public fun edible(): Builder
-
-        /**
-         * Makes this item type inedible.
-         *
-         * @return this builder
-         */
-        @ItemTypeDsl
-        @Contract("-> this", mutates = "this")
-        public fun inedible(): Builder
-
-        /**
-         * Makes this item type fire resistant.
-         *
-         * @return this builder
-         */
-        @ItemTypeDsl
-        @Contract("-> this", mutates = "this")
-        public fun fireResistant(): Builder
-
-        /**
-         * Makes this item type flammable (not fire resistant).
-         *
-         * @return this builder
-         */
-        @ItemTypeDsl
-        @Contract("-> this", mutates = "this")
-        public fun flammable(): Builder
-
-        /**
-         * Sets the eating sound of this item type.
-         *
-         * @param eatingSound the eating sound
-         * @return this builder
-         */
-        @ItemTypeDsl
-        @Contract("_ -> this", mutates = "this")
-        public fun eatingSound(eatingSound: SoundEvent): Builder
-
-        /**
-         * Sets the drinking sound of this item type.
-         *
-         * @param drinkingSound the eating sound
-         * @return this builder
-         */
-        @ItemTypeDsl
-        @Contract("_ -> this", mutates = "this")
-        public fun drinkingSound(drinkingSound: SoundEvent): Builder
-    }
-
-    @ApiStatus.Internal
-    public interface Factory {
-
-        public fun builder(key: Key): Builder
-    }
-
-    public companion object {
-
-        private val FACTORY = Krypton.factoryProvider.provide<Factory>()
-
-        /**
-         * Creates a new builder for item types.
-         *
-         * @param key the key
-         * @return a new builder
-         */
-        @JvmStatic
-        @Contract("_ -> new", pure = true)
-        public fun builder(key: Key): Builder = FACTORY.builder(key)
-    }
 }

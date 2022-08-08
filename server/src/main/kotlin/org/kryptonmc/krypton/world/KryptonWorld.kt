@@ -21,14 +21,11 @@ package org.kryptonmc.krypton.world
 import net.kyori.adventure.identity.Identity
 import net.kyori.adventure.pointer.Pointers
 import net.kyori.adventure.sound.Sound
-import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.block.Blocks
 import org.kryptonmc.api.effect.sound.SoundEvent
 import org.kryptonmc.api.entity.Entity
 import org.kryptonmc.api.entity.EntityType
 import org.kryptonmc.api.entity.EntityTypes
-import org.kryptonmc.api.fluid.Fluid
-import org.kryptonmc.api.fluid.Fluids
 import org.kryptonmc.api.resource.ResourceKey
 import org.kryptonmc.api.world.Difficulty
 import org.kryptonmc.api.world.GameMode
@@ -54,7 +51,7 @@ import org.kryptonmc.krypton.server.PlayerManager
 import org.kryptonmc.krypton.util.clamp
 import org.kryptonmc.krypton.world.biome.BiomeManager
 import org.kryptonmc.krypton.world.block.downcast
-import org.kryptonmc.krypton.world.block.KryptonBlock
+import org.kryptonmc.krypton.world.block.state.KryptonBlockState
 import org.kryptonmc.krypton.world.chunk.ChunkAccessor
 import org.kryptonmc.krypton.world.chunk.ChunkManager
 import org.kryptonmc.krypton.world.chunk.ChunkPosition
@@ -64,6 +61,8 @@ import org.kryptonmc.krypton.world.chunk.ticket.Ticket
 import org.kryptonmc.krypton.world.chunk.ticket.TicketTypes
 import org.kryptonmc.krypton.world.data.WorldData
 import org.kryptonmc.krypton.world.dimension.KryptonDimensionType
+import org.kryptonmc.krypton.world.fluid.KryptonFluidState
+import org.kryptonmc.krypton.world.fluid.KryptonFluids
 import org.kryptonmc.krypton.world.rule.KryptonGameRuleHolder
 import org.kryptonmc.krypton.world.scoreboard.KryptonScoreboard
 import org.spongepowered.math.GenericMath
@@ -202,17 +201,21 @@ class KryptonWorld(
         return setBlock(x, y, z, fluid.asBlock())
     }
 
-    override fun getBlock(x: Int, y: Int, z: Int): KryptonBlock {
-        if (isOutsideBuildHeight(y)) return Blocks.VOID_AIR.downcast()
-        val chunk = getChunkAt(x shr 4, z shr 4) ?: return Blocks.AIR.downcast()
+    override fun getBlock(x: Int, y: Int, z: Int): KryptonBlockState {
+        if (isOutsideBuildHeight(y)) return Blocks.VOID_AIR.defaultState.downcast()
+        val chunk = getChunkAt(x shr 4, z shr 4) ?: return Blocks.AIR.defaultState.downcast()
         return chunk.getBlock(x, y, z)
     }
 
-    override fun getFluid(x: Int, y: Int, z: Int): Fluid {
-        if (isOutsideBuildHeight(y)) return Fluids.EMPTY
-        val chunk = getChunkAt(x shr 4, z shr 4) ?: return Fluids.EMPTY
+    override fun getBlock(position: Vector3i): KryptonBlockState = getBlock(position.x(), position.y(), position.z())
+
+    override fun getFluid(x: Int, y: Int, z: Int): KryptonFluidState {
+        if (isOutsideBuildHeight(y)) return KryptonFluids.EMPTY.defaultState
+        val chunk = getChunkAt(x shr 4, z shr 4) ?: return KryptonFluids.EMPTY.defaultState
         return chunk.getFluid(x, y, z)
     }
+
+    override fun getFluid(position: Vector3i): KryptonFluidState = getFluid(position.x(), position.y(), position.z())
 
     override fun getChunk(x: Int, z: Int, status: ChunkStatus, shouldCreate: Boolean): ChunkAccessor? = null // FIXME
 
@@ -223,10 +226,6 @@ class KryptonWorld(
         }
         return SEA_LEVEL + 1
     }
-
-    override fun getBlock(position: Vector3i): KryptonBlock = getBlock(position.x(), position.y(), position.z())
-
-    override fun getFluid(position: Vector3i): Fluid = getFluid(position.x(), position.y(), position.z())
 
     override fun getChunkAt(x: Int, z: Int): KryptonChunk? = chunkManager[x, z]
 
@@ -240,17 +239,14 @@ class KryptonWorld(
         chunkManager.unload(x, z, TicketTypes.API_LOAD, force)
     }
 
-    override fun setBlock(x: Int, y: Int, z: Int, block: Block): Boolean {
-        val kryptonBlock = block.downcast()
+    override fun setBlock(x: Int, y: Int, z: Int, block: KryptonBlockState): Boolean {
         if (isOutsideBuildHeight(y)) return false
 //        if (isDebug) return false
         val chunk = getChunk(x, y, z) ?: return false
-        if (!chunk.setBlock(x, y, z, kryptonBlock)) return false
-        sessionManager.sendGrouped(PacketOutBlockUpdate(kryptonBlock, x, y, z))
+        if (!chunk.setBlock(x, y, z, block)) return false
+        sessionManager.sendGrouped(PacketOutBlockUpdate(block, x, y, z))
         return true
     }
-
-    override fun setBlock(position: Vector3i, block: Block): Boolean = setBlock(position.x(), position.y(), position.z(), block)
 
     fun tick() {
         if (players.isEmpty()) return // don't tick the world if there's no players in it

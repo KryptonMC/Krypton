@@ -18,10 +18,7 @@
  */
 package org.kryptonmc.krypton.world.chunk
 
-import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.block.Blocks
-import org.kryptonmc.api.fluid.Fluid
-import org.kryptonmc.api.fluid.Fluids
 import org.kryptonmc.api.world.biome.Biome
 import org.kryptonmc.api.world.chunk.Chunk
 import org.kryptonmc.krypton.packet.CachedPacket
@@ -29,8 +26,10 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutChunkDataAndLight
 import org.kryptonmc.krypton.world.Heightmap
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.krypton.world.block.downcast
-import org.kryptonmc.krypton.world.block.KryptonBlock
+import org.kryptonmc.krypton.world.block.state.KryptonBlockState
 import org.kryptonmc.krypton.world.chunk.ticket.Ticket
+import org.kryptonmc.krypton.world.fluid.KryptonFluidState
+import org.kryptonmc.krypton.world.fluid.KryptonFluids
 import org.kryptonmc.nbt.CompoundTag
 import org.spongepowered.math.vector.Vector3i
 
@@ -61,7 +60,7 @@ class KryptonChunk(
 
     val cachedPacket: CachedPacket = CachedPacket { PacketOutChunkDataAndLight(this, true) }
 
-    override fun getBlock(x: Int, y: Int, z: Int): KryptonBlock {
+    override fun getBlock(x: Int, y: Int, z: Int): KryptonBlockState {
 //        if (world.isDebug) {
 //            var block: KryptonBlock? = null
 //            if (y == 60) block = Blocks.BARRIER.downcast()
@@ -73,24 +72,23 @@ class KryptonChunk(
             val section = sections[sectionIndex]
             if (!section.hasOnlyAir()) return section.get(x and 15, y and 15, z and 15)
         }
-        return Blocks.AIR.downcast()
+        return Blocks.AIR.defaultState.downcast()
     }
 
-    override fun getBlock(position: Vector3i): KryptonBlock = getBlock(position.x(), position.y(), position.z())
+    override fun getBlock(position: Vector3i): KryptonBlockState = getBlock(position.x(), position.y(), position.z())
 
-    override fun getFluid(x: Int, y: Int, z: Int): Fluid {
+    override fun getFluid(x: Int, y: Int, z: Int): KryptonFluidState {
         val sectionIndex = sectionIndex(y)
         if (sectionIndex >= 0 && sectionIndex < sections.size) {
             val section = sections[sectionIndex]
             if (!section.hasOnlyAir()) return section.get(x and 15, y and 15, z and 15).asFluid()
         }
-        return Fluids.EMPTY
+        return KryptonFluids.EMPTY.defaultState
     }
 
-    override fun getFluid(position: Vector3i): Fluid = getFluid(position.x(), position.y(), position.z())
+    override fun getFluid(position: Vector3i): KryptonFluidState = getFluid(position.x(), position.y(), position.z())
 
-    override fun setBlock(x: Int, y: Int, z: Int, block: Block): Boolean {
-        val kryptonBlock = block.downcast()
+    override fun setBlock(x: Int, y: Int, z: Int, block: KryptonBlockState): Boolean {
         val section = sections[sectionIndex(y)]
         if (section.hasOnlyAir() && block.isAir) return false
 
@@ -98,19 +96,17 @@ class KryptonChunk(
         val localX = x and 15
         val localY = y and 15
         val localZ = z and 15
-        val oldState = section.set(localX, localY, localZ, kryptonBlock)
-        if (oldState === kryptonBlock) return false
+        val oldState = section.set(localX, localY, localZ, block)
+        if (oldState === block) return false
 
         // Update the heightmaps
-        heightmaps.getValue(Heightmap.Type.MOTION_BLOCKING).update(localX, y, localZ, kryptonBlock)
-        heightmaps.getValue(Heightmap.Type.MOTION_BLOCKING_NO_LEAVES).update(localX, y, localZ, kryptonBlock)
-        heightmaps.getValue(Heightmap.Type.OCEAN_FLOOR).update(localX, y, localZ, kryptonBlock)
-        heightmaps.getValue(Heightmap.Type.WORLD_SURFACE).update(localX, y, localZ, kryptonBlock)
+        heightmaps.getValue(Heightmap.Type.MOTION_BLOCKING).update(localX, y, localZ, block)
+        heightmaps.getValue(Heightmap.Type.MOTION_BLOCKING_NO_LEAVES).update(localX, y, localZ, block)
+        heightmaps.getValue(Heightmap.Type.OCEAN_FLOOR).update(localX, y, localZ, block)
+        heightmaps.getValue(Heightmap.Type.WORLD_SURFACE).update(localX, y, localZ, block)
         cachedPacket.invalidate()
         return true
     }
-
-    override fun setBlock(position: Vector3i, block: Block): Boolean = setBlock(position.x(), position.y(), position.z(), block)
 
     override fun getBiome(x: Int, y: Int, z: Int): Biome = getNoiseBiome(x, y, z)
 

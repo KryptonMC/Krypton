@@ -16,5 +16,5 @@ public fun interface BlockLike {
     /**
      * Gets the block representation, or null if there is no block representation.
      */
-    public fun asBlock(): Block?
+    public fun asBlock(): Block
 }

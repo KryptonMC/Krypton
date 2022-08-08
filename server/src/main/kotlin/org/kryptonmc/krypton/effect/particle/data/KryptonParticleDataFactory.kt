@@ -18,7 +18,7 @@
  */
 package org.kryptonmc.krypton.effect.particle.data
 
-import org.kryptonmc.api.block.Block
+import org.kryptonmc.api.block.BlockState
 import org.kryptonmc.api.effect.particle.data.BlockParticleData
 import org.kryptonmc.api.effect.particle.data.ColorParticleData
 import org.kryptonmc.api.effect.particle.data.DirectionalParticleData
@@ -29,18 +29,14 @@ import org.kryptonmc.api.effect.particle.data.NoteParticleData
 import org.kryptonmc.api.effect.particle.data.ParticleData
 import org.kryptonmc.api.effect.particle.data.VibrationParticleData
 import org.kryptonmc.api.item.ItemStack
-import org.kryptonmc.api.item.ItemType
 import org.kryptonmc.api.util.Color
 import org.kryptonmc.krypton.item.downcast
-import org.kryptonmc.krypton.world.block.KryptonBlock
+import org.kryptonmc.krypton.world.block.downcast
 import org.spongepowered.math.vector.Vector3d
 
 object KryptonParticleDataFactory : ParticleData.Factory {
 
-    override fun block(block: Block): BlockParticleData {
-        if (block !is KryptonBlock) throw IllegalArgumentException("Invalid block instance! You cannot provide custom Block implementations!")
-        return KryptonBlockParticleData(block)
-    }
+    override fun block(block: BlockState): BlockParticleData = KryptonBlockParticleData(block.downcast())
 
     override fun color(color: Color): ColorParticleData = KryptonColorParticleData(color)
 

@@ -33,10 +33,10 @@ import org.kryptonmc.krypton.effect.particle.data.KryptonItemParticleData
 import org.kryptonmc.krypton.effect.particle.data.KryptonVibrationParticleData
 import org.kryptonmc.krypton.util.readItem
 import org.kryptonmc.krypton.util.readVarInt
-import org.kryptonmc.krypton.world.block.BlockLoader
+import org.kryptonmc.krypton.world.block.KryptonBlock
 
 fun ParticleType.createData(buf: ByteBuf): ParticleData? = when (this) {
-    is BlockParticleType -> KryptonBlockParticleData(BlockLoader.fromStateId(buf.readVarInt()))
+    is BlockParticleType -> KryptonBlockParticleData(KryptonBlock.stateFromId(buf.readVarInt()))
     is DustParticleType -> KryptonDustParticleData(buf)
     is DustTransitionParticleType -> KryptonDustTransitionParticleData(buf)
     is ItemParticleType -> KryptonItemParticleData(buf.readItem())

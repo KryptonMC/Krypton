@@ -8,7 +8,7 @@
  */
 package org.kryptonmc.api.event.player
 
-import org.kryptonmc.api.block.Block
+import org.kryptonmc.api.block.BlockState
 import org.kryptonmc.api.entity.Hand
 import org.kryptonmc.api.util.Direction
 
@@ -28,7 +28,7 @@ public interface PlaceBlockEvent : InteractEvent {
      * The block that was placed.
      */
     @get:JvmName("block")
-    public val block: Block
+    public val block: BlockState
 
     /**
      * The hand that the player used to place the block.

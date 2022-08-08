@@ -19,10 +19,10 @@
 package org.kryptonmc.krypton.world.block
 
 import org.kryptonmc.api.block.Block
+import org.kryptonmc.api.block.BlockState
 import org.kryptonmc.krypton.util.downcastApiType
-import org.kryptonmc.krypton.world.block.handler.BlockHandler
-import org.kryptonmc.krypton.world.block.handler.DummyBlockHandler
-
-fun Block.handler(): BlockHandler = BlockManager.handler(this) ?: DummyBlockHandler
+import org.kryptonmc.krypton.world.block.state.KryptonBlockState
 
 fun Block.downcast(): KryptonBlock = downcastApiType("Block")
+
+fun BlockState.downcast(): KryptonBlockState = downcastApiType("BlockState")

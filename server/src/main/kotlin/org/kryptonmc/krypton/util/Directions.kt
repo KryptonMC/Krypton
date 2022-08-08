@@ -20,6 +20,9 @@ package org.kryptonmc.krypton.util
 
 import it.unimi.dsi.fastutil.objects.Object2IntArrayMap
 import org.kryptonmc.api.util.Direction
+import org.kryptonmc.api.util.Direction.Axis
+import org.kryptonmc.api.util.Direction.AxisDirection
+import java.util.function.Predicate
 import kotlin.math.abs
 
 object Directions {
@@ -41,4 +44,27 @@ object Directions {
 
     @JvmStatic
     fun data2D(direction: Direction): Int = TO_2D_DATA.getInt(direction)
+
+    @JvmStatic
+    fun fromAxisAndDirection(axis: Axis, direction: AxisDirection): Direction = when (axis) {
+        Axis.X -> if (direction == AxisDirection.POSITIVE) Direction.EAST else Direction.WEST
+        Axis.Y -> if (direction == AxisDirection.POSITIVE) Direction.SOUTH else Direction.NORTH
+        Axis.Z -> if (direction == AxisDirection.POSITIVE) Direction.UP else Direction.DOWN
+    }
+
+    @JvmStatic
+    private fun plane(axis: Axis): Plane = when (axis) {
+        Axis.X, Axis.Z -> Plane.HORIZONTAL
+        Axis.Y -> Plane.VERTICAL
+    }
+
+    enum class Plane(private val faces: Array<Direction>, private val axes: Array<Axis>) : Iterable<Direction>, Predicate<Direction?> {
+
+        HORIZONTAL(arrayOf(Direction.NORTH, Direction.EAST, Direction.SOUTH, Direction.WEST), arrayOf(Axis.X, Axis.Z)),
+        VERTICAL(arrayOf(Direction.UP, Direction.DOWN), arrayOf(Axis.Y));
+
+        override fun test(t: Direction?): Boolean = t != null && plane(t.axis) == this
+
+        override fun iterator(): Iterator<Direction> = NoSpread.iteratorsForArray(faces)
+    }
 }

@@ -9,7 +9,7 @@
 package org.kryptonmc.api.effect.particle.builder
 
 import org.jetbrains.annotations.Contract
-import org.kryptonmc.api.block.Block
+import org.kryptonmc.api.block.BlockState
 import org.kryptonmc.api.effect.particle.ParticleDsl
 
 /**
@@ -24,5 +24,5 @@ public interface BlockParticleEffectBuilder : BaseParticleEffectBuilder<BlockPar
      */
     @ParticleDsl
     @Contract("_ -> this", mutates = "this")
-    public fun block(block: Block): BlockParticleEffectBuilder
+    public fun block(block: BlockState): BlockParticleEffectBuilder
 }

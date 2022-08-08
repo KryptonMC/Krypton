@@ -22,7 +22,6 @@ import io.netty.buffer.ByteBuf
 import it.unimi.dsi.fastutil.ints.Int2ObjectFunction
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 import net.kyori.adventure.key.Key
-import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.api.world.biome.Biome
 import org.kryptonmc.krypton.registry.KryptonRegistry
@@ -33,9 +32,9 @@ import org.kryptonmc.krypton.util.ZeroBitStorage
 import org.kryptonmc.krypton.util.ceillog2
 import org.kryptonmc.krypton.util.varIntBytes
 import org.kryptonmc.krypton.util.writeLongArray
-import org.kryptonmc.krypton.world.block.BlockLoader
 import org.kryptonmc.krypton.world.block.KryptonBlock
-import org.kryptonmc.krypton.world.block.toBlock
+import org.kryptonmc.krypton.world.block.state.KryptonBlockState
+import org.kryptonmc.krypton.world.block.toBlockState
 import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.StringTag
 import org.kryptonmc.nbt.Tag
@@ -180,9 +179,9 @@ class PaletteHolder<T> : PaletteResizer<T> {
         companion object {
 
             @JvmField
-            val BLOCKS: Strategy<KryptonBlock> = object : Strategy<KryptonBlock>(BlockLoader.STATES, 4) {
+            val BLOCKS: Strategy<KryptonBlockState> = object : Strategy<KryptonBlockState>(KryptonBlock.STATES, 4) {
 
-                override fun createConfiguration(bits: Int): Configuration<KryptonBlock> = when (bits) {
+                override fun createConfiguration(bits: Int): Configuration<KryptonBlockState> = when (bits) {
                     0 -> Configuration(SingleValuePalette.Factory, bits)
                     in 1..4 -> Configuration(ArrayPalette.Factory, 4)
                     in 5..8 -> Configuration(MapPalette.Factory, bits)
@@ -211,9 +210,9 @@ class PaletteHolder<T> : PaletteResizer<T> {
         private val DUMMY_RESIZER: PaletteResizer<Any?> = PaletteResizer { _, _ -> 0 }
 
         @JvmStatic
-        fun readBlocks(data: CompoundTag): PaletteHolder<KryptonBlock> {
-            val entries = mutableListOf<KryptonBlock>()
-            data.getList("palette", CompoundTag.ID).forEachCompound { entries.add(it.toBlock()) }
+        fun readBlocks(data: CompoundTag): PaletteHolder<KryptonBlockState> {
+            val entries = mutableListOf<KryptonBlockState>()
+            data.getList("palette", CompoundTag.ID).forEachCompound { entries.add(it.toBlockState()) }
             return read(Strategy.BLOCKS, entries, data.getLongArray("data"))
         }
 

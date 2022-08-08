@@ -18,44 +18,68 @@
  */
 package org.kryptonmc.krypton.world.fluid
 
-import kotlinx.collections.immutable.ImmutableSet
-import kotlinx.collections.immutable.PersistentMap
 import net.kyori.adventure.key.Key
-import org.kryptonmc.api.block.Block
-import org.kryptonmc.api.block.Blocks
-import org.kryptonmc.api.block.property.Property
+import org.kryptonmc.api.effect.sound.SoundEvent
 import org.kryptonmc.api.fluid.Fluid
-import org.kryptonmc.api.item.ItemType
+import org.kryptonmc.api.fluid.FluidState
 import org.kryptonmc.api.registry.Registries
-import org.kryptonmc.krypton.world.block.property.KryptonPropertyHolder
+import org.kryptonmc.krypton.shapes.VoxelShape
+import org.kryptonmc.krypton.state.StateDefinition
+import org.kryptonmc.krypton.state.StateHolderDelegate
+import org.kryptonmc.krypton.util.IntHashBiMap
+import org.kryptonmc.krypton.world.BlockAccessor
+import org.kryptonmc.krypton.world.block.state.KryptonBlockState
+import org.spongepowered.math.vector.Vector3d
 
-@JvmRecord
-data class KryptonFluid(
-    private val key: Key,
-    val id: Int,
-    val stateId: Int,
-    override val bucket: ItemType,
-    override val isEmpty: Boolean,
-    override val explosionResistance: Double,
-    override val isSource: Boolean,
-    override val height: Float,
-    override val level: Int,
-    val blockKey: Key,
-    override val availableProperties: ImmutableSet<Property<*>>,
-    override val properties: PersistentMap<String, String>
-) : KryptonPropertyHolder<Fluid>, Fluid {
+@Suppress("LeakingThis")
+abstract class KryptonFluid : Fluid, StateHolderDelegate<FluidState, KryptonFluidState> {
 
-    override fun key(): Key = key
+    final override val stateDefinition: StateDefinition<KryptonFluid, KryptonFluidState>
+    private var defaultFluidState: KryptonFluidState
+    final override val defaultState: KryptonFluidState
+        get() = defaultFluidState
 
-    override fun copy(key: String, value: String): Fluid {
-        val newProperties = properties.put(key, value)
-        return requireNotNull(FluidLoader.properties(key().asString(), newProperties)) { "Invalid property $key:$value for block ${key()}" }
+    override val isEmpty: Boolean
+        get() = false
+    open val pickupSound: SoundEvent?
+        get() = null
+
+    init {
+        val builder = StateDefinition.Builder<KryptonFluid, KryptonFluidState>(this)
+        createStateDefinition(builder)
+        stateDefinition = builder.build(KryptonFluid::defaultFluidState, ::KryptonFluidState)
+        defaultFluidState = stateDefinition.any()
     }
 
-    override fun copy(newValues: Map<String, String>): Fluid {
-        val newProperties = properties.putAll(newValues)
-        return requireNotNull(FluidLoader.properties(key().asString(), newProperties)) { "Invalid properties $newValues for block ${key()}!" }
+    abstract fun getFlow(world: BlockAccessor, x: Int, y: Int, z: Int, state: KryptonFluidState): Vector3d
+
+    abstract fun getHeight(state: KryptonFluidState, world: BlockAccessor, x: Int, y: Int, z: Int): Float
+
+    abstract fun getOwnHeight(state: KryptonFluidState): Float
+
+    abstract fun asBlock(state: KryptonFluidState): KryptonBlockState
+
+    abstract fun isSource(state: KryptonFluidState): Boolean
+
+    abstract fun level(state: KryptonFluidState): Int
+
+    open fun isSame(fluid: Fluid): Boolean = fluid === this
+
+    abstract fun getShape(state: KryptonFluidState, world: BlockAccessor, x: Int, y: Int, z: Int): VoxelShape
+
+    override fun key(): Key = Registries.FLUID[this]
+
+    protected fun registerDefaultState(state: KryptonFluidState) {
+        defaultFluidState = state
     }
 
-    override fun asBlock(): Block = Registries.BLOCK[blockKey] ?: Blocks.AIR
+    protected open fun createStateDefinition(builder: StateDefinition.Builder<KryptonFluid, KryptonFluidState>) {
+        // Do nothing by default
+    }
+
+    companion object {
+
+        @JvmField
+        val STATES: IntHashBiMap<KryptonFluidState> = IntHashBiMap()
+    }
 }

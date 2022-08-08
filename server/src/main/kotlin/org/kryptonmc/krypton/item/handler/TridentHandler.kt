@@ -21,10 +21,10 @@ package org.kryptonmc.krypton.item.handler
 import org.kryptonmc.api.world.GameMode
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.world.KryptonWorld
-import org.kryptonmc.krypton.world.block.KryptonBlock
+import org.kryptonmc.krypton.world.block.state.KryptonBlockState
 
 object TridentHandler : ItemHandler {
 
-    override fun canAttackBlock(player: KryptonPlayer, world: KryptonWorld, block: KryptonBlock, x: Int, y: Int, z: Int): Boolean =
+    override fun canAttackBlock(player: KryptonPlayer, world: KryptonWorld, block: KryptonBlockState, x: Int, y: Int, z: Int): Boolean =
         player.gameMode != GameMode.CREATIVE
 }

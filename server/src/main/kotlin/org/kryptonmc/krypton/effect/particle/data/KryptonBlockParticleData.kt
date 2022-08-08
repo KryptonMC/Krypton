@@ -23,11 +23,12 @@ import org.kryptonmc.api.effect.particle.data.BlockParticleData
 import org.kryptonmc.krypton.network.Writable
 import org.kryptonmc.krypton.util.writeVarInt
 import org.kryptonmc.krypton.world.block.KryptonBlock
+import org.kryptonmc.krypton.world.block.state.KryptonBlockState
 
 @JvmRecord
-data class KryptonBlockParticleData(override val block: KryptonBlock) : BlockParticleData, Writable {
+data class KryptonBlockParticleData(override val block: KryptonBlockState) : BlockParticleData, Writable {
 
     override fun write(buf: ByteBuf) {
-        buf.writeVarInt(block.stateId)
+        buf.writeVarInt(KryptonBlock.idOf(block))
     }
 }

@@ -177,7 +177,7 @@ private fun CompoundTag.getLore(): PersistentList<Component> = getDisplay<ListTa
 }!!
 
 private fun CompoundTag.getBlocks(key: String): ImmutableSet<Block> = getList(key, StringTag.ID).mapPersistentSet {
-    Registries.BLOCK[Key.key((it as StringTag).value)]!!
+    Registries.BLOCK[Key.key((it as StringTag).value)]
 }
 
 private fun CompoundTag.putLore(lore: List<Component>): CompoundTag {

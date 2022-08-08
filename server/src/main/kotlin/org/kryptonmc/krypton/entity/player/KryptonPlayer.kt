@@ -59,6 +59,7 @@ import org.kryptonmc.api.service.AFKService
 import org.kryptonmc.api.service.VanishService
 import org.kryptonmc.api.service.provide
 import org.kryptonmc.api.statistic.CustomStatistics
+import org.kryptonmc.api.tags.FluidTags
 import org.kryptonmc.api.util.Direction
 import org.kryptonmc.api.world.Difficulty
 import org.kryptonmc.api.world.GameMode
@@ -80,9 +81,7 @@ import org.kryptonmc.krypton.item.KryptonItemStack
 import org.kryptonmc.krypton.item.handler
 import org.kryptonmc.krypton.network.SessionHandler
 import org.kryptonmc.krypton.network.chat.ChatSender
-import org.kryptonmc.krypton.network.chat.ChatSenderLike
 import org.kryptonmc.krypton.network.chat.ChatType
-import org.kryptonmc.krypton.network.chat.ChatTypes
 import org.kryptonmc.krypton.network.chat.MessageSignature
 import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.packet.out.play.GameEvent
@@ -93,7 +92,6 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutEntitySoundEffect
 import org.kryptonmc.krypton.packet.out.play.PacketOutGameEvent
 import org.kryptonmc.krypton.packet.out.play.PacketOutOpenBook
 import org.kryptonmc.krypton.packet.out.play.PacketOutParticle
-import org.kryptonmc.krypton.packet.out.play.PacketOutPlayerChatMessage
 import org.kryptonmc.krypton.packet.out.play.PacketOutPlayerInfo
 import org.kryptonmc.krypton.packet.out.play.PacketOutPluginMessage
 import org.kryptonmc.krypton.packet.out.play.PacketOutResourcePack
@@ -110,11 +108,9 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutSetTitleText
 import org.kryptonmc.krypton.packet.out.play.PacketOutSoundEffect
 import org.kryptonmc.krypton.packet.out.play.PacketOutSpawnPlayer
 import org.kryptonmc.krypton.packet.out.play.PacketOutStopSound
-import org.kryptonmc.krypton.packet.out.play.PacketOutSystemChatMessage
 import org.kryptonmc.krypton.packet.out.play.PacketOutTeleportEntity
 import org.kryptonmc.krypton.packet.out.play.PacketOutUnloadChunk
 import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateEntityPosition
-import org.kryptonmc.krypton.registry.InternalRegistries
 import org.kryptonmc.krypton.statistic.KryptonStatisticsTracker
 import org.kryptonmc.krypton.util.Directions
 import org.kryptonmc.krypton.util.InteractionResult
@@ -122,7 +118,7 @@ import org.kryptonmc.krypton.util.Positioning
 import org.kryptonmc.krypton.util.chunkX
 import org.kryptonmc.krypton.util.chunkZ
 import org.kryptonmc.krypton.world.KryptonWorld
-import org.kryptonmc.krypton.world.block.KryptonBlock
+import org.kryptonmc.krypton.world.block.state.KryptonBlockState
 import org.kryptonmc.krypton.world.chunk.ChunkPosition
 import org.kryptonmc.krypton.world.scoreboard.KryptonScoreboard
 import org.kryptonmc.nbt.CompoundTag
@@ -466,8 +462,16 @@ class KryptonPlayer(
         return mainHand.isEmpty() // TODO: Check Adventure CanDestroy
     }
 
-    fun hasCorrectTool(block: KryptonBlock): Boolean = !block.requiresCorrectTool ||
-            inventory.heldItem(Hand.MAIN).type.handler().isCorrectTool(block)
+    fun hasCorrectTool(state: KryptonBlockState): Boolean = !state.requiresCorrectTool ||
+            inventory.mainHand.type.handler().isCorrectTool(state)
+
+    fun getDestroySpeed(state: KryptonBlockState): Float {
+        var speed = inventory.getDestroySpeed(state)
+        // TODO: Add enchantment and effect checking here
+        if (underFluid(FluidTags.WATER)) speed /= 5F // FIXME: Check aqua affinity when implemented
+        if (!isOnGround) speed /= 5F
+        return speed
+    }
 
     fun interactOn(entity: KryptonEntity, hand: Hand): InteractionResult {
         if (isSpectator) {

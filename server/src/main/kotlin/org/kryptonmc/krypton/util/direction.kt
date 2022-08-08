@@ -20,6 +20,14 @@ package org.kryptonmc.krypton.util
 
 import org.kryptonmc.api.util.Direction
 
+fun Direction.clockwise(): Direction = when (this) {
+    Direction.NORTH -> Direction.EAST
+    Direction.SOUTH -> Direction.WEST
+    Direction.WEST -> Direction.NORTH
+    Direction.EAST -> Direction.SOUTH
+    else -> error("Unable to get clockwise direction for given direction $this!")
+}
+
 fun Direction.antiClockwise(): Direction = when (this) {
     Direction.NORTH -> Direction.WEST
     Direction.SOUTH -> Direction.EAST

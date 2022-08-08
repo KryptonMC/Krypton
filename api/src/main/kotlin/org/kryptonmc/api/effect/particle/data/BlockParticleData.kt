@@ -9,7 +9,7 @@
 package org.kryptonmc.api.effect.particle.data
 
 import org.jetbrains.annotations.Contract
-import org.kryptonmc.api.block.Block
+import org.kryptonmc.api.block.BlockState
 
 /**
  * Holds data for block particle effects.
@@ -18,21 +18,21 @@ import org.kryptonmc.api.block.Block
 public interface BlockParticleData : ParticleData {
 
     /**
-     * The block that is shown.
+     * The block state that is shown.
      */
     @get:JvmName("block")
-    public val block: Block
+    public val block: BlockState
 
     public companion object {
 
         /**
-         * Creates new block particle data with the given [block].
+         * Creates new block particle data with the given [block] state.
          *
-         * @param block the block that is shown
+         * @param block the block state that is shown
          * @return new block particle data
          */
         @JvmStatic
         @Contract("_ -> new", pure = true)
-        public fun of(block: Block): BlockParticleData = ParticleData.FACTORY.block(block)
+        public fun of(block: BlockState): BlockParticleData = ParticleData.FACTORY.block(block)
     }
 }

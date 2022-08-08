@@ -21,7 +21,7 @@ package org.kryptonmc.krypton.entity.serializer.vehicle
 import org.kryptonmc.krypton.entity.serializer.BaseEntitySerializer
 import org.kryptonmc.krypton.entity.serializer.EntitySerializer
 import org.kryptonmc.krypton.entity.vehicle.KryptonMinecartLike
-import org.kryptonmc.krypton.world.block.toBlock
+import org.kryptonmc.krypton.world.block.toBlockState
 import org.kryptonmc.krypton.world.block.toNBT
 import org.kryptonmc.nbt.CompoundTag
 
@@ -30,7 +30,7 @@ object MinecartLikeSerializer : EntitySerializer<KryptonMinecartLike> {
     override fun load(entity: KryptonMinecartLike, data: CompoundTag) {
         BaseEntitySerializer.load(entity, data)
         if (!data.getBoolean("CustomDisplayTile")) return
-        entity.customBlock = data.getCompound("DisplayState").toBlock()
+        entity.customBlock = data.getCompound("DisplayState").toBlockState()
         entity.customBlockOffset = data.getInt("DisplayOffset")
     }
 

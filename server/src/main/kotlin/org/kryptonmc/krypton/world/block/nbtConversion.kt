@@ -19,26 +19,58 @@
 package org.kryptonmc.krypton.world.block
 
 import net.kyori.adventure.key.Key
-import org.kryptonmc.api.block.Block
+import org.apache.logging.log4j.LogManager
+import org.kryptonmc.api.block.BlockState
 import org.kryptonmc.api.block.Blocks
-import org.kryptonmc.krypton.util.transform
-import org.kryptonmc.krypton.world.block.KryptonBlock
+import org.kryptonmc.api.registry.Registries
+import org.kryptonmc.krypton.state.KryptonState
+import org.kryptonmc.krypton.state.property.KryptonProperty
+import org.kryptonmc.krypton.state.property.downcast
+import org.kryptonmc.krypton.world.block.state.KryptonBlockState
 import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.StringTag
 import org.kryptonmc.nbt.compound
 
-fun CompoundTag.toBlock(): KryptonBlock {
-    if (!contains("Name", StringTag.ID)) return Blocks.AIR.downcast()
-    var block = checkNotNull(BlockLoader.fromKey(Key.key(getString("Name")))) { "No block found with key ${getString("Name")}!" }
+fun CompoundTag.toBlockState(): KryptonBlockState {
+    if (!contains("Name", StringTag.ID)) return Blocks.AIR.defaultState.downcast()
+    val block = Registries.BLOCK[Key.key(getString("Name"))].downcast()
+    var state = block.defaultState
     if (contains("Properties", CompoundTag.ID)) {
-        block = block.copy(getCompound("Properties").data.transform { it.key to (it.value as StringTag).value }).downcast()
+        val properties = getCompound("Properties")
+        val definition = block.stateDefinition
+        properties.keys.forEach {
+            val property = definition.getProperty(it)
+            if (property != null) state = state.set(property, it, properties, this)
+        }
     }
-    return block
+    return state
 }
 
-fun Block.toNBT(): CompoundTag = compound {
-    string("Name", key().asString())
+fun BlockState.toNBT(): CompoundTag = compound {
+    string("Name", Registries.BLOCK[this@toNBT.asBlock()].asString())
     if (properties.isNotEmpty()) {
-        compound("Properties") { properties.forEach { string(it.key, it.value) } }
+        compound("Properties") {
+            properties.forEach {
+                val property = it.key.downcast()
+                string(property.name, property.name(it.value))
+            }
+        }
     }
 }
+
+private val LOGGER = LogManager.getLogger("BlockNBTConverter")
+
+private fun <S : KryptonState<*, S>, T : Comparable<T>> S.set(
+    property: KryptonProperty<T>,
+    name: String,
+    propertiesTag: CompoundTag,
+    blockStateTag: CompoundTag
+): S {
+    val value = property.fromString(name)
+    if (value != null) return set(property, value)
+    LOGGER.warn("Unable to read property $name with value ${propertiesTag.getString(name)} for block state $blockStateTag!")
+    return this
+}
+
+@Suppress("UNCHECKED_CAST")
+private fun <T : Comparable<T>> KryptonProperty<T>.name(value: Comparable<*>): String = toString(value as T)

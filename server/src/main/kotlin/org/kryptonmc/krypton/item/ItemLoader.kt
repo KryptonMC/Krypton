@@ -40,6 +40,6 @@ object ItemLoader : KryptonDataLoader<ItemType>("items", Registries.ITEM) {
         val eatingSound = Registries.SOUND_EVENT[Key.key(value["eatingSound"].asString)] ?: SoundEvents.GENERIC_EAT
         val drinkingSound = Registries.SOUND_EVENT[Key.key(value["drinkingSound"].asString)] ?: SoundEvents.GENERIC_DRINK
         val translation = Component.translatable(translationKey)
-        return KryptonItemType(key, rarity, maxStackSize, depletes, maxDamage, edible, fireResistant, eatingSound, drinkingSound, translation)
+        return KryptonItemType(rarity, maxStackSize, depletes, maxDamage, edible, fireResistant, eatingSound, drinkingSound, translation)
     }
 }

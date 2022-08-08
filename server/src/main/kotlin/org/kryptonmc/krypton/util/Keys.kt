@@ -31,4 +31,10 @@ object Keys {
             null
         }
     }
+
+    @JvmStatic
+    fun translation(type: String, key: Key?): String {
+        if (key == null) return "$type.unregistered_sadface"
+        return "$type.${key.namespace()}.${key.value().replace('/', '.')}"
+    }
 }
