@@ -18,14 +18,13 @@
  */
 package org.kryptonmc.krypton.world.fluid
 
-import org.kryptonmc.api.state.Properties
 import org.kryptonmc.api.util.Direction
 import org.kryptonmc.krypton.entity.KryptonEntity
 import org.kryptonmc.krypton.shapes.Shapes
 import org.kryptonmc.krypton.shapes.VoxelShape
 import org.kryptonmc.krypton.state.StateDefinition
+import org.kryptonmc.krypton.state.property.KryptonProperties
 import org.kryptonmc.krypton.state.property.KryptonProperty
-import org.kryptonmc.krypton.state.property.downcast
 import org.kryptonmc.krypton.util.Directions
 import org.kryptonmc.krypton.world.BlockAccessor
 import org.kryptonmc.krypton.world.material.Materials
@@ -44,7 +43,7 @@ abstract class FlowingFluid : KryptonFluid() {
     fun source(falling: Boolean): KryptonFluidState = source.defaultState.set(FALLING, falling)
 
     override fun createStateDefinition(builder: StateDefinition.Builder<KryptonFluid, KryptonFluidState>) {
-        builder.add(Properties.FALLING.downcast())
+        builder.add(FALLING)
     }
 
     override fun getFlow(world: BlockAccessor, x: Int, y: Int, z: Int, state: KryptonFluidState): Vector3d {
@@ -118,14 +117,14 @@ abstract class FlowingFluid : KryptonFluid() {
         private const val OWN_HEIGHT_OFFSET = 1F - KryptonEntity.BREATHING_DISTANCE_BELOW_EYES
         const val MAX_LEVEL: Int = 8
         @JvmField
-        val LEVEL: KryptonProperty<Int> = Properties.LIQUID_LEVEL.downcast()
+        val LEVEL: KryptonProperty<Int> = KryptonProperties.LIQUID_LEVEL
         @JvmField
-        val FALLING: KryptonProperty<Boolean> = Properties.FALLING.downcast()
+        val FALLING: KryptonProperty<Boolean> = KryptonProperties.FALLING
 
         @JvmStatic
         protected fun calculateBlockLevel(state: KryptonFluidState): Int {
             if (state.isSource) return 0
-            val fallingBonus = if (state.require(Properties.FALLING.downcast())) MAX_LEVEL else 0
+            val fallingBonus = if (state.require(FALLING)) MAX_LEVEL else 0
             return MAX_LEVEL - min(state.level, MAX_LEVEL) + fallingBonus
         }
 

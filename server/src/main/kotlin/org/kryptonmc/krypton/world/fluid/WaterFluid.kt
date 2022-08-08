@@ -22,9 +22,7 @@ import org.kryptonmc.api.block.Blocks
 import org.kryptonmc.api.fluid.Fluid
 import org.kryptonmc.api.item.ItemType
 import org.kryptonmc.api.item.ItemTypes
-import org.kryptonmc.api.state.Properties
 import org.kryptonmc.krypton.state.StateDefinition
-import org.kryptonmc.krypton.state.property.downcast
 import org.kryptonmc.krypton.world.block.state.KryptonBlockState
 import org.kryptonmc.krypton.world.block.downcast
 
@@ -41,8 +39,7 @@ abstract class WaterFluid : FlowingFluid() {
 
     override fun isSame(fluid: Fluid): Boolean = fluid === KryptonFluids.WATER || fluid === KryptonFluids.FLOWING_WATER
 
-    override fun asBlock(state: KryptonFluidState): KryptonBlockState = Blocks.WATER.defaultState.downcast()
-        .set(Properties.LEVEL.downcast(), calculateBlockLevel(state))
+    override fun asBlock(state: KryptonFluidState): KryptonBlockState = Blocks.WATER.defaultState.downcast().set(LEVEL, calculateBlockLevel(state))
 
     class Flowing : WaterFluid() {
 

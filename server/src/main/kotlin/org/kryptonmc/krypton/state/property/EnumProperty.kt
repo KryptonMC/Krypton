@@ -18,32 +18,57 @@
  */
 package org.kryptonmc.krypton.state.property
 
-import kotlinx.collections.immutable.ImmutableSet
+import com.google.common.collect.ImmutableSet
+import java.util.Arrays
+import java.util.EnumSet
+import java.util.function.Predicate
 
-class EnumProperty<E : Enum<E>>(name: String, type: Class<E>, override val values: ImmutableSet<E>) : KryptonProperty<E>(name, type) {
+open class EnumProperty<E : Enum<E>>(name: String, type: Class<E>, values: Collection<E>) : KryptonProperty<E>(name, type) {
 
+    final override val values: Collection<E> = ImmutableSet.copyOf(values)
     private val names = HashMap<String, E>()
-    private var idLookupTable = IntArray(type.enumConstants.size) { -1 }
+    private val idLookupTable: IntArray
 
     init {
-        var id = 0
-        values.forEach {
-            val constantName = it.name.lowercase()
+        for (value in values) {
+            val constantName = value.name.lowercase()
             require(!names.containsKey(constantName)) { "Multiple values have the same name $constantName!" }
-            names[constantName] = it
-            idLookupTable[it.ordinal] = id++
+            names[constantName] = value
+        }
+        var id = 0
+        idLookupTable = IntArray(type.enumConstants.size)
+        Arrays.fill(idLookupTable, -1)
+        for (value in values) {
+            idLookupTable[value.ordinal] = id++
         }
     }
-
-    override fun idFor(value: E): Int = idLookupTable[value.ordinal]
 
     override fun fromString(value: String): E? = names[value]
 
     override fun toString(value: E): String = value.name.lowercase()
 
+    override fun idFor(value: E): Int = idLookupTable[value.ordinal]
+
     override fun generateHashCode(): Int {
         var value = super.generateHashCode()
         value = 31 * value + values.hashCode()
         return 31 * value + names.hashCode()
+    }
+
+    companion object {
+
+        @JvmStatic
+        inline fun <reified E : Enum<E>> of(name: String): EnumProperty<E> =
+            EnumProperty(name, E::class.java, EnumSet.allOf(E::class.java))
+
+        @JvmStatic
+        inline fun <reified E : Enum<E>> of(name: String, predicate: Predicate<E>): EnumProperty<E> =
+            EnumProperty(name, E::class.java, enumValues<E>().filter(predicate::test))
+
+        @JvmStatic
+        inline fun <reified E : Enum<E>> of(name: String, vararg values: E): EnumProperty<E> = of(name, ImmutableSet.copyOf(values))
+
+        @JvmStatic
+        inline fun <reified E : Enum<E>> of(name: String, values: Collection<E>): EnumProperty<E> = EnumProperty(name, E::class.java, values)
     }
 }

@@ -19,9 +19,7 @@
 package org.kryptonmc.krypton.util
 
 import com.mojang.brigadier.exceptions.CommandSyntaxException
-import net.kyori.adventure.translation.Translatable
 import org.kryptonmc.api.block.Block
-import org.kryptonmc.api.block.Blocks
 import org.kryptonmc.api.block.entity.BlockEntityTypes
 import org.kryptonmc.api.block.entity.banner.BannerPatternTypes
 import org.kryptonmc.api.effect.particle.ParticleTypes
