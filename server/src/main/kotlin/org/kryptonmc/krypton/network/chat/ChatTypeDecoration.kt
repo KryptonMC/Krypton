@@ -26,7 +26,7 @@ import net.kyori.adventure.translation.Translatable
 import org.kryptonmc.krypton.adventure.AdventureCodecs
 import org.kryptonmc.krypton.util.serialization.EnumCodecs
 import org.kryptonmc.serialization.Codec
-import org.kryptonmc.serialization.codecs.CompoundCodecBuilder
+import org.kryptonmc.serialization.codecs.RecordCodecBuilder
 
 @JvmRecord
 data class ChatTypeDecoration(private val translationKey: String, val parameters: List<Parameter>, val style: Style) : Translatable {
@@ -49,7 +49,7 @@ data class ChatTypeDecoration(private val translationKey: String, val parameters
     companion object {
 
         @JvmField
-        val CODEC: Codec<ChatTypeDecoration> = CompoundCodecBuilder.create { instance ->
+        val CODEC: Codec<ChatTypeDecoration> = RecordCodecBuilder.create { instance ->
             instance.group(
                 Codec.STRING.field("translation_key").getting { it.translationKey() },
                 Parameter.CODEC.list().field("parameters").getting(ChatTypeDecoration::parameters),

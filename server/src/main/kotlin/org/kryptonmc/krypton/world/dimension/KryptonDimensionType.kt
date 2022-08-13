@@ -32,7 +32,7 @@ import org.kryptonmc.krypton.util.serialization.Codecs
 import org.kryptonmc.krypton.util.serialization.asOptionalLong
 import org.kryptonmc.serialization.Codec
 import org.kryptonmc.serialization.MapCodec
-import org.kryptonmc.serialization.codecs.CompoundCodecBuilder
+import org.kryptonmc.serialization.codecs.RecordCodecBuilder
 import java.util.OptionalLong
 
 @JvmRecord
@@ -80,7 +80,7 @@ data class KryptonDimensionType(
         companion object {
 
             @JvmField
-            val CODEC: MapCodec<MonsterSettings> = CompoundCodecBuilder.createMap {
+            val CODEC: MapCodec<MonsterSettings> = RecordCodecBuilder.createMap {
                 it.group(
                     Codec.BOOLEAN.field("piglin_safe").getting(MonsterSettings::piglinSafe),
                     Codec.BOOLEAN.field("has_raids").getting(MonsterSettings::hasRaids),
@@ -218,7 +218,7 @@ data class KryptonDimensionType(
         private const val MIN_Y = MAX_Y - Y_SIZE + 1
         @JvmField
         @Suppress("UNCHECKED_CAST")
-        val DIRECT_CODEC: Codec<DimensionType> = CompoundCodecBuilder.create { instance ->
+        val DIRECT_CODEC: Codec<DimensionType> = RecordCodecBuilder.create { instance ->
             instance.group(
                 Codec.LONG.optionalField("fixed_time").asOptionalLong().getting(DimensionType::fixedTime),
                 Codec.BOOLEAN.field("has_skylight").getting(DimensionType::hasSkylight),

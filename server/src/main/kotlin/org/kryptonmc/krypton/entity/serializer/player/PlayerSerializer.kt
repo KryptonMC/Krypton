@@ -37,6 +37,7 @@ import org.kryptonmc.krypton.util.serialization.Codecs
 import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.IntTag
 import org.kryptonmc.nbt.StringTag
+import org.kryptonmc.serialization.nbt.NbtOps
 import org.spongepowered.math.vector.Vector3i
 import java.time.Instant
 
@@ -82,7 +83,11 @@ object PlayerSerializer : EntitySerializer<KryptonPlayer> {
             entity.respawnForced = data.getBoolean("SpawnForced")
             entity.respawnAngle = data.getFloat("SpawnAngle")
             if (data.contains("SpawnDimension", StringTag.ID)) {
-                entity.respawnDimension = Codecs.DIMENSION.decodeNullable(data.get("SpawnDimension") as StringTag) ?: World.OVERWORLD
+                entity.respawnDimension = try {
+                    Codecs.DIMENSION.decode(data.get("SpawnDimension"), NbtOps.INSTANCE)
+                } catch (_: Exception) {
+                    World.OVERWORLD
+                }
             }
         }
 
@@ -129,7 +134,7 @@ object PlayerSerializer : EntitySerializer<KryptonPlayer> {
             int("SpawnZ", position.z())
             float("SpawnAngle", entity.respawnAngle)
             boolean("SpawnForced", entity.respawnForced)
-            put("SpawnDimension", Codecs.DIMENSION.encode(entity.respawnDimension))
+            put("SpawnDimension", Codecs.DIMENSION.encodeStart(entity.respawnDimension, NbtOps.INSTANCE))
         }
 
         val rootVehicle = entity.rootVehicle

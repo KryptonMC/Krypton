@@ -22,7 +22,7 @@ import org.kryptonmc.api.effect.Music
 import org.kryptonmc.api.effect.sound.SoundEvent
 import org.kryptonmc.krypton.util.serialization.Codecs
 import org.kryptonmc.serialization.Codec
-import org.kryptonmc.serialization.codecs.CompoundCodecBuilder
+import org.kryptonmc.serialization.codecs.RecordCodecBuilder
 
 @JvmRecord
 data class KryptonMusic(
@@ -45,7 +45,7 @@ data class KryptonMusic(
         private const val TWENTY_MINUTES = 24000
 
         @JvmField
-        val CODEC: Codec<Music> = CompoundCodecBuilder.create { instance ->
+        val CODEC: Codec<Music> = RecordCodecBuilder.create { instance ->
             instance.group(
                 Codecs.SOUND_EVENT.field("sound").getting(Music::sound),
                 Codec.INT.field("min_delay").getting(Music::minimumDelay),

@@ -50,6 +50,7 @@ import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.io.TagCompression
 import org.kryptonmc.nbt.io.TagIO
 import org.kryptonmc.serialization.Encoder
+import org.kryptonmc.serialization.nbt.NbtOps
 import org.spongepowered.math.vector.Vector3f
 import org.spongepowered.math.vector.Vector3i
 import java.io.IOException
@@ -399,7 +400,7 @@ fun ByteBuf.readVarIntArray(): IntArray = IntArray(readVarInt()) { readVarInt() 
 
 fun <T> ByteBuf.encode(encoder: Encoder<T>, value: T) {
     val result = try {
-        encoder.encode(value)
+        encoder.encodeStart(value, NbtOps.INSTANCE)
     } catch (exception: Exception) {
         throw EncoderException("Failed to encode value $value with encoder $encoder!", exception)
     }

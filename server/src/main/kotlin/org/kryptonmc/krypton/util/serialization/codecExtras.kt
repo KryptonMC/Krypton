@@ -18,6 +18,7 @@
  */
 package org.kryptonmc.krypton.util.serialization
 
+import org.kryptonmc.serialization.Codec
 import org.kryptonmc.serialization.MapCodec
 import java.util.Optional
 import java.util.OptionalLong
@@ -27,3 +28,5 @@ private val TO_OPTIONAL_LONG = Function<Optional<Long>, OptionalLong> { it.map(O
 private val FROM_OPTIONAL_LONG = Function<OptionalLong, Optional<Long>> { if (it.isPresent) Optional.of(it.asLong) else Optional.empty() }
 
 fun MapCodec<Optional<Long>>.asOptionalLong(): MapCodec<OptionalLong> = xmap(TO_OPTIONAL_LONG, FROM_OPTIONAL_LONG)
+
+fun <A> Codec<A>.nullableField(name: String): MapCodec<A?> = NullableFieldCodec(name, this)

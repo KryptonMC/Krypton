@@ -23,7 +23,7 @@ import org.kryptonmc.api.effect.particle.data.ParticleData
 import org.kryptonmc.api.world.biome.AmbientParticleSettings
 import org.kryptonmc.krypton.util.serialization.Codecs
 import org.kryptonmc.serialization.Codec
-import org.kryptonmc.serialization.codecs.CompoundCodecBuilder
+import org.kryptonmc.serialization.codecs.RecordCodecBuilder
 
 @JvmRecord
 data class KryptonAmbientParticleSettings(
@@ -66,11 +66,11 @@ data class KryptonAmbientParticleSettings(
     companion object {
 
         @JvmField
-        val CODEC: Codec<AmbientParticleSettings> = CompoundCodecBuilder.create { instance ->
-            instance.group(
+        val CODEC: Codec<AmbientParticleSettings> = RecordCodecBuilder.create {
+            it.group(
                 Codecs.PARTICLE.field("particle").getting(AmbientParticleSettings::type),
                 Codec.FLOAT.field("probability").getting(AmbientParticleSettings::probability)
-            ).apply(instance, ::KryptonAmbientParticleSettings)
+            ).apply(it, ::KryptonAmbientParticleSettings)
         }
     }
 }

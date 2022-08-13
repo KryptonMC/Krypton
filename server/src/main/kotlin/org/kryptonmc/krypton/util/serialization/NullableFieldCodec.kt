@@ -20,13 +20,26 @@ package org.kryptonmc.krypton.util.serialization
 
 import org.kryptonmc.serialization.Codec
 import org.kryptonmc.serialization.DataOps
-import java.util.function.Function
+import org.kryptonmc.serialization.MapCodec
+import org.kryptonmc.serialization.MapLike
+import org.kryptonmc.serialization.RecordBuilder
 
-class EnumCodec<E : Enum<E>>(resolver: Function<String, E?>) : Codec<E> {
+@JvmRecord
+data class NullableFieldCodec<A>(val name: String, val elementCodec: Codec<A>) : MapCodec<A?> {
 
-    private val codec = Codecs.stringResolver({ it.name.lowercase() }, resolver)
+    override fun <T> decode(input: MapLike<T>, ops: DataOps<T>): A? {
+        val value = input.get(name) ?: return null
+        return try {
+            elementCodec.decode(value, ops)
+        } catch (_: Exception) {
+            null
+        }
+    }
 
-    override fun <T> decode(input: T, ops: DataOps<T>): E = codec.decode(input, ops)
+    override fun <T : Any> encode(input: A?, ops: DataOps<T>, prefix: RecordBuilder<T>): RecordBuilder<T> {
+        if (input != null) return prefix.add(name, elementCodec.encodeStart(input, ops))
+        return prefix
+    }
 
-    override fun <T : Any> encode(input: E, ops: DataOps<T>, prefix: T): T = codec.encode(input, ops, prefix)
+    override fun toString(): String = "NullableFieldCodec[$name: $elementCodec]"
 }

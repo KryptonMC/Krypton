@@ -25,7 +25,7 @@ import org.kryptonmc.api.world.World
 import org.kryptonmc.krypton.network.Writable
 import org.kryptonmc.krypton.util.serialization.Codecs
 import org.kryptonmc.serialization.Codec
-import org.kryptonmc.serialization.codecs.CompoundCodecBuilder
+import org.kryptonmc.serialization.codecs.RecordCodecBuilder
 import org.spongepowered.math.vector.Vector3i
 
 @JvmRecord
@@ -41,7 +41,7 @@ data class GlobalPosition(val dimension: ResourceKey<World>, val position: Vecto
     companion object {
 
         @JvmField
-        val CODEC: Codec<GlobalPosition> = CompoundCodecBuilder.create {
+        val CODEC: Codec<GlobalPosition> = RecordCodecBuilder.create {
             it.group(
                 Codecs.DIMENSION.field("dimension").getting(GlobalPosition::dimension),
                 Codecs.VECTOR3I_ARRAY.field("pos").getting(GlobalPosition::position)

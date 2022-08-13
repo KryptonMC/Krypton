@@ -19,9 +19,9 @@
 package org.kryptonmc.krypton.util.provider
 
 import org.kryptonmc.serialization.Codec
-import org.kryptonmc.serialization.codecs.CompoundCodecBuilder
+import org.kryptonmc.serialization.codecs.RecordCodecBuilder
 import org.kryptonmc.util.Either
-import java.util.function.Function
+//import java.util.function.Function
 
 class ConstantInt private constructor(val value: Int) : IntProvider() {
 
@@ -41,8 +41,9 @@ class ConstantInt private constructor(val value: Int) : IntProvider() {
         @JvmField
         val CODEC: Codec<Either<Int, ConstantInt>> = Codec.either(
             Codec.INT,
-            CompoundCodecBuilder.create { it.group(Codec.INT.field("value").getting(ConstantInt::value)).apply(it, ConstantInt::of) }
+            RecordCodecBuilder.create { it.group(Codec.INT.field("value").getting(ConstantInt::value)).apply(it, ConstantInt::of) }
         )/*.xmap({ it.map(ConstantInt::of, Function.identity()) }, { Either.left(it.value) })*/
+        // For why the above is commented out, see: https://youtrack.jetbrains.com/issue/KT-53478
 
         @JvmStatic
         fun of(value: Int): ConstantInt = ConstantInt(value)

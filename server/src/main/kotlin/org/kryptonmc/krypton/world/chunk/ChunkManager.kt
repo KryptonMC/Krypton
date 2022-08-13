@@ -218,7 +218,8 @@ class ChunkManager(private val world: KryptonWorld) {
                     val section = chunk.sections[sectionIndex]
                     val sectionData = compound {
                         byte("Y", i.toByte())
-                        put("block_states", section.blocks.write(KryptonBlockState.CODEC::encode))
+                        // FIXME: Fix this in next update
+//                        put("block_states", section.blocks.write(KryptonBlockState.CODEC::encode))
                         put("biomes", section.biomes.write { StringTag.of(it.key().asString()) })
                         if (section.blockLight.isNotEmpty()) byteArray("BlockLight", section.blockLight)
                         if (section.skyLight.isNotEmpty()) byteArray("SkyLight", section.skyLight)

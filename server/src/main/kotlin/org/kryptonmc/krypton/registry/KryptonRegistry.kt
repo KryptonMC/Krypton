@@ -31,6 +31,7 @@ import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.compound
 import org.kryptonmc.serialization.Codec
 import org.kryptonmc.serialization.Encoder
+import org.kryptonmc.serialization.nbt.NbtOps
 import kotlin.math.max
 
 open class KryptonRegistry<T>(override val key: ResourceKey<out Registry<T>>) : Registry<T>, IntBiMap<T> {
@@ -103,7 +104,7 @@ open class KryptonRegistry<T>(override val key: ResourceKey<out Registry<T>>) : 
             compound {
                 string("name", get(it)!!.asString())
                 int("id", idOf(it))
-                put("element", elementEncoder.encode(it))
+                put("element", elementEncoder.encodeStart(it, NbtOps.INSTANCE))
             }
         })
     }

@@ -24,6 +24,7 @@ import com.google.common.collect.Table
 import kotlinx.collections.immutable.ImmutableMap
 import org.kryptonmc.krypton.util.ZeroCollidingReferenceStateTable
 import org.kryptonmc.krypton.state.property.KryptonProperty
+import org.kryptonmc.krypton.util.serialization.nullableField
 import org.kryptonmc.serialization.Codec
 import org.kryptonmc.serialization.MapCodec
 import java.util.function.Function
