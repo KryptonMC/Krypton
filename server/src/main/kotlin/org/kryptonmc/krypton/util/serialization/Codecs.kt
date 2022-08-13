@@ -32,8 +32,8 @@ import org.kryptonmc.krypton.resource.KryptonResourceKey
 import org.kryptonmc.krypton.util.toIntArray
 import org.kryptonmc.krypton.util.toUUID
 import org.kryptonmc.serialization.Codec
-import org.kryptonmc.serialization.codecs.CompoundCodecBuilder
 import org.kryptonmc.serialization.codecs.EitherCodec
+import org.kryptonmc.serialization.codecs.RecordCodecBuilder
 import org.kryptonmc.util.Either
 import org.kryptonmc.util.Pair
 import org.spongepowered.math.vector.Vector3i
@@ -79,7 +79,7 @@ object Codecs {
     }
 
     @JvmStatic
-    fun <P, I> interval(
+    fun <P : Any, I : Any> interval(
         elementCodec: Codec<P>,
         firstName: String,
         secondName: String,
@@ -91,15 +91,17 @@ object Codecs {
             val list = fixedSize(it, 2)
             mapper.apply(list[0], list[1])
         }, { persistentListOf(firstGetter.apply(it), secondGetter.apply(it)) })
-        @Suppress("RemoveExplicitTypeArguments") // Without the type arguments, we get errors, so idk what Kotlin is on about here
-        val fieldCodec: Codec<I> = CompoundCodecBuilder.create<Pair<P, P>> { instance ->
+        // Without the type arguments here, I think the compiler fails to infer what's going on, and produces the same error as
+        // https://youtrack.jetbrains.com/issue/KT-53478
+        @Suppress("RemoveExplicitTypeArguments")
+        val fieldCodec: Codec<I> = RecordCodecBuilder.create<Pair<P, P>> { instance ->
             instance.group(
-                elementCodec.field(firstName).getting { it.first },
-                elementCodec.field(secondName).getting { it.second }
+                elementCodec.field(firstName).getting(Pair<P, P>::first),
+                elementCodec.field(secondName).getting(Pair<P, P>::second)
             ).apply(instance, ::Pair)
         }.xmap({ mapper.apply(it.first, it.second) }, { Pair.of(firstGetter.apply(it), secondGetter.apply(it)) })
-        val eitherCodec = EitherCodec(codec, fieldCodec).xmap({ either -> either.map({ it }, { it }) }, { Either.left(it) })
-        return Codec.either(elementCodec, eitherCodec).xmap({ either -> either.map({ mapper.apply(it, it) }, { it }) }, {
+        val eitherCodec = EitherCodec(codec, fieldCodec).xmap({ either -> either.map(Function.identity(), Function.identity()) }, { Either.left(it) })
+        return Codec.either(elementCodec, eitherCodec).xmap({ either -> either.map({ mapper.apply(it, it) }, Function.identity()) }, {
             val first = firstGetter.apply(it)
             val second = secondGetter.apply(it)
             if (Objects.equals(first, second)) Either.left(first) else Either.right(it)

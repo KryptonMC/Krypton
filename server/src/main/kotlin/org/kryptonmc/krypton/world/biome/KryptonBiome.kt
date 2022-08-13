@@ -24,7 +24,7 @@ import org.kryptonmc.api.world.biome.Biome
 import org.kryptonmc.api.world.biome.BiomeEffects
 import org.kryptonmc.api.world.biome.Climate
 import org.kryptonmc.serialization.Codec
-import org.kryptonmc.serialization.codecs.CompoundCodecBuilder
+import org.kryptonmc.serialization.codecs.RecordCodecBuilder
 
 class KryptonBiome(override val climate: Climate, override val effects: BiomeEffects) : Biome {
 
@@ -60,18 +60,18 @@ class KryptonBiome(override val climate: Climate, override val effects: BiomeEff
 
         // When we add mob spawn and biome generation settings, this will actually differ from the network codec
         @JvmField
-        val DIRECT_CODEC: Codec<Biome> = CompoundCodecBuilder.create { instance ->
-            instance.group(
+        val DIRECT_CODEC: Codec<Biome> = RecordCodecBuilder.create {
+            it.group(
                 KryptonClimate.CODEC.getting(Biome::climate),
                 KryptonBiomeEffects.CODEC.field("effects").getting(Biome::effects)
-            ).apply(instance, ::KryptonBiome)
+            ).apply(it, ::KryptonBiome)
         }
         @JvmField
-        val NETWORK_CODEC: Codec<Biome> = CompoundCodecBuilder.create { instance ->
-            instance.group(
+        val NETWORK_CODEC: Codec<Biome> = RecordCodecBuilder.create {
+            it.group(
                 KryptonClimate.CODEC.getting(Biome::climate),
                 KryptonBiomeEffects.CODEC.field("effects").getting(Biome::effects)
-            ).apply(instance, ::KryptonBiome)
+            ).apply(it, ::KryptonBiome)
         }
     }
 }

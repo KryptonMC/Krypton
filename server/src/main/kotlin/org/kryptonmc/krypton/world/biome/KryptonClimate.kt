@@ -24,7 +24,7 @@ import org.kryptonmc.api.world.biome.TemperatureModifier
 import org.kryptonmc.krypton.util.serialization.EnumCodecs
 import org.kryptonmc.serialization.Codec
 import org.kryptonmc.serialization.MapCodec
-import org.kryptonmc.serialization.codecs.CompoundCodecBuilder
+import org.kryptonmc.serialization.codecs.RecordCodecBuilder
 
 @JvmRecord
 data class KryptonClimate(
@@ -75,13 +75,13 @@ data class KryptonClimate(
         val DEFAULT: Climate = Builder().build()
 
         @JvmField
-        val CODEC: MapCodec<Climate> = CompoundCodecBuilder.createMap { instance ->
-            instance.group(
+        val CODEC: MapCodec<Climate> = RecordCodecBuilder.createMap {
+            it.group(
                 EnumCodecs.PRECIPITATION.field("precipitation").getting(Climate::precipitation),
                 Codec.FLOAT.field("temperature").getting(Climate::temperature),
                 Codec.FLOAT.field("downfall").getting(Climate::downfall),
                 EnumCodecs.TEMPERATURE_MODIFIER.field("temperature_modifier").getting(Climate::temperatureModifier)
-            ).apply(instance, ::KryptonClimate)
+            ).apply(it, ::KryptonClimate)
         }
     }
 }

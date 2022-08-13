@@ -23,15 +23,16 @@ import net.kyori.adventure.text.format.Style
 import net.kyori.adventure.text.format.TextColor
 import net.kyori.adventure.text.format.TextDecoration
 import org.kryptonmc.krypton.util.serialization.Codecs
+import org.kryptonmc.krypton.util.serialization.nullableField
 import org.kryptonmc.serialization.Codec
 import org.kryptonmc.serialization.MapCodec
-import org.kryptonmc.serialization.codecs.CompoundCodecBuilder
+import org.kryptonmc.serialization.codecs.RecordCodecBuilder
 import java.util.Optional
 
 object AdventureCodecs {
 
     @JvmField
-    val STYLE_FORMATTING: Codec<Style> = CompoundCodecBuilder.create { instance ->
+    val STYLE_FORMATTING: Codec<Style> = RecordCodecBuilder.create { instance ->
         instance.group(
             TEXT_COLOR.nullableField("color").getting(Style::color),
             decorationStateCodec("bold").getting { it.decoration(TextDecoration.BOLD) },

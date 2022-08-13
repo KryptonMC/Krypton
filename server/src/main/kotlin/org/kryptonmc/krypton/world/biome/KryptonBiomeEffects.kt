@@ -29,8 +29,9 @@ import org.kryptonmc.api.world.biome.BiomeEffects
 import org.kryptonmc.api.world.biome.GrassColorModifier
 import org.kryptonmc.krypton.util.serialization.Codecs
 import org.kryptonmc.krypton.util.serialization.EnumCodecs
+import org.kryptonmc.krypton.util.serialization.nullableField
 import org.kryptonmc.serialization.Codec
-import org.kryptonmc.serialization.codecs.CompoundCodecBuilder
+import org.kryptonmc.serialization.codecs.RecordCodecBuilder
 
 @JvmRecord
 data class KryptonBiomeEffects(
@@ -118,8 +119,8 @@ data class KryptonBiomeEffects(
         @JvmField
         val DEFAULT: BiomeEffects = Builder().build()
         @JvmField
-        val CODEC: Codec<BiomeEffects> = CompoundCodecBuilder.create { instance ->
-            instance.group(
+        val CODEC: Codec<BiomeEffects> = RecordCodecBuilder.create {
+            it.group(
                 Codecs.COLOR.field("fog_color").getting(BiomeEffects::fogColor),
                 Codecs.COLOR.field("water_color").getting(BiomeEffects::waterColor),
                 Codecs.COLOR.field("water_fog_color").getting(BiomeEffects::waterFogColor),
@@ -132,7 +133,7 @@ data class KryptonBiomeEffects(
                 KryptonAmbientMoodSettings.CODEC.nullableField("mood_sound").getting(BiomeEffects::ambientMoodSettings),
                 KryptonAmbientAdditionsSettings.CODEC.nullableField("additions_sound").getting(BiomeEffects::ambientAdditionsSettings),
                 KryptonMusic.CODEC.nullableField("music").getting(BiomeEffects::backgroundMusic)
-            ).apply(instance, ::KryptonBiomeEffects)
+            ).apply(it, ::KryptonBiomeEffects)
         }
     }
 }

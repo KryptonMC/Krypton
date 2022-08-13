@@ -22,8 +22,8 @@ import org.kryptonmc.api.resource.ResourceKey
 import org.kryptonmc.api.world.World
 import org.kryptonmc.krypton.util.serialization.Codecs
 import org.kryptonmc.nbt.NumberTag
-import org.kryptonmc.nbt.StringTag
 import org.kryptonmc.nbt.Tag
+import org.kryptonmc.serialization.nbt.NbtOps
 
 fun Tag.parseDimension(): ResourceKey<World>? {
     if (this is NumberTag) {
@@ -32,8 +32,6 @@ fun Tag.parseDimension(): ResourceKey<World>? {
             0 -> return World.OVERWORLD
             1 -> return World.END
         }
-        return null
     }
-    if (this !is StringTag) return null
-    return Codecs.DIMENSION.decodeNullable(this)
+    return Codecs.DIMENSION.decode(this, NbtOps.INSTANCE)
 }

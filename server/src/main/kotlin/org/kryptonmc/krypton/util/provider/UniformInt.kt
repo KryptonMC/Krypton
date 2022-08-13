@@ -19,8 +19,8 @@
 package org.kryptonmc.krypton.util.provider
 
 import org.kryptonmc.serialization.Codec
-import org.kryptonmc.serialization.codecs.CompoundCodecBuilder
-import java.util.function.Function
+import org.kryptonmc.serialization.codecs.RecordCodecBuilder
+//import java.util.function.Function
 
 class UniformInt(override val minimumValue: Int, override val maximumValue: Int) : IntProvider() {
 
@@ -32,7 +32,7 @@ class UniformInt(override val minimumValue: Int, override val maximumValue: Int)
     companion object {
 
         @JvmField
-        val CODEC: Codec<UniformInt> = CompoundCodecBuilder.create {
+        val CODEC: Codec<UniformInt> = RecordCodecBuilder.create {
             it.group(
                 Codec.INT.field("min_inclusive").getting(UniformInt::minimumValue),
                 Codec.INT.field("max_inclusive").getting(UniformInt::maximumValue)
@@ -41,5 +41,6 @@ class UniformInt(override val minimumValue: Int, override val maximumValue: Int)
             check(it.minimumValue <= it.maximumValue) { "Maximum must be >= minimum! Maximum: ${it.maximumValue}, minimum: ${it.minimumValue}" }
             it
         }, Function.identity())*/
+        // For why the above is commented out, see: https://youtrack.jetbrains.com/issue/KT-53478
     }
 }

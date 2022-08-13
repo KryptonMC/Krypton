@@ -23,6 +23,7 @@ import org.kryptonmc.krypton.entity.KryptonLivingEntity
 import org.kryptonmc.krypton.registry.InternalRegistries
 import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.compound
+import org.kryptonmc.serialization.nbt.NbtOps
 import java.util.concurrent.ConcurrentHashMap
 
 class Brain<E : KryptonLivingEntity> {
@@ -55,7 +56,11 @@ class Brain<E : KryptonLivingEntity> {
         data.getCompound("Memories").forEachCompound { memoryKey, memory ->
             val key = InternalRegistries.MEMORIES[Key.key(memoryKey)] ?: return@forEachCompound
             val value = memory.get("value") ?: return@forEachCompound
-            val decoded = key.codec.decodeNullable(value) ?: return@forEachCompound
+            val decoded = try {
+                key.codec.decode(value, NbtOps.INSTANCE)
+            } catch (_: Exception) {
+                return@forEachCompound
+            }
             memories[key] = Memory(decoded, memory.getLong("ttl"))
         }
     }

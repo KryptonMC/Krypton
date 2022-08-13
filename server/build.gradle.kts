@@ -37,6 +37,9 @@ dependencies {
     // Data
     api(libs.dataConverter)
     api(libs.nbt)
+    api(libs.serialization)
+    api(libs.serialization.gson)
+    api(libs.serialization.nbt)
     implementation(libs.articData)
 
     // Collections and caching

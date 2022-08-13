@@ -19,7 +19,7 @@
 package org.kryptonmc.krypton.network.chat
 
 import org.kryptonmc.serialization.Codec
-import org.kryptonmc.serialization.codecs.CompoundCodecBuilder
+import org.kryptonmc.serialization.codecs.RecordCodecBuilder
 
 @JvmRecord
 data class ChatType(val chat: ChatTypeDecoration, val narration: ChatTypeDecoration) {
@@ -27,7 +27,7 @@ data class ChatType(val chat: ChatTypeDecoration, val narration: ChatTypeDecorat
     companion object {
 
         @JvmField
-        val CODEC: Codec<ChatType> = CompoundCodecBuilder.create {
+        val CODEC: Codec<ChatType> = RecordCodecBuilder.create {
             it.group(
                 ChatTypeDecoration.CODEC.field("chat").getting(ChatType::chat),
                 ChatTypeDecoration.CODEC.field("narration").getting(ChatType::narration)

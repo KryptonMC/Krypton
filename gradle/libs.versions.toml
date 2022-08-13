@@ -30,6 +30,7 @@ tca = "1.3.0"
 jline = "3.21.0"
 dataConverter = "1.0.0-SNAPSHOT"
 nbt = "3.4.1"
+serialization = "1.1.1"
 articData = "1.19-aaa3687c"
 caffeine = "3.1.1"
 fastutil = "8.5.8"
@@ -105,6 +106,9 @@ clikt = { group = "com.github.ajalt.clikt", name = "clikt", version.ref = "clikt
 dataConverter = { group = "ca.spottedleaf", name = "dataconverter", version.ref = "dataConverter" }
 articData = { group = "de.articdive", name = "articdata", version.ref = "articData" }
 nbt = { group = "org.kryptonmc", name = "nbt-common", version.ref = "nbt" }
+serialization = { group = "org.kryptonmc", name = "serialization-core", version.ref = "serialization" }
+serialization-gson = { group = "org.kryptonmc", name = "serialization-gson", version.ref = "serialization" }
+serialization-nbt = { group = "org.kryptonmc", name = "serialization-nbt", version.ref = "serialization" }
 
 # Events
 event = { group = "net.kyori", name = "event-method-asm", version.ref = "event" }
