@@ -21,8 +21,10 @@ package org.kryptonmc.krypton.world.dimension
 import net.kyori.adventure.key.Key
 import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.registry.Registries
+import org.kryptonmc.api.resource.ResourceKey
 import org.kryptonmc.api.tags.BlockTags
 import org.kryptonmc.api.tags.Tag
+import org.kryptonmc.api.world.World
 import org.kryptonmc.api.world.dimension.DimensionType
 import org.kryptonmc.krypton.tags.KryptonTagManager
 import org.kryptonmc.krypton.util.provider.ConstantInt
@@ -31,6 +33,8 @@ import org.kryptonmc.krypton.util.provider.UniformInt
 import org.kryptonmc.krypton.util.serialization.Codecs
 import org.kryptonmc.krypton.util.serialization.asOptionalLong
 import org.kryptonmc.serialization.Codec
+import org.kryptonmc.serialization.DataResult
+import org.kryptonmc.serialization.Dynamic
 import org.kryptonmc.serialization.MapCodec
 import org.kryptonmc.serialization.codecs.RecordCodecBuilder
 import java.util.OptionalLong
@@ -65,6 +69,14 @@ data class KryptonDimensionType(
     override val monsterSpawnBlockLightLimit: Int
         get() = monsterSettings.monsterSpawnBlockLightLimit
 
+    init {
+        check(height >= MINIMUM_HEIGHT) { "Height must be at least $MINIMUM_HEIGHT!" }
+        check(minimumY + height <= MAX_Y + 1) { "Minimum Y + height cannot be higher than ${MAX_Y + 1}!" }
+        check(logicalHeight <= height) { "Logical height cannot be higher than height!" }
+        check(height % 16 == 0) { "Height must be a multiple of 16!" }
+        check(minimumY % 16 == 0) { "Minimum Y must be a multiple of 16!" }
+    }
+
     override fun key(): Key = Registries.DIMENSION_TYPE[this] ?: UNREGISTERED_KEY
 
     override fun toBuilder(): Builder = Builder(this)
@@ -82,10 +94,10 @@ data class KryptonDimensionType(
             @JvmField
             val CODEC: MapCodec<MonsterSettings> = RecordCodecBuilder.createMap {
                 it.group(
-                    Codec.BOOLEAN.field("piglin_safe").getting(MonsterSettings::piglinSafe),
-                    Codec.BOOLEAN.field("has_raids").getting(MonsterSettings::hasRaids),
-                    IntProvider.codec(0, 15).field("monster_spawn_light_level").getting(MonsterSettings::monsterSpawnLightLevel),
-                    Codec.intRange(0, 15).field("monster_spawn_block_light_limit").getting(MonsterSettings::monsterSpawnBlockLightLimit)
+                    Codec.BOOLEAN.fieldOf("piglin_safe").getting(MonsterSettings::piglinSafe),
+                    Codec.BOOLEAN.fieldOf("has_raids").getting(MonsterSettings::hasRaids),
+                    IntProvider.codec(0, 15).fieldOf("monster_spawn_light_level").getting(MonsterSettings::monsterSpawnLightLevel),
+                    Codec.intRange(0, 15).fieldOf("monster_spawn_block_light_limit").getting(MonsterSettings::monsterSpawnBlockLightLimit)
                 ).apply(it, ::MonsterSettings)
             }
         }
@@ -218,27 +230,40 @@ data class KryptonDimensionType(
         private const val MIN_Y = MAX_Y - Y_SIZE + 1
         @JvmField
         @Suppress("UNCHECKED_CAST")
-        val DIRECT_CODEC: Codec<DimensionType> = RecordCodecBuilder.create { instance ->
+        val DIRECT_CODEC: Codec<DimensionType> = Codecs.catchDecoderException(RecordCodecBuilder.create { instance ->
             instance.group(
-                Codec.LONG.optionalField("fixed_time").asOptionalLong().getting(DimensionType::fixedTime),
-                Codec.BOOLEAN.field("has_skylight").getting(DimensionType::hasSkylight),
-                Codec.BOOLEAN.field("has_ceiling").getting(DimensionType::hasCeiling),
-                Codec.BOOLEAN.field("ultrawarm").getting(DimensionType::isUltrawarm),
-                Codec.BOOLEAN.field("natural").getting(DimensionType::isNatural),
-                Codec.doubleRange(MINIMUM_COORDINATE_SCALE, MAXIMUM_COORDINATE_SCALE).field("coordinate_scale")
+                Codec.LONG.optionalFieldOf("fixed_time").asOptionalLong().getting(DimensionType::fixedTime),
+                Codec.BOOLEAN.fieldOf("has_skylight").getting(DimensionType::hasSkylight),
+                Codec.BOOLEAN.fieldOf("has_ceiling").getting(DimensionType::hasCeiling),
+                Codec.BOOLEAN.fieldOf("ultrawarm").getting(DimensionType::isUltrawarm),
+                Codec.BOOLEAN.fieldOf("natural").getting(DimensionType::isNatural),
+                Codec.doubleRange(MINIMUM_COORDINATE_SCALE, MAXIMUM_COORDINATE_SCALE).fieldOf("coordinate_scale")
                     .getting(DimensionType::coordinateScale),
-                Codec.BOOLEAN.field("bed_works").getting(DimensionType::allowBeds),
-                Codec.BOOLEAN.field("respawn_anchor_works").getting(DimensionType::allowRespawnAnchors),
-                Codec.intRange(MIN_Y, MAX_Y).field("min_y").getting(DimensionType::minimumY),
-                Codec.intRange(MINIMUM_HEIGHT, Y_SIZE).field("height").getting(DimensionType::height),
-                Codec.intRange(0, Y_SIZE).field("logical_height").getting(DimensionType::logicalHeight),
+                Codec.BOOLEAN.fieldOf("bed_works").getting(DimensionType::allowBeds),
+                Codec.BOOLEAN.fieldOf("respawn_anchor_works").getting(DimensionType::allowRespawnAnchors),
+                Codec.intRange(MIN_Y, MAX_Y).fieldOf("min_y").getting(DimensionType::minimumY),
+                Codec.intRange(MINIMUM_HEIGHT, Y_SIZE).fieldOf("height").getting(DimensionType::height),
+                Codec.intRange(0, Y_SIZE).fieldOf("logical_height").getting(DimensionType::logicalHeight),
                 // TODO: This codec is complete rubbish, but it'll be changed in the next version when we rewrite the tag API
-                Codecs.KEY.xmap({ KryptonTagManager.tags[Registries.TAG_TYPES[it]]!![0] as Tag<Block> }, { it.key() }).field("infiniburn")
+                Codecs.KEY.xmap({ KryptonTagManager.tags[Registries.TAG_TYPES[it]]!![0] as Tag<Block> }, { it.key() }).fieldOf("infiniburn")
                     .getting(DimensionType::infiniburn),
-                Codecs.KEY.field("effects").getting(DimensionType::effects),
-                Codec.FLOAT.field("ambient_light").getting(DimensionType::ambientLight),
+                Codecs.KEY.fieldOf("effects").orElse(KryptonDimensionTypes.OVERWORLD_EFFECTS).getting(DimensionType::effects),
+                Codec.FLOAT.fieldOf("ambient_light").getting(DimensionType::ambientLight),
                 MonsterSettings.CODEC.getting { (it as KryptonDimensionType).monsterSettings }
             ).apply(instance, ::KryptonDimensionType)
+        })
+
+        @JvmStatic
+        fun parseLegacy(data: Dynamic<*>): DataResult<ResourceKey<World>> {
+            val number = data.asNumber().result()
+            if (number.isPresent) {
+                when (number.get().toInt()) {
+                    -1 -> DataResult.success(World.NETHER)
+                    0 -> DataResult.success(World.OVERWORLD)
+                    1 -> DataResult.success(World.END)
+                }
+            }
+            return Codecs.DIMENSION.read(data)
         }
     }
 }

@@ -43,8 +43,8 @@ data class GlobalPosition(val dimension: ResourceKey<World>, val position: Vecto
         @JvmField
         val CODEC: Codec<GlobalPosition> = RecordCodecBuilder.create {
             it.group(
-                Codecs.DIMENSION.field("dimension").getting(GlobalPosition::dimension),
-                Codecs.VECTOR3I_ARRAY.field("pos").getting(GlobalPosition::position)
+                Codecs.DIMENSION.fieldOf("dimension").getting(GlobalPosition::dimension),
+                BlockPositions.CODEC.fieldOf("pos").getting(GlobalPosition::position)
             ).apply(it, ::GlobalPosition)
         }
     }

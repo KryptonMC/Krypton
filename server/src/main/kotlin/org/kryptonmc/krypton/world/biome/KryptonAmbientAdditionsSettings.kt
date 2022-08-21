@@ -56,8 +56,8 @@ data class KryptonAmbientAdditionsSettings(override val sound: SoundEvent, overr
         @JvmField
         val CODEC: Codec<AmbientAdditionsSettings> = RecordCodecBuilder.create {
             it.group(
-                Codecs.SOUND_EVENT.field("sound").getting(AmbientAdditionsSettings::sound),
-                Codec.DOUBLE.field("probability").getting(AmbientAdditionsSettings::probability)
+                Codecs.SOUND_EVENT.fieldOf("sound").getting(AmbientAdditionsSettings::sound),
+                Codec.DOUBLE.fieldOf("probability").getting(AmbientAdditionsSettings::probability)
             ).apply(it, ::KryptonAmbientAdditionsSettings)
         }
     }

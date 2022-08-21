@@ -41,7 +41,7 @@ class ConstantInt private constructor(val value: Int) : IntProvider() {
         @JvmField
         val CODEC: Codec<Either<Int, ConstantInt>> = Codec.either(
             Codec.INT,
-            RecordCodecBuilder.create { it.group(Codec.INT.field("value").getting(ConstantInt::value)).apply(it, ConstantInt::of) }
+            RecordCodecBuilder.create { it.group(Codec.INT.fieldOf("value").getting(ConstantInt::value)).apply(it, ConstantInt::of) }
         )/*.xmap({ it.map(ConstantInt::of, Function.identity()) }, { Either.left(it.value) })*/
         // For why the above is commented out, see: https://youtrack.jetbrains.com/issue/KT-53478
 

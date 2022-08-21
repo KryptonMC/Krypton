@@ -21,6 +21,7 @@ package org.kryptonmc.krypton.util.provider
 import net.kyori.adventure.key.Key
 import org.kryptonmc.krypton.registry.InternalRegistries
 import org.kryptonmc.serialization.Codec
+import org.kryptonmc.serialization.DataResult
 import org.kryptonmc.util.Either
 import java.util.function.Function
 
@@ -31,9 +32,9 @@ object IntProviderTypes {
     val CONSTANT: IntProviderType<ConstantInt> = register("constant", ConstantInt.CODEC
         .xmap({ it.map(ConstantInt::of, Function.identity()) }, { Either.left(it.value) }))
     @JvmField
-    val UNIFORM: IntProviderType<UniformInt> = register("uniform", UniformInt.CODEC.xmap({
-        check(it.minimumValue <= it.maximumValue) { "Maximum must be >= minimum! Maximum: ${it.maximumValue}, minimum: ${it.minimumValue}" }
-        it
+    val UNIFORM: IntProviderType<UniformInt> = register("uniform", UniformInt.CODEC.comapFlatMap({
+        if (it.maximumValue >= it.minimumValue) return@comapFlatMap DataResult.success(it)
+        DataResult.error("Maximum must be >= minimum! Maximum: ${it.maximumValue}, minimum: ${it.minimumValue}")
     }, Function.identity()))
 
     @JvmStatic

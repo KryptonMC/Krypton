@@ -20,9 +20,9 @@ package org.kryptonmc.krypton.util.provider
 
 import org.kryptonmc.krypton.registry.InternalRegistries
 import org.kryptonmc.serialization.Codec
+import org.kryptonmc.serialization.DataResult
 import org.kryptonmc.util.Either
 import java.util.function.Function
-import java.util.function.UnaryOperator
 
 abstract class IntProvider {
 
@@ -32,10 +32,9 @@ abstract class IntProvider {
 
     companion object {
 
-        @Suppress("UNCHECKED_CAST")
         private val CONSTANT_OR_DISPATCH_CODEC: Codec<Either<Int, IntProvider>> = Codec.either(
             Codec.INT,
-            InternalRegistries.INT_PROVIDER_TYPES.byNameCodec().dispatch(IntProvider::type) { it.codec() as Codec<IntProvider> }
+            InternalRegistries.INT_PROVIDER_TYPES.byNameCodec().dispatch(IntProvider::type, IntProviderType<*>::codec)
         )
         @JvmField
         val CODEC: Codec<IntProvider> = CONSTANT_OR_DISPATCH_CODEC.xmap(
@@ -44,13 +43,13 @@ abstract class IntProvider {
         )
 
         @JvmStatic
-        fun codec(minimum: Int, maximum: Int): Codec<IntProvider> {
-            val checker = UnaryOperator<IntProvider> {
-                check(it.minimumValue >= minimum) { "Int provider lower bound too low! Minimum value must be >= $minimum!" }
-                check(it.maximumValue <= maximum) { "Int provider upper bound too high! Maximum value must be <= $maximum!" }
-                it
+        fun codec(min: Int, max: Int): Codec<IntProvider> {
+            val checker = Function<IntProvider, DataResult<IntProvider>> {
+                if (it.minimumValue < min) return@Function DataResult.error("Int provider lower bound too low! Minimum value must be >= $min!")
+                if (it.maximumValue > max) return@Function DataResult.error("Int provider upper bound too high! Maximum value must be <= $max!")
+                DataResult.success(it)
             }
-            return CODEC.xmap(checker, checker)
+            return CODEC.flatXmap(checker, checker)
         }
     }
 }

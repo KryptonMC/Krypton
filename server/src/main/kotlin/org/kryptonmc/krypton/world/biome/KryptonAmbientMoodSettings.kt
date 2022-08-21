@@ -74,10 +74,10 @@ data class KryptonAmbientMoodSettings(
         @JvmField
         val CODEC: Codec<AmbientMoodSettings> = RecordCodecBuilder.create {
             it.group(
-                Codecs.SOUND_EVENT.field("sound").getting(AmbientMoodSettings::sound),
-                Codec.INT.field("tick_delay").getting(AmbientMoodSettings::tickDelay),
-                Codec.INT.field("block_search_extent").getting(AmbientMoodSettings::blockSearchExtent),
-                Codec.DOUBLE.field("offset").getting(AmbientMoodSettings::offset)
+                Codecs.SOUND_EVENT.fieldOf("sound").getting(AmbientMoodSettings::sound),
+                Codec.INT.fieldOf("tick_delay").getting(AmbientMoodSettings::tickDelay),
+                Codec.INT.fieldOf("block_search_extent").getting(AmbientMoodSettings::blockSearchExtent),
+                Codec.DOUBLE.fieldOf("offset").getting(AmbientMoodSettings::offset)
             ).apply(it, ::KryptonAmbientMoodSettings)
         }
     }

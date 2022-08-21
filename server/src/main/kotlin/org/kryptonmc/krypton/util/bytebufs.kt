@@ -399,12 +399,9 @@ fun ByteBuf.writeVarIntArray(array: IntArray) {
 fun ByteBuf.readVarIntArray(): IntArray = IntArray(readVarInt()) { readVarInt() }
 
 fun <T> ByteBuf.encode(encoder: Encoder<T>, value: T) {
-    val result = try {
-        encoder.encodeStart(value, NbtOps.INSTANCE)
-    } catch (exception: Exception) {
-        throw EncoderException("Failed to encode value $value with encoder $encoder!", exception)
-    }
-    writeNBT(result as CompoundTag)
+    val result = encoder.encodeStart(value, NbtOps.INSTANCE)
+    result.error().ifPresent { throw EncoderException("Failed to encode: ${it.message} $value") }
+    writeNBT(result.result().get() as? CompoundTag)
 }
 
 fun ByteBuf.readInstant(): Instant = Instant.ofEpochMilli(readLong())

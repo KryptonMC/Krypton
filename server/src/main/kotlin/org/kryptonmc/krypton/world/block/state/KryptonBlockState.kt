@@ -44,6 +44,6 @@ class KryptonBlockState(
         // FIXME: Don't cast this when we update the way we do registries.
         @JvmField
         @Suppress("UNCHECKED_CAST")
-        val CODEC: Codec<KryptonBlockState> = codec(KryptonRegistries.BLOCK.byNameCodec() as Codec<KryptonBlock>) { it.defaultState }
+        val CODEC: Codec<KryptonBlockState> = codec(KryptonRegistries.BLOCK.byNameCodec() as Codec<KryptonBlock>, KryptonBlock::defaultState).stable()
     }
 }

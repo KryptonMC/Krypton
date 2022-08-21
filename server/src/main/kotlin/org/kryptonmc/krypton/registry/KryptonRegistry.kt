@@ -27,11 +27,14 @@ import org.kryptonmc.api.resource.ResourceKey
 import org.kryptonmc.krypton.util.serialization.Codecs
 import org.kryptonmc.krypton.util.IdentityHashStrategy
 import org.kryptonmc.krypton.util.IntBiMap
+import org.kryptonmc.krypton.util.mapSuccess
+import org.kryptonmc.krypton.util.orElseError
 import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.compound
 import org.kryptonmc.serialization.Codec
 import org.kryptonmc.serialization.Encoder
 import org.kryptonmc.serialization.nbt.NbtOps
+import java.util.Optional
 import kotlin.math.max
 
 open class KryptonRegistry<T>(override val key: ResourceKey<out Registry<T>>) : Registry<T>, IntBiMap<T> {
@@ -71,6 +74,8 @@ open class KryptonRegistry<T>(override val key: ResourceKey<out Registry<T>>) : 
 
     override fun resourceKey(value: T): ResourceKey<T>? = keyStorage.inverse()[value]
 
+    private fun getResourceKey(value: T): Optional<ResourceKey<T>> = Optional.ofNullable(keyStorage.inverse()[value])
+
     override fun idOf(value: T): Int = toId.getInt(value)
 
     override fun <V : T> register(key: ResourceKey<T>, value: V): V = register(nextId, key, value)
@@ -93,9 +98,9 @@ open class KryptonRegistry<T>(override val key: ResourceKey<out Registry<T>>) : 
 
     override fun iterator(): Iterator<T> = storage.values.iterator()
 
-    fun byNameCodec(): Codec<T> = Codecs.KEY.xmap(
-        { checkNotNull(get(it)) { "Unknown registry key $it in $key!" } },
-        { checkNotNull(resourceKey(it)) { "Unknown registry element $it in $key!" }.location }
+    fun byNameCodec(): Codec<T> = Codecs.KEY.flatXmap(
+        { Optional.ofNullable(get(it)).mapSuccess().orElseError("Unknown registry key $it in $key!") },
+        { getResourceKey(it).map(ResourceKey<T>::location).mapSuccess().orElseError("Unknown registry element $it in $key!") }
     )
 
     fun encode(elementEncoder: Encoder<T>): CompoundTag = compound {
@@ -104,7 +109,7 @@ open class KryptonRegistry<T>(override val key: ResourceKey<out Registry<T>>) : 
             compound {
                 string("name", get(it)!!.asString())
                 int("id", idOf(it))
-                put("element", elementEncoder.encodeStart(it, NbtOps.INSTANCE))
+                put("element", elementEncoder.encodeStart(it, NbtOps.INSTANCE).result().get())
             }
         })
     }

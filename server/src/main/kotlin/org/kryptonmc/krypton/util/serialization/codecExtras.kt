@@ -29,4 +29,4 @@ private val FROM_OPTIONAL_LONG = Function<OptionalLong, Optional<Long>> { if (it
 
 fun MapCodec<Optional<Long>>.asOptionalLong(): MapCodec<OptionalLong> = xmap(TO_OPTIONAL_LONG, FROM_OPTIONAL_LONG)
 
-fun <A> Codec<A>.nullableField(name: String): MapCodec<A?> = NullableFieldCodec(name, this)
+fun <A : Any> Codec<A>.nullableFieldOf(name: String): MapCodec<A?> = optionalFieldOf(name).xmap({ it.orElse(null) }, { Optional.ofNullable(it) })

@@ -47,10 +47,10 @@ data class KryptonMusic(
         @JvmField
         val CODEC: Codec<Music> = RecordCodecBuilder.create { instance ->
             instance.group(
-                Codecs.SOUND_EVENT.field("sound").getting(Music::sound),
-                Codec.INT.field("min_delay").getting(Music::minimumDelay),
-                Codec.INT.field("max_delay").getting(Music::maximumDelay),
-                Codec.BOOLEAN.field("replace_current_music").getting(Music::replaceCurrentMusic)
+                Codecs.SOUND_EVENT.fieldOf("sound").getting(Music::sound),
+                Codec.INT.fieldOf("min_delay").getting(Music::minimumDelay),
+                Codec.INT.fieldOf("max_delay").getting(Music::maximumDelay),
+                Codec.BOOLEAN.fieldOf("replace_current_music").getting(Music::replaceCurrentMusic)
             ).apply(instance, ::KryptonMusic)
         }
 

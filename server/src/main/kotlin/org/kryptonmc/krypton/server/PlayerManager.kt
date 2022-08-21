@@ -61,8 +61,10 @@ import org.kryptonmc.krypton.util.pool.daemonThreadFactory
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.krypton.world.biome.BiomeManager
 import org.kryptonmc.krypton.world.data.PlayerDataManager
-import org.kryptonmc.krypton.world.dimension.parseDimension
+import org.kryptonmc.krypton.world.dimension.KryptonDimensionType
 import org.kryptonmc.krypton.world.scoreboard.KryptonScoreboard
+import org.kryptonmc.serialization.Dynamic
+import org.kryptonmc.serialization.nbt.NbtOps
 import java.nio.file.Files
 import java.nio.file.Path
 import java.util.UUID
@@ -107,7 +109,11 @@ class PlayerManager(private val server: KryptonServer) {
         val profile = player.profile
         val name = server.profileCache[profile.uuid]?.name ?: profile.name
         server.profileCache.add(profile)
-        val dimension = if (nbt != null) nbt.get("Dimension")?.parseDimension() ?: World.OVERWORLD else World.OVERWORLD
+        val dimension = if (nbt != null) {
+            KryptonDimensionType.parseLegacy(Dynamic(NbtOps.INSTANCE, nbt.get("Dimension"))).resultOrPartial(LOGGER::error).orElse(World.OVERWORLD)
+        } else {
+            World.OVERWORLD
+        }
         if (nbt != null) server.userManager.updateUser(profile.uuid, nbt)
 
         val world = server.worldManager.worlds[dimension] ?: server.worldManager.default

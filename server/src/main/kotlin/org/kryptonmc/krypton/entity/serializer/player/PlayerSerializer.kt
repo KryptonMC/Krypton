@@ -33,6 +33,7 @@ import org.kryptonmc.krypton.entity.serializer.EntitySerializer
 import org.kryptonmc.krypton.entity.serializer.LivingEntitySerializer
 import org.kryptonmc.krypton.service.KryptonVanishService
 import org.kryptonmc.krypton.util.GameModes
+import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.util.serialization.Codecs
 import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.IntTag
@@ -43,6 +44,7 @@ import java.time.Instant
 
 object PlayerSerializer : EntitySerializer<KryptonPlayer> {
 
+    private val LOGGER = logger<KryptonPlayer>()
     private val VANISH_SERVICE by lazy { KryptonServer.get().servicesManager.provide<VanishService>()!! }
 
     override fun load(entity: KryptonPlayer, data: CompoundTag) {
@@ -83,11 +85,8 @@ object PlayerSerializer : EntitySerializer<KryptonPlayer> {
             entity.respawnForced = data.getBoolean("SpawnForced")
             entity.respawnAngle = data.getFloat("SpawnAngle")
             if (data.contains("SpawnDimension", StringTag.ID)) {
-                entity.respawnDimension = try {
-                    Codecs.DIMENSION.decode(data.get("SpawnDimension"), NbtOps.INSTANCE)
-                } catch (_: Exception) {
-                    World.OVERWORLD
-                }
+                entity.respawnDimension = Codecs.DIMENSION.read(data.get("SpawnDimension"), NbtOps.INSTANCE).resultOrPartial(LOGGER::error)
+                    .orElse(World.OVERWORLD)
             }
         }
 
@@ -134,7 +133,8 @@ object PlayerSerializer : EntitySerializer<KryptonPlayer> {
             int("SpawnZ", position.z())
             float("SpawnAngle", entity.respawnAngle)
             boolean("SpawnForced", entity.respawnForced)
-            put("SpawnDimension", Codecs.DIMENSION.encodeStart(entity.respawnDimension, NbtOps.INSTANCE))
+            Codecs.KEY.encodeStart(entity.respawnDimension.location, NbtOps.INSTANCE).resultOrPartial(LOGGER::error)
+                .ifPresent { put("SpawnDimension", it) }
         }
 
         val rootVehicle = entity.rootVehicle

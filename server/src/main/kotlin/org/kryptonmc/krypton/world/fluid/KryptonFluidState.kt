@@ -63,6 +63,6 @@ class KryptonFluidState(
         // FIXME: Don't cast this when we update the way we do registries.
         @JvmField
         @Suppress("UNCHECKED_CAST")
-        val CODEC: Codec<KryptonFluidState> = codec(KryptonRegistries.FLUID.byNameCodec() as Codec<KryptonFluid>) { it.defaultState }
+        val CODEC: Codec<KryptonFluidState> = codec(KryptonRegistries.FLUID.byNameCodec() as Codec<KryptonFluid>, KryptonFluid::defaultState).stable()
     }
 }

@@ -24,15 +24,16 @@ import org.kryptonmc.api.world.World
 import org.kryptonmc.krypton.entity.getVector3i
 import org.kryptonmc.krypton.entity.putVector3i
 import org.kryptonmc.krypton.entity.vector3i
-import org.kryptonmc.krypton.world.dimension.parseDimension
+import org.kryptonmc.krypton.util.serialization.Codecs
 import org.kryptonmc.nbt.CompoundTag
+import org.kryptonmc.serialization.nbt.NbtOps
 import org.spongepowered.math.vector.Vector3i
 
-@Suppress("EqualsOrHashCode")
 class KryptonCompassMeta(data: CompoundTag) : AbstractItemMeta<KryptonCompassMeta>(data), CompassMeta {
 
     override val isTrackingLodestone: Boolean = data.getBoolean("LodestoneTracking")
-    override val lodestoneDimension: ResourceKey<World>? = data.get("LodestoneDimension")?.parseDimension()
+    override val lodestoneDimension: ResourceKey<World>? =
+        Codecs.DIMENSION.read(data.get("LodestoneDimension"), NbtOps.INSTANCE).result().orElse(null)
     override val lodestonePosition: Vector3i? = data.getVector3i("LodestonePos")
 
     override fun copy(data: CompoundTag): KryptonCompassMeta = KryptonCompassMeta(data)

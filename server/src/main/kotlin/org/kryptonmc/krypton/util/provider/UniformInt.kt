@@ -34,12 +34,12 @@ class UniformInt(override val minimumValue: Int, override val maximumValue: Int)
         @JvmField
         val CODEC: Codec<UniformInt> = RecordCodecBuilder.create {
             it.group(
-                Codec.INT.field("min_inclusive").getting(UniformInt::minimumValue),
-                Codec.INT.field("max_inclusive").getting(UniformInt::maximumValue)
+                Codec.INT.fieldOf("min_inclusive").getting(UniformInt::minimumValue),
+                Codec.INT.fieldOf("max_inclusive").getting(UniformInt::maximumValue)
             ).apply(it, ::UniformInt)
-        }/*.xmap({
-            check(it.minimumValue <= it.maximumValue) { "Maximum must be >= minimum! Maximum: ${it.maximumValue}, minimum: ${it.minimumValue}" }
-            it
+        }/*.comapFlatMap({
+            if (it.maximumValue >= it.minimumValue) return@comapFlatMap DataResult.success(it)
+            DataResult.error("Maximum must be >= minimum! Maximum: ${it.maximumValue}, minimum: ${it.minimumValue}")
         }, Function.identity())*/
         // For why the above is commented out, see: https://youtrack.jetbrains.com/issue/KT-53478
     }
