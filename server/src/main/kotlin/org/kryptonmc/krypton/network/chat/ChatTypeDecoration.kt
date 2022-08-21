@@ -51,9 +51,9 @@ data class ChatTypeDecoration(private val translationKey: String, val parameters
         @JvmField
         val CODEC: Codec<ChatTypeDecoration> = RecordCodecBuilder.create { instance ->
             instance.group(
-                Codec.STRING.field("translation_key").getting { it.translationKey() },
-                Parameter.CODEC.list().field("parameters").getting(ChatTypeDecoration::parameters),
-                AdventureCodecs.STYLE_FORMATTING.optionalField("style", Style.empty()).getting(ChatTypeDecoration::style)
+                Codec.STRING.fieldOf("translation_key").getting { it.translationKey() },
+                Parameter.CODEC.listOf().fieldOf("parameters").getting(ChatTypeDecoration::parameters),
+                AdventureCodecs.STYLE_FORMATTING.optionalFieldOf("style", Style.empty()).getting(ChatTypeDecoration::style)
             ).apply(instance, ::ChatTypeDecoration)
         }
 

@@ -68,8 +68,8 @@ data class KryptonAmbientParticleSettings(
         @JvmField
         val CODEC: Codec<AmbientParticleSettings> = RecordCodecBuilder.create {
             it.group(
-                Codecs.PARTICLE.field("particle").getting(AmbientParticleSettings::type),
-                Codec.FLOAT.field("probability").getting(AmbientParticleSettings::probability)
+                Codecs.PARTICLE.fieldOf("particle").getting(AmbientParticleSettings::type),
+                Codec.FLOAT.fieldOf("probability").getting(AmbientParticleSettings::probability)
             ).apply(it, ::KryptonAmbientParticleSettings)
         }
     }

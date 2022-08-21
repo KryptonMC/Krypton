@@ -16,22 +16,11 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.world.dimension
+package org.kryptonmc.krypton.util
 
-import org.kryptonmc.api.resource.ResourceKey
-import org.kryptonmc.api.world.World
-import org.kryptonmc.krypton.util.serialization.Codecs
-import org.kryptonmc.nbt.NumberTag
-import org.kryptonmc.nbt.Tag
-import org.kryptonmc.serialization.nbt.NbtOps
+import org.kryptonmc.serialization.DataResult
+import java.util.Optional
 
-fun Tag.parseDimension(): ResourceKey<World>? {
-    if (this is NumberTag) {
-        when (toInt()) {
-            -1 -> return World.NETHER
-            0 -> return World.OVERWORLD
-            1 -> return World.END
-        }
-    }
-    return Codecs.DIMENSION.decode(this, NbtOps.INSTANCE)
-}
+fun <R> Optional<R>.mapSuccess(): Optional<DataResult<R>> = map { DataResult.success(it!!) }
+
+fun <R> Optional<DataResult<R>>.orElseError(message: String): DataResult<R> = orElseGet { DataResult.error(message) }

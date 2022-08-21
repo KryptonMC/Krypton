@@ -19,11 +19,20 @@
 package org.kryptonmc.krypton.util
 
 import com.google.common.collect.AbstractIterator
+import org.kryptonmc.krypton.util.serialization.Codecs
+import org.kryptonmc.serialization.Codec
 import org.spongepowered.math.vector.Vector3i
+import java.util.stream.IntStream
 import kotlin.math.max
 import kotlin.math.min
 
 object BlockPositions {
+
+    @JvmField
+    val CODEC: Codec<Vector3i> = Codec.INT_STREAM.comapFlatMap(
+        { input -> Codecs.fixedSize(input, 3).map { Vector3i(it[0], it[1], it[2]) } },
+        { IntStream.of(it.x(), it.y(), it.z()) }
+    )
 
     @JvmStatic
     fun betweenClosed(a: Vector3i, b: Vector3i): Iterable<Vector3i> =

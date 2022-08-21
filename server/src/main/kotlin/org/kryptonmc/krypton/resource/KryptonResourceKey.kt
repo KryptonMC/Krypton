@@ -26,8 +26,9 @@ import org.kryptonmc.serialization.Codec
 import java.util.Collections
 import java.util.IdentityHashMap
 
-@JvmRecord
-data class KryptonResourceKey<T>(override val registry: Key, override val location: Key) : ResourceKey<T> {
+class KryptonResourceKey<T> private constructor(override val registry: Key, override val location: Key) : ResourceKey<T> {
+
+    override fun toString(): String = "ResourceKey[$registry / $location]"
 
     object Factory : ResourceKey.Factory {
 
@@ -40,8 +41,10 @@ data class KryptonResourceKey<T>(override val registry: Key, override val locati
 
         @JvmStatic
         @Suppress("UNCHECKED_CAST")
-        fun <T> of(registry: Key, location: Key): ResourceKey<T> =
-            VALUES.computeIfAbsent("$registry:$location".intern()) { KryptonResourceKey<T>(registry, location) } as ResourceKey<T>
+        fun <T> of(registry: Key, location: Key): ResourceKey<T> {
+            val key = "$registry:$location".intern()
+            return VALUES.computeIfAbsent(key) { KryptonResourceKey<T>(registry, location) } as ResourceKey<T>
+        }
 
         @JvmStatic
         fun <T> of(parent: ResourceKey<out Registry<T>>, location: Key): ResourceKey<T> = of(parent.location, location)

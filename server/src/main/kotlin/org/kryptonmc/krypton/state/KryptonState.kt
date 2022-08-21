@@ -24,9 +24,9 @@ import com.google.common.collect.Table
 import kotlinx.collections.immutable.ImmutableMap
 import org.kryptonmc.krypton.util.ZeroCollidingReferenceStateTable
 import org.kryptonmc.krypton.state.property.KryptonProperty
-import org.kryptonmc.krypton.util.serialization.nullableField
 import org.kryptonmc.serialization.Codec
 import org.kryptonmc.serialization.MapCodec
+import java.util.Optional
 import java.util.function.Function
 
 @Suppress("LeakingThis", "UNCHECKED_CAST")
@@ -89,10 +89,11 @@ abstract class KryptonState<O, S : KryptonState<O, S>>(
             defaultGetter: Function<O, S>
         ): Codec<S> = ownerCodec.dispatch("Name", { it.owner }) { owner ->
             val state = defaultGetter.apply(owner)
-            if (state.values.isEmpty()) Codec.unit(state) else state.propertiesCodec.codec()
-                .nullableField("Properties")
-                .xmap({ it ?: state }, { it })
-                .codec()
+            if (state.values.isEmpty()) {
+                Codec.unit(state)
+            } else {
+                state.propertiesCodec.codec().optionalFieldOf("Properties").xmap({ it.orElse(state) }, { Optional.of(it) }).codec()
+            }
         }
 
         @JvmStatic

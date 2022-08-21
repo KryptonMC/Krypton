@@ -120,7 +120,7 @@ class StateDefinition<O, S : KryptonState<O, S>>(
             supplier: Supplier<S>,
             key: String,
             property: KryptonProperty<T>
-        ): MapCodec<S> = MapCodec.pair(codec, property.valueCodec.field(key).orElseGet { property.value(supplier.get()) })
+        ): MapCodec<S> = MapCodec.pair(codec, property.valueCodec.fieldOf(key).orElseGet { property.value(supplier.get()) })
             .xmap({ it.first.set(property, it.second.value) }, { Pair.of(it, property.value(it)) })
     }
 }

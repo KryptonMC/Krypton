@@ -20,6 +20,7 @@ package org.kryptonmc.krypton.util
 
 import net.kyori.adventure.key.InvalidKeyException
 import net.kyori.adventure.key.Key
+import org.kryptonmc.serialization.DataResult
 
 object Keys {
 
@@ -27,8 +28,17 @@ object Keys {
     fun create(namespace: String, path: String): Key? {
         return try {
             Key.key(namespace, path)
-        } catch (exception: InvalidKeyException) {
+        } catch (_: InvalidKeyException) {
             null
+        }
+    }
+
+    @JvmStatic
+    fun read(value: String): DataResult<Key> {
+        return try {
+            DataResult.success(Key.key(value))
+        } catch (exception: InvalidKeyException) {
+            DataResult.error("$value is not a valid resource location! ${exception.message}")
         }
     }
 
