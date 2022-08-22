@@ -9,6 +9,7 @@ indra {
     publishSnapshotsTo("krypton", "https://repo.kryptonmc.org/snapshots")
     includeJavaSoftwareComponentInPublications(false)
     configurePublications {
+        artifactId = "krypton-${project.name}"
         from(components["kotlin"])
         pom {
             name.set("Krypton")
