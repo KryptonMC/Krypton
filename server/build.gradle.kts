@@ -4,7 +4,6 @@ import org.apache.tools.ant.filters.ReplaceTokens
 
 plugins {
     id("com.github.johnrengelman.shadow")
-    `java-library`
     jacoco
 }
 
@@ -122,13 +121,8 @@ license {
 }
 
 tasks.jacocoTestReport {
-    sourceSets(project(":api").sourceSets.main.get())
     reports {
         xml.required.set(true)
         html.required.set(true)
     }
-}
-
-tasks.test {
-    finalizedBy(tasks.jacocoTestReport)
 }

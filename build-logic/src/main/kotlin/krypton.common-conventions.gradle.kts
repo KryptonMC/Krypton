@@ -2,7 +2,9 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     kotlin("jvm")
+    id("net.kyori.indra")
     id("org.cadixdev.licenser")
+    jacoco
 }
 
 configurations.all {
@@ -16,7 +18,21 @@ kotlin {
     }
 }
 
+indra {
+    javaVersions {
+        target(17)
+    }
+
+    github("KryptonMC", "Krypton") {
+        ci(true)
+    }
+    gpl3OnlyLicense()
+}
+
 tasks {
+    jacocoTestReport {
+        dependsOn(test)
+    }
     withType<KotlinCompile> {
         kotlinOptions {
             jvmTarget = "17"

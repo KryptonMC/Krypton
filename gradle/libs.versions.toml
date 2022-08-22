@@ -6,7 +6,7 @@ metadata.format.version = "1.1"
 adventure = "4.12.0-SNAPSHOT"
 configurate = "4.1.2"
 log4j = "2.17.2"
-kotlin = "1.7.0"
+kotlin = "1.7.10"
 coroutines = "1.6.3"
 kotlinCollections = "0.3.5"
 guava = "31.1-jre"
@@ -45,6 +45,14 @@ junit-platform = "1.8.2"
 mockk = "1.12.4"
 bytebuddy = "1.12.11"
 jimfs = "1.2"
+
+# Plugin versions
+indra = "2.1.1"
+licenser = "0.6.1"
+dokka = "1.7.10"
+detekt = "1.21.0"
+vanillaGradle = "0.2.1-SNAPSHOT"
+shadow = "7.1.2"
 
 [libraries]
 
@@ -133,6 +141,15 @@ guice = { group = "com.google.inject", name = "guice", version.ref = "guice" }
 kotlinGuice = { group = "dev.misfitlabs.kotlinguice4", name = "kotlin-guice", version.ref = "kotlinGuice" }
 math = { group = "org.spongepowered", name = "math", version.ref = "math" }
 bstats = { group = "org.bstats", name = "bstats-base", version.ref = "bstats" }
+
+# Plugins
+plugin-indra = { group = "net.kyori", name = "indra-common", version.ref = "indra" }
+plugin-licenser = { group = "gradle.plugin.org.cadixdev.gradle", name = "licenser", version.ref = "licenser" }
+plugin-kotlin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
+plugin-dokka = { group = "org.jetbrains.dokka", name = "dokka-gradle-plugin", version.ref = "dokka" }
+plugin-detekt = { group = "io.gitlab.arturbosch.detekt", name = "detekt-gradle-plugin", version.ref = "detekt" }
+plugin-vanillaGradle = { group = "org.spongepowered", name = "vanillagradle", version.ref = "vanillaGradle" }
+plugin-shadow = { group = "gradle.plugin.com.github.johnrengelman", name = "shadow", version.ref = "shadow" }
 
 [bundles]
 

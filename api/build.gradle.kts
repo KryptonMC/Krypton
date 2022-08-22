@@ -1,4 +1,4 @@
-import org.jetbrains.dokka.gradle.DokkaTask
+//import org.jetbrains.dokka.gradle.DokkaTask
 
 plugins {
     id("io.gitlab.arturbosch.detekt")
@@ -82,6 +82,7 @@ tasks {
             attributes("Specification-Version" to project.version.toString())
         }
     }
+    /*
     withType<DokkaTask>().configureEach {
         dokkaSourceSets {
             named("main") {
@@ -101,6 +102,7 @@ tasks {
             }
         }
     }
+    */
     detekt.configure {
         reports {
             html.required.set(true)
