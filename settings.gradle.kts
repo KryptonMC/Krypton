@@ -3,13 +3,13 @@ enableFeaturePreview("VERSION_CATALOGS")
 
 dependencyResolutionManagement {
     repositories {
+        mavenCentral()
         maven("https://repo.kryptonmc.org/releases")
         maven("https://repo.velocitypowered.com/snapshots/")
         maven("https://oss.sonatype.org/content/groups/public/")
         maven("https://repo.kryptonmc.org/snapshots")
         maven("https://s01.oss.sonatype.org/content/repositories/snapshots/")
         maven("https://jitpack.io")
-        mavenCentral()
     }
     versionCatalogs {
         create("global") {
