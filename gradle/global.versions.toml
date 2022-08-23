@@ -3,4 +3,3 @@ metadata.format.version = "1.1"
 [versions]
 
 minecraft = "1.18.1"
-jacoco = "0.8.7"

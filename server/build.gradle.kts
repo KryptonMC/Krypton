@@ -1,11 +1,9 @@
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 import com.github.jengelman.gradle.plugins.shadow.transformers.Log4j2PluginsCacheFileTransformer
-import net.kyori.indra.git.IndraGitExtension
 import org.apache.tools.ant.filters.ReplaceTokens
 
 plugins {
     id("com.github.johnrengelman.shadow")
-    jacoco
 }
 
 dependencies {
@@ -58,51 +56,6 @@ dependencies {
     testRuntimeOnly(libs.bytebuddy)
 }
 
-tasks {
-    jar {
-        manifest {
-            attributes(
-                "Main-Class" to "org.kryptonmc.krypton.KryptonKt",
-                "Automatic-Module-Name" to "org.kryptonmc.server",
-                "Implementation-Title" to "Krypton",
-                "Implementation-Vendor" to "KryptonMC",
-                "Implementation-Version" to project.version.toString(),
-                "Multi-Release" to "true"
-            )
-            extensions.findByType<IndraGitExtension>()?.applyVcsInformationToManifest(this)
-        }
-    }
-    withType<ShadowJar> {
-        val buildNumber = System.getenv("BUILD_NUMBER")?.let { "-$it" }.orEmpty()
-        archiveFileName.set("Krypton-${project.version}$buildNumber.jar")
-        transform(Log4j2PluginsCacheFileTransformer::class.java)
-
-        exclude("it/unimi/dsi/fastutil/booleans/**")
-        exclude("it/unimi/dsi/fastutil/bytes/**")
-        exclude("it/unimi/dsi/fastutil/chars/**")
-        exclude("it/unimi/dsi/fastutil/floats/**")
-        exclude("it/unimi/dsi/fastutil/io/**")
-        exclude("it/unimi/dsi/fastutil/objects/*Reference*")
-        exclude("it/unimi/dsi/fastutil/shorts/**")
-
-        relocate("org.bstats", "org.kryptonmc.krypton.bstats")
-    }
-    withType<ProcessResources> {
-        filter<ReplaceTokens>("tokens" to mapOf(
-            "version" to project.version.toString(),
-            "minecraft" to global.versions.minecraft.get(),
-            "spark" to libs.versions.spark.get(),
-            "data" to global.versions.minecraft.get().replace('.', '_')
-        ))
-    }
-}
-
-tasks["build"].dependsOn(tasks["shadowJar"])
-
-jacoco {
-    toolVersion = global.versions.jacoco.get()
-}
-
 license {
     exclude(
         "**/*.properties",
@@ -125,9 +78,30 @@ license {
     )
 }
 
-tasks.jacocoTestReport {
-    reports {
-        xml.required.set(true)
-        html.required.set(true)
+tasks["build"].dependsOn(tasks.shadowJar)
+
+tasks {
+    withType<ShadowJar> {
+        val buildNumber = System.getenv("BUILD_NUMBER")?.let { "-$it" }.orEmpty()
+        archiveFileName.set("Krypton-${project.version}$buildNumber.jar")
+        transform<Log4j2PluginsCacheFileTransformer>()
+
+        fastutilExclusions("booleans", "bytes", "chars", "floats", "io", "shorts")
+        exclude("it/unimi/dsi/fastutil/objects/*Reference*")
+
+        relocate("org.bstats", "org.kryptonmc.krypton.bstats")
     }
+    withType<ProcessResources> {
+        filter<ReplaceTokens>("tokens" to mapOf(
+            "version" to project.version.toString(),
+            "minecraft" to global.versions.minecraft.get(),
+            "spark" to libs.versions.spark.get(),
+            "data" to global.versions.minecraft.get().replace('.', '_')
+        ))
+    }
+}
+
+applyImplJarMetadata("org.kryptonmc.server", "Krypton") {
+    put("Main-Class", "org.kryptonmc.krypton.KryptonKt")
+    put("Multi-Release", "true")
 }

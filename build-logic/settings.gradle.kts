@@ -8,8 +8,7 @@ dependencyResolutionManagement {
 //    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
 
     versionCatalogs {
-        register("libs") {
-            from(files("../gradle/libs.versions.toml"))
-        }
+        register("libs") { from(files("../gradle/libs.versions.toml")) }
+        register("global") { from(files("../gradle/global.versions.toml")) }
     }
 }

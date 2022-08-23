@@ -1,7 +1,6 @@
 plugins {
     id("krypton.common-conventions")
     id("net.kyori.indra.publishing")
-    id("org.jetbrains.dokka")
 }
 
 tasks {

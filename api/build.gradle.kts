@@ -1,6 +1,3 @@
-import net.kyori.indra.git.IndraGitExtension
-import org.jetbrains.dokka.gradle.DokkaTask
-
 plugins {
     id("io.gitlab.arturbosch.detekt")
 }
@@ -76,28 +73,16 @@ kotlin {
 }
 
 tasks {
-    jar {
-        manifest {
-            attributes(
-                "Automatic-Module-Name" to "org.kryptonmc.api",
-                "Specification-Title" to "Krypton API",
-                "Specification-Vendor" to "KryptonMC",
-                "Specification-Version" to project.version.toString()
-            )
-            extensions.findByType<IndraGitExtension>()?.applyVcsInformationToManifest(this)
-        }
-    }
-    withType<DokkaTask>().configureEach {
-        dokkaSourceSets {
-            named("main") {
-                sequenceOf("api", "key", "text-serializer-gson", "text-serializer-legacy", "text-serializer-plain", "serializer-configurate4")
-                    .forEach { javadocLink("https://jd.adventure.kyori.net/$it/${libs.versions.adventure.get()}/") }
-                externalDocumentationLink("https://logging.apache.org/log4j/log4j-${libs.versions.log4j.get()}/log4j-api/apidocs/")
-                javadocLink("https://javadoc.io/doc/com.google.code.gson/gson/${libs.versions.gson.get()}/")
-                javadocLink("https://google.github.io/guice/api-docs/${libs.versions.guice.get()}/javadoc/")
-                externalDocumentationLink("https://commons.apache.org/proper/commons-lang/apidocs/")
-                javadocLink("https://configurate.aoeu.xyz/${libs.versions.configurate.get()}/apidocs/")
-            }
+    dokkaTasks.configureEach {
+        configureSourceSets {
+            modernJavadocLink("https://guava.dev/releases/${libs.versions.guava.get()}/api/docs/")
+            modernJavadocLink("https://javadoc.io/doc/com.google.code.gson/gson/${libs.versions.gson.get()}/")
+            externalDocumentationLink("https://commons.apache.org/proper/commons-lang/apidocs/")
+            externalDocumentationLink("https://logging.apache.org/log4j/log4j-${libs.versions.log4j.get()}/log4j-api/apidocs/")
+            modernJavadocLink("https://google.github.io/guice/api-docs/${libs.versions.guice.get()}/javadoc/")
+            sequenceOf("api", "key", "text-serializer-gson", "text-serializer-legacy", "text-serializer-plain", "serializer-configurate4")
+                .forEach { modernJavadocLink("https://jd.adventure.kyori.net/$it/${libs.versions.adventure.get()}/") }
+            modernJavadocLink("https://configurate.aoeu.xyz/${libs.versions.configurate.get()}/apidocs/")
         }
     }
     detekt.configure {
@@ -107,3 +92,5 @@ tasks {
         }
     }
 }
+
+applySpecJarMetadata("org.kryptonmc.api", "Krypton API")

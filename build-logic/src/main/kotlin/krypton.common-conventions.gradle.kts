@@ -2,6 +2,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     kotlin("jvm")
+    id("krypton.base-conventions")
     id("net.kyori.indra")
     id("org.cadixdev.licenser")
     jacoco
@@ -29,9 +30,17 @@ indra {
     gpl3OnlyLicense()
 }
 
+jacoco.toolVersion = "0.8.7"
+
+tasks["build"].dependsOn(tasks.test)
+
 tasks {
     jacocoTestReport {
         dependsOn(test)
+        reports {
+            xml.required.set(true)
+            html.required.set(true)
+        }
     }
     withType<KotlinCompile> {
         kotlinOptions {
@@ -43,8 +52,6 @@ tasks {
         useJUnitPlatform()
     }
 }
-
-tasks["build"].dependsOn(tasks["test"])
 
 license {
     header(project.rootProject.resources.text.fromFile("HEADER.txt"))
