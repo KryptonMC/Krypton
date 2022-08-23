@@ -66,6 +66,8 @@ org.kryptonmc.api.world.damage
 org.kryptonmc.api.world.damage.type
 org.kryptonmc.api.world.dimension
 org.kryptonmc.api.world.rule
+module:generators
+org.kryptonmc.generators
 module:server
 org.kryptonmc.krypton
 org.kryptonmc.krypton.adventure
