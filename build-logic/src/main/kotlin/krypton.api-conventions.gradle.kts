@@ -4,19 +4,25 @@ plugins {
     id("org.jetbrains.dokka")
 }
 
+tasks {
+    javadoc {
+        enabled = false
+    }
+    javadocJar {
+        from(dokkaJavadoc)
+    }
+}
+
 indra {
     publishReleasesTo("krypton", "https://repo.kryptonmc.org/releases")
     publishSnapshotsTo("krypton", "https://repo.kryptonmc.org/snapshots")
-    includeJavaSoftwareComponentInPublications(false)
     configurePublications {
         artifactId = "krypton-${project.name}"
-        from(components["kotlin"])
         pom {
             name.set("Krypton")
             description.set(rootProject.description)
             url.set("https://www.kryptonmc.org")
             inceptionYear.set("2021")
-            packaging = "jar"
 
             organization {
                 name.set("KryptonMC")

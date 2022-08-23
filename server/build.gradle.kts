@@ -1,5 +1,6 @@
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 import com.github.jengelman.gradle.plugins.shadow.transformers.Log4j2PluginsCacheFileTransformer
+import net.kyori.indra.git.IndraGitExtension
 import org.apache.tools.ant.filters.ReplaceTokens
 
 plugins {
@@ -60,11 +61,15 @@ dependencies {
 tasks {
     jar {
         manifest {
-            attributes("Main-Class" to "org.kryptonmc.krypton.KryptonKt")
-            attributes("Implementation-Title" to "Krypton")
-            attributes("Implementation-Version" to project.version.toString())
-            attributes("Implementation-Vendor" to "KryptonMC")
-            attributes("Multi-Release" to "true")
+            attributes(
+                "Main-Class" to "org.kryptonmc.krypton.KryptonKt",
+                "Automatic-Module-Name" to "org.kryptonmc.server",
+                "Implementation-Title" to "Krypton",
+                "Implementation-Vendor" to "KryptonMC",
+                "Implementation-Version" to project.version.toString(),
+                "Multi-Release" to "true"
+            )
+            extensions.findByType<IndraGitExtension>()?.applyVcsInformationToManifest(this)
         }
     }
     withType<ShadowJar> {
