@@ -21,6 +21,8 @@ package org.kryptonmc.krypton.entity
 import com.google.common.collect.Iterables
 import it.unimi.dsi.fastutil.objects.Object2DoubleArrayMap
 import net.kyori.adventure.identity.Identity
+import net.kyori.adventure.permission.PermissionChecker
+import net.kyori.adventure.pointer.Pointers
 import net.kyori.adventure.sound.Sound
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.event.HoverEvent
@@ -103,6 +105,7 @@ abstract class KryptonEntity(override var world: KryptonWorld, override val type
                 it.insertion(uuid.toString())
             }
         }
+    protected var cachedPointers: Pointers? = null
     val data: MetadataHolder = MetadataHolder(this)
 
     final override val server: KryptonServer = world.server
@@ -434,6 +437,17 @@ abstract class KryptonEntity(override var world: KryptonWorld, override val type
     }
 
     override fun identity(): Identity = Identity.identity(uuid)
+
+    override fun pointers(): Pointers {
+        if (cachedPointers == null) {
+            cachedPointers = Pointers.builder()
+                .withDynamic(Identity.DISPLAY_NAME, ::name)
+                .withDynamic(Identity.UUID, ::uuid)
+                .withStatic(PermissionChecker.POINTER, PermissionChecker(::getPermissionValue))
+                .build()
+        }
+        return cachedPointers!!
+    }
 
     override fun asHoverEvent(op: UnaryOperator<HoverEvent.ShowEntity>): HoverEvent<HoverEvent.ShowEntity> =
         HoverEvent.showEntity(op.apply(HoverEvent.ShowEntity.of(type.key(), uuid, displayName)))

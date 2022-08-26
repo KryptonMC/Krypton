@@ -18,6 +18,8 @@
  */
 package org.kryptonmc.krypton.world
 
+import net.kyori.adventure.identity.Identity
+import net.kyori.adventure.pointer.Pointers
 import net.kyori.adventure.sound.Sound
 import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.block.Blocks
@@ -138,6 +140,8 @@ class KryptonWorld(
             oldRainLevel = clamped
             field = clamped
         }
+
+    private var cachedPointers: Pointers? = null
 
     @Suppress("UNCHECKED_CAST")
     override fun <T : Entity> spawnEntity(type: EntityType<T>, location: Vector3d): T? {
@@ -336,6 +340,11 @@ class KryptonWorld(
     fun getRainLevel(delta: Float): Float = GenericMath.lerp(oldRainLevel, rainLevel, delta)
 
     fun getThunderLevel(delta: Float): Float = GenericMath.lerp(oldThunderLevel, thunderLevel, delta) * getRainLevel(delta)
+
+    override fun pointers(): Pointers {
+        if (cachedPointers == null) cachedPointers = Pointers.builder().withDynamic(Identity.NAME, ::name).build()
+        return cachedPointers!!
+    }
 
     companion object {
 

@@ -26,6 +26,8 @@ import net.kyori.adventure.bossbar.BossBar
 import net.kyori.adventure.identity.Identity
 import net.kyori.adventure.inventory.Book
 import net.kyori.adventure.key.Key
+import net.kyori.adventure.permission.PermissionChecker
+import net.kyori.adventure.pointer.Pointers
 import net.kyori.adventure.sound.Sound
 import net.kyori.adventure.sound.SoundStop
 import net.kyori.adventure.text.Component
@@ -671,6 +673,19 @@ class KryptonPlayer(
         session.send(PacketOutSetSlot(0, stateId, slot, item))
         session.send(PacketOutOpenBook(hand))
         session.send(PacketOutSetSlot(0, stateId, slot, inventory.mainHand))
+    }
+
+    override fun pointers(): Pointers {
+        if (cachedPointers == null) {
+            cachedPointers = Pointers.builder()
+                .withDynamic(Identity.DISPLAY_NAME, ::displayName)
+                .withDynamic(Identity.NAME) { profile.name }
+                .withDynamic(Identity.UUID) { profile.uuid }
+                .withStatic(PermissionChecker.POINTER, PermissionChecker(::getPermissionValue))
+                .withDynamic(Identity.LOCALE, ::locale)
+                .build()
+        }
+        return cachedPointers!!
     }
 
     private fun updateAbilities() {

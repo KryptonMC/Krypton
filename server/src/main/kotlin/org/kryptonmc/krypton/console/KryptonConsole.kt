@@ -20,6 +20,8 @@ package org.kryptonmc.krypton.console
 
 import net.kyori.adventure.audience.MessageType
 import net.kyori.adventure.identity.Identity
+import net.kyori.adventure.permission.PermissionChecker
+import net.kyori.adventure.pointer.Pointers
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.util.TriState
 import net.minecrell.terminalconsole.SimpleTerminalConsole
@@ -40,9 +42,10 @@ class KryptonConsole(override val server: KryptonServer) : SimpleTerminalConsole
 
     // The permission function defaults to ALWAYS_TRUE because we are god and have all permissions by default
     private var permissionFunction = DEFAULT_PERMISSION_FUNCTION
+    private var cachedPointers: Pointers? = null
 
-    override val name: Component = Component.text("CONSOLE")
-    override val uuid: UUID = Identity.nil().uuid()
+    override val name: Component = DISPLAY_NAME
+    override val uuid: UUID = ID
 
     fun setupPermissions() {
         val event = SetupPermissionsEvent(this) { DEFAULT_PERMISSION_FUNCTION }
@@ -86,7 +89,23 @@ class KryptonConsole(override val server: KryptonServer) : SimpleTerminalConsole
             .option(LineReader.Option.COMPLETE_IN_WORD, true)
     )
 
+    override fun pointers(): Pointers {
+        if (cachedPointers == null) {
+            cachedPointers = Pointers.builder()
+                .withStatic(Identity.NAME, NAME)
+                .withStatic(Identity.DISPLAY_NAME, DISPLAY_NAME)
+                .withStatic(Identity.UUID, ID)
+                .withStatic(PermissionChecker.POINTER, PermissionChecker(::getPermissionValue))
+                .build()
+        }
+        return cachedPointers!!
+    }
+
     companion object {
+
+        private const val NAME = "CONSOLE"
+        private val DISPLAY_NAME = Component.text(NAME)
+        private val ID = UUID(0, 0)
 
         private val DEFAULT_PERMISSION_FUNCTION = PermissionFunction.ALWAYS_TRUE
         private val LOGGER = LogManager.getLogger("CONSOLE")
