@@ -26,7 +26,7 @@ fun <T> CompoundTag.Builder.encode(encoder: Encoder<T, out Tag>, name: String, v
 }
 
 fun <T> CompoundTag.Builder.encode(encoder: CompoundEncoder<T>, value: T?): CompoundTag.Builder = apply {
-    if (value != null) encoder.encode(value).forEach { put(it.key, it.value) }
+    if (value != null) encoder.encode(value).data.forEach { put(it.key, it.value) }
 }
 
 @Suppress("UNCHECKED_CAST")

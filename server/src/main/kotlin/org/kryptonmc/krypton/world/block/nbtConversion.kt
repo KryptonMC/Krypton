@@ -31,7 +31,7 @@ fun CompoundTag.toBlock(): KryptonBlock {
     if (!contains("Name", StringTag.ID)) return Blocks.AIR.downcast()
     var block = checkNotNull(BlockLoader.fromKey(Key.key(getString("Name")))) { "No block found with key ${getString("Name")}!" }
     if (contains("Properties", CompoundTag.ID)) {
-        block = block.copy(getCompound("Properties").transform { it.key to (it.value as StringTag).value }).downcast()
+        block = block.copy(getCompound("Properties").data.transform { it.key to (it.value as StringTag).value }).downcast()
     }
     return block
 }

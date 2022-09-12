@@ -83,7 +83,7 @@ object PlayerSerializer : EntitySerializer<KryptonPlayer> {
             entity.respawnForced = data.getBoolean("SpawnForced")
             entity.respawnAngle = data.getFloat("SpawnAngle")
             if (data.contains("SpawnDimension", StringTag.ID)) {
-                entity.respawnDimension = Codecs.DIMENSION.decodeNullable(data["SpawnDimension"] as StringTag) ?: World.OVERWORLD
+                entity.respawnDimension = Codecs.DIMENSION.decodeNullable(data.get("SpawnDimension") as StringTag) ?: World.OVERWORLD
             }
         }
 
@@ -120,8 +120,8 @@ object PlayerSerializer : EntitySerializer<KryptonPlayer> {
 
         val leftShoulder = entity.data[MetadataKeys.PLAYER.LEFT_SHOULDER]
         val rightShoulder = entity.data[MetadataKeys.PLAYER.RIGHT_SHOULDER]
-        if (leftShoulder.isNotEmpty()) put("ShoulderEntityLeft", leftShoulder)
-        if (rightShoulder.isNotEmpty()) put("ShoulderEntityRight", rightShoulder)
+        if (!leftShoulder.isEmpty()) put("ShoulderEntityLeft", leftShoulder)
+        if (!rightShoulder.isEmpty()) put("ShoulderEntityRight", rightShoulder)
 
         string("Dimension", entity.dimension.location.asString())
         entity.respawnPosition?.let { position ->

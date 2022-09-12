@@ -30,7 +30,7 @@ asm = "9.3"
 tca = "1.3.0"
 jline = "3.21.0"
 dataConverter = "1.0.0-SNAPSHOT"
-nbt = "2.6"
+nbt = "3.4.1"
 articData = "1.18.1"
 caffeine = "3.1.1"
 fastutil = "8.5.8"
@@ -105,7 +105,7 @@ clikt = { group = "com.github.ajalt.clikt", name = "clikt", version.ref = "clikt
 # Data
 dataConverter = { group = "ca.spottedleaf", name = "dataconverter", version.ref = "dataConverter" }
 articData = { group = "de.articdive", name = "articdata", version.ref = "articData" }
-nbt = { group = "org.kryptonmc", name = "nbt-common-jvm", version.ref = "nbt" }
+nbt = { group = "org.kryptonmc", name = "nbt-common", version.ref = "nbt" }
 
 # Events
 event = { group = "net.kyori", name = "event-method-asm", version.ref = "event" }

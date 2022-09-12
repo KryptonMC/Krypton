@@ -108,7 +108,7 @@ class PlayerManager(private val server: KryptonServer) {
         val profile = player.profile
         val name = server.profileCache[profile.uuid]?.name ?: profile.name
         server.profileCache.add(profile)
-        val dimension = if (nbt != null) nbt["Dimension"]?.parseDimension() ?: World.OVERWORLD else World.OVERWORLD
+        val dimension = if (nbt != null) nbt.get("Dimension")?.parseDimension() ?: World.OVERWORLD else World.OVERWORLD
         if (nbt != null) server.userManager.updateUser(profile.uuid, nbt)
 
         val world = server.worldManager.worlds[dimension] ?: server.worldManager.default
