@@ -87,7 +87,6 @@ tasks {
         transform<Log4j2PluginsCacheFileTransformer>()
 
         fastutilExclusions("booleans", "bytes", "chars", "floats", "io", "shorts")
-        exclude("it/unimi/dsi/fastutil/objects/*Reference*")
 
         relocate("org.bstats", "org.kryptonmc.krypton.bstats")
     }

@@ -110,9 +110,9 @@ class KryptonServer(
     @Volatile
     var isRunning: Boolean = true
         private set
-    private val sparkPlugin = KryptonSparkPlugin(this, Path.of("plugins").resolve("spark"))
+    private var sparkPlugin: KryptonSparkPlugin? = null
     override val spark: Spark
-        get() = sparkPlugin.api
+        get() = checkNotNull(sparkPlugin) { "Spark plugin was not loaded when API was accessed!" }.api
 
     // These help us keep track of how fast the server is running and how far
     // behind it is at any one time.
@@ -166,6 +166,8 @@ class KryptonServer(
         servicesManager.bootstrap()
         loadPlugins()
         LOGGER.info("Loading built-in Spark...")
+        val sparkPlugin = KryptonSparkPlugin(this, Path.of("plugins").resolve("spark"))
+        this.sparkPlugin = sparkPlugin
         pluginManager.registerPlugin(KryptonPluginContainer(sparkPlugin.description, sparkPlugin))
         sparkPlugin.start()
         sparkPlugin.tickReporter.endTick(0L) // Makes MSPT not return null by setting durationSupported
@@ -205,12 +207,12 @@ class KryptonServer(
                 }
 
                 eventManager.fireAndForgetSync(TickStartEvent(tickCount))
-                sparkPlugin.tickHook.startTick()
+                sparkPlugin!!.tickHook.startTick()
                 val tickTime = measureTimeMillis(::tick)
 
                 val finishTime = System.currentTimeMillis()
                 eventManager.fireAndForgetSync(TickEndEvent(tickCount, tickTime, finishTime))
-                sparkPlugin.tickReporter.endTick(tickTime)
+                sparkPlugin!!.tickReporter.endTick(tickTime)
                 lastTickTime = finishTime
 
                 // This logic ensures that ticking isn't delayed by the overhead from Thread.sleep, which seems to be up to 10 ms,
@@ -334,7 +336,7 @@ class KryptonServer(
             LOGGER.info("Shutting down plugins and unregistering listeners...")
             eventManager.fireAndForgetSync(ServerStopEvent)
             eventManager.shutdown()
-            sparkPlugin.stop()
+            sparkPlugin?.stop()
 
             // Shut down scheduler
             scheduler.shutdown()

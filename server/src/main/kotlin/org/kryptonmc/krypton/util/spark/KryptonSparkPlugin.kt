@@ -51,29 +51,29 @@ class KryptonSparkPlugin(private val server: KryptonServer, private val folder: 
         emptySet(),
         folder
     )
-    private lateinit var platform: SparkPlatform
+    private var platform: SparkPlatform? = null
+    private var internalApi: Spark? = null
     private val platformInfo = KryptonSparkPlatformInfo
 
-    lateinit var api: Spark
-        private set
+    val api: Spark = checkNotNull(internalApi) { "Spark API is not been initialized!" }
     val tickHook: KryptonSparkTickHook by lazy { KryptonSparkTickHook() }
     val tickReporter: KryptonSparkTickReporter by lazy { KryptonSparkTickReporter() }
 
     fun start() {
         platform = SparkPlatform(this)
-        platform.enable()
+        platform!!.enable()
         server.commandManager.register(this, simpleCommandMeta("spark") {})
     }
 
     fun stop() {
-        platform.disable()
+        platform?.disable()
     }
 
     override fun execute(sender: Sender, args: Array<String>) {
-        platform.executeCommand(KryptonSparkCommandSender(sender), args)
+        platform!!.executeCommand(KryptonSparkCommandSender(sender), args)
     }
 
-    override fun suggest(sender: Sender, args: Array<String>): List<String> = platform.tabCompleteCommand(KryptonSparkCommandSender(sender), args)
+    override fun suggest(sender: Sender, args: Array<String>): List<String> = platform!!.tabCompleteCommand(KryptonSparkCommandSender(sender), args)
 
     override fun getCommandName(): String = "spark"
 
@@ -99,6 +99,6 @@ class KryptonSparkPlugin(private val server: KryptonServer, private val folder: 
     override fun getVersion(): String = KryptonPlatform.sparkVersion
 
     override fun registerApi(api: Spark) {
-        this.api = api
+        internalApi = api
     }
 }
