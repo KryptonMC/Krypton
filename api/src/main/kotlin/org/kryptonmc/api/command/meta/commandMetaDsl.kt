@@ -18,7 +18,7 @@ import org.jetbrains.annotations.Contract
 internal annotation class CommandMetaDsl
 
 /**
- * Constructs new [CommandMeta] with the given [name] and [builder].
+ * Constructs new [CommandMeta] with the given [name] and [builder] function.
  *
  * @param name the name
  * @param builder the builder

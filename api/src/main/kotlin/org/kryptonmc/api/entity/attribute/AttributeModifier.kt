@@ -11,7 +11,6 @@ package org.kryptonmc.api.entity.attribute
 import org.jetbrains.annotations.ApiStatus
 import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.Krypton
-import org.kryptonmc.api.util.provide
 import java.util.UUID
 
 /**
@@ -52,8 +51,6 @@ public interface AttributeModifier {
 
     public companion object {
 
-        private val FACTORY = Krypton.factoryProvider.provide<Factory>()
-
         /**
          * Creates a new attribute modifier with the given values.
          *
@@ -66,6 +63,6 @@ public interface AttributeModifier {
         @JvmStatic
         @Contract("_, _, _, _ -> new", pure = true)
         public fun of(name: String, uuid: UUID, amount: Double, operation: ModifierOperation): AttributeModifier =
-            FACTORY.of(name, uuid, amount, operation)
+            Krypton.factory<Factory>().of(name, uuid, amount, operation)
     }
 }

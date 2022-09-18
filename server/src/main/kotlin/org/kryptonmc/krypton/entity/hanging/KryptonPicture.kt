@@ -25,9 +25,4 @@ import org.kryptonmc.api.entity.hanging.Picture
 data class KryptonPicture(private val key: Key, override val width: Int, override val height: Int) : Picture {
 
     override fun key(): Key = key
-
-    object Factory : Picture.Factory {
-
-        override fun of(key: Key, width: Int, height: Int): Picture = KryptonPicture(key, width, height)
-    }
 }

@@ -304,7 +304,7 @@ class PlayHandler(override val server: KryptonServer, override val session: Sess
         if (existingBlock != Blocks.AIR.defaultState) return
 
         val item = player.inventory.mainHand
-        val block = Registries.BLOCK[item.type.key()].downcast()
+        val block = Registries.BLOCK.get(item.type.key()).downcast()
         chunk.setBlock(x, y, z, block.defaultState)
     }
 
@@ -312,7 +312,7 @@ class PlayHandler(override val server: KryptonServer, override val session: Sess
         when (packet.action) {
             PlayerAction.START_DIGGING, PlayerAction.FINISH_DIGGING, PlayerAction.CANCEL_DIGGING -> player.blockHandler.handleBlockBreak(packet)
             PlayerAction.RELEASE_USE_ITEM -> {
-                val handler = player.inventory[player.inventory.heldSlot].type.handler()
+                val handler = player.inventory.get(player.inventory.heldSlot).type.handler()
                 if (handler !is ItemTimedHandler) return
                 handler.finishUse(player, player.hand)
             }

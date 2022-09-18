@@ -71,7 +71,7 @@ object DebugStickHandler : ItemHandler {
         val block = state.block
         val definition = block.stateDefinition
         val properties = definition.properties
-        val key = Registries.BLOCK[block].asString()
+        val key = Registries.BLOCK.get(block).asString()
         if (properties.isEmpty()) {
             player.sendActionBar(Component.translatable("$TRANSLATION.empty", Component.text(key)))
             return false

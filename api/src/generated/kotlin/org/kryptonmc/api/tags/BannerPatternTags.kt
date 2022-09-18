@@ -36,5 +36,5 @@ public object BannerPatternTags {
 
     // @formatter:on
     @JvmStatic
-    private fun get(key: String): Tag<BannerPatternType> = Krypton.tagManager[TagTypes.BANNER_PATTERNS, "minecraft:$key"]!!
+    private fun get(key: String): Tag<BannerPatternType> = Krypton.tag(TagTypes.BANNER_PATTERNS, "minecraft:$key")!!
 }

@@ -32,5 +32,5 @@ public object Fluids {
 
     // @formatter:on
     @JvmStatic
-    private fun get(key: String): Fluid = Registries.FLUID[Key.key(key)]!!
+    private fun get(key: String): Fluid = Registries.FLUID.get(Key.key(key))!!
 }

@@ -22,22 +22,20 @@
  */
 package org.kryptonmc.krypton.plugin.loader
 
-import kotlinx.collections.immutable.ImmutableCollection
 import org.kryptonmc.api.plugin.PluginDependency
-import org.kryptonmc.api.plugin.PluginDescription
+import org.kryptonmc.krypton.plugin.KryptonPluginDescription
 import java.nio.file.Path
 
-@JvmRecord
-data class LoadedPluginDescriptionCandidate(
-    override val id: String,
-    override val name: String,
-    override val version: String,
-    override val description: String,
-    override val authors: ImmutableCollection<String>,
-    override val dependencies: ImmutableCollection<PluginDependency>,
-    override val source: Path,
+class LoadedPluginDescriptionCandidate(
+    id: String,
+    name: String,
+    version: String,
+    description: String,
+    authors: Collection<String>,
+    dependencies: Collection<PluginDependency>,
+    source: Path,
     val mainClass: String
-) : PluginDescription {
+) : KryptonPluginDescription(id, name, version, description, authors, dependencies, source) {
 
     fun toFull(mainClass: Class<*>): LoadedPluginDescription =
         LoadedPluginDescription(id, name, version, description, authors, dependencies, source, mainClass)

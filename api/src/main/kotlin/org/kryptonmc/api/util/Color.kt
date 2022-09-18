@@ -18,7 +18,7 @@ import org.kryptonmc.api.Krypton
  * A standard colour encoded in RGBA (red, green, blue, alpha) format.
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
-public interface Color : RGBLike {
+public interface Color {
 
     /**
      * The encoded RGBA value of this colour.
@@ -36,21 +36,21 @@ public interface Color : RGBLike {
     /**
      * The red component of this colour.
      */
-    @get:JvmSynthetic
+    @get:JvmName("red")
     public val red: Int
         get() = value shr 16 and 0xFF
 
     /**
      * The green component of this colour.
      */
-    @get:JvmSynthetic
+    @get:JvmName("green")
     public val green: Int
         get() = value shr 8 and 0xFF
 
     /**
      * The blue component of this colour.
      */
-    @get:JvmSynthetic
+    @get:JvmName("blue")
     public val blue: Int
         get() = value and 0xFF
 
@@ -62,24 +62,33 @@ public interface Color : RGBLike {
         get() = value shr 24 and 0xFF
 
     /**
+     * Converts this colour to an Adventure RGBLike object.
+     *
+     * @return the converted RGBLike object
+     */
+    public fun asRGBLike(): RGBLike
+
+    /**
+     * Converts this colour to an Adventure HSVLike object.
+     *
+     * @return the converted HSVLike object
+     */
+    public fun asHSVLike(): HSVLike
+
+    /**
      * Converts this colour to an Adventure text colour.
      *
-     * @return a new text colour
+     * @return the converted text colour
      */
     public fun asTextColor(): TextColor = TextColor.color(value)
 
     /**
      * Converts this colour to a Java AWT colour.
      *
+     * @return the converted AWT colour
      * @return a new AWT colour
      */
     public fun asAwtColor(): java.awt.Color = java.awt.Color(value)
-
-    override fun red(): Int = red
-
-    override fun green(): Int = green
-
-    override fun blue(): Int = blue
 
     @ApiStatus.Internal
     public interface Factory {
@@ -118,7 +127,7 @@ public interface Color : RGBLike {
          * @return a new colour
          */
         @JvmStatic
-        public fun of(value: Int): Color = FACTORY.of(value)
+        public fun of(value: Int): Color = Krypton.factory<Factory>().of(value)
 
         /**
          * Creates a new colour with the given [red], [green], and [blue] RGB
@@ -158,7 +167,7 @@ public interface Color : RGBLike {
          * are not between 0 and 1
          */
         @JvmStatic
-        public fun of(hue: Float, saturation: Float, brightness: Float): Color = FACTORY.of(hue, saturation, brightness)
+        public fun of(hue: Float, saturation: Float, brightness: Float): Color = Krypton.factory<Factory>().of(hue, saturation, brightness)
 
         /**
          * Creates a new colour from the given [hsv] like object.
@@ -170,5 +179,3 @@ public interface Color : RGBLike {
         public fun of(hsv: HSVLike): Color = of(hsv.h(), hsv.s(), hsv.v())
     }
 }
-
-private val FACTORY = Krypton.factoryProvider.provide<Color.Factory>()

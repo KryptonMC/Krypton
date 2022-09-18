@@ -9,31 +9,30 @@
 package org.kryptonmc.api
 
 import org.kryptonmc.api.registry.RegistryManager
+import org.kryptonmc.api.tags.Tag
 import org.kryptonmc.api.tags.TagManager
+import org.kryptonmc.api.tags.TagType
 import org.kryptonmc.api.util.FactoryProvider
 
 internal object Krypton {
 
     @JvmStatic
-    @get:JvmSynthetic
     internal val registryManager: RegistryManager
-        get() = internalRegistryManager!!
-
-    @JvmStatic
-    @get:JvmSynthetic
-    internal val tagManager: TagManager
-        get() = internalTagManager!!
-
-    @JvmStatic
-    @get:JvmSynthetic
-    internal val factoryProvider: FactoryProvider
-        get() = internalFactoryProvider!!
+        @JvmSynthetic get() = internalRegistryManager!!
 
     // Implementation note: All three of these need to be set reflectively.
     @JvmStatic
-    private var internalFactoryProvider: FactoryProvider? = null
+    private var factoryProvider: FactoryProvider? = null
     @JvmStatic
     private var internalRegistryManager: RegistryManager? = null
     @JvmStatic
-    private var internalTagManager: TagManager? = null
+    private var tagManager: TagManager? = null
+
+    @JvmStatic
+    @JvmSynthetic
+    internal inline fun <reified T> factory(): T = factoryProvider!!.provide(T::class.java)
+
+    @JvmStatic
+    @JvmSynthetic
+    internal fun <T : Any> tag(type: TagType<T>, name: String): Tag<T>? = tagManager!!.get(type, name)
 }

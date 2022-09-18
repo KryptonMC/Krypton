@@ -26,9 +26,4 @@ import org.kryptonmc.api.item.ItemRarity
 data class KryptonItemRarity(private val key: Key, override val color: TextColor) : ItemRarity {
 
     override fun key(): Key = key
-
-    object Factory : ItemRarity.Factory {
-
-        override fun of(key: Key, color: TextColor): ItemRarity = KryptonItemRarity(key, color)
-    }
 }

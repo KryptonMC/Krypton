@@ -25,7 +25,7 @@ public fun interface PermissionFunction {
      * @param permission the permission
      * @return the value for the given permission
      */
-    public operator fun get(permission: String): TriState
+    public fun getPermissionValue(permission: String): TriState
 
     public companion object {
 

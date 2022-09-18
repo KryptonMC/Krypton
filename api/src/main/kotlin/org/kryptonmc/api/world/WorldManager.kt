@@ -47,17 +47,16 @@ public interface WorldManager {
      * @param key the resource key
      * @return the loaded world with the key, or null if not present
      */
-    public operator fun get(key: Key): World?
+    public fun get(key: Key): World?
 
     /**
-     * Returns true if there is currently a world loaded with the given [key],
-     * or false otherwise.
+     * Checks if there is currently a world loaded with the given [key].
      *
      * @param key the resource key for the world
      * @return true if there is a world loaded with the given key, false
      * otherwise
      */
-    public operator fun contains(key: Key): Boolean
+    public fun isLoaded(key: Key): Boolean
 
     /**
      * Loads a world by its resource key.
@@ -73,5 +72,5 @@ public interface WorldManager {
      *
      * @param world the world to save
      */
-    public fun save(world: World): CompletableFuture<Unit>
+    public fun save(world: World): CompletableFuture<Void>
 }

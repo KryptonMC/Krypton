@@ -66,6 +66,8 @@ class MockPluginManager : PluginManager {
             get() = emptySet()
         override val source: Path
             get() = Path.of("")
+
+        override fun dependency(id: String): PluginDependency? = null
     }
 
     companion object {

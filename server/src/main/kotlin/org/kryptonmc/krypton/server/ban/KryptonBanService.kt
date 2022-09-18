@@ -19,10 +19,10 @@
 package org.kryptonmc.krypton.server.ban
 
 import org.kryptonmc.api.auth.GameProfile
+import org.kryptonmc.api.event.user.ban.BanEvent
 import org.kryptonmc.api.user.ban.Ban
 import org.kryptonmc.api.user.ban.BanService
 import org.kryptonmc.api.user.ban.BanTypes
-import org.kryptonmc.api.user.ban.BanType
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.event.user.ban.KryptonBanIpEvent
 import org.kryptonmc.krypton.event.user.ban.KryptonBanProfileEvent
@@ -38,7 +38,7 @@ class KryptonBanService(private val server: KryptonServer) : BanService {
     override val ipBans: Collection<Ban.IP>
         get() = server.playerManager.bannedIps.values
 
-    override fun contains(ban: Ban): Boolean = when (ban.type) {
+    override fun isRegistered(ban: Ban): Boolean = when (ban.type) {
         BanTypes.PROFILE -> server.playerManager.bannedPlayers.contains((ban as Ban.Profile).profile)
         BanTypes.IP -> server.playerManager.bannedIps.contains((ban as Ban.IP).address.asString())
         else -> error("Unsupported ban type ${ban.type}!")
@@ -59,26 +59,26 @@ class KryptonBanService(private val server: KryptonServer) : BanService {
     }
 
     override fun add(ban: Ban) {
-        if (ban !is BanEntry<*>) return
-        when (ban.type) {
-            BanTypes.PROFILE -> server.eventManager.fire(KryptonBanProfileEvent(ban as BannedPlayerEntry))
-                .thenApplyAsync { if (it.result.isAllowed) server.playerManager.bannedPlayers.add(ban) }
-            BanTypes.IP -> server.eventManager.fire(KryptonBanIpEvent(ban as BannedIpEntry))
-                .thenApplyAsync { if (it.result.isAllowed) server.playerManager.bannedIps.add(ban) }
-            else -> error("Unsupported ban type ${ban.type}!")
-        }
+        addOrRemove(ban, ::KryptonBanProfileEvent, ::KryptonBanIpEvent, BannedPlayerList::add, BannedIpList::add)
     }
 
     override fun remove(ban: Ban) {
-        if (ban !is BanEntry<*>) return
-        when (ban.type) {
-            BanTypes.PROFILE -> server.eventManager.fire(KryptonPardonProfileEvent(ban as BannedPlayerEntry))
-                .thenApplyAsync { if (it.result.isAllowed) server.playerManager.bannedPlayers.remove(ban.key) }
-            BanTypes.IP -> server.eventManager.fire(KryptonPardonIpEvent(ban as BannedIpEntry))
-                .thenApplyAsync { if (it.result.isAllowed) server.playerManager.bannedIps.remove(ban.key) }
-            else -> error("Unsupported ban type ${ban.type}!")
-        }
+        addOrRemove(ban, ::KryptonPardonProfileEvent, ::KryptonPardonIpEvent, BannedPlayerList::remove, BannedIpList::remove)
     }
 
-    override fun createBuilder(type: BanType): Ban.Builder = KryptonBanBuilder(type)
+    private inline fun addOrRemove(
+        ban: Ban,
+        profileEvent: (Ban.Profile) -> BanEvent<Ban.Profile>,
+        ipEvent: (Ban.IP) -> BanEvent<Ban.IP>,
+        crossinline profileAction: (BannedPlayerList, BannedPlayerEntry) -> Unit,
+        crossinline ipAction: (BannedIpList, BannedIpEntry) -> Unit
+    ) {
+        when (ban) {
+            is BannedPlayerEntry -> server.eventManager.fire(profileEvent(ban))
+                .thenAcceptAsync { if (it.result.isAllowed) profileAction(server.playerManager.bannedPlayers, ban) }
+            is BannedIpEntry -> server.eventManager.fire(ipEvent(ban))
+                .thenAcceptAsync { if (it.result.isAllowed) ipAction(server.playerManager.bannedIps, ban) }
+            else -> error("Unsupported ban $ban!")
+        }
+    }
 }

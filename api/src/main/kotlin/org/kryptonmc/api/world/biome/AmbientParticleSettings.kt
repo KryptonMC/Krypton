@@ -15,7 +15,6 @@ import org.kryptonmc.api.Krypton
 import org.kryptonmc.api.effect.particle.ParticleType
 import org.kryptonmc.api.effect.particle.data.ParticleData
 import org.kryptonmc.api.util.Buildable
-import org.kryptonmc.api.util.provide
 
 /**
  * Settings for ambient particles in biomes.
@@ -114,8 +113,6 @@ public interface AmbientParticleSettings : Buildable<AmbientParticleSettings.Bui
 
     public companion object {
 
-        private val FACTORY = Krypton.factoryProvider.provide<Factory>()
-
         /**
          * Creates new ambient particle settings with the given values.
          *
@@ -126,7 +123,8 @@ public interface AmbientParticleSettings : Buildable<AmbientParticleSettings.Bui
          */
         @JvmStatic
         @Contract("_, _, _ -> new", pure = true)
-        public fun of(type: ParticleType, data: ParticleData?, probability: Float): AmbientParticleSettings = FACTORY.of(type, data, probability)
+        public fun of(type: ParticleType, data: ParticleData?, probability: Float): AmbientParticleSettings =
+            Krypton.factory<Factory>().of(type, data, probability)
 
         /**
          * Creates a new builder for ambient particle settings.
@@ -136,6 +134,6 @@ public interface AmbientParticleSettings : Buildable<AmbientParticleSettings.Bui
          */
         @JvmStatic
         @Contract("_ -> new", pure = true)
-        public fun builder(type: ParticleType): Builder = FACTORY.builder(type)
+        public fun builder(type: ParticleType): Builder = Krypton.factory<Factory>().builder(type)
     }
 }

@@ -15,7 +15,6 @@ import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.Krypton
 import org.kryptonmc.api.scoreboard.criteria.Criterion
 import org.kryptonmc.api.util.Buildable
-import org.kryptonmc.api.util.provide
 import java.util.function.Consumer
 
 /**
@@ -179,37 +178,6 @@ public interface Scoreboard : Buildable<Scoreboard.Builder, Scoreboard> {
         public fun objective(objective: Objective): Builder
 
         /**
-         * Creates a new objective builder with the given values, applies the
-         * given [builder] function to the new builder, and then adds the
-         * built objective to the list of registered objectives.
-         *
-         * @param name the name of the objective
-         * @param criterion the criterion for the objective
-         * @param builder the builder
-         * @return this builder
-         */
-        @ScoreboardDsl
-        @JvmSynthetic
-        @Contract("_, _, _ -> this", mutates = "this")
-        public fun objective(name: String, criterion: Criterion, builder: Objective.Builder.() -> Unit): Builder =
-            objective(Objective.builder(name, criterion).apply(builder).build())
-
-        /**
-         * Creates a new objective builder with the given values, applies the
-         * given [builder] function to the new builder, and then adds the
-         * built objective to the list of registered objectives.
-         *
-         * @param name the name of the objective
-         * @param criterion the criterion for the objective
-         * @param builder the builder
-         * @return this builder
-         */
-        @ScoreboardDsl
-        @Contract("_, _, _ -> this", mutates = "this")
-        public fun objective(name: String, criterion: Criterion, builder: Consumer<Objective.Builder>): Builder =
-            objective(name, criterion) { builder.accept(this) }
-
-        /**
          * Adds the given [objectives] to the list of objectives for the
          * scoreboard.
          *
@@ -298,8 +266,6 @@ public interface Scoreboard : Buildable<Scoreboard.Builder, Scoreboard> {
 
     public companion object {
 
-        private val FACTORY = Krypton.factoryProvider.provide<Factory>()
-
         /**
          * Creates a new empty scoreboard.
          *
@@ -307,7 +273,7 @@ public interface Scoreboard : Buildable<Scoreboard.Builder, Scoreboard> {
          */
         @JvmStatic
         @Contract("-> new", pure = true)
-        public fun empty(): Scoreboard = FACTORY.empty()
+        public fun empty(): Scoreboard = factory().empty()
 
         /**
          * Creates a new builder for building a scoreboard.
@@ -316,6 +282,8 @@ public interface Scoreboard : Buildable<Scoreboard.Builder, Scoreboard> {
          */
         @JvmStatic
         @Contract("-> new", pure = true)
-        public fun builder(): Builder = FACTORY.builder()
+        public fun builder(): Builder = factory().builder()
+
+        private fun factory(): Factory = Krypton.factory()
     }
 }

@@ -18,7 +18,7 @@ public interface GameRuleHolder {
      * All the rules this holder is holding
      */
     @get:JvmName("rules")
-    public val rules: Map<GameRule<out Any>, Any>
+    public val rules: Map<GameRule<*>, *>
 
     /**
      * Gets the value of the provided [rule].
@@ -27,7 +27,7 @@ public interface GameRuleHolder {
      * @param V the value type
      * @return the value
      */
-    public operator fun <V : Any> get(rule: GameRule<V>): V
+    public fun <V : Any> get(rule: GameRule<V>): V
 
     /**
      * Sets the value of the given [rule] to the given [value].
@@ -35,5 +35,5 @@ public interface GameRuleHolder {
      * @param rule the rule
      * @param value the new value
      */
-    public operator fun <V : Any> set(rule: GameRule<V>, value: V)
+    public fun <V : Any> set(rule: GameRule<V>, value: V)
 }

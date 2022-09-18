@@ -15,7 +15,6 @@ import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.Krypton
 import org.kryptonmc.api.util.Buildable
 import org.kryptonmc.api.util.CataloguedBy
-import org.kryptonmc.api.util.provide
 import java.util.function.Consumer
 
 /**
@@ -122,8 +121,6 @@ public interface Biome : Buildable<Biome.Builder, Biome>, Keyed {
 
     public companion object {
 
-        private val FACTORY = Krypton.factoryProvider.provide<Factory>()
-
         /**
          * Creates a new builder for building a new biome.
          *
@@ -131,6 +128,6 @@ public interface Biome : Buildable<Biome.Builder, Biome>, Keyed {
          */
         @JvmStatic
         @Contract("_ -> new", pure = true)
-        public fun builder(): Builder = FACTORY.builder()
+        public fun builder(): Builder = Krypton.factory<Factory>().builder()
     }
 }

@@ -29,7 +29,7 @@ public interface StatisticsTracker {
      * @param statistic the statistic
      * @return the value
      */
-    public operator fun get(statistic: Statistic<*>): Int
+    public fun get(statistic: Statistic<*>): Int
 
     /**
      * Gets the value for the given custom [statistic].
@@ -41,7 +41,7 @@ public interface StatisticsTracker {
      * @param statistic the custom statistic
      * @return the value for the given custom statistic
      */
-    public operator fun get(statistic: Key): Int
+    public fun get(statistic: Key): Int
 
     /**
      * Sets the value for the given [statistic] to the given [value].
@@ -49,7 +49,7 @@ public interface StatisticsTracker {
      * @param statistic the statistic
      * @param value the value
      */
-    public operator fun set(statistic: Statistic<*>, value: Int)
+    public fun set(statistic: Statistic<*>, value: Int)
 
     /**
      * Increases the value of the given [statistic] by 1.
@@ -85,7 +85,7 @@ public interface StatisticsTracker {
      * @param amount the amount
      */
     public fun increment(statistic: Key, amount: Int) {
-        increment(StatisticTypes.CUSTOM[statistic], amount)
+        increment(StatisticTypes.CUSTOM.get(statistic), amount)
     }
 
     /**
@@ -122,7 +122,7 @@ public interface StatisticsTracker {
      * @param amount the amount
      */
     public fun decrement(statistic: Key, amount: Int) {
-        decrement(StatisticTypes.CUSTOM[statistic], amount)
+        decrement(StatisticTypes.CUSTOM.get(statistic), amount)
     }
 
     /**

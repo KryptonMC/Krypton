@@ -28,7 +28,7 @@ import org.kryptonmc.serialization.codecs.RecordCodecBuilder
 
 class KryptonBiome(override val climate: Climate, override val effects: BiomeEffects) : Biome {
 
-    override fun key(): Key = Registries.BIOME[this] ?: UNREGISTERED_KEY
+    override fun key(): Key = Registries.BIOME.get(this) ?: UNREGISTERED_KEY
 
     override fun toBuilder(): Biome.Builder = Builder(this)
 

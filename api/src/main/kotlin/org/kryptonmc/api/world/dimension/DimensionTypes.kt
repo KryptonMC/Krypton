@@ -30,5 +30,5 @@ public object DimensionTypes {
 
     // @formatter:on
     @JvmStatic
-    private fun get(name: String): DimensionType = Registries.DIMENSION_TYPE[Key.key(name)]!!
+    private fun get(name: String): DimensionType = Registries.DIMENSION_TYPE.get(Key.key(name))!!
 }

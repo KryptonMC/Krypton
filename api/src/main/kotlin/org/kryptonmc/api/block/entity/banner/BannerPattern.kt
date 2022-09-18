@@ -9,9 +9,9 @@
 package org.kryptonmc.api.block.entity.banner
 
 import org.jetbrains.annotations.ApiStatus
+import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.Krypton
 import org.kryptonmc.api.item.data.DyeColor
-import org.kryptonmc.api.util.provide
 
 /**
  * A pattern for a banner. These are immutable, and may be reused.
@@ -39,8 +39,6 @@ public interface BannerPattern {
 
     public companion object {
 
-        private val FACTORY = Krypton.factoryProvider.provide<Factory>()
-
         /**
          * Creates a new banner pattern with the given values.
          *
@@ -49,6 +47,7 @@ public interface BannerPattern {
          * @return a new banner pattern
          */
         @JvmStatic
-        public fun of(type: BannerPatternType, color: DyeColor): BannerPattern = FACTORY.of(type, color)
+        @Contract("_, _ -> new", pure = true)
+        public fun of(type: BannerPatternType, color: DyeColor): BannerPattern = Krypton.factory<Factory>().of(type, color)
     }
 }

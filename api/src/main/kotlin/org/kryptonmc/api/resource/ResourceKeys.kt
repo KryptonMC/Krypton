@@ -89,14 +89,14 @@ public object ResourceKeys {
     public val CAT_VARIANT: ResourceKey<out Registry<CatVariant>> = minecraft("cat_variant")
     @JvmField
     public val FROG_VARIANT: ResourceKey<out Registry<FrogVariant>> = minecraft("frog_variant")
+    @JvmField
+    public val PICTURES: ResourceKey<out Registry<Picture>> = minecraft("motive")
 
     /**
      * Custom built-in registries.
      */
     @JvmField
-    public val PICTURES: ResourceKey<out Registry<Picture>> = minecraft("motive")
-    @JvmField
-    public val GAME_RULES: ResourceKey<out Registry<GameRule<Any>>> = krypton("gamerules")
+    public val GAME_RULES: ResourceKey<out Registry<GameRule<*>>> = krypton("gamerules")
     @JvmField
     public val MODIFIER_OPERATIONS: ResourceKey<out Registry<ModifierOperation>> = krypton("attribute_modifier_operations")
     @JvmField

@@ -54,7 +54,7 @@ class ItemStackParser(val reader: StringReader, private val allowTags: Boolean) 
                 return@ItemStackPredicate it.type == item
             }
             if (tag != null) {
-                val tags = KryptonTagManager[TagTypes.ITEMS, tag] ?: throw UNKNOWN_ITEM_TAG.create(tag.toString())
+                val tags = KryptonTagManager.get(TagTypes.ITEMS, tag) ?: throw UNKNOWN_ITEM_TAG.create(tag.toString())
                 return@ItemStackPredicate tags.contains(it.type)
             }
             false
@@ -68,7 +68,7 @@ class ItemStackParser(val reader: StringReader, private val allowTags: Boolean) 
         }
 
         val string = reader.string.substring(i, reader.cursor)
-        val item = Registries.ITEM[Key.key(string)]
+        val item = Registries.ITEM.get(Key.key(string))
         if (item === ItemTypes.AIR) throw ID_INVALID_EXCEPTION.createWithContext(reader, string)
         return item
     }

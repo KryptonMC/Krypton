@@ -21,24 +21,16 @@ package org.kryptonmc.generators
 import net.minecraft.core.Registry
 import net.minecraft.sounds.SoundEvent
 import net.minecraft.sounds.SoundEvents
-import java.lang.reflect.Modifier
 import java.nio.file.Path
 
 class SoundEventGenerator(path: Path) : StandardGenerator(path) {
 
     fun run() {
-        run<SoundEvents, SoundEvent>(Registry.SOUND_EVENT, "effect.sound/SoundEvents", "effect.sound/SoundEvent", "SOUND_EVENT")
+        run<SoundEvents, SoundEvent>(Registry.SOUND_EVENT, "effect.sound.SoundEvents", "effect.sound.SoundEvent", "SOUND_EVENT")
     }
 
-    @Suppress("UNCHECKED_CAST")
-    override fun <S, T> collectFields(catalogueType: Class<S>, type: Class<T>): Sequence<CollectedField> {
-        val fields = catalogueType.declaredFields.asSequence()
-            .filter { Modifier.isStatic(it.modifiers) }
-            .filter { type.isAssignableFrom(it.type) }
-            .map(::CollectedField)
-        val goatHorns = SoundEvents.GOAT_HORN_SOUND_VARIANTS.mapIndexed { index, sound ->
-            CollectedField("GOAT_HORN_$index", sound)
-        }
-        return fields.plus(goatHorns)
+    override fun <S, T> collectFields(catalogueType: Class<S>, type: Class<T>): Sequence<CollectedField<T>> {
+        val goatHorns = SoundEvents.GOAT_HORN_SOUND_VARIANTS.mapIndexed { index, sound -> CollectedField("GOAT_HORN_$index", type.cast(sound)) }
+        return catalogueType.collectFields(type).plus(goatHorns)
     }
 }

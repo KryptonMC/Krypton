@@ -12,7 +12,6 @@ import org.jetbrains.annotations.ApiStatus
 import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.Krypton
 import org.kryptonmc.api.entity.Entity
-import org.kryptonmc.api.util.provide
 import org.kryptonmc.api.world.damage.type.DamageType
 
 /**
@@ -39,9 +38,6 @@ public interface DamageSource {
 
     public companion object {
 
-        @JvmSynthetic
-        internal val FACTORY = Krypton.factoryProvider.provide<Factory>()
-
         /**
          * Creates a new damage source with the given [type].
          *
@@ -50,6 +46,6 @@ public interface DamageSource {
          */
         @JvmStatic
         @Contract("_ -> new", pure = true)
-        public fun of(type: DamageType): DamageSource = FACTORY.of(type)
+        public fun of(type: DamageType): DamageSource = Krypton.factory<Factory>().of(type)
     }
 }

@@ -8,7 +8,6 @@
  */
 package org.kryptonmc.api.util
 
-import net.kyori.adventure.builder.AbstractBuilder
 import org.jetbrains.annotations.Contract
 
 /**
@@ -17,7 +16,7 @@ import org.jetbrains.annotations.Contract
  * @param B the builder type
  * @param T the type of the built object
  */
-public interface Buildable<B : AbstractBuilder<T>, T> {
+public interface Buildable<B, T> {
 
     /**
      * Creates a new builder from this object.

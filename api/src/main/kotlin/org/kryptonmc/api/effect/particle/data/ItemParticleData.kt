@@ -33,6 +33,6 @@ public interface ItemParticleData : ParticleData {
          */
         @JvmStatic
         @Contract("_ -> new", pure = true)
-        public fun of(item: ItemStack): ItemParticleData = ParticleData.FACTORY.item(item)
+        public fun of(item: ItemStack): ItemParticleData = ParticleData.factory().item(item)
     }
 }

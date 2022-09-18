@@ -19,15 +19,30 @@
 package org.kryptonmc.krypton.util
 
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
+import net.kyori.adventure.util.HSVLike
+import net.kyori.adventure.util.RGBLike
 import org.kryptonmc.api.util.Color
 import java.util.function.IntFunction
 
 @JvmRecord
 data class KryptonColor(override val value: Int) : Color {
 
+    override fun asRGBLike(): RGBLike = RGBLikeImpl()
+
+    override fun asHSVLike(): HSVLike = HSVLike.fromRGB(red, green, blue)
+
+    private inner class RGBLikeImpl : RGBLike {
+
+        override fun red(): Int = red
+
+        override fun green(): Int = green
+
+        override fun blue(): Int = blue
+    }
+
     object Factory : Color.Factory {
 
-        override fun of(value: Int): Color = VALUES.computeIfAbsent(value, IntFunction(::KryptonColor))
+        override fun of(value: Int): Color = VALUES.get(value) ?: KryptonColor(value)
 
         override fun of(hue: Float, saturation: Float, brightness: Float): Color {
             require(hue in 0F..1F) { "Hue must be between 0 and 1!" }

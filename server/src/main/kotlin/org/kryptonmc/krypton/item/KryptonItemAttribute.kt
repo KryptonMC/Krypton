@@ -45,7 +45,7 @@ data class KryptonItemAttribute(
 
         @JvmStatic
         fun from(data: CompoundTag): KryptonItemAttribute? {
-            val type = Registries.ATTRIBUTE[Key.key(data.getString("AttributeName"))] ?: return null
+            val type = Registries.ATTRIBUTE.get(Key.key(data.getString("AttributeName"))) ?: return null
             val slot = EquipmentSlots.fromName(data.getString("Slot")) ?: return null
             val modifier = KryptonAttributeModifier.from(data) ?: return null
             return KryptonItemAttribute(type, slot, modifier)

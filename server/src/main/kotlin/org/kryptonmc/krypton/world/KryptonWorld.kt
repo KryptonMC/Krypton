@@ -254,7 +254,7 @@ class KryptonWorld(
         // tick rain
         val wasRaining = isRaining
         if (dimensionType.hasSkylight) {
-            if (gameRules[GameRules.DO_WEATHER_CYCLE]) {
+            if (gameRules.get(GameRules.DO_WEATHER_CYCLE)) {
                 var clearWeatherTime = data.clearWeatherTime
                 var thunderTime = data.thunderTime
                 var rainTime = data.rainTime
@@ -323,7 +323,7 @@ class KryptonWorld(
     private fun tickTime() {
         if (!tickTime) return
         data.time++
-        if (data.gameRules[GameRules.DO_DAYLIGHT_CYCLE]) data.dayTime++
+        if (data.gameRules.get(GameRules.DO_DAYLIGHT_CYCLE)) data.dayTime++
     }
 
     fun save(shouldClose: Boolean) {

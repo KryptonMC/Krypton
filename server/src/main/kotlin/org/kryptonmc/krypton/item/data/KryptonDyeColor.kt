@@ -32,10 +32,4 @@ data class KryptonDyeColor(
 ) : DyeColor {
 
     override fun key(): Key = key
-
-    object Factory : DyeColor.Factory {
-
-        override fun of(key: Key, color: Color, fireworkColor: Color, textColor: TextColor): DyeColor =
-            KryptonDyeColor(key, color, fireworkColor, textColor)
-    }
 }

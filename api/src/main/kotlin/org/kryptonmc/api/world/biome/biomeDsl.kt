@@ -26,5 +26,5 @@ internal annotation class BiomeDsl
  */
 @BiomeDsl
 @JvmSynthetic
-@Contract("_, _ -> new", pure = true)
+@Contract("_ -> new", pure = true)
 public inline fun biome(builder: Biome.Builder.() -> Unit): Biome = Biome.builder().apply(builder).build()

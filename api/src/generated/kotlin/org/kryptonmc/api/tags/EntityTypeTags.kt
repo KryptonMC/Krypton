@@ -44,5 +44,5 @@ public object EntityTypeTags {
 
     // @formatter:on
     @JvmStatic
-    private fun get(key: String): Tag<EntityType<*>> = Krypton.tagManager[TagTypes.ENTITY_TYPES, "minecraft:$key"]!!
+    private fun get(key: String): Tag<EntityType<*>> = Krypton.tag(TagTypes.ENTITY_TYPES, "minecraft:$key")!!
 }

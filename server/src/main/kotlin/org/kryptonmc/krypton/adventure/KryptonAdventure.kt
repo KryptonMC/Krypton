@@ -53,6 +53,9 @@ object KryptonAdventure {
     }
 
     @JvmStatic
+    fun colors(): List<NamedTextColor> = NAMED_TEXT_COLORS
+
+    @JvmStatic
     fun colorId(color: NamedTextColor): Int = NAMED_TEXT_COLOR_ID_MAP.getInt(color)
 
     @JvmStatic

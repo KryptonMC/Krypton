@@ -257,7 +257,7 @@ class KryptonServer(
 
         worldManager.worlds.forEach { (_, world) ->
             if (tickCount % TICKS_PER_SECOND == 0) {
-                val packet = PacketOutUpdateTime(world.data.time, world.data.dayTime, world.data.gameRules[GameRules.DO_DAYLIGHT_CYCLE])
+                val packet = PacketOutUpdateTime(world.data.time, world.data.dayTime, world.data.gameRules.get(GameRules.DO_DAYLIGHT_CYCLE))
                 sessionManager.sendGrouped(packet) { it.world === world }
             }
             world.tick()

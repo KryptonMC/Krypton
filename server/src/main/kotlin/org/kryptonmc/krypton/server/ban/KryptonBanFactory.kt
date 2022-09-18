@@ -16,21 +16,11 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.world.scoreboard
+package org.kryptonmc.krypton.server.ban
 
-import kotlinx.collections.immutable.ImmutableSet
-import net.kyori.adventure.key.Key
-import org.kryptonmc.api.scoreboard.ObjectiveRenderType
-import org.kryptonmc.api.scoreboard.criteria.CompoundCriterion
+import org.kryptonmc.api.user.ban.Ban
 
-@JvmRecord
-data class KryptonCompoundCriterion(
-    private val key: Key,
-    override val name: String,
-    override val children: ImmutableSet<KryptonCriterion>,
-    override val isMutable: Boolean = false,
-    override val renderType: ObjectiveRenderType = ObjectiveRenderType.INTEGER
-) : CompoundCriterion {
+object KryptonBanFactory : Ban.Factory {
 
-    override fun key(): Key = key
+    override fun builder(): Ban.Builder = KryptonBanBuilder()
 }

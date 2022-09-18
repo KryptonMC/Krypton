@@ -29,7 +29,7 @@ public interface State<out S : State<S>> {
     /**
      * Checks if the given [property] has a value on this state.
      */
-    public operator fun contains(property: Property<*>): Boolean
+    public fun contains(property: Property<*>): Boolean
 
     /**
      * Gets the value for the given [property], or returns null if there is no
@@ -38,7 +38,7 @@ public interface State<out S : State<S>> {
      * @param property the property
      * @return the value, or null if not present
      */
-    public operator fun <T : Comparable<T>> get(property: Property<T>): T?
+    public fun <T : Comparable<T>> get(property: Property<T>): T?
 
     /**
      * Gets the value for the given [property], or throws an

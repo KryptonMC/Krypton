@@ -23,210 +23,184 @@ public object ParticleTypes {
 
     // @formatter:off
     @JvmField
-    public val AMBIENT_ENTITY_EFFECT: SimpleParticleType = simple("ambient_entity_effect")
+    public val AMBIENT_ENTITY_EFFECT: SimpleParticleType = get("ambient_entity_effect")
     @JvmField
-    public val ANGRY_VILLAGER: SimpleParticleType = simple("angry_villager")
+    public val ANGRY_VILLAGER: SimpleParticleType = get("angry_villager")
     @JvmField
-    public val BLOCK: BlockParticleType = block("block")
+    public val BLOCK: BlockParticleType = get("block")
     @JvmField
-    public val BLOCK_MARKER: BlockParticleType = block("block_marker")
+    public val BLOCK_MARKER: BlockParticleType = get("block_marker")
     @JvmField
-    public val BUBBLE: DirectionalParticleType = directional("bubble")
+    public val BUBBLE: DirectionalParticleType = get("bubble")
     @JvmField
-    public val CLOUD: DirectionalParticleType = directional("cloud")
+    public val CLOUD: DirectionalParticleType = get("cloud")
     @JvmField
-    public val CRIT: DirectionalParticleType = directional("crit")
+    public val CRIT: DirectionalParticleType = get("crit")
     @JvmField
-    public val DAMAGE_INDICATOR: DirectionalParticleType = directional("damage_indicator")
+    public val DAMAGE_INDICATOR: DirectionalParticleType = get("damage_indicator")
     @JvmField
-    public val DRAGON_BREATH: DirectionalParticleType = directional("dragon_breath")
+    public val DRAGON_BREATH: DirectionalParticleType = get("dragon_breath")
     @JvmField
-    public val DRIPPING_LAVA: SimpleParticleType = simple("dripping_lava")
+    public val DRIPPING_LAVA: SimpleParticleType = get("dripping_lava")
     @JvmField
-    public val FALLING_LAVA: SimpleParticleType = simple("falling_lava")
+    public val FALLING_LAVA: SimpleParticleType = get("falling_lava")
     @JvmField
-    public val LANDING_LAVA: SimpleParticleType = simple("landing_lava")
+    public val LANDING_LAVA: SimpleParticleType = get("landing_lava")
     @JvmField
-    public val DRIPPING_WATER: SimpleParticleType = simple("dripping_water")
+    public val DRIPPING_WATER: SimpleParticleType = get("dripping_water")
     @JvmField
-    public val FALLING_WATER: SimpleParticleType = simple("falling_water")
+    public val FALLING_WATER: SimpleParticleType = get("falling_water")
     @JvmField
-    public val DUST: DustParticleType = dust("dust")
+    public val DUST: DustParticleType = get("dust")
     @JvmField
-    public val DUST_COLOR_TRANSITION: DustTransitionParticleType = transition("dust_color_transition")
+    public val DUST_COLOR_TRANSITION: DustTransitionParticleType = get("dust_color_transition")
     @JvmField
-    public val EFFECT: SimpleParticleType = simple("effect")
+    public val EFFECT: SimpleParticleType = get("effect")
     @JvmField
-    public val ELDER_GUARDIAN: SimpleParticleType = simple("elder_guardian")
+    public val ELDER_GUARDIAN: SimpleParticleType = get("elder_guardian")
     @JvmField
-    public val ENCHANTED_HIT: DirectionalParticleType = directional("enchanted_hit")
+    public val ENCHANTED_HIT: DirectionalParticleType = get("enchanted_hit")
     @JvmField
-    public val ENCHANT: DirectionalParticleType = directional("enchant")
+    public val ENCHANT: DirectionalParticleType = get("enchant")
     @JvmField
-    public val END_ROD: DirectionalParticleType = directional("end_rod")
+    public val END_ROD: DirectionalParticleType = get("end_rod")
     @JvmField
-    public val ENTITY_EFFECT: ColorParticleType = color("entity_effect")
+    public val ENTITY_EFFECT: ColorParticleType = get("entity_effect")
     @JvmField
-    public val EXPLOSION_EMITTER: SimpleParticleType = simple("explosion_emitter")
+    public val EXPLOSION_EMITTER: SimpleParticleType = get("explosion_emitter")
     @JvmField
-    public val EXPLOSION: SimpleParticleType = simple("explosion")
+    public val EXPLOSION: SimpleParticleType = get("explosion")
     @JvmField
-    public val FALLING_DUST: BlockParticleType = block("falling_dust")
+    public val FALLING_DUST: BlockParticleType = get("falling_dust")
     @JvmField
-    public val FIREWORK: DirectionalParticleType = directional("firework")
+    public val FIREWORK: DirectionalParticleType = get("firework")
     @JvmField
-    public val FISHING: DirectionalParticleType = directional("fishing")
+    public val FISHING: DirectionalParticleType = get("fishing")
     @JvmField
-    public val FLAME: DirectionalParticleType = directional("flame")
+    public val FLAME: DirectionalParticleType = get("flame")
     @JvmField
-    public val SOUL_FIRE_FLAME: DirectionalParticleType = directional("soul_fire_flame")
+    public val SOUL_FIRE_FLAME: DirectionalParticleType = get("soul_fire_flame")
     @JvmField
-    public val SOUL: DirectionalParticleType = directional("soul")
+    public val SOUL: DirectionalParticleType = get("soul")
     @JvmField
-    public val FLASH: SimpleParticleType = simple("flash")
+    public val FLASH: SimpleParticleType = get("flash")
     @JvmField
-    public val HAPPY_VILLAGER: SimpleParticleType = simple("happy_villager")
+    public val HAPPY_VILLAGER: SimpleParticleType = get("happy_villager")
     @JvmField
-    public val COMPOSTER: SimpleParticleType = simple("composter")
+    public val COMPOSTER: SimpleParticleType = get("composter")
     @JvmField
-    public val HEART: SimpleParticleType = simple("heart")
+    public val HEART: SimpleParticleType = get("heart")
     @JvmField
-    public val INSTANT_EFFECT: SimpleParticleType = simple("instant_effect")
+    public val INSTANT_EFFECT: SimpleParticleType = get("instant_effect")
     @JvmField
-    public val ITEM: ItemParticleType = item("item")
+    public val ITEM: ItemParticleType = get("item")
     @JvmField
-    public val VIBRATION: VibrationParticleType = vibration("vibration")
+    public val VIBRATION: VibrationParticleType = get("vibration")
     @JvmField
-    public val ITEM_SLIME: SimpleParticleType = simple("item_slime")
+    public val ITEM_SLIME: SimpleParticleType = get("item_slime")
     @JvmField
-    public val ITEM_SNOWBALL: SimpleParticleType = simple("item_snowball")
+    public val ITEM_SNOWBALL: SimpleParticleType = get("item_snowball")
     @JvmField
-    public val LARGE_SMOKE: DirectionalParticleType = directional("large_smoke")
+    public val LARGE_SMOKE: DirectionalParticleType = get("large_smoke")
     @JvmField
-    public val LAVA: SimpleParticleType = simple("lava")
+    public val LAVA: SimpleParticleType = get("lava")
     @JvmField
-    public val MYCELIUM: SimpleParticleType = simple("mycelium")
+    public val MYCELIUM: SimpleParticleType = get("mycelium")
     @JvmField
-    public val NOTE: NoteParticleType = note("note")
+    public val NOTE: NoteParticleType = get("note")
     @JvmField
-    public val POOF: DirectionalParticleType = directional("poof")
+    public val POOF: DirectionalParticleType = get("poof")
     @JvmField
-    public val PORTAL: DirectionalParticleType = directional("portal")
+    public val PORTAL: DirectionalParticleType = get("portal")
     @JvmField
-    public val RAIN: SimpleParticleType = simple("rain")
+    public val RAIN: SimpleParticleType = get("rain")
     @JvmField
-    public val SMOKE: DirectionalParticleType = directional("smoke")
+    public val SMOKE: DirectionalParticleType = get("smoke")
     @JvmField
-    public val SNEEZE: DirectionalParticleType = directional("sneeze")
+    public val SNEEZE: DirectionalParticleType = get("sneeze")
     @JvmField
-    public val SPIT: DirectionalParticleType = directional("spit")
+    public val SPIT: DirectionalParticleType = get("spit")
     @JvmField
-    public val SQUID_INK: DirectionalParticleType = directional("squid_ink")
+    public val SQUID_INK: DirectionalParticleType = get("squid_ink")
     @JvmField
-    public val SWEEP_ATTACK: SimpleParticleType = simple("sweep_attack")
+    public val SWEEP_ATTACK: SimpleParticleType = get("sweep_attack")
     @JvmField
-    public val TOTEM_OF_UNDYING: DirectionalParticleType = directional("totem_of_undying")
+    public val TOTEM_OF_UNDYING: DirectionalParticleType = get("totem_of_undying")
     @JvmField
-    public val UNDERWATER: SimpleParticleType = simple("underwater")
+    public val UNDERWATER: SimpleParticleType = get("underwater")
     @JvmField
-    public val SPLASH: SimpleParticleType = simple("splash")
+    public val SPLASH: SimpleParticleType = get("splash")
     @JvmField
-    public val WITCH: SimpleParticleType = simple("witch")
+    public val WITCH: SimpleParticleType = get("witch")
     @JvmField
-    public val BUBBLE_POP: DirectionalParticleType = directional("bubble_pop")
+    public val BUBBLE_POP: DirectionalParticleType = get("bubble_pop")
     @JvmField
-    public val CURRENT_DOWN: SimpleParticleType = simple("current_down")
+    public val CURRENT_DOWN: SimpleParticleType = get("current_down")
     @JvmField
-    public val BUBBLE_COLUMN_UP: DirectionalParticleType = directional("bubble_column_up")
+    public val BUBBLE_COLUMN_UP: DirectionalParticleType = get("bubble_column_up")
     @JvmField
-    public val NAUTILUS: DirectionalParticleType = directional("nautilus")
+    public val NAUTILUS: DirectionalParticleType = get("nautilus")
     @JvmField
-    public val DOLPHIN: SimpleParticleType = simple("dolphin")
+    public val DOLPHIN: SimpleParticleType = get("dolphin")
     @JvmField
-    public val CAMPFIRE_COSY_SMOKE: DirectionalParticleType = directional("campfire_cosy_smoke")
+    public val CAMPFIRE_COSY_SMOKE: DirectionalParticleType = get("campfire_cosy_smoke")
     @JvmField
-    public val CAMPFIRE_SIGNAL_SMOKE: DirectionalParticleType = directional("campfire_signal_smoke")
+    public val CAMPFIRE_SIGNAL_SMOKE: DirectionalParticleType = get("campfire_signal_smoke")
     @JvmField
-    public val DRIPPING_HONEY: SimpleParticleType = simple("dripping_honey")
+    public val DRIPPING_HONEY: SimpleParticleType = get("dripping_honey")
     @JvmField
-    public val FALLING_HONEY: SimpleParticleType = simple("falling_honey")
+    public val FALLING_HONEY: SimpleParticleType = get("falling_honey")
     @JvmField
-    public val LANDING_HONEY: SimpleParticleType = simple("landing_honey")
+    public val LANDING_HONEY: SimpleParticleType = get("landing_honey")
     @JvmField
-    public val FALLING_NECTAR: SimpleParticleType = simple("falling_nectar")
+    public val FALLING_NECTAR: SimpleParticleType = get("falling_nectar")
     @JvmField
-    public val FALLING_SPORE_BLOSSOM: SimpleParticleType = simple("falling_spore_blossom")
+    public val FALLING_SPORE_BLOSSOM: SimpleParticleType = get("falling_spore_blossom")
     @JvmField
-    public val ASH: SimpleParticleType = simple("ash")
+    public val ASH: SimpleParticleType = get("ash")
     @JvmField
-    public val CRIMSON_SPORE: SimpleParticleType = simple("crimson_spore")
+    public val CRIMSON_SPORE: SimpleParticleType = get("crimson_spore")
     @JvmField
-    public val WARPED_SPORE: SimpleParticleType = simple("warped_spore")
+    public val WARPED_SPORE: SimpleParticleType = get("warped_spore")
     @JvmField
-    public val SPORE_BLOSSOM_AIR: SimpleParticleType = simple("spore_blossom_air")
+    public val SPORE_BLOSSOM_AIR: SimpleParticleType = get("spore_blossom_air")
     @JvmField
-    public val DRIPPING_OBSIDIAN_TEAR: SimpleParticleType = simple("dripping_obsidian_tear")
+    public val DRIPPING_OBSIDIAN_TEAR: SimpleParticleType = get("dripping_obsidian_tear")
     @JvmField
-    public val FALLING_OBSIDIAN_TEAR: SimpleParticleType = simple("falling_obsidian_tear")
+    public val FALLING_OBSIDIAN_TEAR: SimpleParticleType = get("falling_obsidian_tear")
     @JvmField
-    public val LANDING_OBSIDIAN_TEAR: SimpleParticleType = simple("landing_obsidian_tear")
+    public val LANDING_OBSIDIAN_TEAR: SimpleParticleType = get("landing_obsidian_tear")
     @JvmField
-    public val REVERSE_PORTAL: DirectionalParticleType = directional("reverse_portal")
+    public val REVERSE_PORTAL: DirectionalParticleType = get("reverse_portal")
     @JvmField
-    public val WHITE_ASH: SimpleParticleType = simple("white_ash")
+    public val WHITE_ASH: SimpleParticleType = get("white_ash")
     @JvmField
-    public val SMALL_FLAME: SimpleParticleType = simple("small_flame")
+    public val SMALL_FLAME: SimpleParticleType = get("small_flame")
     @JvmField
-    public val SNOWFLAKE: SimpleParticleType = simple("snowflake")
+    public val SNOWFLAKE: SimpleParticleType = get("snowflake")
     @JvmField
-    public val DRIPPING_DRIPSTONE_LAVA: SimpleParticleType = simple("dripping_dripstone_lava")
+    public val DRIPPING_DRIPSTONE_LAVA: SimpleParticleType = get("dripping_dripstone_lava")
     @JvmField
-    public val FALLING_DRIPSTONE_LAVA: SimpleParticleType = simple("falling_dripstone_lava")
+    public val FALLING_DRIPSTONE_LAVA: SimpleParticleType = get("falling_dripstone_lava")
     @JvmField
-    public val DRIPPING_DRIPSTONE_WATER: SimpleParticleType = simple("dripping_dripstone_water")
+    public val DRIPPING_DRIPSTONE_WATER: SimpleParticleType = get("dripping_dripstone_water")
     @JvmField
-    public val FALLING_DRIPSTONE_WATER: SimpleParticleType = simple("falling_dripstone_water")
+    public val FALLING_DRIPSTONE_WATER: SimpleParticleType = get("falling_dripstone_water")
     @JvmField
-    public val GLOW_SQUID_INK: SimpleParticleType = simple("glow_squid_ink")
+    public val GLOW_SQUID_INK: SimpleParticleType = get("glow_squid_ink")
     @JvmField
-    public val GLOW: SimpleParticleType = simple("glow")
+    public val GLOW: SimpleParticleType = get("glow")
     @JvmField
-    public val WAX_ON: SimpleParticleType = simple("wax_on")
+    public val WAX_ON: SimpleParticleType = get("wax_on")
     @JvmField
-    public val WAX_OFF: SimpleParticleType = simple("wax_off")
+    public val WAX_OFF: SimpleParticleType = get("wax_off")
     @JvmField
-    public val ELECTRIC_SPARK: SimpleParticleType = simple("electric_spark")
+    public val ELECTRIC_SPARK: SimpleParticleType = get("electric_spark")
     @JvmField
-    public val SCRAPE: SimpleParticleType = simple("scrape")
+    public val SCRAPE: SimpleParticleType = get("scrape")
 
     // @formatter:on
     @JvmStatic
-    private fun <T : ParticleType> register(particle: T): T = Registries.PARTICLE_TYPE.register(particle.key(), particle)
-
-    @JvmStatic
-    private fun simple(name: String): SimpleParticleType = register(SimpleParticleType.of(Key.key(name)))
-
-    @JvmStatic
-    private fun directional(name: String): DirectionalParticleType = register(DirectionalParticleType.of(Key.key(name)))
-
-    @JvmStatic
-    private fun block(name: String): BlockParticleType = register(BlockParticleType.of(Key.key(name)))
-
-    @JvmStatic
-    private fun item(name: String): ItemParticleType = register(ItemParticleType.of(Key.key(name)))
-
-    @JvmStatic
-    private fun dust(name: String): DustParticleType = register(DustParticleType.of(Key.key(name)))
-
-    @JvmStatic
-    private fun transition(name: String): DustTransitionParticleType = register(DustTransitionParticleType.of(Key.key(name)))
-
-    @JvmStatic
-    private fun color(name: String): ColorParticleType = register(ColorParticleType.of(Key.key(name)))
-
-    @JvmStatic
-    private fun note(name: String): NoteParticleType = register(NoteParticleType.of(Key.key(name)))
-
-    @JvmStatic
-    private fun vibration(name: String): VibrationParticleType = register(VibrationParticleType.of(Key.key(name)))
+    @Suppress("UNCHECKED_CAST")
+    private fun <T : ParticleType> get(name: String): T = Registries.PARTICLE_TYPE.get(Key.key(name)) as T
 }

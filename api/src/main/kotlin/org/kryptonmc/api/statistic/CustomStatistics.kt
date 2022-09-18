@@ -175,7 +175,7 @@ public object CustomStatistics {
     private fun register(name: String, formatter: StatisticFormatter): Key {
         val key = Key.key(name)
         Registries.CUSTOM_STATISTIC.register(key, key)
-        StatisticTypes.CUSTOM[key, formatter]
+        StatisticTypes.CUSTOM.get(key, formatter)
         return key
     }
 }

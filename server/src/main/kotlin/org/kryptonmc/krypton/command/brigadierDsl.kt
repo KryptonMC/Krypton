@@ -50,8 +50,9 @@ fun <T, T1> RequiredArgumentBuilder<Sender, T>.argument(
     builder: RequiredArgumentBuilder<Sender, T1>.() -> Unit
 ): RequiredArgumentBuilder<Sender, T> = then(RequiredArgumentBuilder.argument<Sender, T1>(name, type).apply(builder))
 
-fun <T : ArgumentBuilder<Sender, T>> ArgumentBuilder<Sender, T>.runs(action: Consumer<CommandContext<Sender>>): ArgumentBuilder<Sender, T> =
-    executes {
-        action.accept(it)
-        com.mojang.brigadier.Command.SINGLE_SUCCESS
-    }
+inline fun <T : ArgumentBuilder<Sender, T>> ArgumentBuilder<Sender, T>.runs(
+    crossinline action: (CommandContext<Sender>) -> Unit
+): ArgumentBuilder<Sender, T> = executes {
+    action(it)
+    com.mojang.brigadier.Command.SINGLE_SUCCESS
+}

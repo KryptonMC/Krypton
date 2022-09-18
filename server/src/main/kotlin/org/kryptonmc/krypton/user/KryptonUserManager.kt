@@ -50,14 +50,14 @@ class KryptonUserManager(private val server: KryptonServer) : UserManager {
     override fun get(uuid: UUID): User? = users[uuid]
 
     override fun get(name: String): User? {
-        val profile = server.profileCache[name] ?: return null
+        val profile = server.profileCache.get(name) ?: return null
         return users[profile.uuid]
     }
 
     override fun load(uuid: UUID): CompletableFuture<User?> {
         val existing = get(uuid)
         if (existing != null) return CompletableFuture.completedFuture(existing)
-        val cachedProfile = server.profileCache[uuid]
+        val cachedProfile = server.profileCache.get(uuid)
         if (cachedProfile != null) return CompletableFuture.supplyAsync({ loadUser(cachedProfile) }, executor)
         return ApiService.profile(uuid).thenApplyAsync(::loadUser, executor)
     }
@@ -65,7 +65,7 @@ class KryptonUserManager(private val server: KryptonServer) : UserManager {
     override fun load(name: String): CompletableFuture<User?> {
         val existing = get(name)
         if (existing != null) return CompletableFuture.completedFuture(existing)
-        val cachedProfile = server.profileCache[name]
+        val cachedProfile = server.profileCache.get(name)
         if (cachedProfile != null) return CompletableFuture.supplyAsync({ loadUser(cachedProfile) }, executor)
         return ApiService.profile(name).thenApplyAsync(::loadUser, executor)
     }

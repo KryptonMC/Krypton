@@ -48,5 +48,5 @@ public object AttributeTypes {
 
     // @formatter:on
     @JvmStatic
-    private fun get(key: String): AttributeType = Registries.ATTRIBUTE[Key.key(key)]!!
+    private fun get(key: String): AttributeType = Registries.ATTRIBUTE.get(Key.key(key))!!
 }

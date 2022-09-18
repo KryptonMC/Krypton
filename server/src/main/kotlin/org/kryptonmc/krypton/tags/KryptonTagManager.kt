@@ -36,23 +36,15 @@ import org.kryptonmc.api.tags.TagType
 object KryptonTagManager : TagManager {
 
     private val GSON = Gson()
+    private var tags: ImmutableMap<TagType<*>, ImmutableList<Tag<*>>>? = null
 
-    override val tags: ImmutableMap<TagType<*>, ImmutableList<Tag<*>>> by lazy { readTags() }
+    override fun <T : Any> get(type: TagType<T>): List<Tag<T>> = tags(type) as? List<Tag<T>> ?: emptyList()
 
-    override fun <T : Any> get(type: TagType<T>): List<Tag<T>> = tags[type] as? List<Tag<T>> ?: emptyList()
-
-    override fun <T : Any> get(type: TagType<T>, name: String): KryptonTag<T>? {
-        val tags = tags[type] ?: return null
-        return tags.firstOrNull { it.key().asString() == name } as? KryptonTag<T>
-    }
+    override fun <T : Any> get(type: TagType<T>, name: String): KryptonTag<T>? =
+        tags(type)?.firstOrNull { it.key().asString() == name } as? KryptonTag<T>
 
     @JvmStatic
     fun bootstrap() {
-        tags
-    }
-
-    @JvmStatic
-    private fun readTags(): ImmutableMap<TagType<*>, ImmutableList<Tag<*>>> {
         val tagMap = persistentHashMapOf<TagType<*>, PersistentList<Tag<*>>>().builder()
         Registries.TAG_TYPES.values.forEach { type ->
             if (type !is KryptonTagType) return@forEach
@@ -65,8 +57,11 @@ object KryptonTagManager : TagManager {
             }
             tagMap[type] = identifiers.build()
         }
-        return tagMap.build()
+        tags = tagMap.build()
     }
+
+    @JvmStatic
+    private fun tags(type: TagType<*>): List<Tag<*>>? = requireNotNull(tags) { "Tags were not initialized!" }[type]
 
     @JvmStatic
     private fun keys(main: JsonObject, value: String): Set<String> {

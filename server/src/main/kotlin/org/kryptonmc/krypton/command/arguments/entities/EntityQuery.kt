@@ -97,13 +97,13 @@ data class EntityQuery(private val args: List<EntityArgument.EntityArg>, val typ
         val server = sender.server as? KryptonServer ?: return emptyList()
         if (sender is KryptonPlayer) {
             if (playerName.isNotEmpty()) {
-                val profile = server.profileCache[playerName] ?: throw EntityArgumentExceptions.PLAYER_NOT_FOUND.create()
+                val profile = server.profileCache.get(playerName) ?: throw EntityArgumentExceptions.PLAYER_NOT_FOUND.create()
                 return listOf(profile)
             }
             return players(sender).map { it.profile }
         }
         if (playerName.isNotEmpty()) {
-            val profile = server.profileCache[playerName] ?: throw EntityArgumentExceptions.PLAYER_NOT_FOUND.create()
+            val profile = server.profileCache.get(playerName) ?: throw EntityArgumentExceptions.PLAYER_NOT_FOUND.create()
             return listOf(profile)
         }
         return emptyList()

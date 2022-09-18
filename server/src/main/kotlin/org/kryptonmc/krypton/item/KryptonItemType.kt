@@ -40,9 +40,9 @@ class KryptonItemType(
     override val translation: TranslatableComponent
 ) : ItemType {
 
-    override fun key(): Key = Registries.ITEM[this]
+    override fun key(): Key = Registries.ITEM.get(this)
 
-    override fun asBlock(): Block = Registries.BLOCK[key()]
+    override fun asBlock(): Block = Registries.BLOCK.get(key())
 
     companion object {
 

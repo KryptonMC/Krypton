@@ -19,91 +19,88 @@ import org.kryptonmc.api.util.Catalogue
 public object BannerPatternTypes {
 
     @JvmField
-    public val BASE: BannerPatternType = register("base", "b")
+    public val BASE: BannerPatternType = get("base")
     @JvmField
-    public val BOTTOM_LEFT_SQUARE: BannerPatternType = register("square_bottom_left", "bl")
+    public val BOTTOM_LEFT_SQUARE: BannerPatternType = get("square_bottom_left")
     @JvmField
-    public val BOTTOM_RIGHT_SQUARE: BannerPatternType = register("square_bottom_right", "br")
+    public val BOTTOM_RIGHT_SQUARE: BannerPatternType = get("square_bottom_right")
     @JvmField
-    public val TOP_LEFT_SQUARE: BannerPatternType = register("square_top_left", "tl")
+    public val TOP_LEFT_SQUARE: BannerPatternType = get("square_top_left")
     @JvmField
-    public val TOP_RIGHT_SQUARE: BannerPatternType = register("square_top_right", "tr")
+    public val TOP_RIGHT_SQUARE: BannerPatternType = get("square_top_right")
     @JvmField
-    public val BOTTOM_STRIPE: BannerPatternType = register("stripe_bottom", "bs")
+    public val BOTTOM_STRIPE: BannerPatternType = get("stripe_bottom")
     @JvmField
-    public val TOP_STRIPE: BannerPatternType = register("stripe_top", "ts")
+    public val TOP_STRIPE: BannerPatternType = get("stripe_top")
     @JvmField
-    public val LEFT_STRIPE: BannerPatternType = register("stripe_left", "ls")
+    public val LEFT_STRIPE: BannerPatternType = get("stripe_left")
     @JvmField
-    public val RIGHT_STRIPE: BannerPatternType = register("stripe_right", "rs")
+    public val RIGHT_STRIPE: BannerPatternType = get("stripe_right")
     @JvmField
-    public val CENTER_STRIPE: BannerPatternType = register("stripe_center", "cs")
+    public val CENTER_STRIPE: BannerPatternType = get("stripe_center")
     @JvmField
-    public val MIDDLE_STRIPE: BannerPatternType = register("stripe_middle", "ms")
+    public val MIDDLE_STRIPE: BannerPatternType = get("stripe_middle")
     @JvmField
-    public val DOWN_RIGHT_STRIPE: BannerPatternType = register("stripe_downright", "drs")
+    public val DOWN_RIGHT_STRIPE: BannerPatternType = get("stripe_downright")
     @JvmField
-    public val DOWN_LEFT_STRIPE: BannerPatternType = register("stripe_downleft", "dls")
+    public val DOWN_LEFT_STRIPE: BannerPatternType = get("stripe_downleft")
     @JvmField
-    public val SMALL_STRIPES: BannerPatternType = register("small_stripes", "ss")
+    public val SMALL_STRIPES: BannerPatternType = get("small_stripes")
     @JvmField
-    public val CROSS: BannerPatternType = register("cross", "cr")
+    public val CROSS: BannerPatternType = get("cross")
     @JvmField
-    public val STRAIGHT_CROSS: BannerPatternType = register("straight_cross", "sc")
+    public val STRAIGHT_CROSS: BannerPatternType = get("straight_cross")
     @JvmField
-    public val BOTTOM_TRIANGLE: BannerPatternType = register("triangle_bottom", "bt")
+    public val BOTTOM_TRIANGLE: BannerPatternType = get("triangle_bottom")
     @JvmField
-    public val TOP_TRIANGLE: BannerPatternType = register("triangle_top", "tt")
+    public val TOP_TRIANGLE: BannerPatternType = get("triangle_top")
     @JvmField
-    public val BOTTOM_TRIANGLES: BannerPatternType = register("triangles_bottom", "bts")
+    public val BOTTOM_TRIANGLES: BannerPatternType = get("triangles_bottom")
     @JvmField
-    public val TOP_TRIANGLES: BannerPatternType = register("triangles_top", "tts")
+    public val TOP_TRIANGLES: BannerPatternType = get("triangles_top")
     @JvmField
-    public val LEFT_DIAGONAL: BannerPatternType = register("diagonal_left", "ld")
+    public val LEFT_DIAGONAL: BannerPatternType = get("diagonal_left")
     @JvmField
-    public val RIGHT_DIAGONAL: BannerPatternType = register("diagonal_up_right", "rd")
+    public val RIGHT_DIAGONAL: BannerPatternType = get("diagonal_up_right")
     @JvmField
-    public val LEFT_REVERSE_DIAGONAL: BannerPatternType = register("diagonal_up_left", "lud")
+    public val LEFT_REVERSE_DIAGONAL: BannerPatternType = get("diagonal_up_left")
     @JvmField
-    public val RIGHT_REVERSE_DIAGONAL: BannerPatternType = register("diagonal_right", "rud")
+    public val RIGHT_REVERSE_DIAGONAL: BannerPatternType = get("diagonal_right")
     @JvmField
-    public val MIDDLE_CIRCLE: BannerPatternType = register("circle", "mc")
+    public val MIDDLE_CIRCLE: BannerPatternType = get("circle")
     @JvmField
-    public val MIDDLE_RHOMBUS: BannerPatternType = register("rhombus", "mr")
+    public val MIDDLE_RHOMBUS: BannerPatternType = get("rhombus")
     @JvmField
-    public val LEFT_HALF_VERTICAL: BannerPatternType = register("half_vertical", "vh")
+    public val LEFT_HALF_VERTICAL: BannerPatternType = get("half_vertical")
     @JvmField
-    public val TOP_HALF_HORIZONTAL: BannerPatternType = register("half_horizontal", "hh")
+    public val TOP_HALF_HORIZONTAL: BannerPatternType = get("half_horizontal")
     @JvmField
-    public val RIGHT_HALF_VERTICAL: BannerPatternType = register("half_vertical_right", "vhr")
+    public val RIGHT_HALF_VERTICAL: BannerPatternType = get("half_vertical_right")
     @JvmField
-    public val BOTTOM_HALF_HORIZONTAL: BannerPatternType = register("half_horizontal_bottom", "hhb")
+    public val BOTTOM_HALF_HORIZONTAL: BannerPatternType = get("half_horizontal_bottom")
     @JvmField
-    public val BORDER: BannerPatternType = register("border", "bo")
+    public val BORDER: BannerPatternType = get("border")
     @JvmField
-    public val CURLY_BORDER: BannerPatternType = register("curly_border", "cbo")
+    public val CURLY_BORDER: BannerPatternType = get("curly_border")
     @JvmField
-    public val GRADIENT: BannerPatternType = register("gradient", "gra")
+    public val GRADIENT: BannerPatternType = get("gradient")
     @JvmField
-    public val REVERSE_GRADIENT: BannerPatternType = register("gradient_up", "gru")
+    public val REVERSE_GRADIENT: BannerPatternType = get("gradient_up")
     @JvmField
-    public val BRICKS: BannerPatternType = register("bricks", "bri")
+    public val BRICKS: BannerPatternType = get("bricks")
     @JvmField
-    public val GLOBE: BannerPatternType = register("globe", "glb")
+    public val GLOBE: BannerPatternType = get("globe")
     @JvmField
-    public val CREEPER: BannerPatternType = register("creeper", "cre")
+    public val CREEPER: BannerPatternType = get("creeper")
     @JvmField
-    public val SKULL: BannerPatternType = register("skull", "sku")
+    public val SKULL: BannerPatternType = get("skull")
     @JvmField
-    public val FLOWER: BannerPatternType = register("flower", "flo")
+    public val FLOWER: BannerPatternType = get("flower")
     @JvmField
-    public val MOJANG: BannerPatternType = register("mojang", "moj")
+    public val MOJANG: BannerPatternType = get("mojang")
     @JvmField
-    public val PIGLIN: BannerPatternType = register("piglin", "pig")
+    public val PIGLIN: BannerPatternType = get("piglin")
 
     @JvmStatic
-    private fun register(name: String, code: String): BannerPatternType {
-        val key = Key.key(name)
-        return Registries.BANNER_PATTERN.register(key, BannerPatternType.of(key, code))
-    }
+    private fun get(name: String): BannerPatternType = Registries.BANNER_PATTERN.get(Key.key(name))!!
 }

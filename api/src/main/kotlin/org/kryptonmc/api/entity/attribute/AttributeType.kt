@@ -8,16 +8,9 @@
  */
 package org.kryptonmc.api.entity.attribute
 
-import net.kyori.adventure.key.Key
 import net.kyori.adventure.key.Keyed
-import net.kyori.adventure.text.Component.translatable
-import net.kyori.adventure.text.TranslatableComponent
-import org.jetbrains.annotations.ApiStatus
-import org.jetbrains.annotations.Contract
-import org.kryptonmc.api.Krypton
 import org.kryptonmc.api.util.CataloguedBy
 import org.kryptonmc.api.util.TranslationHolder
-import org.kryptonmc.api.util.provide
 
 /**
  * The type of an attribute.
@@ -56,57 +49,4 @@ public interface AttributeType : TranslationHolder, Keyed {
      */
     @get:JvmName("sendToClient")
     public val sendToClient: Boolean
-
-    @ApiStatus.Internal
-    public interface Factory {
-
-        public fun of(
-            key: Key,
-            defaultBase: Double,
-            minimum: Double,
-            maximum: Double,
-            sendToClient: Boolean,
-            translation: TranslatableComponent
-        ): AttributeType
-    }
-
-    public companion object {
-
-        private val FACTORY = Krypton.factoryProvider.provide<Factory>()
-
-        /**
-         * Creates a new type of attribute with the given values.
-         *
-         * @param defaultBase the default base value
-         * @param minimum the minimum base
-         * @param maximum the maximum base
-         * @param sendToClient if the type should be sent to clients
-         * @return a new type of attribute
-         */
-        @JvmStatic
-        @Contract("_, _, _, _, _ -> new", pure = true)
-        public fun of(key: Key, defaultBase: Double, minimum: Double, maximum: Double, sendToClient: Boolean): AttributeType =
-            of(key, defaultBase, minimum, maximum, sendToClient, translatable("attribute.name.${key.value()}"))
-
-        /**
-         * Creates a new type of attribute with the given values.
-         *
-         * @param defaultBase the default base value
-         * @param minimum the minimum base
-         * @param maximum the maximum base
-         * @param sendToClient if the type should be sent to clients
-         * @param translation the translation
-         * @return a new type of attribute
-         */
-        @JvmStatic
-        @Contract("_, _, _, _, _, _ -> new", pure = true)
-        public fun of(
-            key: Key,
-            defaultBase: Double,
-            minimum: Double,
-            maximum: Double,
-            sendToClient: Boolean,
-            translation: TranslatableComponent
-        ): AttributeType = FACTORY.of(key, defaultBase, minimum, maximum, sendToClient, translation)
-    }
 }

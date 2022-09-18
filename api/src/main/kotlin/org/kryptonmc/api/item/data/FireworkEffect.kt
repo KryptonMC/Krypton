@@ -8,19 +8,18 @@
  */
 package org.kryptonmc.api.item.data
 
-import net.kyori.adventure.util.Buildable
+import net.kyori.adventure.builder.AbstractBuilder
 import org.jetbrains.annotations.ApiStatus
 import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.Krypton
+import org.kryptonmc.api.util.Buildable
 import org.kryptonmc.api.util.Color
-import org.kryptonmc.api.util.provide
-import java.util.function.Consumer
 
 /**
  * An effect that may be produced from a firework star exploding.
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
-public interface FireworkEffect : Buildable<FireworkEffect, FireworkEffect.Builder> {
+public interface FireworkEffect : Buildable<FireworkEffect.Builder, FireworkEffect> {
 
     /**
      * The type of this effect.
@@ -51,28 +50,6 @@ public interface FireworkEffect : Buildable<FireworkEffect, FireworkEffect.Build
      */
     @get:JvmName("fadeColors")
     public val fadeColors: List<Color>
-
-    /**
-     * Creates a new firework effect by creating a new builder from this effect
-     * and applying the given [builder] function.
-     *
-     * @param builder the builder to apply
-     * @return a new firework effect
-     */
-    @JvmSynthetic
-    @Contract("_ -> new", pure = true)
-    public fun with(builder: Builder.() -> Unit): FireworkEffect
-
-    /**
-     * Creates a new firework effect by creating a new builder from this effect
-     * and applying the given [builder] function.
-     *
-     * @param builder the builder to apply
-     * @return a new firework effect
-     */
-    @JvmSynthetic
-    @Contract("_ -> new", pure = true)
-    public fun with(builder: Consumer<Builder>): FireworkEffect = with { builder.accept(this) }
 
     /**
      * Creates a new firework effect with the given [type].
@@ -183,7 +160,7 @@ public interface FireworkEffect : Buildable<FireworkEffect, FireworkEffect.Build
      * A builder for building firework effects.
      */
     @FireworkEffectDsl
-    public interface Builder : Buildable.Builder<FireworkEffect> {
+    public interface Builder : AbstractBuilder<FireworkEffect> {
 
         /**
          * Sets the type of the firework effect to the given [type].
@@ -284,8 +261,6 @@ public interface FireworkEffect : Buildable<FireworkEffect, FireworkEffect.Build
 
     public companion object {
 
-        private val FACTORY = Krypton.factoryProvider.provide<Factory>()
-
         /**
          * Creates a new builder for building a firework effect with the given
          * [type].
@@ -295,6 +270,6 @@ public interface FireworkEffect : Buildable<FireworkEffect, FireworkEffect.Build
          */
         @JvmStatic
         @Contract("_ -> new", pure = true)
-        public fun builder(type: FireworkEffectType): Builder = FACTORY.builder(type)
+        public fun builder(type: FireworkEffectType): Builder = Krypton.factory<Factory>().builder(type)
     }
 }

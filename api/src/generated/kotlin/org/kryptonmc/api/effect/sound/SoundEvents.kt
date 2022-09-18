@@ -2664,5 +2664,5 @@ public object SoundEvents {
 
     // @formatter:on
     @JvmStatic
-    private fun get(key: String): SoundEvent = Registries.SOUND_EVENT[Key.key(key)]!!
+    private fun get(key: String): SoundEvent = Registries.SOUND_EVENT.get(Key.key(key))!!
 }

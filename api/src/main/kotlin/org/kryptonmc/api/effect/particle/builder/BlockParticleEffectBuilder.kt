@@ -15,6 +15,7 @@ import org.kryptonmc.api.effect.particle.ParticleDsl
 /**
  * A builder for building block particle effects.
  */
+@ParticleDsl
 public interface BlockParticleEffectBuilder : BaseParticleEffectBuilder<BlockParticleEffectBuilder> {
 
     /**

@@ -21,7 +21,9 @@ package org.kryptonmc.krypton.world.damage
 import net.kyori.adventure.text.Component
 import org.kryptonmc.api.world.damage.DamageSource
 import org.kryptonmc.api.world.damage.type.DamageType
+import org.kryptonmc.krypton.entity.KryptonEntity
 import org.kryptonmc.krypton.entity.KryptonLivingEntity
+import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.spongepowered.math.vector.Vector3d
 
 open class KryptonDamageSource(override val type: DamageType) : DamageSource {
@@ -53,14 +55,19 @@ open class KryptonDamageSource(override val type: DamageType) : DamageSource {
     val aggravatesTarget: Boolean
         get() = type.aggravatesTarget
 
-    open val isCreativePlayer: Boolean
-        get() = false
+    val isCreativePlayer: Boolean
+        get() = entity() is KryptonPlayer && (entity() as KryptonPlayer).canInstantlyBuild
     open val sourcePosition: Vector3d?
         get() = null
 
+    open fun directEntity(): KryptonEntity? = entity()
+
+    open fun entity(): KryptonEntity? = null
+
     open fun formatDeathMessage(target: KryptonLivingEntity): Component {
         val killer = target.killer
-        if (killer != null) return Component.translatable("${type.translationKey}.player", target.displayName, killer.displayName)
-        return Component.translatable(type.translationKey, target.displayName)
+        val baseMessage = "death.attack.${type.translationKey()}"
+        if (killer != null) return Component.translatable("$baseMessage.player", target.displayName, killer.displayName)
+        return Component.translatable(baseMessage, target.displayName)
     }
 }

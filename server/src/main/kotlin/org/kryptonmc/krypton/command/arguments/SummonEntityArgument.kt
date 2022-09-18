@@ -51,7 +51,7 @@ object SummonEntityArgument : ArgumentType<Key> {
      */
     @JvmStatic
     fun ensureSummonable(key: Key): Key {
-        val type = Registries.ENTITY_TYPE[key]
+        val type = Registries.ENTITY_TYPE.get(key)
         if (!type.isSummonable) throw ERROR_UNKNOWN_ENTITY.create(key)
         return type.key()
     }

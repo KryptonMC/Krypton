@@ -77,7 +77,7 @@ data class KryptonDimensionType(
         check(minimumY % 16 == 0) { "Minimum Y must be a multiple of 16!" }
     }
 
-    override fun key(): Key = Registries.DIMENSION_TYPE[this] ?: UNREGISTERED_KEY
+    override fun key(): Key = Registries.DIMENSION_TYPE.get(this) ?: UNREGISTERED_KEY
 
     override fun toBuilder(): Builder = Builder(this)
 
@@ -245,7 +245,7 @@ data class KryptonDimensionType(
                 Codec.intRange(MINIMUM_HEIGHT, Y_SIZE).fieldOf("height").getting(DimensionType::height),
                 Codec.intRange(0, Y_SIZE).fieldOf("logical_height").getting(DimensionType::logicalHeight),
                 // TODO: This codec is complete rubbish, but it'll be changed in the next version when we rewrite the tag API
-                Codecs.KEY.xmap({ KryptonTagManager.tags[Registries.TAG_TYPES[it]]!![0] as Tag<Block> }, { it.key() }).fieldOf("infiniburn")
+                Codecs.KEY.xmap({ KryptonTagManager.get(Registries.TAG_TYPES.get(it)!!)[0] as Tag<Block> }, { it.key() }).fieldOf("infiniburn")
                     .getting(DimensionType::infiniburn),
                 Codecs.KEY.fieldOf("effects").orElse(KryptonDimensionTypes.OVERWORLD_EFFECTS).getting(DimensionType::effects),
                 Codec.FLOAT.fieldOf("ambient_light").getting(DimensionType::ambientLight),

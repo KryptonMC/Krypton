@@ -45,6 +45,7 @@ import org.kryptonmc.api.tags.EntityTypeTags
 import org.kryptonmc.api.tags.FluidTags
 import org.kryptonmc.api.tags.ItemTags
 import org.kryptonmc.api.tags.TagTypes
+import org.kryptonmc.api.user.ban.BanTypes
 import org.kryptonmc.api.world.biome.Biomes
 import org.kryptonmc.api.world.damage.type.DamageTypes
 import org.kryptonmc.api.world.dimension.DimensionTypes
@@ -72,7 +73,6 @@ import org.kryptonmc.krypton.world.biome.BiomeKeys
 import org.kryptonmc.krypton.world.biome.KryptonBiomes
 import org.kryptonmc.krypton.world.block.KryptonBlocks
 import org.kryptonmc.krypton.world.block.entity.BlockEntityLoader
-import org.kryptonmc.krypton.world.damage.type.KryptonDamageTypes
 import org.kryptonmc.krypton.world.dimension.KryptonDimensionTypes
 import org.kryptonmc.krypton.world.event.GameEvents
 import org.kryptonmc.krypton.world.fluid.KryptonFluids
@@ -99,11 +99,11 @@ object Bootstrap {
         // The only 2 other alternatives here are to do away with the static singleton and revert back, or restructure
         // the entire project to use Guice's dependency inversion (something that should be looked in to at some point)
         val kryptonClass = Class.forName("org.kryptonmc.api.Krypton")
-        Reflection.modifyField(kryptonClass, "internalFactoryProvider", KryptonFactoryProvider)
+        Reflection.modifyField(kryptonClass, "factoryProvider", KryptonFactoryProvider)
         Reflection.modifyField(kryptonClass, "internalRegistryManager", KryptonRegistryManager)
-        Reflection.modifyField(kryptonClass, "internalTagManager", KryptonTagManager)
+        Reflection.modifyField(kryptonClass, "tagManager", KryptonTagManager)
         KryptonFactoryProvider.bootstrap()
-        KryptonRegistryManager.parent // Force initialisation
+        KryptonRegistryManager.bootstrap() // Force initialisation
 
         // Preload all the registry classes to ensure everything is properly registered
         InternalRegistries
@@ -149,9 +149,9 @@ object Bootstrap {
         MetadataKeys
         StatisticTypes
         CustomStatistics
-        KryptonDamageTypes
         DamageTypes
         DyeColors
+        BanTypes
 
         // Preload some other things that would otherwise load on first player join or some other time
         Encryption

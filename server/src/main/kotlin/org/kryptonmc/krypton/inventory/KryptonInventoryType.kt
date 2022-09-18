@@ -26,9 +26,4 @@ import org.kryptonmc.api.inventory.InventoryType
 data class KryptonInventoryType(private val key: Key, override val size: Int, override val defaultTitle: Component) : InventoryType {
 
     override fun key(): Key = key
-
-    object Factory : InventoryType.Factory {
-
-        override fun of(key: Key, size: Int, defaultTitle: Component): InventoryType = KryptonInventoryType(key, size, defaultTitle)
-    }
 }

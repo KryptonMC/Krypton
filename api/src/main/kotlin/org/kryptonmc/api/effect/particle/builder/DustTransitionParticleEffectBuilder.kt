@@ -17,6 +17,7 @@ import org.kryptonmc.api.util.Color
 /**
  * A builder for building dust transition particle effects.
  */
+@ParticleDsl
 public interface DustTransitionParticleEffectBuilder : BaseDustParticleEffectBuilder<DustTransitionParticleEffectBuilder> {
 
     /**

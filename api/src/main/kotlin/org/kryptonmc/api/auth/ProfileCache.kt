@@ -29,7 +29,7 @@ public interface ProfileCache : Iterable<GameProfile> {
      * @param name the name
      * @return the cached profile, or null if not present
      */
-    public operator fun get(name: String): GameProfile?
+    public fun get(name: String): GameProfile?
 
     /**
      * Gets the cached [GameProfile] with the specified [uuid], or returns null
@@ -38,5 +38,5 @@ public interface ProfileCache : Iterable<GameProfile> {
      * @param uuid the uuid
      * @return the cached profile, or null if not present
      */
-    public operator fun get(uuid: UUID): GameProfile?
+    public fun get(uuid: UUID): GameProfile?
 }

@@ -20,7 +20,7 @@ package org.kryptonmc.generators
 
 import net.minecraft.resources.ResourceLocation
 
-fun interface KeyGetter {
+fun interface KeyGetter<T> {
 
-    fun key(field: CollectedField): ResourceLocation
+    fun key(field: CollectedField<T>): ResourceLocation
 }

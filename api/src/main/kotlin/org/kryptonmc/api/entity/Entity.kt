@@ -283,7 +283,7 @@ public interface Entity : Sender, HoverEventSource<HoverEvent.ShowEntity>, Sound
      * @param yaw the yaw amount
      * @param pitch the pitch amount
      */
-    public fun move(x: Double = 0.0, y: Double = 0.0, z: Double = 0.0, yaw: Float = 0F, pitch: Float = 0F)
+    public fun move(x: Double, y: Double, z: Double, yaw: Float, pitch: Float)
 
     /**
      * Moves this entity to the specified x, y, and z coordinates.
@@ -295,7 +295,7 @@ public interface Entity : Sender, HoverEventSource<HoverEvent.ShowEntity>, Sound
      * @param y the Y coordinate
      * @param z the Z coordinate
      */
-    public fun moveTo(x: Double = location.x(), y: Double = location.y(), z: Double = location.z())
+    public fun moveTo(x: Double, y: Double, z: Double)
 
     /**
      * Makes this entity look to the specified yaw and pitch.
@@ -303,7 +303,7 @@ public interface Entity : Sender, HoverEventSource<HoverEvent.ShowEntity>, Sound
      * The values provided to this function are **absolute**, meaning they
      * will replace the existing yaw and pitch values.
      */
-    public fun look(yaw: Float = rotation.x(), pitch: Float = rotation.y())
+    public fun look(yaw: Float, pitch: Float)
 
     /**
      * Repositions this entity to be at the specified x, y, and z coordinates,
@@ -318,13 +318,7 @@ public interface Entity : Sender, HoverEventSource<HoverEvent.ShowEntity>, Sound
      * @param yaw the yaw value
      * @param pitch the pitch value
      */
-    public fun reposition(
-        x: Double = location.x(),
-        y: Double = location.y(),
-        z: Double = location.z(),
-        yaw: Float = rotation.x(),
-        pitch: Float = rotation.y()
-    )
+    public fun reposition(x: Double, y: Double, z: Double, yaw: Float, pitch: Float)
 
     /**
      * Attempts to make the given [entity] ride this entity.

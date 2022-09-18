@@ -19,13 +19,12 @@
 package org.kryptonmc.krypton.world.damage.type
 
 import net.kyori.adventure.key.Key
-import net.kyori.adventure.text.TranslatableComponent
 import org.kryptonmc.api.world.damage.type.DamageType
 
 @JvmRecord
 data class KryptonDamageType(
     private val key: Key,
-    override val translationKey: String,
+    private val translationKey: String,
     override val damagesHelmet: Boolean,
     override val bypassesArmor: Boolean,
     override val bypassesInvulnerability: Boolean,
@@ -43,12 +42,15 @@ data class KryptonDamageType(
 
     override fun key(): Key = key
 
-    class Builder(private var key: Key, private var translationKey: String) : DamageType.Builder {
+    override fun translationKey(): String = translationKey
+
+    class Builder(private var key: Key, private var translationKey: String) {
 
         private var damagesHelmet = false
         private var bypassesArmor = false
         private var bypassesInvulnerability = false
         private var bypassesMagic = false
+        private var bypassesEnchantments = false
         private var exhaustion = 0.1F
         private var fire = false
         private var projectile = false
@@ -56,55 +58,42 @@ data class KryptonDamageType(
         private var magic = false
         private var explosion = false
         private var fall = false
+        private var aggravatesTarget = true
         private var thorns = false
-        private var aggravatesTarget = false
 
-        constructor(source: KryptonDamageType) : this(source.key(), source.translationKey) {
-            translationKey = source.translationKey
-            damagesHelmet = source.damagesHelmet
-            bypassesArmor = source.bypassesArmor
-            bypassesInvulnerability = source.bypassesInvulnerability
-            bypassesMagic = source.bypassesMagic
-            exhaustion = source.exhaustion
-            fire = source.isFire
-            projectile = source.isProjectile
-            scalesWithDifficulty = source.scalesWithDifficulty
-            magic = source.isMagic
-            explosion = source.isExplosion
-            fall = source.isFall
+        fun damagesHelmet(): Builder = apply { damagesHelmet = true }
+
+        fun bypassArmor(): Builder = apply {
+            bypassesArmor = true
+            exhaustion = 0F
         }
 
-        override fun key(key: Key): DamageType.Builder = apply { this.key = key }
+        fun bypassInvulnerability(): Builder = apply { bypassesInvulnerability = true }
 
-        override fun translationKey(translationKey: String): DamageType.Builder = apply { this.translationKey = translationKey }
+        fun bypassMagic(): Builder = apply {
+            bypassesMagic = true
+            exhaustion = 0F
+        }
 
-        override fun damagesHelmet(value: Boolean): DamageType.Builder = apply { damagesHelmet = value }
+        fun bypassEnchantments(): Builder = apply { bypassesEnchantments = true }
 
-        override fun bypassesArmor(value: Boolean): DamageType.Builder = apply { bypassesArmor = value }
+        fun fire(): Builder = apply { fire = true }
 
-        override fun bypassesInvulnerability(value: Boolean): DamageType.Builder = apply { bypassesInvulnerability = value }
+        fun projectile(): Builder = apply { projectile = true }
 
-        override fun bypassesMagic(value: Boolean): DamageType.Builder = apply { bypassesMagic = value }
+        fun scalesWithDifficulty(): Builder = apply { scalesWithDifficulty = true }
 
-        override fun exhaustion(value: Float): DamageType.Builder = apply { exhaustion = value }
+        fun magic(): Builder = apply { magic = true }
 
-        override fun fire(value: Boolean): DamageType.Builder = apply { fire = value }
+        fun explosion(): Builder = apply { explosion = true }
 
-        override fun projectile(value: Boolean): DamageType.Builder = apply { projectile = value }
+        fun fall(): Builder = apply { fall = true }
 
-        override fun scalesWithDifficulty(value: Boolean): DamageType.Builder = apply { scalesWithDifficulty = value }
+        fun noAggravatesTarget(): Builder = apply { aggravatesTarget = false }
 
-        override fun magic(value: Boolean): DamageType.Builder = apply { magic = value }
+        fun thorns(): Builder = apply { thorns = true }
 
-        override fun explosion(value: Boolean): DamageType.Builder = apply { explosion = value }
-
-        override fun fall(value: Boolean): DamageType.Builder = apply { fall = value }
-
-        override fun thorns(value: Boolean): DamageType.Builder = apply { thorns = value }
-
-        override fun aggravatesTarget(value: Boolean): DamageType.Builder = apply { aggravatesTarget = value }
-
-        override fun build(): DamageType = KryptonDamageType(
+        fun build(): KryptonDamageType = KryptonDamageType(
             key,
             translationKey,
             damagesHelmet,
@@ -121,10 +110,5 @@ data class KryptonDamageType(
             thorns,
             aggravatesTarget
         )
-    }
-
-    object Factory : DamageType.Factory {
-
-        override fun builder(key: Key, translationKey: String): DamageType.Builder = Builder(key, translationKey)
     }
 }

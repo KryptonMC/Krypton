@@ -593,7 +593,7 @@ class KryptonPlayer(
 
     override fun canSee(player: Player): Boolean = vanishService.canSee(this, player)
 
-    override fun getPermissionValue(permission: String): TriState = permissionFunction[permission]
+    override fun getPermissionValue(permission: String): TriState = permissionFunction.getPermissionValue(permission)
 
     override fun getSpawnPacket(): Packet = PacketOutSpawnPlayer(this)
 
@@ -683,7 +683,7 @@ class KryptonPlayer(
     }
 
     override fun playSound(sound: Sound, x: Double, y: Double, z: Double) {
-        val type = Registries.SOUND_EVENT[sound.name()]
+        val type = Registries.SOUND_EVENT.get(sound.name())
         if (type != null) {
             session.send(PacketOutSoundEffect(sound, type, x, y, z))
             return
@@ -698,7 +698,7 @@ class KryptonPlayer(
             else -> error("Sound emitter must be an entity or self(), was $emitter")
         }
 
-        val event = Registries.SOUND_EVENT[sound.name()]
+        val event = Registries.SOUND_EVENT.get(sound.name())
         if (event != null) {
             session.send(PacketOutEntitySoundEffect(event, sound.source(), entity.id, sound.volume(), sound.pitch()))
             return

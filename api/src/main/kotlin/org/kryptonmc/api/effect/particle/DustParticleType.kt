@@ -8,25 +8,9 @@
  */
 package org.kryptonmc.api.effect.particle
 
-import net.kyori.adventure.key.Key
-import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.effect.particle.builder.DustParticleEffectBuilder
 
 /**
  * A type of particle that uses a colour and scale for its appearance.
  */
-public interface DustParticleType : ScopedParticleType<DustParticleEffectBuilder> {
-
-    public companion object {
-
-        /**
-         * Creates a new dust particle type with the given [key].
-         *
-         * @param key the key
-         * @return a new dust particle type
-         */
-        @JvmStatic
-        @Contract("_ -> new", pure = true)
-        public fun of(key: Key): DustParticleType = ParticleType.of(key)
-    }
-}
+public interface DustParticleType : ScopedParticleType<DustParticleEffectBuilder>

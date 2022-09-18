@@ -31,7 +31,7 @@ object PaintingSerializer : EntitySerializer<KryptonPainting> {
 
     override fun load(entity: KryptonPainting, data: CompoundTag) {
         BaseEntitySerializer.load(entity, data)
-        entity.picture = Registries.PICTURES[Key.key(data.getString("Motive"))]
+        entity.picture = Registries.PICTURES.get(Key.key(data.getString("Motive")))
         entity.direction = Directions.of2D(data.getByte("Facing").toInt())
     }
 

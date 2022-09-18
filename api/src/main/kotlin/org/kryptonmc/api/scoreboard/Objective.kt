@@ -14,15 +14,13 @@ import org.jetbrains.annotations.ApiStatus
 import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.Krypton
 import org.kryptonmc.api.scoreboard.criteria.Criterion
-import org.kryptonmc.api.util.Buildable
-import org.kryptonmc.api.util.provide
 
 /**
  * An objective for a scoreboard, that has optional criteria that must be met,
  * and information about what it's called and how it should be rendered.
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
-public interface Objective : Buildable<Objective.Builder, Objective> {
+public interface Objective {
 
     /**
      * The name of this objective.
@@ -53,7 +51,7 @@ public interface Objective : Buildable<Objective.Builder, Objective> {
      * A builder for objectives.
      */
     @ScoreboardDsl
-    public interface Builder : AbstractBuilder<Objective> {
+    public interface Builder {
 
         /**
          * Sets the name of the objective to the given [name].
@@ -63,58 +61,67 @@ public interface Objective : Buildable<Objective.Builder, Objective> {
          */
         @ScoreboardDsl
         @Contract("_ -> this", mutates = "this")
-        public fun name(name: String): Builder
+        public fun name(name: String): NamedStep
 
         /**
-         * Sets the display name of the objective to the given [name].
-         *
-         * @param name the display name
-         * @return this builder
+         * An intermediary step that ensures the name of the objective is set.
          */
-        @ScoreboardDsl
-        @Contract("_ -> this", mutates = "this")
-        public fun displayName(name: Component): Builder
+        public interface NamedStep {
+
+            /**
+             * Sets the criterion for the objective to the given [criterion].
+             *
+             * @param criterion the criterion
+             * @return this builder
+             */
+            @ScoreboardDsl
+            @Contract("_ -> this", mutates = "this")
+            public fun criterion(criterion: Criterion): EndStep
+        }
 
         /**
-         * Sets the criterion for the objective to the given [criterion].
-         *
-         * @param criterion the criterion
-         * @return this builder
+         * The end step that ensures the name and the criterion of the
+         * objective are set.
          */
-        @ScoreboardDsl
-        @Contract("_ -> this", mutates = "this")
-        public fun criterion(criterion: Criterion): Builder
+        public interface EndStep : AbstractBuilder<Objective> {
 
-        /**
-         * Sets the render type for the objective to the given [type].
-         *
-         * @param type the render type
-         * @return this builder
-         */
-        @ScoreboardDsl
-        @Contract("_ -> this", mutates = "this")
-        public fun renderType(type: ObjectiveRenderType): Builder
+            /**
+             * Sets the display name of the objective to the given [name].
+             *
+             * @param name the display name
+             * @return this builder
+             */
+            @ScoreboardDsl
+            @Contract("_ -> this", mutates = "this")
+            public fun displayName(name: Component): Builder
+
+            /**
+             * Sets the render type for the objective to the given [type].
+             *
+             * @param type the render type
+             * @return this builder
+             */
+            @ScoreboardDsl
+            @Contract("_ -> this", mutates = "this")
+            public fun renderType(type: ObjectiveRenderType): Builder
+        }
     }
 
     @ApiStatus.Internal
     public interface Factory {
 
-        public fun builder(name: String, criterion: Criterion): Builder
+        public fun builder(): Builder
     }
 
     public companion object {
 
-        private val FACTORY = Krypton.factoryProvider.provide<Factory>()
-
         /**
          * Creates a new builder for building an objective.
          *
-         * @param name the name
-         * @param criterion the criterion
          * @return a new builder
          */
         @JvmStatic
         @Contract("_, _ -> new", pure = true)
-        public fun builder(name: String, criterion: Criterion): Builder = FACTORY.builder(name, criterion)
+        public fun builder(): Builder = Krypton.factory<Factory>().builder()
     }
 }

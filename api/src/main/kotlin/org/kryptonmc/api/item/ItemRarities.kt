@@ -9,8 +9,6 @@
 package org.kryptonmc.api.item
 
 import net.kyori.adventure.key.Key
-import net.kyori.adventure.text.format.NamedTextColor
-import net.kyori.adventure.text.format.TextColor
 import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.api.util.Catalogue
 
@@ -22,18 +20,15 @@ public object ItemRarities {
 
     // @formatter:off
     @JvmField
-    public val COMMON: ItemRarity = register("common", NamedTextColor.WHITE)
+    public val COMMON: ItemRarity = get("common")
     @JvmField
-    public val UNCOMMON: ItemRarity = register("uncommon", NamedTextColor.YELLOW)
+    public val UNCOMMON: ItemRarity = get("uncommon")
     @JvmField
-    public val RARE: ItemRarity = register("rare", NamedTextColor.AQUA)
+    public val RARE: ItemRarity = get("rare")
     @JvmField
-    public val EPIC: ItemRarity = register("epic", NamedTextColor.LIGHT_PURPLE)
+    public val EPIC: ItemRarity = get("epic")
 
     // @formatter:on
     @JvmStatic
-    private fun register(name: String, color: TextColor): ItemRarity {
-        val key = Key.key("krypton", name)
-        return Registries.ITEM_RARITIES.register(key, ItemRarity.of(key, color))
-    }
+    private fun get(name: String): ItemRarity = Registries.ITEM_RARITIES.get(Key.key("krypton", name))!!
 }

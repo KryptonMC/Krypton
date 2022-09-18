@@ -14,7 +14,6 @@ import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.Krypton
 import org.kryptonmc.api.registry.Registry
 import org.kryptonmc.api.util.CataloguedBy
-import org.kryptonmc.api.util.provide
 
 /**
  * A key pointing to some form of resource.
@@ -45,8 +44,6 @@ public interface ResourceKey<T> {
 
     public companion object {
 
-        private val FACTORY = Krypton.factoryProvider.provide<Factory>()
-
         /**
          * Creates a new resource key, or returns an existing one if one with
          * the given parameters has already been created, with the given
@@ -59,7 +56,7 @@ public interface ResourceKey<T> {
          */
         @JvmStatic
         @Contract("_, _ -> new", pure = true)
-        public fun <T> of(registry: Key, location: Key): ResourceKey<T> = FACTORY.of(registry, location)
+        public fun <T> of(registry: Key, location: Key): ResourceKey<T> = Krypton.factory<Factory>().of(registry, location)
 
         /**
          * Creates a new resource key, or returns an existing one if one with

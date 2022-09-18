@@ -47,7 +47,7 @@ data class KryptonCommandMeta(override val name: String, override val aliases: I
         final override fun aliases(vararg aliases: String): B = aliases(aliases.asIterable())
     }
 
-    class Builder(name: String) : AbstractBuilder<Builder>(name), CommandMeta.Builder {
+    class Builder(name: String) : AbstractBuilder<Builder>(name) {
 
         constructor(meta: CommandMeta) : this(meta.name) {
             aliases.addAll(meta.aliases)

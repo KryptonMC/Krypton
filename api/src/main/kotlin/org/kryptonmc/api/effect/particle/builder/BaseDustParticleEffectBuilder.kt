@@ -14,6 +14,7 @@ import org.kryptonmc.api.effect.particle.ParticleDsl
 /**
  * The base builder for building dust particle effects.
  */
+@ParticleDsl
 public interface BaseDustParticleEffectBuilder<B : BaseDustParticleEffectBuilder<B>> : BaseColorParticleEffectBuilder<B> {
 
     /**

@@ -13,7 +13,6 @@ import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.entity.EntityType
 import org.kryptonmc.api.item.ItemType
 import org.kryptonmc.api.registry.Registries
-import org.kryptonmc.api.registry.Registry
 import org.kryptonmc.api.util.Catalogue
 
 /**
@@ -24,29 +23,26 @@ public object StatisticTypes {
 
     // @formatter:off
     @JvmField
-    public val BLOCK_MINED: StatisticType<Block> = register("mined", Registries.BLOCK)
+    public val BLOCK_MINED: StatisticType<Block> = get("mined")
     @JvmField
-    public val ITEM_CRAFTED: StatisticType<ItemType> = register("crafted", Registries.ITEM)
+    public val ITEM_CRAFTED: StatisticType<ItemType> = get("crafted")
     @JvmField
-    public val ITEM_USED: StatisticType<ItemType> = register("used", Registries.ITEM)
+    public val ITEM_USED: StatisticType<ItemType> = get("used")
     @JvmField
-    public val ITEM_BROKEN: StatisticType<ItemType> = register("broken", Registries.ITEM)
+    public val ITEM_BROKEN: StatisticType<ItemType> = get("broken")
     @JvmField
-    public val ITEM_PICKED_UP: StatisticType<ItemType> = register("picked_up", Registries.ITEM)
+    public val ITEM_PICKED_UP: StatisticType<ItemType> = get("picked_up")
     @JvmField
-    public val ITEM_DROPPED: StatisticType<ItemType> = register("dropped", Registries.ITEM)
+    public val ITEM_DROPPED: StatisticType<ItemType> = get("dropped")
     @JvmField
-    public val ENTITY_KILLED: StatisticType<EntityType<*>> = register("killed", Registries.ENTITY_TYPE)
+    public val ENTITY_KILLED: StatisticType<EntityType<*>> = get("killed")
     @JvmField
-    public val ENTITY_KILLED_BY: StatisticType<EntityType<*>> = register("killed_by", Registries.ENTITY_TYPE)
+    public val ENTITY_KILLED_BY: StatisticType<EntityType<*>> = get("killed_by")
     @JvmField
-    public val CUSTOM: StatisticType<Key> = register("custom", Registries.CUSTOM_STATISTIC)
+    public val CUSTOM: StatisticType<Key> = get("custom")
 
     // @formatter:on
-    @Suppress("UNCHECKED_CAST")
     @JvmStatic
-    private fun <T : Any> register(name: String, registry: Registry<T>): StatisticType<T> {
-        val key = Key.key(name)
-        return Registries.STATISTIC_TYPE.register(key, StatisticType.of(key, registry))
-    }
+    @Suppress("UNCHECKED_CAST")
+    private fun <T : Any> get(name: String): StatisticType<T> = Registries.STATISTIC_TYPE.get(Key.key(name))!! as StatisticType<T>
 }

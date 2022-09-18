@@ -35,5 +35,5 @@ public interface Tag<T : Any> : Keyed {
      * @param value the value
      * @return true if the value is in this tag, false otherwise
      */
-    public operator fun contains(value: T): Boolean = values.contains(value)
+    public fun contains(value: T): Boolean = values.contains(value)
 }

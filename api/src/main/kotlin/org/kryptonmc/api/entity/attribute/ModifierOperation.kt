@@ -9,18 +9,17 @@
 package org.kryptonmc.api.entity.attribute
 
 /**
- * Represents an operation that can be [applied][apply] to
- * [AttributeModifier]s.
+ * An operation that can be applied to attribute modifiers.
  */
 public fun interface ModifierOperation {
 
     /**
-     * Applies this operation to the specified [values] and returns the result.
+     * Applies this operation to the given [modifiers] and returns the result.
      *
-     * @param values the values to apply
-     * @return the result of applying this operation to the specified values
+     * @param modifiers the modifiers to apply
+     * @return the result of applying this operation to the given modifiers
      */
-    public fun apply(base: Double, values: Set<AttributeModifier>): Double
+    public fun apply(base: Double, modifiers: Set<AttributeModifier>): Double
 
     public companion object {
 
@@ -54,7 +53,7 @@ public fun interface ModifierOperation {
          */
         @JvmField
         public val MULTIPLY_TOTAL: ModifierOperation = ModifierOperation { base, values ->
-            values.fold(base) { acc, value -> acc * (1 + value.amount) }
+            values.fold(base) { acc, value -> acc * (value.amount + 1) }
         }
     }
 }

@@ -15,22 +15,22 @@ package org.kryptonmc.api.block.meta
  * adjacent chest blocks where necessary, for example, with the double chest,
  * where adjacent chests need to be attached across blocks.
  */
-public enum class ChestType {
+public enum class ChestType(private val oppositeId: Int) {
 
     /**
      * A single chest that is not connected to any other chest.
      */
-    SINGLE,
+    SINGLE(0),
 
     /**
      * The left half of a double chest.
      */
-    LEFT,
+    LEFT(2),
 
     /**
      * The right half of a double chest.
      */
-    RIGHT;
+    RIGHT(1);
 
     /**
      * The chest type opposite to this chest type.
@@ -41,11 +41,11 @@ public enum class ChestType {
      * and so the opposite will just be single.
      */
     @get:JvmName("opposite")
-    public val opposite: ChestType by lazy {
-        when (this) {
-            SINGLE -> SINGLE
-            LEFT -> RIGHT
-            RIGHT -> LEFT
-        }
+    public val opposite: ChestType
+        get() = BY_ID[oppositeId]
+
+    public companion object {
+
+        private val BY_ID = values()
     }
 }

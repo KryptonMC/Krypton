@@ -8,7 +8,10 @@
  */
 package org.kryptonmc.api.effect.particle.builder
 
+import org.kryptonmc.api.effect.particle.ParticleDsl
+
 /**
  * A builder for building colour particle effects.
  */
+@ParticleDsl
 public interface ColorParticleEffectBuilder : BaseColorParticleEffectBuilder<ColorParticleEffectBuilder>

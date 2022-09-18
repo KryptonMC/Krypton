@@ -20,14 +20,11 @@ public object BanTypes {
 
     // @formatter:off
     @JvmField
-    public val IP: BanType = register<Ban.IP>("ip")
+    public val IP: BanType = get("ip")
     @JvmField
-    public val PROFILE: BanType = register<Ban.Profile>("profile")
+    public val PROFILE: BanType = get("profile")
 
     // @formatter:on
     @JvmStatic
-    private inline fun <reified T : Ban> register(name: String): BanType {
-        val key = Key.key("krypton", name)
-        return Registries.BAN_TYPES.register(key, BanType.of(key, T::class.java))
-    }
+    private fun get(name: String): BanType = Registries.BAN_TYPES.get(Key.key(name))!!
 }

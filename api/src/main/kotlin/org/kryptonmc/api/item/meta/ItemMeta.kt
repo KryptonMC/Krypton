@@ -19,7 +19,6 @@ import org.kryptonmc.api.entity.attribute.AttributeType
 import org.kryptonmc.api.item.ItemAttribute
 import org.kryptonmc.api.item.ItemType
 import org.kryptonmc.api.item.data.ItemFlag
-import org.kryptonmc.api.util.provide
 import org.kryptonmc.api.world.GameMode
 
 /**
@@ -353,8 +352,6 @@ public interface ItemMeta {
 
     public companion object {
 
-        private val FACTORY = Krypton.factoryProvider.provide<Factory>()
-
         /**
          * Creates a new builder for building item metadata.
          *
@@ -362,10 +359,11 @@ public interface ItemMeta {
          */
         @JvmStatic
         @Contract("-> new", pure = true)
-        public fun builder(): Builder = FACTORY.builder()
+        public fun builder(): Builder = Krypton.factory<Factory>().builder()
 
         @JvmSynthetic
         @PublishedApi
-        internal fun <B : ItemMetaBuilder<B, P>, P : ItemMetaBuilder.Provider<B>> builder(type: Class<P>): B = FACTORY.builder(type)
+        internal fun <B : ItemMetaBuilder<B, P>, P : ItemMetaBuilder.Provider<B>> builder(type: Class<P>): B =
+            Krypton.factory<Factory>().builder(type)
     }
 }

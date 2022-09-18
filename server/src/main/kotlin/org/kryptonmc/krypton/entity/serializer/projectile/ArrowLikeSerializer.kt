@@ -51,7 +51,7 @@ object ArrowLikeSerializer : EntitySerializer<KryptonArrowLike> {
 
         if (data.contains("SoundEvent", StringTag.ID)) {
             val defaultHitGroundSound = if (entity is KryptonTrident) SoundEvents.TRIDENT_HIT_GROUND else SoundEvents.ARROW_HIT
-            entity.sound = Registries.SOUND_EVENT[Key.key(data.getString("SoundEvent"))] ?: defaultHitGroundSound
+            entity.sound = Registries.SOUND_EVENT.get(Key.key(data.getString("SoundEvent"))) ?: defaultHitGroundSound
         }
     }
 

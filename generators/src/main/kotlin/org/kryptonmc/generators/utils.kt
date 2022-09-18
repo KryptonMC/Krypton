@@ -18,6 +18,8 @@
  */
 package org.kryptonmc.generators
 
+import java.lang.reflect.Field
+import java.lang.reflect.Modifier
 import java.nio.file.Path
 import kotlin.io.path.createDirectories
 import kotlin.io.path.createFile
@@ -26,12 +28,18 @@ fun Path.tryCreateDirectories(): Path = catchAndReturnSelf { createDirectories()
 
 fun Path.tryCreateFile(): Path = catchAndReturnSelf { createFile() }
 
-private fun <T> T.catchAndReturnSelf(action: () -> Unit): T = try {
+private inline fun <T> T.catchAndReturnSelf(action: () -> Unit): T = try {
     action()
     this
-} catch (exception: Exception) {
+} catch (_: Exception) {
     this
 }
+
+fun Class<*>.staticFields(): Sequence<Field> = declaredFields.asSequence().filter { Modifier.isStatic(it.modifiers) }
+
+fun <T> Class<*>.staticConstantFields(type: Class<T>): Sequence<Field> = staticFields().filter { type.isAssignableFrom(it.type) }
+
+fun <T> Class<*>.collectFields(type: Class<T>): Sequence<CollectedField<T>> = staticConstantFields(type).map { CollectedField(it, type) }
 
 /**
  * Kotlinpoet likes to enforce certain restrictions when you use it to generate

@@ -8,11 +8,8 @@
  */
 package org.kryptonmc.api.user.ban
 
-import net.kyori.adventure.text.Component
-import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.auth.GameProfile
 import java.net.InetAddress
-import java.time.OffsetDateTime
 
 /**
  * A service that provides a way to ban users.
@@ -38,7 +35,7 @@ public interface BanService {
      * @param ban the ban to check
      * @return true if the ban is registered, false otherwise
      */
-    public operator fun contains(ban: Ban): Boolean
+    public fun isRegistered(ban: Ban): Boolean
 
     /**
      * Gets the profile ban targeting the given [profile], or returns null if
@@ -47,7 +44,7 @@ public interface BanService {
      * @param profile the profile
      * @return the profile ban targeting the profile, or null if not present
      */
-    public operator fun get(profile: GameProfile): Ban.Profile?
+    public fun get(profile: GameProfile): Ban.Profile?
 
     /**
      * Gets the IP ban targeting the given [address], or returns null if there
@@ -56,7 +53,7 @@ public interface BanService {
      * @param address the address
      * @return the IP ban targeting the address, or null if not present
      */
-    public operator fun get(address: InetAddress): Ban.IP?
+    public fun get(address: InetAddress): Ban.IP?
 
     /**
      * Attempts to pardon the given [profile], removing any bans associated
@@ -90,41 +87,4 @@ public interface BanService {
      * @param ban the ban
      */
     public fun remove(ban: Ban)
-
-    /**
-     * Creates a new builder for building a ban with the given [type].
-     *
-     * @param type the type of the ban
-     * @return a new ban builder
-     */
-    @Contract("_ -> new", pure = true)
-    public fun createBuilder(type: BanType): Ban.Builder
-
-    /**
-     * Creates a new profile ban for the given [profile], expiring on the given
-     * [expirationDate].
-     *
-     * @param profile the profile to ban
-     * @param source the source of the ban
-     * @param reason the reason why the profile was banned
-     * @param expirationDate the date when the ban expires
-     * @return a new profile ban for the profile
-     */
-    @Contract("_, _, _, _ -> new", pure = true)
-    public fun createProfileBan(profile: GameProfile, source: Component, reason: Component?, expirationDate: OffsetDateTime?): Ban =
-        createBuilder(BanTypes.PROFILE).profile(profile).expirationDate(expirationDate).build()
-
-    /**
-     * Creates a new IP ban for the given IP [address], expiring on the given
-     * [expirationDate].
-     *
-     * @param address the IP address to ban
-     * @param source the source of the ban
-     * @param reason the reason why the IP was banned
-     * @param expirationDate the date when the ban expires
-     * @return a new IP ban for the IP address
-     */
-    @Contract("_, _, _, _ -> new", pure = true)
-    public fun createIPBan(address: InetAddress, source: Component, reason: Component?, expirationDate: OffsetDateTime?): Ban =
-        createBuilder(BanTypes.PROFILE).address(address).expirationDate(expirationDate).build()
 }

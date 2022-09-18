@@ -17,7 +17,6 @@ import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.Krypton
 import org.kryptonmc.api.item.meta.ItemMeta
 import org.kryptonmc.api.item.meta.ItemMetaBuilder
-import org.kryptonmc.api.util.provide
 import java.util.function.Consumer
 
 /**
@@ -284,8 +283,6 @@ public interface ItemStack : Buildable<ItemStack, ItemStack.Builder>, HoverEvent
 
     public companion object {
 
-        private val FACTORY = Krypton.factoryProvider.provide<Factory>()
-
         /**
          * Creates a new builder for building an item stack.
          *
@@ -293,7 +290,7 @@ public interface ItemStack : Buildable<ItemStack, ItemStack.Builder>, HoverEvent
          */
         @JvmStatic
         @Contract("-> new", pure = true)
-        public fun builder(): Builder = FACTORY.builder()
+        public fun builder(): Builder = Krypton.factory<Factory>().builder()
 
         /**
          * Creates a new item stack with the given [type].
@@ -303,7 +300,7 @@ public interface ItemStack : Buildable<ItemStack, ItemStack.Builder>, HoverEvent
          */
         @JvmStatic
         @Contract("_ -> new", pure = true)
-        public fun of(type: ItemType): ItemStack = FACTORY.builder().type(type).build()
+        public fun of(type: ItemType): ItemStack = Krypton.factory<Factory>().builder().type(type).build()
 
         /**
          * Creates a new item stack with the given [type] and [amount].
@@ -314,7 +311,7 @@ public interface ItemStack : Buildable<ItemStack, ItemStack.Builder>, HoverEvent
          */
         @JvmStatic
         @Contract("_, _ -> new", pure = true)
-        public fun of(type: ItemType, amount: Int): ItemStack = FACTORY.builder().type(type).amount(amount).build()
+        public fun of(type: ItemType, amount: Int): ItemStack = Krypton.factory<Factory>().builder().type(type).amount(amount).build()
 
         /**
          * Gets the empty item stack.
@@ -331,7 +328,7 @@ public interface ItemStack : Buildable<ItemStack, ItemStack.Builder>, HoverEvent
          */
         @JvmStatic
         @Contract(pure = true)
-        public fun empty(): ItemStack = FACTORY.empty()
+        public fun empty(): ItemStack = Krypton.factory<Factory>().empty()
     }
 }
 

@@ -14,7 +14,6 @@ import com.mojang.brigadier.tree.LiteralCommandNode
 import org.jetbrains.annotations.ApiStatus
 import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.Krypton
-import org.kryptonmc.api.util.provide
 
 /**
  * A command that is backed by a Brigadier [LiteralCommandNode].
@@ -37,8 +36,6 @@ public interface BrigadierCommand : Command {
 
     public companion object {
 
-        private val FACTORY = Krypton.factoryProvider.provide<Factory>()
-
         /**
          * Creates a new command backed by the given Brigadier command [node].
          *
@@ -47,7 +44,7 @@ public interface BrigadierCommand : Command {
          */
         @JvmStatic
         @Contract("_ -> new", pure = true)
-        public fun of(node: LiteralCommandNode<Sender>): BrigadierCommand = FACTORY.of(node)
+        public fun of(node: LiteralCommandNode<Sender>): BrigadierCommand = Krypton.factory<Factory>().of(node)
 
         /**
          * Creates a new command backed by the Brigadier command node built

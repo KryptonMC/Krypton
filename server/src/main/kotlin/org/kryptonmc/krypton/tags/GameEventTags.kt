@@ -28,5 +28,5 @@ object GameEventTags {
     val IGNORE_VIBRATIONS_SNEAKING: KryptonTag<GameEvent> = get("ignore_vibrations_sneaking")
 
     @JvmStatic
-    private fun get(name: String): KryptonTag<GameEvent> = KryptonTagManager[KryptonTagTypes.GAME_EVENTS, "minecraft:$name"]!!
+    private fun get(name: String): KryptonTag<GameEvent> = KryptonTagManager.get(KryptonTagTypes.GAME_EVENTS, "minecraft:$name")!!
 }

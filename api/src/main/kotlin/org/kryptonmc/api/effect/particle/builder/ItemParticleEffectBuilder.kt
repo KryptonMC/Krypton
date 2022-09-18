@@ -15,6 +15,7 @@ import org.kryptonmc.api.item.ItemStack
 /**
  * A builder for building item particle effects.
  */
+@ParticleDsl
 public interface ItemParticleEffectBuilder : BaseParticleEffectBuilder<ItemParticleEffectBuilder> {
 
     /**

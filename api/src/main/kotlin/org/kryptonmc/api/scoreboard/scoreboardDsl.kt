@@ -11,7 +11,6 @@
 package org.kryptonmc.api.scoreboard
 
 import org.jetbrains.annotations.Contract
-import org.kryptonmc.api.scoreboard.criteria.Criterion
 
 @Target(AnnotationTarget.CLASS, AnnotationTarget.FUNCTION)
 @Retention(AnnotationRetention.SOURCE)
@@ -29,21 +28,6 @@ internal annotation class ScoreboardDsl
 @JvmSynthetic
 @Contract("_ -> new", pure = true)
 public inline fun scoreboard(builder: Scoreboard.Builder.() -> Unit): Scoreboard = Scoreboard.builder().apply(builder).build()
-
-/**
- * Creates a new objective with the given [name], [criterion], and the result
- * of applying the given [builder] function.
- *
- * @param name the name
- * @param criterion the criterion
- * @param builder the builder function to apply
- * @return a new objective
- */
-@ScoreboardDsl
-@JvmSynthetic
-@Contract("_, _, _ -> new", pure = true)
-public inline fun objective(name: String, criterion: Criterion, builder: Objective.Builder.() -> Unit): Objective =
-    Objective.builder(name, criterion).apply(builder).build()
 
 /**
  * Creates a new team with the given [name] and the result of applying the
