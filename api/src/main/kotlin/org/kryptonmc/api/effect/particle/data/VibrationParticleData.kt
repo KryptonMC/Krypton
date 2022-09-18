@@ -42,6 +42,6 @@ public interface VibrationParticleData : ParticleData {
          */
         @JvmStatic
         @Contract("_ -> new", pure = true)
-        public fun of(destination: Vector3d, ticks: Int): VibrationParticleData = ParticleData.FACTORY.vibration(destination, ticks)
+        public fun of(destination: Vector3d, ticks: Int): VibrationParticleData = ParticleData.factory().vibration(destination, ticks)
     }
 }

@@ -25,6 +25,7 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder
 import net.kyori.adventure.text.Component
 import org.kryptonmc.api.command.Sender
 import org.kryptonmc.api.registry.Registries
+import org.kryptonmc.api.world.rule.GameRule
 import org.kryptonmc.krypton.command.InternalCommand
 import org.kryptonmc.krypton.command.argument
 import org.kryptonmc.krypton.command.permission
@@ -41,7 +42,7 @@ object GameRuleCommand : InternalCommand {
         Registries.GAME_RULES.values.forEach { rule ->
             val gameRule = LiteralArgumentBuilder.literal<Sender>(rule.name).runs {
                 val sender = it.source as? KryptonPlayer ?: return@runs
-                val gameRule = Component.text(sender.world.gameRules[rule].toString())
+                val gameRule = Component.text(sender.world.gameRules.get(rule).toString())
                 sender.sendMessage(Component.translatable("commands.gamerule.query", Component.text(rule.name), gameRule))
             }
             if (rule.default is Boolean) {
@@ -49,7 +50,7 @@ object GameRuleCommand : InternalCommand {
                     runs {
                         val sender = it.source as? KryptonPlayer ?: return@runs
                         val value = it.argument<Boolean>("value")
-                        sender.world.gameRules[rule] = value
+                        sender.world.gameRules.set(rule as GameRule<Any>, value)
                         val name = Component.text(rule.name)
                         sender.sendMessage(Component.translatable("commands.gamerule.set", name, Component.text(value.toString())))
                     }
@@ -59,7 +60,7 @@ object GameRuleCommand : InternalCommand {
                     runs {
                         val sender = it.source as? KryptonPlayer ?: return@runs
                         val value = it.argument<Int>("value")
-                        sender.world.gameRules[rule] = value
+                        sender.world.gameRules.set(rule as GameRule<Any>, value)
                         val name = Component.text(rule.name)
                         sender.sendMessage(Component.translatable("commands.gamerule.set", name, Component.text(value.toString())))
                     }

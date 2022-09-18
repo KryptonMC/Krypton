@@ -245,7 +245,7 @@ object EntityFactory {
     @JvmStatic
     fun create(world: KryptonWorld, id: String, nbt: CompoundTag?): KryptonEntity? {
         return try {
-            val type = Registries.ENTITY_TYPE[Key.key(id)]
+            val type = Registries.ENTITY_TYPE.get(Key.key(id))
             val entity = create(type, world)
             if (entity == null) {
                 LOGGER.warn("No entity found with ID $id!")

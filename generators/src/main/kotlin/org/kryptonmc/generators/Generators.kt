@@ -23,7 +23,6 @@ import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.STAR
 import net.minecraft.SharedConstants
 import net.minecraft.core.Registry
-import net.minecraft.data.BuiltinRegistries
 import net.minecraft.resources.ResourceKey
 import net.minecraft.server.Bootstrap
 import net.minecraft.tags.BannerPatternTags
@@ -49,29 +48,25 @@ fun main() {
     Bootstrap.bootStrap()
     val output = Path.of("api/src/generated/kotlin")
     val generator = StandardGenerator(output)
-    generator.run<Blocks, Block>(Registry.BLOCK, "block/Blocks", "block/Block", "BLOCK")
+    generator.run<Blocks, Block>(Registry.BLOCK, "block.Blocks", "block.Block", "BLOCK")
     SoundEventGenerator(output).run()
-    generator.run<Fluids, Fluid>(Registry.FLUID, "fluid/Fluids", "fluid/Fluid", "FLUID")
-    generator.run<Items, Item>(Registry.ITEM, "item/ItemTypes", "item/ItemType", "ITEM")
-    generator.run<Biomes, ResourceKey<*>>(BuiltinRegistries.BIOME, "world.biome/Biomes", "world.biome/Biome", "BIOME") {
-        (it.value as ResourceKey<*>).location()
-    }
-    generator.run<Attributes, Attribute>(Registry.ATTRIBUTE, "entity.attribute/AttributeTypes", "entity.attribute/AttributeType", "ATTRIBUTE")
+    generator.run<Fluids, Fluid>(Registry.FLUID, "fluid.Fluids", "fluid.Fluid", "FLUID")
+    generator.run<Items, Item>(Registry.ITEM, "item.ItemTypes", "item.ItemType", "ITEM")
+    generator.run<Biomes, ResourceKey<*>>("world.biome.Biomes", "world.biome.Biome", "BIOME") { it.value.location() }
+    generator.run<Attributes, Attribute>(Registry.ATTRIBUTE, "entity.attribute.AttributeTypes", "entity.attribute.AttributeType", "ATTRIBUTE")
     generator.run<BlockEntityType<*>, BlockEntityType<*>>(
         Registry.BLOCK_ENTITY_TYPE,
-        "block.entity/BlockEntityTypes",
-        "block.entity/BlockEntityType",
+        "block.entity.BlockEntityTypes",
+        "block.entity.BlockEntityType",
         "BLOCK_ENTITY_TYPE"
     )
-    DyeColorGenerator(output).run()
-    val pkg = "org.kryptonmc.api"
-    val patternType = ClassName("org.kryptonmc.api.block.entity.banner", "BannerPatternType")
-    val entityType = ClassName("$pkg.entity", "EntityType").parameterizedBy(STAR)
+    val patternType = ClassName("$PACKAGE.block.entity.banner", "BannerPatternType")
+    val entityType = ClassName("$PACKAGE.entity", "EntityType").parameterizedBy(STAR)
     val tagGenerator = TagGenerator(output)
     tagGenerator.run<BannerPatternTags>("BannerPatternTags", "BANNER_PATTERNS", patternType, "BannerPatternType")
-    tagGenerator.run<BiomeTags>("BiomeTags", "BIOMES", ClassName("org.kryptonmc.api.world.biome", "Biome"), "Biome")
-    tagGenerator.run<BlockTags>("BlockTags", "BLOCKS", ClassName("org.kryptonmc.api.block", "Block"), "Block")
+    tagGenerator.run<BiomeTags>("BiomeTags", "BIOMES", ClassName("$PACKAGE.world.biome", "Biome"), "Biome")
+    tagGenerator.run<BlockTags>("BlockTags", "BLOCKS", ClassName("$PACKAGE.block", "Block"), "Block")
     tagGenerator.run<EntityTypeTags>("EntityTypeTags", "ENTITY_TYPES", entityType, "EntityType<\\*>")
-    tagGenerator.run<FluidTags>("FluidTags", "FLUIDS", ClassName("org.kryptonmc.api.fluid", "Fluid"), "Fluid")
-    tagGenerator.run<ItemTags>("ItemTags", "ITEMS", ClassName("org.kryptonmc.api.item", "ItemType"), "ItemType")
+    tagGenerator.run<FluidTags>("FluidTags", "FLUIDS", ClassName("$PACKAGE.fluid", "Fluid"), "Fluid")
+    tagGenerator.run<ItemTags>("ItemTags", "ITEMS", ClassName("$PACKAGE.item", "ItemType"), "ItemType")
 }

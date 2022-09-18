@@ -34,7 +34,7 @@ public interface DustParticleData : ColorParticleData {
          */
         @JvmStatic
         @Contract("_, _ -> new", pure = true)
-        public fun of(color: Color, scale: Float): DustParticleData = ParticleData.FACTORY.dust(color, scale)
+        public fun of(color: Color, scale: Float): DustParticleData = ParticleData.factory().dust(color, scale)
 
         /**
          * Creates new dust particle data with the given [red], [green], and

@@ -25,9 +25,4 @@ import org.kryptonmc.api.block.entity.banner.BannerPatternType
 data class KryptonBannerPatternType(private val key: Key, override val code: String) : BannerPatternType {
 
     override fun key(): Key = key
-
-    object Factory : BannerPatternType.Factory {
-
-        override fun of(key: Key, code: String): BannerPatternType = KryptonBannerPatternType(key, code)
-    }
 }

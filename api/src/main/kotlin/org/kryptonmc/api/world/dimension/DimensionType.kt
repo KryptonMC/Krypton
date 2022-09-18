@@ -18,7 +18,6 @@ import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.tags.Tag
 import org.kryptonmc.api.util.Buildable
 import org.kryptonmc.api.util.CataloguedBy
-import org.kryptonmc.api.util.provide
 import java.util.OptionalLong
 
 /**
@@ -581,8 +580,6 @@ public interface DimensionType : Buildable<DimensionType.Builder, DimensionType>
 
     public companion object {
 
-        private val FACTORY = Krypton.factoryProvider.provide<Factory>()
-
         /**
          * Creates a new builder for building dimension types.
          *
@@ -590,6 +587,6 @@ public interface DimensionType : Buildable<DimensionType.Builder, DimensionType>
          */
         @JvmStatic
         @Contract("_ -> new", pure = true)
-        public fun builder(): Builder = FACTORY.builder()
+        public fun builder(): Builder = Krypton.factory<Factory>().builder()
     }
 }

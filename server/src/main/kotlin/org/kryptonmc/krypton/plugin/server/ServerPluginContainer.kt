@@ -20,6 +20,7 @@ package org.kryptonmc.krypton.plugin.server
 
 import org.kryptonmc.api.plugin.PluginContainer
 import org.kryptonmc.api.plugin.PluginDescription
+import org.kryptonmc.krypton.plugin.KryptonPluginDescription
 
 /**
  * A plugin container representing the current server.
@@ -30,6 +31,6 @@ import org.kryptonmc.api.plugin.PluginDescription
  */
 object ServerPluginContainer : PluginContainer {
 
-    override val description: PluginDescription = ServerPluginDescription
+    override val description: PluginDescription = KryptonPluginDescription.SERVER
     override val instance: Any? = null
 }

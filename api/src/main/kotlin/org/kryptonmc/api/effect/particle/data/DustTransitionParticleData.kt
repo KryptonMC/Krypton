@@ -57,7 +57,7 @@ public interface DustTransitionParticleData : DustParticleData {
          */
         @JvmStatic
         @Contract("_, _, _ -> new", pure = true)
-        public fun of(from: Color, scale: Float, to: Color): DustTransitionParticleData = ParticleData.FACTORY.transition(from, scale, to)
+        public fun of(from: Color, scale: Float, to: Color): DustTransitionParticleData = ParticleData.factory().transition(from, scale, to)
 
         /**
          * Creates new dust color transition particle data with the given

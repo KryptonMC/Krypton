@@ -47,12 +47,6 @@ import org.kryptonmc.api.world.rule.GameRule
 public object Registries {
 
     /**
-     * The parent registry. All registries should be a child of this registry.
-     */
-    @JvmField
-    public val PARENT: Registry<out Registry<out Any>> = Krypton.registryManager.parent
-
-    /**
      * All built-in vanilla registries.
      */
     @JvmField
@@ -94,7 +88,7 @@ public object Registries {
     @JvmField
     public val PICTURES: DefaultedRegistry<Picture> = createDefaulted(ResourceKeys.PICTURES, Key.key("kebab"))
     @JvmField
-    public val GAME_RULES: Registry<GameRule<Any>> = create(ResourceKeys.GAME_RULES)
+    public val GAME_RULES: Registry<GameRule<*>> = create(ResourceKeys.GAME_RULES)
     @JvmField
     public val MODIFIER_OPERATIONS: Registry<ModifierOperation> = create(ResourceKeys.MODIFIER_OPERATIONS)
     @JvmField

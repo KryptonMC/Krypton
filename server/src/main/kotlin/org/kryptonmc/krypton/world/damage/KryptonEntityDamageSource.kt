@@ -20,29 +20,29 @@ package org.kryptonmc.krypton.world.damage
 
 import net.kyori.adventure.text.Component
 import org.kryptonmc.api.entity.Hand
-import org.kryptonmc.api.entity.LivingEntity
-import org.kryptonmc.api.entity.player.Player
 import org.kryptonmc.api.world.damage.EntityDamageSource
 import org.kryptonmc.api.world.damage.type.DamageType
 import org.kryptonmc.krypton.entity.KryptonEntity
 import org.kryptonmc.krypton.entity.KryptonLivingEntity
+import org.kryptonmc.krypton.entity.player.KryptonPlayer
+import org.kryptonmc.krypton.item.KryptonItemStack
 import org.spongepowered.math.vector.Vector3d
 
 open class KryptonEntityDamageSource(type: DamageType, final override val entity: KryptonEntity) : KryptonDamageSource(type), EntityDamageSource {
 
-    override val isCreativePlayer: Boolean
-        get() = entity is Player && entity.canInstantlyBuild
     override val sourcePosition: Vector3d?
         get() = entity.location
     override val scalesWithDifficulty: Boolean
-        get() = entity is LivingEntity && entity !is Player
+        get() = entity is KryptonLivingEntity && entity !is KryptonPlayer
+
+    override fun entity(): KryptonEntity? = entity
 
     override fun formatDeathMessage(target: KryptonLivingEntity): Component {
-        val heldItem = target.heldItem(Hand.MAIN)
-        val itemName = heldItem.meta.name
-        if (!heldItem.isEmpty() && itemName != null) {
-            return Component.translatable("${type.translationKey}.item", target.displayName, entity.displayName, itemName)
+        val heldItem = if (entity is KryptonLivingEntity) entity.heldItem(Hand.MAIN) else KryptonItemStack.EMPTY
+        val baseMessage = "death.attack.${type.translationKey()}"
+        if (!heldItem.isEmpty() && heldItem.meta.name != null) {
+            return Component.translatable("$baseMessage.item", target.displayName, entity.displayName, heldItem.meta.name)
         }
-        return Component.translatable(type.translationKey, target.displayName, entity.displayName)
+        return Component.translatable(baseMessage, target.displayName, entity.displayName)
     }
 }

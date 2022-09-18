@@ -54,7 +54,7 @@ public interface ColorParticleData : ParticleData {
          */
         @JvmStatic
         @Contract("_ -> new", pure = true)
-        public fun of(color: Color): ColorParticleData = ParticleData.FACTORY.color(color)
+        public fun of(color: Color): ColorParticleData = ParticleData.factory().color(color)
 
         /**
          * Creates new colour particle data with the given [red], [green], and

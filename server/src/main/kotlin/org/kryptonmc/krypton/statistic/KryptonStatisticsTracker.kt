@@ -108,7 +108,7 @@ class KryptonStatisticsTracker(private val player: KryptonPlayer, private val fi
 
     override fun get(statistic: Statistic<*>): Int = statistics.getInt(statistic)
 
-    override fun get(statistic: Key): Int = statistics.getInt(StatisticTypes.CUSTOM[statistic])
+    override fun get(statistic: Key): Int = statistics.getInt(StatisticTypes.CUSTOM.get(statistic))
 
     override fun set(statistic: Statistic<*>, value: Int) {
         statistics[statistic] = value
@@ -149,7 +149,7 @@ class KryptonStatisticsTracker(private val player: KryptonPlayer, private val fi
             val stats = data["stats"]?.asJsonObject ?: JsonObject()
             stats.keys.forEach { key ->
                 if (!stats[key].isJsonObject) return@forEach
-                val type = Registries.STATISTIC_TYPE[Key.key(key)]
+                val type = Registries.STATISTIC_TYPE.get(Key.key(key))
                 if (type == null) {
                     LOGGER.warn("Invalid statistic type found in $file! Could not recognise $key!")
                     return@forEach
@@ -178,10 +178,10 @@ class KryptonStatisticsTracker(private val player: KryptonPlayer, private val fi
     private fun <T : Any> statistic(type: StatisticType<T>, name: String): Statistic<T>? {
         val key = try {
             Key.key(name)
-        } catch (exception: InvalidKeyException) {
+        } catch (_: InvalidKeyException) {
             return null
         }
-        return type.registry[key]?.let { type[it] }
+        return type.registry.get(key)?.let(type::get)
     }
 
     companion object {

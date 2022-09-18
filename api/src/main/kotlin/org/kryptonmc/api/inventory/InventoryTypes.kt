@@ -9,7 +9,6 @@
 package org.kryptonmc.api.inventory
 
 import net.kyori.adventure.key.Key
-import net.kyori.adventure.text.Component
 import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.api.util.Catalogue
 
@@ -24,58 +23,55 @@ public object InventoryTypes {
 
     // @formatter:off
     @JvmField
-    public val CHEST_ONE_ROW: InventoryType = register("chest_one_row", 9, Component.translatable("container.chest"))
+    public val CHEST_ONE_ROW: InventoryType = get("chest_one_row")
     @JvmField
-    public val CHEST_TWO_ROWS: InventoryType = register("chest_two_rows", 9 * 2, CHEST_ONE_ROW.defaultTitle)
+    public val CHEST_TWO_ROWS: InventoryType = get("chest_two_rows")
     @JvmField
-    public val CHEST_THREE_ROWS: InventoryType = register("chest_three_rows", 9 * 3, CHEST_ONE_ROW.defaultTitle)
+    public val CHEST_THREE_ROWS: InventoryType = get("chest_three_rows")
     @JvmField
-    public val CHEST_FOUR_ROWS: InventoryType = register("chest_four_rows", 9 * 4, Component.translatable("container.chestDouble"))
+    public val CHEST_FOUR_ROWS: InventoryType = get("chest_four_rows")
     @JvmField
-    public val CHEST_FIVE_ROWS: InventoryType = register("chest_five_rows", 9 * 5, CHEST_FOUR_ROWS.defaultTitle)
+    public val CHEST_FIVE_ROWS: InventoryType = get("chest_five_rows")
     @JvmField
-    public val CHEST_SIX_ROWS: InventoryType = register("chest_six_rows", 9 * 6, CHEST_FOUR_ROWS.defaultTitle)
+    public val CHEST_SIX_ROWS: InventoryType = get("chest_six_rows")
     @JvmField
-    public val GENERIC_3x3: InventoryType = register("generic_3x3", 3 * 3, Component.translatable("container.dispenser"))
+    public val GENERIC_3x3: InventoryType = get("generic_3x3")
     @JvmField
-    public val ANVIL: InventoryType = register("anvil", 3, Component.translatable("container.repair"))
+    public val ANVIL: InventoryType = get("anvil")
     @JvmField
-    public val BEACON: InventoryType = register("beacon", 1, Component.translatable("container.beacon"))
+    public val BEACON: InventoryType = get("beacon")
     @JvmField
-    public val BLAST_FURNACE: InventoryType = register("blast_furnace", 3, Component.translatable("container.blast_furnace"))
+    public val BLAST_FURNACE: InventoryType = get("blast_furnace")
     @JvmField
-    public val BREWING_STAND: InventoryType = register("brewing_stand", 5, Component.translatable("container"))
+    public val BREWING_STAND: InventoryType = get("brewing_stand")
     @JvmField
-    public val CRAFTING_TABLE: InventoryType = register("crafting", 3 * 3 + 1, Component.translatable("container.crafting"))
+    public val CRAFTING_TABLE: InventoryType = get("crafting")
     @JvmField
-    public val ENCHANTING_TABLE: InventoryType = register("enchantment", 2, Component.translatable("container.enchant"))
+    public val ENCHANTING_TABLE: InventoryType = get("enchantment")
     @JvmField
-    public val FURNACE: InventoryType = register("furnace", 3, Component.translatable("container.furnace"))
+    public val FURNACE: InventoryType = get("furnace")
     @JvmField
-    public val GRINDSTONE: InventoryType = register("grindstone", 3, Component.translatable("container.grindstone_title"))
+    public val GRINDSTONE: InventoryType = get("grindstone")
     @JvmField
-    public val HOPPER: InventoryType = register("hopper", 5, Component.translatable("container.hopper"))
+    public val HOPPER: InventoryType = get("hopper")
     @JvmField
-    public val LECTERN: InventoryType = register("lectern", 1, Component.translatable("container.lectern"))
+    public val LECTERN: InventoryType = get("lectern")
     @JvmField
-    public val LOOM: InventoryType = register("loom", 4, Component.translatable("container.loom"))
+    public val LOOM: InventoryType = get("loom")
     @JvmField
-    public val MERCHANT: InventoryType = register("merchant", 3, Component.translatable("merchant.trades"))
+    public val MERCHANT: InventoryType = get("merchant")
     @JvmField
-    public val SHULKER_BOX: InventoryType = register("shulker_box", 9 * 3, Component.translatable("container.shulkerBox"))
+    public val SHULKER_BOX: InventoryType = get("shulker_box")
     @JvmField
-    public val SMITHING_TABLE: InventoryType = register("smithing", 3, Component.translatable("container.upgrade"))
+    public val SMITHING_TABLE: InventoryType = get("smithing")
     @JvmField
-    public val SMOKER: InventoryType = register("smoker", 3, Component.translatable("container.smoker"))
+    public val SMOKER: InventoryType = get("smoker")
     @JvmField
-    public val CARTOGRAPHY_TABLE: InventoryType = register("cartography_table", 3, Component.translatable("container.cartography_table"))
+    public val CARTOGRAPHY_TABLE: InventoryType = get("cartography_table")
     @JvmField
-    public val STONECUTTER: InventoryType = register("stonecutter", 2, Component.translatable("container.stonecutter"))
+    public val STONECUTTER: InventoryType = get("stonecutter")
 
     // @formatter:on
     @JvmStatic
-    private fun register(name: String, size: Int, defaultTitle: Component): InventoryType {
-        val key = Key.key(name)
-        return Registries.INVENTORY_TYPES.register(key, InventoryType.of(key, size, defaultTitle))
-    }
+    private fun get(name: String): InventoryType = Registries.INVENTORY_TYPES.get(Key.key(name))!!
 }

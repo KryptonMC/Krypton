@@ -63,7 +63,7 @@ object Codecs {
     val SOUND_EVENT: Codec<SoundEvent> = KEY.xmap(::KryptonSoundEvent, SoundEvent::key)
     // TODO: Look at the particle type codec, since it's not that great here
     @JvmField
-    val PARTICLE: Codec<ParticleType> = KEY.xmap({ Registries.PARTICLE_TYPE[it]!! }, ParticleType::key)
+    val PARTICLE: Codec<ParticleType> = KEY.xmap({ Registries.PARTICLE_TYPE.get(it)!! }, ParticleType::key)
     @JvmField
     val DIMENSION: Codec<ResourceKey<World>> = KryptonResourceKey.codec(ResourceKeys.DIMENSION)
 

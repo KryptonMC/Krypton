@@ -11,7 +11,6 @@ package org.kryptonmc.api.auth
 import org.jetbrains.annotations.ApiStatus
 import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.Krypton
-import org.kryptonmc.api.util.provide
 
 /**
  * A property of a [GameProfile].
@@ -65,20 +64,28 @@ public interface ProfileProperty {
 
     public companion object {
 
-        private val FACTORY = Krypton.factoryProvider.provide<Factory>()
-
         /**
          * Creates a new profile property with the given [name], [value], and
-         * optionally, [signature].
+         * [signature].
          *
          * @param name the name
          * @param value the value
          * @param signature the signature, or null for no signature
-         * @return a new profile property with the given name and value
+         * @return a new profile property
          */
         @JvmStatic
-        @JvmOverloads
         @Contract("_, _, _ -> new", pure = true)
-        public fun of(name: String, value: String, signature: String? = null): ProfileProperty = FACTORY.of(name, value, signature)
+        public fun of(name: String, value: String, signature: String?): ProfileProperty = Krypton.factory<Factory>().of(name, value, signature)
+
+        /**
+         * Creates a new profile property with the given [name] and [value].
+         *
+         * @param name the name
+         * @param value the value
+         * @return a new profile property
+         */
+        @JvmStatic
+        @Contract("_, _ -> new", pure = true)
+        public fun of(name: String, value: String): ProfileProperty = of(name, value, null)
     }
 }

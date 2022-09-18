@@ -9,6 +9,7 @@
 package org.kryptonmc.api.command.meta
 
 import org.jetbrains.annotations.Contract
+import org.kryptonmc.api.Krypton
 
 /**
  * Command metadata for a [org.kryptonmc.api.command.SimpleCommand].
@@ -35,6 +36,7 @@ public interface SimpleCommandMeta : CommandMeta {
          * Sets the permission required to use the command to the given [permission].
          *
          * @param permission the permission
+         * @return this builder
          */
         @CommandMetaDsl
         @Contract("_ -> this", mutates = "this")
@@ -61,6 +63,6 @@ public interface SimpleCommandMeta : CommandMeta {
          */
         @JvmStatic
         @Contract("_ -> new", pure = true)
-        public fun builder(name: String): Builder = CommandMeta.FACTORY.simpleBuilder(name)
+        public fun builder(name: String): Builder = Krypton.factory<CommandMeta.Factory>().simpleBuilder(name)
     }
 }

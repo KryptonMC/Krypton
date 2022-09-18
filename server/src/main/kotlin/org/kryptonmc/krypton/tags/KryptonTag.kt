@@ -28,7 +28,7 @@ data class KryptonTag<T : Any>(private val key: Key, override val type: KryptonT
 
     constructor(name: Key, type: KryptonTagType<T>, keys: Set<String>) : this(name, type, keys.mapPersistentList {
         val key = Key.key(it)
-        requireNotNull(type.registry[key]) { "Could not find registry entry for key $key in registry ${type.registry.key}!" }
+        requireNotNull(type.registry.get(key)) { "Could not find registry entry for key $key in registry ${type.registry.key}!" }
     })
 
     override fun key(): Key = key

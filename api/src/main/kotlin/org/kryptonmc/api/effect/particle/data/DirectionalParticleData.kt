@@ -45,6 +45,6 @@ public interface DirectionalParticleData : ParticleData {
          */
         @JvmStatic
         @Contract("_, _ -> new", pure = true)
-        public fun of(direction: Vector3d?, velocity: Float): DirectionalParticleData = ParticleData.FACTORY.directional(direction, velocity)
+        public fun of(direction: Vector3d?, velocity: Float): DirectionalParticleData = ParticleData.factory().directional(direction, velocity)
     }
 }

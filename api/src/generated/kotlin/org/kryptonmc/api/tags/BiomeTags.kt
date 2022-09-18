@@ -150,5 +150,5 @@ public object BiomeTags {
 
     // @formatter:on
     @JvmStatic
-    private fun get(key: String): Tag<Biome> = Krypton.tagManager[TagTypes.BIOMES, "minecraft:$key"]!!
+    private fun get(key: String): Tag<Biome> = Krypton.tag(TagTypes.BIOMES, "minecraft:$key")!!
 }

@@ -14,7 +14,6 @@ import org.kryptonmc.api.Krypton
 import org.kryptonmc.api.entity.EquipmentSlot
 import org.kryptonmc.api.entity.attribute.AttributeModifier
 import org.kryptonmc.api.entity.attribute.AttributeType
-import org.kryptonmc.api.util.provide
 
 /**
  * An attribute that can be applied to an item that modifies a specific
@@ -50,8 +49,6 @@ public interface ItemAttribute {
 
     public companion object {
 
-        private val FACTORY = Krypton.factoryProvider.provide<Factory>()
-
         /**
          * Creates a new item attribute with the given [type], [slot], and
          * [modifier].
@@ -62,6 +59,7 @@ public interface ItemAttribute {
          */
         @JvmStatic
         @Contract("_, _, _ -> new", pure = true)
-        public fun of(type: AttributeType, slot: EquipmentSlot, modifier: AttributeModifier): ItemAttribute = FACTORY.of(type, slot, modifier)
+        public fun of(type: AttributeType, slot: EquipmentSlot, modifier: AttributeModifier): ItemAttribute =
+            Krypton.factory<Factory>().of(type, slot, modifier)
     }
 }

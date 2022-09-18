@@ -13,7 +13,6 @@ import org.kryptonmc.api.Krypton
 import org.kryptonmc.api.block.BlockState
 import org.kryptonmc.api.item.ItemStack
 import org.kryptonmc.api.util.Color
-import org.kryptonmc.api.util.provide
 import org.spongepowered.math.vector.Vector3d
 
 /**
@@ -45,6 +44,6 @@ public interface ParticleData {
     public companion object {
 
         @JvmSynthetic
-        internal val FACTORY = Krypton.factoryProvider.provide<Factory>()
+        internal fun factory(): Factory = Krypton.factory()
     }
 }

@@ -15,6 +15,7 @@ import org.spongepowered.math.vector.Vector3d
 /**
  * A builder for building directional particle effects.
  */
+@ParticleDsl
 public interface DirectionalParticleEffectBuilder : BaseParticleEffectBuilder<DirectionalParticleEffectBuilder> {
 
     /**

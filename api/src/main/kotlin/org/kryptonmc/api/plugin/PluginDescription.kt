@@ -64,4 +64,13 @@ public interface PluginDescription {
      */
     @get:JvmName("source")
     public val source: Path
+
+    /**
+     * Gets the plugin dependency with the given [id], or returns null if there
+     * is no dependency with the given [id].
+     *
+     * @param id the ID of the dependency
+     * @return the dependency, or null if not present
+     */
+    public fun dependency(id: String): PluginDependency?
 }

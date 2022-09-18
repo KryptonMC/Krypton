@@ -8,25 +8,9 @@
  */
 package org.kryptonmc.api.effect.particle
 
-import net.kyori.adventure.key.Key
-import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.effect.particle.builder.ColorParticleEffectBuilder
 
 /**
  * A type of particle that uses a colour for its appearance.
  */
-public interface ColorParticleType : ScopedParticleType<ColorParticleEffectBuilder> {
-
-    public companion object {
-
-        /**
-         * Creates a new colour particle type with the given [key].
-         *
-         * @param key the key
-         * @return a new colour particle type
-         */
-        @JvmStatic
-        @Contract("_ -> new", pure = true)
-        public fun of(key: Key): ColorParticleType = ParticleType.of(key)
-    }
-}
+public interface ColorParticleType : ScopedParticleType<ColorParticleEffectBuilder>

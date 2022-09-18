@@ -43,6 +43,6 @@ class KryptonStatistic<T : Any>(
 
 private fun <T : Any> StatisticType<T>.criterionName(value: T): String {
     val key = key().asString().replace(':', '.')
-    val path = registry[value]?.asString()?.replace(':', '.')
+    val path = registry.get(value)?.asString()?.replace(':', '.')
     return "$key:$path"
 }

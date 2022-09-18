@@ -308,8 +308,6 @@ public interface BoundingBox {
 
     public companion object {
 
-        private val FACTORY = Krypton.factoryProvider.provide<Factory>()
-
         /**
          * Gets the bounding box that has minimum and maximum values all set
          * to 0, meaning it is 0 in size on all axes, and has a volume and
@@ -317,7 +315,7 @@ public interface BoundingBox {
          */
         @JvmStatic
         @Contract(pure = true)
-        public fun zero(): BoundingBox = FACTORY.zero()
+        public fun zero(): BoundingBox = Krypton.factory<Factory>().zero()
 
         /**
          * Gets the bounding box that has minimum values set to 0, and maximum
@@ -326,7 +324,7 @@ public interface BoundingBox {
          */
         @JvmStatic
         @Contract(pure = true)
-        public fun unit(): BoundingBox = FACTORY.unit()
+        public fun unit(): BoundingBox = Krypton.factory<Factory>().unit()
 
         /**
          * Creates a new bounding box from the given values.
@@ -343,7 +341,7 @@ public interface BoundingBox {
          */
         @JvmStatic
         @Contract("_, _ -> new", pure = true)
-        public fun of(minimum: Vector3d, maximum: Vector3d): BoundingBox = FACTORY.of(minimum, maximum)
+        public fun of(minimum: Vector3d, maximum: Vector3d): BoundingBox = Krypton.factory<Factory>().of(minimum, maximum)
 
         /**
          * Creates a new bounding box from the given values.
@@ -360,7 +358,7 @@ public interface BoundingBox {
          */
         @JvmStatic
         @Contract("_, _ -> new", pure = true)
-        public fun of(minimum: Vector3i, maximum: Vector3i): BoundingBox = FACTORY.of(minimum, maximum)
+        public fun of(minimum: Vector3i, maximum: Vector3i): BoundingBox = Krypton.factory<Factory>().of(minimum, maximum)
 
         /**
          * Creates a new bounding box from the given values.
@@ -382,6 +380,6 @@ public interface BoundingBox {
         @JvmStatic
         @Contract("_, _, _, _, _, _ -> new", pure = true)
         public fun of(minimumX: Double, minimumY: Double, minimumZ: Double, maximumX: Double, maximumY: Double, maximumZ: Double): BoundingBox =
-            FACTORY.of(minimumX, minimumY, minimumZ, maximumX, maximumY, maximumZ)
+            Krypton.factory<Factory>().of(minimumX, minimumY, minimumZ, maximumX, maximumY, maximumZ)
     }
 }

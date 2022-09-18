@@ -99,8 +99,10 @@ public object DamageTypes {
     @JvmField
     public val PLAYER_EXPLOSION: DamageType = get("player_explosion")
     @JvmField
+    public val SONIC_BOOM: DamageType = get("sonic_boom")
+    @JvmField
     public val BAD_RESPAWN_POINT: DamageType = get("bad_respawn_point")
 
     @JvmStatic
-    private fun get(name: String): DamageType = Registries.DAMAGE_TYPES[Key.key(name)]!!
+    private fun get(name: String): DamageType = Registries.DAMAGE_TYPES.get(Key.key(name))!!
 }

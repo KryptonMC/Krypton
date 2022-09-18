@@ -191,7 +191,29 @@ public interface ItemMetaBuilder<B : ItemMetaBuilder<B, I>, I : ItemMeta> {
      */
     @MetaDsl
     @Contract("_ -> this", mutates = "this")
-    public fun attributeModifiers(attributes: Set<ItemAttribute>): B
+    public fun attributeModifiers(attributes: Iterable<ItemAttribute>): B
+
+    /**
+     * Sets the list of attribute modifiers applied to entities wearing items
+     * that the metadata is applied to to the given [attributes].
+     *
+     * @param attributes the attributes
+     * @return this builder
+     */
+    @MetaDsl
+    @Contract("_ -> this", mutates = "this")
+    public fun attributeModifiers(vararg attributes: ItemAttribute): B = attributeModifiers(attributes.asIterable())
+
+    /**
+     * Adds the given [modifier] modifier to the list of attribute modifiers
+     * for the item.
+     *
+     * @param modifier the attribute modifier to add
+     * @return this builder
+     */
+    @MetaDsl
+    @Contract("_ -> this", mutates = "this")
+    public fun addAttributeModifier(modifier: ItemAttribute): B
 
     /**
      * Builds the resulting item metadata.

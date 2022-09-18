@@ -8,15 +8,11 @@
  */
 package org.kryptonmc.api.auth
 
-import net.kyori.adventure.builder.AbstractBuilder
 import net.kyori.adventure.identity.Identified
 import org.jetbrains.annotations.ApiStatus
 import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.Krypton
-import org.kryptonmc.api.util.Buildable
-import org.kryptonmc.api.util.provide
 import java.util.UUID
-import java.util.function.Consumer
 
 /**
  * Represents the profile of an authenticated player. Most of the time, this
@@ -24,7 +20,7 @@ import java.util.function.Consumer
  * implementation.
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
-public interface GameProfile : Buildable<GameProfile.Builder, GameProfile>, Identified {
+public interface GameProfile : Identified {
 
     /**
      * The name of the profile.
@@ -43,27 +39,6 @@ public interface GameProfile : Buildable<GameProfile.Builder, GameProfile>, Iden
      */
     @get:JvmName("properties")
     public val properties: List<ProfileProperty>
-
-    /**
-     * Creates a new game profile by creating a new builder from this profile
-     * and applying the given [builder] to it.
-     *
-     * @param builder the builder to apply
-     * @return a new game profile
-     */
-    @JvmSynthetic
-    @Contract("_ -> new", pure = true)
-    public fun with(builder: Builder.() -> Unit): GameProfile
-
-    /**
-     * Creates a new game profile by creating a new builder from this profile
-     * and applying the given [builder] to it.
-     *
-     * @param builder the builder to apply
-     * @return a new game profile
-     */
-    @Contract("_ -> new", pure = true)
-    public fun with(builder: Consumer<Builder>): GameProfile = with { builder.accept(this) }
 
     /**
      * Creates a new game profile with the given [properties].
@@ -104,54 +79,6 @@ public interface GameProfile : Buildable<GameProfile.Builder, GameProfile>, Iden
     @Contract("_ -> new", pure = true)
     public fun withoutProperty(property: ProfileProperty): GameProfile
 
-    /**
-     * A builder for building game profiles.
-     *
-     * This is designed for bulk modification, and so cannot be constructed
-     * without an existing instance.
-     */
-    public interface Builder : AbstractBuilder<GameProfile> {
-
-        /**
-         * Sets the properties of the game profile to the given [properties].
-         *
-         * @param properties the properties
-         * @return this builder
-         */
-        @Contract("_ -> this", mutates = "this")
-        public fun properties(properties: Iterable<ProfileProperty>): Builder
-
-        /**
-         * Adds the given [property] to the list of properties for the game
-         * profile.
-         *
-         * @param property the property to add
-         * @return this builder
-         */
-        @Contract("_ -> this", mutates = "this")
-        public fun addProperty(property: ProfileProperty): Builder
-
-        /**
-         * Removes the property at the given [index] from the list of
-         * properties for the game profile.
-         *
-         * @param index the index of the property to remove
-         * @return this builder
-         */
-        @Contract("_ -> this", mutates = "this")
-        public fun removeProperty(index: Int): Builder
-
-        /**
-         * Removes the given [property] from the list of properties for the
-         * game profile.
-         *
-         * @param property the property to remove
-         * @return this builder
-         */
-        @Contract("_ -> this", mutates = "this")
-        public fun removeProperty(property: ProfileProperty): Builder
-    }
-
     @ApiStatus.Internal
     public interface Factory {
 
@@ -159,8 +86,6 @@ public interface GameProfile : Buildable<GameProfile.Builder, GameProfile>, Iden
     }
 
     public companion object {
-
-        private val FACTORY = Krypton.factoryProvider.provide<Factory>()
 
         /**
          * Creates a new game profile with the given [name], [uuid], and
@@ -172,8 +97,19 @@ public interface GameProfile : Buildable<GameProfile.Builder, GameProfile>, Iden
          * @return a new profile
          */
         @JvmStatic
-        @JvmOverloads
         @Contract("_, _, _ -> new", pure = true)
-        public fun of(name: String, uuid: UUID, properties: List<ProfileProperty> = emptyList()): GameProfile = FACTORY.of(name, uuid, properties)
+        public fun of(name: String, uuid: UUID, properties: List<ProfileProperty>): GameProfile =
+            Krypton.factory<Factory>().of(name, uuid, properties)
+
+        /**
+         * Creates a new game profile with the given [name] and [uuid].
+         *
+         * @param name the name of the profile
+         * @param uuid the UUID of the profile
+         * @return a new profile
+         */
+        @JvmStatic
+        @Contract("_, _ -> new", pure = true)
+        public fun of(name: String, uuid: UUID): GameProfile = of(name, uuid, emptyList())
     }
 }

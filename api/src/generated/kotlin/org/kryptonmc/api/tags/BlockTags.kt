@@ -326,5 +326,5 @@ public object BlockTags {
 
     // @formatter:on
     @JvmStatic
-    private fun get(key: String): Tag<Block> = Krypton.tagManager[TagTypes.BLOCKS, "minecraft:$key"]!!
+    private fun get(key: String): Tag<Block> = Krypton.tag(TagTypes.BLOCKS, "minecraft:$key")!!
 }

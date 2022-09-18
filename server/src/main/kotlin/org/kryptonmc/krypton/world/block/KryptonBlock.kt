@@ -100,7 +100,7 @@ open class KryptonBlock(properties: Properties) : BlockBehaviour(properties), St
         entity: KryptonBlockEntity?,
         tool: KryptonItemStack
     ) {
-        player.statistics.increment(StatisticTypes.BLOCK_MINED[this])
+        player.statistics.increment(StatisticTypes.BLOCK_MINED.get(this))
         // TODO: Cause exhaustion and drop items
     }
 
@@ -163,14 +163,14 @@ open class KryptonBlock(properties: Properties) : BlockBehaviour(properties), St
 
     override fun asBlock(): KryptonBlock = this
 
-    override fun key(): Key = Registries.BLOCK[this]
+    override fun key(): Key = Registries.BLOCK.get(this)
 
     override fun translationKey(): String {
-        if (defaultTranslationKey == null) defaultTranslationKey = Keys.translation("block", Registries.BLOCK[this])
+        if (defaultTranslationKey == null) defaultTranslationKey = Keys.translation("block", key())
         return defaultTranslationKey!!
     }
 
-    override fun toString(): String = "Block(${Registries.BLOCK[this]})"
+    override fun toString(): String = "Block(${key()})"
 
     companion object {
 

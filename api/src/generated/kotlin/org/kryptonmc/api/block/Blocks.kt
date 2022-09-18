@@ -1888,5 +1888,5 @@ public object Blocks {
 
     // @formatter:on
     @JvmStatic
-    private fun get(key: String): Block = Registries.BLOCK[Key.key(key)]!!
+    private fun get(key: String): Block = Registries.BLOCK.get(Key.key(key))!!
 }

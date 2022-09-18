@@ -14,7 +14,6 @@ import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.Krypton
 import org.kryptonmc.api.effect.sound.SoundEvent
 import org.kryptonmc.api.util.Buildable
-import org.kryptonmc.api.util.provide
 
 /**
  * Settings for ambient sounds that may play randomly when in the biome, with
@@ -76,8 +75,6 @@ public interface AmbientAdditionsSettings : Buildable<AmbientAdditionsSettings.B
 
     public companion object {
 
-        private val FACTORY = Krypton.factoryProvider.provide<Factory>()
-
         /**
          * Creates new ambient addition sound settings with the given values.
          *
@@ -87,7 +84,7 @@ public interface AmbientAdditionsSettings : Buildable<AmbientAdditionsSettings.B
          */
         @JvmStatic
         @Contract("_, _ -> new", pure = true)
-        public fun of(sound: SoundEvent, probability: Double): AmbientAdditionsSettings = FACTORY.of(sound, probability)
+        public fun of(sound: SoundEvent, probability: Double): AmbientAdditionsSettings = Krypton.factory<Factory>().of(sound, probability)
 
         /**
          * Creates a new builder for ambient additions settings.
@@ -97,6 +94,6 @@ public interface AmbientAdditionsSettings : Buildable<AmbientAdditionsSettings.B
          */
         @JvmStatic
         @Contract("_ -> new", pure = true)
-        public fun builder(sound: SoundEvent): Builder = FACTORY.builder(sound)
+        public fun builder(sound: SoundEvent): Builder = Krypton.factory<Factory>().builder(sound)
     }
 }

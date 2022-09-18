@@ -67,7 +67,7 @@ abstract class KryptonFluid : Fluid, StateHolderDelegate<FluidState, KryptonFlui
 
     abstract fun getShape(state: KryptonFluidState, world: BlockAccessor, x: Int, y: Int, z: Int): VoxelShape
 
-    override fun key(): Key = Registries.FLUID[this]
+    override fun key(): Key = Registries.FLUID.get(this)
 
     protected fun registerDefaultState(state: KryptonFluidState) {
         defaultFluidState = state

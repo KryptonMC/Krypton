@@ -17,7 +17,7 @@ public interface FactoryProvider {
 
     /**
      * Provides the factory with the given type [type], or throws a
-     * [FactoryNotFoundException] if there is no factory registered for the
+     * [TypeNotFoundException] if there is no factory registered for the
      * given type.
      */
     public fun <T> provide(type: Class<T>): T
@@ -36,7 +36,7 @@ public interface FactoryProvider {
 
 /**
  * Provides the factory with the given type [T], or throws a
- * [FactoryNotFoundException] if there is no factory registered for the given
+ * [TypeNotFoundException] if there is no factory registered for the given
  * type.
  */
 @JvmSynthetic

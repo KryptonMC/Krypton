@@ -14,7 +14,6 @@ import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.Krypton
 import org.kryptonmc.api.effect.sound.SoundEvent
 import org.kryptonmc.api.util.Buildable
-import org.kryptonmc.api.util.provide
 
 /**
  * Settings for ambient mood sounds that will play whilst in certain biomes.
@@ -111,8 +110,6 @@ public interface AmbientMoodSettings : Buildable<AmbientMoodSettings.Builder, Am
 
     public companion object {
 
-        private val FACTORY = Krypton.factoryProvider.provide<Factory>()
-
         /**
          * Creates new ambient mood sound settings with the given values.
          *
@@ -126,7 +123,7 @@ public interface AmbientMoodSettings : Buildable<AmbientMoodSettings.Builder, Am
         @JvmStatic
         @Contract("_, _, _, _ -> new", pure = true)
         public fun of(sound: SoundEvent, tickDelay: Int, blockSearchExtent: Int, offset: Double): AmbientMoodSettings =
-            FACTORY.of(sound, tickDelay, blockSearchExtent, offset)
+            Krypton.factory<Factory>().of(sound, tickDelay, blockSearchExtent, offset)
 
         /**
          * Creates a new builder for ambient mood settings.
@@ -136,6 +133,6 @@ public interface AmbientMoodSettings : Buildable<AmbientMoodSettings.Builder, Am
          */
         @JvmStatic
         @Contract("_ -> new", pure = true)
-        public fun builder(sound: SoundEvent): Builder = FACTORY.builder(sound)
+        public fun builder(sound: SoundEvent): Builder = Krypton.factory<Factory>().builder(sound)
     }
 }

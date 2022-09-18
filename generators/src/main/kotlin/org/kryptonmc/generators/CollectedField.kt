@@ -31,7 +31,7 @@ import java.lang.reflect.Field
  * like "GOAT_HORN_SOUND_VARIANT_{index}" and the event as the value.
  */
 @JvmRecord
-data class CollectedField(val name: String, val value: Any) {
+data class CollectedField<T>(val name: String, val value: T) {
 
-    constructor(field: Field) : this(field.name, field.get(null))
+    constructor(field: Field, type: Class<T>) : this(field.name, type.cast(field.get(null)))
 }

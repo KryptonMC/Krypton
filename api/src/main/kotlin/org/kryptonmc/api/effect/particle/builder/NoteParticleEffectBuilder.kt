@@ -14,6 +14,7 @@ import org.kryptonmc.api.effect.particle.ParticleDsl
 /**
  * A builder for building note particle effects.
  */
+@ParticleDsl
 public interface NoteParticleEffectBuilder : BaseParticleEffectBuilder<NoteParticleEffectBuilder> {
 
     /**

@@ -11,7 +11,6 @@ package org.kryptonmc.api.entity.attribute
 /**
  * A holder of attributes.
  */
-@Suppress("INAPPLICABLE_JVM_NAME")
 public interface AttributeHolder {
 
     /**

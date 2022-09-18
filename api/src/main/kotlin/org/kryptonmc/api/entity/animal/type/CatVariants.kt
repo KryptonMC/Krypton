@@ -19,31 +19,28 @@ import org.kryptonmc.api.util.Catalogue
 public object CatVariants {
 
     @JvmField
-    public val TABBY: CatVariant = register("tabby")
+    public val TABBY: CatVariant = get("tabby")
     @JvmField
-    public val BLACK: CatVariant = register("black")
+    public val BLACK: CatVariant = get("black")
     @JvmField
-    public val RED: CatVariant = register("red")
+    public val RED: CatVariant = get("red")
     @JvmField
-    public val SIAMESE: CatVariant = register("siamese")
+    public val SIAMESE: CatVariant = get("siamese")
     @JvmField
-    public val BRITISH_SHORTHAIR: CatVariant = register("british_shorthair")
+    public val BRITISH_SHORTHAIR: CatVariant = get("british_shorthair")
     @JvmField
-    public val CALICO: CatVariant = register("calico")
+    public val CALICO: CatVariant = get("calico")
     @JvmField
-    public val PERSIAN: CatVariant = register("persian")
+    public val PERSIAN: CatVariant = get("persian")
     @JvmField
-    public val RAGDOLL: CatVariant = register("ragdoll")
+    public val RAGDOLL: CatVariant = get("ragdoll")
     @JvmField
-    public val WHITE: CatVariant = register("white")
+    public val WHITE: CatVariant = get("white")
     @JvmField
-    public val JELLIE: CatVariant = register("jellie")
+    public val JELLIE: CatVariant = get("jellie")
     @JvmField
-    public val ALL_BLACK: CatVariant = register("all_black")
+    public val ALL_BLACK: CatVariant = get("all_black")
 
     @JvmStatic
-    private fun register(name: String): CatVariant {
-        val key = Key.key(name)
-        return Registries.CAT_VARIANT.register(key, CatVariant.of(key))
-    }
+    private fun get(name: String): CatVariant = Registries.CAT_VARIANT.get(Key.key(name))!!
 }

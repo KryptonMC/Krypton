@@ -35,8 +35,6 @@ data class KryptonFireworkEffect(
     override val fadeColors: PersistentList<Color>
 ) : FireworkEffect {
 
-    override fun with(builder: FireworkEffect.Builder.() -> Unit): FireworkEffect = toBuilder().apply(builder).build()
-
     override fun withType(type: FireworkEffectType): FireworkEffect = copy(type = type)
 
     override fun withFlicker(flickers: Boolean): FireworkEffect = copy(hasFlicker = flickers)

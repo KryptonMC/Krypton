@@ -300,5 +300,5 @@ public object EntityTypes {
 
     @Suppress("UNCHECKED_CAST")
     @JvmStatic
-    private fun <T : Entity> get(name: String): EntityType<T> = Registries.ENTITY_TYPE[Key.key(name)] as EntityType<T>
+    private fun <T : Entity> get(name: String): EntityType<T> = Registries.ENTITY_TYPE.get(Key.key(name)) as EntityType<T>
 }

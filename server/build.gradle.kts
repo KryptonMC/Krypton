@@ -84,9 +84,10 @@ license {
     )
 }
 
-tasks["build"].dependsOn(tasks.shadowJar)
-
 tasks {
+    build {
+        dependsOn(shadowJar)
+    }
     withType<ShadowJar> {
         val buildNumber = System.getenv("BUILD_NUMBER")?.let { "-$it" }.orEmpty()
         archiveFileName.set("Krypton-${project.version}$buildNumber.jar")
@@ -97,11 +98,14 @@ tasks {
         relocate("org.bstats", "org.kryptonmc.krypton.bstats")
     }
     withType<ProcessResources> {
-        filter<ReplaceTokens>("tokens" to mapOf(
-            "version" to project.version.toString(),
-            "minecraft" to global.versions.minecraft.get(),
-            "data" to global.versions.minecraft.get().replace('.', '_')
-        ))
+        filesMatching("**/versions.properties") {
+            val minecraftVersion = global.versions.minecraft.get()
+            filter<ReplaceTokens>("tokens" to mapOf(
+                "krypton" to project.version.toString(),
+                "minecraft" to minecraftVersion,
+                "data" to minecraftVersion.replace('.', '_')
+            ))
+        }
     }
 }
 

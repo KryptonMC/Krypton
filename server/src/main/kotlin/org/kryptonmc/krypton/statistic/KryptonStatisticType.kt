@@ -19,6 +19,8 @@
 package org.kryptonmc.krypton.statistic
 
 import net.kyori.adventure.key.Key
+import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.TranslatableComponent
 import org.kryptonmc.api.registry.Registry
 import org.kryptonmc.api.statistic.Statistic
 import org.kryptonmc.api.statistic.StatisticFormatter
@@ -26,15 +28,21 @@ import org.kryptonmc.api.statistic.StatisticType
 import java.util.Collections
 import java.util.IdentityHashMap
 
-@JvmRecord
-data class KryptonStatisticType<T : Any>(
-    private val key: Key,
-    override val registry: Registry<T>,
-    private val statisticMap: MutableMap<T, Statistic<T>> = IdentityHashMap(),
+class KryptonStatisticType<T : Any>(private val key: Key, override val registry: Registry<T>) : StatisticType<T> {
+
+    private val statisticMap = IdentityHashMap<T, Statistic<T>>()
+    private var displayName: TranslatableComponent? = null
+
     override val statistics: Map<T, Statistic<T>> = Collections.unmodifiableMap(statisticMap)
-) : StatisticType<T> {
+    override val translation: TranslatableComponent
+        get() {
+            if (displayName == null) displayName = Component.translatable(translationKey())
+            return displayName!!
+        }
 
     override fun key(): Key = key
+
+    override fun translationKey(): String = "stat_type.${key.asString().replace(':', '.')}"
 
     override fun contains(key: T): Boolean = statisticMap.containsKey(key)
 
@@ -43,9 +51,4 @@ data class KryptonStatisticType<T : Any>(
     override fun get(key: T, formatter: StatisticFormatter): Statistic<T> = statisticMap.getOrPut(key) { KryptonStatistic(this, key, formatter) }
 
     override fun iterator(): Iterator<Statistic<T>> = statisticMap.values.iterator()
-
-    object Factory : StatisticType.Factory {
-
-        override fun <T : Any> of(key: Key, registry: Registry<T>): StatisticType<T> = KryptonStatisticType(key, registry)
-    }
 }

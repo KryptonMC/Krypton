@@ -12,9 +12,7 @@ import net.kyori.adventure.builder.AbstractBuilder
 import org.jetbrains.annotations.ApiStatus
 import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.Krypton
-import org.kryptonmc.api.command.BrigadierCommand
 import org.kryptonmc.api.util.Buildable
-import org.kryptonmc.api.util.provide
 
 /**
  * Holds metadata for a [org.kryptonmc.api.command.Command].
@@ -42,6 +40,9 @@ public interface CommandMeta : Buildable<CommandMeta.Builder, CommandMeta> {
 
         /**
          * Sets the name of the command to the given [name].
+         *
+         * @param name the name
+         * @return this builder
          */
         @CommandMetaDsl
         @Contract("_ -> this", mutates = "this")
@@ -49,6 +50,9 @@ public interface CommandMeta : Buildable<CommandMeta.Builder, CommandMeta> {
 
         /**
          * Adds the given [alias] to the list of aliases.
+         *
+         * @param alias the alias
+         * @return this builder
          */
         @CommandMetaDsl
         @Contract("_ -> this", mutates = "this")
@@ -56,6 +60,9 @@ public interface CommandMeta : Buildable<CommandMeta.Builder, CommandMeta> {
 
         /**
          * Adds the given [aliases] to the list of aliases.
+         *
+         * @param aliases the aliases
+         * @return this builder
          */
         @CommandMetaDsl
         @Contract("_ -> this", mutates = "this")
@@ -63,6 +70,9 @@ public interface CommandMeta : Buildable<CommandMeta.Builder, CommandMeta> {
 
         /**
          * Adds the given [aliases] to the list of aliases.
+         *
+         * @param aliases the aliases
+         * @return this builder
          */
         @CommandMetaDsl
         @Contract("_ -> this", mutates = "this")
@@ -79,9 +89,6 @@ public interface CommandMeta : Buildable<CommandMeta.Builder, CommandMeta> {
 
     public companion object {
 
-        @JvmSynthetic
-        internal val FACTORY = Krypton.factoryProvider.provide<Factory>()
-
         /**
          * Creates a new builder for constructing command metadata.
          *
@@ -90,17 +97,6 @@ public interface CommandMeta : Buildable<CommandMeta.Builder, CommandMeta> {
          */
         @JvmStatic
         @Contract("_ -> new", pure = true)
-        public fun builder(name: String): Builder = FACTORY.builder(name)
-
-        /**
-         * Creates a new builder for constructing command metadata from the given
-         * Brigadier command.
-         *
-         * @param command the Brigadier command
-         * @return a new builder
-         */
-        @JvmStatic
-        @Contract("_ -> new", pure = true)
-        public fun builder(command: BrigadierCommand): Builder = builder(command.node.name)
+        public fun builder(name: String): Builder = Krypton.factory<Factory>().builder(name)
     }
 }

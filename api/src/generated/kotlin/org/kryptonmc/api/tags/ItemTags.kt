@@ -176,5 +176,5 @@ public object ItemTags {
 
     // @formatter:on
     @JvmStatic
-    private fun get(key: String): Tag<ItemType> = Krypton.tagManager[TagTypes.ITEMS, "minecraft:$key"]!!
+    private fun get(key: String): Tag<ItemType> = Krypton.tag(TagTypes.ITEMS, "minecraft:$key")!!
 }

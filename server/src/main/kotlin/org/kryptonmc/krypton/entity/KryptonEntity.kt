@@ -347,7 +347,7 @@ abstract class KryptonEntity(override var world: KryptonWorld, override val type
 
         val height = (blockY.toFloat() + fluid.getHeight(world, x, blockY, z))
         if (height <= y) return
-        KryptonTagManager.tags[KryptonTagTypes.FLUIDS]!!.forEach { fluidOnEyes.add(it as Tag<Fluid>) }
+        KryptonTagManager.get(KryptonTagTypes.FLUIDS).forEach { fluidOnEyes.add(it) }
     }
 
     fun underFluid(fluid: Tag<Fluid>): Boolean = fluidOnEyes.contains(fluid)

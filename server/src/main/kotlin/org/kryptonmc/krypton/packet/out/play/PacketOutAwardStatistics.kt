@@ -46,7 +46,7 @@ data class PacketOutAwardStatistics(val statistics: Object2IntMap<Statistic<*>>)
 
 private fun ByteBuf.readStatistic(): Statistic<*> = readStatistic(readById(KryptonRegistries.STATISTIC_TYPE)!!)
 
-private fun <T : Any> ByteBuf.readStatistic(type: StatisticType<T>): Statistic<T> = type[readById(type.registry.downcast())!!]
+private fun <T : Any> ByteBuf.readStatistic(type: StatisticType<T>): Statistic<T> = type.get(readById(type.registry.downcast())!!)
 
 private fun <T : Any> ByteBuf.writeStatistic(statistic: Statistic<T>) {
     writeId(KryptonRegistries.STATISTIC_TYPE, statistic.type)

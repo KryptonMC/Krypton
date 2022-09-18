@@ -44,7 +44,7 @@ public interface Inventory : Iterable<ItemStack> {
      * @param item the item
      * @return true if the [item] is in this inventory, false otherwise
      */
-    public operator fun contains(item: ItemStack): Boolean
+    public fun contains(item: ItemStack): Boolean
 
     /**
      * Retrieve an item from this inventory at the specified [index].
@@ -55,7 +55,7 @@ public interface Inventory : Iterable<ItemStack> {
      * @throws ArrayIndexOutOfBoundsException if [index] is out of bounds
      * (not in 0 <= [index] < [size])
      */
-    public operator fun get(index: Int): ItemStack
+    public fun get(index: Int): ItemStack
 
     /**
      * Sets the item at the given [index] to the given [item].
@@ -63,7 +63,7 @@ public interface Inventory : Iterable<ItemStack> {
      * @param index the index of the item
      * @param item the new item
      */
-    public operator fun set(index: Int, item: ItemStack)
+    public fun set(index: Int, item: ItemStack)
 
     /**
      * Puts the specified item in the first available empty slot in this

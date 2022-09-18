@@ -19,15 +19,12 @@ import org.kryptonmc.api.util.Catalogue
 public object FrogVariants {
 
     @JvmField
-    public val TEMPERATE: FrogVariant = register("temperate")
+    public val TEMPERATE: FrogVariant = get("temperate")
     @JvmField
-    public val WARM: FrogVariant = register("warm")
+    public val WARM: FrogVariant = get("warm")
     @JvmField
-    public val COLD: FrogVariant = register("cold")
+    public val COLD: FrogVariant = get("cold")
 
     @JvmStatic
-    private fun register(name: String): FrogVariant {
-        val key = Key.key(name)
-        return Registries.FROG_VARIANT.register(key, FrogVariant.of(key))
-    }
+    private fun get(name: String): FrogVariant = Registries.FROG_VARIANT.get(Key.key(name))!!
 }

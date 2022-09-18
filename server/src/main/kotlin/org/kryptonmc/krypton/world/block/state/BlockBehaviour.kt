@@ -95,7 +95,7 @@ abstract class BlockBehaviour(protected val properties: Properties) : Block {
     val lootTable: Key
         get() {
             if (drops == null) {
-                val registryKey = requireNotNull(KryptonRegistries.BLOCK[asBlock()]) { "Could not find registry key for block ${asBlock()}!" }
+                val registryKey = requireNotNull(KryptonRegistries.BLOCK.get(asBlock())) { "Could not find registry key for block ${asBlock()}!" }
                 drops = Key.key(registryKey.namespace(), "blocks/${registryKey.value()}")
             }
             return drops!!
@@ -479,7 +479,7 @@ abstract class BlockBehaviour(protected val properties: Properties) : Block {
 
             init {
                 if (!collisionShape.isEmpty() && state.offsetType != OffsetType.NONE) {
-                    val key = KryptonRegistries.BLOCK[state.block]
+                    val key = KryptonRegistries.BLOCK.get(state.block)
                     error("$key has a collision shape and an offset type, but is not marked as dynamic in its properties!")
                 }
                 largeCollisionShape = Direction.Axis.values().any { collisionShape.min(it) < 0.0 || collisionShape.max(it) > 1.0 }

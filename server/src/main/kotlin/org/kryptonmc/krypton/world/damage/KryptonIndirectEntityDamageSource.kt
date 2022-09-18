@@ -24,19 +24,25 @@ import org.kryptonmc.api.world.damage.IndirectEntityDamageSource
 import org.kryptonmc.api.world.damage.type.DamageType
 import org.kryptonmc.krypton.entity.KryptonEntity
 import org.kryptonmc.krypton.entity.KryptonLivingEntity
+import org.kryptonmc.krypton.item.KryptonItemStack
 
 class KryptonIndirectEntityDamageSource(
     type: DamageType,
     entity: KryptonEntity,
-    override val indirectEntity: KryptonEntity
+    override val indirectEntity: KryptonEntity?
 ) : KryptonEntityDamageSource(type, entity), IndirectEntityDamageSource {
 
+    override fun directEntity(): KryptonEntity = entity
+
+    override fun entity(): KryptonEntity? = indirectEntity
+
     override fun formatDeathMessage(target: KryptonLivingEntity): Component {
-        val heldItem = target.heldItem(Hand.MAIN)
-        val itemName = heldItem.meta.name
-        if (!heldItem.isEmpty() && itemName != null) {
-            return Component.translatable("${type.translationKey}.item", target.displayName, indirectEntity.displayName, itemName)
+        val displayName = indirectEntity?.displayName ?: entity.displayName
+        val heldItem = if (indirectEntity is KryptonLivingEntity) indirectEntity.heldItem(Hand.MAIN) else KryptonItemStack.EMPTY
+        val baseMessage = "death.attack.${type.translationKey()}"
+        if (!heldItem.isEmpty() && heldItem.meta.name != null) {
+            return Component.translatable("$baseMessage.item", target.displayName, displayName, heldItem.meta.name)
         }
-        return Component.translatable(type.translationKey, target.displayName, indirectEntity.displayName)
+        return Component.translatable(baseMessage, target.displayName, displayName)
     }
 }

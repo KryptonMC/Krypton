@@ -43,29 +43,31 @@ class KryptonObjective(
             scoreboard?.onObjectiveUpdated(this)
         }
 
-    override fun toBuilder(): Objective.Builder = Builder(this)
+    class Builder() : Objective.Builder, Objective.Builder.NamedStep, Objective.Builder.EndStep {
 
-    class Builder(private var name: String, private var criterion: Criterion) : Objective.Builder {
-
+        private var name: String? = null
+        private var criterion: Criterion? = null
         private var scoreboard: KryptonScoreboard? = null
         private var displayName: Component? = null
         private var renderType = ObjectiveRenderType.INTEGER
 
-        constructor(objective: KryptonObjective) : this(objective.name, objective.criterion) {
+        constructor(objective: KryptonObjective) : this() {
+            name = objective.name
+            criterion = objective.criterion
             scoreboard = objective.scoreboard
             displayName = objective.displayName
             renderType = objective.renderType
         }
 
-        override fun name(name: String): Objective.Builder = apply { this.name = name }
+        override fun name(name: String): Builder = apply { this.name = name }
 
-        override fun displayName(name: Component): Objective.Builder = apply { displayName = name }
+        override fun displayName(name: Component): Builder = apply { displayName = name }
 
-        override fun criterion(criterion: Criterion): Objective.Builder = apply { this.criterion = criterion }
+        override fun criterion(criterion: Criterion): Builder = apply { this.criterion = criterion }
 
-        override fun renderType(type: ObjectiveRenderType): Objective.Builder = apply { renderType = type }
+        override fun renderType(type: ObjectiveRenderType): Builder = apply { renderType = type }
 
-        override fun build(): KryptonObjective = KryptonObjective(scoreboard, name, criterion, getName(displayName, name), renderType)
+        override fun build(): KryptonObjective = KryptonObjective(scoreboard, name!!, criterion!!, getName(displayName, name!!), renderType)
 
         companion object {
 
@@ -77,6 +79,6 @@ class KryptonObjective(
 
     object Factory : Objective.Factory {
 
-        override fun builder(name: String, criterion: Criterion): Objective.Builder = Builder(name, criterion)
+        override fun builder(): Objective.Builder = Builder()
     }
 }

@@ -12,7 +12,6 @@ package org.kryptonmc.api.state
 import org.jetbrains.annotations.ApiStatus
 import org.kryptonmc.api.Krypton
 import org.kryptonmc.api.util.CataloguedBy
-import org.kryptonmc.api.util.provide
 
 /**
  * Represents a property key.
@@ -52,12 +51,12 @@ public interface Property<T : Comparable<T>> {
     public companion object {
 
         @JvmSynthetic
-        internal fun forBoolean(name: String): Property<Boolean> = Krypton.factoryProvider.provide<Factory>().forBoolean(name)
+        internal fun forBoolean(name: String): Property<Boolean> = Krypton.factory<Factory>().forBoolean(name)
 
         @JvmSynthetic
-        internal fun forInt(name: String): Property<Int> = Krypton.factoryProvider.provide<Factory>().forInt(name)
+        internal fun forInt(name: String): Property<Int> = Krypton.factory<Factory>().forInt(name)
 
         @JvmSynthetic
-        internal fun <E : Enum<E>> forEnum(name: String): Property<E> = Krypton.factoryProvider.provide<Factory>().forEnum(name)
+        internal fun <E : Enum<E>> forEnum(name: String): Property<E> = Krypton.factory<Factory>().forEnum(name)
     }
 }

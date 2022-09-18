@@ -8,12 +8,8 @@
  */
 package org.kryptonmc.api.block.entity.banner
 
-import net.kyori.adventure.key.Key
 import net.kyori.adventure.key.Keyed
-import org.jetbrains.annotations.ApiStatus
-import org.kryptonmc.api.Krypton
 import org.kryptonmc.api.util.CataloguedBy
-import org.kryptonmc.api.util.provide
 
 /**
  * A type of banner pattern.
@@ -28,26 +24,4 @@ public interface BannerPatternType : Keyed {
      */
     @get:JvmName("code")
     public val code: String
-
-    @ApiStatus.Internal
-    public interface Factory {
-
-        public fun of(key: Key, code: String): BannerPatternType
-    }
-
-    public companion object {
-
-        private val FACTORY = Krypton.factoryProvider.provide<Factory>()
-
-        /**
-         * Creates a new banner pattern type with the given [key] and
-         * shortened [code].
-         *
-         * @param key the key
-         * @param code the shortened code
-         * @return a new banner pattern type
-         */
-        @JvmStatic
-        public fun of(key: Key, code: String): BannerPatternType = FACTORY.of(key, code)
-    }
 }

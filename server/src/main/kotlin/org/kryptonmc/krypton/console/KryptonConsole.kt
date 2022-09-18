@@ -65,7 +65,7 @@ class KryptonConsole(override val server: KryptonServer) : SimpleTerminalConsole
         LOGGER.info(TranslationBootstrap.render(message).toLegacySectionText())
     }
 
-    override fun getPermissionValue(permission: String): TriState = permissionFunction[permission]
+    override fun getPermissionValue(permission: String): TriState = permissionFunction.getPermissionValue(permission)
 
     override fun identity(): Identity = Identity.nil()
 

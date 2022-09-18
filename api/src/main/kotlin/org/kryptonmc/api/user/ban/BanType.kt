@@ -8,13 +8,8 @@
  */
 package org.kryptonmc.api.user.ban
 
-import net.kyori.adventure.key.Key
 import net.kyori.adventure.key.Keyed
-import org.jetbrains.annotations.ApiStatus
-import org.jetbrains.annotations.Contract
-import org.kryptonmc.api.Krypton
 import org.kryptonmc.api.util.CataloguedBy
-import org.kryptonmc.api.util.provide
 
 /**
  * A type of ban.
@@ -28,26 +23,4 @@ public interface BanType : Keyed {
      */
     @get:JvmName("banClass")
     public val banClass: Class<out Ban>
-
-    @ApiStatus.Internal
-    public interface Factory {
-
-        public fun of(key: Key, clazz: Class<out Ban>): BanType
-    }
-
-    public companion object {
-
-        private val FACTORY = Krypton.factoryProvider.provide<Factory>()
-
-        /**
-         * Creates a new ban type with the given values.
-         *
-         * @param key the key
-         * @param clazz the class
-         * @return a new ban type
-         */
-        @JvmStatic
-        @Contract("_, _ -> new", pure = true)
-        public fun of(key: Key, clazz: Class<out Ban>): BanType = FACTORY.of(key, clazz)
-    }
 }

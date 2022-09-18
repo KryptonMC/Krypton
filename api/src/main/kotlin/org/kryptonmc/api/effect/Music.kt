@@ -12,7 +12,6 @@ import org.jetbrains.annotations.ApiStatus
 import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.Krypton
 import org.kryptonmc.api.effect.sound.SoundEvent
-import org.kryptonmc.api.util.provide
 
 /**
  * Music that may be played. This has a minimum and maximum delay before the
@@ -57,8 +56,6 @@ public interface Music {
 
     public companion object {
 
-        private val FACTORY = Krypton.factoryProvider.provide<Factory>()
-
         /**
          * Creates new music with the given values.
          *
@@ -70,6 +67,6 @@ public interface Music {
         @JvmStatic
         @Contract("_, _, _, _ -> new", pure = true)
         public fun of(sound: SoundEvent, minimumDelay: Int, maximumDelay: Int, replaceCurrentMusic: Boolean): Music =
-            FACTORY.of(sound, minimumDelay, maximumDelay, replaceCurrentMusic)
+            Krypton.factory<Factory>().of(sound, minimumDelay, maximumDelay, replaceCurrentMusic)
     }
 }

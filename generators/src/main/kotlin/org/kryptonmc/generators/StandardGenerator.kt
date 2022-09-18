@@ -18,89 +18,53 @@
  */
 package org.kryptonmc.generators
 
-import com.squareup.kotlinpoet.AnnotationSpec
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.FileSpec
-import com.squareup.kotlinpoet.FunSpec
-import com.squareup.kotlinpoet.KModifier
-import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeSpec
 import net.minecraft.core.Registry
-import java.lang.reflect.Modifier
 import java.nio.file.Path
 import kotlin.io.path.exists
 import kotlin.io.path.writeText
 
-open class StandardGenerator(@PublishedApi internal val output: Path) {
+open class StandardGenerator(private val output: Path) {
 
-    protected open fun <S, T> collectFields(catalogueType: Class<S>, type: Class<T>): Sequence<CollectedField> =
-        catalogueType.declaredFields.asSequence()
-            .filter { Modifier.isStatic(it.modifiers) }
-            .filter { type.isAssignableFrom(it.type) }
-            .map(::CollectedField)
+    protected open fun <S, T> collectFields(catalogueType: Class<S>, type: Class<T>): Sequence<CollectedField<T>> =
+        catalogueType.collectFields(type)
 
-    @Suppress("UNCHECKED_CAST")
     fun <S, T> run(
         catalogueType: Class<S>,
         type: Class<T>,
-        registry: Registry<*>,
-        name: String,
-        returnType: String,
+        name: ClassName,
+        returnType: ClassName,
         registryName: String,
-        keyGetter: KeyGetter = KeyGetter { (registry as Registry<Any>).getKey(it.value)!! }
+        keyGetter: KeyGetter<T>
     ) {
-        val pkg = "org.kryptonmc.api"
-        val className = className(name)
-        val classReturnType = className(returnType)
-        val file = FileSpec.builder(className.packageName, className.simpleName)
-            .indent("    ")
-            .addImport("net.kyori.adventure.key", "Key")
-            .addImport("$pkg.registry", "Registries")
-        val outputClass = TypeSpec.objectBuilder(className)
-            .addKdoc("This file is auto-generated. Do not edit this manually!")
-            .addAnnotation(AnnotationSpec.builder(ClassName("org.kryptonmc.api.util", "Catalogue"))
-                .addMember("${classReturnType.simpleName}::class")
-                .build())
-            .addFunction(FunSpec.builder("get")
-                .returns(classReturnType)
-                .addParameter("key", ClassName("kotlin", "String"))
-                .addAnnotation(JvmStatic::class)
-                .addModifiers(KModifier.PRIVATE)
-                .addCode("return Registries.$registryName[Key.key(key)]!!")
-                .build())
-        collectFields(catalogueType, type).forEach {
-            outputClass.addProperty(PropertySpec.builder(it.name, classReturnType)
-                .addAnnotation(JvmField::class)
-                .initializer("get(\"${keyGetter.key(it).path}\")")
-                .build())
-        }
-        val stringBuilder = StringBuilder()
-        file.addType(outputClass.build())
-            .build()
-            .writeTo(stringBuilder)
-        val outputFile = output.resolve(className.packageName.replace('.', '/'))
-            .tryCreateDirectories()
-            .resolve("${className.simpleName}.kt")
+        val file = FileSpec.catalogueType(name)
+        val outputClass = TypeSpec.catalogueType(name, returnType).registryGetter(returnType, registryName)
+        collectFields(catalogueType, type).forEach { outputClass.catalogueField(it, returnType, keyGetter) }
+        val out = StringBuilder()
+        file.addType(outputClass.build()).build().writeTo(out)
+        val outputFile = output.resolve(name.packageName.replace('.', '/')).tryCreateDirectories().resolve("${name.simpleName}.kt")
         if (outputFile.exists()) return
-        outputFile.tryCreateFile().writeText(stringBuilder.toString().performReplacements(classReturnType.simpleName, className.simpleName))
+        outputFile.tryCreateFile().writeText(out.toString().performReplacements(returnType.simpleName, name.simpleName))
+    }
+
+    inline fun <reified S, reified T> run(name: String, returnType: String, registryName: String, keyGetter: KeyGetter<T>) {
+        run(S::class.java, T::class.java, className(name), className(returnType), registryName, keyGetter)
+    }
+
+    inline fun <reified S, reified T> run(registry: Registry<T>, name: String, returnType: String, registryName: String) {
+        run(S::class.java, T::class.java, className(name), className(returnType), registryName) { registry.getKey(it.value)!! }
     }
 
     companion object {
 
         @JvmStatic
-        private fun className(name: String): ClassName {
-            val parts = name.split("/")
-            return ClassName("org.kryptonmc.api.${parts[0]}", parts[1])
+        @PublishedApi
+        internal fun className(name: String): ClassName {
+            val lastSeparator = name.lastIndexOf('.')
+            require(lastSeparator != -1) { "Cannot create class name from name without '.' separator!" }
+            return ClassName("$PACKAGE.${name.substring(0, lastSeparator)}", name.substring(lastSeparator + 1))
         }
     }
-}
-
-inline fun <reified S, reified T> StandardGenerator.run(
-    registry: Registry<*>,
-    name: String,
-    returnType: String,
-    registryName: String,
-    keyGetter: KeyGetter = KeyGetter { (registry as Registry<Any>).getKey(it.value)!! }
-) {
-    run(S::class.java, T::class.java, registry, name, returnType, registryName, keyGetter)
 }

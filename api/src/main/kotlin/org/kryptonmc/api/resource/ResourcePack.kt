@@ -13,7 +13,6 @@ import org.jetbrains.annotations.ApiStatus
 import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.Krypton
 import org.kryptonmc.api.entity.player.Player
-import org.kryptonmc.api.util.provide
 import java.net.URI
 
 /**
@@ -90,8 +89,6 @@ public interface ResourcePack {
 
     public companion object {
 
-        private val FACTORY = Krypton.factoryProvider.provide<Factory>()
-
         /**
          * Creates a new resource pack with the given values.
          *
@@ -104,6 +101,6 @@ public interface ResourcePack {
         @JvmStatic
         @Contract("_, _, _, _ -> new", pure = true)
         public fun of(uri: URI, hash: String, isForced: Boolean, promptMessage: Component?): ResourcePack =
-            FACTORY.of(uri, hash, isForced, promptMessage)
+            Krypton.factory<Factory>().of(uri, hash, isForced, promptMessage)
     }
 }

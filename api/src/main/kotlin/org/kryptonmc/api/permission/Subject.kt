@@ -18,7 +18,7 @@ import net.kyori.adventure.util.TriState
 /**
  * An object that has a queryable set of permissions.
  */
-public fun interface Subject : PermissionChecker {
+public fun interface Subject {
 
     /**
      * Gets the value for the given [permission].
@@ -32,8 +32,7 @@ public fun interface Subject : PermissionChecker {
     public fun getPermissionValue(permission: String): TriState
 
     /**
-     * Returns true if this subject has the given [permission], false
-     * otherwise.
+     * Checks if this subject has the given [permission].
      *
      * A subject having a permission is defined as the subject both possessing
      * the permission, and it being set to [TriState.TRUE].
@@ -43,5 +42,10 @@ public fun interface Subject : PermissionChecker {
      */
     public fun hasPermission(permission: String): Boolean = getPermissionValue(permission) == TriState.TRUE
 
-    override fun value(permission: String): TriState = getPermissionValue(permission)
+    /**
+     * Converts this subject to its equivalent Adventure permission checker.
+     *
+     * @return the permission checker
+     */
+    public fun asPermissionChecker(): PermissionChecker = PermissionChecker(::getPermissionValue)
 }

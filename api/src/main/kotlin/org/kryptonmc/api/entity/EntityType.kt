@@ -18,7 +18,6 @@ import org.kryptonmc.api.block.BlockState
 import org.kryptonmc.api.util.CataloguedBy
 import org.kryptonmc.api.util.KeyedBuilder
 import org.kryptonmc.api.util.TranslationHolder
-import org.kryptonmc.api.util.provide
 
 /**
  * A type of entity.
@@ -287,8 +286,6 @@ public interface EntityType<T : Entity> : Keyed, TranslationHolder {
 
     public companion object {
 
-        private val FACTORY = Krypton.factoryProvider.provide<Factory>()
-
         /**
          * Creates a new builder for building an entity type with the given
          * values.
@@ -299,6 +296,6 @@ public interface EntityType<T : Entity> : Keyed, TranslationHolder {
          */
         @JvmStatic
         @Contract("_ -> new", pure = true)
-        public fun <T : Entity> builder(key: Key, category: EntityCategory): Builder<T> = FACTORY.builder(key, category)
+        public fun <T : Entity> builder(key: Key, category: EntityCategory): Builder<T> = Krypton.factory<Factory>().builder(key, category)
     }
 }

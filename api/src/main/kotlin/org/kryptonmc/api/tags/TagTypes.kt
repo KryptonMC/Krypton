@@ -42,7 +42,7 @@ public object TagTypes {
     public val PICTURES: TagType<Picture> = get("picture")
 
     // @formatter:on
-    @Suppress("UNCHECKED_CAST")
     @JvmStatic
-    private fun <T : Any> get(key: String): TagType<T> = Registries.TAG_TYPES[Key.key(key)]!! as TagType<T>
+    @Suppress("UNCHECKED_CAST")
+    private fun <T : Any> get(key: String): TagType<T> = Registries.TAG_TYPES.get(Key.key(key))!! as TagType<T>
 }

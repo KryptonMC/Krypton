@@ -88,7 +88,7 @@ class EntityManager(val world: KryptonWorld) : AutoCloseable {
         val location = player.location
 
         // TODO: World border
-        player.session.send(PacketOutUpdateTime(world.data.time, world.data.dayTime, world.data.gameRules[GameRules.DO_DAYLIGHT_CYCLE]))
+        player.session.send(PacketOutUpdateTime(world.data.time, world.data.dayTime, world.data.gameRules.get(GameRules.DO_DAYLIGHT_CYCLE)))
         if (!player.isVanished) {
             forEachEntityInRange(location, player.viewDistance) {
                 it.addViewer(player)
@@ -137,7 +137,7 @@ class EntityManager(val world: KryptonWorld) : AutoCloseable {
             } catch (exception: InvalidKeyException) {
                 return@forEachCompound
             }
-            val type = Registries.ENTITY_TYPE[key]
+            val type = Registries.ENTITY_TYPE.get(key)
             val entity = EntityFactory.create(type, world) ?: return@forEachCompound
             EntityFactory.serializer(entity.type).load(entity, it)
             spawn(entity)

@@ -148,5 +148,5 @@ public object Biomes {
 
     // @formatter:on
     @JvmStatic
-    private fun get(key: String): Biome = Registries.BIOME[Key.key(key)]!!
+    private fun get(key: String): Biome = Registries.BIOME.get(Key.key(key))!!
 }

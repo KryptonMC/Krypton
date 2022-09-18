@@ -2326,5 +2326,5 @@ public object ItemTypes {
 
     // @formatter:on
     @JvmStatic
-    private fun get(key: String): ItemType = Registries.ITEM[Key.key(key)]!!
+    private fun get(key: String): ItemType = Registries.ITEM.get(Key.key(key))!!
 }

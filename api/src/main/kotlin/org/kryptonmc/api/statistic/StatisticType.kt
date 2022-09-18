@@ -8,21 +8,17 @@
  */
 package org.kryptonmc.api.statistic
 
-import net.kyori.adventure.key.Key
 import net.kyori.adventure.key.Keyed
-import org.jetbrains.annotations.ApiStatus
-import org.jetbrains.annotations.Contract
-import org.kryptonmc.api.Krypton
 import org.kryptonmc.api.registry.Registry
 import org.kryptonmc.api.util.CataloguedBy
-import org.kryptonmc.api.util.provide
+import org.kryptonmc.api.util.TranslationHolder
 
 /**
  * A type of a statistic.
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
 @CataloguedBy(StatisticTypes::class)
-public interface StatisticType<T : Any> : Iterable<Statistic<T>>, Keyed {
+public interface StatisticType<T : Any> : Iterable<Statistic<T>>, TranslationHolder, Keyed {
 
     /**
      * All of the statistics for this type.
@@ -44,7 +40,7 @@ public interface StatisticType<T : Any> : Iterable<Statistic<T>>, Keyed {
      * @return true if this type contains a statistic for the key, false
      * otherwise
      */
-    public operator fun contains(key: T): Boolean
+    public fun contains(key: T): Boolean
 
     /**
      * Gets the statistic for the given [key], creating it if it does not
@@ -53,7 +49,7 @@ public interface StatisticType<T : Any> : Iterable<Statistic<T>>, Keyed {
      * @param key the key
      * @return the statistic for the key
      */
-    public operator fun get(key: T): Statistic<T>
+    public fun get(key: T): Statistic<T>
 
     /**
      * Gets the statistic for the given [key] with the given [formatter],
@@ -63,27 +59,5 @@ public interface StatisticType<T : Any> : Iterable<Statistic<T>>, Keyed {
      * @param formatter the formatter
      * @return the statistic for the key
      */
-    public operator fun get(key: T, formatter: StatisticFormatter): Statistic<T>
-
-    @ApiStatus.Internal
-    public interface Factory {
-
-        public fun <T : Any> of(key: Key, registry: Registry<T>): StatisticType<T>
-    }
-
-    public companion object {
-
-        private val FACTORY = Krypton.factoryProvider.provide<Factory>()
-
-        /**
-         * Creates a new statistic type with the given values.
-         *
-         * @param key the key
-         * @param registry the registry
-         * @return a new statistic type
-         */
-        @JvmStatic
-        @Contract("_, _ -> new", pure = true)
-        public fun <T : Any> of(key: Key, registry: Registry<T>): StatisticType<T> = FACTORY.of(key, registry)
-    }
+    public fun get(key: T, formatter: StatisticFormatter): Statistic<T>
 }

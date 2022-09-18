@@ -138,7 +138,7 @@ data class KryptonItemStack(override val type: ItemType, override val amount: In
 
         @JvmStatic
         fun from(data: CompoundTag): KryptonItemStack {
-            val type = Registries.ITEM[Key.key(data.getString("id"))]
+            val type = Registries.ITEM.get(Key.key(data.getString("id")))
             return KryptonItemStack(type, data.getInt("Count"), ItemFactory.create(type, data.getCompound("tag")))
         }
     }

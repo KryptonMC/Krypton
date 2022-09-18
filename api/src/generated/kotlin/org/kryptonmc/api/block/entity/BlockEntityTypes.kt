@@ -94,5 +94,5 @@ public object BlockEntityTypes {
 
     // @formatter:on
     @JvmStatic
-    private fun get(key: String): BlockEntityType = Registries.BLOCK_ENTITY_TYPE[Key.key(key)]!!
+    private fun get(key: String): BlockEntityType = Registries.BLOCK_ENTITY_TYPE.get(Key.key(key))!!
 }

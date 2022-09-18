@@ -26,5 +26,5 @@ public object FluidTags {
 
     // @formatter:on
     @JvmStatic
-    private fun get(key: String): Tag<Fluid> = Krypton.tagManager[TagTypes.FLUIDS, "minecraft:$key"]!!
+    private fun get(key: String): Tag<Fluid> = Krypton.tag(TagTypes.FLUIDS, "minecraft:$key")!!
 }

@@ -52,7 +52,7 @@ object SuggestionProviders {
         Registries.ENTITY_TYPE.values.asSequence()
             .filter { it.isSummonable }
             .suggestKey(builder, EntityType<*>::key) {
-                val key = Registries.ENTITY_TYPE[it]
+                val key = Registries.ENTITY_TYPE.get(it)
                 Component.translatable("entity.${key.namespace()}.${key.value().replace("/", ".")}").toMessage()
             }
     }

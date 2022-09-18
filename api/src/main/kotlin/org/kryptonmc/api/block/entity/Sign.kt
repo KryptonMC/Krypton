@@ -36,6 +36,7 @@ public interface Sign : BlockEntity {
     /**
      * The colour that this sign is dyed.
      */
+    @get:JvmName("color")
     public var color: DyeColor
 
     /**

@@ -32,6 +32,6 @@ public interface NoteParticleData : ParticleData {
          */
         @JvmStatic
         @Contract("_ -> new", pure = true)
-        public fun of(note: Byte): NoteParticleData = ParticleData.FACTORY.note(note)
+        public fun of(note: Byte): NoteParticleData = ParticleData.factory().note(note)
     }
 }

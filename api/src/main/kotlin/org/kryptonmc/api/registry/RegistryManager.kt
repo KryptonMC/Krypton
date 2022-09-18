@@ -19,20 +19,13 @@ import org.kryptonmc.api.resource.ResourceKey
 public interface RegistryManager {
 
     /**
-     * The parent registry. All registries should be a child of this registry.
-     */
-    @get:JvmName("parent")
-    public val parent: Registry<out Registry<out Any>>
-
-    /**
      * Gets the existing registry with the given resource [key], or returns
      * null if there is no existing registry with the given resource [key].
      *
      * @param key the key
      * @return the existing registry, or null if not present
      */
-    @Suppress("UNCHECKED_CAST")
-    public fun <T : Any> registry(key: ResourceKey<out Registry<T>>): Registry<T>? = parent[key] as? Registry<T>
+    public fun <T : Any> registry(key: ResourceKey<out Registry<T>>): Registry<T>?
 
     /**
      * Gets the existing defaulted registry with the given resource [key], or
@@ -42,8 +35,7 @@ public interface RegistryManager {
      * @param key the key
      * @return the existing defaulted registry, or null if not present
      */
-    @Suppress("UNCHECKED_CAST")
-    public fun <T : Any> defaulted(key: ResourceKey<out Registry<T>>): DefaultedRegistry<T>? = parent[key] as? DefaultedRegistry<T>
+    public fun <T : Any> defaulted(key: ResourceKey<out Registry<T>>): DefaultedRegistry<T>?
 
     /**
      * Creates a new registry with the given registry [key].

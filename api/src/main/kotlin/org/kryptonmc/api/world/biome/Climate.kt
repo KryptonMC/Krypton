@@ -13,7 +13,6 @@ import org.jetbrains.annotations.ApiStatus
 import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.Krypton
 import org.kryptonmc.api.util.Buildable
-import org.kryptonmc.api.util.provide
 
 /**
  * The climate for a biome.
@@ -110,8 +109,6 @@ public interface Climate : Buildable<Climate.Builder, Climate> {
 
     public companion object {
 
-        private val FACTORY = Krypton.factoryProvider.provide<Factory>()
-
         /**
          * Creates a new climate with the given values.
          *
@@ -124,7 +121,7 @@ public interface Climate : Buildable<Climate.Builder, Climate> {
         @JvmStatic
         @Contract("_, _, _, _ -> new", pure = true)
         public fun of(precipitation: Precipitation, temperature: Float, downfall: Float, temperatureModifier: TemperatureModifier): Climate =
-            FACTORY.of(precipitation, temperature, downfall, temperatureModifier)
+            Krypton.factory<Factory>().of(precipitation, temperature, downfall, temperatureModifier)
 
         /**
          * Creates a new builder for climates.
@@ -133,6 +130,6 @@ public interface Climate : Buildable<Climate.Builder, Climate> {
          */
         @JvmStatic
         @Contract("-> new", pure = true)
-        public fun builder(): Builder = FACTORY.builder()
+        public fun builder(): Builder = Krypton.factory<Factory>().builder()
     }
 }

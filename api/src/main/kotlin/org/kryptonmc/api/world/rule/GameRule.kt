@@ -10,14 +10,12 @@ package org.kryptonmc.api.world.rule
 
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.key.Keyed
-import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.TranslatableComponent
 import org.jetbrains.annotations.ApiStatus
 import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.Krypton
 import org.kryptonmc.api.util.CataloguedBy
 import org.kryptonmc.api.util.TranslationHolder
-import org.kryptonmc.api.util.provide
 
 /**
  * A rule dictating how a specific aspect of the game functions.
@@ -48,8 +46,6 @@ public interface GameRule<V : Any> : TranslationHolder, Keyed {
 
     public companion object {
 
-        private val FACTORY = Krypton.factoryProvider.provide<Factory>()
-
         /**
          * Creates a new game rule with the given values.
          *
@@ -62,11 +58,7 @@ public interface GameRule<V : Any> : TranslationHolder, Keyed {
         @JvmStatic
         @JvmOverloads
         @Contract("_, _, _, _ -> new", pure = true)
-        public fun <V : Any> of(
-            key: Key,
-            name: String,
-            default: V,
-            translation: TranslatableComponent = Component.translatable("gamerule.$name")
-        ): GameRule<V> = FACTORY.of(key, name, default, translation)
+        public fun <V : Any> of(key: Key, name: String, default: V, translation: TranslatableComponent): GameRule<V> =
+            Krypton.factory<Factory>().of(key, name, default, translation)
     }
 }

@@ -32,9 +32,10 @@ indra {
 
 jacoco.toolVersion = "0.8.7"
 
-tasks["build"].dependsOn(tasks.test)
-
 tasks {
+    build {
+        dependsOn(test)
+    }
     jacocoTestReport {
         dependsOn(test)
         reports {

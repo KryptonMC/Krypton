@@ -19,6 +19,7 @@
 package org.kryptonmc.krypton.world.rule
 
 import net.kyori.adventure.key.Key
+import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.TranslatableComponent
 import org.kryptonmc.api.world.rule.GameRule
 
@@ -27,7 +28,7 @@ data class KryptonGameRule<V : Any>(
     private val key: Key,
     override val name: String,
     override val default: V,
-    override val translation: TranslatableComponent
+    override val translation: TranslatableComponent = Component.translatable("gamerule.$name")
 ) : GameRule<V> {
 
     override fun key(): Key = key

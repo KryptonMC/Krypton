@@ -33,16 +33,4 @@ data class KryptonAttributeType(
 ) : AttributeType {
 
     override fun key(): Key = key
-
-    object Factory : AttributeType.Factory {
-
-        override fun of(
-            key: Key,
-            defaultBase: Double,
-            minimum: Double,
-            maximum: Double,
-            sendToClient: Boolean,
-            translation: TranslatableComponent
-        ): AttributeType = KryptonAttributeType(key, defaultBase, minimum, maximum, sendToClient, translation)
-    }
 }

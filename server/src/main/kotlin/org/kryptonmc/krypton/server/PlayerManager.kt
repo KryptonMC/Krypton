@@ -107,7 +107,7 @@ class PlayerManager(private val server: KryptonServer) {
 
     fun add(player: KryptonPlayer, session: SessionHandler): CompletableFuture<Void> = dataManager.load(player, executor).thenAcceptAsync({ nbt ->
         val profile = player.profile
-        val name = server.profileCache[profile.uuid]?.name ?: profile.name
+        val name = server.profileCache.get(profile.uuid)?.name ?: profile.name
         server.profileCache.add(profile)
         val dimension = if (nbt != null) {
             KryptonDimensionType.parseLegacy(Dynamic(NbtOps.INSTANCE, nbt.get("Dimension"))).resultOrPartial(LOGGER::error).orElse(World.OVERWORLD)
@@ -123,8 +123,8 @@ class PlayerManager(private val server: KryptonServer) {
         LOGGER.info("Player ${profile.name} logged in with entity ID ${player.id} at (${location.x()}, ${location.y()}, ${location.z()})")
 
         // Join the game
-        val reducedDebugInfo = world.gameRules[GameRules.REDUCED_DEBUG_INFO]
-        val doImmediateRespawn = world.gameRules[GameRules.DO_IMMEDIATE_RESPAWN]
+        val reducedDebugInfo = world.gameRules.get(GameRules.REDUCED_DEBUG_INFO)
+        val doImmediateRespawn = world.gameRules.get(GameRules.DO_IMMEDIATE_RESPAWN)
         session.send(PacketOutLogin(
             player.id,
             world.data.isHardcore,
@@ -253,7 +253,7 @@ class PlayerManager(private val server: KryptonServer) {
 
     private fun sendWorldInfo(world: KryptonWorld, player: KryptonPlayer) {
         player.session.send(PacketOutInitializeWorldBorder(world.border))
-        player.session.send(PacketOutUpdateTime(world.data.time, world.data.dayTime, world.data.gameRules[GameRules.DO_DAYLIGHT_CYCLE]))
+        player.session.send(PacketOutUpdateTime(world.data.time, world.data.dayTime, world.data.gameRules.get(GameRules.DO_DAYLIGHT_CYCLE)))
         player.session.send(PacketOutSetDefaultSpawnPosition(world.data.spawnX, world.data.spawnY, world.data.spawnZ, world.data.spawnAngle))
         if (world.isRaining) {
             player.session.send(PacketOutGameEvent(GameEvent.BEGIN_RAINING))

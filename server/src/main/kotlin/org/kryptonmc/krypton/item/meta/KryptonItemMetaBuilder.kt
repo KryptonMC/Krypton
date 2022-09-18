@@ -79,10 +79,12 @@ abstract class KryptonItemMetaBuilder<B : ItemMetaBuilder<B, I>, I : ItemMeta> :
 
     final override fun addCanPlaceOn(block: Block): B = apply { canPlaceOn.add(block) } as B
 
-    final override fun attributeModifiers(attributes: Set<ItemAttribute>): B = apply {
+    final override fun attributeModifiers(attributes: Iterable<ItemAttribute>): B = apply {
         this.attributes.clear()
         this.attributes.addAll(attributes)
     } as B
+
+    final override fun addAttributeModifier(modifier: ItemAttribute): B = apply { attributes.add(modifier) } as B
 
     protected fun copyFrom(meta: I) {
         damage = meta.damage

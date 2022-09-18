@@ -143,6 +143,7 @@ public interface Player : LivingEntity, Equipable, PluginMessageRecipient {
      * such as chat plugins, respect this option, and allow players to opt-out
      * of chat filtering if they wish to do so.
      */
+    @get:JvmName("filterText")
     public val filterText: Boolean
 
     /**

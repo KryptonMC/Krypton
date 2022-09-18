@@ -44,7 +44,7 @@ data class PacketOutUpdateAttributes(override val entityId: Int, val attributes:
 
     constructor(buf: ByteBuf) : this(buf.readVarInt(), buf.readList {
         val key = buf.readKey()
-        val type = requireNotNull(Registries.ATTRIBUTE[key]) { "Cannot find attribute type with key $key!" }
+        val type = requireNotNull(Registries.ATTRIBUTE.get(key)) { "Cannot find attribute type with key $key!" }
         val base = buf.readDouble()
         val modifiers = buf.readList {
             val uuid = buf.readUUID()
@@ -61,7 +61,7 @@ data class PacketOutUpdateAttributes(override val entityId: Int, val attributes:
     override fun write(buf: ByteBuf) {
         buf.writeVarInt(entityId)
         buf.writeCollection(attributes) { attribute ->
-            buf.writeKey(Registries.ATTRIBUTE[attribute.type]!!)
+            buf.writeKey(Registries.ATTRIBUTE.get(attribute.type)!!)
             buf.writeDouble(attribute.base)
             buf.writeCollection(attribute.modifiers) {
                 buf.writeUUID(it.uuid)

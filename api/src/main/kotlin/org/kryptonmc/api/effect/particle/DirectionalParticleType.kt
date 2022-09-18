@@ -8,25 +8,9 @@
  */
 package org.kryptonmc.api.effect.particle
 
-import net.kyori.adventure.key.Key
-import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.effect.particle.builder.DirectionalParticleEffectBuilder
 
 /**
  * A type of particle that can have velocity applied in a direction.
  */
-public interface DirectionalParticleType : ScopedParticleType<DirectionalParticleEffectBuilder> {
-
-    public companion object {
-
-        /**
-         * Creates a new directional particle type with the given [key].
-         *
-         * @param key the key
-         * @return a new directional particle type
-         */
-        @JvmStatic
-        @Contract("_ -> new", pure = true)
-        public fun of(key: Key): DirectionalParticleType = ParticleType.of(key)
-    }
-}
+public interface DirectionalParticleType : ScopedParticleType<DirectionalParticleEffectBuilder>

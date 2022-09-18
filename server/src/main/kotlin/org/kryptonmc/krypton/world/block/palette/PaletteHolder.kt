@@ -220,7 +220,7 @@ class PaletteHolder<T> : PaletteResizer<T> {
         fun readBiomes(data: CompoundTag): PaletteHolder<Biome> {
             val entries = mutableListOf<Biome>()
             data.getList("palette", StringTag.ID).forEachString {
-                val biome = checkNotNull(Registries.BIOME[Key.key(it)]) { "Invalid palette data! Failed to find biome with key $it!" }
+                val biome = checkNotNull(Registries.BIOME.get(Key.key(it))) { "Invalid palette data! Failed to find biome with key $it!" }
                 entries.add(biome)
             }
             return read(Strategy.BIOMES, entries, data.getLongArray("data"))

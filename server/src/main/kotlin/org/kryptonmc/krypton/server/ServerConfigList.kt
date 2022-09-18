@@ -61,6 +61,10 @@ abstract class ServerConfigList<K, V : ServerConfigEntry<K>>(val path: Path) : I
         save()
     }
 
+    fun remove(entry: V) {
+        remove(entry.key)
+    }
+
     fun remove(key: K) {
         if (!contains(key)) return
         map.remove(key(key))

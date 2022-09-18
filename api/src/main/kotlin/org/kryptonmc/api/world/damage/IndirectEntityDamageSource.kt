@@ -9,6 +9,7 @@
 package org.kryptonmc.api.world.damage
 
 import org.jetbrains.annotations.Contract
+import org.kryptonmc.api.Krypton
 import org.kryptonmc.api.entity.Entity
 import org.kryptonmc.api.world.damage.type.DamageType
 
@@ -22,7 +23,7 @@ public interface IndirectEntityDamageSource : EntityDamageSource {
      * The entity that indirectly caused the damage.
      */
     @get:JvmName("indirectEntity")
-    public val indirectEntity: Entity
+    public val indirectEntity: Entity?
 
     public companion object {
 
@@ -39,6 +40,6 @@ public interface IndirectEntityDamageSource : EntityDamageSource {
         @JvmStatic
         @Contract("_, _, _ -> new", pure = true)
         public fun of(type: DamageType, entity: Entity, indirectEntity: Entity): IndirectEntityDamageSource =
-            DamageSource.FACTORY.indirectEntity(type, entity, indirectEntity)
+            Krypton.factory<DamageSource.Factory>().indirectEntity(type, entity, indirectEntity)
     }
 }

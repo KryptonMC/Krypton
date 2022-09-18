@@ -10,7 +10,9 @@ package org.kryptonmc.api.user.ban
 
 import net.kyori.adventure.builder.AbstractBuilder
 import net.kyori.adventure.text.Component
+import org.jetbrains.annotations.ApiStatus
 import org.jetbrains.annotations.Contract
+import org.kryptonmc.api.Krypton
 import org.kryptonmc.api.auth.GameProfile
 import java.net.InetAddress
 import java.time.OffsetDateTime
@@ -79,82 +81,85 @@ public interface Ban {
 
     /**
      * A builder for building bans.
-     *
-     * A new builder can be created with [BanService.createBuilder].
      */
-    public interface Builder : AbstractBuilder<Ban> {
+    public interface Builder {
 
         /**
          * Sets the target profile for the ban to the given [profile].
          *
-         * This will only work if the ban type has been set to
-         * [profile][BanTypes.PROFILE].
-         *
          * @param profile the profile
          * @return this builder
-         * @throws IllegalArgumentException if the ban type is not set to
-         * [BanTypes.PROFILE]
          */
         @Contract("_ -> this", mutates = "this")
-        public fun profile(profile: GameProfile): Builder
+        public fun profile(profile: GameProfile): EndStep
 
         /**
          * Sets the target address for the ban to the given [address].
          *
-         * This will only work if the ban type has been set to
-         * [IP][BanTypes.IP].
-         *
          * @param address the address
          * @return this builder
-         * @throws IllegalArgumentException if the ban type is not set to
-         * [BanTypes.IP]
          */
         @Contract("_ -> this", mutates = "this")
-        public fun address(address: InetAddress): Builder
+        public fun address(address: InetAddress): EndStep
 
         /**
-         * Sets the type of the ban to the given [type].
-         *
-         * @param type the type
-         * @return this builder
+         * A final step that allows a ban to be built after the profile or
+         * address is set.
          */
-        @Contract("_ -> this", mutates = "this")
-        public fun type(type: BanType): Builder
+        public interface EndStep : Builder, AbstractBuilder<Ban> {
+
+            /**
+             * Sets the source of the ban to the given [source].
+             *
+             * @param source the source
+             * @return this builder
+             */
+            @Contract("_ -> this", mutates = "this")
+            public fun source(source: Component): EndStep
+
+            /**
+             * Sets the reason for the ban to the given [reason].
+             *
+             * @param reason the reason
+             * @return this builder
+             */
+            @Contract("_ -> this", mutates = "this")
+            public fun reason(reason: Component?): EndStep
+
+            /**
+             * Sets the date that the ban was created to the given [date].
+             *
+             * @param date the date
+             * @return this builder
+             */
+            @Contract("_ -> this", mutates = "this")
+            public fun creationDate(date: OffsetDateTime): EndStep
+
+            /**
+             * Sets the date that the ban will expire to the given [date].
+             *
+             * @param date the date
+             * @return this builder
+             */
+            @Contract("_ -> this", mutates = "this")
+            public fun expirationDate(date: OffsetDateTime?): EndStep
+        }
+    }
+
+    @ApiStatus.Internal
+    public interface Factory {
+
+        public fun builder(): Builder
+    }
+
+    public companion object {
 
         /**
-         * Sets the source of the ban to the given [source].
+         * Creates a new builder for building a new ban.
          *
-         * @param source the source
-         * @return this builder
+         * @return a new builder
          */
-        @Contract("_ -> this", mutates = "this")
-        public fun source(source: Component): Builder
-
-        /**
-         * Sets the reason for the ban to the given [reason].
-         *
-         * @param reason the reason
-         * @return this builder
-         */
-        @Contract("_ -> this", mutates = "this")
-        public fun reason(reason: Component?): Builder
-
-        /**
-         * Sets the date that the ban was created to the given [date].
-         *
-         * @param date the date
-         * @return this builder
-         */
-        @Contract("_ -> this", mutates = "this")
-        public fun creationDate(date: OffsetDateTime): Builder
-
-        /**
-         * Sets the date that the ban will expire to the given [date].
-         *
-         * @param date the date
-         * @return this builder
-         */
-        @Contract("_ -> this", mutates = "this")
-        public fun expirationDate(date: OffsetDateTime?): Builder
+        @JvmStatic
+        public fun builder(): Builder = Krypton.factory<Factory>().builder()
     }
 }

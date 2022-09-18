@@ -15,18 +15,12 @@ package org.kryptonmc.api.tags
 public interface TagManager {
 
     /**
-     * All of the available tags, mapped by their type.
-     */
-    @get:JvmName("tags")
-    public val tags: Map<TagType<*>, List<Tag<*>>>
-
-    /**
      * Gets the list of tags for the given [type].
      *
      * @param type the type
      * @return the list of tags for the type
      */
-    public operator fun <T : Any> get(type: TagType<T>): List<Tag<T>>
+    public fun <T : Any> get(type: TagType<T>): List<Tag<T>>
 
     /**
      * Gets the tag with the given [type] and [name], or returns null if there
@@ -36,5 +30,5 @@ public interface TagManager {
      * @param name the name
      * @return the tag with the type and name, or null if not present
      */
-    public operator fun <T : Any> get(type: TagType<T>, name: String): Tag<T>?
+    public fun <T : Any> get(type: TagType<T>, name: String): Tag<T>?
 }

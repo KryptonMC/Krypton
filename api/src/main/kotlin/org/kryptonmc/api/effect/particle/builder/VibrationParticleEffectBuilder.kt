@@ -15,6 +15,7 @@ import org.spongepowered.math.vector.Vector3d
 /**
  * A builder for building vibration particle effects.
  */
+@ParticleDsl
 public interface VibrationParticleEffectBuilder : BaseParticleEffectBuilder<VibrationParticleEffectBuilder> {
 
     /**

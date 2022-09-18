@@ -37,7 +37,7 @@ public interface Registry<T> : Map<ResourceKey<T>, T> {
      * @param key the key
      * @return true if the key has a registered value, false otherwise
      */
-    public operator fun contains(key: Key): Boolean
+    public fun contains(key: Key): Boolean
 
     /**
      * Gets a value by its namespaced [key], or null if there is no value
@@ -46,7 +46,7 @@ public interface Registry<T> : Map<ResourceKey<T>, T> {
      * @param key the key
      * @return the value, or null if not present
      */
-    public operator fun get(key: Key): T?
+    public fun get(key: Key): T?
 
     /**
      * Gets a namespaced [Key] by its [value], or null if there is no key
@@ -55,7 +55,7 @@ public interface Registry<T> : Map<ResourceKey<T>, T> {
      * @param value the value
      * @return the key, or null if not present
      */
-    public operator fun get(value: T): Key?
+    public fun get(value: T): Key?
 
     /**
      * Gets the [ResourceKey] for the given [value], or null if there is no key

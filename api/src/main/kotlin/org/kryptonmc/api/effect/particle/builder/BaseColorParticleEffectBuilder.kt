@@ -17,6 +17,7 @@ import org.kryptonmc.api.util.Color
 /**
  * The base builder for building colour particle effects.
  */
+@ParticleDsl
 public interface BaseColorParticleEffectBuilder<B : BaseColorParticleEffectBuilder<B>> : BaseParticleEffectBuilder<B> {
 
     /**

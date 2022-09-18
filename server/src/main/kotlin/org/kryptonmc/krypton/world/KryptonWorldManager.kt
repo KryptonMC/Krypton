@@ -79,7 +79,7 @@ class KryptonWorldManager(override val server: KryptonServer, private val worldF
         val loaded = worlds[resourceKey]
         if (loaded != null) return CompletableFuture.completedFuture(loaded)
 
-        val dimensionType = Registries.DIMENSION_TYPE[key] as? KryptonDimensionType
+        val dimensionType = Registries.DIMENSION_TYPE.get(key) as? KryptonDimensionType
             ?: return failFuture(IllegalStateException("No dimension type found for given key $key!"))
 
         LOGGER.info("Loading world ${key.asString()}...")
@@ -101,12 +101,12 @@ class KryptonWorldManager(override val server: KryptonServer, private val worldF
         }, worldExecutor)
     }
 
-    override fun save(world: World): CompletableFuture<Unit> {
-        if (world !is KryptonWorld) return CompletableFuture.completedFuture(Unit)
-        return CompletableFuture.supplyAsync({ world.save(false) }, worldExecutor)
+    override fun save(world: World): CompletableFuture<Void> {
+        if (world !is KryptonWorld) return CompletableFuture.completedFuture(null)
+        return CompletableFuture.runAsync({ world.save(false) }, worldExecutor)
     }
 
-    override fun contains(key: Key): Boolean = worlds.containsKey(ResourceKey.of(ResourceKeys.DIMENSION, key))
+    override fun isLoaded(key: Key): Boolean = worlds.containsKey(ResourceKey.of(ResourceKeys.DIMENSION, key))
 
     fun saveAll(shouldClose: Boolean): Boolean {
         var successful = false

@@ -65,6 +65,7 @@ public interface BannerMeta : ScopedItemMeta<BannerMeta.Builder, BannerMeta> {
     /**
      * A builder for building banner metadata.
      */
+    @MetaDsl
     public interface Builder : ItemMetaBuilder<Builder, BannerMeta> {
 
         /**
@@ -73,6 +74,7 @@ public interface BannerMeta : ScopedItemMeta<BannerMeta.Builder, BannerMeta> {
          * @param patterns the patterns
          * @return this builder
          */
+        @MetaDsl
         @Contract("_ -> this", mutates = "this")
         public fun patterns(patterns: List<BannerPattern>): Builder
 
@@ -83,6 +85,7 @@ public interface BannerMeta : ScopedItemMeta<BannerMeta.Builder, BannerMeta> {
          * @param pattern the pattern to add
          * @return this builder
          */
+        @MetaDsl
         @Contract("_ -> this", mutates = "this")
         public fun addPattern(pattern: BannerPattern): Builder
     }
