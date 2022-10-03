@@ -19,6 +19,8 @@
 package org.kryptonmc.krypton.command.arguments.entities
 
 import com.mojang.brigadier.StringReader
+import kotlinx.collections.immutable.persistentListOf
+import org.kryptonmc.krypton.command.arguments.entities.EntityQuery.Selector
 
 /**
  * Parses entity selectors.
@@ -33,51 +35,54 @@ object EntityArgumentParser {
     private const val KEY_VALUE_SEPARATOR = '='
 
     @JvmStatic
-    fun parse(reader: StringReader, operation: Char, position: Int, onlyPlayers: Boolean, singleTarget: Boolean): EntityQuery = when (operation) {
-        EntityQuery.Selector.NEAREST_PLAYER_CHAR -> EntityQuery(emptyList(), EntityQuery.Selector.NEAREST_PLAYER)
-        EntityQuery.Selector.ALL_ENTITIES_CHAR -> {
-            if (singleTarget) {
-                reader.cursor = 0
-                throw EntityArgumentExceptions.TOO_MANY_ENTITIES.createWithContext(reader)
-            } else if (onlyPlayers) {
-                reader.cursor = 0
-                throw EntityArgumentExceptions.ONLY_FOR_PLAYERS.createWithContext(reader)
-            }
+    fun parse(reader: StringReader, operation: Char, position: Int, onlyPlayers: Boolean, singleTarget: Boolean): EntityQuery {
+        when (operation) {
+            Selector.NEAREST_PLAYER_CHAR -> return emptyQuery(Selector.NEAREST_PLAYER)
+            Selector.ALL_ENTITIES_CHAR -> {
+                if (singleTarget) {
+                    reader.cursor = 0
+                    throw EntityArgumentExceptions.TOO_MANY_ENTITIES.createWithContext(reader)
+                } else if (onlyPlayers) {
+                    reader.cursor = 0
+                    throw EntityArgumentExceptions.ONLY_FOR_PLAYERS.createWithContext(reader)
+                }
 
-            // If we have a [, we know that we have filters to parse
-            if (reader.canRead() && reader.peek() == OPENING_BRACKET) {
-                reader.skip()
-                EntityQuery(parseArguments(reader), EntityQuery.Selector.ALL_ENTITIES)
-            } else {
-                EntityQuery(emptyList(), EntityQuery.Selector.ALL_ENTITIES)
+                // If we have a [, we know that we have filters to parse
+                if (reader.canRead() && reader.peek() == OPENING_BRACKET) {
+                    reader.skip()
+                    return EntityQuery(parseArguments(reader), Selector.ALL_ENTITIES)
+                }
+                return EntityQuery(emptyList(), Selector.ALL_ENTITIES)
             }
-        }
-        EntityQuery.Selector.RANDOM_PLAYER_CHAR -> EntityQuery(emptyList(), EntityQuery.Selector.RANDOM_PLAYER)
-        EntityQuery.Selector.ALL_PLAYERS_CHAR -> {
-            if (singleTarget) {
-                reader.cursor = 0
-                throw EntityArgumentExceptions.TOO_MANY_PLAYERS.createWithContext(reader)
-            }
+            Selector.RANDOM_PLAYER_CHAR -> return emptyQuery(Selector.RANDOM_PLAYER)
+            Selector.ALL_PLAYERS_CHAR -> {
+                if (singleTarget) {
+                    reader.cursor = 0
+                    throw EntityArgumentExceptions.TOO_MANY_PLAYERS.createWithContext(reader)
+                }
 
-            // If we have a [, we know that we have filters to parse
-            if (reader.canRead() && reader.peek() == OPENING_BRACKET) {
-                reader.skip()
-                EntityQuery(parseArguments(reader), EntityQuery.Selector.ALL_PLAYERS)
-            } else {
-                EntityQuery(emptyList(), EntityQuery.Selector.ALL_PLAYERS)
+                // If we have a [, we know that we have filters to parse
+                if (reader.canRead() && reader.peek() == OPENING_BRACKET) {
+                    reader.skip()
+                    return EntityQuery(parseArguments(reader), Selector.ALL_PLAYERS)
+                }
+                return emptyQuery(Selector.ALL_PLAYERS)
             }
-        }
-        EntityQuery.Selector.EXECUTOR_CHAR -> EntityQuery(emptyList(), EntityQuery.Selector.EXECUTOR)
-        else -> {
-            reader.cursor = position
-            throw EntityArgumentExceptions.UNKNOWN_SELECTOR.createWithContext(reader, "$SELECTOR_CHAR$operation")
+            Selector.EXECUTOR_CHAR -> return emptyQuery(Selector.EXECUTOR)
+            else -> {
+                reader.cursor = position
+                throw EntityArgumentExceptions.UNKNOWN_SELECTOR.createWithContext(reader, "$SELECTOR_CHAR$operation")
+            }
         }
     }
 
     @JvmStatic
-    private fun parseArguments(reader: StringReader): List<EntityArgument.EntityArg> {
+    private fun emptyQuery(selector: Selector): EntityQuery = EntityQuery(emptyList(), selector)
+
+    @JvmStatic
+    private fun parseArguments(reader: StringReader): List<EntityArgument> {
         reader.skipWhitespace()
-        val args = mutableListOf<EntityArgument.EntityArg>()
+        val args = persistentListOf<EntityArgument>().builder()
         while (reader.canRead() && reader.peek() != CLOSING_BRACKET) {
             reader.skipWhitespace()
             val position = reader.cursor
@@ -93,7 +98,7 @@ object EntityArgumentParser {
                 if (exclude) reader.skip()
 
                 val value = reader.readString()
-                args.add(EntityArgument.EntityArg(option, value, exclude))
+                args.add(EntityArgument(option, value, exclude))
 
                 reader.skipWhitespace()
                 if (!reader.canRead()) continue
@@ -111,6 +116,6 @@ object EntityArgumentParser {
             throw EntityArgumentExceptions.VALUELESS.createWithContext(reader, option)
         }
         if (reader.canRead()) reader.skip() else throw EntityArgumentExceptions.UNTERMINATED.createWithContext(reader)
-        return args.toList()
+        return args.build()
     }
 }

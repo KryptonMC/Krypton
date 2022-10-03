@@ -32,7 +32,6 @@ import org.kryptonmc.krypton.util.writeVarIntByteArray
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
 import java.time.Instant
-import java.util.Objects
 import java.util.UUID
 
 @JvmRecord
@@ -58,7 +57,13 @@ data class MessageSignature(val timestamp: Instant, val salt: Long, val signatur
         return timestamp == (other as MessageSignature).timestamp && salt == other.salt && signature.contentEquals(other.signature)
     }
 
-    override fun hashCode(): Int = Objects.hash(timestamp, salt, signature)
+    override fun hashCode(): Int {
+        var result = 1
+        result = 31 * result + timestamp.hashCode()
+        result = 31 * result + salt.hashCode()
+        result = 31 * result + signature.contentHashCode()
+        return result
+    }
 
     companion object {
 

@@ -41,7 +41,7 @@ data class PacketOutPlayerChatMessage(
 
     constructor(buf: ByteBuf) : this(
         buf.readComponent(),
-        buf.readNullable { buf.readComponent() },
+        buf.readNullable(ByteBuf::readComponent),
         buf.readVarInt(),
         // FIXME: When we fix chat, this needs to be sorted
         ChatSender.SYSTEM,

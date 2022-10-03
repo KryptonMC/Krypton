@@ -18,6 +18,21 @@
  */
 package org.kryptonmc.krypton.util
 
-import java.lang.reflect.Method
+import org.spongepowered.math.vector.Vector3d
 
-inline fun <reified T : Annotation> Method.getAnnotation(): T? = getAnnotation(T::class.java)
+object Worlds {
+
+    /**
+     * Determines whether the given position is both inside the maximum spawnable
+     * height **and** inside the maximum world bounds.
+     */
+    @JvmStatic
+    fun isInSpawnableBounds(position: Vector3d): Boolean = !isOutsideSpawnableHeight(position.y()) && isInHorizontalWorldBounds(position)
+
+    @JvmStatic
+    private fun isOutsideSpawnableHeight(y: Double): Boolean = y < -20000000 || y >= 20000000
+
+    @JvmStatic
+    private fun isInHorizontalWorldBounds(position: Vector3d): Boolean = position.x() >= -30000000 && position.z() >= -30000000 &&
+            position.x() < 30000000 && position.z() < 30000000
+}

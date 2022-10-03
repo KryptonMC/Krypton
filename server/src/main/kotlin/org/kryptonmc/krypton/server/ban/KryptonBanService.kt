@@ -38,15 +38,15 @@ class KryptonBanService(private val server: KryptonServer) : BanService {
     override val ipBans: Collection<Ban.IP>
         get() = server.playerManager.bannedIps.values
 
-    override fun isRegistered(ban: Ban): Boolean = when (ban.type) {
-        BanTypes.PROFILE -> server.playerManager.bannedPlayers.contains((ban as Ban.Profile).profile)
-        BanTypes.IP -> server.playerManager.bannedIps.contains((ban as Ban.IP).address.asString())
+    override fun isRegistered(ban: Ban): Boolean = when (ban) {
+        is Ban.Profile -> server.playerManager.bannedPlayers.contains(ban.profile)
+        is Ban.IP -> server.playerManager.bannedIps.contains(ban.address.asString())
         else -> error("Unsupported ban type ${ban.type}!")
     }
 
-    override fun get(profile: GameProfile): Ban.Profile? = server.playerManager.bannedPlayers[profile]
+    override fun get(profile: GameProfile): Ban.Profile? = server.playerManager.bannedPlayers.get(profile)
 
-    override fun get(address: InetAddress): Ban.IP? = server.playerManager.bannedIps[address.asString()]
+    override fun get(address: InetAddress): Ban.IP? = server.playerManager.bannedIps.get(address.asString())
 
     override fun pardon(profile: GameProfile) {
         val ban = get(profile) ?: return

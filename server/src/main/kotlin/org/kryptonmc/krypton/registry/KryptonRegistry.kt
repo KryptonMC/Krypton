@@ -64,17 +64,17 @@ open class KryptonRegistry<T>(override val key: ResourceKey<out Registry<T>>) : 
 
     override fun containsValue(value: T): Boolean = storage.containsValue(value)
 
-    override fun get(key: Key): T? = storage[key]
+    override fun get(key: Key): T? = storage.get(key)
 
     override fun get(id: Int): T? = byId.getOrNull(id)
 
-    override fun get(value: T): Key? = storage.inverse()[value]
+    override fun get(value: T): Key? = storage.inverse().get(value)
 
-    override fun get(key: ResourceKey<T>): T? = keyStorage[key]
+    override fun get(key: ResourceKey<T>): T? = keyStorage.get(key)
 
-    override fun resourceKey(value: T): ResourceKey<T>? = keyStorage.inverse()[value]
+    override fun resourceKey(value: T): ResourceKey<T>? = keyStorage.inverse().get(value)
 
-    private fun getResourceKey(value: T): Optional<ResourceKey<T>> = Optional.ofNullable(keyStorage.inverse()[value])
+    private fun getResourceKey(value: T): Optional<ResourceKey<T>> = Optional.ofNullable(keyStorage.inverse().get(value))
 
     override fun idOf(value: T): Int = toId.getInt(value)
 
@@ -86,10 +86,10 @@ open class KryptonRegistry<T>(override val key: ResourceKey<out Registry<T>>) : 
 
     protected open fun <V : T> register(id: Int, key: ResourceKey<T>, value: V): V {
         byId.size(max(byId.size, id + 1))
-        byId[id] = value
-        toId[value] = id
-        storage[key.location] = value
-        keyStorage[key] = value
+        byId.set(id, value)
+        toId.put(value, id)
+        storage.put(key.location, value)
+        keyStorage.put(key, value)
         if (nextId <= id) nextId = id + 1
         return value
     }

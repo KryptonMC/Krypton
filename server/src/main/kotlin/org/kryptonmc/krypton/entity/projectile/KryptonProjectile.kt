@@ -32,7 +32,7 @@ abstract class KryptonProjectile(world: KryptonWorld, type: EntityType<out Proje
         get() {
             if (field != null) return field
             if (ownerId != null) {
-                field = world.entityManager[ownerId!!]
+                field = world.entityManager.get(ownerId!!)
                 return field
             }
             return null

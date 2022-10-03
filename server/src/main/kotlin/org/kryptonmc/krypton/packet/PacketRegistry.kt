@@ -138,7 +138,7 @@ object PacketRegistry {
     fun lookup(clazz: Class<*>): Int = toId.getInt(clazz)
 
     fun lookup(state: PacketState, id: Int, buf: ByteBuf): Packet? {
-        val constructor = byEncoded[encode(state, id)] ?: return null
+        val constructor = byEncoded.get(encode(state, id)) ?: return null
         return constructor.create(buf)
     }
 
@@ -264,12 +264,12 @@ object PacketRegistry {
 
     @JvmStatic
     private fun register(state: PacketState, id: Int, creator: PacketConstructor) {
-        byEncoded[encode(state, id)] = creator
+        byEncoded.put(encode(state, id), creator)
     }
 
     @JvmStatic
     private inline fun <reified T> register(id: Int) {
-        toId[T::class.java] = id
+        toId.put(T::class.java, id)
     }
 
     @JvmStatic

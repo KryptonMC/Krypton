@@ -58,7 +58,7 @@ abstract class KryptonState<O, S : KryptonState<O, S>>(
         values.forEach { entry ->
             val property = entry.key
             property.values.forEach {
-                if (it != entry.value) table.put(property, it, states[createNeighbourValues(property, it)]!!)
+                if (it != entry.value) table.put(property, it, states.get(createNeighbourValues(property, it))!!)
             }
         }
         val neighbours = if (table.isEmpty) table else ArrayTable.create(table)
@@ -68,7 +68,7 @@ abstract class KryptonState<O, S : KryptonState<O, S>>(
 
     private fun createNeighbourValues(property: KryptonProperty<*>, value: Comparable<*>): Map<KryptonProperty<*>, Comparable<*>> {
         val values = HashMap(values)
-        values[property] = value
+        values.put(property, value)
         return values
     }
 

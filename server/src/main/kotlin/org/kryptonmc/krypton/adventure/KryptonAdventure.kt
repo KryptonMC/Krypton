@@ -24,7 +24,6 @@ import net.kyori.adventure.text.flattener.ComponentFlattener
 import net.kyori.adventure.text.format.NamedTextColor
 import org.kryptonmc.krypton.util.Reflection
 import org.kryptonmc.krypton.util.TranslationBootstrap
-import java.util.Locale
 
 /**
  * Various things used by Krypton for supporting Adventure.
@@ -37,9 +36,7 @@ object KryptonAdventure {
      */
     @JvmField
     val FLATTENER: ComponentFlattener = ComponentFlattener.basic().toBuilder()
-        .complexMapper<TranslatableComponent> { translatable, mapper ->
-            mapper(TranslationBootstrap.render(translatable))
-        }
+        .complexMapper(TranslatableComponent::class.java) { translatable, mapper -> mapper.accept(TranslationBootstrap.render(translatable)) }
         .build()
     // We need to do this because the only other solution, which is to use the NAMES index, doesn't have the guaranteed ordering
     // that we require to map the IDs properly. This internal list has the ordering we need.
@@ -48,16 +45,13 @@ object KryptonAdventure {
     }
     private val NAMED_TEXT_COLOR_ID_MAP = Object2IntArrayMap<NamedTextColor>(NAMED_TEXT_COLORS.size).apply {
         for (i in NAMED_TEXT_COLORS.indices) {
-            put(NAMED_TEXT_COLORS[i], i)
+            put(NAMED_TEXT_COLORS.get(i), i)
         }
     }
-
-    @JvmStatic
-    fun colors(): List<NamedTextColor> = NAMED_TEXT_COLORS
 
     @JvmStatic
     fun colorId(color: NamedTextColor): Int = NAMED_TEXT_COLOR_ID_MAP.getInt(color)
 
     @JvmStatic
-    fun colorFromId(id: Int): NamedTextColor = NAMED_TEXT_COLORS[id]
+    fun colorFromId(id: Int): NamedTextColor = NAMED_TEXT_COLORS.get(id)
 }

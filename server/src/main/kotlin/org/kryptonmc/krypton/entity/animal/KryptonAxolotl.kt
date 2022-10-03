@@ -29,13 +29,15 @@ import org.kryptonmc.api.item.ItemTypes
 import org.kryptonmc.api.item.ItemType
 import org.kryptonmc.api.tags.ItemTags
 import org.kryptonmc.krypton.entity.BucketStorable
+import org.kryptonmc.krypton.entity.KryptonMob
+import org.kryptonmc.krypton.entity.attribute.AttributeSupplier
 import org.kryptonmc.krypton.entity.memory.MemoryKeys
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.item.KryptonItemStack
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.nbt.CompoundTag
 
-class KryptonAxolotl(world: KryptonWorld) : KryptonAnimal(world, EntityTypes.AXOLOTL, ATTRIBUTES), Axolotl, BucketStorable {
+class KryptonAxolotl(world: KryptonWorld) : KryptonAnimal(world, EntityTypes.AXOLOTL), Axolotl, BucketStorable {
 
     override var variant: AxolotlVariant
         get() = VARIANTS.getOrNull(data.get(MetadataKeys.Axolotl.VARIANT)) ?: AxolotlVariant.LUCY
@@ -102,10 +104,11 @@ class KryptonAxolotl(world: KryptonWorld) : KryptonAnimal(world, EntityTypes.AXO
 
         private val MAX_AIR_TICKS = 5 * 60 * 20 // 5 minutes in ticks
         private val VARIANTS = AxolotlVariant.values()
-        private val ATTRIBUTES = attributes()
+
+        @JvmStatic
+        fun attributes(): AttributeSupplier.Builder = KryptonMob.attributes()
             .add(AttributeTypes.MAX_HEALTH, 14.0)
             .add(AttributeTypes.MOVEMENT_SPEED, 1.0)
             .add(AttributeTypes.ATTACK_DAMAGE, 2.0)
-            .build()
     }
 }

@@ -37,7 +37,7 @@ fun List<PluginDescription>.sortCandidates(): List<PluginDescription> {
     sortedCandidates.forEach { description ->
         graph.addNode(description)
         description.dependencies.forEach {
-            val candidate = candidateMap[it.id]
+            val candidate = candidateMap.get(it.id)
             if (candidate != null) graph.putEdge(description, candidate)
         }
     }
@@ -65,9 +65,9 @@ private fun Graph<PluginDescription>.visitNode(
     }
 
     currentDependencyScanStack.addLast(current)
-    visited[current] = Mark.VISITING
+    visited.put(current, Mark.VISITING)
     successors(current).forEach { visitNode(it, visited, sorted, currentDependencyScanStack) }
-    visited[current] = Mark.VISITED
+    visited.put(current, Mark.VISITED)
     currentDependencyScanStack.removeLast()
     sorted.add(current)
 }

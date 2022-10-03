@@ -59,7 +59,7 @@ class ZeroCollidingReferenceStateTable(private val thisState: KryptonState<*, *>
 
         val map = table.rowMap()
         for (property in map.keys) {
-            val propertyMap = map[property]!!
+            val propertyMap = map.get(property)!!
             val id = lookupValueIndex(property, indexTable!!)
             val states = arrayOfNulls<KryptonState<*, *>?>(property.values.size)
             valueTable!![id] = states

@@ -18,8 +18,6 @@
  */
 package org.kryptonmc.krypton.util
 
-import com.google.common.base.Predicates
-import com.google.common.collect.Iterators
 import kotlin.math.max
 
 /**
@@ -132,7 +130,7 @@ class IntIdentityHashBiMap<K> : IntBiMap<K> {
         throw RuntimeException("Overflowed :(")
     }
 
-    override fun iterator(): Iterator<K> = Iterators.filter(NoSpread.iteratorsForArray(byId), Predicates.notNull()) as Iterator<K>
+    override fun iterator(): Iterator<K> = NoSpread.iteratorsForArray(byId).filterNotNull()
 
     fun clear() {
         keys.fill(null)

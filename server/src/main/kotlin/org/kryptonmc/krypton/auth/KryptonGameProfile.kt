@@ -28,6 +28,8 @@ import net.kyori.adventure.identity.Identity
 import org.kryptonmc.api.auth.GameProfile
 import org.kryptonmc.api.auth.ProfileProperty
 import org.kryptonmc.krypton.util.MojangUUIDTypeAdapter
+import org.kryptonmc.krypton.util.array
+import org.kryptonmc.krypton.util.readListTo
 import java.util.UUID
 
 @JvmRecord
@@ -53,26 +55,19 @@ data class KryptonGameProfile(
             KryptonGameProfile(name, uuid, properties.toPersistentList())
     }
 
-    object Adapter : TypeAdapter<KryptonGameProfile>() {
+    companion object : TypeAdapter<GameProfile>() {
 
-        override fun read(reader: JsonReader): KryptonGameProfile? {
+        override fun read(reader: JsonReader): GameProfile? {
             reader.beginObject()
 
             var uuid: UUID? = null
             var name: String? = null
-            val properties = persistentListOf<KryptonProfileProperty>().builder()
+            val properties = persistentListOf<ProfileProperty>().builder()
             while (reader.hasNext()) {
                 when (reader.nextName()) {
                     "id" -> uuid = MojangUUIDTypeAdapter.read(reader)
                     "name" -> name = reader.nextString()
-                    "properties" -> {
-                        reader.beginArray()
-                        while (reader.hasNext()) {
-                            val property = KryptonProfileProperty.Adapter.read(reader)
-                            if (property != null) properties.add(property)
-                        }
-                        reader.endArray()
-                    }
+                    "properties" -> reader.readListTo(properties, KryptonProfileProperty::read)
                 }
             }
 
@@ -81,7 +76,7 @@ data class KryptonGameProfile(
             return KryptonGameProfile(name, uuid, properties.build())
         }
 
-        override fun write(writer: JsonWriter, value: KryptonGameProfile) {
+        override fun write(writer: JsonWriter, value: GameProfile) {
             writer.beginObject()
             writer.name("id")
             MojangUUIDTypeAdapter.write(writer, value.uuid)
@@ -90,9 +85,7 @@ data class KryptonGameProfile(
 
             if (value.properties.isNotEmpty()) {
                 writer.name("properties")
-                writer.beginArray()
-                value.properties.forEach { KryptonProfileProperty.Adapter.write(writer, it) }
-                writer.endArray()
+                writer.array(value.properties, KryptonProfileProperty::write)
             }
             writer.endObject()
         }

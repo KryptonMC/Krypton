@@ -67,16 +67,16 @@ class StateDefinition<O, S : KryptonState<O, S>>(
         properties.forEach { list ->
             val values: ImmutableMap<KryptonProperty<*>, Comparable<*>> = list.associatePersistent({ it.first }, { it.second })
             val state = factory.create(owner, values, propertiesCodec)
-            statesByProperties[values] = state
+            statesByProperties.put(values, state)
             stateList.add(state)
         }
         stateList.forEach { it.populateNeighbours(statesByProperties) }
         states = stateList.toPersistentList()
     }
 
-    fun any(): S = states[0]
+    fun any(): S = states.get(0)
 
-    fun getProperty(name: String): KryptonProperty<*>? = propertiesByName[name]
+    fun getProperty(name: String): KryptonProperty<*>? = propertiesByName.get(name)
 
     fun interface Factory<O, S> {
 
@@ -90,7 +90,7 @@ class StateDefinition<O, S : KryptonState<O, S>>(
         fun add(vararg properties: KryptonProperty<*>): Builder<O, S> = apply {
             properties.forEach {
                 validateProperty(it)
-                this.properties[it.name] = it
+                this.properties.put(it.name, it)
             }
         }
 

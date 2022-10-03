@@ -24,35 +24,26 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder
 import com.mojang.brigadier.builder.RequiredArgumentBuilder
 import com.mojang.brigadier.context.CommandContext
 import org.kryptonmc.api.command.Sender
-import java.util.function.Consumer
 
-inline fun literal(name: String, builder: LiteralArgumentBuilder<Sender>.() -> Unit): LiteralArgumentBuilder<Sender> =
-    LiteralArgumentBuilder.literal<Sender>(name).apply(builder)
+inline fun literal(name: String, builder: LiteralBuilder.() -> Unit): LiteralBuilder = LiteralArgumentBuilder.literal<Sender>(name).apply(builder)
 
-inline fun <T> argument(
-    name: String,
-    type: ArgumentType<T>,
-    builder: RequiredArgumentBuilder<Sender, T>.() -> Unit
-): RequiredArgumentBuilder<Sender, T> = RequiredArgumentBuilder.argument<Sender, T>(name, type).apply(builder)
+inline fun <T> argument(name: String, type: ArgumentType<T>, builder: ArgBuilder<T>.() -> Unit): ArgBuilder<T> =
+    RequiredArgumentBuilder.argument<Sender, T>(name, type).apply(builder)
 
-fun LiteralArgumentBuilder<Sender>.literal(name: String, builder: LiteralArgumentBuilder<Sender>.() -> Unit): LiteralArgumentBuilder<Sender> =
+fun LiteralBuilder.literal(name: String, builder: LiteralBuilder.() -> Unit): LiteralBuilder =
     then(LiteralArgumentBuilder.literal<Sender>(name).apply(builder))
 
-fun <T> LiteralArgumentBuilder<Sender>.argument(
-    name: String,
-    type: ArgumentType<T>,
-    builder: RequiredArgumentBuilder<Sender, T>.() -> Unit
-): LiteralArgumentBuilder<Sender> = then(RequiredArgumentBuilder.argument<Sender, T>(name, type).apply(builder))
+fun <T> LiteralBuilder.argument(name: String, type: ArgumentType<T>, builder: ArgBuilder<T>.() -> Unit): LiteralBuilder =
+    then(RequiredArgumentBuilder.argument<Sender, T>(name, type).apply(builder))
 
-fun <T, T1> RequiredArgumentBuilder<Sender, T>.argument(
-    name: String,
-    type: ArgumentType<T1>,
-    builder: RequiredArgumentBuilder<Sender, T1>.() -> Unit
-): RequiredArgumentBuilder<Sender, T> = then(RequiredArgumentBuilder.argument<Sender, T1>(name, type).apply(builder))
+fun <T, T1> ArgBuilder<T>.argument(name: String, type: ArgumentType<T1>, builder: ArgBuilder<T1>.() -> Unit): ArgBuilder<T> =
+    then(RequiredArgumentBuilder.argument<Sender, T1>(name, type).apply(builder))
 
-inline fun <T : ArgumentBuilder<Sender, T>> ArgumentBuilder<Sender, T>.runs(
-    crossinline action: (CommandContext<Sender>) -> Unit
-): ArgumentBuilder<Sender, T> = executes {
+inline fun <T : Builder<T>> Builder<T>.runs(crossinline action: (CommandContext<Sender>) -> Unit): Builder<T> = executes {
     action(it)
     com.mojang.brigadier.Command.SINGLE_SUCCESS
 }
+
+private typealias Builder<T> = ArgumentBuilder<Sender, T>
+private typealias LiteralBuilder = LiteralArgumentBuilder<Sender>
+private typealias ArgBuilder<T> = RequiredArgumentBuilder<Sender, T>

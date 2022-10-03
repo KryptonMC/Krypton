@@ -21,6 +21,7 @@ package org.kryptonmc.krypton.util.provider
 import org.kryptonmc.serialization.Codec
 import org.kryptonmc.serialization.codecs.RecordCodecBuilder
 import org.kryptonmc.util.Either
+import kotlin.random.Random
 //import java.util.function.Function
 
 class ConstantInt private constructor(val value: Int) : IntProvider() {
@@ -31,6 +32,8 @@ class ConstantInt private constructor(val value: Int) : IntProvider() {
         get() = value
     override val maximumValue: Int
         get() = value
+
+    override fun sample(random: Random): Int = value
 
     override fun toString(): String = value.toString()
 

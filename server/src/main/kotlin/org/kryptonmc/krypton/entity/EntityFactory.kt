@@ -121,126 +121,69 @@ import org.kryptonmc.krypton.entity.vehicle.KryptonTNTMinecart
 import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.nbt.CompoundTag
+import java.util.function.Function
 
 object EntityFactory {
 
     private val LOGGER = logger<EntityFactory>()
-    private val TYPE_MAP = mapOf<EntityType<out Entity>, (KryptonWorld) -> KryptonEntity>(
-        EntityTypes.AREA_EFFECT_CLOUD to ::KryptonAreaEffectCloud,
-        EntityTypes.ARMOR_STAND to ::KryptonArmorStand,
-        EntityTypes.ARROW to ::KryptonArrow,
-        EntityTypes.AXOLOTL to ::KryptonAxolotl,
-        EntityTypes.BAT to ::KryptonBat,
-        EntityTypes.BEE to ::KryptonBee,
-        EntityTypes.BOAT to ::KryptonBoat,
-        EntityTypes.CAT to ::KryptonCat,
-        EntityTypes.CHICKEN to ::KryptonChicken,
-        EntityTypes.COD to ::KryptonCod,
-        EntityTypes.COW to ::KryptonCow,
-        EntityTypes.CREEPER to ::KryptonCreeper,
-        EntityTypes.DOLPHIN to ::KryptonDolphin,
-        EntityTypes.DRAGON_FIREBALL to ::KryptonDragonFireball,
-        EntityTypes.EXPERIENCE_ORB to ::KryptonExperienceOrb,
-        EntityTypes.FIREWORK_ROCKET to ::KryptonFireworkRocket,
-        EntityTypes.FIREBALL to ::KryptonLargeFireball,
-        EntityTypes.FOX to ::KryptonFox,
-        EntityTypes.GLOW_SQUID to ::KryptonGlowSquid,
-        EntityTypes.GOAT to ::KryptonGoat,
-        EntityTypes.LLAMA_SPIT to ::KryptonLlamaSpit,
-        EntityTypes.MINECART to ::KryptonMinecart,
-        EntityTypes.COMMAND_BLOCK_MINECART to ::KryptonCommandBlockMinecart,
-        EntityTypes.FURNACE_MINECART to ::KryptonFurnaceMinecart,
-        EntityTypes.TNT_MINECART to ::KryptonTNTMinecart,
-        EntityTypes.MOOSHROOM to ::KryptonMooshroom,
-        EntityTypes.OCELOT to ::KryptonOcelot,
-        EntityTypes.PAINTING to ::KryptonPainting,
-        EntityTypes.PANDA to ::KryptonPanda,
-        EntityTypes.PARROT to ::KryptonParrot,
-        EntityTypes.PIG to ::KryptonPig,
-        EntityTypes.POLAR_BEAR to ::KryptonPolarBear,
-        EntityTypes.PUFFERFISH to ::KryptonPufferfish,
-        EntityTypes.RABBIT to ::KryptonRabbit,
-        EntityTypes.SALMON to ::KryptonSalmon,
-        EntityTypes.SHEEP to ::KryptonSheep,
-        EntityTypes.SHULKER_BULLET to ::KryptonShulkerBullet,
-        EntityTypes.SMALL_FIREBALL to ::KryptonSmallFireball,
-        EntityTypes.SNOWBALL to ::KryptonSnowball,
-        EntityTypes.SPECTRAL_ARROW to ::KryptonSpectralArrow,
-        EntityTypes.SQUID to ::KryptonSquid,
-        EntityTypes.EGG to ::KryptonEgg,
-        EntityTypes.ENDER_PEARL to ::KryptonEnderPearl,
-        EntityTypes.EXPERIENCE_BOTTLE to ::KryptonExperienceBottle,
-        EntityTypes.POTION to ::KryptonThrownPotion,
-        EntityTypes.TRIDENT to ::KryptonTrident,
-        EntityTypes.TROPICAL_FISH to ::KryptonTropicalFish,
-        EntityTypes.TURTLE to ::KryptonTurtle,
-        EntityTypes.WITHER_SKULL to ::KryptonWitherSkull,
-        EntityTypes.WOLF to ::KryptonWolf,
-        EntityTypes.ZOMBIE to ::KryptonZombie,
-        EntityTypes.FISHING_HOOK to ::KryptonFishingHook
-    )
-    private val SERIALIZERS = mapOf(
-        EntityTypes.AREA_EFFECT_CLOUD to AreaEffectCloudSerializer,
-        EntityTypes.ARMOR_STAND to ArmorStandSerializer,
-        EntityTypes.ARROW to ArrowSerializer,
-        EntityTypes.AXOLOTL to AxolotlSerializer,
-        EntityTypes.BAT to BatSerializer,
-        EntityTypes.BEE to BeeSerializer,
-        EntityTypes.BOAT to BoatSerializer,
-        EntityTypes.CAT to CatSerializer,
-        EntityTypes.CHICKEN to ChickenSerializer,
-        EntityTypes.COD to FishSerializer,
-        EntityTypes.COMMAND_BLOCK_MINECART to CommandBlockMinecartSerializer,
-        EntityTypes.COW to AgeableSerializer,
-        EntityTypes.CREEPER to CreeperSerializer,
-        EntityTypes.DOLPHIN to DolphinSerializer,
-        EntityTypes.DRAGON_FIREBALL to AcceleratingProjectileSerializer,
-        EntityTypes.EGG to ThrowableProjectileSerializer,
-        EntityTypes.ENDER_PEARL to ThrowableProjectileSerializer,
-        EntityTypes.EXPERIENCE_BOTTLE to ThrowableProjectileSerializer,
-        EntityTypes.EXPERIENCE_ORB to ExperienceOrbSerializer,
-        EntityTypes.FIREWORK_ROCKET to ProjectileSerializer,
-        EntityTypes.FIREBALL to LargeFireballSerializer,
-        EntityTypes.FISHING_HOOK to ProjectileSerializer,
-        EntityTypes.FOX to FoxSerializer,
-        EntityTypes.FURNACE_MINECART to FurnaceMinecartSerializer,
-        EntityTypes.GLOW_SQUID to GlowSquidSerializer,
-        EntityTypes.GOAT to GoatSerializer,
-        EntityTypes.LLAMA_SPIT to ProjectileSerializer,
-        EntityTypes.MINECART to MinecartLikeSerializer,
-        EntityTypes.MOOSHROOM to MooshroomSerializer,
-        EntityTypes.OCELOT to OcelotSerializer,
-        EntityTypes.PAINTING to PaintingSerializer,
-        EntityTypes.PANDA to PandaSerializer,
-        EntityTypes.PARROT to ParrotSerializer,
-        EntityTypes.PIG to PigSerializer,
-        EntityTypes.PLAYER to PlayerSerializer,
-        EntityTypes.POLAR_BEAR to PolarBearSerializer,
-        EntityTypes.POTION to ThrowableProjectileSerializer,
-        EntityTypes.PUFFERFISH to PufferfishSerializer,
-        EntityTypes.RABBIT to RabbitSerializer,
-        EntityTypes.SALMON to FishSerializer,
-        EntityTypes.SHEEP to SheepSerializer,
-        EntityTypes.SHULKER_BULLET to ShulkerBulletSerializer,
-        EntityTypes.SMALL_FIREBALL to FireballSerializer,
-        EntityTypes.SNOWBALL to ThrowableProjectileSerializer,
-        EntityTypes.SPECTRAL_ARROW to SpectralArrowSerializer,
-        EntityTypes.SQUID to MobSerializer,
-        EntityTypes.TNT_MINECART to TNTMinecartSerializer,
-        EntityTypes.TRIDENT to TridentSerializer,
-        EntityTypes.TROPICAL_FISH to TropicalFishSerializer,
-        EntityTypes.TURTLE to TurtleSerializer,
-        EntityTypes.WITHER_SKULL to AcceleratingProjectileSerializer,
-        EntityTypes.WOLF to WolfSerializer,
-        EntityTypes.ZOMBIE to ZombieSerializer
+    private val TYPE_MAP = mapOf(
+        EntityTypes.AREA_EFFECT_CLOUD to Entry(::KryptonAreaEffectCloud, AreaEffectCloudSerializer),
+        EntityTypes.ARMOR_STAND to Entry(::KryptonArmorStand, ArmorStandSerializer),
+        EntityTypes.ARROW to Entry(::KryptonArrow, ArrowSerializer),
+        EntityTypes.AXOLOTL to Entry(::KryptonAxolotl, AxolotlSerializer),
+        EntityTypes.BAT to Entry(::KryptonBat, BatSerializer),
+        EntityTypes.BEE to Entry(::KryptonBee, BeeSerializer),
+        EntityTypes.BOAT to Entry(::KryptonBoat, BoatSerializer),
+        EntityTypes.CAT to Entry(::KryptonCat, CatSerializer),
+        EntityTypes.CHICKEN to Entry(::KryptonChicken, ChickenSerializer),
+        EntityTypes.COD to Entry(::KryptonCod, FishSerializer),
+        EntityTypes.COMMAND_BLOCK_MINECART to Entry(::KryptonCommandBlockMinecart, CommandBlockMinecartSerializer),
+        EntityTypes.COW to Entry(::KryptonCow, AgeableSerializer),
+        EntityTypes.CREEPER to Entry(::KryptonCreeper, CreeperSerializer),
+        EntityTypes.DOLPHIN to Entry(::KryptonDolphin, DolphinSerializer),
+        EntityTypes.DRAGON_FIREBALL to Entry(::KryptonDragonFireball, AcceleratingProjectileSerializer),
+        EntityTypes.EGG to Entry(::KryptonEgg, ThrowableProjectileSerializer),
+        EntityTypes.ENDER_PEARL to Entry(::KryptonEnderPearl, ThrowableProjectileSerializer),
+        EntityTypes.EXPERIENCE_BOTTLE to Entry(::KryptonExperienceBottle, ThrowableProjectileSerializer),
+        EntityTypes.EXPERIENCE_ORB to Entry(::KryptonExperienceOrb, ExperienceOrbSerializer),
+        EntityTypes.FIREWORK_ROCKET to Entry(::KryptonFireworkRocket, ProjectileSerializer),
+        EntityTypes.FIREBALL to Entry(::KryptonLargeFireball, LargeFireballSerializer),
+        EntityTypes.FISHING_HOOK to Entry(::KryptonFishingHook, ProjectileSerializer),
+        EntityTypes.FOX to Entry(::KryptonFox, FoxSerializer),
+        EntityTypes.FURNACE_MINECART to Entry(::KryptonFurnaceMinecart, FurnaceMinecartSerializer),
+        EntityTypes.GLOW_SQUID to Entry(::KryptonGlowSquid, GlowSquidSerializer),
+        EntityTypes.GOAT to Entry(::KryptonGoat, GoatSerializer),
+        EntityTypes.LLAMA_SPIT to Entry(::KryptonLlamaSpit, ProjectileSerializer),
+        EntityTypes.MINECART to Entry(::KryptonMinecart, MinecartLikeSerializer),
+        EntityTypes.MOOSHROOM to Entry(::KryptonMooshroom, MooshroomSerializer),
+        EntityTypes.OCELOT to Entry(::KryptonOcelot, OcelotSerializer),
+        EntityTypes.PAINTING to Entry(::KryptonPainting, PaintingSerializer),
+        EntityTypes.PANDA to Entry(::KryptonPanda, PandaSerializer),
+        EntityTypes.PARROT to Entry(::KryptonParrot, ParrotSerializer),
+        EntityTypes.PIG to Entry(::KryptonPig, PigSerializer),
+        EntityTypes.PLAYER to Entry(null, PlayerSerializer),
+        EntityTypes.POLAR_BEAR to Entry(::KryptonPolarBear, PolarBearSerializer),
+        EntityTypes.POTION to Entry(::KryptonThrownPotion, ThrowableProjectileSerializer),
+        EntityTypes.PUFFERFISH to Entry(::KryptonPufferfish, PufferfishSerializer),
+        EntityTypes.RABBIT to Entry(::KryptonRabbit, RabbitSerializer),
+        EntityTypes.SALMON to Entry(::KryptonSalmon, ThrowableProjectileSerializer),
+        EntityTypes.SHEEP to Entry(::KryptonSheep, SheepSerializer),
+        EntityTypes.SHULKER_BULLET to Entry(::KryptonShulkerBullet, ShulkerBulletSerializer),
+        EntityTypes.SMALL_FIREBALL to Entry(::KryptonSmallFireball, FireballSerializer),
+        EntityTypes.SNOWBALL to Entry(::KryptonSnowball, ThrowableProjectileSerializer),
+        EntityTypes.SPECTRAL_ARROW to Entry(::KryptonSpectralArrow, SpectralArrowSerializer),
+        EntityTypes.SQUID to Entry(::KryptonSquid, MobSerializer),
+        EntityTypes.TNT_MINECART to Entry(::KryptonTNTMinecart, TNTMinecartSerializer),
+        EntityTypes.TRIDENT to Entry(::KryptonTrident, TridentSerializer),
+        EntityTypes.TROPICAL_FISH to Entry(::KryptonTropicalFish, TropicalFishSerializer),
+        EntityTypes.TURTLE to Entry(::KryptonTurtle, TurtleSerializer),
+        EntityTypes.WITHER_SKULL to Entry(::KryptonWitherSkull, AcceleratingProjectileSerializer),
+        EntityTypes.WOLF to Entry(::KryptonWolf, WolfSerializer),
+        EntityTypes.ZOMBIE to Entry(::KryptonZombie, ZombieSerializer)
     )
 
-    @Suppress("UNCHECKED_CAST")
     @JvmStatic
-    fun <T : Entity> create(type: EntityType<T>, world: KryptonWorld): T? = TYPE_MAP[type]?.invoke(world) as? T
-
-    @JvmStatic
-    fun create(type: EntityType<out Entity>, world: KryptonWorld): KryptonEntity? = TYPE_MAP[type]?.invoke(world)
+    fun create(type: EntityType<out Entity>, world: KryptonWorld): KryptonEntity? = TYPE_MAP.get(type)?.first?.apply(world)
 
     @JvmStatic
     fun create(world: KryptonWorld, id: String, nbt: CompoundTag?): KryptonEntity? {
@@ -259,10 +202,10 @@ object EntityFactory {
         }
     }
 
-    @Suppress("UNCHECKED_CAST")
     @JvmStatic
-    fun <E : Entity> serializer(type: EntityType<out E>): EntitySerializer<E> {
-        val serializer = requireNotNull(SERIALIZERS[type]) { "Cannot find serializer for type ${type.key().asString()}" }
-        return serializer as EntitySerializer<E>
-    }
+    @Suppress("UNCHECKED_CAST")
+    fun <E : Entity> serializer(type: EntityType<out E>): EntitySerializer<E> =
+        requireNotNull(TYPE_MAP.get(type)?.second) { "Cannot find serializer for type ${type.key().asString()}!" } as EntitySerializer<E>
 }
+
+private typealias Entry<E> = Pair<Function<KryptonWorld, KryptonEntity>?, EntitySerializer<E>>

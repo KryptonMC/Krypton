@@ -45,10 +45,8 @@ abstract class AbstractPackResources(protected val path: Path) : PackResources {
 
     final override fun getResource(location: Key): InputStream = getResource(convertPath(location))
 
-    final override fun <T> getMetadata(serializer: MetadataSerializer<T>): T? {
-        val input = requireNotNull(getResource(PackResources.PACK_META)) { "Could not find metadata in data pack!" }
-        return input.use { getMetadataFromStream(serializer, it) }
-    }
+    final override fun <T> getMetadata(serializer: MetadataSerializer<T>): T? =
+        getResource(PackResources.PACK_META).use { getMetadataFromStream(serializer, it) }
 
     protected fun logWarning(namespace: String) {
         LOGGER.warn("Ignoring non-lowercase namespace $namespace for data pack at ${path.fileName}")

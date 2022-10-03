@@ -37,7 +37,7 @@ object FoxSerializer : EntitySerializer<KryptonFox> {
         AgeableSerializer.load(entity, data)
         data.getList("Trusted", IntArrayTag.ID).forEachIntArray { addTrustedId(entity, it.toUUID()) }
         entity.isSleeping = data.getBoolean("Sleeping")
-        if (data.contains("Type", StringTag.ID)) entity.variant = TYPE_NAMES[data.getString("Type")]!!
+        if (data.contains("Type", StringTag.ID)) entity.variant = TYPE_NAMES.get(data.getString("Type"))!!
         entity.isSitting = data.getBoolean("Sitting")
         entity.isCrouching = data.getBoolean("Crouching")
     }

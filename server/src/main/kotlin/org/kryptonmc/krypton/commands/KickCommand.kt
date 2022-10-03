@@ -24,7 +24,7 @@ import net.kyori.adventure.text.Component
 import org.kryptonmc.api.command.Sender
 import org.kryptonmc.krypton.command.InternalCommand
 import org.kryptonmc.krypton.command.argument
-import org.kryptonmc.krypton.command.arguments.entities.EntityArgument
+import org.kryptonmc.krypton.command.arguments.entities.EntityArgumentType
 import org.kryptonmc.krypton.command.arguments.entities.entityArgument
 import org.kryptonmc.krypton.command.permission
 import org.kryptonmc.krypton.command.argument.argument
@@ -38,10 +38,8 @@ object KickCommand : InternalCommand {
     override fun register(dispatcher: CommandDispatcher<Sender>) {
         dispatcher.register(literal("kick") {
             permission(KryptonPermission.KICK)
-            argument("targets", EntityArgument.players()) {
-                runs { context ->
-                    context.entityArgument("targets").players(context.source).forEach { it.disconnect(KICKED_MESSAGE) }
-                }
+            argument("targets", EntityArgumentType.players()) {
+                runs { context -> context.entityArgument("targets").players(context.source).forEach { it.disconnect(KICKED_MESSAGE) } }
                 argument("reason", StringArgumentType.string()) {
                     runs { context ->
                         val reason = context.argument<String>("reason")

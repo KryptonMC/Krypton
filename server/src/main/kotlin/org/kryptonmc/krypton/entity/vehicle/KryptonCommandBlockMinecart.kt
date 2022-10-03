@@ -19,7 +19,6 @@
 package org.kryptonmc.krypton.entity.vehicle
 
 import net.kyori.adventure.text.Component
-import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.block.BlockState
 import org.kryptonmc.api.block.Blocks
 import org.kryptonmc.api.entity.EntityTypes

@@ -259,21 +259,10 @@ public interface Scoreboard : Buildable<Scoreboard.Builder, Scoreboard> {
     @ApiStatus.Internal
     public interface Factory {
 
-        public fun empty(): Scoreboard
-
         public fun builder(): Builder
     }
 
     public companion object {
-
-        /**
-         * Creates a new empty scoreboard.
-         *
-         * @return a new scoreboard
-         */
-        @JvmStatic
-        @Contract("-> new", pure = true)
-        public fun empty(): Scoreboard = factory().empty()
 
         /**
          * Creates a new builder for building a scoreboard.
@@ -282,8 +271,6 @@ public interface Scoreboard : Buildable<Scoreboard.Builder, Scoreboard> {
          */
         @JvmStatic
         @Contract("-> new", pure = true)
-        public fun builder(): Builder = factory().builder()
-
-        private fun factory(): Factory = Krypton.factory()
+        public fun builder(): Builder = Krypton.factory<Factory>().builder()
     }
 }

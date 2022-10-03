@@ -36,7 +36,6 @@ import org.kryptonmc.api.event.ListenerPriority
 import org.kryptonmc.api.plugin.PluginContainer
 import org.kryptonmc.api.plugin.PluginManager
 import org.kryptonmc.krypton.util.findPrimitiveVarHandle
-import org.kryptonmc.krypton.util.getAnnotation
 import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.util.pool.ThreadPoolBuilder
 import org.kryptonmc.krypton.util.pool.daemonThreadFactory
@@ -115,7 +114,7 @@ class KryptonEventManager(private val pluginManager: PluginManager) : EventManag
                 LOGGER.info("Invalid listener method ${it.method.name} in ${it.method.declaringClass.name}: ${it.errors}")
                 return@forEach
             }
-            val untargetedHandler = checkNotNull(untargetedMethodHandlers[it.method]) {
+            val untargetedHandler = checkNotNull(untargetedMethodHandlers.get(it.method)) {
                 "Untargeted handler for ${it.method.name} in ${it.method.declaringClass.name} was somehow null!"
             }
             if (it.eventType == null) throw VerifyException("Event type is not present and there are no errors!")
@@ -127,22 +126,20 @@ class KryptonEventManager(private val pluginManager: PluginManager) : EventManag
 
     private fun register(registrations: List<HandlerRegistration>) {
         lock.write { registrations.forEach { handlersByType.put(it.eventType, it) } }
-        handlersCache.invalidateAll(registrations.asSequence()
-            .flatMap { eventTypeTracker.getFriendsOf(it.eventType) }
-            .distinct()
-            .toList())
+        val classes = registrations.asSequence().flatMap { eventTypeTracker.getFriendsOf(it.eventType) }.distinct().toList()
+        handlersCache.invalidateAll(classes)
     }
 
     override fun <E> fire(event: E): CompletableFuture<E> {
         requireNotNull(event) { "Attempted to fire a null event!" } // Required to access event's class
-        val handlersCache = handlersCache[event.javaClass] ?: return CompletableFuture.completedFuture(event) // Optimisation: nobody's listening
+        val handlersCache = handlersCache.get(event.javaClass) ?: return CompletableFuture.completedFuture(event) // Optimisation: nobody's listening
         val future = CompletableFuture<E>()
         fire(future, event, handlersCache)
         return future
     }
 
     override fun fireAndForget(event: Any) {
-        val handlersCache = handlersCache[event.javaClass] ?: return // Optimisation: nobody's listening
+        val handlersCache = handlersCache.get(event.javaClass) ?: return // Optimisation: nobody's listening
         fire(null, event, handlersCache)
     }
 
@@ -153,13 +150,13 @@ class KryptonEventManager(private val pluginManager: PluginManager) : EventManag
     // TODO: Review the way we implement always synchronous event firing
     fun <E> fireSync(event: E): E {
         requireNotNull(event) { "Attempted to fire a null event!" } // Required to access event's class
-        val handlersCache = handlersCache[event.javaClass] ?: return event // Optimisation: nobody's listening
+        val handlersCache = handlersCache.get(event.javaClass) ?: return event // Optimisation: nobody's listening
         fire(null, event, handlersCache, true)
         return event
     }
 
     fun fireAndForgetSync(event: Any) {
-        val handlersCache = handlersCache[event.javaClass] ?: return
+        val handlersCache = handlersCache.get(event.javaClass) ?: return
         fire(null, event, handlersCache, true)
     }
 
@@ -196,10 +193,8 @@ class KryptonEventManager(private val pluginManager: PluginManager) : EventManag
                 }
             }
         }
-        handlersCache.invalidateAll(removed.asSequence()
-            .flatMap { eventTypeTracker.getFriendsOf(it.eventType) }
-            .distinct()
-            .toList())
+        val classes = removed.asSequence().flatMap { eventTypeTracker.getFriendsOf(it.eventType) }.distinct().toList()
+        handlersCache.invalidateAll(classes)
     }
 
     private fun <E> fire(
@@ -244,7 +239,7 @@ class KryptonEventManager(private val pluginManager: PluginManager) : EventManag
         val baked = ArrayList<HandlerRegistration>()
         val types = eventTypeTracker.getFriendsOf(eventType)
 
-        lock.read { types.forEach { baked.addAll(handlersByType[it]) } }
+        lock.read { types.forEach { baked.addAll(handlersByType.get(it)) } }
         if (baked.isEmpty()) return null
         baked.sortWith(HANDLER_COMPARATOR)
 
@@ -258,7 +253,7 @@ class KryptonEventManager(private val pluginManager: PluginManager) : EventManag
 
     private fun collectMethods(targetClass: Class<*>, collected: MutableMap<String, MethodHandlerInfo>) {
         targetClass.declaredMethods.forEach { method ->
-            val listener = method.getAnnotation<Listener>() ?: return@forEach
+            val listener = method.getAnnotation(Listener::class.java) ?: return@forEach
 
             var key = "${method.name}(${method.parameterTypes.joinToString(",") { it.name }})"
             if (Modifier.isPrivate(method.modifiers)) key = "${targetClass.name}$$key"
@@ -313,7 +308,7 @@ class KryptonEventManager(private val pluginManager: PluginManager) : EventManag
 
             val priority = listener.priority.ordinal.toShort()
             val errorsJoined = if (errors.isEmpty()) null else errors.joinToString(",")
-            collected[key] = MethodHandlerInfo(method, asyncType, eventType, priority, errorsJoined, continuationType)
+            collected.put(key, MethodHandlerInfo(method, asyncType, eventType, priority, errorsJoined, continuationType))
         }
         val superclass = targetClass.superclass
         if (superclass != Any::class.java) collectMethods(superclass, collected)

@@ -26,11 +26,7 @@ import org.kryptonmc.api.entity.projectile.ArrowLike
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.world.KryptonWorld
 
-abstract class KryptonArrowLike(
-    world: KryptonWorld,
-    type: EntityType<out ArrowLike>,
-    defaultHitGroundSound: SoundEvent = SoundEvents.ARROW_HIT
-) : KryptonProjectile(world, type), ArrowLike {
+abstract class KryptonArrowLike(world: KryptonWorld, type: EntityType<out ArrowLike>) : KryptonProjectile(world, type), ArrowLike {
 
     final override var baseDamage: Double = 2.0
     final override var isInGround: Boolean = false
@@ -52,6 +48,9 @@ abstract class KryptonArrowLike(
     final override var piercingLevel: Int
         get() = data.get(MetadataKeys.ArrowLike.PIERCING_LEVEL).toInt()
         set(value) = data.set(MetadataKeys.ArrowLike.PIERCING_LEVEL, value.toByte())
+
+    protected open val defaultHitGroundSound: SoundEvent
+        get() = SoundEvents.ARROW_HIT
 
     init {
         data.add(MetadataKeys.ArrowLike.FLAGS, 0)

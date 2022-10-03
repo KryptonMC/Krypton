@@ -22,7 +22,7 @@ import org.kryptonmc.api.entity.player.CooldownTracker
 import org.kryptonmc.api.item.ItemType
 import org.kryptonmc.krypton.event.player.KryptonCooldownEvent
 import org.kryptonmc.krypton.packet.out.play.PacketOutSetCooldown
-import org.kryptonmc.krypton.util.clamp
+import org.kryptonmc.krypton.util.Maths
 import java.util.concurrent.ConcurrentHashMap
 
 class KryptonCooldownTracker(private val player: KryptonPlayer) : CooldownTracker {
@@ -45,15 +45,15 @@ class KryptonCooldownTracker(private val player: KryptonPlayer) : CooldownTracke
     override fun contains(item: ItemType): Boolean = percentage(item) > 0F
 
     override fun get(item: ItemType): Int {
-        val instance = cooldowns[item] ?: return 0
+        val instance = cooldowns.get(item) ?: return 0
         return instance.endTime - tickCount
     }
 
     override fun percentage(item: ItemType): Float {
-        val instance = cooldowns[item] ?: return 0F
+        val instance = cooldowns.get(item) ?: return 0F
         val totalCooldownTime = (instance.endTime - instance.startTime).toFloat()
         val remainingCooldownTime = (instance.endTime - tickCount).toFloat()
-        return (remainingCooldownTime / totalCooldownTime).clamp(0F, 1F)
+        return Maths.clamp(remainingCooldownTime / totalCooldownTime, 0F, 1F)
     }
 
     override fun set(item: ItemType, ticks: Int) {
@@ -61,7 +61,7 @@ class KryptonCooldownTracker(private val player: KryptonPlayer) : CooldownTracke
         val result = player.server.eventManager.fireSync(KryptonCooldownEvent(player, item, ticks)).result
         if (!result.isAllowed) return
         val cooldownAmount = if (result.cooldown > 0) result.cooldown else ticks
-        cooldowns[item] = Cooldown(tickCount, cooldownAmount)
+        cooldowns.put(item, Cooldown(tickCount, cooldownAmount))
         onCooldownStarted(item, ticks)
     }
 

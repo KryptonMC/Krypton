@@ -41,7 +41,7 @@ abstract class KryptonInventory(
         return stateId
     }
 
-    final override fun get(index: Int): KryptonItemStack = items[index]
+    final override fun get(index: Int): KryptonItemStack = items.get(index)
 
     final override fun contains(item: ItemStack): Boolean = items.contains(item)
 
@@ -52,14 +52,14 @@ abstract class KryptonInventory(
                 val initialAmount = element.amount
                 val maxAmount = element.type.maximumStackSize
                 if (initialAmount + item.amount <= maxAmount) {
-                    items[index] = element.withAmount(initialAmount + item.amount)
+                    items.set(index, element.withAmount(initialAmount + item.amount))
                     return
                 } else if (element.amount != maxAmount) {
-                    items[index] = element.withAmount(maxAmount)
+                    items.set(index, element.withAmount(maxAmount))
                     if (item.amount == 0) return
                 }
             } else if (element.isEmpty()) {
-                items[index] = item
+                items.set(index, item)
                 return
             }
         }
@@ -68,13 +68,13 @@ abstract class KryptonInventory(
     final override fun remove(item: ItemStack) {
         items.forEachIndexed { index, element ->
             if (element != item) return@forEachIndexed
-            items[index] = KryptonItemStack.EMPTY
+            items.set(index, KryptonItemStack.EMPTY)
             return
         }
     }
 
     final override fun clear() {
-        items.forEachIndexed { index, _ -> items[index] = KryptonItemStack.EMPTY }
+        items.forEachIndexed { index, _ -> items.set(index, KryptonItemStack.EMPTY) }
     }
 
     final override fun iterator(): Iterator<KryptonItemStack> = items.iterator()

@@ -28,12 +28,12 @@ import org.kryptonmc.krypton.util.KryptonDataLoader
 object AttributeLoader : KryptonDataLoader<AttributeType>("attributes", Registries.ATTRIBUTE) {
 
     override fun create(key: Key, value: JsonObject): AttributeType {
-        val translationKey = value["translationKey"].asString
-        val defaultValue = value["defaultValue"].asDouble
-        val clientSync = value["clientSync"].asBoolean
-        val range = value["range"].asJsonObject
-        val min = range["minValue"].asDouble
-        val max = range["maxValue"].asDouble
+        val translationKey = value.get("translationKey").asString
+        val defaultValue = value.get("defaultValue").asDouble
+        val clientSync = value.get("clientSync").asBoolean
+        val range = value.get("range").asJsonObject
+        val min = range.get("minValue").asDouble
+        val max = range.get("maxValue").asDouble
         return KryptonAttributeType(key, defaultValue, min, max, clientSync, Component.translatable(translationKey))
     }
 }

@@ -100,7 +100,7 @@ data class KryptonEntityType<T : Entity>(
 
         override fun immuneTo(block: Block): Builder<T> = apply { immuneTo.add(block) }
 
-        override fun immuneTo(vararg blocks: Block): Builder<T> = apply { blocks.forEach { immuneTo.add(it) } }
+        override fun immuneTo(vararg blocks: Block): Builder<T> = apply { blocks.forEach(immuneTo::add) }
 
         override fun immuneTo(blocks: Iterable<Block>): Builder<T> = apply { immuneTo.addAll(blocks) }
 

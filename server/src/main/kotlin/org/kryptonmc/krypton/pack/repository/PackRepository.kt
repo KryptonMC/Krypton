@@ -24,6 +24,7 @@ import kotlinx.collections.immutable.toImmutableList
 import kotlinx.collections.immutable.toImmutableMap
 import org.kryptonmc.krypton.pack.PackResources
 import java.util.TreeMap
+import java.util.function.Function
 
 class PackRepository(private val sources: Set<RepositorySource>, private val constructor: Pack.Constructor) {
 
@@ -35,19 +36,19 @@ class PackRepository(private val sources: Set<RepositorySource>, private val con
     val availablePacks: Collection<Pack>
         get() = available.values
     val selectedIds: Collection<String>
-        get() = selected.map { it.id }
+        get() = selected.map(Pack::id)
     val selectedPacks: Collection<Pack>
         get() = selected
 
     fun isAvailable(id: String): Boolean = available.containsKey(id)
 
-    fun pack(id: String): Pack? = available[id]
+    fun pack(id: String): Pack? = available.get(id)
 
     fun openAllSelected(): List<PackResources> = selected.map(Pack::open)
 
     fun reload() {
         available = discoverAvailable()
-        selected = rebuildSelected(selected.mapTo(mutableSetOf()) { it.id })
+        selected = rebuildSelected(selected.mapTo(HashSet(), Pack::id))
     }
 
     fun setSelected(ids: Collection<String>) {
@@ -56,14 +57,14 @@ class PackRepository(private val sources: Set<RepositorySource>, private val con
 
     private fun discoverAvailable(): Map<String, Pack> {
         val available = TreeMap<String, Pack>()
-        sources.forEach { source -> source.loadPacks(constructor) { available[it.id] = it } }
+        sources.forEach { source -> source.loadPacks(constructor) { available.put(it.id, it) } }
         return available.toImmutableMap()
     }
 
     private fun rebuildSelected(ids: Collection<String>): List<Pack> {
         val packs = getAvailablePacks(ids).toMutableList()
         available.values.forEach {
-            if (it.required && !packs.contains(it)) it.defaultPosition.insert(packs, it, false) { pack -> pack }
+            if (it.required && !packs.contains(it)) it.defaultPosition.insert(packs, it, false, Function.identity())
         }
         return packs.toImmutableList()
     }

@@ -115,7 +115,7 @@ class SimpleBitStorage(override val bits: Int, override val size: Int, data: Lon
         for (k in 0 until j) {
             var l = along[k]
             for (i1 in 0 until valuesPerLong) {
-                consumer(i, (l and mask).toInt())
+                consumer.accept(i, (l and mask).toInt())
                 l = l shr bits
                 ++i
                 if (i >= size) return
@@ -158,7 +158,13 @@ class SimpleBitStorage(override val bits: Int, override val size: Int, data: Lon
         return bits == (other as SimpleBitStorage).bits && size == other.size && data.contentEquals(other.data)
     }
 
-    override fun hashCode(): Int = Objects.hash(bits, size, data)
+    override fun hashCode(): Int {
+        var result = 1
+        result = 31 * result + bits.hashCode()
+        result = 31 * result + size.hashCode()
+        result = 31 * result + data.contentHashCode()
+        return result
+    }
 
     private fun cellIndex(index: Int): Int = ((index.toLong() * divideMultiply + divideAdd) shr 32 shr divideShift).toInt()
 

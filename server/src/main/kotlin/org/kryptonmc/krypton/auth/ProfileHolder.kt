@@ -24,9 +24,10 @@ import com.google.gson.stream.JsonWriter
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 import java.time.format.DateTimeParseException
-import java.util.Objects
 import java.util.UUID
 import kotlinx.collections.immutable.persistentListOf
+import org.kryptonmc.api.auth.GameProfile
+import java.util.concurrent.atomic.AtomicLong
 
 /**
  * This holds a game profile and other information that we need when storing
@@ -36,7 +37,17 @@ import kotlinx.collections.immutable.persistentListOf
  * it, because we only store the [KryptonProfileCache.MRU_LIMIT] most recent
  * profiles to disk.
  */
-class ProfileHolder(val profile: KryptonGameProfile, val expiryDate: ZonedDateTime, @Volatile var lastAccess: Long = 0L) {
+class ProfileHolder(val profile: GameProfile, val expiryDate: ZonedDateTime) : Comparable<ProfileHolder> {
+
+    @Volatile
+    var lastAccess: Long = 0L
+
+    fun profile(operations: AtomicLong): GameProfile {
+        lastAccess = operations.incrementAndGet()
+        return profile
+    }
+
+    override fun compareTo(other: ProfileHolder): Int = other.lastAccess.compareTo(lastAccess)
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -44,11 +55,18 @@ class ProfileHolder(val profile: KryptonGameProfile, val expiryDate: ZonedDateTi
         return profile == (other as ProfileHolder).profile && expiryDate == other.expiryDate
     }
 
-    override fun hashCode(): Int = Objects.hash(profile, expiryDate)
+    override fun hashCode(): Int {
+        var result = 1
+        result = 31 * result + profile.hashCode()
+        result = 31 * result + expiryDate.hashCode()
+        return result
+    }
 
     override fun toString(): String = "ProfileHolder(profile=$profile, expiryDate=$expiryDate)"
 
-    object Adapter : TypeAdapter<ProfileHolder>() {
+    companion object : TypeAdapter<ProfileHolder>() {
+
+        private val DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss Z")
 
         override fun read(reader: JsonReader): ProfileHolder? {
             reader.beginObject()
@@ -83,17 +101,5 @@ class ProfileHolder(val profile: KryptonGameProfile, val expiryDate: ZonedDateTi
             writer.value(DATE_FORMATTER.format(value.expiryDate))
             writer.endObject()
         }
-    }
-
-    companion object {
-
-        /**
-         * Standard date formatter for the ISO 8601 calendar date standard,
-         * also including the timezone.
-         *
-         * See [here](https://en.wikipedia.org/wiki/ISO_8601#Calendar_dates)
-         */
-        @JvmField
-        val DATE_FORMATTER: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss Z")
     }
 }

@@ -30,9 +30,8 @@ import org.kryptonmc.nbt.list
 
 class KryptonFireworkRocketMeta(data: CompoundTag) : AbstractItemMeta<KryptonFireworkRocketMeta>(data), FireworkRocketMeta {
 
-    override val effects: PersistentList<FireworkEffect> = data.getCompound("Fireworks")
-        .getList("Explosions", CompoundTag.ID)
-        .mapPersistentList { KryptonFireworkEffect.from(it as CompoundTag) }
+    override val effects: PersistentList<FireworkEffect> =
+        data.getCompound("Fireworks").getList("Explosions", CompoundTag.ID).mapCompound(KryptonFireworkEffect::from)
     override val flightDuration: Int = data.getCompound("Fireworks").getByte("Flight").toInt()
 
     override fun copy(data: CompoundTag): KryptonFireworkRocketMeta = KryptonFireworkRocketMeta(data)
@@ -82,7 +81,7 @@ class KryptonFireworkRocketMeta(data: CompoundTag) : AbstractItemMeta<KryptonFir
     }
 }
 
-private fun CompoundTag.modifyFireworks(modifier: CompoundTag.() -> CompoundTag): CompoundTag {
+private inline fun CompoundTag.modifyFireworks(modifier: CompoundTag.() -> CompoundTag): CompoundTag {
     if (!contains("Fireworks", CompoundTag.ID)) return this
     return modifier(getCompound("Fireworks"))
 }

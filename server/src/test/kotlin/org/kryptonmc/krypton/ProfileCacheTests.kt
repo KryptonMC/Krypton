@@ -23,9 +23,9 @@ import com.google.common.jimfs.Jimfs
 import kotlinx.collections.immutable.persistentListOf
 import org.kryptonmc.krypton.auth.KryptonGameProfile
 import org.kryptonmc.krypton.auth.KryptonProfileCache
-import org.kryptonmc.krypton.auth.ProfileHolder
 import java.time.ZoneOffset
 import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
 import java.util.UUID
 import kotlin.io.path.readText
 import kotlin.io.path.writeText
@@ -83,8 +83,10 @@ class ProfileCacheTests {
 
         private val ID = UUID.randomUUID()
         private val PROFILE = KryptonGameProfile("Dave", ID, persistentListOf())
+
+        private val FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss Z")
         private val TIME = ZonedDateTime.of(2021, 2, 13, 17, 2, 36, 0, ZoneOffset.UTC)
-        private val TIME_FORMATTED = ProfileHolder.DATE_FORMATTER.format(TIME)
+        private val TIME_FORMATTED = FORMATTER.format(TIME)
 
         init {
             EMPTY_PATH.writeText("[]")

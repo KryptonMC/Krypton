@@ -18,6 +18,7 @@
  */
 package org.kryptonmc.krypton.world.scoreboard
 
+import kotlinx.collections.immutable.persistentSetOf
 import net.kyori.adventure.text.Component
 import org.kryptonmc.api.adventure.toPlainText
 import org.kryptonmc.api.scoreboard.DisplaySlot
@@ -33,8 +34,10 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutDisplayObjective
 import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateObjectives
 import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateScore
 import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateTeams
+import org.kryptonmc.krypton.util.mapPersistentSet
 import java.util.Collections
 import java.util.concurrent.ConcurrentHashMap
+import java.util.function.Consumer
 
 class KryptonScoreboard(private val server: KryptonServer) : Scoreboard {
 
@@ -66,17 +69,17 @@ class KryptonScoreboard(private val server: KryptonServer) : Scoreboard {
     }
 
     private fun startTrackingObjective(objective: Objective) {
-        getStartTrackingPackets(objective).forEach { server.sessionManager.sendGrouped(it) }
+        getStartTrackingPackets(objective).forEach(server.sessionManager::sendGrouped)
         trackedObjectives.add(objective)
     }
 
     private fun stopTrackingObjective(objective: Objective) {
-        getStopTrackingPackets(objective).forEach { server.sessionManager.sendGrouped(it) }
+        getStopTrackingPackets(objective).forEach(server.sessionManager::sendGrouped)
         trackedObjectives.remove(objective)
     }
 
     fun getStartTrackingPackets(objective: Objective): List<Packet> {
-        val packets = mutableListOf<Packet>()
+        val packets = ArrayList<Packet>()
         packets.add(PacketOutDisplayObjective(0, objective))
         displayObjectives.forEach { if (it.value === objective) packets.add(PacketOutDisplayObjective(it.key, it.value)) }
         scores(objective).forEach { packets.add(PacketOutUpdateScore(PacketOutUpdateScore.Action.CREATE_OR_UPDATE, it)) }
@@ -84,18 +87,17 @@ class KryptonScoreboard(private val server: KryptonServer) : Scoreboard {
     }
 
     private fun getStopTrackingPackets(objective: Objective): List<Packet> {
-        val packets = mutableListOf<Packet>()
+        val packets = ArrayList<Packet>()
         packets.add(PacketOutDisplayObjective(1, objective))
         displayObjectives.forEach { if (it.value === objective) packets.add(PacketOutDisplayObjective(it.key, it.value)) }
         return packets
     }
 
-    private fun scores(objective: Objective): Collection<KryptonScore> = memberScores.values
-        .mapNotNullTo(mutableListOf()) { it[objective] }
-        .apply { sortWith(KryptonScore.COMPARATOR) }
+    private fun scores(objective: Objective): Collection<KryptonScore> =
+        memberScores.values.mapNotNullTo(ArrayList()) { it.get(objective) }.apply { sortWith(KryptonScore.COMPARATOR) }
 
-    fun forEachObjective(criterion: Criterion, member: Component, action: (KryptonScore) -> Unit) {
-        objectivesByCriterion.getOrDefault(criterion, emptyList()).forEach { action(getOrCreateScore(member, it)) }
+    fun forEachObjective(criterion: Criterion, member: Component, action: Consumer<KryptonScore>) {
+        objectivesByCriterion.getOrDefault(criterion, emptyList()).forEach { action.accept(getOrCreateScore(member, it)) }
     }
 
     fun removeEntity(entity: KryptonEntity) {
@@ -105,7 +107,7 @@ class KryptonScoreboard(private val server: KryptonServer) : Scoreboard {
     }
 
     private fun getOrCreateScore(member: Component, objective: Objective): KryptonScore {
-        val scores = memberScores.computeIfAbsent(member) { mutableMapOf() }
+        val scores = memberScores.computeIfAbsent(member) { HashMap() }
         return scores.computeIfAbsent(objective) { KryptonScore(this, it, member).apply { score = 0 } }
     }
 
@@ -115,7 +117,7 @@ class KryptonScoreboard(private val server: KryptonServer) : Scoreboard {
             if (scores != null) onMemberRemoved(member)
             return
         }
-        val scores = memberScores[member] ?: return
+        val scores = memberScores.get(member) ?: return
         val score = scores.remove(objective)
         if (scores.isEmpty()) {
             val removed = memberScores.remove(member)
@@ -127,7 +129,7 @@ class KryptonScoreboard(private val server: KryptonServer) : Scoreboard {
 
     fun addMemberToTeam(member: Component, team: Team): Boolean {
         if (memberTeam(member) != null) removeMemberFromTeam(member)
-        teamsByMember[member] = team
+        teamsByMember.put(member, team)
         if (!team.addMember(member)) return false
         server.sessionManager.sendGrouped(PacketOutUpdateTeams.addOrRemoveMember(team, member, true))
         return true
@@ -146,34 +148,33 @@ class KryptonScoreboard(private val server: KryptonServer) : Scoreboard {
         server.sessionManager.sendGrouped(PacketOutUpdateTeams.addOrRemoveMember(team, member, false))
     }
 
-    override fun objective(name: String): Objective? = objectivesByName[name]
+    override fun objective(name: String): Objective? = objectivesByName.get(name)
 
-    override fun objective(slot: DisplaySlot): Objective? = displayObjectives[slot]
+    override fun objective(slot: DisplaySlot): Objective? = displayObjectives.get(slot)
 
-    override fun objectives(criterion: Criterion): Set<Objective> = objectivesByCriterion[criterion] ?: emptySet()
+    override fun objectives(criterion: Criterion): Set<Objective> = objectivesByCriterion.getOrDefault(criterion, emptySet())
 
     override fun addObjective(objective: Objective) {
         require(!objectivesByName.containsKey(objective.name)) { "An objective with the name ${objective.name} is already registered!" }
         objectivesByCriterion.computeIfAbsent(objective.criterion) { ConcurrentHashMap.newKeySet() }.add(objective)
-        objectivesByName[objective.name] = objective
+        objectivesByName.put(objective.name, objective)
         makeDirty()
     }
 
     override fun removeObjective(objective: Objective) {
         objectivesByName.remove(objective.name)
         displayObjectives.forEach { if (it.value === objective) displayObjectives.remove(it.key) }
-        objectivesByCriterion[objective.criterion]?.remove(objective)
+        objectivesByCriterion.get(objective.criterion)?.remove(objective)
         memberScores.values.forEach { it.remove(objective) }
         onObjectiveRemoved(objective)
     }
 
-    @Suppress("ReplaceSizeCheckWithIsNotEmpty") // No it can't, IntelliJ
     override fun updateSlot(objective: Objective?, slot: DisplaySlot) {
         require(objective == null || objectivesByName.containsValue(objective)) {
             "Cannot set the display slot for an objective that is not registered to this scoreboard!"
         }
-        val old = displayObjectives[slot]
-        if (objective == null) displayObjectives.remove(slot) else displayObjectives[slot] = objective
+        val old = displayObjectives.get(slot)
+        if (objective == null) displayObjectives.remove(slot) else displayObjectives.put(slot, objective)
         if (old !== objective && old != null) {
             if (displayObjectives.count { it.value === objective } > 0) {
                 server.sessionManager.sendGrouped(PacketOutDisplayObjective(slot, objective))
@@ -195,33 +196,33 @@ class KryptonScoreboard(private val server: KryptonServer) : Scoreboard {
         displayObjectives.remove(slot)
     }
 
-    override fun scores(name: Component): Set<KryptonScore> = memberScores.values.flatMapTo(mutableSetOf()) { it.values }
+    override fun scores(name: Component): Set<KryptonScore> = memberScores.values.flatMapTo(HashSet()) { it.values }
 
     override fun removeScores(name: Component) {
         memberScores.forEach { entry -> if (entry.value.values.any { it.name == name }) memberScores.remove(entry.key) }
     }
 
-    override fun team(name: String): Team? = teamsByName[name]
+    override fun team(name: String): Team? = teamsByName.get(name)
 
-    override fun memberTeam(member: Component): Team? = teamsByMember[member]
+    override fun memberTeam(member: Component): Team? = teamsByMember.get(member)
 
     override fun addTeam(team: Team) {
         require(!teamsByName.containsKey(team.name)) { "A team with the name ${team.name} is already registered!" }
-        teamsByName[team.name] = team
-        team.members.forEach { teamsByMember[it] = team }
+        teamsByName.put(team.name, team)
+        team.members.forEach { teamsByMember.put(it, team) }
         onTeamAdded(team)
     }
 
     override fun removeTeam(team: Team) {
         teamsByName.remove(team.name)
-        team.members.forEach { teamsByMember.remove(it) }
+        team.members.forEach(teamsByMember::remove)
         onTeamRemoved(team)
     }
 
     override fun toBuilder(): Scoreboard.Builder = Builder(this)
 
     private fun makeDirty() {
-        listeners.forEach { it.run() }
+        listeners.forEach(Runnable::run)
     }
 
     fun onObjectiveUpdated(objective: Objective) {
@@ -272,8 +273,8 @@ class KryptonScoreboard(private val server: KryptonServer) : Scoreboard {
 
     class Builder(val server: KryptonServer) : Scoreboard.Builder {
 
-        private val objectives = mutableListOf<Objective>()
-        private val teams = mutableListOf<Team>()
+        private val objectives = ArrayList<Objective>()
+        private val teams = ArrayList<Team>()
 
         constructor(scoreboard: KryptonScoreboard) : this(scoreboard.server) {
             objectives.addAll(scoreboard.objectives)
@@ -282,13 +283,13 @@ class KryptonScoreboard(private val server: KryptonServer) : Scoreboard {
 
         override fun objective(objective: Objective): Scoreboard.Builder = apply { objectives.add(objective) }
 
-        override fun objectives(vararg objectives: Objective): Scoreboard.Builder = apply { objectives.forEach { this.objectives.add(it) } }
+        override fun objectives(vararg objectives: Objective): Scoreboard.Builder = apply { objectives.forEach(this.objectives::add) }
 
         override fun objectives(objectives: Iterable<Objective>): Scoreboard.Builder = apply { this.objectives.addAll(objectives) }
 
         override fun team(team: Team): Scoreboard.Builder = apply { teams.add(team) }
 
-        override fun teams(vararg teams: Team): Scoreboard.Builder = apply { teams.forEach { this.teams.add(it) } }
+        override fun teams(vararg teams: Team): Scoreboard.Builder = apply { teams.forEach(this.teams::add) }
 
         override fun teams(teams: Iterable<Team>): Scoreboard.Builder = apply { this.teams.addAll(teams) }
 
@@ -296,8 +297,6 @@ class KryptonScoreboard(private val server: KryptonServer) : Scoreboard {
     }
 
     object Factory : Scoreboard.Factory {
-
-        override fun empty(): Scoreboard = KryptonScoreboard(KryptonServer.get())
 
         override fun builder(): Scoreboard.Builder = Builder(KryptonServer.get())
     }

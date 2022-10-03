@@ -105,6 +105,6 @@ enum class WorldEvent(val id: Int) {
         private val BY_ID = Int2ObjectOpenHashMap<WorldEvent>(VALUES.size).apply { VALUES.forEach { put(it.id, it) } }
 
         @JvmStatic
-        fun fromId(id: Int): WorldEvent? = BY_ID[id]
+        fun fromId(id: Int): WorldEvent? = BY_ID.get(id)
     }
 }

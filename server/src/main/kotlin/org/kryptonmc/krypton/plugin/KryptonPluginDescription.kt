@@ -38,7 +38,7 @@ open class KryptonPluginDescription(
     final override val dependencies: Collection<PluginDependency>
         get() = dependencyMap.values
 
-    final override fun dependency(id: String): PluginDependency? = dependencyMap[id]
+    final override fun dependency(id: String): PluginDependency? = dependencyMap.get(id)
 
     companion object {
 

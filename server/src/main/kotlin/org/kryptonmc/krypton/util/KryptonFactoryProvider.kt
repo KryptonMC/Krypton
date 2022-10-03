@@ -90,11 +90,11 @@ object KryptonFactoryProvider : FactoryProvider {
     private val factories = Object2ObjectOpenHashMap<Class<*>, Any>()
 
     @Suppress("UNCHECKED_CAST")
-    override fun <T> provide(type: Class<T>): T = factories[type] as? T ?: throw TypeNotFoundException("Type $type has no factory registered!")
+    override fun <T> provide(type: Class<T>): T = factories.get(type) as? T ?: throw TypeNotFoundException("Type $type has no factory registered!")
 
     override fun <T> register(type: Class<T>, factory: T) {
         require(!factories.contains(type)) { "Duplicate registration for type $type!" }
-        factories[type] = factory
+        factories.put(type, factory)
     }
 
     fun bootstrap() {

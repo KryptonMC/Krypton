@@ -23,14 +23,11 @@ import java.util.function.Consumer
 
 class KryptonGsonComponentSerializerProvider : GsonComponentSerializer.Provider {
 
-    override fun gson(): GsonComponentSerializer = GsonComponentSerializer.builder()
-        .legacyHoverEventSerializer(NBTLegacyHoverEventSerializer)
-        .build()
+    override fun gson(): GsonComponentSerializer =
+        GsonComponentSerializer.builder().legacyHoverEventSerializer(NBTLegacyHoverEventSerializer).build()
 
-    override fun gsonLegacy(): GsonComponentSerializer = GsonComponentSerializer.builder()
-        .legacyHoverEventSerializer(NBTLegacyHoverEventSerializer)
-        .downsampleColors()
-        .build()
+    override fun gsonLegacy(): GsonComponentSerializer =
+        GsonComponentSerializer.builder().legacyHoverEventSerializer(NBTLegacyHoverEventSerializer).downsampleColors().build()
 
     override fun builder(): Consumer<GsonComponentSerializer.Builder> = Consumer {}
 }

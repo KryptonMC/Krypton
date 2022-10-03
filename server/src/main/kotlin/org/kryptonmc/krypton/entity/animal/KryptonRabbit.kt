@@ -25,10 +25,12 @@ import org.kryptonmc.api.entity.animal.type.RabbitVariant
 import org.kryptonmc.api.entity.attribute.AttributeTypes
 import org.kryptonmc.api.item.ItemStack
 import org.kryptonmc.api.item.ItemTypes
+import org.kryptonmc.krypton.entity.KryptonMob
+import org.kryptonmc.krypton.entity.attribute.AttributeSupplier
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.world.KryptonWorld
 
-class KryptonRabbit(world: KryptonWorld) : KryptonAnimal(world, EntityTypes.RABBIT, ATTRIBUTES), Rabbit {
+class KryptonRabbit(world: KryptonWorld) : KryptonAnimal(world, EntityTypes.RABBIT), Rabbit {
 
     internal var moreCarrotTicks = 0
     override var variant: RabbitVariant
@@ -63,7 +65,11 @@ class KryptonRabbit(world: KryptonWorld) : KryptonAnimal(world, EntityTypes.RABB
 
         private const val KILLER_TYPE = 99
         private val TYPES = RabbitVariant.values()
-        private val ATTRIBUTES = attributes().add(AttributeTypes.MAX_HEALTH, 3.0).add(AttributeTypes.MOVEMENT_SPEED, 0.3).build()
         private val TEMPTING_ITEMS = setOf(ItemTypes.CARROT, ItemTypes.GOLDEN_CARROT, ItemTypes.DANDELION)
+
+        @JvmStatic
+        fun attributes(): AttributeSupplier.Builder = KryptonMob.attributes()
+            .add(AttributeTypes.MAX_HEALTH, 3.0)
+            .add(AttributeTypes.MOVEMENT_SPEED, 0.3)
     }
 }

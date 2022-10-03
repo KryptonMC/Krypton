@@ -59,6 +59,6 @@ data class MaterialColor(val id: Int, val color: Int) {
 
         @JvmStatic
         fun fromDyeColor(color: DyeColor): MaterialColor =
-            checkNotNull(BY_DYE_COLOR[color]) { "Could not find material colour for dye colour $color! This is a bug!" }
+            checkNotNull(BY_DYE_COLOR.get(color)) { "Could not find material colour for dye colour $color! This is a bug!" }
     }
 }

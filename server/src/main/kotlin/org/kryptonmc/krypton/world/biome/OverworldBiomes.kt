@@ -26,7 +26,7 @@ import org.kryptonmc.api.world.biome.Precipitation
 import org.kryptonmc.api.world.biome.GrassColorModifier
 import org.kryptonmc.api.world.biome.TemperatureModifier
 import org.kryptonmc.krypton.effect.KryptonMusic
-import org.kryptonmc.krypton.util.clamp
+import org.kryptonmc.krypton.util.Maths
 
 object OverworldBiomes {
 
@@ -129,13 +129,12 @@ object OverworldBiomes {
 
     @JvmStatic
     private fun badlands(wooded: Boolean): KryptonBiome = biome {
-        val temperature = 2F
-        climate(Climate.of(Precipitation.NONE, temperature, 0F, TemperatureModifier.NONE))
+        climate(Climate.of(Precipitation.NONE, 2F, 0F, TemperatureModifier.NONE))
         effects {
             waterColor(OVERWORLD_WATER)
             waterFogColor(OVERWORLD_WATER_FOG)
             fogColor(OVERWORLD_FOG)
-            skyColor(calculateSkyColor(temperature))
+            skyColor(calculateSkyColor(2F))
             foliageColor(BADLANDS_FOLIAGE)
             grassColor(BADLANDS_GRASS)
             mood(KryptonAmbientMoodSettings.CAVE)
@@ -200,7 +199,6 @@ object OverworldBiomes {
 
     @JvmStatic
     private fun beach(snowy: Boolean, stony: Boolean): KryptonBiome {
-        val normal = !snowy && !stony
         val temperature = when {
             snowy -> 0.05F
             stony -> 0.2F
@@ -208,7 +206,7 @@ object OverworldBiomes {
         }
         val precipitation = if (snowy) Precipitation.SNOW else Precipitation.RAIN
         val water = if (snowy) SNOWY_WATER else OVERWORLD_WATER
-        return createBiome(precipitation, temperature, if (normal) 0.4F else 0.3F, water)
+        return createBiome(precipitation, temperature, if (!snowy && !stony) 0.4F else 0.3F, water)
     }
 
     // ==============================
@@ -235,13 +233,12 @@ object OverworldBiomes {
 
     @JvmStatic
     fun darkForest(): KryptonBiome = biome {
-        val temperature = 0.7F
-        climate(Climate.of(Precipitation.RAIN, temperature, 0.8F, TemperatureModifier.NONE))
+        climate(Climate.of(Precipitation.RAIN, 0.7F, 0.8F, TemperatureModifier.NONE))
         effects {
             waterColor(OVERWORLD_WATER)
             waterFogColor(OVERWORLD_WATER_FOG)
             fogColor(OVERWORLD_FOG)
-            skyColor(calculateSkyColor(temperature))
+            skyColor(calculateSkyColor(0.7F))
             grassColorModifier(GrassColorModifier.DARK_FOREST)
             mood(KryptonAmbientMoodSettings.CAVE)
             backgroundMusic(KryptonMusic.game(SoundEvents.MUSIC_BIOME_JUNGLE_AND_FOREST))
@@ -342,13 +339,12 @@ object OverworldBiomes {
 
     @JvmStatic
     private fun baseSwamp(waterColor: Color, waterFogColor: Color, foliageColor: Color): KryptonBiome = biome {
-        val temperature = 0.8F
-        climate(Climate.of(Precipitation.RAIN, temperature, 0.9F, TemperatureModifier.NONE))
+        climate(Climate.of(Precipitation.RAIN, 0.8F, 0.9F, TemperatureModifier.NONE))
         effects {
             waterColor(waterColor)
             waterFogColor(waterFogColor)
             fogColor(OVERWORLD_FOG)
-            skyColor(calculateSkyColor(temperature))
+            skyColor(calculateSkyColor(0.8F))
             foliageColor(foliageColor)
             grassColorModifier(GrassColorModifier.SWAMP)
             mood(KryptonAmbientMoodSettings.CAVE)
@@ -428,7 +424,7 @@ object OverworldBiomes {
 
     @JvmStatic
     fun calculateSkyColor(temperature: Float): Color {
-        val value = (temperature / 3F).clamp(-1F, 1F)
+        val value = Maths.clamp(temperature / 3F, -1F, 1F)
         return Color.of(0.62222224F - value * 0.05F, 0.5F + value * 0.1F, 1F)
     }
 

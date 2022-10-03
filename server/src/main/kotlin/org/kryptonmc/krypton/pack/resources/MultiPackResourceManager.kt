@@ -34,7 +34,7 @@ class MultiPackResourceManager(packs: List<PackResources>) : CloseableResourceMa
 
     init {
         val managers = HashMap<String, FallbackResourceManager>()
-        val namespaces = packs.asSequence().flatMap { it.namespaces }.distinct().toList()
+        val namespaces = packs.asSequence().flatMap(PackResources::namespaces).distinct().toList()
         packs.forEach { resources ->
             val filterData = getPackFilterData(resources)
             val packNamespaces = resources.namespaces
@@ -43,7 +43,7 @@ class MultiPackResourceManager(packs: List<PackResources>) : CloseableResourceMa
                 val inPackNamespaces = packNamespaces.contains(it)
                 val filtered = filterData != null && filterData.isNamespaceFiltered(it)
                 if (!inPackNamespaces && !filtered) return@inner
-                val manager = managers.getOrPut(it) { FallbackResourceManager(it) }
+                val manager = managers.computeIfAbsent(it, ::FallbackResourceManager)
                 if (inPackNamespaces && filtered) {
                     // predicate must be non-null as filterData != null if filtered is true, and if filterData != null, predicate != null
                     manager.push(resources, predicate!!)
@@ -58,7 +58,7 @@ class MultiPackResourceManager(packs: List<PackResources>) : CloseableResourceMa
         namespacedManagers = managers
     }
 
-    override fun getResource(location: Key): Resource? = namespacedManagers[location.namespace()]?.getResource(location)
+    override fun getResource(location: Key): Resource? = namespacedManagers.get(location.namespace())?.getResource(location)
 
     override fun listResources(path: String, predicate: Predicate<Key>): Map<Key, Resource> {
         val result = TreeMap<Key, Resource>()

@@ -46,17 +46,11 @@ data class KryptonItemStack(override val type: ItemType, override val amount: In
 
     fun save(): CompoundTag = save(CompoundTag.immutableBuilder()).build()
 
-    fun isEmpty(): Boolean {
-        if (type !== ItemTypes.AIR) return amount <= 0
-        return true
-    }
+    fun isEmpty(): Boolean = type === ItemTypes.AIR || amount <= 0
 
     fun eq(type: ItemType): Boolean = this.type === type
 
-    override fun <I : ItemMeta> meta(type: Class<I>): I? {
-        if (type.isInstance(meta)) return type.cast(meta)
-        return null
-    }
+    override fun <I : ItemMeta> meta(type: Class<I>): I? = if (type.isInstance(meta)) type.cast(meta) else null
 
     override fun withType(type: ItemType): KryptonItemStack {
         if (type == this.type) return this
@@ -134,7 +128,7 @@ data class KryptonItemStack(override val type: ItemType, override val amount: In
     companion object {
 
         @JvmField
-        val EMPTY: KryptonItemStack = KryptonItemStack(ItemTypes.AIR, 1, KryptonItemMeta.DEFAULT)
+        val EMPTY: KryptonItemStack = KryptonItemStack(ItemTypes.AIR)
 
         @JvmStatic
         fun from(data: CompoundTag): KryptonItemStack {

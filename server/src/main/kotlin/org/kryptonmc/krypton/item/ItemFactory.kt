@@ -79,22 +79,22 @@ object ItemFactory {
         ItemTypes.BLACK_BANNER to ::KryptonBannerMeta
     )
     private val BUILDERS_BY_TYPE: Map<Class<out ItemMetaBuilder.Provider<*>>, () -> ItemMetaBuilder<*, *>> = mapOf(
-        BannerMeta::class.java to { KryptonBannerMeta.Builder() },
-        BundleMeta::class.java to { KryptonBundleMeta.Builder() },
-        CompassMeta::class.java to { KryptonCompassMeta.Builder() },
-        CrossbowMeta::class.java to { KryptonCrossbowMeta.Builder() },
-        FireworkRocketMeta::class.java to { KryptonFireworkRocketMeta.Builder() },
-        FireworkStarMeta::class.java to { KryptonFireworkStarMeta.Builder() },
-        LeatherArmorMeta::class.java to { KryptonLeatherArmorMeta.Builder() },
-        PlayerHeadMeta::class.java to { KryptonPlayerHeadMeta.Builder() },
-        WritableBookMeta::class.java to { KryptonWritableBookMeta.Builder() },
-        WrittenBookMeta::class.java to { KryptonWrittenBookMeta.Builder() }
+        BannerMeta::class.java to KryptonBannerMeta::Builder,
+        BundleMeta::class.java to KryptonBundleMeta::Builder,
+        CompassMeta::class.java to KryptonCompassMeta::Builder,
+        CrossbowMeta::class.java to KryptonCrossbowMeta::Builder,
+        FireworkRocketMeta::class.java to KryptonFireworkRocketMeta::Builder,
+        FireworkStarMeta::class.java to KryptonFireworkStarMeta::Builder,
+        LeatherArmorMeta::class.java to KryptonLeatherArmorMeta::Builder,
+        PlayerHeadMeta::class.java to KryptonPlayerHeadMeta::Builder,
+        WritableBookMeta::class.java to KryptonWritableBookMeta::Builder,
+        WrittenBookMeta::class.java to KryptonWrittenBookMeta::Builder
     )
 
     @JvmStatic
-    fun create(type: ItemType, data: CompoundTag): AbstractItemMeta<*> = META_BY_TYPE[type]?.invoke(data) ?: KryptonItemMeta(data)
+    fun create(type: ItemType, data: CompoundTag): AbstractItemMeta<*> = META_BY_TYPE.get(type)?.invoke(data) ?: KryptonItemMeta(data)
 
     @JvmStatic
     @Suppress("UNCHECKED_CAST")
-    fun <B : ItemMetaBuilder<B, P>, P : ItemMetaBuilder.Provider<B>> builder(type: Class<P>): B = BUILDERS_BY_TYPE[type]?.invoke() as B
+    fun <B : ItemMetaBuilder<B, P>, P : ItemMetaBuilder.Provider<B>> builder(type: Class<P>): B = BUILDERS_BY_TYPE.get(type)?.invoke() as B
 }

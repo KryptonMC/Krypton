@@ -20,6 +20,11 @@ package org.kryptonmc.krypton.util
 
 import java.util.AbstractList
 
+/**
+ * A fixed-sized list that essentially acts as a wrapper around an array.
+ *
+ * This list does not support null elements.
+ */
 class FixedList<E : Any>(override val size: Int, private val fillElement: E) : AbstractList<E>() {
 
     @Suppress("UNCHECKED_CAST")
@@ -32,8 +37,4 @@ class FixedList<E : Any>(override val size: Int, private val fillElement: E) : A
         array[index] = element
         return old
     }
-
-    override fun indexOf(element: E): Int = array.indexOf(element)
-
-    override fun lastIndexOf(element: E): Int = array.lastIndexOf(element)
 }

@@ -32,47 +32,46 @@ import org.kryptonmc.krypton.module.GlobalModule
 import org.kryptonmc.krypton.module.PluginModule
 import org.kryptonmc.krypton.plugin.loader.LoadedPluginDescription
 import org.kryptonmc.krypton.plugin.loader.PluginLoader
-import org.kryptonmc.krypton.util.forEachDirectoryEntry
 import java.nio.file.Files
 import java.nio.file.Path
 import java.util.IdentityHashMap
 
-@Suppress("INAPPLICABLE_JVM_NAME")
-object KryptonPluginManager : PluginManager {
+class KryptonPluginManager : PluginManager {
 
-    private val LOGGER = LogManager.getLogger("PluginManager")
     private val pluginMap = LinkedHashMap<String, PluginContainer>()
     private val pluginInstances = IdentityHashMap<Any, PluginContainer>()
     override val plugins: Collection<PluginContainer>
         get() = pluginMap.values
 
     fun loadPlugins(directory: Path, server: KryptonServer) {
-        val found = mutableListOf<PluginDescription>()
+        val found = ArrayList<PluginDescription>()
 
-        directory.forEachDirectoryEntry({ Files.isRegularFile(it) && it.toString().endsWith(".jar") }, {
-            try {
-                val description = PluginLoader.loadDescription(it)
-                if (description.id == "spark") {
-                    // If we don't stop the standalone one loading, we could end up with conflicts on the classpath.
-                    LOGGER.warn("Ignoring attempt to load standalone Spark plugin, as this plugin is already bundled.")
-                    return@forEachDirectoryEntry
+        Files.newDirectoryStream(directory) { Files.isRegularFile(it) && it.toString().endsWith(".jar") }.use { stream ->
+            stream.forEach {
+                try {
+                    val description = PluginLoader.loadDescription(it)
+                    if (description.id == "spark") {
+                        // If we don't stop the standalone one loading, we could end up with conflicts on the classpath.
+                        LOGGER.warn("Ignoring attempt to load standalone Spark plugin, as this plugin is already bundled.")
+                        return@forEach
+                    }
+                    found.add(description)
+                } catch (exception: Exception) {
+                    LOGGER.error("Failed to load plugin at $it!", exception)
                 }
-                found.add(description)
-            } catch (exception: Exception) {
-                LOGGER.error("Failed to load plugin at $it!", exception)
             }
-        })
+        }
         if (found.isEmpty()) return // no plugins
 
         val sortedPlugins = found.sortCandidates()
-        val loadedPluginsById = mutableSetOf<String>()
+        val loadedPluginsById = HashSet<String>()
         val pluginContainers = LinkedHashMap<PluginContainer, Module>()
 
         // Load the plugins!
         sortedPlugins.forEach pluginLoad@{ candidate ->
             // Verify dependencies
             candidate.dependencies.forEach {
-                if (it.isOptional || it.id in loadedPluginsById) return@forEach
+                if (it.isOptional || loadedPluginsById.contains(it.id)) return@forEach
                 LOGGER.error("Failed to load plugin ${candidate.id} due to missing dependency on plugin ${it.id}!")
                 return@pluginLoad
             }
@@ -80,7 +79,7 @@ object KryptonPluginManager : PluginManager {
             try {
                 val description = PluginLoader.loadPlugin(candidate)
                 val container = KryptonPluginContainer(description)
-                pluginContainers[container] = PluginModule(description, container, directory)
+                pluginContainers.put(container, PluginModule(description, container, directory))
                 loadedPluginsById.add(description.id)
             } catch (exception: Exception) {
                 LOGGER.error("Failed to create Guice module for plugin ${candidate.id}!", exception)
@@ -89,7 +88,7 @@ object KryptonPluginManager : PluginManager {
         val commonModule = GlobalModule(server, pluginContainers.keys)
 
         pluginContainers.forEach { (container, module) ->
-            val description = container.description as LoadedPluginDescription
+            val description = container.description
 
             try {
                 PluginLoader.createPlugin(container, module, commonModule)
@@ -104,16 +103,16 @@ object KryptonPluginManager : PluginManager {
     }
 
     private fun registerPlugin(plugin: PluginContainer) {
-        pluginMap[plugin.description.id] = plugin
-        plugin.instance?.let { pluginInstances[it] = plugin }
+        pluginMap.put(plugin.description.id, plugin)
+        plugin.instance?.let { pluginInstances.put(it, plugin) }
     }
 
     override fun fromInstance(instance: Any): PluginContainer? {
         if (instance is PluginContainer) return instance
-        return pluginInstances[instance]
+        return pluginInstances.get(instance)
     }
 
-    override fun plugin(id: String): PluginContainer? = pluginMap[id]
+    override fun plugin(id: String): PluginContainer? = pluginMap.get(id)
 
     override fun isLoaded(id: String): Boolean = pluginMap.containsKey(id)
 
@@ -124,5 +123,10 @@ object KryptonPluginManager : PluginManager {
         val loader = instance.javaClass.classLoader
         if (loader !is PluginClassLoader) throw UnsupportedOperationException("Operation is not supported for non-Krypton plugins!")
         loader.addPath(path)
+    }
+
+    companion object {
+
+        private val LOGGER = LogManager.getLogger("PluginManager")
     }
 }

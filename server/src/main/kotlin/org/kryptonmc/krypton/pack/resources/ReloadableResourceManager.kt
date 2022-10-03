@@ -29,7 +29,7 @@ import java.util.function.Predicate
 class ReloadableResourceManager : ResourceManager, AutoCloseable {
 
     private var manager = MultiPackResourceManager(emptyList())
-    private val listeners = mutableListOf<ReloadListener>()
+    private val listeners = ArrayList<ReloadListener>()
 
     fun registerListener(listener: ReloadListener) {
         listeners.add(listener)

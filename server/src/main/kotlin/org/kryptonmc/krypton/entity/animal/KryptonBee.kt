@@ -23,15 +23,17 @@ import org.kryptonmc.api.entity.animal.Bee
 import org.kryptonmc.api.entity.attribute.AttributeTypes
 import org.kryptonmc.api.item.ItemStack
 import org.kryptonmc.api.tags.ItemTags
+import org.kryptonmc.krypton.entity.KryptonMob
 import org.kryptonmc.krypton.entity.Neutral
+import org.kryptonmc.krypton.entity.attribute.AttributeSupplier
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
-import org.kryptonmc.krypton.util.sample
+import org.kryptonmc.krypton.util.provider.UniformInt
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.spongepowered.math.vector.Vector3i
 import java.util.UUID
 import kotlin.random.Random
 
-class KryptonBee(world: KryptonWorld) : KryptonAnimal(world, EntityTypes.BEE, ATTRIBUTES), Bee, Neutral {
+class KryptonBee(world: KryptonWorld) : KryptonAnimal(world, EntityTypes.BEE), Bee, Neutral {
 
     override var cannotEnterHiveTicks: Int = 0
     override var hive: Vector3i? = null
@@ -75,14 +77,14 @@ class KryptonBee(world: KryptonWorld) : KryptonAnimal(world, EntityTypes.BEE, AT
         private const val FLAG_ANGRY = 1
         private const val FLAG_STUNG = 2
         private const val FLAG_NECTAR = 3
+        private val PERSISTENT_ANGER_TIME = UniformInt(20 * 20, 39 * 20)
 
-        private val ATTRIBUTES = attributes()
+        @JvmStatic
+        fun attributes(): AttributeSupplier.Builder = KryptonMob.attributes()
             .add(AttributeTypes.MAX_HEALTH, 10.0)
             .add(AttributeTypes.FLYING_SPEED, 0.6)
             .add(AttributeTypes.MOVEMENT_SPEED, 0.3)
             .add(AttributeTypes.ATTACK_DAMAGE, 2.0)
             .add(AttributeTypes.FOLLOW_RANGE, 48.0)
-            .build()
-        private val PERSISTENT_ANGER_TIME = 20..39
     }
 }

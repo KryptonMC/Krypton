@@ -33,7 +33,7 @@ class BlockStatePredicate private constructor(
     @Suppress("UNCHECKED_CAST")
     fun <V : Comparable<V>> where(property: KryptonProperty<V>, predicate: Predicate<V>): BlockStatePredicate = apply {
         require(definition.properties.contains(property)) { "$definition cannot support property $property!" }
-        properties[property] = predicate as Predicate<Any>
+        properties.put(property, predicate as Predicate<Any>)
     }
 
     override fun test(t: KryptonBlockState?): Boolean {

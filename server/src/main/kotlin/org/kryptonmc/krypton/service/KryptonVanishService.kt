@@ -47,20 +47,20 @@ class KryptonVanishService : VanishService {
 
     override fun show(player: Player, target: Player) {
         if (player === target || player !is KryptonPlayer || target !is KryptonPlayer) return
-        if (!hiddenPlayers.containsKey(player.uuid) || !hiddenPlayers[player.uuid].contains(target.uuid)) return
+        if (!hiddenPlayers.containsKey(player.uuid) || !hiddenPlayers.containsEntry(player.uuid, target.uuid)) return
         hiddenPlayers.put(player.uuid, target.uuid)
         target.addViewer(player)
     }
 
     override fun hide(player: Player, target: Player) {
         if (player === target || player !is KryptonPlayer || target !is KryptonPlayer) return
-        if (!hiddenPlayers.containsKey(player.uuid) || hiddenPlayers[player.uuid].contains(target.uuid)) return
+        if (!hiddenPlayers.containsKey(player.uuid) || hiddenPlayers.containsEntry(player.uuid, target.uuid)) return
         hiddenPlayers.remove(player.uuid, target.uuid)
         target.removeViewer(player)
     }
 
     override fun canSee(player: Player, target: Player): Boolean {
         if (!hiddenPlayers.containsKey(player.uuid)) return true
-        return !hiddenPlayers[player.uuid].contains(target.uuid)
+        return !hiddenPlayers.containsEntry(player.uuid, target.uuid)
     }
 }

@@ -82,8 +82,6 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateEntityPositionAndRot
 import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateEntityRotation
 import org.kryptonmc.krypton.registry.InternalRegistries
 import org.kryptonmc.krypton.util.Positioning
-import org.kryptonmc.krypton.util.chunkX
-import org.kryptonmc.krypton.util.chunkZ
 import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.world.block.downcast
 import org.kryptonmc.krypton.world.chunk.ChunkPosition
@@ -112,7 +110,7 @@ class PlayHandler(override val server: KryptonServer, override val session: Sess
     private var lastKeepAlive = 0L
     private var keepAliveChallenge = 0L
     private var pendingKeepAlive = false
-    private var lastChatTimestamp = AtomicReference(Instant.EPOCH)
+    private val lastChatTimestamp = AtomicReference(Instant.EPOCH)
 
     fun tick() {
         val time = System.currentTimeMillis()
@@ -231,7 +229,7 @@ class PlayHandler(override val server: KryptonServer, override val session: Sess
     }
 
     private fun handleClientInformation(packet: PacketInClientInformation) {
-        player.locale = Locale.forLanguageTag(packet.locale)
+        player.locale = Locale(packet.locale)
         player.chatVisibility = packet.chatVisibility
         player.skinSettings = packet.skinSettings.toByte()
         player.mainHand = packet.mainHand
@@ -244,7 +242,7 @@ class PlayHandler(override val server: KryptonServer, override val session: Sess
         val item = packet.clickedItem
         val inValidRange = packet.slot >= 1 && packet.slot < KryptonPlayerInventory.SIZE
         val isValid = item.isEmpty() || item.meta.damage >= 0 && item.amount <= 64 && !item.isEmpty()
-        if (inValidRange && isValid) player.inventory[packet.slot] = packet.clickedItem
+        if (inValidRange && isValid) player.inventory.set(packet.slot, packet.clickedItem)
     }
 
     private fun handlePlayerCommand(packet: PacketInPlayerCommand) {
@@ -282,7 +280,7 @@ class PlayHandler(override val server: KryptonServer, override val session: Sess
     }
 
     private fun handleAbilities(packet: PacketInAbilities) {
-        player.isGliding = packet.isFlying && player.canFly
+        player.isGliding = packet.isFlying && player.abilities.canFly
     }
 
     // TODO: This entire thing needs to be rewritten
@@ -297,15 +295,12 @@ class PlayHandler(override val server: KryptonServer, override val session: Sess
         val event = server.eventManager.fireSync(KryptonPlaceBlockEvent(player, state, packet.hand, x, y, z, packet.face, packet.isInside))
         if (!event.result.isAllowed) return
 
-        val chunkX = player.location.chunkX()
-        val chunkZ = player.location.chunkZ()
-        val chunk = world.chunkManager[ChunkPosition.toLong(chunkX, chunkZ)] ?: return
+        val chunkX = Positioning.toChunkCoordinate(player.location.floorX())
+        val chunkZ = Positioning.toChunkCoordinate(player.location.floorZ())
+        val chunk = world.chunkManager.get(ChunkPosition.toLong(chunkX, chunkZ)) ?: return
         val existingBlock = chunk.getBlock(x, y, z)
         if (existingBlock != Blocks.AIR.defaultState) return
-
-        val item = player.inventory.mainHand
-        val block = Registries.BLOCK.get(item.type.key()).downcast()
-        chunk.setBlock(x, y, z, block.defaultState)
+        chunk.setBlock(x, y, z, Registries.BLOCK.get(player.inventory.mainHand.type.key()).downcast().defaultState)
     }
 
     private fun handlePlayerAction(packet: PacketInPlayerAction) {
@@ -330,7 +325,7 @@ class PlayHandler(override val server: KryptonServer, override val session: Sess
     }
 
     private fun handleInteract(packet: PacketInInteract) {
-        val target = player.world.entityManager[packet.entityId]
+        val target = player.world.entityManager.get(packet.entityId)
         player.isSneaking = packet.sneaking
         if (target == null) return
         if (player.location.distanceSquared(target.location) >= INTERACTION_RANGE_SQUARED) return
@@ -412,7 +407,7 @@ class PlayHandler(override val server: KryptonServer, override val session: Sess
 
     private fun handleEntityTagQuery(packet: PacketInQueryEntityTag) {
         if (!player.hasPermission(KryptonPermission.ENTITY_QUERY.node)) return
-        val entity = player.world.entityManager[packet.entityId] ?: return
+        val entity = player.world.entityManager.get(packet.entityId) ?: return
         session.send(PacketOutTagQueryResponse(packet.transactionId, EntityFactory.serializer(entity.type).saveWithPassengers(entity).build()))
     }
 

@@ -84,8 +84,9 @@ sealed class ThreadPoolBuilder<B : ThreadPoolBuilder<B, E>, E : ExecutorService>
         }
 
         override fun build(factory: ThreadFactory, handler: RejectedExecutionHandler?): ExecutorService {
-            if (handler != null) return ThreadPoolExecutor(corePoolSize, maximumPoolSize, keepAliveTime, unit, workQueue ?: SynchronousQueue(), factory, handler)
-            return ThreadPoolExecutor(corePoolSize, maximumPoolSize, keepAliveTime, unit, workQueue ?: SynchronousQueue(), factory)
+            val queue = workQueue ?: SynchronousQueue()
+            if (handler != null) return ThreadPoolExecutor(corePoolSize, maximumPoolSize, keepAliveTime, unit, queue, factory, handler)
+            return ThreadPoolExecutor(corePoolSize, maximumPoolSize, keepAliveTime, unit, queue, factory)
         }
     }
 

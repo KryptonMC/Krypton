@@ -37,7 +37,7 @@ import org.kryptonmc.krypton.command.argument.argument
 import org.kryptonmc.krypton.command.literal
 import org.kryptonmc.krypton.command.runs
 import org.kryptonmc.krypton.command.toExceptionType
-import org.kryptonmc.krypton.util.isInSpawnableBounds
+import org.kryptonmc.krypton.util.Worlds
 import org.kryptonmc.nbt.CompoundTag
 import org.spongepowered.math.vector.Vector3d
 
@@ -72,11 +72,10 @@ object SummonCommand : InternalCommand {
     }
 
     @JvmStatic
-    private fun spawnEntity(player: KryptonPlayer, entityType: Key, position: Vector3d, nbt: CompoundTag? = CompoundTag.empty()) {
-        if (!position.isInSpawnableBounds()) throw ERROR_INVALID_POSITION.create()
-        val world = player.world
-        val entity = EntityFactory.create(world, entityType.asString(), nbt)?.apply { this.location = position } ?: throw ERROR_FAILED.create()
-        world.spawnEntity(entity)
+    private fun spawnEntity(player: KryptonPlayer, type: Key, position: Vector3d, nbt: CompoundTag? = CompoundTag.empty()) {
+        if (!Worlds.isInSpawnableBounds(position)) throw ERROR_INVALID_POSITION.create()
+        val entity = EntityFactory.create(player.world, type.asString(), nbt)?.apply { this.location = position } ?: throw ERROR_FAILED.create()
+        player.world.spawnEntity(entity)
         player.sendMessage(Component.translatable("commands.summon.success", entity.displayName))
     }
 }

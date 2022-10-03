@@ -43,11 +43,11 @@ data class PacketOutLoginSuccess(val uuid: UUID, val username: String, val prope
 
     constructor(profile: GameProfile) : this(profile.uuid, profile.name, profile.properties)
 
-    constructor(buf: ByteBuf) : this(buf.readUUID(), buf.readString(), buf.readList { buf.readProfileProperty() })
+    constructor(buf: ByteBuf) : this(buf.readUUID(), buf.readString(), buf.readList(ByteBuf::readProfileProperty))
 
     override fun write(buf: ByteBuf) {
         buf.writeUUID(uuid)
         buf.writeString(username)
-        buf.writeCollection(properties) { buf.writeProfileProperty(it) }
+        buf.writeCollection(properties, buf::writeProfileProperty)
     }
 }

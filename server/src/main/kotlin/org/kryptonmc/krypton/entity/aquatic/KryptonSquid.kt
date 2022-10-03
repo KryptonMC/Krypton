@@ -22,9 +22,11 @@ import org.kryptonmc.api.entity.EntityType
 import org.kryptonmc.api.entity.EntityTypes
 import org.kryptonmc.api.entity.aquatic.Squid
 import org.kryptonmc.api.entity.attribute.AttributeTypes
+import org.kryptonmc.krypton.entity.KryptonMob
+import org.kryptonmc.krypton.entity.attribute.AttributeSupplier
 import org.kryptonmc.krypton.world.KryptonWorld
 
-open class KryptonSquid(world: KryptonWorld, type: EntityType<out Squid>) : KryptonAquaticAnimal(world, type, ATTRIBUTES) {
+open class KryptonSquid(world: KryptonWorld, type: EntityType<out Squid>) : KryptonAquaticAnimal(world, type) {
 
     override val soundVolume: Float
         get() = 0.4F
@@ -33,6 +35,7 @@ open class KryptonSquid(world: KryptonWorld, type: EntityType<out Squid>) : Kryp
 
     companion object {
 
-        private val ATTRIBUTES = attributes().add(AttributeTypes.MAX_HEALTH, 10.0).build()
+        @JvmStatic
+        fun attributes(): AttributeSupplier.Builder = KryptonMob.attributes().add(AttributeTypes.MAX_HEALTH, 10.0)
     }
 }

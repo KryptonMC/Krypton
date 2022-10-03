@@ -24,7 +24,6 @@ import io.netty.channel.ChannelFuture
 import io.netty.channel.ChannelInitializer
 import io.netty.channel.ChannelOption
 import io.netty.channel.EventLoopGroup
-import io.netty.channel.MultithreadEventLoopGroup
 import io.netty.channel.ServerChannel
 import io.netty.channel.epoll.Epoll
 import io.netty.channel.epoll.EpollEventLoopGroup
@@ -61,8 +60,8 @@ import java.util.concurrent.ConcurrentHashMap
 object NettyProcess {
 
     private val LOGGER = logger<KryptonServer>()
-    private val bossGroup: EventLoopGroup = bestLoopGroup()
-    private val workerGroup: EventLoopGroup = bestLoopGroup()
+    private val bossGroup = bestLoopGroup()
+    private val workerGroup = bestLoopGroup()
     private val listeners = ConcurrentHashMap<Key, ChannelInitializeListener>()
     private var future: ChannelFuture? = null
 
@@ -141,7 +140,7 @@ object NettyProcess {
      */
     @JvmStatic
     fun addListener(key: Key, listener: ChannelInitializeListener) {
-        listeners[key] = listener
+        listeners.put(key, listener)
     }
 
     /**
@@ -160,7 +159,7 @@ object NettyProcess {
 
     // Determines the best loop group to use based on what is available on the current operating system
     @JvmStatic
-    private fun bestLoopGroup(): MultithreadEventLoopGroup = when {
+    private fun bestLoopGroup(): EventLoopGroup = when {
         Epoll.isAvailable() -> EpollEventLoopGroup(0, threadFactory("Netty Epoll Worker #%d"))
         KQueue.isAvailable() -> KQueueEventLoopGroup(0, threadFactory("Netty KQueue Worker #%d"))
         else -> NioEventLoopGroup(0, threadFactory("Netty NIO Worker #%d"))

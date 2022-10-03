@@ -28,7 +28,7 @@ import org.kryptonmc.api.world.GameMode
 import org.kryptonmc.krypton.command.InternalCommand
 import org.kryptonmc.krypton.command.argument
 import org.kryptonmc.krypton.command.argument.argument
-import org.kryptonmc.krypton.command.arguments.entities.EntityArgument
+import org.kryptonmc.krypton.command.arguments.entities.EntityArgumentType
 import org.kryptonmc.krypton.command.arguments.entities.entityArgument
 import org.kryptonmc.krypton.command.literal
 import org.kryptonmc.krypton.command.permission
@@ -43,7 +43,7 @@ object GameModeCommand : InternalCommand {
         GameModes.VALUES.forEach { mode ->
             command.then(literal(mode.name.lowercase()) {
                 runs { gameModeArgument(it, mode) }
-                argument("targets", EntityArgument.players()) {
+                argument("targets", EntityArgumentType.players()) {
                     runs { targetArgument(it, mode) }
                 }
             })
@@ -59,7 +59,7 @@ object GameModeCommand : InternalCommand {
                 if (gameMode == null) return@runs
                 gameModeArgument(it, gameMode)
             }
-            argument("targets", EntityArgument.players()) {
+            argument("targets", EntityArgumentType.players()) {
                 runs {
                     var gameMode = GameModes.fromAbbreviation(it.argument("gameMode"))
                     if (gameMode == null) {
@@ -81,7 +81,6 @@ object GameModeCommand : InternalCommand {
     }
 
     @JvmStatic
-    @Suppress("UNCHECKED_CAST")
     private fun targetArgument(context: CommandContext<Sender>, gameMode: GameMode) {
         updateGameMode(context.entityArgument("targets").players(context.source), gameMode, context.source)
     }

@@ -37,18 +37,18 @@ object KryptonPropertyFactory : Property.Factory {
                     val count = propertyCount.computeIfAbsent(property.name, ToIntFunction { 0 }) + 1
                     "${property.name}_$count"
                 }
-                propertyUsages[name] = property
+                propertyUsages.put(name, property)
             }
         }
         propertyUsages
     }
 
-    override fun forBoolean(name: String): Property<Boolean> = PROPERTIES[name] as BooleanProperty
+    override fun forBoolean(name: String): Property<Boolean> = PROPERTIES.get(name) as BooleanProperty
 
-    override fun forInt(name: String): Property<Int> = PROPERTIES[name] as IntProperty
+    override fun forInt(name: String): Property<Int> = PROPERTIES.get(name) as IntProperty
 
     @Suppress("UNCHECKED_CAST")
-    override fun <E : Enum<E>> forEnum(name: String): Property<E> = PROPERTIES[name] as EnumProperty<E>
+    override fun <E : Enum<E>> forEnum(name: String): Property<E> = PROPERTIES.get(name) as EnumProperty<E>
 
     @JvmStatic
     private fun collectFieldProperties(): MutableMap<KryptonProperty<*>, String> {
@@ -56,7 +56,7 @@ object KryptonPropertyFactory : Property.Factory {
         KryptonProperties::class.java.declaredFields.forEach { field ->
             try {
                 val property = field.get(null)
-                if (property is KryptonProperty<*>) map[property] = field.name
+                if (property is KryptonProperty<*>) map.put(property, field.name)
             } catch (exception: IllegalAccessException) {
                 exception.printStackTrace()
             }

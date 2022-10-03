@@ -64,19 +64,19 @@ class KryptonWorldManager(override val server: KryptonServer, private val worldF
 
     override val worlds: MutableMap<ResourceKey<World>, KryptonWorld> = ConcurrentHashMap()
     override val default: KryptonWorld
-        get() = worlds[World.OVERWORLD] ?: error("The default world has not yet been loaded!")
+        get() = worlds.get(World.OVERWORLD) ?: error("The default world has not yet been loaded!")
 
     fun init() {
         create()
         prepare()
     }
 
-    override fun get(key: Key): World? = worlds[ResourceKey.of(ResourceKeys.DIMENSION, key)]
+    override fun get(key: Key): World? = worlds.get(ResourceKey.of(ResourceKeys.DIMENSION, key))
 
     override fun load(key: Key): CompletableFuture<KryptonWorld> {
         val resourceKey = ResourceKey.of(ResourceKeys.DIMENSION, key)
         if (resourceKey === World.OVERWORLD) return failFuture(IllegalArgumentException("The default world cannot be loaded!"))
-        val loaded = worlds[resourceKey]
+        val loaded = worlds.get(resourceKey)
         if (loaded != null) return CompletableFuture.completedFuture(loaded)
 
         val dimensionType = Registries.DIMENSION_TYPE.get(key) as? KryptonDimensionType
@@ -120,7 +120,7 @@ class KryptonWorldManager(override val server: KryptonServer, private val worldF
 
     private fun create() {
         val world = KryptonWorld(server, data, World.OVERWORLD, KryptonDimensionTypes.OVERWORLD, data.generationSettings.seed, true)
-        worlds[World.OVERWORLD] = world
+        worlds.put(World.OVERWORLD, world)
         if (!data.isInitialized) data.isInitialized = true
     }
 

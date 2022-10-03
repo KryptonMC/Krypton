@@ -29,5 +29,5 @@ object Difficulties {
     fun fromId(id: Int): Difficulty? = VALUES.getOrNull(id)
 
     @JvmStatic
-    fun fromName(name: String): Difficulty? = BY_NAME[name]
+    fun fromName(name: String): Difficulty? = BY_NAME.get(name)
 }

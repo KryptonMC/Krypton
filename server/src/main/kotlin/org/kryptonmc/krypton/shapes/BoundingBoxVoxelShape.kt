@@ -88,7 +88,6 @@ class BoundingBoxVoxelShape(val box: BoundingBox) : VoxelShape(Shapes.unoptimize
 
     override fun toBoundingBoxes(): List<BoundingBox> = listOf(box)
 
-    @Suppress("SimplifyNegatedBinaryExpression") // NaN may be a valid value for any of our comparisons
     override fun findIndex(axis: Direction.Axis, position: Double): Int = when (axis) {
         Direction.Axis.X -> findIndex(position, BoundingBox::minimumX, BoundingBox::maximumX)
         Direction.Axis.Y -> findIndex(position, BoundingBox::minimumY, BoundingBox::maximumY)

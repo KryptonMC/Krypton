@@ -34,7 +34,7 @@ data class GlobalPosition(val dimension: ResourceKey<World>, val position: Vecto
     constructor(buf: ByteBuf) : this(ResourceKey.of(ResourceKeys.DIMENSION, buf.readKey()), buf.readVector())
 
     override fun write(buf: ByteBuf) {
-        buf.writeKey(dimension.location)
+        buf.writeResourceKey(dimension)
         buf.writeVector(position)
     }
 

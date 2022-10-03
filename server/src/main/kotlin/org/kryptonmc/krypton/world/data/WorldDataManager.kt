@@ -20,9 +20,8 @@ package org.kryptonmc.krypton.world.data
 
 import ca.spottedleaf.dataconverter.minecraft.datatypes.MCTypeRegistry
 import org.kryptonmc.krypton.KryptonPlatform
+import org.kryptonmc.krypton.util.DataConversion
 import org.kryptonmc.krypton.util.logger
-import org.kryptonmc.krypton.util.sendDataConversionWarning
-import org.kryptonmc.krypton.util.upgradeData
 import org.kryptonmc.nbt.io.TagCompression
 import org.kryptonmc.nbt.io.TagIO
 import java.nio.file.Files
@@ -82,11 +81,11 @@ class WorldDataManager(private val folder: Path, private val useDataConverter: B
             val version = if (data.contains("DataVersion", 99)) data.getInt("DataVersion") else -1
             // We won't upgrade data if use of the data converter is disabled.
             if (version < KryptonPlatform.worldVersion && !useDataConverter) {
-                LOGGER.sendDataConversionWarning("data for world at ${path.toAbsolutePath()}")
+                DataConversion.sendWarning(LOGGER, "data for world at ${path.toAbsolutePath()}")
                 error("Attempted to load old world data from version $version when data conversion is disabled!")
             }
 
-            PrimaryWorldData.parse(folder, data.upgradeData(MCTypeRegistry.LEVEL, version))
+            PrimaryWorldData.parse(folder, DataConversion.upgrade(data, MCTypeRegistry.LEVEL, version))
         } catch (exception: Exception) {
             LOGGER.error("Error whilst trying to read world at $folder!", exception)
             null

@@ -34,7 +34,7 @@ import java.util.function.Consumer
 
 class KryptonAttribute(override val type: AttributeType, private val callback: Consumer<KryptonAttribute>) : Attribute {
 
-    private val modifiersByOperation = mutableMapOf<ModifierOperation, MutableSet<AttributeModifier>>()
+    private val modifiersByOperation = HashMap<ModifierOperation, MutableSet<AttributeModifier>>()
     private val modifiersById = Object2ObjectArrayMap<UUID, AttributeModifier>()
     private val permanentModifiers = ObjectArraySet<AttributeModifier>()
     override val modifiers: Collection<AttributeModifier> = Collections.unmodifiableCollection(modifiersById.values)
@@ -63,7 +63,7 @@ class KryptonAttribute(override val type: AttributeType, private val callback: C
                 val operation = KryptonRegistries.MODIFIER_OPERATIONS.get(it.getInt("Operation")) ?: return@forEachCompound
                 val uuid = it.getUUID("UUID") ?: return@forEachCompound
                 val modifier = KryptonAttributeModifier(it.getString("Name"), uuid, it.getDouble("Amount"), operation)
-                modifiersById[modifier.uuid] = modifier
+                modifiersById.put(modifier.uuid, modifier)
                 modifiers(operation).add(modifier)
                 permanentModifiers.add(modifier)
             }
@@ -88,9 +88,10 @@ class KryptonAttribute(override val type: AttributeType, private val callback: C
         makeDirty()
     }
 
-    override fun modifier(uuid: UUID): AttributeModifier? = modifiersById[uuid]
+    override fun modifier(uuid: UUID): AttributeModifier? = modifiersById.get(uuid)
 
-    override fun modifiers(operation: ModifierOperation): MutableSet<AttributeModifier> = modifiersByOperation.getOrPut(operation) { mutableSetOf() }
+    override fun modifiers(operation: ModifierOperation): MutableSet<AttributeModifier> =
+        modifiersByOperation.computeIfAbsent(operation) { HashSet() }
 
     override fun addModifier(modifier: AttributeModifier) {
         require(modifiersById.putIfAbsent(modifier.uuid, modifier) == null) { "The modifier is already applied to this attribute!" }
@@ -100,7 +101,7 @@ class KryptonAttribute(override val type: AttributeType, private val callback: C
 
     override fun removeModifier(modifier: AttributeModifier) {
         modifiers(modifier.operation).remove(modifier)
-        modifiersById[modifier.uuid] = modifier
+        modifiersById.put(modifier.uuid, modifier)
         makeDirty()
     }
 

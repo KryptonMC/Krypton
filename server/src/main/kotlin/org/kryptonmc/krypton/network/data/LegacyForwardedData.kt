@@ -20,6 +20,7 @@ package org.kryptonmc.krypton.network.data
 
 import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.persistentListOf
+import org.kryptonmc.api.auth.ProfileProperty
 import org.kryptonmc.krypton.auth.KryptonProfileProperty
 import org.kryptonmc.krypton.util.MojangUUIDTypeAdapter
 import java.util.UUID
@@ -29,7 +30,7 @@ data class LegacyForwardedData(
     val originalAddress: String,
     override val forwardedAddress: String,
     override val uuid: UUID,
-    override val properties: PersistentList<KryptonProfileProperty>
+    override val properties: PersistentList<ProfileProperty>
 ) : ForwardedData {
 
     override val forwardedPort: Int
@@ -42,8 +43,8 @@ data class LegacyForwardedData(
             val split = string.split('\u0000')
             // We need to have the original IP, forwarded IP, and the UUID at bare minimum.
             if (split.size < 3) return null
-            val properties = if (split.size > 3) KryptonProfileProperty.Adapter.fromJsonList(split[3]) else persistentListOf()
-            return LegacyForwardedData(split[0], split[1], MojangUUIDTypeAdapter.fromString(split[2]), properties)
+            val properties = if (split.size > 3) KryptonProfileProperty.fromJsonList(split.get(3)) else persistentListOf()
+            return LegacyForwardedData(split.get(0), split.get(1), MojangUUIDTypeAdapter.fromString(split.get(2)), properties)
         }
     }
 }

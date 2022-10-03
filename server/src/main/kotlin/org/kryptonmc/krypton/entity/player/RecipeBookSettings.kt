@@ -58,7 +58,7 @@ class RecipeBookSettings private constructor(private val settings: MutableMap<Re
     private fun getSettings(type: RecipeBookType): TypeSettings = settings.getOrDefault(type, TypeSettings.ALL_FALSE)
 
     private fun setSettings(type: RecipeBookType, open: Boolean, filtered: Boolean) {
-        settings[type] = TypeSettings.from(open, filtered)
+        settings.put(type, TypeSettings.from(open, filtered))
     }
 
     @JvmRecord
@@ -97,21 +97,21 @@ class RecipeBookSettings private constructor(private val settings: MutableMap<Re
         @JvmStatic
         fun read(data: CompoundTag): RecipeBookSettings {
             val map = EnumMap<RecipeBookType, TypeSettings>(RecipeBookType::class.java)
-            TAG_FIELDS.forEach { (type, fields) -> map[type] = TypeSettings.from(data.getBoolean(fields.first), data.getBoolean(fields.second)) }
+            TAG_FIELDS.forEach { (type, fields) -> map.put(type, TypeSettings.from(data.getBoolean(fields.first), data.getBoolean(fields.second))) }
             return RecipeBookSettings(map)
         }
 
         @JvmStatic
         fun read(buf: ByteBuf): RecipeBookSettings {
             val map = EnumMap<RecipeBookType, TypeSettings>(RecipeBookType::class.java)
-            VALUES.forEach { map[it] = TypeSettings.from(buf.readBoolean(), buf.readBoolean()) }
+            VALUES.forEach { map.put(it, TypeSettings.from(buf.readBoolean(), buf.readBoolean())) }
             return RecipeBookSettings(map)
         }
 
         @JvmStatic
         private fun createDefaultStatesMap(): MutableMap<RecipeBookType, TypeSettings> {
             val map = EnumMap<RecipeBookType, TypeSettings>(RecipeBookType::class.java)
-            VALUES.forEach { map[it] = TypeSettings.ALL_FALSE }
+            VALUES.forEach { map.put(it, TypeSettings.ALL_FALSE) }
             return map
         }
     }

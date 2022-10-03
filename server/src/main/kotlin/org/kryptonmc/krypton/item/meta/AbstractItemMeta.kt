@@ -117,7 +117,7 @@ abstract class AbstractItemMeta<I : ItemMeta>(val data: CompoundTag) : ItemMeta 
     final override fun attributeModifiers(slot: EquipmentSlot): Map<AttributeType, Set<AttributeModifier>> {
         val modifiers = attributeModifiers.asSequence().filter { it.slot == slot }
         val result = persistentMapOf<AttributeType, MutableSet<AttributeModifier>>().builder()
-        modifiers.forEach { result.getOrPut(it.type) { mutableSetOf() }.add(it.modifier) }
+        modifiers.forEach { result.computeIfAbsent(it.type) { HashSet() }.add(it.modifier) }
         return result.build()
     }
 
@@ -130,7 +130,7 @@ abstract class AbstractItemMeta<I : ItemMeta>(val data: CompoundTag) : ItemMeta 
     final override fun withAttributeModifiers(attributes: Set<ItemAttribute>): I = copy(data.setAttributeModifiers(attributes))
 
     final override fun withAttributeModifiers(type: AttributeType, slot: EquipmentSlot, modifiers: Set<AttributeModifier>): I =
-        withAttributeModifiers(modifiers.mapTo(mutableSetOf()) { KryptonItemAttribute(type, slot, it) })
+        withAttributeModifiers(modifiers.mapTo(HashSet()) { KryptonItemAttribute(type, slot, it) })
 
     final override fun addAttributeModifiers(type: AttributeType, slot: EquipmentSlot, modifiers: Iterable<AttributeModifier>): I {
         val newAttributes = modifiers.map { KryptonItemAttribute(type, slot, it) }

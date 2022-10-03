@@ -112,7 +112,7 @@ class KryptonTeam(
         private var nameTags = Visibility.ALWAYS
         private var deathMessages = Visibility.ALWAYS
         private var collisionRule = CollisionRule.ALWAYS
-        private val members = mutableSetOf<Component>()
+        private val members = HashSet<Component>()
 
         constructor(team: KryptonTeam) : this(team.name) {
             scoreboard = team.scoreboard

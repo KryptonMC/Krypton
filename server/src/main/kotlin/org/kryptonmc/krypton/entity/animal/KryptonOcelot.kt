@@ -23,10 +23,12 @@ import org.kryptonmc.api.entity.animal.Ocelot
 import org.kryptonmc.api.entity.attribute.AttributeTypes
 import org.kryptonmc.api.item.ItemStack
 import org.kryptonmc.api.item.ItemTypes
+import org.kryptonmc.krypton.entity.KryptonMob
+import org.kryptonmc.krypton.entity.attribute.AttributeSupplier
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.world.KryptonWorld
 
-class KryptonOcelot(world: KryptonWorld) : KryptonAnimal(world, EntityTypes.OCELOT, ATTRIBUTES), Ocelot {
+class KryptonOcelot(world: KryptonWorld) : KryptonAnimal(world, EntityTypes.OCELOT), Ocelot {
 
     override var isTrusting: Boolean
         get() = data.get(MetadataKeys.Ocelot.TRUSTING)
@@ -40,11 +42,12 @@ class KryptonOcelot(world: KryptonWorld) : KryptonAnimal(world, EntityTypes.OCEL
 
     companion object {
 
-        private val ATTRIBUTES = attributes()
+        private val TEMPT_INGREDIENTS = setOf(ItemTypes.COD, ItemTypes.SALMON)
+
+        @JvmStatic
+        fun attributes(): AttributeSupplier.Builder = KryptonMob.attributes()
             .add(AttributeTypes.MAX_HEALTH, 10.0)
             .add(AttributeTypes.MOVEMENT_SPEED, 0.3)
             .add(AttributeTypes.ATTACK_DAMAGE, 3.0)
-            .build()
-        private val TEMPT_INGREDIENTS = setOf(ItemTypes.COD, ItemTypes.SALMON)
     }
 }

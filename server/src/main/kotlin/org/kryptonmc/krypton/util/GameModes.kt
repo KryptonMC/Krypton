@@ -31,8 +31,8 @@ object GameModes {
     fun fromId(id: Int): GameMode? = VALUES.getOrNull(id)
 
     @JvmStatic
-    fun fromName(name: String): GameMode? = BY_NAME[name]
+    fun fromName(name: String): GameMode? = BY_NAME.get(name)
 
     @JvmStatic
-    fun fromAbbreviation(abbreviation: String): GameMode? = BY_ABBREVIATION[abbreviation]
+    fun fromAbbreviation(abbreviation: String): GameMode? = BY_ABBREVIATION.get(abbreviation)
 }

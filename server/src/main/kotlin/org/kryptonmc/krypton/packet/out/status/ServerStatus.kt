@@ -24,13 +24,13 @@ import com.google.gson.stream.JsonWriter
 import me.bardy.gsonkt.getAdapter
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer
+import org.kryptonmc.api.auth.GameProfile
 import org.kryptonmc.krypton.KryptonPlatform
-import org.kryptonmc.krypton.auth.KryptonGameProfile
 
 @JvmRecord
 data class ServerStatus(val motd: Component, val players: Players, val favicon: String?) {
 
-    class Players(val max: Int, var online: Int, var sample: Array<KryptonGameProfile> = emptyArray()) {
+    class Players(val max: Int, var online: Int, var sample: Array<GameProfile> = emptyArray()) {
 
         companion object : TypeAdapter<Players>() {
 

@@ -51,7 +51,7 @@ class PluginClassLoader(vararg urls: URL) : URLClassLoader(urls) {
     private fun loadClass0(name: String, resolve: Boolean, checkOther: Boolean): Class<*> {
         try {
             return super.loadClass(name, resolve)
-        } catch (ignored: ClassNotFoundException) {
+        } catch (_: ClassNotFoundException) {
             // ignored - we'll try others
         }
 
@@ -60,7 +60,7 @@ class PluginClassLoader(vararg urls: URL) : URLClassLoader(urls) {
             if (it == this) return@forEach
             try {
                 return it.loadClass0(name, resolve, false)
-            } catch (ignored: ClassNotFoundException) {
+            } catch (_: ClassNotFoundException) {
                 // oh well, we'll try everyone else first
             }
         }

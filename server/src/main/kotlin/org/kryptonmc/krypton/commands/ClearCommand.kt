@@ -24,7 +24,7 @@ import org.kryptonmc.api.command.Sender
 import org.kryptonmc.krypton.command.InternalCommand
 import org.kryptonmc.krypton.command.argument
 import org.kryptonmc.krypton.command.argument.argument
-import org.kryptonmc.krypton.command.arguments.entities.EntityArgument
+import org.kryptonmc.krypton.command.arguments.entities.EntityArgumentType
 import org.kryptonmc.krypton.command.arguments.entities.entityArgument
 import org.kryptonmc.krypton.command.arguments.item.ItemStackPredicate
 import org.kryptonmc.krypton.command.arguments.item.ItemStackPredicateArgument
@@ -34,6 +34,7 @@ import org.kryptonmc.krypton.command.runs
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.item.KryptonItemStack
 import org.kryptonmc.krypton.packet.out.play.PacketOutSetContainerContent
+import java.util.function.Consumer
 
 object ClearCommand : InternalCommand {
 
@@ -41,10 +42,10 @@ object ClearCommand : InternalCommand {
         dispatcher.register(literal("clear") {
             permission(KryptonPermission.CLEAR)
             runs {
-                if (it.source !is KryptonPlayer) return@runs
-                clear(listOf(it.source as KryptonPlayer), it.source)
+                val player = it.source as? KryptonPlayer ?: return@runs
+                clear(listOf(player), player)
             }
-            argument("targets", EntityArgument.players()) {
+            argument("targets", EntityArgumentType.players()) {
                 runs { clear(it.entityArgument("targets").players(it.source), it.source) }
                 argument("item", ItemStackPredicateArgument) {
                     runs { clear(it.entityArgument("targets").players(it.source), it.source, it.argument("item")) }
@@ -58,13 +59,13 @@ object ClearCommand : InternalCommand {
     private fun clear(targets: List<KryptonPlayer>, sender: Sender, predicate: ItemStackPredicate = ItemStackPredicate { true }, maxCount: Int = -1) {
         val amount = if (maxCount == -1) "all" else maxCount.toString()
         if (targets.size == 1) {
-            val target = targets[0]
+            val target = targets.get(0)
             clear(target, predicate, maxCount)
             sender.sendMessage(Component.translatable("commands.clear.success.single", Component.text(amount), target.displayName))
             target.session.send(PacketOutSetContainerContent(target.inventory, target.inventory.mainHand))
         } else {
             targets.forEach { target ->
-                target.inventory.items.forEachIndexed { index, item -> if (predicate(item)) target.inventory[index] = KryptonItemStack.EMPTY }
+                target.inventory.items.forEachIndexed { index, item -> if (predicate(item)) target.inventory.set(index, KryptonItemStack.EMPTY) }
                 target.session.send(PacketOutSetContainerContent(target.inventory, target.inventory.mainHand))
             }
             val targetSize = Component.text(targets.size.toString())
@@ -78,15 +79,15 @@ object ClearCommand : InternalCommand {
         var remaining = maxCount
 
         // Clear inventory items
-        remaining = clearList(predicate, remaining, inventory.items) { index, item -> inventory.items[index] = item }
+        remaining = clearList(predicate, remaining, inventory.items)
         if (remaining == 0) return
 
         // Clear armor items
-        remaining = clearList(predicate, remaining, inventory.armor) { index, item -> inventory.armor[index] = item }
+        remaining = clearList(predicate, remaining, inventory.armor)
         if (remaining == 0) return
 
         // Clear crafting items
-        remaining = clearList(predicate, remaining, inventory.crafting) { index, item -> inventory.crafting[index] = item }
+        remaining = clearList(predicate, remaining, inventory.crafting)
         if (remaining == 0) return
 
         // Clear offhand
@@ -94,15 +95,10 @@ object ClearCommand : InternalCommand {
     }
 
     @JvmStatic
-    private fun clearList(
-        predicate: ItemStackPredicate,
-        originalRemaining: Int,
-        items: List<KryptonItemStack>,
-        setItem: (Int, KryptonItemStack) -> Unit
-    ): Int {
+    private fun clearList(predicate: ItemStackPredicate, originalRemaining: Int, items: MutableList<KryptonItemStack>): Int {
         var remaining = originalRemaining
         items.forEachIndexed { index, item ->
-            val newRemaining = clearItem(predicate, remaining, item) { setItem(index, it) }
+            val newRemaining = clearItem(predicate, remaining, item) { items.set(index, it) }
             if (newRemaining == -1) return@forEachIndexed
             if (newRemaining == 0) return 0
             remaining = newRemaining
@@ -111,19 +107,19 @@ object ClearCommand : InternalCommand {
     }
 
     @JvmStatic
-    private fun clearItem(predicate: ItemStackPredicate, remaining: Int, item: KryptonItemStack, setItem: (KryptonItemStack) -> Unit): Int {
+    private fun clearItem(predicate: ItemStackPredicate, remaining: Int, item: KryptonItemStack, setItem: Consumer<KryptonItemStack>): Int {
         if (!predicate(item)) return -1
         return when {
             remaining == -1 -> {
-                setItem(KryptonItemStack.EMPTY)
+                setItem.accept(KryptonItemStack.EMPTY)
                 remaining
             }
             remaining > item.amount -> {
-                setItem(KryptonItemStack.EMPTY)
+                setItem.accept(KryptonItemStack.EMPTY)
                 remaining - item.amount
             }
             else -> {
-                setItem(item.shrink(remaining))
+                setItem.accept(item.shrink(remaining))
                 0
             }
         }

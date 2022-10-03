@@ -39,7 +39,6 @@ object GameProfileArgument : ArgumentType<EntityQuery> {
         while (reader.canRead() && reader.peek() != CommandDispatcher.ARGUMENT_SEPARATOR_CHAR) {
             reader.skip()
         }
-        val string = reader.string.substring(position, reader.cursor)
-        return EntityQuery(emptyList(), EntityQuery.Selector.PLAYER, string)
+        return EntityQuery(emptyList(), EntityQuery.Selector.PLAYER, reader.string.substring(position, reader.cursor))
     }
 }

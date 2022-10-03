@@ -20,12 +20,13 @@ package org.kryptonmc.krypton.auth.requests
 
 import com.github.benmanes.caffeine.cache.AsyncLoadingCache
 import com.github.benmanes.caffeine.cache.Caffeine
+import org.kryptonmc.api.auth.GameProfile
 import org.kryptonmc.krypton.auth.KryptonGameProfile
 import org.kryptonmc.krypton.util.MojangUUIDTypeAdapter
 import java.net.URI
 import java.net.http.HttpClient
 import java.net.http.HttpRequest
-import java.net.http.HttpResponse
+import java.net.http.HttpResponse.BodyHandlers
 import java.time.Duration
 import java.util.UUID
 import java.util.concurrent.CompletableFuture
@@ -38,31 +39,30 @@ object ApiService {
 
     private const val USERNAME_BASE_URL = "https://api.mojang.com/users/profiles/minecraft/"
     private const val UUID_BASE_URL = "https://sessionserver.mojang.com/session/minecraft/profile/"
+    private val EXPIRE = Duration.ofMinutes(5)
 
     private val client = HttpClient.newHttpClient()
-    private val usernameCache: AsyncLoadingCache<String, KryptonGameProfile> = Caffeine.newBuilder()
-        .expireAfterWrite(Duration.ofMinutes(5))
-        .maximumSize(128)
-        .buildAsync { name, executor -> loadProfile(USERNAME_BASE_URL + name, executor) }
-    private val uuidCache: AsyncLoadingCache<UUID, KryptonGameProfile> = Caffeine.newBuilder()
-        .expireAfterWrite(Duration.ofMinutes(5))
-        .maximumSize(128)
-        .buildAsync { uuid, executor -> loadProfile(UUID_BASE_URL + MojangUUIDTypeAdapter.toString(uuid), executor) }
+    private val usernameCache = createCache<String> { USERNAME_BASE_URL + it }
+    private val uuidCache = createCache<UUID> { UUID_BASE_URL + MojangUUIDTypeAdapter.toString(it) }
 
     /**
      * Requests the profile with the given [name] from the Mojang API.
      */
     @JvmStatic
-    fun profile(name: String): CompletableFuture<KryptonGameProfile?> = usernameCache[name]
+    fun profile(name: String): CompletableFuture<GameProfile?> = usernameCache.get(name)
 
     /**
      * Requests the profile with the given [uuid] from the Mojang API.
      */
     @JvmStatic
-    fun profile(uuid: UUID): CompletableFuture<KryptonGameProfile?> = uuidCache[uuid]
+    fun profile(uuid: UUID): CompletableFuture<GameProfile?> = uuidCache.get(uuid)
 
     @JvmStatic
-    private fun loadProfile(url: String, executor: Executor): CompletableFuture<KryptonGameProfile?> =
-        client.sendAsync(HttpRequest.newBuilder(URI(url)).build(), HttpResponse.BodyHandlers.ofString())
-            .thenApplyAsync({ KryptonGameProfile.Adapter.fromJson(it.body()) }, executor)
+    private fun loadProfile(url: String, executor: Executor): CompletableFuture<GameProfile?> =
+        client.sendAsync(HttpRequest.newBuilder(URI(url)).build(), BodyHandlers.ofString())
+            .thenApplyAsync({ KryptonGameProfile.fromJson(it.body()) }, executor)
+
+    @JvmStatic
+    private inline fun <K> createCache(crossinline urlCreator: (K) -> String): AsyncLoadingCache<K, GameProfile> =
+        Caffeine.newBuilder().expireAfterWrite(EXPIRE).maximumSize(128).buildAsync { key, executor -> loadProfile(urlCreator(key), executor) }
 }

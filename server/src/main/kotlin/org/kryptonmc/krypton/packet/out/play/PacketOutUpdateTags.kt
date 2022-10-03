@@ -27,8 +27,8 @@ import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.tags.TagSerializer
 import org.kryptonmc.krypton.util.readKey
 import org.kryptonmc.krypton.util.readMap
-import org.kryptonmc.krypton.util.writeKey
 import org.kryptonmc.krypton.util.writeMap
+import org.kryptonmc.krypton.util.writeResourceKey
 
 @JvmRecord
 data class PacketOutUpdateTags(val tags: Map<ResourceKey<TagType<*>>, TagSerializer.NetworkPayload>) : Packet {
@@ -36,7 +36,7 @@ data class PacketOutUpdateTags(val tags: Map<ResourceKey<TagType<*>>, TagSeriali
     constructor(buf: ByteBuf) : this(buf.readMap({ ResourceKey.of(ResourceKeys.TAG_TYPES, it.readKey()) }, TagSerializer::NetworkPayload))
 
     override fun write(buf: ByteBuf) {
-        buf.writeMap(tags, { _, key -> buf.writeKey(key.location) }, { _, payload -> payload.write(buf) })
+        buf.writeMap(tags, ByteBuf::writeResourceKey) { _, payload -> payload.write(buf) }
     }
 
     companion object {

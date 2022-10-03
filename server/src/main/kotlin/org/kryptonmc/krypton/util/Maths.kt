@@ -20,11 +20,18 @@ package org.kryptonmc.krypton.util
 
 import com.google.common.math.IntMath
 import org.kryptonmc.krypton.world.chunk.ChunkPosition
+import org.spongepowered.math.GenericMath
+import java.util.UUID
 import java.util.function.IntPredicate
 import kotlin.math.sqrt
+import kotlin.random.Random
 
 object Maths {
 
+    private val MULTIPLY_DE_BRUIJN_BIT_POSITION = intArrayOf(
+        0, 1, 28, 2, 29, 14, 24, 3, 30, 22, 20, 15, 25, 17, 4, 8,
+        31, 27, 13, 23, 21, 19, 16, 7, 26, 12, 18, 6, 11, 5, 10, 9
+    )
     const val EPSILON: Float = 1.0E-5F
 
     /**
@@ -57,7 +64,7 @@ object Maths {
         val index = id - 1
 
         // compute radius (inverse arithmetic sum of 8 + 16 + 24 + ...)
-        val radius = ((sqrt(index + 1.0) - 1) / 2).floor() + 1
+        val radius = floor((sqrt(index + 1.0) - 1) / 2) + 1
 
         // compute total point on radius -1 (arithmetic sum of 8 + 16 + 24 + ...)
         val p = 8 * radius * (radius - 1) / 2
@@ -115,5 +122,72 @@ object Maths {
         var seed = (x * 3129871).toLong() xor (y.toLong() * 116129781L) xor z.toLong()
         seed = seed * seed * 42317861L + seed * 11L
         return seed shr 16
+    }
+
+    @JvmStatic
+    fun floor(value: Float): Int {
+        val result = value.toInt()
+        return if (value < result) result - 1 else result
+    }
+
+    @JvmStatic
+    fun floor(value: Double): Int {
+        val result = value.toInt()
+        return if (value < result) result - 1 else result
+    }
+
+    @JvmStatic
+    fun ceil(value: Double): Int {
+        val result = value.toInt()
+        return if (value > result) result + 1 else result
+    }
+
+    @JvmStatic
+    fun ceillog2(value: Int): Int {
+        val temp = if (GenericMath.isPowerOfTwo(value)) value else GenericMath.roundUpPow2(value)
+        return MULTIPLY_DE_BRUIJN_BIT_POSITION[(temp.toLong() * 125613361L shr 27 and 31).toInt()]
+    }
+
+    @JvmStatic
+    fun clamp(value: Int, low: Int, high: Int): Int {
+        if (value < low) return low
+        if (value > high) return high
+        return value
+    }
+
+    @JvmStatic
+    fun clamp(value: Float, low: Float, high: Float): Float {
+        if (value < low) return low
+        if (value > high) return high
+        return value
+    }
+
+    @JvmStatic
+    fun clamp(value: Double, low: Double, high: Double): Double {
+        if (value < low) return low
+        if (value > high) return high
+        return value
+    }
+
+    @JvmStatic
+    fun nextInt(random: Random, low: Int, high: Int): Int {
+        if (low >= high) return low
+        return random.nextInt(high - low + 1) + low
+    }
+
+    @JvmStatic
+    fun nextFloat(random: Random, low: Float, high: Float): Float {
+        if (low >= high) return low
+        return random.nextFloat() * (high - low) + low
+    }
+
+    @JvmStatic
+    fun randomBetween(random: Random, min: Int, max: Int): Int = random.nextInt(max - min + 1) + min
+
+    @JvmStatic
+    fun createInsecureUUID(random: Random): UUID {
+        val least = random.nextLong() and -61441L or 16384L
+        val most = random.nextLong() and 4611686018427387903L or Long.MIN_VALUE
+        return UUID(least, most)
     }
 }

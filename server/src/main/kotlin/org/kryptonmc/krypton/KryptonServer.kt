@@ -93,13 +93,13 @@ class KryptonServer(
     override val scoreboard: KryptonScoreboard = KryptonScoreboard(this)
 
     override val worldManager: KryptonWorldManager = KryptonWorldManager(this, worldFolder)
-    override val commandManager: KryptonCommandManager = KryptonCommandManager
-    override val pluginManager: KryptonPluginManager = KryptonPluginManager
+    override val commandManager: KryptonCommandManager = KryptonCommandManager()
+    override val pluginManager: KryptonPluginManager = KryptonPluginManager()
     override val eventManager: KryptonEventManager = KryptonEventManager(pluginManager)
     override val servicesManager: KryptonServicesManager = KryptonServicesManager(this)
     override val registryManager: KryptonRegistryManager = KryptonRegistryManager
     override val tagManager: KryptonTagManager = KryptonTagManager
-    override val scheduler: KryptonScheduler = KryptonScheduler()
+    override val scheduler: KryptonScheduler = KryptonScheduler(pluginManager)
     override val factoryProvider: KryptonFactoryProvider = KryptonFactoryProvider
     override val userManager: KryptonUserManager = KryptonUserManager(this)
 
@@ -287,9 +287,9 @@ class KryptonServer(
         return maxDistance <= config.world.spawnProtectionRadius
     }
 
-    override fun player(uuid: UUID): KryptonPlayer? = playerManager.playersByUUID[uuid]
+    override fun player(uuid: UUID): KryptonPlayer? = playerManager.playersByUUID.get(uuid)
 
-    override fun player(name: String): KryptonPlayer? = playerManager.playersByName[name]
+    override fun player(name: String): KryptonPlayer? = playerManager.playersByName.get(name)
 
     override fun audiences(): Iterable<Audience> = players.asSequence().plus(console).asIterable()
 

@@ -25,14 +25,12 @@ class KryptonLegacyComponentSerializerProvider : LegacyComponentSerializer.Provi
 
     override fun legacy(): Consumer<LegacyComponentSerializer.Builder> = Consumer {}
 
-    override fun legacyAmpersand(): LegacyComponentSerializer = LegacyComponentSerializer.builder()
-        .character(LegacyComponentSerializer.AMPERSAND_CHAR)
-        .hexCharacter(LegacyComponentSerializer.HEX_CHAR)
-        .flattener(KryptonAdventure.FLATTENER)
-        .build()
+    override fun legacyAmpersand(): LegacyComponentSerializer = createSerializer(LegacyComponentSerializer.AMPERSAND_CHAR)
 
-    override fun legacySection(): LegacyComponentSerializer = LegacyComponentSerializer.builder()
-        .character(LegacyComponentSerializer.SECTION_CHAR)
+    override fun legacySection(): LegacyComponentSerializer = createSerializer(LegacyComponentSerializer.SECTION_CHAR)
+
+    private fun createSerializer(char: Char): LegacyComponentSerializer = LegacyComponentSerializer.builder()
+        .character(char)
         .hexCharacter(LegacyComponentSerializer.HEX_CHAR)
         .flattener(KryptonAdventure.FLATTENER)
         .build()

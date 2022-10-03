@@ -28,13 +28,13 @@ class AttributeSupplier(private val attributes: ImmutableMap<AttributeType, Kryp
     fun value(type: AttributeType): Double = attribute(type).value
 
     fun create(type: AttributeType, callback: (KryptonAttribute) -> Unit): KryptonAttribute {
-        val attribute = attributes[type] ?: return KryptonAttribute(type, callback)
+        val attribute = attributes.get(type) ?: return KryptonAttribute(type, callback)
         val copy = KryptonAttribute(type, callback)
         copy.replaceFrom(attribute)
         return copy
     }
 
-    private fun attribute(type: AttributeType): KryptonAttribute = requireNotNull(attributes[type]) { "Cannot find attribute ${type.key()}!" }
+    private fun attribute(type: AttributeType): KryptonAttribute = requireNotNull(attributes.get(type)) { "Cannot find attribute ${type.key()}!" }
 
     class Builder {
 
@@ -54,7 +54,7 @@ class AttributeSupplier(private val attributes: ImmutableMap<AttributeType, Kryp
             val attribute = KryptonAttribute(type) {
                 if (frozen) throw UnsupportedOperationException("Attempted to change value for default attribute ${type.key()}!")
             }
-            attributes[type] = attribute
+            attributes.put(type, attribute)
             return attribute
         }
     }

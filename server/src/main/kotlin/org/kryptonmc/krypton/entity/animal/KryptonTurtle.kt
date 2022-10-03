@@ -25,11 +25,13 @@ import org.kryptonmc.api.entity.animal.Turtle
 import org.kryptonmc.api.entity.attribute.AttributeTypes
 import org.kryptonmc.api.item.ItemStack
 import org.kryptonmc.api.item.ItemTypes
+import org.kryptonmc.krypton.entity.KryptonMob
+import org.kryptonmc.krypton.entity.attribute.AttributeSupplier
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.spongepowered.math.vector.Vector3i
 
-class KryptonTurtle(world: KryptonWorld) : KryptonAnimal(world, EntityTypes.TURTLE, ATTRIBUTES), Turtle {
+class KryptonTurtle(world: KryptonWorld) : KryptonAnimal(world, EntityTypes.TURTLE), Turtle {
 
     override var hasEgg: Boolean
         get() = data.get(MetadataKeys.Turtle.HAS_EGG)
@@ -70,6 +72,9 @@ class KryptonTurtle(world: KryptonWorld) : KryptonAnimal(world, EntityTypes.TURT
 
     companion object {
 
-        private val ATTRIBUTES = attributes().add(AttributeTypes.MAX_HEALTH, 30.0).add(AttributeTypes.MOVEMENT_SPEED, 0.25).build()
+        @JvmStatic
+        fun attributes(): AttributeSupplier.Builder = KryptonMob.attributes()
+            .add(AttributeTypes.MAX_HEALTH, 30.0)
+            .add(AttributeTypes.MOVEMENT_SPEED, 0.25)
     }
 }

@@ -28,7 +28,7 @@ import org.kryptonmc.api.entity.player.Player
 import org.kryptonmc.krypton.command.InternalCommand
 import org.kryptonmc.krypton.command.argument
 import org.kryptonmc.krypton.command.argument.argument
-import org.kryptonmc.krypton.command.arguments.entities.EntityArgument
+import org.kryptonmc.krypton.command.arguments.entities.EntityArgumentType
 import org.kryptonmc.krypton.command.arguments.entities.entityArgument
 import org.kryptonmc.krypton.command.literal
 import org.kryptonmc.krypton.command.permission
@@ -40,10 +40,10 @@ object TitleCommand : InternalCommand {
     override fun register(dispatcher: CommandDispatcher<Sender>) {
         dispatcher.register(literal("title") {
             permission(KryptonPermission.TITLE)
-            argument("targets", EntityArgument.players()) {
-                title("actionbar") { player, bar -> player.sendActionBar(bar) }
-                title("title") { player, title -> player.sendTitle(title) }
-                title("subtitle") { player, subtitle -> player.sendSubtitle(subtitle) }
+            argument("targets", EntityArgumentType.players()) {
+                title("actionbar", KryptonPlayer::sendActionBar)
+                title("title", KryptonPlayer::sendTitle)
+                title("subtitle", KryptonPlayer::sendSubtitle)
                 clearOrReset("clear", "cleared", Player::clearTitle)
                 clearOrReset("reset", "reset", Player::resetTitle)
                 times()
@@ -52,23 +52,25 @@ object TitleCommand : InternalCommand {
     }
 }
 
-private fun LiteralArgumentBuilder<Sender>.title(name: String, action: (KryptonPlayer, Component) -> Unit): LiteralArgumentBuilder<Sender> =
-    literal(name) {
-        argument("message", StringArgumentType.string()) {
-            runs { context ->
-                val sender = context.source as? KryptonPlayer ?: return@runs
-                val targets = context.entityArgument("targets").players(sender)
-                val message = Component.text(context.argument<String>("message"))
-                targets.forEach { action(it, message) }
-                sender.sendFeedback("commands.title.show.$name", targets.size)
-            }
+private inline fun LiteralArgumentBuilder<Sender>.title(
+    name: String,
+    crossinline action: (KryptonPlayer, Component) -> Unit
+): LiteralArgumentBuilder<Sender> = literal(name) {
+    argument("message", StringArgumentType.string()) {
+        runs { context ->
+            val sender = context.source as? KryptonPlayer ?: return@runs
+            val targets = context.entityArgument("targets").players(sender)
+            val message = Component.text(context.argument<String>("message"))
+            targets.forEach { action(it, message) }
+            sender.sendFeedback("commands.title.show.$name", targets.size)
         }
     }
+}
 
-private fun LiteralArgumentBuilder<Sender>.clearOrReset(
+private inline fun LiteralArgumentBuilder<Sender>.clearOrReset(
     name: String,
     translationKey: String,
-    action: (KryptonPlayer) -> Unit
+    crossinline action: (KryptonPlayer) -> Unit
 ): LiteralArgumentBuilder<Sender> = literal(name) {
     runs { context ->
         val sender = context.source as? KryptonPlayer ?: return@runs

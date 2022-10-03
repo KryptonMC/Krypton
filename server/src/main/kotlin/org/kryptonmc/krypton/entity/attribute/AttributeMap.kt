@@ -26,7 +26,6 @@ import org.kryptonmc.nbt.ListTag
 import org.kryptonmc.nbt.list
 import java.util.UUID
 
-@Suppress("UNCHECKED_CAST")
 class AttributeMap(private val supplier: AttributeSupplier) {
 
     private val attributes = mutableMapOf<AttributeType, KryptonAttribute>()
@@ -36,7 +35,7 @@ class AttributeMap(private val supplier: AttributeSupplier) {
 
     fun get(type: AttributeType): KryptonAttribute = attributes.computeIfAbsent(type) { supplier.create(type, ::onModify) }
 
-    fun value(type: AttributeType): Double = attributes[type]?.value ?: supplier.value(type)
+    fun value(type: AttributeType): Double = attributes.get(type)?.value ?: supplier.value(type)
 
     fun load(list: ListTag) {
         list.forEachCompound {

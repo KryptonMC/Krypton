@@ -26,5 +26,5 @@ import org.kryptonmc.krypton.util.KryptonDataLoader
 
 object SoundLoader : KryptonDataLoader<SoundEvent>("sounds", Registries.SOUND_EVENT) {
 
-    override fun create(key: Key, value: JsonObject): SoundEvent = KryptonSoundEvent(key, value["range"]?.asFloat ?: 16F)
+    override fun create(key: Key, value: JsonObject): SoundEvent = KryptonSoundEvent(key, value.get("range")?.asFloat ?: 16F)
 }

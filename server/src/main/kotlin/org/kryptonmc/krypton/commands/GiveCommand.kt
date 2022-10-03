@@ -25,7 +25,7 @@ import org.kryptonmc.api.command.Sender
 import org.kryptonmc.api.effect.sound.SoundEvents
 import org.kryptonmc.krypton.command.InternalCommand
 import org.kryptonmc.krypton.command.argument
-import org.kryptonmc.krypton.command.arguments.entities.EntityArgument
+import org.kryptonmc.krypton.command.arguments.entities.EntityArgumentType
 import org.kryptonmc.krypton.command.arguments.entities.entityArgument
 import org.kryptonmc.krypton.command.arguments.item.ItemStackArgument
 import org.kryptonmc.krypton.command.arguments.item.ItemStackArgumentType
@@ -42,7 +42,7 @@ object GiveCommand : InternalCommand {
     override fun register(dispatcher: CommandDispatcher<Sender>) {
         dispatcher.register(literal("give") {
             permission(KryptonPermission.GIVE)
-            argument("targets", EntityArgument.players()) {
+            argument("targets", EntityArgumentType.players()) {
                 argument("item", ItemStackArgumentType) {
                     runs { give(it.entityArgument("targets").players(it.source), it.itemStackArgument("item"), 1) }
                     argument("count", IntegerArgumentType.integer(1)) {

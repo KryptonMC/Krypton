@@ -44,10 +44,7 @@ class ParticleEffectTests {
     @Test
     fun `test color values are cut off and disallowed in color builder`() {
         Bootstrap.preload()
-        val dust = ParticleTypes.DUST.builder()
-            .quantity(1)
-            .longDistance(true)
-            .offset(Vector3d.RIGHT)
+        val dust = ParticleTypes.DUST.builder().quantity(1).longDistance(true).offset(Vector3d.RIGHT)
 
         // Check HSB values with any above 1 are thrown out
         assertThrows<IllegalArgumentException> { dust.hsv(1.2F, 0.5F, 0.3F) }

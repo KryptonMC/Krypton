@@ -50,13 +50,13 @@ import java.util.UUID
  * @param players a list of players, can be empty if not required by the [action]
  */
 @JvmRecord
-data class PacketOutPlayerInfo(val action: Action, val players: List<PlayerData> = emptyList()) : Packet {
+data class PacketOutPlayerInfo(val action: Action, val players: List<PlayerData>) : Packet {
 
     constructor(action: Action, vararg players: KryptonPlayer) : this(action, players.map(PlayerData::from))
 
     constructor(buf: ByteBuf) : this(buf, buf.readEnum<Action>())
 
-    private constructor(buf: ByteBuf, action: Action) : this(action, buf.readList { action.read(buf) })
+    private constructor(buf: ByteBuf, action: Action) : this(action, buf.readList(action::read))
 
     override fun write(buf: ByteBuf) {
         buf.writeVarInt(action.ordinal)
@@ -164,4 +164,4 @@ data class PacketOutPlayerInfo(val action: Action, val players: List<PlayerData>
 
 private fun ByteBuf.readGameMode(): GameMode? = GameModes.fromId(readVarInt())
 
-private fun ByteBuf.readNullableComponent(): Component? = readNullable { readComponent() }
+private fun ByteBuf.readNullableComponent(): Component? = readNullable(ByteBuf::readComponent)

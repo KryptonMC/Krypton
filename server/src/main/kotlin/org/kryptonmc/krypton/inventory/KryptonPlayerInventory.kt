@@ -60,16 +60,16 @@ class KryptonPlayerInventory(override val owner: KryptonPlayer) : KryptonInvento
         set(value) = setArmor(ArmorSlot.BOOTS, value)
 
     override val mainHand: KryptonItemStack
-        get() = items[heldSlot]
+        get() = items.get(heldSlot)
     override var offHand: KryptonItemStack = KryptonItemStack.EMPTY
 
     override var heldSlot: Int = 0
 
-    override fun armor(slot: ArmorSlot): KryptonItemStack = armor[slot.ordinal]
+    override fun armor(slot: ArmorSlot): KryptonItemStack = armor.get(slot.ordinal)
 
     override fun setArmor(slot: ArmorSlot, item: ItemStack) {
         if (item !is KryptonItemStack) return
-        armor[slot.ordinal] = item
+        armor.set(slot.ordinal, item)
     }
 
     override fun heldItem(hand: Hand): KryptonItemStack {
@@ -90,13 +90,13 @@ class KryptonPlayerInventory(override val owner: KryptonPlayer) : KryptonInvento
         set(index, item)
     }
 
-    operator fun set(index: Int, item: KryptonItemStack) {
+    fun set(index: Int, item: KryptonItemStack) {
         when (index) {
-            0 -> crafting[CRAFTING_SLOT] = item
-            in 1..CRAFTING_GRID_SIZE -> crafting[index - 1] = item
-            in CRAFTING_SIZE until HOTBAR_SIZE -> armor[index - CRAFTING_SIZE] = item
-            in HOTBAR_SIZE until INVENTORY_SIZE -> items[index] = item
-            in INVENTORY_SIZE until OFFHAND_SLOT -> items[index - INVENTORY_SIZE] = item
+            0 -> crafting.set(CRAFTING_SLOT, item)
+            in 1..CRAFTING_GRID_SIZE -> crafting.set(index - 1, item)
+            in CRAFTING_SIZE until HOTBAR_SIZE -> armor.set(index - CRAFTING_SIZE, item)
+            in HOTBAR_SIZE until INVENTORY_SIZE -> items.set(index, item)
+            in INVENTORY_SIZE until OFFHAND_SLOT -> items.set(index - INVENTORY_SIZE, item)
             OFFHAND_SLOT -> offHand = item
         }
         owner.session.send(PacketOutSetContainerSlot(id, incrementStateId(), index, item))
@@ -104,22 +104,22 @@ class KryptonPlayerInventory(override val owner: KryptonPlayer) : KryptonInvento
 
     override fun write(buf: ByteBuf) {
         buf.writeVarInt(SIZE)
-        buf.writeItem(crafting[CRAFTING_SIZE - 1])
+        buf.writeItem(crafting.get(CRAFTING_SIZE - 1))
         for (i in 0 until CRAFTING_GRID_SIZE) {
-            buf.writeItem(crafting[i])
+            buf.writeItem(crafting.get(i))
         }
-        armor.forEach { buf.writeItem(it) }
+        armor.forEach(buf::writeItem)
         for (i in 0 until MAIN_SIZE) {
-            buf.writeItem(items[i + HOTBAR_SIZE])
+            buf.writeItem(items.get(i + HOTBAR_SIZE))
         }
         for (i in 0 until HOTBAR_SIZE) {
-            buf.writeItem(items[i])
+            buf.writeItem(items.get(i))
         }
         buf.writeItem(offHand)
     }
 
     fun getDestroySpeed(state: KryptonBlockState): Float {
-        val item = items[heldSlot]
+        val item = items.get(heldSlot)
         return item.type.handler().destroySpeed(item, state)
     }
 
@@ -131,11 +131,11 @@ class KryptonPlayerInventory(override val owner: KryptonPlayer) : KryptonInvento
             val slot = it.getByte("Slot").toInt()
             val stack = KryptonItemStack.from(it)
             when (slot) {
-                in items.indices -> items[slot] = stack
-                BOOTS_DATA_SLOT -> armor[BOOTS_SLOT] = stack
-                LEGGINGS_DATA_SLOT -> armor[LEGGINGS_SLOT] = stack
-                CHESTPLATE_DATA_SLOT -> armor[CHESTPLATE_SLOT] = stack
-                HELMET_DATA_SLOT -> armor[HELMET_SLOT] = stack
+                in items.indices -> items.set(slot, stack)
+                BOOTS_DATA_SLOT -> armor.set(BOOTS_SLOT, stack)
+                LEGGINGS_DATA_SLOT -> armor.set(LEGGINGS_SLOT, stack)
+                CHESTPLATE_DATA_SLOT -> armor.set(CHESTPLATE_SLOT, stack)
+                HELMET_DATA_SLOT -> armor.set(HELMET_SLOT, stack)
                 OFFHAND_DATA_SLOT -> offHand = stack
             }
         }

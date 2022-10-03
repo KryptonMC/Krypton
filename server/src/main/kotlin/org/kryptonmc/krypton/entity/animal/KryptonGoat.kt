@@ -21,10 +21,12 @@ package org.kryptonmc.krypton.entity.animal
 import org.kryptonmc.api.entity.EntityTypes
 import org.kryptonmc.api.entity.animal.Goat
 import org.kryptonmc.api.entity.attribute.AttributeTypes
+import org.kryptonmc.krypton.entity.KryptonMob
+import org.kryptonmc.krypton.entity.attribute.AttributeSupplier
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.world.KryptonWorld
 
-class KryptonGoat(world: KryptonWorld) : KryptonAnimal(world, EntityTypes.GOAT, ATTRIBUTES), Goat {
+class KryptonGoat(world: KryptonWorld) : KryptonAnimal(world, EntityTypes.GOAT), Goat {
 
     override var canScream: Boolean
         get() = data.get(MetadataKeys.Goat.SCREAMING)
@@ -43,10 +45,10 @@ class KryptonGoat(world: KryptonWorld) : KryptonAnimal(world, EntityTypes.GOAT, 
         private const val BABY_ATTACK_DAMAGE = 1.0
         private const val ADULT_ATTACK_DAMAGE = 2.0
 
-        private val ATTRIBUTES = attributes()
+        @JvmStatic
+        fun attributes(): AttributeSupplier.Builder = KryptonMob.attributes()
             .add(AttributeTypes.MAX_HEALTH, 10.0)
             .add(AttributeTypes.MOVEMENT_SPEED, 0.2)
             .add(AttributeTypes.ATTACK_DAMAGE, 2.0)
-            .build()
     }
 }

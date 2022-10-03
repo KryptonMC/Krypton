@@ -29,12 +29,10 @@ object Directions {
 
     private val BY_3D_DATA = arrayOf(Direction.DOWN, Direction.UP, Direction.NORTH, Direction.SOUTH, Direction.WEST, Direction.EAST)
     private val BY_2D_DATA = arrayOf(Direction.SOUTH, Direction.WEST, Direction.NORTH, Direction.EAST)
-    private val TO_2D_DATA = Object2IntArrayMap<Direction>().apply {
-        BY_2D_DATA.forEachIndexed { index, direction -> put(direction, index) }
-    }
+    private val TO_2D_DATA = Object2IntArrayMap<Direction>().apply { BY_2D_DATA.forEachIndexed { index, direction -> put(direction, index) } }
 
     @JvmStatic
-    fun ofPitch(pitch: Double): Direction = of2D((pitch / 90.0 + 0.5).floor() and 3)
+    fun ofPitch(pitch: Double): Direction = of2D(Maths.floor(pitch / 90.0 + 0.5) and 3)
 
     @JvmStatic
     fun of2D(data: Int): Direction = BY_2D_DATA[abs(data % BY_2D_DATA.size)]
@@ -44,6 +42,24 @@ object Directions {
 
     @JvmStatic
     fun data2D(direction: Direction): Int = TO_2D_DATA.getInt(direction)
+
+    @JvmStatic
+    fun clockwise(direction: Direction): Direction = when (direction) {
+        Direction.NORTH -> Direction.EAST
+        Direction.SOUTH -> Direction.WEST
+        Direction.WEST -> Direction.NORTH
+        Direction.EAST -> Direction.SOUTH
+        else -> error("Unable to get clockwise direction for given direction $this!")
+    }
+
+    @JvmStatic
+    fun antiClockwise(direction: Direction): Direction = when (direction) {
+        Direction.NORTH -> Direction.WEST
+        Direction.SOUTH -> Direction.EAST
+        Direction.WEST -> Direction.SOUTH
+        Direction.EAST -> Direction.NORTH
+        else -> error("Unable to get anti clockwise direction for given direction $this!")
+    }
 
     @JvmStatic
     fun fromAxisAndDirection(axis: Axis, direction: AxisDirection): Direction = when (axis) {

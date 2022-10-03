@@ -23,16 +23,14 @@ import kotlinx.collections.immutable.persistentListOf
 import org.kryptonmc.api.item.ItemStack
 import org.kryptonmc.api.item.meta.CrossbowMeta
 import org.kryptonmc.krypton.item.KryptonItemStack
-import org.kryptonmc.krypton.util.mapPersistentList
+import org.kryptonmc.krypton.item.downcast
 import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.list
 
-@Suppress("EqualsOrHashCode")
 class KryptonCrossbowMeta(data: CompoundTag) : AbstractItemMeta<KryptonCrossbowMeta>(data), CrossbowMeta {
 
     override val isCharged: Boolean = data.getBoolean("Charged")
-    override val projectiles: PersistentList<ItemStack> = data.getList("ChargedProjectiles", CompoundTag.ID)
-        .mapPersistentList { KryptonItemStack.from(it as CompoundTag) }
+    override val projectiles: PersistentList<ItemStack> = data.getList("ChargedProjectiles", CompoundTag.ID).mapCompound(KryptonItemStack::from)
 
     override fun copy(data: CompoundTag): KryptonCrossbowMeta = KryptonCrossbowMeta(data)
 
@@ -72,7 +70,7 @@ class KryptonCrossbowMeta(data: CompoundTag) : AbstractItemMeta<KryptonCrossbowM
 
         override fun buildData(): CompoundTag.Builder = super.buildData().apply {
             boolean("Charged", charged)
-            if (projectiles.isNotEmpty()) list("ChargedProjectiles") { projectiles.forEach { add((it as KryptonItemStack).save()) } }
+            if (projectiles.isNotEmpty()) list("ChargedProjectiles") { projectiles.forEach { add(it.downcast().save()) } }
         }
 
         override fun build(): KryptonCrossbowMeta = KryptonCrossbowMeta(buildData().build())
@@ -81,5 +79,5 @@ class KryptonCrossbowMeta(data: CompoundTag) : AbstractItemMeta<KryptonCrossbowM
 
 private fun CompoundTag.putProjectiles(projectiles: List<ItemStack>): CompoundTag {
     if (projectiles.isNotEmpty()) return remove("ChargedProjectiles")
-    return put("ChargedProjectiles", list { projectiles.forEach { add((it as KryptonItemStack).save()) } })
+    return put("ChargedProjectiles", list { projectiles.forEach { add(it.downcast().save()) } })
 }

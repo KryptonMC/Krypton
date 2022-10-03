@@ -33,12 +33,12 @@ fun <T> List<T>.toIntArray(converter: ToIntFunction<T>): IntArray {
     return array
 }
 
-fun <T, R> Iterable<T>.mapPersistentList(action: (T) -> R): PersistentList<R> = mapPersistentTo(persistentListOf<R>().builder(), action)
+inline fun <T, R> Iterable<T>.mapPersistentList(action: (T) -> R): PersistentList<R> = mapPersistentTo(persistentListOf<R>().builder(), action)
 
-fun <T, R> Iterable<T>.mapPersistentSet(action: (T) -> R): PersistentSet<R> = mapPersistentTo(persistentSetOf<R>().builder(), action)
+inline fun <T, R> Iterable<T>.mapPersistentSet(action: (T) -> R): PersistentSet<R> = mapPersistentTo(persistentSetOf<R>().builder(), action)
 
 @Suppress("UNCHECKED_CAST")
-fun <T, R, B : PersistentCollection.Builder<R>, C : PersistentCollection<R>> Iterable<T>.mapPersistentTo(builder: B, action: (T) -> R): C {
+inline fun <T, R, B : PersistentCollection.Builder<R>, C : PersistentCollection<R>> Iterable<T>.mapPersistentTo(builder: B, action: (T) -> R): C {
     for (element in this) {
         builder.add(action(element))
     }

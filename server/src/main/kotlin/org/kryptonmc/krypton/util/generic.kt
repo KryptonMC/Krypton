@@ -22,11 +22,11 @@ import java.net.InetAddress
 import java.net.SocketAddress
 import java.util.UUID
 
-fun SocketAddress.asString(): String = toString().addressAsString()
+fun SocketAddress.asString(): String = toString().formatAddressString()
 
-fun InetAddress.asString(): String = toString().addressAsString()
+fun InetAddress.asString(): String = toString().formatAddressString()
 
-private fun String.addressAsString(): String {
+private fun String.formatAddressString(): String {
     var temp = this
     if (temp.contains('/')) temp = temp.substring(temp.indexOf('/') + 1)
     if (temp.contains(':')) temp = temp.substring(0, temp.indexOf(':'))

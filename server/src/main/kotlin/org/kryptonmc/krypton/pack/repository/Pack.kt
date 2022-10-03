@@ -87,7 +87,7 @@ data class Pack(
             if (position == BOTTOM) {
                 var index = 0
                 while (index < list.size) {
-                    val pack = converter.apply(list[index])
+                    val pack = converter.apply(list.get(index))
                     if (!pack.fixedPosition || pack.defaultPosition != this) break
                     ++index
                 }
@@ -96,7 +96,7 @@ data class Pack(
             }
             var index = list.size - 1
             while (index >= 0) {
-                val pack = converter.apply(list[index])
+                val pack = converter.apply(list.get(index))
                 if (!pack.fixedPosition || pack.defaultPosition != this) break
                 --index
             }

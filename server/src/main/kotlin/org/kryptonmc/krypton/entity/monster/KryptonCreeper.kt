@@ -21,10 +21,11 @@ package org.kryptonmc.krypton.entity.monster
 import org.kryptonmc.api.entity.EntityTypes
 import org.kryptonmc.api.entity.attribute.AttributeTypes
 import org.kryptonmc.api.entity.monster.Creeper
+import org.kryptonmc.krypton.entity.attribute.AttributeSupplier
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.world.KryptonWorld
 
-class KryptonCreeper(world: KryptonWorld) : KryptonMonster(world, EntityTypes.CREEPER, ATTRIBUTES), Creeper {
+class KryptonCreeper(world: KryptonWorld) : KryptonMonster(world, EntityTypes.CREEPER), Creeper {
 
     override var fuse: Short = 0
     override var explosionRadius: Int = 0
@@ -44,6 +45,7 @@ class KryptonCreeper(world: KryptonWorld) : KryptonMonster(world, EntityTypes.CR
 
     companion object {
 
-        private val ATTRIBUTES = attributes().add(AttributeTypes.MOVEMENT_SPEED, 0.25).build()
+        @JvmStatic
+        fun attributes(): AttributeSupplier.Builder = KryptonMonster.attributes().add(AttributeTypes.MOVEMENT_SPEED, 0.25)
     }
 }

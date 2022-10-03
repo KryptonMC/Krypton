@@ -31,11 +31,10 @@ abstract class JsonResourceReloadListener(private val gson: Gson, private val di
 
     override fun prepare(manager: ResourceManager): Map<Key, JsonElement> {
         val result = HashMap<Key, JsonElement>()
-        val prefixLength = directory.length + 1
         manager.listResources(directory) { it.value().endsWith(PATH_SUFFIX) }.forEach {
             val key = it.key
             val path = key.value()
-            val location = Key.key(key.namespace(), path.substring(prefixLength, path.length - PATH_SUFFIX_LENGTH))
+            val location = Key.key(key.namespace(), path.substring(directory.length + 1, path.length - PATH_SUFFIX_LENGTH))
             try {
                 it.value.openAsReader().use { reader ->
                     val json = gson.getAdapter<JsonElement>().read(JsonReader(reader))
@@ -45,8 +44,11 @@ abstract class JsonResourceReloadListener(private val gson: Gson, private val di
                         LOGGER.error("Failed to load data file $location from $key as it's null or empty!")
                     }
                 }
-            } catch (exception: Exception) {
-                if (exception !is IllegalArgumentException && exception !is IOException && exception !is JsonParseException) throw exception
+            } catch (exception: IllegalArgumentException) {
+                LOGGER.error("Failed to parse data file $location from $key!", exception)
+            } catch (exception: IOException) {
+                LOGGER.error("Failed to parse data file $location from $key!", exception)
+            } catch (exception: JsonParseException) {
                 LOGGER.error("Failed to parse data file $location from $key!", exception)
             }
         }

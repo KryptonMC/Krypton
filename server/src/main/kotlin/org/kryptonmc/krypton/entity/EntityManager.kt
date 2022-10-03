@@ -28,18 +28,18 @@ import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.event.entity.KryptonRemoveEntityEvent
 import org.kryptonmc.krypton.event.entity.KryptonSpawnEntityEvent
 import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateTime
-import org.kryptonmc.krypton.util.forEachEntityInRange
+import org.kryptonmc.krypton.util.DataConversion
+import org.kryptonmc.krypton.util.Maths
 import org.kryptonmc.krypton.util.logger
-import org.kryptonmc.krypton.util.sendDataConversionWarning
-import org.kryptonmc.krypton.util.upgradeData
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.krypton.world.chunk.ChunkPosition
 import org.kryptonmc.krypton.world.chunk.KryptonChunk
 import org.kryptonmc.krypton.world.region.RegionFileManager
 import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.IntTag
-import org.kryptonmc.nbt.MutableListTag
+import org.kryptonmc.nbt.ListTag
 import org.kryptonmc.nbt.compound
+import org.spongepowered.math.vector.Vector3d
 import space.vectrix.flare.fastutil.Int2ObjectSyncMap
 import space.vectrix.flare.fastutil.Long2ObjectSyncMap
 import java.util.UUID
@@ -55,17 +55,14 @@ class EntityManager(val world: KryptonWorld) : AutoCloseable {
     val entities: MutableCollection<KryptonEntity>
         get() = byId.values
 
-    operator fun get(id: Int): KryptonEntity? = byId[id]
+    fun get(id: Int): KryptonEntity? = byId.get(id)
 
-    operator fun get(uuid: UUID): KryptonEntity? = byUUID[uuid]
-
-    operator fun get(chunk: KryptonChunk): Set<KryptonEntity> =
-        byChunk.computeIfAbsent(ChunkPosition.toLong(chunk.position.x, chunk.position.z), LongFunction { ConcurrentHashMap.newKeySet() })
+    fun get(uuid: UUID): KryptonEntity? = byUUID.get(uuid)
 
     fun spawn(entity: KryptonEntity) {
         if (entity.world != world) return
         if (byUUID.containsKey(entity.uuid)) {
-            LOGGER.error("UUID collision! UUID for entity with ID ${entity.id} collided with entity with ID ${byUUID[entity.uuid]?.id}!")
+            LOGGER.error("UUID collision! UUID for entity with ID ${entity.id} collided with entity with ID ${byUUID.get(entity.uuid)?.id}!")
             LOGGER.warn("Refusing to spawn entity with ID ${entity.id}.")
             return
         }
@@ -77,9 +74,9 @@ class EntityManager(val world: KryptonWorld) : AutoCloseable {
                 if (it is KryptonPlayer) entity.addViewer(it)
             }
             val chunk = world.getChunk(entity.location.floorX(), entity.location.floorY(), entity.location.floorZ()) ?: return@thenAccept
-            byId[entity.id] = entity
-            byUUID[entity.uuid] = entity
-            byChunk.computeIfAbsent(chunk.position.toLong(), LongFunction { ConcurrentHashMap.newKeySet() }).add(entity)
+            byId.put(entity.id, entity)
+            byUUID.put(entity.uuid, entity)
+            getByChunk(chunk.position.toLong()).add(entity)
         }
     }
 
@@ -97,10 +94,13 @@ class EntityManager(val world: KryptonWorld) : AutoCloseable {
         }
 
         val chunk = world.getChunk(player.location.floorX(), player.location.floorY(), player.location.floorZ()) ?: return
-        byId[player.id] = player
-        byUUID[player.uuid] = player
-        byChunk.computeIfAbsent(chunk.position.toLong(), LongFunction { ConcurrentHashMap.newKeySet() }).add(player)
+        byId.put(player.id, player)
+        byUUID.put(player.uuid, player)
+        getByChunk(chunk.position.toLong()).add(player)
     }
+
+    private fun getByChunk(location: Long): MutableSet<KryptonEntity> =
+        byChunk.computeIfAbsent(location, LongFunction { ConcurrentHashMap.newKeySet() })
 
     fun remove(entity: KryptonEntity) {
         if (entity.world != world) return
@@ -114,7 +114,7 @@ class EntityManager(val world: KryptonWorld) : AutoCloseable {
             val chunk = world.getChunk(entity.location.floorX(), entity.location.floorY(), entity.location.floorZ()) ?: return@thenAccept
             byId.remove(entity.id)
             byUUID.remove(entity.uuid)
-            val entitiesByChunk = byChunk[chunk.position.toLong()].apply { remove(entity) }
+            val entitiesByChunk = byChunk.get(chunk.position.toLong()).apply { remove(entity) }
             if (entitiesByChunk.isEmpty()) byChunk.remove(chunk.position.toLong())
             world.scoreboard.removeEntity(entity)
         }
@@ -125,16 +125,16 @@ class EntityManager(val world: KryptonWorld) : AutoCloseable {
         val version = if (nbt.contains("DataVersion", IntTag.ID)) nbt.getInt("DataVersion") else -1
         // We won't upgrade data if use of the data converter is disabled.
         if (version < KryptonPlatform.worldVersion && !world.server.config.advanced.useDataConverter) {
-            LOGGER.sendDataConversionWarning("entities for chunk at ${chunk.x}, ${chunk.z}")
+            DataConversion.sendWarning(LOGGER, "entities for chunk at ${chunk.x}, ${chunk.z}")
             error("Tried to load old chunk from version $version when data conversion is disabled!")
         }
 
-        nbt.upgradeData(MCTypeRegistry.ENTITY_CHUNK, version).getList("Entities", CompoundTag.ID).forEachCompound {
+        DataConversion.upgrade(nbt, MCTypeRegistry.ENTITY_CHUNK, version).getList("Entities", CompoundTag.ID).forEachCompound {
             val id = it.getString("id")
             if (id.isBlank()) return@forEachCompound
             val key = try {
                 Key.key(id)
-            } catch (exception: InvalidKeyException) {
+            } catch (_: InvalidKeyException) {
                 return@forEachCompound
             }
             val type = Registries.ENTITY_TYPE.get(key)
@@ -145,21 +145,18 @@ class EntityManager(val world: KryptonWorld) : AutoCloseable {
     }
 
     fun save(chunk: KryptonChunk) {
-        val x = chunk.position.x
-        val z = chunk.position.z
-        val entities = byChunk[chunk.position.toLong()] ?: return
+        val entities = byChunk.get(chunk.position.toLong()) ?: return
         if (entities.isEmpty()) return
-        val entityList = MutableListTag(elementType = CompoundTag.ID)
-        val root = compound {
-            int("DataVersion", KryptonPlatform.worldVersion)
-            ints("Position", x, z)
-            put("Entities", entityList)
-        }
+        val entityList = ListTag.immutableBuilder(CompoundTag.ID)
         entities.forEach {
-            if (it is KryptonPlayer) return@forEach // Do not save players in here.
+            if (it is KryptonPlayer) return@forEach
             entityList.add(EntityFactory.serializer(it.type).saveWithPassengers(it).build())
         }
-        regionFileManager.write(chunk.x, chunk.z, root)
+        regionFileManager.write(chunk.x, chunk.z, compound {
+            int("DataVersion", KryptonPlatform.worldVersion)
+            ints("Position", chunk.position.x, chunk.position.z)
+            put("Entities", entityList.build())
+        })
     }
 
     fun flush() {
@@ -170,8 +167,54 @@ class EntityManager(val world: KryptonWorld) : AutoCloseable {
         regionFileManager.close()
     }
 
+    private inline fun forEachEntityInRange(location: Vector3d, viewDistance: Int, callback: (KryptonEntity) -> Unit) {
+        location.chunksInRange(viewDistance).forEach {
+            val chunk = world.getChunkAt(it.chunkX(), it.chunkZ()) ?: return@forEach
+            getByChunk(chunk.position.toLong()).forEach(callback)
+        }
+    }
+
     companion object {
 
         private val LOGGER = logger<EntityManager>()
     }
 }
+
+private fun Long.chunkX(): Int = (this and 4294967295L).toInt()
+
+private fun Long.chunkZ(): Int = (this ushr 32 and 4294967295L).toInt()
+
+private fun Vector3d.chunksInRange(range: Int): LongArray {
+    val area = (range * 2 + 1) * (range * 2 + 1)
+    val visible = LongArray(area)
+    var xDistance = 0
+    var xDirection = 1
+    var zDistance = 0
+    var zDirection = -1
+    var length = 1
+    var corner = 0
+
+    for (i in 0 until area) {
+        val chunkX = (xDistance * 16 + x()).toChunkCoordinate()
+        val chunkZ = (zDistance * 16 + z()).toChunkCoordinate()
+        visible[i] = ChunkPosition.toLong(chunkX, chunkZ)
+
+        if (corner % 2 == 0) {
+            xDistance += xDirection
+            if (kotlin.math.abs(xDistance) == length) {
+                corner++
+                xDirection = -xDirection
+            }
+        } else {
+            zDistance += zDirection
+            if (kotlin.math.abs(zDistance) == length) {
+                corner++
+                zDirection = -zDirection
+                if (corner % 4 == 0) length++
+            }
+        }
+    }
+    return visible
+}
+
+private fun Double.toChunkCoordinate(): Int = Math.floorDiv(Maths.floor(this), 16)

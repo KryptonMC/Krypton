@@ -30,11 +30,13 @@ import org.kryptonmc.api.item.ItemStack
 import org.kryptonmc.api.item.ItemTypes
 import org.kryptonmc.api.item.data.DyeColor
 import org.kryptonmc.api.item.data.DyeColors
+import org.kryptonmc.krypton.entity.KryptonMob
+import org.kryptonmc.krypton.entity.attribute.AttributeSupplier
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.registry.KryptonRegistries
 import org.kryptonmc.krypton.world.KryptonWorld
 
-class KryptonCat(world: KryptonWorld) : KryptonTamable(world, EntityTypes.CAT, ATTRIBUTES), Cat {
+class KryptonCat(world: KryptonWorld) : KryptonTamable(world, EntityTypes.CAT), Cat {
 
     override var variant: CatVariant
         get() = KryptonRegistries.CAT_VARIANT.get(data.get(MetadataKeys.Cat.VARIANT))!!
@@ -70,10 +72,10 @@ class KryptonCat(world: KryptonWorld) : KryptonTamable(world, EntityTypes.CAT, A
 
     companion object {
 
-        private val ATTRIBUTES = attributes()
+        @JvmStatic
+        fun attributes(): AttributeSupplier.Builder = KryptonMob.attributes()
             .add(AttributeTypes.MAX_HEALTH, 10.0)
             .add(AttributeTypes.MOVEMENT_SPEED, 0.3)
             .add(AttributeTypes.ATTACK_DAMAGE, 3.0)
-            .build()
     }
 }

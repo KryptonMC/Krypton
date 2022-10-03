@@ -23,7 +23,7 @@ import org.kryptonmc.api.service.AFKService
 
 class KryptonAFKService : AFKService {
 
-    private val afkPlayers = mutableSetOf<Player>()
+    private val afkPlayers = HashSet<Player>()
 
     override fun isAfk(player: Player): Boolean = afkPlayers.contains(player)
 

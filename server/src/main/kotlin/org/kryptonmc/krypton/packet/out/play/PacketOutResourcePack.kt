@@ -34,7 +34,7 @@ data class PacketOutResourcePack(val uri: String, val hash: String, val forced: 
 
     constructor(pack: ResourcePack) : this(pack.uri.toString(), pack.hash, pack.isForced, pack.promptMessage)
 
-    constructor(buf: ByteBuf) : this(buf.readString(), buf.readString(), buf.readBoolean(), buf.readNullable { buf.readComponent() })
+    constructor(buf: ByteBuf) : this(buf.readString(), buf.readString(), buf.readBoolean(), buf.readNullable(ByteBuf::readComponent))
 
     override fun write(buf: ByteBuf) {
         buf.writeString(uri)

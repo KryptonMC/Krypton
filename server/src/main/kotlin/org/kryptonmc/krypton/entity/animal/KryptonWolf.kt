@@ -25,15 +25,17 @@ import org.kryptonmc.api.entity.attribute.AttributeTypes
 import org.kryptonmc.api.item.ItemStack
 import org.kryptonmc.api.item.data.DyeColor
 import org.kryptonmc.api.item.data.DyeColors
+import org.kryptonmc.krypton.entity.KryptonMob
 import org.kryptonmc.krypton.entity.Neutral
+import org.kryptonmc.krypton.entity.attribute.AttributeSupplier
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.registry.KryptonRegistries
-import org.kryptonmc.krypton.util.randomValue
+import org.kryptonmc.krypton.util.provider.UniformInt
 import org.kryptonmc.krypton.world.KryptonWorld
 import java.util.UUID
 import kotlin.random.Random
 
-class KryptonWolf(world: KryptonWorld) : KryptonTamable(world, EntityTypes.WOLF, ATTRIBUTES), Wolf, Neutral {
+class KryptonWolf(world: KryptonWorld) : KryptonTamable(world, EntityTypes.WOLF), Wolf, Neutral {
 
     override var angerTarget: UUID? = null
     override var isAngry: Boolean
@@ -74,7 +76,7 @@ class KryptonWolf(world: KryptonWorld) : KryptonTamable(world, EntityTypes.WOLF,
     }
 
     override fun startAngerTimer() {
-        remainingAngerTime = PERSISTENT_ANGER_TIME.randomValue(Random)
+        remainingAngerTime = PERSISTENT_ANGER_TIME.sample(Random)
     }
 
     // TODO: Check if item type is meat
@@ -94,12 +96,12 @@ class KryptonWolf(world: KryptonWorld) : KryptonTamable(world, EntityTypes.WOLF,
         private const val TAMED_HEALTH = 20.0
         private const val UNTAMED_HEALTH = 8.0
         private const val TAME_UPDATE_ATTACK_DAMAGE = 4.0
+        private val PERSISTENT_ANGER_TIME = UniformInt(20 * 20, 39 * 20)
 
-        private val ATTRIBUTES = attributes()
+        @JvmStatic
+        fun attributes(): AttributeSupplier.Builder = KryptonMob.attributes()
             .add(AttributeTypes.MOVEMENT_SPEED, 0.3)
             .add(AttributeTypes.MAX_HEALTH, 8.0)
             .add(AttributeTypes.ATTACK_DAMAGE, 2.0)
-            .build()
-        private val PERSISTENT_ANGER_TIME = 20..39
     }
 }

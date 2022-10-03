@@ -23,7 +23,6 @@ import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.packet.out.play.data.LightPacketData
 import org.kryptonmc.krypton.util.readVarInt
 import org.kryptonmc.krypton.util.writeVarInt
-import org.kryptonmc.krypton.world.chunk.KryptonChunk
 
 @JvmRecord
 data class PacketOutUpdateLight(val x: Int, val z: Int, val lightData: LightPacketData) : Packet {

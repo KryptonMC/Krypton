@@ -19,7 +19,6 @@
 package org.kryptonmc.krypton.packet.`in`.login
 
 import io.netty.buffer.ByteBuf
-import java.util.Objects
 import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.util.readAllAvailableBytes
 import org.kryptonmc.krypton.util.readVarInt
@@ -43,5 +42,10 @@ data class PacketInPluginResponse(val messageId: Int, val data: ByteArray?) : Pa
         return messageId == (other as PacketInPluginResponse).messageId && data.contentEquals(other.data)
     }
 
-    override fun hashCode(): Int = Objects.hash(messageId, data)
+    override fun hashCode(): Int {
+        var result = 1
+        result = 31 * result + messageId.hashCode()
+        result = 31 * result + data.contentHashCode()
+        return result
+    }
 }

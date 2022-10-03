@@ -21,12 +21,12 @@ package org.kryptonmc.krypton.util
 import kotlinx.collections.immutable.PersistentMap
 import kotlinx.collections.immutable.persistentMapOf
 
-fun <K, V, K1, V1> Map<K, V>.transform(transformer: (Map.Entry<K, V>) -> Pair<K1, V1>): Map<K1, V1> = transformTo(mutableMapOf(), transformer)
+fun <K, V, K1, V1> Map<K, V>.transform(transformer: (Map.Entry<K, V>) -> Pair<K1, V1>): Map<K1, V1> = transformTo(HashMap(), transformer)
 
 fun <C : MutableMap<K1, V1>, K, V, K1, V1> Map<K, V>.transformTo(destination: C, transformer: (Map.Entry<K, V>) -> Pair<K1, V1>): C {
     for (entry in this) {
         val transformed = transformer(entry)
-        destination[transformed.first] = transformed.second
+        destination.put(transformed.first, transformed.second)
     }
     return destination
 }
@@ -34,7 +34,7 @@ fun <C : MutableMap<K1, V1>, K, V, K1, V1> Map<K, V>.transformTo(destination: C,
 inline fun <T, K, V> Iterable<T>.associatePersistent(keyGetter: (T) -> K, valueGetter: (T) -> V): PersistentMap<K, V> {
     val map = persistentMapOf<K, V>().builder()
     for (element in this) {
-        map[keyGetter(element)] = valueGetter(element)
+        map.put(keyGetter(element), valueGetter(element))
     }
     return map.build()
 }

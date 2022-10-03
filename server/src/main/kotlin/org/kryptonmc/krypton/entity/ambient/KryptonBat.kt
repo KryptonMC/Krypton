@@ -21,10 +21,12 @@ package org.kryptonmc.krypton.entity.ambient
 import org.kryptonmc.api.entity.EntityTypes
 import org.kryptonmc.api.entity.ambient.Bat
 import org.kryptonmc.api.entity.attribute.AttributeTypes
+import org.kryptonmc.krypton.entity.KryptonMob
+import org.kryptonmc.krypton.entity.attribute.AttributeSupplier
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.world.KryptonWorld
 
-class KryptonBat(world: KryptonWorld) : KryptonAmbientCreature(world, EntityTypes.BAT, ATTRIBUTES), Bat {
+class KryptonBat(world: KryptonWorld) : KryptonAmbientCreature(world, EntityTypes.BAT), Bat {
 
     override var isResting: Boolean
         get() = getFlag(MetadataKeys.Bat.FLAGS, FLAG_RESTING)
@@ -37,6 +39,8 @@ class KryptonBat(world: KryptonWorld) : KryptonAmbientCreature(world, EntityType
     companion object {
 
         private const val FLAG_RESTING = 0
-        private val ATTRIBUTES = attributes().add(AttributeTypes.MAX_HEALTH, 6.0).build()
+
+        @JvmStatic
+        fun attributes(): AttributeSupplier.Builder = KryptonMob.attributes().add(AttributeTypes.MAX_HEALTH, 6.0)
     }
 }

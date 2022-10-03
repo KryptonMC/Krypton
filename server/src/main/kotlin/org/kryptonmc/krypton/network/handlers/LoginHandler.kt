@@ -22,6 +22,7 @@ import com.velocitypowered.natives.util.Natives
 import io.netty.buffer.Unpooled
 import kotlinx.collections.immutable.persistentListOf
 import net.kyori.adventure.text.Component
+import org.kryptonmc.api.auth.GameProfile
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.auth.KryptonGameProfile
 import org.kryptonmc.krypton.auth.requests.SessionService
@@ -82,8 +83,6 @@ class LoginHandler(
     override val session: SessionHandler,
     private val proxyForwardedData: ForwardedData?
 ) : PacketHandler {
-
-    private val playerManager = server.playerManager
 
     // Doesn't really matter what this is, just needs to be unique.
     private val velocityMessageId = ThreadLocalRandom.current().nextInt(Short.MAX_VALUE.toInt())
@@ -152,18 +151,14 @@ class LoginHandler(
         // Fire the authentication event.
         server.eventManager.fire(KryptonAuthenticationEvent(name)).thenApplyAsync({
             if (!it.result.isAllowed) return@thenApplyAsync null
-
             val profile = SessionService.hasJoined(name, sharedSecret, server.config.server.ip)
             if (profile == null) {
                 session.disconnect(Component.translatable("multiplayer.disconnect.unverified_username"))
                 return@thenApplyAsync null
             }
             if (!canJoin(profile, address) || !callLoginEvent(profile)) return@thenApplyAsync null
-
             // Check the profile from the event and construct the player.
-            val resultProfile = it.result.profile
-            val finalProfile = if (resultProfile != null && resultProfile is KryptonGameProfile) resultProfile else profile
-            KryptonPlayer(session, finalProfile, server.worldManager.default, address, publicKey)
+            KryptonPlayer(session, it.result.profile ?: profile, server.worldManager.default, address, publicKey)
         }, session.channel.eventLoop()).thenApplyAsync({
             if (it == null) return@thenApplyAsync
             // Setup permissions.
@@ -225,7 +220,7 @@ class LoginHandler(
         session.writeAndFlush(PacketOutLoginSuccess(player.profile))
         session.handler = PlayHandler(server, session, player)
         session.currentState = PacketState.PLAY
-        playerManager.add(player, session).whenComplete { _, exception ->
+        server.playerManager.add(player, session).whenComplete { _, exception ->
             if (exception == null) return@whenComplete
             LOGGER.error("Disconnecting player ${player.profile.name} due to exception caught whilst attempting to load them in...", exception)
             player.disconnect(Component.text("An unexpected exception occurred. Please contact the system administrator."))
@@ -265,8 +260,8 @@ class LoginHandler(
         val threshold = server.config.server.compressionThreshold
 
         // Check for existing encoders and decoders
-        var encoder = session.channel.pipeline()[PacketCompressor.NETTY_NAME] as? PacketCompressor
-        var decoder = session.channel.pipeline()[PacketDecompressor.NETTY_NAME] as? PacketDecompressor
+        var encoder = session.channel.pipeline().get(PacketCompressor.NETTY_NAME) as? PacketCompressor
+        var decoder = session.channel.pipeline().get(PacketDecompressor.NETTY_NAME) as? PacketDecompressor
         if (encoder != null && decoder != null) {
             encoder.threshold = threshold
             decoder.threshold = threshold
@@ -285,7 +280,7 @@ class LoginHandler(
         session.channel.pipeline().addBefore(PacketEncoder.NETTY_NAME, PacketCompressor.NETTY_NAME, encoder)
     }
 
-    private fun callLoginEvent(profile: KryptonGameProfile): Boolean {
+    private fun callLoginEvent(profile: GameProfile): Boolean {
         val event = KryptonLoginEvent(profile.name, profile.uuid, session.channel.remoteAddress() as InetSocketAddress)
         val result = server.eventManager.fireSync(event).result
         if (!result.isAllowed) {
@@ -295,11 +290,11 @@ class LoginHandler(
         return true
     }
 
-    private fun canJoin(profile: KryptonGameProfile, address: SocketAddress): Boolean {
-        val whitelist = playerManager.whitelist
-        val whitelistedIps = playerManager.whitelistedIps
-        if (playerManager.bannedPlayers.contains(profile)) { // We are banned
-            val entry = playerManager.bannedPlayers[profile]!!
+    private fun canJoin(profile: GameProfile, address: SocketAddress): Boolean {
+        val whitelist = server.playerManager.whitelist
+        val whitelistedIps = server.playerManager.whitelistedIps
+        if (server.playerManager.bannedPlayers.contains(profile)) { // We are banned
+            val entry = server.playerManager.bannedPlayers.get(profile)!!
             val text = Component.translatable("multiplayer.disconnect.banned.reason", entry.reason)
             // Add the expiration date
             if (entry.expirationDate != null) {
@@ -311,13 +306,13 @@ class LoginHandler(
             disconnect(text)
             LOGGER.info("${profile.name} was disconnected as they are banned from this server.")
             return false
-        } else if (playerManager.whitelistEnabled && !whitelist.contains(profile) && !whitelistedIps.isWhitelisted(address)) {
+        } else if (server.playerManager.whitelistEnabled && !whitelist.contains(profile) && !whitelistedIps.isWhitelisted(address)) {
             // We are not whitelisted
             disconnect(Component.translatable("multiplayer.disconnect.not_whitelisted"))
             LOGGER.info("${profile.name} was disconnected as this server is whitelisted and they are not on the whitelist.")
             return false
-        } else if (playerManager.bannedIps.isBanned(address)) { // Their IP is banned.
-            val entry = playerManager.bannedIps[address]!!
+        } else if (server.playerManager.bannedIps.isBanned(address)) { // Their IP is banned.
+            val entry = server.playerManager.bannedIps.get(address)!!
             val text = Component.translatable().key("multiplayer.disconnect.banned_ip.reason").args(entry.reason)
             if (entry.expirationDate != null) {
                 val expirationDate = Component.text(BanEntry.DATE_FORMATTER.format(entry.expirationDate))

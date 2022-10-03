@@ -31,27 +31,20 @@ import net.kyori.adventure.text.Component
 import net.kyori.adventure.title.Title
 import net.kyori.adventure.title.TitlePart
 import org.kryptonmc.api.registry.Registries
-import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.entity.KryptonEntity
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.network.SessionManager
-import org.kryptonmc.krypton.network.chat.ChatSender
-import org.kryptonmc.krypton.network.chat.ChatTypes
-import org.kryptonmc.krypton.network.chat.MessageSignature
 import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.packet.out.play.PacketOutSetActionBarText
 import org.kryptonmc.krypton.packet.out.play.PacketOutClearTitles
 import org.kryptonmc.krypton.packet.out.play.PacketOutEntitySoundEffect
 import org.kryptonmc.krypton.packet.out.play.PacketOutCustomSoundEffect
-import org.kryptonmc.krypton.packet.out.play.PacketOutPlayerChatMessage
 import org.kryptonmc.krypton.packet.out.play.PacketOutSetTabListHeaderAndFooter
 import org.kryptonmc.krypton.packet.out.play.PacketOutSoundEffect
 import org.kryptonmc.krypton.packet.out.play.PacketOutStopSound
 import org.kryptonmc.krypton.packet.out.play.PacketOutSetSubtitleText
 import org.kryptonmc.krypton.packet.out.play.PacketOutSetTitleText
 import org.kryptonmc.krypton.packet.out.play.PacketOutSetTitleAnimationTimes
-import org.kryptonmc.krypton.packet.out.play.PacketOutSystemChatMessage
-import org.kryptonmc.krypton.registry.InternalRegistries
 
 interface PacketGroupingAudience : ForwardingAudience {
 
@@ -154,16 +147,4 @@ interface PacketGroupingAudience : ForwardingAudience {
     }
 
     override fun audiences(): Iterable<Audience> = players
-
-    companion object {
-
-        @JvmStatic
-        fun of(players: Collection<KryptonPlayer>): PacketGroupingAudience = object : PacketGroupingAudience {
-
-            override val sessionManager: SessionManager
-                get() = KryptonServer.get().sessionManager
-            override val players: Collection<KryptonPlayer>
-                get() = players
-        }
-    }
 }

@@ -21,10 +21,12 @@ package org.kryptonmc.krypton.entity.animal
 import org.kryptonmc.api.entity.EntityTypes
 import org.kryptonmc.api.entity.animal.Pig
 import org.kryptonmc.api.entity.attribute.AttributeTypes
+import org.kryptonmc.krypton.entity.KryptonMob
+import org.kryptonmc.krypton.entity.attribute.AttributeSupplier
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.world.KryptonWorld
 
-class KryptonPig(world: KryptonWorld) : KryptonAnimal(world, EntityTypes.PIG, ATTRIBUTES), Pig {
+class KryptonPig(world: KryptonWorld) : KryptonAnimal(world, EntityTypes.PIG), Pig {
 
     override var isSaddled: Boolean
         get() = data.get(MetadataKeys.Pig.SADDLE)
@@ -37,6 +39,9 @@ class KryptonPig(world: KryptonWorld) : KryptonAnimal(world, EntityTypes.PIG, AT
 
     companion object {
 
-        private val ATTRIBUTES = attributes().add(AttributeTypes.MAX_HEALTH, 10.0).add(AttributeTypes.MOVEMENT_SPEED, 0.25).build()
+        @JvmStatic
+        fun attributes(): AttributeSupplier.Builder = KryptonMob.attributes()
+            .add(AttributeTypes.MAX_HEALTH, 10.0)
+            .add(AttributeTypes.MOVEMENT_SPEED, 0.25)
     }
 }

@@ -24,7 +24,6 @@ import org.kryptonmc.api.item.ItemStack
 import org.kryptonmc.api.item.ItemTypes
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.item.KryptonItemStack
-import org.kryptonmc.krypton.item.meta.KryptonItemMeta
 import org.kryptonmc.krypton.world.KryptonWorld
 
 abstract class KryptonFireball(world: KryptonWorld, type: EntityType<out Fireball>) : KryptonAcceleratingProjectile(world, type), Fireball {
@@ -41,6 +40,6 @@ abstract class KryptonFireball(world: KryptonWorld, type: EntityType<out Firebal
 
     companion object {
 
-        private val DEFAULT_ITEM = KryptonItemStack(ItemTypes.FIRE_CHARGE, 1, KryptonItemMeta.DEFAULT)
+        private val DEFAULT_ITEM = KryptonItemStack(ItemTypes.FIRE_CHARGE)
     }
 }

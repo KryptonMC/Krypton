@@ -148,7 +148,7 @@ class SNBTParser(private val reader: StringReader) {
 
     @Suppress("UNCHECKED_CAST")
     private fun <T : Number> readArray(arrayType: Int, elementType: Int): List<T> {
-        val list = mutableListOf<T>()
+        val list = ArrayList<T>()
         while (true) {
             if (reader.peek() != LIST_END) {
                 val cursor = reader.cursor

@@ -19,8 +19,8 @@
 package org.kryptonmc.krypton.world.chunk
 
 import org.kryptonmc.api.world.biome.Biome
+import org.kryptonmc.krypton.util.Maths
 import org.kryptonmc.krypton.util.Quart
-import org.kryptonmc.krypton.util.clamp
 import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.world.BlockAccessor
 import org.kryptonmc.krypton.world.HeightAccessor
@@ -63,17 +63,17 @@ abstract class ChunkAccessor(
 
     private fun section(index: Int): ChunkSection = sectionArray[index]!!
 
-    fun getOrCreateHeightmap(type: Heightmap.Type): Heightmap = heightmaps.getOrPut(type) { Heightmap(this, type) }
+    fun getOrCreateHeightmap(type: Heightmap.Type): Heightmap = heightmaps.computeIfAbsent(type) { Heightmap(this, it) }
 
     fun setHeightmap(type: Heightmap.Type, data: LongArray) {
         getOrCreateHeightmap(type).setData(this, type, data)
     }
 
     fun getHeight(type: Heightmap.Type, x: Int, z: Int): Int {
-        var heightmap = heightmaps[type]
+        var heightmap = heightmaps.get(type)
         if (heightmap == null) {
             Heightmap.prime(this, EnumSet.of(type))
-            heightmap = heightmaps[type]!!
+            heightmap = heightmaps.get(type)!!
         }
         return heightmap.firstAvailable(x and 15, z and 15) - 1
     }
@@ -81,7 +81,7 @@ abstract class ChunkAccessor(
     override fun getNoiseBiome(x: Int, y: Int, z: Int): Biome {
         val minimumQuart = Quart.fromBlock(minimumBuildHeight)
         val maximumQuart = minimumQuart + Quart.fromBlock(height) - 1
-        val actualY = y.clamp(minimumQuart, maximumQuart)
+        val actualY = Maths.clamp(y, minimumQuart, maximumQuart)
         val sectionIndex = sectionIndex(Quart.toBlock(actualY))
         return section(sectionIndex).getNoiseBiome(x and 3, actualY and 3, z and 3)
     }

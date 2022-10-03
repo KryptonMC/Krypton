@@ -19,7 +19,7 @@
 package org.kryptonmc.krypton.shapes
 
 import org.kryptonmc.api.util.Direction
-import org.kryptonmc.krypton.util.clamp
+import org.kryptonmc.krypton.util.Maths
 
 class SliceDiscreteVoxelShape(
     private val parent: DiscreteVoxelShape,
@@ -44,7 +44,7 @@ class SliceDiscreteVoxelShape(
     private fun clampToShape(axis: Direction.Axis, value: Int): Int {
         val low = axis.select(startX, startY, startZ)
         val high = axis.select(endX, endY, endZ)
-        return value.clamp(low, high) - low
+        return Maths.clamp(value, low, high) - low
     }
 
     override fun toString(): String = "SubShape(parent=$parent, sizeX=$sizeX, sizeY=$sizeY, sizeZ=$sizeZ, startX=$startX, startY=$startY," +

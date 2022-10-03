@@ -95,7 +95,7 @@ class FilePackResources(path: Path) : AbstractPackResources(path) {
         private fun collectNamespaces(resources: FilePackResources): Set<String> {
             val zipFile = try {
                 resources.getOrCreateZipFile()
-            } catch (exception: IOException) {
+            } catch (_: IOException) {
                 return emptySet()
             }
             val entries = zipFile.entries()
@@ -105,7 +105,7 @@ class FilePackResources(path: Path) : AbstractPackResources(path) {
                 if (!entry.name.startsWith("${PackResources.DATA_FOLDER_NAME}/")) continue
                 val parts = SPLITTER.split(entry.name).toList()
                 if (parts.size <= 1) continue
-                val namespace = parts[1]
+                val namespace = parts.get(1)
                 if (namespace == namespace.lowercase()) namespaces.add(namespace) else resources.logWarning(namespace)
             }
             return namespaces.build()

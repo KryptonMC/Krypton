@@ -58,7 +58,7 @@ data class KryptonColor(override val value: Int) : Color {
 
         init {
             // Preload the values with some common, small constants
-            for (i in -128..127) {
+            for (i in -256..256) {
                 VALUES.put(i, KryptonColor(i))
             }
         }

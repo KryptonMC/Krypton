@@ -21,7 +21,7 @@ package org.kryptonmc.krypton.world
 import it.unimi.dsi.fastutil.objects.ObjectArrayList
 import org.kryptonmc.api.block.Blocks
 import org.kryptonmc.krypton.util.BitStorage
-import org.kryptonmc.krypton.util.ceillog2
+import org.kryptonmc.krypton.util.Maths
 import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.util.SimpleBitStorage
 import org.kryptonmc.krypton.util.serialization.EnumCodecs
@@ -33,8 +33,7 @@ import java.util.function.Predicate
 
 class Heightmap(private val chunk: ChunkAccessor, val type: Type) {
 
-    private val data: BitStorage = SimpleBitStorage((chunk.height + 1).ceillog2(), 256)
-    private val isOpaque = type.isOpaque
+    private val data: BitStorage = SimpleBitStorage(Maths.ceillog2(chunk.height + 1), 256)
     val rawData: LongArray
         get() = data.data
 

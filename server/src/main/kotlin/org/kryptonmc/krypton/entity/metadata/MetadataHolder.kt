@@ -53,13 +53,13 @@ class MetadataHolder(private val entity: KryptonEntity) {
     }
 
     @Suppress("UNCHECKED_CAST")
-    private fun <T> entry(key: MetadataKey<T>): Entry<T> = checkNotNull(itemsById[key.id] as? Entry<T>) {
+    private fun <T> entry(key: MetadataKey<T>): Entry<T> = checkNotNull(itemsById.get(key.id) as? Entry<T>) {
         "Could not find key $key for entity of type ${entity.type}!"
     }
 
     private fun <T> createItem(key: MetadataKey<T>, value: T) {
         val item = Entry(key, value)
-        itemsById[key.id] = item
+        itemsById.put(key.id, item)
         isEmpty = false
     }
 

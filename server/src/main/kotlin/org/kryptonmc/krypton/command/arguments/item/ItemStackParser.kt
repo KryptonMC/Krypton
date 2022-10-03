@@ -36,16 +36,43 @@ import org.kryptonmc.nbt.CompoundTag
 /**
  * A parser that can parse both item stacks and item stack predicates.
  */
-class ItemStackParser(val reader: StringReader, private val allowTags: Boolean) { // TODO: Tags for ItemStackPredicate etc.
+object ItemStackParser { // TODO: Tags for ItemStackPredicate etc.
 
-    fun parseItem(): ItemStackArgument = ItemStackArgument(readItem(reader), readNBT(reader))
+    /**
+     * Thrown when a user tries to parse an item stack with type AIR, which
+     * is not allowed (for hopefully obvious reasons).
+     */
+    @JvmField
+    val ID_INVALID_EXCEPTION: DynamicCommandExceptionType = DynamicCommandExceptionType {
+        Component.translatable("argument.item.id.invalid", Component.text(it.toString())).toMessage()
+    }
 
-    fun parsePredicate(): ItemStackPredicate {
+    /**
+     * Thrown when a user inputs an item tag and the parser is not allowed
+     * to parse item tags.
+     */
+    @JvmField
+    val TAG_DISALLOWED_EXCEPTION: SimpleCommandExceptionType = Component.translatable("argument.item.tag.disallowed").toExceptionType()
+
+    /**
+     * Thrown when a user inputs an item tag and the parser was unable to
+     * resolve the input to a valid item tag.
+     */
+    @JvmField
+    val UNKNOWN_ITEM_TAG: DynamicCommandExceptionType = DynamicCommandExceptionType {
+        Component.translatable("arguments.item.tag.unknown", Component.text(it.toString())).toMessage()
+    }
+
+    @JvmStatic
+    fun parseItem(reader: StringReader): ItemStackArgument = ItemStackArgument(readItem(reader), readNBT(reader))
+
+    @JvmStatic
+    fun parsePredicate(reader: StringReader, allowTags: Boolean): ItemStackPredicate {
         var tag: String? = null
         var item: ItemType? = null
         var data: CompoundTag? = null
 
-        if (reader.canRead() && reader.peek() == '#') tag = readTag(reader) else item = readItem(reader)
+        if (reader.canRead() && reader.peek() == '#') tag = readTag(reader, allowTags) else item = readItem(reader)
         if (reader.canRead() && reader.peek() == '{') data = readNBT(reader)
 
         return ItemStackPredicate {
@@ -61,6 +88,7 @@ class ItemStackParser(val reader: StringReader, private val allowTags: Boolean) 
         }
     }
 
+    @JvmStatic
     private fun readItem(reader: StringReader): ItemType {
         val i = reader.cursor
         while (reader.canRead() && isCharacterValid(reader.peek())) {
@@ -73,7 +101,8 @@ class ItemStackParser(val reader: StringReader, private val allowTags: Boolean) 
         return item
     }
 
-    private fun readTag(reader: StringReader): String {
+    @JvmStatic
+    private fun readTag(reader: StringReader, allowTags: Boolean): String {
         if (allowTags) {
             reader.expect('#')
             val i = reader.cursor
@@ -85,45 +114,18 @@ class ItemStackParser(val reader: StringReader, private val allowTags: Boolean) 
         throw TAG_DISALLOWED_EXCEPTION.createWithContext(reader)
     }
 
+    @JvmStatic
     private fun readNBT(reader: StringReader): CompoundTag? {
         if (reader.canRead() && reader.peek() == '{') return SNBTParser(reader).readCompound()
         return null
     }
 
-    companion object {
-
-        /**
-         * Thrown when a user tries to parse an item stack with type AIR, which
-         * is not allowed (for hopefully obvious reasons).
-         */
-        @JvmField
-        val ID_INVALID_EXCEPTION: DynamicCommandExceptionType = DynamicCommandExceptionType {
-            Component.translatable("argument.item.id.invalid", Component.text(it.toString())).toMessage()
-        }
-
-        /**
-         * Thrown when a user inputs an item tag and the parser is not allowed
-         * to parse item tags.
-         */
-        @JvmField
-        val TAG_DISALLOWED_EXCEPTION: SimpleCommandExceptionType = Component.translatable("argument.item.tag.disallowed").toExceptionType()
-
-        /**
-         * Thrown when a user inputs an item tag and the parser was unable to
-         * resolve the input to a valid item tag.
-         */
-        @JvmField
-        val UNKNOWN_ITEM_TAG: DynamicCommandExceptionType = DynamicCommandExceptionType {
-            Component.translatable("arguments.item.tag.unknown", Component.text(it.toString())).toMessage()
-        }
-
-        @JvmStatic
-        private fun isCharacterValid(character: Char): Boolean = character in '0'..'9' ||
-                character in 'a'..'z' ||
-                character == '_' ||
-                character == ':' ||
-                character == '/' ||
-                character == '.' ||
-                character == '-'
-    }
+    @JvmStatic
+    private fun isCharacterValid(character: Char): Boolean = character in '0'..'9' ||
+            character in 'a'..'z' ||
+            character == '_' ||
+            character == ':' ||
+            character == '/' ||
+            character == '.' ||
+            character == '-'
 }

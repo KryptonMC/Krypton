@@ -27,9 +27,9 @@ import org.kryptonmc.api.world.biome.Biome
 import org.kryptonmc.krypton.registry.KryptonRegistry
 import org.kryptonmc.krypton.util.BitStorage
 import org.kryptonmc.krypton.util.IntBiMap
+import org.kryptonmc.krypton.util.Maths
 import org.kryptonmc.krypton.util.SimpleBitStorage
 import org.kryptonmc.krypton.util.ZeroBitStorage
-import org.kryptonmc.krypton.util.ceillog2
 import org.kryptonmc.krypton.util.varIntBytes
 import org.kryptonmc.krypton.util.writeLongArray
 import org.kryptonmc.krypton.world.block.KryptonBlock
@@ -170,7 +170,7 @@ class PaletteHolder<T> : PaletteResizer<T> {
         fun calculateSize(): Int = 1 shl sizeBits * 3
 
         fun calculateSerializationBits(size: Int): Int {
-            val sizeBits = size.ceillog2()
+            val sizeBits = Maths.ceillog2(size)
             val config = configuration(sizeBits)
             if (config.factory === GlobalPalette.Factory) return sizeBits
             return config.bits
@@ -185,7 +185,7 @@ class PaletteHolder<T> : PaletteResizer<T> {
                     0 -> Configuration(SingleValuePalette.Factory, bits)
                     in 1..4 -> Configuration(ArrayPalette.Factory, 4)
                     in 5..8 -> Configuration(MapPalette.Factory, bits)
-                    else -> Configuration(GlobalPalette.Factory, registry.size.ceillog2())
+                    else -> Configuration(GlobalPalette.Factory, Maths.ceillog2(registry.size))
                 }
             }
             @JvmField
@@ -194,7 +194,7 @@ class PaletteHolder<T> : PaletteResizer<T> {
                 override fun createConfiguration(bits: Int): Configuration<Biome> = when (bits) {
                     0 -> Configuration(SingleValuePalette.Factory, bits)
                     in 1..3 -> Configuration(ArrayPalette.Factory, bits)
-                    else -> Configuration(GlobalPalette.Factory, registry.size.ceillog2())
+                    else -> Configuration(GlobalPalette.Factory, Maths.ceillog2(registry.size))
                 }
             }
         }

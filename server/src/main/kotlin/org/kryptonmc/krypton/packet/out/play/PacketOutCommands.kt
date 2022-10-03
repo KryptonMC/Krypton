@@ -49,8 +49,6 @@ import org.kryptonmc.krypton.util.writeKey
 import org.kryptonmc.krypton.util.writeString
 import org.kryptonmc.krypton.util.writeVarInt
 import org.kryptonmc.krypton.util.writeVarIntArray
-import java.util.Objects
-import java.util.concurrent.atomic.AtomicInteger
 import java.util.function.BiPredicate
 import java.util.function.Predicate
 
@@ -102,7 +100,14 @@ data class PacketOutCommands(val rootIndex: Int, val nodes: List<Node>) : Packet
                     data == other.data
         }
 
-        override fun hashCode(): Int = Objects.hash(flags, children, redirectNode, data)
+        override fun hashCode(): Int {
+            var result = 1
+            result = 31 * result + flags.hashCode()
+            result = 31 * result + children.contentHashCode()
+            result = 31 * result + redirectNode.hashCode()
+            result = 31 * result + data.hashCode()
+            return result
+        }
     }
 
     sealed interface NodeData : Writable
@@ -139,7 +144,7 @@ data class PacketOutCommands(val rootIndex: Int, val nodes: List<Node>) : Packet
         @JvmStatic
         private fun createNodes(enumerations: Object2IntMap<CommandNode<Sender>>): List<Node> {
             val nodes = ObjectArrayList<Node>(enumerations.size).apply { size(enumerations.size) }
-            Object2IntMaps.fastForEach(enumerations) { nodes[it.intValue] = createNode(it.key, enumerations) }
+            Object2IntMaps.fastForEach(enumerations) { nodes.set(it.intValue, createNode(it.key, enumerations)) }
             return nodes
         }
 
@@ -196,7 +201,7 @@ data class PacketOutCommands(val rootIndex: Int, val nodes: List<Node>) : Packet
         private fun validateEntries(nodes: List<Node>, predicate: BiPredicate<Node, IntSet>) {
             val set = IntOpenHashSet(IntSets.fromTo(0, nodes.size))
             while (set.isNotEmpty()) {
-                require(set.removeIf(Predicate { predicate.test(nodes[it], set) })) { "Server sent an impossible command tree!" }
+                require(set.removeIf(Predicate { predicate.test(nodes.get(it), set) })) { "Server sent an impossible command tree!" }
             }
         }
 
@@ -211,7 +216,7 @@ data class PacketOutCommands(val rootIndex: Int, val nodes: List<Node>) : Packet
                 val element = queue.removeFirst()
                 if (result.containsKey(element)) continue
                 val size = result.size
-                result[element] = size
+                result.put(element, size)
                 queue.addAll(element.children)
                 if (element.redirect != null) queue.add(element.redirect)
             }
@@ -221,7 +226,4 @@ data class PacketOutCommands(val rootIndex: Int, val nodes: List<Node>) : Packet
     }
 }
 
-private fun SuggestionProvider<Sender>?.id(): Key? {
-    if (this == null) return null
-    return SuggestionProviders.name(this)
-}
+private fun SuggestionProvider<Sender>?.id(): Key? = if (this == null) null else SuggestionProviders.name(this)

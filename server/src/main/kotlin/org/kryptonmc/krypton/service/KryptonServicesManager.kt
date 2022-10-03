@@ -45,19 +45,18 @@ class KryptonServicesManager(private val server: KryptonServer) : ServicesManage
     }
 
     override fun <T> register(plugin: Any, type: Class<T>, service: T): ServiceProvider<T> {
-        val container = requireNotNull(KryptonPluginManager.fromInstance(plugin)) { "Provided plugin $plugin is not a valid plugin instance!" }
+        val container = requireNotNull(server.pluginManager.fromInstance(plugin)) { "Provided plugin $plugin is not a valid plugin instance!" }
         return register(container, type, service)
     }
 
     override fun <T> register(plugin: PluginContainer, type: Class<T>, service: T): ServiceProvider<T> {
         val provider = KryptonServiceProvider(plugin, type, service)
-        providers[type] = provider
+        providers.put(type, provider)
         return provider
     }
 
-    @Suppress("UNCHECKED_CAST")
-    override fun <T> provide(clazz: Class<T>): T? = providers[clazz]?.service as? T
+    override fun <T> provide(clazz: Class<T>): T? = provider(clazz)?.service
 
     @Suppress("UNCHECKED_CAST")
-    override fun <T> provider(clazz: Class<T>): ServiceProvider<T>? = providers[clazz] as? ServiceProvider<T>
+    override fun <T> provider(clazz: Class<T>): ServiceProvider<T>? = providers.get(clazz) as? ServiceProvider<T>
 }

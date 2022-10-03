@@ -55,10 +55,10 @@ class RegionFileVersion private constructor(
         val NONE: RegionFileVersion = register(RegionFileVersion(3, { it }, { it }))
 
         @JvmStatic
-        fun fromId(id: Int): RegionFileVersion? = BY_ID[id]
+        fun fromId(id: Int): RegionFileVersion? = BY_ID.get(id)
 
         @JvmStatic
-        private fun register(version: RegionFileVersion): RegionFileVersion = version.apply { BY_ID[version.id] = version }
+        private fun register(version: RegionFileVersion): RegionFileVersion = version.apply { BY_ID.put(version.id, version) }
 
         @JvmStatic
         private fun register(id: Int, decompressor: Converter<InputStream>, compressor: Converter<OutputStream>): RegionFileVersion =

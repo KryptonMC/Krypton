@@ -24,27 +24,27 @@ import net.kyori.adventure.text.event.ClickEvent
 import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.text.format.TextDecoration
 import org.kryptonmc.api.command.Sender
+import org.kryptonmc.krypton.KryptonPlatform
 import org.kryptonmc.krypton.command.literal
 import org.kryptonmc.krypton.command.runs
 
 object InfoCommand : KryptonSubCommand {
 
-    private val KRYPTON = Component.text()
-        .content("Krypton ")
-        .color(KryptonColors.STANDARD_PURPLE)
-        .decorate(TextDecoration.BOLD)
-        .clickEvent(ClickEvent.openUrl("https://kryptonmc.org"))
+    private val MESSAGE = Component.text()
+        .append(Component.text("This server is running ", KryptonColors.LIGHTER_PURPLE))
+        .append(Component.text()
+            .content("Krypton ")
+            .color(KryptonColors.STANDARD_PURPLE)
+            .decorate(TextDecoration.BOLD)
+            .clickEvent(ClickEvent.openUrl("https://kryptonmc.org")))
+        .append(Component.text(KryptonPlatform.version, NamedTextColor.GREEN))
+        .append(Component.text(" for Minecraft ", KryptonColors.LIGHTER_PURPLE))
+        .append(Component.text(KryptonPlatform.minecraftVersion, NamedTextColor.GREEN))
+        .build()
 
     override val aliases: Sequence<String> = sequenceOf("about", "version")
 
     override fun register(): LiteralArgumentBuilder<Sender> = literal("info") {
-        runs {
-            it.source.sendMessage(Component.empty()
-                .append(Component.text("This server is running ", KryptonColors.LIGHTER_PURPLE))
-                .append(KRYPTON)
-                .append(Component.text(it.source.server.platform.version, NamedTextColor.GREEN))
-                .append(Component.text(" for Minecraft ", KryptonColors.LIGHTER_PURPLE))
-                .append(Component.text(it.source.server.platform.minecraftVersion, NamedTextColor.GREEN)))
-        }
+        runs { it.source.sendMessage(MESSAGE) }
     }
 }

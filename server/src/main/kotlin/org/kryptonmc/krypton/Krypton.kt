@@ -124,7 +124,9 @@ private class KryptonCLI : CliktCommand(
                 reference.get().stop()
             }
         }
-        val server = KryptonServer(config, KryptonProfileCache(userCacheFile), configFile, worldFolder)
+        val cache = KryptonProfileCache(userCacheFile)
+        cache.loadAll()
+        val server = KryptonServer(config, cache, configFile, worldFolder)
         reference.set(server)
         serverThread.start()
     }

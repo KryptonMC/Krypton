@@ -18,7 +18,9 @@
  */
 package org.kryptonmc.krypton.util
 
+import com.google.common.collect.AbstractIterator
 import com.google.common.collect.Iterators
+import com.google.common.collect.UnmodifiableIterator
 
 fun <T> Iterable<T>.findRelative(value: T?, reversed: Boolean): T? = if (reversed) findPrevious(value) else findNext(value)
 
@@ -48,4 +50,22 @@ fun <T> Iterable<T>.findNext(value: T?): T {
         if (iterator.hasNext()) return iterator.next()
     }
     return first
+}
+
+@Suppress("UNCHECKED_CAST")
+inline fun <I : Iterable<T>, I1 : Iterable<R>, T, reified R : T> I.ensureAllOfType(error: () -> Exception): I1 {
+    for (element in this) {
+        if (element !is R) throw error()
+    }
+    return this as I1
+}
+
+fun <T> Iterator<T?>.filterNotNull(): UnmodifiableIterator<T> = object : AbstractIterator<T>() {
+    override fun computeNext(): T? {
+        while (this@filterNotNull.hasNext()) {
+            val element = this@filterNotNull.next()
+            if (element != null) return element
+        }
+        return endOfData()
+    }
 }

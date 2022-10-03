@@ -29,7 +29,6 @@ import org.kryptonmc.api.adventure.toPlainText
 import org.kryptonmc.krypton.util.nbt.SNBTParser
 import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.Tag
-import org.kryptonmc.nbt.buildCompound
 import java.io.IOException
 import java.lang.RuntimeException
 import java.util.UUID
@@ -72,12 +71,9 @@ object NBTLegacyHoverEventSerializer : LegacyHoverEventSerializer {
     }
 
     override fun serializeShowItem(input: HoverEvent.ShowItem): Component {
-        val tag = buildCompound {
-            string(ITEM_TYPE, input.item().asString())
-            byte(ITEM_COUNT, input.count().toByte())
-        }
+        val tag = CompoundTag.immutableBuilder().string(ITEM_TYPE, input.item().asString()).byte(ITEM_COUNT, input.count().toByte())
         try {
-            if (input.nbt() != null) tag.put(ITEM_TAG, input.nbt()!!.get(SNBT_CODEC))
+            input.nbt()?.let { tag.put(ITEM_TAG, it.get(SNBT_CODEC)) }
         } catch (exception: CommandSyntaxException) {
             throw IOException(exception)
         }
@@ -85,11 +81,8 @@ object NBTLegacyHoverEventSerializer : LegacyHoverEventSerializer {
     }
 
     override fun serializeShowEntity(input: HoverEvent.ShowEntity, encoder: Codec.Encoder<Component, String, out RuntimeException>): Component {
-        val tag = buildCompound {
-            string(ENTITY_ID, input.id().toString())
-            string(ENTITY_TYPE, input.type().asString())
-        }
-        if (input.name() != null) tag.string(ENTITY_NAME, encoder.encode(input.name()!!))
+        val tag = CompoundTag.immutableBuilder().string(ENTITY_ID, input.id().toString()).string(ENTITY_TYPE, input.type().asString())
+        input.name()?.let { tag.string(ENTITY_NAME, encoder.encode(it)) }
         return Component.text(SNBT_CODEC.encode(tag.build()))
     }
 }
