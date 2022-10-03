@@ -22,15 +22,12 @@ import org.kryptonmc.api.world.biome.Biome
 import org.kryptonmc.api.world.biome.BiomeContainer
 import org.kryptonmc.api.world.biome.Biomes
 import org.kryptonmc.api.world.dimension.DimensionType
-import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.world.biome.BiomeManager
 import org.kryptonmc.krypton.world.biome.NoiseBiomeSource
 import org.kryptonmc.krypton.world.chunk.ChunkAccessor
 import org.kryptonmc.krypton.world.chunk.ChunkManager
 import org.kryptonmc.krypton.world.chunk.ChunkStatus
-import org.kryptonmc.krypton.world.data.WorldData
 import org.spongepowered.math.vector.Vector3i
-import java.util.Random
 
 interface WorldAccessor : BlockAccessor, NoiseBiomeSource, BiomeContainer {
 
@@ -43,7 +40,7 @@ interface WorldAccessor : BlockAccessor, NoiseBiomeSource, BiomeContainer {
     override val minimumBuildHeight: Int
         get() = dimensionType.minimumY
 
-    fun hasChunk(x: Int, z: Int): Boolean = chunkManager[x, z] != null
+    fun hasChunk(x: Int, z: Int): Boolean = chunkManager.get(x, z) != null
 
     fun hasChunkAt(x: Int, z: Int): Boolean = hasChunk(x shr 4, z shr 4)
 

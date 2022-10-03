@@ -24,7 +24,6 @@
 package org.kryptonmc.krypton.plugin.loader
 
 import com.google.gson.stream.JsonReader
-import com.google.inject.Guice
 import com.google.inject.Module
 import kotlinx.collections.immutable.toImmutableList
 import org.kryptonmc.api.plugin.InvalidPluginException
@@ -77,8 +76,8 @@ object PluginLoader {
         var foundBungeeBukkitPluginFile = false
         generateSequence { input.nextJarEntry }.forEach { entry ->
             if (entry.name == "plugin.yml" || entry.name == "bungee.yml") foundBungeeBukkitPluginFile = true
-            if (entry.name == "krypton-plugin-meta.json") JsonReader(input.reader()).use {
-                return SerializedPluginDescription.read(it)
+            if (entry.name == "krypton-plugin-meta.json") {
+                JsonReader(input.reader()).use { return SerializedPluginDescription.read(it) }
             }
         }
 

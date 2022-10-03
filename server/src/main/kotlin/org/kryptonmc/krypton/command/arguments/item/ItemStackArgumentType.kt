@@ -33,5 +33,5 @@ object ItemStackArgumentType : ArgumentType<ItemStackArgument> {
 
     override fun getExamples(): Collection<String> = EXAMPLES
 
-    override fun parse(reader: StringReader): ItemStackArgument = ItemStackParser(reader, false).parseItem()
+    override fun parse(reader: StringReader): ItemStackArgument = ItemStackParser.parseItem(reader)
 }

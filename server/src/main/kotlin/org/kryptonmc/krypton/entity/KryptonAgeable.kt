@@ -20,16 +20,10 @@ package org.kryptonmc.krypton.entity
 
 import org.kryptonmc.api.entity.Ageable
 import org.kryptonmc.api.entity.EntityType
-import org.kryptonmc.krypton.entity.attribute.AttributeSupplier
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.world.KryptonWorld
-import org.kryptonmc.nbt.CompoundTag
 
-abstract class KryptonAgeable(
-    world: KryptonWorld,
-    type: EntityType<out Ageable>,
-    attributeSupplier: AttributeSupplier
-) : KryptonMob(world, type, attributeSupplier), Ageable {
+abstract class KryptonAgeable(world: KryptonWorld, type: EntityType<out Ageable>) : KryptonMob(world, type), Ageable {
 
     final override var age: Int = 0
         set(value) {

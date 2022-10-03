@@ -23,10 +23,12 @@ import org.kryptonmc.api.entity.animal.Chicken
 import org.kryptonmc.api.entity.attribute.AttributeTypes
 import org.kryptonmc.api.item.ItemStack
 import org.kryptonmc.api.item.ItemTypes
+import org.kryptonmc.krypton.entity.KryptonMob
+import org.kryptonmc.krypton.entity.attribute.AttributeSupplier
 import org.kryptonmc.krypton.world.KryptonWorld
 import kotlin.random.Random
 
-class KryptonChicken(world: KryptonWorld) : KryptonAnimal(world, EntityTypes.CHICKEN, ATTRIBUTES), Chicken {
+class KryptonChicken(world: KryptonWorld) : KryptonAnimal(world, EntityTypes.CHICKEN), Chicken {
 
     override var eggCooldownTime: Int = Random.nextInt(FIVE_MINUTES_TICKS) + FIVE_MINUTES_TICKS
     override var isJockey: Boolean = false
@@ -36,8 +38,11 @@ class KryptonChicken(world: KryptonWorld) : KryptonAnimal(world, EntityTypes.CHI
     companion object {
 
         private const val FIVE_MINUTES_TICKS = 6000
-
-        private val ATTRIBUTES = attributes().add(AttributeTypes.MAX_HEALTH, 4.0).add(AttributeTypes.MOVEMENT_SPEED, 0.25).build()
         private val FOOD_ITEMS = setOf(ItemTypes.WHEAT_SEEDS, ItemTypes.MELON_SEEDS, ItemTypes.PUMPKIN_SEEDS, ItemTypes.BEETROOT_SEEDS)
+
+        @JvmStatic
+        fun attributes(): AttributeSupplier.Builder = KryptonMob.attributes()
+            .add(AttributeTypes.MAX_HEALTH, 4.0)
+            .add(AttributeTypes.MOVEMENT_SPEED, 0.25)
     }
 }

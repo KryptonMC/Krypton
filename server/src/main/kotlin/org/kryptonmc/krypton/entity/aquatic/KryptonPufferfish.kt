@@ -24,8 +24,6 @@ import org.kryptonmc.api.entity.aquatic.Pufferfish
 import org.kryptonmc.api.item.ItemTypes
 import org.kryptonmc.api.item.ItemType
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
-import org.kryptonmc.krypton.item.KryptonItemStack
-import org.kryptonmc.krypton.item.meta.KryptonItemMeta
 import org.kryptonmc.krypton.world.KryptonWorld
 
 class KryptonPufferfish(world: KryptonWorld) : KryptonFish(world, EntityTypes.PUFFERFISH), Pufferfish {

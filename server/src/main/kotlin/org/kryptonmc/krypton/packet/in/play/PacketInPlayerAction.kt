@@ -21,9 +21,7 @@ package org.kryptonmc.krypton.packet.`in`.play
 import io.netty.buffer.ByteBuf
 import org.kryptonmc.api.util.Direction
 import org.kryptonmc.krypton.packet.Packet
-import org.kryptonmc.krypton.util.decodeBlockX
-import org.kryptonmc.krypton.util.decodeBlockY
-import org.kryptonmc.krypton.util.decodeBlockZ
+import org.kryptonmc.krypton.util.Positioning
 import org.kryptonmc.krypton.util.readEnum
 import org.kryptonmc.krypton.util.readVarInt
 import org.kryptonmc.krypton.util.writeEnum
@@ -40,7 +38,7 @@ data class PacketInPlayerAction(val action: Action, val x: Int, val y: Int, val 
         location: Long,
         direction: Direction,
         sequence: Int
-    ) : this(action, location.decodeBlockX(), location.decodeBlockY(), location.decodeBlockZ(), direction, sequence)
+    ) : this(action, Positioning.decodeBlockX(location), Positioning.decodeBlockY(location), Positioning.decodeBlockZ(location), direction, sequence)
 
     override fun write(buf: ByteBuf) {
         buf.writeEnum(action)

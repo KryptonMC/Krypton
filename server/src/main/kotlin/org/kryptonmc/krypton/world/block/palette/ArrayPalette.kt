@@ -45,7 +45,7 @@ class ArrayPalette<T> private constructor(
             "Failed to initialise array palette with entries $entries! Entries size (${entries.size}) must be < palette size (${1 shl bits})!"
         }
         for (i in entries.indices) {
-            values[i] = entries[i]
+            values[i] = entries.get(i)
         }
     }
 

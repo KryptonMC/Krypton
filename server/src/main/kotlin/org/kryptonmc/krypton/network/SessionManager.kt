@@ -24,19 +24,16 @@ import org.kryptonmc.krypton.network.handlers.PlayHandler
 import org.kryptonmc.krypton.packet.FramedPacket
 import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.packet.out.status.ServerStatus
+import org.kryptonmc.krypton.util.Maths
 import org.kryptonmc.krypton.util.frame
-import org.kryptonmc.krypton.util.nextIntClamped
 import java.util.concurrent.ConcurrentHashMap
-import java.util.concurrent.locks.ReentrantReadWriteLock
 import java.util.function.Predicate
-import kotlin.concurrent.write
 import kotlin.math.min
 import kotlin.random.Random
 
 class SessionManager(private val server: KryptonServer) {
 
     private val sessions = ConcurrentHashMap.newKeySet<SessionHandler>()
-    private val lock = ReentrantReadWriteLock()
 
     val status: ServerStatus = ServerStatus(server.motd, ServerStatus.Players(server.maxPlayers, server.playerManager.players.size), null)
     private var statusInvalidated = false
@@ -44,11 +41,11 @@ class SessionManager(private val server: KryptonServer) {
     private var lastStatus = 0L
 
     fun add(session: SessionHandler) {
-        lock.write { sessions.add(session) }
+        sessions.add(session)
     }
 
     fun remove(session: SessionHandler) {
-        lock.write { sessions.remove(session) }
+        sessions.remove(session)
     }
 
     fun sendGrouped(packet: Packet, predicate: Predicate<KryptonPlayer> = Predicate { true }) {
@@ -74,8 +71,8 @@ class SessionManager(private val server: KryptonServer) {
             val playersOnline = server.playerManager.players.size
             status.players.online = playersOnline
             val sampleSize = min(playersOnline, MAXIMUM_SAMPLED_PLAYERS)
-            val playerOffset = Random.nextIntClamped(0, playersOnline - sampleSize)
-            val sample = Array(sampleSize) { server.playerManager.players[it + playerOffset].profile }.apply { shuffle() }
+            val playerOffset = Maths.nextInt(Random, 0, playersOnline - sampleSize)
+            val sample = Array(sampleSize) { server.playerManager.players.get(it + playerOffset).profile }.apply { shuffle() }
             status.players.sample = sample
         }
         sessions.forEach {

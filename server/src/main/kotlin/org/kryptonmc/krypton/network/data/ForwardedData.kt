@@ -19,7 +19,7 @@
 package org.kryptonmc.krypton.network.data
 
 import kotlinx.collections.immutable.PersistentList
-import org.kryptonmc.krypton.auth.KryptonProfileProperty
+import org.kryptonmc.api.auth.ProfileProperty
 import java.util.UUID
 
 interface ForwardedData {
@@ -29,6 +29,6 @@ interface ForwardedData {
 
     val uuid: UUID?
         get() = null
-    val properties: PersistentList<KryptonProfileProperty>?
+    val properties: PersistentList<ProfileProperty>?
         get() = null
 }

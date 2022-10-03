@@ -45,7 +45,6 @@ import org.kryptonmc.krypton.state.property.KryptonProperty
 import org.kryptonmc.krypton.util.BlockHitResult
 import org.kryptonmc.krypton.util.InteractionResult
 import org.kryptonmc.krypton.util.Maths
-import org.kryptonmc.krypton.util.clamp
 import org.kryptonmc.krypton.util.math.Mirror
 import org.kryptonmc.krypton.util.math.Rotation
 import org.kryptonmc.krypton.world.BlockAccessor
@@ -162,11 +161,9 @@ abstract class BlockBehaviour(protected val properties: Properties) : Block {
     // Shapes
     // ==============================
 
-    open fun getShape(state: KryptonBlockState, world: BlockAccessor, x: Int, y: Int, z: Int, context: CollisionContext): VoxelShape =
-        Shapes.block()
+    open fun getShape(state: KryptonBlockState, world: BlockAccessor, x: Int, y: Int, z: Int, context: CollisionContext): VoxelShape = Shapes.block()
 
-    open fun getOcclusionShape(state: KryptonBlockState, world: BlockAccessor, x: Int, y: Int, z: Int): VoxelShape =
-        state.getShape(world, x, y, z)
+    open fun getOcclusionShape(state: KryptonBlockState, world: BlockAccessor, x: Int, y: Int, z: Int): VoxelShape = state.getShape(world, x, y, z)
 
     open fun getCollisionShape(state: KryptonBlockState, world: BlockAccessor, x: Int, y: Int, z: Int, context: CollisionContext): VoxelShape =
         if (hasCollision) state.getShape(world, x, y, z) else Shapes.empty()
@@ -384,9 +381,9 @@ abstract class BlockBehaviour(protected val properties: Properties) : Block {
             if (offsetType == OffsetType.NONE) return Vector3d.ZERO
             val seed = Maths.getSeed(x, 0, z)
             val maxHorizontalOffset = block.maximumHorizontalOffset.toDouble()
-            val offsetX = ((((seed and 15L) / 15F) - 0.5) * 0.5).clamp(-maxHorizontalOffset, maxHorizontalOffset)
+            val offsetX = Maths.clamp((((seed and 15L) / 15F) - 0.5) * 0.5, -maxHorizontalOffset, maxHorizontalOffset)
             val offsetY = if (offsetType == OffsetType.XYZ) ((((seed shr 4) and 15L) / 15F) - 1.0) * block.maximumVerticalOffset else 0.0
-            val offsetZ = (((((seed shr 8) and 15) / 15F) - 0.5) * 0.5).clamp(-maxHorizontalOffset, maxHorizontalOffset)
+            val offsetZ = Maths.clamp(((((seed shr 8) and 15) / 15F) - 0.5) * 0.5, -maxHorizontalOffset, maxHorizontalOffset)
             return Vector3d(offsetX, offsetY, offsetZ)
         }
 

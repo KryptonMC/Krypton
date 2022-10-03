@@ -29,34 +29,38 @@ import java.util.function.Function
 import java.util.function.Predicate
 
 fun SuggestionsBuilder.suggestCoordinates(text: String, coordinates: TextCoordinates, predicate: Predicate<String>): CompletableFuture<Suggestions> {
+    val results = ArrayList<String>()
+    val (x, y, z) = coordinates
     if (text.isEmpty()) {
-        val (x, y, z) = coordinates
-        val suggestion = "$x $y $z"
-        if (!predicate.test(suggestion)) return suggest(emptySet())
-        return suggest(setOf(x.toString(), "$x $y", suggestion))
+        results.addIf("$x $y $z", predicate) {
+            add(x.toString())
+            add("$x $y")
+            add(it)
+        }
+    } else {
+        val components = text.split(" ")
+        if (components.size == 1) {
+            results.addIf("${components[0]} $y $z", predicate) {
+                add("${components[0]} $y")
+                add(it)
+            }
+        } else if (components.size == 2) {
+            results.addIf("${components[0]} ${components[1]} $z", predicate, MutableList<String>::add)
+        }
     }
-    val components = text.split(" ")
-    if (components.size == 1) {
-        val (_, y, z) = coordinates
-        val suggestion = "${components[0]} $y $z"
-        if (!predicate.test(suggestion)) return suggest(emptySet())
-        return suggest(setOf("${components[0]} $y", suggestion))
-    }
-    if (components.size == 2) {
-        val suggestion = "${components[0]} ${components[1]} ${coordinates.z}"
-        if (!predicate.test(suggestion)) return suggest(emptySet())
-        return suggest(setOf(suggestion))
-    }
-    return suggest(emptyList())
+    return suggest(results)
 }
 
-fun <T> Sequence<T>.suggestKey(
+private inline fun <T> MutableList<T>.addIf(input: String, predicate: Predicate<String>, action: MutableList<T>.(String) -> Unit) {
+    if (predicate.test(input)) action(input)
+}
+
+fun <T> Sequence<T>.suggestResource(
     builder: SuggestionsBuilder,
     provider: Function<T, Key>,
     messageProvider: Function<T, Message>
 ): CompletableFuture<Suggestions> {
-    val remaining = builder.remaining.lowercase()
-    filterResources(remaining, provider) { builder.suggest(provider.apply(it).toString(), messageProvider.apply(it)) }
+    filterResources(builder.remainingLowerCase, provider) { builder.suggest(provider.apply(it).toString(), messageProvider.apply(it)) }
     return builder.buildFuture()
 }
 
@@ -73,10 +77,7 @@ fun <T> Sequence<T>.filterResources(text: String, provider: Function<T, Key>, co
 }
 
 private fun SuggestionsBuilder.suggest(suggestions: Iterable<String>): CompletableFuture<Suggestions> {
-    suggestions.forEach {
-        if (!remainingLowerCase.matchesSubString(it.lowercase())) return@forEach
-        suggest(it)
-    }
+    suggestions.forEach { if (remainingLowerCase.matchesSubString(it.lowercase())) suggest(it) }
     return buildFuture()
 }
 

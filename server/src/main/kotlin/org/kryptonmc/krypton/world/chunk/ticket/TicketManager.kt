@@ -24,6 +24,7 @@ import org.kryptonmc.krypton.world.chunk.ChunkManager
 import org.kryptonmc.krypton.world.chunk.ChunkPosition
 import space.vectrix.flare.fastutil.Long2ObjectSyncMap
 import java.util.UUID
+import java.util.function.LongFunction
 import kotlin.math.abs
 import kotlin.math.max
 
@@ -45,7 +46,7 @@ class TicketManager(private val chunkManager: ChunkManager) {
     fun <T> removeTicket(x: Int, z: Int, type: TicketType<T>, level: Int, key: T) {
         if (type === TicketTypes.PLAYER) return
         val ticket = Ticket(type, level, key)
-        tickets[ChunkPosition.toLong(x, z)]?.remove(ticket)
+        tickets.get(ChunkPosition.toLong(x, z))?.remove(ticket)
         val radius = MAXIMUM_TICKET_LEVEL - level + 1
         reset(x, z, type, key, radius)
     }
@@ -68,7 +69,7 @@ class TicketManager(private val chunkManager: ChunkManager) {
             val calculatedLevel = calculateLevel(absDelta(xo - x, zo - z), ticket.level)
             if (calculatedLevel > MAXIMUM_TICKET_LEVEL) break
             val newTicket = Ticket(ticket.type, calculatedLevel, ticket.key)
-            tickets.getOrPut(pos) { SortedArraySet.create(4) }.add(newTicket)
+            tickets.computeIfAbsent(pos, LongFunction { SortedArraySet.create(4) }).add(newTicket)
             if (calculatedLevel <= PLAYER_TICKET_LEVEL) {
                 val loadedChunk = chunkManager.load(xo, zo, newTicket)
                 if (loadedChunk != null) onLoad()
@@ -91,7 +92,7 @@ class TicketManager(private val chunkManager: ChunkManager) {
             }
             if (calculatedLevel > MAXIMUM_TICKET_LEVEL) break
             val ticket = Ticket(TicketTypes.PLAYER, calculatedLevel, uuid)
-            tickets.getOrPut(pos) { SortedArraySet.create(4) }.add(ticket)
+            tickets.computeIfAbsent(pos, LongFunction { SortedArraySet.create(4) }).add(ticket)
             if (calculatedLevel <= PLAYER_TICKET_LEVEL) chunkManager.load(xo, zo, ticket)
             i++
         }
@@ -100,7 +101,7 @@ class TicketManager(private val chunkManager: ChunkManager) {
     private fun <T, K> reset(x: Int, z: Int, type: TicketType<T>, key: K, radius: Int, offset: Int = 0, shouldUnload: Boolean = true) {
         for (i in 0 until (radius * 2 + offset) * (radius * 2 + offset)) {
             val pos = Maths.chunkInSpiral(i, x, z)
-            val list = tickets[pos] ?: continue
+            val list = tickets.get(pos) ?: continue
             list.removeIf { it.type === type && it.key === key }
             if (list.isEmpty()) {
                 tickets.remove(pos)

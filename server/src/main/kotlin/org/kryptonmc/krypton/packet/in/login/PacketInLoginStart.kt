@@ -25,7 +25,6 @@ import org.kryptonmc.krypton.util.readString
 import org.kryptonmc.krypton.util.writeNullable
 import org.kryptonmc.krypton.util.writeString
 
-@Suppress("ArrayInDataClass")
 @JvmRecord
 data class PacketInLoginStart(val name: String, val publicKey: PlayerPublicKey.Data?) : Packet {
 

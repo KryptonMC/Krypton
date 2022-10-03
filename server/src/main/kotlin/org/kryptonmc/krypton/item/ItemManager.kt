@@ -28,7 +28,7 @@ import org.kryptonmc.krypton.item.handler.TridentHandler
 
 object ItemManager {
 
-    private val handlers = mutableMapOf<String, ItemHandler>()
+    private val handlers = HashMap<String, ItemHandler>()
 
     init {
         register(ItemTypes.WOODEN_SWORD, SwordHandler)
@@ -43,10 +43,10 @@ object ItemManager {
     }
 
     @JvmStatic
-    fun handler(type: ItemType): ItemHandler? = handlers[type.key().asString()]
+    fun handler(type: ItemType): ItemHandler? = handlers.get(type.key().asString())
 
     @JvmStatic
     fun register(type: ItemType, handler: ItemHandler) {
-        handlers[type.key().asString()] = handler
+        handlers.put(type.key().asString(), handler)
     }
 }

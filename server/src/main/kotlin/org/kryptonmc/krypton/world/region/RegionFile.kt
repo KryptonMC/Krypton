@@ -75,7 +75,7 @@ class RegionFile(
 
             val fileSize = Files.size(folder)
             for (i in 0 until SECTOR_INTS) {
-                val offset = offsets[i]
+                val offset = offsets.get(i)
                 if (offset == 0) continue
 
                 val sectorNumber = sectorNumber(offset)
@@ -247,20 +247,15 @@ class RegionFile(
 
     private fun offset(x: Int, z: Int): Int = offsets.get(offsetIndex(x, z))
 
-    private fun resolveExternalChunkPath(x: Int, z: Int): Path {
-        val name = "c.$x.$z$EXTERNAL_FILE_EXTENSION"
-        return externalFolder.resolve(name)
-    }
+    private fun resolveExternalChunkPath(x: Int, z: Int): Path = externalFolder.resolve("c.$x.$z$EXTERNAL_FILE_EXTENSION")
 
     private fun writeHeader() {
         header.position(0)
         channel.write(header, 0)
     }
 
-    private fun createExternalStub(): ByteBuffer = ByteBuffer.allocate(CHUNK_HEADER_SIZE)
-        .putInt(1)
-        .put((version.id or EXTERNAL_STREAM_FLAG).toByte())
-        .flip()
+    private fun createExternalStub(): ByteBuffer =
+        ByteBuffer.allocate(CHUNK_HEADER_SIZE).putInt(1).put((version.id or EXTERNAL_STREAM_FLAG).toByte()).flip()
 
     private fun padToFullSector() {
         val size = channel.size().toInt()

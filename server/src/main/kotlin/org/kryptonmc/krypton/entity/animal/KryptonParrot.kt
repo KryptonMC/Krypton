@@ -25,11 +25,13 @@ import org.kryptonmc.api.entity.animal.Parrot
 import org.kryptonmc.api.entity.animal.type.ParrotVariant
 import org.kryptonmc.api.entity.attribute.AttributeTypes
 import org.kryptonmc.api.item.ItemStack
+import org.kryptonmc.krypton.entity.KryptonMob
+import org.kryptonmc.krypton.entity.attribute.AttributeSupplier
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.world.KryptonWorld
 import kotlin.random.Random
 
-class KryptonParrot(world: KryptonWorld) : KryptonTamable(world, EntityTypes.PARROT, ATTRIBUTES), Parrot {
+class KryptonParrot(world: KryptonWorld) : KryptonTamable(world, EntityTypes.PARROT), Parrot {
 
     override var variant: ParrotVariant
         get() = TYPES.getOrNull(data.get(MetadataKeys.Parrot.TYPE)) ?: ParrotVariant.RED_AND_BLUE
@@ -77,12 +79,13 @@ class KryptonParrot(world: KryptonWorld) : KryptonTamable(world, EntityTypes.PAR
     companion object {
 
         private val TYPES = ParrotVariant.values()
-        private val ATTRIBUTES = attributes()
+        //private val TAME_FOOD = setOf(ItemTypes.WHEAT_SEEDS, ItemTypes.MELON_SEEDS, ItemTypes.PUMPKIN_SEEDS, ItemTypes.BEETROOT_SEEDS)
+        //private val POISONOUS_FOOD = ItemTypes.COOKIE
+
+        @JvmStatic
+        fun attributes(): AttributeSupplier.Builder = KryptonMob.attributes()
             .add(AttributeTypes.MAX_HEALTH, 6.0)
             .add(AttributeTypes.FLYING_SPEED, 0.4)
             .add(AttributeTypes.MOVEMENT_SPEED, 0.2)
-            .build()
-        //private val TAME_FOOD = setOf(ItemTypes.WHEAT_SEEDS, ItemTypes.MELON_SEEDS, ItemTypes.PUMPKIN_SEEDS, ItemTypes.BEETROOT_SEEDS)
-        //private val POISONOUS_FOOD = ItemTypes.COOKIE
     }
 }

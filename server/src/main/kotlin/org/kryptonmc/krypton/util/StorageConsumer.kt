@@ -20,5 +20,5 @@ package org.kryptonmc.krypton.util
 
 fun interface StorageConsumer {
 
-    operator fun invoke(index: Int, value: Int)
+    fun accept(index: Int, value: Int)
 }

@@ -39,7 +39,7 @@ object Futures {
             val size = result.size
             result.add(null)
             resultFutures[size] = it.whenComplete { value, exception ->
-                if (exception != null) consumer.accept(exception) else result[size] = value
+                if (exception != null) consumer.accept(exception) else result.set(size, value)
             }
         }
         return NoSpread.completableFutureAllOf(resultFutures).thenApply { result as ArrayList<V> }

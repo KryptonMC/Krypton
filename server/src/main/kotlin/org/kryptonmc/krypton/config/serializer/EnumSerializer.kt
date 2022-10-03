@@ -38,6 +38,6 @@ sealed class EnumSerializer<E : Enum<E>>(
     override fun deserialize(type: Type, source: Any): E = when (source) {
         is Int -> fromId.apply(source) ?: throw SerializationException("$source is not a valid $typeName ID!")
         is String -> fromName.apply(source.lowercase()) ?: throw SerializationException("$source is not a valid $typeName name!")
-        else -> throw SerializationException("Expected either an integer or a string for this $typeName, got ${source::class.simpleName}!")
+        else -> throw SerializationException("Expected either an integer or a string for this $typeName, got ${source.javaClass.simpleName}!")
     }
 }

@@ -38,9 +38,8 @@ import org.kryptonmc.krypton.util.writeVarIntArray
 object TagSerializer {
 
     @JvmStatic
-    fun serialize(): Map<ResourceKey<TagType<*>>, NetworkPayload> = Registries.TAG_TYPES
-        .transform { it.key to serializeTags(it.value) }
-        .filter { !it.value.isEmpty() }
+    fun serialize(): Map<ResourceKey<TagType<*>>, NetworkPayload> =
+        Registries.TAG_TYPES.transform { it.key to serializeTags(it.value) }.filter { !it.value.isEmpty() }
 
     @JvmStatic
     private fun <T : Any> serializeTags(type: TagType<T>): NetworkPayload {
@@ -48,7 +47,7 @@ object TagSerializer {
         KryptonTagManager.get(type).forEach { tag ->
             val list = IntArrayList(tag.values.size)
             tag.values.forEach { list.add(type.registry.downcast().idOf(it)) }
-            tags[tag.key()] = list.toIntArray()
+            tags.put(tag.key(), list.toIntArray())
         }
         return NetworkPayload(tags.build())
     }

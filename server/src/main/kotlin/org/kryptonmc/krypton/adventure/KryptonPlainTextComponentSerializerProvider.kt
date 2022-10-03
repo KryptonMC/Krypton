@@ -23,9 +23,8 @@ import java.util.function.Consumer
 
 class KryptonPlainTextComponentSerializerProvider : PlainTextComponentSerializer.Provider {
 
-    override fun plainTextSimple(): PlainTextComponentSerializer = PlainTextComponentSerializer.builder()
-        .flattener(KryptonAdventure.FLATTENER)
-        .build()
+    override fun plainTextSimple(): PlainTextComponentSerializer =
+        PlainTextComponentSerializer.builder().flattener(KryptonAdventure.FLATTENER).build()
 
     override fun plainText(): Consumer<PlainTextComponentSerializer.Builder> = Consumer {}
 }

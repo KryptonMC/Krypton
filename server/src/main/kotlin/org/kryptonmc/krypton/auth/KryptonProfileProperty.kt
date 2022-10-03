@@ -25,6 +25,7 @@ import com.google.gson.stream.JsonWriter
 import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.persistentListOf
 import org.kryptonmc.api.auth.ProfileProperty
+import org.kryptonmc.krypton.util.readPersistentList
 import java.io.StringReader
 
 @JvmRecord
@@ -39,29 +40,21 @@ data class KryptonProfileProperty(override val name: String, override val value:
         override fun of(name: String, value: String, signature: String?): ProfileProperty = KryptonProfileProperty(name, value, signature)
     }
 
-    object Adapter : TypeAdapter<ProfileProperty>() {
+    companion object : TypeAdapter<ProfileProperty>() {
 
         @JvmStatic
-        fun fromJsonList(json: String): PersistentList<KryptonProfileProperty> = readList(JsonReader(StringReader(json)))
+        fun fromJsonList(json: String): PersistentList<ProfileProperty> = readList(JsonReader(StringReader(json)))
 
         @JvmStatic
-        fun readList(reader: JsonReader): PersistentList<KryptonProfileProperty> {
+        fun readList(reader: JsonReader): PersistentList<ProfileProperty> {
             if (reader.peek() == JsonToken.NULL) {
                 reader.nextNull()
                 return persistentListOf()
             }
-
-            val builder = persistentListOf<KryptonProfileProperty>().builder()
-            reader.beginArray()
-            while (reader.hasNext()) {
-                val instance = read(reader)
-                if (instance != null) builder.add(instance)
-            }
-            reader.endArray()
-            return builder.build()
+            return reader.readPersistentList(::read)
         }
 
-        override fun read(reader: JsonReader): KryptonProfileProperty? {
+        override fun read(reader: JsonReader): ProfileProperty? {
             reader.beginObject()
 
             var name: String? = null
@@ -86,7 +79,6 @@ data class KryptonProfileProperty(override val name: String, override val value:
             writer.value(value.name)
             writer.name("value")
             writer.value(value.value)
-
             if (value.signature != null) {
                 writer.name("signature")
                 writer.value(value.signature)

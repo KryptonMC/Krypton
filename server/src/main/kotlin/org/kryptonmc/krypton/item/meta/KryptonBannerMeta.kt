@@ -22,7 +22,6 @@ import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.persistentListOf
 import org.kryptonmc.api.block.entity.banner.BannerPattern
 import org.kryptonmc.api.item.meta.BannerMeta
-import org.kryptonmc.krypton.util.mapPersistentList
 import org.kryptonmc.krypton.world.block.entity.banner.KryptonBannerPattern
 import org.kryptonmc.krypton.world.block.entity.banner.save
 import org.kryptonmc.nbt.CompoundTag
@@ -30,8 +29,7 @@ import org.kryptonmc.nbt.list
 
 class KryptonBannerMeta(data: CompoundTag) : AbstractItemMeta<KryptonBannerMeta>(data), BannerMeta {
 
-    override val patterns: PersistentList<BannerPattern> = data.getList("Items", CompoundTag.ID)
-        .mapPersistentList { KryptonBannerPattern.from(it as CompoundTag) }
+    override val patterns: PersistentList<BannerPattern> = data.getList("Items", CompoundTag.ID).mapCompound(KryptonBannerPattern::from)
 
     override fun copy(data: CompoundTag): KryptonBannerMeta = KryptonBannerMeta(data)
 

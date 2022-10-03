@@ -40,7 +40,7 @@ abstract class ServerConfigList<K, V : ServerConfigEntry<K>>(val path: Path) : I
 
     open fun key(key: K): String = key.toString()
 
-    open operator fun get(key: K): V? = map[key(key)]
+    open operator fun get(key: K): V? = map.get(key(key))
 
     open fun validatePath() {
         if (!path.exists()) {
@@ -57,7 +57,7 @@ abstract class ServerConfigList<K, V : ServerConfigEntry<K>>(val path: Path) : I
 
     fun add(entry: V) {
         if (contains(entry.key)) return
-        map[key(entry.key)] = entry
+        map.put(key(entry.key), entry)
         save()
     }
 
@@ -90,7 +90,7 @@ abstract class ServerConfigList<K, V : ServerConfigEntry<K>>(val path: Path) : I
                     LOGGER.error("Failed to parse ${path.fileName}! Delete it to reset it.")
                     continue
                 }
-                map[entry.key.toString()] = entry as V
+                map.put(entry.key.toString(), entry as V)
             }
             reader.endArray()
         }

@@ -19,7 +19,6 @@
 package org.kryptonmc.krypton.packet.out.login
 
 import io.netty.buffer.ByteBuf
-import java.util.Objects
 import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.util.readAllAvailableBytes
 import org.kryptonmc.krypton.util.readString
@@ -44,5 +43,11 @@ data class PacketOutPluginRequest(val id: Int, val channel: String, val data: By
         return id == (other as PacketOutPluginRequest).id && channel == other.channel && data.contentEquals(other.data)
     }
 
-    override fun hashCode(): Int = Objects.hash(id, channel, data)
+    override fun hashCode(): Int {
+        var result = 1
+        result = 31 * result + id.hashCode()
+        result = 31 * result + channel.hashCode()
+        result = 31 * result + data.contentHashCode()
+        return result
+    }
 }

@@ -25,7 +25,7 @@ import net.kyori.adventure.text.Component
 import org.kryptonmc.api.command.Sender
 import org.kryptonmc.krypton.command.InternalCommand
 import org.kryptonmc.krypton.command.argument
-import org.kryptonmc.krypton.command.arguments.entities.EntityArgument
+import org.kryptonmc.krypton.command.arguments.entities.EntityArgumentType
 import org.kryptonmc.krypton.command.arguments.entities.entityArgument
 import org.kryptonmc.krypton.command.permission
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
@@ -38,11 +38,11 @@ object MessageCommand : InternalCommand {
     override fun register(dispatcher: CommandDispatcher<Sender>) {
         val messageCommand = dispatcher.register(literal("msg") {
             permission(KryptonPermission.MESSAGE)
-            argument("player", EntityArgument.players()) {
+            argument("player", EntityArgumentType.players()) {
                 argument("message", StringArgumentType.string()) {
                     runs {
                         val source = it.source as? KryptonPlayer ?: return@runs
-                        val player = it.entityArgument("player").players(source)[0]
+                        val player = it.entityArgument("player").players(source).get(0)
                         val message = Component.text(it.argument<String>("message"))
                         source.sendMessage(Component.translatable("commands.message.display.outgoing", player.displayName, message))
                         player.sendMessage(Component.translatable("commands.message.display.incoming", source.displayName, message))

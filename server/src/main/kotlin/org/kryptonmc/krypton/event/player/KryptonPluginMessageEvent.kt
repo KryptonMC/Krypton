@@ -32,5 +32,11 @@ data class KryptonPluginMessageEvent(override val player: Player, override val c
         return player == (other as KryptonPluginMessageEvent).player && channel == other.channel && message.contentEquals(other.message)
     }
 
-    override fun hashCode(): Int = Objects.hash(player, channel, message)
+    override fun hashCode(): Int {
+        var result = 1
+        result = 31 * result + player.hashCode()
+        result = 31 * result + channel.hashCode()
+        result = 31 * result + message.contentHashCode()
+        return result
+    }
 }

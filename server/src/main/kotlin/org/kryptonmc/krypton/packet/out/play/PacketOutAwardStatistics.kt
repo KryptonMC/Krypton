@@ -36,9 +36,8 @@ import org.kryptonmc.krypton.util.writeVarInt
 @JvmRecord
 data class PacketOutAwardStatistics(val statistics: Object2IntMap<Statistic<*>>) : Packet {
 
-    constructor(buf: ByteBuf) : this(buf.readMap(::Object2IntOpenHashMap, { buf.readStatistic() }, { buf.readVarInt() }))
+    constructor(buf: ByteBuf) : this(buf.readMap(::Object2IntOpenHashMap, ByteBuf::readStatistic, ByteBuf::readVarInt))
 
-    @Suppress("UNCHECKED_CAST")
     override fun write(buf: ByteBuf) {
         buf.writeMap(statistics, { _, key -> buf.writeStatistic(key) }, ByteBuf::writeVarInt)
     }

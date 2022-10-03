@@ -18,10 +18,18 @@
  */
 package org.kryptonmc.krypton.world.block.pattern
 
+import it.unimi.dsi.fastutil.chars.Char2ObjectMaps
 import it.unimi.dsi.fastutil.chars.Char2ObjectOpenHashMap
 import it.unimi.dsi.fastutil.chars.CharArrayList
-import java.lang.reflect.Array as JLRArray
 import java.util.function.Predicate
+import kotlin.Array
+import kotlin.Char
+import kotlin.String
+import kotlin.Suppress
+import kotlin.apply
+import kotlin.check
+import kotlin.require
+import java.lang.reflect.Array as JLRArray
 
 class BlockPatternBuilder private constructor() {
 
@@ -31,7 +39,7 @@ class BlockPatternBuilder private constructor() {
     private var width = 0
 
     init {
-        lookup[' '] = Predicate { true }
+        lookup.put(' ', Predicate { true })
     }
 
     // This declares a series of replacement patterns that we can register predicates for.
@@ -46,25 +54,24 @@ class BlockPatternBuilder private constructor() {
             require(value.length == width) {
                 "Not all rows in the given aisle are the correct width! Expected $width, found one with ${value.length}!"
             }
-            value.forEach { if (!lookup.containsKey(it)) lookup[it] = null }
+            value.forEach { if (!lookup.containsKey(it)) lookup.put(it, null) }
         }
         pattern.add(aisle)
     }
 
     // This provides the predicates for individual symbols register in the above aisle.
-    fun where(symbol: Char, matcher: Predicate<BlockInWorld?>): BlockPatternBuilder = apply { lookup[symbol] = matcher }
+    fun where(symbol: Char, matcher: Predicate<BlockInWorld?>): BlockPatternBuilder = apply { lookup.put(symbol, matcher) }
 
     fun build(): BlockPattern = BlockPattern(createPattern())
 
     @Suppress("UNCHECKED_CAST")
     private fun createPattern(): Array<Array<Array<Predicate<BlockInWorld?>>>> {
         ensureAllCharactersMatched()
-        val pattern: Array<Array<Array<Predicate<BlockInWorld?>>>> =
-            JLRArray.newInstance(Predicate::class.java, pattern.size, height, width) as Array<Array<Array<Predicate<BlockInWorld?>>>>
+        val pattern = JLRArray.newInstance(Predicate::class.java, pattern.size, height, width) as Array<Array<Array<Predicate<BlockInWorld?>>>>
         for (x in 0 until this.pattern.size) {
             for (y in 0 until height) {
                 for (z in 0 until width) {
-                    pattern[x][y][z] = lookup[this.pattern[x][y][z]]
+                    pattern[x][y][z] = lookup.get(this.pattern[x][y][z])
                 }
             }
         }
@@ -73,7 +80,7 @@ class BlockPatternBuilder private constructor() {
 
     private fun ensureAllCharactersMatched() {
         val characters = CharArrayList()
-        lookup.forEach { if (it.value == null) characters.add(it.key) }
+        Char2ObjectMaps.fastForEach(lookup) { if (it.value == null) characters.add(it.charKey) }
         check(characters.isEmpty) { "Predicates for character(s) ${characters.joinToString(",")} are missing!" }
     }
 

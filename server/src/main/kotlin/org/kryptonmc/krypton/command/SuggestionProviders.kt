@@ -23,11 +23,10 @@ import com.mojang.brigadier.suggestion.SuggestionProvider
 import com.mojang.brigadier.suggestion.Suggestions
 import com.mojang.brigadier.suggestion.SuggestionsBuilder
 import net.kyori.adventure.key.Key
-import net.kyori.adventure.text.Component
-import org.kryptonmc.api.adventure.toMessage
 import org.kryptonmc.api.command.Sender
 import org.kryptonmc.api.entity.EntityType
 import org.kryptonmc.api.registry.Registries
+import org.kryptonmc.krypton.util.Keys
 import java.util.concurrent.CompletableFuture
 
 /**
@@ -40,7 +39,7 @@ import java.util.concurrent.CompletableFuture
  */
 object SuggestionProviders {
 
-    private val PROVIDERS_BY_NAME = mutableMapOf<Key, SuggestionProvider<Sender>>()
+    private val PROVIDERS_BY_NAME = HashMap<Key, SuggestionProvider<Sender>>()
     private val DEFAULT_NAME = Key.key("ask_server")
 
     /**
@@ -50,23 +49,17 @@ object SuggestionProviders {
     @JvmField
     val SUMMONABLE_ENTITIES: SuggestionProvider<Sender> = register(Key.key("summonable_entities")) { _, builder ->
         Registries.ENTITY_TYPE.values.asSequence()
-            .filter { it.isSummonable }
-            .suggestKey(builder, EntityType<*>::key) {
-                val key = Registries.ENTITY_TYPE.get(it)
-                Component.translatable("entity.${key.namespace()}.${key.value().replace("/", ".")}").toMessage()
-            }
+            .filter(EntityType<*>::isSummonable)
+            .suggestResource(builder, EntityType<*>::key) { Keys.translationComponent("entity", Registries.ENTITY_TYPE.get(it)) }
     }
 
     @JvmStatic
-    fun name(provider: SuggestionProvider<Sender>): Key {
-        if (provider is Wrapper) return provider.name
-        return DEFAULT_NAME
-    }
+    fun name(provider: SuggestionProvider<Sender>): Key = if (provider is Wrapper) provider.name else DEFAULT_NAME
 
     @JvmStatic
     private fun register(key: Key, provider: SuggestionProvider<Sender>): SuggestionProvider<Sender> {
         require(!PROVIDERS_BY_NAME.containsKey(key)) { "A command suggestion provider is already registered with the given key $key!" }
-        PROVIDERS_BY_NAME[key] = provider
+        PROVIDERS_BY_NAME.put(key, provider)
         return Wrapper(key, provider)
     }
 

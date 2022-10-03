@@ -62,7 +62,13 @@ data class PlayerPublicKey(val data: Data) {
             return expiryTime == (other as Data).expiryTime && key == other.key && signature.contentEquals(other.signature)
         }
 
-        override fun hashCode(): Int = Objects.hash(expiryTime, key, signature)
+        override fun hashCode(): Int {
+            var result = 1
+            result = 31 * result + expiryTime.hashCode()
+            result = 31 * result + key.hashCode()
+            result = 31 * result + signature.contentHashCode()
+            return result
+        }
     }
 
     companion object {

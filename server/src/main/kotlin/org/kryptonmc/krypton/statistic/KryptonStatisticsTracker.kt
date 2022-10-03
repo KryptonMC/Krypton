@@ -38,9 +38,8 @@ import org.kryptonmc.api.statistic.StatisticsTracker
 import org.kryptonmc.krypton.KryptonPlatform
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.packet.out.play.PacketOutAwardStatistics
+import org.kryptonmc.krypton.util.DataConversion
 import org.kryptonmc.krypton.util.logger
-import org.kryptonmc.krypton.util.sendDataConversionWarning
-import org.kryptonmc.krypton.util.upgradeData
 import java.io.IOException
 import java.io.Reader
 import java.nio.file.Files
@@ -77,10 +76,10 @@ class KryptonStatisticsTracker(private val player: KryptonPlayer, private val fi
     @Suppress("UNCHECKED_CAST")
     fun save() {
         try {
-            val map = mutableMapOf<StatisticType<*>, JsonObject>()
+            val map = HashMap<StatisticType<*>, JsonObject>()
             statistics.object2IntEntrySet().forEach {
                 val registry = it.key.type.registry as Registry<Any>
-                map.getOrPut(it.key.type) { JsonObject() }.addProperty(registry[it.key.value]!!.toString(), it.intValue)
+                map.computeIfAbsent(it.key.type) { JsonObject() }.addProperty(registry.get(it.key.value)!!.toString(), it.intValue)
             }
 
             val statsJson = JsonObject()
@@ -98,7 +97,7 @@ class KryptonStatisticsTracker(private val player: KryptonPlayer, private val fi
 
     fun send() {
         val map = Object2IntOpenHashMap<Statistic<*>>()
-        pendingUpdating.forEach { map[it] = get(it) }
+        pendingUpdating.forEach { map.put(it, get(it)) }
         player.session.send(PacketOutAwardStatistics(map))
     }
 
@@ -111,7 +110,7 @@ class KryptonStatisticsTracker(private val player: KryptonPlayer, private val fi
     override fun get(statistic: Key): Int = statistics.getInt(StatisticTypes.CUSTOM.get(statistic))
 
     override fun set(statistic: Statistic<*>, value: Int) {
-        statistics[statistic] = value
+        statistics.put(statistic, value)
         pendingUpdate.add(statistic)
     }
 
@@ -134,37 +133,37 @@ class KryptonStatisticsTracker(private val player: KryptonPlayer, private val fi
             }
 
             json as JsonObject
-            if (!json.has("DataVersion") || !json["DataVersion"].isJsonPrimitive) json.addProperty("DataVersion", OLD_VERSION)
-            val version = json["DataVersion"].asInt
+            if (!json.has("DataVersion") || !json.get("DataVersion").isJsonPrimitive) json.addProperty("DataVersion", OLD_VERSION)
+            val version = json.get("DataVersion").asInt
             // We won't upgrade data if use of the data converter is disabled.
             if (version < KryptonPlatform.worldVersion && !player.server.config.advanced.useDataConverter) {
-                LOGGER.sendDataConversionWarning("statistics data for player with UUID ${player.uuid}")
+                DataConversion.sendWarning(LOGGER, "statistics data for player with UUID ${player.uuid}")
                 error("Tried to load old statistics from version $version when data conversion is disabled!")
             }
 
             // Don't use data converter if the version isn't older than our version.
-            val data = json.upgradeData(MCTypeRegistry.STATS, json["DataVersion"].asInt)
-            if (data["stats"].asJsonObject.size() == 0) return
+            val data = DataConversion.upgrade(json, MCTypeRegistry.STATS, json.get("DataVersion").asInt)
+            if (data.get("stats").asJsonObject.size() == 0) return
 
-            val stats = data["stats"]?.asJsonObject ?: JsonObject()
+            val stats = data.get("stats")?.asJsonObject ?: JsonObject()
             stats.keys.forEach { key ->
-                if (!stats[key].isJsonObject) return@forEach
+                if (!stats.get(key).isJsonObject) return@forEach
                 val type = Registries.STATISTIC_TYPE.get(Key.key(key))
                 if (type == null) {
                     LOGGER.warn("Invalid statistic type found in $file! Could not recognise $key!")
                     return@forEach
                 }
-                val values = stats[key].asJsonObject
+                val values = stats.get(key).asJsonObject
                 values.keys.forEach { valueKey ->
-                    if (values[valueKey].isJsonPrimitive) {
+                    if (values.get(valueKey).isJsonPrimitive) {
                         val statistic = statistic(type, valueKey)
                         if (statistic != null) {
-                            statistics[statistic] = values[valueKey].asInt
+                            statistics.put(statistic, values.get(valueKey).asInt)
                         } else {
                             LOGGER.warn("Invalid statistic found in $file! Could not recognise key $valueKey!")
                         }
                     } else {
-                        LOGGER.warn("Invalid statistic found in $file! Could not recognise value ${values[valueKey]} for key $valueKey")
+                        LOGGER.warn("Invalid statistic found in $file! Could not recognise value ${values.get(valueKey)} for key $valueKey")
                     }
                 }
             }

@@ -35,10 +35,11 @@ object KryptonRegistryManager : RegistryManager {
         parent = KryptonRegistry(ResourceKeys.PARENT)
     }
 
-    override fun <T : Any> registry(key: ResourceKey<out Registry<T>>): Registry<T>? = parent[key as ResourceKey<Registry<out Any>>] as? Registry<T>
+    override fun <T : Any> registry(key: ResourceKey<out Registry<T>>): Registry<T>? =
+        parent.get(key as ResourceKey<Registry<out Any>>) as? Registry<T>
 
     override fun <T : Any> defaulted(key: ResourceKey<out Registry<T>>): DefaultedRegistry<T>? =
-        parent[key as ResourceKey<Registry<out Any>>] as? DefaultedRegistry<T>
+        parent.get(key as ResourceKey<Registry<out Any>>) as? DefaultedRegistry<T>
 
     override fun <T : Any> create(key: ResourceKey<out Registry<T>>): KryptonRegistry<T> =
         parent.register(key as ResourceKey<Registry<out Any>>, KryptonRegistry(key as ResourceKey<out Registry<T>>))

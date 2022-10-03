@@ -48,7 +48,7 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutChangeDifficulty
 import org.kryptonmc.krypton.packet.out.play.PacketOutWorldEvent
 import org.kryptonmc.krypton.packet.out.play.PacketOutSoundEffect
 import org.kryptonmc.krypton.server.PlayerManager
-import org.kryptonmc.krypton.util.clamp
+import org.kryptonmc.krypton.util.Maths
 import org.kryptonmc.krypton.world.biome.BiomeManager
 import org.kryptonmc.krypton.world.block.downcast
 import org.kryptonmc.krypton.world.block.state.KryptonBlockState
@@ -127,14 +127,14 @@ class KryptonWorld(
     private var oldRainLevel = 0F
     override var rainLevel: Float = 0F
         set(value) {
-            val clamped = value.clamp(0F, 1F)
+            val clamped = Maths.clamp(value, 0F, 1F)
             oldRainLevel = clamped
             field = clamped
         }
     private var oldThunderLevel = 0F
     override var thunderLevel: Float = 0F
         set(value) {
-            val clamped = value.clamp(0F, 1F)
+            val clamped = Maths.clamp(value, 0F, 1F)
             oldRainLevel = clamped
             field = clamped
         }
@@ -227,7 +227,7 @@ class KryptonWorld(
         return SEA_LEVEL + 1
     }
 
-    override fun getChunkAt(x: Int, z: Int): KryptonChunk? = chunkManager[x, z]
+    override fun getChunkAt(x: Int, z: Int): KryptonChunk? = chunkManager.get(x, z)
 
     override fun getChunk(x: Int, y: Int, z: Int): KryptonChunk? = getChunkAt(x shr 4, z shr 4)
 
@@ -251,7 +251,17 @@ class KryptonWorld(
     fun tick() {
         if (players.isEmpty()) return // don't tick the world if there's no players in it
 
-        // tick rain
+        tickWeather()
+        tickTime()
+        chunkManager.chunkMap.values.forEach { it.tick(chunkManager.players(it.position.toLong()).size) }
+
+        if (players.isNotEmpty()) entities.forEach {
+            if (it.isRemoved) return@forEach
+            it.tick()
+        }
+    }
+
+    private fun tickWeather() {
         val wasRaining = isRaining
         if (dimensionType.hasSkylight) {
             if (gameRules.get(GameRules.DO_WEATHER_CYCLE)) {
@@ -292,10 +302,10 @@ class KryptonWorld(
             }
             oldThunderLevel = thunderLevel
             thunderLevel = if (data.isThundering) thunderLevel + 0.01F else thunderLevel - 0.01F
-            thunderLevel = thunderLevel.clamp(0F, 1F)
+            thunderLevel = Maths.clamp(thunderLevel, 0F, 1F)
             oldRainLevel = rainLevel
             rainLevel = if (data.isRaining) rainLevel + 0.01F else rainLevel - 0.01F
-            rainLevel = rainLevel.clamp(0F, 1F)
+            rainLevel = Maths.clamp(rainLevel, 0F, 1F)
         }
 
         if (oldRainLevel != rainLevel) {
@@ -309,14 +319,6 @@ class KryptonWorld(
             sessionManager.sendGrouped(PacketOutGameEvent(newRainState)) { it.world === this }
             sessionManager.sendGrouped(PacketOutGameEvent(GameEvent.RAIN_LEVEL_CHANGE, rainLevel)) { it.world === this }
             sessionManager.sendGrouped(PacketOutGameEvent(GameEvent.THUNDER_LEVEL_CHANGE, thunderLevel)) { it.world === this }
-        }
-
-        tickTime()
-        chunkManager.chunkMap.values.forEach { it.tick(chunkManager.players(it.position.toLong()).size) }
-
-        if (players.isNotEmpty()) entities.forEach {
-            if (it.isRemoved) return@forEach
-            it.tick()
         }
     }
 

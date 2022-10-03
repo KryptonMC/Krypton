@@ -45,7 +45,6 @@ import java.time.Instant
 object PlayerSerializer : EntitySerializer<KryptonPlayer> {
 
     private val LOGGER = logger<KryptonPlayer>()
-    private val VANISH_SERVICE by lazy { KryptonServer.get().servicesManager.provide<VanishService>()!! }
 
     override fun load(entity: KryptonPlayer, data: CompoundTag) {
         LivingEntitySerializer.load(entity, data)
@@ -59,16 +58,7 @@ object PlayerSerializer : EntitySerializer<KryptonPlayer> {
         entity.foodExhaustionLevel = data.getFloat("foodExhaustionLevel")
         entity.foodSaturationLevel = data.getFloat("foodSaturationLevel")
 
-        if (data.contains("abilities", CompoundTag.ID)) {
-            val abilitiesData = data.getCompound("abilities")
-            entity.isInvulnerable = abilitiesData.getBoolean("invulnerable")
-            entity.isFlying = abilitiesData.getBoolean("flying")
-            entity.canFly = abilitiesData.getBoolean("mayfly")
-            entity.canBuild = abilitiesData.getBoolean("mayBuild")
-            entity.canInstantlyBuild = abilitiesData.getBoolean("instabuild")
-            entity.walkingSpeed = abilitiesData.getFloat("walkSpeed")
-            entity.flyingSpeed = abilitiesData.getFloat("flySpeed")
-        }
+        entity.abilities.load(data)
         entity.attribute(AttributeTypes.MOVEMENT_SPEED)!!.baseValue = entity.walkingSpeed.toDouble()
 
         // NBT data for entities sitting on the player's shoulders, e.g. parrots
@@ -85,7 +75,8 @@ object PlayerSerializer : EntitySerializer<KryptonPlayer> {
             entity.respawnForced = data.getBoolean("SpawnForced")
             entity.respawnAngle = data.getFloat("SpawnAngle")
             if (data.contains("SpawnDimension", StringTag.ID)) {
-                entity.respawnDimension = Codecs.DIMENSION.read(data.get("SpawnDimension"), NbtOps.INSTANCE).resultOrPartial(LOGGER::error)
+                entity.respawnDimension = Codecs.DIMENSION.read(data.get("SpawnDimension"), NbtOps.INSTANCE)
+                    .resultOrPartial(LOGGER::error)
                     .orElse(World.OVERWORLD)
             }
         }
@@ -93,7 +84,8 @@ object PlayerSerializer : EntitySerializer<KryptonPlayer> {
         if (data.contains("krypton", CompoundTag.ID)) {
             entity.hasJoinedBefore = true
             val kryptonData = data.getCompound("krypton")
-            if (VANISH_SERVICE is KryptonVanishService && kryptonData.getBoolean("vanished")) VANISH_SERVICE.vanish(entity)
+            val vanishService = entity.server.servicesManager.provide<VanishService>()!!
+            if (vanishService is KryptonVanishService && kryptonData.getBoolean("vanished")) vanishService.vanish(entity)
             entity.firstJoined = Instant.ofEpochMilli(kryptonData.getLong("firstJoined"))
         }
     }
@@ -110,16 +102,7 @@ object PlayerSerializer : EntitySerializer<KryptonPlayer> {
         int("foodTickTimer", entity.foodTickTimer)
         float("foodExhaustionLevel", entity.foodExhaustionLevel)
         float("foodSaturationLevel", entity.foodSaturationLevel)
-
-        compound("abilities") {
-            boolean("flying", entity.isGliding)
-            boolean("invulnerable", entity.isInvulnerable)
-            boolean("mayfly", entity.canFly)
-            boolean("mayBuild", entity.canBuild)
-            boolean("instabuild", entity.canInstantlyBuild)
-            float("walkSpeed", entity.walkingSpeed)
-            float("flySpeed", entity.flyingSpeed)
-        }
+        entity.abilities.save(this)
 
         val leftShoulder = entity.data.get(MetadataKeys.Player.LEFT_SHOULDER)
         val rightShoulder = entity.data.get(MetadataKeys.Player.RIGHT_SHOULDER)
@@ -133,7 +116,8 @@ object PlayerSerializer : EntitySerializer<KryptonPlayer> {
             int("SpawnZ", position.z())
             float("SpawnAngle", entity.respawnAngle)
             boolean("SpawnForced", entity.respawnForced)
-            Codecs.KEY.encodeStart(entity.respawnDimension.location, NbtOps.INSTANCE).resultOrPartial(LOGGER::error)
+            Codecs.KEY.encodeStart(entity.respawnDimension.location, NbtOps.INSTANCE)
+                .resultOrPartial(LOGGER::error)
                 .ifPresent { put("SpawnDimension", it) }
         }
 
@@ -147,7 +131,8 @@ object PlayerSerializer : EntitySerializer<KryptonPlayer> {
         }
 
         compound("krypton") {
-            if (VANISH_SERVICE is KryptonVanishService) boolean("vanished", entity.isVanished)
+            val vanishService = entity.server.servicesManager.provide<VanishService>()!!
+            if (vanishService is KryptonVanishService) boolean("vanished", entity.isVanished)
             long("firstJoined", entity.firstJoined.toEpochMilli())
             long("lastJoined", entity.lastJoined.toEpochMilli())
         }

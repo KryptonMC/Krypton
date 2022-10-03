@@ -20,13 +20,13 @@ package org.kryptonmc.krypton.packet.out.play.data
 
 import io.netty.buffer.ByteBuf
 import io.netty.buffer.Unpooled
-import java.util.Objects
 import org.kryptonmc.krypton.network.Writable
 import org.kryptonmc.krypton.util.readNBT
 import org.kryptonmc.krypton.util.readVarIntByteArray
 import org.kryptonmc.krypton.util.writeNBT
 import org.kryptonmc.krypton.util.writeVarInt
 import org.kryptonmc.krypton.util.writeVarIntByteArray
+import org.kryptonmc.krypton.world.chunk.ChunkSection
 import org.kryptonmc.krypton.world.chunk.KryptonChunk
 import org.kryptonmc.nbt.CompoundTag
 
@@ -51,7 +51,12 @@ data class ChunkPacketData(val heightmaps: CompoundTag, val data: ByteArray) : W
         return heightmaps == (other as ChunkPacketData).heightmaps && data.contentEquals(other.data)
     }
 
-    override fun hashCode(): Int = Objects.hash(heightmaps, data)
+    override fun hashCode(): Int {
+        var result = 1
+        result = 31 * result + heightmaps.hashCode()
+        result = 31 * result + data.contentHashCode()
+        return result
+    }
 
     companion object {
 
@@ -65,7 +70,7 @@ data class ChunkPacketData(val heightmaps: CompoundTag, val data: ByteArray) : W
 
         @JvmStatic
         private fun extractData(chunk: KryptonChunk): ByteArray {
-            val result = ByteArray(chunk.sections.sumOf { it.calculateSerializedSize() })
+            val result = ByteArray(chunk.sections.sumOf(ChunkSection::calculateSerializedSize))
             val buffer = Unpooled.wrappedBuffer(result).writerIndex(0)
             chunk.sections.forEach { it.write(buffer) }
             return result

@@ -21,11 +21,12 @@ package org.kryptonmc.krypton.command.arguments
 import com.mojang.brigadier.StringReader
 import com.mojang.brigadier.arguments.ArgumentType
 import com.mojang.brigadier.exceptions.DynamicCommandExceptionType
+import net.kyori.adventure.key.InvalidKeyException
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.text.Component
 import org.kryptonmc.api.adventure.toMessage
 import org.kryptonmc.api.registry.Registries
-import org.kryptonmc.krypton.util.nextKey
+import org.kryptonmc.krypton.command.toExceptionType
 
 /**
  * An argument type that parses entity types that are summonable, in the form
@@ -60,3 +61,26 @@ object SummonEntityArgument : ArgumentType<Key> {
 
     override fun getExamples(): Collection<String> = EXAMPLES
 }
+
+private val ERROR_INVALID = Component.translatable("argument.id.invalid").toExceptionType()
+
+private fun StringReader.nextKey(): Key {
+    val cursor = cursor
+    while (canRead() && peek().isAllowedInKey()) {
+        skip()
+    }
+    try {
+        return Key.key(string.substring(cursor, this.cursor))
+    } catch (_: InvalidKeyException) {
+        setCursor(cursor)
+        throw ERROR_INVALID.createWithContext(this)
+    }
+}
+
+private fun Char.isAllowedInKey(): Boolean = (this >= '0' && this <= '9') ||
+        (this >= 'a' && this <= 'z') ||
+        this == '_' ||
+        this == ':' ||
+        this == '/' ||
+        this == '.' ||
+        this == '-'

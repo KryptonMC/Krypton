@@ -18,8 +18,8 @@
  */
 package org.kryptonmc.krypton.auth.requests
 
-import com.github.benmanes.caffeine.cache.Cache
 import com.github.benmanes.caffeine.cache.Caffeine
+import org.kryptonmc.api.auth.GameProfile
 import org.kryptonmc.krypton.auth.KryptonGameProfile
 import org.kryptonmc.krypton.util.crypto.Encryption
 import org.kryptonmc.krypton.util.logger
@@ -27,7 +27,7 @@ import java.math.BigInteger
 import java.net.URI
 import java.net.http.HttpClient
 import java.net.http.HttpRequest
-import java.net.http.HttpResponse
+import java.net.http.HttpResponse.BodyHandlers
 import java.security.MessageDigest
 import java.util.concurrent.TimeUnit
 
@@ -41,16 +41,13 @@ object SessionService {
     private val LOGGER = logger<SessionService>()
 
     private val client = HttpClient.newHttpClient()
-    private val profiles: Cache<String, KryptonGameProfile> = Caffeine.newBuilder()
-        .expireAfterWrite(6, TimeUnit.HOURS)
-        .maximumSize(128)
-        .build()
+    private val profiles = Caffeine.newBuilder().expireAfterWrite(6, TimeUnit.HOURS).maximumSize(128).build<String, GameProfile>()
 
     /**
      * Authenticates a user with Mojang.
      */
     @JvmStatic
-    fun hasJoined(username: String, secret: ByteArray, ip: String): KryptonGameProfile? {
+    fun hasJoined(username: String, secret: ByteArray, ip: String): GameProfile? {
         val cachedProfile = profiles.getIfPresent(username)
         if (cachedProfile != null) return cachedProfile
 
@@ -60,17 +57,15 @@ object SessionService {
         shaDigest.update(Encryption.publicKey.encoded)
         val serverId = shaDigest.hexDigest()
 
-        val request = HttpRequest.newBuilder()
-            .uri(URI("$BASE_URL?username=$username&serverId=$serverId&ip=$ip"))
-            .build()
-        val response = client.send(request, HttpResponse.BodyHandlers.ofString())
+        val request = HttpRequest.newBuilder(URI("$BASE_URL?username=$username&serverId=$serverId&ip=$ip")).build()
+        val response = client.send(request, BodyHandlers.ofString())
         if (response.statusCode() != 200) { // Ensures no content responses are also a failure.
             LOGGER.debug("Error authenticating $username! Code: ${response.statusCode()}, body: ${response.body()}")
             LOGGER.error("Failed to verify username $username!")
             return null
         }
 
-        val profile = KryptonGameProfile.Adapter.fromJson(response.body())
+        val profile = KryptonGameProfile.fromJson(response.body())
         LOGGER.info("UUID of player ${profile.name} is ${profile.uuid}.")
         profiles.put(profile.name, profile)
         return profile

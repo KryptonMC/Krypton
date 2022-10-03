@@ -25,11 +25,13 @@ import org.kryptonmc.api.entity.attribute.AttributeTypes
 import org.kryptonmc.api.item.ItemStack
 import org.kryptonmc.api.tags.ItemTags
 import org.kryptonmc.krypton.entity.KryptonLivingEntity
+import org.kryptonmc.krypton.entity.KryptonMob
+import org.kryptonmc.krypton.entity.attribute.AttributeSupplier
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.world.KryptonWorld
 import java.util.UUID
 
-class KryptonFox(world: KryptonWorld) : KryptonAnimal(world, EntityTypes.FOX, ATTRIBUTES), Fox {
+class KryptonFox(world: KryptonWorld) : KryptonAnimal(world, EntityTypes.FOX), Fox {
 
     override var variant: FoxVariant
         get() = TYPES.getOrNull(data.get(MetadataKeys.Fox.TYPE)) ?: FoxVariant.RED
@@ -88,13 +90,13 @@ class KryptonFox(world: KryptonWorld) : KryptonAnimal(world, EntityTypes.FOX, AT
         private const val FLAG_SLEEPING = 5
         private const val FLAG_FACEPLANTED = 6
         private const val FLAG_DEFENDING = 7
-
         private val TYPES = FoxVariant.values()
-        private val ATTRIBUTES = attributes()
+
+        @JvmStatic
+        fun attributes(): AttributeSupplier.Builder = KryptonMob.attributes()
             .add(AttributeTypes.MOVEMENT_SPEED, 0.3)
             .add(AttributeTypes.MAX_HEALTH, 10.0)
             .add(AttributeTypes.FOLLOW_RANGE, 32.0)
             .add(AttributeTypes.ATTACK_DAMAGE, 2.0)
-            .build()
     }
 }

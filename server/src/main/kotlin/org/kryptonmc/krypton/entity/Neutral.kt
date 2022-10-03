@@ -56,7 +56,7 @@ interface Neutral {
             val targetId = tag.getUUID("AngryAt")
             entity.angerTarget = targetId
             if (targetId == null) return
-            val target = entity.world.entityManager[targetId] ?: return
+            val target = entity.world.entityManager.get(targetId) ?: return
             if (target is KryptonMob) entity.lastHurtByMob = target
             if (target.type === EntityTypes.PLAYER) entity.lastHurtByPlayer = target as KryptonPlayer
         }

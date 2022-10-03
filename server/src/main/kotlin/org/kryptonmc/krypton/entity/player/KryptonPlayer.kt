@@ -34,6 +34,7 @@ import net.kyori.adventure.text.Component
 import net.kyori.adventure.title.Title
 import net.kyori.adventure.title.TitlePart
 import net.kyori.adventure.util.TriState
+import org.kryptonmc.api.auth.GameProfile
 import org.kryptonmc.api.effect.particle.ParticleEffect
 import org.kryptonmc.api.effect.particle.data.ColorParticleData
 import org.kryptonmc.api.effect.particle.data.DirectionalParticleData
@@ -67,12 +68,12 @@ import org.kryptonmc.api.world.World
 import org.kryptonmc.api.world.dimension.DimensionType
 import org.kryptonmc.krypton.adventure.BossBarManager
 import org.kryptonmc.krypton.adventure.toItemStack
-import org.kryptonmc.krypton.auth.KryptonGameProfile
 import org.kryptonmc.krypton.commands.KryptonPermission
 import org.kryptonmc.krypton.entity.EquipmentSlots
 import org.kryptonmc.krypton.entity.KryptonEntity
 import org.kryptonmc.krypton.entity.KryptonEquipable
 import org.kryptonmc.krypton.entity.KryptonLivingEntity
+import org.kryptonmc.krypton.entity.attribute.AttributeSupplier
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.event.player.KryptonChangeGameModeEvent
 import org.kryptonmc.krypton.event.player.KryptonPerformActionEvent
@@ -115,8 +116,6 @@ import org.kryptonmc.krypton.statistic.KryptonStatisticsTracker
 import org.kryptonmc.krypton.util.Directions
 import org.kryptonmc.krypton.util.InteractionResult
 import org.kryptonmc.krypton.util.Positioning
-import org.kryptonmc.krypton.util.chunkX
-import org.kryptonmc.krypton.util.chunkZ
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.krypton.world.block.state.KryptonBlockState
 import org.kryptonmc.krypton.world.chunk.ChunkPosition
@@ -138,11 +137,11 @@ import kotlin.math.sqrt
 @Suppress("INAPPLICABLE_JVM_NAME")
 class KryptonPlayer(
     val session: SessionHandler,
-    override val profile: KryptonGameProfile,
+    override val profile: GameProfile,
     world: KryptonWorld,
     override val address: InetSocketAddress,
     val publicKey: PlayerPublicKey?
-) : KryptonLivingEntity(world, EntityTypes.PLAYER, ATTRIBUTES), Player, KryptonEquipable {
+) : KryptonLivingEntity(world, EntityTypes.PLAYER), Player, KryptonEquipable {
 
     var permissionFunction: PermissionFunction = DEFAULT_PERMISSION_FUNCTION
 
@@ -155,47 +154,41 @@ class KryptonPlayer(
     @Volatile
     var isLoaded: Boolean = false
 
-    override var canFly: Boolean = false
+    internal val abilities = Abilities()
+    override var canFly: Boolean
+        get() = abilities.canFly
         set(value) {
-            field = value
-            if (!isLoaded) return
+            abilities.canFly = value
             onAbilitiesUpdate()
         }
-    override var canBuild: Boolean = false
+    override var canBuild: Boolean
+        get() = abilities.canBuild
         set(value) {
-            field = value
-            if (!isLoaded) return
+            abilities.canBuild = value
             onAbilitiesUpdate()
         }
-    override var canInstantlyBuild: Boolean = false
+    override var canInstantlyBuild: Boolean
+        get() = abilities.canInstantlyBuild
         set(value) {
-            field = value
-            if (!isLoaded) return
+            abilities.canInstantlyBuild = value
             onAbilitiesUpdate()
         }
-    override var walkingSpeed: Float = DEFAULT_WALKING_SPEED
+    override var walkingSpeed: Float
+        get() = abilities.walkingSpeed
         set(value) {
-            field = value
-            if (!isLoaded) return
+            abilities.walkingSpeed = value
             onAbilitiesUpdate()
         }
-    override var flyingSpeed: Float = DEFAULT_FLYING_SPEED
+    override var flyingSpeed: Float
+        get() = abilities.flyingSpeed
         set(value) {
-            field = value
-            if (!isLoaded) return
+            abilities.flyingSpeed = value
             onAbilitiesUpdate()
         }
-    override var isFlying: Boolean = false
+    override var isFlying: Boolean
+        get() = abilities.flying
         set(value) {
-            field = value
-            if (!isLoaded) return
-            onAbilitiesUpdate()
-        }
-    override var isInvulnerable: Boolean
-        get() = super.isInvulnerable
-        set(value) {
-            super.isInvulnerable = value
-            if (!isLoaded) return
+            abilities.flying = value
             onAbilitiesUpdate()
         }
     override val inventory: KryptonPlayerInventory = KryptonPlayerInventory(this)
@@ -763,8 +756,8 @@ class KryptonPlayer(
 
         val oldCentralX = previousCentralX
         val oldCentralZ = previousCentralZ
-        val centralX = location.chunkX()
-        val centralZ = location.chunkZ()
+        val centralX = Positioning.toChunkCoordinate(location.floorX())
+        val centralZ = Positioning.toChunkCoordinate(location.floorZ())
         val radius = server.config.world.viewDistance
 
         if (firstLoad) {
@@ -806,17 +799,12 @@ class KryptonPlayer(
         }
 
         visibleChunks.addAll(newChunks)
-        world.chunkManager.addPlayer(
-            this,
-            centralX,
-            centralZ,
-            if (firstLoad) centralX else oldCentralX,
-            if (firstLoad) centralZ else oldCentralZ,
-            radius
-        ).thenRun {
+        val oldX = if (firstLoad) centralX else oldCentralX
+        val oldZ = if (firstLoad) centralZ else oldCentralZ
+        world.chunkManager.addPlayer(this, centralX, centralZ, oldX, oldZ, radius).thenRun {
             session.send(PacketOutSetCenterChunk(centralX, centralZ))
             newChunks.forEach {
-                val chunk = world.chunkManager[it] ?: return@forEach
+                val chunk = world.chunkManager.get(it) ?: return@forEach
                 session.write(chunk.cachedPacket)
             }
 
@@ -890,21 +878,19 @@ class KryptonPlayer(
 
     companion object {
 
-        private const val DEFAULT_WALKING_SPEED = 0.1F
-        private const val DEFAULT_FLYING_SPEED = 0.05F
         private const val FLYING_ACHIEVEMENT_MINIMUM_SPEED = 25
         private const val SWIMMING_EXHAUSTION_MODIFIER = 0.01F
         private const val SPRINTING_EXHAUSTION_MODIFIER = 0.1F
 
-        private val ATTRIBUTES = attributes()
+        private val DEFAULT_PERMISSION_FUNCTION = PermissionFunction.ALWAYS_NOT_SET
+        @JvmField
+        val DEFAULT_PERMISSIONS: PermissionProvider = PermissionProvider { DEFAULT_PERMISSION_FUNCTION }
+
+        @JvmStatic
+        fun attributes(): AttributeSupplier.Builder = KryptonLivingEntity.attributes()
             .add(AttributeTypes.ATTACK_DAMAGE, 1.0)
             .add(AttributeTypes.MOVEMENT_SPEED, 0.1)
             .add(AttributeTypes.ATTACK_SPEED)
             .add(AttributeTypes.LUCK)
-            .build()
-
-        private val DEFAULT_PERMISSION_FUNCTION = PermissionFunction.ALWAYS_NOT_SET
-        @JvmField
-        val DEFAULT_PERMISSIONS: PermissionProvider = PermissionProvider { DEFAULT_PERMISSION_FUNCTION }
     }
 }

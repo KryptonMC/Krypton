@@ -68,10 +68,7 @@ object MemoryKeys {
     @JvmField
     val UNIVERSAL_ANGER: MemoryKey<Boolean> = register("universal_anger", Codec.BOOLEAN)
 
-    @Suppress("UNCHECKED_CAST")
     @JvmStatic
-    private fun <T : Any> register(name: String, codec: Codec<T>): MemoryKey<T> {
-        val key = Key.key(name)
-        return InternalRegistries.MEMORIES.register(key, MemoryKey(key, codec) as MemoryKey<Any>) as MemoryKey<T>
-    }
+    private fun <T : Any> register(name: String, codec: Codec<T>): MemoryKey<T> =
+        InternalRegistries.MEMORIES.register(Key.key(name), MemoryKey(codec))
 }

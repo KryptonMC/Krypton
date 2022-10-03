@@ -23,11 +23,13 @@ import net.kyori.adventure.key.Key
 import org.kryptonmc.krypton.entity.player.RecipeBookSettings
 import org.kryptonmc.krypton.packet.CachedPacket
 import org.kryptonmc.krypton.packet.Packet
+import org.kryptonmc.krypton.util.readEnum
+import org.kryptonmc.krypton.util.readKey
+import org.kryptonmc.krypton.util.readList
 import org.kryptonmc.krypton.util.writeCollection
 import org.kryptonmc.krypton.util.writeEnum
 import org.kryptonmc.krypton.util.writeKey
 
-// TODO: What the hell was I thinking? This needs to be redone.
 @JvmRecord
 data class PacketOutUpdateRecipeBook(
     val action: Action,
@@ -35,6 +37,14 @@ data class PacketOutUpdateRecipeBook(
     val toHighlight: List<Key>,
     val settings: RecipeBookSettings
 ) : Packet {
+
+    constructor(buf: ByteBuf) : this(buf, buf.readEnum(), RecipeBookSettings.read(buf))
+
+    private constructor(
+        buf: ByteBuf,
+        action: Action,
+        settings: RecipeBookSettings
+    ) : this(action, buf.readList(ByteBuf::readKey), if (action == Action.INIT) buf.readList(ByteBuf::readKey) else emptyList(), settings)
 
     override fun write(buf: ByteBuf) {
         buf.writeEnum(action)

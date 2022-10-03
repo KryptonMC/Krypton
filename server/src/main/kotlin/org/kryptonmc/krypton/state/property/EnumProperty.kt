@@ -33,7 +33,7 @@ open class EnumProperty<E : Enum<E>>(name: String, type: Class<E>, values: Colle
         for (value in values) {
             val constantName = value.name.lowercase()
             require(!names.containsKey(constantName)) { "Multiple values have the same name $constantName!" }
-            names[constantName] = value
+            names.put(constantName, value)
         }
         var id = 0
         idLookupTable = IntArray(type.enumConstants.size)
@@ -43,7 +43,7 @@ open class EnumProperty<E : Enum<E>>(name: String, type: Class<E>, values: Colle
         }
     }
 
-    override fun fromString(value: String): E? = names[value]
+    override fun fromString(value: String): E? = names.get(value)
 
     override fun toString(value: E): String = value.name.lowercase()
 

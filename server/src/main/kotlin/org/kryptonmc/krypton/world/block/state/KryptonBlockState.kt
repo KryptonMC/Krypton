@@ -19,17 +19,11 @@
 package org.kryptonmc.krypton.world.block.state
 
 import kotlinx.collections.immutable.ImmutableMap
-import org.kryptonmc.api.block.Block
-import org.kryptonmc.api.block.PushReaction
-import org.kryptonmc.api.tags.Tag
 import org.kryptonmc.krypton.registry.KryptonRegistries
 import org.kryptonmc.krypton.state.property.KryptonProperty
 import org.kryptonmc.krypton.world.block.KryptonBlock
-import org.kryptonmc.krypton.world.fluid.KryptonFluidState
-import org.kryptonmc.krypton.world.material.Material
 import org.kryptonmc.serialization.Codec
 import org.kryptonmc.serialization.MapCodec
-import java.util.function.Predicate
 
 class KryptonBlockState(
     owner: KryptonBlock,

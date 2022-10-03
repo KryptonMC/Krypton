@@ -23,7 +23,7 @@ import org.kryptonmc.api.entity.projectile.FishingHook
 import org.kryptonmc.krypton.entity.KryptonEntity
 import org.kryptonmc.krypton.entity.metadata.MetadataKey
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
-import org.kryptonmc.krypton.util.nextFloatClamped
+import org.kryptonmc.krypton.util.Maths
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.spongepowered.math.vector.Vector3d
 import kotlin.random.Random
@@ -46,12 +46,12 @@ class KryptonFishingHook(world: KryptonWorld) : KryptonProjectile(world, EntityT
     override fun onDataUpdate(key: MetadataKey<*>) {
         if (key === MetadataKeys.FishingHook.HOOKED) {
             val id = data.get(MetadataKeys.FishingHook.HOOKED)
-            hooked = if (id > 0) world.entityManager[id - 1] else null
+            hooked = if (id > 0) world.entityManager.get(id - 1) else null
         }
 
         if (key === MetadataKeys.FishingHook.BITING) {
             isBiting = data.get(MetadataKeys.FishingHook.BITING)
-            if (isBiting) velocity = Vector3d(velocity.x(), (-0.4F * Random.nextFloatClamped(0.6F, 1F)).toDouble(), velocity.z())
+            if (isBiting) velocity = Vector3d(velocity.x(), (-0.4F * Maths.nextFloat(Random, 0.6F, 1F)).toDouble(), velocity.z())
         }
 
         super.onDataUpdate(key)

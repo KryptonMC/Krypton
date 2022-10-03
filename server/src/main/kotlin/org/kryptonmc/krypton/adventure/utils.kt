@@ -20,7 +20,6 @@ package org.kryptonmc.krypton.adventure
 
 import net.kyori.adventure.inventory.Book
 import net.kyori.adventure.text.Component
-import net.kyori.adventure.text.flattener.ComponentFlattener
 import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.text.format.TextColor
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer
@@ -32,10 +31,6 @@ import org.kryptonmc.krypton.item.KryptonItemStack
 import org.kryptonmc.krypton.item.meta.KryptonWrittenBookMeta
 import org.kryptonmc.krypton.util.GsonHelper
 import java.util.Locale
-
-inline fun <reified T : Component> ComponentFlattener.Builder.complexMapper(
-    noinline converter: (T, (Component) -> Unit) -> Unit
-): ComponentFlattener.Builder = complexMapper(T::class.java) { value, consumer -> converter(value) { consumer.accept(it) } }
 
 fun Book.toItemStack(): KryptonItemStack {
     if (this is KryptonWrittenBookMeta) return KryptonItemStack(ItemTypes.WRITTEN_BOOK, 1, this)
@@ -51,7 +46,7 @@ fun Book.toItemStack(): KryptonItemStack {
     } as KryptonItemStack
 }
 
-fun TextColor.serialize(): String {
+fun TextColor.serializeToNetwork(): String {
     if (this is NamedTextColor) return NamedTextColor.NAMES.key(this)!!
     return String.format(Locale.ROOT, "#%06X", value())
 }

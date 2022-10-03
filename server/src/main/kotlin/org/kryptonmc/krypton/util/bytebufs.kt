@@ -38,6 +38,7 @@ import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer
 import org.kryptonmc.api.adventure.toJson
 import org.kryptonmc.api.auth.GameProfile
 import org.kryptonmc.api.auth.ProfileProperty
+import org.kryptonmc.api.resource.ResourceKey
 import org.kryptonmc.krypton.auth.KryptonGameProfile
 import org.kryptonmc.krypton.auth.KryptonProfileProperty
 import org.kryptonmc.krypton.command.argument.ArgumentSerializers
@@ -263,7 +264,7 @@ fun ByteBuf.writeItem(item: KryptonItemStack) {
         return
     }
     writeBoolean(true)
-    writeVarInt(KryptonRegistries.ITEM.idOf(item.type))
+    writeId(KryptonRegistries.ITEM, item.type)
     writeByte(item.amount)
     writeNBT(item.meta.data)
 }
@@ -293,6 +294,10 @@ fun ByteBuf.writeKey(key: Key) {
     writeString(key.asString())
 }
 
+fun ByteBuf.writeResourceKey(key: ResourceKey<*>) {
+    writeKey(key.location)
+}
+
 fun ByteBuf.readKey(): Key = Key.key(readString())
 
 fun <T> ByteBuf.writeNullable(value: T?, writer: ByteBufWriter<T>) {
@@ -300,12 +305,8 @@ fun <T> ByteBuf.writeNullable(value: T?, writer: ByteBufWriter<T>) {
     if (value != null) writer.write(this, value)
 }
 
-fun <T> ByteBuf.readNullable(reader: ByteBufReader<T>): T? {
-    if (!readBoolean()) return null
-    return reader.read(this)
-}
+fun <T> ByteBuf.readNullable(reader: ByteBufReader<T>): T? = if (!readBoolean()) null else reader.read(this)
 
-@Suppress("UNCHECKED_CAST")
 fun <T : ArgumentType<*>> ByteBuf.writeArgumentType(type: T) {
     val entry = checkNotNull(ArgumentSerializers.get(type)) { "Argument type for node must have registered serializer!" }
     writeVarInt(entry.id)
@@ -318,9 +319,9 @@ fun ByteBuf.writeEnum(enum: Enum<*>) {
     writeVarInt(enum.ordinal)
 }
 
-fun <E> ByteBuf.writeCollection(collection: Collection<E>, action: (E) -> Unit) {
+inline fun <E> ByteBuf.writeCollection(collection: Collection<E>, action: (E) -> Unit) {
     writeVarInt(collection.size)
-    collection.forEach { action(it) }
+    collection.forEach(action)
 }
 
 fun <C : MutableCollection<E>, E> ByteBuf.readCollection(collectionCreator: IntFunction<C>, reader: (ByteBuf) -> E): C {
@@ -358,7 +359,7 @@ fun <M : MutableMap<K, V>, K, V> ByteBuf.readMap(mapCreator: IntFunction<M>, key
     val size = readVarInt()
     val map = mapCreator.apply(size)
     for (i in 0 until size) {
-        map[keyReader(this)] = valueReader(this)
+        map.put(keyReader(this), valueReader(this))
     }
     return map
 }
@@ -372,7 +373,7 @@ fun ByteBuf.writeGameProfile(profile: GameProfile) {
 fun ByteBuf.readGameProfile(): GameProfile {
     val uuid = readUUID()
     val name = readString()
-    return KryptonGameProfile(name, uuid, readPersistentList { readProfileProperty() })
+    return KryptonGameProfile(name, uuid, readPersistentList(ByteBuf::readProfileProperty))
 }
 
 fun ByteBuf.writeProfileProperty(property: ProfileProperty) {
@@ -381,7 +382,7 @@ fun ByteBuf.writeProfileProperty(property: ProfileProperty) {
     writeNullable(property.signature) { buf, signature -> buf.writeString(signature) }
 }
 
-fun ByteBuf.readProfileProperty(): ProfileProperty = KryptonProfileProperty(readString(), readString(), readNullable { readString() })
+fun ByteBuf.readProfileProperty(): ProfileProperty = KryptonProfileProperty(readString(), readString(), readNullable(ByteBuf::readString))
 
 fun <T : Any> ByteBuf.writeId(registry: KryptonRegistry<T>, value: T) {
     writeVarInt(registry.idOf(value))

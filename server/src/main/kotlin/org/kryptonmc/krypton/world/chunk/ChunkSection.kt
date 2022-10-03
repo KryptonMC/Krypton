@@ -46,7 +46,7 @@ class ChunkSection(
         recount()
     }
 
-    fun get(x: Int, y: Int, z: Int): KryptonBlockState = blocks[x, y, z]
+    fun get(x: Int, y: Int, z: Int): KryptonBlockState = blocks.get(x, y, z)
 
     fun set(x: Int, y: Int, z: Int, block: KryptonBlockState): KryptonBlockState {
         val oldBlock = blocks.getAndSet(x, y, z, block)
@@ -74,7 +74,7 @@ class ChunkSection(
         biomes.write(buf)
     }
 
-    override fun getNoiseBiome(x: Int, y: Int, z: Int): Biome = biomes[x, y, z]
+    override fun getNoiseBiome(x: Int, y: Int, z: Int): Biome = biomes.get(x, y, z)
 
     companion object {
 

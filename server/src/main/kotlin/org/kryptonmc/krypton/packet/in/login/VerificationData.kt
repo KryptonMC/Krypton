@@ -25,7 +25,6 @@ import org.kryptonmc.krypton.network.Writable
 import org.kryptonmc.krypton.util.crypto.Encryption
 import org.kryptonmc.krypton.util.readVarIntByteArray
 import org.kryptonmc.krypton.util.writeVarIntByteArray
-import java.util.Objects
 import java.util.OptionalLong
 
 @JvmRecord
@@ -53,8 +52,9 @@ data class VerificationData(val verifyToken: ByteArray?, val salt: OptionalLong,
 
     override fun write(buf: ByteBuf) {
         buf.writeBoolean(verifyToken != null)
-        if (verifyToken != null) buf.writeVarIntByteArray(verifyToken)
-        if (verifyToken == null) {
+        if (verifyToken != null) {
+            buf.writeVarIntByteArray(verifyToken)
+        } else {
             buf.writeLong(salt.orElseThrow())
             buf.writeVarIntByteArray(signature!!)
         }
@@ -63,12 +63,16 @@ data class VerificationData(val verifyToken: ByteArray?, val salt: OptionalLong,
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
-        return verifyToken.contentEquals((other as VerificationData).verifyToken) &&
-                salt == other.salt &&
-                signature.contentEquals(other.signature)
+        return verifyToken.contentEquals((other as VerificationData).verifyToken) && salt == other.salt && signature.contentEquals(other.signature)
     }
 
-    override fun hashCode(): Int = Objects.hash(verifyToken, salt, signature)
+    override fun hashCode(): Int {
+        var result = 1
+        result = 31 * result + verifyToken.contentHashCode()
+        result = 31 * result + salt.hashCode()
+        result = 31 * result + signature.contentHashCode()
+        return result
+    }
 
     companion object {
 

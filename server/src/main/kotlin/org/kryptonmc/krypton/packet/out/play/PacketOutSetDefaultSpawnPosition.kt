@@ -20,9 +20,7 @@ package org.kryptonmc.krypton.packet.out.play
 
 import io.netty.buffer.ByteBuf
 import org.kryptonmc.krypton.packet.Packet
-import org.kryptonmc.krypton.util.decodeBlockX
-import org.kryptonmc.krypton.util.decodeBlockY
-import org.kryptonmc.krypton.util.decodeBlockZ
+import org.kryptonmc.krypton.util.Positioning
 import org.kryptonmc.krypton.util.writeVector
 import org.spongepowered.math.vector.Vector3i
 
@@ -37,7 +35,12 @@ data class PacketOutSetDefaultSpawnPosition(val x: Int, val y: Int, val z: Int, 
 
     constructor(buf: ByteBuf) : this(buf.readLong(), buf.readFloat())
 
-    private constructor(encoded: Long, angle: Float) : this(encoded.decodeBlockX(), encoded.decodeBlockY(), encoded.decodeBlockZ(), angle)
+    private constructor(encoded: Long, angle: Float) : this(
+        Positioning.decodeBlockX(encoded),
+        Positioning.decodeBlockY(encoded),
+        Positioning.decodeBlockZ(encoded),
+        angle
+    )
 
     override fun write(buf: ByteBuf) {
         buf.writeVector(x, y, z)

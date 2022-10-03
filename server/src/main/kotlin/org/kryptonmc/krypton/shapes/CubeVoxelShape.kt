@@ -20,8 +20,7 @@ package org.kryptonmc.krypton.shapes
 
 import it.unimi.dsi.fastutil.doubles.DoubleList
 import org.kryptonmc.api.util.Direction
-import org.kryptonmc.krypton.util.clamp
-import org.kryptonmc.krypton.util.floor
+import org.kryptonmc.krypton.util.Maths
 
 class CubeVoxelShape(shape: DiscreteVoxelShape) : VoxelShape(shape) {
 
@@ -29,7 +28,7 @@ class CubeVoxelShape(shape: DiscreteVoxelShape) : VoxelShape(shape) {
 
     override fun findIndex(axis: Direction.Axis, position: Double): Int {
         val size = shape.size(axis).toDouble()
-        return (position * size).clamp(-1.0, size).floor()
+        return Maths.floor(Maths.clamp(position * size, -1.0, size))
     }
 
     override fun toString(): String = "CubeVoxelShape(shape=$shape)"

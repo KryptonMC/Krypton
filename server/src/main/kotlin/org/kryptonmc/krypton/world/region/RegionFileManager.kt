@@ -35,11 +35,7 @@ class RegionFileManager(private val folder: Path, private val synchronizeWrites:
     private val regionCache = Long2ObjectLinkedOpenHashMap<RegionFile>()
     private val regionCacheLock = ReentrantLock()
 
-    fun read(x: Int, z: Int): CompoundTag? {
-        val file = getRegionFile(x, z)
-        val input = file.getChunkDataInputStream(x, z) ?: return null
-        return input.use { TagIO.read(it) }
-    }
+    fun read(x: Int, z: Int): CompoundTag? = getRegionFile(x, z).getChunkDataInputStream(x, z)?.use(TagIO::read)
 
     fun write(x: Int, z: Int, data: CompoundTag?) {
         val file = getRegionFile(x, z)
@@ -66,11 +62,11 @@ class RegionFileManager(private val folder: Path, private val synchronizeWrites:
     }
 
     fun flush() {
-        regionCacheLock.withLock { regionCache.values.forEach { it.flush() } }
+        regionCacheLock.withLock { regionCache.values.forEach(RegionFile::flush) }
     }
 
     override fun close() {
-        regionCacheLock.withLock { regionCache.values.forEach { it.close() } }
+        regionCacheLock.withLock { regionCache.values.forEach(RegionFile::close) }
     }
 
     companion object {

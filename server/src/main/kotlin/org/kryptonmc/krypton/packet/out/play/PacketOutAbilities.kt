@@ -33,12 +33,12 @@ data class PacketOutAbilities(
 ) : Packet {
 
     constructor(player: KryptonPlayer) : this(
-        player.isInvulnerable,
-        player.isGliding,
-        player.canFly,
-        player.canInstantlyBuild,
-        player.flyingSpeed,
-        player.walkingSpeed
+        player.abilities.invulnerable,
+        player.abilities.flying,
+        player.abilities.canFly,
+        player.abilities.canInstantlyBuild,
+        player.abilities.flyingSpeed,
+        player.abilities.walkingSpeed
     )
 
     constructor(buf: ByteBuf) : this(buf.readByte().toInt(), buf.readFloat(), buf.readFloat())

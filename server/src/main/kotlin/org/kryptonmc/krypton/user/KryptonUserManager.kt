@@ -26,9 +26,8 @@ import org.kryptonmc.api.user.UserManager
 import org.kryptonmc.krypton.KryptonPlatform
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.auth.requests.ApiService
+import org.kryptonmc.krypton.util.DataConversion
 import org.kryptonmc.krypton.util.logger
-import org.kryptonmc.krypton.util.sendDataConversionWarning
-import org.kryptonmc.krypton.util.upgradeData
 import org.kryptonmc.krypton.util.pool.daemonThreadFactory
 import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.IntTag
@@ -44,14 +43,14 @@ class KryptonUserManager(private val server: KryptonServer) : UserManager {
     private val executor = Executors.newSingleThreadExecutor(daemonThreadFactory("Krypton User Data Loader"))
 
     fun updateUser(uuid: UUID, data: CompoundTag) {
-        users[uuid]?.data = data
+        users.get(uuid)?.data = data
     }
 
-    override fun get(uuid: UUID): User? = users[uuid]
+    override fun get(uuid: UUID): User? = users.get(uuid)
 
     override fun get(name: String): User? {
         val profile = server.profileCache.get(name) ?: return null
-        return users[profile.uuid]
+        return users.get(profile.uuid)
     }
 
     override fun load(uuid: UUID): CompletableFuture<User?> {
@@ -75,18 +74,18 @@ class KryptonUserManager(private val server: KryptonServer) : UserManager {
         val file = server.playerManager.dataManager.folder.resolve("${profile.uuid}.dat")
         val nbt = try {
             TagIO.read(file, TagCompression.GZIP)
-        } catch (exception: Exception) {
+        } catch (_: Exception) {
             return null
         }
 
         val version = if (nbt.contains("DataVersion", IntTag.ID)) nbt.getInt("DataVersion") else -1
         // We won't upgrade data if use of the data converter is disabled.
         if (version < KryptonPlatform.worldVersion && !server.config.advanced.useDataConverter) {
-            LOGGER.sendDataConversionWarning("data for user with UUID ${profile.uuid}")
+            DataConversion.sendWarning(LOGGER, "data for user with UUID ${profile.uuid}")
             error("Tried to load old user from version $version when data conversion is disabled!")
         }
 
-        return KryptonUser(profile, nbt.upgradeData(MCTypeRegistry.PLAYER, version), server)
+        return KryptonUser(profile, DataConversion.upgrade(nbt, MCTypeRegistry.PLAYER, version), server)
     }
 
     companion object {

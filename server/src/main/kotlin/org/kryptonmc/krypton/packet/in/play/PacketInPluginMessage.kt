@@ -26,7 +26,6 @@ import org.kryptonmc.krypton.util.readKey
 import org.kryptonmc.krypton.util.writeKey
 import org.kryptonmc.krypton.util.writeVarIntByteArray
 
-@Suppress("ArrayInDataClass")
 @JvmRecord
 data class PacketInPluginMessage(val channel: Key, val data: ByteArray) : Packet {
 
@@ -35,5 +34,18 @@ data class PacketInPluginMessage(val channel: Key, val data: ByteArray) : Packet
     override fun write(buf: ByteBuf) {
         buf.writeKey(channel)
         buf.writeVarIntByteArray(data)
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+        return channel == (other as PacketInPluginMessage).channel && data.contentEquals(other.data)
+    }
+
+    override fun hashCode(): Int {
+        var result = 1
+        result = 31 * result + channel.hashCode()
+        result = 31 * result + data.contentHashCode()
+        return result
     }
 }

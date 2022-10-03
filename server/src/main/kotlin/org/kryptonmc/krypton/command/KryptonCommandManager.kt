@@ -77,10 +77,7 @@ import kotlin.concurrent.write
 import kotlin.math.max
 import kotlin.math.min
 
-object KryptonCommandManager : CommandManager {
-
-    private val LOGGER = logger<CommandManager>()
-    private const val ERROR_MESSAGE_CUTOFF_THRESHOLD = 10
+class KryptonCommandManager : CommandManager {
 
     @GuardedBy("lock")
     private val dispatcher = CommandDispatcher<Sender>() // Reads and writes MUST be locked by this lock!
@@ -196,4 +193,10 @@ object KryptonCommandManager : CommandManager {
     fun parse(sender: Sender, input: String): ParseResults<Sender> = lock.read { dispatcher.parse(input, sender) }
 
     private fun parse(sender: Sender, reader: StringReader): ParseResults<Sender> = lock.read { dispatcher.parse(reader, sender) }
+
+    companion object {
+
+        private val LOGGER = logger<CommandManager>()
+        private const val ERROR_MESSAGE_CUTOFF_THRESHOLD = 10
+    }
 }

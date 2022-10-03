@@ -22,10 +22,9 @@ import org.kryptonmc.krypton.shapes.CollisionContext
 import org.kryptonmc.krypton.shapes.Shapes
 import org.kryptonmc.krypton.shapes.VoxelShape
 import org.kryptonmc.krypton.world.BlockAccessor
-import org.kryptonmc.krypton.world.block.state.BlockBehaviour
 import org.kryptonmc.krypton.world.block.state.KryptonBlockState
 
-class AirBlock(properties: BlockBehaviour.Properties) : KryptonBlock(properties) {
+class AirBlock(properties: Properties) : KryptonBlock(properties) {
 
     override fun getRenderShape(state: KryptonBlockState): RenderShape = RenderShape.INVISIBLE
 

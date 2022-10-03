@@ -22,15 +22,10 @@ import org.kryptonmc.api.entity.EntityType
 import org.kryptonmc.api.entity.aquatic.AquaticAnimal
 import org.kryptonmc.api.world.damage.type.DamageTypes
 import org.kryptonmc.krypton.entity.KryptonMob
-import org.kryptonmc.krypton.entity.attribute.AttributeSupplier
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.krypton.world.damage.KryptonDamageSource
 
-abstract class KryptonAquaticAnimal(
-    world: KryptonWorld,
-    type: EntityType<out AquaticAnimal>,
-    attributeSupplier: AttributeSupplier
-) : KryptonMob(world, type, attributeSupplier), AquaticAnimal {
+abstract class KryptonAquaticAnimal(world: KryptonWorld, type: EntityType<out AquaticAnimal>) : KryptonMob(world, type), AquaticAnimal {
 
     final override val pushedByFluid: Boolean
         get() = false

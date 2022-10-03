@@ -21,9 +21,7 @@ package org.kryptonmc.krypton.packet.out.play
 import io.netty.buffer.ByteBuf
 import org.kryptonmc.krypton.world.WorldEvent
 import org.kryptonmc.krypton.packet.Packet
-import org.kryptonmc.krypton.util.decodeBlockX
-import org.kryptonmc.krypton.util.decodeBlockY
-import org.kryptonmc.krypton.util.decodeBlockZ
+import org.kryptonmc.krypton.util.Positioning
 import org.kryptonmc.krypton.util.writeVector
 import org.spongepowered.math.vector.Vector3i
 
@@ -44,7 +42,7 @@ data class PacketOutWorldEvent(val event: WorldEvent, val x: Int, val y: Int, va
         encoded: Long,
         data: Int,
         isGlobal: Boolean
-    ) : this(event, encoded.decodeBlockX(), encoded.decodeBlockY(), encoded.decodeBlockZ(), data, isGlobal)
+    ) : this(event, Positioning.decodeBlockX(encoded), Positioning.decodeBlockY(encoded), Positioning.decodeBlockZ(encoded), data, isGlobal)
 
     override fun write(buf: ByteBuf) {
         buf.writeInt(event.id)

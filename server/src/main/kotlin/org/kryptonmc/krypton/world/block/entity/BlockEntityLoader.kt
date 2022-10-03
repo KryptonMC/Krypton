@@ -28,7 +28,7 @@ import org.kryptonmc.krypton.util.mapPersistentSet
 object BlockEntityLoader : KryptonDataLoader<BlockEntityType>("block_entities", Registries.BLOCK_ENTITY_TYPE) {
 
     override fun create(key: Key, value: JsonObject): BlockEntityType {
-        val blocks = value["blocks"].asJsonArray.mapPersistentSet { Registries.BLOCK.get(Key.key(it.asJsonObject["id"].asString)) }
+        val blocks = value.get("blocks").asJsonArray.mapPersistentSet { Registries.BLOCK.get(Key.key(it.asJsonObject.get("id").asString)) }
         return KryptonBlockEntityType(key, blocks)
     }
 }

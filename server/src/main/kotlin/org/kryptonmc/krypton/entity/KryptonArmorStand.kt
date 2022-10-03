@@ -28,7 +28,7 @@ import org.kryptonmc.krypton.util.FixedList
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.spongepowered.math.vector.Vector3f
 
-class KryptonArmorStand(world: KryptonWorld) : KryptonLivingEntity(world, EntityTypes.ARMOR_STAND, ATTRIBUTES), ArmorStand, KryptonEquipable {
+class KryptonArmorStand(world: KryptonWorld) : KryptonLivingEntity(world, EntityTypes.ARMOR_STAND), ArmorStand, KryptonEquipable {
 
     internal val armorItems = FixedList(4, KryptonItemStack.EMPTY)
     internal val handItems = FixedList(2, KryptonItemStack.EMPTY)
@@ -81,14 +81,14 @@ class KryptonArmorStand(world: KryptonWorld) : KryptonLivingEntity(world, Entity
     }
 
     override fun equipment(slot: EquipmentSlot): KryptonItemStack = when (slot.type) {
-        EquipmentSlot.Type.HAND -> handItems[EquipmentSlots.index(slot)]
-        EquipmentSlot.Type.ARMOR -> armorItems[EquipmentSlots.index(slot)]
+        EquipmentSlot.Type.HAND -> handItems.get(EquipmentSlots.index(slot))
+        EquipmentSlot.Type.ARMOR -> armorItems.get(EquipmentSlots.index(slot))
     }
 
     override fun setEquipment(slot: EquipmentSlot, item: KryptonItemStack) {
         when (slot.type) {
-            EquipmentSlot.Type.HAND -> handItems[EquipmentSlots.index(slot)] = item
-            EquipmentSlot.Type.ARMOR -> armorItems[EquipmentSlots.index(slot)] = item
+            EquipmentSlot.Type.HAND -> handItems.set(EquipmentSlots.index(slot), item)
+            EquipmentSlot.Type.ARMOR -> armorItems.set(EquipmentSlots.index(slot), item)
         }
     }
 

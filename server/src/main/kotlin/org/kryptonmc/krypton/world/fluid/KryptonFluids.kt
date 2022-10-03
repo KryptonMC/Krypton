@@ -35,7 +35,7 @@ object KryptonFluids {
 
     init {
         Registries.FLUID.values.forEach { fluid ->
-            (fluid as KryptonFluid).stateDefinition.states.forEach { KryptonFluid.STATES.add(it) }
+            (fluid as KryptonFluid).stateDefinition.states.forEach(KryptonFluid.STATES::add)
         }
     }
 

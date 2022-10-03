@@ -106,7 +106,7 @@ class VanillaPackResources(val metadata: PackMetadata, vararg namespaces: String
         return try {
             val url = VanillaPackResources::class.java.getResource(path)
             if (isResourceUrlValid(path, url)) url.openStream() else null
-        } catch (exception: IOException) {
+        } catch (_: IOException) {
             VanillaPackResources::class.java.getResourceAsStream(path)
         }
     }

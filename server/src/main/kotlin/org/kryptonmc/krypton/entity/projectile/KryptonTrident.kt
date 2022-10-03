@@ -18,16 +18,16 @@
  */
 package org.kryptonmc.krypton.entity.projectile
 
+import org.kryptonmc.api.effect.sound.SoundEvent
 import org.kryptonmc.api.effect.sound.SoundEvents
 import org.kryptonmc.api.entity.EntityTypes
 import org.kryptonmc.api.entity.projectile.Trident
 import org.kryptonmc.api.item.ItemTypes
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.item.KryptonItemStack
-import org.kryptonmc.krypton.item.meta.KryptonItemMeta
 import org.kryptonmc.krypton.world.KryptonWorld
 
-class KryptonTrident(world: KryptonWorld) : KryptonArrowLike(world, EntityTypes.TRIDENT, SoundEvents.TRIDENT_HIT_GROUND), Trident {
+class KryptonTrident(world: KryptonWorld) : KryptonArrowLike(world, EntityTypes.TRIDENT), Trident {
 
     override var item: KryptonItemStack = DEFAULT_ITEM
     override var dealtDamage: Boolean = false
@@ -39,6 +39,9 @@ class KryptonTrident(world: KryptonWorld) : KryptonArrowLike(world, EntityTypes.
         get() = data.get(MetadataKeys.Trident.ENCHANTED)
         set(value) = data.set(MetadataKeys.Trident.ENCHANTED, value)
 
+    override val defaultHitGroundSound: SoundEvent
+        get() = SoundEvents.TRIDENT_HIT_GROUND
+
     init {
         data.add(MetadataKeys.Trident.LOYALTY_LEVEL, 0)
         data.add(MetadataKeys.Trident.ENCHANTED, false)
@@ -46,6 +49,6 @@ class KryptonTrident(world: KryptonWorld) : KryptonArrowLike(world, EntityTypes.
 
     companion object {
 
-        private val DEFAULT_ITEM = KryptonItemStack(ItemTypes.TRIDENT, 1, KryptonItemMeta.DEFAULT)
+        private val DEFAULT_ITEM = KryptonItemStack(ItemTypes.TRIDENT)
     }
 }

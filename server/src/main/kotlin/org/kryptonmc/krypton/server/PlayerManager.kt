@@ -116,7 +116,7 @@ class PlayerManager(private val server: KryptonServer) {
         }
         if (nbt != null) server.userManager.updateUser(profile.uuid, nbt)
 
-        val world = server.worldManager.worlds[dimension] ?: server.worldManager.default
+        val world = server.worldManager.worlds.get(dimension) ?: server.worldManager.default
         player.world = world
         world.players.add(player)
         val location = player.location
@@ -161,8 +161,8 @@ class PlayerManager(private val server: KryptonServer) {
 
         // Add the player to the list and cache maps
         players.add(player)
-        playersByName[player.profile.name] = player
-        playersByUUID[player.uuid] = player
+        playersByName.put(player.profile.name, player)
+        playersByUUID.put(player.uuid, player)
 
         // Fire join event and send result message
         val joinResult = server.eventManager.fireSync(KryptonJoinEvent(player, !profile.name.equals(name, true))).result
@@ -263,11 +263,11 @@ class PlayerManager(private val server: KryptonServer) {
     }
 
     private fun updateScoreboard(scoreboard: KryptonScoreboard, player: KryptonPlayer) {
-        val objectives = mutableSetOf<Objective>()
+        val objectives = HashSet<Objective>()
         scoreboard.teams.forEach { player.session.send(PacketOutUpdateTeams.create(it)) }
         scoreboard.displayObjectives.forEach { (_, objective) ->
             if (objectives.contains(objective)) return@forEach
-            scoreboard.getStartTrackingPackets(objective).forEach { player.session.send(it) }
+            scoreboard.getStartTrackingPackets(objective).forEach(player.session::send)
             objectives.add(objective)
         }
     }

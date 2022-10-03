@@ -58,13 +58,13 @@ object EntityArguments {
 
         companion object {
 
-            private val BY_NAME = values().associateBy { it.name }
+            private val BY_NAME = values().associateBy(Sorter::name)
 
             /**
              * Get the sort candidate from the name
              */
             @JvmStatic
-            fun fromName(name: String): Sorter? = BY_NAME[name.uppercase()]
+            fun fromName(name: String): Sorter? = BY_NAME.get(name.uppercase())
         }
     }
 }

@@ -18,13 +18,16 @@
  */
 package org.kryptonmc.krypton.auth
 
-import com.google.gson.stream.JsonReader
-import com.google.gson.stream.JsonWriter
+import com.google.common.collect.Lists
 import kotlinx.collections.immutable.ImmutableSet
-import kotlinx.collections.immutable.toImmutableSet
 import org.kryptonmc.api.auth.GameProfile
 import org.kryptonmc.api.auth.ProfileCache
+import org.kryptonmc.krypton.util.array
+import org.kryptonmc.krypton.util.jsonReader
+import org.kryptonmc.krypton.util.jsonWriter
 import org.kryptonmc.krypton.util.logger
+import org.kryptonmc.krypton.util.mapPersistentSet
+import org.kryptonmc.krypton.util.readListTo
 import java.io.IOException
 import java.nio.file.Files
 import java.nio.file.Path
@@ -33,8 +36,6 @@ import java.util.UUID
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.atomic.AtomicLong
 import kotlin.io.path.exists
-import kotlin.io.path.reader
-import kotlin.io.path.writer
 
 class KryptonProfileCache(private val path: Path) : ProfileCache {
 
@@ -42,60 +43,39 @@ class KryptonProfileCache(private val path: Path) : ProfileCache {
     private val profilesByUUID = ConcurrentHashMap<UUID, ProfileHolder>()
     private val operations = AtomicLong()
     override val profiles: ImmutableSet<GameProfile>
-        get() = profilesByUUID.values.asSequence()
-            .map {
-                it.lastAccess = operations.incrementAndGet()
-                it.profile
-            }
-            .toImmutableSet()
+        get() = profilesByUUID.values.mapPersistentSet {
+            it.lastAccess = operations.incrementAndGet()
+            it.profile
+        }
 
-    init {
-        load().apply { reverse() }.forEach { add(it) }
-    }
-
-    fun add(profile: KryptonGameProfile) {
+    fun add(profile: GameProfile) {
         add(ProfileHolder(profile, ZonedDateTime.now().plusMonths(1)))
     }
 
-    override fun get(name: String): KryptonGameProfile? {
-        val holder = profilesByName[name] ?: return null
-        holder.lastAccess = operations.incrementAndGet()
-        return holder.profile
-    }
+    override fun get(name: String): GameProfile? = profilesByName.get(name)?.profile(operations)
 
-    override fun get(uuid: UUID): KryptonGameProfile? {
-        val holder = profilesByUUID[uuid] ?: return null
-        holder.lastAccess = operations.incrementAndGet()
-        return holder.profile
-    }
+    override fun get(uuid: UUID): GameProfile? = profilesByUUID.get(uuid)?.profile(operations)
 
     override fun iterator(): Iterator<GameProfile> = profiles.iterator()
 
     private fun add(holder: ProfileHolder) {
-        val profile = holder.profile
-        holder.lastAccess = operations.incrementAndGet()
-        profilesByName[profile.name] = holder
-        profilesByUUID[profile.uuid] = holder
+        val profile = holder.profile(operations)
+        profilesByName.put(profile.name, holder)
+        profilesByUUID.put(profile.uuid, holder)
     }
 
-    private fun load(): MutableList<ProfileHolder> {
-        val holders = mutableListOf<ProfileHolder>()
-        if (!path.exists()) return holders
+    fun loadAll() {
+        if (!path.exists()) return
+        val holders = ArrayList<ProfileHolder>()
         try {
-            JsonReader(path.reader()).use { reader ->
-                reader.beginArray()
-                while (reader.hasNext()) {
-                    val holder = ProfileHolder.Adapter.read(reader)
-                    if (holder != null) holders.add(holder)
-                }
-                reader.endArray()
-            }
+            path.jsonReader().use { it.readListTo(holders, ProfileHolder::read) }
         } catch (exception: IOException) {
             LOGGER.warn("Failed to read $path. You can delete it to force the server to recreate it.", exception)
         } catch (exception: IllegalStateException) {
             LOGGER.warn("Failed to parse JSON data from $path. You can delete it to force the server to recreate it.", exception)
         }
-        return holders
+        if (holders.isEmpty()) return
+        Lists.reverse(holders).forEach(::add)
     }
 
     fun save() {
@@ -108,14 +88,7 @@ class KryptonProfileCache(private val path: Path) : ProfileCache {
             }
         }
         try {
-            JsonWriter(path.writer()).use { writer ->
-                writer.beginArray()
-                profilesByUUID.values.asSequence()
-                    .sortedByDescending { it.lastAccess }
-                    .take(MRU_LIMIT)
-                    .forEach { ProfileHolder.Adapter.write(writer, it) }
-                writer.endArray()
-            }
+            path.jsonWriter().use { it.array(profilesByUUID.values.stream().sorted().limit(MRU_LIMIT), ProfileHolder::write) }
         } catch (exception: IOException) {
             LOGGER.error("Error writing user cache file!", exception)
         }
@@ -124,6 +97,6 @@ class KryptonProfileCache(private val path: Path) : ProfileCache {
     companion object {
 
         private val LOGGER = logger<KryptonProfileCache>()
-        private const val MRU_LIMIT = 1000
+        private const val MRU_LIMIT = 1000L
     }
 }

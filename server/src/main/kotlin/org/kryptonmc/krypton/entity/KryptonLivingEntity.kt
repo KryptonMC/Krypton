@@ -31,6 +31,7 @@ import org.kryptonmc.api.fluid.Fluid
 import org.kryptonmc.api.world.Difficulty
 import org.kryptonmc.krypton.entity.attribute.AttributeMap
 import org.kryptonmc.krypton.entity.attribute.AttributeSupplier
+import org.kryptonmc.krypton.entity.attribute.DefaultAttributes
 import org.kryptonmc.krypton.entity.memory.Brain
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
@@ -42,8 +43,7 @@ import kotlin.random.Random
 
 abstract class KryptonLivingEntity(
     world: KryptonWorld,
-    type: EntityType<out LivingEntity>,
-    attributeSupplier: AttributeSupplier
+    type: EntityType<out LivingEntity>
 ) : KryptonEntity(world, type), LivingEntity, KryptonEquipable {
 
     final override val maxHealth: Float
@@ -56,7 +56,7 @@ abstract class KryptonLivingEntity(
     final override var hurtTime: Short = 0
     final override var lastHurtTimestamp: Int = 0
     private var tickCount = 0
-    val attributes: AttributeMap = AttributeMap(attributeSupplier)
+    val attributes: AttributeMap = AttributeMap(DefaultAttributes.get(type))
     open val brain: Brain<*> = Brain<KryptonLivingEntity>()
     var headYaw: Float = rotation.x()
 
@@ -193,9 +193,6 @@ abstract class KryptonLivingEntity(
         private const val FLAG_USING_ITEM = 0
         private const val FLAG_OFFHAND = 1
         private const val FLAG_IN_RIPTIDE_SPIN_ATTACK = 2
-
-        @JvmField
-        val ATTRIBUTES: AttributeSupplier = attributes().build()
 
         @JvmStatic
         fun attributes(): AttributeSupplier.Builder = AttributeSupplier.builder()

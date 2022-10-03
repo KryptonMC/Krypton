@@ -20,9 +20,7 @@ package org.kryptonmc.krypton.packet.out.play
 
 import io.netty.buffer.ByteBuf
 import org.kryptonmc.krypton.packet.EntityPacket
-import org.kryptonmc.krypton.util.decodeBlockX
-import org.kryptonmc.krypton.util.decodeBlockY
-import org.kryptonmc.krypton.util.decodeBlockZ
+import org.kryptonmc.krypton.util.Positioning
 import org.kryptonmc.krypton.util.readVarInt
 import org.kryptonmc.krypton.util.writeVarInt
 import org.kryptonmc.krypton.util.writeVector
@@ -39,7 +37,7 @@ data class PacketOutSetBlockDestroyStage(override val entityId: Int, val x: Int,
         entityId: Int,
         encoded: Long,
         destroyStage: Int
-    ) : this(entityId, encoded.decodeBlockX(), encoded.decodeBlockY(), encoded.decodeBlockZ(), destroyStage)
+    ) : this(entityId, Positioning.decodeBlockX(encoded), Positioning.decodeBlockY(encoded), Positioning.decodeBlockZ(encoded), destroyStage)
 
     override fun write(buf: ByteBuf) {
         buf.writeVarInt(entityId)

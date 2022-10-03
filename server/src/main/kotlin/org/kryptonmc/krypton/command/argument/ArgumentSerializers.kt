@@ -70,16 +70,16 @@ object ArgumentSerializers {
     }
 
     @JvmStatic
-    fun <T : ArgumentType<*>> get(type: T): Entry<T>? = BY_CLASS[type::class.java] as? Entry<T>
+    fun <T : ArgumentType<*>> get(type: T): Entry<T>? = BY_CLASS.get(type::class.java) as? Entry<T>
 
     @JvmStatic
-    fun <T : ArgumentType<*>> get(id: Int): Entry<T>? = BY_ID[id] as? Entry<T>
+    fun <T : ArgumentType<*>> get(id: Int): Entry<T>? = BY_ID.get(id) as? Entry<T>
 
     @JvmStatic
     private inline fun <reified T : ArgumentType<*>> register(id: Int, name: String, serializer: ArgumentSerializer<T>) {
         val entry = Entry(id, Key.key(name), T::class.java, serializer)
-        BY_CLASS[T::class.java] = entry
-        BY_ID[id] = entry
+        BY_CLASS.put(T::class.java, entry)
+        BY_ID.put(id, entry)
     }
 
     @JvmStatic

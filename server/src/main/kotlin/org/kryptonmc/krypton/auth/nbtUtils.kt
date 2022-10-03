@@ -21,22 +21,26 @@ package org.kryptonmc.krypton.auth
 import kotlinx.collections.immutable.persistentListOf
 import org.kryptonmc.api.auth.GameProfile
 import org.kryptonmc.api.auth.ProfileProperty
-import org.kryptonmc.krypton.auth.requests.ApiService
 import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.StringTag
 import org.kryptonmc.nbt.compound
+import java.util.UUID
+
+private val NIL_UUID = UUID(0L, 0L)
 
 fun CompoundTag.getGameProfile(key: String): GameProfile? {
-    val data = get(key) ?: return null
-    if (data is StringTag) return ApiService.profile(data.value).get()
-    if (data !is CompoundTag) return null
+    if (contains(key, CompoundTag.ID)) return getCompound(key).toGameProfile()
+    if (contains(key, StringTag.ID) && getString(key).isNotBlank()) return KryptonGameProfile(getString(key), NIL_UUID, persistentListOf())
+    return null
+}
 
-    val name = data.getString("Name")
-    val uuid = checkNotNull(data.getUUID("Id")) { "UUID for skull owner cannot be null!" }
-    if (!data.contains("Properties", CompoundTag.ID)) return KryptonGameProfile(name, uuid, persistentListOf())
+fun CompoundTag.toGameProfile(): GameProfile? {
+    val name = if (contains("Name", StringTag.ID)) getString("Name") else return null
+    val uuid = getUUID("Id") ?: return null
+    if (!contains("Properties", CompoundTag.ID)) return KryptonGameProfile(name, uuid, persistentListOf())
 
     val properties = persistentListOf<ProfileProperty>().builder()
-    data.getCompound("Properties").forEachList { profileKey, list ->
+    getCompound("Properties").forEachList { profileKey, list ->
         list.forEachCompound {
             val value = it.getString("Value")
             val signature = if (it.contains("Signature", StringTag.ID)) it.getString("Signature") else null

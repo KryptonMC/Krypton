@@ -78,6 +78,7 @@ sealed class InvocableCommandRegistrar<C : InvocableCommand<A>, M : CommandMeta,
 
     companion object {
 
+        @JvmStatic
         private fun buildRawArgumentsLiteral(
             alias: String,
             command: Command<Sender>,

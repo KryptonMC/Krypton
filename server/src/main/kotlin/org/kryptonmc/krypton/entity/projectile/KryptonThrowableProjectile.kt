@@ -21,17 +21,16 @@ package org.kryptonmc.krypton.entity.projectile
 import org.kryptonmc.api.entity.EntityType
 import org.kryptonmc.api.entity.projectile.ThrowableProjectile
 import org.kryptonmc.api.item.ItemStack
-import org.kryptonmc.api.item.ItemType
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.item.KryptonItemStack
-import org.kryptonmc.krypton.item.meta.KryptonItemMeta
 import org.kryptonmc.krypton.world.KryptonWorld
 
 abstract class KryptonThrowableProjectile(
     world: KryptonWorld,
-    type: EntityType<out ThrowableProjectile>,
-    private val defaultItem: KryptonItemStack
+    type: EntityType<out ThrowableProjectile>
 ) : KryptonProjectile(world, type), ThrowableProjectile {
+
+    protected abstract val defaultItem: KryptonItemStack
 
     init {
         data.add(MetadataKeys.ThrowableProjectile.ITEM, KryptonItemStack.EMPTY)
@@ -41,11 +40,5 @@ abstract class KryptonThrowableProjectile(
         val item = data.get(MetadataKeys.ThrowableProjectile.ITEM)
         if (item.isEmpty()) return defaultItem
         return item
-    }
-
-    companion object {
-
-        @JvmStatic
-        protected fun createDefaultItem(type: ItemType): KryptonItemStack = KryptonItemStack(type, 1, KryptonItemMeta.DEFAULT)
     }
 }

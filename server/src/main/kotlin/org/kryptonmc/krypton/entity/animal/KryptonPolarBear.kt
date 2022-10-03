@@ -22,14 +22,16 @@ import org.kryptonmc.api.entity.EntityTypes
 import org.kryptonmc.api.entity.animal.PolarBear
 import org.kryptonmc.api.entity.attribute.AttributeTypes
 import org.kryptonmc.api.item.ItemStack
+import org.kryptonmc.krypton.entity.KryptonMob
 import org.kryptonmc.krypton.entity.Neutral
+import org.kryptonmc.krypton.entity.attribute.AttributeSupplier
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
-import org.kryptonmc.krypton.util.sample
+import org.kryptonmc.krypton.util.provider.UniformInt
 import org.kryptonmc.krypton.world.KryptonWorld
 import java.util.UUID
 import kotlin.random.Random
 
-class KryptonPolarBear(world: KryptonWorld) : KryptonAnimal(world, EntityTypes.POLAR_BEAR, ATTRIBUTES), PolarBear, Neutral {
+class KryptonPolarBear(world: KryptonWorld) : KryptonAnimal(world, EntityTypes.POLAR_BEAR), PolarBear, Neutral {
 
     override var remainingAngerTime: Int = 0
     override var angerTarget: UUID? = null
@@ -50,12 +52,13 @@ class KryptonPolarBear(world: KryptonWorld) : KryptonAnimal(world, EntityTypes.P
 
     companion object {
 
-        private val ATTRIBUTES = attributes()
+        private val PERSISTENT_ANGER_TIME = UniformInt(20 * 20, 39 * 20)
+
+        @JvmStatic
+        fun attributes(): AttributeSupplier.Builder = KryptonMob.attributes()
             .add(AttributeTypes.MAX_HEALTH, 30.0)
             .add(AttributeTypes.FOLLOW_RANGE, 20.0)
             .add(AttributeTypes.MOVEMENT_SPEED, 0.25)
             .add(AttributeTypes.ATTACK_DAMAGE, 6.0)
-            .build()
-        private val PERSISTENT_ANGER_TIME = 20..39
     }
 }

@@ -110,7 +110,7 @@ class HandshakeHandler(override val server: KryptonServer, override val session:
             }
 
             if (data != null) {
-                LOGGER.debug("Detected TCPShield forwarded login")
+                LOGGER.debug("Detected TCPShield forwarded login for ${data.uuid}")
                 handleStateChange(packet.nextState, data)
             } else {
                 // If the data was null then we weren't sent what we needed

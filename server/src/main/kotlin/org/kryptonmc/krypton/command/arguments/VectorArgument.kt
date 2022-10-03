@@ -53,7 +53,7 @@ class VectorArgument private constructor(private val correctCenter: Boolean = tr
             try {
                 parse(StringReader(it))
                 true
-            } catch (exception: CommandSyntaxException) {
+            } catch (_: CommandSyntaxException) {
                 false
             }
         }

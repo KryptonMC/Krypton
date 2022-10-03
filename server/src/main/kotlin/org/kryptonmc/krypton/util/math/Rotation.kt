@@ -19,8 +19,7 @@
 package org.kryptonmc.krypton.util.math
 
 import org.kryptonmc.api.util.Direction
-import org.kryptonmc.krypton.util.antiClockwise
-import org.kryptonmc.krypton.util.clockwise
+import org.kryptonmc.krypton.util.Directions
 import org.kryptonmc.krypton.util.serialization.EnumCodecs
 import org.kryptonmc.serialization.Codec
 
@@ -56,9 +55,9 @@ enum class Rotation(val id: String, val rotation: OctahedralGroup) {
     fun rotate(facing: Direction): Direction {
         if (facing.axis == Direction.Axis.Y) return facing
         return when (this) {
-            CLOCKWISE_90 -> facing.clockwise()
+            CLOCKWISE_90 -> Directions.clockwise(facing)
             CLOCKWISE_180 -> facing.opposite
-            ANTICLOCKWISE_90 -> facing.antiClockwise()
+            ANTICLOCKWISE_90 -> Directions.antiClockwise(facing)
             else -> facing
         }
     }

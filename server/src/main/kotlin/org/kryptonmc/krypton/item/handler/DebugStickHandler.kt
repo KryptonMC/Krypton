@@ -54,7 +54,6 @@ object DebugStickHandler : ItemHandler {
 
     // TODO: We need to get information about where the item was so we can replace it with a copy that has the modified metadata,
     //  as all item stacks are immutable, so we can't just simply modify the data on the item like vanilla does.
-    @Suppress("UNCHECKED_CAST") // Screw you too generics, no wonder you have no friends
     @JvmStatic
     private fun handleInteraction(
         player: KryptonPlayer,

@@ -23,7 +23,6 @@ import org.kryptonmc.api.block.Blocks
 import org.kryptonmc.api.entity.AreaEffectCloud
 import org.kryptonmc.api.entity.ArmorStand
 import org.kryptonmc.api.entity.Entity
-import org.kryptonmc.api.entity.EntityCategories
 import org.kryptonmc.api.entity.EntityCategory
 import org.kryptonmc.api.entity.ExperienceOrb
 import org.kryptonmc.api.entity.ambient.Bat
@@ -85,7 +84,7 @@ object KryptonEntityTypes {
 
     // TODO: Make each of these be of their respective entity types when they exist
     @JvmField
-    val AREA_EFFECT_CLOUD: KryptonEntityType<AreaEffectCloud> = register("area_effect_cloud", EntityCategories.MISC) {
+    val AREA_EFFECT_CLOUD: KryptonEntityType<AreaEffectCloud> = register("area_effect_cloud", KryptonEntityCategories.MISC) {
         fireImmune()
         width(6F)
         height(0.5F)
@@ -93,292 +92,292 @@ object KryptonEntityTypes {
         updateInterval(Int.MAX_VALUE)
     }
     @JvmField
-    val ARMOR_STAND: KryptonEntityType<ArmorStand> = register("armor_stand", EntityCategories.MISC) {
+    val ARMOR_STAND: KryptonEntityType<ArmorStand> = register("armor_stand", KryptonEntityCategories.MISC) {
         width(0.5F)
         height(1.975F)
         clientTrackingRange(10)
     }
     @JvmField
-    val ARROW: KryptonEntityType<Arrow> = register("arrow", EntityCategories.MISC) {
+    val ARROW: KryptonEntityType<Arrow> = register("arrow", KryptonEntityCategories.MISC) {
         clientTrackingRange(4)
         updateInterval(20)
     }
     @JvmField
-    val AXOLOTL: KryptonEntityType<Axolotl> = register("axolotl", EntityCategories.UNDERGROUND_WATER_CREATURE) {
+    val AXOLOTL: KryptonEntityType<Axolotl> = register("axolotl", KryptonEntityCategories.UNDERGROUND_WATER_CREATURE) {
         width(0.75F)
         height(0.42F)
         clientTrackingRange(10)
     }
     @JvmField
-    val BAT: KryptonEntityType<Bat> = register("bat", EntityCategories.AMBIENT) {
+    val BAT: KryptonEntityType<Bat> = register("bat", KryptonEntityCategories.AMBIENT) {
         width(0.5F)
         height(0.9F)
         clientTrackingRange(5)
     }
     @JvmField
-    val BEE: KryptonEntityType<Bee> = register("bee", EntityCategories.CREATURE) {
+    val BEE: KryptonEntityType<Bee> = register("bee", KryptonEntityCategories.CREATURE) {
         width(0.7F)
         height(0.6F)
         clientTrackingRange(8)
     }
     @JvmField
-    val BLAZE: KryptonEntityType<Entity> = register("blaze", EntityCategories.MONSTER) {
+    val BLAZE: KryptonEntityType<Entity> = register("blaze", KryptonEntityCategories.MONSTER) {
         fireImmune()
         width(0.6F)
         height(1.8F)
         clientTrackingRange(8)
     }
     @JvmField
-    val BOAT: KryptonEntityType<Boat> = register("boat", EntityCategories.MISC) {
+    val BOAT: KryptonEntityType<Boat> = register("boat", KryptonEntityCategories.MISC) {
         width(1.375F)
         height(0.5625F)
         clientTrackingRange(10)
     }
     @JvmField
-    val CAT: KryptonEntityType<Cat> = register("cat", EntityCategories.CREATURE) {
+    val CAT: KryptonEntityType<Cat> = register("cat", KryptonEntityCategories.CREATURE) {
         width(0.6F)
         height(0.7F)
         clientTrackingRange(8)
     }
     @JvmField
-    val CAVE_SPIDER: KryptonEntityType<Entity> = register("cave_spider", EntityCategories.MONSTER) {
+    val CAVE_SPIDER: KryptonEntityType<Entity> = register("cave_spider", KryptonEntityCategories.MONSTER) {
         width(0.7F)
         height(0.5F)
         clientTrackingRange(8)
     }
     @JvmField
-    val CHICKEN: KryptonEntityType<Chicken> = register("chicken", EntityCategories.CREATURE) {
+    val CHICKEN: KryptonEntityType<Chicken> = register("chicken", KryptonEntityCategories.CREATURE) {
         width(0.4F)
         height(0.7F)
         clientTrackingRange(10)
     }
     @JvmField
-    val COD: KryptonEntityType<Cod> = register("cod", EntityCategories.WATER_AMBIENT) {
+    val COD: KryptonEntityType<Cod> = register("cod", KryptonEntityCategories.WATER_AMBIENT) {
         width(0.5F)
         height(0.3F)
         clientTrackingRange(4)
     }
     @JvmField
-    val COW: KryptonEntityType<Cow> = register("cow", EntityCategories.CREATURE) {
+    val COW: KryptonEntityType<Cow> = register("cow", KryptonEntityCategories.CREATURE) {
         width(0.9F)
         height(1.4F)
         clientTrackingRange(10)
     }
     @JvmField
-    val CREEPER: KryptonEntityType<Creeper> = register("creeper", EntityCategories.MONSTER) {
+    val CREEPER: KryptonEntityType<Creeper> = register("creeper", KryptonEntityCategories.MONSTER) {
         width(0.6F)
         height(1.7F)
         clientTrackingRange(8)
     }
     @JvmField
-    val DOLPHIN: KryptonEntityType<Dolphin> = register("dolphin", EntityCategories.WATER_CREATURE) {
+    val DOLPHIN: KryptonEntityType<Dolphin> = register("dolphin", KryptonEntityCategories.WATER_CREATURE) {
         width(0.9F)
         height(0.6F)
         rideable()
     }
     @JvmField
-    val DONKEY: KryptonEntityType<Entity> = register("donkey", EntityCategories.CREATURE) {
+    val DONKEY: KryptonEntityType<Entity> = register("donkey", KryptonEntityCategories.CREATURE) {
         width(MAGIC_HORSE_WIDTH)
         height(1.5F)
         clientTrackingRange(10)
     }
     @JvmField
-    val DRAGON_FIREBALL: KryptonEntityType<DragonFireball> = register("dragon_fireball", EntityCategories.MISC) {
+    val DRAGON_FIREBALL: KryptonEntityType<DragonFireball> = register("dragon_fireball", KryptonEntityCategories.MISC) {
         square(1F)
         clientTrackingRange(4)
         updateInterval(10)
     }
     @JvmField
-    val DROWNED: KryptonEntityType<Entity> = register("drowned", EntityCategories.MONSTER) {
+    val DROWNED: KryptonEntityType<Entity> = register("drowned", KryptonEntityCategories.MONSTER) {
         height(HUMAN_HEIGHT)
         clientTrackingRange(8)
     }
     @JvmField
-    val ELDER_GUARDIAN: KryptonEntityType<Entity> = register("elder_guardian", EntityCategories.MONSTER) {
+    val ELDER_GUARDIAN: KryptonEntityType<Entity> = register("elder_guardian", KryptonEntityCategories.MONSTER) {
         square(1.9975F)
         clientTrackingRange(10)
     }
     @JvmField
-    val END_CRYSTAL: KryptonEntityType<Entity> = register("end_crystal", EntityCategories.MISC) {
+    val END_CRYSTAL: KryptonEntityType<Entity> = register("end_crystal", KryptonEntityCategories.MISC) {
         square(2F)
         clientTrackingRange(16)
         updateInterval(Int.MAX_VALUE)
     }
     @JvmField
-    val ENDER_DRAGON: KryptonEntityType<Entity> = register("ender_dragon", EntityCategories.MONSTER) {
+    val ENDER_DRAGON: KryptonEntityType<Entity> = register("ender_dragon", KryptonEntityCategories.MONSTER) {
         fireImmune()
         width(16F)
         height(8F)
         clientTrackingRange(10)
     }
     @JvmField
-    val ENDERMAN: KryptonEntityType<Entity> = register("enderman", EntityCategories.MONSTER) {
+    val ENDERMAN: KryptonEntityType<Entity> = register("enderman", KryptonEntityCategories.MONSTER) {
         width(0.6F)
         height(2.9F)
         clientTrackingRange(8)
     }
     @JvmField
-    val ENDERMTIE: KryptonEntityType<Entity> = register("endermite", EntityCategories.MONSTER) {
+    val ENDERMTIE: KryptonEntityType<Entity> = register("endermite", KryptonEntityCategories.MONSTER) {
         width(0.4F)
         height(0.3F)
         clientTrackingRange(8)
     }
     @JvmField
-    val EVOKER: KryptonEntityType<Entity> = register("evoker", EntityCategories.MONSTER) {
+    val EVOKER: KryptonEntityType<Entity> = register("evoker", KryptonEntityCategories.MONSTER) {
         height(HUMAN_HEIGHT)
         clientTrackingRange(8)
     }
     @JvmField
-    val EVOKER_FANGS: KryptonEntityType<Entity> = register("evoker_fangs", EntityCategories.MISC) {
+    val EVOKER_FANGS: KryptonEntityType<Entity> = register("evoker_fangs", KryptonEntityCategories.MISC) {
         width(0.5F)
         height(0.8F)
         clientTrackingRange(6)
         updateInterval(2)
     }
     @JvmField
-    val EXPERIENCE_ORB: KryptonEntityType<ExperienceOrb> = register("experience_orb", EntityCategories.MISC) {
+    val EXPERIENCE_ORB: KryptonEntityType<ExperienceOrb> = register("experience_orb", KryptonEntityCategories.MISC) {
         square(0.5F)
         clientTrackingRange(6)
         updateInterval(20)
     }
     @JvmField
-    val EYE_OF_ENDER: KryptonEntityType<Entity> = register("eye_of_ender", EntityCategories.MISC) {
+    val EYE_OF_ENDER: KryptonEntityType<Entity> = register("eye_of_ender", KryptonEntityCategories.MISC) {
         square(0.25F)
         clientTrackingRange(4)
         updateInterval(4)
     }
     @JvmField
-    val FALLING_BLOCK: KryptonEntityType<Entity> = register("falling_block", EntityCategories.MISC) {
+    val FALLING_BLOCK: KryptonEntityType<Entity> = register("falling_block", KryptonEntityCategories.MISC) {
         square(0.98F)
         clientTrackingRange(10)
         updateInterval(20)
     }
     @JvmField
-    val FIREWORK_ROCKET: KryptonEntityType<FireworkRocket> = register("firework_rocket", EntityCategories.MISC) {
+    val FIREWORK_ROCKET: KryptonEntityType<FireworkRocket> = register("firework_rocket", KryptonEntityCategories.MISC) {
         square(0.25F)
         clientTrackingRange(4)
         updateInterval(10)
     }
     @JvmField
-    val FOX: KryptonEntityType<Fox> = register("fox", EntityCategories.CREATURE) {
+    val FOX: KryptonEntityType<Fox> = register("fox", KryptonEntityCategories.CREATURE) {
         width(0.6F)
         height(0.7F)
         clientTrackingRange(8)
         immuneTo(Blocks.SWEET_BERRY_BUSH)
     }
     @JvmField
-    val GHAST: KryptonEntityType<Entity> = register("ghast", EntityCategories.MONSTER) {
+    val GHAST: KryptonEntityType<Entity> = register("ghast", KryptonEntityCategories.MONSTER) {
         fireImmune()
         square(4F)
         clientTrackingRange(10)
     }
     @JvmField
-    val GIANT: KryptonEntityType<Entity> = register("giant", EntityCategories.MONSTER) {
+    val GIANT: KryptonEntityType<Entity> = register("giant", KryptonEntityCategories.MONSTER) {
         width(3.6F)
         height(12F)
         clientTrackingRange(10)
     }
     @JvmField
-    val GLOW_ITEM_FRAME: KryptonEntityType<Entity> = register("glow_item_frame", EntityCategories.MISC) {
+    val GLOW_ITEM_FRAME: KryptonEntityType<Entity> = register("glow_item_frame", KryptonEntityCategories.MISC) {
         square(0.5F)
         clientTrackingRange(10)
         updateInterval(Int.MAX_VALUE)
     }
     @JvmField
-    val GLOW_SQUID: KryptonEntityType<GlowSquid> = register("glow_squid", EntityCategories.UNDERGROUND_WATER_CREATURE) {
+    val GLOW_SQUID: KryptonEntityType<GlowSquid> = register("glow_squid", KryptonEntityCategories.UNDERGROUND_WATER_CREATURE) {
         square(0.8F)
         clientTrackingRange(10)
     }
     @JvmField
-    val GOAT: KryptonEntityType<Goat> = register("goat", EntityCategories.CREATURE) {
+    val GOAT: KryptonEntityType<Goat> = register("goat", KryptonEntityCategories.CREATURE) {
         width(0.9F)
         height(1.3F)
         clientTrackingRange(10)
     }
     @JvmField
-    val GUARDIAN: KryptonEntityType<Entity> = register("guardian", EntityCategories.MONSTER) {
+    val GUARDIAN: KryptonEntityType<Entity> = register("guardian", KryptonEntityCategories.MONSTER) {
         square(0.85F)
         clientTrackingRange(8)
     }
     @JvmField
-    val HOGLIN: KryptonEntityType<Entity> = register("hoglin", EntityCategories.MONSTER) {
+    val HOGLIN: KryptonEntityType<Entity> = register("hoglin", KryptonEntityCategories.MONSTER) {
         width(MAGIC_HORSE_WIDTH)
         height(1.4F)
         clientTrackingRange(8)
     }
     @JvmField
-    val HORSE: KryptonEntityType<Entity> = register("horse", EntityCategories.CREATURE) {
+    val HORSE: KryptonEntityType<Entity> = register("horse", KryptonEntityCategories.CREATURE) {
         width(MAGIC_HORSE_WIDTH)
         height(1.6F)
         clientTrackingRange(10)
     }
     @JvmField
-    val HUSK: KryptonEntityType<Entity> = register("husk", EntityCategories.MONSTER) {
+    val HUSK: KryptonEntityType<Entity> = register("husk", KryptonEntityCategories.MONSTER) {
         height(HUMAN_HEIGHT)
         clientTrackingRange(8)
     }
     @JvmField
-    val ILLUSIONER: KryptonEntityType<Entity> = register("illusioner", EntityCategories.MONSTER) {
+    val ILLUSIONER: KryptonEntityType<Entity> = register("illusioner", KryptonEntityCategories.MONSTER) {
         height(HUMAN_HEIGHT)
         clientTrackingRange(8)
     }
     @JvmField
-    val IRON_GOLEM: KryptonEntityType<Entity> = register("iron_golem", EntityCategories.MISC) {
+    val IRON_GOLEM: KryptonEntityType<Entity> = register("iron_golem", KryptonEntityCategories.MISC) {
         width(1.4F)
         height(2.7F)
         clientTrackingRange(10)
     }
     @JvmField
-    val ITEM: KryptonEntityType<Entity> = register("item", EntityCategories.MISC) {
+    val ITEM: KryptonEntityType<Entity> = register("item", KryptonEntityCategories.MISC) {
         square(0.25F)
         clientTrackingRange(6)
         updateInterval(20)
     }
     @JvmField
-    val ITEM_FRAME: KryptonEntityType<Entity> = register("item_frame", EntityCategories.MISC) {
+    val ITEM_FRAME: KryptonEntityType<Entity> = register("item_frame", KryptonEntityCategories.MISC) {
         square(0.5F)
         clientTrackingRange(10)
         updateInterval(Int.MAX_VALUE)
     }
     @JvmField
-    val FIREBALL: KryptonEntityType<LargeFireball> = register("fireball", EntityCategories.MISC) {
+    val FIREBALL: KryptonEntityType<LargeFireball> = register("fireball", KryptonEntityCategories.MISC) {
         square(1F)
         clientTrackingRange(4)
         updateInterval(10)
     }
     @JvmField
-    val LEASH_KNOT: KryptonEntityType<Entity> = register("leash_knot", EntityCategories.MISC) {
+    val LEASH_KNOT: KryptonEntityType<Entity> = register("leash_knot", KryptonEntityCategories.MISC) {
         width(0.375F)
         height(0.5F)
         clientTrackingRange(10)
         updateInterval(Int.MAX_VALUE)
     }
     @JvmField
-    val LIGHTNING_BOLT: KryptonEntityType<Entity> = register("lightning_bolt", EntityCategories.MISC) {
+    val LIGHTNING_BOLT: KryptonEntityType<Entity> = register("lightning_bolt", KryptonEntityCategories.MISC) {
         square(0F)
         clientTrackingRange(16)
         updateInterval(Int.MAX_VALUE)
     }
     @JvmField
-    val LLAMA: KryptonEntityType<Entity> = register("llama", EntityCategories.CREATURE) {
+    val LLAMA: KryptonEntityType<Entity> = register("llama", KryptonEntityCategories.CREATURE) {
         width(0.9F)
         height(1.87F)
         clientTrackingRange(10)
     }
     @JvmField
-    val LLAMA_SPIT: KryptonEntityType<LlamaSpit> = register("llama_spit", EntityCategories.MISC) {
+    val LLAMA_SPIT: KryptonEntityType<LlamaSpit> = register("llama_spit", KryptonEntityCategories.MISC) {
         square(0.25F)
         clientTrackingRange(4)
         updateInterval(10)
     }
     @JvmField
-    val MAGMA_CUBE: KryptonEntityType<Entity> = register("magma_cube", EntityCategories.MONSTER) {
+    val MAGMA_CUBE: KryptonEntityType<Entity> = register("magma_cube", KryptonEntityCategories.MONSTER) {
         fireImmune()
         square(2.04F)
         clientTrackingRange(8)
     }
     @JvmField
-    val MARKER: KryptonEntityType<Entity> = register("marker", EntityCategories.MISC) {
+    val MARKER: KryptonEntityType<Entity> = register("marker", KryptonEntityCategories.MISC) {
         square(0F)
         clientTrackingRange(0)
     }
@@ -397,191 +396,191 @@ object KryptonEntityTypes {
     @JvmField
     val TNT_MINECART: KryptonEntityType<TNTMinecart> = minecart("tnt_minecart")
     @JvmField
-    val MULE: KryptonEntityType<Entity> = register("mule", EntityCategories.CREATURE) {
+    val MULE: KryptonEntityType<Entity> = register("mule", KryptonEntityCategories.CREATURE) {
         width(MAGIC_HORSE_WIDTH)
         height(1.6F)
         clientTrackingRange(8)
     }
     @JvmField
-    val MOOSHROOM: KryptonEntityType<Mooshroom> = register("mooshroom", EntityCategories.CREATURE) {
+    val MOOSHROOM: KryptonEntityType<Mooshroom> = register("mooshroom", KryptonEntityCategories.CREATURE) {
         width(0.9F)
         height(1.4F)
         clientTrackingRange(10)
     }
     @JvmField
-    val OCELOT: KryptonEntityType<Ocelot> = register("ocelot", EntityCategories.CREATURE) {
+    val OCELOT: KryptonEntityType<Ocelot> = register("ocelot", KryptonEntityCategories.CREATURE) {
         width(0.6F)
         height(0.7F)
         clientTrackingRange(10)
     }
     @JvmField
-    val PAINTING: KryptonEntityType<Painting> = register("painting", EntityCategories.MISC) {
+    val PAINTING: KryptonEntityType<Painting> = register("painting", KryptonEntityCategories.MISC) {
         square(0.5F)
         clientTrackingRange(10)
         updateInterval(Int.MAX_VALUE)
     }
     @JvmField
-    val PANDA: KryptonEntityType<Panda> = register("panda", EntityCategories.CREATURE) {
+    val PANDA: KryptonEntityType<Panda> = register("panda", KryptonEntityCategories.CREATURE) {
         width(1.3F)
         height(1.25F)
         clientTrackingRange(10)
     }
     @JvmField
-    val PARROT: KryptonEntityType<Parrot> = register("parrot", EntityCategories.CREATURE) {
+    val PARROT: KryptonEntityType<Parrot> = register("parrot", KryptonEntityCategories.CREATURE) {
         width(0.5F)
         height(0.9F)
         clientTrackingRange(8)
     }
     @JvmField
-    val PHANTOM: KryptonEntityType<Entity> = register("phantom", EntityCategories.MONSTER) {
+    val PHANTOM: KryptonEntityType<Entity> = register("phantom", KryptonEntityCategories.MONSTER) {
         width(0.9F)
         height(0.5F)
         clientTrackingRange(8)
     }
     @JvmField
-    val PIG: KryptonEntityType<Pig> = register("pig", EntityCategories.CREATURE) {
+    val PIG: KryptonEntityType<Pig> = register("pig", KryptonEntityCategories.CREATURE) {
         square(0.9F)
         clientTrackingRange(10)
     }
     @JvmField
-    val PIGLIN: KryptonEntityType<Entity> = register("piglin", EntityCategories.MONSTER) {
+    val PIGLIN: KryptonEntityType<Entity> = register("piglin", KryptonEntityCategories.MONSTER) {
         width(0.6F)
         height(1.95F)
         clientTrackingRange(8)
     }
     @JvmField
-    val PIGLIN_BRUTE: KryptonEntityType<Entity> = register("piglin_brute", EntityCategories.MONSTER) {
+    val PIGLIN_BRUTE: KryptonEntityType<Entity> = register("piglin_brute", KryptonEntityCategories.MONSTER) {
         width(0.6F)
         height(1.95F)
         clientTrackingRange(8)
     }
     @JvmField
-    val PILLAGER: KryptonEntityType<Entity> = register("pillager", EntityCategories.MONSTER) {
+    val PILLAGER: KryptonEntityType<Entity> = register("pillager", KryptonEntityCategories.MONSTER) {
         width(0.6F)
         height(1.95F)
         clientTrackingRange(8)
     }
     @JvmField
-    val POLAR_BEAR: KryptonEntityType<PolarBear> = register("polar_bear", EntityCategories.CREATURE) {
+    val POLAR_BEAR: KryptonEntityType<PolarBear> = register("polar_bear", KryptonEntityCategories.CREATURE) {
         square(1.4F)
         clientTrackingRange(10)
         immuneTo(Blocks.POWDER_SNOW)
     }
     @JvmField
-    val PRIMED_TNT: KryptonEntityType<Entity> = register("tnt", EntityCategories.MISC) {
+    val PRIMED_TNT: KryptonEntityType<Entity> = register("tnt", KryptonEntityCategories.MISC) {
         fireImmune()
         square(0.98F)
         clientTrackingRange(10)
         updateInterval(10)
     }
     @JvmField
-    val PUFFERFISH: KryptonEntityType<Pufferfish> = register("pufferfish", EntityCategories.WATER_AMBIENT) {
+    val PUFFERFISH: KryptonEntityType<Pufferfish> = register("pufferfish", KryptonEntityCategories.WATER_AMBIENT) {
         square(0.7F)
         clientTrackingRange(4)
     }
     @JvmField
-    val RABBIT: KryptonEntityType<Rabbit> = register("rabbit", EntityCategories.CREATURE) {
+    val RABBIT: KryptonEntityType<Rabbit> = register("rabbit", KryptonEntityCategories.CREATURE) {
         width(0.4F)
         height(0.5F)
         clientTrackingRange(8)
     }
     @JvmField
-    val RAVAGER: KryptonEntityType<Entity> = register("ravager", EntityCategories.MONSTER) {
+    val RAVAGER: KryptonEntityType<Entity> = register("ravager", KryptonEntityCategories.MONSTER) {
         width(1.95F)
         height(2.2F)
         clientTrackingRange(10)
     }
     @JvmField
-    val SALMON: KryptonEntityType<Salmon> = register("salmon", EntityCategories.WATER_AMBIENT) {
+    val SALMON: KryptonEntityType<Salmon> = register("salmon", KryptonEntityCategories.WATER_AMBIENT) {
         width(0.7F)
         height(0.4F)
         clientTrackingRange(4)
     }
     @JvmField
-    val SHEEP: KryptonEntityType<Sheep> = register("sheep", EntityCategories.CREATURE) {
+    val SHEEP: KryptonEntityType<Sheep> = register("sheep", KryptonEntityCategories.CREATURE) {
         width(0.9F)
         height(1.3F)
         clientTrackingRange(10)
     }
     @JvmField
-    val SHULKER: KryptonEntityType<Entity> = register("shulker", EntityCategories.MONSTER) {
+    val SHULKER: KryptonEntityType<Entity> = register("shulker", KryptonEntityCategories.MONSTER) {
         fireImmune()
         square(1F)
         clientTrackingRange(10)
     }
     @JvmField
-    val SHULKER_BULLET: KryptonEntityType<ShulkerBullet> = register("shulker_bullet", EntityCategories.MISC) {
+    val SHULKER_BULLET: KryptonEntityType<ShulkerBullet> = register("shulker_bullet", KryptonEntityCategories.MISC) {
         square(0.3125F)
         clientTrackingRange(8)
     }
     @JvmField
-    val SILVERFISH: KryptonEntityType<Entity> = register("silverfish", EntityCategories.MONSTER) {
+    val SILVERFISH: KryptonEntityType<Entity> = register("silverfish", KryptonEntityCategories.MONSTER) {
         width(0.4F)
         height(0.3F)
         clientTrackingRange(8)
     }
     @JvmField
-    val SKELETON: KryptonEntityType<Entity> = register("skeleton", EntityCategories.MONSTER) {
+    val SKELETON: KryptonEntityType<Entity> = register("skeleton", KryptonEntityCategories.MONSTER) {
         width(0.6F)
         height(1.99F)
         clientTrackingRange(8)
     }
     @JvmField
-    val SKELETON_HORSE: KryptonEntityType<Entity> = register("skeleton_horse", EntityCategories.CREATURE) {
+    val SKELETON_HORSE: KryptonEntityType<Entity> = register("skeleton_horse", KryptonEntityCategories.CREATURE) {
         width(MAGIC_HORSE_WIDTH)
         height(1.6F)
         clientTrackingRange(10)
     }
     @JvmField
-    val SLIME: KryptonEntityType<Entity> = register("slime", EntityCategories.MONSTER) {
+    val SLIME: KryptonEntityType<Entity> = register("slime", KryptonEntityCategories.MONSTER) {
         square(2.04F)
         clientTrackingRange(10)
     }
     @JvmField
-    val SMALL_FIREBALL: KryptonEntityType<SmallFireball> = register("small_fireball", EntityCategories.MISC) {
+    val SMALL_FIREBALL: KryptonEntityType<SmallFireball> = register("small_fireball", KryptonEntityCategories.MISC) {
         square(0.3125F)
         clientTrackingRange(4)
         updateInterval(10)
     }
     @JvmField
-    val SNOW_GOLEM: KryptonEntityType<Entity> = register("snow_golem", EntityCategories.MISC) {
+    val SNOW_GOLEM: KryptonEntityType<Entity> = register("snow_golem", KryptonEntityCategories.MISC) {
         width(0.7F)
         height(1.9F)
         clientTrackingRange(8)
         immuneTo(Blocks.POWDER_SNOW)
     }
     @JvmField
-    val SNOWBALL: KryptonEntityType<Snowball> = register("snowball", EntityCategories.MISC) {
+    val SNOWBALL: KryptonEntityType<Snowball> = register("snowball", KryptonEntityCategories.MISC) {
         square(0.25F)
         clientTrackingRange(4)
         updateInterval(10)
     }
     @JvmField
-    val SPECTRAL_ARROW: KryptonEntityType<SpectralArrow> = register("spectral_arrow", EntityCategories.MISC) {
+    val SPECTRAL_ARROW: KryptonEntityType<SpectralArrow> = register("spectral_arrow", KryptonEntityCategories.MISC) {
         square(0.5F)
         clientTrackingRange(4)
         updateInterval(20)
     }
     @JvmField
-    val SPIDER: KryptonEntityType<Entity> = register("spider", EntityCategories.MONSTER) {
+    val SPIDER: KryptonEntityType<Entity> = register("spider", KryptonEntityCategories.MONSTER) {
         width(1.4F)
         height(0.9F)
         clientTrackingRange(8)
     }
     @JvmField
-    val SQUID: KryptonEntityType<Squid> = register("squid", EntityCategories.WATER_CREATURE) {
+    val SQUID: KryptonEntityType<Squid> = register("squid", KryptonEntityCategories.WATER_CREATURE) {
         square(0.8F)
         clientTrackingRange(8)
     }
     @JvmField
-    val STRAY: KryptonEntityType<Entity> = register("stray", EntityCategories.MONSTER) {
+    val STRAY: KryptonEntityType<Entity> = register("stray", KryptonEntityCategories.MONSTER) {
         width(0.6F)
         height(1.99F)
         clientTrackingRange(8)
         immuneTo(Blocks.POWDER_SNOW)
     }
     @JvmField
-    val STRIDER: KryptonEntityType<Entity> = register("strider", EntityCategories.CREATURE) {
+    val STRIDER: KryptonEntityType<Entity> = register("strider", KryptonEntityCategories.CREATURE) {
         fireImmune()
         width(0.9F)
         height(1.7F)
@@ -596,59 +595,59 @@ object KryptonEntityTypes {
     @JvmField
     val POTION: KryptonEntityType<ThrownPotion> = thrownItem("potion")
     @JvmField
-    val TRIDENT: KryptonEntityType<Trident> = register("trident", EntityCategories.MISC) {
+    val TRIDENT: KryptonEntityType<Trident> = register("trident", KryptonEntityCategories.MISC) {
         square(0.5F)
         clientTrackingRange(4)
         updateInterval(20)
     }
     @JvmField
-    val TRADER_LLAMA: KryptonEntityType<Entity> = register("trader_llama", EntityCategories.CREATURE) {
+    val TRADER_LLAMA: KryptonEntityType<Entity> = register("trader_llama", KryptonEntityCategories.CREATURE) {
         width(0.9F)
         height(1.87F)
         clientTrackingRange(10)
     }
     @JvmField
-    val TROPICAL_FISH: KryptonEntityType<TropicalFish> = register("tropical_fish", EntityCategories.WATER_AMBIENT) {
+    val TROPICAL_FISH: KryptonEntityType<TropicalFish> = register("tropical_fish", KryptonEntityCategories.WATER_AMBIENT) {
         width(0.5F)
         height(0.4F)
         clientTrackingRange(4)
     }
     @JvmField
-    val TURTLE: KryptonEntityType<Turtle> = register("turtle", EntityCategories.CREATURE) {
+    val TURTLE: KryptonEntityType<Turtle> = register("turtle", KryptonEntityCategories.CREATURE) {
         width(1.2F)
         height(0.4F)
         clientTrackingRange(10)
     }
     @JvmField
-    val VEX: KryptonEntityType<Entity> = register("vex", EntityCategories.MONSTER) {
+    val VEX: KryptonEntityType<Entity> = register("vex", KryptonEntityCategories.MONSTER) {
         fireImmune()
         width(0.4F)
         height(0.8F)
         clientTrackingRange(8)
     }
     @JvmField
-    val VILLAGER: KryptonEntityType<Entity> = register("villager", EntityCategories.MISC) {
+    val VILLAGER: KryptonEntityType<Entity> = register("villager", KryptonEntityCategories.MISC) {
         height(HUMAN_HEIGHT)
         clientTrackingRange(10)
     }
     @JvmField
-    val VINDICATOR: KryptonEntityType<Entity> = register("vindicator", EntityCategories.MONSTER) {
+    val VINDICATOR: KryptonEntityType<Entity> = register("vindicator", KryptonEntityCategories.MONSTER) {
         height(HUMAN_HEIGHT)
         clientTrackingRange(8)
     }
     @JvmField
-    val WANDERING_TRADER: KryptonEntityType<Entity> = register("wandering_trader", EntityCategories.CREATURE) {
+    val WANDERING_TRADER: KryptonEntityType<Entity> = register("wandering_trader", KryptonEntityCategories.CREATURE) {
         height(HUMAN_HEIGHT)
         clientTrackingRange(10)
     }
     @JvmField
-    val WITCH: KryptonEntityType<Entity> = register("witch", EntityCategories.MONSTER) {
+    val WITCH: KryptonEntityType<Entity> = register("witch", KryptonEntityCategories.MONSTER) {
         width(0.6F)
         height(1.95F)
         clientTrackingRange(8)
     }
     @JvmField
-    val WITHER: KryptonEntityType<Entity> = register("wither", EntityCategories.MONSTER) {
+    val WITHER: KryptonEntityType<Entity> = register("wither", KryptonEntityCategories.MONSTER) {
         fireImmune()
         width(0.9F)
         height(3.5F)
@@ -656,7 +655,7 @@ object KryptonEntityTypes {
         immuneTo(Blocks.WITHER_ROSE)
     }
     @JvmField
-    val WITHER_SKELETON: KryptonEntityType<Entity> = register("wither_skeleton", EntityCategories.MONSTER) {
+    val WITHER_SKELETON: KryptonEntityType<Entity> = register("wither_skeleton", KryptonEntityCategories.MONSTER) {
         fireImmune()
         width(0.7F)
         height(2.4F)
@@ -664,48 +663,48 @@ object KryptonEntityTypes {
         immuneTo(Blocks.WITHER_ROSE)
     }
     @JvmField
-    val WITHER_SKULL: KryptonEntityType<WitherSkull> = register("wither_skull", EntityCategories.MISC) {
+    val WITHER_SKULL: KryptonEntityType<WitherSkull> = register("wither_skull", KryptonEntityCategories.MISC) {
         square(0.3125F)
         clientTrackingRange(4)
         updateInterval(10)
     }
     @JvmField
-    val WOLF: KryptonEntityType<Wolf> = register("wolf", EntityCategories.CREATURE) {
+    val WOLF: KryptonEntityType<Wolf> = register("wolf", KryptonEntityCategories.CREATURE) {
         width(0.6F)
         height(0.85F)
         clientTrackingRange(10)
     }
     @JvmField
-    val ZOGLIN: KryptonEntityType<Entity> = register("zoglin", EntityCategories.MONSTER) {
+    val ZOGLIN: KryptonEntityType<Entity> = register("zoglin", KryptonEntityCategories.MONSTER) {
         fireImmune()
         width(MAGIC_HORSE_WIDTH)
         height(1.4F)
         clientTrackingRange(8)
     }
     @JvmField
-    val ZOMBIE: KryptonEntityType<Zombie> = register("zombie", EntityCategories.MONSTER) {
+    val ZOMBIE: KryptonEntityType<Zombie> = register("zombie", KryptonEntityCategories.MONSTER) {
         height(HUMAN_HEIGHT)
         clientTrackingRange(8)
     }
     @JvmField
-    val ZOMBIE_HORSE: KryptonEntityType<Entity> = register("zombie_horse", EntityCategories.CREATURE) {
+    val ZOMBIE_HORSE: KryptonEntityType<Entity> = register("zombie_horse", KryptonEntityCategories.CREATURE) {
         width(MAGIC_HORSE_WIDTH)
         height(1.6F)
         clientTrackingRange(10)
     }
     @JvmField
-    val ZOMBIE_VILLAGER: KryptonEntityType<Entity> = register("zombie_villager", EntityCategories.MONSTER) {
+    val ZOMBIE_VILLAGER: KryptonEntityType<Entity> = register("zombie_villager", KryptonEntityCategories.MONSTER) {
         height(HUMAN_HEIGHT)
         clientTrackingRange(8)
     }
     @JvmField
-    val ZOMBIFIED_PIGLIN: KryptonEntityType<Entity> = register("zombified_piglin", EntityCategories.MONSTER) {
+    val ZOMBIFIED_PIGLIN: KryptonEntityType<Entity> = register("zombified_piglin", KryptonEntityCategories.MONSTER) {
         fireImmune()
         height(HUMAN_HEIGHT)
         clientTrackingRange(8)
     }
     @JvmField
-    val PLAYER: KryptonEntityType<Player> = register("player", EntityCategories.MISC) {
+    val PLAYER: KryptonEntityType<Player> = register("player", KryptonEntityCategories.MISC) {
         notSummonable()
         width(0.6F)
         height(1.8F)
@@ -713,7 +712,7 @@ object KryptonEntityTypes {
         updateInterval(2)
     }
     @JvmField
-    val FISHING_HOOK: KryptonEntityType<FishingHook> = register("fishing_bobber", EntityCategories.MISC) {
+    val FISHING_HOOK: KryptonEntityType<FishingHook> = register("fishing_bobber", KryptonEntityCategories.MISC) {
         notSummonable()
         square(0.25F)
         clientTrackingRange(4)
@@ -721,14 +720,14 @@ object KryptonEntityTypes {
     }
 
     @JvmStatic
-    private fun <T : Entity> minecart(name: String): KryptonEntityType<T> = register(name, EntityCategories.MISC) {
+    private fun <T : Entity> minecart(name: String): KryptonEntityType<T> = register(name, KryptonEntityCategories.MISC) {
         width(0.98F)
         height(0.7F)
         clientTrackingRange(8)
     }
 
     @JvmStatic
-    private fun <T : Entity> thrownItem(name: String): KryptonEntityType<T> = register(name, EntityCategories.MISC) {
+    private fun <T : Entity> thrownItem(name: String): KryptonEntityType<T> = register(name, KryptonEntityCategories.MISC) {
         square(0.25F)
         clientTrackingRange(4)
         updateInterval(10)

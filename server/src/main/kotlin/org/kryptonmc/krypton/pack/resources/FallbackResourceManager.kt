@@ -34,7 +34,7 @@ import java.util.function.Supplier
 
 class FallbackResourceManager(private val namespace: String) : ResourceManager {
 
-    private val fallbacks = mutableListOf<PackEntry>()
+    private val fallbacks = ArrayList<PackEntry>()
 
     fun push(resources: PackResources) {
         pushInternal(resources.name, resources, null)
@@ -55,7 +55,7 @@ class FallbackResourceManager(private val namespace: String) : ResourceManager {
     override fun getResource(location: Key): Resource? {
         if (!isValidLocation(location)) return null
         for (i in fallbacks.size - 1 downTo 0) {
-            val entry = fallbacks[i]
+            val entry = fallbacks.get(i)
             val resources = entry.resources
             if (resources != null && resources.hasResource(location)) {
                 return Resource(resources.name, createResourceGetter(location, resources), createStackMetadataFinder(location, i))
@@ -72,18 +72,18 @@ class FallbackResourceManager(private val namespace: String) : ResourceManager {
         val resourceIds = Object2IntOpenHashMap<Key>()
         val fallbackSize = fallbacks.size
         for (i in 0 until fallbackSize) {
-            val entry = fallbacks[i]
+            val entry = fallbacks.get(i)
             entry.filterAll(resourceIds.keys)
             if (entry.resources != null) {
-                entry.resources.getResources(namespace, path, predicate).forEach { resourceIds[it] = i }
+                entry.resources.getResources(namespace, path, predicate).forEach { resourceIds.put(it, i) }
             }
         }
         val resources = TreeMap<Key, Resource>()
         Object2IntMaps.fastForEach(resourceIds) {
             val id = it.intValue
             val key = it.key
-            val packResources = fallbacks[id].resources!!
-            resources[key] = Resource(packResources.name, createResourceGetter(key, packResources), createStackMetadataFinder(key, id))
+            val packResources = fallbacks.get(id).resources!!
+            resources.put(key, Resource(packResources.name, createResourceGetter(key, packResources), createStackMetadataFinder(key, id)))
         }
         return resources
     }
@@ -95,7 +95,7 @@ class FallbackResourceManager(private val namespace: String) : ResourceManager {
             listPackResources(it, path, predicate, entries)
         }
         val result = TreeMap<Key, List<Resource>>()
-        entries.forEach { result[it.key] = it.value.createThunks() }
+        entries.forEach { result.put(it.key, it.value.createThunks()) }
         return result
     }
 
@@ -104,7 +104,7 @@ class FallbackResourceManager(private val namespace: String) : ResourceManager {
         resources.getResources(namespace, path, predicate).forEach {
             val metadataLocation = getMetadataLocation(it)
             val thunkSupplier = SinglePackResourceThunkSupplier(it, metadataLocation, resources)
-            output.computeIfAbsent(it) { EntryStack(metadataLocation, mutableListOf()) }.entries.add(thunkSupplier)
+            output.computeIfAbsent(it) { EntryStack(metadataLocation, ArrayList()) }.entries.add(thunkSupplier)
         }
     }
 
@@ -116,7 +116,7 @@ class FallbackResourceManager(private val namespace: String) : ResourceManager {
     private fun createStackMetadataFinder(location: Key, index: Int): Supplier<ResourceMetadata> = Supplier {
         val metadataLocation = getMetadataLocation(location)
         for (i in fallbacks.size - 1 downTo index) {
-            val entry = fallbacks[i]
+            val entry = fallbacks.get(i)
             val resources = entry.resources
             if (resources != null && resources.hasResource(metadataLocation)) {
                 return@Supplier resources.getResource(location).use(ResourceMetadata::fromJsonStream)

@@ -24,6 +24,8 @@ import org.kryptonmc.api.entity.EntityTypes
 import org.kryptonmc.api.entity.aquatic.Dolphin
 import org.kryptonmc.api.entity.attribute.AttributeTypes
 import org.kryptonmc.api.world.damage.type.DamageTypes
+import org.kryptonmc.krypton.entity.KryptonMob
+import org.kryptonmc.krypton.entity.attribute.AttributeSupplier
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.krypton.world.damage.KryptonDamageSource
@@ -31,7 +33,7 @@ import org.spongepowered.math.vector.Vector2f
 import org.spongepowered.math.vector.Vector3i
 import kotlin.random.Random
 
-class KryptonDolphin(world: KryptonWorld) : KryptonAquaticAnimal(world, EntityTypes.DOLPHIN, ATTRIBUTES), Dolphin {
+class KryptonDolphin(world: KryptonWorld) : KryptonAquaticAnimal(world, EntityTypes.DOLPHIN), Dolphin {
 
     override var treasurePosition: Vector3i
         get() = data.get(MetadataKeys.Dolphin.TREASURE_POSITION)
@@ -103,11 +105,11 @@ class KryptonDolphin(world: KryptonWorld) : KryptonAquaticAnimal(world, EntityTy
         private const val MAX_ANGLE = 360F
         private const val GROUND_Y_VELOCITY_INCREASE = 0.5
 
-        private val ATTRIBUTES = attributes()
+        @JvmStatic
+        fun attributes(): AttributeSupplier.Builder = KryptonMob.attributes()
             .add(AttributeTypes.MAX_HEALTH, 10.0)
             .add(AttributeTypes.MOVEMENT_SPEED, 1.2)
             .add(AttributeTypes.ATTACK_DAMAGE, 3.0)
-            .build()
 
         // this will always produce a value between -0.2 and 0.2
         // Broken down: Random.nextFloat() produces a value between 0 and 1, multiplied by 2 produces a value between 0 and 2

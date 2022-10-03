@@ -25,7 +25,6 @@ import org.kryptonmc.api.item.ItemStack
 import org.kryptonmc.api.item.ItemTypes
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.item.KryptonItemStack
-import org.kryptonmc.krypton.item.meta.KryptonItemMeta
 import org.kryptonmc.krypton.world.KryptonWorld
 import java.util.OptionalInt
 
@@ -53,6 +52,6 @@ class KryptonFireworkRocket(world: KryptonWorld) : KryptonProjectile(world, Enti
 
     companion object {
 
-        private val DEFAULT_ITEM = KryptonItemStack(ItemTypes.FIREWORK_ROCKET, 1, KryptonItemMeta.DEFAULT)
+        private val DEFAULT_ITEM = KryptonItemStack(ItemTypes.FIREWORK_ROCKET)
     }
 }

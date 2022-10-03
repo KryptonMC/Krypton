@@ -19,7 +19,6 @@
 package org.kryptonmc.krypton.packet.out.login
 
 import io.netty.buffer.ByteBuf
-import java.util.Objects
 import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.util.readString
 import org.kryptonmc.krypton.util.readVarIntByteArray
@@ -51,5 +50,10 @@ data class PacketOutEncryptionRequest(val serverId: String, val publicKey: ByteA
         return publicKey.contentEquals((other as PacketOutEncryptionRequest).publicKey) && verifyToken.contentEquals(other.verifyToken)
     }
 
-    override fun hashCode(): Int = Objects.hash(publicKey, verifyToken)
+    override fun hashCode(): Int {
+        var result = 1
+        result = 31 * result + publicKey.contentHashCode()
+        result = 31 * result + verifyToken.contentHashCode()
+        return result
+    }
 }

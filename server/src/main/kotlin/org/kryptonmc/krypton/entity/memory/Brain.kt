@@ -24,16 +24,20 @@ import org.kryptonmc.krypton.registry.InternalRegistries
 import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.compound
 import org.kryptonmc.serialization.nbt.NbtOps
+import java.util.Optional
 import java.util.concurrent.ConcurrentHashMap
 
 class Brain<E : KryptonLivingEntity> {
 
-    private val memories = ConcurrentHashMap<MemoryKey<*>, Memory<*>?>()
+    private val memories = ConcurrentHashMap<MemoryKey<*>, Optional<Memory<*>>>()
 
     operator fun contains(key: MemoryKey<*>): Boolean = memories.containsKey(key)
 
     @Suppress("UNCHECKED_CAST")
-    operator fun <T : Any> get(key: MemoryKey<T>): T? = memories[key]?.value as? T
+    operator fun <T> get(key: MemoryKey<T>): Optional<T> {
+        val memory = requireNotNull(memories.get(key)) { "Cannot get unregistered memory for key $key!" }
+        return memory.map { it.value as? T }
+    }
 
     operator fun <T : Any> set(key: MemoryKey<T>, value: T?) {
         set(key, value, Long.MAX_VALUE)
@@ -42,14 +46,14 @@ class Brain<E : KryptonLivingEntity> {
     fun <T : Any> set(key: MemoryKey<T>, value: T?, ttl: Long) {
         if (!memories.containsKey(key)) return
         if (value == null) {
-            memories[key] = null
+            memories.put(key, Optional.empty())
             return
         }
         if (value is Collection<*> && value.isEmpty()) {
-            memories[key] = null
+            memories.put(key, Optional.empty())
             return
         }
-        memories[key] = Memory(value, ttl)
+        memories.put(key, Optional.of(Memory(value, ttl)))
     }
 
     fun load(data: CompoundTag) {
@@ -61,12 +65,12 @@ class Brain<E : KryptonLivingEntity> {
             } catch (_: Exception) {
                 return@forEachCompound
             }
-            memories[key] = Memory(decoded, memory.getLong("ttl"))
+            memories.put(key, Optional.of(Memory(decoded, memory.getLong("ttl"))))
         }
     }
 
     @Suppress("UNCHECKED_CAST")
     fun save(): CompoundTag = compound {
-        compound("memories") { memories.forEach { (key, memory) -> memory?.save(key as MemoryKey<in Any>, this) } }
+        compound("memories") { memories.forEach { (key, memory) -> memory.ifPresent { it.save(key as MemoryKey<in Any>, this) } } }
     }
 }

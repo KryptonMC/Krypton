@@ -23,25 +23,25 @@
  */
 package org.kryptonmc.krypton.scheduling
 
+import com.google.common.collect.Multimap
 import com.google.common.collect.Multimaps
 import org.apache.logging.log4j.LogManager
+import org.kryptonmc.api.plugin.PluginManager
 import org.kryptonmc.api.scheduling.Scheduler
 import org.kryptonmc.api.scheduling.Task
 import org.kryptonmc.api.scheduling.TaskRunnable
 import org.kryptonmc.api.scheduling.TaskState
-import org.kryptonmc.krypton.plugin.KryptonPluginManager
-import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.util.pool.daemonThreadFactory
 import org.kryptonmc.krypton.util.pool.ThreadPoolBuilder
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.ScheduledFuture
 import java.util.concurrent.TimeUnit
 
-class KryptonScheduler : Scheduler {
+class KryptonScheduler(private val pluginManager: PluginManager) : Scheduler {
 
     private val executor = ThreadPoolBuilder.cached().factory(daemonThreadFactory("Krypton Scheduler #%d")).build()
     private val timedExecutor = ThreadPoolBuilder.scheduled(1).factory(daemonThreadFactory("Krypton Timed Scheduler")).build()
-    private val tasksByPlugin = Multimaps.newMultimap(ConcurrentHashMap<Any, MutableCollection<KryptonTask>>()) { ConcurrentHashMap.newKeySet() }
+    private val tasksByPlugin: Multimap<Any, Task> = Multimaps.newMultimap(ConcurrentHashMap()) { ConcurrentHashMap.newKeySet() }
 
     override fun run(plugin: Any, task: TaskRunnable): Task = schedule(plugin, 0, TimeUnit.MILLISECONDS, task)
 
@@ -55,7 +55,7 @@ class KryptonScheduler : Scheduler {
     }
 
     fun shutdown(): Boolean {
-        synchronized(tasksByPlugin) { tasksByPlugin.values() }.forEach { it.cancel() }
+        synchronized(tasksByPlugin) { tasksByPlugin.values() }.forEach(Task::cancel)
         timedExecutor.shutdown()
         executor.shutdown()
         return executor.awaitTermination(10, TimeUnit.SECONDS)
@@ -70,6 +70,7 @@ class KryptonScheduler : Scheduler {
     ) : Runnable, Task {
 
         private var future: ScheduledFuture<*>? = null
+        @Volatile
         private var currentTaskThread: Thread? = null
 
         override val state: TaskState
@@ -89,7 +90,8 @@ class KryptonScheduler : Scheduler {
         }
 
         override fun cancel() {
-            future?.cancel(false)
+            if (future == null) return
+            future!!.cancel(false)
             currentTaskThread?.interrupt()
             finish()
         }
@@ -99,13 +101,13 @@ class KryptonScheduler : Scheduler {
                 currentTaskThread = Thread.currentThread()
                 try {
                     callable.run(this)
-                } catch (exception: Exception) {
+                } catch (exception: Throwable) {
                     if (exception is InterruptedException) {
                         Thread.currentThread().interrupt()
-                        return@execute
+                    } else {
+                        val name = pluginManager.fromInstance(plugin)?.description?.name ?: "UNKNOWN"
+                        LOGGER.error("Plugin $name generated an exception whilst trying to execute task $callable!", exception)
                     }
-                    val name = KryptonPluginManager.fromInstance(plugin)?.description?.name ?: "UNKNOWN"
-                    LOGGER.error("Plugin $name generated an exception whilst trying to execute task $callable!", exception)
                 } finally {
                     if (period == 0L) finish()
                     currentTaskThread = null
@@ -114,7 +116,7 @@ class KryptonScheduler : Scheduler {
         }
 
         private fun finish() {
-            tasksByPlugin[plugin].remove(this)
+            tasksByPlugin.remove(plugin, this)
         }
     }
 

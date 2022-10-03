@@ -16,24 +16,12 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.util
+package org.kryptonmc.krypton.item.meta
 
-import org.kryptonmc.api.util.Direction
+import kotlinx.collections.immutable.PersistentList
+import org.kryptonmc.krypton.util.mapPersistentList
+import org.kryptonmc.nbt.CompoundTag
+import org.kryptonmc.nbt.ListTag
 
-fun Direction.clockwise(): Direction = when (this) {
-    Direction.NORTH -> Direction.EAST
-    Direction.SOUTH -> Direction.WEST
-    Direction.WEST -> Direction.NORTH
-    Direction.EAST -> Direction.SOUTH
-    else -> error("Unable to get clockwise direction for given direction $this!")
-}
-
-fun Direction.antiClockwise(): Direction = when (this) {
-    Direction.NORTH -> Direction.WEST
-    Direction.SOUTH -> Direction.EAST
-    Direction.WEST -> Direction.SOUTH
-    Direction.EAST -> Direction.NORTH
-    else -> error("Unable to get anti clockwise direction for given direction $this!")
-}
-
-fun Direction.data2D(): Int = Directions.data2D(this)
+@JvmSynthetic
+internal inline fun <R> ListTag.mapCompound(action: (CompoundTag) -> R): PersistentList<R> = mapPersistentList { action(it as CompoundTag) }

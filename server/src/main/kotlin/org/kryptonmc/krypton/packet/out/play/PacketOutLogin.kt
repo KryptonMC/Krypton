@@ -29,15 +29,14 @@ import org.kryptonmc.krypton.packet.EntityPacket
 import org.kryptonmc.krypton.registry.KryptonRegistries
 import org.kryptonmc.krypton.util.GameModes
 import org.kryptonmc.krypton.util.GlobalPosition
-import org.kryptonmc.krypton.util.asLong
 import org.kryptonmc.krypton.util.readCollection
 import org.kryptonmc.krypton.util.readKey
 import org.kryptonmc.krypton.util.readNBT
 import org.kryptonmc.krypton.util.readVarInt
 import org.kryptonmc.krypton.util.readVector
 import org.kryptonmc.krypton.util.writeCollection
-import org.kryptonmc.krypton.util.writeKey
 import org.kryptonmc.krypton.util.writeNBT
+import org.kryptonmc.krypton.util.writeResourceKey
 import org.kryptonmc.krypton.util.writeVarInt
 import org.kryptonmc.krypton.world.biome.KryptonBiome
 import org.kryptonmc.krypton.world.dimension.KryptonDimensionType
@@ -90,10 +89,10 @@ data class PacketOutLogin(
         buf.writeBoolean(isHardcore)
         buf.writeByte(gameMode.ordinal)
         buf.writeByte(oldGameMode?.ordinal ?: -1)
-        buf.writeCollection(dimensions) { buf.writeKey(it.location) }
+        buf.writeCollection(dimensions, buf::writeResourceKey)
         buf.writeNBT(registryCodec)
-        buf.writeKey(dimensionType.location)
-        buf.writeKey(dimension.location)
+        buf.writeResourceKey(dimensionType)
+        buf.writeResourceKey(dimension)
         buf.writeLong(seed)
         buf.writeVarInt(maxPlayers)
         buf.writeVarInt(viewDistance)
@@ -103,10 +102,7 @@ data class PacketOutLogin(
         buf.writeBoolean(isDebug)
         buf.writeBoolean(isFlat)
         buf.writeBoolean(deathLocation != null)
-        if (deathLocation != null) {
-            buf.writeKey(deathLocation.dimension.location)
-            buf.writeLong(deathLocation.position.asLong())
-        }
+        deathLocation?.write(buf)
     }
 
     companion object {

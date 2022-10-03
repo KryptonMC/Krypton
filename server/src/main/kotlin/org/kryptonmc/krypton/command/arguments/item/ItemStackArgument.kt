@@ -18,6 +18,7 @@
  */
 package org.kryptonmc.krypton.command.arguments.item
 
+import kotlinx.collections.immutable.persistentListOf
 import org.kryptonmc.api.item.ItemType
 import org.kryptonmc.krypton.item.ItemFactory
 import org.kryptonmc.krypton.item.KryptonItemStack
@@ -34,18 +35,15 @@ data class ItemStackArgument(val type: ItemType, val data: CompoundTag? = null) 
      */
     fun createItemStacks(amount: Int): List<KryptonItemStack> {
         if (amount <= type.maximumStackSize) return listOf(createStack(amount))
-        val items = mutableListOf<KryptonItemStack>()
+        val items = persistentListOf<KryptonItemStack>().builder()
         var size = amount
         while (size > type.maximumStackSize) {
             items.add(createStack(type.maximumStackSize))
             size -= type.maximumStackSize
         }
         items.add(createStack(size))
-        return items
+        return items.build()
     }
 
-    private fun createStack(amount: Int): KryptonItemStack {
-        val nbt = data ?: CompoundTag.empty()
-        return KryptonItemStack(type, amount, ItemFactory.create(type, nbt))
-    }
+    private fun createStack(amount: Int): KryptonItemStack = KryptonItemStack(type, amount, ItemFactory.create(type, data ?: CompoundTag.empty()))
 }

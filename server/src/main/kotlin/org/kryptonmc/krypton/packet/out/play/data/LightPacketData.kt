@@ -47,8 +47,8 @@ data class LightPacketData(
         BitSet.valueOf(buf.readLongArray()),
         BitSet.valueOf(buf.readLongArray()),
         BitSet.valueOf(buf.readLongArray()),
-        buf.readList { buf.readVarIntByteArray() },
-        buf.readList { buf.readVarIntByteArray() }
+        buf.readList(ByteBuf::readVarIntByteArray),
+        buf.readList(ByteBuf::readVarIntByteArray)
     )
 
     override fun write(buf: ByteBuf) {
@@ -59,8 +59,8 @@ data class LightPacketData(
         buf.writeLongArray(emptySkyMask.toLongArray())
         buf.writeLongArray(emptyBlockMask.toLongArray())
 
-        buf.writeCollection(skyLights) { buf.writeVarIntByteArray(it) }
-        buf.writeCollection(blockLights) { buf.writeVarIntByteArray(it) }
+        buf.writeCollection(skyLights, buf::writeVarIntByteArray)
+        buf.writeCollection(blockLights, buf::writeVarIntByteArray)
     }
 
     companion object {

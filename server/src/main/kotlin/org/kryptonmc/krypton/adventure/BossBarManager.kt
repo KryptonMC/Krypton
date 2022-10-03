@@ -42,20 +42,20 @@ object BossBarManager : BossBar.Listener {
 
     fun addBar(bar: BossBar, audience: PacketGroupingAudience) {
         val holder = getOrCreate(bar)
-        val addedPlayers = audience.players.filter { holder.subscribers.add(it) }
+        val addedPlayers = audience.players.filter(holder.subscribers::add)
         if (addedPlayers.isNotEmpty()) {
             audience.sessionManager.sendGrouped(addedPlayers, PacketOutBossBar(holder.id, PacketOutBossBar.AddAction(holder.bar)))
         }
     }
 
     fun removeBar(bar: BossBar, player: KryptonPlayer) {
-        val holder = bars[bar] ?: return
+        val holder = bars.get(bar) ?: return
         if (holder.subscribers.remove(player)) player.session.send(PacketOutBossBar(holder.id, PacketOutBossBar.RemoveAction))
     }
 
     fun removeBar(bar: BossBar, audience: PacketGroupingAudience) {
-        val holder = bars[bar] ?: return
-        val addedPlayers = audience.players.filter { holder.subscribers.add(it) }
+        val holder = bars.get(bar) ?: return
+        val addedPlayers = audience.players.filter(holder.subscribers::add)
         if (addedPlayers.isNotEmpty()) {
             audience.sessionManager.sendGrouped(addedPlayers, PacketOutBossBar(holder.id, PacketOutBossBar.RemoveAction))
         }
@@ -81,10 +81,10 @@ object BossBarManager : BossBar.Listener {
         update(bar, PacketOutBossBar.UpdateFlagsAction(bar.flags()))
     }
 
-    private fun getOrCreate(bar: BossBar): BossBarHolder = bars.getOrPut(bar) { BossBarHolder(bar) }.register()
+    private fun getOrCreate(bar: BossBar): BossBarHolder = bars.computeIfAbsent(bar, ::BossBarHolder).register()
 
     private fun update(bar: BossBar, action: PacketOutBossBar.Action) {
-        val holder = bars[bar] ?: return
+        val holder = bars.get(bar) ?: return
         val packet = PacketOutBossBar(holder.id, action)
         holder.subscribers.forEach { it.session.send(packet) }
     }

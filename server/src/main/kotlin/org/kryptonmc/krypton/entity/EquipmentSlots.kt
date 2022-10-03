@@ -32,10 +32,10 @@ object EquipmentSlots {
     private val BY_NAME = EquipmentSlot.values().associateBy { it.name.lowercase() }
 
     @JvmStatic
-    fun fromArmorSlot(slot: ArmorSlot): EquipmentSlot = BY_ARMOR_SLOT[slot]!!
+    fun fromArmorSlot(slot: ArmorSlot): EquipmentSlot = BY_ARMOR_SLOT.get(slot)!!
 
     @JvmStatic
-    fun fromName(name: String): EquipmentSlot? = BY_NAME[name]
+    fun fromName(name: String): EquipmentSlot? = BY_NAME.get(name)
 
     @JvmStatic
     fun index(slot: EquipmentSlot): Int = when (slot.type) {

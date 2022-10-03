@@ -24,10 +24,12 @@ import org.kryptonmc.api.entity.animal.type.PandaGene
 import org.kryptonmc.api.entity.attribute.AttributeTypes
 import org.kryptonmc.api.item.ItemStack
 import org.kryptonmc.api.item.ItemTypes
+import org.kryptonmc.krypton.entity.KryptonMob
+import org.kryptonmc.krypton.entity.attribute.AttributeSupplier
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.world.KryptonWorld
 
-class KryptonPanda(world: KryptonWorld) : KryptonAnimal(world, EntityTypes.PANDA, ATTRIBUTES), Panda {
+class KryptonPanda(world: KryptonWorld) : KryptonAnimal(world, EntityTypes.PANDA), Panda {
 
     override var knownGene: PandaGene
         get() = GENES.getOrNull(data.get(MetadataKeys.Panda.MAIN_GENE).toInt()) ?: PandaGene.NORMAL
@@ -93,7 +95,11 @@ class KryptonPanda(world: KryptonWorld) : KryptonAnimal(world, EntityTypes.PANDA
 
         private val GENES = PandaGene.values()
         private val GENE_NAMES = GENES.associateBy { it.name.lowercase() }
-        private val ATTRIBUTES = attributes().add(AttributeTypes.MOVEMENT_SPEED, 0.15).add(AttributeTypes.ATTACK_DAMAGE, 6.0).build()
+
+        @JvmStatic
+        fun attributes(): AttributeSupplier.Builder = KryptonMob.attributes()
+            .add(AttributeTypes.MOVEMENT_SPEED, 0.15)
+            .add(AttributeTypes.ATTACK_DAMAGE, 6.0)
 
         @JvmStatic
         fun deserializeGene(name: String): PandaGene = GENE_NAMES.getOrDefault(name, PandaGene.NORMAL)

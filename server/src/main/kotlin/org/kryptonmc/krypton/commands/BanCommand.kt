@@ -23,9 +23,9 @@ import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.arguments.StringArgumentType
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer
+import org.kryptonmc.api.auth.GameProfile
 import org.kryptonmc.api.command.Sender
 import org.kryptonmc.krypton.KryptonServer
-import org.kryptonmc.krypton.auth.KryptonGameProfile
 import org.kryptonmc.krypton.command.InternalCommand
 import org.kryptonmc.krypton.command.argument
 import org.kryptonmc.krypton.command.arguments.GameProfileArgument
@@ -61,13 +61,12 @@ object BanCommand : InternalCommand {
     }
 
     @JvmStatic
-    private fun ban(profiles: List<KryptonGameProfile>, server: KryptonServer, sender: Sender, reason: String = "Banned by operator.") {
+    private fun ban(profiles: List<GameProfile>, server: KryptonServer, sender: Sender, reason: String = "Banned by operator.") {
         profiles.forEach { profile ->
             if (server.playerManager.bannedPlayers.contains(profile)) return@forEach
             val entry = BannedPlayerEntry(profile, reason = LegacyComponentSerializer.legacySection().deserialize(reason))
             server.playerManager.bannedPlayers.add(entry)
-            val player = server.player(profile.uuid)
-            if (player != null) kick(entry, player)
+            server.player(profile.uuid)?.let { kick(entry, it) }
             sender.sendMessage(Component.translatable("commands.ban.success", Component.text(profile.name), Component.text(reason)))
         }
     }

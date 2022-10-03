@@ -22,16 +22,11 @@ import org.kryptonmc.api.entity.EntityType
 import org.kryptonmc.api.entity.animal.Tamable
 import org.kryptonmc.api.entity.player.Player
 import org.kryptonmc.api.scoreboard.Team
-import org.kryptonmc.krypton.entity.attribute.AttributeSupplier
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.world.KryptonWorld
 
-abstract class KryptonTamable(
-    world: KryptonWorld,
-    type: EntityType<out Tamable>,
-    attributeSupplier: AttributeSupplier
-) : KryptonAnimal(world, type, attributeSupplier), Tamable {
+abstract class KryptonTamable(world: KryptonWorld, type: EntityType<out Tamable>) : KryptonAnimal(world, type), Tamable {
 
     final override var isOrderedToSit: Boolean = false
     final override var isSitting: Boolean
@@ -43,7 +38,7 @@ abstract class KryptonTamable(
     final override val owner: KryptonPlayer?
         get() {
             val uuid = data.get(MetadataKeys.Tamable.OWNER) ?: return null
-            return world.entityManager[uuid] as? KryptonPlayer
+            return world.entityManager.get(uuid) as? KryptonPlayer
         }
     final override val team: Team?
         get() {

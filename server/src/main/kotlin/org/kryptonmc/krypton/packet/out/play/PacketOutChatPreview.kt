@@ -31,7 +31,7 @@ import org.kryptonmc.krypton.util.writeVarInt
 @JvmRecord
 data class PacketOutChatPreview(val queryId: Int, val previewMessage: Component?) : Packet {
 
-    constructor(buf: ByteBuf) : this(buf.readVarInt(), buf.readNullable { buf.readComponent() })
+    constructor(buf: ByteBuf) : this(buf.readVarInt(), buf.readNullable(ByteBuf::readComponent))
 
     override fun write(buf: ByteBuf) {
         buf.writeVarInt(queryId)

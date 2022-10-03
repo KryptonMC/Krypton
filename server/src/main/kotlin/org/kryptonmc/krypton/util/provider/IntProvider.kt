@@ -23,12 +23,15 @@ import org.kryptonmc.serialization.Codec
 import org.kryptonmc.serialization.DataResult
 import org.kryptonmc.util.Either
 import java.util.function.Function
+import kotlin.random.Random
 
 abstract class IntProvider {
 
     abstract val type: IntProviderType<*>
     abstract val minimumValue: Int
     abstract val maximumValue: Int
+
+    abstract fun sample(random: Random): Int
 
     companion object {
 
@@ -39,7 +42,7 @@ abstract class IntProvider {
         @JvmField
         val CODEC: Codec<IntProvider> = CONSTANT_OR_DISPATCH_CODEC.xmap(
             { it.map(ConstantInt::of, Function.identity()) },
-            { if (it.type === IntProviderTypes.CONSTANT) Either.left((it as ConstantInt).value) else Either.right(it) }
+            { if (it is ConstantInt) Either.left(it.value) else Either.right(it) }
         )
 
         @JvmStatic

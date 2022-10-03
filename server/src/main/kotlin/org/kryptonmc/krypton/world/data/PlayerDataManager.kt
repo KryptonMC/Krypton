@@ -22,9 +22,8 @@ import ca.spottedleaf.dataconverter.minecraft.datatypes.MCTypeRegistry
 import org.kryptonmc.krypton.KryptonPlatform
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.entity.serializer.player.PlayerSerializer
+import org.kryptonmc.krypton.util.DataConversion
 import org.kryptonmc.krypton.util.logger
-import org.kryptonmc.krypton.util.sendDataConversionWarning
-import org.kryptonmc.krypton.util.upgradeData
 import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.io.TagCompression
 import org.kryptonmc.nbt.io.TagIO
@@ -66,11 +65,11 @@ class PlayerDataManager(val folder: Path, private val serializeData: Boolean) {
         val version = if (nbt.contains("DataVersion", 99)) nbt.getInt("DataVersion") else -1
         // We won't upgrade data if use of the data converter is disabled.
         if (version < KryptonPlatform.worldVersion && !player.server.config.advanced.useDataConverter) {
-            LOGGER.sendDataConversionWarning("data for player with UUID ${player.uuid}")
+            DataConversion.sendWarning(LOGGER, "data for player with UUID ${player.uuid}")
             error("Tried to load old player data from version $version when data conversion is disabled!")
         }
 
-        val data = nbt.upgradeData(MCTypeRegistry.PLAYER, version)
+        val data = DataConversion.upgrade(nbt, MCTypeRegistry.PLAYER, version)
         PlayerSerializer.load(player, data)
         data
     }, executor)

@@ -22,9 +22,11 @@ import org.kryptonmc.api.entity.EntityType
 import org.kryptonmc.api.entity.EntityTypes
 import org.kryptonmc.api.entity.animal.Cow
 import org.kryptonmc.api.entity.attribute.AttributeTypes
+import org.kryptonmc.krypton.entity.KryptonMob
+import org.kryptonmc.krypton.entity.attribute.AttributeSupplier
 import org.kryptonmc.krypton.world.KryptonWorld
 
-open class KryptonCow(world: KryptonWorld, type: EntityType<out Cow>) : KryptonAnimal(world, type, ATTRIBUTES), Cow {
+open class KryptonCow(world: KryptonWorld, type: EntityType<out Cow>) : KryptonAnimal(world, type), Cow {
 
     constructor(world: KryptonWorld) : this(world, EntityTypes.COW)
 
@@ -33,6 +35,9 @@ open class KryptonCow(world: KryptonWorld, type: EntityType<out Cow>) : KryptonA
 
     companion object {
 
-        private val ATTRIBUTES = attributes().add(AttributeTypes.MAX_HEALTH, 10.0).add(AttributeTypes.MOVEMENT_SPEED, 0.2).build()
+        @JvmStatic
+        fun attributes(): AttributeSupplier.Builder = KryptonMob.attributes()
+            .add(AttributeTypes.MAX_HEALTH, 10.0)
+            .add(AttributeTypes.MOVEMENT_SPEED, 0.2)
     }
 }

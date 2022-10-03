@@ -60,7 +60,7 @@ object AdventureCodecs {
     val TEXT_COLOR: Codec<TextColor> = Codec.STRING.comapFlatMap({
         val value = if (it.startsWith("#")) TextColor.fromHexString(it) else NamedTextColor.NAMES.value(it)
         if (value != null) DataResult.success(value) else DataResult.error("Input string $it is not a valid named colour or hex colour!")
-    }, TextColor::serialize)
+    }, TextColor::serializeToNetwork)
 
     @JvmStatic
     private fun decorationStateCodec(name: String): MapCodec<TextDecoration.State> = Codec.BOOLEAN.optionalFieldOf(name)

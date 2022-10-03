@@ -22,11 +22,13 @@ import org.kryptonmc.api.entity.EntityTypes
 import org.kryptonmc.api.entity.animal.Sheep
 import org.kryptonmc.api.entity.attribute.AttributeTypes
 import org.kryptonmc.api.item.data.DyeColor
+import org.kryptonmc.krypton.entity.KryptonMob
+import org.kryptonmc.krypton.entity.attribute.AttributeSupplier
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.registry.KryptonRegistries
 import org.kryptonmc.krypton.world.KryptonWorld
 
-class KryptonSheep(world: KryptonWorld) : KryptonAnimal(world, EntityTypes.SHEEP, ATTRIBUTES), Sheep {
+class KryptonSheep(world: KryptonWorld) : KryptonAnimal(world, EntityTypes.SHEEP), Sheep {
 
     override var isSheared: Boolean
         get() = getFlag(MetadataKeys.Sheep.FLAGS, FLAG_SHEARED)
@@ -48,6 +50,9 @@ class KryptonSheep(world: KryptonWorld) : KryptonAnimal(world, EntityTypes.SHEEP
         private const val WOOL_COLOR_MASK = 15
         private const val CLEAR_WOOL_COLOR_MASK = 240
 
-        private val ATTRIBUTES = attributes().add(AttributeTypes.MAX_HEALTH, 8.0).add(AttributeTypes.MOVEMENT_SPEED, 0.23).build()
+        @JvmStatic
+        fun attributes(): AttributeSupplier.Builder = KryptonMob.attributes()
+            .add(AttributeTypes.MAX_HEALTH, 8.0)
+            .add(AttributeTypes.MOVEMENT_SPEED, 0.23)
     }
 }

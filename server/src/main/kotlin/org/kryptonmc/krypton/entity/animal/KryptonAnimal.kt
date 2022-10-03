@@ -23,16 +23,11 @@ import org.kryptonmc.api.entity.animal.Animal
 import org.kryptonmc.api.item.ItemStack
 import org.kryptonmc.api.item.ItemTypes
 import org.kryptonmc.krypton.entity.KryptonAgeable
-import org.kryptonmc.krypton.entity.attribute.AttributeSupplier
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.world.KryptonWorld
 import java.util.UUID
 
-abstract class KryptonAnimal(
-    world: KryptonWorld,
-    type: EntityType<out Animal>,
-    attributeSupplier: AttributeSupplier
-) : KryptonAgeable(world, type, attributeSupplier), Animal {
+abstract class KryptonAnimal(world: KryptonWorld, type: EntityType<out Animal>) : KryptonAgeable(world, type), Animal {
 
     final override var loveCause: UUID? = null
     final override var inLoveTime: Int = 0
@@ -43,7 +38,7 @@ abstract class KryptonAnimal(
     var loveCausePlayer: KryptonPlayer?
         get() {
             val cause = loveCause ?: return null
-            return world.entityManager[cause] as? KryptonPlayer
+            return world.entityManager.get(cause) as? KryptonPlayer
         }
         set(value) {
             inLoveTime = DEFAULT_IN_LOVE_TIME

@@ -38,10 +38,7 @@ import org.kryptonmc.api.event.Continuation as EventContinuation
 object Coroutines {
 
     fun registerHandlerAdapter(manager: KryptonEventManager) {
-        val filter = Predicate<Method> {
-            val function = it.kotlinFunction ?: return@Predicate false
-            function.isSuspend
-        }
+        val filter = Predicate<Method> { it.kotlinFunction?.isSuspend == true }
         val validator = BiConsumer<Method, MutableList<String>> { method, errors ->
             val function = requireNotNull(method.kotlinFunction) { "Method was not Kotlin function despite being validated as one!" }
             // parameters includes receiver, but excludes continuation

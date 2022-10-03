@@ -24,7 +24,6 @@ import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.util.readString
 import org.kryptonmc.krypton.util.writeString
 
-@Suppress("ArrayInDataClass")
 @JvmRecord
 data class PacketInChatMessage(val message: String, val signature: MessageSignature, val signedPreview: Boolean) : Packet {
 

@@ -18,7 +18,6 @@
  */
 package org.kryptonmc.krypton.entity.serializer.animal
 
-import org.kryptonmc.api.entity.animal.type.PandaGene
 import org.kryptonmc.krypton.entity.animal.KryptonPanda
 import org.kryptonmc.krypton.entity.serializer.AgeableSerializer
 import org.kryptonmc.krypton.entity.serializer.EntitySerializer

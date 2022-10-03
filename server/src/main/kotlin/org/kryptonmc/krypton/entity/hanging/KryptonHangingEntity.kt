@@ -22,9 +22,8 @@ import org.kryptonmc.api.entity.EntityType
 import org.kryptonmc.api.entity.hanging.HangingEntity
 import org.kryptonmc.api.util.Direction
 import org.kryptonmc.krypton.entity.KryptonEntity
+import org.kryptonmc.krypton.util.Directions
 import org.kryptonmc.krypton.util.KryptonBoundingBox
-import org.kryptonmc.krypton.util.antiClockwise
-import org.kryptonmc.krypton.util.data2D
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.spongepowered.math.vector.Vector2f
 import org.spongepowered.math.vector.Vector3d
@@ -46,7 +45,7 @@ abstract class KryptonHangingEntity(
             field = value
             // Each horizontal direction is a half turn (90 degrees) away from each other.
             // The 2D data value is 0 = south, 1 = west, 2 = north, 3 = east.
-            rotation = Vector2f(rotation.x(), value.data2D() * HALF_TURN_DEGREES)
+            rotation = Vector2f(rotation.x(), Directions.data2D(value) * HALF_TURN_DEGREES)
             recalculateBoundingBox()
         }
 
@@ -59,7 +58,7 @@ abstract class KryptonHangingEntity(
         // for SOUTH, the z becomes centerZ + 1/32, and for NORTH, the z becomes centerZ + 31/32
         z -= direction.normalZ * ALMOST_TWO_BLOCKS_PIXELS
         if (height % TWO_BLOCKS_PICTURE_PIXELS == 0) y += BLOCK_CENTER_OFFSET
-        val antiClockwise = direction.antiClockwise()
+        val antiClockwise = Directions.antiClockwise(direction)
         if (width % TWO_BLOCKS_PICTURE_PIXELS == 0) {
             // for direction NORTH (anti clockwise WEST), the x becomes centerX
             // for direction SOUTH (anti clockwise EAST), the x becomes centerX + 1

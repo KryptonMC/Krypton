@@ -30,6 +30,6 @@ object LocaleTypeSerializer : ScalarSerializer<Locale>(Locale::class.java) {
 
     override fun deserialize(type: Type, source: Any): Locale {
         if (source !is String) throw SerializationException("Locale must be a string!")
-        return Locale.forLanguageTag(source)
+        return Locale(source)
     }
 }

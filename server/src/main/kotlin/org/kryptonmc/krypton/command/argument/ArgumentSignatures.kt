@@ -30,12 +30,12 @@ import org.kryptonmc.krypton.util.writeVarIntByteArray
 @JvmRecord
 data class ArgumentSignatures(val salt: Long, val signatures: Map<String, ByteArray>) : Writable {
 
-    constructor(buf: ByteBuf) : this(buf.readLong(), buf.readMap({ buf.readString(16) }, { buf.readVarIntByteArray() }))
+    constructor(buf: ByteBuf) : this(buf.readLong(), buf.readMap({ buf.readString(16) }, ByteBuf::readVarIntByteArray))
 
-    fun get(argument: String): ByteArray? = signatures[argument]
+    fun get(argument: String): ByteArray? = signatures.get(argument)
 
     override fun write(buf: ByteBuf) {
         buf.writeLong(salt)
-        buf.writeMap(signatures, { _, value -> buf.writeString(value, 16) }, { _, value -> buf.writeVarIntByteArray(value) })
+        buf.writeMap(signatures, { _, value -> buf.writeString(value, 16) }, ByteBuf::writeVarIntByteArray)
     }
 }

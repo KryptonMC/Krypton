@@ -25,11 +25,7 @@ import org.kryptonmc.krypton.entity.KryptonMob
 import org.kryptonmc.krypton.entity.attribute.AttributeSupplier
 import org.kryptonmc.krypton.world.KryptonWorld
 
-abstract class KryptonMonster(
-    world: KryptonWorld,
-    type: EntityType<out Monster>,
-    attributeSupplier: AttributeSupplier
-) : KryptonMob(world, type, attributeSupplier), Monster {
+abstract class KryptonMonster(world: KryptonWorld, type: EntityType<out Monster>) : KryptonMob(world, type), Monster {
 
     companion object {
 

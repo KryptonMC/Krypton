@@ -41,7 +41,7 @@ class ZeroBitStorage(override val size: Int) : BitStorage {
 
     override fun forEach(consumer: StorageConsumer) {
         for (i in 0 until size) {
-            consumer(i, 0)
+            consumer.accept(i, 0)
         }
     }
 

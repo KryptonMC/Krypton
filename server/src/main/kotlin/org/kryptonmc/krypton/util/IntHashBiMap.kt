@@ -36,11 +36,11 @@ class IntHashBiMap<T>(expectedSize: Int) : IntBiMap<T> {
     constructor() : this(512)
 
     fun set(key: T, value: Int) {
-        idByValue[key] = value
+        idByValue.put(key, value)
         while (valueById.size <= value) {
             valueById.add(null)
         }
-        valueById[value] = key
+        valueById.set(value, key)
         if (nextId <= value) nextId = value + 1
     }
 
@@ -52,5 +52,5 @@ class IntHashBiMap<T>(expectedSize: Int) : IntBiMap<T> {
 
     override fun get(id: Int): T? = valueById.getOrNull(id)
 
-    override fun iterator(): Iterator<T> = valueById.iterator().asSequence().filterNotNull().iterator()
+    override fun iterator(): Iterator<T> = valueById.iterator().filterNotNull()
 }

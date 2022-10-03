@@ -24,7 +24,6 @@ import org.kryptonmc.krypton.entity.hanging.KryptonPainting
 import org.kryptonmc.krypton.entity.serializer.BaseEntitySerializer
 import org.kryptonmc.krypton.entity.serializer.EntitySerializer
 import org.kryptonmc.krypton.util.Directions
-import org.kryptonmc.krypton.util.data2D
 import org.kryptonmc.nbt.CompoundTag
 
 object PaintingSerializer : EntitySerializer<KryptonPainting> {
@@ -37,6 +36,6 @@ object PaintingSerializer : EntitySerializer<KryptonPainting> {
 
     override fun save(entity: KryptonPainting): CompoundTag.Builder = BaseEntitySerializer.save(entity).apply {
         if (entity.picture != null) string("Motive", entity.picture!!.key().asString())
-        byte("Facing", entity.direction.data2D().toByte())
+        byte("Facing", Directions.data2D(entity.direction).toByte())
     }
 }

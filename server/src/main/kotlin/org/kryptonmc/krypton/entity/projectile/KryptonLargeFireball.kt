@@ -21,7 +21,6 @@ package org.kryptonmc.krypton.entity.projectile
 import org.kryptonmc.api.entity.EntityTypes
 import org.kryptonmc.api.entity.projectile.LargeFireball
 import org.kryptonmc.krypton.world.KryptonWorld
-import org.kryptonmc.nbt.CompoundTag
 
 class KryptonLargeFireball(world: KryptonWorld) : KryptonFireball(world, EntityTypes.FIREBALL), LargeFireball {
 

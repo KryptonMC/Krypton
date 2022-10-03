@@ -42,7 +42,7 @@ data class PacketOutSetContainerContent(
         heldItem: KryptonItemStack
     ) : this(inventory.id, inventory.incrementStateId(), inventory.items, heldItem)
 
-    constructor(buf: ByteBuf) : this(buf.readByte().toInt(), buf.readVarInt(), buf.readList { buf.readItem() }, buf.readItem())
+    constructor(buf: ByteBuf) : this(buf.readByte().toInt(), buf.readVarInt(), buf.readList(ByteBuf::readItem), buf.readItem())
 
     override fun write(buf: ByteBuf) {
         buf.writeByte(id)

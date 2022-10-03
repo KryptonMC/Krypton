@@ -57,9 +57,7 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutSetPassengers
 import org.kryptonmc.krypton.packet.out.play.PacketOutSpawnEntity
 import org.kryptonmc.krypton.tags.KryptonTagManager
 import org.kryptonmc.krypton.tags.KryptonTagTypes
-import org.kryptonmc.krypton.util.ceil
-import org.kryptonmc.krypton.util.floor
-import org.kryptonmc.krypton.util.nextUUID
+import org.kryptonmc.krypton.util.Maths
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.krypton.world.damage.KryptonDamageSource
 import org.spongepowered.math.vector.Vector2f
@@ -73,19 +71,19 @@ import kotlin.math.max
 import kotlin.random.Random
 
 // TODO: If we keep doing this the vanilla way, this is going to end up with way too much in it.
-//  first, the loading and saving mechanism can probably be extracted to a separate system, to isolate entities.
-//  second, all of the entity processing logic can also be moved elsewhere
-//  third, there is a lot of vanilla stuff in here that is clearly just taken, which isn't allowed
+//  First, the loading and saving mechanism can probably be extracted to a separate system, to isolate entities.
+//  Second, all of the entity processing logic can also be moved elsewhere
+//  Third, there is a lot of vanilla stuff in here that is clearly just taken, which isn't allowed
 @Suppress("LeakingThis")
-abstract class KryptonEntity(override var world: KryptonWorld, override val type: EntityType<out Entity>) : Entity {
+abstract class KryptonEntity(final override var world: KryptonWorld, final override val type: EntityType<out Entity>) : Entity {
 
     final override val id: Int = NEXT_ENTITY_ID.incrementAndGet()
-    override var uuid: UUID = Random.nextUUID()
+    override var uuid: UUID = Maths.createInsecureUUID(Random)
     override val teamRepresentation: Component
         get() = Component.text(uuid.toString())
     override val name: Component
         get() = customName ?: type.translation
-    override val displayName: Component
+    final override val displayName: Component
         get() {
             val team = team ?: return name
             return team.formatName(name).style {
@@ -107,7 +105,7 @@ abstract class KryptonEntity(override var world: KryptonWorld, override val type
     final override var isOnGround: Boolean = true
     final override var ticksExisted: Int = 0
     final override var fireTicks: Short = 0
-    override var isInvulnerable: Boolean = false
+    final override var isInvulnerable: Boolean = false
     final override var fallDistance: Float = 0F
 
     final override val isPassenger: Boolean
@@ -138,10 +136,8 @@ abstract class KryptonEntity(override var world: KryptonWorld, override val type
     final override var inWater: Boolean = false
     final override var inLava: Boolean = false
     final override var underwater: Boolean = false
-    // FIXME: change this in the next version, when we add all the KryptonBlock implementations. This can be an `is` check.
     val inBubbleColumn: Boolean
-        get() = false
-//        get() = world.getBlock(location.floorX(), location.floorY(), location.floorZ()) === Blocks.BUBBLE_COLUMN.defaultState
+        get() = world.getBlock(location.floorX(), location.floorY(), location.floorZ()).eq(Blocks.BUBBLE_COLUMN)
 
     open val maxAirTicks: Int
         get() = DEFAULT_MAX_AIR
@@ -151,7 +147,7 @@ abstract class KryptonEntity(override var world: KryptonWorld, override val type
         get() = false
     protected open val pushedByFluid: Boolean
         get() = true
-    override val isRideable: Boolean
+    final override val isRideable: Boolean
         get() = type.isRideable
 
     open val soundSource: Sound.Source
@@ -284,12 +280,12 @@ abstract class KryptonEntity(override var world: KryptonWorld, override val type
     }
 
     private fun updateFluidHeight(tag: Tag<Fluid>, flowScale: Double): Boolean {
-        val minX = (boundingBox.minimumX - 0.001).floor()
-        val minY = (boundingBox.minimumY - 0.001).floor()
-        val minZ = (boundingBox.minimumZ - 0.001).floor()
-        val maxX = (boundingBox.maximumX + 0.001).ceil()
-        val maxY = (boundingBox.maximumY + 0.001).ceil()
-        val maxZ = (boundingBox.maximumZ + 0.001).ceil()
+        val minX = Maths.floor(boundingBox.minimumX - 0.001)
+        val minY = Maths.floor(boundingBox.minimumY - 0.001)
+        val minZ = Maths.floor(boundingBox.minimumZ - 0.001)
+        val maxX = Maths.ceil(boundingBox.maximumX + 0.001)
+        val maxY = Maths.ceil(boundingBox.maximumY + 0.001)
+        val maxZ = Maths.ceil(boundingBox.maximumZ + 0.001)
         var amount = 0.0
         val pushed = pushedByFluid
         var shouldPush = false
@@ -327,11 +323,10 @@ abstract class KryptonEntity(override var world: KryptonWorld, override val type
             server.sessionManager.sendGrouped(viewers, PacketOutSetEntityVelocity(this))
         }
 
-        fluidHeights[tag] = amount
+        fluidHeights.put(tag, amount)
         return shouldPush
     }
 
-    @Suppress("UNCHECKED_CAST")
     private fun updateUnderFluid() {
         underwater = underFluid(FluidTags.WATER)
         fluidOnEyes.clear()
@@ -341,13 +336,13 @@ abstract class KryptonEntity(override var world: KryptonWorld, override val type
         if (vehicle is KryptonBoat && !vehicle.underwater && vehicle.boundingBox.maximumY >= y && vehicle.boundingBox.minimumY <= y) return
 
         val x = location.floorX()
-        val blockY = y.floor()
+        val blockY = Maths.floor(y)
         val z = location.floorZ()
         val fluid = world.getFluid(x, blockY, z)
 
         val height = (blockY.toFloat() + fluid.getHeight(world, x, blockY, z))
         if (height <= y) return
-        KryptonTagManager.get(KryptonTagTypes.FLUIDS).forEach { fluidOnEyes.add(it) }
+        KryptonTagManager.get(KryptonTagTypes.FLUIDS).forEach(fluidOnEyes::add)
     }
 
     fun underFluid(fluid: Tag<Fluid>): Boolean = fluidOnEyes.contains(fluid)
@@ -381,10 +376,8 @@ abstract class KryptonEntity(override var world: KryptonWorld, override val type
         look(yaw, pitch)
     }
 
-    open fun isInvulnerableTo(source: KryptonDamageSource): Boolean = isRemoved ||
-            isInvulnerable &&
-            source.type !== DamageTypes.VOID &&
-            !source.isCreativePlayer
+    open fun isInvulnerableTo(source: KryptonDamageSource): Boolean =
+        isRemoved || isInvulnerable && source.type !== DamageTypes.VOID && !source.isCreativePlayer
 
     open fun damage(source: KryptonDamageSource, damage: Float): Boolean {
         if (isInvulnerableTo(source)) return false

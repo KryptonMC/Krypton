@@ -22,9 +22,7 @@ import io.netty.buffer.ByteBuf
 import org.kryptonmc.api.entity.Hand
 import org.kryptonmc.api.util.Direction
 import org.kryptonmc.krypton.packet.Packet
-import org.kryptonmc.krypton.util.decodeBlockX
-import org.kryptonmc.krypton.util.decodeBlockY
-import org.kryptonmc.krypton.util.decodeBlockZ
+import org.kryptonmc.krypton.util.Positioning
 import org.kryptonmc.krypton.util.readEnum
 import org.kryptonmc.krypton.util.readVarInt
 import org.kryptonmc.krypton.util.writeEnum
@@ -49,9 +47,9 @@ data class PacketInUseItemOn(
 
     private constructor(buf: ByteBuf, hand: Hand, location: Long) : this(
         hand,
-        location.decodeBlockX(),
-        location.decodeBlockY(),
-        location.decodeBlockZ(),
+        Positioning.decodeBlockX(location),
+        Positioning.decodeBlockY(location),
+        Positioning.decodeBlockZ(location),
         buf.readEnum<Direction>(),
         buf.readFloat(),
         buf.readFloat(),
