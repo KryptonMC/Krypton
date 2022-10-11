@@ -19,6 +19,11 @@
 package org.kryptonmc.krypton.entity
 
 import org.kryptonmc.api.entity.Entity
+import org.kryptonmc.api.entity.EntityType
 import org.kryptonmc.krypton.util.downcastApiType
 
 inline fun <A : Entity, reified I : KryptonEntity> A.downcast(): I = downcastApiType("Entity")
+
+fun Entity.downcastBase(): KryptonEntity = downcast()
+
+fun <E : Entity, KE : KryptonEntity> EntityType<E>.downcast(): KryptonEntityType<KE> = downcastApiType("EntityType")

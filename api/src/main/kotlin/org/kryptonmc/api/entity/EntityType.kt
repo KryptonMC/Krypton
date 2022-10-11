@@ -26,7 +26,7 @@ import org.kryptonmc.api.util.TranslationHolder
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
 @CataloguedBy(EntityTypes::class)
-public interface EntityType<T : Entity> : Keyed, TranslationHolder {
+public interface EntityType<out T : Entity> : Keyed, TranslationHolder {
 
     /**
      * The category entities of this type are part of.
@@ -44,11 +44,6 @@ public interface EntityType<T : Entity> : Keyed, TranslationHolder {
      * If entities of this type are immune to all types of fire damage.
      */
     public val isImmuneToFire: Boolean
-
-    /**
-     * If entities of this type can be ridden.
-     */
-    public val isRideable: Boolean
 
     /**
      * The radius of the circle in which the client will track the movement of
@@ -162,25 +157,6 @@ public interface EntityType<T : Entity> : Keyed, TranslationHolder {
         @EntityTypeDsl
         @Contract("_ -> this", mutates = "this")
         public fun fireImmune(): Builder<T> = fireImmune(true)
-
-        /**
-         * Sets whether entities of the type can be ridden.
-         *
-         * @param value the value of the setting
-         * @return this builder
-         */
-        @EntityTypeDsl
-        @Contract("_ -> this", mutates = "this")
-        public fun rideable(value: Boolean): Builder<T>
-
-        /**
-         * Makes entities of the type able to be ridden.
-         *
-         * @return this builder
-         */
-        @EntityTypeDsl
-        @Contract("_ -> this", mutates = "this")
-        public fun rideable(): Builder<T> = rideable(true)
 
         /**
          * Makes entities of the type flammable.

@@ -18,22 +18,28 @@
  */
 package org.kryptonmc.krypton.entity.aquatic
 
-import org.kryptonmc.api.effect.sound.SoundEvent
-import org.kryptonmc.api.effect.sound.SoundEvents
-import org.kryptonmc.api.entity.EntityTypes
 import org.kryptonmc.api.entity.aquatic.Dolphin
 import org.kryptonmc.api.entity.attribute.AttributeTypes
 import org.kryptonmc.api.world.damage.type.DamageTypes
+import org.kryptonmc.krypton.entity.KryptonEntityType
+import org.kryptonmc.krypton.entity.KryptonEntityTypes
 import org.kryptonmc.krypton.entity.KryptonMob
 import org.kryptonmc.krypton.entity.attribute.AttributeSupplier
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
+import org.kryptonmc.krypton.entity.serializer.EntitySerializer
+import org.kryptonmc.krypton.entity.serializer.aquatic.DolphinSerializer
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.krypton.world.damage.KryptonDamageSource
 import org.spongepowered.math.vector.Vector2f
 import org.spongepowered.math.vector.Vector3i
 import kotlin.random.Random
 
-class KryptonDolphin(world: KryptonWorld) : KryptonAquaticAnimal(world, EntityTypes.DOLPHIN), Dolphin {
+class KryptonDolphin(world: KryptonWorld) : KryptonAquaticAnimal(world), Dolphin {
+
+    override val type: KryptonEntityType<Dolphin>
+        get() = KryptonEntityTypes.DOLPHIN
+    override val serializer: EntitySerializer<KryptonDolphin>
+        get() = DolphinSerializer
 
     override var treasurePosition: Vector3i
         get() = data.get(MetadataKeys.Dolphin.TREASURE_POSITION)
@@ -47,15 +53,12 @@ class KryptonDolphin(world: KryptonWorld) : KryptonAquaticAnimal(world, EntityTy
 
     override val maxAirTicks: Int
         get() = MAX_AIR
-    override val swimSound: SoundEvent
-        get() = SoundEvents.DOLPHIN_SWIM
-    override val splashSound: SoundEvent
-        get() = SoundEvents.DOLPHIN_SPLASH
 
-    init {
-        data.add(MetadataKeys.Dolphin.TREASURE_POSITION, Vector3i.ZERO)
-        data.add(MetadataKeys.Dolphin.GOT_FISH, false)
-        data.add(MetadataKeys.Dolphin.MOISTURE, FULL_SKIN_MOISTURE)
+    override fun defineData() {
+        super.defineData()
+        data.define(MetadataKeys.Dolphin.TREASURE_POSITION, Vector3i.ZERO)
+        data.define(MetadataKeys.Dolphin.GOT_FISH, false)
+        data.define(MetadataKeys.Dolphin.MOISTURE, FULL_SKIN_MOISTURE)
     }
 
     override fun handleAir(amount: Int) {
@@ -71,7 +74,7 @@ class KryptonDolphin(world: KryptonWorld) : KryptonAquaticAnimal(world, EntityTy
         // Dolphins don't immediately start to suffocate out of water, as they can survive out of water for extended periods of time.
         // In real life, dolphins can't breathe underwater, so they have to resurface. In Minecraft, this behaviour isn't
         // simulated, but what is simulated is the ability for dolphins to survive for extended periods of time out of water.
-        if (inWater || inBubbleColumn) { // TODO: Also check for being in rain
+        if (inWater || waterPhysicsSystem.isInBubbleColumn()) { // TODO: Also check for being in rain
             // If the dolphin is in water, rain, or a bubble column then it has full moisture.
             skinMoisture = FULL_SKIN_MOISTURE
             return

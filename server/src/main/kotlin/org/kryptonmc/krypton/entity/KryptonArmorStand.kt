@@ -19,38 +19,38 @@
 package org.kryptonmc.krypton.entity
 
 import org.kryptonmc.api.entity.ArmorStand
-import org.kryptonmc.api.entity.EntityTypes
 import org.kryptonmc.api.entity.EquipmentSlot
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.entity.serializer.ArmorStandSerializer
+import org.kryptonmc.krypton.entity.serializer.EntitySerializer
 import org.kryptonmc.krypton.item.KryptonItemStack
 import org.kryptonmc.krypton.util.FixedList
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.spongepowered.math.vector.Vector3f
 
-class KryptonArmorStand(world: KryptonWorld) : KryptonLivingEntity(world, EntityTypes.ARMOR_STAND), ArmorStand, KryptonEquipable {
+class KryptonArmorStand(world: KryptonWorld) : KryptonLivingEntity(world), ArmorStand, KryptonEquipable {
+
+    override val type: KryptonEntityType<ArmorStand>
+        get() = KryptonEntityTypes.ARMOR_STAND
+    override val serializer: EntitySerializer<KryptonArmorStand>
+        get() = ArmorStandSerializer
 
     internal val armorItems = FixedList(4, KryptonItemStack.EMPTY)
     internal val handItems = FixedList(2, KryptonItemStack.EMPTY)
     internal var disabledSlots = 0
 
-    override val handSlots: Iterable<KryptonItemStack>
-        get() = handItems
-    override val armorSlots: Iterable<KryptonItemStack>
-        get() = armorItems
-
     override var isSmall: Boolean
-        get() = getFlag(MetadataKeys.ArmorStand.FLAGS, FLAG_SMALL)
-        set(value) = setFlag(MetadataKeys.ArmorStand.FLAGS, FLAG_SMALL, value)
+        get() = data.getFlag(MetadataKeys.ArmorStand.FLAGS, FLAG_SMALL)
+        set(value) = data.setFlag(MetadataKeys.ArmorStand.FLAGS, FLAG_SMALL, value)
     override var hasArms: Boolean
-        get() = getFlag(MetadataKeys.ArmorStand.FLAGS, FLAG_ARMS)
-        set(value) = setFlag(MetadataKeys.ArmorStand.FLAGS, FLAG_ARMS, value)
+        get() = data.getFlag(MetadataKeys.ArmorStand.FLAGS, FLAG_ARMS)
+        set(value) = data.setFlag(MetadataKeys.ArmorStand.FLAGS, FLAG_ARMS, value)
     override var hasBasePlate: Boolean
-        get() = getFlag(MetadataKeys.ArmorStand.FLAGS, FLAG_BASE_PLATE)
-        set(value) = setFlag(MetadataKeys.ArmorStand.FLAGS, FLAG_BASE_PLATE, value)
+        get() = data.getFlag(MetadataKeys.ArmorStand.FLAGS, FLAG_BASE_PLATE)
+        set(value) = data.setFlag(MetadataKeys.ArmorStand.FLAGS, FLAG_BASE_PLATE, value)
     override var isMarker: Boolean
-        get() = getFlag(MetadataKeys.ArmorStand.FLAGS, FLAG_MARKER)
-        set(value) = setFlag(MetadataKeys.ArmorStand.FLAGS, FLAG_MARKER, value)
+        get() = data.getFlag(MetadataKeys.ArmorStand.FLAGS, FLAG_MARKER)
+        set(value) = data.setFlag(MetadataKeys.ArmorStand.FLAGS, FLAG_MARKER, value)
     override var headPose: Vector3f
         get() = data.get(MetadataKeys.ArmorStand.HEAD_ROTATION)
         set(value) = data.set(MetadataKeys.ArmorStand.HEAD_ROTATION, value)
@@ -70,14 +70,15 @@ class KryptonArmorStand(world: KryptonWorld) : KryptonLivingEntity(world, Entity
         get() = data.get(MetadataKeys.ArmorStand.RIGHT_LEG_ROTATION)
         set(value) = data.set(MetadataKeys.ArmorStand.RIGHT_LEG_ROTATION, value)
 
-    init {
-        data.add(MetadataKeys.ArmorStand.FLAGS, 0)
-        data.add(MetadataKeys.ArmorStand.HEAD_ROTATION, ArmorStandSerializer.DEFAULT_HEAD_ROTATION)
-        data.add(MetadataKeys.ArmorStand.BODY_ROTATION, ArmorStandSerializer.DEFAULT_BODY_ROTATION)
-        data.add(MetadataKeys.ArmorStand.LEFT_ARM_ROTATION, ArmorStandSerializer.DEFAULT_LEFT_ARM_ROTATION)
-        data.add(MetadataKeys.ArmorStand.RIGHT_ARM_ROTATION, ArmorStandSerializer.DEFAULT_RIGHT_ARM_ROTATION)
-        data.add(MetadataKeys.ArmorStand.LEFT_LEG_ROTATION, ArmorStandSerializer.DEFAULT_LEFT_LEG_ROTATION)
-        data.add(MetadataKeys.ArmorStand.RIGHT_LEG_ROTATION, ArmorStandSerializer.DEFAULT_RIGHT_LEG_ROTATION)
+    override fun defineData() {
+        super.defineData()
+        data.define(MetadataKeys.ArmorStand.FLAGS, 0)
+        data.define(MetadataKeys.ArmorStand.HEAD_ROTATION, ArmorStandSerializer.DEFAULT_HEAD_ROTATION)
+        data.define(MetadataKeys.ArmorStand.BODY_ROTATION, ArmorStandSerializer.DEFAULT_BODY_ROTATION)
+        data.define(MetadataKeys.ArmorStand.LEFT_ARM_ROTATION, ArmorStandSerializer.DEFAULT_LEFT_ARM_ROTATION)
+        data.define(MetadataKeys.ArmorStand.RIGHT_ARM_ROTATION, ArmorStandSerializer.DEFAULT_RIGHT_ARM_ROTATION)
+        data.define(MetadataKeys.ArmorStand.LEFT_LEG_ROTATION, ArmorStandSerializer.DEFAULT_LEFT_LEG_ROTATION)
+        data.define(MetadataKeys.ArmorStand.RIGHT_LEG_ROTATION, ArmorStandSerializer.DEFAULT_RIGHT_LEG_ROTATION)
     }
 
     override fun equipment(slot: EquipmentSlot): KryptonItemStack = when (slot.type) {

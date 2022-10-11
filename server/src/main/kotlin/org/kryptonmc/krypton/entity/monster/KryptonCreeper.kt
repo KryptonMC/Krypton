@@ -18,14 +18,22 @@
  */
 package org.kryptonmc.krypton.entity.monster
 
-import org.kryptonmc.api.entity.EntityTypes
 import org.kryptonmc.api.entity.attribute.AttributeTypes
 import org.kryptonmc.api.entity.monster.Creeper
+import org.kryptonmc.krypton.entity.KryptonEntityType
+import org.kryptonmc.krypton.entity.KryptonEntityTypes
 import org.kryptonmc.krypton.entity.attribute.AttributeSupplier
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
+import org.kryptonmc.krypton.entity.serializer.EntitySerializer
+import org.kryptonmc.krypton.entity.serializer.monster.CreeperSerializer
 import org.kryptonmc.krypton.world.KryptonWorld
 
-class KryptonCreeper(world: KryptonWorld) : KryptonMonster(world, EntityTypes.CREEPER), Creeper {
+class KryptonCreeper(world: KryptonWorld) : KryptonMonster(world), Creeper {
+
+    override val type: KryptonEntityType<Creeper>
+        get() = KryptonEntityTypes.CREEPER
+    override val serializer: EntitySerializer<KryptonCreeper>
+        get() = CreeperSerializer
 
     override var fuse: Short = 0
     override var explosionRadius: Int = 0
@@ -37,10 +45,11 @@ class KryptonCreeper(world: KryptonWorld) : KryptonMonster(world, EntityTypes.CR
         get() = data.get(MetadataKeys.Creeper.IGNITED)
         set(value) = data.set(MetadataKeys.Creeper.IGNITED, value)
 
-    init {
-        data.add(MetadataKeys.Creeper.STATE, -1)
-        data.add(MetadataKeys.Creeper.CHARGED, false)
-        data.add(MetadataKeys.Creeper.IGNITED, false)
+    override fun defineData() {
+        super.defineData()
+        data.define(MetadataKeys.Creeper.STATE, -1)
+        data.define(MetadataKeys.Creeper.CHARGED, false)
+        data.define(MetadataKeys.Creeper.IGNITED, false)
     }
 
     companion object {

@@ -19,11 +19,15 @@
 package org.kryptonmc.krypton.entity
 
 import org.kryptonmc.api.entity.Ageable
-import org.kryptonmc.api.entity.EntityType
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
+import org.kryptonmc.krypton.entity.serializer.AgeableSerializer
+import org.kryptonmc.krypton.entity.serializer.EntitySerializer
 import org.kryptonmc.krypton.world.KryptonWorld
 
-abstract class KryptonAgeable(world: KryptonWorld, type: EntityType<out Ageable>) : KryptonMob(world, type), Ageable {
+abstract class KryptonAgeable(world: KryptonWorld) : KryptonMob(world), Ageable {
+
+    override val serializer: EntitySerializer<out KryptonAgeable>
+        get() = AgeableSerializer
 
     final override var age: Int = 0
         set(value) {
@@ -46,7 +50,7 @@ abstract class KryptonAgeable(world: KryptonWorld, type: EntityType<out Ageable>
         get() = false
 
     init {
-        data.add(MetadataKeys.Ageable.BABY, false)
+        data.define(MetadataKeys.Ageable.BABY, false)
     }
 
     protected open fun onAgeTransformation() {

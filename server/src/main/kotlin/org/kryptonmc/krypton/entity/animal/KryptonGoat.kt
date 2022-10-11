@@ -18,22 +18,31 @@
  */
 package org.kryptonmc.krypton.entity.animal
 
-import org.kryptonmc.api.entity.EntityTypes
 import org.kryptonmc.api.entity.animal.Goat
 import org.kryptonmc.api.entity.attribute.AttributeTypes
+import org.kryptonmc.krypton.entity.KryptonEntityType
+import org.kryptonmc.krypton.entity.KryptonEntityTypes
 import org.kryptonmc.krypton.entity.KryptonMob
 import org.kryptonmc.krypton.entity.attribute.AttributeSupplier
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
+import org.kryptonmc.krypton.entity.serializer.EntitySerializer
+import org.kryptonmc.krypton.entity.serializer.animal.GoatSerializer
 import org.kryptonmc.krypton.world.KryptonWorld
 
-class KryptonGoat(world: KryptonWorld) : KryptonAnimal(world, EntityTypes.GOAT), Goat {
+class KryptonGoat(world: KryptonWorld) : KryptonAnimal(world), Goat {
+
+    override val type: KryptonEntityType<Goat>
+        get() = KryptonEntityTypes.GOAT
+    override val serializer: EntitySerializer<KryptonGoat>
+        get() = GoatSerializer
 
     override var canScream: Boolean
         get() = data.get(MetadataKeys.Goat.SCREAMING)
         set(value) = data.set(MetadataKeys.Goat.SCREAMING, value)
 
-    init {
-        data.add(MetadataKeys.Goat.SCREAMING, false)
+    override fun defineData() {
+        super.defineData()
+        data.define(MetadataKeys.Goat.SCREAMING, false)
     }
 
     override fun onAgeTransformation() {

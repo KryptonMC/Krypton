@@ -20,7 +20,6 @@ package org.kryptonmc.krypton.entity.animal
 
 import org.kryptonmc.api.effect.sound.SoundEvent
 import org.kryptonmc.api.effect.sound.SoundEvents
-import org.kryptonmc.api.entity.EntityTypes
 import org.kryptonmc.api.entity.animal.Axolotl
 import org.kryptonmc.api.entity.animal.type.AxolotlVariant
 import org.kryptonmc.api.entity.attribute.AttributeTypes
@@ -29,15 +28,24 @@ import org.kryptonmc.api.item.ItemTypes
 import org.kryptonmc.api.item.ItemType
 import org.kryptonmc.api.tags.ItemTags
 import org.kryptonmc.krypton.entity.BucketStorable
+import org.kryptonmc.krypton.entity.KryptonEntityType
+import org.kryptonmc.krypton.entity.KryptonEntityTypes
 import org.kryptonmc.krypton.entity.KryptonMob
 import org.kryptonmc.krypton.entity.attribute.AttributeSupplier
 import org.kryptonmc.krypton.entity.memory.MemoryKeys
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
+import org.kryptonmc.krypton.entity.serializer.EntitySerializer
+import org.kryptonmc.krypton.entity.serializer.animal.AxolotlSerializer
 import org.kryptonmc.krypton.item.KryptonItemStack
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.nbt.CompoundTag
 
-class KryptonAxolotl(world: KryptonWorld) : KryptonAnimal(world, EntityTypes.AXOLOTL), Axolotl, BucketStorable {
+class KryptonAxolotl(world: KryptonWorld) : KryptonAnimal(world), Axolotl, BucketStorable {
+
+    override val type: KryptonEntityType<Axolotl>
+        get() = KryptonEntityTypes.AXOLOTL
+    override val serializer: EntitySerializer<KryptonAxolotl>
+        get() = AxolotlSerializer
 
     override var variant: AxolotlVariant
         get() = VARIANTS.getOrNull(data.get(MetadataKeys.Axolotl.VARIANT)) ?: AxolotlVariant.LUCY
@@ -53,27 +61,24 @@ class KryptonAxolotl(world: KryptonWorld) : KryptonAnimal(world, EntityTypes.AXO
     override val bucketPickupSound: SoundEvent
         get() = SoundEvents.BUCKET_FILL_AXOLOTL
 
-    override val swimSound: SoundEvent
-        get() = SoundEvents.AXOLOTL_SWIM
-    override val splashSound: SoundEvent
-        get() = SoundEvents.AXOLOTL_SPLASH
     override val maxAirTicks: Int
         get() = MAX_AIR_TICKS
-    override val pushedByFluid: Boolean
+    override val isPushedByFluid: Boolean
         get() = false
     override val canBeSeenAsEnemy: Boolean
         get() = !isPlayingDead && super.canBeSeenAsEnemy
 
-    init {
-        data.add(MetadataKeys.Axolotl.VARIANT, AxolotlVariant.LUCY.ordinal)
-        data.add(MetadataKeys.Axolotl.PLAYING_DEAD, false)
-        data.add(MetadataKeys.Axolotl.FROM_BUCKET, false)
+    override fun defineData() {
+        super.defineData()
+        data.define(MetadataKeys.Axolotl.VARIANT, AxolotlVariant.LUCY.ordinal)
+        data.define(MetadataKeys.Axolotl.PLAYING_DEAD, false)
+        data.define(MetadataKeys.Axolotl.FROM_BUCKET, false)
     }
 
     override fun isFood(item: ItemStack): Boolean = ItemTags.AXOLOTL_TEMPT_ITEMS.contains(item.type)
 
     override fun loadFromBucket(tag: CompoundTag) {
-        loadDefaultsFromBucket(this, tag)
+        BucketStorable.loadDefaultsFromBucket(this, tag)
         data.set(MetadataKeys.Axolotl.VARIANT, tag.getInt("Variant"))
         if (tag.contains("Age")) age = tag.getInt("Age")
         if (tag.contains("HuntingCooldown")) brain.set(MemoryKeys.HAS_HUNTING_COOLDOWN, true, tag.getLong("HuntingCooldown"))

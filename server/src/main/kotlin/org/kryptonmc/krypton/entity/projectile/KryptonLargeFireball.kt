@@ -18,11 +18,19 @@
  */
 package org.kryptonmc.krypton.entity.projectile
 
-import org.kryptonmc.api.entity.EntityTypes
 import org.kryptonmc.api.entity.projectile.LargeFireball
+import org.kryptonmc.krypton.entity.KryptonEntityType
+import org.kryptonmc.krypton.entity.KryptonEntityTypes
+import org.kryptonmc.krypton.entity.serializer.EntitySerializer
+import org.kryptonmc.krypton.entity.serializer.projectile.LargeFireballSerializer
 import org.kryptonmc.krypton.world.KryptonWorld
 
-class KryptonLargeFireball(world: KryptonWorld) : KryptonFireball(world, EntityTypes.FIREBALL), LargeFireball {
+class KryptonLargeFireball(world: KryptonWorld) : KryptonFireball(world), LargeFireball {
+
+    override val type: KryptonEntityType<LargeFireball>
+        get() = KryptonEntityTypes.FIREBALL
+    override val serializer: EntitySerializer<KryptonLargeFireball>
+        get() = LargeFireballSerializer
 
     override var explosionPower: Int = 1
 }

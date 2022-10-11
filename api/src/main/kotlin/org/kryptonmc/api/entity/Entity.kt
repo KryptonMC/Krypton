@@ -25,7 +25,7 @@ import org.spongepowered.math.vector.Vector3d
  * An entity somewhere in a world.
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
-public interface Entity : Sender, HoverEventSource<HoverEvent.ShowEntity>, Sound.Emitter, TeamMember {
+public interface Entity : Sender, HoverEventSource<HoverEvent.ShowEntity>, Sound.Emitter, Sound.Source.Provider, TeamMember {
 
     /**
      * The ID of this entity.
@@ -48,7 +48,7 @@ public interface Entity : Sender, HoverEventSource<HoverEvent.ShowEntity>, Sound
      * The type of this entity.
      */
     @get:JvmName("type")
-    public val type: EntityType<out Entity>
+    public val type: EntityType<Entity>
 
     /**
      * The custom name of the entity. May be null if the custom name has not
@@ -183,11 +183,6 @@ public interface Entity : Sender, HoverEventSource<HoverEvent.ShowEntity>, Sound
     public var isSilent: Boolean
 
     /**
-     * If this entity is rideable or not.
-     */
-    public val isRideable: Boolean
-
-    /**
      * If this entity is affected by gravity.
      *
      * When this value is false, this entity will not naturally fall when it
@@ -319,13 +314,6 @@ public interface Entity : Sender, HoverEventSource<HoverEvent.ShowEntity>, Sound
      * @param pitch the pitch value
      */
     public fun reposition(x: Double, y: Double, z: Double, yaw: Float, pitch: Float)
-
-    /**
-     * Attempts to make the given [entity] ride this entity.
-     *
-     * @param entity the entity
-     */
-    public fun tryRide(entity: Entity)
 
     /**
      * Adds the given [entity] as a passenger of this entity.

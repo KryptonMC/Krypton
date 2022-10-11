@@ -18,31 +18,40 @@
  */
 package org.kryptonmc.krypton.entity.animal
 
-import org.kryptonmc.api.entity.EntityTypes
 import org.kryptonmc.api.entity.animal.Ocelot
 import org.kryptonmc.api.entity.attribute.AttributeTypes
 import org.kryptonmc.api.item.ItemStack
 import org.kryptonmc.api.item.ItemTypes
+import org.kryptonmc.krypton.entity.KryptonEntityType
+import org.kryptonmc.krypton.entity.KryptonEntityTypes
 import org.kryptonmc.krypton.entity.KryptonMob
 import org.kryptonmc.krypton.entity.attribute.AttributeSupplier
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
+import org.kryptonmc.krypton.entity.serializer.EntitySerializer
+import org.kryptonmc.krypton.entity.serializer.animal.OcelotSerializer
 import org.kryptonmc.krypton.world.KryptonWorld
 
-class KryptonOcelot(world: KryptonWorld) : KryptonAnimal(world, EntityTypes.OCELOT), Ocelot {
+class KryptonOcelot(world: KryptonWorld) : KryptonAnimal(world), Ocelot {
+
+    override val type: KryptonEntityType<Ocelot>
+        get() = KryptonEntityTypes.OCELOT
+    override val serializer: EntitySerializer<KryptonOcelot>
+        get() = OcelotSerializer
 
     override var isTrusting: Boolean
         get() = data.get(MetadataKeys.Ocelot.TRUSTING)
         set(value) = data.set(MetadataKeys.Ocelot.TRUSTING, value)
 
-    init {
-        data.add(MetadataKeys.Ocelot.TRUSTING, false)
+    override fun defineData() {
+        super.defineData()
+        data.define(MetadataKeys.Ocelot.TRUSTING, false)
     }
 
     override fun isFood(item: ItemStack): Boolean = TEMPT_INGREDIENTS.contains(item.type)
 
     companion object {
 
-        private val TEMPT_INGREDIENTS = setOf(ItemTypes.COD, ItemTypes.SALMON)
+        private val TEMPT_INGREDIENTS = listOf(ItemTypes.COD, ItemTypes.SALMON)
 
         @JvmStatic
         fun attributes(): AttributeSupplier.Builder = KryptonMob.attributes()

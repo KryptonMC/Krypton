@@ -18,20 +18,29 @@
  */
 package org.kryptonmc.krypton.entity.animal
 
-import org.kryptonmc.api.entity.EntityTypes
 import org.kryptonmc.api.entity.animal.Mooshroom
 import org.kryptonmc.api.entity.animal.type.MooshroomVariant
+import org.kryptonmc.krypton.entity.KryptonEntityType
+import org.kryptonmc.krypton.entity.KryptonEntityTypes
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
+import org.kryptonmc.krypton.entity.serializer.EntitySerializer
+import org.kryptonmc.krypton.entity.serializer.animal.MooshroomSerializer
 import org.kryptonmc.krypton.world.KryptonWorld
 
-class KryptonMooshroom(world: KryptonWorld) : KryptonCow(world, EntityTypes.MOOSHROOM), Mooshroom {
+class KryptonMooshroom(world: KryptonWorld) : KryptonCow(world), Mooshroom {
+
+    override val type: KryptonEntityType<Mooshroom>
+        get() = KryptonEntityTypes.MOOSHROOM
+    override val serializer: EntitySerializer<KryptonMooshroom>
+        get() = MooshroomSerializer
 
     override var variant: MooshroomVariant
         get() = deserializeType(data.get(MetadataKeys.Mooshroom.TYPE))
         set(value) = data.set(MetadataKeys.Mooshroom.TYPE, value.name.lowercase())
 
-    init {
-        data.add(MetadataKeys.Mooshroom.TYPE, MooshroomVariant.RED.name.lowercase())
+    override fun defineData() {
+        super.defineData()
+        data.define(MetadataKeys.Mooshroom.TYPE, MooshroomVariant.RED.name.lowercase())
     }
 
     companion object {

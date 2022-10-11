@@ -18,20 +18,26 @@
  */
 package org.kryptonmc.krypton.entity.animal
 
-import org.kryptonmc.api.effect.sound.SoundEvent
-import org.kryptonmc.api.effect.sound.SoundEvents
-import org.kryptonmc.api.entity.EntityTypes
 import org.kryptonmc.api.entity.animal.Turtle
 import org.kryptonmc.api.entity.attribute.AttributeTypes
 import org.kryptonmc.api.item.ItemStack
 import org.kryptonmc.api.item.ItemTypes
+import org.kryptonmc.krypton.entity.KryptonEntityType
+import org.kryptonmc.krypton.entity.KryptonEntityTypes
 import org.kryptonmc.krypton.entity.KryptonMob
 import org.kryptonmc.krypton.entity.attribute.AttributeSupplier
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
+import org.kryptonmc.krypton.entity.serializer.EntitySerializer
+import org.kryptonmc.krypton.entity.serializer.animal.TurtleSerializer
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.spongepowered.math.vector.Vector3i
 
-class KryptonTurtle(world: KryptonWorld) : KryptonAnimal(world, EntityTypes.TURTLE), Turtle {
+class KryptonTurtle(world: KryptonWorld) : KryptonAnimal(world), Turtle {
+
+    override val type: KryptonEntityType<Turtle>
+        get() = KryptonEntityTypes.TURTLE
+    override val serializer: EntitySerializer<KryptonTurtle>
+        get() = TurtleSerializer
 
     override var hasEgg: Boolean
         get() = data.get(MetadataKeys.Turtle.HAS_EGG)
@@ -52,20 +58,19 @@ class KryptonTurtle(world: KryptonWorld) : KryptonAnimal(world, EntityTypes.TURT
         get() = data.get(MetadataKeys.Turtle.DESTINATION)
         set(value) = data.set(MetadataKeys.Turtle.DESTINATION, value)
 
-    override val pushedByFluid: Boolean
+    override val isPushedByFluid: Boolean
         get() = false
-    override val swimSound: SoundEvent
-        get() = SoundEvents.TURTLE_SWIM
     override val canFallInLove: Boolean
         get() = super.canFallInLove && !hasEgg
 
-    init {
-        data.add(MetadataKeys.Turtle.HOME, Vector3i.ZERO)
-        data.add(MetadataKeys.Turtle.HAS_EGG, false)
-        data.add(MetadataKeys.Turtle.LAYING_EGG, false)
-        data.add(MetadataKeys.Turtle.DESTINATION, Vector3i.ZERO)
-        data.add(MetadataKeys.Turtle.GOING_HOME, false)
-        data.add(MetadataKeys.Turtle.TRAVELLING, false)
+    override fun defineData() {
+        super.defineData()
+        data.define(MetadataKeys.Turtle.HOME, Vector3i.ZERO)
+        data.define(MetadataKeys.Turtle.HAS_EGG, false)
+        data.define(MetadataKeys.Turtle.LAYING_EGG, false)
+        data.define(MetadataKeys.Turtle.DESTINATION, Vector3i.ZERO)
+        data.define(MetadataKeys.Turtle.GOING_HOME, false)
+        data.define(MetadataKeys.Turtle.TRAVELLING, false)
     }
 
     override fun isFood(item: ItemStack): Boolean = item.type === ItemTypes.SEAGRASS

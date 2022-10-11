@@ -18,200 +18,112 @@
  */
 package org.kryptonmc.krypton.entity.player
 
-import it.unimi.dsi.fastutil.longs.LongArrayList
-import it.unimi.dsi.fastutil.longs.LongArraySet
-import it.unimi.dsi.fastutil.longs.LongSet
-import net.kyori.adventure.audience.MessageType
-import net.kyori.adventure.bossbar.BossBar
 import net.kyori.adventure.identity.Identity
-import net.kyori.adventure.inventory.Book
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.permission.PermissionChecker
 import net.kyori.adventure.pointer.Pointers
-import net.kyori.adventure.sound.Sound
-import net.kyori.adventure.sound.SoundStop
 import net.kyori.adventure.text.Component
-import net.kyori.adventure.title.Title
-import net.kyori.adventure.title.TitlePart
-import net.kyori.adventure.util.TriState
 import org.kryptonmc.api.auth.GameProfile
 import org.kryptonmc.api.effect.particle.ParticleEffect
 import org.kryptonmc.api.effect.particle.data.ColorParticleData
 import org.kryptonmc.api.effect.particle.data.DirectionalParticleData
 import org.kryptonmc.api.effect.particle.data.NoteParticleData
-import org.kryptonmc.api.entity.ArmorSlot
-import org.kryptonmc.api.entity.EntityTypes
 import org.kryptonmc.api.entity.EquipmentSlot
 import org.kryptonmc.api.entity.Hand
-import org.kryptonmc.api.entity.MainHand
 import org.kryptonmc.api.entity.attribute.AttributeTypes
-import org.kryptonmc.api.entity.player.ChatVisibility
 import org.kryptonmc.api.entity.player.Player
+import org.kryptonmc.api.entity.player.PlayerSettings
 import org.kryptonmc.api.event.player.ChangeGameModeEvent
-import org.kryptonmc.api.event.player.PerformActionEvent
 import org.kryptonmc.api.inventory.Inventory
-import org.kryptonmc.api.item.ItemTypes
 import org.kryptonmc.api.permission.PermissionFunction
 import org.kryptonmc.api.permission.PermissionProvider
-import org.kryptonmc.api.registry.Registries
-import org.kryptonmc.api.resource.ResourceKey
 import org.kryptonmc.api.resource.ResourcePack
 import org.kryptonmc.api.service.AFKService
-import org.kryptonmc.api.service.VanishService
 import org.kryptonmc.api.service.provide
 import org.kryptonmc.api.statistic.CustomStatistics
 import org.kryptonmc.api.tags.FluidTags
-import org.kryptonmc.api.util.Direction
-import org.kryptonmc.api.world.Difficulty
 import org.kryptonmc.api.world.GameMode
-import org.kryptonmc.api.world.World
-import org.kryptonmc.api.world.dimension.DimensionType
-import org.kryptonmc.krypton.adventure.BossBarManager
-import org.kryptonmc.krypton.adventure.toItemStack
 import org.kryptonmc.krypton.commands.KryptonPermission
 import org.kryptonmc.krypton.entity.EquipmentSlots
 import org.kryptonmc.krypton.entity.KryptonEntity
-import org.kryptonmc.krypton.entity.KryptonEquipable
+import org.kryptonmc.krypton.entity.KryptonEntityType
+import org.kryptonmc.krypton.entity.KryptonEntityTypes
 import org.kryptonmc.krypton.entity.KryptonLivingEntity
 import org.kryptonmc.krypton.entity.attribute.AttributeSupplier
+import org.kryptonmc.krypton.entity.components.BasePlayer
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
+import org.kryptonmc.krypton.entity.serializer.EntitySerializer
+import org.kryptonmc.krypton.entity.serializer.player.PlayerSerializer
+import org.kryptonmc.krypton.entity.system.PlayerChunkViewingSystem
+import org.kryptonmc.krypton.entity.system.PlayerGameModeSystem
+import org.kryptonmc.krypton.entity.system.PlayerHungerSystem
 import org.kryptonmc.krypton.event.player.KryptonChangeGameModeEvent
-import org.kryptonmc.krypton.event.player.KryptonPerformActionEvent
 import org.kryptonmc.krypton.inventory.KryptonPlayerInventory
 import org.kryptonmc.krypton.item.KryptonItemStack
 import org.kryptonmc.krypton.item.handler
 import org.kryptonmc.krypton.network.SessionHandler
 import org.kryptonmc.krypton.network.chat.ChatSender
-import org.kryptonmc.krypton.network.chat.ChatType
-import org.kryptonmc.krypton.network.chat.MessageSignature
-import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.packet.out.play.GameEvent
 import org.kryptonmc.krypton.packet.out.play.PacketOutAbilities
-import org.kryptonmc.krypton.packet.out.play.PacketOutClearTitles
-import org.kryptonmc.krypton.packet.out.play.PacketOutCustomSoundEffect
-import org.kryptonmc.krypton.packet.out.play.PacketOutEntitySoundEffect
 import org.kryptonmc.krypton.packet.out.play.PacketOutGameEvent
 import org.kryptonmc.krypton.packet.out.play.PacketOutOpenBook
 import org.kryptonmc.krypton.packet.out.play.PacketOutParticle
 import org.kryptonmc.krypton.packet.out.play.PacketOutPlayerInfo
 import org.kryptonmc.krypton.packet.out.play.PacketOutPluginMessage
 import org.kryptonmc.krypton.packet.out.play.PacketOutResourcePack
-import org.kryptonmc.krypton.packet.out.play.PacketOutSetActionBarText
 import org.kryptonmc.krypton.packet.out.play.PacketOutSetCamera
-import org.kryptonmc.krypton.packet.out.play.PacketOutSetCenterChunk
 import org.kryptonmc.krypton.packet.out.play.PacketOutSetContainerSlot
 import org.kryptonmc.krypton.packet.out.play.PacketOutSetEntityMetadata
 import org.kryptonmc.krypton.packet.out.play.PacketOutSetHealth
-import org.kryptonmc.krypton.packet.out.play.PacketOutSetSubtitleText
-import org.kryptonmc.krypton.packet.out.play.PacketOutSetTabListHeaderAndFooter
-import org.kryptonmc.krypton.packet.out.play.PacketOutSetTitleAnimationTimes
-import org.kryptonmc.krypton.packet.out.play.PacketOutSetTitleText
-import org.kryptonmc.krypton.packet.out.play.PacketOutSoundEffect
-import org.kryptonmc.krypton.packet.out.play.PacketOutSpawnPlayer
-import org.kryptonmc.krypton.packet.out.play.PacketOutStopSound
 import org.kryptonmc.krypton.packet.out.play.PacketOutTeleportEntity
-import org.kryptonmc.krypton.packet.out.play.PacketOutUnloadChunk
 import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateEntityPosition
 import org.kryptonmc.krypton.statistic.KryptonStatisticsTracker
-import org.kryptonmc.krypton.util.Directions
+import org.kryptonmc.krypton.util.GameModes
 import org.kryptonmc.krypton.util.InteractionResult
 import org.kryptonmc.krypton.util.Positioning
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.krypton.world.block.state.KryptonBlockState
-import org.kryptonmc.krypton.world.chunk.ChunkPosition
-import org.kryptonmc.krypton.world.scoreboard.KryptonScoreboard
 import org.kryptonmc.nbt.CompoundTag
 import org.spongepowered.math.vector.Vector3d
 import org.spongepowered.math.vector.Vector3i
 import java.net.InetSocketAddress
 import java.time.Instant
-import java.util.Locale
 import java.util.UUID
-import java.util.concurrent.ThreadLocalRandom
-import kotlin.math.abs
-import kotlin.math.max
-import kotlin.math.min
 import kotlin.math.roundToInt
 import kotlin.math.sqrt
 
 @Suppress("INAPPLICABLE_JVM_NAME")
 class KryptonPlayer(
-    val session: SessionHandler,
+    override val session: SessionHandler,
     override val profile: GameProfile,
     world: KryptonWorld,
     override val address: InetSocketAddress,
-    val publicKey: PlayerPublicKey?
-) : KryptonLivingEntity(world, EntityTypes.PLAYER), Player, KryptonEquipable {
+    override val publicKey: PlayerPublicKey?
+) : KryptonLivingEntity(world), BasePlayer {
 
-    var permissionFunction: PermissionFunction = DEFAULT_PERMISSION_FUNCTION
+    override val type: KryptonEntityType<Player>
+        get() = KryptonEntityTypes.PLAYER
+    override val serializer: EntitySerializer<KryptonPlayer>
+        get() = PlayerSerializer
+    override var permissionFunction: PermissionFunction = DEFAULT_PERMISSION_FUNCTION
 
     override val name: Component = Component.text(profile.name)
     override var uuid: UUID
         get() = profile.uuid
         set(_) = Unit // Player UUIDs are read only.
 
-    // This is a bit hacky, but ensures that data will never be sent in the wrong order for players.
-    @Volatile
-    var isLoaded: Boolean = false
+    override val hungerSystem: PlayerHungerSystem = PlayerHungerSystem(this)
+    val gameModeSystem: PlayerGameModeSystem = PlayerGameModeSystem(this)
+    val chunkViewingSystem: PlayerChunkViewingSystem = PlayerChunkViewingSystem(this)
 
-    internal val abilities = Abilities()
-    override var canFly: Boolean
-        get() = abilities.canFly
-        set(value) {
-            abilities.canFly = value
-            onAbilitiesUpdate()
-        }
-    override var canBuild: Boolean
-        get() = abilities.canBuild
-        set(value) {
-            abilities.canBuild = value
-            onAbilitiesUpdate()
-        }
-    override var canInstantlyBuild: Boolean
-        get() = abilities.canInstantlyBuild
-        set(value) {
-            abilities.canInstantlyBuild = value
-            onAbilitiesUpdate()
-        }
-    override var walkingSpeed: Float
-        get() = abilities.walkingSpeed
-        set(value) {
-            abilities.walkingSpeed = value
-            onAbilitiesUpdate()
-        }
-    override var flyingSpeed: Float
-        get() = abilities.flyingSpeed
-        set(value) {
-            abilities.flyingSpeed = value
-            onAbilitiesUpdate()
-        }
-    override var isFlying: Boolean
-        get() = abilities.flying
-        set(value) {
-            abilities.flying = value
-            onAbilitiesUpdate()
-        }
+    override val abilities: Abilities = Abilities()
     override val inventory: KryptonPlayerInventory = KryptonPlayerInventory(this)
     override var openInventory: Inventory? = null
-    override val handSlots: Iterable<KryptonItemStack>
-        get() = sequenceOf(inventory.mainHand, inventory.offHand).asIterable()
-    override val armorSlots: Iterable<KryptonItemStack>
-        get() = inventory.armor
 
-    override val scoreboard: KryptonScoreboard = world.scoreboard
-    override var locale: Locale? = null
     override val statistics: KryptonStatisticsTracker = KryptonStatisticsTracker(this, server.worldManager.statsFolder.resolve("$uuid.json"))
     override val cooldowns: KryptonCooldownTracker = KryptonCooldownTracker(this)
-    override val teamRepresentation: Component = name
-    override val pushedByFluid: Boolean
-        get() = !isFlying
 
-    // TODO: Per-player view distance, see issue #49
-    override val viewDistance: Int = server.config.world.viewDistance
-    override var chatVisibility: ChatVisibility = ChatVisibility.FULL
-    override var filterText: Boolean = false
-    override var allowsListing: Boolean = true
-    override var time: Long = 0L
+    override var settings: PlayerSettings = KryptonPlayerSettings.DEFAULT
     private val chatSender = ChatSender(uuid, publicKey)
     private var lastActionTime = System.currentTimeMillis()
 
@@ -227,21 +139,16 @@ class KryptonPlayer(
 
     var oldGameMode: GameMode? = null
     // Hacks to get around Kotlin not letting us set the value of the property without calling the setter.
-    private var internalGameMode: GameMode = GameMode.SURVIVAL
+    private var internalGameMode = GameMode.SURVIVAL
     override var gameMode: GameMode
         get() = internalGameMode
         set(value) = updateGameMode(value, ChangeGameModeEvent.Cause.API)
-    override val isSpectator: Boolean
-        get() = gameMode == GameMode.SPECTATOR
-    override val direction: Direction
-        get() = Directions.ofPitch(rotation.y().toDouble())
     val canUseGameMasterBlocks: Boolean
-        get() = canInstantlyBuild && hasPermission(KryptonPermission.USE_GAME_MASTER_BLOCKS.node)
-
-    override val dimensionType: DimensionType
-        get() = world.dimensionType
-    override val dimension: ResourceKey<World>
-        get() = world.dimension
+        get() = abilities.canInstantlyBuild && hasPermission(KryptonPermission.USE_GAME_MASTER_BLOCKS.node)
+    override val canBeSeenByAnyone: Boolean
+        get() = gameMode != GameMode.SPECTATOR && super.canBeSeenByAnyone
+    override val isPushedByFluid: Boolean
+        get() = !isFlying
 
     override val isOnline: Boolean
         get() = server.player(uuid) === this
@@ -249,74 +156,30 @@ class KryptonPlayer(
     override var firstJoined: Instant = Instant.EPOCH
     override var lastJoined: Instant = Instant.now()
 
-    private val vanishService = server.servicesManager.provide<VanishService>()!!
-    override val isVanished: Boolean
-        get() = vanishService.isVanished(this)
-
-    private val afkService = server.servicesManager.provide<AFKService>()!!
     override var isAfk: Boolean
-        get() = afkService.isAfk(this)
-        set(value) = afkService.setAfk(this, value)
+        get() = server.servicesManager.provide<AFKService>()!!.isAfk(this)
+        set(value) = server.servicesManager.provide<AFKService>()!!.setAfk(this, value)
 
-    val blockHandler: PlayerBlockHandler = PlayerBlockHandler(this)
-
-    internal var respawnPosition: Vector3i? = null
-    internal var respawnForced = false
-    internal var respawnAngle = 0F
-    internal var respawnDimension = World.OVERWORLD
-
-    private var previousCentralX = 0
-    private var previousCentralZ = 0
-    private val visibleChunks = LongArraySet()
+    internal var respawnData: RespawnData? = null
 
     override var health: Float
         get() = super.health
         set(value) {
             super.health = value
-            if (!isLoaded) return
             session.send(PacketOutSetHealth(health, foodLevel, foodSaturationLevel))
         }
-
-    // Sources for vanilla hunger system values:
-    //      -> Minecraft Wiki https://minecraft.fandom.com/wiki/Hunger
-    // 20 is the default vanilla food level
-    override var foodLevel: Int = 20
-        set(value) {
-            field = value
-            if (!isLoaded) return
-            session.send(PacketOutSetHealth(health, foodLevel, foodSaturationLevel))
-        }
-
-    internal var foodTickTimer = 0
-
-    // 0 is the default vanilla food exhaustion level
-    override var foodExhaustionLevel: Float = 0F
-
-    // 5 is the default vanilla food saturation level
-    override var foodSaturationLevel: Float = 5F
-        set(value) {
-            field = value
-            if (!isLoaded) return
-            session.send(PacketOutSetHealth(health, foodLevel, foodSaturationLevel))
-        }
-
     override var absorption: Float
         get() = data.get(MetadataKeys.Player.ADDITIONAL_HEARTS)
         set(value) = data.set(MetadataKeys.Player.ADDITIONAL_HEARTS, value)
-    var skinSettings: Byte
-        get() = data.get(MetadataKeys.Player.SKIN_FLAGS)
-        set(value) = data.set(MetadataKeys.Player.SKIN_FLAGS, value)
-    override var mainHand: MainHand
-        get() = if (data.get(MetadataKeys.Player.MAIN_HAND) == 0.toByte()) MainHand.LEFT else MainHand.RIGHT
-        set(value) = data.set(MetadataKeys.Player.MAIN_HAND, if (value == MainHand.LEFT) 0 else 1)
 
-    init {
-        data.add(MetadataKeys.Player.ADDITIONAL_HEARTS, 0F)
-        data.add(MetadataKeys.Player.SCORE, 0)
-        data.add(MetadataKeys.Player.SKIN_FLAGS, 0)
-        data.add(MetadataKeys.Player.MAIN_HAND, 1)
-        data.add(MetadataKeys.Player.LEFT_SHOULDER, CompoundTag.empty())
-        data.add(MetadataKeys.Player.RIGHT_SHOULDER, CompoundTag.empty())
+    override fun defineData() {
+        super<KryptonLivingEntity>.defineData()
+        data.define(MetadataKeys.Player.ADDITIONAL_HEARTS, 0F)
+        data.define(MetadataKeys.Player.SCORE, 0)
+        data.define(MetadataKeys.Player.SKIN_FLAGS, 0)
+        data.define(MetadataKeys.Player.MAIN_HAND, 1)
+        data.define(MetadataKeys.Player.LEFT_SHOULDER, CompoundTag.empty())
+        data.define(MetadataKeys.Player.RIGHT_SHOULDER, CompoundTag.empty())
     }
 
     fun updateGameMode(mode: GameMode, cause: ChangeGameModeEvent.Cause) {
@@ -326,8 +189,7 @@ class KryptonPlayer(
 
         oldGameMode = gameMode
         internalGameMode = result.newGameMode ?: mode
-        if (!isLoaded) return
-        updateAbilities()
+        GameModes.updatePlayerAbilities(mode, abilities)
         onAbilitiesUpdate()
         server.sessionManager.sendGrouped(PacketOutPlayerInfo(PacketOutPlayerInfo.Action.UPDATE_GAMEMODE, this))
         session.send(PacketOutGameEvent(GameEvent.CHANGE_GAMEMODE, mode.ordinal.toFloat()))
@@ -337,7 +199,7 @@ class KryptonPlayer(
     override fun equipment(slot: EquipmentSlot): KryptonItemStack = when {
         slot == EquipmentSlot.MAIN_HAND -> inventory.mainHand
         slot == EquipmentSlot.OFF_HAND -> inventory.offHand
-        slot.type == EquipmentSlot.Type.ARMOR -> inventory.armor[EquipmentSlots.index(slot)]
+        slot.type == EquipmentSlot.Type.ARMOR -> inventory.armor.get(EquipmentSlots.index(slot))
         else -> KryptonItemStack.EMPTY
     }
 
@@ -345,109 +207,19 @@ class KryptonPlayer(
         when {
             slot == EquipmentSlot.MAIN_HAND -> inventory.setHeldItem(Hand.MAIN, item)
             slot == EquipmentSlot.OFF_HAND -> inventory.setHeldItem(Hand.OFF, item)
-            slot.type == EquipmentSlot.Type.ARMOR -> inventory.armor[EquipmentSlots.index(slot)] = item
+            slot.type == EquipmentSlot.Type.ARMOR -> inventory.armor.set(EquipmentSlots.index(slot), item)
         }
     }
 
     override fun tick() {
         super.tick()
-        blockHandler.tick()
-        hungerMechanic()
+        gameModeSystem.tick()
+        hungerSystem.tick()
         cooldowns.tick()
         if (data.isDirty) session.send(PacketOutSetEntityMetadata(id, data.collectDirty()))
     }
 
-    private fun hungerMechanic() {
-        // TODO: More actions for exhaustion, add constants?
-        if (gameMode != GameMode.SURVIVAL && gameMode != GameMode.ADVENTURE) return
-        foodTickTimer++
-
-        // Sources:
-        //      -> Minecraft Wiki https://minecraft.fandom.com/wiki/Hunger
-        //      -> 3 other implementations of this exact mechanic (lines up with wiki)
-
-        // Food System
-        // The food exhaustion level accumulates exhaustion from player actions
-        // over time. Once the exhaustion level exceeds a threshold of 4, it
-        // resets, and then deducts a food saturation level.
-        // The food saturation level, in turn, once depleted (at zero), deducts a
-        // a food level every tick, only once the exhaustion has been reset again.
-        // Additionally, client side, a saturation level of zero is responsible for
-        // triggering the shaking of the hunger bar.
-        // TLDR: The exhaustion level deducts from the saturation. The saturation level
-        // follows the food level and acts as a buffer before any food levels are deducted.
-        // -> Player action
-        // -> Exhaustion ↑
-        // -> If Exhaustion Threshold of 4
-        // -> Reset Exhaustion
-        // -> Saturation ↓
-        // -> If Saturation Threshold of 0
-        // -> Food Level ↓
-        if (foodExhaustionLevel > 4F) {
-            foodExhaustionLevel -= 4F
-            if (foodSaturationLevel > 0) {
-                foodSaturationLevel = max(foodSaturationLevel - 1, 0F)
-            } else {
-                foodLevel = max(foodLevel - 1, 0)
-            }
-        }
-
-        // Starvation System
-        // If the food level is zero, every 80 ticks, deduct a half-heart.
-        // This system is conditional based on difficulty.
-        //      -> Easy: Health must be greater than 10
-        //      -> Normal: Health must be greater than 1
-        //      -> Hard: There is no minimum health, good luck out there.
-        // An exception to this system is in peaceful mode, where every 20 ticks,
-        // the food level regenerates instead of deducting a half-heart.
-        // NOTE: 80 are 20 ticks are the vanilla timings for hunger and
-        // peaceful food regeneration respectively.
-        when (world.difficulty) {
-            Difficulty.EASY -> {
-                if (health > 10 && foodLevel == 0 && foodTickTimer == 80) { // starving
-                    health-- // deduct half a heart
-                }
-            }
-            Difficulty.NORMAL -> if (health > 1 && foodLevel == 0 && foodTickTimer == 80) health--
-            Difficulty.HARD -> if (foodLevel == 0 && foodTickTimer == 80) health--
-            Difficulty.PEACEFUL -> {
-                if (foodLevel < 20 && foodTickTimer % 20 == 0) {
-                    foodLevel++ // increase player food level
-                }
-            }
-        }
-
-        // Health Regeneration System
-        // Every 80 ticks if the food level is greater than
-        // or equal to 18, add a half-heart to the player.
-        // Healing of course, comes at an expense to the player's
-        // food level, so food exhaustion and saturation are adjusted
-        // to bring equilibrium to the hunger system. This is to avoid
-        // a player healing infinitely.
-        if (foodTickTimer == 80) {
-            if (foodLevel >= 18) {
-                // Avoid exceeding max health
-                if (maxHealth >= health + 1) {
-                    // Regenerate health
-                    health++
-                    // Once a half-heart has been added, increase the exhaustion by 3,
-                    // or if that operation were to exceed the threshold, instead, set it to the
-                    // threshold value of 4.
-                    foodExhaustionLevel = min(foodExhaustionLevel + 3F, 4F)
-                    // Force the saturation level to deplete by 3.
-                    // So as health comes up, the food "buffer" comes down,
-                    // eventually causing the food level to decrease, when saturation
-                    // reaches zero.
-                    foodSaturationLevel -= 3
-                } else {
-                    health = maxHealth
-                }
-            }
-            foodTickTimer = 0 // reset tick timer
-        }
-    }
-
-    fun isBlockActionRestricted(x: Int, y: Int, z: Int): Boolean {
+    fun isBlockActionRestricted(position: Vector3i): Boolean {
         if (gameMode != GameMode.ADVENTURE && gameMode != GameMode.SPECTATOR) return false
         if (gameMode == GameMode.SPECTATOR) return true
         if (canBuild) return false
@@ -461,13 +233,13 @@ class KryptonPlayer(
     fun getDestroySpeed(state: KryptonBlockState): Float {
         var speed = inventory.getDestroySpeed(state)
         // TODO: Add enchantment and effect checking here
-        if (underFluid(FluidTags.WATER)) speed /= 5F // FIXME: Check aqua affinity when implemented
+        if (waterPhysicsSystem.isUnderFluid(FluidTags.WATER)) speed /= 5F // FIXME: Check aqua affinity when implemented
         if (!isOnGround) speed /= 5F
         return speed
     }
 
     fun interactOn(entity: KryptonEntity, hand: Hand): InteractionResult {
-        if (isSpectator) {
+        if (gameMode == GameMode.SPECTATOR) {
             // TODO: Open spectator menu
             return InteractionResult.PASS
         }
@@ -490,50 +262,6 @@ class KryptonPlayer(
         }
          */
         return InteractionResult.PASS
-    }
-
-    // This has vanilla logic in it that we don't want present in the API.
-    fun tryStartGliding(): Boolean {
-        // TODO: Check for levitation effect
-        if (isOnGround || isGliding || inWater) return false
-        val item = inventory.armor(ArmorSlot.CHESTPLATE)
-        if (item.type == ItemTypes.ELYTRA && item.meta.damage < item.type.durability - 1) {
-            startGliding()
-            return true
-        }
-        return false
-    }
-
-    override fun startGliding() {
-        val result = server.eventManager.fireSync(KryptonPerformActionEvent(this, PerformActionEvent.Action.START_FLYING_WITH_ELYTRA)).result
-        if (result.isAllowed) {
-            isGliding = true
-        } else {
-            // Took this from Spigot. It seems like it's taken from the vanilla thing below, but if you don't have this,
-            // it can cause issues like https://hub.spigotmc.org/jira/browse/SPIGOT-5542.
-            isGliding = true
-            isGliding = false
-        }
-    }
-
-    override fun stopGliding() {
-        val result = server.eventManager.fireSync(KryptonPerformActionEvent(this, PerformActionEvent.Action.STOP_FLYING_WITH_ELYTRA)).result
-        if (!result.isAllowed) return
-        // This is a vanilla thing
-        isGliding = true
-        isGliding = false
-    }
-
-    override fun addViewer(player: KryptonPlayer): Boolean {
-        if (player === this) return false
-        player.session.send(PacketOutPlayerInfo(PacketOutPlayerInfo.Action.ADD_PLAYER, this))
-        return super.addViewer(player)
-    }
-
-    override fun removeViewer(player: KryptonPlayer): Boolean {
-        if (player === this || !super.removeViewer(player)) return false
-        player.session.send(PacketOutPlayerInfo(PacketOutPlayerInfo.Action.REMOVE_PLAYER, this))
-        return true
     }
 
     override fun spawnParticles(effect: ParticleEffect, location: Vector3d) {
@@ -561,34 +289,12 @@ class KryptonPlayer(
                 isOnGround
             ))
         }
-        updateChunks()
+        chunkViewingSystem.updateChunks()
     }
 
     override fun teleport(player: Player) {
         teleport(player.location)
     }
-
-    override fun vanish() {
-        vanishService.vanish(this)
-    }
-
-    override fun unvanish() {
-        vanishService.unvanish(this)
-    }
-
-    override fun show(player: Player) {
-        vanishService.show(this, player)
-    }
-
-    override fun hide(player: Player) {
-        vanishService.hide(this, player)
-    }
-
-    override fun canSee(player: Player): Boolean = vanishService.canSee(this, player)
-
-    override fun getPermissionValue(permission: String): TriState = permissionFunction.getPermissionValue(permission)
-
-    override fun getSpawnPacket(): Packet = PacketOutSpawnPlayer(this)
 
     override fun sendPluginMessage(channel: Key, message: ByteArray) {
         session.send(PacketOutPluginMessage(channel, message))
@@ -598,120 +304,7 @@ class KryptonPlayer(
         session.send(PacketOutResourcePack(pack))
     }
 
-    override fun sendMessage(source: Identity, message: Component, type: MessageType) {
-        // TODO: Update this when Adventure updates - still a few things wrong here, the sender's name is always empty.
-//        val chatType = when (type) {
-//            MessageType.CHAT -> ChatTypes.CHAT
-//            MessageType.SYSTEM -> ChatTypes.SYSTEM
-//        }
-//        sendMessage(message, MessageSignature.unsigned(), ChatSender.fromIdentity(source), chatType)
-    }
-
-    fun sendMessage(message: Component, signature: MessageSignature, sender: ChatSender, type: ChatType) {
-        if (chatVisibility != ChatVisibility.FULL) return
-        // TODO: Fix chat (again)
-//        val typeId = InternalRegistries.CHAT_TYPE.idOf(type)
-//        val packet = when (type) {
-//            ChatTypes.SYSTEM -> PacketOutSystemChatMessage(message, typeId)
-//            ChatTypes.CHAT, ChatTypes.GAME_INFO -> PacketOutPlayerChatMessage(message, null, typeId, sender, signature)
-//            else -> throw IllegalArgumentException("Chat type $type is not a message type!")
-//        }
-//        session.send(packet)
-    }
-
-    override fun sendActionBar(message: Component) {
-        session.send(PacketOutSetActionBarText(message))
-    }
-
-    override fun sendPlayerListHeaderAndFooter(header: Component, footer: Component) {
-        session.send(PacketOutSetTabListHeaderAndFooter(header, footer))
-    }
-
-    override fun showTitle(title: Title) {
-        if (title.times() != null) session.send(PacketOutSetTitleAnimationTimes(title.times()!!))
-        session.send(PacketOutSetSubtitleText(title.subtitle()))
-        session.send(PacketOutSetTitleText(title.title()))
-    }
-
-    override fun <T : Any> sendTitlePart(part: TitlePart<T>, value: T) {
-        val packet = when (part) {
-            TitlePart.TITLE -> PacketOutSetTitleText(value as Component)
-            TitlePart.SUBTITLE -> PacketOutSetSubtitleText(value as Component)
-            TitlePart.TIMES -> PacketOutSetTitleAnimationTimes(value as Title.Times)
-            else -> throw IllegalArgumentException("Unknown title part $part!")
-        }
-        session.send(packet)
-    }
-
-    fun sendTitle(title: Component) {
-        session.send(PacketOutSetTitleText(title))
-    }
-
-    fun sendSubtitle(subtitle: Component) {
-        session.send(PacketOutSetSubtitleText(subtitle))
-    }
-
-    fun sendTitleTimes(fadeInTicks: Int, stayTicks: Int, fadeOutTicks: Int) {
-        session.send(PacketOutSetTitleAnimationTimes(fadeInTicks, stayTicks, fadeOutTicks))
-    }
-
-    override fun clearTitle() {
-        session.send(PacketOutClearTitles(false))
-    }
-
-    override fun resetTitle() {
-        session.send(PacketOutClearTitles(true))
-    }
-
-    override fun showBossBar(bar: BossBar) {
-        BossBarManager.addBar(bar, this)
-    }
-
-    override fun hideBossBar(bar: BossBar) {
-        BossBarManager.removeBar(bar, this)
-    }
-
-    override fun playSound(sound: Sound) {
-        playSound(sound, location.x(), location.y(), location.z())
-    }
-
-    override fun playSound(sound: Sound, x: Double, y: Double, z: Double) {
-        val type = Registries.SOUND_EVENT.get(sound.name())
-        if (type != null) {
-            session.send(PacketOutSoundEffect(sound, type, x, y, z))
-            return
-        }
-        session.send(PacketOutCustomSoundEffect(sound, x, y, z))
-    }
-
-    override fun playSound(sound: Sound, emitter: Sound.Emitter) {
-        val entity = when {
-            emitter === Sound.Emitter.self() -> this
-            emitter is KryptonEntity -> emitter
-            else -> error("Sound emitter must be an entity or self(), was $emitter")
-        }
-
-        val event = Registries.SOUND_EVENT.get(sound.name())
-        if (event != null) {
-            session.send(PacketOutEntitySoundEffect(event, sound.source(), entity.id, sound.volume(), sound.pitch()))
-            return
-        }
-        val x = entity.location.x()
-        val y = entity.location.y()
-        val z = entity.location.z()
-        val seed = sound.seed().orElse(ThreadLocalRandom.current().nextLong())
-        session.send(PacketOutCustomSoundEffect(sound.name(), sound.source(), x, y, z, sound.volume(), sound.pitch(), seed))
-    }
-
-    override fun stopSound(stop: SoundStop) {
-        session.send(PacketOutStopSound(stop))
-    }
-
-    override fun openBook(book: Book) {
-        openBook(book.toItemStack())
-    }
-
-    fun openBook(item: KryptonItemStack) {
+    override fun openBook(item: KryptonItemStack) {
         val slot = inventory.items.size + inventory.heldSlot
         val stateId = inventory.stateId
         session.send(PacketOutSetContainerSlot(0, stateId, slot, item))
@@ -726,103 +319,18 @@ class KryptonPlayer(
                 .withDynamic(Identity.NAME) { profile.name }
                 .withDynamic(Identity.UUID) { profile.uuid }
                 .withStatic(PermissionChecker.POINTER, PermissionChecker(::getPermissionValue))
-                .withDynamic(Identity.LOCALE, ::locale)
+                .withDynamic(Identity.LOCALE) { settings.locale }
                 .build()
         }
         return cachedPointers!!
-    }
-
-    private fun updateAbilities() {
-        when (gameMode) {
-            GameMode.CREATIVE -> {
-                isInvulnerable = true
-                canFly = true
-                canInstantlyBuild = true
-            }
-            GameMode.SPECTATOR -> {
-                isInvulnerable = true
-                canFly = true
-                isGliding = true
-                canInstantlyBuild = false
-            }
-            else -> Unit
-        }
-        canBuild = gameMode.canBuild
-    }
-
-    fun updateChunks(firstLoad: Boolean = false) {
-        var previousChunks: LongSet? = null
-        val newChunks = LongArrayList()
-
-        val oldCentralX = previousCentralX
-        val oldCentralZ = previousCentralZ
-        val centralX = Positioning.toChunkCoordinate(location.floorX())
-        val centralZ = Positioning.toChunkCoordinate(location.floorZ())
-        val radius = server.config.world.viewDistance
-
-        if (firstLoad) {
-            for (x in centralX - radius..centralX + radius) {
-                for (z in centralZ - radius..centralZ + radius) {
-                    newChunks.add(ChunkPosition.toLong(x, z))
-                }
-            }
-        } else if (abs(centralX - previousCentralX) > radius || abs(centralZ - previousCentralZ) > radius) {
-            visibleChunks.clear()
-            for (x in centralX - radius..centralX + radius) {
-                for (z in centralZ - radius..centralZ + radius) {
-                    newChunks.add(ChunkPosition.toLong(x, z))
-                }
-            }
-        } else if (previousCentralX != centralX || previousCentralZ != centralZ) {
-            previousChunks = LongArraySet(visibleChunks)
-            for (x in centralX - radius..centralX + radius) {
-                for (z in centralZ - radius..centralZ + radius) {
-                    val pos = ChunkPosition.toLong(x, z)
-                    if (visibleChunks.contains(pos)) previousChunks.remove(pos) else newChunks.add(pos)
-                }
-            }
-        } else {
-            return
-        }
-
-        previousCentralX = centralX
-        previousCentralZ = centralZ
-
-        newChunks.sortWith { a, b ->
-            var dx = 16 * a.toInt() + 8 - location.x()
-            var dz = 16 * (a shr 32).toInt() + 8 - location.z()
-            val da = dx * dx + dz * dz
-            dx = 16 * b.toInt() + 8 - location.x()
-            dz = 16 * (b shr 32).toInt() + 8 - location.z()
-            val db = dx * dx + dz * dz
-            da.compareTo(db)
-        }
-
-        visibleChunks.addAll(newChunks)
-        val oldX = if (firstLoad) centralX else oldCentralX
-        val oldZ = if (firstLoad) centralZ else oldCentralZ
-        world.chunkManager.addPlayer(this, centralX, centralZ, oldX, oldZ, radius).thenRun {
-            session.send(PacketOutSetCenterChunk(centralX, centralZ))
-            newChunks.forEach {
-                val chunk = world.chunkManager.get(it) ?: return@forEach
-                session.write(chunk.cachedPacket)
-            }
-
-            if (previousChunks == null) return@thenRun
-            previousChunks.forEach {
-                session.send(PacketOutUnloadChunk(it.toInt(), (it shr 32).toInt()))
-                visibleChunks.remove(it)
-            }
-            previousChunks.clear()
-        }
     }
 
     override fun disconnect(text: Component) {
         session.disconnect(text)
     }
 
-    private fun onAbilitiesUpdate() {
-        session.send(PacketOutAbilities(this))
+    override fun onAbilitiesUpdate() {
+        session.send(PacketOutAbilities(abilities))
         removeEffectParticles()
         isInvisible = gameMode == GameMode.SPECTATOR
     }
@@ -852,24 +360,6 @@ class KryptonPlayer(
         if (value > FLYING_ACHIEVEMENT_MINIMUM_SPEED) statistics.increment(CustomStatistics.FLY_ONE_CM, value)
     }
 
-    fun updateMovementExhaustion(deltaX: Double, deltaY: Double, deltaZ: Double) {
-        // Source: https://minecraft.fandom.com/wiki/Hunger#Exhaustion_level_increase
-        if (isSwimming) {
-            val value = sqrt(deltaX * deltaX + deltaY * deltaY + deltaZ * deltaZ)
-            if (value > 0) foodExhaustionLevel += SWIMMING_EXHAUSTION_MODIFIER * value.toFloat()
-            // 0.01/u is the vanilla level of exhaustion per unit for swimming
-            return
-        }
-        if (isOnGround) {
-            val value = sqrt(deltaX * deltaX + deltaZ * deltaZ)
-            if (value > 0) when {
-                isSprinting -> foodExhaustionLevel += SPRINTING_EXHAUSTION_MODIFIER * value.toFloat()
-                // 0.1/u is the vanilla level of exhaustion per unit for sprinting
-            }
-            return
-        }
-    }
-
     fun resetLastActionTime() {
         lastActionTime = System.currentTimeMillis()
     }
@@ -879,8 +369,6 @@ class KryptonPlayer(
     companion object {
 
         private const val FLYING_ACHIEVEMENT_MINIMUM_SPEED = 25
-        private const val SWIMMING_EXHAUSTION_MODIFIER = 0.01F
-        private const val SPRINTING_EXHAUSTION_MODIFIER = 0.1F
 
         private val DEFAULT_PERMISSION_FUNCTION = PermissionFunction.ALWAYS_NOT_SET
         @JvmField

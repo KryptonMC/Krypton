@@ -118,8 +118,8 @@ abstract class BlockBehaviour(protected val properties: Properties) : Block {
         }
     }
 
-    open fun getDestroyProgress(state: KryptonBlockState, player: KryptonPlayer, world: BlockAccessor, x: Int, y: Int, z: Int): Float {
-        val speed = state.getDestroySpeed(world, x, y, z)
+    open fun getDestroyProgress(state: KryptonBlockState, player: KryptonPlayer, world: BlockAccessor, position: Vector3i): Float {
+        val speed = state.getDestroySpeed(world, position)
         if (speed == -1F) return 0F
         val correctToolBonus = if (player.hasCorrectTool(state)) 30 else 100
         return player.getDestroySpeed(state) / speed / correctToolBonus
@@ -134,7 +134,7 @@ abstract class BlockBehaviour(protected val properties: Properties) : Block {
         // Do nothing by default
     }
 
-    open fun attack(state: KryptonBlockState, world: KryptonWorld, x: Int, y: Int, z: Int, player: KryptonPlayer) {
+    open fun attack(state: KryptonBlockState, world: KryptonWorld, position: Vector3i, player: KryptonPlayer) {
         // Do nothing by default
     }
 
@@ -335,10 +335,10 @@ abstract class BlockBehaviour(protected val properties: Properties) : Block {
 
         fun getAnalogOutputSignal(world: KryptonWorld, x: Int, y: Int, z: Int): Int = block.getAnalogOutputSignal(asState(), world, x, y, z)
 
-        fun getDestroySpeed(world: BlockAccessor, x: Int, y: Int, z: Int): Float = destroySpeed
+        fun getDestroySpeed(world: BlockAccessor, position: Vector3i): Float = destroySpeed
 
-        fun getDestroyProgress(player: KryptonPlayer, world: BlockAccessor, x: Int, y: Int, z: Int): Float =
-            block.getDestroyProgress(asState(), player, world, x, y, z)
+        fun getDestroyProgress(player: KryptonPlayer, world: BlockAccessor, position: Vector3i): Float =
+            block.getDestroyProgress(asState(), player, world, position)
 
         fun isSolidRender(world: BlockAccessor, x: Int, y: Int, z: Int): Boolean {
             if (cache != null) return cache!!.solidRender
@@ -417,8 +417,8 @@ abstract class BlockBehaviour(protected val properties: Properties) : Block {
         fun use(world: KryptonWorld, player: KryptonPlayer, hand: Hand, hit: BlockHitResult): InteractionResult =
             block.use(asState(), world, hit.position, player, hand, hit)
 
-        fun attack(world: KryptonWorld, x: Int, y: Int, z: Int, player: KryptonPlayer) {
-            block.attack(asState(), world, x, y, z, player)
+        fun attack(world: KryptonWorld, position: Vector3i, player: KryptonPlayer) {
+            block.attack(asState(), world, position, player)
         }
 
         fun isSuffocating(world: BlockAccessor, x: Int, y: Int, z: Int): Boolean = isSuffocating.test(asState(), world, x, y, z)

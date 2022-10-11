@@ -18,8 +18,13 @@
  */
 package org.kryptonmc.krypton.entity.projectile
 
-import org.kryptonmc.api.entity.EntityTypes
 import org.kryptonmc.api.entity.projectile.DragonFireball
+import org.kryptonmc.krypton.entity.KryptonEntityType
+import org.kryptonmc.krypton.entity.KryptonEntityTypes
 import org.kryptonmc.krypton.world.KryptonWorld
 
-class KryptonDragonFireball(world: KryptonWorld) : KryptonAcceleratingProjectile(world, EntityTypes.DRAGON_FIREBALL), DragonFireball
+class KryptonDragonFireball(world: KryptonWorld) : KryptonAcceleratingProjectile(world), DragonFireball {
+
+    override val type: KryptonEntityType<DragonFireball>
+        get() = KryptonEntityTypes.DRAGON_FIREBALL
+}

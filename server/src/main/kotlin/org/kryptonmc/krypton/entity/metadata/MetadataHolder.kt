@@ -20,20 +20,20 @@ package org.kryptonmc.krypton.entity.metadata
 
 import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.persistentListOf
-import org.kryptonmc.krypton.entity.KryptonEntity
+import org.kryptonmc.krypton.entity.components.BaseDataHolder
 import space.vectrix.flare.fastutil.Int2ObjectSyncMap
 
 // TODO: Possibly change this up to be less vanilla-like
-class MetadataHolder(private val entity: KryptonEntity) {
+class MetadataHolder(private val entity: BaseDataHolder) {
 
-    private val itemsById = Int2ObjectSyncMap.hashmap<Entry<*>>()
+    private val itemsById = Int2ObjectSyncMap.hashmap<MutableEntry<*>>()
 
     var isDirty: Boolean = false
         private set
     var isEmpty: Boolean = true
         private set
 
-    fun <T> add(key: MetadataKey<T>, value: T) {
+    fun <T> define(key: MetadataKey<T>, value: T) {
         val id = key.id
         require(id <= MAX_ID_VALUE) { "Data value id is too big! Maximum size is $MAX_ID_VALUE, value was $id!" }
         require(!itemsById.containsKey(id)) { "Duplicate id value for $id!" }
@@ -52,14 +52,21 @@ class MetadataHolder(private val entity: KryptonEntity) {
         isDirty = true
     }
 
+    fun getFlag(key: MetadataKey<Byte>, flag: Int): Boolean = get(key).toInt() and (1 shl flag) != 0
+
+    fun setFlag(key: MetadataKey<Byte>, flag: Int, state: Boolean) {
+        val flags = get(key).toInt()
+        val value = if (state) flags or (1 shl flag) else flags and (1 shl flag).inv()
+        set(key, value.toByte())
+    }
+
     @Suppress("UNCHECKED_CAST")
-    private fun <T> entry(key: MetadataKey<T>): Entry<T> = checkNotNull(itemsById.get(key.id) as? Entry<T>) {
+    private fun <T> entry(key: MetadataKey<T>): MutableEntry<T> = checkNotNull(itemsById.get(key.id) as? MutableEntry<T>) {
         "Could not find key $key for entity of type ${entity.type}!"
     }
 
     private fun <T> createItem(key: MetadataKey<T>, value: T) {
-        val item = Entry(key, value)
-        itemsById.put(key.id, item)
+        itemsById.put(key.id, MutableEntry(key, value))
         isEmpty = false
     }
 
@@ -67,7 +74,7 @@ class MetadataHolder(private val entity: KryptonEntity) {
         var entries: PersistentList.Builder<Entry<*>>? = null
         itemsById.values.forEach {
             if (entries == null) entries = persistentListOf<Entry<*>>().builder()
-            entries!!.add(it.copy())
+            entries!!.add(it.export())
         }
         return entries?.build()
     }
@@ -79,18 +86,21 @@ class MetadataHolder(private val entity: KryptonEntity) {
                 if (!it.isDirty) return@forEach
                 it.isDirty = false
                 if (entries == null) entries = persistentListOf<Entry<*>>().builder()
-                entries!!.add(it.copy())
+                entries!!.add(it.export())
             }
         }
         isDirty = false
         return entries?.build()
     }
 
-    data class Entry<T>(val key: MetadataKey<T>, var value: T) {
+    @JvmRecord
+    data class Entry<T>(val key: MetadataKey<T>, val value: T)
+
+    private class MutableEntry<T>(val key: MetadataKey<T>, var value: T) {
 
         var isDirty: Boolean = true
 
-        fun copy(): Entry<T> = Entry(key, value)
+        fun export(): Entry<T> = Entry(key, value)
     }
 
     companion object {

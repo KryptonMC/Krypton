@@ -185,13 +185,13 @@ class KryptonWorld(
     // TODO: Check world border bounds
     fun canInteract(player: KryptonPlayer, x: Int, z: Int): Boolean = !server.isProtected(this, x, z, player)
 
-    fun broadcastBlockDestroyProgress(sourceId: Int, x: Int, y: Int, z: Int, state: Int) {
-        val packet = PacketOutSetBlockDestroyStage(sourceId, x, y, z, state)
+    fun broadcastBlockDestroyProgress(sourceId: Int, position: Vector3i, state: Int) {
+        val packet = PacketOutSetBlockDestroyStage(sourceId, position, state)
         sessionManager.sendGrouped(packet) {
             if (it.world !== this || it.id == sourceId) return@sendGrouped false
-            val distanceX = x - it.location.x()
-            val distanceY = y - it.location.y()
-            val distanceZ = z - it.location.z()
+            val distanceX = position.x() - it.location.x()
+            val distanceY = position.y() - it.location.y()
+            val distanceZ = position.z() - it.location.z()
             distanceX * distanceX + distanceY * distanceY + distanceZ * distanceZ < 1024.0
         }
     }

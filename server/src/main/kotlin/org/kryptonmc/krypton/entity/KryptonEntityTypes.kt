@@ -173,7 +173,6 @@ object KryptonEntityTypes {
     val DOLPHIN: KryptonEntityType<Dolphin> = register("dolphin", KryptonEntityCategories.WATER_CREATURE) {
         width(0.9F)
         height(0.6F)
-        rideable()
     }
     @JvmField
     val DONKEY: KryptonEntityType<Entity> = register("donkey", KryptonEntityCategories.CREATURE) {

@@ -19,8 +19,6 @@
 package org.kryptonmc.krypton.entity
 
 import org.kryptonmc.api.entity.ArmorSlot
-import org.kryptonmc.api.entity.Entity
-import org.kryptonmc.api.entity.EntityType
 import org.kryptonmc.api.entity.EquipmentSlot
 import org.kryptonmc.api.entity.Hand
 import org.kryptonmc.api.entity.LivingEntity
@@ -35,16 +33,19 @@ import org.kryptonmc.krypton.entity.attribute.DefaultAttributes
 import org.kryptonmc.krypton.entity.memory.Brain
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
+import org.kryptonmc.krypton.entity.serializer.EntitySerializer
+import org.kryptonmc.krypton.entity.serializer.LivingEntitySerializer
 import org.kryptonmc.krypton.item.KryptonItemStack
-import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateAttributes
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.spongepowered.math.vector.Vector3i
 import kotlin.random.Random
 
-abstract class KryptonLivingEntity(
-    world: KryptonWorld,
-    type: EntityType<out LivingEntity>
-) : KryptonEntity(world, type), LivingEntity, KryptonEquipable {
+@Suppress("LeakingThis")
+abstract class KryptonLivingEntity(world: KryptonWorld) : KryptonEntity(world), LivingEntity, KryptonEquipable {
+
+    abstract override val type: KryptonEntityType<LivingEntity>
+    override val serializer: EntitySerializer<out KryptonLivingEntity>
+        get() = LivingEntitySerializer
 
     final override val maxHealth: Float
         get() = attributes.value(AttributeTypes.MAX_HEALTH).toFloat()
@@ -60,15 +61,6 @@ abstract class KryptonLivingEntity(
     open val brain: Brain<*> = Brain<KryptonLivingEntity>()
     var headYaw: Float = rotation.x()
 
-    open val isBaby: Boolean
-        get() = false
-    val killer: KryptonLivingEntity?
-        get() {
-            // TODO: Check combat tracker here
-            if (lastHurtByPlayer != null) return lastHurtByPlayer
-            if (lastHurtByMob != null) return lastHurtByMob
-            return null
-        }
     @Suppress("MemberVisibilityCanBePrivate")
     var lastHurtByMob: KryptonLivingEntity? = null
         set(value) {
@@ -84,11 +76,12 @@ abstract class KryptonLivingEntity(
         }
     private var lastHurtByPlayerTime = 0
 
-    abstract override val armorSlots: Iterable<KryptonItemStack>
+    open val isBaby: Boolean
+        get() = false
     open val canBeSeenAsEnemy: Boolean
         get() = !isInvulnerable && canBeSeenByAnyone
     open val canBeSeenByAnyone: Boolean
-        get() = !isSpectator && isAlive
+        get() = isAlive
     open val soundVolume: Float
         get() = 1F
     open val voicePitch: Float
@@ -96,19 +89,26 @@ abstract class KryptonLivingEntity(
             val babyFactor = if (isBaby) 1.5F else 1F
             return (Random.nextFloat() - Random.nextFloat()) * 0.2F + babyFactor
         }
+    val killCredit: KryptonLivingEntity?
+        get() {
+            // TODO: Check combat tracker here
+            if (lastHurtByPlayer != null) return lastHurtByPlayer
+            if (lastHurtByMob != null) return lastHurtByMob
+            return null
+        }
 
     final override var isGliding: Boolean
-        get() = getFlag(MetadataKeys.Entity.FLAGS, FLAG_ENTITY_GLIDING)
-        set(value) = setFlag(MetadataKeys.Entity.FLAGS, FLAG_ENTITY_GLIDING, value)
+        get() = data.getFlag(MetadataKeys.Entity.FLAGS, FLAG_ENTITY_GLIDING)
+        set(value) = data.setFlag(MetadataKeys.Entity.FLAGS, FLAG_ENTITY_GLIDING, value)
     final override var isUsingItem: Boolean
-        get() = getFlag(MetadataKeys.LivingEntity.FLAGS, FLAG_USING_ITEM)
-        set(value) = setFlag(MetadataKeys.LivingEntity.FLAGS, FLAG_USING_ITEM, value)
+        get() = data.getFlag(MetadataKeys.LivingEntity.FLAGS, FLAG_USING_ITEM)
+        set(value) = data.setFlag(MetadataKeys.LivingEntity.FLAGS, FLAG_USING_ITEM, value)
     final override var hand: Hand
-        get() = if (getFlag(MetadataKeys.LivingEntity.FLAGS, FLAG_OFFHAND)) Hand.OFF else Hand.MAIN
-        set(value) = setFlag(MetadataKeys.LivingEntity.FLAGS, FLAG_OFFHAND, value == Hand.OFF)
+        get() = if (data.getFlag(MetadataKeys.LivingEntity.FLAGS, FLAG_OFFHAND)) Hand.OFF else Hand.MAIN
+        set(value) = data.setFlag(MetadataKeys.LivingEntity.FLAGS, FLAG_OFFHAND, value == Hand.OFF)
     final override var isInRiptideSpinAttack: Boolean
-        get() = getFlag(MetadataKeys.LivingEntity.FLAGS, FLAG_IN_RIPTIDE_SPIN_ATTACK)
-        set(value) = setFlag(MetadataKeys.LivingEntity.FLAGS, FLAG_IN_RIPTIDE_SPIN_ATTACK, value)
+        get() = data.getFlag(MetadataKeys.LivingEntity.FLAGS, FLAG_IN_RIPTIDE_SPIN_ATTACK)
+        set(value) = data.setFlag(MetadataKeys.LivingEntity.FLAGS, FLAG_IN_RIPTIDE_SPIN_ATTACK, value)
     override var health: Float
         get() = data.get(MetadataKeys.LivingEntity.HEALTH)
         set(value) = data.set(MetadataKeys.LivingEntity.HEALTH, value)
@@ -129,14 +129,18 @@ abstract class KryptonLivingEntity(
         set(value) = data.set(MetadataKeys.LivingEntity.BED_LOCATION, value)
 
     init {
-        data.add(MetadataKeys.LivingEntity.FLAGS, 0)
-        data.add(MetadataKeys.LivingEntity.HEALTH, 1F)
-        data.add(MetadataKeys.LivingEntity.POTION_EFFECT_COLOR, 0)
-        data.add(MetadataKeys.LivingEntity.POTION_EFFECT_AMBIENCE, false)
-        data.add(MetadataKeys.LivingEntity.ARROWS, 0)
-        data.add(MetadataKeys.LivingEntity.STINGERS, 0)
-        data.add(MetadataKeys.LivingEntity.BED_LOCATION, null)
         data.set(MetadataKeys.LivingEntity.HEALTH, maxHealth)
+    }
+
+    override fun defineData() {
+        super.defineData()
+        data.define(MetadataKeys.LivingEntity.FLAGS, 0)
+        data.define(MetadataKeys.LivingEntity.HEALTH, 1F)
+        data.define(MetadataKeys.LivingEntity.POTION_EFFECT_COLOR, 0)
+        data.define(MetadataKeys.LivingEntity.POTION_EFFECT_AMBIENCE, false)
+        data.define(MetadataKeys.LivingEntity.ARROWS, 0)
+        data.define(MetadataKeys.LivingEntity.STINGERS, 0)
+        data.define(MetadataKeys.LivingEntity.BED_LOCATION, null)
     }
 
     abstract override fun equipment(slot: EquipmentSlot): KryptonItemStack
@@ -171,20 +175,9 @@ abstract class KryptonLivingEntity(
 
     override fun attribute(type: AttributeType): Attribute? = attributes.get(type)
 
-    override fun addViewer(player: KryptonPlayer): Boolean {
-        if (!super.addViewer(player)) return false
-        player.session.send(PacketOutUpdateAttributes(id, attributes.syncable))
-        return true
-    }
-
     protected fun removeEffectParticles() {
         isPotionEffectAmbient = false
         potionEffectColor = 0
-    }
-
-    override fun tryRide(entity: Entity) {
-        if (!isAlive) return
-        super.tryRide(entity)
     }
 
     companion object {

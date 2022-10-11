@@ -18,18 +18,26 @@
  */
 package org.kryptonmc.krypton.entity.animal
 
-import org.kryptonmc.api.entity.EntityTypes
 import org.kryptonmc.api.entity.animal.Panda
 import org.kryptonmc.api.entity.animal.type.PandaGene
 import org.kryptonmc.api.entity.attribute.AttributeTypes
 import org.kryptonmc.api.item.ItemStack
 import org.kryptonmc.api.item.ItemTypes
+import org.kryptonmc.krypton.entity.KryptonEntityType
+import org.kryptonmc.krypton.entity.KryptonEntityTypes
 import org.kryptonmc.krypton.entity.KryptonMob
 import org.kryptonmc.krypton.entity.attribute.AttributeSupplier
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
+import org.kryptonmc.krypton.entity.serializer.EntitySerializer
+import org.kryptonmc.krypton.entity.serializer.animal.PandaSerializer
 import org.kryptonmc.krypton.world.KryptonWorld
 
-class KryptonPanda(world: KryptonWorld) : KryptonAnimal(world, EntityTypes.PANDA), Panda {
+class KryptonPanda(world: KryptonWorld) : KryptonAnimal(world), Panda {
+
+    override val type: KryptonEntityType<Panda>
+        get() = KryptonEntityTypes.PANDA
+    override val serializer: EntitySerializer<KryptonPanda>
+        get() = PandaSerializer
 
     override var knownGene: PandaGene
         get() = GENES.getOrNull(data.get(MetadataKeys.Panda.MAIN_GENE).toInt()) ?: PandaGene.NORMAL
@@ -45,20 +53,20 @@ class KryptonPanda(world: KryptonWorld) : KryptonAnimal(world, EntityTypes.PANDA
             eatingTime = if (value) 1 else 0
         }
     override var isSneezing: Boolean
-        get() = getFlag(MetadataKeys.Panda.FLAGS, FLAG_SNEEZING)
+        get() = data.getFlag(MetadataKeys.Panda.FLAGS, FLAG_SNEEZING)
         set(value) {
-            setFlag(MetadataKeys.Panda.FLAGS, FLAG_SNEEZING, value)
+            data.setFlag(MetadataKeys.Panda.FLAGS, FLAG_SNEEZING, value)
             if (!value) sneezingTime = 0
         }
     override var isRolling: Boolean
-        get() = getFlag(MetadataKeys.Panda.FLAGS, FLAG_ROLLING)
-        set(value) = setFlag(MetadataKeys.Panda.FLAGS, FLAG_ROLLING, value)
+        get() = data.getFlag(MetadataKeys.Panda.FLAGS, FLAG_ROLLING)
+        set(value) = data.setFlag(MetadataKeys.Panda.FLAGS, FLAG_ROLLING, value)
     override var isSitting: Boolean
-        get() = getFlag(MetadataKeys.Panda.FLAGS, FLAG_SITTING)
-        set(value) = setFlag(MetadataKeys.Panda.FLAGS, FLAG_SITTING, value)
+        get() = data.getFlag(MetadataKeys.Panda.FLAGS, FLAG_SITTING)
+        set(value) = data.setFlag(MetadataKeys.Panda.FLAGS, FLAG_SITTING, value)
     override var isLyingOnBack: Boolean
-        get() = getFlag(MetadataKeys.Panda.FLAGS, FLAG_LYING_ON_BACK)
-        set(value) = setFlag(MetadataKeys.Panda.FLAGS, FLAG_LYING_ON_BACK, value)
+        get() = data.getFlag(MetadataKeys.Panda.FLAGS, FLAG_LYING_ON_BACK)
+        set(value) = data.setFlag(MetadataKeys.Panda.FLAGS, FLAG_LYING_ON_BACK, value)
     override var unhappyTime: Int
         get() = data.get(MetadataKeys.Panda.UNHAPPY_TIMER)
         set(value) = data.set(MetadataKeys.Panda.UNHAPPY_TIMER, value)
@@ -75,13 +83,17 @@ class KryptonPanda(world: KryptonWorld) : KryptonAnimal(world, EntityTypes.PANDA
         get() = variantFromGenes(knownGene, hiddenGene)
 
     init {
-        data.add(MetadataKeys.Panda.UNHAPPY_TIMER, 0)
-        data.add(MetadataKeys.Panda.SNEEZE_TIMER, 0)
-        data.add(MetadataKeys.Panda.EATING_TIMER, 0)
-        data.add(MetadataKeys.Panda.MAIN_GENE, 0)
-        data.add(MetadataKeys.Panda.HIDDEN_GENE, 0)
-        data.add(MetadataKeys.Panda.FLAGS, 0)
         if (!isBaby) canPickUpLoot = false
+    }
+
+    override fun defineData() {
+        super.defineData()
+        data.define(MetadataKeys.Panda.UNHAPPY_TIMER, 0)
+        data.define(MetadataKeys.Panda.SNEEZE_TIMER, 0)
+        data.define(MetadataKeys.Panda.EATING_TIMER, 0)
+        data.define(MetadataKeys.Panda.MAIN_GENE, 0)
+        data.define(MetadataKeys.Panda.HIDDEN_GENE, 0)
+        data.define(MetadataKeys.Panda.FLAGS, 0)
     }
 
     override fun isFood(item: ItemStack): Boolean = item.type === ItemTypes.BAMBOO

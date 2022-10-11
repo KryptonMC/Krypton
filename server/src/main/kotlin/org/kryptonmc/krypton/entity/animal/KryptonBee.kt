@@ -18,22 +18,30 @@
  */
 package org.kryptonmc.krypton.entity.animal
 
-import org.kryptonmc.api.entity.EntityTypes
 import org.kryptonmc.api.entity.animal.Bee
 import org.kryptonmc.api.entity.attribute.AttributeTypes
 import org.kryptonmc.api.item.ItemStack
 import org.kryptonmc.api.tags.ItemTags
+import org.kryptonmc.krypton.entity.KryptonEntityType
+import org.kryptonmc.krypton.entity.KryptonEntityTypes
 import org.kryptonmc.krypton.entity.KryptonMob
 import org.kryptonmc.krypton.entity.Neutral
 import org.kryptonmc.krypton.entity.attribute.AttributeSupplier
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
+import org.kryptonmc.krypton.entity.serializer.EntitySerializer
+import org.kryptonmc.krypton.entity.serializer.animal.BeeSerializer
 import org.kryptonmc.krypton.util.provider.UniformInt
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.spongepowered.math.vector.Vector3i
 import java.util.UUID
 import kotlin.random.Random
 
-class KryptonBee(world: KryptonWorld) : KryptonAnimal(world, EntityTypes.BEE), Bee, Neutral {
+class KryptonBee(world: KryptonWorld) : KryptonAnimal(world), Bee, Neutral {
+
+    override val type: KryptonEntityType<Bee>
+        get() = KryptonEntityTypes.BEE
+    override val serializer: EntitySerializer<KryptonBee>
+        get() = BeeSerializer
 
     override var cannotEnterHiveTicks: Int = 0
     override var hive: Vector3i? = null
@@ -43,16 +51,16 @@ class KryptonBee(world: KryptonWorld) : KryptonAnimal(world, EntityTypes.BEE), B
     internal var cropsGrownSincePollination = 0
 
     override var isAngry: Boolean
-        get() = getFlag(MetadataKeys.Bee.FLAGS, FLAG_ANGRY)
-        set(value) = setFlag(MetadataKeys.Bee.FLAGS, FLAG_ANGRY, value)
+        get() = data.getFlag(MetadataKeys.Bee.FLAGS, FLAG_ANGRY)
+        set(value) = data.setFlag(MetadataKeys.Bee.FLAGS, FLAG_ANGRY, value)
     override var hasStung: Boolean
-        get() = getFlag(MetadataKeys.Bee.FLAGS, FLAG_STUNG)
-        set(value) = setFlag(MetadataKeys.Bee.FLAGS, FLAG_STUNG, value)
+        get() = data.getFlag(MetadataKeys.Bee.FLAGS, FLAG_STUNG)
+        set(value) = data.setFlag(MetadataKeys.Bee.FLAGS, FLAG_STUNG, value)
     override var hasNectar: Boolean
-        get() = getFlag(MetadataKeys.Bee.FLAGS, FLAG_NECTAR)
+        get() = data.getFlag(MetadataKeys.Bee.FLAGS, FLAG_NECTAR)
         set(value) {
             if (value) timeSincePollination = 0
-            setFlag(MetadataKeys.Bee.FLAGS, FLAG_NECTAR, value)
+            data.setFlag(MetadataKeys.Bee.FLAGS, FLAG_NECTAR, value)
         }
     override var remainingAngerTime: Int
         get() = data.get(MetadataKeys.Bee.ANGER_TIME)
@@ -61,9 +69,10 @@ class KryptonBee(world: KryptonWorld) : KryptonAnimal(world, EntityTypes.BEE), B
     override val soundVolume: Float
         get() = 0.4F
 
-    init {
-        data.add(MetadataKeys.Bee.FLAGS, 0)
-        data.add(MetadataKeys.Bee.ANGER_TIME, 0)
+    override fun defineData() {
+        super.defineData()
+        data.define(MetadataKeys.Bee.FLAGS, 0)
+        data.define(MetadataKeys.Bee.ANGER_TIME, 0)
     }
 
     override fun startAngerTimer() {

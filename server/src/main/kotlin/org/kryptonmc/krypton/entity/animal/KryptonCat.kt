@@ -20,7 +20,6 @@ package org.kryptonmc.krypton.entity.animal
 
 import net.kyori.adventure.sound.Sound
 import org.kryptonmc.api.effect.sound.SoundEvents
-import org.kryptonmc.api.entity.EntityTypes
 import org.kryptonmc.api.entity.animal.Animal
 import org.kryptonmc.api.entity.animal.Cat
 import org.kryptonmc.api.entity.animal.type.CatVariant
@@ -30,13 +29,22 @@ import org.kryptonmc.api.item.ItemStack
 import org.kryptonmc.api.item.ItemTypes
 import org.kryptonmc.api.item.data.DyeColor
 import org.kryptonmc.api.item.data.DyeColors
+import org.kryptonmc.krypton.entity.KryptonEntityType
+import org.kryptonmc.krypton.entity.KryptonEntityTypes
 import org.kryptonmc.krypton.entity.KryptonMob
 import org.kryptonmc.krypton.entity.attribute.AttributeSupplier
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
+import org.kryptonmc.krypton.entity.serializer.EntitySerializer
+import org.kryptonmc.krypton.entity.serializer.animal.CatSerializer
 import org.kryptonmc.krypton.registry.KryptonRegistries
 import org.kryptonmc.krypton.world.KryptonWorld
 
-class KryptonCat(world: KryptonWorld) : KryptonTamable(world, EntityTypes.CAT), Cat {
+class KryptonCat(world: KryptonWorld) : KryptonTamable(world), Cat {
+
+    override val type: KryptonEntityType<Cat>
+        get() = KryptonEntityTypes.CAT
+    override val serializer: EntitySerializer<KryptonCat>
+        get() = CatSerializer
 
     override var variant: CatVariant
         get() = KryptonRegistries.CAT_VARIANT.get(data.get(MetadataKeys.Cat.VARIANT))!!
@@ -51,15 +59,16 @@ class KryptonCat(world: KryptonWorld) : KryptonTamable(world, EntityTypes.CAT), 
         get() = KryptonRegistries.DYE_COLORS.get(data.get(MetadataKeys.Cat.COLLAR_COLOR)) ?: DyeColors.WHITE
         set(value) = data.set(MetadataKeys.Cat.COLLAR_COLOR, KryptonRegistries.DYE_COLORS.idOf(value))
 
-    init {
-        data.add(MetadataKeys.Cat.VARIANT, KryptonRegistries.CAT_VARIANT.idOf(CatVariants.BLACK))
-        data.add(MetadataKeys.Cat.LYING, false)
-        data.add(MetadataKeys.Cat.RELAXED, false)
-        data.add(MetadataKeys.Cat.COLLAR_COLOR, KryptonRegistries.DYE_COLORS.idOf(DyeColors.RED))
+    override fun defineData() {
+        super.defineData()
+        data.define(MetadataKeys.Cat.VARIANT, KryptonRegistries.CAT_VARIANT.idOf(CatVariants.BLACK))
+        data.define(MetadataKeys.Cat.LYING, false)
+        data.define(MetadataKeys.Cat.RELAXED, false)
+        data.define(MetadataKeys.Cat.COLLAR_COLOR, KryptonRegistries.DYE_COLORS.idOf(DyeColors.RED))
     }
 
     override fun hiss() {
-        playSound(Sound.sound(SoundEvents.CAT_HISS, soundSource, soundVolume, voicePitch), location.x(), location.y(), location.z())
+        playSound(Sound.sound(SoundEvents.CAT_HISS, soundSource(), soundVolume, voicePitch), location.x(), location.y(), location.z())
     }
 
     override fun canMate(target: Animal): Boolean {

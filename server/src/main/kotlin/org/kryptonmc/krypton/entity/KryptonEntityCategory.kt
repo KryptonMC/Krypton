@@ -20,10 +20,10 @@ package org.kryptonmc.krypton.entity
 
 import net.kyori.adventure.key.Key
 import org.kryptonmc.api.entity.EntityCategory
+import org.kryptonmc.api.registry.Registries
 
 @JvmRecord
 data class KryptonEntityCategory(
-    private val key: Key,
     val max: Int,
     override val isFriendly: Boolean,
     val isPersistent: Boolean,
@@ -31,5 +31,5 @@ data class KryptonEntityCategory(
     val noDespawnDistance: Int
 ) : EntityCategory {
 
-    override fun key(): Key = key
+    override fun key(): Key = Registries.ENTITY_CATEGORIES.get(this)!!
 }

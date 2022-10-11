@@ -18,7 +18,6 @@
  */
 package org.kryptonmc.krypton.world.scoreboard
 
-import kotlinx.collections.immutable.persistentSetOf
 import net.kyori.adventure.text.Component
 import org.kryptonmc.api.adventure.toPlainText
 import org.kryptonmc.api.scoreboard.DisplaySlot
@@ -34,7 +33,6 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutDisplayObjective
 import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateObjectives
 import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateScore
 import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateTeams
-import org.kryptonmc.krypton.util.mapPersistentSet
 import java.util.Collections
 import java.util.concurrent.ConcurrentHashMap
 import java.util.function.Consumer
@@ -100,7 +98,7 @@ class KryptonScoreboard(private val server: KryptonServer) : Scoreboard {
         objectivesByCriterion.getOrDefault(criterion, emptyList()).forEach { action.accept(getOrCreateScore(member, it)) }
     }
 
-    fun removeEntity(entity: KryptonEntity) {
+    fun onEntityRemoved(entity: KryptonEntity) {
         if (entity is KryptonPlayer || entity.isAlive) return
         resetScore(entity.teamRepresentation, null)
         removeMemberFromTeam(entity.teamRepresentation)

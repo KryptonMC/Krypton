@@ -64,13 +64,15 @@ open class KryptonRegistry<T>(override val key: ResourceKey<out Registry<T>>) : 
 
     override fun containsValue(value: T): Boolean = storage.containsValue(value)
 
-    override fun get(key: Key): T? = storage.get(key)
+    override fun get(key: Key): T? = getNullable(key)
 
     override fun get(id: Int): T? = byId.getOrNull(id)
 
     override fun get(value: T): Key? = storage.inverse().get(value)
 
     override fun get(key: ResourceKey<T>): T? = keyStorage.get(key)
+
+    fun getNullable(key: Key): T? = storage.get(key)
 
     override fun resourceKey(value: T): ResourceKey<T>? = keyStorage.inverse().get(value)
 

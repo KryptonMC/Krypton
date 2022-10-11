@@ -29,7 +29,6 @@ import org.kryptonmc.api.command.meta.CommandMeta
 import org.kryptonmc.api.effect.Music
 import org.kryptonmc.api.effect.particle.data.ParticleData
 import org.kryptonmc.api.effect.sound.SoundEvent
-import org.kryptonmc.api.entity.EntityType
 import org.kryptonmc.api.entity.attribute.AttributeModifier
 import org.kryptonmc.api.item.ItemAttribute
 import org.kryptonmc.api.item.ItemStack
@@ -62,7 +61,6 @@ import org.kryptonmc.krypton.command.meta.KryptonCommandMeta
 import org.kryptonmc.krypton.effect.KryptonMusic
 import org.kryptonmc.krypton.effect.particle.data.KryptonParticleDataFactory
 import org.kryptonmc.krypton.effect.sound.KryptonSoundEvent
-import org.kryptonmc.krypton.entity.KryptonEntityType
 import org.kryptonmc.krypton.entity.attribute.KryptonAttributeModifier
 import org.kryptonmc.krypton.item.KryptonItemAttribute
 import org.kryptonmc.krypton.item.KryptonItemStack
@@ -117,7 +115,6 @@ object KryptonFactoryProvider : FactoryProvider {
         register<BiomeEffects.Factory>(KryptonBiomeEffects.Factory)
         register<Climate.Factory>(KryptonClimate.Factory)
         register<BoundingBox.Factory>(KryptonBoundingBox.Factory)
-        register<EntityType.Factory>(KryptonEntityType.Factory)
         register<DimensionType.Factory>(KryptonDimensionType.Factory)
         register<ResourcePack.Factory>(KryptonResourcePack.Factory)
         register<Team.Factory>(KryptonTeam.Factory)

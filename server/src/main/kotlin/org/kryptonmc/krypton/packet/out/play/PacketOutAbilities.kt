@@ -19,6 +19,7 @@
 package org.kryptonmc.krypton.packet.out.play
 
 import io.netty.buffer.ByteBuf
+import org.kryptonmc.krypton.entity.player.Abilities
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.packet.Packet
 
@@ -32,13 +33,13 @@ data class PacketOutAbilities(
     val walkingSpeed: Float
 ) : Packet {
 
-    constructor(player: KryptonPlayer) : this(
-        player.abilities.invulnerable,
-        player.abilities.flying,
-        player.abilities.canFly,
-        player.abilities.canInstantlyBuild,
-        player.abilities.flyingSpeed,
-        player.abilities.walkingSpeed
+    constructor(abilities: Abilities) : this(
+        abilities.invulnerable,
+        abilities.flying,
+        abilities.canFly,
+        abilities.canInstantlyBuild,
+        abilities.flyingSpeed,
+        abilities.walkingSpeed
     )
 
     constructor(buf: ByteBuf) : this(buf.readByte().toInt(), buf.readFloat(), buf.readFloat())

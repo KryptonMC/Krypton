@@ -21,12 +21,16 @@ package org.kryptonmc.krypton.entity.projectile
 import org.kryptonmc.api.block.BlockState
 import org.kryptonmc.api.effect.sound.SoundEvent
 import org.kryptonmc.api.effect.sound.SoundEvents
-import org.kryptonmc.api.entity.EntityType
 import org.kryptonmc.api.entity.projectile.ArrowLike
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
+import org.kryptonmc.krypton.entity.serializer.EntitySerializer
+import org.kryptonmc.krypton.entity.serializer.projectile.ArrowLikeSerializer
 import org.kryptonmc.krypton.world.KryptonWorld
 
-abstract class KryptonArrowLike(world: KryptonWorld, type: EntityType<out ArrowLike>) : KryptonProjectile(world, type), ArrowLike {
+abstract class KryptonArrowLike(world: KryptonWorld) : KryptonProjectile(world), ArrowLike {
+
+    override val serializer: EntitySerializer<out KryptonArrowLike>
+        get() = ArrowLikeSerializer
 
     final override var baseDamage: Double = 2.0
     final override var isInGround: Boolean = false
@@ -37,14 +41,14 @@ abstract class KryptonArrowLike(world: KryptonWorld, type: EntityType<out ArrowL
     final override var pickupRule: ArrowLike.PickupRule = ArrowLike.PickupRule.DISALLOWED
 
     final override var isCritical: Boolean
-        get() = getFlag(MetadataKeys.ArrowLike.FLAGS, FLAG_CRITICAL)
-        set(value) = setFlag(MetadataKeys.ArrowLike.FLAGS, FLAG_CRITICAL, value)
+        get() = data.getFlag(MetadataKeys.ArrowLike.FLAGS, FLAG_CRITICAL)
+        set(value) = data.setFlag(MetadataKeys.ArrowLike.FLAGS, FLAG_CRITICAL, value)
     final override var ignoresPhysics: Boolean
-        get() = getFlag(MetadataKeys.ArrowLike.FLAGS, FLAG_IGNORES_PHYSICS)
-        set(value) = setFlag(MetadataKeys.ArrowLike.FLAGS, FLAG_IGNORES_PHYSICS, value)
+        get() = data.getFlag(MetadataKeys.ArrowLike.FLAGS, FLAG_IGNORES_PHYSICS)
+        set(value) = data.setFlag(MetadataKeys.ArrowLike.FLAGS, FLAG_IGNORES_PHYSICS, value)
     final override var wasShotFromCrossbow: Boolean
-        get() = getFlag(MetadataKeys.ArrowLike.FLAGS, FLAG_WAS_SHOT_FROM_CROSSBOW)
-        set(value) = setFlag(MetadataKeys.ArrowLike.FLAGS, FLAG_WAS_SHOT_FROM_CROSSBOW, value)
+        get() = data.getFlag(MetadataKeys.ArrowLike.FLAGS, FLAG_WAS_SHOT_FROM_CROSSBOW)
+        set(value) = data.setFlag(MetadataKeys.ArrowLike.FLAGS, FLAG_WAS_SHOT_FROM_CROSSBOW, value)
     final override var piercingLevel: Int
         get() = data.get(MetadataKeys.ArrowLike.PIERCING_LEVEL).toInt()
         set(value) = data.set(MetadataKeys.ArrowLike.PIERCING_LEVEL, value.toByte())
@@ -53,8 +57,8 @@ abstract class KryptonArrowLike(world: KryptonWorld, type: EntityType<out ArrowL
         get() = SoundEvents.ARROW_HIT
 
     init {
-        data.add(MetadataKeys.ArrowLike.FLAGS, 0)
-        data.add(MetadataKeys.ArrowLike.PIERCING_LEVEL, 0)
+        data.define(MetadataKeys.ArrowLike.FLAGS, 0)
+        data.define(MetadataKeys.ArrowLike.PIERCING_LEVEL, 0)
     }
 
     companion object {

@@ -19,16 +19,20 @@
 package org.kryptonmc.krypton.entity.projectile
 
 import org.kryptonmc.api.entity.Entity
-import org.kryptonmc.api.entity.EntityTypes
 import org.kryptonmc.api.entity.projectile.FireworkRocket
 import org.kryptonmc.api.item.ItemStack
 import org.kryptonmc.api.item.ItemTypes
+import org.kryptonmc.krypton.entity.KryptonEntityType
+import org.kryptonmc.krypton.entity.KryptonEntityTypes
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.item.KryptonItemStack
 import org.kryptonmc.krypton.world.KryptonWorld
 import java.util.OptionalInt
 
-class KryptonFireworkRocket(world: KryptonWorld) : KryptonProjectile(world, EntityTypes.FIREWORK_ROCKET), FireworkRocket {
+class KryptonFireworkRocket(world: KryptonWorld) : KryptonProjectile(world), FireworkRocket {
+
+    override val type: KryptonEntityType<FireworkRocket>
+        get() = KryptonEntityTypes.FIREWORK_ROCKET
 
     override var attachedEntity: Entity? = null
     override var life: Int = 0
@@ -39,9 +43,9 @@ class KryptonFireworkRocket(world: KryptonWorld) : KryptonProjectile(world, Enti
         set(value) = data.set(MetadataKeys.FireworkRocket.SHOT_AT_ANGLE, value)
 
     init {
-        data.add(MetadataKeys.FireworkRocket.ITEM, KryptonItemStack.EMPTY)
-        data.add(MetadataKeys.FireworkRocket.ATTACHED, OptionalInt.empty())
-        data.add(MetadataKeys.FireworkRocket.SHOT_AT_ANGLE, false)
+        data.define(MetadataKeys.FireworkRocket.ITEM, KryptonItemStack.EMPTY)
+        data.define(MetadataKeys.FireworkRocket.ATTACHED, OptionalInt.empty())
+        data.define(MetadataKeys.FireworkRocket.SHOT_AT_ANGLE, false)
     }
 
     override fun asItem(): ItemStack {

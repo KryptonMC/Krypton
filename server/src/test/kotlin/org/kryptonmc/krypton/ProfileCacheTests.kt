@@ -23,6 +23,7 @@ import com.google.common.jimfs.Jimfs
 import kotlinx.collections.immutable.persistentListOf
 import org.kryptonmc.krypton.auth.KryptonGameProfile
 import org.kryptonmc.krypton.auth.KryptonProfileCache
+import java.nio.file.Path
 import java.time.ZoneOffset
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
@@ -55,16 +56,16 @@ class ProfileCacheTests {
 
     @Test
     fun `test profile loading`() {
-        assertTrue(KryptonProfileCache(SINGLE_PATH).profiles.isNotEmpty())
-        assertTrue(KryptonProfileCache(EMPTY_PATH).profiles.isEmpty())
-        assertTrue(KryptonProfileCache(NO_QUOTES_PATH).profiles.isEmpty())
-        assertTrue(KryptonProfileCache(NO_ARRAY_PATH).profiles.isEmpty())
-        assertTrue(KryptonProfileCache(BOGUS_PATH).profiles.isEmpty())
+        assertTrue(createAndInit(SINGLE_PATH).profiles.isNotEmpty())
+        assertTrue(createAndInit(EMPTY_PATH).profiles.isEmpty())
+        assertTrue(createAndInit(NO_QUOTES_PATH).profiles.isEmpty())
+        assertTrue(createAndInit(NO_ARRAY_PATH).profiles.isEmpty())
+        assertTrue(createAndInit(BOGUS_PATH).profiles.isEmpty())
     }
 
     @Test
     fun `test profile saving`() {
-        val cache = KryptonProfileCache(OUTPUT_PATH)
+        val cache = createAndInit(OUTPUT_PATH)
         cache.add(PROFILE)
         cache.add(KryptonGameProfile("Joe", UUID.randomUUID(), persistentListOf()))
         cache.save()
@@ -94,5 +95,8 @@ class ProfileCacheTests {
             NO_QUOTES_PATH.writeText("[{name:Dave,uuid:$ID,expiresOn:$TIME_FORMATTED}]")
             NO_ARRAY_PATH.writeText("{\"name\":\"Dave\",\"uuid\":\"$ID\",\"expiresOn\":\"$TIME_FORMATTED\"}")
         }
+
+        @JvmStatic
+        private fun createAndInit(path: Path): KryptonProfileCache = KryptonProfileCache(path).apply { loadAll() }
     }
 }

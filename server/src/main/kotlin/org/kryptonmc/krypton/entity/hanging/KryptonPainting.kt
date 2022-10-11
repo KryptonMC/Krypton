@@ -18,12 +18,20 @@
  */
 package org.kryptonmc.krypton.entity.hanging
 
-import org.kryptonmc.api.entity.EntityTypes
 import org.kryptonmc.api.entity.hanging.Picture
 import org.kryptonmc.api.entity.hanging.Painting
+import org.kryptonmc.krypton.entity.KryptonEntityType
+import org.kryptonmc.krypton.entity.KryptonEntityTypes
+import org.kryptonmc.krypton.entity.serializer.EntitySerializer
+import org.kryptonmc.krypton.entity.serializer.hanging.PaintingSerializer
 import org.kryptonmc.krypton.world.KryptonWorld
 
-class KryptonPainting(world: KryptonWorld) : KryptonHangingEntity(world, EntityTypes.PAINTING), Painting {
+class KryptonPainting(world: KryptonWorld) : KryptonHangingEntity(world), Painting {
+
+    override val type: KryptonEntityType<Painting>
+        get() = KryptonEntityTypes.PAINTING
+    override val serializer: EntitySerializer<KryptonPainting>
+        get() = PaintingSerializer
 
     override var picture: Picture? = null
     override val width: Int

@@ -18,13 +18,21 @@
  */
 package org.kryptonmc.krypton.entity.vehicle
 
-import org.kryptonmc.api.entity.EntityTypes
 import org.kryptonmc.api.entity.vehicle.FurnaceMinecart
 import org.kryptonmc.api.entity.vehicle.MinecartVariant
+import org.kryptonmc.krypton.entity.KryptonEntityType
+import org.kryptonmc.krypton.entity.KryptonEntityTypes
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
+import org.kryptonmc.krypton.entity.serializer.EntitySerializer
+import org.kryptonmc.krypton.entity.serializer.vehicle.FurnaceMinecartSerializer
 import org.kryptonmc.krypton.world.KryptonWorld
 
-class KryptonFurnaceMinecart(world: KryptonWorld) : KryptonMinecartLike(world, EntityTypes.FURNACE_MINECART), FurnaceMinecart {
+class KryptonFurnaceMinecart(world: KryptonWorld) : KryptonMinecartLike(world), FurnaceMinecart {
+
+    override val type: KryptonEntityType<FurnaceMinecart>
+        get() = KryptonEntityTypes.FURNACE_MINECART
+    override val serializer: EntitySerializer<KryptonFurnaceMinecart>
+        get() = FurnaceMinecartSerializer
 
     override val variant: MinecartVariant
         get() = MinecartVariant.FURNACE
@@ -34,6 +42,6 @@ class KryptonFurnaceMinecart(world: KryptonWorld) : KryptonMinecartLike(world, E
     override var fuel: Int = 0
 
     init {
-        data.add(MetadataKeys.FurnaceMinecart.HAS_FUEL, false)
+        data.define(MetadataKeys.FurnaceMinecart.HAS_FUEL, false)
     }
 }

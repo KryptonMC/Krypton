@@ -19,17 +19,7 @@
 package org.kryptonmc.krypton.entity
 
 import org.kryptonmc.nbt.CompoundTag
-import org.kryptonmc.nbt.ListTag
-import org.spongepowered.math.vector.Vector3f
 import org.spongepowered.math.vector.Vector3i
-
-fun ListTag.readRotation(): Vector3f = Vector3f.from(getFloat(0), getFloat(1), getFloat(2))
-
-fun CompoundTag.Builder.rotation(key: String, rotation: Vector3f): CompoundTag.Builder = list(key) {
-    addFloat(rotation.x())
-    addFloat(rotation.y())
-    addFloat(rotation.z())
-}
 
 fun CompoundTag.getVector3i(key: String): Vector3i? {
     if (!contains(key, CompoundTag.ID)) return null

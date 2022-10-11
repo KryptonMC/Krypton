@@ -18,37 +18,36 @@
  */
 package org.kryptonmc.krypton.entity.animal
 
-import org.kryptonmc.api.entity.EntityType
 import org.kryptonmc.api.entity.animal.Tamable
 import org.kryptonmc.api.entity.player.Player
 import org.kryptonmc.api.scoreboard.Team
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
+import org.kryptonmc.krypton.entity.serializer.EntitySerializer
+import org.kryptonmc.krypton.entity.serializer.animal.TamableSerializer
 import org.kryptonmc.krypton.world.KryptonWorld
 
-abstract class KryptonTamable(world: KryptonWorld, type: EntityType<out Tamable>) : KryptonAnimal(world, type), Tamable {
+abstract class KryptonTamable(world: KryptonWorld) : KryptonAnimal(world), Tamable {
+
+    override val serializer: EntitySerializer<out KryptonTamable>
+        get() = TamableSerializer
 
     final override var isOrderedToSit: Boolean = false
     final override var isSitting: Boolean
-        get() = getFlag(MetadataKeys.Tamable.FLAGS, FLAG_SITTING)
-        set(value) = setFlag(MetadataKeys.Tamable.FLAGS, FLAG_SITTING, value)
+        get() = data.getFlag(MetadataKeys.Tamable.FLAGS, FLAG_SITTING)
+        set(value) = data.setFlag(MetadataKeys.Tamable.FLAGS, FLAG_SITTING, value)
     override var isTamed: Boolean
-        get() = getFlag(MetadataKeys.Tamable.FLAGS, FLAG_TAMED)
-        set(value) = setFlag(MetadataKeys.Tamable.FLAGS, FLAG_TAMED, value)
+        get() = data.getFlag(MetadataKeys.Tamable.FLAGS, FLAG_TAMED)
+        set(value) = data.setFlag(MetadataKeys.Tamable.FLAGS, FLAG_TAMED, value)
     final override val owner: KryptonPlayer?
-        get() {
-            val uuid = data.get(MetadataKeys.Tamable.OWNER) ?: return null
-            return world.entityManager.get(uuid) as? KryptonPlayer
-        }
+        get() = data.get(MetadataKeys.Tamable.OWNER)?.let(world.entityManager::get) as? KryptonPlayer
     final override val team: Team?
-        get() {
-            if (isTamed) return owner?.team
-            return super.team
-        }
+        get() = if (isTamed) owner?.team else super.team
 
-    init {
-        data.add(MetadataKeys.Tamable.FLAGS, 0)
-        data.add(MetadataKeys.Tamable.OWNER, null)
+    override fun defineData() {
+        super.defineData()
+        data.define(MetadataKeys.Tamable.FLAGS, 0)
+        data.define(MetadataKeys.Tamable.OWNER, null)
     }
 
     final override fun tame(tamer: Player) {

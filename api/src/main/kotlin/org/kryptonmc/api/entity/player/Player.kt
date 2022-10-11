@@ -13,7 +13,6 @@ import org.kryptonmc.api.auth.GameProfile
 import org.kryptonmc.api.effect.particle.ParticleEffect
 import org.kryptonmc.api.entity.Equipable
 import org.kryptonmc.api.entity.LivingEntity
-import org.kryptonmc.api.entity.MainHand
 import org.kryptonmc.api.inventory.Inventory
 import org.kryptonmc.api.inventory.PlayerInventory
 import org.kryptonmc.api.plugin.PluginMessageRecipient
@@ -28,7 +27,6 @@ import org.kryptonmc.api.world.GameMode
 import org.spongepowered.math.vector.Vector3d
 import java.net.InetSocketAddress
 import java.time.Instant
-import java.util.Locale
 
 /**
  * A player that is connected to the server and playing the game.
@@ -121,48 +119,10 @@ public interface Player : LivingEntity, Equipable, PluginMessageRecipient {
     public val dimensionType: DimensionType
 
     /**
-     * The view distance of this player.
+     * The settings for the player.
      */
-    @get:JvmName("viewDistance")
-    public val viewDistance: Int
-
-    /**
-     * The visibility settings for this player's chat.
-     */
-    @get:JvmName("chatVisibility")
-    public val chatVisibility: ChatVisibility
-
-    /**
-     * If this player wants their text filtered before it is sent to them.
-     *
-     * This filtering is usually meant to be done by Mojang, and is designed to
-     * protect underage players from receiving any naughty words, like swear
-     * words.
-     *
-     * It is recommended that plugins that wish to filter text for players,
-     * such as chat plugins, respect this option, and allow players to opt-out
-     * of chat filtering if they wish to do so.
-     */
-    @get:JvmName("filterText")
-    public val filterText: Boolean
-
-    /**
-     * If this player wants to be listed in the server status' player list.
-     *
-     * All plugins that override the MOTD settings with their own custom MOTDs
-     * should try to respect the setting that has been indicated here, as this
-     * was added to prevent cross-server player tracking.
-     */
-    @get:JvmName("allowsListing")
-    public val allowsListing: Boolean
-
-    /**
-     * The current time of this player.
-     *
-     * Will always be the time of the server.
-     */
-    @get:JvmName("time")
-    public val time: Long
+    @get:JvmName("settings")
+    public val settings: PlayerSettings
 
     /**
      * If this player is currently vanished, meaning no other player on the
@@ -194,12 +154,6 @@ public interface Player : LivingEntity, Equipable, PluginMessageRecipient {
     public val scoreboard: Scoreboard
 
     /**
-     * This player's main hand.
-     */
-    @get:JvmName("mainHand")
-    public val mainHand: MainHand
-
-    /**
      * The inventory of this player.
      *
      * This holds information on all of the items that are currently held by
@@ -213,16 +167,6 @@ public interface Player : LivingEntity, Equipable, PluginMessageRecipient {
      */
     @get:JvmName("openInventory")
     public var openInventory: Inventory?
-
-    /**
-     * The locale of this player.
-     *
-     * This may be null if the client has not yet indicated what locale they
-     * want to use, in which case a sensible default should be assumed, such
-     * as [Locale.US].
-     */
-    @get:JvmName("locale")
-    public val locale: Locale?
 
     /**
      * The food level of this player.

@@ -18,14 +18,22 @@
  */
 package org.kryptonmc.krypton.entity.monster
 
-import org.kryptonmc.api.entity.EntityTypes
 import org.kryptonmc.api.entity.attribute.AttributeTypes
 import org.kryptonmc.api.entity.monster.Zombie
+import org.kryptonmc.krypton.entity.KryptonEntityType
+import org.kryptonmc.krypton.entity.KryptonEntityTypes
 import org.kryptonmc.krypton.entity.attribute.AttributeSupplier
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
+import org.kryptonmc.krypton.entity.serializer.EntitySerializer
+import org.kryptonmc.krypton.entity.serializer.monster.ZombieSerializer
 import org.kryptonmc.krypton.world.KryptonWorld
 
-class KryptonZombie(world: KryptonWorld) : KryptonMonster(world, EntityTypes.ZOMBIE), Zombie {
+class KryptonZombie(world: KryptonWorld) : KryptonMonster(world), Zombie {
+
+    override val type: KryptonEntityType<Zombie>
+        get() = KryptonEntityTypes.ZOMBIE
+    override val serializer: EntitySerializer<KryptonZombie>
+        get() = ZombieSerializer
 
     internal var conversionTime = 0
 
@@ -36,9 +44,10 @@ class KryptonZombie(world: KryptonWorld) : KryptonMonster(world, EntityTypes.ZOM
         get() = data.get(MetadataKeys.Zombie.CONVERTING)
         set(value) = data.set(MetadataKeys.Zombie.CONVERTING, value)
 
-    init {
-        data.add(MetadataKeys.Zombie.BABY, false)
-        data.add(MetadataKeys.Zombie.CONVERTING, false)
+    override fun defineData() {
+        super.defineData()
+        data.define(MetadataKeys.Zombie.BABY, false)
+        data.define(MetadataKeys.Zombie.CONVERTING, false)
     }
 
     companion object {

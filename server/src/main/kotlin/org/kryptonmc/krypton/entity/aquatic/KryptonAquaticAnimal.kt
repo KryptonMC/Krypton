@@ -18,16 +18,15 @@
  */
 package org.kryptonmc.krypton.entity.aquatic
 
-import org.kryptonmc.api.entity.EntityType
 import org.kryptonmc.api.entity.aquatic.AquaticAnimal
 import org.kryptonmc.api.world.damage.type.DamageTypes
 import org.kryptonmc.krypton.entity.KryptonMob
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.krypton.world.damage.KryptonDamageSource
 
-abstract class KryptonAquaticAnimal(world: KryptonWorld, type: EntityType<out AquaticAnimal>) : KryptonMob(world, type), AquaticAnimal {
+abstract class KryptonAquaticAnimal(world: KryptonWorld) : KryptonMob(world), AquaticAnimal {
 
-    final override val pushedByFluid: Boolean
+    final override val isPushedByFluid: Boolean
         get() = false
 
     override fun tick() {
@@ -37,7 +36,7 @@ abstract class KryptonAquaticAnimal(world: KryptonWorld, type: EntityType<out Aq
     }
 
     protected open fun handleAir(amount: Int) {
-        if (isAlive && !inWater && !inBubbleColumn) {
+        if (isAlive && !waterPhysicsSystem.isInWaterOrBubbleColumn()) {
             // Aquatic creatures must be underwater to breathe. If they are out of water, they start to run out of air,
             // and eventually suffocate.
             air = amount - 1
@@ -46,9 +45,9 @@ abstract class KryptonAquaticAnimal(world: KryptonWorld, type: EntityType<out Aq
                 air = 0
                 damage(KryptonDamageSource(DamageTypes.DROWNING), DROWNING_DAMAGE)
             }
-            return
+        } else {
+            air = AIR_RESET_AMOUNT
         }
-        air = AIR_RESET_AMOUNT
     }
 
     companion object {

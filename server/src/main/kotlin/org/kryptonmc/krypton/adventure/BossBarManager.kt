@@ -21,7 +21,7 @@ package org.kryptonmc.krypton.adventure
 import com.google.common.collect.MapMaker
 import net.kyori.adventure.bossbar.BossBar
 import net.kyori.adventure.text.Component
-import org.kryptonmc.krypton.entity.player.KryptonPlayer
+import org.kryptonmc.krypton.entity.components.NetworkPlayer
 import org.kryptonmc.krypton.packet.out.play.PacketOutBossBar
 import java.util.Collections
 import java.util.UUID
@@ -35,7 +35,7 @@ object BossBarManager : BossBar.Listener {
 
     private val bars = MapMaker().weakKeys().makeMap<BossBar, BossBarHolder>()
 
-    fun addBar(bar: BossBar, player: KryptonPlayer) {
+    fun addBar(bar: BossBar, player: NetworkPlayer) {
         val holder = getOrCreate(bar)
         if (holder.subscribers.add(player)) player.session.send(PacketOutBossBar(holder.id, PacketOutBossBar.AddAction(holder.bar)))
     }
@@ -48,7 +48,7 @@ object BossBarManager : BossBar.Listener {
         }
     }
 
-    fun removeBar(bar: BossBar, player: KryptonPlayer) {
+    fun removeBar(bar: BossBar, player: NetworkPlayer) {
         val holder = bars.get(bar) ?: return
         if (holder.subscribers.remove(player)) player.session.send(PacketOutBossBar(holder.id, PacketOutBossBar.RemoveAction))
     }
@@ -92,7 +92,7 @@ object BossBarManager : BossBar.Listener {
     private class BossBarHolder(val bar: BossBar) {
 
         val id: UUID = UUID.randomUUID()
-        val subscribers: MutableSet<KryptonPlayer> = Collections.newSetFromMap(MapMaker().weakKeys().makeMap())
+        val subscribers: MutableSet<NetworkPlayer> = Collections.newSetFromMap(MapMaker().weakKeys().makeMap())
 
         fun register(): BossBarHolder = apply { bar.addListener(BossBarManager) }
     }

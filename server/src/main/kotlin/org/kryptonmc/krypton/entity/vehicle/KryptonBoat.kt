@@ -18,15 +18,23 @@
  */
 package org.kryptonmc.krypton.entity.vehicle
 
-import org.kryptonmc.api.entity.EntityTypes
 import org.kryptonmc.api.entity.vehicle.Boat
 import org.kryptonmc.api.entity.vehicle.BoatVariant
 import org.kryptonmc.krypton.entity.KryptonEntity
+import org.kryptonmc.krypton.entity.KryptonEntityType
+import org.kryptonmc.krypton.entity.KryptonEntityTypes
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
+import org.kryptonmc.krypton.entity.serializer.EntitySerializer
+import org.kryptonmc.krypton.entity.serializer.vehicle.BoatSerializer
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.krypton.world.damage.KryptonDamageSource
 
-class KryptonBoat(world: KryptonWorld) : KryptonEntity(world, EntityTypes.BOAT), Boat {
+open class KryptonBoat(world: KryptonWorld) : KryptonEntity(world), Boat {
+
+    override val type: KryptonEntityType<Boat>
+        get() = KryptonEntityTypes.BOAT
+    override val serializer: EntitySerializer<out KryptonBoat>
+        get() = BoatSerializer
 
     override var variant: BoatVariant
         get() = TYPES.getOrNull(data.get(MetadataKeys.Boat.TYPE)) ?: BoatVariant.OAK
@@ -47,14 +55,15 @@ class KryptonBoat(world: KryptonWorld) : KryptonEntity(world, EntityTypes.BOAT),
         get() = data.get(MetadataKeys.Boat.HURT_DIRECTION)
         set(value) = data.set(MetadataKeys.Boat.HURT_DIRECTION, value)
 
-    init {
-        data.add(MetadataKeys.Boat.HURT_TIMER, 0)
-        data.add(MetadataKeys.Boat.HURT_DIRECTION, 1)
-        data.add(MetadataKeys.Boat.DAMAGE, 0F)
-        data.add(MetadataKeys.Boat.TYPE, BoatVariant.OAK.ordinal)
-        data.add(MetadataKeys.Boat.LEFT_PADDLE_TURNING, false)
-        data.add(MetadataKeys.Boat.RIGHT_PADDLE_TURNING, false)
-        data.add(MetadataKeys.Boat.SPLASH_TIMER, 0)
+    override fun defineData() {
+        super.defineData()
+        data.define(MetadataKeys.Boat.HURT_TIMER, 0)
+        data.define(MetadataKeys.Boat.HURT_DIRECTION, 1)
+        data.define(MetadataKeys.Boat.DAMAGE, 0F)
+        data.define(MetadataKeys.Boat.TYPE, BoatVariant.OAK.ordinal)
+        data.define(MetadataKeys.Boat.LEFT_PADDLE_TURNING, false)
+        data.define(MetadataKeys.Boat.RIGHT_PADDLE_TURNING, false)
+        data.define(MetadataKeys.Boat.SPLASH_TIMER, 0)
     }
 
     override fun damage(source: KryptonDamageSource, damage: Float): Boolean {

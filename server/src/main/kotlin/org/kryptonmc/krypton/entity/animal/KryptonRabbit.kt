@@ -19,18 +19,26 @@
 package org.kryptonmc.krypton.entity.animal
 
 import net.kyori.adventure.sound.Sound
-import org.kryptonmc.api.entity.EntityTypes
 import org.kryptonmc.api.entity.animal.Rabbit
 import org.kryptonmc.api.entity.animal.type.RabbitVariant
 import org.kryptonmc.api.entity.attribute.AttributeTypes
 import org.kryptonmc.api.item.ItemStack
 import org.kryptonmc.api.item.ItemTypes
+import org.kryptonmc.krypton.entity.KryptonEntityType
+import org.kryptonmc.krypton.entity.KryptonEntityTypes
 import org.kryptonmc.krypton.entity.KryptonMob
 import org.kryptonmc.krypton.entity.attribute.AttributeSupplier
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
+import org.kryptonmc.krypton.entity.serializer.EntitySerializer
+import org.kryptonmc.krypton.entity.serializer.animal.RabbitSerializer
 import org.kryptonmc.krypton.world.KryptonWorld
 
-class KryptonRabbit(world: KryptonWorld) : KryptonAnimal(world, EntityTypes.RABBIT), Rabbit {
+class KryptonRabbit(world: KryptonWorld) : KryptonAnimal(world), Rabbit {
+
+    override val type: KryptonEntityType<Rabbit>
+        get() = KryptonEntityTypes.RABBIT
+    override val serializer: EntitySerializer<KryptonRabbit>
+        get() = RabbitSerializer
 
     internal var moreCarrotTicks = 0
     override var variant: RabbitVariant
@@ -52,14 +60,14 @@ class KryptonRabbit(world: KryptonWorld) : KryptonAnimal(world, EntityTypes.RABB
             data.set(MetadataKeys.Rabbit.TYPE, value.ordinal)
         }
 
-    override val soundSource: Sound.Source
-        get() = if (variant == RabbitVariant.KILLER) Sound.Source.HOSTILE else Sound.Source.NEUTRAL
-
-    init {
-        data.add(MetadataKeys.Rabbit.TYPE, 0)
+    override fun defineData() {
+        super.defineData()
+        data.define(MetadataKeys.Rabbit.TYPE, 0)
     }
 
     override fun isFood(item: ItemStack): Boolean = TEMPTING_ITEMS.contains(item.type)
+
+    override fun soundSource(): Sound.Source = if (variant == RabbitVariant.KILLER) Sound.Source.HOSTILE else Sound.Source.NEUTRAL
 
     companion object {
 

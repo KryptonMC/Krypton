@@ -18,13 +18,11 @@
  */
 package org.kryptonmc.krypton.entity.serializer
 
-import org.kryptonmc.api.entity.Entity
-import org.kryptonmc.krypton.entity.EntityFactory
 import org.kryptonmc.krypton.entity.KryptonEntity
 import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.MutableListTag
 
-interface EntitySerializer<E : Entity> {
+interface EntitySerializer<E : KryptonEntity> {
 
     fun load(entity: E, data: CompoundTag)
 
@@ -35,7 +33,7 @@ interface EntitySerializer<E : Entity> {
             val passengerList = MutableListTag()
             entity.passengers.forEach {
                 if (it !is KryptonEntity) return@forEach
-                passengerList.add(EntityFactory.serializer(entity.type).saveWithPassengers(entity).build())
+                passengerList.add(entity.saveWithPassengers().build())
             }
             if (!passengerList.isEmpty()) put("Passengers", passengerList)
         }
