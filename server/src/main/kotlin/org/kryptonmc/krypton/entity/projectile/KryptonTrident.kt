@@ -20,14 +20,22 @@ package org.kryptonmc.krypton.entity.projectile
 
 import org.kryptonmc.api.effect.sound.SoundEvent
 import org.kryptonmc.api.effect.sound.SoundEvents
-import org.kryptonmc.api.entity.EntityTypes
 import org.kryptonmc.api.entity.projectile.Trident
 import org.kryptonmc.api.item.ItemTypes
+import org.kryptonmc.krypton.entity.KryptonEntityType
+import org.kryptonmc.krypton.entity.KryptonEntityTypes
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
+import org.kryptonmc.krypton.entity.serializer.EntitySerializer
+import org.kryptonmc.krypton.entity.serializer.projectile.TridentSerializer
 import org.kryptonmc.krypton.item.KryptonItemStack
 import org.kryptonmc.krypton.world.KryptonWorld
 
-class KryptonTrident(world: KryptonWorld) : KryptonArrowLike(world, EntityTypes.TRIDENT), Trident {
+class KryptonTrident(world: KryptonWorld) : KryptonArrowLike(world), Trident {
+
+    override val type: KryptonEntityType<Trident>
+        get() = KryptonEntityTypes.TRIDENT
+    override val serializer: EntitySerializer<KryptonTrident>
+        get() = TridentSerializer
 
     override var item: KryptonItemStack = DEFAULT_ITEM
     override var dealtDamage: Boolean = false
@@ -43,8 +51,8 @@ class KryptonTrident(world: KryptonWorld) : KryptonArrowLike(world, EntityTypes.
         get() = SoundEvents.TRIDENT_HIT_GROUND
 
     init {
-        data.add(MetadataKeys.Trident.LOYALTY_LEVEL, 0)
-        data.add(MetadataKeys.Trident.ENCHANTED, false)
+        data.define(MetadataKeys.Trident.LOYALTY_LEVEL, 0)
+        data.define(MetadataKeys.Trident.ENCHANTED, false)
     }
 
     companion object {

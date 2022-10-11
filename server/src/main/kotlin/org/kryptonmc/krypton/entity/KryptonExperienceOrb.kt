@@ -18,20 +18,22 @@
  */
 package org.kryptonmc.krypton.entity
 
-import org.kryptonmc.api.entity.EntityTypes
 import org.kryptonmc.api.entity.ExperienceOrb
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
-import org.kryptonmc.krypton.packet.Packet
-import org.kryptonmc.krypton.packet.out.play.PacketOutSpawnExperienceOrb
+import org.kryptonmc.krypton.entity.serializer.EntitySerializer
+import org.kryptonmc.krypton.entity.serializer.ExperienceOrbSerializer
 import org.kryptonmc.krypton.world.KryptonWorld
 
-class KryptonExperienceOrb(world: KryptonWorld) : KryptonEntity(world, EntityTypes.EXPERIENCE_ORB), ExperienceOrb {
+class KryptonExperienceOrb(world: KryptonWorld) : KryptonEntity(world), ExperienceOrb {
+
+    override val type: KryptonEntityType<ExperienceOrb>
+        get() = KryptonEntityTypes.EXPERIENCE_ORB
+    override val serializer: EntitySerializer<KryptonExperienceOrb>
+        get() = ExperienceOrbSerializer
 
     var age: Int = 0
     override var count: Int = 1
     override var health: Int = 5
     override var experience: Int = 0
     override var following: KryptonPlayer? = null
-
-    override fun getSpawnPacket(): Packet = PacketOutSpawnExperienceOrb(this)
 }

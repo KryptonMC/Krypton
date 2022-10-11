@@ -18,9 +18,10 @@
  */
 package org.kryptonmc.krypton.entity.projectile
 
-import org.kryptonmc.api.entity.EntityTypes
 import org.kryptonmc.api.entity.projectile.FishingHook
 import org.kryptonmc.krypton.entity.KryptonEntity
+import org.kryptonmc.krypton.entity.KryptonEntityType
+import org.kryptonmc.krypton.entity.KryptonEntityTypes
 import org.kryptonmc.krypton.entity.metadata.MetadataKey
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.util.Maths
@@ -28,7 +29,10 @@ import org.kryptonmc.krypton.world.KryptonWorld
 import org.spongepowered.math.vector.Vector3d
 import kotlin.random.Random
 
-class KryptonFishingHook(world: KryptonWorld) : KryptonProjectile(world, EntityTypes.FISHING_HOOK), FishingHook {
+class KryptonFishingHook(world: KryptonWorld) : KryptonProjectile(world), FishingHook {
+
+    override val type: KryptonEntityType<FishingHook>
+        get() = KryptonEntityTypes.FISHING_HOOK
 
     override var hooked: KryptonEntity? = null
         set(value) {
@@ -39,8 +43,8 @@ class KryptonFishingHook(world: KryptonWorld) : KryptonProjectile(world, EntityT
     override var isBiting: Boolean = false
 
     init {
-        data.add(MetadataKeys.FishingHook.HOOKED, 0)
-        data.add(MetadataKeys.FishingHook.BITING, false)
+        data.define(MetadataKeys.FishingHook.HOOKED, 0)
+        data.define(MetadataKeys.FishingHook.BITING, false)
     }
 
     override fun onDataUpdate(key: MetadataKey<*>) {

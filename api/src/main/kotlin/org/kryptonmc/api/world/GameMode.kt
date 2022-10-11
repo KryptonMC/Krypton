@@ -20,16 +20,15 @@ import org.kryptonmc.api.world.damage.type.DamageType
  *
  * @param abbreviation the shortened name of this game mode, such as 's' for
  * [SURVIVAL]
- * @param canBuild whether players in this game mode can build
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
-public enum class GameMode(public val abbreviation: String, public val canBuild: Boolean) : TranslationHolder {
+public enum class GameMode(public val abbreviation: String) : TranslationHolder {
 
     /**
      * Survival mode is the default game mode. In it, you can access most
      * gameplay features, but you will take damage, and cannot fly.
      */
-    SURVIVAL("s", true),
+    SURVIVAL("s"),
 
     /**
      * Creative mode grants you access to spawn in any block in the game. It
@@ -37,14 +36,14 @@ public enum class GameMode(public val abbreviation: String, public val canBuild:
      * blocks instantly, and you can only take damage from types that
      * [bypass invulnerability][DamageType.bypassesInvulnerability].
      */
-    CREATIVE("c", true),
+    CREATIVE("c"),
 
     /**
      * Adventure mode is designed for custom maps. In it, your block breaking
      * and placing are restricted, you still take damage like normal, and you
      * cannot fly.
      */
-    ADVENTURE("a", false),
+    ADVENTURE("a"),
 
     /**
      * Spectator mode is designed for spectating things. In it, you will take
@@ -53,7 +52,7 @@ public enum class GameMode(public val abbreviation: String, public val canBuild:
      * world, including breaking and placing blocks, attacking entities, and
      * opening containers.
      */
-    SPECTATOR("sp", false);
+    SPECTATOR("sp");
 
     @get:JvmName("translation")
     override val translation: TranslatableComponent = Component.translatable("gameMode.${name.lowercase()}")

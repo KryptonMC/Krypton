@@ -18,24 +18,32 @@
  */
 package org.kryptonmc.krypton.entity.animal
 
-import org.kryptonmc.api.entity.EntityTypes
 import org.kryptonmc.api.entity.animal.Animal
 import org.kryptonmc.api.entity.animal.Wolf
 import org.kryptonmc.api.entity.attribute.AttributeTypes
 import org.kryptonmc.api.item.ItemStack
 import org.kryptonmc.api.item.data.DyeColor
 import org.kryptonmc.api.item.data.DyeColors
+import org.kryptonmc.krypton.entity.KryptonEntityType
+import org.kryptonmc.krypton.entity.KryptonEntityTypes
 import org.kryptonmc.krypton.entity.KryptonMob
 import org.kryptonmc.krypton.entity.Neutral
 import org.kryptonmc.krypton.entity.attribute.AttributeSupplier
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
+import org.kryptonmc.krypton.entity.serializer.EntitySerializer
+import org.kryptonmc.krypton.entity.serializer.animal.WolfSerializer
 import org.kryptonmc.krypton.registry.KryptonRegistries
 import org.kryptonmc.krypton.util.provider.UniformInt
 import org.kryptonmc.krypton.world.KryptonWorld
 import java.util.UUID
 import kotlin.random.Random
 
-class KryptonWolf(world: KryptonWorld) : KryptonTamable(world, EntityTypes.WOLF), Wolf, Neutral {
+class KryptonWolf(world: KryptonWorld) : KryptonTamable(world), Wolf, Neutral {
+
+    override val type: KryptonEntityType<Wolf>
+        get() = KryptonEntityTypes.WOLF
+    override val serializer: EntitySerializer<KryptonWolf>
+        get() = WolfSerializer
 
     override var angerTarget: UUID? = null
     override var isAngry: Boolean
@@ -69,10 +77,14 @@ class KryptonWolf(world: KryptonWorld) : KryptonTamable(world, EntityTypes.WOLF)
         get() = 0.4F
 
     init {
-        data.add(MetadataKeys.Wolf.BEGGING, false)
-        data.add(MetadataKeys.Wolf.COLLAR_COLOR, KryptonRegistries.DYE_COLORS.idOf(DyeColors.RED))
-        data.add(MetadataKeys.Wolf.ANGER_TIME, 0)
         isTamed = false
+    }
+
+    override fun defineData() {
+        super.defineData()
+        data.define(MetadataKeys.Wolf.BEGGING, false)
+        data.define(MetadataKeys.Wolf.COLLAR_COLOR, KryptonRegistries.DYE_COLORS.idOf(DyeColors.RED))
+        data.define(MetadataKeys.Wolf.ANGER_TIME, 0)
     }
 
     override fun startAngerTimer() {

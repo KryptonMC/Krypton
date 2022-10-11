@@ -18,19 +18,27 @@
  */
 package org.kryptonmc.krypton.entity.projectile
 
-import org.kryptonmc.api.entity.EntityTypes
 import org.kryptonmc.api.entity.projectile.Arrow
 import org.kryptonmc.api.util.Color
+import org.kryptonmc.krypton.entity.KryptonEntityType
+import org.kryptonmc.krypton.entity.KryptonEntityTypes
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
+import org.kryptonmc.krypton.entity.serializer.EntitySerializer
+import org.kryptonmc.krypton.entity.serializer.projectile.ArrowSerializer
 import org.kryptonmc.krypton.world.KryptonWorld
 
-class KryptonArrow(world: KryptonWorld) : KryptonArrowLike(world, EntityTypes.ARROW), Arrow {
+class KryptonArrow(world: KryptonWorld) : KryptonArrowLike(world), Arrow {
+
+    override val type: KryptonEntityType<Arrow>
+        get() = KryptonEntityTypes.ARROW
+    override val serializer: EntitySerializer<KryptonArrow>
+        get() = ArrowSerializer
 
     override var color: Color
         get() = Color.of(data.get(MetadataKeys.Arrow.COLOR))
         set(value) = data.set(MetadataKeys.Arrow.COLOR, value.value)
 
     init {
-        data.add(MetadataKeys.Arrow.COLOR, -1)
+        data.define(MetadataKeys.Arrow.COLOR, -1)
     }
 }

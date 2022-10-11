@@ -18,45 +18,44 @@
  */
 package org.kryptonmc.krypton.entity
 
-import org.kryptonmc.api.entity.EntityType
 import org.kryptonmc.api.entity.EquipmentSlot
 import org.kryptonmc.api.entity.MainHand
 import org.kryptonmc.api.entity.Mob
 import org.kryptonmc.api.entity.attribute.AttributeTypes
 import org.kryptonmc.krypton.entity.attribute.AttributeSupplier
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
+import org.kryptonmc.krypton.entity.serializer.EntitySerializer
+import org.kryptonmc.krypton.entity.serializer.MobSerializer
 import org.kryptonmc.krypton.item.KryptonItemStack
 import org.kryptonmc.krypton.util.FixedList
 import org.kryptonmc.krypton.world.KryptonWorld
 
-abstract class KryptonMob(world: KryptonWorld, type: EntityType<out Mob>) : KryptonLivingEntity(world, type), Mob {
+abstract class KryptonMob(world: KryptonWorld) : KryptonLivingEntity(world), Mob {
+
+    override val serializer: EntitySerializer<out KryptonMob>
+        get() = MobSerializer
 
     internal val handItems = FixedList(2, KryptonItemStack.EMPTY)
     internal val armorItems = FixedList(4, KryptonItemStack.EMPTY)
-    internal val handDropChances = FloatArray(2)
-    internal val armorDropChances = FloatArray(4)
-
-    override val handSlots: Iterable<KryptonItemStack>
-        get() = handItems
-    override val armorSlots: Iterable<KryptonItemStack>
-        get() = armorItems
+    internal val handDropChances = FloatArray(2) { DEFAULT_DROP_CHANCE }
+    internal val armorDropChances = FloatArray(4) { DEFAULT_DROP_CHANCE }
 
     final override var canPickUpLoot: Boolean = false
     final override var isPersistent: Boolean = false
     open var target: KryptonLivingEntity? = null
 
     final override var hasAI: Boolean
-        get() = !getFlag(MetadataKeys.Mob.FLAGS, FLAG_NO_AI)
-        set(value) = setFlag(MetadataKeys.Mob.FLAGS, FLAG_NO_AI, !value)
+        get() = !data.getFlag(MetadataKeys.Mob.FLAGS, FLAG_NO_AI)
+        set(value) = data.setFlag(MetadataKeys.Mob.FLAGS, FLAG_NO_AI, !value)
     final override var mainHand: MainHand
-        get() = if (getFlag(MetadataKeys.Mob.FLAGS, FLAG_LEFT_HANDED)) MainHand.LEFT else MainHand.RIGHT
-        set(value) = setFlag(MetadataKeys.Mob.FLAGS, FLAG_LEFT_HANDED, value == MainHand.LEFT)
+        get() = if (data.getFlag(MetadataKeys.Mob.FLAGS, FLAG_LEFT_HANDED)) MainHand.LEFT else MainHand.RIGHT
+        set(value) = data.setFlag(MetadataKeys.Mob.FLAGS, FLAG_LEFT_HANDED, value == MainHand.LEFT)
     final override var isAggressive: Boolean
-        get() = getFlag(MetadataKeys.Mob.FLAGS, FLAG_AGGRESSIVE)
-        set(value) = setFlag(MetadataKeys.Mob.FLAGS, FLAG_AGGRESSIVE, value)
+        get() = data.getFlag(MetadataKeys.Mob.FLAGS, FLAG_AGGRESSIVE)
+        set(value) = data.setFlag(MetadataKeys.Mob.FLAGS, FLAG_AGGRESSIVE, value)
 
     init {
-        data.add(MetadataKeys.Mob.FLAGS, 0)
+        data.define(MetadataKeys.Mob.FLAGS, 0)
     }
 
     override fun equipment(slot: EquipmentSlot): KryptonItemStack = when (slot.type) {
@@ -101,6 +100,8 @@ abstract class KryptonMob(world: KryptonWorld, type: EntityType<out Mob>) : Kryp
         private const val FLAG_NO_AI = 0
         private const val FLAG_LEFT_HANDED = 1
         private const val FLAG_AGGRESSIVE = 2
+
+        private const val DEFAULT_DROP_CHANCE = 0.085F
 
         @JvmStatic
         fun attributes(): AttributeSupplier.Builder = KryptonLivingEntity.attributes()

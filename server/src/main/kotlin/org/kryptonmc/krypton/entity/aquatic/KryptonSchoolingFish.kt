@@ -18,8 +18,7 @@
  */
 package org.kryptonmc.krypton.entity.aquatic
 
-import org.kryptonmc.api.entity.EntityType
 import org.kryptonmc.api.entity.aquatic.SchoolingFish
 import org.kryptonmc.krypton.world.KryptonWorld
 
-abstract class KryptonSchoolingFish(world: KryptonWorld, type: EntityType<out SchoolingFish>) : KryptonFish(world, type), SchoolingFish
+abstract class KryptonSchoolingFish(world: KryptonWorld) : KryptonFish(world), SchoolingFish

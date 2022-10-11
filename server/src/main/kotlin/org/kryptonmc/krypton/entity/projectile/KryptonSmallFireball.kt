@@ -18,8 +18,13 @@
  */
 package org.kryptonmc.krypton.entity.projectile
 
-import org.kryptonmc.api.entity.EntityTypes
 import org.kryptonmc.api.entity.projectile.SmallFireball
+import org.kryptonmc.krypton.entity.KryptonEntityType
+import org.kryptonmc.krypton.entity.KryptonEntityTypes
 import org.kryptonmc.krypton.world.KryptonWorld
 
-class KryptonSmallFireball(world: KryptonWorld) : KryptonFireball(world, EntityTypes.SMALL_FIREBALL), SmallFireball
+class KryptonSmallFireball(world: KryptonWorld) : KryptonFireball(world), SmallFireball {
+
+    override val type: KryptonEntityType<SmallFireball>
+        get() = KryptonEntityTypes.SMALL_FIREBALL
+}

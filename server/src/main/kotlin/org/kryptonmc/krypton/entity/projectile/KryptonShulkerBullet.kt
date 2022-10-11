@@ -19,13 +19,21 @@
 package org.kryptonmc.krypton.entity.projectile
 
 import org.kryptonmc.api.entity.Entity
-import org.kryptonmc.api.entity.EntityTypes
 import org.kryptonmc.api.entity.projectile.ShulkerBullet
 import org.kryptonmc.api.util.Direction
+import org.kryptonmc.krypton.entity.KryptonEntityType
+import org.kryptonmc.krypton.entity.KryptonEntityTypes
+import org.kryptonmc.krypton.entity.serializer.EntitySerializer
+import org.kryptonmc.krypton.entity.serializer.projectile.ShulkerBulletSerializer
 import org.kryptonmc.krypton.world.KryptonWorld
 import java.util.UUID
 
-class KryptonShulkerBullet(world: KryptonWorld) : KryptonProjectile(world, EntityTypes.SHULKER_BULLET), ShulkerBullet {
+class KryptonShulkerBullet(world: KryptonWorld) : KryptonProjectile(world), ShulkerBullet {
+
+    override val type: KryptonEntityType<ShulkerBullet>
+        get() = KryptonEntityTypes.SHULKER_BULLET
+    override val serializer: EntitySerializer<KryptonShulkerBullet>
+        get() = ShulkerBulletSerializer
 
     internal var targetId: UUID? = null
     override var steps: Int = 0

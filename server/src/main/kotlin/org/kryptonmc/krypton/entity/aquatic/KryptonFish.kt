@@ -20,33 +20,36 @@ package org.kryptonmc.krypton.entity.aquatic
 
 import org.kryptonmc.api.effect.sound.SoundEvent
 import org.kryptonmc.api.effect.sound.SoundEvents
-import org.kryptonmc.api.entity.EntityType
 import org.kryptonmc.api.entity.aquatic.Fish
 import org.kryptonmc.api.entity.attribute.AttributeTypes
 import org.kryptonmc.krypton.entity.BucketStorable
 import org.kryptonmc.krypton.entity.KryptonMob
 import org.kryptonmc.krypton.entity.attribute.AttributeSupplier
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
+import org.kryptonmc.krypton.entity.serializer.EntitySerializer
+import org.kryptonmc.krypton.entity.serializer.aquatic.FishSerializer
 import org.kryptonmc.krypton.item.KryptonItemStack
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.nbt.CompoundTag
 
-abstract class KryptonFish(world: KryptonWorld, type: EntityType<out Fish>) : KryptonAquaticAnimal(world, type), Fish, BucketStorable {
+abstract class KryptonFish(world: KryptonWorld) : KryptonAquaticAnimal(world), Fish, BucketStorable {
+
+    override val serializer: EntitySerializer<out KryptonFish>
+        get() = FishSerializer
 
     override var spawnedFromBucket: Boolean
         get() = data.get(MetadataKeys.Fish.FROM_BUCKET)
         set(value) = data.set(MetadataKeys.Fish.FROM_BUCKET, value)
     override val bucketPickupSound: SoundEvent
         get() = SoundEvents.BUCKET_FILL_FISH
-    override val swimSound: SoundEvent
-        get() = SoundEvents.FISH_SWIM
 
-    init {
-        data.add(MetadataKeys.Fish.FROM_BUCKET, false)
+    override fun defineData() {
+        super.defineData()
+        data.define(MetadataKeys.Fish.FROM_BUCKET, false)
     }
 
     override fun loadFromBucket(tag: CompoundTag) {
-        loadDefaultsFromBucket(this, tag)
+        BucketStorable.loadDefaultsFromBucket(this, tag)
     }
 
     /* FIXME

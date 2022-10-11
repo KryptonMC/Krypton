@@ -34,12 +34,11 @@ import org.kryptonmc.krypton.world.block.isBurning
 import org.kryptonmc.krypton.world.block.state.KryptonBlockState
 
 @JvmRecord
-data class KryptonEntityType<T : Entity>(
+data class KryptonEntityType<out T : Entity>(
     private val key: Key,
     override val category: EntityCategory,
     override val isSummonable: Boolean,
     override val isImmuneToFire: Boolean,
-    override val isRideable: Boolean,
     override val clientTrackingRange: Int,
     override val updateInterval: Int,
     override val width: Float,
@@ -63,7 +62,6 @@ data class KryptonEntityType<T : Entity>(
 
         private var summonable = true
         private var fireImmune = false
-        private var rideable = false
         private var width = DEFAULT_WIDTH
         private var height = DEFAULT_HEIGHT
         private val immuneTo = persistentSetOf<Block>().builder()
@@ -72,14 +70,6 @@ data class KryptonEntityType<T : Entity>(
         private var lootTable: Key? = null
         private var translation: TranslatableComponent? = null
 
-        constructor(type: EntityType<T>) : this(type.key(), type.category) {
-            summonable = type.isSummonable
-            fireImmune = type.isImmuneToFire
-            rideable = type.isRideable
-            immuneTo.addAll(type.immuneTo)
-            lootTable = type.lootTable
-        }
-
         override fun key(key: Key): Builder<T> = apply { this.key = key }
 
         override fun category(category: EntityCategory): Builder<T> = apply { this.category = category }
@@ -87,8 +77,6 @@ data class KryptonEntityType<T : Entity>(
         override fun summonable(value: Boolean): Builder<T> = apply { summonable = value }
 
         override fun fireImmune(value: Boolean): Builder<T> = apply { fireImmune = value }
-
-        override fun rideable(value: Boolean): Builder<T> = apply { rideable = value }
 
         override fun clientTrackingRange(range: Int): Builder<T> = apply { clientTrackingRange = range }
 
@@ -113,7 +101,6 @@ data class KryptonEntityType<T : Entity>(
             category,
             summonable,
             fireImmune,
-            rideable,
             clientTrackingRange,
             updateInterval,
             width,

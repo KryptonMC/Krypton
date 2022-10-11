@@ -22,6 +22,7 @@ import com.mojang.brigadier.StringReader
 import net.kyori.adventure.audience.MessageType
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.event.ClickEvent
+import net.kyori.adventure.translation.Translator
 import org.kryptonmc.api.block.Blocks
 import org.kryptonmc.api.entity.Hand
 import org.kryptonmc.api.entity.player.ChatVisibility
@@ -30,8 +31,9 @@ import org.kryptonmc.api.resource.ResourcePack
 import org.kryptonmc.api.world.GameMode
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.commands.KryptonPermission
-import org.kryptonmc.krypton.entity.EntityFactory
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
+import org.kryptonmc.krypton.entity.player.KryptonPlayerSettings
+import org.kryptonmc.krypton.entity.player.KryptonSkinParts
 import org.kryptonmc.krypton.event.command.KryptonCommandExecuteEvent
 import org.kryptonmc.krypton.event.player.KryptonChatEvent
 import org.kryptonmc.krypton.event.player.KryptonMoveEvent
@@ -89,7 +91,6 @@ import org.spongepowered.math.vector.Vector2f
 import org.spongepowered.math.vector.Vector3d
 import java.time.Duration
 import java.time.Instant
-import java.util.Locale
 import java.util.concurrent.atomic.AtomicReference
 import org.kryptonmc.api.event.player.PerformActionEvent.Action as EntityAction
 import org.kryptonmc.krypton.packet.`in`.play.PacketInPlayerAction.Action as PlayerAction
@@ -219,7 +220,7 @@ class PlayHandler(override val server: KryptonServer, override val session: Sess
 
     private fun resetLastActionTime(): Boolean {
         // TODO: Fix chat (again)
-        if (player.chatVisibility == ChatVisibility.HIDDEN) {
+        if (player.settings.chatVisibility == ChatVisibility.HIDDEN) {
 //            val systemTypeId = InternalRegistries.CHAT_TYPE.idOf(ChatTypes.SYSTEM)
 //            session.send(PacketOutSystemChatMessage(Component.translatable("chat.disabled.options", NamedTextColor.RED), systemTypeId))
             return false
@@ -229,12 +230,15 @@ class PlayHandler(override val server: KryptonServer, override val session: Sess
     }
 
     private fun handleClientInformation(packet: PacketInClientInformation) {
-        player.locale = Locale(packet.locale)
-        player.chatVisibility = packet.chatVisibility
-        player.skinSettings = packet.skinSettings.toByte()
-        player.mainHand = packet.mainHand
-        player.filterText = packet.filterText
-        player.allowsListing = packet.allowsListing
+        player.settings = KryptonPlayerSettings(
+            Translator.parseLocale(packet.locale),
+            packet.viewDistance,
+            packet.chatVisibility,
+            packet.chatColors,
+            KryptonSkinParts(packet.skinSettings.toInt()),
+            packet.mainHand,
+            packet.allowsListing
+        )
     }
 
     private fun handleSetCreativeModeSlot(packet: PacketInSetCreativeModeSlot) {
@@ -305,7 +309,7 @@ class PlayHandler(override val server: KryptonServer, override val session: Sess
 
     private fun handlePlayerAction(packet: PacketInPlayerAction) {
         when (packet.action) {
-            PlayerAction.START_DIGGING, PlayerAction.FINISH_DIGGING, PlayerAction.CANCEL_DIGGING -> player.blockHandler.handleBlockBreak(packet)
+            PlayerAction.START_DIGGING, PlayerAction.FINISH_DIGGING, PlayerAction.CANCEL_DIGGING -> player.gameModeSystem.handleBlockBreak(packet)
             PlayerAction.RELEASE_USE_ITEM -> {
                 val handler = player.inventory.get(player.inventory.heldSlot).type.handler()
                 if (handler !is ItemTimedHandler) return
@@ -348,7 +352,7 @@ class PlayHandler(override val server: KryptonServer, override val session: Sess
         val deltaY = Positioning.delta(newLocation.y(), oldLocation.y())
         val deltaZ = Positioning.delta(newLocation.z(), oldLocation.z())
         val newPacket = PacketOutUpdateEntityPosition(player.id, deltaX, deltaY, deltaZ, packet.onGround)
-        sessionManager.sendGrouped(player.viewers, newPacket)
+        player.viewingSystem.sendToViewers(newPacket)
         onMove(newLocation, oldLocation)
     }
 
@@ -408,7 +412,7 @@ class PlayHandler(override val server: KryptonServer, override val session: Sess
     private fun handleEntityTagQuery(packet: PacketInQueryEntityTag) {
         if (!player.hasPermission(KryptonPermission.ENTITY_QUERY.node)) return
         val entity = player.world.entityManager.get(packet.entityId) ?: return
-        session.send(PacketOutTagQueryResponse(packet.transactionId, EntityFactory.serializer(entity.type).saveWithPassengers(entity).build()))
+        session.send(PacketOutTagQueryResponse(packet.transactionId, entity.saveWithPassengers().build()))
     }
 
     private fun handleResourcePack(packet: PacketInResourcePack) {
@@ -420,9 +424,9 @@ class PlayHandler(override val server: KryptonServer, override val session: Sess
     }
 
     private fun onMove(new: Vector3d, old: Vector3d) {
-        player.updateChunks()
+        player.chunkViewingSystem.updateChunks()
         player.updateMovementStatistics(new.x() - old.x(), new.y() - old.y(), new.z() - old.z())
-        player.updateMovementExhaustion(new.x() - old.x(), new.y() - old.y(), new.z() - old.z())
+        player.hungerSystem.updateMovementExhaustion(new.x() - old.x(), new.y() - old.y(), new.z() - old.z())
     }
 
     private inner class InteractionHandler : PacketInInteract.Handler {

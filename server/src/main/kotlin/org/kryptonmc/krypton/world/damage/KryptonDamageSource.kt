@@ -65,7 +65,7 @@ open class KryptonDamageSource(override val type: DamageType) : DamageSource {
     open fun entity(): KryptonEntity? = null
 
     open fun formatDeathMessage(target: KryptonLivingEntity): Component {
-        val killer = target.killer
+        val killer = target.killCredit
         val baseMessage = "death.attack.${type.translationKey()}"
         if (killer != null) return Component.translatable("$baseMessage.player", target.displayName, killer.displayName)
         return Component.translatable(baseMessage, target.displayName)

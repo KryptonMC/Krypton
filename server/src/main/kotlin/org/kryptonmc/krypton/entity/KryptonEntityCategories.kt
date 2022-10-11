@@ -39,8 +39,6 @@ object KryptonEntityCategories {
     val MISC: KryptonEntityCategory = register("misc", -1, true, true, 128)
 
     @JvmStatic
-    private fun register(name: String, max: Int, friendly: Boolean, persistent: Boolean, despawn: Int): KryptonEntityCategory {
-        val key = Key.key(name)
-        return Registries.ENTITY_CATEGORIES.register(key, KryptonEntityCategory(key, max, friendly, persistent, despawn, 32))
-    }
+    private fun register(name: String, max: Int, friendly: Boolean, persistent: Boolean, despawn: Int): KryptonEntityCategory =
+        Registries.ENTITY_CATEGORIES.register(Key.key(name), KryptonEntityCategory(max, friendly, persistent, despawn, 32))
 }

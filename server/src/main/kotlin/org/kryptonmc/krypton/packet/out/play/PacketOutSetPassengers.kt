@@ -30,7 +30,7 @@ import org.kryptonmc.krypton.util.writeVarIntArray
 @JvmRecord
 data class PacketOutSetPassengers(override val entityId: Int, val passengers: IntArray) : EntityPacket {
 
-    constructor(entity: KryptonEntity) : this(entity.id, entity.passengers.toIdArray())
+    constructor(entity: KryptonEntity, passengers: List<Entity>) : this(entity.id, passengers.toIdArray())
 
     constructor(buf: ByteBuf) : this(buf.readVarInt(), buf.readVarIntArray())
 

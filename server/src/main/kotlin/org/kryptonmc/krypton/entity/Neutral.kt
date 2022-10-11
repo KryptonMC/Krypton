@@ -20,7 +20,6 @@ package org.kryptonmc.krypton.entity
 
 import org.kryptonmc.api.entity.EntityTypes
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
-import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.nbt.CompoundTag
 import java.util.UUID
 
@@ -47,24 +46,25 @@ interface Neutral {
     companion object {
 
         @JvmStatic
-        fun <E> loadAngerData(entity: E, tag: CompoundTag) where E : KryptonEntity, E : Neutral {
-            entity.remainingAngerTime = tag.getInt("AngerTime")
-            if (!tag.hasUUID("AngryAt")) {
+        fun <E> loadAngerData(entity: E, data: CompoundTag) where E : KryptonEntity, E : Neutral {
+            entity.remainingAngerTime = data.getInt("AngerTime")
+            if (!data.hasUUID("AngryAt")) {
                 entity.angerTarget = null
                 return
             }
-            val targetId = tag.getUUID("AngryAt")
+            val targetId = data.getUUID("AngryAt")!!
             entity.angerTarget = targetId
-            if (targetId == null) return
-            val target = entity.world.entityManager.get(targetId) ?: return
-            if (target is KryptonMob) entity.lastHurtByMob = target
-            if (target.type === EntityTypes.PLAYER) entity.lastHurtByPlayer = target as KryptonPlayer
+            val target = entity.world.entityManager.get(targetId)
+            if (target != null) {
+                if (target is KryptonMob) entity.lastHurtByMob = target
+                if (target.type === EntityTypes.PLAYER) entity.lastHurtByPlayer = target as KryptonPlayer
+            }
         }
 
         @JvmStatic
-        fun saveAngerData(entity: Neutral, tag: CompoundTag.Builder) {
-            tag.int("AngerTime", entity.remainingAngerTime)
-            if (entity.angerTarget != null) tag.uuid("AngryAt", entity.angerTarget!!)
+        fun saveAngerData(entity: Neutral, data: CompoundTag.Builder): CompoundTag.Builder = data.apply {
+            int("AngerTime", entity.remainingAngerTime)
+            if (entity.angerTarget != null) uuid("AngryAt", entity.angerTarget!!)
         }
     }
 }

@@ -18,21 +18,29 @@
  */
 package org.kryptonmc.krypton.entity.animal
 
-import org.kryptonmc.api.entity.EntityTypes
 import org.kryptonmc.api.entity.animal.Sheep
 import org.kryptonmc.api.entity.attribute.AttributeTypes
 import org.kryptonmc.api.item.data.DyeColor
+import org.kryptonmc.krypton.entity.KryptonEntityType
+import org.kryptonmc.krypton.entity.KryptonEntityTypes
 import org.kryptonmc.krypton.entity.KryptonMob
 import org.kryptonmc.krypton.entity.attribute.AttributeSupplier
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
+import org.kryptonmc.krypton.entity.serializer.EntitySerializer
+import org.kryptonmc.krypton.entity.serializer.animal.SheepSerializer
 import org.kryptonmc.krypton.registry.KryptonRegistries
 import org.kryptonmc.krypton.world.KryptonWorld
 
-class KryptonSheep(world: KryptonWorld) : KryptonAnimal(world, EntityTypes.SHEEP), Sheep {
+class KryptonSheep(world: KryptonWorld) : KryptonAnimal(world), Sheep {
+
+    override val type: KryptonEntityType<Sheep>
+        get() = KryptonEntityTypes.SHEEP
+    override val serializer: EntitySerializer<KryptonSheep>
+        get() = SheepSerializer
 
     override var isSheared: Boolean
-        get() = getFlag(MetadataKeys.Sheep.FLAGS, FLAG_SHEARED)
-        set(value) = setFlag(MetadataKeys.Sheep.FLAGS, FLAG_SHEARED, value)
+        get() = data.getFlag(MetadataKeys.Sheep.FLAGS, FLAG_SHEARED)
+        set(value) = data.setFlag(MetadataKeys.Sheep.FLAGS, FLAG_SHEARED, value)
     override var woolColor: DyeColor
         get() = KryptonRegistries.DYE_COLORS.get(data.get(MetadataKeys.Sheep.FLAGS).toInt() and WOOL_COLOR_MASK)!!
         set(value) {
@@ -40,8 +48,9 @@ class KryptonSheep(world: KryptonWorld) : KryptonAnimal(world, EntityTypes.SHEEP
             data.set(MetadataKeys.Sheep.FLAGS, (old or (KryptonRegistries.DYE_COLORS.idOf(value) and WOOL_COLOR_MASK)).toByte())
         }
 
-    init {
-        data.add(MetadataKeys.Sheep.FLAGS, 0)
+    override fun defineData() {
+        super.defineData()
+        data.define(MetadataKeys.Sheep.FLAGS, 0)
     }
 
     companion object {

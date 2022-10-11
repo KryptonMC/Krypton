@@ -18,17 +18,18 @@
  */
 package org.kryptonmc.krypton.entity.animal
 
-import org.kryptonmc.api.entity.EntityType
-import org.kryptonmc.api.entity.EntityTypes
 import org.kryptonmc.api.entity.animal.Cow
 import org.kryptonmc.api.entity.attribute.AttributeTypes
+import org.kryptonmc.krypton.entity.KryptonEntityType
+import org.kryptonmc.krypton.entity.KryptonEntityTypes
 import org.kryptonmc.krypton.entity.KryptonMob
 import org.kryptonmc.krypton.entity.attribute.AttributeSupplier
 import org.kryptonmc.krypton.world.KryptonWorld
 
-open class KryptonCow(world: KryptonWorld, type: EntityType<out Cow>) : KryptonAnimal(world, type), Cow {
+open class KryptonCow(world: KryptonWorld) : KryptonAnimal(world), Cow {
 
-    constructor(world: KryptonWorld) : this(world, EntityTypes.COW)
+    override val type: KryptonEntityType<Cow>
+        get() = KryptonEntityTypes.COW
 
     override val soundVolume: Float
         get() = 0.4F

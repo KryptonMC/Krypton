@@ -20,11 +20,12 @@ package org.kryptonmc.krypton.entity.vehicle
 
 import org.kryptonmc.api.block.BlockState
 import org.kryptonmc.api.block.Blocks
-import org.kryptonmc.api.entity.EntityType
 import org.kryptonmc.api.entity.vehicle.MinecartLike
 import org.kryptonmc.krypton.entity.KryptonEntity
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
+import org.kryptonmc.krypton.entity.serializer.EntitySerializer
+import org.kryptonmc.krypton.entity.serializer.vehicle.MinecartLikeSerializer
 import org.kryptonmc.krypton.registry.KryptonRegistries
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.krypton.world.block.KryptonBlock
@@ -32,7 +33,10 @@ import org.kryptonmc.krypton.world.block.downcast
 import org.kryptonmc.krypton.world.damage.KryptonDamageSource
 import org.kryptonmc.krypton.world.damage.KryptonEntityDamageSource
 
-abstract class KryptonMinecartLike(world: KryptonWorld, type: EntityType<out MinecartLike>) : KryptonEntity(world, type), MinecartLike {
+abstract class KryptonMinecartLike(world: KryptonWorld) : KryptonEntity(world), MinecartLike {
+
+    override val serializer: EntitySerializer<out KryptonMinecartLike>
+        get() = MinecartLikeSerializer
 
     override var damageTaken: Float
         get() = data.get(MetadataKeys.MinecartLike.DAMAGE)
@@ -64,13 +68,14 @@ abstract class KryptonMinecartLike(world: KryptonWorld, type: EntityType<out Min
     protected open val defaultCustomBlockOffset: Int
         get() = 0
 
-    init {
-        data.add(MetadataKeys.MinecartLike.HURT_TIMER, 0)
-        data.add(MetadataKeys.MinecartLike.HURT_DIRECTION, 1)
-        data.add(MetadataKeys.MinecartLike.DAMAGE, 0F)
-        data.add(MetadataKeys.MinecartLike.CUSTOM_BLOCK_ID, KryptonRegistries.BLOCK.idOf(Blocks.AIR))
-        data.add(MetadataKeys.MinecartLike.CUSTOM_BLOCK_OFFSET, 6)
-        data.add(MetadataKeys.MinecartLike.SHOW_CUSTOM_BLOCK, false)
+    override fun defineData() {
+        super.defineData()
+        data.define(MetadataKeys.MinecartLike.HURT_TIMER, 0)
+        data.define(MetadataKeys.MinecartLike.HURT_DIRECTION, 1)
+        data.define(MetadataKeys.MinecartLike.DAMAGE, 0F)
+        data.define(MetadataKeys.MinecartLike.CUSTOM_BLOCK_ID, KryptonRegistries.BLOCK.idOf(Blocks.AIR))
+        data.define(MetadataKeys.MinecartLike.CUSTOM_BLOCK_OFFSET, 6)
+        data.define(MetadataKeys.MinecartLike.SHOW_CUSTOM_BLOCK, false)
     }
 
     override fun damage(source: KryptonDamageSource, damage: Float): Boolean {
@@ -80,7 +85,7 @@ abstract class KryptonMinecartLike(world: KryptonWorld, type: EntityType<out Min
         damageTimer = DEFAULT_DAMAGE_TIMER
         markDamaged()
         damageTaken += damage * DAMAGE_INCREASE_MULTIPLIER
-        val canInstantlyBuild = source is KryptonEntityDamageSource && source.entity is KryptonPlayer && source.entity.canInstantlyBuild
+        val canInstantlyBuild = source is KryptonEntityDamageSource && source.entity is KryptonPlayer && source.entity.abilities.canInstantlyBuild
         if (canInstantlyBuild || damageTaken > MAX_DAMAGE) {
             ejectPassengers()
             remove()

@@ -19,13 +19,17 @@
 package org.kryptonmc.krypton.entity.projectile
 
 import org.kryptonmc.api.entity.Entity
-import org.kryptonmc.api.entity.EntityType
 import org.kryptonmc.api.entity.projectile.Projectile
 import org.kryptonmc.krypton.entity.KryptonEntity
+import org.kryptonmc.krypton.entity.serializer.EntitySerializer
+import org.kryptonmc.krypton.entity.serializer.projectile.ProjectileSerializer
 import org.kryptonmc.krypton.world.KryptonWorld
 import java.util.UUID
 
-abstract class KryptonProjectile(world: KryptonWorld, type: EntityType<out Projectile>) : KryptonEntity(world, type), Projectile {
+abstract class KryptonProjectile(world: KryptonWorld) : KryptonEntity(world), Projectile {
+
+    override val serializer: EntitySerializer<out KryptonProjectile>
+        get() = ProjectileSerializer
 
     internal var ownerId: UUID? = null
     final override var owner: Entity? = null

@@ -19,6 +19,7 @@
 package org.kryptonmc.krypton.util
 
 import org.kryptonmc.api.world.GameMode
+import org.kryptonmc.krypton.entity.player.Abilities
 
 object GameModes {
 
@@ -35,4 +36,31 @@ object GameModes {
 
     @JvmStatic
     fun fromAbbreviation(abbreviation: String): GameMode? = BY_ABBREVIATION.get(abbreviation)
+
+    @JvmStatic
+    fun updatePlayerAbilities(mode: GameMode, abilities: Abilities) {
+        when (mode) {
+            GameMode.CREATIVE -> {
+                abilities.canFly = true
+                abilities.canInstantlyBuild = true
+                abilities.invulnerable = true
+            }
+            GameMode.SPECTATOR -> {
+                abilities.canFly = true
+                abilities.canInstantlyBuild = false
+                abilities.invulnerable = true
+                abilities.flying = true
+            }
+            else -> {
+                abilities.canFly = false
+                abilities.canInstantlyBuild = false
+                abilities.invulnerable = false
+                abilities.flying = false
+            }
+        }
+        abilities.canBuild = !isBlockPlacingRestricted(mode)
+    }
+
+    @JvmStatic
+    fun isBlockPlacingRestricted(mode: GameMode): Boolean = mode == GameMode.ADVENTURE || mode == GameMode.SPECTATOR
 }

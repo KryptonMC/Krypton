@@ -49,6 +49,7 @@ import org.kryptonmc.krypton.world.WorldEvent
 import org.kryptonmc.krypton.world.block.entity.KryptonBlockEntity
 import org.kryptonmc.krypton.world.block.state.BlockBehaviour
 import org.kryptonmc.krypton.world.block.state.KryptonBlockState
+import org.spongepowered.math.vector.Vector3i
 import java.util.function.Function
 
 @Suppress("LeakingThis")
@@ -80,7 +81,7 @@ open class KryptonBlock(properties: Properties) : BlockBehaviour(properties), St
     open fun propagatesSkylightDown(state: KryptonBlockState, world: BlockAccessor, x: Int, y: Int, z: Int): Boolean =
         !isShapeFullBlock(state.getShape(world, x, y, z)) && state.asFluid().isEmpty
 
-    open fun destroy(world: WorldAccessor, x: Int, y: Int, z: Int, state: KryptonBlockState) {
+    open fun destroy(world: WorldAccessor, position: Vector3i, state: KryptonBlockState) {
         // Do nothing by default
     }
 
@@ -93,9 +94,7 @@ open class KryptonBlock(properties: Properties) : BlockBehaviour(properties), St
     open fun playerDestroy(
         world: KryptonWorld,
         player: KryptonPlayer,
-        x: Int,
-        y: Int,
-        z: Int,
+        position: Vector3i,
         state: KryptonBlockState,
         entity: KryptonBlockEntity?,
         tool: KryptonItemStack
@@ -126,12 +125,12 @@ open class KryptonBlock(properties: Properties) : BlockBehaviour(properties), St
 
     open fun getItemStack(world: BlockAccessor, x: Int, y: Int, z: Int, state: KryptonBlockState): KryptonItemStack = defaultItemStack
 
-    open fun spawnDestroyParticles(world: KryptonWorld, player: KryptonPlayer, x: Int, y: Int, z: Int, state: KryptonBlockState) {
-        world.worldEvent(WorldEvent.DESTROY_BLOCK, x, y, z, idOf(state), player)
+    open fun spawnDestroyParticles(world: KryptonWorld, player: KryptonPlayer, position: Vector3i, state: KryptonBlockState) {
+        world.worldEvent(WorldEvent.DESTROY_BLOCK, position.x(), position.y(), position.z(), idOf(state), player)
     }
 
-    open fun playerWillDestroy(world: KryptonWorld, x: Int, y: Int, z: Int, state: KryptonBlockState, player: KryptonPlayer) {
-        spawnDestroyParticles(world, player, x, y, z, state)
+    open fun playerWillDestroy(world: KryptonWorld, position: Vector3i, state: KryptonBlockState, player: KryptonPlayer) {
+        spawnDestroyParticles(world, player, position, state)
         // TODO: Anger nearby piglins if state is guarded by piglins and trigger game event for sculk sensors
     }
 

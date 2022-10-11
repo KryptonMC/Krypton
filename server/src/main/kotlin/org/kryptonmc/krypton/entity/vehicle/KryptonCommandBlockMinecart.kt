@@ -21,15 +21,23 @@ package org.kryptonmc.krypton.entity.vehicle
 import net.kyori.adventure.text.Component
 import org.kryptonmc.api.block.BlockState
 import org.kryptonmc.api.block.Blocks
-import org.kryptonmc.api.entity.EntityTypes
 import org.kryptonmc.api.entity.vehicle.CommandBlockMinecart
 import org.kryptonmc.api.entity.vehicle.MinecartVariant
+import org.kryptonmc.krypton.entity.KryptonEntityType
+import org.kryptonmc.krypton.entity.KryptonEntityTypes
 import org.kryptonmc.krypton.entity.metadata.MetadataKey
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
+import org.kryptonmc.krypton.entity.serializer.EntitySerializer
+import org.kryptonmc.krypton.entity.serializer.vehicle.CommandBlockMinecartSerializer
 import org.kryptonmc.krypton.world.CommandBlockHandler
 import org.kryptonmc.krypton.world.KryptonWorld
 
-class KryptonCommandBlockMinecart(world: KryptonWorld) : KryptonMinecartLike(world, EntityTypes.COMMAND_BLOCK_MINECART), CommandBlockMinecart {
+class KryptonCommandBlockMinecart(world: KryptonWorld) : KryptonMinecartLike(world), CommandBlockMinecart {
+
+    override val type: KryptonEntityType<CommandBlockMinecart>
+        get() = KryptonEntityTypes.COMMAND_BLOCK_MINECART
+    override val serializer: EntitySerializer<KryptonCommandBlockMinecart>
+        get() = CommandBlockMinecartSerializer
 
     internal val commandBlock = Handler()
     override val variant: MinecartVariant
@@ -45,8 +53,8 @@ class KryptonCommandBlockMinecart(world: KryptonWorld) : KryptonMinecartLike(wor
         get() = Blocks.COMMAND_BLOCK.defaultState
 
     init {
-        data.add(MetadataKeys.CommandBlockMinecart.COMMAND, "")
-        data.add(MetadataKeys.CommandBlockMinecart.LAST_OUTPUT, Component.empty())
+        data.define(MetadataKeys.CommandBlockMinecart.COMMAND, "")
+        data.define(MetadataKeys.CommandBlockMinecart.LAST_OUTPUT, Component.empty())
     }
 
     override fun onDataUpdate(key: MetadataKey<*>) {

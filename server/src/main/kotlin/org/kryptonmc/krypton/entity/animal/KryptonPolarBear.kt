@@ -18,20 +18,28 @@
  */
 package org.kryptonmc.krypton.entity.animal
 
-import org.kryptonmc.api.entity.EntityTypes
 import org.kryptonmc.api.entity.animal.PolarBear
 import org.kryptonmc.api.entity.attribute.AttributeTypes
 import org.kryptonmc.api.item.ItemStack
+import org.kryptonmc.krypton.entity.KryptonEntityType
+import org.kryptonmc.krypton.entity.KryptonEntityTypes
 import org.kryptonmc.krypton.entity.KryptonMob
 import org.kryptonmc.krypton.entity.Neutral
 import org.kryptonmc.krypton.entity.attribute.AttributeSupplier
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
+import org.kryptonmc.krypton.entity.serializer.EntitySerializer
+import org.kryptonmc.krypton.entity.serializer.animal.PolarBearSerializer
 import org.kryptonmc.krypton.util.provider.UniformInt
 import org.kryptonmc.krypton.world.KryptonWorld
 import java.util.UUID
 import kotlin.random.Random
 
-class KryptonPolarBear(world: KryptonWorld) : KryptonAnimal(world, EntityTypes.POLAR_BEAR), PolarBear, Neutral {
+class KryptonPolarBear(world: KryptonWorld) : KryptonAnimal(world), PolarBear, Neutral {
+
+    override val type: KryptonEntityType<PolarBear>
+        get() = KryptonEntityTypes.POLAR_BEAR
+    override val serializer: EntitySerializer<KryptonPolarBear>
+        get() = PolarBearSerializer
 
     override var remainingAngerTime: Int = 0
     override var angerTarget: UUID? = null
@@ -40,8 +48,9 @@ class KryptonPolarBear(world: KryptonWorld) : KryptonAnimal(world, EntityTypes.P
         get() = data.get(MetadataKeys.PolarBear.STANDING)
         set(value) = data.set(MetadataKeys.PolarBear.STANDING, value)
 
-    init {
-        data.add(MetadataKeys.PolarBear.STANDING, false)
+    override fun defineData() {
+        super.defineData()
+        data.define(MetadataKeys.PolarBear.STANDING, false)
     }
 
     override fun startAngerTimer() {

@@ -19,8 +19,8 @@
 package org.kryptonmc.krypton.entity.attribute
 
 import com.google.common.collect.ImmutableMap
-import org.kryptonmc.api.entity.EntityType
 import org.kryptonmc.api.entity.LivingEntity
+import org.kryptonmc.krypton.entity.KryptonEntityType
 import org.kryptonmc.krypton.entity.KryptonEntityTypes
 import org.kryptonmc.krypton.entity.KryptonLivingEntity
 import org.kryptonmc.krypton.entity.ambient.KryptonBat
@@ -80,10 +80,10 @@ object DefaultAttributes {
         .build()
 
     @JvmStatic
-    fun get(type: EntityType<out LivingEntity>): AttributeSupplier =
-        checkNotNull(SUPPLIERS.get(type)) { "Could not find attributes for entity type $type!" }
+    fun get(type: Key): AttributeSupplier = checkNotNull(SUPPLIERS.get(type)) { "Could not find attributes for entity type $type!" }
 }
 
-private typealias Builder = ImmutableMap.Builder<EntityType<out LivingEntity>, AttributeSupplier>
+private typealias Key = KryptonEntityType<LivingEntity>
+private typealias Builder = ImmutableMap.Builder<Key, AttributeSupplier>
 
-private inline fun Builder.put(type: EntityType<out LivingEntity>, supplier: () -> AttributeSupplier.Builder): Builder = put(type, supplier().build())
+private inline fun Builder.put(type: Key, supplier: () -> AttributeSupplier.Builder): Builder = put(type, supplier().build())

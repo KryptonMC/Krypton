@@ -18,13 +18,17 @@
  */
 package org.kryptonmc.krypton.entity.projectile
 
-import org.kryptonmc.api.entity.EntityTypes
 import org.kryptonmc.api.entity.projectile.Snowball
 import org.kryptonmc.api.item.ItemTypes
+import org.kryptonmc.krypton.entity.KryptonEntityType
+import org.kryptonmc.krypton.entity.KryptonEntityTypes
 import org.kryptonmc.krypton.item.KryptonItemStack
 import org.kryptonmc.krypton.world.KryptonWorld
 
-class KryptonSnowball(world: KryptonWorld) : KryptonThrowableProjectile(world, EntityTypes.SNOWBALL), Snowball {
+class KryptonSnowball(world: KryptonWorld) : KryptonThrowableProjectile(world), Snowball {
+
+    override val type: KryptonEntityType<Snowball>
+        get() = KryptonEntityTypes.SNOWBALL
 
     override val defaultItem: KryptonItemStack
         get() = DEFAULT_ITEM

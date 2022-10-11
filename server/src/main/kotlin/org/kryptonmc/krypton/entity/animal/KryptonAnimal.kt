@@ -18,16 +18,20 @@
  */
 package org.kryptonmc.krypton.entity.animal
 
-import org.kryptonmc.api.entity.EntityType
 import org.kryptonmc.api.entity.animal.Animal
 import org.kryptonmc.api.item.ItemStack
 import org.kryptonmc.api.item.ItemTypes
 import org.kryptonmc.krypton.entity.KryptonAgeable
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
+import org.kryptonmc.krypton.entity.serializer.EntitySerializer
+import org.kryptonmc.krypton.entity.serializer.animal.AnimalSerializer
 import org.kryptonmc.krypton.world.KryptonWorld
 import java.util.UUID
 
-abstract class KryptonAnimal(world: KryptonWorld, type: EntityType<out Animal>) : KryptonAgeable(world, type), Animal {
+abstract class KryptonAnimal(world: KryptonWorld) : KryptonAgeable(world), Animal {
+
+    override val serializer: EntitySerializer<out KryptonAnimal>
+        get() = AnimalSerializer
 
     final override var loveCause: UUID? = null
     final override var inLoveTime: Int = 0

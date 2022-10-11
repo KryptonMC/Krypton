@@ -19,14 +19,24 @@
 package org.kryptonmc.krypton.entity.aquatic
 
 import org.kryptonmc.api.effect.sound.SoundEvents
-import org.kryptonmc.api.entity.EntityTypes
 import org.kryptonmc.api.entity.aquatic.Pufferfish
 import org.kryptonmc.api.item.ItemTypes
 import org.kryptonmc.api.item.ItemType
+import org.kryptonmc.krypton.entity.KryptonEntityType
+import org.kryptonmc.krypton.entity.KryptonEntityTypes
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
+import org.kryptonmc.krypton.entity.serializer.EntitySerializer
+import org.kryptonmc.krypton.entity.serializer.aquatic.PufferfishSerializer
 import org.kryptonmc.krypton.world.KryptonWorld
 
-class KryptonPufferfish(world: KryptonWorld) : KryptonFish(world, EntityTypes.PUFFERFISH), Pufferfish {
+class KryptonPufferfish(world: KryptonWorld) : KryptonFish(world), Pufferfish {
+
+    override val type: KryptonEntityType<Pufferfish>
+        get() = KryptonEntityTypes.PUFFERFISH
+    override val serializer: EntitySerializer<KryptonPufferfish>
+        get() = PufferfishSerializer
+    override val bucketType: ItemType
+        get() = ItemTypes.PUFFERFISH_BUCKET
 
     // This gets ticked up when the puff goal sets it to 1, and reset when the puff goal is stopped.
     private var inflateCounter = 0
@@ -37,10 +47,9 @@ class KryptonPufferfish(world: KryptonWorld) : KryptonFish(world, EntityTypes.PU
         get() = data.get(MetadataKeys.Pufferfish.PUFF_STATE)
         set(value) = data.set(MetadataKeys.Pufferfish.PUFF_STATE, value)
 
-    override val bucketType: ItemType = ItemTypes.PUFFERFISH_BUCKET
-
-    init {
-        data.add(MetadataKeys.Pufferfish.PUFF_STATE, 0)
+    override fun defineData() {
+        super.defineData()
+        data.define(MetadataKeys.Pufferfish.PUFF_STATE, 0)
     }
 
     override fun tick() {

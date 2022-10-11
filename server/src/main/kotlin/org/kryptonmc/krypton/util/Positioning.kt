@@ -58,6 +58,12 @@ object Positioning {
     @JvmStatic
     fun toChunkCoordinate(value: Int): Int = value shr 4
 
+    @JvmStatic
+    fun chunkX(encoded: Long): Int = encoded.toInt()
+
+    @JvmStatic
+    fun chunkZ(encoded: Long): Int = (encoded ushr 32).toInt()
+
     /**
      * The encoding here is decently efficient. It places the X in the first 26
      * bits (most significant), then the Z in the "middle" 26 bits, followed by

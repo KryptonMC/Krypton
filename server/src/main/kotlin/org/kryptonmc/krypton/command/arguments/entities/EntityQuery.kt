@@ -18,8 +18,6 @@
  */
 package org.kryptonmc.krypton.command.arguments.entities
 
-import com.mojang.brigadier.exceptions.CommandExceptionType
-import com.mojang.brigadier.exceptions.CommandSyntaxException
 import com.mojang.brigadier.exceptions.DynamicCommandExceptionType
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType
 import net.kyori.adventure.text.Component
@@ -68,7 +66,7 @@ data class EntityQuery(private val args: List<EntityArgument>, val type: Selecto
         }
     }
 
-    private inline fun applyEntities(source: KryptonPlayer, exceptionType: SimpleCommandExceptionType): List<KryptonEntity> {
+    private fun applyEntities(source: KryptonPlayer, exceptionType: SimpleCommandExceptionType): List<KryptonEntity> {
         val entities = applyArguments(source.server.players.asSequence().plus(source.world.entities), source)
         if (entities.isEmpty()) throw exceptionType.create()
         return entities

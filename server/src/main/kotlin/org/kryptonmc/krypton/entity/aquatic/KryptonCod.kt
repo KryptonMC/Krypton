@@ -18,13 +18,17 @@
  */
 package org.kryptonmc.krypton.entity.aquatic
 
-import org.kryptonmc.api.entity.EntityTypes
 import org.kryptonmc.api.entity.aquatic.Cod
 import org.kryptonmc.api.item.ItemType
 import org.kryptonmc.api.item.ItemTypes
+import org.kryptonmc.krypton.entity.KryptonEntityType
+import org.kryptonmc.krypton.entity.KryptonEntityTypes
 import org.kryptonmc.krypton.world.KryptonWorld
 
-class KryptonCod(world: KryptonWorld) : KryptonSchoolingFish(world, EntityTypes.COD), Cod {
+class KryptonCod(world: KryptonWorld) : KryptonSchoolingFish(world), Cod {
 
-    override val bucketType: ItemType = ItemTypes.COD_BUCKET
+    override val type: KryptonEntityType<Cod>
+        get() = KryptonEntityTypes.COD
+    override val bucketType: ItemType
+        get() = ItemTypes.COD_BUCKET
 }

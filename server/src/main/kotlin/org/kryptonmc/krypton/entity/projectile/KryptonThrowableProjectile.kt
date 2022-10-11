@@ -18,22 +18,23 @@
  */
 package org.kryptonmc.krypton.entity.projectile
 
-import org.kryptonmc.api.entity.EntityType
 import org.kryptonmc.api.entity.projectile.ThrowableProjectile
 import org.kryptonmc.api.item.ItemStack
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
+import org.kryptonmc.krypton.entity.serializer.EntitySerializer
+import org.kryptonmc.krypton.entity.serializer.projectile.ThrowableProjectileSerializer
 import org.kryptonmc.krypton.item.KryptonItemStack
 import org.kryptonmc.krypton.world.KryptonWorld
 
-abstract class KryptonThrowableProjectile(
-    world: KryptonWorld,
-    type: EntityType<out ThrowableProjectile>
-) : KryptonProjectile(world, type), ThrowableProjectile {
+abstract class KryptonThrowableProjectile(world: KryptonWorld) : KryptonProjectile(world), ThrowableProjectile {
+
+    final override val serializer: EntitySerializer<KryptonThrowableProjectile>
+        get() = ThrowableProjectileSerializer
 
     protected abstract val defaultItem: KryptonItemStack
 
     init {
-        data.add(MetadataKeys.ThrowableProjectile.ITEM, KryptonItemStack.EMPTY)
+        data.define(MetadataKeys.ThrowableProjectile.ITEM, KryptonItemStack.EMPTY)
     }
 
     final override fun asItem(): ItemStack {

@@ -18,18 +18,22 @@
  */
 package org.kryptonmc.krypton.entity.projectile
 
-import org.kryptonmc.api.entity.EntityType
 import org.kryptonmc.api.entity.projectile.Fireball
 import org.kryptonmc.api.item.ItemStack
 import org.kryptonmc.api.item.ItemTypes
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
+import org.kryptonmc.krypton.entity.serializer.EntitySerializer
+import org.kryptonmc.krypton.entity.serializer.projectile.FireballSerializer
 import org.kryptonmc.krypton.item.KryptonItemStack
 import org.kryptonmc.krypton.world.KryptonWorld
 
-abstract class KryptonFireball(world: KryptonWorld, type: EntityType<out Fireball>) : KryptonAcceleratingProjectile(world, type), Fireball {
+abstract class KryptonFireball(world: KryptonWorld) : KryptonAcceleratingProjectile(world), Fireball {
+
+    override val serializer: EntitySerializer<out KryptonFireball>
+        get() = FireballSerializer
 
     init {
-        data.add(MetadataKeys.Fireball.ITEM, KryptonItemStack.EMPTY)
+        data.define(MetadataKeys.Fireball.ITEM, KryptonItemStack.EMPTY)
     }
 
     final override fun asItem(): ItemStack {

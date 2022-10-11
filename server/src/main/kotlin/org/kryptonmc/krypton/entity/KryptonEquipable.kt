@@ -63,11 +63,6 @@ interface KryptonEquipable : Equipable {
         }
 
         @JvmStatic
-        fun saveItems(items: Iterable<KryptonItemStack>): ListTag = list {
-            items.forEach {
-                if (it.isEmpty()) return@forEach
-                add(it.save())
-            }
-        }
+        fun saveItems(items: Iterable<KryptonItemStack>): ListTag = list { items.forEach { if (!it.isEmpty()) add(it.save()) } }
     }
 }

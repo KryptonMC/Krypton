@@ -20,10 +20,9 @@ package org.kryptonmc.krypton.entity.serializer
 
 import org.kryptonmc.krypton.entity.KryptonArmorStand
 import org.kryptonmc.krypton.entity.KryptonEquipable
-import org.kryptonmc.krypton.entity.readRotation
-import org.kryptonmc.krypton.entity.rotation
 import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.FloatTag
+import org.kryptonmc.nbt.ListTag
 import org.spongepowered.math.vector.Vector3f
 
 object ArmorStandSerializer : EntitySerializer<KryptonArmorStand> {
@@ -88,4 +87,12 @@ object ArmorStandSerializer : EntitySerializer<KryptonArmorStand> {
             if (entity.rightLegPose != DEFAULT_RIGHT_LEG_ROTATION) rotation("RightLeg", entity.rightLegPose)
         }
     }
+}
+
+private fun ListTag.readRotation(): Vector3f = Vector3f.from(getFloat(0), getFloat(1), getFloat(2))
+
+private fun CompoundTag.Builder.rotation(key: String, rotation: Vector3f): CompoundTag.Builder = list(key) {
+    addFloat(rotation.x())
+    addFloat(rotation.y())
+    addFloat(rotation.z())
 }

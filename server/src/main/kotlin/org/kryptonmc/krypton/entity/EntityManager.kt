@@ -30,6 +30,7 @@ import org.kryptonmc.krypton.event.entity.KryptonSpawnEntityEvent
 import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateTime
 import org.kryptonmc.krypton.util.DataConversion
 import org.kryptonmc.krypton.util.Maths
+import org.kryptonmc.krypton.util.Positioning
 import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.krypton.world.chunk.ChunkPosition
@@ -45,6 +46,7 @@ import space.vectrix.flare.fastutil.Long2ObjectSyncMap
 import java.util.UUID
 import java.util.concurrent.ConcurrentHashMap
 import java.util.function.LongFunction
+import kotlin.math.abs
 
 class EntityManager(val world: KryptonWorld) : AutoCloseable {
 
@@ -68,9 +70,8 @@ class EntityManager(val world: KryptonWorld) : AutoCloseable {
         }
         world.server.eventManager.fire(KryptonSpawnEntityEvent(entity, world)).thenAccept { event ->
             if (!event.result.isAllowed) return@thenAccept
-            val location = entity.location
 
-            forEachEntityInRange(location, world.server.config.world.viewDistance) {
+            forEachEntityInRange(entity.location, world.server.config.world.viewDistance) {
                 if (it is KryptonPlayer) entity.addViewer(it)
             }
             val chunk = world.getChunk(entity.location.floorX(), entity.location.floorY(), entity.location.floorZ()) ?: return@thenAccept
@@ -82,12 +83,11 @@ class EntityManager(val world: KryptonWorld) : AutoCloseable {
 
     fun spawn(player: KryptonPlayer) {
         if (player.world != world) return
-        val location = player.location
 
         // TODO: World border
         player.session.send(PacketOutUpdateTime(world.data.time, world.data.dayTime, world.data.gameRules.get(GameRules.DO_DAYLIGHT_CYCLE)))
         if (!player.isVanished) {
-            forEachEntityInRange(location, player.viewDistance) {
+            forEachEntityInRange(player.location, player.settings.viewDistance) {
                 it.addViewer(player)
                 if (it is KryptonPlayer && !it.isVanished) player.addViewer(it)
             }
@@ -116,7 +116,7 @@ class EntityManager(val world: KryptonWorld) : AutoCloseable {
             byUUID.remove(entity.uuid)
             val entitiesByChunk = byChunk.get(chunk.position.toLong()).apply { remove(entity) }
             if (entitiesByChunk.isEmpty()) byChunk.remove(chunk.position.toLong())
-            world.scoreboard.removeEntity(entity)
+            world.scoreboard.onEntityRemoved(entity)
         }
     }
 
@@ -139,7 +139,7 @@ class EntityManager(val world: KryptonWorld) : AutoCloseable {
             }
             val type = Registries.ENTITY_TYPE.get(key)
             val entity = EntityFactory.create(type, world) ?: return@forEachCompound
-            EntityFactory.serializer(entity.type).load(entity, it)
+            entity.load(it)
             spawn(entity)
         }
     }
@@ -148,10 +148,7 @@ class EntityManager(val world: KryptonWorld) : AutoCloseable {
         val entities = byChunk.get(chunk.position.toLong()) ?: return
         if (entities.isEmpty()) return
         val entityList = ListTag.immutableBuilder(CompoundTag.ID)
-        entities.forEach {
-            if (it is KryptonPlayer) return@forEach
-            entityList.add(EntityFactory.serializer(it.type).saveWithPassengers(it).build())
-        }
+        entities.forEach { if (it !is KryptonPlayer) entityList.add(it.saveWithPassengers().build()) }
         regionFileManager.write(chunk.x, chunk.z, compound {
             int("DataVersion", KryptonPlatform.worldVersion)
             ints("Position", chunk.position.x, chunk.position.z)
@@ -168,8 +165,8 @@ class EntityManager(val world: KryptonWorld) : AutoCloseable {
     }
 
     private inline fun forEachEntityInRange(location: Vector3d, viewDistance: Int, callback: (KryptonEntity) -> Unit) {
-        location.chunksInRange(viewDistance).forEach {
-            val chunk = world.getChunkAt(it.chunkX(), it.chunkZ()) ?: return@forEach
+        chunksInRange(location, viewDistance).forEach {
+            val chunk = world.getChunkAt(Positioning.chunkX(it), Positioning.chunkZ(it)) ?: return@forEach
             getByChunk(chunk.position.toLong()).forEach(callback)
         }
     }
@@ -177,44 +174,41 @@ class EntityManager(val world: KryptonWorld) : AutoCloseable {
     companion object {
 
         private val LOGGER = logger<EntityManager>()
-    }
-}
 
-private fun Long.chunkX(): Int = (this and 4294967295L).toInt()
+        @JvmStatic
+        private fun chunksInRange(location: Vector3d, range: Int): LongArray {
+            val area = (range * 2 + 1) * (range * 2 + 1)
+            val visible = LongArray(area)
+            var distanceX = 0
+            var directionX = 1
+            var distanceZ = 0
+            var directionZ = -1
+            var length = 1
+            var corner = 0
 
-private fun Long.chunkZ(): Int = (this ushr 32 and 4294967295L).toInt()
+            for (i in 0 until area) {
+                val chunkX = (distanceX * 16 + location.x()).toChunkCoordinate()
+                val chunkZ = (distanceZ * 16 + location.z()).toChunkCoordinate()
+                visible[i] = ChunkPosition.toLong(chunkX, chunkZ)
 
-private fun Vector3d.chunksInRange(range: Int): LongArray {
-    val area = (range * 2 + 1) * (range * 2 + 1)
-    val visible = LongArray(area)
-    var xDistance = 0
-    var xDirection = 1
-    var zDistance = 0
-    var zDirection = -1
-    var length = 1
-    var corner = 0
-
-    for (i in 0 until area) {
-        val chunkX = (xDistance * 16 + x()).toChunkCoordinate()
-        val chunkZ = (zDistance * 16 + z()).toChunkCoordinate()
-        visible[i] = ChunkPosition.toLong(chunkX, chunkZ)
-
-        if (corner % 2 == 0) {
-            xDistance += xDirection
-            if (kotlin.math.abs(xDistance) == length) {
-                corner++
-                xDirection = -xDirection
+                if (corner % 2 == 0) {
+                    distanceX += directionX
+                    if (abs(distanceX) == length) {
+                        corner++
+                        directionX = -directionX
+                    }
+                } else {
+                    distanceZ += directionZ
+                    if (abs(distanceZ) == length) {
+                        corner++
+                        directionZ = -directionZ
+                        if (corner % 4 == 0) length++
+                    }
+                }
             }
-        } else {
-            zDistance += zDirection
-            if (kotlin.math.abs(zDistance) == length) {
-                corner++
-                zDirection = -zDirection
-                if (corner % 4 == 0) length++
-            }
+            return visible
         }
     }
-    return visible
 }
 
 private fun Double.toChunkCoordinate(): Int = Math.floorDiv(Maths.floor(this), 16)

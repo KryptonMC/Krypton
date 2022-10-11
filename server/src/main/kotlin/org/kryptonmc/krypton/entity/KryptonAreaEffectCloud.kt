@@ -20,13 +20,19 @@ package org.kryptonmc.krypton.entity
 
 import org.kryptonmc.api.effect.particle.ParticleTypes
 import org.kryptonmc.api.entity.AreaEffectCloud
-import org.kryptonmc.api.entity.EntityTypes
 import org.kryptonmc.api.util.Color
 import org.kryptonmc.krypton.effect.particle.ParticleOptions
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
+import org.kryptonmc.krypton.entity.serializer.AreaEffectCloudSerializer
+import org.kryptonmc.krypton.entity.serializer.EntitySerializer
 import org.kryptonmc.krypton.world.KryptonWorld
 
-class KryptonAreaEffectCloud(world: KryptonWorld) : KryptonEntity(world, EntityTypes.AREA_EFFECT_CLOUD), AreaEffectCloud {
+class KryptonAreaEffectCloud(world: KryptonWorld) : KryptonEntity(world), AreaEffectCloud {
+
+    override val type: KryptonEntityType<AreaEffectCloud>
+        get() = KryptonEntityTypes.AREA_EFFECT_CLOUD
+    override val serializer: EntitySerializer<KryptonAreaEffectCloud>
+        get() = AreaEffectCloudSerializer
 
     var age: Int = 0
     override var duration: Int = 0
@@ -38,10 +44,11 @@ class KryptonAreaEffectCloud(world: KryptonWorld) : KryptonEntity(world, EntityT
         get() = Color.of(data.get(MetadataKeys.AreaEffectCloud.COLOR))
         set(value) = data.set(MetadataKeys.AreaEffectCloud.COLOR, value.value)
 
-    init {
-        data.add(MetadataKeys.AreaEffectCloud.RADIUS, 0.5F)
-        data.add(MetadataKeys.AreaEffectCloud.COLOR, 0)
-        data.add(MetadataKeys.AreaEffectCloud.IGNORE_RADIUS, false)
-        data.add(MetadataKeys.AreaEffectCloud.PARTICLE, ParticleOptions(ParticleTypes.EFFECT, null))
+    override fun defineData() {
+        super.defineData()
+        data.define(MetadataKeys.AreaEffectCloud.RADIUS, 0.5F)
+        data.define(MetadataKeys.AreaEffectCloud.COLOR, 0)
+        data.define(MetadataKeys.AreaEffectCloud.IGNORE_RADIUS, false)
+        data.define(MetadataKeys.AreaEffectCloud.PARTICLE, ParticleOptions(ParticleTypes.EFFECT, null))
     }
 }

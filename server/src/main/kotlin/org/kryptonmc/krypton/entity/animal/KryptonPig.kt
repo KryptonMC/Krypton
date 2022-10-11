@@ -18,23 +18,32 @@
  */
 package org.kryptonmc.krypton.entity.animal
 
-import org.kryptonmc.api.entity.EntityTypes
 import org.kryptonmc.api.entity.animal.Pig
 import org.kryptonmc.api.entity.attribute.AttributeTypes
+import org.kryptonmc.krypton.entity.KryptonEntityType
+import org.kryptonmc.krypton.entity.KryptonEntityTypes
 import org.kryptonmc.krypton.entity.KryptonMob
 import org.kryptonmc.krypton.entity.attribute.AttributeSupplier
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
+import org.kryptonmc.krypton.entity.serializer.EntitySerializer
+import org.kryptonmc.krypton.entity.serializer.animal.PigSerializer
 import org.kryptonmc.krypton.world.KryptonWorld
 
-class KryptonPig(world: KryptonWorld) : KryptonAnimal(world, EntityTypes.PIG), Pig {
+class KryptonPig(world: KryptonWorld) : KryptonAnimal(world), Pig {
+
+    override val type: KryptonEntityType<Pig>
+        get() = KryptonEntityTypes.PIG
+    override val serializer: EntitySerializer<KryptonPig>
+        get() = PigSerializer
 
     override var isSaddled: Boolean
         get() = data.get(MetadataKeys.Pig.SADDLE)
         set(value) = data.set(MetadataKeys.Pig.SADDLE, value)
 
-    init {
-        data.add(MetadataKeys.Pig.SADDLE, false)
-        data.add(MetadataKeys.Pig.BOOST_TIME, 0)
+    override fun defineData() {
+        super.defineData()
+        data.define(MetadataKeys.Pig.SADDLE, false)
+        data.define(MetadataKeys.Pig.BOOST_TIME, 0)
     }
 
     companion object {

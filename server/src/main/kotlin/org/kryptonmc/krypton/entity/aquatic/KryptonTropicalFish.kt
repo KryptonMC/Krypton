@@ -18,18 +18,28 @@
  */
 package org.kryptonmc.krypton.entity.aquatic
 
-import org.kryptonmc.api.entity.EntityTypes
 import org.kryptonmc.api.entity.aquatic.TropicalFish
 import org.kryptonmc.api.entity.aquatic.TropicalFishVariant
 import org.kryptonmc.api.item.ItemTypes
 import org.kryptonmc.api.item.data.DyeColor
 import org.kryptonmc.api.item.ItemType
+import org.kryptonmc.krypton.entity.KryptonEntityType
+import org.kryptonmc.krypton.entity.KryptonEntityTypes
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
+import org.kryptonmc.krypton.entity.serializer.EntitySerializer
+import org.kryptonmc.krypton.entity.serializer.aquatic.TropicalFishSerializer
 import org.kryptonmc.krypton.registry.KryptonRegistries
 import org.kryptonmc.krypton.world.KryptonWorld
 import kotlin.math.min
 
-class KryptonTropicalFish(world: KryptonWorld) : KryptonSchoolingFish(world, EntityTypes.TROPICAL_FISH), TropicalFish {
+class KryptonTropicalFish(world: KryptonWorld) : KryptonSchoolingFish(world), TropicalFish {
+
+    override val type: KryptonEntityType<TropicalFish>
+        get() = KryptonEntityTypes.TROPICAL_FISH
+    override val serializer: EntitySerializer<KryptonTropicalFish>
+        get() = TropicalFishSerializer
+    override val bucketType: ItemType
+        get() = ItemTypes.TROPICAL_FISH_BUCKET
 
     override var baseColor: DyeColor
         get() = extractBaseColor(data.get(MetadataKeys.TropicalFish.VARIANT))
@@ -41,10 +51,9 @@ class KryptonTropicalFish(world: KryptonWorld) : KryptonSchoolingFish(world, Ent
         get() = extractVariant(data.get(MetadataKeys.TropicalFish.VARIANT))
         set(value) = updateVariant(::modifyVariant, value)
 
-    override val bucketType: ItemType = ItemTypes.TROPICAL_FISH_BUCKET
-
-    init {
-        data.add(MetadataKeys.TropicalFish.VARIANT, TropicalFishVariant.KOB.ordinal)
+    override fun defineData() {
+        super.defineData()
+        data.define(MetadataKeys.TropicalFish.VARIANT, TropicalFishVariant.KOB.ordinal)
     }
 
     /* FIXME

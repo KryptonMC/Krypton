@@ -18,17 +18,25 @@
  */
 package org.kryptonmc.krypton.entity.animal
 
-import org.kryptonmc.api.entity.EntityTypes
 import org.kryptonmc.api.entity.animal.Chicken
 import org.kryptonmc.api.entity.attribute.AttributeTypes
 import org.kryptonmc.api.item.ItemStack
 import org.kryptonmc.api.item.ItemTypes
+import org.kryptonmc.krypton.entity.KryptonEntityType
+import org.kryptonmc.krypton.entity.KryptonEntityTypes
 import org.kryptonmc.krypton.entity.KryptonMob
 import org.kryptonmc.krypton.entity.attribute.AttributeSupplier
+import org.kryptonmc.krypton.entity.serializer.EntitySerializer
+import org.kryptonmc.krypton.entity.serializer.animal.ChickenSerializer
 import org.kryptonmc.krypton.world.KryptonWorld
 import kotlin.random.Random
 
-class KryptonChicken(world: KryptonWorld) : KryptonAnimal(world, EntityTypes.CHICKEN), Chicken {
+class KryptonChicken(world: KryptonWorld) : KryptonAnimal(world), Chicken {
+
+    override val type: KryptonEntityType<Chicken>
+        get() = KryptonEntityTypes.CHICKEN
+    override val serializer: EntitySerializer<KryptonChicken>
+        get() = ChickenSerializer
 
     override var eggCooldownTime: Int = Random.nextInt(FIVE_MINUTES_TICKS) + FIVE_MINUTES_TICKS
     override var isJockey: Boolean = false

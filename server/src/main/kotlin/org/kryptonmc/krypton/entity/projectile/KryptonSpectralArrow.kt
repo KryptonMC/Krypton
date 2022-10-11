@@ -18,11 +18,15 @@
  */
 package org.kryptonmc.krypton.entity.projectile
 
-import org.kryptonmc.api.entity.EntityTypes
 import org.kryptonmc.api.entity.projectile.SpectralArrow
+import org.kryptonmc.krypton.entity.KryptonEntityType
+import org.kryptonmc.krypton.entity.KryptonEntityTypes
 import org.kryptonmc.krypton.world.KryptonWorld
 
-class KryptonSpectralArrow(world: KryptonWorld) : KryptonArrowLike(world, EntityTypes.SPECTRAL_ARROW), SpectralArrow {
+class KryptonSpectralArrow(world: KryptonWorld) : KryptonArrowLike(world), SpectralArrow {
+
+    override val type: KryptonEntityType<SpectralArrow>
+        get() = KryptonEntityTypes.SPECTRAL_ARROW
 
     override var duration: Int = DEFAULT_DURATION
 

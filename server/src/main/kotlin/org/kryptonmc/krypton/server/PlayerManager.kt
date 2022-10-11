@@ -148,7 +148,7 @@ class PlayerManager(private val server: KryptonServer) {
         session.write(world.cachedDifficultyPacket)
 
         // Player data stuff
-        session.send(PacketOutAbilities(player))
+        session.send(PacketOutAbilities(player.abilities))
         session.send(PacketOutSetHeldItem(player.inventory.heldSlot))
         session.write(PacketOutUpdateRecipes.CACHED)
         session.write(PacketOutUpdateRecipeBook.CACHED_INIT)
@@ -183,7 +183,7 @@ class PlayerManager(private val server: KryptonServer) {
         world.spawnPlayer(player)
 
         // Send the initial chunk stream
-        player.updateChunks(true)
+        player.chunkViewingSystem.loadInitialChunks()
 
         // TODO: Custom boss events, resource pack pack, mob effects
         sendWorldInfo(world, player)
@@ -194,7 +194,6 @@ class PlayerManager(private val server: KryptonServer) {
 
         // Send inventory data
         session.send(PacketOutSetContainerContent(player.inventory, player.inventory.mainHand))
-        player.isLoaded = true
     }, executor)
 
     fun remove(player: KryptonPlayer) {

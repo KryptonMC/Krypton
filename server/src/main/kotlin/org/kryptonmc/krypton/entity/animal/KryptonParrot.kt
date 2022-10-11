@@ -19,31 +19,38 @@
 package org.kryptonmc.krypton.entity.animal
 
 import net.kyori.adventure.sound.Sound
-import org.kryptonmc.api.entity.EntityTypes
 import org.kryptonmc.api.entity.animal.Animal
 import org.kryptonmc.api.entity.animal.Parrot
 import org.kryptonmc.api.entity.animal.type.ParrotVariant
 import org.kryptonmc.api.entity.attribute.AttributeTypes
 import org.kryptonmc.api.item.ItemStack
+import org.kryptonmc.krypton.entity.KryptonEntityType
+import org.kryptonmc.krypton.entity.KryptonEntityTypes
 import org.kryptonmc.krypton.entity.KryptonMob
 import org.kryptonmc.krypton.entity.attribute.AttributeSupplier
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
+import org.kryptonmc.krypton.entity.serializer.EntitySerializer
+import org.kryptonmc.krypton.entity.serializer.animal.ParrotSerializer
 import org.kryptonmc.krypton.world.KryptonWorld
 import kotlin.random.Random
 
-class KryptonParrot(world: KryptonWorld) : KryptonTamable(world, EntityTypes.PARROT), Parrot {
+class KryptonParrot(world: KryptonWorld) : KryptonTamable(world), Parrot {
+
+    override val type: KryptonEntityType<Parrot>
+        get() = KryptonEntityTypes.PARROT
+    override val serializer: EntitySerializer<KryptonParrot>
+        get() = ParrotSerializer
 
     override var variant: ParrotVariant
         get() = TYPES.getOrNull(data.get(MetadataKeys.Parrot.TYPE)) ?: ParrotVariant.RED_AND_BLUE
         set(value) = data.set(MetadataKeys.Parrot.TYPE, value.ordinal)
 
-    override val soundSource: Sound.Source
-        get() = Sound.Source.NEUTRAL
     override val voicePitch: Float
         get() = (Random.nextFloat() - Random.nextFloat()) * 0.2F + 1F
 
-    init {
-        data.add(MetadataKeys.Parrot.TYPE, ParrotVariant.RED_AND_BLUE.ordinal)
+    override fun defineData() {
+        super.defineData()
+        data.define(MetadataKeys.Parrot.TYPE, ParrotVariant.RED_AND_BLUE.ordinal)
     }
 
     override fun isFood(item: ItemStack): Boolean = false
@@ -75,6 +82,8 @@ class KryptonParrot(world: KryptonWorld) : KryptonTamable(world, EntityTypes.PAR
         return super.mobInteract(player, hand)
     }
     */
+
+    override fun soundSource(): Sound.Source = Sound.Source.NEUTRAL
 
     companion object {
 

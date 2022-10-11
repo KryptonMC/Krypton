@@ -25,23 +25,23 @@ import java.util.EnumMap
 
 class RecipeBookSettings private constructor(private val settings: MutableMap<RecipeBookType, TypeSettings>) : Writable {
 
-    constructor() : this(createDefaultStatesMap())
+    constructor() : this(EnumMap<_, TypeSettings>(RecipeBookType::class.java).apply { VALUES.forEach { put(it, TypeSettings.ALL_FALSE) } })
 
-    fun isOpen(type: RecipeBookType): Boolean = getSettings(type).open
+    fun isOpen(type: RecipeBookType): Boolean = getSettings(type, TypeSettings::open)
 
-    fun isFiltered(type: RecipeBookType): Boolean = getSettings(type).filtered
+    fun isFiltered(type: RecipeBookType): Boolean = getSettings(type, TypeSettings::filtered)
 
     fun setOpen(type: RecipeBookType, open: Boolean) {
-        setSettings(type, open, getSettings(type).filtered)
+        modifySettings(type) { it.withOpen(open) }
     }
 
     fun setFiltered(type: RecipeBookType, filtered: Boolean) {
-        setSettings(type, getSettings(type).open, filtered)
+        modifySettings(type) { it.withFiltered(filtered) }
     }
 
     fun write(data: CompoundTag.Builder): CompoundTag.Builder = data.apply {
         TAG_FIELDS.forEach { (type, fields) ->
-            val settings = getSettings(type)
+            val settings = settings.getOrDefault(type, TypeSettings.ALL_FALSE)
             boolean(fields.first, settings.open)
             boolean(fields.second, settings.filtered)
         }
@@ -49,38 +49,29 @@ class RecipeBookSettings private constructor(private val settings: MutableMap<Re
 
     override fun write(buf: ByteBuf) {
         VALUES.forEach {
-            val settings = getSettings(it)
+            val settings = settings.getOrDefault(it, TypeSettings.ALL_FALSE)
             buf.writeBoolean(settings.open)
             buf.writeBoolean(settings.filtered)
         }
     }
 
-    private fun getSettings(type: RecipeBookType): TypeSettings = settings.getOrDefault(type, TypeSettings.ALL_FALSE)
+    private inline fun getSettings(type: RecipeBookType, block: (TypeSettings) -> Boolean): Boolean = settings.get(type)?.let(block) ?: false
 
-    private fun setSettings(type: RecipeBookType, open: Boolean, filtered: Boolean) {
-        settings.put(type, TypeSettings.from(open, filtered))
+    private inline fun modifySettings(type: RecipeBookType, crossinline modifier: (TypeSettings) -> TypeSettings) {
+        settings.computeIfPresent(type) { _, settings -> modifier(settings) }
     }
 
     @JvmRecord
     private data class TypeSettings(val open: Boolean, val filtered: Boolean) {
 
+        fun withOpen(value: Boolean): TypeSettings = if (open == value) this else TypeSettings(value, filtered)
+
+        fun withFiltered(value: Boolean): TypeSettings = if (filtered == value) this else TypeSettings(open, value)
+
         companion object {
 
             @JvmField
             val ALL_FALSE: TypeSettings = TypeSettings(false, false)
-            private val ALL_TRUE = TypeSettings(true, true)
-            private val OPEN_NOT_FILTERED = TypeSettings(true, false)
-            private val FILTERED_NOT_OPEN = TypeSettings(false, true)
-
-            @JvmStatic
-            fun from(open: Boolean, filtered: Boolean): TypeSettings {
-                if (open) {
-                    if (filtered) return ALL_TRUE
-                    return OPEN_NOT_FILTERED
-                }
-                if (filtered) return FILTERED_NOT_OPEN
-                return ALL_FALSE
-            }
         }
     }
 
@@ -96,23 +87,16 @@ class RecipeBookSettings private constructor(private val settings: MutableMap<Re
 
         @JvmStatic
         fun read(data: CompoundTag): RecipeBookSettings {
-            val map = EnumMap<RecipeBookType, TypeSettings>(RecipeBookType::class.java)
-            TAG_FIELDS.forEach { (type, fields) -> map.put(type, TypeSettings.from(data.getBoolean(fields.first), data.getBoolean(fields.second))) }
+            val map = EnumMap<_, TypeSettings>(RecipeBookType::class.java)
+            TAG_FIELDS.forEach { (type, fields) -> map.put(type, TypeSettings(data.getBoolean(fields.first), data.getBoolean(fields.second))) }
             return RecipeBookSettings(map)
         }
 
         @JvmStatic
         fun read(buf: ByteBuf): RecipeBookSettings {
-            val map = EnumMap<RecipeBookType, TypeSettings>(RecipeBookType::class.java)
-            VALUES.forEach { map.put(it, TypeSettings.from(buf.readBoolean(), buf.readBoolean())) }
+            val map = EnumMap<_, TypeSettings>(RecipeBookType::class.java)
+            VALUES.forEach { map.put(it, TypeSettings(buf.readBoolean(), buf.readBoolean())) }
             return RecipeBookSettings(map)
-        }
-
-        @JvmStatic
-        private fun createDefaultStatesMap(): MutableMap<RecipeBookType, TypeSettings> {
-            val map = EnumMap<RecipeBookType, TypeSettings>(RecipeBookType::class.java)
-            VALUES.forEach { map.put(it, TypeSettings.ALL_FALSE) }
-            return map
         }
     }
 }

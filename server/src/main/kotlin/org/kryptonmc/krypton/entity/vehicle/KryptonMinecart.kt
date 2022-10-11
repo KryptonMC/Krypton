@@ -18,11 +18,16 @@
  */
 package org.kryptonmc.krypton.entity.vehicle
 
-import org.kryptonmc.api.entity.EntityTypes
+import org.kryptonmc.api.entity.vehicle.Minecart
 import org.kryptonmc.api.entity.vehicle.MinecartVariant
+import org.kryptonmc.krypton.entity.KryptonEntityType
+import org.kryptonmc.krypton.entity.KryptonEntityTypes
 import org.kryptonmc.krypton.world.KryptonWorld
 
-class KryptonMinecart(world: KryptonWorld) : KryptonMinecartLike(world, EntityTypes.MINECART) {
+class KryptonMinecart(world: KryptonWorld) : KryptonMinecartLike(world), Minecart {
+
+    override val type: KryptonEntityType<Minecart>
+        get() = KryptonEntityTypes.MINECART
 
     override val variant: MinecartVariant
         get() = MinecartVariant.RIDEABLE

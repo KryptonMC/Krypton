@@ -18,20 +18,20 @@
  */
 package org.kryptonmc.krypton.entity.aquatic
 
-import org.kryptonmc.api.entity.EntityType
-import org.kryptonmc.api.entity.EntityTypes
 import org.kryptonmc.api.entity.aquatic.Squid
 import org.kryptonmc.api.entity.attribute.AttributeTypes
+import org.kryptonmc.krypton.entity.KryptonEntityType
+import org.kryptonmc.krypton.entity.KryptonEntityTypes
 import org.kryptonmc.krypton.entity.KryptonMob
 import org.kryptonmc.krypton.entity.attribute.AttributeSupplier
 import org.kryptonmc.krypton.world.KryptonWorld
 
-open class KryptonSquid(world: KryptonWorld, type: EntityType<out Squid>) : KryptonAquaticAnimal(world, type) {
+open class KryptonSquid(world: KryptonWorld) : KryptonAquaticAnimal(world) {
 
+    override val type: KryptonEntityType<Squid>
+        get() = KryptonEntityTypes.SQUID
     override val soundVolume: Float
         get() = 0.4F
-
-    constructor(world: KryptonWorld) : this(world, EntityTypes.SQUID)
 
     companion object {
 
