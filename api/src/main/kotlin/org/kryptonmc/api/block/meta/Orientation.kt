@@ -17,10 +17,7 @@ import org.kryptonmc.api.util.Direction
  * @param top the top direction
  * @param front the front direction
  */
-public enum class Orientation(
-    @get:JvmName("top") public val top: Direction,
-    @get:JvmName("front") public val front: Direction
-) {
+public enum class Orientation(public val top: Direction, public val front: Direction) {
 
     UP_NORTH(Direction.UP, Direction.NORTH),
     UP_SOUTH(Direction.UP, Direction.SOUTH),

@@ -21,11 +21,11 @@ package org.kryptonmc.krypton.packet.out.play
 import io.netty.buffer.ByteBuf
 import org.kryptonmc.api.entity.attribute.AttributeModifier
 import org.kryptonmc.api.entity.attribute.AttributeType
+import org.kryptonmc.api.entity.attribute.BasicModifierOperation
 import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.krypton.entity.attribute.KryptonAttribute
 import org.kryptonmc.krypton.entity.attribute.KryptonAttributeModifier
 import org.kryptonmc.krypton.packet.EntityPacket
-import org.kryptonmc.krypton.registry.KryptonRegistries
 import org.kryptonmc.krypton.util.mapPersistentList
 import org.kryptonmc.krypton.util.readKey
 import org.kryptonmc.krypton.util.readList
@@ -42,18 +42,14 @@ data class PacketOutUpdateAttributes(override val entityId: Int, val attributes:
 
     constructor(id: Int, attributes: Iterable<KryptonAttribute>) : this(id, attributes.mapPersistentList(AttributeSnapshot::from))
 
-    constructor(buf: ByteBuf) : this(buf.readVarInt(), buf.readList {
-        val key = buf.readKey()
-        val type = requireNotNull(Registries.ATTRIBUTE.get(key)) { "Cannot find attribute type with key $key!" }
+    constructor(buf: ByteBuf) : this(buf.readVarInt(), buf.readList { _ ->
+        val type = buf.readKey().let { requireNotNull(Registries.ATTRIBUTE.get(it)) { "Cannot find attribute type with key $it!" } }
         val base = buf.readDouble()
         val modifiers = buf.readList {
             val uuid = buf.readUUID()
             val amount = buf.readDouble()
-            val operationId = buf.readByte().toInt()
-            val operation = requireNotNull(KryptonRegistries.MODIFIER_OPERATIONS.get(operationId)) {
-                "Cannot find modifier operation with ID $operationId!"
-            }
-            KryptonAttributeModifier("Unknown read attribute", uuid, amount, operation)
+            val operation = KryptonAttributeModifier.getOperationById(buf.readByte().toInt())
+            KryptonAttributeModifier(uuid, "Unknown read attribute", amount, operation)
         }
         AttributeSnapshot(type, base, modifiers)
     })
@@ -63,10 +59,12 @@ data class PacketOutUpdateAttributes(override val entityId: Int, val attributes:
         buf.writeCollection(attributes) { attribute ->
             buf.writeKey(Registries.ATTRIBUTE.get(attribute.type)!!)
             buf.writeDouble(attribute.base)
-            buf.writeCollection(attribute.modifiers) {
+            buf.writeCollection(attribute.modifiers) inner@{
+                val operation = it.operation
+                if (operation !is BasicModifierOperation) return@inner
                 buf.writeUUID(it.uuid)
                 buf.writeDouble(it.amount)
-                buf.writeByte(KryptonRegistries.MODIFIER_OPERATIONS.idOf(it.operation))
+                buf.writeByte(operation.ordinal)
             }
         }
     }

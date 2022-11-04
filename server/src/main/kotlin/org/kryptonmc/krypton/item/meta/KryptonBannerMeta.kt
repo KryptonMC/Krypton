@@ -18,10 +18,10 @@
  */
 package org.kryptonmc.krypton.item.meta
 
-import kotlinx.collections.immutable.PersistentList
-import kotlinx.collections.immutable.persistentListOf
+import com.google.common.collect.ImmutableList
 import org.kryptonmc.api.block.entity.banner.BannerPattern
 import org.kryptonmc.api.item.meta.BannerMeta
+import org.kryptonmc.krypton.util.BuilderCollection
 import org.kryptonmc.krypton.world.block.entity.banner.KryptonBannerPattern
 import org.kryptonmc.krypton.world.block.entity.banner.save
 import org.kryptonmc.nbt.CompoundTag
@@ -29,47 +29,47 @@ import org.kryptonmc.nbt.list
 
 class KryptonBannerMeta(data: CompoundTag) : AbstractItemMeta<KryptonBannerMeta>(data), BannerMeta {
 
-    override val patterns: PersistentList<BannerPattern> = data.getList("Items", CompoundTag.ID).mapCompound(KryptonBannerPattern::from)
+    override val patterns: ImmutableList<BannerPattern> = data.mapToList("Patterns", CompoundTag.ID) { KryptonBannerPattern.from(it as CompoundTag) }
 
     override fun copy(data: CompoundTag): KryptonBannerMeta = KryptonBannerMeta(data)
 
-    override fun withPatterns(patterns: List<BannerPattern>): BannerMeta = KryptonBannerMeta(data.setPatterns(patterns))
+    override fun withPatterns(patterns: List<BannerPattern>): BannerMeta = copy(data.setPatterns(patterns))
 
-    override fun addPattern(pattern: BannerPattern): BannerMeta = withPatterns(patterns.add(pattern))
+    override fun withPattern(pattern: BannerPattern): BannerMeta = copy(data.update("Patterns", CompoundTag.ID) { it.add(pattern.save()) })
 
-    override fun removePattern(index: Int): BannerMeta = withPatterns(patterns.removeAt(index))
+    override fun withoutPattern(index: Int): BannerMeta = copy(data.update("Patterns", CompoundTag.ID) { it.remove(index) })
 
-    override fun removePattern(pattern: BannerPattern): BannerMeta = withPatterns(patterns.remove(pattern))
+    override fun withoutPattern(pattern: BannerPattern): BannerMeta = copy(data.update("Patterns", CompoundTag.ID) { it.remove(pattern.save()) })
 
     override fun toBuilder(): BannerMeta.Builder = Builder()
 
     override fun toString(): String = "KryptonBannerMeta(${partialToString()}, patterns=$patterns)"
 
-    class Builder() : KryptonItemMetaBuilder<BannerMeta.Builder, BannerMeta>(), BannerMeta.Builder {
+    class Builder : KryptonItemMetaBuilder<BannerMeta.Builder, BannerMeta>, BannerMeta.Builder {
 
-        private val patterns = persistentListOf<BannerPattern>().builder()
+        private var patterns: MutableCollection<BannerPattern>
 
-        constructor(meta: BannerMeta) : this() {
-            copyFrom(meta)
-            patterns.addAll(meta.patterns)
+        constructor() : super() {
+            patterns = BuilderCollection()
         }
 
-        override fun patterns(patterns: List<BannerPattern>): BannerMeta.Builder = apply {
-            this.patterns.clear()
-            this.patterns.addAll(patterns)
+        constructor(meta: KryptonBannerMeta) : super(meta) {
+            patterns = BuilderCollection(meta.patterns)
         }
 
-        override fun addPattern(pattern: BannerPattern): BannerMeta.Builder = apply { patterns.add(pattern) }
+        override fun patterns(patterns: Collection<BannerPattern>): Builder = apply { this.patterns = BuilderCollection(patterns) }
 
-        override fun build(): BannerMeta = KryptonBannerMeta(buildData().build())
+        override fun addPattern(pattern: BannerPattern): Builder = apply { patterns.add(pattern) }
+
+        override fun build(): KryptonBannerMeta = KryptonBannerMeta(buildData().build())
 
         override fun buildData(): CompoundTag.Builder = super.buildData().apply {
-            if (patterns.isNotEmpty()) list("Patterns") { patterns.forEach(BannerPattern::save) }
+            if (patterns.isNotEmpty()) list("Patterns") { patterns.forEach { it.save() } }
         }
     }
 }
 
 private fun CompoundTag.setPatterns(patterns: List<BannerPattern>): CompoundTag {
     if (patterns.isEmpty()) return remove("Patterns")
-    return put("Patterns", list { patterns.forEach(BannerPattern::save) })
+    return put("Patterns", list { patterns.forEach { it.save() } })
 }

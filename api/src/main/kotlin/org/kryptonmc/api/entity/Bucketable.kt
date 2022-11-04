@@ -26,19 +26,17 @@ public interface Bucketable {
      * stored on the bucket item. It can be placed back in to the world, in
      * which it would be spawned from a bucket.
      */
-    @get:JvmName("spawnedFromBucket")
-    public var spawnedFromBucket: Boolean
+    @get:JvmName("wasSpawnedFromBucket")
+    public var wasSpawnedFromBucket: Boolean
 
     /**
      * The type of the bucket this entity can be captured in.
      */
-    @get:JvmName("bucketType")
     public val bucketType: ItemType
 
     /**
      * The sound that is played when the entity is picked up in a bucket.
      */
-    @get:JvmName("bucketPickupSound")
     public val bucketPickupSound: SoundEvent
 
     /**

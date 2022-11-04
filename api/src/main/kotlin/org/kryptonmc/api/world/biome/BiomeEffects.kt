@@ -18,12 +18,14 @@ import org.kryptonmc.api.effect.sound.SoundEvent
 import org.kryptonmc.api.util.Buildable
 import org.kryptonmc.api.util.Color
 import java.util.function.Consumer
+import javax.annotation.concurrent.Immutable
 
 /**
  * The effects for a biome. These control various things, including colouring,
  * ambient particles, sounds, and music.
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
+@Immutable
 public interface BiomeEffects : Buildable<BiomeEffects.Builder, BiomeEffects> {
 
     /**

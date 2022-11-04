@@ -12,11 +12,13 @@ import org.jetbrains.annotations.ApiStatus
 import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.Krypton
 import org.kryptonmc.api.item.data.DyeColor
+import javax.annotation.concurrent.Immutable
 
 /**
  * A pattern for a banner. These are immutable, and may be reused.
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
+@Immutable
 public interface BannerPattern {
 
     /**

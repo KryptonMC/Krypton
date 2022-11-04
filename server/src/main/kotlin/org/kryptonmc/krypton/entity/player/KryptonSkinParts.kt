@@ -20,8 +20,8 @@ package org.kryptonmc.krypton.entity.player
 
 import org.kryptonmc.api.entity.player.SkinParts
 
-@JvmInline
-value class KryptonSkinParts(private val raw: Int) : SkinParts {
+@JvmRecord
+data class KryptonSkinParts(private val raw: Int) : SkinParts {
 
     override val hasCape: Boolean
         get() = raw and FLAG_CAPE != 0

@@ -20,6 +20,7 @@ package org.kryptonmc.krypton.entity.player
 
 import org.kryptonmc.nbt.ByteTag
 import org.kryptonmc.nbt.CompoundTag
+import org.kryptonmc.nbt.compound
 
 class Abilities {
 
@@ -45,12 +46,12 @@ class Abilities {
     }
 
     fun save(builder: CompoundTag.Builder): CompoundTag.Builder = builder.compound("abilities") {
-        boolean("invulnerable", invulnerable)
-        boolean("flying", flying)
-        boolean("mayfly", canFly)
-        boolean("instabuild", canInstantlyBuild)
-        boolean("mayBuild", canBuild)
-        float("flySpeed", flyingSpeed)
-        float("walkSpeed", walkingSpeed)
+        putBoolean("invulnerable", invulnerable)
+        putBoolean("flying", flying)
+        putBoolean("mayfly", canFly)
+        putBoolean("instabuild", canInstantlyBuild)
+        putBoolean("mayBuild", canBuild)
+        putFloat("flySpeed", flyingSpeed)
+        putFloat("walkSpeed", walkingSpeed)
     }
 }

@@ -11,5 +11,4 @@ package org.kryptonmc.api.event.server
 /**
  * Called when a tick begins.
  */
-@Suppress("INAPPLICABLE_JVM_NAME")
 public interface TickStartEvent : TickEvent

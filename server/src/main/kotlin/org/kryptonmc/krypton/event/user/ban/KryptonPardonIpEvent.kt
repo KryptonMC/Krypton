@@ -22,7 +22,7 @@ import org.kryptonmc.api.event.GenericResult
 import org.kryptonmc.api.event.user.ban.PardonIpEvent
 import org.kryptonmc.api.user.ban.Ban
 
-data class KryptonPardonIpEvent(override val ban: Ban.IP) : PardonIpEvent {
+class KryptonPardonIpEvent(override val ban: Ban.IP) : PardonIpEvent {
 
     override var result: GenericResult = GenericResult.allowed()
 }

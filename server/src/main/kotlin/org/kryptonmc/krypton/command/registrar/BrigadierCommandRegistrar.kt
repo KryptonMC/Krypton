@@ -20,7 +20,7 @@ package org.kryptonmc.krypton.command.registrar
 
 import com.mojang.brigadier.tree.RootCommandNode
 import org.kryptonmc.api.command.BrigadierCommand
-import org.kryptonmc.api.command.meta.CommandMeta
+import org.kryptonmc.api.command.CommandMeta
 import org.kryptonmc.api.command.Sender
 import java.util.concurrent.locks.Lock
 
@@ -29,11 +29,15 @@ import java.util.concurrent.locks.Lock
  * easy to register, as they are already backed by nodes that we are able to
  * add to the tree.
  */
-class BrigadierCommandRegistrar(lock: Lock) : KryptonCommandRegistrar<BrigadierCommand, CommandMeta>(lock) {
+class BrigadierCommandRegistrar(lock: Lock) : KryptonCommandRegistrar<BrigadierCommand>(lock) {
 
     override fun register(root: RootCommandNode<Sender>, command: BrigadierCommand, meta: CommandMeta) {
         val literal = command.node
         val name = literal.name
         if (name == name.lowercase()) register(root, literal)
+        meta.aliases.forEach {
+            if (name == it) return@forEach
+            register(root, literal, it)
+        }
     }
 }

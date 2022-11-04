@@ -10,11 +10,13 @@ package org.kryptonmc.api.item.meta
 
 import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.item.data.FireworkEffect
+import javax.annotation.concurrent.Immutable
 
 /**
  * Item metadata for a firework star.
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
+@Immutable
 public interface FireworkStarMeta : ScopedItemMeta<FireworkStarMeta.Builder, FireworkStarMeta> {
 
     /**

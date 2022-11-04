@@ -27,28 +27,14 @@ import java.util.function.ToIntFunction
 
 object KryptonPropertyFactory : Property.Factory {
 
-    private val PROPERTIES: Map<String, KryptonProperty<*>> by lazy {
-        val builtins = collectFieldProperties()
-        val propertyUsages = HashMap<String, KryptonProperty<*>>()
-        val propertyCount = Object2IntOpenHashMap<String>()
-        Registries.BLOCK.values.forEach { block ->
-            block.downcast().defaultState.availableProperties.forEach { property ->
-                val name = builtins.computeIfAbsent(property) {
-                    val count = propertyCount.computeIfAbsent(property.name, ToIntFunction { 0 }) + 1
-                    "${property.name}_$count"
-                }
-                propertyUsages.put(name, property)
-            }
-        }
-        propertyUsages
-    }
+    private var PROPERTIES: Map<String, KryptonProperty<*>>? = null
 
-    override fun forBoolean(name: String): Property<Boolean> = PROPERTIES.get(name) as BooleanProperty
+    override fun forBoolean(name: String): Property<Boolean> = properties().get(name) as BooleanProperty
 
-    override fun forInt(name: String): Property<Int> = PROPERTIES.get(name) as IntProperty
+    override fun forInt(name: String): Property<Int> = properties().get(name) as IntProperty
 
     @Suppress("UNCHECKED_CAST")
-    override fun <E : Enum<E>> forEnum(name: String): Property<E> = PROPERTIES.get(name) as EnumProperty<E>
+    override fun <E : Enum<E>> forEnum(name: String): Property<E> = properties().get(name) as EnumProperty<E>
 
     @JvmStatic
     private fun collectFieldProperties(): MutableMap<KryptonProperty<*>, String> {
@@ -62,5 +48,24 @@ object KryptonPropertyFactory : Property.Factory {
             }
         }
         return map
+    }
+
+    @JvmStatic
+    private fun properties(): Map<String, KryptonProperty<*>> {
+        if (PROPERTIES != null) return PROPERTIES!!
+        val builtins = collectFieldProperties()
+        val propertyUsages = HashMap<String, KryptonProperty<*>>()
+        val propertyCount = Object2IntOpenHashMap<String>()
+        Registries.BLOCK.values.forEach { block ->
+            block.downcast().defaultState.availableProperties.forEach { property ->
+                val name = builtins.computeIfAbsent(property) {
+                    val count = propertyCount.computeIfAbsent(property.name, ToIntFunction { 0 }) + 1
+                    "${property.name}_$count"
+                }
+                propertyUsages.put(name, property)
+            }
+        }
+        PROPERTIES = propertyUsages
+        return propertyUsages
     }
 }

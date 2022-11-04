@@ -10,11 +10,13 @@ package org.kryptonmc.api.effect.particle.data
 
 import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.util.Color
+import javax.annotation.concurrent.Immutable
 
 /**
  * Holds data for dust particle effects.
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
+@Immutable
 public interface DustParticleData : ColorParticleData {
 
     /**
@@ -35,19 +37,5 @@ public interface DustParticleData : ColorParticleData {
         @JvmStatic
         @Contract("_, _ -> new", pure = true)
         public fun of(color: Color, scale: Float): DustParticleData = ParticleData.factory().dust(color, scale)
-
-        /**
-         * Creates new dust particle data with the given [red], [green], and
-         * [blue] RGB components, and the given [scale].
-         *
-         * @param red the red component
-         * @param green the green component
-         * @param blue the blue component
-         * @param scale the scale
-         * @return new dust particle data
-         */
-        @JvmStatic
-        @Contract("_, _, _, _ -> new", pure = true)
-        public fun of(red: Int, green: Int, blue: Int, scale: Float): DustParticleData = of(Color.of(red, green, blue), scale)
     }
 }

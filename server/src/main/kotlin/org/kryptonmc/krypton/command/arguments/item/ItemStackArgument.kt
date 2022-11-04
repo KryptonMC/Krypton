@@ -45,5 +45,5 @@ data class ItemStackArgument(val type: ItemType, val data: CompoundTag? = null) 
         return items.build()
     }
 
-    private fun createStack(amount: Int): KryptonItemStack = KryptonItemStack(type, amount, ItemFactory.create(type, data ?: CompoundTag.empty()))
+    private fun createStack(amount: Int): KryptonItemStack = KryptonItemStack(type, amount, ItemFactory.create(type, data ?: CompoundTag.EMPTY))
 }

@@ -16,20 +16,28 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.command.meta
+package org.kryptonmc.krypton.util
 
-import org.kryptonmc.api.command.meta.CommandMeta
+import java.util.UUID
 
-/**
- * For use by the brigadier command registrar, where command meta doesn't
- * matter.
- */
-object EmptyCommandMeta : CommandMeta {
+object UUIDUtil {
 
-    override val name: String = ""
-    override val aliases: Set<String> = emptySet()
+    @JvmField
+    val NIL_UUID: UUID = UUID(0L, 0L)
 
-    override fun toBuilder(): CommandMeta.Builder {
-        throw UnsupportedOperationException("Cannot turn empty command meta into a builder!")
+    @JvmStatic
+    fun fromIntArray(data: IntArray): UUID = UUID(
+        (data[0].toLong() shl 32) or (data[1].toLong() and 0xFFFFFFFFL),
+        (data[2].toLong() shl 32) or (data[3].toLong() and 0xFFFFFFFFL)
+    )
+
+    @JvmStatic
+    fun toIntArray(uuid: UUID): IntArray {
+        val most = uuid.mostSignificantBits
+        val least = uuid.leastSignificantBits
+        return intArrayOf((most shr 32).toInt(), most.toInt(), (least shr 32).toInt(), least.toInt())
     }
+
+    @JvmStatic
+    fun createOfflinePlayerId(name: String): UUID = UUID.nameUUIDFromBytes("OfflinePlayer:$name".encodeToByteArray())
 }

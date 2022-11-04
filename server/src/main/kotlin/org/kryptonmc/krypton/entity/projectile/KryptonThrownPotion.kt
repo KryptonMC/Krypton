@@ -27,7 +27,7 @@ import org.kryptonmc.krypton.world.KryptonWorld
 
 class KryptonThrownPotion(world: KryptonWorld) : KryptonThrowableProjectile(world), ThrownPotion {
 
-    override val type: KryptonEntityType<ThrownPotion>
+    override val type: KryptonEntityType<KryptonThrownPotion>
         get() = KryptonEntityTypes.POTION
 
     override val defaultItem: KryptonItemStack

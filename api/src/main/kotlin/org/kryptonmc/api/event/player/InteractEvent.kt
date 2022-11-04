@@ -15,13 +15,11 @@ import org.kryptonmc.api.event.ResultedEvent
  * The superclass for all events involving a player's interaction with
  * something in a world.
  */
-@Suppress("INAPPLICABLE_JVM_NAME")
 public sealed interface InteractEvent : PlayerEvent, ResultedEvent<GenericResult> {
 
     /**
      * The type of interaction that the player performed.
      */
-    @get:JvmName("type")
     public val type: Type
 
     /**

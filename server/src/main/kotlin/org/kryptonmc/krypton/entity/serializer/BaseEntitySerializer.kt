@@ -19,9 +19,12 @@
 package org.kryptonmc.krypton.entity.serializer
 
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer
-import org.kryptonmc.api.adventure.toJson
+import org.kryptonmc.krypton.adventure.toJson
 import org.kryptonmc.krypton.entity.KryptonEntity
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
+import org.kryptonmc.krypton.util.nbt.getUUID
+import org.kryptonmc.krypton.util.nbt.hasUUID
+import org.kryptonmc.krypton.util.nbt.putUUID
 import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.DoubleTag
 import org.kryptonmc.nbt.FloatTag
@@ -41,7 +44,7 @@ object BaseEntitySerializer : EntitySerializer<KryptonEntity> {
         }
         entity.isCustomNameVisible = data.getBoolean("CustomNameVisible")
         entity.fallDistance = data.getFloat("FallDistance")
-        entity.fireTicks = data.getShort("Fire")
+        entity.fireTicks = data.getShort("Fire").toInt()
         entity.isGlowing = data.getBoolean("Glowing")
         entity.isInvulnerable = data.getBoolean("Invulnerable")
 
@@ -63,31 +66,30 @@ object BaseEntitySerializer : EntitySerializer<KryptonEntity> {
 
     override fun save(entity: KryptonEntity): CompoundTag.Builder = buildCompound {
         // Display name
-        if (entity.isCustomNameVisible) boolean("CustomNameVisible", true)
-        val customName = entity.customName
-        if (customName != null) string("CustomName", customName.toJson())
+        if (entity.isCustomNameVisible) putBoolean("CustomNameVisible", true)
+        entity.customName?.let { putString("CustomName", it.toJson()) }
 
         // Flags
-        if (entity.isGlowing) boolean("Glowing", true)
-        if (entity.isInvulnerable) boolean("Invulnerable", true)
-        if (!entity.hasGravity) boolean("NoGravity", true)
-        boolean("OnGround", entity.isOnGround)
-        if (entity.isSilent) boolean("Silent", true)
+        if (entity.isGlowing) putBoolean("Glowing", true)
+        if (entity.isInvulnerable) putBoolean("Invulnerable", true)
+        if (!entity.hasGravity) putBoolean("NoGravity", true)
+        putBoolean("OnGround", entity.isOnGround)
+        if (entity.isSilent) putBoolean("Silent", true)
 
         // Positioning
-        list("Motion", DoubleTag.ID, DoubleTag.of(entity.velocity.x()), DoubleTag.of(entity.velocity.y()), DoubleTag.of(entity.velocity.z()))
-        list("Pos", DoubleTag.ID, DoubleTag.of(entity.location.x()), DoubleTag.of(entity.location.y()), DoubleTag.of(entity.location.z()))
-        list("Rotation", FloatTag.ID, FloatTag.of(entity.rotation.x()), FloatTag.of(entity.rotation.y()))
+        putList("Motion", DoubleTag.ID, DoubleTag.of(entity.velocity.x()), DoubleTag.of(entity.velocity.y()), DoubleTag.of(entity.velocity.z()))
+        putList("Pos", DoubleTag.ID, DoubleTag.of(entity.location.x()), DoubleTag.of(entity.location.y()), DoubleTag.of(entity.location.z()))
+        putList("Rotation", FloatTag.ID, FloatTag.of(entity.rotation.x()), FloatTag.of(entity.rotation.y()))
 
         // Identification
-        if (entity !is KryptonPlayer) string("id", entity.type.key().asString())
-        uuid("UUID", entity.uuid)
+        if (entity !is KryptonPlayer) putString("id", entity.type.key().asString())
+        putUUID("UUID", entity.uuid)
 
         // Miscellaneous
-        short("Air", entity.air.toShort())
-        short("Fire", entity.fireTicks)
-        int("TicksFrozen", entity.frozenTicks)
-        float("FallDistance", entity.fallDistance)
+        putShort("Air", entity.air.toShort())
+        putShort("Fire", entity.fireTicks.toShort())
+        putInt("TicksFrozen", entity.frozenTicks)
+        putFloat("FallDistance", entity.fallDistance)
     }
 }
 

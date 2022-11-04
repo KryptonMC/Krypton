@@ -18,62 +18,62 @@
  */
 package org.kryptonmc.krypton.item.meta
 
-import kotlinx.collections.immutable.PersistentList
-import kotlinx.collections.immutable.persistentListOf
+import com.google.common.collect.ImmutableList
 import org.kryptonmc.api.item.data.FireworkEffect
 import org.kryptonmc.api.item.meta.FireworkRocketMeta
 import org.kryptonmc.krypton.item.data.KryptonFireworkEffect
 import org.kryptonmc.krypton.item.data.save
-import org.kryptonmc.krypton.util.mapPersistentList
+import org.kryptonmc.krypton.util.BuilderCollection
 import org.kryptonmc.nbt.CompoundTag
+import org.kryptonmc.nbt.ListTag
+import org.kryptonmc.nbt.compound
 import org.kryptonmc.nbt.list
 
 class KryptonFireworkRocketMeta(data: CompoundTag) : AbstractItemMeta<KryptonFireworkRocketMeta>(data), FireworkRocketMeta {
 
-    override val effects: PersistentList<FireworkEffect> =
-        data.getCompound("Fireworks").getList("Explosions", CompoundTag.ID).mapCompound(KryptonFireworkEffect::from)
+    override val effects: ImmutableList<FireworkEffect> =
+        data.getCompound("Fireworks").mapToList("Explosions", CompoundTag.ID) { KryptonFireworkEffect.from(it as CompoundTag) }
     override val flightDuration: Int = data.getCompound("Fireworks").getByte("Flight").toInt()
 
     override fun copy(data: CompoundTag): KryptonFireworkRocketMeta = KryptonFireworkRocketMeta(data)
 
     override fun withEffects(effects: List<FireworkEffect>): KryptonFireworkRocketMeta = copy(data.putEffects(effects))
 
-    override fun addEffect(effect: FireworkEffect): KryptonFireworkRocketMeta = withEffects(effects.add(effect))
+    override fun withEffect(effect: FireworkEffect): KryptonFireworkRocketMeta = copy(data.modifyEffects { it.add(effect.save()) })
 
-    override fun removeEffect(index: Int): KryptonFireworkRocketMeta = withEffects(effects.removeAt(index))
+    override fun withoutEffect(index: Int): KryptonFireworkRocketMeta = copy(data.modifyEffects { it.remove(index) })
 
-    override fun removeEffect(effect: FireworkEffect): KryptonFireworkRocketMeta = withEffects(effects.remove(effect))
+    override fun withoutEffect(effect: FireworkEffect): KryptonFireworkRocketMeta = copy(data.modifyEffects { it.remove(effect.save()) })
 
-    override fun withFlightDuration(duration: Int): KryptonFireworkRocketMeta = copy(data.modifyFireworks { putByte("Flight", duration.toByte()) })
+    override fun withFlightDuration(duration: Int): KryptonFireworkRocketMeta =
+        copy(data.update("Fireworks") { it.putByte("Flight", duration.toByte()) })
 
     override fun toBuilder(): FireworkRocketMeta.Builder = Builder(this)
 
     override fun toString(): String = "KryptonFireworkRocketMeta(${partialToString()}, effects=$effects, flightDuration=$flightDuration)"
 
-    class Builder() : KryptonItemMetaBuilder<FireworkRocketMeta.Builder, FireworkRocketMeta>(), FireworkRocketMeta.Builder {
+    class Builder : KryptonItemMetaBuilder<FireworkRocketMeta.Builder, FireworkRocketMeta>, FireworkRocketMeta.Builder {
 
-        private val effects = persistentListOf<FireworkEffect>().builder()
+        private var effects: MutableCollection<FireworkEffect>
         private var flightDuration = 0
 
-        constructor(meta: FireworkRocketMeta) : this() {
-            copyFrom(meta)
-            effects.addAll(meta.effects)
+        constructor() : super() {
+            effects = BuilderCollection()
+        }
+
+        constructor(meta: KryptonFireworkRocketMeta) : super(meta) {
+            effects = BuilderCollection(meta.effects)
             flightDuration = meta.flightDuration
         }
 
-        override fun effects(effects: Iterable<FireworkEffect>): FireworkRocketMeta.Builder = apply {
-            this.effects.clear()
-            this.effects.addAll(effects)
-        }
+        override fun effects(effects: Collection<FireworkEffect>): Builder = apply { this.effects = BuilderCollection(effects) }
 
-        override fun addEffect(effect: FireworkEffect): FireworkRocketMeta.Builder = apply { effects.add(effect) }
-
-        override fun flightDuration(duration: Int): FireworkRocketMeta.Builder = apply { flightDuration = duration }
+        override fun flightDuration(duration: Int): Builder = apply { flightDuration = duration }
 
         override fun buildData(): CompoundTag.Builder = super.buildData().apply {
             compound("Fireworks") {
                 if (effects.isNotEmpty()) list("Explosions") { effects.forEach { add(it.save()) } }
-                byte("Flight", flightDuration.toByte())
+                putByte("Flight", flightDuration.toByte())
             }
         }
 
@@ -81,12 +81,12 @@ class KryptonFireworkRocketMeta(data: CompoundTag) : AbstractItemMeta<KryptonFir
     }
 }
 
-private inline fun CompoundTag.modifyFireworks(modifier: CompoundTag.() -> CompoundTag): CompoundTag {
+private fun CompoundTag.modifyEffects(modifier: (ListTag) -> ListTag): CompoundTag {
     if (!contains("Fireworks", CompoundTag.ID)) return this
-    return modifier(getCompound("Fireworks"))
+    return put("Fireworks", getCompound("Fireworks").update("Explosions", ListTag.ID, modifier))
 }
 
 private fun CompoundTag.putEffects(effects: List<FireworkEffect>): CompoundTag {
-    if (effects.isEmpty()) return modifyFireworks { remove("Explosions") }
-    return modifyFireworks { put("Explosions", list { effects.forEach { add(it.save()) } }) }
+    if (effects.isEmpty()) return update("Fireworks") { remove("Explosions") }
+    return update("Fireworks") { put("Explosions", list { effects.forEach { add(it.save()) } }) }
 }

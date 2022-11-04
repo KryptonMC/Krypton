@@ -71,6 +71,8 @@ public object EntityTypes {
     // TODO: Make each of these be of their respective entity types when they exist
     // @formatter:off
     @JvmField
+    public val ALLAY: EntityType<Entity> = get("allay")
+    @JvmField
     public val AREA_EFFECT_CLOUD: EntityType<AreaEffectCloud> = get("area_effect_cloud")
     @JvmField
     public val ARMOR_STAND: EntityType<ArmorStand> = get("armor_stand")
@@ -86,6 +88,8 @@ public object EntityTypes {
     public val BLAZE: EntityType<Entity> = get("blaze")
     @JvmField
     public val BOAT: EntityType<Boat> = get("boat")
+    @JvmField
+    public val CHEST_BOAT: EntityType<Entity> = get("chest_boat")
     @JvmField
     public val CAT: EntityType<Cat> = get("cat")
     @JvmField
@@ -130,6 +134,8 @@ public object EntityTypes {
     public val FIREWORK_ROCKET: EntityType<FireworkRocket> = get("firework_rocket")
     @JvmField
     public val FOX: EntityType<Fox> = get("fox")
+    @JvmField
+    public val FROG: EntityType<Entity> = get("frog")
     @JvmField
     public val GHAST: EntityType<Entity> = get("ghast")
     @JvmField
@@ -249,6 +255,8 @@ public object EntityTypes {
     @JvmField
     public val STRIDER: EntityType<Entity> = get("strider")
     @JvmField
+    public val TADPOLE: EntityType<Entity> = get("tadpole")
+    @JvmField
     public val EGG: EntityType<Egg> = get("egg")
     @JvmField
     public val ENDER_PEARL: EntityType<EnderPearl> = get("ender_pearl")
@@ -272,6 +280,8 @@ public object EntityTypes {
     public val VINDICATOR: EntityType<Entity> = get("vindicator")
     @JvmField
     public val WANDERING_TRADER: EntityType<Entity> = get("wandering_trader")
+    @JvmField
+    public val WARDEN: EntityType<Entity> = get("warden")
     @JvmField
     public val WITCH: EntityType<Entity> = get("witch")
     @JvmField

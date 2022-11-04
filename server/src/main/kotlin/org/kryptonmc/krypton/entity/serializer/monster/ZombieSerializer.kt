@@ -35,7 +35,7 @@ object ZombieSerializer : EntitySerializer<KryptonZombie> {
     }
 
     override fun save(entity: KryptonZombie): CompoundTag.Builder = MobSerializer.save(entity).apply {
-        boolean("IsBaby", entity.isBaby)
-        int("DrownedConversionTime", entity.conversionTime)
+        putBoolean("IsBaby", entity.isBaby)
+        putInt("DrownedConversionTime", entity.conversionTime)
     }
 }

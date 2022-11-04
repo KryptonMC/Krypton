@@ -68,13 +68,13 @@ abstract class CommandBlockHandler(override val server: KryptonServer) : Sender 
     }
 
     fun save(builder: CompoundTag.Builder): CompoundTag.Builder = builder.apply {
-        string("Command", command)
-        int("SuccessCount", successCount)
-        string("CustomName", GsonComponentSerializer.gson().serialize(name))
-        boolean("TrackOutput", trackOutput)
-        if (lastOutput != null && trackOutput) string("LastOutput", GsonComponentSerializer.gson().serialize(lastOutput!!))
-        boolean("UpdateLastExecution", updateLastExecution)
-        if (updateLastExecution && lastExecution > 0L) long("LastExecution", lastExecution)
+        putString("Command", command)
+        putInt("SuccessCount", successCount)
+        putString("CustomName", GsonComponentSerializer.gson().serialize(name))
+        putBoolean("TrackOutput", trackOutput)
+        if (lastOutput != null && trackOutput) putString("LastOutput", GsonComponentSerializer.gson().serialize(lastOutput!!))
+        putBoolean("UpdateLastExecution", updateLastExecution)
+        if (updateLastExecution && lastExecution > 0L) putLong("LastExecution", lastExecution)
     }
 
     fun runCommand(world: KryptonWorld): Boolean {

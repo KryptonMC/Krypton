@@ -14,12 +14,10 @@ import org.kryptonmc.api.resource.ResourcePack
  * Called when the given [player] updates the server about the status of the
  * resource pack that the server has sent them.
  */
-@Suppress("INAPPLICABLE_JVM_NAME")
 public interface ResourcePackStatusEvent : PlayerEvent {
 
     /**
      * The status of the player's resource pack.
      */
-    @get:JvmName("status")
     public val status: ResourcePack.Status
 }

@@ -27,22 +27,14 @@ import org.kryptonmc.krypton.network.Writable
 data class KryptonDustTransitionParticleData(
     override val color: Color,
     override val scale: Float,
-    override val to: Color
+    override val toColor: Color
 ) : DustTransitionParticleData, Writable {
 
-    constructor(buf: ByteBuf) : this(buf.readColor(), buf.readFloat(), buf.readColor())
+    constructor(buf: ByteBuf) : this(buf.readParticleColor(), buf.readFloat(), buf.readParticleColor())
 
     override fun write(buf: ByteBuf) {
-        buf.writeFloat(if (red == 0) Float.MIN_VALUE else red.toFloat() / 255F)
-        buf.writeFloat(green.toFloat() / 255F)
-        buf.writeFloat(blue.toFloat() / 255F)
+        buf.writeParticleColor(color)
         buf.writeFloat(scale)
-        buf.writeFloat(if (toRed == 0) Float.MIN_VALUE else toRed.toFloat() / 255F)
-        buf.writeFloat(toGreen.toFloat() / 255F)
-        buf.writeFloat(toBlue.toFloat() / 255F)
+        buf.writeParticleColor(toColor)
     }
 }
-
-private fun ByteBuf.readColor(): Color = Color.of(readColorValue(), readColorValue(), readColorValue())
-
-private fun ByteBuf.readColorValue(): Int = (readFloat() * 255F).toInt()

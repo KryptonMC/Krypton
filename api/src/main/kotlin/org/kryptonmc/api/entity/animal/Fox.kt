@@ -20,7 +20,6 @@ public interface Fox : Animal {
     /**
      * The variant of this fox.
      */
-    @get:JvmName("variant")
     public var variant: FoxVariant
 
     /**
@@ -104,13 +103,11 @@ public interface Fox : Animal {
     /**
      * The first player UUID that this fox trusts.
      */
-    @get:JvmName("firstTrusted")
     public var firstTrusted: UUID?
 
     /**
      * The second player UUID that this fox trusts.
      */
-    @get:JvmName("secondTrusted")
     public var secondTrusted: UUID?
 
     /**

@@ -22,8 +22,7 @@ import com.google.gson.stream.JsonWriter
 
 abstract class ServerConfigEntry<T>(val key: T) {
 
-    open val isInvalid: Boolean
-        get() = false
-
     abstract fun write(writer: JsonWriter)
+
+    open fun hasExpired(): Boolean = false
 }

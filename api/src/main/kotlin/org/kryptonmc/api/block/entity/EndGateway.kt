@@ -13,14 +13,12 @@ import org.spongepowered.math.vector.Vector3i
 /**
  * An end gateway.
  */
-@Suppress("INAPPLICABLE_JVM_NAME")
 public interface EndGateway : BlockEntity {
 
     /**
      * The position that a player will be teleported to when they enter this
      * gateway.
      */
-    @get:JvmName("exitPosition")
     public var exitPosition: Vector3i
 
     /**
@@ -29,8 +27,7 @@ public interface EndGateway : BlockEntity {
      * If this is false, the gateway will attempt to find the closest possible
      * safe exit location to the exit position.
      */
-    @get:JvmName("exactTeleport")
-    public var exactTeleport: Boolean
+    public var isExactTeleport: Boolean
 
     /**
      * The age, in ticks, of this gateway.
@@ -38,6 +35,5 @@ public interface EndGateway : BlockEntity {
      * If this age is less than 200 ticks, the beam will be magenta.
      * If this age is a multiple of 2400 ticks, the beam will be purple.
      */
-    @get:JvmName("age")
     public var age: Int
 }

@@ -15,12 +15,10 @@ import org.kryptonmc.api.event.ResultedEvent
 /**
  * Called when a block is damaged.
  */
-@Suppress("INAPPLICABLE_JVM_NAME")
 public interface BlockDamageEvent : PlayerEvent, ResultedEvent<GenericResult> {
 
     /**
      * The block that is being broken by the player.
      */
-    @get:JvmName("block")
     public val block: Block
 }

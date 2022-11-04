@@ -18,15 +18,20 @@
  */
 package org.kryptonmc.krypton.effect.particle
 
+import io.netty.buffer.ByteBuf
 import net.kyori.adventure.key.Key
 import org.kryptonmc.api.effect.particle.VibrationParticleType
 import org.kryptonmc.api.effect.particle.builder.VibrationParticleEffectBuilder
+import org.kryptonmc.api.effect.particle.data.ParticleData
 import org.kryptonmc.krypton.effect.particle.builder.KryptonVibrationParticleEffectBuilder
+import org.kryptonmc.krypton.effect.particle.data.KryptonVibrationParticleData
 
 @JvmRecord
-data class KryptonVibrationParticleType(private val key: Key) : VibrationParticleType {
+data class KryptonVibrationParticleType(private val key: Key) : KryptonParticleType, VibrationParticleType {
 
     override fun key(): Key = key
 
     override fun builder(): VibrationParticleEffectBuilder = KryptonVibrationParticleEffectBuilder(this)
+
+    override fun createData(buf: ByteBuf): ParticleData = KryptonVibrationParticleData(buf)
 }

@@ -41,36 +41,30 @@ public interface ArmorStand : LivingEntity, Equipable {
     /**
      * The pose this stand's head is currently making.
      */
-    @get:JvmName("headPose")
     public var headPose: Vector3f
 
     /**
      * The pose this stand's body is currently making.
      */
-    @get:JvmName("bodyPose")
     public var bodyPose: Vector3f
 
     /**
      * The pose this stand's left arm is currently making.
      */
-    @get:JvmName("leftArmPose")
     public var leftArmPose: Vector3f
 
     /**
      * The pose this stand's right arm is currently making.
      */
-    @get:JvmName("rightArmPose")
     public var rightArmPose: Vector3f
 
     /**
      * The pose this stand's left leg is currently making.
      */
-    @get:JvmName("leftLegPose")
     public var leftLegPose: Vector3f
 
     /**
      * The pose this stand's right leg is currently making.
      */
-    @get:JvmName("rightLegPose")
     public var rightLegPose: Vector3f
 }

@@ -40,12 +40,10 @@ public interface Turtle : Animal {
     /**
      * The location of this turtle's home.
      */
-    @get:JvmName("home")
     public var home: Vector3i
 
     /**
      * The current destination of this turtle.
      */
-    @get:JvmName("destination")
     public var destination: Vector3i
 }

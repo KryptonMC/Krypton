@@ -5,51 +5,49 @@ metadata.format.version = "1.1"
 # API
 adventure = "4.12.0-SNAPSHOT"
 configurate = "4.1.2"
-log4j = "2.18.0"
-kotlin = "1.7.20-Beta"
-coroutines = "1.6.3"
+log4j = "2.19.0"
+kotlin = "1.7.20"
+coroutines = "1.6.4"
 kotlinCollections = "0.3.5"
 guava = "31.1-jre"
-gson = "2.9.0"
+gson = "2.9.1"
 gsonKt = "1.3"
 commonsLang = "3.12.0"
 guice = "5.1.0"
 kotlinGuice = "1.6.0"
-velocityBrigadier = "1.0.0-SNAPSHOT"
+brigadier = "1.0.0-SNAPSHOT"
 math = "2.0.1"
 
 # Generation
 kotlinpoet = "1.12.0"
 
 # Server
-netty = "4.1.78.Final"
+netty = "4.1.84.Final"
 velocity = "3.1.0"
-event = "4.0.0-SNAPSHOT"
-asm = "9.3"
 tca = "1.3.0"
 jline = "3.21.0"
 dataConverter = "1.0.0-SNAPSHOT"
-nbt = "3.4.2"
+nbt = "4.3.0"
 serialization = "1.2.1"
 articData = "1.19-aaa3687c"
 caffeine = "3.1.1"
-fastutil = "8.5.8"
+fastutil = "8.5.9"
 flare = "2.0.1"
 clikt = "3.5.0"
 bstats = "3.0.0"
 lmbda = "2.0.0"
 
 # Test
-junit-jupiter = "5.8.2"
-junit-platform = "1.8.2"
-mockk = "1.12.4"
-bytebuddy = "1.12.12"
+junit-jupiter = "5.9.1"
+junit-platform = "1.9.1"
+mockk = "1.13.2"
+bytebuddy = "1.12.18"
 jimfs = "1.2"
 
 # Plugin versions
-indra = "2.1.1"
+indra = "3.0.1"
 licenser = "0.6.1"
-dokka = "1.7.10"
+dokka = "1.7.20"
 detekt = "1.21.0"
 vanillaGradle = "0.2.1-SNAPSHOT"
 shadow = "7.1.2"
@@ -90,7 +88,6 @@ netty-transport-native-epoll = { group = "io.netty", name = "netty-transport-nat
 netty-transport-native-kqueue = { group = "io.netty", name = "netty-transport-native-kqueue", version.ref = "netty" }
 
 # Velocity
-velocity-brigadier = { group = "com.velocitypowered", name = "velocity-brigadier", version.ref = "velocityBrigadier" }
 velocity-native = { group = "com.velocitypowered", name = "velocity-native", version.ref = "velocity" }
 
 # Logging
@@ -106,13 +103,12 @@ clikt = { group = "com.github.ajalt.clikt", name = "clikt", version.ref = "clikt
 dataConverter = { group = "ca.spottedleaf", name = "dataconverter", version.ref = "dataConverter" }
 articData = { group = "de.articdive", name = "articdata", version.ref = "articData" }
 nbt = { group = "org.kryptonmc", name = "nbt-common", version.ref = "nbt" }
+nbt-kotlin = { group = "org.kryptonmc", name = "nbt-extra-kotlin", version.ref = "nbt" }
 serialization = { group = "org.kryptonmc", name = "serialization-core", version.ref = "serialization" }
 serialization-gson = { group = "org.kryptonmc", name = "serialization-gson", version.ref = "serialization" }
 serialization-nbt = { group = "org.kryptonmc", name = "serialization-nbt", version.ref = "serialization" }
 
 # Events
-event = { group = "net.kyori", name = "event-method-asm", version.ref = "event" }
-asm = { group = "org.ow2.asm", name = "asm", version.ref = "asm" }
 lmbda = { group = "org.lanternpowered", name = "lmbda", version.ref = "lmbda" }
 
 # Generation
@@ -133,6 +129,7 @@ bytebuddy = { group = "net.bytebuddy", name = "byte-buddy", version.ref = "byteb
 jimfs = { group = "com.google.jimfs", name = "jimfs", version.ref = "jimfs" }
 
 # Miscellaneous
+brigadier = { group = "org.kryptonmc", name = "krypton-brigadier", version.ref = "brigadier" }
 guava = { group = "com.google.guava", name = "guava", version.ref = "guava" }
 commonsLang = { group = "org.apache.commons", name = "commons-lang3", version.ref = "commonsLang" }
 gson = { group = "com.google.code.gson", name = "gson", version.ref = "gson" }

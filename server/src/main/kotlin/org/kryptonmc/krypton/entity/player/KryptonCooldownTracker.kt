@@ -42,14 +42,14 @@ class KryptonCooldownTracker(private val player: KryptonPlayer) : CooldownTracke
         }
     }
 
-    override fun contains(item: ItemType): Boolean = percentage(item) > 0F
+    override fun hasCooldown(item: ItemType): Boolean = getPercentage(item) > 0F
 
     override fun get(item: ItemType): Int {
         val instance = cooldowns.get(item) ?: return 0
         return instance.endTime - tickCount
     }
 
-    override fun percentage(item: ItemType): Float {
+    override fun getPercentage(item: ItemType): Float {
         val instance = cooldowns.get(item) ?: return 0F
         val totalCooldownTime = (instance.endTime - instance.startTime).toFloat()
         val remainingCooldownTime = (instance.endTime - tickCount).toFloat()

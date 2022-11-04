@@ -21,11 +21,15 @@ package org.kryptonmc.krypton.entity.components
 import net.kyori.adventure.text.Component
 import org.kryptonmc.api.entity.Entity
 import org.kryptonmc.api.scoreboard.Team
+import org.kryptonmc.krypton.entity.KryptonEntity
+import org.kryptonmc.krypton.entity.KryptonEntityType
 
 interface NameableTeamMember : Entity {
 
+    override val type: KryptonEntityType<KryptonEntity>
+
     override val name: Component
-        get() = customName ?: type.translation
+        get() = customName ?: type.description()
     override val displayName: Component
         get() {
             val team = team ?: return name

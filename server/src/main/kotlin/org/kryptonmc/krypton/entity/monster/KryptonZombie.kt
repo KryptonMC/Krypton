@@ -18,11 +18,11 @@
  */
 package org.kryptonmc.krypton.entity.monster
 
-import org.kryptonmc.api.entity.attribute.AttributeTypes
 import org.kryptonmc.api.entity.monster.Zombie
 import org.kryptonmc.krypton.entity.KryptonEntityType
 import org.kryptonmc.krypton.entity.KryptonEntityTypes
 import org.kryptonmc.krypton.entity.attribute.AttributeSupplier
+import org.kryptonmc.krypton.entity.attribute.KryptonAttributeTypes
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.entity.serializer.EntitySerializer
 import org.kryptonmc.krypton.entity.serializer.monster.ZombieSerializer
@@ -30,7 +30,7 @@ import org.kryptonmc.krypton.world.KryptonWorld
 
 class KryptonZombie(world: KryptonWorld) : KryptonMonster(world), Zombie {
 
-    override val type: KryptonEntityType<Zombie>
+    override val type: KryptonEntityType<KryptonZombie>
         get() = KryptonEntityTypes.ZOMBIE
     override val serializer: EntitySerializer<KryptonZombie>
         get() = ZombieSerializer
@@ -54,10 +54,10 @@ class KryptonZombie(world: KryptonWorld) : KryptonMonster(world), Zombie {
 
         @JvmStatic
         fun attributes(): AttributeSupplier.Builder = KryptonMonster.attributes()
-            .add(AttributeTypes.FOLLOW_RANGE, 35.0)
-            .add(AttributeTypes.MOVEMENT_SPEED, 0.23)
-            .add(AttributeTypes.ATTACK_DAMAGE, 3.0)
-            .add(AttributeTypes.ARMOR, 2.0)
-            .add(AttributeTypes.SPAWN_REINFORCEMENTS_CHANCE)
+            .add(KryptonAttributeTypes.FOLLOW_RANGE, 35.0)
+            .add(KryptonAttributeTypes.MOVEMENT_SPEED, 0.23)
+            .add(KryptonAttributeTypes.ATTACK_DAMAGE, 3.0)
+            .add(KryptonAttributeTypes.ARMOR, 2.0)
+            .add(KryptonAttributeTypes.SPAWN_REINFORCEMENTS_CHANCE)
     }
 }

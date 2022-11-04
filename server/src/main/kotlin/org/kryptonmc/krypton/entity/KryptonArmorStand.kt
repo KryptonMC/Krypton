@@ -30,7 +30,7 @@ import org.spongepowered.math.vector.Vector3f
 
 class KryptonArmorStand(world: KryptonWorld) : KryptonLivingEntity(world), ArmorStand, KryptonEquipable {
 
-    override val type: KryptonEntityType<ArmorStand>
+    override val type: KryptonEntityType<KryptonArmorStand>
         get() = KryptonEntityTypes.ARMOR_STAND
     override val serializer: EntitySerializer<KryptonArmorStand>
         get() = ArmorStandSerializer
@@ -81,7 +81,7 @@ class KryptonArmorStand(world: KryptonWorld) : KryptonLivingEntity(world), Armor
         data.define(MetadataKeys.ArmorStand.RIGHT_LEG_ROTATION, ArmorStandSerializer.DEFAULT_RIGHT_LEG_ROTATION)
     }
 
-    override fun equipment(slot: EquipmentSlot): KryptonItemStack = when (slot.type) {
+    override fun getEquipment(slot: EquipmentSlot): KryptonItemStack = when (slot.type) {
         EquipmentSlot.Type.HAND -> handItems.get(EquipmentSlots.index(slot))
         EquipmentSlot.Type.ARMOR -> armorItems.get(EquipmentSlots.index(slot))
     }

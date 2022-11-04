@@ -13,19 +13,16 @@ import net.kyori.adventure.text.Component
 /**
  * A command block.
  */
-@Suppress("INAPPLICABLE_JVM_NAME")
 public interface CommandBlock : BlockEntity {
 
     /**
      * The command that this command block will run.
      */
-    @get:JvmName("command")
     public var command: String
 
     /**
      * The last output from the command block running the command.
      */
-    @get:JvmName("lastOutput")
     public var lastOutput: Component
 
     /**

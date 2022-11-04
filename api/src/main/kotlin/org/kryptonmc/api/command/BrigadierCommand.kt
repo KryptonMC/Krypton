@@ -14,11 +14,13 @@ import com.mojang.brigadier.tree.LiteralCommandNode
 import org.jetbrains.annotations.ApiStatus
 import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.Krypton
+import javax.annotation.concurrent.Immutable
 
 /**
  * A command that is backed by a Brigadier [LiteralCommandNode].
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
+@Immutable
 public interface BrigadierCommand : Command {
 
     /**

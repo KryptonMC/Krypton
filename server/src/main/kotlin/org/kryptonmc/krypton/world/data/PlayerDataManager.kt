@@ -76,7 +76,7 @@ class PlayerDataManager(val folder: Path, private val serializeData: Boolean) {
 
     fun save(player: KryptonPlayer): CompoundTag? {
         if (!serializeData) return null
-        val data = PlayerSerializer.saveWithPassengers(player).build()
+        val data = player.saveWithPassengers().build()
 
         // Create temp file and write data
         val temp = Files.createTempFile(folder, player.uuid.toString(), ".dat")

@@ -20,14 +20,13 @@ public interface Dolphin : AquaticAnimal {
     /**
      * The position of this dolphin's treasure.
      */
-    @get:JvmName("treasurePosition")
     public var treasurePosition: Vector3i
 
     /**
      * If this dolphin has got a fish.
      */
-    @get:JvmName("gotFish")
-    public var gotFish: Boolean
+    @get:JvmName("hasGotFish")
+    public var hasGotFish: Boolean
 
     /**
      * The skin moisture of this dolphin. This determines how long a dolphin
@@ -54,6 +53,5 @@ public interface Dolphin : AquaticAnimal {
      * [dry out][DamageTypes.DRY_OUT] damage every tick, until the dolphin
      * perishes.
      */
-    @get:JvmName("skinMoisture")
     public var skinMoisture: Int
 }

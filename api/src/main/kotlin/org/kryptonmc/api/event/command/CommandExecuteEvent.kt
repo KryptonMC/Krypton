@@ -11,23 +11,21 @@ package org.kryptonmc.api.event.command
 import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.command.Sender
 import org.kryptonmc.api.event.ResultedEvent
+import javax.annotation.concurrent.Immutable
 
 /**
  * Called when the given [command] is executed by the given [sender].
  */
-@Suppress("INAPPLICABLE_JVM_NAME")
 public interface CommandExecuteEvent : ResultedEvent<CommandExecuteEvent.Result> {
 
     /**
      * The sender that executed the command.
      */
-    @get:JvmName("sender")
     public val sender: Sender
 
     /**
      * The command that was executed.
      */
-    @get:JvmName("command")
     public val command: String
 
     /**
@@ -36,6 +34,7 @@ public interface CommandExecuteEvent : ResultedEvent<CommandExecuteEvent.Result>
      * @param command the command to forward
      */
     @JvmRecord
+    @Immutable
     public data class Result(override val isAllowed: Boolean, public val command: String? = null) : ResultedEvent.Result {
 
         public companion object {

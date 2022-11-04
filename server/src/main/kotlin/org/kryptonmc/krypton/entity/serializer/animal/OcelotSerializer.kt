@@ -31,6 +31,6 @@ object OcelotSerializer : EntitySerializer<KryptonOcelot> {
     }
 
     override fun save(entity: KryptonOcelot): CompoundTag.Builder = AgeableSerializer.save(entity).apply {
-        boolean("Trusting", entity.isTrusting)
+        putBoolean("Trusting", entity.isTrusting)
     }
 }

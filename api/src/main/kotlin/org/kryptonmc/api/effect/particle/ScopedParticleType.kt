@@ -9,10 +9,12 @@
 package org.kryptonmc.api.effect.particle
 
 import org.kryptonmc.api.effect.particle.builder.BaseParticleEffectBuilder
+import javax.annotation.concurrent.Immutable
 
 /**
  * A particle type that scopes the return of the builder.
  */
+@Immutable
 public sealed interface ScopedParticleType<B : BaseParticleEffectBuilder<B>> : ParticleType {
 
     override fun builder(): B

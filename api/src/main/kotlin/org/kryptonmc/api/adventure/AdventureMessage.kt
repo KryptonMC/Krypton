@@ -14,6 +14,7 @@ import net.kyori.adventure.text.ComponentLike
 import org.jetbrains.annotations.ApiStatus
 import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.Krypton
+import javax.annotation.concurrent.Immutable
 
 /**
  * A Brigadier [Message] that wraps a [Component].
@@ -25,7 +26,7 @@ import org.kryptonmc.api.Krypton
  * You should use this class when you want to send a [Component] error message as
  * a response to a Brigadier command.
  */
-@Suppress("INAPPLICABLE_JVM_NAME")
+@Immutable
 public interface AdventureMessage : Message, ComponentLike {
 
     @ApiStatus.Internal

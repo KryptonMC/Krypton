@@ -23,12 +23,11 @@ import org.kryptonmc.api.state.State
 import org.kryptonmc.api.state.StateHolder
 import org.kryptonmc.krypton.state.property.KryptonProperty
 
-@Suppress("UNCHECKED_CAST")
 interface StateHolderDelegate<out S : State<S>, K : KryptonState<*, K>> : StateHolder<S> {
 
     val stateDefinition: StateDefinition<*, K>
     override val states: List<S>
-        get() = stateDefinition.states as List<S>
+        @Suppress("UNCHECKED_CAST") get() = stateDefinition.states as List<S>
     override val availableProperties: Collection<KryptonProperty<*>>
         get() = stateDefinition.properties
 

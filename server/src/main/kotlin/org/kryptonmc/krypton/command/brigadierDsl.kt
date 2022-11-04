@@ -24,6 +24,7 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder
 import com.mojang.brigadier.builder.RequiredArgumentBuilder
 import com.mojang.brigadier.context.CommandContext
 import org.kryptonmc.api.command.Sender
+import org.kryptonmc.krypton.commands.KryptonPermission
 
 inline fun literal(name: String, builder: LiteralBuilder.() -> Unit): LiteralBuilder = LiteralArgumentBuilder.literal<Sender>(name).apply(builder)
 
@@ -43,6 +44,9 @@ inline fun <T : Builder<T>> Builder<T>.runs(crossinline action: (CommandContext<
     action(it)
     com.mojang.brigadier.Command.SINGLE_SUCCESS
 }
+
+fun LiteralArgumentBuilder<Sender>.permission(permission: KryptonPermission): LiteralArgumentBuilder<Sender> =
+    requires { it.hasPermission(permission.node) }
 
 private typealias Builder<T> = ArgumentBuilder<Sender, T>
 private typealias LiteralBuilder = LiteralArgumentBuilder<Sender>

@@ -11,7 +11,6 @@ package org.kryptonmc.api.event.player
 /**
  * Called when a player attacks an entity.
  */
-@Suppress("INAPPLICABLE_JVM_NAME")
 public interface AttackEntityEvent : EntityInteractEvent {
 
     override val type: InteractEvent.Type

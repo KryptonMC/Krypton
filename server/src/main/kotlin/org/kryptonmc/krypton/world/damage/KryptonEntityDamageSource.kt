@@ -38,7 +38,7 @@ open class KryptonEntityDamageSource(type: DamageType, final override val entity
     override fun entity(): KryptonEntity? = entity
 
     override fun formatDeathMessage(target: KryptonLivingEntity): Component {
-        val heldItem = if (entity is KryptonLivingEntity) entity.heldItem(Hand.MAIN) else KryptonItemStack.EMPTY
+        val heldItem = if (entity is KryptonLivingEntity) entity.getHeldItem(Hand.MAIN) else KryptonItemStack.EMPTY
         val baseMessage = "death.attack.${type.translationKey()}"
         if (!heldItem.isEmpty() && heldItem.meta.name != null) {
             return Component.translatable("$baseMessage.item", target.displayName, entity.displayName, heldItem.meta.name)

@@ -19,32 +19,68 @@
 package org.kryptonmc.krypton.entity.attribute
 
 import org.kryptonmc.api.entity.attribute.AttributeModifier
+import org.kryptonmc.api.entity.attribute.BasicModifierOperation
 import org.kryptonmc.api.entity.attribute.ModifierOperation
-import org.kryptonmc.krypton.registry.KryptonRegistries
+import org.kryptonmc.krypton.util.logger
+import org.kryptonmc.krypton.util.nbt.getUUID
 import org.kryptonmc.nbt.CompoundTag
+import java.util.Objects
 import java.util.UUID
+import java.util.function.Supplier
 
-@JvmRecord
-data class KryptonAttributeModifier(
-    override val name: String,
-    override val uuid: UUID,
-    override val amount: Double,
+open class KryptonAttributeModifier(
+    final override val uuid: UUID,
+    private val nameGetter: Supplier<String>,
+    final override val amount: Double,
     override val operation: ModifierOperation
 ) : AttributeModifier {
 
+    final override val name: String
+        get() = nameGetter.get()
+
+    constructor(uuid: UUID, name: String, amount: Double, operation: ModifierOperation) : this(uuid, { name }, amount, operation)
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+        return Objects.equals(uuid, (other as KryptonAttributeModifier).uuid)
+    }
+
+    override fun hashCode(): Int = uuid.hashCode()
+
+    override fun toString(): String = "KryptonAttributeModifier(amount=$amount, operation=$operation, name=${nameGetter.get()}, uuid=$uuid)"
+
     object Factory : AttributeModifier.Factory {
 
-        override fun of(name: String, uuid: UUID, amount: Double, operation: ModifierOperation): AttributeModifier =
-            KryptonAttributeModifier(name, uuid, amount, operation)
+        override fun of(uuid: UUID, name: String, amount: Double, operation: ModifierOperation): AttributeModifier =
+            KryptonAttributeModifier(uuid, name, amount, operation)
     }
 
     companion object {
 
+        private val LOGGER = logger<KryptonAttributeModifier>()
+        private val BASIC_OPERATIONS = BasicModifierOperation.values()
+
         @JvmStatic
         fun from(data: CompoundTag): KryptonAttributeModifier? {
-            val operation = KryptonRegistries.MODIFIER_OPERATIONS.get(data.getInt("Operation")) ?: return null
-            val uuid = data.getUUID("UUID") ?: return null
-            return KryptonAttributeModifier(data.getString("Name"), uuid, data.getDouble("Amount"), operation)
+            return try {
+                KryptonAttributeModifier(getId(data), data.getString("Name"), data.getDouble("Amount"), getOperation(data))
+            } catch (exception: Exception) {
+                LOGGER.warn("Unable to create attribute: ${exception.message}")
+                null
+            }
+        }
+
+        @JvmStatic
+        protected fun getId(data: CompoundTag): UUID = requireNotNull(data.getUUID("UUID")) { "Could not deserialize UUID for attribute modifier!" }
+
+        @JvmStatic
+        protected fun getOperation(data: CompoundTag): BasicModifierOperation = getOperationById(data.getInt("Operation"))
+
+        @JvmStatic
+        fun getOperationById(id: Int): BasicModifierOperation {
+            require(id >= 0 && id < BASIC_OPERATIONS.size) { "No operation could be found with ID $id!" }
+            return BASIC_OPERATIONS[id]
         }
     }
 }

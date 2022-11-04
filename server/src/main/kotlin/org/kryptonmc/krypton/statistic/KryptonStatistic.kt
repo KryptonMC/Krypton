@@ -18,7 +18,6 @@
  */
 package org.kryptonmc.krypton.statistic
 
-import net.kyori.adventure.key.Key
 import org.kryptonmc.api.statistic.Statistic
 import org.kryptonmc.api.statistic.StatisticFormatter
 import org.kryptonmc.api.statistic.StatisticType
@@ -28,7 +27,7 @@ class KryptonStatistic<T : Any>(
     override val type: StatisticType<T>,
     override val value: T,
     override val formatter: StatisticFormatter
-) : KryptonCriterion(Key.key(type.criterionName(value)), type.criterionName(value)), Statistic<T> {
+) : KryptonCriterion(type.criterionName(value)), Statistic<T> {
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

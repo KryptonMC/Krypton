@@ -21,7 +21,7 @@ package org.kryptonmc.krypton.event.command
 import org.kryptonmc.api.command.Sender
 import org.kryptonmc.api.event.command.CommandExecuteEvent
 
-data class KryptonCommandExecuteEvent(override val sender: Sender, override val command: String) : CommandExecuteEvent {
+class KryptonCommandExecuteEvent(override val sender: Sender, override val command: String) : CommandExecuteEvent {
 
     override var result: CommandExecuteEvent.Result = CommandExecuteEvent.Result.allowed()
 }

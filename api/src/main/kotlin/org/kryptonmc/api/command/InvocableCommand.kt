@@ -8,12 +8,14 @@
  */
 package org.kryptonmc.api.command
 
+import com.google.common.collect.ImmutableList
+
 /**
  * A command that may be invoked with arbitrary arguments.
  *
  * @param A the type of the arguments
  */
-public fun interface InvocableCommand<A> : Command {
+public sealed interface InvocableCommand<A> : Command {
 
     /**
      * Invokes this command with the given [sender] and [args].
@@ -24,7 +26,7 @@ public fun interface InvocableCommand<A> : Command {
      * through some medium, such as typing it out in chat, or in the console.
      *
      * @param sender the sender who ran this command
-     * @param args the arguments the sender sent
+     * @param args the arguments provided by the sender
      */
     public fun execute(sender: Sender, args: A)
 
@@ -36,8 +38,19 @@ public fun interface InvocableCommand<A> : Command {
      * requested for this command.
      *
      * @param sender the sender who sent the tab completion request
-     * @param args the arguments the sender sent
+     * @param args the arguments provided by the sender
      * @return a list of possible tab completions
      */
-    public fun suggest(sender: Sender, args: A): List<String> = emptyList()
+    public fun suggest(sender: Sender, args: A): List<String> = ImmutableList.of()
+
+    /**
+     * Checks if the given [sender] has permission to execute this command with
+     * the given [args].
+     *
+     * @param sender the sender attempting to execute the command
+     * @param args the arguments provided by the sender
+     * @return true if the sender can perform this command with the arguments,
+     * false otherwise
+     */
+    public fun hasPermission(sender: Sender, args: A): Boolean = true
 }

@@ -31,7 +31,7 @@ import org.kryptonmc.krypton.world.KryptonWorld
 
 class KryptonPufferfish(world: KryptonWorld) : KryptonFish(world), Pufferfish {
 
-    override val type: KryptonEntityType<Pufferfish>
+    override val type: KryptonEntityType<KryptonPufferfish>
         get() = KryptonEntityTypes.PUFFERFISH
     override val serializer: EntitySerializer<KryptonPufferfish>
         get() = PufferfishSerializer

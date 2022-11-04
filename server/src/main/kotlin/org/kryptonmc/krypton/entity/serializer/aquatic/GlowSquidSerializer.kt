@@ -31,6 +31,6 @@ object GlowSquidSerializer : EntitySerializer<KryptonGlowSquid> {
     }
 
     override fun save(entity: KryptonGlowSquid): CompoundTag.Builder = MobSerializer.save(entity).apply {
-        int("DarkTicksRemaining", entity.remainingDarkTicks)
+        putInt("DarkTicksRemaining", entity.remainingDarkTicks)
     }
 }

@@ -19,11 +19,10 @@
 package org.kryptonmc.krypton.world.block.entity.banner
 
 import org.kryptonmc.api.block.entity.banner.BannerPattern
-import org.kryptonmc.krypton.registry.KryptonRegistries
 import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.compound
 
 fun BannerPattern.save(): CompoundTag = compound {
-    int("Color", KryptonRegistries.DYE_COLORS.idOf(color))
-    string("Pattern", type.code)
+    putInt("Color", color.ordinal)
+    putString("Pattern", type.code)
 }

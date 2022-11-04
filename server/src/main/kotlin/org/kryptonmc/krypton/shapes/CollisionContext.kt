@@ -43,7 +43,7 @@ interface CollisionContext {
 
         @JvmStatic
         fun of(entity: KryptonEntity): CollisionContext {
-            val heldItem = if (entity is KryptonLivingEntity) entity.heldItem(Hand.MAIN) else KryptonItemStack.EMPTY
+            val heldItem = if (entity is KryptonLivingEntity) entity.getHeldItem(Hand.MAIN) else KryptonItemStack.EMPTY
             val canStandOnFluid: Predicate<Fluid> = if (entity is KryptonLivingEntity) Predicate(entity::canStandOnFluid) else Predicate { false }
             return EntityCollisionContext(entity.isSneaking, entity.location.y(), heldItem, canStandOnFluid, entity)
         }

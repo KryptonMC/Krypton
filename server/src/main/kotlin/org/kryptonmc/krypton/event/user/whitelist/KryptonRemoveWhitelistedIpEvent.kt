@@ -22,7 +22,7 @@ import org.kryptonmc.api.event.GenericResult
 import org.kryptonmc.api.event.user.whitelist.RemoveWhitelistedIpEvent
 import java.net.InetAddress
 
-data class KryptonRemoveWhitelistedIpEvent(override val address: InetAddress) : RemoveWhitelistedIpEvent {
+class KryptonRemoveWhitelistedIpEvent(override val address: InetAddress) : RemoveWhitelistedIpEvent {
 
     override var result: GenericResult = GenericResult.allowed()
 }

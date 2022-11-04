@@ -22,7 +22,7 @@ import org.kryptonmc.api.entity.player.Player
 import org.kryptonmc.api.event.GenericResult
 import org.kryptonmc.api.event.player.PerformActionEvent
 
-data class KryptonPerformActionEvent(override val player: Player, override val action: PerformActionEvent.Action) : PerformActionEvent {
+class KryptonPerformActionEvent(override val player: Player, override val action: PerformActionEvent.Action) : PerformActionEvent {
 
     override var result: GenericResult = GenericResult.allowed()
 }

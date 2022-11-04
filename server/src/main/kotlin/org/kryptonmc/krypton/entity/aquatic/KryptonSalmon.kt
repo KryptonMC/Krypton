@@ -27,7 +27,7 @@ import org.kryptonmc.krypton.world.KryptonWorld
 
 class KryptonSalmon(world: KryptonWorld) : KryptonSchoolingFish(world), Salmon {
 
-    override val type: KryptonEntityType<Salmon>
+    override val type: KryptonEntityType<KryptonSalmon>
         get() = KryptonEntityTypes.SALMON
     override val bucketType: ItemType
         get() = ItemTypes.SALMON_BUCKET

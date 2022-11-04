@@ -36,18 +36,15 @@ public interface Bee : Animal {
     /**
      * The amount of ticks this bee can't enter its hive for.
      */
-    @get:JvmName("cannotEnterHiveTicks")
     public var cannotEnterHiveTicks: Int
 
     /**
      * The location of this bee's hive.
      */
-    @get:JvmName("hive")
     public var hive: Vector3i?
 
     /**
      * The location of this bee's flower.
      */
-    @get:JvmName("flower")
     public var flower: Vector3i?
 }

@@ -16,20 +16,17 @@ import org.kryptonmc.api.item.ItemStack
 /**
  * Represents a player's inventory.
  */
-@Suppress("INAPPLICABLE_JVM_NAME")
 public interface PlayerInventory : Inventory {
 
     /**
      * The main inventory area, excluding the hotbar area. This has 27 slots,
      * and covers from slots 9 to 35.
      */
-    @get:JvmName("main")
     public val main: List<ItemStack>
 
     /**
      * The hotbar area. This has 9 slots, and covers from slots 0 to 8.
      */
-    @get:JvmName("hotbar")
     public val hotbar: List<ItemStack>
 
     /**
@@ -38,7 +35,6 @@ public interface PlayerInventory : Inventory {
      *
      * The returned list is immutable, and of a fixed size.
      */
-    @get:JvmName("crafting")
     public val crafting: List<ItemStack>
 
     /**
@@ -46,55 +42,46 @@ public interface PlayerInventory : Inventory {
      *
      * The returned list is immutable, and of a fixed size.
      */
-    @get:JvmName("armor")
     public val armor: List<ItemStack>
 
     /**
      * The item that this player is currently holding in their main hand.
      */
-    @get:JvmName("mainHand")
     public val mainHand: ItemStack
 
     /**
      * The item that this player is currently holding in their offhand.
      */
-    @get:JvmName("offHand")
     public val offHand: ItemStack
 
     /**
      * The helmet this player is currently wearing.
      */
-    @get:JvmName("helmet")
     public var helmet: ItemStack
 
     /**
      * The chestplate this player is currently wearing.
      */
-    @get:JvmName("chestplate")
     public var chestplate: ItemStack
 
     /**
      * The leggings this player is currently wearing.
      */
-    @get:JvmName("leggings")
     public var leggings: ItemStack
 
     /**
      * The boots this player is currently wearing.
      */
-    @get:JvmName("boots")
     public var boots: ItemStack
 
     /**
      * The slot of the currently held item.
      */
-    @get:JvmName("heldSlot")
     public val heldSlot: Int
 
     /**
      * The owner of this player inventory.
      */
-    @get:JvmName("owner")
     public val owner: Player
 
     /**

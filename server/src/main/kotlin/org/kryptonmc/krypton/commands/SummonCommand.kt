@@ -72,7 +72,7 @@ object SummonCommand : InternalCommand {
     }
 
     @JvmStatic
-    private fun spawnEntity(player: KryptonPlayer, type: Key, position: Vector3d, nbt: CompoundTag? = CompoundTag.empty()) {
+    private fun spawnEntity(player: KryptonPlayer, type: Key, position: Vector3d, nbt: CompoundTag? = null) {
         if (!Worlds.isInSpawnableBounds(position)) throw ERROR_INVALID_POSITION.create()
         val entity = EntityFactory.create(player.world, type.asString(), nbt)?.apply { this.location = position } ?: throw ERROR_FAILED.create()
         player.world.spawnEntity(entity)

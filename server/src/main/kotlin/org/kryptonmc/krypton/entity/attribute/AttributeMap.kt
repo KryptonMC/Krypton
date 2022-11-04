@@ -18,24 +18,64 @@
  */
 package org.kryptonmc.krypton.entity.attribute
 
+import com.google.common.collect.Multimap
 import net.kyori.adventure.key.Key
-import org.kryptonmc.api.entity.attribute.AttributeType
+import org.kryptonmc.api.entity.attribute.AttributeModifier
 import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.krypton.util.logger
+import org.kryptonmc.krypton.util.nullableComputeIfAbsent
 import org.kryptonmc.nbt.ListTag
 import org.kryptonmc.nbt.list
 import java.util.UUID
 
 class AttributeMap(private val supplier: AttributeSupplier) {
 
-    private val attributes = mutableMapOf<AttributeType, KryptonAttribute>()
-    private val dirty = mutableSetOf<KryptonAttribute>()
-    val syncable: Collection<KryptonAttribute>
-        get() = attributes.values.filter { it.type.sendToClient }
+    private val attributes = HashMap<KryptonAttributeType, KryptonAttribute>()
+    private val dirty = HashSet<KryptonAttribute>()
 
-    fun get(type: AttributeType): KryptonAttribute = attributes.computeIfAbsent(type) { supplier.create(type, ::onModify) }
+    fun syncable(): Collection<KryptonAttribute> = attributes.values.filter { it.type.sendToClient }
 
-    fun value(type: AttributeType): Double = attributes.get(type)?.value ?: supplier.value(type)
+    fun hasAttribute(type: KryptonAttributeType): Boolean = attributes.get(type) != null || supplier.hasAttribute(type)
+
+    fun hasModifier(type: KryptonAttributeType, modifierId: UUID): Boolean {
+        val attribute = attributes.get(type) ?: return supplier.hasModifier(type, modifierId)
+        return attribute.getModifier(modifierId) != null
+    }
+
+    // Would use a method reference for onModified, but for whatever reason, using a method reference generates a kotlin.Function
+    // implementation and then creates a Consumer that delegates to that.
+    fun get(type: KryptonAttributeType): KryptonAttribute? =
+        attributes.nullableComputeIfAbsent(type) { supplier.create(type) { onModified(it) } }
+
+    fun getValue(type: KryptonAttributeType): Double = attributes.get(type)?.calculateValue() ?: supplier.getValue(type)
+
+    fun getBaseValue(type: KryptonAttributeType): Double = attributes.get(type)?.baseValue ?: supplier.getBaseValue(type)
+
+    fun getModifierValue(type: KryptonAttributeType, modifierId: UUID): Double {
+        val attribute = attributes.get(type) ?: return supplier.getModifierValue(type, modifierId)
+        return requireNotNull(attribute.getModifier(modifierId)) { "Modifier $modifierId could not be found for attribute ${type.key()}!" }.amount
+    }
+
+    fun removeModifiers(modifiers: Multimap<KryptonAttributeType, AttributeModifier>) {
+        modifiers.asMap().forEach { (type, modifiers) ->
+            val attribute = attributes.get(type)
+            if (attribute != null) modifiers.forEach(attribute::removeModifier)
+        }
+    }
+
+    fun addModifiers(modifiers: Multimap<KryptonAttributeType, AttributeModifier>) {
+        modifiers.forEach { type, modifier ->
+            val attribute = get(type)
+            if (attribute != null) {
+                attribute.removeModifier(modifier)
+                attribute.addModifier(modifier)
+            }
+        }
+    }
+
+    fun replaceFrom(other: AttributeMap) {
+        other.attributes.values.forEach { get(it.type)?.replaceFrom(it) }
+    }
 
     fun load(list: ListTag) {
         list.forEachCompound {
@@ -45,13 +85,13 @@ class AttributeMap(private val supplier: AttributeSupplier) {
                 LOGGER.warn("Ignoring unknown attribute $key.")
                 return@forEachCompound
             }
-            get(type).load(it)
+            get(type.downcast())?.load(it)
         }
     }
 
     fun save(): ListTag = list { attributes.values.forEach { add(it.save()) } }
 
-    private fun onModify(attribute: KryptonAttribute) {
+    private fun onModified(attribute: KryptonAttribute) {
         if (attribute.type.sendToClient) dirty.add(attribute)
     }
 

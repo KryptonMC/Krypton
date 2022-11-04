@@ -35,6 +35,6 @@ object BoatSerializer : EntitySerializer<KryptonBoat> {
     }
 
     override fun save(entity: KryptonBoat): CompoundTag.Builder = BaseEntitySerializer.save(entity).apply {
-        string("Type", entity.variant.name.lowercase())
+        putString("Type", entity.variant.name.lowercase())
     }
 }

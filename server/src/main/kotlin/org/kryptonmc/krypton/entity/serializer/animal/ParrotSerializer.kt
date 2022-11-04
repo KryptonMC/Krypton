@@ -33,6 +33,6 @@ object ParrotSerializer : EntitySerializer<KryptonParrot> {
     }
 
     override fun save(entity: KryptonParrot): CompoundTag.Builder = TamableSerializer.save(entity).apply {
-        int("Variant", entity.variant.ordinal)
+        putInt("Variant", entity.variant.ordinal)
     }
 }

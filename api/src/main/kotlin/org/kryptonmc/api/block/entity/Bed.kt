@@ -13,12 +13,10 @@ import org.kryptonmc.api.item.data.DyeColor
 /**
  * A bed.
  */
-@Suppress("INAPPLICABLE_JVM_NAME")
 public interface Bed : BlockEntity {
 
     /**
      * The colour of this bed.
      */
-    @get:JvmName("color")
     public val color: DyeColor
 }

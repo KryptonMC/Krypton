@@ -19,11 +19,11 @@
 package org.kryptonmc.krypton.entity.animal
 
 import org.kryptonmc.api.entity.animal.Goat
-import org.kryptonmc.api.entity.attribute.AttributeTypes
 import org.kryptonmc.krypton.entity.KryptonEntityType
 import org.kryptonmc.krypton.entity.KryptonEntityTypes
 import org.kryptonmc.krypton.entity.KryptonMob
 import org.kryptonmc.krypton.entity.attribute.AttributeSupplier
+import org.kryptonmc.krypton.entity.attribute.KryptonAttributeTypes
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.entity.serializer.EntitySerializer
 import org.kryptonmc.krypton.entity.serializer.animal.GoatSerializer
@@ -31,7 +31,7 @@ import org.kryptonmc.krypton.world.KryptonWorld
 
 class KryptonGoat(world: KryptonWorld) : KryptonAnimal(world), Goat {
 
-    override val type: KryptonEntityType<Goat>
+    override val type: KryptonEntityType<KryptonGoat>
         get() = KryptonEntityTypes.GOAT
     override val serializer: EntitySerializer<KryptonGoat>
         get() = GoatSerializer
@@ -46,7 +46,7 @@ class KryptonGoat(world: KryptonWorld) : KryptonAnimal(world), Goat {
     }
 
     override fun onAgeTransformation() {
-        attribute(AttributeTypes.ATTACK_DAMAGE)?.baseValue = if (isBaby) BABY_ATTACK_DAMAGE else ADULT_ATTACK_DAMAGE
+        getAttribute(KryptonAttributeTypes.ATTACK_DAMAGE)?.baseValue = if (isBaby) BABY_ATTACK_DAMAGE else ADULT_ATTACK_DAMAGE
     }
 
     companion object {
@@ -56,8 +56,8 @@ class KryptonGoat(world: KryptonWorld) : KryptonAnimal(world), Goat {
 
         @JvmStatic
         fun attributes(): AttributeSupplier.Builder = KryptonMob.attributes()
-            .add(AttributeTypes.MAX_HEALTH, 10.0)
-            .add(AttributeTypes.MOVEMENT_SPEED, 0.2)
-            .add(AttributeTypes.ATTACK_DAMAGE, 2.0)
+            .add(KryptonAttributeTypes.MAX_HEALTH, 10.0)
+            .add(KryptonAttributeTypes.MOVEMENT_SPEED, 0.2)
+            .add(KryptonAttributeTypes.ATTACK_DAMAGE, 2.0)
     }
 }

@@ -19,24 +19,21 @@ public interface MinecartLike : DamageableVehicle {
     /**
      * The variant of this minecart like object.
      */
-    @get:JvmName("variant")
     public val variant: MinecartVariant
 
     /**
      * If the custom block is shown on the minecart.
      */
     @get:JvmName("showCustomBlock")
-    public var hasCustomBlock: Boolean
+    public var showCustomBlock: Boolean
 
     /**
      * The custom block state shown within the minecart.
      */
-    @get:JvmName("customBlock")
     public var customBlock: BlockState
 
     /**
      * The offset of the custom block.
      */
-    @get:JvmName("customBlockOffset")
     public var customBlockOffset: Int
 }

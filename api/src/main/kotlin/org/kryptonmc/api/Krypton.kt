@@ -16,17 +16,17 @@ import org.kryptonmc.api.util.FactoryProvider
 
 internal object Krypton {
 
-    @JvmStatic
-    internal val registryManager: RegistryManager
-        @JvmSynthetic get() = internalRegistryManager!!
-
     // Implementation note: All three of these need to be set reflectively.
     @JvmStatic
     private var factoryProvider: FactoryProvider? = null
     @JvmStatic
-    private var internalRegistryManager: RegistryManager? = null
+    private var registryManager: RegistryManager? = null
     @JvmStatic
     private var tagManager: TagManager? = null
+
+    @JvmStatic
+    @JvmSynthetic
+    internal fun registryManager(): RegistryManager = registryManager!!
 
     @JvmStatic
     @JvmSynthetic

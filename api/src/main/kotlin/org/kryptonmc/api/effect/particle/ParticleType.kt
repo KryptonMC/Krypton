@@ -12,11 +12,13 @@ import net.kyori.adventure.key.Keyed
 import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.effect.particle.builder.BaseParticleEffectBuilder
 import org.kryptonmc.api.util.CataloguedBy
+import javax.annotation.concurrent.Immutable
 
 /**
  * A type of particle effect.
  */
 @CataloguedBy(ParticleTypes::class)
+@Immutable
 public interface ParticleType : Keyed {
 
     /**

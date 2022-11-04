@@ -18,15 +18,20 @@
  */
 package org.kryptonmc.krypton.effect.particle
 
+import io.netty.buffer.ByteBuf
 import net.kyori.adventure.key.Key
 import org.kryptonmc.api.effect.particle.DustParticleType
 import org.kryptonmc.api.effect.particle.builder.DustParticleEffectBuilder
+import org.kryptonmc.api.effect.particle.data.ParticleData
 import org.kryptonmc.krypton.effect.particle.builder.KryptonDustParticleEffectBuilder
+import org.kryptonmc.krypton.effect.particle.data.KryptonDustParticleData
 
 @JvmRecord
-data class KryptonDustParticleType(private val key: Key) : DustParticleType {
+data class KryptonDustParticleType(private val key: Key) : KryptonParticleType, DustParticleType {
 
     override fun key(): Key = key
 
     override fun builder(): DustParticleEffectBuilder = KryptonDustParticleEffectBuilder(this)
+
+    override fun createData(buf: ByteBuf): ParticleData = KryptonDustParticleData(buf)
 }

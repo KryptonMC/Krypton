@@ -20,20 +20,21 @@ package org.kryptonmc.krypton.command.registrar
 
 import com.mojang.brigadier.Command
 import com.mojang.brigadier.CommandDispatcher
-import com.mojang.brigadier.arguments.StringArgumentType
+import com.mojang.brigadier.arguments.ArgumentType
 import com.mojang.brigadier.builder.LiteralArgumentBuilder
-import com.mojang.brigadier.builder.RequiredArgumentBuilder
-import com.mojang.brigadier.context.CommandContext
-import com.mojang.brigadier.suggestion.SuggestionProvider
+import com.mojang.brigadier.context.CommandContextBuilder
+import com.mojang.brigadier.context.ParsedArgument
 import com.mojang.brigadier.suggestion.Suggestions
 import com.mojang.brigadier.suggestion.SuggestionsBuilder
 import com.mojang.brigadier.tree.LiteralCommandNode
 import com.mojang.brigadier.tree.RootCommandNode
-import org.kryptonmc.api.command.meta.CommandMeta
 import org.kryptonmc.api.command.InvocableCommand
 import org.kryptonmc.api.command.Sender
+import org.kryptonmc.api.command.CommandMeta
+import org.kryptonmc.krypton.command.brigadier.KryptonArgumentBuilder
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.locks.Lock
+import java.util.function.Predicate
 
 /**
  * Registers commands that can be invoked. This is an abstraction over
@@ -41,11 +42,46 @@ import java.util.concurrent.locks.Lock
  * helper functions that we can just override in those subclasses to provide
  * the functionality that we need for each.
  */
-sealed class InvocableCommandRegistrar<C : InvocableCommand<A>, M : CommandMeta, A>(lock: Lock) : KryptonCommandRegistrar<C, M>(lock) {
+abstract class InvocableCommandRegistrar<C : InvocableCommand<A>, A>(
+    lock: Lock,
+    private val argumentsType: ArgumentType<A>
+) : KryptonCommandRegistrar<C>(lock) {
 
-    abstract fun execute(command: C, meta: M, context: CommandContext<Sender>): Int
+    protected abstract fun getArgs(arguments: Map<String, ParsedArgument<*, *>>): A
 
-    abstract fun suggest(command: C, meta: M, context: CommandContext<Sender>, builder: SuggestionsBuilder): CompletableFuture<Suggestions>
+    protected inline fun <reified V> readArguments(arguments: Map<String, ParsedArgument<*, *>>, fallback: V): V {
+        val argument = arguments.get("arguments") ?: return fallback
+        try {
+            return V::class.java.cast(argument.result)
+        } catch (exception: ClassCastException) {
+            throw IllegalArgumentException("Expected parsed argument to be of type ${V::class.java}, was ${argument.result.javaClass}!", exception)
+        }
+    }
+
+    override fun register(root: RootCommandNode<Sender>, command: C, meta: CommandMeta) {
+        val literal = createLiteral(command, meta.name)
+        register(root, literal)
+        meta.aliases.forEach { register(root, literal, it) }
+    }
+
+    private fun createLiteral(command: C, alias: String): LiteralCommandNode<Sender> {
+        val requirement = Predicate<CommandContextBuilder<Sender>> { command.hasPermission(it.source, getArgs(it.arguments)) }
+        val callback = Command {
+            command.execute(it.source, getArgs(it.arguments))
+            1
+        }
+        val literal = LiteralArgumentBuilder.literal<Sender>(alias)
+            .requiresWithContext { context, reader -> reader.canRead() || requirement.test(context) }
+            .executes(callback)
+            .build()
+        val arguments = KryptonArgumentBuilder.kryptonArgument<Sender, A>("arguments", argumentsType)
+            .requiresWithContext { context, _ -> requirement.test(context) }
+            .executes(callback)
+            .suggests { context, builder -> createSuggestions(builder, command.suggest(context.source, getArgs(context.arguments))) }
+            .build()
+        literal.addChild(arguments)
+        return literal
+    }
 
     /**
      * This came from CraftBukkit. We create a copy of the suggestions builder
@@ -59,35 +95,9 @@ sealed class InvocableCommandRegistrar<C : InvocableCommand<A>, M : CommandMeta,
      * replace `user` with the `<username>`, meaning we would get
      * `/lp <username>`.
      */
-    fun createSuggestions(builder: SuggestionsBuilder, results: List<String>): CompletableFuture<Suggestions> {
+    private fun createSuggestions(builder: SuggestionsBuilder, results: List<String>): CompletableFuture<Suggestions> {
         val offsetBuilder = builder.createOffset(builder.input.lastIndexOf(CommandDispatcher.ARGUMENT_SEPARATOR_CHAR) + 1)
         results.forEach(offsetBuilder::suggest)
         return offsetBuilder.buildFuture()
-    }
-
-    override fun register(root: RootCommandNode<Sender>, command: C, meta: M) {
-        val name = meta.name.lowercase()
-        val node = buildRawArgumentsLiteral(name, { execute(command, meta, it) }, { context, builder -> suggest(command, meta, context, builder) })
-        register(root, node)
-        meta.aliases.forEach {
-            val value = it.lowercase()
-            if (value == name) return@forEach
-            register(root, node, value)
-        }
-    }
-
-    companion object {
-
-        @JvmStatic
-        private fun buildRawArgumentsLiteral(
-            alias: String,
-            command: Command<Sender>,
-            suggestionProvider: SuggestionProvider<Sender>
-        ): LiteralCommandNode<Sender> = LiteralArgumentBuilder.literal<Sender>(alias.lowercase())
-            .then(RequiredArgumentBuilder.argument<Sender, String>("arguments", StringArgumentType.greedyString())
-                .suggests(suggestionProvider)
-                .executes(command))
-            .executes(command)
-            .build()
     }
 }

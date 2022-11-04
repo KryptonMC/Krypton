@@ -14,7 +14,6 @@ import java.net.InetAddress
 /**
  * A service that can whitelist users.
  */
-@Suppress("INAPPLICABLE_JVM_NAME")
 public interface WhitelistService {
 
     /**

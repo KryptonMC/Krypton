@@ -21,6 +21,9 @@ package org.kryptonmc.krypton.entity.serializer.projectile
 import org.kryptonmc.krypton.entity.projectile.KryptonShulkerBullet
 import org.kryptonmc.krypton.entity.serializer.EntitySerializer
 import org.kryptonmc.krypton.util.Directions
+import org.kryptonmc.krypton.util.nbt.getUUID
+import org.kryptonmc.krypton.util.nbt.hasUUID
+import org.kryptonmc.krypton.util.nbt.putUUID
 import org.kryptonmc.nbt.CompoundTag
 
 object ShulkerBulletSerializer : EntitySerializer<KryptonShulkerBullet> {
@@ -36,11 +39,11 @@ object ShulkerBulletSerializer : EntitySerializer<KryptonShulkerBullet> {
     }
 
     override fun save(entity: KryptonShulkerBullet): CompoundTag.Builder = ProjectileSerializer.save(entity).apply {
-        int("Steps", entity.steps)
-        double("TXD", entity.targetDeltaX)
-        double("TYD", entity.targetDeltaY)
-        double("TZD", entity.targetDeltaZ)
-        if (entity.target != null) uuid("Target", entity.target!!.uuid)
-        if (entity.movingDirection != null) int("Dir", entity.movingDirection!!.ordinal)
+        putInt("Steps", entity.steps)
+        putDouble("TXD", entity.targetDeltaX)
+        putDouble("TYD", entity.targetDeltaY)
+        putDouble("TZD", entity.targetDeltaZ)
+        if (entity.target != null) putUUID("Target", entity.target!!.uuid)
+        if (entity.movingDirection != null) putInt("Dir", entity.movingDirection!!.ordinal)
     }
 }

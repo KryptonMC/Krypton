@@ -22,7 +22,6 @@ public interface Registry<T> : Map<ResourceKey<T>, T> {
     /**
      * The registry key for this registry.
      */
-    @get:JvmName("key")
     public val key: ResourceKey<out Registry<T>>
 
     /**

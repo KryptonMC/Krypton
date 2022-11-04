@@ -31,10 +31,6 @@ data class KryptonResourcePack(
     override val promptMessage: Component?
 ) : ResourcePack {
 
-    override fun send(player: Player) {
-        player.sendResourcePack(this)
-    }
-
     object Factory : ResourcePack.Factory {
 
         override fun of(uri: URI, hash: String, isForced: Boolean, promptMessage: Component?): ResourcePack =

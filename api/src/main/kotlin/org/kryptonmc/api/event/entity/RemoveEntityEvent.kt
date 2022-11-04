@@ -16,18 +16,15 @@ import org.kryptonmc.api.world.World
 /**
  * Called when the given [entity] is removed from the given [world].
  */
-@Suppress("INAPPLICABLE_JVM_NAME")
 public interface RemoveEntityEvent : ResultedEvent<GenericResult> {
 
     /**
      * The entity that was removed from the world.
      */
-    @get:JvmName("entity")
     public val entity: Entity
 
     /**
      * The world that the entity was removed from.
      */
-    @get:JvmName("world")
     public val world: World
 }

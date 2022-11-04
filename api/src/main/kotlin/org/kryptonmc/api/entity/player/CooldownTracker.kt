@@ -21,7 +21,7 @@ public interface CooldownTracker {
      * @param item the item
      * @return true if the item is currently on cooldown, false otherwise
      */
-    public fun contains(item: ItemType): Boolean
+    public fun hasCooldown(item: ItemType): Boolean
 
     /**
      * Gets the current cooldown for the given [item], or returns `-1` if there
@@ -38,7 +38,7 @@ public interface CooldownTracker {
      * @param item the item
      * @return the percentage
      */
-    public fun percentage(item: ItemType): Float
+    public fun getPercentage(item: ItemType): Float
 
     /**
      * Sets the cooldown for the given [item] to the given amount of [ticks].

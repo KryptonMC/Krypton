@@ -27,7 +27,7 @@ import org.kryptonmc.krypton.world.KryptonWorld
 
 class KryptonLargeFireball(world: KryptonWorld) : KryptonFireball(world), LargeFireball {
 
-    override val type: KryptonEntityType<LargeFireball>
+    override val type: KryptonEntityType<KryptonLargeFireball>
         get() = KryptonEntityTypes.FIREBALL
     override val serializer: EntitySerializer<KryptonLargeFireball>
         get() = LargeFireballSerializer

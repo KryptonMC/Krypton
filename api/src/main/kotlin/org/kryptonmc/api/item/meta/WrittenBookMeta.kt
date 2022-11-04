@@ -11,12 +11,15 @@ package org.kryptonmc.api.item.meta
 import net.kyori.adventure.inventory.Book
 import net.kyori.adventure.text.Component
 import org.jetbrains.annotations.Contract
+import org.jetbrains.annotations.Unmodifiable
 import org.kryptonmc.api.item.data.WrittenBookGeneration
+import javax.annotation.concurrent.Immutable
 
 /**
  * Item metadata for books that have been written.
  */
 @Suppress("INAPPLICABLE_JVM_NAME", "NonExtendableApiUsage")
+@Immutable
 public interface WrittenBookMeta : BookMeta<WrittenBookMeta.Builder, WrittenBookMeta>, Book {
 
     /**
@@ -38,7 +41,7 @@ public interface WrittenBookMeta : BookMeta<WrittenBookMeta.Builder, WrittenBook
     public val generation: WrittenBookGeneration
 
     @get:JvmSynthetic
-    override val pages: List<Component>
+    override val pages: @Unmodifiable List<Component>
 
     /**
      * Creates new item metadata with the given [title].
@@ -79,8 +82,6 @@ public interface WrittenBookMeta : BookMeta<WrittenBookMeta.Builder, WrittenBook
 
     override fun pages(pages: List<Component>): WrittenBookMeta = withPages(pages)
 
-    override fun pages(vararg pages: Component): WrittenBookMeta = withPages(pages.toList())
-
     override fun toBuilder(): Builder
 
     /**
@@ -109,10 +110,10 @@ public interface WrittenBookMeta : BookMeta<WrittenBookMeta.Builder, WrittenBook
         override fun addPage(page: Component): Builder
 
         @MetaDsl
-        override fun pages(pages: Collection<Component>): Builder = pages(pages.asIterable())
+        override fun pages(pages: Collection<Component>): Builder
 
         @MetaDsl
-        override fun pages(vararg pages: Component): Builder = pages(pages.asIterable())
+        override fun pages(vararg pages: Component): Builder = pages(pages.asList())
     }
 
     public companion object {

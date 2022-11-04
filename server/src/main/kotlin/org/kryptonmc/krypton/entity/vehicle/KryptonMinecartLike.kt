@@ -44,20 +44,20 @@ abstract class KryptonMinecartLike(world: KryptonWorld) : KryptonEntity(world), 
     override var damageTimer: Int
         get() = data.get(MetadataKeys.MinecartLike.HURT_TIMER)
         set(value) = data.set(MetadataKeys.MinecartLike.HURT_TIMER, value)
-    override var hasCustomBlock: Boolean
+    override var showCustomBlock: Boolean
         get() = data.get(MetadataKeys.MinecartLike.SHOW_CUSTOM_BLOCK)
         set(value) = data.set(MetadataKeys.MinecartLike.SHOW_CUSTOM_BLOCK, value)
     override var customBlock: BlockState
-        get() = if (!hasCustomBlock) defaultCustomBlock else KryptonBlock.stateFromId(data.get(MetadataKeys.MinecartLike.CUSTOM_BLOCK_ID))
+        get() = if (!showCustomBlock) defaultCustomBlock else KryptonBlock.stateFromId(data.get(MetadataKeys.MinecartLike.CUSTOM_BLOCK_ID))
         set(value) {
             data.set(MetadataKeys.MinecartLike.CUSTOM_BLOCK_ID, KryptonBlock.idOf(value.downcast()))
-            hasCustomBlock = value !== defaultCustomBlock
+            showCustomBlock = value !== defaultCustomBlock
         }
     override var customBlockOffset: Int
         get() = data.get(MetadataKeys.MinecartLike.CUSTOM_BLOCK_OFFSET)
         set(value) {
             data.set(MetadataKeys.MinecartLike.CUSTOM_BLOCK_OFFSET, value)
-            hasCustomBlock = value != defaultCustomBlockOffset
+            showCustomBlock = value != defaultCustomBlockOffset
         }
     private var hurtDirection: Int
         get() = data.get(MetadataKeys.MinecartLike.HURT_DIRECTION)

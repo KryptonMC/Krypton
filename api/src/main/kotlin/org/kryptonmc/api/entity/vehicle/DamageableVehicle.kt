@@ -12,18 +12,15 @@ package org.kryptonmc.api.entity.vehicle
  * A vehicle that can be damaged by a player hitting it, causing it to
  * eventually break when it takes enough damage.
  */
-@Suppress("INAPPLICABLE_JVM_NAME")
 public interface DamageableVehicle : Vehicle {
 
     /**
      * The amount of damage that this damageable vehicle has taken.
      */
-    @get:JvmName("damageTaken")
     public var damageTaken: Float
 
     /**
      * The time since this damageable vehicle last took damage.
      */
-    @get:JvmName("damageTimer")
     public var damageTimer: Int
 }

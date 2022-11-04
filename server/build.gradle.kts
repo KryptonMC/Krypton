@@ -25,8 +25,6 @@ dependencies {
     implementation(libs.velocity.native)
 
     // Events
-    implementation(libs.event)
-    implementation(libs.asm)
     implementation(libs.lmbda)
 
     // Logging and console
@@ -37,6 +35,7 @@ dependencies {
     // Data
     api(libs.dataConverter)
     api(libs.nbt)
+    api(libs.nbt.kotlin)
     api(libs.serialization)
     api(libs.serialization.gson)
     api(libs.serialization.nbt)
@@ -51,6 +50,7 @@ dependencies {
     // Miscellaneous
     implementation(libs.clikt)
     implementation(libs.bstats)
+    implementation(libs.kotlinx.collections.immutable)
 
     testImplementation(libs.bundles.junit)
     testImplementation(libs.junit.platform.runner)

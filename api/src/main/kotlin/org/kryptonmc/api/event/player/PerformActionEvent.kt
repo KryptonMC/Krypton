@@ -14,13 +14,11 @@ import org.kryptonmc.api.event.ResultedEvent
 /**
  * Called when the given [player] performs the given [action].
  */
-@Suppress("INAPPLICABLE_JVM_NAME")
 public interface PerformActionEvent : PlayerEvent, ResultedEvent<GenericResult> {
 
     /**
      * The action that is being performed by the player.
      */
-    @get:JvmName("action")
     public val action: Action
 
     /**

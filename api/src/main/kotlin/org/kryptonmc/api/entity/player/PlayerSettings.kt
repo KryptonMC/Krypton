@@ -10,11 +10,13 @@ package org.kryptonmc.api.entity.player
 
 import org.kryptonmc.api.entity.MainHand
 import java.util.Locale
+import javax.annotation.concurrent.Immutable
 
 /**
  * The settings for a player indicated by the client.
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
+@Immutable
 public interface PlayerSettings {
 
     /**

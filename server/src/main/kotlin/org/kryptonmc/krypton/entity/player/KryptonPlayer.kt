@@ -30,7 +30,6 @@ import org.kryptonmc.api.effect.particle.data.DirectionalParticleData
 import org.kryptonmc.api.effect.particle.data.NoteParticleData
 import org.kryptonmc.api.entity.EquipmentSlot
 import org.kryptonmc.api.entity.Hand
-import org.kryptonmc.api.entity.attribute.AttributeTypes
 import org.kryptonmc.api.entity.player.Player
 import org.kryptonmc.api.entity.player.PlayerSettings
 import org.kryptonmc.api.event.player.ChangeGameModeEvent
@@ -50,6 +49,7 @@ import org.kryptonmc.krypton.entity.KryptonEntityType
 import org.kryptonmc.krypton.entity.KryptonEntityTypes
 import org.kryptonmc.krypton.entity.KryptonLivingEntity
 import org.kryptonmc.krypton.entity.attribute.AttributeSupplier
+import org.kryptonmc.krypton.entity.attribute.KryptonAttributeTypes
 import org.kryptonmc.krypton.entity.components.BasePlayer
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.entity.serializer.EntitySerializer
@@ -101,7 +101,7 @@ class KryptonPlayer(
     override val publicKey: PlayerPublicKey?
 ) : KryptonLivingEntity(world), BasePlayer {
 
-    override val type: KryptonEntityType<Player>
+    override val type: KryptonEntityType<KryptonPlayer>
         get() = KryptonEntityTypes.PLAYER
     override val serializer: EntitySerializer<KryptonPlayer>
         get() = PlayerSerializer
@@ -178,8 +178,8 @@ class KryptonPlayer(
         data.define(MetadataKeys.Player.SCORE, 0)
         data.define(MetadataKeys.Player.SKIN_FLAGS, 0)
         data.define(MetadataKeys.Player.MAIN_HAND, 1)
-        data.define(MetadataKeys.Player.LEFT_SHOULDER, CompoundTag.empty())
-        data.define(MetadataKeys.Player.RIGHT_SHOULDER, CompoundTag.empty())
+        data.define(MetadataKeys.Player.LEFT_SHOULDER, CompoundTag.EMPTY)
+        data.define(MetadataKeys.Player.RIGHT_SHOULDER, CompoundTag.EMPTY)
     }
 
     fun updateGameMode(mode: GameMode, cause: ChangeGameModeEvent.Cause) {
@@ -196,7 +196,7 @@ class KryptonPlayer(
         if (mode != GameMode.SPECTATOR) camera = this
     }
 
-    override fun equipment(slot: EquipmentSlot): KryptonItemStack = when {
+    override fun getEquipment(slot: EquipmentSlot): KryptonItemStack = when {
         slot == EquipmentSlot.MAIN_HAND -> inventory.mainHand
         slot == EquipmentSlot.OFF_HAND -> inventory.offHand
         slot.type == EquipmentSlot.Type.ARMOR -> inventory.armor.get(EquipmentSlots.index(slot))
@@ -376,9 +376,9 @@ class KryptonPlayer(
 
         @JvmStatic
         fun attributes(): AttributeSupplier.Builder = KryptonLivingEntity.attributes()
-            .add(AttributeTypes.ATTACK_DAMAGE, 1.0)
-            .add(AttributeTypes.MOVEMENT_SPEED, 0.1)
-            .add(AttributeTypes.ATTACK_SPEED)
-            .add(AttributeTypes.LUCK)
+            .add(KryptonAttributeTypes.ATTACK_DAMAGE, 1.0)
+            .add(KryptonAttributeTypes.MOVEMENT_SPEED, 0.1)
+            .add(KryptonAttributeTypes.ATTACK_SPEED)
+            .add(KryptonAttributeTypes.LUCK)
     }
 }

@@ -14,14 +14,12 @@ import net.kyori.adventure.text.Component
  * Something that may be a member of a team, having a meaningful representation
  * on a team.
  */
-@Suppress("INAPPLICABLE_JVM_NAME")
 public interface TeamMember {
 
     /**
      * If the member is currently part of a team, the team the member is part
      * of.
      */
-    @get:JvmName("team")
     public val team: Team?
 
     /**
@@ -31,6 +29,5 @@ public interface TeamMember {
      * containing their UUID, with the exception of the player, for which it is
      * their username.
      */
-    @get:JvmName("teamRepresentation")
     public val teamRepresentation: Component
 }

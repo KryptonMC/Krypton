@@ -23,10 +23,12 @@ import org.kryptonmc.krypton.entity.animal.KryptonFox
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.entity.serializer.AgeableSerializer
 import org.kryptonmc.krypton.entity.serializer.EntitySerializer
+import org.kryptonmc.krypton.util.nbt.addUUID
 import org.kryptonmc.krypton.util.toUUID
 import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.IntArrayTag
 import org.kryptonmc.nbt.StringTag
+import org.kryptonmc.nbt.list
 import java.util.UUID
 
 object FoxSerializer : EntitySerializer<KryptonFox> {
@@ -47,10 +49,10 @@ object FoxSerializer : EntitySerializer<KryptonFox> {
             if (entity.firstTrusted != null) addUUID(entity.firstTrusted!!)
             if (entity.secondTrusted != null) addUUID(entity.secondTrusted!!)
         }
-        boolean("Sleeping", entity.isSleeping)
-        string("Type", entity.variant.name.lowercase())
-        boolean("Sitting", entity.isSitting)
-        boolean("Crouching", entity.isCrouching)
+        putBoolean("Sleeping", entity.isSleeping)
+        putString("Type", entity.variant.name.lowercase())
+        putBoolean("Sitting", entity.isSitting)
+        putBoolean("Crouching", entity.isCrouching)
     }
 
     @JvmStatic

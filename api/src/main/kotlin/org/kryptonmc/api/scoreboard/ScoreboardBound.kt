@@ -6,15 +6,15 @@
  * This project is licensed under the terms of the MIT license.
  * For more details, please reference the LICENSE file in the api top-level directory.
  */
-package org.kryptonmc.api.fluid
+package org.kryptonmc.api.scoreboard
 
 /**
- * Something that can be represented as a [Fluid].
+ * Something that is bound to a scoreboard.
  */
-public fun interface FluidLike {
+public interface ScoreboardBound {
 
     /**
-     * Converts this fluid like object to its fluid representation.
+     * The scoreboard that this object is bound to.
      */
-    public fun asFluid(): Fluid
+    public val scoreboard: Scoreboard
 }

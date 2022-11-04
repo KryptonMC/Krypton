@@ -31,7 +31,7 @@ class KryptonGameRuleHolder private constructor(override val rules: MutableMap<G
     constructor() : this(Registries.GAME_RULES.values.associateWithTo(HashMap()) { it.default })
 
     fun save(): CompoundTag = compound {
-        rules.forEach { (rule, value) -> string(rule.name, value.toString()) }
+        rules.forEach { (rule, value) -> putString(rule.name, value.toString()) }
     }
 
     @Suppress("UNCHECKED_CAST") // This should be fine

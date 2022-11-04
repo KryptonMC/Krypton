@@ -18,6 +18,7 @@
  */
 package org.kryptonmc.krypton
 
+import org.kryptonmc.api.entity.attribute.BasicModifierOperation
 import org.kryptonmc.api.entity.attribute.ModifierOperation
 import org.kryptonmc.krypton.entity.attribute.KryptonAttributeModifier
 import java.util.UUID
@@ -28,17 +29,17 @@ class AttributeTests {
 
     @Test
     fun add() {
-        assertEquals(9.0, ModifierOperation.ADD.apply(BASE, MODIFIERS))
+        assertEquals(9.0, BasicModifierOperation.ADDITION.apply(BASE, MODIFIERS))
     }
 
     @Test
     fun `multiply base`() {
-        assertEquals(21.0, ModifierOperation.MULTIPLY_BASE.apply(BASE, MODIFIERS))
+        assertEquals(21.0, BasicModifierOperation.MULTIPLY_BASE.apply(BASE, MODIFIERS))
     }
 
     @Test
     fun `multiply total`() {
-        assertEquals(45.0, ModifierOperation.MULTIPLY_TOTAL.apply(BASE, MODIFIERS))
+        assertEquals(45.0, BasicModifierOperation.MULTIPLY_TOTAL.apply(BASE, MODIFIERS))
     }
 
     companion object {
@@ -46,8 +47,8 @@ class AttributeTests {
         private const val BASE = 3.0
         private val OPERATION = ModifierOperation { _, _ -> 0.0 }
         private val MODIFIERS = setOf(
-            KryptonAttributeModifier("1", UUID.randomUUID(), 2.0, OPERATION),
-            KryptonAttributeModifier("2", UUID.randomUUID(), 4.0, OPERATION)
+            KryptonAttributeModifier(UUID.randomUUID(), "1", 2.0, OPERATION),
+            KryptonAttributeModifier(UUID.randomUUID(), "2", 4.0, OPERATION)
         )
     }
 }

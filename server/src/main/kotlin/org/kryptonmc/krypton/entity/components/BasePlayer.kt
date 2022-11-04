@@ -37,7 +37,7 @@ interface BasePlayer : BaseEntity, KryptonEquipable, Vanishable, HungerDelegate,
         get() = world.scoreboard
     override val teamRepresentation: Component
         get() = name
-    override val direction: Direction
+    override val facing: Direction
         get() = Directions.ofPitch(rotation.y().toDouble())
     override val dimensionType: DimensionType
         get() = world.dimensionType

@@ -10,6 +10,7 @@ package org.kryptonmc.api.event.player
 
 import net.kyori.adventure.text.Component
 import org.kryptonmc.api.event.ResultedEvent
+import javax.annotation.concurrent.Immutable
 
 /**
  * Called when a player logs in and a player object has been constructed for
@@ -31,6 +32,7 @@ public interface JoinEvent : PlayerEvent, ResultedEvent<JoinEvent.Result> {
      * @param hasJoinedBefore if the player joining has joined before
      */
     @JvmRecord
+    @Immutable
     public data class Result(
         override val isAllowed: Boolean,
         public val message: Component?,

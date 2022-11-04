@@ -18,48 +18,16 @@
  */
 package org.kryptonmc.krypton.command.registrar
 
-import com.mojang.brigadier.context.CommandContext
-import com.mojang.brigadier.suggestion.Suggestions
-import com.mojang.brigadier.suggestion.SuggestionsBuilder
-import net.kyori.adventure.util.TriState
-import org.kryptonmc.api.command.Sender
+import com.mojang.brigadier.context.ParsedArgument
 import org.kryptonmc.api.command.SimpleCommand
-import org.kryptonmc.api.command.meta.SimpleCommandMeta
-import org.kryptonmc.krypton.command.splitArguments
-import java.util.concurrent.CompletableFuture
+import org.kryptonmc.krypton.command.brigadier.StringArrayArgumentType
 import java.util.concurrent.locks.Lock
 
 /**
  * Registers simple commands to a root node. This performs permission checks on
  * execute and suggest.
  */
-class SimpleCommandRegistrar(lock: Lock) : InvocableCommandRegistrar<SimpleCommand, SimpleCommandMeta, Array<String>>(lock) {
+class SimpleCommandRegistrar(lock: Lock) : InvocableCommandRegistrar<SimpleCommand, Array<String>>(lock, StringArrayArgumentType) {
 
-    override fun execute(command: SimpleCommand, meta: SimpleCommandMeta, context: CommandContext<Sender>): Int {
-        val sender = context.source
-        val args = context.splitArguments()
-        if (meta.permission == null) return dispatch(command, sender, args)
-
-        return when (sender.getPermissionValue(meta.permission!!)) {
-            TriState.TRUE -> dispatch(command, sender, args)
-            TriState.FALSE, TriState.NOT_SET -> 0
-        }
-    }
-
-    override fun suggest(
-        command: SimpleCommand,
-        meta: SimpleCommandMeta,
-        context: CommandContext<Sender>,
-        builder: SuggestionsBuilder
-    ): CompletableFuture<Suggestions> {
-        val args = context.splitArguments()
-        val hasPermission = meta.permission?.let(context.source::hasPermission) ?: true
-        if (!hasPermission) return builder.buildFuture()
-        return createSuggestions(builder, command.suggest(context.source, args))
-    }
-
-    private fun dispatch(command: SimpleCommand, sender: Sender, args: Array<String>): Int {
-        command.execute(sender, args)
-        return 1
-    }
+    override fun getArgs(arguments: Map<String, ParsedArgument<*, *>>): Array<String> = readArguments(arguments, StringArrayArgumentType.EMPTY)
 }

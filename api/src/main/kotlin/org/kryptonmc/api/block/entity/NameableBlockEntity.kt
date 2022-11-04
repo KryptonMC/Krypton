@@ -13,12 +13,10 @@ import net.kyori.adventure.text.Component
 /**
  * A block entity that can be named.
  */
-@Suppress("INAPPLICABLE_JVM_NAME")
 public interface NameableBlockEntity : BlockEntity {
 
     /**
      * The display name of the block entity.
      */
-    @get:JvmName("displayName")
     public var displayName: Component
 }

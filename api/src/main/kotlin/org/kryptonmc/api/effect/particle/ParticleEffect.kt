@@ -11,6 +11,7 @@ package org.kryptonmc.api.effect.particle
 import org.kryptonmc.api.effect.particle.builder.BaseParticleEffectBuilder
 import org.kryptonmc.api.effect.particle.data.ParticleData
 import org.spongepowered.math.vector.Vector3d
+import javax.annotation.concurrent.Immutable
 
 /**
  * Holds information used to spawn particles for a player.
@@ -22,6 +23,7 @@ import org.spongepowered.math.vector.Vector3d
  * subclass of [BaseParticleEffectBuilder]).
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
+@Immutable
 public interface ParticleEffect {
 
     /**

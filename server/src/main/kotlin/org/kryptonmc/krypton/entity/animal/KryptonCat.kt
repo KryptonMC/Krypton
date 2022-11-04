@@ -23,32 +23,30 @@ import org.kryptonmc.api.effect.sound.SoundEvents
 import org.kryptonmc.api.entity.animal.Animal
 import org.kryptonmc.api.entity.animal.Cat
 import org.kryptonmc.api.entity.animal.type.CatVariant
-import org.kryptonmc.api.entity.animal.type.CatVariants
-import org.kryptonmc.api.entity.attribute.AttributeTypes
 import org.kryptonmc.api.item.ItemStack
 import org.kryptonmc.api.item.ItemTypes
 import org.kryptonmc.api.item.data.DyeColor
-import org.kryptonmc.api.item.data.DyeColors
 import org.kryptonmc.krypton.entity.KryptonEntityType
 import org.kryptonmc.krypton.entity.KryptonEntityTypes
 import org.kryptonmc.krypton.entity.KryptonMob
 import org.kryptonmc.krypton.entity.attribute.AttributeSupplier
+import org.kryptonmc.krypton.entity.attribute.KryptonAttributeTypes
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.entity.serializer.EntitySerializer
 import org.kryptonmc.krypton.entity.serializer.animal.CatSerializer
-import org.kryptonmc.krypton.registry.KryptonRegistries
+import org.kryptonmc.krypton.util.DyeColors
 import org.kryptonmc.krypton.world.KryptonWorld
 
 class KryptonCat(world: KryptonWorld) : KryptonTamable(world), Cat {
 
-    override val type: KryptonEntityType<Cat>
+    override val type: KryptonEntityType<KryptonCat>
         get() = KryptonEntityTypes.CAT
     override val serializer: EntitySerializer<KryptonCat>
         get() = CatSerializer
 
     override var variant: CatVariant
-        get() = KryptonRegistries.CAT_VARIANT.get(data.get(MetadataKeys.Cat.VARIANT))!!
-        set(value) = data.set(MetadataKeys.Cat.VARIANT, KryptonRegistries.CAT_VARIANT.idOf(value))
+        get() = VARIANTS[data.get(MetadataKeys.Cat.VARIANT)]
+        set(value) = data.set(MetadataKeys.Cat.VARIANT, value.ordinal)
     override var isLying: Boolean
         get() = data.get(MetadataKeys.Cat.LYING)
         set(value) = data.set(MetadataKeys.Cat.LYING, value)
@@ -56,15 +54,15 @@ class KryptonCat(world: KryptonWorld) : KryptonTamable(world), Cat {
         get() = data.get(MetadataKeys.Cat.RELAXED)
         set(value) = data.set(MetadataKeys.Cat.RELAXED, value)
     override var collarColor: DyeColor
-        get() = KryptonRegistries.DYE_COLORS.get(data.get(MetadataKeys.Cat.COLLAR_COLOR)) ?: DyeColors.WHITE
-        set(value) = data.set(MetadataKeys.Cat.COLLAR_COLOR, KryptonRegistries.DYE_COLORS.idOf(value))
+        get() = DyeColors.fromId(data.get(MetadataKeys.Cat.COLLAR_COLOR))
+        set(value) = data.set(MetadataKeys.Cat.COLLAR_COLOR, value.ordinal)
 
     override fun defineData() {
         super.defineData()
-        data.define(MetadataKeys.Cat.VARIANT, KryptonRegistries.CAT_VARIANT.idOf(CatVariants.BLACK))
+        data.define(MetadataKeys.Cat.VARIANT, CatVariant.BLACK.ordinal)
         data.define(MetadataKeys.Cat.LYING, false)
         data.define(MetadataKeys.Cat.RELAXED, false)
-        data.define(MetadataKeys.Cat.COLLAR_COLOR, KryptonRegistries.DYE_COLORS.idOf(DyeColors.RED))
+        data.define(MetadataKeys.Cat.COLLAR_COLOR, DyeColor.RED.ordinal)
     }
 
     override fun hiss() {
@@ -81,10 +79,12 @@ class KryptonCat(world: KryptonWorld) : KryptonTamable(world), Cat {
 
     companion object {
 
+        private val VARIANTS = CatVariant.values()
+
         @JvmStatic
         fun attributes(): AttributeSupplier.Builder = KryptonMob.attributes()
-            .add(AttributeTypes.MAX_HEALTH, 10.0)
-            .add(AttributeTypes.MOVEMENT_SPEED, 0.3)
-            .add(AttributeTypes.ATTACK_DAMAGE, 3.0)
+            .add(KryptonAttributeTypes.MAX_HEALTH, 10.0)
+            .add(KryptonAttributeTypes.MOVEMENT_SPEED, 0.3)
+            .add(KryptonAttributeTypes.ATTACK_DAMAGE, 3.0)
     }
 }

@@ -28,22 +28,22 @@ import org.kryptonmc.api.resource.ResourceKeys
 @Suppress("UNCHECKED_CAST")
 object KryptonRegistryManager : RegistryManager {
 
-    private lateinit var parent: KryptonRegistry<Registry<out Any>>
+    private lateinit var parent: KryptonRegistry<Registry<*>>
 
     @JvmStatic
     fun bootstrap() {
         parent = KryptonRegistry(ResourceKeys.PARENT)
     }
 
-    override fun <T : Any> registry(key: ResourceKey<out Registry<T>>): Registry<T>? =
-        parent.get(key as ResourceKey<Registry<out Any>>) as? Registry<T>
+    override fun <T> registry(key: ResourceKey<out Registry<T>>): Registry<T>? =
+        parent.get(key as ResourceKey<Registry<*>>) as? Registry<T>
 
-    override fun <T : Any> defaulted(key: ResourceKey<out Registry<T>>): DefaultedRegistry<T>? =
-        parent.get(key as ResourceKey<Registry<out Any>>) as? DefaultedRegistry<T>
+    override fun <T> defaulted(key: ResourceKey<out Registry<T>>): DefaultedRegistry<T>? =
+        parent.get(key as ResourceKey<Registry<*>>) as? DefaultedRegistry<T>
 
-    override fun <T : Any> create(key: ResourceKey<out Registry<T>>): KryptonRegistry<T> =
-        parent.register(key as ResourceKey<Registry<out Any>>, KryptonRegistry(key as ResourceKey<out Registry<T>>))
+    override fun <T> create(key: ResourceKey<out Registry<T>>): KryptonRegistry<T> =
+        parent.register(key as ResourceKey<Registry<*>>, KryptonRegistry(key as ResourceKey<out Registry<T>>))
 
-    override fun <T : Any> createDefaulted(key: ResourceKey<out Registry<T>>, defaultKey: Key): KryptonDefaultedRegistry<T> =
-        parent.register(key as ResourceKey<Registry<out Any>>, KryptonDefaultedRegistry(key as ResourceKey<out Registry<T>>, defaultKey))
+    override fun <T> createDefaulted(key: ResourceKey<out Registry<T>>, defaultKey: Key): KryptonDefaultedRegistry<T> =
+        parent.register(key as ResourceKey<Registry<*>>, KryptonDefaultedRegistry(key as ResourceKey<out Registry<T>>, defaultKey))
 }

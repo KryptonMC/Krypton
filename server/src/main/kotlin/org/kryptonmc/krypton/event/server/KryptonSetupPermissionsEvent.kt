@@ -23,7 +23,7 @@ import org.kryptonmc.api.permission.PermissionFunction
 import org.kryptonmc.api.permission.PermissionProvider
 import org.kryptonmc.api.permission.Subject
 
-data class KryptonSetupPermissionsEvent(override val subject: Subject, private val defaultProvider: PermissionProvider) : SetupPermissionsEvent {
+class KryptonSetupPermissionsEvent(override val subject: Subject, private val defaultProvider: PermissionProvider) : SetupPermissionsEvent {
 
     override var provider: PermissionProvider = defaultProvider
 

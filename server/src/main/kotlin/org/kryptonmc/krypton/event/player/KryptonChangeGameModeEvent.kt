@@ -22,7 +22,7 @@ import org.kryptonmc.api.entity.player.Player
 import org.kryptonmc.api.event.player.ChangeGameModeEvent
 import org.kryptonmc.api.world.GameMode
 
-data class KryptonChangeGameModeEvent(
+class KryptonChangeGameModeEvent(
     override val player: Player,
     override val oldGameMode: GameMode,
     override val newGameMode: GameMode,

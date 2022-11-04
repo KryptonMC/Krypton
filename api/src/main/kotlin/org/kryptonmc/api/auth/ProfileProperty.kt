@@ -11,11 +11,13 @@ package org.kryptonmc.api.auth
 import org.jetbrains.annotations.ApiStatus
 import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.Krypton
+import javax.annotation.concurrent.Immutable
 
 /**
  * A property of a [GameProfile].
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
+@Immutable
 public interface ProfileProperty {
 
     /**
@@ -31,27 +33,26 @@ public interface ProfileProperty {
     public val value: String
 
     /**
-     * The Yggdrasil signature for this property. May be null if this property
-     * isn't signed.
+     * The signature for this property.
+     *
+     * May be null if this property isn't signed.
      */
     @get:JvmName("signature")
     public val signature: String?
 
     /**
-     * Creates a new profile property that is a copy of this one with the
-     * given [signature].
+     * Creates a new profile property with the given [signature].
      *
      * @param signature the new signature
-     * @return the new, modified profile property
+     * @return the new profile property
      */
     @Contract("_ -> new", pure = true)
     public fun withSignature(signature: String?): ProfileProperty
 
     /**
-     * Creates a new profile property that is a copy of this one without a
-     * signature.
+     * Creates a new profile property without a signature.
      *
-     * @return the new, modified profile property
+     * @return the new profile property
      */
     @Contract("_ -> new", pure = true)
     public fun withoutSignature(): ProfileProperty

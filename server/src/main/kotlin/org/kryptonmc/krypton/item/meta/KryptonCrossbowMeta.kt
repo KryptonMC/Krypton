@@ -18,58 +18,59 @@
  */
 package org.kryptonmc.krypton.item.meta
 
-import kotlinx.collections.immutable.PersistentList
-import kotlinx.collections.immutable.persistentListOf
+import com.google.common.collect.ImmutableList
 import org.kryptonmc.api.item.ItemStack
 import org.kryptonmc.api.item.meta.CrossbowMeta
 import org.kryptonmc.krypton.item.KryptonItemStack
 import org.kryptonmc.krypton.item.downcast
+import org.kryptonmc.krypton.util.BuilderCollection
 import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.list
 
 class KryptonCrossbowMeta(data: CompoundTag) : AbstractItemMeta<KryptonCrossbowMeta>(data), CrossbowMeta {
 
     override val isCharged: Boolean = data.getBoolean("Charged")
-    override val projectiles: PersistentList<ItemStack> = data.getList("ChargedProjectiles", CompoundTag.ID).mapCompound(KryptonItemStack::from)
+    override val projectiles: ImmutableList<ItemStack> =
+        data.mapToList("ChargedProjectiles", CompoundTag.ID) { KryptonItemStack.from(it as CompoundTag) }
 
     override fun copy(data: CompoundTag): KryptonCrossbowMeta = KryptonCrossbowMeta(data)
 
     override fun withCharged(charged: Boolean): KryptonCrossbowMeta = copy(data.putBoolean("Charged", charged))
 
-    override fun withProjectiles(projectiles: List<ItemStack>): KryptonCrossbowMeta = KryptonCrossbowMeta(data.putProjectiles(projectiles))
+    override fun withProjectiles(projectiles: List<ItemStack>): KryptonCrossbowMeta = copy(data.putProjectiles(projectiles))
 
-    override fun addProjectile(projectile: ItemStack): KryptonCrossbowMeta = withProjectiles(projectiles.add(projectile))
+    override fun withProjectile(projectile: ItemStack): KryptonCrossbowMeta =
+        copy(data.update("ChargedProjectiles", CompoundTag.ID) { it.add(projectile.downcast().save()) })
 
-    override fun removeProjectile(index: Int): KryptonCrossbowMeta = withProjectiles(projectiles.removeAt(index))
+    override fun withoutProjectile(index: Int): KryptonCrossbowMeta = copy(data.update("ChargedProjectiles", CompoundTag.ID) { it.remove(index) })
 
-    override fun removeProjectile(projectile: ItemStack): KryptonCrossbowMeta = withProjectiles(projectiles.remove(projectile))
+    override fun withoutProjectile(projectile: ItemStack): KryptonCrossbowMeta =
+        copy(data.update("ChargedProjectiles", CompoundTag.ID) { it.remove(projectile.downcast().save()) })
 
     override fun toBuilder(): CrossbowMeta.Builder = Builder(this)
 
     override fun toString(): String = "KryptonCrossbowMeta(${partialToString()}, isCharged=$isCharged, projectiles=$projectiles)"
 
-    class Builder() : KryptonItemMetaBuilder<CrossbowMeta.Builder, CrossbowMeta>(), CrossbowMeta.Builder {
+    class Builder : KryptonItemMetaBuilder<CrossbowMeta.Builder, CrossbowMeta>, CrossbowMeta.Builder {
 
         private var charged = false
-        private val projectiles = persistentListOf<ItemStack>().builder()
+        private var projectiles: MutableCollection<ItemStack>
 
-        constructor(meta: CrossbowMeta) : this() {
-            copyFrom(meta)
+        constructor() : super() {
+            projectiles = BuilderCollection()
+        }
+
+        constructor(meta: KryptonCrossbowMeta) : super(meta) {
             charged = meta.isCharged
-            projectiles.addAll(meta.projectiles)
+            projectiles = BuilderCollection(meta.projectiles)
         }
 
-        override fun charged(value: Boolean): CrossbowMeta.Builder = apply { charged = value }
+        override fun charged(value: Boolean): Builder = apply { charged = value }
 
-        override fun projectiles(projectiles: Iterable<ItemStack>): CrossbowMeta.Builder = apply {
-            this.projectiles.clear()
-            this.projectiles.addAll(projectiles)
-        }
-
-        override fun addProjectile(projectile: ItemStack): CrossbowMeta.Builder = apply { projectiles.add(projectile) }
+        override fun projectiles(projectiles: Collection<ItemStack>): Builder = apply { this.projectiles = BuilderCollection(projectiles) }
 
         override fun buildData(): CompoundTag.Builder = super.buildData().apply {
-            boolean("Charged", charged)
+            putBoolean("Charged", charged)
             if (projectiles.isNotEmpty()) list("ChargedProjectiles") { projectiles.forEach { add(it.downcast().save()) } }
         }
 
@@ -78,6 +79,6 @@ class KryptonCrossbowMeta(data: CompoundTag) : AbstractItemMeta<KryptonCrossbowM
 }
 
 private fun CompoundTag.putProjectiles(projectiles: List<ItemStack>): CompoundTag {
-    if (projectiles.isNotEmpty()) return remove("ChargedProjectiles")
+    if (projectiles.isEmpty()) return remove("ChargedProjectiles")
     return put("ChargedProjectiles", list { projectiles.forEach { add(it.downcast().save()) } })
 }

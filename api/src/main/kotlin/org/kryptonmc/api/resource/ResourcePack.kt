@@ -12,13 +12,14 @@ import net.kyori.adventure.text.Component
 import org.jetbrains.annotations.ApiStatus
 import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.Krypton
-import org.kryptonmc.api.entity.player.Player
 import java.net.URI
+import javax.annotation.concurrent.Immutable
 
 /**
  * A resource pack that may be sent to clients.
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
+@Immutable
 public interface ResourcePack {
 
     /**
@@ -45,13 +46,6 @@ public interface ResourcePack {
      */
     @get:JvmName("promptMessage")
     public val promptMessage: Component?
-
-    /**
-     * Sends this resource pack to the given [player].
-     *
-     * @param player the player
-     */
-    public fun send(player: Player)
 
     /**
      * The status of a resource pack.

@@ -18,35 +18,46 @@
  */
 package org.kryptonmc.krypton.entity
 
-import kotlinx.collections.immutable.ImmutableSet
-import kotlinx.collections.immutable.persistentSetOf
+import com.google.common.collect.ImmutableSet
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.text.Component
-import net.kyori.adventure.text.TranslatableComponent
 import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.block.BlockState
 import org.kryptonmc.api.block.Blocks
 import org.kryptonmc.api.entity.Entity
 import org.kryptonmc.api.entity.EntityCategory
 import org.kryptonmc.api.entity.EntityType
+import org.kryptonmc.api.registry.Registries
+import org.kryptonmc.krypton.util.Keys
 import org.kryptonmc.krypton.world.block.downcast
 import org.kryptonmc.krypton.world.block.isBurning
 import org.kryptonmc.krypton.world.block.state.KryptonBlockState
 
-@JvmRecord
-data class KryptonEntityType<out T : Entity>(
-    private val key: Key,
+class KryptonEntityType<out T : KryptonEntity>(
     override val category: EntityCategory,
+    val isSerializable: Boolean,
     override val isSummonable: Boolean,
     override val isImmuneToFire: Boolean,
-    override val clientTrackingRange: Int,
-    override val updateInterval: Int,
+    val canSpawnFarFromPlayer: Boolean,
+    override val immuneTo: ImmutableSet<Block>,
     override val width: Float,
     override val height: Float,
-    override val immuneTo: ImmutableSet<Block>,
-    override val lootTable: Key,
-    override val translation: TranslatableComponent
+    override val clientTrackingRange: Int,
+    override val updateInterval: Int
 ) : EntityType<T> {
+
+    private var descriptionId: String? = null
+    private var description: Component? = null
+    private var cachedLootTable: Key? = null
+
+    override val lootTable: Key
+        get() {
+            if (cachedLootTable == null) {
+                val key = key()
+                cachedLootTable = Key.key(key.namespace(), "entities/${key.value()}")
+            }
+            return cachedLootTable!!
+        }
 
     override fun isImmuneTo(block: BlockState): Boolean = isImmuneTo(block.downcast())
 
@@ -56,71 +67,60 @@ data class KryptonEntityType<out T : Entity>(
         return block.eq(Blocks.WITHER_ROSE) || block.eq(Blocks.SWEET_BERRY_BUSH) || block.eq(Blocks.CACTUS) || block.eq(Blocks.POWDER_SNOW)
     }
 
-    override fun key(): Key = key
+    override fun key(): Key = Registries.ENTITY_TYPE.get(this)
 
-    class Builder<T : Entity>(private var key: Key, private var category: EntityCategory) : EntityType.Builder<T> {
-
-        private var summonable = true
-        private var fireImmune = false
-        private var width = DEFAULT_WIDTH
-        private var height = DEFAULT_HEIGHT
-        private val immuneTo = persistentSetOf<Block>().builder()
-        private var clientTrackingRange = DEFAULT_CLIENT_TRACKING_RANGE
-        private var updateInterval = DEFAULT_UPDATE_INTERVAL
-        private var lootTable: Key? = null
-        private var translation: TranslatableComponent? = null
-
-        override fun key(key: Key): Builder<T> = apply { this.key = key }
-
-        override fun category(category: EntityCategory): Builder<T> = apply { this.category = category }
-
-        override fun summonable(value: Boolean): Builder<T> = apply { summonable = value }
-
-        override fun fireImmune(value: Boolean): Builder<T> = apply { fireImmune = value }
-
-        override fun clientTrackingRange(range: Int): Builder<T> = apply { clientTrackingRange = range }
-
-        override fun updateInterval(interval: Int): Builder<T> = apply { updateInterval = interval }
-
-        override fun width(width: Float): Builder<T> = apply { this.width = width }
-
-        override fun height(height: Float): Builder<T> = apply { this.height = height }
-
-        override fun immuneTo(block: Block): Builder<T> = apply { immuneTo.add(block) }
-
-        override fun immuneTo(vararg blocks: Block): Builder<T> = apply { blocks.forEach(immuneTo::add) }
-
-        override fun immuneTo(blocks: Iterable<Block>): Builder<T> = apply { immuneTo.addAll(blocks) }
-
-        override fun lootTable(identifier: Key): Builder<T> = apply { lootTable = identifier }
-
-        override fun translation(translation: TranslatableComponent): Builder<T> = apply { this.translation = translation }
-
-        override fun build(): KryptonEntityType<T> = KryptonEntityType(
-            key,
-            category,
-            summonable,
-            fireImmune,
-            clientTrackingRange,
-            updateInterval,
-            width,
-            height,
-            immuneTo.build(),
-            lootTable ?: Key.key(key.namespace(), "entities/${key.value()}"),
-            translation ?: Component.translatable("entity.${key.namespace()}.${key.value().replace('/', '.')}")
-        )
-
-        companion object {
-
-            private const val DEFAULT_WIDTH = 0.6F
-            private const val DEFAULT_HEIGHT = 1.8F
-            private const val DEFAULT_CLIENT_TRACKING_RANGE = 5
-            private const val DEFAULT_UPDATE_INTERVAL = 3
-        }
+    override fun translationKey(): String {
+        if (descriptionId == null) descriptionId = Keys.translation("entity", key())
+        return descriptionId!!
     }
 
-    object Factory : EntityType.Factory {
+    fun description(): Component {
+        if (description == null) description = Component.translatable(translationKey())
+        return description!!
+    }
 
-        override fun <T : Entity> builder(key: Key, category: EntityCategory): EntityType.Builder<T> = Builder(key, category)
+    class Builder<out T : KryptonEntity>(private val category: EntityCategory) {
+
+        private var immuneTo = ImmutableSet.of<Block>()
+        private var serializable = true
+        private var summonable = true
+        private var fireImmune = false
+        private var canSpawnFarFromPlayer = false
+        private var clientTrackingRange = 5
+        private var updateInterval = 3
+        private var width = 0.6F
+        private var height = 1.8F
+
+        fun size(width: Float, height: Float): Builder<T> = apply {
+            this.width = width
+            this.height = height
+        }
+
+        fun notSummonable(): Builder<T> = apply { summonable = false }
+
+        fun notSerializable(): Builder<T> = apply { serializable = false }
+
+        fun fireImmune(): Builder<T> = apply { fireImmune = true }
+
+        fun immuneTo(vararg blocks: Block): Builder<T> = apply { immuneTo = ImmutableSet.copyOf(blocks) }
+
+        fun canSpawnFarFromPlayer(): Builder<T> = apply { canSpawnFarFromPlayer = true }
+
+        fun clientTrackingRange(range: Int): Builder<T> = apply { clientTrackingRange = range }
+
+        fun updateInterval(interval: Int): Builder<T> = apply { updateInterval = interval }
+
+        fun build(): KryptonEntityType<T> = KryptonEntityType(
+            category,
+            serializable,
+            summonable,
+            fireImmune,
+            canSpawnFarFromPlayer,
+            immuneTo,
+            width,
+            height,
+            clientTrackingRange,
+            updateInterval
+        )
     }
 }

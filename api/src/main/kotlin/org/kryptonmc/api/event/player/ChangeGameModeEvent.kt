@@ -11,29 +11,26 @@ package org.kryptonmc.api.event.player
 import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.event.ResultedEvent
 import org.kryptonmc.api.world.GameMode
+import javax.annotation.concurrent.Immutable
 
 /**
  * Called when the given [player] changes game mode.
  */
-@Suppress("INAPPLICABLE_JVM_NAME")
 public interface ChangeGameModeEvent : PlayerEvent, ResultedEvent<ChangeGameModeEvent.Result> {
 
     /**
      * The game mode that the player was in before the change.
      */
-    @get:JvmName("oldGameMode")
     public val oldGameMode: GameMode
 
     /**
      * The game mode that the player will be in after the change.
      */
-    @get:JvmName("newGameMode")
     public val newGameMode: GameMode
 
     /**
      * The cause of the game mode being changed for the player.
      */
-    @get:JvmName("cause")
     public val cause: Cause
 
     /**
@@ -64,6 +61,7 @@ public interface ChangeGameModeEvent : PlayerEvent, ResultedEvent<ChangeGameMode
      * @param newGameMode the new game mode to change to
      */
     @JvmRecord
+    @Immutable
     public data class Result(override val isAllowed: Boolean, public val newGameMode: GameMode?) : ResultedEvent.Result {
 
         public companion object {

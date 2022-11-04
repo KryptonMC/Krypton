@@ -13,6 +13,7 @@ import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.Krypton
 import org.spongepowered.math.vector.Vector3d
 import org.spongepowered.math.vector.Vector3i
+import javax.annotation.concurrent.Immutable
 
 /**
  * A bounding box.
@@ -20,6 +21,7 @@ import org.spongepowered.math.vector.Vector3i
  * These are immutable to guarantee thread-safe usage.
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
+@Immutable
 public interface BoundingBox {
 
     /**
@@ -61,20 +63,20 @@ public interface BoundingBox {
     /**
      * The size of this bounding box on the X axis.
      */
-    @get:JvmName("xSize")
-    public val xSize: Double
+    @get:JvmName("sizeX")
+    public val sizeX: Double
 
     /**
      * The size of this bounding box on the Y axis.
      */
-    @get:JvmName("ySize")
-    public val ySize: Double
+    @get:JvmName("sizeY")
+    public val sizeY: Double
 
     /**
      * The size of this bounding box on the Z axis.
      */
-    @get:JvmName("zSize")
-    public val zSize: Double
+    @get:JvmName("sizeZ")
+    public val sizeZ: Double
 
     /**
      * The total size of this bounding box.
@@ -127,7 +129,7 @@ public interface BoundingBox {
      * @param axis the axis
      * @return the minimum value for the axis
      */
-    public fun minimum(axis: Direction.Axis): Double
+    public fun minimum(axis: Direction.Axis): Double = axis.select(minimumX, minimumY, minimumZ)
 
     /**
      * Gets the maximum value for the given [axis].
@@ -135,7 +137,7 @@ public interface BoundingBox {
      * @param axis the axis
      * @return the maximum value for the axis
      */
-    public fun maximum(axis: Direction.Axis): Double
+    public fun maximum(axis: Direction.Axis): Double = axis.select(maximumX, maximumY, maximumZ)
 
     /**
      * Creates a new bounding box with its border inflated by the given
@@ -271,7 +273,8 @@ public interface BoundingBox {
      * @param other the other bounding box
      * @return true if this box intersects with the other box, false otherwise
      */
-    public fun intersects(other: BoundingBox): Boolean
+    public fun intersects(other: BoundingBox): Boolean =
+        intersects(other.minimumX, other.minimumY, other.minimumZ, other.maximumX, other.maximumY, other.maximumZ)
 
     /**
      * Checks if the given [x], [y], and [z] values are inside the bounds of
@@ -290,7 +293,7 @@ public interface BoundingBox {
      * @param position the position
      * @return true if this box contains the position, false otherwise
      */
-    public operator fun contains(position: Vector3d): Boolean = contains(position.x(), position.y(), position.z())
+    public fun contains(position: Vector3d): Boolean = contains(position.x(), position.y(), position.z())
 
     @ApiStatus.Internal
     public interface Factory {

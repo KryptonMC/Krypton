@@ -38,7 +38,7 @@ fun CompoundTag.toBlockState(): KryptonBlockState {
     if (contains("Properties", CompoundTag.ID)) {
         val properties = getCompound("Properties")
         val definition = block.stateDefinition
-        properties.keys.forEach {
+        properties.keySet().forEach {
             val property = definition.getProperty(it)
             if (property != null) state = state.set(property, it, properties, this)
         }
@@ -47,12 +47,12 @@ fun CompoundTag.toBlockState(): KryptonBlockState {
 }
 
 fun BlockState.toNBT(): CompoundTag = compound {
-    string("Name", Registries.BLOCK.get(this@toNBT.asBlock()).asString())
+    putString("Name", Registries.BLOCK.get(this@toNBT.block).asString())
     if (properties.isNotEmpty()) {
         compound("Properties") {
             properties.forEach {
                 val property = it.key.downcast()
-                string(property.name, property.name(it.value))
+                putString(property.name, property.name(it.value))
             }
         }
     }

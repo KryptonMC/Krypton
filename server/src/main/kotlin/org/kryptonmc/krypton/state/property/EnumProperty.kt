@@ -19,6 +19,7 @@
 package org.kryptonmc.krypton.state.property
 
 import com.google.common.collect.ImmutableSet
+import com.google.common.collect.Sets
 import java.util.Arrays
 import java.util.EnumSet
 import java.util.function.Predicate
@@ -58,17 +59,16 @@ open class EnumProperty<E : Enum<E>>(name: String, type: Class<E>, values: Colle
     companion object {
 
         @JvmStatic
-        inline fun <reified E : Enum<E>> of(name: String): EnumProperty<E> =
-            EnumProperty(name, E::class.java, EnumSet.allOf(E::class.java))
+        inline fun <reified E : Enum<E>> create(name: String): EnumProperty<E> = create(name, EnumSet.allOf(E::class.java))
 
         @JvmStatic
-        inline fun <reified E : Enum<E>> of(name: String, predicate: Predicate<E>): EnumProperty<E> =
-            EnumProperty(name, E::class.java, enumValues<E>().filter(predicate::test))
+        inline fun <reified E : Enum<E>> create(name: String, predicate: Predicate<E>): EnumProperty<E> =
+            create(name, Arrays.stream(enumValues<E>()).filter(predicate).collect(Sets.toImmutableEnumSet()))
 
         @JvmStatic
-        inline fun <reified E : Enum<E>> of(name: String, vararg values: E): EnumProperty<E> = of(name, ImmutableSet.copyOf(values))
+        inline fun <reified E : Enum<E>> create(name: String, vararg values: E): EnumProperty<E> = create(name, values.asList())
 
         @JvmStatic
-        inline fun <reified E : Enum<E>> of(name: String, values: Collection<E>): EnumProperty<E> = EnumProperty(name, E::class.java, values)
+        inline fun <reified E : Enum<E>> create(name: String, values: Collection<E>): EnumProperty<E> = EnumProperty(name, E::class.java, values)
     }
 }

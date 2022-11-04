@@ -27,7 +27,7 @@ import org.kryptonmc.krypton.world.KryptonWorld
 
 class KryptonExperienceBottle(world: KryptonWorld) : KryptonThrowableProjectile(world), ExperienceBottle {
 
-    override val type: KryptonEntityType<ExperienceBottle>
+    override val type: KryptonEntityType<KryptonExperienceBottle>
         get() = KryptonEntityTypes.EXPERIENCE_BOTTLE
     override val defaultItem: KryptonItemStack
         get() = DEFAULT_ITEM

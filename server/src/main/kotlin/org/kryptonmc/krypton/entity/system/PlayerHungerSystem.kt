@@ -144,10 +144,10 @@ class PlayerHungerSystem(private val player: KryptonPlayer) {
     }
 
     fun save(builder: CompoundTag.Builder): CompoundTag.Builder = builder.apply {
-        int("foodLevel", foodLevel)
-        int("foodTickTimer", tickTimer)
-        float("foodExhaustionLevel", exhaustionLevel)
-        float("foodSaturationLevel", saturationLevel)
+        putInt("foodLevel", foodLevel)
+        putInt("foodTickTimer", tickTimer)
+        putFloat("foodExhaustionLevel", exhaustionLevel)
+        putFloat("foodSaturationLevel", saturationLevel)
     }
 
     fun updateMovementExhaustion(deltaX: Double, deltaY: Double, deltaZ: Double) {

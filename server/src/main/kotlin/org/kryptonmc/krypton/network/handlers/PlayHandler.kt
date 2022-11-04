@@ -292,19 +292,19 @@ class PlayHandler(override val server: KryptonServer, override val session: Sess
         if (!player.canBuild) return // If they can't place blocks, they are irrelevant :)
 
         val world = player.world
-        val x = packet.x
-        val y = packet.y
-        val z = packet.z
-        val state = world.getBlock(x, y, z)
-        val event = server.eventManager.fireSync(KryptonPlaceBlockEvent(player, state, packet.hand, x, y, z, packet.face, packet.isInside))
+        val position = packet.hitResult.position
+        val state = world.getBlock(position)
+        val face = packet.hitResult.direction
+        val isInside = packet.hitResult.isInside
+        val event = server.eventManager.fireSync(KryptonPlaceBlockEvent(player, state, packet.hand, position, face, isInside))
         if (!event.result.isAllowed) return
 
         val chunkX = Positioning.toChunkCoordinate(player.location.floorX())
         val chunkZ = Positioning.toChunkCoordinate(player.location.floorZ())
         val chunk = world.chunkManager.get(ChunkPosition.toLong(chunkX, chunkZ)) ?: return
-        val existingBlock = chunk.getBlock(x, y, z)
+        val existingBlock = chunk.getBlock(position)
         if (existingBlock != Blocks.AIR.defaultState) return
-        chunk.setBlock(x, y, z, Registries.BLOCK.get(player.inventory.mainHand.type.key()).downcast().defaultState)
+        chunk.setBlock(position, Registries.BLOCK.get(player.inventory.mainHand.type.key()).downcast().defaultState)
     }
 
     private fun handlePlayerAction(packet: PacketInPlayerAction) {

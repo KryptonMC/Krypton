@@ -35,6 +35,6 @@ object ArrowSerializer : EntitySerializer<KryptonArrow> {
     }
 
     override fun save(entity: KryptonArrow): CompoundTag.Builder = ArrowLikeSerializer.save(entity).apply {
-        int("Color", entity.color.value)
+        putInt("Color", entity.color.value)
     }
 }

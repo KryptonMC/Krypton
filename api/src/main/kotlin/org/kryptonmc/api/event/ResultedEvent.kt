@@ -17,13 +17,11 @@ package org.kryptonmc.api.event
  *
  * @param R the type of the result
  */
-@Suppress("INAPPLICABLE_JVM_NAME")
 public interface ResultedEvent<R : ResultedEvent.Result> {
 
     /**
      * The result of firing this event.
      */
-    @get:JvmName("result")
     public var result: R
 
     /**

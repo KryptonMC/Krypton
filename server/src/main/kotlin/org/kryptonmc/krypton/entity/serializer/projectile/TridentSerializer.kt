@@ -32,7 +32,7 @@ object TridentSerializer : EntitySerializer<KryptonTrident> {
     }
 
     override fun save(entity: KryptonTrident): CompoundTag.Builder = ArrowLikeSerializer.save(entity).apply {
-        boolean("DealtDamage", entity.dealtDamage)
+        putBoolean("DealtDamage", entity.dealtDamage)
         put("Trident", entity.item.save())
     }
 }

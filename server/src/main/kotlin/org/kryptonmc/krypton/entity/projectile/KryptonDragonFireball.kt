@@ -25,6 +25,6 @@ import org.kryptonmc.krypton.world.KryptonWorld
 
 class KryptonDragonFireball(world: KryptonWorld) : KryptonAcceleratingProjectile(world), DragonFireball {
 
-    override val type: KryptonEntityType<DragonFireball>
+    override val type: KryptonEntityType<KryptonDragonFireball>
         get() = KryptonEntityTypes.DRAGON_FIREBALL
 }

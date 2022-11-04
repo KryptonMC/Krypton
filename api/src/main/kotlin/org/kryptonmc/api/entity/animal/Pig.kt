@@ -11,7 +11,6 @@ package org.kryptonmc.api.entity.animal
 /**
  * A pig.
  */
-@Suppress("INAPPLICABLE_JVM_NAME")
 public interface Pig : Animal {
 
     /**

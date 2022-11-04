@@ -10,6 +10,8 @@ package org.kryptonmc.api.entity.attribute
 
 /**
  * An operation that can be applied to attribute modifiers.
+ *
+ * See [BasicModifierOperation] for the basic built-in operations.
  */
 public fun interface ModifierOperation {
 
@@ -19,41 +21,5 @@ public fun interface ModifierOperation {
      * @param modifiers the modifiers to apply
      * @return the result of applying this operation to the given modifiers
      */
-    public fun apply(base: Double, modifiers: Set<AttributeModifier>): Double
-
-    public companion object {
-
-        /**
-         * Adds each modifier's amount to the base value.
-         *
-         * For example, with a base of 3, and 2 modifiers, with values 2 and 4
-         * respectively, the total would be 9, because 3 + 2 + 4 = 9.
-         */
-        @JvmField
-        public val ADD: ModifierOperation = ModifierOperation { base, values ->
-            values.fold(base) { acc, value -> acc + value.amount }
-        }
-
-        /**
-         * Multiplies the base value by 1 + the sum of all the modifier amounts.
-         *
-         * For example, with a base of 3 and 2 modifiers with values 2 and 4
-         * respectively, the total would be 21, because 3 * (1 + 2 + 4) = 21.
-         */
-        @JvmField
-        public val MULTIPLY_BASE: ModifierOperation = ModifierOperation { base, values ->
-            base * values.fold(1.0) { acc, value -> acc + value.amount }
-        }
-
-        /**
-         * Multiplies the base by each value + 1.
-         *
-         * For example, with a base of 3 and 2 modifiers with values 2 and 4
-         * respectively, the total would be 45, as 3 * (1 + 2) * (1 + 4) = 45.
-         */
-        @JvmField
-        public val MULTIPLY_TOTAL: ModifierOperation = ModifierOperation { base, values ->
-            values.fold(base) { acc, value -> acc * (value.amount + 1) }
-        }
-    }
+    public fun apply(base: Double, modifiers: Collection<AttributeModifier>): Double
 }

@@ -30,6 +30,6 @@ object TNTMinecartSerializer : EntitySerializer<KryptonTNTMinecart> {
     }
 
     override fun save(entity: KryptonTNTMinecart): CompoundTag.Builder = MinecartLikeSerializer.save(entity).apply {
-        int("TNTFuse", entity.fuse)
+        putInt("TNTFuse", entity.fuse)
     }
 }

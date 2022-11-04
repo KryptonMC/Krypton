@@ -23,6 +23,7 @@ import org.kryptonmc.krypton.entity.serializer.EntitySerializer
 import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.DoubleTag
 import org.kryptonmc.nbt.ListTag
+import org.kryptonmc.nbt.list
 import org.spongepowered.math.vector.Vector3d
 
 object AcceleratingProjectileSerializer : EntitySerializer<KryptonAcceleratingProjectile> {
@@ -31,7 +32,7 @@ object AcceleratingProjectileSerializer : EntitySerializer<KryptonAcceleratingPr
         ProjectileSerializer.load(entity, data)
         if (!data.contains("power", ListTag.ID)) return
         val power = data.getList("power", DoubleTag.ID)
-        if (power.size != 3) return
+        if (power.size() != 3) return
         entity.acceleration = Vector3d(power.getDouble(0), power.getDouble(1), power.getDouble(2))
     }
 

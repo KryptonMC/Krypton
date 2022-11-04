@@ -13,33 +13,31 @@ import java.util.UUID
 /**
  * Represents an attribute that can be applied to a living entity.
  */
-@Suppress("INAPPLICABLE_JVM_NAME")
 public interface Attribute {
 
     /**
      * The type of this attribute.
      */
-    @get:JvmName("type")
     public val type: AttributeType
 
     /**
      * The base value of this attribute.
      */
-    @get:JvmName("baseValue")
     public var baseValue: Double
 
     /**
-     * The cached calculated value of this attribute.
+     * The modifiers used to modify the [baseValue] in calculation to get the
+     * value.
      */
-    @get:JvmName("value")
-    public val value: Double
+    public val modifiers: Collection<AttributeModifier>
 
     /**
-     * The modifiers used to modify the [baseValue] in calculation to get the
-     * [value].
+     * Calculates the final value of this attribute by applying the modifiers
+     * to the base value.
+     *
+     * @return the final value of this attribute
      */
-    @get:JvmName("modifiers")
-    public val modifiers: Collection<AttributeModifier>
+    public fun calculateValue(): Double
 
     /**
      * Gets the modifier with the given [uuid], or returns null if there is no
@@ -48,7 +46,7 @@ public interface Attribute {
      * @param uuid the UUID
      * @return the modifier, or null if not present
      */
-    public fun modifier(uuid: UUID): AttributeModifier?
+    public fun getModifier(uuid: UUID): AttributeModifier?
 
     /**
      * Gets all modifiers stored under the given [operation].
@@ -56,7 +54,7 @@ public interface Attribute {
      * @param operation the operation
      * @return all modifiers for the given operation
      */
-    public fun modifiers(operation: ModifierOperation): Set<AttributeModifier>
+    public fun getModifiers(operation: ModifierOperation): Set<AttributeModifier>
 
     /**
      * Adds the given [modifier] to the list of modifiers.

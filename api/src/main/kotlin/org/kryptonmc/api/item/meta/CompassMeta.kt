@@ -12,11 +12,13 @@ import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.resource.ResourceKey
 import org.kryptonmc.api.world.World
 import org.spongepowered.math.vector.Vector3i
+import javax.annotation.concurrent.Immutable
 
 /**
  * Item metadata for a compass.
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
+@Immutable
 public interface CompassMeta : ScopedItemMeta<CompassMeta.Builder, CompassMeta> {
 
     /**

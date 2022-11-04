@@ -8,7 +8,7 @@
  */
 package org.kryptonmc.api.block.meta
 
-import net.kyori.adventure.text.Component
+import net.kyori.adventure.translation.Translatable
 
 /**
  * Indicates the mode that a structure block this property is applied to is in.
@@ -17,8 +17,7 @@ import net.kyori.adventure.text.Component
  * mode, the structure block will load a saved structure. In save mode, it will
  * save a captured structure.
  */
-@Suppress("INAPPLICABLE_JVM_NAME")
-public enum class StructureMode {
+public enum class StructureMode : Translatable {
 
     /**
      * In this mode, a structure block can load a saved structure in to the
@@ -48,10 +47,5 @@ public enum class StructureMode {
      */
     DATA;
 
-    /**
-     * The display name of this structure mode, as shown in the client's
-     * structure block configuration menu.
-     */
-    @get:JvmName("displayName")
-    public val displayName: Component = Component.translatable("structure_block.mode_info.${name.lowercase()}")
+    override fun translationKey(): String = "structure_block.mode_info.${name.lowercase()}"
 }

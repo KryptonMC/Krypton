@@ -21,15 +21,13 @@ package org.kryptonmc.krypton.entity.components
 import net.kyori.adventure.identity.Identity
 import net.kyori.adventure.text.event.HoverEvent
 import net.kyori.adventure.util.TriState
-import org.kryptonmc.api.entity.Entity
 import org.kryptonmc.krypton.KryptonServer
-import org.kryptonmc.krypton.entity.KryptonEntityType
 import org.kryptonmc.krypton.entity.Pose
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.world.KryptonWorld
 import java.util.function.UnaryOperator
 
-interface BaseEntity : BaseDataHolder, Moveable, NameableTeamMember, Rideable, Viewable, WaterPushable, Damageable, Interactable {
+interface BaseEntity : BaseDataHolder, NameableTeamMember, Rideable, Viewable, WaterPushable, Damageable, Interactable {
 
     val isRemoved: Boolean
     val maxAirTicks: Int
@@ -37,7 +35,6 @@ interface BaseEntity : BaseDataHolder, Moveable, NameableTeamMember, Rideable, V
     val isAlive: Boolean
         get() = !isRemoved
 
-    override val type: KryptonEntityType<Entity>
     override val world: KryptonWorld
     override val server: KryptonServer
         get() = world.server

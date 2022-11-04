@@ -35,13 +35,11 @@ import java.util.UUID
  * You can use the server to retrieve information, managers for various aspects
  * of the API, configuration options, status, and players.
  */
-@Suppress("INAPPLICABLE_JVM_NAME")
 public interface Server : ForwardingAudience {
 
     /**
      * Information about this server implementation.
      */
-    @get:JvmName("platform")
     public val platform: Platform
 
     /**
@@ -50,7 +48,6 @@ public interface Server : ForwardingAudience {
      * The world manager is used to load, save, create and update
      * worlds.
      */
-    @get:JvmName("worldManager")
     public val worldManager: WorldManager
 
     /**
@@ -58,7 +55,6 @@ public interface Server : ForwardingAudience {
      *
      * This is used to register and unregister commands.
      */
-    @get:JvmName("commandManager")
     public val commandManager: CommandManager
 
     /**
@@ -67,13 +63,11 @@ public interface Server : ForwardingAudience {
      * This is used to retrieve plugins and check whether they have
      * been initialised or not.
      */
-    @get:JvmName("pluginManager")
     public val pluginManager: PluginManager
 
     /**
      * The services manager for this server.
      */
-    @get:JvmName("servicesManager")
     public val servicesManager: ServicesManager
 
     /**
@@ -82,7 +76,6 @@ public interface Server : ForwardingAudience {
      * This is used to register/unregister listeners/handlers for specific
      * events that may be fired, and also to fire said events.
      */
-    @get:JvmName("eventManager")
     public val eventManager: EventManager
 
     /**
@@ -90,13 +83,11 @@ public interface Server : ForwardingAudience {
      *
      * This is used to create new registries and register values to them.
      */
-    @get:JvmName("registryManager")
     public val registryManager: RegistryManager
 
     /**
      * The tag manager for this server.
      */
-    @get:JvmName("tagManager")
     public val tagManager: TagManager
 
     /**
@@ -105,19 +96,16 @@ public interface Server : ForwardingAudience {
      * This provides factories from the implementation, usually used to
      * construct certain things, like an object, or a builder.
      */
-    @get:JvmName("factoryProvider")
     public val factoryProvider: FactoryProvider
 
     /**
      * The cache of [org.kryptonmc.api.auth.GameProfile]s.
      */
-    @get:JvmName("profileCache")
     public val profileCache: ProfileCache
 
     /**
      * The user manager for this server.
      */
-    @get:JvmName("userManager")
     public val userManager: UserManager
 
     /**
@@ -125,19 +113,16 @@ public interface Server : ForwardingAudience {
      *
      * This can be used to run and schedule asynchronous tasks.
      */
-    @get:JvmName("scheduler")
     public val scheduler: Scheduler
 
     /**
      * The maximum amount of players that can be online at once.
      */
-    @get:JvmName("maxPlayers")
     public val maxPlayers: Int
 
     /**
      * The message of the day for the server.
      */
-    @get:JvmName("motd")
     public val motd: Component
 
     /**
@@ -150,25 +135,21 @@ public interface Server : ForwardingAudience {
     /**
      * The address that this server is currently bound to.
      */
-    @get:JvmName("address")
     public val address: InetSocketAddress
 
     /**
      * The list of online players.
      */
-    @get:JvmName("players")
     public val players: Collection<Player>
 
     /**
      * The console's [Sender] object.
      */
-    @get:JvmName("console")
     public val console: ConsoleSender
 
     /**
      * The server's [Scoreboard], or null if there isn't one.
      */
-    @get:JvmName("scoreboard")
     public val scoreboard: Scoreboard
 
     /**

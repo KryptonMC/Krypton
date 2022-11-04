@@ -9,6 +9,7 @@
 package org.kryptonmc.api.service
 
 import org.kryptonmc.api.plugin.PluginContainer
+import javax.annotation.concurrent.Immutable
 
 /**
  * Represents a provider of a service of type [T].
@@ -18,6 +19,7 @@ import org.kryptonmc.api.plugin.PluginContainer
  * to (if anyone), which is a neat abstraction layer.
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
+@Immutable
 public interface ServiceProvider<T> {
 
     /**

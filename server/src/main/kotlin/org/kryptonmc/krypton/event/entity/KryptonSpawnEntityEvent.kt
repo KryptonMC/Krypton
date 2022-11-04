@@ -23,7 +23,7 @@ import org.kryptonmc.api.event.GenericResult
 import org.kryptonmc.api.event.entity.SpawnEntityEvent
 import org.kryptonmc.api.world.World
 
-data class KryptonSpawnEntityEvent(override val entity: Entity, override val world: World) : SpawnEntityEvent {
+class KryptonSpawnEntityEvent(override val entity: Entity, override val world: World) : SpawnEntityEvent {
 
     override var result: GenericResult = GenericResult.allowed()
 }

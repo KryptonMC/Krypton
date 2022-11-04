@@ -14,7 +14,6 @@ import org.kryptonmc.api.entity.player.Player
 /**
  * An animal that may be tamed by an entity, usually a player.
  */
-@Suppress("INAPPLICABLE_JVM_NAME")
 public interface Tamable : Animal {
 
     /**
@@ -36,7 +35,6 @@ public interface Tamable : Animal {
      * The entity that has tamed this animal, or null, if no entities own this
      * tamable animal.
      */
-    @get:JvmName("owner")
     public val owner: LivingEntity?
 
     /**

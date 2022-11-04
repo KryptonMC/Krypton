@@ -22,7 +22,6 @@ import org.kryptonmc.api.effect.sound.SoundEvent
 import org.kryptonmc.api.effect.sound.SoundEvents
 import org.kryptonmc.api.entity.animal.Axolotl
 import org.kryptonmc.api.entity.animal.type.AxolotlVariant
-import org.kryptonmc.api.entity.attribute.AttributeTypes
 import org.kryptonmc.api.item.ItemStack
 import org.kryptonmc.api.item.ItemTypes
 import org.kryptonmc.api.item.ItemType
@@ -32,6 +31,7 @@ import org.kryptonmc.krypton.entity.KryptonEntityType
 import org.kryptonmc.krypton.entity.KryptonEntityTypes
 import org.kryptonmc.krypton.entity.KryptonMob
 import org.kryptonmc.krypton.entity.attribute.AttributeSupplier
+import org.kryptonmc.krypton.entity.attribute.KryptonAttributeTypes
 import org.kryptonmc.krypton.entity.memory.MemoryKeys
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.entity.serializer.EntitySerializer
@@ -42,7 +42,7 @@ import org.kryptonmc.nbt.CompoundTag
 
 class KryptonAxolotl(world: KryptonWorld) : KryptonAnimal(world), Axolotl, BucketStorable {
 
-    override val type: KryptonEntityType<Axolotl>
+    override val type: KryptonEntityType<KryptonAxolotl>
         get() = KryptonEntityTypes.AXOLOTL
     override val serializer: EntitySerializer<KryptonAxolotl>
         get() = AxolotlSerializer
@@ -53,7 +53,7 @@ class KryptonAxolotl(world: KryptonWorld) : KryptonAnimal(world), Axolotl, Bucke
     override var isPlayingDead: Boolean
         get() = data.get(MetadataKeys.Axolotl.PLAYING_DEAD)
         set(value) = data.set(MetadataKeys.Axolotl.PLAYING_DEAD, value)
-    override var spawnedFromBucket: Boolean
+    override var wasSpawnedFromBucket: Boolean
         get() = data.get(MetadataKeys.Axolotl.FROM_BUCKET)
         set(value) = data.set(MetadataKeys.Axolotl.FROM_BUCKET, value)
 
@@ -107,13 +107,13 @@ class KryptonAxolotl(world: KryptonWorld) : KryptonAnimal(world), Axolotl, Bucke
 
     companion object {
 
-        private val MAX_AIR_TICKS = 5 * 60 * 20 // 5 minutes in ticks
+        private const val MAX_AIR_TICKS = 5 * 60 * 20 // 5 minutes in ticks
         private val VARIANTS = AxolotlVariant.values()
 
         @JvmStatic
         fun attributes(): AttributeSupplier.Builder = KryptonMob.attributes()
-            .add(AttributeTypes.MAX_HEALTH, 14.0)
-            .add(AttributeTypes.MOVEMENT_SPEED, 1.0)
-            .add(AttributeTypes.ATTACK_DAMAGE, 2.0)
+            .add(KryptonAttributeTypes.MAX_HEALTH, 14.0)
+            .add(KryptonAttributeTypes.MOVEMENT_SPEED, 1.0)
+            .add(KryptonAttributeTypes.ATTACK_DAMAGE, 2.0)
     }
 }

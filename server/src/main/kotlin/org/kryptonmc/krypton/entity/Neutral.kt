@@ -20,6 +20,9 @@ package org.kryptonmc.krypton.entity
 
 import org.kryptonmc.api.entity.EntityTypes
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
+import org.kryptonmc.krypton.util.nbt.getUUID
+import org.kryptonmc.krypton.util.nbt.hasUUID
+import org.kryptonmc.krypton.util.nbt.putUUID
 import org.kryptonmc.nbt.CompoundTag
 import java.util.UUID
 
@@ -63,8 +66,8 @@ interface Neutral {
 
         @JvmStatic
         fun saveAngerData(entity: Neutral, data: CompoundTag.Builder): CompoundTag.Builder = data.apply {
-            int("AngerTime", entity.remainingAngerTime)
-            if (entity.angerTarget != null) uuid("AngryAt", entity.angerTarget!!)
+            putInt("AngerTime", entity.remainingAngerTime)
+            if (entity.angerTarget != null) putUUID("AngryAt", entity.angerTarget!!)
         }
     }
 }

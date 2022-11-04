@@ -10,11 +10,13 @@ package org.kryptonmc.api.effect.particle.data
 
 import org.jetbrains.annotations.Contract
 import org.spongepowered.math.vector.Vector3d
+import javax.annotation.concurrent.Immutable
 
 /**
  * Holds data for vibration particle effects.
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
+@Immutable
 public interface VibrationParticleData : ParticleData {
 
     /**

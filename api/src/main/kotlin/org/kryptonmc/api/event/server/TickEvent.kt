@@ -14,7 +14,6 @@ package org.kryptonmc.api.event.server
  * These events are called incredibly frequently. On a server with a normal
  * tick speed, these events will be called 20 times per second.
  */
-@Suppress("INAPPLICABLE_JVM_NAME")
 public sealed interface TickEvent {
 
     /**
@@ -25,6 +24,5 @@ public sealed interface TickEvent {
      * This is NOT a persisted value. It only counts up when the server is
      * running. When the server is restarted, this will reset to 0.
      */
-    @get:JvmName("tickNumber")
     public val tickNumber: Int
 }

@@ -16,11 +16,14 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.server.ban
+package org.kryptonmc.krypton.entity.hanging
 
-import org.kryptonmc.api.user.ban.Ban
+import net.kyori.adventure.key.Key
+import org.kryptonmc.api.entity.hanging.PaintingVariant
+import org.kryptonmc.api.registry.Registries
 
-object KryptonBanFactory : Ban.Factory {
+@JvmRecord
+data class KryptonPaintingVariant(override val width: Int, override val height: Int) : PaintingVariant {
 
-    override fun builder(): Ban.Builder = KryptonBanBuilder()
+    override fun key(): Key = Registries.PAINTING_VARIANT.get(this)
 }

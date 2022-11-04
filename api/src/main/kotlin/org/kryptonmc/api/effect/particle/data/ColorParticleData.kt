@@ -10,11 +10,13 @@ package org.kryptonmc.api.effect.particle.data
 
 import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.util.Color
+import javax.annotation.concurrent.Immutable
 
 /**
  * Holds data for coloured particle effects.
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
+@Immutable
 public interface ColorParticleData : ParticleData {
 
     /**
@@ -22,27 +24,6 @@ public interface ColorParticleData : ParticleData {
      */
     @get:JvmName("color")
     public val color: Color
-
-    /**
-     * The red component of the RGB colour.
-     */
-    @get:JvmName("red")
-    public val red: Int
-        get() = color.red
-
-    /**
-     * The green component of the RGB colour.
-     */
-    @get:JvmName("green")
-    public val green: Int
-        get() = color.green
-
-    /**
-     * The blue component of the RGB colour.
-     */
-    @get:JvmName("blue")
-    public val blue: Int
-        get() = color.blue
 
     public companion object {
 
@@ -55,18 +36,5 @@ public interface ColorParticleData : ParticleData {
         @JvmStatic
         @Contract("_ -> new", pure = true)
         public fun of(color: Color): ColorParticleData = ParticleData.factory().color(color)
-
-        /**
-         * Creates new colour particle data with the given [red], [green], and
-         * [blue] RGB components.
-         *
-         * @param red the red component
-         * @param green the green component
-         * @param blue the blue component
-         * @return new color particle data
-         */
-        @JvmStatic
-        @Contract("_, _, _ -> new", pure = true)
-        public fun of(red: Int, green: Int, blue: Int): ColorParticleData = of(Color.of(red, green, blue))
     }
 }

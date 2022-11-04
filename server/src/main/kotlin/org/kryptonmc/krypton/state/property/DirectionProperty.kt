@@ -18,26 +18,30 @@
  */
 package org.kryptonmc.krypton.state.property
 
-import com.google.common.collect.ImmutableSet
+import com.google.common.collect.Sets
 import org.kryptonmc.api.util.Direction
+import java.util.Arrays
+import java.util.EnumSet
 import java.util.function.Predicate
 
 class DirectionProperty(name: String, values: Collection<Direction>) : EnumProperty<Direction>(name, Direction::class.java, values) {
 
     companion object {
 
-        private val VALUES = Direction.values().toList()
+        private val VALUES = Direction.values()
+        private val VALUE_SET = Sets.immutableEnumSet(EnumSet.allOf(Direction::class.java))
 
         @JvmStatic
-        fun of(name: String): DirectionProperty = DirectionProperty(name, VALUES)
+        fun create(name: String): DirectionProperty = DirectionProperty(name, VALUE_SET)
 
         @JvmStatic
-        fun of(name: String, predicate: Predicate<Direction>): DirectionProperty = DirectionProperty(name, VALUES.filter(predicate::test))
+        fun create(name: String, predicate: Predicate<Direction>): DirectionProperty =
+            DirectionProperty(name, Arrays.stream(VALUES).filter(predicate).collect(Sets.toImmutableEnumSet()))
 
         @JvmStatic
-        fun of(name: String, vararg values: Direction): DirectionProperty = DirectionProperty(name, ImmutableSet.copyOf(values))
+        fun create(name: String, vararg values: Direction): DirectionProperty = create(name, values.asList())
 
         @JvmStatic
-        fun of(name: String, values: Collection<Direction>): DirectionProperty = DirectionProperty(name, values)
+        private fun create(name: String, values: Collection<Direction>): DirectionProperty = DirectionProperty(name, Sets.immutableEnumSet(values))
     }
 }

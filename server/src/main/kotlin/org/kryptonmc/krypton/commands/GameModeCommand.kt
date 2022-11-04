@@ -90,10 +90,11 @@ object GameModeCommand : InternalCommand {
         entities.forEach {
             it.updateGameMode(mode, ChangeGameModeEvent.Cause.COMMAND)
             if (sender === it) {
-                sender.sendMessage(Component.translatable("gameMode.changed", mode.translation))
+                sender.sendMessage(Component.translatable("gameMode.changed", Component.translatable(mode.translationKey())))
                 return@forEach
             }
-            sender.sendMessage(Component.translatable("commands.gamemode.success.other", it.displayName, mode.translation))
+            val translation = Component.translatable(mode.translationKey())
+            sender.sendMessage(Component.translatable("commands.gamemode.success.other", it.displayName, translation))
         }
     }
 }

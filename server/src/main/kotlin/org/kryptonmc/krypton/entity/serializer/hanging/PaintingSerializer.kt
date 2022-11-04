@@ -30,12 +30,12 @@ object PaintingSerializer : EntitySerializer<KryptonPainting> {
 
     override fun load(entity: KryptonPainting, data: CompoundTag) {
         BaseEntitySerializer.load(entity, data)
-        entity.picture = Registries.PICTURES.get(Key.key(data.getString("Motive")))
-        entity.direction = Directions.of2D(data.getByte("Facing").toInt())
+        entity.variant = Registries.PAINTING_VARIANT.get(Key.key(data.getString("variant")))
+        entity.direction = Directions.of2D(data.getByte("facing").toInt())
     }
 
     override fun save(entity: KryptonPainting): CompoundTag.Builder = BaseEntitySerializer.save(entity).apply {
-        if (entity.picture != null) string("Motive", entity.picture!!.key().asString())
-        byte("Facing", Directions.data2D(entity.direction).toByte())
+        if (entity.variant != null) putString("variant", entity.variant!!.key().asString())
+        putByte("facing", Directions.data2D(entity.direction).toByte())
     }
 }

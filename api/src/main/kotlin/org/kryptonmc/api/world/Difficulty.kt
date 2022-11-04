@@ -8,16 +8,14 @@
  */
 package org.kryptonmc.api.world
 
-import net.kyori.adventure.text.Component
-import net.kyori.adventure.text.TranslatableComponent
-import org.kryptonmc.api.util.TranslationHolder
+import net.kyori.adventure.translation.Translatable
 
 /**
  * Represents the difficulty of a world. That being a measure of how difficult
  * it is to play the game (though this is not always accurate).
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
-public enum class Difficulty : TranslationHolder {
+public enum class Difficulty : Translatable {
 
     /**
      * In peaceful mode, no hostile monsters will spawn in the world.
@@ -48,6 +46,5 @@ public enum class Difficulty : TranslationHolder {
      */
     HARD;
 
-    @get:JvmName("translation")
-    override val translation: TranslatableComponent = Component.translatable("options.difficulty.${name.lowercase()}")
+    override fun translationKey(): String = "options.difficulty.${name.lowercase()}"
 }

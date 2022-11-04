@@ -21,8 +21,8 @@ package org.kryptonmc.krypton.entity
 import org.kryptonmc.api.entity.EquipmentSlot
 import org.kryptonmc.api.entity.MainHand
 import org.kryptonmc.api.entity.Mob
-import org.kryptonmc.api.entity.attribute.AttributeTypes
 import org.kryptonmc.krypton.entity.attribute.AttributeSupplier
+import org.kryptonmc.krypton.entity.attribute.KryptonAttributeTypes
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.entity.serializer.EntitySerializer
 import org.kryptonmc.krypton.entity.serializer.MobSerializer
@@ -58,7 +58,7 @@ abstract class KryptonMob(world: KryptonWorld) : KryptonLivingEntity(world), Mob
         data.define(MetadataKeys.Mob.FLAGS, 0)
     }
 
-    override fun equipment(slot: EquipmentSlot): KryptonItemStack = when (slot.type) {
+    override fun getEquipment(slot: EquipmentSlot): KryptonItemStack = when (slot.type) {
         EquipmentSlot.Type.HAND -> handItems.get(EquipmentSlots.index(slot))
         EquipmentSlot.Type.ARMOR -> armorItems.get(EquipmentSlots.index(slot))
     }
@@ -105,7 +105,7 @@ abstract class KryptonMob(world: KryptonWorld) : KryptonLivingEntity(world), Mob
 
         @JvmStatic
         fun attributes(): AttributeSupplier.Builder = KryptonLivingEntity.attributes()
-            .add(AttributeTypes.FOLLOW_RANGE, 16.0)
-            .add(AttributeTypes.ATTACK_KNOCKBACK)
+            .add(KryptonAttributeTypes.FOLLOW_RANGE, 16.0)
+            .add(KryptonAttributeTypes.ATTACK_KNOCKBACK)
     }
 }

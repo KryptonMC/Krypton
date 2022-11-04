@@ -29,7 +29,7 @@ import org.kryptonmc.krypton.world.KryptonWorld
 
 class KryptonFurnaceMinecart(world: KryptonWorld) : KryptonMinecartLike(world), FurnaceMinecart {
 
-    override val type: KryptonEntityType<FurnaceMinecart>
+    override val type: KryptonEntityType<KryptonFurnaceMinecart>
         get() = KryptonEntityTypes.FURNACE_MINECART
     override val serializer: EntitySerializer<KryptonFurnaceMinecart>
         get() = FurnaceMinecartSerializer

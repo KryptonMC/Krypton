@@ -19,46 +19,49 @@
 package org.kryptonmc.krypton.world.material
 
 import org.kryptonmc.api.item.data.DyeColor
-import org.kryptonmc.api.item.data.DyeColors
+import java.util.EnumMap
 
 @JvmRecord
 data class MaterialColor(val id: Int, val color: Int) {
 
     init {
-        if (id < 0 || id > 63) throw IndexOutOfBoundsException("Material colour ID must be between 0 and 63 inclusive!")
-        VALUES[id] = this
+        VALUES[checkIdInRange(id)] = this
     }
 
     companion object {
 
-        private val VALUES = arrayOfNulls<MaterialColor>(64)
-        private val BY_DYE_COLOR = mapOf(
-            DyeColors.WHITE to MaterialColors.SNOW,
-            DyeColors.ORANGE to MaterialColors.COLOR_ORANGE,
-            DyeColors.MAGENTA to MaterialColors.COLOR_MAGENTA,
-            DyeColors.LIGHT_BLUE to MaterialColors.COLOR_LIGHT_BLUE,
-            DyeColors.YELLOW to MaterialColors.COLOR_YELLOW,
-            DyeColors.LIME to MaterialColors.COLOR_LIGHT_GREEN,
-            DyeColors.PINK to MaterialColors.COLOR_PINK,
-            DyeColors.GRAY to MaterialColors.COLOR_GRAY,
-            DyeColors.LIGHT_GRAY to MaterialColors.COLOR_LIGHT_GRAY,
-            DyeColors.CYAN to MaterialColors.COLOR_CYAN,
-            DyeColors.PURPLE to MaterialColors.COLOR_PURPLE,
-            DyeColors.BLUE to MaterialColors.COLOR_BLUE,
-            DyeColors.BROWN to MaterialColors.COLOR_BROWN,
-            DyeColors.GREEN to MaterialColors.COLOR_GREEN,
-            DyeColors.RED to MaterialColors.COLOR_RED,
-            DyeColors.BLACK to MaterialColors.COLOR_BLACK
-        )
+        private const val TOTAL_COLORS = 64
+        private val VALUES = arrayOfNulls<MaterialColor>(TOTAL_COLORS)
+        private val BY_DYE_COLOR = EnumMap<DyeColor, MaterialColor>(DyeColor::class.java).apply {
+            put(DyeColor.WHITE, MaterialColors.SNOW)
+            put(DyeColor.ORANGE, MaterialColors.COLOR_ORANGE,)
+            put(DyeColor.MAGENTA, MaterialColors.COLOR_MAGENTA,)
+            put(DyeColor.LIGHT_BLUE, MaterialColors.COLOR_LIGHT_BLUE,)
+            put(DyeColor.YELLOW, MaterialColors.COLOR_YELLOW,)
+            put(DyeColor.LIME, MaterialColors.COLOR_LIGHT_GREEN,)
+            put(DyeColor.PINK, MaterialColors.COLOR_PINK,)
+            put(DyeColor.GRAY, MaterialColors.COLOR_GRAY,)
+            put(DyeColor.LIGHT_GRAY, MaterialColors.COLOR_LIGHT_GRAY,)
+            put(DyeColor.CYAN, MaterialColors.COLOR_CYAN,)
+            put(DyeColor.PURPLE, MaterialColors.COLOR_PURPLE,)
+            put(DyeColor.BLUE, MaterialColors.COLOR_BLUE,)
+            put(DyeColor.BROWN, MaterialColors.COLOR_BROWN,)
+            put(DyeColor.GREEN, MaterialColors.COLOR_GREEN,)
+            put(DyeColor.RED, MaterialColors.COLOR_RED,)
+            put(DyeColor.BLACK, MaterialColors.COLOR_BLACK)
+        }
 
         @JvmStatic
-        fun fromId(id: Int): MaterialColor {
-            if (id < 0 || id > VALUES.size) throw IndexOutOfBoundsException("Material colour ID must be between 0 and 63 inclusive!")
-            return VALUES[id] ?: MaterialColors.NONE
-        }
+        fun fromId(id: Int): MaterialColor = VALUES[checkIdInRange(id)] ?: MaterialColors.NONE
 
         @JvmStatic
         fun fromDyeColor(color: DyeColor): MaterialColor =
             checkNotNull(BY_DYE_COLOR.get(color)) { "Could not find material colour for dye colour $color! This is a bug!" }
+
+        @JvmStatic
+        private fun checkIdInRange(id: Int): Int {
+            if (id < 0 || id >= TOTAL_COLORS) throw IndexOutOfBoundsException("Material colour ID must be between 0 and $TOTAL_COLORS!")
+            return id
+        }
     }
 }

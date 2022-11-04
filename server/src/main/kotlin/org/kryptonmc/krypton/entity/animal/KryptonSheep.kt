@@ -19,21 +19,21 @@
 package org.kryptonmc.krypton.entity.animal
 
 import org.kryptonmc.api.entity.animal.Sheep
-import org.kryptonmc.api.entity.attribute.AttributeTypes
 import org.kryptonmc.api.item.data.DyeColor
 import org.kryptonmc.krypton.entity.KryptonEntityType
 import org.kryptonmc.krypton.entity.KryptonEntityTypes
 import org.kryptonmc.krypton.entity.KryptonMob
 import org.kryptonmc.krypton.entity.attribute.AttributeSupplier
+import org.kryptonmc.krypton.entity.attribute.KryptonAttributeTypes
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.entity.serializer.EntitySerializer
 import org.kryptonmc.krypton.entity.serializer.animal.SheepSerializer
-import org.kryptonmc.krypton.registry.KryptonRegistries
+import org.kryptonmc.krypton.util.DyeColors
 import org.kryptonmc.krypton.world.KryptonWorld
 
 class KryptonSheep(world: KryptonWorld) : KryptonAnimal(world), Sheep {
 
-    override val type: KryptonEntityType<Sheep>
+    override val type: KryptonEntityType<KryptonSheep>
         get() = KryptonEntityTypes.SHEEP
     override val serializer: EntitySerializer<KryptonSheep>
         get() = SheepSerializer
@@ -42,10 +42,10 @@ class KryptonSheep(world: KryptonWorld) : KryptonAnimal(world), Sheep {
         get() = data.getFlag(MetadataKeys.Sheep.FLAGS, FLAG_SHEARED)
         set(value) = data.setFlag(MetadataKeys.Sheep.FLAGS, FLAG_SHEARED, value)
     override var woolColor: DyeColor
-        get() = KryptonRegistries.DYE_COLORS.get(data.get(MetadataKeys.Sheep.FLAGS).toInt() and WOOL_COLOR_MASK)!!
+        get() = DyeColors.fromId(data.get(MetadataKeys.Sheep.FLAGS).toInt() and 0xF)
         set(value) {
-            val old = data.get(MetadataKeys.Sheep.FLAGS).toInt() and CLEAR_WOOL_COLOR_MASK
-            data.set(MetadataKeys.Sheep.FLAGS, (old or (KryptonRegistries.DYE_COLORS.idOf(value) and WOOL_COLOR_MASK)).toByte())
+            val old = data.get(MetadataKeys.Sheep.FLAGS).toInt()
+            data.set(MetadataKeys.Sheep.FLAGS, ((old and 0xF0) or (value.ordinal and 0xF)).toByte())
         }
 
     override fun defineData() {
@@ -56,12 +56,10 @@ class KryptonSheep(world: KryptonWorld) : KryptonAnimal(world), Sheep {
     companion object {
 
         private const val FLAG_SHEARED = 4
-        private const val WOOL_COLOR_MASK = 15
-        private const val CLEAR_WOOL_COLOR_MASK = 240
 
         @JvmStatic
         fun attributes(): AttributeSupplier.Builder = KryptonMob.attributes()
-            .add(AttributeTypes.MAX_HEALTH, 8.0)
-            .add(AttributeTypes.MOVEMENT_SPEED, 0.23)
+            .add(KryptonAttributeTypes.MAX_HEALTH, 8.0)
+            .add(KryptonAttributeTypes.MOVEMENT_SPEED, 0.23)
     }
 }

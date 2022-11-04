@@ -9,8 +9,10 @@
 package org.kryptonmc.api.effect.particle
 
 import org.kryptonmc.api.effect.particle.builder.BlockParticleEffectBuilder
+import javax.annotation.concurrent.Immutable
 
 /**
  * A type of particle that uses a block texture for its appearance.
  */
+@Immutable
 public interface BlockParticleType : ScopedParticleType<BlockParticleEffectBuilder>

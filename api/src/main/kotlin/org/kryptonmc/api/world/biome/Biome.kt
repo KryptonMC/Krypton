@@ -16,12 +16,14 @@ import org.kryptonmc.api.Krypton
 import org.kryptonmc.api.util.Buildable
 import org.kryptonmc.api.util.CataloguedBy
 import java.util.function.Consumer
+import javax.annotation.concurrent.Immutable
 
 /**
  * A biome is a region in a world with distinct geographical features.
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
 @CataloguedBy(Biomes::class)
+@Immutable
 public interface Biome : Buildable<Biome.Builder, Biome>, Keyed {
 
     /**

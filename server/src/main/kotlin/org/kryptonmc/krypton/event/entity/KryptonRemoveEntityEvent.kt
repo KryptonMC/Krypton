@@ -23,7 +23,7 @@ import org.kryptonmc.api.event.GenericResult
 import org.kryptonmc.api.event.entity.RemoveEntityEvent
 import org.kryptonmc.api.world.World
 
-data class KryptonRemoveEntityEvent(override val entity: Entity, override val world: World) : RemoveEntityEvent {
+class KryptonRemoveEntityEvent(override val entity: Entity, override val world: World) : RemoveEntityEvent {
 
     override var result: GenericResult = GenericResult.allowed()
 }

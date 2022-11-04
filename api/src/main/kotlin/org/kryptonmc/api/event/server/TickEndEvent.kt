@@ -13,19 +13,16 @@ import org.kryptonmc.api.event.annotation.PerformanceSensitive
 /**
  * Called when a tick ends.
  */
-@Suppress("INAPPLICABLE_JVM_NAME")
 @PerformanceSensitive
 public interface TickEndEvent : TickEvent {
 
     /**
      * The estimated duration, in milliseconds, of the tick that ended.
      */
-    @get:JvmName("tickDuration")
     public val tickDuration: Long
 
     /**
      * The estimated time, in milliseconds, when the tick ended.
      */
-    @get:JvmName("endTime")
     public val endTime: Long
 }

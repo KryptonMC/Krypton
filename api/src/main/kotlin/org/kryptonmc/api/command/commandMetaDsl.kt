@@ -8,7 +8,7 @@
  */
 @file:JvmSynthetic
 @file:Suppress("MatchingDeclarationName")
-package org.kryptonmc.api.command.meta
+package org.kryptonmc.api.command
 
 import org.jetbrains.annotations.Contract
 
@@ -29,16 +29,3 @@ internal annotation class CommandMetaDsl
 @Contract("_, _ -> new", pure = true)
 public inline fun commandMeta(name: String, builder: CommandMeta.Builder.() -> Unit): CommandMeta =
     CommandMeta.builder(name).apply(builder).build()
-
-/**
- * Constructs new [SimpleCommandMeta] with the given [name] and [builder] function.
- *
- * @param name the name
- * @param builder the builder function to apply
- * @return new simple command metadata
- */
-@CommandMetaDsl
-@JvmSynthetic
-@Contract("_, _ -> new", pure = true)
-public inline fun simpleCommandMeta(name: String, builder: SimpleCommandMeta.Builder.() -> Unit): SimpleCommandMeta =
-    SimpleCommandMeta.builder(name).apply(builder).build()

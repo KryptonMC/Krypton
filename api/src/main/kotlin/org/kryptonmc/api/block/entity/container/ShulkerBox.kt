@@ -14,12 +14,10 @@ import org.kryptonmc.api.item.data.DyeColor
 /**
  * A shulker box.
  */
-@Suppress("INAPPLICABLE_JVM_NAME")
 public interface ShulkerBox : ContainerBlockEntity, NameableBlockEntity {
 
     /**
      * The colour of this shulker box.
      */
-    @get:JvmName("color")
     public val color: DyeColor?
 }

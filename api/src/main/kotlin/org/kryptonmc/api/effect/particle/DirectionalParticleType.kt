@@ -9,8 +9,10 @@
 package org.kryptonmc.api.effect.particle
 
 import org.kryptonmc.api.effect.particle.builder.DirectionalParticleEffectBuilder
+import javax.annotation.concurrent.Immutable
 
 /**
  * A type of particle that can have velocity applied in a direction.
  */
+@Immutable
 public interface DirectionalParticleType : ScopedParticleType<DirectionalParticleEffectBuilder>

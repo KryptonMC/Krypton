@@ -30,9 +30,11 @@ import org.kryptonmc.krypton.entity.serializer.EntitySerializer
 import org.kryptonmc.krypton.entity.serializer.LivingEntitySerializer
 import org.kryptonmc.krypton.service.KryptonVanishService
 import org.kryptonmc.krypton.util.logger
+import org.kryptonmc.krypton.util.nbt.putUUID
 import org.kryptonmc.krypton.util.serialization.Codecs
 import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.StringTag
+import org.kryptonmc.nbt.compound
 import org.kryptonmc.serialization.nbt.NbtOps
 import org.spongepowered.math.vector.Vector3i
 import java.time.Instant
@@ -49,7 +51,7 @@ object PlayerSerializer : EntitySerializer<KryptonPlayer> {
         entity.hungerSystem.load(data)
 
         entity.abilities.load(data)
-        entity.attribute(AttributeTypes.MOVEMENT_SPEED)!!.baseValue = entity.walkingSpeed.toDouble()
+        entity.getAttribute(AttributeTypes.MOVEMENT_SPEED)!!.baseValue = entity.walkingSpeed.toDouble()
 
         // NBT data for entities sitting on the player's shoulders, e.g. parrots
         if (data.contains("ShoulderEntityLeft", CompoundTag.ID)) {
@@ -80,38 +82,38 @@ object PlayerSerializer : EntitySerializer<KryptonPlayer> {
     }
 
     override fun save(entity: KryptonPlayer): CompoundTag.Builder = LivingEntitySerializer.save(entity).apply {
-        int("playerGameType", entity.gameMode.ordinal)
-        if (entity.oldGameMode != null) int("previousPlayerGameType", entity.oldGameMode!!.ordinal)
+        putInt("playerGameType", entity.gameMode.ordinal)
+        if (entity.oldGameMode != null) putInt("previousPlayerGameType", entity.oldGameMode!!.ordinal)
 
-        int("DataVersion", KryptonPlatform.worldVersion)
+        putInt("DataVersion", KryptonPlatform.worldVersion)
         put("Inventory", entity.inventory.save())
-        int("SelectedItemSlot", entity.inventory.heldSlot)
-        int("Score", entity.data.get(MetadataKeys.Player.SCORE))
+        putInt("SelectedItemSlot", entity.inventory.heldSlot)
+        putInt("Score", entity.data.get(MetadataKeys.Player.SCORE))
         entity.hungerSystem.save(this)
         entity.abilities.save(this)
 
         val leftShoulder = entity.data.get(MetadataKeys.Player.LEFT_SHOULDER)
         val rightShoulder = entity.data.get(MetadataKeys.Player.RIGHT_SHOULDER)
-        if (!leftShoulder.isEmpty()) put("ShoulderEntityLeft", leftShoulder)
-        if (!rightShoulder.isEmpty()) put("ShoulderEntityRight", rightShoulder)
+        if (!leftShoulder.isEmpty) put("ShoulderEntityLeft", leftShoulder)
+        if (!rightShoulder.isEmpty) put("ShoulderEntityRight", rightShoulder)
 
-        string("Dimension", entity.dimension.location.asString())
+        putString("Dimension", entity.dimension.location.asString())
         entity.respawnData?.save(this, LOGGER)
 
         val rootVehicle = entity.vehicleSystem.rootVehicle()
         val vehicle = entity.vehicle
         if (vehicle != null && rootVehicle !== entity && rootVehicle.vehicleSystem.hasExactlyOnePlayerPassenger()) {
             compound("RootVehicle") {
-                uuid("Attach", vehicle.uuid)
+                putUUID("Attach", vehicle.uuid)
                 put("Entity", rootVehicle.saveWithPassengers().build())
             }
         }
 
         compound("krypton") {
             val vanishService = entity.server.servicesManager.provide<VanishService>()!!
-            if (vanishService is KryptonVanishService) boolean("vanished", entity.isVanished)
-            long("firstJoined", entity.firstJoined.toEpochMilli())
-            long("lastJoined", entity.lastJoined.toEpochMilli())
+            if (vanishService is KryptonVanishService) putBoolean("vanished", entity.isVanished)
+            putLong("firstJoined", entity.firstJoined.toEpochMilli())
+            putLong("lastJoined", entity.lastJoined.toEpochMilli())
         }
     }
 }

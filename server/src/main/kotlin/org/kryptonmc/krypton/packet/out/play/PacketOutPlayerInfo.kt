@@ -84,13 +84,8 @@ data class PacketOutPlayerInfo(val action: Action, val players: List<PlayerData>
 
         ADD_PLAYER {
 
-            override fun read(buf: ByteBuf): PlayerData = PlayerData(
-                buf.readGameProfile(),
-                buf.readGameMode(),
-                buf.readVarInt(),
-                buf.readNullableComponent(),
-                buf.readNullable(PlayerPublicKey::Data)
-            )
+            override fun read(buf: ByteBuf): PlayerData =
+                PlayerData(buf.readGameProfile(), buf.readGameMode(), buf.readVarInt(), buf.readNullableComponent(), buf.readNullableKey())
 
             override fun write(buf: ByteBuf, data: PlayerData) {
                 buf.writeGameProfile(data.profile)
@@ -165,3 +160,5 @@ data class PacketOutPlayerInfo(val action: Action, val players: List<PlayerData>
 private fun ByteBuf.readGameMode(): GameMode? = GameModes.fromId(readVarInt())
 
 private fun ByteBuf.readNullableComponent(): Component? = readNullable(ByteBuf::readComponent)
+
+private fun ByteBuf.readNullableKey(): PlayerPublicKey.Data? = readNullable(PlayerPublicKey::Data)

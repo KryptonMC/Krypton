@@ -25,7 +25,7 @@ import org.kryptonmc.api.effect.particle.data.ColorParticleData
 import org.kryptonmc.api.effect.particle.data.DirectionalParticleData
 import org.kryptonmc.api.effect.particle.data.NoteParticleData
 import org.kryptonmc.api.effect.particle.data.ParticleData
-import org.kryptonmc.krypton.effect.particle.createData
+import org.kryptonmc.krypton.effect.particle.downcast
 import org.kryptonmc.krypton.network.Writable
 import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.registry.KryptonRegistries
@@ -158,9 +158,9 @@ data class PacketOutParticle(
                 }
                 is ColorParticleData -> {
                     offsetPosition()
-                    offsetX = data.red.toFloat() / 255F
-                    offsetY = data.green.toFloat() / 255F
-                    offsetZ = data.blue.toFloat() / 255F
+                    offsetX = data.color.red.toFloat() / 255F
+                    offsetY = data.color.green.toFloat() / 255F
+                    offsetZ = data.color.blue.toFloat() / 255F
                     count = 0
                 }
                 is NoteParticleData -> {
@@ -175,6 +175,6 @@ data class PacketOutParticle(
         }
 
         @JvmStatic
-        private fun readData(typeId: Int, buf: ByteBuf): ParticleData? = KryptonRegistries.PARTICLE_TYPE.get(typeId)!!.createData(buf)
+        private fun readData(typeId: Int, buf: ByteBuf): ParticleData? = KryptonRegistries.PARTICLE_TYPE.get(typeId)!!.downcast().createData(buf)
     }
 }

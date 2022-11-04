@@ -18,39 +18,52 @@
  */
 package org.kryptonmc.krypton.entity.attribute
 
-import kotlinx.collections.immutable.ImmutableMap
-import kotlinx.collections.immutable.persistentMapOf
-import org.kryptonmc.api.entity.attribute.AttributeType
+import com.google.common.collect.ImmutableMap
 import java.util.UUID
+import java.util.function.Consumer
 
-class AttributeSupplier(private val attributes: ImmutableMap<AttributeType, KryptonAttribute>) {
+class AttributeSupplier(attributes: Map<KryptonAttributeType, KryptonAttribute>) {
 
-    fun value(type: AttributeType): Double = attribute(type).value
+    private val attributes = ImmutableMap.copyOf(attributes)
 
-    fun create(type: AttributeType, callback: (KryptonAttribute) -> Unit): KryptonAttribute {
-        val attribute = attributes.get(type) ?: return KryptonAttribute(type, callback)
+    fun hasAttribute(type: KryptonAttributeType): Boolean = attributes.containsKey(type)
+
+    fun hasModifier(type: KryptonAttributeType, modifierId: UUID): Boolean = attributes.get(type)?.getModifier(modifierId) != null
+
+    fun getValue(type: KryptonAttributeType): Double = getAttribute(type).calculateValue()
+
+    fun getBaseValue(type: KryptonAttributeType): Double = getAttribute(type).baseValue
+
+    fun getModifierValue(type: KryptonAttributeType, modifierId: UUID): Double {
+        val modifier = requireNotNull(getAttribute(type).getModifier(modifierId)) { "Cannot find modifier $modifierId on attribute ${type.key()}!" }
+        return modifier.amount
+    }
+
+    fun create(type: KryptonAttributeType, callback: Consumer<KryptonAttribute>): KryptonAttribute? {
+        val attribute = attributes.get(type) ?: return null
         val copy = KryptonAttribute(type, callback)
         copy.replaceFrom(attribute)
         return copy
     }
 
-    private fun attribute(type: AttributeType): KryptonAttribute = requireNotNull(attributes.get(type)) { "Cannot find attribute ${type.key()}!" }
+    private fun getAttribute(type: KryptonAttributeType): KryptonAttribute =
+        requireNotNull(attributes.get(type)) { "Cannot find attribute ${type.key()}!" }
 
     class Builder {
 
-        private val attributes = persistentMapOf<AttributeType, KryptonAttribute>().builder()
+        private val attributes = HashMap<KryptonAttributeType, KryptonAttribute>()
         private var frozen = false
 
-        fun add(type: AttributeType): Builder = apply { create(type) }
+        fun add(type: KryptonAttributeType): Builder = apply { create(type) }
 
-        fun add(type: AttributeType, base: Double): Builder = apply { create(type).baseValue = base }
+        fun add(type: KryptonAttributeType, base: Double): Builder = apply { create(type).baseValue = base }
 
         fun build(): AttributeSupplier {
             frozen = true
-            return AttributeSupplier(attributes.build())
+            return AttributeSupplier(attributes)
         }
 
-        private fun create(type: AttributeType): KryptonAttribute {
+        private fun create(type: KryptonAttributeType): KryptonAttribute {
             val attribute = KryptonAttribute(type) {
                 if (frozen) throw UnsupportedOperationException("Attempted to change value for default attribute ${type.key()}!")
             }

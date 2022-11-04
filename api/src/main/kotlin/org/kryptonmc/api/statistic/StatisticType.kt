@@ -9,22 +9,18 @@
 package org.kryptonmc.api.statistic
 
 import net.kyori.adventure.key.Keyed
+import net.kyori.adventure.translation.Translatable
 import org.kryptonmc.api.registry.Registry
 import org.kryptonmc.api.util.CataloguedBy
-import org.kryptonmc.api.util.TranslationHolder
+import javax.annotation.concurrent.Immutable
 
 /**
  * A type of a statistic.
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
 @CataloguedBy(StatisticTypes::class)
-public interface StatisticType<T : Any> : Iterable<Statistic<T>>, TranslationHolder, Keyed {
-
-    /**
-     * All of the statistics for this type.
-     */
-    @get:JvmName("statistics")
-    public val statistics: Map<T, Statistic<T>>
+@Immutable
+public interface StatisticType<T : Any> : Iterable<Statistic<T>>, Translatable, Keyed {
 
     /**
      * The registry for this statistic type.

@@ -11,18 +11,17 @@ package org.kryptonmc.api.event.auth
 import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.auth.GameProfile
 import org.kryptonmc.api.event.ResultedEvent
+import javax.annotation.concurrent.Immutable
 
 /**
  * An event that is called when a request is made to authenticate a player with
  * the given [username].
  */
-@Suppress("INAPPLICABLE_JVM_NAME")
 public interface AuthenticationEvent : ResultedEvent<AuthenticationEvent.Result> {
 
     /**
      * The username of the player that is being authenticated.
      */
-    @get:JvmName("username")
     public val username: String
 
     /**
@@ -31,6 +30,7 @@ public interface AuthenticationEvent : ResultedEvent<AuthenticationEvent.Result>
      * @param profile the optional profile for a successful result
      */
     @JvmRecord
+    @Immutable
     public data class Result(override val isAllowed: Boolean, public val profile: GameProfile?) : ResultedEvent.Result {
 
         public companion object {

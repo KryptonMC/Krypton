@@ -19,6 +19,7 @@
 package org.kryptonmc.krypton.entity
 
 import org.kryptonmc.nbt.CompoundTag
+import org.kryptonmc.nbt.ImmutableCompoundTag
 import org.spongepowered.math.vector.Vector3i
 
 fun CompoundTag.getVector3i(key: String): Vector3i? {
@@ -29,6 +30,6 @@ fun CompoundTag.getVector3i(key: String): Vector3i? {
 
 fun CompoundTag.putVector3i(key: String, vector: Vector3i): CompoundTag = put(key, vector.toCompound())
 
-fun CompoundTag.Builder.vector3i(key: String, vector: Vector3i): CompoundTag.Builder = put(key, vector.toCompound())
+fun CompoundTag.Builder.putVector3i(key: String, vector: Vector3i): CompoundTag.Builder = put(key, vector.toCompound())
 
-private fun Vector3i.toCompound(): CompoundTag = CompoundTag.immutableBuilder().int("X", x()).int("Y", y()).int("Z", z()).build()
+private fun Vector3i.toCompound(): CompoundTag = ImmutableCompoundTag.builder().putInt("X", x()).putInt("Y", y()).putInt("Z", z()).build()

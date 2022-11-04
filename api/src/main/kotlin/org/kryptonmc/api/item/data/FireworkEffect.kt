@@ -8,18 +8,20 @@
  */
 package org.kryptonmc.api.item.data
 
+import com.google.common.collect.ImmutableList
 import net.kyori.adventure.builder.AbstractBuilder
 import org.jetbrains.annotations.ApiStatus
 import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.Krypton
-import org.kryptonmc.api.util.Buildable
 import org.kryptonmc.api.util.Color
+import javax.annotation.concurrent.Immutable
 
 /**
  * An effect that may be produced from a firework star exploding.
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
-public interface FireworkEffect : Buildable<FireworkEffect.Builder, FireworkEffect> {
+@Immutable
+public interface FireworkEffect {
 
     /**
      * The type of this effect.
@@ -52,135 +54,10 @@ public interface FireworkEffect : Buildable<FireworkEffect.Builder, FireworkEffe
     public val fadeColors: List<Color>
 
     /**
-     * Creates a new firework effect with the given [type].
-     *
-     * @param type the new type
-     * @return a new firework effect
-     */
-    @Contract("_ -> new", pure = true)
-    public fun withType(type: FireworkEffectType): FireworkEffect
-
-    /**
-     * Creates a new firework effect with the given [flickers] setting.
-     *
-     * @param flickers the new flickers setting
-     * @return a new firework effect
-     */
-    @Contract("_ -> new", pure = true)
-    public fun withFlicker(flickers: Boolean): FireworkEffect
-
-    /**
-     * Creates a new firework effect with the given [trail] setting.
-     *
-     * @param trail the new trail setting
-     * @return a new firework effect
-     */
-    @Contract("_ -> new", pure = true)
-    public fun withTrail(trail: Boolean): FireworkEffect
-
-    /**
-     * Creates a new firework effect with the given [colors].
-     *
-     * @param colors the new colours
-     * @return a new firework effect
-     */
-    @Contract("_ -> new", pure = true)
-    public fun withColors(colors: Iterable<Color>): FireworkEffect
-
-    /**
-     * Creates a new firework effect with the given [color] added to the list
-     * of colours.
-     *
-     * @param color the colour to add
-     * @return a new firework effect
-     */
-    @Contract("_ -> new", pure = true)
-    public fun addColor(color: Color): FireworkEffect
-
-    /**
-     * Creates a new firework effect with the colour at the given [index]
-     * removed from the list of colours.
-     *
-     * @param index the index of the colour to remove
-     * @return a new firework effect
-     */
-    @Contract("_ -> new", pure = true)
-    public fun removeColor(index: Int): FireworkEffect
-
-    /**
-     * Creates a new firework effect with the given [color] remove from the
-     * list of colours.
-     *
-     * @param color the colour to remove
-     * @return a new firework effect
-     */
-    @Contract("_ -> new", pure = true)
-    public fun removeColor(color: Color): FireworkEffect
-
-    /**
-     * Creates a new firework effect with the given [fadeColors].
-     *
-     * @param fadeColors the new fade colours
-     * @return a new firework effect
-     */
-    @Contract("_ -> new", pure = true)
-    public fun withFadeColors(fadeColors: Iterable<Color>): FireworkEffect
-
-    /**
-     * Creates a new firework effect with the given fade [color] added to the
-     * list of fade colours.
-     *
-     * @param color the fade colour to add
-     * @return a new firework effect
-     */
-    @Contract("_ -> new", pure = true)
-    public fun addFadeColor(color: Color): FireworkEffect
-
-    /**
-     * Creates a new firework effect with the fade colour at the given [index]
-     * removed from the list of fade colours.
-     *
-     * @param index the index of the colour to remove
-     * @return a new firework effect
-     */
-    @Contract("_ -> new", pure = true)
-    public fun removeFadeColor(index: Int): FireworkEffect
-
-    /**
-     * Creates a new firework effect with the given fade [color] remove from
-     * the list of fade colours.
-     *
-     * @param color the colour to remove
-     * @return a new firework effect
-     */
-    @Contract("_ -> new", pure = true)
-    public fun removeFadeColor(color: Color): FireworkEffect
-
-    /**
      * A builder for building firework effects.
      */
     @FireworkEffectDsl
     public interface Builder : AbstractBuilder<FireworkEffect> {
-
-        /**
-         * Sets the type of the firework effect to the given [type].
-         *
-         * @param type the type
-         * @return this builder
-         */
-        @FireworkEffectDsl
-        @Contract("_ -> this", mutates = "this")
-        public fun type(type: FireworkEffectType): Builder
-
-        /**
-         * Sets whether the firework effect flickers to the given [value].
-         *
-         * @param value whether the effect flickers
-         * @return this builder
-         */
-        @FireworkEffectDsl
-        @Contract("_ -> this", mutates = "this")
-        public fun flicker(value: Boolean): Builder
 
         /**
          * Makes the firework effect flicker.
@@ -189,17 +66,7 @@ public interface FireworkEffect : Buildable<FireworkEffect.Builder, FireworkEffe
          */
         @FireworkEffectDsl
         @Contract("-> this", mutates = "this")
-        public fun flickers(): Builder = flicker(true)
-
-        /**
-         * Sets whether the firework effect has a trail to the given [value].
-         *
-         * @param value whether the effect has a trail
-         * @return this builder
-         */
-        @FireworkEffectDsl
-        @Contract("_ -> this", mutates = "this")
-        public fun trail(value: Boolean): Builder
+        public fun flickers(): Builder
 
         /**
          * Makes the effect have a trail.
@@ -208,28 +75,27 @@ public interface FireworkEffect : Buildable<FireworkEffect.Builder, FireworkEffe
          */
         @FireworkEffectDsl
         @Contract("-> this", mutates = "this")
-        public fun trail(): Builder = trail(true)
+        public fun trail(): Builder
 
         /**
          * Sets the colours of the firework effect to the given [colors].
          *
-         * @param colors the colors
+         * @param colors the colours
          * @return this builder
          */
         @FireworkEffectDsl
         @Contract("_ -> this", mutates = "this")
-        public fun colors(colors: Iterable<Color>): Builder
+        public fun colors(colors: Collection<Color>): Builder
 
         /**
-         * Adds the given [color] to the list of colours for this firework
-         * effect.
+         * Sets the colours of the firework effect to the given [colors].
          *
-         * @param color the colour to add
+         * @param colors the colours
          * @return this builder
          */
         @FireworkEffectDsl
         @Contract("_ -> this", mutates = "this")
-        public fun addColor(color: Color): Builder
+        public fun colors(vararg colors: Color): Builder = colors(ImmutableList.copyOf(colors))
 
         /**
          * Sets the fade colours of the firework effect to the given [colors].
@@ -239,18 +105,17 @@ public interface FireworkEffect : Buildable<FireworkEffect.Builder, FireworkEffe
          */
         @FireworkEffectDsl
         @Contract("_ -> this", mutates = "this")
-        public fun fadeColors(colors: Iterable<Color>): Builder
+        public fun fadeColors(colors: Collection<Color>): Builder
 
         /**
-         * Adds the given [color] to the list of fade colours for this
-         * firework effect.
+         * Sets the fade colours of the firework effect to the given [colors].
          *
-         * @param color the fade colour to add
+         * @param colors the fade colours
          * @return this builder
          */
         @FireworkEffectDsl
         @Contract("_ -> this", mutates = "this")
-        public fun addFadeColor(color: Color): Builder
+        public fun fadeColors(vararg colors: Color): Builder = fadeColors(ImmutableList.copyOf(colors))
     }
 
     @ApiStatus.Internal

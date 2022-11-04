@@ -26,6 +26,5 @@ public interface FurnaceMinecart : MinecartLike {
     /**
      * The fuel this furnace minecart currently has.
      */
-    @get:JvmName("fuel")
     public var fuel: Int
 }

@@ -21,6 +21,7 @@ package org.kryptonmc.krypton.world.region
 import it.unimi.dsi.fastutil.longs.Long2ObjectLinkedOpenHashMap
 import org.kryptonmc.krypton.world.chunk.ChunkPosition
 import org.kryptonmc.nbt.CompoundTag
+import org.kryptonmc.nbt.io.TagCompression
 import org.kryptonmc.nbt.io.TagIO
 import java.nio.file.Files
 import java.nio.file.Path
@@ -35,7 +36,7 @@ class RegionFileManager(private val folder: Path, private val synchronizeWrites:
     private val regionCache = Long2ObjectLinkedOpenHashMap<RegionFile>()
     private val regionCacheLock = ReentrantLock()
 
-    fun read(x: Int, z: Int): CompoundTag? = getRegionFile(x, z).getChunkDataInputStream(x, z)?.use(TagIO::read)
+    fun read(x: Int, z: Int): CompoundTag? = getRegionFile(x, z).getChunkDataInputStream(x, z)?.use { TagIO.read(it, TagCompression.NONE) }
 
     fun write(x: Int, z: Int, data: CompoundTag?) {
         val file = getRegionFile(x, z)
@@ -43,7 +44,7 @@ class RegionFileManager(private val folder: Path, private val synchronizeWrites:
             file.clear(x, z)
             return
         }
-        file.getChunkDataOutputStream(x, z).use { TagIO.write(it, data) }
+        file.getChunkDataOutputStream(x, z).use { TagIO.write(it, data, TagCompression.NONE) }
     }
 
     private fun getRegionFile(x: Int, z: Int): RegionFile {

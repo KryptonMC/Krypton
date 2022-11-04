@@ -19,12 +19,12 @@
 package org.kryptonmc.krypton.entity.aquatic
 
 import org.kryptonmc.api.entity.aquatic.Dolphin
-import org.kryptonmc.api.entity.attribute.AttributeTypes
 import org.kryptonmc.api.world.damage.type.DamageTypes
 import org.kryptonmc.krypton.entity.KryptonEntityType
 import org.kryptonmc.krypton.entity.KryptonEntityTypes
 import org.kryptonmc.krypton.entity.KryptonMob
 import org.kryptonmc.krypton.entity.attribute.AttributeSupplier
+import org.kryptonmc.krypton.entity.attribute.KryptonAttributeTypes
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.entity.serializer.EntitySerializer
 import org.kryptonmc.krypton.entity.serializer.aquatic.DolphinSerializer
@@ -36,7 +36,7 @@ import kotlin.random.Random
 
 class KryptonDolphin(world: KryptonWorld) : KryptonAquaticAnimal(world), Dolphin {
 
-    override val type: KryptonEntityType<Dolphin>
+    override val type: KryptonEntityType<KryptonDolphin>
         get() = KryptonEntityTypes.DOLPHIN
     override val serializer: EntitySerializer<KryptonDolphin>
         get() = DolphinSerializer
@@ -44,7 +44,7 @@ class KryptonDolphin(world: KryptonWorld) : KryptonAquaticAnimal(world), Dolphin
     override var treasurePosition: Vector3i
         get() = data.get(MetadataKeys.Dolphin.TREASURE_POSITION)
         set(value) = data.set(MetadataKeys.Dolphin.TREASURE_POSITION, value)
-    override var gotFish: Boolean
+    override var hasGotFish: Boolean
         get() = data.get(MetadataKeys.Dolphin.GOT_FISH)
         set(value) = data.set(MetadataKeys.Dolphin.GOT_FISH, value)
     override var skinMoisture: Int
@@ -74,7 +74,7 @@ class KryptonDolphin(world: KryptonWorld) : KryptonAquaticAnimal(world), Dolphin
         // Dolphins don't immediately start to suffocate out of water, as they can survive out of water for extended periods of time.
         // In real life, dolphins can't breathe underwater, so they have to resurface. In Minecraft, this behaviour isn't
         // simulated, but what is simulated is the ability for dolphins to survive for extended periods of time out of water.
-        if (inWater || waterPhysicsSystem.isInBubbleColumn()) { // TODO: Also check for being in rain
+        if (isInWater || waterPhysicsSystem.isInBubbleColumn()) { // TODO: Also check for being in rain
             // If the dolphin is in water, rain, or a bubble column then it has full moisture.
             skinMoisture = FULL_SKIN_MOISTURE
             return
@@ -110,9 +110,9 @@ class KryptonDolphin(world: KryptonWorld) : KryptonAquaticAnimal(world), Dolphin
 
         @JvmStatic
         fun attributes(): AttributeSupplier.Builder = KryptonMob.attributes()
-            .add(AttributeTypes.MAX_HEALTH, 10.0)
-            .add(AttributeTypes.MOVEMENT_SPEED, 1.2)
-            .add(AttributeTypes.ATTACK_DAMAGE, 3.0)
+            .add(KryptonAttributeTypes.MAX_HEALTH, 10.0)
+            .add(KryptonAttributeTypes.MOVEMENT_SPEED, 1.2)
+            .add(KryptonAttributeTypes.ATTACK_DAMAGE, 3.0)
 
         // this will always produce a value between -0.2 and 0.2
         // Broken down: Random.nextFloat() produces a value between 0 and 1, multiplied by 2 produces a value between 0 and 2

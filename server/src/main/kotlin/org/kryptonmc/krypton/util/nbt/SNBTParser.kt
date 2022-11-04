@@ -22,13 +22,15 @@ import com.mojang.brigadier.StringReader
 import com.mojang.brigadier.exceptions.Dynamic2CommandExceptionType
 import com.mojang.brigadier.exceptions.DynamicCommandExceptionType
 import net.kyori.adventure.text.Component
-import org.kryptonmc.api.adventure.toMessage
+import org.kryptonmc.krypton.adventure.toMessage
 import org.kryptonmc.krypton.command.toExceptionType
 import org.kryptonmc.nbt.ByteArrayTag
 import org.kryptonmc.nbt.ByteTag
 import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.DoubleTag
+import org.kryptonmc.nbt.EndTag
 import org.kryptonmc.nbt.FloatTag
+import org.kryptonmc.nbt.ImmutableCompoundTag
 import org.kryptonmc.nbt.IntArrayTag
 import org.kryptonmc.nbt.IntTag
 import org.kryptonmc.nbt.LongArrayTag
@@ -38,7 +40,7 @@ import org.kryptonmc.nbt.NumberTag
 import org.kryptonmc.nbt.ShortTag
 import org.kryptonmc.nbt.StringTag
 import org.kryptonmc.nbt.Tag
-import org.kryptonmc.nbt.io.Types
+import org.kryptonmc.nbt.util.Types
 
 class SNBTParser(private val reader: StringReader) {
 
@@ -60,7 +62,7 @@ class SNBTParser(private val reader: StringReader) {
 
     fun readCompound(): CompoundTag {
         expect(COMPOUND_START)
-        val builder = CompoundTag.immutableBuilder()
+        val builder = ImmutableCompoundTag.builder()
         reader.skipWhitespace()
 
         while (reader.canRead() && reader.peek() != COMPOUND_END) {
@@ -107,17 +109,17 @@ class SNBTParser(private val reader: StringReader) {
         expect(LIST_START)
         reader.skipWhitespace()
         if (!reader.canRead()) throw ERROR_EXPECTED_VALUE.createWithContext(reader)
-        val list = MutableListTag()
+        val list = MutableListTag.of(ArrayList(), EndTag.ID)
         var type: Int = -1
 
         while (reader.peek() != LIST_END) {
             val cursor = reader.cursor
             val tag = readValue()
             if (type == -1) {
-                type = tag.id
-            } else if (tag.id != type) {
+                type = tag.id()
+            } else if (tag.id() != type) {
                 reader.cursor = cursor
-                throw ERROR_INSERT_MIXED_LIST.createWithContext(reader, tag.type.name, Types.of(type).name)
+                throw ERROR_INSERT_MIXED_LIST.createWithContext(reader, tag.type().name, Types.of(type).name)
             }
             list.add(tag)
             if (!reader.hasElementSeparator()) break
@@ -136,9 +138,9 @@ class SNBTParser(private val reader: StringReader) {
         reader.skipWhitespace()
         if (!reader.canRead()) throw ERROR_EXPECTED_VALUE.createWithContext(reader)
         return when (start) {
-            BYTE_ARRAY_START -> ByteArrayTag(readArray<Byte>(ByteArrayTag.ID, ByteTag.ID).toByteArray())
-            INT_ARRAY_START -> IntArrayTag(readArray<Int>(IntArrayTag.ID, IntTag.ID).toIntArray())
-            LONG_ARRAY_START -> LongArrayTag(readArray<Long>(LongArrayTag.ID, LongTag.ID).toLongArray())
+            BYTE_ARRAY_START -> ByteArrayTag.of(readArray<Byte>(ByteArrayTag.ID, ByteTag.ID).toByteArray())
+            INT_ARRAY_START -> IntArrayTag.of(readArray<Int>(IntArrayTag.ID, IntTag.ID).toIntArray())
+            LONG_ARRAY_START -> LongArrayTag.of(readArray<Long>(LongArrayTag.ID, LongTag.ID).toLongArray())
             else -> {
                 reader.cursor = cursor
                 throw ERROR_INVALID_ARRAY.createWithContext(reader, start.toString())
@@ -153,14 +155,14 @@ class SNBTParser(private val reader: StringReader) {
             if (reader.peek() != LIST_END) {
                 val cursor = reader.cursor
                 val tag = readValue()
-                val type = tag.id
+                val type = tag.id()
                 if (type != elementType) {
                     reader.cursor = cursor
                     throw ERROR_INSERT_MIXED_ARRAY.createWithContext(reader, Types.of(type).name, Types.of(arrayType).name)
                 }
                 val value = when (elementType) {
-                    ByteTag.ID -> (tag as ByteTag).value as T
-                    LongTag.ID -> (tag as LongTag).value as T
+                    ByteTag.ID -> (tag as ByteTag).value() as T
+                    LongTag.ID -> (tag as LongTag).value() as T
                     else -> (tag as NumberTag).asNumber() as T
                 }
                 list.add(value)

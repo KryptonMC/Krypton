@@ -24,7 +24,7 @@ public interface Equipable {
      * @param hand the hand
      * @return the item this mob is holding in the hand
      */
-    public fun heldItem(hand: Hand): ItemStack
+    public fun getHeldItem(hand: Hand): ItemStack
 
     /**
      * Sets the item that this mob holds in the given [hand] to the given
@@ -43,7 +43,7 @@ public interface Equipable {
      *
      * @param slot the slot
      */
-    public fun armor(slot: ArmorSlot): ItemStack
+    public fun getArmor(slot: ArmorSlot): ItemStack
 
     /**
      * Sets the armour item that this mob has equipped in the given [slot] to
@@ -63,7 +63,7 @@ public interface Equipable {
      * @param slot the slot
      * @return the item in the given slot
      */
-    public fun equipment(slot: EquipmentSlot): ItemStack
+    public fun getEquipment(slot: EquipmentSlot): ItemStack
 
     /**
      * Sets the equipment item that this mob has equipped in the given [slot] to

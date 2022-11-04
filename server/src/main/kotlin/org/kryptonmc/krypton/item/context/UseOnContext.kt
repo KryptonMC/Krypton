@@ -44,11 +44,11 @@ open class UseOnContext protected constructor(
     val isInside: Boolean
         get() = hitResult.isInside
     open val horizontalDirection: Direction
-        get() = player?.direction ?: Direction.NORTH
+        get() = player?.facing ?: Direction.NORTH
     open val isSneaking: Boolean
         get() = player != null && player.isSneaking
     open val rotation: Float
         get() = player?.rotation?.y() ?: 0F
 
-    constructor(player: KryptonPlayer, hand: Hand, hitResult: BlockHitResult) : this(player.world, player, hand, player.heldItem(hand), hitResult)
+    constructor(player: KryptonPlayer, hand: Hand, hitResult: BlockHitResult) : this(player.world, player, hand, player.getHeldItem(hand), hitResult)
 }

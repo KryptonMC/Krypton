@@ -13,12 +13,10 @@ import org.kryptonmc.api.entity.player.Player
 /**
  * An event that involves a player.
  */
-@Suppress("INAPPLICABLE_JVM_NAME")
 public sealed interface PlayerEvent {
 
     /**
      * The player involved in this event.
      */
-    @get:JvmName("player")
     public val player: Player
 }

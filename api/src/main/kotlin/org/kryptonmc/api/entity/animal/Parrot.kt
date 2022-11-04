@@ -13,12 +13,10 @@ import org.kryptonmc.api.entity.animal.type.ParrotVariant
 /**
  * A parrot.
  */
-@Suppress("INAPPLICABLE_JVM_NAME")
 public interface Parrot : Tamable {
 
     /**
      * The variant of this parrot.
      */
-    @get:JvmName("variant")
     public var variant: ParrotVariant
 }

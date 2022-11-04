@@ -11,12 +11,14 @@ package org.kryptonmc.api.scoreboard.criteria
 import net.kyori.adventure.key.Keyed
 import org.kryptonmc.api.scoreboard.ObjectiveRenderType
 import org.kryptonmc.api.util.CataloguedBy
+import javax.annotation.concurrent.Immutable
 
 /**
  * The criterion for a scoreboard objective to be displayed.
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
 @CataloguedBy(Criteria::class)
+@Immutable
 public interface Criterion : Keyed {
 
     /**

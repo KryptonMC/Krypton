@@ -31,6 +31,6 @@ object PigSerializer : EntitySerializer<KryptonPig> {
     }
 
     override fun save(entity: KryptonPig): CompoundTag.Builder = AgeableSerializer.save(entity).apply {
-        boolean("Saddle", entity.isSaddled)
+        putBoolean("Saddle", entity.isSaddled)
     }
 }

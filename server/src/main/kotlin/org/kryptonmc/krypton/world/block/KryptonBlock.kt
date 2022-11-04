@@ -20,8 +20,6 @@ package org.kryptonmc.krypton.world.block
 
 import com.github.benmanes.caffeine.cache.Caffeine
 import net.kyori.adventure.key.Key
-import net.kyori.adventure.text.Component
-import net.kyori.adventure.text.TranslatableComponent
 import org.kryptonmc.api.block.BlockState
 import org.kryptonmc.api.block.Blocks
 import org.kryptonmc.api.registry.Registries
@@ -57,15 +55,12 @@ open class KryptonBlock(properties: Properties) : BlockBehaviour(properties), St
 
     final override val stateDefinition: StateDefinition<KryptonBlock, KryptonBlockState>
     private var defaultBlockState: KryptonBlockState
-    private var defaultTranslationKey: String? = null
+    private var descriptionId: String? = null
     private var item: KryptonItemType? = null
     private val defaultItemStack: KryptonItemStack by lazy { KryptonItemStack(this) }
 
     final override val defaultState: KryptonBlockState
         get() = defaultBlockState
-    final override val translation: TranslatableComponent
-        get() = Component.translatable(translationKey())
-
     override val canRespawnIn: Boolean
         get() = !material.solid && !material.liquid
 
@@ -165,8 +160,8 @@ open class KryptonBlock(properties: Properties) : BlockBehaviour(properties), St
     override fun key(): Key = Registries.BLOCK.get(this)
 
     override fun translationKey(): String {
-        if (defaultTranslationKey == null) defaultTranslationKey = Keys.translation("block", key())
-        return defaultTranslationKey!!
+        if (descriptionId == null) descriptionId = Keys.translation("block", key())
+        return descriptionId!!
     }
 
     override fun toString(): String = "Block(${key()})"

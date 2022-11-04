@@ -35,7 +35,7 @@ object MojangUUIDTypeAdapter : TypeAdapter<UUID>() {
 
     override fun read(reader: JsonReader): UUID = fromString(reader.nextString())
 
-    override fun write(out: JsonWriter, value: UUID) {
-        out.value(toString(value))
+    override fun write(out: JsonWriter, value: UUID?) {
+        out.value(value?.let(::toString))
     }
 }

@@ -23,13 +23,11 @@ public interface WorldManager {
     /**
      * The server this world manager is bound to.
      */
-    @get:JvmName("server")
     public val server: Server
 
     /**
      * The map of all currently loaded worlds by dimension.
      */
-    @get:JvmName("worlds")
     public val worlds: Map<ResourceKey<World>, World>
 
     /**
@@ -37,7 +35,6 @@ public interface WorldManager {
      *
      * What the default world is will be defined by the implementation.
      */
-    @get:JvmName("defaultWorld")
     public val default: World
 
     /**

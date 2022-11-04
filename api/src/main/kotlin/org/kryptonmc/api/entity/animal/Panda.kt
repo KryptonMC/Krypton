@@ -13,7 +13,6 @@ import org.kryptonmc.api.entity.animal.type.PandaGene
 /**
  * A panda.
  */
-@Suppress("INAPPLICABLE_JVM_NAME")
 public interface Panda : Animal {
 
     /**
@@ -29,7 +28,6 @@ public interface Panda : Animal {
      * that if both genes are dominant, the main gene will always be expressed
      * over the hidden gene.
      */
-    @get:JvmName("knownGene")
     public var knownGene: PandaGene
 
     /**
@@ -37,7 +35,6 @@ public interface Panda : Animal {
      *
      * See [knownGene] for an explanation on panda genetics.
      */
-    @get:JvmName("hiddenGene")
     public var hiddenGene: PandaGene
 
     /**
@@ -83,18 +80,15 @@ public interface Panda : Animal {
     /**
      * The remaining time, in ticks, this panda will be unhappy for.
      */
-    @get:JvmName("unhappyTime")
     public var unhappyTime: Int
 
     /**
      * The remaining time, in ticks, this panda will be unhappy for.
      */
-    @get:JvmName("sneezeTime")
     public var sneezingTime: Int
 
     /**
      * The remaining time, in ticks, this panda will be unhappy for.
      */
-    @get:JvmName("eatTime")
     public var eatingTime: Int
 }

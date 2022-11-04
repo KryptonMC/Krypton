@@ -8,10 +8,13 @@
  */
 package org.kryptonmc.api.entity.player
 
+import javax.annotation.concurrent.Immutable
+
 /**
  * The parts of the skin that are shown on a player.
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
+@Immutable
 public interface SkinParts {
 
     /**

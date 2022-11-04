@@ -16,18 +16,15 @@ import org.kryptonmc.api.world.World
 /**
  * Called when the given [entity] spawns in to the given [world].
  */
-@Suppress("INAPPLICABLE_JVM_NAME")
 public interface SpawnEntityEvent : ResultedEvent<GenericResult> {
 
     /**
      * The entity that is being spawned in to the world.
      */
-    @get:JvmName("entity")
     public val entity: Entity
 
     /**
      * The world that the entity is being spawned in to.
      */
-    @get:JvmName("world")
     public val world: World
 }

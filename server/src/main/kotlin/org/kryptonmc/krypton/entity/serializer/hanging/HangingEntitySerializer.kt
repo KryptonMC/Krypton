@@ -33,8 +33,8 @@ object HangingEntitySerializer : EntitySerializer<KryptonHangingEntity> {
 
     override fun save(entity: KryptonHangingEntity): CompoundTag.Builder = BaseEntitySerializer.save(entity).apply {
         val position = entity.centerPosition!!
-        int("TileX", position.x())
-        int("TileY", position.y())
-        int("TileZ", position.z())
+        putInt("TileX", position.x())
+        putInt("TileY", position.y())
+        putInt("TileZ", position.z())
     }
 }

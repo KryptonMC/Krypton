@@ -20,7 +20,6 @@ package org.kryptonmc.krypton.entity.animal
 
 import org.kryptonmc.api.entity.animal.Fox
 import org.kryptonmc.api.entity.animal.type.FoxVariant
-import org.kryptonmc.api.entity.attribute.AttributeTypes
 import org.kryptonmc.api.item.ItemStack
 import org.kryptonmc.api.tags.ItemTags
 import org.kryptonmc.krypton.entity.KryptonEntityType
@@ -28,6 +27,7 @@ import org.kryptonmc.krypton.entity.KryptonEntityTypes
 import org.kryptonmc.krypton.entity.KryptonLivingEntity
 import org.kryptonmc.krypton.entity.KryptonMob
 import org.kryptonmc.krypton.entity.attribute.AttributeSupplier
+import org.kryptonmc.krypton.entity.attribute.KryptonAttributeTypes
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.entity.serializer.EntitySerializer
 import org.kryptonmc.krypton.entity.serializer.animal.FoxSerializer
@@ -36,7 +36,7 @@ import java.util.UUID
 
 class KryptonFox(world: KryptonWorld) : KryptonAnimal(world), Fox {
 
-    override val type: KryptonEntityType<Fox>
+    override val type: KryptonEntityType<KryptonFox>
         get() = KryptonEntityTypes.FOX
     override val serializer: EntitySerializer<KryptonFox>
         get() = FoxSerializer
@@ -103,9 +103,9 @@ class KryptonFox(world: KryptonWorld) : KryptonAnimal(world), Fox {
 
         @JvmStatic
         fun attributes(): AttributeSupplier.Builder = KryptonMob.attributes()
-            .add(AttributeTypes.MOVEMENT_SPEED, 0.3)
-            .add(AttributeTypes.MAX_HEALTH, 10.0)
-            .add(AttributeTypes.FOLLOW_RANGE, 32.0)
-            .add(AttributeTypes.ATTACK_DAMAGE, 2.0)
+            .add(KryptonAttributeTypes.MOVEMENT_SPEED, 0.3)
+            .add(KryptonAttributeTypes.MAX_HEALTH, 10.0)
+            .add(KryptonAttributeTypes.FOLLOW_RANGE, 32.0)
+            .add(KryptonAttributeTypes.ATTACK_DAMAGE, 2.0)
     }
 }

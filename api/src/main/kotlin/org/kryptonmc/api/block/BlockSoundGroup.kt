@@ -9,13 +9,27 @@
 package org.kryptonmc.api.block
 
 import org.kryptonmc.api.effect.sound.SoundEvent
+import javax.annotation.concurrent.Immutable
 
 /**
  * The sounds that a block will make when specific actions are taken, such as
  * breaking it, stepping on it, or falling on it.
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
+@Immutable
 public interface BlockSoundGroup {
+
+    /**
+     * The volume that the sounds in this group will be played at.
+     */
+    @get:JvmName("volume")
+    public val volume: Float
+
+    /**
+     * The pitch that the sounds in this group will be played at.
+     */
+    @get:JvmName("pitch")
+    public val pitch: Float
 
     /**
      * The sound that is played when the block is broken.
@@ -46,16 +60,4 @@ public interface BlockSoundGroup {
      */
     @get:JvmName("fallSound")
     public val fallSound: SoundEvent
-
-    /**
-     * The volume that the sounds in this group will be played at.
-     */
-    @get:JvmName("volume")
-    public val volume: Float
-
-    /**
-     * The pitch that the sounds in this group will be played at.
-     */
-    @get:JvmName("pitch")
-    public val pitch: Float
 }

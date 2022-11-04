@@ -14,13 +14,11 @@ import org.kryptonmc.api.entity.Bucketable
 /**
  * An axolotl.
  */
-@Suppress("INAPPLICABLE_JVM_NAME")
 public interface Axolotl : Animal, Bucketable {
 
     /**
      * The variant of this axolotl.
      */
-    @get:JvmName("variant")
     public var variant: AxolotlVariant
 
     /**

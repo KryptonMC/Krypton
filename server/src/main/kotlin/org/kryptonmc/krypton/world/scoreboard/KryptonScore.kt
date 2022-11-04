@@ -19,32 +19,33 @@
 package org.kryptonmc.krypton.world.scoreboard
 
 import net.kyori.adventure.text.Component
-import org.kryptonmc.api.adventure.toLegacySectionText
 import org.kryptonmc.api.scoreboard.Objective
 import org.kryptonmc.api.scoreboard.Score
+import org.kryptonmc.krypton.adventure.toLegacySectionText
 
-class KryptonScore(var scoreboard: KryptonScoreboard?, override val objective: Objective?, override val name: Component) : Score {
+class KryptonScore(override val scoreboard: KryptonScoreboard, override val objective: Objective?, override val name: Component) : Score {
 
-    private var forceUpdate = true
-    private val nameString = name.toLegacySectionText()
     override var score: Int = 0
         set(value) {
             val old = field
             field = value
             if (old != value || forceUpdate) {
                 forceUpdate = false
-                scoreboard?.onScoreUpdated(this)
+                scoreboard.onScoreUpdated(this)
             }
         }
     override var isLocked: Boolean = true
+    private var forceUpdate = true
+
+    private val nameString = name.toLegacySectionText()
 
     fun add(amount: Int) {
-        if (objective == null || !objective.criterion.isMutable) return
+        require(objective == null || !objective.criterion.isMutable) { "Cannot modify read-only score!" }
         score += amount
     }
 
     fun subtract(amount: Int) {
-        if (objective == null || !objective.criterion.isMutable) return
+        require(objective == null || !objective.criterion.isMutable) { "Cannot modify read-only score!" }
         score -= amount
     }
 

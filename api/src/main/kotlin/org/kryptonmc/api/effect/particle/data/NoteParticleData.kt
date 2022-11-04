@@ -9,11 +9,13 @@
 package org.kryptonmc.api.effect.particle.data
 
 import org.jetbrains.annotations.Contract
+import javax.annotation.concurrent.Immutable
 
 /**
  * Holds data for note particle effects.
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
+@Immutable
 public interface NoteParticleData : ParticleData {
 
     /**

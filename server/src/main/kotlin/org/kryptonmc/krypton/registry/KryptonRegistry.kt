@@ -31,6 +31,7 @@ import org.kryptonmc.krypton.util.mapSuccess
 import org.kryptonmc.krypton.util.orElseError
 import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.compound
+import org.kryptonmc.nbt.list
 import org.kryptonmc.serialization.Codec
 import org.kryptonmc.serialization.Encoder
 import org.kryptonmc.serialization.nbt.NbtOps
@@ -72,7 +73,7 @@ open class KryptonRegistry<T>(override val key: ResourceKey<out Registry<T>>) : 
 
     override fun get(key: ResourceKey<T>): T? = keyStorage.get(key)
 
-    fun getNullable(key: Key): T? = storage.get(key)
+    private fun getNullable(key: Key): T? = storage.get(key)
 
     override fun resourceKey(value: T): ResourceKey<T>? = keyStorage.inverse().get(value)
 
@@ -106,11 +107,11 @@ open class KryptonRegistry<T>(override val key: ResourceKey<out Registry<T>>) : 
     )
 
     fun encode(elementEncoder: Encoder<T>): CompoundTag = compound {
-        string("type", key.location.asString())
-        list("value", CompoundTag.ID, values.map {
+        putString("type", key.location.asString())
+        putList("value", CompoundTag.ID, values.map {
             compound {
-                string("name", get(it)!!.asString())
-                int("id", idOf(it))
+                putString("name", get(it)!!.asString())
+                putInt("id", idOf(it))
                 put("element", elementEncoder.encodeStart(it, NbtOps.INSTANCE).result().get())
             }
         })

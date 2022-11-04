@@ -8,9 +8,7 @@
  */
 package org.kryptonmc.api.world
 
-import net.kyori.adventure.text.Component
-import net.kyori.adventure.text.TranslatableComponent
-import org.kryptonmc.api.util.TranslationHolder
+import net.kyori.adventure.translation.Translatable
 import org.kryptonmc.api.world.damage.type.DamageType
 
 /**
@@ -22,7 +20,7 @@ import org.kryptonmc.api.world.damage.type.DamageType
  * [SURVIVAL]
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
-public enum class GameMode(public val abbreviation: String) : TranslationHolder {
+public enum class GameMode(public val abbreviation: String) : Translatable {
 
     /**
      * Survival mode is the default game mode. In it, you can access most
@@ -54,6 +52,5 @@ public enum class GameMode(public val abbreviation: String) : TranslationHolder 
      */
     SPECTATOR("sp");
 
-    @get:JvmName("translation")
-    override val translation: TranslatableComponent = Component.translatable("gameMode.${name.lowercase()}")
+    override fun translationKey(): String = "gameMode.${name.lowercase()}"
 }

@@ -18,7 +18,7 @@
  */
 package org.kryptonmc.krypton.world.fluid
 
-import kotlinx.collections.immutable.ImmutableMap
+import com.google.common.collect.ImmutableMap
 import org.kryptonmc.api.block.BlockState
 import org.kryptonmc.api.fluid.Fluid
 import org.kryptonmc.api.fluid.FluidState
@@ -39,8 +39,6 @@ class KryptonFluidState(
 ) : KryptonState<KryptonFluid, KryptonFluidState>(fluid, values, propertiesCodec), FluidState,
     StateDelegate<FluidState, KryptonFluidState> {
 
-    override val state: KryptonFluidState
-        get() = this
     override val isSource: Boolean
         get() = fluid.isSource(this)
     override val level: Int
@@ -57,6 +55,8 @@ class KryptonFluidState(
     fun eq(block: Fluid): Boolean = this.fluid === block
 
     override fun asBlock(): BlockState = fluid.asBlock(this)
+
+    override fun asState(): KryptonFluidState = this
 
     companion object {
 

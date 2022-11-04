@@ -29,7 +29,7 @@ import org.kryptonmc.krypton.world.KryptonWorld
 
 class KryptonMooshroom(world: KryptonWorld) : KryptonCow(world), Mooshroom {
 
-    override val type: KryptonEntityType<Mooshroom>
+    override val type: KryptonEntityType<KryptonMooshroom>
         get() = KryptonEntityTypes.MOOSHROOM
     override val serializer: EntitySerializer<KryptonMooshroom>
         get() = MooshroomSerializer

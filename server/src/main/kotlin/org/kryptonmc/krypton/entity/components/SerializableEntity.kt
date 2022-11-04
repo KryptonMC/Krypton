@@ -21,6 +21,7 @@ package org.kryptonmc.krypton.entity.components
 import org.kryptonmc.krypton.entity.KryptonEntity
 import org.kryptonmc.krypton.entity.serializer.EntitySerializer
 import org.kryptonmc.nbt.CompoundTag
+import org.kryptonmc.nbt.EndTag
 import org.kryptonmc.nbt.MutableListTag
 
 interface SerializableEntity : BaseEntity {
@@ -35,12 +36,12 @@ interface SerializableEntity : BaseEntity {
 
     fun saveWithPassengers(): CompoundTag.Builder = save().apply {
         if (isVehicle) {
-            val passengerList = MutableListTag()
+            val passengerList = MutableListTag.of(ArrayList(), EndTag.ID)
             passengers.forEach {
                 if (it !is KryptonEntity) return@forEach
                 passengerList.add(it.saveWithPassengers().build())
             }
-            if (!passengerList.isEmpty()) put("Passengers", passengerList)
+            if (!passengerList.isEmpty) put("Passengers", passengerList)
         }
     }
 

@@ -42,9 +42,9 @@ object Reflection {
     fun modifyField(clazz: Class<*>, name: String, instance: Any?, value: Any) {
         try {
             getField(clazz, name)?.set(instance, value)
-        } catch (exception: IllegalArgumentException) {
+        } catch (_: IllegalArgumentException) {
             LOGGER.warn("Attempted to set the value of field $name of class ${clazz.canonicalName} on invalid instance $instance")
-        } catch (exception: IllegalAccessException) {
+        } catch (_: IllegalAccessException) {
             LOGGER.warn("Attempted to set the value of field $name of class ${clazz.canonicalName} that is static and final")
         }
     }
@@ -58,7 +58,7 @@ object Reflection {
     private fun getField(clazz: Class<*>, name: String): Field? {
         return try {
             clazz.getDeclaredField(name).apply { isAccessible = true }
-        } catch (exception: NoSuchFieldException) {
+        } catch (_: NoSuchFieldException) {
             LOGGER.warn("Attempted to access non-existent field $name on class ${clazz.canonicalName}.")
             null
         }

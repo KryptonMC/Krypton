@@ -39,6 +39,7 @@ import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.StringTag
 import org.kryptonmc.nbt.Tag
 import org.kryptonmc.nbt.compound
+import org.kryptonmc.nbt.list
 import java.util.function.IntUnaryOperator
 
 class PaletteHolder<T> : PaletteResizer<T> {
@@ -95,7 +96,7 @@ class PaletteHolder<T> : PaletteResizer<T> {
         val data = if (bits != 0) SimpleBitStorage(bits, size, ids).data else LongArray(0)
         return compound {
             list("palette") { palette.entries.forEach { add(encoder.encode(it)) } }
-            longArray("data", data)
+            putLongArray("data", data)
         }
     }
 

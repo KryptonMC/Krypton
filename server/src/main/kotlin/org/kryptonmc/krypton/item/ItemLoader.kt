@@ -20,7 +20,6 @@ package org.kryptonmc.krypton.item
 
 import com.google.gson.JsonObject
 import net.kyori.adventure.key.Key
-import net.kyori.adventure.text.Component
 import org.kryptonmc.api.effect.sound.SoundEvents
 import org.kryptonmc.api.item.ItemType
 import org.kryptonmc.api.registry.Registries
@@ -31,15 +30,12 @@ object ItemLoader : KryptonDataLoader<ItemType>("items", Registries.ITEM) {
     override fun create(key: Key, value: JsonObject): ItemType {
         val rarityName = value.get("rarity")?.asString ?: "COMMON"
         val rarity = Registries.ITEM_RARITIES.get(Key.key("krypton", rarityName.lowercase()))!!
-        val translationKey = value.get("translationKey")?.asString ?: "item.${key.namespace()}.${key.value().replace('/', '.')}"
-        val depletes = value.get("depletes").asBoolean
         val maxStackSize = value.get("maxStackSize").asInt
         val maxDamage = value.get("maxDamage").asInt
         val edible = value.get("edible").asBoolean
         val fireResistant = value.get("fireResistant").asBoolean
         val eatingSound = Registries.SOUND_EVENT.get(Key.key(value.get("eatingSound").asString)) ?: SoundEvents.GENERIC_EAT
         val drinkingSound = Registries.SOUND_EVENT.get(Key.key(value.get("drinkingSound").asString)) ?: SoundEvents.GENERIC_DRINK
-        val translation = Component.translatable(translationKey)
-        return KryptonItemType(rarity, maxStackSize, depletes, maxDamage, edible, fireResistant, eatingSound, drinkingSound, translation)
+        return KryptonItemType(rarity, maxStackSize, maxDamage, edible, fireResistant, eatingSound, drinkingSound)
     }
 }

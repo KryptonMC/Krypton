@@ -22,5 +22,4 @@ import org.kryptonmc.api.entity.player.Player
 import org.kryptonmc.api.event.player.ResourcePackStatusEvent
 import org.kryptonmc.api.resource.ResourcePack
 
-@JvmRecord
-data class KryptonResourcePackStatusEvent(override val player: Player, override val status: ResourcePack.Status) : ResourcePackStatusEvent
+class KryptonResourcePackStatusEvent(override val player: Player, override val status: ResourcePack.Status) : ResourcePackStatusEvent

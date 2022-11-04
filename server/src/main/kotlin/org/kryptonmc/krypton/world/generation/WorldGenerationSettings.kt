@@ -26,9 +26,9 @@ import kotlin.random.Random
 data class WorldGenerationSettings(val seed: Long, val generateFeatures: Boolean, val bonusChest: Boolean, val dimensions: CompoundTag) {
 
     fun save(): CompoundTag = compound {
-        long("seed", seed)
-        boolean("generate_features", generateFeatures)
-        boolean("bonus_chest", bonusChest)
+        putLong("seed", seed)
+        putBoolean("generate_features", generateFeatures)
+        putBoolean("bonus_chest", bonusChest)
         put("dimensions", dimensions)
     }
 

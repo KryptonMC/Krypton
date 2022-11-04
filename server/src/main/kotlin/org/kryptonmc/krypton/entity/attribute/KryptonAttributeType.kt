@@ -19,18 +19,18 @@
 package org.kryptonmc.krypton.entity.attribute
 
 import net.kyori.adventure.key.Key
-import net.kyori.adventure.text.TranslatableComponent
 import org.kryptonmc.api.entity.attribute.AttributeType
+import org.kryptonmc.api.registry.Registries
 
-@JvmRecord
-data class KryptonAttributeType(
-    private val key: Key,
-    override val defaultBase: Double,
-    override val minimum: Double,
-    override val maximum: Double,
-    override val sendToClient: Boolean,
-    override val translation: TranslatableComponent
+open class KryptonAttributeType protected constructor(
+    final override val defaultValue: Double,
+    val sendToClient: Boolean,
+    private val translationKey: String
 ) : AttributeType {
 
-    override fun key(): Key = key
+    override fun key(): Key = Registries.ATTRIBUTE.get(this)!!
+
+    override fun translationKey(): String = translationKey
+
+    override fun sanitizeValue(value: Double): Double = value
 }

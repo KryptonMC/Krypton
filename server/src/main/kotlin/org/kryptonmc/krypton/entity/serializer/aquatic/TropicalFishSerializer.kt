@@ -31,6 +31,6 @@ object TropicalFishSerializer : EntitySerializer<KryptonTropicalFish> {
     }
 
     override fun save(entity: KryptonTropicalFish): CompoundTag.Builder = FishSerializer.save(entity).apply {
-        int("Variant", entity.data.get(MetadataKeys.TropicalFish.VARIANT))
+        putInt("Variant", entity.data.get(MetadataKeys.TropicalFish.VARIANT))
     }
 }

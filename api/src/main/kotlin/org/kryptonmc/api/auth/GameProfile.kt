@@ -11,8 +11,10 @@ package org.kryptonmc.api.auth
 import net.kyori.adventure.identity.Identified
 import org.jetbrains.annotations.ApiStatus
 import org.jetbrains.annotations.Contract
+import org.jetbrains.annotations.Unmodifiable
 import org.kryptonmc.api.Krypton
 import java.util.UUID
+import javax.annotation.concurrent.Immutable
 
 /**
  * Represents the profile of an authenticated player. Most of the time, this
@@ -20,6 +22,7 @@ import java.util.UUID
  * implementation.
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
+@Immutable
 public interface GameProfile : Identified {
 
     /**
@@ -38,7 +41,7 @@ public interface GameProfile : Identified {
      * All of the properties for this profile.
      */
     @get:JvmName("properties")
-    public val properties: List<ProfileProperty>
+    public val properties: @Unmodifiable List<ProfileProperty>
 
     /**
      * Creates a new game profile with the given [properties].
@@ -88,8 +91,8 @@ public interface GameProfile : Identified {
     public companion object {
 
         /**
-         * Creates a new game profile with the given [name], [uuid], and
-         * optionally, list of profile [properties].
+         * Creates a new game profile with the given [name], [uuid], and list
+         * of profile [properties].
          *
          * @param name the name of the profile
          * @param uuid the UUID of the profile

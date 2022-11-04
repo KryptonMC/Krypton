@@ -16,13 +16,12 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.entity.hanging
+package org.kryptonmc.krypton.effect.particle
 
-import net.kyori.adventure.key.Key
-import org.kryptonmc.api.entity.hanging.Picture
+import io.netty.buffer.ByteBuf
+import org.kryptonmc.api.effect.particle.data.ParticleData
 
-@JvmRecord
-data class KryptonPicture(private val key: Key, override val width: Int, override val height: Int) : Picture {
+interface KryptonParticleType {
 
-    override fun key(): Key = key
+    fun createData(buf: ByteBuf): ParticleData? = null
 }

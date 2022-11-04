@@ -11,24 +11,22 @@ package org.kryptonmc.api.event.player
 import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.event.ResultedEvent
 import org.kryptonmc.api.item.ItemType
+import javax.annotation.concurrent.Immutable
 
 /**
  * Called when a cooldown is set on usage of the given [item] for the given
  * [player].
  */
-@Suppress("INAPPLICABLE_JVM_NAME")
 public interface CooldownEvent : PlayerEvent, ResultedEvent<CooldownEvent.Result> {
 
     /**
      * The item type that the cooldown is being applied to.
      */
-    @get:JvmName("item")
     public val item: ItemType
 
     /**
      * The time, in ticks, that the cooldown will be in effect for.
      */
-    @get:JvmName("cooldown")
     public val cooldown: Int
 
     /**
@@ -37,6 +35,7 @@ public interface CooldownEvent : PlayerEvent, ResultedEvent<CooldownEvent.Result
      * @param cooldown the cooldown amount, in ticks
      */
     @JvmRecord
+    @Immutable
     public data class Result(override val isAllowed: Boolean, public val cooldown: Int) : ResultedEvent.Result {
 
         public companion object {

@@ -14,18 +14,15 @@ import org.kryptonmc.api.item.data.DyeColor
 /**
  * A banner.
  */
-@Suppress("INAPPLICABLE_JVM_NAME")
 public interface Banner : NameableBlockEntity {
 
     /**
      * The base colour of this banner.
      */
-    @get:JvmName("baseColor")
     public val baseColor: DyeColor
 
     /**
      * The patterns that are on this banner.
      */
-    @get:JvmName("patterns")
     public val patterns: List<BannerPattern>
 }

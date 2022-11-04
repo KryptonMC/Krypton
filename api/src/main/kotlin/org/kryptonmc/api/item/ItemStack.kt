@@ -18,11 +18,13 @@ import org.kryptonmc.api.Krypton
 import org.kryptonmc.api.item.meta.ItemMeta
 import org.kryptonmc.api.item.meta.ItemMetaBuilder
 import java.util.function.Consumer
+import javax.annotation.concurrent.Immutable
 
 /**
  * A stack of items in an inventory.
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
+@Immutable
 public interface ItemStack : Buildable<ItemStack, ItemStack.Builder>, HoverEventSource<HoverEvent.ShowItem> {
 
     /**
@@ -52,27 +54,6 @@ public interface ItemStack : Buildable<ItemStack, ItemStack.Builder>, HoverEvent
      * type
      */
     public fun <I : ItemMeta> meta(type: Class<I>): I?
-
-    /**
-     * Creates a new item stack from the result of applying the given
-     * [builder].
-     *
-     * @param builder the builder to apply
-     * @return a new item stack
-     */
-    @JvmSynthetic
-    @Contract("_ -> new", pure = true)
-    public fun with(builder: Builder.() -> Unit): ItemStack = toBuilder().apply(builder).build()
-
-    /**
-     * Creates a new item stack from the result of applying the given
-     * [builder].
-     *
-     * @param builder the builder to apply
-     * @return a new item stack
-     */
-    @Contract("_ -> new", pure = true)
-    public fun with(builder: Consumer<Builder>): ItemStack = with { builder.accept(this) }
 
     /**
      * Creates a new item stack with the given [type].

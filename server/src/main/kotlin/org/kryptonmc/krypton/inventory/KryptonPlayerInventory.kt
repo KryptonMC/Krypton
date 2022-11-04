@@ -145,7 +145,7 @@ class KryptonPlayerInventory(override val owner: KryptonPlayer) : KryptonInvento
         items.forEachIndexed { index, item ->
             if (item.type === ItemTypes.AIR) return@forEachIndexed
             add(compound {
-                byte("Slot", index.toByte())
+                putByte("Slot", index.toByte())
                 item.save(this)
             })
         }
@@ -153,13 +153,13 @@ class KryptonPlayerInventory(override val owner: KryptonPlayer) : KryptonInvento
         armor.forEach {
             if (it.type === ItemTypes.AIR) return@forEach
             add(compound {
-                byte("Slot", i--)
+                putByte("Slot", i--)
                 it.save(this)
             })
         }
         if (offHand.type !== ItemTypes.AIR) {
             add(compound {
-                byte("Slot", OFFHAND_DATA_SLOT.toByte())
+                putByte("Slot", OFFHAND_DATA_SLOT.toByte())
                 offHand.save(this)
             })
         }

@@ -19,28 +19,38 @@
 package org.kryptonmc.krypton.item
 
 import net.kyori.adventure.key.Key
-import net.kyori.adventure.text.TranslatableComponent
 import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.effect.sound.SoundEvent
 import org.kryptonmc.api.item.ItemRarity
 import org.kryptonmc.api.item.ItemType
 import org.kryptonmc.api.item.ItemTypes
 import org.kryptonmc.api.registry.Registries
+import org.kryptonmc.krypton.util.Keys
 import org.kryptonmc.krypton.world.block.KryptonBlock
 
-class KryptonItemType(
+open class KryptonItemType(
     override val rarity: ItemRarity,
     override val maximumStackSize: Int,
-    override val canBreak: Boolean,
     override val durability: Int,
     override val isEdible: Boolean,
     override val isFireResistant: Boolean,
     override val eatingSound: SoundEvent,
-    override val drinkingSound: SoundEvent,
-    override val translation: TranslatableComponent
+    override val drinkingSound: SoundEvent
 ) : ItemType {
 
+    private var descriptionId: String? = null
+
+    override val canBreak: Boolean
+        get() = durability > 0
+
     override fun key(): Key = Registries.ITEM.get(this)
+
+    override fun translationKey(): String = getOrCreateTranslationKey()
+
+    protected fun getOrCreateTranslationKey(): String {
+        if (descriptionId == null) descriptionId = Keys.translation("item", key())
+        return descriptionId!!
+    }
 
     override fun asBlock(): Block = Registries.BLOCK.get(key())
 

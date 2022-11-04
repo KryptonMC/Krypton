@@ -18,49 +18,48 @@
  */
 package org.kryptonmc.krypton.item.meta
 
-import kotlinx.collections.immutable.PersistentList
-import kotlinx.collections.immutable.persistentListOf
-import kotlinx.collections.immutable.toImmutableList
+import com.google.common.collect.ImmutableList
 import org.kryptonmc.api.item.ItemStack
 import org.kryptonmc.api.item.meta.BundleMeta
 import org.kryptonmc.krypton.item.KryptonItemStack
 import org.kryptonmc.krypton.item.downcast
+import org.kryptonmc.krypton.util.BuilderCollection
 import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.list
 
 class KryptonBundleMeta(data: CompoundTag) : AbstractItemMeta<KryptonBundleMeta>(data), BundleMeta {
 
-    override val items: PersistentList<ItemStack> = data.getList("Items", CompoundTag.ID).mapCompound(KryptonItemStack::from)
+    override val items: ImmutableList<ItemStack> = data.mapToList("Items", CompoundTag.ID) { KryptonItemStack.from(it as CompoundTag) }
 
     override fun copy(data: CompoundTag): KryptonBundleMeta = KryptonBundleMeta(data)
 
-    override fun withItems(items: List<ItemStack>): KryptonBundleMeta = KryptonBundleMeta(data.setItems(items.toImmutableList()))
+    override fun withItems(items: List<ItemStack>): KryptonBundleMeta = copy(data.setItems(items))
 
-    override fun addItem(item: ItemStack): KryptonBundleMeta = withItems(items.add(item))
+    override fun withItem(item: ItemStack): KryptonBundleMeta = copy(data.update("Items", CompoundTag.ID) { it.add(item.downcast().save()) })
 
-    override fun removeItem(index: Int): KryptonBundleMeta = withItems(items.removeAt(index))
+    override fun withoutItem(index: Int): KryptonBundleMeta = copy(data.update("Items", CompoundTag.ID) { it.remove(index) })
 
-    override fun removeItem(item: ItemStack): KryptonBundleMeta = withItems(items.remove(item))
+    override fun withoutItem(item: ItemStack): KryptonBundleMeta = copy(data.update("Items", CompoundTag.ID) { it.remove(item.downcast().save()) })
 
     override fun toBuilder(): BundleMeta.Builder = Builder(this)
 
     override fun toString(): String = "KryptonBundleMeta(${partialToString()}, items=$items)"
 
-    class Builder() : KryptonItemMetaBuilder<BundleMeta.Builder, BundleMeta>(), BundleMeta.Builder {
+    class Builder : KryptonItemMetaBuilder<BundleMeta.Builder, BundleMeta>, BundleMeta.Builder {
 
-        private val items = persistentListOf<ItemStack>().builder()
+        private var items: MutableCollection<ItemStack>
 
-        constructor(meta: BundleMeta) : this() {
-            copyFrom(meta)
-            items.addAll(meta.items)
+        constructor() : super() {
+            items = BuilderCollection()
         }
 
-        override fun items(items: Iterable<ItemStack>): BundleMeta.Builder = apply {
-            this.items.clear()
-            this.items.addAll(items)
+        constructor(meta: KryptonBundleMeta) : super(meta) {
+            items = BuilderCollection(meta.items)
         }
 
-        override fun addItem(item: ItemStack): BundleMeta.Builder = apply { items.add(item) }
+        override fun items(items: Collection<ItemStack>): Builder = apply { this.items = BuilderCollection(items) }
+
+        override fun addItem(item: ItemStack): Builder = apply { items.add(item) }
 
         override fun build(): BundleMeta = KryptonBundleMeta(buildData().build())
 

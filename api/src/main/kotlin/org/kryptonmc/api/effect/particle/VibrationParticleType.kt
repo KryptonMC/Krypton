@@ -9,9 +9,11 @@
 package org.kryptonmc.api.effect.particle
 
 import org.kryptonmc.api.effect.particle.builder.VibrationParticleEffectBuilder
+import javax.annotation.concurrent.Immutable
 
 /**
  * A type of particle that vibrates from one location to another in a given
  * amount of ticks.
  */
+@Immutable
 public interface VibrationParticleType : ScopedParticleType<VibrationParticleEffectBuilder>

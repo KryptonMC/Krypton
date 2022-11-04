@@ -13,13 +13,11 @@ import org.kryptonmc.api.entity.Hand
 /**
  * Called when a player interacts on an entity.
  */
-@Suppress("INAPPLICABLE_JVM_NAME")
 public interface InteractEntityEvent : EntityInteractEvent {
 
     /**
      * The hand that the player used to interact with the target.
      */
-    @get:JvmName("hand")
     public val hand: Hand
 
     override val type: InteractEvent.Type

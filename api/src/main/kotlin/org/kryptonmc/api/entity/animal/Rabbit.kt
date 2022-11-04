@@ -13,12 +13,10 @@ import org.kryptonmc.api.entity.animal.type.RabbitVariant
 /**
  * A rabbit.
  */
-@Suppress("INAPPLICABLE_JVM_NAME")
 public interface Rabbit : Animal {
 
     /**
      * The type of this rabbit.
      */
-    @get:JvmName("variant")
     public var variant: RabbitVariant
 }

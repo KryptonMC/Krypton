@@ -101,13 +101,11 @@ class KryptonScheduler(private val pluginManager: PluginManager) : Scheduler {
                 currentTaskThread = Thread.currentThread()
                 try {
                     callable.run(this)
+                } catch (exception: InterruptedException) {
+                    Thread.currentThread().interrupt()
                 } catch (exception: Throwable) {
-                    if (exception is InterruptedException) {
-                        Thread.currentThread().interrupt()
-                    } else {
-                        val name = pluginManager.fromInstance(plugin)?.description?.name ?: "UNKNOWN"
-                        LOGGER.error("Plugin $name generated an exception whilst trying to execute task $callable!", exception)
-                    }
+                    val name = pluginManager.fromInstance(plugin)?.description?.name ?: "UNKNOWN"
+                    LOGGER.error("Plugin $name generated an exception whilst trying to execute task $callable!", exception)
                 } finally {
                     if (period == 0L) finish()
                     currentTaskThread = null

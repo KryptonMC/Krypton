@@ -22,6 +22,9 @@ import org.kryptonmc.krypton.entity.animal.KryptonTamable
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.entity.serializer.AgeableSerializer
 import org.kryptonmc.krypton.entity.serializer.EntitySerializer
+import org.kryptonmc.krypton.util.nbt.getUUID
+import org.kryptonmc.krypton.util.nbt.hasUUID
+import org.kryptonmc.krypton.util.nbt.putUUID
 import org.kryptonmc.nbt.CompoundTag
 
 object TamableSerializer : EntitySerializer<KryptonTamable> {
@@ -37,8 +40,7 @@ object TamableSerializer : EntitySerializer<KryptonTamable> {
     }
 
     override fun save(entity: KryptonTamable): CompoundTag.Builder = AgeableSerializer.save(entity).apply {
-        val ownerUUID = entity.data.get(MetadataKeys.Tamable.OWNER)
-        if (ownerUUID != null) uuid("Owner", ownerUUID)
-        boolean("Sitting", entity.isOrderedToSit)
+        entity.data.get(MetadataKeys.Tamable.OWNER)?.let { putUUID("Owner", it) }
+        putBoolean("Sitting", entity.isOrderedToSit)
     }
 }

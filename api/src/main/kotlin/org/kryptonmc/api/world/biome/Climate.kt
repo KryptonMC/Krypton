@@ -13,11 +13,13 @@ import org.jetbrains.annotations.ApiStatus
 import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.Krypton
 import org.kryptonmc.api.util.Buildable
+import javax.annotation.concurrent.Immutable
 
 /**
  * The climate for a biome.
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
+@Immutable
 public interface Climate : Buildable<Climate.Builder, Climate> {
 
     /**

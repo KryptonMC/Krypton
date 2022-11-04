@@ -8,10 +8,7 @@ plugins {
     jacoco
 }
 
-configurations.all {
-    exclude("org.checkerframework", "checker-qual")
-    exclude("junit")
-}
+configurations.all { exclude("junit") }
 
 kotlin {
     jvmToolchain {

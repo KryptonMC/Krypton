@@ -16,12 +16,10 @@ import org.kryptonmc.api.user.ban.Ban
  * An event that involves a ban. This will either be a ban being issued or a
  * ban being repealed (a pardon).
  */
-@Suppress("INAPPLICABLE_JVM_NAME")
 public sealed interface BanEvent<B : Ban> : ResultedEvent<GenericResult> {
 
     /**
      * The ban that was issued or repealed.
      */
-    @get:JvmName("ban")
     public val ban: B
 }

@@ -22,12 +22,12 @@ import net.kyori.adventure.sound.Sound
 import org.kryptonmc.api.entity.animal.Animal
 import org.kryptonmc.api.entity.animal.Parrot
 import org.kryptonmc.api.entity.animal.type.ParrotVariant
-import org.kryptonmc.api.entity.attribute.AttributeTypes
 import org.kryptonmc.api.item.ItemStack
 import org.kryptonmc.krypton.entity.KryptonEntityType
 import org.kryptonmc.krypton.entity.KryptonEntityTypes
 import org.kryptonmc.krypton.entity.KryptonMob
 import org.kryptonmc.krypton.entity.attribute.AttributeSupplier
+import org.kryptonmc.krypton.entity.attribute.KryptonAttributeTypes
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.entity.serializer.EntitySerializer
 import org.kryptonmc.krypton.entity.serializer.animal.ParrotSerializer
@@ -36,7 +36,7 @@ import kotlin.random.Random
 
 class KryptonParrot(world: KryptonWorld) : KryptonTamable(world), Parrot {
 
-    override val type: KryptonEntityType<Parrot>
+    override val type: KryptonEntityType<KryptonParrot>
         get() = KryptonEntityTypes.PARROT
     override val serializer: EntitySerializer<KryptonParrot>
         get() = ParrotSerializer
@@ -93,8 +93,8 @@ class KryptonParrot(world: KryptonWorld) : KryptonTamable(world), Parrot {
 
         @JvmStatic
         fun attributes(): AttributeSupplier.Builder = KryptonMob.attributes()
-            .add(AttributeTypes.MAX_HEALTH, 6.0)
-            .add(AttributeTypes.FLYING_SPEED, 0.4)
-            .add(AttributeTypes.MOVEMENT_SPEED, 0.2)
+            .add(KryptonAttributeTypes.MAX_HEALTH, 6.0)
+            .add(KryptonAttributeTypes.FLYING_SPEED, 0.4)
+            .add(KryptonAttributeTypes.MOVEMENT_SPEED, 0.2)
     }
 }

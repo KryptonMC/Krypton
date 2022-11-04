@@ -10,14 +10,17 @@
 package org.kryptonmc.api.state
 
 import org.jetbrains.annotations.ApiStatus
+import org.jetbrains.annotations.Unmodifiable
 import org.kryptonmc.api.Krypton
 import org.kryptonmc.api.util.CataloguedBy
+import javax.annotation.concurrent.Immutable
 
 /**
  * Represents a property key.
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
 @CataloguedBy(Properties::class)
+@Immutable
 public interface Property<T : Comparable<T>> {
 
     /**
@@ -36,7 +39,7 @@ public interface Property<T : Comparable<T>> {
      * The set of values this property key allows.
      */
     @get:JvmName("values")
-    public val values: Collection<T>
+    public val values: @Unmodifiable Collection<T>
 
     @ApiStatus.Internal
     public interface Factory {
