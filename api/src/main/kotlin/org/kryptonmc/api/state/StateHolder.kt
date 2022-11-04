@@ -8,23 +8,27 @@
  */
 package org.kryptonmc.api.state
 
+import org.jetbrains.annotations.Unmodifiable
+import javax.annotation.concurrent.Immutable
+
 /**
  * Something that can be in some state.
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
+@Immutable
 public interface StateHolder<out S : State<S>> {
 
     /**
      * All of the states that this holder can be in.
      */
     @get:JvmName("states")
-    public val states: List<S>
+    public val states: @Unmodifiable List<S>
 
     /**
      * All of the properties that can be set on the states of this holder.
      */
     @get:JvmName("availableProperties")
-    public val availableProperties: Collection<Property<*>>
+    public val availableProperties: @Unmodifiable Collection<Property<*>>
 
     /**
      * The default state that this holder will appear in.

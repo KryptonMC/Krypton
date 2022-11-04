@@ -16,20 +16,17 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.item.data
+package org.kryptonmc.krypton.effect.particle.data
 
-import net.kyori.adventure.key.Key
-import net.kyori.adventure.text.format.TextColor
-import org.kryptonmc.api.item.data.DyeColor
+import io.netty.buffer.ByteBuf
 import org.kryptonmc.api.util.Color
 
-@JvmRecord
-data class KryptonDyeColor(
-    private val key: Key,
-    override val color: Color,
-    override val fireworkColor: Color,
-    override val textColor: TextColor
-) : DyeColor {
+internal fun ByteBuf.readParticleColor(): Color = Color.of(readColorValue(), readColorValue(), readColorValue())
 
-    override fun key(): Key = key
+private fun ByteBuf.readColorValue(): Int = (readFloat() * 255F).toInt()
+
+internal fun ByteBuf.writeParticleColor(color: Color) {
+    writeFloat(if (color.red == 0) Float.MIN_VALUE else color.red.toFloat() / 255F)
+    writeFloat(color.green.toFloat() / 255F)
+    writeFloat(color.blue.toFloat() / 255F)
 }

@@ -73,8 +73,8 @@ data class LightPacketData(
             val blockMask = BitSet()
             val emptySkyMask = BitSet()
             val emptyBlockMask = BitSet()
-            val skyLights = persistentListOf<ByteArray>().builder()
-            val blockLights = persistentListOf<ByteArray>().builder()
+            val skyLights = ArrayList<ByteArray>()
+            val blockLights = ArrayList<ByteArray>()
 
             for (i in sections.indices) {
                 val section = sections[i]

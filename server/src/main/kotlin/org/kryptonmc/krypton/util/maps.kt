@@ -18,12 +18,11 @@
  */
 package org.kryptonmc.krypton.util
 
-import kotlinx.collections.immutable.PersistentMap
-import kotlinx.collections.immutable.persistentMapOf
+import java.util.function.Function
 
-fun <K, V, K1, V1> Map<K, V>.transform(transformer: (Map.Entry<K, V>) -> Pair<K1, V1>): Map<K1, V1> = transformTo(HashMap(), transformer)
+inline fun <K, V, K1, V1> Map<K, V>.transform(transformer: (Map.Entry<K, V>) -> Pair<K1, V1>): Map<K1, V1> = transformTo(HashMap(), transformer)
 
-fun <C : MutableMap<K1, V1>, K, V, K1, V1> Map<K, V>.transformTo(destination: C, transformer: (Map.Entry<K, V>) -> Pair<K1, V1>): C {
+inline fun <C : MutableMap<K1, V1>, K, V, K1, V1> Map<K, V>.transformTo(destination: C, transformer: (Map.Entry<K, V>) -> Pair<K1, V1>): C {
     for (entry in this) {
         val transformed = transformer(entry)
         destination.put(transformed.first, transformed.second)
@@ -31,10 +30,8 @@ fun <C : MutableMap<K1, V1>, K, V, K1, V1> Map<K, V>.transformTo(destination: C,
     return destination
 }
 
-inline fun <T, K, V> Iterable<T>.associatePersistent(keyGetter: (T) -> K, valueGetter: (T) -> V): PersistentMap<K, V> {
-    val map = persistentMapOf<K, V>().builder()
-    for (element in this) {
-        map.put(keyGetter(element), valueGetter(element))
-    }
-    return map.build()
-}
+// We use the platform class here to clean up the generated code, because we don't need to check for KMappedMarker,
+// and we ideally want to call the JVM implementation directly, as that's the one with our desired semantics.
+@Suppress("UNCHECKED_CAST", "PLATFORM_CLASS_MAPPED_TO_KOTLIN", "NOTHING_TO_INLINE")
+inline fun <K, V> MutableMap<K, V>.nullableComputeIfAbsent(key: K, mappingFunction: Function<in K, out V?>): V? =
+    (this as java.util.Map<K, V>).computeIfAbsent(key, mappingFunction)

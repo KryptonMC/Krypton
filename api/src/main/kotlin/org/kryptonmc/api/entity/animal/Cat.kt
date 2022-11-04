@@ -15,13 +15,11 @@ import org.kryptonmc.api.item.data.DyeColor
 /**
  * A cat.
  */
-@Suppress("INAPPLICABLE_JVM_NAME")
 public interface Cat : Tamable {
 
     /**
      * The variant of this cat.
      */
-    @get:JvmName("variant")
     public var variant: CatVariant
 
     /**
@@ -37,7 +35,6 @@ public interface Cat : Tamable {
     /**
      * The colour of this cat's collar.
      */
-    @get:JvmName("collarColor")
     public var collarColor: DyeColor
 
     /**

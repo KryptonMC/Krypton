@@ -26,7 +26,6 @@ import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer
 import org.kryptonmc.api.auth.GameProfile
 import org.kryptonmc.api.user.ban.Ban
 import org.kryptonmc.api.user.ban.BanType
-import org.kryptonmc.api.user.ban.BanTypes
 import org.kryptonmc.krypton.auth.KryptonGameProfile
 import java.time.OffsetDateTime
 import java.time.format.DateTimeParseException
@@ -40,7 +39,7 @@ class BannedPlayerEntry(
     reason: Component = DEFAULT_REASON
 ) : BanEntry<GameProfile>(profile, creationDate, source, expiryDate, reason), Ban.Profile {
 
-    override val type: BanType = BanTypes.PROFILE
+    override val type: BanType = BanType.PROFILE
 
     override fun writeKey(writer: JsonWriter) {
         writer.name("uuid")

@@ -20,9 +20,8 @@ package org.kryptonmc.krypton.item.meta
 
 import org.kryptonmc.api.auth.GameProfile
 import org.kryptonmc.api.item.meta.PlayerHeadMeta
-import org.kryptonmc.krypton.auth.gameProfile
-import org.kryptonmc.krypton.auth.getGameProfile
 import org.kryptonmc.krypton.auth.putGameProfile
+import org.kryptonmc.krypton.auth.getGameProfile
 import org.kryptonmc.nbt.CompoundTag
 
 class KryptonPlayerHeadMeta(data: CompoundTag) : AbstractItemMeta<KryptonPlayerHeadMeta>(data), PlayerHeadMeta {
@@ -31,22 +30,23 @@ class KryptonPlayerHeadMeta(data: CompoundTag) : AbstractItemMeta<KryptonPlayerH
 
     override fun copy(data: CompoundTag): KryptonPlayerHeadMeta = KryptonPlayerHeadMeta(data)
 
-    override fun withOwner(owner: GameProfile?): KryptonPlayerHeadMeta = KryptonPlayerHeadMeta(data.putGameProfile("SkullOwner", owner))
+    override fun withOwner(owner: GameProfile?): KryptonPlayerHeadMeta = copy(data.putGameProfile("SkullOwner", owner))
 
     override fun toBuilder(): PlayerHeadMeta.Builder = Builder(this)
 
-    class Builder() : KryptonItemMetaBuilder<PlayerHeadMeta.Builder, PlayerHeadMeta>(), PlayerHeadMeta.Builder {
+    class Builder : KryptonItemMetaBuilder<PlayerHeadMeta.Builder, PlayerHeadMeta>, PlayerHeadMeta.Builder {
 
         private var owner: GameProfile? = null
 
-        constructor(meta: PlayerHeadMeta) : this() {
-            copyFrom(meta)
+        constructor() : super()
+
+        constructor(meta: KryptonPlayerHeadMeta) : super(meta) {
             owner = meta.owner
         }
 
         override fun owner(owner: GameProfile?): PlayerHeadMeta.Builder = apply { this.owner = owner }
 
-        override fun buildData(): CompoundTag.Builder = super.buildData().gameProfile("SkullOwner", owner)
+        override fun buildData(): CompoundTag.Builder = super.buildData().putGameProfile("SkullOwner", owner)
 
         override fun build(): KryptonPlayerHeadMeta = KryptonPlayerHeadMeta(buildData().build())
     }

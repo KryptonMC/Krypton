@@ -17,7 +17,7 @@ public interface Mob : LivingEntity, Equipable {
     /**
      * If this mob is persistent (will have its data saved on removal).
      */
-    public val isPersistent: Boolean
+    public var isPersistent: Boolean
 
     /**
      * If this mob can pick up loot.
@@ -25,22 +25,21 @@ public interface Mob : LivingEntity, Equipable {
      * For example, if this mob can wear armour/use weapons it picks up.
      */
     @get:JvmName("canPickUpLoot")
-    public val canPickUpLoot: Boolean
+    public var canPickUpLoot: Boolean
 
     /**
      * If this mob has artificial intelligence.
      */
     @get:JvmName("hasAI")
-    public val hasAI: Boolean
+    public var hasAI: Boolean
 
     /**
      * If this mob is hostile.
      */
-    public val isAggressive: Boolean
+    public var isAggressive: Boolean
 
     /**
      * The main hand of this mob.
      */
-    @get:JvmName("mainHand")
-    public val mainHand: MainHand
+    public var mainHand: MainHand
 }

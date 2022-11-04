@@ -14,11 +14,13 @@ import org.kryptonmc.api.block.BlockState
 import org.kryptonmc.api.item.ItemStack
 import org.kryptonmc.api.util.Color
 import org.spongepowered.math.vector.Vector3d
+import javax.annotation.concurrent.Immutable
 
 /**
  * The supertype of all particle data. Merely serves as a marker interface for
  * its subtypes.
  */
+@Immutable
 public interface ParticleData {
 
     @ApiStatus.Internal

@@ -22,7 +22,7 @@ import org.kryptonmc.api.entity.player.Player
 import org.kryptonmc.api.event.ComponentResult
 import org.kryptonmc.api.event.player.ChatEvent
 
-data class KryptonChatEvent(override val player: Player, override val message: String) : ChatEvent {
+class KryptonChatEvent(override val player: Player, override val message: String) : ChatEvent {
 
     override var result: ComponentResult = ComponentResult.allowed()
 }

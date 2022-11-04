@@ -31,7 +31,7 @@ import org.kryptonmc.krypton.world.damage.KryptonDamageSource
 
 open class KryptonBoat(world: KryptonWorld) : KryptonEntity(world), Boat {
 
-    override val type: KryptonEntityType<Boat>
+    override val type: KryptonEntityType<KryptonBoat>
         get() = KryptonEntityTypes.BOAT
     override val serializer: EntitySerializer<out KryptonBoat>
         get() = BoatSerializer

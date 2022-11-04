@@ -18,31 +18,16 @@
  */
 package org.kryptonmc.krypton.command.registrar
 
-import com.mojang.brigadier.context.CommandContext
-import com.mojang.brigadier.suggestion.Suggestions
-import com.mojang.brigadier.suggestion.SuggestionsBuilder
+import com.mojang.brigadier.arguments.StringArgumentType
+import com.mojang.brigadier.context.ParsedArgument
 import org.kryptonmc.api.command.RawCommand
-import org.kryptonmc.api.command.Sender
-import org.kryptonmc.api.command.meta.CommandMeta
-import org.kryptonmc.krypton.command.rawArguments
-import java.util.concurrent.CompletableFuture
 import java.util.concurrent.locks.Lock
 
 /**
  * Registers raw commands to a root node. This is relatively simple, as raw
  * commands do not do any extra processing.
  */
-class RawCommandRegistrar(lock: Lock) : InvocableCommandRegistrar<RawCommand, CommandMeta, String>(lock) {
+class RawCommandRegistrar(lock: Lock) : InvocableCommandRegistrar<RawCommand, String>(lock, StringArgumentType.greedyString()) {
 
-    override fun execute(command: RawCommand, meta: CommandMeta, context: CommandContext<Sender>): Int {
-        command.execute(context.source, context.rawArguments())
-        return 1
-    }
-
-    override fun suggest(
-        command: RawCommand,
-        meta: CommandMeta,
-        context: CommandContext<Sender>,
-        builder: SuggestionsBuilder
-    ): CompletableFuture<Suggestions> = createSuggestions(builder, command.suggest(context.source, context.rawArguments()))
+    override fun getArgs(arguments: Map<String, ParsedArgument<*, *>>): String = readArguments(arguments, "")
 }

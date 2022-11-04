@@ -14,12 +14,14 @@ import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.Krypton
 import org.kryptonmc.api.effect.sound.SoundEvent
 import org.kryptonmc.api.util.Buildable
+import javax.annotation.concurrent.Immutable
 
 /**
  * Settings for ambient sounds that may play randomly when in the biome, with
  * a fixed chance.
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
+@Immutable
 public interface AmbientAdditionsSettings : Buildable<AmbientAdditionsSettings.Builder, AmbientAdditionsSettings> {
 
     /**

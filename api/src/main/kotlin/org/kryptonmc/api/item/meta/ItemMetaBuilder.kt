@@ -11,7 +11,7 @@ package org.kryptonmc.api.item.meta
 import net.kyori.adventure.text.Component
 import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.block.Block
-import org.kryptonmc.api.item.ItemAttribute
+import org.kryptonmc.api.item.ItemAttributeModifier
 import org.kryptonmc.api.item.data.ItemFlag
 
 /**
@@ -78,7 +78,7 @@ public interface ItemMetaBuilder<B : ItemMetaBuilder<B, I>, I : ItemMeta> {
      */
     @MetaDsl
     @Contract("_ -> this", mutates = "this")
-    public fun lore(lore: Iterable<Component>): B
+    public fun lore(lore: Collection<Component>): B
 
     /**
      * Sets the lore of the item to the given [lore].
@@ -88,7 +88,7 @@ public interface ItemMetaBuilder<B : ItemMetaBuilder<B, I>, I : ItemMeta> {
      */
     @MetaDsl
     @Contract("_ -> this", mutates = "this")
-    public fun lore(vararg lore: Component): B = lore(lore.asIterable())
+    public fun lore(vararg lore: Component): B = lore(lore.asList())
 
     /**
      * Adds the given [lore] line to the lore of the item.
@@ -128,7 +128,7 @@ public interface ItemMetaBuilder<B : ItemMetaBuilder<B, I>, I : ItemMeta> {
      */
     @MetaDsl
     @Contract("_ -> this", mutates = "this")
-    public fun canDestroy(blocks: Iterable<Block>): B
+    public fun canDestroy(blocks: Collection<Block>): B
 
     /**
      * Sets the list of blocks the item can destroy to the given [blocks].
@@ -138,7 +138,7 @@ public interface ItemMetaBuilder<B : ItemMetaBuilder<B, I>, I : ItemMeta> {
      */
     @MetaDsl
     @Contract("_ -> this", mutates = "this")
-    public fun canDestroy(vararg blocks: Block): B = canDestroy(blocks.asIterable())
+    public fun canDestroy(vararg blocks: Block): B = canDestroy(blocks.asList())
 
     /**
      * Adds the given [block] to the list of blocks the item can destroy.
@@ -159,7 +159,7 @@ public interface ItemMetaBuilder<B : ItemMetaBuilder<B, I>, I : ItemMeta> {
      */
     @MetaDsl
     @Contract("_ -> this", mutates = "this")
-    public fun canPlaceOn(blocks: Iterable<Block>): B
+    public fun canPlaceOn(blocks: Collection<Block>): B
 
     /**
      * Sets the list of blocks the item can be placed on to the given
@@ -170,7 +170,7 @@ public interface ItemMetaBuilder<B : ItemMetaBuilder<B, I>, I : ItemMeta> {
      */
     @MetaDsl
     @Contract("_ -> this", mutates = "this")
-    public fun canPlaceOn(vararg blocks: Block): B = canPlaceOn(blocks.asIterable())
+    public fun canPlaceOn(vararg blocks: Block): B = canPlaceOn(blocks.asList())
 
     /**
      * Adds the given [block] to the list of blocks the item can be placed on.
@@ -184,25 +184,25 @@ public interface ItemMetaBuilder<B : ItemMetaBuilder<B, I>, I : ItemMeta> {
 
     /**
      * Sets the list of attribute modifiers applied to entities wearing items
-     * that the metadata is applied to to the given [attributes].
+     * that the metadata is applied to to the given [modifiers].
      *
-     * @param attributes the attributes
+     * @param modifiers the attribute modifiers
      * @return this builder
      */
     @MetaDsl
     @Contract("_ -> this", mutates = "this")
-    public fun attributeModifiers(attributes: Iterable<ItemAttribute>): B
+    public fun attributeModifiers(modifiers: Collection<ItemAttributeModifier>): B
 
     /**
      * Sets the list of attribute modifiers applied to entities wearing items
-     * that the metadata is applied to to the given [attributes].
+     * that the metadata is applied to to the given [modifiers].
      *
-     * @param attributes the attributes
+     * @param modifiers the attribute modifiers
      * @return this builder
      */
     @MetaDsl
     @Contract("_ -> this", mutates = "this")
-    public fun attributeModifiers(vararg attributes: ItemAttribute): B = attributeModifiers(attributes.asIterable())
+    public fun attributeModifiers(vararg modifiers: ItemAttributeModifier): B = attributeModifiers(modifiers.asList())
 
     /**
      * Adds the given [modifier] modifier to the list of attribute modifiers
@@ -213,7 +213,7 @@ public interface ItemMetaBuilder<B : ItemMetaBuilder<B, I>, I : ItemMeta> {
      */
     @MetaDsl
     @Contract("_ -> this", mutates = "this")
-    public fun addAttributeModifier(modifier: ItemAttribute): B
+    public fun addAttributeModifier(modifier: ItemAttributeModifier): B
 
     /**
      * Builds the resulting item metadata.

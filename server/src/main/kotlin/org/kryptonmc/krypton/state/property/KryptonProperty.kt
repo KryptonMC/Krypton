@@ -20,19 +20,17 @@ package org.kryptonmc.krypton.state.property
 
 import org.kryptonmc.api.state.Property
 import org.kryptonmc.krypton.state.KryptonState
-import org.kryptonmc.krypton.util.mapSuccess
-import org.kryptonmc.krypton.util.orElseError
+import org.kryptonmc.krypton.util.resultOrError
 import org.kryptonmc.serialization.Codec
-import java.util.Optional
 import java.util.concurrent.atomic.AtomicInteger
 
-abstract class KryptonProperty<T : Comparable<T>>(final override val name: String, final override val type: Class<T>) : Property<T> {
+abstract class KryptonProperty<T : Comparable<T>> protected constructor(
+    final override val name: String,
+    final override val type: Class<T>
+) : Property<T> {
 
     val id: Int = ID_COUNTER.getAndIncrement()
-    val codec: Codec<T> = Codec.STRING.comapFlatMap(
-        { Optional.ofNullable(fromString(it)).mapSuccess().orElseError("Unable to read property $this with value $it!") },
-        ::toString
-    )
+    val codec: Codec<T> = Codec.STRING.comapFlatMap({ fromString(it).resultOrError { "Unable to read property $this with value $it!" } }, ::toString)
     val valueCodec: Codec<Value<T>> = codec.xmap(::value, Value<T>::value)
     // We cache the hash code because we frequently look up by property in maps, and computing the hash code is expensive.
     private var hashCode: Int? = null
@@ -54,7 +52,7 @@ abstract class KryptonProperty<T : Comparable<T>>(final override val name: Strin
         return hashCode!!
     }
 
-    final override fun toString(): String = "KryptonProperty(name=$name, type=$type, values=$values)"
+    final override fun toString(): String = "${javaClass.simpleName}(name=$name, type=$type, values=$values)"
 
     protected open fun generateHashCode(): Int = 31 * type.hashCode() + name.hashCode()
 

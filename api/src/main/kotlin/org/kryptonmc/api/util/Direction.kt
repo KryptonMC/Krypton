@@ -19,76 +19,53 @@ import org.spongepowered.math.vector.Vector3i
  * @param normal the normal of this direction
  */
 public enum class Direction(
-    @get:JvmName("axis") public val axis: Axis,
-    @get:JvmName("axisDirection") public val axisDirection: AxisDirection,
-    @get:JvmName("normal") public val normal: Vector3i
+    private val oppositeIndex: Int,
+    public val axis: Axis,
+    public val axisDirection: AxisDirection,
+    public val normal: Vector3i
 ) {
 
-    DOWN(Axis.Y, AxisDirection.NEGATIVE, Vector3i(0, -1, 0)),
-    UP(Axis.Y, AxisDirection.POSITIVE, Vector3i(0, 1, 0)),
-    NORTH(Axis.Z, AxisDirection.NEGATIVE, Vector3i(0, 0, -1)),
-    SOUTH(Axis.Z, AxisDirection.POSITIVE, Vector3i(0, 0, 1)),
-    WEST(Axis.X, AxisDirection.NEGATIVE, Vector3i(-1, 0, 0)),
-    EAST(Axis.X, AxisDirection.POSITIVE, Vector3i(1, 0, 0));
+    DOWN(1, Axis.Y, AxisDirection.NEGATIVE, Vector3i(0, -1, 0)),
+    UP(0, Axis.Y, AxisDirection.POSITIVE, Vector3i(0, 1, 0)),
+    NORTH(3, Axis.Z, AxisDirection.NEGATIVE, Vector3i(0, 0, -1)),
+    SOUTH(2, Axis.Z, AxisDirection.POSITIVE, Vector3i(0, 0, 1)),
+    WEST(5, Axis.X, AxisDirection.NEGATIVE, Vector3i(-1, 0, 0)),
+    EAST(4, Axis.X, AxisDirection.POSITIVE, Vector3i(1, 0, 0));
 
     /**
      * The normal on the X axis.
      */
     public val normalX: Int
-        @JvmName("normalX") get() = normal.x()
+        get() = normal.x()
 
     /**
      * The normal on the Y axis.
      */
     public val normalY: Int
-        @JvmName("normalY") get() = normal.y()
+        get() = normal.y()
 
     /**
      * The normal on the Z axis.
      */
     public val normalZ: Int
-        @JvmName("normalZ") get() = normal.z()
+        get() = normal.z()
 
     /**
      * The opposite of this direction.
      *
      * Initialized lazily to avoid a circular dependency.
      */
-    @get:JvmName("opposite")
-    public val opposite: Direction by lazy {
-        when (this) {
-            DOWN -> UP
-            UP -> DOWN
-            NORTH -> SOUTH
-            SOUTH -> NORTH
-            EAST -> WEST
-            WEST -> EAST
-        }
-    }
+    public val opposite: Direction
+        get() = VALUES[oppositeIndex]
 
     /**
      * Axes that a direction may be on.
      */
-    public enum class Axis {
+    public enum class Axis(private val intSelector: IntSelector, private val doubleSelector: DoubleSelector) {
 
-        X {
-
-            override fun select(x: Int, y: Int, z: Int): Int = x
-
-            override fun select(x: Double, y: Double, z: Double): Double = x
-        },
-        Y {
-
-            override fun select(x: Int, y: Int, z: Int): Int = y
-
-            override fun select(x: Double, y: Double, z: Double): Double = y
-        },
-        Z {
-
-            override fun select(x: Int, y: Int, z: Int): Int = z
-
-            override fun select(x: Double, y: Double, z: Double): Double = z
-        };
+        X({ x, _, _ -> x }, { x, _, _ -> x }),
+        Y({ _, y, _ -> y }, { _, y, _ -> y }),
+        Z({ _, _, z -> z }, { _, _, z -> z });
 
         /**
          * If this axis tiles vertically.
@@ -111,7 +88,7 @@ public enum class Direction(
          * @param z the Z coordinate
          * @return the chosen coordinate
          */
-        public abstract fun select(x: Int, y: Int, z: Int): Int
+        public fun select(x: Int, y: Int, z: Int): Int = intSelector.select(x, y, z)
 
         /**
          * Selects the appropriate [x], [y], or [z] coordinate, depending on
@@ -122,7 +99,7 @@ public enum class Direction(
          * @param z the Z coordinate
          * @return the chosen coordinate
          */
-        public abstract fun select(x: Double, y: Double, z: Double): Double
+        public fun select(x: Double, y: Double, z: Double): Double = doubleSelector.select(x, y, z)
     }
 
     /**
@@ -130,7 +107,7 @@ public enum class Direction(
      *
      * @param step the step
      */
-    public enum class AxisDirection(@get:JvmName("step") public val step: Int) {
+    public enum class AxisDirection(public val step: Int) {
 
         POSITIVE(1),
         NEGATIVE(-1);
@@ -140,7 +117,22 @@ public enum class Direction(
          *
          * Initialized lazily to avoid circular dependencies.
          */
-        @get:JvmName("opposite")
-        public val opposite: AxisDirection by lazy { if (this == POSITIVE) NEGATIVE else POSITIVE }
+        public val opposite: AxisDirection
+            get() = if (this === POSITIVE) NEGATIVE else POSITIVE
+    }
+
+    private fun interface IntSelector {
+
+        fun select(x: Int, y: Int, z: Int): Int
+    }
+
+    private fun interface DoubleSelector {
+
+        fun select(x: Double, y: Double, z: Double): Double
+    }
+
+    public companion object {
+
+        private val VALUES = values()
     }
 }

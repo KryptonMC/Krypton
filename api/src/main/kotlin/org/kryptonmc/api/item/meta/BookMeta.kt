@@ -10,18 +10,21 @@ package org.kryptonmc.api.item.meta
 
 import net.kyori.adventure.text.Component
 import org.jetbrains.annotations.Contract
+import org.jetbrains.annotations.Unmodifiable
+import javax.annotation.concurrent.Immutable
 
 /**
  * Contains shared metadata between [WritableBookMeta] and [WrittenBookMeta].
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
+@Immutable
 public sealed interface BookMeta<B : BookMeta.Builder<B, I>, I : BookMeta<B, I>> : ScopedItemMeta<B, I> {
 
     /**
      * The pages written in the book.
      */
     @get:JvmName("pages")
-    public val pages: List<Component>
+    public val pages: @Unmodifiable List<Component>
 
     /**
      * Creates new item metadata with the given [pages].
@@ -30,7 +33,7 @@ public sealed interface BookMeta<B : BookMeta.Builder<B, I>, I : BookMeta<B, I>>
      * @return new item metadata
      */
     @Contract("_ -> new", pure = true)
-    public fun withPages(pages: Iterable<Component>): I
+    public fun withPages(pages: Collection<Component>): I
 
     /**
      * Creates new item metadata with the given [page] added to the end of the
@@ -40,7 +43,7 @@ public sealed interface BookMeta<B : BookMeta.Builder<B, I>, I : BookMeta<B, I>>
      * @return new item metadata
      */
     @Contract("_ -> new", pure = true)
-    public fun addPage(page: Component): I
+    public fun withPage(page: Component): I
 
     /**
      * Creates new item metadata with the page at the given [index] removed
@@ -52,7 +55,7 @@ public sealed interface BookMeta<B : BookMeta.Builder<B, I>, I : BookMeta<B, I>>
      * bounds exception, i.e. when it is too small or too big
      */
     @Contract("_ -> new", pure = true)
-    public fun removePage(index: Int): I
+    public fun withoutPage(index: Int): I
 
     /**
      * Creates new item metadata with the given [page] removed from the pages.
@@ -61,7 +64,7 @@ public sealed interface BookMeta<B : BookMeta.Builder<B, I>, I : BookMeta<B, I>>
      * @return new item metadata
      */
     @Contract("_ -> new", pure = true)
-    public fun removePage(page: Component): I
+    public fun withoutPage(page: Component): I
 
     /**
      * A builder for building book metadata.
@@ -77,7 +80,7 @@ public sealed interface BookMeta<B : BookMeta.Builder<B, I>, I : BookMeta<B, I>>
          */
         @MetaDsl
         @Contract("_ -> this", mutates = "this")
-        public fun pages(pages: Iterable<Component>): B
+        public fun pages(pages: Collection<Component>): B
 
         /**
          * Sets the pages the book has to the given [pages].
@@ -87,7 +90,7 @@ public sealed interface BookMeta<B : BookMeta.Builder<B, I>, I : BookMeta<B, I>>
          */
         @MetaDsl
         @Contract("_ -> this", mutates = "this")
-        public fun pages(vararg pages: Component): B = pages(pages.asIterable())
+        public fun pages(vararg pages: Component): B = pages(pages.asList())
 
         /**
          * Adds the given [page] to the list of pages the book has.

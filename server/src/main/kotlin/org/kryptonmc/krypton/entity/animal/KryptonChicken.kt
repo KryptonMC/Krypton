@@ -19,13 +19,13 @@
 package org.kryptonmc.krypton.entity.animal
 
 import org.kryptonmc.api.entity.animal.Chicken
-import org.kryptonmc.api.entity.attribute.AttributeTypes
 import org.kryptonmc.api.item.ItemStack
 import org.kryptonmc.api.item.ItemTypes
 import org.kryptonmc.krypton.entity.KryptonEntityType
 import org.kryptonmc.krypton.entity.KryptonEntityTypes
 import org.kryptonmc.krypton.entity.KryptonMob
 import org.kryptonmc.krypton.entity.attribute.AttributeSupplier
+import org.kryptonmc.krypton.entity.attribute.KryptonAttributeTypes
 import org.kryptonmc.krypton.entity.serializer.EntitySerializer
 import org.kryptonmc.krypton.entity.serializer.animal.ChickenSerializer
 import org.kryptonmc.krypton.world.KryptonWorld
@@ -33,7 +33,7 @@ import kotlin.random.Random
 
 class KryptonChicken(world: KryptonWorld) : KryptonAnimal(world), Chicken {
 
-    override val type: KryptonEntityType<Chicken>
+    override val type: KryptonEntityType<KryptonChicken>
         get() = KryptonEntityTypes.CHICKEN
     override val serializer: EntitySerializer<KryptonChicken>
         get() = ChickenSerializer
@@ -50,7 +50,7 @@ class KryptonChicken(world: KryptonWorld) : KryptonAnimal(world), Chicken {
 
         @JvmStatic
         fun attributes(): AttributeSupplier.Builder = KryptonMob.attributes()
-            .add(AttributeTypes.MAX_HEALTH, 4.0)
-            .add(AttributeTypes.MOVEMENT_SPEED, 0.25)
+            .add(KryptonAttributeTypes.MAX_HEALTH, 4.0)
+            .add(KryptonAttributeTypes.MOVEMENT_SPEED, 0.25)
     }
 }

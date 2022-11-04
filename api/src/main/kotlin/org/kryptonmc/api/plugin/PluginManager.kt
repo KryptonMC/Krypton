@@ -23,7 +23,6 @@ public interface PluginManager {
     /**
      * The list of currently loaded plugins.
      */
-    @get:JvmName("plugins")
     public val plugins: Collection<PluginContainer>
 
     /**

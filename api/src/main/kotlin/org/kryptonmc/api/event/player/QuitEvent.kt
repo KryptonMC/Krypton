@@ -13,7 +13,6 @@ import net.kyori.adventure.text.Component
 /**
  * Called when the connection to a player is lost.
  */
-@Suppress("INAPPLICABLE_JVM_NAME")
 public interface QuitEvent : PlayerEvent {
 
     /**
@@ -22,6 +21,5 @@ public interface QuitEvent : PlayerEvent {
      *
      * Set this to null to send no message when the player quits.
      */
-    @get:JvmName("quitMessage")
     public var quitMessage: Component?
 }

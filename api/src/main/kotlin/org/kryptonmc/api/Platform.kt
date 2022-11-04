@@ -8,12 +8,15 @@
  */
 package org.kryptonmc.api
 
+import javax.annotation.concurrent.Immutable
+
 /**
  * Provides information about the current platform this is running on, such as
  * the name and version, if it is considered stable, and the target Minecraft
  * version.
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
+@Immutable
 public interface Platform {
 
     /**

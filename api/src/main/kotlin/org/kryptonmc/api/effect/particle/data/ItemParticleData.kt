@@ -10,11 +10,13 @@ package org.kryptonmc.api.effect.particle.data
 
 import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.item.ItemStack
+import javax.annotation.concurrent.Immutable
 
 /**
  * Holds data for item particle effects.
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
+@Immutable
 public interface ItemParticleData : ParticleData {
 
     /**

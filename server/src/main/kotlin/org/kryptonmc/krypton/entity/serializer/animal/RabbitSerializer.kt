@@ -33,7 +33,7 @@ object RabbitSerializer : EntitySerializer<KryptonRabbit> {
     }
 
     override fun save(entity: KryptonRabbit): CompoundTag.Builder = AgeableSerializer.save(entity).apply {
-        int("RabbitType", entity.data.get(MetadataKeys.Rabbit.TYPE))
-        int("MoreCarrotTicks", entity.moreCarrotTicks)
+        putInt("RabbitType", entity.data.get(MetadataKeys.Rabbit.TYPE))
+        putInt("MoreCarrotTicks", entity.moreCarrotTicks)
     }
 }

@@ -8,6 +8,8 @@
  */
 package org.kryptonmc.api.util
 
+import java.awt.Color as AwtColor
+import javax.annotation.concurrent.Immutable
 import net.kyori.adventure.text.format.TextColor
 import net.kyori.adventure.util.HSVLike
 import net.kyori.adventure.util.RGBLike
@@ -18,17 +20,14 @@ import org.kryptonmc.api.Krypton
  * A standard colour encoded in RGBA (red, green, blue, alpha) format.
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
+@Immutable
 public interface Color {
 
     /**
      * The encoded RGBA value of this colour.
      *
-     * The red, green, blue, and alpha components are all encoded as 8-bit
-     * unsigned bytes, where the first 8 bits is the red, the next 8 bits is
-     * the green, the next 8 bits is the blue, and the last 8 bits is the
-     * alpha.
-     * To be exact, bits 0-7 are red, bits 8-15 are green, bits 16-23 are
-     * blue, and bits 24-31 are alpha.
+     * The encoding here follows the same as that used in [java.awt.Color],
+     * which is the [ARGB32 model](https://en.wikipedia.org/wiki/RGBA_color_model#ARGB32).
      */
     @get:JvmName("value")
     public val value: Int
@@ -88,7 +87,7 @@ public interface Color {
      * @return the converted AWT colour
      * @return a new AWT colour
      */
-    public fun asAwtColor(): java.awt.Color = java.awt.Color(value)
+    public fun asAwtColor(): AwtColor = AwtColor(value, true)
 
     @ApiStatus.Internal
     public interface Factory {
@@ -140,7 +139,26 @@ public interface Color {
          */
         @JvmStatic
         @Suppress("MagicNumber")
-        public fun of(red: Int, green: Int, blue: Int): Color = of(red and 255 shl 16 or (green and 255 shl 8) or (blue and 255))
+        public fun of(red: Int, green: Int, blue: Int): Color = of(red, green, blue, 0xFF)
+
+        /**
+         * Creates a new colour with the given [red], [green], [blue], and
+         * [alpha] ARGB components.
+         *
+         * @param red the red component
+         * @param green the green component
+         * @param blue the blue component
+         * @param alpha the alpha component
+         * @return a new colour
+         */
+        @JvmStatic
+        @Suppress("MagicNumber")
+        public fun of(red: Int, green: Int, blue: Int, alpha: Int): Color = of(
+            alpha and 0xFF shl 24 or
+            (red and 0xFF shl 16) or
+            (green and 0xFF shl 8) or
+            (blue and 0xFF)
+        )
 
         /**
          * Creates a new colour from the given [rgb] like object, or returns
@@ -150,10 +168,7 @@ public interface Color {
          * @return a new colour, or the given object if it is already a colour
          */
         @JvmStatic
-        public fun of(rgb: RGBLike): Color {
-            if (rgb is Color) return rgb
-            return of(rgb.red(), rgb.green(), rgb.blue())
-        }
+        public fun of(rgb: RGBLike): Color = of(rgb.red(), rgb.green(), rgb.blue())
 
         /**
          * Creates a new colour from the given [hue], [saturation], and

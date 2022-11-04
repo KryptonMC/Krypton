@@ -14,13 +14,11 @@ import org.kryptonmc.api.item.data.DyeColor
 /**
  * A sign.
  */
-@Suppress("INAPPLICABLE_JVM_NAME")
 public interface Sign : BlockEntity {
 
     /**
      * The lines of text on this sign.
      */
-    @get:JvmName("lines")
     public val lines: Collection<Component>
 
     /**
@@ -36,7 +34,6 @@ public interface Sign : BlockEntity {
     /**
      * The colour that this sign is dyed.
      */
-    @get:JvmName("color")
     public var color: DyeColor
 
     /**

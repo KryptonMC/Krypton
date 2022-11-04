@@ -27,7 +27,7 @@ import org.kryptonmc.krypton.world.KryptonWorld
 
 class KryptonCod(world: KryptonWorld) : KryptonSchoolingFish(world), Cod {
 
-    override val type: KryptonEntityType<Cod>
+    override val type: KryptonEntityType<KryptonCod>
         get() = KryptonEntityTypes.COD
     override val bucketType: ItemType
         get() = ItemTypes.COD_BUCKET

@@ -27,7 +27,7 @@ import org.kryptonmc.krypton.world.KryptonWorld
 
 class KryptonEgg(world: KryptonWorld) : KryptonThrowableProjectile(world), Egg {
 
-    override val type: KryptonEntityType<Egg>
+    override val type: KryptonEntityType<KryptonEgg>
         get() = KryptonEntityTypes.EGG
     override val defaultItem: KryptonItemStack
         get() = DEFAULT_ITEM

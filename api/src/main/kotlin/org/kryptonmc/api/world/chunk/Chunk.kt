@@ -16,25 +16,21 @@ import org.kryptonmc.api.world.biome.BiomeContainer
 /**
  * Represents a chunk, or a 16 x 16 x world height area of blocks.
  */
-@Suppress("INAPPLICABLE_JVM_NAME")
 public interface Chunk : BlockContainer, FluidContainer, BiomeContainer {
 
     /**
      * The world this chunk is in.
      */
-    @get:JvmName("world")
     public val world: World
 
     /**
      * The X position of this chunk.
      */
-    @get:JvmName("x")
     public val x: Int
 
     /**
      * The Z position of this chunk.
      */
-    @get:JvmName("z")
     public val z: Int
 
     /**
@@ -55,13 +51,11 @@ public interface Chunk : BlockContainer, FluidContainer, BiomeContainer {
      * See [here](https://minecraft.gamepedia.com/Chunk_format#NBT_structure)
      * for more details.
      */
-    @get:JvmName("inhabitedTime")
     public val inhabitedTime: Long
 
     /**
      * The time that this chunk was last updated. This is set when the chunk is
      * saved to disk.
      */
-    @get:JvmName("lastUpdate")
     public val lastUpdate: Long
 }

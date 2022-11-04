@@ -25,7 +25,6 @@ import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer
 import org.kryptonmc.api.user.ban.Ban
 import org.kryptonmc.api.user.ban.BanType
-import org.kryptonmc.api.user.ban.BanTypes
 import java.net.InetAddress
 import java.time.OffsetDateTime
 import java.time.format.DateTimeParseException
@@ -38,7 +37,7 @@ class BannedIpEntry(
     reason: Component = DEFAULT_REASON
 ) : BanEntry<String>(ip, creationDate, source, expiryDate, reason), Ban.IP {
 
-    override val type: BanType = BanTypes.IP
+    override val type: BanType = BanType.IP
     override val address: InetAddress = InetAddresses.forString(ip)
 
     override fun writeKey(writer: JsonWriter) {

@@ -19,19 +19,18 @@
 package org.kryptonmc.krypton.auth
 
 import com.google.common.collect.Lists
-import kotlinx.collections.immutable.ImmutableSet
 import org.kryptonmc.api.auth.GameProfile
 import org.kryptonmc.api.auth.ProfileCache
 import org.kryptonmc.krypton.util.array
 import org.kryptonmc.krypton.util.jsonReader
 import org.kryptonmc.krypton.util.jsonWriter
 import org.kryptonmc.krypton.util.logger
-import org.kryptonmc.krypton.util.mapPersistentSet
 import org.kryptonmc.krypton.util.readListTo
 import java.io.IOException
 import java.nio.file.Files
 import java.nio.file.Path
 import java.time.ZonedDateTime
+import java.util.Collections
 import java.util.UUID
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.atomic.AtomicLong
@@ -41,12 +40,10 @@ class KryptonProfileCache(private val path: Path) : ProfileCache {
 
     private val profilesByName = ConcurrentHashMap<String, ProfileHolder>()
     private val profilesByUUID = ConcurrentHashMap<UUID, ProfileHolder>()
+    private val profileSet = ConcurrentHashMap.newKeySet<GameProfile>()
     private val operations = AtomicLong()
-    override val profiles: ImmutableSet<GameProfile>
-        get() = profilesByUUID.values.mapPersistentSet {
-            it.lastAccess = operations.incrementAndGet()
-            it.profile
-        }
+
+    override val profiles: Collection<GameProfile> = Collections.unmodifiableCollection(profileSet)
 
     fun add(profile: GameProfile) {
         add(ProfileHolder(profile, ZonedDateTime.now().plusMonths(1)))
@@ -62,6 +59,7 @@ class KryptonProfileCache(private val path: Path) : ProfileCache {
         val profile = holder.profile(operations)
         profilesByName.put(profile.name, holder)
         profilesByUUID.put(profile.uuid, holder)
+        profileSet.add(profile)
     }
 
     fun loadAll() {

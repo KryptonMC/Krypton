@@ -10,17 +10,17 @@ package org.kryptonmc.api.user.ban
 
 import net.kyori.adventure.builder.AbstractBuilder
 import net.kyori.adventure.text.Component
-import org.jetbrains.annotations.ApiStatus
 import org.jetbrains.annotations.Contract
-import org.kryptonmc.api.Krypton
 import org.kryptonmc.api.auth.GameProfile
 import java.net.InetAddress
 import java.time.OffsetDateTime
+import javax.annotation.concurrent.Immutable
 
 /**
  * A ban made on a target.
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
+@Immutable
 public interface Ban {
 
     /**
@@ -58,6 +58,7 @@ public interface Ban {
     /**
      * A ban targeting a profile.
      */
+    @Immutable
     public interface Profile : Ban {
 
         /**
@@ -70,6 +71,7 @@ public interface Ban {
     /**
      * A ban targeting an IP address.
      */
+    @Immutable
     public interface IP : Ban {
 
         /**
@@ -144,22 +146,5 @@ public interface Ban {
             @Contract("_ -> this", mutates = "this")
             public fun expirationDate(date: OffsetDateTime?): EndStep
         }
-    }
-
-    @ApiStatus.Internal
-    public interface Factory {
-
-        public fun builder(): Builder
-    }
-
-    public companion object {
-
-        /**
-         * Creates a new builder for building a new ban.
-         *
-         * @return a new builder
-         */
-        @JvmStatic
-        public fun builder(): Builder = Krypton.factory<Factory>().builder()
     }
 }

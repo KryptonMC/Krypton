@@ -22,13 +22,9 @@ import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.effect.particle.ParticleType
 import org.kryptonmc.api.effect.sound.SoundEvent
 import org.kryptonmc.api.entity.EntityType
-import org.kryptonmc.api.entity.animal.type.CatVariant
-import org.kryptonmc.api.entity.animal.type.FrogVariant
-import org.kryptonmc.api.entity.attribute.ModifierOperation
-import org.kryptonmc.api.entity.hanging.Picture
+import org.kryptonmc.api.entity.hanging.PaintingVariant
 import org.kryptonmc.api.fluid.Fluid
 import org.kryptonmc.api.item.ItemType
-import org.kryptonmc.api.item.data.DyeColor
 import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.api.registry.Registry
 import org.kryptonmc.api.statistic.StatisticType
@@ -60,18 +56,10 @@ object KryptonRegistries {
     val FLUID: KryptonRegistry<Fluid> = Registries.FLUID.downcastUnchecked()
     @JvmField
     val DIMENSION_TYPE: KryptonRegistry<DimensionType> = Registries.DIMENSION_TYPE.downcastUnchecked()
-    @JvmField
-    val CAT_VARIANT: KryptonRegistry<CatVariant> = Registries.CAT_VARIANT.downcastUnchecked()
-    @JvmField
-    val FROG_VARIANT: KryptonRegistry<FrogVariant> = Registries.FROG_VARIANT.downcastUnchecked()
 
     // Custom Krypton downcasted registries
     @JvmField
-    val PICTURES: KryptonRegistry<Picture> = Registries.PICTURES.downcastUnchecked()
-    @JvmField
-    val MODIFIER_OPERATIONS: KryptonRegistry<ModifierOperation> = Registries.MODIFIER_OPERATIONS.downcastUnchecked()
-    @JvmField
-    val DYE_COLORS: KryptonRegistry<DyeColor> = Registries.DYE_COLORS.downcastUnchecked()
+    val PICTURES: KryptonRegistry<PaintingVariant> = Registries.PAINTING_VARIANT.downcastUnchecked()
 }
 
 private fun <T : Any> Registry<T>.downcastUnchecked(): KryptonRegistry<T> = this as KryptonRegistry<T>

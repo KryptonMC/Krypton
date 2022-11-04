@@ -9,12 +9,15 @@
 package org.kryptonmc.api.item.meta
 
 import org.jetbrains.annotations.Contract
+import org.jetbrains.annotations.Unmodifiable
 import org.kryptonmc.api.item.ItemStack
+import javax.annotation.concurrent.Immutable
 
 /**
  * Item metadata for a crossbow.
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
+@Immutable
 public interface CrossbowMeta : ScopedItemMeta<CrossbowMeta.Builder, CrossbowMeta> {
 
     /**
@@ -26,7 +29,7 @@ public interface CrossbowMeta : ScopedItemMeta<CrossbowMeta.Builder, CrossbowMet
      * The projectiles that the crossbow has charged.
      */
     @get:JvmName("projectiles")
-    public val projectiles: List<ItemStack>
+    public val projectiles: @Unmodifiable List<ItemStack>
 
     /**
      * Creates new item metadata with the given [charged] setting.
@@ -54,7 +57,7 @@ public interface CrossbowMeta : ScopedItemMeta<CrossbowMeta.Builder, CrossbowMet
      * @return new item metadata
      */
     @Contract("_ -> new", pure = true)
-    public fun addProjectile(projectile: ItemStack): CrossbowMeta
+    public fun withProjectile(projectile: ItemStack): CrossbowMeta
 
     /**
      * Creates new item metadata with the projectile at the given [index]
@@ -66,7 +69,7 @@ public interface CrossbowMeta : ScopedItemMeta<CrossbowMeta.Builder, CrossbowMet
      * bounds exception, i.e. when it is too small or too big
      */
     @Contract("_ -> new", pure = true)
-    public fun removeProjectile(index: Int): CrossbowMeta
+    public fun withoutProjectile(index: Int): CrossbowMeta
 
     /**
      * Creates new item metadata with the given [projectile] removed from the
@@ -76,7 +79,7 @@ public interface CrossbowMeta : ScopedItemMeta<CrossbowMeta.Builder, CrossbowMet
      * @return new item metadata
      */
     @Contract("_ -> new", pure = true)
-    public fun removeProjectile(projectile: ItemStack): CrossbowMeta
+    public fun withoutProjectile(projectile: ItemStack): CrossbowMeta
 
     /**
      * A builder for building crossbow metadata.
@@ -103,7 +106,7 @@ public interface CrossbowMeta : ScopedItemMeta<CrossbowMeta.Builder, CrossbowMet
          */
         @MetaDsl
         @Contract("_ -> this", mutates = "this")
-        public fun projectiles(projectiles: Iterable<ItemStack>): Builder
+        public fun projectiles(projectiles: Collection<ItemStack>): Builder
 
         /**
          * Sets the list of charged projectiles for the crossbow to the given
@@ -114,18 +117,7 @@ public interface CrossbowMeta : ScopedItemMeta<CrossbowMeta.Builder, CrossbowMet
          */
         @MetaDsl
         @Contract("_ -> this", mutates = "this")
-        public fun projectiles(vararg projectiles: ItemStack): Builder = projectiles(projectiles.asIterable())
-
-        /**
-         * Adds the given [projectile] to the list of charged projectiles for
-         * the crossbow.
-         *
-         * @param projectile the projectile to add
-         * @return this builder
-         */
-        @MetaDsl
-        @Contract("_ -> this", mutates = "this")
-        public fun addProjectile(projectile: ItemStack): Builder
+        public fun projectiles(vararg projectiles: ItemStack): Builder = projectiles(projectiles.asList())
     }
 
     public companion object {

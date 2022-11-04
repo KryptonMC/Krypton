@@ -13,7 +13,6 @@ import org.kryptonmc.api.entity.Entity
 /**
  * A block entity that stores entities within it.
  */
-@Suppress("INAPPLICABLE_JVM_NAME")
 public interface EntityStorageBlockEntity<T : Entity> : BlockEntity {
 
     /**
@@ -24,14 +23,12 @@ public interface EntityStorageBlockEntity<T : Entity> : BlockEntity {
     /**
      * The amount of entities contained within this block entity.
      */
-    @get:JvmName("entityCount")
     public val entityCount: Int
 
     /**
      * The maximum amount of entities that can be stored within this block
      * entity.
      */
-    @get:JvmName("maximumEntities")
     public var maximumEntities: Int
 
     /**

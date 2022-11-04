@@ -13,5 +13,4 @@ import org.kryptonmc.api.user.ban.Ban
 /**
  * Called when a game profile is pardoned.
  */
-@Suppress("INAPPLICABLE_JVM_NAME")
 public interface PardonProfileEvent : BanEvent<Ban.Profile>

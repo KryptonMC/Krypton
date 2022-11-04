@@ -20,7 +20,6 @@ package org.kryptonmc.krypton.adventure
 
 import net.kyori.adventure.text.Component
 import org.kryptonmc.api.adventure.AdventureMessage
-import org.kryptonmc.api.adventure.toPlainText
 
 @JvmRecord
 data class KryptonAdventureMessage(private val component: Component) : AdventureMessage {

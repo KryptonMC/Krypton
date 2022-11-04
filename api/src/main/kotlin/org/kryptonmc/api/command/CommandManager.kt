@@ -8,8 +8,6 @@
  */
 package org.kryptonmc.api.command
 
-import org.kryptonmc.api.command.meta.CommandMeta
-import org.kryptonmc.api.command.meta.SimpleCommandMeta
 import org.kryptonmc.api.entity.player.Player
 
 /**
@@ -19,29 +17,22 @@ import org.kryptonmc.api.entity.player.Player
 public interface CommandManager {
 
     /**
-     * Registers a Brigadier command with this manager.
-     *
-     * @param command the command to register
-     */
-    public fun register(command: BrigadierCommand)
-
-    /**
-     * Registers the given simple [command] with the given [meta] to
-     * this manager.
+     * Registers the given Brigadier [command] with the given [meta] to this
+     * manager.
      *
      * @param command the command to register
      * @param meta the command metadata
      */
-    public fun register(command: SimpleCommand, meta: SimpleCommandMeta)
+    public fun register(command: BrigadierCommand, meta: CommandMeta)
 
     /**
-     * Registers the given raw [command] with the given [meta] to
-     * this manager.
+     * Registers the given invocable [command] with the given [meta] to this
+     * manager.
      *
      * @param command the command to register
      * @param meta the command metadata
      */
-    public fun register(command: RawCommand, meta: CommandMeta)
+    public fun register(command: InvocableCommand<*>, meta: CommandMeta)
 
     /**
      * Registers the given [command] with the given [meta] to this manager using

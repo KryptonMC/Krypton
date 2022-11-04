@@ -26,17 +26,10 @@ import org.kryptonmc.krypton.network.Writable
 @JvmRecord
 data class KryptonDustParticleData(override val color: Color, override val scale: Float) : DustParticleData, Writable {
 
-    constructor(buf: ByteBuf) : this(buf.readColor(), buf.readFloat())
+    constructor(buf: ByteBuf) : this(buf.readParticleColor(), buf.readFloat())
 
     override fun write(buf: ByteBuf) {
-        buf.writeFloat(if (red == 0) Float.MIN_VALUE else red.toFloat() / 255F)
-        buf.writeFloat(green.toFloat() / 255F)
-        buf.writeFloat(blue.toFloat() / 255F)
+        buf.writeParticleColor(color)
         buf.writeFloat(scale)
     }
 }
-
-
-private fun ByteBuf.readColor(): Color = Color.of(readColorValue(), readColorValue(), readColorValue())
-
-private fun ByteBuf.readColorValue(): Int = (readFloat() * 255F).toInt()

@@ -23,7 +23,7 @@ import org.kryptonmc.api.entity.player.Player
 import org.kryptonmc.api.event.GenericResult
 import org.kryptonmc.api.event.player.BlockDamageEvent
 
-data class KryptonBlockDamageEvent(override val player: Player, override val block: Block) : BlockDamageEvent {
+class KryptonBlockDamageEvent(override val player: Player, override val block: Block) : BlockDamageEvent {
 
     override var result: GenericResult = GenericResult.allowed()
 }

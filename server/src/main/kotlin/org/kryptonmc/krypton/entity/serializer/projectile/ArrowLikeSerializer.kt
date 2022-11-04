@@ -56,15 +56,15 @@ object ArrowLikeSerializer : EntitySerializer<KryptonArrowLike> {
     }
 
     override fun save(entity: KryptonArrowLike): CompoundTag.Builder = ProjectileSerializer.save(entity).apply {
-        boolean("crit", entity.isCritical)
-        double("damage", entity.baseDamage)
+        putBoolean("crit", entity.isCritical)
+        putDouble("damage", entity.baseDamage)
         if (entity.stuckInBlock != null) put("inBlockState", entity.stuckInBlock!!.toNBT())
-        boolean("inGround", entity.isInGround)
-        short("life", entity.life.toShort())
-        byte("pickup", entity.pickupRule.ordinal.toByte())
-        byte("PierceLevel", entity.piercingLevel.toByte())
-        byte("shake", entity.shakeTime.toByte())
-        boolean("ShotFromCrossbow", entity.wasShotFromCrossbow)
-        string("SoundEvent", entity.sound.key().asString())
+        putBoolean("inGround", entity.isInGround)
+        putShort("life", entity.life.toShort())
+        putByte("pickup", entity.pickupRule.ordinal.toByte())
+        putByte("PierceLevel", entity.piercingLevel.toByte())
+        putByte("shake", entity.shakeTime.toByte())
+        putBoolean("ShotFromCrossbow", entity.wasShotFromCrossbow)
+        putString("SoundEvent", entity.sound.key().asString())
     }
 }

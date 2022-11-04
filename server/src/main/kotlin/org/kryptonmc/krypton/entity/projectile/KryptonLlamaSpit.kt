@@ -25,6 +25,6 @@ import org.kryptonmc.krypton.world.KryptonWorld
 
 class KryptonLlamaSpit(world: KryptonWorld) : KryptonProjectile(world), LlamaSpit {
 
-    override val type: KryptonEntityType<LlamaSpit>
+    override val type: KryptonEntityType<KryptonLlamaSpit>
         get() = KryptonEntityTypes.LLAMA_SPIT
 }

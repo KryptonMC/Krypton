@@ -11,20 +11,19 @@ package org.kryptonmc.api.item.meta
 import net.kyori.adventure.text.Component
 import org.jetbrains.annotations.ApiStatus
 import org.jetbrains.annotations.Contract
+import org.jetbrains.annotations.Unmodifiable
 import org.kryptonmc.api.Krypton
 import org.kryptonmc.api.block.Block
-import org.kryptonmc.api.entity.EquipmentSlot
-import org.kryptonmc.api.entity.attribute.AttributeModifier
-import org.kryptonmc.api.entity.attribute.AttributeType
-import org.kryptonmc.api.item.ItemAttribute
-import org.kryptonmc.api.item.ItemType
+import org.kryptonmc.api.item.ItemAttributeModifier
 import org.kryptonmc.api.item.data.ItemFlag
 import org.kryptonmc.api.world.GameMode
+import javax.annotation.concurrent.Immutable
 
 /**
  * Holder for various item metadata values for an item stack.
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
+@Immutable
 public interface ItemMeta {
 
     /**
@@ -52,7 +51,6 @@ public interface ItemMeta {
      * The display name of the item.
      *
      * If null, the default display name of the item will be used.
-     * This will usually be the [item's translation][ItemType.translation].
      */
     @get:JvmName("name")
     public val name: Component?
@@ -61,7 +59,7 @@ public interface ItemMeta {
      * The lore of the item.
      */
     @get:JvmName("lore")
-    public val lore: List<Component>
+    public val lore: @Unmodifiable List<Component>
 
     /**
      * The flags that determine what is hidden for the item.
@@ -81,7 +79,7 @@ public interface ItemMeta {
      * destroy.
      */
     @get:JvmName("canDestroy")
-    public val canDestroy: Set<Block>
+    public val canDestroy: @Unmodifiable Set<Block>
 
     /**
      * All of the blocks that the item can be placed on.
@@ -93,14 +91,14 @@ public interface ItemMeta {
      * be placed on.
      */
     @get:JvmName("canPlaceOn")
-    public val canPlaceOn: Set<Block>
+    public val canPlaceOn: @Unmodifiable Set<Block>
 
     /**
      * All of the attribute modifiers that will be applied to entities holding
      * items with this metadata.
      */
     @get:JvmName("attributeModifiers")
-    public val attributeModifiers: Set<ItemAttribute>
+    public val attributeModifiers: @Unmodifiable List<ItemAttributeModifier>
 
     /**
      * Checks whether the item has the given item [flag].
@@ -153,7 +151,7 @@ public interface ItemMeta {
      * @return new item metadata
      */
     @Contract("_ -> new", pure = true)
-    public fun withLore(lore: Iterable<Component>): ItemMeta
+    public fun withLore(lore: List<Component>): ItemMeta
 
     /**
      * Creates new item metadata with the given [lore] line added to the bottom
@@ -163,7 +161,7 @@ public interface ItemMeta {
      * @return new item metadata
      */
     @Contract("_ -> new", pure = true)
-    public fun addLore(lore: Component): ItemMeta
+    public fun withLore(lore: Component): ItemMeta
 
     /**
      * Creates new item metadata with the lore line at the given [index]
@@ -175,7 +173,7 @@ public interface ItemMeta {
      * bounds exception, i.e. when it is too small or too big
      */
     @Contract("_ -> new", pure = true)
-    public fun removeLore(index: Int): ItemMeta
+    public fun withoutLore(index: Int): ItemMeta
 
     /**
      * Creates new item metadata with the given [lore] line removed from the
@@ -185,7 +183,7 @@ public interface ItemMeta {
      * @return new item metadata
      */
     @Contract("_ -> new", pure = true)
-    public fun removeLore(lore: Component): ItemMeta
+    public fun withoutLore(lore: Component): ItemMeta
 
     /**
      * Creates new item metadata with the given hide [flags].
@@ -221,7 +219,7 @@ public interface ItemMeta {
      * @return new item metadata
      */
     @Contract("_ -> new", pure = true)
-    public fun withCanDestroy(blocks: Iterable<Block>): ItemMeta
+    public fun withCanDestroy(blocks: Collection<Block>): ItemMeta
 
     /**
      * Creates new item metadata with the given can destroy [blocks].
@@ -230,111 +228,44 @@ public interface ItemMeta {
      * @return new item metadata
      */
     @Contract("_ -> new", pure = true)
-    public fun withCanPlaceOn(blocks: Iterable<Block>): ItemMeta
+    public fun withCanPlaceOn(blocks: Collection<Block>): ItemMeta
 
     /**
-     * Gets the attribute modifiers that are applied to the attributes on this
-     * item when it is in the given [slot].
+     * Creates new item metadata with the given attribute [modifiers].
      *
-     * @param slot the slot
-     * @return the modifiers associated with the attribute types
-     */
-    public fun attributeModifiers(slot: EquipmentSlot): Map<AttributeType, Set<AttributeModifier>>
-
-    /**
-     * Gets the attribute modifiers that are applied to the given attribute
-     * [type] when this item is on the given [slot].
-     *
-     * @param type the attribute type the modifiers are applied to
-     * @param slot the slot
-     * @return the modifiers associated with the given type
-     */
-    public fun attributeModifiers(type: AttributeType, slot: EquipmentSlot): Set<AttributeModifier>
-
-    /**
-     * Creates a new item metadata with the given [attributes] applied to
-     * entities wearing the items this metadata is applied to.
-     *
-     * @param attributes the attributes
+     * @param modifiers the new attribute modifiers
      * @return new item metadata
      */
     @Contract("_ -> new", pure = true)
-    public fun withAttributeModifiers(attributes: Set<ItemAttribute>): ItemMeta
+    public fun withAttributeModifiers(modifiers: Collection<ItemAttributeModifier>): ItemMeta
 
     /**
-     * Creates new item metadata with the given [modifiers] applied to the
-     * given attribute [type] when this item is on the given [slot].
+     * Creates new item metadata without any modifiers.
      *
-     * @param type the attribute type the modifiers are applied to
-     * @param slot the slot
-     * @param modifiers the attributes
      * @return new item metadata
      */
-    @Contract("_, _, _ -> new", pure = true)
-    public fun withAttributeModifiers(type: AttributeType, slot: EquipmentSlot, modifiers: Set<AttributeModifier>): ItemMeta
-
-    /**
-     * Creates new item metadata with the given [modifiers] added to the list
-     * of modifiers applied to the given attribute [type] when this item is in
-     * the given [slot].
-     *
-     * @param type the attribute type the modifiers are applied to
-     * @param slot the slot
-     * @param modifiers the modifiers to add
-     * @return new item metadata
-     */
-    @Contract("_, _, _ -> new", pure = true)
-    public fun addAttributeModifiers(type: AttributeType, slot: EquipmentSlot, modifiers: Iterable<AttributeModifier>): ItemMeta
-
-    /**
-     * Creates new item metadata with the given [modifiers] removed from the
-     * list of modifiers applied to the given attribute [type] when this item
-     * is in the given [slot].
-     *
-     * @param type the attribute type the modifiers are applied to
-     * @param slot the slot
-     * @param modifiers the modifiers to remove
-     * @return new item metadata
-     */
-    @Contract("_, _, _ -> new", pure = true)
-    public fun removeAttributeModifiers(type: AttributeType, slot: EquipmentSlot, modifiers: Iterable<AttributeModifier>): ItemMeta
-
-    /**
-     * Creates new item metadata with all modifiers applied to the given [type]
-     * when this item is in the given [slot] removed.
-     *
-     * @param type the attribute type the modifiers are applied to
-     * @param slot the slot
-     * @return new item metadata
-     */
-    @Contract("_, _ -> new", pure = true)
-    public fun removeAttributeModifiers(type: AttributeType, slot: EquipmentSlot): ItemMeta
+    @Contract("-> new", pure = true)
+    public fun withoutAttributeModifiers(): ItemMeta
 
     /**
      * Creates new item metadata with the given [modifier] added to the list of
-     * modifiers applied to the given attribute [type] when this item is on the
-     * given [slot].
+     * modifiers for this item.
      *
-     * @param type the attribute type the modifiers are applied to
-     * @param slot the slot
      * @param modifier the modifier to add
      * @return new item metadata
      */
     @Contract("_, _, _ -> new", pure = true)
-    public fun addAttributeModifier(type: AttributeType, slot: EquipmentSlot, modifier: AttributeModifier): ItemMeta
+    public fun withAttributeModifier(modifier: ItemAttributeModifier): ItemMeta
 
     /**
      * Creates new item metadata with the given [modifier] removed from the
-     * list of modifiers applied to the given attribute [type] when this item
-     * is on the given [slot].
+     * list of modifiers for this item.
      *
-     * @param type the attribute type the modifiers are applied to
-     * @param slot the slot
      * @param modifier the modifier to remove
      * @return new item metadata
      */
     @Contract("_, _, _ -> new", pure = true)
-    public fun removeAttributeModifier(type: AttributeType, slot: EquipmentSlot, modifier: AttributeModifier): ItemMeta
+    public fun withoutAttributeModifier(modifier: ItemAttributeModifier): ItemMeta
 
     /**
      * A builder for building item metadata.

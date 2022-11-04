@@ -42,6 +42,8 @@ import org.kryptonmc.krypton.world.chunk.ticket.TicketType
 import org.kryptonmc.krypton.world.chunk.ticket.TicketTypes
 import org.kryptonmc.krypton.world.region.RegionFileManager
 import org.kryptonmc.nbt.CompoundTag
+import org.kryptonmc.nbt.ImmutableCompoundTag
+import org.kryptonmc.nbt.ImmutableListTag
 import org.kryptonmc.nbt.ListTag
 import org.kryptonmc.nbt.LongArrayTag
 import org.kryptonmc.nbt.StringTag
@@ -121,7 +123,7 @@ class ChunkManager(private val world: KryptonWorld) {
 
         val sectionList = data.getList("sections", CompoundTag.ID)
         val sections = arrayOfNulls<ChunkSection>(world.sectionCount)
-        for (i in 0 until sectionList.size) {
+        for (i in 0 until sectionList.size()) {
             val sectionData = sectionList.getCompound(i)
             val y = sectionData.getByte("Y").toInt()
             val index = world.sectionIndexFromY(y)
@@ -189,47 +191,47 @@ class ChunkManager(private val world: KryptonWorld) {
         @JvmStatic
         private fun serialize(chunk: KryptonChunk): CompoundTag {
             val data = buildCompound {
-                int("DataVersion", KryptonPlatform.worldVersion)
+                putInt("DataVersion", KryptonPlatform.worldVersion)
                 compound("CarvingMasks") {
-                    byteArray("AIR", chunk.carvingMasks.first)
-                    byteArray("LIQUID", chunk.carvingMasks.second)
+                    putByteArray("AIR", chunk.carvingMasks.first)
+                    putByteArray("LIQUID", chunk.carvingMasks.second)
                 }
-                long("LastUpdate", chunk.lastUpdate)
-                list("Lights", ListTag.ID)
-                list("LiquidsToBeTicked", ListTag.ID)
-                list("LiquidTicks", ListTag.ID)
-                long("InhabitedTime", chunk.inhabitedTime)
-                list("PostProcessing", ListTag.ID)
-                string("Status", "full")
-                list("TileEntities", CompoundTag.ID)
-                list("TileTicks", CompoundTag.ID)
-                list("ToBeTicked", ListTag.ID)
+                putLong("LastUpdate", chunk.lastUpdate)
+                putList("Lights", ListTag.ID)
+                putList("LiquidsToBeTicked", ListTag.ID)
+                putList("LiquidTicks", ListTag.ID)
+                putLong("InhabitedTime", chunk.inhabitedTime)
+                putList("PostProcessing", ListTag.ID)
+                putString("Status", "full")
+                putList("TileEntities", CompoundTag.ID)
+                putList("TileTicks", CompoundTag.ID)
+                putList("ToBeTicked", ListTag.ID)
                 put("Structures", chunk.structures)
-                int("xPos", chunk.position.x)
-                int("zPos", chunk.position.z)
+                putInt("xPos", chunk.position.x)
+                putInt("zPos", chunk.position.z)
             }
 
-            val sectionList = ListTag.immutableBuilder(CompoundTag.ID)
+            val sectionList = ImmutableListTag.builder(CompoundTag.ID)
             for (i in chunk.minimumLightSection until chunk.maximumLightSection) {
                 val sectionIndex = chunk.world.sectionIndexFromY(i)
                 // TODO: Handle light sections below and above the world
                 if (sectionIndex >= 0 && sectionIndex < chunk.sections.size) {
                     val section = chunk.sections[sectionIndex]
                     val sectionData = compound {
-                        byte("Y", i.toByte())
+                        putByte("Y", i.toByte())
                         // FIXME: Fix this in next update
 //                        put("block_states", section.blocks.write(KryptonBlockState.CODEC::encode))
                         put("biomes", section.biomes.write { StringTag.of(it.key().asString()) })
-                        if (section.blockLight.isNotEmpty()) byteArray("BlockLight", section.blockLight)
-                        if (section.skyLight.isNotEmpty()) byteArray("SkyLight", section.skyLight)
+                        if (section.blockLight.isNotEmpty()) putByteArray("BlockLight", section.blockLight)
+                        if (section.skyLight.isNotEmpty()) putByteArray("SkyLight", section.skyLight)
                     }
                     sectionList.add(sectionData)
                 }
             }
             data.put("sections", sectionList.build())
 
-            val heightmapData = CompoundTag.immutableBuilder()
-            chunk.heightmaps.forEach { if (it.key in Heightmap.Type.POST_FEATURES) heightmapData.longArray(it.key.name, it.value.rawData) }
+            val heightmapData = ImmutableCompoundTag.builder()
+            chunk.heightmaps.forEach { if (it.key in Heightmap.Type.POST_FEATURES) heightmapData.putLongArray(it.key.name, it.value.rawData) }
             data.put("Heightmaps", heightmapData.build())
             return data.build()
         }

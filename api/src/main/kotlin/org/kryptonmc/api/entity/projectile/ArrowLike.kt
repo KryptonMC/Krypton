@@ -20,14 +20,12 @@ public interface ArrowLike : Projectile {
      * The base damage that this arrow like object will do to an entity it
      * comes in to contact with.
      */
-    @get:JvmName("baseDamage")
     public var baseDamage: Double
 
     /**
      * The block this arrow like object is currently stuck in, or null if this
      * object is not currently stuck in a block.
      */
-    @get:JvmName("stuckInBlock")
     public var stuckInBlock: BlockState?
 
     /**
@@ -43,7 +41,6 @@ public interface ArrowLike : Projectile {
     /**
      * If this arrow like object ignores physics.
      */
-    @get:JvmName("ignoresPhysics")
     public var ignoresPhysics: Boolean
 
     /**
@@ -58,14 +55,12 @@ public interface ArrowLike : Projectile {
      *
      * When this value reaches 0, it will no longer pierce through entities.
      */
-    @get:JvmName("piercingLevel")
-    public val piercingLevel: Int
+    public var piercingLevel: Int
 
     /**
      * The current pickup state of this arrow like object.
      */
-    @get:JvmName("pickupRule")
-    public val pickupRule: PickupRule
+    public var pickupRule: PickupRule
 
     /**
      * A rule that determines whether an arrow like object can be picked up.

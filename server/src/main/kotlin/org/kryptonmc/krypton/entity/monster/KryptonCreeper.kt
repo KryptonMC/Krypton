@@ -18,11 +18,11 @@
  */
 package org.kryptonmc.krypton.entity.monster
 
-import org.kryptonmc.api.entity.attribute.AttributeTypes
 import org.kryptonmc.api.entity.monster.Creeper
 import org.kryptonmc.krypton.entity.KryptonEntityType
 import org.kryptonmc.krypton.entity.KryptonEntityTypes
 import org.kryptonmc.krypton.entity.attribute.AttributeSupplier
+import org.kryptonmc.krypton.entity.attribute.KryptonAttributeTypes
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.entity.serializer.EntitySerializer
 import org.kryptonmc.krypton.entity.serializer.monster.CreeperSerializer
@@ -30,12 +30,12 @@ import org.kryptonmc.krypton.world.KryptonWorld
 
 class KryptonCreeper(world: KryptonWorld) : KryptonMonster(world), Creeper {
 
-    override val type: KryptonEntityType<Creeper>
+    override val type: KryptonEntityType<KryptonCreeper>
         get() = KryptonEntityTypes.CREEPER
     override val serializer: EntitySerializer<KryptonCreeper>
         get() = CreeperSerializer
 
-    override var fuse: Short = 0
+    override var fuse: Int = 0
     override var explosionRadius: Int = 0
 
     override var isCharged: Boolean
@@ -55,6 +55,6 @@ class KryptonCreeper(world: KryptonWorld) : KryptonMonster(world), Creeper {
     companion object {
 
         @JvmStatic
-        fun attributes(): AttributeSupplier.Builder = KryptonMonster.attributes().add(AttributeTypes.MOVEMENT_SPEED, 0.25)
+        fun attributes(): AttributeSupplier.Builder = KryptonMonster.attributes().add(KryptonAttributeTypes.MOVEMENT_SPEED, 0.25)
     }
 }

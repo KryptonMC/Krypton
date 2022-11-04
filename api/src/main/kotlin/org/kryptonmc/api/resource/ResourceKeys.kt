@@ -10,7 +10,6 @@ package org.kryptonmc.api.resource
 
 import net.kyori.adventure.key.Key
 import org.jetbrains.annotations.Contract
-import org.kryptonmc.api.user.ban.BanType
 import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.block.entity.BlockEntityType
 import org.kryptonmc.api.block.entity.banner.BannerPatternType
@@ -18,16 +17,12 @@ import org.kryptonmc.api.effect.particle.ParticleType
 import org.kryptonmc.api.effect.sound.SoundEvent
 import org.kryptonmc.api.entity.EntityType
 import org.kryptonmc.api.entity.EntityCategory
-import org.kryptonmc.api.entity.animal.type.CatVariant
-import org.kryptonmc.api.entity.animal.type.FrogVariant
 import org.kryptonmc.api.entity.attribute.AttributeType
-import org.kryptonmc.api.entity.attribute.ModifierOperation
-import org.kryptonmc.api.entity.hanging.Picture
+import org.kryptonmc.api.entity.hanging.PaintingVariant
 import org.kryptonmc.api.fluid.Fluid
 import org.kryptonmc.api.inventory.InventoryType
 import org.kryptonmc.api.item.ItemRarity
 import org.kryptonmc.api.item.ItemType
-import org.kryptonmc.api.item.data.DyeColor
 import org.kryptonmc.api.registry.Registry
 import org.kryptonmc.api.registry.RegistryRoots
 import org.kryptonmc.api.statistic.StatisticType
@@ -50,7 +45,7 @@ public object ResourceKeys {
      * The key of the parent registry.
      */
     @JvmField
-    public val PARENT: ResourceKey<out Registry<Registry<out Any>>> = minecraft("root")
+    public val PARENT: ResourceKey<out Registry<Registry<*>>> = minecraft("root")
 
     /**
      * Built-in vanilla registries.
@@ -86,11 +81,7 @@ public object ResourceKeys {
     @JvmField
     public val BANNER_PATTERN: ResourceKey<out Registry<BannerPatternType>> = minecraft("banner_pattern")
     @JvmField
-    public val CAT_VARIANT: ResourceKey<out Registry<CatVariant>> = minecraft("cat_variant")
-    @JvmField
-    public val FROG_VARIANT: ResourceKey<out Registry<FrogVariant>> = minecraft("frog_variant")
-    @JvmField
-    public val PICTURES: ResourceKey<out Registry<Picture>> = minecraft("motive")
+    public val PAINTING_VARIANT: ResourceKey<out Registry<PaintingVariant>> = minecraft("painting_variant")
 
     /**
      * Custom built-in registries.
@@ -98,19 +89,13 @@ public object ResourceKeys {
     @JvmField
     public val GAME_RULES: ResourceKey<out Registry<GameRule<*>>> = krypton("gamerules")
     @JvmField
-    public val MODIFIER_OPERATIONS: ResourceKey<out Registry<ModifierOperation>> = krypton("attribute_modifier_operations")
-    @JvmField
     public val CRITERIA: ResourceKey<out Registry<Criterion>> = krypton("criteria")
     @JvmField
     public val ITEM_RARITIES: ResourceKey<out Registry<ItemRarity>> = krypton("item_rarities")
     @JvmField
     public val ENTITY_CATEGORIES: ResourceKey<out Registry<EntityCategory>> = krypton("entity_categories")
     @JvmField
-    public val DYE_COLORS: ResourceKey<out Registry<DyeColor>> = krypton("dye_colors")
-    @JvmField
     public val TAG_TYPES: ResourceKey<out Registry<TagType<*>>> = krypton("tag_types")
-    @JvmField
-    public val BAN_TYPES: ResourceKey<out Registry<BanType>> = krypton("ban_types")
     @JvmField
     public val DAMAGE_TYPES: ResourceKey<out Registry<DamageType>> = krypton("damage_types")
 
@@ -124,7 +109,7 @@ public object ResourceKeys {
      */
     @JvmStatic
     @Contract("_ -> new", pure = true)
-    public fun <T : Any> minecraft(key: String): ResourceKey<out Registry<T>> = ResourceKey.of(RegistryRoots.MINECRAFT, Key.key(key))
+    public fun <T> minecraft(key: String): ResourceKey<out Registry<T>> = ResourceKey.of(RegistryRoots.MINECRAFT, Key.key(key))
 
     /**
      * Creates a new registry key with the given [key] as its base key.
@@ -136,5 +121,5 @@ public object ResourceKeys {
      */
     @JvmStatic
     @Contract("_ -> new", pure = true)
-    public fun <T : Any> krypton(key: String): ResourceKey<out Registry<T>> = ResourceKey.of(RegistryRoots.KRYPTON, Key.key("krypton", key))
+    public fun <T> krypton(key: String): ResourceKey<out Registry<T>> = ResourceKey.of(RegistryRoots.KRYPTON, Key.key("krypton", key))
 }

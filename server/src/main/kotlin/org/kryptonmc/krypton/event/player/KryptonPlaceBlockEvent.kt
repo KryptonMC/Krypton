@@ -24,14 +24,13 @@ import org.kryptonmc.api.entity.player.Player
 import org.kryptonmc.api.event.GenericResult
 import org.kryptonmc.api.event.player.PlaceBlockEvent
 import org.kryptonmc.api.util.Direction
+import org.spongepowered.math.vector.Vector3i
 
-data class KryptonPlaceBlockEvent(
+class KryptonPlaceBlockEvent(
     override val player: Player,
     override val block: BlockState,
     override val hand: Hand,
-    override val x: Int,
-    override val y: Int,
-    override val z: Int,
+    override val position: Vector3i,
     override val face: Direction,
     override val isInsideBlock: Boolean
 ) : PlaceBlockEvent {

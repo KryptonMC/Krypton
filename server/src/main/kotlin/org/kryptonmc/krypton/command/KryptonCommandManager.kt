@@ -33,13 +33,12 @@ import org.kryptonmc.api.adventure.AdventureMessage
 import org.kryptonmc.api.command.BrigadierCommand
 import org.kryptonmc.api.command.CommandManager
 import org.kryptonmc.api.command.CommandRegistrar
+import org.kryptonmc.api.command.InvocableCommand
 import org.kryptonmc.api.command.RawCommand
 import org.kryptonmc.api.command.Sender
 import org.kryptonmc.api.command.SimpleCommand
-import org.kryptonmc.api.command.meta.CommandMeta
-import org.kryptonmc.api.command.meta.SimpleCommandMeta
+import org.kryptonmc.api.command.CommandMeta
 import org.kryptonmc.api.entity.player.Player
-import org.kryptonmc.krypton.command.meta.EmptyCommandMeta
 import org.kryptonmc.krypton.commands.BanCommand
 import org.kryptonmc.krypton.commands.BanIpCommand
 import org.kryptonmc.krypton.commands.ClearCommand
@@ -82,20 +81,20 @@ class KryptonCommandManager : CommandManager {
     @GuardedBy("lock")
     private val dispatcher = CommandDispatcher<Sender>() // Reads and writes MUST be locked by this lock!
     private val lock = ReentrantReadWriteLock()
+
     private val brigadierCommandRegistrar = BrigadierCommandRegistrar(lock.writeLock())
     private val simpleCommandRegistrar = SimpleCommandRegistrar(lock.writeLock())
     private val rawCommandRegistrar = RawCommandRegistrar(lock.writeLock())
 
-    override fun register(command: BrigadierCommand) {
-        brigadierCommandRegistrar.register(dispatcher.root, command, EmptyCommandMeta)
+    override fun register(command: BrigadierCommand, meta: CommandMeta) {
+        brigadierCommandRegistrar.register(dispatcher.root, command, meta)
     }
 
-    override fun register(command: SimpleCommand, meta: SimpleCommandMeta) {
-        simpleCommandRegistrar.register(dispatcher.root, command, meta)
-    }
-
-    override fun register(command: RawCommand, meta: CommandMeta) {
-        rawCommandRegistrar.register(dispatcher.root, command, meta)
+    override fun register(command: InvocableCommand<*>, meta: CommandMeta) {
+        when (command) {
+            is SimpleCommand -> simpleCommandRegistrar.register(dispatcher.root, command, meta)
+            is RawCommand -> rawCommandRegistrar.register(dispatcher.root, command, meta)
+        }
     }
 
     override fun <C, M> register(command: C, meta: M, registrar: CommandRegistrar<C, M>) {
@@ -106,15 +105,13 @@ class KryptonCommandManager : CommandManager {
         lock.write { dispatcher.root.removeChildByName(alias.lowercase()) }
     }
 
-    override fun dispatch(sender: Sender, command: String): Boolean = dispatch(sender, command, null)
+    override fun dispatch(sender: Sender, command: String): Boolean = dispatch(sender, command, NO_OP_RESULT_CONSUMER)
 
-    fun dispatch(sender: Sender, command: String, resultCallback: ResultConsumer<Sender>?): Boolean {
-        val normalized = command.normalize(true)
+    fun dispatch(sender: Sender, command: String, resultCallback: ResultConsumer<Sender>): Boolean {
+        val normalized = normalizeInput(command)
         return try {
             val parseResults = parse(sender, normalized)
-            if (resultCallback != null) lock.read { dispatcher.setConsumer(resultCallback) }
-            dispatcher.execute(parseResults)
-            if (resultCallback != null) lock.read { dispatcher.setConsumer { _, _, _ -> } }
+            dispatcher.execute(parseResults, resultCallback)
             true
         } catch (exception: CommandSyntaxException) {
             // The exception formatting here is mostly based on that of vanilla, so we can actually report all of the useful
@@ -198,5 +195,14 @@ class KryptonCommandManager : CommandManager {
 
         private val LOGGER = logger<CommandManager>()
         private const val ERROR_MESSAGE_CUTOFF_THRESHOLD = 10
+        private val NO_OP_RESULT_CONSUMER = ResultConsumer<Sender> { _, _, _ ->}
+
+        @JvmStatic
+        private fun normalizeInput(input: String): String {
+            val command = input.trim()
+            val firstSeparator = command.indexOf(CommandDispatcher.ARGUMENT_SEPARATOR_CHAR)
+            if (firstSeparator != -1) return command.substring(0, firstSeparator).lowercase() + command.substring(firstSeparator)
+            return command.lowercase()
+        }
     }
 }

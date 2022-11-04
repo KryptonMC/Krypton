@@ -18,8 +18,6 @@
  */
 package org.kryptonmc.krypton.state.property
 
-import kotlinx.collections.immutable.persistentSetOf
-import org.kryptonmc.api.block.Blocks
 import org.kryptonmc.api.block.meta.AttachFace
 import org.kryptonmc.api.block.meta.BambooLeaves
 import org.kryptonmc.api.block.meta.BedPart
@@ -197,78 +195,78 @@ object KryptonProperties {
     // ==============================
 
     @JvmField
-    val ATTACH_FACE: EnumProperty<AttachFace> = EnumProperty.of("face")
+    val ATTACH_FACE: EnumProperty<AttachFace> = EnumProperty.create("face")
     @JvmField
-    val AXIS: EnumProperty<Direction.Axis> = EnumProperty.of("axis")
+    val AXIS: EnumProperty<Direction.Axis> = EnumProperty.create("axis")
     @JvmField
-    val BAMBOO_LEAVES: EnumProperty<BambooLeaves> = EnumProperty.of("leaves")
+    val BAMBOO_LEAVES: EnumProperty<BambooLeaves> = EnumProperty.create("leaves")
     @JvmField
-    val BED_PART: EnumProperty<BedPart> = EnumProperty.of("part")
+    val BED_PART: EnumProperty<BedPart> = EnumProperty.create("part")
     @JvmField
-    val BELL_ATTACHMENT: EnumProperty<BellAttachment> = EnumProperty.of("attachment")
+    val BELL_ATTACHMENT: EnumProperty<BellAttachment> = EnumProperty.create("attachment")
     @JvmField
-    val CHEST_TYPE: EnumProperty<ChestType> = EnumProperty.of("type")
+    val CHEST_TYPE: EnumProperty<ChestType> = EnumProperty.create("type")
     @JvmField
-    val COMPARATOR_MODE: EnumProperty<ComparatorMode> = EnumProperty.of("mode")
+    val COMPARATOR_MODE: EnumProperty<ComparatorMode> = EnumProperty.create("mode")
     @JvmField
-    val DOOR_HINGE: EnumProperty<DoorHingeSide> = EnumProperty.of("hinge")
+    val DOOR_HINGE: EnumProperty<DoorHingeSide> = EnumProperty.create("hinge")
     @JvmField
-    val DOUBLE_BLOCK_HALF: EnumProperty<DoubleBlockHalf> = EnumProperty.of("half")
+    val DOUBLE_BLOCK_HALF: EnumProperty<DoubleBlockHalf> = EnumProperty.create("half")
     @JvmField
-    val DRIPSTONE_THICKNESS: EnumProperty<DripstoneThickness> = EnumProperty.of("thickness")
+    val DRIPSTONE_THICKNESS: EnumProperty<DripstoneThickness> = EnumProperty.create("thickness")
     @JvmField
-    val EAST_REDSTONE_SIDE: EnumProperty<RedstoneSide> = EnumProperty.of("east")
+    val EAST_REDSTONE_SIDE: EnumProperty<RedstoneSide> = EnumProperty.create("east")
     @JvmField
-    val EAST_WALL_SIDE: EnumProperty<WallSide> = EnumProperty.of("east")
+    val EAST_WALL_SIDE: EnumProperty<WallSide> = EnumProperty.create("east")
     @JvmField
-    val HALF: EnumProperty<Half> = EnumProperty.of("half")
+    val HALF: EnumProperty<Half> = EnumProperty.create("half")
     @JvmField
-    val HORIZONTAL_AXIS: EnumProperty<Direction.Axis> = EnumProperty.of("axis", Direction.Axis.X, Direction.Axis.Z)
+    val HORIZONTAL_AXIS: EnumProperty<Direction.Axis> = EnumProperty.create("axis", Direction.Axis.X, Direction.Axis.Z)
     @JvmField
-    val INSTRUMENT: EnumProperty<NoteBlockInstrument> = EnumProperty.of("instrument")
+    val INSTRUMENT: EnumProperty<NoteBlockInstrument> = EnumProperty.create("instrument")
     @JvmField
-    val NORTH_REDSTONE_SIDE: EnumProperty<RedstoneSide> = EnumProperty.of("north")
+    val NORTH_REDSTONE_SIDE: EnumProperty<RedstoneSide> = EnumProperty.create("north")
     @JvmField
-    val NORTH_WALL_SIDE: EnumProperty<WallSide> = EnumProperty.of("north")
+    val NORTH_WALL_SIDE: EnumProperty<WallSide> = EnumProperty.create("north")
     @JvmField
-    val ORIENTATION: EnumProperty<Orientation> = EnumProperty.of("orientation")
+    val ORIENTATION: EnumProperty<Orientation> = EnumProperty.create("orientation")
     @JvmField
-    val PISTON_TYPE: EnumProperty<PistonType> = EnumProperty.of("type")
+    val PISTON_TYPE: EnumProperty<PistonType> = EnumProperty.create("type")
     @JvmField
-    val RAIL_SHAPE: EnumProperty<RailShape> = EnumProperty.of("shape")
+    val RAIL_SHAPE: EnumProperty<RailShape> = EnumProperty.create("shape")
     @JvmField
-    val SCULK_SENSOR_PHASE: EnumProperty<SculkSensorPhase> = EnumProperty.of("sculk_sensor_phase")
+    val SCULK_SENSOR_PHASE: EnumProperty<SculkSensorPhase> = EnumProperty.create("sculk_sensor_phase")
     @JvmField
-    val SLAB_TYPE: EnumProperty<SlabType> = EnumProperty.of("type")
+    val SLAB_TYPE: EnumProperty<SlabType> = EnumProperty.create("type")
     @JvmField
-    val SOUTH_REDSTONE_SIDE: EnumProperty<RedstoneSide> = EnumProperty.of("south")
+    val SOUTH_REDSTONE_SIDE: EnumProperty<RedstoneSide> = EnumProperty.create("south")
     @JvmField
-    val SOUTH_WALL_SIDE: EnumProperty<WallSide> = EnumProperty.of("south")
+    val SOUTH_WALL_SIDE: EnumProperty<WallSide> = EnumProperty.create("south")
     @JvmField
-    val STAIR_SHAPE: EnumProperty<StairShape> = EnumProperty.of("shape")
+    val STAIR_SHAPE: EnumProperty<StairShape> = EnumProperty.create("shape")
     @JvmField
-    val STRUCTURE_MODE: EnumProperty<StructureMode> = EnumProperty.of("mode")
+    val STRUCTURE_MODE: EnumProperty<StructureMode> = EnumProperty.create("mode")
     @JvmField
-    val STRAIGHT_RAIL_SHAPE: EnumProperty<RailShape> = EnumProperty.of("shape") {
+    val STRAIGHT_RAIL_SHAPE: EnumProperty<RailShape> = EnumProperty.create("shape") {
         it != RailShape.NORTH_EAST && it != RailShape.NORTH_WEST && it != RailShape.SOUTH_EAST && it != RailShape.SOUTH_WEST
     }
     @JvmField
-    val TILT: EnumProperty<Tilt> = EnumProperty.of("tilt")
+    val TILT: EnumProperty<Tilt> = EnumProperty.create("tilt")
     @JvmField
-    val WEST_REDSTONE_SIDE: EnumProperty<RedstoneSide> = EnumProperty.of("west")
+    val WEST_REDSTONE_SIDE: EnumProperty<RedstoneSide> = EnumProperty.create("west")
     @JvmField
-    val WEST_WALL_SIDE: EnumProperty<WallSide> = EnumProperty.of("west")
+    val WEST_WALL_SIDE: EnumProperty<WallSide> = EnumProperty.create("west")
 
     // ==============================
     // Direction properties
     // ==============================
 
     @JvmField
-    val FACING: DirectionProperty = DirectionProperty.of("facing")
+    val FACING: DirectionProperty = DirectionProperty.create("facing")
     @JvmField
-    val HOPPER_FACING: DirectionProperty = DirectionProperty.of("facing") { it != Direction.UP }
+    val HOPPER_FACING: DirectionProperty = DirectionProperty.create("facing") { it != Direction.UP }
     @JvmField
-    val HORIZONTAL_FACING: DirectionProperty = DirectionProperty.of("facing", Directions.Plane.HORIZONTAL)
+    val HORIZONTAL_FACING: DirectionProperty = DirectionProperty.create("facing", Directions.Plane.HORIZONTAL)
     @JvmField
-    val VERTICAL_DIRECTION: DirectionProperty = DirectionProperty.of("vertical_direction", Direction.UP, Direction.DOWN)
+    val VERTICAL_DIRECTION: DirectionProperty = DirectionProperty.create("vertical_direction", Direction.UP, Direction.DOWN)
 }

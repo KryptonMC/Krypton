@@ -26,7 +26,7 @@ import org.kryptonmc.krypton.world.KryptonWorld
 
 class KryptonWitherSkull(world: KryptonWorld) : KryptonAcceleratingProjectile(world), WitherSkull {
 
-    override val type: KryptonEntityType<WitherSkull>
+    override val type: KryptonEntityType<KryptonWitherSkull>
         get() = KryptonEntityTypes.WITHER_SKULL
 
     override var isDangerous: Boolean

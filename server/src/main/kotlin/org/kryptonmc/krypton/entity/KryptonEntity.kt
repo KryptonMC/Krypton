@@ -70,7 +70,7 @@ abstract class KryptonEntity(final override var world: KryptonWorld) : BaseEntit
     final override var boundingBox: BoundingBox = BoundingBox.zero()
     final override var isOnGround: Boolean = true
     final override var ticksExisted: Int = 0
-    final override var fireTicks: Short = 0
+    final override var fireTicks: Int = 0
     final override var isInvulnerable: Boolean = false
     final override var fallDistance: Float = 0F
 

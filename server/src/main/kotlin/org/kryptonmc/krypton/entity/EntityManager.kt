@@ -37,6 +37,7 @@ import org.kryptonmc.krypton.world.chunk.ChunkPosition
 import org.kryptonmc.krypton.world.chunk.KryptonChunk
 import org.kryptonmc.krypton.world.region.RegionFileManager
 import org.kryptonmc.nbt.CompoundTag
+import org.kryptonmc.nbt.ImmutableListTag
 import org.kryptonmc.nbt.IntTag
 import org.kryptonmc.nbt.ListTag
 import org.kryptonmc.nbt.compound
@@ -147,11 +148,11 @@ class EntityManager(val world: KryptonWorld) : AutoCloseable {
     fun save(chunk: KryptonChunk) {
         val entities = byChunk.get(chunk.position.toLong()) ?: return
         if (entities.isEmpty()) return
-        val entityList = ListTag.immutableBuilder(CompoundTag.ID)
+        val entityList = ImmutableListTag.builder(CompoundTag.ID)
         entities.forEach { if (it !is KryptonPlayer) entityList.add(it.saveWithPassengers().build()) }
         regionFileManager.write(chunk.x, chunk.z, compound {
-            int("DataVersion", KryptonPlatform.worldVersion)
-            ints("Position", chunk.position.x, chunk.position.z)
+            putInt("DataVersion", KryptonPlatform.worldVersion)
+            putInts("Position", chunk.position.x, chunk.position.z)
             put("Entities", entityList.build())
         })
     }

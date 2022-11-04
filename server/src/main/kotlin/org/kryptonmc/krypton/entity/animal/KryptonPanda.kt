@@ -20,13 +20,13 @@ package org.kryptonmc.krypton.entity.animal
 
 import org.kryptonmc.api.entity.animal.Panda
 import org.kryptonmc.api.entity.animal.type.PandaGene
-import org.kryptonmc.api.entity.attribute.AttributeTypes
 import org.kryptonmc.api.item.ItemStack
 import org.kryptonmc.api.item.ItemTypes
 import org.kryptonmc.krypton.entity.KryptonEntityType
 import org.kryptonmc.krypton.entity.KryptonEntityTypes
 import org.kryptonmc.krypton.entity.KryptonMob
 import org.kryptonmc.krypton.entity.attribute.AttributeSupplier
+import org.kryptonmc.krypton.entity.attribute.KryptonAttributeTypes
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.entity.serializer.EntitySerializer
 import org.kryptonmc.krypton.entity.serializer.animal.PandaSerializer
@@ -34,7 +34,7 @@ import org.kryptonmc.krypton.world.KryptonWorld
 
 class KryptonPanda(world: KryptonWorld) : KryptonAnimal(world), Panda {
 
-    override val type: KryptonEntityType<Panda>
+    override val type: KryptonEntityType<KryptonPanda>
         get() = KryptonEntityTypes.PANDA
     override val serializer: EntitySerializer<KryptonPanda>
         get() = PandaSerializer
@@ -110,8 +110,8 @@ class KryptonPanda(world: KryptonWorld) : KryptonAnimal(world), Panda {
 
         @JvmStatic
         fun attributes(): AttributeSupplier.Builder = KryptonMob.attributes()
-            .add(AttributeTypes.MOVEMENT_SPEED, 0.15)
-            .add(AttributeTypes.ATTACK_DAMAGE, 6.0)
+            .add(KryptonAttributeTypes.MOVEMENT_SPEED, 0.15)
+            .add(KryptonAttributeTypes.ATTACK_DAMAGE, 6.0)
 
         @JvmStatic
         fun deserializeGene(name: String): PandaGene = GENE_NAMES.getOrDefault(name, PandaGene.NORMAL)

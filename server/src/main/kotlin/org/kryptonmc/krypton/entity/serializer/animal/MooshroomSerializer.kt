@@ -32,6 +32,6 @@ object MooshroomSerializer : EntitySerializer<KryptonMooshroom> {
     }
 
     override fun save(entity: KryptonMooshroom): CompoundTag.Builder = AgeableSerializer.save(entity).apply {
-        string("Type", entity.variant.name.lowercase())
+        putString("Type", entity.variant.name.lowercase())
     }
 }

@@ -8,11 +8,20 @@
  */
 package org.kryptonmc.api.entity.animal.type
 
-import net.kyori.adventure.key.Keyed
-import org.kryptonmc.api.util.CataloguedBy
-
 /**
- * A variant of cat.
+ * A variant of a cat.
  */
-@CataloguedBy(CatVariants::class)
-public interface CatVariant : Keyed
+public enum class CatVariant {
+
+    TABBY,
+    BLACK,
+    RED,
+    SIAMESE,
+    BRITISH_SHORTHAIR,
+    CALICO,
+    PERSIAN,
+    RAGDOLL,
+    WHITE,
+    JELLIE,
+    ALL_BLACK;
+}

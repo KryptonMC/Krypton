@@ -19,13 +19,13 @@
 package org.kryptonmc.krypton.entity.animal
 
 import org.kryptonmc.api.entity.animal.PolarBear
-import org.kryptonmc.api.entity.attribute.AttributeTypes
 import org.kryptonmc.api.item.ItemStack
 import org.kryptonmc.krypton.entity.KryptonEntityType
 import org.kryptonmc.krypton.entity.KryptonEntityTypes
 import org.kryptonmc.krypton.entity.KryptonMob
 import org.kryptonmc.krypton.entity.Neutral
 import org.kryptonmc.krypton.entity.attribute.AttributeSupplier
+import org.kryptonmc.krypton.entity.attribute.KryptonAttributeTypes
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.entity.serializer.EntitySerializer
 import org.kryptonmc.krypton.entity.serializer.animal.PolarBearSerializer
@@ -36,7 +36,7 @@ import kotlin.random.Random
 
 class KryptonPolarBear(world: KryptonWorld) : KryptonAnimal(world), PolarBear, Neutral {
 
-    override val type: KryptonEntityType<PolarBear>
+    override val type: KryptonEntityType<KryptonPolarBear>
         get() = KryptonEntityTypes.POLAR_BEAR
     override val serializer: EntitySerializer<KryptonPolarBear>
         get() = PolarBearSerializer
@@ -65,9 +65,9 @@ class KryptonPolarBear(world: KryptonWorld) : KryptonAnimal(world), PolarBear, N
 
         @JvmStatic
         fun attributes(): AttributeSupplier.Builder = KryptonMob.attributes()
-            .add(AttributeTypes.MAX_HEALTH, 30.0)
-            .add(AttributeTypes.FOLLOW_RANGE, 20.0)
-            .add(AttributeTypes.MOVEMENT_SPEED, 0.25)
-            .add(AttributeTypes.ATTACK_DAMAGE, 6.0)
+            .add(KryptonAttributeTypes.MAX_HEALTH, 30.0)
+            .add(KryptonAttributeTypes.FOLLOW_RANGE, 20.0)
+            .add(KryptonAttributeTypes.MOVEMENT_SPEED, 0.25)
+            .add(KryptonAttributeTypes.ATTACK_DAMAGE, 6.0)
     }
 }

@@ -11,12 +11,10 @@ package org.kryptonmc.api.block.entity
 /**
  * A sculk shrieker.
  */
-@Suppress("INAPPLICABLE_JVM_NAME")
 public interface SculkShrieker : BlockEntity {
 
     /**
      * The warning level of this shrieker.
      */
-    @get:JvmName("warningLevel")
     public var warningLevel: Int
 }

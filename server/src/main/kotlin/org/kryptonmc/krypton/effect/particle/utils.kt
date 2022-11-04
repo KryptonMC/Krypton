@@ -18,28 +18,7 @@
  */
 package org.kryptonmc.krypton.effect.particle
 
-import io.netty.buffer.ByteBuf
-import org.kryptonmc.api.effect.particle.BlockParticleType
-import org.kryptonmc.api.effect.particle.DustParticleType
-import org.kryptonmc.api.effect.particle.DustTransitionParticleType
-import org.kryptonmc.api.effect.particle.ItemParticleType
 import org.kryptonmc.api.effect.particle.ParticleType
-import org.kryptonmc.api.effect.particle.VibrationParticleType
-import org.kryptonmc.api.effect.particle.data.ParticleData
-import org.kryptonmc.krypton.effect.particle.data.KryptonBlockParticleData
-import org.kryptonmc.krypton.effect.particle.data.KryptonDustParticleData
-import org.kryptonmc.krypton.effect.particle.data.KryptonDustTransitionParticleData
-import org.kryptonmc.krypton.effect.particle.data.KryptonItemParticleData
-import org.kryptonmc.krypton.effect.particle.data.KryptonVibrationParticleData
-import org.kryptonmc.krypton.util.readItem
-import org.kryptonmc.krypton.util.readVarInt
-import org.kryptonmc.krypton.world.block.KryptonBlock
+import org.kryptonmc.krypton.util.downcastApiType
 
-fun ParticleType.createData(buf: ByteBuf): ParticleData? = when (this) {
-    is BlockParticleType -> KryptonBlockParticleData(KryptonBlock.stateFromId(buf.readVarInt()))
-    is DustParticleType -> KryptonDustParticleData(buf)
-    is DustTransitionParticleType -> KryptonDustTransitionParticleData(buf)
-    is ItemParticleType -> KryptonItemParticleData(buf.readItem())
-    is VibrationParticleType -> KryptonVibrationParticleData(buf)
-    else -> null
-}
+fun ParticleType.downcast(): KryptonParticleType = downcastApiType("ParticleType")

@@ -19,19 +19,16 @@ import org.spongepowered.math.vector.Vector3d
  * one or two players, this event could be called up to one hundred times per
  * second, or even more.
  */
-@Suppress("INAPPLICABLE_JVM_NAME")
 @PerformanceSensitive
 public interface MoveEvent : PlayerEvent {
 
     /**
      * The location of the player before they moved.
      */
-    @get:JvmName("oldLocation")
     public val oldLocation: Vector3d
 
     /**
      * The location of the player after they moved.
      */
-    @get:JvmName("newLocation")
     public val newLocation: Vector3d
 }

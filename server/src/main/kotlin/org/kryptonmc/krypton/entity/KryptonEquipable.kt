@@ -57,7 +57,7 @@ interface KryptonEquipable : Equipable {
         fun loadItems(tag: CompoundTag, name: String, output: MutableList<KryptonItemStack>) {
             if (!tag.contains(name, ListTag.ID)) return
             val items = tag.getList(name, ListTag.ID)
-            for (i in 0 until items.size) {
+            for (i in 0 until items.size()) {
                 output.set(i, KryptonItemStack.from(items.getCompound(i)))
             }
         }

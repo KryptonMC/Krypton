@@ -18,7 +18,6 @@ import java.util.UUID
 /**
  * A sender is an interface representing the sender of a command.
  */
-@Suppress("INAPPLICABLE_JVM_NAME")
 public interface Sender : Audience, Subject, Identified {
 
     /**
@@ -26,18 +25,15 @@ public interface Sender : Audience, Subject, Identified {
      *
      * How this is defined is entirely dependent on the subtype.
      */
-    @get:JvmName("name")
     public val name: Component
 
     /**
      * The UUID of this sender.
      */
-    @get:JvmName("uuid")
     public val uuid: UUID
 
     /**
      * The server that the sender is on.
      */
-    @get:JvmName("server")
     public val server: Server
 }

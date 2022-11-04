@@ -9,11 +9,13 @@
 package org.kryptonmc.api.item.meta
 
 import org.jetbrains.annotations.Contract
+import javax.annotation.concurrent.Immutable
 
 /**
  * Item metadata for a writable book (book and quill).
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
+@Immutable
 public interface WritableBookMeta : BookMeta<WritableBookMeta.Builder, WritableBookMeta> {
 
     /**

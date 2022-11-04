@@ -8,49 +8,40 @@
  */
 package org.kryptonmc.api.scoreboard
 
-import net.kyori.adventure.builder.AbstractBuilder
 import net.kyori.adventure.text.Component
-import org.jetbrains.annotations.ApiStatus
 import org.jetbrains.annotations.Contract
-import org.kryptonmc.api.Krypton
 import org.kryptonmc.api.scoreboard.criteria.Criterion
 
 /**
  * An objective for a scoreboard, that has optional criteria that must be met,
  * and information about what it's called and how it should be rendered.
  */
-@Suppress("INAPPLICABLE_JVM_NAME")
-public interface Objective {
+public interface Objective : ScoreboardBound {
 
     /**
      * The name of this objective.
      */
-    @get:JvmName("name")
     public val name: String
 
     /**
      * The name that is displayed on the scoreboard to clients.
      */
-    @get:JvmName("displayName")
     public var displayName: Component
 
     /**
      * The criterion that must be met for this objective.
      */
-    @get:JvmName("criterion")
     public val criterion: Criterion
 
     /**
      * The setting for how this objective should be displayed on the
      * scoreboard.
      */
-    @get:JvmName("renderType")
     public val renderType: ObjectiveRenderType
 
     /**
      * A builder for objectives.
      */
-    @ScoreboardDsl
     public interface Builder {
 
         /**
@@ -59,7 +50,6 @@ public interface Objective {
          * @param name the name
          * @return this builder
          */
-        @ScoreboardDsl
         @Contract("_ -> this", mutates = "this")
         public fun name(name: String): NamedStep
 
@@ -74,7 +64,6 @@ public interface Objective {
              * @param criterion the criterion
              * @return this builder
              */
-            @ScoreboardDsl
             @Contract("_ -> this", mutates = "this")
             public fun criterion(criterion: Criterion): EndStep
         }
@@ -83,7 +72,7 @@ public interface Objective {
          * The end step that ensures the name and the criterion of the
          * objective are set.
          */
-        public interface EndStep : AbstractBuilder<Objective> {
+        public interface EndStep {
 
             /**
              * Sets the display name of the objective to the given [name].
@@ -91,9 +80,8 @@ public interface Objective {
              * @param name the display name
              * @return this builder
              */
-            @ScoreboardDsl
             @Contract("_ -> this", mutates = "this")
-            public fun displayName(name: Component): Builder
+            public fun displayName(name: Component): EndStep
 
             /**
              * Sets the render type for the objective to the given [type].
@@ -101,27 +89,16 @@ public interface Objective {
              * @param type the render type
              * @return this builder
              */
-            @ScoreboardDsl
             @Contract("_ -> this", mutates = "this")
-            public fun renderType(type: ObjectiveRenderType): Builder
+            public fun renderType(type: ObjectiveRenderType): EndStep
+
+            /**
+             * Builds the objective and adds it to the scoreboard.
+             *
+             * @return the built objective
+             */
+            @Contract("-> new", pure = true)
+            public fun buildAndRegister(): Objective
         }
-    }
-
-    @ApiStatus.Internal
-    public interface Factory {
-
-        public fun builder(): Builder
-    }
-
-    public companion object {
-
-        /**
-         * Creates a new builder for building an objective.
-         *
-         * @return a new builder
-         */
-        @JvmStatic
-        @Contract("_, _ -> new", pure = true)
-        public fun builder(): Builder = Krypton.factory<Factory>().builder()
     }
 }

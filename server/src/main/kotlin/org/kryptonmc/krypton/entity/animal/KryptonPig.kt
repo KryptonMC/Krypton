@@ -19,11 +19,11 @@
 package org.kryptonmc.krypton.entity.animal
 
 import org.kryptonmc.api.entity.animal.Pig
-import org.kryptonmc.api.entity.attribute.AttributeTypes
 import org.kryptonmc.krypton.entity.KryptonEntityType
 import org.kryptonmc.krypton.entity.KryptonEntityTypes
 import org.kryptonmc.krypton.entity.KryptonMob
 import org.kryptonmc.krypton.entity.attribute.AttributeSupplier
+import org.kryptonmc.krypton.entity.attribute.KryptonAttributeTypes
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.entity.serializer.EntitySerializer
 import org.kryptonmc.krypton.entity.serializer.animal.PigSerializer
@@ -31,7 +31,7 @@ import org.kryptonmc.krypton.world.KryptonWorld
 
 class KryptonPig(world: KryptonWorld) : KryptonAnimal(world), Pig {
 
-    override val type: KryptonEntityType<Pig>
+    override val type: KryptonEntityType<KryptonPig>
         get() = KryptonEntityTypes.PIG
     override val serializer: EntitySerializer<KryptonPig>
         get() = PigSerializer
@@ -50,7 +50,7 @@ class KryptonPig(world: KryptonWorld) : KryptonAnimal(world), Pig {
 
         @JvmStatic
         fun attributes(): AttributeSupplier.Builder = KryptonMob.attributes()
-            .add(AttributeTypes.MAX_HEALTH, 10.0)
-            .add(AttributeTypes.MOVEMENT_SPEED, 0.25)
+            .add(KryptonAttributeTypes.MAX_HEALTH, 10.0)
+            .add(KryptonAttributeTypes.MOVEMENT_SPEED, 0.25)
     }
 }

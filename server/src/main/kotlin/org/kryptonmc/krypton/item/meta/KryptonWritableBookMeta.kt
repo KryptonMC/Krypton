@@ -18,50 +18,49 @@
  */
 package org.kryptonmc.krypton.item.meta
 
-import kotlinx.collections.immutable.PersistentList
-import kotlinx.collections.immutable.persistentListOf
-import kotlinx.collections.immutable.toImmutableList
+import com.google.common.collect.ImmutableList
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer
-import org.kryptonmc.api.adventure.toJson
 import org.kryptonmc.api.item.meta.WritableBookMeta
-import org.kryptonmc.krypton.util.mapPersistentList
+import org.kryptonmc.krypton.adventure.toJson
+import org.kryptonmc.krypton.adventure.toLegacySectionText
+import org.kryptonmc.krypton.util.BuilderCollection
 import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.StringTag
 import org.kryptonmc.nbt.list
 
 class KryptonWritableBookMeta(data: CompoundTag) : AbstractItemMeta<KryptonWritableBookMeta>(data), WritableBookMeta {
 
-    override val pages: PersistentList<Component> = data.getList("pages", StringTag.ID)
-        .mapPersistentList { LegacyComponentSerializer.legacySection().deserialize((it as StringTag).value) }
+    override val pages: ImmutableList<Component> =
+        data.mapToList("pages", StringTag.ID) { LegacyComponentSerializer.legacySection().deserialize((it as StringTag).value()) }
 
     override fun copy(data: CompoundTag): KryptonWritableBookMeta = KryptonWritableBookMeta(data)
 
-    override fun withPages(pages: Iterable<Component>): KryptonWritableBookMeta = KryptonWritableBookMeta(data.putPages(pages.toImmutableList()))
+    override fun withPages(pages: Collection<Component>): KryptonWritableBookMeta = copy(data.putPages(pages))
 
-    override fun addPage(page: Component): KryptonWritableBookMeta = withPages(pages.add(page))
+    override fun withPage(page: Component): KryptonWritableBookMeta = copy(data.update("pages", StringTag.ID) { it.add(page.toLegacy()) })
 
-    override fun removePage(index: Int): KryptonWritableBookMeta = withPages(pages.removeAt(index))
+    override fun withoutPage(index: Int): KryptonWritableBookMeta = copy(data.update("pages", StringTag.ID) { it.remove(index) })
 
-    override fun removePage(page: Component): KryptonWritableBookMeta = withPages(pages.remove(page))
+    override fun withoutPage(page: Component): KryptonWritableBookMeta = copy(data.update("pages", StringTag.ID) { it.remove(page.toLegacy()) })
 
     override fun toBuilder(): WritableBookMeta.Builder = Builder(this)
 
-    class Builder() : KryptonItemMetaBuilder<WritableBookMeta.Builder, WritableBookMeta>(), WritableBookMeta.Builder {
+    class Builder : KryptonItemMetaBuilder<WritableBookMeta.Builder, WritableBookMeta>, WritableBookMeta.Builder {
 
-        private val pages = persistentListOf<Component>().builder()
+        private var pages: MutableCollection<Component>
 
-        constructor(meta: WritableBookMeta) : this() {
-            copyFrom(meta)
-            pages.addAll(meta.pages)
+        constructor() {
+            pages = BuilderCollection()
         }
 
-        override fun pages(pages: Iterable<Component>): WritableBookMeta.Builder = apply {
-            this.pages.clear()
-            this.pages.addAll(pages)
+        constructor(meta: KryptonWritableBookMeta) {
+            pages = BuilderCollection(meta.pages)
         }
 
-        override fun addPage(page: Component): WritableBookMeta.Builder = apply { pages.add(page) }
+        override fun pages(pages: Collection<Component>): Builder = apply { this.pages = BuilderCollection() }
+
+        override fun addPage(page: Component): Builder = apply { pages.add(page) }
 
         override fun buildData(): CompoundTag.Builder = super.buildData().apply {
             if (pages.isNotEmpty()) list("pages") { pages.forEach { addString(it.toJson()) } }
@@ -71,7 +70,7 @@ class KryptonWritableBookMeta(data: CompoundTag) : AbstractItemMeta<KryptonWrita
     }
 }
 
-private fun CompoundTag.putPages(pages: List<Component>): CompoundTag {
-    if (pages.isEmpty()) return remove("pages")
-    return put("pages", list { pages.forEach { addString(it.toJson()) } })
-}
+private fun Component.toLegacy(): StringTag = StringTag.of(toLegacySectionText())
+
+private fun CompoundTag.putPages(pages: Collection<Component>): CompoundTag =
+    if (pages.isEmpty()) remove("pages") else put("pages", list { pages.forEach { addString(it.toJson()) } })

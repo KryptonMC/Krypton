@@ -18,22 +18,17 @@ import org.kryptonmc.api.effect.particle.ParticleType
 import org.kryptonmc.api.effect.sound.SoundEvent
 import org.kryptonmc.api.entity.EntityCategory
 import org.kryptonmc.api.entity.EntityType
-import org.kryptonmc.api.entity.animal.type.CatVariant
-import org.kryptonmc.api.entity.animal.type.FrogVariant
 import org.kryptonmc.api.entity.attribute.AttributeType
-import org.kryptonmc.api.entity.attribute.ModifierOperation
-import org.kryptonmc.api.entity.hanging.Picture
+import org.kryptonmc.api.entity.hanging.PaintingVariant
 import org.kryptonmc.api.fluid.Fluid
 import org.kryptonmc.api.inventory.InventoryType
 import org.kryptonmc.api.item.ItemRarity
 import org.kryptonmc.api.item.ItemType
-import org.kryptonmc.api.item.data.DyeColor
 import org.kryptonmc.api.resource.ResourceKey
 import org.kryptonmc.api.resource.ResourceKeys
 import org.kryptonmc.api.scoreboard.criteria.Criterion
 import org.kryptonmc.api.statistic.StatisticType
 import org.kryptonmc.api.tags.TagType
-import org.kryptonmc.api.user.ban.BanType
 import org.kryptonmc.api.util.Catalogue
 import org.kryptonmc.api.world.biome.Biome
 import org.kryptonmc.api.world.damage.type.DamageType
@@ -78,19 +73,13 @@ public object Registries {
     @JvmField
     public val BANNER_PATTERN: Registry<BannerPatternType> = create(ResourceKeys.BANNER_PATTERN)
     @JvmField
-    public val CAT_VARIANT: Registry<CatVariant> = create(ResourceKeys.CAT_VARIANT)
-    @JvmField
-    public val FROG_VARIANT: Registry<FrogVariant> = create(ResourceKeys.FROG_VARIANT)
+    public val PAINTING_VARIANT: DefaultedRegistry<PaintingVariant> = createDefaulted(ResourceKeys.PAINTING_VARIANT, Key.key("kebab"))
 
     /**
      * Custom built-in registries.
      */
     @JvmField
-    public val PICTURES: DefaultedRegistry<Picture> = createDefaulted(ResourceKeys.PICTURES, Key.key("kebab"))
-    @JvmField
     public val GAME_RULES: Registry<GameRule<*>> = create(ResourceKeys.GAME_RULES)
-    @JvmField
-    public val MODIFIER_OPERATIONS: Registry<ModifierOperation> = create(ResourceKeys.MODIFIER_OPERATIONS)
     @JvmField
     public val CRITERIA: Registry<Criterion> = create(ResourceKeys.CRITERIA)
     @JvmField
@@ -98,11 +87,7 @@ public object Registries {
     @JvmField
     public val ENTITY_CATEGORIES: Registry<EntityCategory> = create(ResourceKeys.ENTITY_CATEGORIES)
     @JvmField
-    public val DYE_COLORS: Registry<DyeColor> = create(ResourceKeys.DYE_COLORS)
-    @JvmField
     public val TAG_TYPES: Registry<TagType<*>> = create(ResourceKeys.TAG_TYPES)
-    @JvmField
-    public val BAN_TYPES: Registry<BanType> = create(ResourceKeys.BAN_TYPES)
     @JvmField
     public val DAMAGE_TYPES: Registry<DamageType> = create(ResourceKeys.DAMAGE_TYPES)
 
@@ -114,7 +99,7 @@ public object Registries {
      * @return the existing registry, or null if not present
      */
     @JvmStatic
-    public fun <T : Any> registry(key: ResourceKey<out Registry<T>>): Registry<T>? = Krypton.registryManager.registry(key)
+    public fun <T> registry(key: ResourceKey<out Registry<T>>): Registry<T>? = Krypton.registryManager().registry(key)
 
     /**
      * Gets the existing defaulted registry with the given resource [key], or
@@ -125,7 +110,7 @@ public object Registries {
      * @return the existing defaulted registry, or null if not present
      */
     @JvmStatic
-    public fun <T : Any> defaulted(key: ResourceKey<out Registry<T>>): DefaultedRegistry<T>? = Krypton.registryManager.defaulted(key)
+    public fun <T> defaulted(key: ResourceKey<out Registry<T>>): DefaultedRegistry<T>? = Krypton.registryManager().defaulted(key)
 
     /**
      * Creates a new registry with the given registry [key].
@@ -135,7 +120,7 @@ public object Registries {
      */
     @JvmStatic
     @Contract("_ -> new", pure = true)
-    public fun <T : Any> create(key: ResourceKey<out Registry<T>>): Registry<T> = Krypton.registryManager.create(key)
+    public fun <T> create(key: ResourceKey<out Registry<T>>): Registry<T> = Krypton.registryManager().create(key)
 
     /**
      * Creates a new registry with the given registry [key], with a
@@ -150,6 +135,6 @@ public object Registries {
      */
     @JvmStatic
     @Contract("_, _ -> new", pure = true)
-    public fun <T : Any> createDefaulted(key: ResourceKey<out Registry<T>>, defaultKey: Key): DefaultedRegistry<T> =
-        Krypton.registryManager.createDefaulted(key, defaultKey)
+    public fun <T> createDefaulted(key: ResourceKey<out Registry<T>>, defaultKey: Key): DefaultedRegistry<T> =
+        Krypton.registryManager().createDefaulted(key, defaultKey)
 }

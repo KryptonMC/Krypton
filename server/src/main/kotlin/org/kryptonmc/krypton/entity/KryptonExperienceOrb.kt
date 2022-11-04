@@ -26,7 +26,7 @@ import org.kryptonmc.krypton.world.KryptonWorld
 
 class KryptonExperienceOrb(world: KryptonWorld) : KryptonEntity(world), ExperienceOrb {
 
-    override val type: KryptonEntityType<ExperienceOrb>
+    override val type: KryptonEntityType<KryptonExperienceOrb>
         get() = KryptonEntityTypes.EXPERIENCE_ORB
     override val serializer: EntitySerializer<KryptonExperienceOrb>
         get() = ExperienceOrbSerializer

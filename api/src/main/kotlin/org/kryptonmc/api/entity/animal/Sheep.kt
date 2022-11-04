@@ -13,7 +13,6 @@ import org.kryptonmc.api.item.data.DyeColor
 /**
  * A sheep.
  */
-@Suppress("INAPPLICABLE_JVM_NAME")
 public interface Sheep : Animal {
 
     /**
@@ -24,6 +23,5 @@ public interface Sheep : Animal {
     /**
      * The colour of this sheep's wool.
      */
-    @get:JvmName("woolColor")
     public var woolColor: DyeColor
 }

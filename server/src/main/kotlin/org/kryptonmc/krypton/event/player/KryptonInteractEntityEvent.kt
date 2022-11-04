@@ -24,7 +24,7 @@ import org.kryptonmc.api.entity.player.Player
 import org.kryptonmc.api.event.GenericResult
 import org.kryptonmc.api.event.player.InteractEntityEvent
 
-data class KryptonInteractEntityEvent(override val player: Player, override val target: Entity, override val hand: Hand) : InteractEntityEvent {
+class KryptonInteractEntityEvent(override val player: Player, override val target: Entity, override val hand: Hand) : InteractEntityEvent {
 
     override var result: GenericResult = GenericResult.allowed()
 }

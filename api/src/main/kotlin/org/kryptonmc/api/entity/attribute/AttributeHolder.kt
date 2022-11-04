@@ -20,5 +20,5 @@ public interface AttributeHolder {
      * @param type the type of the attribute
      * @return the attribute, or null if not present
      */
-    public fun attribute(type: AttributeType): Attribute?
+    public fun getAttribute(type: AttributeType): Attribute?
 }

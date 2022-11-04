@@ -18,20 +18,21 @@
  */
 package org.kryptonmc.krypton.item.meta
 
-import kotlinx.collections.immutable.persistentListOf
-import kotlinx.collections.immutable.persistentSetOf
 import net.kyori.adventure.text.Component
-import org.kryptonmc.api.adventure.toJson
 import org.kryptonmc.api.block.Block
-import org.kryptonmc.api.item.ItemAttribute
+import org.kryptonmc.api.item.ItemAttributeModifier
 import org.kryptonmc.api.item.data.ItemFlag
 import org.kryptonmc.api.item.meta.ItemMeta
 import org.kryptonmc.api.item.meta.ItemMetaBuilder
+import org.kryptonmc.krypton.adventure.toJson
 import org.kryptonmc.krypton.item.mask
 import org.kryptonmc.krypton.item.save
+import org.kryptonmc.krypton.util.BuilderCollection
 import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.StringTag
 import org.kryptonmc.nbt.buildCompound
+import org.kryptonmc.nbt.compound
+import org.kryptonmc.nbt.list
 
 @Suppress("UNCHECKED_CAST")
 abstract class KryptonItemMetaBuilder<B : ItemMetaBuilder<B, I>, I : ItemMeta> : ItemMetaBuilder<B, I> {
@@ -40,11 +41,30 @@ abstract class KryptonItemMetaBuilder<B : ItemMetaBuilder<B, I>, I : ItemMeta> :
     private var unbreakable = false
     private var customModelData = 0
     private var name: Component? = null
-    private val lore = persistentListOf<Component>().builder()
+    private var lore: MutableCollection<Component>
     private var hideFlags = 0
-    private val canDestroy = persistentSetOf<Block>().builder()
-    private val canPlaceOn = persistentSetOf<Block>().builder()
-    private val attributes = persistentSetOf<ItemAttribute>().builder()
+    private var canDestroy: MutableCollection<Block>
+    private var canPlaceOn: MutableCollection<Block>
+    private var modifiers: MutableCollection<ItemAttributeModifier>
+
+    protected constructor() {
+        lore = BuilderCollection()
+        canDestroy = BuilderCollection()
+        canPlaceOn = BuilderCollection()
+        modifiers = BuilderCollection()
+    }
+
+    protected constructor(meta: AbstractItemMeta<*>) {
+        damage = meta.damage
+        unbreakable = meta.isUnbreakable
+        customModelData = meta.customModelData
+        name = meta.name
+        lore = BuilderCollection(meta.lore)
+        hideFlags = meta.hideFlags
+        canDestroy = BuilderCollection(meta.canDestroy)
+        canPlaceOn = BuilderCollection(meta.canPlaceOn)
+        modifiers = BuilderCollection(meta.attributeModifiers)
+    }
 
     final override fun damage(damage: Int): B = apply { this.damage = damage } as B
 
@@ -54,10 +74,7 @@ abstract class KryptonItemMetaBuilder<B : ItemMetaBuilder<B, I>, I : ItemMeta> :
 
     final override fun name(name: Component?): B = apply { this.name = name } as B
 
-    final override fun lore(lore: Iterable<Component>): B = apply {
-        this.lore.clear()
-        this.lore.addAll(lore)
-    } as B
+    final override fun lore(lore: Collection<Component>): B = apply { this.lore = BuilderCollection(lore) } as B
 
     final override fun addLore(lore: Component): B = apply { this.lore.add(lore) } as B
 
@@ -65,50 +82,30 @@ abstract class KryptonItemMetaBuilder<B : ItemMetaBuilder<B, I>, I : ItemMeta> :
 
     final override fun addFlag(flag: ItemFlag): B = apply { hideFlags = hideFlags or flag.mask() } as B
 
-    final override fun canDestroy(blocks: Iterable<Block>): B = apply {
-        canDestroy.clear()
-        canDestroy.addAll(blocks)
-    } as B
+    final override fun canDestroy(blocks: Collection<Block>): B = apply { canDestroy = BuilderCollection(canDestroy) } as B
 
     final override fun addCanDestroy(block: Block): B = apply { canDestroy.add(block) } as B
 
-    final override fun canPlaceOn(blocks: Iterable<Block>): B = apply {
-        canPlaceOn.clear()
-        canPlaceOn.addAll(blocks)
-    } as B
+    final override fun canPlaceOn(blocks: Collection<Block>): B = apply { canPlaceOn = BuilderCollection(blocks) } as B
 
     final override fun addCanPlaceOn(block: Block): B = apply { canPlaceOn.add(block) } as B
 
-    final override fun attributeModifiers(attributes: Iterable<ItemAttribute>): B = apply {
-        this.attributes.clear()
-        this.attributes.addAll(attributes)
-    } as B
+    final override fun attributeModifiers(modifiers: Collection<ItemAttributeModifier>): B =
+        apply { this.modifiers = BuilderCollection(modifiers) } as B
 
-    final override fun addAttributeModifier(modifier: ItemAttribute): B = apply { attributes.add(modifier) } as B
-
-    protected fun copyFrom(meta: I) {
-        damage = meta.damage
-        unbreakable = meta.isUnbreakable
-        customModelData = meta.customModelData
-        name = meta.name
-        lore.addAll(meta.lore)
-        hideFlags = meta.hideFlags
-        canDestroy.addAll(meta.canDestroy)
-        canPlaceOn.addAll(meta.canPlaceOn)
-        attributes.addAll(meta.attributeModifiers)
-    }
+    final override fun addAttributeModifier(modifier: ItemAttributeModifier): B = apply { modifiers.add(modifier) } as B
 
     protected open fun buildData(): CompoundTag.Builder = buildCompound {
-        int("Damage", damage)
-        boolean("Unbreakable", unbreakable)
-        int("CustomModelData", customModelData)
+        putInt("Damage", damage)
+        putBoolean("Unbreakable", unbreakable)
+        putInt("CustomModelData", customModelData)
         compound("display") {
-            if (name != null) string("Name", name!!.toJson())
-            if (lore.isNotEmpty()) list("Lore", StringTag.ID, lore.map { StringTag.of(it.toJson()) })
+            if (name != null) putString("Name", name!!.toJson())
+            if (lore.isNotEmpty()) list("Lore") { lore.forEach { addString(it.toJson()) } }
         }
-        int("HideFlags", hideFlags)
-        list("CanDestroy", StringTag.ID, canDestroy.map { StringTag.of(it.key().asString()) })
-        list("CanPlaceOn", StringTag.ID, canPlaceOn.map { StringTag.of(it.key().asString()) })
-        if (attributes.isNotEmpty()) list("AttributeModifiers") { attributes.forEach { add(it.save()) } }
+        putInt("HideFlags", hideFlags)
+        putList("CanDestroy", StringTag.ID, canDestroy.map { StringTag.of(it.key().asString()) })
+        putList("CanPlaceOn", StringTag.ID, canPlaceOn.map { StringTag.of(it.key().asString()) })
+        if (modifiers.isNotEmpty()) list("AttributeModifiers") { modifiers.forEach { add(it.save()) } }
     }
 }

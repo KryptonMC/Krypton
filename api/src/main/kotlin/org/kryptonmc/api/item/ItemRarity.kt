@@ -10,12 +10,14 @@ package org.kryptonmc.api.item
 
 import net.kyori.adventure.key.Keyed
 import net.kyori.adventure.text.format.TextColor
+import javax.annotation.concurrent.Immutable
 
 /**
  * The rarity of an item. This determines what colour the lore text appears as
  * when the tooltip is read.
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
+@Immutable
 public interface ItemRarity : Keyed {
 
     /**

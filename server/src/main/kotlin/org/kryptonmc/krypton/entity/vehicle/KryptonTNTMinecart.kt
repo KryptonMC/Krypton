@@ -33,7 +33,7 @@ import org.kryptonmc.krypton.world.damage.KryptonDamageSource
 
 class KryptonTNTMinecart(world: KryptonWorld) : KryptonMinecartLike(world), TNTMinecart {
 
-    override val type: KryptonEntityType<TNTMinecart>
+    override val type: KryptonEntityType<KryptonTNTMinecart>
         get() = KryptonEntityTypes.TNT_MINECART
     override val serializer: EntitySerializer<KryptonTNTMinecart>
         get() = TNTMinecartSerializer

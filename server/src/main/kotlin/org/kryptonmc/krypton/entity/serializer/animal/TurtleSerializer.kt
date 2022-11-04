@@ -34,12 +34,12 @@ object TurtleSerializer : EntitySerializer<KryptonTurtle> {
     }
 
     override fun save(entity: KryptonTurtle): CompoundTag.Builder = AgeableSerializer.save(entity).apply {
-        int("HomePosX", entity.home.x())
-        int("HomePosY", entity.home.y())
-        int("HomePosZ", entity.home.z())
-        boolean("HasEgg", entity.hasEgg)
-        int("TravelPosX", entity.destination.x())
-        int("TravelPosY", entity.destination.y())
-        int("TravelPosZ", entity.destination.z())
+        putInt("HomePosX", entity.home.x())
+        putInt("HomePosY", entity.home.y())
+        putInt("HomePosZ", entity.home.z())
+        putBoolean("HasEgg", entity.hasEgg)
+        putInt("TravelPosX", entity.destination.x())
+        putInt("TravelPosY", entity.destination.y())
+        putInt("TravelPosZ", entity.destination.z())
     }
 }

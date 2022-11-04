@@ -15,13 +15,11 @@ import org.kryptonmc.api.entity.player.Player
 /**
  * Called when the given [rootNode] is sent to the given [player].
  */
-@Suppress("INAPPLICABLE_JVM_NAME")
 public interface CommandSendEvent {
 
     /**
      * The player the commands are being sent to.
      */
-    @get:JvmName("player")
     public val player: Player
 
     /**
@@ -30,6 +28,5 @@ public interface CommandSendEvent {
      * This can be mutated to change the command tree that is sent to the
      * player.
      */
-    @get:JvmName("rootNode")
     public val rootNode: RootCommandNode<Sender>
 }

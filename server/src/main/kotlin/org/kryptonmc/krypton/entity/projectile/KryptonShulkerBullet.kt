@@ -30,7 +30,7 @@ import java.util.UUID
 
 class KryptonShulkerBullet(world: KryptonWorld) : KryptonProjectile(world), ShulkerBullet {
 
-    override val type: KryptonEntityType<ShulkerBullet>
+    override val type: KryptonEntityType<KryptonShulkerBullet>
         get() = KryptonEntityTypes.SHULKER_BULLET
     override val serializer: EntitySerializer<KryptonShulkerBullet>
         get() = ShulkerBulletSerializer

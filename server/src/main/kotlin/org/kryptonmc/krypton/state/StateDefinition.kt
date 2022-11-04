@@ -18,12 +18,10 @@
  */
 package org.kryptonmc.krypton.state
 
+import com.google.common.collect.ImmutableList
+import com.google.common.collect.ImmutableMap
 import com.google.common.collect.ImmutableSortedMap
-import kotlinx.collections.immutable.ImmutableList
-import kotlinx.collections.immutable.ImmutableMap
-import kotlinx.collections.immutable.toPersistentList
 import org.kryptonmc.krypton.state.property.KryptonProperty
-import org.kryptonmc.krypton.util.associatePersistent
 import org.kryptonmc.serialization.Decoder
 import org.kryptonmc.serialization.Encoder
 import org.kryptonmc.serialization.MapCodec
@@ -48,7 +46,7 @@ class StateDefinition<O, S : KryptonState<O, S>>(
     init {
         val defaultSupplier = Supplier { defaultGetter.apply(owner) }
         var propertiesCodec = MapCodec.of(Encoder.empty(), Decoder.unit(defaultSupplier))
-        this.propertiesByName.forEach { propertiesCodec = appendPropertyCodec(propertiesCodec, defaultSupplier, it.key, it.value) }
+        this.propertiesByName.entries.forEach { propertiesCodec = appendPropertyCodec(propertiesCodec, defaultSupplier, it.key, it.value) }
 
         val statesByProperties = LinkedHashMap<Map<KryptonProperty<*>, Comparable<*>>, S>()
         val stateList = ArrayList<S>()
@@ -56,27 +54,25 @@ class StateDefinition<O, S : KryptonState<O, S>>(
         var properties: Stream<List<Pair<KryptonProperty<*>, Comparable<*>>>> = Stream.of(Collections.emptyList())
         propertiesByName.values.forEach { property ->
             properties = properties.flatMap { list ->
-                property.values.stream().map {
-                    val newList = ArrayList(list)
-                    newList.add(Pair.of(property, it))
-                    newList
-                }
+                property.values.stream().map { ArrayList(list).apply { add(Pair.of(property, it)) } }
             }
         }
 
         properties.forEach { list ->
-            val values: ImmutableMap<KryptonProperty<*>, Comparable<*>> = list.associatePersistent({ it.first }, { it.second })
+            val values = list.stream().collect(ImmutableMap.toImmutableMap({ it.first() }, { it.second() }))
             val state = factory.create(owner, values, propertiesCodec)
             statesByProperties.put(values, state)
             stateList.add(state)
         }
         stateList.forEach { it.populateNeighbours(statesByProperties) }
-        states = stateList.toPersistentList()
+        states = ImmutableList.copyOf(stateList)
     }
 
     fun any(): S = states.get(0)
 
     fun getProperty(name: String): KryptonProperty<*>? = propertiesByName.get(name)
+
+    override fun toString(): String = "${javaClass.simpleName}(block=$owner, properties=${propertiesByName.values.map { it.name }})"
 
     fun interface Factory<O, S> {
 

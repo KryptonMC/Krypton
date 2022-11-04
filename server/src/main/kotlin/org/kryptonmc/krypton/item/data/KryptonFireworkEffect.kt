@@ -18,87 +18,43 @@
  */
 package org.kryptonmc.krypton.item.data
 
-import kotlinx.collections.immutable.PersistentList
-import kotlinx.collections.immutable.persistentListOf
-import kotlinx.collections.immutable.toPersistentList
+import com.google.common.collect.ImmutableList
 import org.kryptonmc.api.item.data.FireworkEffect
 import org.kryptonmc.api.item.data.FireworkEffectType
 import org.kryptonmc.api.util.Color
 import org.kryptonmc.nbt.CompoundTag
+import java.util.Arrays
 
 @JvmRecord
 data class KryptonFireworkEffect(
     override val type: FireworkEffectType,
     override val hasFlicker: Boolean,
     override val hasTrail: Boolean,
-    override val colors: PersistentList<Color>,
-    override val fadeColors: PersistentList<Color>
+    override val colors: ImmutableList<Color>,
+    override val fadeColors: ImmutableList<Color>
 ) : FireworkEffect {
 
-    override fun withType(type: FireworkEffectType): FireworkEffect = copy(type = type)
-
-    override fun withFlicker(flickers: Boolean): FireworkEffect = copy(hasFlicker = flickers)
-
-    override fun withTrail(trail: Boolean): FireworkEffect = copy(hasTrail = trail)
-
-    override fun withColors(colors: Iterable<Color>): FireworkEffect = copy(colors = colors.toPersistentList())
-
-    override fun addColor(color: Color): FireworkEffect = copy(colors = colors.add(color))
-
-    override fun removeColor(index: Int): FireworkEffect = copy(colors = colors.removeAt(index))
-
-    override fun removeColor(color: Color): FireworkEffect = copy(colors = colors.remove(color))
-
-    override fun withFadeColors(fadeColors: Iterable<Color>): FireworkEffect = copy(fadeColors = fadeColors.toPersistentList())
-
-    override fun addFadeColor(color: Color): FireworkEffect = copy(fadeColors = fadeColors.add(color))
-
-    override fun removeFadeColor(index: Int): FireworkEffect = copy(fadeColors = fadeColors.removeAt(index))
-
-    override fun removeFadeColor(color: Color): FireworkEffect = copy(fadeColors = fadeColors.remove(color))
-
-    override fun toBuilder(): FireworkEffect.Builder = Builder(this)
-
-    class Builder(private var type: FireworkEffectType) : FireworkEffect.Builder {
+    class Builder(private val type: FireworkEffectType) : FireworkEffect.Builder {
 
         private var flicker = false
         private var trail = false
-        private var colors = persistentListOf<Color>().builder()
-        private var fadeColors = persistentListOf<Color>().builder()
+        private var colors = ImmutableList.of<Color>()
+        private var fadeColors = ImmutableList.of<Color>()
 
-        constructor(effect: FireworkEffect) : this(effect.type) {
-            flicker = effect.hasFlicker
-            trail = effect.hasTrail
-            colors.addAll(effect.colors)
-            fadeColors.addAll(effect.fadeColors)
-        }
+        override fun flickers(): Builder = apply { flicker = true }
 
-        override fun type(type: FireworkEffectType): FireworkEffect.Builder = apply { this.type = type }
+        override fun trail(): Builder = apply { trail = true }
 
-        override fun flicker(value: Boolean): FireworkEffect.Builder = apply { flicker = value }
+        override fun colors(colors: Collection<Color>): Builder = apply { this.colors = ImmutableList.copyOf(colors) }
 
-        override fun trail(value: Boolean): FireworkEffect.Builder = apply { trail = value }
+        override fun fadeColors(colors: Collection<Color>): Builder = apply { fadeColors = ImmutableList.copyOf(colors) }
 
-        override fun colors(colors: Iterable<Color>): FireworkEffect.Builder = apply {
-            this.colors.clear()
-            this.colors.addAll(colors)
-        }
-
-        override fun addColor(color: Color): FireworkEffect.Builder = apply { colors.add(color) }
-
-        override fun fadeColors(colors: Iterable<Color>): FireworkEffect.Builder = apply {
-            fadeColors.clear()
-            fadeColors.addAll(colors)
-        }
-
-        override fun addFadeColor(color: Color): FireworkEffect.Builder = apply { fadeColors.add(color) }
-
-        override fun build(): FireworkEffect = KryptonFireworkEffect(type, flicker, trail, colors.build(), fadeColors.build())
+        override fun build(): KryptonFireworkEffect = KryptonFireworkEffect(type, flicker, trail, colors, fadeColors)
     }
 
     object Factory : FireworkEffect.Factory {
 
-        override fun builder(type: FireworkEffectType): FireworkEffect.Builder = Builder(type)
+        override fun builder(type: FireworkEffectType): Builder = Builder(type)
     }
 
     companion object {
@@ -115,4 +71,5 @@ data class KryptonFireworkEffect(
     }
 }
 
-private fun CompoundTag.getColors(name: String): PersistentList<Color> = getIntArray(name).map(Color::of).toPersistentList()
+private fun CompoundTag.getColors(name: String): ImmutableList<Color> =
+    Arrays.stream(getIntArray(name)).mapToObj(Color::of).collect(ImmutableList.toImmutableList())

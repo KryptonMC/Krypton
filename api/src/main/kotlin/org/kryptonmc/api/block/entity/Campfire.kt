@@ -19,7 +19,7 @@ public interface Campfire : BlockEntity {
      * @param slot the slot
      * @return the progress of the item in the slot
      */
-    public fun cookingProgress(slot: Int): Int
+    public fun getCookingProgress(slot: Int): Int
 
     /**
      * Gets the amount of time, in ticks, until the item in the given [slot]
@@ -28,5 +28,5 @@ public interface Campfire : BlockEntity {
      * @param slot the slot
      * @return the amount of time until the item in the slot is cooked
      */
-    public fun cookingDuration(slot: Int): Int
+    public fun getCookingDuration(slot: Int): Int
 }

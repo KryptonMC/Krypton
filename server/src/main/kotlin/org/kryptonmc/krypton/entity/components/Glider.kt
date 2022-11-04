@@ -21,6 +21,7 @@ package org.kryptonmc.krypton.entity.components
 import org.kryptonmc.api.entity.ArmorSlot
 import org.kryptonmc.api.entity.player.Player
 import org.kryptonmc.api.event.player.PerformActionEvent
+import org.kryptonmc.api.event.player.PerformActionEvent.Action
 import org.kryptonmc.api.item.ItemTypes
 import org.kryptonmc.krypton.event.player.KryptonPerformActionEvent
 
@@ -31,7 +32,7 @@ interface Glider : BaseEntity, Player {
     // This has vanilla logic in it that we don't want present in the API.
     fun tryStartGliding(): Boolean {
         // TODO: Check for levitation effect
-        if (isOnGround || isGliding || inWater) return false
+        if (isOnGround || isGliding || isInWater) return false
         val item = inventory.armor(ArmorSlot.CHESTPLATE)
         if (item.type == ItemTypes.ELYTRA && item.meta.damage < item.type.durability - 1) {
             startGliding()
@@ -40,23 +41,25 @@ interface Glider : BaseEntity, Player {
         return false
     }
 
-    override fun startGliding() {
-        val result = server.eventManager.fireSync(KryptonPerformActionEvent(this, PerformActionEvent.Action.START_FLYING_WITH_ELYTRA)).result
-        if (result.isAllowed) {
+    override fun startGliding(): Boolean {
+        if (fireEvent(Action.START_FLYING_WITH_ELYTRA).result.isAllowed) {
             isGliding = true
-        } else {
-            // Took this from Spigot. It seems like it's taken from the vanilla thing below, but if you don't have this,
-            // it can cause issues like https://hub.spigotmc.org/jira/browse/SPIGOT-5542.
-            isGliding = true
-            isGliding = false
+            return true
         }
+        // Took this from Spigot. It seems like it's taken from the vanilla thing below, but if we don't have this,
+        // it can cause issues like https://hub.spigotmc.org/jira/browse/SPIGOT-5542.
+        isGliding = true
+        isGliding = false
+        return false
     }
 
-    override fun stopGliding() {
-        val result = server.eventManager.fireSync(KryptonPerformActionEvent(this, PerformActionEvent.Action.STOP_FLYING_WITH_ELYTRA)).result
-        if (!result.isAllowed) return
+    override fun stopGliding(): Boolean {
+        if (!fireEvent(Action.STOP_FLYING_WITH_ELYTRA).result.isAllowed) return false
         // This is a vanilla thing
         isGliding = true
         isGliding = false
+        return true
     }
+
+    private fun fireEvent(action: Action): PerformActionEvent = server.eventManager.fireSync(KryptonPerformActionEvent(this, action))
 }

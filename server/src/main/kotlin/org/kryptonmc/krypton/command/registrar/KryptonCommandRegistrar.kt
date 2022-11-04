@@ -23,10 +23,11 @@ import com.mojang.brigadier.tree.LiteralCommandNode
 import com.mojang.brigadier.tree.RootCommandNode
 import org.kryptonmc.api.command.CommandRegistrar
 import org.kryptonmc.api.command.Sender
+import org.kryptonmc.api.command.CommandMeta
 import java.util.concurrent.locks.Lock
 import kotlin.concurrent.withLock
 
-abstract class KryptonCommandRegistrar<C, M>(private val lock: Lock) : CommandRegistrar<C, M> {
+abstract class KryptonCommandRegistrar<C>(private val lock: Lock) : CommandRegistrar<C, CommandMeta> {
 
     protected fun register(root: RootCommandNode<Sender>, node: LiteralCommandNode<Sender>) {
         lock.withLock {

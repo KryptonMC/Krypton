@@ -9,19 +9,22 @@
 package org.kryptonmc.api.item.meta
 
 import org.jetbrains.annotations.Contract
+import org.jetbrains.annotations.Unmodifiable
 import org.kryptonmc.api.item.ItemStack
+import javax.annotation.concurrent.Immutable
 
 /**
  * Item metadata for a bundle.
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
+@Immutable
 public interface BundleMeta : ScopedItemMeta<BundleMeta.Builder, BundleMeta> {
 
     /**
      * The items contained within the bundle.
      */
     @get:JvmName("items")
-    public val items: List<ItemStack>
+    public val items: @Unmodifiable List<ItemStack>
 
     /**
      * Creates new item metadata with the given [items].
@@ -40,7 +43,7 @@ public interface BundleMeta : ScopedItemMeta<BundleMeta.Builder, BundleMeta> {
      * @return new item metadata
      */
     @Contract("_ -> new", pure = true)
-    public fun addItem(item: ItemStack): BundleMeta
+    public fun withItem(item: ItemStack): BundleMeta
 
     /**
      * Creates new item metadata with the item at the given [index] removed
@@ -52,7 +55,7 @@ public interface BundleMeta : ScopedItemMeta<BundleMeta.Builder, BundleMeta> {
      * bounds exception, i.e. when it is too small or too big
      */
     @Contract("_ -> new", pure = true)
-    public fun removeItem(index: Int): BundleMeta
+    public fun withoutItem(index: Int): BundleMeta
 
     /**
      * Creates new item metadata with the given [item] removed from the items
@@ -62,7 +65,7 @@ public interface BundleMeta : ScopedItemMeta<BundleMeta.Builder, BundleMeta> {
      * @return new item metadata
      */
     @Contract("_ -> new", pure = true)
-    public fun removeItem(item: ItemStack): BundleMeta
+    public fun withoutItem(item: ItemStack): BundleMeta
 
     /**
      * A builder for building bundle metadata.
@@ -78,7 +81,7 @@ public interface BundleMeta : ScopedItemMeta<BundleMeta.Builder, BundleMeta> {
          */
         @MetaDsl
         @Contract("_ -> this", mutates = "this")
-        public fun items(items: Iterable<ItemStack>): Builder
+        public fun items(items: Collection<ItemStack>): Builder
 
         /**
          * Sets the items held by the bundle to the given [items].
@@ -88,7 +91,7 @@ public interface BundleMeta : ScopedItemMeta<BundleMeta.Builder, BundleMeta> {
          */
         @MetaDsl
         @Contract("_ -> this", mutates = "this")
-        public fun items(vararg items: ItemStack): Builder = items(items.asIterable())
+        public fun items(vararg items: ItemStack): Builder = items(items.asList())
 
         /**
          * Adds the given [item] to the bundle.

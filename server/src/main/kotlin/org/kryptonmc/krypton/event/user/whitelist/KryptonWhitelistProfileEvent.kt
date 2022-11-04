@@ -22,7 +22,7 @@ import org.kryptonmc.api.auth.GameProfile
 import org.kryptonmc.api.event.GenericResult
 import org.kryptonmc.api.event.user.whitelist.WhitelistProfileEvent
 
-data class KryptonWhitelistProfileEvent(override val profile: GameProfile) : WhitelistProfileEvent {
+class KryptonWhitelistProfileEvent(override val profile: GameProfile) : WhitelistProfileEvent {
 
     override var result: GenericResult = GenericResult.allowed()
 }

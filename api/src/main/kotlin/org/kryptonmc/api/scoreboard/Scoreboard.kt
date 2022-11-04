@@ -8,38 +8,29 @@
  */
 package org.kryptonmc.api.scoreboard
 
-import net.kyori.adventure.builder.AbstractBuilder
 import net.kyori.adventure.text.Component
-import org.jetbrains.annotations.ApiStatus
 import org.jetbrains.annotations.Contract
-import org.kryptonmc.api.Krypton
 import org.kryptonmc.api.scoreboard.criteria.Criterion
-import org.kryptonmc.api.util.Buildable
-import java.util.function.Consumer
 
 /**
  * A [Scoreboard] is a method of keeping track of scores.
  * These are primarily for use in minigames.
  */
-@Suppress("INAPPLICABLE_JVM_NAME")
-public interface Scoreboard : Buildable<Scoreboard.Builder, Scoreboard> {
+public interface Scoreboard {
 
     /**
      * All objectives registered on this scoreboard.
      */
-    @get:JvmName("objectives")
     public val objectives: Collection<Objective>
 
     /**
      * All teams tracked by this scoreboard.
      */
-    @get:JvmName("teams")
     public val teams: Collection<Team>
 
     /**
      * All scores tracked by this scoreboard.
      */
-    @get:JvmName("scores")
     public val scores: Collection<Score>
 
     /**
@@ -70,14 +61,26 @@ public interface Scoreboard : Buildable<Scoreboard.Builder, Scoreboard> {
     public fun objectives(criterion: Criterion): Set<Objective>
 
     /**
+     * Creates a new builder for building an objective that will be registered
+     * to this scoreboard.
+     *
+     * @return a new objective builder
+     */
+    @Contract("_ -> new", pure = true)
+    public fun createObjectiveBuilder(): Objective.Builder
+
+    /**
      * Adds the given [objective] to this scoreboard's list of registered
      * objectives.
      *
-     * @param objective the objective
+     * @param name the name
+     * @param criterion the criterion
+     * @param displayName the display name
+     * @param renderType the render type
      * @throws IllegalArgumentException if an objective with the name of the
      * given objective is already registered with this scoreboard
      */
-    public fun addObjective(objective: Objective)
+    public fun addObjective(name: String, criterion: Criterion, displayName: Component, renderType: ObjectiveRenderType): Objective
 
     /**
      * Removes the given [objective] from this scoreboard's list of registered
@@ -143,14 +146,33 @@ public interface Scoreboard : Buildable<Scoreboard.Builder, Scoreboard> {
     public fun memberTeam(member: Component): Team?
 
     /**
-     * Adds the given [team] to this scoreboard's list of registered teams.
+     * Creates a new builder for building a team with the given [name] that
+     * will be registered to this scoreboard.
      *
-     * @param team the team
-     * @throws IllegalArgumentException if there is a registered team with the
-     * same name as the given team, or if the given team is already registered
-     * to a scoreboard
+     * @param name the name of the team
+     * @return a new team builder
      */
-    public fun addTeam(team: Team)
+    public fun createTeamBuilder(name: String): Team.Builder
+
+    /**
+     * Creates a new team with the given [name] and adds it to the list of
+     * registered teams for this scoreboard.
+     *
+     * @param name the name of the team
+     * @throws IllegalArgumentException if there is a registered team with the
+     * same name as the given name
+     */
+    public fun addTeam(name: String): Team
+
+    /**
+     * Gets the existing team with the given [name], or creates a new team with
+     * the given [name] and adds it to the list of registered teams for this
+     * scoreboard.
+     *
+     * @param name the name of the team
+     * @return the existing team, or the new team if there was no existing one
+     */
+    public fun getOrAddTeam(name: String): Team
 
     /**
      * Removes the given [team] from this scoreboard's list of registered
@@ -159,118 +181,4 @@ public interface Scoreboard : Buildable<Scoreboard.Builder, Scoreboard> {
      * @param team the team
      */
     public fun removeTeam(team: Team)
-
-    /**
-     * A builder for scoreboards.
-     */
-    @ScoreboardDsl
-    public interface Builder : AbstractBuilder<Scoreboard> {
-
-        /**
-         * Adds the given [objective] to the list of registered objectives for
-         * the scoreboard.
-         *
-         * @param objective the objective
-         * @return this builder
-         */
-        @ScoreboardDsl
-        @Contract("_ -> this", mutates = "this")
-        public fun objective(objective: Objective): Builder
-
-        /**
-         * Adds the given [objectives] to the list of objectives for the
-         * scoreboard.
-         *
-         * @param objectives the objectives
-         * @return this builder
-         */
-        @ScoreboardDsl
-        @Contract("_ -> this", mutates = "this")
-        public fun objectives(vararg objectives: Objective): Builder
-
-        /**
-         * Adds the given [objectives] to the list of objectives for the
-         * scoreboard.
-         *
-         * @param objectives the objectives
-         * @return this builder
-         */
-        @ScoreboardDsl
-        @Contract("_ -> this", mutates = "this")
-        public fun objectives(objectives: Iterable<Objective>): Builder
-
-        /**
-         * Adds the given [team] to the list of registered teams for the
-         * scoreboard.
-         *
-         * @param team the team
-         * @return this builder
-         */
-        @ScoreboardDsl
-        @Contract("_ -> this", mutates = "this")
-        public fun team(team: Team): Builder
-
-        /**
-         * Creates a new team builder with the given values, applies the given
-         * [builder] function to the new builder, and then adds the built
-         * objective to the list of registered objectives.
-         *
-         * @param builder the builder
-         * @return this builder
-         */
-        @ScoreboardDsl
-        @JvmSynthetic
-        @Contract("_, _ -> this", mutates = "this")
-        public fun team(name: String, builder: Team.Builder.() -> Unit): Builder = team(Team.builder(name).apply(builder).build())
-
-        /**
-         * Creates a new team builder with the given values, applies the given
-         * [builder] function to the new builder, and then adds the built
-         * objective to the list of registered objectives.
-         *
-         * @param builder the builder
-         * @return this builder
-         */
-        @ScoreboardDsl
-        @Contract("_, _ -> this", mutates = "this")
-        public fun team(name: String, builder: Consumer<Team.Builder>): Builder = team(name) { builder.accept(this) }
-
-        /**
-         * Adds the given [teams] to the list of teams for the scoreboard.
-         *
-         * @param teams the teams
-         * @return this builder
-         */
-        @ScoreboardDsl
-        @Contract("_ -> this", mutates = "this")
-        public fun teams(vararg teams: Team): Builder
-
-        /**
-         * Adds the given [teams] to the list of teams for the scoreboard.
-         *
-         * @param teams the teams
-         * @return this builder
-         */
-        @ScoreboardDsl
-        @Contract("_ -> this", mutates = "this")
-        public fun teams(teams: Iterable<Team>): Builder
-    }
-
-    @ApiStatus.Internal
-    public interface Factory {
-
-        public fun builder(): Builder
-    }
-
-    public companion object {
-
-        /**
-         * Creates a new builder for building a scoreboard.
-         *
-         * @return a new builder
-         */
-        @JvmStatic
-        @Contract("-> new", pure = true)
-        public fun builder(): Builder = Krypton.factory<Factory>().builder()
-    }
 }

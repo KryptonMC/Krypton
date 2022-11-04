@@ -16,7 +16,6 @@ package org.kryptonmc.api.plugin
  * A wrapper around a loaded plugin, that may be injected to gain access to
  * some details that may otherwise be unavailable.
  */
-@Suppress("INAPPLICABLE_JVM_NAME")
 public interface PluginContainer {
 
     /**
@@ -25,7 +24,6 @@ public interface PluginContainer {
      *
      * For more information, see [PluginDescription].
      */
-    @get:JvmName("description")
     public val description: PluginDescription
 
     /**
@@ -37,6 +35,5 @@ public interface PluginContainer {
      * This option here avoids the chicken and egg problem that would otherwise
      * ensue.
      */
-    @get:JvmName("instance")
     public val instance: Any?
 }

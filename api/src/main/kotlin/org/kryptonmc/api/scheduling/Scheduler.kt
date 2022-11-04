@@ -9,10 +9,12 @@
 package org.kryptonmc.api.scheduling
 
 import java.util.concurrent.TimeUnit
+import javax.annotation.concurrent.ThreadSafe
 
 /**
  * The scheduler. This can be used to run or schedule tasks asynchronously.
  */
+@ThreadSafe
 public interface Scheduler {
 
     /**

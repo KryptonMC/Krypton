@@ -31,7 +31,7 @@ import java.util.OptionalInt
 
 class KryptonFireworkRocket(world: KryptonWorld) : KryptonProjectile(world), FireworkRocket {
 
-    override val type: KryptonEntityType<FireworkRocket>
+    override val type: KryptonEntityType<KryptonFireworkRocket>
         get() = KryptonEntityTypes.FIREWORK_ROCKET
 
     override var attachedEntity: Entity? = null

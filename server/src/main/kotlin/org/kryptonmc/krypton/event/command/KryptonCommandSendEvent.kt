@@ -23,5 +23,4 @@ import org.kryptonmc.api.command.Sender
 import org.kryptonmc.api.entity.player.Player
 import org.kryptonmc.api.event.command.CommandSendEvent
 
-@JvmRecord
-data class KryptonCommandSendEvent(override val player: Player, override val rootNode: RootCommandNode<Sender>) : CommandSendEvent
+class KryptonCommandSendEvent(override val player: Player, override val rootNode: RootCommandNode<Sender>) : CommandSendEvent

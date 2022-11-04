@@ -23,7 +23,7 @@ import org.kryptonmc.api.event.player.LoginEvent
 import java.net.InetSocketAddress
 import java.util.UUID
 
-data class KryptonLoginEvent(override val username: String, override val uuid: UUID, override val address: InetSocketAddress) : LoginEvent {
+class KryptonLoginEvent(override val username: String, override val uuid: UUID, override val address: InetSocketAddress) : LoginEvent {
 
     override var result: ComponentResult = ComponentResult.allowed()
 }

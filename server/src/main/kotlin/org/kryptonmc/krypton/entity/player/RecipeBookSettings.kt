@@ -42,8 +42,8 @@ class RecipeBookSettings private constructor(private val settings: MutableMap<Re
     fun write(data: CompoundTag.Builder): CompoundTag.Builder = data.apply {
         TAG_FIELDS.forEach { (type, fields) ->
             val settings = settings.getOrDefault(type, TypeSettings.ALL_FALSE)
-            boolean(fields.first, settings.open)
-            boolean(fields.second, settings.filtered)
+            putBoolean(fields.first, settings.open)
+            putBoolean(fields.second, settings.filtered)
         }
     }
 

@@ -22,7 +22,7 @@ import org.kryptonmc.api.event.GenericResult
 import org.kryptonmc.api.event.user.ban.BanIpEvent
 import org.kryptonmc.api.user.ban.Ban
 
-data class KryptonBanIpEvent(override val ban: Ban.IP) : BanIpEvent {
+class KryptonBanIpEvent(override val ban: Ban.IP) : BanIpEvent {
 
     override var result: GenericResult = GenericResult.allowed()
 }

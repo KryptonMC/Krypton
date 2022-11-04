@@ -29,12 +29,10 @@ import org.kryptonmc.api.entity.EntityType
 import org.kryptonmc.api.entity.EntityTypes
 import org.kryptonmc.api.entity.attribute.AttributeType
 import org.kryptonmc.api.entity.attribute.AttributeTypes
-import org.kryptonmc.api.entity.hanging.Pictures
 import org.kryptonmc.api.fluid.Fluids
 import org.kryptonmc.api.item.ItemRarities
 import org.kryptonmc.api.item.ItemType
 import org.kryptonmc.api.item.ItemTypes
-import org.kryptonmc.api.item.data.DyeColors
 import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.api.statistic.CustomStatistics
 import org.kryptonmc.api.statistic.StatisticTypes
@@ -45,7 +43,6 @@ import org.kryptonmc.api.tags.EntityTypeTags
 import org.kryptonmc.api.tags.FluidTags
 import org.kryptonmc.api.tags.ItemTags
 import org.kryptonmc.api.tags.TagTypes
-import org.kryptonmc.api.user.ban.BanTypes
 import org.kryptonmc.api.world.biome.Biomes
 import org.kryptonmc.api.world.damage.type.DamageTypes
 import org.kryptonmc.api.world.dimension.DimensionTypes
@@ -58,7 +55,7 @@ import org.kryptonmc.krypton.effect.sound.SoundLoader
 import org.kryptonmc.krypton.entity.EntityFactory
 import org.kryptonmc.krypton.entity.KryptonEntityCategories
 import org.kryptonmc.krypton.entity.KryptonEntityTypes
-import org.kryptonmc.krypton.entity.attribute.AttributeLoader
+import org.kryptonmc.krypton.entity.attribute.KryptonAttributeTypes
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.item.Instruments
 import org.kryptonmc.krypton.item.ItemLoader
@@ -100,7 +97,7 @@ object Bootstrap {
         // the entire project to use Guice's dependency inversion (something that should be looked in to at some point)
         val kryptonClass = Class.forName("org.kryptonmc.api.Krypton")
         Reflection.modifyField(kryptonClass, "factoryProvider", KryptonFactoryProvider)
-        Reflection.modifyField(kryptonClass, "internalRegistryManager", KryptonRegistryManager)
+        Reflection.modifyField(kryptonClass, "registryManager", KryptonRegistryManager)
         Reflection.modifyField(kryptonClass, "tagManager", KryptonTagManager)
         KryptonFactoryProvider.bootstrap()
         KryptonRegistryManager.bootstrap() // Force initialisation
@@ -131,7 +128,6 @@ object Bootstrap {
         KryptonBiomes
         Biomes
         BannerPatternTypes
-        Pictures
         Instruments
         KryptonTagManager.bootstrap()
         KryptonDimensionTypes
@@ -144,14 +140,12 @@ object Bootstrap {
         BannerPatternTags
         BiomeTags
         GameRules
-        AttributeLoader.init()
+        KryptonAttributeTypes
         AttributeTypes
         MetadataKeys
         StatisticTypes
         CustomStatistics
         DamageTypes
-        DyeColors
-        BanTypes
 
         // Preload some other things that would otherwise load on first player join or some other time
         Encryption

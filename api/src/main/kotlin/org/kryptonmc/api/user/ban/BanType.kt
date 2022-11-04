@@ -8,19 +8,11 @@
  */
 package org.kryptonmc.api.user.ban
 
-import net.kyori.adventure.key.Keyed
-import org.kryptonmc.api.util.CataloguedBy
-
 /**
  * A type of ban.
  */
-@Suppress("INAPPLICABLE_JVM_NAME")
-@CataloguedBy(BanTypes::class)
-public interface BanType : Keyed {
+public enum class BanType {
 
-    /**
-     * The ban class that this type represents.
-     */
-    @get:JvmName("banClass")
-    public val banClass: Class<out Ban>
+    IP,
+    PROFILE
 }

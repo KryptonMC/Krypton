@@ -15,12 +15,10 @@ import org.kryptonmc.api.event.ResultedEvent
 /**
  * Called when a whitelisted game profile is removed from the whitelist.
  */
-@Suppress("INAPPLICABLE_JVM_NAME")
 public interface RemoveWhitelistedProfileEvent : ResultedEvent<GenericResult> {
 
     /**
      * The whitelisted profile.
      */
-    @get:JvmName("profile")
     public val profile: GameProfile
 }

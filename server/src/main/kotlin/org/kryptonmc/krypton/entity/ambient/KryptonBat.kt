@@ -19,11 +19,11 @@
 package org.kryptonmc.krypton.entity.ambient
 
 import org.kryptonmc.api.entity.ambient.Bat
-import org.kryptonmc.api.entity.attribute.AttributeTypes
 import org.kryptonmc.krypton.entity.KryptonEntityType
 import org.kryptonmc.krypton.entity.KryptonEntityTypes
 import org.kryptonmc.krypton.entity.KryptonMob
 import org.kryptonmc.krypton.entity.attribute.AttributeSupplier
+import org.kryptonmc.krypton.entity.attribute.KryptonAttributeTypes
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.entity.serializer.EntitySerializer
 import org.kryptonmc.krypton.entity.serializer.ambient.BatSerializer
@@ -31,7 +31,7 @@ import org.kryptonmc.krypton.world.KryptonWorld
 
 class KryptonBat(world: KryptonWorld) : KryptonAmbientCreature(world), Bat {
 
-    override val type: KryptonEntityType<Bat>
+    override val type: KryptonEntityType<KryptonBat>
         get() = KryptonEntityTypes.BAT
     override val serializer: EntitySerializer<KryptonBat>
         get() = BatSerializer
@@ -50,6 +50,6 @@ class KryptonBat(world: KryptonWorld) : KryptonAmbientCreature(world), Bat {
         private const val FLAG_RESTING = 0
 
         @JvmStatic
-        fun attributes(): AttributeSupplier.Builder = KryptonMob.attributes().add(AttributeTypes.MAX_HEALTH, 6.0)
+        fun attributes(): AttributeSupplier.Builder = KryptonMob.attributes().add(KryptonAttributeTypes.MAX_HEALTH, 6.0)
     }
 }

@@ -9,17 +9,19 @@
 package org.kryptonmc.api.item
 
 import net.kyori.adventure.key.Keyed
+import net.kyori.adventure.translation.Translatable
 import org.kryptonmc.api.block.BlockLike
 import org.kryptonmc.api.effect.sound.SoundEvent
 import org.kryptonmc.api.util.CataloguedBy
-import org.kryptonmc.api.util.TranslationHolder
+import javax.annotation.concurrent.Immutable
 
 /**
  * Represents a type of item.
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
 @CataloguedBy(ItemTypes::class)
-public interface ItemType : ItemLike, BlockLike, TranslationHolder, Keyed {
+@Immutable
+public interface ItemType : ItemLike, BlockLike, Translatable, Keyed {
 
     /**
      * The rarity of the item.

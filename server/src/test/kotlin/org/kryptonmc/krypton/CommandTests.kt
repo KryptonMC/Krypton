@@ -25,7 +25,7 @@ import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import org.kryptonmc.api.command.BrigadierCommand
 import org.kryptonmc.api.command.Sender
-import org.kryptonmc.api.command.meta.CommandMeta
+import org.kryptonmc.api.command.CommandMeta
 import org.kryptonmc.krypton.command.argument
 import org.kryptonmc.krypton.command.literal
 import org.kryptonmc.krypton.command.registrar.BrigadierCommandRegistrar

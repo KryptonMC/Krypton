@@ -16,13 +16,17 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.entity.animal.type
+package org.kryptonmc.krypton.util
 
-import net.kyori.adventure.key.Key
-import org.kryptonmc.api.entity.animal.type.CatVariant
+import org.kryptonmc.api.item.data.DyeColor
 
-@JvmRecord
-data class KryptonCatVariant(private val key: Key) : CatVariant {
+object DyeColors {
 
-    override fun key(): Key = key
+    private val VALUES = DyeColor.values()
+
+    @JvmStatic
+    fun fromId(id: Int): DyeColor {
+        val temp = if (id < 0 || id >= VALUES.size) 0 else id
+        return VALUES[temp]
+    }
 }

@@ -17,24 +17,20 @@ import java.util.UUID
  * Called when a player has been authenticated, but they have not yet had
  * a player object constructed for them.
  */
-@Suppress("INAPPLICABLE_JVM_NAME")
 public interface LoginEvent : ResultedEvent<ComponentResult> {
 
     /**
      * The username of the player logging in.
      */
-    @get:JvmName("username")
     public val username: String
 
     /**
      * The unique ID of the player logging in.
      */
-    @get:JvmName("uuid")
     public val uuid: UUID
 
     /**
      * The address that the player is logging in from.
      */
-    @get:JvmName("address")
     public val address: InetSocketAddress
 }

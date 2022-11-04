@@ -27,7 +27,7 @@ import org.kryptonmc.krypton.world.KryptonWorld
 
 class KryptonSnowball(world: KryptonWorld) : KryptonThrowableProjectile(world), Snowball {
 
-    override val type: KryptonEntityType<Snowball>
+    override val type: KryptonEntityType<KryptonSnowball>
         get() = KryptonEntityTypes.SNOWBALL
 
     override val defaultItem: KryptonItemStack

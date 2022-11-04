@@ -19,12 +19,14 @@ import org.kryptonmc.api.tags.Tag
 import org.kryptonmc.api.util.Buildable
 import org.kryptonmc.api.util.CataloguedBy
 import java.util.OptionalLong
+import javax.annotation.concurrent.Immutable
 
 /**
  * Represents data for a dimension.
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
 @CataloguedBy(DimensionTypes::class)
+@Immutable
 public interface DimensionType : Buildable<DimensionType.Builder, DimensionType>, Keyed {
 
     /**

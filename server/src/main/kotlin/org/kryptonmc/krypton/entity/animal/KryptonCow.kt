@@ -19,16 +19,16 @@
 package org.kryptonmc.krypton.entity.animal
 
 import org.kryptonmc.api.entity.animal.Cow
-import org.kryptonmc.api.entity.attribute.AttributeTypes
 import org.kryptonmc.krypton.entity.KryptonEntityType
 import org.kryptonmc.krypton.entity.KryptonEntityTypes
 import org.kryptonmc.krypton.entity.KryptonMob
 import org.kryptonmc.krypton.entity.attribute.AttributeSupplier
+import org.kryptonmc.krypton.entity.attribute.KryptonAttributeTypes
 import org.kryptonmc.krypton.world.KryptonWorld
 
 open class KryptonCow(world: KryptonWorld) : KryptonAnimal(world), Cow {
 
-    override val type: KryptonEntityType<Cow>
+    override val type: KryptonEntityType<KryptonCow>
         get() = KryptonEntityTypes.COW
 
     override val soundVolume: Float
@@ -38,7 +38,7 @@ open class KryptonCow(world: KryptonWorld) : KryptonAnimal(world), Cow {
 
         @JvmStatic
         fun attributes(): AttributeSupplier.Builder = KryptonMob.attributes()
-            .add(AttributeTypes.MAX_HEALTH, 10.0)
-            .add(AttributeTypes.MOVEMENT_SPEED, 0.2)
+            .add(KryptonAttributeTypes.MAX_HEALTH, 10.0)
+            .add(KryptonAttributeTypes.MOVEMENT_SPEED, 0.2)
     }
 }

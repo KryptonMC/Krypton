@@ -22,7 +22,6 @@ import net.kyori.adventure.text.Component
 import org.kryptonmc.api.auth.GameProfile
 import org.kryptonmc.api.user.ban.Ban
 import org.kryptonmc.api.user.ban.BanType
-import org.kryptonmc.api.user.ban.BanTypes
 import org.kryptonmc.krypton.util.asString
 import java.net.InetAddress
 import java.time.OffsetDateTime
@@ -37,27 +36,26 @@ class KryptonBanBuilder : Ban.Builder, Ban.Builder.EndStep {
     private var start: OffsetDateTime? = null
     private var end: OffsetDateTime? = null
 
-    override fun profile(profile: GameProfile): Ban.Builder.EndStep = apply {
-        type = BanTypes.PROFILE
+    override fun profile(profile: GameProfile): KryptonBanBuilder = apply {
+        type = BanType.PROFILE
         this.profile = profile
     }
 
-    override fun address(address: InetAddress): Ban.Builder.EndStep = apply {
-        type = BanTypes.IP
+    override fun address(address: InetAddress): KryptonBanBuilder = apply {
+        type = BanType.IP
         this.address = address
     }
 
-    override fun source(source: Component): Ban.Builder.EndStep = apply { this.source = source }
+    override fun source(source: Component): KryptonBanBuilder = apply { this.source = source }
 
-    override fun reason(reason: Component?): Ban.Builder.EndStep = apply { this.reason = reason ?: BanEntry.DEFAULT_REASON }
+    override fun reason(reason: Component?): KryptonBanBuilder = apply { this.reason = reason ?: BanEntry.DEFAULT_REASON }
 
-    override fun creationDate(date: OffsetDateTime): Ban.Builder.EndStep = apply { start = date }
+    override fun creationDate(date: OffsetDateTime): KryptonBanBuilder = apply { start = date }
 
-    override fun expirationDate(date: OffsetDateTime?): Ban.Builder.EndStep = apply { end = date }
+    override fun expirationDate(date: OffsetDateTime?): KryptonBanBuilder = apply { end = date }
 
-    override fun build(): Ban = when (type) {
-        BanTypes.PROFILE -> BannedPlayerEntry(profile!!, start ?: OffsetDateTime.now(), source, end, reason)
-        BanTypes.IP -> BannedIpEntry(address!!.asString(), start ?: OffsetDateTime.now(), source, end, reason)
-        else -> error("Unsupported ban type $type!")
+    override fun build(): Ban = when (type!!) {
+        BanType.PROFILE -> BannedPlayerEntry(profile!!, start ?: OffsetDateTime.now(), source, end, reason)
+        BanType.IP -> BannedIpEntry(address!!.asString(), start ?: OffsetDateTime.now(), source, end, reason)
     }
 }

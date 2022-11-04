@@ -14,13 +14,11 @@ import org.kryptonmc.api.registry.Registries
 /**
  * A tracker of statistics.
  */
-@Suppress("INAPPLICABLE_JVM_NAME")
 public interface StatisticsTracker {
 
     /**
      * All of the statistics being tracked by this tracker.
      */
-    @get:JvmName("statistics")
     public val statistics: Map<Statistic<*>, Int>
 
     /**

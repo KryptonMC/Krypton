@@ -23,11 +23,11 @@ import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer
-import org.kryptonmc.api.adventure.toJson
-import org.kryptonmc.api.adventure.toLegacyAmpersandText
-import org.kryptonmc.api.adventure.toLegacySectionText
-import org.kryptonmc.api.adventure.toMessage
-import org.kryptonmc.api.adventure.toPlainText
+import org.kryptonmc.krypton.adventure.toJson
+import org.kryptonmc.krypton.adventure.toLegacyAmpersandText
+import org.kryptonmc.krypton.adventure.toLegacySectionText
+import org.kryptonmc.krypton.adventure.toMessage
+import org.kryptonmc.krypton.adventure.toPlainText
 import kotlin.test.Test
 import kotlin.test.assertEquals
 

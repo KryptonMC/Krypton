@@ -19,13 +19,13 @@
 package org.kryptonmc.krypton.entity.animal
 
 import org.kryptonmc.api.entity.animal.Turtle
-import org.kryptonmc.api.entity.attribute.AttributeTypes
 import org.kryptonmc.api.item.ItemStack
 import org.kryptonmc.api.item.ItemTypes
 import org.kryptonmc.krypton.entity.KryptonEntityType
 import org.kryptonmc.krypton.entity.KryptonEntityTypes
 import org.kryptonmc.krypton.entity.KryptonMob
 import org.kryptonmc.krypton.entity.attribute.AttributeSupplier
+import org.kryptonmc.krypton.entity.attribute.KryptonAttributeTypes
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.entity.serializer.EntitySerializer
 import org.kryptonmc.krypton.entity.serializer.animal.TurtleSerializer
@@ -34,7 +34,7 @@ import org.spongepowered.math.vector.Vector3i
 
 class KryptonTurtle(world: KryptonWorld) : KryptonAnimal(world), Turtle {
 
-    override val type: KryptonEntityType<Turtle>
+    override val type: KryptonEntityType<KryptonTurtle>
         get() = KryptonEntityTypes.TURTLE
     override val serializer: EntitySerializer<KryptonTurtle>
         get() = TurtleSerializer
@@ -79,7 +79,7 @@ class KryptonTurtle(world: KryptonWorld) : KryptonAnimal(world), Turtle {
 
         @JvmStatic
         fun attributes(): AttributeSupplier.Builder = KryptonMob.attributes()
-            .add(AttributeTypes.MAX_HEALTH, 30.0)
-            .add(AttributeTypes.MOVEMENT_SPEED, 0.25)
+            .add(KryptonAttributeTypes.MAX_HEALTH, 30.0)
+            .add(KryptonAttributeTypes.MOVEMENT_SPEED, 0.25)
     }
 }

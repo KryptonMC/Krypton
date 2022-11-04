@@ -25,20 +25,15 @@ import org.kryptonmc.api.auth.ProfileProperty
 import org.kryptonmc.api.block.entity.banner.BannerPattern
 import org.kryptonmc.api.state.Property
 import org.kryptonmc.api.command.BrigadierCommand
-import org.kryptonmc.api.command.meta.CommandMeta
+import org.kryptonmc.api.command.CommandMeta
 import org.kryptonmc.api.effect.Music
 import org.kryptonmc.api.effect.particle.data.ParticleData
-import org.kryptonmc.api.effect.sound.SoundEvent
 import org.kryptonmc.api.entity.attribute.AttributeModifier
-import org.kryptonmc.api.item.ItemAttribute
+import org.kryptonmc.api.item.ItemAttributeModifier
 import org.kryptonmc.api.item.ItemStack
 import org.kryptonmc.api.item.meta.ItemMeta
 import org.kryptonmc.api.resource.ResourceKey
 import org.kryptonmc.api.resource.ResourcePack
-import org.kryptonmc.api.scoreboard.Objective
-import org.kryptonmc.api.scoreboard.Scoreboard
-import org.kryptonmc.api.scoreboard.Team
-import org.kryptonmc.api.user.ban.Ban
 import org.kryptonmc.api.util.BoundingBox
 import org.kryptonmc.api.util.Color
 import org.kryptonmc.api.util.TypeNotFoundException
@@ -57,17 +52,15 @@ import org.kryptonmc.krypton.adventure.KryptonAdventureMessage
 import org.kryptonmc.krypton.auth.KryptonGameProfile
 import org.kryptonmc.krypton.auth.KryptonProfileProperty
 import org.kryptonmc.krypton.command.KryptonBrigadierCommand
-import org.kryptonmc.krypton.command.meta.KryptonCommandMeta
+import org.kryptonmc.krypton.command.KryptonCommandMeta
 import org.kryptonmc.krypton.effect.KryptonMusic
 import org.kryptonmc.krypton.effect.particle.data.KryptonParticleDataFactory
-import org.kryptonmc.krypton.effect.sound.KryptonSoundEvent
 import org.kryptonmc.krypton.entity.attribute.KryptonAttributeModifier
-import org.kryptonmc.krypton.item.KryptonItemAttribute
+import org.kryptonmc.krypton.item.KryptonItemAttributeModifier
 import org.kryptonmc.krypton.item.KryptonItemStack
 import org.kryptonmc.krypton.item.meta.KryptonItemMeta
 import org.kryptonmc.krypton.resource.KryptonResourceKey
 import org.kryptonmc.krypton.resource.KryptonResourcePack
-import org.kryptonmc.krypton.server.ban.KryptonBanFactory
 import org.kryptonmc.krypton.world.biome.KryptonAmbientAdditionsSettings
 import org.kryptonmc.krypton.world.biome.KryptonAmbientMoodSettings
 import org.kryptonmc.krypton.world.biome.KryptonAmbientParticleSettings
@@ -79,9 +72,6 @@ import org.kryptonmc.krypton.state.property.KryptonPropertyFactory
 import org.kryptonmc.krypton.world.damage.KryptonDamageSourceFactory
 import org.kryptonmc.krypton.world.dimension.KryptonDimensionType
 import org.kryptonmc.krypton.world.rule.KryptonGameRule
-import org.kryptonmc.krypton.world.scoreboard.KryptonObjective
-import org.kryptonmc.krypton.world.scoreboard.KryptonScoreboard
-import org.kryptonmc.krypton.world.scoreboard.KryptonTeam
 
 object KryptonFactoryProvider : FactoryProvider {
 
@@ -104,8 +94,6 @@ object KryptonFactoryProvider : FactoryProvider {
         register<CommandMeta.Factory>(KryptonCommandMeta.Factory)
         register<GameProfile.Factory>(KryptonGameProfile.Factory)
         register<ProfileProperty.Factory>(KryptonProfileProperty.Factory)
-        register<SoundEvent.Factory>(KryptonSoundEvent.Factory)
-        register<Objective.Factory>(KryptonObjective.Factory)
         register<GameRule.Factory>(KryptonGameRule.Factory)
         register<Music.Factory>(KryptonMusic.Factory)
         register<AmbientAdditionsSettings.Factory>(KryptonAmbientAdditionsSettings.Factory)
@@ -117,15 +105,12 @@ object KryptonFactoryProvider : FactoryProvider {
         register<BoundingBox.Factory>(KryptonBoundingBox.Factory)
         register<DimensionType.Factory>(KryptonDimensionType.Factory)
         register<ResourcePack.Factory>(KryptonResourcePack.Factory)
-        register<Team.Factory>(KryptonTeam.Factory)
         register<ItemMeta.Factory>(KryptonItemMeta.Factory)
         register<DamageSource.Factory>(KryptonDamageSourceFactory)
         register<AdventureMessage.Factory>(KryptonAdventureMessage.Factory)
         register<BrigadierCommand.Factory>(KryptonBrigadierCommand.Factory)
-        register<Scoreboard.Factory>(KryptonScoreboard.Factory)
-        register<ItemAttribute.Factory>(KryptonItemAttribute.Factory)
+        register<ItemAttributeModifier.Factory>(KryptonItemAttributeModifier.Factory)
         register<BannerPattern.Factory>(KryptonBannerPattern.Factory)
         register<Color.Factory>(KryptonColor.Factory)
-        register<Ban.Factory>(KryptonBanFactory)
     }
 }

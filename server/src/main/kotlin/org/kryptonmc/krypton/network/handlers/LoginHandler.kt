@@ -55,6 +55,7 @@ import org.kryptonmc.krypton.packet.out.login.PacketOutPluginRequest
 import org.kryptonmc.krypton.packet.out.login.PacketOutSetCompression
 import org.kryptonmc.krypton.server.ban.BanEntry
 import org.kryptonmc.krypton.util.ComponentException
+import org.kryptonmc.krypton.util.UUIDUtil
 import org.kryptonmc.krypton.util.crypto.Encryption
 import org.kryptonmc.krypton.util.crypto.InsecurePublicKeyException
 import org.kryptonmc.krypton.util.crypto.SignatureValidator
@@ -63,7 +64,6 @@ import org.kryptonmc.krypton.util.readVarInt
 import java.net.InetSocketAddress
 import java.net.SocketAddress
 import java.security.SecureRandom
-import java.util.UUID
 import java.util.concurrent.ThreadLocalRandom
 import javax.crypto.SecretKey
 import javax.crypto.spec.SecretKeySpec
@@ -121,7 +121,7 @@ class LoginHandler(
             // Copy over the data from legacy forwarding
             // Note: Per the protocol, offline players use UUID v3, rather than UUID v4.
             val address = createAddress()
-            val uuid = proxyForwardedData?.uuid ?: UUID.nameUUIDFromBytes("OfflinePlayer:${packet.name}".encodeToByteArray())
+            val uuid = proxyForwardedData?.uuid ?: UUIDUtil.createOfflinePlayerId(packet.name)
             val profile = KryptonGameProfile(packet.name, uuid, proxyForwardedData?.properties ?: persistentListOf())
 
             // Check the player can join and the login event was not cancelled.
@@ -198,7 +198,7 @@ class LoginHandler(
         if (version >= VelocityProxy.MODERN_FORWARDING_WITH_KEY && publicKey == null) {
             try {
                 publicKey = PlayerPublicKey.create(SignatureValidator.YGGDRASIL, data.key)
-            } catch (exception: Exception) {
+            } catch (_: Exception) {
                 disconnect(Component.text("Could not validate public key forwarded from Velocity!"))
                 return
             }

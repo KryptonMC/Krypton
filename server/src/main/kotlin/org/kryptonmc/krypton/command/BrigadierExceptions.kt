@@ -23,7 +23,7 @@ import com.mojang.brigadier.exceptions.Dynamic2CommandExceptionType
 import com.mojang.brigadier.exceptions.DynamicCommandExceptionType
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType
 import net.kyori.adventure.text.Component
-import org.kryptonmc.api.adventure.toMessage
+import org.kryptonmc.krypton.adventure.toMessage
 
 // Built-in types using vanilla's translation keys
 object BrigadierExceptions : BuiltInExceptionProvider {

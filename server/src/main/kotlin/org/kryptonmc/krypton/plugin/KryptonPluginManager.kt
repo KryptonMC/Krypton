@@ -30,18 +30,17 @@ import org.kryptonmc.api.plugin.PluginManager
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.module.GlobalModule
 import org.kryptonmc.krypton.module.PluginModule
-import org.kryptonmc.krypton.plugin.loader.LoadedPluginDescription
 import org.kryptonmc.krypton.plugin.loader.PluginLoader
 import java.nio.file.Files
 import java.nio.file.Path
+import java.util.Collections
 import java.util.IdentityHashMap
 
 class KryptonPluginManager : PluginManager {
 
     private val pluginMap = LinkedHashMap<String, PluginContainer>()
     private val pluginInstances = IdentityHashMap<Any, PluginContainer>()
-    override val plugins: Collection<PluginContainer>
-        get() = pluginMap.values
+    override val plugins: Collection<PluginContainer> = Collections.unmodifiableCollection(pluginMap.values)
 
     fun loadPlugins(directory: Path, server: KryptonServer) {
         val found = ArrayList<PluginDescription>()

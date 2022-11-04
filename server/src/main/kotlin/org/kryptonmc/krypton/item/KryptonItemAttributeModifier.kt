@@ -20,35 +20,53 @@ package org.kryptonmc.krypton.item
 
 import net.kyori.adventure.key.Key
 import org.kryptonmc.api.entity.EquipmentSlot
-import org.kryptonmc.api.entity.attribute.AttributeModifier
 import org.kryptonmc.api.entity.attribute.AttributeType
-import org.kryptonmc.api.item.ItemAttribute
+import org.kryptonmc.api.entity.attribute.BasicModifierOperation
+import org.kryptonmc.api.item.ItemAttributeModifier
 import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.krypton.entity.EquipmentSlots
 import org.kryptonmc.krypton.entity.attribute.KryptonAttributeModifier
 import org.kryptonmc.nbt.CompoundTag
+import java.util.UUID
+import java.util.function.Supplier
 
-@JvmRecord
-data class KryptonItemAttribute(
+class KryptonItemAttributeModifier(
     override val type: AttributeType,
     override val slot: EquipmentSlot,
-    override val modifier: AttributeModifier
-) : ItemAttribute {
+    uuid: UUID,
+    nameGetter: Supplier<String>,
+    amount: Double,
+    override val operation: BasicModifierOperation
+) : KryptonAttributeModifier(uuid, nameGetter, amount, operation), ItemAttributeModifier {
 
-    object Factory : ItemAttribute.Factory {
+    constructor(
+        type: AttributeType,
+        slot: EquipmentSlot,
+        uuid: UUID,
+        name: String,
+        amount: Double,
+        operation: BasicModifierOperation
+    ) : this(type, slot, uuid, { name }, amount, operation)
 
-        override fun of(type: AttributeType, slot: EquipmentSlot, modifier: AttributeModifier): ItemAttribute =
-            KryptonItemAttribute(type, slot, modifier)
+    object Factory : ItemAttributeModifier.Factory {
+
+        override fun of(
+            type: AttributeType,
+            slot: EquipmentSlot,
+            uuid: UUID,
+            name: String,
+            amount: Double,
+            operation: BasicModifierOperation
+        ): ItemAttributeModifier = KryptonItemAttributeModifier(type, slot, uuid, name, amount, operation)
     }
 
     companion object {
 
         @JvmStatic
-        fun from(data: CompoundTag): KryptonItemAttribute? {
+        fun from(data: CompoundTag): KryptonItemAttributeModifier? {
             val type = Registries.ATTRIBUTE.get(Key.key(data.getString("AttributeName"))) ?: return null
             val slot = EquipmentSlots.fromName(data.getString("Slot")) ?: return null
-            val modifier = KryptonAttributeModifier.from(data) ?: return null
-            return KryptonItemAttribute(type, slot, modifier)
+            return KryptonItemAttributeModifier(type, slot, getId(data), data.getString("Name"), data.getDouble("Amount"), getOperation(data))
         }
     }
 }

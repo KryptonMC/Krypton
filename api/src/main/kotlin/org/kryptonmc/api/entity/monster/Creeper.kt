@@ -11,7 +11,6 @@ package org.kryptonmc.api.entity.monster
 /**
  * A creeper.
  */
-@Suppress("INAPPLICABLE_JVM_NAME")
 public interface Creeper : Monster {
 
     /**
@@ -19,8 +18,7 @@ public interface Creeper : Monster {
      *
      * Will be 0 if this creeper is not [ignited][isIgnited].
      */
-    @get:JvmName("fuse")
-    public var fuse: Short
+    public var fuse: Int
 
     /**
      * The radius of the explosion this creeper will produce when it explodes.
@@ -29,8 +27,7 @@ public interface Creeper : Monster {
      * 6 for charged creepers, however these values may differ depending on the
      * implementation.
      */
-    @get:JvmName("explosionRadius")
-    public val explosionRadius: Int
+    public var explosionRadius: Int
 
     /**
      * If this creeper is charged.

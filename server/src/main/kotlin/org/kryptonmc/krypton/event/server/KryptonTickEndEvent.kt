@@ -20,5 +20,4 @@ package org.kryptonmc.krypton.event.server
 
 import org.kryptonmc.api.event.server.TickEndEvent
 
-@JvmRecord
-data class KryptonTickEndEvent(override val tickNumber: Int, override val tickDuration: Long, override val endTime: Long) : TickEndEvent
+class KryptonTickEndEvent(override val tickNumber: Int, override val tickDuration: Long, override val endTime: Long) : TickEndEvent

@@ -16,32 +16,27 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton
+package org.kryptonmc.krypton.command.brigadier
 
-import org.junit.jupiter.api.BeforeAll
-import org.kryptonmc.api.block.BlockFace
-import org.kryptonmc.krypton.util.Bootstrap
-import kotlin.test.Test
-import kotlin.test.assertEquals
+import com.google.common.base.Splitter
+import com.mojang.brigadier.CommandDispatcher
+import com.mojang.brigadier.StringReader
+import com.mojang.brigadier.arguments.ArgumentType
 
-class BlockTests {
+object StringArrayArgumentType : ArgumentType<Array<String>> {
 
-    @Test
-    fun `test face opposites`() {
-        assertEquals(BlockFace.TOP, BlockFace.BOTTOM.opposite)
-        assertEquals(BlockFace.BOTTOM, BlockFace.TOP.opposite)
-        assertEquals(BlockFace.SOUTH, BlockFace.NORTH.opposite)
-        assertEquals(BlockFace.NORTH, BlockFace.SOUTH.opposite)
-        assertEquals(BlockFace.EAST, BlockFace.WEST.opposite)
-        assertEquals(BlockFace.WEST, BlockFace.EAST.opposite)
+    val EMPTY: Array<String> = emptyArray<String>()
+    private val WORD_SPLITTER = Splitter.on(CommandDispatcher.ARGUMENT_SEPARATOR_CHAR)
+    private val EXAMPLES = listOf("word", "some words")
+
+    override fun parse(reader: StringReader): Array<String> {
+        val text = reader.remaining
+        reader.cursor = reader.totalLength
+        if (text.isEmpty()) return EMPTY
+        return WORD_SPLITTER.splitToList(text).toTypedArray()
     }
 
-    companion object {
+    override fun getExamples(): Collection<String> = EXAMPLES
 
-        @JvmStatic
-        @BeforeAll
-        fun bootstrap() {
-            Bootstrap.preload()
-        }
-    }
+    override fun toString(): String = "stringArray()"
 }

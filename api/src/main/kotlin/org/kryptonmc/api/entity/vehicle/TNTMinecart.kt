@@ -11,7 +11,6 @@ package org.kryptonmc.api.entity.vehicle
 /**
  * A minecart holding TNT.
  */
-@Suppress("INAPPLICABLE_JVM_NAME")
 public interface TNTMinecart : MinecartLike {
 
     /**
@@ -22,7 +21,6 @@ public interface TNTMinecart : MinecartLike {
     /**
      * The fuse of this TNT minecart.
      */
-    @get:JvmName("fuse")
     public var fuse: Int
 
     /**

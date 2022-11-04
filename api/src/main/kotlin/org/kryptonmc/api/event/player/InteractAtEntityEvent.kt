@@ -9,36 +9,22 @@
 package org.kryptonmc.api.event.player
 
 import org.kryptonmc.api.entity.Hand
+import org.spongepowered.math.vector.Vector3d
 
 /**
  * Called when a player interacts at an entity.
  */
-@Suppress("INAPPLICABLE_JVM_NAME")
 public interface InteractAtEntityEvent : EntityInteractEvent {
 
     /**
      * The hand the player used to interact with the target.
      */
-    @get:JvmName("hand")
     public val hand: Hand
 
     /**
-     * The X coordinate of the position that the player clicked on the entity.
+     * The position that the player clicked on the entity.
      */
-    @get:JvmName("clickedX")
-    public val clickedX: Double
-
-    /**
-     * The Y coordinate of the position that the player clicked on the entity.
-     */
-    @get:JvmName("clickedY")
-    public val clickedY: Double
-
-    /**
-     * The Z coordinate of the position that the player clicked on the entity.
-     */
-    @get:JvmName("clickedZ")
-    public val clickedZ: Double
+    public val clickedPosition: Vector3d
 
     override val type: InteractEvent.Type
         get() = InteractEvent.Type.INTERACT_AT_ENTITY

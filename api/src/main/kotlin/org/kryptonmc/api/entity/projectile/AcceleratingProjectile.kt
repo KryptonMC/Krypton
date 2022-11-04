@@ -14,12 +14,10 @@ import org.spongepowered.math.vector.Vector3d
  * A projectile that will accelerate at constant velocity until it hits
  * something, when it will explode.
  */
-@Suppress("INAPPLICABLE_JVM_NAME")
 public interface AcceleratingProjectile : Projectile {
 
     /**
      * The acceleration values of this projectile.
      */
-    @get:JvmName("acceleration")
     public val acceleration: Vector3d
 }

@@ -20,8 +20,8 @@ package org.kryptonmc.krypton.state
 
 import com.google.common.collect.ArrayTable
 import com.google.common.collect.HashBasedTable
+import com.google.common.collect.ImmutableMap
 import com.google.common.collect.Table
-import kotlinx.collections.immutable.ImmutableMap
 import org.kryptonmc.krypton.util.ZeroCollidingReferenceStateTable
 import org.kryptonmc.krypton.state.property.KryptonProperty
 import org.kryptonmc.serialization.Codec
@@ -29,7 +29,7 @@ import org.kryptonmc.serialization.MapCodec
 import java.util.Optional
 import java.util.function.Function
 
-@Suppress("LeakingThis", "UNCHECKED_CAST")
+@Suppress("LeakingThis")
 abstract class KryptonState<O, S : KryptonState<O, S>>(
     protected val owner: O,
     val values: ImmutableMap<KryptonProperty<*>, Comparable<*>>,
@@ -48,20 +48,24 @@ abstract class KryptonState<O, S : KryptonState<O, S>>(
         return property.type.cast(value)
     }
 
-    fun <V : Comparable<V>> set(property: KryptonProperty<V>, value: V): S = optimisedTable.get(property, value) as? S ?: this as S
+    @Suppress("UNCHECKED_CAST")
+    fun <V : Comparable<V>> set(property: KryptonProperty<V>, value: V): S {
+        val newState = optimisedTable.get(property, value) ?: return this as S
+        return newState as S
+    }
 
-    fun <V : Comparable<V>> cycle(property: KryptonProperty<V>): S = set(property, findNext(property.values, get(property))!!)
+    fun <V : Comparable<V>> cycle(property: KryptonProperty<V>): S = set(property, findNext(property.values, require(property)))
 
     fun populateNeighbours(states: Map<Map<KryptonProperty<*>, Comparable<*>>, S>) {
         check(!populatedNeighbours) { "Attempted to populate neighbours when they were already populated!" }
         val table = HashBasedTable.create<KryptonProperty<*>, Comparable<*>, S>()
-        values.forEach { entry ->
-            val property = entry.key
+        values.entries.forEach { (property, value) ->
             property.values.forEach {
-                if (it != entry.value) table.put(property, it, states.get(createNeighbourValues(property, it))!!)
+                if (it != value) table.put(property, it, states.get(createNeighbourValues(property, it))!!)
             }
         }
         val neighbours = if (table.isEmpty) table else ArrayTable.create(table)
+        @Suppress("UNCHECKED_CAST")
         optimisedTable.loadInTable(neighbours as Table<KryptonProperty<*>, Comparable<*>, KryptonState<*, *>>, values)
         populatedNeighbours = true
     }
@@ -76,7 +80,7 @@ abstract class KryptonState<O, S : KryptonState<O, S>>(
         append(owner)
         if (values.isNotEmpty()) {
             append('[')
-            append(values.entries.joinToString(",") { "${it.key.name}=${toString(it.key, it.value)}" })
+            append(values.entries.joinToString(",") { "${it.key.name}=${toStringHelper(it.key, it.value)}" })
             append(']')
         }
     }
@@ -100,14 +104,16 @@ abstract class KryptonState<O, S : KryptonState<O, S>>(
         private fun <T> findNext(collection: Collection<T>, value: T): T {
             val iterator = collection.iterator()
             while (iterator.hasNext()) {
-                if (iterator.next() != value) continue
-                if (iterator.hasNext()) return iterator.next()
-                return collection.iterator().next()
+                if (iterator.next() == value) {
+                    if (iterator.hasNext()) return iterator.next()
+                    return collection.iterator().next()
+                }
             }
             return iterator.next()
         }
 
         @JvmStatic
-        private fun <T : Comparable<T>> toString(property: KryptonProperty<T>, value: Comparable<*>): String = property.toString(value as T)
+        @Suppress("UNCHECKED_CAST")
+        private fun <T : Comparable<T>> toStringHelper(property: KryptonProperty<T>, value: Comparable<*>): String = property.toString(value as T)
     }
 }

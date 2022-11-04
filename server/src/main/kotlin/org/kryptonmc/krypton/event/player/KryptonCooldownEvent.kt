@@ -22,7 +22,7 @@ import org.kryptonmc.api.entity.player.Player
 import org.kryptonmc.api.event.player.CooldownEvent
 import org.kryptonmc.api.item.ItemType
 
-data class KryptonCooldownEvent(override val player: Player, override val item: ItemType, override val cooldown: Int) : CooldownEvent {
+class KryptonCooldownEvent(override val player: Player, override val item: ItemType, override val cooldown: Int) : CooldownEvent {
 
     override var result: CooldownEvent.Result = CooldownEvent.Result.allowed()
 }

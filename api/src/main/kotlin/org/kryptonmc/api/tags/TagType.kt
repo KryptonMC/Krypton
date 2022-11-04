@@ -11,12 +11,14 @@ package org.kryptonmc.api.tags
 import net.kyori.adventure.key.Keyed
 import org.kryptonmc.api.registry.Registry
 import org.kryptonmc.api.util.CataloguedBy
+import javax.annotation.concurrent.Immutable
 
 /**
  * A type of a game tag.
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
 @CataloguedBy(TagTypes::class)
+@Immutable
 public interface TagType<T : Any> : Keyed {
 
     /**

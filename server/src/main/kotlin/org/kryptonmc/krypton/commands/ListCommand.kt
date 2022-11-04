@@ -20,9 +20,9 @@ package org.kryptonmc.krypton.commands
 
 import com.mojang.brigadier.CommandDispatcher
 import net.kyori.adventure.text.Component
-import org.kryptonmc.api.adventure.toPlainText
 import org.kryptonmc.api.command.Sender
 import org.kryptonmc.krypton.KryptonServer
+import org.kryptonmc.krypton.adventure.toPlainText
 import org.kryptonmc.krypton.command.InternalCommand
 import org.kryptonmc.krypton.command.literal
 import org.kryptonmc.krypton.command.permission

@@ -13,7 +13,6 @@ import org.kryptonmc.api.auth.GameProfile
 /**
  * A skull.
  */
-@Suppress("INAPPLICABLE_JVM_NAME")
 public interface Skull : BlockEntity {
 
     /**
@@ -21,6 +20,5 @@ public interface Skull : BlockEntity {
      *
      * This determines what head is rendered on the skull.
      */
-    @get:JvmName("owner")
-    public val owner: GameProfile?
+    public var owner: GameProfile?
 }

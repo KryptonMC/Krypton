@@ -32,7 +32,7 @@ import org.kryptonmc.krypton.world.KryptonWorld
 
 class KryptonTrident(world: KryptonWorld) : KryptonArrowLike(world), Trident {
 
-    override val type: KryptonEntityType<Trident>
+    override val type: KryptonEntityType<KryptonTrident>
         get() = KryptonEntityTypes.TRIDENT
     override val serializer: EntitySerializer<KryptonTrident>
         get() = TridentSerializer

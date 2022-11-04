@@ -14,12 +14,10 @@ import org.kryptonmc.api.event.ResultedEvent
 /**
  * Called when a player sends a chat message (not a command).
  */
-@Suppress("INAPPLICABLE_JVM_NAME")
 public interface ChatEvent : PlayerEvent, ResultedEvent<ComponentResult> {
 
     /**
      * The message that the player has sent.
      */
-    @get:JvmName("message")
     public val message: String
 }

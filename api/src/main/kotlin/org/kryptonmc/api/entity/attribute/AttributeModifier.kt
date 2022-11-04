@@ -12,24 +12,26 @@ import org.jetbrains.annotations.ApiStatus
 import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.Krypton
 import java.util.UUID
+import javax.annotation.concurrent.Immutable
 
 /**
  * A modifier that can be applied to an [Attribute].
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
+@Immutable
 public interface AttributeModifier {
-
-    /**
-     * The name of the modifier.
-     */
-    @get:JvmName("name")
-    public val name: String
 
     /**
      * The unique ID of the modifier.
      */
     @get:JvmName("uuid")
     public val uuid: UUID
+
+    /**
+     * The name of the modifier.
+     */
+    @get:JvmName("name")
+    public val name: String
 
     /**
      * The amount to modify attribute values by.
@@ -46,7 +48,7 @@ public interface AttributeModifier {
     @ApiStatus.Internal
     public interface Factory {
 
-        public fun of(name: String, uuid: UUID, amount: Double, operation: ModifierOperation): AttributeModifier
+        public fun of(uuid: UUID, name: String, amount: Double, operation: ModifierOperation): AttributeModifier
     }
 
     public companion object {
@@ -54,15 +56,15 @@ public interface AttributeModifier {
         /**
          * Creates a new attribute modifier with the given values.
          *
-         * @param name the name of the modifier
          * @param uuid the unique ID of the modifier
+         * @param name the name of the modifier
          * @param amount the amount to modify attribute values by
          * @param operation the operation to perform on the modifier
          * @return a new attribute modifier
          */
         @JvmStatic
         @Contract("_, _, _, _ -> new", pure = true)
-        public fun of(name: String, uuid: UUID, amount: Double, operation: ModifierOperation): AttributeModifier =
-            Krypton.factory<Factory>().of(name, uuid, amount, operation)
+        public fun of(uuid: UUID, name: String, amount: Double, operation: ModifierOperation): AttributeModifier =
+            Krypton.factory<Factory>().of(uuid, name, amount, operation)
     }
 }

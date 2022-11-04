@@ -48,7 +48,6 @@ import java.nio.file.StandardOpenOption
 import kotlin.math.max
 import kotlin.math.min
 
-@Suppress("INAPPLICABLE_JVM_NAME")
 class KryptonStatisticsTracker(private val player: KryptonPlayer, private val file: Path) : StatisticsTracker {
 
     override val statistics: Object2IntMap<Statistic<*>> = Object2IntMaps.synchronize(Object2IntOpenHashMap())

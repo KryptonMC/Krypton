@@ -8,11 +8,12 @@
  */
 package org.kryptonmc.api.entity.animal.type
 
-import net.kyori.adventure.key.Keyed
-import org.kryptonmc.api.util.CataloguedBy
-
 /**
- * A variant of frog.
+ * A variant of a frog.
  */
-@CataloguedBy(FrogVariants::class)
-public interface FrogVariant : Keyed
+public enum class FrogVariant {
+
+    TEMPERATE,
+    WARM,
+    COLD
+}

@@ -13,25 +13,21 @@ import org.kryptonmc.api.item.data.DyeColor
 /**
  * A tropical fish.
  */
-@Suppress("INAPPLICABLE_JVM_NAME")
 public interface TropicalFish : SchoolingFish {
 
     /**
      * The base colour of this tropical fish.
      */
-    @get:JvmName("baseColor")
     public var baseColor: DyeColor
 
     /**
      * The colour of the pattern on this tropical fish.
      */
-    @get:JvmName("patternColor")
     public var patternColor: DyeColor
 
     /**
      * The variant that this tropical fish is, which determines its shape and
      * pattern.
      */
-    @get:JvmName("variant")
     public var variant: TropicalFishVariant
 }

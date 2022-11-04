@@ -34,7 +34,7 @@ import org.kryptonmc.krypton.world.KryptonWorld
 
 class KryptonCommandBlockMinecart(world: KryptonWorld) : KryptonMinecartLike(world), CommandBlockMinecart {
 
-    override val type: KryptonEntityType<CommandBlockMinecart>
+    override val type: KryptonEntityType<KryptonCommandBlockMinecart>
         get() = KryptonEntityTypes.COMMAND_BLOCK_MINECART
     override val serializer: EntitySerializer<KryptonCommandBlockMinecart>
         get() = CommandBlockMinecartSerializer

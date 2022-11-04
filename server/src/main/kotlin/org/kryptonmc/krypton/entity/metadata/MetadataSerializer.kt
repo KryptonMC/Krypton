@@ -26,7 +26,6 @@ import org.kryptonmc.krypton.util.ByteBufWriter
 import org.kryptonmc.krypton.util.readById
 import org.kryptonmc.krypton.util.readEnum
 import org.kryptonmc.krypton.util.readNullable
-import org.kryptonmc.krypton.util.readVarInt
 import org.kryptonmc.krypton.util.writeEnum
 import org.kryptonmc.krypton.util.writeId
 import org.kryptonmc.krypton.util.writeNullable

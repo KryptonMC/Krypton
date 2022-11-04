@@ -10,11 +10,13 @@ package org.kryptonmc.api.item.meta
 
 import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.auth.GameProfile
+import javax.annotation.concurrent.Immutable
 
 /**
  * Item metadata for a player head.
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
+@Immutable
 public interface PlayerHeadMeta : ScopedItemMeta<PlayerHeadMeta.Builder, PlayerHeadMeta> {
 
     /**

@@ -17,7 +17,7 @@ import org.kryptonmc.api.effect.sound.SoundEvents
  *
  * @param sound the corresponding sound event
  */
-public enum class NoteBlockInstrument(@get:JvmName("sound") public val sound: SoundEvent) {
+public enum class NoteBlockInstrument(public val sound: SoundEvent) {
 
     HARP(SoundEvents.NOTE_BLOCK_HARP),
     BASEDRUM(SoundEvents.NOTE_BLOCK_BASEDRUM),

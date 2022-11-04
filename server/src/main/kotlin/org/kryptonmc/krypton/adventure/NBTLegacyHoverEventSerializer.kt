@@ -25,9 +25,9 @@ import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.event.HoverEvent
 import net.kyori.adventure.text.serializer.gson.LegacyHoverEventSerializer
 import net.kyori.adventure.util.Codec
-import org.kryptonmc.api.adventure.toPlainText
 import org.kryptonmc.krypton.util.nbt.SNBTParser
 import org.kryptonmc.nbt.CompoundTag
+import org.kryptonmc.nbt.ImmutableCompoundTag
 import org.kryptonmc.nbt.Tag
 import java.io.IOException
 import java.lang.RuntimeException
@@ -53,7 +53,7 @@ object NBTLegacyHoverEventSerializer : LegacyHoverEventSerializer {
         return try {
             val nbt = SNBT_CODEC.decode(input.toPlainText())
             val tag = nbt.getCompound(ITEM_TAG)
-            val holder = if (!tag.isEmpty()) BinaryTagHolder.encode(tag, SNBT_CODEC) else null
+            val holder = if (!tag.isEmpty) BinaryTagHolder.encode(tag, SNBT_CODEC) else null
             HoverEvent.ShowItem.of(Key.key(nbt.getString(ITEM_TYPE)), nbt.getByte(ITEM_COUNT).toInt(), holder)
         } catch (exception: CommandSyntaxException) {
             throw IOException(exception)
@@ -71,7 +71,7 @@ object NBTLegacyHoverEventSerializer : LegacyHoverEventSerializer {
     }
 
     override fun serializeShowItem(input: HoverEvent.ShowItem): Component {
-        val tag = CompoundTag.immutableBuilder().string(ITEM_TYPE, input.item().asString()).byte(ITEM_COUNT, input.count().toByte())
+        val tag = ImmutableCompoundTag.builder().putString(ITEM_TYPE, input.item().asString()).putByte(ITEM_COUNT, input.count().toByte())
         try {
             input.nbt()?.let { tag.put(ITEM_TAG, it.get(SNBT_CODEC)) }
         } catch (exception: CommandSyntaxException) {
@@ -81,8 +81,8 @@ object NBTLegacyHoverEventSerializer : LegacyHoverEventSerializer {
     }
 
     override fun serializeShowEntity(input: HoverEvent.ShowEntity, encoder: Codec.Encoder<Component, String, out RuntimeException>): Component {
-        val tag = CompoundTag.immutableBuilder().string(ENTITY_ID, input.id().toString()).string(ENTITY_TYPE, input.type().asString())
-        input.name()?.let { tag.string(ENTITY_NAME, encoder.encode(it)) }
+        val tag = ImmutableCompoundTag.builder().putString(ENTITY_ID, input.id().toString()).putString(ENTITY_TYPE, input.type().asString())
+        input.name()?.let { tag.putString(ENTITY_NAME, encoder.encode(it)) }
         return Component.text(SNBT_CODEC.encode(tag.build()))
     }
 }

@@ -12,6 +12,7 @@ import org.jetbrains.annotations.ApiStatus
 import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.Krypton
 import org.kryptonmc.api.effect.sound.SoundEvent
+import javax.annotation.concurrent.Immutable
 
 /**
  * Music that may be played. This has a minimum and maximum delay before the
@@ -19,6 +20,7 @@ import org.kryptonmc.api.effect.sound.SoundEvent
  * between this time frame.
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
+@Immutable
 public interface Music {
 
     /**

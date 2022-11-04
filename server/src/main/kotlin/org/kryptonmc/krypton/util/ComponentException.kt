@@ -20,7 +20,7 @@ package org.kryptonmc.krypton.util
 
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.ComponentLike
-import org.kryptonmc.api.adventure.toPlainText
+import org.kryptonmc.krypton.adventure.toPlainText
 
 open class ComponentException(
     private val component: Component,

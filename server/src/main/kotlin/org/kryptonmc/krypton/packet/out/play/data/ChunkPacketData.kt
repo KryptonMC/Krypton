@@ -29,6 +29,7 @@ import org.kryptonmc.krypton.util.writeVarIntByteArray
 import org.kryptonmc.krypton.world.chunk.ChunkSection
 import org.kryptonmc.krypton.world.chunk.KryptonChunk
 import org.kryptonmc.nbt.CompoundTag
+import org.kryptonmc.nbt.ImmutableCompoundTag
 
 @JvmRecord
 data class ChunkPacketData(val heightmaps: CompoundTag, val data: ByteArray) : Writable {
@@ -62,9 +63,9 @@ data class ChunkPacketData(val heightmaps: CompoundTag, val data: ByteArray) : W
 
         @JvmStatic
         private fun extractHeightmaps(chunk: KryptonChunk): CompoundTag {
-            if (chunk.heightmaps.isEmpty()) return CompoundTag.empty()
-            val heightmaps = CompoundTag.immutableBuilder()
-            chunk.heightmaps.forEach { if (it.key.sendToClient()) heightmaps.longArray(it.key.name, it.value.rawData) }
+            if (chunk.heightmaps.isEmpty()) return CompoundTag.EMPTY
+            val heightmaps = ImmutableCompoundTag.builder()
+            chunk.heightmaps.forEach { if (it.key.sendToClient()) heightmaps.putLongArray(it.key.name, it.value.rawData) }
             return heightmaps.build()
         }
 

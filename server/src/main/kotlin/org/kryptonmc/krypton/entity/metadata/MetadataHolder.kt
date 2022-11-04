@@ -18,8 +18,6 @@
  */
 package org.kryptonmc.krypton.entity.metadata
 
-import kotlinx.collections.immutable.PersistentList
-import kotlinx.collections.immutable.persistentListOf
 import org.kryptonmc.krypton.entity.components.BaseDataHolder
 import space.vectrix.flare.fastutil.Int2ObjectSyncMap
 
@@ -35,7 +33,7 @@ class MetadataHolder(private val entity: BaseDataHolder) {
 
     fun <T> define(key: MetadataKey<T>, value: T) {
         val id = key.id
-        require(id <= MAX_ID_VALUE) { "Data value id is too big! Maximum size is $MAX_ID_VALUE, value was $id!" }
+        require(id <= MAX_ID_VALUE) { "Data value id $id is too large! Maximum is $MAX_ID_VALUE!" }
         require(!itemsById.containsKey(id)) { "Duplicate id value for $id!" }
         require(MetadataSerializers.idOf(key.serializer) >= 0) { "Unregistered serializer ${key.serializer} for $id!" }
         return createItem(key, value)
@@ -71,26 +69,26 @@ class MetadataHolder(private val entity: BaseDataHolder) {
     }
 
     fun collectAll(): List<Entry<*>>? {
-        var entries: PersistentList.Builder<Entry<*>>? = null
+        var entries: MutableList<Entry<*>>? = null
         itemsById.values.forEach {
-            if (entries == null) entries = persistentListOf<Entry<*>>().builder()
+            if (entries == null) entries = ArrayList()
             entries!!.add(it.export())
         }
-        return entries?.build()
+        return entries
     }
 
     fun collectDirty(): List<Entry<*>>? {
-        var entries: PersistentList.Builder<Entry<*>>? = null
+        var entries: MutableList<Entry<*>>? = null
         if (isDirty) {
             itemsById.values.forEach {
                 if (!it.isDirty) return@forEach
                 it.isDirty = false
-                if (entries == null) entries = persistentListOf<Entry<*>>().builder()
+                if (entries == null) entries = ArrayList()
                 entries!!.add(it.export())
             }
         }
         isDirty = false
-        return entries?.build()
+        return entries
     }
 
     @JvmRecord

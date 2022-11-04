@@ -29,14 +29,14 @@ object CreeperSerializer : EntitySerializer<KryptonCreeper> {
         MobSerializer.load(entity, data)
         entity.isCharged = data.getBoolean("powered")
         entity.isIgnited = data.getBoolean("ignited")
-        entity.fuse = data.getShort("Fuse")
+        entity.fuse = data.getShort("Fuse").toInt()
         entity.explosionRadius = data.getInt("ExplosionRadius")
     }
 
     override fun save(entity: KryptonCreeper): CompoundTag.Builder = MobSerializer.save(entity).apply {
-        boolean("powered", entity.isCharged)
-        boolean("ignited", entity.isIgnited)
-        short("Fuse", entity.fuse)
-        int("ExplosionRadius", entity.explosionRadius)
+        putBoolean("powered", entity.isCharged)
+        putBoolean("ignited", entity.isIgnited)
+        putShort("Fuse", entity.fuse.toShort())
+        putInt("ExplosionRadius", entity.explosionRadius)
     }
 }

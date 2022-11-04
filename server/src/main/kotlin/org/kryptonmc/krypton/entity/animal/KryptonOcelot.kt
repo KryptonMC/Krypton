@@ -19,13 +19,13 @@
 package org.kryptonmc.krypton.entity.animal
 
 import org.kryptonmc.api.entity.animal.Ocelot
-import org.kryptonmc.api.entity.attribute.AttributeTypes
 import org.kryptonmc.api.item.ItemStack
 import org.kryptonmc.api.item.ItemTypes
 import org.kryptonmc.krypton.entity.KryptonEntityType
 import org.kryptonmc.krypton.entity.KryptonEntityTypes
 import org.kryptonmc.krypton.entity.KryptonMob
 import org.kryptonmc.krypton.entity.attribute.AttributeSupplier
+import org.kryptonmc.krypton.entity.attribute.KryptonAttributeTypes
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.entity.serializer.EntitySerializer
 import org.kryptonmc.krypton.entity.serializer.animal.OcelotSerializer
@@ -33,7 +33,7 @@ import org.kryptonmc.krypton.world.KryptonWorld
 
 class KryptonOcelot(world: KryptonWorld) : KryptonAnimal(world), Ocelot {
 
-    override val type: KryptonEntityType<Ocelot>
+    override val type: KryptonEntityType<KryptonOcelot>
         get() = KryptonEntityTypes.OCELOT
     override val serializer: EntitySerializer<KryptonOcelot>
         get() = OcelotSerializer
@@ -55,8 +55,8 @@ class KryptonOcelot(world: KryptonWorld) : KryptonAnimal(world), Ocelot {
 
         @JvmStatic
         fun attributes(): AttributeSupplier.Builder = KryptonMob.attributes()
-            .add(AttributeTypes.MAX_HEALTH, 10.0)
-            .add(AttributeTypes.MOVEMENT_SPEED, 0.3)
-            .add(AttributeTypes.ATTACK_DAMAGE, 3.0)
+            .add(KryptonAttributeTypes.MAX_HEALTH, 10.0)
+            .add(KryptonAttributeTypes.MOVEMENT_SPEED, 0.3)
+            .add(KryptonAttributeTypes.ATTACK_DAMAGE, 3.0)
     }
 }

@@ -29,7 +29,7 @@ import org.kryptonmc.krypton.world.damage.KryptonDamageSource
 
 class KryptonGlowSquid(world: KryptonWorld) : KryptonSquid(world), GlowSquid {
 
-    override val type: KryptonEntityType<GlowSquid>
+    override val type: KryptonEntityType<KryptonGlowSquid>
         get() = KryptonEntityTypes.GLOW_SQUID
     override val serializer: EntitySerializer<KryptonGlowSquid>
         get() = GlowSquidSerializer

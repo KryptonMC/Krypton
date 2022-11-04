@@ -9,10 +9,11 @@
 package org.kryptonmc.api.block
 
 import net.kyori.adventure.key.Keyed
+import net.kyori.adventure.translation.Translatable
 import org.kryptonmc.api.item.ItemLike
 import org.kryptonmc.api.state.StateHolder
 import org.kryptonmc.api.util.CataloguedBy
-import org.kryptonmc.api.util.TranslationHolder
+import javax.annotation.concurrent.Immutable
 
 /**
  * A block with certain properties.
@@ -25,7 +26,8 @@ import org.kryptonmc.api.util.TranslationHolder
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
 @CataloguedBy(Blocks::class)
-public interface Block : StateHolder<BlockState>, BlockLike, ItemLike, TranslationHolder, Keyed {
+@Immutable
+public interface Block : StateHolder<BlockState>, BlockLike, ItemLike, Translatable, Keyed {
 
     /**
      * How resistant this block is to explosions. Higher

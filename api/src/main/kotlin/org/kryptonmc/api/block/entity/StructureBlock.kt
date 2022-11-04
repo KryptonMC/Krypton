@@ -19,19 +19,16 @@ public interface StructureBlock : BlockEntity {
     /**
      * The position of the structure.
      */
-    @get:JvmName("structurePosition")
     public var structurePosition: Vector3i
 
     /**
      * The size of the structure.
      */
-    @get:JvmName("size")
     public var size: Vector3i
 
     /**
      * The author of the structure.
      */
-    @get:JvmName("author")
     public var author: String
 
     /**
@@ -60,7 +57,6 @@ public interface StructureBlock : BlockEntity {
     /**
      * The seed of the structure to be generated.
      */
-    @get:JvmName("seed")
     public var seed: Long
 
     /**
@@ -68,6 +64,5 @@ public interface StructureBlock : BlockEntity {
      *
      * This determines how complete the structure that gets placed will be.
      */
-    @get:JvmName("integrity")
     public var integrity: Double
 }

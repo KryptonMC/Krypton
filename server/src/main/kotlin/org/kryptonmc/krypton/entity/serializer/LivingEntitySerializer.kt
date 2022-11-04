@@ -18,7 +18,7 @@
  */
 package org.kryptonmc.krypton.entity.serializer
 
-import org.kryptonmc.api.adventure.toPlainText
+import org.kryptonmc.krypton.adventure.toPlainText
 import org.kryptonmc.krypton.entity.KryptonLivingEntity
 import org.kryptonmc.krypton.entity.Pose
 import org.kryptonmc.krypton.util.logger
@@ -41,9 +41,9 @@ object LivingEntitySerializer : EntitySerializer<KryptonLivingEntity> {
         if (data.contains("Health", 99)) entity.health = data.getFloat("Health")
         if (data.getBoolean("FallFlying")) entity.isGliding = true
         entity.absorption = data.getFloat("AbsorptionAmount").coerceAtLeast(0F)
-        entity.deathTime = data.getShort("DeathTime")
+        entity.deathTime = data.getShort("DeathTime").toInt()
         entity.lastHurtTimestamp = data.getInt("HurtByTimestamp")
-        entity.hurtTime = data.getShort("HurtTime")
+        entity.hurtTime = data.getShort("HurtTime").toInt()
 
         // Scoreboard
         if (data.contains("Team", StringTag.ID)) {
@@ -61,19 +61,18 @@ object LivingEntitySerializer : EntitySerializer<KryptonLivingEntity> {
     }
 
     override fun save(entity: KryptonLivingEntity): CompoundTag.Builder = BaseEntitySerializer.save(entity).apply {
-        float("AbsorptionAmount", entity.absorption)
+        putFloat("AbsorptionAmount", entity.absorption)
         put("Attributes", entity.attributes.save())
         put("Brain", entity.brain.save())
-        short("DeathTime", entity.deathTime)
-        boolean("FallFlying", entity.isGliding)
-        float("Health", entity.health)
-        int("HurtByTimestamp", entity.lastHurtTimestamp)
-        short("HurtTime", entity.hurtTime)
-        val sleeping = entity.sleepingPosition
-        if (sleeping != null) {
-            int("SleepingX", sleeping.x())
-            int("SleepingY", sleeping.y())
-            int("SleepingZ", sleeping.z())
+        putShort("DeathTime", entity.deathTime.toShort())
+        putBoolean("FallFlying", entity.isGliding)
+        putFloat("Health", entity.health)
+        putInt("HurtByTimestamp", entity.lastHurtTimestamp)
+        putShort("HurtTime", entity.hurtTime.toShort())
+        entity.sleepingPosition?.let {
+            putInt("SleepingX", it.x())
+            putInt("SleepingY", it.y())
+            putInt("SleepingZ", it.z())
         }
     }
 }

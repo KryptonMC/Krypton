@@ -9,19 +9,22 @@
 package org.kryptonmc.api.item.meta
 
 import org.jetbrains.annotations.Contract
+import org.jetbrains.annotations.Unmodifiable
 import org.kryptonmc.api.block.entity.banner.BannerPattern
+import javax.annotation.concurrent.Immutable
 
 /**
  * Item metadata for a banner.
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
+@Immutable
 public interface BannerMeta : ScopedItemMeta<BannerMeta.Builder, BannerMeta> {
 
     /**
      * All of the patterns for this banner metadata.
      */
     @get:JvmName("patterns")
-    public val patterns: List<BannerPattern>
+    public val patterns: @Unmodifiable List<BannerPattern>
 
     /**
      * Creates new banner metadata with the given [patterns].
@@ -40,7 +43,7 @@ public interface BannerMeta : ScopedItemMeta<BannerMeta.Builder, BannerMeta> {
      * @return new banner metadata
      */
     @Contract("_ -> new", pure = true)
-    public fun addPattern(pattern: BannerPattern): BannerMeta
+    public fun withPattern(pattern: BannerPattern): BannerMeta
 
     /**
      * Creates new banner metadata with the pattern at the given [index]
@@ -50,7 +53,7 @@ public interface BannerMeta : ScopedItemMeta<BannerMeta.Builder, BannerMeta> {
      * @return new banner metadata
      */
     @Contract("_ -> new", pure = true)
-    public fun removePattern(index: Int): BannerMeta
+    public fun withoutPattern(index: Int): BannerMeta
 
     /**
      * Creates new banner metadata with the given [pattern] removed from the
@@ -60,7 +63,7 @@ public interface BannerMeta : ScopedItemMeta<BannerMeta.Builder, BannerMeta> {
      * @return new banner metadata
      */
     @Contract("_ -> new", pure = true)
-    public fun removePattern(pattern: BannerPattern): BannerMeta
+    public fun withoutPattern(pattern: BannerPattern): BannerMeta
 
     /**
      * A builder for building banner metadata.
@@ -76,7 +79,17 @@ public interface BannerMeta : ScopedItemMeta<BannerMeta.Builder, BannerMeta> {
          */
         @MetaDsl
         @Contract("_ -> this", mutates = "this")
-        public fun patterns(patterns: List<BannerPattern>): Builder
+        public fun patterns(patterns: Collection<BannerPattern>): Builder
+
+        /**
+         * Sets the patterns of the banner metadata.
+         *
+         * @param patterns the patterns
+         * @return this builder
+         */
+        @MetaDsl
+        @Contract("_ -> this", mutates = "this")
+        public fun patterns(vararg patterns: BannerPattern): Builder = patterns(patterns.asList())
 
         /**
          * Adds the given [pattern] to the list of patterns for the banner

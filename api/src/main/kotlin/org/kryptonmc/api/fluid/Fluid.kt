@@ -13,6 +13,7 @@ import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.item.ItemType
 import org.kryptonmc.api.state.StateHolder
 import org.kryptonmc.api.util.CataloguedBy
+import javax.annotation.concurrent.Immutable
 
 /**
  * A fluid with certain properties.
@@ -21,7 +22,8 @@ import org.kryptonmc.api.util.CataloguedBy
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
 @CataloguedBy(Fluids::class)
-public interface Fluid : StateHolder<FluidState>, FluidLike, Keyed {
+@Immutable
+public interface Fluid : StateHolder<FluidState>, Keyed {
 
     /**
      * The type of the bucket this fluid can be held in.
@@ -39,6 +41,4 @@ public interface Fluid : StateHolder<FluidState>, FluidLike, Keyed {
      */
     @get:JvmName("explosionResistance")
     public val explosionResistance: Double
-
-    override fun asFluid(): Fluid = this
 }

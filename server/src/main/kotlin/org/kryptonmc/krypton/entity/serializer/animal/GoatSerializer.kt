@@ -31,6 +31,6 @@ object GoatSerializer : EntitySerializer<KryptonGoat> {
     }
 
     override fun save(entity: KryptonGoat): CompoundTag.Builder = AgeableSerializer.save(entity).apply {
-        boolean("IsScreamingGoat", entity.canScream)
+        putBoolean("IsScreamingGoat", entity.canScream)
     }
 }

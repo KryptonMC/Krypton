@@ -21,22 +21,5 @@ package org.kryptonmc.krypton.event.player
 import net.kyori.adventure.key.Key
 import org.kryptonmc.api.entity.player.Player
 import org.kryptonmc.api.event.player.PluginMessageEvent
-import java.util.Objects
 
-@JvmRecord
-data class KryptonPluginMessageEvent(override val player: Player, override val channel: Key, override val message: ByteArray) : PluginMessageEvent {
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-        return player == (other as KryptonPluginMessageEvent).player && channel == other.channel && message.contentEquals(other.message)
-    }
-
-    override fun hashCode(): Int {
-        var result = 1
-        result = 31 * result + player.hashCode()
-        result = 31 * result + channel.hashCode()
-        result = 31 * result + message.contentHashCode()
-        return result
-    }
-}
+class KryptonPluginMessageEvent(override val player: Player, override val channel: Key, override val message: ByteArray) : PluginMessageEvent

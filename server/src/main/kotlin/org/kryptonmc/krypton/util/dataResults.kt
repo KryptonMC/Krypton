@@ -24,3 +24,5 @@ import java.util.Optional
 fun <R> Optional<R>.mapSuccess(): Optional<DataResult<R>> = map { DataResult.success(it!!) }
 
 fun <R> Optional<DataResult<R>>.orElseError(message: String): DataResult<R> = orElseGet { DataResult.error(message) }
+
+inline fun <R> R?.resultOrError(error: () -> String): DataResult<R> = if (this == null) DataResult.error(error()) else DataResult.success(this)

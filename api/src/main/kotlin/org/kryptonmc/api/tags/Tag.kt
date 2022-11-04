@@ -9,12 +9,14 @@
 package org.kryptonmc.api.tags
 
 import net.kyori.adventure.key.Keyed
+import javax.annotation.concurrent.Immutable
 
 /**
  * A game tag that may be applied to certain objects to denote specific
  * features or categories that something may have or be placed in to.
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
+@Immutable
 public interface Tag<T : Any> : Keyed {
 
     /**

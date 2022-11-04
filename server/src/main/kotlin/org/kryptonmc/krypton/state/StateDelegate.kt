@@ -28,21 +28,20 @@ import org.kryptonmc.krypton.state.property.downcast
  * KryptonState generic to be a KryptonState instance whilst avoiding the clash
  * in supertype generic types.
  */
-@Suppress("UNCHECKED_CAST")
 interface StateDelegate<S : State<S>, K : KryptonState<*, K>> : State<S> {
 
-    val state: K
-
     override val availableProperties: Set<KryptonProperty<*>>
-        get() = state.values.keys
+        get() = asState().values.keys
     override val properties: Map<Property<*>, Comparable<*>>
-        get() = state.values as Map<Property<*>, Comparable<*>>
+        @Suppress("UNCHECKED_CAST") get() = asState().values as Map<Property<*>, Comparable<*>>
 
-    override fun contains(property: Property<*>): Boolean = state.contains(property.downcast())
+    fun asState(): K
 
-    override fun <T : Comparable<T>> get(property: Property<T>): T? = state.get(property.downcast())
+    override fun contains(property: Property<*>): Boolean = asState().contains(property.downcast())
 
-    override fun <T : Comparable<T>> require(property: Property<T>): T = state.require(property.downcast())
+    override fun <T : Comparable<T>> get(property: Property<T>): T? = asState().get(property.downcast())
 
-    override fun <T : Comparable<T>> set(property: Property<T>, value: T): S = state.set(property.downcast(), value) as S
+    override fun <T : Comparable<T>> require(property: Property<T>): T = asState().require(property.downcast())
+
+    override fun <T : Comparable<T>> set(property: Property<T>, value: T): S = asState().set(property.downcast(), value) as S
 }

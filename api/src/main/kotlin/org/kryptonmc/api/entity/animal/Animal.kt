@@ -41,7 +41,6 @@ public interface Animal : Ageable {
     /**
      * The time remaining that this animal will be in love for.
      */
-    @get:JvmName("inLoveTime")
     public val inLoveTime: Int
 
     /**
@@ -49,7 +48,6 @@ public interface Animal : Ageable {
      *
      * If it is not in love, this will always be null.
      */
-    @get:JvmName("loveCause")
     public var loveCause: UUID?
 
     /**

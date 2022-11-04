@@ -25,7 +25,7 @@ public enum class PandaGene(public val mutationProbability: Float, public val is
      *
      * The mutation chance for this gene is 5/16.
      */
-    NORMAL(0.3125F, false),
+    NORMAL(5F / 16F, false),
 
     /**
      * Lazy pandas have the following unique personality traits:
@@ -36,7 +36,7 @@ public enum class PandaGene(public val mutationProbability: Float, public val is
      *
      * The mutation chance for this gene is 1/16.
      */
-    LAZY(0.0625F, false),
+    LAZY(1F / 16F, false),
 
     /**
      * Worried pandas have the following unique personality traits:
@@ -47,7 +47,7 @@ public enum class PandaGene(public val mutationProbability: Float, public val is
      *
      * The mutation chance for this gene is 1/16.
      */
-    WORRIED(0.0625F, false),
+    WORRIED(1F / 16F, false),
 
     /**
      * Playful pandas will roll over and jump around, even as adults. This
@@ -56,7 +56,7 @@ public enum class PandaGene(public val mutationProbability: Float, public val is
      *
      * The mutation chance for this gene is 1/16.
      */
-    PLAYFUL(0.0625F, false),
+    PLAYFUL(1F / 16F, false),
 
     /**
      * Brown pandas have no unique personality traits, but are brown and white,
@@ -64,7 +64,7 @@ public enum class PandaGene(public val mutationProbability: Float, public val is
      *
      * The mutation chance for this gene is 2/16.
      */
-    BROWN(0.125F, true),
+    BROWN(2F / 16F, true),
 
     /**
      * Weak pandas tend to sneeze more often as babies than regular baby
@@ -72,7 +72,7 @@ public enum class PandaGene(public val mutationProbability: Float, public val is
      *
      * The mutation chance for this gene is 5/16.
      */
-    WEAK(0.3125F, true),
+    WEAK(5F / 16F, true),
 
     /**
      * Aggressive pandas have the following unique personality traits:
@@ -85,5 +85,5 @@ public enum class PandaGene(public val mutationProbability: Float, public val is
      *
      * The mutation chance for this gene is 1/16.
      */
-    AGGRESSIVE(0.0625F, false)
+    AGGRESSIVE(1F / 16F, false)
 }

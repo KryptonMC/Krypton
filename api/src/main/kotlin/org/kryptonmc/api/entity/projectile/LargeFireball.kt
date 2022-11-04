@@ -11,12 +11,10 @@ package org.kryptonmc.api.entity.projectile
 /**
  * A large fireball.
  */
-@Suppress("INAPPLICABLE_JVM_NAME")
 public interface LargeFireball : Fireball {
 
     /**
      * The power of the explosion that will be produced by this large fireball.
      */
-    @get:JvmName("explosionPower")
-    public val explosionPower: Int
+    public var explosionPower: Int
 }

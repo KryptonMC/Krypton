@@ -25,6 +25,7 @@ import org.kryptonmc.nbt.ByteTag
 import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.FloatTag
 import org.kryptonmc.nbt.ListTag
+import org.kryptonmc.nbt.list
 
 object MobSerializer : EntitySerializer<KryptonMob> {
 
@@ -43,21 +44,21 @@ object MobSerializer : EntitySerializer<KryptonMob> {
     }
 
     override fun save(entity: KryptonMob): CompoundTag.Builder = LivingEntitySerializer.save(entity).apply {
-        boolean("CanPickUpLoot", entity.canPickUpLoot)
-        boolean("PersistenceRequired", entity.isPersistent)
+        putBoolean("CanPickUpLoot", entity.canPickUpLoot)
+        putBoolean("PersistenceRequired", entity.isPersistent)
         put("ArmorItems", KryptonEquipable.saveItems(entity.armorItems))
         put("HandItems", KryptonEquipable.saveItems(entity.handItems))
         list("ArmorDropChances") { entity.armorDropChances.forEach(::addFloat) }
         list("HandDropChances") { entity.handDropChances.forEach(::addFloat) }
-        boolean("LeftHanded", entity.mainHand == MainHand.LEFT)
-        if (!entity.hasAI) boolean("NoAI", true)
+        putBoolean("LeftHanded", entity.mainHand == MainHand.LEFT)
+        if (!entity.hasAI) putBoolean("NoAI", true)
     }
 
     @JvmStatic
     private fun loadChances(data: CompoundTag, name: String, chances: FloatArray) {
         if (!data.contains(name, ListTag.ID)) return
         val chancesData = data.getList(name, FloatTag.ID)
-        for (i in 0 until chancesData.size) {
+        for (i in 0 until chancesData.size()) {
             chances[i] = chancesData.getFloat(i)
         }
     }

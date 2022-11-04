@@ -20,7 +20,7 @@ package org.kryptonmc.krypton.event.auth
 
 import org.kryptonmc.api.event.auth.AuthenticationEvent
 
-data class KryptonAuthenticationEvent(override val username: String) : AuthenticationEvent {
+class KryptonAuthenticationEvent(override val username: String) : AuthenticationEvent {
 
     override var result: AuthenticationEvent.Result = AuthenticationEvent.Result.allowed()
 }

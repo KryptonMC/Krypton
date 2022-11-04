@@ -8,23 +8,27 @@
  */
 package org.kryptonmc.api.state
 
+import org.jetbrains.annotations.Unmodifiable
+import javax.annotation.concurrent.Immutable
+
 /**
  * Something that is a possible state of something else.
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
+@Immutable
 public interface State<out S : State<S>> {
 
     /**
      * All of the properties that can be set on this state.
      */
     @get:JvmName("availableProperties")
-    public val availableProperties: Set<Property<*>>
+    public val availableProperties: @Unmodifiable Set<Property<*>>
 
     /**
      * All of the properties that are currently set on this state.
      */
     @get:JvmName("properties")
-    public val properties: Map<Property<*>, Comparable<*>>
+    public val properties: @Unmodifiable Map<Property<*>, Comparable<*>>
 
     /**
      * Checks if the given [property] has a value on this state.

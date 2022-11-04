@@ -18,14 +18,16 @@
  */
 package org.kryptonmc.krypton.item
 
-import org.kryptonmc.api.item.ItemAttribute
+import org.kryptonmc.api.item.ItemAttributeModifier
 import org.kryptonmc.api.item.ItemStack
 import org.kryptonmc.krypton.item.handler.ItemHandler
 import org.kryptonmc.api.item.ItemType
 import org.kryptonmc.api.item.data.ItemFlag
+import org.kryptonmc.api.item.meta.ItemMeta
 import org.kryptonmc.krypton.item.handler.DummyItemHandler
-import org.kryptonmc.krypton.registry.KryptonRegistries
+import org.kryptonmc.krypton.item.meta.AbstractItemMeta
 import org.kryptonmc.krypton.util.downcastApiType
+import org.kryptonmc.krypton.util.nbt.putUUID
 import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.compound
 
@@ -33,15 +35,17 @@ fun ItemStack.downcast(): KryptonItemStack = downcastApiType("ItemStack")
 
 fun ItemType.downcast(): KryptonItemType = downcastApiType("ItemType")
 
+fun ItemMeta.downcastBase(): AbstractItemMeta<*> = downcastApiType("ItemMeta")
+
 fun ItemType.handler(): ItemHandler = ItemManager.handler(this) ?: DummyItemHandler
 
 fun ItemFlag.mask(): Int = 1 shl ordinal
 
-fun ItemAttribute.save(): CompoundTag = compound {
-    string("AttributeName", type.key().asString())
-    string("Slot", slot.name.lowercase())
-    string("Name", modifier.name)
-    uuid("UUID", modifier.uuid)
-    double("Amount", modifier.amount)
-    int("Operation", KryptonRegistries.MODIFIER_OPERATIONS.idOf(modifier.operation))
+fun ItemAttributeModifier.save(): CompoundTag = compound {
+    putString("AttributeName", type.key().asString())
+    putString("Slot", slot.name.lowercase())
+    putString("Name", name)
+    putUUID("UUID", uuid)
+    putDouble("Amount", amount)
+    putInt("Operation", operation.ordinal)
 }

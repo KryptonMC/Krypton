@@ -13,18 +13,15 @@ import net.kyori.adventure.text.Component
 /**
  * A minecart with a command block in it.
  */
-@Suppress("INAPPLICABLE_JVM_NAME")
 public interface CommandBlockMinecart : MinecartLike {
 
     /**
      * The command that this command block Minecart will run.
      */
-    @get:JvmName("command")
     public var command: String
 
     /**
      * The last output from the command block Minecart running the command.
      */
-    @get:JvmName("lastOutput")
     public var lastOutput: Component
 }

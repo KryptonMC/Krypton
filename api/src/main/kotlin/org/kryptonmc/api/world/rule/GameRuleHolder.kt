@@ -11,13 +11,11 @@ package org.kryptonmc.api.world.rule
 /**
  * A holder of game rules. Used to get and set game rule values.
  */
-@Suppress("INAPPLICABLE_JVM_NAME")
 public interface GameRuleHolder {
 
     /**
      * All the rules this holder is holding
      */
-    @get:JvmName("rules")
     public val rules: Map<GameRule<*>, *>
 
     /**

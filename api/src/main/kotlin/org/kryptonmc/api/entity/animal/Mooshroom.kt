@@ -13,12 +13,10 @@ import org.kryptonmc.api.entity.animal.type.MooshroomVariant
 /**
  * A mooshroom.
  */
-@Suppress("INAPPLICABLE_JVM_NAME")
 public interface Mooshroom : Cow {
 
     /**
      * The variant of this mooshroom.
      */
-    @get:JvmName("variant")
     public var variant: MooshroomVariant
 }

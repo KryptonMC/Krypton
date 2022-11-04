@@ -15,12 +15,10 @@ import java.net.InetAddress
 /**
  * Called when an IP address is whitelisted.
  */
-@Suppress("INAPPLICABLE_JVM_NAME")
 public interface WhitelistIpEvent : ResultedEvent<GenericResult> {
 
     /**
      * The whitelisted IP address.
      */
-    @get:JvmName("address")
     public val address: InetAddress
 }

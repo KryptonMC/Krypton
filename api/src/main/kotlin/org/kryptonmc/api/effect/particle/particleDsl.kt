@@ -11,6 +11,7 @@
 package org.kryptonmc.api.effect.particle
 
 import org.jetbrains.annotations.Contract
+import org.kryptonmc.api.effect.particle.builder.BaseParticleEffectBuilder
 import org.kryptonmc.api.effect.particle.builder.BlockParticleEffectBuilder
 import org.kryptonmc.api.effect.particle.builder.ColorParticleEffectBuilder
 import org.kryptonmc.api.effect.particle.builder.DirectionalParticleEffectBuilder
@@ -37,8 +38,7 @@ internal annotation class ParticleDsl
 @ParticleDsl
 @JvmSynthetic
 @Contract("_, _ -> new", pure = true)
-public inline fun particleEffect(type: SimpleParticleType, builder: SimpleParticleEffectBuilder.() -> Unit = {}): ParticleEffect =
-    type.builder().apply(builder).build()
+public inline fun particleEffect(type: SimpleParticleType, builder: SimpleParticleEffectBuilder.() -> Unit): ParticleEffect = effect(type, builder)
 
 /**
  * Creates a new directional particle effect with the given [type] and the
@@ -51,8 +51,8 @@ public inline fun particleEffect(type: SimpleParticleType, builder: SimplePartic
 @ParticleDsl
 @JvmSynthetic
 @Contract("_, _ -> new", pure = true)
-public inline fun particleEffect(type: DirectionalParticleType, builder: DirectionalParticleEffectBuilder.() -> Unit = {}): ParticleEffect =
-    type.builder().apply(builder).build()
+public inline fun particleEffect(type: DirectionalParticleType, builder: DirectionalParticleEffectBuilder.() -> Unit): ParticleEffect =
+    effect(type, builder)
 
 /**
  * Creates a new block particle effect with the given [type] and the result of
@@ -65,8 +65,7 @@ public inline fun particleEffect(type: DirectionalParticleType, builder: Directi
 @ParticleDsl
 @JvmSynthetic
 @Contract("_, _ -> new", pure = true)
-public inline fun particleEffect(type: BlockParticleType, builder: BlockParticleEffectBuilder.() -> Unit = {}): ParticleEffect =
-    type.builder().apply(builder).build()
+public inline fun particleEffect(type: BlockParticleType, builder: BlockParticleEffectBuilder.() -> Unit): ParticleEffect = effect(type, builder)
 
 /**
  * Creates a new item particle effect with the given [type] and the result of
@@ -79,8 +78,7 @@ public inline fun particleEffect(type: BlockParticleType, builder: BlockParticle
 @ParticleDsl
 @JvmSynthetic
 @Contract("_, _ -> new", pure = true)
-public inline fun particleEffect(type: ItemParticleType, builder: ItemParticleEffectBuilder.() -> Unit = {}): ParticleEffect =
-    type.builder().apply(builder).build()
+public inline fun particleEffect(type: ItemParticleType, builder: ItemParticleEffectBuilder.() -> Unit): ParticleEffect = effect(type, builder)
 
 /**
  * Creates a new colour particle effect with the given [type] and the result
@@ -93,8 +91,7 @@ public inline fun particleEffect(type: ItemParticleType, builder: ItemParticleEf
 @ParticleDsl
 @JvmSynthetic
 @Contract("_, _ -> new", pure = true)
-public inline fun particleEffect(type: ColorParticleType, builder: ColorParticleEffectBuilder.() -> Unit = {}): ParticleEffect =
-    type.builder().apply(builder).build()
+public inline fun particleEffect(type: ColorParticleType, builder: ColorParticleEffectBuilder.() -> Unit): ParticleEffect = effect(type, builder)
 
 /**
  * Creates a new dust particle effect with the given [type] and the result of
@@ -107,8 +104,7 @@ public inline fun particleEffect(type: ColorParticleType, builder: ColorParticle
 @ParticleDsl
 @JvmSynthetic
 @Contract("_, _ -> new", pure = true)
-public inline fun particleEffect(type: DustParticleType, builder: DustParticleEffectBuilder.() -> Unit = {}): ParticleEffect =
-    type.builder().apply(builder).build()
+public inline fun particleEffect(type: DustParticleType, builder: DustParticleEffectBuilder.() -> Unit): ParticleEffect = effect(type, builder)
 
 /**
  * Creates a new dust transition particle effect with the given [type] and the
@@ -121,8 +117,8 @@ public inline fun particleEffect(type: DustParticleType, builder: DustParticleEf
 @ParticleDsl
 @JvmSynthetic
 @Contract("_, _ -> new", pure = true)
-public inline fun particleEffect(type: DustTransitionParticleType, builder: DustTransitionParticleEffectBuilder.() -> Unit = {}): ParticleEffect =
-    type.builder().apply(builder).build()
+public inline fun particleEffect(type: DustTransitionParticleType, builder: DustTransitionParticleEffectBuilder.() -> Unit): ParticleEffect =
+    effect(type, builder)
 
 /**
  * Creates a new note particle effect with the given [type] and the result of
@@ -135,8 +131,7 @@ public inline fun particleEffect(type: DustTransitionParticleType, builder: Dust
 @ParticleDsl
 @JvmSynthetic
 @Contract("_, _ -> new", pure = true)
-public inline fun particleEffect(type: NoteParticleType, builder: NoteParticleEffectBuilder.() -> Unit = {}): ParticleEffect =
-    type.builder().apply(builder).build()
+public inline fun particleEffect(type: NoteParticleType, builder: NoteParticleEffectBuilder.() -> Unit): ParticleEffect = effect(type, builder)
 
 /**
  * Creates a new vibration particle effect with the given [type] and the
@@ -149,5 +144,10 @@ public inline fun particleEffect(type: NoteParticleType, builder: NoteParticleEf
 @ParticleDsl
 @JvmSynthetic
 @Contract("_, _ -> new", pure = true)
-public inline fun particleEffect(type: VibrationParticleType, builder: VibrationParticleEffectBuilder.() -> Unit = {}): ParticleEffect =
+public inline fun particleEffect(type: VibrationParticleType, builder: VibrationParticleEffectBuilder.() -> Unit): ParticleEffect =
+    effect(type, builder)
+
+@JvmSynthetic
+@PublishedApi
+internal inline fun <B : BaseParticleEffectBuilder<B>, T : ScopedParticleType<B>> effect(type: T, builder: B.() -> Unit): ParticleEffect =
     type.builder().apply(builder).build()

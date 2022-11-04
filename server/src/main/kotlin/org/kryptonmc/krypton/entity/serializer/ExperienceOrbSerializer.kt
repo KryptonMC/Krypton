@@ -32,9 +32,9 @@ object ExperienceOrbSerializer : EntitySerializer<KryptonExperienceOrb> {
     }
 
     override fun save(entity: KryptonExperienceOrb): CompoundTag.Builder = BaseEntitySerializer.save(entity).apply {
-        short("Age", entity.age.toShort())
-        int("Count", entity.count)
-        short("Health", entity.health.toShort())
-        short("Value", entity.experience.toShort())
+        putShort("Age", entity.age.toShort())
+        putInt("Count", entity.count)
+        putShort("Health", entity.health.toShort())
+        putShort("Value", entity.experience.toShort())
     }
 }

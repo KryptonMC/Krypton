@@ -8,14 +8,13 @@
  */
 package org.kryptonmc.api.world.rule
 
-import net.kyori.adventure.key.Key
 import net.kyori.adventure.key.Keyed
-import net.kyori.adventure.text.TranslatableComponent
+import net.kyori.adventure.translation.Translatable
 import org.jetbrains.annotations.ApiStatus
 import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.Krypton
 import org.kryptonmc.api.util.CataloguedBy
-import org.kryptonmc.api.util.TranslationHolder
+import javax.annotation.concurrent.Immutable
 
 /**
  * A rule dictating how a specific aspect of the game functions.
@@ -24,7 +23,8 @@ import org.kryptonmc.api.util.TranslationHolder
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
 @CataloguedBy(GameRules::class)
-public interface GameRule<V : Any> : TranslationHolder, Keyed {
+@Immutable
+public interface GameRule<V : Any> : Translatable, Keyed {
 
     /**
      * The name of this rule.
@@ -41,7 +41,7 @@ public interface GameRule<V : Any> : TranslationHolder, Keyed {
     @ApiStatus.Internal
     public interface Factory {
 
-        public fun <V : Any> of(key: Key, name: String, default: V, translation: TranslatableComponent): GameRule<V>
+        public fun <V : Any> of(name: String, default: V): GameRule<V>
     }
 
     public companion object {
@@ -49,16 +49,12 @@ public interface GameRule<V : Any> : TranslationHolder, Keyed {
         /**
          * Creates a new game rule with the given values.
          *
-         * @param key the key
          * @param name the name
          * @param default the default value
-         * @param translation the translation
          * @return a new game rule
          */
         @JvmStatic
-        @JvmOverloads
         @Contract("_, _, _, _ -> new", pure = true)
-        public fun <V : Any> of(key: Key, name: String, default: V, translation: TranslatableComponent): GameRule<V> =
-            Krypton.factory<Factory>().of(key, name, default, translation)
+        public fun <V : Any> of(name: String, default: V): GameRule<V> = Krypton.factory<Factory>().of(name, default)
     }
 }

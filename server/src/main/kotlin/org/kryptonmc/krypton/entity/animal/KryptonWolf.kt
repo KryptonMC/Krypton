@@ -20,19 +20,18 @@ package org.kryptonmc.krypton.entity.animal
 
 import org.kryptonmc.api.entity.animal.Animal
 import org.kryptonmc.api.entity.animal.Wolf
-import org.kryptonmc.api.entity.attribute.AttributeTypes
 import org.kryptonmc.api.item.ItemStack
 import org.kryptonmc.api.item.data.DyeColor
-import org.kryptonmc.api.item.data.DyeColors
 import org.kryptonmc.krypton.entity.KryptonEntityType
 import org.kryptonmc.krypton.entity.KryptonEntityTypes
 import org.kryptonmc.krypton.entity.KryptonMob
 import org.kryptonmc.krypton.entity.Neutral
 import org.kryptonmc.krypton.entity.attribute.AttributeSupplier
+import org.kryptonmc.krypton.entity.attribute.KryptonAttributeTypes
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.entity.serializer.EntitySerializer
 import org.kryptonmc.krypton.entity.serializer.animal.WolfSerializer
-import org.kryptonmc.krypton.registry.KryptonRegistries
+import org.kryptonmc.krypton.util.DyeColors
 import org.kryptonmc.krypton.util.provider.UniformInt
 import org.kryptonmc.krypton.world.KryptonWorld
 import java.util.UUID
@@ -40,7 +39,7 @@ import kotlin.random.Random
 
 class KryptonWolf(world: KryptonWorld) : KryptonTamable(world), Wolf, Neutral {
 
-    override val type: KryptonEntityType<Wolf>
+    override val type: KryptonEntityType<KryptonWolf>
         get() = KryptonEntityTypes.WOLF
     override val serializer: EntitySerializer<KryptonWolf>
         get() = WolfSerializer
@@ -51,8 +50,8 @@ class KryptonWolf(world: KryptonWorld) : KryptonTamable(world), Wolf, Neutral {
         set(value) = if (value) startAngerTimer() else stopBeingAngry()
 
     override var collarColor: DyeColor
-        get() = KryptonRegistries.DYE_COLORS.get(data.get(MetadataKeys.Wolf.COLLAR_COLOR))!!
-        set(value) = data.set(MetadataKeys.Wolf.COLLAR_COLOR, KryptonRegistries.DYE_COLORS.idOf(value))
+        get() = DyeColors.fromId(data.get(MetadataKeys.Wolf.COLLAR_COLOR))
+        set(value) = data.set(MetadataKeys.Wolf.COLLAR_COLOR, value.ordinal)
     override var isBeggingForFood: Boolean
         get() = data.get(MetadataKeys.Wolf.BEGGING)
         set(value) = data.set(MetadataKeys.Wolf.BEGGING, value)
@@ -65,12 +64,12 @@ class KryptonWolf(world: KryptonWorld) : KryptonTamable(world), Wolf, Neutral {
         set(value) {
             super.isTamed = value
             if (value) {
-                attribute(AttributeTypes.MAX_HEALTH)?.baseValue = TAMED_HEALTH
+                getAttribute(KryptonAttributeTypes.MAX_HEALTH)?.baseValue = TAMED_HEALTH
                 health = TAMED_HEALTH.toFloat()
             } else {
-                attribute(AttributeTypes.MAX_HEALTH)?.baseValue = UNTAMED_HEALTH
+                getAttribute(KryptonAttributeTypes.MAX_HEALTH)?.baseValue = UNTAMED_HEALTH
             }
-            attribute(AttributeTypes.ATTACK_DAMAGE)?.baseValue = TAME_UPDATE_ATTACK_DAMAGE
+            getAttribute(KryptonAttributeTypes.ATTACK_DAMAGE)?.baseValue = TAME_UPDATE_ATTACK_DAMAGE
         }
 
     override val soundVolume: Float
@@ -83,7 +82,7 @@ class KryptonWolf(world: KryptonWorld) : KryptonTamable(world), Wolf, Neutral {
     override fun defineData() {
         super.defineData()
         data.define(MetadataKeys.Wolf.BEGGING, false)
-        data.define(MetadataKeys.Wolf.COLLAR_COLOR, KryptonRegistries.DYE_COLORS.idOf(DyeColors.RED))
+        data.define(MetadataKeys.Wolf.COLLAR_COLOR, DyeColor.RED.ordinal)
         data.define(MetadataKeys.Wolf.ANGER_TIME, 0)
     }
 
@@ -112,8 +111,8 @@ class KryptonWolf(world: KryptonWorld) : KryptonTamable(world), Wolf, Neutral {
 
         @JvmStatic
         fun attributes(): AttributeSupplier.Builder = KryptonMob.attributes()
-            .add(AttributeTypes.MOVEMENT_SPEED, 0.3)
-            .add(AttributeTypes.MAX_HEALTH, 8.0)
-            .add(AttributeTypes.ATTACK_DAMAGE, 2.0)
+            .add(KryptonAttributeTypes.MOVEMENT_SPEED, 0.3)
+            .add(KryptonAttributeTypes.MAX_HEALTH, 8.0)
+            .add(KryptonAttributeTypes.ATTACK_DAMAGE, 2.0)
     }
 }

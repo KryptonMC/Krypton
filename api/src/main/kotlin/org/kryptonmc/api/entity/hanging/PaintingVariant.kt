@@ -10,16 +10,18 @@ package org.kryptonmc.api.entity.hanging
 
 import net.kyori.adventure.key.Keyed
 import org.kryptonmc.api.util.CataloguedBy
+import javax.annotation.concurrent.Immutable
 
 /**
- * A picture that may appear on the canvas of a [Painting].
+ * A variant of a painting.
  *
  * This determines what image will actually appear on the painting when it is
  * rendered by the client.
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
-@CataloguedBy(Pictures::class)
-public interface Picture : Keyed {
+@CataloguedBy(PaintingVariants::class)
+@Immutable
+public interface PaintingVariant : Keyed {
 
     /**
      * The width of the image.

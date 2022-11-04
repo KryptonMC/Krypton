@@ -10,14 +10,11 @@ package org.kryptonmc.api.entity
 
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.key.Keyed
-import org.jetbrains.annotations.ApiStatus
-import org.jetbrains.annotations.Contract
-import org.kryptonmc.api.Krypton
+import net.kyori.adventure.translation.Translatable
 import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.block.BlockState
 import org.kryptonmc.api.util.CataloguedBy
-import org.kryptonmc.api.util.KeyedBuilder
-import org.kryptonmc.api.util.TranslationHolder
+import javax.annotation.concurrent.Immutable
 
 /**
  * A type of entity.
@@ -26,7 +23,8 @@ import org.kryptonmc.api.util.TranslationHolder
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
 @CataloguedBy(EntityTypes::class)
-public interface EntityType<out T : Entity> : Keyed, TranslationHolder {
+@Immutable
+public interface EntityType<out T : Entity> : Keyed, Translatable {
 
     /**
      * The category entities of this type are part of.
@@ -85,193 +83,11 @@ public interface EntityType<out T : Entity> : Keyed, TranslationHolder {
     public val lootTable: Key
 
     /**
-     * Returns true if entities of this type are immune (they will not be
-     * damaged by) the given [block], or false otherwise.
+     * Checks if entities of this type are immune (they will not be damaged by)
+     * the given [block].
      *
      * @param block the block to check
      * @return true if entities are immune to the block, false otherwise
      */
     public fun isImmuneTo(block: BlockState): Boolean
-
-    /**
-     * A builder for building entity types.
-     */
-    @EntityTypeDsl
-    public interface Builder<T : Entity> : KeyedBuilder<EntityType<T>, Builder<T>>, TranslationHolder.Builder<Builder<T>, EntityType<T>> {
-
-        /**
-         * Sets the category for the entity type to the given [category].
-         *
-         * @param category the category
-         * @return this builder
-         */
-        @EntityTypeDsl
-        @Contract("_ -> this", mutates = "this")
-        public fun category(category: EntityCategory): Builder<T>
-
-        /**
-         * Sets whether entities of the type are summonable or not to the given
-         * setting [value].
-         *
-         * @param value the value of the setting
-         * @return this builder
-         */
-        @EntityTypeDsl
-        @Contract("_ -> this", mutates = "this")
-        public fun summonable(value: Boolean): Builder<T>
-
-        /**
-         * Makes entities of the type summonable.
-         *
-         * @return this builder
-         */
-        @EntityTypeDsl
-        @Contract("_ -> this", mutates = "this")
-        public fun summonable(): Builder<T> = summonable(true)
-
-        /**
-         * Makes entities of the type not summonable.
-         *
-         * @return this builder
-         */
-        @EntityTypeDsl
-        @Contract("_ -> this", mutates = "this")
-        public fun notSummonable(): Builder<T> = summonable(false)
-
-        /**
-         * Sets whether entities of the type are immune to fire or not to the
-         * given setting [value].
-         *
-         * @param value the value of the setting
-         * @return this builder
-         */
-        @EntityTypeDsl
-        @Contract("_ -> this", mutates = "this")
-        public fun fireImmune(value: Boolean): Builder<T>
-
-        /**
-         * Makes entities of the type immune to fire.
-         *
-         * @return this builder
-         */
-        @EntityTypeDsl
-        @Contract("_ -> this", mutates = "this")
-        public fun fireImmune(): Builder<T> = fireImmune(true)
-
-        /**
-         * Makes entities of the type flammable.
-         *
-         * @return this builder
-         */
-        @EntityTypeDsl
-        @Contract("_ -> this", mutates = "this")
-        public fun flammable(): Builder<T> = fireImmune(false)
-
-        /**
-         * Sets the client tracking range for entities of the type to the given
-         * [range].
-         *
-         * @param range the range
-         * @return this builder
-         */
-        @EntityTypeDsl
-        @Contract("_ -> this", mutates = "this")
-        public fun clientTrackingRange(range: Int): Builder<T>
-
-        /**
-         * Sets the interval between updates for entities of the type to the
-         * given [interval].
-         *
-         * @param interval the update interval
-         * @return this builder
-         */
-        @EntityTypeDsl
-        @Contract("_ -> this", mutates = "this")
-        public fun updateInterval(interval: Int): Builder<T>
-
-        /**
-         * Sets the base width for the entity type to the given [width].
-         *
-         * @param width the base width
-         * @return this builder
-         */
-        @EntityTypeDsl
-        @Contract("_ -> this", mutates = "this")
-        public fun width(width: Float): Builder<T>
-
-        /**
-         * Sets the base height for the entity type to the given [height].
-         *
-         * @param height the base height
-         * @return this builder
-         */
-        @EntityTypeDsl
-        @Contract("_ -> this", mutates = "this")
-        public fun height(height: Float): Builder<T>
-
-        /**
-         * Adds the given [block] to the list of blocks that entities of the
-         * type will not be damaged by.
-         *
-         * @param block the block
-         * @return this builder
-         */
-        @EntityTypeDsl
-        @Contract("_ -> this", mutates = "this")
-        public fun immuneTo(block: Block): Builder<T>
-
-        /**
-         * Adds the given [blocks] to the list of blocks that entities of the
-         * type will not be damaged by.
-         *
-         * @param blocks the blocks
-         * @return this builder
-         */
-        @EntityTypeDsl
-        @Contract("_ -> this", mutates = "this")
-        public fun immuneTo(vararg blocks: Block): Builder<T>
-
-        /**
-         * Adds the given [blocks] to the list of blocks that entities of the
-         * type will not be damaged by.
-         *
-         * @param blocks the blocks
-         * @return this builder
-         */
-        @EntityTypeDsl
-        @Contract("_ -> this", mutates = "this")
-        public fun immuneTo(blocks: Iterable<Block>): Builder<T>
-
-        /**
-         * Sets the identifier for the loot table that entities of the type
-         * will use to determine loot.
-         *
-         * @param identifier the loot table identifier
-         * @return this builder
-         */
-        @EntityTypeDsl
-        @Contract("_ -> this", mutates = "this")
-        public fun lootTable(identifier: Key): Builder<T>
-    }
-
-    @ApiStatus.Internal
-    public interface Factory {
-
-        public fun <T : Entity> builder(key: Key, category: EntityCategory): Builder<T>
-    }
-
-    public companion object {
-
-        /**
-         * Creates a new builder for building an entity type with the given
-         * values.
-         *
-         * @param key the key
-         * @param category the category
-         * @return a new builder
-         */
-        @JvmStatic
-        @Contract("_ -> new", pure = true)
-        public fun <T : Entity> builder(key: Key, category: EntityCategory): Builder<T> = Krypton.factory<Factory>().builder(key, category)
-    }
 }

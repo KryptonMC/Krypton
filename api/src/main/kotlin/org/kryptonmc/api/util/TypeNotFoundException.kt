@@ -8,10 +8,14 @@
  */
 package org.kryptonmc.api.util
 
+import java.io.Serial
+
 /**
  * Thrown when a factory or builder requested from the factory provider was not found.
  */
 public class TypeNotFoundException : RuntimeException {
+
+    public constructor() : super()
 
     public constructor(message: String?) : super(message)
 
@@ -21,6 +25,7 @@ public class TypeNotFoundException : RuntimeException {
 
     public companion object {
 
+        @Serial
         private const val serialVersionUID = 7032005516854864359L
     }
 }

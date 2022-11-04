@@ -25,6 +25,6 @@ import org.kryptonmc.krypton.world.KryptonWorld
 
 class KryptonSmallFireball(world: KryptonWorld) : KryptonFireball(world), SmallFireball {
 
-    override val type: KryptonEntityType<SmallFireball>
+    override val type: KryptonEntityType<KryptonSmallFireball>
         get() = KryptonEntityTypes.SMALL_FIREBALL
 }

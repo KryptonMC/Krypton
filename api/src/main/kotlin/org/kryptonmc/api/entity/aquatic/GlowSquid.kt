@@ -11,7 +11,6 @@ package org.kryptonmc.api.entity.aquatic
 /**
  * A glow squid.
  */
-@Suppress("INAPPLICABLE_JVM_NAME")
 public interface GlowSquid : Squid {
 
     /**
@@ -22,6 +21,5 @@ public interface GlowSquid : Squid {
      * the amount of those ticks there are remaining until the glow squid will
      * glow again.
      */
-    @get:JvmName("remainingDarkTicks")
     public var remainingDarkTicks: Int
 }

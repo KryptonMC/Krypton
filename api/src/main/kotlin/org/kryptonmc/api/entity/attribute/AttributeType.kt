@@ -9,44 +9,33 @@
 package org.kryptonmc.api.entity.attribute
 
 import net.kyori.adventure.key.Keyed
+import net.kyori.adventure.translation.Translatable
 import org.kryptonmc.api.util.CataloguedBy
-import org.kryptonmc.api.util.TranslationHolder
+import javax.annotation.concurrent.Immutable
 
 /**
  * The type of an attribute.
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
 @CataloguedBy(AttributeTypes::class)
-public interface AttributeType : TranslationHolder, Keyed {
+@Immutable
+public interface AttributeType : Translatable, Keyed {
 
     /**
-     * The default base value for attributes of this type.
+     * The default value for attributes of this type.
+     */
+    @get:JvmName("defaultValue")
+    public val defaultValue: Double
+
+    /**
+     * Ensures that the given [value] satisfies the constraints of this
+     * attribute type.
      *
-     * This must be between the [minimum] and [maximum] base values.
-     */
-    @get:JvmName("defaultBase")
-    public val defaultBase: Double
-
-    /**
-     * The minimum base value for attributes of this type.
-     */
-    @get:JvmName("minimum")
-    public val minimum: Double
-
-    /**
-     * The maximum base value for attributes of this type.
+     * For example, with ranged attribute types, this will ensure that the
+     * value is between the minimum and maximum value.
      *
-     * This must be greater than the [minimum] base value.
+     * @param value the value to sanitize
+     * @return the sanitized result
      */
-    @get:JvmName("maximum")
-    public val maximum: Double
-
-    /**
-     * If attributes of this type should be sent to clients.
-     *
-     * When set to false, attributes of this type will only be stored server
-     * side, and will not be accessible by clients.
-     */
-    @get:JvmName("sendToClient")
-    public val sendToClient: Boolean
+    public fun sanitizeValue(value: Double): Double
 }

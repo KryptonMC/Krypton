@@ -22,7 +22,7 @@ import com.mojang.brigadier.Message
 import net.kyori.adventure.key.InvalidKeyException
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.text.Component
-import org.kryptonmc.api.adventure.toMessage
+import org.kryptonmc.krypton.adventure.toMessage
 import org.kryptonmc.serialization.DataResult
 
 object Keys {

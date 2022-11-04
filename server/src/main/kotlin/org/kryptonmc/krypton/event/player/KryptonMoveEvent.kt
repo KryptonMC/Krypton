@@ -22,5 +22,4 @@ import org.kryptonmc.api.entity.player.Player
 import org.kryptonmc.api.event.player.MoveEvent
 import org.spongepowered.math.vector.Vector3d
 
-@JvmRecord
-data class KryptonMoveEvent(override val player: Player, override val oldLocation: Vector3d, override val newLocation: Vector3d) : MoveEvent
+class KryptonMoveEvent(override val player: Player, override val oldLocation: Vector3d, override val newLocation: Vector3d) : MoveEvent

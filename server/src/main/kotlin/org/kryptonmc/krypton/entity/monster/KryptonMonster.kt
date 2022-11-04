@@ -18,10 +18,10 @@
  */
 package org.kryptonmc.krypton.entity.monster
 
-import org.kryptonmc.api.entity.attribute.AttributeTypes
 import org.kryptonmc.api.entity.monster.Monster
 import org.kryptonmc.krypton.entity.KryptonMob
 import org.kryptonmc.krypton.entity.attribute.AttributeSupplier
+import org.kryptonmc.krypton.entity.attribute.KryptonAttributeTypes
 import org.kryptonmc.krypton.world.KryptonWorld
 
 abstract class KryptonMonster(world: KryptonWorld) : KryptonMob(world), Monster {
@@ -29,6 +29,6 @@ abstract class KryptonMonster(world: KryptonWorld) : KryptonMob(world), Monster 
     companion object {
 
         @JvmStatic
-        fun attributes(): AttributeSupplier.Builder = KryptonMob.attributes().add(AttributeTypes.ATTACK_DAMAGE)
+        fun attributes(): AttributeSupplier.Builder = KryptonMob.attributes().add(KryptonAttributeTypes.ATTACK_DAMAGE)
     }
 }

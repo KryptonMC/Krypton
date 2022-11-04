@@ -23,7 +23,7 @@ import org.kryptonmc.api.entity.player.Player
 import org.kryptonmc.api.event.GenericResult
 import org.kryptonmc.api.event.player.AttackEntityEvent
 
-data class KryptonAttackEntityEvent(override val player: Player, override val target: Entity) : AttackEntityEvent {
+class KryptonAttackEntityEvent(override val player: Player, override val target: Entity) : AttackEntityEvent {
 
     override var result: GenericResult = GenericResult.allowed()
 }

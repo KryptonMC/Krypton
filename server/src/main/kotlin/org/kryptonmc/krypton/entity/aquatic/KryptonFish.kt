@@ -21,10 +21,10 @@ package org.kryptonmc.krypton.entity.aquatic
 import org.kryptonmc.api.effect.sound.SoundEvent
 import org.kryptonmc.api.effect.sound.SoundEvents
 import org.kryptonmc.api.entity.aquatic.Fish
-import org.kryptonmc.api.entity.attribute.AttributeTypes
 import org.kryptonmc.krypton.entity.BucketStorable
 import org.kryptonmc.krypton.entity.KryptonMob
 import org.kryptonmc.krypton.entity.attribute.AttributeSupplier
+import org.kryptonmc.krypton.entity.attribute.KryptonAttributeTypes
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.entity.serializer.EntitySerializer
 import org.kryptonmc.krypton.entity.serializer.aquatic.FishSerializer
@@ -37,7 +37,7 @@ abstract class KryptonFish(world: KryptonWorld) : KryptonAquaticAnimal(world), F
     override val serializer: EntitySerializer<out KryptonFish>
         get() = FishSerializer
 
-    override var spawnedFromBucket: Boolean
+    override var wasSpawnedFromBucket: Boolean
         get() = data.get(MetadataKeys.Fish.FROM_BUCKET)
         set(value) = data.set(MetadataKeys.Fish.FROM_BUCKET, value)
     override val bucketPickupSound: SoundEvent
@@ -69,6 +69,6 @@ abstract class KryptonFish(world: KryptonWorld) : KryptonAquaticAnimal(world), F
     companion object {
 
         @JvmStatic
-        fun attributes(): AttributeSupplier.Builder = KryptonMob.attributes().add(AttributeTypes.MAX_HEALTH, 3.0)
+        fun attributes(): AttributeSupplier.Builder = KryptonMob.attributes().add(KryptonAttributeTypes.MAX_HEALTH, 3.0)
     }
 }

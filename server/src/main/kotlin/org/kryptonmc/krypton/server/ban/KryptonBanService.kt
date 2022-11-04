@@ -22,7 +22,6 @@ import org.kryptonmc.api.auth.GameProfile
 import org.kryptonmc.api.event.user.ban.BanEvent
 import org.kryptonmc.api.user.ban.Ban
 import org.kryptonmc.api.user.ban.BanService
-import org.kryptonmc.api.user.ban.BanTypes
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.event.user.ban.KryptonBanIpEvent
 import org.kryptonmc.krypton.event.user.ban.KryptonBanProfileEvent
@@ -37,6 +36,8 @@ class KryptonBanService(private val server: KryptonServer) : BanService {
         get() = server.playerManager.bannedPlayers.values
     override val ipBans: Collection<Ban.IP>
         get() = server.playerManager.bannedIps.values
+
+    override fun createBuilder(): Ban.Builder = KryptonBanBuilder()
 
     override fun isRegistered(ban: Ban): Boolean = when (ban) {
         is Ban.Profile -> server.playerManager.bannedPlayers.contains(ban.profile)

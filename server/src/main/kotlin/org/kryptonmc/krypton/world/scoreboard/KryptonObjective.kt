@@ -25,7 +25,7 @@ import org.kryptonmc.api.scoreboard.ObjectiveRenderType
 import org.kryptonmc.api.scoreboard.criteria.Criterion
 
 class KryptonObjective(
-    var scoreboard: KryptonScoreboard?,
+    override val scoreboard: KryptonScoreboard,
     override val name: String,
     override val criterion: Criterion,
     displayName: Component,
@@ -35,29 +35,20 @@ class KryptonObjective(
     override var displayName: Component = displayName
         set(value) {
             field = value
-            scoreboard?.onObjectiveUpdated(this)
+            scoreboard.onObjectiveUpdated(this)
         }
     override var renderType: ObjectiveRenderType = renderType
         set(value) {
             field = value
-            scoreboard?.onObjectiveUpdated(this)
+            scoreboard.onObjectiveUpdated(this)
         }
 
-    class Builder() : Objective.Builder, Objective.Builder.NamedStep, Objective.Builder.EndStep {
+    class Builder(private val scoreboard: KryptonScoreboard) : Objective.Builder, Objective.Builder.NamedStep, Objective.Builder.EndStep {
 
         private var name: String? = null
         private var criterion: Criterion? = null
-        private var scoreboard: KryptonScoreboard? = null
         private var displayName: Component? = null
         private var renderType = ObjectiveRenderType.INTEGER
-
-        constructor(objective: KryptonObjective) : this() {
-            name = objective.name
-            criterion = objective.criterion
-            scoreboard = objective.scoreboard
-            displayName = objective.displayName
-            renderType = objective.renderType
-        }
 
         override fun name(name: String): Builder = apply { this.name = name }
 
@@ -67,7 +58,7 @@ class KryptonObjective(
 
         override fun renderType(type: ObjectiveRenderType): Builder = apply { renderType = type }
 
-        override fun build(): KryptonObjective = KryptonObjective(scoreboard, name!!, criterion!!, getName(displayName, name!!), renderType)
+        override fun buildAndRegister(): Objective = scoreboard.addObjective(name!!, criterion!!, getName(displayName, name!!), renderType)
 
         companion object {
 
@@ -75,10 +66,5 @@ class KryptonObjective(
             private fun getName(displayName: Component?, name: String): Component =
                 displayName ?: LegacyComponentSerializer.legacySection().deserialize(name)
         }
-    }
-
-    object Factory : Objective.Factory {
-
-        override fun builder(): Objective.Builder = Builder()
     }
 }

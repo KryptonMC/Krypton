@@ -33,7 +33,7 @@ object PandaSerializer : EntitySerializer<KryptonPanda> {
     }
 
     override fun save(entity: KryptonPanda): CompoundTag.Builder = AgeableSerializer.save(entity).apply {
-        string("MainGene", entity.knownGene.name.lowercase())
-        string("HiddenGene", entity.hiddenGene.name.lowercase())
+        putString("MainGene", entity.knownGene.name.lowercase())
+        putString("HiddenGene", entity.hiddenGene.name.lowercase())
     }
 }

@@ -23,7 +23,7 @@ import org.kryptonmc.krypton.entity.animal.KryptonBee
 import org.kryptonmc.krypton.entity.getVector3i
 import org.kryptonmc.krypton.entity.serializer.AgeableSerializer
 import org.kryptonmc.krypton.entity.serializer.EntitySerializer
-import org.kryptonmc.krypton.entity.vector3i
+import org.kryptonmc.krypton.entity.putVector3i
 import org.kryptonmc.nbt.CompoundTag
 
 object BeeSerializer : EntitySerializer<KryptonBee> {
@@ -42,12 +42,12 @@ object BeeSerializer : EntitySerializer<KryptonBee> {
 
     override fun save(entity: KryptonBee): CompoundTag.Builder = AgeableSerializer.save(entity).apply {
         Neutral.saveAngerData(entity, this)
-        if (entity.hive != null) vector3i("HivePos", entity.hive!!)
-        if (entity.flower != null) vector3i("FlowerPos", entity.flower!!)
-        boolean("HasNectar", entity.hasNectar)
-        boolean("HasStung", entity.hasStung)
-        int("TicksSincePollination", entity.timeSincePollination)
-        int("CannotEnterHiveTicks", entity.cannotEnterHiveTicks)
-        int("CropsGrownSincePollination", entity.cropsGrownSincePollination)
+        if (entity.hive != null) putVector3i("HivePos", entity.hive!!)
+        if (entity.flower != null) putVector3i("FlowerPos", entity.flower!!)
+        putBoolean("HasNectar", entity.hasNectar)
+        putBoolean("HasStung", entity.hasStung)
+        putInt("TicksSincePollination", entity.timeSincePollination)
+        putInt("CannotEnterHiveTicks", entity.cannotEnterHiveTicks)
+        putInt("CropsGrownSincePollination", entity.cropsGrownSincePollination)
     }
 }

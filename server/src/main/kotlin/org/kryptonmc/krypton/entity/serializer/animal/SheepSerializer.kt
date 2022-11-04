@@ -21,7 +21,7 @@ package org.kryptonmc.krypton.entity.serializer.animal
 import org.kryptonmc.krypton.entity.animal.KryptonSheep
 import org.kryptonmc.krypton.entity.serializer.AgeableSerializer
 import org.kryptonmc.krypton.entity.serializer.EntitySerializer
-import org.kryptonmc.krypton.registry.KryptonRegistries
+import org.kryptonmc.krypton.util.DyeColors
 import org.kryptonmc.nbt.CompoundTag
 
 object SheepSerializer : EntitySerializer<KryptonSheep> {
@@ -29,11 +29,11 @@ object SheepSerializer : EntitySerializer<KryptonSheep> {
     override fun load(entity: KryptonSheep, data: CompoundTag) {
         AgeableSerializer.load(entity, data)
         entity.isSheared = data.getBoolean("Sheared")
-        entity.woolColor = KryptonRegistries.DYE_COLORS.get(data.getByte("Color").toInt())!!
+        entity.woolColor = DyeColors.fromId(data.getByte("Color").toInt())
     }
 
     override fun save(entity: KryptonSheep): CompoundTag.Builder = AgeableSerializer.save(entity).apply {
-        boolean("Sheared", entity.isSheared)
-        byte("Color", KryptonRegistries.DYE_COLORS.idOf(entity.woolColor).toByte())
+        putBoolean("Sheared", entity.isSheared)
+        putByte("Color", entity.woolColor.ordinal.toByte())
     }
 }

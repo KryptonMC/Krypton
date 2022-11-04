@@ -12,7 +12,6 @@ import net.kyori.adventure.sound.Sound
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.event.HoverEvent
 import net.kyori.adventure.text.event.HoverEventSource
-import org.jetbrains.annotations.Range
 import org.kryptonmc.api.command.Sender
 import org.kryptonmc.api.scoreboard.TeamMember
 import org.kryptonmc.api.util.BoundingBox
@@ -35,26 +34,22 @@ public interface Entity : Sender, HoverEventSource<HoverEvent.ShowEntity>, Sound
      * entity object is first created, and discarded when the entity is
      * removed.
      */
-    @get:JvmName("id")
     public val id: Int
 
     /**
      * The world this entity is currently in.
      */
-    @get:JvmName("world")
     public val world: World
 
     /**
      * The type of this entity.
      */
-    @get:JvmName("type")
     public val type: EntityType<Entity>
 
     /**
      * The custom name of the entity. May be null if the custom name has not
      * been set.
      */
-    @get:JvmName("customName")
     public var customName: Component?
 
     /**
@@ -64,16 +59,12 @@ public interface Entity : Sender, HoverEventSource<HoverEvent.ShowEntity>, Sound
 
     /**
      * The display name of this entity.
-     *
-     * In vanilla, this is dependent on the name of the team the entity is in.
      */
-    @get:JvmName("displayName")
     public val displayName: Component
 
     /**
      * The current position of this entity.
      */
-    @get:JvmName("location")
     public var location: Vector3d
 
     /**
@@ -83,20 +74,17 @@ public interface Entity : Sender, HoverEventSource<HoverEvent.ShowEntity>, Sound
      * - x -> yaw
      * - y -> pitch
      */
-    @get:JvmName("rotation")
     public var rotation: Vector2f
 
     /**
      * The current delta X, Y, and Z values of this entity, in metres per tick.
      */
-    @get:JvmName("velocity")
     public var velocity: Vector3d
 
     /**
      * The current bounding box of this entity. This is used to determine the
      * area in which an entity can be interacted with, also known as a hitbox.
      */
-    @get:JvmName("boundingBox")
     public var boundingBox: BoundingBox
 
     /**
@@ -109,7 +97,6 @@ public interface Entity : Sender, HoverEventSource<HoverEvent.ShowEntity>, Sound
      *
      * Will be empty if the entity has no passengers.
      */
-    @get:JvmName("passengers")
     public val passengers: List<Entity>
 
     /**
@@ -120,7 +107,6 @@ public interface Entity : Sender, HoverEventSource<HoverEvent.ShowEntity>, Sound
     /**
      * The entity that this entity is a passenger of.
      */
-    @get:JvmName("vehicle")
     public var vehicle: Entity?
 
     /**
@@ -196,8 +182,7 @@ public interface Entity : Sender, HoverEventSource<HoverEvent.ShowEntity>, Sound
      *
      * This will be increased by 1 for every tick this entity exists for.
      */
-    @get:JvmName("ticksExisted")
-    public val ticksExisted: @Range(from = 0L, to = Int.MAX_VALUE.toLong()) Int
+    public val ticksExisted: Int
 
     /**
      * How much air this entity has, in ticks.
@@ -209,8 +194,7 @@ public interface Entity : Sender, HoverEventSource<HoverEvent.ShowEntity>, Sound
      * take 1 health point (half a heart) of damage for every second
      * it remains underwater.
      */
-    @get:JvmName("air")
-    public val air: @Range(from = 0L, to = Int.MAX_VALUE.toLong()) Int
+    public val air: Int
 
     /**
      * This value can mean one of two things, depending on if the value is
@@ -222,8 +206,7 @@ public interface Entity : Sender, HoverEventSource<HoverEvent.ShowEntity>, Sound
      * When the value is negative, this represents the number of ticks this
      * entity can survive in fire for before burning.
      */
-    @get:JvmName("fireTicks")
-    public val fireTicks: Short
+    public val fireTicks: Int
 
     /**
      * The amount of ticks this entity has been freezing for.
@@ -235,7 +218,6 @@ public interface Entity : Sender, HoverEventSource<HoverEvent.ShowEntity>, Sound
      * snow, to a maximum of 300, and decrease by 2 for every tick this entity
      * is not in powder snow.
      */
-    @get:JvmName("frozenTicks")
     public val frozenTicks: Int
 
     /**
@@ -244,76 +226,23 @@ public interface Entity : Sender, HoverEventSource<HoverEvent.ShowEntity>, Sound
      * The larger the value of this, the more damage the entity will take when
      * it lands.
      */
-    @get:JvmName("fallDistance")
     public val fallDistance: Float
 
     /**
      * If this entity is currently touching water.
      */
-    @get:JvmName("inWater")
-    public val inWater: Boolean
+    public val isInWater: Boolean
 
     /**
      * If this entity is currently touching lava.
      */
-    @get:JvmName("inLava")
-    public val inLava: Boolean
+    public val isInLava: Boolean
 
     /**
      * If this entity is currently fully submerged under water, meaning its
      * entire hitbox must be under water.
      */
-    @get:JvmName("underwater")
-    public val underwater: Boolean
-
-    /**
-     * Moves this entity by the specified x, y, z, yaw, and pitch amounts.
-     *
-     * The values provided to this function are **relative**, meaning they
-     * will be added to the current values.
-     *
-     * @param x the X amount
-     * @param y the Y amount
-     * @param z the Z amount
-     * @param yaw the yaw amount
-     * @param pitch the pitch amount
-     */
-    public fun move(x: Double, y: Double, z: Double, yaw: Float, pitch: Float)
-
-    /**
-     * Moves this entity to the specified x, y, and z coordinates.
-     *
-     * The values provided to this function are **absolute**, meaning they
-     * will replace the existing x, y, and z coordinates.
-     *
-     * @param x the X coordinate
-     * @param y the Y coordinate
-     * @param z the Z coordinate
-     */
-    public fun moveTo(x: Double, y: Double, z: Double)
-
-    /**
-     * Makes this entity look to the specified yaw and pitch.
-     *
-     * The values provided to this function are **absolute**, meaning they
-     * will replace the existing yaw and pitch values.
-     */
-    public fun look(yaw: Float, pitch: Float)
-
-    /**
-     * Repositions this entity to be at the specified x, y, and z coordinates,
-     * and looking at the specified yaw and pitch amounts.
-     *
-     * The values provided to this function are **absolute**, meaning they
-     * will replace the existing x, y, z, yaw, and pitch values.
-     *
-     * @param x the X coordinate
-     * @param y the Y coordinate
-     * @param z the Z coordinate
-     * @param yaw the yaw value
-     * @param pitch the pitch value
-     */
-    public fun reposition(x: Double, y: Double, z: Double, yaw: Float, pitch: Float)
+    public val isUnderwater: Boolean
 
     /**
      * Adds the given [entity] as a passenger of this entity.

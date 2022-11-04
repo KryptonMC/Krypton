@@ -28,10 +28,10 @@ import net.minecrell.terminalconsole.SimpleTerminalConsole
 import org.apache.logging.log4j.LogManager
 import org.jline.reader.LineReader
 import org.jline.reader.LineReaderBuilder
-import org.kryptonmc.api.adventure.toLegacySectionText
 import org.kryptonmc.api.command.ConsoleSender
 import org.kryptonmc.api.permission.PermissionFunction
 import org.kryptonmc.krypton.KryptonServer
+import org.kryptonmc.krypton.adventure.toLegacySectionText
 import org.kryptonmc.krypton.event.command.KryptonCommandExecuteEvent
 import org.kryptonmc.krypton.event.server.KryptonSetupPermissionsEvent
 import org.kryptonmc.krypton.util.TranslationBootstrap

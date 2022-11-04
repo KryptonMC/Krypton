@@ -11,7 +11,6 @@ package org.kryptonmc.api.block.entity
 /**
  * A sculk sensor.
  */
-@Suppress("INAPPLICABLE_JVM_NAME")
 public interface SculkSensor : BlockEntity {
 
     /**
@@ -20,6 +19,5 @@ public interface SculkSensor : BlockEntity {
      * Different activities detected by the sensor will produce different
      * frequencies and dictate the output of connected comparators.
      */
-    @get:JvmName("lastVibrationFrequency")
     public var lastVibrationFrequency: Int
 }

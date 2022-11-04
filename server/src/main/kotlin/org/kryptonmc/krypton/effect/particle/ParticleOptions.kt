@@ -30,7 +30,7 @@ data class ParticleOptions(val type: ParticleType, val data: ParticleData?) : Wr
 
     constructor(buf: ByteBuf) : this(buf, buf.readById(KryptonRegistries.PARTICLE_TYPE)!!)
 
-    private constructor(buf: ByteBuf, type: ParticleType) : this(type, type.createData(buf))
+    private constructor(buf: ByteBuf, type: ParticleType) : this(type, type.downcast().createData(buf))
 
     override fun write(buf: ByteBuf) {
         if (data != null && data is Writable) data.write(buf)

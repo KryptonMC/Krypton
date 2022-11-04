@@ -16,14 +16,20 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.server.ban
+package org.kryptonmc.krypton.adventure
 
-import net.kyori.adventure.key.Key
-import org.kryptonmc.api.user.ban.Ban
-import org.kryptonmc.api.user.ban.BanType
+import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer
+import org.kryptonmc.api.adventure.AdventureMessage
 
-@JvmRecord
-data class KryptonBanType(private val key: Key, override val banClass: Class<out Ban>) : BanType {
+fun Component.toJson(): String = GsonComponentSerializer.gson().serialize(this)
 
-    override fun key(): Key = key
-}
+fun Component.toLegacySectionText(): String = LegacyComponentSerializer.legacySection().serialize(this)
+
+fun Component.toLegacyAmpersandText(): String = LegacyComponentSerializer.legacyAmpersand().serialize(this)
+
+fun Component.toPlainText(): String = PlainTextComponentSerializer.plainText().serialize(this)
+
+fun Component.toMessage(): AdventureMessage = AdventureMessage.of(this)

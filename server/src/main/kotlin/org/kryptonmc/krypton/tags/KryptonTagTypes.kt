@@ -22,7 +22,7 @@ import net.kyori.adventure.key.Key
 import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.block.entity.banner.BannerPatternType
 import org.kryptonmc.api.entity.EntityType
-import org.kryptonmc.api.entity.hanging.Picture
+import org.kryptonmc.api.entity.hanging.PaintingVariant
 import org.kryptonmc.api.fluid.Fluid
 import org.kryptonmc.api.item.ItemType
 import org.kryptonmc.api.registry.Registries
@@ -55,7 +55,7 @@ object KryptonTagTypes {
     @JvmField
     val ITEMS: KryptonTagType<ItemType> = register("item", Registries.ITEM)
     @JvmField
-    val PICTURES: KryptonTagType<Picture> = register("picture", "painting_variant", Registries.PICTURES)
+    val PICTURES: KryptonTagType<PaintingVariant> = register("picture", "painting_variant", Registries.PAINTING_VARIANT)
 
     @JvmStatic
     private fun <T : Any> register(name: String, fileName: String, registry: Registry<T>): KryptonTagType<T> {

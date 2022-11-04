@@ -13,6 +13,7 @@
 package org.kryptonmc.api.plugin
 
 import java.nio.file.Path
+import javax.annotation.concurrent.Immutable
 
 /**
  * Represents the plugin.conf file that every plugin has.
@@ -21,6 +22,7 @@ import java.nio.file.Path
  * version, description, authors and dependencies.
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
+@Immutable
 public interface PluginDescription {
 
     /**

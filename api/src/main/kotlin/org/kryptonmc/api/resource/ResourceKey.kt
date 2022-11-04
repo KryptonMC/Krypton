@@ -14,6 +14,7 @@ import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.Krypton
 import org.kryptonmc.api.registry.Registry
 import org.kryptonmc.api.util.CataloguedBy
+import javax.annotation.concurrent.Immutable
 
 /**
  * A key pointing to some form of resource.
@@ -22,6 +23,7 @@ import org.kryptonmc.api.util.CataloguedBy
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
 @CataloguedBy(ResourceKeys::class)
+@Immutable
 public interface ResourceKey<T> {
 
     /**
@@ -69,7 +71,7 @@ public interface ResourceKey<T> {
          * @return a resource key
          */
         @JvmStatic
-        @Contract("_ -> new", pure = true)
+        @Contract("_, _ -> new", pure = true)
         public fun <T> of(parent: ResourceKey<out Registry<T>>, location: Key): ResourceKey<T> = of(parent.location, location)
     }
 }

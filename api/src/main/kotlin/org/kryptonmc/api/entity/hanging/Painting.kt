@@ -9,15 +9,12 @@
 package org.kryptonmc.api.entity.hanging
 
 /**
- * A painting that may display a [Picture].
+ * A painting.
  */
-@Suppress("INAPPLICABLE_JVM_NAME")
 public interface Painting : HangingEntity {
 
     /**
-     * The picture displayed on this painting, or null if this painting is
-     * blank.
+     * The variant of this painting, or null if this painting has no variant.
      */
-    @get:JvmName("picture")
-    public val picture: Picture?
+    public var variant: PaintingVariant?
 }

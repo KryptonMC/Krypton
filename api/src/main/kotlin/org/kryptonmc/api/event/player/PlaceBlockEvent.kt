@@ -11,6 +11,7 @@ package org.kryptonmc.api.event.player
 import org.kryptonmc.api.block.BlockState
 import org.kryptonmc.api.entity.Hand
 import org.kryptonmc.api.util.Direction
+import org.spongepowered.math.vector.Vector3i
 
 /**
  * Called when a player places a block.
@@ -21,43 +22,26 @@ import org.kryptonmc.api.util.Direction
  * This event signals when the player places a block, **not** when the server
  * handles that block placement.
  */
-@Suppress("INAPPLICABLE_JVM_NAME")
 public interface PlaceBlockEvent : InteractEvent {
 
     /**
      * The block that was placed.
      */
-    @get:JvmName("block")
     public val block: BlockState
 
     /**
      * The hand that the player used to place the block.
      */
-    @get:JvmName("hand")
     public val hand: Hand
 
     /**
-     * The X coordinate of the position where the block was placed.
+     * The position where the block was placed.
      */
-    @get:JvmName("x")
-    public val x: Int
-
-    /**
-     * The Y coordinate of the position where the block was placed.
-     */
-    @get:JvmName("y")
-    public val y: Int
-
-    /**
-     * The Z coordinate of the position where the block was placed.
-     */
-    @get:JvmName("z")
-    public val z: Int
+    public val position: Vector3i
 
     /**
      * The face of the block on which the block was placed.
      */
-    @get:JvmName("face")
     public val face: Direction
 
     /**

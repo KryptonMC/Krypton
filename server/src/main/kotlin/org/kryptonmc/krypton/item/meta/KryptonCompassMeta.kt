@@ -23,7 +23,6 @@ import org.kryptonmc.api.resource.ResourceKey
 import org.kryptonmc.api.world.World
 import org.kryptonmc.krypton.entity.getVector3i
 import org.kryptonmc.krypton.entity.putVector3i
-import org.kryptonmc.krypton.entity.vector3i
 import org.kryptonmc.krypton.util.serialization.Codecs
 import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.serialization.nbt.NbtOps
@@ -43,37 +42,37 @@ class KryptonCompassMeta(data: CompoundTag) : AbstractItemMeta<KryptonCompassMet
         return copy(data.putBoolean("LodestoneTracked", false).putString("LodestoneDimension", dimensionKey).putVector3i("LodestonePos", position))
     }
 
-    override fun withoutLodestone(): KryptonCompassMeta =
-        copy(data.putBoolean("LodestoneTracked", false).remove("LodestoneDimension").remove("LodestonePos"))
+    override fun withoutLodestone(): KryptonCompassMeta = copy(CompoundTag.EMPTY)
 
     override fun toBuilder(): CompassMeta.Builder = Builder(this)
 
     override fun toString(): String = "KryptonCompassMeta(${partialToString()}, isTrackingLodestone=$isTrackingLodestone, " +
             "lodestoneDimension=$lodestoneDimension, lodestonePosition=$lodestonePosition)"
 
-    class Builder() : KryptonItemMetaBuilder<CompassMeta.Builder, CompassMeta>(), CompassMeta.Builder {
+    class Builder : KryptonItemMetaBuilder<CompassMeta.Builder, CompassMeta>, CompassMeta.Builder {
 
         private var tracking = false
         private var dimension: ResourceKey<World>? = null
         private var position: Vector3i? = null
 
-        constructor(meta: CompassMeta) : this() {
-            copyFrom(meta)
+        constructor() : super()
+
+        constructor(meta: KryptonCompassMeta) : super(meta) {
             tracking = meta.isTrackingLodestone
             dimension = meta.lodestoneDimension
             position = meta.lodestonePosition
         }
 
-        override fun lodestone(dimension: ResourceKey<World>, position: Vector3i): CompassMeta.Builder = apply {
+        override fun lodestone(dimension: ResourceKey<World>, position: Vector3i): Builder = apply {
             tracking = true
             this.dimension = dimension
             this.position = position
         }
 
         override fun buildData(): CompoundTag.Builder = super.buildData().apply {
-            boolean("LodestoneTracked", tracking)
-            if (dimension != null) string("LodestoneDimension", dimension!!.location.asString())
-            if (position != null) vector3i("LodestonePos", position!!)
+            putBoolean("LodestoneTracked", tracking)
+            if (dimension != null) putString("LodestoneDimension", dimension!!.location.asString())
+            if (position != null) putVector3i("LodestonePos", position!!)
         }
 
         override fun build(): KryptonCompassMeta = KryptonCompassMeta(buildData().build())

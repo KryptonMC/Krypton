@@ -45,7 +45,7 @@ class KryptonUser(override val profile: GameProfile, var data: CompoundTag, priv
         get() {
             val player = player
             if (player != null) return player.hasJoinedBefore
-            return !data.isEmpty()
+            return !data.isEmpty
         }
     override val firstJoined: Instant
         get() {

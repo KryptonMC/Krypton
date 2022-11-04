@@ -60,10 +60,10 @@ object Codecs {
     @JvmField
     val KEY: Codec<Key> = Codec.STRING.comapFlatMap(Keys::read, Key::asString).stable()
     @JvmField
-    val SOUND_EVENT: Codec<SoundEvent> = KEY.xmap(::KryptonSoundEvent, SoundEvent::key)
+    val SOUND_EVENT: Codec<SoundEvent> = KEY.xmap({ KryptonSoundEvent(it, 16F) }, SoundEvent::key)
     // TODO: Look at the particle type codec, since it's not that great here
     @JvmField
-    val PARTICLE: Codec<ParticleType> = KEY.xmap({ Registries.PARTICLE_TYPE.get(it)!! }, ParticleType::key)
+    val PARTICLE: Codec<ParticleType> = KEY.xmap({ Registries.PARTICLE_TYPE.get(it)!! }, { Registries.PARTICLE_TYPE.get(it)!! })
     @JvmField
     val DIMENSION: Codec<ResourceKey<World>> = KryptonResourceKey.codec(ResourceKeys.DIMENSION)
 

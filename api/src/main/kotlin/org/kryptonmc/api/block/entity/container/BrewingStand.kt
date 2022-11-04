@@ -13,21 +13,18 @@ import org.kryptonmc.api.block.entity.NameableBlockEntity
 /**
  * A brewing stand.
  */
-@Suppress("INAPPLICABLE_JVM_NAME")
 public interface BrewingStand : ContainerBlockEntity, NameableBlockEntity {
 
     /**
      * The amount of time, in ticks, until the fuel in the brewing stand runs
      * out.
      */
-    @get:JvmName("remainingFuel")
     public var remainingFuel: Int
 
     /**
      * The amount of time, in ticks, until the potions being brewed in this
      * brewing stand are brewed.
      */
-    @get:JvmName("remainingBrewTime")
     public var remainingBrewTime: Int
 
     /**

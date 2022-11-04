@@ -17,25 +17,21 @@ import org.kryptonmc.api.item.ItemStack
  * [ItemStack.empty], not null. This includes the default values in lists of
  * items, such as [items].
  */
-@Suppress("INAPPLICABLE_JVM_NAME")
 public interface Inventory : Iterable<ItemStack> {
 
     /**
      * The size of this inventory.
      */
-    @get:JvmName("size")
     public val size: Int
 
     /**
      * The type of this inventory.
      */
-    @get:JvmName("type")
     public val type: InventoryType
 
     /**
      * The items in this inventory.
      */
-    @get:JvmName("items")
     public val items: List<ItemStack>
 
     /**

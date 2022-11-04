@@ -8,13 +8,9 @@
  */
 package org.kryptonmc.api.scoreboard
 
-import net.kyori.adventure.builder.AbstractBuilder
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
-import org.jetbrains.annotations.ApiStatus
 import org.jetbrains.annotations.Contract
-import org.kryptonmc.api.Krypton
-import org.kryptonmc.api.util.Buildable
 
 /**
  * A team on a [Scoreboard].
@@ -23,36 +19,31 @@ import org.kryptonmc.api.util.Buildable
  * and a specific set of rules they follow.
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
-public interface Team : Buildable<Team.Builder, Team> {
+public interface Team : ScoreboardBound {
 
     /**
      * The name of this team.
      */
-    @get:JvmName("name")
     public val name: String
 
     /**
      * The name that is displayed on the scoreboard to clients.
      */
-    @get:JvmName("displayName")
     public var displayName: Component
 
     /**
      * The prefix prepended to the display name of members of this team.
      */
-    @get:JvmName("prefix")
     public var prefix: Component
 
     /**
      * The suffix appended to the display name of members of this team.
      */
-    @get:JvmName("suffix")
     public var suffix: Component
 
     /**
      * The colour of the team that is displayed on the scoreboard.
      */
-    @get:JvmName("color")
     public var color: NamedTextColor
 
     /**
@@ -72,25 +63,21 @@ public interface Team : Buildable<Team.Builder, Team> {
     /**
      * The visibility of name tags in the team.
      */
-    @get:JvmName("nameTagVisibility")
     public var nameTagVisibility: Visibility
 
     /**
      * The visibility of death messages in the team.
      */
-    @get:JvmName("deathMessageVisibility")
     public var deathMessageVisibility: Visibility
 
     /**
      * The collision rule for the team.
      */
-    @get:JvmName("collisionRule")
     public var collisionRule: CollisionRule
 
     /**
      * All of the members in this team.
      */
-    @get:JvmName("members")
     public val members: Set<Component>
 
     /**
@@ -126,18 +113,7 @@ public interface Team : Buildable<Team.Builder, Team> {
     /**
      * A builder for building teams.
      */
-    @ScoreboardDsl
-    public interface Builder : AbstractBuilder<Team> {
-
-        /**
-         * Sets the name for the team to the given [name].
-         *
-         * @param name the name
-         * @return this builder
-         */
-        @ScoreboardDsl
-        @Contract("_ -> this", mutates = "this")
-        public fun name(name: String): Builder
+    public interface Builder {
 
         /**
          * Sets the display name for the team to the given [name].
@@ -145,7 +121,6 @@ public interface Team : Buildable<Team.Builder, Team> {
          * @param name the display name
          * @return this builder
          */
-        @ScoreboardDsl
         @Contract("_ -> this", mutates = "this")
         public fun displayName(name: Component): Builder
 
@@ -155,7 +130,6 @@ public interface Team : Buildable<Team.Builder, Team> {
          * @param prefix the prefix
          * @return this builder
          */
-        @ScoreboardDsl
         @Contract("_ -> this", mutates = "this")
         public fun prefix(prefix: Component): Builder
 
@@ -165,26 +139,14 @@ public interface Team : Buildable<Team.Builder, Team> {
          * @param suffix the suffix
          * @return this builder
          */
-        @ScoreboardDsl
         @Contract("_ -> this", mutates = "this")
         public fun suffix(suffix: Component): Builder
-
-        /**
-         * Sets the team colour to the given [color].
-         *
-         * @param color the colour
-         * @return this builder
-         */
-        @ScoreboardDsl
-        @Contract("_ -> this", mutates = "this")
-        public fun color(color: NamedTextColor): Builder
 
         /**
          * Allows friendly fire for the team.
          *
          * @return this builder
          */
-        @ScoreboardDsl
         @Contract("-> this", mutates = "this")
         public fun allowFriendlyFire(): Builder = friendlyFire(true)
 
@@ -193,7 +155,6 @@ public interface Team : Buildable<Team.Builder, Team> {
          *
          * @return this builder
          */
-        @ScoreboardDsl
         @Contract("-> this", mutates = "this")
         public fun disallowFriendlyFire(): Builder = friendlyFire(false)
 
@@ -203,7 +164,6 @@ public interface Team : Buildable<Team.Builder, Team> {
          * @param value the value of the setting
          * @return this builder
          */
-        @ScoreboardDsl
         @Contract("_ -> this", mutates = "this")
         public fun friendlyFire(value: Boolean): Builder
 
@@ -212,7 +172,6 @@ public interface Team : Buildable<Team.Builder, Team> {
          *
          * @return this builder
          */
-        @ScoreboardDsl
         @Contract("-> this", mutates = "this")
         public fun allowSeeingInvisibleMembers(): Builder = canSeeInvisibleMembers(true)
 
@@ -221,7 +180,6 @@ public interface Team : Buildable<Team.Builder, Team> {
          *
          * @return this builder
          */
-        @ScoreboardDsl
         @Contract("-> this", mutates = "this")
         public fun disallowSeeingInvisibleMembers(): Builder = canSeeInvisibleMembers(false)
 
@@ -232,7 +190,6 @@ public interface Team : Buildable<Team.Builder, Team> {
          * @param value the value of the setting
          * @return this builder
          */
-        @ScoreboardDsl
         @Contract("_ -> this", mutates = "this")
         public fun canSeeInvisibleMembers(value: Boolean): Builder
 
@@ -242,7 +199,6 @@ public interface Team : Buildable<Team.Builder, Team> {
          * @param visibility the visibility
          * @return this builder
          */
-        @ScoreboardDsl
         @Contract("_ -> this", mutates = "this")
         public fun nameTagVisibility(visibility: Visibility): Builder
 
@@ -253,9 +209,17 @@ public interface Team : Buildable<Team.Builder, Team> {
          * @param visibility the visibility
          * @return this builder
          */
-        @ScoreboardDsl
         @Contract("_ -> this", mutates = "this")
         public fun deathMessageVisibility(visibility: Visibility): Builder
+
+        /**
+         * Sets the team colour to the given [color].
+         *
+         * @param color the colour
+         * @return this builder
+         */
+        @Contract("_ -> this", mutates = "this")
+        public fun color(color: NamedTextColor): Builder
 
         /**
          * Sets the collision rule for the team to the given [rule].
@@ -263,7 +227,6 @@ public interface Team : Buildable<Team.Builder, Team> {
          * @param rule the collision rule
          * @return this builder
          */
-        @ScoreboardDsl
         @Contract("_ -> this", mutates = "this")
         public fun collisionRule(rule: CollisionRule): Builder
 
@@ -273,7 +236,6 @@ public interface Team : Buildable<Team.Builder, Team> {
          * @param member the member
          * @return this builder
          */
-        @ScoreboardDsl
         @Contract("_ -> this", mutates = "this")
         public fun addMember(member: Component): Builder
 
@@ -283,27 +245,15 @@ public interface Team : Buildable<Team.Builder, Team> {
          * @param member the member
          * @return this builder
          */
-        @ScoreboardDsl
         @Contract("_ -> this", mutates = "this")
         public fun removeMember(member: Component): Builder
-    }
-
-    @ApiStatus.Internal
-    public interface Factory {
-
-        public fun builder(name: String): Builder
-    }
-
-    public companion object {
 
         /**
-         * Creates a new builder for building a team.
+         * Builds the team and adds it to the scoreboard.
          *
-         * @param name the name of the team
-         * @return a new builder
+         * @return the built team
          */
-        @JvmStatic
-        @Contract("_ -> new", pure = true)
-        public fun builder(name: String): Builder = Krypton.factory<Factory>().builder(name)
+        @Contract("-> new", pure = true)
+        public fun buildAndRegister(): Team
     }
 }

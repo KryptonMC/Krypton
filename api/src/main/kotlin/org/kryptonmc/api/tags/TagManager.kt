@@ -11,7 +11,6 @@ package org.kryptonmc.api.tags
 /**
  * The manager of tags.
  */
-@Suppress("INAPPLICABLE_JVM_NAME")
 public interface TagManager {
 
     /**

@@ -8,26 +8,32 @@
  */
 package org.kryptonmc.api.user.ban
 
+import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.auth.GameProfile
 import java.net.InetAddress
 
 /**
  * A service that provides a way to ban users.
  */
-@Suppress("INAPPLICABLE_JVM_NAME")
 public interface BanService {
 
     /**
      * All of the registered profile bans.
      */
-    @get:JvmName("profileBans")
     public val profileBans: Collection<Ban.Profile>
 
     /**
      * All of the registered IP bans.
      */
-    @get:JvmName("ipBans")
     public val ipBans: Collection<Ban.IP>
+
+    /**
+     * Creates a new builder for building a ban.
+     *
+     * @return a new ban builder
+     */
+    @Contract("-> new", pure = true)
+    public fun createBuilder(): Ban.Builder
 
     /**
      * Checks if the given [ban] is registered with this ban manager.

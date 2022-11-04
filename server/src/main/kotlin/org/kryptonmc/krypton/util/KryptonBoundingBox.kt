@@ -19,7 +19,6 @@
 package org.kryptonmc.krypton.util
 
 import org.kryptonmc.api.util.BoundingBox
-import org.kryptonmc.api.util.Direction
 import org.spongepowered.math.GenericMath
 import org.spongepowered.math.vector.Vector3d
 import org.spongepowered.math.vector.Vector3i
@@ -36,16 +35,16 @@ data class KryptonBoundingBox(
     override val maximumZ: Double
 ) : BoundingBox {
 
-    override val xSize: Double
+    override val sizeX: Double
         get() = maximumX - minimumX
-    override val ySize: Double
+    override val sizeY: Double
         get() = maximumY - minimumY
-    override val zSize: Double
+    override val sizeZ: Double
         get() = maximumZ - minimumZ
     override val size: Double
-        get() = (xSize + ySize + zSize) / 3.0
+        get() = (sizeX + sizeY + sizeZ) / 3.0
     override val volume: Double
-        get() = xSize * ySize * zSize
+        get() = sizeX * sizeY * sizeZ
     override val centerX: Double
         get() = GenericMath.lerp(minimumX, maximumX, 0.5)
     override val centerY: Double
@@ -58,10 +57,6 @@ data class KryptonBoundingBox(
         require(minimumY <= maximumY) { "Maximum Y cannot be less than than minimum Y! Maximum is $maximumY and minimum is $minimumY!" }
         require(minimumZ <= maximumZ) { "Maximum Z cannot be less than than minimum Z! Maximum is $maximumZ and minimum is $minimumZ!" }
     }
-
-    override fun minimum(axis: Direction.Axis): Double = axis.select(minimumX, minimumY, minimumZ)
-
-    override fun maximum(axis: Direction.Axis): Double = axis.select(maximumX, maximumY, maximumZ)
 
     override fun inflate(xFactor: Double, yFactor: Double, zFactor: Double): BoundingBox {
         val newMinX = minimumX - xFactor
@@ -116,9 +111,6 @@ data class KryptonBoundingBox(
         this.minimumX < maximumX && this.maximumX > minimumX &&
             this.minimumY < maximumY && this.maximumY > minimumY &&
             this.minimumZ < maximumZ && this.maximumZ > minimumZ
-
-    override fun intersects(other: BoundingBox): Boolean =
-        intersects(other.minimumX, other.minimumY, other.minimumZ, other.maximumX, other.maximumY, other.maximumZ)
 
     override fun contains(x: Double, y: Double, z: Double): Boolean =
         x >= minimumX && x < maximumX && y >= minimumY && y < maximumY && z >= minimumZ && z < maximumZ

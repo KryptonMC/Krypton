@@ -11,13 +11,11 @@ package org.kryptonmc.api.entity.vehicle
 /**
  * A boat.
  */
-@Suppress("INAPPLICABLE_JVM_NAME")
 public interface Boat : DamageableVehicle {
 
     /**
      * The variant of the boat.
      */
-    @get:JvmName("variant")
     public var variant: BoatVariant
 
     /**

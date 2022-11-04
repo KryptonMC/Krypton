@@ -29,7 +29,7 @@ import org.kryptonmc.krypton.world.KryptonWorld
 
 class KryptonArrow(world: KryptonWorld) : KryptonArrowLike(world), Arrow {
 
-    override val type: KryptonEntityType<Arrow>
+    override val type: KryptonEntityType<KryptonArrow>
         get() = KryptonEntityTypes.ARROW
     override val serializer: EntitySerializer<KryptonArrow>
         get() = ArrowSerializer

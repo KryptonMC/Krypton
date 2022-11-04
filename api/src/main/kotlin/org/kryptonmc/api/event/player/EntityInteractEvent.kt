@@ -13,12 +13,10 @@ import org.kryptonmc.api.entity.Entity
 /**
  * An interaction event targeting an entity.
  */
-@Suppress("INAPPLICABLE_JVM_NAME")
 public sealed interface EntityInteractEvent : InteractEvent {
 
     /**
      * The entity that was interacted with.
      */
-    @get:JvmName("target")
     public val target: Entity
 }

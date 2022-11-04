@@ -22,5 +22,4 @@ import org.kryptonmc.api.entity.player.Player
 import org.kryptonmc.api.event.player.RotateEvent
 import org.spongepowered.math.vector.Vector2f
 
-@JvmRecord
-data class KryptonRotateEvent(override val player: Player, override val oldRotation: Vector2f, override val newRotation: Vector2f) : RotateEvent
+class KryptonRotateEvent(override val player: Player, override val oldRotation: Vector2f, override val newRotation: Vector2f) : RotateEvent

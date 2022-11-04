@@ -13,18 +13,15 @@ import net.kyori.adventure.key.Key
 /**
  * Called when a plugin message is received from a client.
  */
-@Suppress("INAPPLICABLE_JVM_NAME")
 public interface PluginMessageEvent : PlayerEvent {
 
     /**
      * The channel that the message was received on.
      */
-    @get:JvmName("channel")
     public val channel: Key
 
     /**
      * The message that was received from the sender.
      */
-    @get:JvmName("message")
     public val message: ByteArray
 }

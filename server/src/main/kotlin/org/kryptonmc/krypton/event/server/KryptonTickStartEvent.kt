@@ -20,5 +20,4 @@ package org.kryptonmc.krypton.event.server
 
 import org.kryptonmc.api.event.server.TickStartEvent
 
-@JvmRecord
-data class KryptonTickStartEvent(override val tickNumber: Int) : TickStartEvent
+class KryptonTickStartEvent(override val tickNumber: Int) : TickStartEvent

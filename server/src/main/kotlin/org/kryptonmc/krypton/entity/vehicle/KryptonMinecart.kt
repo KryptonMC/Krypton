@@ -26,7 +26,7 @@ import org.kryptonmc.krypton.world.KryptonWorld
 
 class KryptonMinecart(world: KryptonWorld) : KryptonMinecartLike(world), Minecart {
 
-    override val type: KryptonEntityType<Minecart>
+    override val type: KryptonEntityType<KryptonMinecart>
         get() = KryptonEntityTypes.MINECART
 
     override val variant: MinecartVariant

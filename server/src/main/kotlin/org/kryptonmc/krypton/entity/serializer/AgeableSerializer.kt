@@ -30,7 +30,7 @@ object AgeableSerializer : EntitySerializer<KryptonAgeable> {
     }
 
     override fun save(entity: KryptonAgeable): CompoundTag.Builder = MobSerializer.save(entity).apply {
-        int("Age", entity.age)
-        int("ForcedAge", entity.forcedAge)
+        putInt("Age", entity.age)
+        putInt("ForcedAge", entity.forcedAge)
     }
 }

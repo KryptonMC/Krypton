@@ -30,6 +30,6 @@ object LargeFireballSerializer : EntitySerializer<KryptonLargeFireball> {
     }
 
     override fun save(entity: KryptonLargeFireball): CompoundTag.Builder = FireballSerializer.save(entity).apply {
-        byte("ExplosionPower", entity.explosionPower.toByte())
+        putByte("ExplosionPower", entity.explosionPower.toByte())
     }
 }

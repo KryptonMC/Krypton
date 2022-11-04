@@ -21,12 +21,12 @@ package org.kryptonmc.krypton.command.arguments.entities
 import com.mojang.brigadier.exceptions.DynamicCommandExceptionType
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType
 import net.kyori.adventure.text.Component
-import org.kryptonmc.api.adventure.toMessage
-import org.kryptonmc.api.adventure.toPlainText
 import org.kryptonmc.api.auth.GameProfile
 import org.kryptonmc.api.command.Sender
 import org.kryptonmc.api.entity.player.Player
 import org.kryptonmc.krypton.KryptonServer
+import org.kryptonmc.krypton.adventure.toMessage
+import org.kryptonmc.krypton.adventure.toPlainText
 import org.kryptonmc.krypton.command.BrigadierExceptions
 import org.kryptonmc.krypton.command.toExceptionType
 import org.kryptonmc.krypton.entity.KryptonEntity

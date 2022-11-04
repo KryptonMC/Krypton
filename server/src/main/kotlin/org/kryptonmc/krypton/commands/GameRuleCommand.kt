@@ -19,8 +19,10 @@
 package org.kryptonmc.krypton.commands
 
 import com.mojang.brigadier.CommandDispatcher
+import com.mojang.brigadier.arguments.ArgumentType
 import com.mojang.brigadier.arguments.BoolArgumentType
 import com.mojang.brigadier.arguments.IntegerArgumentType
+import com.mojang.brigadier.builder.ArgumentBuilder
 import com.mojang.brigadier.builder.LiteralArgumentBuilder
 import net.kyori.adventure.text.Component
 import org.kryptonmc.api.command.Sender
@@ -36,7 +38,6 @@ import org.kryptonmc.krypton.command.runs
 
 object GameRuleCommand : InternalCommand {
 
-    @Suppress("UNCHECKED_CAST")
     override fun register(dispatcher: CommandDispatcher<Sender>) {
         val command = literal("gamerule") { permission(KryptonPermission.GAME_RULE) }
         Registries.GAME_RULES.values.forEach { rule ->
@@ -46,28 +47,27 @@ object GameRuleCommand : InternalCommand {
                 sender.sendMessage(Component.translatable("commands.gamerule.query", Component.text(rule.name), gameRule))
             }
             if (rule.default is Boolean) {
-                gameRule.then(argument("value", BoolArgumentType.bool()) {
-                    runs {
-                        val sender = it.source as? KryptonPlayer ?: return@runs
-                        val value = it.argument<Boolean>("value")
-                        sender.world.gameRules.set(rule as GameRule<Any>, value)
-                        val name = Component.text(rule.name)
-                        sender.sendMessage(Component.translatable("commands.gamerule.set", name, Component.text(value.toString())))
-                    }
-                })
+                @Suppress("UNCHECKED_CAST")
+                gameRule.then(gameRuleArgument(BoolArgumentType.bool(), rule as GameRule<Boolean>))
             } else if (rule.default is Int) {
-                gameRule.then(argument<Int>("value", IntegerArgumentType.integer()) {
-                    runs {
-                        val sender = it.source as? KryptonPlayer ?: return@runs
-                        val value = it.argument<Int>("value")
-                        sender.world.gameRules.set(rule as GameRule<Any>, value)
-                        val name = Component.text(rule.name)
-                        sender.sendMessage(Component.translatable("commands.gamerule.set", name, Component.text(value.toString())))
-                    }
-                })
+                @Suppress("UNCHECKED_CAST")
+                gameRule.then(gameRuleArgument(IntegerArgumentType.integer(), rule as GameRule<Int>))
             }
             command.then(gameRule)
         }
         dispatcher.register(command)
+    }
+
+    @JvmStatic
+    private inline fun <reified V : Any> gameRuleArgument(
+        argument: ArgumentType<V>,
+        rule: GameRule<V>
+    ): ArgumentBuilder<Sender, *> = argument("value", argument) {
+        runs {
+            val sender = it.source as? KryptonPlayer ?: return@runs
+            val value = it.argument<V>("value")
+            sender.world.gameRules.set(rule, value)
+            sender.sendMessage(Component.translatable("commands.gamerule.set", Component.text(rule.name), Component.text(value.toString())))
+        }
     }
 }

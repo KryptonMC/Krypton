@@ -11,18 +11,17 @@ package org.kryptonmc.api.item.meta
 import net.kyori.adventure.text.Component
 import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.block.Block
-import org.kryptonmc.api.entity.EquipmentSlot
-import org.kryptonmc.api.entity.attribute.AttributeModifier
-import org.kryptonmc.api.entity.attribute.AttributeType
-import org.kryptonmc.api.item.ItemAttribute
+import org.kryptonmc.api.item.ItemAttributeModifier
 import org.kryptonmc.api.item.data.ItemFlag
 import java.util.function.Consumer
+import javax.annotation.concurrent.Immutable
 
 /**
  * An item meta subtype that changes all of the returns of functions in item
  * meta to a generic type to avoid all subtypes having to override all of the
  * functions.
  */
+@Immutable
 public sealed interface ScopedItemMeta<B : ItemMetaBuilder<B, I>, I : ItemMeta> : ItemMeta, ItemMetaBuilder.Provider<B> {
 
     /**
@@ -54,13 +53,13 @@ public sealed interface ScopedItemMeta<B : ItemMetaBuilder<B, I>, I : ItemMeta> 
 
     override fun withName(name: Component?): I
 
-    override fun withLore(lore: Iterable<Component>): I
+    override fun withLore(lore: List<Component>): I
 
-    override fun addLore(lore: Component): I
+    override fun withLore(lore: Component): I
 
-    override fun removeLore(index: Int): I
+    override fun withoutLore(index: Int): I
 
-    override fun removeLore(lore: Component): I
+    override fun withoutLore(lore: Component): I
 
     override fun withHideFlags(flags: Int): I
 
@@ -68,21 +67,15 @@ public sealed interface ScopedItemMeta<B : ItemMetaBuilder<B, I>, I : ItemMeta> 
 
     override fun withoutHideFlag(flag: ItemFlag): I
 
-    override fun withCanDestroy(blocks: Iterable<Block>): I
+    override fun withCanDestroy(blocks: Collection<Block>): I
 
-    override fun withCanPlaceOn(blocks: Iterable<Block>): I
+    override fun withCanPlaceOn(blocks: Collection<Block>): I
 
-    override fun withAttributeModifiers(attributes: Set<ItemAttribute>): I
+    override fun withAttributeModifiers(modifiers: Collection<ItemAttributeModifier>): I
 
-    override fun withAttributeModifiers(type: AttributeType, slot: EquipmentSlot, modifiers: Set<AttributeModifier>): I
+    override fun withoutAttributeModifiers(): I
 
-    override fun addAttributeModifiers(type: AttributeType, slot: EquipmentSlot, modifiers: Iterable<AttributeModifier>): I
+    override fun withAttributeModifier(modifier: ItemAttributeModifier): I
 
-    override fun removeAttributeModifiers(type: AttributeType, slot: EquipmentSlot, modifiers: Iterable<AttributeModifier>): I
-
-    override fun removeAttributeModifiers(type: AttributeType, slot: EquipmentSlot): I
-
-    override fun addAttributeModifier(type: AttributeType, slot: EquipmentSlot, modifier: AttributeModifier): I
-
-    override fun removeAttributeModifier(type: AttributeType, slot: EquipmentSlot, modifier: AttributeModifier): I
+    override fun withoutAttributeModifier(modifier: ItemAttributeModifier): I
 }

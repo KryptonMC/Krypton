@@ -18,7 +18,7 @@
  */
 package org.kryptonmc.krypton.world.block.state
 
-import kotlinx.collections.immutable.ImmutableMap
+import com.google.common.collect.ImmutableMap
 import net.kyori.adventure.key.Key
 import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.block.BlockSoundGroup
@@ -290,8 +290,6 @@ abstract class BlockBehaviour(protected val properties: Properties) : Block {
 
         final override val block: KryptonBlock
             get() = owner
-        final override val state: KryptonBlockState
-            get() = asState()
         val hasBlockEntity: Boolean
             get() = false // FIXME: When we create all the KryptonBlock implementations, check if is instance of EntityBlock
         val hasLargeCollisionShape: Boolean
@@ -461,7 +459,7 @@ abstract class BlockBehaviour(protected val properties: Properties) : Block {
 
         final override fun asFluid(): KryptonFluidState = block.getFluidState(asState())
 
-        protected abstract fun asState(): KryptonBlockState
+        abstract override fun asState(): KryptonBlockState
 
         protected class Cache(state: KryptonBlockState) {
 

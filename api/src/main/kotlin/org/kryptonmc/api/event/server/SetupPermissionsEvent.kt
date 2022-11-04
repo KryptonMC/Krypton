@@ -19,19 +19,16 @@ import org.kryptonmc.api.permission.Subject
 /**
  * Called when the given [subject]'s permissions are initially being set up.
  */
-@Suppress("INAPPLICABLE_JVM_NAME")
 public interface SetupPermissionsEvent {
 
     /**
      * The subject that is having their permissions set up.
      */
-    @get:JvmName("subject")
     public val subject: Subject
 
     /**
      * The provider that should be used to provide permissions for the subject.
      */
-    @get:JvmName("provider")
     public var provider: PermissionProvider
 
     /**

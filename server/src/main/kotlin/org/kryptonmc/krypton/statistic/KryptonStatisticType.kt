@@ -20,35 +20,33 @@ package org.kryptonmc.krypton.statistic
 
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.text.Component
-import net.kyori.adventure.text.TranslatableComponent
+import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.api.registry.Registry
 import org.kryptonmc.api.statistic.Statistic
 import org.kryptonmc.api.statistic.StatisticFormatter
 import org.kryptonmc.api.statistic.StatisticType
-import java.util.Collections
 import java.util.IdentityHashMap
 
-class KryptonStatisticType<T : Any>(private val key: Key, override val registry: Registry<T>) : StatisticType<T> {
+class KryptonStatisticType<T : Any>(override val registry: Registry<T>) : StatisticType<T> {
 
-    private val statisticMap = IdentityHashMap<T, Statistic<T>>()
-    private var displayName: TranslatableComponent? = null
+    private val statistics = IdentityHashMap<T, Statistic<T>>()
+    private var displayName: Component? = null
 
-    override val statistics: Map<T, Statistic<T>> = Collections.unmodifiableMap(statisticMap)
-    override val translation: TranslatableComponent
-        get() {
-            if (displayName == null) displayName = Component.translatable(translationKey())
-            return displayName!!
-        }
+    override fun key(): Key = Registries.STATISTIC_TYPE.get(this)!!
 
-    override fun key(): Key = key
+    override fun translationKey(): String = "stat_type.${key().asString().replace(':', '.')}"
 
-    override fun translationKey(): String = "stat_type.${key.asString().replace(':', '.')}"
+    fun displayName(): Component {
+        if (displayName == null) displayName = Component.translatable(translationKey())
+        return displayName!!
+    }
 
-    override fun contains(key: T): Boolean = statisticMap.containsKey(key)
+    override fun contains(key: T): Boolean = statistics.containsKey(key)
 
     override fun get(key: T): Statistic<T> = get(key, StatisticFormatter.DEFAULT)
 
-    override fun get(key: T, formatter: StatisticFormatter): Statistic<T> = statisticMap.getOrPut(key) { KryptonStatistic(this, key, formatter) }
+    override fun get(key: T, formatter: StatisticFormatter): Statistic<T> =
+        statistics.computeIfAbsent(key) { KryptonStatistic(this, it, formatter) }
 
-    override fun iterator(): Iterator<Statistic<T>> = statisticMap.values.iterator()
+    override fun iterator(): Iterator<Statistic<T>> = statistics.values.iterator()
 }

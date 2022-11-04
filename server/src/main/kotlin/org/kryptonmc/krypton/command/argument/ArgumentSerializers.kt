@@ -43,7 +43,6 @@ import java.util.concurrent.ConcurrentHashMap
  * Holds all of the built-in argument serializers for all of the argument
  * types that we use that need to be sent to the client.
  */
-@Suppress("UNCHECKED_CAST")
 object ArgumentSerializers {
 
     private val BY_CLASS = ConcurrentHashMap<Class<*>, Entry<*>>()
@@ -70,15 +69,22 @@ object ArgumentSerializers {
     }
 
     @JvmStatic
-    fun <T : ArgumentType<*>> get(type: T): Entry<T>? = BY_CLASS.get(type::class.java) as? Entry<T>
+    @Suppress("UNCHECKED_CAST")
+    fun <T : ArgumentType<*>> get(type: T): Entry<T>? = BY_CLASS.get(type.javaClass) as? Entry<T>
 
     @JvmStatic
+    @Suppress("UNCHECKED_CAST")
     fun <T : ArgumentType<*>> get(id: Int): Entry<T>? = BY_ID.get(id) as? Entry<T>
 
     @JvmStatic
     private inline fun <reified T : ArgumentType<*>> register(id: Int, name: String, serializer: ArgumentSerializer<T>) {
-        val entry = Entry(id, Key.key(name), T::class.java, serializer)
-        BY_CLASS.put(T::class.java, entry)
+        register(id, name, T::class.java, serializer)
+    }
+
+    @JvmStatic
+    private fun <T : ArgumentType<*>> register(id: Int, name: String, type: Class<T>, serializer: ArgumentSerializer<T>) {
+        val entry = Entry(id, Key.key(name), type, serializer)
+        BY_CLASS.put(type, entry)
         BY_ID.put(id, entry)
     }
 

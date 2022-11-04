@@ -21,12 +21,16 @@ package org.kryptonmc.krypton.entity.projectile
 import org.kryptonmc.api.entity.projectile.SpectralArrow
 import org.kryptonmc.krypton.entity.KryptonEntityType
 import org.kryptonmc.krypton.entity.KryptonEntityTypes
+import org.kryptonmc.krypton.entity.serializer.EntitySerializer
+import org.kryptonmc.krypton.entity.serializer.projectile.SpectralArrowSerializer
 import org.kryptonmc.krypton.world.KryptonWorld
 
 class KryptonSpectralArrow(world: KryptonWorld) : KryptonArrowLike(world), SpectralArrow {
 
-    override val type: KryptonEntityType<SpectralArrow>
+    override val type: KryptonEntityType<KryptonSpectralArrow>
         get() = KryptonEntityTypes.SPECTRAL_ARROW
+    override val serializer: EntitySerializer<KryptonSpectralArrow>
+        get() = SpectralArrowSerializer
 
     override var duration: Int = DEFAULT_DURATION
 

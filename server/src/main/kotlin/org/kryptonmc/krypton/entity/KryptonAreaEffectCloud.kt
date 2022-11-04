@@ -29,7 +29,7 @@ import org.kryptonmc.krypton.world.KryptonWorld
 
 class KryptonAreaEffectCloud(world: KryptonWorld) : KryptonEntity(world), AreaEffectCloud {
 
-    override val type: KryptonEntityType<AreaEffectCloud>
+    override val type: KryptonEntityType<KryptonAreaEffectCloud>
         get() = KryptonEntityTypes.AREA_EFFECT_CLOUD
     override val serializer: EntitySerializer<KryptonAreaEffectCloud>
         get() = AreaEffectCloudSerializer

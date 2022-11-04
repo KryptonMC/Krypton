@@ -264,7 +264,7 @@ class PlayerManager(private val server: KryptonServer) {
     private fun updateScoreboard(scoreboard: KryptonScoreboard, player: KryptonPlayer) {
         val objectives = HashSet<Objective>()
         scoreboard.teams.forEach { player.session.send(PacketOutUpdateTeams.create(it)) }
-        scoreboard.displayObjectives.forEach { (_, objective) ->
+        scoreboard.displayObjectives().forEach { objective ->
             if (objectives.contains(objective)) return@forEach
             scoreboard.getStartTrackingPackets(objective).forEach(player.session::send)
             objectives.add(objective)

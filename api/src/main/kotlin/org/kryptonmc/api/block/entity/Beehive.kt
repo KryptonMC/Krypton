@@ -14,7 +14,6 @@ import org.spongepowered.math.vector.Vector3i
 /**
  * A beehive.
  */
-@Suppress("INAPPLICABLE_JVM_NAME")
 public interface Beehive : EntityStorageBlockEntity<Bee> {
 
     /**
@@ -26,6 +25,5 @@ public interface Beehive : EntityStorageBlockEntity<Bee> {
      * The position of a flower that one of the bees has found, so that other
      * bees in the beehive can find it.
      */
-    @get:JvmName("flower")
     public var flower: Vector3i?
 }

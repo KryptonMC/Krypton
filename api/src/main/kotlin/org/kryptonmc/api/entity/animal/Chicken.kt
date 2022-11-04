@@ -11,7 +11,6 @@ package org.kryptonmc.api.entity.animal
 /**
  * A chicken.
  */
-@Suppress("INAPPLICABLE_JVM_NAME")
 public interface Chicken : Animal {
 
     /**
@@ -22,6 +21,5 @@ public interface Chicken : Animal {
     /**
      * The time remaining until the next egg drops from this chicken.
      */
-    @get:JvmName("eggCooldownTime")
     public var eggCooldownTime: Int
 }

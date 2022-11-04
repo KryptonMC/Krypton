@@ -13,14 +13,12 @@ import org.kryptonmc.api.block.entity.NameableBlockEntity
 /**
  * A hopper.
  */
-@Suppress("INAPPLICABLE_JVM_NAME")
 public interface Hopper : ContainerBlockEntity, NameableBlockEntity {
 
     /**
      * The amount of time, in ticks, before the hopper can transfer another
      * item.
      */
-    @get:JvmName("cooldown")
     public val cooldown: Int
 
     /**

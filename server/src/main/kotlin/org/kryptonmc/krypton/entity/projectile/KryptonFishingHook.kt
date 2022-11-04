@@ -31,7 +31,7 @@ import kotlin.random.Random
 
 class KryptonFishingHook(world: KryptonWorld) : KryptonProjectile(world), FishingHook {
 
-    override val type: KryptonEntityType<FishingHook>
+    override val type: KryptonEntityType<KryptonFishingHook>
         get() = KryptonEntityTypes.FISHING_HOOK
 
     override var hooked: KryptonEntity? = null

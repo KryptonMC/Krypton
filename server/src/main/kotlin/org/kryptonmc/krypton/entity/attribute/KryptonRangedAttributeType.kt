@@ -18,22 +18,22 @@
  */
 package org.kryptonmc.krypton.entity.attribute
 
-import com.google.gson.JsonObject
-import net.kyori.adventure.key.Key
-import net.kyori.adventure.text.Component
-import org.kryptonmc.api.entity.attribute.AttributeType
-import org.kryptonmc.api.registry.Registries
-import org.kryptonmc.krypton.util.KryptonDataLoader
+import org.kryptonmc.api.entity.attribute.RangedAttributeType
+import org.kryptonmc.krypton.util.Maths
 
-object AttributeLoader : KryptonDataLoader<AttributeType>("attributes", Registries.ATTRIBUTE) {
+class KryptonRangedAttributeType(
+    defaultValue: Double,
+    sendToClient: Boolean,
+    translationKey: String,
+    override val minimum: Double,
+    override val maximum: Double
+) : KryptonAttributeType(defaultValue, sendToClient, translationKey), RangedAttributeType {
 
-    override fun create(key: Key, value: JsonObject): AttributeType {
-        val translationKey = value.get("translationKey").asString
-        val defaultValue = value.get("defaultValue").asDouble
-        val clientSync = value.get("clientSync").asBoolean
-        val range = value.get("range").asJsonObject
-        val min = range.get("minValue").asDouble
-        val max = range.get("maxValue").asDouble
-        return KryptonAttributeType(key, defaultValue, min, max, clientSync, Component.translatable(translationKey))
+    init {
+        require(minimum <= maximum) { "Minimum value cannot be larger than maximum value!" }
+        require(defaultValue >= minimum) { "Default value cannot be less than minimum value!" }
+        require(defaultValue <= maximum) { "Default value cannot be greater than maximum value!" }
     }
+
+    override fun sanitizeValue(value: Double): Double = if (value.isNaN()) minimum else Maths.clamp(value, minimum, maximum)
 }

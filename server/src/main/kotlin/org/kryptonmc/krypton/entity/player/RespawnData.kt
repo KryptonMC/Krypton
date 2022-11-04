@@ -35,11 +35,11 @@ data class RespawnData(
 ) {
 
     fun save(data: CompoundTag.Builder, logger: Logger): CompoundTag.Builder = data.apply {
-        int("SpawnX", position.x())
-        int("SpawnY", position.y())
-        int("SpawnZ", position.z())
-        float("SpawnAngle", angle)
-        boolean("SpawnForced", forced)
+        putInt("SpawnX", position.x())
+        putInt("SpawnY", position.y())
+        putInt("SpawnZ", position.z())
+        putFloat("SpawnAngle", angle)
+        putBoolean("SpawnForced", forced)
         Codecs.KEY.encodeStart(dimension.location, NbtOps.INSTANCE).resultOrPartial(logger::error).ifPresent { put("SpawnDimension", it) }
     }
 }

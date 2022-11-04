@@ -20,8 +20,8 @@ package org.kryptonmc.krypton.server.ban
 
 import com.google.gson.stream.JsonWriter
 import net.kyori.adventure.text.Component
-import org.kryptonmc.api.adventure.toLegacySectionText
 import org.kryptonmc.api.user.ban.Ban
+import org.kryptonmc.krypton.adventure.toLegacySectionText
 import org.kryptonmc.krypton.server.ServerConfigEntry
 import java.time.OffsetDateTime
 import java.time.format.DateTimeFormatter
@@ -38,12 +38,6 @@ sealed class BanEntry<T>(
     private val reasonString by lazy { reason.toLegacySectionText() }
     private val startFormatted by lazy { creationDate.format(DATE_FORMATTER) }
     private val endFormatted by lazy { expirationDate?.format(DATE_FORMATTER) ?: "forever" }
-    final override val isInvalid: Boolean
-        get() {
-            val now = OffsetDateTime.now()
-            if (expirationDate == null) return false
-            return expirationDate.isEqual(now) || expirationDate.isBefore(now)
-        }
 
     abstract fun writeKey(writer: JsonWriter)
 
@@ -60,6 +54,8 @@ sealed class BanEntry<T>(
         writer.value(reasonString)
         writer.endObject()
     }
+
+    final override fun hasExpired(): Boolean = expirationDate?.isBefore(OffsetDateTime.now()) ?: false
 
     companion object {
 

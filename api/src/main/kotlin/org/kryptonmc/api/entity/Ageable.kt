@@ -17,7 +17,6 @@ public interface Ageable : Mob {
     /**
      * The age of this ageable mob.
      */
-    @get:JvmName("age")
     public val age: Int
 
     /**

@@ -8,23 +8,22 @@
  */
 package org.kryptonmc.api.auth
 
+import org.jetbrains.annotations.UnmodifiableView
 import java.util.UUID
 
 /**
  * A simple cache that holds [GameProfile]s.
  */
-@Suppress("INAPPLICABLE_JVM_NAME")
 public interface ProfileCache : Iterable<GameProfile> {
 
     /**
      * An immutable view of the currently cached profiles.
      */
-    @get:JvmName("profiles")
-    public val profiles: Set<GameProfile>
+    public val profiles: @UnmodifiableView Collection<GameProfile>
 
     /**
-     * Gets the cached [GameProfile] with the specified [name], or returns null
-     * if there is no cached [GameProfile] with the specified name.
+     * Gets the cached game profile with the specified [name], or returns null
+     * if there is no cached game profile with the specified name.
      *
      * @param name the name
      * @return the cached profile, or null if not present
@@ -32,8 +31,8 @@ public interface ProfileCache : Iterable<GameProfile> {
     public fun get(name: String): GameProfile?
 
     /**
-     * Gets the cached [GameProfile] with the specified [uuid], or returns null
-     * if there is no cached [GameProfile] with the specified [uuid].
+     * Gets the cached game profile with the specified [uuid], or returns null
+     * if there is no cached game profile with the specified [uuid].
      *
      * @param uuid the uuid
      * @return the cached profile, or null if not present

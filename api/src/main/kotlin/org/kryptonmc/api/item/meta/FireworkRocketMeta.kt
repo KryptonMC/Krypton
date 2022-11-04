@@ -9,12 +9,15 @@
 package org.kryptonmc.api.item.meta
 
 import org.jetbrains.annotations.Contract
+import org.jetbrains.annotations.Unmodifiable
 import org.kryptonmc.api.item.data.FireworkEffect
+import javax.annotation.concurrent.Immutable
 
 /**
  * Item metadata for a firework rocket.
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
+@Immutable
 public interface FireworkRocketMeta : ScopedItemMeta<FireworkRocketMeta.Builder, FireworkRocketMeta> {
 
     /**
@@ -22,7 +25,7 @@ public interface FireworkRocketMeta : ScopedItemMeta<FireworkRocketMeta.Builder,
      * when it explodes.
      */
     @get:JvmName("explosions")
-    public val effects: List<FireworkEffect>
+    public val effects: @Unmodifiable List<FireworkEffect>
 
     /**
      * The flight duration of the firework rocket.
@@ -47,7 +50,7 @@ public interface FireworkRocketMeta : ScopedItemMeta<FireworkRocketMeta.Builder,
      * @return new item metadata
      */
     @Contract("_ -> new", pure = true)
-    public fun addEffect(effect: FireworkEffect): FireworkRocketMeta
+    public fun withEffect(effect: FireworkEffect): FireworkRocketMeta
 
     /**
      * Creates new item metadata with the effect at the given [index] removed
@@ -59,7 +62,7 @@ public interface FireworkRocketMeta : ScopedItemMeta<FireworkRocketMeta.Builder,
      * bounds exception, i.e. when it is too small or too big
      */
     @Contract("_ -> new", pure = true)
-    public fun removeEffect(index: Int): FireworkRocketMeta
+    public fun withoutEffect(index: Int): FireworkRocketMeta
 
     /**
      * Creates new item metadata with the given [effect] removed from the
@@ -69,7 +72,7 @@ public interface FireworkRocketMeta : ScopedItemMeta<FireworkRocketMeta.Builder,
      * @return new item metadata
      */
     @Contract("_ -> new", pure = true)
-    public fun removeEffect(effect: FireworkEffect): FireworkRocketMeta
+    public fun withoutEffect(effect: FireworkEffect): FireworkRocketMeta
 
     /**
      * Creates new item metadata with the given flight [duration].
@@ -94,7 +97,7 @@ public interface FireworkRocketMeta : ScopedItemMeta<FireworkRocketMeta.Builder,
          */
         @MetaDsl
         @Contract("_ -> this", mutates = "this")
-        public fun effects(effects: Iterable<FireworkEffect>): Builder
+        public fun effects(effects: Collection<FireworkEffect>): Builder
 
         /**
          * Sets the list of effects for the rocket to the given [effects].
@@ -104,17 +107,7 @@ public interface FireworkRocketMeta : ScopedItemMeta<FireworkRocketMeta.Builder,
          */
         @MetaDsl
         @Contract("_ -> this", mutates = "this")
-        public fun effects(vararg effects: FireworkEffect): Builder = effects(effects.asIterable())
-
-        /**
-         * Adds the given [effect] to the list of effects for the rocket.
-         *
-         * @param effect the effect to add
-         * @return this builder
-         */
-        @MetaDsl
-        @Contract("_ -> this", mutates = "this")
-        public fun addEffect(effect: FireworkEffect): Builder
+        public fun effects(vararg effects: FireworkEffect): Builder = effects(effects.asList())
 
         /**
          * Sets the flight duration of the rocket to the given [duration].

@@ -21,6 +21,9 @@ package org.kryptonmc.krypton.entity.serializer.projectile
 import org.kryptonmc.krypton.entity.projectile.KryptonProjectile
 import org.kryptonmc.krypton.entity.serializer.BaseEntitySerializer
 import org.kryptonmc.krypton.entity.serializer.EntitySerializer
+import org.kryptonmc.krypton.util.nbt.getUUID
+import org.kryptonmc.krypton.util.nbt.hasUUID
+import org.kryptonmc.krypton.util.nbt.putUUID
 import org.kryptonmc.nbt.CompoundTag
 
 object ProjectileSerializer : EntitySerializer<KryptonProjectile> {
@@ -33,8 +36,8 @@ object ProjectileSerializer : EntitySerializer<KryptonProjectile> {
     }
 
     override fun save(entity: KryptonProjectile): CompoundTag.Builder = BaseEntitySerializer.save(entity).apply {
-        if (entity.ownerId != null) uuid("Owner", entity.ownerId!!)
-        if (entity.hasLeftOwner) boolean("LeftOwner", true)
-        boolean("HasBeenShot", entity.hasBeenShot)
+        if (entity.ownerId != null) putUUID("Owner", entity.ownerId!!)
+        if (entity.hasLeftOwner) putBoolean("LeftOwner", true)
+        putBoolean("HasBeenShot", entity.hasBeenShot)
     }
 }

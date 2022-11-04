@@ -29,15 +29,15 @@ object DolphinSerializer : EntitySerializer<KryptonDolphin> {
     override fun load(entity: KryptonDolphin, data: CompoundTag) {
         MobSerializer.load(entity, data)
         entity.treasurePosition = Vector3i(data.getInt("TreasurePosX"), data.getInt("TreasurePosY"), data.getInt("TreasurePosZ"))
-        entity.gotFish = data.getBoolean("GotFish")
+        entity.hasGotFish = data.getBoolean("GotFish")
         entity.skinMoisture = data.getInt("Moistness")
     }
 
     override fun save(entity: KryptonDolphin): CompoundTag.Builder = MobSerializer.save(entity).apply {
-        int("TreasurePosX", entity.treasurePosition.x())
-        int("TreasurePosY", entity.treasurePosition.y())
-        int("TreasurePosZ", entity.treasurePosition.z())
-        boolean("GotFish", entity.gotFish)
-        int("Moistness", entity.skinMoisture)
+        putInt("TreasurePosX", entity.treasurePosition.x())
+        putInt("TreasurePosY", entity.treasurePosition.y())
+        putInt("TreasurePosZ", entity.treasurePosition.z())
+        putBoolean("GotFish", entity.hasGotFish)
+        putInt("Moistness", entity.skinMoisture)
     }
 }

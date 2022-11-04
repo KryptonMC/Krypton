@@ -21,20 +21,20 @@ package org.kryptonmc.krypton.entity.aquatic
 import org.kryptonmc.api.entity.aquatic.TropicalFish
 import org.kryptonmc.api.entity.aquatic.TropicalFishVariant
 import org.kryptonmc.api.item.ItemTypes
-import org.kryptonmc.api.item.data.DyeColor
 import org.kryptonmc.api.item.ItemType
+import org.kryptonmc.api.item.data.DyeColor
 import org.kryptonmc.krypton.entity.KryptonEntityType
 import org.kryptonmc.krypton.entity.KryptonEntityTypes
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.entity.serializer.EntitySerializer
 import org.kryptonmc.krypton.entity.serializer.aquatic.TropicalFishSerializer
-import org.kryptonmc.krypton.registry.KryptonRegistries
+import org.kryptonmc.krypton.util.DyeColors
 import org.kryptonmc.krypton.world.KryptonWorld
 import kotlin.math.min
 
 class KryptonTropicalFish(world: KryptonWorld) : KryptonSchoolingFish(world), TropicalFish {
 
-    override val type: KryptonEntityType<TropicalFish>
+    override val type: KryptonEntityType<KryptonTropicalFish>
         get() = KryptonEntityTypes.TROPICAL_FISH
     override val serializer: EntitySerializer<KryptonTropicalFish>
         get() = TropicalFishSerializer
@@ -69,6 +69,13 @@ class KryptonTropicalFish(world: KryptonWorld) : KryptonSchoolingFish(world), Tr
     companion object {
 
         private val VARIANTS = TropicalFishVariant.values()
+        private const val NO_SHAPE_PATTERN_MASK = -65536 // 11111111 11111111 00000000 00000000 (clear bits 0-15)
+        private const val NO_BASE_COLOR_MASK = -16711681 // 11111111 00000000 11111111 11111111 (clear bits 16-23)
+        private const val NO_PATTERN_COLOR_MASK = -65281 // 11111111 11111111 00000000 11111111 (clear bits 8-15)
+        private const val SHAPE_MASK = 255 // 00000000 00000000 00000000 11111111 (clear all bits except 0-7)
+        private const val PATTERN_MASK = 65280 // 00000000 00000000 11111111 00000000 (clear all bits except 8-15)
+        private const val BASE_COLOR_MASK = 16711680 // 00000000 11111111 00000000 00000000 (clear all bits except 16-23)
+        private const val PATTERN_COLOR_MASK = -16777216 // 11111111 00000000 00000000 00000000 (clear all bits except 24-31)
 
         /*
          * Tropical fish data is all packed in to a single 32-bit integer, with 8 bits being
@@ -92,38 +99,25 @@ class KryptonTropicalFish(world: KryptonWorld) : KryptonSchoolingFish(world), Tr
          * - a AND 0 = 0
          */
 
-        // -65536 = 11111111 11111111 00000000 00000000 (clear bits 0-15)
         @JvmStatic
-        private fun modifyVariant(encoded: Int, variant: TropicalFishVariant): Int {
-            val encodedVariant = (variant.shape and 255) or ((variant.pattern and 255) shl 8)
-            return (encoded and -65536) or encodedVariant
-        }
+        private fun modifyVariant(encoded: Int, variant: TropicalFishVariant): Int =
+            encoded and NO_SHAPE_PATTERN_MASK or (variant.ordinal + 2 shr 3 or (variant.ordinal % 6 shl 8))
 
-        // -16711681 = 11111111 00000000 11111111 11111111 (clear bits 16-23)
         @JvmStatic
-        private fun modifyBaseColor(encoded: Int, baseColor: DyeColor): Int {
-            val colorId = KryptonRegistries.DYE_COLORS.idOf(baseColor)
-            return (encoded and -16711681) or ((colorId and 255) shl 16)
-        }
+        private fun modifyBaseColor(encoded: Int, baseColor: DyeColor): Int = encoded and NO_BASE_COLOR_MASK or (baseColor.ordinal shl 16)
 
-        // 16777215 = 00000000 11111111 11111111 11111111 (clear bits 24-31)
         @JvmStatic
-        private fun modifyPatternColor(encoded: Int, patternColor: DyeColor): Int {
-            val colorId = KryptonRegistries.DYE_COLORS.idOf(patternColor)
-            return (encoded and 16777215) or ((colorId and 255) shl 24)
-        }
+        private fun modifyPatternColor(encoded: Int, patternColor: DyeColor): Int =
+            encoded and NO_PATTERN_COLOR_MASK or (patternColor.ordinal shl 24)
 
-        // 16711680 = 00000000 11111111 00000000 00000000 (clear all bits except 16-23)
         @JvmStatic
-        private fun extractBaseColor(variant: Int): DyeColor = KryptonRegistries.DYE_COLORS.get((variant and 16711680) shr 16)!!
+        private fun extractBaseColor(variant: Int): DyeColor = DyeColors.fromId(variant and BASE_COLOR_MASK shr 16)
 
-        // -16777216 = 11111111 00000000 00000000 00000000 (clear all bits except 24-31)
         @JvmStatic
-        private fun extractPatternColor(encoded: Int): DyeColor = KryptonRegistries.DYE_COLORS.get((encoded and -16777216) shr 24)!!
+        private fun extractPatternColor(encoded: Int): DyeColor = DyeColors.fromId(encoded and PATTERN_COLOR_MASK shr 24)
 
-        // 255 = 00000000 00000000 00000000 11111111 (clear all bits except 0-7)
-        // 65280 = 00000000 00000000 11111111 00000000 (clear all bits except 8-15)
         @JvmStatic
-        private fun extractVariant(encoded: Int): TropicalFishVariant = VARIANTS[min(encoded and 255, 1) + 6 * min((encoded and 65280) shr 8, 5)]
+        private fun extractVariant(encoded: Int): TropicalFishVariant =
+            VARIANTS[min(encoded and SHAPE_MASK, 1) + 6 * min(encoded and PATTERN_MASK shr 8, 5)]
     }
 }

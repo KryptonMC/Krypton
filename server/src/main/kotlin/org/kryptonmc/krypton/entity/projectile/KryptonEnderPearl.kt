@@ -27,7 +27,7 @@ import org.kryptonmc.krypton.world.KryptonWorld
 
 class KryptonEnderPearl(world: KryptonWorld) : KryptonThrowableProjectile(world), EnderPearl {
 
-    override val type: KryptonEntityType<EnderPearl>
+    override val type: KryptonEntityType<KryptonEnderPearl>
         get() = KryptonEntityTypes.ENDER_PEARL
     override val defaultItem: KryptonItemStack
         get() = DEFAULT_ITEM

@@ -14,18 +14,15 @@ import org.kryptonmc.api.inventory.Inventory
 /**
  * A block entity that has a container.
  */
-@Suppress("INAPPLICABLE_JVM_NAME")
 public interface ContainerBlockEntity : BlockEntity {
 
     /**
      * The inventory that this block entity has.
      */
-    @get:JvmName("inventory")
     public val inventory: Inventory
 
     /**
      * The token that this container block entity is locked with.
      */
-    @get:JvmName("lockToken")
     public var lockToken: String?
 }

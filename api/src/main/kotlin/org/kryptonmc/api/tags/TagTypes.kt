@@ -12,7 +12,7 @@ import net.kyori.adventure.key.Key
 import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.block.entity.banner.BannerPatternType
 import org.kryptonmc.api.entity.EntityType
-import org.kryptonmc.api.entity.hanging.Picture
+import org.kryptonmc.api.entity.hanging.PaintingVariant
 import org.kryptonmc.api.fluid.Fluid
 import org.kryptonmc.api.item.ItemType
 import org.kryptonmc.api.registry.Registries
@@ -39,7 +39,7 @@ public object TagTypes {
     @JvmField
     public val ITEMS: TagType<ItemType> = get("item")
     @JvmField
-    public val PICTURES: TagType<Picture> = get("picture")
+    public val PICTURES: TagType<PaintingVariant> = get("picture")
 
     // @formatter:on
     @JvmStatic

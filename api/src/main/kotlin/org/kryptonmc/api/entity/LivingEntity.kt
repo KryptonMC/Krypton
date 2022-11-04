@@ -14,42 +14,37 @@ import org.spongepowered.math.vector.Vector3i
 /**
  * Represents an entity that lives in a world.
  */
-@Suppress("INAPPLICABLE_JVM_NAME")
 public interface LivingEntity : Entity, AttributeHolder {
 
     /**
      * The current health of this entity.
      */
-    @get:JvmName("health")
     public var health: Float
 
     /**
      * The maximum health of this entity.
      */
-    @get:JvmName("maxHealth")
     public val maxHealth: Float
 
     /**
      * The amount of absorption this living entity has.
      */
-    @get:JvmName("absorption")
     public var absorption: Float
 
     /**
      * If this entity is currently using an item
      */
-    public val isUsingItem: Boolean
+    public var isUsingItem: Boolean
 
     /**
      * The hand the entity is currently using
      */
-    @get:JvmName("hand")
-    public val hand: Hand
+    public var hand: Hand
 
     /**
      * If this entity is in a riptide spin attack
      */
-    public val isInRiptideSpinAttack: Boolean
+    public var isInRiptideSpinAttack: Boolean
 
     /**
      * If this entity is gliding with an elytra.
@@ -59,7 +54,7 @@ public interface LivingEntity : Entity, AttributeHolder {
      *
      * This field can only
      */
-    public val isGliding: Boolean
+    public var isGliding: Boolean
 
     /**
      * If this entity is dead or not.
@@ -72,16 +67,14 @@ public interface LivingEntity : Entity, AttributeHolder {
      *
      * Will be 0 whilst this entity is alive.
      */
-    @get:JvmName("deathTime")
-    public val deathTime: Short
+    public val deathTime: Int
 
     /**
      * The number of ticks this entity will turn red for after being hit.
      *
      * Will be 0 when not recently hit.
      */
-    @get:JvmName("hurtTime")
-    public val hurtTime: Short
+    public val hurtTime: Int
 
     /**
      * The last time, in ticks, this entity was damaged.
@@ -89,7 +82,6 @@ public interface LivingEntity : Entity, AttributeHolder {
      * Calculated as the
      * [number of ticks since the entity's creation][ticksExisted].
      */
-    @get:JvmName("lastHurtTimestamp")
     public val lastHurtTimestamp: Int
 
     /**
@@ -97,6 +89,5 @@ public interface LivingEntity : Entity, AttributeHolder {
      *
      * If this value is null, this entity is not currently sleeping.
      */
-    @get:JvmName("sleepingPosition")
-    public val sleepingPosition: Vector3i?
+    public var sleepingPosition: Vector3i?
 }

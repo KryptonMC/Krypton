@@ -13,5 +13,4 @@ import org.kryptonmc.api.user.ban.Ban
 /**
  * Called when an IP is banned.
  */
-@Suppress("INAPPLICABLE_JVM_NAME")
 public interface BanIpEvent : BanEvent<Ban.IP>

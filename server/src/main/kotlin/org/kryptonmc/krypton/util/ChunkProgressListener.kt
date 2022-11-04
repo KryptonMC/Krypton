@@ -19,7 +19,7 @@
 package org.kryptonmc.krypton.util
 
 import net.kyori.adventure.text.Component
-import org.kryptonmc.api.adventure.toPlainText
+import org.kryptonmc.krypton.adventure.toPlainText
 import org.kryptonmc.krypton.world.chunk.ChunkStatus
 
 class ChunkProgressListener(radius: Int) {

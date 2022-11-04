@@ -25,9 +25,9 @@ import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.compound
 
 fun FireworkEffect.save(): CompoundTag = compound {
-    intArray("Colors", colors.toIntArray(Color::value))
-    intArray("FadeColors", colors.toIntArray(Color::value))
-    boolean("Flicker", hasFlicker)
-    boolean("Trail", hasTrail)
-    byte("Type", type.ordinal.toByte())
+    putIntArray("Colors", colors.toIntArray(Color::value))
+    putIntArray("FadeColors", colors.toIntArray(Color::value))
+    putBoolean("Flicker", hasFlicker)
+    putBoolean("Trail", hasTrail)
+    putByte("Type", type.ordinal.toByte())
 }

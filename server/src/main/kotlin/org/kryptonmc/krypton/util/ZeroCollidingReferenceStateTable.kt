@@ -44,7 +44,6 @@ class ZeroCollidingReferenceStateTable(private val thisState: KryptonState<*, *>
         }
     }
 
-    @Suppress("UNCHECKED_CAST")
     fun loadInTable(table: Table<KryptonProperty<*>, Comparable<*>, KryptonState<*, *>>, values: Map<KryptonProperty<*>, Comparable<*>>) {
         val combined = HashSet<KryptonProperty<*>>(table.rowKeySet())
         combined.addAll(values.keys)
@@ -55,7 +54,7 @@ class ZeroCollidingReferenceStateTable(private val thisState: KryptonState<*, *>
             val id = lookupValueIndex(property, indexTable!!)
             if (id > maxId) maxId = id
         }
-        valueTable = arrayOfNulls<Array<KryptonState<*, *>?>?>(maxId + 1)
+        valueTable = arrayOfNulls(maxId + 1)
 
         val map = table.rowMap()
         for (property in map.keys) {
@@ -65,7 +64,7 @@ class ZeroCollidingReferenceStateTable(private val thisState: KryptonState<*, *>
             valueTable!![id] = states
             for (entry in propertyMap.entries) {
                 if (entry.value == null) continue
-                states[(property as KryptonProperty<Comparable<Any>>).idFor(entry.key as Comparable<Any>)] = entry.value
+                states[idForHelper(property, entry.key)] = entry.value
             }
         }
 
@@ -73,7 +72,7 @@ class ZeroCollidingReferenceStateTable(private val thisState: KryptonState<*, *>
             val property = entry.key
             val index = lookupValueIndex(property, indexTable!!)
             if (valueTable!![index] == null) valueTable!![index] = arrayOfNulls(property.values.size)
-            valueTable!![index]!![(property as KryptonProperty<Comparable<Any>>).idFor(entry.value as Comparable<Any>)] = thisState
+            valueTable!![index]!![idForHelper(property, entry.value)] = thisState
         }
     }
 
@@ -99,15 +98,13 @@ class ZeroCollidingReferenceStateTable(private val thisState: KryptonState<*, *>
     }
 
     fun get(property: KryptonProperty<*>): Comparable<*>? {
-        val table = thisTable
         val index = lookupValueIndex(property, thisIndexTable)
-        if (index < 0 || index >= table.size) return null
-        return table[index]
+        if (index < 0 || index >= thisTable.size) return null
+        return thisTable[index]
     }
 
-    @Suppress("UNCHECKED_CAST")
     fun get(property: KryptonProperty<*>, with: Comparable<*>): KryptonState<*, *>? {
-        val withId = (property as KryptonProperty<Comparable<Any>>).idFor(with as Comparable<Any>)
+        val withId = idForHelper(property, with)
         if (withId < 0) return null
 
         val index = lookupValueIndex(property, indexTable!!)
@@ -134,5 +131,9 @@ class ZeroCollidingReferenceStateTable(private val thisState: KryptonState<*, *>
             // otherwise it comes out as -1.
             return (((indexValue ushr 32) + java.lang.Long.bitCount(indexValue and lowerMask)) or containsCheck).toInt()
         }
+
+        @JvmStatic
+        @Suppress("UNCHECKED_CAST")
+        private fun <T : Comparable<T>> idForHelper(property: KryptonProperty<T>, value: Comparable<*>): Int = property.idFor(value as T)
     }
 }

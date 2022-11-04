@@ -35,10 +35,11 @@ import kotlinx.collections.immutable.persistentListOf
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer
-import org.kryptonmc.api.adventure.toJson
 import org.kryptonmc.api.auth.GameProfile
 import org.kryptonmc.api.auth.ProfileProperty
 import org.kryptonmc.api.resource.ResourceKey
+import org.kryptonmc.api.util.Direction
+import org.kryptonmc.krypton.adventure.toJson
 import org.kryptonmc.krypton.auth.KryptonGameProfile
 import org.kryptonmc.krypton.auth.KryptonProfileProperty
 import org.kryptonmc.krypton.command.argument.ArgumentSerializers
@@ -48,10 +49,12 @@ import org.kryptonmc.krypton.registry.KryptonRegistries
 import org.kryptonmc.krypton.registry.KryptonRegistry
 import org.kryptonmc.krypton.util.crypto.decodeToPublicKey
 import org.kryptonmc.nbt.CompoundTag
+import org.kryptonmc.nbt.EndTag
 import org.kryptonmc.nbt.io.TagCompression
 import org.kryptonmc.nbt.io.TagIO
 import org.kryptonmc.serialization.Encoder
 import org.kryptonmc.serialization.nbt.NbtOps
+import org.spongepowered.math.vector.Vector3d
 import org.spongepowered.math.vector.Vector3f
 import org.spongepowered.math.vector.Vector3i
 import java.io.IOException
@@ -228,7 +231,7 @@ fun ByteBuf.writeNBT(tag: CompoundTag?) {
 fun ByteBuf.readNBT(): CompoundTag {
     val index = readerIndex()
     val type = readByte()
-    if (type == 0.toByte()) return CompoundTag.empty()
+    if (type == EndTag.ID.toByte()) return CompoundTag.EMPTY
     readerIndex(index) // reset the head if it's not an end tag
 
     try {
@@ -417,6 +420,27 @@ fun ByteBuf.readPublicKey(): PublicKey {
     } catch (exception: Exception) {
         throw DecoderException("Failed to decode public key!", exception)
     }
+}
+
+fun ByteBuf.readBlockHitResult(): BlockHitResult {
+    val position = readVector()
+    val direction = readEnum<Direction>()
+    val cursorX = readFloat().toDouble()
+    val cursorY = readFloat().toDouble()
+    val cursorZ = readFloat().toDouble()
+    val isInside = readBoolean()
+    return BlockHitResult(Vector3d(position.x() + cursorX, position.y() + cursorY, position.z() + cursorZ), direction, position, isInside)
+}
+
+fun ByteBuf.writeBlockHitResult(hitResult: BlockHitResult) {
+    val position = hitResult.position
+    writeVector(position)
+    writeEnum(hitResult.direction)
+    val location = hitResult.location
+    writeFloat((location.x() - position.x()).toFloat())
+    writeFloat((location.y() - position.y()).toFloat())
+    writeFloat((location.z() - position.z()).toFloat())
+    writeBoolean(hitResult.isInside)
 }
 
 fun ByteBuf.write3EmptyBytes(): Int {

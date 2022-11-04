@@ -15,7 +15,6 @@ import org.kryptonmc.api.resource.ResourceKey
 /**
  * The manager for registries.
  */
-@Suppress("INAPPLICABLE_JVM_NAME")
 public interface RegistryManager {
 
     /**
@@ -25,7 +24,7 @@ public interface RegistryManager {
      * @param key the key
      * @return the existing registry, or null if not present
      */
-    public fun <T : Any> registry(key: ResourceKey<out Registry<T>>): Registry<T>?
+    public fun <T> registry(key: ResourceKey<out Registry<T>>): Registry<T>?
 
     /**
      * Gets the existing defaulted registry with the given resource [key], or
@@ -35,7 +34,7 @@ public interface RegistryManager {
      * @param key the key
      * @return the existing defaulted registry, or null if not present
      */
-    public fun <T : Any> defaulted(key: ResourceKey<out Registry<T>>): DefaultedRegistry<T>?
+    public fun <T> defaulted(key: ResourceKey<out Registry<T>>): DefaultedRegistry<T>?
 
     /**
      * Creates a new registry with the given registry [key].
@@ -44,7 +43,7 @@ public interface RegistryManager {
      * @return a registry for the given [key]
      */
     @Contract("_ -> new", pure = true)
-    public fun <T : Any> create(key: ResourceKey<out Registry<T>>): Registry<T>
+    public fun <T> create(key: ResourceKey<out Registry<T>>): Registry<T>
 
     /**
      * Creates a new registry with the given registry [key], with a
@@ -55,5 +54,5 @@ public interface RegistryManager {
      * @return a defaulted registry for the given [key]
      */
     @Contract("_, _ -> new", pure = true)
-    public fun <T : Any> createDefaulted(key: ResourceKey<out Registry<T>>, defaultKey: Key): DefaultedRegistry<T>
+    public fun <T> createDefaulted(key: ResourceKey<out Registry<T>>, defaultKey: Key): DefaultedRegistry<T>
 }

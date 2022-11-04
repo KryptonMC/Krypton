@@ -13,12 +13,10 @@ import org.kryptonmc.api.item.ItemStack
 /**
  * A lectern.
  */
-@Suppress("INAPPLICABLE_JVM_NAME")
 public interface Lectern : BlockEntity {
 
     /**
      * The book that is in this lectern.
      */
-    @get:JvmName("book")
     public var book: ItemStack
 }

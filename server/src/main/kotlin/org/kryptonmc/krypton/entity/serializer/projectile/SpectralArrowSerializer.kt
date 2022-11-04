@@ -30,6 +30,6 @@ object SpectralArrowSerializer : EntitySerializer<KryptonSpectralArrow> {
     }
 
     override fun save(entity: KryptonSpectralArrow): CompoundTag.Builder = ArrowLikeSerializer.save(entity).apply {
-        int("Duration", entity.duration)
+        putInt("Duration", entity.duration)
     }
 }

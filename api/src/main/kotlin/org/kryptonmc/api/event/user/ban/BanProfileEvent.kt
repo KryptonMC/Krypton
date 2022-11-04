@@ -13,5 +13,4 @@ import org.kryptonmc.api.user.ban.Ban
 /**
  * Called when a game profile is banned.
  */
-@Suppress("INAPPLICABLE_JVM_NAME")
 public interface BanProfileEvent : BanEvent<Ban.Profile>

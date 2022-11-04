@@ -24,12 +24,15 @@ import org.kryptonmc.api.entity.Hand
 import org.kryptonmc.api.entity.LivingEntity
 import org.kryptonmc.api.entity.attribute.Attribute
 import org.kryptonmc.api.entity.attribute.AttributeType
-import org.kryptonmc.api.entity.attribute.AttributeTypes
 import org.kryptonmc.api.fluid.Fluid
 import org.kryptonmc.api.world.Difficulty
 import org.kryptonmc.krypton.entity.attribute.AttributeMap
 import org.kryptonmc.krypton.entity.attribute.AttributeSupplier
 import org.kryptonmc.krypton.entity.attribute.DefaultAttributes
+import org.kryptonmc.krypton.entity.attribute.KryptonAttribute
+import org.kryptonmc.krypton.entity.attribute.KryptonAttributeType
+import org.kryptonmc.krypton.entity.attribute.KryptonAttributeTypes
+import org.kryptonmc.krypton.entity.attribute.downcast
 import org.kryptonmc.krypton.entity.memory.Brain
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
@@ -43,18 +46,18 @@ import kotlin.random.Random
 @Suppress("LeakingThis")
 abstract class KryptonLivingEntity(world: KryptonWorld) : KryptonEntity(world), LivingEntity, KryptonEquipable {
 
-    abstract override val type: KryptonEntityType<LivingEntity>
+    abstract override val type: KryptonEntityType<KryptonLivingEntity>
     override val serializer: EntitySerializer<out KryptonLivingEntity>
         get() = LivingEntitySerializer
 
     final override val maxHealth: Float
-        get() = attributes.value(AttributeTypes.MAX_HEALTH).toFloat()
+        get() = attributes.getValue(KryptonAttributeTypes.MAX_HEALTH).toFloat()
     override var absorption: Float = 0F
     final override val isAlive: Boolean
         get() = super.isAlive && health > 0F
     final override var isDead: Boolean = false
-    final override var deathTime: Short = 0
-    final override var hurtTime: Short = 0
+    final override var deathTime: Int = 0
+    final override var hurtTime: Int = 0
     final override var lastHurtTimestamp: Int = 0
     private var tickCount = 0
     val attributes: AttributeMap = AttributeMap(DefaultAttributes.get(type))
@@ -143,11 +146,11 @@ abstract class KryptonLivingEntity(world: KryptonWorld) : KryptonEntity(world), 
         data.define(MetadataKeys.LivingEntity.BED_LOCATION, null)
     }
 
-    abstract override fun equipment(slot: EquipmentSlot): KryptonItemStack
+    abstract override fun getEquipment(slot: EquipmentSlot): KryptonItemStack
 
-    override fun heldItem(hand: Hand): KryptonItemStack {
-        if (hand == Hand.MAIN) return equipment(EquipmentSlot.MAIN_HAND)
-        if (hand == Hand.OFF) return equipment(EquipmentSlot.OFF_HAND)
+    override fun getHeldItem(hand: Hand): KryptonItemStack {
+        if (hand == Hand.MAIN) return getEquipment(EquipmentSlot.MAIN_HAND)
+        if (hand == Hand.OFF) return getEquipment(EquipmentSlot.OFF_HAND)
         error("Tried to get held item for hand $hand that should not exist! Please sure that no plugins are injecting entries in to enums!")
     }
 
@@ -160,7 +163,7 @@ abstract class KryptonLivingEntity(world: KryptonWorld) : KryptonEntity(world), 
         }
     }
 
-    override fun armor(slot: ArmorSlot): KryptonItemStack = equipment(EquipmentSlots.fromArmorSlot(slot))
+    override fun getArmor(slot: ArmorSlot): KryptonItemStack = getEquipment(EquipmentSlots.fromArmorSlot(slot))
 
     override fun setArmor(slot: ArmorSlot, item: KryptonItemStack) {
         setEquipment(EquipmentSlots.fromArmorSlot(slot), item)
@@ -173,7 +176,9 @@ abstract class KryptonLivingEntity(world: KryptonWorld) : KryptonEntity(world), 
 
     fun canStandOnFluid(fluid: Fluid): Boolean = false
 
-    override fun attribute(type: AttributeType): Attribute? = attributes.get(type)
+    protected fun getAttribute(type: KryptonAttributeType): KryptonAttribute? = attributes.get(type)
+
+    override fun getAttribute(type: AttributeType): Attribute? = getAttribute(type.downcast())
 
     protected fun removeEffectParticles() {
         isPotionEffectAmbient = false
@@ -189,10 +194,10 @@ abstract class KryptonLivingEntity(world: KryptonWorld) : KryptonEntity(world), 
 
         @JvmStatic
         fun attributes(): AttributeSupplier.Builder = AttributeSupplier.builder()
-            .add(AttributeTypes.MAX_HEALTH)
-            .add(AttributeTypes.KNOCKBACK_RESISTANCE)
-            .add(AttributeTypes.MOVEMENT_SPEED)
-            .add(AttributeTypes.ARMOR)
-            .add(AttributeTypes.ARMOR_TOUGHNESS)
+            .add(KryptonAttributeTypes.MAX_HEALTH)
+            .add(KryptonAttributeTypes.KNOCKBACK_RESISTANCE)
+            .add(KryptonAttributeTypes.MOVEMENT_SPEED)
+            .add(KryptonAttributeTypes.ARMOR)
+            .add(KryptonAttributeTypes.ARMOR_TOUGHNESS)
     }
 }

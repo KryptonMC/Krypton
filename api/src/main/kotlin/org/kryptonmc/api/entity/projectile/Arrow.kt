@@ -13,12 +13,10 @@ import org.kryptonmc.api.util.Color
 /**
  * An arrow or tipped arrow.
  */
-@Suppress("INAPPLICABLE_JVM_NAME")
 public interface Arrow : ArrowLike {
 
     /**
      * The colour of this arrow.
      */
-    @get:JvmName("color")
     public var color: Color
 }

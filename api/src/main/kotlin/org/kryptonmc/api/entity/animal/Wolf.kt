@@ -13,7 +13,6 @@ import org.kryptonmc.api.item.data.DyeColor
 /**
  * A wolf.
  */
-@Suppress("INAPPLICABLE_JVM_NAME")
 public interface Wolf : Tamable {
 
     /**
@@ -24,7 +23,6 @@ public interface Wolf : Tamable {
     /**
      * The colour of this wolf's collar.
      */
-    @get:JvmName("collarColor")
     public var collarColor: DyeColor
 
     /**

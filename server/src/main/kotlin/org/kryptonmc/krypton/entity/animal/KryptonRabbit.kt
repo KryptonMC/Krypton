@@ -21,13 +21,13 @@ package org.kryptonmc.krypton.entity.animal
 import net.kyori.adventure.sound.Sound
 import org.kryptonmc.api.entity.animal.Rabbit
 import org.kryptonmc.api.entity.animal.type.RabbitVariant
-import org.kryptonmc.api.entity.attribute.AttributeTypes
 import org.kryptonmc.api.item.ItemStack
 import org.kryptonmc.api.item.ItemTypes
 import org.kryptonmc.krypton.entity.KryptonEntityType
 import org.kryptonmc.krypton.entity.KryptonEntityTypes
 import org.kryptonmc.krypton.entity.KryptonMob
 import org.kryptonmc.krypton.entity.attribute.AttributeSupplier
+import org.kryptonmc.krypton.entity.attribute.KryptonAttributeTypes
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.entity.serializer.EntitySerializer
 import org.kryptonmc.krypton.entity.serializer.animal.RabbitSerializer
@@ -35,7 +35,7 @@ import org.kryptonmc.krypton.world.KryptonWorld
 
 class KryptonRabbit(world: KryptonWorld) : KryptonAnimal(world), Rabbit {
 
-    override val type: KryptonEntityType<Rabbit>
+    override val type: KryptonEntityType<KryptonRabbit>
         get() = KryptonEntityTypes.RABBIT
     override val serializer: EntitySerializer<KryptonRabbit>
         get() = RabbitSerializer
@@ -77,7 +77,7 @@ class KryptonRabbit(world: KryptonWorld) : KryptonAnimal(world), Rabbit {
 
         @JvmStatic
         fun attributes(): AttributeSupplier.Builder = KryptonMob.attributes()
-            .add(AttributeTypes.MAX_HEALTH, 3.0)
-            .add(AttributeTypes.MOVEMENT_SPEED, 0.3)
+            .add(KryptonAttributeTypes.MAX_HEALTH, 3.0)
+            .add(KryptonAttributeTypes.MOVEMENT_SPEED, 0.3)
     }
 }

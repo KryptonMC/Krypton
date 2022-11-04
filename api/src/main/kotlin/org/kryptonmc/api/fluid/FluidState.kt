@@ -10,12 +10,14 @@ package org.kryptonmc.api.fluid
 
 import org.kryptonmc.api.block.BlockState
 import org.kryptonmc.api.state.State
+import javax.annotation.concurrent.Immutable
 
 /**
  * A state of a fluid.
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
-public interface FluidState : State<FluidState>, FluidLike {
+@Immutable
+public interface FluidState : State<FluidState> {
 
     /**
      * The fluid this is a state of.
@@ -51,6 +53,4 @@ public interface FluidState : State<FluidState>, FluidLike {
      * @return this fluid state as a block state.
      */
     public fun asBlock(): BlockState
-
-    override fun asFluid(): Fluid = fluid
 }

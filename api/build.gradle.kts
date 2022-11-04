@@ -10,7 +10,6 @@ dependencies {
     // Kotlin
     api(libs.bundles.kotlin)
     api(libs.kotlinx.coroutines)
-    api(libs.kotlinx.collections.immutable)
 
     // Core
     api(libs.guava)
@@ -30,7 +29,7 @@ dependencies {
     api(libs.bundles.configurate)
 
     // Miscellaneous
-    api(libs.velocity.brigadier)
+    api(libs.brigadier)
     api(libs.math)
 }
 

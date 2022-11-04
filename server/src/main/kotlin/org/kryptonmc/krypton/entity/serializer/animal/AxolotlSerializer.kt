@@ -29,11 +29,11 @@ object AxolotlSerializer : EntitySerializer<KryptonAxolotl> {
     override fun load(entity: KryptonAxolotl, data: CompoundTag) {
         AgeableSerializer.load(entity, data)
         entity.data.set(MetadataKeys.Axolotl.VARIANT, data.getInt("Variant"))
-        entity.spawnedFromBucket = data.getBoolean("FromBucket")
+        entity.wasSpawnedFromBucket = data.getBoolean("FromBucket")
     }
 
     override fun save(entity: KryptonAxolotl): CompoundTag.Builder = AgeableSerializer.save(entity).apply {
-        int("Variant", entity.data.get(MetadataKeys.Axolotl.VARIANT))
-        boolean("FromBucket", entity.spawnedFromBucket)
+        putInt("Variant", entity.data.get(MetadataKeys.Axolotl.VARIANT))
+        putBoolean("FromBucket", entity.wasSpawnedFromBucket)
     }
 }

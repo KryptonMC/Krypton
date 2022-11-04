@@ -18,7 +18,7 @@
  */
 package org.kryptonmc.krypton.world.block.state
 
-import kotlinx.collections.immutable.ImmutableMap
+import com.google.common.collect.ImmutableMap
 import org.kryptonmc.krypton.registry.KryptonRegistries
 import org.kryptonmc.krypton.state.property.KryptonProperty
 import org.kryptonmc.krypton.world.block.KryptonBlock
@@ -38,6 +38,7 @@ class KryptonBlockState(
         // FIXME: Don't cast this when we update the way we do registries.
         @JvmField
         @Suppress("UNCHECKED_CAST")
-        val CODEC: Codec<KryptonBlockState> = codec(KryptonRegistries.BLOCK.byNameCodec() as Codec<KryptonBlock>, KryptonBlock::defaultState).stable()
+        val CODEC: Codec<KryptonBlockState> =
+            codec(KryptonRegistries.BLOCK.byNameCodec() as Codec<KryptonBlock>, KryptonBlock::defaultState).stable()
     }
 }

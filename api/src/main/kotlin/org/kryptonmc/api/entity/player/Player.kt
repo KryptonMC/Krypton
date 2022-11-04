@@ -9,10 +9,10 @@
 package org.kryptonmc.api.entity.player
 
 import net.kyori.adventure.text.Component
-import org.kryptonmc.api.auth.GameProfile
 import org.kryptonmc.api.effect.particle.ParticleEffect
 import org.kryptonmc.api.entity.Equipable
 import org.kryptonmc.api.entity.LivingEntity
+import org.kryptonmc.api.event.player.PerformActionEvent
 import org.kryptonmc.api.inventory.Inventory
 import org.kryptonmc.api.inventory.PlayerInventory
 import org.kryptonmc.api.plugin.PluginMessageRecipient
@@ -23,53 +23,21 @@ import org.kryptonmc.api.statistic.StatisticsTracker
 import org.kryptonmc.api.world.World
 import org.kryptonmc.api.world.dimension.DimensionType
 import org.kryptonmc.api.scoreboard.Scoreboard
+import org.kryptonmc.api.user.BaseUser
 import org.kryptonmc.api.world.GameMode
 import org.spongepowered.math.vector.Vector3d
 import java.net.InetSocketAddress
-import java.time.Instant
 
 /**
  * A player that is connected to the server and playing the game.
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
-public interface Player : LivingEntity, Equipable, PluginMessageRecipient {
+public interface Player : LivingEntity, Equipable, PluginMessageRecipient, BaseUser {
 
     /**
      * The address that the player is currently connected from.
      */
-    @get:JvmName("address")
     public val address: InetSocketAddress
-
-    /**
-     * If this player is currently online.
-     */
-    public val isOnline: Boolean
-
-    /**
-     * If this player has joined this server before.
-     */
-    @get:JvmName("hasJoinedBefore")
-    public val hasJoinedBefore: Boolean
-
-    /**
-     * The time that this player first joined the server.
-     */
-    @get:JvmName("firstJoined")
-    public val firstJoined: Instant
-
-    /**
-     * The latest time when this player last joined the server.
-     */
-    @get:JvmName("lastJoined")
-    public val lastJoined: Instant
-
-    /**
-     * The game profile for this player.
-     *
-     * Will contain offline mode details for offline mode players.
-     */
-    @get:JvmName("profile")
-    public val profile: GameProfile
 
     /**
      * If this player can fly.
@@ -92,13 +60,11 @@ public interface Player : LivingEntity, Equipable, PluginMessageRecipient {
     /**
      * The current speed at which this player can walk at.
      */
-    @get:JvmName("walkingSpeed")
     public var walkingSpeed: Float
 
     /**
      * The current speed at which this player can fly at.
      */
-    @get:JvmName("flyingSpeed")
     public var flyingSpeed: Float
 
     /**
@@ -109,26 +75,17 @@ public interface Player : LivingEntity, Equipable, PluginMessageRecipient {
     /**
      * The dimension resource key for the world the player is currently in.
      */
-    @get:JvmName("dimension")
     public val dimension: ResourceKey<World>
 
     /**
      * The dimension the player is currently in.
      */
-    @get:JvmName("dimensionType")
     public val dimensionType: DimensionType
 
     /**
      * The settings for the player.
      */
-    @get:JvmName("settings")
     public val settings: PlayerSettings
-
-    /**
-     * If this player is currently vanished, meaning no other player on the
-     * server can see them.
-     */
-    public val isVanished: Boolean
 
     /**
      * If this player is currently AFK, meaning they are not doing anything.
@@ -138,19 +95,16 @@ public interface Player : LivingEntity, Equipable, PluginMessageRecipient {
     /**
      * This player's current game mode.
      */
-    @get:JvmName("gameMode")
     public var gameMode: GameMode
 
     /**
      * The direction this player is currently facing.
      */
-    @get:JvmName("direction")
-    public val direction: Direction
+    public val facing: Direction
 
     /**
      * The scoreboard currently being shown to this player.
      */
-    @get:JvmName("scoreboard")
     public val scoreboard: Scoreboard
 
     /**
@@ -159,43 +113,36 @@ public interface Player : LivingEntity, Equipable, PluginMessageRecipient {
      * This holds information on all of the items that are currently held by
      * this player.
      */
-    @get:JvmName("inventory")
     public val inventory: PlayerInventory
 
     /**
      * The inventory that this player currently has open.
      */
-    @get:JvmName("openInventory")
     public var openInventory: Inventory?
 
     /**
      * The food level of this player.
      */
-    @get:JvmName("foodLevel")
     public var foodLevel: Int
 
     /**
      * The food exhaustion level of this player.
      */
-    @get:JvmName("foodExhaustionLevel")
     public var foodExhaustionLevel: Float
 
     /**
      * The food saturation level of this player.
      */
-    @get:JvmName("foodSaturationLevel")
     public var foodSaturationLevel: Float
 
     /**
      * The statistics tracker for this player.
      */
-    @get:JvmName("statistics")
     public val statistics: StatisticsTracker
 
     /**
      * The cooldown tracker for this player.
      */
-    @get:JvmName("cooldowns")
     public val cooldowns: CooldownTracker
 
     /**
@@ -215,12 +162,12 @@ public interface Player : LivingEntity, Equipable, PluginMessageRecipient {
     public fun sendResourcePack(pack: ResourcePack)
 
     /**
-     * Teleport this player to the specified position.
+     * Teleports this player to the given [position].
      */
     public fun teleport(position: Vector3d)
 
     /**
-     * Teleport this player to the specified other [player].
+     * Teleports this player to the given other [player].
      */
     public fun teleport(player: Player)
 
@@ -261,31 +208,29 @@ public interface Player : LivingEntity, Equipable, PluginMessageRecipient {
     /**
      * Makes this player start gliding (elytra flying).
      *
-     * This should call the
-     * [org.kryptonmc.api.event.player.PerformActionEvent], which may cause
-     * this action to get cancelled, meaning the player will keep its previous
-     * gliding status.
+     * This should call the [PerformActionEvent], which may cause this action
+     * to get cancelled, meaning the player will keep its previous gliding
+     * status.
      *
-     * This can be verified by checking if [isGliding] returns true, which will
-     * indicate that the player did actually start gliding.
+     * @return whether the request to start gliding was approved, or it was
+     * cancelled by the result of calling the event
      */
-    public fun startGliding()
+    public fun startGliding(): Boolean
 
     /**
      * Makes this player stop gliding (elytra flying).
      *
-     * This should call the
-     * [org.kryptonmc.api.event.player.PerformActionEvent], which may cause
-     * this action to get cancelled, meaning the player will keep its previous
-     * gliding status.
+     * This should call the [PerformActionEvent], which may cause this action
+     * to get cancelled, meaning the player will keep their previous gliding
+     * status.
      *
-     * This can be verified by checking if [isGliding] returns false, which
-     * will indicate that the player did actually stop gliding.
+     * @return whether the request to stop gliding was approved, or it was
+     * cancelled by the result of calling the event
      */
-    public fun stopGliding()
+    public fun stopGliding(): Boolean
 
     /**
-     * Kicks the player with the given text shown
+     * Kicks the player with the given [text] shown.
      */
     public fun disconnect(text: Component)
 }
