@@ -58,7 +58,9 @@ public interface ChangeGameModeEvent : PlayerEvent, ResultedEvent<ChangeGameMode
     /**
      * The result of an attempt to change a player's game mode.
      *
-     * @param newGameMode the new game mode to change to
+     * @property isAllowed Whether the game mode change is allowed to continue.
+     * @property newGameMode The new game mode to change the player to, or null
+     * if the game mode should not be changed.
      */
     @JvmRecord
     @Immutable

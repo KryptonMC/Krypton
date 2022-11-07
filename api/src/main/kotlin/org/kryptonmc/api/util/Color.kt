@@ -97,7 +97,7 @@ public interface Color {
         public fun of(hue: Float, saturation: Float, brightness: Float): Color
     }
 
-    @Suppress("UndocumentedPublicProperty")
+    @Suppress("UndocumentedPublicProperty", "MethodOverloading")
     public companion object {
 
         @JvmField

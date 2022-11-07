@@ -27,17 +27,22 @@ import org.kryptonmc.nbt.CompoundTag
 
 object MinecartLikeSerializer : EntitySerializer<KryptonMinecartLike> {
 
+    private const val CUSTOM_DISPLAY_TAG = "CustomDisplayTile"
+    private const val DISPLAY_STATE_TAG = "DisplayState"
+    private const val DISPLAY_OFFSET_TAG = "DisplayOffset"
+
     override fun load(entity: KryptonMinecartLike, data: CompoundTag) {
         BaseEntitySerializer.load(entity, data)
-        if (!data.getBoolean("CustomDisplayTile")) return
-        entity.customBlock = data.getCompound("DisplayState").toBlockState()
-        entity.customBlockOffset = data.getInt("DisplayOffset")
+        if (!data.getBoolean(CUSTOM_DISPLAY_TAG)) return
+        entity.customBlock = data.getCompound(DISPLAY_STATE_TAG).toBlockState()
+        entity.customBlockOffset = data.getInt(DISPLAY_OFFSET_TAG)
     }
 
     override fun save(entity: KryptonMinecartLike): CompoundTag.Builder = BaseEntitySerializer.save(entity).apply {
-        if (!entity.showCustomBlock) return@apply
-        putBoolean("CustomDisplayTile", true)
-        put("DisplayState", entity.customBlock.toNBT())
-        putInt("DisplayOffset", entity.customBlockOffset)
+        if (entity.showCustomBlock) {
+            putBoolean(CUSTOM_DISPLAY_TAG, true)
+            put(DISPLAY_STATE_TAG, entity.customBlock.toNBT())
+            putInt(DISPLAY_OFFSET_TAG, entity.customBlockOffset)
+        }
     }
 }

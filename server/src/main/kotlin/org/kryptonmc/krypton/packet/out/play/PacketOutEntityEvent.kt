@@ -23,8 +23,6 @@ import org.kryptonmc.krypton.packet.EntityPacket
 
 /**
  * Sent to indicate a status for an entity.
- *
- * @param entityId the ID of the entity to set the status for
  */
 @JvmRecord
 data class PacketOutEntityEvent(override val entityId: Int, val event: Int) : EntityPacket {

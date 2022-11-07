@@ -52,6 +52,7 @@ public interface ResourceKey<T> {
          * [registry] as its parent name, and the given [location] as the
          * location of the resource.
          *
+         * @param T the resource key type
          * @param registry the parent registry name
          * @param location the location of the resource
          * @return a resource key
@@ -66,6 +67,7 @@ public interface ResourceKey<T> {
          * [parent] as its parent, and the given [location] as the location of
          * the resource.
          *
+         * @param T the resource key type
          * @param parent the parent key
          * @param location the location of the resource
          * @return a resource key

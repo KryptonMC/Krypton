@@ -25,4 +25,10 @@ import org.kryptonmc.api.effect.sound.SoundEvent
 data class KryptonSoundEvent(private val key: Key, override val range: Float) : SoundEvent {
 
     override fun key(): Key = key
+
+    companion object {
+
+        // This is the default range that sounds travel (from vanilla) that the majority of sounds have from before ranged sounds were added.
+        const val DEFAULT_RANGE: Float = 16F
+    }
 }

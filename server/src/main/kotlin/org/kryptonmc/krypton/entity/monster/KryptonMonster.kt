@@ -24,6 +24,7 @@ import org.kryptonmc.krypton.entity.attribute.AttributeSupplier
 import org.kryptonmc.krypton.entity.attribute.KryptonAttributeTypes
 import org.kryptonmc.krypton.world.KryptonWorld
 
+@Suppress("UnnecessaryAbstractClass") // This class is designed for inheritance, not instantiation.
 abstract class KryptonMonster(world: KryptonWorld) : KryptonMob(world), Monster {
 
     companion object {

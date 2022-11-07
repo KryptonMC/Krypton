@@ -27,8 +27,8 @@ object UUIDUtil {
 
     @JvmStatic
     fun fromIntArray(data: IntArray): UUID = UUID(
-        (data[0].toLong() shl 32) or (data[1].toLong() and 0xFFFFFFFFL),
-        (data[2].toLong() shl 32) or (data[3].toLong() and 0xFFFFFFFFL)
+        data[0].toLong() shl 32 or (data[1].toLong() and 0xFFFFFFFFL),
+        data[2].toLong() shl 32 or (data[3].toLong() and 0xFFFFFFFFL)
     )
 
     @JvmStatic

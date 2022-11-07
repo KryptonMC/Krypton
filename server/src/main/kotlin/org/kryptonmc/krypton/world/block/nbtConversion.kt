@@ -31,12 +31,15 @@ import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.StringTag
 import org.kryptonmc.nbt.compound
 
+private const val NAME_TAG = "Name"
+private const val PROPERTIES_TAG = "Properties"
+
 fun CompoundTag.toBlockState(): KryptonBlockState {
-    if (!contains("Name", StringTag.ID)) return Blocks.AIR.defaultState.downcast()
-    val block = Registries.BLOCK.get(Key.key(getString("Name"))).downcast()
+    if (!contains(NAME_TAG, StringTag.ID)) return Blocks.AIR.defaultState.downcast()
+    val block = Registries.BLOCK.get(Key.key(getString(NAME_TAG))).downcast()
     var state = block.defaultState
-    if (contains("Properties", CompoundTag.ID)) {
-        val properties = getCompound("Properties")
+    if (contains(PROPERTIES_TAG, CompoundTag.ID)) {
+        val properties = getCompound(PROPERTIES_TAG)
         val definition = block.stateDefinition
         properties.keySet().forEach {
             val property = definition.getProperty(it)
@@ -47,9 +50,9 @@ fun CompoundTag.toBlockState(): KryptonBlockState {
 }
 
 fun BlockState.toNBT(): CompoundTag = compound {
-    putString("Name", Registries.BLOCK.get(this@toNBT.block).asString())
+    putString(NAME_TAG, Registries.BLOCK.get(this@toNBT.block).asString())
     if (properties.isNotEmpty()) {
-        compound("Properties") {
+        compound(PROPERTIES_TAG) {
             properties.forEach {
                 val property = it.key.downcast()
                 putString(property.name, property.name(it.value))
@@ -57,6 +60,8 @@ fun BlockState.toNBT(): CompoundTag = compound {
         }
     }
 }
+
+fun CompoundTag.Builder.putBlockState(name: String, state: BlockState): CompoundTag.Builder = put(name, state.toNBT())
 
 private val LOGGER = LogManager.getLogger("BlockNBTConverter")
 

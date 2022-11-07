@@ -7,7 +7,7 @@
  * For more details, please reference the LICENSE file in the api top-level directory.
  */
 @file:JvmSynthetic
-@file:Suppress("MatchingDeclarationName")
+@file:Suppress("MatchingDeclarationName", "MethodOverloading")
 package org.kryptonmc.api.effect.particle
 
 import org.jetbrains.annotations.Contract

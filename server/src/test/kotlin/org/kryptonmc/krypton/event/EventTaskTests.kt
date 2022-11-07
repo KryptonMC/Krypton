@@ -76,6 +76,7 @@ class EventTaskTests {
     private class WitnessContinuation(private val onComplete: Consumer<Throwable?>? = null) : Continuation {
 
         @Volatile
+        @Suppress("UnusedPrivateMember")
         private var status = INCOMPLETE
 
         fun completedSuccessfully(): Boolean = STATUS_UPDATER.get(this) == COMPLETE

@@ -330,7 +330,7 @@ public object Properties {
 
     /**
      * The thickness of the [Pointed Dripstone][Blocks.POINTED_DRIPSTONE] this
-     * property is applied to
+     * property is applied to.
      */
     @JvmField
     public val DRIPSTONE_THICKNESS: Property<DripstoneThickness> = Property.forEnum("DRIPSTONE_THICKNESS")

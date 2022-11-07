@@ -19,7 +19,6 @@
 package org.kryptonmc.krypton.world.event
 
 import net.kyori.adventure.key.Key
-import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.krypton.registry.InternalRegistries
 
 object GameEvents {

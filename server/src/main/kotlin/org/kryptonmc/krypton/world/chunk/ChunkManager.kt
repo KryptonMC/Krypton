@@ -52,6 +52,7 @@ import org.kryptonmc.nbt.compound
 import space.vectrix.flare.fastutil.Long2ObjectSyncMap
 import java.util.function.LongFunction
 
+@Suppress("StringLiteralDuplication") // TODO: Refactor the serialization out of this class and use constants to fix this issue
 class ChunkManager(private val world: KryptonWorld) {
 
     val chunkMap: Long2ObjectMap<KryptonChunk> = Long2ObjectSyncMap.hashmap()

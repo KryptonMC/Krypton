@@ -52,12 +52,17 @@ class KryptonZombie(world: KryptonWorld) : KryptonMonster(world), Zombie {
 
     companion object {
 
+        private const val DEFAULT_FOLLOW_RANGE = 35.0
+        private const val DEFAULT_MOVEMENT_SPEED = 0.23
+        private const val DEFAULT_ATTACK_DAMAGE = 3.0
+        private const val DEFAULT_ARMOR = 2.0
+
         @JvmStatic
         fun attributes(): AttributeSupplier.Builder = KryptonMonster.attributes()
-            .add(KryptonAttributeTypes.FOLLOW_RANGE, 35.0)
-            .add(KryptonAttributeTypes.MOVEMENT_SPEED, 0.23)
-            .add(KryptonAttributeTypes.ATTACK_DAMAGE, 3.0)
-            .add(KryptonAttributeTypes.ARMOR, 2.0)
+            .add(KryptonAttributeTypes.FOLLOW_RANGE, DEFAULT_FOLLOW_RANGE)
+            .add(KryptonAttributeTypes.MOVEMENT_SPEED, DEFAULT_MOVEMENT_SPEED)
+            .add(KryptonAttributeTypes.ATTACK_DAMAGE, DEFAULT_ATTACK_DAMAGE)
+            .add(KryptonAttributeTypes.ARMOR, DEFAULT_ARMOR)
             .add(KryptonAttributeTypes.SPAWN_REINFORCEMENTS_CHANCE)
     }
 }

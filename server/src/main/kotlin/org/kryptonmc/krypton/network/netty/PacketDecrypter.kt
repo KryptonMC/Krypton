@@ -23,7 +23,6 @@ import com.velocitypowered.natives.util.MoreByteBufUtils
 import io.netty.buffer.ByteBuf
 import io.netty.channel.ChannelHandlerContext
 import io.netty.handler.codec.MessageToMessageDecoder
-import org.kryptonmc.krypton.util.logger
 
 /**
  * Decrypts packets using a stream cipher provided by the specified [cipher].

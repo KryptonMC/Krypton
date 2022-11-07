@@ -13,12 +13,18 @@ package org.kryptonmc.api.entity.animal.type
  *
  * Every gene has its own list of traits that pandas will express if they have
  * the gene and it is expressed in its phenotype.
- *
- * @param mutationProbability the probability that a baby panda born from two
- * other pandas may randomly mutate this gene
- * @param isRecessive if this gene is a recessive allele
  */
-public enum class PandaGene(public val mutationProbability: Float, public val isRecessive: Boolean) {
+public enum class PandaGene(
+    /**
+     * The probability that a baby panda born from two other pandas may
+     * randomly mutate this gene.
+     */
+    public val mutationProbability: Float,
+    /**
+     * If this gene is a recessive allele.
+     */
+    public val isRecessive: Boolean
+) {
 
     /**
      * Normal pandas have no unique personality traits.

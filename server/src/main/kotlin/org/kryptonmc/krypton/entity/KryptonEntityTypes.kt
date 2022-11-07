@@ -73,6 +73,7 @@ import org.kryptonmc.krypton.entity.vehicle.KryptonFurnaceMinecart
 import org.kryptonmc.krypton.entity.vehicle.KryptonMinecart
 import org.kryptonmc.krypton.entity.vehicle.KryptonTNTMinecart
 
+@Suppress("MagicNumber")
 object KryptonEntityTypes {
 
     private const val MAGIC_HORSE_WIDTH = 1.3964844F

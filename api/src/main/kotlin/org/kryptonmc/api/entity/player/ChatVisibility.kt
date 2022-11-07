@@ -13,14 +13,18 @@ import net.kyori.adventure.audience.MessageType
 
 /**
  * Settings for the visibility of chat messages for a player.
- *
- * @param messageType the highest message type that can be sent with the
- * visibility, with the priority being determined by the ordinal low to high,
- * for example, [MessageType.CHAT] is higher than [MessageType.SYSTEM], and so
- * the [FULL] type that has [MessageType.CHAT] also includes
- * [MessageType.SYSTEM]
  */
-public enum class ChatVisibility(public val messageType: MessageType?) {
+public enum class ChatVisibility(
+    /**
+     * The highest message type that can be sent with the visibility, with the
+     * priority being determined by the ordinal, low to high.
+     *
+     * For example, [MessageType.CHAT] is higher than [MessageType.SYSTEM], and
+     * so the [FULL] type that has [MessageType.CHAT] also includes
+     * [MessageType.SYSTEM].
+     */
+    public val messageType: MessageType?
+) {
 
     /**
      * In this mode, the client wants to see all messages sent by the server.

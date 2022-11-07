@@ -22,7 +22,7 @@ import io.netty.buffer.ByteBuf
 import org.kryptonmc.krypton.packet.Packet
 
 /**
- * Response to the client's [ping][org.kryptonmc.krypton.packet.in.status.PacketInPingRequest] packet
+ * Response to the client's [ping][org.kryptonmc.krypton.packet.in.status.PacketInPingRequest] packet.
  */
 @JvmRecord
 data class PacketOutPingResponse(val value: Long) : Packet {

@@ -43,7 +43,8 @@ class KryptonProfileCache(private val path: Path) : ProfileCache {
     private val profileSet = ConcurrentHashMap.newKeySet<GameProfile>()
     private val operations = AtomicLong()
 
-    override val profiles: Collection<GameProfile> = Collections.unmodifiableCollection(profileSet)
+    override val profiles: Collection<GameProfile>
+        get() = Collections.unmodifiableCollection(profileSet)
 
     fun add(profile: GameProfile) {
         add(ProfileHolder(profile, ZonedDateTime.now().plusMonths(1)))
@@ -80,7 +81,7 @@ class KryptonProfileCache(private val path: Path) : ProfileCache {
         if (!Files.exists(path)) {
             try {
                 Files.createFile(path)
-            } catch (exception: Exception) {
+            } catch (exception: IOException) {
                 LOGGER.warn("Failed to create profile cache file $path.", exception)
                 return
             }

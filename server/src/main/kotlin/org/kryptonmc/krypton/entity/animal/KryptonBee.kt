@@ -88,12 +88,18 @@ class KryptonBee(world: KryptonWorld) : KryptonAnimal(world), Bee, Neutral {
         private const val FLAG_NECTAR = 3
         private val PERSISTENT_ANGER_TIME = UniformInt(20 * 20, 39 * 20)
 
+        private const val DEFAULT_MAX_HEALTH = 10.0
+        private const val DEFAULT_FLYING_SPEED = 0.6
+        private const val DEFAULT_MOVEMENT_SPEED = 0.3
+        private const val DEFAULT_ATTACK_DAMAGE = 2.0
+        private const val DEFAULT_FOLLOW_RANGE = 48.0
+
         @JvmStatic
         fun attributes(): AttributeSupplier.Builder = KryptonMob.attributes()
-            .add(KryptonAttributeTypes.MAX_HEALTH, 10.0)
-            .add(KryptonAttributeTypes.FLYING_SPEED, 0.6)
-            .add(KryptonAttributeTypes.MOVEMENT_SPEED, 0.3)
-            .add(KryptonAttributeTypes.ATTACK_DAMAGE, 2.0)
-            .add(KryptonAttributeTypes.FOLLOW_RANGE, 48.0)
+            .add(KryptonAttributeTypes.MAX_HEALTH, DEFAULT_MAX_HEALTH)
+            .add(KryptonAttributeTypes.FLYING_SPEED, DEFAULT_FLYING_SPEED)
+            .add(KryptonAttributeTypes.MOVEMENT_SPEED, DEFAULT_MOVEMENT_SPEED)
+            .add(KryptonAttributeTypes.ATTACK_DAMAGE, DEFAULT_ATTACK_DAMAGE)
+            .add(KryptonAttributeTypes.FOLLOW_RANGE, DEFAULT_FOLLOW_RANGE)
     }
 }

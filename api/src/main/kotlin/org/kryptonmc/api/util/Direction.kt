@@ -13,15 +13,20 @@ import org.spongepowered.math.vector.Vector3i
 /**
  * Represents a three-dimensional
  * [Cardinal direction](https://en.wikipedia.org/wiki/Cardinal_direction).
- *
- * @param axis the axis of this direction
- * @param axisDirection the direction of the axis of this direction
- * @param normal the normal of this direction
  */
 public enum class Direction(
     private val oppositeIndex: Int,
+    /**
+     * The axis of this direction.
+     */
     public val axis: Axis,
+    /**
+     * The direction of the axis of this direction.
+     */
     public val axisDirection: AxisDirection,
+    /**
+     * The normal of this direction.
+     */
     public val normal: Vector3i
 ) {
 

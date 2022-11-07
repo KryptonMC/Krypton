@@ -26,14 +26,17 @@ import org.kryptonmc.nbt.CompoundTag
 
 object RabbitSerializer : EntitySerializer<KryptonRabbit> {
 
+    private const val TYPE_TAG = "RabbitType"
+    private const val MORE_CARROT_TICKS_TAG = "MoreCarrotTicks"
+
     override fun load(entity: KryptonRabbit, data: CompoundTag) {
         AgeableSerializer.load(entity, data)
-        entity.data.set(MetadataKeys.Rabbit.TYPE, data.getInt("RabbitType"))
-        entity.moreCarrotTicks = data.getInt("MoreCarrotTicks")
+        entity.data.set(MetadataKeys.Rabbit.TYPE, data.getInt(TYPE_TAG))
+        entity.moreCarrotTicks = data.getInt(MORE_CARROT_TICKS_TAG)
     }
 
     override fun save(entity: KryptonRabbit): CompoundTag.Builder = AgeableSerializer.save(entity).apply {
-        putInt("RabbitType", entity.data.get(MetadataKeys.Rabbit.TYPE))
-        putInt("MoreCarrotTicks", entity.moreCarrotTicks)
+        putInt(TYPE_TAG, entity.data.get(MetadataKeys.Rabbit.TYPE))
+        putInt(MORE_CARROT_TICKS_TAG, entity.moreCarrotTicks)
     }
 }

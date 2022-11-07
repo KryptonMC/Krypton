@@ -31,11 +31,13 @@ public interface CommandExecuteEvent : ResultedEvent<CommandExecuteEvent.Result>
     /**
      * The result of a [CommandExecuteEvent].
      *
-     * @param command the command to forward
+     * @property isAllowed Whether the command is allowed to be executed.
+     * @property command The replacement command to execute, or null, if the
+     * original command should be executed.
      */
     @JvmRecord
     @Immutable
-    public data class Result(override val isAllowed: Boolean, public val command: String? = null) : ResultedEvent.Result {
+    public data class Result(override val isAllowed: Boolean, public val command: String?) : ResultedEvent.Result {
 
         public companion object {
 
@@ -43,8 +45,8 @@ public interface CommandExecuteEvent : ResultedEvent<CommandExecuteEvent.Result>
             private val DENIED = Result(false, null)
 
             /**
-             * Returns a result that allows the command without any modifications,
-             * and without forwarding it to the backend server.
+             * Gets the result that allows the command to be executed without
+             * any modifications.
              *
              * @return the allowed result
              */
@@ -53,8 +55,8 @@ public interface CommandExecuteEvent : ResultedEvent<CommandExecuteEvent.Result>
             public fun allowed(): Result = ALLOWED
 
             /**
-             * Returns a result that denies the command from being executed by the
-             * server.
+             * Gets the result that denies the command from being executed by
+             * the server.
              *
              * @return the denied result
              */

@@ -64,7 +64,7 @@ class SessionManager(private val server: KryptonServer) {
     }
 
     fun update(time: Long) {
-        if ((statusInvalidated && time - statusInvalidatedTime > WAIT_AFTER_INVALID_STATUS_TIME) || time - lastStatus >= UPDATE_STATUS_INTERVAL) {
+        if (statusInvalidated && time - statusInvalidatedTime > WAIT_AFTER_INVALID_STATUS_TIME || time - lastStatus >= UPDATE_STATUS_INTERVAL) {
             lastStatus = time
             statusInvalidated = false
             statusInvalidatedTime = 0L

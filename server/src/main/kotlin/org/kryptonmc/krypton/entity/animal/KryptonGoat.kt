@@ -54,10 +54,14 @@ class KryptonGoat(world: KryptonWorld) : KryptonAnimal(world), Goat {
         private const val BABY_ATTACK_DAMAGE = 1.0
         private const val ADULT_ATTACK_DAMAGE = 2.0
 
+        private const val DEFAULT_MAX_HEALTH = 10.0
+        private const val DEFAULT_MOVEMENT_SPEED = 0.2
+        private const val DEFAULT_ATTACK_DAMAGE = 2.0
+
         @JvmStatic
         fun attributes(): AttributeSupplier.Builder = KryptonMob.attributes()
-            .add(KryptonAttributeTypes.MAX_HEALTH, 10.0)
-            .add(KryptonAttributeTypes.MOVEMENT_SPEED, 0.2)
-            .add(KryptonAttributeTypes.ATTACK_DAMAGE, 2.0)
+            .add(KryptonAttributeTypes.MAX_HEALTH, DEFAULT_MAX_HEALTH)
+            .add(KryptonAttributeTypes.MOVEMENT_SPEED, DEFAULT_MOVEMENT_SPEED)
+            .add(KryptonAttributeTypes.ATTACK_DAMAGE, DEFAULT_ATTACK_DAMAGE)
     }
 }

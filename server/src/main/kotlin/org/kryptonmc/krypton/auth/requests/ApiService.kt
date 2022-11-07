@@ -63,6 +63,6 @@ object ApiService {
             .thenApplyAsync({ KryptonGameProfile.fromJson(it.body()) }, executor)
 
     @JvmStatic
-    private inline fun <K> createCache(crossinline urlCreator: (K) -> String): AsyncLoadingCache<K, GameProfile> =
-        Caffeine.newBuilder().expireAfterWrite(EXPIRE).maximumSize(128).buildAsync { key, executor -> loadProfile(urlCreator(key), executor) }
+    private inline fun <K> createCache(crossinline toUrl: (K) -> String): AsyncLoadingCache<K, GameProfile> =
+        Caffeine.newBuilder().expireAfterWrite(EXPIRE).maximumSize(128).buildAsync { key, executor -> loadProfile(toUrl(key), executor) }
 }

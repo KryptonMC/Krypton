@@ -25,6 +25,7 @@ import org.kryptonmc.util.Either
 import java.util.function.Function
 import kotlin.random.Random
 
+@Suppress("UnnecessaryAbstractClass")
 abstract class IntProvider {
 
     abstract val type: IntProviderType<*>

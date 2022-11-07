@@ -26,14 +26,17 @@ import org.kryptonmc.nbt.CompoundTag
 
 object AxolotlSerializer : EntitySerializer<KryptonAxolotl> {
 
+    private const val VARIANT_TAG = "Variant"
+    private const val FROM_BUCKET_TAG = "FromBucket"
+
     override fun load(entity: KryptonAxolotl, data: CompoundTag) {
         AgeableSerializer.load(entity, data)
-        entity.data.set(MetadataKeys.Axolotl.VARIANT, data.getInt("Variant"))
-        entity.wasSpawnedFromBucket = data.getBoolean("FromBucket")
+        entity.data.set(MetadataKeys.Axolotl.VARIANT, data.getInt(VARIANT_TAG))
+        entity.wasSpawnedFromBucket = data.getBoolean(FROM_BUCKET_TAG)
     }
 
     override fun save(entity: KryptonAxolotl): CompoundTag.Builder = AgeableSerializer.save(entity).apply {
-        putInt("Variant", entity.data.get(MetadataKeys.Axolotl.VARIANT))
-        putBoolean("FromBucket", entity.wasSpawnedFromBucket)
+        putInt(VARIANT_TAG, entity.data.get(MetadataKeys.Axolotl.VARIANT))
+        putBoolean(FROM_BUCKET_TAG, entity.wasSpawnedFromBucket)
     }
 }

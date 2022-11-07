@@ -14,9 +14,9 @@ import org.kryptonmc.api.block.Blocks
 /**
  * A variant of boat.
  *
- * @param planks the type of planks the boat is made out of
+ * @property planks The type of planks the boat is made out of.
  */
-public enum class BoatVariant(@get:JvmName("planks") public val planks: Block) {
+public enum class BoatVariant(public val planks: Block) {
 
     OAK(Blocks.OAK_PLANKS),
     SPRUCE(Blocks.SPRUCE_PLANKS),

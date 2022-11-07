@@ -25,12 +25,14 @@ import org.kryptonmc.nbt.CompoundTag
 
 object GoatSerializer : EntitySerializer<KryptonGoat> {
 
+    private const val SCREAMING_TAG = "IsScreamingGoat"
+
     override fun load(entity: KryptonGoat, data: CompoundTag) {
         AgeableSerializer.load(entity, data)
-        entity.canScream = data.getBoolean("IsScreamingGoat")
+        entity.canScream = data.getBoolean(SCREAMING_TAG)
     }
 
     override fun save(entity: KryptonGoat): CompoundTag.Builder = AgeableSerializer.save(entity).apply {
-        putBoolean("IsScreamingGoat", entity.canScream)
+        putBoolean(SCREAMING_TAG, entity.canScream)
     }
 }

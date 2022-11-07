@@ -91,10 +91,14 @@ class KryptonParrot(world: KryptonWorld) : KryptonTamable(world), Parrot {
         //private val TAME_FOOD = setOf(ItemTypes.WHEAT_SEEDS, ItemTypes.MELON_SEEDS, ItemTypes.PUMPKIN_SEEDS, ItemTypes.BEETROOT_SEEDS)
         //private val POISONOUS_FOOD = ItemTypes.COOKIE
 
+        private const val DEFAULT_MAX_HEALTH = 6.0
+        private const val DEFAULT_FLYING_SPEED = 0.4
+        private const val DEFAULT_MOVEMENT_SPEED = 0.2
+
         @JvmStatic
         fun attributes(): AttributeSupplier.Builder = KryptonMob.attributes()
-            .add(KryptonAttributeTypes.MAX_HEALTH, 6.0)
-            .add(KryptonAttributeTypes.FLYING_SPEED, 0.4)
-            .add(KryptonAttributeTypes.MOVEMENT_SPEED, 0.2)
+            .add(KryptonAttributeTypes.MAX_HEALTH, DEFAULT_MAX_HEALTH)
+            .add(KryptonAttributeTypes.FLYING_SPEED, DEFAULT_FLYING_SPEED)
+            .add(KryptonAttributeTypes.MOVEMENT_SPEED, DEFAULT_MOVEMENT_SPEED)
     }
 }

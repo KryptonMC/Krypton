@@ -26,6 +26,5 @@ enum class InteractionResult {
     FAIL,
     PASS;
 
-    val consumesAction: Boolean
-        get() = this == SUCCESS || this == CONSUME || this == CONSUME_PARTIAL
+    fun consumesAction(): Boolean = this == SUCCESS || this == CONSUME || this == CONSUME_PARTIAL
 }

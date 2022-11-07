@@ -108,16 +108,21 @@ class KryptonDolphin(world: KryptonWorld) : KryptonAquaticAnimal(world), Dolphin
         private const val MAX_ANGLE = 360F
         private const val GROUND_Y_VELOCITY_INCREASE = 0.5
 
+        private const val DEFAULT_MAX_HEALTH = 10.0
+        private const val DEFAULT_MOVEMENT_SPEED = 1.2
+        private const val DEFAULT_ATTACK_DAMAGE = 3.0
+
         @JvmStatic
         fun attributes(): AttributeSupplier.Builder = KryptonMob.attributes()
-            .add(KryptonAttributeTypes.MAX_HEALTH, 10.0)
-            .add(KryptonAttributeTypes.MOVEMENT_SPEED, 1.2)
-            .add(KryptonAttributeTypes.ATTACK_DAMAGE, 3.0)
+            .add(KryptonAttributeTypes.MAX_HEALTH, DEFAULT_MAX_HEALTH)
+            .add(KryptonAttributeTypes.MOVEMENT_SPEED, DEFAULT_MOVEMENT_SPEED)
+            .add(KryptonAttributeTypes.ATTACK_DAMAGE, DEFAULT_ATTACK_DAMAGE)
 
         // this will always produce a value between -0.2 and 0.2
         // Broken down: Random.nextFloat() produces a value between 0 and 1, multiplied by 2 produces a value between 0 and 2
         // taking 1 away produces a value between -1 and 1, then multiplying by 0.2 produces a value between -0.2 and 0.2
         @JvmStatic
+        @Suppress("MagicNumber") // Not magic if it's explained in a comment
         private fun randomVelocityModifier(): Double = ((Random.nextFloat() * 2F - 1F) * 0.2F).toDouble()
     }
 }

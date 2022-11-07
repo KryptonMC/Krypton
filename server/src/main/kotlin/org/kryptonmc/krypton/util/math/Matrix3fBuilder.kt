@@ -20,7 +20,7 @@ package org.kryptonmc.krypton.util.math
 
 import org.spongepowered.math.matrix.Matrix3f
 
-class Matrix3fBuilder() {
+class Matrix3fBuilder {
 
     private var m00 = 0F
     private var m01 = 0F

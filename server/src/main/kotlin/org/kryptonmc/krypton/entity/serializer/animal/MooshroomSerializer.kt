@@ -21,17 +21,20 @@ package org.kryptonmc.krypton.entity.serializer.animal
 import org.kryptonmc.krypton.entity.animal.KryptonMooshroom
 import org.kryptonmc.krypton.entity.serializer.AgeableSerializer
 import org.kryptonmc.krypton.entity.serializer.EntitySerializer
+import org.kryptonmc.krypton.util.nbt.putStringEnum
 import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.StringTag
 
 object MooshroomSerializer : EntitySerializer<KryptonMooshroom> {
 
+    private const val TYPE_TAG = "Type"
+
     override fun load(entity: KryptonMooshroom, data: CompoundTag) {
         AgeableSerializer.load(entity, data)
-        if (data.contains("Type", StringTag.ID)) entity.variant = KryptonMooshroom.deserializeType(data.getString("Type"))
+        if (data.contains(TYPE_TAG, StringTag.ID)) entity.variant = KryptonMooshroom.deserializeType(data.getString(TYPE_TAG))
     }
 
     override fun save(entity: KryptonMooshroom): CompoundTag.Builder = AgeableSerializer.save(entity).apply {
-        putString("Type", entity.variant.name.lowercase())
+        putStringEnum(TYPE_TAG, entity.variant)
     }
 }

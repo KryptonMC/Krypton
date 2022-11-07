@@ -21,8 +21,9 @@ package org.kryptonmc.krypton.item.meta
 import org.kryptonmc.api.item.meta.CompassMeta
 import org.kryptonmc.api.resource.ResourceKey
 import org.kryptonmc.api.world.World
-import org.kryptonmc.krypton.entity.getVector3i
-import org.kryptonmc.krypton.entity.putVector3i
+import org.kryptonmc.krypton.util.nbt.getBlockPos
+import org.kryptonmc.krypton.util.nbt.getNullableCompound
+import org.kryptonmc.krypton.util.nbt.putBlockPos
 import org.kryptonmc.krypton.util.serialization.Codecs
 import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.serialization.nbt.NbtOps
@@ -30,17 +31,14 @@ import org.spongepowered.math.vector.Vector3i
 
 class KryptonCompassMeta(data: CompoundTag) : AbstractItemMeta<KryptonCompassMeta>(data), CompassMeta {
 
-    override val isTrackingLodestone: Boolean = data.getBoolean("LodestoneTracking")
-    override val lodestoneDimension: ResourceKey<World>? =
-        Codecs.DIMENSION.read(data.get("LodestoneDimension"), NbtOps.INSTANCE).result().orElse(null)
-    override val lodestonePosition: Vector3i? = data.getVector3i("LodestonePos")
+    override val isTrackingLodestone: Boolean = data.getBoolean(TRACKED_TAG)
+    override val lodestoneDimension: ResourceKey<World>? = Codecs.DIMENSION.read(data.get(DIMENSION_TAG), NbtOps.INSTANCE).result().orElse(null)
+    override val lodestonePosition: Vector3i? = data.getNullableCompound(POS_TAG)?.getBlockPos()
 
     override fun copy(data: CompoundTag): KryptonCompassMeta = KryptonCompassMeta(data)
 
-    override fun withLodestone(dimension: ResourceKey<World>, position: Vector3i): KryptonCompassMeta {
-        val dimensionKey = dimension.location.asString()
-        return copy(data.putBoolean("LodestoneTracked", false).putString("LodestoneDimension", dimensionKey).putVector3i("LodestonePos", position))
-    }
+    override fun withLodestone(dimension: ResourceKey<World>, position: Vector3i): KryptonCompassMeta =
+        copy(data.putBoolean(TRACKED_TAG, true).putString(DIMENSION_TAG, dimension.location.asString()).putBlockPos(POS_TAG, position))
 
     override fun withoutLodestone(): KryptonCompassMeta = copy(CompoundTag.EMPTY)
 
@@ -70,11 +68,18 @@ class KryptonCompassMeta(data: CompoundTag) : AbstractItemMeta<KryptonCompassMet
         }
 
         override fun buildData(): CompoundTag.Builder = super.buildData().apply {
-            putBoolean("LodestoneTracked", tracking)
-            if (dimension != null) putString("LodestoneDimension", dimension!!.location.asString())
-            if (position != null) putVector3i("LodestonePos", position!!)
+            putBoolean(TRACKED_TAG, tracking)
+            if (dimension != null) putString(DIMENSION_TAG, dimension!!.location.asString())
+            if (position != null) putBlockPos(POS_TAG, position!!)
         }
 
         override fun build(): KryptonCompassMeta = KryptonCompassMeta(buildData().build())
+    }
+
+    companion object {
+
+        private const val TRACKED_TAG = "LodestoneTracked"
+        private const val DIMENSION_TAG = "LodestoneDimension"
+        private const val POS_TAG = "LodestonePos"
     }
 }

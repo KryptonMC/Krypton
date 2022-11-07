@@ -21,8 +21,6 @@ package org.kryptonmc.krypton.entity.serializer.player
 import org.kryptonmc.api.entity.attribute.AttributeTypes
 import org.kryptonmc.api.service.VanishService
 import org.kryptonmc.api.service.provide
-import org.kryptonmc.api.world.World
-import org.kryptonmc.krypton.KryptonPlatform
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.entity.player.RespawnData
@@ -30,90 +28,99 @@ import org.kryptonmc.krypton.entity.serializer.EntitySerializer
 import org.kryptonmc.krypton.entity.serializer.LivingEntitySerializer
 import org.kryptonmc.krypton.service.KryptonVanishService
 import org.kryptonmc.krypton.util.logger
+import org.kryptonmc.krypton.util.nbt.putDataVersion
 import org.kryptonmc.krypton.util.nbt.putUUID
-import org.kryptonmc.krypton.util.serialization.Codecs
 import org.kryptonmc.nbt.CompoundTag
-import org.kryptonmc.nbt.StringTag
 import org.kryptonmc.nbt.compound
-import org.kryptonmc.serialization.nbt.NbtOps
-import org.spongepowered.math.vector.Vector3i
 import java.time.Instant
 
 object PlayerSerializer : EntitySerializer<KryptonPlayer> {
 
     private val LOGGER = logger<KryptonPlayer>()
 
+    // Vanilla tags
+    private const val GAME_TYPE_TAG = "playerGameType"
+    private const val PREVIOUS_GAME_TYPE_TAG = "previousPlayerGameType"
+    private const val INVENTORY_TAG = "Inventory"
+    private const val SELECTED_SLOT_TAG = "SelectedItemSlot"
+    private const val SCORE_TAG = "Score"
+    private const val LEFT_SHOULDER_TAG = "ShoulderEntityLeft"
+    private const val RIGHT_SHOULDER_TAG = "ShoulderEntityRight"
+    private const val DIMENSION_TAG = "Dimension"
+    private const val ROOT_VEHICLE_TAG = "RootVehicle"
+    private const val ATTACH_TAG = "Attach"
+    private const val ENTITY_TAG = "Entity"
+
+    // Custom krypton-only tags
+    private const val KRYPTON_TAG = "krypton"
+    private const val VANISHED_TAG = "vanished"
+    private const val FIRST_JOINED_TAG = "firstJoined"
+    private const val LAST_JOINED_TAG = "lastJoined"
+
     override fun load(entity: KryptonPlayer, data: CompoundTag) {
         LivingEntitySerializer.load(entity, data)
-        entity.inventory.load(data.getList("Inventory", CompoundTag.ID))
-        entity.inventory.heldSlot = data.getInt("SelectedItemSlot")
-        entity.data.set(MetadataKeys.Player.SCORE, data.getInt("Score"))
+        entity.inventory.load(data.getList(INVENTORY_TAG, CompoundTag.ID))
+        entity.inventory.heldSlot = data.getInt(SELECTED_SLOT_TAG)
+        entity.data.set(MetadataKeys.Player.SCORE, data.getInt(SCORE_TAG))
         entity.hungerSystem.load(data)
 
         entity.abilities.load(data)
         entity.getAttribute(AttributeTypes.MOVEMENT_SPEED)!!.baseValue = entity.walkingSpeed.toDouble()
 
         // NBT data for entities sitting on the player's shoulders, e.g. parrots
-        if (data.contains("ShoulderEntityLeft", CompoundTag.ID)) {
-            entity.data.set(MetadataKeys.Player.LEFT_SHOULDER, data.getCompound("ShoulderEntityLeft"))
+        if (data.contains(LEFT_SHOULDER_TAG, CompoundTag.ID)) {
+            entity.data.set(MetadataKeys.Player.LEFT_SHOULDER, data.getCompound(LEFT_SHOULDER_TAG))
         }
-        if (data.contains("ShoulderEntityRight", CompoundTag.ID)) {
-            entity.data.set(MetadataKeys.Player.RIGHT_SHOULDER, data.getCompound("ShoulderEntityRight"))
+        if (data.contains(RIGHT_SHOULDER_TAG, CompoundTag.ID)) {
+            entity.data.set(MetadataKeys.Player.RIGHT_SHOULDER, data.getCompound(RIGHT_SHOULDER_TAG))
         }
 
         // Respawn data
-        if (data.contains("SpawnX", 99) && data.contains("SpawnY", 99) && data.contains("SpawnZ", 99)) {
-            val position = Vector3i(data.getInt("SpawnX"), data.getInt("SpawnY"), data.getInt("SpawnZ"))
-            val dimension = if (data.contains("SpawnDimension", StringTag.ID)) {
-                Codecs.DIMENSION.read(data.get("SpawnDimension"), NbtOps.INSTANCE).resultOrPartial(LOGGER::error).orElse(World.OVERWORLD)
-            } else {
-                World.OVERWORLD
-            }
-            entity.respawnData = RespawnData(position, dimension, data.getFloat("SpawnAngle"), data.getBoolean("SpawnForced"))
-        }
+        entity.respawnData = RespawnData.load(data, LOGGER)
 
-        if (data.contains("krypton", CompoundTag.ID)) {
+        if (data.contains(KRYPTON_TAG, CompoundTag.ID)) {
             entity.hasJoinedBefore = true
-            val kryptonData = data.getCompound("krypton")
+            val kryptonData = data.getCompound(KRYPTON_TAG)
             val vanishService = entity.server.servicesManager.provide<VanishService>()!!
-            if (vanishService is KryptonVanishService && kryptonData.getBoolean("vanished")) vanishService.vanish(entity)
-            entity.firstJoined = Instant.ofEpochMilli(kryptonData.getLong("firstJoined"))
+            if (vanishService is KryptonVanishService && kryptonData.getBoolean(VANISHED_TAG)) vanishService.vanish(entity)
+            entity.firstJoined = Instant.ofEpochMilli(kryptonData.getLong(FIRST_JOINED_TAG))
+            entity.lastJoined = Instant.ofEpochMilli(kryptonData.getLong(LAST_JOINED_TAG))
         }
     }
 
     override fun save(entity: KryptonPlayer): CompoundTag.Builder = LivingEntitySerializer.save(entity).apply {
-        putInt("playerGameType", entity.gameMode.ordinal)
-        if (entity.oldGameMode != null) putInt("previousPlayerGameType", entity.oldGameMode!!.ordinal)
+        putInt(GAME_TYPE_TAG, entity.gameMode.ordinal)
+        if (entity.oldGameMode != null) putInt(PREVIOUS_GAME_TYPE_TAG, entity.oldGameMode!!.ordinal)
 
-        putInt("DataVersion", KryptonPlatform.worldVersion)
-        put("Inventory", entity.inventory.save())
-        putInt("SelectedItemSlot", entity.inventory.heldSlot)
-        putInt("Score", entity.data.get(MetadataKeys.Player.SCORE))
+        putDataVersion()
+        put(INVENTORY_TAG, entity.inventory.save())
+        putInt(SELECTED_SLOT_TAG, entity.inventory.heldSlot)
+        putInt(SCORE_TAG, entity.data.get(MetadataKeys.Player.SCORE))
         entity.hungerSystem.save(this)
         entity.abilities.save(this)
 
         val leftShoulder = entity.data.get(MetadataKeys.Player.LEFT_SHOULDER)
         val rightShoulder = entity.data.get(MetadataKeys.Player.RIGHT_SHOULDER)
-        if (!leftShoulder.isEmpty) put("ShoulderEntityLeft", leftShoulder)
-        if (!rightShoulder.isEmpty) put("ShoulderEntityRight", rightShoulder)
+        if (!leftShoulder.isEmpty) put(LEFT_SHOULDER_TAG, leftShoulder)
+        if (!rightShoulder.isEmpty) put(RIGHT_SHOULDER_TAG, rightShoulder)
 
-        putString("Dimension", entity.dimension.location.asString())
+        putString(DIMENSION_TAG, entity.dimension.location.asString())
         entity.respawnData?.save(this, LOGGER)
 
         val rootVehicle = entity.vehicleSystem.rootVehicle()
         val vehicle = entity.vehicle
         if (vehicle != null && rootVehicle !== entity && rootVehicle.vehicleSystem.hasExactlyOnePlayerPassenger()) {
-            compound("RootVehicle") {
-                putUUID("Attach", vehicle.uuid)
-                put("Entity", rootVehicle.saveWithPassengers().build())
+            compound(ROOT_VEHICLE_TAG) {
+                putUUID(ATTACH_TAG, vehicle.uuid)
+                put(ENTITY_TAG, rootVehicle.saveWithPassengers().build())
             }
         }
 
-        compound("krypton") {
+        compound(KRYPTON_TAG) {
             val vanishService = entity.server.servicesManager.provide<VanishService>()!!
-            if (vanishService is KryptonVanishService) putBoolean("vanished", entity.isVanished)
-            putLong("firstJoined", entity.firstJoined.toEpochMilli())
-            putLong("lastJoined", entity.lastJoined.toEpochMilli())
+            if (vanishService is KryptonVanishService) putBoolean(VANISHED_TAG, entity.isVanished)
+            putLong(FIRST_JOINED_TAG, entity.firstJoined.toEpochMilli())
+            putLong(LAST_JOINED_TAG, entity.lastJoined.toEpochMilli())
         }
     }
 }

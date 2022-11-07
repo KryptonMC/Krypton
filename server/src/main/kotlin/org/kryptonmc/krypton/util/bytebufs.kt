@@ -65,6 +65,24 @@ import java.util.function.IntFunction
 import kotlin.math.ceil
 import kotlin.math.min
 
+/*
+ * The var int encoding is a variable-length encoding, which consists of a sequence of bytes, with 7 bits representing the value, and the 8th bit
+ * indicating whether there is a next byte to read or not.
+ *
+ * For the reading, we do a simple loop up to the maximum bytes we can read in a var int/long, which is 5 and 10 respectively.
+ * We then read each byte individually, shift the value in to the correct position, ignoring the marker bit (value & 0x7F gets rid of the marker
+ * bit and << j * 7 shifts left by 7 bits * the byte index for each byte we read).
+ * Then, we check if the marker bit is set, and if it isn't, we are done reading, otherwise, we continue reading.
+ *
+ * For the writing, instead of implementing it using a looping mechanism, we check each value individually for better performance.
+ * We check the value against each individual case, by taking the unsigned maximum integer value (all 32 bits set to 1) and shifting it left by
+ * the amount of bits we want to check, which leaves us with a value that has only the number of bits we want to check set to 0. By doing an AND
+ * against this value and the provided value, we can check if the value has no bits above that number set to 1, as any number & 1 = any.
+ *
+ * With var longs, these methods are simply extended to 10 bytes.
+ */
+
+@Suppress("MagicNumber") // Easier to explain this in a comment than create loads of constants
 fun ByteBuf.readVarInt(): Int {
     var i = 0
     val maxRead = min(5, readableBytes())
@@ -77,6 +95,7 @@ fun ByteBuf.readVarInt(): Int {
 }
 
 // This came from Velocity. See https://steinborn.me/posts/performance/how-fast-can-you-write-a-varint/
+@Suppress("MagicNumber") // Explained in a comment on readVarInt
 fun ByteBuf.writeVarInt(value: Int) {
     when {
         value.toLong() and (0xFFFFFFFF shl 7) == 0L -> writeByte(value)
@@ -93,13 +112,14 @@ fun ByteBuf.writeVarInt(value: Int) {
     }
 }
 
+@Suppress("MagicNumber") // Explained in a comment on readVarInt
 fun ByteBuf.readVarLong(): Long {
     var i = 0L
     val maxRead = min(10, readableBytes())
     for (j in 0 until maxRead) {
         val next = readByte()
         i = i or (next.toLong() and 0x7F shl j * 7)
-        if (next.toLong() and 0x80 != 128L) return i // If there's no more var int bytes after this, we're done
+        if (next.toLong() and 0x80 != 0x80L) return i // If there's no more var int bytes after this, we're done
     }
     return Long.MAX_VALUE
 }
@@ -107,6 +127,7 @@ fun ByteBuf.readVarLong(): Long {
 // This is my own completely crazy extension of the above `writeVarInt` function, created by Andrew Steinborn of Velocity,
 // to the 10-bit var long. This is pretty much completely unnecessary, but it functions as expected, and was a challenge in
 // the article cited on the above method, so I thought it was worth putting it in here.
+@Suppress("MagicNumber") // Explained in a comment on readVarInt
 fun ByteBuf.writeVarLong(value: Long) {
     when {
         value and (0xFFFFFFFF shl 7) == 0L -> writeByte(value.toInt())
@@ -132,23 +153,23 @@ fun ByteBuf.writeVarLong(value: Long) {
             writeMedium((value ushr 28 and 0x7F or 0x80 shl 16 or (value ushr 35 and 0x7F or 0x80 shl 8) or
                     (value ushr 42)).toInt())
         }
-        value and (0xFFFFFFFF shl 56) == 0L -> writeLong((value and 0x7F or 0x80 shl 56 or
+        value and (0xFFFFFFFF shl 56) == 0L -> writeLong(value and 0x7F or 0x80 shl 56 or
                 (value ushr 7 and 0x7F or 0x80 shl 48) or (value ushr 14 and 0x7F or 0x80 shl 40) or
                 (value ushr 21 and 0x7F or 0x80 shl 32) or (value ushr 28 and 0x7F or 0x80 shl 24) or
                 (value ushr 35 and 0x7F or 0x80 shl 16) or (value ushr 42 and 0x7F or 0x80 shl 8) or
-                (value ushr 49)))
+                (value ushr 49))
         value and (0xFFFFFFFF shl 63) == 0L -> {
-            writeLong((value and 0x7F or 0x80 shl 56 or (value ushr 7 and 0x7F or 0x80 shl 48) or
+            writeLong(value and 0x7F or 0x80 shl 56 or (value ushr 7 and 0x7F or 0x80 shl 48) or
                     (value ushr 14 and 0x7F or 0x80 shl 40) or (value ushr 21 and 0x7F or 0x80 shl 32) or
                     (value ushr 28 and 0x7F or 0x80 shl 24) or (value ushr 35 and 0x7F or 0x80 shl 16) or
-                    (value ushr 42 and 0x7F or 0x80 shl 8) or (value ushr 49 and 0x7F or 0x80)))
+                    (value ushr 42 and 0x7F or 0x80 shl 8) or (value ushr 49 and 0x7F or 0x80))
             writeByte((value ushr 56).toInt())
         }
         value and (0xFFFFFFFF shl 70) == 0L -> {
-            writeLong((value and 0x7F or 0x80 shl 56 or (value ushr 7 and 0x7F or 0x80 shl 48) or
+            writeLong(value and 0x7F or 0x80 shl 56 or (value ushr 7 and 0x7F or 0x80 shl 48) or
                     (value ushr 14 and 0x7F or 0x80 shl 40) or (value ushr 21 and 0x7F or 0x80 shl 32) or
                     (value ushr 28 and 0x7F or 0x80 shl 24) or (value ushr 35 and 0x7F or 0x80 shl 16) or
-                    (value ushr 42 and 0x7F or 0x80 shl 8) or (value ushr 49 and 0x7F or 0x80)))
+                    (value ushr 42 and 0x7F or 0x80 shl 8) or (value ushr 49 and 0x7F or 0x80))
             writeShort((value ushr 56 and 0x7F or 0x80 shl 8 or (value ushr 63)).toInt())
         }
     }
@@ -156,13 +177,13 @@ fun ByteBuf.writeVarLong(value: Long) {
 
 fun ByteBuf.readString(max: Int): String {
     val length = readVarInt()
-    return when {
-        length > max * 4 -> throw IOException("String too long! Expected maximum length of $max, got length of $length!")
-        length < 0 -> throw IOException("String cannot be less than 0 in length!")
+    when {
+        length < 0 -> throw DecoderException("String cannot be less than 0 in length!")
+        length > max * 4 -> throw DecoderException("String too long! Expected maximum length of $max, got length of $length!")
         else -> {
             val string = String(readAvailableBytes(length))
-            if (string.length > max) throw IOException("String too long! Expected maximum length of $max, got length of ${string.length}")
-            string
+            if (string.length > max) throw DecoderException("String too long! Expected maximum length of $max, got length of ${string.length}")
+            return string
         }
     }
 }
@@ -204,11 +225,6 @@ fun ByteBuf.writeLongArray(array: LongArray) {
 
 fun ByteBuf.readLongArray(): LongArray = LongArray(readVarInt()) { readLong() }
 
-fun ByteBuf.writeSingletonLongArray(element: Long) {
-    writeVarInt(1)
-    writeLong(element)
-}
-
 fun ByteBuf.writeUUID(uuid: UUID) {
     writeLong(uuid.mostSignificantBits)
     writeLong(uuid.leastSignificantBits)
@@ -241,13 +257,15 @@ fun ByteBuf.readNBT(): CompoundTag {
     }
 }
 
+private const val MAXIMUM_COMPONENT_STRING_LENGTH = 262144
+
 fun ByteBuf.writeComponent(component: Component) {
-    writeString(component.toJson(), 262144)
+    writeString(component.toJson(), MAXIMUM_COMPONENT_STRING_LENGTH)
 }
 
 fun ByteBuf.readComponent(): Component {
     try {
-        return GsonComponentSerializer.gson().deserialize(readString(262144))
+        return GsonComponentSerializer.gson().deserialize(readString(MAXIMUM_COMPONENT_STRING_LENGTH))
     } catch (exception: Exception) {
         throw DecoderException("Could not decode component!", exception)
     }
@@ -272,26 +290,39 @@ fun ByteBuf.writeItem(item: KryptonItemStack) {
     writeNBT(item.meta.data)
 }
 
+/*
+ * In this encoding, the X, Y, and Z coordinates are packed in to a single long, with the X coordinate occupying the most significant 26 bits,
+ * followed by the Z coordinate occupying the next 26 bits, then the Y coordinate, occupying the least significant 12 bits.
+ *
+ * This encoding allows for the following maximum values:
+ * - X and Z: minimum of -33554432 (-2^25) and maximum of 33554431 (2^25 - 1)
+ * - Y: minimum of -2048 (-2^11) and maximum of 2047 (2^11 - 1)
+ */
+@Suppress("MagicNumber")
 fun ByteBuf.writeVector(x: Int, y: Int, z: Int) {
-    writeLong(((x.toLong() and 0x3FFFFFF) shl 38) or ((z.toLong() and 0x3FFFFFF) shl 12) or (y.toLong() and 0xFFF))
+    writeLong(x.toLong() and 0x3FFFFFF shl 38 or (z.toLong() and 0x3FFFFFF shl 12) or (y.toLong() and 0xFFF))
 }
 
 fun ByteBuf.writeVector(vector: Vector3i) {
     writeVector(vector.x(), vector.y(), vector.z())
 }
 
+@Suppress("MagicNumber")
 fun ByteBuf.readVector(): Vector3i {
     val value = readLong()
-    return Vector3i((value shr 38).toInt(), (value and 0xFFF).toInt(), ((value shr 12) and 0x3FFFFFF).toInt())
+    return Vector3i((value shr 38).toInt(), (value and 0xFFF).toInt(), (value shr 12 and 0x3FFFFFF).toInt())
 }
 
 fun ByteBuf.readVector3f(): Vector3f = Vector3f(readFloat(), readFloat(), readFloat())
 
+private const val MAX_BYTE_ANGLE = 256F
+private const val MAX_DEGREE_ANGLE = 360F
+
 fun ByteBuf.writeAngle(angle: Float) {
-    writeByte((angle * 256F / 360F).toInt())
+    writeByte((angle * MAX_BYTE_ANGLE / MAX_DEGREE_ANGLE).toInt())
 }
 
-fun ByteBuf.readAngle(): Float = (readByte().toFloat() * 360F) / 256F
+fun ByteBuf.readAngle(): Float = readByte().toFloat() * MAX_DEGREE_ANGLE / MAX_BYTE_ANGLE
 
 fun ByteBuf.writeKey(key: Key) {
     writeString(key.asString())
@@ -452,7 +483,7 @@ fun ByteBuf.write3EmptyBytes(): Int {
 fun ByteBuf.write3ByteVarInt(startIndex: Int, value: Int) {
     val originalIndex = writerIndex()
     writerIndex(startIndex)
-    val encoded = (((value and 0x7F) or 0x80) shl 16) or ((((value ushr 7) and 0x7F) or 0x80) shl 8) or (value ushr 14)
+    val encoded = value and 0x7F or 0x80 shl 16 or (value ushr 7 and 0x7F or 0x80 shl 8) or (value ushr 14)
     writeMedium(encoded)
     writerIndex(originalIndex)
 }

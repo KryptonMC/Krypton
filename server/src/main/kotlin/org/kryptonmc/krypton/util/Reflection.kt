@@ -32,7 +32,7 @@ object Reflection {
     fun <R> accessField(clazz: Class<*>, name: String, instance: Any? = null): R? {
         return try {
             getField(clazz, name)?.get(instance) as? R
-        } catch (exception: IllegalArgumentException) {
+        } catch (ignored: IllegalArgumentException) {
             LOGGER.warn("Attempted to get the value of field $name of class ${clazz.canonicalName} on invalid instance $instance")
             null
         }

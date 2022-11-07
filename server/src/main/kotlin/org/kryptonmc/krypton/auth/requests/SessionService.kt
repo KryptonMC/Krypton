@@ -36,6 +36,7 @@ import java.util.concurrent.TimeUnit
  */
 object SessionService {
 
+    private const val OK_RESPONSE_CODE = 200 // HTTP response code for 'OK' response.
     private val SERVER_ID_BYTES = ByteArray(0)
     private const val BASE_URL = "https://sessionserver.mojang.com/session/minecraft/hasJoined"
     private val LOGGER = logger<SessionService>()
@@ -59,7 +60,7 @@ object SessionService {
 
         val request = HttpRequest.newBuilder(URI("$BASE_URL?username=$username&serverId=$serverId&ip=$ip")).build()
         val response = client.send(request, BodyHandlers.ofString())
-        if (response.statusCode() != 200) { // Ensures no content responses are also a failure.
+        if (response.statusCode() != OK_RESPONSE_CODE) { // Ensures no content responses are also a failure.
             LOGGER.debug("Error authenticating $username! Code: ${response.statusCode()}, body: ${response.body()}")
             LOGGER.error("Failed to verify username $username!")
             return null

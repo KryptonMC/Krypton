@@ -20,16 +20,19 @@ package org.kryptonmc.krypton.entity.serializer.vehicle
 
 import org.kryptonmc.krypton.entity.serializer.EntitySerializer
 import org.kryptonmc.krypton.entity.vehicle.KryptonTNTMinecart
+import org.kryptonmc.krypton.util.nbt.hasNumber
 import org.kryptonmc.nbt.CompoundTag
 
 object TNTMinecartSerializer : EntitySerializer<KryptonTNTMinecart> {
 
+    private const val FUSE_TAG = "TNTFuse"
+
     override fun load(entity: KryptonTNTMinecart, data: CompoundTag) {
         MinecartLikeSerializer.load(entity, data)
-        if (data.contains("TNTFuse", 99)) entity.fuse = data.getInt("TNTFuse")
+        if (data.hasNumber(FUSE_TAG)) entity.fuse = data.getInt(FUSE_TAG)
     }
 
     override fun save(entity: KryptonTNTMinecart): CompoundTag.Builder = MinecartLikeSerializer.save(entity).apply {
-        putInt("TNTFuse", entity.fuse)
+        putInt(FUSE_TAG, entity.fuse)
     }
 }

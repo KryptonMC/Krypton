@@ -54,7 +54,9 @@ class KryptonCreeper(world: KryptonWorld) : KryptonMonster(world), Creeper {
 
     companion object {
 
+        private const val DEFAULT_MOVEMENT_SPEED = 0.25
+
         @JvmStatic
-        fun attributes(): AttributeSupplier.Builder = KryptonMonster.attributes().add(KryptonAttributeTypes.MOVEMENT_SPEED, 0.25)
+        fun attributes(): AttributeSupplier.Builder = KryptonMonster.attributes().add(KryptonAttributeTypes.MOVEMENT_SPEED, DEFAULT_MOVEMENT_SPEED)
     }
 }

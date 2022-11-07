@@ -19,7 +19,6 @@
 package org.kryptonmc.krypton.packet.out.play.data
 
 import io.netty.buffer.ByteBuf
-import kotlinx.collections.immutable.persistentListOf
 import org.kryptonmc.krypton.network.Writable
 import org.kryptonmc.krypton.util.readList
 import org.kryptonmc.krypton.util.readLongArray

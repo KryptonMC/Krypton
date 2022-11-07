@@ -29,6 +29,7 @@ import org.kryptonmc.krypton.util.Directions
 import org.kryptonmc.krypton.world.BlockAccessor
 import org.kryptonmc.krypton.world.material.Materials
 import org.spongepowered.math.vector.Vector3d
+import org.spongepowered.math.vector.Vector3i
 import kotlin.math.min
 
 abstract class FlowingFluid : KryptonFluid() {
@@ -49,9 +50,9 @@ abstract class FlowingFluid : KryptonFluid() {
     override fun getFlow(world: BlockAccessor, x: Int, y: Int, z: Int, state: KryptonFluidState): Vector3d {
         var flowX = 0.0
         var flowZ = 0.0
-        var tempX = 0
-        var tempY = 0
-        var tempZ = 0
+        var tempX: Int
+        var tempY: Int
+        var tempZ: Int
         Directions.Plane.HORIZONTAL.forEach {
             tempX = x + it.normalX
             tempY = y + it.normalY
@@ -109,7 +110,7 @@ abstract class FlowingFluid : KryptonFluid() {
         if (fluid.fluid.isSame(this)) return false
         if (side == Direction.UP) return true
         if (block.material == Materials.ICE) return false
-        return block.isFaceSturdy(world, x, y, z, side)
+        return block.isFaceSturdy(world, Vector3i(x, y, z), side)
     }
 
     companion object {

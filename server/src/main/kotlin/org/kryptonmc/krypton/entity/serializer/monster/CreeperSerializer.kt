@@ -25,18 +25,23 @@ import org.kryptonmc.nbt.CompoundTag
 
 object CreeperSerializer : EntitySerializer<KryptonCreeper> {
 
+    private const val POWERED_TAG = "powered"
+    private const val IGNITED_TAG = "ignited"
+    private const val FUSE_TAG = "Fuse"
+    private const val EXPLOSION_RADIUS_TAG = "ExplosionRadius"
+
     override fun load(entity: KryptonCreeper, data: CompoundTag) {
         MobSerializer.load(entity, data)
-        entity.isCharged = data.getBoolean("powered")
-        entity.isIgnited = data.getBoolean("ignited")
-        entity.fuse = data.getShort("Fuse").toInt()
-        entity.explosionRadius = data.getInt("ExplosionRadius")
+        entity.isCharged = data.getBoolean(POWERED_TAG)
+        entity.isIgnited = data.getBoolean(IGNITED_TAG)
+        entity.fuse = data.getShort(FUSE_TAG).toInt()
+        entity.explosionRadius = data.getInt(EXPLOSION_RADIUS_TAG)
     }
 
     override fun save(entity: KryptonCreeper): CompoundTag.Builder = MobSerializer.save(entity).apply {
-        putBoolean("powered", entity.isCharged)
-        putBoolean("ignited", entity.isIgnited)
-        putShort("Fuse", entity.fuse.toShort())
-        putInt("ExplosionRadius", entity.explosionRadius)
+        putBoolean(POWERED_TAG, entity.isCharged)
+        putBoolean(IGNITED_TAG, entity.isIgnited)
+        putShort(FUSE_TAG, entity.fuse.toShort())
+        putInt(EXPLOSION_RADIUS_TAG, entity.explosionRadius)
     }
 }

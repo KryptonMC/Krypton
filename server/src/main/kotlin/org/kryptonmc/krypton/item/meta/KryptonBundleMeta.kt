@@ -29,17 +29,17 @@ import org.kryptonmc.nbt.list
 
 class KryptonBundleMeta(data: CompoundTag) : AbstractItemMeta<KryptonBundleMeta>(data), BundleMeta {
 
-    override val items: ImmutableList<ItemStack> = data.mapToList("Items", CompoundTag.ID) { KryptonItemStack.from(it as CompoundTag) }
+    override val items: ImmutableList<ItemStack> = data.mapToList(ITEMS_TAG, CompoundTag.ID) { KryptonItemStack.from(it as CompoundTag) }
 
     override fun copy(data: CompoundTag): KryptonBundleMeta = KryptonBundleMeta(data)
 
-    override fun withItems(items: List<ItemStack>): KryptonBundleMeta = copy(data.setItems(items))
+    override fun withItems(items: List<ItemStack>): KryptonBundleMeta = copy(put(data, ITEMS_TAG, items) { it.downcast().save() })
 
-    override fun withItem(item: ItemStack): KryptonBundleMeta = copy(data.update("Items", CompoundTag.ID) { it.add(item.downcast().save()) })
+    override fun withItem(item: ItemStack): KryptonBundleMeta = copy(data.update(ITEMS_TAG, CompoundTag.ID) { it.add(item.downcast().save()) })
 
-    override fun withoutItem(index: Int): KryptonBundleMeta = copy(data.update("Items", CompoundTag.ID) { it.remove(index) })
+    override fun withoutItem(index: Int): KryptonBundleMeta = copy(data.update(ITEMS_TAG, CompoundTag.ID) { it.remove(index) })
 
-    override fun withoutItem(item: ItemStack): KryptonBundleMeta = copy(data.update("Items", CompoundTag.ID) { it.remove(item.downcast().save()) })
+    override fun withoutItem(item: ItemStack): KryptonBundleMeta = copy(data.update(ITEMS_TAG, CompoundTag.ID) { it.remove(item.downcast().save()) })
 
     override fun toBuilder(): BundleMeta.Builder = Builder(this)
 
@@ -64,12 +64,12 @@ class KryptonBundleMeta(data: CompoundTag) : AbstractItemMeta<KryptonBundleMeta>
         override fun build(): BundleMeta = KryptonBundleMeta(buildData().build())
 
         override fun buildData(): CompoundTag.Builder = super.buildData().apply {
-            if (items.isNotEmpty()) list("Items") { items.forEach { it.downcast().save() } }
+            if (items.isNotEmpty()) list(ITEMS_TAG) { items.forEach { it.downcast().save() } }
         }
     }
-}
 
-private fun CompoundTag.setItems(items: List<ItemStack>): CompoundTag {
-    if (items.isEmpty()) return remove("Items")
-    return put("Items", list { items.forEach { it.downcast().save() } })
+    companion object {
+
+        private const val ITEMS_TAG = "Items"
+    }
 }

@@ -20,32 +20,23 @@ package org.kryptonmc.krypton.packet.out.play
 
 import io.netty.buffer.ByteBuf
 import net.kyori.adventure.text.Component
-import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer
 import org.kryptonmc.api.scoreboard.Score
+import org.kryptonmc.krypton.adventure.toLegacySectionText
 import org.kryptonmc.krypton.packet.Packet
-import org.kryptonmc.krypton.util.readString
-import org.kryptonmc.krypton.util.readVarInt
 import org.kryptonmc.krypton.util.writeString
 import org.kryptonmc.krypton.util.writeVarInt
 
 @JvmRecord
-data class PacketOutUpdateScore(val name: Component, val action: Action, val objectiveName: String?, val score: Int) : Packet {
+data class PacketOutUpdateScore(val name: String, val action: Action, val objectiveName: String?, val score: Int) : Packet {
 
-    constructor(action: Action, score: Score) : this(score.name, action, score.objective?.name, score.score)
+    constructor(name: Component, action: Action, objectiveName: String?, score: Int) : this(name.toLegacySectionText(), action, objectiveName, score)
 
-    constructor(buf: ByteBuf) : this(buf, buf.readLegacyComponent(), Action.fromId(buf.readByte().toInt())!!, buf.readString(16))
-
-    private constructor(
-        buf: ByteBuf,
-        name: Component,
-        action: Action,
-        objectiveName: String
-    ) : this(name, action, objectiveName.ifEmpty { null }, if (action != Action.REMOVE) buf.readVarInt() else 0)
+    constructor(action: Action, score: Score) : this(score.name.toLegacySectionText(), action, score.objective?.name, score.score)
 
     override fun write(buf: ByteBuf) {
-        buf.writeString(LegacyComponentSerializer.legacySection().serialize(name), 40)
+        buf.writeString(name, MAX_NAME_LENGTH)
         buf.writeByte(action.ordinal)
-        buf.writeString(objectiveName ?: "", 16)
+        buf.writeString(objectiveName ?: "", MAX_OBJECTIVE_NAME_LENGTH)
         if (action != Action.REMOVE) buf.writeVarInt(score)
     }
 
@@ -62,6 +53,10 @@ data class PacketOutUpdateScore(val name: Component, val action: Action, val obj
             fun fromId(id: Int): Action? = BY_ID.getOrNull(id)
         }
     }
-}
 
-private fun ByteBuf.readLegacyComponent(): Component = LegacyComponentSerializer.legacySection().deserialize(readString(40))
+    companion object {
+
+        private const val MAX_NAME_LENGTH = 40
+        private const val MAX_OBJECTIVE_NAME_LENGTH = 16
+    }
+}

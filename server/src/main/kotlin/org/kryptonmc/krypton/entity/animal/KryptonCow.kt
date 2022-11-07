@@ -36,9 +36,12 @@ open class KryptonCow(world: KryptonWorld) : KryptonAnimal(world), Cow {
 
     companion object {
 
+        private const val DEFAULT_MAX_HEALTH = 10.0
+        private const val DEFAULT_MOVEMENT_SPEED = 0.2
+
         @JvmStatic
         fun attributes(): AttributeSupplier.Builder = KryptonMob.attributes()
-            .add(KryptonAttributeTypes.MAX_HEALTH, 10.0)
-            .add(KryptonAttributeTypes.MOVEMENT_SPEED, 0.2)
+            .add(KryptonAttributeTypes.MAX_HEALTH, DEFAULT_MAX_HEALTH)
+            .add(KryptonAttributeTypes.MOVEMENT_SPEED, DEFAULT_MOVEMENT_SPEED)
     }
 }

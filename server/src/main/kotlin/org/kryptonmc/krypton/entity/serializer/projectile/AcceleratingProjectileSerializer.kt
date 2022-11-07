@@ -20,6 +20,7 @@ package org.kryptonmc.krypton.entity.serializer.projectile
 
 import org.kryptonmc.krypton.entity.projectile.KryptonAcceleratingProjectile
 import org.kryptonmc.krypton.entity.serializer.EntitySerializer
+import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.DoubleTag
 import org.kryptonmc.nbt.ListTag
@@ -28,16 +29,23 @@ import org.spongepowered.math.vector.Vector3d
 
 object AcceleratingProjectileSerializer : EntitySerializer<KryptonAcceleratingProjectile> {
 
+    private val LOGGER = logger<AcceleratingProjectileSerializer>()
+    private const val POWER_TAG = "power"
+    private const val POWER_SIZE = 3
+
     override fun load(entity: KryptonAcceleratingProjectile, data: CompoundTag) {
         ProjectileSerializer.load(entity, data)
-        if (!data.contains("power", ListTag.ID)) return
-        val power = data.getList("power", DoubleTag.ID)
-        if (power.size() != 3) return
+        if (!data.contains(POWER_TAG, ListTag.ID)) return
+        val power = data.getList(POWER_TAG, DoubleTag.ID)
+        if (power.size() != POWER_SIZE) {
+            LOGGER.warn("Found invalid accelerating projectile power array of length ${power.size()}! Expected length of $POWER_SIZE! Skipping...")
+            return
+        }
         entity.acceleration = Vector3d(power.getDouble(0), power.getDouble(1), power.getDouble(2))
     }
 
     override fun save(entity: KryptonAcceleratingProjectile): CompoundTag.Builder = ProjectileSerializer.save(entity).apply {
-        list("power") {
+        list(POWER_TAG) {
             addDouble(entity.acceleration.x())
             addDouble(entity.acceleration.y())
             addDouble(entity.acceleration.z())

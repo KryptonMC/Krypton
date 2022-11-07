@@ -27,7 +27,9 @@ public interface AuthenticationEvent : ResultedEvent<AuthenticationEvent.Result>
     /**
      * The result of a request to authenticate a player.
      *
-     * @param profile the optional profile for a successful result
+     * @property isAllowed Whether the player is allowed to continue
+     * authenticating.
+     * @property profile The optional profile for a successful result.
      */
     @JvmRecord
     @Immutable

@@ -40,7 +40,7 @@ object TitleCommand : InternalCommand {
     override fun register(dispatcher: CommandDispatcher<Sender>) {
         dispatcher.register(literal("title") {
             permission(KryptonPermission.TITLE)
-            argument("targets", EntityArgumentType.players()) {
+            argument(TARGETS_ARGUMENT, EntityArgumentType.players()) {
                 title("actionbar", KryptonPlayer::sendActionBar)
                 title("title", KryptonPlayer::sendTitle)
                 title("subtitle", KryptonPlayer::sendSubtitle)
@@ -52,6 +52,8 @@ object TitleCommand : InternalCommand {
     }
 }
 
+private const val TARGETS_ARGUMENT = "targets"
+
 private inline fun LiteralArgumentBuilder<Sender>.title(
     name: String,
     crossinline action: (KryptonPlayer, Component) -> Unit
@@ -59,7 +61,7 @@ private inline fun LiteralArgumentBuilder<Sender>.title(
     argument("message", StringArgumentType.string()) {
         runs { context ->
             val sender = context.source as? KryptonPlayer ?: return@runs
-            val targets = context.entityArgument("targets").players(sender)
+            val targets = context.entityArgument(TARGETS_ARGUMENT).players(sender)
             val message = Component.text(context.argument<String>("message"))
             targets.forEach { action(it, message) }
             sender.sendFeedback("commands.title.show.$name", targets.size)
@@ -74,7 +76,7 @@ private inline fun LiteralArgumentBuilder<Sender>.clearOrReset(
 ): LiteralArgumentBuilder<Sender> = literal(name) {
     runs { context ->
         val sender = context.source as? KryptonPlayer ?: return@runs
-        val targets = context.entityArgument("targets").players(sender)
+        val targets = context.entityArgument(TARGETS_ARGUMENT).players(sender)
         targets.forEach(action)
         sender.sendFeedback("commands.title.$translationKey", targets.size)
     }
@@ -86,7 +88,7 @@ private fun LiteralArgumentBuilder<Sender>.times(): LiteralArgumentBuilder<Sende
             argument("fadeOut", IntegerArgumentType.integer()) {
                 runs { context ->
                     val sender = context.source as? KryptonPlayer ?: return@runs
-                    val targets = context.entityArgument("targets").players(sender)
+                    val targets = context.entityArgument(TARGETS_ARGUMENT).players(sender)
                     targets.forEach { it.sendTitleTimes(context.argument("fadeIn"), context.argument("stay"), context.argument("fadeOut")) }
                     sender.sendFeedback("commands.title.times", targets.size)
                 }

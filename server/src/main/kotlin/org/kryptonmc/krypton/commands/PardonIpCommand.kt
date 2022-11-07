@@ -53,7 +53,7 @@ object PardonIpCommand : InternalCommand {
                 runs {
                     val server = it.source.server as? KryptonServer ?: return@runs
                     val target = it.argument<String>("target")
-                    if (target.matches(BanIpCommand.IP_ADDRESS_PATTERN)) {
+                    if (BanIpCommand.IP_ADDRESS_PATTERN.matcher(target).matches()) {
                         if (server.playerManager.bannedIps.contains(target)) {
                             server.playerManager.bannedIps.remove(target)
                             return@runs

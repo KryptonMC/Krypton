@@ -38,8 +38,8 @@ data class EntityArgumentType(val onlyPlayers: Boolean, val singleTarget: Boolea
             return EntityArgumentParser.parse(reader, reader.read(), position, onlyPlayers, singleTarget)
         }
         val input = reader.readString()
-        if (input matches PLAYER_NAME_REGEX) return EntityQuery(emptyList(), EntityQuery.Selector.PLAYER, input)
-        return EntityQuery(emptyList(), EntityQuery.Selector.UNKNOWN)
+        if (PLAYER_NAME_REGEX.matches(input)) return EntityQuery(EntityQuery.Selector.PLAYER, input)
+        return EntityQuery(EntityQuery.Selector.UNKNOWN)
     }
 
     override fun getExamples(): Collection<String> = EXAMPLES
@@ -57,12 +57,8 @@ data class EntityArgumentType(val onlyPlayers: Boolean, val singleTarget: Boolea
 
         @JvmStatic
         fun from(players: Boolean, singleTarget: Boolean): EntityArgumentType {
-            if (players) {
-                if (singleTarget) return PLAYER
-                return PLAYERS
-            }
-            if (singleTarget) return ENTITY
-            return ENTITIES
+            if (players) return if (singleTarget) PLAYER else PLAYERS
+            return if (singleTarget) ENTITY else ENTITIES
         }
 
         /**

@@ -22,7 +22,7 @@ import io.netty.buffer.ByteBuf
 import org.kryptonmc.krypton.packet.Packet
 
 /**
- * Tells the client to change the item it's currently holding to the specified [slot]
+ * Tells the client to change the item it's currently holding to the specified [slot].
  *
  * @param slot the slot to change to
  */

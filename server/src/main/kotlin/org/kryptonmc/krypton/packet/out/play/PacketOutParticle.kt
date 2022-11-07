@@ -35,7 +35,7 @@ import org.spongepowered.math.vector.Vector3d
 import org.spongepowered.math.vector.Vector3f
 
 /**
- * Tells the client to spawn some particles around it
+ * Tells the client to spawn some particles around it.
  */
 @JvmRecord
 data class PacketOutParticle(
@@ -106,6 +106,9 @@ data class PacketOutParticle(
 
     companion object {
 
+        private const val RGB_TO_FLOAT_FACTOR = 255F
+        private const val NOTE_TO_FLOAT_FACTOR = 24F
+
         @JvmStatic
         fun from(effect: ParticleEffect, location: Vector3d): PacketOutParticle = from(effect, location.x(), location.y(), location.z())
 
@@ -158,14 +161,14 @@ data class PacketOutParticle(
                 }
                 is ColorParticleData -> {
                     offsetPosition()
-                    offsetX = data.color.red.toFloat() / 255F
-                    offsetY = data.color.green.toFloat() / 255F
-                    offsetZ = data.color.blue.toFloat() / 255F
+                    offsetX = data.color.red.toFloat() / RGB_TO_FLOAT_FACTOR
+                    offsetY = data.color.green.toFloat() / RGB_TO_FLOAT_FACTOR
+                    offsetZ = data.color.blue.toFloat() / RGB_TO_FLOAT_FACTOR
                     count = 0
                 }
                 is NoteParticleData -> {
                     offsetPosition()
-                    offsetX = data.note.toFloat() / 24F
+                    offsetX = data.note.toFloat() / NOTE_TO_FLOAT_FACTOR
                     offsetY = 0F
                     offsetZ = 0F
                     count = 0

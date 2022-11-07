@@ -126,7 +126,7 @@ abstract class VoxelShape(val shape: DiscreteVoxelShape) {
             val face = faces!![direction.ordinal]
             if (face != null) return face
         } else {
-            faces = arrayOfNulls(6)
+            faces = arrayOfNulls(FACES)
         }
         val face = calculateFace(direction)
         faces!![direction.ordinal] = face
@@ -182,5 +182,10 @@ abstract class VoxelShape(val shape: DiscreteVoxelShape) {
             }
         }
         return tempMaxDistance
+    }
+
+    companion object {
+
+        private const val FACES = 6
     }
 }

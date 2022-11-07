@@ -49,6 +49,7 @@ public interface ItemStack : Buildable<ItemStack, ItemStack.Builder>, HoverEvent
      * Gets the metadata for this item stack as the given type [I], or returns
      * null if the metadata could not be casted to the given [type].
      *
+     * @param I the type of metadata
      * @param type the type
      * @return the metadata as the type, or null if the metadata is not of the
      * type
@@ -133,10 +134,10 @@ public interface ItemStack : Buildable<ItemStack, ItemStack.Builder>, HoverEvent
      * Creates a new item stack with meta retrieved applying the given
      * [builder] to a new meta builder created with the given [type].
      *
-     * @param type the type
-     * @param builder the builder to apply
      * @param B the builder type
      * @param P the metadata type
+     * @param type the type
+     * @param builder the builder to apply
      * @return a new item stack
      */
     @JvmSynthetic
@@ -147,10 +148,10 @@ public interface ItemStack : Buildable<ItemStack, ItemStack.Builder>, HoverEvent
      * Creates a new item stack with meta retrieved applying the given
      * [builder] to a new meta builder created with the given [type].
      *
-     * @param type the type
-     * @param builder the builder to apply
      * @param B the builder type
      * @param P the metadata type
+     * @param type the type
+     * @param builder the builder to apply
      * @return a new item stack
      */
     @Contract("_, _ -> new", pure = true)
@@ -220,10 +221,10 @@ public interface ItemStack : Buildable<ItemStack, ItemStack.Builder>, HoverEvent
          * Applies the given [builder] function to the metadata builder for
          * this builder.
          *
-         * @param type the type of the metadata
-         * @param builder the builder function to apply
          * @param B the builder type
          * @param P the metadata type
+         * @param type the type of the metadata
+         * @param builder the builder function to apply
          * @return this builder
          */
         @ItemDsl
@@ -235,10 +236,10 @@ public interface ItemStack : Buildable<ItemStack, ItemStack.Builder>, HoverEvent
          * Applies the given [builder] function to the metadata builder for
          * this builder.
          *
-         * @param type the type of the metadata
-         * @param builder the builder function to apply
          * @param B the builder type
          * @param P the metadata type
+         * @param type the type of the metadata
+         * @param builder the builder function to apply
          * @return this builder
          */
         @ItemDsl
@@ -317,6 +318,7 @@ public interface ItemStack : Buildable<ItemStack, ItemStack.Builder>, HoverEvent
  * Gets the metadata for this item stack as the given type [I], or returns
  * null if the metadata could not be casted to the given type [I].
  *
+ * @param I the metadata type
  * @return the metadata as the type, or null if the metadata is not of the type
  */
 @JvmSynthetic
@@ -326,9 +328,9 @@ public inline fun <reified I : ItemMeta> ItemStack.meta(): I? = meta(I::class.ja
  * Creates a new item stack with meta retrieved applying the given
  * [builder] to a new meta builder created with the given type [P].
  *
- * @param builder the builder to apply
  * @param B the builder type
  * @param P the metadata type
+ * @param builder the builder to apply
  * @return a new item stack
  */
 @JvmSynthetic
@@ -341,9 +343,9 @@ public inline fun <B : ItemMetaBuilder<B, P>, reified P : ItemMetaBuilder.Provid
  * Applies the given [builder] function to the metadata builder for
  * this builder.
  *
- * @param builder the builder function to apply
  * @param B the builder type
  * @param P the metadata type
+ * @param builder the builder function to apply
  * @return this builder
  */
 @ItemDsl

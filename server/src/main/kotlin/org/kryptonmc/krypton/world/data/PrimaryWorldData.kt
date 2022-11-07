@@ -25,6 +25,9 @@ import org.kryptonmc.krypton.KryptonPlatform
 import org.kryptonmc.krypton.util.Difficulties
 import org.kryptonmc.krypton.util.GameModes
 import org.kryptonmc.krypton.util.nbt.getUUID
+import org.kryptonmc.krypton.util.nbt.hasNumber
+import org.kryptonmc.krypton.util.nbt.putDataVersion
+import org.kryptonmc.krypton.util.nbt.putNullable
 import org.kryptonmc.krypton.util.nbt.putUUID
 import org.kryptonmc.krypton.world.generation.WorldGenerationSettings
 import org.kryptonmc.krypton.world.rule.KryptonGameRuleHolder
@@ -32,10 +35,12 @@ import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.ListTag
 import org.kryptonmc.nbt.StringTag
 import org.kryptonmc.nbt.compound
+import org.kryptonmc.nbt.list
 import java.nio.file.Path
 import java.time.Instant
 import java.util.UUID
 
+@Suppress("LongParameterList")
 class PrimaryWorldData(
     override val name: String,
     override val folder: Path,
@@ -65,78 +70,111 @@ class PrimaryWorldData(
 ) : WorldData {
 
     fun save(): CompoundTag = compound {
-        compound("Data") {
-            compound("Krypton") {
-                putString("Version", KryptonPlatform.version)
+        compound(DATA_TAG) {
+            compound(KRYPTON_TAG) {
+                putString(VERSION_TAG, KryptonPlatform.version)
             }
-            putInt("DataVersion", KryptonPlatform.worldVersion)
-            putInt("version", ANVIL_VERSION_ID)
-            compound("Version") {
-                putInt("Id", KryptonPlatform.worldVersion)
-                putString("Name", KryptonPlatform.minecraftVersion)
-                putBoolean("Snapshot", !KryptonPlatform.isStableMinecraft)
+            putDataVersion()
+            putInt(LOWER_VERSION_TAG, ANVIL_VERSION_ID)
+            compound(VERSION_TAG) {
+                putInt(ID_TAG, KryptonPlatform.worldVersion)
+                putString(NAME_TAG, KryptonPlatform.minecraftVersion)
+                putBoolean(SNAPSHOT_TAG, !KryptonPlatform.isStableMinecraft)
             }
-            putString("LevelName", name)
-            putInt("GameType", gameMode.ordinal)
-            putByte("Difficulty", difficulty.ordinal.toByte())
-            putBoolean("hardcore", isHardcore)
-            put("GameRules", gameRules.save())
-            put("WorldGenSettings", generationSettings.save())
-            putInt("SpawnX", spawnX)
-            putInt("SpawnY", spawnY)
-            putInt("SpawnZ", spawnZ)
-            putFloat("SpawnAngle", spawnAngle)
-            putLong("Time", time)
-            putLong("DayTime", dayTime)
-            putLong("LastPlayed", Instant.now().toEpochMilli())
-            putInt("clearWeatherTime", clearWeatherTime)
-            putBoolean("raining", isRaining)
-            putInt("rainTime", rainTime)
-            putBoolean("thundering", isThundering)
-            putInt("thunderTime", thunderTime)
-            putBoolean("initialized", isInitialized)
-            putInt("WanderingTraderSpawnChance", wanderingTraderSpawnChance)
-            putInt("WanderingTraderSpawnDelay", wanderingTraderSpawnDelay)
-            if (wanderingTraderId != null) putUUID("WanderingTraderId", wanderingTraderId!!)
-            if (customBossEvents != null) put("CustomBossEvents", customBossEvents!!)
-            put("DragonFight", enderDragonFightData)
-            putList("ServerBrands", StringTag.ID, serverBrands.map(StringTag::of))
-            putBoolean("WasModded", true)
+            putString(LEVEL_NAME_TAG, name)
+            putInt(GAME_TYPE_TAG, gameMode.ordinal)
+            putByte(DIFFICULTY_TAG, difficulty.ordinal.toByte())
+            putBoolean(HARDCORE_TAG, isHardcore)
+            put(GAME_RULES_TAG, gameRules.save())
+            put(WORLD_GEN_SETTINGS_TAG, generationSettings.save())
+            putInt(SPAWN_X_TAG, spawnX)
+            putInt(SPAWN_Y_TAG, spawnY)
+            putInt(SPAWN_Z_TAG, spawnZ)
+            putFloat(SPAWN_ANGLE_TAG, spawnAngle)
+            putLong(TIME_TAG, time)
+            putLong(DAY_TIME_TAG, dayTime)
+            putLong(LAST_PLAYED_TAG, Instant.now().toEpochMilli())
+            putInt(CLEAR_WEATHER_TIME_TAG, clearWeatherTime)
+            putBoolean(RAINING_TAG, isRaining)
+            putInt(RAIN_TIME_TAG, rainTime)
+            putBoolean(THUNDERING_TAG, isThundering)
+            putInt(THUNDER_TIME_TAG, thunderTime)
+            putBoolean(INITIALIZED_TAG, isInitialized)
+            putInt(TRADER_SPAWN_CHANCE_TAG, wanderingTraderSpawnChance)
+            putInt(TRADER_SPAWN_DELAY_TAG, wanderingTraderSpawnDelay)
+            putNullable(TRADER_ID_TAG, wanderingTraderId, CompoundTag.Builder::putUUID)
+            putNullable(CUSTOM_BOSS_EVENTS_TAG, customBossEvents, CompoundTag.Builder::put)
+            put(DRAGON_FIGHT_TAG, enderDragonFightData)
+            list(SERVER_BRANDS_TAG) { serverBrands.forEach(::addString) }
+            putBoolean(WAS_MODDED_TAG, true)
         }
     }
 
     companion object {
 
+        private const val DATA_TAG = "Data"
+        private const val KRYPTON_TAG = "Krypton"
+        private const val VERSION_TAG = "Version"
+        private const val LOWER_VERSION_TAG = "version"
+        private const val ID_TAG = "Id"
+        private const val NAME_TAG = "Name"
+        private const val SNAPSHOT_TAG = "Snapshot"
+        private const val LEVEL_NAME_TAG = "LevelName"
+        private const val GAME_TYPE_TAG = "GameType"
+        private const val DIFFICULTY_TAG = "Difficulty"
+        private const val HARDCORE_TAG = "hardcore"
+        private const val GAME_RULES_TAG = "GameRules"
+        private const val WORLD_GEN_SETTINGS_TAG = "WorldGenSettings"
+        private const val SPAWN_X_TAG = "SpawnX"
+        private const val SPAWN_Y_TAG = "SpawnY"
+        private const val SPAWN_Z_TAG = "SpawnZ"
+        private const val SPAWN_ANGLE_TAG = "SpawnAngle"
+        private const val TIME_TAG = "Time"
+        private const val DAY_TIME_TAG = "DayTime"
+        private const val LAST_PLAYED_TAG = "LastPlayed"
+        private const val CLEAR_WEATHER_TIME_TAG = "clearWeatherTime"
+        private const val RAINING_TAG = "raining"
+        private const val RAIN_TIME_TAG = "rainTime"
+        private const val THUNDERING_TAG = "thundering"
+        private const val THUNDER_TIME_TAG = "thunderTime"
+        private const val INITIALIZED_TAG = "initialized"
+        private const val TRADER_SPAWN_CHANCE_TAG = "WanderingTraderSpawnChance"
+        private const val TRADER_SPAWN_DELAY_TAG = "WanderingTraderSpawnDelay"
+        private const val TRADER_ID_TAG = "WanderingTraderId"
+        private const val CUSTOM_BOSS_EVENTS_TAG = "CustomBossEvents"
+        private const val DRAGON_FIGHT_TAG = "DragonFight"
+        private const val SERVER_BRANDS_TAG = "ServerBrands"
+        private const val WAS_MODDED_TAG = "WasModded"
         private const val ANVIL_VERSION_ID = 19133
 
         @JvmStatic
         fun parse(folder: Path, data: CompoundTag): PrimaryWorldData {
-            val generationSettings = WorldGenerationSettings.parse(data.getCompound("WorldGenSettings"))
-            val time = data.getLong("Time", 0L)
+            val generationSettings = WorldGenerationSettings.parse(data.getCompound(WORLD_GEN_SETTINGS_TAG))
+            val time = data.getLong(TIME_TAG, 0L)
             return PrimaryWorldData(
-                data.getString("LevelName"),
+                data.getString(LEVEL_NAME_TAG),
                 folder,
-                GameModes.fromId(data.getInt("GameType", 0)) ?: GameMode.SURVIVAL,
+                GameModes.fromId(data.getInt(GAME_TYPE_TAG, 0)) ?: GameMode.SURVIVAL,
                 resolveDifficulty(data),
-                data.getBoolean("hardcore", false),
-                KryptonGameRuleHolder.from(data.getCompound("GameRules")),
+                data.getBoolean(HARDCORE_TAG, false),
+                KryptonGameRuleHolder.from(data.getCompound(GAME_RULES_TAG)),
                 generationSettings,
-                data.getInt("SpawnX"),
-                data.getInt("SpawnY"),
-                data.getInt("SpawnZ"),
-                data.getFloat("SpawnAngle"),
+                data.getInt(SPAWN_X_TAG),
+                data.getInt(SPAWN_Y_TAG),
+                data.getInt(SPAWN_Z_TAG),
+                data.getFloat(SPAWN_ANGLE_TAG),
                 time,
-                data.getLong("DayTime", time),
-                data.getInt("clearWeatherTime"),
-                data.getBoolean("raining"),
-                data.getInt("rainTime"),
-                data.getBoolean("thundering"),
-                data.getInt("thunderTime"),
-                data.getBoolean("initialized"),
-                data.getInt("WanderingTraderSpawnChance"),
-                data.getInt("WanderingTraderSpawnDelay"),
-                data.getUUID("WanderingTraderId"),
-                data.getCompound("CustomBossEvents"),
+                data.getLong(DAY_TIME_TAG, time),
+                data.getInt(CLEAR_WEATHER_TIME_TAG),
+                data.getBoolean(RAINING_TAG),
+                data.getInt(RAIN_TIME_TAG),
+                data.getBoolean(THUNDERING_TAG),
+                data.getInt(THUNDER_TIME_TAG),
+                data.getBoolean(INITIALIZED_TAG),
+                data.getInt(TRADER_SPAWN_CHANCE_TAG),
+                data.getInt(TRADER_SPAWN_DELAY_TAG),
+                data.getUUID(TRADER_ID_TAG),
+                data.getCompound(CUSTOM_BOSS_EVENTS_TAG),
                 resolveDragonFightData(data),
                 extractBrands(data)
             )
@@ -144,8 +182,8 @@ class PrimaryWorldData(
 
         @JvmStatic
         private fun extractBrands(data: CompoundTag): Set<String> {
-            if (!data.contains("ServerBrands", ListTag.ID)) return persistentSetOf()
-            val brandData = data.getList("ServerBrands", StringTag.ID)
+            if (!data.contains(SERVER_BRANDS_TAG, ListTag.ID)) return persistentSetOf()
+            val brandData = data.getList(SERVER_BRANDS_TAG, StringTag.ID)
             if (brandData.isEmpty) return persistentSetOf()
             val result = persistentSetOf<String>().builder()
             for (i in 0 until brandData.size()) {
@@ -159,14 +197,14 @@ class PrimaryWorldData(
 
         @JvmStatic
         private fun resolveDragonFightData(data: CompoundTag): CompoundTag {
-            if (data.contains("DragonFightData", CompoundTag.ID)) return data.getCompound("DragonFightData")
-            return data.getCompound("DimensionData").getCompound("1").getCompound("DragonFight")
+            if (data.contains(DRAGON_FIGHT_TAG, CompoundTag.ID)) return data.getCompound(DRAGON_FIGHT_TAG)
+            return data.getCompound("DimensionData").getCompound("1").getCompound(DRAGON_FIGHT_TAG)
         }
 
         @JvmStatic
         private fun resolveDifficulty(data: CompoundTag): Difficulty {
             var difficulty: Difficulty? = null
-            if (data.contains("Difficulty", 99)) difficulty = Difficulties.fromId(data.getInt("Difficulty"))
+            if (data.hasNumber(DIFFICULTY_TAG)) difficulty = Difficulties.fromId(data.getInt(DIFFICULTY_TAG))
             return difficulty ?: Difficulty.NORMAL
         }
     }

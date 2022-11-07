@@ -27,15 +27,24 @@ public interface JoinEvent : PlayerEvent, ResultedEvent<JoinEvent.Result> {
 
     /**
      * The result of a [JoinEvent].
-     *
-     * @param message the join message
-     * @param hasJoinedBefore if the player joining has joined before
      */
     @JvmRecord
     @Immutable
     public data class Result(
         override val isAllowed: Boolean,
+        /**
+         * The custom join message to send, or null, if no custom message is to
+         * be sent.
+         *
+         * Note: some implementations may still send a join message.
+         */
         public val message: Component?,
+        /**
+         * If the joining player has joined before.
+         *
+         * Implementations may choose to use this information to alter the join
+         * message.
+         */
         public val hasJoinedBefore: Boolean
     ) : ResultedEvent.Result {
 

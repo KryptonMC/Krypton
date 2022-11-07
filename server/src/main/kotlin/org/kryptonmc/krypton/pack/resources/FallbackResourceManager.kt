@@ -144,6 +144,7 @@ class FallbackResourceManager(private val namespace: String) : ResourceManager {
             closed = true
         }
 
+        @Suppress("ProtectedMemberInFinalClass")
         protected fun finalize() {
             if (!closed) LOGGER.warn(message)
         }
@@ -153,6 +154,7 @@ class FallbackResourceManager(private val namespace: String) : ResourceManager {
             @JvmStatic
             private fun generateStackTrace(): OutputStream {
                 val output = ByteArrayOutputStream()
+                @Suppress("ThrowingExceptionsWithoutMessageOrCause")
                 Exception().printStackTrace(PrintStream(output))
                 return output
             }

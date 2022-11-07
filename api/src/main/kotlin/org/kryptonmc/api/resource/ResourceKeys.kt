@@ -104,6 +104,7 @@ public object ResourceKeys {
      *
      * This will use [RegistryRoots.MINECRAFT] as its root.
      *
+     * @param T the resource key type
      * @param key the key
      * @return a new registry key
      */
@@ -116,6 +117,7 @@ public object ResourceKeys {
      *
      * This will use [RegistryRoots.KRYPTON] as its root.
      *
+     * @param T the resource key type
      * @param key the key
      * @return a new registry key
      */

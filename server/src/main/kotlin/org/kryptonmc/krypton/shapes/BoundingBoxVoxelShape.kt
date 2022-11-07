@@ -60,14 +60,15 @@ class BoundingBoxVoxelShape(val box: BoundingBox) : VoxelShape(Shapes.unoptimize
         }
     }
 
+    @Suppress("MagicNumber")
     override fun get(axis: Direction.Axis, index: Int): Double = when (axis.ordinal or (index shl 2)) {
-        (0 or (0 shl 2)) -> box.minimumX
-        (1 or (0 shl 2)) -> box.minimumY
-        (2 or (0 shl 2)) -> box.minimumZ
-        (0 or (1 shl 2)) -> box.maximumX
-        (1 or (1 shl 2)) -> box.maximumY
-        (2 or (1 shl 2)) -> box.maximumZ
-        else -> throw IllegalStateException("Unknown axis requested! Axis: $axis, Index: $index")
+        0 or 0 shl 2 -> box.minimumX
+        1 or (0 shl 2) -> box.minimumY
+        2 or (0 shl 2) -> box.minimumZ
+        0 or (1 shl 2) -> box.maximumX
+        1 or (1 shl 2) -> box.maximumY
+        2 or (1 shl 2) -> box.maximumZ
+        else -> error("Unknown axis requested! Axis: $axis, Index: $index")
     }
 
     override fun isEmpty(): Boolean = Collisions.isEmpty(box)

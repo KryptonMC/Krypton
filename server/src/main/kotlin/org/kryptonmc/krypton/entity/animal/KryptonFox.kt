@@ -101,11 +101,16 @@ class KryptonFox(world: KryptonWorld) : KryptonAnimal(world), Fox {
         private const val FLAG_DEFENDING = 7
         private val TYPES = FoxVariant.values()
 
+        private const val DEFAULT_MOVEMENT_SPEED = 0.3
+        private const val DEFAULT_MAX_HEALTH = 10.0
+        private const val DEFAULT_FOLLOW_RANGE = 32.0
+        private const val DEFAULT_ATTACK_DAMAGE = 2.0
+
         @JvmStatic
         fun attributes(): AttributeSupplier.Builder = KryptonMob.attributes()
-            .add(KryptonAttributeTypes.MOVEMENT_SPEED, 0.3)
-            .add(KryptonAttributeTypes.MAX_HEALTH, 10.0)
-            .add(KryptonAttributeTypes.FOLLOW_RANGE, 32.0)
-            .add(KryptonAttributeTypes.ATTACK_DAMAGE, 2.0)
+            .add(KryptonAttributeTypes.MOVEMENT_SPEED, DEFAULT_MOVEMENT_SPEED)
+            .add(KryptonAttributeTypes.MAX_HEALTH, DEFAULT_MAX_HEALTH)
+            .add(KryptonAttributeTypes.FOLLOW_RANGE, DEFAULT_FOLLOW_RANGE)
+            .add(KryptonAttributeTypes.ATTACK_DAMAGE, DEFAULT_ATTACK_DAMAGE)
     }
 }

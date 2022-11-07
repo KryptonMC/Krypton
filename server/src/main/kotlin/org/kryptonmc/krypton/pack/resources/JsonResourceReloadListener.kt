@@ -22,7 +22,6 @@ import com.google.gson.Gson
 import com.google.gson.JsonElement
 import com.google.gson.JsonParseException
 import com.google.gson.stream.JsonReader
-import me.bardy.gsonkt.getAdapter
 import net.kyori.adventure.key.Key
 import org.kryptonmc.krypton.util.logger
 import java.io.IOException
@@ -37,19 +36,20 @@ abstract class JsonResourceReloadListener(private val gson: Gson, private val di
             val location = Key.key(key.namespace(), path.substring(directory.length + 1, path.length - PATH_SUFFIX_LENGTH))
             try {
                 it.value.openAsReader().use { reader ->
-                    val json = gson.getAdapter<JsonElement>().read(JsonReader(reader))
+                    val json = gson.getAdapter(JsonElement::class.java).read(JsonReader(reader))
                     if (json != null) {
                         check(result.put(location, json) == null) { "Duplicate data file ignored with ID $location!" }
                     } else {
                         LOGGER.error("Failed to load data file $location from $key as it's null or empty!")
                     }
                 }
+            // Kotlin please add multicatch soon
             } catch (exception: IllegalArgumentException) {
-                LOGGER.error("Failed to parse data file $location from $key!", exception)
+                logReadError(location, key, exception)
             } catch (exception: IOException) {
-                LOGGER.error("Failed to parse data file $location from $key!", exception)
+                logReadError(location, key, exception)
             } catch (exception: JsonParseException) {
-                LOGGER.error("Failed to parse data file $location from $key!", exception)
+                logReadError(location, key, exception)
             }
         }
         return result
@@ -60,5 +60,11 @@ abstract class JsonResourceReloadListener(private val gson: Gson, private val di
         private val LOGGER = logger<JsonResourceReloadListener>()
         private const val PATH_SUFFIX = ".json"
         private const val PATH_SUFFIX_LENGTH = PATH_SUFFIX.length
+
+        @JvmStatic
+        @Suppress("NOTHING_TO_INLINE")
+        private inline fun logReadError(location: Key, key: Key, exception: Exception) {
+            LOGGER.error("Failed to parse data file $location from $key!", exception)
+        }
     }
 }

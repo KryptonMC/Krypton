@@ -22,18 +22,21 @@ import org.kryptonmc.krypton.entity.Neutral
 import org.kryptonmc.krypton.entity.animal.KryptonWolf
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.entity.serializer.EntitySerializer
+import org.kryptonmc.krypton.util.nbt.hasNumber
 import org.kryptonmc.nbt.CompoundTag
 
 object WolfSerializer : EntitySerializer<KryptonWolf> {
 
+    private const val COLLAR_COLOR_TAG = "CollarColor"
+
     override fun load(entity: KryptonWolf, data: CompoundTag) {
         TamableSerializer.load(entity, data)
-        if (data.contains("CollarColor", 99)) entity.data.set(MetadataKeys.Wolf.COLLAR_COLOR, data.getInt("CollarColor"))
+        if (data.hasNumber(COLLAR_COLOR_TAG)) entity.data.set(MetadataKeys.Wolf.COLLAR_COLOR, data.getInt(COLLAR_COLOR_TAG))
         Neutral.loadAngerData(entity, data)
     }
 
     override fun save(entity: KryptonWolf): CompoundTag.Builder = TamableSerializer.save(entity).apply {
-        putInt("CollarColor", entity.data.get(MetadataKeys.Wolf.COLLAR_COLOR))
+        putInt(COLLAR_COLOR_TAG, entity.data.get(MetadataKeys.Wolf.COLLAR_COLOR))
         Neutral.saveAngerData(entity, this)
     }
 }

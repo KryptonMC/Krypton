@@ -144,8 +144,8 @@ public interface BoundingBox {
      * [xFactor], [yFactor], and [zFactor].
      *
      * @param xFactor the X factor to inflate the border by
-     * @param xFactor the Y factor to inflate the border by
-     * @param xFactor the Z factor to inflate the border by
+     * @param yFactor the Y factor to inflate the border by
+     * @param zFactor the Z factor to inflate the border by
      * @return a new bounding box
      */
     @Contract("_ -> new", pure = true)
@@ -168,8 +168,8 @@ public interface BoundingBox {
      * This is equivalent to calling `inflate(-xFactor, -yFactor, -zFactor)`
      *
      * @param xFactor the X factor to deflate the border by
-     * @param xFactor the Y factor to deflate the border by
-     * @param xFactor the Z factor to deflate the border by
+     * @param yFactor the Y factor to deflate the border by
+     * @param zFactor the Z factor to deflate the border by
      * @return a new bounding box
      */
     @Contract("_ -> new", pure = true)
@@ -374,7 +374,7 @@ public interface BoundingBox {
          * @param minimumZ the minimum Z value
          * @param maximumX the maximum X value
          * @param maximumY the maximum Y value
-         * @param maximumY the maximum Y value
+         * @param maximumZ the maximum Y value
          * @return a new bounding box
          * @throws IllegalArgumentException if any of the minimum values are
          * greater than their respective maximum values, e.g. the maximum X is

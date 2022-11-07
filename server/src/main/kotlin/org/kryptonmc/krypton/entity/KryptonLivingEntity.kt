@@ -174,6 +174,7 @@ abstract class KryptonLivingEntity(world: KryptonWorld) : KryptonEntity(world), 
         return target.canBeSeenAsEnemy
     }
 
+    @Suppress("FunctionOnlyReturningConstant", "UnusedPrivateMember") // This will have logic in the future
     fun canStandOnFluid(fluid: Fluid): Boolean = false
 
     protected fun getAttribute(type: KryptonAttributeType): KryptonAttribute? = attributes.get(type)

@@ -20,7 +20,8 @@ import javax.annotation.concurrent.Immutable
  * A result that contains a [reason] for allowing/denying the event, as a
  * [Component].
  *
- * @param reason the reason for the result
+ * @property isAllowed Whether the event is allowed to continue.
+ * @property reason The reason for the result.
  */
 @JvmRecord
 @Immutable

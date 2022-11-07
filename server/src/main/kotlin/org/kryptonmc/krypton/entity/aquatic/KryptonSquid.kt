@@ -30,11 +30,14 @@ open class KryptonSquid(world: KryptonWorld) : KryptonAquaticAnimal(world) {
     override val type: KryptonEntityType<KryptonSquid>
         get() = KryptonEntityTypes.SQUID
     override val soundVolume: Float
-        get() = 0.4F
+        get() = SOUND_VOLUME
 
     companion object {
 
+        private const val SOUND_VOLUME = 0.4F
+        private const val DEFAULT_MAX_HEALTH = 10.0
+
         @JvmStatic
-        fun attributes(): AttributeSupplier.Builder = KryptonMob.attributes().add(KryptonAttributeTypes.MAX_HEALTH, 10.0)
+        fun attributes(): AttributeSupplier.Builder = KryptonMob.attributes().add(KryptonAttributeTypes.MAX_HEALTH, DEFAULT_MAX_HEALTH)
     }
 }

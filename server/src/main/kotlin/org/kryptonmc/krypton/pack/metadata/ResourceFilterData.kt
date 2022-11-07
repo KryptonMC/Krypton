@@ -56,6 +56,7 @@ class ResourceFilterData(private val blockList: List<KeyPattern>) {
     companion object {
 
         private val LOGGER = logger<ResourceFilterData>()
+        private const val BLOCKS_DATA = "blocks"
         @JvmField
         val SERIALIZER: MetadataSerializer<ResourceFilterData> = object : MetadataSerializer<ResourceFilterData> {
 
@@ -63,11 +64,11 @@ class ResourceFilterData(private val blockList: List<KeyPattern>) {
                 get() = "filter"
 
             override fun fromJson(json: JsonObject): ResourceFilterData {
-                if (!json.has("blocks") || !json.get("blocks").isJsonArray) {
-                    LOGGER.error("Invalid filter data! \"blocks\" must be present and must be an array! Data: $json")
-                    throw RuntimeException("Invalid filter data! \"blocks\" must be present and must be an array! Data: $json")
+                if (!json.has(BLOCKS_DATA) || !json.get(BLOCKS_DATA).isJsonArray) {
+                    LOGGER.error("Invalid filter data! \"$BLOCKS_DATA\" must be present and must be an array! Data: $json")
+                    throw RuntimeException("Invalid filter data! \"$BLOCKS_DATA\" must be present and must be an array! Data: $json")
                 }
-                return ResourceFilterData(json.get("blocks").asJsonArray.map(KeyPattern::fromJson))
+                return ResourceFilterData(json.get(BLOCKS_DATA).asJsonArray.map(KeyPattern::fromJson))
             }
         }
     }

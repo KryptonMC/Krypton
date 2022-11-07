@@ -153,7 +153,7 @@ class PlayerManager(private val server: KryptonServer) {
         session.write(PacketOutUpdateRecipes.CACHED)
         session.write(PacketOutUpdateRecipeBook.CACHED_INIT)
         session.write(PacketOutUpdateTags.CACHED)
-        session.send(PacketOutEntityEvent(player.id, if (reducedDebugInfo) 22 else 23))
+        session.send(PacketOutEntityEvent(player.id, if (reducedDebugInfo) ENABLE_REDUCED_DEBUG_SCREEN else DISABLE_REDUCED_DEBUG_SCREEN))
         sendCommands(player)
         player.statistics.invalidate()
         updateScoreboard(world.scoreboard, player)
@@ -240,7 +240,7 @@ class PlayerManager(private val server: KryptonServer) {
     }
 
     private fun sendCommands(player: KryptonPlayer) {
-        player.session.send(PacketOutEntityEvent(player.id, 28))
+        player.session.send(PacketOutEntityEvent(player.id, OP_PERMISSION_LEVEL_4))
         server.commandManager.updateCommands(player)
     }
 
@@ -264,8 +264,8 @@ class PlayerManager(private val server: KryptonServer) {
     private fun updateScoreboard(scoreboard: KryptonScoreboard, player: KryptonPlayer) {
         val objectives = HashSet<Objective>()
         scoreboard.teams.forEach { player.session.send(PacketOutUpdateTeams.create(it)) }
-        scoreboard.displayObjectives().forEach { objective ->
-            if (objectives.contains(objective)) return@forEach
+        for (objective in scoreboard.displayObjectives()) {
+            if (objectives.contains(objective)) continue
             scoreboard.getStartTrackingPackets(objective).forEach(player.session::send)
             objectives.add(objective)
         }
@@ -277,5 +277,9 @@ class PlayerManager(private val server: KryptonServer) {
         private val BRAND_KEY = Key.key("brand")
         // The word "Krypton" encoded in to UTF-8 and then prefixed with the length, which in this case is 7.
         private val BRAND_MESSAGE = byteArrayOf(7, 75, 114, 121, 112, 116, 111, 110)
+
+        private const val ENABLE_REDUCED_DEBUG_SCREEN = 22
+        private const val DISABLE_REDUCED_DEBUG_SCREEN = 23
+        private const val OP_PERMISSION_LEVEL_4 = 28
     }
 }

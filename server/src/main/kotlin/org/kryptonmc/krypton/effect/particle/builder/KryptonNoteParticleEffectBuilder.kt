@@ -22,7 +22,6 @@ import org.kryptonmc.api.effect.particle.NoteParticleType
 import org.kryptonmc.api.effect.particle.builder.NoteParticleEffectBuilder
 import org.kryptonmc.api.effect.particle.data.ParticleData
 import org.kryptonmc.krypton.effect.particle.data.KryptonNoteParticleData
-import org.spongepowered.math.vector.Vector3d
 
 class KryptonNoteParticleEffectBuilder(type: NoteParticleType) : AbstractParticleEffectBuilder<NoteParticleEffectBuilder>(type),
     NoteParticleEffectBuilder {

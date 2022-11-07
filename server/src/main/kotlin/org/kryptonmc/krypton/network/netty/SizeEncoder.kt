@@ -25,7 +25,7 @@ import io.netty.handler.codec.MessageToByteEncoder
 import org.kryptonmc.krypton.util.writeVarInt
 
 /**
- * Writes a packet size in an appropriate VarInt before the data is written
+ * Writes a packet size in an appropriate VarInt before the data is written.
  */
 @ChannelHandler.Sharable
 object SizeEncoder : MessageToByteEncoder<ByteBuf>() {

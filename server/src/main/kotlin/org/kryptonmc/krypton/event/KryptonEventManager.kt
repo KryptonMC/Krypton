@@ -35,11 +35,9 @@ import org.kryptonmc.api.event.Listener
 import org.kryptonmc.api.event.ListenerPriority
 import org.kryptonmc.api.plugin.PluginContainer
 import org.kryptonmc.api.plugin.PluginManager
-import org.kryptonmc.krypton.util.findPrimitiveVarHandle
 import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.util.pool.ThreadPoolBuilder
 import org.kryptonmc.krypton.util.pool.daemonThreadFactory
-import org.kryptonmc.krypton.util.privateIn
 import org.lanternpowered.lmbda.LambdaFactory
 import org.lanternpowered.lmbda.LambdaType
 import org.lanternpowered.lmbda.kt.lambdaType
@@ -88,7 +86,7 @@ class KryptonEventManager(private val pluginManager: PluginManager) : EventManag
 
     fun shutdown(): Boolean {
         asyncExecutor.shutdown()
-        return asyncExecutor.awaitTermination(10, TimeUnit.SECONDS)
+        return asyncExecutor.awaitTermination(SHUTDOWN_TIMEOUT_TIME, TimeUnit.SECONDS)
     }
 
     override fun register(plugin: Any, listener: Any) {
@@ -99,35 +97,32 @@ class KryptonEventManager(private val pluginManager: PluginManager) : EventManag
     @Suppress("UNCHECKED_CAST")
     override fun <E> register(plugin: Any, eventClass: Class<E>, priority: ListenerPriority, handler: EventHandler<E>) {
         val order = priority.ordinal.toShort()
-        val registration = HandlerRegistration(getContainer(plugin), order, eventClass, handler as EventHandler<Any>, AsyncType.SOMETIMES, handler)
-        register(listOf(registration))
+        register(listOf(HandlerRegistration(getContainer(plugin), order, eventClass, handler as EventHandler<Any>, AsyncType.SOMETIMES, handler)))
     }
 
     fun registerUnchecked(plugin: PluginContainer, listener: Any) {
-        val targetClass = listener.javaClass
         val collected = HashMap<String, MethodHandlerInfo>()
-        collectMethods(targetClass, collected)
+        collectMethods(listener.javaClass, collected)
 
         val registrations = ArrayList<HandlerRegistration>()
-        collected.values.forEach {
-            if (it.errors != null) {
-                LOGGER.info("Invalid listener method ${it.method.name} in ${it.method.declaringClass.name}: ${it.errors}")
-                return@forEach
+        for (methodInfo in collected.values) {
+            if (methodInfo.errors != null) {
+                LOGGER.info("Invalid listener method ${methodInfo.method.name} in ${methodInfo.method.declaringClass.name}: ${methodInfo.errors}")
+                continue
             }
-            val untargetedHandler = checkNotNull(untargetedMethodHandlers.get(it.method)) {
-                "Untargeted handler for ${it.method.name} in ${it.method.declaringClass.name} was somehow null!"
+            val untargetedHandler = checkNotNull(untargetedMethodHandlers.get(methodInfo.method)) {
+                "Untargeted handler for ${methodInfo.method.name} in ${methodInfo.method.declaringClass.name} was somehow null!"
             }
-            if (it.eventType == null) throw VerifyException("Event type is not present and there are no errors!")
+            if (methodInfo.eventType == null) throw VerifyException("Event type is not present and there are no errors!")
             val handler = untargetedHandler.createHandler(listener)
-            registrations.add(HandlerRegistration(plugin, it.priority, it.eventType, handler, it.asyncType, listener))
+            registrations.add(HandlerRegistration(plugin, methodInfo.priority, methodInfo.eventType, handler, methodInfo.asyncType, listener))
         }
         register(registrations)
     }
 
     private fun register(registrations: List<HandlerRegistration>) {
         lock.write { registrations.forEach { handlersByType.put(it.eventType, it) } }
-        val classes = registrations.asSequence().flatMap { eventTypeTracker.getFriendsOf(it.eventType) }.distinct().toList()
-        handlersCache.invalidateAll(classes)
+        invalidateHandlers(registrations)
     }
 
     override fun <E> fire(event: E): CompletableFuture<E> {
@@ -193,8 +188,11 @@ class KryptonEventManager(private val pluginManager: PluginManager) : EventManag
                 }
             }
         }
-        val classes = removed.asSequence().flatMap { eventTypeTracker.getFriendsOf(it.eventType) }.distinct().toList()
-        handlersCache.invalidateAll(classes)
+        invalidateHandlers(removed)
+    }
+
+    private fun invalidateHandlers(handlers: List<HandlerRegistration>) {
+        handlersCache.invalidateAll(handlers.asSequence().flatMap { eventTypeTracker.getFriendsOf(it.eventType) }.distinct().toList())
     }
 
     private fun <E> fire(
@@ -224,22 +222,24 @@ class KryptonEventManager(private val pluginManager: PluginManager) : EventManag
     }
 
     private fun createUntargetedMethodHandler(method: Method): UntargetedEventHandler {
-        handlerAdapters.forEach { if (it.filter.test(method)) return it.createUntargetedHandler(method) }
-        val lookup = MethodHandles.privateLookupIn(method.declaringClass, LOOKUP)
-        val handle = lookup.unreflect(method)
+        for (adapter in handlerAdapters) {
+            if (adapter.filter.test(method)) return adapter.createUntargetedHandler(method)
+        }
         val type = when {
             EventTask::class.java.isAssignableFrom(method.returnType) -> UNTARGETED_EVENT_TASK_HANDLER_TYPE
             method.parameterCount == 2 -> UNTARGETED_WITH_CONTINUATION_HANDLER_TYPE
             else -> UNTARGETED_VOID_HANDLER_TYPE
         }
-        return LambdaFactory.create(type.defineClassesWith(lookup), handle)
+        val lookup = MethodHandles.privateLookupIn(method.declaringClass, LOOKUP)
+        return LambdaFactory.create(type.defineClassesWith(lookup), lookup.unreflect(method))
     }
 
     private fun bakeHandlers(eventType: Class<*>): HandlersCache? {
         val baked = ArrayList<HandlerRegistration>()
-        val types = eventTypeTracker.getFriendsOf(eventType)
 
+        val types = eventTypeTracker.getFriendsOf(eventType)
         lock.read { types.forEach { baked.addAll(handlersByType.get(it)) } }
+
         if (baked.isEmpty()) return null
         baked.sortWith(HANDLER_COMPARATOR)
 
@@ -252,12 +252,12 @@ class KryptonEventManager(private val pluginManager: PluginManager) : EventManag
     }
 
     private fun collectMethods(targetClass: Class<*>, collected: MutableMap<String, MethodHandlerInfo>) {
-        targetClass.declaredMethods.forEach { method ->
-            val listener = method.getAnnotation(Listener::class.java) ?: return@forEach
+        for (method in targetClass.declaredMethods) {
+            val listener = method.getAnnotation(Listener::class.java) ?: continue
 
             var key = "${method.name}(${method.parameterTypes.joinToString(",") { it.name }})"
             if (Modifier.isPrivate(method.modifiers)) key = "${targetClass.name}$$key"
-            if (collected.containsKey(key)) return@forEach
+            if (collected.containsKey(key)) continue
 
             val errors = HashSet<String>()
             if (Modifier.isStatic(method.modifiers)) errors.add("method must not be static")
@@ -273,16 +273,16 @@ class KryptonEventManager(private val pluginManager: PluginManager) : EventManag
             } else {
                 val parameterTypes = method.parameterTypes
                 eventType = parameterTypes[0]
-                handlerAdapters.forEach candidates@{ candidate ->
+                for (candidate in handlerAdapters) {
                     if (candidate.filter.test(method)) {
                         handlerAdapter = candidate
-                        return@candidates
+                        continue
                     }
                 }
                 if (handlerAdapter != null) {
                     val adapterErrors = ArrayList<String>()
-                    handlerAdapter!!.validator.accept(method, adapterErrors)
-                    if (adapterErrors.isNotEmpty()) errors.add("${handlerAdapter!!.name} adapter errors: [${adapterErrors.joinToString(", ")}]")
+                    handlerAdapter.validator.accept(method, adapterErrors)
+                    if (adapterErrors.isNotEmpty()) errors.add("${handlerAdapter.name} adapter errors: [${adapterErrors.joinToString(", ")}]")
                 } else if (parameterCount == 2) {
                     continuationType = parameterTypes[1]
                     if (continuationType != Continuation::class.java) {
@@ -293,13 +293,12 @@ class KryptonEventManager(private val pluginManager: PluginManager) : EventManag
 
             var asyncType = AsyncType.NEVER
             if (handlerAdapter == null) {
-                val returnType = method.returnType
                 when {
-                    returnType != Void.TYPE && continuationType == Continuation::class.java ->
+                    method.returnType != Void.TYPE && continuationType == Continuation::class.java ->
                         errors.add("method return type must be void if a continuation parameter is provided")
-                    returnType != Void.TYPE && returnType != EventTask::class.java ->
+                    method.returnType != Void.TYPE && method.returnType != EventTask::class.java ->
                         errors.add("method return type must be void, AsyncTask, AsyncTask.Basic, or AsyncTask.WithContinuation")
-                    returnType == EventTask::class.java -> asyncType = AsyncType.SOMETIMES
+                    method.returnType == EventTask::class.java -> asyncType = AsyncType.SOMETIMES
                 }
             } else {
                 asyncType = AsyncType.SOMETIMES
@@ -370,7 +369,7 @@ class KryptonEventManager(private val pluginManager: PluginManager) : EventManag
 
         @Volatile
         private var state = TASK_STATE_DEFAULT
-        @Suppress("UNUSED") // Used by means of a VarHandle
+        @Suppress("UNUSED", "UnusedPrivateMember") // Used by means of a VarHandle
         @Volatile
         private var resumed = false
 
@@ -416,6 +415,7 @@ class KryptonEventManager(private val pluginManager: PluginManager) : EventManag
     companion object {
 
         private val LOGGER = logger<KryptonEventManager>()
+        private const val SHUTDOWN_TIMEOUT_TIME = 10L
 
         private const val TASK_STATE_DEFAULT = 0
         private const val TASK_STATE_EXECUTING = 1
@@ -433,7 +433,7 @@ class KryptonEventManager(private val pluginManager: PluginManager) : EventManag
 
         init {
             try {
-                val lookup = MethodHandles.lookup().privateIn<ContinuationTask<*>>()
+                val lookup = MethodHandles.privateLookupIn(ContinuationTask::class.java, MethodHandles.lookup())
                 CONTINUATION_TASK_RESUMED = lookup.findPrimitiveVarHandle<ContinuationTask<*>, Boolean>("resumed")
                 CONTINUATION_TASK_STATE = lookup.findPrimitiveVarHandle<ContinuationTask<*>, Int>("state")
             } catch (exception: ReflectiveOperationException) {
@@ -447,3 +447,6 @@ class KryptonEventManager(private val pluginManager: PluginManager) : EventManag
         }
     }
 }
+
+private inline fun <reified T, reified R : Any> MethodHandles.Lookup.findPrimitiveVarHandle(name: String): VarHandle =
+    findVarHandle(T::class.java, name, R::class.javaPrimitiveType)

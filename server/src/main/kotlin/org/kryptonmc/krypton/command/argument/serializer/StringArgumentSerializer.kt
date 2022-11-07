@@ -36,10 +36,14 @@ import org.kryptonmc.krypton.util.writeEnum
  */
 object StringArgumentSerializer : ArgumentSerializer<StringArgumentType> {
 
+    private const val SINGLE_WORD_TYPE = 0
+    private const val QUOTABLE_PHRASE_TYPE = 1
+    private const val GREEDY_PHRASE_TYPE = 2
+
     override fun read(buf: ByteBuf): StringArgumentType = when (val type = buf.readVarInt()) {
-        StringArgumentType.StringType.SINGLE_WORD.ordinal -> StringArgumentType.word()
-        StringArgumentType.StringType.QUOTABLE_PHRASE.ordinal -> StringArgumentType.string()
-        StringArgumentType.StringType.GREEDY_PHRASE.ordinal -> StringArgumentType.greedyString()
+        SINGLE_WORD_TYPE -> StringArgumentType.word()
+        QUOTABLE_PHRASE_TYPE -> StringArgumentType.string()
+        GREEDY_PHRASE_TYPE -> StringArgumentType.greedyString()
         else -> throw IllegalArgumentException("Cannot get type with ID $type!")
     }
 

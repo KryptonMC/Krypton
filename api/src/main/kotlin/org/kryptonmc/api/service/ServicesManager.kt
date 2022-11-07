@@ -20,6 +20,7 @@ public interface ServicesManager {
      * Gets the service for the given [clazz], or returns null if there is no
      * service registered for the given [clazz].
      *
+     * @param T the service type
      * @param clazz the service class
      * @return the service, or null if not present
      */
@@ -29,6 +30,7 @@ public interface ServicesManager {
      * Gets the service provider for the service of the given [clazz] type, or
      * returns null if there is no service provider for the given [clazz].
      *
+     * @param T the service type
      * @param clazz the service class
      * @return the service provider, or null if not present
      */
@@ -37,6 +39,7 @@ public interface ServicesManager {
     /**
      * Registers a new service to this services manager.
      *
+     * @param T the service type
      * @param plugin the plugin that registered the service
      * @param type the type of the service being provided
      * @param service the service being provided
@@ -47,6 +50,7 @@ public interface ServicesManager {
     /**
      * Registers a new service to this services manager.
      *
+     * @param T the service type
      * @param plugin the plugin that registered the service
      * @param type the type of the service being provided
      * @param service the service being provided
@@ -78,8 +82,8 @@ public inline fun <reified T> ServicesManager.provider(): ServiceProvider<T>? = 
 /**
  * Registers a new service to this services manager.
  *
- * @param plugin the plugin that registered the service
  * @param T the service type
+ * @param plugin the plugin that registered the service
  * @param service the service
  */
 @JvmSynthetic
@@ -90,8 +94,8 @@ public inline fun <reified T> ServicesManager.register(plugin: PluginContainer, 
 /**
  * Registers a new service to this services manager.
  *
- * @param plugin the plugin that registered the service
  * @param T the service type
+ * @param plugin the plugin that registered the service
  * @param service the service
  */
 @JvmSynthetic

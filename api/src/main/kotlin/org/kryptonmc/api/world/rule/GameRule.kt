@@ -49,6 +49,7 @@ public interface GameRule<V : Any> : Translatable, Keyed {
         /**
          * Creates a new game rule with the given values.
          *
+         * @param V the game rule value type
          * @param name the name
          * @param default the default value
          * @return a new game rule

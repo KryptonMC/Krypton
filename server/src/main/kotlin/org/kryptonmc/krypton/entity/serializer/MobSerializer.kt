@@ -29,29 +29,38 @@ import org.kryptonmc.nbt.list
 
 object MobSerializer : EntitySerializer<KryptonMob> {
 
+    private const val PICKUP_LOOT_TAG = "CanPickUpLoot"
+    private const val PERSISTENCE_TAG = "PersistenceRequired"
+    private const val ARMOR_ITEMS_TAG = "ArmorItems"
+    private const val HAND_ITEMS_TAG = "HandItems"
+    private const val ARMOR_DROP_CHANCES_TAG = "ArmorDropChances"
+    private const val HAND_DROP_CHANCES_TAG = "HandDropChances"
+    private const val LEFT_HANDED_TAG = "LeftHanded"
+    private const val NO_AI_TAG = "NoAI"
+
     override fun load(entity: KryptonMob, data: CompoundTag) {
         LivingEntitySerializer.load(entity, data)
-        if (data.contains("CanPickUpLoot", ByteTag.ID)) entity.canPickUpLoot = data.getBoolean("CanPickUpLoot")
-        entity.isPersistent = data.getBoolean("PersistenceRequired")
+        if (data.contains(PICKUP_LOOT_TAG, ByteTag.ID)) entity.canPickUpLoot = data.getBoolean(PICKUP_LOOT_TAG)
+        entity.isPersistent = data.getBoolean(PERSISTENCE_TAG)
 
-        KryptonEquipable.loadItems(data, "ArmorItems", entity.armorItems)
-        KryptonEquipable.loadItems(data, "HandItems", entity.handItems)
-        loadChances(data, "ArmorDropChances", entity.armorDropChances)
-        loadChances(data, "HandDropChances", entity.handDropChances)
+        KryptonEquipable.loadItems(data, ARMOR_ITEMS_TAG, entity.armorItems)
+        KryptonEquipable.loadItems(data, HAND_ITEMS_TAG, entity.handItems)
+        loadChances(data, ARMOR_DROP_CHANCES_TAG, entity.armorDropChances)
+        loadChances(data, HAND_DROP_CHANCES_TAG, entity.handDropChances)
 
-        entity.mainHand = if (data.getBoolean("LeftHanded")) MainHand.LEFT else MainHand.RIGHT
-        entity.hasAI = !data.getBoolean("NoAI")
+        entity.mainHand = if (data.getBoolean(LEFT_HANDED_TAG)) MainHand.LEFT else MainHand.RIGHT
+        entity.hasAI = !data.getBoolean(NO_AI_TAG)
     }
 
     override fun save(entity: KryptonMob): CompoundTag.Builder = LivingEntitySerializer.save(entity).apply {
-        putBoolean("CanPickUpLoot", entity.canPickUpLoot)
-        putBoolean("PersistenceRequired", entity.isPersistent)
-        put("ArmorItems", KryptonEquipable.saveItems(entity.armorItems))
-        put("HandItems", KryptonEquipable.saveItems(entity.handItems))
-        list("ArmorDropChances") { entity.armorDropChances.forEach(::addFloat) }
-        list("HandDropChances") { entity.handDropChances.forEach(::addFloat) }
-        putBoolean("LeftHanded", entity.mainHand == MainHand.LEFT)
-        if (!entity.hasAI) putBoolean("NoAI", true)
+        putBoolean(PICKUP_LOOT_TAG, entity.canPickUpLoot)
+        putBoolean(PERSISTENCE_TAG, entity.isPersistent)
+        put(ARMOR_ITEMS_TAG, KryptonEquipable.saveItems(entity.armorItems))
+        put(HAND_ITEMS_TAG, KryptonEquipable.saveItems(entity.handItems))
+        list(ARMOR_DROP_CHANCES_TAG) { entity.armorDropChances.forEach(::addFloat) }
+        list(HAND_DROP_CHANCES_TAG) { entity.handDropChances.forEach(::addFloat) }
+        putBoolean(LEFT_HANDED_TAG, entity.mainHand == MainHand.LEFT)
+        if (!entity.hasAI) putBoolean(NO_AI_TAG, true)
     }
 
     @JvmStatic

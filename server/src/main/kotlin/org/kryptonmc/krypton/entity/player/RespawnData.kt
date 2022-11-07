@@ -21,8 +21,12 @@ package org.kryptonmc.krypton.entity.player
 import org.apache.logging.log4j.Logger
 import org.kryptonmc.api.resource.ResourceKey
 import org.kryptonmc.api.world.World
+import org.kryptonmc.krypton.util.nbt.getBlockPos
+import org.kryptonmc.krypton.util.nbt.hasBlockPos
+import org.kryptonmc.krypton.util.nbt.putBlockPosParts
 import org.kryptonmc.krypton.util.serialization.Codecs
 import org.kryptonmc.nbt.CompoundTag
+import org.kryptonmc.nbt.StringTag
 import org.kryptonmc.serialization.nbt.NbtOps
 import org.spongepowered.math.vector.Vector3i
 
@@ -35,11 +39,28 @@ data class RespawnData(
 ) {
 
     fun save(data: CompoundTag.Builder, logger: Logger): CompoundTag.Builder = data.apply {
-        putInt("SpawnX", position.x())
-        putInt("SpawnY", position.y())
-        putInt("SpawnZ", position.z())
-        putFloat("SpawnAngle", angle)
-        putBoolean("SpawnForced", forced)
-        Codecs.KEY.encodeStart(dimension.location, NbtOps.INSTANCE).resultOrPartial(logger::error).ifPresent { put("SpawnDimension", it) }
+        putBlockPosParts(position, XYZ_PREFIX)
+        putFloat(ANGLE_TAG, angle)
+        putBoolean(FORCED_TAG, forced)
+        Codecs.KEY.encodeStart(dimension.location, NbtOps.INSTANCE).resultOrPartial(logger::error).ifPresent { put(DIMENSION_TAG, it) }
+    }
+
+    companion object {
+
+        private const val XYZ_PREFIX = "Spawn"
+        private const val ANGLE_TAG = "SpawnAngle"
+        private const val FORCED_TAG = "SpawnForced"
+        private const val DIMENSION_TAG = "SpawnDimension"
+
+        @JvmStatic
+        fun load(data: CompoundTag, logger: Logger): RespawnData? {
+            if (!data.hasBlockPos(XYZ_PREFIX)) return null
+            val dimension = if (data.contains(DIMENSION_TAG, StringTag.ID)) {
+                Codecs.DIMENSION.read(data.get(DIMENSION_TAG), NbtOps.INSTANCE).resultOrPartial(logger::error).orElse(World.OVERWORLD)
+            } else {
+                World.OVERWORLD
+            }
+            return RespawnData(data.getBlockPos(XYZ_PREFIX), dimension, data.getFloat(ANGLE_TAG), data.getBoolean(FORCED_TAG))
+        }
     }
 }

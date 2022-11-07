@@ -13,11 +13,18 @@ package org.kryptonmc.api.block.meta
  *
  * Large dripleaf plants can tilt downwards when significant force is applied
  * to the top of them, for example, when a player stands on them.
- *
- * @param causesVibrations if this tilt causes vibrations that the sculk sensor
- * will pick up
  */
-public enum class Tilt(@get:JvmName("causesVibrations") public val causesVibrations: Boolean) {
+public enum class Tilt(
+    /**
+     * If this tilt causes vibrations that sculk sensors in the area will
+     * respond to.
+     *
+     * This determines whether jumping on a big dripleaf with this tilt will
+     * alert nearby sculk sensors.
+     */
+    @get:JvmName("causesVibrations")
+    public val causesVibrations: Boolean
+) {
 
     /**
      * The dripleaf is flat, and not tilting.

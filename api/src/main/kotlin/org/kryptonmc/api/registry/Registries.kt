@@ -95,6 +95,7 @@ public object Registries {
      * Gets the existing registry with the given resource [key], or returns null
      * if there is no existing registry with the given resource [key].
      *
+     * @param T the registry element type
      * @param key the key
      * @return the existing registry, or null if not present
      */
@@ -106,6 +107,7 @@ public object Registries {
      * returns null if there is no existing defaulted registry with the given
      * resource [key].
      *
+     * @param T the registry element type
      * @param key the key
      * @return the existing defaulted registry, or null if not present
      */
@@ -115,6 +117,7 @@ public object Registries {
     /**
      * Creates a new registry with the given registry [key].
      *
+     * @param T the registry element type
      * @param key the registry key
      * @return a registry for the given [key]
      */
@@ -129,6 +132,7 @@ public object Registries {
      * The default value for this registry will be the first value registered
      * that has a key that matches the given [defaultKey].
      *
+     * @param T the registry element type
      * @param key the registry key
      * @param defaultKey the default key
      * @return a defaulted registry for the given [key]

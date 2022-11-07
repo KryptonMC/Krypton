@@ -92,9 +92,9 @@ class BiomeManager(private val source: NoiseBiomeSource, private val seed: Long)
         }
 
         @JvmStatic
-        private fun fiddle(value: Long): Double = ((Math.floorMod(value shr 24, 1024) / 1024.0) - 0.5) * 0.9
+        private fun fiddle(value: Long): Double = (Math.floorMod(value shr 24, 1024) / 1024.0 - 0.5) * 0.9
 
         @JvmStatic
-        private fun nextRandom(seed: Long, salt: Long): Long = (seed * (seed * LCG_MULTIPLIER * LCG_INCREMENT)) + salt
+        private fun nextRandom(seed: Long, salt: Long): Long = seed * seed * LCG_MULTIPLIER * LCG_INCREMENT + salt
     }
 }

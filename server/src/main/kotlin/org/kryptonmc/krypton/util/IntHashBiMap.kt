@@ -33,7 +33,7 @@ class IntHashBiMap<T>(expectedSize: Int) : IntBiMap<T> {
     override val size: Int
         get() = idByValue.size
 
-    constructor() : this(512)
+    constructor() : this(DEFAULT_EXPECTED_SIZE)
 
     fun set(key: T, value: Int) {
         idByValue.put(key, value)
@@ -53,4 +53,9 @@ class IntHashBiMap<T>(expectedSize: Int) : IntBiMap<T> {
     override fun get(id: Int): T? = valueById.getOrNull(id)
 
     override fun iterator(): Iterator<T> = valueById.iterator().filterNotNull()
+
+    companion object {
+
+        private const val DEFAULT_EXPECTED_SIZE = 512
+    }
 }

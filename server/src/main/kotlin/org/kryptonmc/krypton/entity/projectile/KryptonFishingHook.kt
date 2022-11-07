@@ -55,9 +55,22 @@ class KryptonFishingHook(world: KryptonWorld) : KryptonProjectile(world), Fishin
 
         if (key === MetadataKeys.FishingHook.BITING) {
             isBiting = data.get(MetadataKeys.FishingHook.BITING)
-            if (isBiting) velocity = Vector3d(velocity.x(), (-0.4F * Maths.nextFloat(Random, 0.6F, 1F)).toDouble(), velocity.z())
+            if (isBiting) velocity = randomizeBitingVelocity(velocity)
         }
 
         super.onDataUpdate(key)
+    }
+
+    companion object {
+
+        private const val BITING_VELOCITY_RANDOMNESS_MIN = 0.6F
+        private const val BITING_VELOCITY_MULTIPLIER = -0.4F
+
+        @JvmStatic
+        private fun randomizeBitingVelocity(existing: Vector3d): Vector3d {
+            // This always comes out to be a number between -0.4 and -0.24. These numbers are from vanilla.
+            val randomY = BITING_VELOCITY_MULTIPLIER * Maths.nextFloat(Random, BITING_VELOCITY_RANDOMNESS_MIN, 1F)
+            return Vector3d(existing.x(), randomY.toDouble(), existing.z())
+        }
     }
 }

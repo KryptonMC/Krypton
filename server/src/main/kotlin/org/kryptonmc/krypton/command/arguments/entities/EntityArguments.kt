@@ -37,34 +37,34 @@ object EntityArguments {
     enum class Sorter {
 
         /**
-         * Sort by increasing distance
+         * Sort by increasing distance.
          */
         NEAREST,
 
         /**
-         * Sort by decreasing distance
+         * Sort by decreasing distance.
          */
         FURTHEST,
 
         /**
-         * Sort randomly
+         * Sort randomly.
          */
         RANDOM,
 
         /**
-         * Sort by time created
+         * Sort by time created.
          */
         ARBITRARY;
 
         companion object {
 
-            private val BY_NAME = values().associateBy(Sorter::name)
+            private val BY_NAME = values().associateBy { it.name.lowercase() }
 
             /**
-             * Get the sort candidate from the name
+             * Gets the sorter with the given [name].
              */
             @JvmStatic
-            fun fromName(name: String): Sorter? = BY_NAME.get(name.uppercase())
+            fun fromName(name: String): Sorter? = BY_NAME.get(name)
         }
     }
 }

@@ -29,7 +29,6 @@ import org.kryptonmc.krypton.item.mask
 import org.kryptonmc.krypton.item.save
 import org.kryptonmc.krypton.util.BuilderCollection
 import org.kryptonmc.nbt.CompoundTag
-import org.kryptonmc.nbt.StringTag
 import org.kryptonmc.nbt.buildCompound
 import org.kryptonmc.nbt.compound
 import org.kryptonmc.nbt.list
@@ -82,7 +81,7 @@ abstract class KryptonItemMetaBuilder<B : ItemMetaBuilder<B, I>, I : ItemMeta> :
 
     final override fun addFlag(flag: ItemFlag): B = apply { hideFlags = hideFlags or flag.mask() } as B
 
-    final override fun canDestroy(blocks: Collection<Block>): B = apply { canDestroy = BuilderCollection(canDestroy) } as B
+    final override fun canDestroy(blocks: Collection<Block>): B = apply { canDestroy = BuilderCollection(blocks) } as B
 
     final override fun addCanDestroy(block: Block): B = apply { canDestroy.add(block) } as B
 
@@ -104,8 +103,8 @@ abstract class KryptonItemMetaBuilder<B : ItemMetaBuilder<B, I>, I : ItemMeta> :
             if (lore.isNotEmpty()) list("Lore") { lore.forEach { addString(it.toJson()) } }
         }
         putInt("HideFlags", hideFlags)
-        putList("CanDestroy", StringTag.ID, canDestroy.map { StringTag.of(it.key().asString()) })
-        putList("CanPlaceOn", StringTag.ID, canPlaceOn.map { StringTag.of(it.key().asString()) })
+        if (canDestroy.isNotEmpty()) list("CanDestroy") { canDestroy.forEach { addString(it.key().asString()) } }
+        if (canPlaceOn.isNotEmpty()) list("CanPlaceOn") { canPlaceOn.forEach { addString(it.key().asString()) } }
         if (modifiers.isNotEmpty()) list("AttributeModifiers") { modifiers.forEach { add(it.save()) } }
     }
 }

@@ -38,6 +38,7 @@ interface BucketStorable : Bucketable {
             if (tag.contains("Health", 99)) mob.health = tag.getFloat("Health")
         }
 
+        @Suppress("ExpressionBodySyntax") // There's commented out code here
         fun saveDefaultsToBucket(mob: KryptonMob): AbstractItemMeta<*> {
             // FIXME
             /*

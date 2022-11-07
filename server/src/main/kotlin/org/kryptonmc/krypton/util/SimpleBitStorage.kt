@@ -18,8 +18,6 @@
  */
 package org.kryptonmc.krypton.util
 
-import java.util.Objects
-
 /**
  * This one is a strange one. This is essentially an array that allows arbitrarily-sized numbers of any
  * size in bits to be tightly packed into longs in a backing long array.
@@ -27,7 +25,7 @@ import java.util.Objects
  * When instantiated, the [size] of this should always be 4096, as this is used to hold block states, and
  * there are always a maximum of 4096 blocks in a chunk section (16^3 = 4096)
  */
-class SimpleBitStorage(override val bits: Int, override val size: Int, data: LongArray? = null) : BitStorage {
+class SimpleBitStorage(override val bits: Int, size: Int, data: LongArray? = null) : AbstractBitStorage(size) {
 
     private val mask = (1L shl bits) - 1L
     private val valuesPerLong = Long.SIZE_BITS / bits
@@ -78,8 +76,8 @@ class SimpleBitStorage(override val bits: Int, override val size: Int, data: Lon
     }
 
     override fun getAndSet(index: Int, value: Int): Int {
-        require(index in 0 until size) { "Index must be between 0 and $size, was $index" }
-        require(value in 0..mask) { "Value must be between 0 and $mask, was $value" }
+        checkIndex(index)
+        checkValue(value)
 
         val cellIndex = cellIndex(index)
         val cell = data[cellIndex]
@@ -90,8 +88,8 @@ class SimpleBitStorage(override val bits: Int, override val size: Int, data: Lon
     }
 
     override fun set(index: Int, value: Int) {
-        require(index in 0 until size) { "Index must be between 0 and $size, was $index" }
-        require(value in 0..mask) { "Value must be between 0 and $mask, was $value" }
+        checkIndex(index)
+        checkValue(value)
 
         val cellIndex = cellIndex(index)
         val cell = data[cellIndex]
@@ -100,7 +98,7 @@ class SimpleBitStorage(override val bits: Int, override val size: Int, data: Lon
     }
 
     override fun get(index: Int): Int {
-        require(index in 0 until size) { "Index must be between 0 and $size!" }
+        checkIndex(index)
 
         val cellIndex = cellIndex(index)
         val cell = data[cellIndex]
@@ -108,6 +106,11 @@ class SimpleBitStorage(override val bits: Int, override val size: Int, data: Lon
         return (cell shr magic and mask).toInt()
     }
 
+    private fun checkValue(value: Int) {
+        require(value in 0..mask) { "Value must be between 0 and $mask, was $value" }
+    }
+
+    @Suppress("UnusedPrivateMember")
     override fun forEach(consumer: StorageConsumer) {
         var i = 0
         val along = data
@@ -166,7 +169,7 @@ class SimpleBitStorage(override val bits: Int, override val size: Int, data: Lon
         return result
     }
 
-    private fun cellIndex(index: Int): Int = ((index.toLong() * divideMultiply + divideAdd) shr 32 shr divideShift).toInt()
+    private fun cellIndex(index: Int): Int = (index.toLong() * divideMultiply + divideAdd shr 32 shr divideShift).toInt()
 
     class InitializationException(message: String) : RuntimeException(message)
 

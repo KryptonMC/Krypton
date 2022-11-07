@@ -20,7 +20,6 @@ package org.kryptonmc.krypton.packet.out.play
 
 import io.netty.buffer.ByteBuf
 import org.kryptonmc.krypton.entity.player.Abilities
-import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.packet.Packet
 
 @JvmRecord
@@ -45,10 +44,10 @@ data class PacketOutAbilities(
     constructor(buf: ByteBuf) : this(buf.readByte().toInt(), buf.readFloat(), buf.readFloat())
 
     private constructor(flags: Int, flyingSpeed: Float, walkingSpeed: Float) : this(
-        (flags and FLAG_INVULNERABLE) != 0,
-        (flags and FLAG_FLYING) != 0,
-        (flags and FLAG_CAN_FLY) != 0,
-        (flags and FLAG_CAN_INSTANTLY_BUILD) != 0,
+        flags and FLAG_INVULNERABLE != 0,
+        flags and FLAG_FLYING != 0,
+        flags and FLAG_CAN_FLY != 0,
+        flags and FLAG_CAN_INSTANTLY_BUILD != 0,
         flyingSpeed,
         walkingSpeed
     )

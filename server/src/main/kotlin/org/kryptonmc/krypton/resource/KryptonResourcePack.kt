@@ -19,7 +19,6 @@
 package org.kryptonmc.krypton.resource
 
 import net.kyori.adventure.text.Component
-import org.kryptonmc.api.entity.player.Player
 import org.kryptonmc.api.resource.ResourcePack
 import java.net.URI
 

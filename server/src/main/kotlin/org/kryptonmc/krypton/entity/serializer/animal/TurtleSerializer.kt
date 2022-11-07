@@ -21,25 +21,26 @@ package org.kryptonmc.krypton.entity.serializer.animal
 import org.kryptonmc.krypton.entity.animal.KryptonTurtle
 import org.kryptonmc.krypton.entity.serializer.AgeableSerializer
 import org.kryptonmc.krypton.entity.serializer.EntitySerializer
+import org.kryptonmc.krypton.util.nbt.getBlockPos
+import org.kryptonmc.krypton.util.nbt.putBlockPosParts
 import org.kryptonmc.nbt.CompoundTag
-import org.spongepowered.math.vector.Vector3i
 
 object TurtleSerializer : EntitySerializer<KryptonTurtle> {
 
+    private const val HOME_PREFIX = "HomePos"
+    private const val DESTINATION_PREFIX = "TravelPos"
+    private const val HAS_EGG_TAG = "HasEgg"
+
     override fun load(entity: KryptonTurtle, data: CompoundTag) {
         AgeableSerializer.load(entity, data)
-        entity.home = Vector3i.from(data.getInt("HomePosX"), data.getInt("HomePosY"), data.getInt("HomePosZ"))
-        entity.destination = Vector3i.from(data.getInt("TravelPosX"), data.getInt("TravelPosY"), data.getInt("TravelPosZ"))
-        entity.hasEgg = data.getBoolean("HasEgg")
+        entity.home = data.getBlockPos(HOME_PREFIX)
+        entity.destination = data.getBlockPos(DESTINATION_PREFIX)
+        entity.hasEgg = data.getBoolean(HAS_EGG_TAG)
     }
 
     override fun save(entity: KryptonTurtle): CompoundTag.Builder = AgeableSerializer.save(entity).apply {
-        putInt("HomePosX", entity.home.x())
-        putInt("HomePosY", entity.home.y())
-        putInt("HomePosZ", entity.home.z())
-        putBoolean("HasEgg", entity.hasEgg)
-        putInt("TravelPosX", entity.destination.x())
-        putInt("TravelPosY", entity.destination.y())
-        putInt("TravelPosZ", entity.destination.z())
+        putBlockPosParts(entity.home, HOME_PREFIX)
+        putBlockPosParts(entity.destination, DESTINATION_PREFIX)
+        putBoolean(HAS_EGG_TAG, entity.hasEgg)
     }
 }

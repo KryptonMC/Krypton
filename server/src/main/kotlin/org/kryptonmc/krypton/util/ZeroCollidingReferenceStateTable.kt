@@ -83,7 +83,7 @@ class ZeroCollidingReferenceStateTable(private val thisState: KryptonState<*, *>
             if (id > maxId) maxId = id
         }
 
-        val result = LongArray(((maxId + 1) + 31) ushr 5) // ceil((maxId + 1) / 32)
+        val result = LongArray(maxId + 1 + 31 ushr 5) // ceil((maxId + 1) / 32)
         for (property in properties) {
             val id = property.id
             result[id ushr 5] = result[id ushr 5] or (1L shl (id and 31))
@@ -120,16 +120,16 @@ class ZeroCollidingReferenceStateTable(private val thisState: KryptonState<*, *>
         @JvmStatic
         private fun lookupValueIndex(property: KryptonProperty<*>, indexTable: LongArray): Int {
             val id = property.id
-            val bitsetMask = (1L shl (id and 31))
+            val bitsetMask = 1L shl (id and 31)
             val lowerMask = bitsetMask - 1
             val index = id ushr 5
             if (index >= indexTable.size) return -1
             val indexValue = indexTable[index]
-            val containsCheck = ((indexValue and bitsetMask) - 1) shr (Long.SIZE_BITS - 1) // -1L if it doesn't contain the value
+            val containsCheck = (indexValue and bitsetMask) - 1 shr Long.SIZE_BITS - 1 // -1L if it doesn't contain the value
             // index = total bits set in lower table values (upper 32 bits of index_value) plus total bits set in lower indices below id
             // contains_check is 0 if the bitset had id set, else it's -1: so index is unaffected if contains_check == 0,
             // otherwise it comes out as -1.
-            return (((indexValue ushr 32) + java.lang.Long.bitCount(indexValue and lowerMask)) or containsCheck).toInt()
+            return ((indexValue ushr 32) + java.lang.Long.bitCount(indexValue and lowerMask) or containsCheck).toInt()
         }
 
         @JvmStatic

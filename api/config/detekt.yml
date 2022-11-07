@@ -1,23 +1,9 @@
-config:
-  validation: true
-  warningsAsErrors: false
-
-processors:
-  active: true
-
-console-reports:
-  active: true
-
-output-reports:
-  active: true
-  exclude:
-    - 'TxtOutputReport'
-    - 'SarifOutputReport'
-
 comments:
   active: true
-  DeprecatedBlockTag:
-    active: true
+  CommentOverPrivateFunction:
+    active: true # There shouldn't be private functions anyway, but if there are, they definitely shouldn't need comments.
+  CommentOverPrivateProperty:
+    active: true # There shouldn't be private properties anyway, but if there are, they definitely shouldn't need comments.
   UndocumentedPublicClass:
     active: true
     excludes: ["**/test/**"]
@@ -33,162 +19,20 @@ comments:
 
 complexity:
   active: true
-  LargeClass:
-    active: true
-    ignoreAnnotated: ["Catalogue"]
+  ComplexCondition:
+    threshold: 1 # There shouldn't really be any conditions in API code, but if there are, they should be very simple.
   LongParameterList:
-    active: false
-  StringLiteralDuplication:
-    active: true
-    ignoreAnnotated: ["Catalogue"]
+    functionThreshold: 8
+    constructorThreshold: 8
+  MethodOverloading:
+    threshold: 20
+  NestedBlockDepth:
+    threshold: 2 # There shouldn't be any nested blocks in API code.
   TooManyFunctions:
-    active: false
-
-coroutines:
-  active: true
-  GlobalCoroutineUsage:
-    active: true
-  RedundantSuspendModifier:
-    active: true
-  SleepInsteadOfDelay:
-    active: true
-  SuspendFunWithFlowReturnType:
-    active: true
-
-exceptions:
-  active: true
-  InstanceOfCheckForException:
-    active: true
-  NotImplementedDeclaration:
-    active: true
-  ObjectExtendsThrowable:
-    active: true
-  ThrowingExceptionInMain:
-    active: true
-
-naming:
-  EnumNaming:
-    enumEntryPattern: '[A-Z0-9_]+'
-
-potential-bugs:
-  CastToNullableType:
-    active: true
-  Deprecation:
-    active: true
-  DontDowncastCollectionTypes:
-    active: true
-  DoubleMutabilityForCollection:
-    active: true
-  HasPlatformType:
-    active: true
-  IgnoredReturnValue:
-    active: true
-  LateinitUsage:
-    active: true
-  MapGetWithNotNullAssertionOperator:
-    active: true
-  NullableToStringCall:
-    active: true
-  UnconditionalJumpStatementInLoop:
-    active: true
-  UnreachableCatchBlock:
-    active: true
-  UnusedUnaryOperator:
-    active: true
-  UselessPostfixExpression:
-    active: true
+    ignoreOverridden: true
+    thresholdInFiles: 30
+    thresholdInInterfaces: 40
 
 style:
-  CollapsibleIfStatements:
-    active: true
-  # Us using mutable data classes gives us the benefit of the generated stuff whilst also keeping allocations down
-  DataClassShouldBeImmutable:
-    active: false
-  DestructuringDeclarationWithTooManyEntries:
-    active: true
-    maxDestructuringEntries: 5
-  EqualsOnSignatureLine:
-    active: true
-  ExplicitCollectionElementAccessMethod:
-    active: true
-  ExpressionBodySyntax:
-    active: true
-  ForbiddenComment:
-    active: false # TODO: Possibly turn this on when we go stable
-  ForbiddenMethodCall:
-    active: true
-  ForbiddenVoid:
-    active: true
-  MagicNumber:
-    active: true
-    ignoreEnums: true
-    ignoreRanges: true
-    ignoreNamedArgument: true
-    ignorePropertyDeclaration: true
-    ignoreLocalVariableDeclaration: true
-    ignoreAnnotation: true
-    ignoreNumbers: ["-3", "-2", "-1", "-0.5", "0", "0.5", "1", "2", "3", "64", "90", "180", "360"]
-    excludes: ["**/test/**"]
-  MandatoryBracesIfStatements:
-    active: true
-  MandatoryBracesLoops:
-    active: true
-  MaxLineLength:
-    active: true
-    maxLineLength: 150
-    excludeCommentStatements: true
-  NoTabs:
-    active: true
-  ObjectLiteralToLambda:
-    active: true
-  OptionalWhenBraces:
-    active: true
-  PreferToOverPairSyntax:
-    active: true
-  RedundantExplicitType:
-    active: true
-  RedundantHigherOrderMapUsage:
-    active: true
   ReturnCount:
-    active: true
-    max: 4
-    excludeGuardClauses: true
-  SpacingBetweenPackageAndImports:
-    active: true
-  ThrowsCount:
-    active: true
-    max: 4
-  TrailingWhitespace:
-    active: true
-  UnnecessaryAnnotationUseSiteTarget:
-    active: true
-  UnnecessaryFilter:
-    active: true
-  UnnecessaryLet:
-    active: true
-  UnnecessaryParentheses:
-    active: true
-  UntilInsteadOfRangeTo:
-    active: true
-  UnusedImports:
-    active: true
-  UseArrayLiteralsInAnnotations:
-    active: true
-  UseCheckNotNull:
-    active: true
-  UseCheckOrError:
-    active: true
-  UseEmptyCounterpart:
-    active: true
-  UseIfEmptyOrIfBlank:
-    active: true
-  UseIfInsteadOfWhen:
-    active: true
-  UseIsNullOrEmpty:
-    active: true
-  UseOrEmpty:
-    active: true
-  UseRequire:
-    active: true
-  UseRequireNotNull:
-    active: true
+    max: 2 # API methods should be very, very simple. Anything more than dimorphic is probably too complex, and should be in the implementation.

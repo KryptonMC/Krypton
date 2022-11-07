@@ -23,28 +23,29 @@ import org.kryptonmc.krypton.shapes.BooleanOperator
 import org.kryptonmc.krypton.shapes.Shapes
 import org.kryptonmc.krypton.world.BlockAccessor
 import org.kryptonmc.krypton.world.block.state.KryptonBlockState
+import org.spongepowered.math.vector.Vector3i
 
 enum class SupportType {
 
     FULL {
 
-        override fun isSupporting(state: KryptonBlockState, world: BlockAccessor, x: Int, y: Int, z: Int, face: Direction): Boolean =
-            KryptonBlock.isFaceFull(state.getBlockSupportShape(world, x, y, z), face)
+        override fun isSupporting(state: KryptonBlockState, world: BlockAccessor, position: Vector3i, face: Direction): Boolean =
+            KryptonBlock.isFaceFull(state.getBlockSupportShape(world, position), face)
     },
     CENTER {
 
         private val supportShape = KryptonBlock.box(7.0, 0.0, 7.0, 9.0, 10.0, 9.0)
 
-        override fun isSupporting(state: KryptonBlockState, world: BlockAccessor, x: Int, y: Int, z: Int, face: Direction): Boolean =
-            !Shapes.joinIsNotEmpty(state.getBlockSupportShape(world, x, y, z).getFaceShape(face), supportShape, BooleanOperator.ONLY_SECOND)
+        override fun isSupporting(state: KryptonBlockState, world: BlockAccessor, position: Vector3i, face: Direction): Boolean =
+            !Shapes.joinIsNotEmpty(state.getBlockSupportShape(world, position).getFaceShape(face), supportShape, BooleanOperator.ONLY_SECOND)
     },
     RIGID {
 
         private val supportShape = Shapes.join(Shapes.block(), KryptonBlock.box(2.0, 0.0, 2.0, 14.0, 16.0, 14.0), BooleanOperator.ONLY_FIRST)
 
-        override fun isSupporting(state: KryptonBlockState, world: BlockAccessor, x: Int, y: Int, z: Int, face: Direction): Boolean =
-            !Shapes.joinIsNotEmpty(state.getBlockSupportShape(world, x, y, z).getFaceShape(face), supportShape, BooleanOperator.ONLY_FIRST)
+        override fun isSupporting(state: KryptonBlockState, world: BlockAccessor, position: Vector3i, face: Direction): Boolean =
+            !Shapes.joinIsNotEmpty(state.getBlockSupportShape(world, position).getFaceShape(face), supportShape, BooleanOperator.ONLY_FIRST)
     };
 
-    abstract fun isSupporting(state: KryptonBlockState, world: BlockAccessor, x: Int, y: Int, z: Int, face: Direction): Boolean
+    abstract fun isSupporting(state: KryptonBlockState, world: BlockAccessor, position: Vector3i, face: Direction): Boolean
 }

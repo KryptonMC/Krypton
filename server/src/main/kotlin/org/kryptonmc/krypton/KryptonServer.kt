@@ -189,8 +189,8 @@ class KryptonServer(
 
             while (isRunning) {
                 val nextTickTime = System.currentTimeMillis() - lastTickTime
-                if (nextTickTime > 2000L && lastTickTime - lastOverloadWarning >= 15_000L) {
-                    LOGGER.warn("Can't keep up! Running $nextTickTime ms (${nextTickTime / 50} ticks) behind!")
+                if (nextTickTime > SLOW_TICK_THRESHOLD && lastTickTime - lastOverloadWarning >= OVERLOAD_WARNING_INTERVAL) {
+                    LOGGER.warn("Can't keep up! Running $nextTickTime ms (${nextTickTime / MILLISECONDS_PER_TICK} ticks) behind!")
                     lastOverloadWarning = lastTickTime
                 }
 
@@ -236,12 +236,12 @@ class KryptonServer(
 
         // Register all of the plugin instances as event listeners, so that plugins can listen for events such as
         // ServerStartEvent and ServerStopEvent in their main class.
-        pluginManager.plugins.forEach {
-            val instance = it.instance ?: return@forEach
+        for (container in pluginManager.plugins) {
+            val instance = container.instance ?: continue
             try {
-                eventManager.registerUnchecked(it, instance)
+                eventManager.registerUnchecked(container, instance)
             } catch (exception: Exception) {
-                LOGGER.error("Unable to register plugin listener for plugin ${it.description.name}!", exception)
+                LOGGER.error("Unable to register plugin listener for plugin ${container.description.name}!", exception)
             }
         }
 
@@ -251,8 +251,7 @@ class KryptonServer(
     private fun tick() {
         tickCount++
 
-        val time = System.currentTimeMillis()
-        sessionManager.update(time)
+        sessionManager.update(System.currentTimeMillis())
         if (playerManager.players.isEmpty()) return // don't tick if there are no players on the server
 
         worldManager.worlds.forEach { (_, world) ->
@@ -272,8 +271,7 @@ class KryptonServer(
 
     fun updateConfig(path: String, value: Any?) {
         val config = HoconConfigurationLoader.builder().path(configPath).defaultOptions(KryptonConfig.OPTIONS).build()
-        val node = config.load().node(path.split(".")).set(value)
-        config.save(node)
+        config.save(config.load().node(path.split(".")).set(value))
     }
 
     fun isProtected(world: KryptonWorld, x: Int, z: Int, player: KryptonPlayer): Boolean {
@@ -355,6 +353,8 @@ class KryptonServer(
         private const val MILLISECONDS_PER_TICK = 50L // milliseconds in a tick
         private const val TICKS_PER_SECOND = 20
         private const val SAVE_PROFILE_CACHE_INTERVAL = 600
+        private const val SLOW_TICK_THRESHOLD = 2000L
+        private const val OVERLOAD_WARNING_INTERVAL = 15000L
 
         private val LOGGER = logger<KryptonServer>()
 

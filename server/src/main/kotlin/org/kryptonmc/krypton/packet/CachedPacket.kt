@@ -22,7 +22,6 @@ import io.netty.buffer.ByteBuf
 import org.kryptonmc.krypton.util.frame
 import java.lang.invoke.MethodHandles
 import java.lang.ref.SoftReference
-import java.util.concurrent.atomic.AtomicIntegerFieldUpdater
 import java.util.function.Supplier
 
 @Suppress("UNCHECKED_CAST", "unused")

@@ -26,14 +26,17 @@ import org.kryptonmc.nbt.CompoundTag
 
 object SheepSerializer : EntitySerializer<KryptonSheep> {
 
+    private const val SHEARED_TAG = "Sheared"
+    private const val COLOR_TAG = "Color"
+
     override fun load(entity: KryptonSheep, data: CompoundTag) {
         AgeableSerializer.load(entity, data)
-        entity.isSheared = data.getBoolean("Sheared")
-        entity.woolColor = DyeColors.fromId(data.getByte("Color").toInt())
+        entity.isSheared = data.getBoolean(SHEARED_TAG)
+        entity.woolColor = DyeColors.fromId(data.getByte(COLOR_TAG).toInt())
     }
 
     override fun save(entity: KryptonSheep): CompoundTag.Builder = AgeableSerializer.save(entity).apply {
-        putBoolean("Sheared", entity.isSheared)
-        putByte("Color", entity.woolColor.ordinal.toByte())
+        putBoolean(SHEARED_TAG, entity.isSheared)
+        putByte(COLOR_TAG, entity.woolColor.ordinal.toByte())
     }
 }

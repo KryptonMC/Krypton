@@ -76,8 +76,9 @@ object Positioning {
      * See [here](https://wiki.vg/Protocol#Position)
      */
     @JvmStatic
+    @Suppress("MagicNumber")
     fun encode(position: Vector3i): Long =
-        ((position.x().toLong() and 0x3FFFFFF) shl 38) or ((position.z().toLong() and 0x3FFFFFF) shl 12) or (position.y().toLong() and 0xFFF)
+        position.x().toLong() and 0x3FFFFFF shl 38 or (position.z().toLong() and 0x3FFFFFF shl 12) or (position.y().toLong() and 0xFFF)
 
     @JvmStatic
     fun decodeBlockX(encoded: Long): Int = (encoded shr 38).toInt()

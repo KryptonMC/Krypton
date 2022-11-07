@@ -19,8 +19,6 @@
 package org.kryptonmc.krypton.packet.out.status
 
 import io.netty.buffer.ByteBuf
-import me.bardy.gsonkt.newBuilder
-import me.bardy.gsonkt.registerTypeAdapter
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer
 import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.util.readString
@@ -42,9 +40,9 @@ data class PacketOutStatusResponse(val response: String) : Packet {
 
     companion object {
 
-        private val GSON = GsonComponentSerializer.gson().serializer().newBuilder {
-            registerTypeAdapter<ServerStatus.Players>(ServerStatus.Players)
-            registerTypeAdapter<ServerStatus>(ServerStatus)
-        }
+        private val GSON = GsonComponentSerializer.gson().serializer().newBuilder()
+            .registerTypeAdapter(ServerStatus.Players::class.java, ServerStatus.Players)
+            .registerTypeAdapter(ServerStatus::class.java, ServerStatus)
+            .create()
     }
 }

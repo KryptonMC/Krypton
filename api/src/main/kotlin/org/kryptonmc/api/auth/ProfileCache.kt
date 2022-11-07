@@ -12,7 +12,7 @@ import org.jetbrains.annotations.UnmodifiableView
 import java.util.UUID
 
 /**
- * A simple cache that holds [GameProfile]s.
+ * A simple cache that holds game profiles.
  */
 public interface ProfileCache : Iterable<GameProfile> {
 

@@ -37,64 +37,82 @@ import kotlin.math.abs
 
 object BaseEntitySerializer : EntitySerializer<KryptonEntity> {
 
-    override fun load(entity: KryptonEntity, data: CompoundTag) {
-        entity.air = data.getShort("Air").toInt()
-        if (data.contains("CustomName", StringTag.ID)) {
-            entity.customName = GsonComponentSerializer.gson().deserialize(data.getString("CustomName"))
-        }
-        entity.isCustomNameVisible = data.getBoolean("CustomNameVisible")
-        entity.fallDistance = data.getFloat("FallDistance")
-        entity.fireTicks = data.getShort("Fire").toInt()
-        entity.isGlowing = data.getBoolean("Glowing")
-        entity.isInvulnerable = data.getBoolean("Invulnerable")
+    private const val ID_TAG = "id"
+    private const val AIR_TAG = "Air"
+    private const val CUSTOM_NAME_TAG = "CustomName"
+    private const val CUSTOM_NAME_VISIBLE_TAG = "CustomNameVisible"
+    private const val FALL_DISTANCE_TAG = "FallDistance"
+    private const val FIRE_TAG = "Fire"
+    private const val GLOWING_TAG = "Glowing"
+    private const val INVULNERABLE_TAG = "Invulnerable"
+    private const val MOTION_TAG = "Motion"
+    private const val NO_GRAVITY_TAG = "NoGravity"
+    private const val ON_GROUND_TAG = "OnGround"
+    private const val POSITION_TAG = "Pos"
+    private const val ROTATION_TAG = "Rotation"
+    private const val SILENT_TAG = "Silent"
+    private const val FROZEN_TICKS_TAG = "TicksFrozen"
+    private const val UUID_TAG = "UUID"
 
-        val motion = data.getList("Motion", DoubleTag.ID)
+    override fun load(entity: KryptonEntity, data: CompoundTag) {
+        entity.air = data.getShort(AIR_TAG).toInt()
+        if (data.contains(CUSTOM_NAME_TAG, StringTag.ID)) {
+            entity.customName = GsonComponentSerializer.gson().deserialize(data.getString(CUSTOM_NAME_TAG))
+        }
+        entity.isCustomNameVisible = data.getBoolean(CUSTOM_NAME_VISIBLE_TAG)
+        entity.fallDistance = data.getFloat(FALL_DISTANCE_TAG)
+        entity.fireTicks = data.getShort(FIRE_TAG).toInt()
+        entity.isGlowing = data.getBoolean(GLOWING_TAG)
+        entity.isInvulnerable = data.getBoolean(INVULNERABLE_TAG)
+
+        val motion = data.getList(MOTION_TAG, DoubleTag.ID)
         entity.velocity = Vector3d(motion.getMotionValue(0), motion.getMotionValue(1), motion.getMotionValue(2))
 
-        entity.hasGravity = !data.getBoolean("NoGravity")
-        entity.isOnGround = data.getBoolean("OnGround")
+        entity.hasGravity = !data.getBoolean(NO_GRAVITY_TAG)
+        entity.isOnGround = data.getBoolean(ON_GROUND_TAG)
 
-        val location = data.getList("Pos", DoubleTag.ID)
-        val rotation = data.getList("Rotation", FloatTag.ID)
+        val location = data.getList(POSITION_TAG, DoubleTag.ID)
+        val rotation = data.getList(ROTATION_TAG, FloatTag.ID)
         entity.location = Vector3d(location.getDouble(0), location.getDouble(1), location.getDouble(2))
         entity.rotation = Vector2f(rotation.getFloat(0), rotation.getFloat(1))
 
-        entity.isSilent = data.getBoolean("Silent")
-        entity.frozenTicks = data.getInt("TicksFrozen")
-        if (data.hasUUID("UUID")) entity.uuid = data.getUUID("UUID")!!
+        entity.isSilent = data.getBoolean(SILENT_TAG)
+        entity.frozenTicks = data.getInt(FROZEN_TICKS_TAG)
+        if (data.hasUUID(UUID_TAG)) entity.uuid = data.getUUID(UUID_TAG)!!
     }
 
     override fun save(entity: KryptonEntity): CompoundTag.Builder = buildCompound {
         // Display name
-        if (entity.isCustomNameVisible) putBoolean("CustomNameVisible", true)
-        entity.customName?.let { putString("CustomName", it.toJson()) }
+        if (entity.isCustomNameVisible) putBoolean(CUSTOM_NAME_VISIBLE_TAG, true)
+        entity.customName?.let { putString(CUSTOM_NAME_TAG, it.toJson()) }
 
         // Flags
-        if (entity.isGlowing) putBoolean("Glowing", true)
-        if (entity.isInvulnerable) putBoolean("Invulnerable", true)
-        if (!entity.hasGravity) putBoolean("NoGravity", true)
-        putBoolean("OnGround", entity.isOnGround)
-        if (entity.isSilent) putBoolean("Silent", true)
+        if (entity.isGlowing) putBoolean(GLOWING_TAG, true)
+        if (entity.isInvulnerable) putBoolean(INVULNERABLE_TAG, true)
+        if (!entity.hasGravity) putBoolean(NO_GRAVITY_TAG, true)
+        putBoolean(ON_GROUND_TAG, entity.isOnGround)
+        if (entity.isSilent) putBoolean(SILENT_TAG, true)
 
         // Positioning
-        putList("Motion", DoubleTag.ID, DoubleTag.of(entity.velocity.x()), DoubleTag.of(entity.velocity.y()), DoubleTag.of(entity.velocity.z()))
-        putList("Pos", DoubleTag.ID, DoubleTag.of(entity.location.x()), DoubleTag.of(entity.location.y()), DoubleTag.of(entity.location.z()))
-        putList("Rotation", FloatTag.ID, FloatTag.of(entity.rotation.x()), FloatTag.of(entity.rotation.y()))
+        putList(MOTION_TAG, DoubleTag.ID, DoubleTag.of(entity.velocity.x()), DoubleTag.of(entity.velocity.y()), DoubleTag.of(entity.velocity.z()))
+        putList(POSITION_TAG, DoubleTag.ID, DoubleTag.of(entity.location.x()), DoubleTag.of(entity.location.y()), DoubleTag.of(entity.location.z()))
+        putList(ROTATION_TAG, FloatTag.ID, FloatTag.of(entity.rotation.x()), FloatTag.of(entity.rotation.y()))
 
         // Identification
-        if (entity !is KryptonPlayer) putString("id", entity.type.key().asString())
-        putUUID("UUID", entity.uuid)
+        if (entity !is KryptonPlayer) putString(ID_TAG, entity.type.key().asString())
+        putUUID(UUID_TAG, entity.uuid)
 
         // Miscellaneous
-        putShort("Air", entity.air.toShort())
-        putShort("Fire", entity.fireTicks.toShort())
-        putInt("TicksFrozen", entity.frozenTicks)
-        putFloat("FallDistance", entity.fallDistance)
+        putShort(AIR_TAG, entity.air.toShort())
+        putShort(FIRE_TAG, entity.fireTicks.toShort())
+        putInt(FROZEN_TICKS_TAG, entity.frozenTicks)
+        putFloat(FALL_DISTANCE_TAG, entity.fallDistance)
     }
 }
 
+private const val MAXIMUM_MOTION_VALUE = 10.0
+
 private fun ListTag.getMotionValue(index: Int): Double {
     val value = getDouble(index)
-    if (abs(value) <= 10) return value
-    return 0.0
+    return if (abs(value) < MAXIMUM_MOTION_VALUE) value else 0.0
 }

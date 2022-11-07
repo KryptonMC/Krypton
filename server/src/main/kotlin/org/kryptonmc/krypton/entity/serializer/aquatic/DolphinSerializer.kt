@@ -21,23 +21,26 @@ package org.kryptonmc.krypton.entity.serializer.aquatic
 import org.kryptonmc.krypton.entity.aquatic.KryptonDolphin
 import org.kryptonmc.krypton.entity.serializer.EntitySerializer
 import org.kryptonmc.krypton.entity.serializer.MobSerializer
+import org.kryptonmc.krypton.util.nbt.getBlockPos
+import org.kryptonmc.krypton.util.nbt.putBlockPosParts
 import org.kryptonmc.nbt.CompoundTag
-import org.spongepowered.math.vector.Vector3i
 
 object DolphinSerializer : EntitySerializer<KryptonDolphin> {
 
+    private const val TREASURE_PREFIX = "TreasurePos"
+    private const val GOT_FISH_TAG = "GotFish"
+    private const val MOISTNESS_TAG = "Moistness"
+
     override fun load(entity: KryptonDolphin, data: CompoundTag) {
         MobSerializer.load(entity, data)
-        entity.treasurePosition = Vector3i(data.getInt("TreasurePosX"), data.getInt("TreasurePosY"), data.getInt("TreasurePosZ"))
-        entity.hasGotFish = data.getBoolean("GotFish")
-        entity.skinMoisture = data.getInt("Moistness")
+        entity.treasurePosition = data.getBlockPos(TREASURE_PREFIX)
+        entity.hasGotFish = data.getBoolean(GOT_FISH_TAG)
+        entity.skinMoisture = data.getInt(MOISTNESS_TAG)
     }
 
     override fun save(entity: KryptonDolphin): CompoundTag.Builder = MobSerializer.save(entity).apply {
-        putInt("TreasurePosX", entity.treasurePosition.x())
-        putInt("TreasurePosY", entity.treasurePosition.y())
-        putInt("TreasurePosZ", entity.treasurePosition.z())
-        putBoolean("GotFish", entity.hasGotFish)
-        putInt("Moistness", entity.skinMoisture)
+        putBlockPosParts(entity.treasurePosition, TREASURE_PREFIX)
+        putBoolean(GOT_FISH_TAG, entity.hasGotFish)
+        putInt(MOISTNESS_TAG, entity.skinMoisture)
     }
 }

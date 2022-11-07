@@ -27,7 +27,6 @@ import org.kryptonmc.api.service.register
 import org.kryptonmc.api.user.ban.BanService
 import org.kryptonmc.api.user.whitelist.WhitelistService
 import org.kryptonmc.krypton.KryptonServer
-import org.kryptonmc.krypton.plugin.KryptonPluginManager
 import org.kryptonmc.krypton.plugin.server.ServerPluginContainer
 import org.kryptonmc.krypton.server.ban.KryptonBanService
 import org.kryptonmc.krypton.server.whitelist.KryptonWhitelistService

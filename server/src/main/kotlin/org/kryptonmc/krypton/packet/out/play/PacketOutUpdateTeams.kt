@@ -35,7 +35,7 @@ import org.kryptonmc.krypton.util.writeString
 import org.kryptonmc.krypton.util.writeVarInt
 
 /**
- * Tells the client to perform an action to a team on their current scoreboard
+ * Tells the client to perform an action to a team on their current scoreboard.
  */
 @JvmRecord
 data class PacketOutUpdateTeams(
@@ -46,7 +46,7 @@ data class PacketOutUpdateTeams(
 ) : Packet {
 
     override fun write(buf: ByteBuf) {
-        buf.writeString(name, 16)
+        buf.writeString(name, MAX_NAME_LENGTH)
         buf.writeByte(action.ordinal)
         if (action == Action.CREATE || action == Action.UPDATE_INFO) {
             requireNotNull(parameters) { "Parameters must be present if action is CREATE or UPDATE_INFO!" }.write(buf)
@@ -97,8 +97,8 @@ data class PacketOutUpdateTeams(
         constructor(buf: ByteBuf) : this(
             buf.readComponent(),
             buf.readByte().toInt(),
-            buf.readString(40),
-            buf.readString(40),
+            buf.readString(MAX_VISIBILITY_LENGTH),
+            buf.readString(MAX_VISIBILITY_LENGTH),
             KryptonAdventure.colorFromId(buf.readVarInt()),
             buf.readComponent(),
             buf.readComponent()
@@ -107,8 +107,8 @@ data class PacketOutUpdateTeams(
         override fun write(buf: ByteBuf) {
             buf.writeComponent(displayName)
             buf.writeByte(options)
-            buf.writeString(nameTagVisibility, 40)
-            buf.writeString(collisionRule, 40)
+            buf.writeString(nameTagVisibility, MAX_VISIBILITY_LENGTH)
+            buf.writeString(collisionRule, MAX_VISIBILITY_LENGTH)
             buf.writeVarInt(KryptonAdventure.colorId(color))
             buf.writeComponent(prefix)
             buf.writeComponent(suffix)
@@ -119,6 +119,8 @@ data class PacketOutUpdateTeams(
 
         private const val FLAG_FRIENDLY_FIRE = 1
         private const val FLAG_SEE_INVISIBLES = 2
+        private const val MAX_NAME_LENGTH = 16
+        private const val MAX_VISIBILITY_LENGTH = 40
 
         @JvmStatic
         fun create(team: Team): PacketOutUpdateTeams = createOrUpdate(team, true)

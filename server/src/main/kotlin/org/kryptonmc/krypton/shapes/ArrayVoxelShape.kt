@@ -38,15 +38,6 @@ class ArrayVoxelShape(
 
     private val boundingBoxesRepresentation = boundingBoxesRepresentation ?: toBoundingBoxes().toTypedArray()
 
-    constructor(shape: DiscreteVoxelShape, xs: DoubleArray, ys: DoubleArray, zs: DoubleArray) : this(
-        shape,
-        DoubleArrayList.wrap(xs.copyOf(shape.sizeX() + 1)),
-        DoubleArrayList.wrap(ys.copyOf(shape.sizeY() + 1)),
-        DoubleArrayList.wrap(zs.copyOf(shape.sizeZ() + 1))
-    )
-
-    constructor(shape: DiscreteVoxelShape, xs: DoubleList, ys: DoubleList, zs: DoubleList) : this(shape, xs, ys, zs, null, 0.0, 0.0, 0.0)
-
     init {
         val sizeX = shape.sizeX() + 1
         val sizeY = shape.sizeY() + 1
@@ -55,6 +46,15 @@ class ArrayVoxelShape(
             "Lengths of point arrays must be consistent with the size of the VoxelShape!"
         }
     }
+
+    constructor(shape: DiscreteVoxelShape, xs: DoubleArray, ys: DoubleArray, zs: DoubleArray) : this(
+        shape,
+        DoubleArrayList.wrap(xs.copyOf(shape.sizeX() + 1)),
+        DoubleArrayList.wrap(ys.copyOf(shape.sizeY() + 1)),
+        DoubleArrayList.wrap(zs.copyOf(shape.sizeZ() + 1))
+    )
+
+    constructor(shape: DiscreteVoxelShape, xs: DoubleList, ys: DoubleList, zs: DoubleList) : this(shape, xs, ys, zs, null, 0.0, 0.0, 0.0)
 
     override fun coordinates(axis: Direction.Axis): DoubleList = when (axis) {
         Direction.Axis.X -> xs

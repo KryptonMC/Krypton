@@ -22,7 +22,6 @@ import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.block.entity.BlockEntity
 import org.kryptonmc.api.block.entity.BlockEntityType
 import org.kryptonmc.api.world.World
-import org.kryptonmc.nbt.CompoundTag
 import org.spongepowered.math.vector.Vector3i
 
 abstract class KryptonBlockEntity(

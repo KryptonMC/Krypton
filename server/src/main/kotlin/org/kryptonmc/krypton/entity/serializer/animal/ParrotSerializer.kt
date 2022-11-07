@@ -26,13 +26,14 @@ import org.kryptonmc.nbt.CompoundTag
 object ParrotSerializer : EntitySerializer<KryptonParrot> {
 
     private val TYPES = ParrotVariant.values()
+    private const val VARIANT_TAG = "Variant"
 
     override fun load(entity: KryptonParrot, data: CompoundTag) {
         TamableSerializer.load(entity, data)
-        entity.variant = TYPES.getOrNull(data.getInt("Variant")) ?: ParrotVariant.RED_AND_BLUE
+        entity.variant = TYPES.getOrNull(data.getInt(VARIANT_TAG)) ?: ParrotVariant.RED_AND_BLUE
     }
 
     override fun save(entity: KryptonParrot): CompoundTag.Builder = TamableSerializer.save(entity).apply {
-        putInt("Variant", entity.variant.ordinal)
+        putInt(VARIANT_TAG, entity.variant.ordinal)
     }
 }

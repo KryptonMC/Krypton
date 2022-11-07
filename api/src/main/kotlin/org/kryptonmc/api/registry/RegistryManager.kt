@@ -21,6 +21,7 @@ public interface RegistryManager {
      * Gets the existing registry with the given resource [key], or returns
      * null if there is no existing registry with the given resource [key].
      *
+     * @param T the registry element type
      * @param key the key
      * @return the existing registry, or null if not present
      */
@@ -31,6 +32,7 @@ public interface RegistryManager {
      * returns null if there is no existing defaulted registry with the given
      * resource [key].
      *
+     * @param T the registry element type
      * @param key the key
      * @return the existing defaulted registry, or null if not present
      */
@@ -39,6 +41,7 @@ public interface RegistryManager {
     /**
      * Creates a new registry with the given registry [key].
      *
+     * @param T the registry element type
      * @param key the registry key
      * @return a registry for the given [key]
      */
@@ -49,6 +52,7 @@ public interface RegistryManager {
      * Creates a new registry with the given registry [key], with a
      * [defaultKey].
      *
+     * @param T the registry element type
      * @param key the registry key
      * @param defaultKey the default key
      * @return a defaulted registry for the given [key]

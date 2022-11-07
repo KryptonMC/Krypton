@@ -26,7 +26,6 @@ import com.google.gson.stream.JsonReader
 import it.unimi.dsi.fastutil.objects.Object2IntMap
 import it.unimi.dsi.fastutil.objects.Object2IntMaps
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap
-import me.bardy.gsonkt.keys
 import net.kyori.adventure.key.InvalidKeyException
 import net.kyori.adventure.key.Key
 import org.kryptonmc.api.registry.Registries
@@ -85,8 +84,8 @@ class KryptonStatisticsTracker(private val player: KryptonPlayer, private val fi
             map.forEach { statsJson.add(it.key.key().asString(), it.value) }
 
             val json = JsonObject().apply {
-                add("stats", statsJson)
-                addProperty("DataVersion", KryptonPlatform.worldVersion)
+                add(STATS_KEY, statsJson)
+                addProperty(DATA_VERSION_KEY, KryptonPlatform.worldVersion)
             }.toString()
             Files.newOutputStream(file).writer().use { it.write(json) }
         } catch (exception: IOException) {
@@ -132,8 +131,8 @@ class KryptonStatisticsTracker(private val player: KryptonPlayer, private val fi
             }
 
             json as JsonObject
-            if (!json.has("DataVersion") || !json.get("DataVersion").isJsonPrimitive) json.addProperty("DataVersion", OLD_VERSION)
-            val version = json.get("DataVersion").asInt
+            if (!json.has(DATA_VERSION_KEY) || !json.get(DATA_VERSION_KEY).isJsonPrimitive) json.addProperty(DATA_VERSION_KEY, OLD_VERSION)
+            val version = json.get(DATA_VERSION_KEY).asInt
             // We won't upgrade data if use of the data converter is disabled.
             if (version < KryptonPlatform.worldVersion && !player.server.config.advanced.useDataConverter) {
                 DataConversion.sendWarning(LOGGER, "statistics data for player with UUID ${player.uuid}")
@@ -142,10 +141,10 @@ class KryptonStatisticsTracker(private val player: KryptonPlayer, private val fi
 
             // Don't use data converter if the version isn't older than our version.
             val data = DataConversion.upgrade(json, MCTypeRegistry.STATS, json.get("DataVersion").asInt)
-            if (data.get("stats").asJsonObject.size() == 0) return
+            if (data.get(STATS_KEY).asJsonObject.size() == 0) return
 
-            val stats = data.get("stats")?.asJsonObject ?: JsonObject()
-            stats.keys.forEach { key ->
+            val stats = data.get(STATS_KEY)?.asJsonObject ?: JsonObject()
+            stats.keySet().forEach { key ->
                 if (!stats.get(key).isJsonObject) return@forEach
                 val type = Registries.STATISTIC_TYPE.get(Key.key(key))
                 if (type == null) {
@@ -153,7 +152,7 @@ class KryptonStatisticsTracker(private val player: KryptonPlayer, private val fi
                     return@forEach
                 }
                 val values = stats.get(key).asJsonObject
-                values.keys.forEach { valueKey ->
+                values.keySet().forEach { valueKey ->
                     if (values.get(valueKey).isJsonPrimitive) {
                         val statistic = statistic(type, valueKey)
                         if (statistic != null) {
@@ -186,5 +185,8 @@ class KryptonStatisticsTracker(private val player: KryptonPlayer, private val fi
 
         private val LOGGER = logger<KryptonStatisticsTracker>()
         private const val OLD_VERSION = 1343
+
+        private const val STATS_KEY = "stats"
+        private const val DATA_VERSION_KEY = "DataVersion"
     }
 }

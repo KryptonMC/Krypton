@@ -21,6 +21,7 @@ package org.kryptonmc.krypton.util
 import com.google.common.math.IntMath
 import org.kryptonmc.krypton.world.chunk.ChunkPosition
 import org.spongepowered.math.GenericMath
+import org.spongepowered.math.vector.Vector3i
 import java.util.UUID
 import java.util.function.IntPredicate
 import kotlin.math.sqrt
@@ -108,6 +109,7 @@ object Maths {
 
     // The magic values in here are from the mixer parts of MurmurHash3
     @JvmStatic
+    @Suppress("MagicNumber")
     fun murmurHash3Mixer(value: Int): Int {
         var temp = value
         temp = temp xor (temp ushr 16)
@@ -118,8 +120,12 @@ object Maths {
     }
 
     @JvmStatic
+    fun getSeed(position: Vector3i): Long = getSeed(position.x(), position.y(), position.z())
+
+    @JvmStatic
+    @Suppress("MagicNumber")
     fun getSeed(x: Int, y: Int, z: Int): Long {
-        var seed = (x * 3129871).toLong() xor (y.toLong() * 116129781L) xor z.toLong()
+        var seed = (x * 3129871).toLong() xor y.toLong() * 116129781L xor z.toLong()
         seed = seed * seed * 42317861L + seed * 11L
         return seed shr 16
     }
@@ -143,6 +149,7 @@ object Maths {
     }
 
     @JvmStatic
+    @Suppress("MagicNumber")
     fun ceillog2(value: Int): Int {
         val temp = if (GenericMath.isPowerOfTwo(value)) value else GenericMath.roundUpPow2(value)
         return MULTIPLY_DE_BRUIJN_BIT_POSITION[(temp.toLong() * 125613361L shr 27 and 31).toInt()]
@@ -185,9 +192,10 @@ object Maths {
     fun randomBetween(random: Random, min: Int, max: Int): Int = random.nextInt(max - min + 1) + min
 
     @JvmStatic
+    @Suppress("MagicNumber")
     fun createInsecureUUID(random: Random): UUID {
-        val least = random.nextLong() and -61441L or 16384L
-        val most = random.nextLong() and 4611686018427387903L or Long.MIN_VALUE
-        return UUID(least, most)
+        val most = random.nextLong() and -61441L or 16384L
+        val least = random.nextLong() and 4611686018427387903L or Long.MIN_VALUE
+        return UUID(most, least)
     }
 }

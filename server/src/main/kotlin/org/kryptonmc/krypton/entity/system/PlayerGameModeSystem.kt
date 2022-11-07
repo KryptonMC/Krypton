@@ -149,7 +149,7 @@ class PlayerGameModeSystem(private val player: KryptonPlayer) {
                 val block = player.world.getBlock(position)
                 if (block.isAir) return
                 val destroyProgress = block.getDestroyProgress(player, player.world, position) * (tickDifference + 1).toFloat()
-                if (destroyProgress >= 0.7F) {
+                if (destroyProgress >= MAXIMUM_DESTROY_PROGRESS) {
                     isDestroying = false
                     player.world.broadcastBlockDestroyProgress(player.id, position, -1)
                     destroyAndAcknowledge(position, "block broke")
@@ -233,6 +233,7 @@ class PlayerGameModeSystem(private val player: KryptonPlayer) {
     companion object {
 
         private const val MAXIMUM_DISTANCE_FROM_BLOCK = 6.0 * 6.0
+        private const val MAXIMUM_DESTROY_PROGRESS = 0.7F
         private val LOGGER = logger<PlayerGameModeSystem>()
     }
 }

@@ -22,7 +22,7 @@ import java.util.function.Predicate
 import kotlin.math.max
 import kotlin.math.min
 
-@Suppress("UNCHECKED_CAST", "EqualsOrHashCode")
+@Suppress("UNCHECKED_CAST")
 class SortedArraySet<T>(private val comparator: Comparator<T>, initialCapacity: Int) : AbstractMutableSet<T>() {
 
     private var contents = arrayOfNulls<Any>(initialCapacity) as Array<T?>
@@ -60,10 +60,13 @@ class SortedArraySet<T>(private val comparator: Comparator<T>, initialCapacity: 
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-        if (comparator == (other as SortedArraySet<Any>).comparator) return size == other.size && contents.contentEquals(other.contents)
+        if (other is SortedArraySet<*> && comparator == other.comparator) {
+            return size == other.size && contents.contentEquals((other as SortedArraySet<T>).contents)
+        }
         return super.equals(other)
     }
+
+    override fun hashCode(): Int = contents.contentHashCode()
 
     override fun toArray(): Array<T?> = contents.clone()
 
@@ -83,6 +86,7 @@ class SortedArraySet<T>(private val comparator: Comparator<T>, initialCapacity: 
         var i = 0
         val len = size
         val backing = contents
+        @Suppress("UnconditionalJumpStatementInLoop") // It's not unconditional, just needs some more complex analysis to realise that.
         while (true) {
             if (i >= len) return false
             if (!filter.test(backing[i]!!)) {

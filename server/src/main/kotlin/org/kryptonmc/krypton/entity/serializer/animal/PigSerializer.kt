@@ -25,12 +25,14 @@ import org.kryptonmc.nbt.CompoundTag
 
 object PigSerializer : EntitySerializer<KryptonPig> {
 
+    private const val SADDLE_TAG = "Saddle"
+
     override fun load(entity: KryptonPig, data: CompoundTag) {
         AgeableSerializer.load(entity, data)
-        entity.isSaddled = data.getBoolean("Saddle")
+        entity.isSaddled = data.getBoolean(SADDLE_TAG)
     }
 
     override fun save(entity: KryptonPig): CompoundTag.Builder = AgeableSerializer.save(entity).apply {
-        putBoolean("Saddle", entity.isSaddled)
+        putBoolean(SADDLE_TAG, entity.isSaddled)
     }
 }

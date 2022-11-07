@@ -22,19 +22,21 @@ import org.kryptonmc.api.entity.vehicle.BoatVariant
 import org.kryptonmc.krypton.entity.serializer.BaseEntitySerializer
 import org.kryptonmc.krypton.entity.serializer.EntitySerializer
 import org.kryptonmc.krypton.entity.vehicle.KryptonBoat
+import org.kryptonmc.krypton.util.nbt.putStringEnum
 import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.StringTag
 
 object BoatSerializer : EntitySerializer<KryptonBoat> {
 
+    private const val TYPE_TAG = "Type"
     private val TYPE_NAMES = BoatVariant.values().associateBy { it.name.lowercase() }
 
     override fun load(entity: KryptonBoat, data: CompoundTag) {
         BaseEntitySerializer.load(entity, data)
-        if (data.contains("Type", StringTag.ID)) entity.variant = TYPE_NAMES.getOrDefault(data.getString("Type"), BoatVariant.OAK)
+        if (data.contains(TYPE_TAG, StringTag.ID)) entity.variant = TYPE_NAMES.getOrDefault(data.getString(TYPE_TAG), BoatVariant.OAK)
     }
 
     override fun save(entity: KryptonBoat): CompoundTag.Builder = BaseEntitySerializer.save(entity).apply {
-        putString("Type", entity.variant.name.lowercase())
+        putStringEnum(TYPE_TAG, entity.variant)
     }
 }

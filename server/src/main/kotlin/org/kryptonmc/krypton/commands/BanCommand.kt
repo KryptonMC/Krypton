@@ -40,19 +40,22 @@ import org.kryptonmc.krypton.command.runs
 
 object BanCommand : InternalCommand {
 
+    private const val TARGETS_ARGUMENT = "targets"
+    private const val REASON_ARGUMENT = "reason"
+
     override fun register(dispatcher: CommandDispatcher<Sender>) {
         dispatcher.register(literal("ban") {
             permission(KryptonPermission.BAN)
-            argument("targets", GameProfileArgument) {
+            argument(TARGETS_ARGUMENT, GameProfileArgument) {
                 runs {
                     val server = it.source.server as? KryptonServer ?: return@runs
-                    ban(it.gameProfileArgument("targets").profiles(it.source), server, it.source)
+                    ban(it.gameProfileArgument(TARGETS_ARGUMENT).profiles(it.source), server, it.source)
                     Command.SINGLE_SUCCESS
                 }
-                argument("reason", StringArgumentType.string()) {
+                argument(REASON_ARGUMENT, StringArgumentType.string()) {
                     runs {
                         val server = it.source.server as? KryptonServer ?: return@runs
-                        ban(it.gameProfileArgument("targets").profiles(it.source), server, it.source, it.argument("reason"))
+                        ban(it.gameProfileArgument(TARGETS_ARGUMENT).profiles(it.source), server, it.source, it.argument(REASON_ARGUMENT))
                         Command.SINGLE_SUCCESS
                     }
                 }
@@ -62,10 +65,11 @@ object BanCommand : InternalCommand {
 
     @JvmStatic
     private fun ban(profiles: List<GameProfile>, server: KryptonServer, sender: Sender, reason: String = "Banned by operator.") {
+        val bannedPlayers = server.playerManager.bannedPlayers
         profiles.forEach { profile ->
-            if (server.playerManager.bannedPlayers.contains(profile)) return@forEach
+            if (bannedPlayers.contains(profile)) return@forEach
             val entry = BannedPlayerEntry(profile, reason = LegacyComponentSerializer.legacySection().deserialize(reason))
-            server.playerManager.bannedPlayers.add(entry)
+            bannedPlayers.add(entry)
             server.player(profile.uuid)?.let { kick(entry, it) }
             sender.sendMessage(Component.translatable("commands.ban.success", Component.text(profile.name), Component.text(reason)))
         }

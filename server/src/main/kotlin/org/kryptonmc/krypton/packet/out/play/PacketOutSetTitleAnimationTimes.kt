@@ -39,4 +39,6 @@ data class PacketOutSetTitleAnimationTimes(val fadeInTicks: Int, val stayTicks: 
     }
 }
 
-private fun Duration.toTicks(): Int = toSeconds().toInt() * 20
+private const val TICKS_PER_SECOND = 20
+
+private fun Duration.toTicks(): Int = toSeconds().toInt() * TICKS_PER_SECOND

@@ -53,7 +53,7 @@ abstract class KryptonArrowLike(world: KryptonWorld) : KryptonProjectile(world),
         get() = data.get(MetadataKeys.ArrowLike.PIERCING_LEVEL).toInt()
         set(value) = data.set(MetadataKeys.ArrowLike.PIERCING_LEVEL, value.toByte())
 
-    protected open val defaultHitGroundSound: SoundEvent
+    internal open val defaultHitGroundSound: SoundEvent
         get() = SoundEvents.ARROW_HIT
 
     init {

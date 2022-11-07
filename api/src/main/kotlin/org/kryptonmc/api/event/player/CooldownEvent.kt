@@ -32,7 +32,8 @@ public interface CooldownEvent : PlayerEvent, ResultedEvent<CooldownEvent.Result
     /**
      * The result of a [CooldownEvent].
      *
-     * @param cooldown the cooldown amount, in ticks
+     * @property isAllowed Whether the cooldown is allowed to be applied.
+     * @property cooldown The resulting cooldown amount, in ticks.
      */
     @JvmRecord
     @Immutable

@@ -14,15 +14,15 @@ package org.kryptonmc.api.world.rule
 public interface GameRuleHolder {
 
     /**
-     * All the rules this holder is holding
+     * All the rules this holder is holding.
      */
     public val rules: Map<GameRule<*>, *>
 
     /**
      * Gets the value of the provided [rule].
      *
-     * @param rule the rule
      * @param V the value type
+     * @param rule the rule
      * @return the value
      */
     public fun <V : Any> get(rule: GameRule<V>): V
@@ -30,6 +30,7 @@ public interface GameRuleHolder {
     /**
      * Sets the value of the given [rule] to the given [value].
      *
+     * @param V the value type
      * @param rule the rule
      * @param value the new value
      */

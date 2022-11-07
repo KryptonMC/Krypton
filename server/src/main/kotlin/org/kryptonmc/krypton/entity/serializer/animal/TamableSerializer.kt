@@ -24,23 +24,27 @@ import org.kryptonmc.krypton.entity.serializer.AgeableSerializer
 import org.kryptonmc.krypton.entity.serializer.EntitySerializer
 import org.kryptonmc.krypton.util.nbt.getUUID
 import org.kryptonmc.krypton.util.nbt.hasUUID
+import org.kryptonmc.krypton.util.nbt.putNullable
 import org.kryptonmc.krypton.util.nbt.putUUID
 import org.kryptonmc.nbt.CompoundTag
 
 object TamableSerializer : EntitySerializer<KryptonTamable> {
 
+    private const val OWNER_TAG = "Owner"
+    private const val SITTING_TAG = "Sitting"
+
     override fun load(entity: KryptonTamable, data: CompoundTag) {
         AgeableSerializer.load(entity, data)
         // TODO: Fix this. The vanilla implementation is weird, and this doesn't make any sense. It also needs old
         //  user conversion stuff that we don't have yet.
-        entity.data.set(MetadataKeys.Tamable.OWNER, data.getUUID("Owner"))
-        entity.isTamed = data.hasUUID("Owner")
-        entity.isOrderedToSit = data.getBoolean("Sitting")
+        entity.data.set(MetadataKeys.Tamable.OWNER, data.getUUID(OWNER_TAG))
+        entity.isTamed = data.hasUUID(OWNER_TAG)
+        entity.isOrderedToSit = data.getBoolean(SITTING_TAG)
         entity.isSitting = entity.isOrderedToSit
     }
 
     override fun save(entity: KryptonTamable): CompoundTag.Builder = AgeableSerializer.save(entity).apply {
-        entity.data.get(MetadataKeys.Tamable.OWNER)?.let { putUUID("Owner", it) }
-        putBoolean("Sitting", entity.isOrderedToSit)
+        putNullable(OWNER_TAG, entity.data.get(MetadataKeys.Tamable.OWNER), CompoundTag.Builder::putUUID)
+        putBoolean(SITTING_TAG, entity.isOrderedToSit)
     }
 }

@@ -70,7 +70,7 @@ data class PacketOutSetEntityMetadata(override val entityId: Int, val packedEntr
         private fun readEntries(buf: ByteBuf): List<MetadataHolder.Entry<*>>? {
             var entries: PersistentList.Builder<MetadataHolder.Entry<*>>? = null
             var index = buf.readUnsignedByte().toInt()
-            while (index != 255) {
+            while (index != EOF_MARKER) {
                 if (entries == null) entries = persistentListOf<MetadataHolder.Entry<*>>().builder()
                 val type = buf.readVarInt()
                 val serializer = MetadataSerializers.get(type) ?: throw DecoderException("Unknown serializer type $type!")

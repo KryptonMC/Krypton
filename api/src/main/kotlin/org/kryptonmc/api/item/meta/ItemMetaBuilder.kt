@@ -225,7 +225,7 @@ public interface ItemMetaBuilder<B : ItemMetaBuilder<B, I>, I : ItemMeta> {
     public fun build(): I
 
     /**
-     * A provider of an item meta builder
+     * A provider of an item meta builder.
      */
     public interface Provider<T> {
 

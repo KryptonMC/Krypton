@@ -13,7 +13,7 @@ import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.api.util.Catalogue
 
 /**
- * All of the built-in vanilla painting variants
+ * All of the built-in vanilla painting variants.
  */
 @Catalogue(PaintingVariant::class)
 public object PaintingVariants {

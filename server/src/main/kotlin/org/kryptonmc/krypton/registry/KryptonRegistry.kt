@@ -31,7 +31,6 @@ import org.kryptonmc.krypton.util.mapSuccess
 import org.kryptonmc.krypton.util.orElseError
 import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.compound
-import org.kryptonmc.nbt.list
 import org.kryptonmc.serialization.Codec
 import org.kryptonmc.serialization.Encoder
 import org.kryptonmc.serialization.nbt.NbtOps

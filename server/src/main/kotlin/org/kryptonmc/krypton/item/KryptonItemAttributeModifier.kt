@@ -66,7 +66,12 @@ class KryptonItemAttributeModifier(
         fun from(data: CompoundTag): KryptonItemAttributeModifier? {
             val type = Registries.ATTRIBUTE.get(Key.key(data.getString("AttributeName"))) ?: return null
             val slot = EquipmentSlots.fromName(data.getString("Slot")) ?: return null
-            return KryptonItemAttributeModifier(type, slot, getId(data), data.getString("Name"), data.getDouble("Amount"), getOperation(data))
+            return try {
+                KryptonItemAttributeModifier(type, slot, getId(data), data.getString("Name"), data.getDouble("Amount"), getOperation(data))
+            } catch (exception: Exception) {
+                LOGGER.warn("Unable to create attribute!", exception)
+                null
+            }
         }
     }
 }

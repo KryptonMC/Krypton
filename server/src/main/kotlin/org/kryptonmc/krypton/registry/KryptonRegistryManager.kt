@@ -28,6 +28,7 @@ import org.kryptonmc.api.resource.ResourceKeys
 @Suppress("UNCHECKED_CAST")
 object KryptonRegistryManager : RegistryManager {
 
+    @Suppress("LateinitUsage") // Here, we want it to throw if this is not initialized, as that's a bug.
     private lateinit var parent: KryptonRegistry<Registry<*>>
 
     @JvmStatic

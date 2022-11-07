@@ -48,9 +48,12 @@ class KryptonPig(world: KryptonWorld) : KryptonAnimal(world), Pig {
 
     companion object {
 
+        private const val DEFAULT_MAX_HEALTH = 10.0
+        private const val DEFAULT_MOVEMENT_SPEED = 0.25
+
         @JvmStatic
         fun attributes(): AttributeSupplier.Builder = KryptonMob.attributes()
-            .add(KryptonAttributeTypes.MAX_HEALTH, 10.0)
-            .add(KryptonAttributeTypes.MOVEMENT_SPEED, 0.25)
+            .add(KryptonAttributeTypes.MAX_HEALTH, DEFAULT_MAX_HEALTH)
+            .add(KryptonAttributeTypes.MOVEMENT_SPEED, DEFAULT_MOVEMENT_SPEED)
     }
 }

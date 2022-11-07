@@ -93,7 +93,7 @@ object WhitelistCommand : InternalCommand {
 
     @JvmStatic
     private fun whitelistIp(server: KryptonServer, target: String, sender: Sender) {
-        if (target.matches(BanIpCommand.IP_ADDRESS_PATTERN)) {
+        if (BanIpCommand.IP_ADDRESS_PATTERN.matcher(target).matches()) {
             if (server.playerManager.whitelistedIps.contains(target)) {
                 sender.sendMessage(Component.translatable("commands.whitelist.add.failed"))
                 return

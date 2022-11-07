@@ -80,11 +80,14 @@ class KryptonCat(world: KryptonWorld) : KryptonTamable(world), Cat {
     companion object {
 
         private val VARIANTS = CatVariant.values()
+        private const val DEFAULT_MAX_HEALTH = 10.0
+        private const val DEFAULT_MOVEMENT_SPEED = 0.3
+        private const val DEFAULT_ATTACK_DAMAGE = 3.0
 
         @JvmStatic
         fun attributes(): AttributeSupplier.Builder = KryptonMob.attributes()
-            .add(KryptonAttributeTypes.MAX_HEALTH, 10.0)
-            .add(KryptonAttributeTypes.MOVEMENT_SPEED, 0.3)
-            .add(KryptonAttributeTypes.ATTACK_DAMAGE, 3.0)
+            .add(KryptonAttributeTypes.MAX_HEALTH, DEFAULT_MAX_HEALTH)
+            .add(KryptonAttributeTypes.MOVEMENT_SPEED, DEFAULT_MOVEMENT_SPEED)
+            .add(KryptonAttributeTypes.ATTACK_DAMAGE, DEFAULT_ATTACK_DAMAGE)
     }
 }

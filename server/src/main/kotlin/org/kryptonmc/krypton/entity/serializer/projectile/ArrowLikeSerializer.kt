@@ -19,52 +19,64 @@
 package org.kryptonmc.krypton.entity.serializer.projectile
 
 import net.kyori.adventure.key.Key
-import org.kryptonmc.api.effect.sound.SoundEvents
 import org.kryptonmc.api.entity.projectile.ArrowLike
 import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.krypton.entity.projectile.KryptonArrowLike
-import org.kryptonmc.krypton.entity.projectile.KryptonTrident
 import org.kryptonmc.krypton.entity.serializer.EntitySerializer
+import org.kryptonmc.krypton.util.nbt.hasNumber
+import org.kryptonmc.krypton.util.nbt.putNullable
+import org.kryptonmc.krypton.util.nbt.putKeyed
+import org.kryptonmc.krypton.world.block.putBlockState
 import org.kryptonmc.krypton.world.block.toBlockState
-import org.kryptonmc.krypton.world.block.toNBT
 import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.StringTag
 
 object ArrowLikeSerializer : EntitySerializer<KryptonArrowLike> {
 
+    private const val CRIT_TAG = "crit"
+    private const val DAMAGE_TAG = "damage"
+    private const val IN_BLOCK_TAG = "inBlockState"
+    private const val IN_GROUND_TAG = "inGround"
+    private const val LIFE_TAG = "life"
+    private const val PICKUP_TAG = "pickup"
+    private const val PIERCE_LEVEL_TAG = "PierceLevel"
+    private const val SHAKE_TAG = "shake"
+    private const val SHOT_FROM_CROSSBOW_TAG = "ShotFromCrossbow"
+    private const val SOUND_EVENT_TAG = "SoundEvent"
+
+    private const val MAX_SHAKE_TIME = 255
     private val PICKUP_RULES = ArrowLike.PickupRule.values()
 
     override fun load(entity: KryptonArrowLike, data: CompoundTag) {
         ProjectileSerializer.load(entity, data)
-        entity.isCritical = data.getBoolean("crit")
-        if (data.contains("damage", 99)) entity.baseDamage = data.getDouble("damage")
-        if (data.contains("inBlockState", CompoundTag.ID)) entity.stuckInBlock = data.getCompound("inBlockState").toBlockState()
-        entity.isInGround = data.getBoolean("inGround")
-        entity.life = data.getShort("life").toInt()
+        entity.isCritical = data.getBoolean(CRIT_TAG)
+        if (data.hasNumber(DAMAGE_TAG)) entity.baseDamage = data.getDouble(DAMAGE_TAG)
+        if (data.contains(IN_BLOCK_TAG, CompoundTag.ID)) entity.stuckInBlock = data.getCompound(IN_BLOCK_TAG).toBlockState()
+        entity.isInGround = data.getBoolean(IN_GROUND_TAG)
+        entity.life = data.getShort(LIFE_TAG).toInt()
 
-        val pickupOrdinal = data.getInt("pickup")
+        val pickupOrdinal = data.getInt(PICKUP_TAG)
         val pickupIndex = if (pickupOrdinal in PICKUP_RULES.indices) pickupOrdinal else 0
         entity.pickupRule = PICKUP_RULES[pickupIndex]
-        entity.piercingLevel = data.getByte("PierceLevel").toInt()
-        entity.shakeTime = data.getByte("shake").toInt() and 255
-        entity.wasShotFromCrossbow = data.getBoolean("ShotFromCrossbow")
+        entity.piercingLevel = data.getByte(PIERCE_LEVEL_TAG).toInt()
+        entity.shakeTime = data.getByte(SHAKE_TAG).toInt() and MAX_SHAKE_TIME
+        entity.wasShotFromCrossbow = data.getBoolean(SHOT_FROM_CROSSBOW_TAG)
 
-        if (data.contains("SoundEvent", StringTag.ID)) {
-            val defaultHitGroundSound = if (entity is KryptonTrident) SoundEvents.TRIDENT_HIT_GROUND else SoundEvents.ARROW_HIT
-            entity.sound = Registries.SOUND_EVENT.get(Key.key(data.getString("SoundEvent"))) ?: defaultHitGroundSound
+        if (data.contains(SOUND_EVENT_TAG, StringTag.ID)) {
+            entity.sound = Registries.SOUND_EVENT.get(Key.key(data.getString(SOUND_EVENT_TAG))) ?: entity.defaultHitGroundSound
         }
     }
 
     override fun save(entity: KryptonArrowLike): CompoundTag.Builder = ProjectileSerializer.save(entity).apply {
-        putBoolean("crit", entity.isCritical)
-        putDouble("damage", entity.baseDamage)
-        if (entity.stuckInBlock != null) put("inBlockState", entity.stuckInBlock!!.toNBT())
-        putBoolean("inGround", entity.isInGround)
-        putShort("life", entity.life.toShort())
-        putByte("pickup", entity.pickupRule.ordinal.toByte())
-        putByte("PierceLevel", entity.piercingLevel.toByte())
-        putByte("shake", entity.shakeTime.toByte())
-        putBoolean("ShotFromCrossbow", entity.wasShotFromCrossbow)
-        putString("SoundEvent", entity.sound.key().asString())
+        putBoolean(CRIT_TAG, entity.isCritical)
+        putDouble(DAMAGE_TAG, entity.baseDamage)
+        putNullable(IN_BLOCK_TAG, entity.stuckInBlock, CompoundTag.Builder::putBlockState)
+        putBoolean(IN_GROUND_TAG, entity.isInGround)
+        putShort(LIFE_TAG, entity.life.toShort())
+        putByte(PICKUP_TAG, entity.pickupRule.ordinal.toByte())
+        putByte(PIERCE_LEVEL_TAG, entity.piercingLevel.toByte())
+        putByte(SHAKE_TAG, entity.shakeTime.toByte())
+        putBoolean(SHOT_FROM_CROSSBOW_TAG, entity.wasShotFromCrossbow)
+        putKeyed(SOUND_EVENT_TAG, entity.sound)
     }
 }

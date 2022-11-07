@@ -4,6 +4,7 @@ import org.apache.tools.ant.filters.ReplaceTokens
 
 plugins {
     id("com.github.johnrengelman.shadow")
+    id("io.gitlab.arturbosch.detekt")
 }
 
 dependencies {
@@ -11,7 +12,9 @@ dependencies {
     implementation(projects.annotationProcessor)
 
     // Networking
-    api(libs.bundles.netty)
+    api(libs.netty.buffer)
+    api(libs.netty.handler)
+    api(libs.netty.transport)
     implementation(libs.netty.transport.native.epoll) {
         artifact {
             classifier = "linux-x86_64"
@@ -43,7 +46,6 @@ dependencies {
 
     // Collections and caching
     implementation(libs.fastutil)
-    implementation(libs.flare)
     implementation(libs.flare.fastutil)
     implementation(libs.caffeine)
 
@@ -52,7 +54,9 @@ dependencies {
     implementation(libs.bstats)
     implementation(libs.kotlinx.collections.immutable)
 
-    testImplementation(libs.bundles.junit)
+    testImplementation(libs.junit.api)
+    testImplementation(libs.junit.engine)
+    testImplementation(libs.kotlin.test.junit)
     testImplementation(libs.junit.platform.runner)
     testImplementation(libs.mockk)
     testImplementation(libs.jimfs)
@@ -113,3 +117,4 @@ applyImplJarMetadata("org.kryptonmc.server", "Krypton") {
     put("Main-Class", "org.kryptonmc.krypton.KryptonKt")
     put("Multi-Release", "true")
 }
+setupDetekt()

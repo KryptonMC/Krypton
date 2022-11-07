@@ -24,12 +24,14 @@ import org.kryptonmc.nbt.CompoundTag
 
 object SpectralArrowSerializer : EntitySerializer<KryptonSpectralArrow> {
 
+    private const val DURATION_TAG = "Duration"
+
     override fun load(entity: KryptonSpectralArrow, data: CompoundTag) {
         ArrowLikeSerializer.load(entity, data)
-        entity.duration = data.getInt("Duration")
+        entity.duration = data.getInt(DURATION_TAG)
     }
 
     override fun save(entity: KryptonSpectralArrow): CompoundTag.Builder = ArrowLikeSerializer.save(entity).apply {
-        putInt("Duration", entity.duration)
+        putInt(DURATION_TAG, entity.duration)
     }
 }

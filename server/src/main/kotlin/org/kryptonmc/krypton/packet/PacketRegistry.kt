@@ -142,6 +142,7 @@ object PacketRegistry {
         return constructor.create(buf)
     }
 
+    @Suppress("LongMethod", "MagicNumber")
     fun bootstrap() {
         // Handshake
         register(PacketState.HANDSHAKE, 0x00, ::PacketInHandshake)
@@ -272,8 +273,10 @@ object PacketRegistry {
         toId.put(T::class.java, id)
     }
 
+    // This encoding places the state in the upper 16 bits, and the ID in the lower 16 bits.
     @JvmStatic
-    private fun encode(state: PacketState, id: Int): Int = (state.ordinal shl 16) or (id and 0xFFFF)
+    @Suppress("MagicNumber") // Explained above
+    private fun encode(state: PacketState, id: Int): Int = state.ordinal shl 16 or (id and 0xFFFF)
 
     private fun interface PacketConstructor {
 

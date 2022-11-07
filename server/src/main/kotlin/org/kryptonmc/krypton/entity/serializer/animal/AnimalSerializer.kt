@@ -22,20 +22,23 @@ import org.kryptonmc.krypton.entity.animal.KryptonAnimal
 import org.kryptonmc.krypton.entity.serializer.AgeableSerializer
 import org.kryptonmc.krypton.entity.serializer.EntitySerializer
 import org.kryptonmc.krypton.util.nbt.getUUID
-import org.kryptonmc.krypton.util.nbt.hasUUID
+import org.kryptonmc.krypton.util.nbt.putNullable
 import org.kryptonmc.krypton.util.nbt.putUUID
 import org.kryptonmc.nbt.CompoundTag
 
 object AnimalSerializer : EntitySerializer<KryptonAnimal> {
 
+    private const val LOVE_TAG = "InLove"
+    private const val LOVE_CAUSE_TAG = "LoveCause"
+
     override fun load(entity: KryptonAnimal, data: CompoundTag) {
         AgeableSerializer.load(entity, data)
-        entity.inLoveTime = data.getInt("InLove")
-        entity.loveCause = if (data.hasUUID("LoveCause")) data.getUUID("LoveCause") else null
+        entity.inLoveTime = data.getInt(LOVE_TAG)
+        entity.loveCause = data.getUUID(LOVE_CAUSE_TAG)
     }
 
     override fun save(entity: KryptonAnimal): CompoundTag.Builder = AgeableSerializer.save(entity).apply {
-        putInt("InLove", entity.inLoveTime)
-        if (entity.loveCause != null) putUUID("LoveCause", entity.loveCause!!)
+        putInt(LOVE_TAG, entity.inLoveTime)
+        putNullable(LOVE_CAUSE_TAG, entity.loveCause, CompoundTag.Builder::putUUID)
     }
 }

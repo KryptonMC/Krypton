@@ -32,43 +32,43 @@ object Collisions {
     const val EPSILON: Double = Shapes.EPSILON
 
     @JvmStatic
-    fun isEmpty(box: BoundingBox): Boolean = (box.maximumX - box.minimumX) < EPSILON &&
-            (box.maximumY - box.minimumY) < EPSILON &&
-            (box.maximumZ - box.minimumZ) < EPSILON
+    fun isEmpty(box: BoundingBox): Boolean = box.maximumX - box.minimumX < EPSILON &&
+            box.maximumY - box.minimumY < EPSILON &&
+            box.maximumZ - box.minimumZ < EPSILON
 
     @JvmStatic
-    fun voxelShapeIntersect(box1: BoundingBox, box2: BoundingBox): Boolean = (box1.minimumX - box2.maximumX) < -EPSILON &&
-            (box1.maximumX - box2.minimumX) > EPSILON &&
-            (box1.minimumY - box2.maximumY) < -EPSILON &&
-            (box1.maximumY - box2.minimumY) > EPSILON &&
-            (box1.minimumZ - box2.maximumZ) < -EPSILON &&
-            (box1.maximumZ - box2.minimumZ) > EPSILON
+    fun voxelShapeIntersect(box1: BoundingBox, box2: BoundingBox): Boolean = box1.minimumX - box2.maximumX < -EPSILON &&
+            box1.maximumX - box2.minimumX > EPSILON &&
+            box1.minimumY - box2.maximumY < -EPSILON &&
+            box1.maximumY - box2.minimumY > EPSILON &&
+            box1.minimumZ - box2.maximumZ < -EPSILON &&
+            box1.maximumZ - box2.minimumZ > EPSILON
 
     @JvmStatic
     fun voxelShapeIntersect(box: BoundingBox, minX: Double, minY: Double, minZ: Double, maxX: Double, maxY: Double, maxZ: Double): Boolean =
-        (box.minimumX - maxX) < -EPSILON && (box.maximumX - minX) > EPSILON &&
-                (box.minimumY - maxY) < -EPSILON && (box.maximumY - minY) > EPSILON &&
-                (box.minimumZ - maxZ) < -EPSILON && (box.maximumZ - minZ) > EPSILON
+        box.minimumX - maxX < -EPSILON && box.maximumX - minX > EPSILON &&
+                box.minimumY - maxY < -EPSILON && box.maximumY - minY > EPSILON &&
+                box.minimumZ - maxZ < -EPSILON && box.maximumZ - minZ > EPSILON
 
     @JvmStatic
     fun collideX(target: BoundingBox, source: BoundingBox, sourceMove: Double): Double =
         collide(sourceMove, { target.minimumX - source.maximumX }, { target.maximumX - source.minimumX }) {
-            (source.minimumY - target.maximumY) < -EPSILON && (source.maximumY - target.minimumY) > EPSILON &&
-                    (source.minimumZ - target.maximumZ) < -EPSILON && (source.maximumZ - target.minimumZ) > EPSILON
+            source.minimumY - target.maximumY < -EPSILON && source.maximumY - target.minimumY > EPSILON &&
+                    source.minimumZ - target.maximumZ < -EPSILON && source.maximumZ - target.minimumZ > EPSILON
         }
 
     @JvmStatic
     fun collideY(target: BoundingBox, source: BoundingBox, sourceMove: Double): Double =
         collide(sourceMove, { target.minimumY - source.maximumY }, { target.maximumY - source.minimumY }) {
-            (source.minimumX - target.maximumX) < -EPSILON && (source.maximumX - target.minimumX) > EPSILON &&
-                    (source.minimumZ - target.maximumZ) < -EPSILON && (source.maximumZ - target.minimumZ) > EPSILON
+            source.minimumX - target.maximumX < -EPSILON && source.maximumX - target.minimumX > EPSILON &&
+                    source.minimumZ - target.maximumZ < -EPSILON && source.maximumZ - target.minimumZ > EPSILON
         }
 
     @JvmStatic
     fun collideZ(target: BoundingBox, source: BoundingBox, sourceMove: Double): Double =
         collide(sourceMove, { target.minimumZ - source.maximumZ }, { target.maximumZ - source.minimumZ }) {
-            (source.minimumX - target.maximumX) < -EPSILON && (source.maximumX - target.minimumX) > EPSILON &&
-                    (source.minimumY - target.maximumY) < -EPSILON && (source.maximumY - target.minimumY) > EPSILON
+            source.minimumX - target.maximumX < -EPSILON && source.maximumX - target.minimumX > EPSILON &&
+                    source.minimumY - target.maximumY < -EPSILON && source.maximumY - target.minimumY > EPSILON
         }
 
     @JvmStatic

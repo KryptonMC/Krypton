@@ -39,6 +39,6 @@ object GameProfileArgument : ArgumentType<EntityQuery> {
         while (reader.canRead() && reader.peek() != CommandDispatcher.ARGUMENT_SEPARATOR_CHAR) {
             reader.skip()
         }
-        return EntityQuery(emptyList(), EntityQuery.Selector.PLAYER, reader.string.substring(position, reader.cursor))
+        return EntityQuery(EntityQuery.Selector.PLAYER, reader.string.substring(position, reader.cursor))
     }
 }

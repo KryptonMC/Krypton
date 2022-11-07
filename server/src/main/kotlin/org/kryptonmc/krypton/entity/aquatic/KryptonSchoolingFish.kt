@@ -21,4 +21,5 @@ package org.kryptonmc.krypton.entity.aquatic
 import org.kryptonmc.api.entity.aquatic.SchoolingFish
 import org.kryptonmc.krypton.world.KryptonWorld
 
+@Suppress("UnnecessaryAbstractClass") // This is designed for inheritance and not for instantiation, so it's abstract.
 abstract class KryptonSchoolingFish(world: KryptonWorld) : KryptonFish(world), SchoolingFish
