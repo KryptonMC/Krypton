@@ -38,6 +38,7 @@ import java.util.concurrent.CompletableFuture
 import java.util.function.BiPredicate
 import java.util.function.Predicate
 
+@Suppress("LongParameterList")
 class KryptonArgumentCommandNode<S, T>(
     name: String,
     private val richType: ArgumentType<T>,

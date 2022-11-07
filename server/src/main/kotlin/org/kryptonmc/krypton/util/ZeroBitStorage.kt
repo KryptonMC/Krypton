@@ -18,25 +18,29 @@
  */
 package org.kryptonmc.krypton.util
 
-class ZeroBitStorage(override val size: Int) : BitStorage {
+class ZeroBitStorage(size: Int) : AbstractBitStorage(size) {
 
     override val bits: Int = 0
     override val data: LongArray = RAW
 
     override fun getAndSet(index: Int, value: Int): Int {
-        require(index in 0 until size) { "Index must be between 0 and $size, was $index" }
-        require(value == 0) { "Value must be 0, was $value" }
+        checkIndex(index)
+        checkValue(value)
         return 0
     }
 
     override fun get(index: Int): Int {
-        require(index in 0 until size) { "Index must be between 0 and $size, was $index" }
+        checkIndex(index)
         return 0
     }
 
     override fun set(index: Int, value: Int) {
-        require(index in 0 until size) { "Index must be between 0 and $size, was $index" }
-        require(value == 0) { "Value must be 0, was $value" }
+        checkIndex(index)
+        checkValue(value)
+    }
+
+    private fun checkValue(value: Int) {
+        require(value == 0) { "Value must be 0, was $value!" }
     }
 
     override fun forEach(consumer: StorageConsumer) {

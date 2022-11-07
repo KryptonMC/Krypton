@@ -29,17 +29,18 @@ import org.kryptonmc.nbt.list
 
 class KryptonBannerMeta(data: CompoundTag) : AbstractItemMeta<KryptonBannerMeta>(data), BannerMeta {
 
-    override val patterns: ImmutableList<BannerPattern> = data.mapToList("Patterns", CompoundTag.ID) { KryptonBannerPattern.from(it as CompoundTag) }
+    override val patterns: ImmutableList<BannerPattern> =
+        data.mapToList(PATTERNS_TAG, CompoundTag.ID) { KryptonBannerPattern.from(it as CompoundTag) }
 
     override fun copy(data: CompoundTag): KryptonBannerMeta = KryptonBannerMeta(data)
 
-    override fun withPatterns(patterns: List<BannerPattern>): BannerMeta = copy(data.setPatterns(patterns))
+    override fun withPatterns(patterns: List<BannerPattern>): BannerMeta = copy(put(data, PATTERNS_TAG, patterns, BannerPattern::save))
 
-    override fun withPattern(pattern: BannerPattern): BannerMeta = copy(data.update("Patterns", CompoundTag.ID) { it.add(pattern.save()) })
+    override fun withPattern(pattern: BannerPattern): BannerMeta = copy(data.update(PATTERNS_TAG, CompoundTag.ID) { it.add(pattern.save()) })
 
-    override fun withoutPattern(index: Int): BannerMeta = copy(data.update("Patterns", CompoundTag.ID) { it.remove(index) })
+    override fun withoutPattern(index: Int): BannerMeta = copy(data.update(PATTERNS_TAG, CompoundTag.ID) { it.remove(index) })
 
-    override fun withoutPattern(pattern: BannerPattern): BannerMeta = copy(data.update("Patterns", CompoundTag.ID) { it.remove(pattern.save()) })
+    override fun withoutPattern(pattern: BannerPattern): BannerMeta = copy(data.update(PATTERNS_TAG, CompoundTag.ID) { it.remove(pattern.save()) })
 
     override fun toBuilder(): BannerMeta.Builder = Builder()
 
@@ -64,12 +65,12 @@ class KryptonBannerMeta(data: CompoundTag) : AbstractItemMeta<KryptonBannerMeta>
         override fun build(): KryptonBannerMeta = KryptonBannerMeta(buildData().build())
 
         override fun buildData(): CompoundTag.Builder = super.buildData().apply {
-            if (patterns.isNotEmpty()) list("Patterns") { patterns.forEach { it.save() } }
+            if (patterns.isNotEmpty()) list(PATTERNS_TAG) { patterns.forEach { it.save() } }
         }
     }
-}
 
-private fun CompoundTag.setPatterns(patterns: List<BannerPattern>): CompoundTag {
-    if (patterns.isEmpty()) return remove("Patterns")
-    return put("Patterns", list { patterns.forEach { it.save() } })
+    companion object {
+
+        private const val PATTERNS_TAG = "Patterns"
+    }
 }

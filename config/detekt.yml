@@ -1,0 +1,197 @@
+# This is a shared configuration that is used by all projects that use detekt. It is not intended to be used alone,
+# only with another configuration.
+
+config:
+  validation: true
+  warningsAsErrors: false
+
+processors:
+  active: true
+
+console-reports:
+  active: true
+
+output-reports:
+  active: true
+  exclude:
+    - 'TxtOutputReport'
+    - 'SarifOutputReport'
+
+comments:
+  active: true
+  DeprecatedBlockTag:
+    active: true
+  EndOfSentenceFormat:
+    active: true
+  KDocReferencesNonPublicProperty:
+    active: true
+  OutdatedDocumentation:
+    active: true
+    allowParamOnConstructorProperties: true
+
+complexity:
+  active: true
+  LabeledExpression:
+    active: true
+  LargeClass:
+    ignoreAnnotated: ["Catalogue"]
+  MethodOverloading:
+    active: true
+  NestedScopeFunctions:
+    active: true
+  ReplaceSafeCallChainWithRun:
+    active: true
+  StringLiteralDuplication:
+    active: true
+    ignoreAnnotated: ["Catalogue"]
+  TooManyFunctions:
+    ignoreOverridden: true
+
+coroutines:
+  active: true
+  GlobalCoroutineUsage:
+    active: true
+  SuspendFunWithCoroutineScopeReceiver:
+    active: true
+
+exceptions:
+  active: true
+  NotImplementedDeclaration:
+    active: true
+  ObjectExtendsThrowable:
+    active: true
+  ThrowingExceptionInMain:
+    active: true
+  TooGenericExceptionCaught:
+    active: false
+  TooGenericExceptionThrown:
+    active: false
+
+naming:
+  EnumNaming:
+    enumEntryPattern: '[A-Z0-9_]+'
+  FunctionMaxLength:
+    active: true
+  FunctionMinLength:
+    active: true
+    minimumFunctionNameLength: 2 # Allow 'of' factory functions
+  LambdaParameterNaming:
+    active: true
+  MemberNameEqualsClassName:
+    active: false
+  NonBooleanPropertyPrefixedWithIs:
+    active: true
+  VariableMaxLength:
+    active: true
+  VariableMinLength:
+    active: true
+
+performance:
+  CouldBeSequence:
+    active: true
+
+potential-bugs:
+  CastToNullableType:
+    active: true
+  Deprecation:
+    active: true
+  DontDowncastCollectionTypes:
+    active: true
+  ElseCaseInsteadOfExhaustiveWhen:
+    active: true
+  # No expression functions should evaluate to Unit. It is strange and doesn't make much sense, as unit is meant to represent the absence of
+  # a value, and an expression function is meant to return the result of an expression.
+  ImplicitUnitReturnType:
+    active: true
+    allowExplicitReturnType: false
+  # Using lateinit is buggy and error-prone, as in many cases, if not guarded fiercely, it can lead to uninitialized exceptions.
+  # Using null instead forces you to confront the possibility that a variable may have not been initialized because another thread
+  # accessed it before it had a chance to be initialized.
+  LateinitUsage:
+    active: true
+  MissingPackageDeclaration:
+    active: true
+  NullableToStringCall:
+    active: true
+  UnconditionalJumpStatementInLoop:
+    active: true
+
+style:
+  CanBeNonNullable:
+    active: true
+  CascadingCallWrapping:
+    active: true
+  ClassOrdering:
+    active: true
+  CollapsibleIfStatements:
+    active: true
+  DataClassShouldBeImmutable:
+    active: true
+  DestructuringDeclarationWithTooManyEntries:
+    active: true
+    maxDestructuringEntries: 3
+  EqualsOnSignatureLine:
+    active: true
+  ExpressionBodySyntax:
+    active: true
+  ForbiddenComment:
+    active: false # TODO: Possibly turn this on when we go stable
+  ForbiddenVoid:
+    active: true
+    ignoreUsageInGenerics: true
+  MagicNumber:
+    active: true
+    ignoreEnums: true
+    ignoreRanges: true
+    ignoreNamedArgument: true
+    ignorePropertyDeclaration: true
+    ignoreLocalVariableDeclaration: true
+    ignoreAnnotation: true
+    ignoreNumbers: ["-3", "-2", "-1", "-0.5", "0", "0.5", "1", "2", "3", "4", "8", "16", "32", "64", "90", "99", "180", "360"]
+    excludes: ["**/test/**"]
+  MandatoryBracesIfStatements:
+    active: true
+  MandatoryBracesLoops:
+    active: true
+  MaxLineLength:
+    active: true
+    maxLineLength: 150
+    excludeCommentStatements: true
+  MultilineLambdaItParameter:
+    active: true
+  NoTabs:
+    active: true
+  NullableBooleanCheck:
+    active: true
+  OptionalWhenBraces:
+    active: true
+  RedundantExplicitType:
+    active: true
+  RedundantHigherOrderMapUsage:
+    active: true
+  SpacingBetweenPackageAndImports:
+    active: true
+  ThrowsCount:
+    max: 4
+  TrailingWhitespace:
+    active: true
+  UnnecessaryAnnotationUseSiteTarget:
+    active: true
+  UnnecessaryBackticks:
+    active: true
+  UnnecessaryInnerClass:
+    active: true
+  UnnecessaryLet:
+    active: true
+  UnnecessaryParentheses:
+    active: true
+  UntilInsteadOfRangeTo:
+    active: true
+  UnusedImports:
+    active: true
+  UseEmptyCounterpart:
+    active: true
+  UseIfEmptyOrIfBlank:
+    active: true
+  UseIfInsteadOfWhen:
+    active: true

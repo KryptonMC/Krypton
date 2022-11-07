@@ -26,7 +26,6 @@ import com.google.gson.JsonParseException
 import com.google.gson.JsonPrimitive
 import com.google.gson.stream.JsonReader
 import com.google.gson.stream.JsonWriter
-import me.bardy.gsonkt.getAdapter
 import java.io.IOException
 import java.io.Reader
 import java.io.StringWriter
@@ -42,7 +41,7 @@ object GsonHelper {
     @JvmStatic
     fun parse(reader: Reader, lenient: Boolean): JsonObject {
         try {
-            return GSON.getAdapter<JsonObject>().read(JsonReader(reader).apply { isLenient = lenient })
+            return GSON.getAdapter(JsonObject::class.java).read(JsonReader(reader).apply { isLenient = lenient })
         } catch (exception: IOException) {
             throw JsonParseException(exception)
         }

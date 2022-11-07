@@ -20,9 +20,6 @@ package org.kryptonmc.krypton.command.arguments.item
 
 import com.mojang.brigadier.StringReader
 import com.mojang.brigadier.arguments.ArgumentType
-import com.mojang.brigadier.context.CommandContext
-import org.kryptonmc.api.command.Sender
-import org.kryptonmc.krypton.command.argument.argument
 
 /**
  * An argument type that parses item stacks.

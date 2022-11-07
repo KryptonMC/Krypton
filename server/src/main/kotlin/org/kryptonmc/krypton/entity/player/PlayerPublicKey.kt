@@ -31,7 +31,6 @@ import org.kryptonmc.krypton.util.writeInstant
 import org.kryptonmc.krypton.util.writeVarIntByteArray
 import java.security.PublicKey
 import java.time.Instant
-import java.util.Objects
 
 @JvmRecord
 data class PlayerPublicKey(val data: Data) {

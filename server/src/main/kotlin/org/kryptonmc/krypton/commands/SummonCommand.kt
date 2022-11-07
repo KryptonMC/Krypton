@@ -46,24 +46,27 @@ object SummonCommand : InternalCommand {
     private val ERROR_FAILED = Component.translatable("commands.summon.failed").toExceptionType()
     private val ERROR_INVALID_POSITION = Component.translatable("commands.summon.invalidPosition").toExceptionType()
 
+    private const val ENTITY_ARGUMENT = "entity"
+    private const val POSITION_ARGUMENT = "position"
+
     override fun register(dispatcher: CommandDispatcher<Sender>) {
         dispatcher.register(literal("summon") {
             permission(KryptonPermission.SUMMON)
-            argument("entity", SummonEntityArgument) {
+            argument(ENTITY_ARGUMENT, SummonEntityArgument) {
                 suggests(SuggestionProviders.SUMMONABLE_ENTITIES)
                 runs {
                     val sender = it.source as? KryptonPlayer ?: return@runs
-                    spawnEntity(sender, it.summonableEntity("entity"), sender.location)
+                    spawnEntity(sender, it.summonableEntity(ENTITY_ARGUMENT), sender.location)
                 }
-                argument("position", VectorArgument.normal()) {
+                argument(POSITION_ARGUMENT, VectorArgument.normal()) {
                     runs {
                         val sender = it.source as? KryptonPlayer ?: return@runs
-                        spawnEntity(sender, it.summonableEntity("entity"), it.vectorArgument("position"))
+                        spawnEntity(sender, it.summonableEntity(ENTITY_ARGUMENT), it.vectorArgument(POSITION_ARGUMENT))
                     }
                     argument("nbt", NBTCompoundArgument) {
                         runs {
                             val sender = it.source as? KryptonPlayer ?: return@runs
-                            spawnEntity(sender, it.summonableEntity("entity"), it.vectorArgument("position"), it.argument("nbt"))
+                            spawnEntity(sender, it.summonableEntity(ENTITY_ARGUMENT), it.vectorArgument(POSITION_ARGUMENT), it.argument("nbt"))
                         }
                     }
                 }

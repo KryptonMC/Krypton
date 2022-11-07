@@ -36,10 +36,10 @@ data class PacketOutEncryptionRequest(val serverId: String, val publicKey: ByteA
 
     constructor(publicKey: ByteArray, verifyToken: ByteArray) : this("", publicKey, verifyToken)
 
-    constructor(buf: ByteBuf) : this(buf.readString(), buf.readVarIntByteArray(), buf.readVarIntByteArray())
+    constructor(buf: ByteBuf) : this(buf.readString(MAXIMUM_SERVER_ID_LENGTH), buf.readVarIntByteArray(), buf.readVarIntByteArray())
 
     override fun write(buf: ByteBuf) {
-        buf.writeString(serverId, 20)
+        buf.writeString(serverId, MAXIMUM_SERVER_ID_LENGTH)
         buf.writeVarIntByteArray(publicKey)
         buf.writeVarIntByteArray(verifyToken)
     }
@@ -55,5 +55,10 @@ data class PacketOutEncryptionRequest(val serverId: String, val publicKey: ByteA
         result = 31 * result + publicKey.contentHashCode()
         result = 31 * result + verifyToken.contentHashCode()
         return result
+    }
+
+    companion object {
+
+        private const val MAXIMUM_SERVER_ID_LENGTH = 20
     }
 }

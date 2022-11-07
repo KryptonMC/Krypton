@@ -22,6 +22,7 @@ import org.kryptonmc.api.entity.EntityTypes
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.util.nbt.getUUID
 import org.kryptonmc.krypton.util.nbt.hasUUID
+import org.kryptonmc.krypton.util.nbt.putNullable
 import org.kryptonmc.krypton.util.nbt.putUUID
 import org.kryptonmc.nbt.CompoundTag
 import java.util.UUID
@@ -48,14 +49,17 @@ interface Neutral {
 
     companion object {
 
+        private const val ANGER_TIME_TAG = "AngerTime"
+        private const val ANGRY_AT_TAG = "AngryAt"
+
         @JvmStatic
         fun <E> loadAngerData(entity: E, data: CompoundTag) where E : KryptonEntity, E : Neutral {
-            entity.remainingAngerTime = data.getInt("AngerTime")
-            if (!data.hasUUID("AngryAt")) {
+            entity.remainingAngerTime = data.getInt(ANGER_TIME_TAG)
+            if (!data.hasUUID(ANGRY_AT_TAG)) {
                 entity.angerTarget = null
                 return
             }
-            val targetId = data.getUUID("AngryAt")!!
+            val targetId = data.getUUID(ANGRY_AT_TAG)!!
             entity.angerTarget = targetId
             val target = entity.world.entityManager.get(targetId)
             if (target != null) {
@@ -66,8 +70,8 @@ interface Neutral {
 
         @JvmStatic
         fun saveAngerData(entity: Neutral, data: CompoundTag.Builder): CompoundTag.Builder = data.apply {
-            putInt("AngerTime", entity.remainingAngerTime)
-            if (entity.angerTarget != null) putUUID("AngryAt", entity.angerTarget!!)
+            putInt(ANGER_TIME_TAG, entity.remainingAngerTime)
+            putNullable(ANGRY_AT_TAG, entity.angerTarget, CompoundTag.Builder::putUUID)
         }
     }
 }

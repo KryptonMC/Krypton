@@ -8,13 +8,13 @@ sourceSets.main {
 
 dependencies {
     // Kotlin
-    api(libs.bundles.kotlin)
+    api(libs.kotlin.stdlib)
+    api(libs.kotlin.reflect)
     api(libs.kotlinx.coroutines)
 
     // Core
     api(libs.guava)
     api(libs.gson)
-    api(libs.gsonKt)
     api(libs.commonsLang)
     api(libs.log4j.api)
 
@@ -23,10 +23,20 @@ dependencies {
     api(libs.kotlinGuice)
 
     // Adventure
-    api(libs.bundles.adventure)
+    api(libs.adventure.api)
+    api(libs.adventure.extraKotlin)
+    api(libs.adventure.minimessage)
+    api(libs.adventure.serializer.gson)
+    api(libs.adventure.serializer.legacy)
+    api(libs.adventure.serializer.plain)
+    api(libs.adventure.serializer.configurate)
 
     // Configurate
-    api(libs.bundles.configurate)
+    api(libs.configurate.core)
+    api(libs.configurate.gson)
+    api(libs.configurate.hocon)
+    api(libs.configurate.yaml)
+    api(libs.configurate.extraKotlin)
 
     // Miscellaneous
     api(libs.brigadier)
@@ -35,7 +45,6 @@ dependencies {
 
 license {
     header(project.resources.text.fromFile("HEADER.txt"))
-    newLine(false)
     exclude(
         // Velocity derivatives, with a special header
         "**/event/ComponentResult.kt",
@@ -62,12 +71,6 @@ license {
     )
 }
 
-detekt {
-    buildUponDefaultConfig = true
-    config = files("$projectDir/config/detekt.yml")
-    baseline = file("$projectDir/config/baseline.xml")
-}
-
 kotlin {
     explicitApi()
 }
@@ -85,12 +88,7 @@ tasks {
             modernJavadocLink("https://configurate.aoeu.xyz/${libs.versions.configurate.get()}/apidocs/")
         }
     }
-    detekt.configure {
-        reports {
-            html.required.set(true)
-            xml.required.set(true)
-        }
-    }
 }
 
 applySpecJarMetadata("org.kryptonmc.api", "Krypton API")
+setupDetekt()

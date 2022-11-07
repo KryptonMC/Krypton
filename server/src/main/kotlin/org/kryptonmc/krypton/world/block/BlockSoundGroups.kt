@@ -18,8 +18,11 @@
  */
 package org.kryptonmc.krypton.world.block
 
+import org.kryptonmc.api.block.BlockSoundGroup
 import org.kryptonmc.api.effect.sound.SoundEvents
+import org.kryptonmc.api.util.Catalogue
 
+@Catalogue(BlockSoundGroup::class)
 object BlockSoundGroups {
 
     @JvmField

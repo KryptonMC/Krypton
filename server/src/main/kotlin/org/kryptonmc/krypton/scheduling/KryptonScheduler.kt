@@ -58,7 +58,7 @@ class KryptonScheduler(private val pluginManager: PluginManager) : Scheduler {
         synchronized(tasksByPlugin) { tasksByPlugin.values() }.forEach(Task::cancel)
         timedExecutor.shutdown()
         executor.shutdown()
-        return executor.awaitTermination(10, TimeUnit.SECONDS)
+        return executor.awaitTermination(SHUTDOWN_TIMEOUT, TimeUnit.SECONDS)
     }
 
     private inner class KryptonTask(
@@ -121,5 +121,6 @@ class KryptonScheduler(private val pluginManager: PluginManager) : Scheduler {
     companion object {
 
         private val LOGGER = LogManager.getLogger("Scheduler")
+        private const val SHUTDOWN_TIMEOUT = 10L
     }
 }

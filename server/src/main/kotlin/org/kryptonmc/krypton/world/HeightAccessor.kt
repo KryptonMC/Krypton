@@ -30,7 +30,7 @@ interface HeightAccessor {
         get() = minimumBuildHeight shr 4
 
     val maximumSection: Int
-        get() = ((maximumBuildHeight - 1) shr 4) + 1
+        get() = (maximumBuildHeight - 1 shr 4) + 1
 
     val sectionCount: Int
         get() = maximumSection - minimumSection

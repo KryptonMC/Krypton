@@ -30,12 +30,18 @@ import org.kryptonmc.krypton.util.writeVarIntByteArray
 @JvmRecord
 data class ArgumentSignatures(val salt: Long, val signatures: Map<String, ByteArray>) : Writable {
 
-    constructor(buf: ByteBuf) : this(buf.readLong(), buf.readMap({ buf.readString(16) }, ByteBuf::readVarIntByteArray))
+    constructor(buf: ByteBuf) : this(buf.readLong(), buf.readMap({ buf.readString(MAX_ARGUMENT_NAME_LENGTH) }, ByteBuf::readVarIntByteArray))
 
     fun get(argument: String): ByteArray? = signatures.get(argument)
 
     override fun write(buf: ByteBuf) {
         buf.writeLong(salt)
-        buf.writeMap(signatures, { _, value -> buf.writeString(value, 16) }, ByteBuf::writeVarIntByteArray)
+        buf.writeMap(signatures, { _, value -> buf.writeString(value, MAX_ARGUMENT_NAME_LENGTH) }, ByteBuf::writeVarIntByteArray)
+    }
+
+    companion object {
+
+        // This is from vanilla
+        private const val MAX_ARGUMENT_NAME_LENGTH = 16
     }
 }

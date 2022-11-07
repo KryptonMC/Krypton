@@ -32,14 +32,14 @@ import org.kryptonmc.krypton.util.DataConversion
 import org.kryptonmc.krypton.util.Maths
 import org.kryptonmc.krypton.util.Positioning
 import org.kryptonmc.krypton.util.logger
+import org.kryptonmc.krypton.util.nbt.getDataVersion
+import org.kryptonmc.krypton.util.nbt.putDataVersion
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.krypton.world.chunk.ChunkPosition
 import org.kryptonmc.krypton.world.chunk.KryptonChunk
 import org.kryptonmc.krypton.world.region.RegionFileManager
 import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.ImmutableListTag
-import org.kryptonmc.nbt.IntTag
-import org.kryptonmc.nbt.ListTag
 import org.kryptonmc.nbt.compound
 import org.spongepowered.math.vector.Vector3d
 import space.vectrix.flare.fastutil.Int2ObjectSyncMap
@@ -123,15 +123,15 @@ class EntityManager(val world: KryptonWorld) : AutoCloseable {
 
     fun load(chunk: KryptonChunk) {
         val nbt = regionFileManager.read(chunk.x, chunk.z) ?: return
-        val version = if (nbt.contains("DataVersion", IntTag.ID)) nbt.getInt("DataVersion") else -1
+        val version = nbt.getDataVersion()
         // We won't upgrade data if use of the data converter is disabled.
         if (version < KryptonPlatform.worldVersion && !world.server.config.advanced.useDataConverter) {
             DataConversion.sendWarning(LOGGER, "entities for chunk at ${chunk.x}, ${chunk.z}")
             error("Tried to load old chunk from version $version when data conversion is disabled!")
         }
 
-        DataConversion.upgrade(nbt, MCTypeRegistry.ENTITY_CHUNK, version).getList("Entities", CompoundTag.ID).forEachCompound {
-            val id = it.getString("id")
+        DataConversion.upgrade(nbt, MCTypeRegistry.ENTITY_CHUNK, version).getList(ENTITIES_TAG, CompoundTag.ID).forEachCompound {
+            val id = it.getString(ID_TAG)
             if (id.isBlank()) return@forEachCompound
             val key = try {
                 Key.key(id)
@@ -151,9 +151,9 @@ class EntityManager(val world: KryptonWorld) : AutoCloseable {
         val entityList = ImmutableListTag.builder(CompoundTag.ID)
         entities.forEach { if (it !is KryptonPlayer) entityList.add(it.saveWithPassengers().build()) }
         regionFileManager.write(chunk.x, chunk.z, compound {
-            putInt("DataVersion", KryptonPlatform.worldVersion)
-            putInts("Position", chunk.position.x, chunk.position.z)
-            put("Entities", entityList.build())
+            putDataVersion()
+            putInts(POSITION_TAG, chunk.position.x, chunk.position.z)
+            put(ENTITIES_TAG, entityList.build())
         })
     }
 
@@ -174,6 +174,9 @@ class EntityManager(val world: KryptonWorld) : AutoCloseable {
 
     companion object {
 
+        private const val ID_TAG = "id"
+        private const val POSITION_TAG = "Position"
+        private const val ENTITIES_TAG = "Entities"
         private val LOGGER = logger<EntityManager>()
 
         @JvmStatic
@@ -188,8 +191,8 @@ class EntityManager(val world: KryptonWorld) : AutoCloseable {
             var corner = 0
 
             for (i in 0 until area) {
-                val chunkX = (distanceX * 16 + location.x()).toChunkCoordinate()
-                val chunkZ = (distanceZ * 16 + location.z()).toChunkCoordinate()
+                val chunkX = ((distanceX shl 4) + location.x()).toChunkCoordinate()
+                val chunkZ = ((distanceZ shl 4) + location.z()).toChunkCoordinate()
                 visible[i] = ChunkPosition.toLong(chunkX, chunkZ)
 
                 if (corner % 2 == 0) {

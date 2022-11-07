@@ -29,7 +29,7 @@ import org.kryptonmc.serialization.MapCodec
 import java.util.Optional
 import java.util.function.Function
 
-@Suppress("LeakingThis")
+@Suppress("LeakingThis", "UnnecessaryAbstractClass") // This class is designed for inheritance, not instantiation.
 abstract class KryptonState<O, S : KryptonState<O, S>>(
     protected val owner: O,
     val values: ImmutableMap<KryptonProperty<*>, Comparable<*>>,

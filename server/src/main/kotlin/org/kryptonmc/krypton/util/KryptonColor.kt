@@ -18,11 +18,9 @@
  */
 package org.kryptonmc.krypton.util
 
-import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 import net.kyori.adventure.util.HSVLike
 import net.kyori.adventure.util.RGBLike
 import org.kryptonmc.api.util.Color
-import java.util.function.IntFunction
 
 @JvmRecord
 data class KryptonColor(override val value: Int) : Color {
@@ -42,7 +40,7 @@ data class KryptonColor(override val value: Int) : Color {
 
     object Factory : Color.Factory {
 
-        override fun of(value: Int): Color = VALUES.get(value) ?: KryptonColor(value)
+        override fun of(value: Int): Color = CACHE.getOrElse(value - CACHE_BOUND) { KryptonColor(it + CACHE_BOUND) }
 
         override fun of(hue: Float, saturation: Float, brightness: Float): Color {
             require(hue in 0F..1F) { "Hue must be between 0 and 1!" }
@@ -54,13 +52,9 @@ data class KryptonColor(override val value: Int) : Color {
 
     companion object {
 
-        private val VALUES = Int2ObjectOpenHashMap<KryptonColor>(512)
-
-        init {
-            // Preload the values with some common, small constants
-            for (i in -256..256) {
-                VALUES.put(i, KryptonColor(i))
-            }
-        }
+        private const val CACHE_BOUND = 256
+        private const val CACHED_VALUE_COUNT = CACHE_BOUND * 2
+        // Caches some small values
+        private val CACHE = Array(CACHED_VALUE_COUNT) { KryptonColor(it - CACHE_BOUND) }
     }
 }

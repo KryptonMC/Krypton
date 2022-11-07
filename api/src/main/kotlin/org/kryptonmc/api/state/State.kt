@@ -39,6 +39,7 @@ public interface State<out S : State<S>> {
      * Gets the value for the given [property], or returns null if there is no
      * value for the given [property].
      *
+     * @param T the property type
      * @param property the property
      * @return the value, or null if not present
      */
@@ -49,6 +50,7 @@ public interface State<out S : State<S>> {
      * [IllegalArgumentException] if there is no value for the given
      * [property].
      *
+     * @param T the property type
      * @param property the property
      * @return the value
      * @throws IllegalArgumentException if there is no value for the property
@@ -62,6 +64,7 @@ public interface State<out S : State<S>> {
      * As states are immutable, this will return a different state where the
      * given [property] has the given [value].
      *
+     * @param T the property type
      * @param property the property
      * @param value the value
      * @return the state with the property set to the value

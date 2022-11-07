@@ -20,8 +20,10 @@ package org.kryptonmc.krypton.effect.sound
 
 import org.kryptonmc.api.effect.sound.SoundEvent
 
+private const val DEFAULT_RANGE = KryptonSoundEvent.DEFAULT_RANGE.toDouble()
+
 fun SoundEvent.calculateDistance(volume: Float): Double {
     if (range != 0F) return range.toDouble()
-    if (volume > 1F) return 16.0 * volume
-    return 16.0
+    if (volume > 1F) return DEFAULT_RANGE * volume
+    return DEFAULT_RANGE
 }

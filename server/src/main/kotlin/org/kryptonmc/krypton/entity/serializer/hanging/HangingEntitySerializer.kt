@@ -21,20 +21,20 @@ package org.kryptonmc.krypton.entity.serializer.hanging
 import org.kryptonmc.krypton.entity.hanging.KryptonHangingEntity
 import org.kryptonmc.krypton.entity.serializer.BaseEntitySerializer
 import org.kryptonmc.krypton.entity.serializer.EntitySerializer
+import org.kryptonmc.krypton.util.nbt.getBlockPos
+import org.kryptonmc.krypton.util.nbt.putBlockPosParts
 import org.kryptonmc.nbt.CompoundTag
-import org.spongepowered.math.vector.Vector3i
 
 object HangingEntitySerializer : EntitySerializer<KryptonHangingEntity> {
 
+    private const val TILE_PREFIX = "Tile"
+
     override fun load(entity: KryptonHangingEntity, data: CompoundTag) {
         BaseEntitySerializer.load(entity, data)
-        entity.centerPosition = Vector3i(data.getInt("TileX"), data.getInt("TileY"), data.getInt("TileZ"))
+        entity.centerPosition = data.getBlockPos(TILE_PREFIX)
     }
 
     override fun save(entity: KryptonHangingEntity): CompoundTag.Builder = BaseEntitySerializer.save(entity).apply {
-        val position = entity.centerPosition!!
-        putInt("TileX", position.x())
-        putInt("TileY", position.y())
-        putInt("TileZ", position.z())
+        entity.centerPosition?.let { putBlockPosParts(it, TILE_PREFIX) }
     }
 }

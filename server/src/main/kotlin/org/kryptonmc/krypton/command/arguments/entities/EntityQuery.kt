@@ -33,12 +33,16 @@ import org.kryptonmc.krypton.entity.KryptonEntity
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.util.GameModes
 import org.kryptonmc.krypton.util.ensureAllOfType
+import org.spongepowered.math.vector.Vector2f
 
-/**
- * Documentation [TODO]
- */
 @JvmRecord
-data class EntityQuery(private val args: List<EntityArgument>, val type: Selector, private val playerName: String = "") {
+data class EntityQuery(val type: Selector, private val args: List<EntityArgument>, private val playerName: String) {
+
+    constructor(type: Selector, args: List<EntityArgument>) : this(type, args, "")
+
+    constructor(type: Selector, playerName: String) : this(type, emptyList(), playerName)
+
+    constructor(type: Selector) : this(type, emptyList(), "")
 
     fun entities(source: KryptonPlayer): List<KryptonEntity> {
         val players = source.server.players
@@ -124,70 +128,15 @@ data class EntityQuery(private val args: List<EntityArgument>, val type: Selecto
                     checkInt(value.toString())
                     entities = entities.filter { applyDifference(differenceZ, value, it.location.floorZ()) }
                 }
-                "distance" -> {
-                    checkIntOrRange(value.toString())
-                    if (value.toString().startsWith("..")) {
-                        val distance = value.toString().replace("..", "").toInt()
-                        entities = entities.filter { it.distanceTo(source) <= distance }
-                        continue
-                    }
-                    if (!value.toString().contains("..")) {
-                        checkInt(value.toString())
-                        entities = entities.filter {
-                            val int = it.distanceTo(source).toInt()
-                            if (int < 0) throw EntityArgumentExceptions.DISTANCE_NEGATIVE.create()
-                            int == value.toString().toInt()
-                        }
-                        continue
-                    }
-                    val range = value.toString().toIntRange()!!
-                    entities = entities.filter { it.distanceTo(source) >= range.first && it.distanceTo(source) <= range.last }
-                }
+                "distance" -> entities = applyDifferenceArgument(source, entities, value)
                 "scores" -> notImplemented("scores")
                 "tag" -> notImplemented("tag")
                 "team" -> notImplemented("team")
                 "level" -> notImplemented("level")
-                "gamemode" -> {
-                    entities = entities.filter {
-                        if (it !is KryptonPlayer) return@filter true
-                        val mode = GameModes.fromName(value.toString())
-                        if (exclude) it.gameMode != mode else it.gameMode == mode
-                    }
-                }
-                "name" -> {
-                    entities = entities.filter {
-                        val name = if (it is Player) it.profile.name else it.name.toPlainText()
-                        if (exclude) name != value else name == value
-                    }
-                }
-                "x_rotation" -> {
-                    checkIntOrRange(value.toString())
-                    if (value.toString().startsWith("..")) {
-                        val pitch = value.toString().replace("..", "").toInt()
-                        entities = entities.filter { it.rotation.y() <= pitch }
-                        continue
-                    }
-                    if (!value.toString().contains("..")) {
-                        entities = entities.filter { it.rotation.y().toInt() == value.toString().toInt() }
-                        continue
-                    }
-                    val range = value.toString().toIntRange()!!
-                    entities = entities.filter { it.rotation.y() >= range.first && it.rotation.y() <= range.last }
-                }
-                "y_rotation" -> {
-                    checkIntOrRange(value.toString())
-                    if (value.toString().startsWith("..")) {
-                        val yaw = value.toString().replace("..", "").toInt()
-                        entities = entities.filter { it.rotation.x() <= yaw }
-                        continue
-                    }
-                    if (!value.toString().contains("..")) {
-                        entities = entities.filter { it.rotation.x().toInt() == value.toString().toInt() }
-                        continue
-                    }
-                    val range = value.toString().toIntRange()!!
-                    entities = entities.filter { it.rotation.x() >= range.first && it.rotation.x() <= range.last }
-                }
+                "gamemode" -> entities = applyGameModeArgument(entities, value, exclude)
+                "name" -> entities = applyNameArgument(entities, value, exclude)
+                "x_rotation" -> entities = applyRotationArgument(entities, value, Vector2f::x)
+                "y_rotation" -> entities = applyRotationArgument(entities, value, Vector2f::y)
                 "type" -> notImplemented("type")
                 "nbt" -> notImplemented("nbt")
                 "advancements" -> notImplemented("advancements")
@@ -211,6 +160,50 @@ data class EntityQuery(private val args: List<EntityArgument>, val type: Selecto
             }
         }
         return entities.toList()
+    }
+
+    private fun applyGameModeArgument(entities: Sequence<KryptonEntity>, value: Any, exclude: Boolean): Sequence<KryptonEntity> = entities.filter {
+        if (it !is KryptonPlayer) return@filter true
+        val mode = GameModes.fromName(value.toString())
+        if (exclude) it.gameMode != mode else it.gameMode == mode
+    }
+
+    private fun applyNameArgument(entities: Sequence<KryptonEntity>, value: Any, exclude: Boolean): Sequence<KryptonEntity> = entities.filter {
+        val name = if (it is Player) it.profile.name else it.name.toPlainText()
+        if (exclude) name != value else name == value
+    }
+
+    private fun applyDifferenceArgument(source: KryptonPlayer, entities: Sequence<KryptonEntity>, value: Any): Sequence<KryptonEntity> {
+        checkIntOrRange(value.toString())
+        if (value.toString().startsWith("..")) {
+            val distance = value.toString().replace("..", "").toInt()
+            return entities.filter { it.distanceTo(source) <= distance }
+        }
+        if (!value.toString().contains("..")) {
+            checkInt(value.toString())
+            return entities.filter {
+                val int = it.distanceTo(source).toInt()
+                if (int < 0) throw EntityArgumentExceptions.DISTANCE_NEGATIVE.create()
+                int == value.toString().toInt()
+            }
+        }
+        val range = value.toString().toIntRange()!!
+        return entities.filter { it.distanceTo(source) >= range.first && it.distanceTo(source) <= range.last }
+    }
+
+    private inline fun applyRotationArgument(
+        entities: Sequence<KryptonEntity>,
+        value: Any,
+        crossinline valueGetter: (Vector2f) -> Float
+    ): Sequence<KryptonEntity> {
+        checkIntOrRange(value.toString())
+        if (value.toString().startsWith("..")) {
+            val pitch = value.toString().replace("..", "").toInt()
+            return entities.filter { valueGetter(it.rotation) <= pitch }
+        }
+        if (!value.toString().contains("..")) return entities.filter { valueGetter(it.rotation).toInt() == value.toString().toInt() }
+        val range = value.toString().toIntRange()!!
+        return entities.filter { valueGetter(it.rotation) >= range.first && valueGetter(it.rotation) <= range.last }
     }
 
     private fun applyDifference(difference: Int, value: Any, blockCoordinate: Int): Boolean {

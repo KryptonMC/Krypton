@@ -20,6 +20,7 @@ public interface BlockEntityContainer {
      * returns null if there is no block entity at the given [x], [y], and [z]
      * coordinates.
      *
+     * @param T the type of block entity
      * @param x the X coordinate
      * @param y the Y coordinate
      * @param z the Z coordinate
@@ -31,6 +32,7 @@ public interface BlockEntityContainer {
      * Gets the block entity at the given [position], or returns null if there
      * is no block entity at the given [position].
      *
+     * @param T the type of block entity
      * @param position the position of the block entity
      * @return the block entity at the position, or null if not present
      */

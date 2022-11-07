@@ -21,7 +21,6 @@ package org.kryptonmc.krypton.effect.particle.builder
 import org.kryptonmc.api.effect.particle.SimpleParticleType
 import org.kryptonmc.api.effect.particle.builder.SimpleParticleEffectBuilder
 import org.kryptonmc.api.effect.particle.data.ParticleData
-import org.spongepowered.math.vector.Vector3d
 
 class KryptonSimpleParticleEffectBuilder(type: SimpleParticleType) : AbstractParticleEffectBuilder<SimpleParticleEffectBuilder>(type),
     SimpleParticleEffectBuilder {

@@ -54,6 +54,7 @@ abstract class KryptonProperty<T : Comparable<T>> protected constructor(
 
     final override fun toString(): String = "${javaClass.simpleName}(name=$name, type=$type, values=$values)"
 
+    @Suppress("MagicNumber") // This is a hash code function
     protected open fun generateHashCode(): Int = 31 * type.hashCode() + name.hashCode()
 
     @JvmRecord

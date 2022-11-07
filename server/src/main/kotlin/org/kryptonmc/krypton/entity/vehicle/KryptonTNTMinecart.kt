@@ -52,6 +52,7 @@ class KryptonTNTMinecart(world: KryptonWorld) : KryptonMinecartLike(world), TNTM
         if (!isSilent) world.playSound(location, SoundEvents.TNT_PRIMED, Sound.Source.BLOCK, 1F, 1F)
     }
 
+    @Suppress("ExpressionBodySyntax") // There will be logic here
     override fun damage(source: KryptonDamageSource, damage: Float): Boolean {
         /* TODO: Explode the minecart if shot with a flaming arrow
         val entity = if (source is KryptonIndirectEntityDamageSource) source.entity else null

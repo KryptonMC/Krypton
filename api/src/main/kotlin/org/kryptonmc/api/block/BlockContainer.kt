@@ -14,7 +14,7 @@ import org.spongepowered.math.vector.Vector3i
  * Something that contains blocks.
  *
  * The default value that will be returned instead of null if no block is
- * found is [Blocks.AIR].
+ * found is the block state representing air.
  */
 public interface BlockContainer {
 

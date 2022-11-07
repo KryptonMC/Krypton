@@ -22,22 +22,26 @@ import org.kryptonmc.krypton.entity.projectile.KryptonProjectile
 import org.kryptonmc.krypton.entity.serializer.BaseEntitySerializer
 import org.kryptonmc.krypton.entity.serializer.EntitySerializer
 import org.kryptonmc.krypton.util.nbt.getUUID
-import org.kryptonmc.krypton.util.nbt.hasUUID
+import org.kryptonmc.krypton.util.nbt.putNullable
 import org.kryptonmc.krypton.util.nbt.putUUID
 import org.kryptonmc.nbt.CompoundTag
 
 object ProjectileSerializer : EntitySerializer<KryptonProjectile> {
 
+    private const val OWNER_TAG = "Owner"
+    private const val LEFT_OWNER_TAG = "LeftOwner"
+    private const val HAS_BEEN_SHOT_TAG = "HasBeenShot"
+
     override fun load(entity: KryptonProjectile, data: CompoundTag) {
         BaseEntitySerializer.load(entity, data)
-        if (data.hasUUID("Owner")) entity.ownerId = data.getUUID("Owner")
-        entity.hasLeftOwner = data.getBoolean("LeftOwner")
-        entity.hasBeenShot = data.getBoolean("HasBeenShot")
+        entity.ownerId = data.getUUID(OWNER_TAG)
+        entity.hasLeftOwner = data.getBoolean(LEFT_OWNER_TAG)
+        entity.hasBeenShot = data.getBoolean(HAS_BEEN_SHOT_TAG)
     }
 
     override fun save(entity: KryptonProjectile): CompoundTag.Builder = BaseEntitySerializer.save(entity).apply {
-        if (entity.ownerId != null) putUUID("Owner", entity.ownerId!!)
-        if (entity.hasLeftOwner) putBoolean("LeftOwner", true)
-        putBoolean("HasBeenShot", entity.hasBeenShot)
+        putNullable(OWNER_TAG, entity.ownerId, CompoundTag.Builder::putUUID)
+        if (entity.hasLeftOwner) putBoolean(LEFT_OWNER_TAG, true)
+        putBoolean(HAS_BEEN_SHOT_TAG, entity.hasBeenShot)
     }
 }

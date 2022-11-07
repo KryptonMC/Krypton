@@ -16,10 +16,12 @@ package org.kryptonmc.api.entity.attribute
 public fun interface ModifierOperation {
 
     /**
-     * Applies this operation to the given [modifiers] and returns the result.
+     * Applies this operation to the given [base] value, modifying it with the
+     * given [modifiers], and returns the result.
      *
+     * @param base the base value to modify
      * @param modifiers the modifiers to apply
-     * @return the result of applying this operation to the given modifiers
+     * @return the resulting modified value
      */
     public fun apply(base: Double, modifiers: Collection<AttributeModifier>): Double
 }

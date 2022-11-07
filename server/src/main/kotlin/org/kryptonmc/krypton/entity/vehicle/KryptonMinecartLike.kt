@@ -74,7 +74,7 @@ abstract class KryptonMinecartLike(world: KryptonWorld) : KryptonEntity(world), 
         data.define(MetadataKeys.MinecartLike.HURT_DIRECTION, 1)
         data.define(MetadataKeys.MinecartLike.DAMAGE, 0F)
         data.define(MetadataKeys.MinecartLike.CUSTOM_BLOCK_ID, KryptonRegistries.BLOCK.idOf(Blocks.AIR))
-        data.define(MetadataKeys.MinecartLike.CUSTOM_BLOCK_OFFSET, 6)
+        data.define(MetadataKeys.MinecartLike.CUSTOM_BLOCK_OFFSET, DEFAULT_CUSTOM_BLOCK_OFFSET)
         data.define(MetadataKeys.MinecartLike.SHOW_CUSTOM_BLOCK, false)
     }
 
@@ -99,5 +99,6 @@ abstract class KryptonMinecartLike(world: KryptonWorld) : KryptonEntity(world), 
         private const val DEFAULT_DAMAGE_TIMER = 10
         private const val DAMAGE_INCREASE_MULTIPLIER = 10F
         private const val MAX_DAMAGE = 40F
+        private const val DEFAULT_CUSTOM_BLOCK_OFFSET = 6
     }
 }

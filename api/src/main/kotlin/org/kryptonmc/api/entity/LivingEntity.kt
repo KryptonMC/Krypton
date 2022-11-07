@@ -32,17 +32,17 @@ public interface LivingEntity : Entity, AttributeHolder {
     public var absorption: Float
 
     /**
-     * If this entity is currently using an item
+     * If this entity is currently using an item.
      */
     public var isUsingItem: Boolean
 
     /**
-     * The hand the entity is currently using
+     * The hand the entity is currently using.
      */
     public var hand: Hand
 
     /**
-     * If this entity is in a riptide spin attack
+     * If this entity is in a riptide spin attack.
      */
     public var isInRiptideSpinAttack: Boolean
 
@@ -51,8 +51,6 @@ public interface LivingEntity : Entity, AttributeHolder {
      *
      * This can be used to detect when the player is gliding without using
      * scoreboard statistics.
-     *
-     * This field can only
      */
     public var isGliding: Boolean
 

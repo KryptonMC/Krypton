@@ -34,16 +34,22 @@ fun CompoundTag.getGameProfile(key: String): GameProfile? {
     return null
 }
 
+private const val NAME_TAG = "Name"
+private const val ID_TAG = "Id"
+private const val PROPERTIES_TAG = "Properties"
+private const val VALUE_TAG = "Value"
+private const val SIGNATURE_TAG = "Signature"
+
 fun CompoundTag.toGameProfile(): GameProfile? {
-    val name = if (contains("Name", StringTag.ID)) getString("Name") else return null
-    val uuid = getUUID("Id") ?: return null
-    if (!contains("Properties", CompoundTag.ID)) return KryptonGameProfile(name, uuid, persistentListOf())
+    val name = if (contains(NAME_TAG, StringTag.ID)) getString(NAME_TAG) else return null
+    val uuid = getUUID(ID_TAG) ?: return null
+    if (!contains(PROPERTIES_TAG, CompoundTag.ID)) return KryptonGameProfile(name, uuid, persistentListOf())
 
     val properties = persistentListOf<ProfileProperty>().builder()
-    getCompound("Properties").forEachList { profileKey, list ->
+    getCompound(PROPERTIES_TAG).forEachList { profileKey, list ->
         list.forEachCompound {
-            val value = it.getString("Value")
-            val signature = if (it.contains("Signature", StringTag.ID)) it.getString("Signature") else null
+            val value = it.getString(VALUE_TAG)
+            val signature = if (it.contains(SIGNATURE_TAG, StringTag.ID)) it.getString(SIGNATURE_TAG) else null
             properties.add(KryptonProfileProperty(profileKey, value, signature))
         }
     }
@@ -60,14 +66,14 @@ fun CompoundTag.Builder.putGameProfile(key: String, profile: GameProfile?): Comp
 }
 
 private fun GameProfile.toCompound(): CompoundTag = compound {
-    putString("Name", name)
-    putUUID("Id", uuid)
+    putString(NAME_TAG, name)
+    putUUID(ID_TAG, uuid)
     if (properties.isEmpty()) return@compound
-    put("Properties", compound {
+    put(PROPERTIES_TAG, compound {
         properties.forEach {
             val data = compound {
-                putString("Value", it.value)
-                if (it.signature != null) putString("Signature", it.signature!!)
+                putString(VALUE_TAG, it.value)
+                if (it.signature != null) putString(SIGNATURE_TAG, it.signature!!)
             }
             putList(it.name, CompoundTag.ID, listOf(data))
         }

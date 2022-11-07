@@ -75,9 +75,12 @@ class KryptonRabbit(world: KryptonWorld) : KryptonAnimal(world), Rabbit {
         private val TYPES = RabbitVariant.values()
         private val TEMPTING_ITEMS = setOf(ItemTypes.CARROT, ItemTypes.GOLDEN_CARROT, ItemTypes.DANDELION)
 
+        private const val DEFAULT_MAX_HEALTH = 3.0
+        private const val DEFAULT_MOVEMENT_SPEED = 0.3
+
         @JvmStatic
         fun attributes(): AttributeSupplier.Builder = KryptonMob.attributes()
-            .add(KryptonAttributeTypes.MAX_HEALTH, 3.0)
-            .add(KryptonAttributeTypes.MOVEMENT_SPEED, 0.3)
+            .add(KryptonAttributeTypes.MAX_HEALTH, DEFAULT_MAX_HEALTH)
+            .add(KryptonAttributeTypes.MOVEMENT_SPEED, DEFAULT_MOVEMENT_SPEED)
     }
 }

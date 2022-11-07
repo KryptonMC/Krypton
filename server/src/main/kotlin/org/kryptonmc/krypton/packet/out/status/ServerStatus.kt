@@ -21,7 +21,6 @@ package org.kryptonmc.krypton.packet.out.status
 import com.google.gson.TypeAdapter
 import com.google.gson.stream.JsonReader
 import com.google.gson.stream.JsonWriter
-import me.bardy.gsonkt.getAdapter
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer
 import org.kryptonmc.api.auth.GameProfile
@@ -64,7 +63,7 @@ data class ServerStatus(val motd: Component, val players: Players, val favicon: 
 
     companion object : TypeAdapter<ServerStatus>() {
 
-        private val COMPONENT_ADAPTER = GsonComponentSerializer.gson().serializer().getAdapter<Component>()
+        private val COMPONENT_ADAPTER = GsonComponentSerializer.gson().serializer().getAdapter(Component::class.java)
 
         override fun read(`in`: JsonReader?): ServerStatus {
             throw UnsupportedOperationException("Reading server status is not supported!")

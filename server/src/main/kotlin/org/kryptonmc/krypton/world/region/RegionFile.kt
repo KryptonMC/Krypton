@@ -19,7 +19,6 @@
 package org.kryptonmc.krypton.world.region
 
 import org.kryptonmc.krypton.util.logger
-import org.kryptonmc.krypton.world.chunk.ChunkPosition
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.DataInputStream
@@ -364,6 +363,6 @@ class RegionFile(
             ByteArrayInputStream(buffer.array(), buffer.position(), length)
 
         @JvmStatic
-        private fun packSectorOffset(sectors: Int, requiredSectors: Int): Int = (sectors shl 8) or requiredSectors
+        private fun packSectorOffset(sectors: Int, requiredSectors: Int): Int = sectors shl 8 or requiredSectors
     }
 }

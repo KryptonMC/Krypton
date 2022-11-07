@@ -79,11 +79,11 @@ public inline fun item(type: ItemType, amount: Int, meta: ItemMeta.Builder.() ->
  * Creates a new item stack with the given [type], [amount], and meta of the
  * given type [P] built from the given [meta] builder of the given type [B].
  *
+ * @param B the type of the metadata builder
+ * @param P the type of the metadata
  * @param type the item type
  * @param amount the amount of items
  * @param meta the meta builder
- * @param B the type of the metadata builder
- * @param P the type of the metadata
  * @return a new item stack
  */
 @ItemDsl

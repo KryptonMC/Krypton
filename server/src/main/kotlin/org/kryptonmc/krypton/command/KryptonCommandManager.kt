@@ -97,7 +97,7 @@ class KryptonCommandManager : CommandManager {
         }
     }
 
-    override fun <C, M> register(command: C, meta: M, registrar: CommandRegistrar<C, M>) {
+    override fun <C> register(command: C, meta: CommandMeta, registrar: CommandRegistrar<C>) {
         lock.write { registrar.register(dispatcher.root, command, meta) }
     }
 
@@ -141,9 +141,9 @@ class KryptonCommandManager : CommandManager {
                 sender.sendMessage(Component.empty().append(errorMessage).color(NamedTextColor.RED))
             }
             false
-        } catch (exception: Throwable) { // We catch Throwable because plugins like to do stupid things sometimes.
-            LOGGER.error("Unable to dispatch command $command from $sender!", exception)
-            throw RuntimeException("Unable to dispatch command $command from $sender!", exception)
+        } catch (naughty: Throwable) { // We catch Throwable because plugins like to do stupid things sometimes.
+            LOGGER.error("Unable to dispatch command $command from $sender!", naughty)
+            throw RuntimeException("Unable to dispatch command $command from $sender!", naughty)
         }
     }
 

@@ -21,18 +21,22 @@ package org.kryptonmc.krypton.entity.serializer.animal
 import org.kryptonmc.krypton.entity.animal.KryptonChicken
 import org.kryptonmc.krypton.entity.serializer.AgeableSerializer
 import org.kryptonmc.krypton.entity.serializer.EntitySerializer
+import org.kryptonmc.krypton.util.nbt.hasNumber
 import org.kryptonmc.nbt.CompoundTag
 
 object ChickenSerializer : EntitySerializer<KryptonChicken> {
 
+    private const val JOCKEY_TAG = "IsChickenJockey"
+    private const val EGG_LAY_TIME_TAG = "EggLayTime"
+
     override fun load(entity: KryptonChicken, data: CompoundTag) {
         AgeableSerializer.load(entity, data)
-        entity.isJockey = data.getBoolean("IsChickenJockey")
-        if (data.contains("EggLayTime", 99)) entity.eggCooldownTime = data.getInt("EggLayTime")
+        entity.isJockey = data.getBoolean(JOCKEY_TAG)
+        if (data.hasNumber(EGG_LAY_TIME_TAG)) entity.eggCooldownTime = data.getInt(EGG_LAY_TIME_TAG)
     }
 
     override fun save(entity: KryptonChicken): CompoundTag.Builder = AgeableSerializer.save(entity).apply {
-        putBoolean("IsChickenJockey", entity.isJockey)
-        putInt("EggLayTime", entity.eggCooldownTime)
+        putBoolean(JOCKEY_TAG, entity.isJockey)
+        putInt(EGG_LAY_TIME_TAG, entity.eggCooldownTime)
     }
 }

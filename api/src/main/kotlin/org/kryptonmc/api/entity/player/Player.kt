@@ -32,7 +32,7 @@ import java.net.InetSocketAddress
  * A player that is connected to the server and playing the game.
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
-public interface Player : LivingEntity, Equipable, PluginMessageRecipient, BaseUser {
+public interface Player : LivingEntity, Equipable, PluginMessageRecipient, BaseUser, VanishingPlayer {
 
     /**
      * The address that the player is currently connected from.
@@ -170,40 +170,6 @@ public interface Player : LivingEntity, Equipable, PluginMessageRecipient, BaseU
      * Teleports this player to the given other [player].
      */
     public fun teleport(player: Player)
-
-    /**
-     * Hides this player from all other players on the server.
-     */
-    public fun vanish()
-
-    /**
-     * Shows this player to all other players on the server.
-     */
-    public fun unvanish()
-
-    /**
-     * Shows the given [player] to this player if they are hidden, or does
-     * nothing if they aren't.
-     *
-     * @param player the player to show
-     */
-    public fun show(player: Player)
-
-    /**
-     * Hides the given [player] from this player if they are shown, or does
-     * nothing if they aren't.
-     *
-     * @param player the player to hide
-     */
-    public fun hide(player: Player)
-
-    /**
-     * Checks if this player can see the given other [player].
-     *
-     * @param player the player to check
-     * @return true if this player can see the other player, false otherwise
-     */
-    public fun canSee(player: Player): Boolean
 
     /**
      * Makes this player start gliding (elytra flying).

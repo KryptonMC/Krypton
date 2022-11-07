@@ -48,8 +48,9 @@ class KryptonBat(world: KryptonWorld) : KryptonAmbientCreature(world), Bat {
     companion object {
 
         private const val FLAG_RESTING = 0
+        private const val DEFAULT_MAX_HEALTH = 6.0
 
         @JvmStatic
-        fun attributes(): AttributeSupplier.Builder = KryptonMob.attributes().add(KryptonAttributeTypes.MAX_HEALTH, 6.0)
+        fun attributes(): AttributeSupplier.Builder = KryptonMob.attributes().add(KryptonAttributeTypes.MAX_HEALTH, DEFAULT_MAX_HEALTH)
     }
 }

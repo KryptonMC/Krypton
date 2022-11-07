@@ -38,6 +38,8 @@ import java.util.function.Consumer
 
 object ClearCommand : InternalCommand {
 
+    private const val TARGETS_ARGUMENT = "targets"
+
     override fun register(dispatcher: CommandDispatcher<Sender>) {
         dispatcher.register(literal("clear") {
             permission(KryptonPermission.CLEAR)
@@ -45,10 +47,10 @@ object ClearCommand : InternalCommand {
                 val player = it.source as? KryptonPlayer ?: return@runs
                 clear(listOf(player), player)
             }
-            argument("targets", EntityArgumentType.players()) {
-                runs { clear(it.entityArgument("targets").players(it.source), it.source) }
+            argument(TARGETS_ARGUMENT, EntityArgumentType.players()) {
+                runs { clear(it.entityArgument(TARGETS_ARGUMENT).players(it.source), it.source) }
                 argument("item", ItemStackPredicateArgument) {
-                    runs { clear(it.entityArgument("targets").players(it.source), it.source, it.argument("item")) }
+                    runs { clear(it.entityArgument(TARGETS_ARGUMENT).players(it.source), it.source, it.argument("item")) }
                 }
             }
         })

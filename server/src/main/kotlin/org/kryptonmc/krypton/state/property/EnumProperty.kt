@@ -50,6 +50,7 @@ open class EnumProperty<E : Enum<E>>(name: String, type: Class<E>, values: Colle
 
     override fun idFor(value: E): Int = idLookupTable[value.ordinal]
 
+    @Suppress("MagicNumber") // This is a hash code function
     override fun generateHashCode(): Int {
         var value = super.generateHashCode()
         value = 31 * value + values.hashCode()

@@ -14,8 +14,8 @@ import org.kryptonmc.api.util.Direction
  * Indicates the orientation of a block that may be oriented in two directions
  * on two separate axes, such as a jigsaw block.
  *
- * @param top the top direction
- * @param front the front direction
+ * @property top The top part of the direction.
+ * @property front The front part of the direction.
  */
 public enum class Orientation(public val top: Direction, public val front: Direction) {
 

@@ -95,8 +95,8 @@ class PaletteHolder<T> : PaletteResizer<T> {
         val bits = strategy.calculateSerializationBits(palette.size)
         val data = if (bits != 0) SimpleBitStorage(bits, size, ids).data else LongArray(0)
         return compound {
-            list("palette") { palette.entries.forEach { add(encoder.encode(it)) } }
-            putLongArray("data", data)
+            list(PALETTE_TAG) { palette.entries.forEach { add(encoder.encode(it)) } }
+            putLongArray(DATA_TAG, data)
         }
     }
 
@@ -166,7 +166,7 @@ class PaletteHolder<T> : PaletteResizer<T> {
 
         fun configuration(bits: Int): Configuration<T> = cache.computeIfAbsent(bits, Int2ObjectFunction(::createConfiguration))
 
-        fun indexOf(x: Int, y: Int, z: Int): Int = (((y shl sizeBits) or z) shl sizeBits) or x
+        fun indexOf(x: Int, y: Int, z: Int): Int = y shl sizeBits or z shl sizeBits or x
 
         fun calculateSize(): Int = 1 shl sizeBits * 3
 
@@ -208,23 +208,24 @@ class PaletteHolder<T> : PaletteResizer<T> {
 
     companion object {
 
+        private const val PALETTE_TAG = "palette"
+        private const val DATA_TAG = "data"
         private val DUMMY_RESIZER: PaletteResizer<Any?> = PaletteResizer { _, _ -> 0 }
 
         @JvmStatic
         fun readBlocks(data: CompoundTag): PaletteHolder<KryptonBlockState> {
-            val entries = mutableListOf<KryptonBlockState>()
-            data.getList("palette", CompoundTag.ID).forEachCompound { entries.add(it.toBlockState()) }
-            return read(Strategy.BLOCKS, entries, data.getLongArray("data"))
+            val entries = ArrayList<KryptonBlockState>()
+            data.getList(PALETTE_TAG, CompoundTag.ID).forEachCompound { entries.add(it.toBlockState()) }
+            return read(Strategy.BLOCKS, entries, data.getLongArray(DATA_TAG))
         }
 
         @JvmStatic
         fun readBiomes(data: CompoundTag): PaletteHolder<Biome> {
-            val entries = mutableListOf<Biome>()
-            data.getList("palette", StringTag.ID).forEachString {
-                val biome = checkNotNull(Registries.BIOME.get(Key.key(it))) { "Invalid palette data! Failed to find biome with key $it!" }
-                entries.add(biome)
+            val entries = ArrayList<Biome>()
+            data.getList(PALETTE_TAG, StringTag.ID).forEachString {
+                entries.add(checkNotNull(Registries.BIOME.get(Key.key(it))) { "Invalid palette data! Failed to find biome with key $it!" })
             }
-            return read(Strategy.BIOMES, entries, data.getLongArray("data"))
+            return read(Strategy.BIOMES, entries, data.getLongArray(DATA_TAG))
         }
 
         @Suppress("UNCHECKED_CAST")

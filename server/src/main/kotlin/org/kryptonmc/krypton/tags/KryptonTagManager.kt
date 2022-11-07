@@ -25,7 +25,6 @@ import kotlinx.collections.immutable.ImmutableMap
 import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.persistentHashMapOf
 import kotlinx.collections.immutable.persistentListOf
-import me.bardy.gsonkt.fromJson
 import net.kyori.adventure.key.Key
 import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.api.tags.Tag
@@ -49,7 +48,7 @@ object KryptonTagManager : TagManager {
         Registries.TAG_TYPES.values.forEach { type ->
             if (type !is KryptonTagType) return@forEach
             val stream = requireNotNull(ClassLoader.getSystemResourceAsStream(type.path)) { "Could not get stream for path ${type.path}!" }
-            val json: JsonObject = stream.reader().use(GSON::fromJson)
+            val json = stream.reader().use { GSON.fromJson(it, JsonObject::class.java) }
             val identifiers = persistentListOf<Tag<*>>().builder()
             json.keySet().forEach { identifiers.add(KryptonTag(Key.key(it), type, keys(json, it))) }
             tagMap.put(type, identifiers.build())

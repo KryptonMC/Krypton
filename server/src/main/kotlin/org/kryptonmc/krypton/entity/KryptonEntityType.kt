@@ -24,7 +24,6 @@ import net.kyori.adventure.text.Component
 import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.block.BlockState
 import org.kryptonmc.api.block.Blocks
-import org.kryptonmc.api.entity.Entity
 import org.kryptonmc.api.entity.EntityCategory
 import org.kryptonmc.api.entity.EntityType
 import org.kryptonmc.api.registry.Registries
@@ -32,7 +31,9 @@ import org.kryptonmc.krypton.util.Keys
 import org.kryptonmc.krypton.world.block.downcast
 import org.kryptonmc.krypton.world.block.isBurning
 import org.kryptonmc.krypton.world.block.state.KryptonBlockState
+import javax.annotation.concurrent.Immutable
 
+@Immutable
 class KryptonEntityType<out T : KryptonEntity>(
     override val category: EntityCategory,
     val isSerializable: Boolean,

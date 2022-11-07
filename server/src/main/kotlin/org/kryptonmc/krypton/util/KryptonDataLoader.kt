@@ -20,7 +20,6 @@ package org.kryptonmc.krypton.util
 
 import com.google.gson.Gson
 import com.google.gson.JsonObject
-import me.bardy.gsonkt.fromJson
 import net.kyori.adventure.key.Key
 import org.kryptonmc.api.registry.Registry
 import org.kryptonmc.krypton.KryptonPlatform
@@ -51,10 +50,9 @@ abstract class KryptonDataLoader<T : Any>(fileSuffix: String, protected val regi
             "Could not find $fileName bundled in JAR! Please report to Krypton!"
         }
         preload()
-        GSON.fromJson<JsonObject>(inputStream.reader()).entrySet().forEach { (key, value) ->
-            val namespacedKey = Key.key(key)
-            if (registry.contains(namespacedKey)) return@forEach
-            register(namespacedKey, create(namespacedKey, value as JsonObject))
+        GSON.fromJson(inputStream.reader(), JsonObject::class.java).entrySet().forEach { (entryKey, value) ->
+            val key = Key.key(entryKey)
+            if (!registry.contains(key)) register(key, create(key, value as JsonObject))
         }
         isLoaded = true
     }

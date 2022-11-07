@@ -75,12 +75,12 @@ class EntityWaterPhysicsSystem(private val entity: KryptonEntity) {
     }
 
     private fun updateFluidHeightAndFlow(tag: Tag<Fluid>, flowScale: Double): Boolean {
-        val minX = Maths.floor(entity.boundingBox.minimumX + 0.001)
-        val minY = Maths.floor(entity.boundingBox.minimumY + 0.001)
-        val minZ = Maths.floor(entity.boundingBox.minimumZ + 0.001)
-        val maxX = Maths.ceil(entity.boundingBox.maximumX - 0.001)
-        val maxY = Maths.ceil(entity.boundingBox.maximumY - 0.001)
-        val maxZ = Maths.ceil(entity.boundingBox.maximumZ - 0.001)
+        val minX = Maths.floor(entity.boundingBox.minimumX + BOUNDING_BOX_EPSILON)
+        val minY = Maths.floor(entity.boundingBox.minimumY + BOUNDING_BOX_EPSILON)
+        val minZ = Maths.floor(entity.boundingBox.minimumZ + BOUNDING_BOX_EPSILON)
+        val maxX = Maths.ceil(entity.boundingBox.maximumX - BOUNDING_BOX_EPSILON)
+        val maxY = Maths.ceil(entity.boundingBox.maximumY - BOUNDING_BOX_EPSILON)
+        val maxZ = Maths.ceil(entity.boundingBox.maximumZ - BOUNDING_BOX_EPSILON)
         var amount = 0.0
         val pushed = entity.isPushedByFluid
         var shouldPush = false
@@ -98,7 +98,7 @@ class EntityWaterPhysicsSystem(private val entity: KryptonEntity) {
                     amount = max(height - minY, amount)
                     if (!pushed) continue
                     var flow = fluid.getFlow(entity.world, x, y, z)
-                    if (amount < 0.4) flow = flow.mul(amount)
+                    if (amount < MAX_FLOW_MULTIPLIER) flow = flow.mul(amount)
                     offset = offset.add(flow)
                     ++pushes
                 }
@@ -110,7 +110,7 @@ class EntityWaterPhysicsSystem(private val entity: KryptonEntity) {
             if (entity !is KryptonPlayer) offset = offset.normalize()
 
             val velocity = entity.velocity
-            offset = offset.mul(flowScale * 1.0)
+            offset = offset.mul(flowScale)
             if (abs(velocity.x()) < FLUID_VECTOR_EPSILON && abs(velocity.z()) < FLUID_VECTOR_EPSILON && offset.length() < FLUID_VECTOR_MAGIC) {
                 offset = offset.normalize().mul(FLUID_VECTOR_MAGIC)
             }
@@ -126,7 +126,7 @@ class EntityWaterPhysicsSystem(private val entity: KryptonEntity) {
         isUnderwater = isUnderFluid(FluidTags.WATER)
         fluidOnEyes.clear()
 
-        val y = (entity.location.y() + entity.eyeHeight) - KryptonEntity.BREATHING_DISTANCE_BELOW_EYES
+        val y = entity.location.y() + entity.eyeHeight - KryptonEntity.BREATHING_DISTANCE_BELOW_EYES
         val vehicle = entity.vehicleSystem.vehicle
         if (vehicle is KryptonBoat && !vehicle.isUnderwater && vehicle.boundingBox.maximumY >= y && vehicle.boundingBox.minimumY <= y) return
 
@@ -135,7 +135,7 @@ class EntityWaterPhysicsSystem(private val entity: KryptonEntity) {
         val z = entity.location.floorZ()
         val fluid = entity.world.getFluid(x, blockY, z)
 
-        val height = (blockY.toFloat() + fluid.getHeight(entity.world, x, blockY, z))
+        val height = blockY.toFloat() + fluid.getHeight(entity.world, x, blockY, z)
         if (height <= y) return
         KryptonTagManager.get(KryptonTagTypes.FLUIDS).forEach(fluidOnEyes::add)
     }
@@ -170,5 +170,7 @@ class EntityWaterPhysicsSystem(private val entity: KryptonEntity) {
         private const val WATER_FLOW_SCALE = 0.014
         private const val FAST_LAVA_FLOW_SCALE = 0.007
         private const val SLOW_LAVA_FLOW_SCALE = 0.0023333333333333335
+        private const val MAX_FLOW_MULTIPLIER = 0.4
+        private const val BOUNDING_BOX_EPSILON = 0.001
     }
 }

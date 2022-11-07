@@ -33,9 +33,9 @@ public inline fun itemMeta(builder: ItemMeta.Builder.() -> Unit): ItemMeta = Ite
  * Creates new item metadata of the given type [P] from the result of applying
  * the given [builder] function to a new builder of type [B].
  *
- * @param builder the builder
  * @param B the type of the builder
  * @param P the type of the metadata
+ * @param builder the builder
  * @return new item metadata
  */
 @MetaDsl

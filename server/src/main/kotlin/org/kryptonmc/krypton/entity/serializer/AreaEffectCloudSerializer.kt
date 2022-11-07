@@ -24,18 +24,23 @@ import org.kryptonmc.nbt.CompoundTag
 
 object AreaEffectCloudSerializer : EntitySerializer<KryptonAreaEffectCloud> {
 
+    private const val AGE_TAG = "Age"
+    private const val DURATION_TAG = "Duration"
+    private const val RADIUS_TAG = "Radius"
+    private const val COLOR_TAG = "Color"
+
     override fun load(entity: KryptonAreaEffectCloud, data: CompoundTag) {
         BaseEntitySerializer.load(entity, data)
-        entity.age = data.getInt("Age")
-        entity.duration = data.getInt("Duration")
-        entity.radius = data.getFloat("Radius")
-        entity.color = Color.of(data.getInt("Color"))
+        entity.age = data.getInt(AGE_TAG)
+        entity.duration = data.getInt(DURATION_TAG)
+        entity.radius = data.getFloat(RADIUS_TAG)
+        entity.color = Color.of(data.getInt(COLOR_TAG))
     }
 
     override fun save(entity: KryptonAreaEffectCloud): CompoundTag.Builder = BaseEntitySerializer.save(entity).apply {
-        putInt("Age", entity.age)
-        putInt("Duration", entity.duration)
-        putFloat("Radius", entity.radius)
-        putInt("Color", entity.color.value)
+        putInt(AGE_TAG, entity.age)
+        putInt(DURATION_TAG, entity.duration)
+        putFloat(RADIUS_TAG, entity.radius)
+        putInt(COLOR_TAG, entity.color.value)
     }
 }

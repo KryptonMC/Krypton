@@ -22,12 +22,27 @@ import org.kryptonmc.krypton.entity.KryptonArmorStand
 import org.kryptonmc.krypton.entity.KryptonEquipable
 import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.FloatTag
-import org.kryptonmc.nbt.ListTag
 import org.kryptonmc.nbt.compound
 import org.kryptonmc.nbt.list
 import org.spongepowered.math.vector.Vector3f
 
 object ArmorStandSerializer : EntitySerializer<KryptonArmorStand> {
+
+    private const val ARMOR_ITEMS_TAG = "ArmorItems"
+    private const val HAND_ITEMS_TAG = "HandItems"
+    private const val INVISIBLE_TAG = "Invisible"
+    private const val SMALL_TAG = "Small"
+    private const val SHOW_ARMS_TAG = "ShowArms"
+    private const val DISABLED_SLOTS_TAG = "DisabledSlots"
+    private const val NO_BASE_PLATE_TAG = "NoBasePlate"
+    private const val MARKER_TAG = "Marker"
+    private const val POSE_TAG = "Pose"
+    private const val HEAD_TAG = "Head"
+    private const val BODY_TAG = "Body"
+    private const val LEFT_ARM_TAG = "LeftArm"
+    private const val RIGHT_ARM_TAG = "RightArm"
+    private const val LEFT_LEG_TAG = "LeftLeg"
+    private const val RIGHT_LEG_TAG = "RightLeg"
 
     @JvmField
     val DEFAULT_HEAD_ROTATION: Vector3f = Vector3f.ZERO
@@ -44,57 +59,59 @@ object ArmorStandSerializer : EntitySerializer<KryptonArmorStand> {
 
     override fun load(entity: KryptonArmorStand, data: CompoundTag) {
         LivingEntitySerializer.load(entity, data)
-        KryptonEquipable.loadItems(data, "ArmorItems", entity.armorItems)
-        KryptonEquipable.loadItems(data, "HandItems", entity.handItems)
+        KryptonEquipable.loadItems(data, ARMOR_ITEMS_TAG, entity.armorItems)
+        KryptonEquipable.loadItems(data, HAND_ITEMS_TAG, entity.handItems)
 
-        entity.isInvisible = data.getBoolean("Invisible")
-        entity.isSmall = data.getBoolean("Small")
-        entity.hasArms = data.getBoolean("ShowArms")
-        entity.disabledSlots = data.getInt("DisabledSlots")
-        entity.hasBasePlate = !data.getBoolean("NoBasePlate")
-        entity.isMarker = data.getBoolean("Marker")
+        entity.isInvisible = data.getBoolean(INVISIBLE_TAG)
+        entity.isSmall = data.getBoolean(SMALL_TAG)
+        entity.hasArms = data.getBoolean(SHOW_ARMS_TAG)
+        entity.disabledSlots = data.getInt(DISABLED_SLOTS_TAG)
+        entity.hasBasePlate = !data.getBoolean(NO_BASE_PLATE_TAG)
+        entity.isMarker = data.getBoolean(MARKER_TAG)
 
-        if (!data.contains("Pose", CompoundTag.ID)) return
-        val headRotation = data.getList("Head", FloatTag.ID)
-        entity.headPose = if (headRotation.isEmpty) DEFAULT_HEAD_ROTATION else headRotation.readRotation()
-        val bodyRotation = data.getList("Body", FloatTag.ID)
-        entity.bodyPose = if (bodyRotation.isEmpty) DEFAULT_BODY_ROTATION else bodyRotation.readRotation()
-        val leftArmRotation = data.getList("LeftArm", FloatTag.ID)
-        entity.leftArmPose = if (leftArmRotation.isEmpty) DEFAULT_LEFT_ARM_ROTATION else leftArmRotation.readRotation()
-        val rightArmRotation = data.getList("RightArm", FloatTag.ID)
-        entity.rightArmPose = if (rightArmRotation.isEmpty) DEFAULT_RIGHT_ARM_ROTATION else rightArmRotation.readRotation()
-        val leftLegRotation = data.getList("LeftLeg", FloatTag.ID)
-        entity.leftLegPose = if (leftLegRotation.isEmpty) DEFAULT_LEFT_LEG_ROTATION else leftLegRotation.readRotation()
-        val rightLegRotation = data.getList("RightLeg", FloatTag.ID)
-        entity.rightLegPose = if (rightLegRotation.isEmpty) DEFAULT_RIGHT_LEG_ROTATION else rightLegRotation.readRotation()
+        if (data.contains(POSE_TAG, CompoundTag.ID)) {
+            val pose = data.getCompound(POSE_TAG)
+            entity.headPose = pose.getPose(HEAD_TAG, DEFAULT_HEAD_ROTATION)
+            entity.bodyPose = pose.getPose(BODY_TAG, DEFAULT_BODY_ROTATION)
+            entity.leftArmPose = pose.getPose(LEFT_ARM_TAG, DEFAULT_LEFT_ARM_ROTATION)
+            entity.rightArmPose = pose.getPose(RIGHT_ARM_TAG, DEFAULT_RIGHT_ARM_ROTATION)
+            entity.leftLegPose = pose.getPose(LEFT_LEG_TAG, DEFAULT_LEFT_LEG_ROTATION)
+            entity.rightLegPose = pose.getPose(RIGHT_LEG_TAG, DEFAULT_RIGHT_LEG_ROTATION)
+        }
     }
 
     override fun save(entity: KryptonArmorStand): CompoundTag.Builder = LivingEntitySerializer.save(entity).apply {
-        put("ArmorItems", KryptonEquipable.saveItems(entity.armorItems))
-        put("HandItems", KryptonEquipable.saveItems(entity.handItems))
+        put(ARMOR_ITEMS_TAG, KryptonEquipable.saveItems(entity.armorItems))
+        put(HAND_ITEMS_TAG, KryptonEquipable.saveItems(entity.handItems))
 
-        putBoolean("Invisible", entity.isInvisible)
-        putBoolean("Small", entity.isSmall)
-        putBoolean("ShowArms", entity.hasArms)
-        putInt("DisabledSlots", entity.disabledSlots)
-        putBoolean("NoBasePlate", !entity.hasBasePlate)
-        if (entity.isMarker) putBoolean("Marker", true)
+        putBoolean(INVISIBLE_TAG, entity.isInvisible)
+        putBoolean(SMALL_TAG, entity.isSmall)
+        putBoolean(SHOW_ARMS_TAG, entity.hasArms)
+        putInt(DISABLED_SLOTS_TAG, entity.disabledSlots)
+        putBoolean(NO_BASE_PLATE_TAG, !entity.hasBasePlate)
+        if (entity.isMarker) putBoolean(MARKER_TAG, true)
 
-        compound("Pose") {
-            if (entity.headPose != DEFAULT_HEAD_ROTATION) rotation("Head", entity.headPose)
-            if (entity.bodyPose != DEFAULT_BODY_ROTATION) rotation("Body", entity.bodyPose)
-            if (entity.leftArmPose != DEFAULT_LEFT_ARM_ROTATION) rotation("LeftArm", entity.leftArmPose)
-            if (entity.rightArmPose != DEFAULT_RIGHT_ARM_ROTATION) rotation("RightArm", entity.rightArmPose)
-            if (entity.leftLegPose != DEFAULT_LEFT_LEG_ROTATION) rotation("LeftLeg", entity.leftLegPose)
-            if (entity.rightLegPose != DEFAULT_RIGHT_LEG_ROTATION) rotation("RightLeg", entity.rightLegPose)
+        compound(POSE_TAG) {
+            putPose(HEAD_TAG, entity.headPose, DEFAULT_HEAD_ROTATION)
+            putPose(BODY_TAG, entity.bodyPose, DEFAULT_BODY_ROTATION)
+            putPose(LEFT_ARM_TAG, entity.leftArmPose, DEFAULT_LEFT_ARM_ROTATION)
+            putPose(RIGHT_ARM_TAG, entity.rightArmPose, DEFAULT_RIGHT_ARM_ROTATION)
+            putPose(LEFT_LEG_TAG, entity.leftLegPose, DEFAULT_LEFT_LEG_ROTATION)
+            putPose(RIGHT_LEG_TAG, entity.rightLegPose, DEFAULT_RIGHT_LEG_ROTATION)
         }
     }
 }
 
-private fun ListTag.readRotation(): Vector3f = Vector3f.from(getFloat(0), getFloat(1), getFloat(2))
+private fun CompoundTag.getPose(name: String, default: Vector3f): Vector3f {
+    val tag = getList(name, FloatTag.ID)
+    return if (tag.isEmpty) default else Vector3f.from(tag.getFloat(0), tag.getFloat(1), tag.getFloat(2))
+}
 
-private fun CompoundTag.Builder.rotation(key: String, rotation: Vector3f): CompoundTag.Builder = list(key) {
-    addFloat(rotation.x())
-    addFloat(rotation.y())
-    addFloat(rotation.z())
+private fun CompoundTag.Builder.putPose(key: String, pose: Vector3f, default: Vector3f): CompoundTag.Builder {
+    if (pose == default) return this
+    return list(key) {
+        addFloat(pose.x())
+        addFloat(pose.y())
+        addFloat(pose.z())
+    }
 }

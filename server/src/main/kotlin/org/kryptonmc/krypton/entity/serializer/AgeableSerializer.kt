@@ -23,14 +23,17 @@ import org.kryptonmc.nbt.CompoundTag
 
 object AgeableSerializer : EntitySerializer<KryptonAgeable> {
 
+    private const val AGE_TAG = "Age"
+    private const val FORCED_AGE_TAG = "ForcedAge"
+
     override fun load(entity: KryptonAgeable, data: CompoundTag) {
         MobSerializer.load(entity, data)
-        entity.age = data.getInt("Age")
-        entity.forcedAge = data.getInt("ForcedAge")
+        entity.age = data.getInt(AGE_TAG)
+        entity.forcedAge = data.getInt(FORCED_AGE_TAG)
     }
 
     override fun save(entity: KryptonAgeable): CompoundTag.Builder = MobSerializer.save(entity).apply {
-        putInt("Age", entity.age)
-        putInt("ForcedAge", entity.forcedAge)
+        putInt(AGE_TAG, entity.age)
+        putInt(FORCED_AGE_TAG, entity.forcedAge)
     }
 }

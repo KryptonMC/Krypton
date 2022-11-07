@@ -24,18 +24,23 @@ import org.kryptonmc.krypton.entity.hanging.KryptonPainting
 import org.kryptonmc.krypton.entity.serializer.BaseEntitySerializer
 import org.kryptonmc.krypton.entity.serializer.EntitySerializer
 import org.kryptonmc.krypton.util.Directions
+import org.kryptonmc.krypton.util.nbt.putNullable
+import org.kryptonmc.krypton.util.nbt.putKeyed
 import org.kryptonmc.nbt.CompoundTag
 
 object PaintingSerializer : EntitySerializer<KryptonPainting> {
 
+    private const val VARIANT_TAG = "variant"
+    private const val FACING_TAG = "facing"
+
     override fun load(entity: KryptonPainting, data: CompoundTag) {
         BaseEntitySerializer.load(entity, data)
-        entity.variant = Registries.PAINTING_VARIANT.get(Key.key(data.getString("variant")))
-        entity.direction = Directions.of2D(data.getByte("facing").toInt())
+        entity.variant = Registries.PAINTING_VARIANT.get(Key.key(data.getString(VARIANT_TAG)))
+        entity.direction = Directions.of2D(data.getByte(FACING_TAG).toInt())
     }
 
     override fun save(entity: KryptonPainting): CompoundTag.Builder = BaseEntitySerializer.save(entity).apply {
-        if (entity.variant != null) putString("variant", entity.variant!!.key().asString())
-        putByte("facing", Directions.data2D(entity.direction).toByte())
+        putNullable(VARIANT_TAG, entity.variant, CompoundTag.Builder::putKeyed)
+        putByte(FACING_TAG, Directions.data2D(entity.direction).toByte())
     }
 }

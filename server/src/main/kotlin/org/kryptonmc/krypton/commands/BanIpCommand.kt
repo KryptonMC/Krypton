@@ -36,28 +36,31 @@ import org.kryptonmc.krypton.command.argument.argument
 import org.kryptonmc.krypton.command.literal
 import org.kryptonmc.krypton.command.runs
 import org.kryptonmc.krypton.util.asString
+import java.util.regex.Pattern
 
 object BanIpCommand : InternalCommand {
 
     private val ALREADY_BANNED = SimpleCommandExceptionType(Component.translatable("commands.banip.failed").toMessage())
-
     @JvmField
-    val IP_ADDRESS_PATTERN: Regex = Regex("^([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\." +
+    val IP_ADDRESS_PATTERN: Pattern = Pattern.compile("^([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\." +
             "([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])$")
+
+    private const val TARGET_ARGUMENT = "target"
+    private const val REASON_ARGUMENT = "reason"
 
     override fun register(dispatcher: CommandDispatcher<Sender>) {
         dispatcher.register(literal("ban-ip") {
             permission(KryptonPermission.BAN_IP)
-            argument("target", StringArgumentType.string()) {
+            argument(TARGET_ARGUMENT, StringArgumentType.string()) {
                 runs {
                     val server = it.source.server as? KryptonServer ?: return@runs
-                    banIp(server, it.argument("target"), it.source, "Banned by operator")
+                    banIp(server, it.argument(TARGET_ARGUMENT), it.source, "Banned by operator")
                     Command.SINGLE_SUCCESS
                 }
-                argument("reason", StringArgumentType.string()) {
+                argument(REASON_ARGUMENT, StringArgumentType.string()) {
                     runs {
                         val server = it.source.server as? KryptonServer ?: return@runs
-                        banIp(server, it.argument("target"), it.source, it.argument("reason"))
+                        banIp(server, it.argument(TARGET_ARGUMENT), it.source, it.argument(REASON_ARGUMENT))
                         Command.SINGLE_SUCCESS
                     }
                 }
@@ -67,7 +70,7 @@ object BanIpCommand : InternalCommand {
 
     @JvmStatic
     private fun banIp(server: KryptonServer, target: String, sender: Sender, reason: String) {
-        if (target.matches(IP_ADDRESS_PATTERN)) {
+        if (IP_ADDRESS_PATTERN.matcher(target).matches()) {
             // The target is an IP address
             // Check player is not already banned
             if (server.playerManager.bannedIps.contains(target)) throw ALREADY_BANNED.create()

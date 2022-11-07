@@ -41,16 +41,16 @@ import org.kryptonmc.nbt.list
 @Suppress("UNCHECKED_CAST")
 abstract class AbstractItemMeta<I : ItemMeta>(val data: CompoundTag) : ItemMeta {
 
-    final override val damage: Int = data.getInt("Damage")
-    final override val isUnbreakable: Boolean = data.getBoolean("Unbreakable")
-    final override val customModelData: Int = data.getInt("CustomModelData")
-    final override val name: Component? = data.getDisplay("Name", StringTag.ID, null, StringTag::toComponent)
-    final override val lore: ImmutableList<Component> = data.getLore()
-    final override val hideFlags: Int = data.getInt("HideFlags")
-    final override val canDestroy: ImmutableSet<Block> = data.getBlocks("CanDestroy")
-    final override val canPlaceOn: ImmutableSet<Block> = data.getBlocks("CanPlaceOn")
+    final override val damage: Int = data.getInt(DAMAGE_TAG)
+    final override val isUnbreakable: Boolean = data.getBoolean(UNBREAKABLE_TAG)
+    final override val customModelData: Int = data.getInt(CUSTOM_MODEL_DATA_TAG)
+    final override val name: Component? = getDisplay(data, NAME_TAG, StringTag.ID, null, StringTag::toComponent)
+    final override val lore: ImmutableList<Component> = getLore(data)
+    final override val hideFlags: Int = data.getInt(HIDE_FLAGS_TAG)
+    final override val canDestroy: ImmutableSet<Block> = getBlocks(data, CAN_DESTROY_TAG)
+    final override val canPlaceOn: ImmutableSet<Block> = getBlocks(data, CAN_PLACE_ON_TAG)
     final override val attributeModifiers: ImmutableList<ItemAttributeModifier> =
-        data.mapToList("AttributeModifiers", CompoundTag.ID) { KryptonItemAttributeModifier.from(it as CompoundTag) }
+        data.mapToList(MODIFIERS_TAG, CompoundTag.ID) { KryptonItemAttributeModifier.from(it as CompoundTag) }
 
     abstract fun copy(data: CompoundTag): I
 
@@ -58,36 +58,36 @@ abstract class AbstractItemMeta<I : ItemMeta>(val data: CompoundTag) : ItemMeta 
 
     final override fun withDamage(damage: Int): I {
         if (damage == this.damage) return this as I
-        return copy(data.putInt("Damage", damage))
+        return copy(data.putInt(DAMAGE_TAG, damage))
     }
 
     final override fun withUnbreakable(unbreakable: Boolean): I {
         if (unbreakable == isUnbreakable) return this as I
-        return copy(data.putBoolean("Unbreakable", unbreakable))
+        return copy(data.putBoolean(UNBREAKABLE_TAG, unbreakable))
     }
 
     final override fun withCustomModelData(data: Int): I {
         if (data == customModelData) return this as I
-        return copy(this.data.putInt("CustomModelData", data))
+        return copy(this.data.putInt(CUSTOM_MODEL_DATA_TAG, data))
     }
 
     final override fun withName(name: Component?): I {
         if (name == this.name) return this as I
-        if (name == null) return copy(data.update("display") { it.remove("Name") })
-        return copy(data.update("display") { it.putString("Name", name.toJson()) })
+        if (name == null) return copy(data.update(DISPLAY_TAG) { it.remove(NAME_TAG) })
+        return copy(data.update(DISPLAY_TAG) { it.putString(NAME_TAG, name.toJson()) })
     }
 
-    final override fun withLore(lore: List<Component>): I = copy(data.set("Lore", lore) { StringTag.of(it.toJson()) })
+    final override fun withLore(lore: List<Component>): I = copy(put(data, LORE_TAG, lore) { StringTag.of(it.toJson()) })
 
-    final override fun withLore(lore: Component): I = copy(data.update("Lore", StringTag.ID) { it.add(StringTag.of(lore.toJson())) })
+    final override fun withLore(lore: Component): I = copy(data.update(LORE_TAG, StringTag.ID) { it.add(StringTag.of(lore.toJson())) })
 
-    final override fun withoutLore(index: Int): I = copy(data.update("Lore", StringTag.ID) { it.remove(index) })
+    final override fun withoutLore(index: Int): I = copy(data.update(LORE_TAG, StringTag.ID) { it.remove(index) })
 
-    final override fun withoutLore(lore: Component): I = copy(data.update("Lore", StringTag.ID) { it.remove(StringTag.of(lore.toJson())) })
+    final override fun withoutLore(lore: Component): I = copy(data.update(LORE_TAG, StringTag.ID) { it.remove(StringTag.of(lore.toJson())) })
 
     final override fun withHideFlags(flags: Int): I {
         if (flags == hideFlags) return this as I
-        return copy(data.putInt("HideFlags", flags))
+        return copy(data.putInt(HIDE_FLAGS_TAG, flags))
     }
 
     final override fun withHideFlag(flag: ItemFlag): I {
@@ -100,20 +100,20 @@ abstract class AbstractItemMeta<I : ItemMeta>(val data: CompoundTag) : ItemMeta 
         return withHideFlags(hideFlags and flag.mask().inv())
     }
 
-    final override fun withCanDestroy(blocks: Collection<Block>): I = copy(data.setBlocks("CanDestroy", blocks))
+    final override fun withCanDestroy(blocks: Collection<Block>): I = copy(putBlocks(data, CAN_DESTROY_TAG, blocks))
 
-    final override fun withCanPlaceOn(blocks: Collection<Block>): I = copy(data.setBlocks("CanPlaceOn", blocks))
+    final override fun withCanPlaceOn(blocks: Collection<Block>): I = copy(putBlocks(data, CAN_PLACE_ON_TAG, blocks))
 
     final override fun withAttributeModifiers(modifiers: Collection<ItemAttributeModifier>): I =
-        copy(data.set("AttributeModifiers", modifiers) { it.save() })
+        copy(put(data, MODIFIERS_TAG, modifiers) { it.save() })
 
-    final override fun withoutAttributeModifiers(): I = copy(data.remove("AttributeModifiers"))
+    final override fun withoutAttributeModifiers(): I = copy(data.remove(MODIFIERS_TAG))
 
     final override fun withAttributeModifier(modifier: ItemAttributeModifier): I =
-        copy(data.update("AttributeModifiers", CompoundTag.ID) { it.add(modifier.save()) })
+        copy(data.update(MODIFIERS_TAG, CompoundTag.ID) { it.add(modifier.save()) })
 
     final override fun withoutAttributeModifier(modifier: ItemAttributeModifier): I =
-        copy(data.update("AttributeModifiers", CompoundTag.ID) { it.remove(modifier.save()) })
+        copy(data.update(MODIFIERS_TAG, CompoundTag.ID) { it.remove(modifier.save()) })
 
     protected fun partialToString(): String = "damage=$damage, isUnbreakable=$isUnbreakable, customModelData=$customModelData, name=$name, " +
             "lore=$lore, hideFlags=$hideFlags, canDestroy=$canDestroy, canPlaceOn=$canPlaceOn"
@@ -125,31 +125,51 @@ abstract class AbstractItemMeta<I : ItemMeta>(val data: CompoundTag) : ItemMeta 
     }
 
     final override fun hashCode(): Int = data.hashCode()
-}
 
-@Suppress("UNCHECKED_CAST")
-fun <T : Tag, R> CompoundTag.getDisplay(key: String, type: Int, default: R?, mapper: (T) -> R): R? {
-    if (!contains("display", CompoundTag.ID)) return default
-    val displayTag = getCompound("display")
-    if (!displayTag.contains(key, type)) return default
-    val display = displayTag.get(key) as? T ?: return default
-    return mapper(display)
+    companion object {
+
+        private const val DISPLAY_TAG = "display"
+        private const val DAMAGE_TAG = "Damage"
+        private const val UNBREAKABLE_TAG = "Unbreakable"
+        private const val CUSTOM_MODEL_DATA_TAG = "CustomModelData"
+        private const val NAME_TAG = "Name"
+        private const val LORE_TAG = "Lore"
+        private const val HIDE_FLAGS_TAG = "HideFlags"
+        private const val CAN_DESTROY_TAG = "CanDestroy"
+        private const val CAN_PLACE_ON_TAG = "CanPlaceOn"
+        private const val MODIFIERS_TAG = "AttributeModifiers"
+
+        @JvmStatic
+        protected fun <T : Tag, R> getDisplay(data: CompoundTag, key: String, type: Int, default: R?, mapper: (T) -> R): R? {
+            if (!data.contains(DISPLAY_TAG, CompoundTag.ID)) return default
+            val displayTag = data.getCompound(DISPLAY_TAG)
+            if (!displayTag.contains(key, type)) return default
+            val display = displayTag.get(key) as? T ?: return default
+            return mapper(display)
+        }
+
+        @JvmStatic
+        private fun getLore(data: CompoundTag): ImmutableList<Component> =
+            getDisplay<ListTag, _>(data, LORE_TAG, ListTag.ID, ImmutableList.of()) { list ->
+                val builder = ImmutableList.builder<Component>()
+                list.forEach { builder.add((it as StringTag).toComponent()) }
+                builder.build()
+            }!!
+
+        @JvmStatic
+        private fun getBlocks(data: CompoundTag, key: String): ImmutableSet<Block> =
+            data.mapToSet(key, StringTag.ID) { Registries.BLOCK.get(Key.key((it as StringTag).value())) }
+
+        @JvmStatic
+        private fun putBlocks(data: CompoundTag, key: String, blocks: Collection<Block>): CompoundTag =
+            put(data, key, blocks) { StringTag.of(it.key().asString()) }
+
+        @JvmStatic
+        protected inline fun <T> put(data: CompoundTag, key: String, values: Collection<T>, addAction: (T) -> Tag): CompoundTag {
+            if (values.isEmpty()) return data.remove(key)
+            return data.put(key, list { values.forEach { add(addAction(it)) } })
+        }
+    }
 }
 
 private fun StringTag.toComponent(): Component = GsonComponentSerializer.gson().deserialize(value())
-
-private fun CompoundTag.getLore(): ImmutableList<Component> = getDisplay<ListTag, _>("Lore", ListTag.ID, ImmutableList.of()) { list ->
-    val builder = ImmutableList.builder<Component>()
-    list.forEach { builder.add((it as StringTag).toComponent()) }
-    builder.build()
-}!!
-
-private fun CompoundTag.getBlocks(key: String): ImmutableSet<Block> =
-    mapToSet(key, StringTag.ID) { Registries.BLOCK.get(Key.key((it as StringTag).value())) }
-
-private fun CompoundTag.setBlocks(key: String, blocks: Collection<Block>): CompoundTag = set(key, blocks) { StringTag.of(it.key().asString()) }
-
-private inline fun <T> CompoundTag.set(key: String, values: Collection<T>, addAction: (T) -> Tag): CompoundTag {
-    if (values.isEmpty()) return remove(key)
-    return put(key, list { values.forEach { add(addAction(it)) } })
-}

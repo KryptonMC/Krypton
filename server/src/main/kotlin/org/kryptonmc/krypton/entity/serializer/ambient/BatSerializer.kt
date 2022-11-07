@@ -26,12 +26,14 @@ import org.kryptonmc.nbt.CompoundTag
 
 object BatSerializer : EntitySerializer<KryptonBat> {
 
+    private const val FLAGS_TAG = "BatFlags"
+
     override fun load(entity: KryptonBat, data: CompoundTag) {
         MobSerializer.load(entity, data)
-        entity.data.set(MetadataKeys.Bat.FLAGS, data.getByte("BatFlags"))
+        entity.data.set(MetadataKeys.Bat.FLAGS, data.getByte(FLAGS_TAG))
     }
 
     override fun save(entity: KryptonBat): CompoundTag.Builder = MobSerializer.save(entity).apply {
-        putByte("BatFlags", entity.data.get(MetadataKeys.Bat.FLAGS))
+        putByte(FLAGS_TAG, entity.data.get(MetadataKeys.Bat.FLAGS))
     }
 }

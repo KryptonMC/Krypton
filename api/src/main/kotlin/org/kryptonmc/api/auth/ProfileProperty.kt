@@ -14,7 +14,7 @@ import org.kryptonmc.api.Krypton
 import javax.annotation.concurrent.Immutable
 
 /**
- * A property of a [GameProfile].
+ * A property of a game profile.
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
 @Immutable

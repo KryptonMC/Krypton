@@ -1,10 +1,9 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    kotlin("jvm")
+    id("krypton.basic-conventions")
     id("krypton.base-conventions")
     id("net.kyori.indra")
-    id("org.cadixdev.licenser")
     jacoco
 }
 
@@ -53,9 +52,4 @@ tasks {
     withType<Test> {
         useJUnitPlatform()
     }
-}
-
-license {
-    header(project.rootProject.resources.text.fromFile("HEADER.txt"))
-    newLine(false)
 }

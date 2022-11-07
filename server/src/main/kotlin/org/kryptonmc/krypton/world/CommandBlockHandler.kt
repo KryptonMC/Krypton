@@ -50,31 +50,31 @@ abstract class CommandBlockHandler(override val server: KryptonServer) : Sender 
     protected abstract fun onUpdated()
 
     fun load(data: CompoundTag) {
-        command = data.getString("Command")
-        successCount = data.getInt("SuccessCount")
-        if (data.contains("CustomName", StringTag.ID)) name = GsonComponentSerializer.gson().deserialize(data.getString("CustomName"))
-        if (data.contains("TrackOutput", ByteTag.ID)) trackOutput = data.getBoolean("TrackOutput")
-        lastOutput = if (data.contains("LastOutput", StringTag.ID)) {
+        command = data.getString(COMMAND_TAG)
+        successCount = data.getInt(SUCCESS_COUNT_TAG)
+        if (data.contains(CUSTOM_NAME_TAG, StringTag.ID)) name = GsonComponentSerializer.gson().deserialize(data.getString(CUSTOM_NAME_TAG))
+        if (data.contains(TRACK_OUTPUT_TAG, ByteTag.ID)) trackOutput = data.getBoolean(TRACK_OUTPUT_TAG)
+        lastOutput = if (data.contains(LAST_OUTPUT_TAG, StringTag.ID)) {
             try {
-                GsonComponentSerializer.gson().deserialize(data.getString("LastOutput"))
+                GsonComponentSerializer.gson().deserialize(data.getString(LAST_OUTPUT_TAG))
             } catch (exception: Exception) {
                 Component.text(exception.message ?: "Error occurred while deserializing last output")
             }
         } else {
             null
         }
-        if (data.contains("UpdateLastExecution")) updateLastExecution = data.getBoolean("UpdateLastExecution")
-        lastExecution = if (updateLastExecution && data.contains("LastExecution")) data.getLong("LastExecution") else -1L
+        if (data.contains(UPDATE_LAST_EXECUTION_TAG)) updateLastExecution = data.getBoolean(UPDATE_LAST_EXECUTION_TAG)
+        lastExecution = if (updateLastExecution && data.contains(LAST_EXECUTION_TAG)) data.getLong(LAST_EXECUTION_TAG) else -1L
     }
 
     fun save(builder: CompoundTag.Builder): CompoundTag.Builder = builder.apply {
-        putString("Command", command)
-        putInt("SuccessCount", successCount)
-        putString("CustomName", GsonComponentSerializer.gson().serialize(name))
-        putBoolean("TrackOutput", trackOutput)
-        if (lastOutput != null && trackOutput) putString("LastOutput", GsonComponentSerializer.gson().serialize(lastOutput!!))
-        putBoolean("UpdateLastExecution", updateLastExecution)
-        if (updateLastExecution && lastExecution > 0L) putLong("LastExecution", lastExecution)
+        putString(COMMAND_TAG, command)
+        putInt(SUCCESS_COUNT_TAG, successCount)
+        putString(CUSTOM_NAME_TAG, GsonComponentSerializer.gson().serialize(name))
+        putBoolean(TRACK_OUTPUT_TAG, trackOutput)
+        if (lastOutput != null && trackOutput) putString(LAST_OUTPUT_TAG, GsonComponentSerializer.gson().serialize(lastOutput!!))
+        putBoolean(UPDATE_LAST_EXECUTION_TAG, updateLastExecution)
+        if (updateLastExecution && lastExecution > 0L) putLong(LAST_EXECUTION_TAG, lastExecution)
     }
 
     fun runCommand(world: KryptonWorld): Boolean {
@@ -107,5 +107,13 @@ abstract class CommandBlockHandler(override val server: KryptonServer) : Sender 
 
         private val DEFAULT_NAME = Component.text("@")
         private val TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm:ss")
+
+        private const val COMMAND_TAG = "Command"
+        private const val SUCCESS_COUNT_TAG = "SuccessCount"
+        private const val CUSTOM_NAME_TAG = "CustomName"
+        private const val TRACK_OUTPUT_TAG = "TrackOutput"
+        private const val LAST_OUTPUT_TAG = "LastOutput"
+        private const val UPDATE_LAST_EXECUTION_TAG = "UpdateLastExecution"
+        private const val LAST_EXECUTION_TAG = "LastExecution"
     }
 }

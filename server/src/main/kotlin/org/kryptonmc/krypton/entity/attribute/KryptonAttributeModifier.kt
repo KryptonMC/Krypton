@@ -58,15 +58,16 @@ open class KryptonAttributeModifier(
 
     companion object {
 
-        private val LOGGER = logger<KryptonAttributeModifier>()
+        @JvmStatic
+        protected val LOGGER = logger<KryptonAttributeModifier>()
         private val BASIC_OPERATIONS = BasicModifierOperation.values()
 
         @JvmStatic
         fun from(data: CompoundTag): KryptonAttributeModifier? {
             return try {
                 KryptonAttributeModifier(getId(data), data.getString("Name"), data.getDouble("Amount"), getOperation(data))
-            } catch (exception: Exception) {
-                LOGGER.warn("Unable to create attribute: ${exception.message}")
+            } catch (exception: IllegalArgumentException) {
+                LOGGER.warn("Unable to create attribute!", exception)
                 null
             }
         }

@@ -25,12 +25,14 @@ import org.kryptonmc.nbt.CompoundTag
 
 object PufferfishSerializer : EntitySerializer<KryptonPufferfish> {
 
+    private const val PUFF_STATE_TAG = "PuffState"
+
     override fun load(entity: KryptonPufferfish, data: CompoundTag) {
         FishSerializer.load(entity, data)
-        entity.data.set(MetadataKeys.Pufferfish.PUFF_STATE, data.getInt("PuffState"))
+        entity.data.set(MetadataKeys.Pufferfish.PUFF_STATE, data.getInt(PUFF_STATE_TAG))
     }
 
     override fun save(entity: KryptonPufferfish): CompoundTag.Builder = FishSerializer.save(entity).apply {
-        putInt("PuffState", entity.data.get(MetadataKeys.Pufferfish.PUFF_STATE))
+        putInt(PUFF_STATE_TAG, entity.data.get(MetadataKeys.Pufferfish.PUFF_STATE))
     }
 }

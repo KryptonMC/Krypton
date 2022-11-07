@@ -45,10 +45,12 @@ class IntProperty(name: String, private val minimum: Int, private val maximum: I
 
     override fun toString(value: Int): String = value.toString()
 
+    @Suppress("MagicNumber")
     override fun idFor(value: Int): Int {
         val result = value - minimum
-        return result or ((maximum - result) shr 31)
+        return result or (maximum - result shr 31)
     }
 
+    @Suppress("MagicNumber") // This is a hash code function
     override fun generateHashCode(): Int = 31 * super.generateHashCode() + values.hashCode()
 }

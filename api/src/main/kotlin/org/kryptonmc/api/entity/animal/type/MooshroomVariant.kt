@@ -17,8 +17,8 @@ import org.kryptonmc.api.item.ItemTypes
  * A variant of mooshroom, which represents a particular type of mushroom,
  * either brown mushrooms, or red mushrooms.
  *
- * @param item the mushroom item this mooshroom variant represents
- * @param block the mushroom block this mooshroom variant represents
+ * @property item The mushroom item this mooshroom variant represents.
+ * @property block The mushroom block this mooshroom variant represents.
  */
 public enum class MooshroomVariant(public val item: ItemType, public val block: Block) {
 

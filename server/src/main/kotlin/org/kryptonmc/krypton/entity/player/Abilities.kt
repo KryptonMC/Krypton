@@ -18,6 +18,7 @@
  */
 package org.kryptonmc.krypton.entity.player
 
+import org.kryptonmc.krypton.util.nbt.hasNumber
 import org.kryptonmc.nbt.ByteTag
 import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.compound
@@ -33,25 +34,37 @@ class Abilities {
     var flyingSpeed: Float = 0.1F
 
     fun load(data: CompoundTag) {
-        val abilities = if (data.contains("abilities", CompoundTag.ID)) data.getCompound("abilities") else return
-        invulnerable = abilities.getBoolean("invulnerable")
-        flying = abilities.getBoolean("flying")
-        canFly = abilities.getBoolean("mayfly")
-        canInstantlyBuild = abilities.getBoolean("instabuild")
-        if (abilities.contains("flySpeed", 99)) {
-            flyingSpeed = abilities.getFloat("flySpeed")
-            walkingSpeed = abilities.getFloat("walkSpeed")
+        val abilities = if (data.contains(ABILITIES_TAG, CompoundTag.ID)) data.getCompound(ABILITIES_TAG) else return
+        invulnerable = abilities.getBoolean(INVULNERABLE_TAG)
+        flying = abilities.getBoolean(FLYING_TAG)
+        canFly = abilities.getBoolean(MAY_FLY_TAG)
+        canInstantlyBuild = abilities.getBoolean(INSTABUILD_TAG)
+        if (abilities.hasNumber(FLY_SPEED_TAG)) {
+            flyingSpeed = abilities.getFloat(FLY_SPEED_TAG)
+            walkingSpeed = abilities.getFloat(WALK_SPEED_TAG)
         }
-        if (abilities.contains("mayBuild", ByteTag.ID)) canBuild = abilities.getBoolean("mayBuild")
+        if (abilities.contains(MAY_BUILD_TAG, ByteTag.ID)) canBuild = abilities.getBoolean(MAY_BUILD_TAG)
     }
 
-    fun save(builder: CompoundTag.Builder): CompoundTag.Builder = builder.compound("abilities") {
-        putBoolean("invulnerable", invulnerable)
-        putBoolean("flying", flying)
-        putBoolean("mayfly", canFly)
-        putBoolean("instabuild", canInstantlyBuild)
-        putBoolean("mayBuild", canBuild)
-        putFloat("flySpeed", flyingSpeed)
-        putFloat("walkSpeed", walkingSpeed)
+    fun save(builder: CompoundTag.Builder): CompoundTag.Builder = builder.compound(ABILITIES_TAG) {
+        putBoolean(INVULNERABLE_TAG, invulnerable)
+        putBoolean(FLYING_TAG, flying)
+        putBoolean(MAY_FLY_TAG, canFly)
+        putBoolean(INSTABUILD_TAG, canInstantlyBuild)
+        putBoolean(MAY_BUILD_TAG, canBuild)
+        putFloat(FLY_SPEED_TAG, flyingSpeed)
+        putFloat(WALK_SPEED_TAG, walkingSpeed)
+    }
+
+    companion object {
+
+        private const val ABILITIES_TAG = "abilities"
+        private const val INVULNERABLE_TAG = "invulnerable"
+        private const val FLYING_TAG = "flying"
+        private const val MAY_FLY_TAG = "mayfly"
+        private const val INSTABUILD_TAG = "instabuild"
+        private const val MAY_BUILD_TAG = "mayBuild"
+        private const val FLY_SPEED_TAG = "flySpeed"
+        private const val WALK_SPEED_TAG = "walkSpeed"
     }
 }

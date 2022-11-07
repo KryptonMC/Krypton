@@ -48,9 +48,12 @@ class KryptonChicken(world: KryptonWorld) : KryptonAnimal(world), Chicken {
         private const val FIVE_MINUTES_TICKS = 6000
         private val FOOD_ITEMS = setOf(ItemTypes.WHEAT_SEEDS, ItemTypes.MELON_SEEDS, ItemTypes.PUMPKIN_SEEDS, ItemTypes.BEETROOT_SEEDS)
 
+        private const val DEFAULT_MAX_HEALTH = 4.0
+        private const val DEFAULT_MOVEMENT_SPEED = 0.25
+
         @JvmStatic
         fun attributes(): AttributeSupplier.Builder = KryptonMob.attributes()
-            .add(KryptonAttributeTypes.MAX_HEALTH, 4.0)
-            .add(KryptonAttributeTypes.MOVEMENT_SPEED, 0.25)
+            .add(KryptonAttributeTypes.MAX_HEALTH, DEFAULT_MAX_HEALTH)
+            .add(KryptonAttributeTypes.MOVEMENT_SPEED, DEFAULT_MOVEMENT_SPEED)
     }
 }

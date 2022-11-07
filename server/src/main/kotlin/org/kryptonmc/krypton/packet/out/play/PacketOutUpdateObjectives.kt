@@ -30,7 +30,7 @@ import org.kryptonmc.krypton.util.writeString
 import org.kryptonmc.krypton.util.writeVarInt
 
 /**
- * Tells the client to perform an action to an objective for a scoreboard
+ * Tells the client to perform an action to an objective for a scoreboard.
  */
 @JvmRecord
 data class PacketOutUpdateObjectives(val name: String, val action: Action, val displayName: Component, val renderType: Int) : Packet {

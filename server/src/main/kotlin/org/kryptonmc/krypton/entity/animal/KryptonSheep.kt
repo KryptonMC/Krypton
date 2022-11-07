@@ -42,10 +42,10 @@ class KryptonSheep(world: KryptonWorld) : KryptonAnimal(world), Sheep {
         get() = data.getFlag(MetadataKeys.Sheep.FLAGS, FLAG_SHEARED)
         set(value) = data.setFlag(MetadataKeys.Sheep.FLAGS, FLAG_SHEARED, value)
     override var woolColor: DyeColor
-        get() = DyeColors.fromId(data.get(MetadataKeys.Sheep.FLAGS).toInt() and 0xF)
+        get() = DyeColors.fromId(data.get(MetadataKeys.Sheep.FLAGS).toInt() and WOOL_COLOR_MASK)
         set(value) {
             val old = data.get(MetadataKeys.Sheep.FLAGS).toInt()
-            data.set(MetadataKeys.Sheep.FLAGS, ((old and 0xF0) or (value.ordinal and 0xF)).toByte())
+            data.set(MetadataKeys.Sheep.FLAGS, (old and CLEAR_WOOL_COLOR_MASK or (value.ordinal and WOOL_COLOR_MASK)).toByte())
         }
 
     override fun defineData() {
@@ -56,10 +56,15 @@ class KryptonSheep(world: KryptonWorld) : KryptonAnimal(world), Sheep {
     companion object {
 
         private const val FLAG_SHEARED = 4
+        private const val WOOL_COLOR_MASK = 0xF
+        private const val CLEAR_WOOL_COLOR_MASK = 0xF0
+
+        private const val DEFAULT_MAX_HEALTH = 8.0
+        private const val DEFAULT_MOVEMENT_SPEED = 0.23
 
         @JvmStatic
         fun attributes(): AttributeSupplier.Builder = KryptonMob.attributes()
-            .add(KryptonAttributeTypes.MAX_HEALTH, 8.0)
-            .add(KryptonAttributeTypes.MOVEMENT_SPEED, 0.23)
+            .add(KryptonAttributeTypes.MAX_HEALTH, DEFAULT_MAX_HEALTH)
+            .add(KryptonAttributeTypes.MOVEMENT_SPEED, DEFAULT_MOVEMENT_SPEED)
     }
 }

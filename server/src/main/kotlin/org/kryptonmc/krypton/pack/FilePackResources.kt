@@ -75,7 +75,7 @@ class FilePackResources(path: Path) : AbstractPackResources(path) {
     override fun close() {
         try {
             zipFile?.close()
-        } catch (exception: Exception) {
+        } catch (ignored: Exception) {
             // Just ignore
         }
         zipFile = null

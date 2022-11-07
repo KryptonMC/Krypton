@@ -132,8 +132,8 @@ class KryptonAttribute(override val type: KryptonAttributeType, private val onDi
 
     fun load(data: CompoundTag) {
         baseValue = data.getDouble("Base")
-        if (data.contains("Modifiers", ListTag.ID)) {
-            data.getList("Modifiers", CompoundTag.ID).forEachCompound {
+        if (data.contains(MODIFIERS_TAG, ListTag.ID)) {
+            data.getList(MODIFIERS_TAG, CompoundTag.ID).forEachCompound {
                 val modifier = KryptonAttributeModifier.from(it) ?: return@forEachCompound
                 modifiersById.put(modifier.uuid, modifier)
                 modifiersByOperation.put(modifier.operation, modifier)
@@ -144,22 +144,29 @@ class KryptonAttribute(override val type: KryptonAttributeType, private val onDi
     }
 
     fun save(): CompoundTag = compound {
-        putString("Name", type.key().asString())
-        putDouble("Base", baseValue)
+        putString(NAME_TAG, type.key().asString())
+        putDouble(BASE_TAG, baseValue)
         if (permanentModifiers.isNotEmpty()) {
-            list("Modifiers") { permanentModifiers.forEach { add(saveModifier(it)) } }
+            list(MODIFIERS_TAG) { permanentModifiers.forEach { add(saveModifier(it)) } }
         }
     }
 
     companion object {
 
+        private const val NAME_TAG = "Name"
+        private const val BASE_TAG = "Base"
+        private const val MODIFIERS_TAG = "Modifiers"
+        private const val UUID_TAG = "UUID"
+        private const val AMOUNT_TAG = "Amount"
+        private const val OPERATION_TAG = "Operation"
+
         @JvmStatic
         private fun saveModifier(modifier: AttributeModifier): CompoundTag = compound {
-            putString("Name", modifier.name)
-            putUUID("UUID", modifier.uuid)
-            putDouble("Amount", modifier.amount)
+            putString(NAME_TAG, modifier.name)
+            putUUID(UUID_TAG, modifier.uuid)
+            putDouble(AMOUNT_TAG, modifier.amount)
             // Enforced by the invariant in addPermanentModifier. If this throws a CCE, it's a bug.
-            putInt("Operation", (modifier.operation as BasicModifierOperation).ordinal)
+            putInt(OPERATION_TAG, (modifier.operation as BasicModifierOperation).ordinal)
         }
     }
 }

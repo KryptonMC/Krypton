@@ -128,6 +128,7 @@ class BitSetDiscreteVoxelShape : DiscreteVoxelShape {
         }
 
         @JvmStatic
+        @Suppress("MagicNumber")
         fun join(
             mainShape: DiscreteVoxelShape,
             secondaryShape: DiscreteVoxelShape,

@@ -71,13 +71,13 @@ class LegacyQueryHandler(private val server: KryptonServer) : ChannelInboundHand
                     ctx.reply("\u0000", "§1", "127", version, motd, playerCount, maxPlayers)
                 }
                 else -> {
-                    var isValid = msg.readUnsignedByte() == 1.toShort()
-                    isValid = isValid and (msg.readUnsignedByte() == 250.toShort())
+                    var isValid = msg.readUnsignedByte() == PAYLOAD_1_6
+                    isValid = isValid and (msg.readUnsignedByte() == PLUGIN_MESSAGE_ID_1_6)
                     isValid = isValid and (msg.readLegacyString() == MC_1_6_CHANNEL)
                     val dataLength = msg.readUnsignedShort()
-                    isValid = isValid and (msg.readUnsignedByte() >= 73)
+                    isValid = isValid and (msg.readUnsignedByte() >= MINIMUM_SUPPORTED_1_6_PROTOCOL)
                     isValid = isValid and (3 + msg.readAvailableBytes(msg.readShort() * 2).size + 4 == dataLength)
-                    isValid = isValid and (msg.readInt() <= 65_535)
+                    isValid = isValid and (msg.readInt() <= MAXIMUM_HOSTNAME_LENGTH)
                     isValid = isValid and (msg.readableBytes() == 0)
                     if (!isValid) return
 
@@ -102,6 +102,11 @@ class LegacyQueryHandler(private val server: KryptonServer) : ChannelInboundHand
         private const val MC_1_6_CHANNEL = "MC|PingHost"
         private const val LEGACY_PING_PACKET_ID: Short = 0xFE
         private val LOGGER = logger<LegacyQueryHandler>()
+
+        private const val PAYLOAD_1_6: Short = 1
+        private const val PLUGIN_MESSAGE_ID_1_6: Short = 0xFA
+        private const val MINIMUM_SUPPORTED_1_6_PROTOCOL = 73
+        private const val MAXIMUM_HOSTNAME_LENGTH = 65535
     }
 }
 

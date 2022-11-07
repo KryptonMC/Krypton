@@ -42,6 +42,7 @@ import org.kryptonmc.api.block.meta.WallSide
 import org.kryptonmc.api.util.Direction
 import org.kryptonmc.krypton.util.Directions
 
+@Suppress("StringLiteralDuplication")
 object KryptonProperties {
 
     // ==============================

@@ -26,11 +26,11 @@ import org.kryptonmc.nbt.CompoundTag
 
 class KryptonPlayerHeadMeta(data: CompoundTag) : AbstractItemMeta<KryptonPlayerHeadMeta>(data), PlayerHeadMeta {
 
-    override val owner: GameProfile? = data.getGameProfile("SkullOwner")
+    override val owner: GameProfile? = data.getGameProfile(OWNER_TAG)
 
     override fun copy(data: CompoundTag): KryptonPlayerHeadMeta = KryptonPlayerHeadMeta(data)
 
-    override fun withOwner(owner: GameProfile?): KryptonPlayerHeadMeta = copy(data.putGameProfile("SkullOwner", owner))
+    override fun withOwner(owner: GameProfile?): KryptonPlayerHeadMeta = copy(data.putGameProfile(OWNER_TAG, owner))
 
     override fun toBuilder(): PlayerHeadMeta.Builder = Builder(this)
 
@@ -46,8 +46,13 @@ class KryptonPlayerHeadMeta(data: CompoundTag) : AbstractItemMeta<KryptonPlayerH
 
         override fun owner(owner: GameProfile?): PlayerHeadMeta.Builder = apply { this.owner = owner }
 
-        override fun buildData(): CompoundTag.Builder = super.buildData().putGameProfile("SkullOwner", owner)
+        override fun buildData(): CompoundTag.Builder = super.buildData().putGameProfile(OWNER_TAG, owner)
 
         override fun build(): KryptonPlayerHeadMeta = KryptonPlayerHeadMeta(buildData().build())
+    }
+
+    companion object {
+
+        private const val OWNER_TAG = "SkullOwner"
     }
 }

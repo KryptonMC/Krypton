@@ -16,20 +16,11 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.entity
+package org.kryptonmc.krypton.util
 
-import org.kryptonmc.nbt.CompoundTag
-import org.kryptonmc.nbt.ImmutableCompoundTag
-import org.spongepowered.math.vector.Vector3i
+abstract class AbstractBitStorage(final override val size: Int) : BitStorage {
 
-fun CompoundTag.getVector3i(key: String): Vector3i? {
-    if (!contains(key, CompoundTag.ID)) return null
-    val position = getCompound(key)
-    return Vector3i(position.getInt("X"), position.getInt("Y"), position.getInt("Z"))
+    protected fun checkIndex(index: Int) {
+        require(index in 0 until size) { "Index must be between 0 and $size, was $index" }
+    }
 }
-
-fun CompoundTag.putVector3i(key: String, vector: Vector3i): CompoundTag = put(key, vector.toCompound())
-
-fun CompoundTag.Builder.putVector3i(key: String, vector: Vector3i): CompoundTag.Builder = put(key, vector.toCompound())
-
-private fun Vector3i.toCompound(): CompoundTag = ImmutableCompoundTag.builder().putInt("X", x()).putInt("Y", y()).putInt("Z", z()).build()

@@ -22,7 +22,6 @@ import org.kryptonmc.krypton.util.Maths
 import org.kryptonmc.serialization.Codec
 import org.kryptonmc.serialization.codecs.RecordCodecBuilder
 import kotlin.random.Random
-//import java.util.function.Function
 
 class UniformInt(override val minimumValue: Int, override val maximumValue: Int) : IntProvider() {
 

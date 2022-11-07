@@ -39,14 +39,23 @@ import org.kryptonmc.krypton.command.runs
 
 object GiveCommand : InternalCommand {
 
+    // These constants come from vanilla
+    private const val PICKUP_VOLUME = 0.2F
+    private const val PICKUP_PITCH = 2F
+
+    private const val TARGETS_ARGUMENT = "targets"
+    private const val ITEM_ARGUMENT = "item"
+
     override fun register(dispatcher: CommandDispatcher<Sender>) {
         dispatcher.register(literal("give") {
             permission(KryptonPermission.GIVE)
-            argument("targets", EntityArgumentType.players()) {
-                argument("item", ItemStackArgumentType) {
-                    runs { give(it.entityArgument("targets").players(it.source), it.itemStackArgument("item"), 1) }
+            argument(TARGETS_ARGUMENT, EntityArgumentType.players()) {
+                argument(ITEM_ARGUMENT, ItemStackArgumentType) {
+                    runs { give(it.entityArgument(TARGETS_ARGUMENT).players(it.source), it.itemStackArgument(ITEM_ARGUMENT), 1) }
                     argument("count", IntegerArgumentType.integer(1)) {
-                        runs { give(it.entityArgument("targets").players(it.source), it.itemStackArgument("item"), it.argument("count")) }
+                        runs {
+                            give(it.entityArgument(TARGETS_ARGUMENT).players(it.source), it.itemStackArgument(ITEM_ARGUMENT), it.argument("count"))
+                        }
                     }
                 }
             }
@@ -57,7 +66,7 @@ object GiveCommand : InternalCommand {
     private fun give(targets: List<KryptonPlayer>, item: ItemStackArgument, count: Int) {
         targets.forEach { target ->
             item.createItemStacks(count).forEach(target.inventory::add)
-            target.playSound(Sound.sound(SoundEvents.ITEM_PICKUP, Sound.Source.PLAYER, 0.2F, 2F))
+            target.playSound(Sound.sound(SoundEvents.ITEM_PICKUP, Sound.Source.PLAYER, PICKUP_VOLUME, PICKUP_PITCH))
             target.session.send(PacketOutSetContainerContent(target.inventory, target.inventory.mainHand))
         }
     }

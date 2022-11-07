@@ -104,17 +104,15 @@ class KryptonPanda(world: KryptonWorld) : KryptonAnimal(world), Panda {
         private const val FLAG_ROLLING = 2
         private const val FLAG_SITTING = 3
         private const val FLAG_LYING_ON_BACK = 4
-
         private val GENES = PandaGene.values()
-        private val GENE_NAMES = GENES.associateBy { it.name.lowercase() }
+
+        private const val DEFAULT_MOVEMENT_SPEED = 0.15
+        private const val DEFAULT_ATTACK_DAMAGE = 6.0
 
         @JvmStatic
         fun attributes(): AttributeSupplier.Builder = KryptonMob.attributes()
-            .add(KryptonAttributeTypes.MOVEMENT_SPEED, 0.15)
-            .add(KryptonAttributeTypes.ATTACK_DAMAGE, 6.0)
-
-        @JvmStatic
-        fun deserializeGene(name: String): PandaGene = GENE_NAMES.getOrDefault(name, PandaGene.NORMAL)
+            .add(KryptonAttributeTypes.MOVEMENT_SPEED, DEFAULT_MOVEMENT_SPEED)
+            .add(KryptonAttributeTypes.ATTACK_DAMAGE, DEFAULT_ATTACK_DAMAGE)
 
         @JvmStatic
         private fun variantFromGenes(main: PandaGene, hidden: PandaGene): PandaGene {

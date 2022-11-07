@@ -31,6 +31,7 @@ class BooleanProperty(name: String) : KryptonProperty<Boolean>(name, Boolean::cl
 
     override fun toString(value: Boolean): String = value.toString()
 
+    @Suppress("MagicNumber") // This is a hash code function
     override fun generateHashCode(): Int = 31 * super.generateHashCode() + VALUES.hashCode()
 
     companion object {

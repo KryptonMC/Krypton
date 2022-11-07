@@ -18,22 +18,31 @@
  */
 package org.kryptonmc.krypton.entity.serializer.animal
 
+import org.kryptonmc.api.entity.animal.type.PandaGene
 import org.kryptonmc.krypton.entity.animal.KryptonPanda
 import org.kryptonmc.krypton.entity.serializer.AgeableSerializer
 import org.kryptonmc.krypton.entity.serializer.EntitySerializer
+import org.kryptonmc.krypton.util.nbt.putStringEnum
 import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.StringTag
 
 object PandaSerializer : EntitySerializer<KryptonPanda> {
 
+    private const val MAIN_GENE_TAG = "MainGene"
+    private const val HIDDEN_GENE_TAG = "HiddenGene"
+    private val GENE_NAMES = PandaGene.values().associateBy { it.name.lowercase() }
+
     override fun load(entity: KryptonPanda, data: CompoundTag) {
         AgeableSerializer.load(entity, data)
-        if (data.contains("MainGene", StringTag.ID)) entity.knownGene = KryptonPanda.deserializeGene(data.getString("MainGene"))
-        if (data.contains("HiddenGene", StringTag.ID)) entity.hiddenGene = KryptonPanda.deserializeGene(data.getString("HiddenGene"))
+        if (data.contains(MAIN_GENE_TAG, StringTag.ID)) entity.knownGene = deserializeGene(data.getString(MAIN_GENE_TAG))
+        if (data.contains(HIDDEN_GENE_TAG, StringTag.ID)) entity.hiddenGene = deserializeGene(data.getString(HIDDEN_GENE_TAG))
     }
 
     override fun save(entity: KryptonPanda): CompoundTag.Builder = AgeableSerializer.save(entity).apply {
-        putString("MainGene", entity.knownGene.name.lowercase())
-        putString("HiddenGene", entity.hiddenGene.name.lowercase())
+        putStringEnum(MAIN_GENE_TAG, entity.knownGene)
+        putStringEnum(HIDDEN_GENE_TAG, entity.hiddenGene)
     }
+
+    @JvmStatic
+    private fun deserializeGene(name: String): PandaGene = GENE_NAMES.getOrDefault(name, PandaGene.NORMAL)
 }

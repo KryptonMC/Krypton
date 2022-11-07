@@ -219,6 +219,7 @@ class KryptonPlayer(
         if (data.isDirty) session.send(PacketOutSetEntityMetadata(id, data.collectDirty()))
     }
 
+    @Suppress("UnusedPrivateMember") // We will use the position later.
     fun isBlockActionRestricted(position: Vector3i): Boolean {
         if (gameMode != GameMode.ADVENTURE && gameMode != GameMode.SPECTATOR) return false
         if (gameMode == GameMode.SPECTATOR) return true
@@ -233,11 +234,13 @@ class KryptonPlayer(
     fun getDestroySpeed(state: KryptonBlockState): Float {
         var speed = inventory.getDestroySpeed(state)
         // TODO: Add enchantment and effect checking here
-        if (waterPhysicsSystem.isUnderFluid(FluidTags.WATER)) speed /= 5F // FIXME: Check aqua affinity when implemented
-        if (!isOnGround) speed /= 5F
+        // TODO: Check aqua affinity when implemented
+        if (waterPhysicsSystem.isUnderFluid(FluidTags.WATER)) speed /= WATER_FLYING_DESTROY_SPEED_FACTOR
+        if (!isOnGround) speed /= WATER_FLYING_DESTROY_SPEED_FACTOR
         return speed
     }
 
+    @Suppress("UnusedPrivateMember")
     fun interactOn(entity: KryptonEntity, hand: Hand): InteractionResult {
         if (gameMode == GameMode.SPECTATOR) {
             // TODO: Open spectator menu
@@ -245,22 +248,22 @@ class KryptonPlayer(
         }
         // FIXME
         /*
-        var heldItem = heldItem(hand)
+        val heldItem = getHeldItem(hand)
         val result = entity.interact(this, hand)
-        if (result.consumesAction) {
-            if (canInstantlyBuild && heldItem === heldItem(hand)) {
-                setHeldItem(hand, heldItem.withAmount())
-                heldItem.amount = heldCopy.amount
+        if (result.consumesAction()) {
+            val currentHeldItem = getHeldItem(hand)
+            if (abilities.canInstantlyBuild && heldItem !== currentHeldItem && currentHeldItem.amount < heldItem.amount) {
+                setHeldItem(hand, heldItem.withAmount(currentHeldItem.amount))
             }
             return result
         }
         if (heldItem.isEmpty() || entity !is KryptonLivingEntity) return InteractionResult.PASS
         val interactResult = heldItem.type.handler().interactEntity(heldItem, this, entity, hand)
-        if (interactResult.consumesAction) {
+        if (interactResult.consumesAction()) {
             if (heldItem.isEmpty() && !canInstantlyBuild) setHeldItem(hand, KryptonItemStack.EMPTY)
             return interactResult
         }
-         */
+        */
         return InteractionResult.PASS
     }
 
@@ -344,10 +347,12 @@ class KryptonPlayer(
         }
         if (isOnGround) {
             val value = (sqrt(deltaX * deltaX + deltaZ * deltaZ) * 100F).roundToInt()
-            if (value > 0) when {
-                isSprinting -> statistics.increment(CustomStatistics.SPRINT_ONE_CM, value)
-                isSneaking -> statistics.increment(CustomStatistics.CROUCH_ONE_CM, value)
-                else -> statistics.increment(CustomStatistics.WALK_ONE_CM, value)
+            if (value > 0) {
+                when {
+                    isSprinting -> statistics.increment(CustomStatistics.SPRINT_ONE_CM, value)
+                    isSneaking -> statistics.increment(CustomStatistics.CROUCH_ONE_CM, value)
+                    else -> statistics.increment(CustomStatistics.WALK_ONE_CM, value)
+                }
             }
             return
         }
@@ -369,15 +374,19 @@ class KryptonPlayer(
     companion object {
 
         private const val FLYING_ACHIEVEMENT_MINIMUM_SPEED = 25
+        private const val WATER_FLYING_DESTROY_SPEED_FACTOR = 5F
 
         private val DEFAULT_PERMISSION_FUNCTION = PermissionFunction.ALWAYS_NOT_SET
         @JvmField
         val DEFAULT_PERMISSIONS: PermissionProvider = PermissionProvider { DEFAULT_PERMISSION_FUNCTION }
 
+        private const val DEFAULT_ATTACK_DAMAGE = 1.0
+        private const val DEFAULT_MOVEMENT_SPEED = 0.1
+
         @JvmStatic
         fun attributes(): AttributeSupplier.Builder = KryptonLivingEntity.attributes()
-            .add(KryptonAttributeTypes.ATTACK_DAMAGE, 1.0)
-            .add(KryptonAttributeTypes.MOVEMENT_SPEED, 0.1)
+            .add(KryptonAttributeTypes.ATTACK_DAMAGE, DEFAULT_ATTACK_DAMAGE)
+            .add(KryptonAttributeTypes.MOVEMENT_SPEED, DEFAULT_MOVEMENT_SPEED)
             .add(KryptonAttributeTypes.ATTACK_SPEED)
             .add(KryptonAttributeTypes.LUCK)
     }

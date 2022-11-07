@@ -88,7 +88,7 @@ class Heightmap(private val chunk: ChunkAccessor, val type: Type) {
         OCEAN_FLOOR(Usage.LIVE_WORLD, BLOCKS_MOTION),
         MOTION_BLOCKING(Usage.CLIENT, { it.blocksMotion || !it.asFluid().isEmpty }),
         // FIXME: Check if block not instance of LeavesBlock
-        MOTION_BLOCKING_NO_LEAVES(Usage.LIVE_WORLD, { (it.blocksMotion || !it.asFluid().isEmpty) });
+        MOTION_BLOCKING_NO_LEAVES(Usage.LIVE_WORLD, { it.blocksMotion || !it.asFluid().isEmpty });
 
         fun sendToClient(): Boolean = usage == Usage.CLIENT
 

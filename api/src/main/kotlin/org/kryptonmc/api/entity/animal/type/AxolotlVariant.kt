@@ -10,11 +10,16 @@ package org.kryptonmc.api.entity.animal.type
 
 /**
  * A variant of an axolotl.
- *
- * @param isCommon if this axolotl variant is common to find, currently only
- * applies to the blue variant
  */
-public enum class AxolotlVariant(public val isCommon: Boolean) {
+public enum class AxolotlVariant(
+    /**
+     * If this axolotl variant is common to find.
+     *
+     * Currently, only the blue variant has this property set to false. All
+     * other variants are common.
+     */
+    public val isCommon: Boolean
+) {
 
     LUCY(true),
     WILD(true),

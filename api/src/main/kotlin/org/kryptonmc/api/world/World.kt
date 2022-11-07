@@ -295,6 +295,7 @@ public interface World : BlockContainer, FluidContainer, BiomeContainer, Forward
      * Spawns an entity with the given [type] in this world at the given
      * [location].
      *
+     * @param T the entity type
      * @param type the type of the entity
      * @param location the location to spawn the entity at
      */

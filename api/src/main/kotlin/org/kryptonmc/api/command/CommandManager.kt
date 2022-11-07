@@ -12,7 +12,7 @@ import org.kryptonmc.api.entity.player.Player
 
 /**
  * The command manager is responsible for registering, unregistering, and
- * keeping track of [Command]s
+ * keeping track of commands.
  */
 public interface CommandManager {
 
@@ -38,13 +38,16 @@ public interface CommandManager {
      * Registers the given [command] with the given [meta] to this manager using
      * the given [registrar].
      *
-     * This is designed
+     * This is designed to allow custom command frameworks to be used without
+     * needing to attempt to conform the framework to the existing command
+     * types.
      *
+     * @param C the custom command type
      * @param command the command to register
      * @param meta the command metadata
      * @param registrar the command registrar to use to register the command
      */
-    public fun <C, M> register(command: C, meta: M, registrar: CommandRegistrar<C, M>)
+    public fun <C> register(command: C, meta: CommandMeta, registrar: CommandRegistrar<C>)
 
     /**
      * Unregisters the given alias from this manager, if registered.

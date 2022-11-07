@@ -26,10 +26,16 @@ import org.kryptonmc.krypton.util.writeString
 @JvmRecord
 data class PacketInChatPreview(val queryId: Int, val query: String) : Packet {
 
-    constructor(buf: ByteBuf) : this(buf.readInt(), buf.readString(256))
+    constructor(buf: ByteBuf) : this(buf.readInt(), buf.readString(MAXIMUM_QUERY_STRING_LENGTH))
 
     override fun write(buf: ByteBuf) {
         buf.writeInt(queryId)
-        buf.writeString(query, 256)
+        buf.writeString(query, MAXIMUM_QUERY_STRING_LENGTH)
+    }
+
+    companion object {
+
+        // This is a vanilla value
+        private const val MAXIMUM_QUERY_STRING_LENGTH = 256
     }
 }

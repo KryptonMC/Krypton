@@ -46,9 +46,14 @@ class KryptonAreaEffectCloud(world: KryptonWorld) : KryptonEntity(world), AreaEf
 
     override fun defineData() {
         super.defineData()
-        data.define(MetadataKeys.AreaEffectCloud.RADIUS, 0.5F)
+        data.define(MetadataKeys.AreaEffectCloud.RADIUS, DEFAULT_RADIUS)
         data.define(MetadataKeys.AreaEffectCloud.COLOR, 0)
         data.define(MetadataKeys.AreaEffectCloud.IGNORE_RADIUS, false)
         data.define(MetadataKeys.AreaEffectCloud.PARTICLE, ParticleOptions(ParticleTypes.EFFECT, null))
+    }
+
+    companion object {
+
+        private const val DEFAULT_RADIUS = 0.5F
     }
 }

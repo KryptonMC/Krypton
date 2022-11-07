@@ -22,28 +22,36 @@ import org.kryptonmc.krypton.entity.projectile.KryptonShulkerBullet
 import org.kryptonmc.krypton.entity.serializer.EntitySerializer
 import org.kryptonmc.krypton.util.Directions
 import org.kryptonmc.krypton.util.nbt.getUUID
-import org.kryptonmc.krypton.util.nbt.hasUUID
+import org.kryptonmc.krypton.util.nbt.hasNumber
+import org.kryptonmc.krypton.util.nbt.putNullable
 import org.kryptonmc.krypton.util.nbt.putUUID
 import org.kryptonmc.nbt.CompoundTag
 
 object ShulkerBulletSerializer : EntitySerializer<KryptonShulkerBullet> {
 
+    private const val STEPS_TAG = "Steps"
+    private const val DELTA_X_TAG = "TXD"
+    private const val DELTA_Y_TAG = "TYD"
+    private const val DELTA_Z_TAG = "TZD"
+    private const val DIR_TAG = "Dir"
+    private const val TARGET_TAG = "Target"
+
     override fun load(entity: KryptonShulkerBullet, data: CompoundTag) {
         ProjectileSerializer.load(entity, data)
-        entity.steps = data.getInt("Steps")
-        entity.targetDeltaX = data.getDouble("TXD")
-        entity.targetDeltaY = data.getDouble("TYD")
-        entity.targetDeltaZ = data.getDouble("TZD")
-        if (data.contains("Dir", 99)) entity.movingDirection = Directions.of3D(data.getInt("Dir"))
-        if (data.hasUUID("Target")) entity.targetId = data.getUUID("Target")
+        entity.steps = data.getInt(STEPS_TAG)
+        entity.targetDeltaX = data.getDouble(DELTA_X_TAG)
+        entity.targetDeltaY = data.getDouble(DELTA_Y_TAG)
+        entity.targetDeltaZ = data.getDouble(DELTA_Z_TAG)
+        if (data.hasNumber(DIR_TAG)) entity.movingDirection = Directions.of3D(data.getInt(DIR_TAG))
+        entity.targetId = data.getUUID(TARGET_TAG)
     }
 
     override fun save(entity: KryptonShulkerBullet): CompoundTag.Builder = ProjectileSerializer.save(entity).apply {
-        putInt("Steps", entity.steps)
-        putDouble("TXD", entity.targetDeltaX)
-        putDouble("TYD", entity.targetDeltaY)
-        putDouble("TZD", entity.targetDeltaZ)
-        if (entity.target != null) putUUID("Target", entity.target!!.uuid)
-        if (entity.movingDirection != null) putInt("Dir", entity.movingDirection!!.ordinal)
+        putInt(STEPS_TAG, entity.steps)
+        putDouble(DELTA_X_TAG, entity.targetDeltaX)
+        putDouble(DELTA_Y_TAG, entity.targetDeltaY)
+        putDouble(DELTA_Z_TAG, entity.targetDeltaZ)
+        putNullable(DIR_TAG, entity.movingDirection) { name, value -> putInt(name, value.ordinal) }
+        putNullable(TARGET_TAG, entity.targetId, CompoundTag.Builder::putUUID)
     }
 }

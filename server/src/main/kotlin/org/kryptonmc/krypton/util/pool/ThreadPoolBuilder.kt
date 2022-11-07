@@ -79,7 +79,7 @@ sealed class ThreadPoolBuilder<B : ThreadPoolBuilder<B, E>, E : ExecutorService>
         fun cached(): Standard = apply {
             corePoolSize = 0
             maximumPoolSize = Int.MAX_VALUE
-            keepAliveTime = 60
+            keepAliveTime = DEFAULT_CACHED_KEEP_ALIVE_TIME
             unit = TimeUnit.SECONDS
         }
 
@@ -103,6 +103,8 @@ sealed class ThreadPoolBuilder<B : ThreadPoolBuilder<B, E>, E : ExecutorService>
     }
 
     companion object {
+
+        private const val DEFAULT_CACHED_KEEP_ALIVE_TIME = 60L
 
         @JvmStatic
         fun create(): Standard = Standard()

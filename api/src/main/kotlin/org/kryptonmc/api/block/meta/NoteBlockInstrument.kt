@@ -14,10 +14,14 @@ import org.kryptonmc.api.effect.sound.SoundEvents
 /**
  * Indicates the instrument that a note block this property is applied to will
  * play when it is attacked or a redstone signal is applied to it.
- *
- * @param sound the corresponding sound event
  */
-public enum class NoteBlockInstrument(public val sound: SoundEvent) {
+public enum class NoteBlockInstrument(
+    /**
+     * The corresponding sound event that will be played when note blocks with
+     * this instrument are interacted with.
+     */
+    public val sound: SoundEvent
+) {
 
     HARP(SoundEvents.NOTE_BLOCK_HARP),
     BASEDRUM(SoundEvents.NOTE_BLOCK_BASEDRUM),

@@ -16,6 +16,7 @@ public interface TagManager {
     /**
      * Gets the list of tags for the given [type].
      *
+     * @param T the tag type
      * @param type the type
      * @return the list of tags for the type
      */
@@ -25,6 +26,7 @@ public interface TagManager {
      * Gets the tag with the given [type] and [name], or returns null if there
      * is no tag with the given [type] and [name].
      *
+     * @param T the tag type
      * @param type the type
      * @param name the name
      * @return the tag with the type and name, or null if not present

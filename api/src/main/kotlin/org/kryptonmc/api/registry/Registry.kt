@@ -14,6 +14,8 @@ import org.kryptonmc.api.util.CataloguedBy
 
 /**
  * A holder for registry entries.
+ *
+ * @param T the registry entry type
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
 @CataloguedBy(Registries::class)
@@ -69,6 +71,7 @@ public interface Registry<T> : Map<ResourceKey<T>, T> {
      * Registers a new value to this registry with the given registry [key]
      * and value.
      *
+     * @param V the type of value
      * @param key the registry key
      * @param value the value
      * @return the value
@@ -79,6 +82,7 @@ public interface Registry<T> : Map<ResourceKey<T>, T> {
      * Registers a new value to this registry with the given registry [key]
      * and value.
      *
+     * @param V the type of value
      * @param key the key
      * @param value the value
      */
@@ -88,6 +92,7 @@ public interface Registry<T> : Map<ResourceKey<T>, T> {
      * Registers a new value to this registry with the given registry [key]
      * and value.
      *
+     * @param V the type of value
      * @param key the registry key
      * @param value the value
      * @return the value

@@ -22,7 +22,6 @@ import org.kryptonmc.serialization.Codec
 import org.kryptonmc.serialization.codecs.RecordCodecBuilder
 import org.kryptonmc.util.Either
 import kotlin.random.Random
-//import java.util.function.Function
 
 class ConstantInt private constructor(val value: Int) : IntProvider() {
 

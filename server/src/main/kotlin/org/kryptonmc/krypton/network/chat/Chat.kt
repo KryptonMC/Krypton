@@ -20,6 +20,9 @@ package org.kryptonmc.krypton.network.chat
 
 object Chat {
 
+    private const val SECTION_SIGN = '§'
+    private const val DELETE_CHAR = '\u007F'
+
     @JvmStatic
     fun isValidMessage(message: String): Boolean {
         for (i in message.indices) {
@@ -29,5 +32,5 @@ object Chat {
     }
 
     @JvmStatic
-    fun isValidCharacter(char: Char): Boolean = char.code != 167 && char >= ' ' && char.code != 127
+    fun isValidCharacter(char: Char): Boolean = char != SECTION_SIGN && char >= ' ' && char != DELETE_CHAR
 }

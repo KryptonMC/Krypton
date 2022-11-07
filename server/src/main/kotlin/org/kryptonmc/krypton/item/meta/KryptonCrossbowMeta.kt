@@ -29,23 +29,23 @@ import org.kryptonmc.nbt.list
 
 class KryptonCrossbowMeta(data: CompoundTag) : AbstractItemMeta<KryptonCrossbowMeta>(data), CrossbowMeta {
 
-    override val isCharged: Boolean = data.getBoolean("Charged")
-    override val projectiles: ImmutableList<ItemStack> =
-        data.mapToList("ChargedProjectiles", CompoundTag.ID) { KryptonItemStack.from(it as CompoundTag) }
+    override val isCharged: Boolean = data.getBoolean(CHARGED_TAG)
+    override val projectiles: ImmutableList<ItemStack> = data.mapToList(PROJECTILES_TAG, CompoundTag.ID) { KryptonItemStack.from(it as CompoundTag) }
 
     override fun copy(data: CompoundTag): KryptonCrossbowMeta = KryptonCrossbowMeta(data)
 
-    override fun withCharged(charged: Boolean): KryptonCrossbowMeta = copy(data.putBoolean("Charged", charged))
+    override fun withCharged(charged: Boolean): KryptonCrossbowMeta = copy(data.putBoolean(CHARGED_TAG, charged))
 
-    override fun withProjectiles(projectiles: List<ItemStack>): KryptonCrossbowMeta = copy(data.putProjectiles(projectiles))
+    override fun withProjectiles(projectiles: List<ItemStack>): KryptonCrossbowMeta =
+        copy(put(data, PROJECTILES_TAG, projectiles) { it.downcast().save() })
 
     override fun withProjectile(projectile: ItemStack): KryptonCrossbowMeta =
-        copy(data.update("ChargedProjectiles", CompoundTag.ID) { it.add(projectile.downcast().save()) })
+        copy(data.update(PROJECTILES_TAG, CompoundTag.ID) { it.add(projectile.downcast().save()) })
 
-    override fun withoutProjectile(index: Int): KryptonCrossbowMeta = copy(data.update("ChargedProjectiles", CompoundTag.ID) { it.remove(index) })
+    override fun withoutProjectile(index: Int): KryptonCrossbowMeta = copy(data.update(PROJECTILES_TAG, CompoundTag.ID) { it.remove(index) })
 
     override fun withoutProjectile(projectile: ItemStack): KryptonCrossbowMeta =
-        copy(data.update("ChargedProjectiles", CompoundTag.ID) { it.remove(projectile.downcast().save()) })
+        copy(data.update(PROJECTILES_TAG, CompoundTag.ID) { it.remove(projectile.downcast().save()) })
 
     override fun toBuilder(): CrossbowMeta.Builder = Builder(this)
 
@@ -70,15 +70,16 @@ class KryptonCrossbowMeta(data: CompoundTag) : AbstractItemMeta<KryptonCrossbowM
         override fun projectiles(projectiles: Collection<ItemStack>): Builder = apply { this.projectiles = BuilderCollection(projectiles) }
 
         override fun buildData(): CompoundTag.Builder = super.buildData().apply {
-            putBoolean("Charged", charged)
-            if (projectiles.isNotEmpty()) list("ChargedProjectiles") { projectiles.forEach { add(it.downcast().save()) } }
+            putBoolean(CHARGED_TAG, charged)
+            if (projectiles.isNotEmpty()) list(PROJECTILES_TAG) { projectiles.forEach { add(it.downcast().save()) } }
         }
 
         override fun build(): KryptonCrossbowMeta = KryptonCrossbowMeta(buildData().build())
     }
-}
 
-private fun CompoundTag.putProjectiles(projectiles: List<ItemStack>): CompoundTag {
-    if (projectiles.isEmpty()) return remove("ChargedProjectiles")
-    return put("ChargedProjectiles", list { projectiles.forEach { add(it.downcast().save()) } })
+    companion object {
+
+        private const val CHARGED_TAG = "Charged"
+        private const val PROJECTILES_TAG = "ChargedProjectiles"
+    }
 }

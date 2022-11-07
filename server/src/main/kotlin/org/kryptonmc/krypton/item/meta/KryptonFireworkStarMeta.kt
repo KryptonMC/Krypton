@@ -26,12 +26,12 @@ import org.kryptonmc.nbt.CompoundTag
 
 class KryptonFireworkStarMeta(data: CompoundTag) : AbstractItemMeta<KryptonFireworkStarMeta>(data), FireworkStarMeta {
 
-    override val effect: FireworkEffect? = data.getEffect()
+    override val effect: FireworkEffect? = getEffect(data)
 
     override fun copy(data: CompoundTag): KryptonFireworkStarMeta = KryptonFireworkStarMeta(data)
 
     override fun withEffect(effect: FireworkEffect?): KryptonFireworkStarMeta {
-        val newData = if (effect == null) data.remove("Explosion") else data.put("Explosion", effect.save())
+        val newData = if (effect == null) data.remove(EFFECT_TAG) else data.put(EFFECT_TAG, effect.save())
         return KryptonFireworkStarMeta(newData)
     }
 
@@ -52,14 +52,20 @@ class KryptonFireworkStarMeta(data: CompoundTag) : AbstractItemMeta<KryptonFirew
         override fun effect(effect: FireworkEffect?): FireworkStarMeta.Builder = apply { this.effect = effect }
 
         override fun buildData(): CompoundTag.Builder = super.buildData().apply {
-            if (effect != null) put("Explosion", effect!!.save())
+            if (effect != null) put(EFFECT_TAG, effect!!.save())
         }
 
         override fun build(): KryptonFireworkStarMeta = KryptonFireworkStarMeta(buildData().build())
     }
-}
 
-private fun CompoundTag.getEffect(): KryptonFireworkEffect? {
-    if (contains("Explosion", CompoundTag.ID)) return null
-    return KryptonFireworkEffect.from(getCompound("Explosion"))
+    companion object {
+
+        private const val EFFECT_TAG = "Explosion"
+
+        @JvmStatic
+        private fun getEffect(data: CompoundTag): KryptonFireworkEffect? {
+            if (data.contains(EFFECT_TAG, CompoundTag.ID)) return null
+            return KryptonFireworkEffect.from(data.getCompound(EFFECT_TAG))
+        }
+    }
 }

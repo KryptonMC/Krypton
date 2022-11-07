@@ -38,32 +38,35 @@ import org.kryptonmc.krypton.util.GameModes
 
 object GameModeCommand : InternalCommand {
 
+    private const val GAME_MODE_ARGUMENT = "gameMode"
+    private const val TARGETS_ARGUMENT = "targets"
+
     override fun register(dispatcher: CommandDispatcher<Sender>) {
         val command = literal("gamemode") { permission(KryptonPermission.GAME_MODE) }
         GameModes.VALUES.forEach { mode ->
             command.then(literal(mode.name.lowercase()) {
                 runs { gameModeArgument(it, mode) }
-                argument("targets", EntityArgumentType.players()) {
+                argument(TARGETS_ARGUMENT, EntityArgumentType.players()) {
                     runs { targetArgument(it, mode) }
                 }
             })
         }
 
-        command.then(argument("gameMode", StringArgumentType.string()) {
+        command.then(argument(GAME_MODE_ARGUMENT, StringArgumentType.string()) {
             runs {
-                var gameMode = GameModes.fromAbbreviation(it.argument("gameMode"))
+                var gameMode = GameModes.fromAbbreviation(it.argument(GAME_MODE_ARGUMENT))
                 if (gameMode == null) {
-                    val id = it.argument<String>("gameMode").toIntOrNull() ?: return@runs
+                    val id = it.argument<String>(GAME_MODE_ARGUMENT).toIntOrNull() ?: return@runs
                     gameMode = GameModes.fromId(id)
                 }
                 if (gameMode == null) return@runs
                 gameModeArgument(it, gameMode)
             }
-            argument("targets", EntityArgumentType.players()) {
+            argument(TARGETS_ARGUMENT, EntityArgumentType.players()) {
                 runs {
-                    var gameMode = GameModes.fromAbbreviation(it.argument("gameMode"))
+                    var gameMode = GameModes.fromAbbreviation(it.argument(GAME_MODE_ARGUMENT))
                     if (gameMode == null) {
-                        val id = it.argument<String>("gameMode").toIntOrNull() ?: return@runs
+                        val id = it.argument<String>(GAME_MODE_ARGUMENT).toIntOrNull() ?: return@runs
                         gameMode = GameModes.fromId(id)
                     }
                     if (gameMode == null) return@runs
@@ -82,7 +85,7 @@ object GameModeCommand : InternalCommand {
 
     @JvmStatic
     private fun targetArgument(context: CommandContext<Sender>, gameMode: GameMode) {
-        updateGameMode(context.entityArgument("targets").players(context.source), gameMode, context.source)
+        updateGameMode(context.entityArgument(TARGETS_ARGUMENT).players(context.source), gameMode, context.source)
     }
 
     @JvmStatic

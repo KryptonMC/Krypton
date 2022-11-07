@@ -11,7 +11,7 @@ package org.kryptonmc.api.entity
 /**
  * A slot that a piece of equipment may be in.
  *
- * @param type the type of equipment
+ * @property type The type of equipment that this slot is for.
  */
 public enum class EquipmentSlot(public val type: Type) {
 
@@ -23,7 +23,7 @@ public enum class EquipmentSlot(public val type: Type) {
     HEAD(Type.ARMOR);
 
     /**
-     * A type of equipment.
+     * A type of equipment slot.
      */
     public enum class Type {
 

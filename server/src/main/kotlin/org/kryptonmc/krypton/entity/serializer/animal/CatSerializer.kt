@@ -21,18 +21,22 @@ package org.kryptonmc.krypton.entity.serializer.animal
 import org.kryptonmc.krypton.entity.animal.KryptonCat
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.entity.serializer.EntitySerializer
+import org.kryptonmc.krypton.util.nbt.hasNumber
 import org.kryptonmc.nbt.CompoundTag
 
 object CatSerializer : EntitySerializer<KryptonCat> {
 
+    private const val TYPE_TAG = "CatType"
+    private const val COLLAR_COLOR_TAG = "CollarColor"
+
     override fun load(entity: KryptonCat, data: CompoundTag) {
         TamableSerializer.load(entity, data)
-        entity.data.set(MetadataKeys.Cat.VARIANT, data.getInt("CatType"))
-        if (data.contains("CollarColor", 99)) entity.data.set(MetadataKeys.Cat.COLLAR_COLOR, data.getInt("CollarColor"))
+        entity.data.set(MetadataKeys.Cat.VARIANT, data.getInt(TYPE_TAG))
+        if (data.hasNumber(COLLAR_COLOR_TAG)) entity.data.set(MetadataKeys.Cat.COLLAR_COLOR, data.getInt(COLLAR_COLOR_TAG))
     }
 
     override fun save(entity: KryptonCat): CompoundTag.Builder = TamableSerializer.save(entity).apply {
-        putInt("CatType", entity.data.get(MetadataKeys.Cat.VARIANT))
-        putByte("CollarColor", entity.data.get(MetadataKeys.Cat.COLLAR_COLOR).toByte())
+        putInt(TYPE_TAG, entity.data.get(MetadataKeys.Cat.VARIANT))
+        putByte(COLLAR_COLOR_TAG, entity.data.get(MetadataKeys.Cat.COLLAR_COLOR).toByte())
     }
 }

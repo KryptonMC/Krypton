@@ -34,16 +34,17 @@ import org.kryptonmc.krypton.command.runs
 object KickCommand : InternalCommand {
 
     private val KICKED_MESSAGE = Component.translatable("multiplayer.disconnect.kicked")
+    private const val TARGETS_ARGUMENT = "targets"
 
     override fun register(dispatcher: CommandDispatcher<Sender>) {
         dispatcher.register(literal("kick") {
             permission(KryptonPermission.KICK)
-            argument("targets", EntityArgumentType.players()) {
-                runs { context -> context.entityArgument("targets").players(context.source).forEach { it.disconnect(KICKED_MESSAGE) } }
+            argument(TARGETS_ARGUMENT, EntityArgumentType.players()) {
+                runs { context -> context.entityArgument(TARGETS_ARGUMENT).players(context.source).forEach { it.disconnect(KICKED_MESSAGE) } }
                 argument("reason", StringArgumentType.string()) {
                     runs { context ->
                         val reason = context.argument<String>("reason")
-                        context.entityArgument("targets").players(context.source).forEach {
+                        context.entityArgument(TARGETS_ARGUMENT).players(context.source).forEach {
                             it.disconnect(KICKED_MESSAGE.append(Component.text(" Reason: $reason")))
                         }
                     }

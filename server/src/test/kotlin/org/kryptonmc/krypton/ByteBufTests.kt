@@ -39,7 +39,6 @@ import org.kryptonmc.krypton.util.readVarIntByteArray
 import org.kryptonmc.krypton.util.writeItem
 import org.kryptonmc.krypton.util.writeLongArray
 import org.kryptonmc.krypton.util.writeNBT
-import org.kryptonmc.krypton.util.writeSingletonLongArray
 import org.kryptonmc.krypton.util.writeString
 import org.kryptonmc.krypton.util.writeUUID
 import org.kryptonmc.krypton.util.writeVarInt
@@ -159,10 +158,6 @@ class ByteBufTests {
         for (i in 0 until 256) {
             assertEquals(longs[i], buffer.readLong())
         }
-        // Singleton long array
-        buffer.writeSingletonLongArray(1829674328908) // Keyboard mash
-        assertEquals(1, buffer.readVarInt())
-        assertEquals(1829674328908, buffer.readLong())
     }
 
     @Test

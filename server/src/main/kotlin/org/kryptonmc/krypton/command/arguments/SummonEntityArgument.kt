@@ -77,8 +77,8 @@ private fun StringReader.nextKey(): Key {
     }
 }
 
-private fun Char.isAllowedInKey(): Boolean = (this >= '0' && this <= '9') ||
-        (this >= 'a' && this <= 'z') ||
+private fun Char.isAllowedInKey(): Boolean = this >= '0' && this <= '9' ||
+        this >= 'a' && this <= 'z' ||
         this == '_' ||
         this == ':' ||
         this == '/' ||

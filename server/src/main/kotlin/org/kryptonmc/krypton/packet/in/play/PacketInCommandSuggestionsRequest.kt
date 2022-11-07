@@ -28,10 +28,15 @@ import org.kryptonmc.krypton.util.writeVarInt
 @JvmRecord
 data class PacketInCommandSuggestionsRequest(val id: Int, val command: String) : Packet {
 
-    constructor(buf: ByteBuf) : this(buf.readVarInt(), buf.readString(32500))
+    constructor(buf: ByteBuf) : this(buf.readVarInt(), buf.readString(COMMAND_MAX_LENGTH))
 
     override fun write(buf: ByteBuf) {
         buf.writeVarInt(id)
-        buf.writeString(command)
+        buf.writeString(command, COMMAND_MAX_LENGTH)
+    }
+
+    companion object {
+
+        private const val COMMAND_MAX_LENGTH = 32500
     }
 }

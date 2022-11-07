@@ -17,9 +17,7 @@ import java.util.UUID
 import javax.annotation.concurrent.Immutable
 
 /**
- * Represents the profile of an authenticated player. Most of the time, this
- * authentication will be done with Mojang, but it may not, depending on the
- * implementation.
+ * The profile of an authenticated player.
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
 @Immutable

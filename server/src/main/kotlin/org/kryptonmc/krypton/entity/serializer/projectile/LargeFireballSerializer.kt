@@ -20,16 +20,19 @@ package org.kryptonmc.krypton.entity.serializer.projectile
 
 import org.kryptonmc.krypton.entity.projectile.KryptonLargeFireball
 import org.kryptonmc.krypton.entity.serializer.EntitySerializer
+import org.kryptonmc.krypton.util.nbt.hasNumber
 import org.kryptonmc.nbt.CompoundTag
 
 object LargeFireballSerializer : EntitySerializer<KryptonLargeFireball> {
 
+    private const val EXPLOSION_POWER_TAG = "ExplosionPower"
+
     override fun load(entity: KryptonLargeFireball, data: CompoundTag) {
         FireballSerializer.load(entity, data)
-        if (data.contains("ExplosionPower", 99)) entity.explosionPower = data.getByte("ExplosionPower").toInt()
+        if (data.hasNumber(EXPLOSION_POWER_TAG)) entity.explosionPower = data.getByte(EXPLOSION_POWER_TAG).toInt()
     }
 
     override fun save(entity: KryptonLargeFireball): CompoundTag.Builder = FireballSerializer.save(entity).apply {
-        putByte("ExplosionPower", entity.explosionPower.toByte())
+        putByte(EXPLOSION_POWER_TAG, entity.explosionPower.toByte())
     }
 }

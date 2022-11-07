@@ -22,4 +22,5 @@ import org.kryptonmc.api.entity.ambient.AmbientCreature
 import org.kryptonmc.krypton.entity.KryptonMob
 import org.kryptonmc.krypton.world.KryptonWorld
 
+@Suppress("UnnecessaryAbstractClass") // This shouldn't be a concrete class because it's meant to be extended.
 abstract class KryptonAmbientCreature(world: KryptonWorld) : KryptonMob(world), AmbientCreature

@@ -66,6 +66,7 @@ class KryptonTropicalFish(world: KryptonWorld) : KryptonSchoolingFish(world), Tr
         data.set(MetadataKeys.TropicalFish.VARIANT, modifier(data.get(MetadataKeys.TropicalFish.VARIANT), value))
     }
 
+    @Suppress("MagicNumber") // Nothing in here is magic as it's all explained in comments
     companion object {
 
         private val VARIANTS = TropicalFishVariant.values()
@@ -99,6 +100,17 @@ class KryptonTropicalFish(world: KryptonWorld) : KryptonSchoolingFish(world), Tr
          * - a AND 0 = 0
          */
 
+        /*
+         * The + 2 shr 3 here is a trick to get a 0 for values 5 and under and a 1 for values 6 and over (up to 13, though we only have 12 values)
+         * Because 7 is the maximum value you can fit in 3 bits, anything above 7 up to 15 will always have the 8 bit (bit 3) set to 1, and as it's
+         * 5 and up, we add 2 to make it up to 7. Therefore, every value 7 and below will have bit 3 set to 0, and every value 8-15 will have bit 3
+         * set to 1. Therefore, we add 2 to make it up to 7 instead of up to 5, and then shift right by 3 to get the value of bit 3.
+         *
+         * Huge micro-optimisation for this sort of thing, but it does make for some very clean code.
+         *
+         * Also, for the second part, doing mod 6 produces a number from 0-5 for indices up to 5 and then 0-5 for indices up to 11. Essentially,
+         * it's a way to reset the value back to 0 after 6 values.
+         */
         @JvmStatic
         private fun modifyVariant(encoded: Int, variant: TropicalFishVariant): Int =
             encoded and NO_SHAPE_PATTERN_MASK or (variant.ordinal + 2 shr 3 or (variant.ordinal % 6 shl 8))

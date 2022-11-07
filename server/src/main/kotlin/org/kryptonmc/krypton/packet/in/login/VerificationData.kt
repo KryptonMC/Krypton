@@ -30,15 +30,15 @@ import java.util.OptionalLong
 @JvmRecord
 data class VerificationData(val verifyToken: ByteArray?, val salt: OptionalLong, val signature: ByteArray?) : Writable {
 
-    constructor(verifyToken: ByteArray) : this(verifyToken, OptionalLong.empty(), null)
-
-    constructor(salt: Long, signature: ByteArray) : this(null, OptionalLong.of(salt), signature)
-
     init {
-        require((verifyToken != null && salt.isEmpty && signature == null) || (verifyToken == null && salt.isPresent && signature != null)) {
+        require(verifyToken != null && salt.isEmpty && signature == null || verifyToken == null && salt.isPresent && signature != null) {
             "Invalid verification data! Must provide either verify token or both the salt and the signature!"
         }
     }
+
+    constructor(verifyToken: ByteArray) : this(verifyToken, OptionalLong.empty(), null)
+
+    constructor(salt: Long, signature: ByteArray) : this(null, OptionalLong.of(salt), signature)
 
     fun isTokenValid(expected: ByteArray): Boolean = verifyToken != null && expected.contentEquals(Encryption.decrypt(verifyToken))
 

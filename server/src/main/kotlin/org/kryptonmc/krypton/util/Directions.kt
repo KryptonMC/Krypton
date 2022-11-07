@@ -74,10 +74,10 @@ object Directions {
         Axis.Y -> Plane.VERTICAL
     }
 
-    enum class Plane(private val faces: Array<Direction>, private val axes: Array<Axis>) : Iterable<Direction>, Predicate<Direction> {
+    enum class Plane(private val faces: Array<Direction>) : Iterable<Direction>, Predicate<Direction> {
 
-        HORIZONTAL(arrayOf(Direction.NORTH, Direction.EAST, Direction.SOUTH, Direction.WEST), arrayOf(Axis.X, Axis.Z)),
-        VERTICAL(arrayOf(Direction.UP, Direction.DOWN), arrayOf(Axis.Y));
+        HORIZONTAL(arrayOf(Direction.NORTH, Direction.EAST, Direction.SOUTH, Direction.WEST)),
+        VERTICAL(arrayOf(Direction.UP, Direction.DOWN));
 
         override fun test(t: Direction): Boolean = plane(t.axis) == this
 

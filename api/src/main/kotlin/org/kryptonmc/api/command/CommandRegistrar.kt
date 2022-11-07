@@ -12,16 +12,15 @@ import com.mojang.brigadier.tree.RootCommandNode
 
 /**
  * A registrar of commands. Implement this to define how the server should
- * register commands of type [C] with metadata of type [M].
+ * register commands of type [C].
  *
  * This is designed for external command frameworks, to give them even more
  * control over registration of commands than what is otherwise provided.
  * It is also to discourage the use of wrapper classes for delegating calls.
  *
- * @param C the command type
- * @param M the metadata type
+ * @param C the custom command type
  */
-public fun interface CommandRegistrar<C, M> {
+public fun interface CommandRegistrar<C> {
 
     /**
      * Registers the given [command] with the given [meta] to the given [root]
@@ -34,5 +33,5 @@ public fun interface CommandRegistrar<C, M> {
      * @param command the command to register
      * @param meta the command metadata
      */
-    public fun register(root: RootCommandNode<Sender>, command: C, meta: M)
+    public fun register(root: RootCommandNode<Sender>, command: C, meta: CommandMeta)
 }

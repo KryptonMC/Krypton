@@ -91,6 +91,7 @@ class PlayerHungerSystem(private val player: KryptonPlayer) {
         // the food level regenerates instead of deducting a half-heart.
         // NOTE: 80 are 20 ticks are the vanilla timings for hunger and
         // peaceful food regeneration respectively.
+        @Suppress("MagicNumber") // The magic numbers here are all explained above
         when (player.world.difficulty) {
             Difficulty.EASY -> {
                 if (health > 10 && foodLevel == 0 && tickTimer == 80) { // starving
@@ -113,6 +114,7 @@ class PlayerHungerSystem(private val player: KryptonPlayer) {
         // food level, so food exhaustion and saturation are adjusted
         // to bring equilibrium to the hunger system. This is to avoid
         // a player healing infinitely.
+        @Suppress("MagicNumber") // The magic numbers here are all explained above
         if (tickTimer == 80) {
             if (foodLevel >= 18) {
                 // Avoid exceeding max health
@@ -137,17 +139,17 @@ class PlayerHungerSystem(private val player: KryptonPlayer) {
     }
 
     fun load(data: CompoundTag) {
-        foodLevel = data.getInt("foodLevel")
-        tickTimer = data.getInt("foodTickTimer")
-        exhaustionLevel = data.getFloat("foodExhaustionLevel")
-        saturationLevel = data.getFloat("foodSaturationLevel")
+        foodLevel = data.getInt(LEVEL_TAG)
+        tickTimer = data.getInt(TICK_TIMER_TAG)
+        exhaustionLevel = data.getFloat(EXHAUSTION_LEVEL)
+        saturationLevel = data.getFloat(SATURATION_LEVEL)
     }
 
     fun save(builder: CompoundTag.Builder): CompoundTag.Builder = builder.apply {
-        putInt("foodLevel", foodLevel)
-        putInt("foodTickTimer", tickTimer)
-        putFloat("foodExhaustionLevel", exhaustionLevel)
-        putFloat("foodSaturationLevel", saturationLevel)
+        putInt(LEVEL_TAG, foodLevel)
+        putInt(TICK_TIMER_TAG, tickTimer)
+        putFloat(EXHAUSTION_LEVEL, exhaustionLevel)
+        putFloat(SATURATION_LEVEL, saturationLevel)
     }
 
     fun updateMovementExhaustion(deltaX: Double, deltaY: Double, deltaZ: Double) {
@@ -160,9 +162,11 @@ class PlayerHungerSystem(private val player: KryptonPlayer) {
         }
         if (player.isOnGround) {
             val value = sqrt(deltaX * deltaX + deltaZ * deltaZ)
-            if (value > 0) when {
-                player.isSprinting -> exhaustionLevel += SPRINTING_EXHAUSTION_MODIFIER * value.toFloat()
-                // 0.1/u is the vanilla level of exhaustion per unit for sprinting
+            if (value > 0) {
+                when {
+                    player.isSprinting -> exhaustionLevel += SPRINTING_EXHAUSTION_MODIFIER * value.toFloat()
+                    // 0.1/u is the vanilla level of exhaustion per unit for sprinting
+                }
             }
             return
         }
@@ -172,5 +176,10 @@ class PlayerHungerSystem(private val player: KryptonPlayer) {
 
         private const val SWIMMING_EXHAUSTION_MODIFIER = 0.01F
         private const val SPRINTING_EXHAUSTION_MODIFIER = 0.1F
+
+        private const val LEVEL_TAG = "foodLevel"
+        private const val TICK_TIMER_TAG = "foodTickTimer"
+        private const val EXHAUSTION_LEVEL = "foodExhaustionLevel"
+        private const val SATURATION_LEVEL = "foodSaturationLevel"
     }
 }

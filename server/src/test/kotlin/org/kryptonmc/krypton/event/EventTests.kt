@@ -39,6 +39,7 @@ import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@Suppress("UnusedPrivateMember")
 class EventTests {
 
     private val eventManager = KryptonEventManager(MockPluginManager())

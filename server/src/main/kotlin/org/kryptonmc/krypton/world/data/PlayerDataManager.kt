@@ -35,7 +35,7 @@ import java.util.concurrent.CompletableFuture
 import java.util.concurrent.Executor
 
 /**
- * Responsible for loading and saving player data files
+ * Responsible for loading and saving player data files.
  */
 class PlayerDataManager(val folder: Path, private val serializeData: Boolean) {
 

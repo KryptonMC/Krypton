@@ -26,13 +26,15 @@ import org.kryptonmc.nbt.CompoundTag
 
 object ThrowableProjectileSerializer : EntitySerializer<KryptonThrowableProjectile> {
 
+    private const val ITEM_TAG = "Item"
+
     override fun load(entity: KryptonThrowableProjectile, data: CompoundTag) {
         ProjectileSerializer.load(entity, data)
-        entity.data.set(MetadataKeys.ThrowableProjectile.ITEM, KryptonItemStack.from(data.getCompound("Item")))
+        entity.data.set(MetadataKeys.ThrowableProjectile.ITEM, KryptonItemStack.from(data.getCompound(ITEM_TAG)))
     }
 
     override fun save(entity: KryptonThrowableProjectile): CompoundTag.Builder = ProjectileSerializer.save(entity).apply {
         val item = entity.data.get(MetadataKeys.ThrowableProjectile.ITEM)
-        if (!item.isEmpty()) put("Item", item.save())
+        if (!item.isEmpty()) put(ITEM_TAG, item.save())
     }
 }

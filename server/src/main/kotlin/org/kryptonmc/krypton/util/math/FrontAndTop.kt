@@ -46,6 +46,6 @@ enum class FrontAndTop(val front: Direction, val top: Direction) {
         fun fromFrontAndTop(front: Direction, top: Direction): FrontAndTop = LOOKUP_TOP_FRONT.get(lookupKey(front, top))
 
         @JvmStatic
-        private fun lookupKey(front: Direction, top: Direction): Int = (top.ordinal shl 3) or front.ordinal
+        private fun lookupKey(front: Direction, top: Direction): Int = top.ordinal shl 3 or front.ordinal
     }
 }

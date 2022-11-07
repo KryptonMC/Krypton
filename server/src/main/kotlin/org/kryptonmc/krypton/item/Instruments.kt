@@ -23,6 +23,7 @@ import org.kryptonmc.api.effect.sound.SoundEvent
 import org.kryptonmc.api.effect.sound.SoundEvents
 import org.kryptonmc.krypton.registry.InternalRegistries
 
+@Suppress("MagicNumber")
 object Instruments {
 
     @JvmField

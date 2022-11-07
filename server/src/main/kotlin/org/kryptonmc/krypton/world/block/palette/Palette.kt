@@ -20,7 +20,6 @@ package org.kryptonmc.krypton.world.block.palette
 
 import io.netty.buffer.ByteBuf
 import org.kryptonmc.krypton.util.IntBiMap
-import org.kryptonmc.nbt.ListTag
 
 interface Palette<T> {
 

@@ -29,6 +29,7 @@ public interface EventManager {
      * listeners/handlers for this event are still executing, which avoids the
      * possibility of the event handler holding up the server unnecessarily.
      *
+     * @param E the type of the event
      * @param event the event to fire
      * @return the result of firing this event, as a [CompletableFuture]
      */
@@ -58,10 +59,10 @@ public interface EventManager {
      * listen for and handle events of type [E] at
      * [medium priority][ListenerPriority.MEDIUM] for the given [plugin].
      *
+     * @param E the type of the event
      * @param plugin the plugin the listener handles events for
      * @param eventClass the class of the event
      * @param handler the handler to register
-     * @param E the type of the event
      */
     public fun <E> register(plugin: Any, eventClass: Class<E>, handler: EventHandler<E>) {
         register(plugin, eventClass, ListenerPriority.MEDIUM, handler)
@@ -71,11 +72,11 @@ public interface EventManager {
      * Requests that the given [handler] be registered with this manager to
      * listen for and handle events of type [E] for the given [plugin].
      *
+     * @param E the type of the event
      * @param plugin the plugin the listener handles events for
      * @param eventClass the class of the event
      * @param priority the priority the handler will be executed with
      * @param handler the handler to register
-     * @param E the type of the event
      */
     public fun <E> register(plugin: Any, eventClass: Class<E>, priority: ListenerPriority, handler: EventHandler<E>)
 
@@ -103,9 +104,9 @@ public interface EventManager {
      * manager. After this function is called, the given [handler] will no
      * longer function.
      *
+     * @param E the type of the event
      * @param plugin the plugin the handler handles events for
      * @param handler the handler to unregister
-     * @param E the type of the event
      */
     public fun <E> unregister(plugin: Any, handler: EventHandler<E>)
 }
@@ -115,9 +116,9 @@ public interface EventManager {
  * for and handle events of type [E] at
  * [medium priority][ListenerPriority.MEDIUM] for the given [plugin].
  *
+ * @param E the type of the event
  * @param plugin the plugin the handler handles events for
  * @param handler the handler to register
- * @param E the type of the event
  */
 @JvmSynthetic
 public inline fun <reified E> EventManager.registerHandler(plugin: Any, handler: EventHandler<E>) {
@@ -128,10 +129,10 @@ public inline fun <reified E> EventManager.registerHandler(plugin: Any, handler:
  * Requests that the given [handler] be registered with this manager to listen
  * for and handle events of type [E] for the given [plugin].
  *
+ * @param E the type of the event
  * @param plugin the plugin the handler handles events for
  * @param priority the priority the handler will be executed with
  * @param handler the handler to register
- * @param E the type of the event
  */
 @JvmSynthetic
 public inline fun <reified E> EventManager.register(plugin: Any, priority: ListenerPriority, handler: EventHandler<E>) {

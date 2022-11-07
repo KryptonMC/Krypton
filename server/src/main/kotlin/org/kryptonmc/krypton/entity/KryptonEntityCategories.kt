@@ -21,6 +21,7 @@ package org.kryptonmc.krypton.entity
 import net.kyori.adventure.key.Key
 import org.kryptonmc.api.registry.Registries
 
+@Suppress("MagicNumber")
 object KryptonEntityCategories {
 
     @JvmField

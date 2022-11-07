@@ -83,7 +83,7 @@ object Shapes {
 
     @JvmStatic
     fun joinUnoptimized(mainShape: VoxelShape, otherShape: VoxelShape, operator: BooleanOperator): VoxelShape {
-        if (operator.apply(false, false)) throw IllegalArgumentException("Cannot use operator that evaluates to true with two false values!")
+        require(!operator.apply(false, false)) { "Cannot use operator that evaluates to true with two false values!" }
         if (mainShape === otherShape) {
             if (operator.apply(true, true)) return mainShape
             return empty()
@@ -216,6 +216,7 @@ object Shapes {
         val upperMaxIndex = upper.size - 1
         if (lower is CubePointRange && upper is CubePointRange) {
             val lcm = Maths.lcm(lowerMaxIndex, upperMaxIndex)
+            @Suppress("MagicNumber")
             if (size * lcm <= 256L) return DiscreteCubeMerger(lowerMaxIndex, upperMaxIndex)
         }
         if (lowerMaxIndex == upperMaxIndex && Objects.equals(lower, upper)) return IdenticalMerger(lower)

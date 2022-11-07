@@ -62,12 +62,16 @@ class KryptonPolarBear(world: KryptonWorld) : KryptonAnimal(world), PolarBear, N
     companion object {
 
         private val PERSISTENT_ANGER_TIME = UniformInt(20 * 20, 39 * 20)
+        private const val DEFAULT_MAX_HEALTH = 30.0
+        private const val DEFAULT_FOLLOW_RANGE = 20.0
+        private const val DEFAULT_MOVEMENT_SPEED = 0.25
+        private const val DEFAULT_ATTACK_DAMAGE = 6.0
 
         @JvmStatic
         fun attributes(): AttributeSupplier.Builder = KryptonMob.attributes()
-            .add(KryptonAttributeTypes.MAX_HEALTH, 30.0)
-            .add(KryptonAttributeTypes.FOLLOW_RANGE, 20.0)
-            .add(KryptonAttributeTypes.MOVEMENT_SPEED, 0.25)
-            .add(KryptonAttributeTypes.ATTACK_DAMAGE, 6.0)
+            .add(KryptonAttributeTypes.MAX_HEALTH, DEFAULT_MAX_HEALTH)
+            .add(KryptonAttributeTypes.FOLLOW_RANGE, DEFAULT_FOLLOW_RANGE)
+            .add(KryptonAttributeTypes.MOVEMENT_SPEED, DEFAULT_MOVEMENT_SPEED)
+            .add(KryptonAttributeTypes.ATTACK_DAMAGE, DEFAULT_ATTACK_DAMAGE)
     }
 }

@@ -34,7 +34,7 @@ data class PacketOutSynchronizePlayerPosition(
     val yaw: Float,
     val pitch: Float,
     val flags: Int = 0,
-    val teleportId: Int = Random.nextInt(1000),
+    val teleportId: Int = Random.nextInt(RANDOM_TELEPORT_ID_UPPER_BOUND),
     val shouldDismount: Boolean = false
 ) : Packet {
 
@@ -42,7 +42,7 @@ data class PacketOutSynchronizePlayerPosition(
         position: Vector3d,
         rotation: Vector2f,
         flags: Int = 0,
-        teleportId: Int = Random.nextInt(1000),
+        teleportId: Int = Random.nextInt(RANDOM_TELEPORT_ID_UPPER_BOUND),
         shouldDismount: Boolean = false
     ) : this(position.x(), position.y(), position.z(), rotation.x(), rotation.y(), flags, teleportId, shouldDismount)
 
@@ -66,5 +66,10 @@ data class PacketOutSynchronizePlayerPosition(
         buf.writeByte(flags)
         buf.writeVarInt(teleportId)
         buf.writeBoolean(shouldDismount)
+    }
+
+    companion object {
+
+        private const val RANDOM_TELEPORT_ID_UPPER_BOUND = 1000 // A number I chose because it seems sensible enough
     }
 }

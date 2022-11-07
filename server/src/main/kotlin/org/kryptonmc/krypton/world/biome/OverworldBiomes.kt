@@ -28,6 +28,7 @@ import org.kryptonmc.api.world.biome.TemperatureModifier
 import org.kryptonmc.krypton.effect.KryptonMusic
 import org.kryptonmc.krypton.util.Maths
 
+@Suppress("UnusedPrivateMember") // Many parameters are there for when more biome data, such as generation and mob spawning, is added
 object OverworldBiomes {
 
     // Standard colours

@@ -52,7 +52,7 @@ class VanillaPackResources(val metadata: PackMetadata, vararg namespaces: String
         val path = createPath(location)
         return try {
             isResourceUrlValid(path, VanillaPackResources::class.java.getResource(path))
-        } catch (exception: IOException) {
+        } catch (ignored: IOException) {
             false
         }
     }
@@ -90,9 +90,9 @@ class VanillaPackResources(val metadata: PackMetadata, vararg namespaces: String
                 }
                 if (serializer === PackMetadata.Serializer) metadata as T else null
             }
-        } catch (exception: FileNotFoundException) {
+        } catch (ignored: FileNotFoundException) {
             if (serializer === PackMetadata.Serializer) metadata as T else null
-        } catch (exception: RuntimeException) {
+        } catch (ignored: RuntimeException) {
             if (serializer === PackMetadata.Serializer) metadata as T else null
         }
     }
