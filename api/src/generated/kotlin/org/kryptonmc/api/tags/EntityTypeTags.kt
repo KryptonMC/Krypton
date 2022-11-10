@@ -8,41 +8,40 @@
  */
 package org.kryptonmc.api.tags
 
-import org.kryptonmc.api.Krypton
+import net.kyori.adventure.key.Key
 import org.kryptonmc.api.entity.EntityType
-import org.kryptonmc.api.util.Catalogue
+import org.kryptonmc.api.resource.ResourceKeys
 
 /**
  * This file is auto-generated. Do not edit this manually!
  */
-@Catalogue(Tag::class)
 public object EntityTypeTags {
 
     // @formatter:off
     @JvmField
-    public val SKELETONS: Tag<EntityType<*>> = get("skeletons")
+    public val SKELETONS: TagKey<EntityType<*>> = get("skeletons")
     @JvmField
-    public val RAIDERS: Tag<EntityType<*>> = get("raiders")
+    public val RAIDERS: TagKey<EntityType<*>> = get("raiders")
     @JvmField
-    public val BEEHIVE_INHABITORS: Tag<EntityType<*>> = get("beehive_inhabitors")
+    public val BEEHIVE_INHABITORS: TagKey<EntityType<*>> = get("beehive_inhabitors")
     @JvmField
-    public val ARROWS: Tag<EntityType<*>> = get("arrows")
+    public val ARROWS: TagKey<EntityType<*>> = get("arrows")
     @JvmField
-    public val IMPACT_PROJECTILES: Tag<EntityType<*>> = get("impact_projectiles")
+    public val IMPACT_PROJECTILES: TagKey<EntityType<*>> = get("impact_projectiles")
     @JvmField
-    public val POWDER_SNOW_WALKABLE_MOBS: Tag<EntityType<*>> = get("powder_snow_walkable_mobs")
+    public val POWDER_SNOW_WALKABLE_MOBS: TagKey<EntityType<*>> = get("powder_snow_walkable_mobs")
     @JvmField
-    public val AXOLOTL_ALWAYS_HOSTILES: Tag<EntityType<*>> = get("axolotl_always_hostiles")
+    public val AXOLOTL_ALWAYS_HOSTILES: TagKey<EntityType<*>> = get("axolotl_always_hostiles")
     @JvmField
-    public val AXOLOTL_HUNT_TARGETS: Tag<EntityType<*>> = get("axolotl_hunt_targets")
+    public val AXOLOTL_HUNT_TARGETS: TagKey<EntityType<*>> = get("axolotl_hunt_targets")
     @JvmField
-    public val FREEZE_IMMUNE_ENTITY_TYPES: Tag<EntityType<*>> = get("freeze_immune_entity_types")
+    public val FREEZE_IMMUNE_ENTITY_TYPES: TagKey<EntityType<*>> = get("freeze_immune_entity_types")
     @JvmField
-    public val FREEZE_HURTS_EXTRA_TYPES: Tag<EntityType<*>> = get("freeze_hurts_extra_types")
+    public val FREEZE_HURTS_EXTRA_TYPES: TagKey<EntityType<*>> = get("freeze_hurts_extra_types")
     @JvmField
-    public val FROG_FOOD: Tag<EntityType<*>> = get("frog_food")
+    public val FROG_FOOD: TagKey<EntityType<*>> = get("frog_food")
 
     // @formatter:on
     @JvmStatic
-    private fun get(key: String): Tag<EntityType<*>> = Krypton.tag(TagTypes.ENTITY_TYPES, "minecraft:$key")!!
+    public fun get(key: String): TagKey<EntityType<*>> = TagKey.of(ResourceKeys.ENTITY_TYPE, Key.key(key))
 }

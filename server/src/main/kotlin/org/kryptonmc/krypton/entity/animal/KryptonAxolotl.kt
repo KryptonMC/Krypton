@@ -37,6 +37,7 @@ import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.entity.serializer.EntitySerializer
 import org.kryptonmc.krypton.entity.serializer.animal.AxolotlSerializer
 import org.kryptonmc.krypton.item.KryptonItemStack
+import org.kryptonmc.krypton.item.downcast
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.nbt.CompoundTag
 
@@ -75,7 +76,7 @@ class KryptonAxolotl(world: KryptonWorld) : KryptonAnimal(world), Axolotl, Bucke
         data.define(MetadataKeys.Axolotl.FROM_BUCKET, false)
     }
 
-    override fun isFood(item: ItemStack): Boolean = ItemTags.AXOLOTL_TEMPT_ITEMS.contains(item.type)
+    override fun isFood(item: ItemStack): Boolean = item.type.downcast().eq(ItemTags.AXOLOTL_TEMPT_ITEMS)
 
     override fun loadFromBucket(tag: CompoundTag) {
         BucketStorable.loadDefaultsFromBucket(this, tag)

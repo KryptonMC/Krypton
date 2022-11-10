@@ -19,9 +19,8 @@
 package org.kryptonmc.krypton.state.property
 
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap
-import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.api.state.Property
-import org.kryptonmc.krypton.world.block.downcast
+import org.kryptonmc.krypton.registry.KryptonRegistries
 import java.util.IdentityHashMap
 import java.util.function.ToIntFunction
 
@@ -56,8 +55,8 @@ object KryptonPropertyFactory : Property.Factory {
         val builtins = collectFieldProperties()
         val propertyUsages = HashMap<String, KryptonProperty<*>>()
         val propertyCount = Object2IntOpenHashMap<String>()
-        Registries.BLOCK.values.forEach { block ->
-            block.downcast().defaultState.availableProperties.forEach { property ->
+        KryptonRegistries.BLOCK.forEach { block ->
+            block.defaultState.availableProperties.forEach { property ->
                 val name = builtins.computeIfAbsent(property) {
                     val count = propertyCount.computeIfAbsent(property.name, ToIntFunction { 0 }) + 1
                     "${property.name}_$count"

@@ -19,8 +19,8 @@
 package org.kryptonmc.krypton.packet.out.play
 
 import io.netty.buffer.ByteBuf
-import org.kryptonmc.api.entity.EntityType
 import org.kryptonmc.krypton.entity.KryptonEntity
+import org.kryptonmc.krypton.entity.KryptonEntityType
 import org.kryptonmc.krypton.entity.KryptonLivingEntity
 import org.kryptonmc.krypton.packet.EntityPacket
 import org.kryptonmc.krypton.registry.KryptonRegistries
@@ -41,7 +41,7 @@ import java.util.UUID
 data class PacketOutSpawnEntity(
     override val entityId: Int,
     val uuid: UUID,
-    val type: EntityType<*>,
+    val type: KryptonEntityType<*>,
     val x: Double,
     val y: Double,
     val z: Double,
@@ -54,7 +54,7 @@ data class PacketOutSpawnEntity(
     val velocityZ: Int
 ) : EntityPacket {
 
-    constructor(id: Int, uuid: UUID, type: EntityType<*>, location: Vec, rotation: Vector2f, headYaw: Float, data: Int, velocity: Vec) : this(
+    constructor(id: Int, uuid: UUID, type: KryptonEntityType<*>, location: Vec, rotation: Vector2f, headYaw: Float, data: Int, velocity: Vec) : this(
         id,
         uuid,
         type,

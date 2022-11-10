@@ -21,7 +21,7 @@ package org.kryptonmc.krypton.entity.attribute
 import com.google.common.collect.Multimap
 import net.kyori.adventure.key.Key
 import org.kryptonmc.api.entity.attribute.AttributeModifier
-import org.kryptonmc.api.registry.Registries
+import org.kryptonmc.krypton.registry.KryptonRegistries
 import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.util.nullableComputeIfAbsent
 import org.kryptonmc.nbt.ListTag
@@ -80,7 +80,7 @@ class AttributeMap(private val supplier: AttributeSupplier) {
     fun load(list: ListTag) {
         list.forEachCompound {
             val key = Key.key(it.getString("Name"))
-            val type = Registries.ATTRIBUTE.get(key)
+            val type = KryptonRegistries.ATTRIBUTE.get(key)
             if (type == null) {
                 LOGGER.warn("Ignoring unknown attribute $key.")
                 return@forEachCompound

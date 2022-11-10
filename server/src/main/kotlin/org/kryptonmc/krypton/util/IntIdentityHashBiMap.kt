@@ -75,7 +75,7 @@ class IntIdentityHashBiMap<K> : IntBiMap<K> {
         if (value == nextId) ++nextId
     }
 
-    override fun idOf(value: K): Int = getValue(indexOf(value, hash(value)))
+    override fun getId(value: K): Int = getValue(indexOf(value, hash(value)))
 
     override fun get(id: Int): K? {
         if (id >= 0 && id < byId.size) return byId[id]

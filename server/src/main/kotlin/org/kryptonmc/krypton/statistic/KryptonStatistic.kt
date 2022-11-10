@@ -18,30 +18,31 @@
  */
 package org.kryptonmc.krypton.statistic
 
+import org.kryptonmc.api.scoreboard.ObjectiveRenderType
 import org.kryptonmc.api.statistic.Statistic
 import org.kryptonmc.api.statistic.StatisticFormatter
 import org.kryptonmc.api.statistic.StatisticType
 import org.kryptonmc.krypton.world.scoreboard.KryptonCriterion
 
-class KryptonStatistic<T : Any>(
+class KryptonStatistic<T>(
     override val type: StatisticType<T>,
     override val value: T,
     override val formatter: StatisticFormatter
-) : KryptonCriterion(type.criterionName(value)), Statistic<T> {
+) : KryptonCriterion(getCriterionName(type, value), false, ObjectiveRenderType.INTEGER), Statistic<T> {
 
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-        return name == (other as KryptonStatistic<*>).name
-    }
+    override fun equals(other: Any?): Boolean = this === other || other is KryptonStatistic<*> && name == other.name
 
     override fun hashCode(): Int = name.hashCode()
 
     override fun toString(): String = "KryptonStatistic(name=$name, formatter=$formatter)"
-}
 
-private fun <T : Any> StatisticType<T>.criterionName(value: T): String {
-    val key = key().asString().replace(':', '.')
-    val path = registry.get(value)?.asString()?.replace(':', '.')
-    return "$key:$path"
+    companion object {
+
+        @JvmStatic
+        private fun <T> getCriterionName(type: StatisticType<T>, value: T): String {
+            val key = type.key().asString().replace(':', '.')
+            val path = type.registry.getKey(value)?.asString()?.replace(':', '.')
+            return "$key:$path"
+        }
+    }
 }

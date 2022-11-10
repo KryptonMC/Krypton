@@ -20,10 +20,9 @@ package org.kryptonmc.krypton.entity.hanging
 
 import net.kyori.adventure.key.Key
 import org.kryptonmc.api.entity.hanging.PaintingVariant
-import org.kryptonmc.api.registry.Registries
 
 @JvmRecord
-data class KryptonPaintingVariant(override val width: Int, override val height: Int) : PaintingVariant {
+data class KryptonPaintingVariant(private val key: Key, override val width: Int, override val height: Int) : PaintingVariant {
 
-    override fun key(): Key = Registries.PAINTING_VARIANT.get(this)
+    override fun key(): Key = key
 }

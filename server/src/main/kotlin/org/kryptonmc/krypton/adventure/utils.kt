@@ -24,26 +24,25 @@ import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.text.format.TextColor
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer
 import org.kryptonmc.api.item.ItemTypes
-import org.kryptonmc.api.item.item
-import org.kryptonmc.api.item.meta
 import org.kryptonmc.api.item.meta.WrittenBookMeta
 import org.kryptonmc.krypton.item.KryptonItemStack
+import org.kryptonmc.krypton.item.downcast
 import org.kryptonmc.krypton.item.meta.KryptonWrittenBookMeta
 import org.kryptonmc.krypton.util.GsonHelper
 import java.util.Locale
 
 fun Book.toItemStack(): KryptonItemStack {
-    if (this is KryptonWrittenBookMeta) return KryptonItemStack(ItemTypes.WRITTEN_BOOK, 1, this)
+    if (this is KryptonWrittenBookMeta) return KryptonItemStack(ItemTypes.WRITTEN_BOOK.downcast(), 1, this)
     val book = this // Helps avoid ambiguity later
-    return item {
-        type(ItemTypes.WRITTEN_BOOK)
-        amount(1)
-        meta<WrittenBookMeta.Builder, WrittenBookMeta> {
+    return KryptonItemStack.Builder()
+        .type(ItemTypes.WRITTEN_BOOK)
+        .amount(1)
+        .meta(WrittenBookMeta::class.java) {
             title(book.title())
             author(book.author())
             pages(book.pages())
         }
-    } as KryptonItemStack
+        .build()
 }
 
 fun TextColor.serializeToNetwork(): String {

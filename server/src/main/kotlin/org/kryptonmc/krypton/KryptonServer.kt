@@ -25,6 +25,7 @@ import net.kyori.adventure.identity.Identity
 import net.kyori.adventure.text.Component
 import org.apache.logging.log4j.LogManager
 import org.kryptonmc.api.Server
+import org.kryptonmc.api.registry.RegistryManager
 import org.kryptonmc.api.world.World
 import org.kryptonmc.api.world.rule.GameRules
 import org.kryptonmc.krypton.adventure.PacketGroupingAudience
@@ -44,11 +45,10 @@ import org.kryptonmc.krypton.network.SessionManager
 import org.kryptonmc.krypton.packet.PacketRegistry
 import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateTime
 import org.kryptonmc.krypton.plugin.KryptonPluginManager
-import org.kryptonmc.krypton.registry.KryptonRegistryManager
+import org.kryptonmc.krypton.registry.KryptonRegistries
 import org.kryptonmc.krypton.scheduling.KryptonScheduler
 import org.kryptonmc.krypton.server.PlayerManager
 import org.kryptonmc.krypton.service.KryptonServicesManager
-import org.kryptonmc.krypton.tags.KryptonTagManager
 import org.kryptonmc.krypton.user.KryptonUserManager
 import org.kryptonmc.krypton.util.KryptonFactoryProvider
 import org.kryptonmc.krypton.util.crypto.YggdrasilSessionKey
@@ -97,8 +97,7 @@ class KryptonServer(
     override val pluginManager: KryptonPluginManager = KryptonPluginManager()
     override val eventManager: KryptonEventManager = KryptonEventManager(pluginManager)
     override val servicesManager: KryptonServicesManager = KryptonServicesManager(this)
-    override val registryManager: KryptonRegistryManager = KryptonRegistryManager
-    override val tagManager: KryptonTagManager = KryptonTagManager
+    override val registryManager: RegistryManager = KryptonRegistries.ManagerImpl
     override val scheduler: KryptonScheduler = KryptonScheduler(pluginManager)
     override val factoryProvider: KryptonFactoryProvider = KryptonFactoryProvider
     override val userManager: KryptonUserManager = KryptonUserManager(this)

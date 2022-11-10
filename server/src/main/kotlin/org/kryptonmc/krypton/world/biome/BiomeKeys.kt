@@ -22,136 +22,137 @@ import net.kyori.adventure.key.Key
 import org.kryptonmc.api.resource.ResourceKey
 import org.kryptonmc.api.resource.ResourceKeys
 import org.kryptonmc.api.world.biome.Biome
+import org.kryptonmc.krypton.resource.KryptonResourceKey
 
 object BiomeKeys {
 
     @JvmField
-    val THE_VOID: ResourceKey<Biome> = register("the_void")
+    val THE_VOID: ResourceKey<Biome> = create("the_void")
     @JvmField
-    val PLAINS: ResourceKey<Biome> = register("plains")
+    val PLAINS: ResourceKey<Biome> = create("plains")
     @JvmField
-    val SUNFLOWER_PLAINS: ResourceKey<Biome> = register("sunflower_plains")
+    val SUNFLOWER_PLAINS: ResourceKey<Biome> = create("sunflower_plains")
     @JvmField
-    val SNOWY_PLAINS: ResourceKey<Biome> = register("snowy_plains")
+    val SNOWY_PLAINS: ResourceKey<Biome> = create("snowy_plains")
     @JvmField
-    val ICE_SPIKES: ResourceKey<Biome> = register("ice_spikes")
+    val ICE_SPIKES: ResourceKey<Biome> = create("ice_spikes")
     @JvmField
-    val DESERT: ResourceKey<Biome> = register("desert")
+    val DESERT: ResourceKey<Biome> = create("desert")
     @JvmField
-    val SWAMP: ResourceKey<Biome> = register("swamp")
+    val SWAMP: ResourceKey<Biome> = create("swamp")
     @JvmField
-    val MANGROVE_SWAMP: ResourceKey<Biome> = register("mangrove_swamp")
+    val MANGROVE_SWAMP: ResourceKey<Biome> = create("mangrove_swamp")
     @JvmField
-    val FOREST: ResourceKey<Biome> = register("forest")
+    val FOREST: ResourceKey<Biome> = create("forest")
     @JvmField
-    val FLOWER_FOREST: ResourceKey<Biome> = register("flower_forest")
+    val FLOWER_FOREST: ResourceKey<Biome> = create("flower_forest")
     @JvmField
-    val BIRCH_FOREST: ResourceKey<Biome> = register("birch_forest")
+    val BIRCH_FOREST: ResourceKey<Biome> = create("birch_forest")
     @JvmField
-    val DARK_FOREST: ResourceKey<Biome> = register("dark_forest")
+    val DARK_FOREST: ResourceKey<Biome> = create("dark_forest")
     @JvmField
-    val OLD_GROWTH_BIRCH_FOREST: ResourceKey<Biome> = register("old_growth_birch_forest")
+    val OLD_GROWTH_BIRCH_FOREST: ResourceKey<Biome> = create("old_growth_birch_forest")
     @JvmField
-    val OLD_GROWTH_PINE_TAIGA: ResourceKey<Biome> = register("old_growth_pine_taiga")
+    val OLD_GROWTH_PINE_TAIGA: ResourceKey<Biome> = create("old_growth_pine_taiga")
     @JvmField
-    val OLD_GROWTH_SPRUCE_TAIGA: ResourceKey<Biome> = register("old_growth_spruce_taiga")
+    val OLD_GROWTH_SPRUCE_TAIGA: ResourceKey<Biome> = create("old_growth_spruce_taiga")
     @JvmField
-    val TAIGA: ResourceKey<Biome> = register("taiga")
+    val TAIGA: ResourceKey<Biome> = create("taiga")
     @JvmField
-    val SNOWY_TAIGA: ResourceKey<Biome> = register("snowy_taiga")
+    val SNOWY_TAIGA: ResourceKey<Biome> = create("snowy_taiga")
     @JvmField
-    val SAVANNA: ResourceKey<Biome> = register("savanna")
+    val SAVANNA: ResourceKey<Biome> = create("savanna")
     @JvmField
-    val SAVANNA_PLATEAU: ResourceKey<Biome> = register("savanna_plateau")
+    val SAVANNA_PLATEAU: ResourceKey<Biome> = create("savanna_plateau")
     @JvmField
-    val WINDSWEPT_HILLS: ResourceKey<Biome> = register("windswept_hills")
+    val WINDSWEPT_HILLS: ResourceKey<Biome> = create("windswept_hills")
     @JvmField
-    val WINDSWEPT_GRAVELLY_HILLS: ResourceKey<Biome> = register("windswept_gravelly_hills")
+    val WINDSWEPT_GRAVELLY_HILLS: ResourceKey<Biome> = create("windswept_gravelly_hills")
     @JvmField
-    val WINDSWEPT_FOREST: ResourceKey<Biome> = register("windswept_forest")
+    val WINDSWEPT_FOREST: ResourceKey<Biome> = create("windswept_forest")
     @JvmField
-    val WINDSWEPT_SAVANNA: ResourceKey<Biome> = register("windswept_savanna")
+    val WINDSWEPT_SAVANNA: ResourceKey<Biome> = create("windswept_savanna")
     @JvmField
-    val JUNGLE: ResourceKey<Biome> = register("jungle")
+    val JUNGLE: ResourceKey<Biome> = create("jungle")
     @JvmField
-    val SPARSE_JUNGLE: ResourceKey<Biome> = register("sparse_jungle")
+    val SPARSE_JUNGLE: ResourceKey<Biome> = create("sparse_jungle")
     @JvmField
-    val BAMBOO_JUNGLE: ResourceKey<Biome> = register("bamboo_jungle")
+    val BAMBOO_JUNGLE: ResourceKey<Biome> = create("bamboo_jungle")
     @JvmField
-    val BADLANDS: ResourceKey<Biome> = register("badlands")
+    val BADLANDS: ResourceKey<Biome> = create("badlands")
     @JvmField
-    val ERODED_BADLANDS: ResourceKey<Biome> = register("eroded_badlands")
+    val ERODED_BADLANDS: ResourceKey<Biome> = create("eroded_badlands")
     @JvmField
-    val WOODED_BADLANDS: ResourceKey<Biome> = register("wooded_badlands")
+    val WOODED_BADLANDS: ResourceKey<Biome> = create("wooded_badlands")
     @JvmField
-    val MEADOW: ResourceKey<Biome> = register("meadow")
+    val MEADOW: ResourceKey<Biome> = create("meadow")
     @JvmField
-    val GROVE: ResourceKey<Biome> = register("grove")
+    val GROVE: ResourceKey<Biome> = create("grove")
     @JvmField
-    val SNOWY_SLOPES: ResourceKey<Biome> = register("snowy_slopes")
+    val SNOWY_SLOPES: ResourceKey<Biome> = create("snowy_slopes")
     @JvmField
-    val FROZEN_PEAKS: ResourceKey<Biome> = register("frozen_peaks")
+    val FROZEN_PEAKS: ResourceKey<Biome> = create("frozen_peaks")
     @JvmField
-    val JAGGED_PEAKS: ResourceKey<Biome> = register("jagged_peaks")
+    val JAGGED_PEAKS: ResourceKey<Biome> = create("jagged_peaks")
     @JvmField
-    val STONY_PEAKS: ResourceKey<Biome> = register("stony_peaks")
+    val STONY_PEAKS: ResourceKey<Biome> = create("stony_peaks")
     @JvmField
-    val RIVER: ResourceKey<Biome> = register("river")
+    val RIVER: ResourceKey<Biome> = create("river")
     @JvmField
-    val FROZEN_RIVER: ResourceKey<Biome> = register("frozen_river")
+    val FROZEN_RIVER: ResourceKey<Biome> = create("frozen_river")
     @JvmField
-    val BEACH: ResourceKey<Biome> = register("beach")
+    val BEACH: ResourceKey<Biome> = create("beach")
     @JvmField
-    val SNOWY_BEACH: ResourceKey<Biome> = register("snowy_beach")
+    val SNOWY_BEACH: ResourceKey<Biome> = create("snowy_beach")
     @JvmField
-    val STONY_SHORE: ResourceKey<Biome> = register("stony_shore")
+    val STONY_SHORE: ResourceKey<Biome> = create("stony_shore")
     @JvmField
-    val WARM_OCEAN: ResourceKey<Biome> = register("warm_ocean")
+    val WARM_OCEAN: ResourceKey<Biome> = create("warm_ocean")
     @JvmField
-    val LUKEWARM_OCEAN: ResourceKey<Biome> = register("lukewarm_ocean")
+    val LUKEWARM_OCEAN: ResourceKey<Biome> = create("lukewarm_ocean")
     @JvmField
-    val DEEP_LUKEWARM_OCEAN: ResourceKey<Biome> = register("deep_lukewarm_ocean")
+    val DEEP_LUKEWARM_OCEAN: ResourceKey<Biome> = create("deep_lukewarm_ocean")
     @JvmField
-    val OCEAN: ResourceKey<Biome> = register("ocean")
+    val OCEAN: ResourceKey<Biome> = create("ocean")
     @JvmField
-    val DEEP_OCEAN: ResourceKey<Biome> = register("deep_ocean")
+    val DEEP_OCEAN: ResourceKey<Biome> = create("deep_ocean")
     @JvmField
-    val COLD_OCEAN: ResourceKey<Biome> = register("cold_ocean")
+    val COLD_OCEAN: ResourceKey<Biome> = create("cold_ocean")
     @JvmField
-    val DEEP_COLD_OCEAN: ResourceKey<Biome> = register("deep_cold_ocean")
+    val DEEP_COLD_OCEAN: ResourceKey<Biome> = create("deep_cold_ocean")
     @JvmField
-    val FROZEN_OCEAN: ResourceKey<Biome> = register("frozen_ocean")
+    val FROZEN_OCEAN: ResourceKey<Biome> = create("frozen_ocean")
     @JvmField
-    val DEEP_FROZEN_OCEAN: ResourceKey<Biome> = register("deep_frozen_ocean")
+    val DEEP_FROZEN_OCEAN: ResourceKey<Biome> = create("deep_frozen_ocean")
     @JvmField
-    val MUSHROOM_FIELDS: ResourceKey<Biome> = register("mushroom_fields")
+    val MUSHROOM_FIELDS: ResourceKey<Biome> = create("mushroom_fields")
     @JvmField
-    val DRIPSTONE_CAVES: ResourceKey<Biome> = register("dripstone_caves")
+    val DRIPSTONE_CAVES: ResourceKey<Biome> = create("dripstone_caves")
     @JvmField
-    val LUSH_CAVES: ResourceKey<Biome> = register("lush_caves")
+    val LUSH_CAVES: ResourceKey<Biome> = create("lush_caves")
     @JvmField
-    val DEEP_DARK: ResourceKey<Biome> = register("deep_dark")
+    val DEEP_DARK: ResourceKey<Biome> = create("deep_dark")
     @JvmField
-    val NETHER_WASTES: ResourceKey<Biome> = register("nether_wastes")
+    val NETHER_WASTES: ResourceKey<Biome> = create("nether_wastes")
     @JvmField
-    val WARPED_FOREST: ResourceKey<Biome> = register("warped_forest")
+    val WARPED_FOREST: ResourceKey<Biome> = create("warped_forest")
     @JvmField
-    val CRIMSON_FOREST: ResourceKey<Biome> = register("crimson_forest")
+    val CRIMSON_FOREST: ResourceKey<Biome> = create("crimson_forest")
     @JvmField
-    val SOUL_SAND_VALLEY: ResourceKey<Biome> = register("soul_sand_valley")
+    val SOUL_SAND_VALLEY: ResourceKey<Biome> = create("soul_sand_valley")
     @JvmField
-    val BASALT_DELTAS: ResourceKey<Biome> = register("basalt_deltas")
+    val BASALT_DELTAS: ResourceKey<Biome> = create("basalt_deltas")
     @JvmField
-    val THE_END: ResourceKey<Biome> = register("the_end")
+    val THE_END: ResourceKey<Biome> = create("the_end")
     @JvmField
-    val END_HIGHLANDS: ResourceKey<Biome> = register("end_highlands")
+    val END_HIGHLANDS: ResourceKey<Biome> = create("end_highlands")
     @JvmField
-    val END_MIDLANDS: ResourceKey<Biome> = register("end_midlands")
+    val END_MIDLANDS: ResourceKey<Biome> = create("end_midlands")
     @JvmField
-    val SMALL_END_ISLANDS: ResourceKey<Biome> = register("small_end_islands")
+    val SMALL_END_ISLANDS: ResourceKey<Biome> = create("small_end_islands")
     @JvmField
-    val END_BARRENS: ResourceKey<Biome> = register("end_barrens")
+    val END_BARRENS: ResourceKey<Biome> = create("end_barrens")
 
     @JvmStatic
-    private fun register(key: String): ResourceKey<Biome> = ResourceKey.of(ResourceKeys.BIOME, Key.key(key))
+    private fun create(key: String): ResourceKey<Biome> = KryptonResourceKey.of(ResourceKeys.BIOME, Key.key(key))
 }

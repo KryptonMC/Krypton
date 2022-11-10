@@ -25,11 +25,10 @@ import net.kyori.adventure.key.Key
 import net.kyori.adventure.text.Component
 import org.kryptonmc.api.item.ItemType
 import org.kryptonmc.api.item.ItemTypes
-import org.kryptonmc.api.registry.Registries
-import org.kryptonmc.api.tags.TagTypes
 import org.kryptonmc.krypton.adventure.toMessage
 import org.kryptonmc.krypton.command.toExceptionType
-import org.kryptonmc.krypton.tags.KryptonTagManager
+import org.kryptonmc.krypton.item.KryptonItemType
+import org.kryptonmc.krypton.registry.KryptonRegistries
 import org.kryptonmc.krypton.util.nbt.SNBTParser
 import org.kryptonmc.nbt.CompoundTag
 
@@ -80,23 +79,25 @@ object ItemStackParser { // TODO: Tags for ItemStackPredicate etc.
                 if (data != null) return@ItemStackPredicate data == it.meta.data
                 return@ItemStackPredicate it.type == item
             }
+            /* FIXME: When we implement command build context and holder lookups, rewrite this
             if (tag != null) {
                 val tags = KryptonTagManager.get(TagTypes.ITEMS, tag) ?: throw UNKNOWN_ITEM_TAG.create(tag.toString())
                 return@ItemStackPredicate tags.contains(it.type)
             }
+             */
             false
         }
     }
 
     @JvmStatic
-    private fun readItem(reader: StringReader): ItemType {
+    private fun readItem(reader: StringReader): KryptonItemType {
         val i = reader.cursor
         while (reader.canRead() && isCharacterValid(reader.peek())) {
             reader.skip()
         }
 
         val string = reader.string.substring(i, reader.cursor)
-        val item = Registries.ITEM.get(Key.key(string))
+        val item = KryptonRegistries.ITEM.get(Key.key(string))
         if (item === ItemTypes.AIR) throw ID_INVALID_EXCEPTION.createWithContext(reader, string)
         return item
     }

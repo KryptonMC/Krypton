@@ -12,11 +12,11 @@ import org.kryptonmc.api.scoreboard.criteria.Criterion
 import javax.annotation.concurrent.Immutable
 
 /**
- * Represents a statistic that may be counted.
+ * A statistic that may be counted.
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
 @Immutable
-public interface Statistic<T : Any> : Criterion {
+public interface Statistic<T> : Criterion {
 
     /**
      * The type of this statistic.

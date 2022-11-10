@@ -19,16 +19,16 @@
 package org.kryptonmc.krypton.command.arguments.item
 
 import kotlinx.collections.immutable.persistentListOf
-import org.kryptonmc.api.item.ItemType
 import org.kryptonmc.krypton.item.ItemFactory
 import org.kryptonmc.krypton.item.KryptonItemStack
+import org.kryptonmc.krypton.item.KryptonItemType
 import org.kryptonmc.nbt.CompoundTag
 
 /**
  * An argument that represents an item, optionally with some NBT data.
  */
 @JvmRecord
-data class ItemStackArgument(val type: ItemType, val data: CompoundTag? = null) {
+data class ItemStackArgument(val type: KryptonItemType, val data: CompoundTag? = null) {
 
     /**
      * Creates the item stacks from the data stored by this argument.

@@ -18,26 +18,26 @@
  */
 package org.kryptonmc.krypton.world.rule
 
-import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.api.world.rule.GameRule
 import org.kryptonmc.api.world.rule.GameRuleHolder
+import org.kryptonmc.krypton.registry.KryptonRegistries
 import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.StringTag
 import org.kryptonmc.nbt.compound
-import java.util.concurrent.ConcurrentHashMap
 
+// TODO: The way this works is a bit messy and I want to rewrite it
 class KryptonGameRuleHolder private constructor(override val rules: MutableMap<GameRule<*>, Any>) : GameRuleHolder {
 
-    constructor() : this(Registries.GAME_RULES.values.associateWithTo(HashMap()) { it.default })
+    constructor() : this(KryptonRegistries.GAME_RULES.associateWithTo(HashMap()) { it.defaultValue!! })
 
     fun save(): CompoundTag = compound {
         rules.forEach { (rule, value) -> putString(rule.name, value.toString()) }
     }
 
     @Suppress("UNCHECKED_CAST") // This should be fine
-    override fun <V : Any> get(rule: GameRule<V>): V = rules.getOrDefault(rule, rule.default) as V
+    override fun <V> get(rule: GameRule<V>): V = rules.getOrDefault(rule, rule.defaultValue) as V
 
-    override fun <V : Any> set(rule: GameRule<V>, value: V) {
+    override fun <V> set(rule: GameRule<V>, value: V & Any) {
         rules.put(rule, value)
     }
 
@@ -45,8 +45,8 @@ class KryptonGameRuleHolder private constructor(override val rules: MutableMap<G
 
         @JvmStatic
         fun from(data: CompoundTag): KryptonGameRuleHolder {
-            val rules = ConcurrentHashMap<GameRule<out Any>, Any>()
-            Registries.GAME_RULES.values.forEach {
+            val rules = HashMap<GameRule<*>, Any>()
+            KryptonRegistries.GAME_RULES.forEach {
                 if (!data.contains(it.name, StringTag.ID)) return@forEach
                 rules.put(it, deserialize(data.getString(it.name)))
             }

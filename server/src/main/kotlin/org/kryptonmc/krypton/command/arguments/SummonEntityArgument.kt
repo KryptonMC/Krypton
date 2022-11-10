@@ -24,9 +24,9 @@ import com.mojang.brigadier.exceptions.DynamicCommandExceptionType
 import net.kyori.adventure.key.InvalidKeyException
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.text.Component
-import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.krypton.adventure.toMessage
 import org.kryptonmc.krypton.command.toExceptionType
+import org.kryptonmc.krypton.registry.KryptonRegistries
 
 /**
  * An argument type that parses entity types that are summonable, in the form
@@ -52,7 +52,7 @@ object SummonEntityArgument : ArgumentType<Key> {
      */
     @JvmStatic
     fun ensureSummonable(key: Key): Key {
-        val type = Registries.ENTITY_TYPE.get(key)
+        val type = KryptonRegistries.ENTITY_TYPE.get(key)
         if (!type.isSummonable) throw ERROR_UNKNOWN_ENTITY.create(key)
         return type.key()
     }

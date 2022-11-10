@@ -21,10 +21,11 @@ package org.kryptonmc.krypton.util
 import com.google.gson.Gson
 import com.google.gson.JsonObject
 import net.kyori.adventure.key.Key
-import org.kryptonmc.api.registry.Registry
 import org.kryptonmc.krypton.KryptonPlatform
+import org.kryptonmc.krypton.registry.KryptonRegistry
+import org.kryptonmc.krypton.registry.KryptonRegistries
 
-abstract class KryptonDataLoader<T : Any>(fileSuffix: String, protected val registry: Registry<T>) {
+abstract class KryptonDataLoader<T>(fileSuffix: String, protected val registry: KryptonRegistry<T>) {
 
     private val fileName = "${KryptonPlatform.dataVersionPrefix}_$fileSuffix.json"
     @Volatile
@@ -33,7 +34,7 @@ abstract class KryptonDataLoader<T : Any>(fileSuffix: String, protected val regi
     protected abstract fun create(key: Key, value: JsonObject): T
 
     protected open fun register(key: Key, value: T) {
-        registry.register(key, value)
+        KryptonRegistries.register(registry, key, value)
     }
 
     protected open fun preload() {
@@ -52,7 +53,7 @@ abstract class KryptonDataLoader<T : Any>(fileSuffix: String, protected val regi
         preload()
         GSON.fromJson(inputStream.reader(), JsonObject::class.java).entrySet().forEach { (entryKey, value) ->
             val key = Key.key(entryKey)
-            if (!registry.contains(key)) register(key, create(key, value as JsonObject))
+            if (!registry.containsKey(key)) register(key, create(key, value as JsonObject))
         }
         isLoaded = true
     }

@@ -48,7 +48,7 @@ data class MapPalette<T>(
     ) : this(registry, bits, resizer, IntIdentityHashBiMap.create(1 shl bits))
 
     override fun get(value: T): Int {
-        var id = values.idOf(value)
+        var id = values.getId(value)
         if (id == -1) {
             id = values.add(value)
             if (id >= 1 shl bits) id = resizer.onResize(bits + 1, value)
@@ -62,14 +62,14 @@ data class MapPalette<T>(
         val size = size
         buf.writeVarInt(size)
         for (i in 0 until size) {
-            buf.writeVarInt(registry.idOf(values.get(i)!!))
+            buf.writeVarInt(registry.getId(values.get(i)!!))
         }
     }
 
     override fun calculateSerializedSize(): Int {
         var size = size.varIntBytes()
         for (i in 0 until this.size) {
-            size += registry.idOf(values.get(i)!!).varIntBytes()
+            size += registry.getId(values.get(i)!!).varIntBytes()
         }
         return size
     }

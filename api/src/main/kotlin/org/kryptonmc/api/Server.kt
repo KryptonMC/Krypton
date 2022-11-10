@@ -23,7 +23,6 @@ import org.kryptonmc.api.service.ServicesManager
 import org.kryptonmc.api.util.FactoryProvider
 import org.kryptonmc.api.world.WorldManager
 import org.kryptonmc.api.scoreboard.Scoreboard
-import org.kryptonmc.api.tags.TagManager
 import org.kryptonmc.api.user.UserManager
 import java.net.InetSocketAddress
 import java.util.UUID
@@ -84,11 +83,6 @@ public interface Server : ForwardingAudience {
      * This is used to create new registries and register values to them.
      */
     public val registryManager: RegistryManager
-
-    /**
-     * The tag manager for this server.
-     */
-    public val tagManager: TagManager
 
     /**
      * The factory provider for this server.

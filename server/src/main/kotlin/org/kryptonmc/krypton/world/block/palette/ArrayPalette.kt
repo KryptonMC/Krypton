@@ -68,14 +68,14 @@ class ArrayPalette<T> private constructor(
     override fun write(buf: ByteBuf) {
         buf.writeVarInt(size)
         for (i in 0 until size) {
-            buf.writeVarInt(registry.idOf(values[i]!!))
+            buf.writeVarInt(registry.getId(values[i]!!))
         }
     }
 
     override fun calculateSerializedSize(): Int {
         var size = size.varIntBytes()
         for (i in 0 until this.size) {
-            size += registry.idOf(values[i]!!).varIntBytes()
+            size += registry.getId(values[i]!!).varIntBytes()
         }
         return size
     }

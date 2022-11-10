@@ -26,7 +26,9 @@ import org.kryptonmc.api.block.BlockState
 import org.kryptonmc.api.block.Blocks
 import org.kryptonmc.api.entity.EntityCategory
 import org.kryptonmc.api.entity.EntityType
-import org.kryptonmc.api.registry.Registries
+import org.kryptonmc.krypton.registry.Holder
+import org.kryptonmc.krypton.registry.IntrusiveRegistryObject
+import org.kryptonmc.krypton.registry.KryptonRegistries
 import org.kryptonmc.krypton.util.Keys
 import org.kryptonmc.krypton.world.block.downcast
 import org.kryptonmc.krypton.world.block.isBurning
@@ -45,12 +47,13 @@ class KryptonEntityType<out T : KryptonEntity>(
     override val height: Float,
     override val clientTrackingRange: Int,
     override val updateInterval: Int
-) : EntityType<T> {
+) : EntityType<T>, IntrusiveRegistryObject<KryptonEntityType<*>> {
 
     private var descriptionId: String? = null
     private var description: Component? = null
     private var cachedLootTable: Key? = null
 
+    override val builtInRegistryHolder: Holder.Reference<KryptonEntityType<*>> = KryptonRegistries.ENTITY_TYPE.createIntrusiveHolder(this)
     override val lootTable: Key
         get() {
             if (cachedLootTable == null) {
@@ -68,7 +71,7 @@ class KryptonEntityType<out T : KryptonEntity>(
         return block.eq(Blocks.WITHER_ROSE) || block.eq(Blocks.SWEET_BERRY_BUSH) || block.eq(Blocks.CACTUS) || block.eq(Blocks.POWDER_SNOW)
     }
 
-    override fun key(): Key = Registries.ENTITY_TYPE.get(this)
+    override fun key(): Key = KryptonRegistries.ENTITY_TYPE.getKey(this)
 
     override fun translationKey(): String {
         if (descriptionId == null) descriptionId = Keys.translation("entity", key())

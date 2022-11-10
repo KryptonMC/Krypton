@@ -28,7 +28,6 @@ import net.kyori.adventure.text.Component
 import net.kyori.adventure.title.Title
 import net.kyori.adventure.title.TitlePart
 import org.kryptonmc.api.entity.player.ChatVisibility
-import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.krypton.adventure.BossBarManager
 import org.kryptonmc.krypton.adventure.toItemStack
 import org.kryptonmc.krypton.entity.KryptonEntity
@@ -46,6 +45,7 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutSetTitleAnimationTimes
 import org.kryptonmc.krypton.packet.out.play.PacketOutSetTitleText
 import org.kryptonmc.krypton.packet.out.play.PacketOutSoundEffect
 import org.kryptonmc.krypton.packet.out.play.PacketOutStopSound
+import org.kryptonmc.krypton.registry.KryptonRegistries
 import java.util.concurrent.ThreadLocalRandom
 
 interface PlayerAudience : NetworkPlayer {
@@ -130,7 +130,7 @@ interface PlayerAudience : NetworkPlayer {
     }
 
     override fun playSound(sound: Sound, x: Double, y: Double, z: Double) {
-        val type = Registries.SOUND_EVENT.get(sound.name())
+        val type = KryptonRegistries.SOUND_EVENT.get(sound.name())
         if (type != null) {
             session.send(PacketOutSoundEffect(sound, type, x, y, z))
             return
@@ -145,7 +145,7 @@ interface PlayerAudience : NetworkPlayer {
             else -> error("Sound emitter must be an entity or self(), was $emitter")
         }
 
-        val event = Registries.SOUND_EVENT.get(sound.name())
+        val event = KryptonRegistries.SOUND_EVENT.get(sound.name())
         if (event != null) {
             session.send(PacketOutEntitySoundEffect(event, sound.source(), entity.id, sound.volume(), sound.pitch()))
             return

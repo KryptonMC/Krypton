@@ -18,15 +18,18 @@
  */
 package org.kryptonmc.krypton.tags
 
+import net.kyori.adventure.key.Key
+import org.kryptonmc.api.tags.TagKey
+import org.kryptonmc.krypton.resource.KryptonResourceKeys
 import org.kryptonmc.krypton.world.event.GameEvent
 
 object GameEventTags {
 
     @JvmField
-    val VIBRATIONS: KryptonTag<GameEvent> = get("vibrations")
+    val VIBRATIONS: TagKey<GameEvent> = create("vibrations")
     @JvmField
-    val IGNORE_VIBRATIONS_SNEAKING: KryptonTag<GameEvent> = get("ignore_vibrations_sneaking")
+    val IGNORE_VIBRATIONS_SNEAKING: TagKey<GameEvent> = create("ignore_vibrations_sneaking")
 
     @JvmStatic
-    private fun get(name: String): KryptonTag<GameEvent> = KryptonTagManager.get(KryptonTagTypes.GAME_EVENTS, "minecraft:$name")!!
+    private fun create(name: String): TagKey<GameEvent> = KryptonTagKey.of(KryptonResourceKeys.GAME_EVENT, Key.key(name))
 }

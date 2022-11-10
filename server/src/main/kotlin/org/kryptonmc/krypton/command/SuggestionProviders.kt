@@ -24,8 +24,8 @@ import com.mojang.brigadier.suggestion.Suggestions
 import com.mojang.brigadier.suggestion.SuggestionsBuilder
 import net.kyori.adventure.key.Key
 import org.kryptonmc.api.command.Sender
-import org.kryptonmc.api.entity.EntityType
-import org.kryptonmc.api.registry.Registries
+import org.kryptonmc.krypton.entity.KryptonEntityType
+import org.kryptonmc.krypton.registry.KryptonRegistries
 import org.kryptonmc.krypton.util.Keys
 import java.util.concurrent.CompletableFuture
 
@@ -48,9 +48,9 @@ object SuggestionProviders {
      */
     @JvmField
     val SUMMONABLE_ENTITIES: SuggestionProvider<Sender> = register(Key.key("summonable_entities")) { _, builder ->
-        Registries.ENTITY_TYPE.values.asSequence()
-            .filter(EntityType<*>::isSummonable)
-            .suggestResource(builder, EntityType<*>::key) { Keys.translationComponent("entity", Registries.ENTITY_TYPE.get(it)) }
+        KryptonRegistries.ENTITY_TYPE.asSequence()
+            .filter(KryptonEntityType<*>::isSummonable)
+            .suggestResource(builder, KryptonEntityType<*>::key) { Keys.translationComponent("entity", KryptonRegistries.ENTITY_TYPE.getKey(it)) }
     }
 
     @JvmStatic

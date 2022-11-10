@@ -27,11 +27,11 @@ import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.item.ItemAttributeModifier
 import org.kryptonmc.api.item.data.ItemFlag
 import org.kryptonmc.api.item.meta.ItemMeta
-import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.krypton.adventure.toJson
 import org.kryptonmc.krypton.item.KryptonItemAttributeModifier
 import org.kryptonmc.krypton.item.mask
 import org.kryptonmc.krypton.item.save
+import org.kryptonmc.krypton.registry.KryptonRegistries
 import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.ListTag
 import org.kryptonmc.nbt.StringTag
@@ -158,7 +158,7 @@ abstract class AbstractItemMeta<I : ItemMeta>(val data: CompoundTag) : ItemMeta 
 
         @JvmStatic
         private fun getBlocks(data: CompoundTag, key: String): ImmutableSet<Block> =
-            data.mapToSet(key, StringTag.ID) { Registries.BLOCK.get(Key.key((it as StringTag).value())) }
+            data.mapToSet(key, StringTag.ID) { KryptonRegistries.BLOCK.get(Key.key((it as StringTag).value())) }
 
         @JvmStatic
         private fun putBlocks(data: CompoundTag, key: String, blocks: Collection<Block>): CompoundTag =

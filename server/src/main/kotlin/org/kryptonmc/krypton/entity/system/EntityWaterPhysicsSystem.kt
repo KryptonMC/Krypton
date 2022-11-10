@@ -22,13 +22,11 @@ import it.unimi.dsi.fastutil.objects.Object2DoubleArrayMap
 import org.kryptonmc.api.block.Blocks
 import org.kryptonmc.api.fluid.Fluid
 import org.kryptonmc.api.tags.FluidTags
-import org.kryptonmc.api.tags.Tag
+import org.kryptonmc.api.tags.TagKey
 import org.kryptonmc.krypton.entity.KryptonEntity
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.entity.vehicle.KryptonBoat
 import org.kryptonmc.krypton.packet.out.play.PacketOutSetEntityVelocity
-import org.kryptonmc.krypton.tags.KryptonTagManager
-import org.kryptonmc.krypton.tags.KryptonTagTypes
 import org.kryptonmc.krypton.util.Maths
 import org.kryptonmc.krypton.world.fluid.KryptonFluidState
 import org.spongepowered.math.vector.Vector3d
@@ -37,8 +35,8 @@ import kotlin.math.max
 
 class EntityWaterPhysicsSystem(private val entity: KryptonEntity) {
 
-    private val fluidHeights = Object2DoubleArrayMap<Tag<Fluid>>(2)
-    private val fluidOnEyes = HashSet<Tag<Fluid>>()
+    private val fluidHeights = Object2DoubleArrayMap<TagKey<Fluid>>(2)
+    private val fluidOnEyes = HashSet<TagKey<Fluid>>()
     var isInWater: Boolean = false
     var isInLava: Boolean = false
     var isUnderwater: Boolean = false
@@ -48,7 +46,7 @@ class EntityWaterPhysicsSystem(private val entity: KryptonEntity) {
 
     fun isInWaterOrBubbleColumn(): Boolean = isInWater || isInBubbleColumn()
 
-    fun isUnderFluid(fluid: Tag<Fluid>): Boolean = fluidOnEyes.contains(fluid)
+    fun isUnderFluid(fluid: TagKey<Fluid>): Boolean = fluidOnEyes.contains(fluid)
 
     fun tick() {
         updateInWaterState()
@@ -74,7 +72,7 @@ class EntityWaterPhysicsSystem(private val entity: KryptonEntity) {
         entity.fireTicks = 0
     }
 
-    private fun updateFluidHeightAndFlow(tag: Tag<Fluid>, flowScale: Double): Boolean {
+    private fun updateFluidHeightAndFlow(tag: TagKey<Fluid>, flowScale: Double): Boolean {
         val minX = Maths.floor(entity.boundingBox.minimumX + BOUNDING_BOX_EPSILON)
         val minY = Maths.floor(entity.boundingBox.minimumY + BOUNDING_BOX_EPSILON)
         val minZ = Maths.floor(entity.boundingBox.minimumZ + BOUNDING_BOX_EPSILON)
@@ -136,8 +134,10 @@ class EntityWaterPhysicsSystem(private val entity: KryptonEntity) {
         val fluid = entity.world.getFluid(x, blockY, z)
 
         val height = blockY.toFloat() + fluid.getHeight(entity.world, x, blockY, z)
-        if (height <= y) return
-        KryptonTagManager.get(KryptonTagTypes.FLUIDS).forEach(fluidOnEyes::add)
+        if (height > y) {
+            @Suppress("UNCHECKED_CAST")
+            fluid.tags().forEach { fluidOnEyes.add(it as TagKey<Fluid>) }
+        }
     }
 
     private fun updateSwimming() {

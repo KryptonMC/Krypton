@@ -18,7 +18,7 @@
  */
 package org.kryptonmc.krypton.util.provider
 
-import org.kryptonmc.krypton.registry.InternalRegistries
+import org.kryptonmc.krypton.registry.KryptonRegistries
 import org.kryptonmc.serialization.Codec
 import org.kryptonmc.serialization.DataResult
 import org.kryptonmc.util.Either
@@ -38,7 +38,7 @@ abstract class IntProvider {
 
         private val CONSTANT_OR_DISPATCH_CODEC: Codec<Either<Int, IntProvider>> = Codec.either(
             Codec.INT,
-            InternalRegistries.INT_PROVIDER_TYPES.byNameCodec().dispatch(IntProvider::type, IntProviderType<*>::codec)
+            KryptonRegistries.INT_PROVIDER_TYPES.byNameCodec().dispatch(IntProvider::type, IntProviderType<*>::codec)
         )
         @JvmField
         val CODEC: Codec<IntProvider> = CONSTANT_OR_DISPATCH_CODEC.xmap(

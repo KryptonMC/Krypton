@@ -25,7 +25,7 @@ public interface GameRuleHolder {
      * @param rule the rule
      * @return the value
      */
-    public fun <V : Any> get(rule: GameRule<V>): V
+    public fun <V> get(rule: GameRule<V>): V
 
     /**
      * Sets the value of the given [rule] to the given [value].
@@ -34,5 +34,5 @@ public interface GameRuleHolder {
      * @param rule the rule
      * @param value the new value
      */
-    public fun <V : Any> set(rule: GameRule<V>, value: V)
+    public fun <V> set(rule: GameRule<V>, value: V & Any)
 }

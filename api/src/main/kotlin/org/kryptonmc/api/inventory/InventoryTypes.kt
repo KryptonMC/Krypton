@@ -73,5 +73,5 @@ public object InventoryTypes {
 
     // @formatter:on
     @JvmStatic
-    private fun get(name: String): InventoryType = Registries.INVENTORY_TYPES.get(Key.key(name))!!
+    private fun get(name: String): InventoryType = Registries.INVENTORY_TYPE.get(Key.key(name))!!
 }

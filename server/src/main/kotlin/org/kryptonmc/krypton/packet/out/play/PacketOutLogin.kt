@@ -26,7 +26,6 @@ import org.kryptonmc.api.world.GameMode
 import org.kryptonmc.api.world.World
 import org.kryptonmc.api.world.dimension.DimensionType
 import org.kryptonmc.krypton.packet.EntityPacket
-import org.kryptonmc.krypton.registry.KryptonRegistries
 import org.kryptonmc.krypton.util.GameModes
 import org.kryptonmc.krypton.util.GlobalPosition
 import org.kryptonmc.krypton.util.readCollection
@@ -38,8 +37,6 @@ import org.kryptonmc.krypton.util.writeCollection
 import org.kryptonmc.krypton.util.writeNBT
 import org.kryptonmc.krypton.util.writeResourceKey
 import org.kryptonmc.krypton.util.writeVarInt
-import org.kryptonmc.krypton.world.biome.KryptonBiome
-import org.kryptonmc.krypton.world.dimension.KryptonDimensionType
 import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.compound
 
@@ -109,8 +106,10 @@ data class PacketOutLogin(
 
         @JvmStatic
         fun createRegistryCodec(): CompoundTag = compound {
+            /* FIXME: We need to rewrite this based on RegistryAccess
             put(ResourceKeys.DIMENSION_TYPE.location.asString(), KryptonRegistries.DIMENSION_TYPE.encode(KryptonDimensionType.DIRECT_CODEC))
             put(ResourceKeys.BIOME.location.asString(), KryptonRegistries.BIOME.encode(KryptonBiome.DIRECT_CODEC))
+             */
         }
     }
 }

@@ -20,162 +20,157 @@ public object CustomStatistics {
 
     // @formatter:off
     @JvmField
-    public val LEAVE_GAME: Key = register("leave_game", StatisticFormatter.DEFAULT)
+    public val LEAVE_GAME: Key = get("leave_game")
     @JvmField
-    public val PLAY_TIME: Key = register("play_time", StatisticFormatter.TIME)
+    public val PLAY_TIME: Key = get("play_time")
     @JvmField
-    public val TOTAL_WORLD_TIME: Key = register("total_world_time", StatisticFormatter.TIME)
+    public val TOTAL_WORLD_TIME: Key = get("total_world_time")
     @JvmField
-    public val TIME_SINCE_DEATH: Key = register("time_since_death", StatisticFormatter.TIME)
+    public val TIME_SINCE_DEATH: Key = get("time_since_death")
     @JvmField
-    public val TIME_SINCE_REST: Key = register("time_since_rest", StatisticFormatter.TIME)
+    public val TIME_SINCE_REST: Key = get("time_since_rest")
     @JvmField
-    public val CROUCH_TIME: Key = register("sneak_time", StatisticFormatter.TIME)
+    public val CROUCH_TIME: Key = get("sneak_time")
     @JvmField
-    public val WALK_ONE_CM: Key = register("walk_one_cm", StatisticFormatter.DISTANCE)
+    public val WALK_ONE_CM: Key = get("walk_one_cm")
     @JvmField
-    public val CROUCH_ONE_CM: Key = register("crouch_one_cm", StatisticFormatter.DISTANCE)
+    public val CROUCH_ONE_CM: Key = get("crouch_one_cm")
     @JvmField
-    public val SPRINT_ONE_CM: Key = register("sprint_one_cm", StatisticFormatter.DISTANCE)
+    public val SPRINT_ONE_CM: Key = get("sprint_one_cm")
     @JvmField
-    public val WALK_ON_WATER_ONE_CM: Key = register("walk_on_water_one_cm", StatisticFormatter.DISTANCE)
+    public val WALK_ON_WATER_ONE_CM: Key = get("walk_on_water_one_cm")
     @JvmField
-    public val FALL_ONE_CM: Key = register("fall_one_cm", StatisticFormatter.DISTANCE)
+    public val FALL_ONE_CM: Key = get("fall_one_cm")
     @JvmField
-    public val CLIMB_ONE_CM: Key = register("climb_one_cm", StatisticFormatter.DISTANCE)
+    public val CLIMB_ONE_CM: Key = get("climb_one_cm")
     @JvmField
-    public val FLY_ONE_CM: Key = register("fly_one_cm", StatisticFormatter.DISTANCE)
+    public val FLY_ONE_CM: Key = get("fly_one_cm")
     @JvmField
-    public val WALK_UNDER_WATER_ONE_CM: Key = register("walk_under_water_one_cm", StatisticFormatter.DISTANCE)
+    public val WALK_UNDER_WATER_ONE_CM: Key = get("walk_under_water_one_cm")
     @JvmField
-    public val MINECART_ONE_CM: Key = register("minecart_one_cm", StatisticFormatter.DISTANCE)
+    public val MINECART_ONE_CM: Key = get("minecart_one_cm")
     @JvmField
-    public val BOAT_ONE_CM: Key = register("boat_one_cm", StatisticFormatter.DISTANCE)
+    public val BOAT_ONE_CM: Key = get("boat_one_cm")
     @JvmField
-    public val PIG_ONE_CM: Key = register("pig_one_cm", StatisticFormatter.DISTANCE)
+    public val PIG_ONE_CM: Key = get("pig_one_cm")
     @JvmField
-    public val HORSE_ONE_CM: Key = register("horse_one_cm", StatisticFormatter.DISTANCE)
+    public val HORSE_ONE_CM: Key = get("horse_one_cm")
     @JvmField
-    public val AVIATE_ONE_CM: Key = register("aviate_one_cm", StatisticFormatter.DISTANCE)
+    public val AVIATE_ONE_CM: Key = get("aviate_one_cm")
     @JvmField
-    public val SWIM_ONE_CM: Key = register("swim_one_cm", StatisticFormatter.DISTANCE)
+    public val SWIM_ONE_CM: Key = get("swim_one_cm")
     @JvmField
-    public val STRIDER_ONE_CM: Key = register("strider_one_cm", StatisticFormatter.DISTANCE)
+    public val STRIDER_ONE_CM: Key = get("strider_one_cm")
     @JvmField
-    public val JUMP: Key = register("jump", StatisticFormatter.DEFAULT)
+    public val JUMP: Key = get("jump")
     @JvmField
-    public val DROP: Key = register("drop", StatisticFormatter.DEFAULT)
+    public val DROP: Key = get("drop")
     @JvmField
-    public val DAMAGE_DEALT: Key = register("damage_dealt", StatisticFormatter.DIVIDE_BY_TEN)
+    public val DAMAGE_DEALT: Key = get("damage_dealt")
     @JvmField
-    public val DAMAGE_DEALT_ABSORBED: Key = register("damage_dealt_absorbed", StatisticFormatter.DIVIDE_BY_TEN)
+    public val DAMAGE_DEALT_ABSORBED: Key = get("damage_dealt_absorbed")
     @JvmField
-    public val DAMAGE_DEALT_RESISTED: Key = register("damage_dealt_resisted", StatisticFormatter.DIVIDE_BY_TEN)
+    public val DAMAGE_DEALT_RESISTED: Key = get("damage_dealt_resisted")
     @JvmField
-    public val DAMAGE_TAKEN: Key = register("damage_taken", StatisticFormatter.DIVIDE_BY_TEN)
+    public val DAMAGE_TAKEN: Key = get("damage_taken")
     @JvmField
-    public val DAMAGE_BLOCKED_BY_SHIELD: Key = register("damage_blocked_by_shield", StatisticFormatter.DIVIDE_BY_TEN)
+    public val DAMAGE_BLOCKED_BY_SHIELD: Key = get("damage_blocked_by_shield")
     @JvmField
-    public val DAMAGE_ABSORBED: Key = register("damage_absorbed", StatisticFormatter.DIVIDE_BY_TEN)
+    public val DAMAGE_ABSORBED: Key = get("damage_absorbed")
     @JvmField
-    public val DAMAGE_RESISTED: Key = register("damage_resisted", StatisticFormatter.DIVIDE_BY_TEN)
+    public val DAMAGE_RESISTED: Key = get("damage_resisted")
     @JvmField
-    public val DEATHS: Key = register("deaths", StatisticFormatter.DEFAULT)
+    public val DEATHS: Key = get("deaths")
     @JvmField
-    public val MOB_KILLS: Key = register("mob_kills", StatisticFormatter.DEFAULT)
+    public val MOB_KILLS: Key = get("mob_kills")
     @JvmField
-    public val ANIMALS_BRED: Key = register("animals_bred", StatisticFormatter.DEFAULT)
+    public val ANIMALS_BRED: Key = get("animals_bred")
     @JvmField
-    public val PLAYER_KILLS: Key = register("player_kills", StatisticFormatter.DEFAULT)
+    public val PLAYER_KILLS: Key = get("player_kills")
     @JvmField
-    public val FISH_CAUGHT: Key = register("fish_caught", StatisticFormatter.DEFAULT)
+    public val FISH_CAUGHT: Key = get("fish_caught")
     @JvmField
-    public val TALKED_TO_VILLAGER: Key = register("talked_to_villager", StatisticFormatter.DEFAULT)
+    public val TALKED_TO_VILLAGER: Key = get("talked_to_villager")
     @JvmField
-    public val TRADED_WITH_VILLAGER: Key = register("traded_with_villager", StatisticFormatter.DEFAULT)
+    public val TRADED_WITH_VILLAGER: Key = get("traded_with_villager")
     @JvmField
-    public val EAT_CAKE_SLICE: Key = register("eat_cake_slice", StatisticFormatter.DEFAULT)
+    public val EAT_CAKE_SLICE: Key = get("eat_cake_slice")
     @JvmField
-    public val FILL_CAULDRON: Key = register("fill_cauldron", StatisticFormatter.DEFAULT)
+    public val FILL_CAULDRON: Key = get("fill_cauldron")
     @JvmField
-    public val USE_CAULDRON: Key = register("use_cauldron", StatisticFormatter.DEFAULT)
+    public val USE_CAULDRON: Key = get("use_cauldron")
     @JvmField
-    public val CLEAN_ARMOR: Key = register("clean_armor", StatisticFormatter.DEFAULT)
+    public val CLEAN_ARMOR: Key = get("clean_armor")
     @JvmField
-    public val CLEAN_BANNER: Key = register("clean_banner", StatisticFormatter.DEFAULT)
+    public val CLEAN_BANNER: Key = get("clean_banner")
     @JvmField
-    public val CLEAN_SHULKER_BOX: Key = register("clean_shulker_box", StatisticFormatter.DEFAULT)
+    public val CLEAN_SHULKER_BOX: Key = get("clean_shulker_box")
     @JvmField
-    public val INTERACT_WITH_BREWINGSTAND: Key = register("interact_with_brewingstand", StatisticFormatter.DEFAULT)
+    public val INTERACT_WITH_BREWINGSTAND: Key = get("interact_with_brewingstand")
     @JvmField
-    public val INTERACT_WITH_BEACON: Key = register("interact_with_beacon", StatisticFormatter.DEFAULT)
+    public val INTERACT_WITH_BEACON: Key = get("interact_with_beacon")
     @JvmField
-    public val INSPECT_DROPPER: Key = register("inspect_dropper", StatisticFormatter.DEFAULT)
+    public val INSPECT_DROPPER: Key = get("inspect_dropper")
     @JvmField
-    public val INSPECT_HOPPER: Key = register("inspect_hopper", StatisticFormatter.DEFAULT)
+    public val INSPECT_HOPPER: Key = get("inspect_hopper")
     @JvmField
-    public val INSPECT_DISPENSER: Key = register("inspect_dispenser", StatisticFormatter.DEFAULT)
+    public val INSPECT_DISPENSER: Key = get("inspect_dispenser")
     @JvmField
-    public val PLAY_NOTEBLOCK: Key = register("play_noteblock", StatisticFormatter.DEFAULT)
+    public val PLAY_NOTEBLOCK: Key = get("play_noteblock")
     @JvmField
-    public val TUNE_NOTEBLOCK: Key = register("tune_noteblock", StatisticFormatter.DEFAULT)
+    public val TUNE_NOTEBLOCK: Key = get("tune_noteblock")
     @JvmField
-    public val POT_FLOWER: Key = register("pot_flower", StatisticFormatter.DEFAULT)
+    public val POT_FLOWER: Key = get("pot_flower")
     @JvmField
-    public val TRIGGER_TRAPPED_CHEST: Key = register("trigger_trapped_chest", StatisticFormatter.DEFAULT)
+    public val TRIGGER_TRAPPED_CHEST: Key = get("trigger_trapped_chest")
     @JvmField
-    public val OPEN_ENDERCHEST: Key = register("open_enderchest", StatisticFormatter.DEFAULT)
+    public val OPEN_ENDERCHEST: Key = get("open_enderchest")
     @JvmField
-    public val ENCHANT_ITEM: Key = register("enchant_item", StatisticFormatter.DEFAULT)
+    public val ENCHANT_ITEM: Key = get("enchant_item")
     @JvmField
-    public val PLAY_RECORD: Key = register("play_record", StatisticFormatter.DEFAULT)
+    public val PLAY_RECORD: Key = get("play_record")
     @JvmField
-    public val INTERACT_WITH_FURNACE: Key = register("interact_with_furnace", StatisticFormatter.DEFAULT)
+    public val INTERACT_WITH_FURNACE: Key = get("interact_with_furnace")
     @JvmField
-    public val INTERACT_WITH_CRAFTING_TABLE: Key = register("interact_with_crafting_table", StatisticFormatter.DEFAULT)
+    public val INTERACT_WITH_CRAFTING_TABLE: Key = get("interact_with_crafting_table")
     @JvmField
-    public val OPEN_CHEST: Key = register("open_chest", StatisticFormatter.DEFAULT)
+    public val OPEN_CHEST: Key = get("open_chest")
     @JvmField
-    public val SLEEP_IN_BED: Key = register("sleep_in_bed", StatisticFormatter.DEFAULT)
+    public val SLEEP_IN_BED: Key = get("sleep_in_bed")
     @JvmField
-    public val OPEN_SHULKER_BOX: Key = register("open_shulker_box", StatisticFormatter.DEFAULT)
+    public val OPEN_SHULKER_BOX: Key = get("open_shulker_box")
     @JvmField
-    public val OPEN_BARREL: Key = register("open_barrel", StatisticFormatter.DEFAULT)
+    public val OPEN_BARREL: Key = get("open_barrel")
     @JvmField
-    public val INTERACT_WITH_BLAST_FURNACE: Key = register("interact_with_blast_furnace", StatisticFormatter.DEFAULT)
+    public val INTERACT_WITH_BLAST_FURNACE: Key = get("interact_with_blast_furnace")
     @JvmField
-    public val INTERACT_WITH_SMOKER: Key = register("interact_with_smoker", StatisticFormatter.DEFAULT)
+    public val INTERACT_WITH_SMOKER: Key = get("interact_with_smoker")
     @JvmField
-    public val INTERACT_WITH_LECTERN: Key = register("interact_with_lectern", StatisticFormatter.DEFAULT)
+    public val INTERACT_WITH_LECTERN: Key = get("interact_with_lectern")
     @JvmField
-    public val INTERACT_WITH_CAMPFIRE: Key = register("interact_with_campfire", StatisticFormatter.DEFAULT)
+    public val INTERACT_WITH_CAMPFIRE: Key = get("interact_with_campfire")
     @JvmField
-    public val INTERACT_WITH_CARTOGRAPHY_TABLE: Key = register("interact_with_cartography_table", StatisticFormatter.DEFAULT)
+    public val INTERACT_WITH_CARTOGRAPHY_TABLE: Key = get("interact_with_cartography_table")
     @JvmField
-    public val INTERACT_WITH_LOOM: Key = register("interact_with_loom", StatisticFormatter.DEFAULT)
+    public val INTERACT_WITH_LOOM: Key = get("interact_with_loom")
     @JvmField
-    public val INTERACT_WITH_STONECUTTER: Key = register("interact_with_stonecutter", StatisticFormatter.DEFAULT)
+    public val INTERACT_WITH_STONECUTTER: Key = get("interact_with_stonecutter")
     @JvmField
-    public val BELL_RING: Key = register("bell_ring", StatisticFormatter.DEFAULT)
+    public val BELL_RING: Key = get("bell_ring")
     @JvmField
-    public val RAID_TRIGGER: Key = register("raid_trigger", StatisticFormatter.DEFAULT)
+    public val RAID_TRIGGER: Key = get("raid_trigger")
     @JvmField
-    public val RAID_WIN: Key = register("raid_win", StatisticFormatter.DEFAULT)
+    public val RAID_WIN: Key = get("raid_win")
     @JvmField
-    public val INTERACT_WITH_ANVIL: Key = register("interact_with_anvil", StatisticFormatter.DEFAULT)
+    public val INTERACT_WITH_ANVIL: Key = get("interact_with_anvil")
     @JvmField
-    public val INTERACT_WITH_GRINDSTONE: Key = register("interact_with_grindstone", StatisticFormatter.DEFAULT)
+    public val INTERACT_WITH_GRINDSTONE: Key = get("interact_with_grindstone")
     @JvmField
-    public val TARGET_HIT: Key = register("target_hit", StatisticFormatter.DEFAULT)
+    public val TARGET_HIT: Key = get("target_hit")
     @JvmField
-    public val INTERACT_WITH_SMITHING_TABLE: Key = register("interact_with_smithing_table", StatisticFormatter.DEFAULT)
+    public val INTERACT_WITH_SMITHING_TABLE: Key = get("interact_with_smithing_table")
 
     // @formatter:on
     @JvmStatic
-    private fun register(name: String, formatter: StatisticFormatter): Key {
-        val key = Key.key(name)
-        Registries.CUSTOM_STATISTIC.register(key, key)
-        StatisticTypes.CUSTOM.get(key, formatter)
-        return key
-    }
+    private fun get(key: String): Key = Registries.CUSTOM_STATISTIC.get(Key.key(key))!!
 }

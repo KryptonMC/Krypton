@@ -25,13 +25,12 @@ import org.kryptonmc.api.item.ItemRarity
 import org.kryptonmc.api.item.ItemType
 import org.kryptonmc.api.registry.Registry
 import org.kryptonmc.api.registry.RegistryRoots
+import org.kryptonmc.api.scoreboard.criteria.KeyedCriterion
 import org.kryptonmc.api.statistic.StatisticType
 import org.kryptonmc.api.world.World
 import org.kryptonmc.api.world.biome.Biome
 import org.kryptonmc.api.world.dimension.DimensionType
 import org.kryptonmc.api.world.rule.GameRule
-import org.kryptonmc.api.scoreboard.criteria.Criterion
-import org.kryptonmc.api.tags.TagType
 import org.kryptonmc.api.util.Catalogue
 import org.kryptonmc.api.world.damage.type.DamageType
 
@@ -40,12 +39,6 @@ import org.kryptonmc.api.world.damage.type.DamageType
  */
 @Catalogue(ResourceKey::class)
 public object ResourceKeys {
-
-    /**
-     * The key of the parent registry.
-     */
-    @JvmField
-    public val PARENT: ResourceKey<out Registry<Registry<*>>> = minecraft("root")
 
     /**
      * Built-in vanilla registries.
@@ -67,7 +60,7 @@ public object ResourceKeys {
     @JvmField
     public val BIOME: ResourceKey<out Registry<Biome>> = minecraft("worldgen/biome")
     @JvmField
-    public val INVENTORY_TYPES: ResourceKey<out Registry<InventoryType>> = minecraft("menu")
+    public val INVENTORY_TYPE: ResourceKey<out Registry<InventoryType>> = minecraft("menu")
     @JvmField
     public val STATISTIC_TYPE: ResourceKey<out Registry<StatisticType<*>>> = minecraft("stat_type")
     @JvmField
@@ -77,7 +70,7 @@ public object ResourceKeys {
     @JvmField
     public val DIMENSION_TYPE: ResourceKey<out Registry<DimensionType>> = minecraft("dimension_type")
     @JvmField
-    public val BLOCK_ENTITY_TYPE: ResourceKey<out Registry<BlockEntityType>> = minecraft("block_entity")
+    public val BLOCK_ENTITY_TYPE: ResourceKey<out Registry<BlockEntityType>> = minecraft("block_entity_type")
     @JvmField
     public val BANNER_PATTERN: ResourceKey<out Registry<BannerPatternType>> = minecraft("banner_pattern")
     @JvmField
@@ -89,13 +82,11 @@ public object ResourceKeys {
     @JvmField
     public val GAME_RULES: ResourceKey<out Registry<GameRule<*>>> = krypton("gamerules")
     @JvmField
-    public val CRITERIA: ResourceKey<out Registry<Criterion>> = krypton("criteria")
+    public val CRITERIA: ResourceKey<out Registry<KeyedCriterion>> = krypton("criteria")
     @JvmField
     public val ITEM_RARITIES: ResourceKey<out Registry<ItemRarity>> = krypton("item_rarities")
     @JvmField
     public val ENTITY_CATEGORIES: ResourceKey<out Registry<EntityCategory>> = krypton("entity_categories")
-    @JvmField
-    public val TAG_TYPES: ResourceKey<out Registry<TagType<*>>> = krypton("tag_types")
     @JvmField
     public val DAMAGE_TYPES: ResourceKey<out Registry<DamageType>> = krypton("damage_types")
 

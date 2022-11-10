@@ -20,7 +20,7 @@ package org.kryptonmc.krypton.entity.memory
 
 import net.kyori.adventure.key.Key
 import org.kryptonmc.api.util.Catalogue
-import org.kryptonmc.krypton.registry.InternalRegistries
+import org.kryptonmc.krypton.registry.KryptonRegistries
 import org.kryptonmc.krypton.util.GlobalPosition
 import org.kryptonmc.krypton.util.serialization.Codecs
 import org.kryptonmc.serialization.Codec
@@ -70,5 +70,5 @@ object MemoryKeys {
 
     @JvmStatic
     private fun <T : Any> register(name: String, codec: Codec<T>): MemoryKey<T> =
-        InternalRegistries.MEMORIES.register(Key.key(name), MemoryKey(codec))
+        KryptonRegistries.register(KryptonRegistries.MEMORIES, Key.key(name), MemoryKey(codec))
 }

@@ -19,12 +19,12 @@
 package org.kryptonmc.krypton.world
 
 import net.kyori.adventure.key.Key
-import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.api.resource.ResourceKey
 import org.kryptonmc.api.resource.ResourceKeys
 import org.kryptonmc.api.world.World
 import org.kryptonmc.api.world.WorldManager
 import org.kryptonmc.krypton.KryptonServer
+import org.kryptonmc.krypton.registry.KryptonRegistries
 import org.kryptonmc.krypton.util.ChunkProgressListener
 import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.util.pool.ThreadPoolBuilder
@@ -79,7 +79,7 @@ class KryptonWorldManager(override val server: KryptonServer, private val worldF
         val loaded = worlds.get(resourceKey)
         if (loaded != null) return CompletableFuture.completedFuture(loaded)
 
-        val dimensionType = Registries.DIMENSION_TYPE.get(key) as? KryptonDimensionType
+        val dimensionType = KryptonRegistries.DIMENSION_TYPE.get(key) as? KryptonDimensionType
             ?: return failFuture(IllegalStateException("No dimension type found for given key $key!"))
 
         LOGGER.info("Loading world ${key.asString()}...")

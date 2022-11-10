@@ -21,6 +21,7 @@ package org.kryptonmc.krypton.entity.player
 import org.kryptonmc.api.entity.player.CooldownTracker
 import org.kryptonmc.api.item.ItemType
 import org.kryptonmc.krypton.event.player.KryptonCooldownEvent
+import org.kryptonmc.krypton.item.downcast
 import org.kryptonmc.krypton.packet.out.play.PacketOutSetCooldown
 import org.kryptonmc.krypton.util.Maths
 import java.util.concurrent.ConcurrentHashMap
@@ -70,11 +71,11 @@ class KryptonCooldownTracker(private val player: KryptonPlayer) : CooldownTracke
     }
 
     private fun onCooldownStarted(type: ItemType, ticks: Int) {
-        player.session.send(PacketOutSetCooldown(type, ticks))
+        player.session.send(PacketOutSetCooldown(type.downcast(), ticks))
     }
 
     private fun onCooldownEnded(type: ItemType) {
-        player.session.send(PacketOutSetCooldown(type, 0))
+        player.session.send(PacketOutSetCooldown(type.downcast(), 0))
     }
 
     @JvmRecord

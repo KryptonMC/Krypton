@@ -20,9 +20,7 @@ package org.kryptonmc.krypton.world.block
 
 import net.kyori.adventure.key.Key
 import org.apache.logging.log4j.LogManager
-import org.kryptonmc.api.block.BlockState
-import org.kryptonmc.api.block.Blocks
-import org.kryptonmc.api.registry.Registries
+import org.kryptonmc.krypton.registry.KryptonRegistries
 import org.kryptonmc.krypton.state.KryptonState
 import org.kryptonmc.krypton.state.property.KryptonProperty
 import org.kryptonmc.krypton.state.property.downcast
@@ -35,8 +33,8 @@ private const val NAME_TAG = "Name"
 private const val PROPERTIES_TAG = "Properties"
 
 fun CompoundTag.toBlockState(): KryptonBlockState {
-    if (!contains(NAME_TAG, StringTag.ID)) return Blocks.AIR.defaultState.downcast()
-    val block = Registries.BLOCK.get(Key.key(getString(NAME_TAG))).downcast()
+    if (!contains(NAME_TAG, StringTag.ID)) return KryptonBlocks.AIR.defaultState
+    val block = KryptonRegistries.BLOCK.get(Key.key(getString(NAME_TAG)))
     var state = block.defaultState
     if (contains(PROPERTIES_TAG, CompoundTag.ID)) {
         val properties = getCompound(PROPERTIES_TAG)
@@ -49,8 +47,8 @@ fun CompoundTag.toBlockState(): KryptonBlockState {
     return state
 }
 
-fun BlockState.toNBT(): CompoundTag = compound {
-    putString(NAME_TAG, Registries.BLOCK.get(this@toNBT.block).asString())
+fun KryptonBlockState.toNBT(): CompoundTag = compound {
+    putString(NAME_TAG, KryptonRegistries.BLOCK.getKey(this@toNBT.block).asString())
     if (properties.isNotEmpty()) {
         compound(PROPERTIES_TAG) {
             properties.forEach {
@@ -61,7 +59,7 @@ fun BlockState.toNBT(): CompoundTag = compound {
     }
 }
 
-fun CompoundTag.Builder.putBlockState(name: String, state: BlockState): CompoundTag.Builder = put(name, state.toNBT())
+fun CompoundTag.Builder.putBlockState(name: String, state: KryptonBlockState): CompoundTag.Builder = put(name, state.toNBT())
 
 private val LOGGER = LogManager.getLogger("BlockNBTConverter")
 

@@ -18,7 +18,8 @@
  */
 package org.kryptonmc.krypton.world.fluid
 
-import org.kryptonmc.api.registry.Registries
+import net.kyori.adventure.key.Key
+import org.kryptonmc.krypton.registry.KryptonRegistries
 
 object KryptonFluids {
 
@@ -34,11 +35,9 @@ object KryptonFluids {
     val LAVA: FlowingFluid = register("lava", LavaFluid.Source())
 
     init {
-        Registries.FLUID.values.forEach { fluid ->
-            (fluid as KryptonFluid).stateDefinition.states.forEach(KryptonFluid.STATES::add)
-        }
+        KryptonRegistries.FLUID.forEach { it.stateDefinition.states.forEach(KryptonFluid.STATES::add) }
     }
 
     @JvmStatic
-    private fun <T : KryptonFluid> register(key: String, fluid: T): T = Registries.FLUID.register(key, fluid)
+    private fun <T : KryptonFluid> register(key: String, fluid: T): T = KryptonRegistries.register(KryptonRegistries.FLUID, Key.key(key), fluid)
 }

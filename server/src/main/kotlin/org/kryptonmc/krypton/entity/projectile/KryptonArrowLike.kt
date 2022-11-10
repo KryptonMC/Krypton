@@ -26,6 +26,8 @@ import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.entity.serializer.EntitySerializer
 import org.kryptonmc.krypton.entity.serializer.projectile.ArrowLikeSerializer
 import org.kryptonmc.krypton.world.KryptonWorld
+import org.kryptonmc.krypton.world.block.downcast
+import org.kryptonmc.krypton.world.block.state.KryptonBlockState
 
 abstract class KryptonArrowLike(world: KryptonWorld) : KryptonProjectile(world), ArrowLike {
 
@@ -37,7 +39,12 @@ abstract class KryptonArrowLike(world: KryptonWorld) : KryptonProjectile(world),
     var life: Int = 0
     var shakeTime: Int = 0
     var sound: SoundEvent = defaultHitGroundSound
-    final override var stuckInBlock: BlockState? = null
+    final override var stuckInBlock: BlockState?
+        get() = internalStuckInBlock
+        set(value) {
+            internalStuckInBlock = value?.downcast()
+        }
+    var internalStuckInBlock: KryptonBlockState? = null
     final override var pickupRule: ArrowLike.PickupRule = ArrowLike.PickupRule.DISALLOWED
 
     final override var isCritical: Boolean

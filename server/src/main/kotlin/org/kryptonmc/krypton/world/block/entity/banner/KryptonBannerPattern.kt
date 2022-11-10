@@ -21,7 +21,7 @@ package org.kryptonmc.krypton.world.block.entity.banner
 import org.kryptonmc.api.block.entity.banner.BannerPattern
 import org.kryptonmc.api.block.entity.banner.BannerPatternType
 import org.kryptonmc.api.item.data.DyeColor
-import org.kryptonmc.api.registry.Registries
+import org.kryptonmc.krypton.registry.KryptonRegistries
 import org.kryptonmc.krypton.util.DyeColors
 import org.kryptonmc.nbt.CompoundTag
 
@@ -38,7 +38,7 @@ data class KryptonBannerPattern(override val type: BannerPatternType, override v
         @JvmStatic
         fun from(tag: CompoundTag): KryptonBannerPattern {
             val patternCode = tag.getString("Pattern")
-            val type = requireNotNull(Registries.BANNER_PATTERN.values.firstOrNull { it.code == patternCode }) {
+            val type = requireNotNull(KryptonRegistries.BANNER_PATTERN.firstOrNull { it.code == patternCode }) {
                 "Could not find pattern type with code $patternCode!"
             }
             return KryptonBannerPattern(type, DyeColors.fromId(tag.getInt("Color")))

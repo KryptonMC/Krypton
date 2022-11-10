@@ -114,7 +114,7 @@ data class PacketOutParticle(
 
         @JvmStatic
         fun from(effect: ParticleEffect, x: Double, y: Double, z: Double): PacketOutParticle {
-            val typeId = KryptonRegistries.PARTICLE_TYPE.idOf(effect.type)
+            val typeId = KryptonRegistries.PARTICLE_TYPE.getId(effect.type)
             var tempX = x
             var tempY = y
             var tempZ = z

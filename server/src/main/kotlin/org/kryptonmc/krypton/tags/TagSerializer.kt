@@ -19,48 +19,46 @@
 package org.kryptonmc.krypton.tags
 
 import io.netty.buffer.ByteBuf
-import it.unimi.dsi.fastutil.ints.IntArrayList
-import kotlinx.collections.immutable.persistentMapOf
+import it.unimi.dsi.fastutil.ints.IntList
 import net.kyori.adventure.key.Key
-import org.kryptonmc.api.registry.Registries
+import org.kryptonmc.api.registry.Registry
 import org.kryptonmc.api.resource.ResourceKey
-import org.kryptonmc.api.tags.TagType
 import org.kryptonmc.krypton.network.Writable
-import org.kryptonmc.krypton.registry.downcast
+import org.kryptonmc.krypton.util.readIntIdList
 import org.kryptonmc.krypton.util.readKey
 import org.kryptonmc.krypton.util.readMap
-import org.kryptonmc.krypton.util.readVarIntArray
-import org.kryptonmc.krypton.util.transform
+import org.kryptonmc.krypton.util.writeIntIdList
 import org.kryptonmc.krypton.util.writeKey
 import org.kryptonmc.krypton.util.writeMap
-import org.kryptonmc.krypton.util.writeVarIntArray
 
 object TagSerializer {
 
+    // FIXME: When we implement the registry access system, properly implement this
     @JvmStatic
-    fun serialize(): Map<ResourceKey<TagType<*>>, NetworkPayload> =
-        Registries.TAG_TYPES.transform { it.key to serializeTags(it.value) }.filter { !it.value.isEmpty() }
+    fun serialize(): Map<ResourceKey<out Registry<*>>, NetworkPayload> = emptyMap()
 
+    /* FIXME: When we fix the above, uncomment this
     @JvmStatic
-    private fun <T : Any> serializeTags(type: TagType<T>): NetworkPayload {
-        val tags = persistentMapOf<Key, IntArray>().builder()
-        KryptonTagManager.get(type).forEach { tag ->
-            val list = IntArrayList(tag.values.size)
-            tag.values.forEach { list.add(type.registry.downcast().idOf(it)) }
-            tags.put(tag.key(), list.toIntArray())
+    private fun <T : Any> serializeTags(registry: KryptonRegistry<T>): NetworkPayload {
+        val result = HashMap<Key, IntList>()
+        registry.tags.forEach { (key, values) ->
+            val ids = IntArrayList(values.size)
+            values.forEach { ids.add(registry.getId(it)) }
+            result.put(key.location, ids)
         }
-        return NetworkPayload(tags.build())
+        return NetworkPayload(result)
     }
+     */
 
     @JvmRecord
-    data class NetworkPayload(val tags: Map<Key, IntArray>) : Writable {
+    data class NetworkPayload(val tags: Map<Key, IntList>) : Writable {
 
-        constructor(buf: ByteBuf) : this(buf.readMap(ByteBuf::readKey, ByteBuf::readVarIntArray))
+        constructor(buf: ByteBuf) : this(buf.readMap(ByteBuf::readKey, ByteBuf::readIntIdList))
 
         fun isEmpty(): Boolean = tags.isEmpty()
 
         override fun write(buf: ByteBuf) {
-            buf.writeMap(tags, ByteBuf::writeKey, ByteBuf::writeVarIntArray)
+            buf.writeMap(tags, ByteBuf::writeKey, ByteBuf::writeIntIdList)
         }
     }
 }

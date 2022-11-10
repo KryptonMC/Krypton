@@ -19,7 +19,7 @@
 package org.kryptonmc.krypton.util.provider
 
 import net.kyori.adventure.key.Key
-import org.kryptonmc.krypton.registry.InternalRegistries
+import org.kryptonmc.krypton.registry.KryptonRegistries
 import org.kryptonmc.serialization.Codec
 import org.kryptonmc.serialization.DataResult
 import org.kryptonmc.util.Either
@@ -39,5 +39,5 @@ object IntProviderTypes {
 
     @JvmStatic
     private fun <P : IntProvider> register(name: String, codec: Codec<P>): IntProviderType<P> =
-        InternalRegistries.INT_PROVIDER_TYPES.register(Key.key(name), IntProviderType { codec })
+        KryptonRegistries.register(KryptonRegistries.INT_PROVIDER_TYPES, Key.key(name), IntProviderType { codec })
 }

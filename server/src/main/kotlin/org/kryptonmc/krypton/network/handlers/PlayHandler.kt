@@ -26,7 +26,6 @@ import net.kyori.adventure.translation.Translator
 import org.kryptonmc.api.block.Blocks
 import org.kryptonmc.api.entity.Hand
 import org.kryptonmc.api.entity.player.ChatVisibility
-import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.api.resource.ResourcePack
 import org.kryptonmc.api.world.GameMode
 import org.kryptonmc.krypton.KryptonServer
@@ -82,10 +81,9 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutTagQueryResponse
 import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateEntityPosition
 import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateEntityPositionAndRotation
 import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateEntityRotation
-import org.kryptonmc.krypton.registry.InternalRegistries
+import org.kryptonmc.krypton.registry.KryptonRegistries
 import org.kryptonmc.krypton.util.Positioning
 import org.kryptonmc.krypton.util.logger
-import org.kryptonmc.krypton.world.block.downcast
 import org.kryptonmc.krypton.world.chunk.ChunkPosition
 import org.spongepowered.math.vector.Vector2f
 import org.spongepowered.math.vector.Vector3d
@@ -189,7 +187,7 @@ class PlayHandler(override val server: KryptonServer, override val session: Sess
                 LOGGER.warn("Chat message ${packet.message} with invalid signature sent by ${player.name}. Ignoring...")
                 return@thenAcceptAsync
             }
-            val typeId = InternalRegistries.CHAT_TYPE.idOf(ChatTypes.CHAT)
+            val typeId = KryptonRegistries.CHAT_TYPE.getId(ChatTypes.CHAT)
             val outPacket = PacketOutPlayerChatMessage(Component.text(packet.message), message, typeId, player.asChatSender(), packet.signature)
             server.sessionManager.sendGrouped(outPacket) { it !== player }
             server.console.sendMessage(player, message, MessageType.CHAT)
@@ -304,7 +302,7 @@ class PlayHandler(override val server: KryptonServer, override val session: Sess
         val chunk = world.chunkManager.get(ChunkPosition.toLong(chunkX, chunkZ)) ?: return
         val existingBlock = chunk.getBlock(position)
         if (existingBlock != Blocks.AIR.defaultState) return
-        chunk.setBlock(position, Registries.BLOCK.get(player.inventory.mainHand.type.key()).downcast().defaultState)
+        chunk.setBlock(position, KryptonRegistries.BLOCK.get(player.inventory.mainHand.type.key()).defaultState)
     }
 
     private fun handlePlayerAction(packet: PacketInPlayerAction) {

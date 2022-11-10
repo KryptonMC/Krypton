@@ -30,6 +30,8 @@ import io.netty.buffer.ByteBufInputStream
 import io.netty.buffer.ByteBufOutputStream
 import io.netty.handler.codec.DecoderException
 import io.netty.handler.codec.EncoderException
+import it.unimi.dsi.fastutil.ints.IntArrayList
+import it.unimi.dsi.fastutil.ints.IntList
 import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.persistentListOf
 import net.kyori.adventure.key.Key
@@ -418,11 +420,11 @@ fun ByteBuf.writeProfileProperty(property: ProfileProperty) {
 
 fun ByteBuf.readProfileProperty(): ProfileProperty = KryptonProfileProperty(readString(), readString(), readNullable(ByteBuf::readString))
 
-fun <T : Any> ByteBuf.writeId(registry: KryptonRegistry<T>, value: T) {
-    writeVarInt(registry.idOf(value))
+fun <T> ByteBuf.writeId(registry: KryptonRegistry<T>, value: T) {
+    writeVarInt(registry.getId(value))
 }
 
-fun <T : Any> ByteBuf.readById(registry: KryptonRegistry<T>): T? = registry.get(readVarInt())
+fun <T> ByteBuf.readById(registry: KryptonRegistry<T>): T? = registry.get(readVarInt())
 
 fun ByteBuf.writeVarIntArray(array: IntArray) {
     writeVarInt(array.size)
@@ -432,6 +434,20 @@ fun ByteBuf.writeVarIntArray(array: IntArray) {
 }
 
 fun ByteBuf.readVarIntArray(): IntArray = IntArray(readVarInt()) { readVarInt() }
+
+fun ByteBuf.writeIntIdList(ids: IntList) {
+    writeVarInt(ids.size)
+    ids.forEach(::writeVarInt)
+}
+
+fun ByteBuf.readIntIdList(): IntList {
+    val size = readVarInt()
+    val result = IntArrayList()
+    for (i in 0 until size) {
+        result.add(readVarInt())
+    }
+    return result
+}
 
 fun <T> ByteBuf.encode(encoder: Encoder<T>, value: T) {
     val result = encoder.encodeStart(value, NbtOps.INSTANCE)

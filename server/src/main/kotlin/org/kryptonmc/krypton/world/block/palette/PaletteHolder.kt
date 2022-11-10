@@ -22,9 +22,8 @@ import io.netty.buffer.ByteBuf
 import it.unimi.dsi.fastutil.ints.Int2ObjectFunction
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 import net.kyori.adventure.key.Key
-import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.api.world.biome.Biome
-import org.kryptonmc.krypton.registry.KryptonRegistry
+import org.kryptonmc.krypton.registry.KryptonRegistries
 import org.kryptonmc.krypton.util.BitStorage
 import org.kryptonmc.krypton.util.IntBiMap
 import org.kryptonmc.krypton.util.Maths
@@ -190,7 +189,7 @@ class PaletteHolder<T> : PaletteResizer<T> {
                 }
             }
             @JvmField
-            val BIOMES: Strategy<Biome> = object : Strategy<Biome>(Registries.BIOME as KryptonRegistry<Biome>, 2) {
+            val BIOMES: Strategy<Biome> = object : Strategy<Biome>(KryptonRegistries.BIOME, 2) {
 
                 override fun createConfiguration(bits: Int): Configuration<Biome> = when (bits) {
                     0 -> Configuration(SingleValuePalette.Factory, bits)
@@ -223,7 +222,7 @@ class PaletteHolder<T> : PaletteResizer<T> {
         fun readBiomes(data: CompoundTag): PaletteHolder<Biome> {
             val entries = ArrayList<Biome>()
             data.getList(PALETTE_TAG, StringTag.ID).forEachString {
-                entries.add(checkNotNull(Registries.BIOME.get(Key.key(it))) { "Invalid palette data! Failed to find biome with key $it!" })
+                entries.add(checkNotNull(KryptonRegistries.BIOME.get(Key.key(it))) { "Invalid palette data! Failed to find biome with key $it!" })
             }
             return read(Strategy.BIOMES, entries, data.getLongArray(DATA_TAG))
         }
@@ -245,7 +244,7 @@ class PaletteHolder<T> : PaletteResizer<T> {
                 val storage = SimpleBitStorage(bits, size, values)
                 val ids = IntArray(size)
                 storage.unpack(ids)
-                swapPalette(ids) { strategy.registry.idOf(palette.get(it)) }
+                swapPalette(ids) { strategy.registry.getId(palette.get(it)) }
                 return PaletteHolder(strategy, config, SimpleBitStorage(config.bits, size, ids), entries)
             }
             return PaletteHolder(strategy, config, SimpleBitStorage(config.bits, size, values), entries)

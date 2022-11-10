@@ -30,6 +30,7 @@ import org.kryptonmc.krypton.entity.attribute.KryptonAttributeTypes
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.entity.serializer.EntitySerializer
 import org.kryptonmc.krypton.entity.serializer.animal.BeeSerializer
+import org.kryptonmc.krypton.item.downcast
 import org.kryptonmc.krypton.util.provider.UniformInt
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.spongepowered.math.vector.Vector3i
@@ -79,7 +80,7 @@ class KryptonBee(world: KryptonWorld) : KryptonAnimal(world), Bee, Neutral {
         remainingAngerTime = PERSISTENT_ANGER_TIME.sample(Random)
     }
 
-    override fun isFood(item: ItemStack): Boolean = ItemTags.FLOWERS.contains(item.type)
+    override fun isFood(item: ItemStack): Boolean = item.type.downcast().eq(ItemTags.FLOWERS)
 
     companion object {
 

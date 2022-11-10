@@ -18,16 +18,11 @@
  */
 package org.kryptonmc.krypton.world.scoreboard
 
-import net.kyori.adventure.key.Key
-import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.api.scoreboard.ObjectiveRenderType
 import org.kryptonmc.api.scoreboard.criteria.Criterion
 
 open class KryptonCriterion(
     override val name: String,
-    override val isMutable: Boolean = false,
-    override val renderType: ObjectiveRenderType = ObjectiveRenderType.INTEGER
-) : Criterion {
-
-    override fun key(): Key = Registries.CRITERIA.get(this)!!
-}
+    override val isMutable: Boolean,
+    override val renderType: ObjectiveRenderType
+) : Criterion

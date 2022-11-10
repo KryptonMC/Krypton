@@ -22,10 +22,10 @@ import io.netty.buffer.ByteBuf
 import org.kryptonmc.api.entity.attribute.AttributeModifier
 import org.kryptonmc.api.entity.attribute.AttributeType
 import org.kryptonmc.api.entity.attribute.BasicModifierOperation
-import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.krypton.entity.attribute.KryptonAttribute
 import org.kryptonmc.krypton.entity.attribute.KryptonAttributeModifier
 import org.kryptonmc.krypton.packet.EntityPacket
+import org.kryptonmc.krypton.registry.KryptonRegistries
 import org.kryptonmc.krypton.util.mapPersistentList
 import org.kryptonmc.krypton.util.readKey
 import org.kryptonmc.krypton.util.readList
@@ -43,7 +43,7 @@ data class PacketOutUpdateAttributes(override val entityId: Int, val attributes:
     constructor(id: Int, attributes: Iterable<KryptonAttribute>) : this(id, attributes.mapPersistentList(AttributeSnapshot::from))
 
     constructor(buf: ByteBuf) : this(buf.readVarInt(), buf.readList { _ ->
-        val type = buf.readKey().let { requireNotNull(Registries.ATTRIBUTE.get(it)) { "Cannot find attribute type with key $it!" } }
+        val type = buf.readKey().let { requireNotNull(KryptonRegistries.ATTRIBUTE.get(it)) { "Cannot find attribute type with key $it!" } }
         val base = buf.readDouble()
         val modifiers = buf.readList {
             val uuid = buf.readUUID()
@@ -57,7 +57,7 @@ data class PacketOutUpdateAttributes(override val entityId: Int, val attributes:
     override fun write(buf: ByteBuf) {
         buf.writeVarInt(entityId)
         buf.writeCollection(attributes) { attribute ->
-            buf.writeKey(Registries.ATTRIBUTE.get(attribute.type)!!)
+            buf.writeKey(KryptonRegistries.ATTRIBUTE.getKey(attribute.type)!!)
             buf.writeDouble(attribute.base)
             buf.writeCollection(attribute.modifiers) inner@{
                 val operation = it.operation

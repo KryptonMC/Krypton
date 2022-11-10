@@ -6,26 +6,15 @@
  * This project is licensed under the terms of the MIT license.
  * For more details, please reference the LICENSE file in the api top-level directory.
  */
-package org.kryptonmc.api.tags
+package org.kryptonmc.api.scoreboard.criteria
 
 import net.kyori.adventure.key.Keyed
-import org.kryptonmc.api.registry.Registry
 import org.kryptonmc.api.util.CataloguedBy
 import javax.annotation.concurrent.Immutable
 
 /**
- * A type of a game tag.
+ * A criterion for a scoreboard objective to be displayed.
  */
-@Suppress("INAPPLICABLE_JVM_NAME")
-@CataloguedBy(TagTypes::class)
+@CataloguedBy(Criteria::class)
 @Immutable
-public interface TagType<T : Any> : Keyed {
-
-    /**
-     * The registry for the entries that the tag uses.
-     *
-     * For example, for the blocks tag type, this will be the block registry.
-     */
-    @get:JvmName("registry")
-    public val registry: Registry<T>
-}
+public interface KeyedCriterion : Criterion, Keyed

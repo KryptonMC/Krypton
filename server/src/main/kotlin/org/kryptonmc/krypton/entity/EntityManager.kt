@@ -21,13 +21,13 @@ package org.kryptonmc.krypton.entity
 import ca.spottedleaf.dataconverter.minecraft.datatypes.MCTypeRegistry
 import net.kyori.adventure.key.InvalidKeyException
 import net.kyori.adventure.key.Key
-import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.api.world.rule.GameRules
 import org.kryptonmc.krypton.KryptonPlatform
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.event.entity.KryptonRemoveEntityEvent
 import org.kryptonmc.krypton.event.entity.KryptonSpawnEntityEvent
 import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateTime
+import org.kryptonmc.krypton.registry.KryptonRegistries
 import org.kryptonmc.krypton.util.DataConversion
 import org.kryptonmc.krypton.util.Maths
 import org.kryptonmc.krypton.util.Positioning
@@ -138,7 +138,7 @@ class EntityManager(val world: KryptonWorld) : AutoCloseable {
             } catch (_: InvalidKeyException) {
                 return@forEachCompound
             }
-            val type = Registries.ENTITY_TYPE.get(key)
+            val type = KryptonRegistries.ENTITY_TYPE.get(key)
             val entity = EntityFactory.create(type, world) ?: return@forEachCompound
             entity.load(it)
             spawn(entity)
