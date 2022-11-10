@@ -22,7 +22,6 @@ import net.kyori.adventure.key.Key
 import org.kryptonmc.api.entity.Entity
 import org.kryptonmc.api.entity.EntityType
 import org.kryptonmc.api.entity.EntityTypes
-import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.krypton.entity.ambient.KryptonBat
 import org.kryptonmc.krypton.entity.animal.KryptonAxolotl
 import org.kryptonmc.krypton.entity.animal.KryptonBee
@@ -72,6 +71,7 @@ import org.kryptonmc.krypton.entity.vehicle.KryptonCommandBlockMinecart
 import org.kryptonmc.krypton.entity.vehicle.KryptonFurnaceMinecart
 import org.kryptonmc.krypton.entity.vehicle.KryptonMinecart
 import org.kryptonmc.krypton.entity.vehicle.KryptonTNTMinecart
+import org.kryptonmc.krypton.registry.KryptonRegistries
 import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.nbt.CompoundTag
@@ -142,7 +142,7 @@ object EntityFactory {
     @JvmStatic
     fun create(world: KryptonWorld, id: String, nbt: CompoundTag?): KryptonEntity? {
         return try {
-            val type = Registries.ENTITY_TYPE.get(Key.key(id))
+            val type = KryptonRegistries.ENTITY_TYPE.get(Key.key(id))
             val entity = create(type, world)
             if (entity == null) {
                 LOGGER.warn("No entity found with ID $id!")

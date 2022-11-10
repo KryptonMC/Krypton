@@ -28,7 +28,6 @@ import it.unimi.dsi.fastutil.objects.Object2IntMaps
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap
 import net.kyori.adventure.key.InvalidKeyException
 import net.kyori.adventure.key.Key
-import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.api.registry.Registry
 import org.kryptonmc.api.statistic.Statistic
 import org.kryptonmc.api.statistic.StatisticType
@@ -37,6 +36,7 @@ import org.kryptonmc.api.statistic.StatisticsTracker
 import org.kryptonmc.krypton.KryptonPlatform
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.packet.out.play.PacketOutAwardStatistics
+import org.kryptonmc.krypton.registry.KryptonRegistries
 import org.kryptonmc.krypton.util.DataConversion
 import org.kryptonmc.krypton.util.logger
 import java.io.IOException
@@ -77,7 +77,7 @@ class KryptonStatisticsTracker(private val player: KryptonPlayer, private val fi
             val map = HashMap<StatisticType<*>, JsonObject>()
             statistics.object2IntEntrySet().forEach {
                 val registry = it.key.type.registry as Registry<Any>
-                map.computeIfAbsent(it.key.type) { JsonObject() }.addProperty(registry.get(it.key.value)!!.toString(), it.intValue)
+                map.computeIfAbsent(it.key.type) { JsonObject() }.addProperty(registry.getKey(it.key.value!!)!!.toString(), it.intValue)
             }
 
             val statsJson = JsonObject()
@@ -146,7 +146,7 @@ class KryptonStatisticsTracker(private val player: KryptonPlayer, private val fi
             val stats = data.get(STATS_KEY)?.asJsonObject ?: JsonObject()
             stats.keySet().forEach { key ->
                 if (!stats.get(key).isJsonObject) return@forEach
-                val type = Registries.STATISTIC_TYPE.get(Key.key(key))
+                val type = KryptonRegistries.STATISTIC_TYPE.get(Key.key(key))
                 if (type == null) {
                     LOGGER.warn("Invalid statistic type found in $file! Could not recognise $key!")
                     return@forEach
@@ -172,7 +172,7 @@ class KryptonStatisticsTracker(private val player: KryptonPlayer, private val fi
         }
     }
 
-    private fun <T : Any> statistic(type: StatisticType<T>, name: String): Statistic<T>? {
+    private fun <T> statistic(type: StatisticType<T>, name: String): Statistic<T>? {
         val key = try {
             Key.key(name)
         } catch (_: InvalidKeyException) {

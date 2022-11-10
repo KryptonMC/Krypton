@@ -20,9 +20,9 @@ package org.kryptonmc.krypton.entity.serializer.projectile
 
 import net.kyori.adventure.key.Key
 import org.kryptonmc.api.entity.projectile.ArrowLike
-import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.krypton.entity.projectile.KryptonArrowLike
 import org.kryptonmc.krypton.entity.serializer.EntitySerializer
+import org.kryptonmc.krypton.registry.KryptonRegistries
 import org.kryptonmc.krypton.util.nbt.hasNumber
 import org.kryptonmc.krypton.util.nbt.putNullable
 import org.kryptonmc.krypton.util.nbt.putKeyed
@@ -63,14 +63,14 @@ object ArrowLikeSerializer : EntitySerializer<KryptonArrowLike> {
         entity.wasShotFromCrossbow = data.getBoolean(SHOT_FROM_CROSSBOW_TAG)
 
         if (data.contains(SOUND_EVENT_TAG, StringTag.ID)) {
-            entity.sound = Registries.SOUND_EVENT.get(Key.key(data.getString(SOUND_EVENT_TAG))) ?: entity.defaultHitGroundSound
+            entity.sound = KryptonRegistries.SOUND_EVENT.get(Key.key(data.getString(SOUND_EVENT_TAG))) ?: entity.defaultHitGroundSound
         }
     }
 
     override fun save(entity: KryptonArrowLike): CompoundTag.Builder = ProjectileSerializer.save(entity).apply {
         putBoolean(CRIT_TAG, entity.isCritical)
         putDouble(DAMAGE_TAG, entity.baseDamage)
-        putNullable(IN_BLOCK_TAG, entity.stuckInBlock, CompoundTag.Builder::putBlockState)
+        putNullable(IN_BLOCK_TAG, entity.internalStuckInBlock, CompoundTag.Builder::putBlockState)
         putBoolean(IN_GROUND_TAG, entity.isInGround)
         putShort(LIFE_TAG, entity.life.toShort())
         putByte(PICKUP_TAG, entity.pickupRule.ordinal.toByte())

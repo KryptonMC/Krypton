@@ -19,10 +19,10 @@
 package org.kryptonmc.krypton.entity.serializer.hanging
 
 import net.kyori.adventure.key.Key
-import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.krypton.entity.hanging.KryptonPainting
 import org.kryptonmc.krypton.entity.serializer.BaseEntitySerializer
 import org.kryptonmc.krypton.entity.serializer.EntitySerializer
+import org.kryptonmc.krypton.registry.KryptonRegistries
 import org.kryptonmc.krypton.util.Directions
 import org.kryptonmc.krypton.util.nbt.putNullable
 import org.kryptonmc.krypton.util.nbt.putKeyed
@@ -35,7 +35,7 @@ object PaintingSerializer : EntitySerializer<KryptonPainting> {
 
     override fun load(entity: KryptonPainting, data: CompoundTag) {
         BaseEntitySerializer.load(entity, data)
-        entity.variant = Registries.PAINTING_VARIANT.get(Key.key(data.getString(VARIANT_TAG)))
+        entity.variant = KryptonRegistries.PAINTING_VARIANT.get(Key.key(data.getString(VARIANT_TAG)))
         entity.direction = Directions.of2D(data.getByte(FACING_TAG).toInt())
     }
 

@@ -20,59 +20,25 @@ package org.kryptonmc.krypton.util
 
 import com.mojang.brigadier.exceptions.CommandSyntaxException
 import org.kryptonmc.api.block.Block
-import org.kryptonmc.api.block.entity.BlockEntityTypes
-import org.kryptonmc.api.block.entity.banner.BannerPatternTypes
-import org.kryptonmc.api.effect.particle.ParticleTypes
-import org.kryptonmc.api.effect.sound.SoundEvents
-import org.kryptonmc.api.entity.EntityCategories
 import org.kryptonmc.api.entity.EntityType
-import org.kryptonmc.api.entity.EntityTypes
 import org.kryptonmc.api.entity.attribute.AttributeType
-import org.kryptonmc.api.entity.attribute.AttributeTypes
-import org.kryptonmc.api.fluid.Fluids
-import org.kryptonmc.api.item.ItemRarities
 import org.kryptonmc.api.item.ItemType
-import org.kryptonmc.api.item.ItemTypes
 import org.kryptonmc.api.registry.Registries
-import org.kryptonmc.api.statistic.CustomStatistics
-import org.kryptonmc.api.statistic.StatisticTypes
 import org.kryptonmc.api.tags.BannerPatternTags
 import org.kryptonmc.api.tags.BiomeTags
 import org.kryptonmc.api.tags.BlockTags
 import org.kryptonmc.api.tags.EntityTypeTags
 import org.kryptonmc.api.tags.FluidTags
 import org.kryptonmc.api.tags.ItemTags
-import org.kryptonmc.api.tags.TagTypes
-import org.kryptonmc.api.world.biome.Biomes
-import org.kryptonmc.api.world.damage.type.DamageTypes
-import org.kryptonmc.api.world.dimension.DimensionTypes
 import org.kryptonmc.api.world.rule.GameRule
-import org.kryptonmc.api.world.rule.GameRules
 import org.kryptonmc.krypton.auth.requests.SessionService
 import org.kryptonmc.krypton.command.BrigadierExceptions
 import org.kryptonmc.krypton.command.argument.ArgumentSerializers
-import org.kryptonmc.krypton.effect.sound.SoundLoader
 import org.kryptonmc.krypton.entity.EntityFactory
-import org.kryptonmc.krypton.entity.KryptonEntityCategories
-import org.kryptonmc.krypton.entity.KryptonEntityTypes
-import org.kryptonmc.krypton.entity.attribute.KryptonAttributeTypes
-import org.kryptonmc.krypton.entity.metadata.MetadataKeys
-import org.kryptonmc.krypton.item.Instruments
-import org.kryptonmc.krypton.item.ItemLoader
 import org.kryptonmc.krypton.item.ItemManager
-import org.kryptonmc.krypton.registry.InternalRegistries
-import org.kryptonmc.krypton.registry.KryptonRegistryManager
+import org.kryptonmc.krypton.registry.KryptonRegistries
 import org.kryptonmc.krypton.tags.GameEventTags
-import org.kryptonmc.krypton.tags.KryptonTagManager
-import org.kryptonmc.krypton.tags.KryptonTagTypes
 import org.kryptonmc.krypton.util.crypto.Encryption
-import org.kryptonmc.krypton.world.biome.BiomeKeys
-import org.kryptonmc.krypton.world.biome.KryptonBiomes
-import org.kryptonmc.krypton.world.block.KryptonBlocks
-import org.kryptonmc.krypton.world.block.entity.BlockEntityLoader
-import org.kryptonmc.krypton.world.dimension.KryptonDimensionTypes
-import org.kryptonmc.krypton.world.event.GameEvents
-import org.kryptonmc.krypton.world.fluid.KryptonFluids
 import java.util.TreeSet
 import java.util.function.Function
 
@@ -97,41 +63,12 @@ object Bootstrap {
         // the entire project to use Guice's dependency inversion (something that should be looked in to at some point)
         val kryptonClass = Class.forName("org.kryptonmc.api.Krypton")
         Reflection.modifyField(kryptonClass, "factoryProvider", KryptonFactoryProvider)
-        Reflection.modifyField(kryptonClass, "registryManager", KryptonRegistryManager)
-        Reflection.modifyField(kryptonClass, "tagManager", KryptonTagManager)
+        Reflection.modifyField(kryptonClass, "registryManager", KryptonRegistries.ManagerImpl)
         KryptonFactoryProvider.bootstrap()
-        KryptonRegistryManager.bootstrap() // Force initialisation
 
         // Preload all the registry classes to ensure everything is properly registered
-        InternalRegistries
+        KryptonRegistries.bootstrap()
         Registries
-        KryptonTagTypes
-        TagTypes
-        SoundLoader.init()
-        SoundEvents
-        KryptonBlocks
-        //Blocks
-        BlockEntityLoader.init()
-        BlockEntityTypes
-        GameEvents
-        ParticleTypes
-        KryptonEntityCategories
-        EntityCategories
-        KryptonEntityTypes
-        EntityTypes
-        ItemRarities
-        ItemLoader.init()
-        ItemTypes
-        KryptonFluids
-        Fluids
-        BiomeKeys
-        KryptonBiomes
-        Biomes
-        BannerPatternTypes
-        Instruments
-        KryptonTagManager.bootstrap()
-        KryptonDimensionTypes
-        DimensionTypes
         BlockTags
         EntityTypeTags
         FluidTags
@@ -139,13 +76,6 @@ object Bootstrap {
         ItemTags
         BannerPatternTags
         BiomeTags
-        GameRules
-        KryptonAttributeTypes
-        AttributeTypes
-        MetadataKeys
-        StatisticTypes
-        CustomStatistics
-        DamageTypes
 
         // Preload some other things that would otherwise load on first player join or some other time
         Encryption
@@ -165,12 +95,12 @@ object Bootstrap {
     @JvmStatic
     private fun collectMissingTranslations(): Set<String> {
         val missing = TreeSet<String>()
-        checkTranslations(Registries.ATTRIBUTE.values, AttributeType::translationKey, missing)
-        checkTranslations(Registries.ENTITY_TYPE.values, EntityType<*>::translationKey, missing)
-        checkTranslations(Registries.ITEM.values, ItemType::translationKey, missing)
-        checkTranslations(Registries.BLOCK.values, Block::translationKey, missing)
-        checkTranslations(Registries.CUSTOM_STATISTIC.values, { "stat.${it.asString().replace(':', '.')}" }, missing)
-        checkTranslations(Registries.GAME_RULES.values, GameRule<*>::translationKey, missing)
+        checkTranslations(KryptonRegistries.ATTRIBUTE, AttributeType::translationKey, missing)
+        checkTranslations(KryptonRegistries.ENTITY_TYPE, EntityType<*>::translationKey, missing)
+        checkTranslations(KryptonRegistries.ITEM, ItemType::translationKey, missing)
+        checkTranslations(KryptonRegistries.BLOCK, Block::translationKey, missing)
+        checkTranslations(KryptonRegistries.CUSTOM_STATISTIC, { "stat.${it.asString().replace(':', '.')}" }, missing)
+        checkTranslations(KryptonRegistries.GAME_RULES, GameRule<*>::translationKey, missing)
         return missing
     }
 

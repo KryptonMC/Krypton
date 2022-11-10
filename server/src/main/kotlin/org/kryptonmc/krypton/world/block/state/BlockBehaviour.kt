@@ -26,7 +26,7 @@ import org.kryptonmc.api.block.BlockState
 import org.kryptonmc.api.block.PushReaction
 import org.kryptonmc.api.entity.Hand
 import org.kryptonmc.api.item.data.DyeColor
-import org.kryptonmc.api.tags.Tag
+import org.kryptonmc.api.tags.TagKey
 import org.kryptonmc.api.util.Direction
 import org.kryptonmc.krypton.entity.KryptonEntity
 import org.kryptonmc.krypton.entity.KryptonEntityType
@@ -95,7 +95,7 @@ abstract class BlockBehaviour(protected val properties: Properties) : Block {
     val lootTable: Key
         get() {
             if (drops == null) {
-                val registryKey = requireNotNull(KryptonRegistries.BLOCK.get(asBlock())) { "Could not find registry key for block ${asBlock()}!" }
+                val registryKey = requireNotNull(KryptonRegistries.BLOCK.getKey(asBlock())) { "Could not find registry key for block ${asBlock()}!" }
                 drops = Key.key(registryKey.namespace(), "blocks/${registryKey.value()}")
             }
             return drops!!
@@ -442,9 +442,10 @@ abstract class BlockBehaviour(protected val properties: Properties) : Block {
         fun isCollisionShapeFullBlock(world: BlockAccessor, position: Vector3i): Boolean =
             cache?.isCollisionShapeFullBlock ?: block.isCollisionShapeFullBlock(asState(), world, position)
 
-        fun eq(tag: Tag<Block>): Boolean = tag.contains(block)
+        @Suppress("UNCHECKED_CAST")
+        fun eq(tag: TagKey<Block>): Boolean = block.builtInRegistryHolder.eq(tag as TagKey<KryptonBlock>)
 
-        fun eq(tag: Tag<Block>, predicate: Predicate<BlockStateBase>): Boolean = eq(tag) && predicate.test(this)
+        fun eq(tag: TagKey<Block>, predicate: Predicate<BlockStateBase>): Boolean = eq(tag) && predicate.test(this)
 
         fun eq(block: Block): Boolean = this.block === block
 
@@ -465,7 +466,7 @@ abstract class BlockBehaviour(protected val properties: Properties) : Block {
 
             init {
                 if (!collisionShape.isEmpty() && state.offsetType != OffsetType.NONE) {
-                    val key = KryptonRegistries.BLOCK.get(state.block)
+                    val key = KryptonRegistries.BLOCK.getKey(state.block)
                     error("$key has a collision shape and an offset type, but is not marked as dynamic in its properties!")
                 }
                 largeCollisionShape = Direction.Axis.values().any { collisionShape.min(it) < 0.0 || collisionShape.max(it) > 1.0 }

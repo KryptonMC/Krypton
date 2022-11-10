@@ -21,14 +21,9 @@ public interface DefaultedRegistry<T> : Registry<T> {
      */
     public val defaultKey: Key
 
-    /**
-     * The default value for this defaulted registry.
-     */
-    public val defaultValue: T
-
     override fun get(key: Key): T
 
-    override fun get(value: T): Key
-
     override fun get(key: ResourceKey<T>): T
+
+    override fun getKey(value: T): Key
 }

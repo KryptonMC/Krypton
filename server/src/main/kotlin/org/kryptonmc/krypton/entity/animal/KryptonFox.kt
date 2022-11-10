@@ -31,6 +31,7 @@ import org.kryptonmc.krypton.entity.attribute.KryptonAttributeTypes
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.entity.serializer.EntitySerializer
 import org.kryptonmc.krypton.entity.serializer.animal.FoxSerializer
+import org.kryptonmc.krypton.item.downcast
 import org.kryptonmc.krypton.world.KryptonWorld
 import java.util.UUID
 
@@ -88,7 +89,7 @@ class KryptonFox(world: KryptonWorld) : KryptonAnimal(world), Fox {
 
     override fun trusts(uuid: UUID): Boolean = uuid == firstTrusted || uuid == secondTrusted
 
-    override fun isFood(item: ItemStack): Boolean = ItemTags.FOX_FOOD.contains(item.type)
+    override fun isFood(item: ItemStack): Boolean = item.type.downcast().eq(ItemTags.FOX_FOOD)
 
     companion object {
 

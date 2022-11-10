@@ -20,7 +20,7 @@ import javax.annotation.concurrent.Immutable
 @Suppress("INAPPLICABLE_JVM_NAME")
 @CataloguedBy(StatisticTypes::class)
 @Immutable
-public interface StatisticType<T : Any> : Iterable<Statistic<T>>, Translatable, Keyed {
+public interface StatisticType<T> : Iterable<Statistic<T>>, Translatable, Keyed {
 
     /**
      * The registry for this statistic type.

@@ -26,9 +26,8 @@ import org.kryptonmc.api.item.ItemRarity
 import org.kryptonmc.api.item.ItemType
 import org.kryptonmc.api.resource.ResourceKey
 import org.kryptonmc.api.resource.ResourceKeys
-import org.kryptonmc.api.scoreboard.criteria.Criterion
+import org.kryptonmc.api.scoreboard.criteria.KeyedCriterion
 import org.kryptonmc.api.statistic.StatisticType
-import org.kryptonmc.api.tags.TagType
 import org.kryptonmc.api.util.Catalogue
 import org.kryptonmc.api.world.biome.Biome
 import org.kryptonmc.api.world.damage.type.DamageType
@@ -45,51 +44,57 @@ public object Registries {
      * All built-in vanilla registries.
      */
     @JvmField
-    public val SOUND_EVENT: Registry<SoundEvent> = create(ResourceKeys.SOUND_EVENT)
+    public val SOUND_EVENT: Registry<SoundEvent> = builtin(ResourceKeys.SOUND_EVENT)
     @JvmField
-    public val ENTITY_TYPE: DefaultedRegistry<EntityType<*>> = createDefaulted(ResourceKeys.ENTITY_TYPE, Key.key("pig"))
+    public val FLUID: DefaultedRegistry<Fluid> = builtinDefaulted(ResourceKeys.FLUID)
     @JvmField
-    public val PARTICLE_TYPE: Registry<ParticleType> = create(ResourceKeys.PARTICLE_TYPE)
+    public val BLOCK: DefaultedRegistry<Block> = builtinDefaulted(ResourceKeys.BLOCK)
     @JvmField
-    public val BLOCK: DefaultedRegistry<Block> = createDefaulted(ResourceKeys.BLOCK, Key.key("air"))
+    public val ENTITY_TYPE: DefaultedRegistry<EntityType<*>> = builtinDefaulted(ResourceKeys.ENTITY_TYPE)
     @JvmField
-    public val ITEM: DefaultedRegistry<ItemType> = createDefaulted(ResourceKeys.ITEM, Key.key("air"))
+    public val ITEM: DefaultedRegistry<ItemType> = builtinDefaulted(ResourceKeys.ITEM)
     @JvmField
-    public val INVENTORY_TYPES: Registry<InventoryType> = create(ResourceKeys.INVENTORY_TYPES)
+    public val PARTICLE_TYPE: Registry<ParticleType> = builtin(ResourceKeys.PARTICLE_TYPE)
     @JvmField
-    public val ATTRIBUTE: Registry<AttributeType> = create(ResourceKeys.ATTRIBUTE)
+    public val BLOCK_ENTITY_TYPE: Registry<BlockEntityType> = builtin(ResourceKeys.BLOCK_ENTITY_TYPE)
     @JvmField
-    public val BIOME: Registry<Biome> = create(ResourceKeys.BIOME)
+    public val PAINTING_VARIANT: DefaultedRegistry<PaintingVariant> = builtinDefaulted(ResourceKeys.PAINTING_VARIANT)
     @JvmField
-    public val STATISTIC_TYPE: Registry<StatisticType<*>> = create(ResourceKeys.STATISTIC_TYPE)
+    public val CUSTOM_STATISTIC: Registry<Key> = builtin(ResourceKeys.CUSTOM_STATISTIC)
     @JvmField
-    public val CUSTOM_STATISTIC: Registry<Key> = create(ResourceKeys.CUSTOM_STATISTIC)
+    public val INVENTORY_TYPE: Registry<InventoryType> = builtin(ResourceKeys.INVENTORY_TYPE)
     @JvmField
-    public val FLUID: DefaultedRegistry<Fluid> = createDefaulted(ResourceKeys.FLUID, Key.key("empty"))
+    public val ATTRIBUTE: Registry<AttributeType> = builtin(ResourceKeys.ATTRIBUTE)
     @JvmField
-    public val DIMENSION_TYPE: Registry<DimensionType> = create(ResourceKeys.DIMENSION_TYPE)
+    public val STATISTIC_TYPE: Registry<StatisticType<*>> = builtin(ResourceKeys.STATISTIC_TYPE)
     @JvmField
-    public val BLOCK_ENTITY_TYPE: Registry<BlockEntityType> = create(ResourceKeys.BLOCK_ENTITY_TYPE)
+    public val BANNER_PATTERN: Registry<BannerPatternType> = builtin(ResourceKeys.BANNER_PATTERN)
     @JvmField
-    public val BANNER_PATTERN: Registry<BannerPatternType> = create(ResourceKeys.BANNER_PATTERN)
+    public val DIMENSION_TYPE: Registry<DimensionType> = builtin(ResourceKeys.DIMENSION_TYPE)
     @JvmField
-    public val PAINTING_VARIANT: DefaultedRegistry<PaintingVariant> = createDefaulted(ResourceKeys.PAINTING_VARIANT, Key.key("kebab"))
+    public val BIOME: Registry<Biome> = builtin(ResourceKeys.BIOME)
 
     /**
      * Custom built-in registries.
      */
     @JvmField
-    public val GAME_RULES: Registry<GameRule<*>> = create(ResourceKeys.GAME_RULES)
+    public val GAME_RULES: Registry<GameRule<*>> = builtin(ResourceKeys.GAME_RULES)
     @JvmField
-    public val CRITERIA: Registry<Criterion> = create(ResourceKeys.CRITERIA)
+    public val CRITERIA: Registry<KeyedCriterion> = builtin(ResourceKeys.CRITERIA)
     @JvmField
-    public val ITEM_RARITIES: Registry<ItemRarity> = create(ResourceKeys.ITEM_RARITIES)
+    public val ITEM_RARITIES: Registry<ItemRarity> = builtin(ResourceKeys.ITEM_RARITIES)
     @JvmField
-    public val ENTITY_CATEGORIES: Registry<EntityCategory> = create(ResourceKeys.ENTITY_CATEGORIES)
+    public val ENTITY_CATEGORIES: Registry<EntityCategory> = builtin(ResourceKeys.ENTITY_CATEGORIES)
     @JvmField
-    public val TAG_TYPES: Registry<TagType<*>> = create(ResourceKeys.TAG_TYPES)
-    @JvmField
-    public val DAMAGE_TYPES: Registry<DamageType> = create(ResourceKeys.DAMAGE_TYPES)
+    public val DAMAGE_TYPES: Registry<DamageType> = builtin(ResourceKeys.DAMAGE_TYPES)
+
+    @JvmStatic
+    private fun <T> builtin(key: ResourceKey<out Registry<T>>): Registry<T> =
+        requireNotNull(getRegistry(key)) { "Cannot find built-in registry $key!" }
+
+    @JvmStatic
+    private fun <T> builtinDefaulted(key: ResourceKey<out Registry<T>>): DefaultedRegistry<T> =
+        requireNotNull(getDefaultedRegistry(key)) { "Cannot find built-in defaulted registry $key!" }
 
     /**
      * Gets the existing registry with the given resource [key], or returns null
@@ -100,7 +105,7 @@ public object Registries {
      * @return the existing registry, or null if not present
      */
     @JvmStatic
-    public fun <T> registry(key: ResourceKey<out Registry<T>>): Registry<T>? = Krypton.registryManager().registry(key)
+    public fun <T> getRegistry(key: ResourceKey<out Registry<T>>): Registry<T>? = Krypton.registryManager().getRegistry(key)
 
     /**
      * Gets the existing defaulted registry with the given resource [key], or
@@ -112,7 +117,8 @@ public object Registries {
      * @return the existing defaulted registry, or null if not present
      */
     @JvmStatic
-    public fun <T> defaulted(key: ResourceKey<out Registry<T>>): DefaultedRegistry<T>? = Krypton.registryManager().defaulted(key)
+    public fun <T> getDefaultedRegistry(key: ResourceKey<out Registry<T>>): DefaultedRegistry<T>? =
+        Krypton.registryManager().getDefaultedRegistry(key)
 
     /**
      * Creates a new registry with the given registry [key].

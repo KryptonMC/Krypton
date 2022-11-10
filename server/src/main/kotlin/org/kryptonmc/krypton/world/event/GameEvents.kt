@@ -19,7 +19,7 @@
 package org.kryptonmc.krypton.world.event
 
 import net.kyori.adventure.key.Key
-import org.kryptonmc.krypton.registry.InternalRegistries
+import org.kryptonmc.krypton.registry.KryptonRegistries
 
 object GameEvents {
 
@@ -115,6 +115,6 @@ object GameEvents {
     @JvmStatic
     private fun register(name: String): GameEvent {
         val key = Key.key(name)
-        return InternalRegistries.GAME_EVENT.register(key, GameEvent(key))
+        return KryptonRegistries.register(KryptonRegistries.GAME_EVENT, key, GameEvent(key))
     }
 }

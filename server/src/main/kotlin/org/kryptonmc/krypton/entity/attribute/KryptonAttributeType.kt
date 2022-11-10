@@ -20,7 +20,7 @@ package org.kryptonmc.krypton.entity.attribute
 
 import net.kyori.adventure.key.Key
 import org.kryptonmc.api.entity.attribute.AttributeType
-import org.kryptonmc.api.registry.Registries
+import org.kryptonmc.krypton.registry.KryptonRegistries
 
 open class KryptonAttributeType protected constructor(
     final override val defaultValue: Double,
@@ -28,7 +28,7 @@ open class KryptonAttributeType protected constructor(
     private val translationKey: String
 ) : AttributeType {
 
-    override fun key(): Key = Registries.ATTRIBUTE.get(this)!!
+    override fun key(): Key = KryptonRegistries.ATTRIBUTE.getKey(this)!!
 
     override fun translationKey(): String = translationKey
 

@@ -18,7 +18,7 @@
  */
 package org.kryptonmc.krypton.world.block.entity
 
-import kotlinx.collections.immutable.ImmutableSet
+import com.google.common.collect.ImmutableSet
 import net.kyori.adventure.key.Key
 import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.block.entity.BlockEntityType

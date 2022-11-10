@@ -22,7 +22,6 @@ import com.github.benmanes.caffeine.cache.Caffeine
 import net.kyori.adventure.key.Key
 import org.kryptonmc.api.block.BlockState
 import org.kryptonmc.api.block.Blocks
-import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.api.statistic.StatisticTypes
 import org.kryptonmc.api.util.Direction
 import org.kryptonmc.api.world.biome.Precipitation
@@ -32,6 +31,9 @@ import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.item.KryptonItemStack
 import org.kryptonmc.krypton.item.KryptonItemType
 import org.kryptonmc.krypton.item.context.BlockPlaceContext
+import org.kryptonmc.krypton.registry.Holder
+import org.kryptonmc.krypton.registry.IntrusiveRegistryObject
+import org.kryptonmc.krypton.registry.KryptonRegistries
 import org.kryptonmc.krypton.shapes.BooleanOperator
 import org.kryptonmc.krypton.shapes.Shapes
 import org.kryptonmc.krypton.shapes.VoxelShape
@@ -51,13 +53,14 @@ import org.spongepowered.math.vector.Vector3i
 import java.util.function.Function
 
 @Suppress("LeakingThis")
-open class KryptonBlock(properties: Properties) : BlockBehaviour(properties), StateHolderDelegate<BlockState, KryptonBlockState> {
+open class KryptonBlock(properties: Properties) : BlockBehaviour(properties), StateHolderDelegate<BlockState, KryptonBlockState>, IRO {
 
     final override val stateDefinition: StateDefinition<KryptonBlock, KryptonBlockState>
     private var defaultBlockState: KryptonBlockState
     private var descriptionId: String? = null
     private var item: KryptonItemType? = null
     private val defaultItemStack: KryptonItemStack by lazy { KryptonItemStack(this) }
+    override val builtInRegistryHolder: Holder.Reference<KryptonBlock> = KryptonRegistries.BLOCK.createIntrusiveHolder(this)
 
     final override val defaultState: KryptonBlockState
         get() = defaultBlockState
@@ -155,7 +158,7 @@ open class KryptonBlock(properties: Properties) : BlockBehaviour(properties), St
 
     override fun asBlock(): KryptonBlock = this
 
-    override fun key(): Key = Registries.BLOCK.get(this)
+    override fun key(): Key = KryptonRegistries.BLOCK.getKey(this)
 
     override fun translationKey(): String {
         if (descriptionId == null) descriptionId = Keys.translation("block", key())
@@ -180,7 +183,7 @@ open class KryptonBlock(properties: Properties) : BlockBehaviour(properties), St
         @JvmStatic
         fun idOf(state: KryptonBlockState?): Int {
             if (state == null) return 0
-            val id = STATES.idOf(state)
+            val id = STATES.getId(state)
             return if (id == -1) 0 else id
         }
 
@@ -202,3 +205,5 @@ open class KryptonBlock(properties: Properties) : BlockBehaviour(properties), St
         ): KryptonBlockState = state.set(property, result.require(property))
     }
 }
+
+private typealias IRO = IntrusiveRegistryObject<KryptonBlock>

@@ -15,7 +15,7 @@ import org.jetbrains.annotations.ApiStatus
 import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.Krypton
 import org.kryptonmc.api.block.Block
-import org.kryptonmc.api.tags.Tag
+import org.kryptonmc.api.tags.TagKey
 import org.kryptonmc.api.util.Buildable
 import org.kryptonmc.api.util.CataloguedBy
 import java.util.OptionalLong
@@ -92,7 +92,7 @@ public interface DimensionType : Buildable<DimensionType.Builder, DimensionType>
      * The settings used to define which blocks burn infinitely.
      */
     @get:JvmName("infiniburn")
-    public val infiniburn: Tag<Block>
+    public val infiniburn: TagKey<Block>
 
     /**
      * The minimum Y level that can be built at.
@@ -462,7 +462,7 @@ public interface DimensionType : Buildable<DimensionType.Builder, DimensionType>
          */
         @DimensionTypeDsl
         @Contract("_ -> this", mutates = "this")
-        public fun infiniburn(infiniburn: Tag<Block>): Builder
+        public fun infiniburn(infiniburn: TagKey<Block>): Builder
 
         /**
          * Sets the minimum Y level for the dimension type.

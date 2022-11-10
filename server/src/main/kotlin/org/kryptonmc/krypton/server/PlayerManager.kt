@@ -21,7 +21,6 @@ package org.kryptonmc.krypton.server
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
-import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.api.scoreboard.Objective
 import org.kryptonmc.api.statistic.CustomStatistics
 import org.kryptonmc.api.world.World
@@ -51,6 +50,7 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateRecipes
 import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateTags
 import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateTeams
 import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateTime
+import org.kryptonmc.krypton.registry.KryptonRegistries
 import org.kryptonmc.krypton.server.ban.BannedIpList
 import org.kryptonmc.krypton.server.ban.BannedPlayerList
 import org.kryptonmc.krypton.server.whitelist.Whitelist
@@ -132,7 +132,7 @@ class PlayerManager(private val server: KryptonServer) {
             player.oldGameMode,
             server.worldManager.worlds.keys,
             PacketOutLogin.createRegistryCodec(),
-            Registries.DIMENSION_TYPE.resourceKey(world.dimensionType)!!,
+            KryptonRegistries.DIMENSION_TYPE.getResourceKey(world.dimensionType)!!,
             world.dimension,
             BiomeManager.obfuscateSeed(world.seed),
             server.maxPlayers,

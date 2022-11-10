@@ -25,7 +25,7 @@ public interface RegistryManager {
      * @param key the key
      * @return the existing registry, or null if not present
      */
-    public fun <T> registry(key: ResourceKey<out Registry<T>>): Registry<T>?
+    public fun <T> getRegistry(key: ResourceKey<out Registry<T>>): Registry<T>?
 
     /**
      * Gets the existing defaulted registry with the given resource [key], or
@@ -36,7 +36,7 @@ public interface RegistryManager {
      * @param key the key
      * @return the existing defaulted registry, or null if not present
      */
-    public fun <T> defaulted(key: ResourceKey<out Registry<T>>): DefaultedRegistry<T>?
+    public fun <T> getDefaultedRegistry(key: ResourceKey<out Registry<T>>): DefaultedRegistry<T>?
 
     /**
      * Creates a new registry with the given registry [key].

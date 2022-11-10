@@ -24,7 +24,7 @@ import javax.annotation.concurrent.Immutable
 @Suppress("INAPPLICABLE_JVM_NAME")
 @CataloguedBy(GameRules::class)
 @Immutable
-public interface GameRule<V : Any> : Translatable, Keyed {
+public interface GameRule<V> : Translatable, Keyed {
 
     /**
      * The name of this rule.
@@ -36,12 +36,12 @@ public interface GameRule<V : Any> : Translatable, Keyed {
      * The default value of this rule.
      */
     @get:JvmName("defaultValue")
-    public val default: V
+    public val defaultValue: V
 
     @ApiStatus.Internal
     public interface Factory {
 
-        public fun <V : Any> of(name: String, default: V): GameRule<V>
+        public fun <V> of(name: String, defaultValue: V): GameRule<V>
     }
 
     public companion object {
@@ -51,11 +51,11 @@ public interface GameRule<V : Any> : Translatable, Keyed {
          *
          * @param V the game rule value type
          * @param name the name
-         * @param default the default value
+         * @param defaultValue the default value
          * @return a new game rule
          */
         @JvmStatic
         @Contract("_, _, _, _ -> new", pure = true)
-        public fun <V : Any> of(name: String, default: V): GameRule<V> = Krypton.factory<Factory>().of(name, default)
+        public fun <V> of(name: String, defaultValue: V): GameRule<V> = Krypton.factory<Factory>().of(name, defaultValue)
     }
 }

@@ -16,12 +16,18 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.registry
+package org.kryptonmc.krypton.world.scoreboard
 
-import org.kryptonmc.api.registry.DefaultedRegistry
-import org.kryptonmc.api.registry.Registry
-import org.kryptonmc.krypton.util.downcastApiType
+import net.kyori.adventure.key.Key
+import org.kryptonmc.api.scoreboard.ObjectiveRenderType
+import org.kryptonmc.api.scoreboard.criteria.KeyedCriterion
 
-fun <T : Any> Registry<T>.downcast(): KryptonRegistry<T> = downcastApiType("Registry")
+class KryptonKeyedCriterion(
+    private val key: Key,
+    name: String,
+    isMutable: Boolean,
+    renderType: ObjectiveRenderType
+) : KryptonCriterion(name, isMutable, renderType), KeyedCriterion {
 
-fun <T : Any> DefaultedRegistry<T>.downcast(): KryptonDefaultedRegistry<T> = downcastApiType("DefaultedRegistry")
+    override fun key(): Key = key
+}

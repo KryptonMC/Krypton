@@ -21,9 +21,8 @@ package org.kryptonmc.krypton.item
 import net.kyori.adventure.key.Key
 import org.kryptonmc.api.effect.sound.SoundEvent
 import org.kryptonmc.api.effect.sound.SoundEvents
-import org.kryptonmc.krypton.registry.InternalRegistries
+import org.kryptonmc.krypton.registry.KryptonRegistries
 
-@Suppress("MagicNumber")
 object Instruments {
 
     @JvmField
@@ -44,6 +43,7 @@ object Instruments {
     val DREAM_GOAT_HORN: Instrument = register("dream_goat_horn", SoundEvents.GOAT_HORN_7)
 
     @JvmStatic
+    @Suppress("MagicNumber")
     private fun register(name: String, sound: SoundEvent): Instrument =
-        InternalRegistries.INSTRUMENTS.register(Key.key(name), Instrument(sound, 140, 256F))
+        KryptonRegistries.register(KryptonRegistries.INSTRUMENTS, Key.key(name), Instrument(sound, 140, 256F))
 }

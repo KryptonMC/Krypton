@@ -18,101 +18,97 @@
  */
 package org.kryptonmc.krypton.registry
 
-import com.google.common.collect.HashBiMap
-import it.unimi.dsi.fastutil.objects.Object2IntOpenCustomHashMap
-import it.unimi.dsi.fastutil.objects.ObjectArrayList
 import net.kyori.adventure.key.Key
 import org.kryptonmc.api.registry.Registry
 import org.kryptonmc.api.resource.ResourceKey
-import org.kryptonmc.krypton.util.serialization.Codecs
-import org.kryptonmc.krypton.util.IdentityHashStrategy
+import org.kryptonmc.api.tags.TagKey
+import org.kryptonmc.api.tags.TagSet
+import org.kryptonmc.krypton.resource.KryptonResourceKey
 import org.kryptonmc.krypton.util.IntBiMap
-import org.kryptonmc.krypton.util.mapSuccess
-import org.kryptonmc.krypton.util.orElseError
-import org.kryptonmc.nbt.CompoundTag
-import org.kryptonmc.nbt.compound
+import org.kryptonmc.krypton.util.serialization.Codecs
+import org.kryptonmc.krypton.util.successOrError
 import org.kryptonmc.serialization.Codec
-import org.kryptonmc.serialization.Encoder
-import org.kryptonmc.serialization.nbt.NbtOps
+import org.kryptonmc.serialization.DataResult
 import java.util.Optional
-import kotlin.math.max
+import java.util.stream.Stream
+import java.util.stream.StreamSupport
 
-open class KryptonRegistry<T>(override val key: ResourceKey<out Registry<T>>) : Registry<T>, IntBiMap<T> {
+/**
+ * The base registry class that specifies the public API of the backend registries.
+ */
+abstract class KryptonRegistry<T>(final override val key: ResourceKey<out Registry<T>>) : Registry<T>, IntBiMap<T> {
 
-    private val byId = ObjectArrayList<T>(256)
-    private val toId = Object2IntOpenCustomHashMap(IdentityHashStrategy.get<T>())
-    private val storage = HashBiMap.create<Key, T>()
-    private val keyStorage = HashBiMap.create<ResourceKey<T>, T>()
-    private var nextId = 0
+    abstract override val keys: Set<Key>
+    abstract override val registryKeys: Set<ResourceKey<T>>
+    abstract override val entries: Set<Map.Entry<ResourceKey<T>, T>>
+    abstract override val tagKeys: Set<TagKey<T>>
+    abstract override val tags: Map<TagKey<T>, TagSet<T>>
 
-    override val keySet: Set<Key>
-        get() = storage.keys
-    override val entries: Set<Map.Entry<ResourceKey<T>, T>>
-        get() = keyStorage.entries
-    override val keys: Set<ResourceKey<T>>
-        get() = keyStorage.keys
-    override val values: Collection<T>
-        get() = storage.values
-    override val size: Int
-        get() = storage.size
+    abstract override fun containsKey(key: Key): Boolean
 
-    override fun contains(key: Key): Boolean = storage.containsKey(key)
+    abstract override fun containsKey(key: ResourceKey<T>): Boolean
 
-    fun contains(id: Int): Boolean = id >= 0 && id < byId.size
+    abstract override fun getKey(value: T): Key?
 
-    override fun containsKey(key: ResourceKey<T>): Boolean = keyStorage.containsKey(key)
+    abstract override fun getResourceKey(value: T): ResourceKey<T>?
 
-    override fun containsValue(value: T): Boolean = storage.containsValue(value)
+    abstract override fun getId(value: T): Int
 
-    override fun get(key: Key): T? = getNullable(key)
+    abstract override fun get(key: Key): T?
 
-    override fun get(id: Int): T? = byId.getOrNull(id)
+    abstract override fun get(key: ResourceKey<T>): T?
 
-    override fun get(value: T): Key? = storage.inverse().get(value)
+    fun getOrThrow(key: ResourceKey<T>): T = checkNotNull(get(key)) { "Could not find key $key in registry ${this.key}!" }
 
-    override fun get(key: ResourceKey<T>): T? = keyStorage.get(key)
+    abstract fun holders(): Stream<Holder.Reference<T>>
 
-    private fun getNullable(key: Key): T? = storage.get(key)
+    abstract fun getHolder(id: Int): Holder<T>?
 
-    override fun resourceKey(value: T): ResourceKey<T>? = keyStorage.inverse().get(value)
+    abstract fun getHolder(key: ResourceKey<T>): Holder<T>?
 
-    private fun getResourceKey(value: T): Optional<ResourceKey<T>> = Optional.ofNullable(keyStorage.inverse().get(value))
+    fun getHolderOrThrow(key: ResourceKey<T>): Holder<T> = checkNotNull(getHolder(key)) { "Could not find key $key in registry ${this.key}!" }
 
-    override fun idOf(value: T): Int = toId.getInt(value)
+    abstract fun getOrCreateHolder(key: ResourceKey<T>): DataResult<Holder<T>>
 
-    override fun <V : T> register(key: ResourceKey<T>, value: V): V = register(nextId, key, value)
+    abstract fun getOrCreateHolderOrThrow(key: ResourceKey<T>): Holder<T>
 
-    override fun <V : T> register(key: Key, value: V): V = register(ResourceKey.of(this.key, key), value)
+    abstract fun createIntrusiveHolder(value: T): Holder.Reference<T>
 
-    fun <V : T> register(id: Int, key: Key, value: V): V = register(id, ResourceKey.of(this.key, key), value)
+    abstract override fun getTag(key: TagKey<T>): TagSet<T>?
 
-    protected open fun <V : T> register(id: Int, key: ResourceKey<T>, value: V): V {
-        byId.size(max(byId.size, id + 1))
-        byId.set(id, value)
-        toId.put(value, id)
-        storage.put(key.location, value)
-        keyStorage.put(key, value)
-        if (nextId <= id) nextId = id + 1
-        return value
+    abstract fun getOrCreateTag(key: TagKey<T>): TagSet<T>
+
+    abstract fun isKnownTagKey(key: TagKey<T>): Boolean
+
+    abstract fun resetTags()
+
+    abstract fun bindTags(tags: Map<TagKey<T>, List<Holder<T>>>)
+
+    abstract fun tagNames(): Stream<TagKey<T>>
+
+    fun asHolderIdMap(): IntBiMap<Holder<T>> = object : IntBiMap<Holder<T>> {
+
+        override val size: Int
+            get() = this@KryptonRegistry.size
+
+        override fun get(id: Int): Holder<T>? = getHolder(id)
+
+        override fun getId(value: Holder<T>): Int = this@KryptonRegistry.getId(value.value())
+
+        override fun iterator(): Iterator<Holder<T>> = holders().iterator()
     }
-
-    override fun isEmpty(): Boolean = storage.isEmpty()
-
-    override fun iterator(): Iterator<T> = storage.values.iterator()
 
     fun byNameCodec(): Codec<T> = Codecs.KEY.flatXmap(
-        { Optional.ofNullable(get(it)).mapSuccess().orElseError("Unknown registry key $it in $key!") },
-        { getResourceKey(it).map(ResourceKey<T>::location).mapSuccess().orElseError("Unknown registry element $it in $key!") }
+        { Optional.ofNullable(get(it)).successOrError { "Unknown registry key $it in $key!" } },
+        { Optional.ofNullable(getResourceKey(it)).map(ResourceKey<T>::location).successOrError { "Unknown registry element $it in $key!" } }
     )
 
-    fun encode(elementEncoder: Encoder<T>): CompoundTag = compound {
-        putString("type", key.location.asString())
-        putList("value", CompoundTag.ID, values.map {
-            compound {
-                putString("name", get(it)!!.asString())
-                putInt("id", idOf(it))
-                put("element", elementEncoder.encodeStart(it, NbtOps.INSTANCE).result().get())
-            }
-        })
-    }
+    fun holderByNameCodec(): Codec<Holder<T>> = Codecs.KEY.flatXmap(
+        { Optional.ofNullable(getHolder(KryptonResourceKey.of(key, it))).successOrError { "Unknown registry key $it in $key!" } },
+        { holder -> holder.unwrapKey().map { it.location }.successOrError { "Unknown registry element $holder in $key!" } }
+    )
+
+    override fun stream(): Stream<T> = StreamSupport.stream(spliterator(), false)
+
+    override fun toString(): String = "Registry[$key]"
 }

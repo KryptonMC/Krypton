@@ -19,16 +19,16 @@
 package org.kryptonmc.krypton.world.biome
 
 import net.kyori.adventure.key.Key
-import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.api.world.biome.Biome
 import org.kryptonmc.api.world.biome.BiomeEffects
 import org.kryptonmc.api.world.biome.Climate
+import org.kryptonmc.krypton.registry.KryptonRegistries
 import org.kryptonmc.serialization.Codec
 import org.kryptonmc.serialization.codecs.RecordCodecBuilder
 
 class KryptonBiome(override val climate: Climate, override val effects: BiomeEffects) : Biome {
 
-    override fun key(): Key = Registries.BIOME.get(this) ?: UNREGISTERED_KEY
+    override fun key(): Key = KryptonRegistries.BIOME.getKey(this) ?: UNREGISTERED_KEY
 
     override fun toBuilder(): Biome.Builder = Builder(this)
 

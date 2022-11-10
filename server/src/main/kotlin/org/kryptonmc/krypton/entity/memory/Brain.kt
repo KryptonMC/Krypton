@@ -20,7 +20,7 @@ package org.kryptonmc.krypton.entity.memory
 
 import net.kyori.adventure.key.Key
 import org.kryptonmc.krypton.entity.KryptonLivingEntity
-import org.kryptonmc.krypton.registry.InternalRegistries
+import org.kryptonmc.krypton.registry.KryptonRegistries
 import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.compound
 import org.kryptonmc.serialization.nbt.NbtOps
@@ -58,7 +58,7 @@ class Brain<E : KryptonLivingEntity> {
 
     fun load(data: CompoundTag) {
         data.getCompound("Memories").forEachCompound { memoryKey, memory ->
-            val key = InternalRegistries.MEMORIES.get(Key.key(memoryKey)) ?: return@forEachCompound
+            val key = KryptonRegistries.MEMORIES.get(Key.key(memoryKey)) ?: return@forEachCompound
             val value = memory.get("value") ?: return@forEachCompound
             val decoded = try {
                 key.codec.decode(value, NbtOps.INSTANCE)

@@ -48,7 +48,7 @@ class IntHashBiMap<T>(expectedSize: Int) : IntBiMap<T> {
         set(key, nextId)
     }
 
-    override fun idOf(value: T): Int = idByValue.getInt(value)
+    override fun getId(value: T): Int = idByValue.getInt(value)
 
     override fun get(id: Int): T? = valueById.getOrNull(id)
 

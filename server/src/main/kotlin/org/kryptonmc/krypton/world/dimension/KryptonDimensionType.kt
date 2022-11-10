@@ -20,13 +20,14 @@ package org.kryptonmc.krypton.world.dimension
 
 import net.kyori.adventure.key.Key
 import org.kryptonmc.api.block.Block
-import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.api.resource.ResourceKey
+import org.kryptonmc.api.resource.ResourceKeys
 import org.kryptonmc.api.tags.BlockTags
-import org.kryptonmc.api.tags.Tag
+import org.kryptonmc.api.tags.TagKey
 import org.kryptonmc.api.world.World
 import org.kryptonmc.api.world.dimension.DimensionType
-import org.kryptonmc.krypton.tags.KryptonTagManager
+import org.kryptonmc.krypton.registry.KryptonRegistries
+import org.kryptonmc.krypton.tags.KryptonTagKey
 import org.kryptonmc.krypton.util.provider.ConstantInt
 import org.kryptonmc.krypton.util.provider.IntProvider
 import org.kryptonmc.krypton.util.provider.UniformInt
@@ -52,7 +53,7 @@ data class KryptonDimensionType(
     override val minimumY: Int,
     override val height: Int,
     override val logicalHeight: Int,
-    override val infiniburn: Tag<Block>,
+    override val infiniburn: TagKey<Block>,
     override val effects: Key,
     override val ambientLight: Float,
     val monsterSettings: MonsterSettings
@@ -77,7 +78,7 @@ data class KryptonDimensionType(
         check(minimumY % 16 == 0) { "Minimum Y must be a multiple of 16!" }
     }
 
-    override fun key(): Key = Registries.DIMENSION_TYPE.get(this) ?: UNREGISTERED_KEY
+    override fun key(): Key = KryptonRegistries.DIMENSION_TYPE.getKey(this) ?: UNREGISTERED_KEY
 
     override fun toBuilder(): Builder = Builder(this)
 
@@ -166,7 +167,7 @@ data class KryptonDimensionType(
 
         override fun noFixedTime(): Builder = apply { fixedTime = OptionalLong.empty() }
 
-        override fun infiniburn(infiniburn: Tag<Block>): Builder = apply { this.infiniburn = infiniburn }
+        override fun infiniburn(infiniburn: TagKey<Block>): Builder = apply { this.infiniburn = infiniburn }
 
         override fun minimumY(level: Int): Builder = apply { minimumY = level }
 
@@ -229,7 +230,6 @@ data class KryptonDimensionType(
         private const val MAX_Y = (Y_SIZE shr 1) - 1
         private const val MIN_Y = MAX_Y - Y_SIZE + 1
         @JvmField
-        @Suppress("UNCHECKED_CAST")
         val DIRECT_CODEC: Codec<DimensionType> = Codecs.catchDecoderException(RecordCodecBuilder.create { instance ->
             instance.group(
                 Codec.LONG.optionalFieldOf("fixed_time").asOptionalLong().getting(DimensionType::fixedTime),
@@ -244,9 +244,7 @@ data class KryptonDimensionType(
                 Codec.intRange(MIN_Y, MAX_Y).fieldOf("min_y").getting(DimensionType::minimumY),
                 Codec.intRange(MINIMUM_HEIGHT, Y_SIZE).fieldOf("height").getting(DimensionType::height),
                 Codec.intRange(0, Y_SIZE).fieldOf("logical_height").getting(DimensionType::logicalHeight),
-                // TODO: This codec is complete rubbish, but it'll be changed in the next version when we rewrite the tag API
-                Codecs.KEY.xmap({ KryptonTagManager.get(Registries.TAG_TYPES.get(it)!!).get(0) as Tag<Block> }, { it.key() }).fieldOf("infiniburn")
-                    .getting(DimensionType::infiniburn),
+                KryptonTagKey.hashedCodec(ResourceKeys.BLOCK).fieldOf("infiniburn").getting(DimensionType::infiniburn),
                 Codecs.KEY.fieldOf("effects").orElse(KryptonDimensionTypes.OVERWORLD_EFFECTS).getting(DimensionType::effects),
                 Codec.FLOAT.fieldOf("ambient_light").getting(DimensionType::ambientLight),
                 MonsterSettings.CODEC.getting { (it as KryptonDimensionType).monsterSettings }

@@ -8,23 +8,22 @@
  */
 package org.kryptonmc.api.tags
 
-import org.kryptonmc.api.Krypton
+import net.kyori.adventure.key.Key
 import org.kryptonmc.api.fluid.Fluid
-import org.kryptonmc.api.util.Catalogue
+import org.kryptonmc.api.resource.ResourceKeys
 
 /**
  * This file is auto-generated. Do not edit this manually!
  */
-@Catalogue(Tag::class)
 public object FluidTags {
 
     // @formatter:off
     @JvmField
-    public val WATER: Tag<Fluid> = get("water")
+    public val WATER: TagKey<Fluid> = get("water")
     @JvmField
-    public val LAVA: Tag<Fluid> = get("lava")
+    public val LAVA: TagKey<Fluid> = get("lava")
 
     // @formatter:on
     @JvmStatic
-    private fun get(key: String): Tag<Fluid> = Krypton.tag(TagTypes.FLUIDS, "minecraft:$key")!!
+    public fun get(key: String): TagKey<Fluid> = TagKey.of(ResourceKeys.FLUID, Key.key(key))
 }

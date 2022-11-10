@@ -19,7 +19,6 @@
 package org.kryptonmc.krypton.entity.vehicle
 
 import org.kryptonmc.api.block.BlockState
-import org.kryptonmc.api.block.Blocks
 import org.kryptonmc.api.entity.vehicle.MinecartLike
 import org.kryptonmc.krypton.entity.KryptonEntity
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
@@ -29,7 +28,9 @@ import org.kryptonmc.krypton.entity.serializer.vehicle.MinecartLikeSerializer
 import org.kryptonmc.krypton.registry.KryptonRegistries
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.krypton.world.block.KryptonBlock
+import org.kryptonmc.krypton.world.block.KryptonBlocks
 import org.kryptonmc.krypton.world.block.downcast
+import org.kryptonmc.krypton.world.block.state.KryptonBlockState
 import org.kryptonmc.krypton.world.damage.KryptonDamageSource
 import org.kryptonmc.krypton.world.damage.KryptonEntityDamageSource
 
@@ -48,9 +49,14 @@ abstract class KryptonMinecartLike(world: KryptonWorld) : KryptonEntity(world), 
         get() = data.get(MetadataKeys.MinecartLike.SHOW_CUSTOM_BLOCK)
         set(value) = data.set(MetadataKeys.MinecartLike.SHOW_CUSTOM_BLOCK, value)
     override var customBlock: BlockState
+        get() = internalCustomBlock
+        set(value) {
+            internalCustomBlock = value.downcast()
+        }
+    var internalCustomBlock: KryptonBlockState
         get() = if (!showCustomBlock) defaultCustomBlock else KryptonBlock.stateFromId(data.get(MetadataKeys.MinecartLike.CUSTOM_BLOCK_ID))
         set(value) {
-            data.set(MetadataKeys.MinecartLike.CUSTOM_BLOCK_ID, KryptonBlock.idOf(value.downcast()))
+            data.set(MetadataKeys.MinecartLike.CUSTOM_BLOCK_ID, KryptonBlock.idOf(value))
             showCustomBlock = value !== defaultCustomBlock
         }
     override var customBlockOffset: Int
@@ -63,8 +69,8 @@ abstract class KryptonMinecartLike(world: KryptonWorld) : KryptonEntity(world), 
         get() = data.get(MetadataKeys.MinecartLike.HURT_DIRECTION)
         set(value) = data.set(MetadataKeys.MinecartLike.HURT_DIRECTION, value)
 
-    protected open val defaultCustomBlock: BlockState
-        get() = Blocks.AIR.defaultState
+    protected open val defaultCustomBlock: KryptonBlockState
+        get() = KryptonBlocks.AIR.defaultState
     protected open val defaultCustomBlockOffset: Int
         get() = 0
 
@@ -73,7 +79,7 @@ abstract class KryptonMinecartLike(world: KryptonWorld) : KryptonEntity(world), 
         data.define(MetadataKeys.MinecartLike.HURT_TIMER, 0)
         data.define(MetadataKeys.MinecartLike.HURT_DIRECTION, 1)
         data.define(MetadataKeys.MinecartLike.DAMAGE, 0F)
-        data.define(MetadataKeys.MinecartLike.CUSTOM_BLOCK_ID, KryptonRegistries.BLOCK.idOf(Blocks.AIR))
+        data.define(MetadataKeys.MinecartLike.CUSTOM_BLOCK_ID, KryptonRegistries.BLOCK.getId(KryptonBlocks.AIR))
         data.define(MetadataKeys.MinecartLike.CUSTOM_BLOCK_OFFSET, DEFAULT_CUSTOM_BLOCK_OFFSET)
         data.define(MetadataKeys.MinecartLike.SHOW_CUSTOM_BLOCK, false)
     }

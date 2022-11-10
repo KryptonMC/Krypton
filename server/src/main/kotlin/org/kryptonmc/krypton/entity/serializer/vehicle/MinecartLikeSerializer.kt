@@ -34,14 +34,14 @@ object MinecartLikeSerializer : EntitySerializer<KryptonMinecartLike> {
     override fun load(entity: KryptonMinecartLike, data: CompoundTag) {
         BaseEntitySerializer.load(entity, data)
         if (!data.getBoolean(CUSTOM_DISPLAY_TAG)) return
-        entity.customBlock = data.getCompound(DISPLAY_STATE_TAG).toBlockState()
+        entity.internalCustomBlock = data.getCompound(DISPLAY_STATE_TAG).toBlockState()
         entity.customBlockOffset = data.getInt(DISPLAY_OFFSET_TAG)
     }
 
     override fun save(entity: KryptonMinecartLike): CompoundTag.Builder = BaseEntitySerializer.save(entity).apply {
         if (entity.showCustomBlock) {
             putBoolean(CUSTOM_DISPLAY_TAG, true)
-            put(DISPLAY_STATE_TAG, entity.customBlock.toNBT())
+            put(DISPLAY_STATE_TAG, entity.internalCustomBlock.toNBT())
             putInt(DISPLAY_OFFSET_TAG, entity.customBlockOffset)
         }
     }

@@ -22,23 +22,33 @@ import net.kyori.adventure.key.Key
 import org.kryptonmc.api.registry.DefaultedRegistry
 import org.kryptonmc.api.registry.Registry
 import org.kryptonmc.api.resource.ResourceKey
+import java.util.function.Function
 
-class KryptonDefaultedRegistry<T>(key: ResourceKey<out Registry<T>>, override val defaultKey: Key) : KryptonRegistry<T>(key), DefaultedRegistry<T> {
+/**
+ * The defaulted registry implementation that stores a default key to search for when values are registered to store
+ * the default value to return if no other value can be found.
+ */
+class KryptonDefaultedRegistry<T>(
+    override val defaultKey: Key,
+    key: ResourceKey<out Registry<T>>,
+    customHolderProvider: Function<T, Holder.Reference<T>>?
+) : KryptonSimpleRegistry<T>(key, customHolderProvider), DefaultedRegistry<T> {
 
-    private var internalDefault: T? = null
-    override val defaultValue: T
-        get() = internalDefault ?: error("The default value has not been registered for registry ${key.location}!")
+    private var defaultValue: Holder<T>? = null
 
-    override fun get(key: Key): T = super.get(key) ?: defaultValue
+    private fun defaultValue(): T = checkNotNull(defaultValue) { "The default value was not initialized!" }.value()
 
-    override fun get(id: Int): T = super.get(id) ?: defaultValue
-
-    override fun get(key: ResourceKey<T>): T = super.get(key) ?: defaultValue
-
-    override fun get(value: T): Key = super.get(value) ?: defaultKey
-
-    override fun <V : T> register(id: Int, key: ResourceKey<T>, value: V): V {
-        if (key.location == defaultKey) internalDefault = value
-        return super<KryptonRegistry>.register(id, key, value)
+    override fun register(id: Int, key: ResourceKey<T>, value: T): Holder<T> {
+        val holder = super.register(id, key, value)
+        if (defaultKey == key.location) defaultValue = holder
+        return holder
     }
+
+    override fun get(key: Key): T = super.get(key) ?: defaultValue()
+
+    override fun get(key: ResourceKey<T>): T = super.get(key) ?: defaultValue()
+
+    override fun get(id: Int): T = super.get(id) ?: defaultValue()
+
+    override fun getKey(value: T): Key = super.getKey(value) ?: defaultKey
 }

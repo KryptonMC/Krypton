@@ -19,11 +19,11 @@
 package org.kryptonmc.krypton.packet.out.play
 
 import io.netty.buffer.ByteBuf
+import org.kryptonmc.api.registry.Registry
 import org.kryptonmc.api.resource.ResourceKey
-import org.kryptonmc.api.resource.ResourceKeys
-import org.kryptonmc.api.tags.TagType
 import org.kryptonmc.krypton.packet.CachedPacket
 import org.kryptonmc.krypton.packet.Packet
+import org.kryptonmc.krypton.resource.KryptonResourceKeys
 import org.kryptonmc.krypton.tags.TagSerializer
 import org.kryptonmc.krypton.util.readKey
 import org.kryptonmc.krypton.util.readMap
@@ -31,9 +31,9 @@ import org.kryptonmc.krypton.util.writeMap
 import org.kryptonmc.krypton.util.writeResourceKey
 
 @JvmRecord
-data class PacketOutUpdateTags(val tags: Map<ResourceKey<TagType<*>>, TagSerializer.NetworkPayload>) : Packet {
+data class PacketOutUpdateTags(val tags: Map<ResourceKey<out Registry<*>>, TagSerializer.NetworkPayload>) : Packet {
 
-    constructor(buf: ByteBuf) : this(buf.readMap({ ResourceKey.of(ResourceKeys.TAG_TYPES, it.readKey()) }, TagSerializer::NetworkPayload))
+    constructor(buf: ByteBuf) : this(buf.readMap({ ResourceKey.of(KryptonResourceKeys.PARENT, it.readKey()) }, TagSerializer::NetworkPayload))
 
     override fun write(buf: ByteBuf) {
         buf.writeMap(tags, ByteBuf::writeResourceKey) { _, payload -> payload.write(buf) }

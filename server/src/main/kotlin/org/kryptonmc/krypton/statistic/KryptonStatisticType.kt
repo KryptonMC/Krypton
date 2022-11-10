@@ -20,19 +20,18 @@ package org.kryptonmc.krypton.statistic
 
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.text.Component
-import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.api.registry.Registry
 import org.kryptonmc.api.statistic.Statistic
 import org.kryptonmc.api.statistic.StatisticFormatter
 import org.kryptonmc.api.statistic.StatisticType
 import java.util.IdentityHashMap
 
-class KryptonStatisticType<T : Any>(override val registry: Registry<T>) : StatisticType<T> {
+class KryptonStatisticType<T>(private val key: Key, override val registry: Registry<T>) : StatisticType<T> {
 
     private val statistics = IdentityHashMap<T, Statistic<T>>()
     private var displayName: Component? = null
 
-    override fun key(): Key = Registries.STATISTIC_TYPE.get(this)!!
+    override fun key(): Key = key
 
     override fun translationKey(): String = "stat_type.${key().asString().replace(':', '.')}"
 

@@ -127,7 +127,7 @@ object MetadataSerializers {
         position.write(buf)
     }
     @JvmField
-    val PICTURE: MetadataSerializer<PaintingVariant> = MetadataSerializer.simpleId(KryptonRegistries.PICTURES)
+    val PAINTING_VARIANT: MetadataSerializer<PaintingVariant> = MetadataSerializer.simpleId(KryptonRegistries.PAINTING_VARIANT)
 
     init {
         SERIALIZERS.add(BYTE)
@@ -152,12 +152,12 @@ object MetadataSerializers {
         SERIALIZERS.add(CAT_VARIANT)
         SERIALIZERS.add(FROG_VARIANT)
         SERIALIZERS.add(OPTIONAL_GLOBAL_POSITION)
-        SERIALIZERS.add(PICTURE)
+        SERIALIZERS.add(PAINTING_VARIANT)
     }
 
     @JvmStatic
     fun get(id: Int): MetadataSerializer<*>? = SERIALIZERS.get(id)
 
     @JvmStatic
-    fun idOf(serializer: MetadataSerializer<*>): Int = SERIALIZERS.idOf(serializer)
+    fun idOf(serializer: MetadataSerializer<*>): Int = SERIALIZERS.getId(serializer)
 }

@@ -22,12 +22,12 @@ import com.google.common.collect.ImmutableList
 import net.kyori.adventure.key.Key
 import org.kryptonmc.api.effect.particle.ParticleType
 import org.kryptonmc.api.effect.sound.SoundEvent
-import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.api.resource.ResourceKey
 import org.kryptonmc.api.resource.ResourceKeys
 import org.kryptonmc.api.util.Color
 import org.kryptonmc.api.world.World
 import org.kryptonmc.krypton.effect.sound.KryptonSoundEvent
+import org.kryptonmc.krypton.registry.KryptonRegistries
 import org.kryptonmc.krypton.resource.KryptonResourceKey
 import org.kryptonmc.krypton.util.Keys
 import org.kryptonmc.krypton.util.mapSuccess
@@ -63,7 +63,7 @@ object Codecs {
     val SOUND_EVENT: Codec<SoundEvent> = KEY.xmap({ KryptonSoundEvent(it, 16F) }, SoundEvent::key)
     // TODO: Look at the particle type codec, since it's not that great here
     @JvmField
-    val PARTICLE: Codec<ParticleType> = KEY.xmap({ Registries.PARTICLE_TYPE.get(it)!! }, { Registries.PARTICLE_TYPE.get(it)!! })
+    val PARTICLE: Codec<ParticleType> = KEY.xmap({ KryptonRegistries.PARTICLE_TYPE.get(it)!! }, { KryptonRegistries.PARTICLE_TYPE.getKey(it)!! })
     @JvmField
     val DIMENSION: Codec<ResourceKey<World>> = KryptonResourceKey.codec(ResourceKeys.DIMENSION)
 

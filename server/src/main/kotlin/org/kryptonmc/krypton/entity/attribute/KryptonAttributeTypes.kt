@@ -18,7 +18,8 @@
  */
 package org.kryptonmc.krypton.entity.attribute
 
-import org.kryptonmc.api.registry.Registries
+import net.kyori.adventure.key.Key
+import org.kryptonmc.krypton.registry.KryptonRegistries
 
 object KryptonAttributeTypes {
 
@@ -50,6 +51,8 @@ object KryptonAttributeTypes {
     val JUMP_STRENGTH: KryptonAttributeType = register("horse.jump_strength", 0.7, 0.0, 2.0, true)
 
     @JvmStatic
-    private fun register(name: String, default: Double, min: Double, max: Double, sendToClient: Boolean): KryptonAttributeType =
-        Registries.ATTRIBUTE.register(name, KryptonRangedAttributeType(default, sendToClient, "attribute.name.$name", min, max))
+    private fun register(name: String, default: Double, min: Double, max: Double, sendToClient: Boolean): KryptonAttributeType {
+        val type = KryptonRangedAttributeType(default, sendToClient, "attribute.name.$name", min, max)
+        return KryptonRegistries.register(KryptonRegistries.ATTRIBUTE, Key.key(name), type)
+    }
 }

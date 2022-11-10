@@ -21,9 +21,9 @@ package org.kryptonmc.krypton.item.handler
 import net.kyori.adventure.text.Component
 import org.kryptonmc.api.entity.Hand
 import org.kryptonmc.api.item.ItemTypes
-import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.item.KryptonItemStack
+import org.kryptonmc.krypton.registry.KryptonRegistries
 import org.kryptonmc.krypton.state.property.KryptonProperty
 import org.kryptonmc.krypton.util.findRelative
 import org.kryptonmc.krypton.world.KryptonWorld
@@ -70,7 +70,7 @@ object DebugStickHandler : ItemHandler {
         val block = state.block
         val definition = block.stateDefinition
         val properties = definition.properties
-        val key = Registries.BLOCK.get(block).asString()
+        val key = KryptonRegistries.BLOCK.getKey(block).asString()
         if (properties.isEmpty()) {
             player.sendActionBar(Component.translatable("$TRANSLATION.empty", Component.text(key)))
             return false

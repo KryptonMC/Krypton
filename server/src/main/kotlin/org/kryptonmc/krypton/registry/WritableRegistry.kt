@@ -16,14 +16,21 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.tags
+package org.kryptonmc.krypton.registry
 
-import net.kyori.adventure.key.Key
 import org.kryptonmc.api.registry.Registry
-import org.kryptonmc.api.tags.TagType
+import org.kryptonmc.api.resource.ResourceKey
+import java.util.OptionalInt
 
-@JvmRecord
-data class KryptonTagType<T : Any>(private val key: Key, val path: String, override val registry: Registry<T>) : TagType<T> {
+/**
+ * A registry that may be written to. This subclass exists to limit the scope of registry writing, as registries must be downcasted
+ * to this type in order to access the register methods in this class.
+ */
+abstract class WritableRegistry<T>(key: ResourceKey<out Registry<T>>) : KryptonRegistry<T>(key) {
 
-    override fun key(): Key = key
+    abstract fun register(id: Int, key: ResourceKey<T>, value: T): Holder<T>
+
+    abstract fun register(key: ResourceKey<T>, value: T): Holder<T>
+
+    abstract fun registerOrOverride(id: OptionalInt, key: ResourceKey<T>, value: T): Holder<T>
 }

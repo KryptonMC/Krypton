@@ -24,10 +24,14 @@ import org.kryptonmc.api.effect.sound.SoundEvent
 import org.kryptonmc.api.item.ItemRarity
 import org.kryptonmc.api.item.ItemType
 import org.kryptonmc.api.item.ItemTypes
-import org.kryptonmc.api.registry.Registries
+import org.kryptonmc.api.tags.TagKey
+import org.kryptonmc.krypton.registry.Holder
+import org.kryptonmc.krypton.registry.IntrusiveRegistryObject
+import org.kryptonmc.krypton.registry.KryptonRegistries
 import org.kryptonmc.krypton.util.Keys
 import org.kryptonmc.krypton.world.block.KryptonBlock
 
+@Suppress("LeakingThis") // The 'leak' doesn't need any of the data that wouldn't be initialized, it's just used as a key, so it's fine.
 open class KryptonItemType(
     override val rarity: ItemRarity,
     override val maximumStackSize: Int,
@@ -36,14 +40,15 @@ open class KryptonItemType(
     override val isFireResistant: Boolean,
     override val eatingSound: SoundEvent,
     override val drinkingSound: SoundEvent
-) : ItemType {
+) : ItemType, IntrusiveRegistryObject<KryptonItemType> {
 
     private var descriptionId: String? = null
+    override val builtInRegistryHolder: Holder.Reference<KryptonItemType> = KryptonRegistries.ITEM.createIntrusiveHolder(this)
 
     override val canBreak: Boolean
         get() = durability > 0
 
-    override fun key(): Key = Registries.ITEM.get(this)
+    override fun key(): Key = KryptonRegistries.ITEM.getKey(this)
 
     override fun translationKey(): String = getOrCreateTranslationKey()
 
@@ -52,7 +57,10 @@ open class KryptonItemType(
         return descriptionId!!
     }
 
-    override fun asBlock(): Block = Registries.BLOCK.get(key())
+    override fun asBlock(): Block = KryptonRegistries.BLOCK.get(key())
+
+    @Suppress("UNCHECKED_CAST")
+    fun eq(tag: TagKey<ItemType>): Boolean = builtInRegistryHolder.eq(tag as TagKey<KryptonItemType>)
 
     companion object {
 

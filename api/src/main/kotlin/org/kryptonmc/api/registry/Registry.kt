@@ -10,7 +10,10 @@ package org.kryptonmc.api.registry
 
 import net.kyori.adventure.key.Key
 import org.kryptonmc.api.resource.ResourceKey
+import org.kryptonmc.api.tags.TagKey
+import org.kryptonmc.api.tags.TagSet
 import org.kryptonmc.api.util.CataloguedBy
+import java.util.stream.Stream
 
 /**
  * A holder for registry entries.
@@ -19,7 +22,7 @@ import org.kryptonmc.api.util.CataloguedBy
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
 @CataloguedBy(Registries::class)
-public interface Registry<T> : Map<ResourceKey<T>, T> {
+public interface Registry<T> : Iterable<T> {
 
     /**
      * The registry key for this registry.
@@ -27,10 +30,38 @@ public interface Registry<T> : Map<ResourceKey<T>, T> {
     public val key: ResourceKey<out Registry<T>>
 
     /**
-     * The set of child keys.
+     * All the keys in this registry.
      */
-    @get:JvmName("keys")
-    public val keySet: Set<Key>
+    @get:JvmName("keySet")
+    public val keys: Set<Key>
+
+    /**
+     * All the registry keys in this registry.
+     */
+    @get:JvmName("registryKeySet")
+    public val registryKeys: Set<ResourceKey<T>>
+
+    /**
+     * All the entries in this registry.
+     */
+    @get:JvmName("entrySet")
+    public val entries: Set<Map.Entry<ResourceKey<T>, T>>
+
+    /**
+     * The size of this registry.
+     */
+    @get:JvmName("size")
+    public val size: Int
+
+    /**
+     * All the tag keys in this registry.
+     */
+    public val tagKeys: Set<TagKey<T>>
+
+    /**
+     * All the tags in this registry.
+     */
+    public val tags: Map<TagKey<T>, TagSet<T>>
 
     /**
      * Checks if the given [key] has a registered value in this registry.
@@ -38,7 +69,15 @@ public interface Registry<T> : Map<ResourceKey<T>, T> {
      * @param key the key
      * @return true if the key has a registered value, false otherwise
      */
-    public fun contains(key: Key): Boolean
+    public fun containsKey(key: Key): Boolean
+
+    /**
+     * Checks if the given [key] has a registered value in this registry.
+     *
+     * @param key the resource key
+     * @return true if the key has a registered value, false otherwise
+     */
+    public fun containsKey(key: ResourceKey<T>): Boolean
 
     /**
      * Gets a value by its namespaced [key], or null if there is no value
@@ -50,13 +89,22 @@ public interface Registry<T> : Map<ResourceKey<T>, T> {
     public fun get(key: Key): T?
 
     /**
+     * Gets a value by its resource [key], or null if there is no value
+     * associated with the given [key].
+     *
+     * @param key the resource key
+     * @return the value, or null if not present
+     */
+    public fun get(key: ResourceKey<T>): T?
+
+    /**
      * Gets a namespaced [Key] by its [value], or null if there is no key
      * associated with the given [value].
      *
      * @param value the value
      * @return the key, or null if not present
      */
-    public fun get(value: T): Key?
+    public fun getKey(value: T): Key?
 
     /**
      * Gets the [ResourceKey] for the given [value], or null if there is no key
@@ -65,37 +113,21 @@ public interface Registry<T> : Map<ResourceKey<T>, T> {
      * @param value the value
      * @return the resource key, or null if not present
      */
-    public fun resourceKey(value: T): ResourceKey<T>?
+    public fun getResourceKey(value: T): ResourceKey<T>?
 
     /**
-     * Registers a new value to this registry with the given registry [key]
-     * and value.
+     * Gets the tag values for the given [key], or returns null if there are no
+     * tag values associated with the given [key].
      *
-     * @param V the type of value
-     * @param key the registry key
-     * @param value the value
-     * @return the value
+     * @param key the tag key
+     * @return the tag set encapsulating the values for the tag
      */
-    public fun <V : T> register(key: ResourceKey<T>, value: V): V
+    public fun getTag(key: TagKey<T>): TagSet<T>?
 
     /**
-     * Registers a new value to this registry with the given registry [key]
-     * and value.
+     * Creates a new stream of the elements in this registry.
      *
-     * @param V the type of value
-     * @param key the key
-     * @param value the value
+     * @return a new stream of this registry
      */
-    public fun <V : T> register(key: String, value: V): V = register(Key.key(key), value)
-
-    /**
-     * Registers a new value to this registry with the given registry [key]
-     * and value.
-     *
-     * @param V the type of value
-     * @param key the registry key
-     * @param value the value
-     * @return the value
-     */
-    public fun <V : T> register(key: Key, value: V): V
+    public fun stream(): Stream<T>
 }

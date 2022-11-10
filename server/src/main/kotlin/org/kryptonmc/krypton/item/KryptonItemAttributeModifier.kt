@@ -23,9 +23,9 @@ import org.kryptonmc.api.entity.EquipmentSlot
 import org.kryptonmc.api.entity.attribute.AttributeType
 import org.kryptonmc.api.entity.attribute.BasicModifierOperation
 import org.kryptonmc.api.item.ItemAttributeModifier
-import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.krypton.entity.EquipmentSlots
 import org.kryptonmc.krypton.entity.attribute.KryptonAttributeModifier
+import org.kryptonmc.krypton.registry.KryptonRegistries
 import org.kryptonmc.nbt.CompoundTag
 import java.util.UUID
 import java.util.function.Supplier
@@ -64,7 +64,7 @@ class KryptonItemAttributeModifier(
 
         @JvmStatic
         fun from(data: CompoundTag): KryptonItemAttributeModifier? {
-            val type = Registries.ATTRIBUTE.get(Key.key(data.getString("AttributeName"))) ?: return null
+            val type = KryptonRegistries.ATTRIBUTE.get(Key.key(data.getString("AttributeName"))) ?: return null
             val slot = EquipmentSlots.fromName(data.getString("Slot")) ?: return null
             return try {
                 KryptonItemAttributeModifier(type, slot, getId(data), data.getString("Name"), data.getDouble("Amount"), getOperation(data))

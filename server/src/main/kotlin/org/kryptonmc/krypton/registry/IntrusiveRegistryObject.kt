@@ -16,19 +16,13 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.world.block.entity
+package org.kryptonmc.krypton.registry
 
-import com.google.gson.JsonObject
-import net.kyori.adventure.key.Key
-import org.kryptonmc.api.block.entity.BlockEntityType
-import org.kryptonmc.api.registry.Registries
-import org.kryptonmc.krypton.util.KryptonDataLoader
-import org.kryptonmc.krypton.util.mapPersistentSet
+/**
+ * A marker interface for registry objects (those designed for storage in registries) that provides the built-in registry
+ * holder for the object, which must always use an intrusive reference.
+ */
+interface IntrusiveRegistryObject<T> {
 
-object BlockEntityLoader : KryptonDataLoader<BlockEntityType>("block_entities", Registries.BLOCK_ENTITY_TYPE) {
-
-    override fun create(key: Key, value: JsonObject): BlockEntityType {
-        val blocks = value.get("blocks").asJsonArray.mapPersistentSet { Registries.BLOCK.get(Key.key(it.asJsonObject.get("id").asString)) }
-        return KryptonBlockEntityType(key, blocks)
-    }
+    val builtInRegistryHolder: Holder.Reference<T>
 }

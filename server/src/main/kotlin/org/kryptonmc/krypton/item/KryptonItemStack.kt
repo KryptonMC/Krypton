@@ -27,18 +27,18 @@ import org.kryptonmc.api.item.ItemType
 import org.kryptonmc.api.item.ItemTypes
 import org.kryptonmc.api.item.meta.ItemMeta
 import org.kryptonmc.api.item.meta.ItemMetaBuilder
-import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.krypton.item.meta.AbstractItemMeta
 import org.kryptonmc.krypton.item.meta.KryptonItemMeta
+import org.kryptonmc.krypton.registry.KryptonRegistries
 import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.ImmutableCompoundTag
 import java.util.function.Consumer
 import java.util.function.UnaryOperator
 
 @JvmRecord
-data class KryptonItemStack(override val type: ItemType, override val amount: Int, override val meta: AbstractItemMeta<*>) : ItemStack {
+data class KryptonItemStack(override val type: KryptonItemType, override val amount: Int, override val meta: AbstractItemMeta<*>) : ItemStack {
 
-    constructor(like: ItemLike) : this(like.asItem(), 1, KryptonItemMeta.DEFAULT)
+    constructor(like: ItemLike) : this(like.asItem().downcast(), 1, KryptonItemMeta.DEFAULT)
 
     fun save(tag: CompoundTag.Builder): CompoundTag.Builder = tag.apply {
         putString("id", type.key().asString())
@@ -56,7 +56,7 @@ data class KryptonItemStack(override val type: ItemType, override val amount: In
 
     override fun withType(type: ItemType): KryptonItemStack {
         if (type == this.type) return this
-        return KryptonItemStack(type, amount, meta)
+        return KryptonItemStack(type.downcast(), amount, meta)
     }
 
     override fun withAmount(amount: Int): KryptonItemStack {
@@ -87,7 +87,7 @@ data class KryptonItemStack(override val type: ItemType, override val amount: In
 
     class Builder() : ItemStack.Builder {
 
-        private var type: ItemType = ItemTypes.AIR
+        private var type: KryptonItemType = ItemTypes.AIR.downcast()
         private var amount = 1
         private var meta: AbstractItemMeta<*> = KryptonItemMeta.DEFAULT
 
@@ -97,7 +97,7 @@ data class KryptonItemStack(override val type: ItemType, override val amount: In
             meta = item.meta
         }
 
-        override fun type(type: ItemType): Builder = apply { this.type = type }
+        override fun type(type: ItemType): Builder = apply { this.type = type.downcast() }
 
         override fun amount(amount: Int): Builder = apply {
             require(amount in 1..type.maximumStackSize) { "Item amount must be between 1 and ${type.maximumStackSize}, was $amount!" }
@@ -142,7 +142,7 @@ data class KryptonItemStack(override val type: ItemType, override val amount: In
 
         @JvmStatic
         fun from(data: CompoundTag): KryptonItemStack {
-            val type = Registries.ITEM.get(Key.key(data.getString("id")))
+            val type = KryptonRegistries.ITEM.get(Key.key(data.getString("id")))
             return KryptonItemStack(type, data.getInt("Count"), ItemFactory.create(type, data.getCompound("tag")))
         }
     }

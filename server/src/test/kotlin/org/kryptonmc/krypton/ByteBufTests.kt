@@ -27,15 +27,18 @@ import org.junit.jupiter.api.assertThrows
 import org.kryptonmc.api.item.ItemTypes
 import org.kryptonmc.api.item.item
 import org.kryptonmc.krypton.item.KryptonItemStack
+import org.kryptonmc.krypton.item.downcast
 import org.kryptonmc.krypton.registry.KryptonRegistries
 import org.kryptonmc.krypton.util.Bootstrap
 import org.kryptonmc.krypton.util.readAllAvailableBytes
 import org.kryptonmc.krypton.util.readAvailableBytes
+import org.kryptonmc.krypton.util.readById
 import org.kryptonmc.krypton.util.readItem
 import org.kryptonmc.krypton.util.readNBT
 import org.kryptonmc.krypton.util.readString
 import org.kryptonmc.krypton.util.readVarInt
 import org.kryptonmc.krypton.util.readVarIntByteArray
+import org.kryptonmc.krypton.util.writeId
 import org.kryptonmc.krypton.util.writeItem
 import org.kryptonmc.krypton.util.writeLongArray
 import org.kryptonmc.krypton.util.writeNBT
@@ -192,7 +195,7 @@ class ByteBufTests {
         assertEquals(0, buffer.readableBytes())
         buffer.clear()
         buffer.writeByte(0)
-        assertTrue(buffer.readNBT().isEmpty())
+        assertTrue(buffer.readNBT().isEmpty)
     }
 
     @Test
@@ -203,14 +206,11 @@ class ByteBufTests {
         assertEquals(0, buffer.readableBytes())
         buffer.clear()
 
-        val item = item {
-            type(ItemTypes.STONE)
-            amount(3)
-            meta { name(Component.text("Hello World!")) }
-        } as KryptonItemStack
+        val type = ItemTypes.STONE.downcast()
+        val item = KryptonItemStack.Builder().type(type).amount(3).meta { name(Component.text("Hello World!")) }.build()
         buffer.writeItem(item)
         assertEquals(true, buffer.readBoolean())
-        assertEquals(KryptonRegistries.ITEM.idOf(ItemTypes.STONE), buffer.readVarInt())
+        assertEquals(type, buffer.readById(KryptonRegistries.ITEM))
         assertEquals(3, buffer.readByte())
         assertEquals(item.meta.data, buffer.readNBT())
     }
@@ -222,13 +222,9 @@ class ByteBufTests {
         assertSame(KryptonItemStack.EMPTY, buffer.readItem())
         buffer.clear()
 
-        val item = item {
-            type(ItemTypes.STONE)
-            amount(3)
-            meta { name(Component.text("Hello World!")) }
-        } as KryptonItemStack
+        val item = KryptonItemStack.Builder().type(ItemTypes.STONE).amount(3).meta { name(Component.text("Hello World!")) }.build()
         buffer.writeBoolean(true)
-        buffer.writeVarInt(KryptonRegistries.ITEM.idOf(ItemTypes.STONE))
+        buffer.writeId(KryptonRegistries.ITEM, item.type)
         buffer.writeByte(3)
         buffer.writeNBT(item.meta.data)
         assertEquals(item, buffer.readItem())

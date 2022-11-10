@@ -8,33 +8,32 @@
  */
 package org.kryptonmc.api.tags
 
-import org.kryptonmc.api.Krypton
+import net.kyori.adventure.key.Key
 import org.kryptonmc.api.block.entity.banner.BannerPatternType
-import org.kryptonmc.api.util.Catalogue
+import org.kryptonmc.api.resource.ResourceKeys
 
 /**
  * This file is auto-generated. Do not edit this manually!
  */
-@Catalogue(Tag::class)
 public object BannerPatternTags {
 
     // @formatter:off
     @JvmField
-    public val NO_ITEM_REQUIRED: Tag<BannerPatternType> = get("no_item_required")
+    public val NO_ITEM_REQUIRED: TagKey<BannerPatternType> = get("no_item_required")
     @JvmField
-    public val PATTERN_ITEM_FLOWER: Tag<BannerPatternType> = get("pattern_item/flower")
+    public val PATTERN_ITEM_FLOWER: TagKey<BannerPatternType> = get("pattern_item/flower")
     @JvmField
-    public val PATTERN_ITEM_CREEPER: Tag<BannerPatternType> = get("pattern_item/creeper")
+    public val PATTERN_ITEM_CREEPER: TagKey<BannerPatternType> = get("pattern_item/creeper")
     @JvmField
-    public val PATTERN_ITEM_SKULL: Tag<BannerPatternType> = get("pattern_item/skull")
+    public val PATTERN_ITEM_SKULL: TagKey<BannerPatternType> = get("pattern_item/skull")
     @JvmField
-    public val PATTERN_ITEM_MOJANG: Tag<BannerPatternType> = get("pattern_item/mojang")
+    public val PATTERN_ITEM_MOJANG: TagKey<BannerPatternType> = get("pattern_item/mojang")
     @JvmField
-    public val PATTERN_ITEM_GLOBE: Tag<BannerPatternType> = get("pattern_item/globe")
+    public val PATTERN_ITEM_GLOBE: TagKey<BannerPatternType> = get("pattern_item/globe")
     @JvmField
-    public val PATTERN_ITEM_PIGLIN: Tag<BannerPatternType> = get("pattern_item/piglin")
+    public val PATTERN_ITEM_PIGLIN: TagKey<BannerPatternType> = get("pattern_item/piglin")
 
     // @formatter:on
     @JvmStatic
-    private fun get(key: String): Tag<BannerPatternType> = Krypton.tag(TagTypes.BANNER_PATTERNS, "minecraft:$key")!!
+    public fun get(key: String): TagKey<BannerPatternType> = TagKey.of(ResourceKeys.BANNER_PATTERN, Key.key(key))
 }

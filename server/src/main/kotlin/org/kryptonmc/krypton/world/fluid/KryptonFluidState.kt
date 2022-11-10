@@ -22,7 +22,7 @@ import com.google.common.collect.ImmutableMap
 import org.kryptonmc.api.block.BlockState
 import org.kryptonmc.api.fluid.Fluid
 import org.kryptonmc.api.fluid.FluidState
-import org.kryptonmc.api.tags.Tag
+import org.kryptonmc.api.tags.TagKey
 import org.kryptonmc.krypton.registry.KryptonRegistries
 import org.kryptonmc.krypton.state.KryptonState
 import org.kryptonmc.krypton.state.StateDelegate
@@ -31,6 +31,7 @@ import org.kryptonmc.krypton.world.BlockAccessor
 import org.kryptonmc.serialization.Codec
 import org.kryptonmc.serialization.MapCodec
 import org.spongepowered.math.vector.Vector3d
+import java.util.stream.Stream
 
 class KryptonFluidState(
     override val fluid: KryptonFluid,
@@ -50,9 +51,12 @@ class KryptonFluidState(
 
     fun getFlow(world: BlockAccessor, x: Int, y: Int, z: Int): Vector3d = fluid.getFlow(world, x, y, z, this)
 
-    fun eq(tag: Tag<Fluid>): Boolean = tag.contains(fluid)
+    @Suppress("UNCHECKED_CAST")
+    fun eq(tag: TagKey<Fluid>): Boolean = fluid.builtInRegistryHolder.eq(tag as TagKey<KryptonFluid>)
 
     fun eq(block: Fluid): Boolean = this.fluid === block
+
+    fun tags(): Stream<TagKey<KryptonFluid>> = owner.builtInRegistryHolder.tags()
 
     override fun asBlock(): BlockState = fluid.asBlock(this)
 
@@ -60,9 +64,7 @@ class KryptonFluidState(
 
     companion object {
 
-        // FIXME: Don't cast this when we update the way we do registries.
         @JvmField
-        @Suppress("UNCHECKED_CAST")
-        val CODEC: Codec<KryptonFluidState> = codec(KryptonRegistries.FLUID.byNameCodec() as Codec<KryptonFluid>, KryptonFluid::defaultState).stable()
+        val CODEC: Codec<KryptonFluidState> = codec(KryptonRegistries.FLUID.byNameCodec(), KryptonFluid::defaultState).stable()
     }
 }

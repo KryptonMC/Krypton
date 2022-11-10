@@ -18,7 +18,8 @@
  */
 package org.kryptonmc.krypton.world.block
 
-import org.kryptonmc.api.registry.Registries
+import net.kyori.adventure.key.Key
+import org.kryptonmc.krypton.registry.KryptonRegistries
 import org.kryptonmc.krypton.world.block.state.BlockBehaviour.Properties
 import org.kryptonmc.krypton.world.material.Materials
 
@@ -29,5 +30,5 @@ object KryptonBlocks {
     val AIR: KryptonBlock = register("air", AirBlock(Properties.of(Materials.AIR).noCollision().noLootTable().air()))
 
     @JvmStatic
-    private fun register(key: String, block: KryptonBlock): KryptonBlock = Registries.BLOCK.register(key, block)
+    private fun register(key: String, block: KryptonBlock): KryptonBlock = KryptonRegistries.register(KryptonRegistries.BLOCK, Key.key(key), block)
 }

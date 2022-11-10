@@ -18,13 +18,14 @@
  */
 package org.kryptonmc.krypton.world.biome
 
-import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.api.resource.ResourceKey
 import org.kryptonmc.api.world.biome.Biome
+import org.kryptonmc.krypton.registry.KryptonRegistries
 
-object KryptonBiomes {
+object KryptonBiomeRegistrar {
 
-    init {
+    @JvmStatic
+    fun bootstrap() {
         register(BiomeKeys.THE_VOID, OverworldBiomes.theVoid())
         register(BiomeKeys.PLAINS, OverworldBiomes.plains())
         register(BiomeKeys.SUNFLOWER_PLAINS, OverworldBiomes.sunflowerPlains())
@@ -91,5 +92,6 @@ object KryptonBiomes {
     }
 
     @JvmStatic
-    private fun register(key: ResourceKey<Biome>, biome: KryptonBiome): KryptonBiome = Registries.BIOME.register(key, biome)
+    private fun register(key: ResourceKey<Biome>, biome: KryptonBiome): KryptonBiome =
+        KryptonRegistries.register(KryptonRegistries.BIOME, key, biome)
 }

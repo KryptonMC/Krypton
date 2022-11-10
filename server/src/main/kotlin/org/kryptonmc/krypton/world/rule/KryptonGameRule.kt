@@ -19,18 +19,18 @@
 package org.kryptonmc.krypton.world.rule
 
 import net.kyori.adventure.key.Key
-import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.api.world.rule.GameRule
+import org.kryptonmc.krypton.registry.KryptonRegistries
 
 @JvmRecord
-data class KryptonGameRule<V : Any>(override val name: String, override val default: V) : GameRule<V> {
+data class KryptonGameRule<V>(override val name: String, override val defaultValue: V) : GameRule<V> {
 
-    override fun key(): Key = Registries.GAME_RULES.get(this)!!
+    override fun key(): Key = KryptonRegistries.GAME_RULES.getKey(this)!!
 
     override fun translationKey(): String = "gamerule.$name"
 
     object Factory : GameRule.Factory {
 
-        override fun <V : Any> of(name: String, default: V): GameRule<V> = KryptonGameRule(name, default)
+        override fun <V> of(name: String, defaultValue: V): GameRule<V> = KryptonGameRule(name, defaultValue)
     }
 }

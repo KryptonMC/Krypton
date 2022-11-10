@@ -27,5 +27,5 @@ interface IntBiMap<T> : Iterable<T> {
 
     fun get(id: Int): T?
 
-    fun idOf(value: T): Int
+    fun getId(value: T): Int
 }

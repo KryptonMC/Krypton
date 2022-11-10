@@ -8,147 +8,146 @@
  */
 package org.kryptonmc.api.tags
 
-import org.kryptonmc.api.Krypton
-import org.kryptonmc.api.util.Catalogue
+import net.kyori.adventure.key.Key
+import org.kryptonmc.api.resource.ResourceKeys
 import org.kryptonmc.api.world.biome.Biome
 
 /**
  * This file is auto-generated. Do not edit this manually!
  */
-@Catalogue(Tag::class)
 public object BiomeTags {
 
     // @formatter:off
     @JvmField
-    public val IS_DEEP_OCEAN: Tag<Biome> = get("is_deep_ocean")
+    public val IS_DEEP_OCEAN: TagKey<Biome> = get("is_deep_ocean")
     @JvmField
-    public val IS_OCEAN: Tag<Biome> = get("is_ocean")
+    public val IS_OCEAN: TagKey<Biome> = get("is_ocean")
     @JvmField
-    public val IS_BEACH: Tag<Biome> = get("is_beach")
+    public val IS_BEACH: TagKey<Biome> = get("is_beach")
     @JvmField
-    public val IS_RIVER: Tag<Biome> = get("is_river")
+    public val IS_RIVER: TagKey<Biome> = get("is_river")
     @JvmField
-    public val IS_MOUNTAIN: Tag<Biome> = get("is_mountain")
+    public val IS_MOUNTAIN: TagKey<Biome> = get("is_mountain")
     @JvmField
-    public val IS_BADLANDS: Tag<Biome> = get("is_badlands")
+    public val IS_BADLANDS: TagKey<Biome> = get("is_badlands")
     @JvmField
-    public val IS_HILL: Tag<Biome> = get("is_hill")
+    public val IS_HILL: TagKey<Biome> = get("is_hill")
     @JvmField
-    public val IS_TAIGA: Tag<Biome> = get("is_taiga")
+    public val IS_TAIGA: TagKey<Biome> = get("is_taiga")
     @JvmField
-    public val IS_JUNGLE: Tag<Biome> = get("is_jungle")
+    public val IS_JUNGLE: TagKey<Biome> = get("is_jungle")
     @JvmField
-    public val IS_FOREST: Tag<Biome> = get("is_forest")
+    public val IS_FOREST: TagKey<Biome> = get("is_forest")
     @JvmField
-    public val IS_SAVANNA: Tag<Biome> = get("is_savanna")
+    public val IS_SAVANNA: TagKey<Biome> = get("is_savanna")
     @JvmField
-    public val IS_OVERWORLD: Tag<Biome> = get("is_overworld")
+    public val IS_OVERWORLD: TagKey<Biome> = get("is_overworld")
     @JvmField
-    public val IS_NETHER: Tag<Biome> = get("is_nether")
+    public val IS_NETHER: TagKey<Biome> = get("is_nether")
     @JvmField
-    public val IS_END: Tag<Biome> = get("is_end")
+    public val IS_END: TagKey<Biome> = get("is_end")
     @JvmField
-    public val STRONGHOLD_BIASED_TO: Tag<Biome> = get("stronghold_biased_to")
+    public val STRONGHOLD_BIASED_TO: TagKey<Biome> = get("stronghold_biased_to")
     @JvmField
-    public val HAS_BURIED_TREASURE: Tag<Biome> = get("has_structure/buried_treasure")
+    public val HAS_BURIED_TREASURE: TagKey<Biome> = get("has_structure/buried_treasure")
     @JvmField
-    public val HAS_DESERT_PYRAMID: Tag<Biome> = get("has_structure/desert_pyramid")
+    public val HAS_DESERT_PYRAMID: TagKey<Biome> = get("has_structure/desert_pyramid")
     @JvmField
-    public val HAS_IGLOO: Tag<Biome> = get("has_structure/igloo")
+    public val HAS_IGLOO: TagKey<Biome> = get("has_structure/igloo")
     @JvmField
-    public val HAS_JUNGLE_TEMPLE: Tag<Biome> = get("has_structure/jungle_temple")
+    public val HAS_JUNGLE_TEMPLE: TagKey<Biome> = get("has_structure/jungle_temple")
     @JvmField
-    public val HAS_MINESHAFT: Tag<Biome> = get("has_structure/mineshaft")
+    public val HAS_MINESHAFT: TagKey<Biome> = get("has_structure/mineshaft")
     @JvmField
-    public val HAS_MINESHAFT_MESA: Tag<Biome> = get("has_structure/mineshaft_mesa")
+    public val HAS_MINESHAFT_MESA: TagKey<Biome> = get("has_structure/mineshaft_mesa")
     @JvmField
-    public val HAS_OCEAN_MONUMENT: Tag<Biome> = get("has_structure/ocean_monument")
+    public val HAS_OCEAN_MONUMENT: TagKey<Biome> = get("has_structure/ocean_monument")
     @JvmField
-    public val HAS_OCEAN_RUIN_COLD: Tag<Biome> = get("has_structure/ocean_ruin_cold")
+    public val HAS_OCEAN_RUIN_COLD: TagKey<Biome> = get("has_structure/ocean_ruin_cold")
     @JvmField
-    public val HAS_OCEAN_RUIN_WARM: Tag<Biome> = get("has_structure/ocean_ruin_warm")
+    public val HAS_OCEAN_RUIN_WARM: TagKey<Biome> = get("has_structure/ocean_ruin_warm")
     @JvmField
-    public val HAS_PILLAGER_OUTPOST: Tag<Biome> = get("has_structure/pillager_outpost")
+    public val HAS_PILLAGER_OUTPOST: TagKey<Biome> = get("has_structure/pillager_outpost")
     @JvmField
-    public val HAS_RUINED_PORTAL_DESERT: Tag<Biome> = get("has_structure/ruined_portal_desert")
+    public val HAS_RUINED_PORTAL_DESERT: TagKey<Biome> = get("has_structure/ruined_portal_desert")
     @JvmField
-    public val HAS_RUINED_PORTAL_JUNGLE: Tag<Biome> = get("has_structure/ruined_portal_jungle")
+    public val HAS_RUINED_PORTAL_JUNGLE: TagKey<Biome> = get("has_structure/ruined_portal_jungle")
     @JvmField
-    public val HAS_RUINED_PORTAL_OCEAN: Tag<Biome> = get("has_structure/ruined_portal_ocean")
+    public val HAS_RUINED_PORTAL_OCEAN: TagKey<Biome> = get("has_structure/ruined_portal_ocean")
     @JvmField
-    public val HAS_RUINED_PORTAL_SWAMP: Tag<Biome> = get("has_structure/ruined_portal_swamp")
+    public val HAS_RUINED_PORTAL_SWAMP: TagKey<Biome> = get("has_structure/ruined_portal_swamp")
     @JvmField
-    public val HAS_RUINED_PORTAL_MOUNTAIN: Tag<Biome> = get("has_structure/ruined_portal_mountain")
+    public val HAS_RUINED_PORTAL_MOUNTAIN: TagKey<Biome> = get("has_structure/ruined_portal_mountain")
     @JvmField
-    public val HAS_RUINED_PORTAL_STANDARD: Tag<Biome> = get("has_structure/ruined_portal_standard")
+    public val HAS_RUINED_PORTAL_STANDARD: TagKey<Biome> = get("has_structure/ruined_portal_standard")
     @JvmField
-    public val HAS_SHIPWRECK_BEACHED: Tag<Biome> = get("has_structure/shipwreck_beached")
+    public val HAS_SHIPWRECK_BEACHED: TagKey<Biome> = get("has_structure/shipwreck_beached")
     @JvmField
-    public val HAS_SHIPWRECK: Tag<Biome> = get("has_structure/shipwreck")
+    public val HAS_SHIPWRECK: TagKey<Biome> = get("has_structure/shipwreck")
     @JvmField
-    public val HAS_STRONGHOLD: Tag<Biome> = get("has_structure/stronghold")
+    public val HAS_STRONGHOLD: TagKey<Biome> = get("has_structure/stronghold")
     @JvmField
-    public val HAS_SWAMP_HUT: Tag<Biome> = get("has_structure/swamp_hut")
+    public val HAS_SWAMP_HUT: TagKey<Biome> = get("has_structure/swamp_hut")
     @JvmField
-    public val HAS_VILLAGE_DESERT: Tag<Biome> = get("has_structure/village_desert")
+    public val HAS_VILLAGE_DESERT: TagKey<Biome> = get("has_structure/village_desert")
     @JvmField
-    public val HAS_VILLAGE_PLAINS: Tag<Biome> = get("has_structure/village_plains")
+    public val HAS_VILLAGE_PLAINS: TagKey<Biome> = get("has_structure/village_plains")
     @JvmField
-    public val HAS_VILLAGE_SAVANNA: Tag<Biome> = get("has_structure/village_savanna")
+    public val HAS_VILLAGE_SAVANNA: TagKey<Biome> = get("has_structure/village_savanna")
     @JvmField
-    public val HAS_VILLAGE_SNOWY: Tag<Biome> = get("has_structure/village_snowy")
+    public val HAS_VILLAGE_SNOWY: TagKey<Biome> = get("has_structure/village_snowy")
     @JvmField
-    public val HAS_VILLAGE_TAIGA: Tag<Biome> = get("has_structure/village_taiga")
+    public val HAS_VILLAGE_TAIGA: TagKey<Biome> = get("has_structure/village_taiga")
     @JvmField
-    public val HAS_WOODLAND_MANSION: Tag<Biome> = get("has_structure/woodland_mansion")
+    public val HAS_WOODLAND_MANSION: TagKey<Biome> = get("has_structure/woodland_mansion")
     @JvmField
-    public val HAS_NETHER_FORTRESS: Tag<Biome> = get("has_structure/nether_fortress")
+    public val HAS_NETHER_FORTRESS: TagKey<Biome> = get("has_structure/nether_fortress")
     @JvmField
-    public val HAS_NETHER_FOSSIL: Tag<Biome> = get("has_structure/nether_fossil")
+    public val HAS_NETHER_FOSSIL: TagKey<Biome> = get("has_structure/nether_fossil")
     @JvmField
-    public val HAS_BASTION_REMNANT: Tag<Biome> = get("has_structure/bastion_remnant")
+    public val HAS_BASTION_REMNANT: TagKey<Biome> = get("has_structure/bastion_remnant")
     @JvmField
-    public val HAS_ANCIENT_CITY: Tag<Biome> = get("has_structure/ancient_city")
+    public val HAS_ANCIENT_CITY: TagKey<Biome> = get("has_structure/ancient_city")
     @JvmField
-    public val HAS_RUINED_PORTAL_NETHER: Tag<Biome> = get("has_structure/ruined_portal_nether")
+    public val HAS_RUINED_PORTAL_NETHER: TagKey<Biome> = get("has_structure/ruined_portal_nether")
     @JvmField
-    public val HAS_END_CITY: Tag<Biome> = get("has_structure/end_city")
+    public val HAS_END_CITY: TagKey<Biome> = get("has_structure/end_city")
     @JvmField
-    public val REQUIRED_OCEAN_MONUMENT_SURROUNDING: Tag<Biome> = get("required_ocean_monument_surrounding")
+    public val REQUIRED_OCEAN_MONUMENT_SURROUNDING: TagKey<Biome> = get("required_ocean_monument_surrounding")
     @JvmField
-    public val MINESHAFT_BLOCKING: Tag<Biome> = get("mineshaft_blocking")
+    public val MINESHAFT_BLOCKING: TagKey<Biome> = get("mineshaft_blocking")
     @JvmField
-    public val PLAYS_UNDERWATER_MUSIC: Tag<Biome> = get("plays_underwater_music")
+    public val PLAYS_UNDERWATER_MUSIC: TagKey<Biome> = get("plays_underwater_music")
     @JvmField
-    public val HAS_CLOSER_WATER_FOG: Tag<Biome> = get("has_closer_water_fog")
+    public val HAS_CLOSER_WATER_FOG: TagKey<Biome> = get("has_closer_water_fog")
     @JvmField
-    public val WATER_ON_MAP_OUTLINES: Tag<Biome> = get("water_on_map_outlines")
+    public val WATER_ON_MAP_OUTLINES: TagKey<Biome> = get("water_on_map_outlines")
     @JvmField
-    public val PRODUCES_CORALS_FROM_BONEMEAL: Tag<Biome> = get("produces_corals_from_bonemeal")
+    public val PRODUCES_CORALS_FROM_BONEMEAL: TagKey<Biome> = get("produces_corals_from_bonemeal")
     @JvmField
-    public val WITHOUT_ZOMBIE_SIEGES: Tag<Biome> = get("without_zombie_sieges")
+    public val WITHOUT_ZOMBIE_SIEGES: TagKey<Biome> = get("without_zombie_sieges")
     @JvmField
-    public val WITHOUT_PATROL_SPAWNS: Tag<Biome> = get("without_patrol_spawns")
+    public val WITHOUT_PATROL_SPAWNS: TagKey<Biome> = get("without_patrol_spawns")
     @JvmField
-    public val WITHOUT_WANDERING_TRADER_SPAWNS: Tag<Biome> = get("without_wandering_trader_spawns")
+    public val WITHOUT_WANDERING_TRADER_SPAWNS: TagKey<Biome> = get("without_wandering_trader_spawns")
     @JvmField
-    public val SPAWNS_COLD_VARIANT_FROGS: Tag<Biome> = get("spawns_cold_variant_frogs")
+    public val SPAWNS_COLD_VARIANT_FROGS: TagKey<Biome> = get("spawns_cold_variant_frogs")
     @JvmField
-    public val SPAWNS_WARM_VARIANT_FROGS: Tag<Biome> = get("spawns_warm_variant_frogs")
+    public val SPAWNS_WARM_VARIANT_FROGS: TagKey<Biome> = get("spawns_warm_variant_frogs")
     @JvmField
-    public val ONLY_ALLOWS_SNOW_AND_GOLD_RABBITS: Tag<Biome> = get("only_allows_snow_and_gold_rabbits")
+    public val ONLY_ALLOWS_SNOW_AND_GOLD_RABBITS: TagKey<Biome> = get("only_allows_snow_and_gold_rabbits")
     @JvmField
-    public val REDUCED_WATER_AMBIENT_SPAWNS: Tag<Biome> = get("reduce_water_ambient_spawns")
+    public val REDUCED_WATER_AMBIENT_SPAWNS: TagKey<Biome> = get("reduce_water_ambient_spawns")
     @JvmField
-    public val ALLOWS_TROPICAL_FISH_SPAWNS_AT_ANY_HEIGHT: Tag<Biome> = get("allows_tropical_fish_spawns_at_any_height")
+    public val ALLOWS_TROPICAL_FISH_SPAWNS_AT_ANY_HEIGHT: TagKey<Biome> = get("allows_tropical_fish_spawns_at_any_height")
     @JvmField
-    public val POLAR_BEARS_SPAWN_ON_ALTERNATE_BLOCKS: Tag<Biome> = get("polar_bears_spawn_on_alternate_blocks")
+    public val POLAR_BEARS_SPAWN_ON_ALTERNATE_BLOCKS: TagKey<Biome> = get("polar_bears_spawn_on_alternate_blocks")
     @JvmField
-    public val MORE_FREQUENT_DROWNED_SPAWNS: Tag<Biome> = get("more_frequent_drowned_spawns")
+    public val MORE_FREQUENT_DROWNED_SPAWNS: TagKey<Biome> = get("more_frequent_drowned_spawns")
     @JvmField
-    public val ALLOWS_SURFACE_SLIME_SPAWNS: Tag<Biome> = get("allows_surface_slime_spawns")
+    public val ALLOWS_SURFACE_SLIME_SPAWNS: TagKey<Biome> = get("allows_surface_slime_spawns")
 
     // @formatter:on
     @JvmStatic
-    private fun get(key: String): Tag<Biome> = Krypton.tag(TagTypes.BIOMES, "minecraft:$key")!!
+    public fun get(key: String): TagKey<Biome> = TagKey.of(ResourceKeys.BIOME, Key.key(key))
 }

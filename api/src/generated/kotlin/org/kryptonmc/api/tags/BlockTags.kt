@@ -8,323 +8,322 @@
  */
 package org.kryptonmc.api.tags
 
-import org.kryptonmc.api.Krypton
+import net.kyori.adventure.key.Key
 import org.kryptonmc.api.block.Block
-import org.kryptonmc.api.util.Catalogue
+import org.kryptonmc.api.resource.ResourceKeys
 
 /**
  * This file is auto-generated. Do not edit this manually!
  */
-@Catalogue(Tag::class)
 public object BlockTags {
 
     // @formatter:off
     @JvmField
-    public val WOOL: Tag<Block> = get("wool")
+    public val WOOL: TagKey<Block> = get("wool")
     @JvmField
-    public val PLANKS: Tag<Block> = get("planks")
+    public val PLANKS: TagKey<Block> = get("planks")
     @JvmField
-    public val STONE_BRICKS: Tag<Block> = get("stone_bricks")
+    public val STONE_BRICKS: TagKey<Block> = get("stone_bricks")
     @JvmField
-    public val WOODEN_BUTTONS: Tag<Block> = get("wooden_buttons")
+    public val WOODEN_BUTTONS: TagKey<Block> = get("wooden_buttons")
     @JvmField
-    public val BUTTONS: Tag<Block> = get("buttons")
+    public val BUTTONS: TagKey<Block> = get("buttons")
     @JvmField
-    public val WOOL_CARPETS: Tag<Block> = get("wool_carpets")
+    public val WOOL_CARPETS: TagKey<Block> = get("wool_carpets")
     @JvmField
-    public val WOODEN_DOORS: Tag<Block> = get("wooden_doors")
+    public val WOODEN_DOORS: TagKey<Block> = get("wooden_doors")
     @JvmField
-    public val WOODEN_STAIRS: Tag<Block> = get("wooden_stairs")
+    public val WOODEN_STAIRS: TagKey<Block> = get("wooden_stairs")
     @JvmField
-    public val WOODEN_SLABS: Tag<Block> = get("wooden_slabs")
+    public val WOODEN_SLABS: TagKey<Block> = get("wooden_slabs")
     @JvmField
-    public val WOODEN_FENCES: Tag<Block> = get("wooden_fences")
+    public val WOODEN_FENCES: TagKey<Block> = get("wooden_fences")
     @JvmField
-    public val PRESSURE_PLATES: Tag<Block> = get("pressure_plates")
+    public val PRESSURE_PLATES: TagKey<Block> = get("pressure_plates")
     @JvmField
-    public val WOODEN_PRESSURE_PLATES: Tag<Block> = get("wooden_pressure_plates")
+    public val WOODEN_PRESSURE_PLATES: TagKey<Block> = get("wooden_pressure_plates")
     @JvmField
-    public val STONE_PRESSURE_PLATES: Tag<Block> = get("stone_pressure_plates")
+    public val STONE_PRESSURE_PLATES: TagKey<Block> = get("stone_pressure_plates")
     @JvmField
-    public val WOODEN_TRAPDOORS: Tag<Block> = get("wooden_trapdoors")
+    public val WOODEN_TRAPDOORS: TagKey<Block> = get("wooden_trapdoors")
     @JvmField
-    public val DOORS: Tag<Block> = get("doors")
+    public val DOORS: TagKey<Block> = get("doors")
     @JvmField
-    public val SAPLINGS: Tag<Block> = get("saplings")
+    public val SAPLINGS: TagKey<Block> = get("saplings")
     @JvmField
-    public val LOGS_THAT_BURN: Tag<Block> = get("logs_that_burn")
+    public val LOGS_THAT_BURN: TagKey<Block> = get("logs_that_burn")
     @JvmField
-    public val OVERWORLD_NATURAL_LOGS: Tag<Block> = get("overworld_natural_logs")
+    public val OVERWORLD_NATURAL_LOGS: TagKey<Block> = get("overworld_natural_logs")
     @JvmField
-    public val LOGS: Tag<Block> = get("logs")
+    public val LOGS: TagKey<Block> = get("logs")
     @JvmField
-    public val DARK_OAK_LOGS: Tag<Block> = get("dark_oak_logs")
+    public val DARK_OAK_LOGS: TagKey<Block> = get("dark_oak_logs")
     @JvmField
-    public val OAK_LOGS: Tag<Block> = get("oak_logs")
+    public val OAK_LOGS: TagKey<Block> = get("oak_logs")
     @JvmField
-    public val BIRCH_LOGS: Tag<Block> = get("birch_logs")
+    public val BIRCH_LOGS: TagKey<Block> = get("birch_logs")
     @JvmField
-    public val ACACIA_LOGS: Tag<Block> = get("acacia_logs")
+    public val ACACIA_LOGS: TagKey<Block> = get("acacia_logs")
     @JvmField
-    public val JUNGLE_LOGS: Tag<Block> = get("jungle_logs")
+    public val JUNGLE_LOGS: TagKey<Block> = get("jungle_logs")
     @JvmField
-    public val SPRUCE_LOGS: Tag<Block> = get("spruce_logs")
+    public val SPRUCE_LOGS: TagKey<Block> = get("spruce_logs")
     @JvmField
-    public val MANGROVE_LOGS: Tag<Block> = get("mangrove_logs")
+    public val MANGROVE_LOGS: TagKey<Block> = get("mangrove_logs")
     @JvmField
-    public val CRIMSON_STEMS: Tag<Block> = get("crimson_stems")
+    public val CRIMSON_STEMS: TagKey<Block> = get("crimson_stems")
     @JvmField
-    public val WARPED_STEMS: Tag<Block> = get("warped_stems")
+    public val WARPED_STEMS: TagKey<Block> = get("warped_stems")
     @JvmField
-    public val WART_BLOCKS: Tag<Block> = get("wart_blocks")
+    public val WART_BLOCKS: TagKey<Block> = get("wart_blocks")
     @JvmField
-    public val BANNERS: Tag<Block> = get("banners")
+    public val BANNERS: TagKey<Block> = get("banners")
     @JvmField
-    public val SAND: Tag<Block> = get("sand")
+    public val SAND: TagKey<Block> = get("sand")
     @JvmField
-    public val STAIRS: Tag<Block> = get("stairs")
+    public val STAIRS: TagKey<Block> = get("stairs")
     @JvmField
-    public val SLABS: Tag<Block> = get("slabs")
+    public val SLABS: TagKey<Block> = get("slabs")
     @JvmField
-    public val WALLS: Tag<Block> = get("walls")
+    public val WALLS: TagKey<Block> = get("walls")
     @JvmField
-    public val ANVIL: Tag<Block> = get("anvil")
+    public val ANVIL: TagKey<Block> = get("anvil")
     @JvmField
-    public val RAILS: Tag<Block> = get("rails")
+    public val RAILS: TagKey<Block> = get("rails")
     @JvmField
-    public val LEAVES: Tag<Block> = get("leaves")
+    public val LEAVES: TagKey<Block> = get("leaves")
     @JvmField
-    public val TRAPDOORS: Tag<Block> = get("trapdoors")
+    public val TRAPDOORS: TagKey<Block> = get("trapdoors")
     @JvmField
-    public val SMALL_FLOWERS: Tag<Block> = get("small_flowers")
+    public val SMALL_FLOWERS: TagKey<Block> = get("small_flowers")
     @JvmField
-    public val BEDS: Tag<Block> = get("beds")
+    public val BEDS: TagKey<Block> = get("beds")
     @JvmField
-    public val FENCES: Tag<Block> = get("fences")
+    public val FENCES: TagKey<Block> = get("fences")
     @JvmField
-    public val TALL_FLOWERS: Tag<Block> = get("tall_flowers")
+    public val TALL_FLOWERS: TagKey<Block> = get("tall_flowers")
     @JvmField
-    public val FLOWERS: Tag<Block> = get("flowers")
+    public val FLOWERS: TagKey<Block> = get("flowers")
     @JvmField
-    public val PIGLIN_REPELLENTS: Tag<Block> = get("piglin_repellents")
+    public val PIGLIN_REPELLENTS: TagKey<Block> = get("piglin_repellents")
     @JvmField
-    public val GOLD_ORES: Tag<Block> = get("gold_ores")
+    public val GOLD_ORES: TagKey<Block> = get("gold_ores")
     @JvmField
-    public val IRON_ORES: Tag<Block> = get("iron_ores")
+    public val IRON_ORES: TagKey<Block> = get("iron_ores")
     @JvmField
-    public val DIAMOND_ORES: Tag<Block> = get("diamond_ores")
+    public val DIAMOND_ORES: TagKey<Block> = get("diamond_ores")
     @JvmField
-    public val REDSTONE_ORES: Tag<Block> = get("redstone_ores")
+    public val REDSTONE_ORES: TagKey<Block> = get("redstone_ores")
     @JvmField
-    public val LAPIS_ORES: Tag<Block> = get("lapis_ores")
+    public val LAPIS_ORES: TagKey<Block> = get("lapis_ores")
     @JvmField
-    public val COAL_ORES: Tag<Block> = get("coal_ores")
+    public val COAL_ORES: TagKey<Block> = get("coal_ores")
     @JvmField
-    public val EMERALD_ORES: Tag<Block> = get("emerald_ores")
+    public val EMERALD_ORES: TagKey<Block> = get("emerald_ores")
     @JvmField
-    public val COPPER_ORES: Tag<Block> = get("copper_ores")
+    public val COPPER_ORES: TagKey<Block> = get("copper_ores")
     @JvmField
-    public val NON_FLAMMABLE_WOOD: Tag<Block> = get("non_flammable_wood")
+    public val NON_FLAMMABLE_WOOD: TagKey<Block> = get("non_flammable_wood")
     @JvmField
-    public val CANDLES: Tag<Block> = get("candles")
+    public val CANDLES: TagKey<Block> = get("candles")
     @JvmField
-    public val DIRT: Tag<Block> = get("dirt")
+    public val DIRT: TagKey<Block> = get("dirt")
     @JvmField
-    public val TERRACOTTA: Tag<Block> = get("terracotta")
+    public val TERRACOTTA: TagKey<Block> = get("terracotta")
     @JvmField
-    public val COMPLETES_FIND_TREE_TUTORIAL: Tag<Block> = get("completes_find_tree_tutorial")
+    public val COMPLETES_FIND_TREE_TUTORIAL: TagKey<Block> = get("completes_find_tree_tutorial")
     @JvmField
-    public val FLOWER_POTS: Tag<Block> = get("flower_pots")
+    public val FLOWER_POTS: TagKey<Block> = get("flower_pots")
     @JvmField
-    public val ENDERMAN_HOLDABLE: Tag<Block> = get("enderman_holdable")
+    public val ENDERMAN_HOLDABLE: TagKey<Block> = get("enderman_holdable")
     @JvmField
-    public val ICE: Tag<Block> = get("ice")
+    public val ICE: TagKey<Block> = get("ice")
     @JvmField
-    public val VALID_SPAWN: Tag<Block> = get("valid_spawn")
+    public val VALID_SPAWN: TagKey<Block> = get("valid_spawn")
     @JvmField
-    public val IMPERMEABLE: Tag<Block> = get("impermeable")
+    public val IMPERMEABLE: TagKey<Block> = get("impermeable")
     @JvmField
-    public val UNDERWATER_BONEMEALS: Tag<Block> = get("underwater_bonemeals")
+    public val UNDERWATER_BONEMEALS: TagKey<Block> = get("underwater_bonemeals")
     @JvmField
-    public val CORAL_BLOCKS: Tag<Block> = get("coral_blocks")
+    public val CORAL_BLOCKS: TagKey<Block> = get("coral_blocks")
     @JvmField
-    public val WALL_CORALS: Tag<Block> = get("wall_corals")
+    public val WALL_CORALS: TagKey<Block> = get("wall_corals")
     @JvmField
-    public val CORAL_PLANTS: Tag<Block> = get("coral_plants")
+    public val CORAL_PLANTS: TagKey<Block> = get("coral_plants")
     @JvmField
-    public val CORALS: Tag<Block> = get("corals")
+    public val CORALS: TagKey<Block> = get("corals")
     @JvmField
-    public val BAMBOO_PLANTABLE_ON: Tag<Block> = get("bamboo_plantable_on")
+    public val BAMBOO_PLANTABLE_ON: TagKey<Block> = get("bamboo_plantable_on")
     @JvmField
-    public val STANDING_SIGNS: Tag<Block> = get("standing_signs")
+    public val STANDING_SIGNS: TagKey<Block> = get("standing_signs")
     @JvmField
-    public val WALL_SIGNS: Tag<Block> = get("wall_signs")
+    public val WALL_SIGNS: TagKey<Block> = get("wall_signs")
     @JvmField
-    public val SIGNS: Tag<Block> = get("signs")
+    public val SIGNS: TagKey<Block> = get("signs")
     @JvmField
-    public val DRAGON_IMMUNE: Tag<Block> = get("dragon_immune")
+    public val DRAGON_IMMUNE: TagKey<Block> = get("dragon_immune")
     @JvmField
-    public val DRAGON_TRANSPARENT: Tag<Block> = get("dragon_transparent")
+    public val DRAGON_TRANSPARENT: TagKey<Block> = get("dragon_transparent")
     @JvmField
-    public val WITHER_IMMUNE: Tag<Block> = get("wither_immune")
+    public val WITHER_IMMUNE: TagKey<Block> = get("wither_immune")
     @JvmField
-    public val WITHER_SUMMON_BASE_BLOCKS: Tag<Block> = get("wither_summon_base_blocks")
+    public val WITHER_SUMMON_BASE_BLOCKS: TagKey<Block> = get("wither_summon_base_blocks")
     @JvmField
-    public val BEEHIVES: Tag<Block> = get("beehives")
+    public val BEEHIVES: TagKey<Block> = get("beehives")
     @JvmField
-    public val CROPS: Tag<Block> = get("crops")
+    public val CROPS: TagKey<Block> = get("crops")
     @JvmField
-    public val BEE_GROWABLES: Tag<Block> = get("bee_growables")
+    public val BEE_GROWABLES: TagKey<Block> = get("bee_growables")
     @JvmField
-    public val PORTALS: Tag<Block> = get("portals")
+    public val PORTALS: TagKey<Block> = get("portals")
     @JvmField
-    public val FIRE: Tag<Block> = get("fire")
+    public val FIRE: TagKey<Block> = get("fire")
     @JvmField
-    public val NYLIUM: Tag<Block> = get("nylium")
+    public val NYLIUM: TagKey<Block> = get("nylium")
     @JvmField
-    public val BEACON_BASE_BLOCKS: Tag<Block> = get("beacon_base_blocks")
+    public val BEACON_BASE_BLOCKS: TagKey<Block> = get("beacon_base_blocks")
     @JvmField
-    public val SOUL_SPEED_BLOCKS: Tag<Block> = get("soul_speed_blocks")
+    public val SOUL_SPEED_BLOCKS: TagKey<Block> = get("soul_speed_blocks")
     @JvmField
-    public val WALL_POST_OVERRIDE: Tag<Block> = get("wall_post_override")
+    public val WALL_POST_OVERRIDE: TagKey<Block> = get("wall_post_override")
     @JvmField
-    public val CLIMBABLE: Tag<Block> = get("climbable")
+    public val CLIMBABLE: TagKey<Block> = get("climbable")
     @JvmField
-    public val FALL_DAMAGE_RESETTING: Tag<Block> = get("fall_damage_resetting")
+    public val FALL_DAMAGE_RESETTING: TagKey<Block> = get("fall_damage_resetting")
     @JvmField
-    public val SHULKER_BOXES: Tag<Block> = get("shulker_boxes")
+    public val SHULKER_BOXES: TagKey<Block> = get("shulker_boxes")
     @JvmField
-    public val HOGLIN_REPELLENTS: Tag<Block> = get("hoglin_repellents")
+    public val HOGLIN_REPELLENTS: TagKey<Block> = get("hoglin_repellents")
     @JvmField
-    public val SOUL_FIRE_BASE_BLOCKS: Tag<Block> = get("soul_fire_base_blocks")
+    public val SOUL_FIRE_BASE_BLOCKS: TagKey<Block> = get("soul_fire_base_blocks")
     @JvmField
-    public val STRIDER_WARM_BLOCKS: Tag<Block> = get("strider_warm_blocks")
+    public val STRIDER_WARM_BLOCKS: TagKey<Block> = get("strider_warm_blocks")
     @JvmField
-    public val CAMPFIRES: Tag<Block> = get("campfires")
+    public val CAMPFIRES: TagKey<Block> = get("campfires")
     @JvmField
-    public val GUARDED_BY_PIGLINS: Tag<Block> = get("guarded_by_piglins")
+    public val GUARDED_BY_PIGLINS: TagKey<Block> = get("guarded_by_piglins")
     @JvmField
-    public val PREVENT_MOB_SPAWNING_INSIDE: Tag<Block> = get("prevent_mob_spawning_inside")
+    public val PREVENT_MOB_SPAWNING_INSIDE: TagKey<Block> = get("prevent_mob_spawning_inside")
     @JvmField
-    public val FENCE_GATES: Tag<Block> = get("fence_gates")
+    public val FENCE_GATES: TagKey<Block> = get("fence_gates")
     @JvmField
-    public val UNSTABLE_BOTTOM_CENTER: Tag<Block> = get("unstable_bottom_center")
+    public val UNSTABLE_BOTTOM_CENTER: TagKey<Block> = get("unstable_bottom_center")
     @JvmField
-    public val MUSHROOM_GROW_BLOCK: Tag<Block> = get("mushroom_grow_block")
+    public val MUSHROOM_GROW_BLOCK: TagKey<Block> = get("mushroom_grow_block")
     @JvmField
-    public val INFINIBURN_OVERWORLD: Tag<Block> = get("infiniburn_overworld")
+    public val INFINIBURN_OVERWORLD: TagKey<Block> = get("infiniburn_overworld")
     @JvmField
-    public val INFINIBURN_NETHER: Tag<Block> = get("infiniburn_nether")
+    public val INFINIBURN_NETHER: TagKey<Block> = get("infiniburn_nether")
     @JvmField
-    public val INFINIBURN_END: Tag<Block> = get("infiniburn_end")
+    public val INFINIBURN_END: TagKey<Block> = get("infiniburn_end")
     @JvmField
-    public val BASE_STONE_OVERWORLD: Tag<Block> = get("base_stone_overworld")
+    public val BASE_STONE_OVERWORLD: TagKey<Block> = get("base_stone_overworld")
     @JvmField
-    public val STONE_ORE_REPLACEABLES: Tag<Block> = get("stone_ore_replaceables")
+    public val STONE_ORE_REPLACEABLES: TagKey<Block> = get("stone_ore_replaceables")
     @JvmField
-    public val DEEPSLATE_ORE_REPLACEABLES: Tag<Block> = get("deepslate_ore_replaceables")
+    public val DEEPSLATE_ORE_REPLACEABLES: TagKey<Block> = get("deepslate_ore_replaceables")
     @JvmField
-    public val BASE_STONE_NETHER: Tag<Block> = get("base_stone_nether")
+    public val BASE_STONE_NETHER: TagKey<Block> = get("base_stone_nether")
     @JvmField
-    public val OVERWORLD_CARVER_REPLACEABLES: Tag<Block> = get("overworld_carver_replaceables")
+    public val OVERWORLD_CARVER_REPLACEABLES: TagKey<Block> = get("overworld_carver_replaceables")
     @JvmField
-    public val NETHER_CARVER_REPLACEABLES: Tag<Block> = get("nether_carver_replaceables")
+    public val NETHER_CARVER_REPLACEABLES: TagKey<Block> = get("nether_carver_replaceables")
     @JvmField
-    public val CANDLE_CAKES: Tag<Block> = get("candle_cakes")
+    public val CANDLE_CAKES: TagKey<Block> = get("candle_cakes")
     @JvmField
-    public val CAULDRONS: Tag<Block> = get("cauldrons")
+    public val CAULDRONS: TagKey<Block> = get("cauldrons")
     @JvmField
-    public val CRYSTAL_SOUND_BLOCKS: Tag<Block> = get("crystal_sound_blocks")
+    public val CRYSTAL_SOUND_BLOCKS: TagKey<Block> = get("crystal_sound_blocks")
     @JvmField
-    public val INSIDE_STEP_SOUND_BLOCKS: Tag<Block> = get("inside_step_sound_blocks")
+    public val INSIDE_STEP_SOUND_BLOCKS: TagKey<Block> = get("inside_step_sound_blocks")
     @JvmField
-    public val OCCLUDES_VIBRATION_SIGNALS: Tag<Block> = get("occludes_vibration_signals")
+    public val OCCLUDES_VIBRATION_SIGNALS: TagKey<Block> = get("occludes_vibration_signals")
     @JvmField
-    public val DAMPENS_VIBRATIONS: Tag<Block> = get("dampens_vibrations")
+    public val DAMPENS_VIBRATIONS: TagKey<Block> = get("dampens_vibrations")
     @JvmField
-    public val DRIPSTONE_REPLACEABLE: Tag<Block> = get("dripstone_replaceable_blocks")
+    public val DRIPSTONE_REPLACEABLE: TagKey<Block> = get("dripstone_replaceable_blocks")
     @JvmField
-    public val CAVE_VINES: Tag<Block> = get("cave_vines")
+    public val CAVE_VINES: TagKey<Block> = get("cave_vines")
     @JvmField
-    public val MOSS_REPLACEABLE: Tag<Block> = get("moss_replaceable")
+    public val MOSS_REPLACEABLE: TagKey<Block> = get("moss_replaceable")
     @JvmField
-    public val LUSH_GROUND_REPLACEABLE: Tag<Block> = get("lush_ground_replaceable")
+    public val LUSH_GROUND_REPLACEABLE: TagKey<Block> = get("lush_ground_replaceable")
     @JvmField
-    public val AZALEA_ROOT_REPLACEABLE: Tag<Block> = get("azalea_root_replaceable")
+    public val AZALEA_ROOT_REPLACEABLE: TagKey<Block> = get("azalea_root_replaceable")
     @JvmField
-    public val SMALL_DRIPLEAF_PLACEABLE: Tag<Block> = get("small_dripleaf_placeable")
+    public val SMALL_DRIPLEAF_PLACEABLE: TagKey<Block> = get("small_dripleaf_placeable")
     @JvmField
-    public val BIG_DRIPLEAF_PLACEABLE: Tag<Block> = get("big_dripleaf_placeable")
+    public val BIG_DRIPLEAF_PLACEABLE: TagKey<Block> = get("big_dripleaf_placeable")
     @JvmField
-    public val SNOW: Tag<Block> = get("snow")
+    public val SNOW: TagKey<Block> = get("snow")
     @JvmField
-    public val MINEABLE_WITH_AXE: Tag<Block> = get("mineable/axe")
+    public val MINEABLE_WITH_AXE: TagKey<Block> = get("mineable/axe")
     @JvmField
-    public val MINEABLE_WITH_HOE: Tag<Block> = get("mineable/hoe")
+    public val MINEABLE_WITH_HOE: TagKey<Block> = get("mineable/hoe")
     @JvmField
-    public val MINEABLE_WITH_PICKAXE: Tag<Block> = get("mineable/pickaxe")
+    public val MINEABLE_WITH_PICKAXE: TagKey<Block> = get("mineable/pickaxe")
     @JvmField
-    public val MINEABLE_WITH_SHOVEL: Tag<Block> = get("mineable/shovel")
+    public val MINEABLE_WITH_SHOVEL: TagKey<Block> = get("mineable/shovel")
     @JvmField
-    public val NEEDS_DIAMOND_TOOL: Tag<Block> = get("needs_diamond_tool")
+    public val NEEDS_DIAMOND_TOOL: TagKey<Block> = get("needs_diamond_tool")
     @JvmField
-    public val NEEDS_IRON_TOOL: Tag<Block> = get("needs_iron_tool")
+    public val NEEDS_IRON_TOOL: TagKey<Block> = get("needs_iron_tool")
     @JvmField
-    public val NEEDS_STONE_TOOL: Tag<Block> = get("needs_stone_tool")
+    public val NEEDS_STONE_TOOL: TagKey<Block> = get("needs_stone_tool")
     @JvmField
-    public val FEATURES_CANNOT_REPLACE: Tag<Block> = get("features_cannot_replace")
+    public val FEATURES_CANNOT_REPLACE: TagKey<Block> = get("features_cannot_replace")
     @JvmField
-    public val LAVA_POOL_STONE_CANNOT_REPLACE: Tag<Block> = get("lava_pool_stone_cannot_replace")
+    public val LAVA_POOL_STONE_CANNOT_REPLACE: TagKey<Block> = get("lava_pool_stone_cannot_replace")
     @JvmField
-    public val GEODE_INVALID_BLOCKS: Tag<Block> = get("geode_invalid_blocks")
+    public val GEODE_INVALID_BLOCKS: TagKey<Block> = get("geode_invalid_blocks")
     @JvmField
-    public val FROG_PREFER_JUMP_TO: Tag<Block> = get("frog_prefer_jump_to")
+    public val FROG_PREFER_JUMP_TO: TagKey<Block> = get("frog_prefer_jump_to")
     @JvmField
-    public val SCULK_REPLACEABLE: Tag<Block> = get("sculk_replaceable")
+    public val SCULK_REPLACEABLE: TagKey<Block> = get("sculk_replaceable")
     @JvmField
-    public val SCULK_REPLACEABLE_WORLD_GEN: Tag<Block> = get("sculk_replaceable_world_gen")
+    public val SCULK_REPLACEABLE_WORLD_GEN: TagKey<Block> = get("sculk_replaceable_world_gen")
     @JvmField
-    public val ANCIENT_CITY_REPLACEABLE: Tag<Block> = get("ancient_city_replaceable")
+    public val ANCIENT_CITY_REPLACEABLE: TagKey<Block> = get("ancient_city_replaceable")
     @JvmField
-    public val ANIMALS_SPAWNABLE_ON: Tag<Block> = get("animals_spawnable_on")
+    public val ANIMALS_SPAWNABLE_ON: TagKey<Block> = get("animals_spawnable_on")
     @JvmField
-    public val AXOLOTLS_SPAWNABLE_ON: Tag<Block> = get("axolotls_spawnable_on")
+    public val AXOLOTLS_SPAWNABLE_ON: TagKey<Block> = get("axolotls_spawnable_on")
     @JvmField
-    public val GOATS_SPAWNABLE_ON: Tag<Block> = get("goats_spawnable_on")
+    public val GOATS_SPAWNABLE_ON: TagKey<Block> = get("goats_spawnable_on")
     @JvmField
-    public val MOOSHROOMS_SPAWNABLE_ON: Tag<Block> = get("mooshrooms_spawnable_on")
+    public val MOOSHROOMS_SPAWNABLE_ON: TagKey<Block> = get("mooshrooms_spawnable_on")
     @JvmField
-    public val PARROTS_SPAWNABLE_ON: Tag<Block> = get("parrots_spawnable_on")
+    public val PARROTS_SPAWNABLE_ON: TagKey<Block> = get("parrots_spawnable_on")
     @JvmField
-    public val POLAR_BEARS_SPAWNABLE_ON_ALTERNATE: Tag<Block> = get("polar_bears_spawnable_on_alternate")
+    public val POLAR_BEARS_SPAWNABLE_ON_ALTERNATE: TagKey<Block> = get("polar_bears_spawnable_on_alternate")
     @JvmField
-    public val RABBITS_SPAWNABLE_ON: Tag<Block> = get("rabbits_spawnable_on")
+    public val RABBITS_SPAWNABLE_ON: TagKey<Block> = get("rabbits_spawnable_on")
     @JvmField
-    public val FOXES_SPAWNABLE_ON: Tag<Block> = get("foxes_spawnable_on")
+    public val FOXES_SPAWNABLE_ON: TagKey<Block> = get("foxes_spawnable_on")
     @JvmField
-    public val WOLVES_SPAWNABLE_ON: Tag<Block> = get("wolves_spawnable_on")
+    public val WOLVES_SPAWNABLE_ON: TagKey<Block> = get("wolves_spawnable_on")
     @JvmField
-    public val FROGS_SPAWNABLE_ON: Tag<Block> = get("frogs_spawnable_on")
+    public val FROGS_SPAWNABLE_ON: TagKey<Block> = get("frogs_spawnable_on")
     @JvmField
-    public val AZALEA_GROWS_ON: Tag<Block> = get("azalea_grows_on")
+    public val AZALEA_GROWS_ON: TagKey<Block> = get("azalea_grows_on")
     @JvmField
-    public val REPLACEABLE_PLANTS: Tag<Block> = get("replaceable_plants")
+    public val REPLACEABLE_PLANTS: TagKey<Block> = get("replaceable_plants")
     @JvmField
-    public val CONVERTABLE_TO_MUD: Tag<Block> = get("convertable_to_mud")
+    public val CONVERTABLE_TO_MUD: TagKey<Block> = get("convertable_to_mud")
     @JvmField
-    public val MANGROVE_LOGS_CAN_GROW_THROUGH: Tag<Block> = get("mangrove_logs_can_grow_through")
+    public val MANGROVE_LOGS_CAN_GROW_THROUGH: TagKey<Block> = get("mangrove_logs_can_grow_through")
     @JvmField
-    public val MANGROVE_ROOTS_CAN_GROW_THROUGH: Tag<Block> = get("mangrove_roots_can_grow_through")
+    public val MANGROVE_ROOTS_CAN_GROW_THROUGH: TagKey<Block> = get("mangrove_roots_can_grow_through")
     @JvmField
-    public val DEAD_BUSH_MAY_PLACE_ON: Tag<Block> = get("dead_bush_may_place_on")
+    public val DEAD_BUSH_MAY_PLACE_ON: TagKey<Block> = get("dead_bush_may_place_on")
     @JvmField
-    public val SNAPS_GOAT_HORN: Tag<Block> = get("snaps_goat_horn")
+    public val SNAPS_GOAT_HORN: TagKey<Block> = get("snaps_goat_horn")
     @JvmField
-    public val SNOW_LAYER_CANNOT_SURVIVE_ON: Tag<Block> = get("snow_layer_cannot_survive_on")
+    public val SNOW_LAYER_CANNOT_SURVIVE_ON: TagKey<Block> = get("snow_layer_cannot_survive_on")
     @JvmField
-    public val SNOW_LAYER_CAN_SURVIVE_ON: Tag<Block> = get("snow_layer_can_survive_on")
+    public val SNOW_LAYER_CAN_SURVIVE_ON: TagKey<Block> = get("snow_layer_can_survive_on")
 
     // @formatter:on
     @JvmStatic
-    private fun get(key: String): Tag<Block> = Krypton.tag(TagTypes.BLOCKS, "minecraft:$key")!!
+    public fun get(key: String): TagKey<Block> = TagKey.of(ResourceKeys.BLOCK, Key.key(key))
 }

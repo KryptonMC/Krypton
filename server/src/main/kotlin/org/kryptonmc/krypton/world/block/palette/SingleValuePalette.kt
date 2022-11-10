@@ -48,12 +48,12 @@ class SingleValuePalette<T>(private val registry: IntBiMap<T>, private val resiz
 
     override fun write(buf: ByteBuf) {
         checkInit()
-        buf.writeVarInt(registry.idOf(value!!))
+        buf.writeVarInt(registry.getId(value!!))
     }
 
     override fun calculateSerializedSize(): Int {
         checkInit()
-        return registry.idOf(value!!).varIntBytes()
+        return registry.getId(value!!).varIntBytes()
     }
 
     override fun copy(): Palette<T> {
