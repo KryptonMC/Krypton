@@ -19,26 +19,24 @@
 package org.kryptonmc.krypton.packet.out.play
 
 import io.netty.buffer.ByteBuf
+import org.kryptonmc.api.util.Vec3d
 import org.kryptonmc.krypton.entity.KryptonExperienceOrb
 import org.kryptonmc.krypton.packet.EntityPacket
 import org.kryptonmc.krypton.util.readVarInt
+import org.kryptonmc.krypton.util.readVec3d
 import org.kryptonmc.krypton.util.writeVarInt
-import org.spongepowered.math.vector.Vector3d
+import org.kryptonmc.krypton.util.writeVec3d
 
 @JvmRecord
-data class PacketOutSpawnExperienceOrb(override val entityId: Int, val x: Double, val y: Double, val z: Double, val count: Int) : EntityPacket {
+data class PacketOutSpawnExperienceOrb(override val entityId: Int, val location: Vec3d, val count: Int) : EntityPacket {
 
-    constructor(entityId: Int, location: Vector3d, count: Int) : this(entityId, location.x(), location.y(), location.z(), count)
+    constructor(orb: KryptonExperienceOrb) : this(orb.id, orb.location, orb.count)
 
-    constructor(orb: KryptonExperienceOrb) : this(orb.id, orb.location.x(), orb.location.y(), orb.location.z(), orb.count)
-
-    constructor(buf: ByteBuf) : this(buf.readVarInt(), buf.readDouble(), buf.readDouble(), buf.readDouble(), buf.readShort().toInt())
+    constructor(buf: ByteBuf) : this(buf.readVarInt(), buf.readVec3d(), buf.readShort().toInt())
 
     override fun write(buf: ByteBuf) {
         buf.writeVarInt(entityId)
-        buf.writeDouble(x)
-        buf.writeDouble(y)
-        buf.writeDouble(z)
+        buf.writeVec3d(location)
         buf.writeShort(count)
     }
 }

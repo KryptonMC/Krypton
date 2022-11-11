@@ -8,7 +8,7 @@
  */
 package org.kryptonmc.api.block
 
-import org.spongepowered.math.vector.Vector3i
+import org.kryptonmc.api.util.Vec3i
 
 /**
  * Something that contains blocks.
@@ -34,7 +34,7 @@ public interface BlockContainer {
      * @param position the position
      * @return the block at the given position
      */
-    public fun getBlock(position: Vector3i): BlockState
+    public fun getBlock(position: Vec3i): BlockState
 
     /**
      * Sets the block at the given coordinates to the given [block].
@@ -54,5 +54,5 @@ public interface BlockContainer {
      * @param block the block
      * @return true if the block was set, false otherwise
      */
-    public fun setBlock(position: Vector3i, block: BlockState): Boolean
+    public fun setBlock(position: Vec3i, block: BlockState): Boolean
 }

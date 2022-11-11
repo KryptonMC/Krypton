@@ -22,9 +22,8 @@ import org.kryptonmc.api.entity.Hand
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.item.KryptonItemStack
 import org.kryptonmc.krypton.util.BlockHitResult
-import org.kryptonmc.krypton.util.BlockPositions
+import org.kryptonmc.krypton.util.BlockPos
 import org.kryptonmc.krypton.world.KryptonWorld
-import org.spongepowered.math.vector.Vector3i
 
 open class BlockPlaceContext protected constructor(
     world: KryptonWorld,
@@ -34,10 +33,10 @@ open class BlockPlaceContext protected constructor(
     hitResult: BlockHitResult
 ) : UseOnContext(world, player, hand, item, hitResult) {
 
-    private val relativePosition = BlockPositions.relative(hitResult.position, hitResult.direction)
+    private val relativePosition = hitResult.position.relative(hitResult.direction)
     protected var replaceClicked = world.getBlock(hitResult.position).canBeReplaced(this)
 
-    override val clickedPosition: Vector3i
+    override val clickedPosition: BlockPos
         get() = if (replaceClicked) super.clickedPosition else relativePosition
     open val canPlace: Boolean
         get() = replaceClicked || world.getBlock(clickedPosition).canBeReplaced(this)

@@ -16,23 +16,23 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.world.chunk
+package org.kryptonmc.krypton.util
 
-/**
- * Holds a pair of chunk coordinates (x and z).
- */
-// TODO: Look in to removing this class
-@JvmRecord
-data class ChunkPosition(val x: Int, val z: Int) {
+import org.kryptonmc.api.util.Rotations
 
-    fun toLong(): Long = toLong(x, z)
+class RotationsImpl(override val yaw: Float, override val pitch: Float, override val roll: Float) : Rotations {
+
+    object Factory : Rotations.Factory {
+
+        override fun of(yaw: Float, pitch: Float, roll: Float): Rotations {
+            if (yaw == 0F && pitch == 0F && roll == 0F) return ZERO
+            return RotationsImpl(yaw, pitch, roll)
+        }
+    }
 
     companion object {
 
         @JvmField
-        val ZERO: ChunkPosition = ChunkPosition(0, 0)
-
-        @JvmStatic
-        fun toLong(x: Int, z: Int): Long = x.toLong() and 0xFFFFFFFFL or (z.toLong() and 0xFFFFFFFFL shl 32)
+        val ZERO: RotationsImpl = RotationsImpl(0F, 0F, 0F)
     }
 }

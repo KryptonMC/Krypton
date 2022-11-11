@@ -20,24 +20,25 @@ package org.kryptonmc.krypton.item.meta
 
 import org.kryptonmc.api.item.meta.CompassMeta
 import org.kryptonmc.api.resource.ResourceKey
+import org.kryptonmc.api.util.Vec3i
 import org.kryptonmc.api.world.World
+import org.kryptonmc.krypton.util.BlockPos
 import org.kryptonmc.krypton.util.nbt.getBlockPos
 import org.kryptonmc.krypton.util.nbt.getNullableCompound
 import org.kryptonmc.krypton.util.nbt.putBlockPos
 import org.kryptonmc.krypton.util.serialization.Codecs
 import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.serialization.nbt.NbtOps
-import org.spongepowered.math.vector.Vector3i
 
 class KryptonCompassMeta(data: CompoundTag) : AbstractItemMeta<KryptonCompassMeta>(data), CompassMeta {
 
     override val isTrackingLodestone: Boolean = data.getBoolean(TRACKED_TAG)
     override val lodestoneDimension: ResourceKey<World>? = Codecs.DIMENSION.read(data.get(DIMENSION_TAG), NbtOps.INSTANCE).result().orElse(null)
-    override val lodestonePosition: Vector3i? = data.getNullableCompound(POS_TAG)?.getBlockPos()
+    override val lodestonePosition: BlockPos? = data.getNullableCompound(POS_TAG)?.getBlockPos()
 
     override fun copy(data: CompoundTag): KryptonCompassMeta = KryptonCompassMeta(data)
 
-    override fun withLodestone(dimension: ResourceKey<World>, position: Vector3i): KryptonCompassMeta =
+    override fun withLodestone(dimension: ResourceKey<World>, position: Vec3i): KryptonCompassMeta =
         copy(data.putBoolean(TRACKED_TAG, true).putString(DIMENSION_TAG, dimension.location.asString()).putBlockPos(POS_TAG, position))
 
     override fun withoutLodestone(): KryptonCompassMeta = copy(CompoundTag.EMPTY)
@@ -51,7 +52,7 @@ class KryptonCompassMeta(data: CompoundTag) : AbstractItemMeta<KryptonCompassMet
 
         private var tracking = false
         private var dimension: ResourceKey<World>? = null
-        private var position: Vector3i? = null
+        private var position: Vec3i? = null
 
         constructor() : super()
 
@@ -61,7 +62,7 @@ class KryptonCompassMeta(data: CompoundTag) : AbstractItemMeta<KryptonCompassMet
             position = meta.lodestonePosition
         }
 
-        override fun lodestone(dimension: ResourceKey<World>, position: Vector3i): Builder = apply {
+        override fun lodestone(dimension: ResourceKey<World>, position: Vec3i): Builder = apply {
             tracking = true
             this.dimension = dimension
             this.position = position

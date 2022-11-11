@@ -19,6 +19,7 @@
 package org.kryptonmc.krypton.world.chunk
 
 import org.kryptonmc.api.block.Blocks
+import org.kryptonmc.api.util.Vec3i
 import org.kryptonmc.api.world.biome.Biome
 import org.kryptonmc.api.world.chunk.Chunk
 import org.kryptonmc.krypton.packet.CachedPacket
@@ -31,12 +32,11 @@ import org.kryptonmc.krypton.world.chunk.ticket.Ticket
 import org.kryptonmc.krypton.world.fluid.KryptonFluidState
 import org.kryptonmc.krypton.world.fluid.KryptonFluids
 import org.kryptonmc.nbt.CompoundTag
-import org.spongepowered.math.vector.Vector3i
 
 @Suppress("INAPPLICABLE_JVM_NAME")
 class KryptonChunk(
     override val world: KryptonWorld,
-    position: ChunkPosition,
+    position: ChunkPos,
     sections: Array<ChunkSection?>,
     override var lastUpdate: Long,
     inhabitedTime: Long,
@@ -75,7 +75,7 @@ class KryptonChunk(
         return Blocks.AIR.defaultState.downcast()
     }
 
-    override fun getBlock(position: Vector3i): KryptonBlockState = getBlock(position.x(), position.y(), position.z())
+    override fun getBlock(position: Vec3i): KryptonBlockState = getBlock(position.x, position.y, position.z)
 
     override fun getFluid(x: Int, y: Int, z: Int): KryptonFluidState {
         val sectionIndex = sectionIndex(y)
@@ -86,7 +86,7 @@ class KryptonChunk(
         return KryptonFluids.EMPTY.defaultState
     }
 
-    override fun getFluid(position: Vector3i): KryptonFluidState = getFluid(position.x(), position.y(), position.z())
+    override fun getFluid(position: Vec3i): KryptonFluidState = getFluid(position.x, position.y, position.z)
 
     override fun setBlock(x: Int, y: Int, z: Int, block: KryptonBlockState): Boolean {
         val section = sections[sectionIndex(y)]
@@ -110,7 +110,7 @@ class KryptonChunk(
 
     override fun getBiome(x: Int, y: Int, z: Int): Biome = getNoiseBiome(x, y, z)
 
-    override fun getBiome(position: Vector3i): Biome = getBiome(position.x(), position.y(), position.z())
+    override fun getBiome(position: Vec3i): Biome = getBiome(position.x, position.y, position.z)
 
     fun tick(playerCount: Int) {
         inhabitedTime += playerCount

@@ -10,7 +10,7 @@ package org.kryptonmc.api.effect.particle.builder
 
 import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.effect.particle.ParticleDsl
-import org.spongepowered.math.vector.Vector3d
+import org.kryptonmc.api.util.Vec3d
 
 /**
  * A builder for building vibration particle effects.
@@ -26,7 +26,7 @@ public interface VibrationParticleEffectBuilder : BaseParticleEffectBuilder<Vibr
      */
     @ParticleDsl
     @Contract("_ -> this", mutates = "this")
-    public fun destination(position: Vector3d): VibrationParticleEffectBuilder
+    public fun destination(position: Vec3d): VibrationParticleEffectBuilder
 
     /**
      * Sets the amount of ticks it will take to vibrate from the

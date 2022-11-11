@@ -19,7 +19,7 @@
 package org.kryptonmc.krypton.world.region
 
 import it.unimi.dsi.fastutil.longs.Long2ObjectLinkedOpenHashMap
-import org.kryptonmc.krypton.world.chunk.ChunkPosition
+import org.kryptonmc.krypton.world.chunk.ChunkPos
 import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.io.TagCompression
 import org.kryptonmc.nbt.io.TagIO
@@ -50,7 +50,7 @@ class RegionFileManager(private val folder: Path, private val synchronizeWrites:
     private fun getRegionFile(x: Int, z: Int): RegionFile {
         val regionX = x shr 5
         val regionZ = z shr 5
-        val serialized = ChunkPosition.toLong(regionX, regionZ)
+        val serialized = ChunkPos.pack(regionX, regionZ)
         val cachedFile = regionCacheLock.withLock { regionCache.getAndMoveToFirst(serialized) }
         if (cachedFile != null) return cachedFile
 

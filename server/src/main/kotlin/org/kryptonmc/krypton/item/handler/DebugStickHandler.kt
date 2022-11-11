@@ -25,6 +25,7 @@ import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.item.KryptonItemStack
 import org.kryptonmc.krypton.registry.KryptonRegistries
 import org.kryptonmc.krypton.state.property.KryptonProperty
+import org.kryptonmc.krypton.util.BlockPos
 import org.kryptonmc.krypton.util.findRelative
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.krypton.world.block.state.KryptonBlockState
@@ -34,8 +35,8 @@ object DebugStickHandler : ItemHandler {
 
     private val TRANSLATION by lazy { ItemTypes.DEBUG_STICK.translationKey() }
 
-    override fun canAttackBlock(player: KryptonPlayer, world: KryptonWorld, block: KryptonBlockState, x: Int, y: Int, z: Int): Boolean {
-        handleInteraction(player, world, block, x, y, z, false, player.getHeldItem(Hand.MAIN)) { player.setHeldItem(Hand.MAIN, it) }
+    override fun canAttackBlock(player: KryptonPlayer, world: KryptonWorld, block: KryptonBlockState, pos: BlockPos): Boolean {
+        handleInteraction(player, world, block, pos, false, player.getHeldItem(Hand.MAIN)) { player.setHeldItem(Hand.MAIN, it) }
         return false
     }
 
@@ -45,7 +46,7 @@ object DebugStickHandler : ItemHandler {
         val item = context.heldItem
         val world = context.world
         val position = context.position
-        if (!handleInteraction(player, world, world.getBlock(position), position.x(), position.y(), position.z(), true, item)) {
+        if (!handleInteraction(player, world, world.getBlock(position), position, true, item)) {
             return InteractionResult.FAIL
         }
         return InteractionResult.CONSUME
@@ -55,17 +56,8 @@ object DebugStickHandler : ItemHandler {
     // TODO: We need to get information about where the item was so we can replace it with a copy that has the modified metadata,
     //  as all item stacks are immutable, so we can't just simply modify the data on the item like vanilla does.
     @JvmStatic
-    private fun handleInteraction(
-        player: KryptonPlayer,
-        world: KryptonWorld,
-        state: KryptonBlockState,
-        x: Int,
-        y: Int,
-        z: Int,
-        isUse: Boolean,
-        item: KryptonItemStack,
-        setter: Consumer<KryptonItemStack>
-    ): Boolean {
+    private fun handleInteraction(player: KryptonPlayer, world: KryptonWorld, state: KryptonBlockState, pos: BlockPos, isUse: Boolean,
+                                  item: KryptonItemStack, setter: Consumer<KryptonItemStack>): Boolean {
         if (!player.canUseGameMasterBlocks) return false
         val block = state.block
         val definition = block.stateDefinition
@@ -83,7 +75,7 @@ object DebugStickHandler : ItemHandler {
         if (isUse) {
             if (property == null) property = properties.first()
             val cycled = cycleState(state, property, player.isSneaking)
-            world.setBlock(x, y, z, cycled)
+            world.setBlock(pos, cycled)
             player.sendActionBar(Component.translatable("$TRANSLATION.update", Component.text(property.name), toString(state, property)))
         } else {
             property = properties.findRelative(property, player.isSneaking)!!

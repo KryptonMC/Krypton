@@ -15,7 +15,6 @@ commonsLang = "3.12.0"
 guice = "5.1.0"
 kotlinGuice = "1.6.0"
 brigadier = "1.0.0-SNAPSHOT"
-math = "2.0.1"
 
 # Generation
 kotlinpoet = "1.12.0"
@@ -81,7 +80,6 @@ guava = { group = "com.google.guava", name = "guava", version.ref = "guava" }
 commonsLang = { group = "org.apache.commons", name = "commons-lang3", version.ref = "commonsLang" }
 guice = { group = "com.google.inject", name = "guice", version.ref = "guice" }
 kotlinGuice = { group = "dev.misfitlabs.kotlinguice4", name = "kotlin-guice", version.ref = "kotlinGuice" }
-math = { group = "org.spongepowered", name = "math", version.ref = "math" }
 brigadier = { group = "org.kryptonmc", name = "krypton-brigadier", version.ref = "brigadier" }
 
 # Networking

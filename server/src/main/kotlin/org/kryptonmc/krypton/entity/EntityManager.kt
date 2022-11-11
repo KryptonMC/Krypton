@@ -21,6 +21,7 @@ package org.kryptonmc.krypton.entity
 import ca.spottedleaf.dataconverter.minecraft.datatypes.MCTypeRegistry
 import net.kyori.adventure.key.InvalidKeyException
 import net.kyori.adventure.key.Key
+import org.kryptonmc.api.util.Vec3d
 import org.kryptonmc.api.world.rule.GameRules
 import org.kryptonmc.krypton.KryptonPlatform
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
@@ -35,13 +36,12 @@ import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.util.nbt.getDataVersion
 import org.kryptonmc.krypton.util.nbt.putDataVersion
 import org.kryptonmc.krypton.world.KryptonWorld
-import org.kryptonmc.krypton.world.chunk.ChunkPosition
+import org.kryptonmc.krypton.world.chunk.ChunkPos
 import org.kryptonmc.krypton.world.chunk.KryptonChunk
 import org.kryptonmc.krypton.world.region.RegionFileManager
 import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.ImmutableListTag
 import org.kryptonmc.nbt.compound
-import org.spongepowered.math.vector.Vector3d
 import space.vectrix.flare.fastutil.Int2ObjectSyncMap
 import space.vectrix.flare.fastutil.Long2ObjectSyncMap
 import java.util.UUID
@@ -78,7 +78,7 @@ class EntityManager(val world: KryptonWorld) : AutoCloseable {
             val chunk = world.getChunk(entity.location.floorX(), entity.location.floorY(), entity.location.floorZ()) ?: return@thenAccept
             byId.put(entity.id, entity)
             byUUID.put(entity.uuid, entity)
-            getByChunk(chunk.position.toLong()).add(entity)
+            getByChunk(chunk.position.pack()).add(entity)
         }
     }
 
@@ -97,7 +97,7 @@ class EntityManager(val world: KryptonWorld) : AutoCloseable {
         val chunk = world.getChunk(player.location.floorX(), player.location.floorY(), player.location.floorZ()) ?: return
         byId.put(player.id, player)
         byUUID.put(player.uuid, player)
-        getByChunk(chunk.position.toLong()).add(player)
+        getByChunk(chunk.position.pack()).add(player)
     }
 
     private fun getByChunk(location: Long): MutableSet<KryptonEntity> =
@@ -115,8 +115,8 @@ class EntityManager(val world: KryptonWorld) : AutoCloseable {
             val chunk = world.getChunk(entity.location.floorX(), entity.location.floorY(), entity.location.floorZ()) ?: return@thenAccept
             byId.remove(entity.id)
             byUUID.remove(entity.uuid)
-            val entitiesByChunk = byChunk.get(chunk.position.toLong()).apply { remove(entity) }
-            if (entitiesByChunk.isEmpty()) byChunk.remove(chunk.position.toLong())
+            val entitiesByChunk = byChunk.get(chunk.position.pack()).apply { remove(entity) }
+            if (entitiesByChunk.isEmpty()) byChunk.remove(chunk.position.pack())
             world.scoreboard.onEntityRemoved(entity)
         }
     }
@@ -146,7 +146,7 @@ class EntityManager(val world: KryptonWorld) : AutoCloseable {
     }
 
     fun save(chunk: KryptonChunk) {
-        val entities = byChunk.get(chunk.position.toLong()) ?: return
+        val entities = byChunk.get(chunk.position.pack()) ?: return
         if (entities.isEmpty()) return
         val entityList = ImmutableListTag.builder(CompoundTag.ID)
         entities.forEach { if (it !is KryptonPlayer) entityList.add(it.saveWithPassengers().build()) }
@@ -165,10 +165,10 @@ class EntityManager(val world: KryptonWorld) : AutoCloseable {
         regionFileManager.close()
     }
 
-    private inline fun forEachEntityInRange(location: Vector3d, viewDistance: Int, callback: (KryptonEntity) -> Unit) {
+    private inline fun forEachEntityInRange(location: Vec3d, viewDistance: Int, callback: (KryptonEntity) -> Unit) {
         chunksInRange(location, viewDistance).forEach {
             val chunk = world.getChunkAt(Positioning.chunkX(it), Positioning.chunkZ(it)) ?: return@forEach
-            getByChunk(chunk.position.toLong()).forEach(callback)
+            getByChunk(chunk.position.pack()).forEach(callback)
         }
     }
 
@@ -180,7 +180,7 @@ class EntityManager(val world: KryptonWorld) : AutoCloseable {
         private val LOGGER = logger<EntityManager>()
 
         @JvmStatic
-        private fun chunksInRange(location: Vector3d, range: Int): LongArray {
+        private fun chunksInRange(location: Vec3d, range: Int): LongArray {
             val area = (range * 2 + 1) * (range * 2 + 1)
             val visible = LongArray(area)
             var distanceX = 0
@@ -191,9 +191,9 @@ class EntityManager(val world: KryptonWorld) : AutoCloseable {
             var corner = 0
 
             for (i in 0 until area) {
-                val chunkX = ((distanceX shl 4) + location.x()).toChunkCoordinate()
-                val chunkZ = ((distanceZ shl 4) + location.z()).toChunkCoordinate()
-                visible[i] = ChunkPosition.toLong(chunkX, chunkZ)
+                val chunkX = ((distanceX shl 4) + location.x).toChunkCoordinate()
+                val chunkZ = ((distanceZ shl 4) + location.z).toChunkCoordinate()
+                visible[i] = ChunkPos.pack(chunkX, chunkZ)
 
                 if (corner % 2 == 0) {
                     distanceX += directionX

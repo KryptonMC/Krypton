@@ -130,7 +130,7 @@ interface PacketGroupingAudience : ForwardingAudience {
                 sendGroupedPacket(PacketOutEntitySoundEffect(event, sound.source(), entity.id, sound.volume(), sound.pitch()))
                 return
             }
-            sendGroupedPacket(PacketOutCustomSoundEffect(sound, entity.location.x(), entity.location.y(), entity.location.z()))
+            sendGroupedPacket(PacketOutCustomSoundEffect(sound, entity.location))
             return
         }
         // If we're playing on self, we need to delegate to each audience member

@@ -126,7 +126,7 @@ interface PlayerAudience : NetworkPlayer {
     }
 
     override fun playSound(sound: Sound) {
-        playSound(sound, location.x(), location.y(), location.z())
+        playSound(sound, location.x, location.y, location.z)
     }
 
     override fun playSound(sound: Sound, x: Double, y: Double, z: Double) {
@@ -150,11 +150,8 @@ interface PlayerAudience : NetworkPlayer {
             session.send(PacketOutEntitySoundEffect(event, sound.source(), entity.id, sound.volume(), sound.pitch()))
             return
         }
-        val x = entity.location.x()
-        val y = entity.location.y()
-        val z = entity.location.z()
         val seed = sound.seed().orElse(ThreadLocalRandom.current().nextLong())
-        session.send(PacketOutCustomSoundEffect(sound.name(), sound.source(), x, y, z, sound.volume(), sound.pitch(), seed))
+        session.send(PacketOutCustomSoundEffect(sound.name(), sound.source(), entity.location, sound.volume(), sound.pitch(), seed))
     }
 
     override fun stopSound(stop: SoundStop) {

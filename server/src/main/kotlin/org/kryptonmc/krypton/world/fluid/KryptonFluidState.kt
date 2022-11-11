@@ -23,14 +23,15 @@ import org.kryptonmc.api.block.BlockState
 import org.kryptonmc.api.fluid.Fluid
 import org.kryptonmc.api.fluid.FluidState
 import org.kryptonmc.api.tags.TagKey
+import org.kryptonmc.api.util.Vec3d
 import org.kryptonmc.krypton.registry.KryptonRegistries
 import org.kryptonmc.krypton.state.KryptonState
 import org.kryptonmc.krypton.state.StateDelegate
 import org.kryptonmc.krypton.state.property.KryptonProperty
+import org.kryptonmc.krypton.util.BlockPos
 import org.kryptonmc.krypton.world.BlockAccessor
 import org.kryptonmc.serialization.Codec
 import org.kryptonmc.serialization.MapCodec
-import org.spongepowered.math.vector.Vector3d
 import java.util.stream.Stream
 
 class KryptonFluidState(
@@ -47,9 +48,9 @@ class KryptonFluidState(
     val ownHeight: Float
         get() = fluid.getOwnHeight(this)
 
-    fun getHeight(world: BlockAccessor, x: Int, y: Int, z: Int): Float = fluid.getHeight(this, world, x, y, z)
+    fun getHeight(world: BlockAccessor, pos: BlockPos): Float = fluid.getHeight(this, world, pos)
 
-    fun getFlow(world: BlockAccessor, x: Int, y: Int, z: Int): Vector3d = fluid.getFlow(world, x, y, z, this)
+    fun getFlow(world: BlockAccessor, pos: BlockPos): Vec3d = fluid.getFlow(world, pos, this)
 
     @Suppress("UNCHECKED_CAST")
     fun eq(tag: TagKey<Fluid>): Boolean = fluid.builtInRegistryHolder.eq(tag as TagKey<KryptonFluid>)

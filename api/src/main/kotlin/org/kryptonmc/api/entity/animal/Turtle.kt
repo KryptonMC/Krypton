@@ -8,7 +8,7 @@
  */
 package org.kryptonmc.api.entity.animal
 
-import org.spongepowered.math.vector.Vector3i
+import org.kryptonmc.api.util.Vec3i
 
 /**
  * A turtle.
@@ -40,10 +40,10 @@ public interface Turtle : Animal {
     /**
      * The location of this turtle's home.
      */
-    public var home: Vector3i
+    public var home: Vec3i
 
     /**
      * The current destination of this turtle.
      */
-    public var destination: Vector3i
+    public var destination: Vec3i
 }

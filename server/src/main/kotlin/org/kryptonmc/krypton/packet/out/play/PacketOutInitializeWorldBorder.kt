@@ -38,27 +38,11 @@ data class PacketOutInitializeWorldBorder(
     val warningTime: Int
 ) : Packet {
 
-    constructor(border: KryptonWorldBorder) : this(
-        border.center.x(),
-        border.center.y(),
-        border.size,
-        border.size,
-        0,
-        PORTAL_TELEPORT_BOUNDARY,
-        border.warningBlocks,
-        border.warningTime
-    )
+    constructor(border: KryptonWorldBorder) : this(border.centerX, border.centerZ, border.size, border.size, 0, PORTAL_TELEPORT_BOUNDARY,
+        border.warningBlocks, border.warningTime)
 
-    constructor(buf: ByteBuf) : this(
-        buf.readDouble(),
-        buf.readDouble(),
-        buf.readDouble(),
-        buf.readDouble(),
-        buf.readVarLong(),
-        buf.readVarInt(),
-        buf.readVarInt(),
-        buf.readVarInt()
-    )
+    constructor(buf: ByteBuf) : this(buf.readDouble(), buf.readDouble(), buf.readDouble(), buf.readDouble(), buf.readVarLong(), buf.readVarInt(),
+        buf.readVarInt(), buf.readVarInt())
 
     override fun write(buf: ByteBuf) {
         buf.writeDouble(centerX)

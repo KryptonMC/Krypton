@@ -19,9 +19,6 @@
 package org.kryptonmc.krypton.util
 
 import org.kryptonmc.api.util.BoundingBox
-import org.spongepowered.math.GenericMath
-import org.spongepowered.math.vector.Vector3d
-import org.spongepowered.math.vector.Vector3i
 import kotlin.math.max
 import kotlin.math.min
 
@@ -46,11 +43,11 @@ data class KryptonBoundingBox(
     override val volume: Double
         get() = sizeX * sizeY * sizeZ
     override val centerX: Double
-        get() = GenericMath.lerp(minimumX, maximumX, 0.5)
+        get() = Maths.lerp(0.5, minimumX, maximumX)
     override val centerY: Double
-        get() = GenericMath.lerp(minimumY, maximumY, 0.5)
+        get() = Maths.lerp(0.5, minimumY, maximumY)
     override val centerZ: Double
-        get() = GenericMath.lerp(minimumZ, maximumZ, 0.5)
+        get() = Maths.lerp(0.5, minimumZ, maximumZ)
 
     init {
         require(minimumX <= maximumX) { "Maximum X cannot be less than than minimum X! Maximum is $maximumX and minimum is $minimumX!" }
@@ -58,15 +55,8 @@ data class KryptonBoundingBox(
         require(minimumZ <= maximumZ) { "Maximum Z cannot be less than than minimum Z! Maximum is $maximumZ and minimum is $minimumZ!" }
     }
 
-    override fun inflate(xFactor: Double, yFactor: Double, zFactor: Double): BoundingBox {
-        val newMinX = minimumX - xFactor
-        val newMinY = minimumY - yFactor
-        val newMinZ = minimumZ - zFactor
-        val newMaxX = maximumX + xFactor
-        val newMaxY = maximumY + yFactor
-        val newMaxZ = maximumZ + zFactor
-        return KryptonBoundingBox(newMinX, newMinY, newMinZ, newMaxX, newMaxY, newMaxZ)
-    }
+    override fun inflate(x: Double, y: Double, z: Double): BoundingBox =
+        KryptonBoundingBox(minimumX - x, minimumY - y, minimumZ - z, maximumX + x, maximumY + y, maximumZ + z)
 
     override fun intersect(other: BoundingBox): BoundingBox {
         val newMinX = max(minimumX, other.minimumX)
@@ -107,10 +97,10 @@ data class KryptonBoundingBox(
         return KryptonBoundingBox(minX, minY, minZ, maxX, maxY, maxZ)
     }
 
-    override fun intersects(minimumX: Double, minimumY: Double, minimumZ: Double, maximumX: Double, maximumY: Double, maximumZ: Double): Boolean =
-        this.minimumX < maximumX && this.maximumX > minimumX &&
-            this.minimumY < maximumY && this.maximumY > minimumY &&
-            this.minimumZ < maximumZ && this.maximumZ > minimumZ
+    override fun intersects(minX: Double, minY: Double, minZ: Double, maxX: Double, maxY: Double, maxZ: Double): Boolean =
+        this.minimumX < maxX && this.maximumX > minX &&
+            this.minimumY < maxY && this.maximumY > minY &&
+            this.minimumZ < maxZ && this.maximumZ > minZ
 
     override fun contains(x: Double, y: Double, z: Double): Boolean =
         x >= minimumX && x < maximumX && y >= minimumY && y < maximumY && z >= minimumZ && z < maximumZ
@@ -121,20 +111,8 @@ data class KryptonBoundingBox(
 
         override fun unit(): BoundingBox = UNIT
 
-        override fun of(minimum: Vector3d, maximum: Vector3d): BoundingBox =
-            of(minimum.x(), minimum.y(), minimum.z(), maximum.x(), maximum.y(), maximum.z())
-
-        override fun of(minimum: Vector3i, maximum: Vector3i): BoundingBox = of(
-            minimum.x().toDouble(),
-            minimum.y().toDouble(),
-            minimum.z().toDouble(),
-            maximum.x().toDouble(),
-            maximum.y().toDouble(),
-            maximum.z().toDouble()
-        )
-
-        override fun of(minimumX: Double, minimumY: Double, minimumZ: Double, maximumX: Double, maximumY: Double, maximumZ: Double): BoundingBox =
-            KryptonBoundingBox(minimumX, minimumY, minimumZ, maximumX, maximumY, maximumZ)
+        override fun of(minX: Double, minY: Double, minZ: Double, maxX: Double, maxY: Double, maxZ: Double): BoundingBox =
+            KryptonBoundingBox(minX, minY, minZ, maxX, maxY, maxZ)
     }
 
     companion object {

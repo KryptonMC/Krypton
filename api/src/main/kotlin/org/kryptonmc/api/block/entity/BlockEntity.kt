@@ -9,8 +9,8 @@
 package org.kryptonmc.api.block.entity
 
 import org.kryptonmc.api.block.Block
+import org.kryptonmc.api.util.Vec3i
 import org.kryptonmc.api.world.World
-import org.spongepowered.math.vector.Vector3i
 
 /**
  * A block entity is an entity that exists as a companion to a block, so that
@@ -46,5 +46,5 @@ public interface BlockEntity {
      *
      * This will be identical to the position of the associated block.
      */
-    public val position: Vector3i
+    public val position: Vec3i
 }

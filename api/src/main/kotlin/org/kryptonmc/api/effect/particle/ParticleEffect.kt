@@ -10,7 +10,7 @@ package org.kryptonmc.api.effect.particle
 
 import org.kryptonmc.api.effect.particle.builder.BaseParticleEffectBuilder
 import org.kryptonmc.api.effect.particle.data.ParticleData
-import org.spongepowered.math.vector.Vector3d
+import org.kryptonmc.api.util.Vec3d
 import javax.annotation.concurrent.Immutable
 
 /**
@@ -42,7 +42,7 @@ public interface ParticleEffect {
      * The offset vector from the spawn location of this effect.
      */
     @get:JvmName("offset")
-    public val offset: Vector3d
+    public val offset: Vec3d
 
     /**
      * If the distance of this effect is longer than usual.

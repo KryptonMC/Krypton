@@ -18,13 +18,13 @@
  */
 package org.kryptonmc.krypton.world.block.pattern
 
+import org.kryptonmc.krypton.util.BlockPos
 import org.kryptonmc.krypton.world.WorldAccessor
 import org.kryptonmc.krypton.world.block.state.KryptonBlockState
 import org.kryptonmc.krypton.world.block.entity.KryptonBlockEntity
-import org.spongepowered.math.vector.Vector3i
 import java.util.function.Predicate
 
-class BlockInWorld(val world: WorldAccessor, val position: Vector3i, private val loadChunks: Boolean) {
+class BlockInWorld(val world: WorldAccessor, val position: BlockPos, private val loadChunks: Boolean) {
 
     private var blockState: KryptonBlockState? = null
     private var blockEntity: KryptonBlockEntity? = null

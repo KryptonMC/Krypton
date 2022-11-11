@@ -41,6 +41,8 @@ import org.kryptonmc.api.auth.GameProfile
 import org.kryptonmc.api.auth.ProfileProperty
 import org.kryptonmc.api.resource.ResourceKey
 import org.kryptonmc.api.util.Direction
+import org.kryptonmc.api.util.Rotations
+import org.kryptonmc.api.util.Vec3d
 import org.kryptonmc.krypton.adventure.toJson
 import org.kryptonmc.krypton.auth.KryptonGameProfile
 import org.kryptonmc.krypton.auth.KryptonProfileProperty
@@ -56,9 +58,6 @@ import org.kryptonmc.nbt.io.TagCompression
 import org.kryptonmc.nbt.io.TagIO
 import org.kryptonmc.serialization.Encoder
 import org.kryptonmc.serialization.nbt.NbtOps
-import org.spongepowered.math.vector.Vector3d
-import org.spongepowered.math.vector.Vector3f
-import org.spongepowered.math.vector.Vector3i
 import java.io.IOException
 import java.security.PublicKey
 import java.time.Instant
@@ -301,21 +300,26 @@ fun ByteBuf.writeItem(item: KryptonItemStack) {
  * - Y: minimum of -2048 (-2^11) and maximum of 2047 (2^11 - 1)
  */
 @Suppress("MagicNumber")
-fun ByteBuf.writeVector(x: Int, y: Int, z: Int) {
-    writeLong(x.toLong() and 0x3FFFFFF shl 38 or (z.toLong() and 0x3FFFFFF shl 12) or (y.toLong() and 0xFFF))
+fun ByteBuf.writeBlockPos(x: Int, y: Int, z: Int) {
+    writeLong(BlockPos.pack(x, y, z))
 }
 
-fun ByteBuf.writeVector(vector: Vector3i) {
-    writeVector(vector.x(), vector.y(), vector.z())
+fun ByteBuf.writeBlockPos(pos: BlockPos) {
+    writeLong(pos.pack())
 }
 
 @Suppress("MagicNumber")
-fun ByteBuf.readVector(): Vector3i {
-    val value = readLong()
-    return Vector3i((value shr 38).toInt(), (value and 0xFFF).toInt(), (value shr 12 and 0x3FFFFFF).toInt())
+fun ByteBuf.readBlockPos(): BlockPos = BlockPos.unpack(readLong())
+
+fun ByteBuf.readRotations(): Rotations = RotationsImpl(readFloat(), readFloat(), readFloat())
+
+fun ByteBuf.writeVec3d(vector: Vec3d) {
+    writeDouble(vector.x)
+    writeDouble(vector.y)
+    writeDouble(vector.z)
 }
 
-fun ByteBuf.readVector3f(): Vector3f = Vector3f(readFloat(), readFloat(), readFloat())
+fun ByteBuf.readVec3d(): Vec3d = Vec3dImpl(readDouble(), readDouble(), readDouble())
 
 private const val MAX_BYTE_ANGLE = 256F
 private const val MAX_DEGREE_ANGLE = 360F
@@ -470,23 +474,23 @@ fun ByteBuf.readPublicKey(): PublicKey {
 }
 
 fun ByteBuf.readBlockHitResult(): BlockHitResult {
-    val position = readVector()
+    val position = readBlockPos()
     val direction = readEnum<Direction>()
     val cursorX = readFloat().toDouble()
     val cursorY = readFloat().toDouble()
     val cursorZ = readFloat().toDouble()
     val isInside = readBoolean()
-    return BlockHitResult(Vector3d(position.x() + cursorX, position.y() + cursorY, position.z() + cursorZ), direction, position, isInside)
+    return BlockHitResult(Vec3dImpl(position.x + cursorX, position.y + cursorY, position.z + cursorZ), direction, position, isInside)
 }
 
 fun ByteBuf.writeBlockHitResult(hitResult: BlockHitResult) {
     val position = hitResult.position
-    writeVector(position)
+    writeBlockPos(position)
     writeEnum(hitResult.direction)
     val location = hitResult.location
-    writeFloat((location.x() - position.x()).toFloat())
-    writeFloat((location.y() - position.y()).toFloat())
-    writeFloat((location.z() - position.z()).toFloat())
+    writeFloat((location.x - position.x).toFloat())
+    writeFloat((location.y - position.y).toFloat())
+    writeFloat((location.z - position.z).toFloat())
     writeBoolean(hitResult.isInside)
 }
 

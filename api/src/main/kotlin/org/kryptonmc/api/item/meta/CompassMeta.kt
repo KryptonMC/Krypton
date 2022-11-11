@@ -10,8 +10,8 @@ package org.kryptonmc.api.item.meta
 
 import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.resource.ResourceKey
+import org.kryptonmc.api.util.Vec3i
 import org.kryptonmc.api.world.World
-import org.spongepowered.math.vector.Vector3i
 import javax.annotation.concurrent.Immutable
 
 /**
@@ -36,7 +36,7 @@ public interface CompassMeta : ScopedItemMeta<CompassMeta.Builder, CompassMeta> 
      * The position of the lodestone the compass is tracking.
      */
     @get:JvmName("lodestonePosition")
-    public val lodestonePosition: Vector3i?
+    public val lodestonePosition: Vec3i?
 
     /**
      * Creates new item metadata tracking the lodestone in the given
@@ -49,7 +49,7 @@ public interface CompassMeta : ScopedItemMeta<CompassMeta.Builder, CompassMeta> 
      * @return new item metadata
      */
     @Contract("_, _ -> new", pure = true)
-    public fun withLodestone(dimension: ResourceKey<World>, position: Vector3i): CompassMeta
+    public fun withLodestone(dimension: ResourceKey<World>, position: Vec3i): CompassMeta
 
     /**
      * Creates new item metadata without a tracked lodestone.
@@ -78,7 +78,7 @@ public interface CompassMeta : ScopedItemMeta<CompassMeta.Builder, CompassMeta> 
          */
         @MetaDsl
         @Contract("_, _ -> this", mutates = "this")
-        public fun lodestone(dimension: ResourceKey<World>, position: Vector3i): Builder
+        public fun lodestone(dimension: ResourceKey<World>, position: Vec3i): Builder
     }
 
     public companion object {

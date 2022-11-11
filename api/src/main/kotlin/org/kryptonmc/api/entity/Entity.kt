@@ -15,10 +15,9 @@ import net.kyori.adventure.text.event.HoverEventSource
 import org.kryptonmc.api.command.Sender
 import org.kryptonmc.api.scoreboard.TeamMember
 import org.kryptonmc.api.util.BoundingBox
+import org.kryptonmc.api.util.Vec3d
 import org.kryptonmc.api.world.World
 import org.kryptonmc.api.world.damage.DamageSource
-import org.spongepowered.math.vector.Vector2f
-import org.spongepowered.math.vector.Vector3d
 
 /**
  * An entity somewhere in a world.
@@ -65,21 +64,22 @@ public interface Entity : Sender, HoverEventSource<HoverEvent.ShowEntity>, Sound
     /**
      * The current position of this entity.
      */
-    public var location: Vector3d
+    public var location: Vec3d
 
     /**
-     * The current rotation of this entity.
-     *
-     * The format of this rotation is:
-     * - x -> yaw
-     * - y -> pitch
+     * The current yaw of this entity.
      */
-    public var rotation: Vector2f
+    public var yaw: Float
+
+    /**
+     * The current pitch of this entity.
+     */
+    public var pitch: Float
 
     /**
      * The current delta X, Y, and Z values of this entity, in metres per tick.
      */
-    public var velocity: Vector3d
+    public var velocity: Vec3d
 
     /**
      * The current bounding box of this entity. This is used to determine the

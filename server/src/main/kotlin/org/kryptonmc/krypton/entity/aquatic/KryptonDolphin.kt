@@ -19,6 +19,7 @@
 package org.kryptonmc.krypton.entity.aquatic
 
 import org.kryptonmc.api.entity.aquatic.Dolphin
+import org.kryptonmc.api.util.Vec3i
 import org.kryptonmc.api.world.damage.type.DamageTypes
 import org.kryptonmc.krypton.entity.KryptonEntityType
 import org.kryptonmc.krypton.entity.KryptonEntityTypes
@@ -28,10 +29,9 @@ import org.kryptonmc.krypton.entity.attribute.KryptonAttributeTypes
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.entity.serializer.EntitySerializer
 import org.kryptonmc.krypton.entity.serializer.aquatic.DolphinSerializer
+import org.kryptonmc.krypton.util.BlockPos
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.krypton.world.damage.KryptonDamageSource
-import org.spongepowered.math.vector.Vector2f
-import org.spongepowered.math.vector.Vector3i
 import kotlin.random.Random
 
 class KryptonDolphin(world: KryptonWorld) : KryptonAquaticAnimal(world), Dolphin {
@@ -41,9 +41,9 @@ class KryptonDolphin(world: KryptonWorld) : KryptonAquaticAnimal(world), Dolphin
     override val serializer: EntitySerializer<KryptonDolphin>
         get() = DolphinSerializer
 
-    override var treasurePosition: Vector3i
+    override var treasurePosition: Vec3i
         get() = data.get(MetadataKeys.Dolphin.TREASURE_POSITION)
-        set(value) = data.set(MetadataKeys.Dolphin.TREASURE_POSITION, value)
+        set(value) = data.set(MetadataKeys.Dolphin.TREASURE_POSITION, BlockPos.from(value))
     override var hasGotFish: Boolean
         get() = data.get(MetadataKeys.Dolphin.GOT_FISH)
         set(value) = data.set(MetadataKeys.Dolphin.GOT_FISH, value)
@@ -56,7 +56,7 @@ class KryptonDolphin(world: KryptonWorld) : KryptonAquaticAnimal(world), Dolphin
 
     override fun defineData() {
         super.defineData()
-        data.define(MetadataKeys.Dolphin.TREASURE_POSITION, Vector3i.ZERO)
+        data.define(MetadataKeys.Dolphin.TREASURE_POSITION, BlockPos.ZERO)
         data.define(MetadataKeys.Dolphin.GOT_FISH, false)
         data.define(MetadataKeys.Dolphin.MOISTURE, FULL_SKIN_MOISTURE)
     }
@@ -85,7 +85,7 @@ class KryptonDolphin(world: KryptonWorld) : KryptonAquaticAnimal(world), Dolphin
         if (skinMoisture <= 0) damage(KryptonDamageSource(DamageTypes.DRY_OUT), 1F)
         if (isOnGround) {
             velocity = velocity.add(randomVelocityModifier(), GROUND_Y_VELOCITY_INCREASE, randomVelocityModifier())
-            rotation = Vector2f(rotation.x(), Random.nextFloat() * MAX_ANGLE)
+            pitch = Random.nextFloat() * MAX_ANGLE
             isOnGround = false
         }
     }

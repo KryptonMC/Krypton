@@ -21,6 +21,7 @@ package org.kryptonmc.krypton.entity.animal
 import org.kryptonmc.api.entity.animal.Turtle
 import org.kryptonmc.api.item.ItemStack
 import org.kryptonmc.api.item.ItemTypes
+import org.kryptonmc.api.util.Vec3i
 import org.kryptonmc.krypton.entity.KryptonEntityType
 import org.kryptonmc.krypton.entity.KryptonEntityTypes
 import org.kryptonmc.krypton.entity.KryptonMob
@@ -29,8 +30,8 @@ import org.kryptonmc.krypton.entity.attribute.KryptonAttributeTypes
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.entity.serializer.EntitySerializer
 import org.kryptonmc.krypton.entity.serializer.animal.TurtleSerializer
+import org.kryptonmc.krypton.util.BlockPos
 import org.kryptonmc.krypton.world.KryptonWorld
-import org.spongepowered.math.vector.Vector3i
 
 class KryptonTurtle(world: KryptonWorld) : KryptonAnimal(world), Turtle {
 
@@ -51,12 +52,12 @@ class KryptonTurtle(world: KryptonWorld) : KryptonAnimal(world), Turtle {
     override var isTravelling: Boolean
         get() = data.get(MetadataKeys.Turtle.TRAVELLING)
         set(value) = data.set(MetadataKeys.Turtle.TRAVELLING, value)
-    override var home: Vector3i
+    override var home: Vec3i
         get() = data.get(MetadataKeys.Turtle.HOME)
-        set(value) = data.set(MetadataKeys.Turtle.HOME, value)
-    override var destination: Vector3i
+        set(value) = data.set(MetadataKeys.Turtle.HOME, BlockPos.from(value))
+    override var destination: Vec3i
         get() = data.get(MetadataKeys.Turtle.DESTINATION)
-        set(value) = data.set(MetadataKeys.Turtle.DESTINATION, value)
+        set(value) = data.set(MetadataKeys.Turtle.DESTINATION, BlockPos.from(value))
 
     override val isPushedByFluid: Boolean
         get() = false
@@ -65,10 +66,10 @@ class KryptonTurtle(world: KryptonWorld) : KryptonAnimal(world), Turtle {
 
     override fun defineData() {
         super.defineData()
-        data.define(MetadataKeys.Turtle.HOME, Vector3i.ZERO)
+        data.define(MetadataKeys.Turtle.HOME, BlockPos.ZERO)
         data.define(MetadataKeys.Turtle.HAS_EGG, false)
         data.define(MetadataKeys.Turtle.LAYING_EGG, false)
-        data.define(MetadataKeys.Turtle.DESTINATION, Vector3i.ZERO)
+        data.define(MetadataKeys.Turtle.DESTINATION, BlockPos.ZERO)
         data.define(MetadataKeys.Turtle.GOING_HOME, false)
         data.define(MetadataKeys.Turtle.TRAVELLING, false)
     }

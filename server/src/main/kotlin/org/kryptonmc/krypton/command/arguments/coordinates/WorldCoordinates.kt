@@ -21,7 +21,8 @@ package org.kryptonmc.krypton.command.arguments.coordinates
 import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.StringReader
 import org.kryptonmc.api.entity.player.Player
-import org.spongepowered.math.vector.Vector3d
+import org.kryptonmc.api.util.Vec3d
+import org.kryptonmc.krypton.util.Vec3dImpl
 
 @JvmRecord
 data class WorldCoordinates(val x: WorldCoordinate, val y: WorldCoordinate, val z: WorldCoordinate) : Coordinates {
@@ -33,7 +34,7 @@ data class WorldCoordinates(val x: WorldCoordinate, val y: WorldCoordinate, val 
     override val hasRelativeZ: Boolean
         get() = z.isRelative
 
-    override fun position(player: Player): Vector3d = Vector3d(x.get(player.location.x()), y.get(player.location.y()), z.get(player.location.z()))
+    override fun position(player: Player): Vec3d = Vec3dImpl(x.get(player.location.x), y.get(player.location.y), z.get(player.location.z))
 
     companion object {
 

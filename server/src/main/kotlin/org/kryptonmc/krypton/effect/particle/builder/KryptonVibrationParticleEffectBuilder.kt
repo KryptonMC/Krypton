@@ -21,16 +21,17 @@ package org.kryptonmc.krypton.effect.particle.builder
 import org.kryptonmc.api.effect.particle.VibrationParticleType
 import org.kryptonmc.api.effect.particle.builder.VibrationParticleEffectBuilder
 import org.kryptonmc.api.effect.particle.data.ParticleData
+import org.kryptonmc.api.util.Vec3d
 import org.kryptonmc.krypton.effect.particle.data.KryptonVibrationParticleData
-import org.spongepowered.math.vector.Vector3d
+import org.kryptonmc.krypton.util.Vec3dImpl
 
 class KryptonVibrationParticleEffectBuilder(type: VibrationParticleType) : AbstractParticleEffectBuilder<VibrationParticleEffectBuilder>(type),
     VibrationParticleEffectBuilder {
 
-    private var destination: Vector3d = Vector3d.ZERO
+    private var destination: Vec3d = Vec3dImpl.ZERO
     private var ticks = 0
 
-    override fun destination(position: Vector3d): VibrationParticleEffectBuilder = apply { destination = position }
+    override fun destination(position: Vec3d): VibrationParticleEffectBuilder = apply { destination = position }
 
     override fun ticks(ticks: Int): VibrationParticleEffectBuilder = apply { this.ticks = ticks }
 

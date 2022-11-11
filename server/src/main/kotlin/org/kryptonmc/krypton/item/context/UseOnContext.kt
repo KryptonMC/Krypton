@@ -20,12 +20,12 @@ package org.kryptonmc.krypton.item.context
 
 import org.kryptonmc.api.entity.Hand
 import org.kryptonmc.api.util.Direction
+import org.kryptonmc.api.util.Vec3d
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.item.KryptonItemStack
 import org.kryptonmc.krypton.util.BlockHitResult
+import org.kryptonmc.krypton.util.BlockPos
 import org.kryptonmc.krypton.world.KryptonWorld
-import org.spongepowered.math.vector.Vector3d
-import org.spongepowered.math.vector.Vector3i
 
 open class UseOnContext protected constructor(
     val world: KryptonWorld,
@@ -35,11 +35,11 @@ open class UseOnContext protected constructor(
     protected val hitResult: BlockHitResult
 ) {
 
-    open val clickedPosition: Vector3i
+    open val clickedPosition: BlockPos
         get() = hitResult.position
     val clickedFace: Direction
         get() = hitResult.direction
-    val clickLocation: Vector3d
+    val clickLocation: Vec3d
         get() = hitResult.location
     val isInside: Boolean
         get() = hitResult.isInside
@@ -48,7 +48,7 @@ open class UseOnContext protected constructor(
     open val isSneaking: Boolean
         get() = player != null && player.isSneaking
     open val rotation: Float
-        get() = player?.rotation?.y() ?: 0F
+        get() = player?.pitch ?: 0F
 
     constructor(player: KryptonPlayer, hand: Hand, hitResult: BlockHitResult) : this(player.world, player, hand, player.getHeldItem(hand), hitResult)
 }

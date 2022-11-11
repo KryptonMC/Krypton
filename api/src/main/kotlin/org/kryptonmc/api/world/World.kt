@@ -23,13 +23,12 @@ import org.kryptonmc.api.fluid.Fluids
 import org.kryptonmc.api.resource.ResourceKey
 import org.kryptonmc.api.resource.ResourceKeys
 import org.kryptonmc.api.scoreboard.Scoreboard
+import org.kryptonmc.api.util.Vec3d
+import org.kryptonmc.api.util.Vec3i
 import org.kryptonmc.api.world.biome.BiomeContainer
 import org.kryptonmc.api.world.chunk.Chunk
 import org.kryptonmc.api.world.dimension.DimensionType
 import org.kryptonmc.api.world.rule.GameRuleHolder
-import org.spongepowered.math.vector.Vector2i
-import org.spongepowered.math.vector.Vector3d
-import org.spongepowered.math.vector.Vector3i
 import java.nio.file.Path
 
 /**
@@ -65,7 +64,7 @@ public interface World : BlockContainer, FluidContainer, BiomeContainer, Forward
     /**
      * The spawn location of this world.
      */
-    public val spawnLocation: Vector3i
+    public val spawnLocation: Vec3i
 
     /**
      * All of the chunks currently loaded in this world.
@@ -173,7 +172,7 @@ public interface World : BlockContainer, FluidContainer, BiomeContainer, Forward
      * @param position the position
      * @return see above
      */
-    override fun getBlock(position: Vector3i): BlockState
+    override fun getBlock(position: Vec3i): BlockState
 
     /**
      * Gets the fluid at the given coordinates.
@@ -204,7 +203,7 @@ public interface World : BlockContainer, FluidContainer, BiomeContainer, Forward
      * @param position the position
      * @return see above
      */
-    override fun getFluid(position: Vector3i): FluidState
+    override fun getFluid(position: Vec3i): FluidState
 
     /**
      * Gets a chunk from its **chunk** coordinates, or returns null if there is
@@ -220,20 +219,6 @@ public interface World : BlockContainer, FluidContainer, BiomeContainer, Forward
      * loaded
      */
     public fun getChunkAt(x: Int, z: Int): Chunk?
-
-    /**
-     * Gets a chunk from its **chunk** coordinates, or returns null if there is
-     * no chunk **loaded** at the given coordinates.
-     *
-     * That is, to calculate the chunk coordinate from a given block
-     * coordinate, the block coordinate is shifted right by 4 (divided by 16
-     * and floored).
-     *
-     * @param position the chunk position
-     * @return the chunk at the given position, or null if there isn't one
-     * loaded
-     */
-    public fun getChunkAt(position: Vector2i): Chunk? = getChunkAt(position.x(), position.y())
 
     /**
      * Gets a chunk from its **block** coordinates, or returns null if there is
@@ -255,7 +240,7 @@ public interface World : BlockContainer, FluidContainer, BiomeContainer, Forward
      * @return the chunk at the given coordinates, or null if there isn't one
      * loaded
      */
-    public fun getChunk(position: Vector3i): Chunk?
+    public fun getChunk(position: Vec3i): Chunk?
 
     /**
      * Gets or loads the chunk at the given **chunk** coordinates, or returns
@@ -299,7 +284,7 @@ public interface World : BlockContainer, FluidContainer, BiomeContainer, Forward
      * @param type the type of the entity
      * @param location the location to spawn the entity at
      */
-    public fun <T : Entity> spawnEntity(type: EntityType<T>, location: Vector3d): T?
+    public fun <T : Entity> spawnEntity(type: EntityType<T>, location: Vec3d): T?
 
     public companion object {
 

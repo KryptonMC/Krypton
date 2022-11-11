@@ -20,30 +20,24 @@ package org.kryptonmc.krypton.packet.out.play
 
 import io.netty.buffer.ByteBuf
 import org.kryptonmc.krypton.packet.Packet
-import org.kryptonmc.krypton.util.Positioning
-import org.kryptonmc.krypton.util.writeVector
-import org.spongepowered.math.vector.Vector3i
+import org.kryptonmc.krypton.util.BlockPos
+import org.kryptonmc.krypton.util.writeBlockPos
 
 @JvmRecord
 data class PacketOutSetDefaultSpawnPosition(val x: Int, val y: Int, val z: Int, val angle: Float) : Packet {
 
     constructor(x: Int, y: Int, z: Int) : this(x, y, z, 0F)
 
-    constructor(position: Vector3i, angle: Float) : this(position.x(), position.y(), position.z(), angle)
+    constructor(pos: BlockPos, angle: Float) : this(pos.x, pos.y, pos.z, angle)
 
-    constructor(position: Vector3i) : this(position, 0F)
+    constructor(pos: BlockPos) : this(pos, 0F)
 
     constructor(buf: ByteBuf) : this(buf.readLong(), buf.readFloat())
 
-    private constructor(encoded: Long, angle: Float) : this(
-        Positioning.decodeBlockX(encoded),
-        Positioning.decodeBlockY(encoded),
-        Positioning.decodeBlockZ(encoded),
-        angle
-    )
+    private constructor(encoded: Long, angle: Float) : this(BlockPos.unpackX(encoded), BlockPos.unpackY(encoded), BlockPos.unpackZ(encoded), angle)
 
     override fun write(buf: ByteBuf) {
-        buf.writeVector(x, y, z)
+        buf.writeBlockPos(x, y, z)
         buf.writeFloat(angle)
     }
 }

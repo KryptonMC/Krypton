@@ -18,8 +18,7 @@
  */
 package org.kryptonmc.krypton.util
 
-import org.spongepowered.math.vector.Vector3d
-import org.spongepowered.math.vector.Vector3i
+import org.kryptonmc.api.util.Vec3d
 import kotlin.math.abs
 
 object Positioning {
@@ -52,8 +51,7 @@ object Positioning {
      * See [here](https://wiki.vg/Protocol#Entity_Position)
      */
     @JvmStatic
-    fun deltaInMoveRange(old: Vector3d, new: Vector3d): Boolean =
-        abs(new.x() - old.x()) > 8 || abs(new.y() - old.y()) > 8 || abs(new.z() - old.z()) > 8
+    fun deltaInMoveRange(old: Vec3d, new: Vec3d): Boolean = abs(new.x - old.x) > 8 || abs(new.y - old.y) > 8 || abs(new.z - old.z) > 8
 
     @JvmStatic
     fun toChunkCoordinate(value: Int): Int = value shr 4
@@ -63,22 +61,6 @@ object Positioning {
 
     @JvmStatic
     fun chunkZ(encoded: Long): Int = (encoded ushr 32).toInt()
-
-    /**
-     * The encoding here is decently efficient. It places the X in the first 26
-     * bits (most significant), then the Z in the "middle" 26 bits, followed by
-     * the Y value in the last 12 bits (least significant).
-     *
-     * For example, for X = 13, Y = 2, and Z = 2021, the encoded form would be
-     * calculated by:
-     * `((x & 0x3FFFFFF) >> 38) | ((Z & 0x3FFFFFF) << 12) | (y & 0xFFF)`.
-     *
-     * See [here](https://wiki.vg/Protocol#Position)
-     */
-    @JvmStatic
-    @Suppress("MagicNumber")
-    fun encode(position: Vector3i): Long =
-        position.x().toLong() and 0x3FFFFFF shl 38 or (position.z().toLong() and 0x3FFFFFF shl 12) or (position.y().toLong() and 0xFFF)
 
     @JvmStatic
     fun decodeBlockX(encoded: Long): Int = (encoded shr 38).toInt()

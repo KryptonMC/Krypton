@@ -21,13 +21,13 @@ package org.kryptonmc.krypton.world.block
 import org.kryptonmc.krypton.shapes.CollisionContext
 import org.kryptonmc.krypton.shapes.Shapes
 import org.kryptonmc.krypton.shapes.VoxelShape
+import org.kryptonmc.krypton.util.BlockPos
 import org.kryptonmc.krypton.world.BlockAccessor
 import org.kryptonmc.krypton.world.block.state.KryptonBlockState
-import org.spongepowered.math.vector.Vector3i
 
 class AirBlock(properties: Properties) : KryptonBlock(properties) {
 
     override fun getRenderShape(state: KryptonBlockState): RenderShape = RenderShape.INVISIBLE
 
-    override fun getShape(state: KryptonBlockState, world: BlockAccessor, position: Vector3i, context: CollisionContext): VoxelShape = Shapes.empty()
+    override fun getShape(state: KryptonBlockState, world: BlockAccessor, pos: BlockPos, context: CollisionContext): VoxelShape = Shapes.empty()
 }

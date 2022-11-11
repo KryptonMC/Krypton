@@ -27,7 +27,6 @@ import org.kryptonmc.krypton.util.readById
 import org.kryptonmc.krypton.util.readEnum
 import org.kryptonmc.krypton.util.writeEnum
 import org.kryptonmc.krypton.util.writeId
-import org.spongepowered.math.vector.Vector3d
 
 @JvmRecord
 data class PacketOutSoundEffect(
@@ -40,33 +39,11 @@ data class PacketOutSoundEffect(
     val pitch: Float
 ) : Packet {
 
-    constructor(
-        event: SoundEvent,
-        source: Sound.Source,
-        x: Double,
-        y: Double,
-        z: Double,
-        volume: Float,
-        pitch: Float
-    ) : this(event, source, (x * 8.0).toInt(), (y * 8.0).toInt(), (z * 8.0).toInt(), volume, pitch)
+    constructor(event: SoundEvent, source: Sound.Source, x: Double, y: Double, z: Double,
+                volume: Float, pitch: Float) : this(event, source, (x * 8.0).toInt(), (y * 8.0).toInt(), (z * 8.0).toInt(), volume, pitch)
 
-    constructor(
-        event: SoundEvent,
-        source: Sound.Source,
-        location: Vector3d,
-        volume: Float,
-        pitch: Float
-    ) : this(event, source, location.x(), location.y(), location.z(), volume, pitch)
-
-    constructor(
-        sound: Sound,
-        event: SoundEvent,
-        x: Double,
-        y: Double,
-        z: Double
-    ) : this(event, sound.source(), x, y, z, sound.volume(), sound.pitch())
-
-    constructor(sound: Sound, event: SoundEvent, location: Vector3d) : this(sound, event, location.x(), location.y(), location.z())
+    constructor(sound: Sound, event: SoundEvent,
+                x: Double, y: Double, z: Double) : this(event, sound.source(), x, y, z, sound.volume(), sound.pitch())
 
     constructor(buf: ByteBuf) : this(buf.readEvent(), buf.readEnum(), buf.readInt(), buf.readInt(), buf.readInt(), buf.readFloat(), buf.readFloat())
 

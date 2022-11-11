@@ -21,12 +21,12 @@ package org.kryptonmc.krypton.packet.out.play
 import io.netty.buffer.ByteBuf
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.sound.Sound
+import org.kryptonmc.api.util.Vec3d
 import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.util.readEnum
 import org.kryptonmc.krypton.util.readKey
 import org.kryptonmc.krypton.util.writeEnum
 import org.kryptonmc.krypton.util.writeKey
-import org.spongepowered.math.vector.Vector3d
 import java.util.concurrent.ThreadLocalRandom
 
 @JvmRecord
@@ -41,35 +41,17 @@ data class PacketOutCustomSoundEffect(
     val seed: Long
 ) : Packet {
 
-    constructor(
-        name: Key,
-        source: Sound.Source,
-        location: Vector3d,
-        volume: Float,
-        pitch: Float,
-        seed: Long
-    ) : this(name, source, location.x(), location.y(), location.z(), volume, pitch, seed)
+    constructor(name: Key, source: Sound.Source, location: Vec3d, volume: Float, pitch: Float, seed: Long) : this(name, source, location.x,
+        location.y, location.z, volume, pitch, seed)
 
     // TODO: Review if we should use a better source of randomness - as in, for example, one tied to a world.
-    constructor(
-        sound: Sound,
-        x: Double,
-        y: Double,
-        z: Double
-    ) : this(sound.name(), sound.source(), x, y, z, sound.volume(), sound.pitch(), sound.seed().orElse(ThreadLocalRandom.current().nextLong()))
+    constructor(sound: Sound, x: Double, y: Double, z: Double) : this(sound.name(), sound.source(), x, y, z, sound.volume(), sound.pitch(),
+        sound.seed().orElse(ThreadLocalRandom.current().nextLong()))
 
-    constructor(sound: Sound, location: Vector3d) : this(sound, location.x(), location.y(), location.z())
+    constructor(sound: Sound, location: Vec3d) : this(sound, location.x, location.y, location.z)
 
-    constructor(buf: ByteBuf) : this(
-        buf.readKey(),
-        buf.readEnum(),
-        buf.readCoordinate(),
-        buf.readCoordinate(),
-        buf.readCoordinate(),
-        buf.readFloat(),
-        buf.readFloat(),
-        buf.readLong()
-    )
+    constructor(buf: ByteBuf) : this(buf.readKey(), buf.readEnum(), buf.readCoordinate(), buf.readCoordinate(), buf.readCoordinate(),
+        buf.readFloat(), buf.readFloat(), buf.readLong())
 
     override fun write(buf: ByteBuf) {
         buf.writeKey(name)

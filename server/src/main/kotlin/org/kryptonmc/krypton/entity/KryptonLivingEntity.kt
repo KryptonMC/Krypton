@@ -25,6 +25,7 @@ import org.kryptonmc.api.entity.LivingEntity
 import org.kryptonmc.api.entity.attribute.Attribute
 import org.kryptonmc.api.entity.attribute.AttributeType
 import org.kryptonmc.api.fluid.Fluid
+import org.kryptonmc.api.util.Vec3i
 import org.kryptonmc.api.world.Difficulty
 import org.kryptonmc.krypton.entity.attribute.AttributeMap
 import org.kryptonmc.krypton.entity.attribute.AttributeSupplier
@@ -39,8 +40,8 @@ import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.entity.serializer.EntitySerializer
 import org.kryptonmc.krypton.entity.serializer.LivingEntitySerializer
 import org.kryptonmc.krypton.item.KryptonItemStack
+import org.kryptonmc.krypton.util.BlockPos
 import org.kryptonmc.krypton.world.KryptonWorld
-import org.spongepowered.math.vector.Vector3i
 import kotlin.random.Random
 
 @Suppress("LeakingThis")
@@ -62,7 +63,7 @@ abstract class KryptonLivingEntity(world: KryptonWorld) : KryptonEntity(world), 
     private var tickCount = 0
     val attributes: AttributeMap = AttributeMap(DefaultAttributes.get(type))
     open val brain: Brain<*> = Brain<KryptonLivingEntity>()
-    var headYaw: Float = rotation.x()
+    var headYaw: Float = yaw
 
     @Suppress("MemberVisibilityCanBePrivate")
     var lastHurtByMob: KryptonLivingEntity? = null
@@ -127,9 +128,9 @@ abstract class KryptonLivingEntity(world: KryptonWorld) : KryptonEntity(world), 
     var stingerCount: Int
         get() = data.get(MetadataKeys.LivingEntity.STINGERS)
         set(value) = data.set(MetadataKeys.LivingEntity.STINGERS, value)
-    final override var sleepingPosition: Vector3i?
+    final override var sleepingPosition: Vec3i?
         get() = data.get(MetadataKeys.LivingEntity.BED_LOCATION)
-        set(value) = data.set(MetadataKeys.LivingEntity.BED_LOCATION, value)
+        set(value) = data.set(MetadataKeys.LivingEntity.BED_LOCATION, value?.let(BlockPos::from))
 
     init {
         data.set(MetadataKeys.LivingEntity.HEALTH, maxHealth)

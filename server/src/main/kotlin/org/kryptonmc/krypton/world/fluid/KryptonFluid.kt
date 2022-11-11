@@ -22,16 +22,17 @@ import net.kyori.adventure.key.Key
 import org.kryptonmc.api.effect.sound.SoundEvent
 import org.kryptonmc.api.fluid.Fluid
 import org.kryptonmc.api.fluid.FluidState
+import org.kryptonmc.api.util.Vec3d
 import org.kryptonmc.krypton.registry.Holder
 import org.kryptonmc.krypton.registry.IntrusiveRegistryObject
 import org.kryptonmc.krypton.registry.KryptonRegistries
 import org.kryptonmc.krypton.shapes.VoxelShape
 import org.kryptonmc.krypton.state.StateDefinition
 import org.kryptonmc.krypton.state.StateHolderDelegate
+import org.kryptonmc.krypton.util.BlockPos
 import org.kryptonmc.krypton.util.IntHashBiMap
 import org.kryptonmc.krypton.world.BlockAccessor
 import org.kryptonmc.krypton.world.block.state.KryptonBlockState
-import org.spongepowered.math.vector.Vector3d
 
 @Suppress("LeakingThis")
 abstract class KryptonFluid : Fluid, StateHolderDelegate<FluidState, KryptonFluidState>, IntrusiveRegistryObject<KryptonFluid> {
@@ -54,9 +55,9 @@ abstract class KryptonFluid : Fluid, StateHolderDelegate<FluidState, KryptonFlui
         defaultFluidState = stateDefinition.any()
     }
 
-    abstract fun getFlow(world: BlockAccessor, x: Int, y: Int, z: Int, state: KryptonFluidState): Vector3d
+    abstract fun getFlow(world: BlockAccessor, pos: BlockPos, state: KryptonFluidState): Vec3d
 
-    abstract fun getHeight(state: KryptonFluidState, world: BlockAccessor, x: Int, y: Int, z: Int): Float
+    abstract fun getHeight(state: KryptonFluidState, world: BlockAccessor, pos: BlockPos): Float
 
     abstract fun getOwnHeight(state: KryptonFluidState): Float
 
@@ -68,7 +69,7 @@ abstract class KryptonFluid : Fluid, StateHolderDelegate<FluidState, KryptonFlui
 
     open fun isSame(fluid: Fluid): Boolean = fluid === this
 
-    abstract fun getShape(state: KryptonFluidState, world: BlockAccessor, x: Int, y: Int, z: Int): VoxelShape
+    abstract fun getShape(state: KryptonFluidState, world: BlockAccessor, pos: BlockPos): VoxelShape
 
     override fun key(): Key = KryptonRegistries.FLUID.getKey(this)
 

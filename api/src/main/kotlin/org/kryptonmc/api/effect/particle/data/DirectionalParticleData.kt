@@ -9,7 +9,7 @@
 package org.kryptonmc.api.effect.particle.data
 
 import org.jetbrains.annotations.Contract
-import org.spongepowered.math.vector.Vector3d
+import org.kryptonmc.api.util.Vec3d
 import javax.annotation.concurrent.Immutable
 
 /**
@@ -25,7 +25,7 @@ public interface DirectionalParticleData : ParticleData {
      * If this value is null, it will be randomized.
      */
     @get:JvmName("direction")
-    public val direction: Vector3d?
+    public val direction: Vec3d?
 
     /**
      * The current velocity of the particle in the direction it is moving.
@@ -47,6 +47,6 @@ public interface DirectionalParticleData : ParticleData {
          */
         @JvmStatic
         @Contract("_, _ -> new", pure = true)
-        public fun of(direction: Vector3d?, velocity: Float): DirectionalParticleData = ParticleData.factory().directional(direction, velocity)
+        public fun of(direction: Vec3d?, velocity: Float): DirectionalParticleData = ParticleData.factory().directional(direction, velocity)
     }
 }

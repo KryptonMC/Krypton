@@ -27,9 +27,10 @@ import org.kryptonmc.krypton.entity.KryptonEntity
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.entity.vehicle.KryptonBoat
 import org.kryptonmc.krypton.packet.out.play.PacketOutSetEntityVelocity
+import org.kryptonmc.krypton.util.BlockPos
 import org.kryptonmc.krypton.util.Maths
+import org.kryptonmc.krypton.util.Vec3dImpl
 import org.kryptonmc.krypton.world.fluid.KryptonFluidState
-import org.spongepowered.math.vector.Vector3d
 import kotlin.math.abs
 import kotlin.math.max
 
@@ -79,24 +80,28 @@ class EntityWaterPhysicsSystem(private val entity: KryptonEntity) {
         val maxX = Maths.ceil(entity.boundingBox.maximumX - BOUNDING_BOX_EPSILON)
         val maxY = Maths.ceil(entity.boundingBox.maximumY - BOUNDING_BOX_EPSILON)
         val maxZ = Maths.ceil(entity.boundingBox.maximumZ - BOUNDING_BOX_EPSILON)
+
         var amount = 0.0
         val pushed = entity.isPushedByFluid
         var shouldPush = false
-        var offset = Vector3d.ZERO
+        var offset = Vec3dImpl.ZERO
         var pushes = 0
+        val pos = BlockPos.Mutable()
 
         for (x in minX..maxX) {
             for (y in minY..maxY) {
                 for (z in minZ..maxZ) {
-                    val fluid = entity.world.getFluid(x, y, z)
+                    pos.set(x, y, z)
+                    val fluid = entity.world.getFluid(pos)
                     if (!fluid.eq(tag)) continue
-                    val height = (y.toFloat() + fluid.getHeight(entity.world, x, y, z)).toDouble()
+                    val height = (y.toFloat() + fluid.getHeight(entity.world, pos)).toDouble()
                     if (height < minY) continue
+
                     shouldPush = true
                     amount = max(height - minY, amount)
                     if (!pushed) continue
-                    var flow = fluid.getFlow(entity.world, x, y, z)
-                    if (amount < MAX_FLOW_MULTIPLIER) flow = flow.mul(amount)
+                    var flow = fluid.getFlow(entity.world, pos)
+                    if (amount < MAX_FLOW_MULTIPLIER) flow = flow.multiply(amount)
                     offset = offset.add(flow)
                     ++pushes
                 }
@@ -104,13 +109,13 @@ class EntityWaterPhysicsSystem(private val entity: KryptonEntity) {
         }
 
         if (offset.length() > 0.0) {
-            if (pushes > 0) offset = offset.mul(1.0 / pushes)
+            if (pushes > 0) offset = offset.multiply(1.0 / pushes)
             if (entity !is KryptonPlayer) offset = offset.normalize()
 
             val velocity = entity.velocity
-            offset = offset.mul(flowScale)
-            if (abs(velocity.x()) < FLUID_VECTOR_EPSILON && abs(velocity.z()) < FLUID_VECTOR_EPSILON && offset.length() < FLUID_VECTOR_MAGIC) {
-                offset = offset.normalize().mul(FLUID_VECTOR_MAGIC)
+            offset = offset.multiply(flowScale)
+            if (abs(velocity.x) < FLUID_VECTOR_EPSILON && abs(velocity.z) < FLUID_VECTOR_EPSILON && offset.length() < FLUID_VECTOR_MAGIC) {
+                offset = offset.normalize().multiply(FLUID_VECTOR_MAGIC)
             }
             entity.velocity = entity.velocity.add(offset)
             entity.viewingSystem.sendToViewers(PacketOutSetEntityVelocity(entity))
@@ -124,16 +129,13 @@ class EntityWaterPhysicsSystem(private val entity: KryptonEntity) {
         isUnderwater = isUnderFluid(FluidTags.WATER)
         fluidOnEyes.clear()
 
-        val y = entity.location.y() + entity.eyeHeight - KryptonEntity.BREATHING_DISTANCE_BELOW_EYES
+        val y = entity.location.y + entity.eyeHeight - KryptonEntity.BREATHING_DISTANCE_BELOW_EYES
         val vehicle = entity.vehicleSystem.vehicle
         if (vehicle is KryptonBoat && !vehicle.isUnderwater && vehicle.boundingBox.maximumY >= y && vehicle.boundingBox.minimumY <= y) return
 
-        val x = entity.location.floorX()
-        val blockY = Maths.floor(y)
-        val z = entity.location.floorZ()
-        val fluid = entity.world.getFluid(x, blockY, z)
-
-        val height = blockY.toFloat() + fluid.getHeight(entity.world, x, blockY, z)
+        val pos = BlockPos(entity.location.x, y, entity.location.z)
+        val fluid = entity.world.getFluid(pos)
+        val height = (pos.y.toFloat() + fluid.getHeight(entity.world, pos)).toDouble()
         if (height > y) {
             @Suppress("UNCHECKED_CAST")
             fluid.tags().forEach { fluidOnEyes.add(it as TagKey<Fluid>) }

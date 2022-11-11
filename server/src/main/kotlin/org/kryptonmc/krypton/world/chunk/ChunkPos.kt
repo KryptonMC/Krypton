@@ -16,24 +16,23 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.packet.out.play
+package org.kryptonmc.krypton.world.chunk
 
-import io.netty.buffer.ByteBuf
-import org.kryptonmc.krypton.world.WorldEvent
-import org.kryptonmc.krypton.packet.Packet
-import org.kryptonmc.krypton.util.BlockPos
-import org.kryptonmc.krypton.util.readBlockPos
-import org.kryptonmc.krypton.util.writeBlockPos
-
+/**
+ * Holds a pair of chunk coordinates (x and z).
+ */
+// TODO: Look in to removing this class
 @JvmRecord
-data class PacketOutWorldEvent(val event: WorldEvent, val position: BlockPos, val data: Int, val isGlobal: Boolean) : Packet {
+data class ChunkPos(val x: Int, val z: Int) {
 
-    constructor(buf: ByteBuf) : this(WorldEvent.fromId(buf.readInt())!!, buf.readBlockPos(), buf.readInt(), buf.readBoolean())
+    fun pack(): Long = pack(x, z)
 
-    override fun write(buf: ByteBuf) {
-        buf.writeInt(event.id)
-        buf.writeBlockPos(position)
-        buf.writeInt(data)
-        buf.writeBoolean(isGlobal)
+    companion object {
+
+        @JvmField
+        val ZERO: ChunkPos = ChunkPos(0, 0)
+
+        @JvmStatic
+        fun pack(x: Int, z: Int): Long = x.toLong() and 0xFFFFFFFFL or (z.toLong() and 0xFFFFFFFFL shl 32)
     }
 }

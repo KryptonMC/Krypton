@@ -19,14 +19,15 @@
 package org.kryptonmc.krypton.entity.projectile
 
 import org.kryptonmc.api.entity.projectile.FishingHook
+import org.kryptonmc.api.util.Vec3d
 import org.kryptonmc.krypton.entity.KryptonEntity
 import org.kryptonmc.krypton.entity.KryptonEntityType
 import org.kryptonmc.krypton.entity.KryptonEntityTypes
 import org.kryptonmc.krypton.entity.metadata.MetadataKey
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.util.Maths
+import org.kryptonmc.krypton.util.Vec3dImpl
 import org.kryptonmc.krypton.world.KryptonWorld
-import org.spongepowered.math.vector.Vector3d
 import kotlin.random.Random
 
 class KryptonFishingHook(world: KryptonWorld) : KryptonProjectile(world), FishingHook {
@@ -67,10 +68,10 @@ class KryptonFishingHook(world: KryptonWorld) : KryptonProjectile(world), Fishin
         private const val BITING_VELOCITY_MULTIPLIER = -0.4F
 
         @JvmStatic
-        private fun randomizeBitingVelocity(existing: Vector3d): Vector3d {
+        private fun randomizeBitingVelocity(existing: Vec3d): Vec3d {
             // This always comes out to be a number between -0.4 and -0.24. These numbers are from vanilla.
             val randomY = BITING_VELOCITY_MULTIPLIER * Maths.nextFloat(Random, BITING_VELOCITY_RANDOMNESS_MIN, 1F)
-            return Vector3d(existing.x(), randomY.toDouble(), existing.z())
+            return Vec3dImpl(existing.x, randomY.toDouble(), existing.z)
         }
     }
 }

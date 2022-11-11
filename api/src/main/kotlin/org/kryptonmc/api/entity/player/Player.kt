@@ -24,8 +24,8 @@ import org.kryptonmc.api.world.World
 import org.kryptonmc.api.world.dimension.DimensionType
 import org.kryptonmc.api.scoreboard.Scoreboard
 import org.kryptonmc.api.user.BaseUser
+import org.kryptonmc.api.util.Vec3d
 import org.kryptonmc.api.world.GameMode
-import org.spongepowered.math.vector.Vector3d
 import java.net.InetSocketAddress
 
 /**
@@ -152,7 +152,7 @@ public interface Player : LivingEntity, Equipable, PluginMessageRecipient, BaseU
      * appearance
      * @param location the central location to spawn the particles at
      */
-    public fun spawnParticles(effect: ParticleEffect, location: Vector3d)
+    public fun spawnParticles(effect: ParticleEffect, location: Vec3d)
 
     /**
      * Sends the given resource [pack] to this player.
@@ -164,7 +164,7 @@ public interface Player : LivingEntity, Equipable, PluginMessageRecipient, BaseU
     /**
      * Teleports this player to the given [position].
      */
-    public fun teleport(position: Vector3d)
+    public fun teleport(position: Vec3d)
 
     /**
      * Teleports this player to the given other [player].

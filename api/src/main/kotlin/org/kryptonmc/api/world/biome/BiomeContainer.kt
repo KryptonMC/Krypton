@@ -8,7 +8,7 @@
  */
 package org.kryptonmc.api.world.biome
 
-import org.spongepowered.math.vector.Vector3i
+import org.kryptonmc.api.util.Vec3i
 
 /**
  * Something that contains biomes.
@@ -34,5 +34,5 @@ public interface BiomeContainer {
      * @param position the position
      * @return the biome at the given position
      */
-    public fun getBiome(position: Vector3i): Biome
+    public fun getBiome(position: Vec3i): Biome
 }

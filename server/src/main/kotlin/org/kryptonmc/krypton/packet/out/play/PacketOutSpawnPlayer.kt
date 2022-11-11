@@ -27,8 +27,6 @@ import org.kryptonmc.krypton.util.readVarInt
 import org.kryptonmc.krypton.util.writeAngle
 import org.kryptonmc.krypton.util.writeUUID
 import org.kryptonmc.krypton.util.writeVarInt
-import org.spongepowered.math.vector.Vector2f
-import org.spongepowered.math.vector.Vector3d
 import java.util.UUID
 
 /**
@@ -45,24 +43,11 @@ data class PacketOutSpawnPlayer(
     val pitch: Float
 ) : EntityPacket {
 
-    constructor(
-        entityId: Int,
-        uuid: UUID,
-        location: Vector3d,
-        rotation: Vector2f
-    ) : this(entityId, uuid, location.x(), location.y(), location.z(), rotation.x(), rotation.y())
+    constructor(player: KryptonPlayer) : this(player.id, player.uuid, player.location.x, player.location.y, player.location.z,
+        player.yaw, player.pitch)
 
-    constructor(player: KryptonPlayer) : this(player.id, player.uuid, player.location, player.rotation)
-
-    constructor(buf: ByteBuf) : this(
-        buf.readVarInt(),
-        buf.readUUID(),
-        buf.readDouble(),
-        buf.readDouble(),
-        buf.readDouble(),
-        buf.readAngle(),
-        buf.readAngle()
-    )
+    constructor(buf: ByteBuf) : this(buf.readVarInt(), buf.readUUID(), buf.readDouble(), buf.readDouble(), buf.readDouble(),
+        buf.readAngle(), buf.readAngle())
 
     override fun write(buf: ByteBuf) {
         buf.writeVarInt(entityId)

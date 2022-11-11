@@ -21,6 +21,7 @@ package org.kryptonmc.krypton.entity.player
 import org.apache.logging.log4j.Logger
 import org.kryptonmc.api.resource.ResourceKey
 import org.kryptonmc.api.world.World
+import org.kryptonmc.krypton.util.BlockPos
 import org.kryptonmc.krypton.util.nbt.getBlockPos
 import org.kryptonmc.krypton.util.nbt.hasBlockPos
 import org.kryptonmc.krypton.util.nbt.putBlockPosParts
@@ -28,11 +29,10 @@ import org.kryptonmc.krypton.util.serialization.Codecs
 import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.StringTag
 import org.kryptonmc.serialization.nbt.NbtOps
-import org.spongepowered.math.vector.Vector3i
 
 @JvmRecord
 data class RespawnData(
-    val position: Vector3i,
+    val position: BlockPos,
     val dimension: ResourceKey<World>,
     val angle: Float,
     val forced: Boolean

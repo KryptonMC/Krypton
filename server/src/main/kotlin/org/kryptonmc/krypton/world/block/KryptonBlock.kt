@@ -40,6 +40,7 @@ import org.kryptonmc.krypton.shapes.VoxelShape
 import org.kryptonmc.krypton.state.StateDefinition
 import org.kryptonmc.krypton.state.StateHolderDelegate
 import org.kryptonmc.krypton.state.property.KryptonProperty
+import org.kryptonmc.krypton.util.BlockPos
 import org.kryptonmc.krypton.util.IntHashBiMap
 import org.kryptonmc.krypton.util.Keys
 import org.kryptonmc.krypton.world.BlockAccessor
@@ -49,7 +50,6 @@ import org.kryptonmc.krypton.world.WorldEvent
 import org.kryptonmc.krypton.world.block.entity.KryptonBlockEntity
 import org.kryptonmc.krypton.world.block.state.BlockBehaviour
 import org.kryptonmc.krypton.world.block.state.KryptonBlockState
-import org.spongepowered.math.vector.Vector3i
 import java.util.function.Function
 
 @Suppress("LeakingThis")
@@ -76,61 +76,49 @@ open class KryptonBlock(properties: Properties) : BlockBehaviour(properties), St
 
     open fun randomlyTicks(state: KryptonBlockState): Boolean = randomlyTicks
 
-    open fun propagatesSkylightDown(state: KryptonBlockState, world: BlockAccessor, position: Vector3i): Boolean =
-        !isShapeFullBlock(state.getShape(world, position)) && state.asFluid().isEmpty
+    open fun propagatesSkylightDown(state: KryptonBlockState, world: BlockAccessor, pos: BlockPos): Boolean =
+        !isShapeFullBlock(state.getShape(world, pos)) && state.asFluid().isEmpty
 
-    open fun destroy(world: WorldAccessor, position: Vector3i, state: KryptonBlockState) {
+    open fun destroy(world: WorldAccessor, pos: BlockPos, state: KryptonBlockState) {
         // Do nothing by default
     }
 
-    open fun stepOn(world: KryptonWorld, position: Vector3i, state: KryptonBlockState, entity: KryptonEntity) {
+    open fun stepOn(world: KryptonWorld, pos: BlockPos, state: KryptonBlockState, entity: KryptonEntity) {
         // Do nothing by default
     }
 
     open fun getPlacementState(context: BlockPlaceContext): KryptonBlockState? = defaultBlockState
 
-    open fun playerDestroy(
-        world: KryptonWorld,
-        player: KryptonPlayer,
-        position: Vector3i,
-        state: KryptonBlockState,
-        entity: KryptonBlockEntity?,
-        tool: KryptonItemStack
-    ) {
+    open fun playerDestroy(world: KryptonWorld, player: KryptonPlayer, pos: BlockPos, state: KryptonBlockState, entity: KryptonBlockEntity?,
+                           tool: KryptonItemStack) {
         player.statistics.increment(StatisticTypes.BLOCK_MINED.get(this))
         // TODO: Cause exhaustion and drop items
     }
 
-    open fun setPlacedBy(
-        world: KryptonWorld,
-        position: Vector3i,
-        state: KryptonBlockState,
-        entity: KryptonLivingEntity?,
-        stack: KryptonItemStack
-    ) {
+    open fun setPlacedBy(world: KryptonWorld, pos: BlockPos, state: KryptonBlockState, entity: KryptonLivingEntity?, stack: KryptonItemStack) {
         // Do nothing by default
     }
 
-    open fun fallOn(world: KryptonWorld, state: KryptonBlockState, position: Vector3i, entity: KryptonEntity, fallDistance: Float) {
+    open fun fallOn(world: KryptonWorld, state: KryptonBlockState, pos: BlockPos, entity: KryptonEntity, fallDistance: Float) {
         // TODO: Cause fall damage to entity
     }
 
     open fun updateEntityAfterFallOn(world: BlockAccessor, entity: KryptonEntity) {
-        entity.velocity = entity.velocity.mul(1.0, 0.0, 1.0)
+        entity.velocity = entity.velocity.multiply(1.0, 0.0, 1.0)
     }
 
-    open fun getItemStack(world: BlockAccessor, position: Vector3i, state: KryptonBlockState): KryptonItemStack = defaultItemStack
+    open fun getItemStack(world: BlockAccessor, pos: BlockPos, state: KryptonBlockState): KryptonItemStack = defaultItemStack
 
-    open fun spawnDestroyParticles(world: KryptonWorld, player: KryptonPlayer, position: Vector3i, state: KryptonBlockState) {
-        world.worldEvent(WorldEvent.DESTROY_BLOCK, position.x(), position.y(), position.z(), idOf(state), player)
+    open fun spawnDestroyParticles(world: KryptonWorld, player: KryptonPlayer, pos: BlockPos, state: KryptonBlockState) {
+        world.worldEvent(WorldEvent.DESTROY_BLOCK, pos, idOf(state), player)
     }
 
-    open fun playerWillDestroy(world: KryptonWorld, position: Vector3i, state: KryptonBlockState, player: KryptonPlayer) {
-        spawnDestroyParticles(world, player, position, state)
+    open fun playerWillDestroy(world: KryptonWorld, pos: BlockPos, state: KryptonBlockState, player: KryptonPlayer) {
+        spawnDestroyParticles(world, player, pos, state)
         // TODO: Anger nearby piglins if state is guarded by piglins and trigger game event for sculk sensors
     }
 
-    open fun handlePrecipitation(state: KryptonBlockState, world: KryptonWorld, position: Vector3i, precipitation: Precipitation) {
+    open fun handlePrecipitation(state: KryptonBlockState, world: KryptonWorld, pos: BlockPos, precipitation: Precipitation) {
         // Do nothing by default
     }
 
@@ -198,11 +186,10 @@ open class KryptonBlock(properties: Properties) : BlockBehaviour(properties), St
         fun isShapeFullBlock(shape: VoxelShape): Boolean = SHAPE_FULL_BLOCK_CACHE.get(shape)
 
         @JvmStatic
-        private fun <T : Comparable<T>> copyProperty(
-            result: KryptonBlockState,
-            state: KryptonBlockState,
-            property: KryptonProperty<T>
-        ): KryptonBlockState = state.set(property, result.require(property))
+        private fun <T : Comparable<T>> copyProperty(result: KryptonBlockState, state: KryptonBlockState,
+                                                     property: KryptonProperty<T>): KryptonBlockState {
+            return state.set(property, result.require(property))
+        }
     }
 }
 

@@ -21,6 +21,7 @@ package org.kryptonmc.krypton.entity.animal
 import org.kryptonmc.api.entity.animal.Bee
 import org.kryptonmc.api.item.ItemStack
 import org.kryptonmc.api.tags.ItemTags
+import org.kryptonmc.api.util.Vec3i
 import org.kryptonmc.krypton.entity.KryptonEntityType
 import org.kryptonmc.krypton.entity.KryptonEntityTypes
 import org.kryptonmc.krypton.entity.KryptonMob
@@ -33,7 +34,6 @@ import org.kryptonmc.krypton.entity.serializer.animal.BeeSerializer
 import org.kryptonmc.krypton.item.downcast
 import org.kryptonmc.krypton.util.provider.UniformInt
 import org.kryptonmc.krypton.world.KryptonWorld
-import org.spongepowered.math.vector.Vector3i
 import java.util.UUID
 import kotlin.random.Random
 
@@ -45,8 +45,8 @@ class KryptonBee(world: KryptonWorld) : KryptonAnimal(world), Bee, Neutral {
         get() = BeeSerializer
 
     override var cannotEnterHiveTicks: Int = 0
-    override var hive: Vector3i? = null
-    override var flower: Vector3i? = null
+    override var hive: Vec3i? = null
+    override var flower: Vec3i? = null
     override var angerTarget: UUID? = null
     internal var timeSincePollination = 0
     internal var cropsGrownSincePollination = 0

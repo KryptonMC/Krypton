@@ -24,6 +24,7 @@ import org.kryptonmc.krypton.entity.KryptonLivingEntity
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.item.KryptonItemStack
 import org.kryptonmc.krypton.item.UseItemResult
+import org.kryptonmc.krypton.util.BlockPos
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.krypton.world.block.state.KryptonBlockState
 
@@ -48,9 +49,9 @@ interface ItemHandler {
 
     /**
      * Checks if the given [player] can attack the given [block] at the given
-     * [x], [y], and [z] coordinates in the given [world].
+     * [pos] in the given [world].
      */
-    fun canAttackBlock(player: KryptonPlayer, world: KryptonWorld, block: KryptonBlockState, x: Int, y: Int, z: Int): Boolean = true
+    fun canAttackBlock(player: KryptonPlayer, world: KryptonWorld, block: KryptonBlockState, pos: BlockPos): Boolean = true
 
     fun interactEntity(item: KryptonItemStack, player: KryptonPlayer, entity: KryptonLivingEntity, hand: Hand): InteractionResult =
         InteractionResult.PASS
@@ -63,16 +64,8 @@ interface ItemHandler {
 
     /**
      * Called when the given [player] finishes destroying the given [block] at
-     * the given [position] in the given [world], using the given [item] to
+     * the given [pos] in the given [world], using the given [item] to
      * destroy it.
      */
-    fun mineBlock(
-        player: KryptonPlayer,
-        item: KryptonItemStack,
-        world: KryptonWorld,
-        block: KryptonBlockState,
-        x: Int,
-        y: Int,
-        z: Int
-    ): Boolean = false
+    fun mineBlock(player: KryptonPlayer, item: KryptonItemStack, world: KryptonWorld, block: KryptonBlockState, pos: BlockPos): Boolean = false
 }

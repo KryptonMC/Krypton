@@ -8,7 +8,7 @@
  */
 package org.kryptonmc.api.block.entity
 
-import org.spongepowered.math.vector.Vector3i
+import org.kryptonmc.api.util.Vec3i
 
 /**
  * An end gateway.
@@ -19,7 +19,7 @@ public interface EndGateway : BlockEntity {
      * The position that a player will be teleported to when they enter this
      * gateway.
      */
-    public var exitPosition: Vector3i
+    public var exitPosition: Vec3i
 
     /**
      * Whether this gateway will teleport a player to the exact exit position.

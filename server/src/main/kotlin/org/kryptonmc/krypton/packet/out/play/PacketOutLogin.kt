@@ -32,7 +32,7 @@ import org.kryptonmc.krypton.util.readCollection
 import org.kryptonmc.krypton.util.readKey
 import org.kryptonmc.krypton.util.readNBT
 import org.kryptonmc.krypton.util.readVarInt
-import org.kryptonmc.krypton.util.readVector
+import org.kryptonmc.krypton.util.readBlockPos
 import org.kryptonmc.krypton.util.writeCollection
 import org.kryptonmc.krypton.util.writeNBT
 import org.kryptonmc.krypton.util.writeResourceKey
@@ -116,5 +116,5 @@ data class PacketOutLogin(
 
 private fun ByteBuf.readGlobalPosition(): GlobalPosition? {
     if (!readBoolean()) return null
-    return GlobalPosition(ResourceKey.of(ResourceKeys.DIMENSION, readKey()), readVector())
+    return GlobalPosition(ResourceKey.of(ResourceKeys.DIMENSION, readKey()), readBlockPos())
 }

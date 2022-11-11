@@ -55,6 +55,7 @@ import org.kryptonmc.krypton.server.ban.BannedIpList
 import org.kryptonmc.krypton.server.ban.BannedPlayerList
 import org.kryptonmc.krypton.server.whitelist.Whitelist
 import org.kryptonmc.krypton.server.whitelist.WhitelistedIps
+import org.kryptonmc.krypton.util.BlockPos
 import org.kryptonmc.krypton.util.frame
 import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.util.pool.daemonThreadFactory
@@ -120,7 +121,7 @@ class PlayerManager(private val server: KryptonServer) {
         player.world = world
         world.players.add(player)
         val location = player.location
-        LOGGER.info("Player ${profile.name} logged in with entity ID ${player.id} at (${location.x()}, ${location.y()}, ${location.z()})")
+        LOGGER.info("Player ${profile.name} logged in with entity ID ${player.id} at $location")
 
         // Join the game
         val reducedDebugInfo = world.gameRules.get(GameRules.REDUCED_DEBUG_INFO)
@@ -178,7 +179,7 @@ class PlayerManager(private val server: KryptonServer) {
             player.displayName
         )
         server.sendMessage(joinMessage)
-        session.send(PacketOutSynchronizePlayerPosition(location, player.rotation))
+        session.send(PacketOutSynchronizePlayerPosition(player))
         session.send(PacketOutPlayerInfo(PacketOutPlayerInfo.Action.ADD_PLAYER, player))
         world.spawnPlayer(player)
 
@@ -220,15 +221,19 @@ class PlayerManager(private val server: KryptonServer) {
     fun broadcast(packet: Packet, world: KryptonWorld, x: Double, y: Double, z: Double, radius: Double, except: KryptonPlayer?) {
         server.sessionManager.sendGrouped(packet) {
             if (it === except || it.world !== world) return@sendGrouped false
-            val offsetX = x - it.location.x()
-            val offsetY = y - it.location.y()
-            val offsetZ = z - it.location.z()
-            offsetX * offsetX + offsetY * offsetY + offsetZ * offsetZ < radius * radius
+            val dx = x - it.location.x
+            val dy = y - it.location.y
+            val dz = z - it.location.z
+            dx * dx + dy * dy + dz * dz < radius * radius
         }
     }
 
     fun broadcast(packet: Packet, world: KryptonWorld, x: Int, y: Int, z: Int, radius: Double, except: KryptonPlayer?) {
         broadcast(packet, world, x.toDouble(), y.toDouble(), z.toDouble(), radius, except)
+    }
+
+    fun broadcast(packet: Packet, world: KryptonWorld, pos: BlockPos, radius: Double, except: KryptonPlayer?) {
+        broadcast(packet, world, pos.x.toDouble(), pos.y.toDouble(), pos.z.toDouble(), radius, except)
     }
 
     fun disconnectAll() {

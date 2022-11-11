@@ -20,30 +20,21 @@ package org.kryptonmc.krypton.packet.out.play
 
 import io.netty.buffer.ByteBuf
 import org.kryptonmc.krypton.packet.Packet
-import org.kryptonmc.krypton.util.Positioning
+import org.kryptonmc.krypton.util.BlockPos
+import org.kryptonmc.krypton.util.readBlockPos
 import org.kryptonmc.krypton.util.readVarInt
 import org.kryptonmc.krypton.util.writeVarInt
-import org.kryptonmc.krypton.util.writeVector
+import org.kryptonmc.krypton.util.writeBlockPos
 import org.kryptonmc.krypton.world.block.KryptonBlock
 import org.kryptonmc.krypton.world.block.state.KryptonBlockState
-import org.spongepowered.math.vector.Vector3i
 
 @JvmRecord
-data class PacketOutBlockUpdate(val block: KryptonBlockState, val x: Int, val y: Int, val z: Int) : Packet {
+data class PacketOutBlockUpdate(val position: BlockPos, val block: KryptonBlockState) : Packet {
 
-    constructor(block: KryptonBlockState, location: Vector3i) : this(block, location.x(), location.y(), location.z())
-
-    constructor(buf: ByteBuf) : this(buf.readLong(), buf.readVarInt())
-
-    private constructor(encoded: Long, stateId: Int) : this(
-        KryptonBlock.stateFromId(stateId),
-        Positioning.decodeBlockX(encoded),
-        Positioning.decodeBlockY(encoded),
-        Positioning.decodeBlockZ(encoded)
-    )
+    constructor(buf: ByteBuf) : this(buf.readBlockPos(), KryptonBlock.stateFromId(buf.readVarInt()))
 
     override fun write(buf: ByteBuf) {
-        buf.writeVector(x, y, z)
+        buf.writeBlockPos(position)
         buf.writeVarInt(KryptonBlock.idOf(block))
     }
 }

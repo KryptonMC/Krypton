@@ -19,12 +19,12 @@
 package org.kryptonmc.krypton.world
 
 import org.kryptonmc.api.world.WorldBorder
-import org.spongepowered.math.vector.Vector2d
 
 @JvmRecord
 data class KryptonWorldBorder(
     override val size: Double,
-    override val center: Vector2d,
+    override val centerX: Double,
+    override val centerZ: Double,
     override val damageMultiplier: Double,
     val safeZone: Double,
     val sizeLerpTarget: Double,
@@ -36,6 +36,6 @@ data class KryptonWorldBorder(
     companion object {
 
         @JvmField
-        val DEFAULT: KryptonWorldBorder = KryptonWorldBorder(5.9999968E7, Vector2d.ZERO, 0.2, 5.0, 0.0, 0L, 5, 15)
+        val DEFAULT: KryptonWorldBorder = KryptonWorldBorder(5.9999968E7, 0.0, 0.0, 0.2, 5.0, 0.0, 0L, 5, 15)
     }
 }

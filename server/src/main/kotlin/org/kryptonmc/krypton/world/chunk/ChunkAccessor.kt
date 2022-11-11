@@ -30,7 +30,7 @@ import java.util.EnumMap
 import java.util.EnumSet
 
 abstract class ChunkAccessor(
-    val position: ChunkPosition,
+    val position: ChunkPos,
     private val heightAccessor: HeightAccessor,
     var inhabitedTime: Long,
     sections: Array<ChunkSection?>?

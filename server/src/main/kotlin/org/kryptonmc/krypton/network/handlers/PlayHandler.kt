@@ -27,6 +27,7 @@ import org.kryptonmc.api.block.Blocks
 import org.kryptonmc.api.entity.Hand
 import org.kryptonmc.api.entity.player.ChatVisibility
 import org.kryptonmc.api.resource.ResourcePack
+import org.kryptonmc.api.util.Vec3d
 import org.kryptonmc.api.world.GameMode
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.commands.KryptonPermission
@@ -83,10 +84,9 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateEntityPositionAndRot
 import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateEntityRotation
 import org.kryptonmc.krypton.registry.KryptonRegistries
 import org.kryptonmc.krypton.util.Positioning
+import org.kryptonmc.krypton.util.Vec3dImpl
 import org.kryptonmc.krypton.util.logger
-import org.kryptonmc.krypton.world.chunk.ChunkPosition
-import org.spongepowered.math.vector.Vector2f
-import org.spongepowered.math.vector.Vector3d
+import org.kryptonmc.krypton.world.chunk.ChunkPos
 import java.time.Duration
 import java.time.Instant
 import java.util.concurrent.atomic.AtomicReference
@@ -299,7 +299,7 @@ class PlayHandler(override val server: KryptonServer, override val session: Sess
 
         val chunkX = Positioning.toChunkCoordinate(player.location.floorX())
         val chunkZ = Positioning.toChunkCoordinate(player.location.floorZ())
-        val chunk = world.chunkManager.get(ChunkPosition.toLong(chunkX, chunkZ)) ?: return
+        val chunk = world.chunkManager.get(ChunkPos.pack(chunkX, chunkZ)) ?: return
         val existingBlock = chunk.getBlock(position)
         if (existingBlock != Blocks.AIR.defaultState) return
         chunk.setBlock(position, KryptonRegistries.BLOCK.get(player.inventory.mainHand.type.key()).defaultState)
@@ -336,56 +336,65 @@ class PlayHandler(override val server: KryptonServer, override val session: Sess
 
     private fun handlePositionUpdate(packet: PacketInSetPlayerPosition) {
         val oldLocation = player.location
-        if (oldLocation.x() == packet.x && oldLocation.y() == packet.y && oldLocation.z() == packet.z) {
+        if (oldLocation.x == packet.x && oldLocation.y == packet.y && oldLocation.z == packet.z) {
             // We haven't moved at all. We can avoid constructing the Vector3d object entirely, and just
             // fast nope out.
             return
         }
-        val newLocation = Vector3d(packet.x, packet.y, packet.z)
+        val newLocation = Vec3dImpl(packet.x, packet.y, packet.z)
 
         player.location = newLocation
         server.eventManager.fireAndForget(KryptonMoveEvent(player, oldLocation, newLocation))
 
-        val deltaX = Positioning.delta(newLocation.x(), oldLocation.x())
-        val deltaY = Positioning.delta(newLocation.y(), oldLocation.y())
-        val deltaZ = Positioning.delta(newLocation.z(), oldLocation.z())
+        val deltaX = Positioning.delta(newLocation.x, oldLocation.x)
+        val deltaY = Positioning.delta(newLocation.y, oldLocation.y)
+        val deltaZ = Positioning.delta(newLocation.z, oldLocation.z)
         val newPacket = PacketOutUpdateEntityPosition(player.id, deltaX, deltaY, deltaZ, packet.onGround)
         player.viewingSystem.sendToViewers(newPacket)
         onMove(newLocation, oldLocation)
     }
 
     private fun handleRotationUpdate(packet: PacketInSetPlayerRotation) {
-        val oldRotation = player.rotation
-        val newRotation = Vector2f(packet.yaw, packet.pitch)
+        val oldYaw = player.yaw
+        val oldPitch = player.pitch
+        val newYaw = packet.yaw
+        val newPitch = packet.pitch
 
-        player.rotation = newRotation
-        server.eventManager.fireAndForget(KryptonRotateEvent(player, oldRotation, newRotation))
+        player.yaw = newYaw
+        player.pitch = newPitch
+        server.eventManager.fireAndForget(KryptonRotateEvent(player, oldYaw, oldPitch, newYaw, newPitch))
 
-        sessionManager.sendGrouped(PacketOutUpdateEntityRotation(player.id, packet.yaw, packet.pitch, packet.onGround)) { it !== player }
-        sessionManager.sendGrouped(PacketOutSetHeadRotation(player.id, packet.yaw)) { it !== player }
+        sessionManager.sendGrouped(PacketOutUpdateEntityRotation(player.id, newYaw, newPitch, packet.onGround)) { it !== player }
+        sessionManager.sendGrouped(PacketOutSetHeadRotation(player.id, newYaw)) { it !== player }
     }
 
     private fun handlePositionAndRotationUpdate(packet: PacketInSetPlayerPositionAndRotation) {
         val oldLocation = player.location
-        val oldRotation = player.rotation
-        val newLocation = Vector3d(packet.x, packet.y, packet.z)
-        val newRotation = Vector2f(packet.yaw, packet.pitch)
-        if (newLocation == oldLocation) return
+        if (oldLocation.x == packet.x && oldLocation.y == packet.y && oldLocation.z == packet.z) {
+            // We haven't moved at all. We can avoid constructing the Vector3d object entirely, and just
+            // fast nope out.
+            return
+        }
+        val oldYaw = player.yaw
+        val oldPitch = player.pitch
+
+        val newLocation = Vec3dImpl(packet.x, packet.y, packet.z)
+        val newYaw = packet.yaw
+        val newPitch = packet.pitch
 
         player.location = newLocation
-        player.rotation = newRotation
+        player.yaw = packet.yaw
+        player.pitch = packet.pitch
         server.eventManager.fireAndForget(KryptonMoveEvent(player, oldLocation, newLocation))
-        server.eventManager.fireAndForget(KryptonRotateEvent(player, oldRotation, newRotation))
+        server.eventManager.fireAndForget(KryptonRotateEvent(player, oldYaw, oldPitch, newYaw, newPitch))
 
         // TODO: Look in to optimising this (rotation and head look updating) as much as we possibly can
-        val deltaX = Positioning.delta(newLocation.x(), oldLocation.x())
-        val deltaY = Positioning.delta(newLocation.y(), oldLocation.y())
-        val deltaZ = Positioning.delta(newLocation.z(), oldLocation.z())
-        val newYaw = newRotation.x()
-        val newPitch = newRotation.y()
+        val deltaX = Positioning.delta(newLocation.x, oldLocation.x)
+        val deltaY = Positioning.delta(newLocation.y, oldLocation.y)
+        val deltaZ = Positioning.delta(newLocation.z, oldLocation.z)
         val positionPacket = PacketOutUpdateEntityPositionAndRotation(player.id, deltaX, deltaY, deltaZ, newYaw, newPitch, packet.onGround)
         sessionManager.sendGrouped(positionPacket) { it !== player }
-        sessionManager.sendGrouped(PacketOutSetHeadRotation(player.id, newRotation.x())) { it !== player }
+        sessionManager.sendGrouped(PacketOutSetHeadRotation(player.id, newYaw)) { it !== player }
         onMove(newLocation, oldLocation)
     }
 
@@ -421,10 +430,10 @@ class PlayHandler(override val server: KryptonServer, override val session: Sess
         server.eventManager.fireAndForget(KryptonResourcePackStatusEvent(player, packet.status))
     }
 
-    private fun onMove(new: Vector3d, old: Vector3d) {
+    private fun onMove(new: Vec3d, old: Vec3d) {
         player.chunkViewingSystem.updateChunks()
-        player.updateMovementStatistics(new.x() - old.x(), new.y() - old.y(), new.z() - old.z())
-        player.hungerSystem.updateMovementExhaustion(new.x() - old.x(), new.y() - old.y(), new.z() - old.z())
+        player.updateMovementStatistics(new.x - old.x, new.y - old.y, new.z - old.z)
+        player.hungerSystem.updateMovementExhaustion(new.x - old.x, new.y - old.y, new.z - old.z)
     }
 
     private inner class InteractionHandler : PacketInInteract.Handler {

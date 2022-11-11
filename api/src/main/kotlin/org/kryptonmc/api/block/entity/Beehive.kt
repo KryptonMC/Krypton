@@ -9,7 +9,7 @@
 package org.kryptonmc.api.block.entity
 
 import org.kryptonmc.api.entity.animal.Bee
-import org.spongepowered.math.vector.Vector3i
+import org.kryptonmc.api.util.Vec3i
 
 /**
  * A beehive.
@@ -25,5 +25,5 @@ public interface Beehive : EntityStorageBlockEntity<Bee> {
      * The position of a flower that one of the bees has found, so that other
      * bees in the beehive can find it.
      */
-    public var flower: Vector3i?
+    public var flower: Vec3i?
 }
