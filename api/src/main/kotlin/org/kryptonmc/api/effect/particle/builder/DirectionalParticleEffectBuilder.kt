@@ -10,7 +10,7 @@ package org.kryptonmc.api.effect.particle.builder
 
 import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.effect.particle.ParticleDsl
-import org.spongepowered.math.vector.Vector3d
+import org.kryptonmc.api.util.Vec3d
 
 /**
  * A builder for building directional particle effects.
@@ -26,7 +26,7 @@ public interface DirectionalParticleEffectBuilder : BaseParticleEffectBuilder<Di
      */
     @ParticleDsl
     @Contract("_ -> this", mutates = "this")
-    public fun direction(direction: Vector3d): DirectionalParticleEffectBuilder
+    public fun direction(direction: Vec3d): DirectionalParticleEffectBuilder
 
     /**
      * Sets the velocity that the particle effect will travel with.

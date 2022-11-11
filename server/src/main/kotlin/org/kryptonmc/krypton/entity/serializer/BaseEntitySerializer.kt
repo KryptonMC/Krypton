@@ -22,6 +22,7 @@ import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer
 import org.kryptonmc.krypton.adventure.toJson
 import org.kryptonmc.krypton.entity.KryptonEntity
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
+import org.kryptonmc.krypton.util.Vec3dImpl
 import org.kryptonmc.krypton.util.nbt.getUUID
 import org.kryptonmc.krypton.util.nbt.hasUUID
 import org.kryptonmc.krypton.util.nbt.putUUID
@@ -31,8 +32,6 @@ import org.kryptonmc.nbt.FloatTag
 import org.kryptonmc.nbt.ListTag
 import org.kryptonmc.nbt.StringTag
 import org.kryptonmc.nbt.buildCompound
-import org.spongepowered.math.vector.Vector2f
-import org.spongepowered.math.vector.Vector3d
 import kotlin.math.abs
 
 object BaseEntitySerializer : EntitySerializer<KryptonEntity> {
@@ -66,15 +65,16 @@ object BaseEntitySerializer : EntitySerializer<KryptonEntity> {
         entity.isInvulnerable = data.getBoolean(INVULNERABLE_TAG)
 
         val motion = data.getList(MOTION_TAG, DoubleTag.ID)
-        entity.velocity = Vector3d(motion.getMotionValue(0), motion.getMotionValue(1), motion.getMotionValue(2))
+        entity.velocity = Vec3dImpl(motion.getMotionValue(0), motion.getMotionValue(1), motion.getMotionValue(2))
 
         entity.hasGravity = !data.getBoolean(NO_GRAVITY_TAG)
         entity.isOnGround = data.getBoolean(ON_GROUND_TAG)
 
         val location = data.getList(POSITION_TAG, DoubleTag.ID)
         val rotation = data.getList(ROTATION_TAG, FloatTag.ID)
-        entity.location = Vector3d(location.getDouble(0), location.getDouble(1), location.getDouble(2))
-        entity.rotation = Vector2f(rotation.getFloat(0), rotation.getFloat(1))
+        entity.location = Vec3dImpl(location.getDouble(0), location.getDouble(1), location.getDouble(2))
+        entity.yaw = rotation.getFloat(0)
+        entity.pitch = rotation.getFloat(1)
 
         entity.isSilent = data.getBoolean(SILENT_TAG)
         entity.frozenTicks = data.getInt(FROZEN_TICKS_TAG)
@@ -94,9 +94,9 @@ object BaseEntitySerializer : EntitySerializer<KryptonEntity> {
         if (entity.isSilent) putBoolean(SILENT_TAG, true)
 
         // Positioning
-        putList(MOTION_TAG, DoubleTag.ID, DoubleTag.of(entity.velocity.x()), DoubleTag.of(entity.velocity.y()), DoubleTag.of(entity.velocity.z()))
-        putList(POSITION_TAG, DoubleTag.ID, DoubleTag.of(entity.location.x()), DoubleTag.of(entity.location.y()), DoubleTag.of(entity.location.z()))
-        putList(ROTATION_TAG, FloatTag.ID, FloatTag.of(entity.rotation.x()), FloatTag.of(entity.rotation.y()))
+        putList(MOTION_TAG, DoubleTag.ID, DoubleTag.of(entity.velocity.x), DoubleTag.of(entity.velocity.y), DoubleTag.of(entity.velocity.z))
+        putList(POSITION_TAG, DoubleTag.ID, DoubleTag.of(entity.location.x), DoubleTag.of(entity.location.y), DoubleTag.of(entity.location.z))
+        putList(ROTATION_TAG, FloatTag.ID, FloatTag.of(entity.yaw), FloatTag.of(entity.pitch))
 
         // Identification
         if (entity !is KryptonPlayer) putString(ID_TAG, entity.type.key().asString())

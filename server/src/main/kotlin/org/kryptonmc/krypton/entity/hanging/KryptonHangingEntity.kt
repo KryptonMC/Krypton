@@ -23,12 +23,11 @@ import org.kryptonmc.api.util.Direction
 import org.kryptonmc.krypton.entity.KryptonEntity
 import org.kryptonmc.krypton.entity.serializer.EntitySerializer
 import org.kryptonmc.krypton.entity.serializer.hanging.HangingEntitySerializer
+import org.kryptonmc.krypton.util.BlockPos
 import org.kryptonmc.krypton.util.Directions
 import org.kryptonmc.krypton.util.KryptonBoundingBox
+import org.kryptonmc.krypton.util.Vec3dImpl
 import org.kryptonmc.krypton.world.KryptonWorld
-import org.spongepowered.math.vector.Vector2f
-import org.spongepowered.math.vector.Vector3d
-import org.spongepowered.math.vector.Vector3i
 
 abstract class KryptonHangingEntity(world: KryptonWorld) : KryptonEntity(world), HangingEntity {
 
@@ -38,21 +37,21 @@ abstract class KryptonHangingEntity(world: KryptonWorld) : KryptonEntity(world),
     abstract val width: Int
     abstract val height: Int
 
-    internal var centerPosition: Vector3i? = null
+    internal var centerPosition: BlockPos? = null
     final override var direction: Direction = Direction.SOUTH
         set(value) {
             require(value.axis.isHorizontal)
             field = value
             // Each horizontal direction is a half turn (90 degrees) away from each other.
             // The 2D data value is 0 = south, 1 = west, 2 = north, 3 = east.
-            rotation = Vector2f(rotation.x(), Directions.data2D(value) * HALF_TURN_DEGREES)
+            pitch = Directions.data2D(value) * HALF_TURN_DEGREES
             recalculateBoundingBox()
         }
 
     private fun recalculateBoundingBox() {
-        var x = centerPosition!!.x() + BLOCK_CENTER_OFFSET
-        var y = centerPosition!!.y() + BLOCK_CENTER_OFFSET
-        var z = centerPosition!!.z() + BLOCK_CENTER_OFFSET
+        var x = centerPosition!!.x + BLOCK_CENTER_OFFSET
+        var y = centerPosition!!.y + BLOCK_CENTER_OFFSET
+        var z = centerPosition!!.z + BLOCK_CENTER_OFFSET
         // for EAST, the x becomes centerX + 1/32, and for WEST, the x becomes centerX + 31/32
         x -= direction.normalX * ALMOST_TWO_BLOCKS_PIXELS
         // for SOUTH, the z becomes centerZ + 1/32, and for NORTH, the z becomes centerZ + 31/32
@@ -69,7 +68,7 @@ abstract class KryptonHangingEntity(world: KryptonWorld) : KryptonEntity(world),
             // for direction WEST (anti clockwise SOUTH), the z becomes centerZ + 1
             z += BLOCK_CENTER_OFFSET * antiClockwise.normalZ
         }
-        location = Vector3d(x, y, z)
+        location = Vec3dImpl(x, y, z)
         var xWidth = width.toDouble()
         var height = height.toDouble()
         var zWidth = width.toDouble()

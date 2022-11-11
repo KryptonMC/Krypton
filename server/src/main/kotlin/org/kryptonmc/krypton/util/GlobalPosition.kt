@@ -26,16 +26,15 @@ import org.kryptonmc.krypton.network.Writable
 import org.kryptonmc.krypton.util.serialization.Codecs
 import org.kryptonmc.serialization.Codec
 import org.kryptonmc.serialization.codecs.RecordCodecBuilder
-import org.spongepowered.math.vector.Vector3i
 
 @JvmRecord
-data class GlobalPosition(val dimension: ResourceKey<World>, val position: Vector3i) : Writable {
+data class GlobalPosition(val dimension: ResourceKey<World>, val position: BlockPos) : Writable {
 
-    constructor(buf: ByteBuf) : this(ResourceKey.of(ResourceKeys.DIMENSION, buf.readKey()), buf.readVector())
+    constructor(buf: ByteBuf) : this(ResourceKey.of(ResourceKeys.DIMENSION, buf.readKey()), buf.readBlockPos())
 
     override fun write(buf: ByteBuf) {
         buf.writeResourceKey(dimension)
-        buf.writeVector(position)
+        buf.writeBlockPos(position)
     }
 
     companion object {
@@ -44,7 +43,7 @@ data class GlobalPosition(val dimension: ResourceKey<World>, val position: Vecto
         val CODEC: Codec<GlobalPosition> = RecordCodecBuilder.create {
             it.group(
                 Codecs.DIMENSION.fieldOf("dimension").getting(GlobalPosition::dimension),
-                BlockPositions.CODEC.fieldOf("pos").getting(GlobalPosition::position)
+                BlockPos.CODEC.fieldOf("pos").getting(GlobalPosition::position)
             ).apply(it, ::GlobalPosition)
         }
     }

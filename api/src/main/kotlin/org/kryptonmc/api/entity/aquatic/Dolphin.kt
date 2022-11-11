@@ -8,8 +8,8 @@
  */
 package org.kryptonmc.api.entity.aquatic
 
+import org.kryptonmc.api.util.Vec3i
 import org.kryptonmc.api.world.damage.type.DamageTypes
-import org.spongepowered.math.vector.Vector3i
 
 /**
  * A dolphin.
@@ -20,7 +20,7 @@ public interface Dolphin : AquaticAnimal {
     /**
      * The position of this dolphin's treasure.
      */
-    public var treasurePosition: Vector3i
+    public var treasurePosition: Vec3i
 
     /**
      * If this dolphin has got a fish.

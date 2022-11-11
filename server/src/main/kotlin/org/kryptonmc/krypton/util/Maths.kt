@@ -19,11 +19,10 @@
 package org.kryptonmc.krypton.util
 
 import com.google.common.math.IntMath
-import org.kryptonmc.krypton.world.chunk.ChunkPosition
-import org.spongepowered.math.GenericMath
-import org.spongepowered.math.vector.Vector3i
+import org.kryptonmc.krypton.world.chunk.ChunkPos
 import java.util.UUID
 import java.util.function.IntPredicate
+import kotlin.math.sin
 import kotlin.math.sqrt
 import kotlin.random.Random
 
@@ -33,7 +32,9 @@ object Maths {
         0, 1, 28, 2, 29, 14, 24, 3, 30, 22, 20, 15, 25, 17, 4, 8,
         31, 27, 13, 23, 21, 19, 16, 7, 26, 12, 18, 6, 11, 5, 10, 9
     )
+    private val SIN = FloatArray(65536) { sin(it.toDouble() * Math.PI * 2.0 / 65536.0).toFloat() }
     const val EPSILON: Float = 1.0E-5F
+    private const val TO_RADIANS_FACTOR = Math.PI.toFloat() / 180F
 
     /**
      * Calculates a chunk position from a given [id] in a spiral pattern.
@@ -55,12 +56,12 @@ object Maths {
      * @param id the id in the spiral
      * @param xOffset an optional X offset
      * @param zOffset an optional Z offset
-     * @return a [ChunkPosition] containing the calculated position in the spiral.
+     * @return a [ChunkPos] containing the calculated position in the spiral.
      */
     @JvmStatic
     fun chunkInSpiral(id: Int, xOffset: Int = 0, zOffset: Int = 0): Long {
         // if the id is 0 then we know we're in the centre
-        if (id == 0) return ChunkPosition.toLong(0 + xOffset, 0 + zOffset)
+        if (id == 0) return ChunkPos.pack(0 + xOffset, 0 + zOffset)
 
         val index = id - 1
 
@@ -79,11 +80,11 @@ object Maths {
 
         return when (a / (radius * 2)) {
             // find the face (0 = top, 1 = right, 2 = bottom, 3 = left)
-            0 -> ChunkPosition.toLong(a - radius + xOffset, -radius + zOffset)
-            1 -> ChunkPosition.toLong(radius + xOffset, a % en - radius + zOffset)
-            2 -> ChunkPosition.toLong(radius - a % en + xOffset, radius + zOffset)
-            3 -> ChunkPosition.toLong(-radius + xOffset, radius - a % en + zOffset)
-            else -> ChunkPosition.ZERO.toLong()
+            0 -> ChunkPos.pack(a - radius + xOffset, -radius + zOffset)
+            1 -> ChunkPos.pack(radius + xOffset, a % en - radius + zOffset)
+            2 -> ChunkPos.pack(radius - a % en + xOffset, radius + zOffset)
+            3 -> ChunkPos.pack(-radius + xOffset, radius - a % en + zOffset)
+            else -> ChunkPos.ZERO.pack()
         }
     }
 
@@ -120,7 +121,7 @@ object Maths {
     }
 
     @JvmStatic
-    fun getSeed(position: Vector3i): Long = getSeed(position.x(), position.y(), position.z())
+    fun getSeed(position: BlockPos): Long = getSeed(position.x, position.y, position.z)
 
     @JvmStatic
     @Suppress("MagicNumber")
@@ -151,9 +152,38 @@ object Maths {
     @JvmStatic
     @Suppress("MagicNumber")
     fun ceillog2(value: Int): Int {
-        val temp = if (GenericMath.isPowerOfTwo(value)) value else GenericMath.roundUpPow2(value)
+        val temp = if (isPowerOfTwo(value)) value else roundUpPow2(value)
         return MULTIPLY_DE_BRUIJN_BIT_POSITION[(temp.toLong() * 125613361L shr 27 and 31).toInt()]
     }
+
+    @JvmStatic
+    fun log2(value: Int): Int = ceillog2(value) - if (isPowerOfTwo(value)) 0 else 1
+
+    @JvmStatic
+    fun isPowerOfTwo(value: Int): Boolean = value != 0 && (value and value) - 1 == 0
+
+    @JvmStatic
+    fun roundUpPow2(value: Int): Int {
+        var temp = value - 1
+        temp = temp or (temp shr 1)
+        temp = temp or (temp shr 2)
+        temp = temp or (temp shr 4)
+        temp = temp or (temp shr 8)
+        temp = temp or (temp shr 16)
+        return temp + 1
+    }
+
+    @JvmStatic
+    fun sin(value: Float): Float = SIN[(value * 10430.378F).toInt() and 65535]
+
+    @JvmStatic
+    fun cos(value: Float): Float = SIN[(value * 10430.378F + 16384F).toInt() and 65535]
+
+    /**
+     * A fast approximation of the degrees value in radians, using floats instead of doubles.
+     */
+    @JvmStatic
+    fun toRadians(degrees: Float): Float = degrees * TO_RADIANS_FACTOR
 
     @JvmStatic
     fun clamp(value: Int, low: Int, high: Int): Int {
@@ -175,6 +205,12 @@ object Maths {
         if (value > high) return high
         return value
     }
+
+    @JvmStatic
+    fun lerp(delta: Float, start: Float, end: Float): Float = start + delta * (end - start)
+
+    @JvmStatic
+    fun lerp(delta: Double, start: Double, end: Double): Double = start + delta * (end - start)
 
     @JvmStatic
     fun nextInt(random: Random, low: Int, high: Int): Int {

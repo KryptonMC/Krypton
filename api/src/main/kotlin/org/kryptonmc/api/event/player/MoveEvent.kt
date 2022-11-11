@@ -9,7 +9,7 @@
 package org.kryptonmc.api.event.player
 
 import org.kryptonmc.api.event.annotation.PerformanceSensitive
-import org.spongepowered.math.vector.Vector3d
+import org.kryptonmc.api.util.Vec3d
 
 /**
  * Called when a player moves.
@@ -25,10 +25,10 @@ public interface MoveEvent : PlayerEvent {
     /**
      * The location of the player before they moved.
      */
-    public val oldLocation: Vector3d
+    public val oldLocation: Vec3d
 
     /**
      * The location of the player after they moved.
      */
-    public val newLocation: Vector3d
+    public val newLocation: Vec3d
 }

@@ -23,13 +23,13 @@ import org.kryptonmc.api.entity.Hand
 import org.kryptonmc.api.entity.player.Player
 import org.kryptonmc.api.event.GenericResult
 import org.kryptonmc.api.event.player.InteractAtEntityEvent
-import org.spongepowered.math.vector.Vector3d
+import org.kryptonmc.api.util.Vec3d
 
 class KryptonInteractAtEntityEvent(
     override val player: Player,
     override val target: Entity,
     override val hand: Hand,
-    override val clickedPosition: Vector3d
+    override val clickedPosition: Vec3d
 ) : InteractAtEntityEvent {
 
     override var result: GenericResult = GenericResult.allowed()

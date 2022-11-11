@@ -21,13 +21,13 @@ package org.kryptonmc.krypton.effect.particle
 import org.kryptonmc.api.effect.particle.ParticleEffect
 import org.kryptonmc.api.effect.particle.ParticleType
 import org.kryptonmc.api.effect.particle.data.ParticleData
-import org.spongepowered.math.vector.Vector3d
+import org.kryptonmc.api.util.Vec3d
 
 @JvmRecord
 data class KryptonParticleEffect(
     override val type: ParticleType,
     override val quantity: Int,
-    override val offset: Vector3d,
+    override val offset: Vec3d,
     override val longDistance: Boolean,
     override val data: ParticleData? = null
 ) : ParticleEffect

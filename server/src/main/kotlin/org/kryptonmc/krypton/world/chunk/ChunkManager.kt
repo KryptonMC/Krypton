@@ -66,7 +66,7 @@ class ChunkManager(private val world: KryptonWorld) {
     private val ticketManager = TicketManager(this)
     private val regionFileManager = RegionFileManager(world.folder.resolve("region"), world.server.config.advanced.synchronizeChunkWrites)
 
-    operator fun get(x: Int, z: Int): KryptonChunk? = chunkMap.get(ChunkPosition.toLong(x, z))
+    operator fun get(x: Int, z: Int): KryptonChunk? = chunkMap.get(ChunkPos.pack(x, z))
 
     operator fun get(position: Long): KryptonChunk? = chunkMap.get(position)
 
@@ -83,8 +83,8 @@ class ChunkManager(private val world: KryptonWorld) {
         viewDistance: Int
     ): CompletableFuture<Unit> = CompletableFuture.supplyAsync({
         ticketManager.addPlayer(x, z, oldX, oldZ, player.uuid, viewDistance)
-        val pos = ChunkPosition.toLong(x, z)
-        val oldPos = ChunkPosition.toLong(oldX, oldZ)
+        val pos = ChunkPos.pack(x, z)
+        val oldPos = ChunkPos.pack(oldX, oldZ)
         if (pos == oldPos) {
             if (!playersByChunk.containsKey(pos)) playersByChunk.computeIfAbsent(pos, LongFunction { ConcurrentHashMap.newKeySet() }).add(player)
             return@supplyAsync // They haven't changed chunks
@@ -98,7 +98,7 @@ class ChunkManager(private val world: KryptonWorld) {
         val x = player.location.floorX() shr 4
         val z = player.location.floorZ() shr 4
         ticketManager.removePlayer(x, z, player.uuid, viewDistance)
-        val pos = ChunkPosition.toLong(x, z)
+        val pos = ChunkPos.pack(x, z)
         val set = playersByChunk.get(pos)?.apply { remove(player) }
         if (set != null && set.isEmpty()) playersByChunk.remove(pos)
     }
@@ -106,10 +106,10 @@ class ChunkManager(private val world: KryptonWorld) {
     fun players(position: Long): Set<KryptonPlayer> = playersByChunk.getOrDefault(position, emptySet())
 
     fun load(x: Int, z: Int, ticket: Ticket<*>): KryptonChunk? {
-        val pos = ChunkPosition.toLong(x, z)
+        val pos = ChunkPos.pack(x, z)
         if (chunkMap.containsKey(pos)) return chunkMap.get(pos)!!
 
-        val position = ChunkPosition(x, z)
+        val position = ChunkPos(x, z)
         val nbt = regionFileManager.read(x, z) ?: return null
         val version = if (nbt.contains("DataVersion", 99)) nbt.getInt("DataVersion") else -1
         // We won't upgrade data if use of the data converter is disabled.
@@ -155,7 +155,7 @@ class ChunkManager(private val world: KryptonWorld) {
             carvingMasks,
             data.getCompound("Structures")
         )
-        chunkMap.put(position.toLong(), chunk)
+        chunkMap.put(position.pack(), chunk)
 
         val noneOf = EnumSet.noneOf(Heightmap.Type::class.java)
         Heightmap.Type.POST_FEATURES.forEach {
@@ -170,7 +170,7 @@ class ChunkManager(private val world: KryptonWorld) {
         val loaded = get(x, z) ?: return
         if (!force && loaded.ticket.type !== requiredType) return
         save(loaded)
-        chunkMap.remove(loaded.position.toLong())
+        chunkMap.remove(loaded.position.pack())
     }
 
     fun saveAll(shouldClose: Boolean) {

@@ -20,17 +20,17 @@ package org.kryptonmc.krypton.world.damage
 
 import net.kyori.adventure.text.Component
 import org.kryptonmc.api.entity.Hand
+import org.kryptonmc.api.util.Vec3d
 import org.kryptonmc.api.world.damage.EntityDamageSource
 import org.kryptonmc.api.world.damage.type.DamageType
 import org.kryptonmc.krypton.entity.KryptonEntity
 import org.kryptonmc.krypton.entity.KryptonLivingEntity
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.item.KryptonItemStack
-import org.spongepowered.math.vector.Vector3d
 
 open class KryptonEntityDamageSource(type: DamageType, final override val entity: KryptonEntity) : KryptonDamageSource(type), EntityDamageSource {
 
-    override val sourcePosition: Vector3d?
+    override val sourcePosition: Vec3d?
         get() = entity.location
     override val scalesWithDifficulty: Boolean
         get() = entity is KryptonLivingEntity && entity !is KryptonPlayer

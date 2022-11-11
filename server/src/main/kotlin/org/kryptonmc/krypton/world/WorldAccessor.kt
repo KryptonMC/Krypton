@@ -18,16 +18,17 @@
  */
 package org.kryptonmc.krypton.world
 
+import org.kryptonmc.api.util.Vec3i
 import org.kryptonmc.api.world.biome.Biome
 import org.kryptonmc.api.world.biome.BiomeContainer
 import org.kryptonmc.api.world.biome.Biomes
 import org.kryptonmc.api.world.dimension.DimensionType
+import org.kryptonmc.krypton.util.BlockPos
 import org.kryptonmc.krypton.world.biome.BiomeManager
 import org.kryptonmc.krypton.world.biome.NoiseBiomeSource
 import org.kryptonmc.krypton.world.chunk.ChunkAccessor
 import org.kryptonmc.krypton.world.chunk.ChunkManager
 import org.kryptonmc.krypton.world.chunk.ChunkStatus
-import org.spongepowered.math.vector.Vector3i
 
 interface WorldAccessor : BlockAccessor, NoiseBiomeSource, BiomeContainer {
 
@@ -44,9 +45,9 @@ interface WorldAccessor : BlockAccessor, NoiseBiomeSource, BiomeContainer {
 
     fun hasChunkAt(x: Int, z: Int): Boolean = hasChunk(x shr 4, z shr 4)
 
-    fun hasChunkAt(position: Vector3i): Boolean = hasChunkAt(position.x(), position.z())
+    fun hasChunkAt(position: BlockPos): Boolean = hasChunkAt(position.x, position.z)
 
-    fun getChunk(position: Vector3i): ChunkAccessor? = getChunk(position.x() shr 4, position.z() shr 4)
+    fun getChunk(position: Vec3i): ChunkAccessor? = getChunk(position.x shr 4, position.z shr 4)
 
     fun getChunk(x: Int, z: Int, status: ChunkStatus = ChunkStatus.FULL, shouldCreate: Boolean = true): ChunkAccessor?
 
@@ -54,7 +55,7 @@ interface WorldAccessor : BlockAccessor, NoiseBiomeSource, BiomeContainer {
 
     override fun getBiome(x: Int, y: Int, z: Int): Biome = biomeManager.getBiome(x, y, z)
 
-    override fun getBiome(position: Vector3i): Biome = getBiome(position.x(), position.y(), position.z())
+    override fun getBiome(position: Vec3i): Biome = getBiome(position.x, position.y, position.z)
 
     override fun getNoiseBiome(x: Int, y: Int, z: Int): Biome {
         val chunk = getChunk(x shr 2, z shr 2, ChunkStatus.BIOMES, false) ?: return Biomes.PLAINS

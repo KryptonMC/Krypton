@@ -11,8 +11,6 @@ package org.kryptonmc.api.util
 import org.jetbrains.annotations.ApiStatus
 import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.Krypton
-import org.spongepowered.math.vector.Vector3d
-import org.spongepowered.math.vector.Vector3i
 import javax.annotation.concurrent.Immutable
 
 /**
@@ -141,15 +139,15 @@ public interface BoundingBox {
 
     /**
      * Creates a new bounding box with its border inflated by the given
-     * [xFactor], [yFactor], and [zFactor].
+     * [x], [y], and [z].
      *
-     * @param xFactor the X factor to inflate the border by
-     * @param yFactor the Y factor to inflate the border by
-     * @param zFactor the Z factor to inflate the border by
+     * @param x the X factor to inflate the border by
+     * @param y the Y factor to inflate the border by
+     * @param z the Z factor to inflate the border by
      * @return a new bounding box
      */
     @Contract("_ -> new", pure = true)
-    public fun inflate(xFactor: Double, yFactor: Double, zFactor: Double): BoundingBox
+    public fun inflate(x: Double, y: Double, z: Double): BoundingBox
 
     /**
      * Creates a new bounding box with its border inflated by the given
@@ -163,17 +161,17 @@ public interface BoundingBox {
 
     /**
      * Creates a new bounding box with its border deflated by the given
-     * [xFactor], [yFactor], and [zFactor].
+     * [x], [y], and [z].
      *
      * This is equivalent to calling `inflate(-xFactor, -yFactor, -zFactor)`
      *
-     * @param xFactor the X factor to deflate the border by
-     * @param yFactor the Y factor to deflate the border by
-     * @param zFactor the Z factor to deflate the border by
+     * @param x the X factor to deflate the border by
+     * @param y the Y factor to deflate the border by
+     * @param z the Z factor to deflate the border by
      * @return a new bounding box
      */
     @Contract("_ -> new", pure = true)
-    public fun deflate(xFactor: Double, yFactor: Double, zFactor: Double): BoundingBox = inflate(-xFactor, -yFactor, -zFactor)
+    public fun deflate(x: Double, y: Double, z: Double): BoundingBox = inflate(-x, -y, -z)
 
     /**
      * Creates a new bounding box with its border deflated by the given
@@ -217,7 +215,7 @@ public interface BoundingBox {
      * @return a new bounding box
      */
     @Contract("_ -> new", pure = true)
-    public fun move(amount: Vector3d): BoundingBox = move(amount.x(), amount.y(), amount.z())
+    public fun move(amount: Vec3d): BoundingBox = move(amount.x, amount.y, amount.z)
 
     /**
      * Creates a new bounding box that is the result of expanding this box by
@@ -239,7 +237,7 @@ public interface BoundingBox {
      * @return a new bounding box
      */
     @Contract("_ -> new", pure = true)
-    public fun expand(amount: Vector3d): BoundingBox = expand(amount.x(), amount.y(), amount.z())
+    public fun expand(amount: Vec3d): BoundingBox = expand(amount.x, amount.y, amount.z)
 
     /**
      * Creates a new bounding box that is the result of contracting this box by
@@ -257,15 +255,15 @@ public interface BoundingBox {
      * Checks if this bounding box intersects with the given minimum and
      * maximum values.
      *
-     * @param minimumX the minimum X value
-     * @param minimumY the minimum Y value
-     * @param minimumZ the minimum Z value
-     * @param maximumX the maximum X value
-     * @param maximumY the maximum Y value
-     * @param maximumZ the maximum Z value
+     * @param minX the minimum X value
+     * @param minY the minimum Y value
+     * @param minZ the minimum Z value
+     * @param maxX the maximum X value
+     * @param maxY the maximum Y value
+     * @param maxZ the maximum Z value
      * @return true if this box intersects with the values, false otherwise
      */
-    public fun intersects(minimumX: Double, minimumY: Double, minimumZ: Double, maximumX: Double, maximumY: Double, maximumZ: Double): Boolean
+    public fun intersects(minX: Double, minY: Double, minZ: Double, maxX: Double, maxY: Double, maxZ: Double): Boolean
 
     /**
      * Checks if this bounding box intersects with the given [other] box.
@@ -293,7 +291,7 @@ public interface BoundingBox {
      * @param position the position
      * @return true if this box contains the position, false otherwise
      */
-    public fun contains(position: Vector3d): Boolean = contains(position.x(), position.y(), position.z())
+    public fun contains(position: Vec3d): Boolean = contains(position.x, position.y, position.z)
 
     @ApiStatus.Internal
     public interface Factory {
@@ -302,11 +300,7 @@ public interface BoundingBox {
 
         public fun unit(): BoundingBox
 
-        public fun of(minimum: Vector3d, maximum: Vector3d): BoundingBox
-
-        public fun of(minimum: Vector3i, maximum: Vector3i): BoundingBox
-
-        public fun of(minimumX: Double, minimumY: Double, minimumZ: Double, maximumX: Double, maximumY: Double, maximumZ: Double): BoundingBox
+        public fun of(minX: Double, minY: Double, minZ: Double, maxX: Double, maxY: Double, maxZ: Double): BoundingBox
     }
 
     public companion object {
@@ -335,8 +329,8 @@ public interface BoundingBox {
          * The minimum values given here must all be less than their respective
          * maximum values.
          *
-         * @param minimum the minimum vector
-         * @param maximum the maximum vector
+         * @param min the minimum vector
+         * @param max the maximum vector
          * @return a new bounding box
          * @throws IllegalArgumentException if any of the minimum values are
          * greater than their respective maximum values, e.g. the maximum X is
@@ -344,7 +338,7 @@ public interface BoundingBox {
          */
         @JvmStatic
         @Contract("_, _ -> new", pure = true)
-        public fun of(minimum: Vector3d, maximum: Vector3d): BoundingBox = Krypton.factory<Factory>().of(minimum, maximum)
+        public fun of(min: Vec3d, max: Vec3d): BoundingBox = of(min.x, min.y, min.z, max.x, max.y, max.z)
 
         /**
          * Creates a new bounding box from the given values.
@@ -352,8 +346,8 @@ public interface BoundingBox {
          * The minimum values given here must all be less than their respective
          * maximum values.
          *
-         * @param minimum the minimum vector
-         * @param maximum the maximum vector
+         * @param min the minimum vector
+         * @param max the maximum vector
          * @return a new bounding box
          * @throws IllegalArgumentException if any of the minimum values are
          * greater than their respective maximum values, e.g. the maximum X is
@@ -361,7 +355,8 @@ public interface BoundingBox {
          */
         @JvmStatic
         @Contract("_, _ -> new", pure = true)
-        public fun of(minimum: Vector3i, maximum: Vector3i): BoundingBox = Krypton.factory<Factory>().of(minimum, maximum)
+        public fun of(min: Vec3i, max: Vec3i): BoundingBox =
+            of(min.x.toDouble(), min.y.toDouble(), min.z.toDouble(), max.x.toDouble(), max.y.toDouble(), max.z.toDouble())
 
         /**
          * Creates a new bounding box from the given values.
@@ -369,12 +364,12 @@ public interface BoundingBox {
          * The minimum values given here must all be less than their respective
          * maximum values.
          *
-         * @param minimumX the minimum X value
-         * @param minimumY the minimum Y value
-         * @param minimumZ the minimum Z value
-         * @param maximumX the maximum X value
-         * @param maximumY the maximum Y value
-         * @param maximumZ the maximum Y value
+         * @param minX the minimum X value
+         * @param minY the minimum Y value
+         * @param minZ the minimum Z value
+         * @param maxX the maximum X value
+         * @param maxY the maximum Y value
+         * @param maxZ the maximum Y value
          * @return a new bounding box
          * @throws IllegalArgumentException if any of the minimum values are
          * greater than their respective maximum values, e.g. the maximum X is
@@ -382,7 +377,7 @@ public interface BoundingBox {
          */
         @JvmStatic
         @Contract("_, _, _, _, _, _ -> new", pure = true)
-        public fun of(minimumX: Double, minimumY: Double, minimumZ: Double, maximumX: Double, maximumY: Double, maximumZ: Double): BoundingBox =
-            Krypton.factory<Factory>().of(minimumX, minimumY, minimumZ, maximumX, maximumY, maximumZ)
+        public fun of(minX: Double, minY: Double, minZ: Double, maxX: Double, maxY: Double, maxZ: Double): BoundingBox =
+            Krypton.factory<Factory>().of(minX, minY, minZ, maxX, maxY, maxZ)
     }
 }

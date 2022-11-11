@@ -21,7 +21,7 @@ package org.kryptonmc.krypton.world.chunk.ticket
 import org.kryptonmc.krypton.util.Maths
 import org.kryptonmc.krypton.util.SortedArraySet
 import org.kryptonmc.krypton.world.chunk.ChunkManager
-import org.kryptonmc.krypton.world.chunk.ChunkPosition
+import org.kryptonmc.krypton.world.chunk.ChunkPos
 import space.vectrix.flare.fastutil.Long2ObjectSyncMap
 import java.util.UUID
 import java.util.function.LongFunction
@@ -46,7 +46,7 @@ class TicketManager(private val chunkManager: ChunkManager) {
     fun <T> removeTicket(x: Int, z: Int, type: TicketType<T>, level: Int, key: T) {
         if (type === TicketTypes.PLAYER) return
         val ticket = Ticket(type, level, key)
-        tickets.get(ChunkPosition.toLong(x, z))?.remove(ticket)
+        tickets.get(ChunkPos.pack(x, z))?.remove(ticket)
         val radius = MAXIMUM_TICKET_LEVEL - level + 1
         reset(x, z, type, key, radius)
     }

@@ -21,22 +21,22 @@ package org.kryptonmc.krypton.packet.`in`.play
 import io.netty.buffer.ByteBuf
 import org.kryptonmc.api.util.Direction
 import org.kryptonmc.krypton.packet.Packet
+import org.kryptonmc.krypton.util.BlockPos
 import org.kryptonmc.krypton.util.readEnum
 import org.kryptonmc.krypton.util.readVarInt
-import org.kryptonmc.krypton.util.readVector
+import org.kryptonmc.krypton.util.readBlockPos
 import org.kryptonmc.krypton.util.writeEnum
 import org.kryptonmc.krypton.util.writeVarInt
-import org.kryptonmc.krypton.util.writeVector
-import org.spongepowered.math.vector.Vector3i
+import org.kryptonmc.krypton.util.writeBlockPos
 
 @JvmRecord
-data class PacketInPlayerAction(val action: Action, val position: Vector3i, val direction: Direction, val sequence: Int) : Packet {
+data class PacketInPlayerAction(val action: Action, val position: BlockPos, val direction: Direction, val sequence: Int) : Packet {
 
-    constructor(buf: ByteBuf) : this(buf.readEnum<Action>(), buf.readVector(), buf.readEnum(), buf.readVarInt())
+    constructor(buf: ByteBuf) : this(buf.readEnum<Action>(), buf.readBlockPos(), buf.readEnum(), buf.readVarInt())
 
     override fun write(buf: ByteBuf) {
         buf.writeEnum(action)
-        buf.writeVector(position)
+        buf.writeBlockPos(position)
         buf.writeEnum(direction)
         buf.writeVarInt(sequence)
     }

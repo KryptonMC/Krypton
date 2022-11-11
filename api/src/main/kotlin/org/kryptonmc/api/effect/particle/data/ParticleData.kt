@@ -13,7 +13,7 @@ import org.kryptonmc.api.Krypton
 import org.kryptonmc.api.block.BlockState
 import org.kryptonmc.api.item.ItemStack
 import org.kryptonmc.api.util.Color
-import org.spongepowered.math.vector.Vector3d
+import org.kryptonmc.api.util.Vec3d
 import javax.annotation.concurrent.Immutable
 
 /**
@@ -26,7 +26,7 @@ public interface ParticleData {
     @ApiStatus.Internal
     public interface Factory {
 
-        public fun directional(direction: Vector3d?, velocity: Float): DirectionalParticleData
+        public fun directional(direction: Vec3d?, velocity: Float): DirectionalParticleData
 
         public fun item(item: ItemStack): ItemParticleData
 
@@ -40,7 +40,7 @@ public interface ParticleData {
 
         public fun note(note: Byte): NoteParticleData
 
-        public fun vibration(destination: Vector3d, ticks: Int): VibrationParticleData
+        public fun vibration(destination: Vec3d, ticks: Int): VibrationParticleData
     }
 
     public companion object {

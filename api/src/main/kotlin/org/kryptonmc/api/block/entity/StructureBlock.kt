@@ -8,7 +8,7 @@
  */
 package org.kryptonmc.api.block.entity
 
-import org.spongepowered.math.vector.Vector3i
+import org.kryptonmc.api.util.Vec3i
 
 /**
  * A structure block.
@@ -19,12 +19,12 @@ public interface StructureBlock : BlockEntity {
     /**
      * The position of the structure.
      */
-    public var structurePosition: Vector3i
+    public var structurePosition: Vec3i
 
     /**
      * The size of the structure.
      */
-    public var size: Vector3i
+    public var size: Vec3i
 
     /**
      * The author of the structure.

@@ -8,7 +8,7 @@
  */
 package org.kryptonmc.api.block.entity
 
-import org.spongepowered.math.vector.Vector3i
+import org.kryptonmc.api.util.Vec3i
 
 /**
  * Something that contains block entities.
@@ -36,5 +36,5 @@ public interface BlockEntityContainer {
      * @param position the position of the block entity
      * @return the block entity at the position, or null if not present
      */
-    public fun <T : BlockEntity> getBlockEntity(position: Vector3i): T?
+    public fun <T : BlockEntity> getBlockEntity(position: Vec3i): T?
 }

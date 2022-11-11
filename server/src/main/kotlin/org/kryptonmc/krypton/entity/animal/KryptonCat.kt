@@ -66,7 +66,7 @@ class KryptonCat(world: KryptonWorld) : KryptonTamable(world), Cat {
     }
 
     override fun hiss() {
-        playSound(Sound.sound(SoundEvents.CAT_HISS, soundSource(), soundVolume, voicePitch), location.x(), location.y(), location.z())
+        playSound(Sound.sound(SoundEvents.CAT_HISS, soundSource(), soundVolume, voicePitch), location.x, location.y, location.z)
     }
 
     override fun canMate(target: Animal): Boolean {

@@ -25,14 +25,13 @@ import org.kryptonmc.api.effect.particle.data.ColorParticleData
 import org.kryptonmc.api.effect.particle.data.DirectionalParticleData
 import org.kryptonmc.api.effect.particle.data.NoteParticleData
 import org.kryptonmc.api.effect.particle.data.ParticleData
+import org.kryptonmc.api.util.Vec3d
 import org.kryptonmc.krypton.effect.particle.downcast
 import org.kryptonmc.krypton.network.Writable
 import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.registry.KryptonRegistries
 import org.kryptonmc.krypton.util.readVarInt
 import org.kryptonmc.krypton.util.writeVarInt
-import org.spongepowered.math.vector.Vector3d
-import org.spongepowered.math.vector.Vector3f
 
 /**
  * Tells the client to spawn some particles around it.
@@ -52,16 +51,6 @@ data class PacketOutParticle(
     val data: ParticleData?
 ) : Packet {
 
-    constructor(
-        typeId: Int,
-        longDistance: Boolean,
-        location: Vector3d,
-        offset: Vector3f,
-        maxSpeed: Float,
-        count: Int,
-        data: ParticleData?
-    ) : this(typeId, longDistance, location.x(), location.y(), location.z(), offset.x(), offset.y(), offset.z(), maxSpeed, count, data)
-
     constructor(buf: ByteBuf) : this(
         buf,
         buf.readVarInt(),
@@ -76,19 +65,9 @@ data class PacketOutParticle(
         buf.readVarInt()
     )
 
-    private constructor(
-        buf: ByteBuf,
-        typeId: Int,
-        longDistance: Boolean,
-        x: Double,
-        y: Double,
-        z: Double,
-        offsetX: Float,
-        offsetY: Float,
-        offsetZ: Float,
-        maxSpeed: Float,
-        count: Int
-    ) : this(typeId, longDistance, x, y, z, offsetX, offsetY, offsetZ, maxSpeed, count, readData(typeId, buf))
+    private constructor(buf: ByteBuf, typeId: Int, longDistance: Boolean, x: Double, y: Double, z: Double, offsetX: Float, offsetY: Float,
+                        offsetZ: Float, maxSpeed: Float,
+                        count: Int) : this(typeId, longDistance, x, y, z, offsetX, offsetY, offsetZ, maxSpeed, count, readData(typeId, buf))
 
     override fun write(buf: ByteBuf) {
         buf.writeVarInt(typeId)
@@ -110,17 +89,14 @@ data class PacketOutParticle(
         private const val NOTE_TO_FLOAT_FACTOR = 24F
 
         @JvmStatic
-        fun from(effect: ParticleEffect, location: Vector3d): PacketOutParticle = from(effect, location.x(), location.y(), location.z())
-
-        @JvmStatic
-        fun from(effect: ParticleEffect, x: Double, y: Double, z: Double): PacketOutParticle {
+        fun from(effect: ParticleEffect, location: Vec3d): PacketOutParticle {
             val typeId = KryptonRegistries.PARTICLE_TYPE.getId(effect.type)
-            var tempX = x
-            var tempY = y
-            var tempZ = z
-            var offsetX = effect.offset.x().toFloat()
-            var offsetY = effect.offset.y().toFloat()
-            var offsetZ = effect.offset.z().toFloat()
+            var x = location.x
+            var y = location.y
+            var z = location.z
+            var offsetX = effect.offset.x.toFloat()
+            var offsetY = effect.offset.y.toFloat()
+            var offsetZ = effect.offset.z.toFloat()
             var maxSpeed = 1F
             var count = effect.quantity
 
@@ -134,9 +110,9 @@ data class PacketOutParticle(
              * have a count of 0, but we still want this randomness applied.
              */
             fun offsetPosition() {
-                tempX = x + effect.offset.x() * random.nextGaussian()
-                tempY = y + effect.offset.y() * random.nextGaussian()
-                tempZ = z + effect.offset.z() * random.nextGaussian()
+                x = location.x + effect.offset.x * random.nextGaussian()
+                y = location.y + effect.offset.y * random.nextGaussian()
+                z = location.z + effect.offset.z * random.nextGaussian()
             }
 
             /*
@@ -153,9 +129,9 @@ data class PacketOutParticle(
             when (data) {
                 is DirectionalParticleData -> {
                     offsetPosition()
-                    offsetX = (data.direction?.x() ?: random.nextGaussian()).toFloat()
-                    offsetY = (data.direction?.y() ?: random.nextGaussian()).toFloat()
-                    offsetZ = (data.direction?.z() ?: random.nextGaussian()).toFloat()
+                    offsetX = (data.direction?.x ?: random.nextGaussian()).toFloat()
+                    offsetY = (data.direction?.y ?: random.nextGaussian()).toFloat()
+                    offsetZ = (data.direction?.z ?: random.nextGaussian()).toFloat()
                     maxSpeed = data.velocity
                     count = 0
                 }
@@ -174,7 +150,7 @@ data class PacketOutParticle(
                     count = 0
                 }
             }
-            return PacketOutParticle(typeId, effect.longDistance, tempX, tempY, tempZ, offsetX, offsetY, offsetZ, maxSpeed, count, data)
+            return PacketOutParticle(typeId, effect.longDistance, x, y, z, offsetX, offsetY, offsetZ, maxSpeed, count, data)
         }
 
         @JvmStatic

@@ -9,7 +9,7 @@
 package org.kryptonmc.api.entity
 
 import org.kryptonmc.api.entity.attribute.AttributeHolder
-import org.spongepowered.math.vector.Vector3i
+import org.kryptonmc.api.util.Vec3i
 
 /**
  * Represents an entity that lives in a world.
@@ -87,5 +87,5 @@ public interface LivingEntity : Entity, AttributeHolder {
      *
      * If this value is null, this entity is not currently sleeping.
      */
-    public var sleepingPosition: Vector3i?
+    public var sleepingPosition: Vec3i?
 }

@@ -18,18 +18,18 @@
  */
 package org.kryptonmc.krypton.util
 
+import org.kryptonmc.api.util.Vec3d
 import org.kryptonmc.krypton.entity.KryptonEntity
-import org.spongepowered.math.vector.Vector3d
 
-sealed class HitResult(val location: Vector3d) {
+sealed class HitResult(val location: Vec3d) {
 
     abstract val type: Type
 
     fun distanceTo(entity: KryptonEntity): Double {
-        val distanceX = location.x() - entity.location.x()
-        val distanceY = location.y() - entity.location.y()
-        val distanceZ = location.z() - entity.location.z()
-        return distanceX * distanceX + distanceY * distanceY + distanceZ * distanceZ
+        val dx = location.x - entity.location.x
+        val dy = location.y - entity.location.y
+        val dz = location.z - entity.location.z
+        return dx * dx + dy * dy + dz * dz
     }
 
     enum class Type {

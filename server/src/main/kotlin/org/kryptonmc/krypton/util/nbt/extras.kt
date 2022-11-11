@@ -19,12 +19,13 @@
 package org.kryptonmc.krypton.util.nbt
 
 import net.kyori.adventure.key.Keyed
+import org.kryptonmc.api.util.Vec3i
 import org.kryptonmc.krypton.KryptonPlatform
+import org.kryptonmc.krypton.util.BlockPos
 import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.ImmutableCompoundTag
 import org.kryptonmc.nbt.IntTag
 import org.kryptonmc.nbt.ListTag
-import org.spongepowered.math.vector.Vector3i
 
 private const val NUMBER_TYPE = 99
 private const val DATA_VERSION_TAG = "DataVersion"
@@ -46,14 +47,13 @@ fun CompoundTag.getNullableCompound(name: String): CompoundTag? = getNullable(na
 
 fun CompoundTag.hasBlockPos(prefix: String = ""): Boolean = hasNumber(prefix + 'X') && hasNumber(prefix + 'Y') && hasNumber(prefix + 'Z')
 
-fun CompoundTag.getBlockPos(prefix: String = ""): Vector3i = Vector3i.from(getInt(prefix + 'X'), getInt(prefix + 'Y'), getInt(prefix + 'Z'))
+fun CompoundTag.getBlockPos(prefix: String = ""): BlockPos = BlockPos(getInt(prefix + 'X'), getInt(prefix + 'Y'), getInt(prefix + 'Z'))
 
-fun CompoundTag.putBlockPos(key: String, pos: Vector3i): CompoundTag = put(key, ImmutableCompoundTag.builder().putBlockPosParts(pos).build())
+fun CompoundTag.putBlockPos(key: String, pos: Vec3i): CompoundTag = put(key, ImmutableCompoundTag.builder().putBlockPosParts(pos).build())
 
-fun CB.putBlockPos(key: String, pos: Vector3i): CB = put(key, ImmutableCompoundTag.builder().putBlockPosParts(pos).build())
+fun CB.putBlockPos(key: String, pos: Vec3i): CB = put(key, ImmutableCompoundTag.builder().putBlockPosParts(pos).build())
 
-fun CB.putBlockPosParts(pos: Vector3i, prefix: String = ""): CB =
-    putInt(prefix + 'X', pos.x()).putInt(prefix + 'Y', pos.y()).putInt(prefix + 'Z', pos.z())
+fun CB.putBlockPosParts(pos: Vec3i, prefix: String = ""): CB = putInt(prefix + 'X', pos.x).putInt(prefix + 'Y', pos.y).putInt(prefix + 'Z', pos.z)
 
 inline fun <T> CB.putNullable(name: String, value: T, setter: CB.(String, T & Any) -> CB): CB =
     if (value == null) this else setter(this, name, value)

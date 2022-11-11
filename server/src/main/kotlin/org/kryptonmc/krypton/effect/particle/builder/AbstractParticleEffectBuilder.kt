@@ -22,14 +22,15 @@ import org.kryptonmc.api.effect.particle.ParticleEffect
 import org.kryptonmc.api.effect.particle.ParticleType
 import org.kryptonmc.api.effect.particle.builder.BaseParticleEffectBuilder
 import org.kryptonmc.api.effect.particle.data.ParticleData
+import org.kryptonmc.api.util.Vec3d
 import org.kryptonmc.krypton.effect.particle.KryptonParticleEffect
-import org.spongepowered.math.vector.Vector3d
+import org.kryptonmc.krypton.util.Vec3dImpl
 
 @Suppress("UNCHECKED_CAST")
 abstract class AbstractParticleEffectBuilder<B : BaseParticleEffectBuilder<B>>(protected val type: ParticleType) : BaseParticleEffectBuilder<B> {
 
     private var quantity = 1
-    private var offset: Vector3d = Vector3d.ZERO
+    private var offset: Vec3d = Vec3dImpl.ZERO
     private var longDistance = false
 
     abstract fun buildData(): ParticleData?
@@ -39,7 +40,7 @@ abstract class AbstractParticleEffectBuilder<B : BaseParticleEffectBuilder<B>>(p
         this.quantity = quantity
     } as B
 
-    override fun offset(offset: Vector3d): B = apply { this.offset = offset } as B
+    override fun offset(offset: Vec3d): B = apply { this.offset = offset } as B
 
     override fun longDistance(longDistance: Boolean): B = apply { this.longDistance = longDistance } as B
 

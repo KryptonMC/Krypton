@@ -22,7 +22,6 @@ import it.unimi.dsi.fastutil.booleans.BooleanArrayList
 import it.unimi.dsi.fastutil.booleans.BooleanList
 import org.kryptonmc.api.util.Direction
 import org.kryptonmc.krypton.util.Directions
-import org.spongepowered.math.matrix.Matrix3f
 import java.util.Arrays
 import java.util.EnumMap
 
@@ -83,11 +82,11 @@ enum class OctahedralGroup(
     ROT_90_REF_Z_NEG("rot_90_ref_z_neg", SymmetricGroup3.P213, false, true, true),
     ROT_90_REF_Z_POS("rot_90_ref_z_pos", SymmetricGroup3.P213, true, false, true);
 
-    val transformation: Matrix3f = Matrix3fBuilder()
+    val transformation: Matrix3f = Matrix3f.builder()
         .m00(if (invertX) -1F else 1F)
         .m11(if (invertY) -1F else 1F)
         .m22(if (invertZ) -1F else 1F)
-        .mul(permutation.tranformation)
+        .multiply(permutation.tranformation)
         .build()
     private var rotatedDirections: MutableMap<Direction, Direction>? = null
 

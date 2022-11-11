@@ -8,20 +8,28 @@
  */
 package org.kryptonmc.api.event.player
 
-import org.spongepowered.math.vector.Vector2f
-
 /**
  * Called when a player rotates their head.
  */
 public interface RotateEvent : PlayerEvent {
 
     /**
-     * The rotation of the player before the change in rotation.
+     * The yaw of the player before the change in rotation.
      */
-    public val oldRotation: Vector2f
+    public val oldYaw: Float
 
     /**
-     * The rotation of the player after the change in rotation.
+     * The pitch of the player before the change in rotation.
      */
-    public val newRotation: Vector2f
+    public val oldPitch: Float
+
+    /**
+     * The yaw of the player after the change in rotation.
+     */
+    public val newYaw: Float
+
+    /**
+     * The pitch of the player after the change in rotation.
+     */
+    public val newPitch: Float
 }

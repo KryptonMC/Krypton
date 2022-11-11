@@ -19,7 +19,7 @@
 package org.kryptonmc.krypton.command.arguments.coordinates
 
 import org.kryptonmc.api.entity.player.Player
-import org.spongepowered.math.vector.Vector3d
+import org.kryptonmc.api.util.Vec3d
 
 /**
  * A wrapper around all 3 types of coordinates that may be used in Minecraft.
@@ -40,5 +40,5 @@ sealed interface Coordinates {
      * This is where all the magic happens, in terms of actual movement
      * calculation.
      */
-    fun position(player: Player): Vector3d
+    fun position(player: Player): Vec3d
 }

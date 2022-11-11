@@ -22,6 +22,7 @@ import com.mojang.brigadier.CommandDispatcher
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.text.Component
 import org.kryptonmc.api.command.Sender
+import org.kryptonmc.api.util.Vec3d
 import org.kryptonmc.krypton.command.InternalCommand
 import org.kryptonmc.krypton.command.SuggestionProviders
 import org.kryptonmc.krypton.command.argument
@@ -39,7 +40,6 @@ import org.kryptonmc.krypton.command.runs
 import org.kryptonmc.krypton.command.toExceptionType
 import org.kryptonmc.krypton.util.Worlds
 import org.kryptonmc.nbt.CompoundTag
-import org.spongepowered.math.vector.Vector3d
 
 object SummonCommand : InternalCommand {
 
@@ -75,7 +75,7 @@ object SummonCommand : InternalCommand {
     }
 
     @JvmStatic
-    private fun spawnEntity(player: KryptonPlayer, type: Key, position: Vector3d, nbt: CompoundTag? = null) {
+    private fun spawnEntity(player: KryptonPlayer, type: Key, position: Vec3d, nbt: CompoundTag? = null) {
         if (!Worlds.isInSpawnableBounds(position)) throw ERROR_INVALID_POSITION.create()
         val entity = EntityFactory.create(player.world, type.asString(), nbt)?.apply { this.location = position } ?: throw ERROR_FAILED.create()
         player.world.spawnEntity(entity)

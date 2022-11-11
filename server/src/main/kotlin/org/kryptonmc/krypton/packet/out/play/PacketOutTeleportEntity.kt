@@ -19,48 +19,30 @@
 package org.kryptonmc.krypton.packet.out.play
 
 import io.netty.buffer.ByteBuf
+import org.kryptonmc.api.util.Vec3d
 import org.kryptonmc.krypton.packet.EntityPacket
 import org.kryptonmc.krypton.packet.MovementPacket
 import org.kryptonmc.krypton.util.readAngle
 import org.kryptonmc.krypton.util.readVarInt
+import org.kryptonmc.krypton.util.readVec3d
 import org.kryptonmc.krypton.util.writeAngle
 import org.kryptonmc.krypton.util.writeVarInt
-import org.spongepowered.math.vector.Vector2f
-import org.spongepowered.math.vector.Vector3d
+import org.kryptonmc.krypton.util.writeVec3d
 
 @JvmRecord
 data class PacketOutTeleportEntity(
     override val entityId: Int,
-    val x: Double,
-    val y: Double,
-    val z: Double,
+    val location: Vec3d,
     val yaw: Float,
     val pitch: Float,
     override val onGround: Boolean
 ) : EntityPacket, MovementPacket {
 
-    constructor(
-        entityId: Int,
-        position: Vector3d,
-        rotation: Vector2f,
-        isOnGround: Boolean
-    ) : this(entityId, position.x(), position.y(), position.z(), rotation.x(), rotation.y(), isOnGround)
-
-    constructor(buf: ByteBuf) : this(
-        buf.readVarInt(),
-        buf.readDouble(),
-        buf.readDouble(),
-        buf.readDouble(),
-        buf.readAngle(),
-        buf.readAngle(),
-        buf.readBoolean()
-    )
+    constructor(buf: ByteBuf) : this(buf.readVarInt(), buf.readVec3d(), buf.readAngle(), buf.readAngle(), buf.readBoolean())
 
     override fun write(buf: ByteBuf) {
         buf.writeVarInt(entityId)
-        buf.writeDouble(x)
-        buf.writeDouble(y)
-        buf.writeDouble(z)
+        buf.writeVec3d(location)
         buf.writeAngle(yaw)
         buf.writeAngle(pitch)
         buf.writeBoolean(onGround)

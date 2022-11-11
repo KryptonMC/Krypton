@@ -21,8 +21,9 @@ package org.kryptonmc.krypton.command.arguments.coordinates
 import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.StringReader
 import org.kryptonmc.api.entity.player.Player
-import org.spongepowered.math.TrigMath
-import org.spongepowered.math.vector.Vector3d
+import org.kryptonmc.api.util.Vec3d
+import org.kryptonmc.krypton.util.Maths
+import org.kryptonmc.krypton.util.Vec3dImpl
 
 /**
  * Coordinates that are local to not only a player's position, but also their
@@ -34,27 +35,28 @@ import org.spongepowered.math.vector.Vector3d
 @JvmRecord
 data class LocalCoordinates(private val left: Double, private val up: Double, private val forwards: Double) : Coordinates {
 
-    override fun position(player: Player): Vector3d {
+    override fun position(player: Player): Vec3d {
         // All of this is some slightly complicated linear algebra that I don't really understand.
         // What this does is determine absolute coordinates from the local forwards, up, and left components, which are relative
         // to the direction that a player is facing.
         // TODO: Document all this in detail
-        val rotation = player.rotation
-        val pitch1 = TrigMath.cos(Math.toRadians(rotation.y() + 90.0))
-        val pitch2 = TrigMath.sin(Math.toRadians(rotation.y() + 90.0))
-        val yaw1 = TrigMath.cos(Math.toRadians(-rotation.x().toDouble()))
-        val yaw2 = TrigMath.sin(Math.toRadians(-rotation.x().toDouble()))
-        val yaw3 = TrigMath.cos(Math.toRadians(-rotation.x() + 90.0))
-        val yaw4 = TrigMath.sin(Math.toRadians(-rotation.x() + 90.0))
+        val yaw = player.yaw
+        val pitch = player.pitch
+        val pitch1 = Maths.cos(Maths.toRadians(pitch + 90F))
+        val pitch2 = Maths.sin(Maths.toRadians(pitch + 90F))
+        val yaw1 = Maths.cos(Maths.toRadians(-yaw))
+        val yaw2 = Maths.sin(Maths.toRadians(-yaw))
+        val yaw3 = Maths.cos(Maths.toRadians(-yaw + 90F))
+        val yaw4 = Maths.sin(Maths.toRadians(-yaw + 90F))
 
-        val someVector = Vector3d(pitch1 * yaw1, yaw2, pitch2 * yaw1)
-        val someOtherVector = Vector3d(pitch1 * yaw3, yaw4, pitch2 * yaw3)
-        val scaled = someVector.cross(someOtherVector).negate()
+        val someVector = Vec3dImpl((pitch1 * yaw1).toDouble(), yaw2.toDouble(), (pitch2 * yaw1).toDouble())
+        val someOtherVector = Vec3dImpl((pitch1 * yaw3).toDouble(), yaw4.toDouble(), (pitch2 * yaw3).toDouble())
+        val crossed = someVector.cross(someOtherVector).negate()
 
-        val offsetX = someVector.x() * forwards + someOtherVector.x() * up + scaled.x() * left
-        val offsetY = someVector.y() * forwards + someOtherVector.y() * up + scaled.y() * left
-        val offsetZ = someVector.z() * forwards + someOtherVector.z() * up + scaled.z() * left
-        return Vector3d(player.location.x() + offsetX, player.location.y() + offsetY, player.location.z() + offsetZ)
+        val offsetX = someVector.x * forwards + someOtherVector.x * up + crossed.x * left
+        val offsetY = someVector.y * forwards + someOtherVector.y * up + crossed.y * left
+        val offsetZ = someVector.z * forwards + someOtherVector.z * up + crossed.z * left
+        return player.location.add(offsetX, offsetY, offsetZ)
     }
 
     companion object {

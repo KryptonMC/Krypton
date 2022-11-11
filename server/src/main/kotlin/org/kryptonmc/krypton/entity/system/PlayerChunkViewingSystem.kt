@@ -25,7 +25,7 @@ import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.packet.out.play.PacketOutSetCenterChunk
 import org.kryptonmc.krypton.packet.out.play.PacketOutUnloadChunk
 import org.kryptonmc.krypton.util.Positioning
-import org.kryptonmc.krypton.world.chunk.ChunkPosition
+import org.kryptonmc.krypton.world.chunk.ChunkPos
 import kotlin.math.abs
 
 class PlayerChunkViewingSystem(private val player: KryptonPlayer) {
@@ -55,21 +55,21 @@ class PlayerChunkViewingSystem(private val player: KryptonPlayer) {
         if (firstLoad) {
             for (x in centralX - radius..centralX + radius) {
                 for (z in centralZ - radius..centralZ + radius) {
-                    newChunks.add(ChunkPosition.toLong(x, z))
+                    newChunks.add(ChunkPos.pack(x, z))
                 }
             }
         } else if (abs(centralX - previousCentralX) > radius || abs(centralZ - previousCentralZ) > radius) {
             visibleChunks.clear()
             for (x in centralX - radius..centralX + radius) {
                 for (z in centralZ - radius..centralZ + radius) {
-                    newChunks.add(ChunkPosition.toLong(x, z))
+                    newChunks.add(ChunkPos.pack(x, z))
                 }
             }
         } else if (previousCentralX != centralX || previousCentralZ != centralZ) {
             previousChunks = LongArraySet(visibleChunks)
             for (x in centralX - radius..centralX + radius) {
                 for (z in centralZ - radius..centralZ + radius) {
-                    val pos = ChunkPosition.toLong(x, z)
+                    val pos = ChunkPos.pack(x, z)
                     if (visibleChunks.contains(pos)) previousChunks.remove(pos) else newChunks.add(pos)
                 }
             }
@@ -81,11 +81,11 @@ class PlayerChunkViewingSystem(private val player: KryptonPlayer) {
         previousCentralZ = centralZ
 
         newChunks.sortWith { a, b ->
-            var dx = 16 * a.toInt() + 8 - player.location.x()
-            var dz = 16 * (a shr 32).toInt() + 8 - player.location.z()
+            var dx = 16 * a.toInt() + 8 - player.location.x
+            var dz = 16 * (a shr 32).toInt() + 8 - player.location.z
             val da = dx * dx + dz * dz
-            dx = 16 * b.toInt() + 8 - player.location.x()
-            dz = 16 * (b shr 32).toInt() + 8 - player.location.z()
+            dx = 16 * b.toInt() + 8 - player.location.x
+            dz = 16 * (b shr 32).toInt() + 8 - player.location.z
             val db = dx * dx + dz * dz
             da.compareTo(db)
         }

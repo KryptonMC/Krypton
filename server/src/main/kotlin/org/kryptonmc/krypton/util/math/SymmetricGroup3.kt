@@ -18,8 +18,6 @@
  */
 package org.kryptonmc.krypton.util.math
 
-import org.spongepowered.math.matrix.Matrix3f
-
 enum class SymmetricGroup3(first: Int, second: Int, third: Int) {
 
     P123(0, 1, 2),
@@ -30,7 +28,7 @@ enum class SymmetricGroup3(first: Int, second: Int, third: Int) {
     P321(2, 1, 0);
 
     private val permutations = intArrayOf(first, second, third)
-    val tranformation: Matrix3f = Matrix3fBuilder().set(0, permutation(0), 1F).set(0, permutation(1), 1F).set(0, permutation(2), 1F).build()
+    val tranformation: Matrix3f = Matrix3f.builder().set(0, permutation(0), 1F).set(0, permutation(1), 1F).set(0, permutation(2), 1F).build()
 
     fun compose(other: SymmetricGroup3): SymmetricGroup3 = CAYLEY_TABLE[ordinal][other.ordinal]
 

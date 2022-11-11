@@ -25,11 +25,13 @@ import org.kryptonmc.api.entity.animal.type.FrogVariant
 import org.kryptonmc.api.entity.hanging.PaintingVariant
 import org.kryptonmc.api.util.Catalogue
 import org.kryptonmc.api.util.Direction
+import org.kryptonmc.api.util.Rotations
 import org.kryptonmc.krypton.effect.particle.ParticleOptions
 import org.kryptonmc.krypton.entity.Pose
 import org.kryptonmc.krypton.entity.data.VillagerData
 import org.kryptonmc.krypton.item.KryptonItemStack
 import org.kryptonmc.krypton.registry.KryptonRegistries
+import org.kryptonmc.krypton.util.BlockPos
 import org.kryptonmc.krypton.util.GlobalPosition
 import org.kryptonmc.krypton.util.IntIdentityHashBiMap
 import org.kryptonmc.krypton.util.readComponent
@@ -38,8 +40,8 @@ import org.kryptonmc.krypton.util.readNBT
 import org.kryptonmc.krypton.util.readString
 import org.kryptonmc.krypton.util.readUUID
 import org.kryptonmc.krypton.util.readVarInt
-import org.kryptonmc.krypton.util.readVector
-import org.kryptonmc.krypton.util.readVector3f
+import org.kryptonmc.krypton.util.readBlockPos
+import org.kryptonmc.krypton.util.readRotations
 import org.kryptonmc.krypton.util.writeComponent
 import org.kryptonmc.krypton.util.writeId
 import org.kryptonmc.krypton.util.writeItem
@@ -47,12 +49,10 @@ import org.kryptonmc.krypton.util.writeNBT
 import org.kryptonmc.krypton.util.writeString
 import org.kryptonmc.krypton.util.writeUUID
 import org.kryptonmc.krypton.util.writeVarInt
-import org.kryptonmc.krypton.util.writeVector
+import org.kryptonmc.krypton.util.writeBlockPos
 import org.kryptonmc.krypton.world.block.KryptonBlock
 import org.kryptonmc.krypton.world.block.state.KryptonBlockState
 import org.kryptonmc.nbt.CompoundTag
-import org.spongepowered.math.vector.Vector3f
-import org.spongepowered.math.vector.Vector3i
 import java.util.OptionalInt
 import java.util.UUID
 
@@ -78,15 +78,15 @@ object MetadataSerializers {
     @JvmField
     val BOOLEAN: MetadataSerializer<Boolean> = MetadataSerializer.simple(ByteBuf::readBoolean, ByteBuf::writeBoolean)
     @JvmField
-    val ROTATION: MetadataSerializer<Vector3f> = MetadataSerializer.simple(ByteBuf::readVector3f) { buf, item ->
-        buf.writeFloat(item.x())
-        buf.writeFloat(item.y())
-        buf.writeFloat(item.z())
+    val ROTATION: MetadataSerializer<Rotations> = MetadataSerializer.simple(ByteBuf::readRotations) { buf, item ->
+        buf.writeFloat(item.yaw)
+        buf.writeFloat(item.pitch)
+        buf.writeFloat(item.roll)
     }
     @JvmField
-    val POSITION: MetadataSerializer<Vector3i> = MetadataSerializer.simple(ByteBuf::readVector, ByteBuf::writeVector)
+    val BLOCK_POS: MetadataSerializer<BlockPos> = MetadataSerializer.simple(ByteBuf::readBlockPos, ByteBuf::writeBlockPos)
     @JvmField
-    val OPTIONAL_POSITION: MetadataSerializer<Vector3i?> = MetadataSerializer.nullable(ByteBuf::readVector, ByteBuf::writeVector)
+    val OPTIONAL_BLOCK_POS: MetadataSerializer<BlockPos?> = MetadataSerializer.nullable(ByteBuf::readBlockPos, ByteBuf::writeBlockPos)
     @JvmField
     val DIRECTION: MetadataSerializer<Direction> = MetadataSerializer.simpleEnum()
     @JvmField
@@ -139,8 +139,8 @@ object MetadataSerializers {
         SERIALIZERS.add(ITEM_STACK)
         SERIALIZERS.add(BOOLEAN)
         SERIALIZERS.add(ROTATION)
-        SERIALIZERS.add(POSITION)
-        SERIALIZERS.add(OPTIONAL_POSITION)
+        SERIALIZERS.add(BLOCK_POS)
+        SERIALIZERS.add(OPTIONAL_BLOCK_POS)
         SERIALIZERS.add(DIRECTION)
         SERIALIZERS.add(OPTIONAL_UUID)
         SERIALIZERS.add(OPTIONAL_BLOCK)

@@ -22,11 +22,11 @@ import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.block.entity.BlockEntity
 import org.kryptonmc.api.block.entity.BlockEntityType
 import org.kryptonmc.api.world.World
-import org.spongepowered.math.vector.Vector3i
+import org.kryptonmc.krypton.util.BlockPos
 
 abstract class KryptonBlockEntity(
     override val type: BlockEntityType,
     override val world: World,
-    override val position: Vector3i,
+    override val position: BlockPos,
     override val block: Block
 ) : BlockEntity

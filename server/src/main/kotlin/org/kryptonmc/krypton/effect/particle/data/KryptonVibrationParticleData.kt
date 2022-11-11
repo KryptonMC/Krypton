@@ -20,19 +20,20 @@ package org.kryptonmc.krypton.effect.particle.data
 
 import io.netty.buffer.ByteBuf
 import org.kryptonmc.api.effect.particle.data.VibrationParticleData
+import org.kryptonmc.api.util.Vec3d
 import org.kryptonmc.krypton.network.Writable
-import org.spongepowered.math.vector.Vector3d
+import org.kryptonmc.krypton.util.Vec3dImpl
 
 @JvmRecord
-data class KryptonVibrationParticleData(override val destination: Vector3d, override val ticks: Int) : VibrationParticleData, Writable {
+data class KryptonVibrationParticleData(override val destination: Vec3d, override val ticks: Int) : VibrationParticleData, Writable {
 
-    constructor(buf: ByteBuf) : this(Vector3d(buf.readDouble(), buf.readDouble(), buf.readDouble()), buf.readInt())
+    constructor(buf: ByteBuf) : this(Vec3dImpl(buf.readDouble(), buf.readDouble(), buf.readDouble()), buf.readInt())
 
     override fun write(buf: ByteBuf) {
         // TODO: Sort this out when we have a new position source mechanism
-        buf.writeDouble(destination.x())
-        buf.writeDouble(destination.y())
-        buf.writeDouble(destination.z())
+        buf.writeDouble(destination.x)
+        buf.writeDouble(destination.y)
+        buf.writeDouble(destination.z)
         buf.writeInt(ticks)
     }
 }

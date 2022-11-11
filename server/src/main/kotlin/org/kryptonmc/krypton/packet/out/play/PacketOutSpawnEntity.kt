@@ -33,15 +33,13 @@ import org.kryptonmc.krypton.util.writeAngle
 import org.kryptonmc.krypton.util.writeId
 import org.kryptonmc.krypton.util.writeUUID
 import org.kryptonmc.krypton.util.writeVarInt
-import org.spongepowered.math.vector.Vector2f
-import org.spongepowered.math.vector.Vector3d
 import java.util.UUID
 
 @JvmRecord
 data class PacketOutSpawnEntity(
     override val entityId: Int,
     val uuid: UUID,
-    val type: KryptonEntityType<*>,
+    val type: Type,
     val x: Double,
     val y: Double,
     val z: Double,
@@ -54,46 +52,16 @@ data class PacketOutSpawnEntity(
     val velocityZ: Int
 ) : EntityPacket {
 
-    constructor(id: Int, uuid: UUID, type: KryptonEntityType<*>, location: Vec, rotation: Vector2f, headYaw: Float, data: Int, velocity: Vec) : this(
-        id,
-        uuid,
-        type,
-        location.x(),
-        location.y(),
-        location.z(),
-        rotation.x(),
-        rotation.y(),
-        headYaw,
-        data,
-        Positioning.encodeVelocity(velocity.x()),
-        Positioning.encodeVelocity(velocity.y()),
-        Positioning.encodeVelocity(velocity.z())
-    )
-
     constructor(entity: KryptonEntity) : this(entity, 0F)
 
     constructor(entity: KryptonLivingEntity) : this(entity, entity.headYaw)
 
-    private constructor(
-        entity: KryptonEntity,
-        headYaw: Float
-    ) : this(entity.id, entity.uuid, entity.type, entity.location, entity.rotation, headYaw, 0, entity.velocity)
+    private constructor(entity: KryptonEntity, headYaw: Float) : this(entity.id, entity.uuid, entity.type, entity.location.x, entity.location.y,
+        entity.location.z, entity.pitch, entity.yaw, headYaw, 0, entity.velocityX(), entity.velocityY(), entity.velocityZ())
 
-    constructor(buf: ByteBuf) : this(
-        buf.readVarInt(),
-        buf.readUUID(),
-        buf.readById(KryptonRegistries.ENTITY_TYPE)!!,
-        buf.readDouble(),
-        buf.readDouble(),
-        buf.readDouble(),
-        buf.readAngle(),
-        buf.readAngle(),
-        buf.readAngle(),
-        buf.readInt(),
-        buf.readShort().toInt(),
-        buf.readShort().toInt(),
-        buf.readShort().toInt()
-    )
+    constructor(buf: ByteBuf) : this(buf.readVarInt(), buf.readUUID(), buf.readById(KryptonRegistries.ENTITY_TYPE)!!, buf.readDouble(),
+        buf.readDouble(), buf.readDouble(), buf.readAngle(), buf.readAngle(), buf.readAngle(), buf.readInt(), buf.readShort().toInt(),
+        buf.readShort().toInt(), buf.readShort().toInt())
 
     override fun write(buf: ByteBuf) {
         buf.writeVarInt(entityId)
@@ -112,5 +80,14 @@ data class PacketOutSpawnEntity(
     }
 }
 
+@Suppress("NOTHING_TO_INLINE")
+private inline fun KryptonEntity.velocityX(): Int = Positioning.encodeVelocity(velocity.x)
+
+@Suppress("NOTHING_TO_INLINE")
+private inline fun KryptonEntity.velocityY(): Int = Positioning.encodeVelocity(velocity.y)
+
+@Suppress("NOTHING_TO_INLINE")
+private inline fun KryptonEntity.velocityZ(): Int = Positioning.encodeVelocity(velocity.z)
+
 // This purely exists to avoid annoying wrapping due to the 150 char limit
-private typealias Vec = Vector3d
+private typealias Type = KryptonEntityType<*>

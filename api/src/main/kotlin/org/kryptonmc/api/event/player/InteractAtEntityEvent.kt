@@ -9,7 +9,7 @@
 package org.kryptonmc.api.event.player
 
 import org.kryptonmc.api.entity.Hand
-import org.spongepowered.math.vector.Vector3d
+import org.kryptonmc.api.util.Vec3d
 
 /**
  * Called when a player interacts at an entity.
@@ -24,7 +24,7 @@ public interface InteractAtEntityEvent : EntityInteractEvent {
     /**
      * The position that the player clicked on the entity.
      */
-    public val clickedPosition: Vector3d
+    public val clickedPosition: Vec3d
 
     override val type: InteractEvent.Type
         get() = InteractEvent.Type.INTERACT_AT_ENTITY

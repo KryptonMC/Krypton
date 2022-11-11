@@ -19,11 +19,10 @@
 package org.kryptonmc.krypton.packet.out.play
 
 import io.netty.buffer.ByteBuf
+import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.util.readVarInt
 import org.kryptonmc.krypton.util.writeVarInt
-import org.spongepowered.math.vector.Vector2f
-import org.spongepowered.math.vector.Vector3d
 import kotlin.random.Random
 
 @JvmRecord
@@ -38,24 +37,10 @@ data class PacketOutSynchronizePlayerPosition(
     val shouldDismount: Boolean = false
 ) : Packet {
 
-    constructor(
-        position: Vector3d,
-        rotation: Vector2f,
-        flags: Int = 0,
-        teleportId: Int = Random.nextInt(RANDOM_TELEPORT_ID_UPPER_BOUND),
-        shouldDismount: Boolean = false
-    ) : this(position.x(), position.y(), position.z(), rotation.x(), rotation.y(), flags, teleportId, shouldDismount)
+    constructor(player: KryptonPlayer) : this(player.location.x, player.location.y, player.location.z, player.yaw, player.pitch)
 
-    constructor(buf: ByteBuf) : this(
-        buf.readDouble(),
-        buf.readDouble(),
-        buf.readDouble(),
-        buf.readFloat(),
-        buf.readFloat(),
-        buf.readByte().toInt(),
-        buf.readVarInt(),
-        buf.readBoolean()
-    )
+    constructor(buf: ByteBuf) : this(buf.readDouble(), buf.readDouble(), buf.readDouble(), buf.readFloat(), buf.readFloat(), buf.readByte().toInt(),
+        buf.readVarInt(), buf.readBoolean())
 
     override fun write(buf: ByteBuf) {
         buf.writeDouble(x)

@@ -41,6 +41,7 @@ import org.kryptonmc.api.service.AFKService
 import org.kryptonmc.api.service.provide
 import org.kryptonmc.api.statistic.CustomStatistics
 import org.kryptonmc.api.tags.FluidTags
+import org.kryptonmc.api.util.Vec3d
 import org.kryptonmc.api.world.GameMode
 import org.kryptonmc.krypton.commands.KryptonPermission
 import org.kryptonmc.krypton.entity.EquipmentSlots
@@ -78,14 +79,13 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutSetHealth
 import org.kryptonmc.krypton.packet.out.play.PacketOutTeleportEntity
 import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateEntityPosition
 import org.kryptonmc.krypton.statistic.KryptonStatisticsTracker
+import org.kryptonmc.krypton.util.BlockPos
 import org.kryptonmc.krypton.util.GameModes
 import org.kryptonmc.krypton.util.InteractionResult
 import org.kryptonmc.krypton.util.Positioning
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.krypton.world.block.state.KryptonBlockState
 import org.kryptonmc.nbt.CompoundTag
-import org.spongepowered.math.vector.Vector3d
-import org.spongepowered.math.vector.Vector3i
 import java.net.InetSocketAddress
 import java.time.Instant
 import java.util.UUID
@@ -220,7 +220,7 @@ class KryptonPlayer(
     }
 
     @Suppress("UnusedPrivateMember") // We will use the position later.
-    fun isBlockActionRestricted(position: Vector3i): Boolean {
+    fun isBlockActionRestricted(position: BlockPos): Boolean {
         if (gameMode != GameMode.ADVENTURE && gameMode != GameMode.SPECTATOR) return false
         if (gameMode == GameMode.SPECTATOR) return true
         if (canBuild) return false
@@ -267,8 +267,8 @@ class KryptonPlayer(
         return InteractionResult.PASS
     }
 
-    override fun spawnParticles(effect: ParticleEffect, location: Vector3d) {
-        val packet = PacketOutParticle.from(effect, location.x(), location.y(), location.z())
+    override fun spawnParticles(effect: ParticleEffect, location: Vec3d) {
+        val packet = PacketOutParticle.from(effect, location)
         when (effect.data) {
             // Send multiple packets based on the quantity
             is DirectionalParticleData, is ColorParticleData, is NoteParticleData -> repeat(effect.quantity) { session.send(packet) }
@@ -277,18 +277,18 @@ class KryptonPlayer(
         }
     }
 
-    override fun teleport(position: Vector3d) {
+    override fun teleport(position: Vec3d) {
         val oldLocation = location
         location = position
 
         if (Positioning.deltaInMoveRange(oldLocation, location)) {
-            session.send(PacketOutTeleportEntity(id, location, rotation, isOnGround))
+            session.send(PacketOutTeleportEntity(id, location, yaw, pitch, isOnGround))
         } else {
             session.send(PacketOutUpdateEntityPosition(
                 id,
-                Positioning.delta(location.x(), oldLocation.x()),
-                Positioning.delta(location.y(), oldLocation.y()),
-                Positioning.delta(location.z(), oldLocation.z()),
+                Positioning.delta(location.x, oldLocation.x),
+                Positioning.delta(location.y, oldLocation.y),
+                Positioning.delta(location.z, oldLocation.z),
                 isOnGround
             ))
         }

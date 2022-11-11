@@ -25,10 +25,10 @@ import org.kryptonmc.krypton.packet.`in`.play.PacketInPlayerAction
 import org.kryptonmc.krypton.packet.out.play.PacketOutBlockUpdate
 import org.kryptonmc.krypton.packet.out.play.PacketOutPlayerInfo
 import org.kryptonmc.krypton.packet.out.play.PacketOutPlayerInfo.Action
+import org.kryptonmc.krypton.util.BlockPos
 import org.kryptonmc.krypton.util.GameModes
 import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.world.block.state.KryptonBlockState
-import org.spongepowered.math.vector.Vector3i
 
 class PlayerGameModeSystem(private val player: KryptonPlayer) {
 
@@ -40,9 +40,9 @@ class PlayerGameModeSystem(private val player: KryptonPlayer) {
     private var currentTick = 0
     private var isDestroying = false
     private var startingDestroyProgress = 0
-    private var destroyingPosition = Vector3i.ZERO
+    private var destroyingPosition = BlockPos.ZERO
     private var hasDelayedDestroy = false
-    private var delayedDestroyingPosition = Vector3i.ZERO
+    private var delayedDestroyingPosition = BlockPos.ZERO
     private var delayedDestroyTickStart = 0
     private var lastSentState = -1
 
@@ -90,88 +90,88 @@ class PlayerGameModeSystem(private val player: KryptonPlayer) {
         handleBlockBreak(packet.position, packet.action, player.world.maximumBuildHeight)
     }
 
-    private fun handleBlockBreak(position: Vector3i, action: PacketInPlayerAction.Action, maxHeight: Int) {
-        val distanceX = player.location.x() - (position.x().toDouble() + 0.5)
-        val distanceY = player.location.y() - (position.y().toDouble() + 0.5) + 1.5
-        val distanceZ = player.location.z() - (position.z().toDouble() + 0.5)
+    private fun handleBlockBreak(pos: BlockPos, action: PacketInPlayerAction.Action, maxHeight: Int) {
+        val distanceX = player.location.x - (pos.x.toDouble() + 0.5)
+        val distanceY = player.location.y - (pos.y.toDouble() + 0.5) + 1.5
+        val distanceZ = player.location.z - (pos.z.toDouble() + 0.5)
         val distanceSquared = distanceX * distanceX + distanceY * distanceY + distanceZ * distanceZ
         if (distanceSquared > MAXIMUM_DISTANCE_FROM_BLOCK) {
-            logBlockBreakUpdate(position, false, "cannot break blocks further than 6 blocks away")
+            logBlockBreakUpdate(pos, false, "cannot break blocks further than 6 blocks away")
             return
         }
-        if (position.y() >= maxHeight) {
-            logBlockBreakUpdate(position, false, "cannot break blocks above $maxHeight")
+        if (pos.y >= maxHeight) {
+            logBlockBreakUpdate(pos, false, "cannot break blocks above $maxHeight")
             return
         }
         when (action) {
             PacketInPlayerAction.Action.START_DIGGING -> {
-                if (!player.world.canInteract(player, position.x(), position.z())) {
+                if (!player.world.canInteract(player, pos.x, pos.z)) {
                     sendSpawnProtectionMessage()
-                    logBlockBreakUpdate(position, false, "cannot break blocks in spawn protection")
+                    logBlockBreakUpdate(pos, false, "cannot break blocks in spawn protection")
                     return
                 }
                 if (player.gameMode == GameMode.CREATIVE) {
-                    destroyAndAcknowledge(position, "creative block break")
+                    destroyAndAcknowledge(pos, "creative block break")
                     return
                 }
-                if (player.isBlockActionRestricted(position)) {
-                    player.session.send(PacketOutBlockUpdate(player.world.getBlock(position), position))
-                    logBlockBreakUpdate(position, false, "cannot break blocks while in this state!")
+                if (player.isBlockActionRestricted(pos)) {
+                    player.session.send(PacketOutBlockUpdate(pos, player.world.getBlock(pos)))
+                    logBlockBreakUpdate(pos, false, "cannot break blocks while in this state!")
                     return
                 }
                 startingDestroyProgress = currentTick
                 var destroyProgress = 1F
-                val block = player.world.getBlock(position)
+                val block = player.world.getBlock(pos)
                 if (!block.isAir) {
-                    block.attack(player.world, position, player)
-                    destroyProgress = block.getDestroyProgress(player, player.world, position)
+                    block.attack(player.world, pos, player)
+                    destroyProgress = block.getDestroyProgress(player, player.world, pos)
                 }
 
                 if (!block.isAir && destroyProgress >= 1F) {
-                    destroyAndAcknowledge(position, "instant mine")
+                    destroyAndAcknowledge(pos, "instant mine")
                     return
                 }
                 if (isDestroying) {
-                    player.session.send(PacketOutBlockUpdate(player.world.getBlock(destroyingPosition), destroyingPosition))
+                    player.session.send(PacketOutBlockUpdate(destroyingPosition, player.world.getBlock(destroyingPosition)))
                     val reason = "aborted because another block is already being destroyed (client instantly mined block, we didn't like that)"
-                    logBlockBreakUpdate(position, false, reason)
+                    logBlockBreakUpdate(pos, false, reason)
                 }
                 isDestroying = true
-                destroyingPosition = position
+                destroyingPosition = pos
                 val state = (destroyProgress * 10F).toInt()
-                player.world.broadcastBlockDestroyProgress(player.id, position, state)
-                logBlockBreakUpdate(position, true, "started breaking block")
+                player.world.broadcastBlockDestroyProgress(player.id, pos, state)
+                logBlockBreakUpdate(pos, true, "started breaking block")
                 lastSentState = state
             }
             PacketInPlayerAction.Action.FINISH_DIGGING -> {
-                if (position != destroyingPosition) return
+                if (pos != destroyingPosition) return
                 val tickDifference = currentTick - startingDestroyProgress
-                val block = player.world.getBlock(position)
+                val block = player.world.getBlock(pos)
                 if (block.isAir) return
-                val destroyProgress = block.getDestroyProgress(player, player.world, position) * (tickDifference + 1).toFloat()
+                val destroyProgress = block.getDestroyProgress(player, player.world, pos) * (tickDifference + 1).toFloat()
                 if (destroyProgress >= MAXIMUM_DESTROY_PROGRESS) {
                     isDestroying = false
-                    player.world.broadcastBlockDestroyProgress(player.id, position, -1)
-                    destroyAndAcknowledge(position, "block broke")
+                    player.world.broadcastBlockDestroyProgress(player.id, pos, -1)
+                    destroyAndAcknowledge(pos, "block broke")
                     return
                 }
                 if (!hasDelayedDestroy) {
                     isDestroying = false
                     hasDelayedDestroy = true
-                    delayedDestroyingPosition = position
+                    delayedDestroyingPosition = pos
                     delayedDestroyTickStart = startingDestroyProgress
                 }
-                logBlockBreakUpdate(position, true, "stopped breaking block")
+                logBlockBreakUpdate(pos, true, "stopped breaking block")
             }
             PacketInPlayerAction.Action.CANCEL_DIGGING -> {
                 isDestroying = false
-                if (position != destroyingPosition) {
-                    LOGGER.warn("Mismatched destroy position! Expected $destroyingPosition and got $position!")
+                if (pos != destroyingPosition) {
+                    LOGGER.warn("Mismatched destroy position! Expected $destroyingPosition and got $pos!")
                     player.world.broadcastBlockDestroyProgress(player.id, destroyingPosition, -1)
-                    logBlockBreakUpdate(position, true, "aborted mismatched block breaking")
+                    logBlockBreakUpdate(pos, true, "aborted mismatched block breaking")
                 }
-                player.world.broadcastBlockDestroyProgress(player.id, position, -1)
-                logBlockBreakUpdate(position, true, "aborted block breaking")
+                player.world.broadcastBlockDestroyProgress(player.id, pos, -1)
+                logBlockBreakUpdate(pos, true, "aborted block breaking")
             }
             else -> Unit
         }
@@ -181,48 +181,48 @@ class PlayerGameModeSystem(private val player: KryptonPlayer) {
         if (player.server.config.world.sendSpawnProtectionMessage) player.sendActionBar(player.server.config.world.spawnProtectionMessage)
     }
 
-    private fun incrementDestroyProgress(block: KryptonBlockState, position: Vector3i, startTick: Int): Float {
+    private fun incrementDestroyProgress(block: KryptonBlockState, pos: BlockPos, startTick: Int): Float {
         val tickDifference = currentTick - startTick
-        val progress = block.getDestroyProgress(player, player.world, position) * (tickDifference + 1).toFloat()
+        val progress = block.getDestroyProgress(player, player.world, pos) * (tickDifference + 1).toFloat()
         val state = (progress * 10F).toInt()
         if (state != lastSentState) {
-            player.world.broadcastBlockDestroyProgress(player.id, position, state)
+            player.world.broadcastBlockDestroyProgress(player.id, pos, state)
             lastSentState = state
         }
         return progress
     }
 
-    private fun destroyAndAcknowledge(position: Vector3i, message: String) {
-        val success = destroyBlock(position)
-        logBlockBreakUpdate(position, success, message)
-        if (success) player.session.send(PacketOutBlockUpdate(player.world.getBlock(position), position))
+    private fun destroyAndAcknowledge(pos: BlockPos, message: String) {
+        val success = destroyBlock(pos)
+        logBlockBreakUpdate(pos, success, message)
+        if (success) player.session.send(PacketOutBlockUpdate(pos, player.world.getBlock(pos)))
     }
 
-    private fun destroyBlock(position: Vector3i): Boolean {
-        val state = player.world.getBlock(position)
+    private fun destroyBlock(pos: BlockPos): Boolean {
+        val state = player.world.getBlock(pos)
         val block = state.block
 
         // Check some conditions first
-        if (!player.inventory.mainHand.type.handler().canAttackBlock(player, player.world, state, position.x(), position.y(), position.z())) {
+        if (!player.inventory.mainHand.type.handler().canAttackBlock(player, player.world, state, pos)) {
             return false
         }
         if (!player.canUseGameMasterBlocks) return false // FIXME: Check if is instance of GameMasterBlock
-        if (player.isBlockActionRestricted(position)) return false
+        if (player.isBlockActionRestricted(pos)) return false
 
         // Call pre-destroy, try and remove the block, and if we changed the block, call destroy
-        block.playerWillDestroy(player.world, position, state, player)
-        val hasChanged = player.world.removeBlock(position.x(), position.y(), position.z())
-        if (hasChanged) block.destroy(player.world, position, state)
+        block.playerWillDestroy(player.world, pos, state, player)
+        val hasChanged = player.world.removeBlock(pos)
+        if (hasChanged) block.destroy(player.world, pos, state)
 
         if (player.gameMode == GameMode.CREATIVE) return true // We're done, since the bit after this is for mining, which doesn't happen in creative
         val item = player.inventory.mainHand
         val hasCorrectTool = player.hasCorrectTool(state)
-        item.type.handler().mineBlock(player, item, player.world, state, position.x(), position.y(), position.z())
-        if (hasChanged && hasCorrectTool) block.playerDestroy(player.world, player, position, state, null, item)
+        item.type.handler().mineBlock(player, item, player.world, state, pos)
+        if (hasChanged && hasCorrectTool) block.playerDestroy(player.world, player, pos, state, null, item)
         return true
     }
 
-    private fun logBlockBreakUpdate(position: Vector3i, success: Boolean, message: String) {
+    private fun logBlockBreakUpdate(position: BlockPos, success: Boolean, message: String) {
         if (success) {
             LOGGER.debug("Player ${player.profile.name} updated block break progress at $position: $message")
         } else {

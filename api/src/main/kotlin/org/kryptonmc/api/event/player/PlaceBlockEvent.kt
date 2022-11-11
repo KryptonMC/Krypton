@@ -11,7 +11,7 @@ package org.kryptonmc.api.event.player
 import org.kryptonmc.api.block.BlockState
 import org.kryptonmc.api.entity.Hand
 import org.kryptonmc.api.util.Direction
-import org.spongepowered.math.vector.Vector3i
+import org.kryptonmc.api.util.Vec3i
 
 /**
  * Called when a player places a block.
@@ -37,7 +37,7 @@ public interface PlaceBlockEvent : InteractEvent {
     /**
      * The position where the block was placed.
      */
-    public val position: Vector3i
+    public val position: Vec3i
 
     /**
      * The face of the block on which the block was placed.

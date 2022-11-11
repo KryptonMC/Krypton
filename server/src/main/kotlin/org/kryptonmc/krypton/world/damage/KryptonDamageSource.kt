@@ -19,12 +19,12 @@
 package org.kryptonmc.krypton.world.damage
 
 import net.kyori.adventure.text.Component
+import org.kryptonmc.api.util.Vec3d
 import org.kryptonmc.api.world.damage.DamageSource
 import org.kryptonmc.api.world.damage.type.DamageType
 import org.kryptonmc.krypton.entity.KryptonEntity
 import org.kryptonmc.krypton.entity.KryptonLivingEntity
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
-import org.spongepowered.math.vector.Vector3d
 
 open class KryptonDamageSource(override val type: DamageType) : DamageSource {
 
@@ -57,7 +57,7 @@ open class KryptonDamageSource(override val type: DamageType) : DamageSource {
 
     val isCreativePlayer: Boolean
         get() = entity() is KryptonPlayer && (entity() as KryptonPlayer).canInstantlyBuild
-    open val sourcePosition: Vector3d?
+    open val sourcePosition: Vec3d?
         get() = null
 
     open fun directEntity(): KryptonEntity? = entity()

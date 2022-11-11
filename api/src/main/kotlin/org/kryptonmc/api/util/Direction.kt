@@ -8,8 +8,6 @@
  */
 package org.kryptonmc.api.util
 
-import org.spongepowered.math.vector.Vector3i
-
 /**
  * Represents a three-dimensional
  * [Cardinal direction](https://en.wikipedia.org/wiki/Cardinal_direction).
@@ -27,33 +25,33 @@ public enum class Direction(
     /**
      * The normal of this direction.
      */
-    public val normal: Vector3i
+    public val normal: Vec3i
 ) {
 
-    DOWN(1, Axis.Y, AxisDirection.NEGATIVE, Vector3i(0, -1, 0)),
-    UP(0, Axis.Y, AxisDirection.POSITIVE, Vector3i(0, 1, 0)),
-    NORTH(3, Axis.Z, AxisDirection.NEGATIVE, Vector3i(0, 0, -1)),
-    SOUTH(2, Axis.Z, AxisDirection.POSITIVE, Vector3i(0, 0, 1)),
-    WEST(5, Axis.X, AxisDirection.NEGATIVE, Vector3i(-1, 0, 0)),
-    EAST(4, Axis.X, AxisDirection.POSITIVE, Vector3i(1, 0, 0));
+    DOWN(1, Axis.Y, AxisDirection.NEGATIVE, Vec3i.of(0, -1, 0)),
+    UP(0, Axis.Y, AxisDirection.POSITIVE, Vec3i.of(0, 1, 0)),
+    NORTH(3, Axis.Z, AxisDirection.NEGATIVE, Vec3i.of(0, 0, -1)),
+    SOUTH(2, Axis.Z, AxisDirection.POSITIVE, Vec3i.of(0, 0, 1)),
+    WEST(5, Axis.X, AxisDirection.NEGATIVE, Vec3i.of(-1, 0, 0)),
+    EAST(4, Axis.X, AxisDirection.POSITIVE, Vec3i.of(1, 0, 0));
 
     /**
      * The normal on the X axis.
      */
     public val normalX: Int
-        get() = normal.x()
+        get() = normal.x
 
     /**
      * The normal on the Y axis.
      */
     public val normalY: Int
-        get() = normal.y()
+        get() = normal.y
 
     /**
      * The normal on the Z axis.
      */
     public val normalZ: Int
-        get() = normal.z()
+        get() = normal.z
 
     /**
      * The opposite of this direction.

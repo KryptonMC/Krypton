@@ -40,7 +40,6 @@ dependencies {
 
     // Miscellaneous
     api(libs.brigadier)
-    api(libs.math)
 }
 
 license {

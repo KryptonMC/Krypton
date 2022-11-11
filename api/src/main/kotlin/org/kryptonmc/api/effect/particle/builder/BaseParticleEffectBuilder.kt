@@ -12,7 +12,7 @@ import net.kyori.adventure.builder.AbstractBuilder
 import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.effect.particle.ParticleDsl
 import org.kryptonmc.api.effect.particle.ParticleEffect
-import org.spongepowered.math.vector.Vector3d
+import org.kryptonmc.api.util.Vec3d
 
 /**
  * The base builder for building particle effects.
@@ -41,7 +41,7 @@ public interface BaseParticleEffectBuilder<B : BaseParticleEffectBuilder<B>> : A
      */
     @ParticleDsl
     @Contract("_ -> this", mutates = "this")
-    public fun offset(offset: Vector3d): B
+    public fun offset(offset: Vec3d): B
 
     /**
      * Sets whether the particle effect can be viewed from a further distance

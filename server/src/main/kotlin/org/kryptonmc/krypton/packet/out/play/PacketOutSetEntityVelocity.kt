@@ -19,22 +19,20 @@
 package org.kryptonmc.krypton.packet.out.play
 
 import io.netty.buffer.ByteBuf
+import org.kryptonmc.api.util.Vec3d
 import org.kryptonmc.krypton.entity.KryptonEntity
 import org.kryptonmc.krypton.packet.EntityPacket
 import org.kryptonmc.krypton.util.Positioning
 import org.kryptonmc.krypton.util.readVarInt
 import org.kryptonmc.krypton.util.writeVarInt
-import org.spongepowered.math.vector.Vector3d
 
 @JvmRecord
 data class PacketOutSetEntityVelocity(override val entityId: Int, val x: Int, val y: Int, val z: Int) : EntityPacket {
 
-    constructor(entityId: Int, velocity: Vector3d) : this(entityId, velocity.x().encode(), velocity.y().encode(), velocity.z().encode())
+    constructor(entityId: Int, velocity: Vec3d) : this(entityId, velocity.x.encode(), velocity.y.encode(), velocity.z.encode())
 
-    constructor(
-        entity: KryptonEntity,
-        velocity: Vector3d = entity.velocity
-    ) : this(entity.id, velocity.x().encode(), velocity.y().encode(), velocity.z().encode())
+    constructor(entity: KryptonEntity,
+                velocity: Vec3d = entity.velocity) : this(entity.id, velocity.x.encode(), velocity.y.encode(), velocity.z.encode())
 
     constructor(buf: ByteBuf) : this(buf.readVarInt(), buf.readShort().toInt(), buf.readShort().toInt(), buf.readShort().toInt())
 

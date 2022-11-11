@@ -19,17 +19,18 @@
 package org.kryptonmc.krypton.world.fluid
 
 import org.kryptonmc.api.util.Direction
+import org.kryptonmc.api.util.Vec3d
 import org.kryptonmc.krypton.entity.KryptonEntity
 import org.kryptonmc.krypton.shapes.Shapes
 import org.kryptonmc.krypton.shapes.VoxelShape
 import org.kryptonmc.krypton.state.StateDefinition
 import org.kryptonmc.krypton.state.property.KryptonProperties
 import org.kryptonmc.krypton.state.property.KryptonProperty
+import org.kryptonmc.krypton.util.BlockPos
 import org.kryptonmc.krypton.util.Directions
+import org.kryptonmc.krypton.util.Vec3dImpl
 import org.kryptonmc.krypton.world.BlockAccessor
 import org.kryptonmc.krypton.world.material.Materials
-import org.spongepowered.math.vector.Vector3d
-import org.spongepowered.math.vector.Vector3i
 import kotlin.math.min
 
 abstract class FlowingFluid : KryptonFluid() {
@@ -47,23 +48,21 @@ abstract class FlowingFluid : KryptonFluid() {
         builder.add(FALLING)
     }
 
-    override fun getFlow(world: BlockAccessor, x: Int, y: Int, z: Int, state: KryptonFluidState): Vector3d {
+    override fun getFlow(world: BlockAccessor, pos: BlockPos, state: KryptonFluidState): Vec3d {
         var flowX = 0.0
         var flowZ = 0.0
-        var tempX: Int
-        var tempY: Int
-        var tempZ: Int
+        val offsetPos = BlockPos.Mutable()
+
         Directions.Plane.HORIZONTAL.forEach {
-            tempX = x + it.normalX
-            tempY = y + it.normalY
-            tempZ = z + it.normalZ
-            val fluid = world.getFluid(tempX, tempY, tempZ)
+            offsetPos.setWithOffset(pos, it)
+            val fluid = world.getFluid(offsetPos)
             if (!affectsFlow(fluid)) return@forEach
+
             var ownHeight = fluid.ownHeight
             var height = 0F
             if (ownHeight == 0F) {
-                if (!world.getBlock(tempX, tempY, tempZ).material.blocksMotion) {
-                    val below = world.getFluid(tempX, tempY - 1, tempZ)
+                if (!world.getBlock(offsetPos).material.blocksMotion) {
+                    val below = world.getFluid(offsetPos.below())
                     if (affectsFlow(below)) {
                         ownHeight = below.ownHeight
                         if (ownHeight > 0F) height = state.ownHeight - (ownHeight - OWN_HEIGHT_OFFSET)
@@ -77,13 +76,12 @@ abstract class FlowingFluid : KryptonFluid() {
                 flowZ += (it.normalZ * height).toDouble()
             }
         }
-        var flow = Vector3d(flowX, 0.0, flowZ)
+
+        var flow: Vec3d = Vec3dImpl(flowX, 0.0, flowZ)
         if (state.require(FALLING)) {
             for (direction in Directions.Plane.HORIZONTAL.iterator()) {
-                tempX = x + direction.normalX
-                tempY = y + direction.normalY
-                tempZ = z + direction.normalZ
-                if (isSolidFace(world, tempX, tempY, tempZ, direction) || isSolidFace(world, tempX, tempY + 1, tempZ, direction)) {
+                offsetPos.setWithOffset(pos, direction)
+                if (isSolidFace(world, offsetPos, direction) || isSolidFace(world, offsetPos.above(), direction)) {
                     flow = flow.normalize().add(0.0, -6.0, 0.0)
                     break
                 }
@@ -92,25 +90,25 @@ abstract class FlowingFluid : KryptonFluid() {
         return flow.normalize()
     }
 
-    override fun getHeight(state: KryptonFluidState, world: BlockAccessor, x: Int, y: Int, z: Int): Float =
-        if (hasSameAbove(state, world, x, y, z)) 1F else state.ownHeight
+    override fun getHeight(state: KryptonFluidState, world: BlockAccessor, pos: BlockPos): Float =
+        if (hasSameAbove(state, world, pos)) 1F else state.ownHeight
 
     override fun getOwnHeight(state: KryptonFluidState): Float = state.level / 9F
 
-    override fun getShape(state: KryptonFluidState, world: BlockAccessor, x: Int, y: Int, z: Int): VoxelShape {
-        if (state.level == 9 && hasSameAbove(state, world, x, y, z)) return Shapes.block()
-        return shapes.computeIfAbsent(state) { Shapes.box(0.0, 0.0, 0.0, 1.0, it.getHeight(world, x, y, z).toDouble(), 1.0) }
+    override fun getShape(state: KryptonFluidState, world: BlockAccessor, pos: BlockPos): VoxelShape {
+        if (state.level == 9 && hasSameAbove(state, world, pos)) return Shapes.block()
+        return shapes.computeIfAbsent(state) { Shapes.box(0.0, 0.0, 0.0, 1.0, it.getHeight(world, pos).toDouble(), 1.0) }
     }
 
     private fun affectsFlow(state: KryptonFluidState): Boolean = state.isEmpty || state.fluid.isSame(this)
 
-    protected fun isSolidFace(world: BlockAccessor, x: Int, y: Int, z: Int, side: Direction): Boolean {
-        val block = world.getBlock(x, y, z)
-        val fluid = world.getFluid(x, y, z)
+    protected fun isSolidFace(world: BlockAccessor, pos: BlockPos, side: Direction): Boolean {
+        val block = world.getBlock(pos)
+        val fluid = world.getFluid(pos)
         if (fluid.fluid.isSame(this)) return false
         if (side == Direction.UP) return true
         if (block.material == Materials.ICE) return false
-        return block.isFaceSturdy(world, Vector3i(x, y, z), side)
+        return block.isFaceSturdy(world, pos, side)
     }
 
     companion object {
@@ -130,7 +128,7 @@ abstract class FlowingFluid : KryptonFluid() {
         }
 
         @JvmStatic
-        private fun hasSameAbove(state: KryptonFluidState, world: BlockAccessor, x: Int, y: Int, z: Int): Boolean =
-            state.fluid.isSame(world.getFluid(x, y + 1, z).fluid)
+        private fun hasSameAbove(state: KryptonFluidState, world: BlockAccessor, pos: BlockPos): Boolean =
+            state.fluid.isSame(world.getFluid(pos.above()).fluid)
     }
 }

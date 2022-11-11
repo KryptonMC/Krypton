@@ -33,7 +33,6 @@ import org.kryptonmc.krypton.entity.KryptonEntity
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.util.GameModes
 import org.kryptonmc.krypton.util.ensureAllOfType
-import org.spongepowered.math.vector.Vector2f
 
 @JvmRecord
 data class EntityQuery(val type: Selector, private val args: List<EntityArgument>, private val playerName: String) {
@@ -135,8 +134,8 @@ data class EntityQuery(val type: Selector, private val args: List<EntityArgument
                 "level" -> notImplemented("level")
                 "gamemode" -> entities = applyGameModeArgument(entities, value, exclude)
                 "name" -> entities = applyNameArgument(entities, value, exclude)
-                "x_rotation" -> entities = applyRotationArgument(entities, value, Vector2f::x)
-                "y_rotation" -> entities = applyRotationArgument(entities, value, Vector2f::y)
+                "x_rotation" -> entities = applyRotationArgument(entities, value, KryptonEntity::yaw)
+                "y_rotation" -> entities = applyRotationArgument(entities, value, KryptonEntity::pitch)
                 "type" -> notImplemented("type")
                 "nbt" -> notImplemented("nbt")
                 "advancements" -> notImplemented("advancements")
@@ -194,16 +193,16 @@ data class EntityQuery(val type: Selector, private val args: List<EntityArgument
     private inline fun applyRotationArgument(
         entities: Sequence<KryptonEntity>,
         value: Any,
-        crossinline valueGetter: (Vector2f) -> Float
+        crossinline valueGetter: (KryptonEntity) -> Float
     ): Sequence<KryptonEntity> {
         checkIntOrRange(value.toString())
         if (value.toString().startsWith("..")) {
             val pitch = value.toString().replace("..", "").toInt()
-            return entities.filter { valueGetter(it.rotation) <= pitch }
+            return entities.filter { valueGetter(it) <= pitch }
         }
-        if (!value.toString().contains("..")) return entities.filter { valueGetter(it.rotation).toInt() == value.toString().toInt() }
+        if (!value.toString().contains("..")) return entities.filter { valueGetter(it).toInt() == value.toString().toInt() }
         val range = value.toString().toIntRange()!!
-        return entities.filter { valueGetter(it.rotation) >= range.first && valueGetter(it.rotation) <= range.last }
+        return entities.filter { valueGetter(it) >= range.first && valueGetter(it) <= range.last }
     }
 
     private fun applyDifference(difference: Int, value: Any, blockCoordinate: Int): Boolean {

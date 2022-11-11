@@ -9,7 +9,7 @@
 package org.kryptonmc.api.effect.particle.data
 
 import org.jetbrains.annotations.Contract
-import org.spongepowered.math.vector.Vector3d
+import org.kryptonmc.api.util.Vec3d
 import javax.annotation.concurrent.Immutable
 
 /**
@@ -23,7 +23,7 @@ public interface VibrationParticleData : ParticleData {
      * The ending position of the vibration.
      */
     @get:JvmName("destination")
-    public val destination: Vector3d
+    public val destination: Vec3d
 
     /**
      * The time, in ticks, it will take for the vibration to vibrate from its
@@ -44,6 +44,6 @@ public interface VibrationParticleData : ParticleData {
          */
         @JvmStatic
         @Contract("_ -> new", pure = true)
-        public fun of(destination: Vector3d, ticks: Int): VibrationParticleData = ParticleData.factory().vibration(destination, ticks)
+        public fun of(destination: Vec3d, ticks: Int): VibrationParticleData = ParticleData.factory().vibration(destination, ticks)
     }
 }

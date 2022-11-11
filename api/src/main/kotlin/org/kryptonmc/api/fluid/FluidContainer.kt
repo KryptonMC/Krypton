@@ -8,7 +8,7 @@
  */
 package org.kryptonmc.api.fluid
 
-import org.spongepowered.math.vector.Vector3i
+import org.kryptonmc.api.util.Vec3i
 
 /**
  * Something that contains fluids.
@@ -34,5 +34,5 @@ public interface FluidContainer {
      * @param position the position
      * @return the fluid at the given position
      */
-    public fun getFluid(position: Vector3i): FluidState
+    public fun getFluid(position: Vec3i): FluidState
 }

@@ -24,6 +24,7 @@ import net.kyori.adventure.pointer.Pointers
 import net.kyori.adventure.sound.Sound
 import org.kryptonmc.api.effect.sound.SoundEvent
 import org.kryptonmc.api.util.BoundingBox
+import org.kryptonmc.api.util.Vec3d
 import org.kryptonmc.api.world.damage.type.DamageTypes
 import org.kryptonmc.krypton.entity.components.BaseEntity
 import org.kryptonmc.krypton.entity.components.SerializableEntity
@@ -37,10 +38,9 @@ import org.kryptonmc.krypton.network.chat.ChatSender
 import org.kryptonmc.krypton.packet.out.play.PacketOutSetEntityMetadata
 import org.kryptonmc.krypton.packet.out.play.PacketOutSetEntityVelocity
 import org.kryptonmc.krypton.util.Maths
+import org.kryptonmc.krypton.util.Vec3dImpl
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.krypton.world.damage.KryptonDamageSource
-import org.spongepowered.math.vector.Vector2f
-import org.spongepowered.math.vector.Vector3d
 import java.util.UUID
 import java.util.concurrent.atomic.AtomicInteger
 import kotlin.random.Random
@@ -64,9 +64,10 @@ abstract class KryptonEntity(final override var world: KryptonWorld) : BaseEntit
     final override var isRemoved: Boolean = false
         private set
     private var wasDamaged = false
-    final override var location: Vector3d = Vector3d.ZERO
-    final override var rotation: Vector2f = Vector2f.ZERO
-    final override var velocity: Vector3d = Vector3d.ZERO
+    final override var location: Vec3d = Vec3dImpl.ZERO
+    final override var yaw: Float = 0F
+    final override var pitch: Float = 0F
+    final override var velocity: Vec3d = Vec3dImpl.ZERO
     final override var boundingBox: BoundingBox = BoundingBox.zero()
     final override var isOnGround: Boolean = true
     final override var ticksExisted: Int = 0
@@ -82,7 +83,7 @@ abstract class KryptonEntity(final override var world: KryptonWorld) : BaseEntit
 
     fun playSound(event: SoundEvent, volume: Float, pitch: Float) {
         if (isSilent) return
-        world.playSound(location.x(), location.y(), location.z(), event, soundSource(), volume, pitch)
+        world.playSound(location.x, location.y, location.z, event, soundSource(), volume, pitch)
     }
 
     open fun tick() {

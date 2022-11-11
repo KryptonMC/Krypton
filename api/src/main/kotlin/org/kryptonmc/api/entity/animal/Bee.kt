@@ -8,7 +8,7 @@
  */
 package org.kryptonmc.api.entity.animal
 
-import org.spongepowered.math.vector.Vector3i
+import org.kryptonmc.api.util.Vec3i
 
 /**
  * A bee.
@@ -41,10 +41,10 @@ public interface Bee : Animal {
     /**
      * The location of this bee's hive.
      */
-    public var hive: Vector3i?
+    public var hive: Vec3i?
 
     /**
      * The location of this bee's flower.
      */
-    public var flower: Vector3i?
+    public var flower: Vec3i?
 }

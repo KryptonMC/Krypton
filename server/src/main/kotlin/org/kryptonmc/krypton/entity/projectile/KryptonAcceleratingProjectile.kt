@@ -19,15 +19,16 @@
 package org.kryptonmc.krypton.entity.projectile
 
 import org.kryptonmc.api.entity.projectile.AcceleratingProjectile
+import org.kryptonmc.api.util.Vec3d
 import org.kryptonmc.krypton.entity.serializer.EntitySerializer
 import org.kryptonmc.krypton.entity.serializer.projectile.AcceleratingProjectileSerializer
+import org.kryptonmc.krypton.util.Vec3dImpl
 import org.kryptonmc.krypton.world.KryptonWorld
-import org.spongepowered.math.vector.Vector3d
 
 abstract class KryptonAcceleratingProjectile(world: KryptonWorld) : KryptonProjectile(world), AcceleratingProjectile {
 
     override val serializer: EntitySerializer<out KryptonAcceleratingProjectile>
         get() = AcceleratingProjectileSerializer
 
-    final override var acceleration: Vector3d = Vector3d.ZERO
+    final override var acceleration: Vec3d = Vec3dImpl.ZERO
 }

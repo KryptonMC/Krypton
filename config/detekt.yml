@@ -132,8 +132,6 @@ style:
     maxDestructuringEntries: 3
   EqualsOnSignatureLine:
     active: true
-  ExpressionBodySyntax:
-    active: true
   ForbiddenComment:
     active: false # TODO: Possibly turn this on when we go stable
   ForbiddenVoid:
