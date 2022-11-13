@@ -21,9 +21,9 @@ package org.kryptonmc.krypton.packet.out.play
 import io.netty.buffer.ByteBuf
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.packet.Packet
+import org.kryptonmc.krypton.util.random.RandomSource
 import org.kryptonmc.krypton.util.readVarInt
 import org.kryptonmc.krypton.util.writeVarInt
-import kotlin.random.Random
 
 @JvmRecord
 data class PacketOutSynchronizePlayerPosition(
@@ -33,7 +33,7 @@ data class PacketOutSynchronizePlayerPosition(
     val yaw: Float,
     val pitch: Float,
     val flags: Int = 0,
-    val teleportId: Int = Random.nextInt(RANDOM_TELEPORT_ID_UPPER_BOUND),
+    val teleportId: Int = RANDOM.nextInt(RANDOM_TELEPORT_ID_UPPER_BOUND),
     val shouldDismount: Boolean = false
 ) : Packet {
 
@@ -55,6 +55,7 @@ data class PacketOutSynchronizePlayerPosition(
 
     companion object {
 
+        private val RANDOM = RandomSource.createThreadSafe()
         private const val RANDOM_TELEPORT_ID_UPPER_BOUND = 1000 // A number I chose because it seems sensible enough
     }
 }

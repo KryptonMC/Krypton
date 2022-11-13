@@ -18,9 +18,9 @@
  */
 package org.kryptonmc.krypton.world.generation
 
+import org.kryptonmc.krypton.util.random.RandomSource
 import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.compound
-import kotlin.random.Random
 
 @JvmRecord
 data class WorldGenerationSettings(val seed: Long, val generateFeatures: Boolean, val bonusChest: Boolean, val dimensions: CompoundTag) {
@@ -34,9 +34,11 @@ data class WorldGenerationSettings(val seed: Long, val generateFeatures: Boolean
 
     companion object {
 
+        private val RANDOM = RandomSource.createThreadLocal()
+
         @JvmStatic
         fun parse(data: CompoundTag): WorldGenerationSettings = WorldGenerationSettings(
-            data.getLong("seed", Random.nextLong()),
+            data.getLong("seed", RANDOM.nextLong()),
             data.getBoolean("generate_features"),
             data.getBoolean("bonus_chest"),
             data.getCompound("dimensions")

@@ -42,7 +42,6 @@ import org.kryptonmc.krypton.entity.serializer.LivingEntitySerializer
 import org.kryptonmc.krypton.item.KryptonItemStack
 import org.kryptonmc.krypton.util.BlockPos
 import org.kryptonmc.krypton.world.KryptonWorld
-import kotlin.random.Random
 
 @Suppress("LeakingThis")
 abstract class KryptonLivingEntity(world: KryptonWorld) : KryptonEntity(world), LivingEntity, KryptonEquipable {
@@ -91,7 +90,7 @@ abstract class KryptonLivingEntity(world: KryptonWorld) : KryptonEntity(world), 
     open val voicePitch: Float
         get() {
             val babyFactor = if (isBaby) 1.5F else 1F
-            return (Random.nextFloat() - Random.nextFloat()) * 0.2F + babyFactor
+            return (random.nextFloat() - random.nextFloat()) * 0.2F + babyFactor
         }
     val killCredit: KryptonLivingEntity?
         get() {

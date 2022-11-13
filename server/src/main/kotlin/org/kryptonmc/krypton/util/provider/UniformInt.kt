@@ -19,16 +19,16 @@
 package org.kryptonmc.krypton.util.provider
 
 import org.kryptonmc.krypton.util.Maths
+import org.kryptonmc.krypton.util.random.RandomSource
 import org.kryptonmc.serialization.Codec
 import org.kryptonmc.serialization.codecs.RecordCodecBuilder
-import kotlin.random.Random
 
 class UniformInt(override val minimumValue: Int, override val maximumValue: Int) : IntProvider() {
 
     override val type: IntProviderType<*>
         get() = IntProviderTypes.UNIFORM
 
-    override fun sample(random: Random): Int = Maths.randomBetween(random, minimumValue, maximumValue)
+    override fun sample(random: RandomSource): Int = Maths.randomBetween(random, minimumValue, maximumValue)
 
     override fun toString(): String = "[$minimumValue-$maximumValue]"
 

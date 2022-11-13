@@ -29,7 +29,6 @@ import org.kryptonmc.krypton.entity.attribute.KryptonAttributeTypes
 import org.kryptonmc.krypton.entity.serializer.EntitySerializer
 import org.kryptonmc.krypton.entity.serializer.animal.ChickenSerializer
 import org.kryptonmc.krypton.world.KryptonWorld
-import kotlin.random.Random
 
 class KryptonChicken(world: KryptonWorld) : KryptonAnimal(world), Chicken {
 
@@ -38,7 +37,7 @@ class KryptonChicken(world: KryptonWorld) : KryptonAnimal(world), Chicken {
     override val serializer: EntitySerializer<KryptonChicken>
         get() = ChickenSerializer
 
-    override var eggCooldownTime: Int = Random.nextInt(FIVE_MINUTES_TICKS) + FIVE_MINUTES_TICKS
+    override var eggCooldownTime: Int = random.nextInt(FIVE_MINUTES_TICKS) + FIVE_MINUTES_TICKS
     override var isJockey: Boolean = false
 
     override fun isFood(item: ItemStack): Boolean = FOOD_ITEMS.contains(item.type)

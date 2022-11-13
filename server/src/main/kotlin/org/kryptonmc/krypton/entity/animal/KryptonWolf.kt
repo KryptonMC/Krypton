@@ -35,7 +35,6 @@ import org.kryptonmc.krypton.util.DyeColors
 import org.kryptonmc.krypton.util.provider.UniformInt
 import org.kryptonmc.krypton.world.KryptonWorld
 import java.util.UUID
-import kotlin.random.Random
 
 class KryptonWolf(world: KryptonWorld) : KryptonTamable(world), Wolf, Neutral {
 
@@ -87,7 +86,7 @@ class KryptonWolf(world: KryptonWorld) : KryptonTamable(world), Wolf, Neutral {
     }
 
     override fun startAngerTimer() {
-        remainingAngerTime = PERSISTENT_ANGER_TIME.sample(Random)
+        remainingAngerTime = PERSISTENT_ANGER_TIME.sample(random)
     }
 
     // TODO: Check if item type is meat

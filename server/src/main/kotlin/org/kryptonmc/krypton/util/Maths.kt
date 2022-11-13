@@ -19,12 +19,12 @@
 package org.kryptonmc.krypton.util
 
 import com.google.common.math.IntMath
+import org.kryptonmc.krypton.util.random.RandomSource
 import org.kryptonmc.krypton.world.chunk.ChunkPos
 import java.util.UUID
 import java.util.function.IntPredicate
 import kotlin.math.sin
 import kotlin.math.sqrt
-import kotlin.random.Random
 
 object Maths {
 
@@ -213,23 +213,23 @@ object Maths {
     fun lerp(delta: Double, start: Double, end: Double): Double = start + delta * (end - start)
 
     @JvmStatic
-    fun nextInt(random: Random, low: Int, high: Int): Int {
+    fun nextInt(random: RandomSource, low: Int, high: Int): Int {
         if (low >= high) return low
         return random.nextInt(high - low + 1) + low
     }
 
     @JvmStatic
-    fun nextFloat(random: Random, low: Float, high: Float): Float {
+    fun nextFloat(random: RandomSource, low: Float, high: Float): Float {
         if (low >= high) return low
         return random.nextFloat() * (high - low) + low
     }
 
     @JvmStatic
-    fun randomBetween(random: Random, min: Int, max: Int): Int = random.nextInt(max - min + 1) + min
+    fun randomBetween(random: RandomSource, min: Int, max: Int): Int = random.nextInt(max - min + 1) + min
 
     @JvmStatic
     @Suppress("MagicNumber")
-    fun createInsecureUUID(random: Random): UUID {
+    fun createInsecureUUID(random: RandomSource): UUID {
         val most = random.nextLong() and -61441L or 16384L
         val least = random.nextLong() and 4611686018427387903L or Long.MIN_VALUE
         return UUID(most, least)

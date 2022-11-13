@@ -39,11 +39,11 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutSetEntityMetadata
 import org.kryptonmc.krypton.packet.out.play.PacketOutSetEntityVelocity
 import org.kryptonmc.krypton.util.Maths
 import org.kryptonmc.krypton.util.Vec3dImpl
+import org.kryptonmc.krypton.util.random.RandomSource
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.krypton.world.damage.KryptonDamageSource
 import java.util.UUID
 import java.util.concurrent.atomic.AtomicInteger
-import kotlin.random.Random
 
 @Suppress("LeakingThis")
 abstract class KryptonEntity(final override var world: KryptonWorld) : BaseEntity, SerializableEntity {
@@ -51,8 +51,9 @@ abstract class KryptonEntity(final override var world: KryptonWorld) : BaseEntit
     override val serializer: EntitySerializer<out KryptonEntity>
         get() = BaseEntitySerializer
 
+    protected val random = RandomSource.create()
     final override val id: Int = NEXT_ENTITY_ID.incrementAndGet()
-    override var uuid: UUID = Maths.createInsecureUUID(Random)
+    override var uuid: UUID = Maths.createInsecureUUID(random)
 
     final override val data: MetadataHolder = MetadataHolder(this)
     final override val vehicleSystem: EntityVehicleSystem = EntityVehicleSystem(this)

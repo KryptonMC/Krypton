@@ -32,7 +32,6 @@ import org.kryptonmc.krypton.entity.serializer.animal.PolarBearSerializer
 import org.kryptonmc.krypton.util.provider.UniformInt
 import org.kryptonmc.krypton.world.KryptonWorld
 import java.util.UUID
-import kotlin.random.Random
 
 class KryptonPolarBear(world: KryptonWorld) : KryptonAnimal(world), PolarBear, Neutral {
 
@@ -54,7 +53,7 @@ class KryptonPolarBear(world: KryptonWorld) : KryptonAnimal(world), PolarBear, N
     }
 
     override fun startAngerTimer() {
-        remainingAngerTime = PERSISTENT_ANGER_TIME.sample(Random)
+        remainingAngerTime = PERSISTENT_ANGER_TIME.sample(random)
     }
 
     override fun isFood(item: ItemStack): Boolean = false

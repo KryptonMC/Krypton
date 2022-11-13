@@ -27,8 +27,8 @@ import org.kryptonmc.krypton.entity.metadata.MetadataKey
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.util.Maths
 import org.kryptonmc.krypton.util.Vec3dImpl
+import org.kryptonmc.krypton.util.random.RandomSource
 import org.kryptonmc.krypton.world.KryptonWorld
-import kotlin.random.Random
 
 class KryptonFishingHook(world: KryptonWorld) : KryptonProjectile(world), FishingHook {
 
@@ -56,7 +56,7 @@ class KryptonFishingHook(world: KryptonWorld) : KryptonProjectile(world), Fishin
 
         if (key === MetadataKeys.FishingHook.BITING) {
             isBiting = data.get(MetadataKeys.FishingHook.BITING)
-            if (isBiting) velocity = randomizeBitingVelocity(velocity)
+            if (isBiting) velocity = randomizeBitingVelocity(random, velocity)
         }
 
         super.onDataUpdate(key)
@@ -68,9 +68,9 @@ class KryptonFishingHook(world: KryptonWorld) : KryptonProjectile(world), Fishin
         private const val BITING_VELOCITY_MULTIPLIER = -0.4F
 
         @JvmStatic
-        private fun randomizeBitingVelocity(existing: Vec3d): Vec3d {
+        private fun randomizeBitingVelocity(random: RandomSource, existing: Vec3d): Vec3d {
             // This always comes out to be a number between -0.4 and -0.24. These numbers are from vanilla.
-            val randomY = BITING_VELOCITY_MULTIPLIER * Maths.nextFloat(Random, BITING_VELOCITY_RANDOMNESS_MIN, 1F)
+            val randomY = BITING_VELOCITY_MULTIPLIER * Maths.nextFloat(random, BITING_VELOCITY_RANDOMNESS_MIN, 1F)
             return Vec3dImpl(existing.x, randomY.toDouble(), existing.z)
         }
     }

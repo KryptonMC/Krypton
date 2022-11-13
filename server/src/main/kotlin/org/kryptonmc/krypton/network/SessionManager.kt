@@ -26,15 +26,16 @@ import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.packet.out.status.ServerStatus
 import org.kryptonmc.krypton.util.Maths
 import org.kryptonmc.krypton.util.frame
+import org.kryptonmc.krypton.util.random.RandomSource
 import java.util.concurrent.ConcurrentHashMap
 import java.util.function.Predicate
 import kotlin.math.min
-import kotlin.random.Random
 
 class SessionManager(private val server: KryptonServer) {
 
     private val sessions = ConcurrentHashMap.newKeySet<SessionHandler>()
 
+    private val random = RandomSource.create()
     val status: ServerStatus = ServerStatus(server.motd, ServerStatus.Players(server.maxPlayers, server.playerManager.players.size), null)
     private var statusInvalidated = false
     private var statusInvalidatedTime = 0L
@@ -71,7 +72,7 @@ class SessionManager(private val server: KryptonServer) {
             val playersOnline = server.playerManager.players.size
             status.players.online = playersOnline
             val sampleSize = min(playersOnline, MAXIMUM_SAMPLED_PLAYERS)
-            val playerOffset = Maths.nextInt(Random, 0, playersOnline - sampleSize)
+            val playerOffset = Maths.nextInt(random, 0, playersOnline - sampleSize)
             val sample = Array(sampleSize) { server.playerManager.players.get(it + playerOffset).profile }.apply { shuffle() }
             status.players.sample = sample
         }
