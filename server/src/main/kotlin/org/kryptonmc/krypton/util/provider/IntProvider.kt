@@ -19,11 +19,11 @@
 package org.kryptonmc.krypton.util.provider
 
 import org.kryptonmc.krypton.registry.KryptonRegistries
+import org.kryptonmc.krypton.util.random.RandomSource
 import org.kryptonmc.serialization.Codec
 import org.kryptonmc.serialization.DataResult
 import org.kryptonmc.util.Either
 import java.util.function.Function
-import kotlin.random.Random
 
 @Suppress("UnnecessaryAbstractClass")
 abstract class IntProvider {
@@ -32,7 +32,7 @@ abstract class IntProvider {
     abstract val minimumValue: Int
     abstract val maximumValue: Int
 
-    abstract fun sample(random: Random): Int
+    abstract fun sample(random: RandomSource): Int
 
     companion object {
 

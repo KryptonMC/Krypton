@@ -30,6 +30,7 @@ import org.kryptonmc.krypton.item.KryptonItemStack
 import org.kryptonmc.krypton.item.downcast
 import org.kryptonmc.krypton.registry.KryptonRegistries
 import org.kryptonmc.krypton.util.Bootstrap
+import org.kryptonmc.krypton.util.random.RandomSource
 import org.kryptonmc.krypton.util.readAllAvailableBytes
 import org.kryptonmc.krypton.util.readAvailableBytes
 import org.kryptonmc.krypton.util.readById
@@ -50,7 +51,6 @@ import org.kryptonmc.krypton.util.writeVarLong
 import java.io.IOException
 import java.util.UUID
 import kotlin.math.min
-import kotlin.random.Random
 import kotlin.test.Test
 import kotlin.test.assertContentEquals
 import kotlin.test.assertEquals
@@ -58,6 +58,8 @@ import kotlin.test.assertSame
 import kotlin.test.assertTrue
 
 class ByteBufTests {
+
+    private val random = RandomSource.createThreadLocal()
 
     @Test
     fun `test var int reading and writing`() {
@@ -147,7 +149,7 @@ class ByteBufTests {
     fun `test array writing`() {
         val buffer = Unpooled.buffer()
         // Byte array
-        val bytes = ByteArray(32) { Random.nextInt(Byte.MAX_VALUE.toInt()).toByte() }
+        val bytes = ByteArray(32) { random.nextInt(Byte.MAX_VALUE.toInt()).toByte() }
         buffer.writeVarIntByteArray(bytes)
         assertEquals(32, buffer.readVarInt())
         for (i in 0 until 32) {
@@ -155,7 +157,7 @@ class ByteBufTests {
         }
         buffer.clear()
         // Long array
-        val longs = LongArray(256) { Random.nextLong() }
+        val longs = LongArray(256) { random.nextLong() }
         buffer.writeLongArray(longs)
         assertEquals(256, buffer.readVarInt())
         for (i in 0 until 256) {
@@ -166,7 +168,7 @@ class ByteBufTests {
     @Test
     fun `test byte array reading`() {
         val buffer = Unpooled.buffer()
-        val bytes = ByteArray(32) { Random.nextInt(Byte.MAX_VALUE.toInt()).toByte() }
+        val bytes = ByteArray(32) { random.nextInt(Byte.MAX_VALUE.toInt()).toByte() }
         buffer.writeBytes(bytes)
         assertContentEquals(bytes, buffer.readAllAvailableBytes())
         buffer.clear()

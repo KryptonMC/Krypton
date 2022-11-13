@@ -18,6 +18,7 @@
  */
 package org.kryptonmc.krypton.network.handlers
 
+import com.google.common.primitives.Ints
 import com.velocitypowered.natives.util.Natives
 import io.netty.buffer.Unpooled
 import kotlinx.collections.immutable.persistentListOf
@@ -60,11 +61,10 @@ import org.kryptonmc.krypton.util.crypto.Encryption
 import org.kryptonmc.krypton.util.crypto.InsecurePublicKeyException
 import org.kryptonmc.krypton.util.crypto.SignatureValidator
 import org.kryptonmc.krypton.util.logger
+import org.kryptonmc.krypton.util.random.RandomSource
 import org.kryptonmc.krypton.util.readVarInt
 import java.net.InetSocketAddress
 import java.net.SocketAddress
-import java.security.SecureRandom
-import java.util.concurrent.ThreadLocalRandom
 import javax.crypto.SecretKey
 import javax.crypto.spec.SecretKeySpec
 
@@ -85,7 +85,7 @@ class LoginHandler(
 ) : PacketHandler {
 
     // Doesn't really matter what this is, just needs to be unique.
-    private val velocityMessageId = ThreadLocalRandom.current().nextInt(Short.MAX_VALUE.toInt())
+    private val velocityMessageId = RANDOM.nextInt(Short.MAX_VALUE.toInt())
     private val forwardingSecret = server.config.proxy.secret.encodeToByteArray()
 
     private var name = "" // We cache the name here to avoid late initialization of the KryptonPlayer object.
@@ -344,7 +344,7 @@ class LoginHandler(
     companion object {
 
         private const val VELOCITY_CHANNEL_ID = "velocity:player_info"
-        private val RANDOM = SecureRandom()
+        private val RANDOM = RandomSource.createThreadSafe()
         private val LOGGER = logger<LoginHandler>()
 
         private val MISSING_PUBLIC_KEY = Component.translatable("multiplayer.disconnect.missing_public_key")
@@ -352,11 +352,7 @@ class LoginHandler(
         private val INVALID_PUBLIC_KEY = Component.translatable("multiplayer.disconnect.invalid_public_key")
 
         @JvmStatic
-        private fun generateVerifyToken(): ByteArray {
-            val bytes = ByteArray(4)
-            RANDOM.nextBytes(bytes)
-            return bytes
-        }
+        private fun generateVerifyToken(): ByteArray = Ints.toByteArray(RANDOM.nextInt())
 
         @JvmStatic
         private fun validatePublicKey(keyData: PlayerPublicKey.Data?, requireValid: Boolean): PlayerPublicKey? {

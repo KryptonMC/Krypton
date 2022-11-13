@@ -30,9 +30,9 @@ import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.entity.serializer.EntitySerializer
 import org.kryptonmc.krypton.entity.serializer.aquatic.DolphinSerializer
 import org.kryptonmc.krypton.util.BlockPos
+import org.kryptonmc.krypton.util.random.RandomSource
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.krypton.world.damage.KryptonDamageSource
-import kotlin.random.Random
 
 class KryptonDolphin(world: KryptonWorld) : KryptonAquaticAnimal(world), Dolphin {
 
@@ -84,8 +84,8 @@ class KryptonDolphin(world: KryptonWorld) : KryptonAquaticAnimal(world), Dolphin
         // When the moisture reaches 0, the dolphin takes one damage every tick from dry out.
         if (skinMoisture <= 0) damage(KryptonDamageSource(DamageTypes.DRY_OUT), 1F)
         if (isOnGround) {
-            velocity = velocity.add(randomVelocityModifier(), GROUND_Y_VELOCITY_INCREASE, randomVelocityModifier())
-            pitch = Random.nextFloat() * MAX_ANGLE
+            velocity = velocity.add(randomVelocityModifier(random), GROUND_Y_VELOCITY_INCREASE, randomVelocityModifier(random))
+            pitch = random.nextFloat() * MAX_ANGLE
             isOnGround = false
         }
     }
@@ -123,6 +123,6 @@ class KryptonDolphin(world: KryptonWorld) : KryptonAquaticAnimal(world), Dolphin
         // taking 1 away produces a value between -1 and 1, then multiplying by 0.2 produces a value between -0.2 and 0.2
         @JvmStatic
         @Suppress("MagicNumber") // Not magic if it's explained in a comment
-        private fun randomVelocityModifier(): Double = ((Random.nextFloat() * 2F - 1F) * 0.2F).toDouble()
+        private fun randomVelocityModifier(random: RandomSource): Double = ((random.nextFloat() * 2F - 1F) * 0.2F).toDouble()
     }
 }

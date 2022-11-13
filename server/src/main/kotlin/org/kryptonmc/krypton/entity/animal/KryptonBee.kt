@@ -35,7 +35,6 @@ import org.kryptonmc.krypton.item.downcast
 import org.kryptonmc.krypton.util.provider.UniformInt
 import org.kryptonmc.krypton.world.KryptonWorld
 import java.util.UUID
-import kotlin.random.Random
 
 class KryptonBee(world: KryptonWorld) : KryptonAnimal(world), Bee, Neutral {
 
@@ -77,7 +76,7 @@ class KryptonBee(world: KryptonWorld) : KryptonAnimal(world), Bee, Neutral {
     }
 
     override fun startAngerTimer() {
-        remainingAngerTime = PERSISTENT_ANGER_TIME.sample(Random)
+        remainingAngerTime = PERSISTENT_ANGER_TIME.sample(random)
     }
 
     override fun isFood(item: ItemStack): Boolean = item.type.downcast().eq(ItemTags.FLOWERS)

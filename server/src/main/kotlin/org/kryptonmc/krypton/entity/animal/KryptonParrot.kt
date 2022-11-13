@@ -32,7 +32,6 @@ import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.entity.serializer.EntitySerializer
 import org.kryptonmc.krypton.entity.serializer.animal.ParrotSerializer
 import org.kryptonmc.krypton.world.KryptonWorld
-import kotlin.random.Random
 
 class KryptonParrot(world: KryptonWorld) : KryptonTamable(world), Parrot {
 
@@ -46,7 +45,7 @@ class KryptonParrot(world: KryptonWorld) : KryptonTamable(world), Parrot {
         set(value) = data.set(MetadataKeys.Parrot.TYPE, value.ordinal)
 
     override val voicePitch: Float
-        get() = (Random.nextFloat() - Random.nextFloat()) * 0.2F + 1F
+        get() = (random.nextFloat() - random.nextFloat()) * 0.2F + 1F
 
     override fun defineData() {
         super.defineData()
