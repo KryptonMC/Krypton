@@ -44,7 +44,7 @@ object BossBarManager : BossBar.Listener {
         val holder = getOrCreate(bar)
         val addedPlayers = audience.players.filter(holder.subscribers::add)
         if (addedPlayers.isNotEmpty()) {
-            audience.sessionManager.sendGrouped(addedPlayers, PacketOutBossBar(holder.id, PacketOutBossBar.AddAction(holder.bar)))
+            audience.sendGroupedPacket(addedPlayers, PacketOutBossBar(holder.id, PacketOutBossBar.AddAction(holder.bar)))
         }
     }
 
@@ -57,7 +57,7 @@ object BossBarManager : BossBar.Listener {
         val holder = bars.get(bar) ?: return
         val addedPlayers = audience.players.filter(holder.subscribers::add)
         if (addedPlayers.isNotEmpty()) {
-            audience.sessionManager.sendGrouped(addedPlayers, PacketOutBossBar(holder.id, PacketOutBossBar.RemoveAction))
+            audience.sendGroupedPacket(addedPlayers, PacketOutBossBar(holder.id, PacketOutBossBar.RemoveAction))
         }
     }
 

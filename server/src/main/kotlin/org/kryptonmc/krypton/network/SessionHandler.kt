@@ -26,6 +26,7 @@ import io.netty.channel.SimpleChannelInboundHandler
 import io.netty.handler.timeout.TimeoutException
 import net.kyori.adventure.text.Component
 import org.kryptonmc.krypton.KryptonServer
+import org.kryptonmc.krypton.locale.Messages
 import org.kryptonmc.krypton.network.handlers.HandshakeHandler
 import org.kryptonmc.krypton.network.handlers.PacketHandler
 import org.kryptonmc.krypton.packet.CachedPacket
@@ -146,9 +147,8 @@ class SessionHandler(private val server: KryptonServer) : SimpleChannelInboundHa
             return
         }
 
-        val disconnectReason = Component.translatable("disconnect.genericReason", Component.text("Internal Exception: $cause"))
         LOGGER.debug("Failed to send or received invalid packet!", cause)
-        disconnect(disconnectReason)
+        disconnect(Messages.Disconnect.GENERIC_REASON.build("Internal Exception: $cause"))
         ctx.channel().config().isAutoRead = false
     }
 
@@ -167,7 +167,7 @@ class SessionHandler(private val server: KryptonServer) : SimpleChannelInboundHa
 
         const val NETTY_NAME: String = "handler"
         private val LOGGER = logger<SessionHandler>()
-        private val END_OF_STREAM = Component.translatable("disconnect.endOfStream")
-        private val TIMEOUT = Component.translatable("disconnect.timeout")
+        private val END_OF_STREAM = Messages.Disconnect.END_OF_STREAM.build()
+        private val TIMEOUT = Messages.Disconnect.TIMEOUT.build()
     }
 }

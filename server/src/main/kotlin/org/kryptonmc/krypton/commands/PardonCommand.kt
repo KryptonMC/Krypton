@@ -19,7 +19,6 @@
 package org.kryptonmc.krypton.commands
 
 import com.mojang.brigadier.CommandDispatcher
-import net.kyori.adventure.text.Component
 import org.kryptonmc.api.command.Sender
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.command.InternalCommand
@@ -30,6 +29,7 @@ import org.kryptonmc.krypton.command.literal
 import org.kryptonmc.krypton.command.matchesSubString
 import org.kryptonmc.krypton.command.permission
 import org.kryptonmc.krypton.command.runs
+import org.kryptonmc.krypton.locale.Messages
 
 object PardonCommand : InternalCommand {
 
@@ -39,18 +39,18 @@ object PardonCommand : InternalCommand {
             argument("targets", GameProfileArgument) {
                 suggests { context, builder ->
                     val server = context.source.server as? KryptonServer ?: return@suggests builder.buildFuture()
-                    server.playerManager.bannedPlayers.forEach {
-                        if (!builder.remainingLowerCase.matchesSubString(it.key.name.lowercase())) return@forEach
-                        builder.suggest(it.key.name)
+                    server.playerManager.banManager.profiles().forEach {
+                        if (builder.remainingLowerCase.matchesSubString(it.profile.name.lowercase())) builder.suggest(it.profile.name)
                     }
                     builder.buildFuture()
                 }
                 runs { context ->
                     val server = context.source.server as? KryptonServer ?: return@runs
+                    val banManager = server.playerManager.banManager
                     context.gameProfileArgument("targets").profiles(context.source).forEach {
-                        if (!server.playerManager.bannedPlayers.contains(it)) return@forEach
-                        server.playerManager.bannedPlayers.remove(it)
-                        context.source.sendMessage(Component.translatable("commands.pardon.success", Component.text(it.name)))
+                        if (!banManager.isBanned(it)) return@forEach
+                        banManager.remove(it)
+                        Messages.Commands.PARDON_SUCCESS.send(context.source, it.name)
                     }
                 }
             }

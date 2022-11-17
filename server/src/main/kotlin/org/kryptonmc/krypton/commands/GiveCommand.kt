@@ -26,10 +26,10 @@ import org.kryptonmc.api.effect.sound.SoundEvents
 import org.kryptonmc.krypton.command.InternalCommand
 import org.kryptonmc.krypton.command.argument
 import org.kryptonmc.krypton.command.arguments.entities.EntityArgumentType
-import org.kryptonmc.krypton.command.arguments.entities.entityArgument
+import org.kryptonmc.krypton.command.arguments.entityArgument
 import org.kryptonmc.krypton.command.arguments.item.ItemStackArgument
 import org.kryptonmc.krypton.command.arguments.item.ItemStackArgumentType
-import org.kryptonmc.krypton.command.arguments.item.itemStackArgument
+import org.kryptonmc.krypton.command.arguments.itemStackArgument
 import org.kryptonmc.krypton.command.permission
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.packet.out.play.PacketOutSetContainerContent

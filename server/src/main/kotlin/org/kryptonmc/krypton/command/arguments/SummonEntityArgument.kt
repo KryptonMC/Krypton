@@ -20,12 +20,8 @@ package org.kryptonmc.krypton.command.arguments
 
 import com.mojang.brigadier.StringReader
 import com.mojang.brigadier.arguments.ArgumentType
-import com.mojang.brigadier.exceptions.DynamicCommandExceptionType
 import net.kyori.adventure.key.InvalidKeyException
 import net.kyori.adventure.key.Key
-import net.kyori.adventure.text.Component
-import org.kryptonmc.krypton.adventure.toMessage
-import org.kryptonmc.krypton.command.toExceptionType
 import org.kryptonmc.krypton.registry.KryptonRegistries
 
 /**
@@ -39,9 +35,8 @@ import org.kryptonmc.krypton.registry.KryptonRegistries
 object SummonEntityArgument : ArgumentType<Key> {
 
     private val EXAMPLES = setOf("minecraft:pig", "cow")
-    private val ERROR_UNKNOWN_ENTITY: DynamicCommandExceptionType = DynamicCommandExceptionType {
-        Component.translatable("entity.notFound", Component.text(it.toString())).toMessage()
-    }
+    private val ERROR_UNKNOWN_ENTITY = CommandExceptions.dynamic("entity.notFound")
+    private val ERROR_INVALID = CommandExceptions.simple("argument.id.invalid")
 
     /**
      * Ensures the given [key] is both a valid entity type **and** the entity
@@ -57,30 +52,30 @@ object SummonEntityArgument : ArgumentType<Key> {
         return type.key()
     }
 
-    override fun parse(reader: StringReader): Key = ensureSummonable(reader.nextKey())
+    override fun parse(reader: StringReader): Key = ensureSummonable(readKey(reader))
 
     override fun getExamples(): Collection<String> = EXAMPLES
-}
 
-private val ERROR_INVALID = Component.translatable("argument.id.invalid").toExceptionType()
-
-private fun StringReader.nextKey(): Key {
-    val cursor = cursor
-    while (canRead() && peek().isAllowedInKey()) {
-        skip()
+    @JvmStatic
+    private fun readKey(reader: StringReader): Key {
+        val cursor = reader.cursor
+        while (reader.canRead() && isAllowedInKey(reader.peek())) {
+            reader.skip()
+        }
+        try {
+            return Key.key(reader.string.substring(cursor, reader.cursor))
+        } catch (_: InvalidKeyException) {
+            reader.cursor = cursor
+            throw ERROR_INVALID.createWithContext(reader)
+        }
     }
-    try {
-        return Key.key(string.substring(cursor, this.cursor))
-    } catch (_: InvalidKeyException) {
-        setCursor(cursor)
-        throw ERROR_INVALID.createWithContext(this)
-    }
-}
 
-private fun Char.isAllowedInKey(): Boolean = this >= '0' && this <= '9' ||
-        this >= 'a' && this <= 'z' ||
-        this == '_' ||
-        this == ':' ||
-        this == '/' ||
-        this == '.' ||
-        this == '-'
+    @JvmStatic
+    private fun isAllowedInKey(char: Char): Boolean = char >= '0' && char <= '9' ||
+            char >= 'a' && char <= 'z' ||
+            char == '_' ||
+            char == ':' ||
+            char == '/' ||
+            char == '.' ||
+            char == '-'
+}

@@ -18,17 +18,9 @@
  */
 package org.kryptonmc.krypton
 
-import net.kyori.adventure.audience.Audience
-import net.kyori.adventure.audience.MessageType
-import net.kyori.adventure.identity.Identified
-import net.kyori.adventure.identity.Identity
-import net.kyori.adventure.text.Component
 import org.apache.logging.log4j.LogManager
-import org.kryptonmc.api.Server
-import org.kryptonmc.api.registry.RegistryManager
 import org.kryptonmc.api.world.World
 import org.kryptonmc.api.world.rule.GameRules
-import org.kryptonmc.krypton.adventure.PacketGroupingAudience
 import org.kryptonmc.krypton.auth.KryptonProfileCache
 import org.kryptonmc.krypton.command.KryptonCommandManager
 import org.kryptonmc.krypton.commands.KryptonPermission
@@ -45,24 +37,18 @@ import org.kryptonmc.krypton.network.SessionManager
 import org.kryptonmc.krypton.packet.PacketRegistry
 import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateTime
 import org.kryptonmc.krypton.plugin.KryptonPluginManager
-import org.kryptonmc.krypton.registry.KryptonRegistries
 import org.kryptonmc.krypton.scheduling.KryptonScheduler
 import org.kryptonmc.krypton.server.PlayerManager
 import org.kryptonmc.krypton.service.KryptonServicesManager
 import org.kryptonmc.krypton.user.KryptonUserManager
-import org.kryptonmc.krypton.util.KryptonFactoryProvider
 import org.kryptonmc.krypton.util.crypto.YggdrasilSessionKey
 import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.krypton.world.KryptonWorldManager
 import org.kryptonmc.krypton.world.scoreboard.KryptonScoreboard
-import org.spongepowered.configurate.hocon.HoconConfigurationLoader
-import java.net.InetSocketAddress
 import java.nio.file.Files
 import java.nio.file.Path
-import java.util.Collections
 import java.util.Locale
-import java.util.UUID
 import kotlin.math.abs
 import kotlin.math.max
 import kotlin.system.exitProcess
@@ -72,22 +58,10 @@ import kotlin.system.measureTimeMillis
  * This is the centre of operations here at Krypton Inc. Everything stems from
  * this class.
  */
-class KryptonServer(
-    val config: KryptonConfig,
-    override val profileCache: KryptonProfileCache,
-    private val configPath: Path,
-    worldFolder: Path
-) : Server, PacketGroupingAudience {
+class KryptonServer(override val config: KryptonConfig, override val profileCache: KryptonProfileCache, worldFolder: Path) : BaseServer {
 
-    override val platform: KryptonPlatform = KryptonPlatform
-    override val maxPlayers: Int = config.status.maxPlayers
-    override val motd: Component = config.status.motd
-    override val isOnline: Boolean = config.server.onlineMode
-    override val address: InetSocketAddress = InetSocketAddress(config.server.ip, config.server.port)
-
-    val playerManager: PlayerManager = PlayerManager(this)
-    override val players: List<KryptonPlayer> = Collections.unmodifiableList(playerManager.players)
-    override val sessionManager: SessionManager = SessionManager(this)
+    override val playerManager: PlayerManager = PlayerManager(this)
+    override val sessionManager: SessionManager = SessionManager(playerManager, config.status.motd, config.status.maxPlayers)
 
     override val console: KryptonConsole = KryptonConsole(this)
     override val scoreboard: KryptonScoreboard = KryptonScoreboard(this)
@@ -97,15 +71,11 @@ class KryptonServer(
     override val pluginManager: KryptonPluginManager = KryptonPluginManager()
     override val eventManager: KryptonEventManager = KryptonEventManager(pluginManager)
     override val servicesManager: KryptonServicesManager = KryptonServicesManager(this)
-    override val registryManager: RegistryManager = KryptonRegistries.ManagerImpl
     override val scheduler: KryptonScheduler = KryptonScheduler(pluginManager)
-    override val factoryProvider: KryptonFactoryProvider = KryptonFactoryProvider
     override val userManager: KryptonUserManager = KryptonUserManager(this)
 
     @Volatile
-    var isRunning: Boolean = true
-        private set
-
+    private var running = true
     // These help us keep track of how fast the server is running and how far
     // behind it is at any one time.
     private var lastTickTime = 0L
@@ -118,9 +88,11 @@ class KryptonServer(
         YggdrasilSessionKey.get()
     }
 
+    override fun isRunning(): Boolean = running
+
     // The order of loading here is pretty important, as some things depend on
     // others to function properly.
-    fun start() {
+    override fun start() {
         LOGGER.info("Starting Krypton server on ${config.server.ip}:${config.server.port}...")
         val startTime = System.nanoTime()
 
@@ -129,12 +101,10 @@ class KryptonServer(
         LOGGER.debug("Registering commands...")
         commandManager.registerBuiltins()
 
-        // Create server config lists here before we allow any players in.
-        LOGGER.debug("Loading server config lists...")
-        playerManager.bannedPlayers.validatePath()
-        playerManager.whitelist.validatePath()
-        playerManager.bannedIps.validatePath()
-        playerManager.whitelistedIps.validatePath()
+        // Load bans and whitelists here before we allow any players in.
+        LOGGER.debug("Loading ban list and whitelist...")
+        playerManager.banManager.load()
+        playerManager.whitelistManager.load()
 
         // Start the metrics system.
         LOGGER.debug("Starting bStats metrics")
@@ -181,12 +151,12 @@ class KryptonServer(
         run()
     }
 
-    fun run() {
+    override fun run() {
         try {
             // Set the last tick time early (avoids initial check sending an overload warning every time)
             lastTickTime = System.currentTimeMillis()
 
-            while (isRunning) {
+            while (running) {
                 val nextTickTime = System.currentTimeMillis() - lastTickTime
                 if (nextTickTime > SLOW_TICK_THRESHOLD && lastTickTime - lastOverloadWarning >= OVERLOAD_WARNING_INTERVAL) {
                     LOGGER.warn("Can't keep up! Running $nextTickTime ms (${nextTickTime / MILLISECONDS_PER_TICK} ticks) behind!")
@@ -247,7 +217,7 @@ class KryptonServer(
         LOGGER.info("Finished plugin loading! Loaded ${pluginManager.plugins.size} plugins.")
     }
 
-    private fun tick() {
+    override fun tick() {
         tickCount++
 
         sessionManager.update(System.currentTimeMillis())
@@ -268,11 +238,6 @@ class KryptonServer(
         if (tickCount % SAVE_PROFILE_CACHE_INTERVAL == 0) profileCache.save()
     }
 
-    fun updateConfig(path: String, value: Any?) {
-        val config = HoconConfigurationLoader.builder().path(configPath).defaultOptions(KryptonConfig.OPTIONS).build()
-        config.save(config.load().node(path.split(".")).set(value))
-    }
-
     fun isProtected(world: KryptonWorld, x: Int, z: Int, player: KryptonPlayer): Boolean {
         if (world.dimension !== World.OVERWORLD) return false
         if (player.hasPermission(KryptonPermission.BYPASS_SPAWN_PROTECTION.node)) return false
@@ -284,29 +249,13 @@ class KryptonServer(
         return maxDistance <= config.world.spawnProtectionRadius
     }
 
-    override fun player(uuid: UUID): KryptonPlayer? = playerManager.playersByUUID.get(uuid)
-
-    override fun player(name: String): KryptonPlayer? = playerManager.playersByName.get(name)
-
-    override fun audiences(): Iterable<Audience> = players.asSequence().plus(console).asIterable()
-
-    override fun sendMessage(source: Identified, message: Component, type: MessageType) {
-        super<PacketGroupingAudience>.sendMessage(source, message, type)
-        console.sendMessage(source, message, type)
-    }
-
-    override fun sendMessage(source: Identity, message: Component, type: MessageType) {
-        super<PacketGroupingAudience>.sendMessage(source, message, type)
-        console.sendMessage(source, message, type)
-    }
-
-    fun stop(explicitExit: Boolean = true) {
-        if (!isRunning) return // Ensure we cannot accidentally run this twice
+    override fun stop(explicitExit: Boolean) {
+        if (!running) return // Ensure we cannot accidentally run this twice
 
         val shutdownProcess = Runnable {
             // Stop server and shut down session manager (disconnecting all players)
             LOGGER.info("Starting shutdown for Krypton version ${KryptonPlatform.version}...")
-            isRunning = false
+            running = false
             playerManager.disconnectAll()
             NettyProcess.shutdown()
 
@@ -314,6 +263,11 @@ class KryptonServer(
             LOGGER.info("Saving player, world, and region data...")
             worldManager.saveAll(true)
             playerManager.saveAll()
+
+            // Save bans and whitelist
+            LOGGER.info("Saving ban list and whitelist...")
+            playerManager.banManager.save()
+            playerManager.whitelistManager.save()
 
             // Shut down plugins and unregister listeners
             LOGGER.info("Shutting down plugins and unregistering listeners...")
@@ -332,7 +286,7 @@ class KryptonServer(
         if (explicitExit) Thread(shutdownProcess).start() else shutdownProcess.run()
     }
 
-    fun restart() {
+    override fun restart() {
         stop()
         val split = config.other.restartScript.split(" ")
         if (split.isNotEmpty()) {

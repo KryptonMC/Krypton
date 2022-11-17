@@ -29,7 +29,7 @@ import org.kryptonmc.krypton.command.InternalCommand
 import org.kryptonmc.krypton.command.argument
 import org.kryptonmc.krypton.command.argument.argument
 import org.kryptonmc.krypton.command.arguments.entities.EntityArgumentType
-import org.kryptonmc.krypton.command.arguments.entities.entityArgument
+import org.kryptonmc.krypton.command.arguments.entityArgument
 import org.kryptonmc.krypton.command.literal
 import org.kryptonmc.krypton.command.permission
 import org.kryptonmc.krypton.command.runs

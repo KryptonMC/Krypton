@@ -26,12 +26,13 @@ import org.kryptonmc.api.command.Sender
 import org.kryptonmc.krypton.command.InternalCommand
 import org.kryptonmc.krypton.command.argument
 import org.kryptonmc.krypton.command.arguments.entities.EntityArgumentType
-import org.kryptonmc.krypton.command.arguments.entities.entityArgument
+import org.kryptonmc.krypton.command.arguments.entityArgument
 import org.kryptonmc.krypton.command.permission
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.command.argument.argument
 import org.kryptonmc.krypton.command.literal
 import org.kryptonmc.krypton.command.runs
+import org.kryptonmc.krypton.locale.Messages
 
 object MessageCommand : InternalCommand {
 
@@ -44,8 +45,8 @@ object MessageCommand : InternalCommand {
                         val source = it.source as? KryptonPlayer ?: return@runs
                         val player = it.entityArgument("player").players(source).get(0)
                         val message = Component.text(it.argument<String>("message"))
-                        source.sendMessage(Component.translatable("commands.message.display.outgoing", player.displayName, message))
-                        player.sendMessage(Component.translatable("commands.message.display.incoming", source.displayName, message))
+                        Messages.Commands.OUTGOING_MESSAGE.send(source, player.displayName, message)
+                        Messages.Commands.INCOMING_MESSAGE.send(player, source.displayName, message)
                     }
                 }
             }

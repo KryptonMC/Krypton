@@ -32,7 +32,6 @@ import net.kyori.adventure.title.Title
 import net.kyori.adventure.title.TitlePart
 import org.kryptonmc.krypton.entity.KryptonEntity
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
-import org.kryptonmc.krypton.network.SessionManager
 import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.packet.out.play.PacketOutSetActionBarText
 import org.kryptonmc.krypton.packet.out.play.PacketOutClearTitles
@@ -48,11 +47,12 @@ import org.kryptonmc.krypton.registry.KryptonRegistries
 
 interface PacketGroupingAudience : ForwardingAudience {
 
-    val sessionManager: SessionManager
     val players: Collection<KryptonPlayer>
 
-    fun sendGroupedPacket(packet: Packet) {
-        sessionManager.sendGrouped(players, packet)
+    fun sendGroupedPacket(players: Collection<KryptonPlayer>, packet: Packet)
+
+    private fun sendGroupedPacket(packet: Packet) {
+        sendGroupedPacket(players, packet)
     }
 
     override fun sendMessage(source: Identified, message: Component, type: MessageType) {
@@ -142,7 +142,7 @@ interface PacketGroupingAudience : ForwardingAudience {
     }
 
     override fun openBook(book: Book) {
-        val item = book.toItemStack()
+        val item = KryptonAdventure.toItemStack(book)
         players.forEach { it.openBook(item) }
     }
 

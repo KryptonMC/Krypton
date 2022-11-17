@@ -19,14 +19,10 @@
 package org.kryptonmc.krypton.command.arguments.item
 
 import com.mojang.brigadier.StringReader
-import com.mojang.brigadier.exceptions.DynamicCommandExceptionType
-import com.mojang.brigadier.exceptions.SimpleCommandExceptionType
 import net.kyori.adventure.key.Key
-import net.kyori.adventure.text.Component
 import org.kryptonmc.api.item.ItemType
 import org.kryptonmc.api.item.ItemTypes
-import org.kryptonmc.krypton.adventure.toMessage
-import org.kryptonmc.krypton.command.toExceptionType
+import org.kryptonmc.krypton.command.arguments.CommandExceptions
 import org.kryptonmc.krypton.item.KryptonItemType
 import org.kryptonmc.krypton.registry.KryptonRegistries
 import org.kryptonmc.krypton.util.nbt.SNBTParser
@@ -37,30 +33,10 @@ import org.kryptonmc.nbt.CompoundTag
  */
 object ItemStackParser { // TODO: Tags for ItemStackPredicate etc.
 
-    /**
-     * Thrown when a user tries to parse an item stack with type AIR, which
-     * is not allowed (for hopefully obvious reasons).
-     */
-    @JvmField
-    val ID_INVALID_EXCEPTION: DynamicCommandExceptionType = DynamicCommandExceptionType {
-        Component.translatable("argument.item.id.invalid", Component.text(it.toString())).toMessage()
-    }
-
-    /**
-     * Thrown when a user inputs an item tag and the parser is not allowed
-     * to parse item tags.
-     */
-    @JvmField
-    val TAG_DISALLOWED_EXCEPTION: SimpleCommandExceptionType = Component.translatable("argument.item.tag.disallowed").toExceptionType()
-
-    /**
-     * Thrown when a user inputs an item tag and the parser was unable to
-     * resolve the input to a valid item tag.
-     */
-    @JvmField
-    val UNKNOWN_ITEM_TAG: DynamicCommandExceptionType = DynamicCommandExceptionType {
-        Component.translatable("arguments.item.tag.unknown", Component.text(it.toString())).toMessage()
-    }
+    private val ID_INVALID_EXCEPTION = CommandExceptions.dynamic("argument.item.id.invalid")
+    private val TAG_DISALLOWED_EXCEPTION = CommandExceptions.simple("argument.item.tag.disallowed")
+    @Suppress("UnusedPrivateMember")
+    private val UNKNOWN_ITEM_TAG = CommandExceptions.dynamic("argument.item.tag.unknown")
 
     @JvmStatic
     fun parseItem(reader: StringReader): ItemStackArgument = ItemStackArgument(readItem(reader), readNBT(reader))

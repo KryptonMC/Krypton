@@ -19,14 +19,11 @@
 package org.kryptonmc.krypton
 
 import com.github.ajalt.clikt.core.CliktCommand
-import com.github.ajalt.clikt.parameters.options.convert
 import com.github.ajalt.clikt.parameters.options.default
 import com.github.ajalt.clikt.parameters.options.flag
 import com.github.ajalt.clikt.parameters.options.help
 import com.github.ajalt.clikt.parameters.options.option
-import com.github.ajalt.clikt.parameters.types.int
 import com.github.ajalt.clikt.parameters.types.path
-import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer
 import org.apache.logging.log4j.LogManager
 import org.kryptonmc.krypton.auth.KryptonProfileCache
 import org.kryptonmc.krypton.config.KryptonConfig
@@ -55,21 +52,6 @@ private class KryptonCLI : CliktCommand(
         .flag()
         .help("Creates the config file and exits")
 
-    // Config options
-    private val ip by option()
-        .help("The IP to listen on")
-    private val port by option("-p", "--port")
-        .int()
-        .help("The port to bind to")
-    private val maxPlayers by option("-P", "--players", "--max-players")
-        .int()
-        .help("The maximum amount of players")
-    private val motd by option("--motd", metavar = "COMPONENT")
-        .convert { LegacyComponentSerializer.legacyAmpersand().deserialize(it) }
-        .help("The message of the day sent to players")
-    private val worldName by option("-w", "--world", "--world-name")
-        .help("The name of the world folder for the default world")
-
     // Folders
     private val configFile by option("--config", "--config-file")
         .help("Configuration file path for the server")
@@ -97,23 +79,11 @@ private class KryptonCLI : CliktCommand(
         Bootstrap.preload()
         Bootstrap.validate()
 
-        val loadedConfig = KryptonConfig.load(configFile)
+        val config = KryptonConfig.load(configFile)
         if (configOnly) {
             logger.info("Successfully initialized config file located at $configFile.")
             return
         }
-        // Populate the config with CLI parameters
-        val config = loadedConfig.copy(
-            server = loadedConfig.server.copy(
-                ip = ip ?: loadedConfig.server.ip,
-                port = port ?: loadedConfig.server.port
-            ),
-            status = loadedConfig.status.copy(
-                motd = motd ?: loadedConfig.status.motd,
-                maxPlayers = maxPlayers ?: loadedConfig.status.maxPlayers
-            ),
-            world = loadedConfig.world.copy(name = worldName ?: loadedConfig.world.name)
-        )
 
         // This logic comes from vanilla. We should probably just use the main thread, though this may greater ensure parity
         // with vanilla's buggy mess. Not sure if this is actually the case though.
@@ -126,7 +96,7 @@ private class KryptonCLI : CliktCommand(
         }
         val cache = KryptonProfileCache(userCacheFile)
         cache.loadAll()
-        val server = KryptonServer(config, cache, configFile, worldFolder)
+        val server = KryptonServer(config, cache, worldFolder)
         reference.set(server)
         serverThread.start()
     }

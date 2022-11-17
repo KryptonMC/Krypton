@@ -20,9 +20,7 @@ package org.kryptonmc.krypton.command.arguments.entities
 
 import com.mojang.brigadier.exceptions.DynamicCommandExceptionType
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType
-import net.kyori.adventure.text.Component
-import org.kryptonmc.krypton.adventure.toMessage
-import org.kryptonmc.krypton.command.toExceptionType
+import org.kryptonmc.krypton.command.arguments.CommandExceptions
 
 /**
  * Various exceptions that may be thrown as a result of trying to parse
@@ -36,7 +34,7 @@ object EntityArgumentExceptions {
      * not another character indicating what the user actually wants to select.
      */
     @JvmField
-    val MISSING_SELECTOR: SimpleCommandExceptionType = Component.translatable("argument.entity.selector.missing").toExceptionType()
+    val MISSING_SELECTOR: SimpleCommandExceptionType = CommandExceptions.simple("argument.entity.selector.missing")
 
     /**
      * Thrown when a user inputs a selector that is not recognised by the
@@ -48,9 +46,7 @@ object EntityArgumentExceptions {
      * - `@v`
      */
     @JvmField
-    val UNKNOWN_SELECTOR: DynamicCommandExceptionType = DynamicCommandExceptionType {
-        Component.translatable("argument.entity.selector.unknown", Component.text(it.toString())).toMessage()
-    }
+    val UNKNOWN_SELECTOR: DynamicCommandExceptionType = CommandExceptions.dynamic("argument.entity.selector.unknown")
 
     /**
      * Thrown when a user inputs a selector filter and doesn't terminate the
@@ -62,7 +58,7 @@ object EntityArgumentExceptions {
      * - `@e[dz=74`
      */
     @JvmField
-    val UNTERMINATED: SimpleCommandExceptionType = Component.translatable("argument.entity.options.unterminated").toExceptionType()
+    val UNTERMINATED: SimpleCommandExceptionType = CommandExceptions.simple("argument.entity.options.unterminated")
 
     /**
      * Thrown when a user fails to input a value for a selector filter.
@@ -73,9 +69,7 @@ object EntityArgumentExceptions {
      * - `@e[dz=`
      */
     @JvmField
-    val VALUELESS: DynamicCommandExceptionType = DynamicCommandExceptionType {
-        Component.translatable("argument.entity.options.valueless", Component.text(it.toString())).toMessage()
-    }
+    val VALUELESS: DynamicCommandExceptionType = CommandExceptions.dynamic("argument.entity.options.valueless")
 
     /**
      * Thrown when a user inputs an invalid selector filter.
@@ -86,72 +80,68 @@ object EntityArgumentExceptions {
      * - `@e[hello=world]`
      */
     @JvmField
-    val INVALID_OPTION: DynamicCommandExceptionType = DynamicCommandExceptionType {
-        Component.translatable("argument.entity.options.unknown", Component.text(it.toString())).toMessage()
-    }
+    val INVALID_OPTION: DynamicCommandExceptionType = CommandExceptions.dynamic("argument.entity.options.unknown")
 
     /**
      * Thrown when a user tries to select a player that could not be found,
      * meaning they are not on this server.
      */
     @JvmField
-    val PLAYER_NOT_FOUND: SimpleCommandExceptionType = Component.translatable("argument.entity.notfound.player").toExceptionType()
+    val PLAYER_NOT_FOUND: SimpleCommandExceptionType = CommandExceptions.simple("argument.entity.notfound.player")
 
     /**
      * Thrown when a user tries to select an entity that could not be found,
      * meaning it does not exist on the server.
      */
     @JvmField
-    val ENTITY_NOT_FOUND: SimpleCommandExceptionType = Component.translatable("argument.entity.notfound.entity").toExceptionType()
+    val ENTITY_NOT_FOUND: SimpleCommandExceptionType = CommandExceptions.simple("argument.entity.notfound.entity")
 
     /**
      * Thrown when a user tries to select more than one entity when the parser
      * required that a single entity be selected.
      */
     @JvmField
-    val TOO_MANY_ENTITIES: SimpleCommandExceptionType = Component.translatable("argument.entity.toomany").toExceptionType()
+    val TOO_MANY_ENTITIES: SimpleCommandExceptionType = CommandExceptions.simple("argument.entity.toomany")
 
     /**
      * Thrown when a user tries to select more than one player when the parser
      * required that a single player be selected.
      */
     @JvmField
-    val TOO_MANY_PLAYERS: SimpleCommandExceptionType = Component.translatable("argument.player.toomany").toExceptionType()
+    val TOO_MANY_PLAYERS: SimpleCommandExceptionType = CommandExceptions.simple("argument.player.toomany")
 
     /**
      * Thrown when a user tries to select entities and the parser requires
      * that only players be selected.
      */
     @JvmField
-    val ONLY_FOR_PLAYERS: SimpleCommandExceptionType = Component.translatable("argument.player.entities").toExceptionType()
+    val ONLY_FOR_PLAYERS: SimpleCommandExceptionType = CommandExceptions.simple("argument.player.entities")
 
     /**
      * Thrown when a player selector is parsed and the name does not resolve
      * to an online player.
      */
     @JvmField
-    val UNKNOWN_PLAYER: SimpleCommandExceptionType = Component.translatable("argument.player.unknown").toExceptionType()
+    val UNKNOWN_PLAYER: SimpleCommandExceptionType = CommandExceptions.simple("argument.player.unknown")
 
     /**
      * Thrown when a user inputs a value for a limit selector filter that is
      * less than 0.
      */
     @JvmField
-    val LIMIT_NEGATIVE: SimpleCommandExceptionType = Component.translatable("argument.entity.options.limit.toosmall").toExceptionType()
+    val LIMIT_NEGATIVE: SimpleCommandExceptionType = CommandExceptions.simple("argument.entity.options.limit.toosmall")
 
     /**
      * Thrown when a user inputs a value for a distance selector filter that
      * is less than 0.
      */
     @JvmField
-    val DISTANCE_NEGATIVE: SimpleCommandExceptionType = Component.translatable("argument.entity.options.distance.negative").toExceptionType()
+    val DISTANCE_NEGATIVE: SimpleCommandExceptionType = CommandExceptions.simple("argument.entity.options.distance.negative")
 
     /**
      * Thrown when a user inputs an invalid sort type for a sorting selector
      * filter.
      */
     @JvmField
-    val INVALID_SORT_TYPE: DynamicCommandExceptionType = DynamicCommandExceptionType {
-        Component.translatable("argument.entity.options.sort.irreversible", Component.text(it.toString())).toMessage()
-    }
+    val INVALID_SORT_TYPE: DynamicCommandExceptionType = CommandExceptions.dynamic("argument.entity.options.sort.irreversible")
 }

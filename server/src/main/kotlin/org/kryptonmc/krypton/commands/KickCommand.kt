@@ -25,15 +25,16 @@ import org.kryptonmc.api.command.Sender
 import org.kryptonmc.krypton.command.InternalCommand
 import org.kryptonmc.krypton.command.argument
 import org.kryptonmc.krypton.command.arguments.entities.EntityArgumentType
-import org.kryptonmc.krypton.command.arguments.entities.entityArgument
+import org.kryptonmc.krypton.command.arguments.entityArgument
 import org.kryptonmc.krypton.command.permission
 import org.kryptonmc.krypton.command.argument.argument
 import org.kryptonmc.krypton.command.literal
 import org.kryptonmc.krypton.command.runs
+import org.kryptonmc.krypton.locale.Messages
 
 object KickCommand : InternalCommand {
 
-    private val KICKED_MESSAGE = Component.translatable("multiplayer.disconnect.kicked")
+    private val KICKED_MESSAGE = Messages.Disconnect.KICKED.build()
     private const val TARGETS_ARGUMENT = "targets"
 
     override fun register(dispatcher: CommandDispatcher<Sender>) {

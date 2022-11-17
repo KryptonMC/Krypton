@@ -19,11 +19,7 @@
 package org.kryptonmc.krypton.util.nbt
 
 import com.mojang.brigadier.StringReader
-import com.mojang.brigadier.exceptions.Dynamic2CommandExceptionType
-import com.mojang.brigadier.exceptions.DynamicCommandExceptionType
-import net.kyori.adventure.text.Component
-import org.kryptonmc.krypton.adventure.toMessage
-import org.kryptonmc.krypton.command.toExceptionType
+import org.kryptonmc.krypton.command.arguments.CommandExceptions
 import org.kryptonmc.nbt.ByteArrayTag
 import org.kryptonmc.nbt.ByteTag
 import org.kryptonmc.nbt.CompoundTag
@@ -215,18 +211,12 @@ class SNBTParser(private val reader: StringReader) {
         private val SHORT_REGEX = "[-+]?(?:0|[1-9][0-9]*)s".toRegex(RegexOption.IGNORE_CASE)
         private val INT_REGEX = "[-+]?(?:0|[1-9][0-9]*)".toRegex(RegexOption.IGNORE_CASE)
 
-        private val ERROR_TRAILING_DATA = Component.translatable("argument.nbt.trailing").toExceptionType()
-        private val ERROR_EXPECTED_KEY = Component.translatable("argument.nbt.expected.key").toExceptionType()
-        private val ERROR_EXPECTED_VALUE = Component.translatable("argument.nbt.expected.value").toExceptionType()
-        private val ERROR_INSERT_MIXED_LIST = Dynamic2CommandExceptionType { a, b ->
-            Component.translatable("argument.nbt.list.mixed", Component.text(a.toString()), Component.text(b.toString())).toMessage()
-        }
-        private val ERROR_INSERT_MIXED_ARRAY = Dynamic2CommandExceptionType { a, b ->
-            Component.translatable("argument.nbt.array.mixed", Component.text(a.toString()), Component.text(b.toString())).toMessage()
-        }
-        private val ERROR_INVALID_ARRAY = DynamicCommandExceptionType {
-            Component.translatable("argument.nbt.array.invalid", Component.text(it.toString())).toMessage()
-        }
+        private val ERROR_TRAILING_DATA = CommandExceptions.simple("argument.nbt.trailing")
+        private val ERROR_EXPECTED_KEY = CommandExceptions.simple("argument.nbt.expected.key")
+        private val ERROR_EXPECTED_VALUE = CommandExceptions.simple("argument.nbt.expected.value")
+        private val ERROR_INSERT_MIXED_LIST = CommandExceptions.dynamic2("argument.nbt.list.mixed")
+        private val ERROR_INSERT_MIXED_ARRAY = CommandExceptions.dynamic2("argument.nbt.array.mixed")
+        private val ERROR_INVALID_ARRAY = CommandExceptions.dynamic("argument.nbt.array.invalid")
 
         @JvmStatic
         fun parse(text: String): CompoundTag = SNBTParser(StringReader(text)).readSingleCompound()

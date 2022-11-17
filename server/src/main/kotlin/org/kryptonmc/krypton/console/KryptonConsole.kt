@@ -69,7 +69,7 @@ class KryptonConsole(override val server: KryptonServer) : SimpleTerminalConsole
 
     override fun identity(): Identity = Identity.nil()
 
-    override fun isRunning(): Boolean = server.isRunning
+    override fun isRunning(): Boolean = server.isRunning()
 
     override fun runCommand(command: String) {
         server.eventManager.fire(KryptonCommandExecuteEvent(this, command)).thenAcceptAsync {

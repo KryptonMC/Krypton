@@ -24,7 +24,6 @@ import com.mojang.brigadier.arguments.BoolArgumentType
 import com.mojang.brigadier.arguments.IntegerArgumentType
 import com.mojang.brigadier.builder.ArgumentBuilder
 import com.mojang.brigadier.builder.LiteralArgumentBuilder
-import net.kyori.adventure.text.Component
 import org.kryptonmc.api.command.Sender
 import org.kryptonmc.api.world.rule.GameRule
 import org.kryptonmc.krypton.command.InternalCommand
@@ -34,6 +33,7 @@ import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.command.argument.argument
 import org.kryptonmc.krypton.command.literal
 import org.kryptonmc.krypton.command.runs
+import org.kryptonmc.krypton.locale.Messages
 import org.kryptonmc.krypton.registry.KryptonRegistries
 
 object GameRuleCommand : InternalCommand {
@@ -43,8 +43,7 @@ object GameRuleCommand : InternalCommand {
         KryptonRegistries.GAME_RULES.forEach { rule ->
             val gameRule = LiteralArgumentBuilder.literal<Sender>(rule.name).runs {
                 val sender = it.source as? KryptonPlayer ?: return@runs
-                val gameRule = Component.text(sender.world.gameRules.get(rule).toString())
-                sender.sendMessage(Component.translatable("commands.gamerule.query", Component.text(rule.name), gameRule))
+                Messages.Commands.GAMERULE_QUERY.send(sender, rule.name, sender.world.gameRules.get(rule)!!)
             }
             if (rule.defaultValue is Boolean) {
                 @Suppress("UNCHECKED_CAST")
@@ -67,7 +66,7 @@ object GameRuleCommand : InternalCommand {
             val sender = it.source as? KryptonPlayer ?: return@runs
             val value = it.argument<V>("value")
             sender.world.gameRules.set(rule, value)
-            sender.sendMessage(Component.translatable("commands.gamerule.set", Component.text(rule.name), Component.text(value.toString())))
+            Messages.Commands.GAMERULE_SET.send(sender, rule.name, value)
         }
     }
 }

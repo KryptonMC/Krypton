@@ -20,23 +20,22 @@ package org.kryptonmc.krypton.commands
 
 import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.arguments.StringArgumentType
-import com.mojang.brigadier.exceptions.SimpleCommandExceptionType
-import net.kyori.adventure.text.Component
 import org.kryptonmc.api.command.Sender
 import org.kryptonmc.krypton.KryptonServer
-import org.kryptonmc.krypton.adventure.toMessage
 import org.kryptonmc.krypton.command.InternalCommand
 import org.kryptonmc.krypton.command.argument
 import org.kryptonmc.krypton.command.permission
 import org.kryptonmc.krypton.command.argument.argument
+import org.kryptonmc.krypton.command.arguments.CommandExceptions
 import org.kryptonmc.krypton.command.literal
 import org.kryptonmc.krypton.command.matchesSubString
 import org.kryptonmc.krypton.command.runs
+import org.kryptonmc.krypton.locale.Messages
 
 object PardonIpCommand : InternalCommand {
 
-    private val INVALID_IP_EXCEPTION = SimpleCommandExceptionType(Component.translatable("commands.pardonip.invalid").toMessage())
-    private val ALREADY_UNBANNED_EXCEPTION = SimpleCommandExceptionType(Component.translatable("commands.pardonip.failed").toMessage())
+    private val ERROR_INVALID_IP = CommandExceptions.simple("commands.pardonip.invalid")
+    private val ERROR_ALREADY_UNBANNED = CommandExceptions.simple("commands.pardonip.failed")
 
     override fun register(dispatcher: CommandDispatcher<Sender>) {
         dispatcher.register(literal("pardon-ip") {
@@ -44,23 +43,19 @@ object PardonIpCommand : InternalCommand {
             argument("target", StringArgumentType.string()) {
                 suggests { context, builder ->
                     val server = context.source.server as? KryptonServer ?: return@suggests builder.buildFuture()
-                    server.playerManager.bannedIps.forEach {
-                        if (!builder.remainingLowerCase.matchesSubString(it.key.lowercase())) return@forEach
-                        builder.suggest(it.key)
+                    server.playerManager.banManager.ips().forEach {
+                        if (builder.remainingLowerCase.matchesSubString(it.ip.lowercase())) builder.suggest(it.ip)
                     }
                     builder.buildFuture()
                 }
                 runs {
                     val server = it.source.server as? KryptonServer ?: return@runs
+                    val banManager = server.playerManager.banManager
                     val target = it.argument<String>("target")
-                    if (BanIpCommand.IP_ADDRESS_PATTERN.matcher(target).matches()) {
-                        if (server.playerManager.bannedIps.contains(target)) {
-                            server.playerManager.bannedIps.remove(target)
-                            return@runs
-                        }
-                        throw ALREADY_UNBANNED_EXCEPTION.create()
-                    }
-                    throw INVALID_IP_EXCEPTION.create()
+                    if (!BanIpCommand.IP_ADDRESS_PATTERN.matcher(target).matches()) throw ERROR_INVALID_IP.create()
+                    if (!banManager.isBanned(target)) throw ERROR_ALREADY_UNBANNED.create()
+                    banManager.remove(target)
+                    Messages.Commands.PARDON_IP_SUCCESS.send(it.source, target)
                 }
             }
         })

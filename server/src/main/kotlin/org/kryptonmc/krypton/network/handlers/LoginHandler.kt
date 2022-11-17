@@ -33,6 +33,7 @@ import org.kryptonmc.krypton.entity.player.PlayerPublicKey
 import org.kryptonmc.krypton.event.auth.KryptonAuthenticationEvent
 import org.kryptonmc.krypton.event.player.KryptonLoginEvent
 import org.kryptonmc.krypton.event.server.KryptonSetupPermissionsEvent
+import org.kryptonmc.krypton.locale.Messages
 import org.kryptonmc.krypton.network.SessionHandler
 import org.kryptonmc.krypton.network.data.ForwardedData
 import org.kryptonmc.krypton.network.data.VelocityProxy
@@ -54,9 +55,9 @@ import org.kryptonmc.krypton.packet.out.login.PacketOutLoginDisconnect
 import org.kryptonmc.krypton.packet.out.login.PacketOutLoginSuccess
 import org.kryptonmc.krypton.packet.out.login.PacketOutPluginRequest
 import org.kryptonmc.krypton.packet.out.login.PacketOutSetCompression
-import org.kryptonmc.krypton.server.ban.BanEntry
 import org.kryptonmc.krypton.util.ComponentException
 import org.kryptonmc.krypton.util.UUIDUtil
+import org.kryptonmc.krypton.util.asString
 import org.kryptonmc.krypton.util.crypto.Encryption
 import org.kryptonmc.krypton.util.crypto.InsecurePublicKeyException
 import org.kryptonmc.krypton.util.crypto.SignatureValidator
@@ -112,7 +113,7 @@ class LoginHandler(
         }
 
         // Ignore online mode if we want proxy forwarding
-        if (!server.isOnline || server.config.proxy.mode.authenticatesUsers) {
+        if (!server.config.isOnline || server.config.proxy.mode.authenticatesUsers) {
             if (server.config.proxy.mode == ProxyCategory.Mode.MODERN) {
                 session.send(PacketOutPluginRequest(velocityMessageId, VELOCITY_CHANNEL_ID, ByteArray(0)))
                 return
@@ -153,7 +154,7 @@ class LoginHandler(
             if (!it.result.isAllowed) return@thenApplyAsync null
             val profile = SessionService.hasJoined(name, sharedSecret, server.config.server.ip)
             if (profile == null) {
-                session.disconnect(Component.translatable("multiplayer.disconnect.unverified_username"))
+                session.disconnect(Messages.Disconnect.UNVERIFIED_USERNAME.build())
                 return@thenApplyAsync null
             }
             if (!canJoin(profile, address) || !callLoginEvent(profile)) return@thenApplyAsync null
@@ -168,7 +169,7 @@ class LoginHandler(
 
     private fun handlePluginResponse(packet: PacketInPluginResponse) {
         if (packet.messageId != velocityMessageId || server.config.proxy.mode != ProxyCategory.Mode.MODERN) {
-            disconnect(Component.translatable("multiplayer.disconnect.unexpected_query_response"))
+            disconnect(Messages.Disconnect.UNEXPECTED_QUERY_RESPONSE.build())
             return
         }
         if (packet.data == null) {
@@ -230,14 +231,13 @@ class LoginHandler(
     private fun verifyToken(verificationData: VerificationData): Boolean {
         if (publicKey != null && !verificationData.isSignatureValid(verifyToken, publicKey!!)) {
             LOGGER.error("Signature for public key was invalid for $name! Their connection may have been intercepted.")
-            val message = Component.text("Signature for public key was invalid! Your connection may have been intercepted.")
-            disconnect(Component.translatable("disconnect.loginFailedInfo", message))
+            val message = "Signature for public key was invalid! Your connection may have been intercepted."
+            disconnect(Messages.Disconnect.LOGIN_FAILED_INFO.build(message))
             return false
         }
         if (publicKey == null && !verificationData.isTokenValid(verifyToken)) {
             LOGGER.error("Verify tokens for $name did not match! Their connection may have been intercepted.")
-            val message = Component.text("Verify tokens did not match! Your connection may have been intercepted.")
-            disconnect(Component.translatable("disconnect.loginFailedInfo", message))
+            disconnect(Messages.Disconnect.LOGIN_FAILED_INFO.build("Verify tokens did not match! Your connection may have been intercepted."))
             return false
         }
         return true
@@ -284,41 +284,30 @@ class LoginHandler(
         val event = KryptonLoginEvent(profile.name, profile.uuid, session.channel.remoteAddress() as InetSocketAddress)
         val result = server.eventManager.fireSync(event).result
         if (!result.isAllowed) {
-            disconnect(result.reason ?: Component.translatable("multiplayer.disconnect.kicked"))
+            disconnect(result.reason ?: Messages.Disconnect.KICKED.build())
             return false
         }
         return true
     }
 
     private fun canJoin(profile: GameProfile, address: SocketAddress): Boolean {
-        val whitelist = server.playerManager.whitelist
-        val whitelistedIps = server.playerManager.whitelistedIps
-        if (server.playerManager.bannedPlayers.contains(profile)) { // We are banned
-            val entry = server.playerManager.bannedPlayers.get(profile)!!
-            val text = Component.translatable("multiplayer.disconnect.banned.reason", entry.reason)
-            // Add the expiration date
-            if (entry.expirationDate != null) {
-                val expirationDate = Component.text(BanEntry.DATE_FORMATTER.format(entry.expirationDate))
-                text.append(Component.translatable("multiplayer.disconnect.banned.expiration", expirationDate))
-            }
-
+        val whitelist = server.playerManager.whitelistManager
+        val banManager = server.playerManager.banManager
+        val addressString = address.asString()
+        if (banManager.isBanned(profile)) { // We are banned
+            val ban = banManager.get(profile)!!
             // Inform the client that they are banned
-            disconnect(text)
+            disconnect(Messages.Disconnect.BANNED_MESSAGE.build(ban.reason, ban.expirationDate))
             LOGGER.info("${profile.name} was disconnected as they are banned from this server.")
             return false
-        } else if (server.playerManager.whitelistEnabled && !whitelist.contains(profile) && !whitelistedIps.isWhitelisted(address)) {
+        } else if (whitelist.isEnabled && !whitelist.isWhitelisted(profile) && !whitelist.isWhitelisted(addressString)) {
             // We are not whitelisted
-            disconnect(Component.translatable("multiplayer.disconnect.not_whitelisted"))
+            disconnect(Messages.Disconnect.NOT_WHITELISTED.build())
             LOGGER.info("${profile.name} was disconnected as this server is whitelisted and they are not on the whitelist.")
             return false
-        } else if (server.playerManager.bannedIps.isBanned(address)) { // Their IP is banned.
-            val entry = server.playerManager.bannedIps.get(address)!!
-            val text = Component.translatable().key("multiplayer.disconnect.banned_ip.reason").args(entry.reason)
-            if (entry.expirationDate != null) {
-                val expirationDate = Component.text(BanEntry.DATE_FORMATTER.format(entry.expirationDate))
-                text.append(Component.translatable("multiplayer.disconnect.banned.expiration", expirationDate))
-            }
-            disconnect(text.build())
+        } else if (banManager.isBanned(addressString)) { // Their IP is banned.
+            val ban = banManager.get(addressString)!!
+            disconnect(Messages.Disconnect.BANNED_IP_MESSAGE.build(ban.reason, ban.expirationDate))
             LOGGER.info("${profile.name} disconnected. Reason: IP Banned")
         }
         return true
@@ -347,10 +336,6 @@ class LoginHandler(
         private val RANDOM = RandomSource.createThreadSafe()
         private val LOGGER = logger<LoginHandler>()
 
-        private val MISSING_PUBLIC_KEY = Component.translatable("multiplayer.disconnect.missing_public_key")
-        private val INVALID_SIGNATURE = Component.translatable("multiplayer.disconnect.invalid_public_key_signature")
-        private val INVALID_PUBLIC_KEY = Component.translatable("multiplayer.disconnect.invalid_public_key")
-
         @JvmStatic
         private fun generateVerifyToken(): ByteArray = Ints.toByteArray(RANDOM.nextInt())
 
@@ -358,16 +343,16 @@ class LoginHandler(
         private fun validatePublicKey(keyData: PlayerPublicKey.Data?, requireValid: Boolean): PlayerPublicKey? {
             try {
                 if (keyData == null) {
-                    if (requireValid) throw PublicKeyParseException(MISSING_PUBLIC_KEY)
+                    if (requireValid) throw PublicKeyParseException(Messages.Disconnect.MISSING_PUBLIC_KEY.build())
                     return null
                 }
                 return PlayerPublicKey.create(SignatureValidator.YGGDRASIL, keyData)
             } catch (exception: InsecurePublicKeyException.Missing) {
-                if (requireValid) throw PublicKeyParseException(INVALID_SIGNATURE, exception) else return null
+                if (requireValid) throw PublicKeyParseException(Messages.Disconnect.INVALID_SIGNATURE.build(), exception) else return null
             } catch (exception: InsecurePublicKeyException.Invalid) {
-                throw PublicKeyParseException(INVALID_PUBLIC_KEY, exception)
+                throw PublicKeyParseException(Messages.Disconnect.INVALID_PUBLIC_KEY.build(), exception)
             } catch (exception: Exception) {
-                throw PublicKeyParseException(INVALID_SIGNATURE, exception)
+                throw PublicKeyParseException(Messages.Disconnect.INVALID_SIGNATURE.build(), exception)
             }
         }
     }

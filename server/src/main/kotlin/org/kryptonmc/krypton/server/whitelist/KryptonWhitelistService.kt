@@ -30,30 +30,29 @@ import java.net.InetAddress
 
 class KryptonWhitelistService(private val server: KryptonServer) : WhitelistService {
 
+    private val whitelist = server.playerManager.whitelistManager
     override val isEnabled: Boolean
-        get() = server.playerManager.whitelistEnabled
+        get() = whitelist.isEnabled
 
-    override fun isWhitelisted(profile: GameProfile): Boolean = server.playerManager.whitelist.contains(profile)
+    override fun isWhitelisted(profile: GameProfile): Boolean = whitelist.isWhitelisted(profile)
 
-    override fun isWhitelisted(address: InetAddress): Boolean = server.playerManager.whitelistedIps.contains(address.asString())
+    override fun isWhitelisted(address: InetAddress): Boolean = whitelist.isWhitelisted(address.asString())
 
     override fun add(profile: GameProfile) {
-        server.eventManager.fire(KryptonWhitelistProfileEvent(profile))
-            .thenApplyAsync { if (it.result.isAllowed) server.playerManager.whitelist.add(WhitelistEntry(profile)) }
+        server.eventManager.fire(KryptonWhitelistProfileEvent(profile)).thenApplyAsync { if (it.result.isAllowed) whitelist.add(profile) }
     }
 
     override fun add(address: InetAddress) {
-        server.eventManager.fire(KryptonWhitelistIpEvent(address))
-            .thenApplyAsync { if (it.result.isAllowed) server.playerManager.whitelistedIps.add(WhitelistIpEntry(address.asString())) }
+        server.eventManager.fire(KryptonWhitelistIpEvent(address)).thenApplyAsync { if (it.result.isAllowed) whitelist.add(address.asString()) }
     }
 
     override fun remove(profile: GameProfile) {
         server.eventManager.fire(KryptonRemoveWhitelistedProfileEvent(profile))
-            .thenApplyAsync { if (it.result.isAllowed) server.playerManager.whitelist.remove(profile) }
+            .thenApplyAsync { if (it.result.isAllowed) whitelist.remove(profile) }
     }
 
     override fun remove(address: InetAddress) {
         server.eventManager.fire(KryptonRemoveWhitelistedIpEvent(address))
-            .thenApplyAsync { if (it.result.isAllowed) server.playerManager.whitelistedIps.remove(address.asString()) }
+            .thenApplyAsync { if (it.result.isAllowed) whitelist.remove(address.asString()) }
     }
 }

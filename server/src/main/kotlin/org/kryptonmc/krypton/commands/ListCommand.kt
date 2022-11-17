@@ -19,7 +19,6 @@
 package org.kryptonmc.krypton.commands
 
 import com.mojang.brigadier.CommandDispatcher
-import net.kyori.adventure.text.Component
 import org.kryptonmc.api.command.Sender
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.adventure.toPlainText
@@ -27,29 +26,25 @@ import org.kryptonmc.krypton.command.InternalCommand
 import org.kryptonmc.krypton.command.literal
 import org.kryptonmc.krypton.command.permission
 import org.kryptonmc.krypton.command.runs
+import org.kryptonmc.krypton.entity.player.KryptonPlayer
+import org.kryptonmc.krypton.locale.Messages
 
 object ListCommand : InternalCommand {
 
     override fun register(dispatcher: CommandDispatcher<Sender>) {
         dispatcher.register(literal("list") {
             permission(KryptonPermission.LIST)
-            runs { context ->
-                val server = context.source.server as? KryptonServer ?: return@runs
-                sendNames(context.source, server, server.players.map { it.displayName.toPlainText() })
-            }
+            runs { context -> sendNames(context.source) { it.displayName.toPlainText() } }
             literal("uuids") {
-                runs { context ->
-                    val server = context.source.server as? KryptonServer ?: return@runs
-                    sendNames(context.source, server, server.players.map { "${it.displayName.toPlainText()} (${it.uuid})" })
-                }
+                runs { context -> sendNames(context.source) { "${it.displayName.toPlainText()} (${it.uuid})" } }
             }
         })
     }
 
     @JvmStatic
-    private fun sendNames(sender: Sender, server: KryptonServer, names: List<String>) {
-        val maxPlayers = Component.text(server.maxPlayers)
-        val players = Component.text(names.joinToString("\n"))
-        sender.sendMessage(Component.translatable("commands.list.players", Component.text(names.size), maxPlayers, players))
+    private inline fun sendNames(sender: Sender, nameGetter: (KryptonPlayer) -> String) {
+        val server = sender.server as? KryptonServer ?: return
+        val names = server.players.map(nameGetter)
+        Messages.Commands.LIST_PLAYERS.send(sender, names.size, server.config.status.maxPlayers, names.joinToString("\n"))
     }
 }

@@ -9,7 +9,6 @@
 package org.kryptonmc.api
 
 import net.kyori.adventure.audience.ForwardingAudience
-import net.kyori.adventure.text.Component
 import org.kryptonmc.api.auth.ProfileCache
 import org.kryptonmc.api.command.CommandManager
 import org.kryptonmc.api.command.ConsoleSender
@@ -24,7 +23,6 @@ import org.kryptonmc.api.util.FactoryProvider
 import org.kryptonmc.api.world.WorldManager
 import org.kryptonmc.api.scoreboard.Scoreboard
 import org.kryptonmc.api.user.UserManager
-import java.net.InetSocketAddress
 import java.util.UUID
 
 /**
@@ -110,26 +108,9 @@ public interface Server : ForwardingAudience {
     public val scheduler: Scheduler
 
     /**
-     * The maximum amount of players that can be online at once.
+     * The configuration for the server.
      */
-    public val maxPlayers: Int
-
-    /**
-     * The message of the day for the server.
-     */
-    public val motd: Component
-
-    /**
-     * If this server is in online mode, meaning it authenticates players
-     * through verified means. The authentication provider will, for most
-     * implementations, be Mojang.
-     */
-    public val isOnline: Boolean
-
-    /**
-     * The address that this server is currently bound to.
-     */
-    public val address: InetSocketAddress
+    public val config: ServerConfig
 
     /**
      * The list of online players.
@@ -153,7 +134,7 @@ public interface Server : ForwardingAudience {
      * @param uuid the UUID
      * @return the player, or null if not present
      */
-    public fun player(uuid: UUID): Player?
+    public fun getPlayer(uuid: UUID): Player?
 
     /**
      * Gets the online player with the given [name], or returns null if there
@@ -165,5 +146,5 @@ public interface Server : ForwardingAudience {
      * @param name the player's name
      * @return the player, or null if not present
      */
-    public fun player(name: String): Player?
+    public fun getPlayer(name: String): Player?
 }

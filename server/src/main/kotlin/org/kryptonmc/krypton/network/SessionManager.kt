@@ -18,12 +18,13 @@
  */
 package org.kryptonmc.krypton.network
 
-import org.kryptonmc.krypton.KryptonServer
+import net.kyori.adventure.text.Component
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.network.handlers.PlayHandler
 import org.kryptonmc.krypton.packet.FramedPacket
 import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.packet.out.status.ServerStatus
+import org.kryptonmc.krypton.server.PlayerManager
 import org.kryptonmc.krypton.util.Maths
 import org.kryptonmc.krypton.util.frame
 import org.kryptonmc.krypton.util.random.RandomSource
@@ -31,12 +32,12 @@ import java.util.concurrent.ConcurrentHashMap
 import java.util.function.Predicate
 import kotlin.math.min
 
-class SessionManager(private val server: KryptonServer) {
+class SessionManager(private val playerManager: PlayerManager, motd: Component, maxPlayers: Int) {
 
     private val sessions = ConcurrentHashMap.newKeySet<SessionHandler>()
 
     private val random = RandomSource.create()
-    val status: ServerStatus = ServerStatus(server.motd, ServerStatus.Players(server.maxPlayers, server.playerManager.players.size), null)
+    val status: ServerStatus = ServerStatus(motd, ServerStatus.Players(maxPlayers, playerManager.players.size), null)
     private var statusInvalidated = false
     private var statusInvalidatedTime = 0L
     private var lastStatus = 0L
@@ -50,7 +51,7 @@ class SessionManager(private val server: KryptonServer) {
     }
 
     fun sendGrouped(packet: Packet, predicate: Predicate<KryptonPlayer> = Predicate { true }) {
-        sendGrouped(server.playerManager.players, packet, predicate)
+        sendGrouped(playerManager.players, packet, predicate)
     }
 
     fun sendGrouped(players: Collection<KryptonPlayer>, packet: Packet, predicate: Predicate<KryptonPlayer> = Predicate { true }) {
@@ -69,11 +70,11 @@ class SessionManager(private val server: KryptonServer) {
             lastStatus = time
             statusInvalidated = false
             statusInvalidatedTime = 0L
-            val playersOnline = server.playerManager.players.size
+            val playersOnline = playerManager.players.size
             status.players.online = playersOnline
             val sampleSize = min(playersOnline, MAXIMUM_SAMPLED_PLAYERS)
             val playerOffset = Maths.nextInt(random, 0, playersOnline - sampleSize)
-            val sample = Array(sampleSize) { server.playerManager.players.get(it + playerOffset).profile }.apply { shuffle() }
+            val sample = Array(sampleSize) { playerManager.players.get(it + playerOffset).profile }.apply { shuffle() }
             status.players.sample = sample
         }
         sessions.forEach {
