@@ -21,7 +21,6 @@ package org.kryptonmc.krypton.commands
 import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.arguments.StringArgumentType
 import com.mojang.brigadier.context.CommandContext
-import net.kyori.adventure.text.Component
 import org.kryptonmc.api.command.Sender
 import org.kryptonmc.api.event.player.ChangeGameModeEvent
 import org.kryptonmc.api.world.GameMode
@@ -29,11 +28,12 @@ import org.kryptonmc.krypton.command.InternalCommand
 import org.kryptonmc.krypton.command.argument
 import org.kryptonmc.krypton.command.argument.argument
 import org.kryptonmc.krypton.command.arguments.entities.EntityArgumentType
-import org.kryptonmc.krypton.command.arguments.entities.entityArgument
+import org.kryptonmc.krypton.command.arguments.entityArgument
 import org.kryptonmc.krypton.command.literal
 import org.kryptonmc.krypton.command.permission
 import org.kryptonmc.krypton.command.runs
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
+import org.kryptonmc.krypton.locale.Messages
 import org.kryptonmc.krypton.util.GameModes
 
 object GameModeCommand : InternalCommand {
@@ -93,11 +93,10 @@ object GameModeCommand : InternalCommand {
         entities.forEach {
             it.updateGameMode(mode, ChangeGameModeEvent.Cause.COMMAND)
             if (sender === it) {
-                sender.sendMessage(Component.translatable("gameMode.changed", Component.translatable(mode.translationKey())))
+                Messages.GAME_MODE_CHANGED.send(sender, mode)
                 return@forEach
             }
-            val translation = Component.translatable(mode.translationKey())
-            sender.sendMessage(Component.translatable("commands.gamemode.success.other", it.displayName, translation))
+            Messages.Commands.GAME_MODE_SUCCESS.send(sender, it.displayName, mode)
         }
     }
 }

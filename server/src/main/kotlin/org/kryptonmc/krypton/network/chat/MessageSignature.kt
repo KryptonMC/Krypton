@@ -21,7 +21,7 @@ package org.kryptonmc.krypton.network.chat
 import io.netty.buffer.ByteBuf
 import it.unimi.dsi.fastutil.bytes.ByteArrays
 import net.kyori.adventure.text.Component
-import org.kryptonmc.krypton.adventure.toStableJson
+import org.kryptonmc.krypton.adventure.KryptonAdventure
 import org.kryptonmc.krypton.entity.player.PlayerPublicKey
 import org.kryptonmc.krypton.network.Writable
 import org.kryptonmc.krypton.util.crypto.SignatureUpdater
@@ -78,7 +78,7 @@ data class MessageSignature(val timestamp: Instant, val salt: Long, val signatur
             buffer.putLong(uuid.mostSignificantBits).putLong(uuid.leastSignificantBits)
             buffer.putLong(timestamp.epochSecond)
             output.update(bytes)
-            output.update(message.toStableJson().toByteArray())
+            output.update(KryptonAdventure.toStableJson(message).toByteArray())
         }
     }
 }

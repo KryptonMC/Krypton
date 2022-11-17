@@ -28,7 +28,7 @@ import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.adventure.toMessage
 import org.kryptonmc.krypton.adventure.toPlainText
 import org.kryptonmc.krypton.command.BrigadierExceptions
-import org.kryptonmc.krypton.command.toExceptionType
+import org.kryptonmc.krypton.command.arguments.CommandExceptions
 import org.kryptonmc.krypton.entity.KryptonEntity
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.util.GameModes
@@ -44,7 +44,7 @@ data class EntityQuery(val type: Selector, private val args: List<EntityArgument
     constructor(type: Selector) : this(type, emptyList(), "")
 
     fun entities(source: KryptonPlayer): List<KryptonEntity> {
-        val players = source.server.players
+        val players = source.server.playerManager.players
         when (type) {
             Selector.RANDOM_PLAYER -> return listOf(players.random())
             Selector.ALL_PLAYERS -> {
@@ -62,7 +62,7 @@ data class EntityQuery(val type: Selector, private val args: List<EntityArgument
                 return listOf(currentNearest)
             }
             Selector.PLAYER -> {
-                val player = source.server.player(playerName) ?: throw EntityArgumentExceptions.UNKNOWN_PLAYER.create()
+                val player = source.server.getPlayer(playerName) ?: throw EntityArgumentExceptions.UNKNOWN_PLAYER.create()
                 return listOf(player)
             }
             Selector.UNKNOWN -> throw EntityArgumentExceptions.UNKNOWN_SELECTOR.create("")
@@ -80,10 +80,10 @@ data class EntityQuery(val type: Selector, private val args: List<EntityArgument
     fun players(sender: Sender): List<KryptonPlayer> {
         val server = sender.server as KryptonServer
         if (sender is KryptonPlayer) {
-            if (playerName.isNotEmpty()) return listOf(server.player(playerName).orThrow())
+            if (playerName.isNotEmpty()) return listOf(server.getPlayer(playerName).orThrow())
             return entities(sender).ensureAllOfType { UnsupportedOperationException("Cannot call players if there is an entity in the arguments!") }
         }
-        return listOf(server.player(playerName).orThrow())
+        return listOf(server.getPlayer(playerName).orThrow())
     }
 
     fun profiles(sender: Sender): List<GameProfile> {
@@ -251,7 +251,7 @@ data class EntityQuery(val type: Selector, private val args: List<EntityArgument
     companion object {
 
         private val NOT_IMPLEMENTED = DynamicCommandExceptionType { Component.text(it.toString()).toMessage() }
-        private val OUT_OF_RANGE = Component.translatable("argument.range.empty").toExceptionType()
+        private val OUT_OF_RANGE = CommandExceptions.simple("argument.range.empty")
     }
 }
 

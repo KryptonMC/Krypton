@@ -29,7 +29,7 @@ import net.kyori.adventure.title.Title
 import net.kyori.adventure.title.TitlePart
 import org.kryptonmc.api.entity.player.ChatVisibility
 import org.kryptonmc.krypton.adventure.BossBarManager
-import org.kryptonmc.krypton.adventure.toItemStack
+import org.kryptonmc.krypton.adventure.KryptonAdventure
 import org.kryptonmc.krypton.entity.KryptonEntity
 import org.kryptonmc.krypton.item.KryptonItemStack
 import org.kryptonmc.krypton.network.chat.ChatSender
@@ -159,6 +159,6 @@ interface PlayerAudience : NetworkPlayer {
     }
 
     override fun openBook(book: Book) {
-        openBook(book.toItemStack())
+        openBook(KryptonAdventure.toItemStack(book))
     }
 }

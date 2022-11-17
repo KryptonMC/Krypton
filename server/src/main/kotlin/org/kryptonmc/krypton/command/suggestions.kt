@@ -27,6 +27,7 @@ import java.util.concurrent.CompletableFuture
 import java.util.function.Consumer
 import java.util.function.Function
 import java.util.function.Predicate
+import java.util.stream.Stream
 
 fun SuggestionsBuilder.suggestCoordinates(text: String, coordinates: TextCoordinates, predicate: Predicate<String>): CompletableFuture<Suggestions> {
     val results = ArrayList<String>()
@@ -77,6 +78,16 @@ fun <T> Sequence<T>.filterResources(text: String, provider: Function<T, Key>, co
 }
 
 private fun SuggestionsBuilder.suggest(suggestions: Iterable<String>): CompletableFuture<Suggestions> {
+    suggestions.forEach { if (remainingLowerCase.matchesSubString(it.lowercase())) suggest(it) }
+    return buildFuture()
+}
+
+fun SuggestionsBuilder.suggest(suggestions: Stream<String>): CompletableFuture<Suggestions> {
+    suggestions.filter { remainingLowerCase.matchesSubString(it.lowercase()) }.forEach(::suggest)
+    return buildFuture()
+}
+
+fun SuggestionsBuilder.suggest(suggestions: Array<String>): CompletableFuture<Suggestions> {
     suggestions.forEach { if (remainingLowerCase.matchesSubString(it.lowercase())) suggest(it) }
     return buildFuture()
 }

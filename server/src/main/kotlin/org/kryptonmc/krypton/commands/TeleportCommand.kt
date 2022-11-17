@@ -20,7 +20,6 @@ package org.kryptonmc.krypton.commands
 
 import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.builder.LiteralArgumentBuilder
-import net.kyori.adventure.text.Component
 import org.kryptonmc.api.command.Sender
 import org.kryptonmc.api.entity.player.Player
 import org.kryptonmc.krypton.command.InternalCommand
@@ -28,12 +27,13 @@ import org.kryptonmc.krypton.command.argument
 import org.kryptonmc.krypton.command.arguments.VectorArgument
 import org.kryptonmc.krypton.command.arguments.coordinates.Coordinates
 import org.kryptonmc.krypton.command.arguments.entities.EntityArgumentType
-import org.kryptonmc.krypton.command.arguments.entities.entityArgument
+import org.kryptonmc.krypton.command.arguments.entityArgument
 import org.kryptonmc.krypton.command.permission
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.command.argument.argument
 import org.kryptonmc.krypton.command.literal
 import org.kryptonmc.krypton.command.runs
+import org.kryptonmc.krypton.locale.Messages
 
 object TeleportCommand : InternalCommand {
 
@@ -56,7 +56,7 @@ object TeleportCommand : InternalCommand {
                     if (players.size == 1) {
                         val player = players.get(0)
                         player.teleport(player.location)
-                        sender.sendMessage(Component.translatable("commands.teleport.success.entity.single", sender.displayName, player.displayName))
+                        Messages.Commands.TELEPORT_SINGLE_ENTITY.send(sender, sender.displayName, player.displayName)
                     }
                 }
                 argument("target", EntityArgumentType.players()) {
@@ -65,8 +65,7 @@ object TeleportCommand : InternalCommand {
                         val players = context.entityArgument(PLAYERS_ARGUMENT).players(sender)
                         val target = context.entityArgument("target").players(sender).get(0)
                         players.forEach { it.teleport(target.location) }
-                        val playerCount = Component.text(players.size.toString())
-                        sender.sendMessage(Component.translatable("commands.teleport.success.entity.multiple", playerCount, target.displayName))
+                        Messages.Commands.TELEPORT_MULTIPLE_ENTITIES.send(sender, players.size, target.displayName)
                     }
                 }
                 argument(LOCATION_ARGUMENT, VectorArgument.normal()) {
@@ -75,11 +74,7 @@ object TeleportCommand : InternalCommand {
                         val players = context.entityArgument(PLAYERS_ARGUMENT).players(sender)
                         val location = context.argument<Coordinates>(LOCATION_ARGUMENT).position(sender)
                         players.forEach { it.teleport(location) }
-                        val playerCount = Component.text(players.size.toString())
-                        val x = Component.text(location.floorX().toString())
-                        val y = Component.text(location.floorY().toString())
-                        val z = Component.text(location.floorZ().toString())
-                        sender.sendMessage(Component.translatable("commands.teleport.success.location.multiple", playerCount, x, y, z))
+                        Messages.Commands.TELEPORT_MULTIPLE_LOCATIONS.send(sender, players.size, location)
                     }
                 }
             }

@@ -40,7 +40,7 @@ class KryptonUser(override val profile: GameProfile, var data: CompoundTag, priv
     override val isOnline: Boolean
         get() = player != null
     override val player: KryptonPlayer?
-        get() = server.player(uuid)
+        get() = server.getPlayer(uuid)
     override val hasJoinedBefore: Boolean
         get() {
             val player = player

@@ -40,9 +40,9 @@ import java.util.concurrent.atomic.AtomicLong
 class ProfileHolder(val profile: GameProfile, val expiryDate: ZonedDateTime) : Comparable<ProfileHolder> {
 
     @Volatile
-    var lastAccess: Long = 0L
+    private var lastAccess = 0L
 
-    fun profile(operations: AtomicLong): GameProfile {
+    fun updateAndGetProfile(operations: AtomicLong): GameProfile {
         lastAccess = operations.incrementAndGet()
         return profile
     }

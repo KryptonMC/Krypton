@@ -138,7 +138,7 @@ class KryptonCommandManager : CommandManager {
 
                 // Append the "[HERE]" text (locale-specific) to the end, just like vanilla.
                 errorMessage.append(Component.translatable("command.context.here", NamedTextColor.RED, TextDecoration.ITALIC))
-                sender.sendMessage(Component.empty().append(errorMessage).color(NamedTextColor.RED))
+                sender.sendMessage(Component.text().append(errorMessage).color(NamedTextColor.RED))
             }
             false
         } catch (naughty: Throwable) { // We catch Throwable because plugins like to do stupid things sometimes.

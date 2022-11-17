@@ -18,8 +18,8 @@
  */
 package org.kryptonmc.krypton.util
 
-import net.kyori.adventure.text.Component
 import org.kryptonmc.krypton.adventure.toPlainText
+import org.kryptonmc.krypton.locale.Messages
 import org.kryptonmc.krypton.world.chunk.ChunkStatus
 
 class ChunkProgressListener(radius: Int) {
@@ -46,8 +46,7 @@ class ChunkProgressListener(radius: Int) {
         val progress = progress
         if (System.currentTimeMillis() > nextTickTime) {
             nextTickTime += MILLISECONDS_PER_TICK
-            val message = Component.translatable("menu.preparingSpawn", Component.text(Maths.clamp(progress, 0, 100)))
-            LOGGER.info(TranslationBootstrap.render(message).toPlainText())
+            LOGGER.info(TranslationBootstrap.render(Messages.PREPARING_SPAWN.build(Maths.clamp(progress, 0, 100))).toPlainText())
         }
     }
 

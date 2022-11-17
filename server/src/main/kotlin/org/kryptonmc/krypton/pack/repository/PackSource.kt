@@ -19,7 +19,7 @@
 package org.kryptonmc.krypton.pack.repository
 
 import net.kyori.adventure.text.Component
-import net.kyori.adventure.text.format.NamedTextColor
+import org.kryptonmc.krypton.locale.Messages
 
 fun interface PackSource {
 
@@ -28,14 +28,11 @@ fun interface PackSource {
     companion object {
 
         @JvmField
-        val BUILT_IN: PackSource = decorating("pack.source.builtin")
+        val BUILT_IN: PackSource = decorating(Messages.Pack.SOURCE_BUILTIN.build())
         @JvmField
-        val WORLD: PackSource = decorating("pack.source.world")
+        val WORLD: PackSource = decorating(Messages.Pack.SOURCE_WORLD.build())
 
         @JvmStatic
-        fun decorating(translationKey: String): PackSource {
-            val translation = Component.translatable(translationKey)
-            return PackSource { Component.translatable("pack.nameAndSource", NamedTextColor.GRAY, it, translation) }
-        }
+        fun decorating(translation: Component): PackSource = PackSource { Messages.Pack.NAME_AND_SOURCE.build(it, translation) }
     }
 }

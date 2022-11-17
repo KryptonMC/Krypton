@@ -31,8 +31,8 @@ class KryptonBanBuilder : Ban.Builder, Ban.Builder.EndStep {
     private var type: BanType? = null
     private var profile: GameProfile? = null
     private var address: InetAddress? = null
-    private var source: Component = BanEntry.DEFAULT_SOURCE
-    private var reason: Component = BanEntry.DEFAULT_REASON
+    private var source: Component = KryptonBan.DEFAULT_SOURCE
+    private var reason: Component = KryptonBan.DEFAULT_REASON
     private var start: OffsetDateTime? = null
     private var end: OffsetDateTime? = null
 
@@ -48,14 +48,14 @@ class KryptonBanBuilder : Ban.Builder, Ban.Builder.EndStep {
 
     override fun source(source: Component): KryptonBanBuilder = apply { this.source = source }
 
-    override fun reason(reason: Component?): KryptonBanBuilder = apply { this.reason = reason ?: BanEntry.DEFAULT_REASON }
+    override fun reason(reason: Component?): KryptonBanBuilder = apply { this.reason = reason ?: KryptonBan.DEFAULT_REASON }
 
     override fun creationDate(date: OffsetDateTime): KryptonBanBuilder = apply { start = date }
 
     override fun expirationDate(date: OffsetDateTime?): KryptonBanBuilder = apply { end = date }
 
     override fun build(): Ban = when (type!!) {
-        BanType.PROFILE -> BannedPlayerEntry(profile!!, start ?: OffsetDateTime.now(), source, end, reason)
-        BanType.IP -> BannedIpEntry(address!!.asString(), start ?: OffsetDateTime.now(), source, end, reason)
+        BanType.PROFILE -> KryptonProfileBan(profile!!, source, reason, start ?: OffsetDateTime.now(), end)
+        BanType.IP -> KryptonIpBan(address!!.asString(), source, reason, start ?: OffsetDateTime.now(), end)
     }
 }

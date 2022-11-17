@@ -18,10 +18,8 @@
  */
 package org.kryptonmc.krypton.commands
 
-import com.mojang.brigadier.Command
 import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.arguments.StringArgumentType
-import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer
 import org.kryptonmc.api.auth.GameProfile
 import org.kryptonmc.api.command.Sender
@@ -32,56 +30,45 @@ import org.kryptonmc.krypton.command.arguments.GameProfileArgument
 import org.kryptonmc.krypton.command.arguments.gameProfileArgument
 import org.kryptonmc.krypton.command.permission
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
-import org.kryptonmc.krypton.server.ban.BanEntry
-import org.kryptonmc.krypton.server.ban.BannedPlayerEntry
 import org.kryptonmc.krypton.command.argument.argument
 import org.kryptonmc.krypton.command.literal
 import org.kryptonmc.krypton.command.runs
+import org.kryptonmc.krypton.locale.Messages
+import org.kryptonmc.krypton.server.ban.KryptonProfileBan
 
 object BanCommand : InternalCommand {
 
     private const val TARGETS_ARGUMENT = "targets"
     private const val REASON_ARGUMENT = "reason"
+    private const val DEFAULT_REASON = "Banned by operator."
 
     override fun register(dispatcher: CommandDispatcher<Sender>) {
         dispatcher.register(literal("ban") {
             permission(KryptonPermission.BAN)
             argument(TARGETS_ARGUMENT, GameProfileArgument) {
-                runs {
-                    val server = it.source.server as? KryptonServer ?: return@runs
-                    ban(it.gameProfileArgument(TARGETS_ARGUMENT).profiles(it.source), server, it.source)
-                    Command.SINGLE_SUCCESS
-                }
+                runs { ban(it.gameProfileArgument(TARGETS_ARGUMENT).profiles(it.source), it.source, DEFAULT_REASON) }
                 argument(REASON_ARGUMENT, StringArgumentType.string()) {
-                    runs {
-                        val server = it.source.server as? KryptonServer ?: return@runs
-                        ban(it.gameProfileArgument(TARGETS_ARGUMENT).profiles(it.source), server, it.source, it.argument(REASON_ARGUMENT))
-                        Command.SINGLE_SUCCESS
-                    }
+                    runs { ban(it.gameProfileArgument(TARGETS_ARGUMENT).profiles(it.source), it.source, it.argument(REASON_ARGUMENT)) }
                 }
             }
         })
     }
 
     @JvmStatic
-    private fun ban(profiles: List<GameProfile>, server: KryptonServer, sender: Sender, reason: String = "Banned by operator.") {
-        val bannedPlayers = server.playerManager.bannedPlayers
+    private fun ban(profiles: List<GameProfile>, sender: Sender, reason: String) {
+        val server = sender.server as? KryptonServer ?: return
+        val banManager = server.playerManager.banManager
         profiles.forEach { profile ->
-            if (bannedPlayers.contains(profile)) return@forEach
-            val entry = BannedPlayerEntry(profile, reason = LegacyComponentSerializer.legacySection().deserialize(reason))
-            bannedPlayers.add(entry)
-            server.player(profile.uuid)?.let { kick(entry, it) }
-            sender.sendMessage(Component.translatable("commands.ban.success", Component.text(profile.name), Component.text(reason)))
+            if (banManager.isBanned(profile)) return@forEach
+            val ban = KryptonProfileBan(profile, reason = LegacyComponentSerializer.legacySection().deserialize(reason))
+            banManager.add(ban)
+            server.getPlayer(profile.uuid)?.let { kick(ban, it) }
+            Messages.Commands.BAN_SUCCESS.send(sender, profile.name, reason)
         }
     }
 
     @JvmStatic
-    private fun kick(entry: BannedPlayerEntry, player: KryptonPlayer) {
-        val text = Component.translatable("multiplayer.disconnect.banned.reason", entry.reason)
-        if (entry.expirationDate != null) {
-            val expirationDate = Component.text(BanEntry.DATE_FORMATTER.format(entry.expirationDate))
-            text.append(Component.translatable("multiplayer.disconnect.banned.expiration", expirationDate))
-        }
-        player.disconnect(text)
+    private fun kick(ban: KryptonProfileBan, player: KryptonPlayer) {
+        player.disconnect(Messages.Disconnect.BANNED_MESSAGE.build(ban.reason, ban.expirationDate))
     }
 }

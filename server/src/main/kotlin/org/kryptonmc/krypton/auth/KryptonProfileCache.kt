@@ -50,14 +50,14 @@ class KryptonProfileCache(private val path: Path) : ProfileCache {
         add(ProfileHolder(profile, ZonedDateTime.now().plusMonths(1)))
     }
 
-    override fun get(name: String): GameProfile? = profilesByName.get(name)?.profile(operations)
+    override fun get(name: String): GameProfile? = profilesByName.get(name)?.updateAndGetProfile(operations)
 
-    override fun get(uuid: UUID): GameProfile? = profilesByUUID.get(uuid)?.profile(operations)
+    override fun get(uuid: UUID): GameProfile? = profilesByUUID.get(uuid)?.updateAndGetProfile(operations)
 
     override fun iterator(): Iterator<GameProfile> = profiles.iterator()
 
     private fun add(holder: ProfileHolder) {
-        val profile = holder.profile(operations)
+        val profile = holder.updateAndGetProfile(operations)
         profilesByName.put(profile.name, holder)
         profilesByUUID.put(profile.uuid, holder)
         profileSet.add(profile)

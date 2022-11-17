@@ -21,7 +21,6 @@ package org.kryptonmc.krypton.network.handlers
 import com.mojang.brigadier.StringReader
 import net.kyori.adventure.audience.MessageType
 import net.kyori.adventure.text.Component
-import net.kyori.adventure.text.event.ClickEvent
 import net.kyori.adventure.translation.Translator
 import org.kryptonmc.api.block.Blocks
 import org.kryptonmc.api.entity.Hand
@@ -45,6 +44,7 @@ import org.kryptonmc.krypton.event.player.KryptonRotateEvent
 import org.kryptonmc.krypton.inventory.KryptonPlayerInventory
 import org.kryptonmc.krypton.item.handler
 import org.kryptonmc.krypton.item.handler.ItemTimedHandler
+import org.kryptonmc.krypton.locale.Messages
 import org.kryptonmc.krypton.network.SessionHandler
 import org.kryptonmc.krypton.network.chat.Chat
 import org.kryptonmc.krypton.network.chat.ChatTypes
@@ -115,7 +115,7 @@ class PlayHandler(override val server: KryptonServer, override val session: Sess
         val time = System.currentTimeMillis()
         if (time - lastKeepAlive < KEEP_ALIVE_INTERVAL) return
         if (pendingKeepAlive) {
-            session.disconnect(Component.translatable("disconnect.timeout"))
+            session.disconnect(Messages.Disconnect.TIMEOUT.build())
             return
         }
         pendingKeepAlive = true
@@ -182,7 +182,7 @@ class PlayHandler(override val server: KryptonServer, override val session: Sess
             if (!event.result.isAllowed) return@thenAcceptAsync
             if (!verifyChatMessage(packet.message, packet.signature.timestamp)) return@thenAcceptAsync
 
-            val message = event.result.reason ?: createChatMessage(player, packet.message)
+            val message = event.result.reason ?: Messages.CHAT_TYPE_TEXT.build(player, packet.message)
             if (!packet.signature.verify(player.publicKey, message, player.uuid)) {
                 LOGGER.warn("Chat message ${packet.message} with invalid signature sent by ${player.name}. Ignoring...")
                 return@thenAcceptAsync
@@ -197,7 +197,7 @@ class PlayHandler(override val server: KryptonServer, override val session: Sess
     private fun verifyChatMessage(message: String, timestamp: Instant): Boolean {
         if (!updateChatOrder(timestamp)) {
             LOGGER.warn("Out of order chat message $message received from ${player.profile.name}. Disconnecting...")
-            session.disconnect(Component.translatable("multiplayer.disconnect.out_of_order_chat"))
+            session.disconnect(Messages.Disconnect.OUT_OF_ORDER_CHAT.build())
             return false
         }
         if (isChatExpired(timestamp)) {
@@ -278,7 +278,7 @@ class PlayHandler(override val server: KryptonServer, override val session: Sess
             sessionManager.sendGrouped(PacketOutPlayerInfo(PacketOutPlayerInfo.Action.UPDATE_LATENCY, player))
             return
         }
-        session.disconnect(Component.translatable("disconnect.timeout"))
+        session.disconnect(Messages.Disconnect.TIMEOUT.build())
     }
 
     private fun handleAbilities(packet: PacketInAbilities) {
@@ -424,7 +424,7 @@ class PlayHandler(override val server: KryptonServer, override val session: Sess
 
     private fun handleResourcePack(packet: PacketInResourcePack) {
         if (packet.status == ResourcePack.Status.DECLINED && server.config.server.resourcePack.forced) {
-            session.disconnect(Component.translatable("multiplayer.requiredTexturePrompt.disconnect"))
+            session.disconnect(Messages.Disconnect.REQUIRED_TEXTURE_PROMPT.build())
             return
         }
         server.eventManager.fireAndForget(KryptonResourcePackStatusEvent(player, packet.status))
@@ -458,13 +458,6 @@ class PlayHandler(override val server: KryptonServer, override val session: Sess
         private val LOGGER = logger<PlayHandler>()
 
         private val CHAT_EXPIRE_DURATION = Duration.ofMinutes(5)
-        private val ILLEGAL_CHAT_CHARACTERS_MESSAGE = Component.translatable("multiplayer.disconnect.illegal_characters")
-
-        @JvmStatic
-        private fun createChatMessage(player: KryptonPlayer, message: String): Component {
-            val name = player.profile.name
-            val displayName = player.displayName.insertion(name).clickEvent(ClickEvent.suggestCommand("/msg $name")).hoverEvent(player)
-            return Component.translatable("chat.type.text", displayName, Component.text(message))
-        }
+        private val ILLEGAL_CHAT_CHARACTERS_MESSAGE = Messages.Disconnect.ILLEGAL_CHARACTERS.build()
     }
 }

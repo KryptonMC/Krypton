@@ -35,9 +35,6 @@ data class ServerCategory(
     @Setting("compression-threshold")
     @Comment("The threshold at which packets larger will be compressed. Set to -1 to disable.")
     val compressionThreshold: Int = 256,
-    @Setting("whitelist-enabled")
-    @Comment("Whether only specific users can join the server or not")
-    val whitelistEnabled: Boolean = false,
     @Setting("resource-pack")
     @Comment("Settings for the server resource pack")
     val resourcePack: ResourcePackCategory = ResourcePackCategory()

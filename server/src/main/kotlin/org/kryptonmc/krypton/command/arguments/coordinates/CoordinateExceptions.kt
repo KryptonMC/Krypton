@@ -19,8 +19,7 @@
 package org.kryptonmc.krypton.command.arguments.coordinates
 
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType
-import net.kyori.adventure.text.Component
-import org.kryptonmc.krypton.command.toExceptionType
+import org.kryptonmc.krypton.command.arguments.CommandExceptions
 
 /**
  * Various exceptions that may be thrown as a result of trying to parse
@@ -40,7 +39,7 @@ object CoordinateExceptions {
      * - `^6 ^2 ^`
      */
     @JvmField
-    val POSITION_EXPECTED_DOUBLE: SimpleCommandExceptionType = Component.translatable("argument.pos.missing.double").toExceptionType()
+    val POSITION_EXPECTED_DOUBLE: SimpleCommandExceptionType = CommandExceptions.simple("argument.pos.missing.double")
 
     /**
      * Thrown when a user fails to input all 3 coordinates that are required.
@@ -51,7 +50,7 @@ object CoordinateExceptions {
      * - `6 4`
      */
     @JvmField
-    val POSITION_3D_INCOMPLETE: SimpleCommandExceptionType = Component.translatable("argument.pos3d.incomplete").toExceptionType()
+    val POSITION_3D_INCOMPLETE: SimpleCommandExceptionType = CommandExceptions.simple("argument.pos3d.incomplete")
 
     /**
      * Thrown when a user inputs coordinates of different types in to the same
@@ -63,5 +62,5 @@ object CoordinateExceptions {
      * - `~6 ^4 0`
      */
     @JvmField
-    val POSITION_MIXED_TYPE: SimpleCommandExceptionType = Component.translatable("argument.pos.mixed").toExceptionType()
+    val POSITION_MIXED_TYPE: SimpleCommandExceptionType = CommandExceptions.simple("argument.pos.mixed")
 }

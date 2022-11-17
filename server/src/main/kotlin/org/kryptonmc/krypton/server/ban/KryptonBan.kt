@@ -22,40 +22,34 @@ import com.google.gson.stream.JsonWriter
 import net.kyori.adventure.text.Component
 import org.kryptonmc.api.user.ban.Ban
 import org.kryptonmc.krypton.adventure.toLegacySectionText
-import org.kryptonmc.krypton.server.ServerConfigEntry
 import java.time.OffsetDateTime
 import java.time.format.DateTimeFormatter
 
-sealed class BanEntry<T>(
-    key: T,
-    final override val creationDate: OffsetDateTime = OffsetDateTime.now(),
-    final override val source: Component = DEFAULT_SOURCE,
-    final override val expirationDate: OffsetDateTime? = null,
-    final override val reason: Component = DEFAULT_REASON
-) : ServerConfigEntry<T>(key), Ban {
+abstract class KryptonBan(
+    override val source: Component,
+    override val reason: Component,
+    override val creationDate: OffsetDateTime,
+    override val expirationDate: OffsetDateTime?
+) : Ban {
 
     private val sourceName by lazy { source.toLegacySectionText() }
     private val reasonString by lazy { reason.toLegacySectionText() }
-    private val startFormatted by lazy { creationDate.format(DATE_FORMATTER) }
-    private val endFormatted by lazy { expirationDate?.format(DATE_FORMATTER) ?: "forever" }
 
     abstract fun writeKey(writer: JsonWriter)
 
-    final override fun write(writer: JsonWriter) {
+    fun write(writer: JsonWriter) {
         writer.beginObject()
         writeKey(writer)
         writer.name("created")
-        writer.value(startFormatted)
+        writer.value(creationDate.format(DATE_FORMATTER))
         writer.name("source")
         writer.value(sourceName)
         writer.name("expires")
-        writer.value(endFormatted)
+        writer.value(expirationDate?.format(DATE_FORMATTER) ?: "forever")
         writer.name("reason")
         writer.value(reasonString)
         writer.endObject()
     }
-
-    final override fun hasExpired(): Boolean = expirationDate?.isBefore(OffsetDateTime.now()) ?: false
 
     companion object {
 

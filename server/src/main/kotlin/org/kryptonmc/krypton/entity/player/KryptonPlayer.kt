@@ -151,7 +151,7 @@ class KryptonPlayer(
         get() = !isFlying
 
     override val isOnline: Boolean
-        get() = server.player(uuid) === this
+        get() = server.getPlayer(uuid) === this
     override var hasJoinedBefore: Boolean = false
     override var firstJoined: Instant = Instant.EPOCH
     override var lastJoined: Instant = Instant.now()

@@ -56,7 +56,7 @@ object SessionService {
         shaDigest.update(SERVER_ID_BYTES)
         shaDigest.update(secret)
         shaDigest.update(Encryption.publicKey.encoded)
-        val serverId = shaDigest.hexDigest()
+        val serverId = hexDigest(shaDigest)
 
         val request = HttpRequest.newBuilder(URI("$BASE_URL?username=$username&serverId=$serverId&ip=$ip")).build()
         val response = client.send(request, BodyHandlers.ofString())
@@ -71,7 +71,7 @@ object SessionService {
         profiles.put(profile.name, profile)
         return profile
     }
-}
 
-// This is Yggdrasil's strange way of digesting to hex.
-private fun MessageDigest.hexDigest(): String = BigInteger(digest()).toString(16)
+    @JvmStatic
+    private fun hexDigest(digest: MessageDigest): String = BigInteger(digest.digest()).toString(16)
+}

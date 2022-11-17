@@ -19,9 +19,18 @@
 package org.kryptonmc.krypton.adventure
 
 import it.unimi.dsi.fastutil.objects.Object2IntArrayMap
+import net.kyori.adventure.inventory.Book
+import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.TranslatableComponent
 import net.kyori.adventure.text.flattener.ComponentFlattener
 import net.kyori.adventure.text.format.NamedTextColor
+import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer
+import org.kryptonmc.api.item.ItemTypes
+import org.kryptonmc.api.item.meta.WrittenBookMeta
+import org.kryptonmc.krypton.item.KryptonItemStack
+import org.kryptonmc.krypton.item.downcast
+import org.kryptonmc.krypton.item.meta.KryptonWrittenBookMeta
+import org.kryptonmc.krypton.util.GsonHelper
 import org.kryptonmc.krypton.util.Reflection
 import org.kryptonmc.krypton.util.TranslationBootstrap
 
@@ -57,4 +66,21 @@ object KryptonAdventure {
 
     @JvmStatic
     fun colorFromId(id: Int): NamedTextColor = NAMED_TEXT_COLORS.get(id)
+
+    @JvmStatic
+    fun toItemStack(book: Book): KryptonItemStack {
+        if (book is KryptonWrittenBookMeta) return KryptonItemStack(ItemTypes.WRITTEN_BOOK.downcast(), 1, book)
+        return KryptonItemStack.Builder()
+            .type(ItemTypes.WRITTEN_BOOK)
+            .amount(1)
+            .meta(WrittenBookMeta::class.java) {
+                title(book.title())
+                author(book.author())
+                pages(book.pages())
+            }
+            .build()
+    }
+
+    @JvmStatic
+    fun toStableJson(component: Component): String = GsonHelper.toStableString(GsonComponentSerializer.gson().serializeToTree(component))
 }

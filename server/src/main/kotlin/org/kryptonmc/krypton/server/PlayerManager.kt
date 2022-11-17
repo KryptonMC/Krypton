@@ -19,8 +19,6 @@
 package org.kryptonmc.krypton.server
 
 import net.kyori.adventure.key.Key
-import net.kyori.adventure.text.Component
-import net.kyori.adventure.text.format.NamedTextColor
 import org.kryptonmc.api.scoreboard.Objective
 import org.kryptonmc.api.statistic.CustomStatistics
 import org.kryptonmc.api.world.World
@@ -29,6 +27,7 @@ import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.event.player.KryptonJoinEvent
 import org.kryptonmc.krypton.event.player.KryptonQuitEvent
+import org.kryptonmc.krypton.locale.Messages
 import org.kryptonmc.krypton.network.SessionHandler
 import org.kryptonmc.krypton.packet.FramedPacket
 import org.kryptonmc.krypton.packet.Packet
@@ -51,10 +50,8 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateTags
 import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateTeams
 import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateTime
 import org.kryptonmc.krypton.registry.KryptonRegistries
-import org.kryptonmc.krypton.server.ban.BannedIpList
-import org.kryptonmc.krypton.server.ban.BannedPlayerList
-import org.kryptonmc.krypton.server.whitelist.Whitelist
-import org.kryptonmc.krypton.server.whitelist.WhitelistedIps
+import org.kryptonmc.krypton.server.ban.BanManager
+import org.kryptonmc.krypton.server.whitelist.WhitelistManager
 import org.kryptonmc.krypton.util.BlockPos
 import org.kryptonmc.krypton.util.frame
 import org.kryptonmc.krypton.util.logger
@@ -79,18 +76,11 @@ class PlayerManager(private val server: KryptonServer) {
     private val executor = Executors.newFixedThreadPool(8, daemonThreadFactory("Player Executor #%d"))
     val dataManager: PlayerDataManager
     val players: MutableList<KryptonPlayer> = CopyOnWriteArrayList()
-    val playersByName: MutableMap<String, KryptonPlayer> = ConcurrentHashMap()
-    val playersByUUID: MutableMap<UUID, KryptonPlayer> = ConcurrentHashMap()
+    private val playersByName = ConcurrentHashMap<String, KryptonPlayer>()
+    private val playersByUUID = ConcurrentHashMap<UUID, KryptonPlayer>()
 
-    val bannedPlayers: BannedPlayerList = BannedPlayerList(Path.of("banned-players.json"))
-    val whitelist: Whitelist = Whitelist(Path.of("whitelist.json"))
-    val bannedIps: BannedIpList = BannedIpList(Path.of("banned-ips.json"))
-    val whitelistedIps: WhitelistedIps = WhitelistedIps(Path.of("whitelisted-ips.json"))
-    var whitelistEnabled: Boolean = server.config.server.whitelistEnabled
-        set(value) {
-            field = value
-            server.updateConfig("server.whitelist-enabled", value)
-        }
+    val banManager: BanManager = BanManager(Path.of("bans.json"))
+    val whitelistManager: WhitelistManager = WhitelistManager(Path.of("whitelist.json"))
 
     private val brandPacket by lazy { FramedPacket(PacketOutPluginMessage(BRAND_KEY, BRAND_MESSAGE).frame()) }
 
@@ -105,6 +95,10 @@ class PlayerManager(private val server: KryptonServer) {
         }
         dataManager = PlayerDataManager(playerDataFolder, server.config.advanced.serializePlayerData)
     }
+
+    fun getPlayer(name: String): KryptonPlayer? = playersByName.get(name)
+
+    fun getPlayer(uuid: UUID): KryptonPlayer? = playersByUUID.get(uuid)
 
     fun add(player: KryptonPlayer, session: SessionHandler): CompletableFuture<Void> = dataManager.load(player, executor).thenAcceptAsync({ nbt ->
         val profile = player.profile
@@ -136,7 +130,7 @@ class PlayerManager(private val server: KryptonServer) {
             KryptonRegistries.DIMENSION_TYPE.getResourceKey(world.dimensionType)!!,
             world.dimension,
             BiomeManager.obfuscateSeed(world.seed),
-            server.maxPlayers,
+            server.config.status.maxPlayers,
             server.config.world.viewDistance,
             server.config.world.simulationDistance,
             reducedDebugInfo,
@@ -169,15 +163,12 @@ class PlayerManager(private val server: KryptonServer) {
         val joinResult = server.eventManager.fireSync(KryptonJoinEvent(player, !profile.name.equals(name, true))).result
         if (!joinResult.isAllowed) {
             // Use default reason if denied without specified reason
-            val reason = joinResult.message ?: Component.translatable("multiplayer.disconnect.kicked")
+            val reason = joinResult.message ?: Messages.Disconnect.KICKED.build()
             session.disconnect(reason)
             return@thenAcceptAsync
         }
-        val joinMessage = joinResult.message ?: Component.translatable(
-            if (joinResult.hasJoinedBefore) "multiplayer.player.joined.renamed" else "multiplayer.player.joined",
-            NamedTextColor.YELLOW,
-            player.displayName
-        )
+        val defaultJoinMessage = if (joinResult.hasJoinedBefore) Messages.PLAYER_JOINED_RENAMED else Messages.PLAYER_JOINED
+        val joinMessage = joinResult.message ?: defaultJoinMessage.build(player.displayName)
         server.sendMessage(joinMessage)
         session.send(PacketOutSynchronizePlayerPosition(player))
         session.send(PacketOutPlayerInfo(PacketOutPlayerInfo.Action.ADD_PLAYER, player))
@@ -228,16 +219,12 @@ class PlayerManager(private val server: KryptonServer) {
         }
     }
 
-    fun broadcast(packet: Packet, world: KryptonWorld, x: Int, y: Int, z: Int, radius: Double, except: KryptonPlayer?) {
-        broadcast(packet, world, x.toDouble(), y.toDouble(), z.toDouble(), radius, except)
-    }
-
     fun broadcast(packet: Packet, world: KryptonWorld, pos: BlockPos, radius: Double, except: KryptonPlayer?) {
         broadcast(packet, world, pos.x.toDouble(), pos.y.toDouble(), pos.z.toDouble(), radius, except)
     }
 
     fun disconnectAll() {
-        players.forEach { it.session.disconnect(Component.translatable("multiplayer.disconnect.server_shutdown")) }
+        players.forEach { it.session.disconnect(SHUTDOWN_MESSAGE) }
     }
 
     fun saveAll() {
@@ -250,8 +237,7 @@ class PlayerManager(private val server: KryptonServer) {
     }
 
     private fun save(player: KryptonPlayer) {
-        val playerData = dataManager.save(player)
-        if (playerData != null) server.userManager.updateUser(player.uuid, playerData)
+        dataManager.save(player)?.let { server.userManager.updateUser(player.uuid, it) }
         player.statistics.save()
     }
 
@@ -282,6 +268,7 @@ class PlayerManager(private val server: KryptonServer) {
         private val BRAND_KEY = Key.key("brand")
         // The word "Krypton" encoded in to UTF-8 and then prefixed with the length, which in this case is 7.
         private val BRAND_MESSAGE = byteArrayOf(7, 75, 114, 121, 112, 116, 111, 110)
+        private val SHUTDOWN_MESSAGE = Messages.Disconnect.SERVER_SHUTDOWN.build()
 
         private const val ENABLE_REDUCED_DEBUG_SCREEN = 22
         private const val DISABLE_REDUCED_DEBUG_SCREEN = 23

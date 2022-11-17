@@ -19,7 +19,9 @@
 package org.kryptonmc.krypton.config
 
 import net.kyori.adventure.serializer.configurate4.ConfigurateComponentSerializer
+import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer
+import org.kryptonmc.api.ServerConfig
 import org.kryptonmc.krypton.config.category.AdvancedCategory
 import org.kryptonmc.krypton.config.category.OtherCategory
 import org.kryptonmc.krypton.config.category.ProxyCategory
@@ -53,7 +55,18 @@ data class KryptonConfig(
     val proxy: ProxyCategory = ProxyCategory(),
     @Comment("Other settings that don't quite fit in anywhere else.")
     val other: OtherCategory = OtherCategory()
-) {
+) : ServerConfig {
+
+    override val isOnline: Boolean
+        get() = server.onlineMode
+    override val ip: String
+        get() = server.ip
+    override val port: Int
+        get() = server.port
+    override val motd: Component
+        get() = status.motd
+    override val maxPlayers: Int
+        get() = status.maxPlayers
 
     companion object {
 

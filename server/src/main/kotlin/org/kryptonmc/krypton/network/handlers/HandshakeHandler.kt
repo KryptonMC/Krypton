@@ -22,6 +22,7 @@ import net.kyori.adventure.text.Component
 import org.kryptonmc.krypton.KryptonPlatform
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.config.category.ProxyCategory
+import org.kryptonmc.krypton.locale.Messages
 import org.kryptonmc.krypton.network.SessionHandler
 import org.kryptonmc.krypton.network.data.ForwardedData
 import org.kryptonmc.krypton.network.data.LegacyForwardedData
@@ -46,18 +47,18 @@ class HandshakeHandler(override val server: KryptonServer, override val session:
         // This method of determining what to send is from vanilla Minecraft.
         // We do this first so that we don't have to deal with legacy clients.
         if (packet.protocol != KryptonPlatform.protocolVersion) {
-            val key = when {
-                packet.protocol < KryptonPlatform.protocolVersion -> "multiplayer.disconnect.outdated_client"
-                packet.protocol > KryptonPlatform.protocolVersion -> "multiplayer.disconnect.outdated_server"
-                else -> "multiplayer.disconnect.incompatible" // This should be impossible
+            val translation = when {
+                packet.protocol < KryptonPlatform.protocolVersion -> Messages.Disconnect.OUTDATED_CLIENT
+                packet.protocol > KryptonPlatform.protocolVersion -> Messages.Disconnect.OUTDATED_SERVER
+                else -> Messages.Disconnect.INCOMPATIBLE // This should be impossible
             }
-            disconnect(Component.translatable(key, Component.text(KryptonPlatform.minecraftVersion)))
+            disconnect(translation.build(KryptonPlatform.minecraftVersion))
             return
         }
 
         // We do this early too to avoid even having to check proxy data if the server is full.
         if (server.playerManager.players.size >= server.config.status.maxPlayers) {
-            disconnect(Component.translatable("multiplayer.disconnect.server_full"))
+            disconnect(Messages.Disconnect.SERVER_FULL.build())
             return
         }
 

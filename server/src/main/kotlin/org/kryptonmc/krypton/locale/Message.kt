@@ -16,32 +16,46 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.server.ban
+package org.kryptonmc.krypton.locale
 
-import com.google.gson.stream.JsonReader
-import org.kryptonmc.krypton.server.ServerConfigList
-import org.kryptonmc.krypton.util.asString
-import java.net.SocketAddress
-import java.nio.file.Path
-import java.time.OffsetDateTime
+import net.kyori.adventure.audience.Audience
+import net.kyori.adventure.text.Component
 
-class BannedIpList(path: Path) : ServerConfigList<String, BannedIpEntry>(path) {
+interface Message {
 
-    operator fun get(key: SocketAddress): BannedIpEntry? = super.get(key.asString())
+    fun interface Args0 {
 
-    fun isBanned(address: SocketAddress): Boolean = contains(address.asString())
+        fun build(): Component
 
-    fun clear() {
-        forEach {
-            val expirationDate = it.expirationDate ?: return@forEach
-            if (expirationDate.isBefore(OffsetDateTime.now())) remove(it.key)
+        fun send(sender: Audience) {
+            sender.sendMessage(build())
         }
     }
 
-    override fun read(reader: JsonReader): BannedIpEntry? = BannedIpEntry.read(reader)
+    fun interface Args1<A> {
 
-    override fun validatePath() {
-        super.validatePath()
-        clear()
+        fun build(a: A): Component
+
+        fun send(sender: Audience, a: A) {
+            sender.sendMessage(build(a))
+        }
+    }
+
+    fun interface Args2<A, B> {
+
+        fun build(a: A, b: B): Component
+
+        fun send(sender: Audience, a: A, b: B) {
+            sender.sendMessage(build(a, b))
+        }
+    }
+
+    fun interface Args3<A, B, C> {
+
+        fun build(a: A, b: B, c: C): Component
+
+        fun send(sender: Audience, a: A, b: B, c: C) {
+            sender.sendMessage(build(a, b, c))
+        }
     }
 }

@@ -31,27 +31,28 @@ import java.time.OffsetDateTime
 import java.time.format.DateTimeParseException
 import java.util.UUID
 
-class BannedPlayerEntry(
+class KryptonProfileBan(
     override val profile: GameProfile,
-    creationDate: OffsetDateTime = OffsetDateTime.now(),
     source: Component = DEFAULT_SOURCE,
-    expiryDate: OffsetDateTime? = null,
-    reason: Component = DEFAULT_REASON
-) : BanEntry<GameProfile>(profile, creationDate, source, expiryDate, reason), Ban.Profile {
+    reason: Component = DEFAULT_REASON,
+    creationDate: OffsetDateTime = OffsetDateTime.now(),
+    expirationDate: OffsetDateTime? = null
+) : KryptonBan(source, reason, creationDate, expirationDate), Ban.Profile {
 
-    override val type: BanType = BanType.PROFILE
+    override val type: BanType
+        get() = BanType.PROFILE
 
     override fun writeKey(writer: JsonWriter) {
         writer.name("uuid")
-        writer.value(key.uuid.toString())
+        writer.value(profile.uuid.toString())
         writer.name("name")
-        writer.value(key.name)
+        writer.value(profile.name)
     }
 
     companion object {
 
         @JvmStatic
-        fun read(reader: JsonReader): BannedPlayerEntry? {
+        fun read(reader: JsonReader): KryptonProfileBan? {
             reader.beginObject()
 
             var name: String? = null
@@ -82,7 +83,7 @@ class BannedPlayerEntry(
 
             reader.endObject()
             if (name == null || uuid == null) return null
-            return BannedPlayerEntry(KryptonGameProfile(name, uuid, persistentListOf()), creationDate, source, expires, reason)
+            return KryptonProfileBan(KryptonGameProfile(name, uuid, persistentListOf()), source, reason, creationDate, expires)
         }
     }
 }

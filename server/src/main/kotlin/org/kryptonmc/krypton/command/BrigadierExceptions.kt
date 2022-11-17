@@ -22,44 +22,43 @@ import com.mojang.brigadier.exceptions.BuiltInExceptionProvider
 import com.mojang.brigadier.exceptions.Dynamic2CommandExceptionType
 import com.mojang.brigadier.exceptions.DynamicCommandExceptionType
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType
-import net.kyori.adventure.text.Component
-import org.kryptonmc.krypton.adventure.toMessage
+import org.kryptonmc.krypton.command.arguments.CommandExceptions
 
 // Built-in types using vanilla's translation keys
 object BrigadierExceptions : BuiltInExceptionProvider {
 
     // Out of range/incorrect errors
-    private val INTEGER_TOO_SMALL = dynamic2ExceptionType("argument.integer.low")
-    private val INTEGER_TOO_LARGE = dynamic2ExceptionType("argument.integer.big")
-    private val LONG_TOO_SMALL = dynamic2ExceptionType("argument.long.low")
-    private val LONG_TOO_LARGE = dynamic2ExceptionType("argument.long.big")
-    private val FLOAT_TOO_SMALL = dynamic2ExceptionType("argument.float.low")
-    private val FLOAT_TOO_LARGE = dynamic2ExceptionType("argument.float.big")
-    private val DOUBLE_TOO_SMALL = dynamic2ExceptionType("argument.double.low")
-    private val DOUBLE_TOO_LARGE = dynamic2ExceptionType("argument.double.big")
-    private val LITERAL_INCORRECT = dynamicExceptionType("argument.literal.incorrect")
+    private val INTEGER_TOO_SMALL = CommandExceptions.dynamic2("argument.integer.low")
+    private val INTEGER_TOO_LARGE = CommandExceptions.dynamic2("argument.integer.big")
+    private val LONG_TOO_SMALL = CommandExceptions.dynamic2("argument.long.low")
+    private val LONG_TOO_LARGE = CommandExceptions.dynamic2("argument.long.big")
+    private val FLOAT_TOO_SMALL = CommandExceptions.dynamic2("argument.float.low")
+    private val FLOAT_TOO_LARGE = CommandExceptions.dynamic2("argument.float.big")
+    private val DOUBLE_TOO_SMALL = CommandExceptions.dynamic2("argument.double.low")
+    private val DOUBLE_TOO_LARGE = CommandExceptions.dynamic2("argument.double.big")
+    private val LITERAL_INCORRECT = CommandExceptions.dynamic("argument.literal.incorrect")
 
     // Reader invalid/expected errors
-    private val READER_INVALID_ESCAPE = dynamicExceptionType("parsing.quote.escape")
-    private val READER_INVALID_BOOLEAN = dynamicExceptionType("parsing.bool.invalid")
-    private val READER_INVALID_INTEGER = dynamicExceptionType("parsing.int.invalid")
-    private val READER_INVALID_LONG = dynamicExceptionType("parsing.long.invalid")
-    private val READER_INVALID_FLOAT = dynamicExceptionType("parsing.float.invalid")
-    private val READER_INVALID_DOUBLE = dynamicExceptionType("parsing.double.invalid")
-    private val READER_EXPECTED_BOOLEAN = simpleExceptionType("parsing.bool.expected")
-    private val READER_EXPECTED_INTEGER = simpleExceptionType("parsing.int.expected")
-    private val READER_EXPECTED_LONG = simpleExceptionType("parsing.long.expected")
-    private val READER_EXPECTED_FLOAT = simpleExceptionType("parsing.float.expected")
-    private val READER_EXPECTED_DOUBLE = simpleExceptionType("parsing.double.expected")
-    private val READER_EXPECTED_START_OF_QUOTE = simpleExceptionType("parsing.quote.expected.start")
-    private val READER_EXPECTED_END_OF_QUOTE = simpleExceptionType("parsing.quote.expected.end")
-    private val READER_EXPECTED_SYMBOL = dynamicExceptionType("parsing.expected")
+    private val READER_INVALID_ESCAPE = CommandExceptions.dynamic("parsing.quote.escape")
+    private val READER_INVALID_BOOLEAN = CommandExceptions.dynamic("parsing.bool.invalid")
+    private val READER_INVALID_INTEGER = CommandExceptions.dynamic("parsing.int.invalid")
+    private val READER_INVALID_LONG = CommandExceptions.dynamic("parsing.long.invalid")
+    private val READER_INVALID_FLOAT = CommandExceptions.dynamic("parsing.float.invalid")
+    private val READER_INVALID_DOUBLE = CommandExceptions.dynamic("parsing.double.invalid")
+    private val READER_EXPECTED_BOOLEAN = CommandExceptions.simple("parsing.bool.expected")
+    private val READER_EXPECTED_INTEGER = CommandExceptions.simple("parsing.int.expected")
+    private val READER_EXPECTED_LONG = CommandExceptions.simple("parsing.long.expected")
+    private val READER_EXPECTED_FLOAT = CommandExceptions.simple("parsing.float.expected")
+    private val READER_EXPECTED_DOUBLE = CommandExceptions.simple("parsing.double.expected")
+    private val READER_EXPECTED_START_OF_QUOTE = CommandExceptions.simple("parsing.quote.expected.start")
+    private val READER_EXPECTED_END_OF_QUOTE = CommandExceptions.simple("parsing.quote.expected.end")
+    private val READER_EXPECTED_SYMBOL = CommandExceptions.dynamic("parsing.expected")
 
     // Dispatcher errors
-    private val DISPATCHER_UNKNOWN_COMMAND = simpleExceptionType("command.unknown.command")
-    private val DISPATCHER_UNKNOWN_ARGUMENT = simpleExceptionType("command.unknown.argument")
-    private val DISPATCHER_EXPECTED_SEPARATOR = simpleExceptionType("command.expected.separator")
-    private val DISPATCHER_PARSE_EXCEPTION = dynamicExceptionType("command.exception")
+    private val DISPATCHER_UNKNOWN_COMMAND = CommandExceptions.simple("command.unknown.command")
+    private val DISPATCHER_UNKNOWN_ARGUMENT = CommandExceptions.simple("command.unknown.argument")
+    private val DISPATCHER_EXPECTED_SEPARATOR = CommandExceptions.simple("command.expected.separator")
+    private val DISPATCHER_PARSE_EXCEPTION = CommandExceptions.dynamic("command.exception")
 
     override fun integerTooLow(): Dynamic2CommandExceptionType = INTEGER_TOO_SMALL
 
@@ -114,14 +113,4 @@ object BrigadierExceptions : BuiltInExceptionProvider {
     override fun dispatcherExpectedArgumentSeparator(): SimpleCommandExceptionType = DISPATCHER_EXPECTED_SEPARATOR
 
     override fun dispatcherParseException(): DynamicCommandExceptionType = DISPATCHER_PARSE_EXCEPTION
-
-    private fun simpleExceptionType(key: String): SimpleCommandExceptionType = Component.translatable(key).toExceptionType()
-
-    private fun dynamicExceptionType(key: String): DynamicCommandExceptionType = DynamicCommandExceptionType {
-        Component.translatable(key, Component.text(it.toString())).toMessage()
-    }
-
-    private fun dynamic2ExceptionType(key: String): Dynamic2CommandExceptionType = Dynamic2CommandExceptionType { a, b ->
-        Component.translatable(key, Component.text(a.toString()), Component.text(b.toString())).toMessage()
-    }
 }

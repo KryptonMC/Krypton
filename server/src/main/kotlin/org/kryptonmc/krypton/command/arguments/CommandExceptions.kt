@@ -16,11 +16,24 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.command
+package org.kryptonmc.krypton.command.arguments
 
+import com.mojang.brigadier.exceptions.Dynamic2CommandExceptionType
+import com.mojang.brigadier.exceptions.DynamicCommandExceptionType
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType
 import net.kyori.adventure.text.Component
-import org.kryptonmc.krypton.adventure.KryptonAdventureMessage
+import org.kryptonmc.krypton.adventure.toMessage
 
-// Using toMessage() here breaks some tests that initialise things before the bootstrap is preloaded
-fun Component.toExceptionType(): SimpleCommandExceptionType = SimpleCommandExceptionType(KryptonAdventureMessage(this))
+object CommandExceptions {
+
+    @JvmStatic
+    fun simple(key: String): SimpleCommandExceptionType = SimpleCommandExceptionType(Component.translatable(key).toMessage())
+
+    @JvmStatic
+    fun dynamic(key: String): DynamicCommandExceptionType =
+        DynamicCommandExceptionType { Component.translatable(key, Component.text(it.toString())).toMessage() }
+
+    @JvmStatic
+    fun dynamic2(key: String): Dynamic2CommandExceptionType =
+        Dynamic2CommandExceptionType { a, b -> Component.translatable(key, Component.text(a.toString()), Component.text(b.toString())).toMessage() }
+}

@@ -29,26 +29,27 @@ import java.net.InetAddress
 import java.time.OffsetDateTime
 import java.time.format.DateTimeParseException
 
-class BannedIpEntry(
-    ip: String,
-    creationDate: OffsetDateTime = OffsetDateTime.now(),
+class KryptonIpBan(
+    val ip: String,
     source: Component = DEFAULT_SOURCE,
-    expiryDate: OffsetDateTime? = null,
-    reason: Component = DEFAULT_REASON
-) : BanEntry<String>(ip, creationDate, source, expiryDate, reason), Ban.IP {
+    reason: Component = DEFAULT_REASON,
+    creationDate: OffsetDateTime = OffsetDateTime.now(),
+    expirationDate: OffsetDateTime? = null
+) : KryptonBan(source, reason, creationDate, expirationDate), Ban.IP {
 
-    override val type: BanType = BanType.IP
+    override val type: BanType
+        get() = BanType.IP
     override val address: InetAddress = InetAddresses.forString(ip)
 
     override fun writeKey(writer: JsonWriter) {
         writer.name("ip")
-        writer.value(key)
+        writer.value(ip)
     }
 
     companion object {
 
         @JvmStatic
-        fun read(reader: JsonReader): BannedIpEntry? {
+        fun read(reader: JsonReader): KryptonIpBan? {
             reader.beginObject()
 
             var ip: String? = null
@@ -77,7 +78,7 @@ class BannedIpEntry(
 
             reader.endObject()
             if (ip == null) return null
-            return BannedIpEntry(ip, creationDate, source, expires, reason)
+            return KryptonIpBan(ip, source, reason, creationDate, expires)
         }
     }
 }

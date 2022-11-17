@@ -40,8 +40,8 @@ import org.kryptonmc.krypton.entity.EntityFactory
 import org.kryptonmc.krypton.entity.EntityManager
 import org.kryptonmc.krypton.entity.KryptonEntity
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
-import org.kryptonmc.krypton.network.SessionManager
 import org.kryptonmc.krypton.packet.CachedPacket
+import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.packet.out.play.GameEvent
 import org.kryptonmc.krypton.packet.out.play.PacketOutSetBlockDestroyStage
 import org.kryptonmc.krypton.packet.out.play.PacketOutBlockUpdate
@@ -49,7 +49,6 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutGameEvent
 import org.kryptonmc.krypton.packet.out.play.PacketOutChangeDifficulty
 import org.kryptonmc.krypton.packet.out.play.PacketOutWorldEvent
 import org.kryptonmc.krypton.packet.out.play.PacketOutSoundEffect
-import org.kryptonmc.krypton.server.PlayerManager
 import org.kryptonmc.krypton.util.BlockPos
 import org.kryptonmc.krypton.util.Maths
 import org.kryptonmc.krypton.world.biome.BiomeManager
@@ -118,8 +117,6 @@ class KryptonWorld(
     override val entities: MutableCollection<KryptonEntity> = entityManager.entities
 
     override val chunkManager: ChunkManager = ChunkManager(this)
-    private val playerManager: PlayerManager = server.playerManager
-    override val sessionManager: SessionManager = server.sessionManager
     override val players: MutableSet<KryptonPlayer> = ConcurrentHashMap.newKeySet()
 
     override val height: Int = dimensionType.height
@@ -163,7 +160,7 @@ class KryptonWorld(
     }
 
     fun worldEvent(event: WorldEvent, pos: BlockPos, data: Int, except: KryptonPlayer) {
-        playerManager.broadcast(PacketOutWorldEvent(event, pos, data, false), this, pos, 64.0, except)
+        server.playerManager.broadcast(PacketOutWorldEvent(event, pos, data, false), this, pos, 64.0, except)
     }
 
     fun playSound(position: Vec3d, event: SoundEvent, source: Sound.Source, volume: Float, pitch: Float, except: KryptonPlayer? = null) {
@@ -172,7 +169,8 @@ class KryptonWorld(
 
     fun playSound(x: Double, y: Double, z: Double, event: SoundEvent, source: Sound.Source, volume: Float, pitch: Float,
                   except: KryptonPlayer? = null) {
-        playerManager.broadcast(PacketOutSoundEffect(event, source, x, y, z, volume, pitch), this, x, y, z, event.calculateDistance(volume), except)
+        val packet = PacketOutSoundEffect(event, source, x, y, z, volume, pitch)
+        server.playerManager.broadcast(packet, this, x, y, z, event.calculateDistance(volume), except)
     }
 
     // TODO: Check world border bounds
@@ -180,7 +178,7 @@ class KryptonWorld(
 
     fun broadcastBlockDestroyProgress(sourceId: Int, position: BlockPos, state: Int) {
         val packet = PacketOutSetBlockDestroyStage(sourceId, position, state)
-        sessionManager.sendGrouped(packet) {
+        server.sessionManager.sendGrouped(packet) {
             if (it.world !== this || it.id == sourceId) return@sendGrouped false
             val distanceX = position.x - it.location.x
             val distanceY = position.y - it.location.y
@@ -234,7 +232,7 @@ class KryptonWorld(
 //        if (isDebug) return false
         val chunk = getChunk(x, y, z) ?: return false
         if (!chunk.setBlock(x, y, z, block)) return false
-        sessionManager.sendGrouped(PacketOutBlockUpdate(BlockPos(x, y, z), block))
+        server.sessionManager.sendGrouped(PacketOutBlockUpdate(BlockPos(x, y, z), block))
         return true
     }
 
@@ -298,16 +296,16 @@ class KryptonWorld(
         }
 
         if (oldRainLevel != rainLevel) {
-            sessionManager.sendGrouped(PacketOutGameEvent(GameEvent.RAIN_LEVEL_CHANGE, rainLevel)) { it.world === this }
+            server.sessionManager.sendGrouped(PacketOutGameEvent(GameEvent.RAIN_LEVEL_CHANGE, rainLevel)) { it.world === this }
         }
         if (oldThunderLevel != thunderLevel) {
-            sessionManager.sendGrouped(PacketOutGameEvent(GameEvent.THUNDER_LEVEL_CHANGE, thunderLevel)) { it.world === this }
+            server.sessionManager.sendGrouped(PacketOutGameEvent(GameEvent.THUNDER_LEVEL_CHANGE, thunderLevel)) { it.world === this }
         }
         if (wasRaining != isRaining) {
             val newRainState = if (wasRaining) GameEvent.END_RAINING else GameEvent.BEGIN_RAINING
-            sessionManager.sendGrouped(PacketOutGameEvent(newRainState)) { it.world === this }
-            sessionManager.sendGrouped(PacketOutGameEvent(GameEvent.RAIN_LEVEL_CHANGE, rainLevel)) { it.world === this }
-            sessionManager.sendGrouped(PacketOutGameEvent(GameEvent.THUNDER_LEVEL_CHANGE, thunderLevel)) { it.world === this }
+            server.sessionManager.sendGrouped(PacketOutGameEvent(newRainState)) { it.world === this }
+            server.sessionManager.sendGrouped(PacketOutGameEvent(GameEvent.RAIN_LEVEL_CHANGE, rainLevel)) { it.world === this }
+            server.sessionManager.sendGrouped(PacketOutGameEvent(GameEvent.THUNDER_LEVEL_CHANGE, thunderLevel)) { it.world === this }
         }
     }
 
@@ -329,6 +327,10 @@ class KryptonWorld(
     override fun pointers(): Pointers {
         if (cachedPointers == null) cachedPointers = Pointers.builder().withDynamic(Identity.NAME, ::name).build()
         return cachedPointers!!
+    }
+
+    override fun sendGroupedPacket(players: Collection<KryptonPlayer>, packet: Packet) {
+        server.sessionManager.sendGrouped(players, packet)
     }
 
     companion object {

@@ -20,7 +20,6 @@ package org.kryptonmc.krypton.commands
 
 import com.mojang.brigadier.CommandDispatcher
 import net.kyori.adventure.key.Key
-import net.kyori.adventure.text.Component
 import org.kryptonmc.api.command.Sender
 import org.kryptonmc.api.util.Vec3d
 import org.kryptonmc.krypton.command.InternalCommand
@@ -35,16 +34,17 @@ import org.kryptonmc.krypton.command.permission
 import org.kryptonmc.krypton.entity.EntityFactory
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.command.argument.argument
+import org.kryptonmc.krypton.command.arguments.CommandExceptions
 import org.kryptonmc.krypton.command.literal
 import org.kryptonmc.krypton.command.runs
-import org.kryptonmc.krypton.command.toExceptionType
+import org.kryptonmc.krypton.locale.Messages
 import org.kryptonmc.krypton.util.Worlds
 import org.kryptonmc.nbt.CompoundTag
 
 object SummonCommand : InternalCommand {
 
-    private val ERROR_FAILED = Component.translatable("commands.summon.failed").toExceptionType()
-    private val ERROR_INVALID_POSITION = Component.translatable("commands.summon.invalidPosition").toExceptionType()
+    private val ERROR_FAILED = CommandExceptions.simple("commands.summon.failed")
+    private val ERROR_INVALID_POSITION = CommandExceptions.simple("commands.summon.invalidPosition")
 
     private const val ENTITY_ARGUMENT = "entity"
     private const val POSITION_ARGUMENT = "position"
@@ -54,19 +54,12 @@ object SummonCommand : InternalCommand {
             permission(KryptonPermission.SUMMON)
             argument(ENTITY_ARGUMENT, SummonEntityArgument) {
                 suggests(SuggestionProviders.SUMMONABLE_ENTITIES)
-                runs {
-                    val sender = it.source as? KryptonPlayer ?: return@runs
-                    spawnEntity(sender, it.summonableEntity(ENTITY_ARGUMENT), sender.location)
-                }
+                runs { spawnEntity(it.source, it.summonableEntity(ENTITY_ARGUMENT), null, null) }
                 argument(POSITION_ARGUMENT, VectorArgument.normal()) {
-                    runs {
-                        val sender = it.source as? KryptonPlayer ?: return@runs
-                        spawnEntity(sender, it.summonableEntity(ENTITY_ARGUMENT), it.vectorArgument(POSITION_ARGUMENT))
-                    }
+                    runs { spawnEntity(it.source, it.summonableEntity(ENTITY_ARGUMENT), it.vectorArgument(POSITION_ARGUMENT), null) }
                     argument("nbt", NBTCompoundArgument) {
                         runs {
-                            val sender = it.source as? KryptonPlayer ?: return@runs
-                            spawnEntity(sender, it.summonableEntity(ENTITY_ARGUMENT), it.vectorArgument(POSITION_ARGUMENT), it.argument("nbt"))
+                            spawnEntity(it.source, it.summonableEntity(ENTITY_ARGUMENT), it.vectorArgument(POSITION_ARGUMENT), it.argument("nbt"))
                         }
                     }
                 }
@@ -75,10 +68,12 @@ object SummonCommand : InternalCommand {
     }
 
     @JvmStatic
-    private fun spawnEntity(player: KryptonPlayer, type: Key, position: Vec3d, nbt: CompoundTag? = null) {
+    private fun spawnEntity(sender: Sender, type: Key, pos: Vec3d?, nbt: CompoundTag?) {
+        val player = sender as? KryptonPlayer ?: return
+        val position = pos ?: player.location
         if (!Worlds.isInSpawnableBounds(position)) throw ERROR_INVALID_POSITION.create()
         val entity = EntityFactory.create(player.world, type.asString(), nbt)?.apply { this.location = position } ?: throw ERROR_FAILED.create()
         player.world.spawnEntity(entity)
-        player.sendMessage(Component.translatable("commands.summon.success", entity.displayName))
+        Messages.Commands.SUMMON_SUCCESS.send(player, entity.displayName)
     }
 }

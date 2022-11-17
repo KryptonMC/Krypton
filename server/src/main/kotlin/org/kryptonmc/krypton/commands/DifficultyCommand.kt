@@ -19,38 +19,35 @@
 package org.kryptonmc.krypton.commands
 
 import com.mojang.brigadier.CommandDispatcher
-import net.kyori.adventure.text.Component
 import org.kryptonmc.api.command.Sender
 import org.kryptonmc.api.world.Difficulty
 import org.kryptonmc.krypton.command.InternalCommand
+import org.kryptonmc.krypton.command.arguments.CommandExceptions
 import org.kryptonmc.krypton.command.literal
 import org.kryptonmc.krypton.command.permission
 import org.kryptonmc.krypton.command.runs
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
+import org.kryptonmc.krypton.locale.Messages
 
 object DifficultyCommand : InternalCommand {
+
+    private val ERROR_ALREADY_DIFFICULT = CommandExceptions.dynamic("commands.difficulty.failure")
 
     override fun register(dispatcher: CommandDispatcher<Sender>) {
         val command = literal("difficulty") {
             permission(KryptonPermission.DIFFICULTY)
             runs {
                 val sender = it.source as? KryptonPlayer ?: return@runs
-                val translation = Component.translatable(sender.world.difficulty.translationKey())
-                sender.sendMessage(Component.translatable("commands.difficulty.query", translation))
+                Messages.Commands.DIFFICULTY_QUERY.send(sender, sender.world.difficulty)
             }
         }
         Difficulty.values().forEach { difficulty ->
             command.then(literal(difficulty.name.lowercase()) {
                 runs {
                     val sender = it.source as? KryptonPlayer ?: return@runs
-                    if (sender.world.difficulty == difficulty) {
-                        val translation = Component.translatable(difficulty.translationKey())
-                        sender.sendMessage(Component.translatable("commands.difficulty.failure", translation))
-                        return@runs
-                    }
+                    if (sender.world.difficulty == difficulty) throw ERROR_ALREADY_DIFFICULT.create(difficulty.name.lowercase())
                     sender.world.difficulty = difficulty
-                    val translation = Component.translatable(difficulty.translationKey())
-                    sender.sendMessage(Component.translatable("commands.difficulty.success", translation))
+                    Messages.Commands.DIFFICULTY_SUCCESS.send(sender, difficulty)
                 }
             })
         }
