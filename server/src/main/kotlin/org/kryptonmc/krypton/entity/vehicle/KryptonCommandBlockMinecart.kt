@@ -22,6 +22,8 @@ import net.kyori.adventure.text.Component
 import org.kryptonmc.api.block.Blocks
 import org.kryptonmc.api.entity.vehicle.CommandBlockMinecart
 import org.kryptonmc.api.entity.vehicle.MinecartVariant
+import org.kryptonmc.krypton.adventure.toPlainText
+import org.kryptonmc.krypton.command.CommandSourceStack
 import org.kryptonmc.krypton.entity.KryptonEntityType
 import org.kryptonmc.krypton.entity.KryptonEntityTypes
 import org.kryptonmc.krypton.entity.metadata.MetadataKey
@@ -61,18 +63,17 @@ class KryptonCommandBlockMinecart(world: KryptonWorld) : KryptonMinecartLike(wor
     override fun onDataUpdate(key: MetadataKey<*>) {
         super.onDataUpdate(key)
         when (key) {
-            MetadataKeys.CommandBlockMinecart.LAST_OUTPUT -> {
-                try {
-                    commandBlock.lastOutput = lastOutput
-                } catch (_: Exception) {
-                    // Nothing to do, just ignore it if it fails
-                }
-            }
+            MetadataKeys.CommandBlockMinecart.LAST_OUTPUT -> commandBlock.lastOutput = lastOutput
             MetadataKeys.CommandBlockMinecart.COMMAND -> commandBlock.command = command
         }
     }
 
-    inner class Handler : CommandBlockHandler(server) {
+    inner class Handler : CommandBlockHandler() {
+
+        override fun world(): KryptonWorld = this@KryptonCommandBlockMinecart.world
+
+        override fun createCommandSourceStack(): CommandSourceStack = CommandSourceStack(this, location, yaw, pitch, world(), name.toPlainText(),
+            displayName, world().server, this@KryptonCommandBlockMinecart)
 
         override fun onUpdated() {
             this@KryptonCommandBlockMinecart.command = command

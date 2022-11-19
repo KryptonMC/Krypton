@@ -18,7 +18,6 @@
  */
 package org.kryptonmc.krypton.console
 
-import net.kyori.adventure.audience.MessageType
 import net.kyori.adventure.identity.Identity
 import net.kyori.adventure.permission.PermissionChecker
 import net.kyori.adventure.pointer.Pointers
@@ -32,19 +31,20 @@ import org.kryptonmc.api.command.ConsoleSender
 import org.kryptonmc.api.permission.PermissionFunction
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.adventure.toLegacySectionText
+import org.kryptonmc.krypton.command.CommandSourceStack
+import org.kryptonmc.krypton.command.KryptonSender
 import org.kryptonmc.krypton.event.command.KryptonCommandExecuteEvent
 import org.kryptonmc.krypton.event.server.KryptonSetupPermissionsEvent
 import org.kryptonmc.krypton.util.TranslationBootstrap
-import java.util.UUID
+import org.kryptonmc.krypton.util.Vec3dImpl
 
-class KryptonConsole(override val server: KryptonServer) : SimpleTerminalConsole(), ConsoleSender {
+class KryptonConsole(override val server: KryptonServer) : SimpleTerminalConsole(), KryptonSender, ConsoleSender {
 
     // The permission function defaults to ALWAYS_TRUE because we are god and have all permissions by default
     private var permissionFunction = DEFAULT_PERMISSION_FUNCTION
     private var cachedPointers: Pointers? = null
 
     override val name: Component = DISPLAY_NAME
-    override val uuid: UUID = ID
 
     fun setupPermissions() {
         val event = KryptonSetupPermissionsEvent(this) { DEFAULT_PERMISSION_FUNCTION }
@@ -61,20 +61,18 @@ class KryptonConsole(override val server: KryptonServer) : SimpleTerminalConsole
         thread.start()
     }
 
-    override fun sendMessage(source: Identity, message: Component, type: MessageType) {
+    override fun sendSystemMessage(message: Component) {
         LOGGER.info(TranslationBootstrap.render(message).toLegacySectionText())
     }
 
     override fun getPermissionValue(permission: String): TriState = permissionFunction.getPermissionValue(permission)
-
-    override fun identity(): Identity = Identity.nil()
 
     override fun isRunning(): Boolean = server.isRunning()
 
     override fun runCommand(command: String) {
         server.eventManager.fire(KryptonCommandExecuteEvent(this, command)).thenAcceptAsync {
             if (!it.result.isAllowed) return@thenAcceptAsync
-            server.commandManager.dispatch(this, it.result.command ?: command)
+            server.commandManager.dispatch(createCommandSourceStack(), it.result.command ?: command)
         }
     }
 
@@ -84,8 +82,8 @@ class KryptonConsole(override val server: KryptonServer) : SimpleTerminalConsole
 
     override fun buildReader(builder: LineReaderBuilder): LineReader = super.buildReader(
         builder.appName("Krypton")
-            .completer(BrigadierCompleter(this))
-            .highlighter(BrigadierHighlighter(this))
+            .completer(BrigadierCompleter(server.commandManager, ::createCommandSourceStack))
+            .highlighter(BrigadierHighlighter(server.commandManager, ::createCommandSourceStack))
             .option(LineReader.Option.COMPLETE_IN_WORD, true)
     )
 
@@ -94,18 +92,25 @@ class KryptonConsole(override val server: KryptonServer) : SimpleTerminalConsole
             cachedPointers = Pointers.builder()
                 .withStatic(Identity.NAME, NAME)
                 .withStatic(Identity.DISPLAY_NAME, DISPLAY_NAME)
-                .withStatic(Identity.UUID, ID)
                 .withStatic(PermissionChecker.POINTER, PermissionChecker(::getPermissionValue))
                 .build()
         }
         return cachedPointers!!
     }
 
+    override fun acceptsSuccess(): Boolean = true
+
+    override fun acceptsFailure(): Boolean = true
+
+    override fun shouldInformAdmins(): Boolean = server.config.server.broadcastConsoleToAdmins
+
+    override fun createCommandSourceStack(): CommandSourceStack =
+        CommandSourceStack(this, Vec3dImpl.ZERO, 0F, 0F, server.worldManager.default, NAME, DISPLAY_NAME, server, null)
+
     companion object {
 
         private const val NAME = "CONSOLE"
         private val DISPLAY_NAME = Component.text(NAME)
-        private val ID = UUID(0, 0)
 
         private val DEFAULT_PERMISSION_FUNCTION = PermissionFunction.ALWAYS_TRUE
         private val LOGGER = LogManager.getLogger("CONSOLE")

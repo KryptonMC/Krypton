@@ -20,9 +20,7 @@ package org.kryptonmc.krypton.commands
 
 import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.arguments.StringArgumentType
-import org.kryptonmc.api.command.Sender
-import org.kryptonmc.krypton.KryptonServer
-import org.kryptonmc.krypton.command.InternalCommand
+import org.kryptonmc.krypton.command.CommandSourceStack
 import org.kryptonmc.krypton.command.argument
 import org.kryptonmc.krypton.command.permission
 import org.kryptonmc.krypton.command.argument.argument
@@ -32,26 +30,27 @@ import org.kryptonmc.krypton.command.matchesSubString
 import org.kryptonmc.krypton.command.runs
 import org.kryptonmc.krypton.locale.Messages
 
-object PardonIpCommand : InternalCommand {
+object PardonIpCommand {
 
     private val ERROR_INVALID_IP = CommandExceptions.simple("commands.pardonip.invalid")
     private val ERROR_ALREADY_UNBANNED = CommandExceptions.simple("commands.pardonip.failed")
 
-    override fun register(dispatcher: CommandDispatcher<Sender>) {
+    private const val TARGET = "target"
+
+    @JvmStatic
+    fun register(dispatcher: CommandDispatcher<CommandSourceStack>) {
         dispatcher.register(literal("pardon-ip") {
             permission(KryptonPermission.PARDON_IP)
-            argument("target", StringArgumentType.string()) {
+            argument(TARGET, StringArgumentType.string()) {
                 suggests { context, builder ->
-                    val server = context.source.server as? KryptonServer ?: return@suggests builder.buildFuture()
-                    server.playerManager.banManager.ips().forEach {
+                    context.source.server.playerManager.banManager.ips().forEach {
                         if (builder.remainingLowerCase.matchesSubString(it.ip.lowercase())) builder.suggest(it.ip)
                     }
                     builder.buildFuture()
                 }
                 runs {
-                    val server = it.source.server as? KryptonServer ?: return@runs
-                    val banManager = server.playerManager.banManager
-                    val target = it.argument<String>("target")
+                    val banManager = it.source.server.playerManager.banManager
+                    val target = it.argument<String>(TARGET)
                     if (!BanIpCommand.IP_ADDRESS_PATTERN.matcher(target).matches()) throw ERROR_INVALID_IP.create()
                     if (!banManager.isBanned(target)) throw ERROR_ALREADY_UNBANNED.create()
                     banManager.remove(target)

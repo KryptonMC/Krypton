@@ -22,53 +22,45 @@ import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.arguments.StringArgumentType
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer
 import org.kryptonmc.api.auth.GameProfile
-import org.kryptonmc.api.command.Sender
-import org.kryptonmc.krypton.KryptonServer
-import org.kryptonmc.krypton.command.InternalCommand
+import org.kryptonmc.krypton.command.CommandSourceStack
 import org.kryptonmc.krypton.command.argument
 import org.kryptonmc.krypton.command.arguments.GameProfileArgument
 import org.kryptonmc.krypton.command.arguments.gameProfileArgument
 import org.kryptonmc.krypton.command.permission
-import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.command.argument.argument
 import org.kryptonmc.krypton.command.literal
 import org.kryptonmc.krypton.command.runs
 import org.kryptonmc.krypton.locale.Messages
 import org.kryptonmc.krypton.server.ban.KryptonProfileBan
 
-object BanCommand : InternalCommand {
+object BanCommand {
 
-    private const val TARGETS_ARGUMENT = "targets"
-    private const val REASON_ARGUMENT = "reason"
+    private const val TARGETS = "targets"
+    private const val REASON = "reason"
     private const val DEFAULT_REASON = "Banned by operator."
 
-    override fun register(dispatcher: CommandDispatcher<Sender>) {
+    @JvmStatic
+    fun register(dispatcher: CommandDispatcher<CommandSourceStack>) {
         dispatcher.register(literal("ban") {
             permission(KryptonPermission.BAN)
-            argument(TARGETS_ARGUMENT, GameProfileArgument) {
-                runs { ban(it.gameProfileArgument(TARGETS_ARGUMENT).profiles(it.source), it.source, DEFAULT_REASON) }
-                argument(REASON_ARGUMENT, StringArgumentType.string()) {
-                    runs { ban(it.gameProfileArgument(TARGETS_ARGUMENT).profiles(it.source), it.source, it.argument(REASON_ARGUMENT)) }
+            argument(TARGETS, GameProfileArgument) {
+                runs { ban(it.source, it.gameProfileArgument(TARGETS).profiles(it.source), DEFAULT_REASON) }
+                argument(REASON, StringArgumentType.string()) {
+                    runs { ban(it.source, it.gameProfileArgument(TARGETS).profiles(it.source), it.argument(REASON)) }
                 }
             }
         })
     }
 
     @JvmStatic
-    private fun ban(profiles: List<GameProfile>, sender: Sender, reason: String) {
-        val server = sender.server as? KryptonServer ?: return
-        val banManager = server.playerManager.banManager
+    private fun ban(source: CommandSourceStack, profiles: List<GameProfile>, reason: String) {
+        val banManager = source.server.playerManager.banManager
         profiles.forEach { profile ->
             if (banManager.isBanned(profile)) return@forEach
             val ban = KryptonProfileBan(profile, reason = LegacyComponentSerializer.legacySection().deserialize(reason))
             banManager.add(ban)
-            server.getPlayer(profile.uuid)?.let { kick(ban, it) }
-            Messages.Commands.BAN_SUCCESS.send(sender, profile.name, reason)
+            source.server.getPlayer(profile.uuid)?.disconnect(Messages.Disconnect.BANNED_MESSAGE.build(ban.reason, ban.expirationDate))
+            source.sendSuccess(Messages.Commands.BAN_SUCCESS.build(profile.name, reason), true)
         }
-    }
-
-    @JvmStatic
-    private fun kick(ban: KryptonProfileBan, player: KryptonPlayer) {
-        player.disconnect(Messages.Disconnect.BANNED_MESSAGE.build(ban.reason, ban.expirationDate))
     }
 }

@@ -23,9 +23,8 @@ import com.mojang.brigadier.arguments.IntegerArgumentType
 import com.mojang.brigadier.arguments.StringArgumentType
 import com.mojang.brigadier.builder.LiteralArgumentBuilder
 import net.kyori.adventure.text.Component
-import org.kryptonmc.api.command.Sender
 import org.kryptonmc.api.entity.player.Player
-import org.kryptonmc.krypton.command.InternalCommand
+import org.kryptonmc.krypton.command.CommandSourceStack
 import org.kryptonmc.krypton.command.argument
 import org.kryptonmc.krypton.command.argument.argument
 import org.kryptonmc.krypton.command.arguments.entities.EntityArgumentType
@@ -35,12 +34,13 @@ import org.kryptonmc.krypton.command.permission
 import org.kryptonmc.krypton.command.runs
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 
-object TitleCommand : InternalCommand {
+object TitleCommand {
 
-    override fun register(dispatcher: CommandDispatcher<Sender>) {
+    @JvmStatic
+    fun register(dispatcher: CommandDispatcher<CommandSourceStack>) {
         dispatcher.register(literal("title") {
             permission(KryptonPermission.TITLE)
-            argument(TARGETS_ARGUMENT, EntityArgumentType.players()) {
+            argument(TARGETS, EntityArgumentType.players()) {
                 title("actionbar", KryptonPlayer::sendActionBar)
                 title("title", KryptonPlayer::sendTitle)
                 title("subtitle", KryptonPlayer::sendSubtitle)
@@ -52,53 +52,53 @@ object TitleCommand : InternalCommand {
     }
 }
 
-private const val TARGETS_ARGUMENT = "targets"
+private const val TARGETS = "targets"
+private const val FADE_IN = "fadeIn"
+private const val STAY = "stay"
+private const val FADE_OUT = "fadeOut"
 
-private inline fun LiteralArgumentBuilder<Sender>.title(
+private inline fun LiteralArgumentBuilder<CommandSourceStack>.title(
     name: String,
     crossinline action: (KryptonPlayer, Component) -> Unit
-): LiteralArgumentBuilder<Sender> = literal(name) {
+): LiteralArgumentBuilder<CommandSourceStack> = literal(name) {
     argument("message", StringArgumentType.string()) {
         runs { context ->
-            val sender = context.source as? KryptonPlayer ?: return@runs
-            val targets = context.entityArgument(TARGETS_ARGUMENT).players(sender)
+            val targets = context.entityArgument(TARGETS).players(context.source)
             val message = Component.text(context.argument<String>("message"))
             targets.forEach { action(it, message) }
-            sender.sendFeedback("commands.title.show.$name", targets.size)
+            context.source.sendFeedback("commands.title.show.$name", targets.size)
         }
     }
 }
 
-private inline fun LiteralArgumentBuilder<Sender>.clearOrReset(
+private inline fun LiteralArgumentBuilder<CommandSourceStack>.clearOrReset(
     name: String,
     translationKey: String,
     crossinline action: (KryptonPlayer) -> Unit
-): LiteralArgumentBuilder<Sender> = literal(name) {
+): LiteralArgumentBuilder<CommandSourceStack> = literal(name) {
     runs { context ->
-        val sender = context.source as? KryptonPlayer ?: return@runs
-        val targets = context.entityArgument(TARGETS_ARGUMENT).players(sender)
+        val targets = context.entityArgument(TARGETS).players(context.source)
         targets.forEach(action)
-        sender.sendFeedback("commands.title.$translationKey", targets.size)
+        context.source.sendFeedback("commands.title.$translationKey", targets.size)
     }
 }
 
-private fun LiteralArgumentBuilder<Sender>.times(): LiteralArgumentBuilder<Sender> = literal("times") {
-    argument("fadeIn", IntegerArgumentType.integer()) {
-        argument("stay", IntegerArgumentType.integer()) {
-            argument("fadeOut", IntegerArgumentType.integer()) {
+private fun LiteralArgumentBuilder<CommandSourceStack>.times(): LiteralArgumentBuilder<CommandSourceStack> = literal("times") {
+    argument(FADE_IN, IntegerArgumentType.integer()) {
+        argument(STAY, IntegerArgumentType.integer()) {
+            argument(FADE_OUT, IntegerArgumentType.integer()) {
                 runs { context ->
-                    val sender = context.source as? KryptonPlayer ?: return@runs
-                    val targets = context.entityArgument(TARGETS_ARGUMENT).players(sender)
-                    targets.forEach { it.sendTitleTimes(context.argument("fadeIn"), context.argument("stay"), context.argument("fadeOut")) }
-                    sender.sendFeedback("commands.title.times", targets.size)
+                    val targets = context.entityArgument(TARGETS).players(context.source)
+                    targets.forEach { it.sendTitleTimes(context.argument(FADE_IN), context.argument(STAY), context.argument(FADE_OUT)) }
+                    context.source.sendFeedback("commands.title.times", targets.size)
                 }
             }
         }
     }
 }
 
-private fun Player.sendFeedback(key: String, targets: Int) {
+private fun CommandSourceStack.sendFeedback(key: String, targets: Int) {
     val feedbackKey = if (targets == 1) "$key.single" else "$key.multiple"
     val feedbackArgument = if (targets == 1) displayName else Component.text(targets)
-    sendMessage(Component.translatable(feedbackKey, feedbackArgument))
+    sendSuccess(Component.translatable(feedbackKey, feedbackArgument), true)
 }

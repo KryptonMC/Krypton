@@ -20,9 +20,8 @@ package org.kryptonmc.krypton.commands
 
 import com.mojang.brigadier.CommandDispatcher
 import org.kryptonmc.api.auth.GameProfile
-import org.kryptonmc.api.command.Sender
 import org.kryptonmc.krypton.KryptonServer
-import org.kryptonmc.krypton.command.InternalCommand
+import org.kryptonmc.krypton.command.CommandSourceStack
 import org.kryptonmc.krypton.command.argument
 import org.kryptonmc.krypton.command.arguments.CommandExceptions
 import org.kryptonmc.krypton.command.arguments.GameProfileArgument
@@ -35,7 +34,7 @@ import org.kryptonmc.krypton.locale.Messages
 import org.kryptonmc.krypton.util.logger
 import java.io.IOException
 
-object WhitelistCommand : InternalCommand {
+object WhitelistCommand {
 
     private val LOGGER = logger<WhitelistCommand>()
     private val ERROR_ALREADY_ENABLED = CommandExceptions.simple("commands.whitelist.alreadyOn")
@@ -43,9 +42,10 @@ object WhitelistCommand : InternalCommand {
     private val ERROR_ALREADY_WHITELISTED = CommandExceptions.simple("commands.whitelist.add.failed")
     private val ERROR_NOT_WHITELISTED = CommandExceptions.simple("commands.whitelist.remove.failed")
 
-    private const val TARGETS_ARGUMENT = "targets"
+    private const val TARGETS = "targets"
 
-    override fun register(dispatcher: CommandDispatcher<Sender>) {
+    @JvmStatic
+    fun register(dispatcher: CommandDispatcher<CommandSourceStack>) {
         dispatcher.register(literal("whitelist") {
             permission(KryptonPermission.WHITELIST)
             literal("on") {
@@ -58,23 +58,21 @@ object WhitelistCommand : InternalCommand {
                 executes { showList(it.source) }
             }
             literal("add") {
-                argument(TARGETS_ARGUMENT, GameProfileArgument) {
+                argument(TARGETS, GameProfileArgument) {
                     suggests { context, builder ->
-                        val server = context.source.server as? KryptonServer ?: return@suggests builder.buildFuture()
-                        builder.suggest(server.playerManager.players.stream()
-                            .filter { !server.playerManager.whitelistManager.isWhitelisted(it.profile) }
+                        builder.suggest(context.source.server.playerManager.players.stream()
+                            .filter { !context.source.server.playerManager.whitelistManager.isWhitelisted(it.profile) }
                             .map { it.profile.name })
                     }
-                    executes { addPlayers(it.source, it.gameProfileArgument(TARGETS_ARGUMENT).profiles(it.source)) }
+                    executes { addPlayers(it.source, it.gameProfileArgument(TARGETS).profiles(it.source)) }
                 }
             }
             literal("remove") {
-                argument(TARGETS_ARGUMENT, GameProfileArgument) {
+                argument(TARGETS, GameProfileArgument) {
                     suggests { context, builder ->
-                        val server = context.source.server as? KryptonServer ?: return@suggests builder.buildFuture()
-                        builder.suggest(getWhitelistNames(server))
+                        builder.suggest(getWhitelistNames(context.source.server))
                     }
-                    executes { removePlayers(it.source, it.gameProfileArgument(TARGETS_ARGUMENT).profiles(it.source)) }
+                    executes { removePlayers(it.source, it.gameProfileArgument(TARGETS).profiles(it.source)) }
                 }
             }
             literal("reload") {
@@ -84,23 +82,21 @@ object WhitelistCommand : InternalCommand {
     }
 
     @JvmStatic
-    private fun reload(sender: Sender) {
-        val server = sender.server as? KryptonServer ?: return
-        reloadWhitelist(server)
-        Messages.Commands.WHITELIST_RELOADED.send(sender)
-        kickUnlistedPlayers(server)
+    private fun reload(source: CommandSourceStack) {
+        reloadWhitelist(source.server)
+        source.sendSuccess(Messages.Commands.WHITELIST_RELOADED.build(), true)
+        kickUnlistedPlayers(source.server)
     }
 
     @JvmStatic
-    private fun addPlayers(sender: Sender, profiles: Collection<GameProfile>): Int {
-        val server = sender.server as? KryptonServer ?: return 0
-        val whitelistManager = server.playerManager.whitelistManager
+    private fun addPlayers(source: CommandSourceStack, profiles: Collection<GameProfile>): Int {
+        val whitelistManager = source.server.playerManager.whitelistManager
 
         var count = 0
         profiles.forEach {
             if (whitelistManager.isWhitelisted(it)) return@forEach
             whitelistManager.add(it)
-            Messages.Commands.WHITELIST_ADD_SUCCESS.send(sender, it)
+            source.sendSuccess(Messages.Commands.WHITELIST_ADD_SUCCESS.build(it), true)
             ++count
         }
         if (count == 0) throw ERROR_ALREADY_WHITELISTED.create()
@@ -108,47 +104,47 @@ object WhitelistCommand : InternalCommand {
     }
 
     @JvmStatic
-    private fun removePlayers(sender: Sender, profiles: Collection<GameProfile>): Int {
-        val server = sender.server as? KryptonServer ?: return 0
-        val whitelistManager = server.playerManager.whitelistManager
+    private fun removePlayers(source: CommandSourceStack, profiles: Collection<GameProfile>): Int {
+        val whitelistManager = source.server.playerManager.whitelistManager
 
         var count = 0
         profiles.forEach {
             if (!whitelistManager.isWhitelisted(it)) return@forEach
             whitelistManager.remove(it)
-            Messages.Commands.WHITELIST_REMOVE_SUCCESS.send(sender, it)
+            source.sendSuccess(Messages.Commands.WHITELIST_REMOVE_SUCCESS.build(it), true)
             ++count
         }
 
         if (count == 0) throw ERROR_NOT_WHITELISTED.create()
-        kickUnlistedPlayers(server)
+        kickUnlistedPlayers(source.server)
         return count
     }
 
     @JvmStatic
-    private fun enableWhitelist(sender: Sender) {
-        val server = sender.server as? KryptonServer ?: return
-        val whitelistManager = server.playerManager.whitelistManager
+    private fun enableWhitelist(source: CommandSourceStack) {
+        val whitelistManager = source.server.playerManager.whitelistManager
         if (whitelistManager.isEnabled) throw ERROR_ALREADY_ENABLED.create()
         whitelistManager.isEnabled = true
-        Messages.Commands.WHITELIST_ENABLED.send(sender)
-        kickUnlistedPlayers(server)
+        source.sendSuccess(Messages.Commands.WHITELIST_ENABLED.build(), true)
+        kickUnlistedPlayers(source.server)
     }
 
     @JvmStatic
-    private fun disableWhitelist(sender: Sender) {
-        val server = sender.server as? KryptonServer ?: return
-        val whitelistManager = server.playerManager.whitelistManager
+    private fun disableWhitelist(source: CommandSourceStack) {
+        val whitelistManager = source.server.playerManager.whitelistManager
         if (!whitelistManager.isEnabled) throw ERROR_ALREADY_DISABLED.create()
         whitelistManager.isEnabled = false
-        Messages.Commands.WHITELIST_DISABLED.send(sender)
+        source.sendSuccess(Messages.Commands.WHITELIST_DISABLED.build(), true)
     }
 
     @JvmStatic
-    private fun showList(sender: Sender): Int {
-        val server = sender.server as? KryptonServer ?: return 0
-        val names = getWhitelistNames(server)
-        if (names.isEmpty()) Messages.Commands.WHITELIST_NONE.send(sender) else Messages.Commands.WHITELIST_LIST.send(sender, names)
+    private fun showList(source: CommandSourceStack): Int {
+        val names = getWhitelistNames(source.server)
+        if (names.isEmpty()) {
+            source.sendSuccess(Messages.Commands.WHITELIST_NONE.build(), false)
+        } else {
+            source.sendSuccess(Messages.Commands.WHITELIST_LIST.build(names), false)
+        }
         return names.size
     }
 
@@ -158,9 +154,8 @@ object WhitelistCommand : InternalCommand {
 
     @JvmStatic
     private fun kickUnlistedPlayers(server: KryptonServer) {
-        val whitelistManager = server.playerManager.whitelistManager
         server.playerManager.players.forEach {
-            if (!whitelistManager.isWhitelisted(it.profile)) it.disconnect(Messages.Disconnect.NOT_WHITELISTED.build())
+            if (!server.playerManager.whitelistManager.isWhitelisted(it.profile)) it.disconnect(Messages.Disconnect.NOT_WHITELISTED.build())
         }
     }
 

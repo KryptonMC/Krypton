@@ -28,18 +28,24 @@ import org.jline.reader.Candidate
 import org.jline.reader.Completer
 import org.jline.reader.LineReader
 import org.jline.reader.ParsedLine
+import org.kryptonmc.krypton.command.CommandSourceStack
+import org.kryptonmc.krypton.command.KryptonCommandManager
 import org.kryptonmc.krypton.util.logger
 import java.util.concurrent.ExecutionException
+import java.util.function.Supplier
 
 /**
  * Used for providing Brigadier completions for the console.
  */
-class BrigadierCompleter(private val console: KryptonConsole) : Completer {
+class BrigadierCompleter(
+    private val commandManager: KryptonCommandManager,
+    private val commandSourceProvider: Supplier<CommandSourceStack>
+) : Completer {
 
     override fun complete(reader: LineReader, line: ParsedLine, candidates: MutableList<Candidate>) {
         val input = line.line()
-        val parseResults = console.server.commandManager.parse(console, input)
-        val suggestions = console.server.commandManager.suggest(parseResults, line.cursor())
+        val parseResults = commandManager.parse(commandSourceProvider.get(), input)
+        val suggestions = commandManager.suggest(parseResults, line.cursor())
 
         try {
             suggestions.get().list.forEach {

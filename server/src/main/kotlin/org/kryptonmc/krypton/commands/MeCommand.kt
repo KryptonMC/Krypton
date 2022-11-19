@@ -20,8 +20,7 @@ package org.kryptonmc.krypton.commands
 
 import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.arguments.StringArgumentType
-import org.kryptonmc.api.command.Sender
-import org.kryptonmc.krypton.command.InternalCommand
+import org.kryptonmc.krypton.command.CommandSourceStack
 import org.kryptonmc.krypton.command.argument
 import org.kryptonmc.krypton.command.permission
 import org.kryptonmc.krypton.command.argument.argument
@@ -29,13 +28,14 @@ import org.kryptonmc.krypton.command.literal
 import org.kryptonmc.krypton.command.runs
 import org.kryptonmc.krypton.locale.Messages
 
-object MeCommand : InternalCommand {
+object MeCommand {
 
-    override fun register(dispatcher: CommandDispatcher<Sender>) {
+    @JvmStatic
+    fun register(dispatcher: CommandDispatcher<CommandSourceStack>) {
         dispatcher.register(literal("me") {
             permission(KryptonPermission.ME)
             argument("action", StringArgumentType.string()) {
-                runs { Messages.CHAT_TYPE_EMOTE.send(it.source.server, it.source.name, it.argument("action")) }
+                runs { Messages.CHAT_TYPE_EMOTE.send(it.source.server, it.source.displayName, it.argument("action")) }
             }
         })
     }

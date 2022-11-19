@@ -22,10 +22,15 @@ import net.kyori.adventure.identity.Identity
 import net.kyori.adventure.permission.PermissionChecker
 import net.kyori.adventure.pointer.Pointers
 import net.kyori.adventure.sound.Sound
+import net.kyori.adventure.text.Component
 import org.kryptonmc.api.effect.sound.SoundEvent
 import org.kryptonmc.api.util.BoundingBox
 import org.kryptonmc.api.util.Vec3d
 import org.kryptonmc.api.world.damage.type.DamageTypes
+import org.kryptonmc.api.world.rule.GameRules
+import org.kryptonmc.krypton.adventure.toPlainText
+import org.kryptonmc.krypton.command.CommandSourceStack
+import org.kryptonmc.krypton.command.KryptonSender
 import org.kryptonmc.krypton.entity.components.BaseEntity
 import org.kryptonmc.krypton.entity.components.SerializableEntity
 import org.kryptonmc.krypton.entity.system.EntityVehicleSystem
@@ -46,7 +51,7 @@ import java.util.UUID
 import java.util.concurrent.atomic.AtomicInteger
 
 @Suppress("LeakingThis")
-abstract class KryptonEntity(final override var world: KryptonWorld) : BaseEntity, SerializableEntity {
+abstract class KryptonEntity(final override var world: KryptonWorld) : BaseEntity, SerializableEntity, KryptonSender {
 
     override val serializer: EntitySerializer<out KryptonEntity>
         get() = BaseEntitySerializer
@@ -134,6 +139,19 @@ abstract class KryptonEntity(final override var world: KryptonWorld) : BaseEntit
     open fun asChatSender(): ChatSender = ChatSender.SYSTEM
 
     override fun soundSource(): Sound.Source = Sound.Source.NEUTRAL
+
+    override fun sendSystemMessage(message: Component) {
+        // Do nothing by default
+    }
+
+    override fun acceptsSuccess(): Boolean = world.gameRules.get(GameRules.SEND_COMMAND_FEEDBACK)
+
+    override fun acceptsFailure(): Boolean = true
+
+    override fun shouldInformAdmins(): Boolean = true
+
+    final override fun createCommandSourceStack(): CommandSourceStack =
+        CommandSourceStack(this, location, yaw, pitch, world, name.toPlainText(), displayName, server, this)
 
     companion object {
 

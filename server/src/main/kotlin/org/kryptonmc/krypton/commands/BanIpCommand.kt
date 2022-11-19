@@ -22,9 +22,7 @@ import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.arguments.StringArgumentType
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer
-import org.kryptonmc.api.command.Sender
-import org.kryptonmc.krypton.KryptonServer
-import org.kryptonmc.krypton.command.InternalCommand
+import org.kryptonmc.krypton.command.CommandSourceStack
 import org.kryptonmc.krypton.command.argument
 import org.kryptonmc.krypton.command.permission
 import org.kryptonmc.krypton.command.argument.argument
@@ -36,7 +34,7 @@ import org.kryptonmc.krypton.server.ban.KryptonIpBan
 import org.kryptonmc.krypton.util.asString
 import java.util.regex.Pattern
 
-object BanIpCommand : InternalCommand {
+object BanIpCommand {
 
     private val ERROR_INVALID_IP = CommandExceptions.simple("commands.banip.invalid")
     private val ERROR_ALREADY_BANNED = CommandExceptions.simple("commands.banip.failed")
@@ -44,26 +42,26 @@ object BanIpCommand : InternalCommand {
     val IP_ADDRESS_PATTERN: Pattern = Pattern.compile("^([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\." +
             "([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])$")
 
-    private const val TARGET_ARGUMENT = "target"
-    private const val REASON_ARGUMENT = "reason"
+    private const val TARGET = "target"
+    private const val REASON = "reason"
     private const val DEFAULT_REASON = "Banned by operator."
 
-    override fun register(dispatcher: CommandDispatcher<Sender>) {
+    @JvmStatic
+    fun register(dispatcher: CommandDispatcher<CommandSourceStack>) {
         dispatcher.register(literal("ban-ip") {
             permission(KryptonPermission.BAN_IP)
-            argument(TARGET_ARGUMENT, StringArgumentType.string()) {
-                runs { banIp(it.argument(TARGET_ARGUMENT), it.source, DEFAULT_REASON) }
-                argument(REASON_ARGUMENT, StringArgumentType.string()) {
-                    runs { banIp(it.argument(TARGET_ARGUMENT), it.source, it.argument(REASON_ARGUMENT)) }
+            argument(TARGET, StringArgumentType.string()) {
+                runs { banIp(it.source, it.argument(TARGET), DEFAULT_REASON) }
+                argument(REASON, StringArgumentType.string()) {
+                    runs { banIp(it.source, it.argument(TARGET), it.argument(REASON)) }
                 }
             }
         })
     }
 
     @JvmStatic
-    private fun banIp(target: String, sender: Sender, reason: String) {
-        val server = sender.server as? KryptonServer ?: return
-        val banManager = server.playerManager.banManager
+    private fun banIp(source: CommandSourceStack, target: String, reason: String) {
+        val banManager = source.server.playerManager.banManager
         if (IP_ADDRESS_PATTERN.matcher(target).matches()) {
             // The target is an IP address
             // Check player is not already banned
@@ -71,10 +69,10 @@ object BanIpCommand : InternalCommand {
             banManager.add(KryptonIpBan(target, reason = LegacyComponentSerializer.legacySection().deserialize(reason)))
 
             // Send success
-            Messages.Commands.BAN_IP_SUCCESS.send(sender, target, Component.text(reason))
+            source.sendSuccess(Messages.Commands.BAN_IP_SUCCESS.build(target, Component.text(reason)), true)
             return
         }
-        val player = server.getPlayer(target)
+        val player = source.server.playerManager.getPlayer(target)
         if (player != null) {
             // The target is a player
             val ban = KryptonIpBan(player.address.asString(), reason = LegacyComponentSerializer.legacySection().deserialize(reason))
@@ -86,7 +84,7 @@ object BanIpCommand : InternalCommand {
             // Disconnect target
             player.disconnect(Messages.Disconnect.BANNED_IP_MESSAGE.build(ban.reason, ban.expirationDate))
             // Send success
-            Messages.Commands.BAN_IP_SUCCESS.send(sender, target, ban.reason)
+            source.sendSuccess(Messages.Commands.BAN_IP_SUCCESS.build(target, ban.reason), true)
             return
         }
         // The target isn't an IP address or a player

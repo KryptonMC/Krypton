@@ -33,7 +33,7 @@ import it.unimi.dsi.fastutil.objects.Object2IntMaps
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap
 import it.unimi.dsi.fastutil.objects.ObjectArrayList
 import net.kyori.adventure.key.Key
-import org.kryptonmc.api.command.Sender
+import org.kryptonmc.krypton.command.CommandSourceStack
 import org.kryptonmc.krypton.command.SuggestionProviders
 import org.kryptonmc.krypton.command.argument.ArgumentSerializers
 import org.kryptonmc.krypton.network.Writable
@@ -55,12 +55,10 @@ import java.util.function.Predicate
 @JvmRecord
 data class PacketOutCommands(val rootIndex: Int, val nodes: List<Node>) : Packet {
 
-    constructor(root: RootCommandNode<Sender>) : this(root, enumerate(root))
+    constructor(root: RootCommandNode<Source>) : this(root, enumerate(root))
 
-    private constructor(
-        root: RootCommandNode<Sender>,
-        enumerations: Object2IntMap<CommandNode<Sender>>
-    ) : this(enumerations.getInt(root), createNodes(enumerations))
+    private constructor(root: RootCommandNode<Source>,
+                        enumerations: Object2IntMap<CommandNode<Source>>) : this(enumerations.getInt(root), createNodes(enumerations))
 
     constructor(buf: ByteBuf) : this(buf.readList(::readNode), buf.readVarInt())
 
@@ -123,7 +121,7 @@ data class PacketOutCommands(val rootIndex: Int, val nodes: List<Node>) : Packet
     @JvmRecord
     data class ArgumentNodeData<T>(val name: String, val type: ArgumentType<T>, val suggestionId: Key?) : NodeData {
 
-        constructor(node: ArgumentCommandNode<Sender, T>) : this(node.name, node.type, node.customSuggestions.id())
+        constructor(node: ArgumentCommandNode<Source, T>) : this(node.name, node.type, node.customSuggestions.id())
 
         override fun write(buf: ByteBuf) {
             buf.writeString(name)
@@ -142,14 +140,14 @@ data class PacketOutCommands(val rootIndex: Int, val nodes: List<Node>) : Packet
         private const val TYPE_ARGUMENT = 2
 
         @JvmStatic
-        private fun createNodes(enumerations: Object2IntMap<CommandNode<Sender>>): List<Node> {
+        private fun createNodes(enumerations: Object2IntMap<CommandNode<Source>>): List<Node> {
             val nodes = ObjectArrayList<Node>(enumerations.size).apply { size(enumerations.size) }
             Object2IntMaps.fastForEach(enumerations) { nodes.set(it.intValue, createNode(it.key, enumerations)) }
             return nodes
         }
 
         @JvmStatic
-        private fun createNode(node: CommandNode<Sender>, enumerations: Object2IntMap<CommandNode<Sender>>): Node {
+        private fun createNode(node: CommandNode<Source>, enumerations: Object2IntMap<CommandNode<Source>>): Node {
             var flags = 0
             if (node.redirect != null) flags = flags or FLAG_REDIRECT
             val redirectNode = if (node.redirect != null) enumerations.getInt(node.redirect) else 0
@@ -162,7 +160,7 @@ data class PacketOutCommands(val rootIndex: Int, val nodes: List<Node>) : Packet
                 is ArgumentCommandNode<*, *> -> {
                     flags = flags or TYPE_ARGUMENT
                     if (node.customSuggestions != null) flags = flags or FLAG_SUGGESTIONS
-                    ArgumentNodeData(node as ArgumentCommandNode<Sender, *>)
+                    ArgumentNodeData(node as ArgumentCommandNode<Source, *>)
                 }
                 is LiteralCommandNode<*> -> {
                     flags = flags or TYPE_LITERAL
@@ -207,9 +205,9 @@ data class PacketOutCommands(val rootIndex: Int, val nodes: List<Node>) : Packet
 
         // a breadth-first search algorithm to enumerate a root node
         @JvmStatic
-        private fun enumerate(root: RootCommandNode<Sender>): Object2IntMap<CommandNode<Sender>> {
-            val result = Object2IntOpenHashMap<CommandNode<Sender>>()
-            val queue = ArrayDeque<CommandNode<Sender>>()
+        private fun enumerate(root: RootCommandNode<Source>): Object2IntMap<CommandNode<Source>> {
+            val result = Object2IntOpenHashMap<CommandNode<Source>>()
+            val queue = ArrayDeque<CommandNode<Source>>()
             queue.add(root)
 
             while (queue.isNotEmpty()) {
@@ -226,4 +224,6 @@ data class PacketOutCommands(val rootIndex: Int, val nodes: List<Node>) : Packet
     }
 }
 
-private fun SuggestionProvider<Sender>?.id(): Key? = if (this == null) null else SuggestionProviders.name(this)
+private typealias Source = CommandSourceStack
+
+private fun SuggestionProvider<Source>?.id(): Key? = if (this == null) null else SuggestionProviders.name(this)

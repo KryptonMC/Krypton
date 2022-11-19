@@ -19,23 +19,19 @@
 package org.kryptonmc.krypton.commands
 
 import com.mojang.brigadier.CommandDispatcher
-import org.kryptonmc.api.command.Sender
-import org.kryptonmc.krypton.command.InternalCommand
+import org.kryptonmc.krypton.command.CommandSourceStack
 import org.kryptonmc.krypton.command.literal
 import org.kryptonmc.krypton.command.permission
 import org.kryptonmc.krypton.command.runs
-import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.locale.Messages
 
-object SeedCommand : InternalCommand {
+object SeedCommand {
 
-    override fun register(dispatcher: CommandDispatcher<Sender>) {
+    @JvmStatic
+    fun register(dispatcher: CommandDispatcher<CommandSourceStack>) {
         dispatcher.register(literal("seed") {
             permission(KryptonPermission.SEED)
-            runs {
-                val sender = it.source as? KryptonPlayer ?: return@runs
-                Messages.Commands.SEED_SUCCESS.build(sender.world.seed)
-            }
+            runs { it.source.sendSuccess(Messages.Commands.SEED_SUCCESS.build(it.source.world.seed), true) }
         })
     }
 }

@@ -20,13 +20,13 @@ package org.kryptonmc.krypton.commands.krypton
 
 import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.builder.LiteralArgumentBuilder
-import org.kryptonmc.api.command.Sender
-import org.kryptonmc.krypton.command.InternalCommand
+import org.kryptonmc.krypton.command.CommandSourceStack
 import org.kryptonmc.krypton.command.literal
 
-object KryptonCommand : InternalCommand {
+object KryptonCommand {
 
-    override fun register(dispatcher: CommandDispatcher<Sender>) {
+    @JvmStatic
+    fun register(dispatcher: CommandDispatcher<CommandSourceStack>) {
         dispatcher.register(literal("krypton") {
             registerSubCommand(this, PluginsCommand)
             registerSubCommand(this, InfoCommand)
@@ -34,9 +34,9 @@ object KryptonCommand : InternalCommand {
     }
 
     @JvmStatic
-    private fun registerSubCommand(context: LiteralArgumentBuilder<Sender>, command: KryptonSubCommand) {
+    private fun registerSubCommand(context: LiteralArgumentBuilder<CommandSourceStack>, command: KryptonSubCommand) {
         val node = command.register().build()
         context.then(node)
-        command.aliases.forEach { context.then(LiteralArgumentBuilder.literal<Sender>(it).redirect(node)) }
+        command.aliases.forEach { context.then(LiteralArgumentBuilder.literal<CommandSourceStack>(it).redirect(node)) }
     }
 }

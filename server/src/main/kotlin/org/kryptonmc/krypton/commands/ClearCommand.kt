@@ -19,8 +19,7 @@
 package org.kryptonmc.krypton.commands
 
 import com.mojang.brigadier.CommandDispatcher
-import org.kryptonmc.api.command.Sender
-import org.kryptonmc.krypton.command.InternalCommand
+import org.kryptonmc.krypton.command.CommandSourceStack
 import org.kryptonmc.krypton.command.argument
 import org.kryptonmc.krypton.command.argument.argument
 import org.kryptonmc.krypton.command.arguments.entities.EntityArgumentType
@@ -36,21 +35,20 @@ import org.kryptonmc.krypton.locale.Messages
 import org.kryptonmc.krypton.packet.out.play.PacketOutSetContainerContent
 import java.util.function.Consumer
 
-object ClearCommand : InternalCommand {
+object ClearCommand {
 
-    private const val TARGETS_ARGUMENT = "targets"
+    private const val TARGETS = "targets"
+    private const val ITEM = "item"
 
-    override fun register(dispatcher: CommandDispatcher<Sender>) {
+    @JvmStatic
+    fun register(dispatcher: CommandDispatcher<CommandSourceStack>) {
         dispatcher.register(literal("clear") {
             permission(KryptonPermission.CLEAR)
-            runs {
-                val player = it.source as? KryptonPlayer ?: return@runs
-                clear(listOf(player), player, { true }, -1)
-            }
-            argument(TARGETS_ARGUMENT, EntityArgumentType.players()) {
-                runs { clear(it.entityArgument(TARGETS_ARGUMENT).players(it.source), it.source, { true }, -1) }
-                argument("item", ItemStackPredicateArgument) {
-                    runs { clear(it.entityArgument(TARGETS_ARGUMENT).players(it.source), it.source, it.argument("item"), -1) }
+            runs { clear(it.source, listOf(it.source.getPlayerOrError()), { true }, -1) }
+            argument(TARGETS, EntityArgumentType.players()) {
+                runs { clear(it.source, it.entityArgument(TARGETS).players(it.source), { true }, -1) }
+                argument(ITEM, ItemStackPredicateArgument) {
+                    runs { clear(it.source, it.entityArgument(TARGETS).players(it.source), it.argument(ITEM), -1) }
                 }
             }
         })
@@ -58,19 +56,19 @@ object ClearCommand : InternalCommand {
 
     //-1 means that everything should be cleared (there is no limit)
     @JvmStatic
-    private fun clear(targets: List<KryptonPlayer>, sender: Sender, predicate: ItemStackPredicate, maxCount: Int) {
+    private fun clear(source: CommandSourceStack, targets: List<KryptonPlayer>, predicate: ItemStackPredicate, maxCount: Int) {
         val amount = if (maxCount == -1) "all" else maxCount.toString()
         if (targets.size == 1) {
             val target = targets.get(0)
             clear(target, predicate, maxCount)
-            Messages.Commands.CLEAR_SINGLE_SUCCESS.send(sender, amount, target.displayName)
+            source.sendSuccess(Messages.Commands.CLEAR_SINGLE_SUCCESS.build(amount, target.displayName), true)
             target.session.send(PacketOutSetContainerContent(target.inventory, target.inventory.mainHand))
         } else {
             targets.forEach { target ->
                 target.inventory.items.forEachIndexed { index, item -> if (predicate(item)) target.inventory.set(index, KryptonItemStack.EMPTY) }
                 target.session.send(PacketOutSetContainerContent(target.inventory, target.inventory.mainHand))
             }
-            Messages.Commands.CLEAR_MULTIPLE_SUCCESS.send(sender, amount, targets.size)
+            source.sendSuccess(Messages.Commands.CLEAR_MULTIPLE_SUCCESS.build(amount, targets.size), true)
         }
     }
 
@@ -111,12 +109,10 @@ object ClearCommand : InternalCommand {
                 setItem.accept(KryptonItemStack.EMPTY)
                 remaining
             }
-
             remaining > item.amount -> {
                 setItem.accept(KryptonItemStack.EMPTY)
                 remaining - item.amount
             }
-
             else -> {
                 setItem.accept(item.shrink(remaining))
                 0

@@ -21,21 +21,24 @@ package org.kryptonmc.krypton.command.registrar
 import com.mojang.brigadier.builder.LiteralArgumentBuilder
 import com.mojang.brigadier.tree.LiteralCommandNode
 import com.mojang.brigadier.tree.RootCommandNode
-import org.kryptonmc.api.command.CommandRegistrar
-import org.kryptonmc.api.command.Sender
+import org.kryptonmc.api.command.Command
+import org.kryptonmc.api.command.CommandMeta
+import org.kryptonmc.krypton.command.CommandSourceStack
 import java.util.concurrent.locks.Lock
 import kotlin.concurrent.withLock
 
-abstract class KryptonCommandRegistrar<C>(private val lock: Lock) : CommandRegistrar<C> {
+abstract class AbstractCommandRegistrar<C : Command>(private val lock: Lock) {
 
-    protected fun register(root: RootCommandNode<Sender>, node: LiteralCommandNode<Sender>) {
+    abstract fun register(root: RootCommandNode<CommandSourceStack>, command: C, meta: CommandMeta)
+
+    protected fun register(root: RootCommandNode<CommandSourceStack>, node: LiteralCommandNode<CommandSourceStack>) {
         lock.withLock {
             root.removeChildByName(node.name)
             root.addChild(node)
         }
     }
 
-    protected fun register(root: RootCommandNode<Sender>, node: LiteralCommandNode<Sender>, alias: String) {
-        register(root, LiteralArgumentBuilder.literal<Sender>(alias).redirect(node).build())
+    protected fun register(root: RootCommandNode<CommandSourceStack>, node: LiteralCommandNode<CommandSourceStack>, alias: String) {
+        register(root, LiteralArgumentBuilder.literal<CommandSourceStack>(alias).redirect(node).build())
     }
 }

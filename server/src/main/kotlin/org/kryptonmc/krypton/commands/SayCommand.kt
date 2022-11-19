@@ -20,8 +20,7 @@ package org.kryptonmc.krypton.commands
 
 import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.arguments.StringArgumentType
-import org.kryptonmc.api.command.Sender
-import org.kryptonmc.krypton.command.InternalCommand
+import org.kryptonmc.krypton.command.CommandSourceStack
 import org.kryptonmc.krypton.command.argument
 import org.kryptonmc.krypton.command.permission
 import org.kryptonmc.krypton.command.argument.argument
@@ -29,13 +28,16 @@ import org.kryptonmc.krypton.command.literal
 import org.kryptonmc.krypton.command.runs
 import org.kryptonmc.krypton.locale.Messages
 
-object SayCommand : InternalCommand {
+object SayCommand {
 
-    override fun register(dispatcher: CommandDispatcher<Sender>) {
+    private const val MESSAGE = "message"
+
+    @JvmStatic
+    fun register(dispatcher: CommandDispatcher<CommandSourceStack>) {
         dispatcher.register(literal("say") {
             permission(KryptonPermission.SAY)
-            argument("message", StringArgumentType.string()) {
-                runs { Messages.CHAT_TYPE_ANNOUNCEMENT.send(it.source.server, it.source.name, it.argument("message")) }
+            argument(MESSAGE, StringArgumentType.string()) {
+                runs { Messages.CHAT_TYPE_ANNOUNCEMENT.send(it.source.server, it.source.displayName, it.argument(MESSAGE)) }
             }
         })
     }

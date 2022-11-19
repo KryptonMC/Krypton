@@ -29,8 +29,8 @@ import com.mojang.brigadier.suggestion.SuggestionsBuilder
 import com.mojang.brigadier.tree.LiteralCommandNode
 import com.mojang.brigadier.tree.RootCommandNode
 import org.kryptonmc.api.command.InvocableCommand
-import org.kryptonmc.api.command.Sender
 import org.kryptonmc.api.command.CommandMeta
+import org.kryptonmc.krypton.command.CommandSourceStack
 import org.kryptonmc.krypton.command.brigadier.KryptonArgumentBuilder
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.locks.Lock
@@ -42,10 +42,7 @@ import java.util.function.Predicate
  * helper functions that we can just override in those subclasses to provide
  * the functionality that we need for each.
  */
-abstract class InvocableCommandRegistrar<C : InvocableCommand<A>, A>(
-    lock: Lock,
-    private val argumentsType: ArgumentType<A>
-) : KryptonCommandRegistrar<C>(lock) {
+abstract class InvocableCommandRegistrar<C : IC<A>, A>(lock: Lock, private val argumentsType: ArgumentType<A>) : AbstractCommandRegistrar<C>(lock) {
 
     protected abstract fun getArgs(arguments: Map<String, ParsedArgument<*, *>>): A
 
@@ -58,26 +55,26 @@ abstract class InvocableCommandRegistrar<C : InvocableCommand<A>, A>(
         }
     }
 
-    override fun register(root: RootCommandNode<Sender>, command: C, meta: CommandMeta) {
+    override fun register(root: RootCommandNode<CommandSourceStack>, command: C, meta: CommandMeta) {
         val literal = createLiteral(command, meta.name)
         register(root, literal)
         meta.aliases.forEach { register(root, literal, it) }
     }
 
-    private fun createLiteral(command: C, alias: String): LiteralCommandNode<Sender> {
-        val requirement = Predicate<CommandContextBuilder<Sender>> { command.hasPermission(it.source, getArgs(it.arguments)) }
-        val callback = Command {
-            command.execute(it.source, getArgs(it.arguments))
+    private fun createLiteral(command: C, alias: String): LiteralCommandNode<CommandSourceStack> {
+        val requirement = Predicate<CommandContextBuilder<CommandSourceStack>> { command.hasPermission(it.source.sender, getArgs(it.arguments)) }
+        val callback = Command<CommandSourceStack> {
+            command.execute(it.source.sender, getArgs(it.arguments))
             1
         }
-        val literal = LiteralArgumentBuilder.literal<Sender>(alias)
+        val literal = LiteralArgumentBuilder.literal<CommandSourceStack>(alias)
             .requiresWithContext { context, reader -> reader.canRead() || requirement.test(context) }
             .executes(callback)
             .build()
-        val arguments = KryptonArgumentBuilder.kryptonArgument<Sender, A>("arguments", argumentsType)
+        val arguments = KryptonArgumentBuilder.kryptonArgument<CommandSourceStack, A>("arguments", argumentsType)
             .requiresWithContext { context, _ -> requirement.test(context) }
             .executes(callback)
-            .suggests { context, builder -> createSuggestions(builder, command.suggest(context.source, getArgs(context.arguments))) }
+            .suggests { context, builder -> createSuggestions(builder, command.suggest(context.source.sender, getArgs(context.arguments))) }
             .build()
         literal.addChild(arguments)
         return literal
@@ -101,3 +98,5 @@ abstract class InvocableCommandRegistrar<C : InvocableCommand<A>, A>(
         return offsetBuilder.buildFuture()
     }
 }
+
+private typealias IC<A> = InvocableCommand<A>

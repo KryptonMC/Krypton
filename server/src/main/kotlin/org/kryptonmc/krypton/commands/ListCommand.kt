@@ -19,19 +19,18 @@
 package org.kryptonmc.krypton.commands
 
 import com.mojang.brigadier.CommandDispatcher
-import org.kryptonmc.api.command.Sender
-import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.adventure.toPlainText
-import org.kryptonmc.krypton.command.InternalCommand
+import org.kryptonmc.krypton.command.CommandSourceStack
 import org.kryptonmc.krypton.command.literal
 import org.kryptonmc.krypton.command.permission
 import org.kryptonmc.krypton.command.runs
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.locale.Messages
 
-object ListCommand : InternalCommand {
+object ListCommand {
 
-    override fun register(dispatcher: CommandDispatcher<Sender>) {
+    @JvmStatic
+    fun register(dispatcher: CommandDispatcher<CommandSourceStack>) {
         dispatcher.register(literal("list") {
             permission(KryptonPermission.LIST)
             runs { context -> sendNames(context.source) { it.displayName.toPlainText() } }
@@ -42,9 +41,8 @@ object ListCommand : InternalCommand {
     }
 
     @JvmStatic
-    private inline fun sendNames(sender: Sender, nameGetter: (KryptonPlayer) -> String) {
-        val server = sender.server as? KryptonServer ?: return
-        val names = server.players.map(nameGetter)
-        Messages.Commands.LIST_PLAYERS.send(sender, names.size, server.config.status.maxPlayers, names.joinToString("\n"))
+    private inline fun sendNames(source: CommandSourceStack, nameGetter: (KryptonPlayer) -> String) {
+        val names = source.server.players.map(nameGetter)
+        Messages.Commands.LIST_PLAYERS.send(source.server, names.size, source.server.config.status.maxPlayers, names.joinToString("\n"))
     }
 }

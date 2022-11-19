@@ -21,10 +21,13 @@ package org.kryptonmc.krypton.commands
 import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.arguments.StringArgumentType
 import com.mojang.brigadier.context.CommandContext
-import org.kryptonmc.api.command.Sender
+import com.mojang.brigadier.exceptions.DynamicCommandExceptionType
+import net.kyori.adventure.text.Component
 import org.kryptonmc.api.event.player.ChangeGameModeEvent
 import org.kryptonmc.api.world.GameMode
-import org.kryptonmc.krypton.command.InternalCommand
+import org.kryptonmc.api.world.rule.GameRules
+import org.kryptonmc.krypton.adventure.toMessage
+import org.kryptonmc.krypton.command.CommandSourceStack
 import org.kryptonmc.krypton.command.argument
 import org.kryptonmc.krypton.command.argument.argument
 import org.kryptonmc.krypton.command.arguments.entities.EntityArgumentType
@@ -36,67 +39,66 @@ import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.locale.Messages
 import org.kryptonmc.krypton.util.GameModes
 
-object GameModeCommand : InternalCommand {
+object GameModeCommand {
 
-    private const val GAME_MODE_ARGUMENT = "gameMode"
-    private const val TARGETS_ARGUMENT = "targets"
+    private val ERROR_INVALID_GAME_MODE = DynamicCommandExceptionType { Component.text("Invalid game mode $it!").toMessage() }
 
-    override fun register(dispatcher: CommandDispatcher<Sender>) {
+    private const val GAME_MODE = "gameMode"
+    private const val TARGETS = "targets"
+
+    @JvmStatic
+    fun register(dispatcher: CommandDispatcher<CommandSourceStack>) {
         val command = literal("gamemode") { permission(KryptonPermission.GAME_MODE) }
         GameModes.VALUES.forEach { mode ->
             command.then(literal(mode.name.lowercase()) {
-                runs { gameModeArgument(it, mode) }
-                argument(TARGETS_ARGUMENT, EntityArgumentType.players()) {
-                    runs { targetArgument(it, mode) }
+                runs { setMode(it.source, listOf(it.source.getPlayerOrError()), mode) }
+                argument(TARGETS, EntityArgumentType.players()) {
+                    runs { setMode(it.source, it.entityArgument(TARGETS).players(it.source), mode) }
                 }
             })
         }
 
-        command.then(argument(GAME_MODE_ARGUMENT, StringArgumentType.string()) {
-            runs {
-                var gameMode = GameModes.fromAbbreviation(it.argument(GAME_MODE_ARGUMENT))
-                if (gameMode == null) {
-                    val id = it.argument<String>(GAME_MODE_ARGUMENT).toIntOrNull() ?: return@runs
-                    gameMode = GameModes.fromId(id)
-                }
-                if (gameMode == null) return@runs
-                gameModeArgument(it, gameMode)
-            }
-            argument(TARGETS_ARGUMENT, EntityArgumentType.players()) {
-                runs {
-                    var gameMode = GameModes.fromAbbreviation(it.argument(GAME_MODE_ARGUMENT))
-                    if (gameMode == null) {
-                        val id = it.argument<String>(GAME_MODE_ARGUMENT).toIntOrNull() ?: return@runs
-                        gameMode = GameModes.fromId(id)
-                    }
-                    if (gameMode == null) return@runs
-                    gameModeArgument(it, gameMode!!)
-                }
+        command.then(argument(GAME_MODE, StringArgumentType.string()) {
+            runs { setMode(it.source, listOf(it.source.getPlayerOrError()), getGameMode(it)) }
+            argument(TARGETS, EntityArgumentType.players()) {
+                runs { setMode(it.source, it.entityArgument(TARGETS).players(it.source), getGameMode(it)) }
             }
         })
         dispatcher.register(command)
     }
 
     @JvmStatic
-    private fun gameModeArgument(context: CommandContext<Sender>, gameMode: GameMode) {
-        val sender = context.source as? KryptonPlayer ?: return
-        updateGameMode(listOf(sender), gameMode, sender)
-    }
-
-    @JvmStatic
-    private fun targetArgument(context: CommandContext<Sender>, gameMode: GameMode) {
-        updateGameMode(context.entityArgument(TARGETS_ARGUMENT).players(context.source), gameMode, context.source)
-    }
-
-    @JvmStatic
-    private fun updateGameMode(entities: List<KryptonPlayer>, mode: GameMode, sender: Sender) {
-        entities.forEach {
-            it.updateGameMode(mode, ChangeGameModeEvent.Cause.COMMAND)
-            if (sender === it) {
-                Messages.GAME_MODE_CHANGED.send(sender, mode)
-                return@forEach
+    private fun getGameMode(context: CommandContext<CommandSourceStack>): GameMode {
+        val argument = context.argument<String>(GAME_MODE)
+        var mode = GameModes.fromAbbreviation(argument)
+        if (mode == null) {
+            try {
+                mode = GameModes.fromId(argument.toInt())
+            } catch (_: NumberFormatException) {
+                throw ERROR_INVALID_GAME_MODE.create(argument)
             }
-            Messages.Commands.GAME_MODE_SUCCESS.send(sender, it.displayName, mode)
         }
+        return mode ?: throw ERROR_INVALID_GAME_MODE.create(argument)
+    }
+
+    @JvmStatic
+    private fun setMode(source: CommandSourceStack, targets: List<KryptonPlayer>, mode: GameMode): Int {
+        var count = 0
+        targets.forEach {
+            it.updateGameMode(mode, ChangeGameModeEvent.Cause.COMMAND)
+            notifyGameModeChanged(source, it, mode)
+            ++count
+        }
+        return count
+    }
+
+    @JvmStatic
+    private fun notifyGameModeChanged(source: CommandSourceStack, player: KryptonPlayer, mode: GameMode) {
+        if (source.entity === player) {
+            source.sendSuccess(Messages.Commands.GAME_MODE_SUCCESS_SELF.build(mode), true)
+            return
+        }
+        if (source.world.gameRules.get(GameRules.SEND_COMMAND_FEEDBACK)) source.sendSystemMessage(Messages.GAME_MODE_CHANGED.build(mode))
+        source.sendSuccess(Messages.Commands.GAME_MODE_SUCCESS_OTHER.build(player.displayName, mode), true)
     }
 }

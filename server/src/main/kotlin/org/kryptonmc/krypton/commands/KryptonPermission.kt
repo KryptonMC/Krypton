@@ -46,5 +46,6 @@ enum class KryptonPermission(val node: String) {
     WHITELIST("krypton.command.whitelist"),
     USE_GAME_MASTER_BLOCKS("krypton.feature.game-master-blocks"),
     ENTITY_QUERY("krypton.data.query.entity"),
-    BYPASS_SPAWN_PROTECTION("krypton.bypass-spawn-protection");
+    BYPASS_SPAWN_PROTECTION("krypton.bypass-spawn-protection"),
+    BROADCAST_ADMIN("krypton.broadcast_admin");
 }

@@ -18,8 +18,8 @@
  */
 package org.kryptonmc.krypton.command.arguments.coordinates
 
-import org.kryptonmc.api.entity.player.Player
 import org.kryptonmc.api.util.Vec3d
+import org.kryptonmc.krypton.command.CommandSourceStack
 
 /**
  * A wrapper around all 3 types of coordinates that may be used in Minecraft.
@@ -40,5 +40,5 @@ sealed interface Coordinates {
      * This is where all the magic happens, in terms of actual movement
      * calculation.
      */
-    fun position(player: Player): Vec3d
+    fun position(source: CommandSourceStack): Vec3d
 }

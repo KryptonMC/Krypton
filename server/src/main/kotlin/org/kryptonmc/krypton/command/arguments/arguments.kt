@@ -20,20 +20,19 @@ package org.kryptonmc.krypton.command.arguments
 
 import com.mojang.brigadier.context.CommandContext
 import net.kyori.adventure.key.Key
-import org.kryptonmc.api.command.Sender
-import org.kryptonmc.api.entity.player.Player
 import org.kryptonmc.api.util.Vec3d
+import org.kryptonmc.krypton.command.CommandSourceStack
 import org.kryptonmc.krypton.command.argument.argument
 import org.kryptonmc.krypton.command.arguments.coordinates.Coordinates
 import org.kryptonmc.krypton.command.arguments.entities.EntityQuery
 import org.kryptonmc.krypton.command.arguments.item.ItemStackArgument
 
-fun CommandContext<Sender>.gameProfileArgument(name: String): EntityQuery = argument(name)
+fun CommandContext<CommandSourceStack>.gameProfileArgument(name: String): EntityQuery = argument(name)
 
-fun CommandContext<Sender>.summonableEntity(name: String): Key = SummonEntityArgument.ensureSummonable(argument(name))
+fun CommandContext<CommandSourceStack>.summonableEntity(name: String): Key = SummonEntityArgument.ensureSummonable(argument(name))
 
-fun CommandContext<Sender>.vectorArgument(name: String): Vec3d = argument<Coordinates>(name).position(source as Player)
+fun CommandContext<CommandSourceStack>.vectorArgument(name: String): Vec3d = argument<Coordinates>(name).position(source)
 
-fun CommandContext<Sender>.entityArgument(name: String): EntityQuery = argument(name)
+fun CommandContext<CommandSourceStack>.entityArgument(name: String): EntityQuery = argument(name)
 
-fun CommandContext<Sender>.itemStackArgument(name: String): ItemStackArgument = argument(name)
+fun CommandContext<CommandSourceStack>.itemStackArgument(name: String): ItemStackArgument = argument(name)

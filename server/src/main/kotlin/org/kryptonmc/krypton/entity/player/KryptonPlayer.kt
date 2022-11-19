@@ -371,6 +371,10 @@ class KryptonPlayer(
 
     override fun asChatSender(): ChatSender = chatSender
 
+    override fun sendSystemMessage(message: Component) {
+        // TODO: Send system message (part of chat update)
+    }
+
     companion object {
 
         private const val FLYING_ACHIEVEMENT_MINIMUM_SPEED = 25

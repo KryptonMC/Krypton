@@ -18,19 +18,24 @@
  */
 package org.kryptonmc.krypton.command
 
-import com.mojang.brigadier.CommandDispatcher
+import net.kyori.adventure.audience.MessageType
+import net.kyori.adventure.identity.Identity
+import net.kyori.adventure.text.Component
 import org.kryptonmc.api.command.Sender
 
-/**
- * An internal command. Allows us to directly access the dispatcher where we
- * need it.
- */
-interface InternalCommand {
+interface KryptonSender : Sender {
 
-    /**
-     * Registers this command with the provided [dispatcher].
-     *
-     * @param dispatcher the dispatcher to use to register this command
-     */
-    fun register(dispatcher: CommandDispatcher<Sender>)
+    fun acceptsSuccess(): Boolean
+
+    fun acceptsFailure(): Boolean
+
+    fun shouldInformAdmins(): Boolean
+
+    fun sendSystemMessage(message: Component)
+
+    override fun sendMessage(source: Identity, message: Component, type: MessageType) {
+        if (type == MessageType.SYSTEM) sendSystemMessage(message)
+    }
+
+    fun createCommandSourceStack(): CommandSourceStack
 }

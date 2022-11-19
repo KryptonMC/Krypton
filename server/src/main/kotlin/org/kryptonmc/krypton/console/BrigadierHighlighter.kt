@@ -29,20 +29,27 @@ import org.jline.reader.LineReader
 import org.jline.utils.AttributedString
 import org.jline.utils.AttributedStringBuilder
 import org.jline.utils.AttributedStyle
+import org.kryptonmc.krypton.command.CommandSourceStack
+import org.kryptonmc.krypton.command.KryptonCommandManager
 import org.kryptonmc.krypton.util.logger
+import java.util.function.Supplier
 import java.util.regex.Pattern
 import kotlin.math.min
 
 /**
  * Used for doing console highlighting using Brigadier.
  */
-class BrigadierHighlighter(private val console: KryptonConsole) : Highlighter {
+class BrigadierHighlighter(
+    private val commandManager: KryptonCommandManager,
+    private val commandSourceProvider: Supplier<CommandSourceStack>
+) : Highlighter {
 
     override fun highlight(lineReader: LineReader, buffer: String): AttributedString {
         return try {
-            val results = console.server.commandManager.parse(console, buffer)
+            val results = commandManager.parse(commandSourceProvider.get(), buffer)
             val reader = results.reader
             val builder = AttributedStringBuilder()
+
             var lastPos = 0
             var argumentColorIndex = 0
             results.context.lastChild.nodes.forEach {
@@ -53,6 +60,7 @@ class BrigadierHighlighter(private val console: KryptonConsole) : Highlighter {
                 argumentColorIndex = (argumentColorIndex + 1) % ARGUMENT_STYLES.size
                 lastPos = end
             }
+
             if (lastPos < reader.totalLength) {
                 val style = if (results.exceptions.isEmpty()) LITERAL_STYLE else ERROR_STYLE
                 builder.append(reader.string.substring(lastPos), style)

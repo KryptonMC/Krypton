@@ -21,8 +21,7 @@ package org.kryptonmc.krypton.commands
 import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.arguments.StringArgumentType
 import net.kyori.adventure.text.Component
-import org.kryptonmc.api.command.Sender
-import org.kryptonmc.krypton.command.InternalCommand
+import org.kryptonmc.krypton.command.CommandSourceStack
 import org.kryptonmc.krypton.command.argument
 import org.kryptonmc.krypton.command.arguments.entities.EntityArgumentType
 import org.kryptonmc.krypton.command.arguments.entityArgument
@@ -32,20 +31,23 @@ import org.kryptonmc.krypton.command.literal
 import org.kryptonmc.krypton.command.runs
 import org.kryptonmc.krypton.locale.Messages
 
-object KickCommand : InternalCommand {
+object KickCommand {
 
     private val KICKED_MESSAGE = Messages.Disconnect.KICKED.build()
-    private const val TARGETS_ARGUMENT = "targets"
 
-    override fun register(dispatcher: CommandDispatcher<Sender>) {
+    private const val TARGETS = "targets"
+    private const val REASON = "reason"
+
+    @JvmStatic
+    fun register(dispatcher: CommandDispatcher<CommandSourceStack>) {
         dispatcher.register(literal("kick") {
             permission(KryptonPermission.KICK)
-            argument(TARGETS_ARGUMENT, EntityArgumentType.players()) {
-                runs { context -> context.entityArgument(TARGETS_ARGUMENT).players(context.source).forEach { it.disconnect(KICKED_MESSAGE) } }
-                argument("reason", StringArgumentType.string()) {
+            argument(TARGETS, EntityArgumentType.players()) {
+                runs { context -> context.entityArgument(TARGETS).players(context.source).forEach { it.disconnect(KICKED_MESSAGE) } }
+                argument(REASON, StringArgumentType.string()) {
                     runs { context ->
-                        val reason = context.argument<String>("reason")
-                        context.entityArgument(TARGETS_ARGUMENT).players(context.source).forEach {
+                        val reason = context.argument<String>(REASON)
+                        context.entityArgument(TARGETS).players(context.source).forEach {
                             it.disconnect(KICKED_MESSAGE.append(Component.text(" Reason: $reason")))
                         }
                     }
