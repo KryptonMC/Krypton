@@ -8,6 +8,7 @@
  */
 package org.kryptonmc.api.entity
 
+import net.kyori.adventure.identity.Identified
 import net.kyori.adventure.sound.Sound
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.event.HoverEvent
@@ -18,12 +19,13 @@ import org.kryptonmc.api.util.BoundingBox
 import org.kryptonmc.api.util.Vec3d
 import org.kryptonmc.api.world.World
 import org.kryptonmc.api.world.damage.DamageSource
+import java.util.UUID
 
 /**
  * An entity somewhere in a world.
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
-public interface Entity : Sender, HoverEventSource<HoverEvent.ShowEntity>, Sound.Emitter, Sound.Source.Provider, TeamMember {
+public interface Entity : Sender, HoverEventSource<HoverEvent.ShowEntity>, Sound.Emitter, Sound.Source.Provider, TeamMember, Identified {
 
     /**
      * The ID of this entity.
@@ -34,6 +36,14 @@ public interface Entity : Sender, HoverEventSource<HoverEvent.ShowEntity>, Sound
      * removed.
      */
     public val id: Int
+
+    /**
+     * The UUID of this entity.
+     *
+     * This will always be unique, and exists specifically to provide
+     * uniqueness across server runs (persistent uniqueness).
+     */
+    public val uuid: UUID
 
     /**
      * The world this entity is currently in.

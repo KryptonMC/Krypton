@@ -25,7 +25,7 @@ import net.kyori.adventure.text.ComponentBuilder
 import net.kyori.adventure.text.event.HoverEvent
 import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.text.format.TextDecoration
-import org.kryptonmc.api.command.Sender
+import org.kryptonmc.krypton.command.CommandSourceStack
 import org.kryptonmc.krypton.command.literal
 import org.kryptonmc.krypton.command.runs
 
@@ -46,7 +46,7 @@ object PluginsCommand : KryptonSubCommand {
 
     override val aliases: Sequence<String> = sequenceOf("pl")
 
-    override fun register(): LiteralArgumentBuilder<Sender> = literal("plugins") {
+    override fun register(): LiteralArgumentBuilder<CommandSourceStack> = literal("plugins") {
         runs { context ->
             val sender = context.source
             val plugins = sender.server.pluginManager.plugins

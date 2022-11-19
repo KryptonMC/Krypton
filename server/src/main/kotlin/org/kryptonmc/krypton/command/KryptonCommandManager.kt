@@ -32,7 +32,6 @@ import net.kyori.adventure.text.format.TextDecoration
 import org.kryptonmc.api.adventure.AdventureMessage
 import org.kryptonmc.api.command.BrigadierCommand
 import org.kryptonmc.api.command.CommandManager
-import org.kryptonmc.api.command.CommandRegistrar
 import org.kryptonmc.api.command.InvocableCommand
 import org.kryptonmc.api.command.RawCommand
 import org.kryptonmc.api.command.Sender
@@ -67,6 +66,7 @@ import org.kryptonmc.krypton.commands.krypton.KryptonCommand
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.event.command.KryptonCommandSendEvent
 import org.kryptonmc.krypton.packet.out.play.PacketOutCommands
+import org.kryptonmc.krypton.util.downcastApiType
 import org.kryptonmc.krypton.util.logger
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.locks.ReentrantReadWriteLock
@@ -79,7 +79,7 @@ import kotlin.math.min
 class KryptonCommandManager : CommandManager {
 
     @GuardedBy("lock")
-    private val dispatcher = CommandDispatcher<Sender>() // Reads and writes MUST be locked by this lock!
+    private val dispatcher = CommandDispatcher<Source>() // Reads and writes MUST be locked by this lock!
     private val lock = ReentrantReadWriteLock()
 
     private val brigadierCommandRegistrar = BrigadierCommandRegistrar(lock.writeLock())
@@ -97,20 +97,19 @@ class KryptonCommandManager : CommandManager {
         }
     }
 
-    override fun <C> register(command: C, meta: CommandMeta, registrar: CommandRegistrar<C>) {
-        lock.write { registrar.register(dispatcher.root, command, meta) }
-    }
-
     override fun unregister(alias: String) {
         lock.write { dispatcher.root.removeChildByName(alias.lowercase()) }
     }
 
-    override fun dispatch(sender: Sender, command: String): Boolean = dispatch(sender, command, NO_OP_RESULT_CONSUMER)
+    override fun dispatch(sender: Sender, command: String): Boolean =
+        dispatch(sender.downcast().createCommandSourceStack(), command, NO_OP_RESULT_CONSUMER)
 
-    fun dispatch(sender: Sender, command: String, resultCallback: ResultConsumer<Sender>): Boolean {
+    fun dispatch(source: Source, command: String): Boolean = dispatch(source, command, NO_OP_RESULT_CONSUMER)
+
+    fun dispatch(source: Source, command: String, resultCallback: ResultConsumer<Source>): Boolean {
         val normalized = normalizeInput(command)
         return try {
-            val parseResults = parse(sender, normalized)
+            val parseResults = parse(source, normalized)
             dispatcher.execute(parseResults, resultCallback)
             true
         } catch (exception: CommandSyntaxException) {
@@ -118,7 +117,7 @@ class KryptonCommandManager : CommandManager {
             // information that we may want for exception messages thrown by commands.
             val rawMessage = exception.rawMessage
             val message = if (rawMessage is AdventureMessage) rawMessage.asComponent() else Component.text(exception.message.orEmpty())
-            sender.sendMessage(message.color(NamedTextColor.RED))
+            source.sender.sendMessage(message.color(NamedTextColor.RED))
 
             // This will process extra stuff that we want for proper error reporting to clients.
             if (exception.input != null && exception.cursor >= 0) {
@@ -138,25 +137,27 @@ class KryptonCommandManager : CommandManager {
 
                 // Append the "[HERE]" text (locale-specific) to the end, just like vanilla.
                 errorMessage.append(Component.translatable("command.context.here", NamedTextColor.RED, TextDecoration.ITALIC))
-                sender.sendMessage(Component.text().append(errorMessage).color(NamedTextColor.RED))
+                source.sender.sendMessage(Component.text().append(errorMessage).color(NamedTextColor.RED))
             }
             false
         } catch (naughty: Throwable) { // We catch Throwable because plugins like to do stupid things sometimes.
-            LOGGER.error("Unable to dispatch command $command from $sender!", naughty)
-            throw RuntimeException("Unable to dispatch command $command from $sender!", naughty)
+            LOGGER.error("Unable to dispatch command $command from $source!", naughty)
+            throw RuntimeException("Unable to dispatch command $command from $source!", naughty)
         }
     }
 
-    fun suggest(results: ParseResults<Sender>, cursor: Int): CompletableFuture<Suggestions> = dispatcher.getCompletionSuggestions(results, cursor)
+    fun suggest(results: ParseResults<Source>, cursor: Int): CompletableFuture<Suggestions> = dispatcher.getCompletionSuggestions(results, cursor)
 
-    fun suggest(sender: Sender, reader: StringReader): CompletableFuture<Suggestions> = dispatcher.getCompletionSuggestions(parse(sender, reader))
+    fun suggest(results: ParseResults<Source>): CompletableFuture<Suggestions> = dispatcher.getCompletionSuggestions(results)
+
+    fun suggest(sender: Source, reader: StringReader): CompletableFuture<Suggestions> = dispatcher.getCompletionSuggestions(parse(sender, reader))
 
     override fun updateCommands(player: Player) {
         if (player !is KryptonPlayer) return
         // We copy the root node to avoid a command changing whilst we're trying to send it to the client.
-        val node = RootCommandNode<Sender>()
+        val node = RootCommandNode<CommandSourceStack>()
         lock.read {
-            dispatcher.root.children.forEach { if (it.requirement.test(player)) node.addChild(it) }
+            dispatcher.root.children.forEach { if (it.requirement.test(player.createCommandSourceStack())) node.addChild(it) }
             player.server.eventManager.fireAndForget(KryptonCommandSendEvent(player, node))
             player.session.send(PacketOutCommands(node))
         }
@@ -187,15 +188,15 @@ class KryptonCommandManager : CommandManager {
         KryptonCommand.register(dispatcher)
     }
 
-    fun parse(sender: Sender, input: String): ParseResults<Sender> = lock.read { dispatcher.parse(input, sender) }
+    fun parse(sender: Source, input: String): ParseResults<Source> = lock.read { dispatcher.parse(input, sender) }
 
-    private fun parse(sender: Sender, reader: StringReader): ParseResults<Sender> = lock.read { dispatcher.parse(reader, sender) }
+    fun parse(sender: Source, reader: StringReader): ParseResults<Source> = lock.read { dispatcher.parse(reader, sender) }
 
     companion object {
 
         private val LOGGER = logger<CommandManager>()
         private const val ERROR_MESSAGE_CUTOFF_THRESHOLD = 10
-        private val NO_OP_RESULT_CONSUMER = ResultConsumer<Sender> { _, _, _ ->}
+        private val NO_OP_RESULT_CONSUMER = ResultConsumer<Source> { _, _, _ ->}
 
         @JvmStatic
         private fun normalizeInput(input: String): String {
@@ -206,3 +207,7 @@ class KryptonCommandManager : CommandManager {
         }
     }
 }
+
+private typealias Source = CommandSourceStack
+
+private fun Sender.downcast(): KryptonSender = downcastApiType("Sender")

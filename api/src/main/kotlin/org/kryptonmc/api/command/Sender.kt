@@ -9,16 +9,14 @@
 package org.kryptonmc.api.command
 
 import net.kyori.adventure.audience.Audience
-import net.kyori.adventure.identity.Identified
 import net.kyori.adventure.text.Component
 import org.kryptonmc.api.Server
 import org.kryptonmc.api.permission.Subject
-import java.util.UUID
 
 /**
  * A sender is an interface representing the sender of a command.
  */
-public interface Sender : Audience, Subject, Identified {
+public interface Sender : Audience, Subject {
 
     /**
      * The name of the sender.
@@ -26,11 +24,6 @@ public interface Sender : Audience, Subject, Identified {
      * How this is defined is entirely dependent on the subtype.
      */
     public val name: Component
-
-    /**
-     * The UUID of this sender.
-     */
-    public val uuid: UUID
 
     /**
      * The server that the sender is on.

@@ -28,12 +28,12 @@ public interface BrigadierCommand : Command {
      * command.
      */
     @get:JvmName("node")
-    public val node: LiteralCommandNode<Sender>
+    public val node: LiteralCommandNode<CommandExecutionContext>
 
     @ApiStatus.Internal
     public interface Factory {
 
-        public fun of(node: LiteralCommandNode<Sender>): BrigadierCommand
+        public fun of(node: LiteralCommandNode<CommandExecutionContext>): BrigadierCommand
     }
 
     public companion object {
@@ -46,7 +46,7 @@ public interface BrigadierCommand : Command {
          */
         @JvmStatic
         @Contract("_ -> new", pure = true)
-        public fun of(node: LiteralCommandNode<Sender>): BrigadierCommand = Krypton.factory<Factory>().of(node)
+        public fun of(node: LiteralCommandNode<CommandExecutionContext>): BrigadierCommand = Krypton.factory<Factory>().of(node)
 
         /**
          * Creates a new command backed by the Brigadier command node built
@@ -57,7 +57,7 @@ public interface BrigadierCommand : Command {
          */
         @JvmStatic
         @Contract("_ -> new", pure = true)
-        public fun of(builder: LiteralArgumentBuilder<Sender>): BrigadierCommand = of(builder.build())
+        public fun of(builder: LiteralArgumentBuilder<CommandExecutionContext>): BrigadierCommand = of(builder.build())
     }
 }
 
@@ -70,5 +70,5 @@ public interface BrigadierCommand : Command {
  */
 @JvmSynthetic
 @Contract("_, _ -> new", pure = true)
-public inline fun brigadierCommand(literal: String, builder: LiteralArgumentBuilder<Sender>.() -> Unit): BrigadierCommand =
-    BrigadierCommand.of(LiteralArgumentBuilder.literal<Sender>(literal).apply(builder).build())
+public inline fun brigadierCommand(literal: String, builder: LiteralArgumentBuilder<CommandExecutionContext>.() -> Unit): BrigadierCommand =
+    BrigadierCommand.of(LiteralArgumentBuilder.literal<CommandExecutionContext>(literal).apply(builder).build())

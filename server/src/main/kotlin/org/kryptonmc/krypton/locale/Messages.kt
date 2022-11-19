@@ -25,6 +25,7 @@ import net.kyori.adventure.text.event.ClickEvent
 import net.kyori.adventure.text.event.HoverEvent
 import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.text.format.Style
+import net.kyori.adventure.text.format.TextDecoration
 import org.kryptonmc.api.auth.GameProfile
 import org.kryptonmc.api.util.Vec3d
 import org.kryptonmc.api.world.Difficulty
@@ -51,6 +52,9 @@ object Messages {
         val displayName = player.displayName.style { it.insertion(name).clickEvent(ClickEvent.suggestCommand("/msg $name")).hoverEvent(player) }
         translatable("chat.type.text", displayName, text(message))
     }
+    @JvmField
+    val CHAT_TYPE_ADMIN: Args2<Component, Component> =
+        Args2 { a, b -> translatable("chat.type.admin", NamedTextColor.GRAY, setOf(TextDecoration.ITALIC), a, b) }
     @JvmField
     val SQUARE_BRACKETS: Args1<Component> = Args1 { translatable("chat.square_brackets", it) }
     @JvmField
@@ -81,7 +85,10 @@ object Messages {
         val DIFFICULTY_SUCCESS: Args1<Difficulty> = Args1 { translatable("commands.difficulty.success", translatable(it)) }
 
         @JvmField
-        val GAME_MODE_SUCCESS: Args2<Component,  GameMode> = Args2 { a, b -> translatable("commands.gamemode.success.other", a, translatable(b)) }
+        val GAME_MODE_SUCCESS_SELF: Args1<GameMode> = Args1 { translatable("commands.gamemode.success.self", translatable(it)) }
+        @JvmField
+        val GAME_MODE_SUCCESS_OTHER: Args2<Component,  GameMode> =
+            Args2 { a, b -> translatable("commands.gamemode.success.other", a, translatable(b)) }
 
         @JvmField
         val GAMERULE_QUERY: Args2<String, Any> = Args2 { a, b -> translatable("commands.gamerule.query", text(a), text(b.toString())) }

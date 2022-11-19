@@ -20,9 +20,8 @@ package org.kryptonmc.krypton.commands
 
 import com.mojang.brigadier.CommandDispatcher
 import net.kyori.adventure.key.Key
-import org.kryptonmc.api.command.Sender
 import org.kryptonmc.api.util.Vec3d
-import org.kryptonmc.krypton.command.InternalCommand
+import org.kryptonmc.krypton.command.CommandSourceStack
 import org.kryptonmc.krypton.command.SuggestionProviders
 import org.kryptonmc.krypton.command.argument
 import org.kryptonmc.krypton.command.arguments.NBTCompoundArgument
@@ -32,7 +31,6 @@ import org.kryptonmc.krypton.command.arguments.summonableEntity
 import org.kryptonmc.krypton.command.arguments.vectorArgument
 import org.kryptonmc.krypton.command.permission
 import org.kryptonmc.krypton.entity.EntityFactory
-import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.command.argument.argument
 import org.kryptonmc.krypton.command.arguments.CommandExceptions
 import org.kryptonmc.krypton.command.literal
@@ -41,25 +39,27 @@ import org.kryptonmc.krypton.locale.Messages
 import org.kryptonmc.krypton.util.Worlds
 import org.kryptonmc.nbt.CompoundTag
 
-object SummonCommand : InternalCommand {
+object SummonCommand {
 
     private val ERROR_FAILED = CommandExceptions.simple("commands.summon.failed")
     private val ERROR_INVALID_POSITION = CommandExceptions.simple("commands.summon.invalidPosition")
 
-    private const val ENTITY_ARGUMENT = "entity"
-    private const val POSITION_ARGUMENT = "position"
+    private const val ENTITY = "entity"
+    private const val POSITION = "position"
+    private const val NBT = "nbt"
 
-    override fun register(dispatcher: CommandDispatcher<Sender>) {
+    @JvmStatic
+    fun register(dispatcher: CommandDispatcher<CommandSourceStack>) {
         dispatcher.register(literal("summon") {
             permission(KryptonPermission.SUMMON)
-            argument(ENTITY_ARGUMENT, SummonEntityArgument) {
+            argument(ENTITY, SummonEntityArgument) {
                 suggests(SuggestionProviders.SUMMONABLE_ENTITIES)
-                runs { spawnEntity(it.source, it.summonableEntity(ENTITY_ARGUMENT), null, null) }
-                argument(POSITION_ARGUMENT, VectorArgument.normal()) {
-                    runs { spawnEntity(it.source, it.summonableEntity(ENTITY_ARGUMENT), it.vectorArgument(POSITION_ARGUMENT), null) }
-                    argument("nbt", NBTCompoundArgument) {
+                runs { spawnEntity(it.source, it.summonableEntity(ENTITY), it.source.position, CompoundTag.EMPTY) }
+                argument(POSITION, VectorArgument.normal()) {
+                    runs { spawnEntity(it.source, it.summonableEntity(ENTITY), it.vectorArgument(POSITION), CompoundTag.EMPTY) }
+                    argument(NBT, NBTCompoundArgument) {
                         runs {
-                            spawnEntity(it.source, it.summonableEntity(ENTITY_ARGUMENT), it.vectorArgument(POSITION_ARGUMENT), it.argument("nbt"))
+                            spawnEntity(it.source, it.summonableEntity(ENTITY), it.vectorArgument(POSITION), it.argument(NBT))
                         }
                     }
                 }
@@ -68,12 +68,10 @@ object SummonCommand : InternalCommand {
     }
 
     @JvmStatic
-    private fun spawnEntity(sender: Sender, type: Key, pos: Vec3d?, nbt: CompoundTag?) {
-        val player = sender as? KryptonPlayer ?: return
-        val position = pos ?: player.location
+    private fun spawnEntity(source: CommandSourceStack, type: Key, position: Vec3d, nbt: CompoundTag) {
         if (!Worlds.isInSpawnableBounds(position)) throw ERROR_INVALID_POSITION.create()
-        val entity = EntityFactory.create(player.world, type.asString(), nbt)?.apply { this.location = position } ?: throw ERROR_FAILED.create()
-        player.world.spawnEntity(entity)
-        Messages.Commands.SUMMON_SUCCESS.send(player, entity.displayName)
+        val entity = EntityFactory.create(source.world, type.asString(), nbt)?.apply { this.location = position } ?: throw ERROR_FAILED.create()
+        source.world.spawnEntity(entity)
+        source.sendSuccess(Messages.Commands.SUMMON_SUCCESS.build(entity.displayName), true)
     }
 }

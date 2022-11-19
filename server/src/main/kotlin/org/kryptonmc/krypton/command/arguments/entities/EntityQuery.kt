@@ -22,17 +22,16 @@ import com.mojang.brigadier.exceptions.DynamicCommandExceptionType
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType
 import net.kyori.adventure.text.Component
 import org.kryptonmc.api.auth.GameProfile
-import org.kryptonmc.api.command.Sender
 import org.kryptonmc.api.entity.player.Player
-import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.adventure.toMessage
 import org.kryptonmc.krypton.adventure.toPlainText
 import org.kryptonmc.krypton.command.BrigadierExceptions
+import org.kryptonmc.krypton.command.CommandSourceStack
 import org.kryptonmc.krypton.command.arguments.CommandExceptions
 import org.kryptonmc.krypton.entity.KryptonEntity
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
+import org.kryptonmc.krypton.util.DowncastingList
 import org.kryptonmc.krypton.util.GameModes
-import org.kryptonmc.krypton.util.ensureAllOfType
 
 @JvmRecord
 data class EntityQuery(val type: Selector, private val args: List<EntityArgument>, private val playerName: String) {
@@ -77,22 +76,20 @@ data class EntityQuery(val type: Selector, private val args: List<EntityArgument
 
     fun entity(source: KryptonPlayer): KryptonEntity = entities(source).get(0)
 
-    fun players(sender: Sender): List<KryptonPlayer> {
-        val server = sender.server as KryptonServer
-        if (sender is KryptonPlayer) {
-            if (playerName.isNotEmpty()) return listOf(server.getPlayer(playerName).orThrow())
-            return entities(sender).ensureAllOfType { UnsupportedOperationException("Cannot call players if there is an entity in the arguments!") }
+    fun players(source: CommandSourceStack): List<KryptonPlayer> {
+        if (source.isPlayer()) {
+            if (playerName.isNotEmpty()) return listOf(source.server.getPlayer(playerName).orThrow())
+            return EntityAsPlayerList(entities(source.getPlayerUnchecked()))
         }
-        return listOf(server.getPlayer(playerName).orThrow())
+        return listOf(source.server.getPlayer(playerName).orThrow())
     }
 
-    fun profiles(sender: Sender): List<GameProfile> {
-        val server = sender.server as? KryptonServer ?: return emptyList()
-        if (sender is KryptonPlayer) {
-            if (playerName.isNotEmpty()) return listOf(server.profileCache.get(playerName).orThrow())
-            return players(sender).map(KryptonPlayer::profile)
+    fun profiles(source: CommandSourceStack): List<GameProfile> {
+        if (source.isPlayer()) {
+            if (playerName.isNotEmpty()) return listOf(source.server.profileCache.get(playerName).orThrow())
+            return players(source).map(KryptonPlayer::profile)
         }
-        if (playerName.isNotEmpty()) return listOf(server.profileCache.get(playerName).orThrow())
+        if (playerName.isNotEmpty()) return listOf(source.server.profileCache.get(playerName).orThrow())
         return emptyList()
     }
 
@@ -245,6 +242,16 @@ data class EntityQuery(val type: Selector, private val args: List<EntityArgument
             const val EXECUTOR_CHAR: Char = 's'
             const val ALL_ENTITIES_CHAR: Char = 'e'
             const val NEAREST_PLAYER_CHAR: Char = 'p'
+        }
+    }
+
+    private class EntityAsPlayerList(delegate: List<KryptonEntity>) : DowncastingList<KryptonEntity, KryptonPlayer>(delegate) {
+
+        override fun createThis(delegate: List<KryptonEntity>): DowncastingList<KryptonEntity, KryptonPlayer> = EntityAsPlayerList(delegate)
+
+        override fun downcast(element: KryptonEntity): KryptonPlayer {
+            if (element !is KryptonPlayer) throw UnsupportedOperationException("Cannot call players if there is an entity in the arguments!")
+            return element
         }
     }
 

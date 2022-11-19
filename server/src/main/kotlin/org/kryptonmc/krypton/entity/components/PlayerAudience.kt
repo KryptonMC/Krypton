@@ -30,6 +30,7 @@ import net.kyori.adventure.title.TitlePart
 import org.kryptonmc.api.entity.player.ChatVisibility
 import org.kryptonmc.krypton.adventure.BossBarManager
 import org.kryptonmc.krypton.adventure.KryptonAdventure
+import org.kryptonmc.krypton.command.KryptonSender
 import org.kryptonmc.krypton.entity.KryptonEntity
 import org.kryptonmc.krypton.item.KryptonItemStack
 import org.kryptonmc.krypton.network.chat.ChatSender
@@ -48,7 +49,7 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutStopSound
 import org.kryptonmc.krypton.registry.KryptonRegistries
 import java.util.concurrent.ThreadLocalRandom
 
-interface PlayerAudience : NetworkPlayer {
+interface PlayerAudience : NetworkPlayer, KryptonSender {
 
     fun openBook(item: KryptonItemStack)
 

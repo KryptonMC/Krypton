@@ -19,8 +19,7 @@
 package org.kryptonmc.krypton.event.command
 
 import com.mojang.brigadier.tree.RootCommandNode
-import org.kryptonmc.api.command.Sender
 import org.kryptonmc.api.entity.player.Player
 import org.kryptonmc.api.event.command.CommandSendEvent
 
-class KryptonCommandSendEvent(override val player: Player, override val rootNode: RootCommandNode<Sender>) : CommandSendEvent
+class KryptonCommandSendEvent(override val player: Player, override val rootNode: RootCommandNode<*>) : CommandSendEvent

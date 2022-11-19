@@ -21,9 +21,8 @@ package org.kryptonmc.krypton.commands
 import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.arguments.IntegerArgumentType
 import net.kyori.adventure.sound.Sound
-import org.kryptonmc.api.command.Sender
 import org.kryptonmc.api.effect.sound.SoundEvents
-import org.kryptonmc.krypton.command.InternalCommand
+import org.kryptonmc.krypton.command.CommandSourceStack
 import org.kryptonmc.krypton.command.argument
 import org.kryptonmc.krypton.command.arguments.entities.EntityArgumentType
 import org.kryptonmc.krypton.command.arguments.entityArgument
@@ -37,24 +36,26 @@ import org.kryptonmc.krypton.command.argument.argument
 import org.kryptonmc.krypton.command.literal
 import org.kryptonmc.krypton.command.runs
 
-object GiveCommand : InternalCommand {
+object GiveCommand {
 
     // These constants come from vanilla
     private const val PICKUP_VOLUME = 0.2F
     private const val PICKUP_PITCH = 2F
 
-    private const val TARGETS_ARGUMENT = "targets"
-    private const val ITEM_ARGUMENT = "item"
+    private const val TARGETS = "targets"
+    private const val ITEM = "item"
+    private const val COUNT = "count"
 
-    override fun register(dispatcher: CommandDispatcher<Sender>) {
+    @JvmStatic
+    fun register(dispatcher: CommandDispatcher<CommandSourceStack>) {
         dispatcher.register(literal("give") {
             permission(KryptonPermission.GIVE)
-            argument(TARGETS_ARGUMENT, EntityArgumentType.players()) {
-                argument(ITEM_ARGUMENT, ItemStackArgumentType) {
-                    runs { give(it.entityArgument(TARGETS_ARGUMENT).players(it.source), it.itemStackArgument(ITEM_ARGUMENT), 1) }
-                    argument("count", IntegerArgumentType.integer(1)) {
+            argument(TARGETS, EntityArgumentType.players()) {
+                argument(ITEM, ItemStackArgumentType) {
+                    runs { give(it.entityArgument(TARGETS).players(it.source), it.itemStackArgument(ITEM), 1) }
+                    argument(COUNT, IntegerArgumentType.integer(1)) {
                         runs {
-                            give(it.entityArgument(TARGETS_ARGUMENT).players(it.source), it.itemStackArgument(ITEM_ARGUMENT), it.argument("count"))
+                            give(it.entityArgument(TARGETS).players(it.source), it.itemStackArgument(ITEM), it.argument(COUNT))
                         }
                     }
                 }

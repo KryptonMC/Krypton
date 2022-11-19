@@ -35,6 +35,9 @@ data class ServerCategory(
     @Setting("compression-threshold")
     @Comment("The threshold at which packets larger will be compressed. Set to -1 to disable.")
     val compressionThreshold: Int = 256,
+    @Setting("broadcast-console-to-admins")
+    @Comment("If console messages should be sent to admins with the permission krypton.broadcast_admins")
+    val broadcastConsoleToAdmins: Boolean = true,
     @Setting("resource-pack")
     @Comment("Settings for the server resource pack")
     val resourcePack: ResourcePackCategory = ResourcePackCategory()

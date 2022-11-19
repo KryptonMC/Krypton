@@ -9,7 +9,6 @@
 package org.kryptonmc.api.event.command
 
 import com.mojang.brigadier.tree.RootCommandNode
-import org.kryptonmc.api.command.Sender
 import org.kryptonmc.api.entity.player.Player
 
 /**
@@ -28,5 +27,5 @@ public interface CommandSendEvent {
      * This can be mutated to change the command tree that is sent to the
      * player.
      */
-    public val rootNode: RootCommandNode<Sender>
+    public val rootNode: RootCommandNode<*>
 }

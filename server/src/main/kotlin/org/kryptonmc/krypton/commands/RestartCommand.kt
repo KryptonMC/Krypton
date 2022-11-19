@@ -20,22 +20,20 @@ package org.kryptonmc.krypton.commands
 
 import com.mojang.brigadier.CommandDispatcher
 import net.kyori.adventure.text.Component
-import org.kryptonmc.api.command.Sender
-import org.kryptonmc.krypton.KryptonServer
-import org.kryptonmc.krypton.command.InternalCommand
+import org.kryptonmc.krypton.command.CommandSourceStack
 import org.kryptonmc.krypton.command.literal
 import org.kryptonmc.krypton.command.permission
 import org.kryptonmc.krypton.command.runs
 
-object RestartCommand : InternalCommand {
+object RestartCommand {
 
-    override fun register(dispatcher: CommandDispatcher<Sender>) {
+    @JvmStatic
+    fun register(dispatcher: CommandDispatcher<CommandSourceStack>) {
         dispatcher.register(literal("restart") {
             permission(KryptonPermission.RESTART)
             runs {
-                val server = it.source.server as? KryptonServer ?: return@runs
-                it.source.sendMessage(Component.text("Attempting to restart Krypton..."))
-                server.restart()
+                it.source.sendSuccess(Component.text("Attempting to restart Krypton..."), false)
+                it.source.server.restart()
             }
         })
     }

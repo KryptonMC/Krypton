@@ -18,41 +18,51 @@
  */
 package org.kryptonmc.krypton
 
+import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.arguments.IntegerArgumentType
 import com.mojang.brigadier.arguments.StringArgumentType
+import com.mojang.brigadier.tree.CommandNode
+import com.mojang.brigadier.tree.LiteralCommandNode
 import com.mojang.brigadier.tree.RootCommandNode
-import org.junit.jupiter.api.BeforeAll
+import io.mockk.mockk
+import net.kyori.adventure.text.Component
 import org.junit.jupiter.api.Test
-import org.kryptonmc.api.command.BrigadierCommand
-import org.kryptonmc.api.command.Sender
-import org.kryptonmc.api.command.CommandMeta
+import org.kryptonmc.api.command.CommandExecutionContext
+import org.kryptonmc.krypton.command.CommandSourceStack
+import org.kryptonmc.krypton.command.KryptonBrigadierCommand
+import org.kryptonmc.krypton.command.KryptonCommandMeta
 import org.kryptonmc.krypton.command.argument
 import org.kryptonmc.krypton.command.literal
 import org.kryptonmc.krypton.command.registrar.BrigadierCommandRegistrar
-import org.kryptonmc.krypton.util.Bootstrap
+import org.kryptonmc.krypton.command.runs
+import org.kryptonmc.krypton.util.Vec3dImpl
 import java.util.concurrent.locks.ReentrantLock
 import kotlin.test.assertEquals
 
 class CommandTests {
 
     @Test
-    fun `test brigadier command registrar`() {
-        val root = RootCommandNode<Sender>()
+    fun `test api command nodes work with implementation types`() {
+        val dispatcher = CommandDispatcher<CommandSourceStack>()
         val node = literal("test") {
+            runs { println("Hello World!") }
+        }.build()
+        dispatcher.root.addChild(node)
+        val source = CommandSourceStack(mockk(), Vec3dImpl.ZERO, 0F, 0F, mockk(), "", Component.empty(), mockk(), null)
+        dispatcher.execute("test", source)
+    }
+
+    @Test
+    @Suppress("UNCHECKED_CAST")
+    fun `test brigadier command registrar`() {
+        val root = RootCommandNode<CommandSourceStack>()
+        val node = literal("test") {
+            runs { println("Hello World!") }
             argument("hello", IntegerArgumentType.integer()) {
                 argument("world", StringArgumentType.string()) {}
             }
-        }.build()
-        BrigadierCommandRegistrar(ReentrantLock()).register(root, BrigadierCommand.of(node), CommandMeta.builder("test").build())
-        assertEquals(node, root.getChild("test"))
-    }
-
-    companion object {
-
-        @JvmStatic
-        @BeforeAll
-        fun `preload and inject`() {
-            Bootstrap.preload()
-        }
+        }.build() as LiteralCommandNode<CommandExecutionContext>
+        BrigadierCommandRegistrar(ReentrantLock()).register(root, KryptonBrigadierCommand(node), KryptonCommandMeta.Builder("test").build())
+        assertEquals(node, root.getChild("test") as CommandNode<CommandExecutionContext>)
     }
 }

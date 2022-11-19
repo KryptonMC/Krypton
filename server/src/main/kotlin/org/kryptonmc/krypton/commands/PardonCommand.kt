@@ -19,9 +19,7 @@
 package org.kryptonmc.krypton.commands
 
 import com.mojang.brigadier.CommandDispatcher
-import org.kryptonmc.api.command.Sender
-import org.kryptonmc.krypton.KryptonServer
-import org.kryptonmc.krypton.command.InternalCommand
+import org.kryptonmc.krypton.command.CommandSourceStack
 import org.kryptonmc.krypton.command.argument
 import org.kryptonmc.krypton.command.arguments.GameProfileArgument
 import org.kryptonmc.krypton.command.arguments.gameProfileArgument
@@ -31,23 +29,24 @@ import org.kryptonmc.krypton.command.permission
 import org.kryptonmc.krypton.command.runs
 import org.kryptonmc.krypton.locale.Messages
 
-object PardonCommand : InternalCommand {
+object PardonCommand {
 
-    override fun register(dispatcher: CommandDispatcher<Sender>) {
+    private const val TARGETS = "targets"
+
+    @JvmStatic
+    fun register(dispatcher: CommandDispatcher<CommandSourceStack>) {
         dispatcher.register(literal("pardon") {
             permission(KryptonPermission.PARDON)
-            argument("targets", GameProfileArgument) {
+            argument(TARGETS, GameProfileArgument) {
                 suggests { context, builder ->
-                    val server = context.source.server as? KryptonServer ?: return@suggests builder.buildFuture()
-                    server.playerManager.banManager.profiles().forEach {
+                    context.source.server.playerManager.banManager.profiles().forEach {
                         if (builder.remainingLowerCase.matchesSubString(it.profile.name.lowercase())) builder.suggest(it.profile.name)
                     }
                     builder.buildFuture()
                 }
                 runs { context ->
-                    val server = context.source.server as? KryptonServer ?: return@runs
-                    val banManager = server.playerManager.banManager
-                    context.gameProfileArgument("targets").profiles(context.source).forEach {
+                    val banManager = context.source.server.playerManager.banManager
+                    context.gameProfileArgument(TARGETS).profiles(context.source).forEach {
                         if (!banManager.isBanned(it)) return@forEach
                         banManager.remove(it)
                         Messages.Commands.PARDON_SUCCESS.send(context.source, it.name)

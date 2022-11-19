@@ -23,8 +23,8 @@ import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.event.ClickEvent
 import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.text.format.TextDecoration
-import org.kryptonmc.api.command.Sender
 import org.kryptonmc.krypton.KryptonPlatform
+import org.kryptonmc.krypton.command.CommandSourceStack
 import org.kryptonmc.krypton.command.literal
 import org.kryptonmc.krypton.command.runs
 
@@ -44,7 +44,7 @@ object InfoCommand : KryptonSubCommand {
 
     override val aliases: Sequence<String> = sequenceOf("about", "version")
 
-    override fun register(): LiteralArgumentBuilder<Sender> = literal("info") {
+    override fun register(): LiteralArgumentBuilder<CommandSourceStack> = literal("info") {
         runs { it.source.sendMessage(MESSAGE) }
     }
 }

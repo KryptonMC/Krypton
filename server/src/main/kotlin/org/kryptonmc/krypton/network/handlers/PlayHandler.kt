@@ -405,8 +405,8 @@ class PlayHandler(override val server: KryptonServer, override val session: Sess
     private fun handleCommandSuggestionsRequest(packet: PacketInCommandSuggestionsRequest) {
         val reader = StringReader(packet.command)
         if (reader.canRead() && reader.peek() == '/') reader.skip()
-        server.commandManager.suggest(player, reader)
-            .thenAcceptAsync({ session.send(PacketOutCommandSuggestionsResponse(packet.id, it)) }, session.channel.eventLoop())
+        val parseResults = server.commandManager.parse(player.createCommandSourceStack(), reader)
+        server.commandManager.suggest(parseResults).thenAccept { session.send(PacketOutCommandSuggestionsResponse(packet.id, it)) }
     }
 
     private fun handleClientCommand(packet: PacketInClientCommand) {

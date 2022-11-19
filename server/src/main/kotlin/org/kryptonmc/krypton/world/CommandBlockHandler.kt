@@ -18,20 +18,21 @@
  */
 package org.kryptonmc.krypton.world
 
-import net.kyori.adventure.identity.Identity
+import com.mojang.brigadier.ResultConsumer
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer
 import net.kyori.adventure.util.TriState
-import org.kryptonmc.api.command.Sender
+import org.kryptonmc.api.world.rule.GameRules
 import org.kryptonmc.krypton.KryptonServer
+import org.kryptonmc.krypton.command.CommandSourceStack
+import org.kryptonmc.krypton.command.KryptonSender
 import org.kryptonmc.nbt.ByteTag
 import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.StringTag
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
-import java.util.UUID
 
-abstract class CommandBlockHandler(override val server: KryptonServer) : Sender {
+abstract class CommandBlockHandler : KryptonSender {
 
     var command: String = ""
         set(value) {
@@ -43,9 +44,15 @@ abstract class CommandBlockHandler(override val server: KryptonServer) : Sender 
     private var successCount = 0
     private var trackOutput = true
     var lastOutput: Component? = null
+    private val commandCallback = ResultConsumer<CommandSourceStack> { _, success, _ -> if (success) successCount++ }
 
     override var name: Component = DEFAULT_NAME
-    override val uuid: UUID = Identity.nil().uuid()
+    override val server: KryptonServer
+        get() = world().server
+
+    protected abstract fun world(): KryptonWorld
+
+    abstract override fun createCommandSourceStack(): CommandSourceStack
 
     protected abstract fun onUpdated()
 
@@ -87,21 +94,26 @@ abstract class CommandBlockHandler(override val server: KryptonServer) : Sender 
         successCount = 0
         if (server.config.world.allowCommandBlocks && command.isNotEmpty()) {
             lastOutput = null
-            server.commandManager.dispatch(this, command) { _, result, _ -> if (result) successCount++ }
+            server.commandManager.dispatch(createCommandSourceStack(), command, commandCallback)
         }
         lastExecution = if (updateLastExecution) world.time else -1L
         return true
     }
 
-    override fun sendMessage(message: Component) {
-        if (!trackOutput) return
-        lastOutput = Component.text().content("[${TIME_FORMATTER.format(LocalDateTime.now())}] ").append(message).build()
-        onUpdated()
+    override fun sendSystemMessage(message: Component) {
+        if (trackOutput) {
+            lastOutput = Component.text().content("[${TIME_FORMATTER.format(LocalDateTime.now())}] ").append(message).build()
+            onUpdated()
+        }
     }
 
     override fun getPermissionValue(permission: String): TriState = TriState.TRUE
 
-    override fun identity(): Identity = Identity.nil()
+    override fun acceptsSuccess(): Boolean = world().gameRules.get(GameRules.SEND_COMMAND_FEEDBACK) && trackOutput
+
+    override fun acceptsFailure(): Boolean = trackOutput
+
+    override fun shouldInformAdmins(): Boolean = world().gameRules.get(GameRules.COMMAND_BLOCK_OUTPUT)
 
     companion object {
 
