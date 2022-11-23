@@ -16,25 +16,13 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.commands
+package org.kryptonmc.krypton.util.executor
 
-import com.mojang.brigadier.CommandDispatcher
-import net.kyori.adventure.text.Component
-import org.kryptonmc.krypton.command.CommandSourceStack
-import org.kryptonmc.krypton.command.literal
-import org.kryptonmc.krypton.command.permission
-import org.kryptonmc.krypton.command.runs
+import org.apache.logging.log4j.Logger
 
-object RestartCommand {
+class DefaultUncaughtExceptionHandler(private val logger: Logger) : Thread.UncaughtExceptionHandler {
 
-    @JvmStatic
-    fun register(dispatcher: CommandDispatcher<CommandSourceStack>) {
-        dispatcher.register(literal("restart") {
-            permission(KryptonPermission.RESTART)
-            runs {
-                it.source.sendSuccess(Component.text("Attempting to restart Krypton..."), false)
-                it.source.server.restart()
-            }
-        })
+    override fun uncaughtException(t: Thread?, exception: Throwable) {
+        logger.error("Caught unhandled exception!", exception)
     }
 }

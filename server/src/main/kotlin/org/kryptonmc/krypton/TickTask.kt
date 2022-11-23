@@ -16,26 +16,11 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.util.pool
+package org.kryptonmc.krypton
 
-import com.google.common.util.concurrent.ThreadFactoryBuilder
-import java.util.concurrent.ThreadFactory
+class TickTask(val tick: Int, private val task: Runnable) : Runnable {
 
-@DslMarker
-private annotation class ThreadFactoryDsl
-
-@ThreadFactoryDsl
-inline fun daemonThreadFactory(
-    nameFormat: String,
-    builder: ThreadFactoryBuilder.() -> Unit = {}
-): ThreadFactory = ThreadFactoryBuilder().setNameFormat(nameFormat).setDaemon(true).apply(builder).build()
-
-@ThreadFactoryDsl
-inline fun threadFactory(
-    nameFormat: String,
-    builder: ThreadFactoryBuilder.() -> Unit = {}
-): ThreadFactory = ThreadFactoryBuilder().setNameFormat(nameFormat).apply(builder).build()
-
-@ThreadFactoryDsl
-fun ThreadFactoryBuilder.uncaughtExceptionHandler(handler: Thread.UncaughtExceptionHandler): ThreadFactoryBuilder =
-    setUncaughtExceptionHandler(handler)
+    override fun run() {
+        task.run()
+    }
+}

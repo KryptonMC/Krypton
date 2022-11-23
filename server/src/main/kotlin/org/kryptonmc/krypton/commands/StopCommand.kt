@@ -33,7 +33,7 @@ object StopCommand {
             permission(KryptonPermission.STOP)
             runs {
                 it.source.sendSuccess(Messages.Commands.STOP_STOPPING.build(), true)
-                it.source.server.stop()
+                it.source.server.stop(false)
             }
         })
     }

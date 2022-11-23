@@ -26,10 +26,10 @@ import org.kryptonmc.api.world.WorldManager
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.registry.KryptonRegistries
 import org.kryptonmc.krypton.util.ChunkProgressListener
+import org.kryptonmc.krypton.util.executor.DefaultPoolUncaughtExceptionHandler
 import org.kryptonmc.krypton.util.logger
-import org.kryptonmc.krypton.util.pool.ThreadPoolBuilder
-import org.kryptonmc.krypton.util.pool.daemonThreadFactory
-import org.kryptonmc.krypton.util.pool.uncaughtExceptionHandler
+import org.kryptonmc.krypton.util.executor.ThreadPoolBuilder
+import org.kryptonmc.krypton.util.executor.daemonThreadFactory
 import org.kryptonmc.krypton.world.chunk.ChunkStatus
 import org.kryptonmc.krypton.world.data.PrimaryWorldData
 import org.kryptonmc.krypton.world.data.WorldDataManager
@@ -50,12 +50,7 @@ class KryptonWorldManager(override val server: KryptonServer, private val worldF
         .coreSize(0)
         .maximumSize(max(1, Runtime.getRuntime().availableProcessors() / 2))
         .keepAlive(Duration.ofSeconds(60))
-        .factory(daemonThreadFactory("World Handler #%d") {
-            uncaughtExceptionHandler { thread, exception ->
-                LOGGER.error("Caught unhandled exception in thread ${thread.name}!", exception)
-                server.stop()
-            }
-        })
+        .factory(daemonThreadFactory("World Handler #%d") { setUncaughtExceptionHandler(DefaultPoolUncaughtExceptionHandler(LOGGER)) })
         .build()
     val statsFolder: Path = storageManager.resolve("stats")
 
@@ -102,16 +97,17 @@ class KryptonWorldManager(override val server: KryptonServer, private val worldF
     }
 
     override fun save(world: World): CompletableFuture<Void> {
-        if (world !is KryptonWorld) return CompletableFuture.completedFuture(null)
-        return CompletableFuture.runAsync({ world.save(false) }, worldExecutor)
+        val kryptonWorld = world.downcast() // Moved outside of the block to fail fast
+        return CompletableFuture.runAsync({ kryptonWorld.save(false, false) }, worldExecutor)
     }
 
     override fun isLoaded(key: Key): Boolean = worlds.containsKey(ResourceKey.of(ResourceKeys.DIMENSION, key))
 
-    fun saveAll(shouldClose: Boolean): Boolean {
+    fun saveAllChunks(suppressLog: Boolean, flush: Boolean, forced: Boolean): Boolean {
         var successful = false
-        worlds.values.forEach {
-            it.save(shouldClose)
+        worlds.values.forEach { world ->
+            if (!suppressLog) LOGGER.info("Saving chunks for world $world in ${world.dimension.location}...")
+            world.save(flush, world.doNotSave && !forced)
             successful = true
         }
         storageManager.save(name, data)

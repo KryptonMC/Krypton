@@ -18,6 +18,9 @@
  */
 package org.kryptonmc.krypton
 
+import io.netty.channel.epoll.Epoll
+import io.netty.channel.kqueue.KQueue
+import io.netty.channel.unix.DomainSocketAddress
 import org.apache.logging.log4j.LogManager
 import org.kryptonmc.api.world.World
 import org.kryptonmc.api.world.rule.GameRules
@@ -42,23 +45,34 @@ import org.kryptonmc.krypton.server.PlayerManager
 import org.kryptonmc.krypton.service.KryptonServicesManager
 import org.kryptonmc.krypton.user.KryptonUserManager
 import org.kryptonmc.krypton.util.crypto.YggdrasilSessionKey
+import org.kryptonmc.krypton.util.executor.ReentrantBlockableEventLoop
 import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.krypton.world.KryptonWorldManager
 import org.kryptonmc.krypton.world.scoreboard.KryptonScoreboard
+import java.io.IOException
+import java.net.InetAddress
+import java.net.InetSocketAddress
 import java.nio.file.Files
 import java.nio.file.Path
 import java.util.Locale
+import java.util.concurrent.RejectedExecutionException
+import java.util.concurrent.atomic.AtomicReference
+import java.util.function.BooleanSupplier
+import java.util.function.Function
 import kotlin.math.abs
 import kotlin.math.max
-import kotlin.system.exitProcess
-import kotlin.system.measureTimeMillis
 
 /**
  * This is the centre of operations here at Krypton Inc. Everything stems from
  * this class.
  */
-class KryptonServer(override val config: KryptonConfig, override val profileCache: KryptonProfileCache, worldFolder: Path) : BaseServer {
+class KryptonServer(
+    private val serverThread: Thread,
+    override val config: KryptonConfig,
+    override val profileCache: KryptonProfileCache,
+    worldFolder: Path
+) : ReentrantBlockableEventLoop<TickTask>("Server"), BaseServer {
 
     override val playerManager: PlayerManager = PlayerManager(this)
     override val sessionManager: SessionManager = SessionManager(playerManager, config.status.motd, config.status.maxPlayers)
@@ -76,12 +90,15 @@ class KryptonServer(override val config: KryptonConfig, override val profileCach
 
     @Volatile
     private var running = true
+    private var stopped = false
     // These help us keep track of how fast the server is running and how far
     // behind it is at any one time.
-    private var lastTickTime = 0L
-    private var lastOverloadWarning = 0L
     private var tickCount = 0
-    private var oversleepFactor = 0L
+    private var lastOverloadWarning = 0L
+    private var nextTickTime = 0L
+    private var lastTick = 0L
+    private var mayHaveDelayedTasks = false
+    private var delayedTasksMaxNextTickTime = 0L
 
     init {
         instance = this
@@ -90,9 +107,14 @@ class KryptonServer(override val config: KryptonConfig, override val profileCach
 
     override fun isRunning(): Boolean = running
 
+    fun isStopped(): Boolean = stopped
+
     // The order of loading here is pretty important, as some things depend on
     // others to function properly.
-    override fun start() {
+    private fun initialize(): Boolean {
+        LOGGER.debug("Starting console handler...")
+        console.run()
+
         LOGGER.info("Starting Krypton server on ${config.server.ip}:${config.server.port}...")
         val startTime = System.nanoTime()
 
@@ -103,8 +125,7 @@ class KryptonServer(override val config: KryptonConfig, override val profileCach
 
         // Load bans and whitelists here before we allow any players in.
         LOGGER.debug("Loading ban list and whitelist...")
-        playerManager.banManager.load()
-        playerManager.whitelistManager.load()
+        playerManager.load()
 
         // Start the metrics system.
         LOGGER.debug("Starting bStats metrics")
@@ -126,58 +147,85 @@ class KryptonServer(override val config: KryptonConfig, override val profileCach
         worldManager.init()
 
         // Load plugins here because most of everything they need is available now.
+        LOGGER.debug("Loading built-in services...")
         servicesManager.bootstrap()
         loadPlugins()
 
         // Fire the event that signals the server starting. We fire it here so that plugins can listen to it as part of their lifecycle,
         // and we call it sync so plugins can finish initialising before we do.
+        LOGGER.debug("Notifying plugins that the server is ready")
         eventManager.fireAndForgetSync(KryptonServerStartEvent)
 
         // Initialize console permissions after plugins are loaded. We do this here so plugins have had a chance to register their listeners
         // so they can actually catch this event and set up their own permission providers for the console.
+        LOGGER.debug("Setting up console permissions...")
         console.setupPermissions()
+
+        // Determine the correct bind address (UNIX domain socket or standard internet socket).
+        val bindAddress = if (config.server.ip.startsWith("unix:")) {
+            if (!Epoll.isAvailable() && !KQueue.isAvailable()) {
+                LOGGER.error("UNIX domain sockets are not supported on this operating system!")
+                return false
+            }
+            if (config.proxy.mode == ProxyCategory.Mode.NONE) {
+                LOGGER.error("UNIX domain sockets require IPs to be forwarded from a proxy!")
+                return false
+            }
+            LOGGER.info("Using UNIX domain socket ${config.server.ip}")
+            DomainSocketAddress(config.server.ip.substring("unix:".length))
+        } else {
+            InetSocketAddress(InetAddress.getByName(config.server.ip), config.server.port)
+        }
 
         // Start accepting connections
         LOGGER.debug("Starting Netty...")
-        NettyProcess.run(this)
+        try {
+            NettyProcess.run(this, bindAddress)
+        } catch (exception: IOException) {
+            LOGGER.error("FAILED TO BIND TO PORT ${config.server.port}!", exception)
+            return false
+        }
 
-        Runtime.getRuntime().addShutdownHook(Thread({ stop(false) }, "Shutdown Handler").apply { isDaemon = false })
         val doneTime = String.format(Locale.ROOT, "%.3fs", (System.nanoTime() - startTime) / 1.0E9)
         LOGGER.info("Done ($doneTime)! Type \"help\" for help.")
-
-        LOGGER.debug("Starting console handler")
-        console.run()
-
-        run()
+        return true
     }
 
     override fun run() {
         try {
-            // Set the last tick time early (avoids initial check sending an overload warning every time)
-            lastTickTime = System.currentTimeMillis()
+            check(initialize()) { "Failed to initialize server!" }
+
+            // Set the next tick time early (avoids initial check sending an overload warning every time)
+            nextTickTime = System.currentTimeMillis()
+            lastTick = System.nanoTime() - NORMAL_TICK_TIME_NANOS
 
             while (running) {
-                val nextTickTime = System.currentTimeMillis() - lastTickTime
-                if (nextTickTime > SLOW_TICK_THRESHOLD && lastTickTime - lastOverloadWarning >= OVERLOAD_WARNING_INTERVAL) {
-                    LOGGER.warn("Can't keep up! Running $nextTickTime ms (${nextTickTime / MILLISECONDS_PER_TICK} ticks) behind!")
-                    lastOverloadWarning = lastTickTime
+                val nanoTime = System.nanoTime()
+                val tickDifference = nanoTime / NANOS_TO_MILLIS - nextTickTime
+                if (tickDifference > SLOW_TICK_THRESHOLD && nextTickTime - lastOverloadWarning >= OVERLOAD_WARNING_INTERVAL) {
+                    val differenceTicks = tickDifference / MILLISECONDS_PER_TICK
+                    LOGGER.warn("Can't keep up! Running $tickDifference ms ($differenceTicks ticks) behind!")
+                    nextTickTime += differenceTicks * MILLISECONDS_PER_TICK
+                    lastOverloadWarning = nextTickTime
                 }
 
-                eventManager.fireAndForgetSync(KryptonTickStartEvent(tickCount))
-                val tickTime = measureTimeMillis(::tick)
-
-                val finishTime = System.currentTimeMillis()
-                eventManager.fireAndForgetSync(KryptonTickEndEvent(tickCount, tickTime, finishTime))
-                lastTickTime = finishTime
-
-                // This logic ensures that ticking isn't delayed by the overhead from Thread.sleep, which seems to be up to 10 ms,
-                // which is enough that the average TPS would be reporting at around 15-16, rather than 20.
-                val sleepTime = measureTimeMillis { Thread.sleep(max(0, MILLISECONDS_PER_TICK - tickTime - oversleepFactor)) }
-                oversleepFactor = sleepTime - (MILLISECONDS_PER_TICK - tickTime)
+                lastTick = nanoTime
+                nextTickTime += MILLISECONDS_PER_TICK
+                tick(::haveTime)
+                mayHaveDelayedTasks = true
+                delayedTasksMaxNextTickTime = max(System.currentTimeMillis() + MILLISECONDS_PER_TICK, nextTickTime)
+                waitUntilNextTick()
             }
         } catch (exception: Throwable) { // This is hacky, but ensures that we catch absolutely everything that may be thrown here.
             LOGGER.error("Encountered an unexpected exception", exception)
-            stop()
+        } finally {
+            // This may seem weird, but this will be called when running is no longer true, which will cause the server to stop.
+            try {
+                stopped = true
+                stopServer()
+            } catch (exception: Throwable) {
+                LOGGER.error("Error whilst attempting to stop the server!", exception)
+            }
         }
     }
 
@@ -217,25 +265,127 @@ class KryptonServer(override val config: KryptonConfig, override val profileCach
         LOGGER.info("Finished plugin loading! Loaded ${pluginManager.plugins.size} plugins.")
     }
 
-    override fun tick() {
-        tickCount++
+    private fun tick(hasTimeLeft: BooleanSupplier) {
+        val startTime = System.currentTimeMillis()
+        eventManager.fireAndForgetSync(KryptonTickStartEvent(tickCount + 1))
 
-        sessionManager.update(System.currentTimeMillis())
-        if (playerManager.players.isEmpty()) return // don't tick if there are no players on the server
+        ++tickCount
+        tickChildren(hasTimeLeft)
+        sessionManager.tick(startTime)
+        playerManager.tick(startTime)
 
+        if (config.world.autosaveInterval > 0 && tickCount % config.world.autosaveInterval == 0) {
+            LOGGER.info("Auto save started.")
+            saveEverything(true, false, false)
+            LOGGER.info("Auto save finished.")
+        }
+        if (tickCount % SAVE_PROFILE_CACHE_INTERVAL == 0) profileCache.saveIfNeeded()
+
+        val endTime = System.nanoTime()
+        val remaining = NORMAL_TICK_TIME_NANOS - (endTime - lastTick)
+        eventManager.fireAndForgetSync(KryptonTickEndEvent(tickCount, (endTime - lastTick) / NANOS_TO_MILLIS, remaining))
+    }
+
+    private fun tickChildren(hasTimeLeft: BooleanSupplier) {
         worldManager.worlds.forEach { (_, world) ->
             if (tickCount % TICKS_PER_SECOND == 0) {
                 val packet = PacketOutUpdateTime(world.data.time, world.data.dayTime, world.data.gameRules.get(GameRules.DO_DAYLIGHT_CYCLE))
                 sessionManager.sendGrouped(packet) { it.world === world }
             }
-            world.tick()
+            world.tick(hasTimeLeft)
         }
-        if (config.world.autosaveInterval > 0 && tickCount % config.world.autosaveInterval == 0) {
-            LOGGER.info("Auto save started.")
-            worldManager.saveAll(false)
-            LOGGER.info("Auto save finished.")
+    }
+
+    private fun haveTime(): Boolean = runningTask() ||
+            System.currentTimeMillis() < if (mayHaveDelayedTasks) delayedTasksMaxNextTickTime else nextTickTime
+
+    private fun waitUntilNextTick() {
+        runAllTasks()
+        managedBlock { !haveTime() }
+    }
+
+    override fun wrapRunnable(runnable: Runnable): TickTask = TickTask(tickCount, runnable)
+
+    override fun shouldRun(task: TickTask): Boolean = task.tick + 3 < tickCount || haveTime()
+
+    override fun pollTask(): Boolean {
+        val hasTasks = pollTaskInternal()
+        mayHaveDelayedTasks = hasTasks
+        return hasTasks
+    }
+
+    private fun pollTaskInternal(): Boolean {
+        // TODO: We may want to try polling other tasks in here in the future, which is why this is like this.
+        return super.pollTask()
+    }
+
+    override fun scheduleExecutables(): Boolean = super.scheduleExecutables() && !isStopped()
+
+    override fun executeIfPossible(task: Runnable) {
+        if (isStopped()) throw RejectedExecutionException("Cannot execute tasks while the server is shutting down!")
+        super.executeIfPossible(task)
+    }
+
+    override fun runningThread(): Thread = serverThread
+
+    private fun saveEverything(suppressLog: Boolean, flush: Boolean, forced: Boolean): Boolean {
+        playerManager.saveAll()
+        return worldManager.saveAllChunks(suppressLog, flush, forced)
+    }
+
+    override fun stop(waitForServer: Boolean) {
+        running = false
+        if (waitForServer) {
+            try {
+                serverThread.join()
+            } catch (exception: InterruptedException) {
+                LOGGER.error("Error while shutting down!", exception)
+            }
         }
-        if (tickCount % SAVE_PROFILE_CACHE_INTERVAL == 0) profileCache.save()
+    }
+
+    private fun stopServer() {
+        // Stop server and shut down session manager (disconnecting all players)
+        LOGGER.info("Starting shutdown for Krypton version ${KryptonPlatform.version}...")
+        running = false
+        NettyProcess.shutdown()
+
+        // Save data
+        LOGGER.info("Saving and disconnecting players...")
+        playerManager.saveAll()
+        playerManager.disconnectAll()
+
+        LOGGER.info("Saving worlds...")
+        worldManager.worlds.values.forEach { it.doNotSave = false }
+        worldManager.saveAllChunks(false, true, false)
+        worldManager.worlds.values.forEach {
+            try {
+                it.close()
+            } catch (exception: IOException) {
+                LOGGER.error("Error whilst trying to close world ${it.data.name}!", exception)
+            }
+        }
+
+        // Save bans and whitelist
+        LOGGER.info("Saving ban list and whitelist...")
+        playerManager.banManager.saveIfNeeded()
+        playerManager.whitelistManager.saveIfNeeded()
+
+        // Shut down plugins and unregister listeners
+        LOGGER.info("Shutting down plugins and unregistering listeners...")
+        eventManager.fireAndForgetSync(KryptonServerStopEvent)
+        eventManager.shutdown()
+
+        // Shut down scheduler
+        scheduler.shutdown()
+        LOGGER.info("Goodbye")
+
+        // Manually shut down Log4J 2 here so it doesn't shut down before we've finished logging
+        LogManager.shutdown()
+    }
+
+    override fun close() {
+        stopServer()
     }
 
     fun isProtected(world: KryptonWorld, x: Int, z: Int, player: KryptonPlayer): Boolean {
@@ -249,58 +399,6 @@ class KryptonServer(override val config: KryptonConfig, override val profileCach
         return maxDistance <= config.world.spawnProtectionRadius
     }
 
-    override fun stop(explicitExit: Boolean) {
-        if (!running) return // Ensure we cannot accidentally run this twice
-
-        val shutdownProcess = Runnable {
-            // Stop server and shut down session manager (disconnecting all players)
-            LOGGER.info("Starting shutdown for Krypton version ${KryptonPlatform.version}...")
-            running = false
-            playerManager.disconnectAll()
-            NettyProcess.shutdown()
-
-            // Save data
-            LOGGER.info("Saving player, world, and region data...")
-            worldManager.saveAll(true)
-            playerManager.saveAll()
-
-            // Save bans and whitelist
-            LOGGER.info("Saving ban list and whitelist...")
-            playerManager.banManager.save()
-            playerManager.whitelistManager.save()
-
-            // Shut down plugins and unregister listeners
-            LOGGER.info("Shutting down plugins and unregistering listeners...")
-            eventManager.fireAndForgetSync(KryptonServerStopEvent)
-            eventManager.shutdown()
-
-            // Shut down scheduler
-            scheduler.shutdown()
-            LOGGER.info("Goodbye")
-
-            // Manually shut down Log4J 2 here so it doesn't shut down before we've finished logging
-            LogManager.shutdown()
-            if (explicitExit) exitProcess(0)
-        }
-
-        if (explicitExit) Thread(shutdownProcess).start() else shutdownProcess.run()
-    }
-
-    override fun restart() {
-        stop()
-        val split = config.other.restartScript.split(" ")
-        if (split.isNotEmpty()) {
-            if (!Files.isRegularFile(Path.of(split[0]))) {
-                println("Unable to find restart script ${split[0]}! Refusing to restart!")
-                return
-            }
-            println("Attempting to restart the server with script ${split[0]}...")
-            val os = System.getProperty("os.name").lowercase()
-            val runCommand = if (os.contains("win")) "cmd /c start " else "sh "
-            Runtime.getRuntime().exec(runCommand + config.other.restartScript)
-        }
-    }
-
     companion object {
 
         private const val MILLISECONDS_PER_TICK = 50L // milliseconds in a tick
@@ -308,6 +406,8 @@ class KryptonServer(override val config: KryptonConfig, override val profileCach
         private const val SAVE_PROFILE_CACHE_INTERVAL = 600
         private const val SLOW_TICK_THRESHOLD = 2000L
         private const val OVERLOAD_WARNING_INTERVAL = 15000L
+        private const val NORMAL_TICK_TIME_NANOS = 1_000_000_000 / TICKS_PER_SECOND // 1,000,000,000 = 1 second in nanoseconds
+        private const val NANOS_TO_MILLIS = 1000L * 1000L
 
         private val LOGGER = logger<KryptonServer>()
 
@@ -320,5 +420,19 @@ class KryptonServer(override val config: KryptonConfig, override val profileCach
         @JvmStatic
         @JvmSynthetic
         internal fun get(): KryptonServer = requireNotNull(instance) { "KryptonServer.get() called before server was loaded!" }
+
+        // This logic comes from vanilla. We should probably just use the main thread, though this may greater ensure parity
+        // with vanilla's buggy mess. Not sure if this is actually the case though.
+        @JvmStatic
+        fun createAndRun(threadFunction: Function<Thread, KryptonServer>): KryptonServer {
+            val reference = AtomicReference<KryptonServer>()
+            val thread = Thread({ reference.get().run() }, "Server Thread")
+            thread.setUncaughtExceptionHandler { _, exception -> LOGGER.error("Uncaught exception in server thread!", exception) }
+            if (Runtime.getRuntime().availableProcessors() > 4) thread.priority = 8
+            val server = threadFunction.apply(thread)
+            reference.set(server)
+            thread.start()
+            return server
+        }
     }
 }

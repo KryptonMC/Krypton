@@ -29,6 +29,8 @@ import java.nio.file.Path
 
 abstract class PersistentManager(private val path: Path) {
 
+    private var dirty = false
+
     fun load() {
         if (!Files.exists(path)) return
         try {
@@ -41,6 +43,11 @@ abstract class PersistentManager(private val path: Path) {
     }
 
     protected abstract fun loadData(reader: JsonReader)
+
+    fun saveIfNeeded() {
+        if (dirty) save()
+        dirty = false
+    }
 
     fun save() {
         if (!Files.exists(path)) {
@@ -59,6 +66,10 @@ abstract class PersistentManager(private val path: Path) {
     }
 
     protected abstract fun saveData(writer: JsonWriter)
+
+    protected fun markDirty() {
+        dirty = true
+    }
 
     companion object {
 

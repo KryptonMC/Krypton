@@ -39,7 +39,6 @@ import io.netty.channel.socket.nio.NioServerSocketChannel
 import io.netty.channel.unix.DomainSocketAddress
 import io.netty.handler.timeout.ReadTimeoutHandler
 import net.kyori.adventure.key.Key
-import org.kryptonmc.krypton.config.category.ProxyCategory
 import org.kryptonmc.krypton.network.SessionHandler
 import org.kryptonmc.krypton.network.netty.ChannelInitializeListener
 import org.kryptonmc.krypton.network.netty.GroupedPacketHandler
@@ -48,10 +47,9 @@ import org.kryptonmc.krypton.network.netty.PacketDecoder
 import org.kryptonmc.krypton.network.netty.PacketEncoder
 import org.kryptonmc.krypton.network.netty.SizeDecoder
 import org.kryptonmc.krypton.network.netty.SizeEncoder
+import org.kryptonmc.krypton.util.executor.threadFactory
 import org.kryptonmc.krypton.util.logger
-import org.kryptonmc.krypton.util.pool.threadFactory
-import java.io.IOException
-import java.net.InetSocketAddress
+import java.net.SocketAddress
 import java.util.concurrent.ConcurrentHashMap
 
 /**
@@ -66,58 +64,35 @@ object NettyProcess {
     private var future: ChannelFuture? = null
 
     @JvmStatic
-    fun run(server: KryptonServer) {
-        val ip = server.config.server.ip
-        val address = if (ip.startsWith("unix:")) {
-            if (!Epoll.isAvailable() && !KQueue.isAvailable()) {
-                LOGGER.error("UNIX domain sockets are not supported on this operating system!")
-                server.stop()
-                return
-            }
-            if (server.config.proxy.mode == ProxyCategory.Mode.NONE) {
-                LOGGER.error("UNIX domain sockets require IPs to be forwarded from a proxy!")
-                server.stop()
-                return
-            }
-            LOGGER.info("Using UNIX domain socket ${server.config.server.ip}")
-            DomainSocketAddress(ip.substring("unix:".length))
-        } else {
-            InetSocketAddress(ip, server.config.server.port)
-        }
+    fun run(server: KryptonServer, bindAddress: SocketAddress) {
+        LOGGER.info("Using ${Natives.compress.loadedVariant} compression from Velocity.")
+        LOGGER.info("Using ${Natives.cipher.loadedVariant} cipher from Velocity.")
 
-        try {
-            LOGGER.info("Using ${Natives.compress.loadedVariant} compression from Velocity.")
-            LOGGER.info("Using ${Natives.cipher.loadedVariant} cipher from Velocity.")
-
-            val legacyQueryHandler = LegacyQueryHandler(server)
-            val bootstrap = ServerBootstrap()
-                .group(bossGroup, workerGroup)
-                .localAddress(address)
-                .channel(bestChannel(address is DomainSocketAddress))
-                .childOption(ChannelOption.TCP_NODELAY, true)
-                .childOption(ChannelOption.SO_KEEPALIVE, true)
-                .childHandler(object : ChannelInitializer<SocketChannel>() {
-                    override fun initChannel(channel: SocketChannel) {
-                        val handler = SessionHandler(server)
-                        channel.pipeline()
-                            .addLast("timeout", ReadTimeoutHandler(30))
-                            .addLast(LegacyQueryHandler.NETTY_NAME, legacyQueryHandler)
-                            .addLast(GroupedPacketHandler.NETTY_NAME, GroupedPacketHandler)
-                            .addLast(SizeDecoder.NETTY_NAME, SizeDecoder())
-                            .addLast(PacketDecoder.NETTY_NAME, PacketDecoder())
-                            .addLast(SizeEncoder.NETTY_NAME, SizeEncoder)
-                            .addLast(PacketEncoder.NETTY_NAME, PacketEncoder)
-                            .addLast(SessionHandler.NETTY_NAME, handler)
-                        server.sessionManager.add(handler)
-                        if (listeners.isEmpty()) return
-                        listeners.values.forEach { it.onInitialize(channel) }
-                    }
-                })
-            future = bootstrap.bind().syncUninterruptibly()
-        } catch (exception: IOException) {
-            LOGGER.error("FAILED TO BIND TO PORT ${server.config.server.port}!", exception)
-            server.stop()
-        }
+        val legacyQueryHandler = LegacyQueryHandler(server)
+        val bootstrap = ServerBootstrap()
+            .group(bossGroup, workerGroup)
+            .localAddress(bindAddress)
+            .channel(bestChannel(bindAddress is DomainSocketAddress))
+            .childOption(ChannelOption.TCP_NODELAY, true)
+            .childOption(ChannelOption.SO_KEEPALIVE, true)
+            .childHandler(object : ChannelInitializer<SocketChannel>() {
+                override fun initChannel(channel: SocketChannel) {
+                    val handler = SessionHandler(server)
+                    channel.pipeline()
+                        .addLast("timeout", ReadTimeoutHandler(30))
+                        .addLast(LegacyQueryHandler.NETTY_NAME, legacyQueryHandler)
+                        .addLast(GroupedPacketHandler.NETTY_NAME, GroupedPacketHandler)
+                        .addLast(SizeDecoder.NETTY_NAME, SizeDecoder())
+                        .addLast(PacketDecoder.NETTY_NAME, PacketDecoder())
+                        .addLast(SizeEncoder.NETTY_NAME, SizeEncoder)
+                        .addLast(PacketEncoder.NETTY_NAME, PacketEncoder)
+                        .addLast(SessionHandler.NETTY_NAME, handler)
+                    server.sessionManager.add(handler)
+                    if (listeners.isEmpty()) return
+                    listeners.values.forEach { it.onInitialize(channel) }
+                }
+            })
+        future = bootstrap.bind().syncUninterruptibly()
     }
 
     @JvmStatic

@@ -16,18 +16,22 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.config.category
+package org.kryptonmc.krypton.util.executor
 
-import org.spongepowered.configurate.objectmapping.ConfigSerializable
-import org.spongepowered.configurate.objectmapping.meta.Comment
-import org.spongepowered.configurate.objectmapping.meta.Setting
+abstract class ReentrantBlockableEventLoop<R : Runnable>(name: String) : BlockableEventLoop<R>(name) {
 
-@ConfigSerializable
-@JvmRecord
-data class OtherCategory(
-    @Comment("If we should enable bStats metrics for the server")
-    val metrics: Boolean = true,
-    @Setting("save-threshold")
-    @Comment("The duration (in seconds) a single tick must take before the single tick profiler reports it.")
-    val saveThreshold: Int = 5
-)
+    private var reentrantCount = 0
+
+    override fun scheduleExecutables(): Boolean = runningTask() || super.scheduleExecutables()
+
+    protected fun runningTask(): Boolean = reentrantCount != 0
+
+    override fun doRunTask(task: R) {
+        ++reentrantCount
+        try {
+            super.doRunTask(task)
+        } finally {
+            --reentrantCount
+        }
+    }
+}

@@ -96,7 +96,6 @@ class ConfigTests {
         // Other settings
         assertTrue(config.other.metrics)
         assertEquals(5, config.other.saveThreshold)
-        assertEquals("./start.sh", config.other.restartScript)
     }
 
     companion object {

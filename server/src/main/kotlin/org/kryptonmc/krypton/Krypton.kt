@@ -28,9 +28,8 @@ import org.apache.logging.log4j.LogManager
 import org.kryptonmc.krypton.auth.KryptonProfileCache
 import org.kryptonmc.krypton.config.KryptonConfig
 import org.kryptonmc.krypton.util.Bootstrap
-import org.kryptonmc.krypton.util.logger
+import org.kryptonmc.krypton.util.executor.DefaultUncaughtExceptionHandler
 import java.nio.file.Path
-import java.util.concurrent.atomic.AtomicReference
 
 fun main(args: Array<String>) {
     KryptonCLI().main(args)
@@ -85,19 +84,12 @@ private class KryptonCLI : CliktCommand(
             return
         }
 
-        // This logic comes from vanilla. We should probably just use the main thread, though this may greater ensure parity
-        // with vanilla's buggy mess. Not sure if this is actually the case though.
-        val reference = AtomicReference<KryptonServer>()
-        val serverThread = Thread({ reference.get().start() }, "Tick Thread").apply {
-            setUncaughtExceptionHandler { _, exception ->
-                logger<KryptonServer>().error("Caught unhandled exception in ticking thread!", exception)
-                reference.get().stop()
-            }
-        }
         val cache = KryptonProfileCache(userCacheFile)
         cache.loadAll()
-        val server = KryptonServer(config, cache, worldFolder)
-        reference.set(server)
-        serverThread.start()
+
+        val server = KryptonServer.createAndRun { KryptonServer(it, config, cache, worldFolder) }
+        val shutdownThread = Thread({ server.stop(true) }, "Server Shutdown Thread")
+        shutdownThread.uncaughtExceptionHandler = DefaultUncaughtExceptionHandler(logger)
+        Runtime.getRuntime().addShutdownHook(shutdownThread)
     }
 }

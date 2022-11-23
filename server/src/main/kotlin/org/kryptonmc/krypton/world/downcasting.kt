@@ -16,18 +16,9 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.config.category
+package org.kryptonmc.krypton.world
 
-import org.spongepowered.configurate.objectmapping.ConfigSerializable
-import org.spongepowered.configurate.objectmapping.meta.Comment
-import org.spongepowered.configurate.objectmapping.meta.Setting
+import org.kryptonmc.api.world.World
+import org.kryptonmc.krypton.util.downcastApiType
 
-@ConfigSerializable
-@JvmRecord
-data class OtherCategory(
-    @Comment("If we should enable bStats metrics for the server")
-    val metrics: Boolean = true,
-    @Setting("save-threshold")
-    @Comment("The duration (in seconds) a single tick must take before the single tick profiler reports it.")
-    val saveThreshold: Int = 5
-)
+fun World.downcast(): KryptonWorld = downcastApiType("World")
