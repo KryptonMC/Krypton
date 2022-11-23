@@ -42,6 +42,7 @@ class KryptonProfileCache(private val path: Path) : ProfileCache {
     private val profilesByUUID = ConcurrentHashMap<UUID, ProfileHolder>()
     private val profileSet = ConcurrentHashMap.newKeySet<GameProfile>()
     private val operations = AtomicLong()
+    private var dirty = false
 
     override val profiles: Collection<GameProfile>
         get() = Collections.unmodifiableCollection(profileSet)
@@ -61,6 +62,7 @@ class KryptonProfileCache(private val path: Path) : ProfileCache {
         profilesByName.put(profile.name, holder)
         profilesByUUID.put(profile.uuid, holder)
         profileSet.add(profile)
+        markDirty()
     }
 
     fun loadAll() {
@@ -77,6 +79,11 @@ class KryptonProfileCache(private val path: Path) : ProfileCache {
         Lists.reverse(holders).forEach(::add)
     }
 
+    fun saveIfNeeded() {
+        if (dirty) save()
+        dirty = false
+    }
+
     fun save() {
         if (!Files.exists(path)) {
             try {
@@ -91,6 +98,10 @@ class KryptonProfileCache(private val path: Path) : ProfileCache {
         } catch (exception: IOException) {
             LOGGER.error("Error writing user cache file!", exception)
         }
+    }
+
+    private fun markDirty() {
+        dirty = true
     }
 
     companion object {

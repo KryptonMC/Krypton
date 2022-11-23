@@ -51,7 +51,6 @@ import org.kryptonmc.krypton.commands.MeCommand
 import org.kryptonmc.krypton.commands.MessageCommand
 import org.kryptonmc.krypton.commands.PardonCommand
 import org.kryptonmc.krypton.commands.PardonIpCommand
-import org.kryptonmc.krypton.commands.RestartCommand
 import org.kryptonmc.krypton.commands.SayCommand
 import org.kryptonmc.krypton.commands.SeedCommand
 import org.kryptonmc.krypton.commands.StopCommand
@@ -165,7 +164,6 @@ class KryptonCommandManager : CommandManager {
 
     fun registerBuiltins() {
         StopCommand.register(dispatcher)
-        RestartCommand.register(dispatcher)
         TeleportCommand.register(dispatcher)
         SummonCommand.register(dispatcher)
         GameModeCommand.register(dispatcher)

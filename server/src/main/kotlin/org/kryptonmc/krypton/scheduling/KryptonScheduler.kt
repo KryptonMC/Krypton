@@ -31,8 +31,8 @@ import org.kryptonmc.api.scheduling.Scheduler
 import org.kryptonmc.api.scheduling.Task
 import org.kryptonmc.api.scheduling.TaskRunnable
 import org.kryptonmc.api.scheduling.TaskState
-import org.kryptonmc.krypton.util.pool.daemonThreadFactory
-import org.kryptonmc.krypton.util.pool.ThreadPoolBuilder
+import org.kryptonmc.krypton.util.executor.ThreadPoolBuilder
+import org.kryptonmc.krypton.util.executor.daemonThreadFactory
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.ScheduledFuture
 import java.util.concurrent.TimeUnit

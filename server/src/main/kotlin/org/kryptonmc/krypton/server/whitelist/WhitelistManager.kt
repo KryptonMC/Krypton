@@ -43,21 +43,25 @@ class WhitelistManager(path: Path) : PersistentManager(path) {
     fun add(profile: GameProfile) {
         if (isWhitelisted(profile)) return
         profiles.add(profile)
+        markDirty()
     }
 
     fun add(ip: String) {
         if (isWhitelisted(ip)) return
         ips.add(ip)
+        markDirty()
     }
 
     fun remove(profile: GameProfile) {
         if (!isWhitelisted(profile)) return
         profiles.remove(profile)
+        markDirty()
     }
 
     fun remove(ip: String) {
         if (!isWhitelisted(ip)) return
         ips.remove(ip)
+        markDirty()
     }
 
     fun profiles(): List<GameProfile> = profiles

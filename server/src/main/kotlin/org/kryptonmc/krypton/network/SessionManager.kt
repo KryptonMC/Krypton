@@ -65,7 +65,7 @@ class SessionManager(private val playerManager: PlayerManager, motd: Component, 
         finalBuffer.release()
     }
 
-    fun update(time: Long) {
+    fun tick(time: Long) {
         if (statusInvalidated && time - statusInvalidatedTime > WAIT_AFTER_INVALID_STATUS_TIME || time - lastStatus >= UPDATE_STATUS_INTERVAL) {
             lastStatus = time
             statusInvalidated = false

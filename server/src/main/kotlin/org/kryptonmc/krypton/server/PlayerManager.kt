@@ -29,7 +29,6 @@ import org.kryptonmc.krypton.event.player.KryptonJoinEvent
 import org.kryptonmc.krypton.event.player.KryptonQuitEvent
 import org.kryptonmc.krypton.locale.Messages
 import org.kryptonmc.krypton.network.SessionHandler
-import org.kryptonmc.krypton.packet.FramedPacket
 import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.packet.out.play.GameEvent
 import org.kryptonmc.krypton.packet.out.play.PacketOutAbilities
@@ -53,9 +52,8 @@ import org.kryptonmc.krypton.registry.KryptonRegistries
 import org.kryptonmc.krypton.server.ban.BanManager
 import org.kryptonmc.krypton.server.whitelist.WhitelistManager
 import org.kryptonmc.krypton.util.BlockPos
-import org.kryptonmc.krypton.util.frame
+import org.kryptonmc.krypton.util.executor.daemonThreadFactory
 import org.kryptonmc.krypton.util.logger
-import org.kryptonmc.krypton.util.pool.daemonThreadFactory
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.krypton.world.biome.BiomeManager
 import org.kryptonmc.krypton.world.data.PlayerDataManager
@@ -74,7 +72,7 @@ import java.util.concurrent.Executors
 class PlayerManager(private val server: KryptonServer) {
 
     private val executor = Executors.newFixedThreadPool(8, daemonThreadFactory("Player Executor #%d"))
-    val dataManager: PlayerDataManager
+    val dataManager: PlayerDataManager = createDataManager(server)
     val players: MutableList<KryptonPlayer> = CopyOnWriteArrayList()
     private val playersByName = ConcurrentHashMap<String, KryptonPlayer>()
     private val playersByUUID = ConcurrentHashMap<UUID, KryptonPlayer>()
@@ -82,9 +80,12 @@ class PlayerManager(private val server: KryptonServer) {
     val banManager: BanManager = BanManager(Path.of("bans.json"))
     val whitelistManager: WhitelistManager = WhitelistManager(Path.of("whitelist.json"))
 
-    private val brandPacket by lazy { FramedPacket(PacketOutPluginMessage(BRAND_KEY, BRAND_MESSAGE).frame()) }
+    fun load() {
+        banManager.load()
+        whitelistManager.load()
+    }
 
-    init {
+    private fun createDataManager(server: KryptonServer): PlayerDataManager {
         val playerDataFolder = Path.of(server.config.world.name).resolve("playerdata")
         if (server.config.advanced.serializePlayerData && !Files.exists(playerDataFolder)) {
             try {
@@ -93,7 +94,7 @@ class PlayerManager(private val server: KryptonServer) {
                 LOGGER.error("Unable to create player data directory!", exception)
             }
         }
-        dataManager = PlayerDataManager(playerDataFolder, server.config.advanced.serializePlayerData)
+        return PlayerDataManager(playerDataFolder, server.config.advanced.serializePlayerData)
     }
 
     fun getPlayer(name: String): KryptonPlayer? = playersByName.get(name)
@@ -139,7 +140,7 @@ class PlayerManager(private val server: KryptonServer) {
             false,
             null
         ))
-        session.write(brandPacket)
+        session.write(PacketOutPluginMessage(BRAND_KEY, BRAND_MESSAGE))
         session.write(world.cachedDifficultyPacket)
 
         // Player data stuff
@@ -231,6 +232,13 @@ class PlayerManager(private val server: KryptonServer) {
         players.forEach(::save)
     }
 
+    fun tick(time: Long) {
+        if (time % BAN_WHITELIST_SAVE_INTERVAL == 0L) {
+            banManager.saveIfNeeded()
+            whitelistManager.saveIfNeeded()
+        }
+    }
+
     private fun sendCommands(player: KryptonPlayer) {
         player.session.send(PacketOutEntityEvent(player.id, OP_PERMISSION_LEVEL_4))
         server.commandManager.updateCommands(player)
@@ -273,5 +281,6 @@ class PlayerManager(private val server: KryptonServer) {
         private const val ENABLE_REDUCED_DEBUG_SCREEN = 22
         private const val DISABLE_REDUCED_DEBUG_SCREEN = 23
         private const val OP_PERMISSION_LEVEL_4 = 28
+        private const val BAN_WHITELIST_SAVE_INTERVAL = 600
     }
 }

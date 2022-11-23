@@ -41,21 +41,25 @@ class BanManager(path: Path) : PersistentManager(path) {
     fun add(ban: KryptonProfileBan) {
         if (isBanned(ban.profile)) return
         profiles.put(ban.profile, ban)
+        markDirty()
     }
 
     fun add(ban: KryptonIpBan) {
         if (isBanned(ban.ip)) return
         ips.put(ban.ip, ban)
+        markDirty()
     }
 
     fun remove(profile: GameProfile) {
         if (!isBanned(profile)) return
         profiles.remove(profile)
+        markDirty()
     }
 
     fun remove(ip: String) {
         if (!isBanned(ip)) return
         ips.remove(ip)
+        markDirty()
     }
 
     fun profiles(): Collection<KryptonProfileBan> = profiles.values

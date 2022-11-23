@@ -71,6 +71,7 @@ import org.kryptonmc.krypton.world.scoreboard.KryptonScoreboard
 import java.nio.file.Path
 import java.util.Random
 import java.util.concurrent.ConcurrentHashMap
+import java.util.function.BooleanSupplier
 
 class KryptonWorld(
     override val server: KryptonServer,
@@ -79,7 +80,7 @@ class KryptonWorld(
     override val dimensionType: KryptonDimensionType,
     override val seed: Long,
     private val tickTime: Boolean
-) : World, WorldAccessor, PacketGroupingAudience {
+) : World, WorldAccessor, PacketGroupingAudience, AutoCloseable {
 
     override val biomeManager: BiomeManager = BiomeManager(this, seed)
     private val random: Random = Random()
@@ -118,6 +119,7 @@ class KryptonWorld(
 
     override val chunkManager: ChunkManager = ChunkManager(this)
     override val players: MutableSet<KryptonPlayer> = ConcurrentHashMap.newKeySet()
+    var doNotSave: Boolean = false
 
     override val height: Int = dimensionType.height
     override val minimumBuildHeight: Int = dimensionType.minimumY
@@ -236,12 +238,10 @@ class KryptonWorld(
         return true
     }
 
-    fun tick() {
-        if (players.isEmpty()) return // don't tick the world if there's no players in it
-
+    fun tick(hasTimeLeft: BooleanSupplier) {
         tickWeather()
         tickTime()
-        chunkManager.chunkMap.values.forEach { it.tick(chunkManager.players(it.position.pack()).size) }
+        chunkManager.tick(hasTimeLeft)
 
         if (players.isNotEmpty()) {
             entities.forEach { if (!it.isRemoved) it.tick() }
@@ -315,9 +315,16 @@ class KryptonWorld(
         if (data.gameRules.get(GameRules.DO_DAYLIGHT_CYCLE)) data.dayTime++
     }
 
-    fun save(shouldClose: Boolean) {
-        chunkManager.saveAll(shouldClose)
-        if (shouldClose) entityManager.close() else entityManager.flush()
+    fun save(flush: Boolean, skipSave: Boolean) {
+        if (skipSave) return
+        // TODO: Save extra data for maps, raids, etc.
+        chunkManager.saveAll(flush)
+        if (flush) entityManager.flush()
+    }
+
+    override fun close() {
+        chunkManager.close()
+        entityManager.close()
     }
 
     fun getRainLevel(delta: Float): Float = Maths.lerp(delta, oldRainLevel, rainLevel)
@@ -332,6 +339,8 @@ class KryptonWorld(
     override fun sendGroupedPacket(players: Collection<KryptonPlayer>, packet: Packet) {
         server.sessionManager.sendGrouped(players, packet)
     }
+
+    override fun toString(): String = "KryptonWorld[${data.name}]"
 
     companion object {
 

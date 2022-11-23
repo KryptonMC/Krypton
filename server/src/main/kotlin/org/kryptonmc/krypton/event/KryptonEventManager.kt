@@ -36,8 +36,8 @@ import org.kryptonmc.api.event.ListenerPriority
 import org.kryptonmc.api.plugin.PluginContainer
 import org.kryptonmc.api.plugin.PluginManager
 import org.kryptonmc.krypton.util.logger
-import org.kryptonmc.krypton.util.pool.ThreadPoolBuilder
-import org.kryptonmc.krypton.util.pool.daemonThreadFactory
+import org.kryptonmc.krypton.util.executor.ThreadPoolBuilder
+import org.kryptonmc.krypton.util.executor.daemonThreadFactory
 import org.lanternpowered.lmbda.LambdaFactory
 import org.lanternpowered.lmbda.LambdaType
 import org.lanternpowered.lmbda.kt.lambdaType

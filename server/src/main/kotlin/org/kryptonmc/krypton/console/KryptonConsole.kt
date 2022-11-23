@@ -67,7 +67,7 @@ class KryptonConsole(override val server: KryptonServer) : SimpleTerminalConsole
 
     override fun getPermissionValue(permission: String): TriState = permissionFunction.getPermissionValue(permission)
 
-    override fun isRunning(): Boolean = server.isRunning()
+    override fun isRunning(): Boolean = !server.isStopped() && server.isRunning()
 
     override fun runCommand(command: String) {
         server.eventManager.fire(KryptonCommandExecuteEvent(this, command)).thenAcceptAsync {
@@ -77,7 +77,7 @@ class KryptonConsole(override val server: KryptonServer) : SimpleTerminalConsole
     }
 
     override fun shutdown() {
-        server.stop()
+        server.stop(false)
     }
 
     override fun buildReader(builder: LineReaderBuilder): LineReader = super.buildReader(

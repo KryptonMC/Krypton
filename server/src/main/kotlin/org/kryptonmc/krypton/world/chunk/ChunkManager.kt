@@ -28,10 +28,10 @@ import org.kryptonmc.api.world.biome.Biomes
 import org.kryptonmc.krypton.KryptonPlatform
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.util.DataConversion
+import org.kryptonmc.krypton.util.executor.DefaultPoolUncaughtExceptionHandler
 import org.kryptonmc.krypton.util.logger
-import org.kryptonmc.krypton.util.pool.ThreadPoolBuilder
-import org.kryptonmc.krypton.util.pool.daemonThreadFactory
-import org.kryptonmc.krypton.util.pool.uncaughtExceptionHandler
+import org.kryptonmc.krypton.util.executor.ThreadPoolBuilder
+import org.kryptonmc.krypton.util.executor.daemonThreadFactory
 import org.kryptonmc.krypton.world.Heightmap
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.krypton.world.block.downcast
@@ -50,19 +50,17 @@ import org.kryptonmc.nbt.StringTag
 import org.kryptonmc.nbt.buildCompound
 import org.kryptonmc.nbt.compound
 import space.vectrix.flare.fastutil.Long2ObjectSyncMap
+import java.util.function.BooleanSupplier
 import java.util.function.LongFunction
 
 @Suppress("StringLiteralDuplication") // TODO: Refactor the serialization out of this class and use constants to fix this issue
-class ChunkManager(private val world: KryptonWorld) {
+class ChunkManager(private val world: KryptonWorld) : AutoCloseable {
 
     val chunkMap: Long2ObjectMap<KryptonChunk> = Long2ObjectSyncMap.hashmap()
     private val playersByChunk = Long2ObjectSyncMap.hashmap<MutableSet<KryptonPlayer>>()
-    private val executor = ThreadPoolBuilder.fixed(2).factory(daemonThreadFactory("Chunk Loader #%d") {
-        uncaughtExceptionHandler { thread, exception ->
-            LOGGER.error("Caught unhandled exception in thread ${thread.name}!", exception)
-            world.server.stop()
-        }
-    }).build()
+    private val executor = ThreadPoolBuilder.fixed(2)
+        .factory(daemonThreadFactory("Chunk Loader #%d") { setUncaughtExceptionHandler(DefaultPoolUncaughtExceptionHandler(LOGGER)) })
+        .build()
     private val ticketManager = TicketManager(this)
     private val regionFileManager = RegionFileManager(world.folder.resolve("region"), world.server.config.advanced.synchronizeChunkWrites)
 
@@ -173,9 +171,9 @@ class ChunkManager(private val world: KryptonWorld) {
         chunkMap.remove(loaded.position.pack())
     }
 
-    fun saveAll(shouldClose: Boolean) {
+    fun saveAll(flush: Boolean) {
         chunkMap.values.forEach(::save)
-        if (shouldClose) regionFileManager.close() else regionFileManager.flush()
+        if (flush) regionFileManager.flush()
     }
 
     fun save(chunk: KryptonChunk) {
@@ -183,6 +181,16 @@ class ChunkManager(private val world: KryptonWorld) {
         chunk.lastUpdate = lastUpdate
         regionFileManager.write(chunk.x, chunk.z, serialize(chunk))
         world.entityManager.save(chunk)
+    }
+
+    @Suppress("UnusedPrivateMember")
+    fun tick(hasTimeLeft: BooleanSupplier) {
+        chunkMap.values.forEach { it.tick(players(it.position.pack()).size) }
+    }
+
+    override fun close() {
+        saveAll(true)
+        regionFileManager.close()
     }
 
     companion object {
