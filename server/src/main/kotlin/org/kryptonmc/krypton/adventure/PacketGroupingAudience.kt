@@ -51,6 +51,8 @@ interface PacketGroupingAudience : ForwardingAudience {
 
     fun sendGroupedPacket(players: Collection<KryptonPlayer>, packet: Packet)
 
+    fun generateSoundSeed(): Long
+
     private fun sendGroupedPacket(packet: Packet) {
         sendGroupedPacket(players, packet)
     }
@@ -115,22 +117,21 @@ interface PacketGroupingAudience : ForwardingAudience {
 
     override fun playSound(sound: Sound, x: Double, y: Double, z: Double) {
         val type = KryptonRegistries.SOUND_EVENT.get(sound.name())
-        if (type != null) {
-            sendGroupedPacket(PacketOutSoundEffect(sound, type, x, y, z))
-            return
-        }
-        sendGroupedPacket(PacketOutCustomSoundEffect(sound, x, y, z))
+        val seed = sound.seed().orElseGet(::generateSoundSeed)
+        sendGroupedPacket(if (type != null) PacketOutSoundEffect(sound, type, x, y, z, seed) else PacketOutCustomSoundEffect(sound, x, y, z, seed))
     }
 
     override fun playSound(sound: Sound, emitter: Sound.Emitter) {
         if (emitter !== Sound.Emitter.self()) {
             val entity = if (emitter is KryptonEntity) emitter else error("Sound emitter must be an entity or self(), was $emitter!")
             val event = KryptonRegistries.SOUND_EVENT.get(sound.name())
-            if (event != null) {
-                sendGroupedPacket(PacketOutEntitySoundEffect(event, sound.source(), entity.id, sound.volume(), sound.pitch()))
-                return
+            val seed = sound.seed().orElseGet(::generateSoundSeed)
+            val packet = if (event != null) {
+                PacketOutEntitySoundEffect(sound, event, entity.id, seed)
+            } else {
+                PacketOutCustomSoundEffect(sound, entity.location.x, entity.location.y, entity.location.z, seed)
             }
-            sendGroupedPacket(PacketOutCustomSoundEffect(sound, entity.location))
+            sendGroupedPacket(packet)
             return
         }
         // If we're playing on self, we need to delegate to each audience member

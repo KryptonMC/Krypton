@@ -43,13 +43,14 @@ import org.kryptonmc.krypton.state.property.KryptonProperty
 import org.kryptonmc.krypton.util.BlockPos
 import org.kryptonmc.krypton.util.IntHashBiMap
 import org.kryptonmc.krypton.util.Keys
-import org.kryptonmc.krypton.world.BlockAccessor
 import org.kryptonmc.krypton.world.KryptonWorld
-import org.kryptonmc.krypton.world.WorldAccessor
+import org.kryptonmc.krypton.world.components.WorldAccessor
 import org.kryptonmc.krypton.world.WorldEvent
 import org.kryptonmc.krypton.world.block.entity.KryptonBlockEntity
 import org.kryptonmc.krypton.world.block.state.BlockBehaviour
 import org.kryptonmc.krypton.world.block.state.KryptonBlockState
+import org.kryptonmc.krypton.world.chunk.SetBlockFlag
+import org.kryptonmc.krypton.world.components.BlockGetter
 import java.util.function.Function
 
 @Suppress("LeakingThis")
@@ -76,7 +77,7 @@ open class KryptonBlock(properties: Properties) : BlockBehaviour(properties), St
 
     open fun randomlyTicks(state: KryptonBlockState): Boolean = randomlyTicks
 
-    open fun propagatesSkylightDown(state: KryptonBlockState, world: BlockAccessor, pos: BlockPos): Boolean =
+    open fun propagatesSkylightDown(state: KryptonBlockState, world: BlockGetter, pos: BlockPos): Boolean =
         !isShapeFullBlock(state.getShape(world, pos)) && state.asFluid().isEmpty
 
     open fun destroy(world: WorldAccessor, pos: BlockPos, state: KryptonBlockState) {
@@ -103,14 +104,14 @@ open class KryptonBlock(properties: Properties) : BlockBehaviour(properties), St
         // TODO: Cause fall damage to entity
     }
 
-    open fun updateEntityAfterFallOn(world: BlockAccessor, entity: KryptonEntity) {
+    open fun updateEntityAfterFallOn(world: BlockGetter, entity: KryptonEntity) {
         entity.velocity = entity.velocity.multiply(1.0, 0.0, 1.0)
     }
 
-    open fun getItemStack(world: BlockAccessor, pos: BlockPos, state: KryptonBlockState): KryptonItemStack = defaultItemStack
+    open fun getItemStack(world: BlockGetter, pos: BlockPos, state: KryptonBlockState): KryptonItemStack = defaultItemStack
 
     open fun spawnDestroyParticles(world: KryptonWorld, player: KryptonPlayer, pos: BlockPos, state: KryptonBlockState) {
-        world.worldEvent(WorldEvent.DESTROY_BLOCK, pos, idOf(state), player)
+        world.worldEvent(pos, WorldEvent.DESTROY_BLOCK, idOf(state), player)
     }
 
     open fun playerWillDestroy(world: KryptonWorld, pos: BlockPos, state: KryptonBlockState, player: KryptonPlayer) {
@@ -184,6 +185,17 @@ open class KryptonBlock(properties: Properties) : BlockBehaviour(properties), St
 
         @JvmStatic
         fun isShapeFullBlock(shape: VoxelShape): Boolean = SHAPE_FULL_BLOCK_CACHE.get(shape)
+
+        @JvmStatic
+        fun updateOrDestroy(oldState: KryptonBlockState, newState: KryptonBlockState, world: WorldAccessor, pos: BlockPos, flags: Int,
+                            recursionLeft: Int) {
+            if (oldState === newState) return
+            if (oldState.isAir) {
+                world.destroyBlock(pos, flags and SetBlockFlag.NEIGHBOUR_DROPS == 0, null, recursionLeft)
+            } else {
+                world.setBlock(pos, newState, flags and SetBlockFlag.NO_NEIGHBOUR_DROPS, recursionLeft)
+            }
+        }
 
         @JvmStatic
         private fun <T : Comparable<T>> copyProperty(result: KryptonBlockState, state: KryptonBlockState,

@@ -29,7 +29,7 @@ import org.kryptonmc.krypton.state.property.KryptonProperty
 import org.kryptonmc.krypton.util.BlockPos
 import org.kryptonmc.krypton.util.Directions
 import org.kryptonmc.krypton.util.Vec3dImpl
-import org.kryptonmc.krypton.world.BlockAccessor
+import org.kryptonmc.krypton.world.components.BlockGetter
 import org.kryptonmc.krypton.world.material.Materials
 import kotlin.math.min
 
@@ -48,7 +48,7 @@ abstract class FlowingFluid : KryptonFluid() {
         builder.add(FALLING)
     }
 
-    override fun getFlow(world: BlockAccessor, pos: BlockPos, state: KryptonFluidState): Vec3d {
+    override fun getFlow(world: BlockGetter, pos: BlockPos, state: KryptonFluidState): Vec3d {
         var flowX = 0.0
         var flowZ = 0.0
         val offsetPos = BlockPos.Mutable()
@@ -90,19 +90,19 @@ abstract class FlowingFluid : KryptonFluid() {
         return flow.normalize()
     }
 
-    override fun getHeight(state: KryptonFluidState, world: BlockAccessor, pos: BlockPos): Float =
+    override fun getHeight(state: KryptonFluidState, world: BlockGetter, pos: BlockPos): Float =
         if (hasSameAbove(state, world, pos)) 1F else state.ownHeight
 
     override fun getOwnHeight(state: KryptonFluidState): Float = state.level / 9F
 
-    override fun getShape(state: KryptonFluidState, world: BlockAccessor, pos: BlockPos): VoxelShape {
+    override fun getShape(state: KryptonFluidState, world: BlockGetter, pos: BlockPos): VoxelShape {
         if (state.level == 9 && hasSameAbove(state, world, pos)) return Shapes.block()
         return shapes.computeIfAbsent(state) { Shapes.box(0.0, 0.0, 0.0, 1.0, it.getHeight(world, pos).toDouble(), 1.0) }
     }
 
     private fun affectsFlow(state: KryptonFluidState): Boolean = state.isEmpty || state.fluid.isSame(this)
 
-    protected fun isSolidFace(world: BlockAccessor, pos: BlockPos, side: Direction): Boolean {
+    protected fun isSolidFace(world: BlockGetter, pos: BlockPos, side: Direction): Boolean {
         val block = world.getBlock(pos)
         val fluid = world.getFluid(pos)
         if (fluid.fluid.isSame(this)) return false
@@ -128,7 +128,7 @@ abstract class FlowingFluid : KryptonFluid() {
         }
 
         @JvmStatic
-        private fun hasSameAbove(state: KryptonFluidState, world: BlockAccessor, pos: BlockPos): Boolean =
+        private fun hasSameAbove(state: KryptonFluidState, world: BlockGetter, pos: BlockPos): Boolean =
             state.fluid.isSame(world.getFluid(pos.above()).fluid)
     }
 }

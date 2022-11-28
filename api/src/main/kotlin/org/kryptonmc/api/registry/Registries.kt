@@ -56,7 +56,7 @@ public object Registries {
     @JvmField
     public val PARTICLE_TYPE: Registry<ParticleType> = builtin(ResourceKeys.PARTICLE_TYPE)
     @JvmField
-    public val BLOCK_ENTITY_TYPE: Registry<BlockEntityType> = builtin(ResourceKeys.BLOCK_ENTITY_TYPE)
+    public val BLOCK_ENTITY_TYPE: Registry<BlockEntityType<*>> = builtin(ResourceKeys.BLOCK_ENTITY_TYPE)
     @JvmField
     public val PAINTING_VARIANT: DefaultedRegistry<PaintingVariant> = builtinDefaulted(ResourceKeys.PAINTING_VARIANT)
     @JvmField

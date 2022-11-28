@@ -47,9 +47,11 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutSetTitleText
 import org.kryptonmc.krypton.packet.out.play.PacketOutSoundEffect
 import org.kryptonmc.krypton.packet.out.play.PacketOutStopSound
 import org.kryptonmc.krypton.registry.KryptonRegistries
-import java.util.concurrent.ThreadLocalRandom
+import org.kryptonmc.krypton.world.KryptonWorld
 
 interface PlayerAudience : NetworkPlayer, KryptonSender {
+
+    override val world: KryptonWorld
 
     fun openBook(item: KryptonItemStack)
 
@@ -132,11 +134,9 @@ interface PlayerAudience : NetworkPlayer, KryptonSender {
 
     override fun playSound(sound: Sound, x: Double, y: Double, z: Double) {
         val type = KryptonRegistries.SOUND_EVENT.get(sound.name())
-        if (type != null) {
-            session.send(PacketOutSoundEffect(sound, type, x, y, z))
-            return
-        }
-        session.send(PacketOutCustomSoundEffect(sound, x, y, z))
+        val seed = sound.seed().orElseGet { world.generateSoundSeed() }
+        val packet = if (type != null) PacketOutSoundEffect(sound, type, x, y, z, seed) else PacketOutCustomSoundEffect(sound, x, y, z, seed)
+        session.send(packet)
     }
 
     override fun playSound(sound: Sound, emitter: Sound.Emitter) {
@@ -147,12 +147,13 @@ interface PlayerAudience : NetworkPlayer, KryptonSender {
         }
 
         val event = KryptonRegistries.SOUND_EVENT.get(sound.name())
-        if (event != null) {
-            session.send(PacketOutEntitySoundEffect(event, sound.source(), entity.id, sound.volume(), sound.pitch()))
-            return
+        val seed = sound.seed().orElseGet { world.generateSoundSeed() }
+        val packet = if (event != null) {
+            PacketOutEntitySoundEffect(event, sound.source(), entity.id, sound.volume(), sound.pitch(), seed)
+        } else {
+            PacketOutCustomSoundEffect(sound, entity.location.x, entity.location.y, entity.location.z, seed)
         }
-        val seed = sound.seed().orElse(ThreadLocalRandom.current().nextLong())
-        session.send(PacketOutCustomSoundEffect(sound.name(), sound.source(), entity.location, sound.volume(), sound.pitch(), seed))
+        session.send(packet)
     }
 
     override fun stopSound(stop: SoundStop) {

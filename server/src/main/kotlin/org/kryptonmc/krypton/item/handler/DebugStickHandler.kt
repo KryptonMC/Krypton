@@ -29,6 +29,7 @@ import org.kryptonmc.krypton.util.BlockPos
 import org.kryptonmc.krypton.util.findRelative
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.krypton.world.block.state.KryptonBlockState
+import org.kryptonmc.krypton.world.chunk.SetBlockFlag
 import java.util.function.Consumer
 
 object DebugStickHandler : ItemHandler {
@@ -75,7 +76,7 @@ object DebugStickHandler : ItemHandler {
         if (isUse) {
             if (property == null) property = properties.first()
             val cycled = cycleState(state, property, player.isSneaking)
-            world.setBlock(pos, cycled)
+            world.setBlock(pos, cycled, SetBlockFlag.UPDATE_NEIGHBOUR_SHAPES or SetBlockFlag.NOTIFY_CLIENTS)
             player.sendActionBar(Component.translatable("$TRANSLATION.update", Component.text(property.name), toString(state, property)))
         } else {
             property = properties.findRelative(property, player.isSneaking)!!

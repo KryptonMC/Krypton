@@ -24,8 +24,45 @@ import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
 import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.block.Blocks
+import org.kryptonmc.api.block.entity.Banner
+import org.kryptonmc.api.block.entity.Beacon
+import org.kryptonmc.api.block.entity.Bed
+import org.kryptonmc.api.block.entity.Beehive
+import org.kryptonmc.api.block.entity.Bell
+import org.kryptonmc.api.block.entity.BlockEntity
 import org.kryptonmc.api.block.entity.BlockEntityType
+import org.kryptonmc.api.block.entity.Campfire
+import org.kryptonmc.api.block.entity.CommandBlock
+import org.kryptonmc.api.block.entity.Comparator
+import org.kryptonmc.api.block.entity.Conduit
+import org.kryptonmc.api.block.entity.DaylightDetector
+import org.kryptonmc.api.block.entity.EnchantmentTable
+import org.kryptonmc.api.block.entity.EndGateway
+import org.kryptonmc.api.block.entity.EndPortal
+import org.kryptonmc.api.block.entity.EnderChest
+import org.kryptonmc.api.block.entity.Jigsaw
+import org.kryptonmc.api.block.entity.Jukebox
+import org.kryptonmc.api.block.entity.Lectern
+import org.kryptonmc.api.block.entity.MobSpawner
+import org.kryptonmc.api.block.entity.MovingPiston
+import org.kryptonmc.api.block.entity.SculkCatalyst
+import org.kryptonmc.api.block.entity.SculkSensor
+import org.kryptonmc.api.block.entity.SculkShrieker
+import org.kryptonmc.api.block.entity.Sign
+import org.kryptonmc.api.block.entity.Skull
+import org.kryptonmc.api.block.entity.StructureBlock
 import org.kryptonmc.api.block.entity.banner.BannerPatternType
+import org.kryptonmc.api.block.entity.container.Barrel
+import org.kryptonmc.api.block.entity.container.BlastFurnace
+import org.kryptonmc.api.block.entity.container.BrewingStand
+import org.kryptonmc.api.block.entity.container.Chest
+import org.kryptonmc.api.block.entity.container.Dispenser
+import org.kryptonmc.api.block.entity.container.Dropper
+import org.kryptonmc.api.block.entity.container.Furnace
+import org.kryptonmc.api.block.entity.container.Hopper
+import org.kryptonmc.api.block.entity.container.ShulkerBox
+import org.kryptonmc.api.block.entity.container.Smoker
+import org.kryptonmc.api.block.entity.container.TrappedChest
 import org.kryptonmc.api.effect.particle.ParticleType
 import org.kryptonmc.api.entity.EntityCategory
 import org.kryptonmc.api.entity.hanging.PaintingVariant
@@ -111,59 +148,59 @@ object RegistryLoaders {
     }
 
     @JvmStatic
-    fun blockEntityType(): RegistryLoader<BlockEntityType> = loader {
-        add("furnace", Blocks.FURNACE)
-        add("chest", Blocks.CHEST)
-        add("trapped_chest", Blocks.TRAPPED_CHEST)
-        add("ender_chest", Blocks.ENDER_CHEST)
-        add("jukebox", Blocks.JUKEBOX)
-        add("dispenser", Blocks.DISPENSER)
-        add("dropper", Blocks.DROPPER)
-        add("sign", Blocks.OAK_SIGN, Blocks.SPRUCE_SIGN, Blocks.BIRCH_SIGN, Blocks.ACACIA_SIGN, Blocks.JUNGLE_SIGN, Blocks.DARK_OAK_SIGN,
+    fun blockEntityType(): RegistryLoader<BlockEntityType<*>> = loader {
+        add<Furnace>("furnace", Blocks.FURNACE)
+        add<Chest>("chest", Blocks.CHEST)
+        add<TrappedChest>("trapped_chest", Blocks.TRAPPED_CHEST)
+        add<EnderChest>("ender_chest", Blocks.ENDER_CHEST)
+        add<Jukebox>("jukebox", Blocks.JUKEBOX)
+        add<Dispenser>("dispenser", Blocks.DISPENSER)
+        add<Dropper>("dropper", Blocks.DROPPER)
+        add<Sign>("sign", Blocks.OAK_SIGN, Blocks.SPRUCE_SIGN, Blocks.BIRCH_SIGN, Blocks.ACACIA_SIGN, Blocks.JUNGLE_SIGN, Blocks.DARK_OAK_SIGN,
             Blocks.OAK_WALL_SIGN, Blocks.SPRUCE_WALL_SIGN, Blocks.BIRCH_WALL_SIGN, Blocks.ACACIA_WALL_SIGN, Blocks.JUNGLE_WALL_SIGN,
             Blocks.DARK_OAK_WALL_SIGN, Blocks.CRIMSON_SIGN, Blocks.CRIMSON_WALL_SIGN, Blocks.WARPED_SIGN, Blocks.WARPED_WALL_SIGN,
             Blocks.MANGROVE_SIGN, Blocks.MANGROVE_WALL_SIGN)
-        add("mob_spawner", Blocks.SPAWNER)
-        add("piston", Blocks.MOVING_PISTON)
-        add("brewing_stand", Blocks.BREWING_STAND)
-        add("enchanting_table", Blocks.ENCHANTING_TABLE)
-        add("end_portal", Blocks.END_PORTAL)
-        add("beacon", Blocks.BEACON)
-        add("skull", Blocks.SKELETON_SKULL, Blocks.SKELETON_WALL_SKULL, Blocks.CREEPER_HEAD, Blocks.CREEPER_WALL_HEAD, Blocks.DRAGON_HEAD,
+        add<MobSpawner>("mob_spawner", Blocks.SPAWNER)
+        add<MovingPiston>("piston", Blocks.MOVING_PISTON)
+        add<BrewingStand>("brewing_stand", Blocks.BREWING_STAND)
+        add<EnchantmentTable>("enchanting_table", Blocks.ENCHANTING_TABLE)
+        add<EndPortal>("end_portal", Blocks.END_PORTAL)
+        add<Beacon>("beacon", Blocks.BEACON)
+        add<Skull>("skull", Blocks.SKELETON_SKULL, Blocks.SKELETON_WALL_SKULL, Blocks.CREEPER_HEAD, Blocks.CREEPER_WALL_HEAD, Blocks.DRAGON_HEAD,
             Blocks.DRAGON_WALL_HEAD, Blocks.ZOMBIE_HEAD, Blocks.ZOMBIE_WALL_HEAD, Blocks.WITHER_SKELETON_SKULL, Blocks.WITHER_SKELETON_WALL_SKULL,
             Blocks.PLAYER_HEAD, Blocks.PLAYER_WALL_HEAD)
-        add("daylight_detector", Blocks.DAYLIGHT_DETECTOR)
-        add("hopper", Blocks.HOPPER)
-        add("comparator", Blocks.COMPARATOR)
-        add("banner", Blocks.WHITE_BANNER, Blocks.ORANGE_BANNER, Blocks.MAGENTA_BANNER, Blocks.LIGHT_BLUE_BANNER, Blocks.YELLOW_BANNER,
+        add<DaylightDetector>("daylight_detector", Blocks.DAYLIGHT_DETECTOR)
+        add<Hopper>("hopper", Blocks.HOPPER)
+        add<Comparator>("comparator", Blocks.COMPARATOR)
+        add<Banner>("banner", Blocks.WHITE_BANNER, Blocks.ORANGE_BANNER, Blocks.MAGENTA_BANNER, Blocks.LIGHT_BLUE_BANNER, Blocks.YELLOW_BANNER,
             Blocks.LIME_BANNER, Blocks.PINK_BANNER, Blocks.GRAY_BANNER, Blocks.LIGHT_GRAY_BANNER, Blocks.CYAN_BANNER, Blocks.PURPLE_BANNER,
             Blocks.BLUE_BANNER, Blocks.BROWN_BANNER, Blocks.GREEN_BANNER, Blocks.RED_BANNER, Blocks.BLACK_BANNER, Blocks.WHITE_WALL_BANNER,
             Blocks.ORANGE_WALL_BANNER, Blocks.MAGENTA_WALL_BANNER, Blocks.LIGHT_BLUE_WALL_BANNER, Blocks.YELLOW_WALL_BANNER,
             Blocks.LIME_WALL_BANNER, Blocks.PINK_WALL_BANNER, Blocks.GRAY_WALL_BANNER, Blocks.LIGHT_GRAY_WALL_BANNER, Blocks.CYAN_WALL_BANNER,
             Blocks.PURPLE_WALL_BANNER, Blocks.BLUE_WALL_BANNER, Blocks.BROWN_WALL_BANNER, Blocks.GREEN_WALL_BANNER, Blocks.RED_WALL_BANNER,
             Blocks.BLACK_WALL_BANNER)
-        add("structure_block", Blocks.STRUCTURE_BLOCK)
-        add("end_gateway", Blocks.END_GATEWAY)
-        add("command_block", Blocks.COMMAND_BLOCK, Blocks.CHAIN_COMMAND_BLOCK, Blocks.REPEATING_COMMAND_BLOCK)
-        add("shulker_box", Blocks.SHULKER_BOX, Blocks.BLACK_SHULKER_BOX, Blocks.BLUE_SHULKER_BOX, Blocks.BROWN_SHULKER_BOX, Blocks.CYAN_SHULKER_BOX,
-            Blocks.GRAY_SHULKER_BOX, Blocks.GREEN_SHULKER_BOX, Blocks.LIGHT_BLUE_SHULKER_BOX, Blocks.LIGHT_GRAY_SHULKER_BOX,
+        add<StructureBlock>("structure_block", Blocks.STRUCTURE_BLOCK)
+        add<EndGateway>("end_gateway", Blocks.END_GATEWAY)
+        add<CommandBlock>("command_block", Blocks.COMMAND_BLOCK, Blocks.CHAIN_COMMAND_BLOCK, Blocks.REPEATING_COMMAND_BLOCK)
+        add<ShulkerBox>("shulker_box", Blocks.SHULKER_BOX, Blocks.BLACK_SHULKER_BOX, Blocks.BLUE_SHULKER_BOX, Blocks.BROWN_SHULKER_BOX,
+            Blocks.CYAN_SHULKER_BOX, Blocks.GRAY_SHULKER_BOX, Blocks.GREEN_SHULKER_BOX, Blocks.LIGHT_BLUE_SHULKER_BOX, Blocks.LIGHT_GRAY_SHULKER_BOX,
             Blocks.LIME_SHULKER_BOX, Blocks.MAGENTA_SHULKER_BOX, Blocks.ORANGE_SHULKER_BOX, Blocks.PINK_SHULKER_BOX, Blocks.PURPLE_SHULKER_BOX,
             Blocks.RED_SHULKER_BOX, Blocks.WHITE_SHULKER_BOX, Blocks.YELLOW_SHULKER_BOX)
-        add("bed", Blocks.RED_BED, Blocks.BLACK_BED, Blocks.BLUE_BED, Blocks.BROWN_BED, Blocks.CYAN_BED, Blocks.GRAY_BED, Blocks.GREEN_BED,
+        add<Bed>("bed", Blocks.RED_BED, Blocks.BLACK_BED, Blocks.BLUE_BED, Blocks.BROWN_BED, Blocks.CYAN_BED, Blocks.GRAY_BED, Blocks.GREEN_BED,
             Blocks.LIGHT_BLUE_BED, Blocks.LIGHT_GRAY_BED, Blocks.LIME_BED, Blocks.MAGENTA_BED, Blocks.ORANGE_BED, Blocks.PINK_BED,
             Blocks.PURPLE_BED, Blocks.WHITE_BED, Blocks.YELLOW_BED)
-        add("conduit", Blocks.CONDUIT)
-        add("barrel", Blocks.BARREL)
-        add("smoker", Blocks.SMOKER)
-        add("blast_furnace", Blocks.BLAST_FURNACE)
-        add("lectern", Blocks.LECTERN)
-        add("bell", Blocks.BELL)
-        add("jigsaw", Blocks.JIGSAW)
-        add("campfire", Blocks.CAMPFIRE, Blocks.SOUL_CAMPFIRE)
-        add("beehive", Blocks.BEE_NEST, Blocks.BEEHIVE)
-        add("sculk_sensor", Blocks.SCULK_SENSOR)
-        add("sculk_catalyst", Blocks.SCULK_CATALYST)
-        add("sculk_shrieker", Blocks.SCULK_SHRIEKER)
+        add<Conduit>("conduit", Blocks.CONDUIT)
+        add<Barrel>("barrel", Blocks.BARREL)
+        add<Smoker>("smoker", Blocks.SMOKER)
+        add<BlastFurnace>("blast_furnace", Blocks.BLAST_FURNACE)
+        add<Lectern>("lectern", Blocks.LECTERN)
+        add<Bell>("bell", Blocks.BELL)
+        add<Jigsaw>("jigsaw", Blocks.JIGSAW)
+        add<Campfire>("campfire", Blocks.CAMPFIRE, Blocks.SOUL_CAMPFIRE)
+        add<Beehive>("beehive", Blocks.BEE_NEST, Blocks.BEEHIVE)
+        add<SculkSensor>("sculk_sensor", Blocks.SCULK_SENSOR)
+        add<SculkCatalyst>("sculk_catalyst", Blocks.SCULK_CATALYST)
+        add<SculkShrieker>("sculk_shrieker", Blocks.SCULK_SHRIEKER)
     }
 
     @JvmStatic
@@ -555,6 +592,6 @@ private fun RegistryLoader<Key>.add(name: String, formatter: StatisticFormatter)
     }
 }
 
-private fun RegistryLoader<BlockEntityType>.add(name: String, vararg blocks: Block) {
-    add(Key.key(name)) { KryptonBlockEntityType(it, ImmutableSet.copyOf(blocks)) }
+private fun <T : BlockEntity> RegistryLoader<BlockEntityType<*>>.add(name: String, vararg blocks: Block) {
+    add(Key.key(name)) { KryptonBlockEntityType<T>(it, ImmutableSet.copyOf(blocks)) }
 }

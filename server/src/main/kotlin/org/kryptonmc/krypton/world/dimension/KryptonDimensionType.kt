@@ -28,6 +28,7 @@ import org.kryptonmc.api.world.World
 import org.kryptonmc.api.world.dimension.DimensionType
 import org.kryptonmc.krypton.registry.KryptonRegistries
 import org.kryptonmc.krypton.tags.KryptonTagKey
+import org.kryptonmc.krypton.util.Maths
 import org.kryptonmc.krypton.util.provider.ConstantInt
 import org.kryptonmc.krypton.util.provider.IntProvider
 import org.kryptonmc.krypton.util.provider.UniformInt
@@ -39,6 +40,7 @@ import org.kryptonmc.serialization.Dynamic
 import org.kryptonmc.serialization.MapCodec
 import org.kryptonmc.serialization.codecs.RecordCodecBuilder
 import java.util.OptionalLong
+import kotlin.math.cos
 
 @JvmRecord
 data class KryptonDimensionType(
@@ -77,6 +79,14 @@ data class KryptonDimensionType(
         check(height % 16 == 0) { "Height must be a multiple of 16!" }
         check(minimumY % 16 == 0) { "Minimum Y must be a multiple of 16!" }
     }
+
+    fun timeOfDay(dayTime: Long): Float {
+        val fraction = Maths.fraction(fixedTime.orElse(dayTime).toDouble() / 24000.0 - 0.25)
+        val offset = 0.5 - cos(fraction * Math.PI) / 2.0
+        return (fraction * 2.0 + offset).toFloat() / 3F
+    }
+
+    fun moonPhase(dayTime: Long): Int = (dayTime / 24000L % 8L + 8L).toInt() % 8
 
     override fun key(): Key = KryptonRegistries.DIMENSION_TYPE.getKey(this) ?: UNREGISTERED_KEY
 
@@ -250,6 +260,8 @@ data class KryptonDimensionType(
                 MonsterSettings.CODEC.getting { (it as KryptonDimensionType).monsterSettings }
             ).apply(instance, ::KryptonDimensionType)
         })
+        @JvmField
+        val MOON_BRIGHTNESS_PER_PHASE: FloatArray = floatArrayOf(1F, 0.75F, 0.5F, 0.25F, 0F, 0.25F, 0.5F, 0.75F)
 
         @JvmStatic
         fun parseLegacy(data: Dynamic<*>): DataResult<ResourceKey<World>> {

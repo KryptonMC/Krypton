@@ -36,16 +36,18 @@ data class PacketOutSoundEffect(
     val y: Int,
     val z: Int,
     val volume: Float,
-    val pitch: Float
+    val pitch: Float,
+    val seed: Long
 ) : Packet {
 
-    constructor(event: SoundEvent, source: Sound.Source, x: Double, y: Double, z: Double,
-                volume: Float, pitch: Float) : this(event, source, (x * 8.0).toInt(), (y * 8.0).toInt(), (z * 8.0).toInt(), volume, pitch)
+    constructor(event: SoundEvent, source: Sound.Source, x: Double, y: Double, z: Double, volume: Float, pitch: Float,
+                seed: Long) : this(event, source, (x * 8.0).toInt(), (y * 8.0).toInt(), (z * 8.0).toInt(), volume, pitch, seed)
 
-    constructor(sound: Sound, event: SoundEvent,
-                x: Double, y: Double, z: Double) : this(event, sound.source(), x, y, z, sound.volume(), sound.pitch())
+    constructor(sound: Sound, event: SoundEvent, x: Double, y: Double, z: Double,
+                seed: Long) : this(event, sound.source(), x, y, z, sound.volume(), sound.pitch(), seed)
 
-    constructor(buf: ByteBuf) : this(buf.readEvent(), buf.readEnum(), buf.readInt(), buf.readInt(), buf.readInt(), buf.readFloat(), buf.readFloat())
+    constructor(buf: ByteBuf) : this(buf.readEvent(), buf.readEnum(), buf.readInt(), buf.readInt(), buf.readInt(), buf.readFloat(), buf.readFloat(),
+        buf.readLong())
 
     override fun write(buf: ByteBuf) {
         buf.writeId(KryptonRegistries.SOUND_EVENT, event)
@@ -55,6 +57,7 @@ data class PacketOutSoundEffect(
         buf.writeInt(z)
         buf.writeFloat(volume)
         buf.writeFloat(pitch)
+        buf.writeLong(seed)
     }
 }
 

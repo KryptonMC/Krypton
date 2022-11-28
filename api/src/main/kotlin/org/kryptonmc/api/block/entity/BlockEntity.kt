@@ -29,7 +29,7 @@ public interface BlockEntity {
     /**
      * The type of this block entity.
      */
-    public val type: BlockEntityType
+    public val type: BlockEntityType<*>
 
     /**
      * The world this block entity is in.

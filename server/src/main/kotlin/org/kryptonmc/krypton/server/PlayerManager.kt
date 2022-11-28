@@ -32,6 +32,7 @@ import org.kryptonmc.krypton.network.SessionHandler
 import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.packet.out.play.GameEvent
 import org.kryptonmc.krypton.packet.out.play.PacketOutAbilities
+import org.kryptonmc.krypton.packet.out.play.PacketOutChangeDifficulty
 import org.kryptonmc.krypton.packet.out.play.PacketOutEntityEvent
 import org.kryptonmc.krypton.packet.out.play.PacketOutGameEvent
 import org.kryptonmc.krypton.packet.out.play.PacketOutInitializeWorldBorder
@@ -141,7 +142,7 @@ class PlayerManager(private val server: KryptonServer) {
             null
         ))
         session.write(PacketOutPluginMessage(BRAND_KEY, BRAND_MESSAGE))
-        session.write(world.cachedDifficultyPacket)
+        session.send(PacketOutChangeDifficulty(world.difficulty))
 
         // Player data stuff
         session.send(PacketOutAbilities(player.abilities))

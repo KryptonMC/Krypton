@@ -14,6 +14,7 @@ import org.kryptonmc.api.Server
 import org.kryptonmc.api.block.BlockContainer
 import org.kryptonmc.api.block.BlockState
 import org.kryptonmc.api.block.Blocks
+import org.kryptonmc.api.block.entity.BlockEntityContainer
 import org.kryptonmc.api.entity.Entity
 import org.kryptonmc.api.entity.EntityType
 import org.kryptonmc.api.entity.player.Player
@@ -26,6 +27,7 @@ import org.kryptonmc.api.scoreboard.Scoreboard
 import org.kryptonmc.api.util.Vec3d
 import org.kryptonmc.api.util.Vec3i
 import org.kryptonmc.api.world.biome.BiomeContainer
+import org.kryptonmc.api.world.chunk.BlockChangeFlags
 import org.kryptonmc.api.world.chunk.Chunk
 import org.kryptonmc.api.world.dimension.DimensionType
 import org.kryptonmc.api.world.rule.GameRuleHolder
@@ -34,7 +36,7 @@ import java.nio.file.Path
 /**
  * Represents a loaded world.
  */
-public interface World : BlockContainer, FluidContainer, BiomeContainer, ForwardingAudience {
+public interface World : BlockContainer, FluidContainer, BiomeContainer, BlockEntityContainer, ForwardingAudience {
 
     /**
      * The server this world was loaded on.
@@ -163,7 +165,7 @@ public interface World : BlockContainer, FluidContainer, BiomeContainer, Forward
      * Gets the block at the given [position].
      *
      * This function will return the following in specific cases:
-     * - If the given [position]'s [Vector3i.y] coordinate is greater than the
+     * - If the given [position]'s [Vec3i.y] coordinate is greater than the
      * maximum height of this world, this will return [Blocks.VOID_AIR].
      * - If there is no chunk loaded at the given [position] ([getChunkAt] was
      * null), this will return [Blocks.AIR].
@@ -173,6 +175,28 @@ public interface World : BlockContainer, FluidContainer, BiomeContainer, Forward
      * @return see above
      */
     override fun getBlock(position: Vec3i): BlockState
+
+    /**
+     * Sets the block at the given coordinates to the given [block].
+     *
+     * @param x the X coordinate
+     * @param y the Y coordinate
+     * @param z the Z coordinate
+     * @param block the block
+     * @param flags the flags to use when updating the block
+     * @return true if the block was set, false otherwise
+     */
+    public fun setBlock(x: Int, y: Int, z: Int, block: BlockState, flags: BlockChangeFlags): Boolean
+
+    /**
+     * Sets the block at the given [position] to the given [block].
+     *
+     * @param position the position
+     * @param block the block
+     * @param flags the flags to use when updating the block
+     * @return true if the block was set, false otherwise
+     */
+    public fun setBlock(position: Vec3i, block: BlockState, flags: BlockChangeFlags): Boolean
 
     /**
      * Gets the fluid at the given coordinates.
@@ -194,7 +218,7 @@ public interface World : BlockContainer, FluidContainer, BiomeContainer, Forward
      * Gets the fluid at the given [position].
      *
      * This function will return the following in specific cases:
-     * - If the given [position]'s [Vector3i.y] coordinate is greater than the
+     * - If the given [position]'s [Vec3i.y] coordinate is greater than the
      * maximum height of this world,  or if there is no chunk loaded at the
      * given [position] ([getChunkAt] returns null), this will return
      * [Fluids.EMPTY].

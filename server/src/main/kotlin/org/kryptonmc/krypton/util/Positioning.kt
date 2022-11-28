@@ -52,22 +52,4 @@ object Positioning {
      */
     @JvmStatic
     fun deltaInMoveRange(old: Vec3d, new: Vec3d): Boolean = abs(new.x - old.x) > 8 || abs(new.y - old.y) > 8 || abs(new.z - old.z) > 8
-
-    @JvmStatic
-    fun toChunkCoordinate(value: Int): Int = value shr 4
-
-    @JvmStatic
-    fun chunkX(encoded: Long): Int = encoded.toInt()
-
-    @JvmStatic
-    fun chunkZ(encoded: Long): Int = (encoded ushr 32).toInt()
-
-    @JvmStatic
-    fun decodeBlockX(encoded: Long): Int = (encoded shr 38).toInt()
-
-    @JvmStatic
-    fun decodeBlockY(encoded: Long): Int = (encoded and 0xFFF).toInt()
-
-    @JvmStatic
-    fun decodeBlockZ(encoded: Long): Int = (encoded shl 26 shr 38).toInt()
 }

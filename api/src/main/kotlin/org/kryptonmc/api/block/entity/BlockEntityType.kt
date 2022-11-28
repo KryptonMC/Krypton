@@ -19,7 +19,7 @@ import javax.annotation.concurrent.Immutable
 @Suppress("INAPPLICABLE_JVM_NAME")
 @CataloguedBy(BlockEntityTypes::class)
 @Immutable
-public interface BlockEntityType : Keyed {
+public interface BlockEntityType<T : BlockEntity> : Keyed {
 
     /**
      * All of the blocks that block entities of this type can be bound to.

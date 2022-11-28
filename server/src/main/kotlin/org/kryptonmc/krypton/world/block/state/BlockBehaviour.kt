@@ -50,15 +50,15 @@ import org.kryptonmc.krypton.util.Maths
 import org.kryptonmc.krypton.util.Vec3dImpl
 import org.kryptonmc.krypton.util.math.Mirror
 import org.kryptonmc.krypton.util.math.Rotation
-import org.kryptonmc.krypton.world.BlockAccessor
 import org.kryptonmc.krypton.world.KryptonWorld
-import org.kryptonmc.krypton.world.WorldAccessor
+import org.kryptonmc.krypton.world.components.WorldAccessor
 import org.kryptonmc.krypton.world.block.BlockSoundGroups
 import org.kryptonmc.krypton.world.block.KryptonBlock
 import org.kryptonmc.krypton.world.block.RenderShape
 import org.kryptonmc.krypton.world.block.SupportType
 import org.kryptonmc.krypton.world.block.state.BlockBehaviour.StateArgumentPredicate
 import org.kryptonmc.krypton.world.block.state.BlockBehaviour.StatePredicate
+import org.kryptonmc.krypton.world.components.BlockGetter
 import org.kryptonmc.krypton.world.fluid.KryptonFluid
 import org.kryptonmc.krypton.world.fluid.KryptonFluidState
 import org.kryptonmc.krypton.world.fluid.KryptonFluids
@@ -120,7 +120,7 @@ abstract class BlockBehaviour(protected val properties: Properties) : Block {
         }
     }
 
-    open fun getDestroyProgress(state: KryptonBlockState, player: KryptonPlayer, world: BlockAccessor, pos: BlockPos): Float {
+    open fun getDestroyProgress(state: KryptonBlockState, player: KryptonPlayer, world: BlockGetter, pos: BlockPos): Float {
         val speed = state.getDestroySpeed(world, pos)
         if (speed == -1F) return 0F
         val correctToolBonus = if (player.hasCorrectTool(state)) 30 else 100
@@ -147,42 +147,41 @@ abstract class BlockBehaviour(protected val properties: Properties) : Block {
 
     open fun useShapeForLightOcclusion(state: KryptonBlockState): Boolean = false
 
-    open fun getLightBlock(state: KryptonBlockState, world: BlockAccessor, pos: BlockPos): Int {
+    open fun getLightBlock(state: KryptonBlockState, world: BlockGetter, pos: BlockPos): Int {
         if (state.isSolidRender(world, pos)) return world.maximumLightLevel
-        if (state.propagatesSkylightDown(world, pos)) return 0
-        return 1
+        return if (state.propagatesSkylightDown(world, pos)) 0 else 1
     }
 
     // ==============================
     // Shapes
     // ==============================
 
-    open fun getShape(state: KryptonBlockState, world: BlockAccessor, pos: BlockPos, context: CollisionContext): VoxelShape = Shapes.block()
+    open fun getShape(state: KryptonBlockState, world: BlockGetter, pos: BlockPos, context: CollisionContext): VoxelShape = Shapes.block()
 
-    open fun getOcclusionShape(state: KryptonBlockState, world: BlockAccessor, pos: BlockPos): VoxelShape = state.getShape(world, pos)
+    open fun getOcclusionShape(state: KryptonBlockState, world: BlockGetter, pos: BlockPos): VoxelShape = state.getShape(world, pos)
 
-    open fun getCollisionShape(state: KryptonBlockState, world: BlockAccessor, pos: BlockPos, context: CollisionContext): VoxelShape =
+    open fun getCollisionShape(state: KryptonBlockState, world: BlockGetter, pos: BlockPos, context: CollisionContext): VoxelShape =
         if (hasCollision) state.getShape(world, pos) else Shapes.empty()
 
-    open fun getVisualShape(state: KryptonBlockState, world: BlockAccessor, pos: BlockPos, context: CollisionContext): VoxelShape =
+    open fun getVisualShape(state: KryptonBlockState, world: BlockGetter, pos: BlockPos, context: CollisionContext): VoxelShape =
         getCollisionShape(state, world, pos, context)
 
-    open fun getInteractionShape(state: KryptonBlockState, world: BlockAccessor, pos: BlockPos): VoxelShape = Shapes.empty()
+    open fun getInteractionShape(state: KryptonBlockState, world: BlockGetter, pos: BlockPos): VoxelShape = Shapes.empty()
 
-    open fun getBlockSupportShape(state: KryptonBlockState, world: BlockAccessor, pos: BlockPos): VoxelShape =
+    open fun getBlockSupportShape(state: KryptonBlockState, world: BlockGetter, pos: BlockPos): VoxelShape =
         getCollisionShape(state, world, pos, CollisionContext.empty())
 
-    open fun isCollisionShapeFullBlock(state: KryptonBlockState, world: BlockAccessor, pos: BlockPos): Boolean =
+    open fun isCollisionShapeFullBlock(state: KryptonBlockState, world: BlockGetter, pos: BlockPos): Boolean =
         KryptonBlock.isShapeFullBlock(state.getCollisionShape(world, pos))
 
-    open fun isOcclusionShapeFullBlock(state: KryptonBlockState, world: BlockAccessor, pos: BlockPos): Boolean =
+    open fun isOcclusionShapeFullBlock(state: KryptonBlockState, world: BlockGetter, pos: BlockPos): Boolean =
         KryptonBlock.isShapeFullBlock(state.getOcclusionShape(world, pos))
 
-    open fun updateIndirectNeighbourShapes(state: KryptonBlockState, world: BlockAccessor, pos: BlockPos, flags: Int, recursionLeft: Int) {
+    open fun updateIndirectNeighbourShapes(state: KryptonBlockState, world: BlockGetter, pos: BlockPos, flags: Int, recursionLeft: Int) {
         // Do nothing by default
     }
 
-    open fun updateShape(state: KryptonBlockState, direction: Direction, neighbour: KryptonBlockState, world: BlockAccessor,
+    open fun updateShape(state: KryptonBlockState, direction: Direction, neighbour: KryptonBlockState, world: BlockGetter,
                          currentPos: BlockPos, neighbourPos: BlockPos): KryptonBlockState = state
 
     // ==============================
@@ -195,9 +194,9 @@ abstract class BlockBehaviour(protected val properties: Properties) : Block {
 
     open fun getAnalogOutputSignal(state: KryptonBlockState, world: KryptonWorld, pos: BlockPos): Int = 0
 
-    open fun getSignal(state: KryptonBlockState, world: BlockAccessor, pos: BlockPos, direction: Direction): Int = 0
+    open fun getSignal(state: KryptonBlockState, world: BlockGetter, pos: BlockPos, direction: Direction): Int = 0
 
-    open fun getDirectSignal(state: KryptonBlockState, world: BlockAccessor, pos: BlockPos, direction: Direction): Int = 0
+    open fun getDirectSignal(state: KryptonBlockState, world: BlockGetter, pos: BlockPos, direction: Direction): Int = 0
 
     // ==============================
     // Miscellaneous
@@ -209,7 +208,7 @@ abstract class BlockBehaviour(protected val properties: Properties) : Block {
 
     open fun getFluidState(state: KryptonBlockState): KryptonFluidState = KryptonFluids.EMPTY.defaultState
 
-    open fun canSurvive(state: KryptonBlockState, world: WorldAccessor, pos: BlockPos): Boolean = true
+    open fun canSurvive(state: KryptonBlockState, world: BlockGetter, pos: BlockPos): Boolean = true
 
     open fun entityInside(state: KryptonBlockState, world: KryptonWorld, pos: BlockPos, entity: KryptonEntity) {
         // Do nothing by default
@@ -224,6 +223,11 @@ abstract class BlockBehaviour(protected val properties: Properties) : Block {
     open fun rotate(state: KryptonBlockState, rotation: Rotation): KryptonBlockState = state
 
     open fun mirror(state: KryptonBlockState, mirror: Mirror): KryptonBlockState = state
+
+    open fun neighbourChanged(state: KryptonBlockState, world: KryptonWorld, pos: BlockPos, block: KryptonBlock, neighbourPos: BlockPos,
+                              moving: Boolean) {
+        // Do nothing by default
+    }
 
     abstract override fun asItem(): KryptonItemType
 
@@ -295,34 +299,34 @@ abstract class BlockBehaviour(protected val properties: Properties) : Block {
             if (!block.hasDynamicShape) cache = Cache(asState())
         }
 
-        fun isValidSpawn(world: BlockAccessor, pos: BlockPos, type: KryptonEntityType<*>): Boolean =
+        fun isValidSpawn(world: BlockGetter, pos: BlockPos, type: KryptonEntityType<*>): Boolean =
             block.properties.isValidSpawn.test(asState(), world, pos, type)
 
-        fun propagatesSkylightDown(world: BlockAccessor, pos: BlockPos): Boolean =
+        fun propagatesSkylightDown(world: BlockGetter, pos: BlockPos): Boolean =
             cache?.propagatesSkylightDown ?: block.propagatesSkylightDown(asState(), world, pos)
 
-        fun getLightBlock(world: BlockAccessor, pos: BlockPos): Int = cache?.lightBlock ?: block.getLightBlock(asState(), world, pos)
+        fun getLightBlock(world: BlockGetter, pos: BlockPos): Int = cache?.lightBlock ?: block.getLightBlock(asState(), world, pos)
 
-        fun getMapColor(world: BlockAccessor, pos: BlockPos): MaterialColor = materialColor
+        fun getMapColor(world: BlockGetter, pos: BlockPos): MaterialColor = materialColor
 
         fun rotate(rotation: Rotation): KryptonBlockState = block.rotate(asState(), rotation)
 
         fun mirror(mirror: Mirror): KryptonBlockState = block.mirror(asState(), mirror)
 
-        fun isRedstoneConductor(world: BlockAccessor, pos: BlockPos): Boolean = isRedstoneConductor.test(asState(), world, pos)
+        fun isRedstoneConductor(world: BlockGetter, pos: BlockPos): Boolean = isRedstoneConductor.test(asState(), world, pos)
 
-        fun getSignal(world: BlockAccessor, pos: BlockPos, direction: Direction): Int = block.getSignal(asState(), world, pos, direction)
+        fun getSignal(world: BlockGetter, pos: BlockPos, direction: Direction): Int = block.getSignal(asState(), world, pos, direction)
 
-        fun getDirectSignal(world: BlockAccessor, pos: BlockPos, direction: Direction): Int = block.getDirectSignal(asState(), world, pos, direction)
+        fun getDirectSignal(world: BlockGetter, pos: BlockPos, direction: Direction): Int = block.getDirectSignal(asState(), world, pos, direction)
 
         fun getAnalogOutputSignal(world: KryptonWorld, pos: BlockPos): Int = block.getAnalogOutputSignal(asState(), world, pos)
 
-        fun getDestroySpeed(world: BlockAccessor, pos: BlockPos): Float = destroySpeed
+        fun getDestroySpeed(world: BlockGetter, pos: BlockPos): Float = destroySpeed
 
-        fun getDestroyProgress(player: KryptonPlayer, world: BlockAccessor, pos: BlockPos): Float =
+        fun getDestroyProgress(player: KryptonPlayer, world: BlockGetter, pos: BlockPos): Float =
             block.getDestroyProgress(asState(), player, world, pos)
 
-        fun isSolidRender(world: BlockAccessor, pos: BlockPos): Boolean {
+        fun isSolidRender(world: BlockGetter, pos: BlockPos): Boolean {
             if (cache != null) return cache!!.solidRender
             val state = asState()
             return if (state.canOcclude) KryptonBlock.isShapeFullBlock(state.getOcclusionShape(world, pos)) else false
@@ -330,35 +334,35 @@ abstract class BlockBehaviour(protected val properties: Properties) : Block {
 
         fun skipRendering(state: KryptonBlockState, face: Direction): Boolean = block.skipRendering(asState(), state, face)
 
-        fun getShape(world: BlockAccessor, pos: BlockPos): VoxelShape = getShape(world, pos, CollisionContext.empty())
+        fun getShape(world: BlockGetter, pos: BlockPos): VoxelShape = getShape(world, pos, CollisionContext.empty())
 
-        fun getShape(world: BlockAccessor, pos: BlockPos, context: CollisionContext): VoxelShape = block.getShape(asState(), world, pos, context)
+        fun getShape(world: BlockGetter, pos: BlockPos, context: CollisionContext): VoxelShape = block.getShape(asState(), world, pos, context)
 
-        fun getFaceOcclusionShape(world: BlockAccessor, pos: BlockPos, face: Direction): VoxelShape =
+        fun getFaceOcclusionShape(world: BlockGetter, pos: BlockPos, face: Direction): VoxelShape =
             cache?.occlusionShapes?.get(face.ordinal) ?: Shapes.faceShape(getOcclusionShape(world, pos), face)
 
-        fun getOcclusionShape(world: BlockAccessor, pos: BlockPos): VoxelShape = block.getOcclusionShape(asState(), world, pos)
+        fun getOcclusionShape(world: BlockGetter, pos: BlockPos): VoxelShape = block.getOcclusionShape(asState(), world, pos)
 
-        fun getCollisionShape(world: BlockAccessor, pos: BlockPos): VoxelShape =
+        fun getCollisionShape(world: BlockGetter, pos: BlockPos): VoxelShape =
             cache?.collisionShape ?: getCollisionShape(world, pos, CollisionContext.empty())
 
-        fun getCollisionShape(world: BlockAccessor, pos: BlockPos, context: CollisionContext): VoxelShape =
+        fun getCollisionShape(world: BlockGetter, pos: BlockPos, context: CollisionContext): VoxelShape =
             block.getCollisionShape(asState(), world, pos, context)
 
-        fun getBlockSupportShape(world: BlockAccessor, pos: BlockPos): VoxelShape = block.getBlockSupportShape(asState(), world, pos)
+        fun getBlockSupportShape(world: BlockGetter, pos: BlockPos): VoxelShape = block.getBlockSupportShape(asState(), world, pos)
 
-        fun getVisualShape(world: BlockAccessor, pos: BlockPos, context: CollisionContext): VoxelShape =
+        fun getVisualShape(world: BlockGetter, pos: BlockPos, context: CollisionContext): VoxelShape =
             block.getVisualShape(asState(), world, pos, context)
 
-        fun getInteractionShape(world: BlockAccessor, pos: BlockPos): VoxelShape = block.getInteractionShape(asState(), world, pos)
+        fun getInteractionShape(world: BlockGetter, pos: BlockPos): VoxelShape = block.getInteractionShape(asState(), world, pos)
 
-        fun entityCanStandOn(world: BlockAccessor, pos: BlockPos, entity: KryptonEntity): Boolean =
+        fun entityCanStandOn(world: BlockGetter, pos: BlockPos, entity: KryptonEntity): Boolean =
             entityCanStandOnFace(world, pos, entity, Direction.UP)
 
-        fun entityCanStandOnFace(world: BlockAccessor, pos: BlockPos, entity: KryptonEntity, face: Direction): Boolean =
+        fun entityCanStandOnFace(world: BlockGetter, pos: BlockPos, entity: KryptonEntity, face: Direction): Boolean =
             KryptonBlock.isFaceFull(getCollisionShape(world, pos, CollisionContext.of(entity)), face)
 
-        fun getOffset(world: BlockAccessor, pos: BlockPos): Vec3d {
+        fun getOffset(world: BlockGetter, pos: BlockPos): Vec3d {
             if (offsetType == OffsetType.NONE) return Vec3dImpl.ZERO
             val seed = Maths.getSeed(pos)
             val maxHorizontalOffset = block.maximumHorizontalOffset.toDouble()
@@ -370,6 +374,22 @@ abstract class BlockBehaviour(protected val properties: Properties) : Block {
 
         fun triggerEvent(world: KryptonWorld, pos: BlockPos, id: Int, parameter: Int): Boolean =
             block.triggerEvent(asState(), world, pos, id, parameter)
+
+        fun neighbourChanged(world: KryptonWorld, pos: BlockPos, block: KryptonBlock, neighbourPos: BlockPos, moving: Boolean) {
+            block.neighbourChanged(asState(), world, pos, block, neighbourPos, moving)
+        }
+
+        fun updateNeighbourShapes(world: WorldAccessor, pos: BlockPos, flags: Int) {
+            updateNeighbourShapes(world, pos, flags, 512)
+        }
+
+        fun updateNeighbourShapes(world: WorldAccessor, pos: BlockPos, flags: Int, recursionLeft: Int) {
+            val currentPos = BlockPos.Mutable()
+            UPDATE_SHAPE_ORDER.forEach {
+                currentPos.setWithOffset(pos, it)
+                world.neighbourShapeChanged(it.opposite, asState(), currentPos, pos, flags, recursionLeft)
+            }
+        }
 
         fun updateIndirectNeighbourShapes(world: WorldAccessor, pos: BlockPos, flags: Int) {
             updateIndirectNeighbourShapes(world, pos, flags, 512)
@@ -402,9 +422,9 @@ abstract class BlockBehaviour(protected val properties: Properties) : Block {
             block.attack(asState(), world, pos, player)
         }
 
-        fun isSuffocating(world: BlockAccessor, pos: BlockPos): Boolean = isSuffocating.test(asState(), world, pos)
+        fun isSuffocating(world: BlockGetter, pos: BlockPos): Boolean = isSuffocating.test(asState(), world, pos)
 
-        fun updateShape(direction: Direction, neighbour: KryptonBlockState, world: WorldAccessor,
+        fun updateShape(direction: Direction, neighbour: KryptonBlockState, world: BlockGetter,
                         currentPos: BlockPos, neighbourPos: BlockPos): KryptonBlockState {
             return block.updateShape(asState(), direction, neighbour, world, currentPos, neighbourPos)
         }
@@ -417,13 +437,13 @@ abstract class BlockBehaviour(protected val properties: Properties) : Block {
             block.onProjectileHit(world, state, hit, projectile)
         }
 
-        fun isFaceSturdy(world: BlockAccessor, pos: BlockPos, face: Direction): Boolean =
+        fun isFaceSturdy(world: BlockGetter, pos: BlockPos, face: Direction): Boolean =
             isFaceSturdy(world, pos, face, SupportType.FULL)
 
-        fun isFaceSturdy(world: BlockAccessor, pos: BlockPos, face: Direction, type: SupportType): Boolean =
+        fun isFaceSturdy(world: BlockGetter, pos: BlockPos, face: Direction, type: SupportType): Boolean =
             cache?.isFaceSturdy(face, type) ?: type.isSupporting(asState(), world, pos, face)
 
-        fun isCollisionShapeFullBlock(world: BlockAccessor, pos: BlockPos): Boolean =
+        fun isCollisionShapeFullBlock(world: BlockGetter, pos: BlockPos): Boolean =
             cache?.isCollisionShapeFullBlock ?: block.isCollisionShapeFullBlock(asState(), world, pos)
 
         @Suppress("UNCHECKED_CAST")
@@ -439,11 +459,11 @@ abstract class BlockBehaviour(protected val properties: Properties) : Block {
 
         protected class Cache(state: KryptonBlockState) {
 
-            val solidRender: Boolean = state.isSolidRender(BlockAccessor.Empty, BlockPos.ZERO)
-            val propagatesSkylightDown: Boolean = state.block.propagatesSkylightDown(state, BlockAccessor.Empty, BlockPos.ZERO)
-            val lightBlock: Int = state.block.getLightBlock(state, BlockAccessor.Empty, BlockPos.ZERO)
+            val solidRender: Boolean = state.isSolidRender(BlockGetter.Empty, BlockPos.ZERO)
+            val propagatesSkylightDown: Boolean = state.block.propagatesSkylightDown(state, BlockGetter.Empty, BlockPos.ZERO)
+            val lightBlock: Int = state.block.getLightBlock(state, BlockGetter.Empty, BlockPos.ZERO)
             val occlusionShapes: Array<VoxelShape>? = createOcclusionShapes(state)
-            val collisionShape: VoxelShape = state.block.getCollisionShape(state, BlockAccessor.Empty, BlockPos.ZERO, CollisionContext.empty())
+            val collisionShape: VoxelShape = state.block.getCollisionShape(state, BlockGetter.Empty, BlockPos.ZERO, CollisionContext.empty())
             val largeCollisionShape: Boolean
             private val faceSturdy = BooleanArray(DIRECTIONS.size * SUPPORT_TYPES.size)
             val isCollisionShapeFullBlock: Boolean
@@ -456,10 +476,10 @@ abstract class BlockBehaviour(protected val properties: Properties) : Block {
                 largeCollisionShape = Direction.Axis.values().any { collisionShape.min(it) < 0.0 || collisionShape.max(it) > 1.0 }
                 DIRECTIONS.forEach { direction ->
                     SUPPORT_TYPES.forEach {
-                        faceSturdy[getFaceSupportIndex(direction, it)] = it.isSupporting(state, BlockAccessor.Empty, BlockPos.ZERO, direction)
+                        faceSturdy[getFaceSupportIndex(direction, it)] = it.isSupporting(state, BlockGetter.Empty, BlockPos.ZERO, direction)
                     }
                 }
-                isCollisionShapeFullBlock = KryptonBlock.isShapeFullBlock(state.getCollisionShape(BlockAccessor.Empty, BlockPos.ZERO))
+                isCollisionShapeFullBlock = KryptonBlock.isShapeFullBlock(state.getCollisionShape(BlockGetter.Empty, BlockPos.ZERO))
             }
 
             fun isFaceSturdy(direction: Direction, type: SupportType): Boolean = faceSturdy[getFaceSupportIndex(direction, type)]
@@ -474,7 +494,7 @@ abstract class BlockBehaviour(protected val properties: Properties) : Block {
                 private fun createOcclusionShapes(state: KryptonBlockState): Array<VoxelShape>? {
                     if (!state.canOcclude) return null
                     val result = arrayOfNulls<VoxelShape>(DIRECTIONS.size)
-                    val shape = state.block.getOcclusionShape(state, BlockAccessor.Empty, BlockPos.ZERO)
+                    val shape = state.block.getOcclusionShape(state, BlockGetter.Empty, BlockPos.ZERO)
                     DIRECTIONS.forEach { result[it.ordinal] = Shapes.faceShape(shape, it) }
                     return result as Array<VoxelShape>
                 }
@@ -637,12 +657,12 @@ abstract class BlockBehaviour(protected val properties: Properties) : Block {
 
     fun interface StateArgumentPredicate<T> {
 
-        fun test(state: KryptonBlockState, world: BlockAccessor, pos: BlockPos, type: T): Boolean
+        fun test(state: KryptonBlockState, world: BlockGetter, pos: BlockPos, type: T): Boolean
     }
 
     fun interface StatePredicate {
 
-        fun test(state: KryptonBlockState, world: BlockAccessor, pos: BlockPos): Boolean
+        fun test(state: KryptonBlockState, world: BlockGetter, pos: BlockPos): Boolean
     }
 
     companion object {

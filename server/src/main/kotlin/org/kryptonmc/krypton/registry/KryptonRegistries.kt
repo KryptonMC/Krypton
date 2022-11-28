@@ -124,7 +124,7 @@ object KryptonRegistries {
     @JvmField
     val PARTICLE_TYPE: Simple<ParticleType> = simple(ApiKeys.PARTICLE_TYPE, loader(Loaders.particleType()) { ParticleTypes })
     @JvmField
-    val BLOCK_ENTITY_TYPE: Simple<BlockEntityType> = simple(ApiKeys.BLOCK_ENTITY_TYPE, loader(Loaders.blockEntityType()) { BlockEntityTypes })
+    val BLOCK_ENTITY_TYPE: Simple<BlockEntityType<*>> = simple(ApiKeys.BLOCK_ENTITY_TYPE, loader(Loaders.blockEntityType()) { BlockEntityTypes })
     @JvmField
     val PAINTING_VARIANT: Defaulted<PaintingVariant> =
         defaulted(ApiKeys.PAINTING_VARIANT, "kebab", loader(Loaders.paintingVariant()) { PaintingVariants })

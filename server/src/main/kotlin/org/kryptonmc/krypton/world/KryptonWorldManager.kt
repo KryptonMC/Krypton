@@ -26,6 +26,7 @@ import org.kryptonmc.api.world.WorldManager
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.registry.KryptonRegistries
 import org.kryptonmc.krypton.util.ChunkProgressListener
+import org.kryptonmc.krypton.util.SectionPos
 import org.kryptonmc.krypton.util.executor.DefaultPoolUncaughtExceptionHandler
 import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.util.executor.ThreadPoolBuilder
@@ -124,7 +125,7 @@ class KryptonWorldManager(override val server: KryptonServer, private val worldF
         val listener = ChunkProgressListener(9)
         LOGGER.info("Preparing start region for dimension ${default.dimension.location}...")
         listener.tick()
-        default.chunkManager.addStartTicket(default.data.spawnX shr 4, default.data.spawnZ shr 4) {
+        default.chunkManager.addStartTicket(SectionPos.blockToSection(default.data.spawnX), SectionPos.blockToSection(default.data.spawnZ)) {
             listener.updateStatus(ChunkStatus.FULL)
         }
         listener.stop()

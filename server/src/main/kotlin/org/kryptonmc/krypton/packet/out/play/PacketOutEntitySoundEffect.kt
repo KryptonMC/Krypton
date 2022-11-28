@@ -36,10 +36,14 @@ data class PacketOutEntitySoundEffect(
     val source: Sound.Source,
     override val entityId: Int,
     val volume: Float,
-    val pitch: Float
+    val pitch: Float,
+    val seed: Long
 ) : EntityPacket {
 
-    constructor(buf: ByteBuf) : this(buf.readEvent(), buf.readEnum(), buf.readVarInt(), buf.readFloat(), buf.readFloat())
+    constructor(buf: ByteBuf) : this(buf.readEvent(), buf.readEnum(), buf.readVarInt(), buf.readFloat(), buf.readFloat(), buf.readLong())
+
+    constructor(sound: Sound, event: SoundEvent, entityId: Int,
+                seed: Long) : this(event, sound.source(), entityId, sound.volume(), sound.pitch(), seed)
 
     override fun write(buf: ByteBuf) {
         buf.writeId(KryptonRegistries.SOUND_EVENT, event)
@@ -47,6 +51,7 @@ data class PacketOutEntitySoundEffect(
         buf.writeVarInt(entityId)
         buf.writeFloat(volume)
         buf.writeFloat(pitch)
+        buf.writeLong(seed)
     }
 }
 

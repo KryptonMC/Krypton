@@ -25,7 +25,7 @@ import org.kryptonmc.api.world.World
 import org.kryptonmc.krypton.util.BlockPos
 
 abstract class KryptonBlockEntity(
-    override val type: BlockEntityType,
+    override val type: BlockEntityType<*>,
     override val world: World,
     override val position: BlockPos,
     override val block: Block

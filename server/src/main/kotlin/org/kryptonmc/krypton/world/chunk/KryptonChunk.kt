@@ -18,15 +18,16 @@
  */
 package org.kryptonmc.krypton.world.chunk
 
-import org.kryptonmc.api.block.Blocks
 import org.kryptonmc.api.util.Vec3i
 import org.kryptonmc.api.world.biome.Biome
 import org.kryptonmc.api.world.chunk.Chunk
 import org.kryptonmc.krypton.packet.CachedPacket
 import org.kryptonmc.krypton.packet.out.play.PacketOutChunkDataAndLight
+import org.kryptonmc.krypton.util.BlockPos
 import org.kryptonmc.krypton.world.Heightmap
 import org.kryptonmc.krypton.world.KryptonWorld
-import org.kryptonmc.krypton.world.block.downcast
+import org.kryptonmc.krypton.world.block.KryptonBlocks
+import org.kryptonmc.krypton.world.block.entity.KryptonBlockEntity
 import org.kryptonmc.krypton.world.block.state.KryptonBlockState
 import org.kryptonmc.krypton.world.chunk.ticket.Ticket
 import org.kryptonmc.krypton.world.fluid.KryptonFluidState
@@ -67,18 +68,18 @@ class KryptonChunk(
 //            if (y == 70) block = DebugGenerator.blockAt(x, z)
 //            return block ?: Blocks.AIR.downcast()
 //        }
-        val sectionIndex = sectionIndex(y)
+        val sectionIndex = getSectionIndex(y)
         if (sectionIndex >= 0 && sectionIndex < sections.size) {
             val section = sections[sectionIndex]
             if (!section.hasOnlyAir()) return section.get(x and 15, y and 15, z and 15)
         }
-        return Blocks.AIR.defaultState.downcast()
+        return KryptonBlocks.AIR.defaultState
     }
 
     override fun getBlock(position: Vec3i): KryptonBlockState = getBlock(position.x, position.y, position.z)
 
     override fun getFluid(x: Int, y: Int, z: Int): KryptonFluidState {
-        val sectionIndex = sectionIndex(y)
+        val sectionIndex = getSectionIndex(y)
         if (sectionIndex >= 0 && sectionIndex < sections.size) {
             val section = sections[sectionIndex]
             if (!section.hasOnlyAir()) return section.get(x and 15, y and 15, z and 15).asFluid()
@@ -88,25 +89,27 @@ class KryptonChunk(
 
     override fun getFluid(position: Vec3i): KryptonFluidState = getFluid(position.x, position.y, position.z)
 
-    override fun setBlock(x: Int, y: Int, z: Int, block: KryptonBlockState): Boolean {
-        val section = sections[sectionIndex(y)]
-        if (section.hasOnlyAir() && block.isAir) return false
+    override fun setBlock(pos: BlockPos, state: KryptonBlockState, moving: Boolean): KryptonBlockState? {
+        val section = sections[getSectionIndex(pos.y)]
+        if (section.hasOnlyAir() && state.isAir) return null
 
         // Get the local coordinates and set the new state in the section
-        val localX = x and 15
-        val localY = y and 15
-        val localZ = z and 15
-        val oldState = section.set(localX, localY, localZ, block)
-        if (oldState === block) return false
+        val localX = pos.x and 15
+        val localY = pos.y and 15
+        val localZ = pos.z and 15
+        val oldState = section.set(localX, localY, localZ, state)
+        if (oldState === state) return null
 
         // Update the heightmaps
-        heightmaps.getValue(Heightmap.Type.MOTION_BLOCKING).update(localX, y, localZ, block)
-        heightmaps.getValue(Heightmap.Type.MOTION_BLOCKING_NO_LEAVES).update(localX, y, localZ, block)
-        heightmaps.getValue(Heightmap.Type.OCEAN_FLOOR).update(localX, y, localZ, block)
-        heightmaps.getValue(Heightmap.Type.WORLD_SURFACE).update(localX, y, localZ, block)
+        heightmaps.getValue(Heightmap.Type.MOTION_BLOCKING).update(localX, pos.y, localZ, state)
+        heightmaps.getValue(Heightmap.Type.MOTION_BLOCKING_NO_LEAVES).update(localX, pos.y, localZ, state)
+        heightmaps.getValue(Heightmap.Type.OCEAN_FLOOR).update(localX, pos.y, localZ, state)
+        heightmaps.getValue(Heightmap.Type.WORLD_SURFACE).update(localX, pos.y, localZ, state)
         cachedPacket.invalidate()
-        return true
+        return oldState
     }
+
+    override fun getBlockEntity(x: Int, y: Int, z: Int): KryptonBlockEntity? = null // TODO: Implement
 
     override fun getBiome(x: Int, y: Int, z: Int): Biome = getNoiseBiome(x, y, z)
 

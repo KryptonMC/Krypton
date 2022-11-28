@@ -16,30 +16,22 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.world
+package org.kryptonmc.krypton.world.entity
 
-interface HeightAccessor {
+import org.kryptonmc.api.world.GameMode
+import org.kryptonmc.krypton.entity.KryptonEntity
+import org.kryptonmc.krypton.entity.KryptonLivingEntity
+import org.kryptonmc.krypton.entity.player.KryptonPlayer
+import java.util.function.Predicate
 
-    val height: Int
-    val minimumBuildHeight: Int
+object EntityPredicates {
 
-    val maximumBuildHeight: Int
-        get() = minimumBuildHeight + height
-
-    val minimumSection: Int
-        get() = minimumBuildHeight shr 4
-
-    val maximumSection: Int
-        get() = (maximumBuildHeight - 1 shr 4) + 1
-
-    val sectionCount: Int
-        get() = maximumSection - minimumSection
-
-    fun sectionIndexFromY(y: Int): Int = y - minimumSection
-
-    fun sectionYFromIndex(index: Int): Int = index + minimumSection
-
-    fun sectionIndex(y: Int): Int = sectionIndexFromY(y shr 4)
-
-    fun isOutsideBuildHeight(y: Int): Boolean = y < minimumBuildHeight || y >= maximumBuildHeight
+    @JvmField
+    val LIVING_ENTITY_STILL_ALIVE: Predicate<KryptonEntity> = Predicate { it.isAlive && it is KryptonLivingEntity }
+    @JvmField
+    val NO_CREATIVE_OR_SPECTATOR: Predicate<KryptonEntity> = Predicate {
+        it !is KryptonPlayer || it.gameMode != GameMode.CREATIVE && it.gameMode != GameMode.SPECTATOR
+    }
+    @JvmField
+    val NO_SPECTATORS: Predicate<KryptonEntity> = Predicate { it !is KryptonPlayer || it.gameMode != GameMode.SPECTATOR }
 }

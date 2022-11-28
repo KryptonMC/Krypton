@@ -9,6 +9,17 @@
 package org.kryptonmc.api.block.entity
 
 import net.kyori.adventure.key.Key
+import org.kryptonmc.api.block.entity.container.Barrel
+import org.kryptonmc.api.block.entity.container.BlastFurnace
+import org.kryptonmc.api.block.entity.container.BrewingStand
+import org.kryptonmc.api.block.entity.container.Chest
+import org.kryptonmc.api.block.entity.container.Dispenser
+import org.kryptonmc.api.block.entity.container.Dropper
+import org.kryptonmc.api.block.entity.container.Furnace
+import org.kryptonmc.api.block.entity.container.Hopper
+import org.kryptonmc.api.block.entity.container.ShulkerBox
+import org.kryptonmc.api.block.entity.container.Smoker
+import org.kryptonmc.api.block.entity.container.TrappedChest
 import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.api.util.Catalogue
 
@@ -20,79 +31,80 @@ public object BlockEntityTypes {
 
     // @formatter:off
     @JvmField
-    public val FURNACE: BlockEntityType = get("furnace")
+    public val FURNACE: BlockEntityType<Furnace> = get("furnace")
     @JvmField
-    public val CHEST: BlockEntityType = get("chest")
+    public val CHEST: BlockEntityType<Chest> = get("chest")
     @JvmField
-    public val TRAPPED_CHEST: BlockEntityType = get("trapped_chest")
+    public val TRAPPED_CHEST: BlockEntityType<TrappedChest> = get("trapped_chest")
     @JvmField
-    public val ENDER_CHEST: BlockEntityType = get("ender_chest")
+    public val ENDER_CHEST: BlockEntityType<EnderChest> = get("ender_chest")
     @JvmField
-    public val JUKEBOX: BlockEntityType = get("jukebox")
+    public val JUKEBOX: BlockEntityType<Jukebox> = get("jukebox")
     @JvmField
-    public val DISPENSER: BlockEntityType = get("dispenser")
+    public val DISPENSER: BlockEntityType<Dispenser> = get("dispenser")
     @JvmField
-    public val DROPPER: BlockEntityType = get("dropper")
+    public val DROPPER: BlockEntityType<Dropper> = get("dropper")
     @JvmField
-    public val SIGN: BlockEntityType = get("sign")
+    public val SIGN: BlockEntityType<Sign> = get("sign")
     @JvmField
-    public val MOB_SPAWNER: BlockEntityType = get("mob_spawner")
+    public val MOB_SPAWNER: BlockEntityType<MobSpawner> = get("mob_spawner")
     @JvmField
-    public val PISTON: BlockEntityType = get("piston")
+    public val PISTON: BlockEntityType<MovingPiston> = get("piston")
     @JvmField
-    public val BREWING_STAND: BlockEntityType = get("brewing_stand")
+    public val BREWING_STAND: BlockEntityType<BrewingStand> = get("brewing_stand")
     @JvmField
-    public val ENCHANTING_TABLE: BlockEntityType = get("enchanting_table")
+    public val ENCHANTING_TABLE: BlockEntityType<EnchantmentTable> = get("enchanting_table")
     @JvmField
-    public val END_PORTAL: BlockEntityType = get("end_portal")
+    public val END_PORTAL: BlockEntityType<EndPortal> = get("end_portal")
     @JvmField
-    public val BEACON: BlockEntityType = get("beacon")
+    public val BEACON: BlockEntityType<Beacon> = get("beacon")
     @JvmField
-    public val SKULL: BlockEntityType = get("skull")
+    public val SKULL: BlockEntityType<Skull> = get("skull")
     @JvmField
-    public val DAYLIGHT_DETECTOR: BlockEntityType = get("daylight_detector")
+    public val DAYLIGHT_DETECTOR: BlockEntityType<DaylightDetector> = get("daylight_detector")
     @JvmField
-    public val HOPPER: BlockEntityType = get("hopper")
+    public val HOPPER: BlockEntityType<Hopper> = get("hopper")
     @JvmField
-    public val COMPARATOR: BlockEntityType = get("comparator")
+    public val COMPARATOR: BlockEntityType<Comparator> = get("comparator")
     @JvmField
-    public val BANNER: BlockEntityType = get("banner")
+    public val BANNER: BlockEntityType<Banner> = get("banner")
     @JvmField
-    public val STRUCTURE_BLOCK: BlockEntityType = get("structure_block")
+    public val STRUCTURE_BLOCK: BlockEntityType<StructureBlock> = get("structure_block")
     @JvmField
-    public val END_GATEWAY: BlockEntityType = get("end_gateway")
+    public val END_GATEWAY: BlockEntityType<EndGateway> = get("end_gateway")
     @JvmField
-    public val COMMAND_BLOCK: BlockEntityType = get("command_block")
+    public val COMMAND_BLOCK: BlockEntityType<CommandBlock> = get("command_block")
     @JvmField
-    public val SHULKER_BOX: BlockEntityType = get("shulker_box")
+    public val SHULKER_BOX: BlockEntityType<ShulkerBox> = get("shulker_box")
     @JvmField
-    public val BED: BlockEntityType = get("bed")
+    public val BED: BlockEntityType<Bed> = get("bed")
     @JvmField
-    public val CONDUIT: BlockEntityType = get("conduit")
+    public val CONDUIT: BlockEntityType<Conduit> = get("conduit")
     @JvmField
-    public val BARREL: BlockEntityType = get("barrel")
+    public val BARREL: BlockEntityType<Barrel> = get("barrel")
     @JvmField
-    public val SMOKER: BlockEntityType = get("smoker")
+    public val SMOKER: BlockEntityType<Smoker> = get("smoker")
     @JvmField
-    public val BLAST_FURNACE: BlockEntityType = get("blast_furnace")
+    public val BLAST_FURNACE: BlockEntityType<BlastFurnace> = get("blast_furnace")
     @JvmField
-    public val LECTERN: BlockEntityType = get("lectern")
+    public val LECTERN: BlockEntityType<Lectern> = get("lectern")
     @JvmField
-    public val BELL: BlockEntityType = get("bell")
+    public val BELL: BlockEntityType<Bell> = get("bell")
     @JvmField
-    public val JIGSAW: BlockEntityType = get("jigsaw")
+    public val JIGSAW: BlockEntityType<Jigsaw> = get("jigsaw")
     @JvmField
-    public val CAMPFIRE: BlockEntityType = get("campfire")
+    public val CAMPFIRE: BlockEntityType<Campfire> = get("campfire")
     @JvmField
-    public val BEEHIVE: BlockEntityType = get("beehive")
+    public val BEEHIVE: BlockEntityType<Beehive> = get("beehive")
     @JvmField
-    public val SCULK_SENSOR: BlockEntityType = get("sculk_sensor")
+    public val SCULK_SENSOR: BlockEntityType<SculkSensor> = get("sculk_sensor")
     @JvmField
-    public val SCULK_CATALYST: BlockEntityType = get("sculk_catalyst")
+    public val SCULK_CATALYST: BlockEntityType<SculkCatalyst> = get("sculk_catalyst")
     @JvmField
-    public val SCULK_SHRIEKER: BlockEntityType = get("sculk_shrieker")
+    public val SCULK_SHRIEKER: BlockEntityType<SculkShrieker> = get("sculk_shrieker")
 
     // @formatter:on
     @JvmStatic
-    private fun get(key: String): BlockEntityType = Registries.BLOCK_ENTITY_TYPE.get(Key.key(key))!!
+    @Suppress("UNCHECKED_CAST")
+    private fun <T : BlockEntity> get(key: String): BlockEntityType<T> = Registries.BLOCK_ENTITY_TYPE.get(Key.key(key))!! as BlockEntityType<T>
 }

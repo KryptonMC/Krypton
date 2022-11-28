@@ -30,8 +30,7 @@ import org.kryptonmc.krypton.event.entity.KryptonSpawnEntityEvent
 import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateTime
 import org.kryptonmc.krypton.registry.KryptonRegistries
 import org.kryptonmc.krypton.util.DataConversion
-import org.kryptonmc.krypton.util.Maths
-import org.kryptonmc.krypton.util.Positioning
+import org.kryptonmc.krypton.util.SectionPos
 import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.util.nbt.getDataVersion
 import org.kryptonmc.krypton.util.nbt.putDataVersion
@@ -167,7 +166,7 @@ class EntityManager(val world: KryptonWorld) : AutoCloseable {
 
     private inline fun forEachEntityInRange(location: Vec3d, viewDistance: Int, callback: (KryptonEntity) -> Unit) {
         chunksInRange(location, viewDistance).forEach {
-            val chunk = world.getChunkAt(Positioning.chunkX(it), Positioning.chunkZ(it)) ?: return@forEach
+            val chunk = world.getChunkAt(ChunkPos.unpackX(it), ChunkPos.unpackZ(it)) ?: return@forEach
             getByChunk(chunk.position.pack()).forEach(callback)
         }
     }
@@ -183,27 +182,27 @@ class EntityManager(val world: KryptonWorld) : AutoCloseable {
         private fun chunksInRange(location: Vec3d, range: Int): LongArray {
             val area = (range * 2 + 1) * (range * 2 + 1)
             val visible = LongArray(area)
-            var distanceX = 0
+            var dx = 0
             var directionX = 1
-            var distanceZ = 0
+            var dz = 0
             var directionZ = -1
             var length = 1
             var corner = 0
 
             for (i in 0 until area) {
-                val chunkX = ((distanceX shl 4) + location.x).toChunkCoordinate()
-                val chunkZ = ((distanceZ shl 4) + location.z).toChunkCoordinate()
+                val chunkX = SectionPos.blockToSection(SectionPos.sectionToBlock(dx) + location.x)
+                val chunkZ = SectionPos.blockToSection(SectionPos.sectionToBlock(dz) + location.z)
                 visible[i] = ChunkPos.pack(chunkX, chunkZ)
 
                 if (corner % 2 == 0) {
-                    distanceX += directionX
-                    if (abs(distanceX) == length) {
+                    dx += directionX
+                    if (abs(dx) == length) {
                         corner++
                         directionX = -directionX
                     }
                 } else {
-                    distanceZ += directionZ
-                    if (abs(distanceZ) == length) {
+                    dz += directionZ
+                    if (abs(dz) == length) {
                         corner++
                         directionZ = -directionZ
                         if (corner % 4 == 0) length++
@@ -214,5 +213,3 @@ class EntityManager(val world: KryptonWorld) : AutoCloseable {
         }
     }
 }
-
-private fun Double.toChunkCoordinate(): Int = Math.floorDiv(Maths.floor(this), 16)

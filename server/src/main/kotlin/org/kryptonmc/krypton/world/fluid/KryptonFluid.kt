@@ -31,8 +31,8 @@ import org.kryptonmc.krypton.state.StateDefinition
 import org.kryptonmc.krypton.state.StateHolderDelegate
 import org.kryptonmc.krypton.util.BlockPos
 import org.kryptonmc.krypton.util.IntHashBiMap
-import org.kryptonmc.krypton.world.BlockAccessor
 import org.kryptonmc.krypton.world.block.state.KryptonBlockState
+import org.kryptonmc.krypton.world.components.BlockGetter
 
 @Suppress("LeakingThis")
 abstract class KryptonFluid : Fluid, StateHolderDelegate<FluidState, KryptonFluidState>, IntrusiveRegistryObject<KryptonFluid> {
@@ -55,9 +55,9 @@ abstract class KryptonFluid : Fluid, StateHolderDelegate<FluidState, KryptonFlui
         defaultFluidState = stateDefinition.any()
     }
 
-    abstract fun getFlow(world: BlockAccessor, pos: BlockPos, state: KryptonFluidState): Vec3d
+    abstract fun getFlow(world: BlockGetter, pos: BlockPos, state: KryptonFluidState): Vec3d
 
-    abstract fun getHeight(state: KryptonFluidState, world: BlockAccessor, pos: BlockPos): Float
+    abstract fun getHeight(state: KryptonFluidState, world: BlockGetter, pos: BlockPos): Float
 
     abstract fun getOwnHeight(state: KryptonFluidState): Float
 
@@ -69,7 +69,7 @@ abstract class KryptonFluid : Fluid, StateHolderDelegate<FluidState, KryptonFlui
 
     open fun isSame(fluid: Fluid): Boolean = fluid === this
 
-    abstract fun getShape(state: KryptonFluidState, world: BlockAccessor, pos: BlockPos): VoxelShape
+    abstract fun getShape(state: KryptonFluidState, world: BlockGetter, pos: BlockPos): VoxelShape
 
     override fun key(): Key = KryptonRegistries.FLUID.getKey(this)
 

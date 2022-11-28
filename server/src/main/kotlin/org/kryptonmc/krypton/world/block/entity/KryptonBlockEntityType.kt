@@ -21,10 +21,10 @@ package org.kryptonmc.krypton.world.block.entity
 import com.google.common.collect.ImmutableSet
 import net.kyori.adventure.key.Key
 import org.kryptonmc.api.block.Block
+import org.kryptonmc.api.block.entity.BlockEntity
 import org.kryptonmc.api.block.entity.BlockEntityType
 
-@JvmRecord
-data class KryptonBlockEntityType(private val key: Key, override val applicableBlocks: ImmutableSet<Block>) : BlockEntityType {
+class KryptonBlockEntityType<T : BlockEntity>(private val key: Key, override val applicableBlocks: ImmutableSet<Block>) : BlockEntityType<T> {
 
     override fun key(): Key = key
 

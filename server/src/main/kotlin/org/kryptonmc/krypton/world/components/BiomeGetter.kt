@@ -16,49 +16,26 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.world
+package org.kryptonmc.krypton.world.components
 
 import org.kryptonmc.api.util.Vec3i
 import org.kryptonmc.api.world.biome.Biome
 import org.kryptonmc.api.world.biome.BiomeContainer
-import org.kryptonmc.api.world.biome.Biomes
-import org.kryptonmc.api.world.dimension.DimensionType
-import org.kryptonmc.krypton.util.BlockPos
+import org.kryptonmc.krypton.util.Quart
 import org.kryptonmc.krypton.world.biome.BiomeManager
 import org.kryptonmc.krypton.world.biome.NoiseBiomeSource
-import org.kryptonmc.krypton.world.chunk.ChunkAccessor
-import org.kryptonmc.krypton.world.chunk.ChunkManager
 import org.kryptonmc.krypton.world.chunk.ChunkStatus
 
-interface WorldAccessor : BlockAccessor, NoiseBiomeSource, BiomeContainer {
+interface BiomeGetter : ChunkGetter, BiomeContainer, NoiseBiomeSource {
 
-    val dimensionType: DimensionType
-    val chunkManager: ChunkManager
     val biomeManager: BiomeManager
 
-    override val height: Int
-        get() = dimensionType.height
-    override val minimumBuildHeight: Int
-        get() = dimensionType.minimumY
+    fun getUncachedNoiseBiome(x: Int, y: Int, z: Int): Biome
 
-    fun hasChunk(x: Int, z: Int): Boolean = chunkManager.get(x, z) != null
-
-    fun hasChunkAt(x: Int, z: Int): Boolean = hasChunk(x shr 4, z shr 4)
-
-    fun hasChunkAt(position: BlockPos): Boolean = hasChunkAt(position.x, position.z)
-
-    fun getChunk(position: Vec3i): ChunkAccessor? = getChunk(position.x shr 4, position.z shr 4)
-
-    fun getChunk(x: Int, z: Int, status: ChunkStatus = ChunkStatus.FULL, shouldCreate: Boolean = true): ChunkAccessor?
-
-    fun getHeight(type: Heightmap.Type, x: Int, z: Int): Int
+    override fun getNoiseBiome(x: Int, y: Int, z: Int): Biome =
+        getChunk(Quart.toSection(x), Quart.toSection(z), ChunkStatus.BIOMES, false)?.getNoiseBiome(x, y, z) ?: getUncachedNoiseBiome(x, y, z)
 
     override fun getBiome(x: Int, y: Int, z: Int): Biome = biomeManager.getBiome(x, y, z)
 
     override fun getBiome(position: Vec3i): Biome = getBiome(position.x, position.y, position.z)
-
-    override fun getNoiseBiome(x: Int, y: Int, z: Int): Biome {
-        val chunk = getChunk(x shr 2, z shr 2, ChunkStatus.BIOMES, false) ?: return Biomes.PLAINS
-        return chunk.getNoiseBiome(x, y, z)
-    }
 }

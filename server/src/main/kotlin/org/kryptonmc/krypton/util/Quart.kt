@@ -27,4 +27,10 @@ object Quart {
 
     @JvmStatic
     fun toBlock(value: Int): Int = value shl BITS
+
+    @JvmStatic
+    fun fromSection(value: Int): Int = value shl BITS
+
+    @JvmStatic
+    fun toSection(value: Int): Int = value shr BITS
 }

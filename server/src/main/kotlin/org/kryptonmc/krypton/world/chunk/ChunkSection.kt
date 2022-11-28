@@ -22,6 +22,7 @@ import io.netty.buffer.ByteBuf
 import org.kryptonmc.api.block.Blocks
 import org.kryptonmc.api.world.biome.Biome
 import org.kryptonmc.api.world.biome.Biomes
+import org.kryptonmc.krypton.util.SectionPos
 import org.kryptonmc.krypton.world.biome.NoiseBiomeSource
 import org.kryptonmc.krypton.world.block.downcast
 import org.kryptonmc.krypton.world.block.state.KryptonBlockState
@@ -39,7 +40,7 @@ class ChunkSection(
     val skyLight: ByteArray = ByteArray(LIGHTS_SIZE)
 ) : NoiseBiomeSource {
 
-    val bottomBlockY: Int = y shl 4
+    val bottomBlockY: Int = SectionPos.sectionToBlock(y)
     private var nonEmptyBlockCount = 0
 
     init {

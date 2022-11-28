@@ -144,6 +144,12 @@ object Maths {
     }
 
     @JvmStatic
+    fun lfloor(value: Double): Long {
+        val result = value.toLong()
+        return if (value < result) result - 1 else result
+    }
+
+    @JvmStatic
     fun ceil(value: Double): Int {
         val result = value.toInt()
         return if (value > result) result + 1 else result
@@ -172,6 +178,12 @@ object Maths {
         temp = temp or (temp shr 16)
         return temp + 1
     }
+
+    /**
+     * Returns the fractional component of the value. This is equivalent to the value minus the floored value (the whole part).
+     */
+    @JvmStatic
+    fun fraction(value: Double): Double = value - lfloor(value)
 
     @JvmStatic
     fun sin(value: Float): Float = SIN[(value * 10430.378F).toInt() and 65535]

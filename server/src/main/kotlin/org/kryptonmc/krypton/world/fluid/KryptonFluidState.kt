@@ -19,7 +19,6 @@
 package org.kryptonmc.krypton.world.fluid
 
 import com.google.common.collect.ImmutableMap
-import org.kryptonmc.api.block.BlockState
 import org.kryptonmc.api.fluid.Fluid
 import org.kryptonmc.api.fluid.FluidState
 import org.kryptonmc.api.tags.TagKey
@@ -29,7 +28,8 @@ import org.kryptonmc.krypton.state.KryptonState
 import org.kryptonmc.krypton.state.StateDelegate
 import org.kryptonmc.krypton.state.property.KryptonProperty
 import org.kryptonmc.krypton.util.BlockPos
-import org.kryptonmc.krypton.world.BlockAccessor
+import org.kryptonmc.krypton.world.block.state.KryptonBlockState
+import org.kryptonmc.krypton.world.components.BlockGetter
 import org.kryptonmc.serialization.Codec
 import org.kryptonmc.serialization.MapCodec
 import java.util.stream.Stream
@@ -38,8 +38,7 @@ class KryptonFluidState(
     override val fluid: KryptonFluid,
     values: ImmutableMap<KryptonProperty<*>, Comparable<*>>,
     propertiesCodec: MapCodec<KryptonFluidState>
-) : KryptonState<KryptonFluid, KryptonFluidState>(fluid, values, propertiesCodec), FluidState,
-    StateDelegate<FluidState, KryptonFluidState> {
+) : KryptonState<KryptonFluid, KryptonFluidState>(fluid, values, propertiesCodec), FluidState, StateDelegate<FluidState, KryptonFluidState> {
 
     override val isSource: Boolean
         get() = fluid.isSource(this)
@@ -48,9 +47,9 @@ class KryptonFluidState(
     val ownHeight: Float
         get() = fluid.getOwnHeight(this)
 
-    fun getHeight(world: BlockAccessor, pos: BlockPos): Float = fluid.getHeight(this, world, pos)
+    fun getHeight(world: BlockGetter, pos: BlockPos): Float = fluid.getHeight(this, world, pos)
 
-    fun getFlow(world: BlockAccessor, pos: BlockPos): Vec3d = fluid.getFlow(world, pos, this)
+    fun getFlow(world: BlockGetter, pos: BlockPos): Vec3d = fluid.getFlow(world, pos, this)
 
     @Suppress("UNCHECKED_CAST")
     fun eq(tag: TagKey<Fluid>): Boolean = fluid.builtInRegistryHolder.eq(tag as TagKey<KryptonFluid>)
@@ -59,7 +58,7 @@ class KryptonFluidState(
 
     fun tags(): Stream<TagKey<KryptonFluid>> = owner.builtInRegistryHolder.tags()
 
-    override fun asBlock(): BlockState = fluid.asBlock(this)
+    override fun asBlock(): KryptonBlockState = fluid.asBlock(this)
 
     override fun asState(): KryptonFluidState = this
 

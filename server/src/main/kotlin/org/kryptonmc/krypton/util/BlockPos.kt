@@ -19,11 +19,14 @@
 package org.kryptonmc.krypton.util
 
 import com.google.common.collect.AbstractIterator
+import org.kryptonmc.api.util.BoundingBox
 import org.kryptonmc.api.util.Direction
 import org.kryptonmc.api.util.Vec3i
 import org.kryptonmc.krypton.util.serialization.Codecs
 import org.kryptonmc.serialization.Codec
 import java.util.stream.IntStream
+import java.util.stream.Stream
+import java.util.stream.StreamSupport
 import javax.annotation.concurrent.Immutable
 import kotlin.math.abs
 import kotlin.math.max
@@ -313,5 +316,15 @@ open class BlockPos(x: Int, y: Int, z: Int) : Vec3i {
                 }
             }
         }
+
+        @JvmStatic
+        fun betweenClosedStream(x1: Int, y1: Int, z1: Int, x2: Int, y2: Int, z2: Int): Stream<BlockPos> =
+            StreamSupport.stream(betweenClosed(x1, y1, z1, x2, y2, z2).spliterator(), false)
+
+        @JvmStatic
+        fun betweenClosedStream(box: BoundingBox): Stream<BlockPos> = betweenClosedStream(
+            Maths.floor(box.minimumX), Maths.floor(box.minimumY), Maths.floor(box.minimumZ),
+            Maths.floor(box.maximumX), Maths.floor(box.maximumY), Maths.floor(box.maximumZ)
+        )
     }
 }

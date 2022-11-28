@@ -28,6 +28,7 @@ import org.kryptonmc.api.world.biome.Biomes
 import org.kryptonmc.krypton.KryptonPlatform
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.util.DataConversion
+import org.kryptonmc.krypton.util.SectionPos
 import org.kryptonmc.krypton.util.executor.DefaultPoolUncaughtExceptionHandler
 import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.util.executor.ThreadPoolBuilder
@@ -64,37 +65,32 @@ class ChunkManager(private val world: KryptonWorld) : AutoCloseable {
     private val ticketManager = TicketManager(this)
     private val regionFileManager = RegionFileManager(world.folder.resolve("region"), world.server.config.advanced.synchronizeChunkWrites)
 
-    operator fun get(x: Int, z: Int): KryptonChunk? = chunkMap.get(ChunkPos.pack(x, z))
+    fun get(x: Int, z: Int): KryptonChunk? = chunkMap.get(ChunkPos.pack(x, z))
 
-    operator fun get(position: Long): KryptonChunk? = chunkMap.get(position)
+    fun get(position: Long): KryptonChunk? = chunkMap.get(position)
 
     fun addStartTicket(centerX: Int, centerZ: Int, onLoad: () -> Unit) {
         ticketManager.addTicket(centerX, centerZ, TicketTypes.START, 22, Unit, onLoad)
     }
 
-    fun addPlayer(
-        player: KryptonPlayer,
-        x: Int,
-        z: Int,
-        oldX: Int,
-        oldZ: Int,
-        viewDistance: Int
-    ): CompletableFuture<Unit> = CompletableFuture.supplyAsync({
+    fun addPlayer(player: KryptonPlayer, x: Int, z: Int, oldX: Int, oldZ: Int, viewDistance: Int): CompletableFuture<Unit> = execute {
         ticketManager.addPlayer(x, z, oldX, oldZ, player.uuid, viewDistance)
         val pos = ChunkPos.pack(x, z)
         val oldPos = ChunkPos.pack(oldX, oldZ)
         if (pos == oldPos) {
             if (!playersByChunk.containsKey(pos)) playersByChunk.computeIfAbsent(pos, LongFunction { ConcurrentHashMap.newKeySet() }).add(player)
-            return@supplyAsync // They haven't changed chunks
+            return@execute // They haven't changed chunks
         }
         val oldSet = playersByChunk.get(oldPos)?.apply { remove(player) }
         if (oldSet != null && oldSet.isEmpty()) playersByChunk.remove(oldPos)
         playersByChunk.computeIfAbsent(pos, LongFunction { ConcurrentHashMap.newKeySet() }).add(player)
-    }, executor)
+    }
+
+    private inline fun execute(crossinline action: () -> Unit): CompletableFuture<Unit> = CompletableFuture.supplyAsync({ action() }, executor)
 
     fun removePlayer(player: KryptonPlayer, viewDistance: Int = world.server.config.world.viewDistance) {
-        val x = player.location.floorX() shr 4
-        val z = player.location.floorZ() shr 4
+        val x = SectionPos.blockToSection(player.location.x)
+        val z = SectionPos.blockToSection(player.location.z)
         ticketManager.removePlayer(x, z, player.uuid, viewDistance)
         val pos = ChunkPos.pack(x, z)
         val set = playersByChunk.get(pos)?.apply { remove(player) }
@@ -125,7 +121,7 @@ class ChunkManager(private val world: KryptonWorld) : AutoCloseable {
         for (i in 0 until sectionList.size()) {
             val sectionData = sectionList.getCompound(i)
             val y = sectionData.getByte("Y").toInt()
-            val index = world.sectionIndexFromY(y)
+            val index = world.getSectionIndexFromSectionY(y)
             if (index >= 0 && index < sections.size) {
                 val blocks = if (sectionData.contains("block_states", CompoundTag.ID)) {
                     PaletteHolder.readBlocks(sectionData.getCompound("block_states"))
@@ -222,7 +218,7 @@ class ChunkManager(private val world: KryptonWorld) : AutoCloseable {
 
             val sectionList = ImmutableListTag.builder(CompoundTag.ID)
             for (i in chunk.minimumLightSection until chunk.maximumLightSection) {
-                val sectionIndex = chunk.world.sectionIndexFromY(i)
+                val sectionIndex = chunk.world.getSectionIndexFromSectionY(i)
                 // TODO: Handle light sections below and above the world
                 if (sectionIndex >= 0 && sectionIndex < chunk.sections.size) {
                     val section = chunk.sections[sectionIndex]

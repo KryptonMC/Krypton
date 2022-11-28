@@ -19,7 +19,7 @@
 package org.kryptonmc.krypton.world.block.pattern
 
 import org.kryptonmc.krypton.util.BlockPos
-import org.kryptonmc.krypton.world.WorldAccessor
+import org.kryptonmc.krypton.world.components.WorldAccessor
 import org.kryptonmc.krypton.world.block.state.KryptonBlockState
 import org.kryptonmc.krypton.world.block.entity.KryptonBlockEntity
 import java.util.function.Predicate

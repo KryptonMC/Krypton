@@ -36,5 +36,8 @@ data class AdvancedCategory(
     val useDataConverter: Boolean = true,
     @Comment("If the server should enforce that all game profiles have properties with valid signatures.")
     @Setting("enforce-secure-profiles")
-    val enforceSecureProfiles: Boolean = true
+    val enforceSecureProfiles: Boolean = true,
+    @Comment("The maximum number of updates to block neighbours that may be executed in bulk.")
+    @Setting("maximum-chained-neighbour-updates")
+    val maximumChainedNeighbourUpdates: Int = 1000000
 )

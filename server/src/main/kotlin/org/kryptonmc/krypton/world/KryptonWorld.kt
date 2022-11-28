@@ -28,101 +28,79 @@ import org.kryptonmc.api.entity.EntityType
 import org.kryptonmc.api.entity.EntityTypes
 import org.kryptonmc.api.resource.ResourceKey
 import org.kryptonmc.api.util.Vec3d
-import org.kryptonmc.api.util.Vec3i
 import org.kryptonmc.api.world.Difficulty
-import org.kryptonmc.api.world.GameMode
 import org.kryptonmc.api.world.World
+import org.kryptonmc.api.world.biome.Biome
+import org.kryptonmc.api.world.biome.Biomes
 import org.kryptonmc.api.world.rule.GameRules
 import org.kryptonmc.krypton.KryptonServer
-import org.kryptonmc.krypton.adventure.PacketGroupingAudience
-import org.kryptonmc.krypton.effect.sound.calculateDistance
+import org.kryptonmc.krypton.effect.sound.getRange
 import org.kryptonmc.krypton.entity.EntityFactory
 import org.kryptonmc.krypton.entity.EntityManager
 import org.kryptonmc.krypton.entity.KryptonEntity
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
-import org.kryptonmc.krypton.packet.CachedPacket
 import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.packet.out.play.GameEvent
-import org.kryptonmc.krypton.packet.out.play.PacketOutSetBlockDestroyStage
 import org.kryptonmc.krypton.packet.out.play.PacketOutBlockUpdate
+import org.kryptonmc.krypton.packet.out.play.PacketOutEntitySoundEffect
 import org.kryptonmc.krypton.packet.out.play.PacketOutGameEvent
-import org.kryptonmc.krypton.packet.out.play.PacketOutChangeDifficulty
-import org.kryptonmc.krypton.packet.out.play.PacketOutWorldEvent
+import org.kryptonmc.krypton.packet.out.play.PacketOutSetBlockDestroyStage
 import org.kryptonmc.krypton.packet.out.play.PacketOutSoundEffect
+import org.kryptonmc.krypton.packet.out.play.PacketOutWorldEvent
 import org.kryptonmc.krypton.util.BlockPos
+import org.kryptonmc.krypton.util.Directions
 import org.kryptonmc.krypton.util.Maths
+import org.kryptonmc.krypton.util.SectionPos
+import org.kryptonmc.krypton.util.random.RandomSource
 import org.kryptonmc.krypton.world.biome.BiomeManager
+import org.kryptonmc.krypton.world.block.KryptonBlock
 import org.kryptonmc.krypton.world.block.KryptonBlocks
 import org.kryptonmc.krypton.world.block.downcast
 import org.kryptonmc.krypton.world.block.state.KryptonBlockState
 import org.kryptonmc.krypton.world.chunk.ChunkAccessor
 import org.kryptonmc.krypton.world.chunk.ChunkManager
-import org.kryptonmc.krypton.world.chunk.ChunkPos
 import org.kryptonmc.krypton.world.chunk.ChunkStatus
-import org.kryptonmc.krypton.world.chunk.KryptonChunk
-import org.kryptonmc.krypton.world.chunk.ticket.Ticket
-import org.kryptonmc.krypton.world.chunk.ticket.TicketTypes
+import org.kryptonmc.krypton.world.chunk.SetBlockFlag
+import org.kryptonmc.krypton.world.components.BaseWorld
 import org.kryptonmc.krypton.world.data.WorldData
 import org.kryptonmc.krypton.world.dimension.KryptonDimensionType
 import org.kryptonmc.krypton.world.fluid.KryptonFluidState
 import org.kryptonmc.krypton.world.fluid.KryptonFluids
-import org.kryptonmc.krypton.world.rule.KryptonGameRuleHolder
-import org.kryptonmc.krypton.world.scoreboard.KryptonScoreboard
-import java.nio.file.Path
-import java.util.Random
+import org.kryptonmc.krypton.world.redstone.BatchingNeighbourUpdater
 import java.util.concurrent.ConcurrentHashMap
 import java.util.function.BooleanSupplier
 
 class KryptonWorld(
     override val server: KryptonServer,
-    val data: WorldData,
+    override val data: WorldData,
     override val dimension: ResourceKey<World>,
     override val dimensionType: KryptonDimensionType,
     override val seed: Long,
     private val tickTime: Boolean
-) : World, WorldAccessor, PacketGroupingAudience, AutoCloseable {
+) : BaseWorld, AutoCloseable {
 
+    override val chunkManager: ChunkManager = ChunkManager(this)
+    override val entityManager: EntityManager = EntityManager(this)
     override val biomeManager: BiomeManager = BiomeManager(this, seed)
-    private val random: Random = Random()
+    override val random: RandomSource = RandomSource.create()
+    private val threadSafeRandom: RandomSource = RandomSource.createThreadSafe()
     override val border: KryptonWorldBorder = KryptonWorldBorder.DEFAULT // FIXME
-    override val gameMode: GameMode
-        get() = data.gameMode
     override var difficulty: Difficulty
         get() = data.difficulty
         set(value) {
             data.difficulty = value
-            cachedDifficultyPacket.invalidate()
         }
-    val cachedDifficultyPacket: CachedPacket = CachedPacket { PacketOutChangeDifficulty(difficulty) }
-    override val gameRules: KryptonGameRuleHolder
-        get() = data.gameRules
-    override val isHardcore: Boolean
-        get() = data.isHardcore
     override val isRaining: Boolean
         get() = getRainLevel(1F) > 0.2F
     override val isThundering: Boolean
         get() = if (dimensionType.hasSkylight && !dimensionType.hasCeiling) getThunderLevel(1F) > 0.9F else false
-    override val name: String
-        get() = data.name
-    override val spawnLocation: BlockPos
-        get() = BlockPos(data.spawnX, data.spawnY, data.spawnZ)
-    override val time: Long
-        get() = data.time
-    override val folder: Path = data.folder
-    override val scoreboard: KryptonScoreboard = server.scoreboard
+    override var skyDarken: Int = 0
+        private set
 
-    override val chunks: Collection<KryptonChunk>
-        get() = chunkManager.chunkMap.values
-
-    val entityManager: EntityManager = EntityManager(this)
-    override val entities: MutableCollection<KryptonEntity> = entityManager.entities
-
-    override val chunkManager: ChunkManager = ChunkManager(this)
     override val players: MutableSet<KryptonPlayer> = ConcurrentHashMap.newKeySet()
     var doNotSave: Boolean = false
-
-    override val height: Int = dimensionType.height
-    override val minimumBuildHeight: Int = dimensionType.minimumY
+    override val seaLevel: Int
+        get() = 63
 
     private var oldRainLevel = 0F
     override var rainLevel: Float = 0F
@@ -139,7 +117,13 @@ class KryptonWorld(
             field = clamped
         }
 
+    private val neighbourUpdater = BatchingNeighbourUpdater(this, server.config.advanced.maximumChainedNeighbourUpdates)
     private var cachedPointers: Pointers? = null
+
+    init {
+        updateSkyBrightness()
+        prepareWeather()
+    }
 
     @Suppress("UNCHECKED_CAST")
     override fun <T : Entity> spawnEntity(type: EntityType<T>, location: Vec3d): T? {
@@ -161,18 +145,33 @@ class KryptonWorld(
         entityManager.remove(entity)
     }
 
-    fun worldEvent(event: WorldEvent, pos: BlockPos, data: Int, except: KryptonPlayer) {
+    override fun worldEvent(pos: BlockPos, event: WorldEvent, data: Int, except: KryptonPlayer?) {
         server.playerManager.broadcast(PacketOutWorldEvent(event, pos, data, false), this, pos, 64.0, except)
     }
 
-    fun playSound(position: Vec3d, event: SoundEvent, source: Sound.Source, volume: Float, pitch: Float, except: KryptonPlayer? = null) {
-        playSound(position.x, position.y, position.z, event, source, volume, pitch, except)
+    override fun playSound(pos: BlockPos, event: SoundEvent, source: Sound.Source, volume: Float, pitch: Float, except: KryptonPlayer?) {
+        playSound(pos.x + 0.5, pos.y + 0.5, pos.z + 0.5, event, source, volume, pitch, except)
+    }
+
+    fun playSound(entity: KryptonEntity, event: SoundEvent, source: Sound.Source, volume: Float, pitch: Float, except: KryptonPlayer? = null) {
+        playSeededSound(entity, event, source, volume, pitch, threadSafeRandom.nextLong(), except)
     }
 
     fun playSound(x: Double, y: Double, z: Double, event: SoundEvent, source: Sound.Source, volume: Float, pitch: Float,
                   except: KryptonPlayer? = null) {
-        val packet = PacketOutSoundEffect(event, source, x, y, z, volume, pitch)
-        server.playerManager.broadcast(packet, this, x, y, z, event.calculateDistance(volume), except)
+        playSeededSound(x, y, z, event, source, volume, pitch, threadSafeRandom.nextLong(), except)
+    }
+
+    private fun playSeededSound(x: Double, y: Double, z: Double, event: SoundEvent, source: Sound.Source, volume: Float, pitch: Float, seed: Long,
+                                except: KryptonPlayer?) {
+        val packet = PacketOutSoundEffect(event, source, x, y, z, volume, pitch, seed)
+        server.playerManager.broadcast(packet, this, x, y, z, event.getRange(volume), except)
+    }
+
+    private fun playSeededSound(entity: KryptonEntity, event: SoundEvent, source: Sound.Source, volume: Float, pitch: Float, seed: Long,
+                                except: KryptonPlayer?) {
+        val packet = PacketOutEntitySoundEffect(event, source, entity.id, volume, pitch, seed)
+        server.playerManager.broadcast(packet, this, entity.location.x, entity.location.y, entity.location.z, event.getRange(volume), except)
     }
 
     // TODO: Check world border bounds
@@ -182,64 +181,126 @@ class KryptonWorld(
         val packet = PacketOutSetBlockDestroyStage(sourceId, position, state)
         server.sessionManager.sendGrouped(packet) {
             if (it.world !== this || it.id == sourceId) return@sendGrouped false
-            val distanceX = position.x - it.location.x
-            val distanceY = position.y - it.location.y
-            val distanceZ = position.z - it.location.z
-            distanceX * distanceX + distanceY * distanceY + distanceZ * distanceZ < 1024.0
+            val dx = position.x - it.location.x
+            val dy = position.y - it.location.y
+            val dz = position.z - it.location.z
+            dx * dx + dy * dy + dz * dz < 32.0 * 32.0
         }
     }
-
-    fun removeBlock(pos: BlockPos): Boolean = setBlock(pos, getFluid(pos).asBlock())
 
     override fun getBlock(x: Int, y: Int, z: Int): KryptonBlockState {
         if (isOutsideBuildHeight(y)) return Blocks.VOID_AIR.defaultState.downcast()
-        val chunk = getChunkAt(x shr 4, z shr 4) ?: return KryptonBlocks.AIR.defaultState
-        return chunk.getBlock(x, y, z)
+        return getChunkAt(SectionPos.blockToSection(x), SectionPos.blockToSection(z))?.getBlock(x, y, z) ?: KryptonBlocks.AIR.defaultState
     }
-
-    override fun getBlock(position: Vec3i): KryptonBlockState = getBlock(position.x, position.y, position.z)
 
     override fun getFluid(x: Int, y: Int, z: Int): KryptonFluidState {
         if (isOutsideBuildHeight(y)) return KryptonFluids.EMPTY.defaultState
-        val chunk = getChunkAt(x shr 4, z shr 4) ?: return KryptonFluids.EMPTY.defaultState
-        return chunk.getFluid(x, y, z)
+        return getChunkAt(SectionPos.blockToSection(x), SectionPos.blockToSection(z))?.getFluid(x, y, z) ?: KryptonFluids.EMPTY.defaultState
     }
 
-    override fun getFluid(position: Vec3i): KryptonFluidState = getFluid(position.x, position.y, position.z)
-
-    override fun getChunk(x: Int, z: Int, status: ChunkStatus, shouldCreate: Boolean): ChunkAccessor? = null // FIXME
+    override fun getChunk(x: Int, z: Int, requiredStatus: ChunkStatus, shouldCreate: Boolean): ChunkAccessor? = null // FIXME
 
     override fun getHeight(type: Heightmap.Type, x: Int, z: Int): Int {
         if (x in MINIMUM_SIZE..MAXIMUM_SIZE && z in MINIMUM_SIZE..MAXIMUM_SIZE) {
-            if (hasChunk(x shr 4, z shr 4)) return getChunk(x shr 4, z shr 4)!!.getHeight(type, x and 15, z and 15) + 1
+            val chunkX = SectionPos.sectionToBlock(x)
+            val chunkZ = SectionPos.sectionRelative(z)
+            val sectionX = SectionPos.sectionRelative(x)
+            val sectionZ = SectionPos.sectionRelative(z)
+            if (hasChunk(chunkX, chunkZ)) return getChunk(chunkX, chunkZ)!!.getHeight(type, sectionX, sectionZ) + 1
             return minimumBuildHeight
         }
-        return SEA_LEVEL + 1
+        return seaLevel + 1
     }
 
-    override fun getChunkAt(x: Int, z: Int): KryptonChunk? = chunkManager.get(x, z)
-
-    override fun getChunk(x: Int, y: Int, z: Int): KryptonChunk? = getChunkAt(x shr 4, z shr 4)
-
-    override fun getChunk(position: Vec3i): KryptonChunk? = getChunk(position.x, position.y, position.z)
-
-    override fun loadChunk(x: Int, z: Int): KryptonChunk? = chunkManager.load(x, z, Ticket(TicketTypes.API_LOAD, 31, ChunkPos.pack(x, z)))
-
-    override fun unloadChunk(x: Int, z: Int, force: Boolean) {
-        chunkManager.unload(x, z, TicketTypes.API_LOAD, force)
-    }
-
-    override fun setBlock(x: Int, y: Int, z: Int, block: KryptonBlockState): Boolean {
-        if (isOutsideBuildHeight(y)) return false
+    override fun setBlock(pos: BlockPos, state: KryptonBlockState, flags: Int, recursionLeft: Int): Boolean {
+        if (isOutsideBuildHeight(pos)) return false
 //        if (isDebug) return false
-        val chunk = getChunk(x, y, z) ?: return false
-        if (!chunk.setBlock(x, y, z, block)) return false
-        server.sessionManager.sendGrouped(PacketOutBlockUpdate(BlockPos(x, y, z), block))
+        val chunk = getChunk(pos) ?: return false
+        val block = state.block
+        val oldState = chunk.setBlock(pos, state, flags and SetBlockFlag.BLOCK_MOVING != 0) ?: return false
+        val newState = getBlock(pos)
+        if (flags and SetBlockFlag.LIGHTING == 0 && newState !== oldState && canUpdateLighting(pos, oldState, newState)) {
+            // TODO: Update lighting for block
+        }
+        if (newState === state) {
+            if (flags and SetBlockFlag.NOTIFY_CLIENTS != 0) sendBlockUpdated(pos, oldState, newState)
+            if (flags and SetBlockFlag.UPDATE_NEIGHBOURS != 0) {
+                blockUpdated(pos, oldState.block)
+                if (state.hasAnalogOutputSignal) updateNeighbourForOutputSignal(pos, block)
+            }
+            if (flags and SetBlockFlag.UPDATE_NEIGHBOUR_SHAPES == 0 && recursionLeft > 0) {
+                val maskedFlags = flags and (SetBlockFlag.NEIGHBOUR_DROPS.inv() and SetBlockFlag.UPDATE_NEIGHBOURS.inv())
+                oldState.updateIndirectNeighbourShapes(this, pos, maskedFlags, recursionLeft - 1)
+                state.updateNeighbourShapes(this, pos, maskedFlags, recursionLeft - 1)
+                state.updateIndirectNeighbourShapes(this, pos, maskedFlags, recursionLeft - 1)
+            }
+            onBlockStateChange(pos, oldState, newState)
+        }
         return true
     }
 
+    private fun canUpdateLighting(pos: BlockPos, oldState: KryptonBlockState, newState: KryptonBlockState): Boolean =
+        newState.getLightBlock(this, pos) != oldState.getLightBlock(this, pos) ||
+                newState.lightEmission != oldState.lightEmission ||
+                newState.useShapeForLightOcclusion != oldState.useShapeForLightOcclusion
+
+    @Suppress("UnusedPrivateMember")
+    fun sendBlockUpdated(pos: BlockPos, oldState: KryptonBlockState, newState: KryptonBlockState) {
+        server.sessionManager.sendGrouped(players, PacketOutBlockUpdate(pos, newState))
+        // TODO: Update pathfinding mobs
+    }
+
+    private fun updateNeighbourForOutputSignal(pos: BlockPos, block: KryptonBlock) {
+        Directions.Plane.HORIZONTAL.forEach { direction ->
+            var neighbourPos = pos.relative(direction)
+            if (!hasChunkAt(neighbourPos)) return@forEach
+            var neighbour = getBlock(neighbourPos)
+            if (neighbour.eq(Blocks.COMPARATOR)) {
+                neighbourChanged(neighbour, neighbourPos, block, pos, false)
+            } else if (neighbour.isRedstoneConductor(this, neighbourPos)) {
+                neighbourPos = neighbourPos.relative(direction)
+                neighbour = getBlock(neighbourPos)
+                if (neighbour.eq(Blocks.COMPARATOR)) neighbourChanged(neighbour, neighbourPos, block, pos, false)
+            }
+        }
+    }
+
+    private fun updateNeighboursAt(pos: BlockPos, block: KryptonBlock) {
+        neighbourUpdater.updateNeighboursAtExceptFromFacing(pos, block, null)
+    }
+
+    private fun neighbourChanged(state: KryptonBlockState, pos: BlockPos, block: KryptonBlock, neighbourPos: BlockPos, moving: Boolean) {
+        neighbourUpdater.neighbourChanged(state, pos, block, neighbourPos, moving)
+    }
+
+    @Suppress("UnusedPrivateMember")
+    private fun onBlockStateChange(pos: BlockPos, oldState: KryptonBlockState, newState: KryptonBlockState) {
+        // TODO: Do POI updates
+    }
+
+    override fun blockUpdated(pos: BlockPos, block: KryptonBlock) {
+        updateNeighboursAt(pos, block)
+    }
+
+    override fun removeBlock(pos: BlockPos, moving: Boolean): Boolean =
+        setBlock(pos, getFluid(pos).asBlock(), SetBlockFlag.UPDATE_NOTIFY or if (moving) SetBlockFlag.BLOCK_MOVING else 0)
+
+    override fun destroyBlock(pos: BlockPos, drop: Boolean, entity: KryptonEntity?, recursionLeft: Int): Boolean {
+        val state = getBlock(pos)
+        if (state.isAir) return false
+        val fluid = getFluid(pos)
+//        if (state.block !is BaseFireBlock) worldEvent(pos, WorldEvent.DESTROY_BLOCK, KryptonBlock.idOf(state)) TODO
+        if (drop) {
+            // TODO: Drop items
+        }
+        return setBlock(pos, fluid.asBlock(), SetBlockFlag.UPDATE_NOTIFY, recursionLeft)
+    }
+
+    override fun getUncachedNoiseBiome(x: Int, y: Int, z: Int): Biome = Biomes.PLAINS // TODO: Use biome source from chunk generator
+
     fun tick(hasTimeLeft: BooleanSupplier) {
         tickWeather()
+        updateSkyBrightness()
         tickTime()
         chunkManager.tick(hasTimeLeft)
 
@@ -315,6 +376,22 @@ class KryptonWorld(
         if (data.gameRules.get(GameRules.DO_DAYLIGHT_CYCLE)) data.dayTime++
     }
 
+    private fun updateSkyBrightness() {
+        val rainFactor = 1.0 - (getRainLevel(1F) * 5F).toDouble() / 16.0
+        val thunderFactor = 1.0 - (getThunderLevel(1F) * 5F).toDouble() / 16.0
+        val result = 0.5 + 2.0 * Maths.clamp(Maths.cos(timeOfDay(1F) * (Math.PI.toFloat() * 2F)).toDouble(), -0.25, 0.25)
+        skyDarken = ((1.0 - result * rainFactor * thunderFactor) * 11.0).toInt()
+    }
+
+    private fun prepareWeather() {
+        if (data.isRaining) {
+            rainLevel = 1F
+            if (data.isThundering) thunderLevel = 1F
+        }
+    }
+
+    override fun generateSoundSeed(): Long = threadSafeRandom.nextLong()
+
     fun save(flush: Boolean, skipSave: Boolean) {
         if (skipSave) return
         // TODO: Save extra data for maps, raids, etc.
@@ -346,6 +423,5 @@ class KryptonWorld(
 
         private const val MINIMUM_SIZE = -30000000
         private const val MAXIMUM_SIZE = -MINIMUM_SIZE
-        private const val SEA_LEVEL = 63
     }
 }

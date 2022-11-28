@@ -70,7 +70,7 @@ public object ResourceKeys {
     @JvmField
     public val DIMENSION_TYPE: ResourceKey<out Registry<DimensionType>> = minecraft("dimension_type")
     @JvmField
-    public val BLOCK_ENTITY_TYPE: ResourceKey<out Registry<BlockEntityType>> = minecraft("block_entity_type")
+    public val BLOCK_ENTITY_TYPE: ResourceKey<out Registry<BlockEntityType<*>>> = minecraft("block_entity_type")
     @JvmField
     public val BANNER_PATTERN: ResourceKey<out Registry<BannerPatternType>> = minecraft("banner_pattern")
     @JvmField

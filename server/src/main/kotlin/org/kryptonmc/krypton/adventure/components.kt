@@ -32,4 +32,4 @@ fun Component.toLegacyAmpersandText(): String = LegacyComponentSerializer.legacy
 
 fun Component.toPlainText(): String = PlainTextComponentSerializer.plainText().serialize(this)
 
-fun Component.toMessage(): AdventureMessage = AdventureMessage.of(this)
+fun Component.toMessage(): AdventureMessage = KryptonAdventureMessage(this)

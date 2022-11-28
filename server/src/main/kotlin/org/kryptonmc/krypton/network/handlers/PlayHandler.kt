@@ -84,6 +84,7 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateEntityPositionAndRot
 import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateEntityRotation
 import org.kryptonmc.krypton.registry.KryptonRegistries
 import org.kryptonmc.krypton.util.Positioning
+import org.kryptonmc.krypton.util.SectionPos
 import org.kryptonmc.krypton.util.Vec3dImpl
 import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.world.chunk.ChunkPos
@@ -297,12 +298,12 @@ class PlayHandler(override val server: KryptonServer, override val session: Sess
         val event = server.eventManager.fireSync(KryptonPlaceBlockEvent(player, state, packet.hand, position, face, isInside))
         if (!event.result.isAllowed) return
 
-        val chunkX = Positioning.toChunkCoordinate(player.location.floorX())
-        val chunkZ = Positioning.toChunkCoordinate(player.location.floorZ())
+        val chunkX = SectionPos.blockToSection(player.location.x)
+        val chunkZ = SectionPos.blockToSection(player.location.z)
         val chunk = world.chunkManager.get(ChunkPos.pack(chunkX, chunkZ)) ?: return
         val existingBlock = chunk.getBlock(position)
         if (existingBlock != Blocks.AIR.defaultState) return
-        chunk.setBlock(position, KryptonRegistries.BLOCK.get(player.inventory.mainHand.type.key()).defaultState)
+        chunk.setBlock(position, KryptonRegistries.BLOCK.get(player.inventory.mainHand.type.key()).defaultState, false)
     }
 
     private fun handlePlayerAction(packet: PacketInPlayerAction) {

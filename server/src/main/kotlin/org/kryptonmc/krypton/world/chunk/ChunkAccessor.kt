@@ -19,13 +19,15 @@
 package org.kryptonmc.krypton.world.chunk
 
 import org.kryptonmc.api.world.biome.Biome
+import org.kryptonmc.krypton.util.BlockPos
 import org.kryptonmc.krypton.util.Maths
 import org.kryptonmc.krypton.util.Quart
 import org.kryptonmc.krypton.util.logger
-import org.kryptonmc.krypton.world.BlockAccessor
-import org.kryptonmc.krypton.world.HeightAccessor
+import org.kryptonmc.krypton.world.components.HeightAccessor
 import org.kryptonmc.krypton.world.Heightmap
 import org.kryptonmc.krypton.world.biome.NoiseBiomeSource
+import org.kryptonmc.krypton.world.block.state.KryptonBlockState
+import org.kryptonmc.krypton.world.components.BlockGetter
 import java.util.EnumMap
 import java.util.EnumSet
 
@@ -34,7 +36,7 @@ abstract class ChunkAccessor(
     private val heightAccessor: HeightAccessor,
     var inhabitedTime: Long,
     sections: Array<ChunkSection?>?
-) : BlockAccessor, NoiseBiomeSource {
+) : BlockGetter, NoiseBiomeSource {
 
     abstract val status: ChunkStatus
 
@@ -61,6 +63,8 @@ abstract class ChunkAccessor(
         replaceMissingSections(heightAccessor, this.sectionArray)
     }
 
+    abstract fun setBlock(pos: BlockPos, state: KryptonBlockState, moving: Boolean): KryptonBlockState?
+
     private fun section(index: Int): ChunkSection = sectionArray[index]!!
 
     fun getOrCreateHeightmap(type: Heightmap.Type): Heightmap = heightmaps.computeIfAbsent(type) { Heightmap(this, it) }
@@ -82,7 +86,7 @@ abstract class ChunkAccessor(
         val minimumQuart = Quart.fromBlock(minimumBuildHeight)
         val maximumQuart = minimumQuart + Quart.fromBlock(height) - 1
         val actualY = Maths.clamp(y, minimumQuart, maximumQuart)
-        val sectionIndex = sectionIndex(Quart.toBlock(actualY))
+        val sectionIndex = getSectionIndex(Quart.toBlock(actualY))
         return section(sectionIndex).getNoiseBiome(x and 3, actualY and 3, z and 3)
     }
 
@@ -101,7 +105,7 @@ abstract class ChunkAccessor(
         @JvmStatic
         private fun replaceMissingSections(heightAccessor: HeightAccessor, sections: Array<ChunkSection?>) {
             for (i in sections.indices) {
-                if (sections[i] == null) sections[i] = ChunkSection(heightAccessor.sectionYFromIndex(i))
+                if (sections[i] == null) sections[i] = ChunkSection(heightAccessor.getSectionYFromSectionIndex(i))
             }
         }
     }

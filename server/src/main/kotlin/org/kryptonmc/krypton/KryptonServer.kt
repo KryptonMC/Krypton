@@ -47,6 +47,7 @@ import org.kryptonmc.krypton.user.KryptonUserManager
 import org.kryptonmc.krypton.util.crypto.YggdrasilSessionKey
 import org.kryptonmc.krypton.util.executor.ReentrantBlockableEventLoop
 import org.kryptonmc.krypton.util.logger
+import org.kryptonmc.krypton.util.random.RandomSource
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.krypton.world.KryptonWorldManager
 import org.kryptonmc.krypton.world.scoreboard.KryptonScoreboard
@@ -87,6 +88,7 @@ class KryptonServer(
     override val servicesManager: KryptonServicesManager = KryptonServicesManager(this)
     override val scheduler: KryptonScheduler = KryptonScheduler(pluginManager)
     override val userManager: KryptonUserManager = KryptonUserManager(this)
+    private val random = RandomSource.create()
 
     @Volatile
     private var running = true
@@ -398,6 +400,8 @@ class KryptonServer(
         val maxDistance = max(distanceX, distanceZ)
         return maxDistance <= config.world.spawnProtectionRadius
     }
+
+    override fun generateSoundSeed(): Long = random.nextLong()
 
     companion object {
 

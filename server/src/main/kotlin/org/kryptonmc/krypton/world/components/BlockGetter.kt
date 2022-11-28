@@ -16,19 +16,21 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.world
+package org.kryptonmc.krypton.world.components
 
 import org.kryptonmc.api.block.BlockContainer
-import org.kryptonmc.api.block.BlockState
-import org.kryptonmc.api.fluid.FluidContainer
+import org.kryptonmc.api.util.BoundingBox
 import org.kryptonmc.api.util.Vec3i
+import org.kryptonmc.krypton.util.BlockPos
+import org.kryptonmc.krypton.util.Maths
 import org.kryptonmc.krypton.world.block.KryptonBlocks
+import org.kryptonmc.krypton.world.block.entity.KryptonBlockEntity
 import org.kryptonmc.krypton.world.block.state.KryptonBlockState
-import org.kryptonmc.krypton.world.block.downcast
 import org.kryptonmc.krypton.world.fluid.KryptonFluidState
 import org.kryptonmc.krypton.world.fluid.KryptonFluids
+import java.util.stream.Stream
 
-interface BlockAccessor : BlockContainer, FluidContainer, HeightAccessor {
+interface BlockGetter : HeightAccessor, BlockContainer, FluidGetter, BlockEntityGetter {
 
     val maximumLightLevel: Int
         get() = 15
@@ -37,19 +39,28 @@ interface BlockAccessor : BlockContainer, FluidContainer, HeightAccessor {
 
     override fun getBlock(position: Vec3i): KryptonBlockState = getBlock(position.x, position.y, position.z)
 
-    override fun getFluid(x: Int, y: Int, z: Int): KryptonFluidState
+    fun getBlockStates(area: BoundingBox): Stream<KryptonBlockState> = BlockPos.betweenClosedStream(area).map(::getBlock)
 
-    override fun getFluid(position: Vec3i): KryptonFluidState = getFluid(position.x, position.y, position.z)
+    fun isEmptyBlock(pos: BlockPos): Boolean = getBlock(pos).isAir
 
-    override fun setBlock(x: Int, y: Int, z: Int, block: BlockState): Boolean = setBlock(x, y, z, block.downcast())
+    fun containsAnyLiquid(area: BoundingBox): Boolean {
+        val minX = Maths.floor(area.minimumX)
+        val maxX = Maths.ceil(area.maximumX)
+        val minY = Maths.floor(area.minimumY)
+        val maxY = Maths.ceil(area.maximumY)
+        val minZ = Maths.floor(area.minimumZ)
+        val maxZ = Maths.ceil(area.maximumX)
+        for (x in minX..maxX) {
+            for (y in minY..maxY) {
+                for (z in minZ..maxZ) {
+                    if (!getBlock(x, y, z).asFluid().isEmpty) return true
+                }
+            }
+        }
+        return false
+    }
 
-    override fun setBlock(position: Vec3i, block: BlockState): Boolean = setBlock(position, block.downcast())
-
-    fun setBlock(x: Int, y: Int, z: Int, block: KryptonBlockState): Boolean
-
-    fun setBlock(position: Vec3i, block: KryptonBlockState): Boolean = setBlock(position.x, position.y, position.z, block)
-
-    object Empty : BlockAccessor {
+    object Empty : BlockGetter {
 
         override val height: Int
             get() = 0
@@ -58,8 +69,8 @@ interface BlockAccessor : BlockContainer, FluidContainer, HeightAccessor {
 
         override fun getBlock(x: Int, y: Int, z: Int): KryptonBlockState = KryptonBlocks.AIR.defaultState
 
-        override fun setBlock(x: Int, y: Int, z: Int, block: KryptonBlockState): Boolean = false
-
         override fun getFluid(x: Int, y: Int, z: Int): KryptonFluidState = KryptonFluids.EMPTY.defaultState
+
+        override fun getBlockEntity(x: Int, y: Int, z: Int): KryptonBlockEntity? = null
     }
 }

@@ -24,7 +24,7 @@ import it.unimi.dsi.fastutil.longs.LongSet
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.packet.out.play.PacketOutSetCenterChunk
 import org.kryptonmc.krypton.packet.out.play.PacketOutUnloadChunk
-import org.kryptonmc.krypton.util.Positioning
+import org.kryptonmc.krypton.util.SectionPos
 import org.kryptonmc.krypton.world.chunk.ChunkPos
 import kotlin.math.abs
 
@@ -48,8 +48,8 @@ class PlayerChunkViewingSystem(private val player: KryptonPlayer) {
 
         val oldCentralX = previousCentralX
         val oldCentralZ = previousCentralZ
-        val centralX = Positioning.toChunkCoordinate(player.location.floorX())
-        val centralZ = Positioning.toChunkCoordinate(player.location.floorZ())
+        val centralX = SectionPos.blockToSection(player.location.x)
+        val centralZ = SectionPos.blockToSection(player.location.z)
         val radius = player.server.config.world.viewDistance
 
         if (firstLoad) {
