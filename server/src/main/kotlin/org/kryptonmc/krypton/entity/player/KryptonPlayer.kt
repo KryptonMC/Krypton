@@ -58,7 +58,6 @@ import org.kryptonmc.krypton.entity.serializer.player.PlayerSerializer
 import org.kryptonmc.krypton.entity.system.PlayerChunkViewingSystem
 import org.kryptonmc.krypton.entity.system.PlayerGameModeSystem
 import org.kryptonmc.krypton.entity.system.PlayerHungerSystem
-import org.kryptonmc.krypton.event.player.KryptonChangeGameModeEvent
 import org.kryptonmc.krypton.inventory.KryptonPlayerInventory
 import org.kryptonmc.krypton.item.KryptonItemStack
 import org.kryptonmc.krypton.item.handler
@@ -69,7 +68,6 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutAbilities
 import org.kryptonmc.krypton.packet.out.play.PacketOutGameEvent
 import org.kryptonmc.krypton.packet.out.play.PacketOutOpenBook
 import org.kryptonmc.krypton.packet.out.play.PacketOutParticle
-import org.kryptonmc.krypton.packet.out.play.PacketOutPlayerInfo
 import org.kryptonmc.krypton.packet.out.play.PacketOutPluginMessage
 import org.kryptonmc.krypton.packet.out.play.PacketOutResourcePack
 import org.kryptonmc.krypton.packet.out.play.PacketOutSetCamera
@@ -80,7 +78,6 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutTeleportEntity
 import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateEntityPosition
 import org.kryptonmc.krypton.statistic.KryptonStatisticsTracker
 import org.kryptonmc.krypton.util.BlockPos
-import org.kryptonmc.krypton.util.GameModes
 import org.kryptonmc.krypton.util.InteractionResult
 import org.kryptonmc.krypton.util.Positioning
 import org.kryptonmc.krypton.world.KryptonWorld
@@ -113,7 +110,7 @@ class KryptonPlayer(
         set(_) = Unit // Player UUIDs are read only.
 
     override val hungerSystem: PlayerHungerSystem = PlayerHungerSystem(this)
-    val gameModeSystem: PlayerGameModeSystem = PlayerGameModeSystem(this)
+    override val gameModeSystem: PlayerGameModeSystem = PlayerGameModeSystem(this)
     val chunkViewingSystem: PlayerChunkViewingSystem = PlayerChunkViewingSystem(this)
 
     override val abilities: Abilities = Abilities()
@@ -137,12 +134,7 @@ class KryptonPlayer(
             }
         }
 
-    var oldGameMode: GameMode? = null
     // Hacks to get around Kotlin not letting us set the value of the property without calling the setter.
-    private var internalGameMode = GameMode.SURVIVAL
-    override var gameMode: GameMode
-        get() = internalGameMode
-        set(value) = updateGameMode(value, ChangeGameModeEvent.Cause.API)
     val canUseGameMasterBlocks: Boolean
         get() = abilities.canInstantlyBuild && hasPermission(KryptonPermission.USE_GAME_MASTER_BLOCKS.node)
     override val canBeSeenByAnyone: Boolean
@@ -182,18 +174,18 @@ class KryptonPlayer(
         data.define(MetadataKeys.Player.RIGHT_SHOULDER, CompoundTag.EMPTY)
     }
 
-    fun updateGameMode(mode: GameMode, cause: ChangeGameModeEvent.Cause) {
-        if (mode === gameMode) return
-        val result = server.eventManager.fireSync(KryptonChangeGameModeEvent(this, gameMode, mode, cause)).result
-        if (!result.isAllowed) return
+    override fun updateGameMode(mode: GameMode, cause: ChangeGameModeEvent.Cause): ChangeGameModeEvent? {
+        val event = gameModeSystem.changeGameMode(mode, cause)
+        if (event == null || !event.result.isAllowed) return null
 
-        oldGameMode = gameMode
-        internalGameMode = result.newGameMode ?: mode
-        GameModes.updatePlayerAbilities(mode, abilities)
-        onAbilitiesUpdate()
-        server.sessionManager.sendGrouped(PacketOutPlayerInfo(PacketOutPlayerInfo.Action.UPDATE_GAMEMODE, this))
         session.send(PacketOutGameEvent(GameEvent.CHANGE_GAMEMODE, mode.ordinal.toFloat()))
-        if (mode != GameMode.SPECTATOR) camera = this
+        if (mode == GameMode.SPECTATOR) {
+            stopRiding()
+        } else {
+            camera = this
+        }
+        onAbilitiesUpdate()
+        return event
     }
 
     override fun getEquipment(slot: EquipmentSlot): KryptonItemStack = when {

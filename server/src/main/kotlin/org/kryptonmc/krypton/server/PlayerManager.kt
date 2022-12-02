@@ -125,8 +125,8 @@ class PlayerManager(private val server: KryptonServer) {
         session.send(PacketOutLogin(
             player.id,
             world.data.isHardcore,
-            player.gameMode,
-            player.oldGameMode,
+            player.gameModeSystem.gameMode,
+            player.gameModeSystem.previousGameMode,
             server.worldManager.worlds.keys,
             PacketOutLogin.createRegistryCodec(),
             KryptonRegistries.DIMENSION_TYPE.getResourceKey(world.dimensionType)!!,

@@ -90,7 +90,7 @@ object PlayerSerializer : EntitySerializer<KryptonPlayer> {
 
     override fun save(entity: KryptonPlayer): CompoundTag.Builder = LivingEntitySerializer.save(entity).apply {
         putInt(GAME_TYPE_TAG, entity.gameMode.ordinal)
-        if (entity.oldGameMode != null) putInt(PREVIOUS_GAME_TYPE_TAG, entity.oldGameMode!!.ordinal)
+        entity.gameModeSystem.previousGameMode?.let { putInt(PREVIOUS_GAME_TYPE_TAG, it.ordinal) }
 
         putDataVersion()
         put(INVENTORY_TAG, entity.inventory.save())

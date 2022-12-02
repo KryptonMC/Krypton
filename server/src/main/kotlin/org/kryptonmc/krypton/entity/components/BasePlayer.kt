@@ -29,7 +29,7 @@ import org.kryptonmc.krypton.entity.KryptonEquipable
 import org.kryptonmc.krypton.util.Directions
 import org.kryptonmc.krypton.world.scoreboard.KryptonScoreboard
 
-interface BasePlayer : BaseEntity, KryptonEquipable, Vanishable, HungerDelegate, AbilitiesDelegate, PlayerAudience, Glider {
+interface BasePlayer : BaseEntity, KryptonEquipable, Vanishable, HungerDelegate, AbilitiesDelegate, PlayerAudience, Glider, GameModePlayer {
 
     val permissionFunction: PermissionFunction
 

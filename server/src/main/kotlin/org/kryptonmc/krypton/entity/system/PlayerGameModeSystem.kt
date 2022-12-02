@@ -18,8 +18,10 @@
  */
 package org.kryptonmc.krypton.entity.system
 
+import org.kryptonmc.api.event.player.ChangeGameModeEvent
 import org.kryptonmc.api.world.GameMode
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
+import org.kryptonmc.krypton.event.player.KryptonChangeGameModeEvent
 import org.kryptonmc.krypton.item.handler
 import org.kryptonmc.krypton.packet.`in`.play.PacketInPlayerAction
 import org.kryptonmc.krypton.packet.out.play.PacketOutBlockUpdate
@@ -34,7 +36,8 @@ class PlayerGameModeSystem(private val player: KryptonPlayer) {
 
     var gameMode: GameMode = GameMode.SURVIVAL
         private set
-    private var previousGameMode: GameMode? = null
+    var previousGameMode: GameMode? = null
+        private set
 
     private var currentTick = 0
     private var isDestroying = false
@@ -71,10 +74,12 @@ class PlayerGameModeSystem(private val player: KryptonPlayer) {
         }
     }
 
-    fun changeGameMode(mode: GameMode): Boolean {
-        if (mode == gameMode) return false
+    fun changeGameMode(mode: GameMode, cause: ChangeGameModeEvent.Cause): ChangeGameModeEvent? {
+        if (mode == gameMode) return null
+        val event = player.server.eventManager.fireSync(KryptonChangeGameModeEvent(player, gameMode, mode, cause))
+        if (!event.result.isAllowed) return event
         setGameMode(mode, gameMode)
-        return true
+        return event
     }
 
     fun setGameMode(mode: GameMode, previousMode: GameMode?) {
