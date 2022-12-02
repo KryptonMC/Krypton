@@ -12,14 +12,15 @@ import net.kyori.adventure.text.Component
 import org.jetbrains.annotations.ApiStatus
 import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.Krypton
+import org.kryptonmc.internal.annotations.ImmutableType
+import org.kryptonmc.internal.annotations.TypeFactory
 import java.net.URI
-import javax.annotation.concurrent.Immutable
 
 /**
  * A resource pack that may be sent to clients.
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
-@Immutable
+@ImmutableType
 public interface ResourcePack {
 
     /**
@@ -76,6 +77,7 @@ public interface ResourcePack {
     }
 
     @ApiStatus.Internal
+    @TypeFactory
     public interface Factory {
 
         public fun of(uri: URI, hash: String, isForced: Boolean, promptMessage: Component?): ResourcePack

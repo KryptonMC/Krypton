@@ -15,8 +15,9 @@ import org.kryptonmc.api.entity.EquipmentSlot
 import org.kryptonmc.api.entity.attribute.AttributeModifier
 import org.kryptonmc.api.entity.attribute.AttributeType
 import org.kryptonmc.api.entity.attribute.BasicModifierOperation
+import org.kryptonmc.internal.annotations.ImmutableType
+import org.kryptonmc.internal.annotations.TypeFactory
 import java.util.UUID
-import javax.annotation.concurrent.Immutable
 
 /**
  * An attribute that can be applied to an item that modifies a specific
@@ -24,7 +25,7 @@ import javax.annotation.concurrent.Immutable
  * equipped.
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
-@Immutable
+@ImmutableType
 public interface ItemAttributeModifier : AttributeModifier {
 
     /**
@@ -42,6 +43,7 @@ public interface ItemAttributeModifier : AttributeModifier {
     override val operation: BasicModifierOperation
 
     @ApiStatus.Internal
+    @TypeFactory
     public interface Factory {
 
         public fun of(

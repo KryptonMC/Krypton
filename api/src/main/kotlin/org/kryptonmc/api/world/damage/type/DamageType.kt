@@ -11,14 +11,14 @@ package org.kryptonmc.api.world.damage.type
 import net.kyori.adventure.key.Keyed
 import net.kyori.adventure.translation.Translatable
 import org.kryptonmc.api.util.CataloguedBy
-import javax.annotation.concurrent.Immutable
+import org.kryptonmc.internal.annotations.ImmutableType
 
 /**
  * A type of damage to something.
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
 @CataloguedBy(DamageTypes::class)
-@Immutable
+@ImmutableType
 public interface DamageType : Keyed, Translatable {
 
     /**

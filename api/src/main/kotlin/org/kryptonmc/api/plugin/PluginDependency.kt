@@ -12,18 +12,19 @@
  */
 package org.kryptonmc.api.plugin
 
-import javax.annotation.concurrent.Immutable
+import org.kryptonmc.internal.annotations.ImmutableType
 
 /**
  * Information for a plugin's dependency on another plugin.
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
-@Immutable
+@ImmutableType
 public interface PluginDependency {
 
     /**
      * The plugin ID of the **dependency**, not the **dependent**.
      */
+    @get:JvmName("id")
     public val id: String
 
     /**

@@ -14,7 +14,7 @@ package org.kryptonmc.api.event
 
 import net.kyori.adventure.text.Component
 import org.jetbrains.annotations.Contract
-import javax.annotation.concurrent.Immutable
+import org.kryptonmc.internal.annotations.ImmutableType
 
 /**
  * A result that contains a [reason] for allowing/denying the event, as a
@@ -24,7 +24,7 @@ import javax.annotation.concurrent.Immutable
  * @property reason The reason for the result.
  */
 @JvmRecord
-@Immutable
+@ImmutableType
 public data class ComponentResult(override val isAllowed: Boolean, public val reason: Component?) : ResultedEvent.Result {
 
     public companion object {

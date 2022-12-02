@@ -13,7 +13,6 @@ package org.kryptonmc.api.command
  * the input.
  *
  * This is useful for attaching external command frameworks to Krypton, and
- * allowing them to do their own processing. However, it is strongly
- * recommended to use the [CommandRegistrar] method over this.
+ * allowing them to do their own processing.
  */
 public fun interface RawCommand : InvocableCommand<String>

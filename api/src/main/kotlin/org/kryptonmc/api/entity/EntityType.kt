@@ -14,7 +14,7 @@ import net.kyori.adventure.translation.Translatable
 import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.block.BlockState
 import org.kryptonmc.api.util.CataloguedBy
-import javax.annotation.concurrent.Immutable
+import org.kryptonmc.internal.annotations.ImmutableType
 
 /**
  * A type of entity.
@@ -23,7 +23,7 @@ import javax.annotation.concurrent.Immutable
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
 @CataloguedBy(EntityTypes::class)
-@Immutable
+@ImmutableType
 public interface EntityType<out T : Entity> : Keyed, Translatable {
 
     /**

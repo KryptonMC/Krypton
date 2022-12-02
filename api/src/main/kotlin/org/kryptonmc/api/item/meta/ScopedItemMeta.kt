@@ -13,15 +13,15 @@ import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.item.ItemAttributeModifier
 import org.kryptonmc.api.item.data.ItemFlag
+import org.kryptonmc.internal.annotations.ImmutableType
 import java.util.function.Consumer
-import javax.annotation.concurrent.Immutable
 
 /**
  * An item meta subtype that changes all of the returns of functions in item
  * meta to a generic type to avoid all subtypes having to override all of the
  * functions.
  */
-@Immutable
+@ImmutableType
 public sealed interface ScopedItemMeta<B : ItemMetaBuilder<B, I>, I : ItemMeta> : ItemMeta, ItemMetaBuilder.Provider<B> {
 
     /**

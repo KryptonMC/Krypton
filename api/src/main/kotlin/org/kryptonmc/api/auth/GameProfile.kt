@@ -13,14 +13,15 @@ import org.jetbrains.annotations.ApiStatus
 import org.jetbrains.annotations.Contract
 import org.jetbrains.annotations.Unmodifiable
 import org.kryptonmc.api.Krypton
+import org.kryptonmc.internal.annotations.ImmutableType
+import org.kryptonmc.internal.annotations.TypeFactory
 import java.util.UUID
-import javax.annotation.concurrent.Immutable
 
 /**
  * The profile of an authenticated player.
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
-@Immutable
+@ImmutableType
 public interface GameProfile : Identified {
 
     /**
@@ -81,6 +82,7 @@ public interface GameProfile : Identified {
     public fun withoutProperty(property: ProfileProperty): GameProfile
 
     @ApiStatus.Internal
+    @TypeFactory
     public interface Factory {
 
         public fun of(name: String, uuid: UUID, properties: List<ProfileProperty>): GameProfile

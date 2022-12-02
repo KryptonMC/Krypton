@@ -10,14 +10,14 @@ package org.kryptonmc.api.effect.sound
 
 import net.kyori.adventure.sound.Sound
 import org.kryptonmc.api.util.CataloguedBy
-import javax.annotation.concurrent.Immutable
+import org.kryptonmc.internal.annotations.ImmutableType
 
 /**
  * A type of sound.
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
 @CataloguedBy(SoundEvents::class)
-@Immutable
+@ImmutableType
 public interface SoundEvent : Sound.Type {
 
     /**

@@ -9,13 +9,13 @@
 package org.kryptonmc.api.state
 
 import org.jetbrains.annotations.Unmodifiable
-import javax.annotation.concurrent.Immutable
+import org.kryptonmc.internal.annotations.ImmutableType
 
 /**
  * Something that can be in some state.
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
-@Immutable
+@ImmutableType
 public interface StateHolder<out S : State<S>> {
 
     /**

@@ -12,13 +12,14 @@ import org.jetbrains.annotations.ApiStatus
 import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.Krypton
 import org.kryptonmc.api.item.data.DyeColor
-import javax.annotation.concurrent.Immutable
+import org.kryptonmc.internal.annotations.ImmutableType
+import org.kryptonmc.internal.annotations.TypeFactory
 
 /**
  * A pattern for a banner. These are immutable, and may be reused.
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
-@Immutable
+@ImmutableType
 public interface BannerPattern {
 
     /**
@@ -34,6 +35,7 @@ public interface BannerPattern {
     public val color: DyeColor
 
     @ApiStatus.Internal
+    @TypeFactory
     public interface Factory {
 
         public fun of(type: BannerPatternType, color: DyeColor): BannerPattern

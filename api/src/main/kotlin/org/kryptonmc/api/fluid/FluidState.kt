@@ -10,13 +10,13 @@ package org.kryptonmc.api.fluid
 
 import org.kryptonmc.api.block.BlockState
 import org.kryptonmc.api.state.State
-import javax.annotation.concurrent.Immutable
+import org.kryptonmc.internal.annotations.ImmutableType
 
 /**
  * A state of a fluid.
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
-@Immutable
+@ImmutableType
 public interface FluidState : State<FluidState> {
 
     /**

@@ -10,7 +10,8 @@ package org.kryptonmc.api.util
 
 import org.jetbrains.annotations.ApiStatus
 import org.kryptonmc.api.Krypton
-import javax.annotation.concurrent.Immutable
+import org.kryptonmc.internal.annotations.ImmutableType
+import org.kryptonmc.internal.annotations.TypeFactory
 
 /**
  * A three dimensional rotation representing a pitch, yaw, and roll, in
@@ -19,7 +20,7 @@ import javax.annotation.concurrent.Immutable
  * As the values are represented in degrees
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
-@Immutable
+@ImmutableType
 public interface Rotations {
 
     /**
@@ -41,6 +42,7 @@ public interface Rotations {
     public val roll: Float
 
     @ApiStatus.Internal
+    @TypeFactory
     public interface Factory {
 
         public fun of(yaw: Float, pitch: Float, roll: Float): Rotations

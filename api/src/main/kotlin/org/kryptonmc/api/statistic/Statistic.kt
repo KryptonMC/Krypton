@@ -9,13 +9,13 @@
 package org.kryptonmc.api.statistic
 
 import org.kryptonmc.api.scoreboard.criteria.Criterion
-import javax.annotation.concurrent.Immutable
+import org.kryptonmc.internal.annotations.ImmutableType
 
 /**
  * A statistic that may be counted.
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
-@Immutable
+@ImmutableType
 public interface Statistic<T> : Criterion {
 
     /**

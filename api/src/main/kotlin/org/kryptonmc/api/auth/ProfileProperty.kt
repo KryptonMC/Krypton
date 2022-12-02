@@ -11,13 +11,14 @@ package org.kryptonmc.api.auth
 import org.jetbrains.annotations.ApiStatus
 import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.Krypton
-import javax.annotation.concurrent.Immutable
+import org.kryptonmc.internal.annotations.ImmutableType
+import org.kryptonmc.internal.annotations.TypeFactory
 
 /**
  * A property of a game profile.
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
-@Immutable
+@ImmutableType
 public interface ProfileProperty {
 
     /**
@@ -58,6 +59,7 @@ public interface ProfileProperty {
     public fun withoutSignature(): ProfileProperty
 
     @ApiStatus.Internal
+    @TypeFactory
     public interface Factory {
 
         public fun of(name: String, value: String, signature: String?): ProfileProperty

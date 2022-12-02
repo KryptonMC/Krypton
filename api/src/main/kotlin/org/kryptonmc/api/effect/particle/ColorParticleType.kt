@@ -9,10 +9,10 @@
 package org.kryptonmc.api.effect.particle
 
 import org.kryptonmc.api.effect.particle.builder.ColorParticleEffectBuilder
-import javax.annotation.concurrent.Immutable
+import org.kryptonmc.internal.annotations.ImmutableType
 
 /**
  * A type of particle that uses a colour for its appearance.
  */
-@Immutable
+@ImmutableType
 public interface ColorParticleType : ScopedParticleType<ColorParticleEffectBuilder>

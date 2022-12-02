@@ -11,14 +11,14 @@ package org.kryptonmc.api.inventory
 import net.kyori.adventure.key.Keyed
 import net.kyori.adventure.text.Component
 import org.kryptonmc.api.util.CataloguedBy
-import javax.annotation.concurrent.Immutable
+import org.kryptonmc.internal.annotations.ImmutableType
 
 /**
  * A type of inventory.
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
 @CataloguedBy(InventoryTypes::class)
-@Immutable
+@ImmutableType
 public interface InventoryType : Keyed {
 
     /**

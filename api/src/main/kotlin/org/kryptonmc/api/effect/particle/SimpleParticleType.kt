@@ -9,10 +9,10 @@
 package org.kryptonmc.api.effect.particle
 
 import org.kryptonmc.api.effect.particle.builder.SimpleParticleEffectBuilder
-import javax.annotation.concurrent.Immutable
+import org.kryptonmc.internal.annotations.ImmutableType
 
 /**
  * A type of particle with basic options available.
  */
-@Immutable
+@ImmutableType
 public interface SimpleParticleType : ScopedParticleType<SimpleParticleEffectBuilder>

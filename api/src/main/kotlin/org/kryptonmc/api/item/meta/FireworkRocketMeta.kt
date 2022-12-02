@@ -11,13 +11,13 @@ package org.kryptonmc.api.item.meta
 import org.jetbrains.annotations.Contract
 import org.jetbrains.annotations.Unmodifiable
 import org.kryptonmc.api.item.data.FireworkEffect
-import javax.annotation.concurrent.Immutable
+import org.kryptonmc.internal.annotations.ImmutableType
 
 /**
  * Item metadata for a firework rocket.
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
-@Immutable
+@ImmutableType
 public interface FireworkRocketMeta : ScopedItemMeta<FireworkRocketMeta.Builder, FireworkRocketMeta> {
 
     /**

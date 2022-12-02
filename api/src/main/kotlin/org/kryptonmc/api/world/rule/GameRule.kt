@@ -14,7 +14,8 @@ import org.jetbrains.annotations.ApiStatus
 import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.Krypton
 import org.kryptonmc.api.util.CataloguedBy
-import javax.annotation.concurrent.Immutable
+import org.kryptonmc.internal.annotations.ImmutableType
+import org.kryptonmc.internal.annotations.TypeFactory
 
 /**
  * A rule dictating how a specific aspect of the game functions.
@@ -23,7 +24,7 @@ import javax.annotation.concurrent.Immutable
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
 @CataloguedBy(GameRules::class)
-@Immutable
+@ImmutableType
 public interface GameRule<V> : Translatable, Keyed {
 
     /**
@@ -39,6 +40,7 @@ public interface GameRule<V> : Translatable, Keyed {
     public val defaultValue: V
 
     @ApiStatus.Internal
+    @TypeFactory
     public interface Factory {
 
         public fun <V> of(name: String, defaultValue: V): GameRule<V>

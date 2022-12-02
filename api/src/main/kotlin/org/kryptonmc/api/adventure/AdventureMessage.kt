@@ -14,7 +14,8 @@ import net.kyori.adventure.text.ComponentLike
 import org.jetbrains.annotations.ApiStatus
 import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.Krypton
-import javax.annotation.concurrent.Immutable
+import org.kryptonmc.internal.annotations.ImmutableType
+import org.kryptonmc.internal.annotations.TypeFactory
 
 /**
  * A Brigadier [Message] that wraps a [Component].
@@ -26,10 +27,11 @@ import javax.annotation.concurrent.Immutable
  * You should use this class when you want to send a [Component] error message as
  * a response to a Brigadier command.
  */
-@Immutable
+@ImmutableType
 public interface AdventureMessage : Message, ComponentLike {
 
     @ApiStatus.Internal
+    @TypeFactory
     public interface Factory {
 
         public fun of(component: Component): AdventureMessage

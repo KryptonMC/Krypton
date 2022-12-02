@@ -31,13 +31,18 @@ import org.kryptonmc.api.effect.particle.data.ParticleData
 import org.kryptonmc.api.entity.attribute.AttributeModifier
 import org.kryptonmc.api.item.ItemAttributeModifier
 import org.kryptonmc.api.item.ItemStack
+import org.kryptonmc.api.item.data.FireworkEffect
 import org.kryptonmc.api.item.meta.ItemMeta
 import org.kryptonmc.api.resource.ResourceKey
 import org.kryptonmc.api.resource.ResourcePack
+import org.kryptonmc.api.tags.TagKey
 import org.kryptonmc.api.util.BoundingBox
 import org.kryptonmc.api.util.Color
 import org.kryptonmc.api.util.TypeNotFoundException
 import org.kryptonmc.api.util.FactoryProvider
+import org.kryptonmc.api.util.Rotations
+import org.kryptonmc.api.util.Vec3d
+import org.kryptonmc.api.util.Vec3i
 import org.kryptonmc.api.util.register
 import org.kryptonmc.api.world.biome.AmbientAdditionsSettings
 import org.kryptonmc.api.world.biome.AmbientMoodSettings
@@ -58,6 +63,7 @@ import org.kryptonmc.krypton.effect.particle.data.KryptonParticleDataFactory
 import org.kryptonmc.krypton.entity.attribute.KryptonAttributeModifier
 import org.kryptonmc.krypton.item.KryptonItemAttributeModifier
 import org.kryptonmc.krypton.item.KryptonItemStack
+import org.kryptonmc.krypton.item.data.KryptonFireworkEffect
 import org.kryptonmc.krypton.item.meta.KryptonItemMeta
 import org.kryptonmc.krypton.resource.KryptonResourceKey
 import org.kryptonmc.krypton.resource.KryptonResourcePack
@@ -69,6 +75,7 @@ import org.kryptonmc.krypton.world.biome.KryptonBiomeEffects
 import org.kryptonmc.krypton.world.biome.KryptonClimate
 import org.kryptonmc.krypton.world.block.entity.banner.KryptonBannerPattern
 import org.kryptonmc.krypton.state.property.KryptonPropertyFactory
+import org.kryptonmc.krypton.tags.KryptonTagKey
 import org.kryptonmc.krypton.world.damage.KryptonDamageSourceFactory
 import org.kryptonmc.krypton.world.dimension.KryptonDimensionType
 import org.kryptonmc.krypton.world.rule.KryptonGameRule
@@ -86,31 +93,36 @@ object KryptonFactoryProvider : FactoryProvider {
     }
 
     fun bootstrap() {
-        register<ResourceKey.Factory>(KryptonResourceKey.Factory)
-        register<ParticleData.Factory>(KryptonParticleDataFactory)
-        register<AttributeModifier.Factory>(KryptonAttributeModifier.Factory)
-        register<Property.Factory>(KryptonPropertyFactory)
-        register<ItemStack.Factory>(KryptonItemStack.Factory)
-        register<CommandMeta.Factory>(KryptonCommandMeta.Factory)
+        register<AdventureMessage.Factory>(KryptonAdventureMessage.Factory)
         register<GameProfile.Factory>(KryptonGameProfile.Factory)
         register<ProfileProperty.Factory>(KryptonProfileProperty.Factory)
-        register<GameRule.Factory>(KryptonGameRule.Factory)
+        register<BannerPattern.Factory>(KryptonBannerPattern.Factory)
+        register<BrigadierCommand.Factory>(KryptonBrigadierCommand.Factory)
+        register<CommandMeta.Factory>(KryptonCommandMeta.Factory)
+        register<ParticleData.Factory>(KryptonParticleDataFactory)
         register<Music.Factory>(KryptonMusic.Factory)
+        register<AttributeModifier.Factory>(KryptonAttributeModifier.Factory)
+        register<ItemAttributeModifier.Factory>(KryptonItemAttributeModifier.Factory)
+        register<ItemStack.Factory>(KryptonItemStack.Factory)
+        register<FireworkEffect.Factory>(KryptonFireworkEffect.Factory)
+        register<ItemMeta.Factory>(KryptonItemMeta.Factory)
+        register<ResourceKey.Factory>(KryptonResourceKey.Factory)
+        register<ResourcePack.Factory>(KryptonResourcePack.Factory)
+        register<Property.Factory>(KryptonPropertyFactory)
+        register<TagKey.Factory>(KryptonTagKey.Factory)
+        register<BoundingBox.Factory>(KryptonBoundingBox.Factory)
+        register<Color.Factory>(KryptonColor.Factory)
+        register<Rotations.Factory>(RotationsImpl.Factory)
+        register<Vec3d.Factory>(Vec3dImpl.Factory)
+        register<Vec3i.Factory>(BlockPos.Factory)
         register<AmbientAdditionsSettings.Factory>(KryptonAmbientAdditionsSettings.Factory)
         register<AmbientMoodSettings.Factory>(KryptonAmbientMoodSettings.Factory)
         register<AmbientParticleSettings.Factory>(KryptonAmbientParticleSettings.Factory)
         register<Biome.Factory>(KryptonBiome.Factory)
         register<BiomeEffects.Factory>(KryptonBiomeEffects.Factory)
         register<Climate.Factory>(KryptonClimate.Factory)
-        register<BoundingBox.Factory>(KryptonBoundingBox.Factory)
-        register<DimensionType.Factory>(KryptonDimensionType.Factory)
-        register<ResourcePack.Factory>(KryptonResourcePack.Factory)
-        register<ItemMeta.Factory>(KryptonItemMeta.Factory)
         register<DamageSource.Factory>(KryptonDamageSourceFactory)
-        register<AdventureMessage.Factory>(KryptonAdventureMessage.Factory)
-        register<BrigadierCommand.Factory>(KryptonBrigadierCommand.Factory)
-        register<ItemAttributeModifier.Factory>(KryptonItemAttributeModifier.Factory)
-        register<BannerPattern.Factory>(KryptonBannerPattern.Factory)
-        register<Color.Factory>(KryptonColor.Factory)
+        register<DimensionType.Factory>(KryptonDimensionType.Factory)
+        register<GameRule.Factory>(KryptonGameRule.Factory)
     }
 }

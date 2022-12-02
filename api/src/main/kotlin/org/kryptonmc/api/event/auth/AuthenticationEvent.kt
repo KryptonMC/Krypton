@@ -11,7 +11,7 @@ package org.kryptonmc.api.event.auth
 import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.auth.GameProfile
 import org.kryptonmc.api.event.ResultedEvent
-import javax.annotation.concurrent.Immutable
+import org.kryptonmc.internal.annotations.ImmutableType
 
 /**
  * An event that is called when a request is made to authenticate a player with
@@ -32,7 +32,7 @@ public interface AuthenticationEvent : ResultedEvent<AuthenticationEvent.Result>
      * @property profile The optional profile for a successful result.
      */
     @JvmRecord
-    @Immutable
+    @ImmutableType
     public data class Result(override val isAllowed: Boolean, public val profile: GameProfile?) : ResultedEvent.Result {
 
         public companion object {

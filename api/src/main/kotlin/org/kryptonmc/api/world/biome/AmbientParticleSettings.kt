@@ -15,13 +15,14 @@ import org.kryptonmc.api.Krypton
 import org.kryptonmc.api.effect.particle.ParticleType
 import org.kryptonmc.api.effect.particle.data.ParticleData
 import org.kryptonmc.api.util.Buildable
-import javax.annotation.concurrent.Immutable
+import org.kryptonmc.internal.annotations.ImmutableType
+import org.kryptonmc.internal.annotations.TypeFactory
 
 /**
  * Settings for ambient particles in biomes.
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
-@Immutable
+@ImmutableType
 public interface AmbientParticleSettings : Buildable<AmbientParticleSettings.Builder, AmbientParticleSettings> {
 
     /**
@@ -106,6 +107,7 @@ public interface AmbientParticleSettings : Buildable<AmbientParticleSettings.Bui
     }
 
     @ApiStatus.Internal
+    @TypeFactory
     public interface Factory {
 
         public fun of(type: ParticleType, data: ParticleData?, probability: Float): AmbientParticleSettings

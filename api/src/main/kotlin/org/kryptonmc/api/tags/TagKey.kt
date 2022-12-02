@@ -13,13 +13,14 @@ import org.jetbrains.annotations.ApiStatus
 import org.kryptonmc.api.Krypton
 import org.kryptonmc.api.registry.Registry
 import org.kryptonmc.api.resource.ResourceKey
-import javax.annotation.concurrent.Immutable
+import org.kryptonmc.internal.annotations.ImmutableType
+import org.kryptonmc.internal.annotations.TypeFactory
 
 /**
  * A key for registry tags.
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
-@Immutable
+@ImmutableType
 public interface TagKey<T> {
 
     /**
@@ -35,6 +36,7 @@ public interface TagKey<T> {
     public val location: Key
 
     @ApiStatus.Internal
+    @TypeFactory
     public interface Factory {
 
         public fun <T> of(registry: ResourceKey<out Registry<T>>, location: Key): TagKey<T>

@@ -12,15 +12,15 @@ import net.kyori.adventure.builder.AbstractBuilder
 import net.kyori.adventure.text.Component
 import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.auth.GameProfile
+import org.kryptonmc.internal.annotations.ImmutableType
 import java.net.InetAddress
 import java.time.OffsetDateTime
-import javax.annotation.concurrent.Immutable
 
 /**
  * A ban made on a target.
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
-@Immutable
+@ImmutableType
 public interface Ban {
 
     /**
@@ -58,7 +58,7 @@ public interface Ban {
     /**
      * A ban targeting a profile.
      */
-    @Immutable
+    @ImmutableType
     public interface Profile : Ban {
 
         /**
@@ -71,7 +71,7 @@ public interface Ban {
     /**
      * A ban targeting an IP address.
      */
-    @Immutable
+    @ImmutableType
     public interface IP : Ban {
 
         /**

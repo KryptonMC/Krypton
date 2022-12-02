@@ -1,5 +1,6 @@
 plugins {
     id("io.gitlab.arturbosch.detekt")
+    id("com.google.devtools.ksp")
 }
 
 sourceSets.main {
@@ -40,6 +41,9 @@ dependencies {
 
     // Miscellaneous
     api(libs.brigadier)
+    compileOnly(libs.annotations)
+    compileOnly(projects.internalAnnotations)
+    ksp(projects.internalAp)
 }
 
 license {

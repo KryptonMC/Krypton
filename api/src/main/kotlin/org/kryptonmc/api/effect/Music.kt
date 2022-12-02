@@ -12,7 +12,8 @@ import org.jetbrains.annotations.ApiStatus
 import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.Krypton
 import org.kryptonmc.api.effect.sound.SoundEvent
-import javax.annotation.concurrent.Immutable
+import org.kryptonmc.internal.annotations.ImmutableType
+import org.kryptonmc.internal.annotations.TypeFactory
 
 /**
  * Music that may be played. This has a minimum and maximum delay before the
@@ -20,7 +21,7 @@ import javax.annotation.concurrent.Immutable
  * between this time frame.
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
-@Immutable
+@ImmutableType
 public interface Music {
 
     /**
@@ -51,6 +52,7 @@ public interface Music {
     public val replaceCurrentMusic: Boolean
 
     @ApiStatus.Internal
+    @TypeFactory
     public interface Factory {
 
         public fun of(sound: SoundEvent, minimumDelay: Int, maximumDelay: Int, replaceCurrentMusic: Boolean): Music

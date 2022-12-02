@@ -14,13 +14,14 @@ import com.mojang.brigadier.tree.LiteralCommandNode
 import org.jetbrains.annotations.ApiStatus
 import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.Krypton
-import javax.annotation.concurrent.Immutable
+import org.kryptonmc.internal.annotations.ImmutableType
+import org.kryptonmc.internal.annotations.TypeFactory
 
 /**
  * A command that is backed by a Brigadier [LiteralCommandNode].
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
-@Immutable
+@ImmutableType
 public interface BrigadierCommand : Command {
 
     /**
@@ -31,6 +32,7 @@ public interface BrigadierCommand : Command {
     public val node: LiteralCommandNode<CommandExecutionContext>
 
     @ApiStatus.Internal
+    @TypeFactory
     public interface Factory {
 
         public fun of(node: LiteralCommandNode<CommandExecutionContext>): BrigadierCommand

@@ -9,10 +9,10 @@
 package org.kryptonmc.api.effect.particle
 
 import org.kryptonmc.api.effect.particle.builder.DustParticleEffectBuilder
-import javax.annotation.concurrent.Immutable
+import org.kryptonmc.internal.annotations.ImmutableType
 
 /**
  * A type of particle that uses a colour and scale for its appearance.
  */
-@Immutable
+@ImmutableType
 public interface DustParticleType : ScopedParticleType<DustParticleEffectBuilder>

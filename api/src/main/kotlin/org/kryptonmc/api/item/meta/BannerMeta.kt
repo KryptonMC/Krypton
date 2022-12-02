@@ -11,13 +11,13 @@ package org.kryptonmc.api.item.meta
 import org.jetbrains.annotations.Contract
 import org.jetbrains.annotations.Unmodifiable
 import org.kryptonmc.api.block.entity.banner.BannerPattern
-import javax.annotation.concurrent.Immutable
+import org.kryptonmc.internal.annotations.ImmutableType
 
 /**
  * Item metadata for a banner.
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
-@Immutable
+@ImmutableType
 public interface BannerMeta : ScopedItemMeta<BannerMeta.Builder, BannerMeta> {
 
     /**

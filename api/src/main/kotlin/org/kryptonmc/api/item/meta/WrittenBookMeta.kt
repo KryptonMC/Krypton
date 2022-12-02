@@ -13,25 +13,28 @@ import net.kyori.adventure.text.Component
 import org.jetbrains.annotations.Contract
 import org.jetbrains.annotations.Unmodifiable
 import org.kryptonmc.api.item.data.WrittenBookGeneration
-import javax.annotation.concurrent.Immutable
+import org.kryptonmc.internal.annotations.ImmutableType
+import org.kryptonmc.internal.annotations.ImmutableTypeIgnore
 
 /**
  * Item metadata for books that have been written.
  */
 @Suppress("INAPPLICABLE_JVM_NAME", "NonExtendableApiUsage")
-@Immutable
+@ImmutableType
 public interface WrittenBookMeta : BookMeta<WrittenBookMeta.Builder, WrittenBookMeta>, Book {
 
     /**
      * The title of the written book.
      */
     @get:JvmSynthetic
+    @ImmutableTypeIgnore
     public val title: Component
 
     /**
      * The author of the written book.
      */
     @get:JvmSynthetic
+    @ImmutableTypeIgnore
     public val author: Component
 
     /**
@@ -41,6 +44,7 @@ public interface WrittenBookMeta : BookMeta<WrittenBookMeta.Builder, WrittenBook
     public val generation: WrittenBookGeneration
 
     @get:JvmSynthetic
+    @ImmutableTypeIgnore
     override val pages: @Unmodifiable List<Component>
 
     /**

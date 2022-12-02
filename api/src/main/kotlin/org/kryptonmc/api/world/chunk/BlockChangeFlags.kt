@@ -8,13 +8,13 @@
  */
 package org.kryptonmc.api.world.chunk
 
-import javax.annotation.concurrent.Immutable
+import org.kryptonmc.internal.annotations.ImmutableType
 
 /**
  * A set of flags used to determine what happens when a block is changed.
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
-@Immutable
+@ImmutableType
 public interface BlockChangeFlags {
 
     /**

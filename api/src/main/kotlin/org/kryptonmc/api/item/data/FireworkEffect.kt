@@ -14,13 +14,14 @@ import org.jetbrains.annotations.ApiStatus
 import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.Krypton
 import org.kryptonmc.api.util.Color
-import javax.annotation.concurrent.Immutable
+import org.kryptonmc.internal.annotations.ImmutableType
+import org.kryptonmc.internal.annotations.TypeFactory
 
 /**
  * An effect that may be produced from a firework star exploding.
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
-@Immutable
+@ImmutableType
 public interface FireworkEffect {
 
     /**
@@ -119,6 +120,7 @@ public interface FireworkEffect {
     }
 
     @ApiStatus.Internal
+    @TypeFactory
     public interface Factory {
 
         public fun builder(type: FireworkEffectType): Builder

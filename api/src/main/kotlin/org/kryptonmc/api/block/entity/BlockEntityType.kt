@@ -11,14 +11,14 @@ package org.kryptonmc.api.block.entity
 import net.kyori.adventure.key.Keyed
 import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.util.CataloguedBy
-import javax.annotation.concurrent.Immutable
+import org.kryptonmc.internal.annotations.ImmutableType
 
 /**
  * A type of block entity.
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
 @CataloguedBy(BlockEntityTypes::class)
-@Immutable
+@ImmutableType
 public interface BlockEntityType<T : BlockEntity> : Keyed {
 
     /**

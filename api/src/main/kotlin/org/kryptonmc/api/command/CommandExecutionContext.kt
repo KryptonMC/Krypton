@@ -11,13 +11,13 @@ package org.kryptonmc.api.command
 import org.kryptonmc.api.Server
 import org.kryptonmc.api.util.Vec3d
 import org.kryptonmc.api.world.World
-import javax.annotation.concurrent.Immutable
+import org.kryptonmc.internal.annotations.ImmutableType
 
 /**
  * The context of a command execution.
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
-@Immutable
+@ImmutableType
 public interface CommandExecutionContext {
 
     /**

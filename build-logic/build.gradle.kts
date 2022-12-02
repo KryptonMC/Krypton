@@ -10,6 +10,7 @@ dependencies {
     implementation(libs.plugin.detekt)
     implementation(libs.plugin.vanillaGradle)
     implementation(libs.plugin.shadow)
+    implementation(libs.plugin.ksp)
 }
 
 dependencies {

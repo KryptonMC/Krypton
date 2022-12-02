@@ -12,13 +12,14 @@ import net.kyori.adventure.builder.AbstractBuilder
 import org.jetbrains.annotations.ApiStatus
 import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.Krypton
-import javax.annotation.concurrent.Immutable
+import org.kryptonmc.internal.annotations.ImmutableType
+import org.kryptonmc.internal.annotations.TypeFactory
 
 /**
  * Holds metadata for a [Command].
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
-@Immutable
+@ImmutableType
 public interface CommandMeta {
 
     /**
@@ -71,6 +72,7 @@ public interface CommandMeta {
     }
 
     @ApiStatus.Internal
+    @TypeFactory
     public interface Factory {
 
         public fun builder(name: String): Builder

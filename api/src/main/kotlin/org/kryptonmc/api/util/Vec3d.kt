@@ -10,13 +10,14 @@ package org.kryptonmc.api.util
 
 import org.jetbrains.annotations.ApiStatus
 import org.kryptonmc.api.Krypton
-import javax.annotation.concurrent.Immutable
+import org.kryptonmc.internal.annotations.ImmutableType
+import org.kryptonmc.internal.annotations.TypeFactory
 
 /**
  * A vector with 3 double components.
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
-@Immutable
+@ImmutableType
 public interface Vec3d : Comparable<Vec3d> {
 
     /**
@@ -322,6 +323,7 @@ public interface Vec3d : Comparable<Vec3d> {
     }
 
     @ApiStatus.Internal
+    @TypeFactory
     public interface Factory {
 
         public fun of(x: Double, y: Double, z: Double): Vec3d

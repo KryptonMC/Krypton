@@ -10,14 +10,14 @@ package org.kryptonmc.api.entity
 
 import net.kyori.adventure.key.Keyed
 import org.kryptonmc.api.util.CataloguedBy
-import javax.annotation.concurrent.Immutable
+import org.kryptonmc.internal.annotations.ImmutableType
 
 /**
  * A category of entity that applies certain spawning mechanics and behaviours.
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
 @CataloguedBy(EntityCategories::class)
-@Immutable
+@ImmutableType
 public interface EntityCategory : Keyed {
 
     /**

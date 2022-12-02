@@ -19,7 +19,6 @@ import org.kryptonmc.api.world.damage.type.DamageType
  * @param abbreviation the shortened name of this game mode, such as 's' for
  * [SURVIVAL]
  */
-@Suppress("INAPPLICABLE_JVM_NAME")
 public enum class GameMode(public val abbreviation: String) : Translatable {
 
     /**

@@ -14,7 +14,8 @@ import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.Krypton
 import org.kryptonmc.api.registry.Registry
 import org.kryptonmc.api.util.CataloguedBy
-import javax.annotation.concurrent.Immutable
+import org.kryptonmc.internal.annotations.ImmutableType
+import org.kryptonmc.internal.annotations.TypeFactory
 
 /**
  * A key pointing to some form of resource.
@@ -23,7 +24,7 @@ import javax.annotation.concurrent.Immutable
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
 @CataloguedBy(ResourceKeys::class)
-@Immutable
+@ImmutableType
 public interface ResourceKey<T> {
 
     /**
@@ -39,6 +40,7 @@ public interface ResourceKey<T> {
     public val location: Key
 
     @ApiStatus.Internal
+    @TypeFactory
     public interface Factory {
 
         public fun <T> of(registry: Key, location: Key): ResourceKey<T>

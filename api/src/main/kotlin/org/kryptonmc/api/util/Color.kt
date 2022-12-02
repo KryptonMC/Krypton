@@ -9,18 +9,19 @@
 package org.kryptonmc.api.util
 
 import java.awt.Color as AwtColor
-import javax.annotation.concurrent.Immutable
 import net.kyori.adventure.text.format.TextColor
 import net.kyori.adventure.util.HSVLike
 import net.kyori.adventure.util.RGBLike
 import org.jetbrains.annotations.ApiStatus
 import org.kryptonmc.api.Krypton
+import org.kryptonmc.internal.annotations.ImmutableType
+import org.kryptonmc.internal.annotations.TypeFactory
 
 /**
  * A standard colour encoded in RGBA (red, green, blue, alpha) format.
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
-@Immutable
+@ImmutableType
 public interface Color {
 
     /**
@@ -90,6 +91,7 @@ public interface Color {
     public fun asAwtColor(): AwtColor = AwtColor(value, true)
 
     @ApiStatus.Internal
+    @TypeFactory
     public interface Factory {
 
         public fun of(value: Int): Color

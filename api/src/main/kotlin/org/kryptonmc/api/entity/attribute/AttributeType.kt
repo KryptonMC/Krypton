@@ -11,14 +11,14 @@ package org.kryptonmc.api.entity.attribute
 import net.kyori.adventure.key.Keyed
 import net.kyori.adventure.translation.Translatable
 import org.kryptonmc.api.util.CataloguedBy
-import javax.annotation.concurrent.Immutable
+import org.kryptonmc.internal.annotations.ImmutableType
 
 /**
  * The type of an attribute.
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
 @CataloguedBy(AttributeTypes::class)
-@Immutable
+@ImmutableType
 public interface AttributeType : Translatable, Keyed {
 
     /**

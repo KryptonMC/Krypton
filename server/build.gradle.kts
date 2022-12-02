@@ -61,6 +61,8 @@ dependencies {
     testImplementation(libs.mockk)
     testImplementation(libs.jimfs)
     testRuntimeOnly(libs.bytebuddy)
+    testImplementation(libs.reflections)
+    testImplementation(projects.internalAnnotations)
 }
 
 license {

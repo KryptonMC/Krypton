@@ -9,7 +9,7 @@
 package org.kryptonmc.api.entity.attribute
 
 import org.kryptonmc.api.util.CataloguedBy
-import javax.annotation.concurrent.Immutable
+import org.kryptonmc.internal.annotations.ImmutableType
 
 /**
  * A type of attribute that only accepts values between a minimum and maximum
@@ -17,7 +17,7 @@ import javax.annotation.concurrent.Immutable
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
 @CataloguedBy(AttributeTypes::class)
-@Immutable
+@ImmutableType
 public interface RangedAttributeType : AttributeType {
 
     /**

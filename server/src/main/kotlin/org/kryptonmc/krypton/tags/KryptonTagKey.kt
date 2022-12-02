@@ -30,6 +30,11 @@ import org.kryptonmc.serialization.DataResult
 @JvmRecord
 data class KryptonTagKey<T>(override val registry: ResourceKey<out Registry<T>>, override val location: Key) : TagKey<T> {
 
+    object Factory : TagKey.Factory {
+
+        override fun <T> of(registry: ResourceKey<out Registry<T>>, location: Key): TagKey<T> = KryptonTagKey.of(registry, location)
+    }
+
     companion object {
 
         private val VALUES = Interners.newWeakInterner<KryptonTagKey<*>>()

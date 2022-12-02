@@ -9,14 +9,14 @@
 package org.kryptonmc.api.tags
 
 import org.kryptonmc.api.registry.Registry
+import org.kryptonmc.internal.annotations.ImmutableType
 import java.util.stream.Stream
-import javax.annotation.concurrent.Immutable
 
 /**
  * A set of tags from a specific registry for a specific tag key.
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
-@Immutable
+@ImmutableType
 public interface TagSet<T> : Iterable<T> {
 
     /**

@@ -10,13 +10,13 @@ package org.kryptonmc.api.item.meta
 
 import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.util.Color
-import javax.annotation.concurrent.Immutable
+import org.kryptonmc.internal.annotations.ImmutableType
 
 /**
  * Item metadata for leather armour.
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
-@Immutable
+@ImmutableType
 public interface LeatherArmorMeta : ScopedItemMeta<LeatherArmorMeta.Builder, LeatherArmorMeta> {
 
     /**

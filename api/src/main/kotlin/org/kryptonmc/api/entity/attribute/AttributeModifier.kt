@@ -11,14 +11,15 @@ package org.kryptonmc.api.entity.attribute
 import org.jetbrains.annotations.ApiStatus
 import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.Krypton
+import org.kryptonmc.internal.annotations.ImmutableType
+import org.kryptonmc.internal.annotations.TypeFactory
 import java.util.UUID
-import javax.annotation.concurrent.Immutable
 
 /**
  * A modifier that can be applied to an [Attribute].
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
-@Immutable
+@ImmutableType
 public interface AttributeModifier {
 
     /**
@@ -46,6 +47,7 @@ public interface AttributeModifier {
     public val operation: ModifierOperation
 
     @ApiStatus.Internal
+    @TypeFactory
     public interface Factory {
 
         public fun of(uuid: UUID, name: String, amount: Double, operation: ModifierOperation): AttributeModifier

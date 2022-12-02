@@ -9,14 +9,14 @@
 package org.kryptonmc.api.block
 
 import org.kryptonmc.api.effect.sound.SoundEvent
-import javax.annotation.concurrent.Immutable
+import org.kryptonmc.internal.annotations.ImmutableType
 
 /**
  * The sounds that a block will make when specific actions are taken, such as
  * breaking it, stepping on it, or falling on it.
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
-@Immutable
+@ImmutableType
 public interface BlockSoundGroup {
 
     /**

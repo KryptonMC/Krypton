@@ -11,7 +11,7 @@ package org.kryptonmc.api.event.command
 import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.command.Sender
 import org.kryptonmc.api.event.ResultedEvent
-import javax.annotation.concurrent.Immutable
+import org.kryptonmc.internal.annotations.ImmutableType
 
 /**
  * Called when the given [command] is executed by the given [sender].
@@ -36,7 +36,7 @@ public interface CommandExecuteEvent : ResultedEvent<CommandExecuteEvent.Result>
      * original command should be executed.
      */
     @JvmRecord
-    @Immutable
+    @ImmutableType
     public data class Result(override val isAllowed: Boolean, public val command: String?) : ResultedEvent.Result {
 
         public companion object {

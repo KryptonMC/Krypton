@@ -40,7 +40,6 @@ public enum class ChestType(private val oppositeId: Int) {
      * left half. If this chest is a single chest, it has no opposite type,
      * and so the opposite will just be single.
      */
-    @get:JvmName("opposite")
     public val opposite: ChestType
         get() = BY_ID[oppositeId]
 

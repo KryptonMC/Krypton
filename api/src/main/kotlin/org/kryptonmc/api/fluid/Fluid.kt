@@ -13,7 +13,7 @@ import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.item.ItemType
 import org.kryptonmc.api.state.StateHolder
 import org.kryptonmc.api.util.CataloguedBy
-import javax.annotation.concurrent.Immutable
+import org.kryptonmc.internal.annotations.ImmutableType
 
 /**
  * A fluid with certain properties.
@@ -22,7 +22,7 @@ import javax.annotation.concurrent.Immutable
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
 @CataloguedBy(Fluids::class)
-@Immutable
+@ImmutableType
 public interface Fluid : StateHolder<FluidState>, Keyed {
 
     /**

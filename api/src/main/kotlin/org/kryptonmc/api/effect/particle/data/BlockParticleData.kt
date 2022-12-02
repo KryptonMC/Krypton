@@ -10,13 +10,13 @@ package org.kryptonmc.api.effect.particle.data
 
 import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.block.BlockState
-import javax.annotation.concurrent.Immutable
+import org.kryptonmc.internal.annotations.ImmutableType
 
 /**
  * Holds data for block particle effects.
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
-@Immutable
+@ImmutableType
 public interface BlockParticleData : ParticleData {
 
     /**

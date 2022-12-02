@@ -14,7 +14,6 @@ import net.kyori.adventure.translation.Translatable
  * Represents the difficulty of a world. That being a measure of how difficult
  * it is to play the game (though this is not always accurate).
  */
-@Suppress("INAPPLICABLE_JVM_NAME")
 public enum class Difficulty : Translatable {
 
     /**

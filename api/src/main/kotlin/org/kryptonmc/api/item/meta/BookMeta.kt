@@ -11,13 +11,13 @@ package org.kryptonmc.api.item.meta
 import net.kyori.adventure.text.Component
 import org.jetbrains.annotations.Contract
 import org.jetbrains.annotations.Unmodifiable
-import javax.annotation.concurrent.Immutable
+import org.kryptonmc.internal.annotations.ImmutableType
 
 /**
  * Contains shared metadata between [WritableBookMeta] and [WrittenBookMeta].
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
-@Immutable
+@ImmutableType
 public sealed interface BookMeta<B : BookMeta.Builder<B, I>, I : BookMeta<B, I>> : ScopedItemMeta<B, I> {
 
     /**

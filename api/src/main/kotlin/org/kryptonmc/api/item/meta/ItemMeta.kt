@@ -17,13 +17,14 @@ import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.item.ItemAttributeModifier
 import org.kryptonmc.api.item.data.ItemFlag
 import org.kryptonmc.api.world.GameMode
-import javax.annotation.concurrent.Immutable
+import org.kryptonmc.internal.annotations.ImmutableType
+import org.kryptonmc.internal.annotations.TypeFactory
 
 /**
  * Holder for various item metadata values for an item stack.
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
-@Immutable
+@ImmutableType
 public interface ItemMeta {
 
     /**
@@ -274,6 +275,7 @@ public interface ItemMeta {
     public interface Builder : ItemMetaBuilder<Builder, ItemMeta>
 
     @ApiStatus.Internal
+    @TypeFactory
     public interface Factory {
 
         public fun builder(): Builder

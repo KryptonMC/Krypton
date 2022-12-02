@@ -9,11 +9,13 @@
 package org.kryptonmc.api.scoreboard.criteria
 
 import org.kryptonmc.api.scoreboard.ObjectiveRenderType
+import org.kryptonmc.internal.annotations.ImmutableType
 
 /**
  * A criterion for a scoreboard objective to be displayed.
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
+@ImmutableType
 public interface Criterion {
 
     /**

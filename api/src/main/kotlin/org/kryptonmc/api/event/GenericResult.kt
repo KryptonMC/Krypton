@@ -12,13 +12,13 @@
  */
 package org.kryptonmc.api.event
 
-import javax.annotation.concurrent.Immutable
+import org.kryptonmc.internal.annotations.ImmutableType
 
 /**
  * A generic allowed/denied result.
  */
 @JvmRecord
-@Immutable
+@ImmutableType
 public data class GenericResult(override val isAllowed: Boolean) : ResultedEvent.Result {
 
     public companion object {

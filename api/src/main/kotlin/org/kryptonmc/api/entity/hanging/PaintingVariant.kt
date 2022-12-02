@@ -10,7 +10,7 @@ package org.kryptonmc.api.entity.hanging
 
 import net.kyori.adventure.key.Keyed
 import org.kryptonmc.api.util.CataloguedBy
-import javax.annotation.concurrent.Immutable
+import org.kryptonmc.internal.annotations.ImmutableType
 
 /**
  * A variant of a painting.
@@ -20,7 +20,7 @@ import javax.annotation.concurrent.Immutable
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
 @CataloguedBy(PaintingVariants::class)
-@Immutable
+@ImmutableType
 public interface PaintingVariant : Keyed {
 
     /**

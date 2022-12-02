@@ -10,14 +10,14 @@ package org.kryptonmc.api.block.entity.banner
 
 import net.kyori.adventure.key.Keyed
 import org.kryptonmc.api.util.CataloguedBy
-import javax.annotation.concurrent.Immutable
+import org.kryptonmc.internal.annotations.ImmutableType
 
 /**
  * A type of banner pattern.
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
 @CataloguedBy(BannerPatternTypes::class)
-@Immutable
+@ImmutableType
 public interface BannerPatternType : Keyed {
 
     /**

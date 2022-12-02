@@ -20,9 +20,5 @@ package org.kryptonmc.api.command
  * and BungeeCord.
  * * [RawCommand] - provides everything as-is, so it can be processed by
  * external frameworks.
- *
- * You can also create your own command types and register them using your own
- * [CommandRegistrar], for even more control over how commands are converted to
- * nodes in the Brigadier tree.
  */
-public interface Command
+public sealed interface Command

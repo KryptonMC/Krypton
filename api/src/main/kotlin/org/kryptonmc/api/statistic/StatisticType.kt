@@ -12,14 +12,14 @@ import net.kyori.adventure.key.Keyed
 import net.kyori.adventure.translation.Translatable
 import org.kryptonmc.api.registry.Registry
 import org.kryptonmc.api.util.CataloguedBy
-import javax.annotation.concurrent.Immutable
+import org.kryptonmc.internal.annotations.ImmutableType
 
 /**
  * A type of a statistic.
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
 @CataloguedBy(StatisticTypes::class)
-@Immutable
+@ImmutableType
 public interface StatisticType<T> : Iterable<Statistic<T>>, Translatable, Keyed {
 
     /**

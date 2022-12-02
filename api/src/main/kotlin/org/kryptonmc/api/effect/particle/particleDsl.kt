@@ -12,15 +12,6 @@ package org.kryptonmc.api.effect.particle
 
 import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.effect.particle.builder.BaseParticleEffectBuilder
-import org.kryptonmc.api.effect.particle.builder.BlockParticleEffectBuilder
-import org.kryptonmc.api.effect.particle.builder.ColorParticleEffectBuilder
-import org.kryptonmc.api.effect.particle.builder.DirectionalParticleEffectBuilder
-import org.kryptonmc.api.effect.particle.builder.DustParticleEffectBuilder
-import org.kryptonmc.api.effect.particle.builder.DustTransitionParticleEffectBuilder
-import org.kryptonmc.api.effect.particle.builder.ItemParticleEffectBuilder
-import org.kryptonmc.api.effect.particle.builder.NoteParticleEffectBuilder
-import org.kryptonmc.api.effect.particle.builder.SimpleParticleEffectBuilder
-import org.kryptonmc.api.effect.particle.builder.VibrationParticleEffectBuilder
 
 @Target(AnnotationTarget.CLASS, AnnotationTarget.FUNCTION)
 @Retention(AnnotationRetention.SOURCE)
@@ -28,126 +19,17 @@ import org.kryptonmc.api.effect.particle.builder.VibrationParticleEffectBuilder
 internal annotation class ParticleDsl
 
 /**
- * Creates a new simple particle effect with the given [type] and the result
- * of applying the given [builder].
- *
- * @param type the type
- * @param builder the builder to apply
- * @return a new simple particle effect
- */
-@ParticleDsl
-@JvmSynthetic
-@Contract("_, _ -> new", pure = true)
-public inline fun particleEffect(type: SimpleParticleType, builder: SimpleParticleEffectBuilder.() -> Unit): ParticleEffect = effect(type, builder)
-
-/**
- * Creates a new directional particle effect with the given [type] and the
- * result of applying the given [builder].
- *
- * @param type the type
- * @param builder the builder to apply
- * @return a new directional particle effect
- */
-@ParticleDsl
-@JvmSynthetic
-@Contract("_, _ -> new", pure = true)
-public inline fun particleEffect(type: DirectionalParticleType, builder: DirectionalParticleEffectBuilder.() -> Unit): ParticleEffect =
-    effect(type, builder)
-
-/**
- * Creates a new block particle effect with the given [type] and the result of
+ * Creates a new particle effect with the given [type] and the result of
  * applying the given [builder].
  *
+ * @param B the builder type
+ * @param T the particle type
  * @param type the type
  * @param builder the builder to apply
- * @return a new block particle effect
+ * @return a new particle effect
  */
 @ParticleDsl
 @JvmSynthetic
 @Contract("_, _ -> new", pure = true)
-public inline fun particleEffect(type: BlockParticleType, builder: BlockParticleEffectBuilder.() -> Unit): ParticleEffect = effect(type, builder)
-
-/**
- * Creates a new item particle effect with the given [type] and the result of
- * applying the given [builder].
- *
- * @param type the type
- * @param builder the builder to apply
- * @return a new item particle effect
- */
-@ParticleDsl
-@JvmSynthetic
-@Contract("_, _ -> new", pure = true)
-public inline fun particleEffect(type: ItemParticleType, builder: ItemParticleEffectBuilder.() -> Unit): ParticleEffect = effect(type, builder)
-
-/**
- * Creates a new colour particle effect with the given [type] and the result
- * of applying the given [builder].
- *
- * @param type the type
- * @param builder the builder to apply
- * @return a new colour particle effect
- */
-@ParticleDsl
-@JvmSynthetic
-@Contract("_, _ -> new", pure = true)
-public inline fun particleEffect(type: ColorParticleType, builder: ColorParticleEffectBuilder.() -> Unit): ParticleEffect = effect(type, builder)
-
-/**
- * Creates a new dust particle effect with the given [type] and the result of
- * applying the given [builder].
- *
- * @param type the type
- * @param builder the builder to apply
- * @return a new dust particle effect
- */
-@ParticleDsl
-@JvmSynthetic
-@Contract("_, _ -> new", pure = true)
-public inline fun particleEffect(type: DustParticleType, builder: DustParticleEffectBuilder.() -> Unit): ParticleEffect = effect(type, builder)
-
-/**
- * Creates a new dust transition particle effect with the given [type] and the
- * result of applying the given [builder].
- *
- * @param type the type
- * @param builder the builder to apply
- * @return a new dust transition particle effect
- */
-@ParticleDsl
-@JvmSynthetic
-@Contract("_, _ -> new", pure = true)
-public inline fun particleEffect(type: DustTransitionParticleType, builder: DustTransitionParticleEffectBuilder.() -> Unit): ParticleEffect =
-    effect(type, builder)
-
-/**
- * Creates a new note particle effect with the given [type] and the result of
- * applying the given [builder].
- *
- * @param type the type
- * @param builder the builder to apply
- * @return a new note particle effect
- */
-@ParticleDsl
-@JvmSynthetic
-@Contract("_, _ -> new", pure = true)
-public inline fun particleEffect(type: NoteParticleType, builder: NoteParticleEffectBuilder.() -> Unit): ParticleEffect = effect(type, builder)
-
-/**
- * Creates a new vibration particle effect with the given [type] and the
- * result of applying the given [builder].
- *
- * @param type the type
- * @param builder the builder to apply
- * @return a new vibration particle effect
- */
-@ParticleDsl
-@JvmSynthetic
-@Contract("_, _ -> new", pure = true)
-public inline fun particleEffect(type: VibrationParticleType, builder: VibrationParticleEffectBuilder.() -> Unit): ParticleEffect =
-    effect(type, builder)
-
-@JvmSynthetic
-@PublishedApi
-internal inline fun <B : BaseParticleEffectBuilder<B>, T : ScopedParticleType<B>> effect(type: T, builder: B.() -> Unit): ParticleEffect =
+public inline fun <B : BaseParticleEffectBuilder<B>, T : ScopedParticleType<B>> particleEffect(type: T, builder: B.() -> Unit): ParticleEffect =
     type.builder().apply(builder).build()

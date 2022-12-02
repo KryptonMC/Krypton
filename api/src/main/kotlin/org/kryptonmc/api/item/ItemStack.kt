@@ -17,14 +17,15 @@ import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.Krypton
 import org.kryptonmc.api.item.meta.ItemMeta
 import org.kryptonmc.api.item.meta.ItemMetaBuilder
+import org.kryptonmc.internal.annotations.ImmutableType
+import org.kryptonmc.internal.annotations.TypeFactory
 import java.util.function.Consumer
-import javax.annotation.concurrent.Immutable
 
 /**
  * A stack of items in an inventory.
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
-@Immutable
+@ImmutableType
 public interface ItemStack : Buildable<ItemStack, ItemStack.Builder>, HoverEventSource<HoverEvent.ShowItem> {
 
     /**
@@ -256,6 +257,7 @@ public interface ItemStack : Buildable<ItemStack, ItemStack.Builder>, HoverEvent
     }
 
     @ApiStatus.Internal
+    @TypeFactory
     public interface Factory {
 
         public fun builder(): Builder

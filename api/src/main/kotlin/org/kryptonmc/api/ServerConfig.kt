@@ -9,10 +9,13 @@
 package org.kryptonmc.api
 
 import net.kyori.adventure.text.Component
+import org.kryptonmc.internal.annotations.ImmutableType
 
 /**
  * The basic configuration options associated with the server.
  */
+@Suppress("INAPPLICABLE_JVM_NAME")
+@ImmutableType
 public interface ServerConfig {
 
     /**
@@ -25,20 +28,24 @@ public interface ServerConfig {
     /**
      * The address that the server is bound to.
      */
+    @get:JvmName("ip")
     public val ip: String
 
     /**
      * The port that the server is bound to.
      */
+    @get:JvmName("port")
     public val port: Int
 
     /**
      * The message of the day for the server's status.
      */
+    @get:JvmName("motd")
     public val motd: Component
 
     /**
      * The maximum players that may join the server.
      */
+    @get:JvmName("maxPlayers")
     public val maxPlayers: Int
 }

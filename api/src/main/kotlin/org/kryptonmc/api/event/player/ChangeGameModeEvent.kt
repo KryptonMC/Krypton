@@ -11,7 +11,7 @@ package org.kryptonmc.api.event.player
 import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.event.ResultedEvent
 import org.kryptonmc.api.world.GameMode
-import javax.annotation.concurrent.Immutable
+import org.kryptonmc.internal.annotations.ImmutableType
 
 /**
  * Called when the given [player] changes game mode.
@@ -63,7 +63,7 @@ public interface ChangeGameModeEvent : PlayerEvent, ResultedEvent<ChangeGameMode
      * if the game mode should not be changed.
      */
     @JvmRecord
-    @Immutable
+    @ImmutableType
     public data class Result(override val isAllowed: Boolean, public val newGameMode: GameMode?) : ResultedEvent.Result {
 
         public companion object {

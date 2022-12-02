@@ -13,14 +13,15 @@ import org.jetbrains.annotations.ApiStatus
 import org.jetbrains.annotations.Unmodifiable
 import org.kryptonmc.api.Krypton
 import org.kryptonmc.api.util.CataloguedBy
-import javax.annotation.concurrent.Immutable
+import org.kryptonmc.internal.annotations.ImmutableType
+import org.kryptonmc.internal.annotations.TypeFactory
 
 /**
  * Represents a property key.
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
 @CataloguedBy(Properties::class)
-@Immutable
+@ImmutableType
 public interface Property<T : Comparable<T>> {
 
     /**
@@ -42,6 +43,7 @@ public interface Property<T : Comparable<T>> {
     public val values: @Unmodifiable Collection<T>
 
     @ApiStatus.Internal
+    @TypeFactory
     public interface Factory {
 
         public fun forBoolean(name: String): Property<Boolean>

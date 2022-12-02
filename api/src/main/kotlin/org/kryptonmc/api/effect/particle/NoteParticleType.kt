@@ -9,11 +9,11 @@
 package org.kryptonmc.api.effect.particle
 
 import org.kryptonmc.api.effect.particle.builder.NoteParticleEffectBuilder
-import javax.annotation.concurrent.Immutable
+import org.kryptonmc.internal.annotations.ImmutableType
 
 /**
  * A type of particle that uses a specific note value for its colour
  * appearance.
  */
-@Immutable
+@ImmutableType
 public interface NoteParticleType : ScopedParticleType<NoteParticleEffectBuilder>

@@ -18,15 +18,16 @@ import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.tags.TagKey
 import org.kryptonmc.api.util.Buildable
 import org.kryptonmc.api.util.CataloguedBy
+import org.kryptonmc.internal.annotations.ImmutableType
+import org.kryptonmc.internal.annotations.TypeFactory
 import java.util.OptionalLong
-import javax.annotation.concurrent.Immutable
 
 /**
  * Represents data for a dimension.
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
 @CataloguedBy(DimensionTypes::class)
-@Immutable
+@ImmutableType
 public interface DimensionType : Buildable<DimensionType.Builder, DimensionType>, Keyed {
 
     /**
@@ -575,6 +576,7 @@ public interface DimensionType : Buildable<DimensionType.Builder, DimensionType>
     }
 
     @ApiStatus.Internal
+    @TypeFactory
     public interface Factory {
 
         public fun builder(): Builder

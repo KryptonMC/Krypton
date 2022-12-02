@@ -12,13 +12,13 @@ import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.Krypton
 import org.kryptonmc.api.entity.Entity
 import org.kryptonmc.api.world.damage.type.DamageType
-import javax.annotation.concurrent.Immutable
+import org.kryptonmc.internal.annotations.ImmutableType
 
 /**
  * A damage source that indirectly affects an entity.
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
-@Immutable
+@ImmutableType
 public interface IndirectEntityDamageSource : EntityDamageSource {
 
     /**

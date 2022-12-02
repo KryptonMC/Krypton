@@ -8,7 +8,7 @@
  */
 package org.kryptonmc.api
 
-import javax.annotation.concurrent.Immutable
+import org.kryptonmc.internal.annotations.ImmutableType
 
 /**
  * Provides information about the current platform this is running on, such as
@@ -16,7 +16,7 @@ import javax.annotation.concurrent.Immutable
  * version.
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
-@Immutable
+@ImmutableType
 public interface Platform {
 
     /**

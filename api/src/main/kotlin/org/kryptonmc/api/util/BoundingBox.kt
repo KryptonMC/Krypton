@@ -11,7 +11,8 @@ package org.kryptonmc.api.util
 import org.jetbrains.annotations.ApiStatus
 import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.Krypton
-import javax.annotation.concurrent.Immutable
+import org.kryptonmc.internal.annotations.ImmutableType
+import org.kryptonmc.internal.annotations.TypeFactory
 
 /**
  * A bounding box.
@@ -19,7 +20,7 @@ import javax.annotation.concurrent.Immutable
  * These are immutable to guarantee thread-safe usage.
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
-@Immutable
+@ImmutableType
 public interface BoundingBox {
 
     /**
@@ -294,6 +295,7 @@ public interface BoundingBox {
     public fun contains(position: Vec3d): Boolean = contains(position.x, position.y, position.z)
 
     @ApiStatus.Internal
+    @TypeFactory
     public interface Factory {
 
         public fun zero(): BoundingBox

@@ -32,3 +32,11 @@ include("api")
 include("server")
 include("generators")
 include("annotation-processor")
+
+internalProject("annotations")
+internalProject("ap")
+
+fun internalProject(name: String) {
+    include("internal-$name")
+    project(":internal-$name").projectDir = file("internal/$name")
+}

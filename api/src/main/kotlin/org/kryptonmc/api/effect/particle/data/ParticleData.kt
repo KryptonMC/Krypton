@@ -14,16 +14,18 @@ import org.kryptonmc.api.block.BlockState
 import org.kryptonmc.api.item.ItemStack
 import org.kryptonmc.api.util.Color
 import org.kryptonmc.api.util.Vec3d
-import javax.annotation.concurrent.Immutable
+import org.kryptonmc.internal.annotations.ImmutableType
+import org.kryptonmc.internal.annotations.TypeFactory
 
 /**
  * The supertype of all particle data. Merely serves as a marker interface for
  * its subtypes.
  */
-@Immutable
+@ImmutableType
 public interface ParticleData {
 
     @ApiStatus.Internal
+    @TypeFactory
     public interface Factory {
 
         public fun directional(direction: Vec3d?, velocity: Float): DirectionalParticleData
