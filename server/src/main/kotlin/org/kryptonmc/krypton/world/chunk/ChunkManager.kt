@@ -89,8 +89,8 @@ class ChunkManager(private val world: KryptonWorld) : AutoCloseable {
     private inline fun execute(crossinline action: () -> Unit): CompletableFuture<Unit> = CompletableFuture.supplyAsync({ action() }, executor)
 
     fun removePlayer(player: KryptonPlayer, viewDistance: Int = world.server.config.world.viewDistance) {
-        val x = SectionPos.blockToSection(player.location.x)
-        val z = SectionPos.blockToSection(player.location.z)
+        val x = SectionPos.blockToSection(player.position.x)
+        val z = SectionPos.blockToSection(player.position.z)
         ticketManager.removePlayer(x, z, player.uuid, viewDistance)
         val pos = ChunkPos.pack(x, z)
         val set = playersByChunk.get(pos)?.apply { remove(player) }

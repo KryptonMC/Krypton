@@ -116,7 +116,7 @@ class PlayerManager(private val server: KryptonServer) {
         val world = server.worldManager.worlds.get(dimension) ?: server.worldManager.default
         player.world = world
         world.players.add(player)
-        val location = player.location
+        val location = player.position
         LOGGER.info("Player ${profile.name} logged in with entity ID ${player.id} at $location")
 
         // Join the game
@@ -214,9 +214,9 @@ class PlayerManager(private val server: KryptonServer) {
     fun broadcast(packet: Packet, world: KryptonWorld, x: Double, y: Double, z: Double, radius: Double, except: KryptonPlayer?) {
         server.sessionManager.sendGrouped(packet) {
             if (it === except || it.world !== world) return@sendGrouped false
-            val dx = x - it.location.x
-            val dy = y - it.location.y
-            val dz = z - it.location.z
+            val dx = x - it.position.x
+            val dy = y - it.position.y
+            val dz = z - it.position.z
             dx * dx + dy * dy + dz * dz < radius * radius
         }
     }

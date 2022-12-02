@@ -50,7 +50,7 @@ object TeleportCommand {
                     val players = it.entityArgument(PLAYERS).players(it.source)
                     if (players.size == 1) {
                         val player = players.get(0)
-                        player.teleport(player.location)
+                        player.teleport(player.position)
                         it.source.sendSuccess(Messages.Commands.TELEPORT_SINGLE_ENTITY.build(it.source.displayName, player.displayName), true)
                     }
                 }
@@ -58,7 +58,7 @@ object TeleportCommand {
                     runs { context ->
                         val players = context.entityArgument(PLAYERS).players(context.source)
                         val target = context.entityArgument(TARGET).players(context.source).get(0)
-                        players.forEach { it.teleport(target.location) }
+                        players.forEach { it.teleport(target.position) }
                         context.source.sendSuccess(Messages.Commands.TELEPORT_MULTIPLE_ENTITIES.build(players.size, target.displayName), true)
                     }
                 }

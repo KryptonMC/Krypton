@@ -128,7 +128,7 @@ class KryptonWorld(
     @Suppress("UNCHECKED_CAST")
     override fun <T : Entity> spawnEntity(type: EntityType<T>, location: Vec3d): T? {
         if (!type.isSummonable || type === EntityTypes.PLAYER) return null
-        val entity = EntityFactory.create(type, this)?.apply { this.location = location } ?: return null
+        val entity = EntityFactory.create(type, this)?.apply { this.position = location } ?: return null
         spawnEntity(entity)
         return entity as? T
     }
@@ -171,7 +171,7 @@ class KryptonWorld(
     private fun playSeededSound(entity: KryptonEntity, event: SoundEvent, source: Sound.Source, volume: Float, pitch: Float, seed: Long,
                                 except: KryptonPlayer?) {
         val packet = PacketOutEntitySoundEffect(event, source, entity.id, volume, pitch, seed)
-        server.playerManager.broadcast(packet, this, entity.location.x, entity.location.y, entity.location.z, event.getRange(volume), except)
+        server.playerManager.broadcast(packet, this, entity.position.x, entity.position.y, entity.position.z, event.getRange(volume), except)
     }
 
     // TODO: Check world border bounds
@@ -181,9 +181,9 @@ class KryptonWorld(
         val packet = PacketOutSetBlockDestroyStage(sourceId, position, state)
         server.sessionManager.sendGrouped(packet) {
             if (it.world !== this || it.id == sourceId) return@sendGrouped false
-            val dx = position.x - it.location.x
-            val dy = position.y - it.location.y
-            val dz = position.z - it.location.z
+            val dx = position.x - it.position.x
+            val dy = position.y - it.position.y
+            val dz = position.z - it.position.z
             dx * dx + dy * dy + dz * dz < 32.0 * 32.0
         }
     }

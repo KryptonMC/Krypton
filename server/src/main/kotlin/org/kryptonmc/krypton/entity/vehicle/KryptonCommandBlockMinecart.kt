@@ -72,7 +72,7 @@ class KryptonCommandBlockMinecart(world: KryptonWorld) : KryptonMinecartLike(wor
 
         override fun world(): KryptonWorld = this@KryptonCommandBlockMinecart.world
 
-        override fun createCommandSourceStack(): CommandSourceStack = CommandSourceStack(this, location, yaw, pitch, world(), name.toPlainText(),
+        override fun createCommandSourceStack(): CommandSourceStack = CommandSourceStack(this, position, yaw, pitch, world(), name.toPlainText(),
             displayName, world().server, this@KryptonCommandBlockMinecart)
 
         override fun onUpdated() {

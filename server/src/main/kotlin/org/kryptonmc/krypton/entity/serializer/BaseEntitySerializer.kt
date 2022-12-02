@@ -54,13 +54,13 @@ object BaseEntitySerializer : EntitySerializer<KryptonEntity> {
     private const val UUID_TAG = "UUID"
 
     override fun load(entity: KryptonEntity, data: CompoundTag) {
-        entity.air = data.getShort(AIR_TAG).toInt()
+        entity.airSupply = data.getShort(AIR_TAG).toInt()
         if (data.contains(CUSTOM_NAME_TAG, StringTag.ID)) {
             entity.customName = GsonComponentSerializer.gson().deserialize(data.getString(CUSTOM_NAME_TAG))
         }
         entity.isCustomNameVisible = data.getBoolean(CUSTOM_NAME_VISIBLE_TAG)
         entity.fallDistance = data.getFloat(FALL_DISTANCE_TAG)
-        entity.fireTicks = data.getShort(FIRE_TAG).toInt()
+        entity.remainingFireTicks = data.getShort(FIRE_TAG).toInt()
         entity.isGlowing = data.getBoolean(GLOWING_TAG)
         entity.isInvulnerable = data.getBoolean(INVULNERABLE_TAG)
 
@@ -72,7 +72,7 @@ object BaseEntitySerializer : EntitySerializer<KryptonEntity> {
 
         val location = data.getList(POSITION_TAG, DoubleTag.ID)
         val rotation = data.getList(ROTATION_TAG, FloatTag.ID)
-        entity.location = Vec3dImpl(location.getDouble(0), location.getDouble(1), location.getDouble(2))
+        entity.position = Vec3dImpl(location.getDouble(0), location.getDouble(1), location.getDouble(2))
         entity.yaw = rotation.getFloat(0)
         entity.pitch = rotation.getFloat(1)
 
@@ -95,7 +95,7 @@ object BaseEntitySerializer : EntitySerializer<KryptonEntity> {
 
         // Positioning
         putList(MOTION_TAG, DoubleTag.ID, DoubleTag.of(entity.velocity.x), DoubleTag.of(entity.velocity.y), DoubleTag.of(entity.velocity.z))
-        putList(POSITION_TAG, DoubleTag.ID, DoubleTag.of(entity.location.x), DoubleTag.of(entity.location.y), DoubleTag.of(entity.location.z))
+        putList(POSITION_TAG, DoubleTag.ID, DoubleTag.of(entity.position.x), DoubleTag.of(entity.position.y), DoubleTag.of(entity.position.z))
         putList(ROTATION_TAG, FloatTag.ID, FloatTag.of(entity.yaw), FloatTag.of(entity.pitch))
 
         // Identification
@@ -103,8 +103,8 @@ object BaseEntitySerializer : EntitySerializer<KryptonEntity> {
         putUUID(UUID_TAG, entity.uuid)
 
         // Miscellaneous
-        putShort(AIR_TAG, entity.air.toShort())
-        putShort(FIRE_TAG, entity.fireTicks.toShort())
+        putShort(AIR_TAG, entity.airSupply.toShort())
+        putShort(FIRE_TAG, entity.remainingFireTicks.toShort())
         putInt(FROZEN_TICKS_TAG, entity.frozenTicks)
         putFloat(FALL_DISTANCE_TAG, entity.fallDistance)
     }

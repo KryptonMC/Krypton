@@ -48,8 +48,8 @@ class PlayerChunkViewingSystem(private val player: KryptonPlayer) {
 
         val oldCentralX = previousCentralX
         val oldCentralZ = previousCentralZ
-        val centralX = SectionPos.blockToSection(player.location.x)
-        val centralZ = SectionPos.blockToSection(player.location.z)
+        val centralX = SectionPos.blockToSection(player.position.x)
+        val centralZ = SectionPos.blockToSection(player.position.z)
         val radius = player.server.config.world.viewDistance
 
         if (firstLoad) {
@@ -81,11 +81,11 @@ class PlayerChunkViewingSystem(private val player: KryptonPlayer) {
         previousCentralZ = centralZ
 
         newChunks.sortWith { a, b ->
-            var dx = 16 * a.toInt() + 8 - player.location.x
-            var dz = 16 * (a shr 32).toInt() + 8 - player.location.z
+            var dx = 16 * a.toInt() + 8 - player.position.x
+            var dz = 16 * (a shr 32).toInt() + 8 - player.position.z
             val da = dx * dx + dz * dz
-            dx = 16 * b.toInt() + 8 - player.location.x
-            dz = 16 * (b shr 32).toInt() + 8 - player.location.z
+            dx = 16 * b.toInt() + 8 - player.position.x
+            dz = 16 * (b shr 32).toInt() + 8 - player.position.z
             val db = dx * dx + dz * dz
             da.compareTo(db)
         }

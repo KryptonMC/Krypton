@@ -52,7 +52,7 @@ interface BaseDataHolder : Entity {
     override var isGlowing: Boolean
         get() = data.getFlag(MetadataKeys.Entity.FLAGS, FLAG_GLOWING)
         set(value) = data.setFlag(MetadataKeys.Entity.FLAGS, FLAG_GLOWING, value)
-    override var air: Int
+    override var airSupply: Int
         get() = data.get(MetadataKeys.Entity.AIR_TICKS)
         set(value) = data.set(MetadataKeys.Entity.AIR_TICKS, value)
     override var customName: Component?

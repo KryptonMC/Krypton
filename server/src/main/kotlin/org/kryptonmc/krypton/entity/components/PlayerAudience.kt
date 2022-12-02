@@ -129,7 +129,7 @@ interface PlayerAudience : NetworkPlayer, KryptonSender {
     }
 
     override fun playSound(sound: Sound) {
-        playSound(sound, location.x, location.y, location.z)
+        playSound(sound, position.x, position.y, position.z)
     }
 
     override fun playSound(sound: Sound, x: Double, y: Double, z: Double) {
@@ -151,7 +151,7 @@ interface PlayerAudience : NetworkPlayer, KryptonSender {
         val packet = if (event != null) {
             PacketOutEntitySoundEffect(event, sound.source(), entity.id, sound.volume(), sound.pitch(), seed)
         } else {
-            PacketOutCustomSoundEffect(sound, entity.location.x, entity.location.y, entity.location.z, seed)
+            PacketOutCustomSoundEffect(sound, entity.position.x, entity.position.y, entity.position.z, seed)
         }
         session.send(packet)
     }

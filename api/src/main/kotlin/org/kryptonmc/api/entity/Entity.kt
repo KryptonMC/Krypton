@@ -74,28 +74,28 @@ public interface Entity : Sender, HoverEventSource<HoverEvent.ShowEntity>, Sound
     /**
      * The current position of this entity.
      */
-    public var location: Vec3d
+    public val position: Vec3d
 
     /**
      * The current yaw of this entity.
      */
-    public var yaw: Float
+    public val yaw: Float
 
     /**
      * The current pitch of this entity.
      */
-    public var pitch: Float
+    public val pitch: Float
 
     /**
      * The current delta X, Y, and Z values of this entity, in metres per tick.
      */
-    public var velocity: Vec3d
+    public val velocity: Vec3d
 
     /**
      * The current bounding box of this entity. This is used to determine the
      * area in which an entity can be interacted with, also known as a hitbox.
      */
-    public var boundingBox: BoundingBox
+    public val boundingBox: BoundingBox
 
     /**
      * If this entity is a passenger of another entity.
@@ -117,7 +117,7 @@ public interface Entity : Sender, HoverEventSource<HoverEvent.ShowEntity>, Sound
     /**
      * The entity that this entity is a passenger of.
      */
-    public var vehicle: Entity?
+    public val vehicle: Entity?
 
     /**
      * If this entity should not take damage from any source.
@@ -204,7 +204,7 @@ public interface Entity : Sender, HoverEventSource<HoverEvent.ShowEntity>, Sound
      * take 1 health point (half a heart) of damage for every second
      * it remains underwater.
      */
-    public val air: Int
+    public val airSupply: Int
 
     /**
      * This value can mean one of two things, depending on if the value is
@@ -216,7 +216,7 @@ public interface Entity : Sender, HoverEventSource<HoverEvent.ShowEntity>, Sound
      * When the value is negative, this represents the number of ticks this
      * entity can survive in fire for before burning.
      */
-    public val fireTicks: Int
+    public val remainingFireTicks: Int
 
     /**
      * The amount of ticks this entity has been freezing for.

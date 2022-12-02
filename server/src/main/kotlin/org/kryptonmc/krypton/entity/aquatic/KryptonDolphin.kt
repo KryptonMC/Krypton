@@ -68,7 +68,7 @@ class KryptonDolphin(world: KryptonWorld) : KryptonAquaticAnimal(world), Dolphin
     override fun tick() {
         super.tick()
         if (!hasAI) {
-            air = maxAirTicks
+            airSupply = maxAirTicks
             return
         }
         // Dolphins don't immediately start to suffocate out of water, as they can survive out of water for extended periods of time.

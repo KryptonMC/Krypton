@@ -70,14 +70,14 @@ abstract class KryptonEntity(final override var world: KryptonWorld) : BaseEntit
     final override var isRemoved: Boolean = false
         private set
     private var wasDamaged = false
-    final override var location: Vec3d = Vec3dImpl.ZERO
+    final override var position: Vec3d = Vec3dImpl.ZERO
     final override var yaw: Float = 0F
     final override var pitch: Float = 0F
     final override var velocity: Vec3d = Vec3dImpl.ZERO
     final override var boundingBox: BoundingBox = BoundingBox.zero()
     final override var isOnGround: Boolean = true
     final override var ticksExisted: Int = 0
-    final override var fireTicks: Int = 0
+    final override var remainingFireTicks: Int = 0
     final override var isInvulnerable: Boolean = false
     final override var fallDistance: Float = 0F
 
@@ -89,7 +89,7 @@ abstract class KryptonEntity(final override var world: KryptonWorld) : BaseEntit
 
     fun playSound(event: SoundEvent, volume: Float, pitch: Float) {
         if (isSilent) return
-        world.playSound(location.x, location.y, location.z, event, soundSource(), volume, pitch)
+        world.playSound(position.x, position.y, position.z, event, soundSource(), volume, pitch)
     }
 
     open fun tick() {
@@ -151,7 +151,7 @@ abstract class KryptonEntity(final override var world: KryptonWorld) : BaseEntit
     override fun shouldInformAdmins(): Boolean = true
 
     final override fun createCommandSourceStack(): CommandSourceStack =
-        CommandSourceStack(this, location, yaw, pitch, world, name.toPlainText(), displayName, server, this)
+        CommandSourceStack(this, position, yaw, pitch, world, name.toPlainText(), displayName, server, this)
 
     companion object {
 

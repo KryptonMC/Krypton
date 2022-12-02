@@ -90,9 +90,9 @@ class PlayerGameModeSystem(private val player: KryptonPlayer) {
     }
 
     private fun handleBlockBreak(pos: BlockPos, action: PacketInPlayerAction.Action, maxHeight: Int) {
-        val dx = player.location.x - (pos.x.toDouble() + 0.5)
-        val dy = player.location.y - (pos.y.toDouble() + 0.5) + 1.5
-        val dz = player.location.z - (pos.z.toDouble() + 0.5)
+        val dx = player.position.x - (pos.x.toDouble() + 0.5)
+        val dy = player.position.y - (pos.y.toDouble() + 0.5) + 1.5
+        val dz = player.position.z - (pos.z.toDouble() + 0.5)
         val squareDistance = dx * dx + dy * dy + dz * dz
         if (squareDistance > MAXIMUM_DISTANCE_FROM_BLOCK) {
             logBlockBreakUpdate(pos, false, "cannot break blocks further than 6 blocks away")

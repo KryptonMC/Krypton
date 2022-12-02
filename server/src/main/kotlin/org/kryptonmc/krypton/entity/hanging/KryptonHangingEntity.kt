@@ -68,7 +68,7 @@ abstract class KryptonHangingEntity(world: KryptonWorld) : KryptonEntity(world),
             // for direction WEST (anti clockwise SOUTH), the z becomes centerZ + 1
             z += BLOCK_CENTER_OFFSET * antiClockwise.normalZ
         }
-        location = Vec3dImpl(x, y, z)
+        position = Vec3dImpl(x, y, z)
         var xWidth = width.toDouble()
         var height = height.toDouble()
         var zWidth = width.toDouble()

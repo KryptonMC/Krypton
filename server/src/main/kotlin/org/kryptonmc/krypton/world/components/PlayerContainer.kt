@@ -36,7 +36,7 @@ interface PlayerContainer {
 
         players.forEach {
             if (filter != null && !filter.test(it)) return@forEach
-            val distanceToPlayer = it.location.distanceSquared(x, y, z)
+            val distanceToPlayer = it.position.distanceSquared(x, y, z)
             if ((x < 0.0 || distanceToPlayer < distance * distance) && (nearestDistance == -1.0 || distanceToPlayer < nearestDistance)) {
                 nearestDistance = distanceToPlayer
                 nearestPlayer = it
@@ -51,12 +51,12 @@ interface PlayerContainer {
     }
 
     fun getNearestPlayer(target: KryptonEntity, distance: Double): KryptonPlayer? =
-        getNearestPlayer(target.location.x, target.location.y, target.location.z, distance, false)
+        getNearestPlayer(target.position.x, target.position.y, target.position.z, distance, false)
 
     fun hasNearbyAlivePlayer(x: Double, y: Double, z: Double, distance: Double): Boolean {
         players.forEach {
             if (EntityPredicates.NO_SPECTATORS.test(it) && EntityPredicates.LIVING_ENTITY_STILL_ALIVE.test(it)) {
-                val distanceTo = it.location.distanceSquared(x, y, z)
+                val distanceTo = it.position.distanceSquared(x, y, z)
                 if (distance < 0.0 || distanceTo < distance * distance) return true
             }
         }

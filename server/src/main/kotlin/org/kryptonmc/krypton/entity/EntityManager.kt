@@ -71,10 +71,10 @@ class EntityManager(val world: KryptonWorld) : AutoCloseable {
         world.server.eventManager.fire(KryptonSpawnEntityEvent(entity, world)).thenAccept { event ->
             if (!event.result.isAllowed) return@thenAccept
 
-            forEachEntityInRange(entity.location, world.server.config.world.viewDistance) {
+            forEachEntityInRange(entity.position, world.server.config.world.viewDistance) {
                 if (it is KryptonPlayer) entity.addViewer(it)
             }
-            val chunk = world.getChunk(entity.location.floorX(), entity.location.floorY(), entity.location.floorZ()) ?: return@thenAccept
+            val chunk = world.getChunk(entity.position.floorX(), entity.position.floorY(), entity.position.floorZ()) ?: return@thenAccept
             byId.put(entity.id, entity)
             byUUID.put(entity.uuid, entity)
             getByChunk(chunk.position.pack()).add(entity)
@@ -87,13 +87,13 @@ class EntityManager(val world: KryptonWorld) : AutoCloseable {
         // TODO: World border
         player.session.send(PacketOutUpdateTime(world.data.time, world.data.dayTime, world.data.gameRules.get(GameRules.DO_DAYLIGHT_CYCLE)))
         if (!player.isVanished) {
-            forEachEntityInRange(player.location, player.settings.viewDistance) {
+            forEachEntityInRange(player.position, player.settings.viewDistance) {
                 it.addViewer(player)
                 if (it is KryptonPlayer && !it.isVanished) player.addViewer(it)
             }
         }
 
-        val chunk = world.getChunk(player.location.floorX(), player.location.floorY(), player.location.floorZ()) ?: return
+        val chunk = world.getChunk(player.position.floorX(), player.position.floorY(), player.position.floorZ()) ?: return
         byId.put(player.id, player)
         byUUID.put(player.uuid, player)
         getByChunk(chunk.position.pack()).add(player)
@@ -106,12 +106,12 @@ class EntityManager(val world: KryptonWorld) : AutoCloseable {
         if (entity.world != world) return
         world.server.eventManager.fire(KryptonRemoveEntityEvent(entity, world)).thenAccept { event ->
             if (!event.result.isAllowed) return@thenAccept
-            forEachEntityInRange(entity.location, world.server.config.world.viewDistance) {
+            forEachEntityInRange(entity.position, world.server.config.world.viewDistance) {
                 if (it is KryptonPlayer) entity.removeViewer(it)
                 if (entity is KryptonPlayer) it.removeViewer(entity)
             }
 
-            val chunk = world.getChunk(entity.location.floorX(), entity.location.floorY(), entity.location.floorZ()) ?: return@thenAccept
+            val chunk = world.getChunk(entity.position.floorX(), entity.position.floorY(), entity.position.floorZ()) ?: return@thenAccept
             byId.remove(entity.id)
             byUUID.remove(entity.uuid)
             val entitiesByChunk = byChunk.get(chunk.position.pack()).apply { remove(entity) }

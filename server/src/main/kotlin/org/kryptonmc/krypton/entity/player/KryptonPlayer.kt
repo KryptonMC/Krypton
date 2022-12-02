@@ -133,7 +133,7 @@ class KryptonPlayer(
             field = value
             if (old != field) {
                 session.send(PacketOutSetCamera(field.id))
-                teleport(field.location)
+                teleport(field.position)
             }
         }
 
@@ -278,17 +278,17 @@ class KryptonPlayer(
     }
 
     override fun teleport(position: Vec3d) {
-        val oldLocation = location
-        location = position
+        val oldLocation = this.position
+        this.position = position
 
-        if (Positioning.deltaInMoveRange(oldLocation, location)) {
-            session.send(PacketOutTeleportEntity(id, location, yaw, pitch, isOnGround))
+        if (Positioning.deltaInMoveRange(oldLocation, this.position)) {
+            session.send(PacketOutTeleportEntity(id, this.position, yaw, pitch, isOnGround))
         } else {
             session.send(PacketOutUpdateEntityPosition(
                 id,
-                Positioning.delta(location.x, oldLocation.x),
-                Positioning.delta(location.y, oldLocation.y),
-                Positioning.delta(location.z, oldLocation.z),
+                Positioning.delta(this.position.x, oldLocation.x),
+                Positioning.delta(this.position.y, oldLocation.y),
+                Positioning.delta(this.position.z, oldLocation.z),
                 isOnGround
             ))
         }
@@ -296,7 +296,7 @@ class KryptonPlayer(
     }
 
     override fun teleport(player: Player) {
-        teleport(player.location)
+        teleport(player.position)
     }
 
     override fun sendPluginMessage(channel: Key, message: ByteArray) {

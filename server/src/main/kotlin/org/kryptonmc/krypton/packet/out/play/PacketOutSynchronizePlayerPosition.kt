@@ -37,7 +37,7 @@ data class PacketOutSynchronizePlayerPosition(
     val shouldDismount: Boolean = false
 ) : Packet {
 
-    constructor(player: KryptonPlayer) : this(player.location.x, player.location.y, player.location.z, player.yaw, player.pitch)
+    constructor(player: KryptonPlayer) : this(player.position.x, player.position.y, player.position.z, player.yaw, player.pitch)
 
     constructor(buf: ByteBuf) : this(buf.readDouble(), buf.readDouble(), buf.readDouble(), buf.readFloat(), buf.readFloat(), buf.readByte().toInt(),
         buf.readVarInt(), buf.readBoolean())

@@ -43,7 +43,7 @@ data class PacketOutSpawnPlayer(
     val pitch: Float
 ) : EntityPacket {
 
-    constructor(player: KryptonPlayer) : this(player.id, player.uuid, player.location.x, player.location.y, player.location.z,
+    constructor(player: KryptonPlayer) : this(player.id, player.uuid, player.position.x, player.position.y, player.position.z,
         player.yaw, player.pitch)
 
     constructor(buf: ByteBuf) : this(buf.readVarInt(), buf.readUUID(), buf.readDouble(), buf.readDouble(), buf.readDouble(),

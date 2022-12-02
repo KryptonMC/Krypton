@@ -114,15 +114,15 @@ data class EntityQuery(val type: Selector, private val args: List<EntityArgument
                 }
                 "x" -> {
                     checkInt(value.toString())
-                    entities = entities.filter { applyDifference(differenceX, value, it.location.floorX()) }
+                    entities = entities.filter { applyDifference(differenceX, value, it.position.floorX()) }
                 }
                 "y" -> {
                     checkInt(value.toString())
-                    entities = entities.filter { applyDifference(differenceY, value, it.location.floorY()) }
+                    entities = entities.filter { applyDifference(differenceY, value, it.position.floorY()) }
                 }
                 "z" -> {
                     checkInt(value.toString())
-                    entities = entities.filter { applyDifference(differenceZ, value, it.location.floorZ()) }
+                    entities = entities.filter { applyDifference(differenceZ, value, it.position.floorZ()) }
                 }
                 "distance" -> entities = applyDifferenceArgument(source, entities, value)
                 "scores" -> notImplemented("scores")
@@ -271,6 +271,6 @@ private fun String.toIntRange(): IntRange? {
     return IntRange(values.get(0).toInt(), values.get(1).toIntOrNull() ?: return null)
 }
 
-private fun KryptonEntity.distanceTo(other: KryptonEntity): Double = location.distanceSquared(other.location)
+private fun KryptonEntity.distanceTo(other: KryptonEntity): Double = position.distanceSquared(other.position)
 
 private fun <T> T?.orThrow(): T = this ?: throw EntityArgumentExceptions.PLAYER_NOT_FOUND.create()

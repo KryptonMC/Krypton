@@ -43,7 +43,7 @@ class EntityWaterPhysicsSystem(private val entity: KryptonEntity) {
     var isUnderwater: Boolean = false
 
     fun isInBubbleColumn(): Boolean =
-        entity.world.getBlock(entity.location.floorX(), entity.location.floorY(), entity.location.floorZ()).eq(Blocks.BUBBLE_COLUMN)
+        entity.world.getBlock(entity.position.floorX(), entity.position.floorY(), entity.position.floorZ()).eq(Blocks.BUBBLE_COLUMN)
 
     fun isInWaterOrBubbleColumn(): Boolean = isInWater || isInBubbleColumn()
 
@@ -70,7 +70,7 @@ class EntityWaterPhysicsSystem(private val entity: KryptonEntity) {
         }
         entity.fallDistance = 0F
         isUnderwater = true
-        entity.fireTicks = 0
+        entity.remainingFireTicks = 0
     }
 
     private fun updateFluidHeightAndFlow(tag: TagKey<Fluid>, flowScale: Double): Boolean {
@@ -129,11 +129,11 @@ class EntityWaterPhysicsSystem(private val entity: KryptonEntity) {
         isUnderwater = isUnderFluid(FluidTags.WATER)
         fluidOnEyes.clear()
 
-        val y = entity.location.y + entity.eyeHeight - KryptonEntity.BREATHING_DISTANCE_BELOW_EYES
+        val y = entity.position.y + entity.eyeHeight - KryptonEntity.BREATHING_DISTANCE_BELOW_EYES
         val vehicle = entity.vehicleSystem.vehicle
         if (vehicle is KryptonBoat && !vehicle.isUnderwater && vehicle.boundingBox.maximumY >= y && vehicle.boundingBox.minimumY <= y) return
 
-        val pos = BlockPos(entity.location.x, y, entity.location.z)
+        val pos = BlockPos(entity.position.x, y, entity.position.z)
         val fluid = entity.world.getFluid(pos)
         val height = (pos.y.toFloat() + fluid.getHeight(entity.world, pos)).toDouble()
         if (height > y) {
@@ -163,7 +163,7 @@ class EntityWaterPhysicsSystem(private val entity: KryptonEntity) {
     }
 
     private fun fluidAtFeet(): KryptonFluidState =
-        entity.world.getFluid(entity.location.floorX(), entity.location.floorY(), entity.location.floorZ())
+        entity.world.getFluid(entity.position.floorX(), entity.position.floorY(), entity.position.floorZ())
 
     companion object {
 

@@ -56,8 +56,8 @@ data class PacketOutSpawnEntity(
 
     constructor(entity: KryptonLivingEntity) : this(entity, entity.headYaw)
 
-    private constructor(entity: KryptonEntity, headYaw: Float) : this(entity.id, entity.uuid, entity.type, entity.location.x, entity.location.y,
-        entity.location.z, entity.pitch, entity.yaw, headYaw, 0, entity.velocityX(), entity.velocityY(), entity.velocityZ())
+    private constructor(entity: KryptonEntity, headYaw: Float) : this(entity.id, entity.uuid, entity.type, entity.position.x, entity.position.y,
+        entity.position.z, entity.pitch, entity.yaw, headYaw, 0, entity.velocityX(), entity.velocityY(), entity.velocityZ())
 
     constructor(buf: ByteBuf) : this(buf.readVarInt(), buf.readUUID(), buf.readById(KryptonRegistries.ENTITY_TYPE)!!, buf.readDouble(),
         buf.readDouble(), buf.readDouble(), buf.readAngle(), buf.readAngle(), buf.readAngle(), buf.readInt(), buf.readShort().toInt(),

@@ -26,9 +26,9 @@ sealed class HitResult(val location: Vec3d) {
     abstract val type: Type
 
     fun distanceTo(entity: KryptonEntity): Double {
-        val dx = location.x - entity.location.x
-        val dy = location.y - entity.location.y
-        val dz = location.z - entity.location.z
+        val dx = location.x - entity.position.x
+        val dy = location.y - entity.position.y
+        val dz = location.z - entity.position.z
         return dx * dx + dy * dy + dz * dz
     }
 

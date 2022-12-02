@@ -129,7 +129,7 @@ interface PacketGroupingAudience : ForwardingAudience {
             val packet = if (event != null) {
                 PacketOutEntitySoundEffect(sound, event, entity.id, seed)
             } else {
-                PacketOutCustomSoundEffect(sound, entity.location.x, entity.location.y, entity.location.z, seed)
+                PacketOutCustomSoundEffect(sound, entity.position.x, entity.position.y, entity.position.z, seed)
             }
             sendGroupedPacket(packet)
             return

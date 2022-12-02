@@ -30,7 +30,7 @@ abstract class KryptonAquaticAnimal(world: KryptonWorld) : KryptonMob(world), Aq
         get() = false
 
     override fun tick() {
-        val air = air
+        val air = airSupply
         super.tick()
         handleAir(air)
     }
@@ -39,14 +39,14 @@ abstract class KryptonAquaticAnimal(world: KryptonWorld) : KryptonMob(world), Aq
         if (isAlive && !waterPhysicsSystem.isInWaterOrBubbleColumn()) {
             // Aquatic creatures must be underwater to breathe. If they are out of water, they start to run out of air,
             // and eventually suffocate.
-            air = amount - 1
-            if (air == DROWNING_THRESHOLD) {
+            airSupply = amount - 1
+            if (airSupply == DROWNING_THRESHOLD) {
                 // If the creature is out of air, it takes 2 points of drowning damage every tick.
-                air = 0
+                airSupply = 0
                 damage(KryptonDamageSource(DamageTypes.DROWNING), DROWNING_DAMAGE)
             }
         } else {
-            air = AIR_RESET_AMOUNT
+            airSupply = AIR_RESET_AMOUNT
         }
     }
 

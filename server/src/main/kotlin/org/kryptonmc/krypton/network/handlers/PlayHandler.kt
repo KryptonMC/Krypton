@@ -298,8 +298,8 @@ class PlayHandler(override val server: KryptonServer, override val session: Sess
         val event = server.eventManager.fireSync(KryptonPlaceBlockEvent(player, state, packet.hand, position, face, isInside))
         if (!event.result.isAllowed) return
 
-        val chunkX = SectionPos.blockToSection(player.location.x)
-        val chunkZ = SectionPos.blockToSection(player.location.z)
+        val chunkX = SectionPos.blockToSection(player.position.x)
+        val chunkZ = SectionPos.blockToSection(player.position.z)
         val chunk = world.chunkManager.get(ChunkPos.pack(chunkX, chunkZ)) ?: return
         val existingBlock = chunk.getBlock(position)
         if (existingBlock != Blocks.AIR.defaultState) return
@@ -331,12 +331,12 @@ class PlayHandler(override val server: KryptonServer, override val session: Sess
         val target = player.world.entityManager.get(packet.entityId)
         player.isSneaking = packet.sneaking
         if (target == null) return
-        if (player.location.distanceSquared(target.location) >= INTERACTION_RANGE_SQUARED) return
+        if (player.position.distanceSquared(target.position) >= INTERACTION_RANGE_SQUARED) return
         packet.action.handle(InteractionHandler())
     }
 
     private fun handlePositionUpdate(packet: PacketInSetPlayerPosition) {
-        val oldLocation = player.location
+        val oldLocation = player.position
         if (oldLocation.x == packet.x && oldLocation.y == packet.y && oldLocation.z == packet.z) {
             // We haven't moved at all. We can avoid constructing the Vector3d object entirely, and just
             // fast nope out.
@@ -344,7 +344,7 @@ class PlayHandler(override val server: KryptonServer, override val session: Sess
         }
         val newLocation = Vec3dImpl(packet.x, packet.y, packet.z)
 
-        player.location = newLocation
+        player.position = newLocation
         server.eventManager.fireAndForget(KryptonMoveEvent(player, oldLocation, newLocation))
 
         val deltaX = Positioning.delta(newLocation.x, oldLocation.x)
@@ -370,7 +370,7 @@ class PlayHandler(override val server: KryptonServer, override val session: Sess
     }
 
     private fun handlePositionAndRotationUpdate(packet: PacketInSetPlayerPositionAndRotation) {
-        val oldLocation = player.location
+        val oldLocation = player.position
         if (oldLocation.x == packet.x && oldLocation.y == packet.y && oldLocation.z == packet.z) {
             // We haven't moved at all. We can avoid constructing the Vector3d object entirely, and just
             // fast nope out.
@@ -383,7 +383,7 @@ class PlayHandler(override val server: KryptonServer, override val session: Sess
         val newYaw = packet.yaw
         val newPitch = packet.pitch
 
-        player.location = newLocation
+        player.position = newLocation
         player.yaw = packet.yaw
         player.pitch = packet.pitch
         server.eventManager.fireAndForget(KryptonMoveEvent(player, oldLocation, newLocation))

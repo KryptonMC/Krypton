@@ -70,7 +70,7 @@ object SummonCommand {
     @JvmStatic
     private fun spawnEntity(source: CommandSourceStack, type: Key, position: Vec3d, nbt: CompoundTag) {
         if (!Worlds.isInSpawnableBounds(position)) throw ERROR_INVALID_POSITION.create()
-        val entity = EntityFactory.create(source.world, type.asString(), nbt)?.apply { this.location = position } ?: throw ERROR_FAILED.create()
+        val entity = EntityFactory.create(source.world, type.asString(), nbt)?.apply { this.position = position } ?: throw ERROR_FAILED.create()
         source.world.spawnEntity(entity)
         source.sendSuccess(Messages.Commands.SUMMON_SUCCESS.build(entity.displayName), true)
     }

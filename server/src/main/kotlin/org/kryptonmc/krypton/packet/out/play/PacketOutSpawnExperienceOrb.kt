@@ -30,7 +30,7 @@ import org.kryptonmc.krypton.util.writeVec3d
 @JvmRecord
 data class PacketOutSpawnExperienceOrb(override val entityId: Int, val location: Vec3d, val count: Int) : EntityPacket {
 
-    constructor(orb: KryptonExperienceOrb) : this(orb.id, orb.location, orb.count)
+    constructor(orb: KryptonExperienceOrb) : this(orb.id, orb.position, orb.count)
 
     constructor(buf: ByteBuf) : this(buf.readVarInt(), buf.readVec3d(), buf.readShort().toInt())
 
