@@ -8,14 +8,14 @@ jobs:
   build:
     runs-on: "ubuntu-latest"
     steps:
-      - name: "checkout repository"
+      - name: "Checkout repository"
         uses: "actions/checkout@v2"
-      - name: "setup jdk 11"
+      - name: "Set up JDK 17"
         uses: "actions/setup-java@v1"
         with:
-          java-version: "16"
+          java-version: "17"
           distribution: "adopt"
-      - name: "cache gradle"
+      - name: "Cache Gradle"
         uses: "actions/cache@v2"
         with:
           path: |
@@ -26,11 +26,11 @@ jobs:
             ${{ runner.os }}-gradle-
       - name: "build"
         run: "./gradlew build"
-      - name: "cleanup gradle cache"
+      - name: "Cleanup Gradle cache"
         run: |
           rm -f ~/.gradle/caches/modules-2/modules-2.lock
           rm -f ~/.gradle/caches/modules-2/gc.properties
-      - name: "upload to packages"
+      - name: "Upload to Packages"
         uses: "actions/upload-artifact@v2"
         with:
           path: "server/build/libs/Krypton-*.jar"
