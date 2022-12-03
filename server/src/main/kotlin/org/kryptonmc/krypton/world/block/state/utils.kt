@@ -16,14 +16,9 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.item
+package org.kryptonmc.krypton.world.block.state
 
-import net.kyori.adventure.key.Key
-import net.kyori.adventure.text.format.TextColor
-import org.kryptonmc.api.item.ItemRarity
+import org.kryptonmc.api.block.BlockState
+import org.kryptonmc.krypton.util.downcastApiType
 
-@JvmRecord
-data class KryptonItemRarity(private val key: Key, override val color: TextColor) : ItemRarity {
-
-    override fun key(): Key = key
-}
+fun BlockState.downcast(): KryptonBlockState = downcastApiType("BlockState")

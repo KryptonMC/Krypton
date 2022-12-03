@@ -64,9 +64,9 @@ class KryptonChunk(
     override fun getBlock(x: Int, y: Int, z: Int): KryptonBlockState {
 //        if (world.isDebug) {
 //            var block: KryptonBlock? = null
-//            if (y == 60) block = Blocks.BARRIER.downcast()
+//            if (y == 60) block = KryptonBlocks.BARRIER.defaultState
 //            if (y == 70) block = DebugGenerator.blockAt(x, z)
-//            return block ?: Blocks.AIR.downcast()
+//            return block ?: KryptonBlocks.AIR.defaultState
 //        }
         val sectionIndex = getSectionIndex(y)
         if (sectionIndex >= 0 && sectionIndex < sections.size) {

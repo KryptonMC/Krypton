@@ -101,6 +101,10 @@ open class KryptonSimpleRegistry<T>(
     override val tags: Map<TagKey<T>, TagSet<T>>
         get() = Collections.unmodifiableMap(tagMap)
 
+    init {
+        if (customHolderProvider != null) intrusiveHolderCache = IdentityHashMap()
+    }
+
     /**
      * Gets a list of the reference holders in this registry in the order they were registered.
      *
@@ -220,7 +224,7 @@ open class KryptonSimpleRegistry<T>(
     }
 
     override fun createIntrusiveHolder(value: T): Holder.Reference<T> {
-        require(customHolderProvider != null) { "This registry cannot create intrusive holders!" }
+        requireNotNull(customHolderProvider) { "This registry cannot create intrusive holders!" }
         if (!frozen && intrusiveHolderCache != null) return intrusiveHolderCache!!.computeIfAbsent(value) { Holder.Reference.intrusive(this, it) }
         error("Registry is already frozen!")
     }

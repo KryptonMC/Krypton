@@ -33,9 +33,9 @@ import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.util.BlockPos
 import org.kryptonmc.krypton.util.SectionPos
 import org.kryptonmc.krypton.world.KryptonWorldBorder
-import org.kryptonmc.krypton.world.block.downcast
 import org.kryptonmc.krypton.world.block.entity.KryptonBlockEntity
 import org.kryptonmc.krypton.world.block.state.KryptonBlockState
+import org.kryptonmc.krypton.world.block.state.downcast
 import org.kryptonmc.krypton.world.chunk.ChunkPos
 import org.kryptonmc.krypton.world.chunk.KryptonChunk
 import org.kryptonmc.krypton.world.chunk.ticket.Ticket

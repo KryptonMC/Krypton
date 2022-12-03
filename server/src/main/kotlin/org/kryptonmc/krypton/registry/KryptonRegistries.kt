@@ -19,6 +19,7 @@
 package org.kryptonmc.krypton.registry
 
 import net.kyori.adventure.key.Key
+import org.kryptonmc.api.block.Blocks
 import org.kryptonmc.api.block.entity.BlockEntityType
 import org.kryptonmc.api.block.entity.BlockEntityTypes
 import org.kryptonmc.api.block.entity.banner.BannerPatternType
@@ -37,8 +38,6 @@ import org.kryptonmc.api.entity.hanging.PaintingVariants
 import org.kryptonmc.api.fluid.Fluids
 import org.kryptonmc.api.inventory.InventoryType
 import org.kryptonmc.api.inventory.InventoryTypes
-import org.kryptonmc.api.item.ItemRarities
-import org.kryptonmc.api.item.ItemRarity
 import org.kryptonmc.api.item.ItemTypes
 import org.kryptonmc.api.registry.DefaultedRegistry
 import org.kryptonmc.api.registry.Registry
@@ -85,6 +84,7 @@ import org.kryptonmc.krypton.world.event.GameEvents
 import org.kryptonmc.krypton.world.fluid.KryptonFluid
 import org.kryptonmc.krypton.world.fluid.KryptonFluids
 import java.util.function.Function
+import java.util.function.Supplier
 
 /**
  * This class contains all of the built-in registries for Krypton. These are required by the API to exist, and they exist in this class
@@ -94,7 +94,7 @@ object KryptonRegistries {
 
     private val LOGGER = logger<KryptonRegistries>()
     private val WRITABLE_PARENT: WritableRegistry<WritableRegistry<*>> = KryptonSimpleRegistry(ImplKeys.PARENT, null)
-    private val LOADERS = HashMap<Key, Runnable>()
+    private val LOADERS = LinkedHashMap<Key, Runnable>()
 
     /*
      * Built-in vanilla-derived registries
@@ -112,8 +112,10 @@ object KryptonRegistries {
     @JvmField
     val BLOCK: Defaulted<KryptonBlock> = defaultedIntrusive(ImplKeys.BLOCK, "air") {
         KryptonBlocks
-        //Blocks
+        Blocks
     }
+    @JvmField
+    val ENTITY_CATEGORIES: Simple<EntityCategory> = simple(ApiKeys.ENTITY_CATEGORIES, loader(Loaders.entityCategory()) { EntityCategories })
     @JvmField
     val ENTITY_TYPE: Defaulted<KryptonEntityType<*>> = defaultedIntrusive(ImplKeys.ENTITY_TYPE, "pig") {
         KryptonEntityTypes
@@ -129,8 +131,6 @@ object KryptonRegistries {
     val PAINTING_VARIANT: Defaulted<PaintingVariant> =
         defaulted(ApiKeys.PAINTING_VARIANT, "kebab", loader(Loaders.paintingVariant()) { PaintingVariants })
     @JvmField
-    val CUSTOM_STATISTIC: Simple<Key> = simple(ApiKeys.CUSTOM_STATISTIC, loader(Loaders.customStatistic()) { CustomStatistics })
-    @JvmField
     val INVENTORY_TYPE: Simple<InventoryType> =
         simple(ResourceKeys.INVENTORY_TYPE, loader(Loaders.inventoryType()) { InventoryTypes })
     @JvmField
@@ -140,6 +140,8 @@ object KryptonRegistries {
     }
     @JvmField
     val STATISTIC_TYPE: Simple<StatisticType<*>> = simple(ApiKeys.STATISTIC_TYPE, loader(Loaders.statisticType()) { StatisticTypes })
+    @JvmField
+    val CUSTOM_STATISTIC: Simple<Key> = simple(ApiKeys.CUSTOM_STATISTIC, loader(Loaders.customStatistic()) { CustomStatistics })
     @JvmField
     val MEMORIES: Simple<MemoryKey<*>> = simple(ImplKeys.MEMORIES) { MemoryKeys }
     @JvmField
@@ -169,10 +171,6 @@ object KryptonRegistries {
     val GAME_RULES: Simple<GameRule<*>> = simple(ApiKeys.GAME_RULES, loader(Loaders.gameRule()) { GameRules })
     @JvmField
     val CRITERIA: Simple<KeyedCriterion> = simple(ApiKeys.CRITERIA, loader(Loaders.criterion()) { Criteria })
-    @JvmField
-    val ITEM_RARITIES: Simple<ItemRarity> = simple(ApiKeys.ITEM_RARITIES, loader(Loaders.itemRarity()) { ItemRarities })
-    @JvmField
-    val ENTITY_CATEGORIES: Simple<EntityCategory> = simple(ApiKeys.ENTITY_CATEGORIES, loader(Loaders.entityCategory()) { EntityCategories })
     @JvmField
     val DAMAGE_TYPES: Simple<DamageType> = simple(ApiKeys.DAMAGE_TYPES, loader(Loaders.damageType()) { DamageTypes })
 
@@ -223,8 +221,8 @@ object KryptonRegistries {
      */
 
     @JvmStatic
-    private inline fun <T> loader(loader: RegistryLoader<T>, crossinline initApiType: () -> Unit): Bootstrap<T> = Bootstrap {
-        loader.forEach { key, value -> register(it, key, value) }
+    private inline fun <T> loader(loader: Supplier<RegistryLoader<T>>, crossinline initApiType: () -> Unit): Bootstrap<T> = Bootstrap {
+        loader.get().forEach { key, value -> register(it, key, value) }
         initApiType()
     }
 

@@ -21,7 +21,6 @@ package org.kryptonmc.krypton.world.block
 import com.github.benmanes.caffeine.cache.Caffeine
 import net.kyori.adventure.key.Key
 import org.kryptonmc.api.block.BlockState
-import org.kryptonmc.api.block.Blocks
 import org.kryptonmc.api.statistic.StatisticTypes
 import org.kryptonmc.api.util.Direction
 import org.kryptonmc.api.world.biome.Precipitation
@@ -154,7 +153,7 @@ open class KryptonBlock(properties: Properties) : BlockBehaviour(properties), St
         return descriptionId!!
     }
 
-    override fun toString(): String = "Block(${key()})"
+    override fun toString(): String = "KryptonBlock(${key()})"
 
     companion object {
 
@@ -167,7 +166,7 @@ open class KryptonBlock(properties: Properties) : BlockBehaviour(properties), St
             .build<VoxelShape, Boolean> { !Shapes.joinIsNotEmpty(Shapes.block(), it, BooleanOperator.NOT_SAME) }
 
         @JvmStatic
-        fun stateFromId(id: Int): KryptonBlockState = STATES.get(id) ?: Blocks.AIR.defaultState.downcast()
+        fun stateFromId(id: Int): KryptonBlockState = STATES.get(id) ?: KryptonBlocks.AIR.defaultState
 
         @JvmStatic
         fun idOf(state: KryptonBlockState?): Int {

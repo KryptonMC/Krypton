@@ -16,13 +16,21 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.world.block
+package org.kryptonmc.krypton.world.block.type
 
-import org.kryptonmc.api.block.Block
-import org.kryptonmc.api.block.BlockState
-import org.kryptonmc.krypton.util.downcastApiType
+import org.kryptonmc.krypton.state.property.BooleanProperty
+import org.kryptonmc.krypton.state.property.KryptonProperties
 import org.kryptonmc.krypton.world.block.state.KryptonBlockState
+import java.util.function.ToIntFunction
 
-fun Block.downcast(): KryptonBlock = downcastApiType("Block")
+interface CaveVines {
 
-fun BlockState.downcast(): KryptonBlockState = downcastApiType("BlockState")
+    companion object {
+
+        @JvmField
+        val BERRIES: BooleanProperty = KryptonProperties.BERRIES
+
+        @JvmStatic
+        fun emission(value: Int): ToIntFunction<KryptonBlockState> = ToIntFunction { if (it.require(BERRIES)) value else 0 }
+    }
+}

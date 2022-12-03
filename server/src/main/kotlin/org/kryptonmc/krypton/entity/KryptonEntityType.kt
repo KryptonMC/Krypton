@@ -21,18 +21,18 @@ package org.kryptonmc.krypton.entity
 import com.google.common.collect.ImmutableSet
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.text.Component
-import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.block.BlockState
-import org.kryptonmc.api.block.Blocks
 import org.kryptonmc.api.entity.EntityCategory
 import org.kryptonmc.api.entity.EntityType
 import org.kryptonmc.krypton.registry.Holder
 import org.kryptonmc.krypton.registry.IntrusiveRegistryObject
 import org.kryptonmc.krypton.registry.KryptonRegistries
 import org.kryptonmc.krypton.util.Keys
-import org.kryptonmc.krypton.world.block.downcast
+import org.kryptonmc.krypton.world.block.KryptonBlock
+import org.kryptonmc.krypton.world.block.KryptonBlocks
 import org.kryptonmc.krypton.world.block.isBurning
 import org.kryptonmc.krypton.world.block.state.KryptonBlockState
+import org.kryptonmc.krypton.world.block.state.downcast
 import javax.annotation.concurrent.Immutable
 
 @Immutable
@@ -42,7 +42,7 @@ class KryptonEntityType<out T : KryptonEntity>(
     override val isSummonable: Boolean,
     override val isImmuneToFire: Boolean,
     val canSpawnFarFromPlayer: Boolean,
-    override val immuneTo: ImmutableSet<Block>,
+    override val immuneTo: ImmutableSet<KryptonBlock>,
     override val width: Float,
     override val height: Float,
     override val clientTrackingRange: Int,
@@ -68,7 +68,8 @@ class KryptonEntityType<out T : KryptonEntity>(
     fun isImmuneTo(block: KryptonBlockState): Boolean {
         if (immuneTo.contains(block.block)) return true
         if (!isImmuneToFire && block.isBurning()) return false
-        return block.eq(Blocks.WITHER_ROSE) || block.eq(Blocks.SWEET_BERRY_BUSH) || block.eq(Blocks.CACTUS) || block.eq(Blocks.POWDER_SNOW)
+        return block.eq(KryptonBlocks.WITHER_ROSE) || block.eq(KryptonBlocks.SWEET_BERRY_BUSH) || block.eq(KryptonBlocks.CACTUS) ||
+                block.eq(KryptonBlocks.POWDER_SNOW)
     }
 
     override fun key(): Key = KryptonRegistries.ENTITY_TYPE.getKey(this)
@@ -85,7 +86,7 @@ class KryptonEntityType<out T : KryptonEntity>(
 
     class Builder<out T : KryptonEntity>(private val category: EntityCategory) {
 
-        private var immuneTo = ImmutableSet.of<Block>()
+        private var immuneTo = ImmutableSet.of<KryptonBlock>()
         private var serializable = true
         private var summonable = true
         private var fireImmune = false
@@ -106,7 +107,7 @@ class KryptonEntityType<out T : KryptonEntity>(
 
         fun fireImmune(): Builder<T> = apply { fireImmune = true }
 
-        fun immuneTo(vararg blocks: Block): Builder<T> = apply { immuneTo = ImmutableSet.copyOf(blocks) }
+        fun immuneTo(vararg blocks: KryptonBlock): Builder<T> = apply { immuneTo = ImmutableSet.copyOf(blocks) }
 
         fun canSpawnFarFromPlayer(): Builder<T> = apply { canSpawnFarFromPlayer = true }
 

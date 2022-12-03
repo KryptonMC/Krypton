@@ -19,7 +19,6 @@
 package org.kryptonmc.krypton.entity.system
 
 import it.unimi.dsi.fastutil.objects.Object2DoubleArrayMap
-import org.kryptonmc.api.block.Blocks
 import org.kryptonmc.api.fluid.Fluid
 import org.kryptonmc.api.tags.FluidTags
 import org.kryptonmc.api.tags.TagKey
@@ -30,6 +29,7 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutSetEntityVelocity
 import org.kryptonmc.krypton.util.BlockPos
 import org.kryptonmc.krypton.util.Maths
 import org.kryptonmc.krypton.util.Vec3dImpl
+import org.kryptonmc.krypton.world.block.KryptonBlocks
 import org.kryptonmc.krypton.world.fluid.KryptonFluidState
 import kotlin.math.abs
 import kotlin.math.max
@@ -43,7 +43,7 @@ class EntityWaterPhysicsSystem(private val entity: KryptonEntity) {
     var isUnderwater: Boolean = false
 
     fun isInBubbleColumn(): Boolean =
-        entity.world.getBlock(entity.position.floorX(), entity.position.floorY(), entity.position.floorZ()).eq(Blocks.BUBBLE_COLUMN)
+        entity.world.getBlock(entity.position.floorX(), entity.position.floorY(), entity.position.floorZ()).eq(KryptonBlocks.BUBBLE_COLUMN)
 
     fun isInWaterOrBubbleColumn(): Boolean = isInWater || isInBubbleColumn()
 

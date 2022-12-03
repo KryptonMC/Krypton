@@ -21,6 +21,7 @@ package org.kryptonmc.krypton.item
 import com.google.gson.JsonObject
 import net.kyori.adventure.key.Key
 import org.kryptonmc.api.effect.sound.SoundEvents
+import org.kryptonmc.api.item.ItemRarity
 import org.kryptonmc.krypton.registry.KryptonRegistries
 import org.kryptonmc.krypton.registry.KryptonRegistry
 import org.kryptonmc.krypton.util.KryptonDataLoader
@@ -29,7 +30,7 @@ class ItemLoader(registry: KryptonRegistry<KryptonItemType>) : KryptonDataLoader
 
     override fun create(key: Key, value: JsonObject): KryptonItemType {
         val rarityName = value.get("rarity")?.asString ?: "COMMON"
-        val rarity = KryptonRegistries.ITEM_RARITIES.get(Key.key("krypton", rarityName.lowercase()))!!
+        val rarity = ItemRarity.valueOf(rarityName)
         val maxStackSize = value.get("maxStackSize").asInt
         val maxDamage = value.get("maxDamage").asInt
         val edible = value.get("edible").asBoolean

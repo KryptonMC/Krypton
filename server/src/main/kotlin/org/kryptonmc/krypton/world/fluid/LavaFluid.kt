@@ -18,13 +18,12 @@
  */
 package org.kryptonmc.krypton.world.fluid
 
-import org.kryptonmc.api.block.Blocks
 import org.kryptonmc.api.fluid.Fluid
 import org.kryptonmc.api.item.ItemType
 import org.kryptonmc.api.item.ItemTypes
 import org.kryptonmc.krypton.state.StateDefinition
+import org.kryptonmc.krypton.world.block.KryptonBlocks
 import org.kryptonmc.krypton.world.block.state.KryptonBlockState
-import org.kryptonmc.krypton.world.block.downcast
 
 abstract class LavaFluid : FlowingFluid() {
 
@@ -39,7 +38,7 @@ abstract class LavaFluid : FlowingFluid() {
 
     override fun isSame(fluid: Fluid): Boolean = fluid === KryptonFluids.LAVA || fluid === KryptonFluids.FLOWING_LAVA
 
-    override fun asBlock(state: KryptonFluidState): KryptonBlockState = Blocks.LAVA.defaultState.downcast().set(LEVEL, calculateBlockLevel(state))
+    override fun asBlock(state: KryptonFluidState): KryptonBlockState = KryptonBlocks.LAVA.defaultState.set(LEVEL, calculateBlockLevel(state))
 
     class Flowing : LavaFluid() {
 

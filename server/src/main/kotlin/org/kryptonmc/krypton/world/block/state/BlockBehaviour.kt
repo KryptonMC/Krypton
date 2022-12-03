@@ -101,10 +101,12 @@ abstract class BlockBehaviour(protected val properties: Properties) : Block {
             }
             return drops!!
         }
-    val defaultMaterialColor: MaterialColor
-        get() = properties.materialColor.apply(asBlock().defaultState)
-    val defaultDestroyTime: Float
-        get() = properties.destroyTime
+
+    fun defaultMaterialColor(): MaterialColor = properties.material.color
+    // TODO: Switch back to below when properly implemented
+//    fun defaultMaterialColor(): MaterialColor = properties.materialColor.apply(asBlock().defaultState)
+
+    fun defaultDestroyTime(): Float = properties.destroyTime
 
     // ==============================
     // Block interaction
@@ -246,17 +248,21 @@ abstract class BlockBehaviour(protected val properties: Properties) : Block {
         propertiesCodec: MapCodec<KryptonBlockState>
     ) : KryptonState<KryptonBlock, KryptonBlockState>(owner, values, propertiesCodec), BlockState, StateDelegate<BlockState, KryptonBlockState> {
 
-        val lightEmission: Int = owner.properties.lightEmission.applyAsInt(asState())
+        // TODO: Change the ones here that are getters back to fields when we properly implement blocks
+        val lightEmission: Int
+            get() = owner.properties.lightEmission.applyAsInt(asState())
         val useShapeForLightOcclusion: Boolean = owner.useShapeForLightOcclusion(asState())
         val material: Material = owner.properties.material
-        private val materialColor = owner.properties.materialColor.apply(asState())
+        private val materialColor
+            get() = owner.properties.materialColor.apply(asState())
         private val destroySpeed = owner.properties.destroyTime
         val requiresCorrectTool: Boolean = owner.properties.requiresCorrectTool
         val canOcclude: Boolean = owner.properties.canOcclude
         private val isRedstoneConductor = owner.properties.isRedstoneConductor
         private val isSuffocating = owner.properties.isSuffocating
         private val hasPostProcess = owner.properties.hasPostProcess
-        val offsetType: OffsetType = owner.properties.offsetType.apply(asState())
+        val offsetType: OffsetType
+            get() = owner.properties.offsetType.apply(asState())
         protected var cache: Cache? = null
 
         final override val isAir: Boolean
@@ -506,17 +512,17 @@ abstract class BlockBehaviour(protected val properties: Properties) : Block {
         }
     }
 
-    class Properties private constructor(material: Material, materialColor: Function<BlockState, MaterialColor>) {
+    class Properties private constructor(material: Material, materialColor: Function<KryptonBlockState, MaterialColor>) {
 
         var material: Material = material
             private set
-        var materialColor: Function<BlockState, MaterialColor> = materialColor
+        var materialColor: Function<KryptonBlockState, MaterialColor> = materialColor
             private set
         var hasCollision: Boolean = true
             private set
         var soundGroup: BlockSoundGroup = BlockSoundGroups.STONE
             private set
-        var lightEmission: ToIntFunction<BlockState> = ToIntFunction { 0 }
+        var lightEmission: ToIntFunction<KryptonBlockState> = ToIntFunction { 0 }
             private set
         var explosionResistance: Float = 0F
             private set
@@ -566,7 +572,7 @@ abstract class BlockBehaviour(protected val properties: Properties) : Block {
 
         fun sounds(group: BlockSoundGroup): Properties = apply { soundGroup = group }
 
-        fun lightLevel(emission: ToIntFunction<BlockState>): Properties = apply { lightEmission = emission }
+        fun lightLevel(emission: ToIntFunction<KryptonBlockState>): Properties = apply { lightEmission = emission }
 
         fun strength(hardness: Float, resistance: Float): Properties = destroyTime(hardness).explosionResistance(resistance)
 
@@ -618,7 +624,7 @@ abstract class BlockBehaviour(protected val properties: Properties) : Block {
             fun of(material: Material, color: MaterialColor): Properties = of(material) { color }
 
             @JvmStatic
-            fun of(material: Material, color: Function<BlockState, MaterialColor>): Properties = Properties(material, color)
+            fun of(material: Material, color: Function<KryptonBlockState, MaterialColor>): Properties = Properties(material, color)
 
             @JvmStatic
             fun from(block: BlockBehaviour): Properties {

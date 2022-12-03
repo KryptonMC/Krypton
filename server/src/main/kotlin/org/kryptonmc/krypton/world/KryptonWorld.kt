@@ -21,7 +21,6 @@ package org.kryptonmc.krypton.world
 import net.kyori.adventure.identity.Identity
 import net.kyori.adventure.pointer.Pointers
 import net.kyori.adventure.sound.Sound
-import org.kryptonmc.api.block.Blocks
 import org.kryptonmc.api.effect.sound.SoundEvent
 import org.kryptonmc.api.entity.Entity
 import org.kryptonmc.api.entity.EntityType
@@ -55,7 +54,6 @@ import org.kryptonmc.krypton.util.random.RandomSource
 import org.kryptonmc.krypton.world.biome.BiomeManager
 import org.kryptonmc.krypton.world.block.KryptonBlock
 import org.kryptonmc.krypton.world.block.KryptonBlocks
-import org.kryptonmc.krypton.world.block.downcast
 import org.kryptonmc.krypton.world.block.state.KryptonBlockState
 import org.kryptonmc.krypton.world.chunk.ChunkAccessor
 import org.kryptonmc.krypton.world.chunk.ChunkManager
@@ -189,7 +187,7 @@ class KryptonWorld(
     }
 
     override fun getBlock(x: Int, y: Int, z: Int): KryptonBlockState {
-        if (isOutsideBuildHeight(y)) return Blocks.VOID_AIR.defaultState.downcast()
+        if (isOutsideBuildHeight(y)) return KryptonBlocks.VOID_AIR.defaultState
         return getChunkAt(SectionPos.blockToSection(x), SectionPos.blockToSection(z))?.getBlock(x, y, z) ?: KryptonBlocks.AIR.defaultState
     }
 
@@ -255,12 +253,12 @@ class KryptonWorld(
             var neighbourPos = pos.relative(direction)
             if (!hasChunkAt(neighbourPos)) return@forEach
             var neighbour = getBlock(neighbourPos)
-            if (neighbour.eq(Blocks.COMPARATOR)) {
+            if (neighbour.eq(KryptonBlocks.COMPARATOR)) {
                 neighbourChanged(neighbour, neighbourPos, block, pos, false)
             } else if (neighbour.isRedstoneConductor(this, neighbourPos)) {
                 neighbourPos = neighbourPos.relative(direction)
                 neighbour = getBlock(neighbourPos)
-                if (neighbour.eq(Blocks.COMPARATOR)) neighbourChanged(neighbour, neighbourPos, block, pos, false)
+                if (neighbour.eq(KryptonBlocks.COMPARATOR)) neighbourChanged(neighbour, neighbourPos, block, pos, false)
             }
         }
     }

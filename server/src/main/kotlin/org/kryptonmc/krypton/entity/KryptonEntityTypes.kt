@@ -19,7 +19,6 @@
 package org.kryptonmc.krypton.entity
 
 import net.kyori.adventure.key.Key
-import org.kryptonmc.api.block.Blocks
 import org.kryptonmc.api.entity.EntityCategories
 import org.kryptonmc.api.entity.EntityCategory
 import org.kryptonmc.krypton.entity.ambient.KryptonBat
@@ -73,6 +72,7 @@ import org.kryptonmc.krypton.entity.vehicle.KryptonFurnaceMinecart
 import org.kryptonmc.krypton.entity.vehicle.KryptonMinecart
 import org.kryptonmc.krypton.entity.vehicle.KryptonTNTMinecart
 import org.kryptonmc.krypton.registry.KryptonRegistries
+import org.kryptonmc.krypton.world.block.KryptonBlocks
 
 @Suppress("MagicNumber")
 object KryptonEntityTypes {
@@ -237,7 +237,7 @@ object KryptonEntityTypes {
     val FOX: KryptonEntityType<KryptonFox> = register("fox", EntityCategories.CREATURE) {
         size(0.6F, 0.7F)
         clientTrackingRange(8)
-        immuneTo(Blocks.SWEET_BERRY_BUSH)
+        immuneTo(KryptonBlocks.SWEET_BERRY_BUSH)
     }
     @JvmField
     val GHAST: KryptonEntityType<KryptonEntity> = register("ghast", EntityCategories.MONSTER) {
@@ -422,7 +422,7 @@ object KryptonEntityTypes {
     val POLAR_BEAR: KryptonEntityType<KryptonPolarBear> = register("polar_bear", EntityCategories.CREATURE) {
         size(1.4F, 1.4F)
         clientTrackingRange(10)
-        immuneTo(Blocks.POWDER_SNOW)
+        immuneTo(KryptonBlocks.POWDER_SNOW)
     }
     @JvmField
     val PRIMED_TNT: KryptonEntityType<KryptonEntity> = register("tnt", EntityCategories.MISC) {
@@ -497,7 +497,7 @@ object KryptonEntityTypes {
     val SNOW_GOLEM: KryptonEntityType<KryptonEntity> = register("snow_golem", EntityCategories.MISC) {
         size(0.7F, 1.9F)
         clientTrackingRange(8)
-        immuneTo(Blocks.POWDER_SNOW)
+        immuneTo(KryptonBlocks.POWDER_SNOW)
     }
     @JvmField
     val SNOWBALL: KryptonEntityType<KryptonSnowball> = register("snowball", EntityCategories.MISC) {
@@ -525,7 +525,7 @@ object KryptonEntityTypes {
     val STRAY: KryptonEntityType<KryptonEntity> = register("stray", EntityCategories.MONSTER) {
         size(0.6F, 1.99F)
         clientTrackingRange(8)
-        immuneTo(Blocks.POWDER_SNOW)
+        immuneTo(KryptonBlocks.POWDER_SNOW)
     }
     @JvmField
     val STRIDER: KryptonEntityType<KryptonEntity> = register("strider", EntityCategories.CREATURE) {
@@ -593,14 +593,14 @@ object KryptonEntityTypes {
         size(0.9F, 3.5F)
         fireImmune()
         clientTrackingRange(10)
-        immuneTo(Blocks.WITHER_ROSE)
+        immuneTo(KryptonBlocks.WITHER_ROSE)
     }
     @JvmField
     val WITHER_SKELETON: KryptonEntityType<KryptonEntity> = register("wither_skeleton", EntityCategories.MONSTER) {
         size(0.7F, 2.4F)
         fireImmune()
         clientTrackingRange(8)
-        immuneTo(Blocks.WITHER_ROSE)
+        immuneTo(KryptonBlocks.WITHER_ROSE)
     }
     @JvmField
     val WITHER_SKULL: KryptonEntityType<KryptonWitherSkull> = register("wither_skull", EntityCategories.MISC) {

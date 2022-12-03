@@ -18,7 +18,6 @@
  */
 package org.kryptonmc.krypton.world.fluid
 
-import org.kryptonmc.api.block.Blocks
 import org.kryptonmc.api.item.ItemType
 import org.kryptonmc.api.item.ItemTypes
 import org.kryptonmc.api.util.Vec3d
@@ -26,8 +25,8 @@ import org.kryptonmc.krypton.shapes.Shapes
 import org.kryptonmc.krypton.shapes.VoxelShape
 import org.kryptonmc.krypton.util.BlockPos
 import org.kryptonmc.krypton.util.Vec3dImpl
+import org.kryptonmc.krypton.world.block.KryptonBlocks
 import org.kryptonmc.krypton.world.block.state.KryptonBlockState
-import org.kryptonmc.krypton.world.block.downcast
 import org.kryptonmc.krypton.world.components.BlockGetter
 
 class EmptyFluid : KryptonFluid() {
@@ -45,7 +44,7 @@ class EmptyFluid : KryptonFluid() {
 
     override fun getOwnHeight(state: KryptonFluidState): Float = 0F
 
-    override fun asBlock(state: KryptonFluidState): KryptonBlockState = Blocks.AIR.defaultState.downcast()
+    override fun asBlock(state: KryptonFluidState): KryptonBlockState = KryptonBlocks.AIR.defaultState
 
     override fun isSource(state: KryptonFluidState): Boolean = false
 

@@ -29,8 +29,8 @@ import org.kryptonmc.krypton.registry.KryptonRegistries
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.krypton.world.block.KryptonBlock
 import org.kryptonmc.krypton.world.block.KryptonBlocks
-import org.kryptonmc.krypton.world.block.downcast
 import org.kryptonmc.krypton.world.block.state.KryptonBlockState
+import org.kryptonmc.krypton.world.block.state.downcast
 import org.kryptonmc.krypton.world.damage.KryptonDamageSource
 import org.kryptonmc.krypton.world.damage.KryptonEntityDamageSource
 

@@ -43,6 +43,7 @@ class BuilderCollection<E> : MutableCollection<E> {
     constructor(from: Collection<E>) {
         @Suppress("UNCHECKED_CAST")
         elements = arrayOfNulls<Any>(from.size) as Array<E?>
+        size = from.size
         if (from is List<*>) {
             from as List<E>
             for (i in from.indices) {

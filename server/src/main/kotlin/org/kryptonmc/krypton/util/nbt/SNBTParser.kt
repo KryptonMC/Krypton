@@ -115,7 +115,7 @@ class SNBTParser(private val reader: StringReader) {
                 type = tag.id()
             } else if (tag.id() != type) {
                 reader.cursor = cursor
-                throw ERROR_INSERT_MIXED_LIST.createWithContext(reader, tag.type().name, Types.of(type).name)
+                throw ERROR_INSERT_MIXED_LIST.createWithContext(reader, tag.type().name(), Types.of(type).name())
             }
             list.add(tag)
             if (!reader.hasElementSeparator()) break
@@ -154,7 +154,7 @@ class SNBTParser(private val reader: StringReader) {
                 val type = tag.id()
                 if (type != elementType) {
                     reader.cursor = cursor
-                    throw ERROR_INSERT_MIXED_ARRAY.createWithContext(reader, Types.of(type).name, Types.of(arrayType).name)
+                    throw ERROR_INSERT_MIXED_ARRAY.createWithContext(reader, Types.of(type).name(), Types.of(arrayType).name())
                 }
                 val value = when (elementType) {
                     ByteTag.ID -> (tag as ByteTag).value() as T

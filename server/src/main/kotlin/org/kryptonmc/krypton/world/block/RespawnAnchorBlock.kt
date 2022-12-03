@@ -16,23 +16,22 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.effect.particle.builder
+package org.kryptonmc.krypton.world.block
 
-import org.kryptonmc.api.block.BlockState
-import org.kryptonmc.api.effect.particle.BlockParticleType
-import org.kryptonmc.api.effect.particle.builder.BlockParticleEffectBuilder
-import org.kryptonmc.api.effect.particle.data.ParticleData
-import org.kryptonmc.krypton.effect.particle.data.KryptonBlockParticleData
-import org.kryptonmc.krypton.world.block.KryptonBlocks
+import org.kryptonmc.krypton.state.property.IntProperty
+import org.kryptonmc.krypton.state.property.KryptonProperties
+import org.kryptonmc.krypton.util.Maths
 import org.kryptonmc.krypton.world.block.state.KryptonBlockState
-import org.kryptonmc.krypton.world.block.state.downcast
 
-class KryptonBlockParticleEffectBuilder(type: BlockParticleType) : AbstractParticleEffectBuilder<BlockParticleEffectBuilder>(type),
-    BlockParticleEffectBuilder {
+class RespawnAnchorBlock(properties: Properties) : KryptonBlock(properties) {
 
-    private var block: KryptonBlockState = KryptonBlocks.STONE.defaultState
+    companion object {
 
-    override fun block(block: BlockState): BlockParticleEffectBuilder = apply { this.block = block.downcast() }
+        @JvmField
+        val CHARGE: IntProperty = KryptonProperties.RESPAWN_ANCHOR_CHARGES
 
-    override fun buildData(): ParticleData = KryptonBlockParticleData(block)
+        @JvmStatic
+        fun getScaledChargeLevel(state: KryptonBlockState, scale: Int): Int =
+            Maths.floor((state.require(CHARGE) - 0).toFloat() / 4F * scale.toFloat())
+    }
 }

@@ -123,7 +123,7 @@ class WhitelistManager(path: Path) : PersistentManager(path) {
 
     companion object {
 
-        @JvmStatic
+        // Would be JvmStatic but it seems that Kotlin decides to generate a bridge static method that uses invokespecial where it shouldn't.
         private inline fun <T> readValues(reader: JsonReader, result: MutableList<T>, readFunction: (JsonReader) -> T) {
             reader.beginArray()
             while (reader.hasNext()) {

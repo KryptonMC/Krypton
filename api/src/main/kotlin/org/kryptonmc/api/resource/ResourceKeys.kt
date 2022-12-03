@@ -21,7 +21,6 @@ import org.kryptonmc.api.entity.attribute.AttributeType
 import org.kryptonmc.api.entity.hanging.PaintingVariant
 import org.kryptonmc.api.fluid.Fluid
 import org.kryptonmc.api.inventory.InventoryType
-import org.kryptonmc.api.item.ItemRarity
 import org.kryptonmc.api.item.ItemType
 import org.kryptonmc.api.registry.Registry
 import org.kryptonmc.api.registry.RegistryRoots
@@ -83,8 +82,6 @@ public object ResourceKeys {
     public val GAME_RULES: ResourceKey<out Registry<GameRule<*>>> = krypton("gamerules")
     @JvmField
     public val CRITERIA: ResourceKey<out Registry<KeyedCriterion>> = krypton("criteria")
-    @JvmField
-    public val ITEM_RARITIES: ResourceKey<out Registry<ItemRarity>> = krypton("item_rarities")
     @JvmField
     public val ENTITY_CATEGORIES: ResourceKey<out Registry<EntityCategory>> = krypton("entity_categories")
     @JvmField

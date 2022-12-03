@@ -20,12 +20,12 @@ package org.kryptonmc.krypton
 
 import io.netty.buffer.ByteBuf
 import io.netty.buffer.Unpooled
+import io.netty.handler.codec.DecoderException
 import io.netty.handler.codec.EncoderException
 import net.kyori.adventure.text.Component
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.assertThrows
 import org.kryptonmc.api.item.ItemTypes
-import org.kryptonmc.api.item.item
 import org.kryptonmc.krypton.item.KryptonItemStack
 import org.kryptonmc.krypton.item.downcast
 import org.kryptonmc.krypton.registry.KryptonRegistries
@@ -48,7 +48,6 @@ import org.kryptonmc.krypton.util.writeUUID
 import org.kryptonmc.krypton.util.writeVarInt
 import org.kryptonmc.krypton.util.writeVarIntByteArray
 import org.kryptonmc.krypton.util.writeVarLong
-import java.io.IOException
 import java.util.UUID
 import kotlin.math.min
 import kotlin.test.Test
@@ -136,10 +135,10 @@ class ByteBufTests {
     fun `test string reading`() {
         val buffer = Unpooled.buffer()
         buffer.writeByte(100)
-        assertThrows<IOException> { buffer.readString(10) }
+        assertThrows<DecoderException> { buffer.readString(10) }
         buffer.clear()
         buffer.writeString("Hello World!-")
-        assertThrows<IOException> { buffer.readString(12) }
+        assertThrows<DecoderException> { buffer.readString(12) }
         buffer.clear()
         buffer.writeString("Hello World!")
         assertEquals("Hello World!", buffer.readString())

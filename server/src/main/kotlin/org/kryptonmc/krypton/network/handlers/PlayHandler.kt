@@ -22,7 +22,6 @@ import com.mojang.brigadier.StringReader
 import net.kyori.adventure.audience.MessageType
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.translation.Translator
-import org.kryptonmc.api.block.Blocks
 import org.kryptonmc.api.entity.Hand
 import org.kryptonmc.api.entity.player.ChatVisibility
 import org.kryptonmc.api.resource.ResourcePack
@@ -87,6 +86,7 @@ import org.kryptonmc.krypton.util.Positioning
 import org.kryptonmc.krypton.util.SectionPos
 import org.kryptonmc.krypton.util.Vec3dImpl
 import org.kryptonmc.krypton.util.logger
+import org.kryptonmc.krypton.world.block.KryptonBlocks
 import org.kryptonmc.krypton.world.chunk.ChunkPos
 import java.time.Duration
 import java.time.Instant
@@ -302,7 +302,7 @@ class PlayHandler(override val server: KryptonServer, override val session: Sess
         val chunkZ = SectionPos.blockToSection(player.position.z)
         val chunk = world.chunkManager.get(ChunkPos.pack(chunkX, chunkZ)) ?: return
         val existingBlock = chunk.getBlock(position)
-        if (existingBlock != Blocks.AIR.defaultState) return
+        if (!existingBlock.eq(KryptonBlocks.AIR)) return
         chunk.setBlock(position, KryptonRegistries.BLOCK.get(player.inventory.mainHand.type.key()).defaultState, false)
     }
 

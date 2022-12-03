@@ -23,7 +23,6 @@ import it.unimi.dsi.fastutil.longs.Long2ObjectMap
 import java.util.EnumSet
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.ConcurrentHashMap
-import org.kryptonmc.api.block.Blocks
 import org.kryptonmc.api.world.biome.Biomes
 import org.kryptonmc.krypton.KryptonPlatform
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
@@ -35,7 +34,7 @@ import org.kryptonmc.krypton.util.executor.ThreadPoolBuilder
 import org.kryptonmc.krypton.util.executor.daemonThreadFactory
 import org.kryptonmc.krypton.world.Heightmap
 import org.kryptonmc.krypton.world.KryptonWorld
-import org.kryptonmc.krypton.world.block.downcast
+import org.kryptonmc.krypton.world.block.KryptonBlocks
 import org.kryptonmc.krypton.world.block.palette.PaletteHolder
 import org.kryptonmc.krypton.world.chunk.ticket.Ticket
 import org.kryptonmc.krypton.world.chunk.ticket.TicketManager
@@ -126,7 +125,7 @@ class ChunkManager(private val world: KryptonWorld) : AutoCloseable {
                 val blocks = if (sectionData.contains("block_states", CompoundTag.ID)) {
                     PaletteHolder.readBlocks(sectionData.getCompound("block_states"))
                 } else {
-                    PaletteHolder(PaletteHolder.Strategy.BLOCKS, Blocks.AIR.defaultState.downcast())
+                    PaletteHolder(PaletteHolder.Strategy.BLOCKS, KryptonBlocks.AIR.defaultState)
                 }
                 val biomes = if (sectionData.contains("biomes", CompoundTag.ID)) {
                     PaletteHolder.readBiomes(sectionData.getCompound("biomes"))

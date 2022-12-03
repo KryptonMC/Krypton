@@ -19,7 +19,6 @@
 package org.kryptonmc.krypton.entity.vehicle
 
 import net.kyori.adventure.text.Component
-import org.kryptonmc.api.block.Blocks
 import org.kryptonmc.api.entity.vehicle.CommandBlockMinecart
 import org.kryptonmc.api.entity.vehicle.MinecartVariant
 import org.kryptonmc.krypton.adventure.toPlainText
@@ -32,7 +31,7 @@ import org.kryptonmc.krypton.entity.serializer.EntitySerializer
 import org.kryptonmc.krypton.entity.serializer.vehicle.CommandBlockMinecartSerializer
 import org.kryptonmc.krypton.world.CommandBlockHandler
 import org.kryptonmc.krypton.world.KryptonWorld
-import org.kryptonmc.krypton.world.block.downcast
+import org.kryptonmc.krypton.world.block.KryptonBlocks
 import org.kryptonmc.krypton.world.block.state.KryptonBlockState
 
 class KryptonCommandBlockMinecart(world: KryptonWorld) : KryptonMinecartLike(world), CommandBlockMinecart {
@@ -53,7 +52,7 @@ class KryptonCommandBlockMinecart(world: KryptonWorld) : KryptonMinecartLike(wor
         set(value) = data.set(MetadataKeys.CommandBlockMinecart.LAST_OUTPUT, value)
 
     override val defaultCustomBlock: KryptonBlockState
-        get() = Blocks.COMMAND_BLOCK.defaultState.downcast()
+        get() = KryptonBlocks.COMMAND_BLOCK.defaultState
 
     init {
         data.define(MetadataKeys.CommandBlockMinecart.COMMAND, "")

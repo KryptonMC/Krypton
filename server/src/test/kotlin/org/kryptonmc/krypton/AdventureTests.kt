@@ -82,11 +82,11 @@ class AdventureTests {
         // Standard
         val nbt = "{CustomModelData:74,Damage:34,Unbreakable:1b}"
         val item = HoverEvent.ShowItem.of(Key.key("air"), 37, BinaryTagHolder.binaryTagHolder(nbt))
-        val output = Component.text("{Count:37b,id:\"minecraft:air\",tag:$nbt}")
+        val output = Component.text("{id:\"minecraft:air\",Count:37b,tag:$nbt}")
         assertEquals(output, NBTLegacyHoverEventSerializer.serializeShowItem(item))
 
         // No extra item data (`tag` in item NBT)
-        val noTag = Component.text("{Count:37b,id:\"minecraft:air\"}")
+        val noTag = Component.text("{id:\"minecraft:air\",Count:37b}")
         assertEquals(noTag, NBTLegacyHoverEventSerializer.serializeShowItem(item.nbt(null)))
 
         // Bogus NBT
@@ -114,7 +114,7 @@ class AdventureTests {
         val name = Component.text("What a name")
 
         // Standard
-        val output = Component.text("{id:\"$uuid\",name:'${name.toJson()}',type:\"minecraft:pig\"}")
+        val output = Component.text("{id:\"$uuid\",type:\"minecraft:pig\",name:'${name.toJson()}'}")
         val entity = HoverEvent.ShowEntity.of(Key.key("pig"), uuid, name)
         assertEquals(output, NBTLegacyHoverEventSerializer.serializeShowEntity(entity, ENCODER))
     }

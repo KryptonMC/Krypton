@@ -19,12 +19,12 @@
 package org.kryptonmc.krypton.world
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList
-import org.kryptonmc.api.block.Blocks
 import org.kryptonmc.krypton.util.BitStorage
 import org.kryptonmc.krypton.util.Maths
 import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.util.SimpleBitStorage
 import org.kryptonmc.krypton.util.serialization.EnumCodecs
+import org.kryptonmc.krypton.world.block.KryptonBlocks
 import org.kryptonmc.krypton.world.block.state.KryptonBlockState
 import org.kryptonmc.krypton.world.chunk.ChunkAccessor
 import org.kryptonmc.serialization.Codec
@@ -125,7 +125,7 @@ class Heightmap(private val chunk: ChunkAccessor, val type: Type) {
                     toPrime.forEach { heightmaps.add(chunk.getOrCreateHeightmap(it)) }
                     for (y in highest - 1 downTo chunk.minimumBuildHeight) {
                         val block = chunk.getBlock(x, y, z)
-                        if (!block.eq(Blocks.AIR)) {
+                        if (!block.eq(KryptonBlocks.AIR)) {
                             while (iterator.hasNext()) {
                                 val heightmap = iterator.next()
                                 if (!heightmap.type.isOpaque.test(block)) continue

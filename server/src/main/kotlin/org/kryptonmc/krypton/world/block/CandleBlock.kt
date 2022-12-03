@@ -18,11 +18,21 @@
  */
 package org.kryptonmc.krypton.world.block
 
-import org.kryptonmc.api.tags.BlockTags
+import org.kryptonmc.krypton.state.property.BooleanProperty
+import org.kryptonmc.krypton.state.property.IntProperty
 import org.kryptonmc.krypton.state.property.KryptonProperties
 import org.kryptonmc.krypton.world.block.state.KryptonBlockState
+import java.util.function.ToIntFunction
 
-fun KryptonBlockState.isBurning(): Boolean =
-    eq(BlockTags.FIRE) || eq(KryptonBlocks.LAVA) || eq(KryptonBlocks.MAGMA_BLOCK) || isLitCampfire() || eq(KryptonBlocks.LAVA_CAULDRON)
+class CandleBlock(properties: Properties) : KryptonBlock(properties) {
 
-fun KryptonBlockState.isLitCampfire(): Boolean = contains(KryptonProperties.LIT) && eq(BlockTags.CAMPFIRES) && get(KryptonProperties.LIT)!!
+    companion object {
+
+        @JvmField
+        val CANDLES: IntProperty = KryptonProperties.CANDLES
+        @JvmField
+        val LIT: BooleanProperty = KryptonProperties.LIT
+        @JvmField
+        val LIGHT_EMISSION: ToIntFunction<KryptonBlockState> = ToIntFunction { if (it.require(LIT)) 3 * it.require(CANDLES) else 0 }
+    }
+}

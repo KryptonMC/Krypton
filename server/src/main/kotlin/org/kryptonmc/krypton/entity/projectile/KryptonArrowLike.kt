@@ -26,8 +26,8 @@ import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.entity.serializer.EntitySerializer
 import org.kryptonmc.krypton.entity.serializer.projectile.ArrowLikeSerializer
 import org.kryptonmc.krypton.world.KryptonWorld
-import org.kryptonmc.krypton.world.block.downcast
 import org.kryptonmc.krypton.world.block.state.KryptonBlockState
+import org.kryptonmc.krypton.world.block.state.downcast
 
 abstract class KryptonArrowLike(world: KryptonWorld) : KryptonProjectile(world), ArrowLike {
 

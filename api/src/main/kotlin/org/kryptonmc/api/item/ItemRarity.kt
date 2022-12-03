@@ -8,21 +8,18 @@
  */
 package org.kryptonmc.api.item
 
-import net.kyori.adventure.key.Keyed
-import net.kyori.adventure.text.format.TextColor
-import org.kryptonmc.internal.annotations.ImmutableType
+import net.kyori.adventure.text.format.NamedTextColor
 
 /**
  * The rarity of an item. This determines what colour the lore text appears as
  * when the tooltip is read.
+ *
+ * @property color The colour the lore text will appear.
  */
-@Suppress("INAPPLICABLE_JVM_NAME")
-@ImmutableType
-public interface ItemRarity : Keyed {
+public enum class ItemRarity(public val color: NamedTextColor) {
 
-    /**
-     * The colour the lore text will appear.
-     */
-    @get:JvmName("color")
-    public val color: TextColor
+    COMMON(NamedTextColor.WHITE),
+    UNCOMMON(NamedTextColor.YELLOW),
+    RARE(NamedTextColor.AQUA),
+    EPIC(NamedTextColor.LIGHT_PURPLE)
 }

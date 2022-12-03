@@ -34,6 +34,11 @@ import java.util.Optional
 object AdventureCodecs {
 
     @JvmField
+    val TEXT_COLOR: Codec<TextColor> = Codec.STRING.comapFlatMap({
+        val value = if (it.startsWith("#")) TextColor.fromHexString(it) else NamedTextColor.NAMES.value(it)
+        if (value != null) DataResult.success(value) else DataResult.error("Input string $it is not a valid named colour or hex colour!")
+    }, ::serialize)
+    @JvmField
     val STYLE_FORMATTING: Codec<Style> = RecordCodecBuilder.create { instance ->
         instance.group(
             TEXT_COLOR.nullableFieldOf("color").getting(Style::color),
@@ -57,11 +62,6 @@ object AdventureCodecs {
                 .build()
         }
     }
-    @JvmField
-    val TEXT_COLOR: Codec<TextColor> = Codec.STRING.comapFlatMap({
-        val value = if (it.startsWith("#")) TextColor.fromHexString(it) else NamedTextColor.NAMES.value(it)
-        if (value != null) DataResult.success(value) else DataResult.error("Input string $it is not a valid named colour or hex colour!")
-    }, ::serialize)
 
     @JvmStatic
     private fun serialize(color: TextColor): String {

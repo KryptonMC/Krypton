@@ -18,13 +18,13 @@
  */
 package org.kryptonmc.krypton.item.handler
 
-import org.kryptonmc.api.block.Blocks
 import org.kryptonmc.api.tags.BlockTags
 import org.kryptonmc.api.world.GameMode
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.item.KryptonItemStack
 import org.kryptonmc.krypton.util.BlockPos
 import org.kryptonmc.krypton.world.KryptonWorld
+import org.kryptonmc.krypton.world.block.KryptonBlocks
 import org.kryptonmc.krypton.world.block.state.KryptonBlockState
 import org.kryptonmc.krypton.world.material.Materials
 
@@ -38,7 +38,7 @@ object SwordHandler : ItemHandler {
         player.gameMode != GameMode.CREATIVE
 
     override fun destroySpeed(item: KryptonItemStack, block: KryptonBlockState): Float {
-        if (block.eq(Blocks.COBWEB)) return COBWEB_DESTROY_SPEED
+        if (block.eq(KryptonBlocks.COBWEB)) return COBWEB_DESTROY_SPEED
         val material = block.material
         val isNotLeaves = !block.eq(BlockTags.LEAVES)
         if (material != Materials.PLANT && material != Materials.REPLACEABLE_PLANT && isNotLeaves && material != Materials.VEGETABLE) {
@@ -47,7 +47,7 @@ object SwordHandler : ItemHandler {
         return PLANT_LEAVES_VEGETABLE_DESTROY_SPEED
     }
 
-    override fun isCorrectTool(block: KryptonBlockState): Boolean = block.eq(Blocks.COBWEB)
+    override fun isCorrectTool(block: KryptonBlockState): Boolean = block.eq(KryptonBlocks.COBWEB)
 
     override fun mineBlock(player: KryptonPlayer, item: KryptonItemStack, world: KryptonWorld, block: KryptonBlockState,
                            pos: BlockPos): Boolean = true

@@ -16,23 +16,23 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.effect.particle.builder
+package org.kryptonmc.krypton.world.block
 
-import org.kryptonmc.api.block.BlockState
-import org.kryptonmc.api.effect.particle.BlockParticleType
-import org.kryptonmc.api.effect.particle.builder.BlockParticleEffectBuilder
-import org.kryptonmc.api.effect.particle.data.ParticleData
-import org.kryptonmc.krypton.effect.particle.data.KryptonBlockParticleData
-import org.kryptonmc.krypton.world.block.KryptonBlocks
+import org.kryptonmc.krypton.state.property.BooleanProperty
+import org.kryptonmc.krypton.state.property.IntProperty
+import org.kryptonmc.krypton.state.property.KryptonProperties
 import org.kryptonmc.krypton.world.block.state.KryptonBlockState
-import org.kryptonmc.krypton.world.block.state.downcast
 
-class KryptonBlockParticleEffectBuilder(type: BlockParticleType) : AbstractParticleEffectBuilder<BlockParticleEffectBuilder>(type),
-    BlockParticleEffectBuilder {
+class SeaPickleBlock(properties: Properties) : KryptonBlock(properties) {
 
-    private var block: KryptonBlockState = KryptonBlocks.STONE.defaultState
+    companion object {
 
-    override fun block(block: BlockState): BlockParticleEffectBuilder = apply { this.block = block.downcast() }
+        @JvmField
+        val PICKLES: IntProperty = KryptonProperties.PICKLES
+        @JvmField
+        val WATERLOGGED: BooleanProperty = KryptonProperties.WATERLOGGED
 
-    override fun buildData(): ParticleData = KryptonBlockParticleData(block)
+        @JvmStatic
+        fun isDead(state: KryptonBlockState): Boolean = !state.require(WATERLOGGED)
+    }
 }

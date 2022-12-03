@@ -32,7 +32,7 @@ import org.kryptonmc.api.item.ItemStack
 import org.kryptonmc.api.util.Color
 import org.kryptonmc.api.util.Vec3d
 import org.kryptonmc.krypton.item.downcast
-import org.kryptonmc.krypton.world.block.downcast
+import org.kryptonmc.krypton.world.block.state.downcast
 
 object KryptonParticleDataFactory : ParticleData.Factory {
 
