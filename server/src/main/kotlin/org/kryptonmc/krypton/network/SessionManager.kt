@@ -20,7 +20,6 @@ package org.kryptonmc.krypton.network
 
 import net.kyori.adventure.text.Component
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
-import org.kryptonmc.krypton.network.handlers.PlayHandler
 import org.kryptonmc.krypton.packet.FramedPacket
 import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.packet.out.status.ServerStatus

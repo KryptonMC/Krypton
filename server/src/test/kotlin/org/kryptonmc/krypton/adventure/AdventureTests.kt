@@ -160,6 +160,7 @@ class AdventureTests {
             .build()
         val simpleStable = KryptonAdventure.toStableJson(simple)
         val complexStable = KryptonAdventure.toStableJson(complex)
+        @Suppress("UnusedPrivateMember")
         for (i in 0 until 10) {
             assertEquals(simpleStable, KryptonAdventure.toStableJson(simple))
             assertEquals(complexStable, KryptonAdventure.toStableJson(complex))

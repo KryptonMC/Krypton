@@ -19,7 +19,6 @@
 package org.kryptonmc.krypton.network.handlers
 
 import com.google.common.primitives.Ints
-import com.velocitypowered.natives.util.Natives
 import io.netty.buffer.Unpooled
 import kotlinx.collections.immutable.persistentListOf
 import net.kyori.adventure.text.Component
@@ -37,13 +36,6 @@ import org.kryptonmc.krypton.locale.Messages
 import org.kryptonmc.krypton.network.SessionHandler
 import org.kryptonmc.krypton.network.data.ForwardedData
 import org.kryptonmc.krypton.network.data.VelocityProxy
-import org.kryptonmc.krypton.network.netty.GroupedPacketHandler
-import org.kryptonmc.krypton.network.netty.PacketCompressor
-import org.kryptonmc.krypton.network.netty.PacketDecoder
-import org.kryptonmc.krypton.network.netty.PacketDecompressor
-import org.kryptonmc.krypton.network.netty.PacketDecrypter
-import org.kryptonmc.krypton.network.netty.PacketEncoder
-import org.kryptonmc.krypton.network.netty.PacketEncrypter
 import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.packet.PacketState
 import org.kryptonmc.krypton.packet.`in`.login.PacketInEncryptionResponse
@@ -51,10 +43,8 @@ import org.kryptonmc.krypton.packet.`in`.login.PacketInLoginStart
 import org.kryptonmc.krypton.packet.`in`.login.PacketInPluginResponse
 import org.kryptonmc.krypton.packet.`in`.login.VerificationData
 import org.kryptonmc.krypton.packet.out.login.PacketOutEncryptionRequest
-import org.kryptonmc.krypton.packet.out.login.PacketOutLoginDisconnect
 import org.kryptonmc.krypton.packet.out.login.PacketOutLoginSuccess
 import org.kryptonmc.krypton.packet.out.login.PacketOutPluginRequest
-import org.kryptonmc.krypton.packet.out.login.PacketOutSetCompression
 import org.kryptonmc.krypton.util.ComponentException
 import org.kryptonmc.krypton.util.UUIDUtil
 import org.kryptonmc.krypton.util.asString
@@ -66,7 +56,6 @@ import org.kryptonmc.krypton.util.random.RandomSource
 import org.kryptonmc.krypton.util.readVarInt
 import java.net.InetSocketAddress
 import java.net.SocketAddress
-import javax.crypto.SecretKey
 import javax.crypto.spec.SecretKeySpec
 
 /**
