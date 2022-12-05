@@ -16,41 +16,22 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton
+package org.kryptonmc.krypton.util
 
-import io.netty.buffer.ByteBuf
 import io.netty.buffer.Unpooled
 import io.netty.handler.codec.DecoderException
 import io.netty.handler.codec.EncoderException
 import net.kyori.adventure.text.Component
 import org.junit.jupiter.api.BeforeAll
+import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.kryptonmc.api.item.ItemTypes
 import org.kryptonmc.krypton.item.KryptonItemStack
 import org.kryptonmc.krypton.item.downcast
 import org.kryptonmc.krypton.registry.KryptonRegistries
-import org.kryptonmc.krypton.util.Bootstrap
+import org.kryptonmc.krypton.testutil.Bootstrapping
 import org.kryptonmc.krypton.util.random.RandomSource
-import org.kryptonmc.krypton.util.readAllAvailableBytes
-import org.kryptonmc.krypton.util.readAvailableBytes
-import org.kryptonmc.krypton.util.readById
-import org.kryptonmc.krypton.util.readItem
-import org.kryptonmc.krypton.util.readNBT
-import org.kryptonmc.krypton.util.readString
-import org.kryptonmc.krypton.util.readVarInt
-import org.kryptonmc.krypton.util.readVarIntByteArray
-import org.kryptonmc.krypton.util.writeId
-import org.kryptonmc.krypton.util.writeItem
-import org.kryptonmc.krypton.util.writeLongArray
-import org.kryptonmc.krypton.util.writeNBT
-import org.kryptonmc.krypton.util.writeString
-import org.kryptonmc.krypton.util.writeUUID
-import org.kryptonmc.krypton.util.writeVarInt
-import org.kryptonmc.krypton.util.writeVarIntByteArray
-import org.kryptonmc.krypton.util.writeVarLong
 import java.util.UUID
-import kotlin.math.min
-import kotlin.test.Test
 import kotlin.test.assertContentEquals
 import kotlin.test.assertEquals
 import kotlin.test.assertSame
@@ -238,19 +219,9 @@ class ByteBufTests {
 
         @JvmStatic
         @BeforeAll
-        fun `preload bootstrap`() {
-            Bootstrap.preload()
+        fun `load factories and registries`() {
+            Bootstrapping.loadFactories()
+            Bootstrapping.loadRegistries()
         }
     }
-}
-
-private fun ByteBuf.readVarLong(): Long {
-    var i = 0L
-    val maxRead = min(10, readableBytes())
-    for (j in 0 until maxRead) {
-        val next = readByte()
-        i = i or (next.toLong() and 0x7F shl j * 7)
-        if (next.toLong() and 0x80 != 128L) return i // If there's no more var long bytes after this, we're done
-    }
-    return Long.MAX_VALUE
 }

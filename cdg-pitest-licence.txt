@@ -1,0 +1,7 @@
+#Licence file for Arcmutate's PIT extensions, which anyone that uses this project can use, courtesy of them.
+#Mon Nov 21 11:01:25 GMT 2022
+expires=21/11/2023
+keyVersion=1
+signature=MH477zhLLT5odK4Pzlf7hUM6lTkIfIlAAieGQqVObHmZKtdHkSnHvFYiSKRHvEWH7ZQNJ1Kyqg2wU/nKSWKd8IetsNzgwOw4ySlbzh4yUR5hDTQbLkdneTOFG86SPy3ZrdjXiOqdMbXABzTbK3eIRK1JILmV20VOOMYTRXwFK3Q\=
+packages=org.kryptonmc.*
+type=OSSS

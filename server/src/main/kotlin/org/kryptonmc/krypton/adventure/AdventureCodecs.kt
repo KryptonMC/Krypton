@@ -18,60 +18,48 @@
  */
 package org.kryptonmc.krypton.adventure
 
-import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.text.format.Style
 import net.kyori.adventure.text.format.TextColor
 import net.kyori.adventure.text.format.TextDecoration
 import org.kryptonmc.krypton.util.serialization.Codecs
-import org.kryptonmc.krypton.util.serialization.nullableFieldOf
+import org.kryptonmc.krypton.util.serialization.gettingNullable
 import org.kryptonmc.serialization.Codec
-import org.kryptonmc.serialization.DataResult
 import org.kryptonmc.serialization.MapCodec
 import org.kryptonmc.serialization.codecs.RecordCodecBuilder
-import java.util.Locale
 import java.util.Optional
 
 object AdventureCodecs {
 
     @JvmField
-    val TEXT_COLOR: Codec<TextColor> = Codec.STRING.comapFlatMap({
-        val value = if (it.startsWith("#")) TextColor.fromHexString(it) else NamedTextColor.NAMES.value(it)
-        if (value != null) DataResult.success(value) else DataResult.error("Input string $it is not a valid named colour or hex colour!")
-    }, ::serialize)
+    val TEXT_COLOR: Codec<TextColor> = Codec.STRING.comapFlatMap({ TextColorSerialization.decodeResult(it) }, { TextColorSerialization.encode(it) })
     @JvmField
     val STYLE_FORMATTING: Codec<Style> = RecordCodecBuilder.create { instance ->
         instance.group(
-            TEXT_COLOR.nullableFieldOf("color").getting(Style::color),
+            TEXT_COLOR.optionalFieldOf("color").gettingNullable { it.color() },
             decorationStateCodec("bold").getting { it.decoration(TextDecoration.BOLD) },
             decorationStateCodec("italic").getting { it.decoration(TextDecoration.ITALIC) },
             decorationStateCodec("underlined").getting { it.decoration(TextDecoration.UNDERLINED) },
             decorationStateCodec("strikethrough").getting { it.decoration(TextDecoration.STRIKETHROUGH) },
             decorationStateCodec("obfuscated").getting { it.decoration(TextDecoration.OBFUSCATED) },
-            Codec.STRING.nullableFieldOf("insertion").getting(Style::insertion),
-            Codecs.KEY.nullableFieldOf("font").getting(Style::font)
+            Codec.STRING.optionalFieldOf("insertion").gettingNullable { it.insertion() },
+            Codecs.KEY.optionalFieldOf("font").gettingNullable { it.font() }
         ).apply(instance) { color, bold, italic, underlined, strikethrough, obfuscated, insertion, font ->
             Style.style()
-                .color(color)
+                .color(color.orElse(null))
                 .decoration(TextDecoration.BOLD, bold)
                 .decoration(TextDecoration.ITALIC, italic)
                 .decoration(TextDecoration.UNDERLINED, underlined)
                 .decoration(TextDecoration.STRIKETHROUGH, strikethrough)
                 .decoration(TextDecoration.OBFUSCATED, obfuscated)
-                .insertion(insertion)
-                .font(font)
+                .insertion(insertion.orElse(null))
+                .font(font.orElse(null))
                 .build()
         }
     }
 
     @JvmStatic
-    private fun serialize(color: TextColor): String {
-        if (color is NamedTextColor) return NamedTextColor.NAMES.key(color)!!
-        return String.format(Locale.ROOT, "#%06X", color.value())
-    }
-
-    @JvmStatic
     private fun decorationStateCodec(name: String): MapCodec<TextDecoration.State> = Codec.BOOLEAN.optionalFieldOf(name)
-        .xmap({ it.map(TextDecoration.State::byBoolean).orElse(TextDecoration.State.NOT_SET) }, TextDecoration.State::asBoolean)
+        .xmap({ value -> value.map { TextDecoration.State.byBoolean(it) }.orElse(TextDecoration.State.NOT_SET) }, { it.asBoolean() })
 }
 
 private fun TextDecoration.State.asBoolean(): Optional<Boolean> = when (this) {

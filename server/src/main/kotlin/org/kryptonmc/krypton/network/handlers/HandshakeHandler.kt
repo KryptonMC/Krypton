@@ -30,7 +30,6 @@ import org.kryptonmc.krypton.network.data.TCPShieldForwardedData
 import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.packet.PacketState
 import org.kryptonmc.krypton.packet.`in`.handshake.PacketInHandshake
-import org.kryptonmc.krypton.packet.out.login.PacketOutLoginDisconnect
 import org.kryptonmc.krypton.util.logger
 
 /**
@@ -97,7 +96,7 @@ class HandshakeHandler(override val server: KryptonServer, override val session:
             } else {
                 // If the data was null then we weren't sent what we needed
                 disconnect(NO_DIRECT_CONNECT)
-                LOGGER.warn("Attempted direct connection from ${session.channel.remoteAddress()} when legacy forwarding is enabled!")
+                LOGGER.warn("Attempted direct connection from ${session.connectAddress()} when legacy forwarding is enabled!")
                 return
             }
         }
@@ -116,7 +115,7 @@ class HandshakeHandler(override val server: KryptonServer, override val session:
             } else {
                 // If the data was null then we weren't sent what we needed
                 disconnect(NO_DIRECT_CONNECT)
-                LOGGER.warn("Attempted direct connection from ${session.channel.remoteAddress()} when TCPShield forwarding is enabled!")
+                LOGGER.warn("Attempted direct connection from ${session.connectAddress()} when TCPShield forwarding is enabled!")
                 return
             }
         }
@@ -126,25 +125,14 @@ class HandshakeHandler(override val server: KryptonServer, override val session:
 
     private fun handleStateChange(state: PacketState, data: ForwardedData? = null) {
         when (state) {
-            PacketState.LOGIN -> handleLoginRequest(data)
-            PacketState.STATUS -> handleStatusRequest()
+            PacketState.LOGIN -> session.changeState(PacketState.LOGIN, LoginHandler(server, session, data))
+            PacketState.STATUS -> session.changeState(PacketState.STATUS, StatusHandler(server, session))
             else -> throw UnsupportedOperationException("Invalid next login state $state sent in handshake!")
         }
     }
 
-    private fun handleLoginRequest(data: ForwardedData? = null) {
-        session.currentState = PacketState.LOGIN
-        session.handler = LoginHandler(server, session, data)
-    }
-
-    private fun handleStatusRequest() {
-        session.currentState = PacketState.STATUS
-        session.handler = StatusHandler(server, session)
-    }
-
     private fun disconnect(reason: Component) {
-        session.send(PacketOutLoginDisconnect(reason))
-        if (session.channel.isOpen) session.channel.close().awaitUninterruptibly()
+        session.loginDisconnect(reason)
     }
 
     companion object {

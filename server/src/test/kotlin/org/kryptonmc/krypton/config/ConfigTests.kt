@@ -16,17 +16,14 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton
+package org.kryptonmc.krypton.config
 
-import org.junit.jupiter.api.BeforeAll
+import org.junit.jupiter.api.Test
 import org.kryptonmc.api.world.Difficulty
 import org.kryptonmc.api.world.GameMode
-import org.kryptonmc.krypton.config.KryptonConfig
 import org.kryptonmc.krypton.config.category.StatusCategory
-import org.kryptonmc.krypton.util.Bootstrap
 import org.spongepowered.configurate.hocon.HoconConfigurationLoader
 import org.spongepowered.configurate.kotlin.extensions.get
-import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertSame
@@ -96,14 +93,5 @@ class ConfigTests {
         // Other settings
         assertTrue(config.other.metrics)
         assertEquals(5, config.other.saveThreshold)
-    }
-
-    companion object {
-
-        @JvmStatic
-        @BeforeAll
-        fun bootstrap() {
-            Bootstrap.preload()
-        }
     }
 }

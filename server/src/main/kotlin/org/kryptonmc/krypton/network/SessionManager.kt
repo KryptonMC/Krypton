@@ -78,8 +78,7 @@ class SessionManager(private val playerManager: PlayerManager, motd: Component, 
             status.players.sample = sample
         }
         sessions.forEach {
-            val handler = it.handler
-            if (handler is PlayHandler) handler.tick()
+            it.tickHandler()
             it.flush()
         }
     }

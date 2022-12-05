@@ -57,7 +57,7 @@ fun CompoundTag.toGameProfile(): GameProfile? {
 }
 
 fun CompoundTag.putGameProfile(key: String, profile: GameProfile?): CompoundTag {
-    if (profile == null) return CompoundTag.EMPTY
+    if (profile == null) return this
     return put(key, profile.toCompound())
 }
 

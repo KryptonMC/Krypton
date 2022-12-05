@@ -76,7 +76,7 @@ data class PacketOutPlayerInfo(val action: Action, val players: List<PlayerData>
 
             @JvmStatic
             fun from(player: KryptonPlayer): PlayerData =
-                PlayerData(player.profile, player.gameMode, player.session.latency, player.displayName, player.publicKey?.data)
+                PlayerData(player.profile, player.gameMode, player.session.latency(), player.displayName, player.publicKey?.data)
         }
     }
 

@@ -18,11 +18,12 @@
  */
 package org.kryptonmc.krypton.entity.components
 
+import org.kryptonmc.api.entity.player.Player
 import org.kryptonmc.api.event.player.ChangeGameModeEvent
 import org.kryptonmc.api.world.GameMode
 import org.kryptonmc.krypton.entity.system.PlayerGameModeSystem
 
-interface GameModePlayer : NetworkPlayer {
+interface GameModePlayer : Player {
 
     val gameModeSystem: PlayerGameModeSystem
     override var gameMode: GameMode

@@ -11,6 +11,7 @@ dependencies {
     implementation(libs.plugin.vanillaGradle)
     implementation(libs.plugin.shadow)
     implementation(libs.plugin.ksp)
+    implementation(libs.plugin.pitest)
 }
 
 dependencies {

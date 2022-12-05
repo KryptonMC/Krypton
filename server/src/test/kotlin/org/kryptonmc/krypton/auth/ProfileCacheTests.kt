@@ -16,13 +16,14 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton
+package org.kryptonmc.krypton.auth
 
 import com.google.common.jimfs.Configuration
 import com.google.common.jimfs.Jimfs
+import io.mockk.spyk
+import io.mockk.verify
 import kotlinx.collections.immutable.persistentListOf
-import org.kryptonmc.krypton.auth.KryptonGameProfile
-import org.kryptonmc.krypton.auth.KryptonProfileCache
+import org.junit.jupiter.api.Test
 import java.nio.file.Path
 import java.time.ZoneOffset
 import java.time.ZonedDateTime
@@ -30,7 +31,6 @@ import java.time.format.DateTimeFormatter
 import java.util.UUID
 import kotlin.io.path.readText
 import kotlin.io.path.writeText
-import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
@@ -72,9 +72,18 @@ class ProfileCacheTests {
         assertTrue(OUTPUT_PATH.readText().isNotBlank())
     }
 
+    @Test
+    fun `ensure add marks dirty`() {
+        val cache = spyk(KryptonProfileCache(NULL_PATH))
+        cache.add(KryptonGameProfile("test", UUID.randomUUID(), persistentListOf()))
+        cache.saveIfNeeded()
+        verify { cache.save() }
+    }
+
     companion object {
 
         private val FILE_SYSTEM = Jimfs.newFileSystem(Configuration.unix())
+        private val NULL_PATH = FILE_SYSTEM.getPath("null_sink") // Used when we want to test saving without actually saving anything
         private val EMPTY_PATH = FILE_SYSTEM.getPath("empty")
         private val SINGLE_PATH = FILE_SYSTEM.getPath("single")
         private val NO_QUOTES_PATH = FILE_SYSTEM.getPath("malformed_profile")

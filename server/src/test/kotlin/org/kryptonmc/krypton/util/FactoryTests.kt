@@ -16,17 +16,16 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton
+package org.kryptonmc.krypton.util
 
 import org.junit.jupiter.api.BeforeAll
+import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertDoesNotThrow
 import org.kryptonmc.internal.annotations.TypeFactory
-import org.kryptonmc.krypton.util.Bootstrap
-import org.kryptonmc.krypton.util.KryptonFactoryProvider
+import org.kryptonmc.krypton.testutil.Bootstrapping
 import org.reflections.Reflections
 import org.reflections.scanners.Scanners
 import org.reflections.util.ConfigurationBuilder
-import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class FactoryTests {
@@ -49,8 +48,8 @@ class FactoryTests {
 
         @JvmStatic
         @BeforeAll
-        fun `bootstrap factory provider`() {
-            Bootstrap.preload()
+        fun `load factory provider`() {
+            Bootstrapping.loadFactories()
         }
     }
 }

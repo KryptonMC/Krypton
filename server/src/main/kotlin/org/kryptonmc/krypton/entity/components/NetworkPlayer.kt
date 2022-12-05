@@ -18,12 +18,11 @@
  */
 package org.kryptonmc.krypton.entity.components
 
-import org.kryptonmc.api.entity.player.Player
 import org.kryptonmc.krypton.entity.player.PlayerPublicKey
-import org.kryptonmc.krypton.network.SessionHandler
+import org.kryptonmc.krypton.network.NetworkSession
 
-interface NetworkPlayer : Player {
+interface NetworkPlayer {
 
-    val session: SessionHandler
+    val session: NetworkSession
     val publicKey: PlayerPublicKey?
 }

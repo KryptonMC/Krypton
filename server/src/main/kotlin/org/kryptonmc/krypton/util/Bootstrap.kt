@@ -19,6 +19,7 @@
 package org.kryptonmc.krypton.util
 
 import com.mojang.brigadier.exceptions.CommandSyntaxException
+import org.jetbrains.annotations.VisibleForTesting
 import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.entity.EntityType
 import org.kryptonmc.api.entity.attribute.AttributeType
@@ -47,6 +48,7 @@ object Bootstrap {
     private val LOGGER = logger<Bootstrap>()
     @Volatile
     private var bootstrapped = false
+    private val kryptonClass by lazy { Class.forName("org.kryptonmc.api.Krypton") }
 
     // Might be better if you turn away from this now, unless you're making something that is registry-based,
     // in which, good luck. It probably needs to be placed somewhere with its dependencies before it and its
@@ -55,18 +57,34 @@ object Bootstrap {
     fun preload() {
         if (bootstrapped) return
         bootstrapped = true
+        preloadTranslations()
+        preloadFactories()
+        preloadRegistries()
+        preloadOtherClasses()
+    }
+
+    @JvmStatic
+    @VisibleForTesting
+    fun preloadTranslations() {
         TranslationBootstrap.init()
+    }
 
-        // Preload the factory stuff
-        // These are some kinda nasty hacks, but the tight coupling nature of Krypton requires it
-        // The only 2 other alternatives here are to do away with the static singleton and revert back, or restructure
-        // the entire project to use Guice's dependency inversion (something that should be looked in to at some point)
-        val kryptonClass = Class.forName("org.kryptonmc.api.Krypton")
+    // Preload the factory stuff
+    // These are some kinda nasty hacks, but the tight coupling nature of Krypton requires it
+    // The only 2 other alternatives here are to do away with the static singleton and revert back, or restructure
+    // the entire project to use Guice's dependency inversion (something that should be looked in to at some point)
+    @JvmStatic
+    @VisibleForTesting
+    fun preloadFactories() {
         Reflection.modifyField(kryptonClass, "factoryProvider", KryptonFactoryProvider)
-        Reflection.modifyField(kryptonClass, "registryManager", KryptonRegistries.ManagerImpl)
         KryptonFactoryProvider.bootstrap()
+    }
 
-        // Preload all the registry classes to ensure everything is properly registered
+    // Preload all the registry classes to ensure everything is properly registered
+    @JvmStatic
+    @VisibleForTesting
+    fun preloadRegistries() {
+        Reflection.modifyField(kryptonClass, "registryManager", KryptonRegistries.ManagerImpl)
         KryptonRegistries.bootstrap()
         Registries
         BlockTags
@@ -76,13 +94,17 @@ object Bootstrap {
         ItemTags
         BannerPatternTags
         BiomeTags
+    }
 
-        // Preload some other things that would otherwise load on first player join or some other time
+    // Preload some other things that would otherwise load on first player join or some other time
+    @JvmStatic
+    @VisibleForTesting
+    fun preloadOtherClasses() {
         Encryption
         SessionService
-        ArgumentSerializers
+        ArgumentSerializers.bootstrap()
         EntityFactory
-        ItemManager
+        ItemManager.bootstrap()
         CommandSyntaxException.BUILT_IN_EXCEPTIONS = BrigadierExceptions
     }
 

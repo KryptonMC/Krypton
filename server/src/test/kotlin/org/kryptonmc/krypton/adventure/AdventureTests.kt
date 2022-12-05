@@ -16,29 +16,33 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton
+package org.kryptonmc.krypton.adventure
 
 import net.kyori.adventure.inventory.Book
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.nbt.api.BinaryTagHolder
 import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.event.ClickEvent
 import net.kyori.adventure.text.event.HoverEvent
 import net.kyori.adventure.text.format.NamedTextColor
+import net.kyori.adventure.text.format.TextDecoration
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer
 import net.kyori.adventure.util.Codec
 import org.junit.jupiter.api.BeforeAll
+import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.kryptonmc.api.item.meta.WrittenBookMeta
-import org.kryptonmc.krypton.adventure.KryptonAdventure
-import org.kryptonmc.krypton.adventure.NBTLegacyHoverEventSerializer
-import org.kryptonmc.krypton.adventure.toJson
-import org.kryptonmc.krypton.adventure.toPlainText
-import org.kryptonmc.krypton.util.Bootstrap
+import org.kryptonmc.krypton.commands.krypton.KryptonColors
+import org.kryptonmc.krypton.item.meta.KryptonWrittenBookMeta
+import org.kryptonmc.krypton.testutil.Bootstrapping
 import org.kryptonmc.krypton.util.Reflection
+import org.kryptonmc.nbt.CompoundTag
 import java.io.IOException
 import java.util.UUID
-import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertIs
+import kotlin.test.assertSame
+import kotlin.test.assertTrue
 
 class AdventureTests {
 
@@ -62,6 +66,13 @@ class AdventureTests {
         assertEquals("title", meta.title().toPlainText())
         assertEquals("author", meta.author().toPlainText())
         assertEquals(pages, meta.pages())
+    }
+
+    @Test
+    fun `test item stack conversion with meta input`() {
+        val meta = KryptonWrittenBookMeta(CompoundTag.EMPTY)
+        val stack = KryptonAdventure.toItemStack(meta)
+        assertSame(meta, assertIs(stack.meta))
     }
 
     @Test
@@ -119,6 +130,42 @@ class AdventureTests {
         assertEquals(output, NBTLegacyHoverEventSerializer.serializeShowEntity(entity, ENCODER))
     }
 
+    @Test
+    fun `test translatable flattening`() {
+        var called = false
+        KryptonAdventure.FLATTENER.flatten(Component.translatable("language.name")) {
+            called = true
+            assertEquals("English", it)
+        }
+        assertTrue(called, "Flattener was not called!")
+    }
+
+    @Test
+    fun `ensure stable json outputs identical json for same component`() {
+        val simple = Component.text("Hello World!")
+        val complex = Component.text()
+            .content("Hello World!")
+            .color(KryptonColors.STANDARD_PURPLE)
+            .decorate(TextDecoration.BOLD)
+            .decorate(TextDecoration.STRIKETHROUGH)
+            .decorate(TextDecoration.OBFUSCATED)
+            .clickEvent(ClickEvent.suggestCommand("/hello_world"))
+            .hoverEvent(HoverEvent.showEntity(HoverEvent.ShowEntity.of(Key.key("pig"), UUID.randomUUID(), Component.text("The most awesome pig"))))
+            .insertion("I am a stable complex component!")
+            .appendSpace()
+            .appendNewline()
+            .appendNewline()
+            .append(Component.text("Goodbye World!"))
+            .font(Key.key("krypton", "awesome_test_font"))
+            .build()
+        val simpleStable = KryptonAdventure.toStableJson(simple)
+        val complexStable = KryptonAdventure.toStableJson(complex)
+        for (i in 0 until 10) {
+            assertEquals(simpleStable, KryptonAdventure.toStableJson(simple))
+            assertEquals(complexStable, KryptonAdventure.toStableJson(complex))
+        }
+    }
+
     companion object {
 
         private val ENCODER = Codec.Encoder<Component, String, RuntimeException>(GsonComponentSerializer.gson()::serialize)
@@ -126,8 +173,10 @@ class AdventureTests {
 
         @JvmStatic
         @BeforeAll
-        fun `preload bootstrap`() {
-            Bootstrap.preload()
+        fun `load translations and factories`() {
+            Bootstrapping.loadTranslations()
+            Bootstrapping.loadFactories()
+            Bootstrapping.loadRegistries()
         }
     }
 }

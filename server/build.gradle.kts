@@ -5,6 +5,7 @@ import org.apache.tools.ant.filters.ReplaceTokens
 plugins {
     id("com.github.johnrengelman.shadow")
     id("io.gitlab.arturbosch.detekt")
+    id("info.solidsoft.pitest")
 }
 
 dependencies {
@@ -63,6 +64,8 @@ dependencies {
     testRuntimeOnly(libs.bytebuddy)
     testImplementation(libs.reflections)
     testImplementation(projects.internalAnnotations)
+    testImplementation(libs.equalsVerifier)
+    pitest(libs.arcmutateKotlin)
 }
 
 license {
@@ -88,6 +91,12 @@ license {
         "**/console/BrigadierCompleter.kt",
         "**/console/BrigadierHighlighter.kt"
     )
+}
+
+pitest {
+    pitestVersion.set(libs.versions.pitest)
+    junit5PluginVersion.set("1.0.0")
+    targetClasses.set(setOf("org.kryptonmc.api.*", "org.kryptonmc.krypton.*"))
 }
 
 tasks {

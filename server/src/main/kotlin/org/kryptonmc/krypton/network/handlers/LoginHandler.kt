@@ -108,7 +108,7 @@ class LoginHandler(
             publicKey = validatePublicKey(packet.publicKey, server.config.advanced.enforceSecureProfiles)
         } catch (exception: PublicKeyParseException) {
             LOGGER.error(exception.message, exception.cause)
-            disconnect(exception.asComponent())
+            session.loginDisconnect(exception.asComponent())
             return
         }
 
@@ -131,7 +131,7 @@ class LoginHandler(
             // Initialize the player and setup their permissions.
             val player = KryptonPlayer(session, profile, server.worldManager.default, address, publicKey)
             server.eventManager.fire(KryptonSetupPermissionsEvent(player, KryptonPlayer.DEFAULT_PERMISSIONS))
-                .thenApplyAsync({ finishLogin(it, player) }, session.channel.eventLoop())
+                .thenApplyAsync({ finishLogin(it, player) }, session.executor())
             return
         }
 
@@ -146,7 +146,7 @@ class LoginHandler(
         // We decrypt the shared secret with the server's private key and then create a new AES streaming
         // cipher to use for encryption and decryption (see https://wiki.vg/Protocol_Encryption).
         val sharedSecret = Encryption.decrypt(packet.secret)
-        enableEncryption(SecretKeySpec(sharedSecret, Encryption.SYMMETRIC_ALGORITHM))
+        session.enableEncryption(SecretKeySpec(sharedSecret, Encryption.SYMMETRIC_ALGORITHM))
 
         val address = createAddress()
         // Fire the authentication event.
@@ -160,20 +160,20 @@ class LoginHandler(
             if (!canJoin(profile, address) || !callLoginEvent(profile)) return@thenApplyAsync null
             // Check the profile from the event and construct the player.
             KryptonPlayer(session, it.result.profile ?: profile, server.worldManager.default, address, publicKey)
-        }, session.channel.eventLoop()).thenApplyAsync({
+        }, session.executor()).thenApplyAsync({
             if (it == null) return@thenApplyAsync
             // Setup permissions.
             finishLogin(server.eventManager.fireSync(KryptonSetupPermissionsEvent(it, KryptonPlayer.DEFAULT_PERMISSIONS)), it)
-        }, session.channel.eventLoop())
+        }, session.executor())
     }
 
     private fun handlePluginResponse(packet: PacketInPluginResponse) {
         if (packet.messageId != velocityMessageId || server.config.proxy.mode != ProxyCategory.Mode.MODERN) {
-            disconnect(Messages.Disconnect.UNEXPECTED_QUERY_RESPONSE.build())
+            session.loginDisconnect(Messages.Disconnect.UNEXPECTED_QUERY_RESPONSE.build())
             return
         }
         if (packet.data == null) {
-            disconnect(Component.text("You must connect to this server through a Velocity proxy!"))
+            session.loginDisconnect(Component.text("You must connect to this server through a Velocity proxy!"))
             return
         }
         if (packet.data.isEmpty()) { // For whatever reason, there was no data sent by Velocity
@@ -184,7 +184,7 @@ class LoginHandler(
         // Verify integrity
         val buffer = Unpooled.copiedBuffer(packet.data)
         if (!VelocityProxy.verifyIntegrity(buffer, forwardingSecret)) {
-            disconnect(Component.text("Response received from Velocity could not be verified!"))
+            session.loginDisconnect(Component.text("Response received from Velocity could not be verified!"))
             return
         }
 
@@ -194,13 +194,13 @@ class LoginHandler(
         }
 
         val data = VelocityProxy.readData(buffer)
-        val address = session.channel.remoteAddress() as InetSocketAddress
+        val address = session.connectAddress() as InetSocketAddress
 
         if (version >= VelocityProxy.MODERN_FORWARDING_WITH_KEY && publicKey == null) {
             try {
                 publicKey = PlayerPublicKey.create(SignatureValidator.YGGDRASIL, data.key)
             } catch (_: Exception) {
-                disconnect(Component.text("Could not validate public key forwarded from Velocity!"))
+                session.loginDisconnect(Component.text("Could not validate public key forwarded from Velocity!"))
                 return
             }
         }
@@ -212,15 +212,14 @@ class LoginHandler(
 
         // Setup permissions for the player
         server.eventManager.fire(KryptonSetupPermissionsEvent(player, KryptonPlayer.DEFAULT_PERMISSIONS))
-            .thenApplyAsync({ finishLogin(it, player) }, session.channel.eventLoop())
+            .thenApplyAsync({ finishLogin(it, player) }, session.executor())
     }
 
     private fun finishLogin(event: KryptonSetupPermissionsEvent, player: KryptonPlayer) {
         player.permissionFunction = event.createFunction(player)
-        enableCompression()
+        session.enableCompression()
         session.writeAndFlush(PacketOutLoginSuccess(player.profile))
-        session.handler = PlayHandler(server, session, player)
-        session.currentState = PacketState.PLAY
+        session.changeState(PacketState.PLAY, PlayHandler(server, session, player))
         server.playerManager.add(player, session).whenComplete { _, exception ->
             if (exception == null) return@whenComplete
             LOGGER.error("Disconnecting player ${player.profile.name} due to exception caught whilst attempting to load them in...", exception)
@@ -232,59 +231,23 @@ class LoginHandler(
         if (publicKey != null && !verificationData.isSignatureValid(verifyToken, publicKey!!)) {
             LOGGER.error("Signature for public key was invalid for $name! Their connection may have been intercepted.")
             val message = "Signature for public key was invalid! Your connection may have been intercepted."
-            disconnect(Messages.Disconnect.LOGIN_FAILED_INFO.build(message))
+            session.loginDisconnect(Messages.Disconnect.LOGIN_FAILED_INFO.build(message))
             return false
         }
         if (publicKey == null && !verificationData.isTokenValid(verifyToken)) {
             LOGGER.error("Verify tokens for $name did not match! Their connection may have been intercepted.")
-            disconnect(Messages.Disconnect.LOGIN_FAILED_INFO.build("Verify tokens did not match! Your connection may have been intercepted."))
+            session.loginDisconnect(Messages.Disconnect.LOGIN_FAILED_INFO.build("Verify tokens did not match! Your connection may have been " +
+                    "intercepted."))
             return false
         }
         return true
     }
 
-    /**
-     * Creates the ciphers for encryption and decryption with the given [key].
-     * The key should be using an AES stream cipher with the key given from the
-     * encryption response packet.
-     */
-    private fun enableEncryption(key: SecretKey) {
-        val cipher = Natives.cipher.get()
-        val encrypter = PacketEncrypter(cipher.forEncryption(key))
-        val decrypter = PacketDecrypter(cipher.forDecryption(key))
-        session.channel.pipeline().addBefore(GroupedPacketHandler.NETTY_NAME, PacketDecrypter.NETTY_NAME, decrypter)
-        session.channel.pipeline().addBefore(GroupedPacketHandler.NETTY_NAME, PacketEncrypter.NETTY_NAME, encrypter)
-    }
-
-    private fun enableCompression() {
-        val threshold = server.config.server.compressionThreshold
-
-        // Check for existing encoders and decoders
-        var encoder = session.channel.pipeline().get(PacketCompressor.NETTY_NAME) as? PacketCompressor
-        var decoder = session.channel.pipeline().get(PacketDecompressor.NETTY_NAME) as? PacketDecompressor
-        if (encoder != null && decoder != null) {
-            encoder.threshold = threshold
-            decoder.threshold = threshold
-            return
-        }
-
-        // Tell the client to update its compression threshold and create our compressor
-        session.writeAndFlush(PacketOutSetCompression(threshold))
-        session.compressionEnabled = true
-        val compressor = Natives.compress.get().create(4)
-        encoder = PacketCompressor(compressor, threshold)
-        decoder = PacketDecompressor(compressor, threshold)
-
-        // Add the compressor and decompressor to our pipeline
-        session.channel.pipeline().addBefore(PacketDecoder.NETTY_NAME, PacketDecompressor.NETTY_NAME, decoder)
-        session.channel.pipeline().addBefore(PacketEncoder.NETTY_NAME, PacketCompressor.NETTY_NAME, encoder)
-    }
-
     private fun callLoginEvent(profile: GameProfile): Boolean {
-        val event = KryptonLoginEvent(profile.name, profile.uuid, session.channel.remoteAddress() as InetSocketAddress)
+        val event = KryptonLoginEvent(profile.name, profile.uuid, session.connectAddress() as InetSocketAddress)
         val result = server.eventManager.fireSync(event).result
         if (!result.isAllowed) {
-            disconnect(result.reason ?: Messages.Disconnect.KICKED.build())
+            session.loginDisconnect(result.reason ?: Messages.Disconnect.KICKED.build())
             return false
         }
         return true
@@ -297,35 +260,30 @@ class LoginHandler(
         if (banManager.isBanned(profile)) { // We are banned
             val ban = banManager.get(profile)!!
             // Inform the client that they are banned
-            disconnect(Messages.Disconnect.BANNED_MESSAGE.build(ban.reason, ban.expirationDate))
+            session.loginDisconnect(Messages.Disconnect.BANNED_MESSAGE.build(ban.reason, ban.expirationDate))
             LOGGER.info("${profile.name} was disconnected as they are banned from this server.")
             return false
         } else if (whitelist.isEnabled && !whitelist.isWhitelisted(profile) && !whitelist.isWhitelisted(addressString)) {
             // We are not whitelisted
-            disconnect(Messages.Disconnect.NOT_WHITELISTED.build())
+            session.loginDisconnect(Messages.Disconnect.NOT_WHITELISTED.build())
             LOGGER.info("${profile.name} was disconnected as this server is whitelisted and they are not on the whitelist.")
             return false
         } else if (banManager.isBanned(addressString)) { // Their IP is banned.
             val ban = banManager.get(addressString)!!
-            disconnect(Messages.Disconnect.BANNED_IP_MESSAGE.build(ban.reason, ban.expirationDate))
+            session.loginDisconnect(Messages.Disconnect.BANNED_IP_MESSAGE.build(ban.reason, ban.expirationDate))
             LOGGER.info("${profile.name} disconnected. Reason: IP Banned")
         }
         return true
     }
 
     private fun createAddress(): InetSocketAddress {
-        val rawAddress = session.channel.remoteAddress() as InetSocketAddress
+        val rawAddress = session.connectAddress() as InetSocketAddress
         return if (proxyForwardedData != null) {
             val port = if (proxyForwardedData.forwardedPort != -1) proxyForwardedData.forwardedPort else rawAddress.port
             InetSocketAddress(proxyForwardedData.forwardedAddress, port)
         } else {
             rawAddress
         }
-    }
-
-    private fun disconnect(reason: Component) {
-        session.writeAndFlush(PacketOutLoginDisconnect(reason))
-        if (session.channel.isOpen) session.channel.close().awaitUninterruptibly()
     }
 
     class PublicKeyParseException(message: Component, cause: Throwable? = null) : ComponentException(message, cause)

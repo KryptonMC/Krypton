@@ -16,13 +16,12 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton
+package org.kryptonmc.krypton.entity.attribute
 
+import org.junit.jupiter.api.Test
 import org.kryptonmc.api.entity.attribute.BasicModifierOperation
 import org.kryptonmc.api.entity.attribute.ModifierOperation
-import org.kryptonmc.krypton.entity.attribute.KryptonAttributeModifier
 import java.util.UUID
-import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class AttributeTests {

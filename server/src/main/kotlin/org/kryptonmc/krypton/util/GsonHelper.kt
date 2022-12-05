@@ -49,13 +49,14 @@ object GsonHelper {
 
     @JvmStatic
     fun toStableString(value: JsonElement): String {
-        val writer = JsonWriter(StringWriter())
+        val output = StringWriter()
+        val writer = JsonWriter(output)
         try {
             writeValueOrdered(writer, value, Comparator.naturalOrder())
         } catch (exception: IOException) {
             throw RuntimeException(exception)
         }
-        return writer.toString()
+        return output.toString()
     }
 
     @JvmStatic
@@ -84,6 +85,7 @@ object GsonHelper {
             writer.name(it.key)
             writeValueOrdered(writer, it.value, comparator)
         }
+        writer.endObject()
     }
 
     @JvmStatic

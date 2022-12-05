@@ -16,12 +16,9 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton
+package org.kryptonmc.krypton.util
 
-import org.junit.jupiter.api.BeforeAll
-import org.kryptonmc.krypton.util.Bootstrap
-import org.kryptonmc.krypton.util.KryptonBoundingBox
-import kotlin.test.Test
+import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
 
 class BoundingBoxTests {
@@ -45,14 +42,5 @@ class BoundingBoxTests {
         assertEquals(0.0, box.centerX)
         assertEquals(0.0, box.centerY)
         assertEquals(0.0, box.centerZ)
-    }
-
-    companion object {
-
-        @JvmStatic
-        @BeforeAll
-        fun bootstrap() {
-            Bootstrap.preload()
-        }
     }
 }

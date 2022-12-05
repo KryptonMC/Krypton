@@ -30,7 +30,8 @@ object ItemManager {
 
     private val handlers = HashMap<String, ItemHandler>()
 
-    init {
+    @JvmStatic
+    fun bootstrap() {
         register(ItemTypes.WOODEN_SWORD, SwordHandler)
         register(ItemTypes.STONE_SWORD, SwordHandler)
         register(ItemTypes.GOLDEN_SWORD, SwordHandler)

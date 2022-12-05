@@ -1,22 +1,4 @@
-/*
- * This file is part of the Krypton project, licensed under the GNU General Public License v3.0
- *
- * Copyright (C) 2021-2022 KryptonMC and the contributors of the Krypton project
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
- */
-package org.kryptonmc.krypton
+package org.kryptonmc.krypton.command.argument
 
 import com.mojang.brigadier.StringReader
 import com.mojang.brigadier.arguments.ArgumentType
@@ -28,8 +10,8 @@ import com.mojang.brigadier.arguments.LongArgumentType
 import com.mojang.brigadier.arguments.StringArgumentType
 import io.netty.buffer.Unpooled
 import org.junit.jupiter.api.BeforeAll
+import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
-import org.kryptonmc.krypton.command.argument.ArgumentSerializers
 import org.kryptonmc.krypton.command.argument.serializer.DoubleArgumentSerializer
 import org.kryptonmc.krypton.command.argument.serializer.FlaggedArgumentSerializer
 import org.kryptonmc.krypton.command.argument.serializer.FloatArgumentSerializer
@@ -38,7 +20,6 @@ import org.kryptonmc.krypton.command.argument.serializer.LongArgumentSerializer
 import org.kryptonmc.krypton.command.argument.serializer.StringArgumentSerializer
 import org.kryptonmc.krypton.util.readVarInt
 import org.kryptonmc.krypton.util.writeArgumentType
-import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 
@@ -70,10 +51,10 @@ class ArgumentTests {
 
     @Test
     fun `serializer flag creating`() {
-        DoubleArgumentSerializer.checkFlags()
-        FloatArgumentSerializer.checkFlags()
-        IntegerArgumentSerializer.checkFlags()
-        LongArgumentSerializer.checkFlags()
+        checkFlags(DoubleArgumentSerializer)
+        checkFlags(FloatArgumentSerializer)
+        checkFlags(IntegerArgumentSerializer)
+        checkFlags(LongArgumentSerializer)
     }
 
     @Test
@@ -117,15 +98,16 @@ class ArgumentTests {
 
         @BeforeAll
         @JvmStatic
-        fun `preload needed classes`() {
-            ArgumentSerializers
+        fun `bootstrap built in argument serializers`() {
+            ArgumentSerializers.bootstrap()
+        }
+
+        @JvmStatic
+        private fun checkFlags(serializer: FlaggedArgumentSerializer<*>) {
+            assertEquals(0b00000011, serializer.createFlags(minimum = true, maximum = true))
+            assertEquals(0b00000000, serializer.createFlags(minimum = false, maximum = false))
+            assertEquals(0b00000010, serializer.createFlags(minimum = false, maximum = true))
+            assertEquals(0b00000001, serializer.createFlags(minimum = true, maximum = false))
         }
     }
-}
-
-private fun FlaggedArgumentSerializer<*>.checkFlags() {
-    assertEquals(0b00000011, createFlags(minimum = true, maximum = true))
-    assertEquals(0b00000000, createFlags(minimum = false, maximum = false))
-    assertEquals(0b00000010, createFlags(minimum = false, maximum = true))
-    assertEquals(0b00000001, createFlags(minimum = true, maximum = false))
 }

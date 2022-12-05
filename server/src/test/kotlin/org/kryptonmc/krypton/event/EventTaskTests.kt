@@ -18,13 +18,13 @@
  */
 package org.kryptonmc.krypton.event
 
+import org.junit.jupiter.api.Test
 import org.kryptonmc.api.event.Continuation
 import org.kryptonmc.api.event.EventTask
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.atomic.AtomicIntegerFieldUpdater
 import java.util.function.Consumer
-import kotlin.test.Test
 import kotlin.test.assertTrue
 
 class EventTaskTests {

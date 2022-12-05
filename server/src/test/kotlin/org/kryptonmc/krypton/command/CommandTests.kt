@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton
+package org.kryptonmc.krypton.command
 
 import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.arguments.IntegerArgumentType
@@ -26,15 +26,11 @@ import com.mojang.brigadier.tree.LiteralCommandNode
 import com.mojang.brigadier.tree.RootCommandNode
 import io.mockk.mockk
 import net.kyori.adventure.text.Component
+import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import org.kryptonmc.api.command.CommandExecutionContext
-import org.kryptonmc.krypton.command.CommandSourceStack
-import org.kryptonmc.krypton.command.KryptonBrigadierCommand
-import org.kryptonmc.krypton.command.KryptonCommandMeta
-import org.kryptonmc.krypton.command.argument
-import org.kryptonmc.krypton.command.literal
 import org.kryptonmc.krypton.command.registrar.BrigadierCommandRegistrar
-import org.kryptonmc.krypton.command.runs
+import org.kryptonmc.krypton.testutil.Bootstrapping
 import org.kryptonmc.krypton.util.Vec3dImpl
 import java.util.concurrent.locks.ReentrantLock
 import kotlin.test.assertEquals
@@ -64,5 +60,14 @@ class CommandTests {
         }.build() as LiteralCommandNode<CommandExecutionContext>
         BrigadierCommandRegistrar(ReentrantLock()).register(root, KryptonBrigadierCommand(node), KryptonCommandMeta.Builder("test").build())
         assertEquals(node, root.getChild("test") as CommandNode<CommandExecutionContext>)
+    }
+
+    companion object {
+
+        @JvmStatic
+        @BeforeAll
+        fun `load factories for vec3d`() {
+            Bootstrapping.loadFactories()
+        }
     }
 }

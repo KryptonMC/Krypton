@@ -116,7 +116,7 @@ class PlayHandler(override val server: KryptonServer, override val session: Sess
         val time = System.currentTimeMillis()
         if (time - lastKeepAlive < KEEP_ALIVE_INTERVAL) return
         if (pendingKeepAlive) {
-            session.disconnect(Messages.Disconnect.TIMEOUT.build())
+            session.playDisconnect(Messages.Disconnect.TIMEOUT.build())
             return
         }
         pendingKeepAlive = true
@@ -167,17 +167,17 @@ class PlayHandler(override val server: KryptonServer, override val session: Sess
     }
 
     private fun handleChatCommand(packet: PacketInChatCommand) {
-        if (!Chat.isValidMessage(packet.command)) session.disconnect(ILLEGAL_CHAT_CHARACTERS_MESSAGE)
+        if (!Chat.isValidMessage(packet.command)) session.playDisconnect(ILLEGAL_CHAT_CHARACTERS_MESSAGE)
         if (!verifyChatMessage(packet.command, packet.timestamp)) return
         server.eventManager.fire(KryptonCommandExecuteEvent(player, packet.command)).thenAcceptAsync({
             if (!it.result.isAllowed) return@thenAcceptAsync
             server.commandManager.dispatch(player, packet.command)
-        }, session.channel.eventLoop())
+        }, session.executor())
     }
 
     private fun handleChatMessage(packet: PacketInChatMessage) {
         // Sanity check message content
-        if (!Chat.isValidMessage(packet.message)) session.disconnect(ILLEGAL_CHAT_CHARACTERS_MESSAGE)
+        if (!Chat.isValidMessage(packet.message)) session.playDisconnect(ILLEGAL_CHAT_CHARACTERS_MESSAGE)
         // Fire the chat event
         server.eventManager.fire(KryptonChatEvent(player, packet.message)).thenAcceptAsync({ event ->
             if (!event.result.isAllowed) return@thenAcceptAsync
@@ -192,13 +192,13 @@ class PlayHandler(override val server: KryptonServer, override val session: Sess
             val outPacket = PacketOutPlayerChatMessage(Component.text(packet.message), message, typeId, player.asChatSender(), packet.signature)
             server.sessionManager.sendGrouped(outPacket) { it !== player }
             server.console.sendMessage(player, message, MessageType.CHAT)
-        }, session.channel.eventLoop())
+        }, session.executor())
     }
 
     private fun verifyChatMessage(message: String, timestamp: Instant): Boolean {
         if (!updateChatOrder(timestamp)) {
             LOGGER.warn("Out of order chat message $message received from ${player.profile.name}. Disconnecting...")
-            session.disconnect(Messages.Disconnect.OUT_OF_ORDER_CHAT.build())
+            session.playDisconnect(Messages.Disconnect.OUT_OF_ORDER_CHAT.build())
             return false
         }
         if (isChatExpired(timestamp)) {
@@ -261,7 +261,7 @@ class PlayHandler(override val server: KryptonServer, override val session: Sess
                 EntityAction.START_FLYING_WITH_ELYTRA -> if (!player.tryStartGliding()) player.stopGliding()
                 else -> error("This should be impossible! Action for player command was not a valid action! Action: ${it.action}")
             }
-        }, session.channel.eventLoop())
+        }, session.executor())
     }
 
     private fun handleSetHeldItem(packet: PacketInSetHeldItem) {
@@ -274,12 +274,12 @@ class PlayHandler(override val server: KryptonServer, override val session: Sess
 
     private fun handleKeepAlive(packet: PacketInKeepAlive) {
         if (pendingKeepAlive && packet.id == keepAliveChallenge) {
-            session.latency = (session.latency * 3 + (System.currentTimeMillis() - lastKeepAlive).toInt()) / 3
+            session.updateLatency(lastKeepAlive)
             pendingKeepAlive = false
             sessionManager.sendGrouped(PacketOutPlayerInfo(PacketOutPlayerInfo.Action.UPDATE_LATENCY, player))
             return
         }
-        session.disconnect(Messages.Disconnect.TIMEOUT.build())
+        session.playDisconnect(Messages.Disconnect.TIMEOUT.build())
     }
 
     private fun handleAbilities(packet: PacketInAbilities) {
@@ -425,7 +425,7 @@ class PlayHandler(override val server: KryptonServer, override val session: Sess
 
     private fun handleResourcePack(packet: PacketInResourcePack) {
         if (packet.status == ResourcePack.Status.DECLINED && server.config.server.resourcePack.forced) {
-            session.disconnect(Messages.Disconnect.REQUIRED_TEXTURE_PROMPT.build())
+            session.playDisconnect(Messages.Disconnect.REQUIRED_TEXTURE_PROMPT.build())
             return
         }
         server.eventManager.fireAndForget(KryptonResourcePackStatusEvent(player, packet.status))

@@ -26,8 +26,8 @@ velocity = "3.1.0"
 tca = "1.3.0"
 jline = "3.21.0"
 dataConverter = "1.0.0-SNAPSHOT"
-nbt = "4.3.2"
-serialization = "1.2.1"
+nbt = "4.3.3"
+serialization = "1.3.2"
 articData = "1.19-aaa3687c"
 caffeine = "3.1.1"
 fastutil = "8.5.9"
@@ -43,6 +43,9 @@ mockk = "1.13.2"
 bytebuddy = "1.12.18"
 jimfs = "1.2"
 reflections = "0.10.2"
+pitest = "1.10.1"
+arcmutateKotlin = "0.2.2"
+equalsVerifier = "3.12.1"
 
 # Extras
 ksp = "1.7.20-1.0.7"
@@ -54,6 +57,7 @@ dokka = "1.7.20"
 detekt = "1.21.0"
 vanillaGradle = "0.2.1-SNAPSHOT"
 shadow = "7.1.2"
+pitestPlugin = "1.9.11"
 
 [libraries]
 
@@ -133,6 +137,8 @@ mockk = { group = "io.mockk", name = "mockk", version.ref = "mockk" }
 bytebuddy = { group = "net.bytebuddy", name = "byte-buddy", version.ref = "bytebuddy" }
 jimfs = { group = "com.google.jimfs", name = "jimfs", version.ref = "jimfs" }
 reflections = { group = "org.reflections", name = "reflections", version.ref = "reflections" }
+arcmutateKotlin = { group = "com.groupcdg.pitest", name = "pitest-kotlin-plugin", version.ref = "arcmutateKotlin" }
+equalsVerifier = { group = "nl.jqno.equalsverifier", name = "equalsverifier", version.ref = "equalsVerifier" }
 
 # Extras
 ksp = { group = "com.google.devtools.ksp", name = "symbol-processing-api", version.ref = "ksp" }
@@ -146,6 +152,7 @@ plugin-detekt = { group = "io.gitlab.arturbosch.detekt", name = "detekt-gradle-p
 plugin-vanillaGradle = { group = "org.spongepowered", name = "vanillagradle", version.ref = "vanillaGradle" }
 plugin-shadow = { group = "gradle.plugin.com.github.johnrengelman", name = "shadow", version.ref = "shadow" }
 plugin-ksp = { group = "com.google.devtools.ksp", name = "symbol-processing-gradle-plugin", version.ref = "ksp" }
+plugin-pitest = { group = "info.solidsoft.gradle.pitest", name = "gradle-pitest-plugin", version.ref = "pitestPlugin" }
 
 # Extras dependencies
 dokka-core = { group = "org.jetbrains.dokka", name = "dokka-core", version.ref = "dokka" }

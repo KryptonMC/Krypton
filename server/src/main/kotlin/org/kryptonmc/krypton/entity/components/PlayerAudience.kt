@@ -28,6 +28,7 @@ import net.kyori.adventure.text.Component
 import net.kyori.adventure.title.Title
 import net.kyori.adventure.title.TitlePart
 import org.kryptonmc.api.entity.player.ChatVisibility
+import org.kryptonmc.api.entity.player.Player
 import org.kryptonmc.krypton.adventure.BossBarManager
 import org.kryptonmc.krypton.adventure.KryptonAdventure
 import org.kryptonmc.krypton.command.KryptonSender
@@ -49,7 +50,7 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutStopSound
 import org.kryptonmc.krypton.registry.KryptonRegistries
 import org.kryptonmc.krypton.world.KryptonWorld
 
-interface PlayerAudience : NetworkPlayer, KryptonSender {
+interface PlayerAudience : Player, NetworkPlayer, KryptonSender {
 
     override val world: KryptonWorld
 

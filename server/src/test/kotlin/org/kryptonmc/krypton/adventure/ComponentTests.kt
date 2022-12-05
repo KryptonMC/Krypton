@@ -16,19 +16,14 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton
+package org.kryptonmc.krypton.adventure
 
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer
-import org.kryptonmc.krypton.adventure.toJson
-import org.kryptonmc.krypton.adventure.toLegacyAmpersandText
-import org.kryptonmc.krypton.adventure.toLegacySectionText
-import org.kryptonmc.krypton.adventure.toMessage
-import org.kryptonmc.krypton.adventure.toPlainText
-import kotlin.test.Test
+import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
 
 class ComponentTests {

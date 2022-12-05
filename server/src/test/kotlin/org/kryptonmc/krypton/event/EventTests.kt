@@ -20,13 +20,14 @@ package org.kryptonmc.krypton.event
 
 import com.google.common.reflect.TypeToken
 import org.junit.jupiter.api.AfterAll
+import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
 import org.kryptonmc.api.event.Continuation
 import org.kryptonmc.api.event.EventTask
 import org.kryptonmc.api.event.Listener
 import org.kryptonmc.api.event.ListenerPriority
 import org.kryptonmc.api.event.registerHandler
-import org.kryptonmc.krypton.util.MockPluginManager
+import org.kryptonmc.krypton.testutil.MockPluginManager
 import java.lang.reflect.Method
 import java.util.concurrent.atomic.AtomicInteger
 import java.util.concurrent.atomic.AtomicLong
@@ -34,7 +35,6 @@ import java.util.function.BiConsumer
 import java.util.function.BiFunction
 import java.util.function.Function
 import java.util.function.Predicate
-import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 

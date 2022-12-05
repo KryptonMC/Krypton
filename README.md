@@ -107,3 +107,5 @@ helping to make this possible.
 - The project's dependencies, each and every one helping to make our lives as developers easier.
 - [JProfiler](https://www.ej-technologies.com/products/jprofiler/overview.html), for being kind enough to grant us an
   open-source license for their profiler, helping to ensure that Krypton can perform well in production environments.
+- [Arcmutate](https://www.arcmutate.com/), for being kind enough to grant us an open-source license for their Kotlin extensions to the PIT mutation
+  testing software that we use to ensure that test coverage is at an acceptable level, helping to ensure the stability of Krypton.

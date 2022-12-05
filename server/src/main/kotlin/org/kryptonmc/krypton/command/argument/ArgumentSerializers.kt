@@ -48,7 +48,8 @@ object ArgumentSerializers {
     private val BY_CLASS = ConcurrentHashMap<Class<*>, Entry<*>>()
     private val BY_ID = Int2ObjectOpenHashMap<Entry<*>>()
 
-    init {
+    @JvmStatic
+    fun bootstrap() {
         // Brigadier serializers
         singleton(0, "brigadier:bool", BoolArgumentType.bool())
         register(1, "brigadier:float", FloatArgumentSerializer)

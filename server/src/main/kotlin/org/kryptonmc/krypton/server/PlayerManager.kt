@@ -166,7 +166,7 @@ class PlayerManager(private val server: KryptonServer) {
         if (!joinResult.isAllowed) {
             // Use default reason if denied without specified reason
             val reason = joinResult.message ?: Messages.Disconnect.KICKED.build()
-            session.disconnect(reason)
+            session.playDisconnect(reason)
             return@thenAcceptAsync
         }
         val defaultJoinMessage = if (joinResult.hasJoinedBefore) Messages.PLAYER_JOINED_RENAMED else Messages.PLAYER_JOINED
@@ -226,7 +226,7 @@ class PlayerManager(private val server: KryptonServer) {
     }
 
     fun disconnectAll() {
-        players.forEach { it.session.disconnect(SHUTDOWN_MESSAGE) }
+        players.forEach { it.session.playDisconnect(SHUTDOWN_MESSAGE) }
     }
 
     fun saveAll() {

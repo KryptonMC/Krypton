@@ -18,10 +18,11 @@
  */
 package org.kryptonmc.krypton.entity.components
 
+import org.kryptonmc.api.entity.player.Player
 import org.kryptonmc.krypton.entity.system.PlayerHungerSystem
 import org.kryptonmc.krypton.packet.out.play.PacketOutSetHealth
 
-interface HungerDelegate : NetworkPlayer {
+interface HungerDelegate : Player, NetworkPlayer {
 
     val hungerSystem: PlayerHungerSystem
 

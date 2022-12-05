@@ -16,15 +16,15 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton
+package org.kryptonmc.krypton.effect.particle
 
 import org.junit.jupiter.api.BeforeAll
+import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertDoesNotThrow
 import org.junit.jupiter.api.assertThrows
 import org.kryptonmc.api.effect.particle.ParticleTypes
 import org.kryptonmc.krypton.effect.particle.data.KryptonNoteParticleData
-import org.kryptonmc.krypton.util.Bootstrap
-import kotlin.test.Test
+import org.kryptonmc.krypton.testutil.Bootstrapping
 
 class ParticleEffectTests {
 
@@ -47,7 +47,8 @@ class ParticleEffectTests {
         @JvmStatic
         @BeforeAll
         fun `preload bootstrap`() {
-            Bootstrap.preload()
+            Bootstrapping.loadFactories()
+            Bootstrapping.loadRegistries()
         }
     }
 }
