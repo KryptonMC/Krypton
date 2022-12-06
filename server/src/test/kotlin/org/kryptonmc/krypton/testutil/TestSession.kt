@@ -24,13 +24,12 @@ import org.kryptonmc.krypton.packet.Packet
 import java.net.InetAddress
 import java.net.InetSocketAddress
 import java.net.SocketAddress
-import java.util.Stack
-import kotlin.test.assertEquals
-import kotlin.test.assertFalse
+import java.util.ArrayDeque
+import kotlin.test.assertTrue
 
 class TestSession : NetworkSession {
 
-    private val sentPackets = Stack<GenericPacket>()
+    private val sentPackets = ArrayDeque<GenericPacket>()
 
     override fun connectAddress(): SocketAddress = InetSocketAddress(InetAddress.getLocalHost(), 25565)
 
@@ -41,11 +40,12 @@ class TestSession : NetworkSession {
     }
 
     override fun write(packet: GenericPacket) {
-        sentPackets.push(packet)
+        sentPackets.addFirst(packet)
     }
 
-    fun checkSent(packet: GenericPacket) {
-        assertFalse(sentPackets.isEmpty(), "No packets were sent!")
-        assertEquals(packet, sentPackets.pop())
+    fun popPacket(): GenericPacket = sentPackets.removeFirst()
+
+    fun assertNoPackets() {
+        assertTrue(sentPackets.isEmpty(), "Expected no packets to be sent, but ${sentPackets.size} were!")
     }
 }

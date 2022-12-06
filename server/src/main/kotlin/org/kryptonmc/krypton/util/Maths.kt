@@ -166,7 +166,7 @@ object Maths {
     fun log2(value: Int): Int = ceillog2(value) - if (isPowerOfTwo(value)) 0 else 1
 
     @JvmStatic
-    fun isPowerOfTwo(value: Int): Boolean = value != 0 && (value and value) - 1 == 0
+    fun isPowerOfTwo(value: Int): Boolean = value != 0 && value and (value - 1) == 0
 
     @JvmStatic
     fun roundUpPow2(value: Int): Int {

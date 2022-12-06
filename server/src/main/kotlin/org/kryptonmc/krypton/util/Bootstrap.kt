@@ -32,7 +32,6 @@ import org.kryptonmc.api.tags.EntityTypeTags
 import org.kryptonmc.api.tags.FluidTags
 import org.kryptonmc.api.tags.ItemTags
 import org.kryptonmc.api.world.rule.GameRule
-import org.kryptonmc.krypton.auth.requests.SessionService
 import org.kryptonmc.krypton.command.BrigadierExceptions
 import org.kryptonmc.krypton.command.argument.ArgumentSerializers
 import org.kryptonmc.krypton.entity.EntityFactory
@@ -101,7 +100,6 @@ object Bootstrap {
     @VisibleForTesting
     fun preloadOtherClasses() {
         Encryption
-        SessionService
         ArgumentSerializers.bootstrap()
         EntityFactory
         ItemManager.bootstrap()

@@ -60,7 +60,7 @@ open class BlockPos(x: Int, y: Int, z: Int) : Vec3i {
 
     override fun subtract(x: Int, y: Int, z: Int): BlockPos {
         if (x == 0 && y == 0 && z == 0) return this
-        return BlockPos(this.x + x, this.y + y, this.z + z)
+        return BlockPos(this.x - x, this.y - y, this.z - z)
     }
 
     override fun multiply(x: Int, y: Int, z: Int): BlockPos {
@@ -70,7 +70,6 @@ open class BlockPos(x: Int, y: Int, z: Int) : Vec3i {
 
     override fun multiply(factor: Int): BlockPos {
         if (factor == 1) return this
-        if (factor == 0) return ZERO
         return BlockPos(x * factor, y * factor, z * factor)
     }
 
