@@ -22,6 +22,7 @@ import com.mojang.brigadier.StringReader
 import net.kyori.adventure.audience.MessageType
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.translation.Translator
+import org.apache.logging.log4j.LogManager
 import org.kryptonmc.api.entity.Hand
 import org.kryptonmc.api.entity.player.ChatVisibility
 import org.kryptonmc.api.resource.ResourcePack
@@ -85,7 +86,6 @@ import org.kryptonmc.krypton.registry.KryptonRegistries
 import org.kryptonmc.krypton.util.Positioning
 import org.kryptonmc.krypton.util.SectionPos
 import org.kryptonmc.krypton.util.Vec3dImpl
-import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.world.block.KryptonBlocks
 import org.kryptonmc.krypton.world.chunk.ChunkPos
 import java.time.Duration
@@ -324,7 +324,7 @@ class PlayHandler(override val server: KryptonServer, override val session: Sess
 
     private fun handlePlayerInput(packet: PacketInPlayerInput) {
         // TODO: Handle steering here
-        if (packet.isSneaking) player.ejectVehicle()
+        if (packet.isSneaking()) player.ejectVehicle()
     }
 
     private fun handleInteract(packet: PacketInInteract) {
@@ -456,7 +456,7 @@ class PlayHandler(override val server: KryptonServer, override val session: Sess
 
         private const val INTERACTION_RANGE_SQUARED = 6.0 * 6.0
         private const val KEEP_ALIVE_INTERVAL = 15000L
-        private val LOGGER = logger<PlayHandler>()
+        private val LOGGER = LogManager.getLogger()
 
         private val CHAT_EXPIRE_DURATION = Duration.ofMinutes(5)
         private val ILLEGAL_CHAT_CHARACTERS_MESSAGE = Messages.Disconnect.ILLEGAL_CHARACTERS.build()

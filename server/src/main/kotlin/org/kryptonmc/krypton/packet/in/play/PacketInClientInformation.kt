@@ -39,16 +39,8 @@ data class PacketInClientInformation(
     val allowsListing: Boolean
 ) : Packet {
 
-    constructor(buf: ByteBuf) : this(
-        buf.readString(16),
-        buf.readByte().toInt(),
-        buf.readEnum(),
-        buf.readBoolean(),
-        buf.readUnsignedByte(),
-        buf.readEnum(),
-        buf.readBoolean(),
-        buf.readBoolean()
-    )
+    constructor(buf: ByteBuf) : this(buf.readString(16), buf.readByte().toInt(), buf.readEnum(), buf.readBoolean(), buf.readUnsignedByte(),
+        buf.readEnum(), buf.readBoolean(), buf.readBoolean())
 
     override fun write(buf: ByteBuf) {
         buf.writeString(locale)

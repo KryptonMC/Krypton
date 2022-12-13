@@ -51,19 +51,8 @@ data class PacketOutParticle(
     val data: ParticleData?
 ) : Packet {
 
-    constructor(buf: ByteBuf) : this(
-        buf,
-        buf.readVarInt(),
-        buf.readBoolean(),
-        buf.readDouble(),
-        buf.readDouble(),
-        buf.readDouble(),
-        buf.readFloat(),
-        buf.readFloat(),
-        buf.readFloat(),
-        buf.readFloat(),
-        buf.readVarInt()
-    )
+    constructor(buf: ByteBuf) : this(buf, buf.readVarInt(), buf.readBoolean(), buf.readDouble(), buf.readDouble(), buf.readDouble(), buf.readFloat(),
+        buf.readFloat(), buf.readFloat(), buf.readFloat(), buf.readVarInt())
 
     private constructor(buf: ByteBuf, typeId: Int, longDistance: Boolean, x: Double, y: Double, z: Double, offsetX: Float, offsetY: Float,
                         offsetZ: Float, maxSpeed: Float,

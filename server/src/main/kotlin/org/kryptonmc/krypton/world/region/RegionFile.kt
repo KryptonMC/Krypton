@@ -18,7 +18,7 @@
  */
 package org.kryptonmc.krypton.world.region
 
-import org.kryptonmc.krypton.util.logger
+import org.apache.logging.log4j.LogManager
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.DataInputStream
@@ -323,7 +323,7 @@ class RegionFile(
 
     companion object {
 
-        private val LOGGER = logger<RegionFile>()
+        private val LOGGER = LogManager.getLogger()
         private const val SECTOR_BYTES = 4096
         private const val SECTOR_INTS = 1024
         private const val CHUNK_HEADER_SIZE = 5

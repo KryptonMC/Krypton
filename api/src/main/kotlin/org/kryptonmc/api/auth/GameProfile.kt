@@ -25,16 +25,16 @@ import java.util.UUID
 public interface GameProfile : Identified {
 
     /**
-     * The name of the profile.
-     */
-    @get:JvmName("name")
-    public val name: String
-
-    /**
      * The UUID of the profile.
      */
     @get:JvmName("uuid")
     public val uuid: UUID
+
+    /**
+     * The name of the profile.
+     */
+    @get:JvmName("name")
+    public val name: String
 
     /**
      * All of the properties for this profile.

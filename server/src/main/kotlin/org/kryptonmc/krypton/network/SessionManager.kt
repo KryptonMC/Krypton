@@ -25,7 +25,7 @@ import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.packet.out.status.ServerStatus
 import org.kryptonmc.krypton.server.PlayerManager
 import org.kryptonmc.krypton.util.Maths
-import org.kryptonmc.krypton.util.frame
+import org.kryptonmc.krypton.util.PacketFraming
 import org.kryptonmc.krypton.util.random.RandomSource
 import java.util.concurrent.ConcurrentHashMap
 import java.util.function.Predicate
@@ -36,10 +36,12 @@ class SessionManager(private val playerManager: PlayerManager, motd: Component, 
     private val sessions = ConcurrentHashMap.newKeySet<SessionHandler>()
 
     private val random = RandomSource.create()
-    val status: ServerStatus = ServerStatus(motd, ServerStatus.Players(maxPlayers, playerManager.players.size), null)
+    private val status = ServerStatus(motd, ServerStatus.Players(maxPlayers, playerManager.players.size), null)
     private var statusInvalidated = false
     private var statusInvalidatedTime = 0L
     private var lastStatus = 0L
+
+    fun status(): ServerStatus = status
 
     fun add(session: SessionHandler) {
         sessions.add(session)
@@ -55,7 +57,7 @@ class SessionManager(private val playerManager: PlayerManager, motd: Component, 
 
     fun sendGrouped(players: Collection<KryptonPlayer>, packet: Packet, predicate: Predicate<KryptonPlayer> = Predicate { true }) {
         if (players.isEmpty()) return
-        val finalBuffer = packet.frame()
+        val finalBuffer = PacketFraming.frame(packet)
         val framedPacket = FramedPacket(finalBuffer)
         players.forEach {
             if (!it.isOnline || !predicate.test(it)) return@forEach

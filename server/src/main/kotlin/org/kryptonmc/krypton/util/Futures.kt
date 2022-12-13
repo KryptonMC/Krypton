@@ -27,7 +27,7 @@ object Futures {
     @JvmStatic
     fun <V> sequenceFailFast(futures: List<CompletableFuture<out V>>): CompletableFuture<List<V>> {
         val result = CompletableFuture<List<V>>()
-        return fallibleSequence(futures, result::completeExceptionally).applyToEither(result, Function.identity())
+        return fallibleSequence(futures) { result.completeExceptionally(it) }.applyToEither(result, Function.identity())
     }
 
     @JvmStatic

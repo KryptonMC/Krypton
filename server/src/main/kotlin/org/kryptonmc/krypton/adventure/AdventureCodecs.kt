@@ -21,8 +21,9 @@ package org.kryptonmc.krypton.adventure
 import net.kyori.adventure.text.format.Style
 import net.kyori.adventure.text.format.TextColor
 import net.kyori.adventure.text.format.TextDecoration
+import net.kyori.adventure.text.format.TextDecoration.State as DecorationState
+import org.kryptonmc.krypton.util.OptionalBoolean
 import org.kryptonmc.krypton.util.serialization.Codecs
-import org.kryptonmc.krypton.util.serialization.gettingNullable
 import org.kryptonmc.serialization.Codec
 import org.kryptonmc.serialization.MapCodec
 import org.kryptonmc.serialization.codecs.RecordCodecBuilder
@@ -35,14 +36,14 @@ object AdventureCodecs {
     @JvmField
     val STYLE_FORMATTING: Codec<Style> = RecordCodecBuilder.create { instance ->
         instance.group(
-            TEXT_COLOR.optionalFieldOf("color").gettingNullable { it.color() },
+            TEXT_COLOR.optionalFieldOf("color").getting { Optional.ofNullable(it.color()) },
             decorationStateCodec("bold").getting { it.decoration(TextDecoration.BOLD) },
             decorationStateCodec("italic").getting { it.decoration(TextDecoration.ITALIC) },
             decorationStateCodec("underlined").getting { it.decoration(TextDecoration.UNDERLINED) },
             decorationStateCodec("strikethrough").getting { it.decoration(TextDecoration.STRIKETHROUGH) },
             decorationStateCodec("obfuscated").getting { it.decoration(TextDecoration.OBFUSCATED) },
-            Codec.STRING.optionalFieldOf("insertion").gettingNullable { it.insertion() },
-            Codecs.KEY.optionalFieldOf("font").gettingNullable { it.font() }
+            Codec.STRING.optionalFieldOf("insertion").getting { Optional.ofNullable(it.insertion()) },
+            Codecs.KEY.optionalFieldOf("font").getting { Optional.ofNullable(it.font()) }
         ).apply(instance) { color, bold, italic, underlined, strikethrough, obfuscated, insertion, font ->
             Style.style()
                 .color(color.orElse(null))
@@ -58,12 +59,13 @@ object AdventureCodecs {
     }
 
     @JvmStatic
-    private fun decorationStateCodec(name: String): MapCodec<TextDecoration.State> = Codec.BOOLEAN.optionalFieldOf(name)
-        .xmap({ value -> value.map { TextDecoration.State.byBoolean(it) }.orElse(TextDecoration.State.NOT_SET) }, { it.asBoolean() })
-}
+    private fun decorationStateCodec(name: String): MapCodec<DecorationState> = Codec.BOOLEAN.optionalFieldOf(name)
+        .xmap({ it.map(DecorationState::byBoolean).orElse(DecorationState.NOT_SET) }, ::stateAsBoolean)
 
-private fun TextDecoration.State.asBoolean(): Optional<Boolean> = when (this) {
-    TextDecoration.State.NOT_SET -> Optional.empty()
-    TextDecoration.State.FALSE -> Optional.of(false)
-    TextDecoration.State.TRUE -> Optional.of(true)
+    @JvmStatic
+    private fun stateAsBoolean(state: DecorationState): Optional<Boolean> = when (state) {
+        DecorationState.NOT_SET -> Optional.empty()
+        DecorationState.TRUE -> OptionalBoolean.TRUE
+        DecorationState.FALSE -> OptionalBoolean.FALSE
+    }
 }

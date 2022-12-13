@@ -20,8 +20,10 @@ package org.kryptonmc.krypton.command.arguments
 
 import com.mojang.brigadier.StringReader
 import com.mojang.brigadier.arguments.ArgumentType
+import com.mojang.brigadier.context.CommandContext
 import net.kyori.adventure.key.InvalidKeyException
 import net.kyori.adventure.key.Key
+import org.kryptonmc.krypton.command.CommandSourceStack
 import org.kryptonmc.krypton.registry.KryptonRegistries
 
 /**
@@ -52,6 +54,9 @@ object SummonEntityArgument : ArgumentType<Key> {
         return type.key()
     }
 
+    @JvmStatic
+    fun get(context: CommandContext<CommandSourceStack>, name: String): Key = ensureSummonable(context.getArgument(name, Key::class.java))
+
     override fun parse(reader: StringReader): Key = ensureSummonable(readKey(reader))
 
     override fun getExamples(): Collection<String> = EXAMPLES
@@ -59,23 +64,10 @@ object SummonEntityArgument : ArgumentType<Key> {
     @JvmStatic
     private fun readKey(reader: StringReader): Key {
         val cursor = reader.cursor
-        while (reader.canRead() && isAllowedInKey(reader.peek())) {
-            reader.skip()
-        }
         try {
-            return Key.key(reader.string.substring(cursor, reader.cursor))
+            return Key.key(StringReading.readKeyString(reader))
         } catch (_: InvalidKeyException) {
-            reader.cursor = cursor
-            throw ERROR_INVALID.createWithContext(reader)
+            CommandExceptions.resetAndThrow(reader, cursor, ERROR_INVALID.createWithContext(reader))
         }
     }
-
-    @JvmStatic
-    private fun isAllowedInKey(char: Char): Boolean = char >= '0' && char <= '9' ||
-            char >= 'a' && char <= 'z' ||
-            char == '_' ||
-            char == ':' ||
-            char == '/' ||
-            char == '.' ||
-            char == '-'
 }

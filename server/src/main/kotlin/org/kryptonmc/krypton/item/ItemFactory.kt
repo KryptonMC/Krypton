@@ -44,57 +44,59 @@ import org.kryptonmc.krypton.item.meta.KryptonPlayerHeadMeta
 import org.kryptonmc.krypton.item.meta.KryptonWritableBookMeta
 import org.kryptonmc.krypton.item.meta.KryptonWrittenBookMeta
 import org.kryptonmc.nbt.CompoundTag
+import java.util.function.Function
+import java.util.function.Supplier
 
 object ItemFactory {
 
-    private val META_BY_TYPE: Map<ItemType, (CompoundTag) -> AbstractItemMeta<*>> = mapOf(
-        ItemTypes.WRITTEN_BOOK to ::KryptonWrittenBookMeta,
-        ItemTypes.WRITABLE_BOOK to ::KryptonWritableBookMeta,
-        ItemTypes.PLAYER_HEAD to ::KryptonPlayerHeadMeta,
-        ItemTypes.LEATHER_HELMET to ::KryptonLeatherArmorMeta,
-        ItemTypes.LEATHER_CHESTPLATE to ::KryptonLeatherArmorMeta,
-        ItemTypes.LEATHER_LEGGINGS to ::KryptonLeatherArmorMeta,
-        ItemTypes.LEATHER_BOOTS to ::KryptonLeatherArmorMeta,
-        ItemTypes.LEATHER_HORSE_ARMOR to ::KryptonLeatherArmorMeta,
-        ItemTypes.FIREWORK_ROCKET to ::KryptonFireworkRocketMeta,
-        ItemTypes.FIREWORK_STAR to ::KryptonFireworkStarMeta,
-        ItemTypes.CROSSBOW to ::KryptonCrossbowMeta,
-        ItemTypes.COMPASS to ::KryptonCompassMeta,
-        ItemTypes.BUNDLE to ::KryptonBundleMeta,
-        ItemTypes.WHITE_BANNER to ::KryptonBannerMeta,
-        ItemTypes.ORANGE_BANNER to ::KryptonBannerMeta,
-        ItemTypes.MAGENTA_BANNER to ::KryptonBannerMeta,
-        ItemTypes.LIGHT_BLUE_BANNER to ::KryptonBannerMeta,
-        ItemTypes.YELLOW_BANNER to ::KryptonBannerMeta,
-        ItemTypes.LIME_BANNER to ::KryptonBannerMeta,
-        ItemTypes.PINK_BANNER to ::KryptonBannerMeta,
-        ItemTypes.GRAY_BANNER to ::KryptonBannerMeta,
-        ItemTypes.LIGHT_GRAY_BANNER to ::KryptonBannerMeta,
-        ItemTypes.CYAN_BANNER to ::KryptonBannerMeta,
-        ItemTypes.PURPLE_BANNER to ::KryptonBannerMeta,
-        ItemTypes.BLUE_BANNER to ::KryptonBannerMeta,
-        ItemTypes.BROWN_BANNER to ::KryptonBannerMeta,
-        ItemTypes.GREEN_BANNER to ::KryptonBannerMeta,
-        ItemTypes.RED_BANNER to ::KryptonBannerMeta,
-        ItemTypes.BLACK_BANNER to ::KryptonBannerMeta
+    private val META_BY_TYPE: Map<ItemType, Function<CompoundTag, AbstractItemMeta<*>>> = mapOf(
+        ItemTypes.WRITTEN_BOOK to Function { KryptonWrittenBookMeta(it) },
+        ItemTypes.WRITABLE_BOOK to Function { KryptonWritableBookMeta(it) },
+        ItemTypes.PLAYER_HEAD to Function { KryptonPlayerHeadMeta(it) },
+        ItemTypes.LEATHER_HELMET to Function { KryptonLeatherArmorMeta(it) },
+        ItemTypes.LEATHER_CHESTPLATE to Function { KryptonLeatherArmorMeta(it) },
+        ItemTypes.LEATHER_LEGGINGS to Function { KryptonLeatherArmorMeta(it) },
+        ItemTypes.LEATHER_BOOTS to Function { KryptonLeatherArmorMeta(it) },
+        ItemTypes.LEATHER_HORSE_ARMOR to Function { KryptonLeatherArmorMeta(it) },
+        ItemTypes.FIREWORK_ROCKET to Function { KryptonFireworkRocketMeta(it) },
+        ItemTypes.FIREWORK_STAR to Function { KryptonFireworkStarMeta(it) },
+        ItemTypes.CROSSBOW to Function { KryptonCrossbowMeta(it) },
+        ItemTypes.COMPASS to Function { KryptonCompassMeta(it) },
+        ItemTypes.BUNDLE to Function { KryptonBundleMeta(it) },
+        ItemTypes.WHITE_BANNER to Function { KryptonBannerMeta(it) },
+        ItemTypes.ORANGE_BANNER to Function { KryptonBannerMeta(it) },
+        ItemTypes.MAGENTA_BANNER to Function { KryptonBannerMeta(it) },
+        ItemTypes.LIGHT_BLUE_BANNER to Function { KryptonBannerMeta(it) },
+        ItemTypes.YELLOW_BANNER to Function { KryptonBannerMeta(it) },
+        ItemTypes.LIME_BANNER to Function { KryptonBannerMeta(it) },
+        ItemTypes.PINK_BANNER to Function { KryptonBannerMeta(it) },
+        ItemTypes.GRAY_BANNER to Function { KryptonBannerMeta(it) },
+        ItemTypes.LIGHT_GRAY_BANNER to Function { KryptonBannerMeta(it) },
+        ItemTypes.CYAN_BANNER to Function { KryptonBannerMeta(it) },
+        ItemTypes.PURPLE_BANNER to Function { KryptonBannerMeta(it) },
+        ItemTypes.BLUE_BANNER to Function { KryptonBannerMeta(it) },
+        ItemTypes.BROWN_BANNER to Function { KryptonBannerMeta(it) },
+        ItemTypes.GREEN_BANNER to Function { KryptonBannerMeta(it) },
+        ItemTypes.RED_BANNER to Function { KryptonBannerMeta(it) },
+        ItemTypes.BLACK_BANNER to Function { KryptonBannerMeta(it) }
     )
-    private val BUILDERS_BY_TYPE: Map<Class<out ItemMetaBuilder.Provider<*>>, () -> ItemMetaBuilder<*, *>> = mapOf(
-        BannerMeta::class.java to KryptonBannerMeta::Builder,
-        BundleMeta::class.java to KryptonBundleMeta::Builder,
-        CompassMeta::class.java to KryptonCompassMeta::Builder,
-        CrossbowMeta::class.java to KryptonCrossbowMeta::Builder,
-        FireworkRocketMeta::class.java to KryptonFireworkRocketMeta::Builder,
-        FireworkStarMeta::class.java to KryptonFireworkStarMeta::Builder,
-        LeatherArmorMeta::class.java to KryptonLeatherArmorMeta::Builder,
-        PlayerHeadMeta::class.java to KryptonPlayerHeadMeta::Builder,
-        WritableBookMeta::class.java to KryptonWritableBookMeta::Builder,
-        WrittenBookMeta::class.java to KryptonWrittenBookMeta::Builder
+    private val BUILDERS_BY_TYPE: Map<Class<out ItemMetaBuilder.Provider<*>>, Supplier<ItemMetaBuilder<*, *>>> = mapOf(
+        BannerMeta::class.java to Supplier { KryptonBannerMeta.Builder() },
+        BundleMeta::class.java to Supplier { KryptonBundleMeta.Builder() },
+        CompassMeta::class.java to Supplier { KryptonCompassMeta.Builder() },
+        CrossbowMeta::class.java to Supplier { KryptonCrossbowMeta.Builder() },
+        FireworkRocketMeta::class.java to Supplier { KryptonFireworkRocketMeta.Builder() },
+        FireworkStarMeta::class.java to Supplier { KryptonFireworkStarMeta.Builder() },
+        LeatherArmorMeta::class.java to Supplier { KryptonLeatherArmorMeta.Builder() },
+        PlayerHeadMeta::class.java to Supplier { KryptonPlayerHeadMeta.Builder() },
+        WritableBookMeta::class.java to Supplier { KryptonWritableBookMeta.Builder() },
+        WrittenBookMeta::class.java to Supplier { KryptonWrittenBookMeta.Builder() }
     )
 
     @JvmStatic
-    fun create(type: ItemType, data: CompoundTag): AbstractItemMeta<*> = META_BY_TYPE.get(type)?.invoke(data) ?: KryptonItemMeta(data)
+    fun create(type: ItemType, data: CompoundTag): AbstractItemMeta<*> = META_BY_TYPE.get(type)?.apply(data) ?: KryptonItemMeta(data)
 
     @JvmStatic
     @Suppress("UNCHECKED_CAST")
-    fun <B : ItemMetaBuilder<B, P>, P : ItemMetaBuilder.Provider<B>> builder(type: Class<P>): B = BUILDERS_BY_TYPE.get(type)?.invoke() as B
+    fun <B : ItemMetaBuilder<B, P>, P : ItemMetaBuilder.Provider<B>> builder(type: Class<P>): B = BUILDERS_BY_TYPE.get(type)?.get() as B
 }

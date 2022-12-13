@@ -21,8 +21,7 @@ package org.kryptonmc.krypton.entity.serializer.vehicle
 import org.kryptonmc.krypton.entity.serializer.BaseEntitySerializer
 import org.kryptonmc.krypton.entity.serializer.EntitySerializer
 import org.kryptonmc.krypton.entity.vehicle.KryptonMinecartLike
-import org.kryptonmc.krypton.world.block.toBlockState
-import org.kryptonmc.krypton.world.block.toNBT
+import org.kryptonmc.krypton.world.block.BlockStateSerialization
 import org.kryptonmc.nbt.CompoundTag
 
 object MinecartLikeSerializer : EntitySerializer<KryptonMinecartLike> {
@@ -34,14 +33,14 @@ object MinecartLikeSerializer : EntitySerializer<KryptonMinecartLike> {
     override fun load(entity: KryptonMinecartLike, data: CompoundTag) {
         BaseEntitySerializer.load(entity, data)
         if (!data.getBoolean(CUSTOM_DISPLAY_TAG)) return
-        entity.internalCustomBlock = data.getCompound(DISPLAY_STATE_TAG).toBlockState()
+        entity.internalCustomBlock = BlockStateSerialization.decode(data.getCompound(DISPLAY_STATE_TAG))
         entity.customBlockOffset = data.getInt(DISPLAY_OFFSET_TAG)
     }
 
     override fun save(entity: KryptonMinecartLike): CompoundTag.Builder = BaseEntitySerializer.save(entity).apply {
         if (entity.showCustomBlock) {
             putBoolean(CUSTOM_DISPLAY_TAG, true)
-            put(DISPLAY_STATE_TAG, entity.internalCustomBlock.toNBT())
+            put(DISPLAY_STATE_TAG, BlockStateSerialization.encode(entity.internalCustomBlock))
             putInt(DISPLAY_OFFSET_TAG, entity.customBlockOffset)
         }
     }

@@ -40,7 +40,7 @@ data class PacketOutEntitySoundEffect(
     val seed: Long
 ) : EntityPacket {
 
-    constructor(buf: ByteBuf) : this(buf.readEvent(), buf.readEnum(), buf.readVarInt(), buf.readFloat(), buf.readFloat(), buf.readLong())
+    constructor(buf: ByteBuf) : this(readEvent(buf), buf.readEnum(), buf.readVarInt(), buf.readFloat(), buf.readFloat(), buf.readLong())
 
     constructor(sound: Sound, event: SoundEvent, entityId: Int,
                 seed: Long) : this(event, sound.source(), entityId, sound.volume(), sound.pitch(), seed)
@@ -53,6 +53,10 @@ data class PacketOutEntitySoundEffect(
         buf.writeFloat(pitch)
         buf.writeLong(seed)
     }
-}
 
-private fun ByteBuf.readEvent(): SoundEvent = readById(KryptonRegistries.SOUND_EVENT)!!
+    companion object {
+
+        @JvmStatic
+        private fun readEvent(buf: ByteBuf): SoundEvent = buf.readById(KryptonRegistries.SOUND_EVENT)!!
+    }
+}

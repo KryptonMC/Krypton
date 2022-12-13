@@ -21,11 +21,6 @@ package org.kryptonmc.krypton.commands
 import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.arguments.StringArgumentType
 import org.kryptonmc.krypton.command.CommandSourceStack
-import org.kryptonmc.krypton.command.argument
-import org.kryptonmc.krypton.command.permission
-import org.kryptonmc.krypton.command.argument.argument
-import org.kryptonmc.krypton.command.literal
-import org.kryptonmc.krypton.command.runs
 import org.kryptonmc.krypton.locale.Messages
 
 object SayCommand {
@@ -37,7 +32,7 @@ object SayCommand {
         dispatcher.register(literal("say") {
             permission(KryptonPermission.SAY)
             argument(MESSAGE, StringArgumentType.string()) {
-                runs { Messages.CHAT_TYPE_ANNOUNCEMENT.send(it.source.server, it.source.displayName, it.argument(MESSAGE)) }
+                runs { Messages.CHAT_TYPE_ANNOUNCEMENT.send(it.source.server, it.source.displayName, it.getArgument(MESSAGE)) }
             }
         })
     }

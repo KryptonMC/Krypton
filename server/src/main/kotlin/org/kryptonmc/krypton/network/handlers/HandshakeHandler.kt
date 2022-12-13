@@ -19,6 +19,7 @@
 package org.kryptonmc.krypton.network.handlers
 
 import net.kyori.adventure.text.Component
+import org.apache.logging.log4j.LogManager
 import org.kryptonmc.krypton.KryptonPlatform
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.config.category.ProxyCategory
@@ -30,7 +31,6 @@ import org.kryptonmc.krypton.network.data.TCPShieldForwardedData
 import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.packet.PacketState
 import org.kryptonmc.krypton.packet.`in`.handshake.PacketInHandshake
-import org.kryptonmc.krypton.util.logger
 
 /**
  * Handles all inbound packets in the [Handshake][PacketState.HANDSHAKE] state.
@@ -137,7 +137,7 @@ class HandshakeHandler(override val server: KryptonServer, override val session:
 
     companion object {
 
-        private val LOGGER = logger<HandshakeHandler>()
+        private val LOGGER = LogManager.getLogger()
 
         private val LEGACY_FORWARDING_NOT_ENABLED = Component.text()
             .content("It appears that you have been forwarded using legacy forwarding by a proxy, but this server is not configured")

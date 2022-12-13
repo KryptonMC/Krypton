@@ -19,7 +19,7 @@
 package org.kryptonmc.krypton.util.executor
 
 import it.unimi.dsi.fastutil.ints.Int2BooleanFunction
-import org.kryptonmc.krypton.util.logger
+import org.apache.logging.log4j.LogManager
 import java.util.concurrent.ConcurrentLinkedQueue
 import java.util.concurrent.Executor
 import java.util.concurrent.RejectedExecutionException
@@ -120,7 +120,7 @@ class ProcessorMailbox<T>(
 
     companion object {
 
-        private val LOGGER = logger<ProcessorMailbox<*>>()
+        private val LOGGER = LogManager.getLogger()
         private const val CLOSED_BIT = 1
         private const val SCHEDULED_BIT = 2
 

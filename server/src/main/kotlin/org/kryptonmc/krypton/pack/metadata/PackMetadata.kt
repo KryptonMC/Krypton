@@ -27,8 +27,7 @@ data class PackMetadata(val description: Component, val format: Int) {
 
     object Serializer : MetadataSerializer<PackMetadata> {
 
-        override val name: String
-            get() = "pack"
+        override fun name(): String = "pack"
 
         override fun fromJson(json: JsonObject): PackMetadata =
             PackMetadata(GsonComponentSerializer.gson().deserialize(json.get("description").asString), json.get("pack_format").asInt)

@@ -19,7 +19,6 @@
 package org.kryptonmc.krypton.entity.serializer
 
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer
-import org.kryptonmc.krypton.adventure.toJson
 import org.kryptonmc.krypton.entity.KryptonEntity
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.util.Vec3dImpl
@@ -53,6 +52,8 @@ object BaseEntitySerializer : EntitySerializer<KryptonEntity> {
     private const val FROZEN_TICKS_TAG = "TicksFrozen"
     private const val UUID_TAG = "UUID"
 
+    private const val MAXIMUM_MOTION_VALUE = 10.0
+
     override fun load(entity: KryptonEntity, data: CompoundTag) {
         entity.airSupply = data.getShort(AIR_TAG).toInt()
         if (data.contains(CUSTOM_NAME_TAG, StringTag.ID)) {
@@ -65,7 +66,7 @@ object BaseEntitySerializer : EntitySerializer<KryptonEntity> {
         entity.isInvulnerable = data.getBoolean(INVULNERABLE_TAG)
 
         val motion = data.getList(MOTION_TAG, DoubleTag.ID)
-        entity.velocity = Vec3dImpl(motion.getMotionValue(0), motion.getMotionValue(1), motion.getMotionValue(2))
+        entity.velocity = Vec3dImpl(getMotionValue(motion, 0), getMotionValue(motion, 1), getMotionValue(motion, 2))
 
         entity.hasGravity = !data.getBoolean(NO_GRAVITY_TAG)
         entity.isOnGround = data.getBoolean(ON_GROUND_TAG)
@@ -78,13 +79,13 @@ object BaseEntitySerializer : EntitySerializer<KryptonEntity> {
 
         entity.isSilent = data.getBoolean(SILENT_TAG)
         entity.frozenTicks = data.getInt(FROZEN_TICKS_TAG)
-        if (data.hasUUID(UUID_TAG)) entity.uuid = data.getUUID(UUID_TAG)!!
+        if (data.hasUUID(UUID_TAG)) entity.uuid = data.getUUID(UUID_TAG)
     }
 
     override fun save(entity: KryptonEntity): CompoundTag.Builder = buildCompound {
         // Display name
         if (entity.isCustomNameVisible) putBoolean(CUSTOM_NAME_VISIBLE_TAG, true)
-        entity.customName?.let { putString(CUSTOM_NAME_TAG, it.toJson()) }
+        entity.customName?.let { putString(CUSTOM_NAME_TAG, GsonComponentSerializer.gson().serialize(it)) }
 
         // Flags
         if (entity.isGlowing) putBoolean(GLOWING_TAG, true)
@@ -108,11 +109,10 @@ object BaseEntitySerializer : EntitySerializer<KryptonEntity> {
         putInt(FROZEN_TICKS_TAG, entity.frozenTicks)
         putFloat(FALL_DISTANCE_TAG, entity.fallDistance)
     }
-}
 
-private const val MAXIMUM_MOTION_VALUE = 10.0
-
-private fun ListTag.getMotionValue(index: Int): Double {
-    val value = getDouble(index)
-    return if (abs(value) < MAXIMUM_MOTION_VALUE) value else 0.0
+    @JvmStatic
+    private fun getMotionValue(motion: ListTag, index: Int): Double {
+        val value = motion.getDouble(index)
+        return if (abs(value) < MAXIMUM_MOTION_VALUE) value else 0.0
+    }
 }

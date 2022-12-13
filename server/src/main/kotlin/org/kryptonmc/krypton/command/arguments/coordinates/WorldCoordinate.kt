@@ -18,16 +18,13 @@
  */
 package org.kryptonmc.krypton.command.arguments.coordinates
 
-import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.StringReader
+import org.kryptonmc.krypton.command.arguments.StringReading
 
 @JvmRecord
 data class WorldCoordinate(val value: Double, val isRelative: Boolean) {
 
-    fun get(relativeTo: Double): Double {
-        if (isRelative) return value + relativeTo
-        return value
-    }
+    fun get(relativeTo: Double): Double = if (isRelative) value + relativeTo else value
 
     companion object {
 
@@ -44,10 +41,10 @@ data class WorldCoordinate(val value: Double, val isRelative: Boolean) {
             if (relative) reader.skip()
 
             val position = reader.cursor
-            var value = if (reader.canRead() && reader.peek() != CommandDispatcher.ARGUMENT_SEPARATOR_CHAR) reader.readDouble() else 0.0
-            val string = reader.string.substring(position, reader.cursor)
-            if (relative && string.isEmpty()) return WorldCoordinate(0.0, true)
-            if (!string.contains('.') && !relative && correctCenter) value += 0.5
+            var value = StringReading.readOptionalDouble(reader)
+            val remaining = reader.string.substring(position, reader.cursor)
+            if (relative && remaining.isEmpty()) return WorldCoordinate(0.0, true)
+            if (!remaining.contains('.') && !relative && correctCenter) value += 0.5
             return WorldCoordinate(value, relative)
         }
     }

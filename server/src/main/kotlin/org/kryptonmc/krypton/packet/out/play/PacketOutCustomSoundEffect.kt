@@ -43,7 +43,7 @@ data class PacketOutCustomSoundEffect(
     constructor(sound: Sound, x: Double, y: Double, z: Double, seed: Long) : this(sound.name(), sound.source(), x, y, z, sound.volume(),
         sound.pitch(), seed)
 
-    constructor(buf: ByteBuf) : this(buf.readKey(), buf.readEnum(), buf.readCoordinate(), buf.readCoordinate(), buf.readCoordinate(),
+    constructor(buf: ByteBuf) : this(buf.readKey(), buf.readEnum(), readCoordinate(buf), readCoordinate(buf), readCoordinate(buf),
         buf.readFloat(), buf.readFloat(), buf.readLong())
 
     override fun write(buf: ByteBuf) {
@@ -55,6 +55,10 @@ data class PacketOutCustomSoundEffect(
         buf.writeFloat(volume)
         buf.writeFloat(pitch)
     }
-}
 
-private fun ByteBuf.readCoordinate(): Double = readInt().toDouble() / 8.0
+    companion object {
+
+        @JvmStatic
+        private fun readCoordinate(buf: ByteBuf): Double = buf.readInt().toDouble() / 8.0
+    }
+}

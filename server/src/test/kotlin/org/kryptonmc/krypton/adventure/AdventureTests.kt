@@ -27,6 +27,7 @@ import net.kyori.adventure.text.event.HoverEvent
 import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.text.format.TextDecoration
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer
 import net.kyori.adventure.util.Codec
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
@@ -63,8 +64,8 @@ class AdventureTests {
         val author = Component.text("author")
         val pages = listOf(Component.text("Page 1"), Component.text("Page 2"), Component.text("Page 3"))
         val meta = KryptonAdventure.toItemStack(Book.book(title, author, pages)).meta(WrittenBookMeta::class.java)!!
-        assertEquals("title", meta.title().toPlainText())
-        assertEquals("author", meta.author().toPlainText())
+        assertEquals("title", PlainTextComponentSerializer.plainText().serialize(meta.title()))
+        assertEquals("author", PlainTextComponentSerializer.plainText().serialize(meta.author()))
         assertEquals(pages, meta.pages())
     }
 
@@ -109,8 +110,8 @@ class AdventureTests {
         val uuid = UUID.fromString("aaaabbbb-cccc-dddd-eeee-ffffaaaabbbb")
         val name = Component.text("What a name")
 
-        // Standard
-        val input = Component.text("{type:'minecraft:pig',id:'$uuid',name:'${name.toJson()}'}")
+        // Standard.toPlainText()
+        val input = Component.text("{type:'minecraft:pig',id:'$uuid',name:'${GsonComponentSerializer.gson().serialize(name)}'}")
         val entity = HoverEvent.ShowEntity.of(Key.key("pig"), uuid, name)
         assertEquals(entity, NBTLegacyHoverEventSerializer.deserializeShowEntity(input, DECODER))
 
@@ -125,7 +126,7 @@ class AdventureTests {
         val name = Component.text("What a name")
 
         // Standard
-        val output = Component.text("{id:\"$uuid\",type:\"minecraft:pig\",name:'${name.toJson()}'}")
+        val output = Component.text("{id:\"$uuid\",type:\"minecraft:pig\",name:'${GsonComponentSerializer.gson().serialize(name)}'}")
         val entity = HoverEvent.ShowEntity.of(Key.key("pig"), uuid, name)
         assertEquals(output, NBTLegacyHoverEventSerializer.serializeShowEntity(entity, ENCODER))
     }

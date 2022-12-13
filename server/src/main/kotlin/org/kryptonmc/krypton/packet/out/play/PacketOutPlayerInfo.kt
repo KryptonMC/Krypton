@@ -19,7 +19,6 @@
 package org.kryptonmc.krypton.packet.out.play
 
 import io.netty.buffer.ByteBuf
-import kotlinx.collections.immutable.persistentListOf
 import net.kyori.adventure.text.Component
 import org.kryptonmc.api.auth.GameProfile
 import org.kryptonmc.api.world.GameMode
@@ -56,7 +55,7 @@ data class PacketOutPlayerInfo(val action: Action, val players: List<PlayerData>
 
     constructor(buf: ByteBuf) : this(buf, buf.readEnum<Action>())
 
-    private constructor(buf: ByteBuf, action: Action) : this(action, buf.readList(action::read))
+    private constructor(buf: ByteBuf, action: Action) : this(action, buf.readList { action.read(it) })
 
     override fun write(buf: ByteBuf) {
         buf.writeVarInt(action.ordinal)
@@ -85,7 +84,7 @@ data class PacketOutPlayerInfo(val action: Action, val players: List<PlayerData>
         ADD_PLAYER {
 
             override fun read(buf: ByteBuf): PlayerData =
-                PlayerData(buf.readGameProfile(), buf.readGameMode(), buf.readVarInt(), buf.readNullableComponent(), buf.readNullableKey())
+                PlayerData(buf.readGameProfile(), readGameMode(buf), buf.readVarInt(), readNullableComponent(buf), readNullableKey(buf))
 
             override fun write(buf: ByteBuf, data: PlayerData) {
                 buf.writeGameProfile(data.profile)
@@ -97,7 +96,7 @@ data class PacketOutPlayerInfo(val action: Action, val players: List<PlayerData>
         },
         UPDATE_GAMEMODE {
 
-            override fun read(buf: ByteBuf): PlayerData = createData(buf.readUUID(), buf.readGameMode())
+            override fun read(buf: ByteBuf): PlayerData = createData(buf.readUUID(), readGameMode(buf))
 
             override fun write(buf: ByteBuf, data: PlayerData) {
                 buf.writeUUID(data.profile.uuid)
@@ -115,7 +114,7 @@ data class PacketOutPlayerInfo(val action: Action, val players: List<PlayerData>
         },
         UPDATE_DISPLAY_NAME {
 
-            override fun read(buf: ByteBuf): PlayerData = createData(buf.readUUID(), displayName = buf.readNullableComponent())
+            override fun read(buf: ByteBuf): PlayerData = createData(buf.readUUID(), displayName = readNullableComponent(buf))
 
             override fun write(buf: ByteBuf, data: PlayerData) {
                 buf.writeUUID(data.profile.uuid)
@@ -153,12 +152,15 @@ data class PacketOutPlayerInfo(val action: Action, val players: List<PlayerData>
             latency: Int = 0,
             displayName: Component? = null,
             key: PlayerPublicKey.Data? = null
-        ): PlayerData = PlayerData(KryptonGameProfile("", uuid, persistentListOf()), gameMode, latency, displayName, key)
+        ): PlayerData = PlayerData(KryptonGameProfile.partial(uuid), gameMode, latency, displayName, key)
+
+        @JvmStatic
+        private fun readGameMode(buf: ByteBuf): GameMode = GameModes.fromId(buf.readVarInt())!!
+
+        @JvmStatic
+        private fun readNullableComponent(buf: ByteBuf): Component? = buf.readNullable(ByteBuf::readComponent)
+
+        @JvmStatic
+        private fun readNullableKey(buf: ByteBuf): PlayerPublicKey.Data? = buf.readNullable(PlayerPublicKey::Data)
     }
 }
-
-private fun ByteBuf.readGameMode(): GameMode? = GameModes.fromId(readVarInt())
-
-private fun ByteBuf.readNullableComponent(): Component? = readNullable(ByteBuf::readComponent)
-
-private fun ByteBuf.readNullableKey(): PlayerPublicKey.Data? = readNullable(PlayerPublicKey::Data)

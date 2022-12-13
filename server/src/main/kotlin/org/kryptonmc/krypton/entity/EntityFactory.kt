@@ -19,6 +19,7 @@
 package org.kryptonmc.krypton.entity
 
 import net.kyori.adventure.key.Key
+import org.apache.logging.log4j.LogManager
 import org.kryptonmc.api.entity.Entity
 import org.kryptonmc.api.entity.EntityType
 import org.kryptonmc.api.entity.EntityTypes
@@ -72,14 +73,13 @@ import org.kryptonmc.krypton.entity.vehicle.KryptonFurnaceMinecart
 import org.kryptonmc.krypton.entity.vehicle.KryptonMinecart
 import org.kryptonmc.krypton.entity.vehicle.KryptonTNTMinecart
 import org.kryptonmc.krypton.registry.KryptonRegistries
-import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.nbt.CompoundTag
 import java.util.function.Function
 
 object EntityFactory {
 
-    private val LOGGER = logger<EntityFactory>()
+    private val LOGGER = LogManager.getLogger()
     private val TYPE_MAP = mapOf(
         entry(EntityTypes.AREA_EFFECT_CLOUD, ::KryptonAreaEffectCloud),
         entry(EntityTypes.ARMOR_STAND, ::KryptonArmorStand),
@@ -157,7 +157,8 @@ object EntityFactory {
     }
 
     @JvmStatic
-    private fun entry(type: EntityType<Entity>, function: Function<KryptonWorld, KryptonEntity>): Entry = Entry(type, function)
+    private inline fun entry(type: EntityType<Entity>, crossinline constructor: (KryptonWorld) -> KryptonEntity): Entry =
+        Entry(type, Function { constructor(it) })
 }
 
 private typealias Entry = Pair<EntityType<Entity>, Function<KryptonWorld, KryptonEntity>?>

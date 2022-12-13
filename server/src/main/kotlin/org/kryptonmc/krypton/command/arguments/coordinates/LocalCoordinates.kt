@@ -18,10 +18,11 @@
  */
 package org.kryptonmc.krypton.command.arguments.coordinates
 
-import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.StringReader
 import org.kryptonmc.api.util.Vec3d
 import org.kryptonmc.krypton.command.CommandSourceStack
+import org.kryptonmc.krypton.command.arguments.CommandExceptions
+import org.kryptonmc.krypton.command.arguments.StringReading
 import org.kryptonmc.krypton.util.Maths
 import org.kryptonmc.krypton.util.Vec3dImpl
 
@@ -64,32 +65,22 @@ data class LocalCoordinates(private val left: Double, private val up: Double, pr
         @JvmStatic
         fun parse(reader: StringReader): LocalCoordinates {
             val resetPosition = reader.cursor
-            val left = reader.readPositionalDouble(resetPosition)
-            if (!reader.canRead() || reader.peek() != CommandDispatcher.ARGUMENT_SEPARATOR_CHAR) {
-                reader.cursor = resetPosition
-                throw CoordinateExceptions.POSITION_3D_INCOMPLETE.createWithContext(reader)
-            }
-            reader.skip()
-
-            val up = reader.readPositionalDouble(resetPosition)
-            if (!reader.canRead() || reader.peek() != CommandDispatcher.ARGUMENT_SEPARATOR_CHAR) {
-                reader.cursor = resetPosition
-                throw CoordinateExceptions.POSITION_3D_INCOMPLETE.createWithContext(reader)
-            }
-            reader.skip()
-
-            val forwards = reader.readPositionalDouble(resetPosition)
+            val left = readPositionalDouble(reader, resetPosition)
+            CoordinateExceptions.checkPositionComplete(reader, resetPosition)
+            val up = readPositionalDouble(reader, resetPosition)
+            CoordinateExceptions.checkPositionComplete(reader, resetPosition)
+            val forwards = readPositionalDouble(reader, resetPosition)
             return LocalCoordinates(left, up, forwards)
         }
-    }
-}
 
-private fun StringReader.readPositionalDouble(resetPosition: Int): Double {
-    if (!canRead()) throw CoordinateExceptions.POSITION_EXPECTED_DOUBLE.createWithContext(this)
-    if (peek() != TextCoordinates.LOCAL_MODIFIER) {
-        cursor = resetPosition
-        throw CoordinateExceptions.POSITION_MIXED_TYPE.createWithContext(this)
+        @JvmStatic
+        private fun readPositionalDouble(reader: StringReader, resetPosition: Int): Double {
+            if (!reader.canRead()) throw CoordinateExceptions.POSITION_EXPECTED_DOUBLE.createWithContext(reader)
+            if (reader.peek() != TextCoordinates.LOCAL_MODIFIER) {
+                CommandExceptions.resetAndThrow(reader, resetPosition, CoordinateExceptions.POSITION_MIXED_TYPE.createWithContext(reader))
+            }
+            reader.skip()
+            return StringReading.readOptionalDouble(reader)
+        }
     }
-    skip()
-    return if (canRead() && peek() != CommandDispatcher.ARGUMENT_SEPARATOR_CHAR) readDouble() else 0.0
 }

@@ -30,8 +30,9 @@ abstract class KryptonProperty<T : Comparable<T>> protected constructor(
 ) : Property<T> {
 
     val id: Int = ID_COUNTER.getAndIncrement()
-    val codec: Codec<T> = Codec.STRING.comapFlatMap({ fromString(it).resultOrError { "Unable to read property $this with value $it!" } }, ::toString)
-    val valueCodec: Codec<Value<T>> = codec.xmap(::value, Value<T>::value)
+    val codec: Codec<T> =
+        Codec.STRING.comapFlatMap({ fromString(it).resultOrError { "Unable to read property $this with value $it!" } }, { toString(it) })
+    val valueCodec: Codec<Value<T>> = codec.xmap({ value(it) }, { it.value })
     // We cache the hash code because we frequently look up by property in maps, and computing the hash code is expensive.
     private var hashCode: Int? = null
 

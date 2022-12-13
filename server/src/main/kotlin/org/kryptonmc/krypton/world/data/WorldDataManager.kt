@@ -19,9 +19,9 @@
 package org.kryptonmc.krypton.world.data
 
 import ca.spottedleaf.dataconverter.minecraft.datatypes.MCTypeRegistry
+import org.apache.logging.log4j.LogManager
 import org.kryptonmc.krypton.KryptonPlatform
 import org.kryptonmc.krypton.util.DataConversion
-import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.nbt.io.TagCompression
 import org.kryptonmc.nbt.io.TagIO
 import java.nio.file.Files
@@ -94,6 +94,6 @@ class WorldDataManager(private val folder: Path, private val useDataConverter: B
 
     companion object {
 
-        private val LOGGER = logger<WorldDataManager>()
+        private val LOGGER = LogManager.getLogger()
     }
 }

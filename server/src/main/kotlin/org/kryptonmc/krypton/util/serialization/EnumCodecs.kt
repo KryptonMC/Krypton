@@ -45,7 +45,7 @@ object EnumCodecs {
         // We only create a lookup map if the amount of values is large enough that the map would really be beneficial.
         if (values.size > PRE_BUILT_LOOKUP_MAP_THRESHOLD) {
             val valueMap = values.associateBy(toName::apply)
-            return EnumCodec(valueMap::get)
+            return EnumCodec { valueMap.get(it) }
         }
         return EnumCodec { name -> values.firstOrNull { toName.apply(it) == name } }
     }

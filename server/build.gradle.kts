@@ -81,7 +81,7 @@ license {
         "**/plugin/KryptonPluginContainer.kt",
         "**/plugin/KryptonPluginManager.kt",
         "**/plugin/PluginClassLoader.kt",
-        "**/plugin/dependencies.kt",
+        "**/plugin/PluginDependencies.kt",
         "**/plugin/loader/LoadedPluginDescription.kt",
         "**/plugin/loader/LoadedPluginDescriptionCandidate.kt",
         "**/plugin/loader/PluginLoader.kt",

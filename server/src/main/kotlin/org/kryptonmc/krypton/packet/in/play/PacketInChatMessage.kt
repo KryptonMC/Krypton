@@ -31,5 +31,7 @@ data class PacketInChatMessage(val message: String, val signature: MessageSignat
 
     override fun write(buf: ByteBuf) {
         buf.writeString(message)
+        signature.write(buf)
+        buf.writeBoolean(signedPreview)
     }
 }

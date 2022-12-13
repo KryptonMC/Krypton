@@ -23,12 +23,12 @@ import net.kyori.adventure.permission.PermissionChecker
 import net.kyori.adventure.pointer.Pointers
 import net.kyori.adventure.sound.Sound
 import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer
 import org.kryptonmc.api.effect.sound.SoundEvent
 import org.kryptonmc.api.util.BoundingBox
 import org.kryptonmc.api.util.Vec3d
 import org.kryptonmc.api.world.damage.type.DamageTypes
 import org.kryptonmc.api.world.rule.GameRules
-import org.kryptonmc.krypton.adventure.toPlainText
 import org.kryptonmc.krypton.command.CommandSourceStack
 import org.kryptonmc.krypton.command.KryptonSender
 import org.kryptonmc.krypton.entity.components.BaseEntity
@@ -128,9 +128,9 @@ abstract class KryptonEntity(final override var world: KryptonWorld) : BaseEntit
     override fun pointers(): Pointers {
         if (cachedPointers == null) {
             cachedPointers = Pointers.builder()
-                .withDynamic(Identity.DISPLAY_NAME, ::name)
-                .withDynamic(Identity.UUID, ::uuid)
-                .withStatic(PermissionChecker.POINTER, PermissionChecker(::getPermissionValue))
+                .withDynamic(Identity.DISPLAY_NAME) { name }
+                .withDynamic(Identity.UUID) { uuid }
+                .withStatic(PermissionChecker.POINTER, PermissionChecker { getPermissionValue(it) })
                 .build()
         }
         return cachedPointers!!
@@ -151,7 +151,7 @@ abstract class KryptonEntity(final override var world: KryptonWorld) : BaseEntit
     override fun shouldInformAdmins(): Boolean = true
 
     final override fun createCommandSourceStack(): CommandSourceStack =
-        CommandSourceStack(this, position, yaw, pitch, world, name.toPlainText(), displayName, server, this)
+        CommandSourceStack(this, position, yaw, pitch, world, PlainTextComponentSerializer.plainText().serialize(name), displayName, server, this)
 
     companion object {
 

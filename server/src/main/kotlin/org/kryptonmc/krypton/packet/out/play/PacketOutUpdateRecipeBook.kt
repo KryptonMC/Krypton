@@ -40,11 +40,8 @@ data class PacketOutUpdateRecipeBook(
 
     constructor(buf: ByteBuf) : this(buf, buf.readEnum(), RecipeBookSettings.read(buf))
 
-    private constructor(
-        buf: ByteBuf,
-        action: Action,
-        settings: RecipeBookSettings
-    ) : this(action, buf.readList(ByteBuf::readKey), if (action == Action.INIT) buf.readList(ByteBuf::readKey) else emptyList(), settings)
+    private constructor(buf: ByteBuf, action: Action, settings: RecipeBookSettings) : this(action, buf.readList { it.readKey() },
+        if (action == Action.INIT) buf.readList { it.readKey() } else emptyList(), settings)
 
     override fun write(buf: ByteBuf) {
         buf.writeEnum(action)

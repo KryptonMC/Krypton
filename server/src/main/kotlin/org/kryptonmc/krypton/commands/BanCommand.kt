@@ -23,13 +23,7 @@ import com.mojang.brigadier.arguments.StringArgumentType
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer
 import org.kryptonmc.api.auth.GameProfile
 import org.kryptonmc.krypton.command.CommandSourceStack
-import org.kryptonmc.krypton.command.argument
 import org.kryptonmc.krypton.command.arguments.GameProfileArgument
-import org.kryptonmc.krypton.command.arguments.gameProfileArgument
-import org.kryptonmc.krypton.command.permission
-import org.kryptonmc.krypton.command.argument.argument
-import org.kryptonmc.krypton.command.literal
-import org.kryptonmc.krypton.command.runs
 import org.kryptonmc.krypton.locale.Messages
 import org.kryptonmc.krypton.server.ban.KryptonProfileBan
 
@@ -44,9 +38,9 @@ object BanCommand {
         dispatcher.register(literal("ban") {
             permission(KryptonPermission.BAN)
             argument(TARGETS, GameProfileArgument) {
-                runs { ban(it.source, it.gameProfileArgument(TARGETS).profiles(it.source), DEFAULT_REASON) }
+                runs { ban(it.source, GameProfileArgument.get(it, TARGETS), DEFAULT_REASON) }
                 argument(REASON, StringArgumentType.string()) {
-                    runs { ban(it.source, it.gameProfileArgument(TARGETS).profiles(it.source), it.argument(REASON)) }
+                    runs { ban(it.source, GameProfileArgument.get(it, TARGETS), it.getArgument(REASON)) }
                 }
             }
         })
@@ -59,8 +53,8 @@ object BanCommand {
             if (banManager.isBanned(profile)) return@forEach
             val ban = KryptonProfileBan(profile, reason = LegacyComponentSerializer.legacySection().deserialize(reason))
             banManager.add(ban)
-            source.server.getPlayer(profile.uuid)?.disconnect(Messages.Disconnect.BANNED_MESSAGE.build(ban.reason, ban.expirationDate))
             source.sendSuccess(Messages.Commands.BAN_SUCCESS.build(profile.name, reason), true)
+            source.server.getPlayer(profile.uuid)?.disconnect(Messages.Disconnect.BANNED_MESSAGE.build(ban.reason, ban.expirationDate))
         }
     }
 }

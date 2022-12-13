@@ -70,7 +70,7 @@ class SNBTParser(private val reader: StringReader) {
             }
             expect(KEY_SEPARATOR)
             builder.put(key, readValue())
-            if (!reader.hasElementSeparator()) break
+            if (!hasElementSeparator(reader)) break
             if (!reader.canRead()) throw ERROR_EXPECTED_KEY.createWithContext(reader)
         }
         expect(COMPOUND_END)
@@ -118,7 +118,7 @@ class SNBTParser(private val reader: StringReader) {
                 throw ERROR_INSERT_MIXED_LIST.createWithContext(reader, tag.type().name(), Types.of(type).name())
             }
             list.add(tag)
-            if (!reader.hasElementSeparator()) break
+            if (!hasElementSeparator(reader)) break
             if (!reader.canRead()) throw ERROR_EXPECTED_VALUE.createWithContext(reader)
         }
 
@@ -162,7 +162,7 @@ class SNBTParser(private val reader: StringReader) {
                     else -> (tag as NumberTag).asNumber() as T
                 }
                 list.add(value)
-                if (reader.hasElementSeparator()) {
+                if (hasElementSeparator(reader)) {
                     if (!reader.canRead()) throw ERROR_EXPECTED_VALUE.createWithContext(reader)
                     continue
                 }
@@ -201,7 +201,7 @@ class SNBTParser(private val reader: StringReader) {
         private const val BYTE_ARRAY_START = 'B'
         private const val LONG_ARRAY_START = 'L'
         private const val INT_ARRAY_START = 'I'
-        internal const val ELEMENT_SEPARATOR = ','
+        private const val ELEMENT_SEPARATOR = ','
 
         private val DOUBLE_REGEX_NO_SUFFIX = "[-+]?(?:[0-9]+[.]|[0-9]*[.][0-9]+)(?:e[-+]?[0-9]+)?".toRegex(RegexOption.IGNORE_CASE)
         private val DOUBLE_REGEX = "[-+]?(?:[0-9]+[.]?|[0-9]*[.][0-9]+)(?:e[-+]?[0-9]+)?d".toRegex(RegexOption.IGNORE_CASE)
@@ -220,15 +220,16 @@ class SNBTParser(private val reader: StringReader) {
 
         @JvmStatic
         fun parse(text: String): CompoundTag = SNBTParser(StringReader(text)).readSingleCompound()
-    }
-}
 
-private fun StringReader.hasElementSeparator(): Boolean {
-    skipWhitespace()
-    val hasSeparator = canRead() && peek() == SNBTParser.ELEMENT_SEPARATOR
-    if (hasSeparator) {
-        skip()
-        skipWhitespace()
+        @JvmStatic
+        private fun hasElementSeparator(reader: StringReader): Boolean {
+            reader.skipWhitespace()
+            val hasSeparator = reader.canRead() && reader.peek() == ELEMENT_SEPARATOR
+            if (hasSeparator) {
+                reader.skip()
+                reader.skipWhitespace()
+            }
+            return hasSeparator
+        }
     }
-    return hasSeparator
 }

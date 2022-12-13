@@ -24,6 +24,7 @@
  */
 package org.kryptonmc.krypton.console
 
+import org.apache.logging.log4j.LogManager
 import org.jline.reader.Highlighter
 import org.jline.reader.LineReader
 import org.jline.utils.AttributedString
@@ -31,9 +32,9 @@ import org.jline.utils.AttributedStringBuilder
 import org.jline.utils.AttributedStyle
 import org.kryptonmc.krypton.command.CommandSourceStack
 import org.kryptonmc.krypton.command.KryptonCommandManager
-import org.kryptonmc.krypton.util.logger
 import java.util.function.Supplier
 import java.util.regex.Pattern
+import java.util.stream.IntStream
 import kotlin.math.min
 
 /**
@@ -82,15 +83,15 @@ class BrigadierHighlighter(
 
     companion object {
 
-        private val LOGGER = logger<BrigadierHighlighter>()
-        private val ERROR_STYLE = AttributedStyle.DEFAULT.foreground(AttributedStyle.RED)
+        private val LOGGER = LogManager.getLogger()
         private val LITERAL_STYLE = AttributedStyle.DEFAULT
-        private val ARGUMENT_STYLES = sequenceOf(
+        private val ERROR_STYLE = LITERAL_STYLE.foreground(AttributedStyle.RED)
+        private val ARGUMENT_STYLES = IntStream.of(
             AttributedStyle.CYAN,
             AttributedStyle.YELLOW,
             AttributedStyle.GREEN,
             AttributedStyle.MAGENTA,
             AttributedStyle.BLUE
-        ).map(AttributedStyle.DEFAULT::foreground).toList().toTypedArray()
+        ).mapToObj { LITERAL_STYLE.foreground(it) }.toArray { arrayOfNulls<AttributedStyle>(it) }
     }
 }

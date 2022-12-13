@@ -22,6 +22,7 @@ import net.kyori.adventure.identity.Identity
 import net.kyori.adventure.permission.PermissionChecker
 import net.kyori.adventure.pointer.Pointers
 import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer
 import net.kyori.adventure.util.TriState
 import net.minecrell.terminalconsole.SimpleTerminalConsole
 import org.apache.logging.log4j.LogManager
@@ -30,7 +31,6 @@ import org.jline.reader.LineReaderBuilder
 import org.kryptonmc.api.command.ConsoleSender
 import org.kryptonmc.api.permission.PermissionFunction
 import org.kryptonmc.krypton.KryptonServer
-import org.kryptonmc.krypton.adventure.toLegacySectionText
 import org.kryptonmc.krypton.command.CommandSourceStack
 import org.kryptonmc.krypton.command.KryptonSender
 import org.kryptonmc.krypton.event.command.KryptonCommandExecuteEvent
@@ -52,17 +52,15 @@ class KryptonConsole(override val server: KryptonServer) : SimpleTerminalConsole
     }
 
     fun run() {
-        val thread = Thread(::start, "Console Handler").apply {
-            uncaughtExceptionHandler = Thread.UncaughtExceptionHandler { _, exception ->
-                LOGGER.error("Caught previously unhandled exception ", exception)
-            }
+        val thread = Thread({ start() }, "Console Handler").apply {
+            setUncaughtExceptionHandler { _, exception -> LOGGER.error("Caught previously unhandled exception!", exception) }
             isDaemon = true
         }
         thread.start()
     }
 
     override fun sendSystemMessage(message: Component) {
-        LOGGER.info(TranslationBootstrap.render(message).toLegacySectionText())
+        LOGGER.info(LegacyComponentSerializer.legacySection().serialize(TranslationBootstrap.render(message)))
     }
 
     override fun getPermissionValue(permission: String): TriState = permissionFunction.getPermissionValue(permission)
@@ -82,8 +80,8 @@ class KryptonConsole(override val server: KryptonServer) : SimpleTerminalConsole
 
     override fun buildReader(builder: LineReaderBuilder): LineReader = super.buildReader(
         builder.appName("Krypton")
-            .completer(BrigadierCompleter(server.commandManager, ::createCommandSourceStack))
-            .highlighter(BrigadierHighlighter(server.commandManager, ::createCommandSourceStack))
+            .completer(BrigadierCompleter(server.commandManager) { createCommandSourceStack() })
+            .highlighter(BrigadierHighlighter(server.commandManager) { createCommandSourceStack() })
             .option(LineReader.Option.COMPLETE_IN_WORD, true)
     )
 
@@ -92,7 +90,7 @@ class KryptonConsole(override val server: KryptonServer) : SimpleTerminalConsole
             cachedPointers = Pointers.builder()
                 .withStatic(Identity.NAME, NAME)
                 .withStatic(Identity.DISPLAY_NAME, DISPLAY_NAME)
-                .withStatic(PermissionChecker.POINTER, PermissionChecker(::getPermissionValue))
+                .withStatic(PermissionChecker.POINTER, PermissionChecker { getPermissionValue(it) })
                 .build()
         }
         return cachedPointers!!

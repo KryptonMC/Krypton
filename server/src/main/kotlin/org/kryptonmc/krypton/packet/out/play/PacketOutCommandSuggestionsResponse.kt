@@ -24,7 +24,7 @@ import com.mojang.brigadier.suggestion.Suggestions
 import io.netty.buffer.ByteBuf
 import net.kyori.adventure.text.Component
 import org.kryptonmc.api.adventure.AdventureMessage
-import org.kryptonmc.krypton.adventure.KryptonAdventureMessage
+import org.kryptonmc.krypton.adventure.KryptonAdventure
 import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.util.readComponent
 import org.kryptonmc.krypton.util.readList
@@ -49,7 +49,7 @@ import org.kryptonmc.krypton.util.writeVarInt
 @JvmRecord
 data class PacketOutCommandSuggestionsResponse(val id: Int, val suggestions: Suggestions) : Packet {
 
-    constructor(buf: ByteBuf) : this(buf.readVarInt(), buf.readSuggestions())
+    constructor(buf: ByteBuf) : this(buf.readVarInt(), readSuggestions(buf))
 
     override fun write(buf: ByteBuf) {
         buf.writeVarInt(id)
@@ -63,11 +63,16 @@ data class PacketOutCommandSuggestionsResponse(val id: Int, val suggestions: Sug
             }
         }
     }
-}
 
-private fun ByteBuf.readSuggestions(): Suggestions {
-    val start = readVarInt()
-    val length = readVarInt()
-    val range = StringRange.between(start, start + length)
-    return Suggestions(range, readList { Suggestion(range, readString(), readNullable { KryptonAdventureMessage(readComponent()) }) })
+    companion object {
+
+        @JvmStatic
+        private fun readSuggestions(buf: ByteBuf): Suggestions {
+            val start = buf.readVarInt()
+            val length = buf.readVarInt()
+            val range = StringRange.between(start, start + length)
+            return Suggestions(range,
+                buf.readList { Suggestion(range, buf.readString(), buf.readNullable { KryptonAdventure.asMessage(buf.readComponent()) }) })
+        }
+    }
 }

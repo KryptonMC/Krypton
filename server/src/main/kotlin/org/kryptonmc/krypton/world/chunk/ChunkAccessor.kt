@@ -18,11 +18,11 @@
  */
 package org.kryptonmc.krypton.world.chunk
 
+import org.apache.logging.log4j.LogManager
 import org.kryptonmc.api.world.biome.Biome
 import org.kryptonmc.krypton.util.BlockPos
 import org.kryptonmc.krypton.util.Maths
 import org.kryptonmc.krypton.util.Quart
-import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.world.components.HeightAccessor
 import org.kryptonmc.krypton.world.Heightmap
 import org.kryptonmc.krypton.world.biome.NoiseBiomeSource
@@ -100,7 +100,7 @@ abstract class ChunkAccessor(
 
     companion object {
 
-        private val LOGGER = logger<ChunkAccessor>()
+        private val LOGGER = LogManager.getLogger()
 
         @JvmStatic
         private fun replaceMissingSections(heightAccessor: HeightAccessor, sections: Array<ChunkSection?>) {

@@ -24,7 +24,6 @@
 package org.kryptonmc.krypton.util
 
 import com.google.common.collect.Maps
-import com.mojang.brigadier.arguments.ArgumentType
 import io.netty.buffer.ByteBuf
 import io.netty.buffer.ByteBufInputStream
 import io.netty.buffer.ByteBufOutputStream
@@ -43,15 +42,14 @@ import org.kryptonmc.api.resource.ResourceKey
 import org.kryptonmc.api.util.Direction
 import org.kryptonmc.api.util.Rotations
 import org.kryptonmc.api.util.Vec3d
-import org.kryptonmc.krypton.adventure.toJson
 import org.kryptonmc.krypton.auth.KryptonGameProfile
 import org.kryptonmc.krypton.auth.KryptonProfileProperty
-import org.kryptonmc.krypton.command.argument.ArgumentSerializers
 import org.kryptonmc.krypton.item.ItemFactory
 import org.kryptonmc.krypton.item.KryptonItemStack
 import org.kryptonmc.krypton.registry.KryptonRegistries
 import org.kryptonmc.krypton.registry.KryptonRegistry
-import org.kryptonmc.krypton.util.crypto.decodeToPublicKey
+import org.kryptonmc.krypton.util.crypto.Crypto
+import org.kryptonmc.krypton.util.hit.BlockHitResult
 import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.EndTag
 import org.kryptonmc.nbt.io.TagCompression
@@ -62,7 +60,6 @@ import java.io.IOException
 import java.security.PublicKey
 import java.time.Instant
 import java.util.UUID
-import java.util.function.IntFunction
 import kotlin.math.ceil
 import kotlin.math.min
 
@@ -261,7 +258,7 @@ fun ByteBuf.readNBT(): CompoundTag {
 private const val MAXIMUM_COMPONENT_STRING_LENGTH = 262144
 
 fun ByteBuf.writeComponent(component: Component) {
-    writeString(component.toJson(), MAXIMUM_COMPONENT_STRING_LENGTH)
+    writeString(GsonComponentSerializer.gson().serialize(component), MAXIMUM_COMPONENT_STRING_LENGTH)
 }
 
 fun ByteBuf.readComponent(): Component {
@@ -291,24 +288,10 @@ fun ByteBuf.writeItem(item: KryptonItemStack) {
     writeNBT(item.meta.data)
 }
 
-/*
- * In this encoding, the X, Y, and Z coordinates are packed in to a single long, with the X coordinate occupying the most significant 26 bits,
- * followed by the Z coordinate occupying the next 26 bits, then the Y coordinate, occupying the least significant 12 bits.
- *
- * This encoding allows for the following maximum values:
- * - X and Z: minimum of -33554432 (-2^25) and maximum of 33554431 (2^25 - 1)
- * - Y: minimum of -2048 (-2^11) and maximum of 2047 (2^11 - 1)
- */
-@Suppress("MagicNumber")
-fun ByteBuf.writeBlockPos(x: Int, y: Int, z: Int) {
-    writeLong(BlockPos.pack(x, y, z))
-}
-
 fun ByteBuf.writeBlockPos(pos: BlockPos) {
     writeLong(pos.pack())
 }
 
-@Suppress("MagicNumber")
 fun ByteBuf.readBlockPos(): BlockPos = BlockPos.unpack(readLong())
 
 fun ByteBuf.readRotations(): Rotations = RotationsImpl(readFloat(), readFloat(), readFloat())
@@ -340,18 +323,12 @@ fun ByteBuf.writeResourceKey(key: ResourceKey<*>) {
 
 fun ByteBuf.readKey(): Key = Key.key(readString())
 
-fun <T> ByteBuf.writeNullable(value: T?, writer: ByteBufWriter<T>) {
+inline fun <T> ByteBuf.writeNullable(value: T?, writer: (ByteBuf, T) -> Unit) {
     writeBoolean(value != null)
-    if (value != null) writer.write(this, value)
+    if (value != null) writer(this, value)
 }
 
-fun <T> ByteBuf.readNullable(reader: ByteBufReader<T>): T? = if (!readBoolean()) null else reader.read(this)
-
-fun <T : ArgumentType<*>> ByteBuf.writeArgumentType(type: T) {
-    val entry = checkNotNull(ArgumentSerializers.get(type)) { "Argument type for node must have registered serializer!" }
-    writeVarInt(entry.id)
-    entry.serializer.write(this, type)
-}
+inline fun <T> ByteBuf.readNullable(reader: (ByteBuf) -> T): T? = if (!readBoolean()) null else reader(this)
 
 inline fun <reified T : Enum<T>> ByteBuf.readEnum(): T = T::class.java.enumConstants[readVarInt()]
 
@@ -364,18 +341,18 @@ inline fun <E> ByteBuf.writeCollection(collection: Collection<E>, action: (E) ->
     collection.forEach(action)
 }
 
-fun <C : MutableCollection<E>, E> ByteBuf.readCollection(collectionCreator: IntFunction<C>, reader: (ByteBuf) -> E): C {
+inline fun <C : MutableCollection<E>, E> ByteBuf.readCollection(collectionCreator: (Int) -> C, reader: (ByteBuf) -> E): C {
     val size = readVarInt()
-    val collection = collectionCreator.apply(size)
+    val collection = collectionCreator(size)
     for (i in 0 until size) {
         collection.add(reader(this))
     }
     return collection
 }
 
-fun <E> ByteBuf.readList(reader: (ByteBuf) -> E): List<E> = readCollection(::ArrayList, reader)
+inline fun <E> ByteBuf.readList(reader: (ByteBuf) -> E): List<E> = readCollection(::ArrayList, reader)
 
-fun <E> ByteBuf.readPersistentList(reader: (ByteBuf) -> E): PersistentList<E> {
+inline fun <E> ByteBuf.readPersistentList(reader: (ByteBuf) -> E): PersistentList<E> {
     val builder = persistentListOf<E>().builder()
     val size = readVarInt()
     for (i in 0 until size) {
@@ -384,20 +361,20 @@ fun <E> ByteBuf.readPersistentList(reader: (ByteBuf) -> E): PersistentList<E> {
     return builder.build()
 }
 
-fun <K, V> ByteBuf.writeMap(map: Map<K, V>, keyAction: (ByteBuf, K) -> Unit, valueAction: (ByteBuf, V) -> Unit) {
+inline fun <K, V> ByteBuf.writeMap(map: Map<K, V>, keyWriter: (ByteBuf, K) -> Unit, valueWriter: (ByteBuf, V) -> Unit) {
     writeVarInt(map.size)
     map.forEach { (key, value) ->
-        keyAction(this, key)
-        valueAction(this, value)
+        keyWriter(this, key)
+        valueWriter(this, value)
     }
 }
 
-fun <K, V> ByteBuf.readMap(keyReader: (ByteBuf) -> K, valueReader: (ByteBuf) -> V): Map<K, V> =
+inline fun <K, V> ByteBuf.readMap(keyReader: (ByteBuf) -> K, valueReader: (ByteBuf) -> V): Map<K, V> =
     readMap(Maps::newHashMapWithExpectedSize, keyReader, valueReader)
 
-fun <M : MutableMap<K, V>, K, V> ByteBuf.readMap(mapCreator: IntFunction<M>, keyReader: (ByteBuf) -> K, valueReader: (ByteBuf) -> V): M {
+inline fun <M : MutableMap<K, V>, K, V> ByteBuf.readMap(mapCreator: (Int) -> M, keyReader: (ByteBuf) -> K, valueReader: (ByteBuf) -> V): M {
     val size = readVarInt()
-    val map = mapCreator.apply(size)
+    val map = mapCreator(size)
     for (i in 0 until size) {
         map.put(keyReader(this), valueReader(this))
     }
@@ -410,16 +387,12 @@ fun ByteBuf.writeGameProfile(profile: GameProfile) {
     writeCollection(profile.properties, ::writeProfileProperty)
 }
 
-fun ByteBuf.readGameProfile(): GameProfile {
-    val uuid = readUUID()
-    val name = readString()
-    return KryptonGameProfile(name, uuid, readPersistentList(ByteBuf::readProfileProperty))
-}
+fun ByteBuf.readGameProfile(): GameProfile = KryptonGameProfile.full(readUUID(), readString(), readPersistentList(ByteBuf::readProfileProperty))
 
 fun ByteBuf.writeProfileProperty(property: ProfileProperty) {
     writeString(property.name)
     writeString(property.value)
-    writeNullable(property.signature) { buf, signature -> buf.writeString(signature) }
+    writeNullable(property.signature, ByteBuf::writeString)
 }
 
 fun ByteBuf.readProfileProperty(): ProfileProperty = KryptonProfileProperty(readString(), readString(), readNullable(ByteBuf::readString))
@@ -467,7 +440,7 @@ fun ByteBuf.writeInstant(instant: Instant) {
 
 fun ByteBuf.readPublicKey(): PublicKey {
     try {
-        return readVarIntByteArray().decodeToPublicKey()
+        return Crypto.bytesToRsaPublicKey(readVarIntByteArray())
     } catch (exception: Exception) {
         throw DecoderException("Failed to decode public key!", exception)
     }

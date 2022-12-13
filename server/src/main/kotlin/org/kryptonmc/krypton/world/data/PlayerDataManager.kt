@@ -19,11 +19,11 @@
 package org.kryptonmc.krypton.world.data
 
 import ca.spottedleaf.dataconverter.minecraft.datatypes.MCTypeRegistry
+import org.apache.logging.log4j.LogManager
 import org.kryptonmc.krypton.KryptonPlatform
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.entity.serializer.player.PlayerSerializer
 import org.kryptonmc.krypton.util.DataConversion
-import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.io.TagCompression
 import org.kryptonmc.nbt.io.TagIO
@@ -101,6 +101,6 @@ class PlayerDataManager(val folder: Path, private val serializeData: Boolean) {
 
     companion object {
 
-        private val LOGGER = logger<PlayerDataManager>()
+        private val LOGGER = LogManager.getLogger()
     }
 }

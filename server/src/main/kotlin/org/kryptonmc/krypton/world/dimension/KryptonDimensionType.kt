@@ -33,7 +33,6 @@ import org.kryptonmc.krypton.util.provider.ConstantInt
 import org.kryptonmc.krypton.util.provider.IntProvider
 import org.kryptonmc.krypton.util.provider.UniformInt
 import org.kryptonmc.krypton.util.serialization.Codecs
-import org.kryptonmc.krypton.util.serialization.asOptionalLong
 import org.kryptonmc.serialization.Codec
 import org.kryptonmc.serialization.DataResult
 import org.kryptonmc.serialization.Dynamic
@@ -103,13 +102,13 @@ data class KryptonDimensionType(
         companion object {
 
             @JvmField
-            val CODEC: MapCodec<MonsterSettings> = RecordCodecBuilder.createMap {
-                it.group(
-                    Codec.BOOLEAN.fieldOf("piglin_safe").getting(MonsterSettings::piglinSafe),
-                    Codec.BOOLEAN.fieldOf("has_raids").getting(MonsterSettings::hasRaids),
-                    IntProvider.codec(0, 15).fieldOf("monster_spawn_light_level").getting(MonsterSettings::monsterSpawnLightLevel),
-                    Codec.intRange(0, 15).fieldOf("monster_spawn_block_light_limit").getting(MonsterSettings::monsterSpawnBlockLightLimit)
-                ).apply(it, ::MonsterSettings)
+            val CODEC: MapCodec<MonsterSettings> = RecordCodecBuilder.createMap { instance ->
+                instance.group(
+                    Codec.BOOLEAN.fieldOf("piglin_safe").getting { it.piglinSafe },
+                    Codec.BOOLEAN.fieldOf("has_raids").getting { it.hasRaids },
+                    IntProvider.codec(0, 15).fieldOf("monster_spawn_light_level").getting { it.monsterSpawnLightLevel },
+                    Codec.intRange(0, 15).fieldOf("monster_spawn_block_light_limit").getting { it.monsterSpawnBlockLightLimit }
+                ).apply(instance) { piglinSafe, raids, level, limit -> MonsterSettings(piglinSafe, raids, level, limit) }
             }
         }
     }
@@ -242,21 +241,20 @@ data class KryptonDimensionType(
         @JvmField
         val DIRECT_CODEC: Codec<DimensionType> = Codecs.catchDecoderException(RecordCodecBuilder.create { instance ->
             instance.group(
-                Codec.LONG.optionalFieldOf("fixed_time").asOptionalLong().getting(DimensionType::fixedTime),
-                Codec.BOOLEAN.fieldOf("has_skylight").getting(DimensionType::hasSkylight),
-                Codec.BOOLEAN.fieldOf("has_ceiling").getting(DimensionType::hasCeiling),
-                Codec.BOOLEAN.fieldOf("ultrawarm").getting(DimensionType::isUltrawarm),
-                Codec.BOOLEAN.fieldOf("natural").getting(DimensionType::isNatural),
-                Codec.doubleRange(MINIMUM_COORDINATE_SCALE, MAXIMUM_COORDINATE_SCALE).fieldOf("coordinate_scale")
-                    .getting(DimensionType::coordinateScale),
-                Codec.BOOLEAN.fieldOf("bed_works").getting(DimensionType::allowBeds),
-                Codec.BOOLEAN.fieldOf("respawn_anchor_works").getting(DimensionType::allowRespawnAnchors),
-                Codec.intRange(MIN_Y, MAX_Y).fieldOf("min_y").getting(DimensionType::minimumY),
-                Codec.intRange(MINIMUM_HEIGHT, Y_SIZE).fieldOf("height").getting(DimensionType::height),
-                Codec.intRange(0, Y_SIZE).fieldOf("logical_height").getting(DimensionType::logicalHeight),
-                KryptonTagKey.hashedCodec(ResourceKeys.BLOCK).fieldOf("infiniburn").getting(DimensionType::infiniburn),
-                Codecs.KEY.fieldOf("effects").orElse(KryptonDimensionTypes.OVERWORLD_EFFECTS).getting(DimensionType::effects),
-                Codec.FLOAT.fieldOf("ambient_light").getting(DimensionType::ambientLight),
+                Codecs.asOptionalLong(Codec.LONG.optionalFieldOf("fixed_time")).getting { it.fixedTime },
+                Codec.BOOLEAN.fieldOf("has_skylight").getting { it.hasSkylight },
+                Codec.BOOLEAN.fieldOf("has_ceiling").getting { it.hasCeiling },
+                Codec.BOOLEAN.fieldOf("ultrawarm").getting { it.isUltrawarm },
+                Codec.BOOLEAN.fieldOf("natural").getting { it.isNatural },
+                Codec.doubleRange(MINIMUM_COORDINATE_SCALE, MAXIMUM_COORDINATE_SCALE).fieldOf("coordinate_scale").getting { it.coordinateScale },
+                Codec.BOOLEAN.fieldOf("bed_works").getting { it.allowBeds },
+                Codec.BOOLEAN.fieldOf("respawn_anchor_works").getting { it.allowRespawnAnchors },
+                Codec.intRange(MIN_Y, MAX_Y).fieldOf("min_y").getting { it.minimumY },
+                Codec.intRange(MINIMUM_HEIGHT, Y_SIZE).fieldOf("height").getting { it.height },
+                Codec.intRange(0, Y_SIZE).fieldOf("logical_height").getting { it.logicalHeight },
+                KryptonTagKey.hashedCodec(ResourceKeys.BLOCK).fieldOf("infiniburn").getting { it.infiniburn },
+                Codecs.KEY.fieldOf("effects").orElse(KryptonDimensionTypes.OVERWORLD_EFFECTS).getting { it.effects },
+                Codec.FLOAT.fieldOf("ambient_light").getting { it.ambientLight },
                 MonsterSettings.CODEC.getting { (it as KryptonDimensionType).monsterSettings }
             ).apply(instance, ::KryptonDimensionType)
         })

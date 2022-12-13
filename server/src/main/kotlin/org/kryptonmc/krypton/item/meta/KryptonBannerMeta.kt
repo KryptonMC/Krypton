@@ -23,24 +23,25 @@ import org.kryptonmc.api.block.entity.banner.BannerPattern
 import org.kryptonmc.api.item.meta.BannerMeta
 import org.kryptonmc.krypton.util.BuilderCollection
 import org.kryptonmc.krypton.world.block.entity.banner.KryptonBannerPattern
-import org.kryptonmc.krypton.world.block.entity.banner.save
 import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.list
 
 class KryptonBannerMeta(data: CompoundTag) : AbstractItemMeta<KryptonBannerMeta>(data), BannerMeta {
 
     override val patterns: ImmutableList<BannerPattern> =
-        data.mapToList(PATTERNS_TAG, CompoundTag.ID) { KryptonBannerPattern.from(it as CompoundTag) }
+        mapToList(data, PATTERNS_TAG, CompoundTag.ID) { KryptonBannerPattern.load(it as CompoundTag) }
 
     override fun copy(data: CompoundTag): KryptonBannerMeta = KryptonBannerMeta(data)
 
-    override fun withPatterns(patterns: List<BannerPattern>): BannerMeta = copy(put(data, PATTERNS_TAG, patterns, BannerPattern::save))
+    override fun withPatterns(patterns: List<BannerPattern>): BannerMeta = copy(put(data, PATTERNS_TAG, patterns, KryptonBannerPattern::save))
 
-    override fun withPattern(pattern: BannerPattern): BannerMeta = copy(data.update(PATTERNS_TAG, CompoundTag.ID) { it.add(pattern.save()) })
+    override fun withPattern(pattern: BannerPattern): BannerMeta =
+        copy(data.update(PATTERNS_TAG, CompoundTag.ID) { it.add(KryptonBannerPattern.save(pattern)) })
 
     override fun withoutPattern(index: Int): BannerMeta = copy(data.update(PATTERNS_TAG, CompoundTag.ID) { it.remove(index) })
 
-    override fun withoutPattern(pattern: BannerPattern): BannerMeta = copy(data.update(PATTERNS_TAG, CompoundTag.ID) { it.remove(pattern.save()) })
+    override fun withoutPattern(pattern: BannerPattern): BannerMeta =
+        copy(data.update(PATTERNS_TAG, CompoundTag.ID) { it.remove(KryptonBannerPattern.save(pattern)) })
 
     override fun toBuilder(): BannerMeta.Builder = Builder()
 
@@ -65,7 +66,7 @@ class KryptonBannerMeta(data: CompoundTag) : AbstractItemMeta<KryptonBannerMeta>
         override fun build(): KryptonBannerMeta = KryptonBannerMeta(buildData().build())
 
         override fun buildData(): CompoundTag.Builder = super.buildData().apply {
-            if (patterns.isNotEmpty()) list(PATTERNS_TAG) { patterns.forEach { it.save() } }
+            if (patterns.isNotEmpty()) list(PATTERNS_TAG) { patterns.forEach(KryptonBannerPattern::save) }
         }
     }
 

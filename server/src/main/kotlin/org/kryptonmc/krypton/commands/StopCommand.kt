@@ -20,9 +20,6 @@ package org.kryptonmc.krypton.commands
 
 import com.mojang.brigadier.CommandDispatcher
 import org.kryptonmc.krypton.command.CommandSourceStack
-import org.kryptonmc.krypton.command.literal
-import org.kryptonmc.krypton.command.permission
-import org.kryptonmc.krypton.command.runs
 import org.kryptonmc.krypton.locale.Messages
 
 object StopCommand {

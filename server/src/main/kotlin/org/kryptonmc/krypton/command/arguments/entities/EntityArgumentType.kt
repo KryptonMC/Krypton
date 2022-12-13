@@ -20,6 +20,9 @@ package org.kryptonmc.krypton.command.arguments.entities
 
 import com.mojang.brigadier.StringReader
 import com.mojang.brigadier.arguments.ArgumentType
+import com.mojang.brigadier.context.CommandContext
+import org.kryptonmc.krypton.command.CommandSourceStack
+import org.kryptonmc.krypton.entity.player.KryptonPlayer
 
 /**
  * An argument type that parses an entity selector, such as `@a` or `@p`.
@@ -34,8 +37,7 @@ data class EntityArgumentType(val onlyPlayers: Boolean, val singleTarget: Boolea
         if (reader.canRead() && reader.peek() == EntityArgumentParser.SELECTOR_CHAR) {
             reader.skip()
             if (!reader.canRead()) throw EntityArgumentExceptions.MISSING_SELECTOR.createWithContext(reader)
-            val position = reader.cursor
-            return EntityArgumentParser.parse(reader, reader.read(), position, onlyPlayers, singleTarget)
+            return EntityArgumentParser.parse(reader, onlyPlayers, singleTarget)
         }
         val input = reader.readString()
         if (PLAYER_NAME_REGEX.matches(input)) return EntityQuery(EntityQuery.Selector.PLAYER, input)
@@ -84,5 +86,9 @@ data class EntityArgumentType(val onlyPlayers: Boolean, val singleTarget: Boolea
          */
         @JvmStatic
         fun entities(): EntityArgumentType = ENTITIES
+
+        @JvmStatic
+        fun getPlayers(context: CommandContext<CommandSourceStack>, name: String): List<KryptonPlayer> =
+            context.getArgument(name, EntityQuery::class.java).getPlayers(context.source)
     }
 }

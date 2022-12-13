@@ -30,8 +30,9 @@ import java.util.stream.Stream
 
 interface Holder<T> {
 
-    val kind: Kind
-    val isBound: Boolean
+    fun kind(): Kind
+
+    fun isBound(): Boolean
 
     fun value(): T
 
@@ -58,12 +59,11 @@ interface Holder<T> {
     }
 
     @JvmRecord
-    data class Direct<T>(private val value: T) : Holder<T> {
+    data class Direct<T>(private val value: T & Any) : Holder<T> {
 
-        override val kind: Kind
-            get() = Kind.DIRECT
-        override val isBound: Boolean
-            get() = true
+        override fun kind(): Kind = Kind.DIRECT
+
+        override fun isBound(): Boolean = true
 
         override fun value(): T = value
 
@@ -94,10 +94,10 @@ interface Holder<T> {
     ) : Holder<T> {
 
         private var tags = ImmutableSet.of<TagKey<T>>()
-        override val kind: Kind
-            get() = Kind.REFERENCE
-        override val isBound: Boolean
-            get() = key != null && value != null
+
+        override fun kind(): Kind = Kind.REFERENCE
+
+        override fun isBound(): Boolean = key != null && value != null
 
         fun key(): ResourceKey<T> = checkNotNull(key) { "Trying to access unbound value $value from registry $registry!" }
 
@@ -146,11 +146,5 @@ interface Holder<T> {
             @JvmStatic
             fun <T> intrusive(registry: Registry<T>, value: T): Reference<T> = Reference(Type.INTRUSIVE, registry, null, value)
         }
-    }
-
-    companion object {
-
-        @JvmStatic
-        fun <T> direct(value: T): Holder<T> = Direct(value)
     }
 }

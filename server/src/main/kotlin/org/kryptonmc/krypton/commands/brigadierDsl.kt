@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.command
+package org.kryptonmc.krypton.commands
 
 import com.mojang.brigadier.Command
 import com.mojang.brigadier.arguments.ArgumentType
@@ -24,7 +24,7 @@ import com.mojang.brigadier.builder.ArgumentBuilder
 import com.mojang.brigadier.builder.LiteralArgumentBuilder
 import com.mojang.brigadier.builder.RequiredArgumentBuilder
 import com.mojang.brigadier.context.CommandContext
-import org.kryptonmc.krypton.commands.KryptonPermission
+import org.kryptonmc.krypton.command.CommandSourceStack
 
 inline fun literal(name: String, builder: LiteralBuilder.() -> Unit): LiteralBuilder = LiteralBuilder.literal<SrcStack>(name).apply(builder)
 
@@ -46,6 +46,12 @@ inline fun <T : Builder<T>> Builder<T>.runs(crossinline action: (CommandContext<
 }
 
 fun LiteralBuilder.permission(permission: KryptonPermission): LiteralBuilder = requires { it.hasPermission(permission) }
+
+/**
+ * Equivalent to [CommandContext.getArgument], except this uses a reified type
+ * to improve QOL in Kotlin. This also doesn't return a platform type.
+ */
+inline fun <reified T> CommandContext<*>.getArgument(name: String): T = getArgument(name, T::class.java)
 
 private typealias SrcStack = CommandSourceStack
 private typealias Builder<T> = ArgumentBuilder<SrcStack, T>

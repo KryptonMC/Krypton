@@ -39,6 +39,7 @@ import io.netty.channel.socket.nio.NioServerSocketChannel
 import io.netty.channel.unix.DomainSocketAddress
 import io.netty.handler.timeout.ReadTimeoutHandler
 import net.kyori.adventure.key.Key
+import org.apache.logging.log4j.LogManager
 import org.kryptonmc.krypton.network.SessionHandler
 import org.kryptonmc.krypton.network.netty.ChannelInitializeListener
 import org.kryptonmc.krypton.network.netty.GroupedPacketHandler
@@ -48,7 +49,6 @@ import org.kryptonmc.krypton.network.netty.PacketEncoder
 import org.kryptonmc.krypton.network.netty.SizeDecoder
 import org.kryptonmc.krypton.network.netty.SizeEncoder
 import org.kryptonmc.krypton.util.executor.daemonThreadFactory
-import org.kryptonmc.krypton.util.logger
 import java.net.SocketAddress
 import java.util.concurrent.ConcurrentHashMap
 
@@ -57,7 +57,7 @@ import java.util.concurrent.ConcurrentHashMap
  */
 object NettyProcess {
 
-    private val LOGGER = logger<KryptonServer>()
+    private val LOGGER = LogManager.getLogger(KryptonServer::class.java)
     private val bossGroup = bestLoopGroup()
     private val workerGroup = bestLoopGroup()
     private val listeners = ConcurrentHashMap<Key, ChannelInitializeListener>()

@@ -30,7 +30,7 @@ object IntProviderTypes {
     // We put the XMAPs here because otherwise we get a compilation error. See https://youtrack.jetbrains.com/issue/KT-53478
     @JvmField
     val CONSTANT: IntProviderType<ConstantInt> = register("constant", ConstantInt.CODEC
-        .xmap({ it.map(ConstantInt::of, Function.identity()) }, { Either.left(it.value) }))
+        .xmap({ either -> either.map({ ConstantInt.of(it) }, Function.identity()) }, { Either.left(it.value) }))
     @JvmField
     val UNIFORM: IntProviderType<UniformInt> = register("uniform", UniformInt.CODEC.comapFlatMap({
         if (it.maximumValue >= it.minimumValue) return@comapFlatMap DataResult.success(it)

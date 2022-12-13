@@ -21,6 +21,7 @@ package org.kryptonmc.krypton.util
 import com.google.gson.Gson
 import com.google.gson.JsonObject
 import net.kyori.adventure.key.Key
+import org.apache.logging.log4j.LogManager
 import org.kryptonmc.krypton.KryptonPlatform
 import org.kryptonmc.krypton.registry.KryptonRegistry
 import org.kryptonmc.krypton.registry.KryptonRegistries
@@ -61,6 +62,6 @@ abstract class KryptonDataLoader<T>(fileSuffix: String, protected val registry: 
     companion object {
 
         protected val GSON = Gson()
-        private val LOGGER = logger<KryptonDataLoader<*>>()
+        private val LOGGER = LogManager.getLogger()
     }
 }

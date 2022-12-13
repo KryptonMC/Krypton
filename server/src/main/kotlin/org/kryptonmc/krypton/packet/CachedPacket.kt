@@ -19,7 +19,7 @@
 package org.kryptonmc.krypton.packet
 
 import io.netty.buffer.ByteBuf
-import org.kryptonmc.krypton.util.frame
+import org.kryptonmc.krypton.util.PacketFraming
 import java.lang.invoke.MethodHandles
 import java.lang.ref.SoftReference
 import java.util.function.Supplier
@@ -36,7 +36,7 @@ class CachedPacket(private val supplier: Supplier<Packet>) : GenericPacket {
 
     fun body(): ByteBuf {
         val cache = updatedCache()
-        return cache?.body ?: supplier.get().frame()
+        return cache?.body ?: PacketFraming.frame(supplier.get())
     }
 
     fun invalidate() {
@@ -47,7 +47,7 @@ class CachedPacket(private val supplier: Supplier<Packet>) : GenericPacket {
         val ref = PACKET.getAcquire(this) as? SoftReference<FramedPacket>
         var cached: FramedPacket? = null
         if (ref?.get() == null) {
-            cached = FramedPacket(supplier.get().frame())
+            cached = FramedPacket(PacketFraming.frame(supplier.get()))
             PACKET.setRelease(this, SoftReference(cached))
         }
         return cached

@@ -29,6 +29,7 @@ import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.event.ClickEvent
 import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.text.format.TextDecoration
+import org.apache.logging.log4j.LogManager
 import org.kryptonmc.api.adventure.AdventureMessage
 import org.kryptonmc.api.command.BrigadierCommand
 import org.kryptonmc.api.command.CommandManager
@@ -66,7 +67,6 @@ import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.event.command.KryptonCommandSendEvent
 import org.kryptonmc.krypton.packet.out.play.PacketOutCommands
 import org.kryptonmc.krypton.util.downcastApiType
-import org.kryptonmc.krypton.util.logger
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.locks.ReentrantReadWriteLock
 import javax.annotation.concurrent.GuardedBy
@@ -136,7 +136,7 @@ class KryptonCommandManager : CommandManager {
 
                 // Append the "[HERE]" text (locale-specific) to the end, just like vanilla.
                 errorMessage.append(Component.translatable("command.context.here", NamedTextColor.RED, TextDecoration.ITALIC))
-                source.sender.sendMessage(Component.text().append(errorMessage).color(NamedTextColor.RED))
+                source.sender.sendMessage(Component.text().append(errorMessage).color(NamedTextColor.RED).build())
             }
             false
         } catch (naughty: Throwable) { // We catch Throwable because plugins like to do stupid things sometimes.
@@ -192,7 +192,7 @@ class KryptonCommandManager : CommandManager {
 
     companion object {
 
-        private val LOGGER = logger<CommandManager>()
+        private val LOGGER = LogManager.getLogger()
         private const val ERROR_MESSAGE_CUTOFF_THRESHOLD = 10
         private val NO_OP_RESULT_CONSUMER = ResultConsumer<Source> { _, _, _ ->}
 

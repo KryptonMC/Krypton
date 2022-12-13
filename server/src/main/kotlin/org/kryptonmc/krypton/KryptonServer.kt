@@ -44,9 +44,9 @@ import org.kryptonmc.krypton.scheduling.KryptonScheduler
 import org.kryptonmc.krypton.server.PlayerManager
 import org.kryptonmc.krypton.service.KryptonServicesManager
 import org.kryptonmc.krypton.user.KryptonUserManager
+import org.kryptonmc.krypton.util.PacketFraming
 import org.kryptonmc.krypton.util.crypto.YggdrasilSessionKey
 import org.kryptonmc.krypton.util.executor.ReentrantBlockableEventLoop
-import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.util.random.RandomSource
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.krypton.world.KryptonWorldManager
@@ -103,7 +103,7 @@ class KryptonServer(
     private var delayedTasksMaxNextTickTime = 0L
 
     init {
-        instance = this
+        PacketFraming.setCompressionThreshold(config.server.compressionThreshold)
         YggdrasilSessionKey.get()
     }
 
@@ -413,17 +413,7 @@ class KryptonServer(
         private const val NORMAL_TICK_TIME_NANOS = 1_000_000_000 / TICKS_PER_SECOND // 1,000,000,000 = 1 second in nanoseconds
         private const val NANOS_TO_MILLIS = 1000L * 1000L
 
-        private val LOGGER = logger<KryptonServer>()
-
-        @Volatile
-        private var instance: KryptonServer? = null
-
-        // This is a massive hack, and even writing this makes me cringe, but we need static access in places.
-        // This is internal to stop dependents using it from Kotlin, and synthetic to stop dependents using it from Java.
-        // Seriously, don't use this.
-        @JvmStatic
-        @JvmSynthetic
-        internal fun get(): KryptonServer = requireNotNull(instance) { "KryptonServer.get() called before server was loaded!" }
+        private val LOGGER = LogManager.getLogger()
 
         // This logic comes from vanilla. We should probably just use the main thread, though this may greater ensure parity
         // with vanilla's buggy mess. Not sure if this is actually the case though.

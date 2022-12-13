@@ -22,9 +22,9 @@ import io.netty.buffer.ByteBuf
 import io.netty.channel.ChannelHandler
 import io.netty.channel.ChannelHandlerContext
 import io.netty.handler.codec.MessageToByteEncoder
+import org.apache.logging.log4j.LogManager
 import org.kryptonmc.krypton.packet.PacketRegistry
 import org.kryptonmc.krypton.packet.Packet
-import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.util.writeVarInt
 
 /**
@@ -36,7 +36,7 @@ import org.kryptonmc.krypton.util.writeVarInt
 object PacketEncoder : MessageToByteEncoder<Packet>() {
 
     const val NETTY_NAME: String = "encoder"
-    private val LOGGER = logger<PacketEncoder>()
+    private val LOGGER = LogManager.getLogger()
 
     override fun encode(ctx: ChannelHandlerContext, msg: Packet, out: ByteBuf) {
         val id = PacketRegistry.lookup(msg.javaClass)

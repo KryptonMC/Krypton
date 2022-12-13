@@ -46,8 +46,8 @@ data class LightPacketData(
         BitSet.valueOf(buf.readLongArray()),
         BitSet.valueOf(buf.readLongArray()),
         BitSet.valueOf(buf.readLongArray()),
-        buf.readList(ByteBuf::readVarIntByteArray),
-        buf.readList(ByteBuf::readVarIntByteArray)
+        buf.readList { it.readVarIntByteArray() },
+        buf.readList { it.readVarIntByteArray() }
     )
 
     override fun write(buf: ByteBuf) {

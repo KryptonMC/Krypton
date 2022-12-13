@@ -18,9 +18,11 @@
  */
 package org.kryptonmc.krypton.command.arguments
 
-import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.StringReader
 import com.mojang.brigadier.arguments.ArgumentType
+import com.mojang.brigadier.context.CommandContext
+import org.kryptonmc.api.auth.GameProfile
+import org.kryptonmc.krypton.command.CommandSourceStack
 import org.kryptonmc.krypton.command.arguments.entities.EntityArgumentParser
 import org.kryptonmc.krypton.command.arguments.entities.EntityQuery
 
@@ -32,13 +34,12 @@ object GameProfileArgument : ArgumentType<EntityQuery> {
     override fun parse(reader: StringReader): EntityQuery {
         if (reader.canRead() && reader.peek() == EntityArgumentParser.SELECTOR_CHAR) {
             reader.skip()
-            val position = reader.cursor
-            return EntityArgumentParser.parse(reader, reader.read(), position, true, false)
+            return EntityArgumentParser.parse(reader, true, false)
         }
-        val position = reader.cursor
-        while (reader.canRead() && reader.peek() != CommandDispatcher.ARGUMENT_SEPARATOR_CHAR) {
-            reader.skip()
-        }
-        return EntityQuery(EntityQuery.Selector.PLAYER, reader.string.substring(position, reader.cursor))
+        return EntityQuery(EntityQuery.Selector.PLAYER, StringReading.readNonSpaceString(reader))
     }
+
+    @JvmStatic
+    fun get(context: CommandContext<CommandSourceStack>, name: String): List<GameProfile> =
+        context.getArgument(name, EntityQuery::class.java).getProfiles(context.source)
 }

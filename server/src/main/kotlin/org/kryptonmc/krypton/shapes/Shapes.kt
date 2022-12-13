@@ -24,7 +24,6 @@ import it.unimi.dsi.fastutil.doubles.DoubleList
 import org.kryptonmc.api.util.BoundingBox
 import org.kryptonmc.api.util.Direction
 import org.kryptonmc.api.util.Direction.Axis
-import org.kryptonmc.krypton.util.Collisions
 import org.kryptonmc.krypton.util.KryptonBoundingBox
 import org.kryptonmc.krypton.util.Maths
 import org.kryptonmc.krypton.util.math.AxisCycle

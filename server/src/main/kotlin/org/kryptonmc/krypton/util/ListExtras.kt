@@ -16,21 +16,16 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.util.crypto
+package org.kryptonmc.krypton.util
 
-import java.security.KeyFactory
-import java.security.PublicKey
-import java.security.spec.X509EncodedKeySpec
-import java.util.Base64
+object ListExtras {
 
-private const val RSA_PUBLIC_KEY_HEADER = "-----BEGIN RSA PUBLIC KEY-----"
-private const val RSA_PUBLIC_KEY_FOOTER = "-----END RSA PUBLIC KEY-----"
-private val MIME_ENCODER = Base64.getMimeEncoder(76, "\n".toByteArray())
-private val RSA_KEY_FACTORY = KeyFactory.getInstance("RSA")
-
-fun PublicKey.toRSAString(): String {
-    require(algorithm == "RSA") { "Public key must be an RSA key to be converted to an RSA string!" }
-    return RSA_PUBLIC_KEY_HEADER + "\n" + MIME_ENCODER.encodeToString(encoded) + "\n" + RSA_PUBLIC_KEY_FOOTER + "\n"
+    @JvmStatic
+    inline fun <T> toIntArray(list: List<T>, converter: (T) -> Int): IntArray {
+        val array = IntArray(list.size)
+        for (i in list.indices) {
+            array[i] = converter(list.get(i))
+        }
+        return array
+    }
 }
-
-fun ByteArray.decodeToPublicKey(): PublicKey = RSA_KEY_FACTORY.generatePublic(X509EncodedKeySpec(this))

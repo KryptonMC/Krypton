@@ -19,10 +19,10 @@
 package org.kryptonmc.krypton.auth.requests
 
 import com.github.benmanes.caffeine.cache.Caffeine
+import org.apache.logging.log4j.LogManager
 import org.kryptonmc.api.auth.GameProfile
 import org.kryptonmc.krypton.auth.KryptonGameProfile
 import org.kryptonmc.krypton.util.crypto.Encryption
-import org.kryptonmc.krypton.util.logger
 import java.math.BigInteger
 import java.net.URI
 import java.net.http.HttpClient
@@ -39,7 +39,7 @@ object SessionService {
     private const val OK_RESPONSE_CODE = 200 // HTTP response code for 'OK' response.
     private val SERVER_ID_BYTES = ByteArray(0)
     private const val BASE_URL = "https://sessionserver.mojang.com/session/minecraft/hasJoined"
-    private val LOGGER = logger<SessionService>()
+    private val LOGGER = LogManager.getLogger()
 
     private val client = HttpClient.newHttpClient()
     private val profiles = Caffeine.newBuilder().expireAfterWrite(6, TimeUnit.HOURS).maximumSize(128).build<String, GameProfile>()
@@ -66,7 +66,7 @@ object SessionService {
             return null
         }
 
-        val profile = KryptonGameProfile.fromJson(response.body())
+        val profile = KryptonGameProfile.Adapter.fromJson(response.body())
         LOGGER.info("UUID of player ${profile.name} is ${profile.uuid}.")
         profiles.put(profile.name, profile)
         return profile

@@ -60,18 +60,18 @@ class KryptonBiome(override val climate: Climate, override val effects: BiomeEff
 
         // When we add mob spawn and biome generation settings, this will actually differ from the network codec
         @JvmField
-        val DIRECT_CODEC: Codec<Biome> = RecordCodecBuilder.create {
-            it.group(
-                KryptonClimate.CODEC.getting(Biome::climate),
-                KryptonBiomeEffects.CODEC.fieldOf("effects").getting(Biome::effects)
-            ).apply(it, ::KryptonBiome)
+        val DIRECT_CODEC: Codec<Biome> = RecordCodecBuilder.create { instance ->
+            instance.group(
+                KryptonClimate.CODEC.getting { it.climate },
+                KryptonBiomeEffects.CODEC.fieldOf("effects").getting { it.effects }
+            ).apply(instance) { climate, effects -> KryptonBiome(climate, effects) }
         }
         @JvmField
-        val NETWORK_CODEC: Codec<Biome> = RecordCodecBuilder.create {
-            it.group(
-                KryptonClimate.CODEC.getting(Biome::climate),
-                KryptonBiomeEffects.CODEC.fieldOf("effects").getting(Biome::effects)
-            ).apply(it, ::KryptonBiome)
+        val NETWORK_CODEC: Codec<Biome> = RecordCodecBuilder.create { instance ->
+            instance.group(
+                KryptonClimate.CODEC.getting { it.climate },
+                KryptonBiomeEffects.CODEC.fieldOf("effects").getting { it.effects }
+            ).apply(instance) { climate, effects -> KryptonBiome(climate, effects) }
         }
     }
 }

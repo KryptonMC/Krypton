@@ -19,7 +19,7 @@
 package org.kryptonmc.krypton.packet.`in`.play
 
 import io.netty.buffer.ByteBuf
-import org.kryptonmc.api.event.player.PerformActionEvent
+import org.kryptonmc.api.event.player.PerformActionEvent.Action
 import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.util.readEnum
 import org.kryptonmc.krypton.util.readVarInt
@@ -27,9 +27,9 @@ import org.kryptonmc.krypton.util.writeEnum
 import org.kryptonmc.krypton.util.writeVarInt
 
 @JvmRecord
-data class PacketInPlayerCommand(val id: Int, val action: PerformActionEvent.Action, val data: Int) : Packet {
+data class PacketInPlayerCommand(val id: Int, val action: Action, val data: Int) : Packet {
 
-    constructor(buf: ByteBuf) : this(buf.readVarInt(), buf.readEnum<PerformActionEvent.Action>(), buf.readVarInt())
+    constructor(buf: ByteBuf) : this(buf.readVarInt(), buf.readEnum<Action>(), buf.readVarInt())
 
     override fun write(buf: ByteBuf) {
         buf.writeVarInt(id)

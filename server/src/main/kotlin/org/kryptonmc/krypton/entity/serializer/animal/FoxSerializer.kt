@@ -22,10 +22,10 @@ import org.kryptonmc.api.entity.animal.type.FoxVariant
 import org.kryptonmc.krypton.entity.animal.KryptonFox
 import org.kryptonmc.krypton.entity.serializer.AgeableSerializer
 import org.kryptonmc.krypton.entity.serializer.EntitySerializer
+import org.kryptonmc.krypton.util.UUIDUtil
 import org.kryptonmc.krypton.util.nbt.addNullable
 import org.kryptonmc.krypton.util.nbt.addUUID
 import org.kryptonmc.krypton.util.nbt.putStringEnum
-import org.kryptonmc.krypton.util.toUUID
 import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.IntArrayTag
 import org.kryptonmc.nbt.ListTag
@@ -44,7 +44,7 @@ object FoxSerializer : EntitySerializer<KryptonFox> {
 
     override fun load(entity: KryptonFox, data: CompoundTag) {
         AgeableSerializer.load(entity, data)
-        data.getList(TRUSTED_TAG, IntArrayTag.ID).forEachIntArray { addTrustedId(entity, it.toUUID()) }
+        data.getList(TRUSTED_TAG, IntArrayTag.ID).forEachIntArray { addTrustedId(entity, UUIDUtil.fromIntArray(it)) }
         entity.isSleeping = data.getBoolean(SLEEPING_TAG)
         if (data.contains(TYPE_TAG, StringTag.ID)) entity.variant = TYPE_NAMES.get(data.getString(TYPE_TAG))!!
         entity.isSitting = data.getBoolean(SITTING_TAG)

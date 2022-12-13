@@ -19,9 +19,9 @@
 package org.kryptonmc.krypton.pack
 
 import net.kyori.adventure.key.Key
+import org.apache.logging.log4j.LogManager
 import org.kryptonmc.krypton.pack.metadata.MetadataSerializer
 import org.kryptonmc.krypton.util.GsonHelper
-import org.kryptonmc.krypton.util.logger
 import java.io.BufferedReader
 import java.io.InputStream
 import java.io.InputStreamReader
@@ -29,8 +29,7 @@ import java.nio.file.Path
 
 abstract class AbstractPackResources(protected val path: Path) : PackResources {
 
-    final override val name: String
-        get() = path.fileName.toString()
+    final override fun name(): String = path.fileName.toString()
 
     protected abstract fun hasResource(path: String): Boolean
 
@@ -38,7 +37,7 @@ abstract class AbstractPackResources(protected val path: Path) : PackResources {
 
     final override fun hasResource(location: Key): Boolean = hasResource(convertPath(location))
 
-    final override fun getRootResource(fileName: String): InputStream? {
+    final override fun getRootResource(fileName: String): InputStream {
         require(!fileName.contains("/") && !fileName.contains("\\")) { "Root resources can only be file names, not paths!" }
         return getResource(fileName)
     }
@@ -54,21 +53,21 @@ abstract class AbstractPackResources(protected val path: Path) : PackResources {
 
     companion object {
 
-        private val LOGGER = logger<AbstractPackResources>()
+        private val LOGGER = LogManager.getLogger()
 
         @JvmStatic
         fun <T> getMetadataFromStream(serializer: MetadataSerializer<T>, input: InputStream): T? {
             val json = try {
                 BufferedReader(InputStreamReader(input, Charsets.UTF_8)).use(GsonHelper::parse)
             } catch (exception: Exception) {
-                LOGGER.error("Failed to load ${serializer.name} metadata!", exception)
+                LOGGER.error("Failed to load ${serializer.name()} metadata!", exception)
                 return null
             }
-            if (!json.has(serializer.name)) return null
+            if (!json.has(serializer.name())) return null
             return try {
-                serializer.fromJson(json.getAsJsonObject(serializer.name))
+                serializer.fromJson(json.getAsJsonObject(serializer.name()))
             } catch (exception: Exception) {
-                LOGGER.error("Failed to load ${serializer.name} metadata!", exception)
+                LOGGER.error("Failed to load ${serializer.name()} metadata!", exception)
                 null
             }
         }

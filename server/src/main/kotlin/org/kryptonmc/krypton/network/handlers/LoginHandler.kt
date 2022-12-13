@@ -22,6 +22,7 @@ import com.google.common.primitives.Ints
 import io.netty.buffer.Unpooled
 import kotlinx.collections.immutable.persistentListOf
 import net.kyori.adventure.text.Component
+import org.apache.logging.log4j.LogManager
 import org.kryptonmc.api.auth.GameProfile
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.auth.KryptonGameProfile
@@ -45,13 +46,12 @@ import org.kryptonmc.krypton.packet.`in`.login.VerificationData
 import org.kryptonmc.krypton.packet.out.login.PacketOutEncryptionRequest
 import org.kryptonmc.krypton.packet.out.login.PacketOutLoginSuccess
 import org.kryptonmc.krypton.packet.out.login.PacketOutPluginRequest
+import org.kryptonmc.krypton.util.AddressUtil
 import org.kryptonmc.krypton.util.ComponentException
 import org.kryptonmc.krypton.util.UUIDUtil
-import org.kryptonmc.krypton.util.asString
 import org.kryptonmc.krypton.util.crypto.Encryption
 import org.kryptonmc.krypton.util.crypto.InsecurePublicKeyException
 import org.kryptonmc.krypton.util.crypto.SignatureValidator
-import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.util.random.RandomSource
 import org.kryptonmc.krypton.util.readVarInt
 import java.net.InetSocketAddress
@@ -112,7 +112,7 @@ class LoginHandler(
             // Note: Per the protocol, offline players use UUID v3, rather than UUID v4.
             val address = createAddress()
             val uuid = proxyForwardedData?.uuid ?: UUIDUtil.createOfflinePlayerId(packet.name)
-            val profile = KryptonGameProfile(packet.name, uuid, proxyForwardedData?.properties ?: persistentListOf())
+            val profile = KryptonGameProfile.full(uuid, packet.name, proxyForwardedData?.properties ?: persistentListOf())
 
             // Check the player can join and the login event was not cancelled.
             if (!canJoin(profile, address) || !callLoginEvent(profile)) return
@@ -196,7 +196,7 @@ class LoginHandler(
 
         // All good to go, let's construct our stuff
         LOGGER.debug("Detected Velocity login for ${data.uuid}")
-        val profile = KryptonGameProfile(data.username, data.uuid, data.properties)
+        val profile = KryptonGameProfile.full(data.uuid, data.username, data.properties)
         val player = KryptonPlayer(session, profile, server.worldManager.default, InetSocketAddress(data.remoteAddress, address.port), publicKey)
 
         // Setup permissions for the player
@@ -245,14 +245,14 @@ class LoginHandler(
     private fun canJoin(profile: GameProfile, address: SocketAddress): Boolean {
         val whitelist = server.playerManager.whitelistManager
         val banManager = server.playerManager.banManager
-        val addressString = address.asString()
+        val addressString = AddressUtil.asString(address)
         if (banManager.isBanned(profile)) { // We are banned
             val ban = banManager.get(profile)!!
             // Inform the client that they are banned
             session.loginDisconnect(Messages.Disconnect.BANNED_MESSAGE.build(ban.reason, ban.expirationDate))
             LOGGER.info("${profile.name} was disconnected as they are banned from this server.")
             return false
-        } else if (whitelist.isEnabled && !whitelist.isWhitelisted(profile) && !whitelist.isWhitelisted(addressString)) {
+        } else if (whitelist.isEnabled() && !whitelist.isWhitelisted(profile) && !whitelist.isWhitelisted(addressString)) {
             // We are not whitelisted
             session.loginDisconnect(Messages.Disconnect.NOT_WHITELISTED.build())
             LOGGER.info("${profile.name} was disconnected as this server is whitelisted and they are not on the whitelist.")
@@ -281,7 +281,7 @@ class LoginHandler(
 
         private const val VELOCITY_CHANNEL_ID = "velocity:player_info"
         private val RANDOM = RandomSource.createThreadSafe()
-        private val LOGGER = logger<LoginHandler>()
+        private val LOGGER = LogManager.getLogger()
 
         @JvmStatic
         private fun generateVerifyToken(): ByteArray = Ints.toByteArray(RANDOM.nextInt())

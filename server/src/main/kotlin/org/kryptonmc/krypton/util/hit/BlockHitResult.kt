@@ -16,10 +16,11 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.util
+package org.kryptonmc.krypton.util.hit
 
 import org.kryptonmc.api.util.Direction
 import org.kryptonmc.api.util.Vec3d
+import org.kryptonmc.krypton.util.BlockPos
 
 class BlockHitResult private constructor(
     location: Vec3d,

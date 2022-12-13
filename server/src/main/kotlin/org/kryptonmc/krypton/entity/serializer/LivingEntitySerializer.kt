@@ -18,10 +18,10 @@
  */
 package org.kryptonmc.krypton.entity.serializer
 
-import org.kryptonmc.krypton.adventure.toPlainText
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer
+import org.apache.logging.log4j.LogManager
 import org.kryptonmc.krypton.entity.KryptonLivingEntity
 import org.kryptonmc.krypton.entity.Pose
-import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.util.nbt.getBlockPos
 import org.kryptonmc.krypton.util.nbt.hasBlockPos
 import org.kryptonmc.krypton.util.nbt.hasNumber
@@ -32,7 +32,7 @@ import org.kryptonmc.nbt.StringTag
 
 object LivingEntitySerializer : EntitySerializer<KryptonLivingEntity> {
 
-    private val LOGGER = logger<LivingEntitySerializer>()
+    private val LOGGER = LogManager.getLogger()
     private const val ATTRIBUTES_TAG = "Attributes"
     private const val BRAIN_TAG = "Brain"
     private const val HEALTH_TAG = "Health"
@@ -63,7 +63,10 @@ object LivingEntitySerializer : EntitySerializer<KryptonLivingEntity> {
             val teamName = data.getString(TEAM_TAG)
             val team = entity.world.scoreboard.team(teamName)
             val wasAdded = team != null && entity.world.scoreboard.addMemberToTeam(entity.teamRepresentation, team)
-            if (!wasAdded) LOGGER.warn("Unable to add living entity ${entity.name.toPlainText()} to team $teamName. This team may not exist.")
+            if (!wasAdded) {
+                LOGGER.warn("Unable to add living entity ${PlainTextComponentSerializer.plainText().serialize(entity.name)} to team $teamName. " +
+                        "This team may not exist.")
+            }
         }
 
         // Sleeping coordinates

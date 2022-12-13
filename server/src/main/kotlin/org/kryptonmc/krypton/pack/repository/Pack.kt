@@ -22,9 +22,9 @@ import com.mojang.brigadier.arguments.StringArgumentType
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.event.HoverEvent
 import net.kyori.adventure.text.format.NamedTextColor
+import org.apache.logging.log4j.LogManager
 import org.kryptonmc.krypton.pack.PackResources
 import org.kryptonmc.krypton.pack.metadata.PackMetadata
-import org.kryptonmc.krypton.util.logger
 import java.io.IOException
 import java.util.function.Function
 import java.util.function.Supplier
@@ -42,15 +42,9 @@ data class Pack(
     val source: PackSource
 ) {
 
-    constructor(
-        id: String,
-        title: Component,
-        required: Boolean,
-        resources: Supplier<PackResources>,
-        metadata: PackMetadata,
-        defaultPosition: Position,
-        source: PackSource
-    ) : this(id, resources, title, metadata.description, PackCompatibility.forMetadata(metadata), defaultPosition, required, false, source)
+    constructor(id: String, title: Component, required: Boolean, resources: Supplier<PackResources>, metadata: PackMetadata,
+                defaultPosition: Position, source: PackSource) : this(id, resources, title, metadata.description,
+        PackCompatibility.forMetadata(metadata), defaultPosition, required, false, source)
 
     fun getChatLink(green: Boolean): Component = createChatLink(this, green)
 
@@ -66,15 +60,8 @@ data class Pack(
 
     fun interface Constructor {
 
-        fun create(
-            id: String,
-            title: Component,
-            required: Boolean,
-            resources: Supplier<PackResources>,
-            metadata: PackMetadata,
-            defaultPosition: Position,
-            source: PackSource
-        ): Pack
+        fun create(id: String, title: Component, required: Boolean, resources: Supplier<PackResources>, metadata: PackMetadata,
+                   defaultPosition: Position, source: PackSource): Pack
     }
 
     enum class Position {
@@ -109,22 +96,16 @@ data class Pack(
 
     companion object {
 
-        private val LOGGER = logger<Pack>()
+        private val LOGGER = LogManager.getLogger()
 
         @JvmStatic
-        fun create(
-            id: String,
-            required: Boolean,
-            resourceSupplier: Supplier<PackResources>,
-            factory: Constructor,
-            defaultPosition: Position,
-            source: PackSource
-        ): Pack? {
+        fun create(id: String, required: Boolean, resourceSupplier: Supplier<PackResources>, factory: Constructor, defaultPosition: Position,
+                   source: PackSource): Pack? {
             try {
                 resourceSupplier.get().use {
                     val metadata = it.getMetadata(PackMetadata.Serializer)
                     if (metadata != null) {
-                        return factory.create(id, Component.text(it.name), required, resourceSupplier, metadata, defaultPosition, source)
+                        return factory.create(id, Component.text(it.name()), required, resourceSupplier, metadata, defaultPosition, source)
                     }
                 }
                 return null

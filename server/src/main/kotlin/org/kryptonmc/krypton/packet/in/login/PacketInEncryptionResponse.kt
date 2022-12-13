@@ -33,11 +33,8 @@ data class PacketInEncryptionResponse(val secret: ByteArray, val verificationDat
         verificationData.write(buf)
     }
 
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-        return secret.contentEquals((other as PacketInEncryptionResponse).secret) && verificationData == other.verificationData
-    }
+    override fun equals(other: Any?): Boolean =
+        this === other || other is PacketInEncryptionResponse && secret.contentEquals(other.secret) && verificationData == other.verificationData
 
     override fun hashCode(): Int {
         var result = 1

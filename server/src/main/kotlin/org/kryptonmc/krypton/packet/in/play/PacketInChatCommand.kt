@@ -40,5 +40,7 @@ data class PacketInChatCommand(
     override fun write(buf: ByteBuf) {
         buf.writeString(command)
         buf.writeInstant(timestamp)
+        argumentSignatures.write(buf)
+        buf.writeBoolean(signedPreview)
     }
 }

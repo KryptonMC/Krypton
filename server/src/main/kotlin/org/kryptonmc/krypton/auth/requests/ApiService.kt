@@ -60,7 +60,7 @@ object ApiService {
     @JvmStatic
     private fun loadProfile(url: String, executor: Executor): CompletableFuture<GameProfile?> =
         client.sendAsync(HttpRequest.newBuilder(URI(url)).build(), BodyHandlers.ofString())
-            .thenApplyAsync({ KryptonGameProfile.fromJson(it.body()) }, executor)
+            .thenApplyAsync({ KryptonGameProfile.Adapter.fromJson(it.body()) }, executor)
 
     @JvmStatic
     private inline fun <K> createCache(crossinline toUrl: (K) -> String): AsyncLoadingCache<K, GameProfile> =

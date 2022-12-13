@@ -22,7 +22,7 @@ import net.kyori.adventure.text.Component
 import org.kryptonmc.api.auth.GameProfile
 import org.kryptonmc.api.user.ban.Ban
 import org.kryptonmc.api.user.ban.BanType
-import org.kryptonmc.krypton.util.asString
+import org.kryptonmc.krypton.util.AddressUtil
 import java.net.InetAddress
 import java.time.OffsetDateTime
 
@@ -56,6 +56,6 @@ class KryptonBanBuilder : Ban.Builder, Ban.Builder.EndStep {
 
     override fun build(): Ban = when (type!!) {
         BanType.PROFILE -> KryptonProfileBan(profile!!, source, reason, start ?: OffsetDateTime.now(), end)
-        BanType.IP -> KryptonIpBan(address!!.asString(), source, reason, start ?: OffsetDateTime.now(), end)
+        BanType.IP -> KryptonIpBan(AddressUtil.asString(address!!), source, reason, start ?: OffsetDateTime.now(), end)
     }
 }

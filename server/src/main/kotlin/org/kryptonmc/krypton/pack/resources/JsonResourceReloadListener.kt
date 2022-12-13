@@ -23,7 +23,7 @@ import com.google.gson.JsonElement
 import com.google.gson.JsonParseException
 import com.google.gson.stream.JsonReader
 import net.kyori.adventure.key.Key
-import org.kryptonmc.krypton.util.logger
+import org.apache.logging.log4j.LogManager
 import java.io.IOException
 
 abstract class JsonResourceReloadListener(private val gson: Gson, private val directory: String) : SimpleReloadListener<Map<Key, JsonElement>>() {
@@ -57,7 +57,7 @@ abstract class JsonResourceReloadListener(private val gson: Gson, private val di
 
     companion object {
 
-        private val LOGGER = logger<JsonResourceReloadListener>()
+        private val LOGGER = LogManager.getLogger()
         private const val PATH_SUFFIX = ".json"
         private const val PATH_SUFFIX_LENGTH = PATH_SUFFIX.length
 

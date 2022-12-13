@@ -36,18 +36,25 @@ import org.kryptonmc.krypton.util.writeVarInt
 @JvmRecord
 data class PacketOutAwardStatistics(val statistics: Object2IntMap<Statistic<*>>) : Packet {
 
-    constructor(buf: ByteBuf) : this(buf.readMap(::Object2IntOpenHashMap, ByteBuf::readStatistic, ByteBuf::readVarInt))
+    constructor(buf: ByteBuf) : this(buf.readMap(::Object2IntOpenHashMap, { readStatistic(it) }, { it.readVarInt() }))
 
     override fun write(buf: ByteBuf) {
-        buf.writeMap(statistics, { _, key -> buf.writeStatistic(key) }, ByteBuf::writeVarInt)
+        buf.writeMap(statistics, { buffer, key -> writeStatistic(buffer, key) }, { _, value -> buf.writeVarInt(value) })
     }
-}
 
-private fun ByteBuf.readStatistic(): Statistic<*> = readStatistic(readById(KryptonRegistries.STATISTIC_TYPE)!!)
+    companion object {
 
-private fun <T> ByteBuf.readStatistic(type: StatisticType<T>): Statistic<T> = type.get(readById(type.registry as KryptonRegistry<T>)!!)
+        @JvmStatic
+        private fun readStatistic(buf: ByteBuf): Statistic<*> = readStatistic(buf, buf.readById(KryptonRegistries.STATISTIC_TYPE)!!)
 
-private fun <T> ByteBuf.writeStatistic(statistic: Statistic<T>) {
-    writeId(KryptonRegistries.STATISTIC_TYPE, statistic.type)
-    writeId(statistic.type.registry as KryptonRegistry<T>, statistic.value)
+        @JvmStatic
+        private fun <T> readStatistic(buf: ByteBuf, type: StatisticType<T>): Statistic<T> =
+            type.get(buf.readById(type.registry as KryptonRegistry<T>)!!)
+
+        @JvmStatic
+        private fun <T> writeStatistic(buf: ByteBuf, statistic: Statistic<T>) {
+            buf.writeId(KryptonRegistries.STATISTIC_TYPE, statistic.type)
+            buf.writeId(statistic.type.registry as KryptonRegistry<T>, statistic.value)
+        }
+    }
 }

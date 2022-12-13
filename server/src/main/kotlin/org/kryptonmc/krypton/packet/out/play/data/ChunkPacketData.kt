@@ -46,11 +46,8 @@ data class ChunkPacketData(val heightmaps: CompoundTag, val data: ByteArray) : W
         buf.writeVarInt(0) // Number of block entities
     }
 
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-        return heightmaps == (other as ChunkPacketData).heightmaps && data.contentEquals(other.data)
-    }
+    override fun equals(other: Any?): Boolean =
+        this === other || other is ChunkPacketData && heightmaps == other.heightmaps && data.contentEquals(other.data)
 
     override fun hashCode(): Int {
         var result = 1

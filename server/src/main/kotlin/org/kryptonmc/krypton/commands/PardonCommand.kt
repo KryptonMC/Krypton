@@ -20,13 +20,8 @@ package org.kryptonmc.krypton.commands
 
 import com.mojang.brigadier.CommandDispatcher
 import org.kryptonmc.krypton.command.CommandSourceStack
-import org.kryptonmc.krypton.command.argument
+import org.kryptonmc.krypton.command.CommandSuggestionProvider
 import org.kryptonmc.krypton.command.arguments.GameProfileArgument
-import org.kryptonmc.krypton.command.arguments.gameProfileArgument
-import org.kryptonmc.krypton.command.literal
-import org.kryptonmc.krypton.command.matchesSubString
-import org.kryptonmc.krypton.command.permission
-import org.kryptonmc.krypton.command.runs
 import org.kryptonmc.krypton.locale.Messages
 
 object PardonCommand {
@@ -39,14 +34,11 @@ object PardonCommand {
             permission(KryptonPermission.PARDON)
             argument(TARGETS, GameProfileArgument) {
                 suggests { context, builder ->
-                    context.source.server.playerManager.banManager.profiles().forEach {
-                        if (builder.remainingLowerCase.matchesSubString(it.profile.name.lowercase())) builder.suggest(it.profile.name)
-                    }
-                    builder.buildFuture()
+                    CommandSuggestionProvider.suggest(context.source.server.playerManager.banManager.profileNames(), builder)
                 }
                 runs { context ->
                     val banManager = context.source.server.playerManager.banManager
-                    context.gameProfileArgument(TARGETS).profiles(context.source).forEach {
+                    GameProfileArgument.get(context, TARGETS).forEach {
                         if (!banManager.isBanned(it)) return@forEach
                         banManager.remove(it)
                         Messages.Commands.PARDON_SUCCESS.send(context.source, it.name)

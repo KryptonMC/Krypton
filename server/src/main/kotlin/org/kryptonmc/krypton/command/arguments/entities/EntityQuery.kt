@@ -18,14 +18,14 @@
  */
 package org.kryptonmc.krypton.command.arguments.entities
 
+import com.mojang.brigadier.exceptions.CommandSyntaxException
 import com.mojang.brigadier.exceptions.DynamicCommandExceptionType
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType
 import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer
 import org.kryptonmc.api.auth.GameProfile
 import org.kryptonmc.api.entity.player.Player
-import org.kryptonmc.krypton.adventure.toMessage
-import org.kryptonmc.krypton.adventure.toPlainText
-import org.kryptonmc.krypton.command.BrigadierExceptions
+import org.kryptonmc.krypton.adventure.KryptonAdventure
 import org.kryptonmc.krypton.command.CommandSourceStack
 import org.kryptonmc.krypton.command.arguments.CommandExceptions
 import org.kryptonmc.krypton.entity.KryptonEntity
@@ -42,22 +42,22 @@ data class EntityQuery(val type: Selector, private val args: List<EntityArgument
 
     constructor(type: Selector) : this(type, emptyList(), "")
 
-    fun entities(source: KryptonPlayer): List<KryptonEntity> {
+    fun getEntities(source: KryptonPlayer): List<KryptonEntity> {
         val players = source.server.playerManager.players
         when (type) {
             Selector.RANDOM_PLAYER -> return listOf(players.random())
             Selector.ALL_PLAYERS -> {
-                if (args.isNotEmpty()) return applyEntities(source, EntityArgumentExceptions.PLAYER_NOT_FOUND)
+                if (args.isNotEmpty()) return tryApplyEntities(source, EntityArgumentExceptions.PLAYER_NOT_FOUND)
                 return players
             }
             Selector.EXECUTOR -> return listOf(source)
             Selector.ALL_ENTITIES -> {
-                if (args.isNotEmpty()) return applyEntities(source, EntityArgumentExceptions.ENTITY_NOT_FOUND)
+                if (args.isNotEmpty()) return tryApplyEntities(source, EntityArgumentExceptions.ENTITY_NOT_FOUND)
                 return players.plus(source.world.entities)
             }
             Selector.NEAREST_PLAYER -> {
                 var currentNearest = players.get(0)
-                players.forEach { if (it.distanceTo(source) < currentNearest.distanceTo(source)) currentNearest = it }
+                players.forEach { if (distance(it, source) < distance(currentNearest, source)) currentNearest = it }
                 return listOf(currentNearest)
             }
             Selector.PLAYER -> {
@@ -68,28 +68,26 @@ data class EntityQuery(val type: Selector, private val args: List<EntityArgument
         }
     }
 
-    private fun applyEntities(source: KryptonPlayer, exceptionType: SimpleCommandExceptionType): List<KryptonEntity> {
+    private fun tryApplyEntities(source: KryptonPlayer, exceptionType: SimpleCommandExceptionType): List<KryptonEntity> {
         val entities = applyArguments(source.server.players.asSequence().plus(source.world.entities), source)
         if (entities.isEmpty()) throw exceptionType.create()
         return entities
     }
 
-    fun entity(source: KryptonPlayer): KryptonEntity = entities(source).get(0)
-
-    fun players(source: CommandSourceStack): List<KryptonPlayer> {
+    fun getPlayers(source: CommandSourceStack): List<KryptonPlayer> {
         if (source.isPlayer()) {
-            if (playerName.isNotEmpty()) return listOf(source.server.getPlayer(playerName).orThrow())
-            return EntityAsPlayerList(entities(source.getPlayerUnchecked()))
+            if (playerName.isNotEmpty()) return listOf(playerOrThrow(source.server.getPlayer(playerName)))
+            return EntityAsPlayerList(getEntities(source.entity as KryptonPlayer))
         }
-        return listOf(source.server.getPlayer(playerName).orThrow())
+        return listOf(playerOrThrow(source.server.getPlayer(playerName)))
     }
 
-    fun profiles(source: CommandSourceStack): List<GameProfile> {
+    fun getProfiles(source: CommandSourceStack): List<GameProfile> {
         if (source.isPlayer()) {
-            if (playerName.isNotEmpty()) return listOf(source.server.profileCache.get(playerName).orThrow())
-            return players(source).map(KryptonPlayer::profile)
+            if (playerName.isNotEmpty()) return listOf(playerOrThrow(source.server.profileCache.get(playerName)))
+            return getPlayers(source).map { it.profile }
         }
-        if (playerName.isNotEmpty()) return listOf(source.server.profileCache.get(playerName).orThrow())
+        if (playerName.isNotEmpty()) return listOf(playerOrThrow(source.server.profileCache.get(playerName)))
         return emptyList()
     }
 
@@ -131,8 +129,8 @@ data class EntityQuery(val type: Selector, private val args: List<EntityArgument
                 "level" -> notImplemented("level")
                 "gamemode" -> entities = applyGameModeArgument(entities, value, exclude)
                 "name" -> entities = applyNameArgument(entities, value, exclude)
-                "x_rotation" -> entities = applyRotationArgument(entities, value, KryptonEntity::yaw)
-                "y_rotation" -> entities = applyRotationArgument(entities, value, KryptonEntity::pitch)
+                "x_rotation" -> entities = applyRotationArgument(entities, value) { it.yaw }
+                "y_rotation" -> entities = applyRotationArgument(entities, value) { it.pitch }
                 "type" -> notImplemented("type")
                 "nbt" -> notImplemented("nbt")
                 "advancements" -> notImplemented("advancements")
@@ -140,10 +138,10 @@ data class EntityQuery(val type: Selector, private val args: List<EntityArgument
                 "sort" -> {
                     val sorter = EntityArguments.Sorter.fromName(value.toString()) ?: throw EntityArgumentExceptions.INVALID_SORT_TYPE.create(value)
                     entities = when (sorter) {
-                        EntityArguments.Sorter.NEAREST -> entities.sortedBy(source::distanceTo)
-                        EntityArguments.Sorter.FURTHEST -> entities.sortedByDescending(source::distanceTo)
+                        EntityArguments.Sorter.NEAREST -> entities.sortedBy { distance(it, source) }
+                        EntityArguments.Sorter.FURTHEST -> entities.sortedByDescending { distance(it, source) }
                         EntityArguments.Sorter.RANDOM -> entities.shuffled()
-                        EntityArguments.Sorter.ARBITRARY -> entities.sortedBy(KryptonEntity::ticksExisted)
+                        EntityArguments.Sorter.ARBITRARY -> entities.sortedBy { it.ticksExisted }
                     }
                 }
                 "limit" -> {
@@ -165,7 +163,7 @@ data class EntityQuery(val type: Selector, private val args: List<EntityArgument
     }
 
     private fun applyNameArgument(entities: Sequence<KryptonEntity>, value: Any, exclude: Boolean): Sequence<KryptonEntity> = entities.filter {
-        val name = if (it is Player) it.profile.name else it.name.toPlainText()
+        val name = if (it is Player) it.profile.name else PlainTextComponentSerializer.plainText().serialize(it.name)
         if (exclude) name != value else name == value
     }
 
@@ -173,32 +171,32 @@ data class EntityQuery(val type: Selector, private val args: List<EntityArgument
         checkIntOrRange(value.toString())
         if (value.toString().startsWith("..")) {
             val distance = value.toString().replace("..", "").toInt()
-            return entities.filter { it.distanceTo(source) <= distance }
+            return entities.filter { distance(it, source) <= distance }
         }
         if (!value.toString().contains("..")) {
             checkInt(value.toString())
             return entities.filter {
-                val int = it.distanceTo(source).toInt()
-                if (int < 0) throw EntityArgumentExceptions.DISTANCE_NEGATIVE.create()
-                int == value.toString().toInt()
+                val distance = distance(it, source).toInt()
+                if (distance < 0) throw EntityArgumentExceptions.DISTANCE_NEGATIVE.create()
+                distance == value.toString().toInt()
             }
         }
-        val range = value.toString().toIntRange()!!
-        return entities.filter { it.distanceTo(source) >= range.first && it.distanceTo(source) <= range.last }
+        val range = toIntRange(value.toString())!!
+        return entities.filter {
+            val distance = distance(it, source)
+            distance >= range.first && distance <= range.last
+        }
     }
 
-    private inline fun applyRotationArgument(
-        entities: Sequence<KryptonEntity>,
-        value: Any,
-        crossinline valueGetter: (KryptonEntity) -> Float
-    ): Sequence<KryptonEntity> {
+    private inline fun applyRotationArgument(entities: Sequence<KryptonEntity>, value: Any,
+                                             crossinline valueGetter: (KryptonEntity) -> Float): Sequence<KryptonEntity> {
         checkIntOrRange(value.toString())
         if (value.toString().startsWith("..")) {
             val pitch = value.toString().replace("..", "").toInt()
             return entities.filter { valueGetter(it) <= pitch }
         }
         if (!value.toString().contains("..")) return entities.filter { valueGetter(it).toInt() == value.toString().toInt() }
-        val range = value.toString().toIntRange()!!
+        val range = toIntRange(value.toString())!!
         return entities.filter { valueGetter(it) >= range.first && valueGetter(it) <= range.last }
     }
 
@@ -215,13 +213,13 @@ data class EntityQuery(val type: Selector, private val args: List<EntityArgument
     }
 
     private fun checkInt(string: String) {
-        if (string.toIntOrNull() == null) throw BrigadierExceptions.readerExpectedInt().create()
+        if (string.toIntOrNull() == null) throw CommandSyntaxException.BUILT_IN_EXCEPTIONS.readerExpectedInt().create()
     }
 
     private fun checkIntOrRange(string: String) {
         if (string.toIntOrNull() != null) return
         if (string.startsWith("..") && string.substring(2).toIntOrNull() != null) return
-        if (string.contains("..") && string.toIntRange() != null) return
+        if (string.contains("..") && toIntRange(string) != null) return
         throw OUT_OF_RANGE.create()
     }
 
@@ -257,20 +255,30 @@ data class EntityQuery(val type: Selector, private val args: List<EntityArgument
 
     companion object {
 
-        private val NOT_IMPLEMENTED = DynamicCommandExceptionType { Component.text(it.toString()).toMessage() }
+        private val NOT_IMPLEMENTED = DynamicCommandExceptionType { KryptonAdventure.asMessage(Component.text(it.toString())) }
         private val OUT_OF_RANGE = CommandExceptions.simple("argument.range.empty")
+
+        @JvmStatic
+        private fun toIntRange(input: String): IntRange? {
+            if (input.startsWith("...")) {
+                try {
+                    return IntRange(0, input.replace("...", "").toInt())
+                } catch (_: NumberFormatException) {
+                    return null
+                }
+            }
+            val values = input.split("..")
+            try {
+                return IntRange(values.get(0).toInt(), values.get(1).toInt())
+            } catch (_: NumberFormatException) {
+                return null
+            }
+        }
+
+        @JvmStatic
+        private fun distance(first: KryptonEntity, second: KryptonEntity): Double = first.position.distanceSquared(second.position)
+
+        @JvmStatic
+        private fun <T : Any> playerOrThrow(player: T?): T = player ?: throw EntityArgumentExceptions.PLAYER_NOT_FOUND.create()
     }
 }
-
-private fun String.toIntRange(): IntRange? {
-    if (startsWith("...")) {
-        val string = replace("..", "").toIntOrNull() ?: return null
-        return IntRange(0, string)
-    }
-    val values = split("..")
-    return IntRange(values.get(0).toInt(), values.get(1).toIntOrNull() ?: return null)
-}
-
-private fun KryptonEntity.distanceTo(other: KryptonEntity): Double = position.distanceSquared(other.position)
-
-private fun <T> T?.orThrow(): T = this ?: throw EntityArgumentExceptions.PLAYER_NOT_FOUND.create()

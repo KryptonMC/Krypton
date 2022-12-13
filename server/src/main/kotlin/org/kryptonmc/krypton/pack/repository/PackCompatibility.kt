@@ -32,8 +32,7 @@ enum class PackCompatibility(type: String) {
     val description: Component = Component.translatable("pack.incompatible.$type", NamedTextColor.GRAY)
     val confirmation: Component = Component.translatable("pack.incompatible.confirm.$type")
 
-    val isCompatible: Boolean
-        get() = this == COMPATIBLE
+    fun isCompatible(): Boolean = this == COMPATIBLE
 
     companion object {
 

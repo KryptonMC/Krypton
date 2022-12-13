@@ -25,6 +25,7 @@ package org.kryptonmc.krypton.plugin.loader
 
 import com.google.gson.stream.JsonReader
 import com.google.inject.Module
+import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
 import org.kryptonmc.api.plugin.InvalidPluginException
 import org.kryptonmc.api.plugin.PluginContainer
@@ -33,7 +34,6 @@ import org.kryptonmc.krypton.plugin.KryptonPluginContainer
 import org.kryptonmc.krypton.plugin.KryptonPluginDependency
 import org.kryptonmc.krypton.plugin.PluginClassLoader
 import org.kryptonmc.krypton.util.NoSpread
-import org.kryptonmc.krypton.util.mapPersistentList
 import org.kryptonmc.processor.SerializedPluginDescription
 import java.nio.file.Files
 import java.nio.file.Path
@@ -48,7 +48,7 @@ object PluginLoader {
     fun loadDescription(source: Path): LoadedPluginDescriptionCandidate {
         val serialized = findMetadata(source) ?: throw InvalidPluginException("Could not find a valid krypton-plugin-meta.json file!")
         if (!serialized.id.matches(SerializedPluginDescription.ID_REGEX)) throw InvalidPluginException("Plugin ID ${serialized.id} is invalid!")
-        return serialized.toCandidate(source)
+        return toCandidate(serialized, source)
     }
 
     @JvmStatic
@@ -76,9 +76,7 @@ object PluginLoader {
         var foundBungeeBukkitPluginFile = false
         generateSequence { input.nextJarEntry }.forEach { entry ->
             if (entry.name == "plugin.yml" || entry.name == "bungee.yml") foundBungeeBukkitPluginFile = true
-            if (entry.name == "krypton-plugin-meta.json") {
-                JsonReader(input.reader()).use { return SerializedPluginDescription.read(it) }
-            }
+            if (entry.name == "krypton-plugin-meta.json") return JsonReader(input.reader()).use(SerializedPluginDescription::read)
         }
 
         if (foundBungeeBukkitPluginFile) {
@@ -87,9 +85,12 @@ object PluginLoader {
         }
         return null
     }
-}
 
-private fun SerializedPluginDescription.toCandidate(source: Path): LoadedPluginDescriptionCandidate {
-    val dependencies = dependencies.mapPersistentList { KryptonPluginDependency(it.id, it.optional) }
-    return LoadedPluginDescriptionCandidate(id, name, version, description, authors.toImmutableList(), dependencies, source, main)
+    @JvmStatic
+    private fun toCandidate(description: SerializedPluginDescription, source: Path): LoadedPluginDescriptionCandidate {
+        val dependencies = description.dependencies
+            .mapTo(persistentListOf<KryptonPluginDependency>().builder()) { KryptonPluginDependency(it.id, it.optional) }
+        return LoadedPluginDescriptionCandidate(description.id, description.name, description.version, description.description,
+            description.authors.toImmutableList(), dependencies, source, description.main)
+    }
 }

@@ -21,7 +21,7 @@ package org.kryptonmc.krypton.pack.metadata
 import com.google.gson.JsonElement
 import com.google.gson.JsonObject
 import net.kyori.adventure.key.Key
-import org.kryptonmc.krypton.util.logger
+import org.apache.logging.log4j.LogManager
 import java.util.function.Predicate
 import java.util.regex.Pattern
 
@@ -55,13 +55,12 @@ class ResourceFilterData(private val blockList: List<KeyPattern>) {
 
     companion object {
 
-        private val LOGGER = logger<ResourceFilterData>()
+        private val LOGGER = LogManager.getLogger()
         private const val BLOCKS_DATA = "blocks"
         @JvmField
         val SERIALIZER: MetadataSerializer<ResourceFilterData> = object : MetadataSerializer<ResourceFilterData> {
 
-            override val name: String
-                get() = "filter"
+            override fun name(): String = "filter"
 
             override fun fromJson(json: JsonObject): ResourceFilterData {
                 if (!json.has(BLOCKS_DATA) || !json.get(BLOCKS_DATA).isJsonArray) {

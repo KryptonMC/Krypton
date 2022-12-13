@@ -20,6 +20,7 @@ package org.kryptonmc.krypton.world.data
 
 import org.kryptonmc.api.world.Difficulty
 import org.kryptonmc.api.world.GameMode
+import org.kryptonmc.krypton.util.BlockPos
 import org.kryptonmc.krypton.world.generation.WorldGenerationSettings
 import org.kryptonmc.krypton.world.rule.KryptonGameRuleHolder
 import java.nio.file.Path
@@ -56,4 +57,6 @@ interface WorldData {
     var wanderingTraderSpawnDelay: Int
     var wanderingTraderSpawnChance: Int
     var wanderingTraderId: UUID?
+
+    fun spawnPos(): BlockPos = BlockPos(spawnX, spawnY, spawnZ)
 }

@@ -21,7 +21,7 @@ package org.kryptonmc.krypton.packet.`in`.play
 import io.netty.buffer.ByteBuf
 import org.kryptonmc.api.entity.Hand
 import org.kryptonmc.krypton.packet.Packet
-import org.kryptonmc.krypton.util.BlockHitResult
+import org.kryptonmc.krypton.util.hit.BlockHitResult
 import org.kryptonmc.krypton.util.readBlockHitResult
 import org.kryptonmc.krypton.util.readEnum
 import org.kryptonmc.krypton.util.readVarInt
@@ -30,11 +30,7 @@ import org.kryptonmc.krypton.util.writeEnum
 import org.kryptonmc.krypton.util.writeVarInt
 
 @JvmRecord
-data class PacketInUseItemOn(
-    val hand: Hand,
-    val hitResult: BlockHitResult,
-    val sequence: Int
-) : Packet {
+data class PacketInUseItemOn(val hand: Hand, val hitResult: BlockHitResult, val sequence: Int) : Packet {
 
     constructor(buf: ByteBuf) : this(buf.readEnum<Hand>(), buf.readBlockHitResult(), buf.readVarInt())
 

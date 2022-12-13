@@ -25,25 +25,26 @@ import org.kryptonmc.krypton.event.user.whitelist.KryptonRemoveWhitelistedIpEven
 import org.kryptonmc.krypton.event.user.whitelist.KryptonRemoveWhitelistedProfileEvent
 import org.kryptonmc.krypton.event.user.whitelist.KryptonWhitelistIpEvent
 import org.kryptonmc.krypton.event.user.whitelist.KryptonWhitelistProfileEvent
-import org.kryptonmc.krypton.util.asString
+import org.kryptonmc.krypton.util.AddressUtil
 import java.net.InetAddress
 
 class KryptonWhitelistService(private val server: KryptonServer) : WhitelistService {
 
     private val whitelist = server.playerManager.whitelistManager
     override val isEnabled: Boolean
-        get() = whitelist.isEnabled
+        get() = whitelist.isEnabled()
 
     override fun isWhitelisted(profile: GameProfile): Boolean = whitelist.isWhitelisted(profile)
 
-    override fun isWhitelisted(address: InetAddress): Boolean = whitelist.isWhitelisted(address.asString())
+    override fun isWhitelisted(address: InetAddress): Boolean = whitelist.isWhitelisted(AddressUtil.asString(address))
 
     override fun add(profile: GameProfile) {
         server.eventManager.fire(KryptonWhitelistProfileEvent(profile)).thenApplyAsync { if (it.result.isAllowed) whitelist.add(profile) }
     }
 
     override fun add(address: InetAddress) {
-        server.eventManager.fire(KryptonWhitelistIpEvent(address)).thenApplyAsync { if (it.result.isAllowed) whitelist.add(address.asString()) }
+        server.eventManager.fire(KryptonWhitelistIpEvent(address))
+            .thenApplyAsync { if (it.result.isAllowed) whitelist.add(AddressUtil.asString(address)) }
     }
 
     override fun remove(profile: GameProfile) {
@@ -53,6 +54,6 @@ class KryptonWhitelistService(private val server: KryptonServer) : WhitelistServ
 
     override fun remove(address: InetAddress) {
         server.eventManager.fire(KryptonRemoveWhitelistedIpEvent(address))
-            .thenApplyAsync { if (it.result.isAllowed) whitelist.remove(address.asString()) }
+            .thenApplyAsync { if (it.result.isAllowed) whitelist.remove(AddressUtil.asString(address)) }
     }
 }

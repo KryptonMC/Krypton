@@ -18,14 +18,14 @@
  */
 package org.kryptonmc.krypton.util
 
-import com.mojang.brigadier.Message
 import net.kyori.adventure.key.InvalidKeyException
 import net.kyori.adventure.key.Key
-import net.kyori.adventure.text.Component
-import org.kryptonmc.krypton.adventure.toMessage
 import org.kryptonmc.serialization.DataResult
 
 object Keys {
+
+    @JvmStatic
+    fun isValidCharacter(char: Char): Boolean = Key.allowedInValue(char) || char == ':'
 
     @JvmStatic
     fun create(namespace: String, path: String): Key? {
@@ -50,7 +50,4 @@ object Keys {
         if (key == null) return "$type.unregistered_sadface"
         return "$type.${key.namespace()}.${key.value().replace('/', '.')}"
     }
-
-    @JvmStatic
-    fun translationComponent(type: String, key: Key?): Message = Component.translatable(translation(type, key)).toMessage()
 }

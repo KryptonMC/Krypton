@@ -24,12 +24,13 @@ import com.mojang.brigadier.context.CommandContext
 import com.mojang.brigadier.exceptions.CommandSyntaxException
 import com.mojang.brigadier.suggestion.Suggestions
 import com.mojang.brigadier.suggestion.SuggestionsBuilder
-import org.kryptonmc.api.entity.player.Player
+import org.kryptonmc.api.util.Vec3d
+import org.kryptonmc.krypton.command.CommandSourceStack
+import org.kryptonmc.krypton.command.CommandSuggestionProvider
 import org.kryptonmc.krypton.command.arguments.coordinates.Coordinates
 import org.kryptonmc.krypton.command.arguments.coordinates.LocalCoordinates
 import org.kryptonmc.krypton.command.arguments.coordinates.TextCoordinates
 import org.kryptonmc.krypton.command.arguments.coordinates.WorldCoordinates
-import org.kryptonmc.krypton.command.suggestCoordinates
 import java.util.concurrent.CompletableFuture
 
 /**
@@ -46,10 +47,10 @@ class VectorArgument private constructor(private val correctCenter: Boolean = tr
     }
 
     override fun <S> listSuggestions(context: CommandContext<S>, builder: SuggestionsBuilder): CompletableFuture<Suggestions> {
-        if (context.source !is Player) return Suggestions.empty()
+        if (context.source !is CommandSourceStack) return Suggestions.empty()
         val remaining = builder.remaining
         val suggestion = if (remaining.isNotEmpty() && remaining[0] == '^') TextCoordinates.CENTER_LOCAL else TextCoordinates.CENTER_GLOBAL
-        return builder.suggestCoordinates(remaining, suggestion) {
+        return CommandSuggestionProvider.suggestCoordinates(remaining, suggestion, builder) {
             try {
                 parse(StringReader(it))
                 true
@@ -72,5 +73,9 @@ class VectorArgument private constructor(private val correctCenter: Boolean = tr
          */
         @JvmStatic
         fun normal(): VectorArgument = NORMAL
+
+        @JvmStatic
+        fun get(context: CommandContext<CommandSourceStack>, name: String): Vec3d =
+            context.getArgument(name, Coordinates::class.java).position(context.source)
     }
 }

@@ -19,11 +19,8 @@
 package org.kryptonmc.krypton.util
 
 import com.mojang.brigadier.exceptions.CommandSyntaxException
+import org.apache.logging.log4j.LogManager
 import org.jetbrains.annotations.VisibleForTesting
-import org.kryptonmc.api.block.Block
-import org.kryptonmc.api.entity.EntityType
-import org.kryptonmc.api.entity.attribute.AttributeType
-import org.kryptonmc.api.item.ItemType
 import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.api.tags.BannerPatternTags
 import org.kryptonmc.api.tags.BiomeTags
@@ -31,7 +28,6 @@ import org.kryptonmc.api.tags.BlockTags
 import org.kryptonmc.api.tags.EntityTypeTags
 import org.kryptonmc.api.tags.FluidTags
 import org.kryptonmc.api.tags.ItemTags
-import org.kryptonmc.api.world.rule.GameRule
 import org.kryptonmc.krypton.command.BrigadierExceptions
 import org.kryptonmc.krypton.command.argument.ArgumentSerializers
 import org.kryptonmc.krypton.entity.EntityFactory
@@ -44,7 +40,7 @@ import java.util.function.Function
 
 object Bootstrap {
 
-    private val LOGGER = logger<Bootstrap>()
+    private val LOGGER = LogManager.getLogger()
     @Volatile
     private var bootstrapped = false
     private val kryptonClass by lazy { Class.forName("org.kryptonmc.api.Krypton") }
@@ -115,12 +111,12 @@ object Bootstrap {
     @JvmStatic
     private fun collectMissingTranslations(): Set<String> {
         val missing = TreeSet<String>()
-        checkTranslations(KryptonRegistries.ATTRIBUTE, AttributeType::translationKey, missing)
-        checkTranslations(KryptonRegistries.ENTITY_TYPE, EntityType<*>::translationKey, missing)
-        checkTranslations(KryptonRegistries.ITEM, ItemType::translationKey, missing)
-        checkTranslations(KryptonRegistries.BLOCK, Block::translationKey, missing)
+        checkTranslations(KryptonRegistries.ATTRIBUTE, { it.translationKey() }, missing)
+        checkTranslations(KryptonRegistries.ENTITY_TYPE, { it.translationKey() }, missing)
+        checkTranslations(KryptonRegistries.ITEM, { it.translationKey() }, missing)
+        checkTranslations(KryptonRegistries.BLOCK, { it.translationKey() }, missing)
         checkTranslations(KryptonRegistries.CUSTOM_STATISTIC, { "stat.${it.asString().replace(':', '.')}" }, missing)
-        checkTranslations(KryptonRegistries.GAME_RULES, GameRule<*>::translationKey, missing)
+        checkTranslations(KryptonRegistries.GAME_RULES, { it.translationKey() }, missing)
         return missing
     }
 

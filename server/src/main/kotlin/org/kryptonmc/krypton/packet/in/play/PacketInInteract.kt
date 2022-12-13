@@ -31,20 +31,18 @@ import org.kryptonmc.krypton.util.writeVarInt
 @JvmRecord
 data class PacketInInteract(val entityId: Int, val action: Action, val sneaking: Boolean) : Packet {
 
-    constructor(buf: ByteBuf) : this(buf, buf.readVarInt(), buf.readEnum<ActionType>())
-
-    private constructor(buf: ByteBuf, entityId: Int, type: ActionType) : this(entityId, type.read(buf), buf.readBoolean())
+    constructor(buf: ByteBuf) : this(buf.readVarInt(), buf.readEnum<ActionType>().read(buf), buf.readBoolean())
 
     override fun write(buf: ByteBuf) {
         buf.writeVarInt(entityId)
-        buf.writeEnum(action.type)
+        buf.writeEnum(action.type())
         action.write(buf)
         buf.writeBoolean(sneaking)
     }
 
     sealed interface Action : Writable {
 
-        val type: ActionType
+        fun type(): ActionType
 
         fun handle(handler: Handler)
     }
@@ -52,10 +50,9 @@ data class PacketInInteract(val entityId: Int, val action: Action, val sneaking:
     @JvmRecord
     data class InteractAction(val hand: Hand) : Action {
 
-        override val type: ActionType
-            get() = ActionType.INTERACT
-
         constructor(buf: ByteBuf) : this(buf.readEnum<Hand>())
+
+        override fun type(): ActionType = ActionType.INTERACT
 
         override fun handle(handler: Handler) {
             handler.onInteract(hand)
@@ -68,8 +65,7 @@ data class PacketInInteract(val entityId: Int, val action: Action, val sneaking:
 
     object AttackAction : Action {
 
-        override val type: ActionType
-            get() = ActionType.ATTACK
+        override fun type(): ActionType = ActionType.ATTACK
 
         override fun handle(handler: Handler) {
             handler.onAttack()
@@ -83,10 +79,9 @@ data class PacketInInteract(val entityId: Int, val action: Action, val sneaking:
     @JvmRecord
     data class InteractAtAction(val x: Float, val y: Float, val z: Float, val hand: Hand) : Action {
 
-        override val type: ActionType
-            get() = ActionType.INTERACT_AT
-
         constructor(buf: ByteBuf) : this(buf.readFloat(), buf.readFloat(), buf.readFloat(), buf.readEnum<Hand>())
+
+        override fun type(): ActionType = ActionType.INTERACT_AT
 
         override fun handle(handler: Handler) {
             handler.onInteractAt(hand, x, y, z)
@@ -111,9 +106,9 @@ data class PacketInInteract(val entityId: Int, val action: Action, val sneaking:
 
     enum class ActionType(private val reader: ByteBufReader<Action>) {
 
-        INTERACT(::InteractAction),
+        INTERACT({ InteractAction(it) }),
         ATTACK({ AttackAction }),
-        INTERACT_AT(::InteractAtAction);
+        INTERACT_AT({ InteractAtAction(it) });
 
         fun read(buf: ByteBuf): Action = reader.read(buf)
     }

@@ -20,9 +20,9 @@ package org.kryptonmc.krypton.server
 
 import com.google.gson.stream.JsonReader
 import com.google.gson.stream.JsonWriter
+import org.apache.logging.log4j.LogManager
 import org.kryptonmc.krypton.util.jsonReader
 import org.kryptonmc.krypton.util.jsonWriter
-import org.kryptonmc.krypton.util.logger
 import java.io.IOException
 import java.nio.file.Files
 import java.nio.file.Path
@@ -73,6 +73,6 @@ abstract class PersistentManager(private val path: Path) {
 
     companion object {
 
-        private val LOGGER = logger<PersistentManager>()
+        private val LOGGER = LogManager.getLogger()
     }
 }

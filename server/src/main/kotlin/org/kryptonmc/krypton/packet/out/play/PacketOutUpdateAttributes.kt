@@ -19,6 +19,7 @@
 package org.kryptonmc.krypton.packet.out.play
 
 import io.netty.buffer.ByteBuf
+import kotlinx.collections.immutable.persistentListOf
 import org.kryptonmc.api.entity.attribute.AttributeModifier
 import org.kryptonmc.api.entity.attribute.AttributeType
 import org.kryptonmc.api.entity.attribute.BasicModifierOperation
@@ -26,7 +27,6 @@ import org.kryptonmc.krypton.entity.attribute.KryptonAttribute
 import org.kryptonmc.krypton.entity.attribute.KryptonAttributeModifier
 import org.kryptonmc.krypton.packet.EntityPacket
 import org.kryptonmc.krypton.registry.KryptonRegistries
-import org.kryptonmc.krypton.util.mapPersistentList
 import org.kryptonmc.krypton.util.readKey
 import org.kryptonmc.krypton.util.readList
 import org.kryptonmc.krypton.util.readUUID
@@ -40,7 +40,8 @@ import java.util.Collections
 @JvmRecord
 data class PacketOutUpdateAttributes(override val entityId: Int, val attributes: Collection<AttributeSnapshot>) : EntityPacket {
 
-    constructor(id: Int, attributes: Iterable<KryptonAttribute>) : this(id, attributes.mapPersistentList(AttributeSnapshot::from))
+    constructor(id: Int, attributes: Iterable<KryptonAttribute>) : this(id,
+        attributes.mapTo(persistentListOf<AttributeSnapshot>().builder(), AttributeSnapshot::from).build())
 
     constructor(buf: ByteBuf) : this(buf.readVarInt(), buf.readList { _ ->
         val type = buf.readKey().let { requireNotNull(KryptonRegistries.ATTRIBUTE.get(it)) { "Cannot find attribute type with key $it!" } }

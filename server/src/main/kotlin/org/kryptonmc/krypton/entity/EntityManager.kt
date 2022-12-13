@@ -21,6 +21,7 @@ package org.kryptonmc.krypton.entity
 import ca.spottedleaf.dataconverter.minecraft.datatypes.MCTypeRegistry
 import net.kyori.adventure.key.InvalidKeyException
 import net.kyori.adventure.key.Key
+import org.apache.logging.log4j.LogManager
 import org.kryptonmc.api.util.Vec3d
 import org.kryptonmc.api.world.rule.GameRules
 import org.kryptonmc.krypton.KryptonPlatform
@@ -31,7 +32,6 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateTime
 import org.kryptonmc.krypton.registry.KryptonRegistries
 import org.kryptonmc.krypton.util.DataConversion
 import org.kryptonmc.krypton.util.SectionPos
-import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.util.nbt.getDataVersion
 import org.kryptonmc.krypton.util.nbt.putDataVersion
 import org.kryptonmc.krypton.world.KryptonWorld
@@ -176,7 +176,7 @@ class EntityManager(val world: KryptonWorld) : AutoCloseable {
         private const val ID_TAG = "id"
         private const val POSITION_TAG = "Position"
         private const val ENTITIES_TAG = "Entities"
-        private val LOGGER = logger<EntityManager>()
+        private val LOGGER = LogManager.getLogger()
 
         @JvmStatic
         private fun chunksInRange(location: Vec3d, range: Int): LongArray {

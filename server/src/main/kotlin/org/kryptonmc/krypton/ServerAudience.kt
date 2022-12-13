@@ -19,9 +19,8 @@
 package org.kryptonmc.krypton
 
 import net.kyori.adventure.audience.Audience
-import net.kyori.adventure.audience.MessageType
-import net.kyori.adventure.identity.Identified
-import net.kyori.adventure.identity.Identity
+import net.kyori.adventure.chat.ChatType
+import net.kyori.adventure.chat.SignedMessage
 import net.kyori.adventure.text.Component
 import org.kryptonmc.api.Server
 import org.kryptonmc.krypton.adventure.PacketGroupingAudience
@@ -41,14 +40,24 @@ interface ServerAudience : Server, PacketGroupingAudience {
 
     override fun audiences(): Iterable<Audience> = players.asSequence().plus(console).asIterable()
 
-    override fun sendMessage(source: Identified, message: Component, type: MessageType) {
-        super<PacketGroupingAudience>.sendMessage(source, message, type)
-        console.sendMessage(source, message, type)
+    override fun sendMessage(message: Component) {
+        super<PacketGroupingAudience>.sendMessage(message)
+        console.sendMessage(message)
     }
 
-    override fun sendMessage(source: Identity, message: Component, type: MessageType) {
-        super<PacketGroupingAudience>.sendMessage(source, message, type)
-        console.sendMessage(source, message, type)
+    override fun sendMessage(message: Component, boundChatType: ChatType.Bound) {
+        super<PacketGroupingAudience>.sendMessage(message, boundChatType)
+        console.sendMessage(message, boundChatType)
+    }
+
+    override fun sendMessage(signedMessage: SignedMessage, boundChatType: ChatType.Bound) {
+        super<PacketGroupingAudience>.sendMessage(signedMessage, boundChatType)
+        console.sendMessage(signedMessage, boundChatType)
+    }
+
+    override fun deleteMessage(signature: SignedMessage.Signature) {
+        super<PacketGroupingAudience>.deleteMessage(signature)
+        console.deleteMessage(signature)
     }
 
     override fun sendGroupedPacket(players: Collection<KryptonPlayer>, packet: Packet) {

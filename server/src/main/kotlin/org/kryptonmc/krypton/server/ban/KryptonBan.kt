@@ -20,8 +20,8 @@ package org.kryptonmc.krypton.server.ban
 
 import com.google.gson.stream.JsonWriter
 import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer
 import org.kryptonmc.api.user.ban.Ban
-import org.kryptonmc.krypton.adventure.toLegacySectionText
 import java.time.OffsetDateTime
 import java.time.format.DateTimeFormatter
 
@@ -32,8 +32,8 @@ abstract class KryptonBan(
     override val expirationDate: OffsetDateTime?
 ) : Ban {
 
-    private val sourceName by lazy { source.toLegacySectionText() }
-    private val reasonString by lazy { reason.toLegacySectionText() }
+    private val sourceName by lazy { LegacyComponentSerializer.legacySection().serialize(source) }
+    private val reasonString by lazy { LegacyComponentSerializer.legacySection().serialize(reason) }
 
     abstract fun writeKey(writer: JsonWriter)
 

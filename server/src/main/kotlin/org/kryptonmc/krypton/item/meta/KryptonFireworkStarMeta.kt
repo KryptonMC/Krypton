@@ -21,7 +21,6 @@ package org.kryptonmc.krypton.item.meta
 import org.kryptonmc.api.item.data.FireworkEffect
 import org.kryptonmc.api.item.meta.FireworkStarMeta
 import org.kryptonmc.krypton.item.data.KryptonFireworkEffect
-import org.kryptonmc.krypton.item.data.save
 import org.kryptonmc.nbt.CompoundTag
 
 class KryptonFireworkStarMeta(data: CompoundTag) : AbstractItemMeta<KryptonFireworkStarMeta>(data), FireworkStarMeta {
@@ -31,7 +30,7 @@ class KryptonFireworkStarMeta(data: CompoundTag) : AbstractItemMeta<KryptonFirew
     override fun copy(data: CompoundTag): KryptonFireworkStarMeta = KryptonFireworkStarMeta(data)
 
     override fun withEffect(effect: FireworkEffect?): KryptonFireworkStarMeta {
-        val newData = if (effect == null) data.remove(EFFECT_TAG) else data.put(EFFECT_TAG, effect.save())
+        val newData = if (effect == null) data.remove(EFFECT_TAG) else data.put(EFFECT_TAG, KryptonFireworkEffect.save(effect))
         return KryptonFireworkStarMeta(newData)
     }
 
@@ -52,7 +51,7 @@ class KryptonFireworkStarMeta(data: CompoundTag) : AbstractItemMeta<KryptonFirew
         override fun effect(effect: FireworkEffect?): FireworkStarMeta.Builder = apply { this.effect = effect }
 
         override fun buildData(): CompoundTag.Builder = super.buildData().apply {
-            if (effect != null) put(EFFECT_TAG, effect!!.save())
+            if (effect != null) put(EFFECT_TAG, KryptonFireworkEffect.save(effect!!))
         }
 
         override fun build(): KryptonFireworkStarMeta = KryptonFireworkStarMeta(buildData().build())
@@ -65,7 +64,7 @@ class KryptonFireworkStarMeta(data: CompoundTag) : AbstractItemMeta<KryptonFirew
         @JvmStatic
         private fun getEffect(data: CompoundTag): KryptonFireworkEffect? {
             if (data.contains(EFFECT_TAG, CompoundTag.ID)) return null
-            return KryptonFireworkEffect.from(data.getCompound(EFFECT_TAG))
+            return KryptonFireworkEffect.load(data.getCompound(EFFECT_TAG))
         }
     }
 }

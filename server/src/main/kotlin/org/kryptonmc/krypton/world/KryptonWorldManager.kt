@@ -19,6 +19,7 @@
 package org.kryptonmc.krypton.world
 
 import net.kyori.adventure.key.Key
+import org.apache.logging.log4j.LogManager
 import org.kryptonmc.api.resource.ResourceKey
 import org.kryptonmc.api.resource.ResourceKeys
 import org.kryptonmc.api.world.World
@@ -28,7 +29,6 @@ import org.kryptonmc.krypton.registry.KryptonRegistries
 import org.kryptonmc.krypton.util.ChunkProgressListener
 import org.kryptonmc.krypton.util.SectionPos
 import org.kryptonmc.krypton.util.executor.DefaultPoolUncaughtExceptionHandler
-import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.util.executor.ThreadPoolBuilder
 import org.kryptonmc.krypton.util.executor.daemonThreadFactory
 import org.kryptonmc.krypton.world.chunk.ChunkStatus
@@ -133,7 +133,7 @@ class KryptonWorldManager(override val server: KryptonServer, private val worldF
 
     companion object {
 
-        private val LOGGER = logger<KryptonWorldManager>()
+        private val LOGGER = LogManager.getLogger()
 
         @JvmStatic
         private fun <T> failFuture(exception: Exception): CompletableFuture<T> = CompletableFuture.failedFuture(exception)

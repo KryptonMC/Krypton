@@ -19,11 +19,8 @@
 package org.kryptonmc.krypton.commands
 
 import com.mojang.brigadier.CommandDispatcher
-import org.kryptonmc.krypton.adventure.toPlainText
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer
 import org.kryptonmc.krypton.command.CommandSourceStack
-import org.kryptonmc.krypton.command.literal
-import org.kryptonmc.krypton.command.permission
-import org.kryptonmc.krypton.command.runs
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.locale.Messages
 
@@ -33,9 +30,11 @@ object ListCommand {
     fun register(dispatcher: CommandDispatcher<CommandSourceStack>) {
         dispatcher.register(literal("list") {
             permission(KryptonPermission.LIST)
-            runs { context -> sendNames(context.source) { it.displayName.toPlainText() } }
+            runs { context -> sendNames(context.source) { PlainTextComponentSerializer.plainText().serialize(it.displayName) } }
             literal("uuids") {
-                runs { context -> sendNames(context.source) { "${it.displayName.toPlainText()} (${it.uuid})" } }
+                runs { context ->
+                    sendNames(context.source) { "${PlainTextComponentSerializer.plainText().serialize(it.displayName)} (${it.uuid})" }
+                }
             }
         })
     }

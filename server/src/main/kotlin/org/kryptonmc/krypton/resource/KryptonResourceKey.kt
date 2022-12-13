@@ -50,6 +50,6 @@ class KryptonResourceKey<T> private constructor(override val registry: Key, over
         fun <T> of(parent: ResourceKey<out Registry<T>>, location: Key): ResourceKey<T> = of(parent.location, location)
 
         @JvmStatic
-        fun <T> codec(key: ResourceKey<out Registry<T>>): Codec<ResourceKey<T>> = Codecs.KEY.xmap({ of(key, it) }, ResourceKey<T>::location)
+        fun <T> codec(key: ResourceKey<out Registry<T>>): Codec<ResourceKey<T>> = Codecs.KEY.xmap({ of(key, it) }, { it.location })
     }
 }

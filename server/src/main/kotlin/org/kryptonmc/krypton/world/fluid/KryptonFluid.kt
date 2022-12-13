@@ -51,7 +51,7 @@ abstract class KryptonFluid : Fluid, StateHolderDelegate<FluidState, KryptonFlui
     init {
         val builder = StateDefinition.Builder<KryptonFluid, KryptonFluidState>(this)
         createStateDefinition(builder)
-        stateDefinition = builder.build(KryptonFluid::defaultFluidState, ::KryptonFluidState)
+        stateDefinition = builder.build({ it.defaultFluidState }, ::KryptonFluidState)
         defaultFluidState = stateDefinition.any()
     }
 

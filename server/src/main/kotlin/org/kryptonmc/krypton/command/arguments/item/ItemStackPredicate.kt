@@ -22,5 +22,5 @@ import org.kryptonmc.krypton.item.KryptonItemStack
 
 fun interface ItemStackPredicate {
 
-    operator fun invoke(item: KryptonItemStack): Boolean
+    fun test(item: KryptonItemStack): Boolean
 }

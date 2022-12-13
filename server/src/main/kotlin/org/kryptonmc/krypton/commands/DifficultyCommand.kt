@@ -22,9 +22,6 @@ import com.mojang.brigadier.CommandDispatcher
 import org.kryptonmc.api.world.Difficulty
 import org.kryptonmc.krypton.command.CommandSourceStack
 import org.kryptonmc.krypton.command.arguments.CommandExceptions
-import org.kryptonmc.krypton.command.literal
-import org.kryptonmc.krypton.command.permission
-import org.kryptonmc.krypton.command.runs
 import org.kryptonmc.krypton.locale.Messages
 
 object DifficultyCommand {

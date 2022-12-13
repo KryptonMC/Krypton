@@ -25,9 +25,9 @@ import io.netty.channel.ChannelHandler
 import io.netty.channel.ChannelHandlerContext
 import io.netty.channel.ChannelInboundHandlerAdapter
 import io.netty.handler.codec.CorruptedFrameException
+import org.apache.logging.log4j.LogManager
 import org.kryptonmc.krypton.KryptonPlatform
 import org.kryptonmc.krypton.KryptonServer
-import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.util.readAvailableBytes
 import java.net.InetSocketAddress
 
@@ -63,17 +63,17 @@ class LegacyQueryHandler(private val server: KryptonServer) : ChannelInboundHand
             when (msg.readableBytes()) {
                 0 -> {
                     LOGGER.debug("Legacy server list ping (versions <=1.3.x) received from ${address.address}:${address.port}")
-                    ctx.reply("§", motd, playerCount, maxPlayers)
+                    reply(ctx, "§", motd, playerCount, maxPlayers)
                 }
                 1 -> {
                     if (msg.readUnsignedByte() != 1.toShort()) return
                     LOGGER.debug("Legacy server list ping (versions 1.4.x-1.5.x) received from ${address.address}:${address.port}")
-                    ctx.reply("\u0000", "§1", "127", version, motd, playerCount, maxPlayers)
+                    reply(ctx, "\u0000", "§1", "127", version, motd, playerCount, maxPlayers)
                 }
                 else -> {
                     var isValid = msg.readUnsignedByte() == PAYLOAD_1_6
                     isValid = isValid and (msg.readUnsignedByte() == PLUGIN_MESSAGE_ID_1_6)
-                    isValid = isValid and (msg.readLegacyString() == MC_1_6_CHANNEL)
+                    isValid = isValid and (readLegacyString(msg) == MC_1_6_CHANNEL)
                     val dataLength = msg.readUnsignedShort()
                     isValid = isValid and (msg.readUnsignedByte() >= MINIMUM_SUPPORTED_1_6_PROTOCOL)
                     isValid = isValid and (3 + msg.readAvailableBytes(msg.readShort() * 2).size + 4 == dataLength)
@@ -82,7 +82,7 @@ class LegacyQueryHandler(private val server: KryptonServer) : ChannelInboundHand
                     if (!isValid) return
 
                     LOGGER.debug("Legacy server list ping (version 1.6.x) received from ${address.address}:${address.port}")
-                    ctx.reply("\u0000", "§1", "127", version, motd, playerCount, maxPlayers)
+                    reply(ctx, "\u0000", "§1", "127", version, motd, playerCount, maxPlayers)
                 }
             }
             msg.release()
@@ -101,31 +101,36 @@ class LegacyQueryHandler(private val server: KryptonServer) : ChannelInboundHand
         const val NETTY_NAME: String = "legacy_query"
         private const val MC_1_6_CHANNEL = "MC|PingHost"
         private const val LEGACY_PING_PACKET_ID: Short = 0xFE
-        private val LOGGER = logger<LegacyQueryHandler>()
+        private val LOGGER = LogManager.getLogger()
 
         private const val PAYLOAD_1_6: Short = 1
         private const val PLUGIN_MESSAGE_ID_1_6: Short = 0xFA
         private const val MINIMUM_SUPPORTED_1_6_PROTOCOL = 73
         private const val MAXIMUM_HOSTNAME_LENGTH = 65535
+
+        @JvmStatic
+        private fun readLegacyString(buf: ByteBuf): String {
+            val length = buf.readShort() * Char.SIZE_BYTES
+            if (!buf.isReadable(length)) {
+                throw CorruptedFrameException("String length $length is too large for available bytes ${buf.readableBytes()}!")
+            }
+            val string = buf.toString(buf.readerIndex(), length, Charsets.UTF_16BE)
+            buf.skipBytes(length)
+            return string
+        }
+
+        @JvmStatic
+        private fun reply(ctx: ChannelHandlerContext, separator: String, vararg parts: Any) {
+            reply(ctx, parts.joinToString(separator))
+        }
+
+        @JvmStatic
+        private fun reply(ctx: ChannelHandlerContext, message: String) {
+            val buffer = Unpooled.buffer().writeByte(255)
+            val chars = message.toCharArray()
+            buffer.writeShort(chars.size)
+            chars.forEach { buffer.writeChar(it.code) }
+            ctx.pipeline().firstContext().writeAndFlush(buffer).addListener(ChannelFutureListener.CLOSE).addListener { buffer.release() }
+        }
     }
-}
-
-private fun ChannelHandlerContext.reply(message: String) {
-    val buffer = Unpooled.buffer().writeByte(255)
-    val chars = message.toCharArray()
-    buffer.writeShort(chars.size)
-    chars.forEach { buffer.writeChar(it.code) }
-    pipeline().firstContext().writeAndFlush(buffer).addListener(ChannelFutureListener.CLOSE).addListener { buffer.release() }
-}
-
-private fun ChannelHandlerContext.reply(separator: String, vararg parts: Any) {
-    reply(parts.joinToString(separator))
-}
-
-private fun ByteBuf.readLegacyString(): String {
-    val length = readShort() * Char.SIZE_BYTES
-    if (!isReadable(length)) throw CorruptedFrameException("String length $length is too large for available bytes ${readableBytes()}!")
-    val string = toString(readerIndex(), length, Charsets.UTF_16BE)
-    skipBytes(length)
-    return string
 }

@@ -16,12 +16,21 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.command.argument
+package org.kryptonmc.krypton.world.block
 
-import com.mojang.brigadier.context.CommandContext
+import org.kryptonmc.api.tags.BlockTags
+import org.kryptonmc.krypton.state.property.BooleanProperty
+import org.kryptonmc.krypton.state.property.KryptonProperties
+import org.kryptonmc.krypton.world.block.state.KryptonBlockState
 
-/**
- * Equivalent to [CommandContext.getArgument], except this uses a reified type
- * to improve QOL in Kotlin. This also doesn't return a platform type.
- */
-inline fun <reified T> CommandContext<*>.argument(name: String): T = getArgument(name, T::class.java)
+class CampfireBlock(properties: Properties) : KryptonBlock(properties) {
+
+    companion object {
+
+        @JvmField
+        val LIT: BooleanProperty = KryptonProperties.LIT
+
+        @JvmStatic
+        fun isLit(state: KryptonBlockState): Boolean = state.contains(LIT) && state.eq(BlockTags.CAMPFIRES) && state.get(LIT)!!
+    }
+}

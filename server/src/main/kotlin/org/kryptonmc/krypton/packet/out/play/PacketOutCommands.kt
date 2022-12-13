@@ -43,7 +43,6 @@ import org.kryptonmc.krypton.util.readList
 import org.kryptonmc.krypton.util.readString
 import org.kryptonmc.krypton.util.readVarInt
 import org.kryptonmc.krypton.util.readVarIntArray
-import org.kryptonmc.krypton.util.writeArgumentType
 import org.kryptonmc.krypton.util.writeCollection
 import org.kryptonmc.krypton.util.writeKey
 import org.kryptonmc.krypton.util.writeString
@@ -55,16 +54,16 @@ import java.util.function.Predicate
 @JvmRecord
 data class PacketOutCommands(val rootIndex: Int, val nodes: List<Node>) : Packet {
 
-    constructor(root: RootCommandNode<Source>) : this(root, enumerate(root))
+    constructor(root: RootCommandNode<CommandSourceStack>) : this(root, enumerate(root))
 
-    private constructor(root: RootCommandNode<Source>,
-                        enumerations: Object2IntMap<CommandNode<Source>>) : this(enumerations.getInt(root), createNodes(enumerations))
+    private constructor(root: RootCommandNode<CommandSourceStack>,
+                        enumerations: Object2IntMap<CommandNode<CommandSourceStack>>) : this(enumerations.getInt(root), createNodes(enumerations))
 
-    constructor(buf: ByteBuf) : this(buf.readList(::readNode), buf.readVarInt())
+    constructor(buf: ByteBuf) : this(buf.readList { readNode(it) }, buf.readVarInt())
 
     private constructor(nodes: List<Node>, rootIndex: Int) : this(rootIndex, nodes) {
-        validateEntries(nodes, Node::canBuild)
-        validateEntries(nodes, Node::canResolve)
+        validateEntries(nodes) { node, indices -> node.canBuild(indices) }
+        validateEntries(nodes) { node, indices -> node.canResolve(indices) }
     }
 
     override fun write(buf: ByteBuf) {
@@ -89,14 +88,8 @@ data class PacketOutCommands(val rootIndex: Int, val nodes: List<Node>) : Packet
             data?.write(buf)
         }
 
-        override fun equals(other: Any?): Boolean {
-            if (this === other) return true
-            if (javaClass != other?.javaClass) return false
-            return flags == (other as Node).flags &&
-                    children.contentEquals(other.children) &&
-                    redirectNode == other.redirectNode &&
-                    data == other.data
-        }
+        override fun equals(other: Any?): Boolean = this === other || other is Node &&
+                flags == other.flags && children.contentEquals(other.children) && redirectNode == other.redirectNode && data == other.data
 
         override fun hashCode(): Int {
             var result = 1
@@ -121,11 +114,11 @@ data class PacketOutCommands(val rootIndex: Int, val nodes: List<Node>) : Packet
     @JvmRecord
     data class ArgumentNodeData<T>(val name: String, val type: ArgumentType<T>, val suggestionId: Key?) : NodeData {
 
-        constructor(node: ArgumentCommandNode<Source, T>) : this(node.name, node.type, node.customSuggestions.id())
+        constructor(node: ArgumentCommandNode<CommandSourceStack, T>) : this(node.name, node.type, getId(node.customSuggestions))
 
         override fun write(buf: ByteBuf) {
             buf.writeString(name)
-            buf.writeArgumentType(type)
+            ArgumentSerializers.write(buf, type)
             if (suggestionId != null) buf.writeKey(suggestionId)
         }
     }
@@ -140,14 +133,14 @@ data class PacketOutCommands(val rootIndex: Int, val nodes: List<Node>) : Packet
         private const val TYPE_ARGUMENT = 2
 
         @JvmStatic
-        private fun createNodes(enumerations: Object2IntMap<CommandNode<Source>>): List<Node> {
+        private fun createNodes(enumerations: Object2IntMap<CommandNode<CommandSourceStack>>): List<Node> {
             val nodes = ObjectArrayList<Node>(enumerations.size).apply { size(enumerations.size) }
             Object2IntMaps.fastForEach(enumerations) { nodes.set(it.intValue, createNode(it.key, enumerations)) }
             return nodes
         }
 
         @JvmStatic
-        private fun createNode(node: CommandNode<Source>, enumerations: Object2IntMap<CommandNode<Source>>): Node {
+        private fun createNode(node: CommandNode<CommandSourceStack>, enumerations: Object2IntMap<CommandNode<CommandSourceStack>>): Node {
             var flags = 0
             if (node.redirect != null) flags = flags or FLAG_REDIRECT
             val redirectNode = if (node.redirect != null) enumerations.getInt(node.redirect) else 0
@@ -160,7 +153,7 @@ data class PacketOutCommands(val rootIndex: Int, val nodes: List<Node>) : Packet
                 is ArgumentCommandNode<*, *> -> {
                     flags = flags or TYPE_ARGUMENT
                     if (node.customSuggestions != null) flags = flags or FLAG_SUGGESTIONS
-                    ArgumentNodeData(node as ArgumentCommandNode<Source, *>)
+                    ArgumentNodeData(node as ArgumentCommandNode<CommandSourceStack, *>)
                 }
                 is LiteralCommandNode<*> -> {
                     flags = flags or TYPE_LITERAL
@@ -168,7 +161,7 @@ data class PacketOutCommands(val rootIndex: Int, val nodes: List<Node>) : Packet
                 }
                 else -> throw UnsupportedOperationException("Unknown node type $node!")
             }
-            val children = node.children.stream().mapToInt(enumerations::getInt).toArray()
+            val children = node.children.stream().mapToInt { enumerations.getInt(it) }.toArray()
             return Node(flags, children, redirectNode, data)
         }
 
@@ -205,9 +198,9 @@ data class PacketOutCommands(val rootIndex: Int, val nodes: List<Node>) : Packet
 
         // a breadth-first search algorithm to enumerate a root node
         @JvmStatic
-        private fun enumerate(root: RootCommandNode<Source>): Object2IntMap<CommandNode<Source>> {
-            val result = Object2IntOpenHashMap<CommandNode<Source>>()
-            val queue = ArrayDeque<CommandNode<Source>>()
+        private fun enumerate(root: RootCommandNode<CommandSourceStack>): Object2IntMap<CommandNode<CommandSourceStack>> {
+            val result = Object2IntOpenHashMap<CommandNode<CommandSourceStack>>()
+            val queue = ArrayDeque<CommandNode<CommandSourceStack>>()
             queue.add(root)
 
             while (queue.isNotEmpty()) {
@@ -221,9 +214,8 @@ data class PacketOutCommands(val rootIndex: Int, val nodes: List<Node>) : Packet
 
             return result
         }
+
+        @JvmStatic
+        private fun getId(provider: SuggestionProvider<CommandSourceStack>?): Key? = provider?.let(SuggestionProviders::getName)
     }
 }
-
-private typealias Source = CommandSourceStack
-
-private fun SuggestionProvider<Source>?.id(): Key? = if (this == null) null else SuggestionProviders.name(this)

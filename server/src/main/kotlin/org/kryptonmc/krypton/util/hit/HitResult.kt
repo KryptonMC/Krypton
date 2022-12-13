@@ -16,20 +16,26 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.util
+package org.kryptonmc.krypton.util.hit
 
-import it.unimi.dsi.fastutil.Hash
+import org.kryptonmc.api.util.Vec3d
+import org.kryptonmc.krypton.entity.KryptonEntity
 
-/**
- * A hash strategy that uses identity equality and [System.identityHashCode].
- */
-object IdentityHashStrategy : Hash.Strategy<Any> {
+sealed class HitResult(val location: Vec3d) {
 
-    @JvmStatic
-    @Suppress("UNCHECKED_CAST")
-    fun <T> get(): Hash.Strategy<T> = IdentityHashStrategy as Hash.Strategy<T>
+    abstract val type: Type
 
-    override fun equals(a: Any?, b: Any?): Boolean = a === b
+    fun distanceTo(entity: KryptonEntity): Double {
+        val dx = location.x - entity.position.x
+        val dy = location.y - entity.position.y
+        val dz = location.z - entity.position.z
+        return dx * dx + dy * dy + dz * dz
+    }
 
-    override fun hashCode(o: Any?): Int = System.identityHashCode(o)
+    enum class Type {
+
+        MISS,
+        BLOCK,
+        ENTITY
+    }
 }

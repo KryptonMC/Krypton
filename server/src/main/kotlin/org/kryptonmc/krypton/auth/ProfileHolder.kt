@@ -25,7 +25,6 @@ import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 import java.time.format.DateTimeParseException
 import java.util.UUID
-import kotlinx.collections.immutable.persistentListOf
 import org.kryptonmc.api.auth.GameProfile
 import java.util.concurrent.atomic.AtomicLong
 
@@ -49,11 +48,8 @@ class ProfileHolder(val profile: GameProfile, val expiryDate: ZonedDateTime) : C
 
     override fun compareTo(other: ProfileHolder): Int = other.lastAccess.compareTo(lastAccess)
 
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-        return profile == (other as ProfileHolder).profile && expiryDate == other.expiryDate
-    }
+    override fun equals(other: Any?): Boolean =
+        this === other || other is ProfileHolder && profile == other.profile && expiryDate == other.expiryDate
 
     override fun hashCode(): Int {
         var result = 1
@@ -71,13 +67,13 @@ class ProfileHolder(val profile: GameProfile, val expiryDate: ZonedDateTime) : C
         override fun read(reader: JsonReader): ProfileHolder? {
             reader.beginObject()
 
-            var name: String? = null
             var uuid: UUID? = null
+            var name: String? = null
             var expiryDate: ZonedDateTime? = null
             while (reader.hasNext()) {
                 when (reader.nextName()) {
-                    "name" -> name = reader.nextString()
                     "uuid" -> uuid = UUID.fromString(reader.nextString())
+                    "name" -> name = reader.nextString()
                     "expiresOn" -> expiryDate = try {
                         ZonedDateTime.parse(reader.nextString(), DATE_FORMATTER)
                     } catch (ignored: DateTimeParseException) {
@@ -87,16 +83,16 @@ class ProfileHolder(val profile: GameProfile, val expiryDate: ZonedDateTime) : C
             }
 
             reader.endObject()
-            if (name == null || uuid == null || expiryDate == null) return null
-            return ProfileHolder(KryptonGameProfile(name, uuid, persistentListOf()), expiryDate)
+            if (uuid == null || name == null || expiryDate == null) return null
+            return ProfileHolder(KryptonGameProfile.basic(uuid, name), expiryDate)
         }
 
         override fun write(writer: JsonWriter, value: ProfileHolder) {
             writer.beginObject()
-            writer.name("name")
-            writer.value(value.profile.name)
             writer.name("uuid")
             writer.value(value.profile.uuid.toString())
+            writer.name("name")
+            writer.value(value.profile.name)
             writer.name("expiresOn")
             writer.value(DATE_FORMATTER.format(value.expiryDate))
             writer.endObject()

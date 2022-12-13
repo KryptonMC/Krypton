@@ -18,22 +18,31 @@
  */
 package org.kryptonmc.krypton.command.arguments
 
+import com.mojang.brigadier.StringReader
+import com.mojang.brigadier.exceptions.CommandSyntaxException
 import com.mojang.brigadier.exceptions.Dynamic2CommandExceptionType
 import com.mojang.brigadier.exceptions.DynamicCommandExceptionType
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType
 import net.kyori.adventure.text.Component
-import org.kryptonmc.krypton.adventure.toMessage
+import org.kryptonmc.krypton.adventure.KryptonAdventure
 
 object CommandExceptions {
 
     @JvmStatic
-    fun simple(key: String): SimpleCommandExceptionType = SimpleCommandExceptionType(Component.translatable(key).toMessage())
+    fun simple(key: String): SimpleCommandExceptionType = SimpleCommandExceptionType(KryptonAdventure.asMessage(Component.translatable(key)))
 
     @JvmStatic
     fun dynamic(key: String): DynamicCommandExceptionType =
-        DynamicCommandExceptionType { Component.translatable(key, Component.text(it.toString())).toMessage() }
+        DynamicCommandExceptionType { KryptonAdventure.asMessage(Component.translatable(key, Component.text(it.toString()))) }
 
     @JvmStatic
-    fun dynamic2(key: String): Dynamic2CommandExceptionType =
-        Dynamic2CommandExceptionType { a, b -> Component.translatable(key, Component.text(a.toString()), Component.text(b.toString())).toMessage() }
+    fun dynamic2(key: String): Dynamic2CommandExceptionType = Dynamic2CommandExceptionType { a, b ->
+        KryptonAdventure.asMessage(Component.translatable(key, Component.text(a.toString()), Component.text(b.toString())))
+    }
+
+    @JvmStatic
+    fun resetAndThrow(reader: StringReader, position: Int, exception: CommandSyntaxException): Nothing {
+        reader.cursor = position
+        throw exception
+    }
 }

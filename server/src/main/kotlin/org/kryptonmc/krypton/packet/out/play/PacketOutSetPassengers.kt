@@ -30,7 +30,7 @@ import org.kryptonmc.krypton.util.writeVarIntArray
 @JvmRecord
 data class PacketOutSetPassengers(override val entityId: Int, val passengers: IntArray) : EntityPacket {
 
-    constructor(entity: KryptonEntity, passengers: List<Entity>) : this(entity.id, passengers.toIdArray())
+    constructor(entity: KryptonEntity, passengers: List<Entity>) : this(entity.id, toIdArray(passengers))
 
     constructor(buf: ByteBuf) : this(buf.readVarInt(), buf.readVarIntArray())
 
@@ -39,11 +39,8 @@ data class PacketOutSetPassengers(override val entityId: Int, val passengers: In
         buf.writeVarIntArray(passengers)
     }
 
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-        return entityId == (other as PacketOutSetPassengers).entityId && passengers.contentEquals(other.passengers)
-    }
+    override fun equals(other: Any?): Boolean =
+        this === other || other is PacketOutSetPassengers && entityId == other.entityId && passengers.contentEquals(other.passengers)
 
     override fun hashCode(): Int {
         var result = 1
@@ -51,6 +48,10 @@ data class PacketOutSetPassengers(override val entityId: Int, val passengers: In
         result = 31 * result + passengers.contentHashCode()
         return result
     }
-}
 
-private fun List<Entity>.toIdArray(): IntArray = IntArray(size) { get(it).id }
+    companion object {
+
+        @JvmStatic
+        private fun toIdArray(entities: List<Entity>): IntArray = IntArray(entities.size) { entities.get(it).id }
+    }
+}

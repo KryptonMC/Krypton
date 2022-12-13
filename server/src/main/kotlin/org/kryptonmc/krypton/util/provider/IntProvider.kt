@@ -38,11 +38,11 @@ abstract class IntProvider {
 
         private val CONSTANT_OR_DISPATCH_CODEC: Codec<Either<Int, IntProvider>> = Codec.either(
             Codec.INT,
-            KryptonRegistries.INT_PROVIDER_TYPES.byNameCodec().dispatch(IntProvider::type, IntProviderType<*>::codec)
+            KryptonRegistries.INT_PROVIDER_TYPES.byNameCodec().dispatch({ it.type }, { it.codec() })
         )
         @JvmField
         val CODEC: Codec<IntProvider> = CONSTANT_OR_DISPATCH_CODEC.xmap(
-            { it.map(ConstantInt::of, Function.identity()) },
+            { either -> either.map({ ConstantInt.of(it) }, Function.identity()) },
             { if (it is ConstantInt) Either.left(it.value) else Either.right(it) }
         )
 

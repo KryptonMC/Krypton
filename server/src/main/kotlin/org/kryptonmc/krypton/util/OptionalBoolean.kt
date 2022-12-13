@@ -16,9 +16,20 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.config.serializer
+package org.kryptonmc.krypton.util
 
-import org.kryptonmc.api.world.Difficulty
-import org.kryptonmc.krypton.util.Difficulties
+import java.util.Optional
 
-object DifficultyTypeSerializer : EnumSerializer<Difficulty>(Difficulty::class, "difficulty", Difficulties::fromId, Difficulties::fromName)
+object OptionalBoolean {
+
+    @JvmField
+    val TRUE: Optional<Boolean> = Optional.of(true)
+    @JvmField
+    val FALSE: Optional<Boolean> = Optional.of(false)
+
+    @JvmStatic
+    fun of(value: Boolean): Optional<Boolean> = if (value) TRUE else FALSE
+
+    @JvmStatic
+    fun ofNullable(value: Boolean?): Optional<Boolean> = value?.let { of(it) } ?: Optional.empty()
+}

@@ -22,7 +22,7 @@ import com.google.gson.JsonObject
 
 interface MetadataSerializer<T> {
 
-    val name: String
+    fun name(): String
 
     fun fromJson(json: JsonObject): T
 }

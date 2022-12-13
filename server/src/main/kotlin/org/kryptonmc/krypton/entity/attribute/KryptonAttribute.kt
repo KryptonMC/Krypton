@@ -37,7 +37,7 @@ import java.util.function.Consumer
 
 class KryptonAttribute(override val type: KryptonAttributeType, private val onDirty: Consumer<KryptonAttribute>) : Attribute {
 
-    private val modifiersByOperation: SetMultimap<ModifierOperation, AttributeModifier> = Multimaps.newSetMultimap(HashMap(), ::HashSet)
+    private val modifiersByOperation: SetMultimap<ModifierOperation, AttributeModifier> = Multimaps.newSetMultimap(HashMap()) { HashSet() }
     private val modifiersById = Object2ObjectArrayMap<UUID, AttributeModifier>()
     private val permanentModifiers = ObjectArraySet<AttributeModifier>()
     override val modifiers: Collection<AttributeModifier> = ObjectCollections.unmodifiable(modifiersById.values)
@@ -126,7 +126,7 @@ class KryptonAttribute(override val type: KryptonAttributeType, private val onDi
         permanentModifiers.clear()
         permanentModifiers.addAll(other.permanentModifiers)
         modifiersByOperation.clear()
-        other.modifiersByOperation.forEach(modifiersByOperation::put)
+        other.modifiersByOperation.forEach { key, value -> modifiersByOperation.put(key, value) }
         markDirty()
     }
 
@@ -134,7 +134,7 @@ class KryptonAttribute(override val type: KryptonAttributeType, private val onDi
         baseValue = data.getDouble("Base")
         if (data.contains(MODIFIERS_TAG, ListTag.ID)) {
             data.getList(MODIFIERS_TAG, CompoundTag.ID).forEachCompound {
-                val modifier = KryptonAttributeModifier.from(it) ?: return@forEachCompound
+                val modifier = KryptonAttributeModifier.load(it) ?: return@forEachCompound
                 modifiersById.put(modifier.uuid, modifier)
                 modifiersByOperation.put(modifier.operation, modifier)
                 permanentModifiers.add(modifier)

@@ -36,11 +36,8 @@ data class PacketInPluginMessage(val channel: Key, val data: ByteArray) : Packet
         buf.writeVarIntByteArray(data)
     }
 
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-        return channel == (other as PacketInPluginMessage).channel && data.contentEquals(other.data)
-    }
+    override fun equals(other: Any?): Boolean =
+        this === other || other is PacketInPluginMessage && channel == other.channel && data.contentEquals(other.data)
 
     override fun hashCode(): Int {
         var result = 1

@@ -20,6 +20,7 @@ package org.kryptonmc.krypton.user
 
 import ca.spottedleaf.dataconverter.minecraft.datatypes.MCTypeRegistry
 import com.google.common.collect.MapMaker
+import org.apache.logging.log4j.LogManager
 import org.kryptonmc.api.auth.GameProfile
 import org.kryptonmc.api.user.User
 import org.kryptonmc.api.user.UserManager
@@ -28,7 +29,6 @@ import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.auth.requests.ApiService
 import org.kryptonmc.krypton.util.DataConversion
 import org.kryptonmc.krypton.util.executor.daemonThreadFactory
-import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.IntTag
 import org.kryptonmc.nbt.io.TagCompression
@@ -58,7 +58,7 @@ class KryptonUserManager(private val server: KryptonServer) : UserManager {
         if (existing != null) return CompletableFuture.completedFuture(existing)
         val cachedProfile = server.profileCache.get(uuid)
         if (cachedProfile != null) return CompletableFuture.supplyAsync({ loadUser(cachedProfile) }, executor)
-        return ApiService.profile(uuid).thenApplyAsync(::loadUser, executor)
+        return ApiService.profile(uuid).thenApplyAsync({ loadUser(it) }, executor)
     }
 
     override fun load(name: String): CompletableFuture<User?> {
@@ -66,12 +66,12 @@ class KryptonUserManager(private val server: KryptonServer) : UserManager {
         if (existing != null) return CompletableFuture.completedFuture(existing)
         val cachedProfile = server.profileCache.get(name)
         if (cachedProfile != null) return CompletableFuture.supplyAsync({ loadUser(cachedProfile) }, executor)
-        return ApiService.profile(name).thenApplyAsync(::loadUser, executor)
+        return ApiService.profile(name).thenApplyAsync({ loadUser(it) }, executor)
     }
 
     private fun loadUser(profile: GameProfile?): User? {
         if (profile == null) return null
-        val file = server.playerManager.dataManager.folder.resolve("${profile.uuid}.dat")
+        val file = server.playerManager.dataFolder().resolve("${profile.uuid}.dat")
         val nbt = try {
             TagIO.read(file, TagCompression.GZIP)
         } catch (_: Exception) {
@@ -90,6 +90,6 @@ class KryptonUserManager(private val server: KryptonServer) : UserManager {
 
     companion object {
 
-        private val LOGGER = logger<KryptonUserManager>()
+        private val LOGGER = LogManager.getLogger()
     }
 }

@@ -21,7 +21,6 @@ package org.kryptonmc.krypton.server.whitelist
 import com.google.gson.TypeAdapter
 import com.google.gson.stream.JsonReader
 import com.google.gson.stream.JsonWriter
-import kotlinx.collections.immutable.persistentListOf
 import org.kryptonmc.api.auth.GameProfile
 import org.kryptonmc.krypton.auth.KryptonGameProfile
 import org.kryptonmc.krypton.server.PersistentManager
@@ -32,9 +31,19 @@ import java.util.UUID
 
 class WhitelistManager(path: Path) : PersistentManager(path) {
 
-    var isEnabled: Boolean = false
+    private var enabled = false
     private val profiles = ArrayList<GameProfile>()
     private val ips = ArrayList<String>()
+
+    fun isEnabled(): Boolean = enabled
+
+    fun enable() {
+        enabled = true
+    }
+
+    fun disable() {
+        enabled = false
+    }
 
     fun isWhitelisted(profile: GameProfile): Boolean = profiles.contains(profile)
 
@@ -73,7 +82,7 @@ class WhitelistManager(path: Path) : PersistentManager(path) {
         reader.beginObject()
         while (reader.hasNext()) {
             when (reader.nextName()) {
-                "enabled" -> isEnabled = reader.nextBoolean()
+                "enabled" -> enabled = reader.nextBoolean()
                 "profiles" -> readValues(reader, profiles, ProfileAdapter::read)
                 "ips" -> readValues(reader, ips, JsonReader::nextString)
             }
@@ -84,7 +93,7 @@ class WhitelistManager(path: Path) : PersistentManager(path) {
     override fun saveData(writer: JsonWriter) {
         writer.beginObject()
         writer.name("enabled")
-        writer.value(isEnabled)
+        writer.value(enabled)
         writer.name("profiles")
         writer.array(profiles) { ProfileAdapter.write(this, it) }
         writer.name("ips")
@@ -97,26 +106,26 @@ class WhitelistManager(path: Path) : PersistentManager(path) {
         override fun read(reader: JsonReader): GameProfile {
             reader.beginObject()
 
-            var name: String? = null
             var uuid: UUID? = null
+            var name: String? = null
             while (reader.hasNext()) {
                 when (reader.nextName()) {
-                    "name" -> name = reader.nextString()
                     "uuid" -> uuid = UUID.fromString(reader.nextString())
+                    "name" -> name = reader.nextString()
                 }
             }
 
             reader.endObject()
-            if (name == null || uuid == null) {
-                throw IOException("Invalid profile in whitelist file! Name or UUID was null! Name: $name, UUID: $uuid")
+            if (uuid == null || name == null) {
+                throw IOException("Invalid profile in whitelist file! Name or UUID was null! UUID: $uuid, Name: $name")
             }
-            return KryptonGameProfile(name, uuid, persistentListOf())
+            return KryptonGameProfile.basic(uuid, name)
         }
 
         override fun write(writer: JsonWriter, value: GameProfile) {
             writer.beginObject()
-            writer.name("name").value(value.name)
             writer.name("uuid").value(value.uuid.toString())
+            writer.name("name").value(value.name)
             writer.endObject()
         }
     }

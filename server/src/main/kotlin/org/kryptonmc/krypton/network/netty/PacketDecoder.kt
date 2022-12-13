@@ -21,9 +21,9 @@ package org.kryptonmc.krypton.network.netty
 import io.netty.buffer.ByteBuf
 import io.netty.channel.ChannelHandlerContext
 import io.netty.handler.codec.ByteToMessageDecoder
+import org.apache.logging.log4j.LogManager
 import org.kryptonmc.krypton.network.SessionHandler
 import org.kryptonmc.krypton.packet.PacketRegistry
-import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.util.readVarInt
 
 /**
@@ -54,6 +54,6 @@ class PacketDecoder : ByteToMessageDecoder() {
     companion object {
 
         const val NETTY_NAME: String = "decoder"
-        private val LOGGER = logger<PacketDecoder>()
+        private val LOGGER = LogManager.getLogger()
     }
 }

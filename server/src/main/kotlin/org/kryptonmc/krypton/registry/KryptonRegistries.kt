@@ -19,6 +19,7 @@
 package org.kryptonmc.krypton.registry
 
 import net.kyori.adventure.key.Key
+import org.apache.logging.log4j.LogManager
 import org.kryptonmc.api.block.Blocks
 import org.kryptonmc.api.block.entity.BlockEntityType
 import org.kryptonmc.api.block.entity.BlockEntityTypes
@@ -72,7 +73,6 @@ import org.kryptonmc.krypton.network.chat.ChatTypes
 import org.kryptonmc.krypton.resource.KryptonResourceKey
 import org.kryptonmc.krypton.resource.KryptonResourceKeys
 import org.kryptonmc.krypton.util.KryptonDataLoader
-import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.util.provider.IntProviderType
 import org.kryptonmc.krypton.util.provider.IntProviderTypes
 import org.kryptonmc.krypton.world.biome.KryptonBiomeRegistrar
@@ -92,7 +92,7 @@ import java.util.function.Supplier
  */
 object KryptonRegistries {
 
-    private val LOGGER = logger<KryptonRegistries>()
+    private val LOGGER = LogManager.getLogger()
     private val WRITABLE_PARENT: WritableRegistry<WritableRegistry<*>> = KryptonSimpleRegistry(ImplKeys.PARENT, null)
     private val LOADERS = LinkedHashMap<Key, Runnable>()
 
@@ -227,10 +227,7 @@ object KryptonRegistries {
     }
 
     @JvmStatic
-    private inline fun <T> dataLoader(
-        crossinline loader: (Simple<T>) -> KryptonDataLoader<T>,
-        crossinline initApiType: () -> Unit
-    ): Bootstrap<T> = Bootstrap {
+    private inline fun <T> dataLoader(crossinline loader: LoaderProvider<T>, crossinline initApiType: () -> Unit): Bootstrap<T> = Bootstrap {
         loader(it).init()
         initApiType()
     }
@@ -290,7 +287,7 @@ object KryptonRegistries {
             create(key) { KryptonDefaultedRegistry(defaultKey, key, null) }
 
         @JvmStatic
-        private fun <T, R : WritableRegistry<T>> create(key: RegistryKey<T>, creator: () -> R): R {
+        private inline fun <T, R : WritableRegistry<T>> create(key: RegistryKey<T>, creator: () -> R): R {
             val registry = creator()
             WRITABLE_PARENT.register(key as WritableKey, registry)
             return registry
@@ -309,3 +306,4 @@ private typealias IRO<T> = IntrusiveRegistryObject<T>
 private typealias CHP<T> = Function<T, Holder.Reference<T>>
 private typealias RegistryKey<T> = ResourceKey<out Registry<T>>
 private typealias WritableKey = ResourceKey<WritableRegistry<*>>
+private typealias LoaderProvider<T> = (Simple<T>) -> KryptonDataLoader<T>

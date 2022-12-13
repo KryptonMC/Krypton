@@ -18,7 +18,6 @@
  */
 package org.kryptonmc.krypton.command.arguments.coordinates
 
-import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.StringReader
 import org.kryptonmc.api.util.Vec3d
 import org.kryptonmc.krypton.command.CommandSourceStack
@@ -26,13 +25,6 @@ import org.kryptonmc.krypton.util.Vec3dImpl
 
 @JvmRecord
 data class WorldCoordinates(val x: WorldCoordinate, val y: WorldCoordinate, val z: WorldCoordinate) : Coordinates {
-
-    override val hasRelativeX: Boolean
-        get() = x.isRelative
-    override val hasRelativeY: Boolean
-        get() = y.isRelative
-    override val hasRelativeZ: Boolean
-        get() = z.isRelative
 
     override fun position(source: CommandSourceStack): Vec3d =
         Vec3dImpl(x.get(source.position.x), y.get(source.position.y), z.get(source.position.z))
@@ -43,19 +35,9 @@ data class WorldCoordinates(val x: WorldCoordinate, val y: WorldCoordinate, val 
         fun parse(reader: StringReader, correctCenter: Boolean): WorldCoordinates {
             val position = reader.cursor
             val x = WorldCoordinate.parse(reader, correctCenter)
-            if (!reader.canRead() || reader.peek() != CommandDispatcher.ARGUMENT_SEPARATOR_CHAR) {
-                reader.cursor = position
-                throw CoordinateExceptions.POSITION_3D_INCOMPLETE.createWithContext(reader)
-            }
-
-            reader.skip()
+            CoordinateExceptions.checkPositionComplete(reader, position)
             val y = WorldCoordinate.parse(reader, false)
-            if (!reader.canRead() || reader.peek() != CommandDispatcher.ARGUMENT_SEPARATOR_CHAR) {
-                reader.cursor = position
-                throw CoordinateExceptions.POSITION_3D_INCOMPLETE.createWithContext(reader)
-            }
-
-            reader.skip()
+            CoordinateExceptions.checkPositionComplete(reader, position)
             val z = WorldCoordinate.parse(reader, correctCenter)
             return WorldCoordinates(x, y, z)
         }

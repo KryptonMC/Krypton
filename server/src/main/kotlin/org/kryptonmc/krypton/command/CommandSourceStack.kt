@@ -43,7 +43,7 @@ class CommandSourceStack(
     val displayName: Component,
     override val server: KryptonServer,
     val entity: KryptonEntity?
-) : CommandExecutionContext, Audience by sender {
+) : CommandExecutionContext, CommandSuggestionProvider, Audience by sender {
 
     fun asChatSender(): ChatSender = entity?.asChatSender() ?: ChatSender.SYSTEM
 
@@ -57,11 +57,6 @@ class CommandSourceStack(
         if (entity is KryptonPlayer) return entity
         throw ERROR_NOT_PLAYER.create()
     }
-
-    /**
-     * Caller must ensure that [isPlayer] is called beforehand or this may result in a ClassCastException!
-     */
-    fun getPlayerUnchecked(): KryptonPlayer = entity as KryptonPlayer
 
     fun hasPermission(permission: KryptonPermission): Boolean = sender.hasPermission(permission.node)
 

@@ -22,8 +22,6 @@ import com.google.common.collect.ImmutableList
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer
 import org.kryptonmc.api.item.meta.WritableBookMeta
-import org.kryptonmc.krypton.adventure.toJson
-import org.kryptonmc.krypton.adventure.toLegacySectionText
 import org.kryptonmc.krypton.util.BuilderCollection
 import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.StringTag
@@ -32,17 +30,17 @@ import org.kryptonmc.nbt.list
 class KryptonWritableBookMeta(data: CompoundTag) : AbstractItemMeta<KryptonWritableBookMeta>(data), WritableBookMeta {
 
     override val pages: ImmutableList<Component> =
-        data.mapToList(PAGES_TAG, StringTag.ID) { LegacyComponentSerializer.legacySection().deserialize((it as StringTag).value()) }
+        mapToList(data, PAGES_TAG, StringTag.ID) { LegacyComponentSerializer.legacySection().deserialize((it as StringTag).value()) }
 
     override fun copy(data: CompoundTag): KryptonWritableBookMeta = KryptonWritableBookMeta(data)
 
-    override fun withPages(pages: Collection<Component>): KryptonWritableBookMeta = copy(put(data, PAGES_TAG, pages) { it.toLegacy() })
+    override fun withPages(pages: Collection<Component>): KryptonWritableBookMeta = copy(put(data, PAGES_TAG, pages, ::toLegacy))
 
-    override fun withPage(page: Component): KryptonWritableBookMeta = copy(data.update(PAGES_TAG, StringTag.ID) { it.add(page.toLegacy()) })
+    override fun withPage(page: Component): KryptonWritableBookMeta = copy(data.update(PAGES_TAG, StringTag.ID) { it.add(toLegacy(page)) })
 
     override fun withoutPage(index: Int): KryptonWritableBookMeta = copy(data.update(PAGES_TAG, StringTag.ID) { it.remove(index) })
 
-    override fun withoutPage(page: Component): KryptonWritableBookMeta = copy(data.update(PAGES_TAG, StringTag.ID) { it.remove(page.toLegacy()) })
+    override fun withoutPage(page: Component): KryptonWritableBookMeta = copy(data.update(PAGES_TAG, StringTag.ID) { it.remove(toLegacy(page)) })
 
     override fun toBuilder(): WritableBookMeta.Builder = Builder(this)
 
@@ -63,7 +61,7 @@ class KryptonWritableBookMeta(data: CompoundTag) : AbstractItemMeta<KryptonWrita
         override fun addPage(page: Component): Builder = apply { pages.add(page) }
 
         override fun buildData(): CompoundTag.Builder = super.buildData().apply {
-            if (pages.isNotEmpty()) list(PAGES_TAG) { pages.forEach { addString(it.toJson()) } }
+            if (pages.isNotEmpty()) list(PAGES_TAG) { pages.forEach { addString(toJson(it)) } }
         }
 
         override fun build(): KryptonWritableBookMeta = KryptonWritableBookMeta(buildData().build())
@@ -72,7 +70,8 @@ class KryptonWritableBookMeta(data: CompoundTag) : AbstractItemMeta<KryptonWrita
     companion object {
 
         private const val PAGES_TAG = "pages"
+
+        @JvmStatic
+        private fun toLegacy(input: Component): StringTag = StringTag.of(LegacyComponentSerializer.legacySection().serialize(input))
     }
 }
-
-private fun Component.toLegacy(): StringTag = StringTag.of(toLegacySectionText())

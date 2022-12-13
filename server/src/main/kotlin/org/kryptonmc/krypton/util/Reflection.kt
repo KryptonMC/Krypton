@@ -18,11 +18,12 @@
  */
 package org.kryptonmc.krypton.util
 
+import org.apache.logging.log4j.LogManager
 import java.lang.reflect.Field
 
 object Reflection {
 
-    private val LOGGER = logger<Reflection>()
+    private val LOGGER = LogManager.getLogger()
 
     @JvmStatic
     inline fun <reified T, R> accessField(name: String, instance: Any? = null): R? = accessField(T::class.java, name, instance)

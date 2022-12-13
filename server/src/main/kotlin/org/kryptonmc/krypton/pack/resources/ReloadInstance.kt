@@ -22,9 +22,9 @@ import java.util.concurrent.CompletableFuture
 
 interface ReloadInstance {
 
-    val actualProgress: Float
-    val isDone: Boolean
-        get() = done().isDone
+    fun actualProgress(): Float
+
+    fun isDone(): Boolean = done().isDone
 
     fun done(): CompletableFuture<*>
 

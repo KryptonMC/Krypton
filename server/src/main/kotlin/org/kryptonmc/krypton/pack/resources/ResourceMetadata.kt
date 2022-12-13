@@ -42,7 +42,7 @@ interface ResourceMetadata {
             object : ResourceMetadata {
 
                 override fun <T> getMetadata(serializer: MetadataSerializer<T>): T? {
-                    if (json.has(serializer.name)) return serializer.fromJson(json.getAsJsonObject(serializer.name))
+                    if (json.has(serializer.name())) return serializer.fromJson(json.getAsJsonObject(serializer.name()))
                     return null
                 }
             }

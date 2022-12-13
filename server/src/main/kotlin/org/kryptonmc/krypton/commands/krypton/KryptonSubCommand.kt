@@ -20,11 +20,11 @@ package org.kryptonmc.krypton.commands.krypton
 
 import com.mojang.brigadier.builder.LiteralArgumentBuilder
 import org.kryptonmc.krypton.command.CommandSourceStack
+import java.util.stream.Stream
 
 fun interface KryptonSubCommand {
 
-    val aliases: Sequence<String>
-        get() = emptySequence()
+    fun aliases(): Stream<String> = Stream.empty()
 
     fun register(): LiteralArgumentBuilder<CommandSourceStack>
 }

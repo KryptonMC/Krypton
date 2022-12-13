@@ -18,6 +18,8 @@
  */
 package org.kryptonmc.krypton.util
 
+import org.kryptonmc.nbt.IntArrayTag
+import org.kryptonmc.nbt.Tag
 import java.util.UUID
 
 object UUIDUtil {
@@ -40,4 +42,15 @@ object UUIDUtil {
 
     @JvmStatic
     fun createOfflinePlayerId(name: String): UUID = UUID.nameUUIDFromBytes("OfflinePlayer:$name".encodeToByteArray())
+
+    @JvmStatic
+    fun loadUUID(tag: Tag): UUID {
+        require(tag.id() == IntArrayTag.ID) { "Expected UUID tag to be of type ${IntArrayTag.TYPE.name}, was ${tag.type().name}!" }
+        val array = (tag as IntArrayTag).data
+        require(array.size == 4) { "Expected UUID array to be of length 4, was ${array.size}!" }
+        return fromIntArray(array)
+    }
+
+    @JvmStatic
+    fun createUUID(value: UUID): IntArrayTag = IntArrayTag.of(toIntArray(value))
 }

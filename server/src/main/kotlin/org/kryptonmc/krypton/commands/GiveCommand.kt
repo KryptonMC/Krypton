@@ -23,18 +23,11 @@ import com.mojang.brigadier.arguments.IntegerArgumentType
 import net.kyori.adventure.sound.Sound
 import org.kryptonmc.api.effect.sound.SoundEvents
 import org.kryptonmc.krypton.command.CommandSourceStack
-import org.kryptonmc.krypton.command.argument
 import org.kryptonmc.krypton.command.arguments.entities.EntityArgumentType
-import org.kryptonmc.krypton.command.arguments.entityArgument
 import org.kryptonmc.krypton.command.arguments.item.ItemStackArgument
 import org.kryptonmc.krypton.command.arguments.item.ItemStackArgumentType
-import org.kryptonmc.krypton.command.arguments.itemStackArgument
-import org.kryptonmc.krypton.command.permission
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.packet.out.play.PacketOutSetContainerContent
-import org.kryptonmc.krypton.command.argument.argument
-import org.kryptonmc.krypton.command.literal
-import org.kryptonmc.krypton.command.runs
 
 object GiveCommand {
 
@@ -52,10 +45,10 @@ object GiveCommand {
             permission(KryptonPermission.GIVE)
             argument(TARGETS, EntityArgumentType.players()) {
                 argument(ITEM, ItemStackArgumentType) {
-                    runs { give(it.entityArgument(TARGETS).players(it.source), it.itemStackArgument(ITEM), 1) }
+                    runs { give(EntityArgumentType.getPlayers(it, TARGETS), ItemStackArgumentType.get(it, ITEM), 1) }
                     argument(COUNT, IntegerArgumentType.integer(1)) {
                         runs {
-                            give(it.entityArgument(TARGETS).players(it.source), it.itemStackArgument(ITEM), it.argument(COUNT))
+                            give(EntityArgumentType.getPlayers(it, TARGETS), ItemStackArgumentType.get(it, ITEM), it.getArgument(COUNT))
                         }
                     }
                 }

@@ -24,8 +24,6 @@ import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer
 import org.kryptonmc.api.item.data.WrittenBookGeneration
 import org.kryptonmc.api.item.meta.WrittenBookMeta
-import org.kryptonmc.krypton.adventure.toJson
-import org.kryptonmc.krypton.adventure.toLegacySectionText
 import org.kryptonmc.krypton.util.BuilderCollection
 import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.StringTag
@@ -36,27 +34,29 @@ class KryptonWrittenBookMeta(data: CompoundTag) : AbstractItemMeta<KryptonWritte
     override val title: Component = LegacyComponentSerializer.legacySection().deserialize(data.getString(TITLE_TAG))
     override val author: Component = LegacyComponentSerializer.legacySection().deserialize(data.getString(AUTHOR_TAG))
     override val pages: ImmutableList<Component> =
-        data.mapToList(PAGES_TAG, StringTag.ID) { GsonComponentSerializer.gson().deserialize((it as StringTag).value()) }
+        mapToList(data, PAGES_TAG, StringTag.ID) { GsonComponentSerializer.gson().deserialize((it as StringTag).value()) }
     override val generation: WrittenBookGeneration = GENERATIONS.getOrNull(data.getInt(GENERATION_TAG)) ?: WrittenBookGeneration.ORIGINAL
 
     override fun copy(data: CompoundTag): KryptonWrittenBookMeta = KryptonWrittenBookMeta(data)
 
-    override fun withTitle(title: Component): KryptonWrittenBookMeta = copy(data.putString(TITLE_TAG, title.toLegacySectionText()))
+    override fun withTitle(title: Component): KryptonWrittenBookMeta =
+        copy(data.putString(TITLE_TAG, LegacyComponentSerializer.legacySection().serialize(title)))
 
-    override fun withAuthor(author: Component): KryptonWrittenBookMeta = copy(data.putString(AUTHOR_TAG, author.toLegacySectionText()))
+    override fun withAuthor(author: Component): KryptonWrittenBookMeta =
+        copy(data.putString(AUTHOR_TAG, LegacyComponentSerializer.legacySection().serialize(author)))
 
     override fun withPages(pages: Collection<Component>): KryptonWrittenBookMeta =
-        copy(put(data, PAGES_TAG, pages) { StringTag.of(it.toLegacySectionText()) })
+        copy(put(data, PAGES_TAG, pages) { StringTag.of(LegacyComponentSerializer.legacySection().serialize(it)) })
 
     override fun withGeneration(generation: WrittenBookGeneration): KryptonWrittenBookMeta = copy(data.putInt(GENERATION_TAG, generation.ordinal))
 
     override fun withPage(page: Component): KryptonWrittenBookMeta =
-        copy(data.update(PAGES_TAG, StringTag.ID) { it.add(StringTag.of(page.toJson())) })
+        copy(data.update(PAGES_TAG, StringTag.ID) { it.add(StringTag.of(toJson(page))) })
 
     override fun withoutPage(index: Int): KryptonWrittenBookMeta = copy(data.update(PAGES_TAG, StringTag.ID) { it.remove(index) })
 
     override fun withoutPage(page: Component): KryptonWrittenBookMeta =
-        copy(data.update(PAGES_TAG, StringTag.ID) { it.remove(StringTag.of(page.toJson())) })
+        copy(data.update(PAGES_TAG, StringTag.ID) { it.remove(StringTag.of(toJson(page))) })
 
     override fun toBuilder(): WrittenBookMeta.Builder = Builder(this)
 
@@ -89,9 +89,9 @@ class KryptonWrittenBookMeta(data: CompoundTag) : AbstractItemMeta<KryptonWritte
         override fun generation(generation: WrittenBookGeneration): WrittenBookMeta.Builder = apply { this.generation = generation }
 
         override fun buildData(): CompoundTag.Builder = super.buildData().apply {
-            putString(TITLE_TAG, title.toLegacySectionText())
-            putString(AUTHOR_TAG, author.toLegacySectionText())
-            list(PAGES_TAG) { pages.forEach { addString(it.toJson()) } }
+            putString(TITLE_TAG, LegacyComponentSerializer.legacySection().serialize(title))
+            putString(AUTHOR_TAG, LegacyComponentSerializer.legacySection().serialize(author))
+            list(PAGES_TAG) { pages.forEach { addString(toJson(it)) } }
             putInt(GENERATION_TAG, generation.ordinal)
         }
 

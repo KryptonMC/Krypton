@@ -31,6 +31,8 @@ import org.kryptonmc.krypton.plugin.KryptonPluginDescription
  */
 object ServerPluginContainer : PluginContainer {
 
-    override val description: PluginDescription = KryptonPluginDescription.SERVER
-    override val instance: Any? = null
+    override val description: PluginDescription
+        get() = KryptonPluginDescription.SERVER
+    override val instance: Any?
+        get() = null
 }

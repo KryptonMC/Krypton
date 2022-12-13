@@ -23,7 +23,6 @@ import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.util.readVarIntArray
 import org.kryptonmc.krypton.util.writeVarIntArray
 
-@Suppress("ArrayInDataClass")
 @JvmRecord
 data class PacketOutRemoveEntities(val ids: IntArray) : Packet {
 
@@ -34,4 +33,8 @@ data class PacketOutRemoveEntities(val ids: IntArray) : Packet {
     override fun write(buf: ByteBuf) {
         buf.writeVarIntArray(ids)
     }
+
+    override fun equals(other: Any?): Boolean = this === other || other is PacketOutRemoveEntities && ids.contentEquals(other.ids)
+
+    override fun hashCode(): Int = ids.contentHashCode()
 }

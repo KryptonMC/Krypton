@@ -28,7 +28,10 @@ abstract class SimpleReloadListener<T> : ReloadListener {
 
     protected abstract fun apply(prepared: T, manager: ResourceManager)
 
-    @Suppress("PARAMETER_NAME_CHANGED_ON_OVERRIDE")
-    override fun reload(barrier: PreparationBarrier, manager: ResourceManager, background: Executor, main: Executor): CompletableFuture<Void> =
-        CompletableFuture.supplyAsync({ prepare(manager) }, background).thenCompose(barrier::wait).thenAcceptAsync({ apply(it, manager) }, main)
+    override fun reload(barrier: PreparationBarrier, manager: ResourceManager, backgroundExecutor: Executor,
+                        mainExecutor: Executor): CompletableFuture<Void> {
+        return CompletableFuture.supplyAsync({ prepare(manager) }, backgroundExecutor)
+            .thenCompose { barrier.wait(it) }
+            .thenAcceptAsync({ apply(it, manager) }, mainExecutor)
+    }
 }

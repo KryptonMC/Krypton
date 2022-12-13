@@ -21,15 +21,8 @@ package org.kryptonmc.krypton.commands
 import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.builder.LiteralArgumentBuilder
 import org.kryptonmc.krypton.command.CommandSourceStack
-import org.kryptonmc.krypton.command.argument
 import org.kryptonmc.krypton.command.arguments.VectorArgument
-import org.kryptonmc.krypton.command.arguments.coordinates.Coordinates
 import org.kryptonmc.krypton.command.arguments.entities.EntityArgumentType
-import org.kryptonmc.krypton.command.arguments.entityArgument
-import org.kryptonmc.krypton.command.permission
-import org.kryptonmc.krypton.command.argument.argument
-import org.kryptonmc.krypton.command.literal
-import org.kryptonmc.krypton.command.runs
 import org.kryptonmc.krypton.locale.Messages
 
 object TeleportCommand {
@@ -43,11 +36,11 @@ object TeleportCommand {
         val node = dispatcher.register(literal("teleport") {
             permission(KryptonPermission.TELEPORT)
             argument(LOCATION, VectorArgument.normal()) {
-                runs { it.source.getPlayerOrError().teleport(it.argument<Coordinates>(LOCATION).position(it.source)) }
+                runs { it.source.getPlayerOrError().teleport(VectorArgument.get(it, LOCATION)) }
             }
             argument(PLAYERS, EntityArgumentType.players()) {
                 runs {
-                    val players = it.entityArgument(PLAYERS).players(it.source)
+                    val players = EntityArgumentType.getPlayers(it, PLAYERS)
                     if (players.size == 1) {
                         val player = players.get(0)
                         player.teleport(player.position)
@@ -56,16 +49,16 @@ object TeleportCommand {
                 }
                 argument(TARGET, EntityArgumentType.players()) {
                     runs { context ->
-                        val players = context.entityArgument(PLAYERS).players(context.source)
-                        val target = context.entityArgument(TARGET).players(context.source).get(0)
+                        val players = EntityArgumentType.getPlayers(context, PLAYERS)
+                        val target = EntityArgumentType.getPlayers(context, TARGET).get(0)
                         players.forEach { it.teleport(target.position) }
                         context.source.sendSuccess(Messages.Commands.TELEPORT_MULTIPLE_ENTITIES.build(players.size, target.displayName), true)
                     }
                 }
                 argument(LOCATION, VectorArgument.normal()) {
                     runs { context ->
-                        val players = context.entityArgument(PLAYERS).players(context.source)
-                        val location = context.argument<Coordinates>(LOCATION).position(context.source)
+                        val players = EntityArgumentType.getPlayers(context, PLAYERS)
+                        val location = VectorArgument.get(context, LOCATION)
                         players.forEach { it.teleport(location) }
                         context.source.sendSuccess(Messages.Commands.TELEPORT_MULTIPLE_LOCATIONS.build(players.size, location), true)
                     }

@@ -26,8 +26,7 @@ import org.kryptonmc.krypton.registry.KryptonRegistries
 import org.kryptonmc.krypton.util.nbt.hasNumber
 import org.kryptonmc.krypton.util.nbt.putNullable
 import org.kryptonmc.krypton.util.nbt.putKeyed
-import org.kryptonmc.krypton.world.block.putBlockState
-import org.kryptonmc.krypton.world.block.toBlockState
+import org.kryptonmc.krypton.world.block.BlockStateSerialization
 import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.StringTag
 
@@ -51,7 +50,7 @@ object ArrowLikeSerializer : EntitySerializer<KryptonArrowLike> {
         ProjectileSerializer.load(entity, data)
         entity.isCritical = data.getBoolean(CRIT_TAG)
         if (data.hasNumber(DAMAGE_TAG)) entity.baseDamage = data.getDouble(DAMAGE_TAG)
-        if (data.contains(IN_BLOCK_TAG, CompoundTag.ID)) entity.stuckInBlock = data.getCompound(IN_BLOCK_TAG).toBlockState()
+        if (data.contains(IN_BLOCK_TAG, CompoundTag.ID)) entity.stuckInBlock = BlockStateSerialization.decode(data.getCompound(IN_BLOCK_TAG))
         entity.isInGround = data.getBoolean(IN_GROUND_TAG)
         entity.life = data.getShort(LIFE_TAG).toInt()
 
@@ -70,7 +69,7 @@ object ArrowLikeSerializer : EntitySerializer<KryptonArrowLike> {
     override fun save(entity: KryptonArrowLike): CompoundTag.Builder = ProjectileSerializer.save(entity).apply {
         putBoolean(CRIT_TAG, entity.isCritical)
         putDouble(DAMAGE_TAG, entity.baseDamage)
-        putNullable(IN_BLOCK_TAG, entity.internalStuckInBlock, CompoundTag.Builder::putBlockState)
+        putNullable(IN_BLOCK_TAG, entity.internalStuckInBlock, BlockStateSerialization::encode)
         putBoolean(IN_GROUND_TAG, entity.isInGround)
         putShort(LIFE_TAG, entity.life.toShort())
         putByte(PICKUP_TAG, entity.pickupRule.ordinal.toByte())

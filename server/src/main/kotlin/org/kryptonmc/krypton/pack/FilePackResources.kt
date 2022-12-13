@@ -21,8 +21,8 @@ package org.kryptonmc.krypton.pack
 import com.google.common.base.Splitter
 import kotlinx.collections.immutable.persistentSetOf
 import net.kyori.adventure.key.Key
+import org.apache.logging.log4j.LogManager
 import org.kryptonmc.krypton.util.Keys
-import org.kryptonmc.krypton.util.logger
 import java.io.IOException
 import java.io.InputStream
 import java.nio.file.Path
@@ -88,7 +88,7 @@ class FilePackResources(path: Path) : AbstractPackResources(path) {
 
     companion object {
 
-        private val LOGGER = logger<FilePackResources>()
+        private val LOGGER = LogManager.getLogger()
         private val SPLITTER = Splitter.on("/").omitEmptyStrings().limit(3)
 
         @JvmStatic

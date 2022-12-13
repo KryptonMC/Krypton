@@ -20,8 +20,10 @@ package org.kryptonmc.krypton.util
 
 class ZeroBitStorage(size: Int) : AbstractBitStorage(size) {
 
-    override val bits: Int = 0
-    override val data: LongArray = RAW
+    override val bits: Int
+        get() = 0
+    override val data: LongArray
+        get() = RAW
 
     override fun getAndSet(index: Int, value: Int): Int {
         checkIndex(index)

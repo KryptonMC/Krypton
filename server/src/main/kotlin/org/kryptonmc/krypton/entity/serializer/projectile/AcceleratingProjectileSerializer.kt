@@ -18,10 +18,10 @@
  */
 package org.kryptonmc.krypton.entity.serializer.projectile
 
+import org.apache.logging.log4j.LogManager
 import org.kryptonmc.krypton.entity.projectile.KryptonAcceleratingProjectile
 import org.kryptonmc.krypton.entity.serializer.EntitySerializer
 import org.kryptonmc.krypton.util.Vec3dImpl
-import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.DoubleTag
 import org.kryptonmc.nbt.ListTag
@@ -29,7 +29,7 @@ import org.kryptonmc.nbt.list
 
 object AcceleratingProjectileSerializer : EntitySerializer<KryptonAcceleratingProjectile> {
 
-    private val LOGGER = logger<AcceleratingProjectileSerializer>()
+    private val LOGGER = LogManager.getLogger()
     private const val POWER_TAG = "power"
     private const val POWER_SIZE = 3
 

@@ -36,11 +36,8 @@ data class PacketInPluginResponse(val messageId: Int, val data: ByteArray?) : Pa
         if (data != null) buf.writeVarIntByteArray(data)
     }
 
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-        return messageId == (other as PacketInPluginResponse).messageId && data.contentEquals(other.data)
-    }
+    override fun equals(other: Any?): Boolean =
+        this === other || other is PacketInPluginResponse && messageId == other.messageId && data.contentEquals(other.data)
 
     override fun hashCode(): Int {
         var result = 1

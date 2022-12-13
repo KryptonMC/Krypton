@@ -36,6 +36,6 @@ class KryptonBlockState(
     companion object {
 
         @JvmField
-        val CODEC: Codec<KryptonBlockState> = codec(KryptonRegistries.BLOCK.byNameCodec(), KryptonBlock::defaultState).stable()
+        val CODEC: Codec<KryptonBlockState> = codec(KryptonRegistries.BLOCK.byNameCodec()) { it.defaultState }.stable()
     }
 }

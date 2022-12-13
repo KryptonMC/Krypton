@@ -22,7 +22,6 @@ import com.google.common.jimfs.Configuration
 import com.google.common.jimfs.Jimfs
 import io.mockk.spyk
 import io.mockk.verify
-import kotlinx.collections.immutable.persistentListOf
 import org.junit.jupiter.api.Test
 import java.nio.file.Path
 import java.time.ZoneOffset
@@ -67,7 +66,7 @@ class ProfileCacheTests {
     fun `test profile saving`() {
         val cache = createAndInit(OUTPUT_PATH)
         cache.add(PROFILE)
-        cache.add(KryptonGameProfile("Joe", UUID.randomUUID(), persistentListOf()))
+        cache.add(KryptonGameProfile.basic(UUID.randomUUID(), "Joe"))
         cache.save()
         assertTrue(OUTPUT_PATH.readText().isNotBlank())
     }
@@ -75,7 +74,7 @@ class ProfileCacheTests {
     @Test
     fun `ensure add marks dirty`() {
         val cache = spyk(KryptonProfileCache(NULL_PATH))
-        cache.add(KryptonGameProfile("test", UUID.randomUUID(), persistentListOf()))
+        cache.add(KryptonGameProfile.basic(UUID.randomUUID(), "test"))
         cache.saveIfNeeded()
         verify { cache.save() }
     }
@@ -92,7 +91,7 @@ class ProfileCacheTests {
         private val OUTPUT_PATH = FILE_SYSTEM.getPath("output")
 
         private val ID = UUID.randomUUID()
-        private val PROFILE = KryptonGameProfile("Dave", ID, persistentListOf())
+        private val PROFILE = KryptonGameProfile.basic(ID, "Dave")
 
         private val FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss Z")
         private val TIME = ZonedDateTime.of(2021, 2, 13, 17, 2, 36, 0, ZoneOffset.UTC)

@@ -18,24 +18,22 @@
  */
 package org.kryptonmc.krypton.util
 
-import org.kryptonmc.api.util.Vec3d
-import org.kryptonmc.krypton.entity.KryptonEntity
+import java.net.InetAddress
+import java.net.SocketAddress
 
-sealed class HitResult(val location: Vec3d) {
+object AddressUtil {
 
-    abstract val type: Type
+    @JvmStatic
+    fun asString(address: SocketAddress): String = formatAddressString(address.toString())
 
-    fun distanceTo(entity: KryptonEntity): Double {
-        val dx = location.x - entity.position.x
-        val dy = location.y - entity.position.y
-        val dz = location.z - entity.position.z
-        return dx * dx + dy * dy + dz * dz
-    }
+    @JvmStatic
+    fun asString(address: InetAddress): String = formatAddressString(address.toString())
 
-    enum class Type {
-
-        MISS,
-        BLOCK,
-        ENTITY
+    @JvmStatic
+    private fun formatAddressString(input: String): String {
+        var temp = input
+        if (temp.contains('/')) temp = temp.substring(temp.indexOf('/') + 1)
+        if (temp.contains(':')) temp = temp.substring(0, temp.indexOf(':'))
+        return temp
     }
 }

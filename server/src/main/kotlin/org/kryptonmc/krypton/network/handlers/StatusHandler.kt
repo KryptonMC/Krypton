@@ -47,7 +47,7 @@ class StatusHandler(override val server: KryptonServer, override val session: Se
     }
 
     private fun handleStatusRequest() {
-        session.send(PacketOutStatusResponse(server.sessionManager.status))
+        session.send(PacketOutStatusResponse(server.sessionManager.status()))
     }
 
     private fun handlePing(packet: PacketInPingRequest) {

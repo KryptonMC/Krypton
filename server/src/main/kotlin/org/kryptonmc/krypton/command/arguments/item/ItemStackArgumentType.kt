@@ -20,6 +20,8 @@ package org.kryptonmc.krypton.command.arguments.item
 
 import com.mojang.brigadier.StringReader
 import com.mojang.brigadier.arguments.ArgumentType
+import com.mojang.brigadier.context.CommandContext
+import org.kryptonmc.krypton.command.CommandSourceStack
 
 /**
  * An argument type that parses item stacks.
@@ -31,4 +33,7 @@ object ItemStackArgumentType : ArgumentType<ItemStackArgument> {
     override fun getExamples(): Collection<String> = EXAMPLES
 
     override fun parse(reader: StringReader): ItemStackArgument = ItemStackParser.parseItem(reader)
+
+    @JvmStatic
+    fun get(context: CommandContext<CommandSourceStack>, name: String): ItemStackArgument = context.getArgument(name, ItemStackArgument::class.java)
 }

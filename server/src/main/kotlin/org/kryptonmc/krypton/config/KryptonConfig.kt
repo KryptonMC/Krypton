@@ -22,15 +22,18 @@ import net.kyori.adventure.serializer.configurate4.ConfigurateComponentSerialize
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer
 import org.kryptonmc.api.ServerConfig
+import org.kryptonmc.api.world.Difficulty
+import org.kryptonmc.api.world.GameMode
 import org.kryptonmc.krypton.config.category.AdvancedCategory
 import org.kryptonmc.krypton.config.category.OtherCategory
 import org.kryptonmc.krypton.config.category.ProxyCategory
 import org.kryptonmc.krypton.config.category.ServerCategory
 import org.kryptonmc.krypton.config.category.StatusCategory
 import org.kryptonmc.krypton.config.category.WorldCategory
-import org.kryptonmc.krypton.config.serializer.DifficultyTypeSerializer
-import org.kryptonmc.krypton.config.serializer.GameModeTypeSerializer
+import org.kryptonmc.krypton.config.serializer.EnumSerializer
 import org.kryptonmc.krypton.config.serializer.LocaleTypeSerializer
+import org.kryptonmc.krypton.util.Difficulties
+import org.kryptonmc.krypton.util.GameModes
 import org.spongepowered.configurate.ConfigurationOptions
 import org.spongepowered.configurate.hocon.HoconConfigurationLoader
 import org.spongepowered.configurate.kotlin.extensions.get
@@ -78,11 +81,10 @@ data class KryptonConfig(
             at https://discord.gg/4QuwYACDRX
         """.trimIndent()
 
-        @JvmField
-        val OPTIONS: ConfigurationOptions = ConfigurationOptions.defaults()
+        private val OPTIONS = ConfigurationOptions.defaults()
             .header(HEADER)
-            .serializers {
-                it.registerAll(ConfigurateComponentSerializer.builder()
+            .serializers { builder ->
+                builder.registerAll(ConfigurateComponentSerializer.builder()
                     .scalarSerializer(LegacyComponentSerializer.builder()
                         .character(LegacyComponentSerializer.AMPERSAND_CHAR)
                         .extractUrls()
@@ -91,10 +93,10 @@ data class KryptonConfig(
                     .outputStringComponents(true)
                     .build()
                     .serializers())
-                it.register(DifficultyTypeSerializer)
-                it.register(GameModeTypeSerializer)
-                it.register(LocaleTypeSerializer)
-                it.registerAnnotatedObjects(objectMapperFactory())
+                builder.register(EnumSerializer(Difficulty::class.java, "difficulty", { Difficulties.fromId(it) }, { Difficulties.fromName(it) }))
+                builder.register(EnumSerializer(GameMode::class.java, "game mode", { GameModes.fromId(it) }, { GameModes.fromName(it) }))
+                builder.register(LocaleTypeSerializer)
+                builder.registerAnnotatedObjects(objectMapperFactory())
             }
 
         @JvmStatic

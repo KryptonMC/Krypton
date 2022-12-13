@@ -19,12 +19,12 @@
 package org.kryptonmc.krypton.auth
 
 import com.google.common.collect.Lists
+import org.apache.logging.log4j.LogManager
 import org.kryptonmc.api.auth.GameProfile
 import org.kryptonmc.api.auth.ProfileCache
 import org.kryptonmc.krypton.util.array
 import org.kryptonmc.krypton.util.jsonReader
 import org.kryptonmc.krypton.util.jsonWriter
-import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.util.readListTo
 import java.io.IOException
 import java.nio.file.Files
@@ -106,7 +106,7 @@ class KryptonProfileCache(private val path: Path) : ProfileCache {
 
     companion object {
 
-        private val LOGGER = logger<KryptonProfileCache>()
+        private val LOGGER = LogManager.getLogger()
         private const val MRU_LIMIT = 1000L
     }
 }

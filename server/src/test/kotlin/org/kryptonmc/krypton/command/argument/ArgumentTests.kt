@@ -37,7 +37,6 @@ import org.kryptonmc.krypton.command.argument.serializer.IntegerArgumentSerializ
 import org.kryptonmc.krypton.command.argument.serializer.LongArgumentSerializer
 import org.kryptonmc.krypton.command.argument.serializer.StringArgumentSerializer
 import org.kryptonmc.krypton.util.readVarInt
-import org.kryptonmc.krypton.util.writeArgumentType
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 
@@ -46,21 +45,21 @@ class ArgumentTests {
     @Test
     fun `argument types write calls error when entry is null`() {
         val buffer = Unpooled.buffer()
-        assertThrows<IllegalStateException> { buffer.writeArgumentType(BogusArgumentType) }
+        assertThrows<IllegalStateException> { ArgumentSerializers.write(buffer, BogusArgumentType) }
         assertFalse(buffer.isReadable)
 
     }
 
     @Test
     fun `valid argument type writing for empty serializer`() {
-        val buffer = Unpooled.buffer().apply { writeArgumentType(BoolArgumentType.bool()) }
+        val buffer = Unpooled.buffer().apply { ArgumentSerializers.write(this, BoolArgumentType.bool()) }
         assertEquals(0, buffer.readVarInt())
         assertFalse(buffer.isReadable)
     }
 
     @Test
     fun `valid argument type writing for integer serializer`() {
-        val buffer = Unpooled.buffer().apply { writeArgumentType(IntegerArgumentType.integer(10, 20)) }
+        val buffer = Unpooled.buffer().apply { ArgumentSerializers.write(this, IntegerArgumentType.integer(10, 20)) }
         assertEquals(3, buffer.readVarInt())
         assertEquals(0b00000011, buffer.readByte())
         assertEquals(10, buffer.readInt())

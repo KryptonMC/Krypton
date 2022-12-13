@@ -43,7 +43,7 @@ import org.kryptonmc.krypton.shapes.VoxelShape
 import org.kryptonmc.krypton.state.KryptonState
 import org.kryptonmc.krypton.state.StateDelegate
 import org.kryptonmc.krypton.state.property.KryptonProperty
-import org.kryptonmc.krypton.util.BlockHitResult
+import org.kryptonmc.krypton.util.hit.BlockHitResult
 import org.kryptonmc.krypton.util.BlockPos
 import org.kryptonmc.krypton.util.InteractionResult
 import org.kryptonmc.krypton.util.Maths

@@ -23,18 +23,11 @@ import net.kyori.adventure.key.Key
 import org.kryptonmc.api.util.Vec3d
 import org.kryptonmc.krypton.command.CommandSourceStack
 import org.kryptonmc.krypton.command.SuggestionProviders
-import org.kryptonmc.krypton.command.argument
 import org.kryptonmc.krypton.command.arguments.NBTCompoundArgument
 import org.kryptonmc.krypton.command.arguments.SummonEntityArgument
 import org.kryptonmc.krypton.command.arguments.VectorArgument
-import org.kryptonmc.krypton.command.arguments.summonableEntity
-import org.kryptonmc.krypton.command.arguments.vectorArgument
-import org.kryptonmc.krypton.command.permission
 import org.kryptonmc.krypton.entity.EntityFactory
-import org.kryptonmc.krypton.command.argument.argument
 import org.kryptonmc.krypton.command.arguments.CommandExceptions
-import org.kryptonmc.krypton.command.literal
-import org.kryptonmc.krypton.command.runs
 import org.kryptonmc.krypton.locale.Messages
 import org.kryptonmc.krypton.util.Worlds
 import org.kryptonmc.nbt.CompoundTag
@@ -54,12 +47,12 @@ object SummonCommand {
             permission(KryptonPermission.SUMMON)
             argument(ENTITY, SummonEntityArgument) {
                 suggests(SuggestionProviders.SUMMONABLE_ENTITIES)
-                runs { spawnEntity(it.source, it.summonableEntity(ENTITY), it.source.position, CompoundTag.EMPTY) }
+                runs { spawnEntity(it.source, SummonEntityArgument.get(it, ENTITY), it.source.position, CompoundTag.EMPTY) }
                 argument(POSITION, VectorArgument.normal()) {
-                    runs { spawnEntity(it.source, it.summonableEntity(ENTITY), it.vectorArgument(POSITION), CompoundTag.EMPTY) }
+                    runs { spawnEntity(it.source, SummonEntityArgument.get(it, ENTITY), VectorArgument.get(it, POSITION), CompoundTag.EMPTY) }
                     argument(NBT, NBTCompoundArgument) {
                         runs {
-                            spawnEntity(it.source, it.summonableEntity(ENTITY), it.vectorArgument(POSITION), it.argument(NBT))
+                            spawnEntity(it.source, SummonEntityArgument.get(it, ENTITY), VectorArgument.get(it, POSITION), it.getArgument(NBT))
                         }
                     }
                 }

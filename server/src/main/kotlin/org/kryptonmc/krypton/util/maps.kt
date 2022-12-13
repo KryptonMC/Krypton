@@ -20,16 +20,6 @@ package org.kryptonmc.krypton.util
 
 import java.util.function.Function
 
-inline fun <K, V, K1, V1> Map<K, V>.transform(transformer: (Map.Entry<K, V>) -> Pair<K1, V1>): Map<K1, V1> = transformTo(HashMap(), transformer)
-
-inline fun <C : MutableMap<K1, V1>, K, V, K1, V1> Map<K, V>.transformTo(destination: C, transformer: (Map.Entry<K, V>) -> Pair<K1, V1>): C {
-    for (entry in this) {
-        val transformed = transformer(entry)
-        destination.put(transformed.first, transformed.second)
-    }
-    return destination
-}
-
 // We use the platform class here to clean up the generated code, because we don't need to check for KMappedMarker,
 // and we ideally want to call the JVM implementation directly, as that's the one with our desired semantics.
 @Suppress("UNCHECKED_CAST", "PLATFORM_CLASS_MAPPED_TO_KOTLIN", "NOTHING_TO_INLINE")

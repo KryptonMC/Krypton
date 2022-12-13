@@ -20,6 +20,7 @@ package org.kryptonmc.krypton.world.chunk
 
 import ca.spottedleaf.dataconverter.minecraft.datatypes.MCTypeRegistry
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap
+import org.apache.logging.log4j.LogManager
 import java.util.EnumSet
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.ConcurrentHashMap
@@ -29,7 +30,6 @@ import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.util.DataConversion
 import org.kryptonmc.krypton.util.SectionPos
 import org.kryptonmc.krypton.util.executor.DefaultPoolUncaughtExceptionHandler
-import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.util.executor.ThreadPoolBuilder
 import org.kryptonmc.krypton.util.executor.daemonThreadFactory
 import org.kryptonmc.krypton.world.Heightmap
@@ -190,7 +190,7 @@ class ChunkManager(private val world: KryptonWorld) : AutoCloseable {
 
     companion object {
 
-        private val LOGGER = logger<ChunkManager>()
+        private val LOGGER = LogManager.getLogger()
 
         @JvmStatic
         private fun serialize(chunk: KryptonChunk): CompoundTag {

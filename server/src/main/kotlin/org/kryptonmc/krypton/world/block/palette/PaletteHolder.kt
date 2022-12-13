@@ -31,9 +31,9 @@ import org.kryptonmc.krypton.util.SimpleBitStorage
 import org.kryptonmc.krypton.util.ZeroBitStorage
 import org.kryptonmc.krypton.util.varIntBytes
 import org.kryptonmc.krypton.util.writeLongArray
+import org.kryptonmc.krypton.world.block.BlockStateSerialization
 import org.kryptonmc.krypton.world.block.KryptonBlock
 import org.kryptonmc.krypton.world.block.state.KryptonBlockState
-import org.kryptonmc.krypton.world.block.toBlockState
 import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.StringTag
 import org.kryptonmc.nbt.Tag
@@ -102,7 +102,7 @@ class PaletteHolder<T> : PaletteResizer<T> {
     fun calculateSerializedSize(): Int = data.calculateSerializedSize()
 
     fun forEachLocation(consumer: PaletteConsumer<T>) {
-        data.storage.forEach { location, data -> consumer(this.data.palette.get(data)!!, location) }
+        data.storage.forEach { location, data -> consumer.apply(this.data.palette.get(data)!!, location) }
     }
 
     override fun onResize(newBits: Int, value: T): Int {
@@ -123,7 +123,7 @@ class PaletteHolder<T> : PaletteResizer<T> {
 
     fun interface PaletteConsumer<T> {
 
-        operator fun invoke(element: T, location: Int)
+        fun apply(element: T, location: Int)
     }
 
     @JvmRecord
@@ -163,7 +163,7 @@ class PaletteHolder<T> : PaletteResizer<T> {
 
         protected abstract fun createConfiguration(bits: Int): Configuration<T>
 
-        fun configuration(bits: Int): Configuration<T> = cache.computeIfAbsent(bits, Int2ObjectFunction(::createConfiguration))
+        fun configuration(bits: Int): Configuration<T> = cache.computeIfAbsent(bits, Int2ObjectFunction { createConfiguration(it) })
 
         fun indexOf(x: Int, y: Int, z: Int): Int = y shl sizeBits or z shl sizeBits or x
 
@@ -214,7 +214,7 @@ class PaletteHolder<T> : PaletteResizer<T> {
         @JvmStatic
         fun readBlocks(data: CompoundTag): PaletteHolder<KryptonBlockState> {
             val entries = ArrayList<KryptonBlockState>()
-            data.getList(PALETTE_TAG, CompoundTag.ID).forEachCompound { entries.add(it.toBlockState()) }
+            data.getList(PALETTE_TAG, CompoundTag.ID).forEachCompound { entries.add(BlockStateSerialization.decode(it)) }
             return read(Strategy.BLOCKS, entries, data.getLongArray(DATA_TAG))
         }
 

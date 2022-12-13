@@ -18,7 +18,7 @@
  */
 package org.kryptonmc.krypton.util.executor
 
-import org.kryptonmc.krypton.util.logger
+import org.apache.logging.log4j.LogManager
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.ConcurrentLinkedQueue
 import java.util.concurrent.Executor
@@ -123,6 +123,6 @@ abstract class BlockableEventLoop<R : Runnable> protected constructor(override v
 
     companion object {
 
-        private val LOGGER = logger<BlockableEventLoop<*>>()
+        private val LOGGER = LogManager.getLogger()
     }
 }

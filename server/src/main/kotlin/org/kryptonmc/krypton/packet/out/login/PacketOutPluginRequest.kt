@@ -37,11 +37,8 @@ data class PacketOutPluginRequest(val id: Int, val channel: String, val data: By
         buf.writeBytes(data)
     }
 
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-        return id == (other as PacketOutPluginRequest).id && channel == other.channel && data.contentEquals(other.data)
-    }
+    override fun equals(other: Any?): Boolean =
+        this === other || other is PacketOutPluginRequest && id == other.id && channel == other.channel && data.contentEquals(other.data)
 
     override fun hashCode(): Int {
         var result = 1

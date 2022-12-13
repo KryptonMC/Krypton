@@ -37,6 +37,7 @@ import org.kryptonmc.api.event.Continuation as EventContinuation
  */
 object Coroutines {
 
+    @JvmStatic
     fun registerHandlerAdapter(manager: KryptonEventManager) {
         val filter = Predicate<Method> { it.kotlinFunction?.isSuspend == true }
         val validator = BiConsumer<Method, MutableList<String>> { method, errors ->
@@ -51,11 +52,11 @@ object Coroutines {
         manager.registerHandlerAdapter("coroutines", object : TypeToken<CoroutineEventFunction>() {}, filter, validator, handlerBuilder)
     }
 
-    private fun suspendingEventTask(handler: suspend () -> Unit): EventTask = EventTask.withContinuation {
-        handler.startCoroutine(it.toCoroutines())
-    }
-}
+    @JvmStatic
+    private fun suspendingEventTask(handler: suspend () -> Unit): EventTask = EventTask.withContinuation { handler.startCoroutine(toCoroutines(it)) }
 
-private fun EventContinuation.toCoroutines(): Continuation<Unit> = Continuation(EmptyCoroutineContext) {
-    if (it.isFailure) resumeWithException(it.exceptionOrNull()!!) else resume()
+    @JvmStatic
+    private fun toCoroutines(continuation: EventContinuation): Continuation<Unit> = Continuation(EmptyCoroutineContext) {
+        if (it.isFailure) continuation.resumeWithException(it.exceptionOrNull()!!) else continuation.resume()
+    }
 }

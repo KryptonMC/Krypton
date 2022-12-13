@@ -18,13 +18,13 @@
  */
 package org.kryptonmc.krypton
 
+import org.apache.logging.log4j.LogManager
 import org.bstats.MetricsBase
 import org.bstats.charts.DrilldownPie
 import org.bstats.charts.SimplePie
 import org.bstats.charts.SingleLineChart
 import org.bstats.config.MetricsConfig
 import org.bstats.json.JsonObjectBuilder
-import org.kryptonmc.krypton.util.logger
 import java.io.IOException
 import java.nio.file.Path
 
@@ -36,7 +36,7 @@ import java.nio.file.Path
  */
 object KryptonMetrics {
 
-    private val LOGGER = logger<KryptonMetrics>()
+    private val LOGGER = LogManager.getLogger()
     private const val SERVICE_ID = 11197
     private val VERSION_REGEX = "\\d+".toRegex()
 
@@ -61,21 +61,21 @@ object KryptonMetrics {
             config.serverUUID,
             SERVICE_ID,
             config.isEnabled,
-            ::appendPlatformData,
+            { appendPlatformData(it) },
             {},
             null,
             { true },
-            LOGGER::warn,
-            LOGGER::info,
+            { message, exception -> LOGGER.warn(message, exception) },
+            { message -> LOGGER.info(message) },
             config.isLogErrorsEnabled,
             config.isLogSentDataEnabled,
             config.isLogResponseStatusTextEnabled
         )
 
-        metrics.addCustomChart(SingleLineChart("players", server.players::size))
+        metrics.addCustomChart(SingleLineChart("players") { server.players.size })
         metrics.addCustomChart(SimplePie("online_mode") { if (server.config.server.onlineMode) "online" else "offline" })
-        metrics.addCustomChart(SimplePie("krypton_version", KryptonPlatform::version))
-        metrics.addCustomChart(SimplePie("minecraft_version", KryptonPlatform::minecraftVersion))
+        metrics.addCustomChart(SimplePie("krypton_version") { KryptonPlatform.version })
+        metrics.addCustomChart(SimplePie("minecraft_version") { KryptonPlatform.minecraftVersion })
 
         metrics.addCustomChart(DrilldownPie("java_version") {
             val javaVersion = System.getProperty("java.version")

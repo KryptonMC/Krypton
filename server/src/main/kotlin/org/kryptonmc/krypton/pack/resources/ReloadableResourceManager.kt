@@ -19,9 +19,9 @@
 package org.kryptonmc.krypton.pack.resources
 
 import net.kyori.adventure.key.Key
+import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.util.Supplier
 import org.kryptonmc.krypton.pack.PackResources
-import org.kryptonmc.krypton.util.logger
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.Executor
 import java.util.function.Predicate
@@ -36,7 +36,7 @@ class ReloadableResourceManager : ResourceManager, AutoCloseable {
     }
 
     fun createReload(background: Executor, main: Executor, waitingFor: CompletableFuture<Unit>, packs: List<PackResources>): ReloadInstance {
-        LOGGER.info(Supplier { "Reloading resource manager: ${packs.joinToString(", ") { it.name }}" })
+        LOGGER.info(Supplier { "Reloading resource manager: ${packs.joinToString(", ") { it.name() }}" })
         manager.close()
         manager = MultiPackResourceManager(packs)
         return SimpleReloadInstance.of(manager, listeners, background, main, waitingFor)
@@ -54,6 +54,6 @@ class ReloadableResourceManager : ResourceManager, AutoCloseable {
 
     companion object {
 
-        private val LOGGER = logger<ReloadableResourceManager>()
+        private val LOGGER = LogManager.getLogger()
     }
 }

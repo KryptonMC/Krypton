@@ -40,11 +40,11 @@ data class GlobalPosition(val dimension: ResourceKey<World>, val position: Block
     companion object {
 
         @JvmField
-        val CODEC: Codec<GlobalPosition> = RecordCodecBuilder.create {
-            it.group(
-                Codecs.DIMENSION.fieldOf("dimension").getting(GlobalPosition::dimension),
-                BlockPos.CODEC.fieldOf("pos").getting(GlobalPosition::position)
-            ).apply(it, ::GlobalPosition)
+        val CODEC: Codec<GlobalPosition> = RecordCodecBuilder.create { instance ->
+            instance.group(
+                Codecs.DIMENSION.fieldOf("dimension").getting { it.dimension },
+                BlockPos.CODEC.fieldOf("pos").getting { it.position }
+            ).apply(instance) { dimension, pos -> GlobalPosition(dimension, pos) }
         }
     }
 }

@@ -18,10 +18,11 @@
  */
 package org.kryptonmc.krypton.entity.attribute
 
+import org.apache.logging.log4j.LogManager
+import org.apache.logging.log4j.Logger
 import org.kryptonmc.api.entity.attribute.AttributeModifier
 import org.kryptonmc.api.entity.attribute.BasicModifierOperation
 import org.kryptonmc.api.entity.attribute.ModifierOperation
-import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.util.nbt.getUUID
 import org.kryptonmc.nbt.CompoundTag
 import java.util.Objects
@@ -56,16 +57,26 @@ open class KryptonAttributeModifier(
             KryptonAttributeModifier(uuid, name, amount, operation)
     }
 
+    @Suppress("JVM_STATIC_ON_CONST_OR_JVM_FIELD")
     companion object {
 
         @JvmStatic
-        protected val LOGGER = logger<KryptonAttributeModifier>()
+        protected const val UUID_TAG = "UUID"
+        @JvmStatic
+        protected const val NAME_TAG = "Name"
+        @JvmStatic
+        protected const val AMOUNT_TAG = "Amount"
+        @JvmStatic
+        protected const val OPERATION_TAG = "Operation"
+
+        @JvmStatic
+        protected val LOGGER: Logger = LogManager.getLogger()
         private val BASIC_OPERATIONS = BasicModifierOperation.values()
 
         @JvmStatic
-        fun from(data: CompoundTag): KryptonAttributeModifier? {
+        fun load(data: CompoundTag): KryptonAttributeModifier? {
             return try {
-                KryptonAttributeModifier(getId(data), data.getString("Name"), data.getDouble("Amount"), getOperation(data))
+                KryptonAttributeModifier(getId(data), data.getString(NAME_TAG), data.getDouble(AMOUNT_TAG), getOperation(data))
             } catch (exception: IllegalArgumentException) {
                 LOGGER.warn("Unable to create attribute!", exception)
                 null
@@ -73,10 +84,11 @@ open class KryptonAttributeModifier(
         }
 
         @JvmStatic
-        protected fun getId(data: CompoundTag): UUID = requireNotNull(data.getUUID("UUID")) { "Could not deserialize UUID for attribute modifier!" }
+        protected fun getId(data: CompoundTag): UUID =
+            requireNotNull(data.getUUID(UUID_TAG)) { "Could not deserialize UUID for attribute modifier!" }
 
         @JvmStatic
-        protected fun getOperation(data: CompoundTag): BasicModifierOperation = getOperationById(data.getInt("Operation"))
+        protected fun getOperation(data: CompoundTag): BasicModifierOperation = getOperationById(data.getInt(OPERATION_TAG))
 
         @JvmStatic
         fun getOperationById(id: Int): BasicModifierOperation {

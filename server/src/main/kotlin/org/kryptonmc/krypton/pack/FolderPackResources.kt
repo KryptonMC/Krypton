@@ -22,8 +22,8 @@ import com.google.common.base.CharMatcher
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.persistentSetOf
 import net.kyori.adventure.key.Key
+import org.apache.logging.log4j.LogManager
 import org.kryptonmc.krypton.util.Keys
-import org.kryptonmc.krypton.util.logger
 import java.io.IOException
 import java.io.InputStream
 import java.nio.file.Files
@@ -85,7 +85,7 @@ class FolderPackResources(path: Path) : AbstractPackResources(path) {
 
     companion object {
 
-        private val LOGGER = logger<FolderPackResources>()
+        private val LOGGER = LogManager.getLogger()
         private val ON_WINDOWS = System.getProperty("os.name").lowercase().contains("win")
         private val BACKSLASH_MATCHER = CharMatcher.`is`('\\')
 
@@ -101,7 +101,7 @@ class FolderPackResources(path: Path) : AbstractPackResources(path) {
             val namespaces = persistentSetOf<String>().builder()
             val dataFolder = path.resolve("data")
             try {
-                Files.list(dataFolder).filter(Files::isDirectory).forEach {
+                Files.list(dataFolder).filter { Files.isDirectory(it) }.forEach {
                     val namespace = relativizePath(dataFolder, it)
                     if (namespace == namespace.lowercase()) {
                         namespaces.add(namespace.substring(0, namespace.length - 1))

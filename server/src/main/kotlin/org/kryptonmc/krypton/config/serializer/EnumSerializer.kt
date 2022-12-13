@@ -24,14 +24,13 @@ import java.lang.reflect.Type
 import java.util.function.Function
 import java.util.function.IntFunction
 import java.util.function.Predicate
-import kotlin.reflect.KClass
 
-sealed class EnumSerializer<E : Enum<E>>(
-    type: KClass<E>,
+class EnumSerializer<E : Enum<E>>(
+    type: Class<E>,
     private val typeName: String,
     private val fromId: IntFunction<E?>,
     private val fromName: Function<String, E?>
-) : ScalarSerializer<E>(type.java) {
+) : ScalarSerializer<E>(type) {
 
     override fun serialize(item: E, typeSupported: Predicate<Class<*>>?): Any = item.name.lowercase()
 

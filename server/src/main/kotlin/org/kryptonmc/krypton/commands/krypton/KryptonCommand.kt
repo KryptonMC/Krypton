@@ -21,7 +21,7 @@ package org.kryptonmc.krypton.commands.krypton
 import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.builder.LiteralArgumentBuilder
 import org.kryptonmc.krypton.command.CommandSourceStack
-import org.kryptonmc.krypton.command.literal
+import org.kryptonmc.krypton.commands.literal
 
 object KryptonCommand {
 
@@ -37,6 +37,6 @@ object KryptonCommand {
     private fun registerSubCommand(context: LiteralArgumentBuilder<CommandSourceStack>, command: KryptonSubCommand) {
         val node = command.register().build()
         context.then(node)
-        command.aliases.forEach { context.then(LiteralArgumentBuilder.literal<CommandSourceStack>(it).redirect(node)) }
+        command.aliases().forEach { context.then(LiteralArgumentBuilder.literal<CommandSourceStack>(it).redirect(node)) }
     }
 }

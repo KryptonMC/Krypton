@@ -26,9 +26,7 @@ import java.time.Duration
 @JvmRecord
 data class PacketOutSetTitleAnimationTimes(val fadeInTicks: Int, val stayTicks: Int, val fadeOutTicks: Int) : Packet {
 
-    constructor(times: Title.Times) : this(times.fadeIn(), times.stay(), times.fadeOut())
-
-    constructor(fadeIn: Duration, stay: Duration, fadeOut: Duration) : this(fadeIn.toTicks(), stay.toTicks(), fadeOut.toTicks())
+    constructor(times: Title.Times) : this(toTicks(times.fadeIn()), toTicks(times.stay()), toTicks(times.fadeOut()))
 
     constructor(buf: ByteBuf) : this(buf.readInt(), buf.readInt(), buf.readInt())
 
@@ -37,8 +35,12 @@ data class PacketOutSetTitleAnimationTimes(val fadeInTicks: Int, val stayTicks: 
         buf.writeInt(stayTicks)
         buf.writeInt(fadeOutTicks)
     }
+
+    companion object {
+
+        private const val TICKS_PER_SECOND = 20
+
+        @JvmStatic
+        private fun toTicks(duration: Duration): Int = duration.toSeconds().toInt() * TICKS_PER_SECOND
+    }
 }
-
-private const val TICKS_PER_SECOND = 20
-
-private fun Duration.toTicks(): Int = toSeconds().toInt() * TICKS_PER_SECOND

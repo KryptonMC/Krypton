@@ -26,6 +26,7 @@ import io.netty.channel.ChannelHandlerContext
 import io.netty.channel.SimpleChannelInboundHandler
 import io.netty.handler.timeout.TimeoutException
 import net.kyori.adventure.text.Component
+import org.apache.logging.log4j.LogManager
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.locale.Messages
 import org.kryptonmc.krypton.network.handlers.HandshakeHandler
@@ -46,8 +47,7 @@ import org.kryptonmc.krypton.packet.PacketState
 import org.kryptonmc.krypton.packet.out.login.PacketOutLoginDisconnect
 import org.kryptonmc.krypton.packet.out.login.PacketOutSetCompression
 import org.kryptonmc.krypton.packet.out.play.PacketOutDisconnect
-import org.kryptonmc.krypton.util.logger
-import org.kryptonmc.krypton.util.writeFramedPacket
+import org.kryptonmc.krypton.util.PacketFraming
 import java.net.InetSocketAddress
 import java.net.SocketAddress
 import java.util.concurrent.Executor
@@ -148,7 +148,7 @@ class SessionHandler(private val server: KryptonServer) : SimpleChannelInboundHa
             is Packet -> {
                 synchronized(tickBufferLock) {
                     if (tickBuffer.refCnt() <= 0) return
-                    tickBuffer.writeFramedPacket(packet, compressionThreshold())
+                    PacketFraming.writeFramedPacket(tickBuffer, packet, compressionThreshold())
                 }
             }
             is FramedPacket -> {
@@ -251,7 +251,7 @@ class SessionHandler(private val server: KryptonServer) : SimpleChannelInboundHa
     companion object {
 
         const val NETTY_NAME: String = "handler"
-        private val LOGGER = logger<SessionHandler>()
+        private val LOGGER = LogManager.getLogger()
         private val END_OF_STREAM = Messages.Disconnect.END_OF_STREAM.build()
         private val TIMEOUT = Messages.Disconnect.TIMEOUT.build()
     }

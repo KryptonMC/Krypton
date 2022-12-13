@@ -28,6 +28,7 @@ import it.unimi.dsi.fastutil.objects.Object2IntMaps
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap
 import net.kyori.adventure.key.InvalidKeyException
 import net.kyori.adventure.key.Key
+import org.apache.logging.log4j.LogManager
 import org.kryptonmc.api.registry.Registry
 import org.kryptonmc.api.statistic.Statistic
 import org.kryptonmc.api.statistic.StatisticType
@@ -38,7 +39,6 @@ import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.packet.out.play.PacketOutAwardStatistics
 import org.kryptonmc.krypton.registry.KryptonRegistries
 import org.kryptonmc.krypton.util.DataConversion
-import org.kryptonmc.krypton.util.logger
 import java.io.IOException
 import java.io.Reader
 import java.nio.file.Files
@@ -183,7 +183,7 @@ class KryptonStatisticsTracker(private val player: KryptonPlayer, private val fi
 
     companion object {
 
-        private val LOGGER = logger<KryptonStatisticsTracker>()
+        private val LOGGER = LogManager.getLogger()
         private const val OLD_VERSION = 1343
 
         private const val STATS_KEY = "stats"

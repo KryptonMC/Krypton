@@ -18,8 +18,6 @@
  */
 package org.kryptonmc.krypton.command
 
-import net.kyori.adventure.audience.MessageType
-import net.kyori.adventure.identity.Identity
 import net.kyori.adventure.text.Component
 import org.kryptonmc.api.command.Sender
 
@@ -33,8 +31,8 @@ interface KryptonSender : Sender {
 
     fun sendSystemMessage(message: Component)
 
-    override fun sendMessage(source: Identity, message: Component, type: MessageType) {
-        if (type == MessageType.SYSTEM) sendSystemMessage(message)
+    override fun sendMessage(message: Component) {
+        sendSystemMessage(message)
     }
 
     fun createCommandSourceStack(): CommandSourceStack

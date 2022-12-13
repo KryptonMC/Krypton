@@ -60,11 +60,8 @@ data class VerificationData(val verifyToken: ByteArray?, val salt: OptionalLong,
         }
     }
 
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-        return verifyToken.contentEquals((other as VerificationData).verifyToken) && salt == other.salt && signature.contentEquals(other.signature)
-    }
+    override fun equals(other: Any?): Boolean = this === other || other is VerificationData &&
+            verifyToken.contentEquals(other.verifyToken) && salt == other.salt && signature.contentEquals(other.signature)
 
     override fun hashCode(): Int {
         var result = 1

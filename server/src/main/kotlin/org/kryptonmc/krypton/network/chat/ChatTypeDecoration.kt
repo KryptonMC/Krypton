@@ -42,7 +42,7 @@ data class ChatTypeDecoration(private val translationKey: String, val parameters
         companion object {
 
             @JvmField
-            val CODEC: Codec<Parameter> = EnumCodecs.of(Parameter::values)
+            val CODEC: Codec<Parameter> = EnumCodecs.of { Parameter.values() }
         }
     }
 
@@ -52,8 +52,8 @@ data class ChatTypeDecoration(private val translationKey: String, val parameters
         val CODEC: Codec<ChatTypeDecoration> = RecordCodecBuilder.create { instance ->
             instance.group(
                 Codec.STRING.fieldOf("translation_key").getting { it.translationKey() },
-                Parameter.CODEC.listOf().fieldOf("parameters").getting(ChatTypeDecoration::parameters),
-                AdventureCodecs.STYLE_FORMATTING.optionalFieldOf("style", Style.empty()).getting(ChatTypeDecoration::style)
+                Parameter.CODEC.listOf().fieldOf("parameters").getting { it.parameters },
+                AdventureCodecs.STYLE_FORMATTING.optionalFieldOf("style", Style.empty()).getting { it.style }
             ).apply(instance, ::ChatTypeDecoration)
         }
 

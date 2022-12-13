@@ -19,12 +19,13 @@
 package org.kryptonmc.krypton.adventure
 
 import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer
 import org.kryptonmc.api.adventure.AdventureMessage
 
 @JvmRecord
 data class KryptonAdventureMessage(private val component: Component) : AdventureMessage {
 
-    override fun getString(): String = component.toPlainText()
+    override fun getString(): String = PlainTextComponentSerializer.plainText().serialize(component)
 
     override fun asComponent(): Component = component
 

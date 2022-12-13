@@ -21,10 +21,10 @@ package org.kryptonmc.krypton.pack
 import kotlinx.collections.immutable.persistentSetOf
 import kotlinx.collections.immutable.toImmutableSet
 import net.kyori.adventure.key.Key
+import org.apache.logging.log4j.LogManager
 import org.kryptonmc.krypton.pack.metadata.MetadataSerializer
 import org.kryptonmc.krypton.pack.metadata.PackMetadata
 import org.kryptonmc.krypton.util.Keys
-import org.kryptonmc.krypton.util.logger
 import java.io.FileNotFoundException
 import java.io.IOException
 import java.io.InputStream
@@ -45,8 +45,8 @@ import kotlin.contracts.contract
 class VanillaPackResources(val metadata: PackMetadata, vararg namespaces: String) : PackResources {
 
     override val namespaces: Set<String> = namespaces.asIterable().toImmutableSet()
-    override val name: String
-        get() = "Default"
+
+    override fun name(): String = "Default"
 
     override fun hasResource(location: Key): Boolean {
         val path = createPath(location)
@@ -68,7 +68,7 @@ class VanillaPackResources(val metadata: PackMetadata, vararg namespaces: String
         val result = persistentSetOf<Key>().builder()
         try {
             if (ROOT_DIRECTORY != null) {
-                getResources(result, namespace, ROOT_DIRECTORY, name, predicate)
+                getResources(result, namespace, ROOT_DIRECTORY, name(), predicate)
             } else {
                 LOGGER.error("Cannot access vanilla data pack root directory!")
             }
@@ -113,7 +113,7 @@ class VanillaPackResources(val metadata: PackMetadata, vararg namespaces: String
 
     companion object {
 
-        private val LOGGER = logger<VanillaPackResources>()
+        private val LOGGER = LogManager.getLogger()
         private val ROOT_DIRECTORY = resolveRootDirectory()
 
         @JvmStatic
@@ -176,7 +176,7 @@ class VanillaPackResources(val metadata: PackMetadata, vararg namespaces: String
                 files.filter { !it.endsWith(PackResources.METADATA_EXTENSION) && Files.isRegularFile(it) }
                     .mapMulti(mapper)
                     .filter(predicate)
-                    .forEach(output::add)
+                    .forEach { output.add(it) }
             }
         }
     }

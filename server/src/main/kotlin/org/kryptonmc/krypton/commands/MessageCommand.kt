@@ -23,13 +23,7 @@ import com.mojang.brigadier.arguments.StringArgumentType
 import com.mojang.brigadier.builder.LiteralArgumentBuilder
 import net.kyori.adventure.text.Component
 import org.kryptonmc.krypton.command.CommandSourceStack
-import org.kryptonmc.krypton.command.argument
 import org.kryptonmc.krypton.command.arguments.entities.EntityArgumentType
-import org.kryptonmc.krypton.command.arguments.entityArgument
-import org.kryptonmc.krypton.command.permission
-import org.kryptonmc.krypton.command.argument.argument
-import org.kryptonmc.krypton.command.literal
-import org.kryptonmc.krypton.command.runs
 import org.kryptonmc.krypton.locale.Messages
 
 object MessageCommand {
@@ -44,8 +38,8 @@ object MessageCommand {
             argument(PLAYER, EntityArgumentType.players()) {
                 argument(MESSAGE, StringArgumentType.string()) {
                     runs {
-                        val player = it.entityArgument(PLAYER).players(it.source).get(0)
-                        val message = Component.text(it.argument<String>(MESSAGE))
+                        val player = EntityArgumentType.getPlayers(it, PLAYER).get(0)
+                        val message = Component.text(it.getArgument(MESSAGE, String::class.java))
                         Messages.Commands.OUTGOING_MESSAGE.send(it.source, player.displayName, message)
                         Messages.Commands.INCOMING_MESSAGE.send(player, it.source.displayName, message)
                     }

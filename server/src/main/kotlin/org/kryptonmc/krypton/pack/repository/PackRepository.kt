@@ -18,6 +18,7 @@
  */
 package org.kryptonmc.krypton.pack.repository
 
+import com.google.common.collect.Lists
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.persistentMapOf
 import kotlinx.collections.immutable.toImmutableList
@@ -31,20 +32,19 @@ class PackRepository(private val sources: Set<RepositorySource>, private val con
     private var available: Map<String, Pack> = persistentMapOf()
     private var selected: List<Pack> = persistentListOf()
 
-    val availableIds: Collection<String>
-        get() = available.keys
-    val availablePacks: Collection<Pack>
-        get() = available.values
-    val selectedIds: Collection<String>
-        get() = selected.map(Pack::id)
-    val selectedPacks: Collection<Pack>
-        get() = selected
+    fun availableIds(): Collection<String> = available.keys
+
+    fun availablePacks(): Collection<Pack> = available.values
+
+    fun selectedIds(): Collection<String> = Lists.transform(selected) { it.id }
+
+    fun selectedPacks(): Collection<Pack> = selected
 
     fun isAvailable(id: String): Boolean = available.containsKey(id)
 
     fun pack(id: String): Pack? = available.get(id)
 
-    fun openAllSelected(): List<PackResources> = selected.map(Pack::open)
+    fun openAllSelected(): List<PackResources> = Lists.transform(selected) { it.open() }
 
     fun reload() {
         available = discoverAvailable()

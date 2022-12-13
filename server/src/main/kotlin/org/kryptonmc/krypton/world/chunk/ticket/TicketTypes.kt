@@ -27,7 +27,7 @@ object TicketTypes {
     @JvmField
     val START: TicketType<Unit> = TicketType("start") { _, _ -> 0 }
     @JvmField
-    val PLAYER: TicketType<UUID> = TicketType("player", UUID::compareTo)
+    val PLAYER: TicketType<UUID> = TicketType("player") { a, b -> a.compareTo(b) }
     @JvmField
-    val API_LOAD: TicketType<Long> = TicketType("api_load", Long::compareTo)
+    val API_LOAD: TicketType<Long> = TicketType("api_load") { a, b -> a.compareTo(b) }
 }

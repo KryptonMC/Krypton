@@ -20,6 +20,7 @@ package org.kryptonmc.krypton.world.scoreboard
 
 import com.google.common.collect.Multimaps
 import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer
 import org.kryptonmc.api.scoreboard.DisplaySlot
 import org.kryptonmc.api.scoreboard.Objective
 import org.kryptonmc.api.scoreboard.ObjectiveRenderType
@@ -27,7 +28,6 @@ import org.kryptonmc.api.scoreboard.Scoreboard
 import org.kryptonmc.api.scoreboard.Team
 import org.kryptonmc.api.scoreboard.criteria.Criterion
 import org.kryptonmc.krypton.KryptonServer
-import org.kryptonmc.krypton.adventure.toPlainText
 import org.kryptonmc.krypton.entity.KryptonEntity
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.packet.Packet
@@ -185,7 +185,9 @@ class KryptonScoreboard(private val server: KryptonServer) : Scoreboard {
     }
 
     private fun removeMemberFromTeam(member: Component, team: Team) {
-        check(memberTeam(member) === team) { "Cannot remove member ${member.toPlainText()} from team ${team.name}! Member is not on the team!" }
+        check(memberTeam(member) === team) {
+            "Cannot remove member ${PlainTextComponentSerializer.plainText().serialize(member)} from team ${team.name}! Member is not on the team!"
+        }
         teamsByMember.remove(member)
         team.removeMember(member)
         server.sessionManager.sendGrouped(PacketOutUpdateTeams.addOrRemoveMember(team, member, false))

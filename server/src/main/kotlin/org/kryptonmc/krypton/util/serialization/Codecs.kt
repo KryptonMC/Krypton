@@ -30,21 +30,21 @@ import org.kryptonmc.krypton.effect.sound.KryptonSoundEvent
 import org.kryptonmc.krypton.registry.KryptonRegistries
 import org.kryptonmc.krypton.resource.KryptonResourceKey
 import org.kryptonmc.krypton.util.Keys
-import org.kryptonmc.krypton.util.mapSuccess
-import org.kryptonmc.krypton.util.orElseError
-import org.kryptonmc.krypton.util.toIntArray
-import org.kryptonmc.krypton.util.toUUID
+import org.kryptonmc.krypton.util.UUIDUtil
+import org.kryptonmc.krypton.util.successOrError
 import org.kryptonmc.serialization.Codec
 import org.kryptonmc.serialization.DataOps
 import org.kryptonmc.serialization.DataResult
 import org.kryptonmc.serialization.Decoder
 import org.kryptonmc.serialization.Lifecycle
+import org.kryptonmc.serialization.MapCodec
 import org.kryptonmc.serialization.codecs.RecordCodecBuilder
 import org.kryptonmc.util.Either
 import org.kryptonmc.util.Pair
 import java.util.Arrays
 import java.util.Objects
 import java.util.Optional
+import java.util.OptionalLong
 import java.util.UUID
 import java.util.concurrent.atomic.AtomicReference
 import java.util.function.BiFunction
@@ -53,10 +53,16 @@ import java.util.stream.IntStream
 
 object Codecs {
 
+    private val TO_OPTIONAL_LONG = Function<Optional<Long>, OptionalLong> { if (it.isPresent) OptionalLong.of(it.get()) else OptionalLong.empty() }
+    private val FROM_OPTIONAL_LONG = Function<OptionalLong, Optional<Long>> { if (it.isPresent) Optional.of(it.asLong) else Optional.empty() }
+
     @JvmField
     val COLOR: Codec<Color> = Codec.INT.xmap(Color::of, Color::value)
     @JvmField
-    val UUID: Codec<UUID> = Codec.INT_STREAM.comapFlatMap({ fixedSize(it, 4).map(IntArray::toUUID) }, { Arrays.stream(it.toIntArray()) })
+    val UUID: Codec<UUID> = Codec.INT_STREAM.comapFlatMap(
+        { fixedSize(it, 4).map(UUIDUtil::fromIntArray) },
+        { Arrays.stream(UUIDUtil.toIntArray(it)) }
+    )
     @JvmField
     val KEY: Codec<Key> = Codec.STRING.comapFlatMap(Keys::read, Key::asString).stable()
     @JvmField
@@ -66,6 +72,9 @@ object Codecs {
     val PARTICLE: Codec<ParticleType> = KEY.xmap({ KryptonRegistries.PARTICLE_TYPE.get(it)!! }, { KryptonRegistries.PARTICLE_TYPE.getKey(it)!! })
     @JvmField
     val DIMENSION: Codec<ResourceKey<World>> = KryptonResourceKey.codec(ResourceKeys.DIMENSION)
+
+    @JvmStatic
+    fun asOptionalLong(codec: MapCodec<Optional<Long>>): MapCodec<OptionalLong> = codec.xmap(TO_OPTIONAL_LONG, FROM_OPTIONAL_LONG)
 
     @JvmStatic
     fun fixedSize(stream: IntStream, size: Int): DataResult<IntArray> {
@@ -131,8 +140,8 @@ object Codecs {
 
     @JvmStatic
     fun <E> stringResolver(toString: Function<E, String?>, fromString: Function<String, E?>): Codec<E> = Codec.STRING.flatXmap(
-        { input -> Optional.ofNullable(fromString.apply(input)).mapSuccess().orElseError("Unknown element name $input!") },
-        { input -> Optional.ofNullable(toString.apply(input)).mapSuccess().orElseError("Element with unknown name $input!") }
+        { input -> Optional.ofNullable(fromString.apply(input)).successOrError { "Unknown element name $input!" } },
+        { input -> Optional.ofNullable(toString.apply(input)).successOrError { "Element with unknown name $input!" } }
     )
 
     @JvmStatic

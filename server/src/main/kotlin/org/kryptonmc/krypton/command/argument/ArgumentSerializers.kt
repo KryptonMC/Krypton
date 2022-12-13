@@ -20,6 +20,7 @@ package org.kryptonmc.krypton.command.argument
 
 import com.mojang.brigadier.arguments.ArgumentType
 import com.mojang.brigadier.arguments.BoolArgumentType
+import io.netty.buffer.ByteBuf
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 import net.kyori.adventure.key.Key
 import org.kryptonmc.krypton.command.argument.serializer.ArgumentSerializer
@@ -37,6 +38,7 @@ import org.kryptonmc.krypton.command.arguments.SummonEntityArgument
 import org.kryptonmc.krypton.command.arguments.VectorArgument
 import org.kryptonmc.krypton.command.arguments.item.ItemStackArgumentType
 import org.kryptonmc.krypton.command.arguments.item.ItemStackPredicateArgument
+import org.kryptonmc.krypton.util.writeVarInt
 import java.util.concurrent.ConcurrentHashMap
 
 /**
@@ -92,6 +94,13 @@ object ArgumentSerializers {
     @JvmStatic
     private inline fun <reified T : ArgumentType<*>> singleton(id: Int, name: String, value: T) {
         register(id, name, SingletonArgumentSerializer(value))
+    }
+
+    @JvmStatic
+    fun <T : ArgumentType<*>> write(buf: ByteBuf, type: T) {
+        val entry = checkNotNull(get(type)) { "Argument type for node must have registered serializer!" }
+        buf.writeVarInt(entry.id)
+        entry.serializer.write(buf, type)
     }
 
     @JvmRecord

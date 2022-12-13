@@ -100,7 +100,7 @@ abstract class KryptonRegistry<T>(final override val key: ResourceKey<out Regist
 
     fun byNameCodec(): Codec<T> = Codecs.KEY.flatXmap(
         { Optional.ofNullable(get(it)).successOrError { "Unknown registry key $it in $key!" } },
-        { Optional.ofNullable(getResourceKey(it)).map(ResourceKey<T>::location).successOrError { "Unknown registry element $it in $key!" } }
+        { value -> Optional.ofNullable(getResourceKey(value)).map { it.location }.successOrError { "Unknown registry element $value in $key!" } }
     )
 
     fun holderByNameCodec(): Codec<Holder<T>> = Codecs.KEY.flatXmap(

@@ -18,6 +18,8 @@
  */
 package org.kryptonmc.krypton.command.arguments.coordinates
 
+import com.mojang.brigadier.CommandDispatcher
+import com.mojang.brigadier.StringReader
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType
 import org.kryptonmc.krypton.command.arguments.CommandExceptions
 
@@ -63,4 +65,12 @@ object CoordinateExceptions {
      */
     @JvmField
     val POSITION_MIXED_TYPE: SimpleCommandExceptionType = CommandExceptions.simple("argument.pos.mixed")
+
+    @JvmStatic
+    fun checkPositionComplete(reader: StringReader, resetPosition: Int) {
+        if (!reader.canRead() || reader.peek() != CommandDispatcher.ARGUMENT_SEPARATOR_CHAR) {
+            CommandExceptions.resetAndThrow(reader, resetPosition, POSITION_3D_INCOMPLETE.createWithContext(reader))
+        }
+        reader.skip()
+    }
 }

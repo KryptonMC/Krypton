@@ -33,7 +33,7 @@ import org.kryptonmc.krypton.util.writeResourceKey
 @JvmRecord
 data class PacketOutUpdateTags(val tags: Map<ResourceKey<out Registry<*>>, TagSerializer.NetworkPayload>) : Packet {
 
-    constructor(buf: ByteBuf) : this(buf.readMap({ ResourceKey.of(KryptonResourceKeys.PARENT, it.readKey()) }, TagSerializer::NetworkPayload))
+    constructor(buf: ByteBuf) : this(buf.readMap({ ResourceKey.of(KryptonResourceKeys.PARENT, it.readKey()) }, { TagSerializer.NetworkPayload(it) }))
 
     override fun write(buf: ByteBuf) {
         buf.writeMap(tags, ByteBuf::writeResourceKey) { _, payload -> payload.write(buf) }

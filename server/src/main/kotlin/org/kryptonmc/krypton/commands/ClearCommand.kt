@@ -20,15 +20,9 @@ package org.kryptonmc.krypton.commands
 
 import com.mojang.brigadier.CommandDispatcher
 import org.kryptonmc.krypton.command.CommandSourceStack
-import org.kryptonmc.krypton.command.argument
-import org.kryptonmc.krypton.command.argument.argument
 import org.kryptonmc.krypton.command.arguments.entities.EntityArgumentType
-import org.kryptonmc.krypton.command.arguments.entityArgument
 import org.kryptonmc.krypton.command.arguments.item.ItemStackPredicate
 import org.kryptonmc.krypton.command.arguments.item.ItemStackPredicateArgument
-import org.kryptonmc.krypton.command.literal
-import org.kryptonmc.krypton.command.permission
-import org.kryptonmc.krypton.command.runs
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.item.KryptonItemStack
 import org.kryptonmc.krypton.locale.Messages
@@ -46,9 +40,9 @@ object ClearCommand {
             permission(KryptonPermission.CLEAR)
             runs { clear(it.source, listOf(it.source.getPlayerOrError()), { true }, -1) }
             argument(TARGETS, EntityArgumentType.players()) {
-                runs { clear(it.source, it.entityArgument(TARGETS).players(it.source), { true }, -1) }
+                runs { clear(it.source, EntityArgumentType.getPlayers(it, TARGETS), { true }, -1) }
                 argument(ITEM, ItemStackPredicateArgument) {
-                    runs { clear(it.source, it.entityArgument(TARGETS).players(it.source), it.argument(ITEM), -1) }
+                    runs { clear(it.source, EntityArgumentType.getPlayers(it, TARGETS), it.getArgument(ITEM), -1) }
                 }
             }
         })
@@ -65,7 +59,9 @@ object ClearCommand {
             target.session.send(PacketOutSetContainerContent(target.inventory, target.inventory.mainHand))
         } else {
             targets.forEach { target ->
-                target.inventory.items.forEachIndexed { index, item -> if (predicate(item)) target.inventory.set(index, KryptonItemStack.EMPTY) }
+                target.inventory.items.forEachIndexed { index, item ->
+                    if (predicate.test(item)) target.inventory.set(index, KryptonItemStack.EMPTY)
+                }
                 target.session.send(PacketOutSetContainerContent(target.inventory, target.inventory.mainHand))
             }
             source.sendSuccess(Messages.Commands.CLEAR_MULTIPLE_SUCCESS.build(amount, targets.size), true)
@@ -103,7 +99,7 @@ object ClearCommand {
 
     @JvmStatic
     private fun clearItem(predicate: ItemStackPredicate, remaining: Int, item: KryptonItemStack, setItem: Consumer<KryptonItemStack>): Int {
-        if (!predicate(item)) return -1
+        if (!predicate.test(item)) return -1
         return when {
             remaining == -1 -> {
                 setItem.accept(KryptonItemStack.EMPTY)

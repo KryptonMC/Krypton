@@ -25,11 +25,6 @@ import com.mojang.brigadier.arguments.IntegerArgumentType
 import com.mojang.brigadier.builder.ArgumentBuilder
 import org.kryptonmc.api.world.rule.GameRule
 import org.kryptonmc.krypton.command.CommandSourceStack
-import org.kryptonmc.krypton.command.argument
-import org.kryptonmc.krypton.command.permission
-import org.kryptonmc.krypton.command.argument.argument
-import org.kryptonmc.krypton.command.literal
-import org.kryptonmc.krypton.command.runs
 import org.kryptonmc.krypton.locale.Messages
 import org.kryptonmc.krypton.registry.KryptonRegistries
 
@@ -61,7 +56,7 @@ object GameRuleCommand {
         rule: GameRule<V>
     ): ArgumentBuilder<CommandSourceStack, *> = argument(VALUE, argument) {
         runs {
-            val value = it.argument<V>(VALUE)
+            val value = it.getArgument(VALUE, V::class.java)
             it.source.world.gameRules.set(rule, value)
             it.source.sendSuccess(Messages.Commands.GAMERULE_SET.build(rule.name, value), true)
         }

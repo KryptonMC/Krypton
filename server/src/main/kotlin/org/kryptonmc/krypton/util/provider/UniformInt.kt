@@ -35,11 +35,11 @@ class UniformInt(override val minimumValue: Int, override val maximumValue: Int)
     companion object {
 
         @JvmField
-        val CODEC: Codec<UniformInt> = RecordCodecBuilder.create {
-            it.group(
-                Codec.INT.fieldOf("min_inclusive").getting(UniformInt::minimumValue),
-                Codec.INT.fieldOf("max_inclusive").getting(UniformInt::maximumValue)
-            ).apply(it, ::UniformInt)
+        val CODEC: Codec<UniformInt> = RecordCodecBuilder.create { instance ->
+            instance.group(
+                Codec.INT.fieldOf("min_inclusive").getting { it.minimumValue },
+                Codec.INT.fieldOf("max_inclusive").getting { it.maximumValue }
+            ).apply(instance) { min, max -> UniformInt(min, max) }
         }/*.comapFlatMap({
             if (it.maximumValue >= it.minimumValue) return@comapFlatMap DataResult.success(it)
             DataResult.error("Maximum must be >= minimum! Maximum: ${it.maximumValue}, minimum: ${it.minimumValue}")

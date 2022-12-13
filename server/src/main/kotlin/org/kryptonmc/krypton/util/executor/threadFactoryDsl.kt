@@ -29,13 +29,3 @@ inline fun daemonThreadFactory(
     nameFormat: String,
     builder: ThreadFactoryBuilder.() -> Unit = {}
 ): ThreadFactory = ThreadFactoryBuilder().setNameFormat(nameFormat).setDaemon(true).apply(builder).build()
-
-@ThreadFactoryDsl
-inline fun threadFactory(
-    nameFormat: String,
-    builder: ThreadFactoryBuilder.() -> Unit = {}
-): ThreadFactory = ThreadFactoryBuilder().setNameFormat(nameFormat).apply(builder).build()
-
-@ThreadFactoryDsl
-fun ThreadFactoryBuilder.uncaughtExceptionHandler(handler: Thread.UncaughtExceptionHandler): ThreadFactoryBuilder =
-    setUncaughtExceptionHandler(handler)

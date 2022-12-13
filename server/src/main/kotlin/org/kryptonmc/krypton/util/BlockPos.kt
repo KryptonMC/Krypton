@@ -230,6 +230,14 @@ open class BlockPos(x: Int, y: Int, z: Int) : Vec3i {
         @JvmStatic
         fun unpack(packed: Long): BlockPos = BlockPos(unpackX(packed), unpackY(packed), unpackZ(packed))
 
+        /*
+         * In this encoding, the X, Y, and Z coordinates are packed in to a single long, with the X coordinate occupying the most significant 26 bits,
+         * followed by the Z coordinate occupying the next 26 bits, then the Y coordinate, occupying the least significant 12 bits.
+         *
+         * This encoding allows for the following maximum values:
+         * - X and Z: minimum of -33554432 (-2^25) and maximum of 33554431 (2^25 - 1)
+         * - Y: minimum of -2048 (-2^11) and maximum of 2047 (2^11 - 1)
+         */
         @JvmStatic
         fun pack(x: Int, y: Int, z: Int): Long {
             var result = 0L

@@ -25,6 +25,7 @@ import com.mojang.brigadier.arguments.ArgumentType
 
 object StringArrayArgumentType : ArgumentType<Array<String>> {
 
+    @JvmField
     val EMPTY: Array<String> = emptyArray()
     private val WORD_SPLITTER = Splitter.on(CommandDispatcher.ARGUMENT_SEPARATOR_CHAR)
     private val EXAMPLES = listOf("word", "some words")

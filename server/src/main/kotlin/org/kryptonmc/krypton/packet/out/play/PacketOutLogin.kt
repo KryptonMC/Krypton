@@ -32,9 +32,10 @@ import org.kryptonmc.krypton.util.readCollection
 import org.kryptonmc.krypton.util.readKey
 import org.kryptonmc.krypton.util.readNBT
 import org.kryptonmc.krypton.util.readVarInt
-import org.kryptonmc.krypton.util.readBlockPos
+import org.kryptonmc.krypton.util.readNullable
 import org.kryptonmc.krypton.util.writeCollection
 import org.kryptonmc.krypton.util.writeNBT
+import org.kryptonmc.krypton.util.writeNullable
 import org.kryptonmc.krypton.util.writeResourceKey
 import org.kryptonmc.krypton.util.writeVarInt
 import org.kryptonmc.nbt.CompoundTag
@@ -66,7 +67,7 @@ data class PacketOutLogin(
         buf.readBoolean(),
         GameModes.fromId(buf.readByte().toInt())!!,
         GameModes.fromId(buf.readByte().toInt())!!,
-        buf.readCollection(Sets::newHashSetWithExpectedSize) { ResourceKey.of(ResourceKeys.DIMENSION, buf.readKey()) },
+        buf.readCollection({ Sets.newHashSetWithExpectedSize(it) }) { ResourceKey.of(ResourceKeys.DIMENSION, buf.readKey()) },
         buf.readNBT(),
         ResourceKey.of(ResourceKeys.DIMENSION_TYPE, buf.readKey()),
         ResourceKey.of(ResourceKeys.DIMENSION, buf.readKey()),
@@ -78,7 +79,7 @@ data class PacketOutLogin(
         buf.readBoolean(),
         buf.readBoolean(),
         buf.readBoolean(),
-        buf.readGlobalPosition()
+        buf.readNullable { GlobalPosition(it) }
     )
 
     override fun write(buf: ByteBuf) {
@@ -98,8 +99,7 @@ data class PacketOutLogin(
         buf.writeBoolean(!enableRespawnScreen)
         buf.writeBoolean(isDebug)
         buf.writeBoolean(isFlat)
-        buf.writeBoolean(deathLocation != null)
-        deathLocation?.write(buf)
+        buf.writeNullable(deathLocation) { _, pos -> pos.write(buf) }
     }
 
     companion object {
@@ -112,9 +112,4 @@ data class PacketOutLogin(
              */
         }
     }
-}
-
-private fun ByteBuf.readGlobalPosition(): GlobalPosition? {
-    if (!readBoolean()) return null
-    return GlobalPosition(ResourceKey.of(ResourceKeys.DIMENSION, readKey()), readBlockPos())
 }

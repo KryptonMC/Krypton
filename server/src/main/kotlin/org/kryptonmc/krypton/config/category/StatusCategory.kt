@@ -40,7 +40,6 @@ data class StatusCategory(
     companion object {
 
         const val DEFAULT_MAX_PLAYERS: Int = 20
-        @JvmField
-        val DEFAULT_MOTD: TextComponent = Component.text("Krypton is a Minecraft server written in Kotlin!", TextColor.color(128, 0, 255))
+        private val DEFAULT_MOTD = Component.text("Krypton is a Minecraft server written in Kotlin!", TextColor.color(128, 0, 255))
     }
 }

@@ -53,6 +53,6 @@ enum class Mirror(val rotation: OctahedralGroup) {
     companion object {
 
         @JvmField
-        val CODEC: Codec<Mirror> = EnumCodecs.of(Mirror::values)
+        val CODEC: Codec<Mirror> = EnumCodecs.of { Mirror.values() }
     }
 }

@@ -26,22 +26,16 @@ import net.kyori.adventure.text.Component
 import org.kryptonmc.api.event.player.ChangeGameModeEvent
 import org.kryptonmc.api.world.GameMode
 import org.kryptonmc.api.world.rule.GameRules
-import org.kryptonmc.krypton.adventure.toMessage
+import org.kryptonmc.krypton.adventure.KryptonAdventure
 import org.kryptonmc.krypton.command.CommandSourceStack
-import org.kryptonmc.krypton.command.argument
-import org.kryptonmc.krypton.command.argument.argument
 import org.kryptonmc.krypton.command.arguments.entities.EntityArgumentType
-import org.kryptonmc.krypton.command.arguments.entityArgument
-import org.kryptonmc.krypton.command.literal
-import org.kryptonmc.krypton.command.permission
-import org.kryptonmc.krypton.command.runs
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.locale.Messages
 import org.kryptonmc.krypton.util.GameModes
 
 object GameModeCommand {
 
-    private val ERROR_INVALID_GAME_MODE = DynamicCommandExceptionType { Component.text("Invalid game mode $it!").toMessage() }
+    private val ERROR_INVALID_GAME_MODE = DynamicCommandExceptionType { KryptonAdventure.asMessage(Component.text("Invalid game mode $it!")) }
 
     private const val GAME_MODE = "gameMode"
     private const val TARGETS = "targets"
@@ -53,7 +47,7 @@ object GameModeCommand {
             command.then(literal(mode.name.lowercase()) {
                 runs { setMode(it.source, listOf(it.source.getPlayerOrError()), mode) }
                 argument(TARGETS, EntityArgumentType.players()) {
-                    runs { setMode(it.source, it.entityArgument(TARGETS).players(it.source), mode) }
+                    runs { setMode(it.source, EntityArgumentType.getPlayers(it, TARGETS), mode) }
                 }
             })
         }
@@ -61,7 +55,7 @@ object GameModeCommand {
         command.then(argument(GAME_MODE, StringArgumentType.string()) {
             runs { setMode(it.source, listOf(it.source.getPlayerOrError()), getGameMode(it)) }
             argument(TARGETS, EntityArgumentType.players()) {
-                runs { setMode(it.source, it.entityArgument(TARGETS).players(it.source), getGameMode(it)) }
+                runs { setMode(it.source, EntityArgumentType.getPlayers(it, TARGETS), getGameMode(it)) }
             }
         })
         dispatcher.register(command)
@@ -69,7 +63,7 @@ object GameModeCommand {
 
     @JvmStatic
     private fun getGameMode(context: CommandContext<CommandSourceStack>): GameMode {
-        val argument = context.argument<String>(GAME_MODE)
+        val argument = context.getArgument(GAME_MODE, String::class.java)
         var mode = GameModes.fromAbbreviation(argument)
         if (mode == null) {
             try {

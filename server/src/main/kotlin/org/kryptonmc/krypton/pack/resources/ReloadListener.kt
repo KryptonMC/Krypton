@@ -23,8 +23,7 @@ import java.util.concurrent.Executor
 
 fun interface ReloadListener {
 
-    val name: String
-        get() = javaClass.simpleName
+    fun name(): String = javaClass.simpleName
 
     fun reload(barrier: PreparationBarrier, manager: ResourceManager, backgroundExecutor: Executor, mainExecutor: Executor): CompletableFuture<Void>
 

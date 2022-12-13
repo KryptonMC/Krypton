@@ -19,24 +19,19 @@
 package org.kryptonmc.krypton.commands
 
 import com.mojang.brigadier.CommandDispatcher
+import org.apache.logging.log4j.LogManager
 import org.kryptonmc.api.auth.GameProfile
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.command.CommandSourceStack
-import org.kryptonmc.krypton.command.argument
+import org.kryptonmc.krypton.command.CommandSuggestionProvider
 import org.kryptonmc.krypton.command.arguments.CommandExceptions
 import org.kryptonmc.krypton.command.arguments.GameProfileArgument
-import org.kryptonmc.krypton.command.arguments.gameProfileArgument
-import org.kryptonmc.krypton.command.permission
-import org.kryptonmc.krypton.command.literal
-import org.kryptonmc.krypton.command.runs
-import org.kryptonmc.krypton.command.suggest
 import org.kryptonmc.krypton.locale.Messages
-import org.kryptonmc.krypton.util.logger
 import java.io.IOException
 
 object WhitelistCommand {
 
-    private val LOGGER = logger<WhitelistCommand>()
+    private val LOGGER = LogManager.getLogger()
     private val ERROR_ALREADY_ENABLED = CommandExceptions.simple("commands.whitelist.alreadyOn")
     private val ERROR_ALREADY_DISABLED = CommandExceptions.simple("commands.whitelist.alreadyOff")
     private val ERROR_ALREADY_WHITELISTED = CommandExceptions.simple("commands.whitelist.add.failed")
@@ -60,19 +55,19 @@ object WhitelistCommand {
             literal("add") {
                 argument(TARGETS, GameProfileArgument) {
                     suggests { context, builder ->
-                        builder.suggest(context.source.server.playerManager.players.stream()
-                            .filter { !context.source.server.playerManager.whitelistManager.isWhitelisted(it.profile) }
-                            .map { it.profile.name })
+                        val playerManager = context.source.server.playerManager
+                        val values = playerManager.players.stream()
+                            .filter { !playerManager.whitelistManager.isWhitelisted(it.profile) }
+                            .map { it.profile.name }
+                        CommandSuggestionProvider.suggest(values, builder)
                     }
-                    executes { addPlayers(it.source, it.gameProfileArgument(TARGETS).profiles(it.source)) }
+                    executes { addPlayers(it.source, GameProfileArgument.get(it, TARGETS)) }
                 }
             }
             literal("remove") {
                 argument(TARGETS, GameProfileArgument) {
-                    suggests { context, builder ->
-                        builder.suggest(getWhitelistNames(context.source.server))
-                    }
-                    executes { removePlayers(it.source, it.gameProfileArgument(TARGETS).profiles(it.source)) }
+                    suggests { context, builder -> CommandSuggestionProvider.suggest(getWhitelistNames(context.source.server), builder) }
+                    executes { removePlayers(it.source, GameProfileArgument.get(it, TARGETS)) }
                 }
             }
             literal("reload") {
@@ -123,8 +118,8 @@ object WhitelistCommand {
     @JvmStatic
     private fun enableWhitelist(source: CommandSourceStack) {
         val whitelistManager = source.server.playerManager.whitelistManager
-        if (whitelistManager.isEnabled) throw ERROR_ALREADY_ENABLED.create()
-        whitelistManager.isEnabled = true
+        if (whitelistManager.isEnabled()) throw ERROR_ALREADY_ENABLED.create()
+        whitelistManager.enable()
         source.sendSuccess(Messages.Commands.WHITELIST_ENABLED.build(), true)
         kickUnlistedPlayers(source.server)
     }
@@ -132,8 +127,8 @@ object WhitelistCommand {
     @JvmStatic
     private fun disableWhitelist(source: CommandSourceStack) {
         val whitelistManager = source.server.playerManager.whitelistManager
-        if (!whitelistManager.isEnabled) throw ERROR_ALREADY_DISABLED.create()
-        whitelistManager.isEnabled = false
+        if (!whitelistManager.isEnabled()) throw ERROR_ALREADY_DISABLED.create()
+        whitelistManager.disable()
         source.sendSuccess(Messages.Commands.WHITELIST_DISABLED.build(), true)
     }
 

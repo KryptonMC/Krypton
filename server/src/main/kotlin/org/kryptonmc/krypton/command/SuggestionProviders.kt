@@ -23,7 +23,8 @@ import com.mojang.brigadier.suggestion.SuggestionProvider
 import com.mojang.brigadier.suggestion.Suggestions
 import com.mojang.brigadier.suggestion.SuggestionsBuilder
 import net.kyori.adventure.key.Key
-import org.kryptonmc.krypton.entity.KryptonEntityType
+import net.kyori.adventure.text.Component
+import org.kryptonmc.krypton.adventure.KryptonAdventure
 import org.kryptonmc.krypton.registry.KryptonRegistries
 import org.kryptonmc.krypton.util.Keys
 import java.util.concurrent.CompletableFuture
@@ -38,7 +39,7 @@ import java.util.concurrent.CompletableFuture
  */
 object SuggestionProviders {
 
-    private val PROVIDERS_BY_NAME = HashMap<Key, SuggestionProvider<Src>>()
+    private val PROVIDERS_BY_NAME = HashMap<Key, SuggestionProvider<CommandSourceStack>>()
     private val DEFAULT_NAME = Key.key("ask_server")
 
     /**
@@ -46,28 +47,30 @@ object SuggestionProviders {
      * through some means, such as with the `/summon` command.
      */
     @JvmField
-    val SUMMONABLE_ENTITIES: SuggestionProvider<Src> = register(Key.key("summonable_entities")) { _, builder ->
-        KryptonRegistries.ENTITY_TYPE.asSequence()
-            .filter(KryptonEntityType<*>::isSummonable)
-            .suggestResource(builder, KryptonEntityType<*>::key) { Keys.translationComponent("entity", KryptonRegistries.ENTITY_TYPE.getKey(it)) }
+    val SUMMONABLE_ENTITIES: SuggestionProvider<CommandSourceStack> = register(Key.key("summonable_entities")) { _, builder ->
+        val registry = KryptonRegistries.ENTITY_TYPE
+        CommandSuggestionProvider.suggestResource(registry.stream().filter { it.isSummonable }, builder, { registry.getKey(it) }) {
+            KryptonAdventure.asMessage(Component.translatable(Keys.translation("entity", registry.getKey(it))))
+        }
     }
 
     @JvmStatic
-    fun name(provider: SuggestionProvider<Src>): Key = if (provider is Wrapper) provider.name else DEFAULT_NAME
+    fun getName(provider: SuggestionProvider<CommandSourceStack>): Key = if (provider is Wrapper) provider.name else DEFAULT_NAME
 
     @JvmStatic
-    private fun register(key: Key, provider: SuggestionProvider<Src>): SuggestionProvider<Src> {
+    private fun register(key: Key, provider: SuggestionProvider<CommandSourceStack>): SuggestionProvider<CommandSourceStack> {
         require(!PROVIDERS_BY_NAME.containsKey(key)) { "A command suggestion provider is already registered with the given key $key!" }
         PROVIDERS_BY_NAME.put(key, provider)
         return Wrapper(key, provider)
     }
 
     @JvmRecord
-    private data class Wrapper(val name: Key, private val delegate: SuggestionProvider<Src>) : SuggestionProvider<Src> {
+    private data class Wrapper(
+        val name: Key,
+        private val delegate: SuggestionProvider<CommandSourceStack>
+    ) : SuggestionProvider<CommandSourceStack> {
 
-        override fun getSuggestions(context: CommandContext<Src>?, builder: SuggestionsBuilder?): CompletableFuture<Suggestions> =
+        override fun getSuggestions(context: CommandContext<CommandSourceStack>?, builder: SuggestionsBuilder?): CompletableFuture<Suggestions> =
             delegate.getSuggestions(context, builder)
     }
 }
-
-private typealias Src = CommandSourceStack

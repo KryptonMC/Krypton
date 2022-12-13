@@ -23,20 +23,18 @@ import com.google.common.collect.ImmutableSet
 import com.google.common.collect.Iterators
 import com.google.common.collect.Maps
 import com.google.common.collect.Sets
-import it.unimi.dsi.fastutil.objects.Object2IntOpenCustomHashMap
 import it.unimi.dsi.fastutil.objects.ObjectArrayList
+import it.unimi.dsi.fastutil.objects.Reference2IntOpenHashMap
 import net.kyori.adventure.key.Key
+import org.apache.logging.log4j.LogManager
 import org.kryptonmc.api.registry.Registry
 import org.kryptonmc.api.resource.ResourceKey
 import org.kryptonmc.api.tags.TagKey
 import org.kryptonmc.api.tags.TagSet
 import org.kryptonmc.krypton.tags.KryptonTagSet
-import org.kryptonmc.krypton.util.IdentityHashStrategy
-import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.serialization.DataResult
 import java.util.Collections
 import java.util.IdentityHashMap
-import java.util.Objects
 import java.util.OptionalInt
 import java.util.function.Function
 import java.util.stream.Collectors
@@ -60,7 +58,7 @@ open class KryptonSimpleRegistry<T>(
     private val byId = ObjectArrayList<Holder.Reference<T>>(256)
     // A map of holder references to IDs. This is an identity hash map as only one holder reference will exist for each value, so we should use
     // reference equality to allow for holders with the same key/value but different identities to be stored in the map.
-    private val toId = Object2IntOpenCustomHashMap(IdentityHashStrategy.get<T>()).apply { defaultReturnValue(-1) }
+    private val toId = Reference2IntOpenHashMap<T>().apply { defaultReturnValue(-1) }
     // A map of namespaced keys to holder references. Allows lookups by namespaced key.
     private val byLocation = HashMap<Key, Holder.Reference<T>>()
     // A map of resource keys to holder references. Allows lookups by resource key.
@@ -93,7 +91,7 @@ open class KryptonSimpleRegistry<T>(
     override val registryKeys: Set<ResourceKey<T>>
         get() = Collections.unmodifiableSet(byKey.keys)
     override val entries: Set<Map.Entry<ResourceKey<T>, T>>
-        get() = Collections.unmodifiableSet(Maps.transformValues(byKey, Holder<T>::value).entries)
+        get() = Collections.unmodifiableSet(Maps.transformValues(byKey) { it.value() }.entries)
     override val size: Int
         get() = byKey.size
     override val tagKeys: Set<TagKey<T>>
@@ -112,7 +110,7 @@ open class KryptonSimpleRegistry<T>(
      * may need to be reinitialized if values are registered to the registry after it is initially constructed.
      */
     private fun holdersInOrder(): List<Holder.Reference<T>> {
-        if (holdersInOrder == null) holdersInOrder = byId.stream().filter(Objects::nonNull).toList()
+        if (holdersInOrder == null) holdersInOrder = byId.stream().filter { it != null }.toList()
         return holdersInOrder!!
     }
 
@@ -131,7 +129,7 @@ open class KryptonSimpleRegistry<T>(
     override fun registerOrOverride(id: OptionalInt, key: ResourceKey<T>, value: T): Holder<T> {
         validateWrite(key)
         val existing = byKey.get(key)
-        val existingValue = if (existing != null && existing.isBound) existing.value() else null
+        val existingValue = if (existing != null && existing.isBound()) existing.value() else null
 
         val actualId: Int
         if (existingValue == null) {
@@ -267,8 +265,8 @@ open class KryptonSimpleRegistry<T>(
             LOGGER.warn("Not all defined tags for registry $key are present in data pack: $missing")
         }
         val tagsCopy = IdentityHashMap(tagMap)
-        tags.forEach { (key, holders) -> tagsCopy.computeIfAbsent(key, ::createTagSet).bindHolders(holders) }
-        tagsMap.forEach(Holder.Reference<T>::bindTags)
+        tags.forEach { (key, holders) -> tagsCopy.computeIfAbsent(key) { createTagSet(it) }.bindHolders(holders) }
+        tagsMap.forEach { (key, value) -> key.bindTags(value) }
         tagMap = tagsCopy
     }
 
@@ -276,10 +274,10 @@ open class KryptonSimpleRegistry<T>(
 
     private fun createTagSet(key: TagKey<T>): KryptonTagSet<T> = KryptonTagSet(this, key)
 
-    override fun iterator(): Iterator<T> = Iterators.transform(holdersInOrder().iterator(), Holder<T>::value)
+    override fun iterator(): Iterator<T> = Iterators.transform(holdersInOrder().iterator()) { it.value() }
 
     companion object {
 
-        private val LOGGER = logger<KryptonSimpleRegistry<*>>()
+        private val LOGGER = LogManager.getLogger()
     }
 }

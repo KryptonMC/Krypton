@@ -30,7 +30,8 @@ import org.kryptonmc.nbt.list
 class KryptonCrossbowMeta(data: CompoundTag) : AbstractItemMeta<KryptonCrossbowMeta>(data), CrossbowMeta {
 
     override val isCharged: Boolean = data.getBoolean(CHARGED_TAG)
-    override val projectiles: ImmutableList<ItemStack> = data.mapToList(PROJECTILES_TAG, CompoundTag.ID) { KryptonItemStack.from(it as CompoundTag) }
+    override val projectiles: ImmutableList<ItemStack> =
+        mapToList(data, PROJECTILES_TAG, CompoundTag.ID) { KryptonItemStack.from(it as CompoundTag) }
 
     override fun copy(data: CompoundTag): KryptonCrossbowMeta = KryptonCrossbowMeta(data)
 

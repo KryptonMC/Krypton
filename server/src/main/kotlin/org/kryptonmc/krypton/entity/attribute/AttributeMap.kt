@@ -20,9 +20,9 @@ package org.kryptonmc.krypton.entity.attribute
 
 import com.google.common.collect.Multimap
 import net.kyori.adventure.key.Key
+import org.apache.logging.log4j.LogManager
 import org.kryptonmc.api.entity.attribute.AttributeModifier
 import org.kryptonmc.krypton.registry.KryptonRegistries
-import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.util.nullableComputeIfAbsent
 import org.kryptonmc.nbt.ListTag
 import org.kryptonmc.nbt.list
@@ -97,6 +97,6 @@ class AttributeMap(private val supplier: AttributeSupplier) {
 
     companion object {
 
-        private val LOGGER = logger<AttributeMap>()
+        private val LOGGER = LogManager.getLogger()
     }
 }

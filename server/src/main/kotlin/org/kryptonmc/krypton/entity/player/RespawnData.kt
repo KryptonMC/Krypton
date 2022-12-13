@@ -42,7 +42,7 @@ data class RespawnData(
         putBlockPosParts(position, XYZ_PREFIX)
         putFloat(ANGLE_TAG, angle)
         putBoolean(FORCED_TAG, forced)
-        Codecs.KEY.encodeStart(dimension.location, NbtOps.INSTANCE).resultOrPartial(logger::error).ifPresent { put(DIMENSION_TAG, it) }
+        Codecs.KEY.encodeStart(dimension.location, NbtOps.INSTANCE).resultOrPartial { logger.error(it) }.ifPresent { put(DIMENSION_TAG, it) }
     }
 
     companion object {
@@ -56,7 +56,7 @@ data class RespawnData(
         fun load(data: CompoundTag, logger: Logger): RespawnData? {
             if (!data.hasBlockPos(XYZ_PREFIX)) return null
             val dimension = if (data.contains(DIMENSION_TAG, StringTag.ID)) {
-                Codecs.DIMENSION.read(data.get(DIMENSION_TAG), NbtOps.INSTANCE).resultOrPartial(logger::error).orElse(World.OVERWORLD)
+                Codecs.DIMENSION.read(data.get(DIMENSION_TAG), NbtOps.INSTANCE).resultOrPartial { logger.error(it) }.orElse(World.OVERWORLD)
             } else {
                 World.OVERWORLD
             }

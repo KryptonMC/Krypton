@@ -25,8 +25,9 @@ import java.util.function.Predicate
 
 interface PackResources : AutoCloseable {
 
-    val name: String
     val namespaces: Set<String>
+
+    fun name(): String
 
     fun hasResource(location: Key): Boolean
 

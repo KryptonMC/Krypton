@@ -24,6 +24,7 @@ import org.kryptonmc.api.item.data.DyeColor
 import org.kryptonmc.krypton.registry.KryptonRegistries
 import org.kryptonmc.krypton.util.DyeColors
 import org.kryptonmc.nbt.CompoundTag
+import org.kryptonmc.nbt.compound
 
 @JvmRecord
 data class KryptonBannerPattern(override val type: BannerPatternType, override val color: DyeColor) : BannerPattern {
@@ -35,13 +36,22 @@ data class KryptonBannerPattern(override val type: BannerPatternType, override v
 
     companion object {
 
+        private const val PATTERN_TAG = "Pattern"
+        private const val COLOR_TAG = "Color"
+
         @JvmStatic
-        fun from(tag: CompoundTag): KryptonBannerPattern {
-            val patternCode = tag.getString("Pattern")
+        fun load(tag: CompoundTag): KryptonBannerPattern {
+            val patternCode = tag.getString(PATTERN_TAG)
             val type = requireNotNull(KryptonRegistries.BANNER_PATTERN.firstOrNull { it.code == patternCode }) {
                 "Could not find pattern type with code $patternCode!"
             }
-            return KryptonBannerPattern(type, DyeColors.fromId(tag.getInt("Color")))
+            return KryptonBannerPattern(type, DyeColors.fromId(tag.getInt(COLOR_TAG)))
+        }
+
+        @JvmStatic
+        fun save(pattern: BannerPattern): CompoundTag = compound {
+            putString(PATTERN_TAG, pattern.type.code)
+            putInt(COLOR_TAG, pattern.color.ordinal)
         }
     }
 }

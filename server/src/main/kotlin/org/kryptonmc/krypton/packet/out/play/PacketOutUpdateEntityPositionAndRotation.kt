@@ -37,15 +37,8 @@ data class PacketOutUpdateEntityPositionAndRotation(
     override val onGround: Boolean
 ) : EntityPacket, MovementPacket {
 
-    constructor(buf: ByteBuf) : this(
-        buf.readVarInt(),
-        buf.readShort(),
-        buf.readShort(),
-        buf.readShort(),
-        buf.readAngle(),
-        buf.readAngle(),
-        buf.readBoolean()
-    )
+    constructor(buf: ByteBuf) : this(buf.readVarInt(), buf.readShort(), buf.readShort(), buf.readShort(), buf.readAngle(), buf.readAngle(),
+        buf.readBoolean())
 
     override fun write(buf: ByteBuf) {
         buf.writeVarInt(entityId)

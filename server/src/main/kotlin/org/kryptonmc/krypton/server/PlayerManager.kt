@@ -19,6 +19,7 @@
 package org.kryptonmc.krypton.server
 
 import net.kyori.adventure.key.Key
+import org.apache.logging.log4j.LogManager
 import org.kryptonmc.api.scoreboard.Objective
 import org.kryptonmc.api.statistic.CustomStatistics
 import org.kryptonmc.api.world.World
@@ -54,7 +55,6 @@ import org.kryptonmc.krypton.server.ban.BanManager
 import org.kryptonmc.krypton.server.whitelist.WhitelistManager
 import org.kryptonmc.krypton.util.BlockPos
 import org.kryptonmc.krypton.util.executor.daemonThreadFactory
-import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.krypton.world.biome.BiomeManager
 import org.kryptonmc.krypton.world.data.PlayerDataManager
@@ -73,13 +73,15 @@ import java.util.concurrent.Executors
 class PlayerManager(private val server: KryptonServer) {
 
     private val executor = Executors.newFixedThreadPool(8, daemonThreadFactory("Player Executor #%d"))
-    val dataManager: PlayerDataManager = createDataManager(server)
+    private val dataManager = createDataManager(server)
     val players: MutableList<KryptonPlayer> = CopyOnWriteArrayList()
     private val playersByName = ConcurrentHashMap<String, KryptonPlayer>()
     private val playersByUUID = ConcurrentHashMap<UUID, KryptonPlayer>()
 
     val banManager: BanManager = BanManager(Path.of("bans.json"))
     val whitelistManager: WhitelistManager = WhitelistManager(Path.of("whitelist.json"))
+
+    fun dataFolder(): Path = dataManager.folder
 
     fun load() {
         banManager.load()
@@ -107,7 +109,9 @@ class PlayerManager(private val server: KryptonServer) {
         val name = server.profileCache.get(profile.uuid)?.name ?: profile.name
         server.profileCache.add(profile)
         val dimension = if (nbt != null) {
-            KryptonDimensionType.parseLegacy(Dynamic(NbtOps.INSTANCE, nbt.get("Dimension"))).resultOrPartial(LOGGER::error).orElse(World.OVERWORLD)
+            KryptonDimensionType.parseLegacy(Dynamic(NbtOps.INSTANCE, nbt.get("Dimension")))
+                .resultOrPartial { LOGGER.error(it) }
+                .orElse(World.OVERWORLD)
         } else {
             World.OVERWORLD
         }
@@ -253,7 +257,7 @@ class PlayerManager(private val server: KryptonServer) {
     private fun sendWorldInfo(world: KryptonWorld, player: KryptonPlayer) {
         player.session.send(PacketOutInitializeWorldBorder(world.border))
         player.session.send(PacketOutUpdateTime(world.data.time, world.data.dayTime, world.data.gameRules.get(GameRules.DO_DAYLIGHT_CYCLE)))
-        player.session.send(PacketOutSetDefaultSpawnPosition(world.data.spawnX, world.data.spawnY, world.data.spawnZ, world.data.spawnAngle))
+        player.session.send(PacketOutSetDefaultSpawnPosition(world.data.spawnPos(), world.data.spawnAngle))
         if (world.isRaining) {
             player.session.send(PacketOutGameEvent(GameEvent.BEGIN_RAINING))
             player.session.send(PacketOutGameEvent(GameEvent.RAIN_LEVEL_CHANGE, world.getRainLevel(1F)))
@@ -273,7 +277,7 @@ class PlayerManager(private val server: KryptonServer) {
 
     companion object {
 
-        private val LOGGER = logger<PlayerManager>()
+        private val LOGGER = LogManager.getLogger()
         private val BRAND_KEY = Key.key("brand")
         // The word "Krypton" encoded in to UTF-8 and then prefixed with the length, which in this case is 7.
         private val BRAND_MESSAGE = byteArrayOf(7, 75, 114, 121, 112, 116, 111, 110)

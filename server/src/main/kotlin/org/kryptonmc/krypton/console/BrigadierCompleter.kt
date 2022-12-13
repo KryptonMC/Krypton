@@ -24,13 +24,13 @@
  */
 package org.kryptonmc.krypton.console
 
+import org.apache.logging.log4j.LogManager
 import org.jline.reader.Candidate
 import org.jline.reader.Completer
 import org.jline.reader.LineReader
 import org.jline.reader.ParsedLine
 import org.kryptonmc.krypton.command.CommandSourceStack
 import org.kryptonmc.krypton.command.KryptonCommandManager
-import org.kryptonmc.krypton.util.logger
 import java.util.concurrent.ExecutionException
 import java.util.function.Supplier
 
@@ -61,6 +61,6 @@ class BrigadierCompleter(
 
     companion object {
 
-        private val LOGGER = logger<BrigadierCompleter>()
+        private val LOGGER = LogManager.getLogger()
     }
 }

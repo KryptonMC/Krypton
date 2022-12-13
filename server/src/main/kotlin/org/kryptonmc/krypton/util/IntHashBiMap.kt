@@ -19,7 +19,7 @@
 package org.kryptonmc.krypton.util
 
 import com.google.common.collect.Lists
-import it.unimi.dsi.fastutil.objects.Object2IntOpenCustomHashMap
+import it.unimi.dsi.fastutil.objects.Reference2IntOpenHashMap
 
 /**
  * The most basic IntBiMap implementation, that uses a map to store T -> Int,
@@ -27,7 +27,7 @@ import it.unimi.dsi.fastutil.objects.Object2IntOpenCustomHashMap
  */
 class IntHashBiMap<T>(expectedSize: Int) : IntBiMap<T> {
 
-    private val idByValue = Object2IntOpenCustomHashMap<T>(expectedSize, IdentityHashStrategy.get()).apply { defaultReturnValue(-1) }
+    private val idByValue = Reference2IntOpenHashMap<T>(expectedSize).apply { defaultReturnValue(-1) }
     private val valueById = Lists.newArrayListWithExpectedSize<T?>(expectedSize)
     private var nextId = 0
     override val size: Int
@@ -52,7 +52,7 @@ class IntHashBiMap<T>(expectedSize: Int) : IntBiMap<T> {
 
     override fun get(id: Int): T? = valueById.getOrNull(id)
 
-    override fun iterator(): Iterator<T> = valueById.iterator().filterNotNull()
+    override fun iterator(): Iterator<T> = Iterables.filterNotNull(valueById.iterator())
 
     companion object {
 

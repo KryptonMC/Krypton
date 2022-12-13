@@ -310,10 +310,10 @@ class KryptonPlayer(
     override fun pointers(): Pointers {
         if (cachedPointers == null) {
             cachedPointers = Pointers.builder()
-                .withDynamic(Identity.DISPLAY_NAME, ::displayName)
+                .withDynamic(Identity.DISPLAY_NAME) { displayName }
                 .withDynamic(Identity.NAME) { profile.name }
                 .withDynamic(Identity.UUID) { profile.uuid }
-                .withStatic(PermissionChecker.POINTER, PermissionChecker(::getPermissionValue))
+                .withStatic(PermissionChecker.POINTER, PermissionChecker { getPermissionValue(it) })
                 .withDynamic(Identity.LOCALE) { settings.locale }
                 .build()
         }

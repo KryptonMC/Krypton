@@ -24,11 +24,11 @@ import net.kyori.adventure.nbt.api.BinaryTagHolder
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.event.HoverEvent
 import net.kyori.adventure.text.serializer.gson.LegacyHoverEventSerializer
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer
 import net.kyori.adventure.util.Codec
 import org.kryptonmc.krypton.util.nbt.SNBTParser
 import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.ImmutableCompoundTag
-import org.kryptonmc.nbt.Tag
 import java.io.IOException
 import java.lang.RuntimeException
 import java.util.UUID
@@ -47,11 +47,12 @@ object NBTLegacyHoverEventSerializer : LegacyHoverEventSerializer {
     private const val ENTITY_NAME = "name"
     private const val ENTITY_ID = "id"
 
-    private val SNBT_CODEC: Codec<CompoundTag, String, CommandSyntaxException, RuntimeException> = Codec.codec(SNBTParser::parse, Tag::asString)
+    private val SNBT_CODEC: Codec<CompoundTag, String, CommandSyntaxException, RuntimeException> =
+        Codec.codec({ SNBTParser.parse(it) }, { it.asString() })
 
     override fun deserializeShowItem(input: Component): HoverEvent.ShowItem {
         return try {
-            val nbt = SNBT_CODEC.decode(input.toPlainText())
+            val nbt = SNBT_CODEC.decode(PlainTextComponentSerializer.plainText().serialize(input))
             val tag = nbt.getCompound(ITEM_TAG)
             val holder = if (!tag.isEmpty) BinaryTagHolder.encode(tag, SNBT_CODEC) else null
             HoverEvent.ShowItem.of(Key.key(nbt.getString(ITEM_TYPE)), nbt.getByte(ITEM_COUNT).toInt(), holder)
@@ -62,7 +63,7 @@ object NBTLegacyHoverEventSerializer : LegacyHoverEventSerializer {
 
     override fun deserializeShowEntity(input: Component, decoder: Codec.Decoder<Component, String, out RuntimeException>): HoverEvent.ShowEntity {
         return try {
-            val nbt = SNBT_CODEC.decode(input.toPlainText())
+            val nbt = SNBT_CODEC.decode(PlainTextComponentSerializer.plainText().serialize(input))
             val name = decoder.decode(nbt.getString(ENTITY_NAME))
             HoverEvent.ShowEntity.of(Key.key(nbt.getString(ENTITY_TYPE)), UUID.fromString(nbt.getString(ENTITY_ID)), name)
         } catch (exception: CommandSyntaxException) {

@@ -20,18 +20,13 @@ package org.kryptonmc.krypton.commands
 
 import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.arguments.StringArgumentType
-import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer
 import org.kryptonmc.krypton.command.CommandSourceStack
-import org.kryptonmc.krypton.command.argument
-import org.kryptonmc.krypton.command.permission
-import org.kryptonmc.krypton.command.argument.argument
 import org.kryptonmc.krypton.command.arguments.CommandExceptions
-import org.kryptonmc.krypton.command.literal
-import org.kryptonmc.krypton.command.runs
 import org.kryptonmc.krypton.locale.Messages
+import org.kryptonmc.krypton.server.ban.BanManager
 import org.kryptonmc.krypton.server.ban.KryptonIpBan
-import org.kryptonmc.krypton.util.asString
+import org.kryptonmc.krypton.util.AddressUtil
 import java.util.regex.Pattern
 
 object BanIpCommand {
@@ -51,9 +46,9 @@ object BanIpCommand {
         dispatcher.register(literal("ban-ip") {
             permission(KryptonPermission.BAN_IP)
             argument(TARGET, StringArgumentType.string()) {
-                runs { banIp(it.source, it.argument(TARGET), DEFAULT_REASON) }
+                runs { banIp(it.source, it.getArgument(TARGET), DEFAULT_REASON) }
                 argument(REASON, StringArgumentType.string()) {
-                    runs { banIp(it.source, it.argument(TARGET), it.argument(REASON)) }
+                    runs { banIp(it.source, it.getArgument(TARGET), it.getArgument(REASON)) }
                 }
             }
         })
@@ -64,30 +59,26 @@ object BanIpCommand {
         val banManager = source.server.playerManager.banManager
         if (IP_ADDRESS_PATTERN.matcher(target).matches()) {
             // The target is an IP address
-            // Check player is not already banned
-            if (banManager.isBanned(target)) throw ERROR_ALREADY_BANNED.create()
-            banManager.add(KryptonIpBan(target, reason = LegacyComponentSerializer.legacySection().deserialize(reason)))
-
-            // Send success
-            source.sendSuccess(Messages.Commands.BAN_IP_SUCCESS.build(target, Component.text(reason)), true)
+            doBan(source, banManager, target, reason)
             return
         }
         val player = source.server.playerManager.getPlayer(target)
         if (player != null) {
             // The target is a player
-            val ban = KryptonIpBan(player.address.asString(), reason = LegacyComponentSerializer.legacySection().deserialize(reason))
-
-            // Check player is not already banned
-            if (banManager.isBanned(ban.ip)) throw ERROR_ALREADY_BANNED.create()
-            banManager.add(ban)
-
-            // Disconnect target
+            val ban = doBan(source, banManager, AddressUtil.asString(player.address), reason)
             player.disconnect(Messages.Disconnect.BANNED_IP_MESSAGE.build(ban.reason, ban.expirationDate))
-            // Send success
-            source.sendSuccess(Messages.Commands.BAN_IP_SUCCESS.build(target, ban.reason), true)
             return
         }
         // The target isn't an IP address or a player
         throw ERROR_INVALID_IP.create()
+    }
+
+    @JvmStatic
+    private fun doBan(source: CommandSourceStack, manager: BanManager, ip: String, reason: String): KryptonIpBan {
+        if (manager.isBanned(ip)) throw ERROR_ALREADY_BANNED.create()
+        val ban = KryptonIpBan(ip, reason = LegacyComponentSerializer.legacySection().deserialize(reason))
+        manager.add(ban)
+        source.sendSuccess(Messages.Commands.BAN_IP_SUCCESS.build(ip, ban.reason), true)
+        return ban
     }
 }

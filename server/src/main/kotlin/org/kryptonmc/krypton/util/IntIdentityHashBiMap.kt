@@ -130,7 +130,7 @@ class IntIdentityHashBiMap<K> : IntBiMap<K> {
         throw RuntimeException("Overflowed :(")
     }
 
-    override fun iterator(): Iterator<K> = NoSpread.iteratorsForArray(byId).filterNotNull()
+    override fun iterator(): Iterator<K> = Iterables.filterNotNull(NoSpread.iteratorsForArray(byId))
 
     fun clear() {
         keys.fill(null)

@@ -75,13 +75,13 @@ data class KryptonClimate(
         val DEFAULT: Climate = Builder().build()
 
         @JvmField
-        val CODEC: MapCodec<Climate> = RecordCodecBuilder.createMap {
-            it.group(
-                EnumCodecs.PRECIPITATION.fieldOf("precipitation").getting(Climate::precipitation),
-                Codec.FLOAT.fieldOf("temperature").getting(Climate::temperature),
-                Codec.FLOAT.fieldOf("downfall").getting(Climate::downfall),
-                EnumCodecs.TEMPERATURE_MODIFIER.fieldOf("temperature_modifier").getting(Climate::temperatureModifier)
-            ).apply(it, ::KryptonClimate)
+        val CODEC: MapCodec<Climate> = RecordCodecBuilder.createMap { instance ->
+            instance.group(
+                EnumCodecs.PRECIPITATION.fieldOf("precipitation").getting { it.precipitation },
+                Codec.FLOAT.fieldOf("temperature").getting { it.temperature },
+                Codec.FLOAT.fieldOf("downfall").getting { it.downfall },
+                EnumCodecs.TEMPERATURE_MODIFIER.fieldOf("temperature_modifier").getting { it.temperatureModifier }
+            ).apply(instance) { precipitation, temperature, downfall, modifier -> KryptonClimate(precipitation, temperature, downfall, modifier) }
         }
     }
 }

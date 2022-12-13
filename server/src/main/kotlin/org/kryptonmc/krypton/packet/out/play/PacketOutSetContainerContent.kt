@@ -30,19 +30,12 @@ import org.kryptonmc.krypton.util.writeItem
 import org.kryptonmc.krypton.util.writeVarInt
 
 @JvmRecord
-data class PacketOutSetContainerContent(
-    val id: Int,
-    val stateId: Int,
-    val items: List<KryptonItemStack>,
-    val heldItem: KryptonItemStack
-) : Packet {
+data class PacketOutSetContainerContent(val id: Int, val stateId: Int, val items: List<KryptonItemStack>, val heldItem: KryptonItemStack) : Packet {
 
-    constructor(
-        inventory: KryptonInventory,
-        heldItem: KryptonItemStack
-    ) : this(inventory.id, inventory.incrementStateId(), inventory.items, heldItem)
+    constructor(inventory: KryptonInventory,
+                heldItem: KryptonItemStack) : this(inventory.id, inventory.incrementStateId(), inventory.items, heldItem)
 
-    constructor(buf: ByteBuf) : this(buf.readByte().toInt(), buf.readVarInt(), buf.readList(ByteBuf::readItem), buf.readItem())
+    constructor(buf: ByteBuf) : this(buf.readByte().toInt(), buf.readVarInt(), buf.readList { it.readItem() }, buf.readItem())
 
     override fun write(buf: ByteBuf) {
         buf.writeByte(id)

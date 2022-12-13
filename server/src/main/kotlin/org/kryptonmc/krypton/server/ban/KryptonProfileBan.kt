@@ -20,7 +20,6 @@ package org.kryptonmc.krypton.server.ban
 
 import com.google.gson.stream.JsonReader
 import com.google.gson.stream.JsonWriter
-import kotlinx.collections.immutable.persistentListOf
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer
 import org.kryptonmc.api.auth.GameProfile
@@ -55,8 +54,8 @@ class KryptonProfileBan(
         fun read(reader: JsonReader): KryptonProfileBan? {
             reader.beginObject()
 
-            var name: String? = null
             var uuid: UUID? = null
+            var name: String? = null
             var creationDate: OffsetDateTime = OffsetDateTime.now()
             var source: Component = DEFAULT_SOURCE
             var expires: OffsetDateTime? = null
@@ -64,8 +63,8 @@ class KryptonProfileBan(
 
             while (reader.hasNext()) {
                 when (reader.nextName()) {
-                    "name" -> name = reader.nextString()
                     "uuid" -> uuid = UUID.fromString(reader.nextString())
+                    "name" -> name = reader.nextString()
                     "created" -> creationDate = try {
                         OffsetDateTime.parse(reader.nextString(), DATE_FORMATTER)
                     } catch (_: DateTimeParseException) {
@@ -82,8 +81,8 @@ class KryptonProfileBan(
             }
 
             reader.endObject()
-            if (name == null || uuid == null) return null
-            return KryptonProfileBan(KryptonGameProfile(name, uuid, persistentListOf()), source, reason, creationDate, expires)
+            if (uuid == null || name == null) return null
+            return KryptonProfileBan(KryptonGameProfile.basic(uuid, name), source, reason, creationDate, expires)
         }
     }
 }

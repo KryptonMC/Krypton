@@ -29,9 +29,9 @@ import org.kryptonmc.api.world.biome.BiomeEffects
 import org.kryptonmc.api.world.biome.GrassColorModifier
 import org.kryptonmc.krypton.util.serialization.Codecs
 import org.kryptonmc.krypton.util.serialization.EnumCodecs
-import org.kryptonmc.krypton.util.serialization.gettingNullable
 import org.kryptonmc.serialization.Codec
 import org.kryptonmc.serialization.codecs.RecordCodecBuilder
+import java.util.Optional
 
 @JvmRecord
 data class KryptonBiomeEffects(
@@ -121,18 +121,18 @@ data class KryptonBiomeEffects(
         @JvmField
         val CODEC: Codec<BiomeEffects> = RecordCodecBuilder.create { instance ->
             instance.group(
-                Codecs.COLOR.fieldOf("fog_color").getting(BiomeEffects::fogColor),
-                Codecs.COLOR.fieldOf("water_color").getting(BiomeEffects::waterColor),
-                Codecs.COLOR.fieldOf("water_fog_color").getting(BiomeEffects::waterFogColor),
-                Codecs.COLOR.fieldOf("sky_color").getting(BiomeEffects::skyColor),
-                EnumCodecs.GRASS_COLOR_MODIFIER.fieldOf("grass_color_modifier").getting(BiomeEffects::grassColorModifier),
-                Codecs.COLOR.optionalFieldOf("foliage_color").gettingNullable(BiomeEffects::foliageColor),
-                Codecs.COLOR.optionalFieldOf("grass_color").gettingNullable(BiomeEffects::grassColor),
-                KryptonAmbientParticleSettings.CODEC.optionalFieldOf("particle").gettingNullable(BiomeEffects::ambientParticleSettings),
-                Codecs.SOUND_EVENT.optionalFieldOf("ambient_sound").gettingNullable(BiomeEffects::ambientLoopSound),
-                KryptonAmbientMoodSettings.CODEC.optionalFieldOf("mood_sound").gettingNullable(BiomeEffects::ambientMoodSettings),
-                KryptonAmbientAdditionsSettings.CODEC.optionalFieldOf("additions_sound").gettingNullable(BiomeEffects::ambientAdditionsSettings),
-                KryptonMusic.CODEC.optionalFieldOf("music").gettingNullable(BiomeEffects::backgroundMusic)
+                Codecs.COLOR.fieldOf("fog_color").getting { it.fogColor },
+                Codecs.COLOR.fieldOf("water_color").getting { it.waterColor },
+                Codecs.COLOR.fieldOf("water_fog_color").getting { it.waterFogColor },
+                Codecs.COLOR.fieldOf("sky_color").getting { it.skyColor },
+                EnumCodecs.GRASS_COLOR_MODIFIER.fieldOf("grass_color_modifier").getting { it.grassColorModifier },
+                Codecs.COLOR.optionalFieldOf("foliage_color").getting { Optional.ofNullable(it.foliageColor) },
+                Codecs.COLOR.optionalFieldOf("grass_color").getting { Optional.ofNullable(it.grassColor) },
+                KryptonAmbientParticleSettings.CODEC.optionalFieldOf("particle").getting { Optional.ofNullable(it.ambientParticleSettings) },
+                Codecs.SOUND_EVENT.optionalFieldOf("ambient_sound").getting { Optional.ofNullable(it.ambientLoopSound) },
+                KryptonAmbientMoodSettings.CODEC.optionalFieldOf("mood_sound").getting { Optional.ofNullable(it.ambientMoodSettings) },
+                KryptonAmbientAdditionsSettings.CODEC.optionalFieldOf("additions_sound").getting { Optional.ofNullable(it.ambientAdditionsSettings) },
+                KryptonMusic.CODEC.optionalFieldOf("music").getting { Optional.ofNullable(it.backgroundMusic) }
             ).apply(instance) { fog, water, waterFog, sky, modifier, foliage, grass, particles, loopSound, mood, additions, music ->
                 KryptonBiomeEffects(fog, water, waterFog, sky, modifier, foliage.orElse(null), grass.orElse(null), particles.orElse(null),
                     loopSound.orElse(null), mood.orElse(null), additions.orElse(null), music.orElse(null))

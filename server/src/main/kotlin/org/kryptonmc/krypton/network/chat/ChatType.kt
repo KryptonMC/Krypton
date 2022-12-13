@@ -27,11 +27,11 @@ data class ChatType(val chat: ChatTypeDecoration, val narration: ChatTypeDecorat
     companion object {
 
         @JvmField
-        val CODEC: Codec<ChatType> = RecordCodecBuilder.create {
-            it.group(
-                ChatTypeDecoration.CODEC.fieldOf("chat").getting(ChatType::chat),
-                ChatTypeDecoration.CODEC.fieldOf("narration").getting(ChatType::narration)
-            ).apply(it, ::ChatType)
+        val CODEC: Codec<ChatType> = RecordCodecBuilder.create { instance ->
+            instance.group(
+                ChatTypeDecoration.CODEC.fieldOf("chat").getting { it.chat },
+                ChatTypeDecoration.CODEC.fieldOf("narration").getting { it.narration }
+            ).apply(instance, ::ChatType)
         }
     }
 }

@@ -20,6 +20,7 @@ package org.kryptonmc.krypton.command.arguments.entities
 
 import com.mojang.brigadier.StringReader
 import kotlinx.collections.immutable.persistentListOf
+import org.kryptonmc.krypton.command.arguments.CommandExceptions
 import org.kryptonmc.krypton.command.arguments.entities.EntityQuery.Selector
 
 /**
@@ -34,33 +35,25 @@ object EntityArgumentParser {
     private const val EXCLUSION = '!'
     private const val KEY_VALUE_SEPARATOR = '='
 
+    private val UNKNOWN_SELECTOR = EntityArgumentExceptions.UNKNOWN_SELECTOR
+
     @JvmStatic
-    fun parse(reader: StringReader, operation: Char, position: Int, onlyPlayers: Boolean, singleTarget: Boolean): EntityQuery {
-        when (operation) {
+    fun parse(reader: StringReader, onlyPlayers: Boolean, singleTarget: Boolean): EntityQuery {
+        val position = reader.cursor
+        when (val operation = reader.read()) {
             Selector.NEAREST_PLAYER_CHAR -> return EntityQuery(Selector.NEAREST_PLAYER)
             Selector.ALL_ENTITIES_CHAR -> {
-                if (singleTarget) {
-                    reader.cursor = 0
-                    throw EntityArgumentExceptions.TOO_MANY_ENTITIES.createWithContext(reader)
-                } else if (onlyPlayers) {
-                    reader.cursor = 0
-                    throw EntityArgumentExceptions.ONLY_FOR_PLAYERS.createWithContext(reader)
-                }
+                if (singleTarget) CommandExceptions.resetAndThrow(reader, 0, EntityArgumentExceptions.TOO_MANY_ENTITIES.createWithContext(reader))
+                if (onlyPlayers) CommandExceptions.resetAndThrow(reader, 0, EntityArgumentExceptions.ONLY_FOR_PLAYERS.createWithContext(reader))
                 return parseMultiple(reader, Selector.ALL_ENTITIES)
             }
             Selector.RANDOM_PLAYER_CHAR -> return EntityQuery(Selector.RANDOM_PLAYER)
             Selector.ALL_PLAYERS_CHAR -> {
-                if (singleTarget) {
-                    reader.cursor = 0
-                    throw EntityArgumentExceptions.TOO_MANY_PLAYERS.createWithContext(reader)
-                }
+                if (singleTarget) CommandExceptions.resetAndThrow(reader, 0, EntityArgumentExceptions.TOO_MANY_PLAYERS.createWithContext(reader))
                 return parseMultiple(reader, Selector.ALL_PLAYERS)
             }
             Selector.EXECUTOR_CHAR -> return EntityQuery(Selector.EXECUTOR)
-            else -> {
-                reader.cursor = position
-                throw EntityArgumentExceptions.UNKNOWN_SELECTOR.createWithContext(reader, "$SELECTOR_CHAR$operation")
-            }
+            else -> CommandExceptions.resetAndThrow(reader, position, UNKNOWN_SELECTOR.createWithContext(reader, "$SELECTOR_CHAR$operation"))
         }
     }
 
@@ -90,9 +83,7 @@ object EntityArgumentParser {
 
                 val exclude = reader.peek() == EXCLUSION
                 if (exclude) reader.skip()
-
-                val value = reader.readString()
-                arguments.add(EntityArgument(option, value, exclude))
+                arguments.add(EntityArgument(option, reader.readString(), exclude))
 
                 reader.skipWhitespace()
                 if (!reader.canRead()) continue
@@ -104,9 +95,7 @@ object EntityArgumentParser {
                 if (reader.peek() != CLOSING_BRACKET) throw EntityArgumentExceptions.UNTERMINATED.createWithContext(reader)
                 break
             }
-
-            reader.cursor = markedPosition
-            throw EntityArgumentExceptions.VALUELESS.createWithContext(reader, option)
+            CommandExceptions.resetAndThrow(reader, markedPosition, EntityArgumentExceptions.VALUELESS.createWithContext(reader, option))
         }
         if (!reader.canRead()) throw EntityArgumentExceptions.UNTERMINATED.createWithContext(reader)
         reader.skip()

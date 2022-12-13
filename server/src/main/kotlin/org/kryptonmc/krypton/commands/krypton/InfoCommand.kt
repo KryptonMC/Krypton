@@ -25,8 +25,9 @@ import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.text.format.TextDecoration
 import org.kryptonmc.krypton.KryptonPlatform
 import org.kryptonmc.krypton.command.CommandSourceStack
-import org.kryptonmc.krypton.command.literal
-import org.kryptonmc.krypton.command.runs
+import org.kryptonmc.krypton.commands.literal
+import org.kryptonmc.krypton.commands.runs
+import java.util.stream.Stream
 
 object InfoCommand : KryptonSubCommand {
 
@@ -42,9 +43,9 @@ object InfoCommand : KryptonSubCommand {
         .append(Component.text(KryptonPlatform.minecraftVersion, NamedTextColor.GREEN))
         .build()
 
-    override val aliases: Sequence<String> = sequenceOf("about", "version")
+    override fun aliases(): Stream<String> = Stream.of("about", "version")
 
     override fun register(): LiteralArgumentBuilder<CommandSourceStack> = literal("info") {
-        runs { it.source.sendMessage(MESSAGE) }
+        runs { it.source.sendSystemMessage(MESSAGE) }
     }
 }

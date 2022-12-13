@@ -18,6 +18,7 @@
  */
 package org.kryptonmc.krypton.adventure
 
+import com.mojang.brigadier.Message
 import it.unimi.dsi.fastutil.objects.Object2IntArrayMap
 import net.kyori.adventure.inventory.Book
 import net.kyori.adventure.text.Component
@@ -83,4 +84,7 @@ object KryptonAdventure {
 
     @JvmStatic
     fun toStableJson(component: Component): String = GsonHelper.toStableString(GsonComponentSerializer.gson().serializeToTree(component))
+
+    @JvmStatic
+    fun asMessage(component: Component): Message = KryptonAdventureMessage(component)
 }

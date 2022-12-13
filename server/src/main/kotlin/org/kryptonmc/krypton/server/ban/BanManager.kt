@@ -18,17 +18,22 @@
  */
 package org.kryptonmc.krypton.server.ban
 
+import com.google.common.collect.Collections2
 import com.google.gson.stream.JsonReader
 import com.google.gson.stream.JsonWriter
 import org.kryptonmc.api.auth.GameProfile
 import org.kryptonmc.krypton.server.PersistentManager
 import org.kryptonmc.krypton.util.array
 import java.nio.file.Path
+import java.util.Collections
 
 class BanManager(path: Path) : PersistentManager(path) {
 
     private val profiles = HashMap<GameProfile, KryptonProfileBan>()
     private val ips = HashMap<String, KryptonIpBan>()
+
+    private val profileNames = Collections.unmodifiableCollection(Collections2.transform(profiles.values) { it.profile.name })
+    private val ipStrings = Collections.unmodifiableCollection(Collections2.transform(ips.values) { it.ip })
 
     fun isBanned(profile: GameProfile): Boolean = profiles.containsKey(profile)
 
@@ -64,7 +69,11 @@ class BanManager(path: Path) : PersistentManager(path) {
 
     fun profiles(): Collection<KryptonProfileBan> = profiles.values
 
+    fun profileNames(): Collection<String> = profileNames
+
     fun ips(): Collection<KryptonIpBan> = ips.values
+
+    fun ipStrings(): Collection<String> = ipStrings
 
     override fun loadData(reader: JsonReader) {
         if (!reader.hasNext()) return // File is empty. Just use defaults (not enabled, no whitelisted profiles or IPs)

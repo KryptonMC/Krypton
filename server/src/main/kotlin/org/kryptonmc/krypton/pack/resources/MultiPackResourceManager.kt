@@ -20,9 +20,9 @@ package org.kryptonmc.krypton.pack.resources
 
 import kotlinx.collections.immutable.toImmutableList
 import net.kyori.adventure.key.Key
+import org.apache.logging.log4j.LogManager
 import org.kryptonmc.krypton.pack.PackResources
 import org.kryptonmc.krypton.pack.metadata.ResourceFilterData
-import org.kryptonmc.krypton.util.logger
 import java.io.IOException
 import java.util.TreeMap
 import java.util.function.Predicate
@@ -34,16 +34,16 @@ class MultiPackResourceManager(packs: List<PackResources>) : CloseableResourceMa
 
     init {
         val managers = HashMap<String, FallbackResourceManager>()
-        val namespaces = packs.asSequence().flatMap(PackResources::namespaces).distinct().toList()
+        val namespaces = packs.asSequence().flatMap(PackResources::namespaces).distinct()
         packs.forEach { resources ->
             val filterData = getPackFilterData(resources)
             val packNamespaces = resources.namespaces
             val predicate: Predicate<Key>? = if (filterData != null) Predicate { filterData.isPathFiltered(it.value()) } else null
-            namespaces.forEach inner@{
-                val inPackNamespaces = packNamespaces.contains(it)
-                val filtered = filterData != null && filterData.isNamespaceFiltered(it)
+            namespaces.forEach inner@{ namespace ->
+                val inPackNamespaces = packNamespaces.contains(namespace)
+                val filtered = filterData != null && filterData.isNamespaceFiltered(namespace)
                 if (!inPackNamespaces && !filtered) return@inner
-                val manager = managers.computeIfAbsent(it, ::FallbackResourceManager)
+                val manager = managers.computeIfAbsent(namespace) { FallbackResourceManager(it) }
                 if (inPackNamespaces && filtered) {
                     // predicate must be non-null as filterData != null if filtered is true, and if filterData != null, predicate != null
                     manager.push(resources, predicate!!)
@@ -51,7 +51,7 @@ class MultiPackResourceManager(packs: List<PackResources>) : CloseableResourceMa
                     manager.push(resources)
                 } else {
                     // predicate must be non-null as filterData != null if filtered is true, and if filterData != null, predicate != null
-                    manager.pushFilterOnly(resources.name, predicate!!)
+                    manager.pushFilterOnly(resources.name(), predicate!!)
                 }
             }
         }
@@ -80,13 +80,13 @@ class MultiPackResourceManager(packs: List<PackResources>) : CloseableResourceMa
         return try {
             resources.getMetadata(ResourceFilterData.SERIALIZER)
         } catch (exception: IOException) {
-            LOGGER.error("Failed to get filter section from pack ${resources.name}!", exception)
+            LOGGER.error("Failed to get filter section from pack ${resources.name()}!", exception)
             null
         }
     }
 
     companion object {
 
-        private val LOGGER = logger<MultiPackResourceManager>()
+        private val LOGGER = LogManager.getLogger()
     }
 }

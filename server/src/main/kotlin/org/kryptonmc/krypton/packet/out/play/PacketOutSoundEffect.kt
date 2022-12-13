@@ -46,7 +46,7 @@ data class PacketOutSoundEffect(
     constructor(sound: Sound, event: SoundEvent, x: Double, y: Double, z: Double,
                 seed: Long) : this(event, sound.source(), x, y, z, sound.volume(), sound.pitch(), seed)
 
-    constructor(buf: ByteBuf) : this(buf.readEvent(), buf.readEnum(), buf.readInt(), buf.readInt(), buf.readInt(), buf.readFloat(), buf.readFloat(),
+    constructor(buf: ByteBuf) : this(readEvent(buf), buf.readEnum(), buf.readInt(), buf.readInt(), buf.readInt(), buf.readFloat(), buf.readFloat(),
         buf.readLong())
 
     override fun write(buf: ByteBuf) {
@@ -59,6 +59,10 @@ data class PacketOutSoundEffect(
         buf.writeFloat(pitch)
         buf.writeLong(seed)
     }
-}
 
-private fun ByteBuf.readEvent(): SoundEvent = readById(KryptonRegistries.SOUND_EVENT)!!
+    companion object {
+
+        @JvmStatic
+        private fun readEvent(buf: ByteBuf): SoundEvent = buf.readById(KryptonRegistries.SOUND_EVENT)!!
+    }
+}

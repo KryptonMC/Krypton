@@ -20,10 +20,10 @@ package org.kryptonmc.krypton.entity.player
 
 import io.netty.buffer.ByteBuf
 import org.kryptonmc.krypton.network.Writable
+import org.kryptonmc.krypton.util.crypto.Crypto
 import org.kryptonmc.krypton.util.crypto.Encryption
 import org.kryptonmc.krypton.util.crypto.InsecurePublicKeyException
 import org.kryptonmc.krypton.util.crypto.SignatureValidator
-import org.kryptonmc.krypton.util.crypto.toRSAString
 import org.kryptonmc.krypton.util.readInstant
 import org.kryptonmc.krypton.util.readPublicKey
 import org.kryptonmc.krypton.util.readVarIntByteArray
@@ -47,7 +47,7 @@ data class PlayerPublicKey(val data: Data) {
         fun validateSignature(validator: SignatureValidator): Boolean =
             validator.validate(createSignedPayload().toByteArray(Charsets.US_ASCII), signature)
 
-        private fun createSignedPayload(): String = expiryTime.toEpochMilli().toString() + key.toRSAString()
+        private fun createSignedPayload(): String = expiryTime.toEpochMilli().toString() + Crypto.publicKeyToRsaString(key)
 
         override fun write(buf: ByteBuf) {
             buf.writeInstant(expiryTime)

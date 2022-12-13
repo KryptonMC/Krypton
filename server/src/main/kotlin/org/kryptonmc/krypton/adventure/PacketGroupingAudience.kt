@@ -20,10 +20,9 @@ package org.kryptonmc.krypton.adventure
 
 import net.kyori.adventure.audience.Audience
 import net.kyori.adventure.audience.ForwardingAudience
-import net.kyori.adventure.audience.MessageType
 import net.kyori.adventure.bossbar.BossBar
-import net.kyori.adventure.identity.Identified
-import net.kyori.adventure.identity.Identity
+import net.kyori.adventure.chat.ChatType
+import net.kyori.adventure.chat.SignedMessage
 import net.kyori.adventure.inventory.Book
 import net.kyori.adventure.sound.Sound
 import net.kyori.adventure.sound.SoundStop
@@ -57,11 +56,7 @@ interface PacketGroupingAudience : ForwardingAudience {
         sendGroupedPacket(players, packet)
     }
 
-    override fun sendMessage(source: Identified, message: Component, type: MessageType) {
-        sendMessage(source.identity(), message, type)
-    }
-
-    override fun sendMessage(source: Identity, message: Component, type: MessageType) {
+    override fun sendMessage(signedMessage: SignedMessage, boundChatType: ChatType.Bound) {
         // TODO: Fix chat (again)
 //        val chatType = when (type) {
 //            MessageType.CHAT -> ChatTypes.CHAT
@@ -117,15 +112,16 @@ interface PacketGroupingAudience : ForwardingAudience {
 
     override fun playSound(sound: Sound, x: Double, y: Double, z: Double) {
         val type = KryptonRegistries.SOUND_EVENT.get(sound.name())
-        val seed = sound.seed().orElseGet(::generateSoundSeed)
-        sendGroupedPacket(if (type != null) PacketOutSoundEffect(sound, type, x, y, z, seed) else PacketOutCustomSoundEffect(sound, x, y, z, seed))
+        val seed = sound.seed().orElseGet { generateSoundSeed() }
+        val packet = if (type != null) PacketOutSoundEffect(sound, type, x, y, z, seed) else PacketOutCustomSoundEffect(sound, x, y, z, seed)
+        sendGroupedPacket(packet)
     }
 
     override fun playSound(sound: Sound, emitter: Sound.Emitter) {
         if (emitter !== Sound.Emitter.self()) {
             val entity = if (emitter is KryptonEntity) emitter else error("Sound emitter must be an entity or self(), was $emitter!")
             val event = KryptonRegistries.SOUND_EVENT.get(sound.name())
-            val seed = sound.seed().orElseGet(::generateSoundSeed)
+            val seed = sound.seed().orElseGet { generateSoundSeed() }
             val packet = if (event != null) {
                 PacketOutEntitySoundEffect(sound, event, entity.id, seed)
             } else {

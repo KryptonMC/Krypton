@@ -20,17 +20,16 @@ package org.kryptonmc.krypton.item.meta
 
 import org.kryptonmc.api.auth.GameProfile
 import org.kryptonmc.api.item.meta.PlayerHeadMeta
-import org.kryptonmc.krypton.auth.putGameProfile
-import org.kryptonmc.krypton.auth.getGameProfile
+import org.kryptonmc.krypton.auth.GameProfileUtil
 import org.kryptonmc.nbt.CompoundTag
 
 class KryptonPlayerHeadMeta(data: CompoundTag) : AbstractItemMeta<KryptonPlayerHeadMeta>(data), PlayerHeadMeta {
 
-    override val owner: GameProfile? = data.getGameProfile(OWNER_TAG)
+    override val owner: GameProfile? = GameProfileUtil.getProfile(data, OWNER_TAG)
 
     override fun copy(data: CompoundTag): KryptonPlayerHeadMeta = KryptonPlayerHeadMeta(data)
 
-    override fun withOwner(owner: GameProfile?): KryptonPlayerHeadMeta = copy(data.putGameProfile(OWNER_TAG, owner))
+    override fun withOwner(owner: GameProfile?): KryptonPlayerHeadMeta = copy(GameProfileUtil.putProfile(data, OWNER_TAG, owner))
 
     override fun toBuilder(): PlayerHeadMeta.Builder = Builder(this)
 
@@ -46,7 +45,7 @@ class KryptonPlayerHeadMeta(data: CompoundTag) : AbstractItemMeta<KryptonPlayerH
 
         override fun owner(owner: GameProfile?): PlayerHeadMeta.Builder = apply { this.owner = owner }
 
-        override fun buildData(): CompoundTag.Builder = super.buildData().putGameProfile(OWNER_TAG, owner)
+        override fun buildData(): CompoundTag.Builder = GameProfileUtil.putProfile(super.buildData(), OWNER_TAG, owner)
 
         override fun build(): KryptonPlayerHeadMeta = KryptonPlayerHeadMeta(buildData().build())
     }

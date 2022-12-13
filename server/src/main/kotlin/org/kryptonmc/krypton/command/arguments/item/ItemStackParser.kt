@@ -23,6 +23,7 @@ import net.kyori.adventure.key.Key
 import org.kryptonmc.api.item.ItemType
 import org.kryptonmc.api.item.ItemTypes
 import org.kryptonmc.krypton.command.arguments.CommandExceptions
+import org.kryptonmc.krypton.command.arguments.StringReading
 import org.kryptonmc.krypton.item.KryptonItemType
 import org.kryptonmc.krypton.registry.KryptonRegistries
 import org.kryptonmc.krypton.util.nbt.SNBTParser
@@ -67,14 +68,9 @@ object ItemStackParser { // TODO: Tags for ItemStackPredicate etc.
 
     @JvmStatic
     private fun readItem(reader: StringReader): KryptonItemType {
-        val i = reader.cursor
-        while (reader.canRead() && isCharacterValid(reader.peek())) {
-            reader.skip()
-        }
-
-        val string = reader.string.substring(i, reader.cursor)
-        val item = KryptonRegistries.ITEM.get(Key.key(string))
-        if (item === ItemTypes.AIR) throw ID_INVALID_EXCEPTION.createWithContext(reader, string)
+        val keyString = StringReading.readKeyString(reader)
+        val item = KryptonRegistries.ITEM.get(Key.key(keyString))
+        if (item === ItemTypes.AIR) throw ID_INVALID_EXCEPTION.createWithContext(reader, keyString)
         return item
     }
 
@@ -82,11 +78,7 @@ object ItemStackParser { // TODO: Tags for ItemStackPredicate etc.
     private fun readTag(reader: StringReader, allowTags: Boolean): String {
         if (allowTags) {
             reader.expect('#')
-            val i = reader.cursor
-            while (reader.canRead() && isCharacterValid(reader.peek())) {
-                reader.skip()
-            }
-            return reader.string.substring(i, reader.cursor)
+            return StringReading.readKeyString(reader)
         }
         throw TAG_DISALLOWED_EXCEPTION.createWithContext(reader)
     }
@@ -96,13 +88,4 @@ object ItemStackParser { // TODO: Tags for ItemStackPredicate etc.
         if (reader.canRead() && reader.peek() == '{') return SNBTParser(reader).readCompound()
         return null
     }
-
-    @JvmStatic
-    private fun isCharacterValid(character: Char): Boolean = character in '0'..'9' ||
-            character in 'a'..'z' ||
-            character == '_' ||
-            character == ':' ||
-            character == '/' ||
-            character == '.' ||
-            character == '-'
 }

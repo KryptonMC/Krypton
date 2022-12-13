@@ -27,7 +27,7 @@ import org.kryptonmc.krypton.event.user.ban.KryptonBanIpEvent
 import org.kryptonmc.krypton.event.user.ban.KryptonBanProfileEvent
 import org.kryptonmc.krypton.event.user.ban.KryptonPardonIpEvent
 import org.kryptonmc.krypton.event.user.ban.KryptonPardonProfileEvent
-import org.kryptonmc.krypton.util.asString
+import org.kryptonmc.krypton.util.AddressUtil
 import java.net.InetAddress
 import java.util.Collections
 
@@ -43,13 +43,13 @@ class KryptonBanService(private val server: KryptonServer) : BanService {
 
     override fun isRegistered(ban: Ban): Boolean = when (ban) {
         is Ban.Profile -> banManager.isBanned(ban.profile)
-        is Ban.IP -> banManager.isBanned(ban.address.asString())
+        is Ban.IP -> banManager.isBanned(AddressUtil.asString(ban.address))
         else -> error("Unsupported ban type ${ban.type}!")
     }
 
     override fun get(profile: GameProfile): Ban.Profile? = banManager.get(profile)
 
-    override fun get(address: InetAddress): Ban.IP? = banManager.get(address.asString())
+    override fun get(address: InetAddress): Ban.IP? = banManager.get(AddressUtil.asString(address))
 
     override fun pardon(profile: GameProfile) {
         get(profile)?.let(::remove)

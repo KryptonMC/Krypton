@@ -19,14 +19,14 @@
 package org.kryptonmc.krypton.item.meta
 
 import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer
 import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.item.ItemAttributeModifier
 import org.kryptonmc.api.item.data.ItemFlag
 import org.kryptonmc.api.item.meta.ItemMeta
 import org.kryptonmc.api.item.meta.ItemMetaBuilder
-import org.kryptonmc.krypton.adventure.toJson
+import org.kryptonmc.krypton.item.KryptonItemAttributeModifier
 import org.kryptonmc.krypton.item.mask
-import org.kryptonmc.krypton.item.save
 import org.kryptonmc.krypton.util.BuilderCollection
 import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.buildCompound
@@ -99,12 +99,12 @@ abstract class KryptonItemMetaBuilder<B : ItemMetaBuilder<B, I>, I : ItemMeta> :
         putBoolean("Unbreakable", unbreakable)
         putInt("CustomModelData", customModelData)
         compound("display") {
-            if (name != null) putString("Name", name!!.toJson())
-            if (lore.isNotEmpty()) list("Lore") { lore.forEach { addString(it.toJson()) } }
+            if (name != null) putString("Name", GsonComponentSerializer.gson().serialize(name!!))
+            if (lore.isNotEmpty()) list("Lore") { lore.forEach { addString(GsonComponentSerializer.gson().serialize(it)) } }
         }
         putInt("HideFlags", hideFlags)
         if (canDestroy.isNotEmpty()) list("CanDestroy") { canDestroy.forEach { addString(it.key().asString()) } }
         if (canPlaceOn.isNotEmpty()) list("CanPlaceOn") { canPlaceOn.forEach { addString(it.key().asString()) } }
-        if (modifiers.isNotEmpty()) list("AttributeModifiers") { modifiers.forEach { add(it.save()) } }
+        if (modifiers.isNotEmpty()) list("AttributeModifiers") { modifiers.forEach { add(KryptonItemAttributeModifier.save(it)) } }
     }
 }

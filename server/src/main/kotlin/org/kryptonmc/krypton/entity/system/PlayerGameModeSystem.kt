@@ -18,6 +18,7 @@
  */
 package org.kryptonmc.krypton.entity.system
 
+import org.apache.logging.log4j.LogManager
 import org.kryptonmc.api.event.player.ChangeGameModeEvent
 import org.kryptonmc.api.world.GameMode
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
@@ -29,7 +30,6 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutPlayerInfo
 import org.kryptonmc.krypton.packet.out.play.PacketOutPlayerInfo.Action
 import org.kryptonmc.krypton.util.BlockPos
 import org.kryptonmc.krypton.util.GameModes
-import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.world.block.state.KryptonBlockState
 
 class PlayerGameModeSystem(private val player: KryptonPlayer) {
@@ -239,6 +239,6 @@ class PlayerGameModeSystem(private val player: KryptonPlayer) {
 
         private const val MAXIMUM_DISTANCE_FROM_BLOCK = 6.0 * 6.0
         private const val MAXIMUM_DESTROY_PROGRESS = 0.7F
-        private val LOGGER = logger<PlayerGameModeSystem>()
+        private val LOGGER = LogManager.getLogger()
     }
 }

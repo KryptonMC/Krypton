@@ -70,7 +70,7 @@ open class KryptonBlock(properties: Properties) : BlockBehaviour(properties), St
     init {
         val builder = StateDefinition.Builder<KryptonBlock, KryptonBlockState>(this)
         createStateDefinition(builder)
-        stateDefinition = builder.build(KryptonBlock::defaultBlockState, ::KryptonBlockState)
+        stateDefinition = builder.build({ it.defaultBlockState }, { owner, values, codec -> KryptonBlockState(owner, values, codec) })
         defaultBlockState = stateDefinition.any()
     }
 

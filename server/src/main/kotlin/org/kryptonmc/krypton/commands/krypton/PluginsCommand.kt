@@ -19,17 +19,20 @@
 package org.kryptonmc.krypton.commands.krypton
 
 import com.mojang.brigadier.builder.LiteralArgumentBuilder
-import net.kyori.adventure.text.BuildableComponent
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.ComponentBuilder
 import net.kyori.adventure.text.event.HoverEvent
 import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.text.format.TextDecoration
 import org.kryptonmc.krypton.command.CommandSourceStack
-import org.kryptonmc.krypton.command.literal
-import org.kryptonmc.krypton.command.runs
+import org.kryptonmc.krypton.commands.literal
+import org.kryptonmc.krypton.commands.runs
+import java.util.stream.Stream
 
 object PluginsCommand : KryptonSubCommand {
+
+    private val OPEN_BRACKET = Component.text(" (", NamedTextColor.DARK_GRAY)
+    private val CLOSED_BRACKET = Component.text(")", NamedTextColor.DARK_GRAY)
 
     private val INDENT = Component.text("  - ", NamedTextColor.DARK_GRAY)
     private val PREFIX = Component.text("Plugins", KryptonColors.STANDARD_PURPLE, TextDecoration.BOLD)
@@ -44,72 +47,71 @@ object PluginsCommand : KryptonSubCommand {
     private val DEPENDENCIES = Component.text("Dependencies: ", KryptonColors.DARK_ORCHID)
     private val OPTIONAL = Component.text("optional: ", KryptonColors.DARK_ORCHID)
 
-    override val aliases: Sequence<String> = sequenceOf("pl")
+    override fun aliases(): Stream<String> = Stream.of("pl")
 
     override fun register(): LiteralArgumentBuilder<CommandSourceStack> = literal("plugins") {
         runs { context ->
-            val sender = context.source
-            val plugins = sender.server.pluginManager.plugins
+            val plugins = context.source.server.pluginManager.plugins
             if (plugins.isEmpty()) {
-                sender.sendMessage(Component.text("No plugins are currently running on this server.", NamedTextColor.RED))
+                context.source.sendSystemMessage(Component.text("No plugins are currently running on this server.", NamedTextColor.RED))
                 return@runs
             }
 
-            val message = plugins.foldToMessage { pluginIndex, builder, plugin ->
+            val message = foldToMessage(plugins) { pluginIndex, builder, plugin ->
                 val pluginMessage = Component.text()
                     .append(ID)
                     .append(Component.text(plugin.description.id, KryptonColors.VIVID_SKY_BLUE))
-                    .append(Component.newline())
+                    .appendNewline()
                     .append(NAME)
                     .append(Component.text(plugin.description.name, KryptonColors.TURQUOISE))
-                    .append(Component.newline())
+                    .appendNewline()
                     .append(VERSION)
                     .append(Component.text(plugin.description.version, NamedTextColor.GREEN))
-                    .append(Component.newline())
+                    .appendNewline()
                     .append(DESCRIPTION)
                     .append(Component.text(plugin.description.description, NamedTextColor.GOLD))
-                    .append(Component.newline())
+                    .appendNewline()
                     .append(AUTHORS)
                     .append(Component.text(plugin.description.authors.joinToString(", "), NamedTextColor.YELLOW))
-                    .append(Component.newline())
+                    .appendNewline()
                     .append(DEPENDENCIES)
                 val dependencies = plugin.description.dependencies
                 if (dependencies.isNotEmpty()) {
-                    pluginMessage.append(Component.newline()).append(dependencies.foldToMessage { index, dependencyMessage, dependency ->
+                    pluginMessage.appendNewline().append(foldToMessage(dependencies) { index, dependencyMessage, dependency ->
                         dependencyMessage.append(INDENT)
                             .append(Component.text(dependency.id, NamedTextColor.GREEN))
                             .append(OPEN_BRACKET)
                             .append(OPTIONAL)
                             .append(Component.text(dependency.isOptional, NamedTextColor.GREEN))
                             .append(CLOSED_BRACKET)
-                        if (index < dependencies.size - 1) dependencyMessage.append(Component.newline())
+                        if (index < dependencies.size - 1) dependencyMessage.appendNewline()
                     })
                 } else {
                     pluginMessage.append(Component.text("None", NamedTextColor.RED))
                 }
                 builder.append(Component.text()
                     .append(Component.text(plugin.description.id, KryptonColors.LIGHTER_PURPLE))
-                    .bracketed(Component.text(plugin.description.version, NamedTextColor.GREEN))
+                    .append(OPEN_BRACKET)
+                    .append(Component.text(plugin.description.version, NamedTextColor.GREEN))
+                    .append(CLOSED_BRACKET)
                     .hoverEvent(HoverEvent.showText(pluginMessage)))
                 if (pluginIndex < plugins.size - 1) builder.append(SEPARATOR)
             }
-            sender.sendMessage(Component.text()
+            context.source.sendSystemMessage(Component.text()
                 .append(PREFIX)
-                .bracketed(Component.text(plugins.size, NamedTextColor.GREEN))
+                .append(OPEN_BRACKET)
+                .append(Component.text(plugins.size, NamedTextColor.GREEN))
+                .append(CLOSED_BRACKET)
                 .append(COLON)
-                .append(message))
+                .append(message)
+                .build())
         }
     }
+
+    @JvmStatic
+    private inline fun <T> foldToMessage(iterable: Iterable<T>, operation: (Int, ComponentBuilder<*, *>, T) -> Unit): Component =
+        iterable.foldIndexed(Component.text()) { index, builder, value ->
+            operation(index, builder, value)
+            builder
+        }.build()
 }
-
-private val OPEN_BRACKET = Component.text(" (", NamedTextColor.DARK_GRAY)
-private val CLOSED_BRACKET = Component.text(")", NamedTextColor.DARK_GRAY)
-
-private inline fun <T> Iterable<T>.foldToMessage(operation: (Int, ComponentBuilder<*, *>, T) -> Unit): Component =
-    foldIndexed(Component.text()) { index, builder, value ->
-        operation(index, builder, value)
-        builder
-    }.build()
-
-private fun <C : BuildableComponent<C, B>, B : ComponentBuilder<C, B>> ComponentBuilder<C, B>.bracketed(value: Component): B =
-    append(OPEN_BRACKET).append(value).append(CLOSED_BRACKET)

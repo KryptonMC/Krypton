@@ -98,7 +98,6 @@ class AdventureCodecTests {
             Bootstrapping.loadFactories()
         }
 
-        // TODO: Remove when Adventure is updated to 4.12.0
         @JvmStatic
         private fun asHexString(color: TextColor): String = String.format(Locale.ROOT, "#%06X", color.value())
     }

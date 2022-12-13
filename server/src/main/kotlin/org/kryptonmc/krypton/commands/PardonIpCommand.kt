@@ -21,13 +21,8 @@ package org.kryptonmc.krypton.commands
 import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.arguments.StringArgumentType
 import org.kryptonmc.krypton.command.CommandSourceStack
-import org.kryptonmc.krypton.command.argument
-import org.kryptonmc.krypton.command.permission
-import org.kryptonmc.krypton.command.argument.argument
+import org.kryptonmc.krypton.command.CommandSuggestionProvider
 import org.kryptonmc.krypton.command.arguments.CommandExceptions
-import org.kryptonmc.krypton.command.literal
-import org.kryptonmc.krypton.command.matchesSubString
-import org.kryptonmc.krypton.command.runs
 import org.kryptonmc.krypton.locale.Messages
 
 object PardonIpCommand {
@@ -43,14 +38,11 @@ object PardonIpCommand {
             permission(KryptonPermission.PARDON_IP)
             argument(TARGET, StringArgumentType.string()) {
                 suggests { context, builder ->
-                    context.source.server.playerManager.banManager.ips().forEach {
-                        if (builder.remainingLowerCase.matchesSubString(it.ip.lowercase())) builder.suggest(it.ip)
-                    }
-                    builder.buildFuture()
+                    CommandSuggestionProvider.suggest(context.source.server.playerManager.banManager.ipStrings(), builder)
                 }
                 runs {
                     val banManager = it.source.server.playerManager.banManager
-                    val target = it.argument<String>(TARGET)
+                    val target = it.getArgument(TARGET, String::class.java)
                     if (!BanIpCommand.IP_ADDRESS_PATTERN.matcher(target).matches()) throw ERROR_INVALID_IP.create()
                     if (!banManager.isBanned(target)) throw ERROR_ALREADY_UNBANNED.create()
                     banManager.remove(target)

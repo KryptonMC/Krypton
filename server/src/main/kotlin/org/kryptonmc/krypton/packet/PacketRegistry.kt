@@ -20,7 +20,7 @@ package org.kryptonmc.krypton.packet
 
 import io.netty.buffer.ByteBuf
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
-import it.unimi.dsi.fastutil.objects.Object2IntOpenCustomHashMap
+import it.unimi.dsi.fastutil.objects.Reference2IntOpenHashMap
 import org.kryptonmc.krypton.packet.`in`.handshake.PacketInHandshake
 import org.kryptonmc.krypton.packet.`in`.login.PacketInEncryptionResponse
 import org.kryptonmc.krypton.packet.`in`.login.PacketInLoginStart
@@ -128,12 +128,11 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutSetCenterChunk
 import org.kryptonmc.krypton.packet.out.play.PacketOutWorldEvent
 import org.kryptonmc.krypton.packet.out.status.PacketOutPingResponse
 import org.kryptonmc.krypton.packet.out.status.PacketOutStatusResponse
-import org.kryptonmc.krypton.util.IdentityHashStrategy
 
 object PacketRegistry {
 
     private val byEncoded = Int2ObjectOpenHashMap<PacketConstructor>()
-    private val toId = Object2IntOpenCustomHashMap<Class<*>>(IdentityHashStrategy).apply { defaultReturnValue(-1) }
+    private val toId = Reference2IntOpenHashMap<Class<*>>().apply { defaultReturnValue(-1) }
 
     fun lookup(clazz: Class<*>): Int = toId.getInt(clazz)
 
@@ -145,19 +144,19 @@ object PacketRegistry {
     @Suppress("LongMethod", "MagicNumber")
     fun bootstrap() {
         // Handshake
-        register(PacketState.HANDSHAKE, 0x00, ::PacketInHandshake)
+        register(PacketState.HANDSHAKE, 0x00) { PacketInHandshake(it) }
 
         // Status
         register(PacketState.STATUS, 0x00) { PacketInStatusRequest }
-        register(PacketState.STATUS, 0x01, ::PacketInPingRequest)
+        register(PacketState.STATUS, 0x01) { PacketInPingRequest(it) }
 
         register<PacketOutStatusResponse>(0x00)
         register<PacketOutPingResponse>(0x01)
 
         // Login
-        register(PacketState.LOGIN, 0x00, ::PacketInLoginStart)
-        register(PacketState.LOGIN, 0x01, ::PacketInEncryptionResponse)
-        register(PacketState.LOGIN, 0x02, ::PacketInPluginResponse)
+        register(PacketState.LOGIN, 0x00) { PacketInLoginStart(it) }
+        register(PacketState.LOGIN, 0x01) { PacketInEncryptionResponse(it) }
+        register(PacketState.LOGIN, 0x02) { PacketInPluginResponse(it) }
 
         register<PacketOutLoginDisconnect>(0x00)
         register<PacketOutEncryptionRequest>(0x01)
@@ -166,31 +165,31 @@ object PacketRegistry {
         register<PacketOutPluginRequest>(0x04)
 
         // Play
-        register(PacketState.PLAY, 0x00, ::PacketInConfirmTeleportation)
-        register(PacketState.PLAY, 0x03, ::PacketInChatCommand)
-        register(PacketState.PLAY, 0x04, ::PacketInChatMessage)
-        register(PacketState.PLAY, 0x05, ::PacketInChatPreview)
-        register(PacketState.PLAY, 0x06, ::PacketInClientCommand)
-        register(PacketState.PLAY, 0x07, ::PacketInClientInformation)
-        register(PacketState.PLAY, 0x08, ::PacketInCommandSuggestionsRequest)
-        register(PacketState.PLAY, 0x0C, ::PacketInPluginMessage)
-        register(PacketState.PLAY, 0x0E, ::PacketInQueryEntityTag)
-        register(PacketState.PLAY, 0x0F, ::PacketInInteract)
-        register(PacketState.PLAY, 0x11, ::PacketInKeepAlive)
-        register(PacketState.PLAY, 0x13, ::PacketInSetPlayerPosition)
-        register(PacketState.PLAY, 0x14, ::PacketInSetPlayerPositionAndRotation)
-        register(PacketState.PLAY, 0x15, ::PacketInSetPlayerRotation)
-        register(PacketState.PLAY, 0x16, ::PacketInSetPlayerOnGround)
-        register(PacketState.PLAY, 0x1B, ::PacketInAbilities)
-        register(PacketState.PLAY, 0x1C, ::PacketInPlayerAction)
-        register(PacketState.PLAY, 0x1D, ::PacketInPlayerCommand)
-        register(PacketState.PLAY, 0x1E, ::PacketInPlayerInput)
-        register(PacketState.PLAY, 0x23, ::PacketInResourcePack)
-        register(PacketState.PLAY, 0x27, ::PacketInSetHeldItem)
-        register(PacketState.PLAY, 0x2A, ::PacketInSetCreativeModeSlot)
-        register(PacketState.PLAY, 0x2E, ::PacketInSwingArm)
-        register(PacketState.PLAY, 0x30, ::PacketInUseItemOn)
-        register(PacketState.PLAY, 0x31, ::PacketInUseItem)
+        register(PacketState.PLAY, 0x00) { PacketInConfirmTeleportation(it) }
+        register(PacketState.PLAY, 0x03) { PacketInChatCommand(it) }
+        register(PacketState.PLAY, 0x04) { PacketInChatMessage(it) }
+        register(PacketState.PLAY, 0x05) { PacketInChatPreview(it) }
+        register(PacketState.PLAY, 0x06) { PacketInClientCommand(it) }
+        register(PacketState.PLAY, 0x07) { PacketInClientInformation(it) }
+        register(PacketState.PLAY, 0x08) { PacketInCommandSuggestionsRequest(it) }
+        register(PacketState.PLAY, 0x0C) { PacketInPluginMessage(it) }
+        register(PacketState.PLAY, 0x0E) { PacketInQueryEntityTag(it) }
+        register(PacketState.PLAY, 0x0F) { PacketInInteract(it) }
+        register(PacketState.PLAY, 0x11) { PacketInKeepAlive(it) }
+        register(PacketState.PLAY, 0x13) { PacketInSetPlayerPosition(it) }
+        register(PacketState.PLAY, 0x14) { PacketInSetPlayerPositionAndRotation(it) }
+        register(PacketState.PLAY, 0x15) { PacketInSetPlayerRotation(it) }
+        register(PacketState.PLAY, 0x16) { PacketInSetPlayerOnGround(it) }
+        register(PacketState.PLAY, 0x1B) { PacketInAbilities(it) }
+        register(PacketState.PLAY, 0x1C) { PacketInPlayerAction(it) }
+        register(PacketState.PLAY, 0x1D) { PacketInPlayerCommand(it) }
+        register(PacketState.PLAY, 0x1E) { PacketInPlayerInput(it) }
+        register(PacketState.PLAY, 0x23) { PacketInResourcePack(it) }
+        register(PacketState.PLAY, 0x27) { PacketInSetHeldItem(it) }
+        register(PacketState.PLAY, 0x2A) { PacketInSetCreativeModeSlot(it) }
+        register(PacketState.PLAY, 0x2E) { PacketInSwingArm(it) }
+        register(PacketState.PLAY, 0x30) { PacketInUseItemOn(it) }
+        register(PacketState.PLAY, 0x31) { PacketInUseItem(it) }
 
         register<PacketOutSpawnEntity>(0x00)
         register<PacketOutSpawnExperienceOrb>(0x01)

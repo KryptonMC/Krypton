@@ -31,29 +31,26 @@ class CoordinateSuggestionTests {
     fun `test false predicate never adds`() {
         val predicate = Predicate<String> { false }
         val builder = SuggestionsBuilder("", "", 0)
-        builder.suggestCoordinates("", TextCoordinates.CENTER_GLOBAL, predicate)
-        assertTrue(builder.build().list.isEmpty())
-        builder.suggestCoordinates("42", TextCoordinates.CENTER_GLOBAL, predicate)
-        assertTrue(builder.build().list.isEmpty())
-        builder.suggestCoordinates("42 42", TextCoordinates.CENTER_GLOBAL, predicate)
-        assertTrue(builder.build().list.isEmpty())
+        val result1 = CommandSuggestionProvider.suggestCoordinates("", TextCoordinates.CENTER_GLOBAL, builder, predicate).join().list
+        assertTrue(result1.isEmpty())
+        val result2 = CommandSuggestionProvider.suggestCoordinates("42", TextCoordinates.CENTER_GLOBAL, builder, predicate).join().list
+        assertTrue(result2.isEmpty())
+        val result3 = CommandSuggestionProvider.suggestCoordinates("42 42", TextCoordinates.CENTER_GLOBAL, builder, predicate).join().list
+        assertTrue(result3.isEmpty())
     }
 
     @Test
     fun `test true predicate always adds`() {
         val predicate = Predicate<String> { true }
         val builder = SuggestionsBuilder("", "", 0)
-        builder.suggestCoordinates("", TextCoordinates.CENTER_GLOBAL, predicate)
-        val result1 = builder.build().list
+        val result1 = CommandSuggestionProvider.suggestCoordinates("", TextCoordinates.CENTER_GLOBAL, builder, predicate).join().list
         assertEquals("~", result1.get(0).text)
         assertEquals("~ ~", result1.get(1).text)
         assertEquals("~ ~ ~", result1.get(2).text)
-        builder.suggestCoordinates("42", TextCoordinates.CENTER_GLOBAL, predicate)
-        val result2 = builder.build().list
+        val result2 = CommandSuggestionProvider.suggestCoordinates("42", TextCoordinates.CENTER_GLOBAL, builder, predicate).join().list
         assertEquals("42 ~", result2.get(0).text)
         assertEquals("42 ~ ~", result2.get(1).text)
-        builder.suggestCoordinates("42 42", TextCoordinates.CENTER_GLOBAL, predicate)
-        val result3 = builder.build().list
+        val result3 = CommandSuggestionProvider.suggestCoordinates("42 42", TextCoordinates.CENTER_GLOBAL, builder, predicate).join().list
         assertEquals("42 42 ~", result3.get(0).text)
     }
 }

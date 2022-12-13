@@ -54,11 +54,11 @@ data class KryptonAmbientAdditionsSettings(override val sound: SoundEvent, overr
     companion object {
 
         @JvmField
-        val CODEC: Codec<AmbientAdditionsSettings> = RecordCodecBuilder.create {
-            it.group(
-                Codecs.SOUND_EVENT.fieldOf("sound").getting(AmbientAdditionsSettings::sound),
-                Codec.DOUBLE.fieldOf("probability").getting(AmbientAdditionsSettings::probability)
-            ).apply(it, ::KryptonAmbientAdditionsSettings)
+        val CODEC: Codec<AmbientAdditionsSettings> = RecordCodecBuilder.create { instance ->
+            instance.group(
+                Codecs.SOUND_EVENT.fieldOf("sound").getting { it.sound },
+                Codec.DOUBLE.fieldOf("probability").getting { it.probability }
+            ).apply(instance) { sound, probability -> KryptonAmbientAdditionsSettings(sound, probability) }
         }
     }
 }

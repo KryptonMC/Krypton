@@ -58,7 +58,6 @@ class CommandSourceStackTests {
         assertFalse(source.isPlayer())
         assertNull(source.getPlayer())
         assertThrows<CommandSyntaxException> { source.getPlayerOrError() }
-        assertThrows<ClassCastException> { source.getPlayerUnchecked() }
     }
 
     @Test
@@ -68,7 +67,6 @@ class CommandSourceStackTests {
         assertTrue(source.isPlayer())
         assertEquals(player, source.getPlayer())
         assertEquals(player, source.getPlayerOrError())
-        assertEquals(player, source.getPlayerUnchecked())
     }
 
     @Test

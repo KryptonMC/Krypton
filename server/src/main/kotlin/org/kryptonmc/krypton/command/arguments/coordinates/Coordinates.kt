@@ -26,13 +26,6 @@ import org.kryptonmc.krypton.command.CommandSourceStack
  */
 sealed interface Coordinates {
 
-    val hasRelativeX: Boolean
-        get() = true
-    val hasRelativeY: Boolean
-        get() = true
-    val hasRelativeZ: Boolean
-        get() = true
-
     /**
      * Calculates the new absolute position based on the coordinates held by
      * this object.

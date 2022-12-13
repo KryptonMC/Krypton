@@ -26,7 +26,7 @@ import org.kryptonmc.krypton.item.KryptonItemStack
 import org.kryptonmc.krypton.registry.KryptonRegistries
 import org.kryptonmc.krypton.state.property.KryptonProperty
 import org.kryptonmc.krypton.util.BlockPos
-import org.kryptonmc.krypton.util.findRelative
+import org.kryptonmc.krypton.util.Iterables
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.krypton.world.block.state.KryptonBlockState
 import org.kryptonmc.krypton.world.chunk.SetBlockFlag
@@ -79,7 +79,7 @@ object DebugStickHandler : ItemHandler {
             world.setBlock(pos, cycled, SetBlockFlag.UPDATE_NEIGHBOUR_SHAPES or SetBlockFlag.NOTIFY_CLIENTS)
             player.sendActionBar(Component.translatable("$TRANSLATION.update", Component.text(property.name), toString(state, property)))
         } else {
-            property = properties.findRelative(property, player.isSneaking)!!
+            property = Iterables.findRelative(properties, property, player.isSneaking)!!
             debugProperty = debugProperty.putString(key, property.name)
             player.sendActionBar(Component.translatable("$TRANSLATION.select", Component.text(property.name), toString(state, property)))
         }
@@ -89,7 +89,7 @@ object DebugStickHandler : ItemHandler {
 
     @JvmStatic
     private fun <T : Comparable<T>> cycleState(state: KryptonBlockState, property: KryptonProperty<T>, reversed: Boolean): KryptonBlockState =
-        state.set(property, property.values.findRelative(state.require(property), reversed)!!)
+        state.set(property, Iterables.findRelative(property.values, state.require(property), reversed)!!)
 
     @JvmStatic
     private fun <T : Comparable<T>> toString(state: KryptonBlockState, property: KryptonProperty<T>): Component =

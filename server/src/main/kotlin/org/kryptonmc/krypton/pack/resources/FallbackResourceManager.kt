@@ -21,8 +21,8 @@ package org.kryptonmc.krypton.pack.resources
 import it.unimi.dsi.fastutil.objects.Object2IntMaps
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap
 import net.kyori.adventure.key.Key
+import org.apache.logging.log4j.LogManager
 import org.kryptonmc.krypton.pack.PackResources
-import org.kryptonmc.krypton.util.logger
 import java.io.ByteArrayOutputStream
 import java.io.FilterInputStream
 import java.io.InputStream
@@ -37,11 +37,11 @@ class FallbackResourceManager(private val namespace: String) : ResourceManager {
     private val fallbacks = ArrayList<PackEntry>()
 
     fun push(resources: PackResources) {
-        pushInternal(resources.name, resources, null)
+        pushInternal(resources.name(), resources, null)
     }
 
     fun push(resources: PackResources, predicate: Predicate<Key>) {
-        pushInternal(resources.name, resources, predicate)
+        pushInternal(resources.name(), resources, predicate)
     }
 
     fun pushFilterOnly(name: String, predicate: Predicate<Key>) {
@@ -58,7 +58,7 @@ class FallbackResourceManager(private val namespace: String) : ResourceManager {
             val entry = fallbacks.get(i)
             val resources = entry.resources
             if (resources != null && resources.hasResource(location)) {
-                return Resource(resources.name, createResourceGetter(location, resources), createStackMetadataFinder(location, i))
+                return Resource(resources.name(), createResourceGetter(location, resources), createStackMetadataFinder(location, i))
             }
             if (entry.isFiltered(location)) {
                 LOGGER.warn("Resource $location not found, but was filtered by pack ${entry.name}")
@@ -83,7 +83,7 @@ class FallbackResourceManager(private val namespace: String) : ResourceManager {
             val id = it.intValue
             val key = it.key
             val packResources = fallbacks.get(id).resources!!
-            resources.put(key, Resource(packResources.name, createResourceGetter(key, packResources), createStackMetadataFinder(key, id)))
+            resources.put(key, Resource(packResources.name(), createResourceGetter(key, packResources), createStackMetadataFinder(key, id)))
         }
         return resources
     }
@@ -110,7 +110,7 @@ class FallbackResourceManager(private val namespace: String) : ResourceManager {
 
     private fun createResourceGetter(location: Key, resources: PackResources): Supplier<InputStream> {
         if (!LOGGER.isDebugEnabled) return Supplier { resources.getResource(location) }
-        return Supplier { LeakedResourceWarningInputStream(resources.getResource(location), location, resources.name) }
+        return Supplier { LeakedResourceWarningInputStream(resources.getResource(location), location, resources.name()) }
     }
 
     private fun createStackMetadataFinder(location: Key, index: Int): Supplier<ResourceMetadata> = Supplier {
@@ -184,8 +184,8 @@ class FallbackResourceManager(private val namespace: String) : ResourceManager {
         }
 
         fun create(): Resource {
-            if (!shouldGetMetadata) return Resource(source.name, createResourceGetter(location, source))
-            return Resource(source.name, createResourceGetter(location, source)) {
+            if (!shouldGetMetadata) return Resource(source.name(), createResourceGetter(location, source))
+            return Resource(source.name(), createResourceGetter(location, source)) {
                 if (!source.hasResource(metadataLocation)) return@Resource ResourceMetadata.EMPTY
                 source.getResource(metadataLocation).use(ResourceMetadata::fromJsonStream)
             }
@@ -194,7 +194,7 @@ class FallbackResourceManager(private val namespace: String) : ResourceManager {
 
     companion object {
 
-        private val LOGGER = logger<FallbackResourceManager>()
+        private val LOGGER = LogManager.getLogger()
 
         @JvmStatic
         private fun getMetadataLocation(location: Key): Key = Key.key(location.namespace(), location.value() + PackResources.METADATA_EXTENSION)

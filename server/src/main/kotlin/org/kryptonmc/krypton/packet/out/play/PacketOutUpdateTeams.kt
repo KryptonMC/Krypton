@@ -21,9 +21,9 @@ package org.kryptonmc.krypton.packet.out.play
 import io.netty.buffer.ByteBuf
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer
 import org.kryptonmc.api.scoreboard.Team
 import org.kryptonmc.krypton.adventure.KryptonAdventure
-import org.kryptonmc.krypton.adventure.toLegacySectionText
 import org.kryptonmc.krypton.network.Writable
 import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.util.readComponent
@@ -52,7 +52,7 @@ data class PacketOutUpdateTeams(
             requireNotNull(parameters) { "Parameters must be present if action is CREATE or UPDATE_INFO!" }.write(buf)
         }
         if (action == Action.CREATE || action == Action.ADD_MEMBERS || action == Action.REMOVE_MEMBERS) {
-            buf.writeCollection(members) { buf.writeString(it.toLegacySectionText()) }
+            buf.writeCollection(members) { buf.writeString(LegacyComponentSerializer.legacySection().serialize(it)) }
         }
     }
 
@@ -84,25 +84,11 @@ data class PacketOutUpdateTeams(
         val suffix: Component
     ) : Writable {
 
-        constructor(team: Team) : this(
-            team.displayName,
-            encodeOptions(team),
-            team.nameTagVisibility.name.lowercase(),
-            team.collisionRule.name.lowercase(),
-            team.color,
-            team.prefix,
-            team.suffix
-        )
+        constructor(team: Team) : this(team.displayName, encodeOptions(team), team.nameTagVisibility.name.lowercase(),
+            team.collisionRule.name.lowercase(), team.color, team.prefix, team.suffix)
 
-        constructor(buf: ByteBuf) : this(
-            buf.readComponent(),
-            buf.readByte().toInt(),
-            buf.readString(MAX_VISIBILITY_LENGTH),
-            buf.readString(MAX_VISIBILITY_LENGTH),
-            KryptonAdventure.colorFromId(buf.readVarInt()),
-            buf.readComponent(),
-            buf.readComponent()
-        )
+        constructor(buf: ByteBuf) : this(buf.readComponent(), buf.readByte().toInt(), buf.readString(MAX_VISIBILITY_LENGTH),
+            buf.readString(MAX_VISIBILITY_LENGTH), KryptonAdventure.colorFromId(buf.readVarInt()), buf.readComponent(), buf.readComponent())
 
         override fun write(buf: ByteBuf) {
             buf.writeComponent(displayName)

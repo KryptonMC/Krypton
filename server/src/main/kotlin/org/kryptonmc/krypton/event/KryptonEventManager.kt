@@ -24,9 +24,11 @@
 package org.kryptonmc.krypton.event
 
 import com.github.benmanes.caffeine.cache.Caffeine
+import com.github.benmanes.caffeine.cache.LoadingCache
 import com.google.common.base.VerifyException
 import com.google.common.collect.ArrayListMultimap
 import com.google.common.reflect.TypeToken
+import org.apache.logging.log4j.LogManager
 import org.kryptonmc.api.event.Continuation
 import org.kryptonmc.api.event.EventHandler
 import org.kryptonmc.api.event.EventManager
@@ -35,7 +37,6 @@ import org.kryptonmc.api.event.Listener
 import org.kryptonmc.api.event.ListenerPriority
 import org.kryptonmc.api.plugin.PluginContainer
 import org.kryptonmc.api.plugin.PluginManager
-import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.util.executor.ThreadPoolBuilder
 import org.kryptonmc.krypton.util.executor.daemonThreadFactory
 import org.lanternpowered.lmbda.LambdaFactory
@@ -58,8 +59,9 @@ import kotlin.concurrent.write
 class KryptonEventManager(private val pluginManager: PluginManager) : EventManager {
 
     private val handlersByType = ArrayListMultimap.create<Class<*>, HandlerRegistration>()
-    private val handlersCache = Caffeine.newBuilder().build(::bakeHandlers)
-    private val untargetedMethodHandlers = Caffeine.newBuilder().weakValues().build(::createUntargetedMethodHandler)
+    private val handlersCache: LoadingCache<Class<*>, HandlersCache> = Caffeine.newBuilder().build { bakeHandlers(it) }
+    private val untargetedMethodHandlers: LoadingCache<Method, UntargetedEventHandler> =
+        Caffeine.newBuilder().weakValues().build { createUntargetedMethodHandler(it) }
     private val asyncExecutor = ThreadPoolBuilder.fixed(Runtime.getRuntime().availableProcessors())
         .factory(daemonThreadFactory("Krypton Async Event Executor #%d"))
         .build()
@@ -414,7 +416,7 @@ class KryptonEventManager(private val pluginManager: PluginManager) : EventManag
 
     companion object {
 
-        private val LOGGER = logger<KryptonEventManager>()
+        private val LOGGER = LogManager.getLogger()
         private const val SHUTDOWN_TIMEOUT_TIME = 10L
 
         private const val TASK_STATE_DEFAULT = 0
@@ -434,8 +436,8 @@ class KryptonEventManager(private val pluginManager: PluginManager) : EventManag
         init {
             try {
                 val lookup = MethodHandles.privateLookupIn(ContinuationTask::class.java, MethodHandles.lookup())
-                CONTINUATION_TASK_RESUMED = lookup.findPrimitiveVarHandle<ContinuationTask<*>, Boolean>("resumed")
-                CONTINUATION_TASK_STATE = lookup.findPrimitiveVarHandle<ContinuationTask<*>, Int>("state")
+                CONTINUATION_TASK_RESUMED = findPrimitiveHandle<ContinuationTask<*>, Boolean>(lookup, "resumed")
+                CONTINUATION_TASK_STATE = findPrimitiveHandle<ContinuationTask<*>, Int>(lookup, "state")
             } catch (exception: ReflectiveOperationException) {
                 throw IllegalStateException("Could not find VarHandle for ContinuationTask field!", exception)
             }
@@ -445,8 +447,9 @@ class KryptonEventManager(private val pluginManager: PluginManager) : EventManag
         private fun logHandlerException(registration: HandlerRegistration, exception: Throwable) {
             LOGGER.error("Could not pass ${registration.eventType.simpleName} to ${registration.plugin.description.id}!", exception)
         }
+
+        @JvmStatic
+        private inline fun <reified T, reified R : Any> findPrimitiveHandle(lookup: MethodHandles.Lookup, name: String): VarHandle =
+            lookup.findVarHandle(T::class.java, name, R::class.javaPrimitiveType)
     }
 }
-
-private inline fun <reified T, reified R : Any> MethodHandles.Lookup.findPrimitiveVarHandle(name: String): VarHandle =
-    findVarHandle(T::class.java, name, R::class.javaPrimitiveType)

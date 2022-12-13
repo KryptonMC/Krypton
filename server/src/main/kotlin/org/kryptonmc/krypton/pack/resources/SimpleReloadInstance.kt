@@ -41,16 +41,8 @@ class SimpleReloadInstance<S>(
     private val startedTaskCounter = AtomicInteger()
     private val doneTaskCounter = AtomicInteger()
 
-    override val actualProgress: Float
-        get() {
-            val removedListenerCount = listenerCount - preparingListeners.size
-            val doneProgress = (doneTaskCounter.get() * 2 + finishedReloads * 2 + removedListenerCount * 1).toFloat()
-            val startedProgress = (startedTaskCounter.get() * 2 + startedReloads * 2 + listenerCount * 1).toFloat()
-            return doneProgress / startedProgress
-        }
-
     init {
-        waitingFor.thenRun(doneTaskCounter::incrementAndGet)
+        waitingFor.thenRun { doneTaskCounter.incrementAndGet() }
         val done = mutableListOf<CompletableFuture<S>>()
         var currentFuture: CompletableFuture<*> = waitingFor
         preparingListeners.forEach { listener ->
@@ -83,29 +75,26 @@ class SimpleReloadInstance<S>(
         allDone = Futures.sequenceFailFast(done)
     }
 
+    override fun actualProgress(): Float {
+        val removedListenerCount = listenerCount - preparingListeners.size
+        val doneProgress = (doneTaskCounter.get() * 2 + finishedReloads * 2 + removedListenerCount * 1).toFloat()
+        val startedProgress = (startedTaskCounter.get() * 2 + startedReloads * 2 + listenerCount * 1).toFloat()
+        return doneProgress / startedProgress
+    }
+
     override fun done(): CompletableFuture<*> = allDone
 
     fun interface StateFactory<S> {
 
-        fun create(
-            barrier: ReloadListener.PreparationBarrier,
-            manager: ResourceManager,
-            listener: ReloadListener,
-            backgroundExecutor: Executor,
-            mainExecutor: Executor
-        ): CompletableFuture<S>
+        fun create(barrier: ReloadListener.PreparationBarrier, manager: ResourceManager, listener: ReloadListener, backgroundExecutor: Executor,
+                   mainExecutor: Executor): CompletableFuture<S>
     }
 
     companion object {
 
         @JvmStatic
-        fun of(
-            resourceManager: ResourceManager,
-            listeners: List<ReloadListener>,
-            backgroundExecutor: Executor,
-            mainExecutor: Executor,
-            waitingFor: CompletableFuture<Unit>
-        ): SimpleReloadInstance<Void> {
+        fun of(resourceManager: ResourceManager, listeners: List<ReloadListener>, backgroundExecutor: Executor, mainExecutor: Executor,
+               waitingFor: CompletableFuture<Unit>): SimpleReloadInstance<Void> {
             val factory = StateFactory { barrier, manager, listener, background, main -> listener.reload(barrier, manager, background, main) }
             return SimpleReloadInstance(backgroundExecutor, mainExecutor, resourceManager, listeners, factory, waitingFor)
         }

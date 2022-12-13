@@ -24,12 +24,11 @@ import org.kryptonmc.krypton.packet.Packet
 @JvmRecord
 data class PacketInPlayerInput(val sideways: Float, val forward: Float, val flags: Byte) : Packet {
 
-    val isJumping: Boolean
-        get() = flags.toInt() and 1 > 0
-    val isSneaking: Boolean
-        get() = flags.toInt() and 2 > 0
-
     constructor(buf: ByteBuf) : this(buf.readFloat(), buf.readFloat(), buf.readByte())
+
+    fun isJumping(): Boolean = flags.toInt() and 1 > 0
+
+    fun isSneaking(): Boolean = flags.toInt() and 2 > 0
 
     override fun write(buf: ByteBuf) {
         buf.writeFloat(sideways)

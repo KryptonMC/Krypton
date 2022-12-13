@@ -22,7 +22,9 @@ import com.google.common.collect.ImmutableList
 import org.kryptonmc.api.item.data.FireworkEffect
 import org.kryptonmc.api.item.data.FireworkEffectType
 import org.kryptonmc.api.util.Color
+import org.kryptonmc.krypton.util.ListExtras
 import org.kryptonmc.nbt.CompoundTag
+import org.kryptonmc.nbt.compound
 import java.util.Arrays
 
 @JvmRecord
@@ -59,17 +61,32 @@ data class KryptonFireworkEffect(
 
     companion object {
 
+        private const val TYPE_TAG = "Type"
+        private const val FLICKER_TAG = "Flicker"
+        private const val TRAIL_TAG = "Trail"
+        private const val COLORS_TAG = "Colors"
+        private const val FADE_COLORS_TAG = "FadeColors"
         private val EFFECT_TYPES = FireworkEffectType.values()
 
         @JvmStatic
-        fun from(data: CompoundTag): KryptonFireworkEffect {
-            val type = EFFECT_TYPES[data.getByte("Type").toInt()]
-            val colors = data.getColors("Colors")
-            val fadeColors = data.getColors("FadeColors")
-            return KryptonFireworkEffect(type, data.getBoolean("Flicker"), data.getBoolean("Trail"), colors, fadeColors)
+        fun load(data: CompoundTag): KryptonFireworkEffect {
+            val type = EFFECT_TYPES[data.getByte(TYPE_TAG).toInt()]
+            val colors = getColors(data, COLORS_TAG)
+            val fadeColors = getColors(data, FADE_COLORS_TAG)
+            return KryptonFireworkEffect(type, data.getBoolean(FLICKER_TAG), data.getBoolean(TRAIL_TAG), colors, fadeColors)
         }
+
+        @JvmStatic
+        fun save(effect: FireworkEffect): CompoundTag = compound {
+            putByte(TYPE_TAG, effect.type.ordinal.toByte())
+            putBoolean(FLICKER_TAG, effect.hasFlicker)
+            putBoolean(TRAIL_TAG, effect.hasTrail)
+            putIntArray(COLORS_TAG, ListExtras.toIntArray(effect.colors, Color::value))
+            putIntArray(FADE_COLORS_TAG, ListExtras.toIntArray(effect.fadeColors, Color::value))
+        }
+
+        @JvmStatic
+        private fun getColors(data: CompoundTag, name: String): ImmutableList<Color> =
+            Arrays.stream(data.getIntArray(name)).mapToObj { Color.of(it) }.collect(ImmutableList.toImmutableList())
     }
 }
-
-private fun CompoundTag.getColors(name: String): ImmutableList<Color> =
-    Arrays.stream(getIntArray(name)).mapToObj(Color::of).collect(ImmutableList.toImmutableList())

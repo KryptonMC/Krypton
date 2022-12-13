@@ -44,11 +44,8 @@ data class PacketOutEncryptionRequest(val serverId: String, val publicKey: ByteA
         buf.writeVarIntByteArray(verifyToken)
     }
 
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-        return publicKey.contentEquals((other as PacketOutEncryptionRequest).publicKey) && verifyToken.contentEquals(other.verifyToken)
-    }
+    override fun equals(other: Any?): Boolean = this === other ||
+            other is PacketOutEncryptionRequest && publicKey.contentEquals(other.publicKey) && verifyToken.contentEquals(other.verifyToken)
 
     override fun hashCode(): Int {
         var result = 1

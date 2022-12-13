@@ -21,6 +21,7 @@ package org.kryptonmc.krypton.command
 import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.arguments.IntegerArgumentType
 import com.mojang.brigadier.arguments.StringArgumentType
+import com.mojang.brigadier.builder.LiteralArgumentBuilder
 import com.mojang.brigadier.tree.CommandNode
 import com.mojang.brigadier.tree.LiteralCommandNode
 import com.mojang.brigadier.tree.RootCommandNode
@@ -30,6 +31,9 @@ import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import org.kryptonmc.api.command.CommandExecutionContext
 import org.kryptonmc.krypton.command.registrar.BrigadierCommandRegistrar
+import org.kryptonmc.krypton.commands.argument
+import org.kryptonmc.krypton.commands.literal
+import org.kryptonmc.krypton.commands.runs
 import org.kryptonmc.krypton.testutil.Bootstrapping
 import org.kryptonmc.krypton.util.Vec3dImpl
 import java.util.concurrent.locks.ReentrantLock
@@ -40,9 +44,7 @@ class CommandTests {
     @Test
     fun `test api command nodes work with implementation types`() {
         val dispatcher = CommandDispatcher<CommandSourceStack>()
-        val node = literal("test") {
-            runs { println("Hello World!") }
-        }.build()
+        val node = LiteralArgumentBuilder.literal<CommandSourceStack>("test").runs { println("Hello World!") }.build()
         dispatcher.root.addChild(node)
         val source = CommandSourceStack(mockk(), Vec3dImpl.ZERO, 0F, 0F, mockk(), "", Component.empty(), mockk(), null)
         dispatcher.execute("test", source)

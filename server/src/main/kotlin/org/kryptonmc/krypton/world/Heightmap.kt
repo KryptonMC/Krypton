@@ -19,9 +19,9 @@
 package org.kryptonmc.krypton.world
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList
+import org.apache.logging.log4j.LogManager
 import org.kryptonmc.krypton.util.BitStorage
 import org.kryptonmc.krypton.util.Maths
-import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.util.SimpleBitStorage
 import org.kryptonmc.krypton.util.serialization.EnumCodecs
 import org.kryptonmc.krypton.world.block.KryptonBlocks
@@ -112,7 +112,7 @@ class Heightmap(private val chunk: ChunkAccessor, val type: Type) {
 
         private val NOT_AIR: Predicate<KryptonBlockState> = Predicate { !it.isAir }
         private val BLOCKS_MOTION: Predicate<KryptonBlockState> = Predicate { it.blocksMotion }
-        private val LOGGER = logger<Heightmap>()
+        private val LOGGER = LogManager.getLogger()
 
         @JvmStatic
         fun prime(chunk: ChunkAccessor, toPrime: Set<Type>) {

@@ -59,7 +59,7 @@ interface Neutral {
                 entity.angerTarget = null
                 return
             }
-            val targetId = data.getUUID(ANGRY_AT_TAG)!!
+            val targetId = data.getUUID(ANGRY_AT_TAG)
             entity.angerTarget = targetId
             val target = entity.world.entityManager.get(targetId)
             if (target != null) {

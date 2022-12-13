@@ -21,8 +21,6 @@ package org.kryptonmc.krypton.entity.metadata
 import io.netty.buffer.ByteBuf
 import org.kryptonmc.api.util.CataloguedBy
 import org.kryptonmc.krypton.registry.KryptonRegistry
-import org.kryptonmc.krypton.util.ByteBufReader
-import org.kryptonmc.krypton.util.ByteBufWriter
 import org.kryptonmc.krypton.util.readById
 import org.kryptonmc.krypton.util.readEnum
 import org.kryptonmc.krypton.util.readNullable
@@ -42,17 +40,18 @@ interface MetadataSerializer<T> {
     companion object {
 
         @JvmStatic
-        fun <T> simple(reader: ByteBufReader<T>, writer: ByteBufWriter<T>): MetadataSerializer<T> = object : MetadataSerializer<T> {
+        inline fun <T> simple(crossinline reader: (ByteBuf) -> T,
+                              crossinline writer: (ByteBuf, T) -> Unit): MetadataSerializer<T> = object : MetadataSerializer<T> {
 
-            override fun read(buf: ByteBuf): T = reader.read(buf)
+            override fun read(buf: ByteBuf): T = reader(buf)
 
             override fun write(buf: ByteBuf, item: T) {
-                writer.write(buf, item)
+                writer(buf, item)
             }
         }
 
         @JvmStatic
-        fun <T> nullable(reader: ByteBufReader<T>, writer: ByteBufWriter<T>): MetadataSerializer<T?> =
+        inline fun <T> nullable(crossinline reader: (ByteBuf) -> T, crossinline writer: (ByteBuf, T) -> Unit): MetadataSerializer<T?> =
             simple({ it.readNullable(reader) }, { buf, value -> buf.writeNullable(value, writer) })
 
         @JvmStatic

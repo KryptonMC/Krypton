@@ -18,7 +18,8 @@
  */
 package org.kryptonmc.krypton.util
 
-import org.kryptonmc.krypton.adventure.toPlainText
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer
+import org.apache.logging.log4j.LogManager
 import org.kryptonmc.krypton.locale.Messages
 import org.kryptonmc.krypton.world.chunk.ChunkStatus
 
@@ -46,13 +47,14 @@ class ChunkProgressListener(radius: Int) {
         val progress = progress
         if (System.currentTimeMillis() > nextTickTime) {
             nextTickTime += MILLISECONDS_PER_TICK
-            LOGGER.info(TranslationBootstrap.render(Messages.PREPARING_SPAWN.build(Maths.clamp(progress, 0, 100))).toPlainText())
+            val message = TranslationBootstrap.render(Messages.PREPARING_SPAWN.build(Maths.clamp(progress, 0, 100)))
+            LOGGER.info(PlainTextComponentSerializer.plainText().serialize(message))
         }
     }
 
     companion object {
 
-        private val LOGGER = logger<ChunkProgressListener>()
+        private val LOGGER = LogManager.getLogger()
         private const val MILLISECONDS_PER_TICK = 50L
         private const val FRACTION_TO_PERCENTAGE = 100F
     }

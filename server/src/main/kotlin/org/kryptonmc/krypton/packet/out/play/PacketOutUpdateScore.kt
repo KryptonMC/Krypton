@@ -20,8 +20,8 @@ package org.kryptonmc.krypton.packet.out.play
 
 import io.netty.buffer.ByteBuf
 import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer
 import org.kryptonmc.api.scoreboard.Score
-import org.kryptonmc.krypton.adventure.toLegacySectionText
 import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.util.writeString
 import org.kryptonmc.krypton.util.writeVarInt
@@ -29,9 +29,9 @@ import org.kryptonmc.krypton.util.writeVarInt
 @JvmRecord
 data class PacketOutUpdateScore(val name: String, val action: Action, val objectiveName: String?, val score: Int) : Packet {
 
-    constructor(name: Component, action: Action, objectiveName: String?, score: Int) : this(name.toLegacySectionText(), action, objectiveName, score)
+    constructor(name: Component, action: Action, objectiveName: String?, score: Int) : this(toLegacyString(name), action, objectiveName, score)
 
-    constructor(action: Action, score: Score) : this(score.name.toLegacySectionText(), action, score.objective?.name, score.score)
+    constructor(action: Action, score: Score) : this(toLegacyString(score.name), action, score.objective?.name, score.score)
 
     override fun write(buf: ByteBuf) {
         buf.writeString(name, MAX_NAME_LENGTH)
@@ -58,5 +58,8 @@ data class PacketOutUpdateScore(val name: String, val action: Action, val object
 
         private const val MAX_NAME_LENGTH = 40
         private const val MAX_OBJECTIVE_NAME_LENGTH = 16
+
+        @JvmStatic
+        private fun toLegacyString(input: Component): String = LegacyComponentSerializer.legacySection().serialize(input)
     }
 }

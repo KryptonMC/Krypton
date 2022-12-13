@@ -18,6 +18,7 @@
  */
 package org.kryptonmc.krypton.entity.serializer.player
 
+import org.apache.logging.log4j.LogManager
 import org.kryptonmc.api.entity.attribute.AttributeTypes
 import org.kryptonmc.api.service.VanishService
 import org.kryptonmc.api.service.provide
@@ -27,7 +28,6 @@ import org.kryptonmc.krypton.entity.player.RespawnData
 import org.kryptonmc.krypton.entity.serializer.EntitySerializer
 import org.kryptonmc.krypton.entity.serializer.LivingEntitySerializer
 import org.kryptonmc.krypton.service.KryptonVanishService
-import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.util.nbt.putDataVersion
 import org.kryptonmc.krypton.util.nbt.putUUID
 import org.kryptonmc.nbt.CompoundTag
@@ -36,7 +36,7 @@ import java.time.Instant
 
 object PlayerSerializer : EntitySerializer<KryptonPlayer> {
 
-    private val LOGGER = logger<KryptonPlayer>()
+    private val LOGGER = LogManager.getLogger()
 
     // Vanilla tags
     private const val GAME_TYPE_TAG = "playerGameType"

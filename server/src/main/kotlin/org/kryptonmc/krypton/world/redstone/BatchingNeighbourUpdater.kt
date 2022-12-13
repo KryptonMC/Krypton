@@ -18,9 +18,9 @@
  */
 package org.kryptonmc.krypton.world.redstone
 
+import org.apache.logging.log4j.LogManager
 import org.kryptonmc.api.util.Direction
 import org.kryptonmc.krypton.util.BlockPos
-import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.krypton.world.block.KryptonBlock
 import org.kryptonmc.krypton.world.block.state.KryptonBlockState
@@ -137,6 +137,6 @@ class BatchingNeighbourUpdater(private val world: KryptonWorld, private val maxC
 
     companion object {
 
-        private val LOGGER = logger<BatchingNeighbourUpdater>()
+        private val LOGGER = LogManager.getLogger()
     }
 }

@@ -22,7 +22,6 @@ import org.kryptonmc.krypton.util.UUIDUtil
 import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.IntArrayTag
 import org.kryptonmc.nbt.ListTag
-import org.kryptonmc.nbt.Tag
 import java.util.UUID
 
 fun CompoundTag.hasUUID(name: String): Boolean {
@@ -30,17 +29,8 @@ fun CompoundTag.hasUUID(name: String): Boolean {
     return tag != null && tag.id() == IntArrayTag.ID && (tag as IntArrayTag).data.size == 4
 }
 
-fun CompoundTag.getUUID(name: String): UUID? = get(name)?.let(::loadUUID)
+fun CompoundTag.getUUID(name: String): UUID = UUIDUtil.loadUUID(get(name)!!)
 
-fun CompoundTag.Builder.putUUID(name: String, uuid: UUID): CompoundTag.Builder = put(name, createUUID(uuid))
+fun CompoundTag.Builder.putUUID(name: String, uuid: UUID): CompoundTag.Builder = put(name, UUIDUtil.createUUID(uuid))
 
-fun ListTag.Builder.addUUID(uuid: UUID): ListTag.Builder = add(createUUID(uuid))
-
-private fun loadUUID(tag: Tag): UUID? {
-    if (tag.id() != IntArrayTag.ID) return null
-    val array = (tag as IntArrayTag).data
-    if (array.size != 4) return null
-    return UUIDUtil.fromIntArray(array)
-}
-
-private fun createUUID(uuid: UUID): IntArrayTag = IntArrayTag.of(UUIDUtil.toIntArray(uuid))
+fun ListTag.Builder.addUUID(uuid: UUID): ListTag.Builder = add(UUIDUtil.createUUID(uuid))

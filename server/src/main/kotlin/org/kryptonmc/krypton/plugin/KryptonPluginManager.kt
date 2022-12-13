@@ -62,7 +62,7 @@ class KryptonPluginManager : PluginManager {
         }
         if (found.isEmpty()) return // no plugins
 
-        val sortedPlugins = found.sortCandidates()
+        val sortedPlugins = PluginDependencies.sortCandidates(found)
         val loadedPluginsById = HashSet<String>()
         val pluginContainers = LinkedHashMap<PluginContainer, Module>()
 
