@@ -24,17 +24,16 @@ import org.kryptonmc.serialization.nbt.NbtOps
 
 class Memory<T : Any>(val value: T?, private var timeToLive: Long = Long.MAX_VALUE) {
 
-    private val canExpire: Boolean
-        get() = timeToLive != Long.MAX_VALUE
+    private fun canExpire(): Boolean = timeToLive != Long.MAX_VALUE
 
     fun tick() {
-        if (canExpire) --timeToLive
+        if (canExpire()) --timeToLive
     }
 
     fun save(key: MemoryKey<in T>, data: CompoundTag.Builder): CompoundTag.Builder = data.apply {
         compound(key.key().asString()) {
             if (value != null) put("value", key.codec.encodeStart(value, NbtOps.INSTANCE).result().get())
-            if (canExpire) putLong("ttl", timeToLive)
+            if (canExpire()) putLong("ttl", timeToLive)
         }
     }
 

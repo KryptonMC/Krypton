@@ -10,7 +10,7 @@ package org.kryptonmc.api.inventory
 
 import net.kyori.adventure.key.Keyed
 import net.kyori.adventure.text.Component
-import org.kryptonmc.api.util.CataloguedBy
+import org.kryptonmc.internal.annotations.CataloguedBy
 import org.kryptonmc.internal.annotations.ImmutableType
 
 /**

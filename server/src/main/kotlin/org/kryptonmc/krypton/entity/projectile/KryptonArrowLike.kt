@@ -63,7 +63,8 @@ abstract class KryptonArrowLike(world: KryptonWorld) : KryptonProjectile(world),
     internal open val defaultHitGroundSound: SoundEvent
         get() = SoundEvents.ARROW_HIT
 
-    init {
+    override fun defineData() {
+        super.defineData()
         data.define(MetadataKeys.ArrowLike.FLAGS, 0)
         data.define(MetadataKeys.ArrowLike.PIERCING_LEVEL, 0)
     }

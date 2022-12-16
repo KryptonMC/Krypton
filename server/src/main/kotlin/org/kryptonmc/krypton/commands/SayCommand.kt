@@ -30,7 +30,7 @@ object SayCommand {
     @JvmStatic
     fun register(dispatcher: CommandDispatcher<CommandSourceStack>) {
         dispatcher.register(literal("say") {
-            permission(KryptonPermission.SAY)
+            requiresPermission(KryptonPermission.SAY)
             argument(MESSAGE, StringArgumentType.string()) {
                 runs { Messages.CHAT_TYPE_ANNOUNCEMENT.send(it.source.server, it.source.displayName, it.getArgument(MESSAGE)) }
             }

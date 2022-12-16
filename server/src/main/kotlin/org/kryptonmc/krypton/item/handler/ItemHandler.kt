@@ -60,7 +60,7 @@ interface ItemHandler {
      * Called when the given [player] uses the item they are holding in the
      * given [hand].
      */
-    fun use(player: KryptonPlayer, hand: Hand): UseItemResult = UseItemResult(InteractionResult.PASS, player.inventory.heldItem(hand))
+    fun use(player: KryptonPlayer, hand: Hand): UseItemResult = UseItemResult(InteractionResult.PASS, player.inventory.getHeldItem(hand))
 
     /**
      * Called when the given [player] finishes destroying the given [block] at

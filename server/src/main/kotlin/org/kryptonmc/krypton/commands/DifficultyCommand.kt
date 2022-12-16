@@ -31,7 +31,7 @@ object DifficultyCommand {
     @JvmStatic
     fun register(dispatcher: CommandDispatcher<CommandSourceStack>) {
         val command = literal("difficulty") {
-            permission(KryptonPermission.DIFFICULTY)
+            requiresPermission(KryptonPermission.DIFFICULTY)
             runs { it.source.sendSuccess(Messages.Commands.DIFFICULTY_QUERY.build(it.source.world.difficulty), false) }
         }
         Difficulty.values().forEach { difficulty ->

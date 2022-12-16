@@ -57,7 +57,6 @@ public interface FireworkEffect {
     /**
      * A builder for building firework effects.
      */
-    @FireworkEffectDsl
     public interface Builder : AbstractBuilder<FireworkEffect> {
 
         /**
@@ -65,7 +64,6 @@ public interface FireworkEffect {
          *
          * @return this builder
          */
-        @FireworkEffectDsl
         @Contract("-> this", mutates = "this")
         public fun flickers(): Builder
 
@@ -74,7 +72,6 @@ public interface FireworkEffect {
          *
          * @return this builder
          */
-        @FireworkEffectDsl
         @Contract("-> this", mutates = "this")
         public fun trail(): Builder
 
@@ -84,7 +81,6 @@ public interface FireworkEffect {
          * @param colors the colours
          * @return this builder
          */
-        @FireworkEffectDsl
         @Contract("_ -> this", mutates = "this")
         public fun colors(colors: Collection<Color>): Builder
 
@@ -94,7 +90,6 @@ public interface FireworkEffect {
          * @param colors the colours
          * @return this builder
          */
-        @FireworkEffectDsl
         @Contract("_ -> this", mutates = "this")
         public fun colors(vararg colors: Color): Builder = colors(ImmutableList.copyOf(colors))
 
@@ -104,7 +99,6 @@ public interface FireworkEffect {
          * @param colors the fade colours
          * @return this builder
          */
-        @FireworkEffectDsl
         @Contract("_ -> this", mutates = "this")
         public fun fadeColors(colors: Collection<Color>): Builder
 
@@ -114,7 +108,6 @@ public interface FireworkEffect {
          * @param colors the fade colours
          * @return this builder
          */
-        @FireworkEffectDsl
         @Contract("_ -> this", mutates = "this")
         public fun fadeColors(vararg colors: Color): Builder = fadeColors(ImmutableList.copyOf(colors))
     }

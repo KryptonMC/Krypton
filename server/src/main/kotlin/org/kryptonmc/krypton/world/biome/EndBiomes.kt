@@ -19,10 +19,8 @@
 package org.kryptonmc.krypton.world.biome
 
 import org.kryptonmc.api.util.Color
-import org.kryptonmc.api.world.biome.Climate
 import org.kryptonmc.api.world.biome.Precipitation
 import org.kryptonmc.api.world.biome.TemperatureModifier
-import org.kryptonmc.api.world.biome.biome
 
 object EndBiomes {
 
@@ -46,8 +44,8 @@ object EndBiomes {
     fun smallEndIslands(): KryptonBiome = baseEnd()
 
     @JvmStatic
-    private fun baseEnd(): KryptonBiome = biome {
-        climate(Climate.of(Precipitation.NONE, TEMPERATURE, DOWNFALL, TemperatureModifier.NONE))
+    private fun baseEnd(): KryptonBiome = KryptonBiome.Builder().apply {
+        climate(KryptonClimate(Precipitation.NONE, TEMPERATURE, DOWNFALL, TemperatureModifier.NONE))
         effects {
             waterColor(OverworldBiomes.OVERWORLD_WATER)
             waterFogColor(OverworldBiomes.OVERWORLD_WATER_FOG)
@@ -55,5 +53,5 @@ object EndBiomes {
             skyColor(Color.BLACK)
             mood(KryptonAmbientMoodSettings.CAVE)
         }
-    } as KryptonBiome
+    }.build()
 }

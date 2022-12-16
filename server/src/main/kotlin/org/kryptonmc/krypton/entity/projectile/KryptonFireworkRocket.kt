@@ -42,7 +42,8 @@ class KryptonFireworkRocket(world: KryptonWorld) : KryptonProjectile(world), Fir
         get() = data.get(MetadataKeys.FireworkRocket.SHOT_AT_ANGLE)
         set(value) = data.set(MetadataKeys.FireworkRocket.SHOT_AT_ANGLE, value)
 
-    init {
+    override fun defineData() {
+        super.defineData()
         data.define(MetadataKeys.FireworkRocket.ITEM, KryptonItemStack.EMPTY)
         data.define(MetadataKeys.FireworkRocket.ATTACHED, OptionalInt.empty())
         data.define(MetadataKeys.FireworkRocket.SHOT_AT_ANGLE, false)

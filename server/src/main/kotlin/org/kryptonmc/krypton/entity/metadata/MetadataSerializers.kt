@@ -23,9 +23,9 @@ import net.kyori.adventure.text.Component
 import org.kryptonmc.api.entity.animal.type.CatVariant
 import org.kryptonmc.api.entity.animal.type.FrogVariant
 import org.kryptonmc.api.entity.hanging.PaintingVariant
-import org.kryptonmc.api.util.Catalogue
 import org.kryptonmc.api.util.Direction
 import org.kryptonmc.api.util.Rotations
+import org.kryptonmc.internal.annotations.Catalogue
 import org.kryptonmc.krypton.effect.particle.ParticleOptions
 import org.kryptonmc.krypton.entity.Pose
 import org.kryptonmc.krypton.entity.data.VillagerData
@@ -50,6 +50,7 @@ import org.kryptonmc.krypton.util.writeString
 import org.kryptonmc.krypton.util.writeUUID
 import org.kryptonmc.krypton.util.writeVarInt
 import org.kryptonmc.krypton.util.writeBlockPos
+import org.kryptonmc.krypton.util.writeRotations
 import org.kryptonmc.krypton.world.block.KryptonBlock
 import org.kryptonmc.krypton.world.block.state.KryptonBlockState
 import org.kryptonmc.nbt.CompoundTag
@@ -78,11 +79,7 @@ object MetadataSerializers {
     @JvmField
     val BOOLEAN: MetadataSerializer<Boolean> = MetadataSerializer.simple(ByteBuf::readBoolean, ByteBuf::writeBoolean)
     @JvmField
-    val ROTATION: MetadataSerializer<Rotations> = MetadataSerializer.simple(ByteBuf::readRotations) { buf, item ->
-        buf.writeFloat(item.yaw)
-        buf.writeFloat(item.pitch)
-        buf.writeFloat(item.roll)
-    }
+    val ROTATION: MetadataSerializer<Rotations> = MetadataSerializer.simple(ByteBuf::readRotations, ByteBuf::writeRotations)
     @JvmField
     val BLOCK_POS: MetadataSerializer<BlockPos> = MetadataSerializer.simple(ByteBuf::readBlockPos, ByteBuf::writeBlockPos)
     @JvmField
@@ -156,8 +153,8 @@ object MetadataSerializers {
     }
 
     @JvmStatic
-    fun get(id: Int): MetadataSerializer<*>? = SERIALIZERS.get(id)
+    fun getById(id: Int): MetadataSerializer<*>? = SERIALIZERS.get(id)
 
     @JvmStatic
-    fun idOf(serializer: MetadataSerializer<*>): Int = SERIALIZERS.getId(serializer)
+    fun getId(serializer: MetadataSerializer<*>): Int = SERIALIZERS.getId(serializer)
 }

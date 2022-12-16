@@ -22,8 +22,9 @@ import org.kryptonmc.api.effect.particle.SimpleParticleType
 import org.kryptonmc.api.effect.particle.builder.SimpleParticleEffectBuilder
 import org.kryptonmc.api.effect.particle.data.ParticleData
 
-class KryptonSimpleParticleEffectBuilder(type: SimpleParticleType) : AbstractParticleEffectBuilder<SimpleParticleEffectBuilder>(type),
-    SimpleParticleEffectBuilder {
+class KryptonSimpleParticleEffectBuilder(type: SimpleParticleType) : AbstractParticleEffectBuilder<ApiSimple>(type), ApiSimple {
 
     override fun buildData(): ParticleData? = null
 }
+
+private typealias ApiSimple = SimpleParticleEffectBuilder

@@ -17,6 +17,7 @@ import org.kryptonmc.api.effect.particle.data.ParticleData
 import org.kryptonmc.api.util.Buildable
 import org.kryptonmc.internal.annotations.ImmutableType
 import org.kryptonmc.internal.annotations.TypeFactory
+import org.kryptonmc.internal.annotations.dsl.BiomeDsl
 
 /**
  * Settings for ambient particles in biomes.

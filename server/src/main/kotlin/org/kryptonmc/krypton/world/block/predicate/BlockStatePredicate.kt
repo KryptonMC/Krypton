@@ -44,7 +44,7 @@ class BlockStatePredicate private constructor(
     }
 
     private fun <T : Comparable<T>> applies(state: KryptonBlockState, property: KryptonProperty<T>, predicate: Predicate<Any>): Boolean =
-        predicate.test(state.require(property))
+        predicate.test(state.requireProperty(property))
 
     companion object {
 

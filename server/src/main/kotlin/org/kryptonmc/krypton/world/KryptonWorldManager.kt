@@ -67,9 +67,9 @@ class KryptonWorldManager(override val server: KryptonServer, private val worldF
         prepare()
     }
 
-    override fun get(key: Key): World? = worlds.get(ResourceKey.of(ResourceKeys.DIMENSION, key))
+    override fun getWorld(key: Key): World? = worlds.get(ResourceKey.of(ResourceKeys.DIMENSION, key))
 
-    override fun load(key: Key): CompletableFuture<KryptonWorld> {
+    override fun loadWorld(key: Key): CompletableFuture<KryptonWorld> {
         val resourceKey = ResourceKey.of(ResourceKeys.DIMENSION, key)
         if (resourceKey === World.OVERWORLD) return failFuture(IllegalArgumentException("The default world cannot be loaded!"))
         val loaded = worlds.get(resourceKey)
@@ -97,7 +97,7 @@ class KryptonWorldManager(override val server: KryptonServer, private val worldF
         }, worldExecutor)
     }
 
-    override fun save(world: World): CompletableFuture<Void> {
+    override fun saveWorld(world: World): CompletableFuture<Void> {
         val kryptonWorld = world.downcast() // Moved outside of the block to fail fast
         return CompletableFuture.runAsync({ kryptonWorld.save(false, false) }, worldExecutor)
     }

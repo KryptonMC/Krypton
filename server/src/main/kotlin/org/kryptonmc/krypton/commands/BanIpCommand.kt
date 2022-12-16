@@ -33,6 +33,7 @@ object BanIpCommand {
 
     private val ERROR_INVALID_IP = CommandExceptions.simple("commands.banip.invalid")
     private val ERROR_ALREADY_BANNED = CommandExceptions.simple("commands.banip.failed")
+    // https://www.oreilly.com/library/view/regular-expressions-cookbook/9780596802837/ch07s16.html
     @JvmField
     val IP_ADDRESS_PATTERN: Pattern = Pattern.compile("^([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\." +
             "([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])$")
@@ -44,7 +45,7 @@ object BanIpCommand {
     @JvmStatic
     fun register(dispatcher: CommandDispatcher<CommandSourceStack>) {
         dispatcher.register(literal("ban-ip") {
-            permission(KryptonPermission.BAN_IP)
+            requiresPermission(KryptonPermission.BAN_IP)
             argument(TARGET, StringArgumentType.string()) {
                 runs { banIp(it.source, it.getArgument(TARGET), DEFAULT_REASON) }
                 argument(REASON, StringArgumentType.string()) {

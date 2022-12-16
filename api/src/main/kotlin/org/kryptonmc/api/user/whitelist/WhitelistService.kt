@@ -42,26 +42,26 @@ public interface WhitelistService {
      *
      * @param profile the profile to add
      */
-    public fun add(profile: GameProfile)
+    public fun whitelist(profile: GameProfile)
 
     /**
      * Adds the given [address] to the whitelist.
      *
      * @param address the address to add
      */
-    public fun add(address: InetAddress)
+    public fun whitelist(address: InetAddress)
 
     /**
      * Removes the given [profile] from the whitelist.
      *
      * @param profile the profile to remove
      */
-    public fun remove(profile: GameProfile)
+    public fun removeWhitelisted(profile: GameProfile)
 
     /**
      * Removes the given [address] from the whitelist.
      *
      * @param address the address to remove
      */
-    public fun remove(address: InetAddress)
+    public fun removeWhitelisted(address: InetAddress)
 }

@@ -13,6 +13,7 @@ import org.kryptonmc.api.resource.ResourceKey
 import org.kryptonmc.api.util.Vec3i
 import org.kryptonmc.api.world.World
 import org.kryptonmc.internal.annotations.ImmutableType
+import org.kryptonmc.internal.annotations.dsl.MetaDsl
 
 /**
  * Item metadata for a compass.

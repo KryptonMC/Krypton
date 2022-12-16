@@ -60,7 +60,7 @@ import org.kryptonmc.api.entity.vehicle.FurnaceMinecart
 import org.kryptonmc.api.entity.vehicle.Minecart
 import org.kryptonmc.api.entity.vehicle.TNTMinecart
 import org.kryptonmc.api.registry.Registries
-import org.kryptonmc.api.util.Catalogue
+import org.kryptonmc.internal.annotations.Catalogue
 
 /**
  * All the types of entities in the game.

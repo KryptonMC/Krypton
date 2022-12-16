@@ -27,7 +27,7 @@ public interface StatisticsTracker {
      * @param statistic the statistic
      * @return the value
      */
-    public fun get(statistic: Statistic<*>): Int
+    public fun getStatistic(statistic: Statistic<*>): Int
 
     /**
      * Gets the value for the given custom [statistic].
@@ -39,7 +39,7 @@ public interface StatisticsTracker {
      * @param statistic the custom statistic
      * @return the value for the given custom statistic
      */
-    public fun get(statistic: Key): Int
+    public fun getStatistic(statistic: Key): Int
 
     /**
      * Sets the value for the given [statistic] to the given [value].
@@ -47,15 +47,15 @@ public interface StatisticsTracker {
      * @param statistic the statistic
      * @param value the value
      */
-    public fun set(statistic: Statistic<*>, value: Int)
+    public fun setStatistic(statistic: Statistic<*>, value: Int)
 
     /**
      * Increases the value of the given [statistic] by 1.
      *
      * @param statistic the statistic
      */
-    public fun increment(statistic: Statistic<*>) {
-        increment(statistic, 1)
+    public fun incrementStatistic(statistic: Statistic<*>) {
+        incrementStatistic(statistic, 1)
     }
 
     /**
@@ -64,15 +64,15 @@ public interface StatisticsTracker {
      * @param statistic the statistic
      * @param amount the amount
      */
-    public fun increment(statistic: Statistic<*>, amount: Int)
+    public fun incrementStatistic(statistic: Statistic<*>, amount: Int)
 
     /**
      * Increases the value of the given custom [statistic] by 1.
      *
      * @param statistic the statistic
      */
-    public fun increment(statistic: Key) {
-        increment(statistic, 1)
+    public fun incrementStatistic(statistic: Key) {
+        incrementStatistic(statistic, 1)
     }
 
     /**
@@ -82,8 +82,8 @@ public interface StatisticsTracker {
      * @param statistic the statistic
      * @param amount the amount
      */
-    public fun increment(statistic: Key, amount: Int) {
-        increment(StatisticTypes.CUSTOM.get(statistic), amount)
+    public fun incrementStatistic(statistic: Key, amount: Int) {
+        incrementStatistic(StatisticTypes.CUSTOM.getStatistic(statistic), amount)
     }
 
     /**
@@ -91,8 +91,8 @@ public interface StatisticsTracker {
      *
      * @param statistic the statistic
      */
-    public fun decrement(statistic: Statistic<*>) {
-        decrement(statistic, 1)
+    public fun decrementStatistic(statistic: Statistic<*>) {
+        decrementStatistic(statistic, 1)
     }
 
     /**
@@ -101,15 +101,15 @@ public interface StatisticsTracker {
      * @param statistic the statistic
      * @param amount the amount
      */
-    public fun decrement(statistic: Statistic<*>, amount: Int)
+    public fun decrementStatistic(statistic: Statistic<*>, amount: Int)
 
     /**
      * Decreases the value of the given custom [statistic] by 1.
      *
      * @param statistic the statistic
      */
-    public fun decrement(statistic: Key) {
-        decrement(statistic, 1)
+    public fun decrementStatistic(statistic: Key) {
+        decrementStatistic(statistic, 1)
     }
 
     /**
@@ -119,8 +119,8 @@ public interface StatisticsTracker {
      * @param statistic the statistic
      * @param amount the amount
      */
-    public fun decrement(statistic: Key, amount: Int) {
-        decrement(StatisticTypes.CUSTOM.get(statistic), amount)
+    public fun decrementStatistic(statistic: Key, amount: Int) {
+        decrementStatistic(StatisticTypes.CUSTOM.getStatistic(statistic), amount)
     }
 
     /**

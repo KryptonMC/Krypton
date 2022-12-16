@@ -54,8 +54,8 @@ class KryptonServicesManager(private val server: KryptonServer) : ServicesManage
         return provider
     }
 
-    override fun <T> provide(clazz: Class<T>): T? = provider(clazz)?.service
+    override fun <T> provide(clazz: Class<T>): T? = getProvider(clazz)?.service
 
     @Suppress("UNCHECKED_CAST")
-    override fun <T> provider(clazz: Class<T>): ServiceProvider<T>? = providers.get(clazz) as? ServiceProvider<T>
+    override fun <T> getProvider(clazz: Class<T>): ServiceProvider<T>? = providers.get(clazz) as? ServiceProvider<T>
 }

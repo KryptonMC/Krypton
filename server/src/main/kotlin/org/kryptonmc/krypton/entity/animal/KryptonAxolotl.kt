@@ -82,7 +82,7 @@ class KryptonAxolotl(world: KryptonWorld) : KryptonAnimal(world), Axolotl, Bucke
         BucketStorable.loadDefaultsFromBucket(this, tag)
         data.set(MetadataKeys.Axolotl.VARIANT, tag.getInt("Variant"))
         if (tag.contains("Age")) age = tag.getInt("Age")
-        if (tag.contains("HuntingCooldown")) brain.set(MemoryKeys.HAS_HUNTING_COOLDOWN, true, tag.getLong("HuntingCooldown"))
+        if (tag.contains("HuntingCooldown")) brain.setMemory(MemoryKeys.HAS_HUNTING_COOLDOWN, true, tag.getLong("HuntingCooldown"))
     }
 
     /* FIXME

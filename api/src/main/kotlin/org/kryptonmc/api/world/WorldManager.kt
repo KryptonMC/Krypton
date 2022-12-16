@@ -44,7 +44,7 @@ public interface WorldManager {
      * @param key the resource key
      * @return the loaded world with the key, or null if not present
      */
-    public fun get(key: Key): World?
+    public fun getWorld(key: Key): World?
 
     /**
      * Checks if there is currently a world loaded with the given [key].
@@ -62,12 +62,12 @@ public interface WorldManager {
      * @return a future representing the result of loading the world with the
      * given key
      */
-    public fun load(key: Key): CompletableFuture<out World>
+    public fun loadWorld(key: Key): CompletableFuture<out World>
 
     /**
      * Saves the given [world] to disk.
      *
      * @param world the world to save
      */
-    public fun save(world: World): CompletableFuture<Void>
+    public fun saveWorld(world: World): CompletableFuture<Void>
 }

@@ -117,8 +117,8 @@ class KryptonPlayer(
     override val inventory: KryptonPlayerInventory = KryptonPlayerInventory(this)
     override var openInventory: Inventory? = null
 
-    override val statistics: KryptonStatisticsTracker = KryptonStatisticsTracker(this, server.worldManager.statsFolder.resolve("$uuid.json"))
-    override val cooldowns: KryptonCooldownTracker = KryptonCooldownTracker(this)
+    override val statisticsTracker: KryptonStatisticsTracker = KryptonStatisticsTracker(this, server.worldManager.statsFolder.resolve("$uuid.json"))
+    override val itemCooldownTracker: KryptonCooldownTracker = KryptonCooldownTracker(this)
 
     override var settings: PlayerSettings = KryptonPlayerSettings.DEFAULT
     private val chatSender = ChatSender(uuid, publicKey)
@@ -207,8 +207,8 @@ class KryptonPlayer(
         super.tick()
         gameModeSystem.tick()
         hungerSystem.tick()
-        cooldowns.tick()
-        if (data.isDirty) session.send(PacketOutSetEntityMetadata(id, data.collectDirty()))
+        itemCooldownTracker.tick()
+        if (data.isDirty()) session.send(PacketOutSetEntityMetadata(id, data.collectDirty()))
     }
 
     @Suppress("UnusedPrivateMember") // We will use the position later.
@@ -334,27 +334,27 @@ class KryptonPlayer(
         // TODO: Walking underwater, walking on water, climbing
         if (isSwimming) {
             val value = (sqrt(deltaX * deltaX + deltaY * deltaY + deltaZ * deltaZ) * 100F).roundToInt()
-            if (value > 0) statistics.increment(CustomStatistics.SWIM_ONE_CM, value)
+            if (value > 0) statisticsTracker.incrementStatistic(CustomStatistics.SWIM_ONE_CM, value)
             return
         }
         if (isOnGround) {
             val value = (sqrt(deltaX * deltaX + deltaZ * deltaZ) * 100F).roundToInt()
             if (value > 0) {
                 when {
-                    isSprinting -> statistics.increment(CustomStatistics.SPRINT_ONE_CM, value)
-                    isSneaking -> statistics.increment(CustomStatistics.CROUCH_ONE_CM, value)
-                    else -> statistics.increment(CustomStatistics.WALK_ONE_CM, value)
+                    isSprinting -> statisticsTracker.incrementStatistic(CustomStatistics.SPRINT_ONE_CM, value)
+                    isSneaking -> statisticsTracker.incrementStatistic(CustomStatistics.CROUCH_ONE_CM, value)
+                    else -> statisticsTracker.incrementStatistic(CustomStatistics.WALK_ONE_CM, value)
                 }
             }
             return
         }
         if (isGliding) {
             val value = (sqrt(deltaX * deltaX + deltaY * deltaY + deltaZ * deltaZ) * 100F).roundToInt()
-            statistics.increment(CustomStatistics.AVIATE_ONE_CM, value)
+            statisticsTracker.incrementStatistic(CustomStatistics.AVIATE_ONE_CM, value)
             return
         }
         val value = (sqrt(deltaX * deltaX + deltaZ * deltaZ) * 100F).roundToInt()
-        if (value > FLYING_ACHIEVEMENT_MINIMUM_SPEED) statistics.increment(CustomStatistics.FLY_ONE_CM, value)
+        if (value > FLYING_ACHIEVEMENT_MINIMUM_SPEED) statisticsTracker.incrementStatistic(CustomStatistics.FLY_ONE_CM, value)
     }
 
     fun resetLastActionTime() {

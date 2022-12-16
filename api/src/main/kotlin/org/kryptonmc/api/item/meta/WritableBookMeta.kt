@@ -10,6 +10,7 @@ package org.kryptonmc.api.item.meta
 
 import org.jetbrains.annotations.Contract
 import org.kryptonmc.internal.annotations.ImmutableType
+import org.kryptonmc.internal.annotations.dsl.MetaDsl
 
 /**
  * Item metadata for a writable book (book and quill).

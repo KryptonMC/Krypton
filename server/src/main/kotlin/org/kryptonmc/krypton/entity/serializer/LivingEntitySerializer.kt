@@ -61,7 +61,7 @@ object LivingEntitySerializer : EntitySerializer<KryptonLivingEntity> {
         // Scoreboard
         if (data.contains(TEAM_TAG, StringTag.ID)) {
             val teamName = data.getString(TEAM_TAG)
-            val team = entity.world.scoreboard.team(teamName)
+            val team = entity.world.scoreboard.getTeam(teamName)
             val wasAdded = team != null && entity.world.scoreboard.addMemberToTeam(entity.teamRepresentation, team)
             if (!wasAdded) {
                 LOGGER.warn("Unable to add living entity ${PlainTextComponentSerializer.plainText().serialize(entity.name)} to team $teamName. " +

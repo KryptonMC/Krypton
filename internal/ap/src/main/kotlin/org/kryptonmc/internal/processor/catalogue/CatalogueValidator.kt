@@ -16,9 +16,14 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.internal.processor.factory
+package org.kryptonmc.internal.processor.catalogue
 
-import com.google.devtools.ksp.processing.KSPLogger
-import com.google.devtools.ksp.processing.Resolver
+import com.google.devtools.ksp.symbol.KSClassDeclaration
+import com.google.devtools.ksp.symbol.KSPropertyDeclaration
 
-class FactoryCheckerContext(val resolver: Resolver, val logger: KSPLogger)
+interface CatalogueValidator {
+
+    fun validateClass(type: KSClassDeclaration)
+
+    fun validateProperty(property: KSPropertyDeclaration, type: KSClassDeclaration)
+}

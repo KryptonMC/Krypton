@@ -37,11 +37,12 @@ interface StateDelegate<S : State<S>, K : KryptonState<*, K>> : State<S> {
 
     fun asState(): K
 
-    override fun contains(property: Property<*>): Boolean = asState().contains(property.downcast())
+    override fun hasProperty(property: Property<*>): Boolean = asState().hasProperty(property.downcast())
 
-    override fun <T : Comparable<T>> get(property: Property<T>): T? = asState().get(property.downcast())
+    override fun <T : Comparable<T>> getProperty(property: Property<T>): T? = asState().getProperty(property.downcast())
 
-    override fun <T : Comparable<T>> require(property: Property<T>): T = asState().require(property.downcast())
+    override fun <T : Comparable<T>> requireProperty(property: Property<T>): T = asState().requireProperty(property.downcast())
 
-    override fun <T : Comparable<T>> set(property: Property<T>, value: T): S = asState().set(property.downcast(), value) as S
+    @Suppress("UNCHECKED_CAST")
+    override fun <T : Comparable<T>> setProperty(property: Property<T>, value: T): S = asState().setProperty(property.downcast(), value) as S
 }

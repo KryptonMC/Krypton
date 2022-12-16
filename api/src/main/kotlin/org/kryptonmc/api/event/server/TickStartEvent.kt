@@ -8,7 +8,10 @@
  */
 package org.kryptonmc.api.event.server
 
+import org.kryptonmc.api.event.annotation.PerformanceSensitive
+
 /**
  * Called when a tick begins.
  */
+@PerformanceSensitive
 public interface TickStartEvent : TickEvent

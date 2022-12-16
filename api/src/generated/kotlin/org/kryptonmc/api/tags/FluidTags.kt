@@ -25,5 +25,5 @@ public object FluidTags {
 
     // @formatter:on
     @JvmStatic
-    public fun get(key: String): TagKey<Fluid> = TagKey.of(ResourceKeys.FLUID, Key.key(key))
+    private fun get(key: String): TagKey<Fluid> = TagKey.of(ResourceKeys.FLUID, Key.key(key))
 }

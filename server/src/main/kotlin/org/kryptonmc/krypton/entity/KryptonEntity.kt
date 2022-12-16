@@ -94,7 +94,7 @@ abstract class KryptonEntity(final override var world: KryptonWorld) : BaseEntit
 
     open fun tick() {
         waterPhysicsSystem.tick()
-        if (data.isDirty) viewingSystem.sendToViewers(PacketOutSetEntityMetadata(id, data.collectDirty()))
+        if (data.isDirty()) viewingSystem.sendToViewers(PacketOutSetEntityMetadata(id, data.collectDirty()))
         if (wasDamaged) {
             viewingSystem.sendToViewers(PacketOutSetEntityVelocity(this))
             wasDamaged = false

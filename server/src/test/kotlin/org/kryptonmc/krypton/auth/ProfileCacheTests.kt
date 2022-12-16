@@ -39,10 +39,10 @@ class ProfileCacheTests {
     @Test
     fun `test retrieval of profiles`() {
         val cache = KryptonProfileCache(EMPTY_PATH).apply { add(PROFILE) }
-        assertEquals(PROFILE, cache.get(ID))
-        assertNull(cache.get(UUID.fromString("aaaabbbb-cccc-dddd-eeee-ffffaaaabbbb")))
-        assertEquals(PROFILE, cache.get("Dave"))
-        assertNull(cache.get("dave")) // Check case sensitivity
+        assertEquals(PROFILE, cache.getProfile(ID))
+        assertNull(cache.getProfile(UUID.fromString("aaaabbbb-cccc-dddd-eeee-ffffaaaabbbb")))
+        assertEquals(PROFILE, cache.getProfile("Dave"))
+        assertNull(cache.getProfile("dave")) // Check case sensitivity
     }
 
     @Test

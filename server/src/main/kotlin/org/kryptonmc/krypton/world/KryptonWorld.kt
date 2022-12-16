@@ -33,7 +33,7 @@ import org.kryptonmc.api.world.biome.Biome
 import org.kryptonmc.api.world.biome.Biomes
 import org.kryptonmc.api.world.rule.GameRules
 import org.kryptonmc.krypton.KryptonServer
-import org.kryptonmc.krypton.effect.sound.getRange
+import org.kryptonmc.krypton.effect.sound.KryptonSoundEvent
 import org.kryptonmc.krypton.entity.EntityFactory
 import org.kryptonmc.krypton.entity.EntityManager
 import org.kryptonmc.krypton.entity.KryptonEntity
@@ -163,13 +163,14 @@ class KryptonWorld(
     private fun playSeededSound(x: Double, y: Double, z: Double, event: SoundEvent, source: Sound.Source, volume: Float, pitch: Float, seed: Long,
                                 except: KryptonPlayer?) {
         val packet = PacketOutSoundEffect(event, source, x, y, z, volume, pitch, seed)
-        server.playerManager.broadcast(packet, this, x, y, z, event.getRange(volume), except)
+        server.playerManager.broadcast(packet, this, x, y, z, KryptonSoundEvent.getRange(event, volume), except)
     }
 
     private fun playSeededSound(entity: KryptonEntity, event: SoundEvent, source: Sound.Source, volume: Float, pitch: Float, seed: Long,
                                 except: KryptonPlayer?) {
         val packet = PacketOutEntitySoundEffect(event, source, entity.id, volume, pitch, seed)
-        server.playerManager.broadcast(packet, this, entity.position.x, entity.position.y, entity.position.z, event.getRange(volume), except)
+        val range = KryptonSoundEvent.getRange(event, volume)
+        server.playerManager.broadcast(packet, this, entity.position.x, entity.position.y, entity.position.z, range, except)
     }
 
     // TODO: Check world border bounds

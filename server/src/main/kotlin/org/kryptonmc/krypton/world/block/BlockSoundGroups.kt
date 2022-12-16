@@ -20,9 +20,11 @@ package org.kryptonmc.krypton.world.block
 
 import org.kryptonmc.api.block.BlockSoundGroup
 import org.kryptonmc.api.effect.sound.SoundEvents
-import org.kryptonmc.api.util.Catalogue
+import org.kryptonmc.internal.annotations.Catalogue
+import org.kryptonmc.internal.annotations.IgnoreNotCataloguedBy
 
 @Catalogue(BlockSoundGroup::class)
+@IgnoreNotCataloguedBy
 object BlockSoundGroups {
 
     @JvmField

@@ -38,7 +38,7 @@ object TitleCommand {
     @JvmStatic
     fun register(dispatcher: CommandDispatcher<CommandSourceStack>) {
         dispatcher.register(literal("title") {
-            permission(KryptonPermission.TITLE)
+            requiresPermission(KryptonPermission.TITLE)
             argument(TARGETS, EntityArgumentType.players()) {
                 title(this@literal, "actionbar", KryptonPlayer::sendActionBar)
                 title(this@literal, "title", KryptonPlayer::sendTitle)

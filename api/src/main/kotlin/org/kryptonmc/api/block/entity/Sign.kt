@@ -42,7 +42,7 @@ public interface Sign : BlockEntity {
      * @param index the index
      * @return the line
      */
-    public fun line(index: Int): Component
+    public fun getLine(index: Int): Component
 
     /**
      * Sets the line of text on this sign at the given [index] to the given

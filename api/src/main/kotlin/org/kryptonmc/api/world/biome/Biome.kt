@@ -14,9 +14,10 @@ import org.jetbrains.annotations.ApiStatus
 import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.Krypton
 import org.kryptonmc.api.util.Buildable
-import org.kryptonmc.api.util.CataloguedBy
+import org.kryptonmc.internal.annotations.CataloguedBy
 import org.kryptonmc.internal.annotations.ImmutableType
 import org.kryptonmc.internal.annotations.TypeFactory
+import org.kryptonmc.internal.annotations.dsl.BiomeDsl
 import java.util.function.Consumer
 
 /**
@@ -65,20 +66,8 @@ public interface Biome : Buildable<Biome.Builder, Biome>, Keyed {
          * @return this builder
          */
         @BiomeDsl
-        @JvmSynthetic
         @Contract("_ -> this", mutates = "this")
-        public fun climate(builder: Climate.Builder.() -> Unit): Builder = climate(Climate.builder().apply(builder).build())
-
-        /**
-         * Applies the given [builder] to a new climate builder and sets the
-         * climate to the built instance.
-         *
-         * @param builder the builder
-         * @return this builder
-         */
-        @BiomeDsl
-        @Contract("_ -> this", mutates = "this")
-        public fun climate(builder: Consumer<Climate.Builder>): Builder = climate { builder.accept(this) }
+        public fun climate(builder: Consumer<Climate.Builder>): Builder = climate(Climate.builder().apply { builder.accept(this) }.build())
 
         /**
          * Sets the effects settings for the biome to the given [effects]
@@ -100,20 +89,8 @@ public interface Biome : Buildable<Biome.Builder, Biome>, Keyed {
          * @return this builder
          */
         @BiomeDsl
-        @JvmSynthetic
         @Contract("_ -> this", mutates = "this")
-        public fun effects(builder: BiomeEffects.Builder.() -> Unit): Builder = effects(BiomeEffects.builder().apply(builder).build())
-
-        /**
-         * Applies the given [builder] to a new effects settings builder and
-         * sets the effects settings to the built instance.
-         *
-         * @param builder the builder
-         * @return this builder
-         */
-        @BiomeDsl
-        @Contract("_ -> this", mutates = "this")
-        public fun effects(builder: Consumer<BiomeEffects.Builder>): Builder = effects { builder.accept(this) }
+        public fun effects(builder: Consumer<BiomeEffects.Builder>): Builder = effects(BiomeEffects.builder().apply { builder.accept(this) }.build())
     }
 
     @ApiStatus.Internal

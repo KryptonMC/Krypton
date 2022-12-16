@@ -31,19 +31,19 @@ class Brain<E : KryptonLivingEntity> {
 
     private val memories = ConcurrentHashMap<MemoryKey<*>, Optional<Memory<*>>>()
 
-    operator fun contains(key: MemoryKey<*>): Boolean = memories.containsKey(key)
+    fun hasMemory(key: MemoryKey<*>): Boolean = memories.containsKey(key)
 
     @Suppress("UNCHECKED_CAST")
-    operator fun <T> get(key: MemoryKey<T>): Optional<T> {
+    fun <T> getMemory(key: MemoryKey<T>): Optional<T> {
         val memory = requireNotNull(memories.get(key)) { "Cannot get unregistered memory for key $key!" }
         return memory.map { it.value as? T }
     }
 
-    operator fun <T : Any> set(key: MemoryKey<T>, value: T?) {
-        set(key, value, Long.MAX_VALUE)
+    fun <T : Any> setMemory(key: MemoryKey<T>, value: T?) {
+        setMemory(key, value, Long.MAX_VALUE)
     }
 
-    fun <T : Any> set(key: MemoryKey<T>, value: T?, ttl: Long) {
+    fun <T : Any> setMemory(key: MemoryKey<T>, value: T?, ttl: Long) {
         if (!memories.containsKey(key)) return
         if (value == null) {
             memories.put(key, Optional.empty())

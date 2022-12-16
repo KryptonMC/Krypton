@@ -40,7 +40,7 @@ abstract class KryptonHangingEntity(world: KryptonWorld) : KryptonEntity(world),
     internal var centerPosition: BlockPos? = null
     final override var direction: Direction = Direction.SOUTH
         set(value) {
-            require(value.axis.isHorizontal)
+            require(value.axis.isHorizontal())
             field = value
             // Each horizontal direction is a half turn (90 degrees) away from each other.
             // The 2D data value is 0 = south, 1 = west, 2 = north, 3 = east.
@@ -52,31 +52,32 @@ abstract class KryptonHangingEntity(world: KryptonWorld) : KryptonEntity(world),
         var x = centerPosition!!.x + BLOCK_CENTER_OFFSET
         var y = centerPosition!!.y + BLOCK_CENTER_OFFSET
         var z = centerPosition!!.z + BLOCK_CENTER_OFFSET
+
         // for EAST, the x becomes centerX + 1/32, and for WEST, the x becomes centerX + 31/32
-        x -= direction.normalX * ALMOST_TWO_BLOCKS_PIXELS
+        x -= direction.normalX * ONE_BLOCK_PIXELS
         // for SOUTH, the z becomes centerZ + 1/32, and for NORTH, the z becomes centerZ + 31/32
-        z -= direction.normalZ * ALMOST_TWO_BLOCKS_PIXELS
+        z -= direction.normalZ * ONE_BLOCK_PIXELS
         if (height % TWO_BLOCKS_PICTURE_PIXELS == 0) y += BLOCK_CENTER_OFFSET
+
         val antiClockwise = Directions.antiClockwise(direction)
         if (width % TWO_BLOCKS_PICTURE_PIXELS == 0) {
             // for direction NORTH (anti clockwise WEST), the x becomes centerX
             // for direction SOUTH (anti clockwise EAST), the x becomes centerX + 1
             x += BLOCK_CENTER_OFFSET * antiClockwise.normalX
-        }
-        if (width % TWO_BLOCKS_PICTURE_PIXELS == 0) {
             // for direction EAST (anti clockwise NORTH), the z becomes centerZ
             // for direction WEST (anti clockwise SOUTH), the z becomes centerZ + 1
             z += BLOCK_CENTER_OFFSET * antiClockwise.normalZ
         }
         position = Vec3dImpl(x, y, z)
-        var xWidth = width.toDouble()
+
+        var widthX = width.toDouble()
         var height = height.toDouble()
-        var zWidth = width.toDouble()
-        if (direction.axis == Direction.Axis.Z) zWidth = 1.0 else xWidth = 1.0
-        xWidth /= TWO_BLOCKS_PICTURE_PIXELS
+        var widthZ = width.toDouble()
+        if (direction.axis == Direction.Axis.Z) widthZ = 1.0 else widthX = 1.0
+        widthX /= TWO_BLOCKS_PICTURE_PIXELS
         height /= TWO_BLOCKS_PICTURE_PIXELS
-        zWidth /= TWO_BLOCKS_PICTURE_PIXELS
-        boundingBox = KryptonBoundingBox(x - xWidth, y - height, z - zWidth, x + xWidth, y + height, z + zWidth)
+        widthZ /= TWO_BLOCKS_PICTURE_PIXELS
+        boundingBox = KryptonBoundingBox(x - widthX, y - height, z - widthZ, x + widthX, y + height, z + widthZ)
     }
 
     companion object {
@@ -84,7 +85,7 @@ abstract class KryptonHangingEntity(world: KryptonWorld) : KryptonEntity(world),
         // The offset to add to a block coordinate to make it in the centre of the block.
         private const val BLOCK_CENTER_OFFSET = 0.5
         private const val TWO_BLOCKS_PICTURE_PIXELS = 16 * 2 // 16 pixels on a picture = 1 block.
-        private const val ALMOST_TWO_BLOCKS_PIXELS = 31 / 32 // Wish I had a better name for this
+        private const val ONE_BLOCK_PIXELS = 15.0 / 32.0
         private const val HALF_TURN_DEGREES = 90F
     }
 }

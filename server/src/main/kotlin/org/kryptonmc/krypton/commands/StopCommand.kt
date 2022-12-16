@@ -27,7 +27,7 @@ object StopCommand {
     @JvmStatic
     fun register(dispatcher: CommandDispatcher<CommandSourceStack>) {
         dispatcher.register(literal("stop") {
-            permission(KryptonPermission.STOP)
+            requiresPermission(KryptonPermission.STOP)
             runs {
                 it.source.sendSuccess(Messages.Commands.STOP_STOPPING.build(), true)
                 it.source.server.stop(false)

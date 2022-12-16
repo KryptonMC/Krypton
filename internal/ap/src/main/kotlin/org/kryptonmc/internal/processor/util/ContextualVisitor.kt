@@ -16,13 +16,14 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.internal.processor.immutable
+package org.kryptonmc.internal.processor.util
 
-import com.google.devtools.ksp.processing.KSPLogger
-import com.google.devtools.ksp.processing.Resolver
-import java.util.function.Supplier
+import com.google.devtools.ksp.symbol.KSNode
+import com.google.devtools.ksp.visitor.KSEmptyVisitor
 
-class ImmutabilityCheckerContext(val resolver: Resolver, val logger: KSPLogger, private val validatorSupplier: Supplier<ImmutabilityValidator>) {
+open class ContextualVisitor : KSEmptyVisitor<VisitorContext, Unit>() {
 
-    val validator: ImmutabilityValidator by lazy { validatorSupplier.get() }
+    override fun defaultHandler(node: KSNode, data: VisitorContext) {
+        // Nothing by default
+    }
 }

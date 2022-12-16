@@ -91,13 +91,13 @@ class KryptonEventManager(private val pluginManager: PluginManager) : EventManag
         return asyncExecutor.awaitTermination(SHUTDOWN_TIMEOUT_TIME, TimeUnit.SECONDS)
     }
 
-    override fun register(plugin: Any, listener: Any) {
+    override fun registerListener(plugin: Any, listener: Any) {
         require(plugin !== listener) { "The plugin main instance is automatically registered!" }
         registerUnchecked(getContainer(plugin), listener)
     }
 
     @Suppress("UNCHECKED_CAST")
-    override fun <E> register(plugin: Any, eventClass: Class<E>, priority: ListenerPriority, handler: EventHandler<E>) {
+    override fun <E> registerHandler(plugin: Any, eventClass: Class<E>, priority: ListenerPriority, handler: EventHandler<E>) {
         val order = priority.ordinal.toShort()
         register(listOf(HandlerRegistration(getContainer(plugin), order, eventClass, handler as EventHandler<Any>, AsyncType.SOMETIMES, handler)))
     }
@@ -174,7 +174,7 @@ class KryptonEventManager(private val pluginManager: PluginManager) : EventManag
         unregisterAll { it.plugin === getContainer(plugin) && it.instance === listener }
     }
 
-    override fun <E> unregister(plugin: Any, handler: EventHandler<E>) {
+    override fun <E> unregisterHandler(plugin: Any, handler: EventHandler<E>) {
         unregisterListener(plugin, handler)
     }
 
@@ -210,7 +210,7 @@ class KryptonEventManager(private val pluginManager: PluginManager) : EventManag
             try {
                 val task = registration.handler.execute(event!!) ?: continue
                 val continuationTask = ContinuationTask(task, i, registrations, future, currentlyAsync, event)
-                if (alwaysSync || currentlyAsync || !task.mustBeAsync) {
+                if (alwaysSync || currentlyAsync || !task.mustBeAsync()) {
                     if (continuationTask.execute()) continue
                 } else {
                     asyncExecutor.execute(continuationTask)

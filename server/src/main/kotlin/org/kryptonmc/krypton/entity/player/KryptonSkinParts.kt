@@ -20,8 +20,7 @@ package org.kryptonmc.krypton.entity.player
 
 import org.kryptonmc.api.entity.player.SkinParts
 
-@JvmRecord
-data class KryptonSkinParts(private val raw: Int) : SkinParts {
+class KryptonSkinParts(private val raw: Int) : SkinParts {
 
     override val hasCape: Boolean
         get() = raw and FLAG_CAPE != 0
@@ -37,6 +36,12 @@ data class KryptonSkinParts(private val raw: Int) : SkinParts {
         get() = raw and FLAG_RIGHT_PANTS != 0
     override val hasHat: Boolean
         get() = raw and FLAG_HAT != 0
+
+    override fun equals(other: Any?): Boolean = this === other || other is KryptonSkinParts && raw == other.raw
+
+    override fun hashCode(): Int = raw.hashCode()
+
+    override fun toString(): String = "SkinParts(raw=$raw)"
 
     companion object {
 

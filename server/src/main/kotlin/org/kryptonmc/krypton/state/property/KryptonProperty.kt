@@ -44,7 +44,7 @@ abstract class KryptonProperty<T : Comparable<T>> protected constructor(
 
     fun value(value: T): Value<T> = Value(this, value)
 
-    fun value(holder: KryptonState<*, *>): Value<T> = Value(this, holder.require(this))
+    fun value(holder: KryptonState<*, *>): Value<T> = Value(this, holder.requireProperty(this))
 
     final override fun equals(other: Any?): Boolean = this === other
 

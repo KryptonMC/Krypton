@@ -37,26 +37,3 @@ public interface FactoryProvider {
      */
     public fun <T> register(type: Class<T>, factory: T)
 }
-
-/**
- * Provides the factory with the given type [T], or throws a
- * [TypeNotFoundException] if there is no factory registered for the given
- * type.
- *
- * @param T the factory type
- */
-@JvmSynthetic
-public inline fun <reified T> FactoryProvider.provide(): T = provide(T::class.java)
-
-/**
- * Registers the given [factory] of the given type [T] to this factory
- * provider.
- *
- * @param T the factory type
- * @param factory the factory to register
- * @throws IllegalStateException if the factory is already registered
- */
-@JvmSynthetic
-public inline fun <reified T> FactoryProvider.register(factory: T) {
-    register(T::class.java, factory)
-}

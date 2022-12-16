@@ -149,8 +149,6 @@ class KryptonCommandManager : CommandManager {
 
     fun suggest(results: ParseResults<Source>): CompletableFuture<Suggestions> = dispatcher.getCompletionSuggestions(results)
 
-    fun suggest(sender: Source, reader: StringReader): CompletableFuture<Suggestions> = dispatcher.getCompletionSuggestions(parse(sender, reader))
-
     override fun updateCommands(player: Player) {
         if (player !is KryptonPlayer) return
         // We copy the root node to avoid a command changing whilst we're trying to send it to the client.

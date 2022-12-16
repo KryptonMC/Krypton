@@ -149,5 +149,5 @@ public object BiomeTags {
 
     // @formatter:on
     @JvmStatic
-    public fun get(key: String): TagKey<Biome> = TagKey.of(ResourceKeys.BIOME, Key.key(key))
+    private fun get(key: String): TagKey<Biome> = TagKey.of(ResourceKeys.BIOME, Key.key(key))
 }

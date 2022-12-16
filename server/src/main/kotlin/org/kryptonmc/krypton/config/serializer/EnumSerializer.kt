@@ -39,4 +39,13 @@ class EnumSerializer<E : Enum<E>>(
         is String -> fromName.apply(source.lowercase()) ?: throw SerializationException("$source is not a valid $typeName name!")
         else -> throw SerializationException("Expected either an integer or a string for this $typeName, got ${source.javaClass.simpleName}!")
     }
+
+    companion object {
+
+        @JvmStatic
+        inline fun <reified E : Enum<E>> of(typeName: String, crossinline fromId: (Int) -> E?,
+                                            crossinline fromName: (String) -> E?): EnumSerializer<E> {
+            return EnumSerializer(E::class.java, typeName, { fromId(it) }, { fromName(it) })
+        }
+    }
 }

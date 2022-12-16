@@ -47,16 +47,16 @@ class KryptonPlayerInventory(override val owner: KryptonPlayer) : KryptonInvento
     override val hotbar: List<ItemStack> = items.subList(0, HOTBAR_SIZE - 1)
 
     override var helmet: ItemStack
-        get() = armor(ArmorSlot.HELMET)
+        get() = getArmor(ArmorSlot.HELMET)
         set(value) = setArmor(ArmorSlot.HELMET, value)
     override var chestplate: ItemStack
-        get() = armor(ArmorSlot.CHESTPLATE)
+        get() = getArmor(ArmorSlot.CHESTPLATE)
         set(value) = setArmor(ArmorSlot.CHESTPLATE, value)
     override var leggings: ItemStack
-        get() = armor(ArmorSlot.LEGGINGS)
+        get() = getArmor(ArmorSlot.LEGGINGS)
         set(value) = setArmor(ArmorSlot.LEGGINGS, value)
     override var boots: ItemStack
-        get() = armor(ArmorSlot.BOOTS)
+        get() = getArmor(ArmorSlot.BOOTS)
         set(value) = setArmor(ArmorSlot.BOOTS, value)
 
     override val mainHand: KryptonItemStack
@@ -65,14 +65,14 @@ class KryptonPlayerInventory(override val owner: KryptonPlayer) : KryptonInvento
 
     override var heldSlot: Int = 0
 
-    override fun armor(slot: ArmorSlot): KryptonItemStack = armor.get(slot.ordinal)
+    override fun getArmor(slot: ArmorSlot): KryptonItemStack = armor.get(slot.ordinal)
 
     override fun setArmor(slot: ArmorSlot, item: ItemStack) {
         if (item !is KryptonItemStack) return
         armor.set(slot.ordinal, item)
     }
 
-    override fun heldItem(hand: Hand): KryptonItemStack {
+    override fun getHeldItem(hand: Hand): KryptonItemStack {
         if (hand == Hand.MAIN) return mainHand
         return offHand
     }
@@ -85,7 +85,7 @@ class KryptonPlayerInventory(override val owner: KryptonPlayer) : KryptonInvento
         }
     }
 
-    override fun set(index: Int, item: ItemStack) {
+    override fun setItem(index: Int, item: ItemStack) {
         if (item !is KryptonItemStack) return
         set(index, item)
     }

@@ -62,15 +62,3 @@ public interface BrigadierCommand : Command {
         public fun of(builder: LiteralArgumentBuilder<CommandExecutionContext>): BrigadierCommand = of(builder.build())
     }
 }
-
-/**
- * Builds a command backed by a Brigadier [LiteralCommandNode].
- *
- * @param literal the primary command name
- * @param builder the builder to build the command with
- * @return the built Brigadier command
- */
-@JvmSynthetic
-@Contract("_, _ -> new", pure = true)
-public inline fun brigadierCommand(literal: String, builder: LiteralArgumentBuilder<CommandExecutionContext>.() -> Unit): BrigadierCommand =
-    BrigadierCommand.of(LiteralArgumentBuilder.literal<CommandExecutionContext>(literal).apply(builder).build())

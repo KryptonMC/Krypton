@@ -177,7 +177,7 @@ abstract class KryptonLivingEntity(world: KryptonWorld) : KryptonEntity(world), 
     @Suppress("FunctionOnlyReturningConstant", "UnusedPrivateMember") // This will have logic in the future
     fun canStandOnFluid(fluid: Fluid): Boolean = false
 
-    protected fun getAttribute(type: KryptonAttributeType): KryptonAttribute? = attributes.get(type)
+    protected fun getAttribute(type: KryptonAttributeType): KryptonAttribute? = attributes.getAttribute(type)
 
     override fun getAttribute(type: AttributeType): Attribute? = getAttribute(type.downcast())
 

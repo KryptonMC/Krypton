@@ -88,14 +88,14 @@ data class PacketOutUpdateTeams(
             team.collisionRule.name.lowercase(), team.color, team.prefix, team.suffix)
 
         constructor(buf: ByteBuf) : this(buf.readComponent(), buf.readByte().toInt(), buf.readString(MAX_VISIBILITY_LENGTH),
-            buf.readString(MAX_VISIBILITY_LENGTH), KryptonAdventure.colorFromId(buf.readVarInt()), buf.readComponent(), buf.readComponent())
+            buf.readString(MAX_VISIBILITY_LENGTH), KryptonAdventure.getColorFromId(buf.readVarInt()), buf.readComponent(), buf.readComponent())
 
         override fun write(buf: ByteBuf) {
             buf.writeComponent(displayName)
             buf.writeByte(options)
             buf.writeString(nameTagVisibility, MAX_VISIBILITY_LENGTH)
             buf.writeString(collisionRule, MAX_VISIBILITY_LENGTH)
-            buf.writeVarInt(KryptonAdventure.colorId(color))
+            buf.writeVarInt(KryptonAdventure.getColorId(color))
             buf.writeComponent(prefix)
             buf.writeComponent(suffix)
         }

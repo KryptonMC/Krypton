@@ -49,7 +49,7 @@ data class PacketOutAwardStatistics(val statistics: Object2IntMap<Statistic<*>>)
 
         @JvmStatic
         private fun <T> readStatistic(buf: ByteBuf, type: StatisticType<T>): Statistic<T> =
-            type.get(buf.readById(type.registry as KryptonRegistry<T>)!!)
+            type.getStatistic(buf.readById(type.registry as KryptonRegistry<T>)!!)
 
         @JvmStatic
         private fun <T> writeStatistic(buf: ByteBuf, statistic: Statistic<T>) {

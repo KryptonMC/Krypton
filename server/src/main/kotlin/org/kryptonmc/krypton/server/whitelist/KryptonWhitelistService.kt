@@ -38,21 +38,21 @@ class KryptonWhitelistService(private val server: KryptonServer) : WhitelistServ
 
     override fun isWhitelisted(address: InetAddress): Boolean = whitelist.isWhitelisted(AddressUtil.asString(address))
 
-    override fun add(profile: GameProfile) {
+    override fun whitelist(profile: GameProfile) {
         server.eventManager.fire(KryptonWhitelistProfileEvent(profile)).thenApplyAsync { if (it.result.isAllowed) whitelist.add(profile) }
     }
 
-    override fun add(address: InetAddress) {
+    override fun whitelist(address: InetAddress) {
         server.eventManager.fire(KryptonWhitelistIpEvent(address))
             .thenApplyAsync { if (it.result.isAllowed) whitelist.add(AddressUtil.asString(address)) }
     }
 
-    override fun remove(profile: GameProfile) {
+    override fun removeWhitelisted(profile: GameProfile) {
         server.eventManager.fire(KryptonRemoveWhitelistedProfileEvent(profile))
             .thenApplyAsync { if (it.result.isAllowed) whitelist.remove(profile) }
     }
 
-    override fun remove(address: InetAddress) {
+    override fun removeWhitelisted(address: InetAddress) {
         server.eventManager.fire(KryptonRemoveWhitelistedIpEvent(address))
             .thenApplyAsync { if (it.result.isAllowed) whitelist.remove(AddressUtil.asString(address)) }
     }

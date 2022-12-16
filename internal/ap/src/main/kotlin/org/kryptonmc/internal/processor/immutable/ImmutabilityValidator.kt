@@ -19,23 +19,12 @@
 package org.kryptonmc.internal.processor.immutable
 
 import com.google.devtools.ksp.processing.Resolver
-import com.google.devtools.ksp.symbol.ClassKind
 import com.google.devtools.ksp.symbol.KSClassDeclaration
 import com.google.devtools.ksp.symbol.KSPropertyDeclaration
 
 interface ImmutabilityValidator {
 
-    fun validateType(type: KSClassDeclaration)
+    fun validateClass(type: KSClassDeclaration, resolver: Resolver)
 
-    fun validateProperty(property: KSPropertyDeclaration, declaringType: KSClassDeclaration)
-
-    companion object {
-
-        @JvmStatic
-        fun select(resolver: Resolver, type: KSClassDeclaration): ImmutabilityValidator = when (type.classKind) {
-            ClassKind.CLASS -> ClassImmutabilityValidator
-            ClassKind.INTERFACE -> InterfaceImmutabilityValidator(resolver)
-            else -> error("Invalid class kind ${type.classKind} for type ${type.simpleName.asString()}")
-        }
-    }
+    fun validateProperty(property: KSPropertyDeclaration, declaringType: KSClassDeclaration, resolver: Resolver)
 }

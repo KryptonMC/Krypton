@@ -27,11 +27,11 @@ import org.kryptonmc.api.resource.ResourceKey
 import org.kryptonmc.api.resource.ResourceKeys
 import org.kryptonmc.api.scoreboard.criteria.KeyedCriterion
 import org.kryptonmc.api.statistic.StatisticType
-import org.kryptonmc.api.util.Catalogue
 import org.kryptonmc.api.world.biome.Biome
 import org.kryptonmc.api.world.damage.type.DamageType
 import org.kryptonmc.api.world.dimension.DimensionType
 import org.kryptonmc.api.world.rule.GameRule
+import org.kryptonmc.internal.annotations.Catalogue
 
 /**
  * Holder of all of the built-in registries.

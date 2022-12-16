@@ -33,6 +33,6 @@ class CandleBlock(properties: Properties) : KryptonBlock(properties) {
         @JvmField
         val LIT: BooleanProperty = KryptonProperties.LIT
         @JvmField
-        val LIGHT_EMISSION: ToIntFunction<KryptonBlockState> = ToIntFunction { if (it.require(LIT)) 3 * it.require(CANDLES) else 0 }
+        val LIGHT_EMISSION: ToIntFunction<KryptonBlockState> = ToIntFunction { if (it.requireProperty(LIT)) 3 * it.requireProperty(CANDLES) else 0 }
     }
 }

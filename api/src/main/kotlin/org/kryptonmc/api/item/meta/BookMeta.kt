@@ -12,6 +12,7 @@ import net.kyori.adventure.text.Component
 import org.jetbrains.annotations.Contract
 import org.jetbrains.annotations.Unmodifiable
 import org.kryptonmc.internal.annotations.ImmutableType
+import org.kryptonmc.internal.annotations.dsl.MetaDsl
 
 /**
  * Contains shared metadata between [WritableBookMeta] and [WrittenBookMeta].

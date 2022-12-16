@@ -35,10 +35,11 @@ public enum class RedstoneSide {
     NONE;
 
     /**
-     * If this side of the redstone wire is connected in some way, to either
-     * another wire or another block, rather than being not connected, or
-     * appearing as a single dot, meaning no connections on any faces.
+     * Gets whether this side of the redstone wire is connected in some way, to
+     * either another wire or another block, rather than being not connected,
+     * or appearing as a single dot, meaning no connections on any faces.
+     *
+     * @return true if connected, false otherwise
      */
-    public val isConnected: Boolean
-        get() = this != NONE
+    public fun isConnected(): Boolean = this != NONE
 }

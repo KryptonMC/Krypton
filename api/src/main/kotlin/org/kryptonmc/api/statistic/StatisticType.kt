@@ -11,7 +11,7 @@ package org.kryptonmc.api.statistic
 import net.kyori.adventure.key.Keyed
 import net.kyori.adventure.translation.Translatable
 import org.kryptonmc.api.registry.Registry
-import org.kryptonmc.api.util.CataloguedBy
+import org.kryptonmc.internal.annotations.CataloguedBy
 import org.kryptonmc.internal.annotations.ImmutableType
 
 /**
@@ -36,7 +36,7 @@ public interface StatisticType<T> : Iterable<Statistic<T>>, Translatable, Keyed 
      * @return true if this type contains a statistic for the key, false
      * otherwise
      */
-    public fun contains(key: T): Boolean
+    public fun hasStatistic(key: T): Boolean
 
     /**
      * Gets the statistic for the given [key], creating it if it does not
@@ -45,7 +45,7 @@ public interface StatisticType<T> : Iterable<Statistic<T>>, Translatable, Keyed 
      * @param key the key
      * @return the statistic for the key
      */
-    public fun get(key: T): Statistic<T>
+    public fun getStatistic(key: T): Statistic<T>
 
     /**
      * Gets the statistic for the given [key] with the given [formatter],
@@ -55,5 +55,5 @@ public interface StatisticType<T> : Iterable<Statistic<T>>, Translatable, Keyed 
      * @param formatter the formatter
      * @return the statistic for the key
      */
-    public fun get(key: T, formatter: StatisticFormatter): Statistic<T>
+    public fun getStatistic(key: T, formatter: StatisticFormatter): Statistic<T>
 }

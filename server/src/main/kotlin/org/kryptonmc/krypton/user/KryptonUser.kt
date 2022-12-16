@@ -18,18 +18,16 @@
  */
 package org.kryptonmc.krypton.user
 
-import net.kyori.adventure.identity.Identity
 import org.kryptonmc.api.auth.GameProfile
+import org.kryptonmc.api.entity.player.Player
 import org.kryptonmc.api.user.User
 import org.kryptonmc.krypton.KryptonServer
-import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.nbt.CompoundTag
 import java.time.Instant
 import java.util.UUID
 
 class KryptonUser(override val profile: GameProfile, var data: CompoundTag, private val server: KryptonServer) : User {
 
-    private val identity = Identity.identity(profile.uuid)
     private var firstJoinedCached: Instant? = null
     private var lastJoinedCached: Instant? = null
 
@@ -38,35 +36,22 @@ class KryptonUser(override val profile: GameProfile, var data: CompoundTag, priv
     override val uuid: UUID
         get() = profile.uuid
     override val isOnline: Boolean
-        get() = player != null
-    override val player: KryptonPlayer?
-        get() = server.getPlayer(uuid)
+        get() = asPlayer() != null
     override val hasJoinedBefore: Boolean
-        get() {
-            val player = player
-            if (player != null) return player.hasJoinedBefore
-            return !data.isEmpty
-        }
+        get() = asPlayer()?.hasJoinedBefore ?: !data.isEmpty
     override val firstJoined: Instant
-        get() {
-            val player = player
-            if (player != null) return player.firstJoined
-            if (firstJoinedCached != null) return firstJoinedCached!!
-            val instant = Instant.ofEpochMilli(data.getLong("firstJoined"))
-            firstJoinedCached = instant
-            return instant
-        }
+        get() = asPlayer()?.firstJoined ?: getAndUpdateJoined("firstJoined", firstJoinedCached) { firstJoinedCached = it }
     override val lastJoined: Instant
-        get() {
-            val player = player
-            if (player != null) return player.lastJoined
-            if (lastJoinedCached != null) return lastJoinedCached!!
-            val instant = Instant.ofEpochMilli(data.getLong("lastJoined"))
-            lastJoinedCached = instant
-            return instant
-        }
+        get() = asPlayer()?.lastJoined ?: getAndUpdateJoined("lastJoined", lastJoinedCached) { lastJoinedCached = it }
     override val isVanished: Boolean
-        get() = player?.isVanished ?: false
+        get() = asPlayer()?.isVanished ?: false
 
-    override fun identity(): Identity = identity
+    override fun asPlayer(): Player? = server.getPlayer(uuid)
+
+    private inline fun getAndUpdateJoined(key: String, cached: Instant?, updateCached: (Instant) -> Unit): Instant {
+        if (cached != null) return cached
+        val instant = Instant.ofEpochMilli(data.getLong(key))
+        updateCached(instant)
+        return instant
+    }
 }

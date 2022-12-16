@@ -7,16 +7,11 @@
  * For more details, please reference the LICENSE file in the api top-level directory.
  */
 @file:JvmSynthetic
-@file:Suppress("MatchingDeclarationName", "MethodOverloading")
 package org.kryptonmc.api.effect.particle
 
 import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.effect.particle.builder.BaseParticleEffectBuilder
-
-@Target(AnnotationTarget.CLASS, AnnotationTarget.FUNCTION)
-@Retention(AnnotationRetention.SOURCE)
-@DslMarker
-internal annotation class ParticleDsl
+import org.kryptonmc.internal.annotations.dsl.ParticleDsl
 
 /**
  * Creates a new particle effect with the given [type] and the result of

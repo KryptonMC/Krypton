@@ -40,7 +40,7 @@ public interface Scoreboard {
      * @param name the name of the registered objective
      * @return the registered objective, or null if not present
      */
-    public fun objective(name: String): Objective?
+    public fun getObjective(name: String): Objective?
 
     /**
      * Gets the objective in the given [slot], or returns null if there are no
@@ -49,7 +49,7 @@ public interface Scoreboard {
      * @param slot the slot the objective may be in
      * @return the registered objective, or null if not present
      */
-    public fun objective(slot: DisplaySlot): Objective?
+    public fun getObjective(slot: DisplaySlot): Objective?
 
     /**
      * Gets all objectives with the given [criterion] that are registered with
@@ -58,7 +58,7 @@ public interface Scoreboard {
      * @param criterion the criterion
      * @return all objectives with the criterion
      */
-    public fun objectives(criterion: Criterion): Set<Objective>
+    public fun getObjectives(criterion: Criterion): Set<Objective>
 
     /**
      * Creates a new builder for building an objective that will be registered
@@ -70,15 +70,16 @@ public interface Scoreboard {
     public fun createObjectiveBuilder(): Objective.Builder
 
     /**
-     * Adds the given [objective] to this scoreboard's list of registered
-     * objectives.
+     * Creates a new objective with the given [name], [criterion],
+     * [displayName], and [renderType], and adds it to this scoreboard.
      *
      * @param name the name
      * @param criterion the criterion
      * @param displayName the display name
      * @param renderType the render type
-     * @throws IllegalArgumentException if an objective with the name of the
-     * given objective is already registered with this scoreboard
+     * @return the created objective
+     * @throws IllegalArgumentException if an objective with the given name is
+     * already registered with this scoreboard
      */
     public fun addObjective(name: String, criterion: Criterion, displayName: Component, renderType: ObjectiveRenderType): Objective
 
@@ -117,7 +118,7 @@ public interface Scoreboard {
      * @param name the name
      * @return all scores with the name
      */
-    public fun scores(name: Component): Set<Score>
+    public fun getScores(name: Component): Set<Score>
 
     /**
      * Removes all scores with the given [name] from the set of all scores
@@ -134,7 +135,7 @@ public interface Scoreboard {
      * @param name the name of the team
      * @return the team with the name, or null if not present
      */
-    public fun team(name: String): Team?
+    public fun getTeam(name: String): Team?
 
     /**
      * Gets the team that the given [member] is in on this scoreboard, or
@@ -143,7 +144,7 @@ public interface Scoreboard {
      * @param member the member
      * @return the team of the member, or null if not present
      */
-    public fun memberTeam(member: Component): Team?
+    public fun getMemberTeam(member: Component): Team?
 
     /**
      * Creates a new builder for building a team with the given [name] that

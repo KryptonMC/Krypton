@@ -27,7 +27,7 @@ object SeedCommand {
     @JvmStatic
     fun register(dispatcher: CommandDispatcher<CommandSourceStack>) {
         dispatcher.register(literal("seed") {
-            permission(KryptonPermission.SEED)
+            requiresPermission(KryptonPermission.SEED)
             runs { it.source.sendSuccess(Messages.Commands.SEED_SUCCESS.build(it.source.world.seed), true) }
         })
     }

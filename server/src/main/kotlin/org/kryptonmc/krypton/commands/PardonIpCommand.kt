@@ -35,7 +35,7 @@ object PardonIpCommand {
     @JvmStatic
     fun register(dispatcher: CommandDispatcher<CommandSourceStack>) {
         dispatcher.register(literal("pardon-ip") {
-            permission(KryptonPermission.PARDON_IP)
+            requiresPermission(KryptonPermission.PARDON_IP)
             argument(TARGET, StringArgumentType.string()) {
                 suggests { context, builder ->
                     CommandSuggestionProvider.suggest(context.source.server.playerManager.banManager.ipStrings(), builder)

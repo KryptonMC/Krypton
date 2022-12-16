@@ -50,7 +50,7 @@ class EventTests {
     }
 
     private fun handleMethodListener(listener: Any) {
-        eventManager.register(MockPluginManager.PLUGIN_A, listener)
+        eventManager.registerListener(MockPluginManager.PLUGIN_A, listener)
         try {
             eventManager.fire(TestEvent()).get()
         } finally {
@@ -105,7 +105,7 @@ class EventTests {
     @Test
     fun `test always sync when event is fired sync`() {
         val listener = AlwaysAsyncListener()
-        eventManager.register(MockPluginManager.PLUGIN_A, listener)
+        eventManager.registerListener(MockPluginManager.PLUGIN_A, listener)
         try {
             eventManager.fireSync(TestEvent())
         } finally {

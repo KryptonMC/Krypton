@@ -68,7 +68,7 @@ object BlockStateSerialization {
     private fun <S : KryptonState<*, S>, T : Comparable<T>> set(state: S, property: KryptonProperty<T>, name: String, propertiesTag: CompoundTag,
                                                                 blockStateTag: CompoundTag): S {
         val value = property.fromString(name)
-        if (value != null) return state.set(property, value)
+        if (value != null) return state.setProperty(property, value)
         LOGGER.warn("Unable to read property $name with value ${propertiesTag.getString(name)} for block state $blockStateTag!")
         return state
     }

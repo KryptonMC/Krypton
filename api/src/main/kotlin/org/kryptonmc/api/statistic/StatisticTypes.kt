@@ -13,7 +13,7 @@ import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.entity.EntityType
 import org.kryptonmc.api.item.ItemType
 import org.kryptonmc.api.registry.Registries
-import org.kryptonmc.api.util.Catalogue
+import org.kryptonmc.internal.annotations.Catalogue
 
 /**
  * All of the built-in statistic types.

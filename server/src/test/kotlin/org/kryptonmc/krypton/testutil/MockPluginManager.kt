@@ -34,7 +34,7 @@ class MockPluginManager : PluginManager {
         else -> null
     }
 
-    override fun plugin(id: String): PluginContainer? = when (id) {
+    override fun getPlugin(id: String): PluginContainer? = when (id) {
         A_ID -> CONTAINER_A
         B_ID -> CONTAINER_B
         else -> null
@@ -67,7 +67,7 @@ class MockPluginManager : PluginManager {
         override val source: Path
             get() = Path.of("")
 
-        override fun dependency(id: String): PluginDependency? = null
+        override fun getDependency(id: String): PluginDependency? = null
     }
 
     companion object {

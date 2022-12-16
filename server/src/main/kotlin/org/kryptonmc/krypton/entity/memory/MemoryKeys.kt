@@ -19,7 +19,7 @@
 package org.kryptonmc.krypton.entity.memory
 
 import net.kyori.adventure.key.Key
-import org.kryptonmc.api.util.Catalogue
+import org.kryptonmc.internal.annotations.Catalogue
 import org.kryptonmc.krypton.registry.KryptonRegistries
 import org.kryptonmc.krypton.util.GlobalPosition
 import org.kryptonmc.krypton.util.serialization.Codecs

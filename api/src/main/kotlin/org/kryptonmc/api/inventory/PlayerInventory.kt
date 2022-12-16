@@ -90,7 +90,7 @@ public interface PlayerInventory : Inventory {
      * @param slot the armour slot
      * @return the armour item in the given [slot]
      */
-    public fun armor(slot: ArmorSlot): ItemStack
+    public fun getArmor(slot: ArmorSlot): ItemStack
 
     /**
      * Sets the armour item in the given [slot] to the give [item].
@@ -106,7 +106,7 @@ public interface PlayerInventory : Inventory {
      * @param hand the hand
      * @return the item
      */
-    public fun heldItem(hand: Hand): ItemStack
+    public fun getHeldItem(hand: Hand): ItemStack
 
     /**
      * Sets the item the player is holding in the given [hand] to the given

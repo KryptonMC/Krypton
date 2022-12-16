@@ -47,23 +47,23 @@ class KryptonBanService(private val server: KryptonServer) : BanService {
         else -> error("Unsupported ban type ${ban.type}!")
     }
 
-    override fun get(profile: GameProfile): Ban.Profile? = banManager.get(profile)
+    override fun getBan(profile: GameProfile): Ban.Profile? = banManager.get(profile)
 
-    override fun get(address: InetAddress): Ban.IP? = banManager.get(AddressUtil.asString(address))
+    override fun getBan(address: InetAddress): Ban.IP? = banManager.get(AddressUtil.asString(address))
 
     override fun pardon(profile: GameProfile) {
-        get(profile)?.let(::remove)
+        getBan(profile)?.let(::removeBan)
     }
 
     override fun pardon(address: InetAddress) {
-        get(address)?.let(::remove)
+        getBan(address)?.let(::removeBan)
     }
 
-    override fun add(ban: Ban) {
+    override fun addBan(ban: Ban) {
         addOrRemove(ban, ::KryptonBanProfileEvent, ::KryptonBanIpEvent, banManager::add, banManager::add)
     }
 
-    override fun remove(ban: Ban) {
+    override fun removeBan(ban: Ban) {
         addOrRemove(ban, ::KryptonPardonProfileEvent, ::KryptonPardonIpEvent, { banManager.remove(it.profile) }, { banManager.remove(it.ip) })
     }
 

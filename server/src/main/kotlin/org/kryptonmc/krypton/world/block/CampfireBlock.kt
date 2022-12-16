@@ -31,6 +31,6 @@ class CampfireBlock(properties: Properties) : KryptonBlock(properties) {
         val LIT: BooleanProperty = KryptonProperties.LIT
 
         @JvmStatic
-        fun isLit(state: KryptonBlockState): Boolean = state.contains(LIT) && state.eq(BlockTags.CAMPFIRES) && state.get(LIT)!!
+        fun isLit(state: KryptonBlockState): Boolean = state.hasProperty(LIT) && state.eq(BlockTags.CAMPFIRES) && state.requireProperty(LIT)
     }
 }

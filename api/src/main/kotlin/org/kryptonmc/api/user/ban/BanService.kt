@@ -50,7 +50,7 @@ public interface BanService {
      * @param profile the profile
      * @return the profile ban targeting the profile, or null if not present
      */
-    public fun get(profile: GameProfile): Ban.Profile?
+    public fun getBan(profile: GameProfile): Ban.Profile?
 
     /**
      * Gets the IP ban targeting the given [address], or returns null if there
@@ -59,7 +59,7 @@ public interface BanService {
      * @param address the address
      * @return the IP ban targeting the address, or null if not present
      */
-    public fun get(address: InetAddress): Ban.IP?
+    public fun getBan(address: InetAddress): Ban.IP?
 
     /**
      * Attempts to pardon the given [profile], removing any bans associated
@@ -85,12 +85,12 @@ public interface BanService {
      *
      * @param ban the ban to add
      */
-    public fun add(ban: Ban)
+    public fun addBan(ban: Ban)
 
     /**
      * Removes the given [ban] from this ban manager.
      *
      * @param ban the ban
      */
-    public fun remove(ban: Ban)
+    public fun removeBan(ban: Ban)
 }

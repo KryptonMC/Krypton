@@ -37,7 +37,7 @@ object ClearCommand {
     @JvmStatic
     fun register(dispatcher: CommandDispatcher<CommandSourceStack>) {
         dispatcher.register(literal("clear") {
-            permission(KryptonPermission.CLEAR)
+            requiresPermission(KryptonPermission.CLEAR)
             runs { clear(it.source, listOf(it.source.getPlayerOrError()), { true }, -1) }
             argument(TARGETS, EntityArgumentType.players()) {
                 runs { clear(it.source, EntityArgumentType.getPlayers(it, TARGETS), { true }, -1) }

@@ -30,8 +30,8 @@ import org.kryptonmc.api.world.World
 import org.kryptonmc.api.world.biome.Biome
 import org.kryptonmc.api.world.dimension.DimensionType
 import org.kryptonmc.api.world.rule.GameRule
-import org.kryptonmc.api.util.Catalogue
 import org.kryptonmc.api.world.damage.type.DamageType
+import org.kryptonmc.internal.annotations.Catalogue
 
 /**
  * All the built-in registry keys for various registries.

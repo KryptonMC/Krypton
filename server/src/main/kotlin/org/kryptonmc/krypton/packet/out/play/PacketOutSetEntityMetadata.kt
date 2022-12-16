@@ -62,7 +62,7 @@ data class PacketOutSetEntityMetadata(override val entityId: Int, val packedEntr
         private fun <T> writeEntry(buf: ByteBuf, entry: MetadataHolder.Entry<T>) {
             val key = entry.key
             buf.writeByte(key.id)
-            buf.writeVarInt(MetadataSerializers.idOf(key.serializer))
+            buf.writeVarInt(MetadataSerializers.getId(key.serializer))
             key.serializer.write(buf, entry.value)
         }
 
@@ -73,7 +73,7 @@ data class PacketOutSetEntityMetadata(override val entityId: Int, val packedEntr
             while (index != EOF_MARKER) {
                 if (entries == null) entries = persistentListOf<MetadataHolder.Entry<*>>().builder()
                 val type = buf.readVarInt()
-                val serializer = MetadataSerializers.get(type) ?: throw DecoderException("Unknown serializer type $type!")
+                val serializer = MetadataSerializers.getById(type) ?: throw DecoderException("Unknown serializer type $type!")
                 entries.add(createEntry(buf, index, serializer))
                 index = buf.readUnsignedByte().toInt()
             }

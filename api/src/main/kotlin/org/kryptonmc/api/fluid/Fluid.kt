@@ -12,7 +12,7 @@ import net.kyori.adventure.key.Keyed
 import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.item.ItemType
 import org.kryptonmc.api.state.StateHolder
-import org.kryptonmc.api.util.CataloguedBy
+import org.kryptonmc.internal.annotations.CataloguedBy
 import org.kryptonmc.internal.annotations.ImmutableType
 
 /**

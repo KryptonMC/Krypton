@@ -24,14 +24,15 @@ import java.util.function.Consumer
 public interface EventTask {
 
     /**
-     * Whether this task must be called asynchronously.
+     * Gets whether this task must be called asynchronously.
      *
      * If this is true, this task is guaranteed to be executed asynchronously
      * from the current thread. Otherwise, the task may be executed on the
      * current thread or asynchronously.
+     *
+     * @return whether this task must be called asynchronously.
      */
-    @get:JvmName("mustBeAsync")
-    public val mustBeAsync: Boolean
+    public fun mustBeAsync(): Boolean
 
     /**
      * Runs this task with the given [continuation]. The continuation must be
@@ -59,9 +60,7 @@ public interface EventTask {
          */
         @JvmStatic
         public fun async(task: Runnable): EventTask = object : EventTask {
-
-            override val mustBeAsync: Boolean
-                get() = true
+            override fun mustBeAsync(): Boolean = true
 
             override fun execute(continuation: Continuation) {
                 task.run()
@@ -78,9 +77,7 @@ public interface EventTask {
          */
         @JvmStatic
         public fun withContinuation(task: Consumer<Continuation>): EventTask = object : EventTask {
-
-            override val mustBeAsync: Boolean
-                get() = false
+            override fun mustBeAsync(): Boolean = false
 
             override fun execute(continuation: Continuation) {
                 task.accept(continuation)

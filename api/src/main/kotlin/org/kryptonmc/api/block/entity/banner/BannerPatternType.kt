@@ -9,7 +9,7 @@
 package org.kryptonmc.api.block.entity.banner
 
 import net.kyori.adventure.key.Keyed
-import org.kryptonmc.api.util.CataloguedBy
+import org.kryptonmc.internal.annotations.CataloguedBy
 import org.kryptonmc.internal.annotations.ImmutableType
 
 /**

@@ -26,16 +26,12 @@ object GameModes {
     @JvmField
     val VALUES: Array<GameMode> = GameMode.values()
     private val BY_NAME = VALUES.associateBy { it.name.lowercase() }
-    private val BY_ABBREVIATION = VALUES.associateBy { it.abbreviation }
 
     @JvmStatic
     fun fromId(id: Int): GameMode? = VALUES.getOrNull(id)
 
     @JvmStatic
     fun fromName(name: String): GameMode? = BY_NAME.get(name)
-
-    @JvmStatic
-    fun fromAbbreviation(abbreviation: String): GameMode? = BY_ABBREVIATION.get(abbreviation)
 
     @JvmStatic
     fun updatePlayerAbilities(mode: GameMode, abilities: Abilities) {

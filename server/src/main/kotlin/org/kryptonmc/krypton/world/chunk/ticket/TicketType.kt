@@ -18,7 +18,7 @@
  */
 package org.kryptonmc.krypton.world.chunk.ticket
 
-import org.kryptonmc.api.util.CataloguedBy
+import org.kryptonmc.internal.annotations.CataloguedBy
 
 @JvmRecord
 @CataloguedBy(TicketTypes::class)

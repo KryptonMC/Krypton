@@ -24,13 +24,13 @@ import org.kryptonmc.api.effect.particle.data.ParticleData
 import org.kryptonmc.api.util.Color
 import org.kryptonmc.krypton.effect.particle.data.KryptonDustTransitionParticleData
 
-class KryptonDustTransitionParticleEffectBuilder(type: DustTransitionParticleType) :
-    AbstractDustParticleEffectBuilder<DustTransitionParticleEffectBuilder>(type),
-    DustTransitionParticleEffectBuilder {
+class KryptonDustTransitionParticleEffectBuilder(type: DustTransitionParticleType) : AbstractDustParticleEffectBuilder<ApiDT>(type), ApiDT {
 
     private var to: Color = Color.BLACK
 
-    override fun toColor(color: Color): DustTransitionParticleEffectBuilder = apply { to = color }
+    override fun toColor(color: Color): ApiDT = apply { to = color }
 
     override fun buildData(): ParticleData = KryptonDustTransitionParticleData(color, scale, to)
 }
+
+private typealias ApiDT = DustTransitionParticleEffectBuilder

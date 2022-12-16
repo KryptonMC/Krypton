@@ -34,7 +34,7 @@ public interface ServicesManager {
      * @param clazz the service class
      * @return the service provider, or null if not present
      */
-    public fun <T> provider(clazz: Class<T>): ServiceProvider<T>?
+    public fun <T> getProvider(clazz: Class<T>): ServiceProvider<T>?
 
     /**
      * Registers a new service to this services manager.
@@ -57,48 +57,4 @@ public interface ServicesManager {
      * @return the registered service provider
      */
     public fun <T> register(plugin: PluginContainer, type: Class<T>, service: T): ServiceProvider<T>
-}
-
-/**
- * Gets the service for the given type [T], or returns null if there is no
- * registered service for the given type [T].
- *
- * @param T the service type
- * @return the service, or null if not present
- */
-@JvmSynthetic
-public inline fun <reified T> ServicesManager.provide(): T? = provide(T::class.java)
-
-/**
- * Gets the provider for the given type [T], or returns null if there is no
- * provider for the given type [T].
- *
- * @param T the service type
- * @return the service provider, or null if not present
- */
-@JvmSynthetic
-public inline fun <reified T> ServicesManager.provider(): ServiceProvider<T>? = provider(T::class.java)
-
-/**
- * Registers a new service to this services manager.
- *
- * @param T the service type
- * @param plugin the plugin that registered the service
- * @param service the service
- */
-@JvmSynthetic
-public inline fun <reified T> ServicesManager.register(plugin: PluginContainer, service: T) {
-    register(plugin, T::class.java, service)
-}
-
-/**
- * Registers a new service to this services manager.
- *
- * @param T the service type
- * @param plugin the plugin that registered the service
- * @param service the service
- */
-@JvmSynthetic
-public inline fun <reified T> ServicesManager.register(plugin: Any, service: T) {
-    register(plugin, T::class.java, service)
 }

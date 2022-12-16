@@ -34,7 +34,7 @@ object GameRuleCommand {
 
     @JvmStatic
     fun register(dispatcher: CommandDispatcher<CommandSourceStack>) {
-        val command = literal("gamerule") { permission(KryptonPermission.GAME_RULE) }
+        val command = literal("gamerule") { requiresPermission(KryptonPermission.GAME_RULE) }
         KryptonRegistries.GAME_RULES.forEach { rule ->
             val gameRule = literal(rule.name) {
                 runs { it.source.sendSuccess(Messages.Commands.GAMERULE_QUERY.build(rule.name, it.source.world.gameRules.get(rule)!!), false) }

@@ -21,7 +21,7 @@ import org.kryptonmc.api.block.entity.container.ShulkerBox
 import org.kryptonmc.api.block.entity.container.Smoker
 import org.kryptonmc.api.block.entity.container.TrappedChest
 import org.kryptonmc.api.registry.Registries
-import org.kryptonmc.api.util.Catalogue
+import org.kryptonmc.internal.annotations.Catalogue
 
 /**
  * This file is auto-generated. Do not edit this manually!

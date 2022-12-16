@@ -23,8 +23,9 @@ import org.kryptonmc.api.effect.particle.builder.ColorParticleEffectBuilder
 import org.kryptonmc.api.effect.particle.data.ParticleData
 import org.kryptonmc.krypton.effect.particle.data.KryptonColorParticleData
 
-class KryptonColorParticleEffectBuilder(type: ColorParticleType) : AbstractColorParticleEffectBuilder<ColorParticleEffectBuilder>(type),
-    ColorParticleEffectBuilder {
+class KryptonColorParticleEffectBuilder(type: ColorParticleType) : AbstractColorParticleEffectBuilder<ApiColor>(type), ApiColor {
 
     override fun buildData(): ParticleData = KryptonColorParticleData(color)
 }
+
+private typealias ApiColor = ColorParticleEffectBuilder

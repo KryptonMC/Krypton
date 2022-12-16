@@ -30,5 +30,12 @@ data class KryptonSoundEvent(private val key: Key, override val range: Float) : 
 
         // This is the default range that sounds travel (from vanilla) that the majority of sounds have from before ranged sounds were added.
         const val DEFAULT_RANGE: Float = 16F
+
+        @JvmStatic
+        fun getRange(event: SoundEvent, volume: Float): Double {
+            if (event.range != 0F) return event.range.toDouble()
+            if (volume > 1F) return DEFAULT_RANGE.toDouble() * volume
+            return DEFAULT_RANGE.toDouble()
+        }
     }
 }

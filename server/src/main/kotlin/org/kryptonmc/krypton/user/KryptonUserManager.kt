@@ -46,27 +46,27 @@ class KryptonUserManager(private val server: KryptonServer) : UserManager {
         users.get(uuid)?.data = data
     }
 
-    override fun get(uuid: UUID): User? = users.get(uuid)
+    override fun getUser(uuid: UUID): User? = users.get(uuid)
 
-    override fun get(name: String): User? {
-        val profile = server.profileCache.get(name) ?: return null
+    override fun getUser(name: String): User? {
+        val profile = server.profileCache.getProfile(name) ?: return null
         return users.get(profile.uuid)
     }
 
-    override fun load(uuid: UUID): CompletableFuture<User?> {
-        val existing = get(uuid)
+    override fun loadUser(uuid: UUID): CompletableFuture<User?> {
+        val existing = getUser(uuid)
         if (existing != null) return CompletableFuture.completedFuture(existing)
-        val cachedProfile = server.profileCache.get(uuid)
+        val cachedProfile = server.profileCache.getProfile(uuid)
         if (cachedProfile != null) return CompletableFuture.supplyAsync({ loadUser(cachedProfile) }, executor)
-        return ApiService.profile(uuid).thenApplyAsync({ loadUser(it) }, executor)
+        return ApiService.getProfile(uuid).thenApplyAsync({ loadUser(it) }, executor)
     }
 
-    override fun load(name: String): CompletableFuture<User?> {
-        val existing = get(name)
+    override fun loadUser(name: String): CompletableFuture<User?> {
+        val existing = getUser(name)
         if (existing != null) return CompletableFuture.completedFuture(existing)
-        val cachedProfile = server.profileCache.get(name)
+        val cachedProfile = server.profileCache.getProfile(name)
         if (cachedProfile != null) return CompletableFuture.supplyAsync({ loadUser(cachedProfile) }, executor)
-        return ApiService.profile(name).thenApplyAsync({ loadUser(it) }, executor)
+        return ApiService.getProfile(name).thenApplyAsync({ loadUser(it) }, executor)
     }
 
     private fun loadUser(profile: GameProfile?): User? {

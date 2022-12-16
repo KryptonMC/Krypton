@@ -19,6 +19,7 @@ import org.kryptonmc.api.item.data.ItemFlag
 import org.kryptonmc.api.world.GameMode
 import org.kryptonmc.internal.annotations.ImmutableType
 import org.kryptonmc.internal.annotations.TypeFactory
+import org.kryptonmc.internal.annotations.dsl.MetaDsl
 
 /**
  * Holder for various item metadata values for an item stack.

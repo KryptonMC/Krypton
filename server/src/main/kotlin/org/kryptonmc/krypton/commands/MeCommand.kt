@@ -28,7 +28,7 @@ object MeCommand {
     @JvmStatic
     fun register(dispatcher: CommandDispatcher<CommandSourceStack>) {
         dispatcher.register(literal("me") {
-            permission(KryptonPermission.ME)
+            requiresPermission(KryptonPermission.ME)
             argument("action", StringArgumentType.string()) {
                 runs { Messages.CHAT_TYPE_EMOTE.send(it.source.server, it.source.displayName, it.getArgument("action")) }
             }

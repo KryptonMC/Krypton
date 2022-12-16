@@ -7,17 +7,12 @@
  * For more details, please reference the LICENSE file in the api top-level directory.
  */
 @file:JvmSynthetic
-@file:Suppress("MatchingDeclarationName")
 package org.kryptonmc.api.item
 
 import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.item.meta.ItemMeta
 import org.kryptonmc.api.item.meta.ItemMetaBuilder
-
-@Target(AnnotationTarget.CLASS, AnnotationTarget.FUNCTION)
-@Retention(AnnotationRetention.SOURCE)
-@DslMarker
-internal annotation class ItemDsl
+import org.kryptonmc.internal.annotations.dsl.ItemDsl
 
 /**
  * Creates a new item stack from the result of applying the given [builder]
@@ -90,8 +85,7 @@ public inline fun item(type: ItemType, amount: Int, meta: ItemMeta.Builder.() ->
 @JvmSynthetic
 @JvmName("itemWithMetaGeneric")
 @Contract("_, _, _ -> new", pure = true)
-public inline fun <B : ItemMetaBuilder<B, P>, reified P : ItemMetaBuilder.Provider<B>> item(
-    type: ItemType,
-    amount: Int,
-    noinline meta: B.() -> Unit
-): ItemStack = ItemStack.builder().type(type).amount(amount).meta(meta).build()
+public inline fun <B : ItemMetaBuilder<B, P>, reified P> item(type: ItemType, amount: Int, meta: B.() -> Unit): ItemStack
+where P : ItemMetaBuilder.Provider<B>, P : ItemMeta {
+    return ItemStack.builder().type(type).amount(amount).meta(meta).build()
+}

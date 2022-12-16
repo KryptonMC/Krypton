@@ -11,11 +11,7 @@
 package org.kryptonmc.api.world.dimension
 
 import org.jetbrains.annotations.Contract
-
-@Target(AnnotationTarget.CLASS, AnnotationTarget.FUNCTION)
-@Retention(AnnotationRetention.SOURCE)
-@DslMarker
-internal annotation class DimensionTypeDsl
+import org.kryptonmc.internal.annotations.dsl.DimensionTypeDsl
 
 /**
  * Creates a new dimension type by applying the given [builder] to a new

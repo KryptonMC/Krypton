@@ -32,6 +32,6 @@ class RespawnAnchorBlock(properties: Properties) : KryptonBlock(properties) {
 
         @JvmStatic
         fun getScaledChargeLevel(state: KryptonBlockState, scale: Int): Int =
-            Maths.floor((state.require(CHARGE) - 0).toFloat() / 4F * scale.toFloat())
+            Maths.floor((state.requireProperty(CHARGE) - 0).toFloat() / 4F * scale.toFloat())
     }
 }

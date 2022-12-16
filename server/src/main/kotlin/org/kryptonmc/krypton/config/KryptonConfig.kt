@@ -22,10 +22,7 @@ import net.kyori.adventure.serializer.configurate4.ConfigurateComponentSerialize
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer
 import org.kryptonmc.api.ServerConfig
-import org.kryptonmc.api.world.Difficulty
-import org.kryptonmc.api.world.GameMode
 import org.kryptonmc.krypton.config.category.AdvancedCategory
-import org.kryptonmc.krypton.config.category.OtherCategory
 import org.kryptonmc.krypton.config.category.ProxyCategory
 import org.kryptonmc.krypton.config.category.ServerCategory
 import org.kryptonmc.krypton.config.category.StatusCategory
@@ -55,9 +52,7 @@ data class KryptonConfig(
     @Comment("Advanced settings. Don't touch these unless you know what you're doing.")
     val advanced: AdvancedCategory = AdvancedCategory(),
     @Comment("Proxy IP forwarding settings.")
-    val proxy: ProxyCategory = ProxyCategory(),
-    @Comment("Other settings that don't quite fit in anywhere else.")
-    val other: OtherCategory = OtherCategory()
+    val proxy: ProxyCategory = ProxyCategory()
 ) : ServerConfig {
 
     override val isOnline: Boolean
@@ -93,8 +88,8 @@ data class KryptonConfig(
                     .outputStringComponents(true)
                     .build()
                     .serializers())
-                builder.register(EnumSerializer(Difficulty::class.java, "difficulty", { Difficulties.fromId(it) }, { Difficulties.fromName(it) }))
-                builder.register(EnumSerializer(GameMode::class.java, "game mode", { GameModes.fromId(it) }, { GameModes.fromName(it) }))
+                builder.register(EnumSerializer.of("difficulty", Difficulties::fromId, Difficulties::fromName))
+                builder.register(EnumSerializer.of("game mode", GameModes::fromId, GameModes::fromName))
                 builder.register(LocaleTypeSerializer)
                 builder.registerAnnotatedObjects(objectMapperFactory())
             }

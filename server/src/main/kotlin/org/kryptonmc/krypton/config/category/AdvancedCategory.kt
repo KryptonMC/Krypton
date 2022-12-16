@@ -20,24 +20,22 @@ package org.kryptonmc.krypton.config.category
 
 import org.spongepowered.configurate.objectmapping.ConfigSerializable
 import org.spongepowered.configurate.objectmapping.meta.Comment
-import org.spongepowered.configurate.objectmapping.meta.Setting
 
 @ConfigSerializable
 @JvmRecord
 data class AdvancedCategory(
-    @Setting("synchronize-chunk-writes")
     @Comment("Whether to use the DSYNC option for saving region files to disk.")
     val synchronizeChunkWrites: Boolean = true,
-    @Setting("serialize-player-data")
     @Comment("Whether the server should load and save player data to and from files")
     val serializePlayerData: Boolean = true,
-    @Setting("use-data-converter")
     @Comment("If worlds from previous versions should be upgraded to the current version.")
     val useDataConverter: Boolean = true,
     @Comment("If the server should enforce that all game profiles have properties with valid signatures.")
-    @Setting("enforce-secure-profiles")
     val enforceSecureProfiles: Boolean = true,
     @Comment("The maximum number of updates to block neighbours that may be executed in bulk.")
-    @Setting("maximum-chained-neighbour-updates")
-    val maximumChainedNeighbourUpdates: Int = 1000000
+    val maximumChainedNeighbourUpdates: Int = 1000000,
+    @Comment("If we should enable bStats metrics for the server")
+    val metrics: Boolean = true,
+    @Comment("The duration (in seconds) a single tick must take before the single tick profiler reports it.")
+    val saveThreshold: Int = 5
 )

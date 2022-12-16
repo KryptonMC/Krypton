@@ -25,29 +25,25 @@ import com.google.devtools.ksp.symbol.KSClassDeclaration
 import com.google.devtools.ksp.symbol.KSPropertyDeclaration
 import com.google.devtools.ksp.symbol.KSTypeReference
 
-class InterfaceImmutabilityValidator(private val resolver: Resolver) : ImmutabilityValidator {
+object InterfaceImmutabilityValidator : ImmutabilityValidator {
 
-    override fun validateType(type: KSClassDeclaration) {
+    private val DEFAULT_BOOLEAN_REGEX = "is[A-Z].*".toRegex()
+
+    override fun validateClass(type: KSClassDeclaration, resolver: Resolver) {
         if (type.classKind != ClassKind.INTERFACE) error("Expected interface for interface validation strategy, given $type!")
     }
 
     @OptIn(KspExperimental::class)
-    override fun validateProperty(property: KSPropertyDeclaration, declaringType: KSClassDeclaration) {
+    override fun validateProperty(property: KSPropertyDeclaration, declaringType: KSClassDeclaration, resolver: Resolver) {
         val getter = property.getter ?: return
         val returnType = getter.returnType ?: return
         if (isBoolean(resolver, returnType) && property.simpleName.asString().matches(DEFAULT_BOOLEAN_REGEX)) return
-        val jvmName = resolver.getJvmName(getter)
-        if (jvmName != property.simpleName.asString()) {
+        if (resolver.getJvmName(getter) != property.simpleName.asString()) {
             error("Expected JvmName for getter on property ${property.simpleName} in immutable type ${declaringType.simpleName} to be the same" +
                     " as the property name!")
         }
     }
 
-    companion object {
-
-        private val DEFAULT_BOOLEAN_REGEX = "is[A-Z].*".toRegex()
-
-        @JvmStatic
-        private fun isBoolean(resolver: Resolver, type: KSTypeReference): Boolean = type.resolve().isAssignableFrom(resolver.builtIns.booleanType)
-    }
+    @JvmStatic
+    private fun isBoolean(resolver: Resolver, type: KSTypeReference): Boolean = type.resolve().isAssignableFrom(resolver.builtIns.booleanType)
 }

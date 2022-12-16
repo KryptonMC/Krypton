@@ -35,8 +35,9 @@ public enum class RailShape {
     SOUTH_WEST;
 
     /**
-     * If this rail shape ascends the Minecart by one Y level.
+     * Gets whether this rail shape ascends the Minecart by one Y level.
+     *
+     * @return true if ascending, false otherwise
      */
-    public val isAscending: Boolean
-        get() = this == ASCENDING_NORTH || this == ASCENDING_SOUTH || this == ASCENDING_EAST || this == ASCENDING_WEST
+    public fun isAscending(): Boolean = this == ASCENDING_NORTH || this == ASCENDING_SOUTH || this == ASCENDING_EAST || this == ASCENDING_WEST
 }

@@ -17,7 +17,7 @@ import net.kyori.adventure.key.Key
 import org.kryptonmc.api.entity.Mob
 import org.kryptonmc.api.entity.player.Player
 import org.kryptonmc.api.registry.Registries
-import org.kryptonmc.api.util.Catalogue
+import org.kryptonmc.internal.annotations.Catalogue
 
 /**
  * All the built-in game rules.

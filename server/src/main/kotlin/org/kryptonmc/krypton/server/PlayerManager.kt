@@ -106,7 +106,7 @@ class PlayerManager(private val server: KryptonServer) {
 
     fun add(player: KryptonPlayer, session: SessionHandler): CompletableFuture<Void> = dataManager.load(player, executor).thenAcceptAsync({ nbt ->
         val profile = player.profile
-        val name = server.profileCache.get(profile.uuid)?.name ?: profile.name
+        val name = server.profileCache.getProfile(profile.uuid)?.name ?: profile.name
         server.profileCache.add(profile)
         val dimension = if (nbt != null) {
             KryptonDimensionType.parseLegacy(Dynamic(NbtOps.INSTANCE, nbt.get("Dimension")))
@@ -156,7 +156,7 @@ class PlayerManager(private val server: KryptonServer) {
         session.write(PacketOutUpdateTags.CACHED)
         session.send(PacketOutEntityEvent(player.id, if (reducedDebugInfo) ENABLE_REDUCED_DEBUG_SCREEN else DISABLE_REDUCED_DEBUG_SCREEN))
         sendCommands(player)
-        player.statistics.invalidate()
+        player.statisticsTracker.invalidate()
         updateScoreboard(world.scoreboard, player)
         server.sessionManager.invalidateStatus()
 
@@ -196,7 +196,7 @@ class PlayerManager(private val server: KryptonServer) {
 
     fun remove(player: KryptonPlayer) {
         server.eventManager.fire(KryptonQuitEvent(player)).thenAcceptAsync({ event ->
-            player.statistics.increment(CustomStatistics.LEAVE_GAME)
+            player.statisticsTracker.incrementStatistic(CustomStatistics.LEAVE_GAME)
             save(player)
             player.world.chunkManager.removePlayer(player)
 
@@ -251,7 +251,7 @@ class PlayerManager(private val server: KryptonServer) {
 
     private fun save(player: KryptonPlayer) {
         dataManager.save(player)?.let { server.userManager.updateUser(player.uuid, it) }
-        player.statistics.save()
+        player.statisticsTracker.save()
     }
 
     private fun sendWorldInfo(world: KryptonWorld, player: KryptonPlayer) {

@@ -89,9 +89,9 @@ object DebugStickHandler : ItemHandler {
 
     @JvmStatic
     private fun <T : Comparable<T>> cycleState(state: KryptonBlockState, property: KryptonProperty<T>, reversed: Boolean): KryptonBlockState =
-        state.set(property, Iterables.findRelative(property.values, state.require(property), reversed)!!)
+        state.setProperty(property, Iterables.findRelative(property.values, state.requireProperty(property), reversed)!!)
 
     @JvmStatic
     private fun <T : Comparable<T>> toString(state: KryptonBlockState, property: KryptonProperty<T>): Component =
-        Component.text(property.toString(state.require(property)))
+        Component.text(property.toString(state.requireProperty(property)))
 }

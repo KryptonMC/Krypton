@@ -43,21 +43,21 @@ class KryptonCooldownTracker(private val player: KryptonPlayer) : CooldownTracke
         }
     }
 
-    override fun hasCooldown(item: ItemType): Boolean = getPercentage(item) > 0F
+    override fun hasCooldown(item: ItemType): Boolean = getCooldownPercentage(item) > 0F
 
-    override fun get(item: ItemType): Int {
-        val instance = cooldowns.get(item) ?: return 0
+    override fun getCooldown(item: ItemType): Int {
+        val instance = cooldowns.get(item) ?: return -1
         return instance.endTime - tickCount
     }
 
-    override fun getPercentage(item: ItemType): Float {
+    override fun getCooldownPercentage(item: ItemType): Float {
         val instance = cooldowns.get(item) ?: return 0F
         val totalCooldownTime = (instance.endTime - instance.startTime).toFloat()
         val remainingCooldownTime = (instance.endTime - tickCount).toFloat()
         return Maths.clamp(remainingCooldownTime / totalCooldownTime, 0F, 1F)
     }
 
-    override fun set(item: ItemType, ticks: Int) {
+    override fun setCooldown(item: ItemType, ticks: Int) {
         if (ticks < 0) return
         val result = player.server.eventManager.fireSync(KryptonCooldownEvent(player, item, ticks)).result
         if (!result.isAllowed) return
@@ -66,8 +66,8 @@ class KryptonCooldownTracker(private val player: KryptonPlayer) : CooldownTracke
         onCooldownStarted(item, ticks)
     }
 
-    override fun reset(item: ItemType) {
-        set(item, 0)
+    override fun resetCooldown(item: ItemType) {
+        setCooldown(item, 0)
     }
 
     private fun onCooldownStarted(type: ItemType, ticks: Int) {

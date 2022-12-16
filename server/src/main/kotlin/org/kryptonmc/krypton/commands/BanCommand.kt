@@ -36,7 +36,7 @@ object BanCommand {
     @JvmStatic
     fun register(dispatcher: CommandDispatcher<CommandSourceStack>) {
         dispatcher.register(literal("ban") {
-            permission(KryptonPermission.BAN)
+            requiresPermission(KryptonPermission.BAN)
             argument(TARGETS, GameProfileArgument) {
                 runs { ban(it.source, GameProfileArgument.get(it, TARGETS), DEFAULT_REASON) }
                 argument(REASON, StringArgumentType.string()) {

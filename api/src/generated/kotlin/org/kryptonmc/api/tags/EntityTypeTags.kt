@@ -43,5 +43,5 @@ public object EntityTypeTags {
 
     // @formatter:on
     @JvmStatic
-    public fun get(key: String): TagKey<EntityType<*>> = TagKey.of(ResourceKeys.ENTITY_TYPE, Key.key(key))
+    private fun get(key: String): TagKey<EntityType<*>> = TagKey.of(ResourceKeys.ENTITY_TYPE, Key.key(key))
 }

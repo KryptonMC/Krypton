@@ -22,8 +22,8 @@ import net.kyori.adventure.key.Key
 import org.kryptonmc.api.block.BlockSoundGroup
 import org.kryptonmc.api.block.meta.BedPart
 import org.kryptonmc.api.item.data.DyeColor
-import org.kryptonmc.api.util.Catalogue
 import org.kryptonmc.api.util.Direction
+import org.kryptonmc.internal.annotations.Catalogue
 import org.kryptonmc.krypton.entity.KryptonEntityType
 import org.kryptonmc.krypton.entity.KryptonEntityTypes
 import org.kryptonmc.krypton.registry.KryptonRegistries
@@ -1881,7 +1881,7 @@ object KryptonBlocks {
     @JvmField
     val SEA_PICKLE: KryptonBlock = register("sea_pickle",
         DummyBlock(Properties.of(Materials.WATER_PLANT, MaterialColors.COLOR_GREEN)
-            .lightLevel { if (SeaPickleBlock.isDead(it)) 0 else 3 + 3 * it.require(SeaPickleBlock.PICKLES) }
+            .lightLevel { if (SeaPickleBlock.isDead(it)) 0 else 3 + 3 * it.requireProperty(SeaPickleBlock.PICKLES) }
             .sounds(BlockSoundGroups.SLIME_BLOCK)
             .noOcclusion()))
     @JvmField
@@ -2634,7 +2634,7 @@ object KryptonBlocks {
 
     @JvmStatic
     private fun litBlockEmission(lightValue: Int): ToIntFunction<KryptonBlockState> =
-        ToIntFunction { if (it.require(KryptonProperties.LIT)) lightValue else 0 }
+        ToIntFunction { if (it.requireProperty(KryptonProperties.LIT)) lightValue else 0 }
 
     @JvmStatic
     private fun bed(color: DyeColor): KryptonBlock =
@@ -2642,7 +2642,7 @@ object KryptonBlocks {
 
     @JvmStatic
     private fun bedColorFunction(color: DyeColor): ColorFunction = Function {
-        if (it.require(KryptonProperties.BED_PART) == BedPart.FOOT) MaterialColor.fromDyeColor(color) else MaterialColors.WOOL
+        if (it.requireProperty(KryptonProperties.BED_PART) == BedPart.FOOT) MaterialColor.fromDyeColor(color) else MaterialColors.WOOL
     }
 
     @JvmStatic
@@ -2651,7 +2651,7 @@ object KryptonBlocks {
 
     @JvmStatic
     private fun logColorFunction(top: MaterialColor, bark: MaterialColor): ColorFunction = Function {
-        if (it.require(KryptonProperties.AXIS) == Direction.Axis.Y) top else bark
+        if (it.requireProperty(KryptonProperties.AXIS) == Direction.Axis.Y) top else bark
     }
 
     @JvmStatic
@@ -2682,7 +2682,7 @@ object KryptonBlocks {
     @JvmStatic
     @Suppress("UnusedPrivateMember")
     private fun pistonBase(sticky: Boolean): KryptonBlock {
-        val predicate = BlockBehaviour.StatePredicate { state, _, _ -> !state.require(KryptonProperties.EXTENDED) }
+        val predicate = BlockBehaviour.StatePredicate { state, _, _ -> !state.requireProperty(KryptonProperties.EXTENDED) }
         return DummyBlock(Properties.of(Materials.PISTON).strength(1.5F).isRedstoneConductor(NEVER).isSuffocating(predicate))
     }
 

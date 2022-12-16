@@ -23,7 +23,6 @@ import net.kyori.adventure.text.TextComponent
 import net.kyori.adventure.text.format.TextColor
 import org.spongepowered.configurate.objectmapping.ConfigSerializable
 import org.spongepowered.configurate.objectmapping.meta.Comment
-import org.spongepowered.configurate.objectmapping.meta.Setting
 
 @ConfigSerializable
 @JvmRecord
@@ -32,7 +31,6 @@ data class StatusCategory(
     val enabled: Boolean = true,
     @Comment("The message of the day. Supports legacy and hex codes (using &#).")
     val motd: TextComponent = DEFAULT_MOTD,
-    @Setting("max-players")
     @Comment("The upper limit of the player count. Any players that try to join when this is reached will be kicked.")
     val maxPlayers: Int = DEFAULT_MAX_PLAYERS
 ) {

@@ -63,10 +63,10 @@ object KryptonAdventure {
     fun colors(): List<NamedTextColor> = NAMED_TEXT_COLORS
 
     @JvmStatic
-    fun colorId(color: NamedTextColor): Int = NAMED_TEXT_COLOR_ID_MAP.getInt(color)
+    fun getColorId(color: NamedTextColor): Int = NAMED_TEXT_COLOR_ID_MAP.getInt(color)
 
     @JvmStatic
-    fun colorFromId(id: Int): NamedTextColor = NAMED_TEXT_COLORS.get(id)
+    fun getColorFromId(id: Int): NamedTextColor = NAMED_TEXT_COLORS.get(id)
 
     @JvmStatic
     fun toItemStack(book: Book): KryptonItemStack {
@@ -74,7 +74,7 @@ object KryptonAdventure {
         return KryptonItemStack.Builder()
             .type(ItemTypes.WRITTEN_BOOK)
             .amount(1)
-            .meta(WrittenBookMeta::class.java) {
+            .meta<_, WrittenBookMeta> {
                 title(book.title())
                 author(book.author())
                 pages(book.pages())

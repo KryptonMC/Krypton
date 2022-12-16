@@ -11,7 +11,7 @@ package org.kryptonmc.api.util
 import java.io.Serial
 
 /**
- * Thrown when a factory or builder requested from the factory provider was not found.
+ * Thrown when a factory requested from the factory provider was not found.
  */
 public class TypeNotFoundException : RuntimeException {
 

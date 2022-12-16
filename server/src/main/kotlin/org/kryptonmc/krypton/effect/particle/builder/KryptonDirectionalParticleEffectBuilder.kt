@@ -24,15 +24,16 @@ import org.kryptonmc.api.effect.particle.data.ParticleData
 import org.kryptonmc.api.util.Vec3d
 import org.kryptonmc.krypton.effect.particle.data.KryptonDirectionalParticleData
 
-class KryptonDirectionalParticleEffectBuilder(type: DirectionalParticleType) : AbstractParticleEffectBuilder<DirectionalParticleEffectBuilder>(type),
-    DirectionalParticleEffectBuilder {
+class KryptonDirectionalParticleEffectBuilder(type: DirectionalParticleType) : AbstractParticleEffectBuilder<ApiDirectional>(type), ApiDirectional {
 
     private var direction: Vec3d? = null
     private var velocity = 0F
 
-    override fun direction(direction: Vec3d): DirectionalParticleEffectBuilder = apply { this.direction = direction }
+    override fun direction(direction: Vec3d): ApiDirectional = apply { this.direction = direction }
 
-    override fun velocity(velocity: Float): DirectionalParticleEffectBuilder = apply { this.velocity = velocity }
+    override fun velocity(velocity: Float): ApiDirectional = apply { this.velocity = velocity }
 
     override fun buildData(): ParticleData = KryptonDirectionalParticleData(direction, velocity)
 }
+
+private typealias ApiDirectional = DirectionalParticleEffectBuilder

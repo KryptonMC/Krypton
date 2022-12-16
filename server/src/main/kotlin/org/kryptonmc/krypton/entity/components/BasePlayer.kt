@@ -21,10 +21,7 @@ package org.kryptonmc.krypton.entity.components
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.util.TriState
 import org.kryptonmc.api.permission.PermissionFunction
-import org.kryptonmc.api.resource.ResourceKey
 import org.kryptonmc.api.util.Direction
-import org.kryptonmc.api.world.World
-import org.kryptonmc.api.world.dimension.DimensionType
 import org.kryptonmc.krypton.entity.KryptonEquipable
 import org.kryptonmc.krypton.util.Directions
 import org.kryptonmc.krypton.world.scoreboard.KryptonScoreboard
@@ -39,10 +36,6 @@ interface BasePlayer : BaseEntity, KryptonEquipable, Vanishable, HungerDelegate,
         get() = name
     override val facing: Direction
         get() = Directions.ofPitch(pitch.toDouble())
-    override val dimensionType: DimensionType
-        get() = world.dimensionType
-    override val dimension: ResourceKey<World>
-        get() = world.dimension
 
     override fun getPermissionValue(permission: String): TriState = permissionFunction.getPermissionValue(permission)
 }

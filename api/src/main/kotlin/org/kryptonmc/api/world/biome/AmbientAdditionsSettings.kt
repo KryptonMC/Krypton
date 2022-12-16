@@ -16,6 +16,7 @@ import org.kryptonmc.api.effect.sound.SoundEvent
 import org.kryptonmc.api.util.Buildable
 import org.kryptonmc.internal.annotations.ImmutableType
 import org.kryptonmc.internal.annotations.TypeFactory
+import org.kryptonmc.internal.annotations.dsl.BiomeDsl
 
 /**
  * Settings for ambient sounds that may play randomly when in the biome, with

@@ -30,6 +30,6 @@ class LightBlock(properties: Properties) : KryptonBlock(properties) {
         @JvmField
         val LEVEL: IntProperty = KryptonProperties.LEVEL
         @JvmField
-        val LIGHT_EMISSION: ToIntFunction<KryptonBlockState> = ToIntFunction { it.require(LEVEL) }
+        val LIGHT_EMISSION: ToIntFunction<KryptonBlockState> = ToIntFunction { it.requireProperty(LEVEL) }
     }
 }

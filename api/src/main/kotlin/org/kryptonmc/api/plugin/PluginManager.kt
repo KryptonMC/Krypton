@@ -42,7 +42,7 @@ public interface PluginManager {
      * @return the plugin container with the specified [id], or null if there
      * isn't one
      */
-    public fun plugin(id: String): PluginContainer?
+    public fun getPlugin(id: String): PluginContainer?
 
     /**
      * Check if a plugin with the specified [id] is currently loaded.

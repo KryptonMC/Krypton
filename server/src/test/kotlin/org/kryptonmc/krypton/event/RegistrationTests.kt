@@ -46,7 +46,7 @@ class RegistrationTests {
 
     @TestFactory
     fun `simple register and unregister`(): Iterable<DynamicNode> = composeTests("simple register and unregister") { annotated, generator ->
-        if (annotated) eventManager.register(PLUGIN_A, AnnotatedListener()) else eventManager.registerHandler(PLUGIN_A, HandlerListener())
+        if (annotated) eventManager.registerListener(PLUGIN_A, AnnotatedListener()) else eventManager.registerHandler(PLUGIN_A, HandlerListener())
         generator.assertFiredEventValue(1)
         eventManager.unregisterListeners(PLUGIN_A)
         generator.assertFiredEventValue(0)
@@ -64,14 +64,14 @@ class RegistrationTests {
     fun `double unregister listener`(): Iterable<DynamicNode> = composeTests("double unregister listener") { annotated, generator ->
         if (annotated) {
             val annotatedListener = AnnotatedListener()
-            eventManager.register(PLUGIN_A, annotatedListener)
+            eventManager.registerListener(PLUGIN_A, annotatedListener)
             eventManager.unregisterListener(PLUGIN_A, annotatedListener)
             assertDoesNotThrow("Extra unregister should do nothing!") { eventManager.unregisterListener(PLUGIN_A, annotatedListener) }
         } else {
             val handler = HandlerListener()
             eventManager.registerHandler(PLUGIN_A, handler)
-            eventManager.unregister(PLUGIN_A, handler)
-            assertDoesNotThrow("Extra unregister should do nothing!") { eventManager.unregister(PLUGIN_A, handler) }
+            eventManager.unregisterHandler(PLUGIN_A, handler)
+            assertDoesNotThrow("Extra unregister should do nothing!") { eventManager.unregisterHandler(PLUGIN_A, handler) }
         }
         generator.assertFiredEventValue(0)
     }
@@ -79,8 +79,8 @@ class RegistrationTests {
     private fun createDoubleRegisterFunction(pluginB: Any): TestFunction = TestFunction { annotated, generator ->
         if (annotated) {
             val annotatedListener = AnnotatedListener()
-            eventManager.register(PLUGIN_A, annotatedListener)
-            eventManager.register(pluginB, annotatedListener)
+            eventManager.registerListener(PLUGIN_A, annotatedListener)
+            eventManager.registerListener(pluginB, annotatedListener)
         } else {
             val handler = HandlerListener()
             eventManager.registerHandler(PLUGIN_A, handler)

@@ -111,7 +111,7 @@ class KryptonPluginManager : PluginManager {
         return pluginInstances.get(instance)
     }
 
-    override fun plugin(id: String): PluginContainer? = pluginMap.get(id)
+    override fun getPlugin(id: String): PluginContainer? = pluginMap.get(id)
 
     override fun isLoaded(id: String): Boolean = pluginMap.containsKey(id)
 

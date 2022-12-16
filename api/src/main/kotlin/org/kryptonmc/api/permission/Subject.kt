@@ -47,5 +47,5 @@ public fun interface Subject {
      *
      * @return the permission checker
      */
-    public fun asPermissionChecker(): PermissionChecker = PermissionChecker(::getPermissionValue)
+    public fun asPermissionChecker(): PermissionChecker = PermissionChecker { getPermissionValue(it) }
 }

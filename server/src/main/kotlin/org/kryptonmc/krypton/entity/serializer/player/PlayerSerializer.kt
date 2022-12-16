@@ -104,7 +104,7 @@ object PlayerSerializer : EntitySerializer<KryptonPlayer> {
         if (!leftShoulder.isEmpty) put(LEFT_SHOULDER_TAG, leftShoulder)
         if (!rightShoulder.isEmpty) put(RIGHT_SHOULDER_TAG, rightShoulder)
 
-        putString(DIMENSION_TAG, entity.dimension.location.asString())
+        putString(DIMENSION_TAG, entity.world.dimension.location.asString())
         entity.respawnData?.save(this, LOGGER)
 
         val rootVehicle = entity.vehicleSystem.rootVehicle()

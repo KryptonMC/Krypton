@@ -18,7 +18,7 @@
  */
 package org.kryptonmc.krypton.world.chunk.ticket
 
-import org.kryptonmc.api.util.Catalogue
+import org.kryptonmc.internal.annotations.Catalogue
 import java.util.UUID
 
 @Catalogue(TicketType::class)

@@ -11,8 +11,7 @@ package org.kryptonmc.api.state
 
 import org.jetbrains.annotations.ApiStatus
 import org.jetbrains.annotations.Unmodifiable
-import org.kryptonmc.api.Krypton
-import org.kryptonmc.api.util.CataloguedBy
+import org.kryptonmc.internal.annotations.CataloguedBy
 import org.kryptonmc.internal.annotations.ImmutableType
 import org.kryptonmc.internal.annotations.TypeFactory
 
@@ -51,17 +50,5 @@ public interface Property<T : Comparable<T>> {
         public fun forInt(name: String): Property<Int>
 
         public fun <E : Enum<E>> forEnum(name: String): Property<E>
-    }
-
-    public companion object {
-
-        @JvmSynthetic
-        internal fun forBoolean(name: String): Property<Boolean> = Krypton.factory<Factory>().forBoolean(name)
-
-        @JvmSynthetic
-        internal fun forInt(name: String): Property<Int> = Krypton.factory<Factory>().forInt(name)
-
-        @JvmSynthetic
-        internal fun <E : Enum<E>> forEnum(name: String): Property<E> = Krypton.factory<Factory>().forEnum(name)
     }
 }

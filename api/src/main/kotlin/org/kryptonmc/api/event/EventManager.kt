@@ -49,10 +49,13 @@ public interface EventManager {
      * Requests that the given [listener] be registered with this manager
      * to listen for and handle events for the given [plugin].
      *
+     * This method will scan the given [listener] class for methods annotated
+     * with @[Listener] and register them as event handlers.
+     *
      * @param plugin the plugin the listener handles events for
      * @param listener the listener to register
      */
-    public fun register(plugin: Any, listener: Any)
+    public fun registerListener(plugin: Any, listener: Any)
 
     /**
      * Requests that the given [handler] be registered with this manager to
@@ -64,8 +67,8 @@ public interface EventManager {
      * @param eventClass the class of the event
      * @param handler the handler to register
      */
-    public fun <E> register(plugin: Any, eventClass: Class<E>, handler: EventHandler<E>) {
-        register(plugin, eventClass, ListenerPriority.MEDIUM, handler)
+    public fun <E> registerHandler(plugin: Any, eventClass: Class<E>, handler: EventHandler<E>) {
+        registerHandler(plugin, eventClass, ListenerPriority.MEDIUM, handler)
     }
 
     /**
@@ -78,7 +81,7 @@ public interface EventManager {
      * @param priority the priority the handler will be executed with
      * @param handler the handler to register
      */
-    public fun <E> register(plugin: Any, eventClass: Class<E>, priority: ListenerPriority, handler: EventHandler<E>)
+    public fun <E> registerHandler(plugin: Any, eventClass: Class<E>, priority: ListenerPriority, handler: EventHandler<E>)
 
     /**
      * Unregisters all registered listeners listening for events for the given
@@ -108,33 +111,5 @@ public interface EventManager {
      * @param plugin the plugin the handler handles events for
      * @param handler the handler to unregister
      */
-    public fun <E> unregister(plugin: Any, handler: EventHandler<E>)
-}
-
-/**
- * Requests that the given [handler] be registered with this manager to listen
- * for and handle events of type [E] at
- * [medium priority][ListenerPriority.MEDIUM] for the given [plugin].
- *
- * @param E the type of the event
- * @param plugin the plugin the handler handles events for
- * @param handler the handler to register
- */
-@JvmSynthetic
-public inline fun <reified E> EventManager.registerHandler(plugin: Any, handler: EventHandler<E>) {
-    register(plugin, E::class.java, handler)
-}
-
-/**
- * Requests that the given [handler] be registered with this manager to listen
- * for and handle events of type [E] for the given [plugin].
- *
- * @param E the type of the event
- * @param plugin the plugin the handler handles events for
- * @param priority the priority the handler will be executed with
- * @param handler the handler to register
- */
-@JvmSynthetic
-public inline fun <reified E> EventManager.register(plugin: Any, priority: ListenerPriority, handler: EventHandler<E>) {
-    register(plugin, E::class.java, priority, handler)
+    public fun <E> unregisterHandler(plugin: Any, handler: EventHandler<E>)
 }

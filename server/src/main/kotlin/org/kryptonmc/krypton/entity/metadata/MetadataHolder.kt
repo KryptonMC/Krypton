@@ -25,17 +25,15 @@ import space.vectrix.flare.fastutil.Int2ObjectSyncMap
 class MetadataHolder(private val entity: BaseDataHolder) {
 
     private val itemsById = Int2ObjectSyncMap.hashmap<MutableEntry<*>>()
+    private var dirty = false
 
-    var isDirty: Boolean = false
-        private set
-    var isEmpty: Boolean = true
-        private set
+    fun isDirty(): Boolean = dirty
 
     fun <T> define(key: MetadataKey<T>, value: T) {
         val id = key.id
         require(id <= MAX_ID_VALUE) { "Data value id $id is too large! Maximum is $MAX_ID_VALUE!" }
         require(!itemsById.containsKey(id)) { "Duplicate id value for $id!" }
-        require(MetadataSerializers.idOf(key.serializer) >= 0) { "Unregistered serializer ${key.serializer} for $id!" }
+        require(MetadataSerializers.getId(key.serializer) >= 0) { "Unregistered serializer ${key.serializer} for $id!" }
         return createItem(key, value)
     }
 
@@ -47,7 +45,7 @@ class MetadataHolder(private val entity: BaseDataHolder) {
         existing.value = value
         entity.onDataUpdate(key)
         existing.isDirty = true
-        isDirty = true
+        dirty = true
     }
 
     fun getFlag(key: MetadataKey<Byte>, flag: Int): Boolean = get(key).toInt() and (1 shl flag) != 0
@@ -65,7 +63,6 @@ class MetadataHolder(private val entity: BaseDataHolder) {
 
     private fun <T> createItem(key: MetadataKey<T>, value: T) {
         itemsById.put(key.id, MutableEntry(key, value))
-        isEmpty = false
     }
 
     fun collectAll(): List<Entry<*>>? {
@@ -79,7 +76,7 @@ class MetadataHolder(private val entity: BaseDataHolder) {
 
     fun collectDirty(): List<Entry<*>>? {
         var entries: MutableList<Entry<*>>? = null
-        if (isDirty) {
+        if (dirty) {
             itemsById.values.forEach {
                 if (!it.isDirty) return@forEach
                 it.isDirty = false
@@ -87,7 +84,7 @@ class MetadataHolder(private val entity: BaseDataHolder) {
                 entries!!.add(it.export())
             }
         }
-        isDirty = false
+        dirty = false
         return entries
     }
 

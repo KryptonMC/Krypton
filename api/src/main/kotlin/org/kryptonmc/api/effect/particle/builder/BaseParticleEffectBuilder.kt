@@ -10,9 +10,9 @@ package org.kryptonmc.api.effect.particle.builder
 
 import net.kyori.adventure.builder.AbstractBuilder
 import org.jetbrains.annotations.Contract
-import org.kryptonmc.api.effect.particle.ParticleDsl
 import org.kryptonmc.api.effect.particle.ParticleEffect
 import org.kryptonmc.api.util.Vec3d
+import org.kryptonmc.internal.annotations.dsl.ParticleDsl
 
 /**
  * The base builder for building particle effects.

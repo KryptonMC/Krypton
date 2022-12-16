@@ -24,6 +24,7 @@ import org.kryptonmc.api.block.BlockState
 import org.kryptonmc.api.statistic.StatisticTypes
 import org.kryptonmc.api.util.Direction
 import org.kryptonmc.api.world.biome.Precipitation
+import org.kryptonmc.internal.annotations.CataloguedBy
 import org.kryptonmc.krypton.entity.KryptonEntity
 import org.kryptonmc.krypton.entity.KryptonLivingEntity
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
@@ -53,6 +54,7 @@ import org.kryptonmc.krypton.world.components.BlockGetter
 import java.util.function.Function
 
 @Suppress("LeakingThis")
+@CataloguedBy(KryptonBlocks::class)
 open class KryptonBlock(properties: Properties) : BlockBehaviour(properties), StateHolderDelegate<BlockState, KryptonBlockState>, IRO {
 
     final override val stateDefinition: StateDefinition<KryptonBlock, KryptonBlockState>
@@ -91,7 +93,7 @@ open class KryptonBlock(properties: Properties) : BlockBehaviour(properties), St
 
     open fun playerDestroy(world: KryptonWorld, player: KryptonPlayer, pos: BlockPos, state: KryptonBlockState, entity: KryptonBlockEntity?,
                            tool: KryptonItemStack) {
-        player.statistics.increment(StatisticTypes.BLOCK_MINED.get(this))
+        player.statisticsTracker.incrementStatistic(StatisticTypes.BLOCK_MINED.getStatistic(this))
         // TODO: Cause exhaustion and drop items
     }
 
@@ -132,7 +134,7 @@ open class KryptonBlock(properties: Properties) : BlockBehaviour(properties), St
 
     fun withPropertiesOf(state: KryptonBlockState): KryptonBlockState {
         var result = defaultBlockState
-        state.block.stateDefinition.properties.forEach { if (result.contains(it)) result = copyProperty(state, result, it) }
+        state.block.stateDefinition.properties.forEach { if (result.hasProperty(it)) result = copyProperty(state, result, it) }
         return result
     }
 
@@ -199,7 +201,7 @@ open class KryptonBlock(properties: Properties) : BlockBehaviour(properties), St
         @JvmStatic
         private fun <T : Comparable<T>> copyProperty(result: KryptonBlockState, state: KryptonBlockState,
                                                      property: KryptonProperty<T>): KryptonBlockState {
-            return state.set(property, result.require(property))
+            return state.setProperty(property, result.requireProperty(property))
         }
     }
 }

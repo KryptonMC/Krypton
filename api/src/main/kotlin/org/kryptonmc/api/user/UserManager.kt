@@ -23,7 +23,7 @@ public interface UserManager {
      * @param uuid the UUID of the user
      * @return the user with the UUID, or null if not present
      */
-    public fun get(uuid: UUID): User?
+    public fun getUser(uuid: UUID): User?
 
     /**
      * Gets the user with the given [name], or returns null if there is no user
@@ -32,7 +32,7 @@ public interface UserManager {
      * @param name the last known name of the user
      * @return the user with the UUID, or null if not present
      */
-    public fun get(name: String): User?
+    public fun getUser(name: String): User?
 
     /**
      * Gets the user with the given [uuid], loading them from persistent
@@ -42,7 +42,7 @@ public interface UserManager {
      * @param uuid the UUID of the user
      * @return the user with the UUID, or null if not present
      */
-    public fun load(uuid: UUID): CompletableFuture<User?>
+    public fun loadUser(uuid: UUID): CompletableFuture<User?>
 
     /**
      * Gets the user with the given [name], loading them from persistent
@@ -52,5 +52,5 @@ public interface UserManager {
      * @param name the last known name of the user
      * @return the user with the UUID, or null if not present
      */
-    public fun load(name: String): CompletableFuture<User?>
+    public fun loadUser(name: String): CompletableFuture<User?>
 }

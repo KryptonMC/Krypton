@@ -33,6 +33,6 @@ class SeaPickleBlock(properties: Properties) : KryptonBlock(properties) {
         val WATERLOGGED: BooleanProperty = KryptonProperties.WATERLOGGED
 
         @JvmStatic
-        fun isDead(state: KryptonBlockState): Boolean = !state.require(WATERLOGGED)
+        fun isDead(state: KryptonBlockState): Boolean = !state.requireProperty(WATERLOGGED)
     }
 }

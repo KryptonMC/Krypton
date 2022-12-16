@@ -117,6 +117,6 @@ class StateDefinition<O, S : KryptonState<O, S>>(
             key: String,
             property: KryptonProperty<T>
         ): MapCodec<S> = MapCodec.pair(codec, property.valueCodec.fieldOf(key).orElseGet { property.value(supplier.get()) })
-            .xmap({ it.first.set(property, it.second.value) }, { Pair.of(it, property.value(it)) })
+            .xmap({ it.first.setProperty(property, it.second.value) }, { Pair.of(it, property.value(it)) })
     }
 }

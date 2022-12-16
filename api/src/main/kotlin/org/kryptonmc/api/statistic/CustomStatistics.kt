@@ -10,12 +10,14 @@ package org.kryptonmc.api.statistic
 
 import net.kyori.adventure.key.Key
 import org.kryptonmc.api.registry.Registries
-import org.kryptonmc.api.util.Catalogue
+import org.kryptonmc.internal.annotations.Catalogue
+import org.kryptonmc.internal.annotations.IgnoreNotCataloguedBy
 
 /**
  * All of the built-in custom statistics.
  */
 @Catalogue(Key::class)
+@IgnoreNotCataloguedBy
 public object CustomStatistics {
 
     // @formatter:off

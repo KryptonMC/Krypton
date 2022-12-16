@@ -34,7 +34,7 @@ public interface Scheduler {
      * @param delay the delay before this task is ran
      * @param unit the time unit for the [delay]
      * @param task the task to be ran
-     * @return a scheduled [Task] that can be [cancelled][Task.cancel]
+     * @return a scheduled task that can be [cancelled][Task.cancel]
      */
     public fun schedule(plugin: Any, delay: Long, unit: TimeUnit, task: TaskRunnable): Task
 
@@ -48,7 +48,7 @@ public interface Scheduler {
      * @param period the period of time between running this task
      * @param unit the unit of time for the [delay] and [period]
      * @param task the task to be ran
-     * @return a scheduled [Task] that can be [cancelled][Task.cancel]
+     * @return a scheduled task that can be [cancelled][Task.cancel]
      */
     public fun schedule(plugin: Any, delay: Long, period: Long, unit: TimeUnit, task: TaskRunnable): Task
 }

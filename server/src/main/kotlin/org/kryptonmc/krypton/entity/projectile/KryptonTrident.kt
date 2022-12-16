@@ -50,7 +50,8 @@ class KryptonTrident(world: KryptonWorld) : KryptonArrowLike(world), Trident {
     override val defaultHitGroundSound: SoundEvent
         get() = SoundEvents.TRIDENT_HIT_GROUND
 
-    init {
+    override fun defineData() {
+        super.defineData()
         data.define(MetadataKeys.Trident.LOYALTY_LEVEL, 0)
         data.define(MetadataKeys.Trident.ENCHANTED, false)
     }

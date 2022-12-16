@@ -20,13 +20,14 @@ package org.kryptonmc.krypton.entity.memory
 
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.key.Keyed
-import org.kryptonmc.api.util.CataloguedBy
+import org.kryptonmc.internal.annotations.CataloguedBy
 import org.kryptonmc.krypton.registry.KryptonRegistries
 import org.kryptonmc.serialization.Codec
 
-@JvmRecord
 @CataloguedBy(MemoryKeys::class)
-data class MemoryKey<T>(val codec: Codec<T>) : Keyed {
+class MemoryKey<T>(val codec: Codec<T>) : Keyed {
 
     override fun key(): Key = KryptonRegistries.MEMORIES.getKey(this)!!
+
+    override fun toString(): String = "MemoryKey(codec=$codec)"
 }

@@ -13,6 +13,7 @@ import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.item.ItemAttributeModifier
 import org.kryptonmc.api.item.data.ItemFlag
+import org.kryptonmc.internal.annotations.dsl.MetaDsl
 
 /**
  * The base builder for item metadata.

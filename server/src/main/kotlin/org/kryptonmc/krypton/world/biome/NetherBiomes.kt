@@ -28,7 +28,6 @@ import org.kryptonmc.api.world.biome.AmbientParticleSettings
 import org.kryptonmc.api.world.biome.Climate
 import org.kryptonmc.api.world.biome.Precipitation
 import org.kryptonmc.api.world.biome.TemperatureModifier
-import org.kryptonmc.api.world.biome.biome
 import org.kryptonmc.krypton.effect.KryptonMusic
 
 object NetherBiomes {
@@ -93,7 +92,7 @@ object NetherBiomes {
         additions: SoundEvent,
         music: SoundEvent,
         particles: AmbientParticleSettings? = null
-    ): KryptonBiome = biome {
+    ): KryptonBiome = KryptonBiome.Builder().apply {
         climate(Climate.of(Precipitation.NONE, 2F, 0F, TemperatureModifier.NONE))
         effects {
             waterColor(OverworldBiomes.OVERWORLD_WATER)
@@ -106,5 +105,5 @@ object NetherBiomes {
             additions(AmbientAdditionsSettings.of(additions, 0.0111))
             backgroundMusic(KryptonMusic.game(music))
         }
-    } as KryptonBiome
+    }.build()
 }

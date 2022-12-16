@@ -34,7 +34,7 @@ object TeleportCommand {
     @JvmStatic
     fun register(dispatcher: CommandDispatcher<CommandSourceStack>) {
         val node = dispatcher.register(literal("teleport") {
-            permission(KryptonPermission.TELEPORT)
+            requiresPermission(KryptonPermission.TELEPORT)
             argument(LOCATION, VectorArgument.normal()) {
                 runs { it.source.getPlayerOrError().teleport(VectorArgument.get(it, LOCATION)) }
             }

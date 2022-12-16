@@ -42,7 +42,7 @@ object GiveCommand {
     @JvmStatic
     fun register(dispatcher: CommandDispatcher<CommandSourceStack>) {
         dispatcher.register(literal("give") {
-            permission(KryptonPermission.GIVE)
+            requiresPermission(KryptonPermission.GIVE)
             argument(TARGETS, EntityArgumentType.players()) {
                 argument(ITEM, ItemStackArgumentType) {
                     runs { give(EntityArgumentType.getPlayers(it, TARGETS), ItemStackArgumentType.get(it, ITEM), 1) }
@@ -59,7 +59,7 @@ object GiveCommand {
     @JvmStatic
     private fun give(targets: List<KryptonPlayer>, item: ItemStackArgument, count: Int) {
         targets.forEach { target ->
-            item.createItemStacks(count).forEach(target.inventory::add)
+            item.createItemStacks(count).forEach(target.inventory::addItem)
             target.playSound(Sound.sound(SoundEvents.ITEM_PICKUP, Sound.Source.PLAYER, PICKUP_VOLUME, PICKUP_PITCH))
             target.session.send(PacketOutSetContainerContent(target.inventory, target.inventory.mainHand))
         }

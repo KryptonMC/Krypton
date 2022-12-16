@@ -78,7 +78,7 @@ public interface Team : ScoreboardBound {
     /**
      * All of the members in this team.
      */
-    public val members: Set<Component>
+    public val members: List<Component>
 
     /**
      * Adds a member to the list of members in this team.
@@ -148,50 +148,15 @@ public interface Team : ScoreboardBound {
          * @return this builder
          */
         @Contract("-> this", mutates = "this")
-        public fun allowFriendlyFire(): Builder = friendlyFire(true)
+        public fun friendlyFire(): Builder
 
         /**
-         * Disallows friendly fire for the team.
+         * Allows all team members to see invisible team members.
          *
          * @return this builder
          */
         @Contract("-> this", mutates = "this")
-        public fun disallowFriendlyFire(): Builder = friendlyFire(false)
-
-        /**
-         * Sets the friendly fire setting for the team to the given [value].
-         *
-         * @param value the value of the setting
-         * @return this builder
-         */
-        @Contract("_ -> this", mutates = "this")
-        public fun friendlyFire(value: Boolean): Builder
-
-        /**
-         * Allows friendly fire for the team.
-         *
-         * @return this builder
-         */
-        @Contract("-> this", mutates = "this")
-        public fun allowSeeingInvisibleMembers(): Builder = canSeeInvisibleMembers(true)
-
-        /**
-         * Allows friendly fire for the team.
-         *
-         * @return this builder
-         */
-        @Contract("-> this", mutates = "this")
-        public fun disallowSeeingInvisibleMembers(): Builder = canSeeInvisibleMembers(false)
-
-        /**
-         * Sets whether members can see other members that are invisible to the
-         * given [value].
-         *
-         * @param value the value of the setting
-         * @return this builder
-         */
-        @Contract("_ -> this", mutates = "this")
-        public fun canSeeInvisibleMembers(value: Boolean): Builder
+        public fun seeInvisibleMembers(): Builder
 
         /**
          * Sets the name tag visibility for the team to the given [visibility].
@@ -238,15 +203,6 @@ public interface Team : ScoreboardBound {
          */
         @Contract("_ -> this", mutates = "this")
         public fun addMember(member: Component): Builder
-
-        /**
-         * Removes the given [member] from the team's list of members.
-         *
-         * @param member the member
-         * @return this builder
-         */
-        @Contract("_ -> this", mutates = "this")
-        public fun removeMember(member: Component): Builder
 
         /**
          * Builds the team and adds it to the scoreboard.

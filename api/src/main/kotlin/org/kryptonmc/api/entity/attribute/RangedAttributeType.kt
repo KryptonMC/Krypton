@@ -8,7 +8,6 @@
  */
 package org.kryptonmc.api.entity.attribute
 
-import org.kryptonmc.api.util.CataloguedBy
 import org.kryptonmc.internal.annotations.ImmutableType
 
 /**
@@ -16,7 +15,6 @@ import org.kryptonmc.internal.annotations.ImmutableType
  * value.
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
-@CataloguedBy(AttributeTypes::class)
 @ImmutableType
 public interface RangedAttributeType : AttributeType {
 

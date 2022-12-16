@@ -73,11 +73,11 @@ object ArgumentSerializers {
 
     @JvmStatic
     @Suppress("UNCHECKED_CAST")
-    fun <T : ArgumentType<*>> get(type: T): Entry<T>? = BY_CLASS.get(type.javaClass) as? Entry<T>
+    fun <T : ArgumentType<*>> getByType(type: T): Entry<T>? = BY_CLASS.get(type.javaClass) as? Entry<T>
 
     @JvmStatic
     @Suppress("UNCHECKED_CAST")
-    fun <T : ArgumentType<*>> get(id: Int): Entry<T>? = BY_ID.get(id) as? Entry<T>
+    fun <T : ArgumentType<*>> getById(id: Int): Entry<T>? = BY_ID.get(id) as? Entry<T>
 
     @JvmStatic
     private inline fun <reified T : ArgumentType<*>> register(id: Int, name: String, serializer: ArgumentSerializer<T>) {
@@ -98,7 +98,7 @@ object ArgumentSerializers {
 
     @JvmStatic
     fun <T : ArgumentType<*>> write(buf: ByteBuf, type: T) {
-        val entry = checkNotNull(get(type)) { "Argument type for node must have registered serializer!" }
+        val entry = checkNotNull(getByType(type)) { "Argument type for node must have registered serializer!" }
         buf.writeVarInt(entry.id)
         entry.serializer.write(buf, type)
     }

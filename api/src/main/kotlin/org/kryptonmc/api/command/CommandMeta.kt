@@ -37,7 +37,6 @@ public interface CommandMeta {
     /**
      * A builder for [CommandMeta].
      */
-    @CommandMetaDsl
     public interface Builder : AbstractBuilder<CommandMeta> {
 
         /**
@@ -46,7 +45,6 @@ public interface CommandMeta {
          * @param name the name
          * @return this builder
          */
-        @CommandMetaDsl
         @Contract("_ -> this", mutates = "this")
         public fun name(name: String): Builder
 
@@ -56,7 +54,6 @@ public interface CommandMeta {
          * @param alias the alias
          * @return this builder
          */
-        @CommandMetaDsl
         @Contract("_ -> this", mutates = "this")
         public fun alias(alias: String): Builder
 
@@ -66,7 +63,6 @@ public interface CommandMeta {
          * @param aliases the aliases
          * @return this builder
          */
-        @CommandMetaDsl
         @Contract("_ -> this", mutates = "this")
         public fun aliases(aliases: Collection<String>): Builder
     }

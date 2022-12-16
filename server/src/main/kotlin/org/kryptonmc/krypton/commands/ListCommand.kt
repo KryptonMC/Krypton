@@ -29,7 +29,7 @@ object ListCommand {
     @JvmStatic
     fun register(dispatcher: CommandDispatcher<CommandSourceStack>) {
         dispatcher.register(literal("list") {
-            permission(KryptonPermission.LIST)
+            requiresPermission(KryptonPermission.LIST)
             runs { context -> sendNames(context.source) { PlainTextComponentSerializer.plainText().serialize(it.displayName) } }
             literal("uuids") {
                 runs { context ->

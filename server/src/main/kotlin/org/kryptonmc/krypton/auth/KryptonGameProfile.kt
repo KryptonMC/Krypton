@@ -24,7 +24,6 @@ import com.google.gson.stream.JsonWriter
 import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toPersistentList
-import net.kyori.adventure.identity.Identity
 import org.kryptonmc.api.auth.GameProfile
 import org.kryptonmc.api.auth.ProfileProperty
 import org.kryptonmc.krypton.util.MojangUUIDTypeAdapter
@@ -46,8 +45,6 @@ class KryptonGameProfile private constructor(
     override fun withoutProperty(index: Int): GameProfile = KryptonGameProfile(uuid, name, properties.removeAt(index))
 
     override fun withoutProperty(property: ProfileProperty): GameProfile = KryptonGameProfile(uuid, name, properties.remove(property))
-
-    override fun identity(): Identity = Identity.identity(uuid)
 
     override fun equals(other: Any?): Boolean =
         this === other || other is KryptonGameProfile && uuid == other.uuid && name == other.name && properties == other.properties

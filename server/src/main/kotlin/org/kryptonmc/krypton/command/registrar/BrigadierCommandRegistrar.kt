@@ -21,7 +21,6 @@ package org.kryptonmc.krypton.command.registrar
 import com.mojang.brigadier.tree.LiteralCommandNode
 import com.mojang.brigadier.tree.RootCommandNode
 import org.kryptonmc.api.command.BrigadierCommand
-import org.kryptonmc.api.command.CommandExecutionContext
 import org.kryptonmc.api.command.CommandMeta
 import org.kryptonmc.krypton.command.CommandSourceStack
 import java.util.concurrent.locks.Lock
@@ -33,14 +32,11 @@ import java.util.concurrent.locks.Lock
  */
 class BrigadierCommandRegistrar(lock: Lock) : AbstractCommandRegistrar<BrigadierCommand>(lock) {
 
+    @Suppress("UNCHECKED_CAST")
     override fun register(root: RootCommandNode<CommandSourceStack>, command: BrigadierCommand, meta: CommandMeta) {
         val literal = command.node
         val name = literal.name
-        if (name == name.lowercase()) register(root, literal.downcast())
-        meta.aliases.forEach { if (name != it) register(root, literal.downcast(), it) }
+        if (name == name.lowercase()) register(root, literal as LiteralCommandNode<CommandSourceStack>)
+        meta.aliases.forEach { if (name != it) register(root, literal as LiteralCommandNode<CommandSourceStack>, it) }
     }
 }
-
-@Suppress("UNCHECKED_CAST", "NOTHING_TO_INLINE")
-private inline fun LiteralCommandNode<CommandExecutionContext>.downcast(): LiteralCommandNode<CommandSourceStack> =
-    this as LiteralCommandNode<CommandSourceStack>

@@ -15,6 +15,7 @@ import org.kryptonmc.api.Krypton
 import org.kryptonmc.api.util.Buildable
 import org.kryptonmc.internal.annotations.ImmutableType
 import org.kryptonmc.internal.annotations.TypeFactory
+import org.kryptonmc.internal.annotations.dsl.BiomeDsl
 
 /**
  * The climate for a biome.

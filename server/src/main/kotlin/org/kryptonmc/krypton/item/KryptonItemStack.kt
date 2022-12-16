@@ -32,7 +32,6 @@ import org.kryptonmc.krypton.item.meta.KryptonItemMeta
 import org.kryptonmc.krypton.registry.KryptonRegistries
 import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.ImmutableCompoundTag
-import java.util.function.Consumer
 import java.util.function.UnaryOperator
 
 @JvmRecord
@@ -73,12 +72,7 @@ data class KryptonItemStack(override val type: KryptonItemType, override val amo
         return KryptonItemStack(type, amount, meta as AbstractItemMeta<*>)
     }
 
-    override fun withMeta(builder: ItemMeta.Builder.() -> Unit): KryptonItemStack = withMeta(ItemMeta.builder().apply(builder).build())
-
-    override fun <B : ItemMetaBuilder<B, P>, P : ItemMetaBuilder.Provider<B>> withMeta(type: Class<P>, builder: B.() -> Unit): KryptonItemStack {
-        val meta = ItemFactory.builder(type).apply(builder).build() as AbstractItemMeta<*>
-        return KryptonItemStack(this.type, amount, meta)
-    }
+    //override fun withMeta(builder: ItemMeta.Builder.() -> Unit): KryptonItemStack = withMeta(ItemMeta.builder().apply(builder).build())
 
     override fun toBuilder(): Builder = Builder(this)
 
@@ -106,21 +100,11 @@ data class KryptonItemStack(override val type: KryptonItemType, override val amo
 
         override fun meta(meta: ItemMeta): Builder = apply { this.meta = meta.downcastBase() }
 
-        override fun meta(builder: ItemMeta.Builder.() -> Unit): Builder = apply {
-            meta = ItemMeta.builder().apply(builder).build().downcastBase()
-        }
+        inline fun meta(builder: ItemMeta.Builder.() -> Unit): Builder = meta(KryptonItemMeta.Builder().apply(builder).build())
 
-        override fun meta(builder: Consumer<ItemMeta.Builder>): Builder = apply {
-            meta = ItemMeta.builder().apply(builder::accept).build().downcastBase()
-        }
-
-        override fun <B : ItemMetaBuilder<B, P>, P : ItemMetaBuilder.Provider<B>> meta(type: Class<P>, builder: B.() -> Unit): Builder = apply {
-            meta = ItemFactory.builder(type).apply(builder).build() as AbstractItemMeta<*>
-        }
-
-        override fun <B : ItemMetaBuilder<B, P>, P : ItemMetaBuilder.Provider<B>> meta(type: Class<P>, builder: Consumer<B>): Builder = apply {
-            meta = ItemFactory.builder(type).apply(builder::accept).build() as AbstractItemMeta<*>
-        }
+        @JvmName("metaGeneric")
+        inline fun <B : ItemMetaBuilder<B, P>, reified P> meta(builder: B.() -> Unit): Builder where P : ItemMetaBuilder.Provider<B>, P : ItemMeta =
+            meta(ItemFactory.builder(P::class.java).apply(builder).build())
 
         override fun build(): KryptonItemStack {
             if (type == EMPTY.type && amount == EMPTY.amount && meta == EMPTY.meta) return EMPTY

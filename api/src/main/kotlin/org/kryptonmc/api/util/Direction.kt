@@ -71,16 +71,18 @@ public enum class Direction(
         Z({ _, _, z -> z }, { _, _, z -> z });
 
         /**
-         * If this axis tiles vertically.
+         * Checks if this axis tiles vertically.
+         *
+         * @return true if this axis is vertical, false otherwise
          */
-        public val isVertical: Boolean
-            get() = this == Y
+        public fun isVertical(): Boolean = this == Y
 
         /**
-         * If this axis tiles horizontally.
+         * Checks if this axis tiles horizontally.
+         *
+         * @return true if this axis is horizontal, false otherwise
          */
-        public val isHorizontal: Boolean
-            get() = this == X || this == Z
+        public fun isHorizontal(): Boolean = this == X || this == Z
 
         /**
          * Selects the appropriate [x], [y], or [z] coordinate, depending on

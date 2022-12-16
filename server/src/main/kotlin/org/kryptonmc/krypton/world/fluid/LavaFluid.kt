@@ -38,7 +38,7 @@ abstract class LavaFluid : FlowingFluid() {
 
     override fun isSame(fluid: Fluid): Boolean = fluid === KryptonFluids.LAVA || fluid === KryptonFluids.FLOWING_LAVA
 
-    override fun asBlock(state: KryptonFluidState): KryptonBlockState = KryptonBlocks.LAVA.defaultState.set(LEVEL, calculateBlockLevel(state))
+    override fun asBlock(state: KryptonFluidState): KryptonBlockState = KryptonBlocks.LAVA.defaultState.setProperty(LEVEL, calculateBlockLevel(state))
 
     class Flowing : LavaFluid() {
 
@@ -47,7 +47,7 @@ abstract class LavaFluid : FlowingFluid() {
             builder.add(LEVEL)
         }
 
-        override fun level(state: KryptonFluidState): Int = state.require(LEVEL)
+        override fun level(state: KryptonFluidState): Int = state.requireProperty(LEVEL)
 
         override fun isSource(state: KryptonFluidState): Boolean = false
     }

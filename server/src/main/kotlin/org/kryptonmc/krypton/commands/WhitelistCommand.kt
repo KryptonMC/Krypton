@@ -42,7 +42,7 @@ object WhitelistCommand {
     @JvmStatic
     fun register(dispatcher: CommandDispatcher<CommandSourceStack>) {
         dispatcher.register(literal("whitelist") {
-            permission(KryptonPermission.WHITELIST)
+            requiresPermission(KryptonPermission.WHITELIST)
             literal("on") {
                 runs { enableWhitelist(it.source) }
             }

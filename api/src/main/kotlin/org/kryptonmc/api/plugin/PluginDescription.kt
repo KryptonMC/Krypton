@@ -74,5 +74,5 @@ public interface PluginDescription {
      * @param id the ID of the dependency
      * @return the dependency, or null if not present
      */
-    public fun dependency(id: String): PluginDependency?
+    public fun getDependency(id: String): PluginDependency?
 }

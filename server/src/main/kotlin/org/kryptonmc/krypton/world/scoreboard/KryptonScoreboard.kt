@@ -58,7 +58,7 @@ class KryptonScoreboard(private val server: KryptonServer) : Scoreboard {
 
     fun displayObjectives(): Collection<Objective> = displayObjectives.values
 
-    override fun objective(name: String): Objective? = objectivesByName.get(name)
+    override fun getObjective(name: String): Objective? = objectivesByName.get(name)
 
     override fun createObjectiveBuilder(): Objective.Builder = KryptonObjective.Builder(this)
 
@@ -79,9 +79,9 @@ class KryptonScoreboard(private val server: KryptonServer) : Scoreboard {
         onObjectiveRemoved(objective)
     }
 
-    override fun team(name: String): Team? = teamsByName.get(name)
+    override fun getTeam(name: String): Team? = teamsByName.get(name)
 
-    override fun memberTeam(member: Component): Team? = teamsByMember.get(member)
+    override fun getMemberTeam(member: Component): Team? = teamsByMember.get(member)
 
     override fun createTeamBuilder(name: String): Team.Builder = KryptonTeam.Builder(this, name)
 
@@ -90,7 +90,7 @@ class KryptonScoreboard(private val server: KryptonServer) : Scoreboard {
         return doAddTeam(name)
     }
 
-    override fun getOrAddTeam(name: String): Team = team(name) ?: doAddTeam(name)
+    override fun getOrAddTeam(name: String): Team = getTeam(name) ?: doAddTeam(name)
 
     private fun doAddTeam(name: String): KryptonTeam {
         val team = KryptonTeam(this, name)
@@ -173,19 +173,19 @@ class KryptonScoreboard(private val server: KryptonServer) : Scoreboard {
     }
 
     private fun tryAddMember(member: Component, team: Team): Boolean {
-        if (memberTeam(member) != null) removeMemberFromTeam(member)
+        if (getMemberTeam(member) != null) removeMemberFromTeam(member)
         teamsByMember.put(member, team)
         return team.removeMember(member)
     }
 
     private fun removeMemberFromTeam(member: Component): Boolean {
-        val team = memberTeam(member) ?: return false
+        val team = getMemberTeam(member) ?: return false
         removeMemberFromTeam(member, team)
         return true
     }
 
     private fun removeMemberFromTeam(member: Component, team: Team) {
-        check(memberTeam(member) === team) {
+        check(getMemberTeam(member) === team) {
             "Cannot remove member ${PlainTextComponentSerializer.plainText().serialize(member)} from team ${team.name}! Member is not on the team!"
         }
         teamsByMember.remove(member)
@@ -194,9 +194,9 @@ class KryptonScoreboard(private val server: KryptonServer) : Scoreboard {
         makeDirty()
     }
 
-    override fun objective(slot: DisplaySlot): Objective? = displayObjectives.get(slot)
+    override fun getObjective(slot: DisplaySlot): Objective? = displayObjectives.get(slot)
 
-    override fun objectives(criterion: Criterion): Set<Objective> = objectivesByCriterion.get(criterion)
+    override fun getObjectives(criterion: Criterion): Set<Objective> = objectivesByCriterion.get(criterion)
 
     override fun updateSlot(objective: Objective?, slot: DisplaySlot) {
         require(objective == null || objectivesByName.containsValue(objective)) {
@@ -231,7 +231,7 @@ class KryptonScoreboard(private val server: KryptonServer) : Scoreboard {
         displayObjectives.remove(slot)
     }
 
-    override fun scores(name: Component): Set<KryptonScore> = memberScores.values.flatMapTo(HashSet()) { it.values }
+    override fun getScores(name: Component): Set<KryptonScore> = memberScores.values.flatMapTo(HashSet()) { it.values }
 
     override fun removeScores(name: Component) {
         memberScores.forEach { entry -> if (entry.value.values.any { it.name == name }) memberScores.remove(entry.key) }

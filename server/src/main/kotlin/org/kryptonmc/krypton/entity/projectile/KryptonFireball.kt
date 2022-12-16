@@ -32,7 +32,8 @@ abstract class KryptonFireball(world: KryptonWorld) : KryptonAcceleratingProject
     override val serializer: EntitySerializer<out KryptonFireball>
         get() = FireballSerializer
 
-    init {
+    override fun defineData() {
+        super.defineData()
         data.define(MetadataKeys.Fireball.ITEM, KryptonItemStack.EMPTY)
     }
 

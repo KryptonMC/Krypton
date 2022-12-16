@@ -588,7 +588,7 @@ private inline fun RegistryLoader<DamageType>.put(key: String, translationKey: S
 
 private fun RegistryLoader<Key>.add(name: String, formatter: StatisticFormatter) {
     add(Key.key(name)) {
-        StatisticTypes.CUSTOM.get(it, formatter)
+        StatisticTypes.CUSTOM.getStatistic(it, formatter)
         it
     }
 }

@@ -178,7 +178,7 @@ data class PacketOutCommands(val rootIndex: Int, val nodes: List<Node>) : Packet
             return when (flags and 3) {
                 2 -> {
                     val name = buf.readString()
-                    val serializer = ArgumentSerializers.get<ArgumentType<*>>(buf.readVarInt()) ?: return null
+                    val serializer = ArgumentSerializers.getById<ArgumentType<*>>(buf.readVarInt()) ?: return null
                     val type = serializer.serializer.read(buf)
                     val suggestionsType = if (flags and FLAG_SUGGESTIONS != 0) buf.readKey() else null
                     return ArgumentNodeData(name, type, suggestionsType)

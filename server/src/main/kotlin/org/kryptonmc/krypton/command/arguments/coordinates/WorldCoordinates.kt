@@ -26,7 +26,7 @@ import org.kryptonmc.krypton.util.Vec3dImpl
 @JvmRecord
 data class WorldCoordinates(val x: WorldCoordinate, val y: WorldCoordinate, val z: WorldCoordinate) : Coordinates {
 
-    override fun position(source: CommandSourceStack): Vec3d =
+    override fun calculatePosition(source: CommandSourceStack): Vec3d =
         Vec3dImpl(x.get(source.position.x), y.get(source.position.y), z.get(source.position.z))
 
     companion object {

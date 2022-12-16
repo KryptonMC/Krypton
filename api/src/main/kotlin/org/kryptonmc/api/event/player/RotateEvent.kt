@@ -8,9 +8,12 @@
  */
 package org.kryptonmc.api.event.player
 
+import org.kryptonmc.api.event.annotation.PerformanceSensitive
+
 /**
  * Called when a player rotates their head.
  */
+@PerformanceSensitive
 public interface RotateEvent : PlayerEvent {
 
     /**

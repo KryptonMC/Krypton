@@ -38,7 +38,8 @@ class KryptonArrow(world: KryptonWorld) : KryptonArrowLike(world), Arrow {
         get() = Color.of(data.get(MetadataKeys.Arrow.COLOR))
         set(value) = data.set(MetadataKeys.Arrow.COLOR, value.value)
 
-    init {
+    override fun defineData() {
+        super.defineData()
         data.define(MetadataKeys.Arrow.COLOR, -1)
     }
 }

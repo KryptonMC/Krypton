@@ -36,7 +36,7 @@ class KryptonTeam(override val scoreboard: KryptonScoreboard, override val name:
     private var _deathMessageVisibility = Visibility.ALWAYS
     private var _color = NamedTextColor.WHITE
     private var _collisionRule = CollisionRule.ALWAYS
-    private val _members = HashSet<Component>()
+    private val _members = ArrayList<Component>()
 
     override var displayName: Component
         get() = _displayName
@@ -92,7 +92,7 @@ class KryptonTeam(override val scoreboard: KryptonScoreboard, override val name:
             _collisionRule = value
             scoreboard.onTeamUpdated(this)
         }
-    override val members: Set<Component> = Collections.unmodifiableSet(_members)
+    override val members: List<Component> = Collections.unmodifiableList(_members)
 
     override fun formatName(name: Component): Component = Component.text().append(prefix).append(name).append(suffix).color(color).build()
 
@@ -119,9 +119,9 @@ class KryptonTeam(override val scoreboard: KryptonScoreboard, override val name:
 
         override fun suffix(suffix: Component): Team.Builder = apply { this.suffix = suffix }
 
-        override fun friendlyFire(value: Boolean): Team.Builder = apply { friendlyFire = value }
+        override fun friendlyFire(): Team.Builder = apply { friendlyFire = true }
 
-        override fun canSeeInvisibleMembers(value: Boolean): Team.Builder = apply { seeInvisibles = value }
+        override fun seeInvisibleMembers(): Team.Builder = apply { seeInvisibles = true }
 
         override fun nameTagVisibility(visibility: Visibility): Team.Builder = apply { nameTags = visibility }
 
@@ -132,8 +132,6 @@ class KryptonTeam(override val scoreboard: KryptonScoreboard, override val name:
         override fun collisionRule(rule: CollisionRule): Team.Builder = apply { collision = rule }
 
         override fun addMember(member: Component): Team.Builder = apply { members.add(member) }
-
-        override fun removeMember(member: Component): Team.Builder = apply { members.remove(member) }
 
         override fun buildAndRegister(): Team {
             val team = scoreboard.addTeam(name)

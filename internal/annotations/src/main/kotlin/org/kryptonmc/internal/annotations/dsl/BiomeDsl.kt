@@ -16,14 +16,12 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.effect.sound
+package org.kryptonmc.internal.annotations.dsl
 
-import org.kryptonmc.api.effect.sound.SoundEvent
-
-private const val DEFAULT_RANGE = KryptonSoundEvent.DEFAULT_RANGE.toDouble()
-
-fun SoundEvent.getRange(volume: Float): Double {
-    if (range != 0F) return range.toDouble()
-    if (volume > 1F) return DEFAULT_RANGE * volume
-    return DEFAULT_RANGE
-}
+/**
+ * Indicates the annotated element is part of the DSL for biomes.
+ */
+@Target(AnnotationTarget.CLASS, AnnotationTarget.FUNCTION)
+@Retention(AnnotationRetention.SOURCE)
+@DslMarker
+public annotation class BiomeDsl

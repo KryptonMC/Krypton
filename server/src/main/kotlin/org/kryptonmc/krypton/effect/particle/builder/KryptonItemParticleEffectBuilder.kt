@@ -26,12 +26,13 @@ import org.kryptonmc.krypton.effect.particle.data.KryptonItemParticleData
 import org.kryptonmc.krypton.item.KryptonItemStack
 import org.kryptonmc.krypton.item.downcast
 
-class KryptonItemParticleEffectBuilder(type: ItemParticleType) : AbstractParticleEffectBuilder<ItemParticleEffectBuilder>(type),
-    ItemParticleEffectBuilder {
+class KryptonItemParticleEffectBuilder(type: ItemParticleType) : AbstractParticleEffectBuilder<ApiItem>(type), ApiItem {
 
     private var item: KryptonItemStack = KryptonItemStack.EMPTY
 
-    override fun item(item: ItemStack): ItemParticleEffectBuilder = apply { this.item = item.downcast() }
+    override fun item(item: ItemStack): ApiItem = apply { this.item = item.downcast() }
 
     override fun buildData(): ParticleData = KryptonItemParticleData(item)
 }
+
+private typealias ApiItem = ItemParticleEffectBuilder

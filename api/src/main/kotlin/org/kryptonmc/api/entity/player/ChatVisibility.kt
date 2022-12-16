@@ -8,42 +8,28 @@
  */
 package org.kryptonmc.api.entity.player
 
-import net.kyori.adventure.audience.Audience
-import net.kyori.adventure.audience.MessageType
-
 /**
  * Settings for the visibility of chat messages for a player.
  */
-public enum class ChatVisibility(
-    /**
-     * The highest message type that can be sent with the visibility, with the
-     * priority being determined by the ordinal, low to high.
-     *
-     * For example, [MessageType.CHAT] is higher than [MessageType.SYSTEM], and
-     * so the [FULL] type that has [MessageType.CHAT] also includes
-     * [MessageType.SYSTEM].
-     */
-    public val messageType: MessageType?
-) {
+public enum class ChatVisibility {
 
     /**
      * In this mode, the client wants to see all messages sent by the server.
      */
-    FULL(MessageType.CHAT),
+    FULL,
 
     /**
-     * In this mode, the client only wants to see system messages. That is,
-     * messages sent with the type [MessageType.SYSTEM].
+     * In this mode, the client only wants to see system messages, such as
+     * those sent as an output to a command, or when a player joins or leaves,
+     * not messages that originate from a player.
      */
-    SYSTEM(MessageType.SYSTEM),
+    SYSTEM,
 
     /**
-     * In this mode, the client does not want to see any chat messages. Vanilla
-     * will still send action bars using it's GAME_INFO message type, however
-     * Adventure does not support this due to the existence of
-     * [Audience.sendActionBar], and its corresponding separate packet, so
-     * Krypton does not support this either, meaning the client will receive
-     * no chat messages in this mode.
+     * In this mode, the client does not want to see any chat messages. They
+     * will still see game state updates however, which are action bars that
+     * inform the player of certain things, such as "You may not rest now,
+     * there are monsters nearby."
      */
-    HIDDEN(null)
+    HIDDEN
 }

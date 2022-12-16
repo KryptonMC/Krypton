@@ -12,6 +12,7 @@ import org.jetbrains.annotations.Contract
 import org.jetbrains.annotations.Unmodifiable
 import org.kryptonmc.api.block.entity.banner.BannerPattern
 import org.kryptonmc.internal.annotations.ImmutableType
+import org.kryptonmc.internal.annotations.dsl.MetaDsl
 
 /**
  * Item metadata for a banner.

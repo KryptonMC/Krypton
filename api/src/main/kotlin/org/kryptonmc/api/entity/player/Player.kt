@@ -16,12 +16,9 @@ import org.kryptonmc.api.event.player.PerformActionEvent
 import org.kryptonmc.api.inventory.Inventory
 import org.kryptonmc.api.inventory.PlayerInventory
 import org.kryptonmc.api.plugin.PluginMessageRecipient
-import org.kryptonmc.api.resource.ResourceKey
 import org.kryptonmc.api.resource.ResourcePack
 import org.kryptonmc.api.util.Direction
 import org.kryptonmc.api.statistic.StatisticsTracker
-import org.kryptonmc.api.world.World
-import org.kryptonmc.api.world.dimension.DimensionType
 import org.kryptonmc.api.scoreboard.Scoreboard
 import org.kryptonmc.api.user.BaseUser
 import org.kryptonmc.api.util.Vec3d
@@ -71,16 +68,6 @@ public interface Player : LivingEntity, Equipable, PluginMessageRecipient, BaseU
      * If this player is currently flying.
      */
     public var isFlying: Boolean
-
-    /**
-     * The dimension resource key for the world the player is currently in.
-     */
-    public val dimension: ResourceKey<World>
-
-    /**
-     * The dimension the player is currently in.
-     */
-    public val dimensionType: DimensionType
 
     /**
      * The settings for the player.
@@ -138,12 +125,12 @@ public interface Player : LivingEntity, Equipable, PluginMessageRecipient, BaseU
     /**
      * The statistics tracker for this player.
      */
-    public val statistics: StatisticsTracker
+    public val statisticsTracker: StatisticsTracker
 
     /**
      * The cooldown tracker for this player.
      */
-    public val cooldowns: CooldownTracker
+    public val itemCooldownTracker: CooldownTracker
 
     /**
      * Spawns particles for this player relative to a location.

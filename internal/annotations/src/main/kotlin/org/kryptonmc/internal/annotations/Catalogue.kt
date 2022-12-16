@@ -1,19 +1,28 @@
 /*
- * This file is part of the Krypton API, licensed under the MIT license.
+ * This file is part of the Krypton project, licensed under the GNU General Public License v3.0
  *
- * Copyright (C) 2021-2022 KryptonMC and the contributors to the Krypton project.
+ * Copyright (C) 2021-2022 KryptonMC and the contributors of the Krypton project
  *
- * This project is licensed under the terms of the MIT license.
- * For more details, please reference the LICENSE file in the api top-level directory.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.api.util
+package org.kryptonmc.internal.annotations
 
 import kotlin.reflect.KClass
 
 /**
- * Marker annotation indicating that the annotated type is a catalogue type,
- * usually meaning it provides access to many static instances of the given
- * catalogued [type].
+ * Indicates that the annotated type is a catalogue type, usually meaning it
+ * provides access to many static instances of the given catalogued [type].
  *
  * All types contained within this API that are annotated with this
  * annotation will meet certain requirements that are listed below, and it is
@@ -38,4 +47,4 @@ import kotlin.reflect.KClass
 @Target(AnnotationTarget.CLASS)
 @Retention(AnnotationRetention.SOURCE)
 @MustBeDocumented
-public annotation class Catalogue(public vararg val type: KClass<*>)
+public annotation class Catalogue(public val type: KClass<*>)

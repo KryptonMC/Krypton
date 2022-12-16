@@ -46,14 +46,8 @@ public interface ItemAttributeModifier : AttributeModifier {
     @TypeFactory
     public interface Factory {
 
-        public fun of(
-            type: AttributeType,
-            slot: EquipmentSlot,
-            uuid: UUID,
-            name: String,
-            amount: Double,
-            operation: BasicModifierOperation
-        ): ItemAttributeModifier
+        public fun of(type: AttributeType, slot: EquipmentSlot, uuid: UUID, name: String, amount: Double,
+                      operation: BasicModifierOperation): ItemAttributeModifier
     }
 
     public companion object {
@@ -72,14 +66,10 @@ public interface ItemAttributeModifier : AttributeModifier {
          */
         @JvmStatic
         @Contract("_, _, _ -> new", pure = true)
-        public fun of(
-            type: AttributeType,
-            slot: EquipmentSlot,
-            uuid: UUID,
-            name: String,
-            amount: Double,
-            operation: BasicModifierOperation
-        ): ItemAttributeModifier = Krypton.factory<Factory>().of(type, slot, uuid, name, amount, operation)
+        public fun of(type: AttributeType, slot: EquipmentSlot, uuid: UUID, name: String, amount: Double,
+                      operation: BasicModifierOperation): ItemAttributeModifier {
+            return Krypton.factory<Factory>().of(type, slot, uuid, name, amount, operation)
+        }
 
         /**
          * Creates a new item attribute modifier with the given [type], [slot],

@@ -11,6 +11,7 @@ package org.kryptonmc.api.item.meta
 import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.util.Color
 import org.kryptonmc.internal.annotations.ImmutableType
+import org.kryptonmc.internal.annotations.dsl.MetaDsl
 
 /**
  * Item metadata for leather armour.

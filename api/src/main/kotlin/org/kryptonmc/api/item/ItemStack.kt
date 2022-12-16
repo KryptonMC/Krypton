@@ -19,6 +19,7 @@ import org.kryptonmc.api.item.meta.ItemMeta
 import org.kryptonmc.api.item.meta.ItemMetaBuilder
 import org.kryptonmc.internal.annotations.ImmutableType
 import org.kryptonmc.internal.annotations.TypeFactory
+import org.kryptonmc.internal.annotations.dsl.ItemDsl
 import java.util.function.Consumer
 
 /**
@@ -117,33 +118,8 @@ public interface ItemStack : Buildable<ItemStack, ItemStack.Builder>, HoverEvent
      * @param builder the builder to apply
      * @return a new item stack
      */
-    @JvmSynthetic
     @Contract("_ -> new", pure = true)
-    public fun withMeta(builder: ItemMeta.Builder.() -> Unit): ItemStack
-
-    /**
-     * Creates a new item stack with meta retrieved applying the given
-     * [builder] to a new item metadata builder.
-     *
-     * @param builder the builder to apply
-     * @return a new item stack
-     */
-    @Contract("_ -> new", pure = true)
-    public fun withMeta(builder: Consumer<ItemMeta.Builder>): ItemStack = withMeta { builder.accept(this) }
-
-    /**
-     * Creates a new item stack with meta retrieved applying the given
-     * [builder] to a new meta builder created with the given [type].
-     *
-     * @param B the builder type
-     * @param P the metadata type
-     * @param type the type
-     * @param builder the builder to apply
-     * @return a new item stack
-     */
-    @JvmSynthetic
-    @Contract("_, _ -> new", pure = true)
-    public fun <B : ItemMetaBuilder<B, P>, P : ItemMetaBuilder.Provider<B>> withMeta(type: Class<P>, builder: B.() -> Unit): ItemStack
+    public fun withMeta(builder: Consumer<ItemMeta.Builder>): ItemStack = withMeta(ItemMeta.builder().apply { builder.accept(this) }.build())
 
     /**
      * Creates a new item stack with meta retrieved applying the given
@@ -156,8 +132,10 @@ public interface ItemStack : Buildable<ItemStack, ItemStack.Builder>, HoverEvent
      * @return a new item stack
      */
     @Contract("_, _ -> new", pure = true)
-    public fun <B : ItemMetaBuilder<B, P>, P : ItemMetaBuilder.Provider<B>> withMeta(type: Class<P>, builder: Consumer<B>): ItemStack =
-        withMeta(type) { builder.accept(this) }
+    public fun <B : ItemMetaBuilder<B, P>, P> withMeta(type: Class<P>, builder: Consumer<B>): ItemStack
+        where P : ItemMetaBuilder.Provider<B>, P : ItemMeta {
+        return withMeta(ItemMeta.builder(type).apply { builder.accept(this) }.build() as ItemMeta)
+    }
 
     /**
      * For building new [ItemStack]s.
@@ -203,35 +181,8 @@ public interface ItemStack : Buildable<ItemStack, ItemStack.Builder>, HoverEvent
          * @return this builder
          */
         @ItemDsl
-        @JvmSynthetic
         @Contract("_ -> this", mutates = "this")
-        public fun meta(builder: ItemMeta.Builder.() -> Unit): Builder
-
-        /**
-         * Applies the given [builder] function to the metadata builder for
-         * this builder.
-         *
-         * @param builder the builder function to apply
-         * @return this builder
-         */
-        @ItemDsl
-        @Contract("_ -> this", mutates = "this")
-        public fun meta(builder: Consumer<ItemMeta.Builder>): Builder = meta { builder.accept(this) }
-
-        /**
-         * Applies the given [builder] function to the metadata builder for
-         * this builder.
-         *
-         * @param B the builder type
-         * @param P the metadata type
-         * @param type the type of the metadata
-         * @param builder the builder function to apply
-         * @return this builder
-         */
-        @ItemDsl
-        @JvmSynthetic
-        @Contract("_, _ -> this", mutates = "this")
-        public fun <B : ItemMetaBuilder<B, P>, P : ItemMetaBuilder.Provider<B>> meta(type: Class<P>, builder: B.() -> Unit): Builder
+        public fun meta(builder: Consumer<ItemMeta.Builder>): Builder = meta(ItemMeta.builder().apply { builder.accept(this) }.build())
 
         /**
          * Applies the given [builder] function to the metadata builder for
@@ -245,8 +196,10 @@ public interface ItemStack : Buildable<ItemStack, ItemStack.Builder>, HoverEvent
          */
         @ItemDsl
         @Contract("_, _ -> this", mutates = "this")
-        public fun <B : ItemMetaBuilder<B, P>, P : ItemMetaBuilder.Provider<B>> meta(type: Class<P>, builder: Consumer<B>): Builder =
-            meta(type) { builder.accept(this) }
+        public fun <B : ItemMetaBuilder<B, P>, P> meta(type: Class<P>, builder: Consumer<B>): Builder
+            where P : ItemMetaBuilder.Provider<B>, P : ItemMeta {
+            return meta(ItemMeta.builder(type).apply { builder.accept(this) }.build())
+        }
 
         /**
          * Builds a new [ItemStack] with the settings retrieved from
@@ -315,44 +268,3 @@ public interface ItemStack : Buildable<ItemStack, ItemStack.Builder>, HoverEvent
         public fun empty(): ItemStack = Krypton.factory<Factory>().empty()
     }
 }
-
-/**
- * Gets the metadata for this item stack as the given type [I], or returns
- * null if the metadata could not be casted to the given type [I].
- *
- * @param I the metadata type
- * @return the metadata as the type, or null if the metadata is not of the type
- */
-@JvmSynthetic
-public inline fun <reified I : ItemMeta> ItemStack.meta(): I? = meta(I::class.java)
-
-/**
- * Creates a new item stack with meta retrieved applying the given
- * [builder] to a new meta builder created with the given type [P].
- *
- * @param B the builder type
- * @param P the metadata type
- * @param builder the builder to apply
- * @return a new item stack
- */
-@JvmSynthetic
-@Contract("_ -> new", pure = true)
-public inline fun <B : ItemMetaBuilder<B, P>, reified P : ItemMetaBuilder.Provider<B>> ItemStack.withMeta(
-    noinline builder: B.() -> Unit
-): ItemStack = withMeta(P::class.java, builder)
-
-/**
- * Applies the given [builder] function to the metadata builder for
- * this builder.
- *
- * @param B the builder type
- * @param P the metadata type
- * @param builder the builder function to apply
- * @return this builder
- */
-@ItemDsl
-@JvmSynthetic
-@Contract("_ -> this", mutates = "this")
-public inline fun <B : ItemMetaBuilder<B, P>, reified P : ItemMetaBuilder.Provider<B>> ItemStack.Builder.meta(
-    noinline builder: B.() -> Unit
-): ItemStack.Builder = meta(P::class.java, builder)

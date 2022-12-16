@@ -36,7 +36,7 @@ import org.kryptonmc.krypton.util.Vec3dImpl
 @JvmRecord
 data class LocalCoordinates(private val left: Double, private val up: Double, private val forwards: Double) : Coordinates {
 
-    override fun position(source: CommandSourceStack): Vec3d {
+    override fun calculatePosition(source: CommandSourceStack): Vec3d {
         // All of this is some slightly complicated linear algebra that I don't really understand.
         // What this does is determine absolute coordinates from the local forwards, up, and left components, which are relative
         // to the direction that a player is facing.

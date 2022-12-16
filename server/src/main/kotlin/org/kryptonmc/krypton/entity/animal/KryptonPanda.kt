@@ -77,14 +77,13 @@ class KryptonPanda(world: KryptonWorld) : KryptonAnimal(world), Panda {
         get() = data.get(MetadataKeys.Panda.EATING_TIMER)
         set(value) = data.set(MetadataKeys.Panda.EATING_TIMER, value)
     override val isScared: Boolean
-        get() = variant == PandaGene.WORRIED && world.isThundering
-
-    private val variant: PandaGene
-        get() = variantFromGenes(knownGene, hiddenGene)
+        get() = variant() == PandaGene.WORRIED && world.isThundering
 
     init {
         if (!isBaby) canPickUpLoot = false
     }
+
+    private fun variant(): PandaGene = variantFromGenes(knownGene, hiddenGene)
 
     override fun defineData() {
         super.defineData()

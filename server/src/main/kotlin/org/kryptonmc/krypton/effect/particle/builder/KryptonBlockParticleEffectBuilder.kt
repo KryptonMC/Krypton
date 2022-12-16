@@ -27,12 +27,13 @@ import org.kryptonmc.krypton.world.block.KryptonBlocks
 import org.kryptonmc.krypton.world.block.state.KryptonBlockState
 import org.kryptonmc.krypton.world.block.state.downcast
 
-class KryptonBlockParticleEffectBuilder(type: BlockParticleType) : AbstractParticleEffectBuilder<BlockParticleEffectBuilder>(type),
-    BlockParticleEffectBuilder {
+class KryptonBlockParticleEffectBuilder(type: BlockParticleType) : AbstractParticleEffectBuilder<ApiBlock>(type), ApiBlock {
 
     private var block: KryptonBlockState = KryptonBlocks.STONE.defaultState
 
-    override fun block(block: BlockState): BlockParticleEffectBuilder = apply { this.block = block.downcast() }
+    override fun block(block: BlockState): ApiBlock = apply { this.block = block.downcast() }
 
     override fun buildData(): ParticleData = KryptonBlockParticleData(block)
 }
+
+private typealias ApiBlock = BlockParticleEffectBuilder

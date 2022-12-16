@@ -8,7 +8,6 @@
  */
 package org.kryptonmc.api.user
 
-import net.kyori.adventure.identity.Identified
 import org.kryptonmc.api.entity.player.Player
 import java.util.UUID
 
@@ -16,7 +15,7 @@ import java.util.UUID
  * A user. This is a player that can be offline, and mostly exists for that
  * purpose.
  */
-public interface User : BaseUser, Identified {
+public interface User : BaseUser {
 
     /**
      * The name of this user.
@@ -29,8 +28,10 @@ public interface User : BaseUser, Identified {
     public val uuid: UUID
 
     /**
-     * The player that this user is associated with, or null if they are not
+     * Gets the player associated with this user, or null if they are not
      * currently available, usually meaning they are offline.
+     *
+     * @return the associated player
      */
-    public val player: Player?
+    public fun asPlayer(): Player?
 }

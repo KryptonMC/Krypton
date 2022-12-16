@@ -25,5 +25,5 @@ import org.kryptonmc.krypton.entity.player.KryptonPlayer
 
 interface ItemTimedHandler : ItemHandler {
 
-    fun finishUse(player: KryptonPlayer, hand: Hand): UseItemResult = UseItemResult(InteractionResult.PASS, player.inventory.heldItem(hand))
+    fun finishUse(player: KryptonPlayer, hand: Hand): UseItemResult = UseItemResult(InteractionResult.PASS, player.inventory.getHeldItem(hand))
 }

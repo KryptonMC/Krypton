@@ -32,8 +32,12 @@ public interface State<out S : State<S>> {
 
     /**
      * Checks if the given [property] has a value on this state.
+     *
+     * @param property the property to check
+     * @return true if this state has a value for the given property, false
+     * otherwise
      */
-    public fun contains(property: Property<*>): Boolean
+    public fun hasProperty(property: Property<*>): Boolean
 
     /**
      * Gets the value for the given [property], or returns null if there is no
@@ -43,7 +47,7 @@ public interface State<out S : State<S>> {
      * @param property the property
      * @return the value, or null if not present
      */
-    public fun <T : Comparable<T>> get(property: Property<T>): T?
+    public fun <T : Comparable<T>> getProperty(property: Property<T>): T?
 
     /**
      * Gets the value for the given [property], or throws an
@@ -55,7 +59,7 @@ public interface State<out S : State<S>> {
      * @return the value
      * @throws IllegalArgumentException if there is no value for the property
      */
-    public fun <T : Comparable<T>> require(property: Property<T>): T
+    public fun <T : Comparable<T>> requireProperty(property: Property<T>): T
 
     /**
      * Sets the value for the given [property] to the given [value] and returns
@@ -69,5 +73,5 @@ public interface State<out S : State<S>> {
      * @param value the value
      * @return the state with the property set to the value
      */
-    public fun <T : Comparable<T>> set(property: Property<T>, value: T): S
+    public fun <T : Comparable<T>> setProperty(property: Property<T>, value: T): S
 }

@@ -19,6 +19,7 @@ import org.kryptonmc.api.util.Buildable
 import org.kryptonmc.api.util.Color
 import org.kryptonmc.internal.annotations.ImmutableType
 import org.kryptonmc.internal.annotations.TypeFactory
+import org.kryptonmc.internal.annotations.dsl.BiomeDsl
 import java.util.function.Consumer
 
 /**
@@ -230,25 +231,9 @@ public interface BiomeEffects : Buildable<BiomeEffects.Builder, BiomeEffects> {
          * @see BiomeEffects.ambientParticleSettings
          */
         @BiomeDsl
-        @JvmSynthetic
-        @Contract("_, _ -> this", mutates = "this")
-        public fun particles(type: ParticleType, builder: AmbientParticleSettings.Builder.() -> Unit): Builder =
-            particles(AmbientParticleSettings.builder(type).apply(builder).build())
-
-        /**
-         * Applies the given [builder] to an ambient particle settings builder,
-         * builds the result, and sets the ambient particle settings to the
-         * built result.
-         *
-         * @param type the type
-         * @param builder the builder
-         * @return this builder
-         * @see BiomeEffects.ambientParticleSettings
-         */
-        @BiomeDsl
         @Contract("_, _ -> this", mutates = "this")
         public fun particles(type: ParticleType, builder: Consumer<AmbientParticleSettings.Builder>): Builder =
-            particles(type) { builder.accept(this) }
+            particles(AmbientParticleSettings.builder(type).apply { builder.accept(this) }.build())
 
         /**
          * Sets the ambient loop sound of the biome effects to the given
@@ -285,24 +270,9 @@ public interface BiomeEffects : Buildable<BiomeEffects.Builder, BiomeEffects> {
          * @see BiomeEffects.ambientMoodSettings
          */
         @BiomeDsl
-        @JvmSynthetic
         @Contract("_, _ -> this", mutates = "this")
-        public fun mood(sound: SoundEvent, builder: AmbientMoodSettings.Builder.() -> Unit): Builder =
-            mood(AmbientMoodSettings.builder(sound).apply(builder).build())
-
-        /**
-         * Applies the given [builder] to an ambient mood settings builder,
-         * builds the result, and sets the ambient mood settings to the
-         * built result.
-         *
-         * @param sound the sound
-         * @param builder the builder
-         * @return this builder
-         * @see BiomeEffects.ambientMoodSettings
-         */
-        @BiomeDsl
-        @Contract("_, _ -> this", mutates = "this")
-        public fun mood(sound: SoundEvent, builder: Consumer<AmbientMoodSettings.Builder>): Builder = mood(sound) { builder.accept(this) }
+        public fun mood(sound: SoundEvent, builder: Consumer<AmbientMoodSettings.Builder>): Builder =
+            mood(AmbientMoodSettings.builder(sound).apply { builder.accept(this) }.build())
 
         /**
          * Sets the ambient additions settings of the biome effects to the
@@ -327,25 +297,9 @@ public interface BiomeEffects : Buildable<BiomeEffects.Builder, BiomeEffects> {
          * @see BiomeEffects.ambientAdditionsSettings
          */
         @BiomeDsl
-        @JvmSynthetic
-        @Contract("_, _ -> this", mutates = "this")
-        public fun additions(sound: SoundEvent, builder: AmbientAdditionsSettings.Builder.() -> Unit): Builder =
-            additions(AmbientAdditionsSettings.builder(sound).apply(builder).build())
-
-        /**
-         * Applies the given [builder] to an ambient additions settings
-         * builder, builds the result, and sets the ambient additions settings
-         * to the built result.
-         *
-         * @param sound the sound
-         * @param builder the builder
-         * @return this builder
-         * @see BiomeEffects.ambientAdditionsSettings
-         */
-        @BiomeDsl
         @Contract("_, _ -> this", mutates = "this")
         public fun additions(sound: SoundEvent, builder: Consumer<AmbientAdditionsSettings.Builder>): Builder =
-            additions(sound) { builder.accept(this) }
+            additions(AmbientAdditionsSettings.builder(sound).apply { builder.accept(this) }.build())
 
         /**
          * Sets the background music of the biome effects to the given [music].

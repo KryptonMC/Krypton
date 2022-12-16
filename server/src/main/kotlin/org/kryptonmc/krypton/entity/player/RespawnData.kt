@@ -31,12 +31,7 @@ import org.kryptonmc.nbt.StringTag
 import org.kryptonmc.serialization.nbt.NbtOps
 
 @JvmRecord
-data class RespawnData(
-    val position: BlockPos,
-    val dimension: ResourceKey<World>,
-    val angle: Float,
-    val forced: Boolean
-) {
+data class RespawnData(val position: BlockPos, val dimension: ResourceKey<World>, val angle: Float, val forced: Boolean) {
 
     fun save(data: CompoundTag.Builder, logger: Logger): CompoundTag.Builder = data.apply {
         putBlockPosParts(position, XYZ_PREFIX)

@@ -33,5 +33,5 @@ sealed interface Coordinates {
      * This is where all the magic happens, in terms of actual movement
      * calculation.
      */
-    fun position(source: CommandSourceStack): Vec3d
+    fun calculatePosition(source: CommandSourceStack): Vec3d
 }

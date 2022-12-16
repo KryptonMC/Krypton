@@ -41,5 +41,5 @@ interface NameableTeamMember : Entity {
     override val teamRepresentation: Component
         get() = Component.text(uuid.toString())
     override val team: Team?
-        get() = world.scoreboard.memberTeam(teamRepresentation)
+        get() = world.scoreboard.getMemberTeam(teamRepresentation)
 }

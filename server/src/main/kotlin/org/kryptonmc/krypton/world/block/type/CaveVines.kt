@@ -31,6 +31,6 @@ interface CaveVines {
         val BERRIES: BooleanProperty = KryptonProperties.BERRIES
 
         @JvmStatic
-        fun emission(value: Int): ToIntFunction<KryptonBlockState> = ToIntFunction { if (it.require(BERRIES)) value else 0 }
+        fun emission(value: Int): ToIntFunction<KryptonBlockState> = ToIntFunction { if (it.requireProperty(BERRIES)) value else 0 }
     }
 }

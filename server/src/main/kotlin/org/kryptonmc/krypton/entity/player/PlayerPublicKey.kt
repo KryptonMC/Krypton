@@ -55,11 +55,8 @@ data class PlayerPublicKey(val data: Data) {
             buf.writeVarIntByteArray(signature)
         }
 
-        override fun equals(other: Any?): Boolean {
-            if (this === other) return true
-            if (javaClass != other?.javaClass) return false
-            return expiryTime == (other as Data).expiryTime && key == other.key && signature.contentEquals(other.signature)
-        }
+        override fun equals(other: Any?): Boolean =
+            this === other || other is Data && expiryTime == other.expiryTime && key == other.key && signature.contentEquals(other.signature)
 
         override fun hashCode(): Int {
             var result = 1

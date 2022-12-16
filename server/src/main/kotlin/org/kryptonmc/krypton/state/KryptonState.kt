@@ -39,22 +39,23 @@ abstract class KryptonState<O, S : KryptonState<O, S>>(
     private var populatedNeighbours = false
     private val optimisedTable = ZeroCollidingReferenceStateTable(this, values)
 
-    fun contains(property: KryptonProperty<*>): Boolean = optimisedTable.get(property) != null
+    fun hasProperty(property: KryptonProperty<*>): Boolean = optimisedTable.get(property) != null
 
-    fun <V : Comparable<V>> get(property: KryptonProperty<V>): V? = property.type.cast(optimisedTable.get(property))
+    fun <V : Comparable<V>> getProperty(property: KryptonProperty<V>): V? = property.type.cast(optimisedTable.get(property))
 
-    fun <V : Comparable<V>> require(property: KryptonProperty<V>): V {
+    fun <V : Comparable<V>> requireProperty(property: KryptonProperty<V>): V {
         val value = requireNotNull(optimisedTable.get(property)) { "Cannot get property $property as it does not exist on $owner!" }
         return property.type.cast(value)
     }
 
     @Suppress("UNCHECKED_CAST")
-    fun <V : Comparable<V>> set(property: KryptonProperty<V>, value: V): S {
+    fun <V : Comparable<V>> setProperty(property: KryptonProperty<V>, value: V): S {
         val newState = optimisedTable.get(property, value) ?: return this as S
         return newState as S
     }
 
-    fun <V : Comparable<V>> cycle(property: KryptonProperty<V>): S = set(property, findNext(property.values, require(property)))
+    fun <V : Comparable<V>> cycleProperty(property: KryptonProperty<V>): S =
+        setProperty(property, findNext(property.values, requireProperty(property)))
 
     fun populateNeighbours(states: Map<Map<KryptonProperty<*>, Comparable<*>>, S>) {
         check(!populatedNeighbours) { "Attempted to populate neighbours when they were already populated!" }

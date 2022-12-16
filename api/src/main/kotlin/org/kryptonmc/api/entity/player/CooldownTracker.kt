@@ -30,7 +30,7 @@ public interface CooldownTracker {
      * @param item the item
      * @return the current cooldown for the item, or -1 if not present
      */
-    public fun get(item: ItemType): Int
+    public fun getCooldown(item: ItemType): Int
 
     /**
      * Gets the current cooldown percentage for the given [item].
@@ -38,7 +38,7 @@ public interface CooldownTracker {
      * @param item the item
      * @return the percentage
      */
-    public fun getPercentage(item: ItemType): Float
+    public fun getCooldownPercentage(item: ItemType): Float
 
     /**
      * Sets the cooldown for the given [item] to the given amount of [ticks].
@@ -46,12 +46,12 @@ public interface CooldownTracker {
      * @param item the item
      * @param ticks the amount of ticks the cooldown will last for
      */
-    public fun set(item: ItemType, ticks: Int)
+    public fun setCooldown(item: ItemType, ticks: Int)
 
     /**
      * Resets the cooldown for the given [item].
      *
      * @param item the item
      */
-    public fun reset(item: ItemType)
+    public fun resetCooldown(item: ItemType)
 }

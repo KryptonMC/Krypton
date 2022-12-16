@@ -41,11 +41,11 @@ abstract class KryptonInventory(
         return stateId
     }
 
-    final override fun get(index: Int): KryptonItemStack = items.get(index)
+    final override fun getItem(index: Int): KryptonItemStack = items.get(index)
 
-    final override fun contains(item: ItemStack): Boolean = items.contains(item)
+    final override fun hasItem(item: ItemStack): Boolean = items.contains(item)
 
-    final override fun add(item: ItemStack) {
+    final override fun addItem(item: ItemStack) {
         if (item !is KryptonItemStack) return
         items.forEachIndexed { index, element ->
             if (element.type == item.type) {
@@ -65,7 +65,7 @@ abstract class KryptonInventory(
         }
     }
 
-    final override fun remove(item: ItemStack) {
+    final override fun removeItem(item: ItemStack) {
         items.forEachIndexed { index, element ->
             if (element != item) return@forEachIndexed
             items.set(index, KryptonItemStack.EMPTY)

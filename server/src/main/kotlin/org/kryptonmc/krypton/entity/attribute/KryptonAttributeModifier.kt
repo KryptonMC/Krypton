@@ -25,7 +25,6 @@ import org.kryptonmc.api.entity.attribute.BasicModifierOperation
 import org.kryptonmc.api.entity.attribute.ModifierOperation
 import org.kryptonmc.krypton.util.nbt.getUUID
 import org.kryptonmc.nbt.CompoundTag
-import java.util.Objects
 import java.util.UUID
 import java.util.function.Supplier
 
@@ -41,15 +40,11 @@ open class KryptonAttributeModifier(
 
     constructor(uuid: UUID, name: String, amount: Double, operation: ModifierOperation) : this(uuid, { name }, amount, operation)
 
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-        return Objects.equals(uuid, (other as KryptonAttributeModifier).uuid)
-    }
+    override fun equals(other: Any?): Boolean = this === other || other is KryptonAttributeModifier && uuid == other.uuid
 
     override fun hashCode(): Int = uuid.hashCode()
 
-    override fun toString(): String = "KryptonAttributeModifier(amount=$amount, operation=$operation, name=${nameGetter.get()}, uuid=$uuid)"
+    override fun toString(): String = "AttributeModifier(amount=$amount, operation=$operation, name=${nameGetter.get()}, uuid=$uuid)"
 
     object Factory : AttributeModifier.Factory {
 

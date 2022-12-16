@@ -76,6 +76,6 @@ class VectorArgument private constructor(private val correctCenter: Boolean = tr
 
         @JvmStatic
         fun get(context: CommandContext<CommandSourceStack>, name: String): Vec3d =
-            context.getArgument(name, Coordinates::class.java).position(context.source)
+            context.getArgument(name, Coordinates::class.java).calculatePosition(context.source)
     }
 }

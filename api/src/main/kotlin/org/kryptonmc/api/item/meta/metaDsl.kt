@@ -7,15 +7,10 @@
  * For more details, please reference the LICENSE file in the api top-level directory.
  */
 @file:JvmSynthetic
-@file:Suppress("MatchingDeclarationName")
 package org.kryptonmc.api.item.meta
 
 import org.jetbrains.annotations.Contract
-
-@Target(AnnotationTarget.CLASS, AnnotationTarget.FUNCTION)
-@Retention(AnnotationRetention.SOURCE)
-@DslMarker
-internal annotation class MetaDsl
+import org.kryptonmc.internal.annotations.dsl.MetaDsl
 
 /**
  * Creates new item metadata from the result of applying the given [builder]

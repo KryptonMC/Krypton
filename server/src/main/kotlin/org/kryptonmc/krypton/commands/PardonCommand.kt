@@ -31,7 +31,7 @@ object PardonCommand {
     @JvmStatic
     fun register(dispatcher: CommandDispatcher<CommandSourceStack>) {
         dispatcher.register(literal("pardon") {
-            permission(KryptonPermission.PARDON)
+            requiresPermission(KryptonPermission.PARDON)
             argument(TARGETS, GameProfileArgument) {
                 suggests { context, builder ->
                     CommandSuggestionProvider.suggest(context.source.server.playerManager.banManager.profileNames(), builder)

@@ -40,11 +40,11 @@ class KryptonStatisticType<T>(private val key: Key, override val registry: Regis
         return displayName!!
     }
 
-    override fun contains(key: T): Boolean = statistics.containsKey(key)
+    override fun hasStatistic(key: T): Boolean = statistics.containsKey(key)
 
-    override fun get(key: T): Statistic<T> = get(key, StatisticFormatter.DEFAULT)
+    override fun getStatistic(key: T): Statistic<T> = getStatistic(key, StatisticFormatter.DEFAULT)
 
-    override fun get(key: T, formatter: StatisticFormatter): Statistic<T> =
+    override fun getStatistic(key: T, formatter: StatisticFormatter): Statistic<T> =
         statistics.computeIfAbsent(key) { KryptonStatistic(this, it, formatter) }
 
     override fun iterator(): Iterator<Statistic<T>> = statistics.values.iterator()

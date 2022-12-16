@@ -44,7 +44,11 @@ class KryptonBiome(override val climate: Climate, override val effects: BiomeEff
 
         override fun climate(climate: Climate): Builder = apply { this.climate = climate }
 
+        inline fun climate(builder: Climate.Builder.() -> Unit): Builder = climate(KryptonClimate.Builder().apply(builder).build())
+
         override fun effects(effects: BiomeEffects): Builder = apply { this.effects = effects }
+
+        inline fun effects(builder: BiomeEffects.Builder.() -> Unit): Builder = effects(KryptonBiomeEffects.Builder().apply(builder).build())
 
         override fun build(): KryptonBiome = KryptonBiome(climate, effects)
     }

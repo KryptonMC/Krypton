@@ -19,8 +19,8 @@
 package org.kryptonmc.krypton.entity.metadata
 
 import net.kyori.adventure.text.Component
-import org.kryptonmc.api.util.Catalogue
 import org.kryptonmc.api.util.Rotations
+import org.kryptonmc.internal.annotations.Catalogue
 import org.kryptonmc.krypton.effect.particle.ParticleOptions
 import org.kryptonmc.krypton.entity.Pose
 import org.kryptonmc.krypton.item.KryptonItemStack

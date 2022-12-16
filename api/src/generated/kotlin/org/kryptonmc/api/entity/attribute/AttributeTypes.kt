@@ -10,7 +10,7 @@ package org.kryptonmc.api.entity.attribute
 
 import net.kyori.adventure.key.Key
 import org.kryptonmc.api.registry.Registries
-import org.kryptonmc.api.util.Catalogue
+import org.kryptonmc.internal.annotations.Catalogue
 
 /**
  * This file is auto-generated. Do not edit this manually!

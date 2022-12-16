@@ -22,11 +22,11 @@ import org.kryptonmc.api.effect.particle.ParticleType
 import org.kryptonmc.api.effect.particle.builder.BaseDustParticleEffectBuilder
 
 @Suppress("UNCHECKED_CAST")
-abstract class AbstractDustParticleEffectBuilder<B : BaseDustParticleEffectBuilder<B>>(type: ParticleType) :
-    AbstractColorParticleEffectBuilder<B>(type),
-    BaseDustParticleEffectBuilder<B> {
+abstract class AbstractDustParticleEffectBuilder<B : BaseDust<B>>(type: ParticleType) : AbstractColorParticleEffectBuilder<B>(type), BaseDust<B> {
 
     protected var scale = 0F
 
     override fun scale(scale: Float): B = apply { this.scale = scale } as B
 }
+
+private typealias BaseDust<B> = BaseDustParticleEffectBuilder<B>

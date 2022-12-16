@@ -310,7 +310,7 @@ class PlayHandler(override val server: KryptonServer, override val session: Sess
         when (packet.action) {
             PlayerAction.START_DIGGING, PlayerAction.FINISH_DIGGING, PlayerAction.CANCEL_DIGGING -> player.gameModeSystem.handleBlockBreak(packet)
             PlayerAction.RELEASE_USE_ITEM -> {
-                val handler = player.inventory.get(player.inventory.heldSlot).type.handler()
+                val handler = player.inventory.getItem(player.inventory.heldSlot).type.handler()
                 if (handler !is ItemTimedHandler) return
                 handler.finishUse(player, player.hand)
             }
@@ -319,7 +319,7 @@ class PlayHandler(override val server: KryptonServer, override val session: Sess
     }
 
     private fun handleUseItem(packet: PacketInUseItem) {
-        player.inventory.heldItem(packet.hand).type.handler().use(player, packet.hand)
+        player.inventory.getHeldItem(packet.hand).type.handler().use(player, packet.hand)
     }
 
     private fun handlePlayerInput(packet: PacketInPlayerInput) {
@@ -413,7 +413,7 @@ class PlayHandler(override val server: KryptonServer, override val session: Sess
     private fun handleClientCommand(packet: PacketInClientCommand) {
         when (packet.action) {
             PacketInClientCommand.Action.PERFORM_RESPAWN -> Unit // TODO
-            PacketInClientCommand.Action.REQUEST_STATS -> player.statistics.send()
+            PacketInClientCommand.Action.REQUEST_STATS -> player.statisticsTracker.send()
         }
     }
 

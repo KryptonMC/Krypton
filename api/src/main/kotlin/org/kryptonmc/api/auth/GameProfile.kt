@@ -8,7 +8,6 @@
  */
 package org.kryptonmc.api.auth
 
-import net.kyori.adventure.identity.Identified
 import org.jetbrains.annotations.ApiStatus
 import org.jetbrains.annotations.Contract
 import org.jetbrains.annotations.Unmodifiable
@@ -22,7 +21,7 @@ import java.util.UUID
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
 @ImmutableType
-public interface GameProfile : Identified {
+public interface GameProfile {
 
     /**
      * The UUID of the profile.

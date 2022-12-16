@@ -11,7 +11,7 @@ package org.kryptonmc.api.effect.particle
 import net.kyori.adventure.key.Keyed
 import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.effect.particle.builder.BaseParticleEffectBuilder
-import org.kryptonmc.api.util.CataloguedBy
+import org.kryptonmc.internal.annotations.CataloguedBy
 import org.kryptonmc.internal.annotations.ImmutableType
 
 /**

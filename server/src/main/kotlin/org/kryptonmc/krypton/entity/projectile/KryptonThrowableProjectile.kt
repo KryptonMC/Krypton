@@ -33,7 +33,8 @@ abstract class KryptonThrowableProjectile(world: KryptonWorld) : KryptonProjecti
 
     protected abstract val defaultItem: KryptonItemStack
 
-    init {
+    override fun defineData() {
+        super.defineData()
         data.define(MetadataKeys.ThrowableProjectile.ITEM, KryptonItemStack.EMPTY)
     }
 

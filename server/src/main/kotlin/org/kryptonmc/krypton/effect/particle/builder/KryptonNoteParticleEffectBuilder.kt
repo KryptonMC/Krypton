@@ -23,15 +23,16 @@ import org.kryptonmc.api.effect.particle.builder.NoteParticleEffectBuilder
 import org.kryptonmc.api.effect.particle.data.ParticleData
 import org.kryptonmc.krypton.effect.particle.data.KryptonNoteParticleData
 
-class KryptonNoteParticleEffectBuilder(type: NoteParticleType) : AbstractParticleEffectBuilder<NoteParticleEffectBuilder>(type),
-    NoteParticleEffectBuilder {
+class KryptonNoteParticleEffectBuilder(type: NoteParticleType) : AbstractParticleEffectBuilder<ApiNote>(type), ApiNote {
 
     private var note: Byte = 0
 
-    override fun note(note: Int): NoteParticleEffectBuilder = apply {
+    override fun note(note: Int): ApiNote = apply {
         require(note in 0..24) { "Note must be between 0 and 24!" }
         this.note = note.toByte()
     }
 
     override fun buildData(): ParticleData = KryptonNoteParticleData(note)
 }
+
+private typealias ApiNote = NoteParticleEffectBuilder

@@ -40,9 +40,9 @@ abstract class FlowingFluid : KryptonFluid() {
     abstract val flowing: KryptonFluid
     abstract val source: KryptonFluid
 
-    fun flowing(level: Int, falling: Boolean): KryptonFluidState = flowing.defaultState.set(LEVEL, level).set(FALLING, falling)
+    fun flowing(level: Int, falling: Boolean): KryptonFluidState = flowing.defaultState.setProperty(LEVEL, level).setProperty(FALLING, falling)
 
-    fun source(falling: Boolean): KryptonFluidState = source.defaultState.set(FALLING, falling)
+    fun source(falling: Boolean): KryptonFluidState = source.defaultState.setProperty(FALLING, falling)
 
     override fun createStateDefinition(builder: StateDefinition.Builder<KryptonFluid, KryptonFluidState>) {
         builder.add(FALLING)
@@ -78,7 +78,7 @@ abstract class FlowingFluid : KryptonFluid() {
         }
 
         var flow: Vec3d = Vec3dImpl(flowX, 0.0, flowZ)
-        if (state.require(FALLING)) {
+        if (state.requireProperty(FALLING)) {
             for (direction in Directions.Plane.HORIZONTAL.iterator()) {
                 offsetPos.setWithOffset(pos, direction)
                 if (isSolidFace(world, offsetPos, direction) || isSolidFace(world, offsetPos.above(), direction)) {
@@ -123,7 +123,7 @@ abstract class FlowingFluid : KryptonFluid() {
         @JvmStatic
         protected fun calculateBlockLevel(state: KryptonFluidState): Int {
             if (state.isSource) return 0
-            val fallingBonus = if (state.require(FALLING)) MAX_LEVEL else 0
+            val fallingBonus = if (state.requireProperty(FALLING)) MAX_LEVEL else 0
             return MAX_LEVEL - min(state.level, MAX_LEVEL) + fallingBonus
         }
 

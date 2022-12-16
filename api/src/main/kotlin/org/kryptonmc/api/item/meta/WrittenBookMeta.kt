@@ -15,6 +15,7 @@ import org.jetbrains.annotations.Unmodifiable
 import org.kryptonmc.api.item.data.WrittenBookGeneration
 import org.kryptonmc.internal.annotations.ImmutableType
 import org.kryptonmc.internal.annotations.ImmutableTypeIgnore
+import org.kryptonmc.internal.annotations.dsl.MetaDsl
 
 /**
  * Item metadata for books that have been written.

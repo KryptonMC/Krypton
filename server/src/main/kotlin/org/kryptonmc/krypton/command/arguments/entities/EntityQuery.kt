@@ -84,10 +84,10 @@ data class EntityQuery(val type: Selector, private val args: List<EntityArgument
 
     fun getProfiles(source: CommandSourceStack): List<GameProfile> {
         if (source.isPlayer()) {
-            if (playerName.isNotEmpty()) return listOf(playerOrThrow(source.server.profileCache.get(playerName)))
+            if (playerName.isNotEmpty()) return listOf(playerOrThrow(source.server.profileCache.getProfile(playerName)))
             return getPlayers(source).map { it.profile }
         }
-        if (playerName.isNotEmpty()) return listOf(playerOrThrow(source.server.profileCache.get(playerName)))
+        if (playerName.isNotEmpty()) return listOf(playerOrThrow(source.server.profileCache.getProfile(playerName)))
         return emptyList()
     }
 

@@ -42,7 +42,7 @@ object GameModeCommand {
 
     @JvmStatic
     fun register(dispatcher: CommandDispatcher<CommandSourceStack>) {
-        val command = literal("gamemode") { permission(KryptonPermission.GAME_MODE) }
+        val command = literal("gamemode") { requiresPermission(KryptonPermission.GAME_MODE) }
         GameModes.VALUES.forEach { mode ->
             command.then(literal(mode.name.lowercase()) {
                 runs { setMode(it.source, listOf(it.source.getPlayerOrError()), mode) }
@@ -64,15 +64,11 @@ object GameModeCommand {
     @JvmStatic
     private fun getGameMode(context: CommandContext<CommandSourceStack>): GameMode {
         val argument = context.getArgument(GAME_MODE, String::class.java)
-        var mode = GameModes.fromAbbreviation(argument)
-        if (mode == null) {
-            try {
-                mode = GameModes.fromId(argument.toInt())
-            } catch (_: NumberFormatException) {
-                throw ERROR_INVALID_GAME_MODE.create(argument)
-            }
+        return try {
+            GameModes.fromId(argument.toInt()) ?: throw ERROR_INVALID_GAME_MODE.create(argument)
+        } catch (_: NumberFormatException) {
+            throw ERROR_INVALID_GAME_MODE.create(argument)
         }
-        return mode ?: throw ERROR_INVALID_GAME_MODE.create(argument)
     }
 
     @JvmStatic

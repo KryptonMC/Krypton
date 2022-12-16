@@ -12,7 +12,7 @@ import net.kyori.adventure.key.Key
 import org.kryptonmc.api.resource.ResourceKey
 import org.kryptonmc.api.tags.TagKey
 import org.kryptonmc.api.tags.TagSet
-import org.kryptonmc.api.util.CataloguedBy
+import org.kryptonmc.internal.annotations.CataloguedBy
 import java.util.stream.Stream
 
 /**

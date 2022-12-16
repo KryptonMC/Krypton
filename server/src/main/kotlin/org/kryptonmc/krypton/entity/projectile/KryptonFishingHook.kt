@@ -43,7 +43,8 @@ class KryptonFishingHook(world: KryptonWorld) : KryptonProjectile(world), Fishin
     override var state: FishingHook.State = FishingHook.State.FLYING
     override var isBiting: Boolean = false
 
-    init {
+    override fun defineData() {
+        super.defineData()
         data.define(MetadataKeys.FishingHook.HOOKED, 0)
         data.define(MetadataKeys.FishingHook.BITING, false)
     }

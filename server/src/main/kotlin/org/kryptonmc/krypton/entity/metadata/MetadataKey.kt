@@ -18,11 +18,13 @@
  */
 package org.kryptonmc.krypton.entity.metadata
 
-import org.kryptonmc.api.util.CataloguedBy
+import org.kryptonmc.internal.annotations.CataloguedBy
 
 /**
  * A key that can be used to retrieve entity metadata from a [MetadataHolder].
  */
-@JvmRecord
 @CataloguedBy(MetadataKeys::class)
-data class MetadataKey<T>(val id: Int, val serializer: MetadataSerializer<T>)
+class MetadataKey<T>(val id: Int, val serializer: MetadataSerializer<T>) {
+
+    override fun toString(): String = "MetadataKey(id=$id, serializer=$serializer)"
+}

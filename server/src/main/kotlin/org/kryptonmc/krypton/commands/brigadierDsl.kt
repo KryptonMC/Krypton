@@ -45,7 +45,7 @@ inline fun <T : Builder<T>> Builder<T>.runs(crossinline action: (CommandContext<
     Command.SINGLE_SUCCESS
 }
 
-fun LiteralBuilder.permission(permission: KryptonPermission): LiteralBuilder = requires { it.hasPermission(permission) }
+fun LiteralBuilder.requiresPermission(permission: KryptonPermission): LiteralBuilder = requires { it.hasPermission(permission) }
 
 /**
  * Equivalent to [CommandContext.getArgument], except this uses a reified type

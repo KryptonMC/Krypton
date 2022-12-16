@@ -154,21 +154,21 @@ data class KryptonDimensionType(
             effects = type.effects
         }
 
-        override fun piglinSafe(safe: Boolean): Builder = apply { piglinSafe = safe }
+        override fun piglinSafe(): Builder = apply { piglinSafe = true }
 
-        override fun natural(natural: Boolean): Builder = apply { this.natural = natural }
+        override fun natural(): Builder = apply { natural = true }
 
-        override fun ultrawarm(ultrawarm: Boolean): Builder = apply { this.ultrawarm = ultrawarm }
+        override fun ultrawarm(): Builder = apply { ultrawarm = true }
 
-        override fun skylight(light: Boolean): Builder = apply { skylight = light }
+        override fun skylight(): Builder = apply { skylight = true }
 
-        override fun ceiling(ceiling: Boolean): Builder = apply { this.ceiling = ceiling }
+        override fun ceiling(): Builder = apply { ceiling = true }
 
-        override fun raids(raids: Boolean): Builder = apply { this.raids = raids }
+        override fun raids(): Builder = apply { raids = true }
 
-        override fun beds(beds: Boolean): Builder = apply { this.beds = beds }
+        override fun beds(): Builder = apply { beds = true }
 
-        override fun respawnAnchors(respawnAnchors: Boolean): Builder = apply { this.respawnAnchors = respawnAnchors }
+        override fun respawnAnchors(): Builder = apply { respawnAnchors = true }
 
         override fun ambientLight(light: Float): Builder = apply { ambientLight = light }
 

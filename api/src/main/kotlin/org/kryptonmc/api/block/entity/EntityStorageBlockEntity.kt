@@ -16,11 +16,6 @@ import org.kryptonmc.api.entity.Entity
 public interface EntityStorageBlockEntity<T : Entity> : BlockEntity {
 
     /**
-     * Whether this block entity is full of entities.
-     */
-    public val isFull: Boolean
-
-    /**
      * The amount of entities contained within this block entity.
      */
     public val entityCount: Int
@@ -30,6 +25,13 @@ public interface EntityStorageBlockEntity<T : Entity> : BlockEntity {
      * entity.
      */
     public var maximumEntities: Int
+
+    /**
+     * Gets whether this block entity is full of entities.
+     *
+     * @return whether this block entity is full
+     */
+    public fun isFull(): Boolean = entityCount >= maximumEntities
 
     /**
      * Releases all the entities contained within this block entity.

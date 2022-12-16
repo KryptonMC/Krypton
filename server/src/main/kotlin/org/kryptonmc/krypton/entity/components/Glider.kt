@@ -33,7 +33,7 @@ interface Glider : BaseEntity, Player {
     fun tryStartGliding(): Boolean {
         // TODO: Check for levitation effect
         if (isOnGround || isGliding || isInWater) return false
-        val item = inventory.armor(ArmorSlot.CHESTPLATE)
+        val item = inventory.getArmor(ArmorSlot.CHESTPLATE)
         if (item.type == ItemTypes.ELYTRA && item.meta.damage < item.type.durability - 1) {
             startGliding()
             return true

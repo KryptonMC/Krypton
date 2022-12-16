@@ -175,5 +175,5 @@ public object ItemTags {
 
     // @formatter:on
     @JvmStatic
-    public fun get(key: String): TagKey<ItemType> = TagKey.of(ResourceKeys.ITEM, Key.key(key))
+    private fun get(key: String): TagKey<ItemType> = TagKey.of(ResourceKeys.ITEM, Key.key(key))
 }

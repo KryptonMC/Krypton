@@ -23,8 +23,9 @@ import org.kryptonmc.api.effect.particle.builder.DustParticleEffectBuilder
 import org.kryptonmc.api.effect.particle.data.ParticleData
 import org.kryptonmc.krypton.effect.particle.data.KryptonDustParticleData
 
-class KryptonDustParticleEffectBuilder(type: DustParticleType) : AbstractDustParticleEffectBuilder<DustParticleEffectBuilder>(type),
-    DustParticleEffectBuilder {
+class KryptonDustParticleEffectBuilder(type: DustParticleType) : AbstractDustParticleEffectBuilder<ApiDust>(type), ApiDust {
 
     override fun buildData(): ParticleData = KryptonDustParticleData(color, scale)
 }
+
+private typealias ApiDust = DustParticleEffectBuilder

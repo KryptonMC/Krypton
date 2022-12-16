@@ -35,5 +35,5 @@ public object BannerPatternTags {
 
     // @formatter:on
     @JvmStatic
-    public fun get(key: String): TagKey<BannerPatternType> = TagKey.of(ResourceKeys.BANNER_PATTERN, Key.key(key))
+    private fun get(key: String): TagKey<BannerPatternType> = TagKey.of(ResourceKeys.BANNER_PATTERN, Key.key(key))
 }

@@ -44,7 +44,7 @@ class AttributeMap(private val supplier: AttributeSupplier) {
 
     // Would use a method reference for onModified, but for whatever reason, using a method reference generates a kotlin.Function
     // implementation and then creates a Consumer that delegates to that.
-    fun get(type: KryptonAttributeType): KryptonAttribute? =
+    fun getAttribute(type: KryptonAttributeType): KryptonAttribute? =
         attributes.nullableComputeIfAbsent(type) { supplier.create(type) { onModified(it) } }
 
     fun getValue(type: KryptonAttributeType): Double = attributes.get(type)?.calculateValue() ?: supplier.getValue(type)
@@ -65,7 +65,7 @@ class AttributeMap(private val supplier: AttributeSupplier) {
 
     fun addModifiers(modifiers: Multimap<KryptonAttributeType, AttributeModifier>) {
         modifiers.forEach { type, modifier ->
-            val attribute = get(type)
+            val attribute = getAttribute(type)
             if (attribute != null) {
                 attribute.removeModifier(modifier)
                 attribute.addModifier(modifier)
@@ -74,7 +74,7 @@ class AttributeMap(private val supplier: AttributeSupplier) {
     }
 
     fun replaceFrom(other: AttributeMap) {
-        other.attributes.values.forEach { get(it.type)?.replaceFrom(it) }
+        other.attributes.values.forEach { getAttribute(it.type)?.replaceFrom(it) }
     }
 
     fun load(list: ListTag) {
@@ -85,7 +85,7 @@ class AttributeMap(private val supplier: AttributeSupplier) {
                 LOGGER.warn("Ignoring unknown attribute $key.")
                 return@forEachCompound
             }
-            get(type.downcast())?.load(it)
+            getAttribute(type.downcast())?.load(it)
         }
     }
 

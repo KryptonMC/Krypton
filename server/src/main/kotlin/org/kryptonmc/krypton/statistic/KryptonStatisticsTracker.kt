@@ -95,7 +95,7 @@ class KryptonStatisticsTracker(private val player: KryptonPlayer, private val fi
 
     fun send() {
         val map = Object2IntOpenHashMap<Statistic<*>>()
-        pendingUpdating.forEach { map.put(it, get(it)) }
+        pendingUpdating.forEach { map.put(it, getStatistic(it)) }
         player.session.send(PacketOutAwardStatistics(map))
     }
 
@@ -103,22 +103,22 @@ class KryptonStatisticsTracker(private val player: KryptonPlayer, private val fi
         pendingUpdate.addAll(statistics.keys)
     }
 
-    override fun get(statistic: Statistic<*>): Int = statistics.getInt(statistic)
+    override fun getStatistic(statistic: Statistic<*>): Int = statistics.getInt(statistic)
 
-    override fun get(statistic: Key): Int = statistics.getInt(StatisticTypes.CUSTOM.get(statistic))
+    override fun getStatistic(statistic: Key): Int = statistics.getInt(StatisticTypes.CUSTOM.getStatistic(statistic))
 
-    override fun set(statistic: Statistic<*>, value: Int) {
+    override fun setStatistic(statistic: Statistic<*>, value: Int) {
         statistics.put(statistic, value)
         pendingUpdate.add(statistic)
     }
 
-    override fun increment(statistic: Statistic<*>, amount: Int) {
-        set(statistic, min(get(statistic).toLong() + amount.toLong(), Int.MAX_VALUE.toLong()).toInt())
+    override fun incrementStatistic(statistic: Statistic<*>, amount: Int) {
+        setStatistic(statistic, min(getStatistic(statistic).toLong() + amount.toLong(), Int.MAX_VALUE.toLong()).toInt())
         player.scoreboard.forEachObjective(statistic, player.teamRepresentation) { it.add(amount) }
     }
 
-    override fun decrement(statistic: Statistic<*>, amount: Int) {
-        set(statistic, max(get(statistic).toLong() - amount.toLong(), Int.MIN_VALUE.toLong()).toInt())
+    override fun decrementStatistic(statistic: Statistic<*>, amount: Int) {
+        setStatistic(statistic, max(getStatistic(statistic).toLong() - amount.toLong(), Int.MIN_VALUE.toLong()).toInt())
         player.scoreboard.forEachObjective(statistic, player.teamRepresentation) { it.subtract(amount) }
     }
 
@@ -178,7 +178,7 @@ class KryptonStatisticsTracker(private val player: KryptonPlayer, private val fi
         } catch (_: InvalidKeyException) {
             return null
         }
-        return type.registry.get(key)?.let(type::get)
+        return type.registry.get(key)?.let(type::getStatistic)
     }
 
     companion object {

@@ -21,41 +21,38 @@ package org.kryptonmc.internal.processor.immutable
 import com.google.devtools.ksp.KspExperimental
 import com.google.devtools.ksp.getDeclaredProperties
 import com.google.devtools.ksp.isAnnotationPresent
+import com.google.devtools.ksp.symbol.ClassKind
 import com.google.devtools.ksp.symbol.KSClassDeclaration
-import com.google.devtools.ksp.symbol.KSNode
 import com.google.devtools.ksp.symbol.KSPropertyDeclaration
-import com.google.devtools.ksp.visitor.KSEmptyVisitor
-import org.kryptonmc.internal.annotations.ImmutableType
 import org.kryptonmc.internal.annotations.ImmutableTypeIgnore
+import org.kryptonmc.internal.processor.util.ContextualVisitor
+import org.kryptonmc.internal.processor.util.VisitorContext
 
-object ImmutabilityChecker : KSEmptyVisitor<ImmutabilityCheckerContext, Unit>() {
+@OptIn(KspExperimental::class)
+object ImmutabilityChecker : ContextualVisitor() {
 
     private const val LOG_IGNORES = false
 
-    override fun defaultHandler(node: KSNode, data: ImmutabilityCheckerContext) {
-        // Do nothing
+    override fun visitClassDeclaration(classDeclaration: KSClassDeclaration, data: VisitorContext) {
+        val validator = when (classDeclaration.classKind) {
+            ClassKind.CLASS -> ClassImmutabilityValidator
+            ClassKind.INTERFACE -> InterfaceImmutabilityValidator
+            else -> return
+        }
+        validator.validateClass(classDeclaration, data.resolver)
+        classDeclaration.getDeclaredProperties().map { visitProperty(it, classDeclaration, data, validator) }
     }
 
-    @OptIn(KspExperimental::class)
-    override fun visitClassDeclaration(classDeclaration: KSClassDeclaration, data: ImmutabilityCheckerContext) {
-        if (!classDeclaration.isAnnotationPresent(ImmutableType::class)) return
-        data.validator.validateType(classDeclaration)
-        classDeclaration.getDeclaredProperties().map { it.accept(this, data) }
-    }
-
-    @OptIn(KspExperimental::class)
-    override fun visitPropertyDeclaration(property: KSPropertyDeclaration, data: ImmutabilityCheckerContext) {
-        val declaringType = property.parentDeclaration as? KSClassDeclaration ?: return
+    private fun visitProperty(property: KSPropertyDeclaration, type: KSClassDeclaration, context: VisitorContext, validator: ImmutabilityValidator) {
         if (property.isMutable) {
-            data.logger.error("Property ${property.simpleName.asString()} in immutable type ${declaringType.simpleName.asString()} is mutable!")
-            return
+            error("Property ${property.simpleName.asString()} in immutable type ${type.simpleName.asString()} is mutable!")
         }
         if (property.isAnnotationPresent(ImmutableTypeIgnore::class)) {
             if (LOG_IGNORES) {
-                data.logger.info("Ignoring property ${property.simpleName.asString()} in immutable type ${declaringType.simpleName.asString()}")
+                context.logger.info("Ignoring property ${property.simpleName.asString()} in immutable type ${type.simpleName.asString()}")
             }
             return
         }
-        data.validator.validateProperty(property, declaringType)
+        validator.validateProperty(property, type, context.resolver)
     }
 }

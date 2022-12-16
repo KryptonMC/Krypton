@@ -18,6 +18,7 @@
  */
 package org.kryptonmc.krypton.auth
 
+import com.google.common.collect.Collections2
 import com.google.common.collect.Lists
 import org.apache.logging.log4j.LogManager
 import org.kryptonmc.api.auth.GameProfile
@@ -40,20 +41,19 @@ class KryptonProfileCache(private val path: Path) : ProfileCache {
 
     private val profilesByName = ConcurrentHashMap<String, ProfileHolder>()
     private val profilesByUUID = ConcurrentHashMap<UUID, ProfileHolder>()
-    private val profileSet = ConcurrentHashMap.newKeySet<GameProfile>()
     private val operations = AtomicLong()
     private var dirty = false
 
-    override val profiles: Collection<GameProfile>
-        get() = Collections.unmodifiableCollection(profileSet)
+    override val profiles: Collection<GameProfile> =
+        Collections.unmodifiableCollection(Collections2.transform(profilesByUUID.values) { it.profile })
 
     fun add(profile: GameProfile) {
         add(ProfileHolder(profile, ZonedDateTime.now().plusMonths(1)))
     }
 
-    override fun get(name: String): GameProfile? = profilesByName.get(name)?.updateAndGetProfile(operations)
+    override fun getProfile(name: String): GameProfile? = profilesByName.get(name)?.updateAndGetProfile(operations)
 
-    override fun get(uuid: UUID): GameProfile? = profilesByUUID.get(uuid)?.updateAndGetProfile(operations)
+    override fun getProfile(uuid: UUID): GameProfile? = profilesByUUID.get(uuid)?.updateAndGetProfile(operations)
 
     override fun iterator(): Iterator<GameProfile> = profiles.iterator()
 
@@ -61,7 +61,6 @@ class KryptonProfileCache(private val path: Path) : ProfileCache {
         val profile = holder.updateAndGetProfile(operations)
         profilesByName.put(profile.name, holder)
         profilesByUUID.put(profile.uuid, holder)
-        profileSet.add(profile)
         markDirty()
     }
 

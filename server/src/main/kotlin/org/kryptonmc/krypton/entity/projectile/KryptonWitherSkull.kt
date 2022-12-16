@@ -33,7 +33,8 @@ class KryptonWitherSkull(world: KryptonWorld) : KryptonAcceleratingProjectile(wo
         get() = data.get(MetadataKeys.WitherSkull.DANGEROUS)
         set(value) = data.set(MetadataKeys.WitherSkull.DANGEROUS, value)
 
-    init {
+    override fun defineData() {
+        super.defineData()
         data.define(MetadataKeys.WitherSkull.DANGEROUS, false)
     }
 }

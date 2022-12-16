@@ -10,7 +10,7 @@ package org.kryptonmc.api.world.dimension
 
 import net.kyori.adventure.key.Key
 import org.kryptonmc.api.registry.Registries
-import org.kryptonmc.api.util.Catalogue
+import org.kryptonmc.internal.annotations.Catalogue
 
 /**
  * All of the built-in vanilla dimension types.

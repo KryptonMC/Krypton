@@ -131,7 +131,7 @@ class KryptonServer(
 
         // Start the metrics system.
         LOGGER.debug("Starting bStats metrics")
-        KryptonMetrics.initialize(this, config.other.metrics)
+        KryptonMetrics.initialize(this, config.advanced.metrics)
 
         // Warn about piracy being unsupported if proxy forwarding is not enabled, because video game piracy is bad.
         if (!config.server.onlineMode && config.proxy.mode == ProxyCategory.Mode.NONE) {

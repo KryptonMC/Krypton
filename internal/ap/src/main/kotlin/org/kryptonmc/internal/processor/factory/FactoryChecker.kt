@@ -24,31 +24,20 @@ import com.google.devtools.ksp.getDeclaredProperties
 import com.google.devtools.ksp.isAnnotationPresent
 import com.google.devtools.ksp.symbol.ClassKind
 import com.google.devtools.ksp.symbol.KSClassDeclaration
-import com.google.devtools.ksp.symbol.KSNode
-import com.google.devtools.ksp.visitor.KSEmptyVisitor
 import org.jetbrains.annotations.ApiStatus
-import org.kryptonmc.internal.annotations.TypeFactory
+import org.kryptonmc.internal.processor.util.ContextualVisitor
+import org.kryptonmc.internal.processor.util.VisitorContext
 
-object FactoryChecker : KSEmptyVisitor<FactoryCheckerContext, Unit>() {
-
-    override fun defaultHandler(node: KSNode, data: FactoryCheckerContext) {
-        // Nothing by default
-    }
+object FactoryChecker : ContextualVisitor() {
 
     @OptIn(KspExperimental::class)
-    override fun visitClassDeclaration(classDeclaration: KSClassDeclaration, data: FactoryCheckerContext) {
-        if (!classDeclaration.isAnnotationPresent(TypeFactory::class)) return
-        doVisitType(classDeclaration, data)
-    }
-
-    @OptIn(KspExperimental::class)
-    private fun doVisitType(type: KSClassDeclaration, resolver: FactoryCheckerContext) {
-        val parent = type.parentDeclaration
-        if (parent == null || parent !is KSClassDeclaration) fail(type, "Must be a member type")
-        if (type.classKind != ClassKind.INTERFACE) fail(type, "Must be an interface")
-        if (!type.isAnnotationPresent(ApiStatus.Internal::class)) fail(type, "Must be marked with @ApiStatus.Internal")
-        if (type.getDeclaredProperties().count() != 0) fail(type, "Must not have properties")
-        if (type.getDeclaredFunctions().count() == 0) fail(type, "Must have at least one factory function")
+    override fun visitClassDeclaration(classDeclaration: KSClassDeclaration, data: VisitorContext) {
+        val parent = classDeclaration.parentDeclaration
+        if (parent == null || parent !is KSClassDeclaration) fail(classDeclaration, "Must be a member type")
+        if (classDeclaration.classKind != ClassKind.INTERFACE) fail(classDeclaration, "Must be an interface")
+        if (!classDeclaration.isAnnotationPresent(ApiStatus.Internal::class)) fail(classDeclaration, "Must be marked with @ApiStatus.Internal")
+        if (classDeclaration.getDeclaredProperties().count() != 0) fail(classDeclaration, "Must not have properties")
+        if (classDeclaration.getDeclaredFunctions().count() == 0) fail(classDeclaration, "Must have at least one factory function")
     }
 
     private fun fail(type: KSClassDeclaration, message: String) {

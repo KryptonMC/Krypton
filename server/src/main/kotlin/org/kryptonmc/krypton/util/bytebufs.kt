@@ -294,6 +294,12 @@ fun ByteBuf.writeBlockPos(pos: BlockPos) {
 
 fun ByteBuf.readBlockPos(): BlockPos = BlockPos.unpack(readLong())
 
+fun ByteBuf.writeRotations(rotations: Rotations) {
+    writeFloat(rotations.yaw)
+    writeFloat(rotations.pitch)
+    writeFloat(rotations.roll)
+}
+
 fun ByteBuf.readRotations(): Rotations = RotationsImpl(readFloat(), readFloat(), readFloat())
 
 fun ByteBuf.writeVec3d(vector: Vec3d) {

@@ -9,8 +9,8 @@
 package org.kryptonmc.api.effect.particle.builder
 
 import org.jetbrains.annotations.Contract
-import org.kryptonmc.api.effect.particle.ParticleDsl
 import org.kryptonmc.api.item.ItemStack
+import org.kryptonmc.internal.annotations.dsl.ParticleDsl
 
 /**
  * A builder for building item particle effects.

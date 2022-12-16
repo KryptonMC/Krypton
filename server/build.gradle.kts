@@ -6,6 +6,7 @@ plugins {
     id("com.github.johnrengelman.shadow")
     id("io.gitlab.arturbosch.detekt")
     id("info.solidsoft.pitest")
+    id("com.google.devtools.ksp")
 }
 
 dependencies {
@@ -54,6 +55,8 @@ dependencies {
     implementation(libs.clikt)
     implementation(libs.bstats)
     implementation(libs.kotlinx.collections.immutable)
+    compileOnly(projects.internalAnnotations)
+    ksp(projects.internalAp)
 
     testImplementation(libs.junit.api)
     testImplementation(libs.junit.engine)

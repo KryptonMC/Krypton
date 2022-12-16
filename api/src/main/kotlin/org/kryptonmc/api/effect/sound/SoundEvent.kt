@@ -9,7 +9,7 @@
 package org.kryptonmc.api.effect.sound
 
 import net.kyori.adventure.sound.Sound
-import org.kryptonmc.api.util.CataloguedBy
+import org.kryptonmc.internal.annotations.CataloguedBy
 import org.kryptonmc.internal.annotations.ImmutableType
 
 /**

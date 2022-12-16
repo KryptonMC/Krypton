@@ -325,5 +325,5 @@ public object BlockTags {
 
     // @formatter:on
     @JvmStatic
-    public fun get(key: String): TagKey<Block> = TagKey.of(ResourceKeys.BLOCK, Key.key(key))
+    private fun get(key: String): TagKey<Block> = TagKey.of(ResourceKeys.BLOCK, Key.key(key))
 }

@@ -33,15 +33,16 @@ public enum class ChestType(private val oppositeId: Int) {
     RIGHT(1);
 
     /**
-     * The chest type opposite to this chest type.
+     * Gets the chest type opposite to this chest type.
      *
      * If this chest is the left half of a double chest, the opposite will be
      * the right half, and if it is the right half, the opposite will be the
      * left half. If this chest is a single chest, it has no opposite type,
      * and so the opposite will just be single.
+     *
+     * @return the opposite chest type
      */
-    public val opposite: ChestType
-        get() = BY_ID[oppositeId]
+    public fun opposite(): ChestType = BY_ID[oppositeId]
 
     public companion object {
 

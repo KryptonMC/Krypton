@@ -22,6 +22,7 @@ import com.squareup.kotlinpoet.AnnotationSpec
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.FunSpec
+import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.STRING
 import com.squareup.kotlinpoet.TypeName
@@ -30,10 +31,10 @@ import com.squareup.kotlinpoet.jvm.jvmField
 import com.squareup.kotlinpoet.jvm.jvmStatic
 
 const val PACKAGE: String = "org.kryptonmc.api"
-private val CATALOGUE_CLASS_NAME = ClassName("$PACKAGE.util", "Catalogue")
+private val catalogueClassName = ClassName("org.kryptonmc.internal.annotations", "Catalogue")
 
 fun TypeSpec.Builder.catalogue(parameterClassName: String): TypeSpec.Builder =
-    addAnnotation(AnnotationSpec.builder(CATALOGUE_CLASS_NAME).addMember("$parameterClassName::class").build())
+    addAnnotation(AnnotationSpec.builder(catalogueClassName).addMember("$parameterClassName::class").build())
 
 fun TypeSpec.Builder.field(name: String, returnType: TypeName, initializer: String): TypeSpec.Builder =
     addProperty(PropertySpec.builder(name, returnType).jvmField().initializer(initializer).build())
@@ -60,4 +61,4 @@ inline fun TypeSpec.Builder.privateStaticFunction(
     name: String,
     returnType: TypeName,
     builder: FunSpec.Builder.() -> Unit = {}
-): TypeSpec.Builder = addFunction(FunSpec.builder(name).returns(returnType).jvmStatic().apply(builder).build())
+): TypeSpec.Builder = addFunction(FunSpec.builder(name).addModifiers(KModifier.PRIVATE).returns(returnType).jvmStatic().apply(builder).build())
