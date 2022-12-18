@@ -21,7 +21,8 @@ package org.kryptonmc.krypton.packet.`in`.play
 import io.netty.buffer.ByteBuf
 import org.kryptonmc.api.entity.MainHand
 import org.kryptonmc.api.entity.player.ChatVisibility
-import org.kryptonmc.krypton.packet.Packet
+import org.kryptonmc.krypton.network.handlers.PlayHandler
+import org.kryptonmc.krypton.packet.InboundPacket
 import org.kryptonmc.krypton.util.readEnum
 import org.kryptonmc.krypton.util.readString
 import org.kryptonmc.krypton.util.writeEnum
@@ -37,7 +38,7 @@ data class PacketInClientInformation(
     val mainHand: MainHand,
     val filterText: Boolean,
     val allowsListing: Boolean
-) : Packet {
+) : InboundPacket<PlayHandler> {
 
     constructor(buf: ByteBuf) : this(buf.readString(16), buf.readByte().toInt(), buf.readEnum(), buf.readBoolean(), buf.readUnsignedByte(),
         buf.readEnum(), buf.readBoolean(), buf.readBoolean())
@@ -51,5 +52,9 @@ data class PacketInClientInformation(
         buf.writeEnum(mainHand)
         buf.writeBoolean(filterText)
         buf.writeBoolean(allowsListing)
+    }
+
+    override fun handle(handler: PlayHandler) {
+        handler.handleClientInformation(this)
     }
 }

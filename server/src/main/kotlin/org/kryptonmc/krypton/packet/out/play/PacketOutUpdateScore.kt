@@ -23,6 +23,8 @@ import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer
 import org.kryptonmc.api.scoreboard.Score
 import org.kryptonmc.krypton.packet.Packet
+import org.kryptonmc.krypton.util.readString
+import org.kryptonmc.krypton.util.readVarInt
 import org.kryptonmc.krypton.util.writeString
 import org.kryptonmc.krypton.util.writeVarInt
 
@@ -32,6 +34,11 @@ data class PacketOutUpdateScore(val name: String, val action: Action, val object
     constructor(name: Component, action: Action, objectiveName: String?, score: Int) : this(toLegacyString(name), action, objectiveName, score)
 
     constructor(action: Action, score: Score) : this(toLegacyString(score.name), action, score.objective?.name, score.score)
+
+    constructor(buf: ByteBuf) : this(buf, buf.readString(MAX_NAME_LENGTH), Action.fromId(buf.readByte().toInt())!!)
+
+    private constructor(buf: ByteBuf, name: String, action: Action) : this(name, action, buf.readString().ifEmpty { null },
+        if (action != Action.REMOVE) buf.readVarInt() else 0)
 
     override fun write(buf: ByteBuf) {
         buf.writeString(name, MAX_NAME_LENGTH)

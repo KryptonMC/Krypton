@@ -22,6 +22,7 @@ import com.velocitypowered.natives.util.Natives
 import io.netty.buffer.ByteBuf
 import io.netty.buffer.Unpooled
 import io.netty.channel.Channel
+import io.netty.channel.ChannelFutureListener
 import io.netty.channel.ChannelHandlerContext
 import io.netty.channel.SimpleChannelInboundHandler
 import io.netty.handler.timeout.TimeoutException
@@ -32,6 +33,7 @@ import org.kryptonmc.krypton.locale.Messages
 import org.kryptonmc.krypton.network.handlers.HandshakeHandler
 import org.kryptonmc.krypton.network.handlers.PacketHandler
 import org.kryptonmc.krypton.network.handlers.PlayHandler
+import org.kryptonmc.krypton.network.handlers.TickablePacketHandler
 import org.kryptonmc.krypton.network.netty.GroupedPacketHandler
 import org.kryptonmc.krypton.network.netty.PacketCompressor
 import org.kryptonmc.krypton.network.netty.PacketDecoder
@@ -42,6 +44,7 @@ import org.kryptonmc.krypton.network.netty.PacketEncrypter
 import org.kryptonmc.krypton.packet.CachedPacket
 import org.kryptonmc.krypton.packet.FramedPacket
 import org.kryptonmc.krypton.packet.GenericPacket
+import org.kryptonmc.krypton.packet.InboundPacket
 import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.packet.PacketState
 import org.kryptonmc.krypton.packet.out.login.PacketOutLoginDisconnect
@@ -51,6 +54,7 @@ import org.kryptonmc.krypton.util.PacketFraming
 import java.net.InetSocketAddress
 import java.net.SocketAddress
 import java.util.concurrent.Executor
+import java.util.concurrent.RejectedExecutionException
 import javax.crypto.SecretKey
 
 /**
@@ -58,7 +62,7 @@ import javax.crypto.SecretKey
  * both in one class, and offers minor improvements over the previous two, such
  * as the absence of `lateinit` values.
  */
-class SessionHandler(private val server: KryptonServer) : SimpleChannelInboundHandler<Packet>(), NetworkSession {
+class NettyConnection(private val server: KryptonServer) : SimpleChannelInboundHandler<Packet>(), NetworkConnection {
 
     private var channel: Channel? = null
     private var latency = 0
@@ -68,6 +72,7 @@ class SessionHandler(private val server: KryptonServer) : SimpleChannelInboundHa
     private var handler: PacketHandler? = null
     @Volatile
     private var compressionEnabled = false
+    private var handlingFault = false
 
     @Volatile
     private var tickBuffer = Unpooled.directBuffer()
@@ -123,9 +128,13 @@ class SessionHandler(private val server: KryptonServer) : SimpleChannelInboundHa
         pipeline.addBefore(GroupedPacketHandler.NETTY_NAME, PacketEncrypter.NETTY_NAME, encrypter)
     }
 
-    fun tickHandler() {
-        val handler = handler ?: return
-        if (handler is PlayHandler) handler.tick()
+    fun playHandler(): PlayHandler =
+        checkNotNull(handler as? PlayHandler) { "Attempted to use handler as play handler before the handler was changed! This is a bug!" }
+
+    fun tick() {
+        val handler = handler
+        if (handler is TickablePacketHandler) handler.tick()
+        flush()
     }
 
     fun changeState(newState: PacketState, newHandler: PacketHandler) {
@@ -137,10 +146,18 @@ class SessionHandler(private val server: KryptonServer) : SimpleChannelInboundHa
         latency = (latency * 3 + (System.currentTimeMillis() - lastKeepAlive).toInt()) / 3
     }
 
+    fun setReadOnly() {
+        channel().config().isAutoRead = false
+    }
+
     private fun compressionThreshold(): Int = if (compressionEnabled) server.config.server.compressionThreshold else -1
 
     override fun send(packet: Packet) {
         write(packet)
+    }
+
+    override fun send(packet: Packet, listener: PacketSendListener) {
+        writeAndFlush(packet, listener)
     }
 
     override fun write(packet: GenericPacket) {
@@ -171,45 +188,46 @@ class SessionHandler(private val server: KryptonServer) : SimpleChannelInboundHa
     }
 
     fun writeAndFlush(packet: Packet) {
-        writeWaitingPackets()
-        channel().writeAndFlush(packet)
+        writeAndFlush(packet, null)
     }
 
-    fun flush() {
+    private fun writeAndFlush(packet: Packet, listener: PacketSendListener?) {
+        writeWaitingPackets()
+        val channel = channel()
+        val future = channel.writeAndFlush(packet)
+        if (listener != null) {
+            future.addListener {
+                if (it.isSuccess) {
+                    listener.onSuccess()
+                } else {
+                    val failPacket = listener.onFailure()
+                    if (failPacket != null) channel.writeAndFlush(failPacket).addListener(ChannelFutureListener.FIRE_EXCEPTION_ON_FAILURE)
+                }
+            }
+        }
+        future.addListener(ChannelFutureListener.FIRE_EXCEPTION_ON_FAILURE)
+    }
+
+    private fun flush() {
+        val channel = channel ?: return
         val bufferSize = tickBuffer.writerIndex()
-        if (bufferSize <= 0 || !channel().isActive) return
+        if (bufferSize <= 0 || !channel.isActive) return
         writeWaitingPackets()
-        channel().flush()
+        channel.flush()
     }
 
-    fun disconnect(reason: Component) {
-        when (currentState) {
-            PacketState.PLAY -> playDisconnect(reason)
-            PacketState.LOGIN -> loginDisconnect(reason)
-            else -> LOGGER.debug("Attempted to disconnect from state $currentState")
+    fun disconnect(message: Component) {
+        val channel = channel()
+        if (channel.isOpen) {
+            channel.close().awaitUninterruptibly()
+            handler?.onDisconnect(message)
         }
     }
 
-    fun loginDisconnect(reason: Component) {
-        writeAndFlush(PacketOutLoginDisconnect(reason))
-        doDisconnect()
-    }
-
-    fun playDisconnect(reason: Component) {
-        writeAndFlush(PacketOutDisconnect(reason))
-        doDisconnect()
-    }
-
-    private fun doDisconnect() {
-        handler?.onDisconnect()
-        val channel = channel()
-        if (channel.isOpen) channel.close().awaitUninterruptibly()
-    }
-
     override fun channelActive(ctx: ChannelHandlerContext) {
-        if (channel != null) error("Channel already initialized!")
+        super.channelActive(ctx)
         channel = ctx.channel()
-        handler = HandshakeHandler(server, this)
+        changeState(PacketState.HANDSHAKE, HandshakeHandler(server, this))
         ctx.channel().config().isAutoRead = true
     }
 
@@ -219,22 +237,44 @@ class SessionHandler(private val server: KryptonServer) : SimpleChannelInboundHa
     }
 
     override fun channelRead0(ctx: ChannelHandlerContext, msg: Packet) {
-        if (!ctx.channel().isOpen) return
-        handler?.handle(msg)
+        if (msg !is InboundPacket<*>) error("Received outbound packet $msg! This is a bug!")
+        if (!channel().isOpen) return
+        try {
+            handleCap(msg, handler!!)
+        } catch (_: RejectedExecutionException) {
+            disconnect(Component.translatable("multiplayer.disconnect.server_shutdown"))
+        } catch (_: ClassCastException) {
+            // We could possibly throw and catch a different exception, however it's cleaner in the client code if we just try to do a generic
+            // cast to the handler type and catch that if it fails.
+            LOGGER.error("Received invalid packet from ${connectAddress()}!")
+            LOGGER.debug("Invalid packet $msg from ${connectAddress()} in state $currentState with handler $handler")
+            disconnect(Component.translatable("multiplayer.disconnect.invalid_packet"))
+        }
     }
 
     override fun exceptionCaught(ctx: ChannelHandlerContext, cause: Throwable) {
-        if (!ctx.channel().isOpen) return
+        val channel = channel()
+        val noExistingFault = !handlingFault
+        handlingFault = true
+        if (!channel.isOpen) return
+
         if (cause is TimeoutException) {
-            val address = ctx.channel().remoteAddress() as InetSocketAddress
+            val address = channel.remoteAddress() as InetSocketAddress
             LOGGER.debug("Connection from ${address.address}:${address.port} timed out!", cause)
             disconnect(TIMEOUT)
             return
         }
 
-        LOGGER.debug("Failed to send or received invalid packet!", cause)
-        disconnect(Messages.Disconnect.GENERIC_REASON.build("Internal Exception: $cause"))
-        ctx.channel().config().isAutoRead = false
+        val reason = Component.translatable("disconnect.genericReason", Component.text("Internal Exception: $cause"))
+        if (noExistingFault) {
+            LOGGER.debug("Failed to send packet or received invalid packet!", cause)
+            val packet = if (currentState == PacketState.LOGIN) PacketOutLoginDisconnect(reason) else PacketOutDisconnect(reason)
+            send(packet, PacketSendListener.thenRun { disconnect(reason) })
+            setReadOnly()
+        } else {
+            LOGGER.debug("Double fault!", cause)
+            disconnect(reason)
+        }
     }
 
     private fun writeWaitingPackets() {
@@ -254,5 +294,11 @@ class SessionHandler(private val server: KryptonServer) : SimpleChannelInboundHa
         private val LOGGER = LogManager.getLogger()
         private val END_OF_STREAM = Messages.Disconnect.END_OF_STREAM.build()
         private val TIMEOUT = Messages.Disconnect.TIMEOUT.build()
+
+        @JvmStatic
+        private fun <H : PacketHandler> handleCap(packet: InboundPacket<H>, handler: PacketHandler) {
+            @Suppress("UNCHECKED_CAST")
+            packet.handle(handler as H)
+        }
     }
 }

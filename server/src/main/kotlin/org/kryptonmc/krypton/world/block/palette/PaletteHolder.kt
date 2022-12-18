@@ -25,11 +25,11 @@ import net.kyori.adventure.key.Key
 import org.kryptonmc.api.world.biome.Biome
 import org.kryptonmc.krypton.registry.KryptonRegistries
 import org.kryptonmc.krypton.util.BitStorage
+import org.kryptonmc.krypton.util.ByteBufExtras
 import org.kryptonmc.krypton.util.IntBiMap
 import org.kryptonmc.krypton.util.Maths
 import org.kryptonmc.krypton.util.SimpleBitStorage
 import org.kryptonmc.krypton.util.ZeroBitStorage
-import org.kryptonmc.krypton.util.varIntBytes
 import org.kryptonmc.krypton.util.writeLongArray
 import org.kryptonmc.krypton.world.block.BlockStateSerialization
 import org.kryptonmc.krypton.world.block.KryptonBlock
@@ -152,7 +152,7 @@ class PaletteHolder<T> : PaletteResizer<T> {
             buf.writeLongArray(storage.data)
         }
 
-        fun calculateSerializedSize(): Int = 1 + palette.calculateSerializedSize() + storage.size.varIntBytes() + storage.sizeBytes()
+        fun calculateSerializedSize(): Int = 1 + palette.calculateSerializedSize() + ByteBufExtras.getVarIntBytes(storage.size) + storage.sizeBytes()
 
         fun copy(): Data<T> = Data(configuration, storage.copy(), palette.copy())
     }

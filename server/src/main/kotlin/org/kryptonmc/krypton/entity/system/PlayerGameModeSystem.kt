@@ -119,7 +119,7 @@ class PlayerGameModeSystem(private val player: KryptonPlayer) {
                     return
                 }
                 if (player.isBlockActionRestricted(pos)) {
-                    player.session.send(PacketOutBlockUpdate(pos, player.world.getBlock(pos)))
+                    player.connection.send(PacketOutBlockUpdate(pos, player.world.getBlock(pos)))
                     logBlockBreakUpdate(pos, false, "cannot break blocks while in this state!")
                     return
                 }
@@ -136,7 +136,7 @@ class PlayerGameModeSystem(private val player: KryptonPlayer) {
                     return
                 }
                 if (isDestroying) {
-                    player.session.send(PacketOutBlockUpdate(destroyPos, player.world.getBlock(destroyPos)))
+                    player.connection.send(PacketOutBlockUpdate(destroyPos, player.world.getBlock(destroyPos)))
                     val reason = "aborted because another block is already being destroyed (client instantly mined block, we didn't like that)"
                     logBlockBreakUpdate(pos, false, reason)
                 }
@@ -199,7 +199,7 @@ class PlayerGameModeSystem(private val player: KryptonPlayer) {
     private fun destroyAndAcknowledge(pos: BlockPos, message: String) {
         val success = destroyBlock(pos)
         logBlockBreakUpdate(pos, success, message)
-        if (success) player.session.send(PacketOutBlockUpdate(pos, player.world.getBlock(pos)))
+        if (success) player.connection.send(PacketOutBlockUpdate(pos, player.world.getBlock(pos)))
     }
 
     private fun destroyBlock(pos: BlockPos): Boolean {

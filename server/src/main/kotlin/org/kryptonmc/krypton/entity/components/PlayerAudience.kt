@@ -78,17 +78,17 @@ interface PlayerAudience : Player, NetworkPlayer, KryptonSender {
     }
 
     override fun sendActionBar(message: Component) {
-        session.send(PacketOutSetActionBarText(message))
+        connection.send(PacketOutSetActionBarText(message))
     }
 
     override fun sendPlayerListHeaderAndFooter(header: Component, footer: Component) {
-        session.send(PacketOutSetTabListHeaderAndFooter(header, footer))
+        connection.send(PacketOutSetTabListHeaderAndFooter(header, footer))
     }
 
     override fun showTitle(title: Title) {
-        if (title.times() != null) session.send(PacketOutSetTitleAnimationTimes(title.times()!!))
-        session.send(PacketOutSetSubtitleText(title.subtitle()))
-        session.send(PacketOutSetTitleText(title.title()))
+        if (title.times() != null) connection.send(PacketOutSetTitleAnimationTimes(title.times()!!))
+        connection.send(PacketOutSetSubtitleText(title.subtitle()))
+        connection.send(PacketOutSetTitleText(title.title()))
     }
 
     override fun <T : Any> sendTitlePart(part: TitlePart<T>, value: T) {
@@ -98,27 +98,27 @@ interface PlayerAudience : Player, NetworkPlayer, KryptonSender {
             TitlePart.TIMES -> PacketOutSetTitleAnimationTimes(value as Title.Times)
             else -> throw IllegalArgumentException("Unknown title part $part!")
         }
-        session.send(packet)
+        connection.send(packet)
     }
 
     fun sendTitle(title: Component) {
-        session.send(PacketOutSetTitleText(title))
+        connection.send(PacketOutSetTitleText(title))
     }
 
     fun sendSubtitle(subtitle: Component) {
-        session.send(PacketOutSetSubtitleText(subtitle))
+        connection.send(PacketOutSetSubtitleText(subtitle))
     }
 
     fun sendTitleTimes(fadeInTicks: Int, stayTicks: Int, fadeOutTicks: Int) {
-        session.send(PacketOutSetTitleAnimationTimes(fadeInTicks, stayTicks, fadeOutTicks))
+        connection.send(PacketOutSetTitleAnimationTimes(fadeInTicks, stayTicks, fadeOutTicks))
     }
 
     override fun clearTitle() {
-        session.send(PacketOutClearTitles(false))
+        connection.send(PacketOutClearTitles(false))
     }
 
     override fun resetTitle() {
-        session.send(PacketOutClearTitles(true))
+        connection.send(PacketOutClearTitles(true))
     }
 
     override fun showBossBar(bar: BossBar) {
@@ -137,7 +137,7 @@ interface PlayerAudience : Player, NetworkPlayer, KryptonSender {
         val type = KryptonRegistries.SOUND_EVENT.get(sound.name())
         val seed = sound.seed().orElseGet { world.generateSoundSeed() }
         val packet = if (type != null) PacketOutSoundEffect(sound, type, x, y, z, seed) else PacketOutCustomSoundEffect(sound, x, y, z, seed)
-        session.send(packet)
+        connection.send(packet)
     }
 
     override fun playSound(sound: Sound, emitter: Sound.Emitter) {
@@ -154,11 +154,11 @@ interface PlayerAudience : Player, NetworkPlayer, KryptonSender {
         } else {
             PacketOutCustomSoundEffect(sound, entity.position.x, entity.position.y, entity.position.z, seed)
         }
-        session.send(packet)
+        connection.send(packet)
     }
 
     override fun stopSound(stop: SoundStop) {
-        session.send(PacketOutStopSound(stop))
+        connection.send(PacketOutStopSound(stop))
     }
 
     override fun openBook(book: Book) {

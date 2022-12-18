@@ -279,6 +279,9 @@ object PacketRegistry {
 
     private fun interface PacketConstructor {
 
-        fun create(buf: ByteBuf): Packet
+        /**
+         * This returns InboundPacket rather than just Packet to try and ensure that all our inbound packets implement this interface.
+         */
+        fun create(buf: ByteBuf): InboundPacket<*>
     }
 }

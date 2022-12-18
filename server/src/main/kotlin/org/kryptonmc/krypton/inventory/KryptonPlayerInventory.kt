@@ -99,7 +99,7 @@ class KryptonPlayerInventory(override val owner: KryptonPlayer) : KryptonInvento
             in INVENTORY_SIZE until OFFHAND_SLOT -> items.set(index - INVENTORY_SIZE, item)
             OFFHAND_SLOT -> offHand = item
         }
-        owner.session.send(PacketOutSetContainerSlot(id, incrementStateId(), index, item))
+        owner.connection.send(PacketOutSetContainerSlot(id, incrementStateId(), index, item))
     }
 
     override fun write(buf: ByteBuf) {

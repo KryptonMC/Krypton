@@ -19,9 +19,9 @@
 package org.kryptonmc.krypton.world.block.palette
 
 import io.netty.buffer.ByteBuf
+import org.kryptonmc.krypton.util.ByteBufExtras
 import org.kryptonmc.krypton.util.IntBiMap
 import org.kryptonmc.krypton.util.IntIdentityHashBiMap
-import org.kryptonmc.krypton.util.varIntBytes
 import org.kryptonmc.krypton.util.writeVarInt
 
 @JvmRecord
@@ -67,9 +67,9 @@ data class MapPalette<T>(
     }
 
     override fun calculateSerializedSize(): Int {
-        var size = size.varIntBytes()
+        var size = ByteBufExtras.getVarIntBytes(size)
         for (i in 0 until this.size) {
-            size += registry.getId(values.get(i)!!).varIntBytes()
+            size += ByteBufExtras.getVarIntBytes(registry.getId(values.get(i)!!))
         }
         return size
     }

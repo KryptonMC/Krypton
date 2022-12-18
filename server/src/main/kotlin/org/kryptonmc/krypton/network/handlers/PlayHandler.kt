@@ -19,8 +19,9 @@
 package org.kryptonmc.krypton.network.handlers
 
 import com.mojang.brigadier.StringReader
-import net.kyori.adventure.audience.MessageType
+import net.kyori.adventure.chat.ChatType
 import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer
 import net.kyori.adventure.translation.Translator
 import org.apache.logging.log4j.LogManager
 import org.kryptonmc.api.entity.Hand
@@ -45,7 +46,8 @@ import org.kryptonmc.krypton.inventory.KryptonPlayerInventory
 import org.kryptonmc.krypton.item.handler
 import org.kryptonmc.krypton.item.handler.ItemTimedHandler
 import org.kryptonmc.krypton.locale.Messages
-import org.kryptonmc.krypton.network.SessionHandler
+import org.kryptonmc.krypton.network.NettyConnection
+import org.kryptonmc.krypton.network.PacketSendListener
 import org.kryptonmc.krypton.network.chat.Chat
 import org.kryptonmc.krypton.network.chat.ChatTypes
 import org.kryptonmc.krypton.packet.Packet
@@ -74,6 +76,7 @@ import org.kryptonmc.krypton.packet.`in`.play.PacketInUseItemOn
 import org.kryptonmc.krypton.packet.out.play.EntityAnimation
 import org.kryptonmc.krypton.packet.out.play.PacketOutAnimation
 import org.kryptonmc.krypton.packet.out.play.PacketOutCommandSuggestionsResponse
+import org.kryptonmc.krypton.packet.out.play.PacketOutDisconnect
 import org.kryptonmc.krypton.packet.out.play.PacketOutKeepAlive
 import org.kryptonmc.krypton.packet.out.play.PacketOutPlayerChatMessage
 import org.kryptonmc.krypton.packet.out.play.PacketOutPlayerInfo
@@ -103,7 +106,11 @@ import org.kryptonmc.krypton.packet.`in`.play.PacketInPlayerAction.Action as Pla
  *
  * This handles all supported inbound packets in the play state.
  */
-class PlayHandler(override val server: KryptonServer, override val session: SessionHandler, private val player: KryptonPlayer) : PacketHandler {
+class PlayHandler(
+    private val server: KryptonServer,
+    override val connection: NettyConnection,
+    private val player: KryptonPlayer
+) : TickablePacketHandler {
 
     private val playerManager = server.playerManager
     private val sessionManager = server.sessionManager
@@ -112,53 +119,32 @@ class PlayHandler(override val server: KryptonServer, override val session: Sess
     private var pendingKeepAlive = false
     private val lastChatTimestamp = AtomicReference(Instant.EPOCH)
 
-    fun tick() {
+    override fun tick() {
         val time = System.currentTimeMillis()
         if (time - lastKeepAlive < KEEP_ALIVE_INTERVAL) return
         if (pendingKeepAlive) {
-            session.playDisconnect(Messages.Disconnect.TIMEOUT.build())
+            disconnect(Messages.Disconnect.TIMEOUT.build())
             return
         }
         pendingKeepAlive = true
         lastKeepAlive = time
         keepAliveChallenge = time
-        session.send(PacketOutKeepAlive(keepAliveChallenge))
+        connection.send(PacketOutKeepAlive(keepAliveChallenge))
     }
 
-    override fun handle(packet: Packet) {
-        when (packet) {
-            is PacketInSwingArm -> handleSwingArm(packet)
-            is PacketInChatCommand -> handleChatCommand(packet)
-            is PacketInChatMessage -> handleChatMessage(packet)
-            is PacketInClientInformation -> handleClientInformation(packet)
-            is PacketInSetCreativeModeSlot -> handleSetCreativeModeSlot(packet)
-            is PacketInPlayerCommand -> handlePlayerCommand(packet)
-            is PacketInSetHeldItem -> handleSetHeldItem(packet)
-            is PacketInKeepAlive -> handleKeepAlive(packet)
-            is PacketInAbilities -> handleAbilities(packet)
-            is PacketInUseItemOn -> handleUseItemOn(packet)
-            is PacketInPlayerAction -> handlePlayerAction(packet)
-            is PacketInSetPlayerPosition -> handlePositionUpdate(packet)
-            is PacketInSetPlayerRotation -> handleRotationUpdate(packet)
-            is PacketInSetPlayerPositionAndRotation -> handlePositionAndRotationUpdate(packet)
-            is PacketInPluginMessage -> handlePluginMessage(packet)
-            is PacketInCommandSuggestionsRequest -> handleCommandSuggestionsRequest(packet)
-            is PacketInClientCommand -> handleClientCommand(packet)
-            is PacketInQueryEntityTag -> handleEntityTagQuery(packet)
-            is PacketInInteract -> handleInteract(packet)
-            is PacketInPlayerInput -> handlePlayerInput(packet)
-            is PacketInUseItem -> handleUseItem(packet)
-            is PacketInResourcePack -> handleResourcePack(packet)
-            else -> Unit
-        }
+    fun disconnect(reason: Component) {
+        connection.send(PacketOutDisconnect(reason), PacketSendListener.thenRun { connection.disconnect(reason) })
+        connection.setReadOnly()
     }
 
-    override fun onDisconnect() {
-        sessionManager.invalidateStatus()
+    override fun onDisconnect(message: Component) {
+        val playerNameText = PlainTextComponentSerializer.plainText().serialize(player.name)
+        LOGGER.info("$playerNameText was disconnected: ${PlainTextComponentSerializer.plainText().serialize(message)}")
+        player.disconnect()
         playerManager.remove(player)
     }
 
-    private fun handleSwingArm(packet: PacketInSwingArm) {
+    fun handleSwingArm(packet: PacketInSwingArm) {
         val animation = when (packet.hand) {
             Hand.MAIN -> EntityAnimation.SWING_MAIN_ARM
             Hand.OFF -> EntityAnimation.SWING_OFFHAND
@@ -166,39 +152,44 @@ class PlayHandler(override val server: KryptonServer, override val session: Sess
         sessionManager.sendGrouped(PacketOutAnimation(player.id, animation)) { it !== player }
     }
 
-    private fun handleChatCommand(packet: PacketInChatCommand) {
-        if (!Chat.isValidMessage(packet.command)) session.playDisconnect(ILLEGAL_CHAT_CHARACTERS_MESSAGE)
+    fun handleChatCommand(packet: PacketInChatCommand) {
+        if (!Chat.isValidMessage(packet.command)) disconnect(ILLEGAL_CHAT_CHARACTERS_MESSAGE)
         if (!verifyChatMessage(packet.command, packet.timestamp)) return
         server.eventManager.fire(KryptonCommandExecuteEvent(player, packet.command)).thenAcceptAsync({
-            if (!it.result.isAllowed) return@thenAcceptAsync
-            server.commandManager.dispatch(player, packet.command)
-        }, session.executor())
+            if (it.result.isAllowed) {
+                server.commandManager.dispatch(player, it.result.command ?: packet.command)
+            }
+        }, connection.executor())
     }
 
-    private fun handleChatMessage(packet: PacketInChatMessage) {
+    fun handleChatMessage(packet: PacketInChatMessage) {
         // Sanity check message content
-        if (!Chat.isValidMessage(packet.message)) session.playDisconnect(ILLEGAL_CHAT_CHARACTERS_MESSAGE)
+        if (!Chat.isValidMessage(packet.message)) disconnect(ILLEGAL_CHAT_CHARACTERS_MESSAGE)
         // Fire the chat event
-        server.eventManager.fire(KryptonChatEvent(player, packet.message)).thenAcceptAsync({ event ->
-            if (!event.result.isAllowed) return@thenAcceptAsync
-            if (!verifyChatMessage(packet.message, packet.signature.timestamp)) return@thenAcceptAsync
+        server.eventManager.fire(KryptonChatEvent(player, packet.message))
+            .thenAcceptAsync({ event -> processChatEvent(event, packet) }, connection.executor())
+    }
 
-            val message = event.result.reason ?: Messages.CHAT_TYPE_TEXT.build(player, packet.message)
-            if (!packet.signature.verify(player.publicKey, message, player.uuid)) {
-                LOGGER.warn("Chat message ${packet.message} with invalid signature sent by ${player.name}. Ignoring...")
-                return@thenAcceptAsync
-            }
-            val typeId = KryptonRegistries.CHAT_TYPE.getId(ChatTypes.CHAT)
-            val outPacket = PacketOutPlayerChatMessage(Component.text(packet.message), message, typeId, player.asChatSender(), packet.signature)
-            server.sessionManager.sendGrouped(outPacket) { it !== player }
-            server.console.sendMessage(player, message, MessageType.CHAT)
-        }, session.executor())
+    private fun processChatEvent(event: KryptonChatEvent, packet: PacketInChatMessage) {
+        if (!event.result.isAllowed) return
+        if (!verifyChatMessage(packet.message, packet.signature.timestamp)) return
+
+        val message = event.result.reason ?: Messages.CHAT_TYPE_TEXT.build(player, packet.message)
+        if (!packet.signature.verify(player.publicKey, message, player.uuid)) {
+            LOGGER.warn("Chat message ${packet.message} with invalid signature sent by ${player.name}! Ignoring...")
+            return
+        }
+        val typeId = KryptonRegistries.CHAT_TYPE.getId(ChatTypes.CHAT)
+        val outPacket = PacketOutPlayerChatMessage(Component.text(packet.message), message, typeId, player.asChatSender(), packet.signature)
+        server.sessionManager.sendGrouped(outPacket) { it !== player }
+        // TODO: Review whether this is actually correct
+        server.console.sendMessage(message, ChatType.CHAT.bind(player.name))
     }
 
     private fun verifyChatMessage(message: String, timestamp: Instant): Boolean {
         if (!updateChatOrder(timestamp)) {
             LOGGER.warn("Out of order chat message $message received from ${player.profile.name}. Disconnecting...")
-            session.playDisconnect(Messages.Disconnect.OUT_OF_ORDER_CHAT.build())
+            disconnect(Messages.Disconnect.OUT_OF_ORDER_CHAT.build())
             return false
         }
         if (isChatExpired(timestamp)) {
@@ -228,7 +219,7 @@ class PlayHandler(override val server: KryptonServer, override val session: Sess
         return true
     }
 
-    private fun handleClientInformation(packet: PacketInClientInformation) {
+    fun handleClientInformation(packet: PacketInClientInformation) {
         player.settings = KryptonPlayerSettings(
             Translator.parseLocale(packet.locale),
             packet.viewDistance,
@@ -240,7 +231,7 @@ class PlayHandler(override val server: KryptonServer, override val session: Sess
         )
     }
 
-    private fun handleSetCreativeModeSlot(packet: PacketInSetCreativeModeSlot) {
+    fun handleSetCreativeModeSlot(packet: PacketInSetCreativeModeSlot) {
         if (player.gameMode != GameMode.CREATIVE) return
         val item = packet.clickedItem
         val inValidRange = packet.slot >= 1 && packet.slot < KryptonPlayerInventory.SIZE
@@ -248,7 +239,7 @@ class PlayHandler(override val server: KryptonServer, override val session: Sess
         if (inValidRange && isValid) player.inventory.set(packet.slot, packet.clickedItem)
     }
 
-    private fun handlePlayerCommand(packet: PacketInPlayerCommand) {
+    fun handlePlayerCommand(packet: PacketInPlayerCommand) {
         server.eventManager.fire(KryptonPerformActionEvent(player, packet.action)).thenAcceptAsync({
             if (!it.result.isAllowed) return@thenAcceptAsync
             when (it.action) {
@@ -261,33 +252,33 @@ class PlayHandler(override val server: KryptonServer, override val session: Sess
                 EntityAction.START_FLYING_WITH_ELYTRA -> if (!player.tryStartGliding()) player.stopGliding()
                 else -> error("This should be impossible! Action for player command was not a valid action! Action: ${it.action}")
             }
-        }, session.executor())
+        }, connection.executor())
     }
 
-    private fun handleSetHeldItem(packet: PacketInSetHeldItem) {
-        if (packet.slot !in 0..8) {
+    fun handleSetHeldItem(packet: PacketInSetHeldItem) {
+        if (packet.slot < 0 || packet.slot > 8) {
             LOGGER.warn("${player.profile.name} tried to change their held item slot to an invalid value!")
             return
         }
         player.inventory.heldSlot = packet.slot
     }
 
-    private fun handleKeepAlive(packet: PacketInKeepAlive) {
+    fun handleKeepAlive(packet: PacketInKeepAlive) {
         if (pendingKeepAlive && packet.id == keepAliveChallenge) {
-            session.updateLatency(lastKeepAlive)
+            connection.updateLatency(lastKeepAlive)
             pendingKeepAlive = false
             sessionManager.sendGrouped(PacketOutPlayerInfo(PacketOutPlayerInfo.Action.UPDATE_LATENCY, player))
             return
         }
-        session.playDisconnect(Messages.Disconnect.TIMEOUT.build())
+        disconnect(Messages.Disconnect.TIMEOUT.build())
     }
 
-    private fun handleAbilities(packet: PacketInAbilities) {
+    fun handleAbilities(packet: PacketInAbilities) {
         player.isGliding = packet.isFlying && player.abilities.canFly
     }
 
     // TODO: This entire thing needs to be rewritten
-    private fun handleUseItemOn(packet: PacketInUseItemOn) {
+    fun handleUseItemOn(packet: PacketInUseItemOn) {
         if (!player.canBuild) return // If they can't place blocks, they are irrelevant :)
 
         val world = player.world
@@ -306,28 +297,27 @@ class PlayHandler(override val server: KryptonServer, override val session: Sess
         chunk.setBlock(position, KryptonRegistries.BLOCK.get(player.inventory.mainHand.type.key()).defaultState, false)
     }
 
-    private fun handlePlayerAction(packet: PacketInPlayerAction) {
+    fun handlePlayerAction(packet: PacketInPlayerAction) {
         when (packet.action) {
             PlayerAction.START_DIGGING, PlayerAction.FINISH_DIGGING, PlayerAction.CANCEL_DIGGING -> player.gameModeSystem.handleBlockBreak(packet)
             PlayerAction.RELEASE_USE_ITEM -> {
                 val handler = player.inventory.getItem(player.inventory.heldSlot).type.handler()
-                if (handler !is ItemTimedHandler) return
-                handler.finishUse(player, player.hand)
+                if (handler is ItemTimedHandler) handler.finishUse(player, player.hand)
             }
             else -> Unit
         }
     }
 
-    private fun handleUseItem(packet: PacketInUseItem) {
+    fun handleUseItem(packet: PacketInUseItem) {
         player.inventory.getHeldItem(packet.hand).type.handler().use(player, packet.hand)
     }
 
-    private fun handlePlayerInput(packet: PacketInPlayerInput) {
+    fun handlePlayerInput(packet: PacketInPlayerInput) {
         // TODO: Handle steering here
         if (packet.isSneaking()) player.ejectVehicle()
     }
 
-    private fun handleInteract(packet: PacketInInteract) {
+    fun handleInteract(packet: PacketInInteract) {
         val target = player.world.entityManager.get(packet.entityId)
         player.isSneaking = packet.sneaking
         if (target == null) return
@@ -335,97 +325,89 @@ class PlayHandler(override val server: KryptonServer, override val session: Sess
         packet.action.handle(InteractionHandler())
     }
 
-    private fun handlePositionUpdate(packet: PacketInSetPlayerPosition) {
-        val oldLocation = player.position
-        if (oldLocation.x == packet.x && oldLocation.y == packet.y && oldLocation.z == packet.z) {
-            // We haven't moved at all. We can avoid constructing the Vector3d object entirely, and just
-            // fast nope out.
+    fun handlePlayerPosition(packet: PacketInSetPlayerPosition) {
+        updatePosition(packet.x, packet.y, packet.z) { dx, dy, dz -> PacketOutUpdateEntityPosition(player.id, dx, dy, dz, packet.onGround) }
+    }
+
+    fun handlePlayerRotation(packet: PacketInSetPlayerRotation) {
+        if (!updateRotation(packet.yaw, packet.pitch)) return
+        sessionManager.sendGrouped(PacketOutUpdateEntityRotation(player.id, packet.yaw, packet.pitch, packet.onGround)) { it !== player }
+        sessionManager.sendGrouped(PacketOutSetHeadRotation(player.id, packet.yaw)) { it !== player }
+    }
+
+    fun handlePlayerPositionAndRotation(packet: PacketInSetPlayerPositionAndRotation) {
+        updatePosition(packet.x, packet.y, packet.z) { dx, dy, dz ->
+            PacketOutUpdateEntityPositionAndRotation(player.id, dx, dy, dz, packet.yaw, packet.pitch, packet.onGround)
+        }
+        // It may seem weird at first that we update the rotation afterwards, considering we use the rotation in the update packet above.
+        // However, we're always using the packet's values, which are the updated values, and we'll have to send that packet anyway, so
+        // there's no point checking whether the rotation has changed or not beforehand.
+        if (updateRotation(packet.yaw, packet.pitch)) {
+            sessionManager.sendGrouped(PacketOutSetHeadRotation(player.id, packet.yaw)) { it !== player }
+        }
+    }
+
+    private fun updatePosition(x: Double, y: Double, z: Double, updatePacket: MovementPacketSupplier) {
+        val oldPosition = player.position
+        if (oldPosition.x == x && oldPosition.y == y && oldPosition.z == z) {
+            // We haven't moved at all. We can avoid constructing the Vector3d object entirely,
+            // avoid calling the move event, and just fast nope out.
             return
         }
-        val newLocation = Vec3dImpl(packet.x, packet.y, packet.z)
 
-        player.position = newLocation
-        server.eventManager.fireAndForget(KryptonMoveEvent(player, oldLocation, newLocation))
+        val newPosition = Vec3dImpl(x, y, z)
+        player.position = newPosition
+        server.eventManager.fireAndForget(KryptonMoveEvent(player, oldPosition, newPosition))
 
-        val deltaX = Positioning.delta(newLocation.x, oldLocation.x)
-        val deltaY = Positioning.delta(newLocation.y, oldLocation.y)
-        val deltaZ = Positioning.delta(newLocation.z, oldLocation.z)
-        val newPacket = PacketOutUpdateEntityPosition(player.id, deltaX, deltaY, deltaZ, packet.onGround)
-        player.viewingSystem.sendToViewers(newPacket)
-        onMove(newLocation, oldLocation)
+        val dx = Positioning.delta(x, oldPosition.x)
+        val dy = Positioning.delta(y, oldPosition.y)
+        val dz = Positioning.delta(z, oldPosition.z)
+        player.viewingSystem.sendToViewers(updatePacket.get(dx, dy, dz))
+        onMove(newPosition, oldPosition)
     }
 
-    private fun handleRotationUpdate(packet: PacketInSetPlayerRotation) {
+    private fun updateRotation(yaw: Float, pitch: Float): Boolean {
         val oldYaw = player.yaw
         val oldPitch = player.pitch
-        val newYaw = packet.yaw
-        val newPitch = packet.pitch
-
-        player.yaw = newYaw
-        player.pitch = newPitch
-        server.eventManager.fireAndForget(KryptonRotateEvent(player, oldYaw, oldPitch, newYaw, newPitch))
-
-        sessionManager.sendGrouped(PacketOutUpdateEntityRotation(player.id, newYaw, newPitch, packet.onGround)) { it !== player }
-        sessionManager.sendGrouped(PacketOutSetHeadRotation(player.id, newYaw)) { it !== player }
-    }
-
-    private fun handlePositionAndRotationUpdate(packet: PacketInSetPlayerPositionAndRotation) {
-        val oldLocation = player.position
-        if (oldLocation.x == packet.x && oldLocation.y == packet.y && oldLocation.z == packet.z) {
-            // We haven't moved at all. We can avoid constructing the Vector3d object entirely, and just
-            // fast nope out.
-            return
+        if (oldYaw == yaw && oldPitch == pitch) {
+            // We haven't rotated at all. We can avoid calling the event and just fast nope out.
+            return false
         }
-        val oldYaw = player.yaw
-        val oldPitch = player.pitch
 
-        val newLocation = Vec3dImpl(packet.x, packet.y, packet.z)
-        val newYaw = packet.yaw
-        val newPitch = packet.pitch
-
-        player.position = newLocation
-        player.yaw = packet.yaw
-        player.pitch = packet.pitch
-        server.eventManager.fireAndForget(KryptonMoveEvent(player, oldLocation, newLocation))
-        server.eventManager.fireAndForget(KryptonRotateEvent(player, oldYaw, oldPitch, newYaw, newPitch))
-
-        // TODO: Look in to optimising this (rotation and head look updating) as much as we possibly can
-        val deltaX = Positioning.delta(newLocation.x, oldLocation.x)
-        val deltaY = Positioning.delta(newLocation.y, oldLocation.y)
-        val deltaZ = Positioning.delta(newLocation.z, oldLocation.z)
-        val positionPacket = PacketOutUpdateEntityPositionAndRotation(player.id, deltaX, deltaY, deltaZ, newYaw, newPitch, packet.onGround)
-        sessionManager.sendGrouped(positionPacket) { it !== player }
-        sessionManager.sendGrouped(PacketOutSetHeadRotation(player.id, newYaw)) { it !== player }
-        onMove(newLocation, oldLocation)
+        player.yaw = yaw
+        player.pitch = pitch
+        server.eventManager.fireAndForget(KryptonRotateEvent(player, oldYaw, oldPitch, yaw, pitch))
+        return true
     }
 
-    private fun handlePluginMessage(packet: PacketInPluginMessage) {
+    fun handlePluginMessage(packet: PacketInPluginMessage) {
         server.eventManager.fireAndForget(KryptonPluginMessageEvent(player, packet.channel, packet.data))
     }
 
-    private fun handleCommandSuggestionsRequest(packet: PacketInCommandSuggestionsRequest) {
+    fun handleCommandSuggestionsRequest(packet: PacketInCommandSuggestionsRequest) {
         val reader = StringReader(packet.command)
         if (reader.canRead() && reader.peek() == '/') reader.skip()
         val parseResults = server.commandManager.parse(player.createCommandSourceStack(), reader)
-        server.commandManager.suggest(parseResults).thenAccept { session.send(PacketOutCommandSuggestionsResponse(packet.id, it)) }
+        server.commandManager.suggest(parseResults)
+            .thenAcceptAsync({ connection.send(PacketOutCommandSuggestionsResponse(packet.id, it)) }, connection.executor())
     }
 
-    private fun handleClientCommand(packet: PacketInClientCommand) {
+    fun handleClientCommand(packet: PacketInClientCommand) {
         when (packet.action) {
             PacketInClientCommand.Action.PERFORM_RESPAWN -> Unit // TODO
             PacketInClientCommand.Action.REQUEST_STATS -> player.statisticsTracker.send()
         }
     }
 
-    private fun handleEntityTagQuery(packet: PacketInQueryEntityTag) {
+    fun handleEntityTagQuery(packet: PacketInQueryEntityTag) {
         if (!player.hasPermission(KryptonPermission.ENTITY_QUERY.node)) return
         val entity = player.world.entityManager.get(packet.entityId) ?: return
-        session.send(PacketOutTagQueryResponse(packet.transactionId, entity.saveWithPassengers().build()))
+        connection.send(PacketOutTagQueryResponse(packet.transactionId, entity.saveWithPassengers().build()))
     }
 
-    private fun handleResourcePack(packet: PacketInResourcePack) {
+    fun handleResourcePack(packet: PacketInResourcePack) {
         if (packet.status == ResourcePack.Status.DECLINED && server.config.server.resourcePack.forced) {
-            session.playDisconnect(Messages.Disconnect.REQUIRED_TEXTURE_PROMPT.build())
+            disconnect(Messages.Disconnect.REQUIRED_TEXTURE_PROMPT.build())
             return
         }
         server.eventManager.fireAndForget(KryptonResourcePackStatusEvent(player, packet.status))
@@ -450,6 +432,11 @@ class PlayHandler(override val server: KryptonServer, override val session: Sess
         override fun onAttack() {
             // TODO: Re-implement interactions and call a handler here
         }
+    }
+
+    private fun interface MovementPacketSupplier {
+
+        fun get(dx: Short, dy: Short, dz: Short): Packet
     }
 
     companion object {

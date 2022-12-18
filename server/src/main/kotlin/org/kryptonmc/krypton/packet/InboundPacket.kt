@@ -16,19 +16,11 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.network
+package org.kryptonmc.krypton.packet
 
-import org.kryptonmc.krypton.packet.GenericPacket
-import org.kryptonmc.krypton.packet.Packet
-import java.net.SocketAddress
+import org.kryptonmc.krypton.network.handlers.PacketHandler
 
-interface NetworkSession {
+interface InboundPacket<H : PacketHandler> : Packet {
 
-    fun connectAddress(): SocketAddress
-
-    fun latency(): Int
-
-    fun send(packet: Packet)
-
-    fun write(packet: GenericPacket)
+    fun handle(handler: H)
 }

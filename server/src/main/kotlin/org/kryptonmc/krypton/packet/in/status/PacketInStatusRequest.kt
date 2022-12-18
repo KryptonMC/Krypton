@@ -19,14 +19,19 @@
 package org.kryptonmc.krypton.packet.`in`.status
 
 import io.netty.buffer.ByteBuf
-import org.kryptonmc.krypton.packet.Packet
+import org.kryptonmc.krypton.network.handlers.StatusHandler
+import org.kryptonmc.krypton.packet.InboundPacket
 
 /**
  * Sent by the client to request the server's status information.
  */
-object PacketInStatusRequest : Packet {
+object PacketInStatusRequest : InboundPacket<StatusHandler> {
 
     override fun write(buf: ByteBuf) {
         // there is nothing to write here, and nothing is read for this either
+    }
+
+    override fun handle(handler: StatusHandler) {
+        handler.handleStatusRequest()
     }
 }

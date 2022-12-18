@@ -18,9 +18,8 @@
  */
 package org.kryptonmc.krypton.network.handlers
 
-import org.kryptonmc.krypton.KryptonServer
-import org.kryptonmc.krypton.packet.Packet
-import org.kryptonmc.krypton.network.SessionHandler
+import net.kyori.adventure.text.Component
+import org.kryptonmc.krypton.network.NettyConnection
 
 /**
  * The base interface for packet handlers. This exists primarily to avoid
@@ -29,12 +28,9 @@ import org.kryptonmc.krypton.network.SessionHandler
  */
 sealed interface PacketHandler {
 
-    val server: KryptonServer
-    val session: SessionHandler
+    val connection: NettyConnection
 
-    fun handle(packet: Packet)
-
-    fun onDisconnect() {
-        // do nothing by default, only the play handler does something for this
+    fun onDisconnect(message: Component) {
+        // Do nothing by default, only the play and login handlers do something for this
     }
 }

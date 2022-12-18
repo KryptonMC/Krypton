@@ -28,6 +28,7 @@ import org.kryptonmc.krypton.util.writeVarIntByteArray
 import java.util.OptionalLong
 
 @JvmRecord
+@Suppress("ArrayInDataClass")
 data class VerificationData(val verifyToken: ByteArray?, val salt: OptionalLong, val signature: ByteArray?) : Writable {
 
     init {
@@ -58,17 +59,6 @@ data class VerificationData(val verifyToken: ByteArray?, val salt: OptionalLong,
             buf.writeLong(salt.orElseThrow())
             buf.writeVarIntByteArray(signature!!)
         }
-    }
-
-    override fun equals(other: Any?): Boolean = this === other || other is VerificationData &&
-            verifyToken.contentEquals(other.verifyToken) && salt == other.salt && signature.contentEquals(other.signature)
-
-    override fun hashCode(): Int {
-        var result = 1
-        result = 31 * result + verifyToken.contentHashCode()
-        result = 31 * result + salt.hashCode()
-        result = 31 * result + signature.contentHashCode()
-        return result
     }
 
     companion object {

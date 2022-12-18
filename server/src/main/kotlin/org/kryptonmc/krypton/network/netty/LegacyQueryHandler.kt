@@ -54,37 +54,7 @@ class LegacyQueryHandler(private val server: KryptonServer) : ChannelInboundHand
         var failed = true
         try {
             if (msg.readUnsignedByte() != LEGACY_PING_PACKET_ID) return
-            val address = ctx.channel().remoteAddress() as InetSocketAddress
-            val motd = status.motd.content()
-            val maxPlayers = status.maxPlayers
-            val playerCount = server.playerManager.players.size
-            val version = KryptonPlatform.minecraftVersion
-
-            when (msg.readableBytes()) {
-                0 -> {
-                    LOGGER.debug("Legacy server list ping (versions <=1.3.x) received from ${address.address}:${address.port}")
-                    reply(ctx, "§", motd, playerCount, maxPlayers)
-                }
-                1 -> {
-                    if (msg.readUnsignedByte() != 1.toShort()) return
-                    LOGGER.debug("Legacy server list ping (versions 1.4.x-1.5.x) received from ${address.address}:${address.port}")
-                    reply(ctx, "\u0000", "§1", "127", version, motd, playerCount, maxPlayers)
-                }
-                else -> {
-                    var isValid = msg.readUnsignedByte() == PAYLOAD_1_6
-                    isValid = isValid and (msg.readUnsignedByte() == PLUGIN_MESSAGE_ID_1_6)
-                    isValid = isValid and (readLegacyString(msg) == MC_1_6_CHANNEL)
-                    val dataLength = msg.readUnsignedShort()
-                    isValid = isValid and (msg.readUnsignedByte() >= MINIMUM_SUPPORTED_1_6_PROTOCOL)
-                    isValid = isValid and (3 + msg.readAvailableBytes(msg.readShort() * 2).size + 4 == dataLength)
-                    isValid = isValid and (msg.readInt() <= MAXIMUM_HOSTNAME_LENGTH)
-                    isValid = isValid and (msg.readableBytes() == 0)
-                    if (!isValid) return
-
-                    LOGGER.debug("Legacy server list ping (version 1.6.x) received from ${address.address}:${address.port}")
-                    reply(ctx, "\u0000", "§1", "127", version, motd, playerCount, maxPlayers)
-                }
-            }
+            handlePing(ctx, msg)
             msg.release()
             failed = false
         } finally {
@@ -92,6 +62,40 @@ class LegacyQueryHandler(private val server: KryptonServer) : ChannelInboundHand
                 msg.resetReaderIndex()
                 ctx.channel().pipeline().remove(this)
                 ctx.fireChannelRead(msg)
+            }
+        }
+    }
+
+    private fun handlePing(ctx: ChannelHandlerContext, buf: ByteBuf) {
+        val address = ctx.channel().remoteAddress() as InetSocketAddress
+        val motd = status.motd.content()
+        val maxPlayers = status.maxPlayers
+        val playerCount = server.playerManager.players.size
+        val version = KryptonPlatform.minecraftVersion
+
+        when (buf.readableBytes()) {
+            0 -> {
+                LOGGER.debug("Legacy server list ping (versions <=1.3.x) received from ${address.address}:${address.port}")
+                reply(ctx, "§", motd, playerCount, maxPlayers)
+            }
+            1 -> {
+                if (buf.readUnsignedByte() != 1.toShort()) return
+                LOGGER.debug("Legacy server list ping (versions 1.4.x-1.5.x) received from ${address.address}:${address.port}")
+                reply(ctx, "\u0000", "§1", "127", version, motd, playerCount, maxPlayers)
+            }
+            else -> {
+                var isValid = buf.readUnsignedByte() == PAYLOAD_1_6
+                isValid = isValid and (buf.readUnsignedByte() == PLUGIN_MESSAGE_ID_1_6)
+                isValid = isValid and (readLegacyString(buf) == MC_1_6_CHANNEL)
+                val dataLength = buf.readUnsignedShort()
+                isValid = isValid and (buf.readUnsignedByte() >= MINIMUM_SUPPORTED_1_6_PROTOCOL)
+                isValid = isValid and (3 + buf.readAvailableBytes(buf.readShort() * 2).size + 4 == dataLength)
+                isValid = isValid and (buf.readInt() <= MAXIMUM_HOSTNAME_LENGTH)
+                isValid = isValid and (buf.readableBytes() == 0)
+                if (!isValid) return
+
+                LOGGER.debug("Legacy server list ping (version 1.6.x) received from ${address.address}:${address.port}")
+                reply(ctx, "\u0000", "§1", "127", version, motd, playerCount, maxPlayers)
             }
         }
     }

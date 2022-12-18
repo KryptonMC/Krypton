@@ -18,7 +18,8 @@
  */
 package org.kryptonmc.krypton.testutil
 
-import org.kryptonmc.krypton.network.NetworkSession
+import org.kryptonmc.krypton.network.NetworkConnection
+import org.kryptonmc.krypton.network.PacketSendListener
 import org.kryptonmc.krypton.packet.GenericPacket
 import org.kryptonmc.krypton.packet.Packet
 import java.net.InetAddress
@@ -27,7 +28,7 @@ import java.net.SocketAddress
 import java.util.ArrayDeque
 import kotlin.test.assertTrue
 
-class TestSession : NetworkSession {
+class TestConnection : NetworkConnection {
 
     private val sentPackets = ArrayDeque<GenericPacket>()
 
@@ -37,6 +38,11 @@ class TestSession : NetworkSession {
 
     override fun send(packet: Packet) {
         write(packet)
+    }
+
+    override fun send(packet: Packet, listener: PacketSendListener) {
+        write(packet)
+        // TODO: Decide how to use the listener
     }
 
     override fun write(packet: GenericPacket) {

@@ -24,25 +24,19 @@ import org.kryptonmc.krypton.KryptonPlatform
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.config.category.ProxyCategory
 import org.kryptonmc.krypton.locale.Messages
-import org.kryptonmc.krypton.network.SessionHandler
+import org.kryptonmc.krypton.network.NettyConnection
 import org.kryptonmc.krypton.network.data.ForwardedData
 import org.kryptonmc.krypton.network.data.LegacyForwardedData
 import org.kryptonmc.krypton.network.data.TCPShieldForwardedData
-import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.packet.PacketState
 import org.kryptonmc.krypton.packet.`in`.handshake.PacketInHandshake
 
 /**
  * Handles all inbound packets in the [Handshake][PacketState.HANDSHAKE] state.
- * Contrary to the other handlers and states, there is only one packet in this
- * state, so this is directly handled by the [handle] function, instead of
- * delegating to another function.
  */
-class HandshakeHandler(override val server: KryptonServer, override val session: SessionHandler) : PacketHandler {
+class HandshakeHandler(private val server: KryptonServer, override val connection: NettyConnection) : PacketHandler {
 
-    override fun handle(packet: Packet) {
-        if (packet !is PacketInHandshake) return // Ignore if not a handshake packet
-
+    fun handleHandshake(packet: PacketInHandshake) {
         // This method of determining what to send is from vanilla Minecraft.
         // We do this first so that we don't have to deal with legacy clients.
         if (packet.protocol != KryptonPlatform.protocolVersion) {
@@ -51,13 +45,13 @@ class HandshakeHandler(override val server: KryptonServer, override val session:
                 packet.protocol > KryptonPlatform.protocolVersion -> Messages.Disconnect.OUTDATED_SERVER
                 else -> Messages.Disconnect.INCOMPATIBLE // This should be impossible
             }
-            disconnect(translation.build(KryptonPlatform.minecraftVersion))
+            connection.disconnect(translation.build(KryptonPlatform.minecraftVersion))
             return
         }
 
         // We do this early too to avoid even having to check proxy data if the server is full.
         if (server.playerManager.players.size >= server.config.status.maxPlayers) {
-            disconnect(Messages.Disconnect.SERVER_FULL.build())
+            connection.disconnect(Messages.Disconnect.SERVER_FULL.build())
             return
         }
 
@@ -68,7 +62,7 @@ class HandshakeHandler(override val server: KryptonServer, override val session:
                     "or Velocity), but this server is not configured to use legacy forwarding!")
             LOGGER.info("If you wish to enable legacy forwarding, please do so in the configuration file by setting \"mode\" to \"LEGACY\" " +
                     "under the \"proxy\" section.")
-            disconnect(LEGACY_FORWARDING_NOT_ENABLED)
+            connection.disconnect(LEGACY_FORWARDING_NOT_ENABLED)
             return
         }
         // This split here is checking for a triple slash split list of strings, which will be sent by TCPShield
@@ -77,7 +71,7 @@ class HandshakeHandler(override val server: KryptonServer, override val session:
             LOGGER.error("User attempted TCPShield forwarded connection, but this server is not configured to use TCPShield forwarding!")
             LOGGER.info("If you wish to enable TCPShield forwarding, please do so in the configuration file by setting \"mode\" to \"TCPSHIELD\" " +
                     "under the \"proxy\" section.")
-            disconnect(TCPSHIELD_FORWARDING_NOT_ENABLED)
+            connection.disconnect(TCPSHIELD_FORWARDING_NOT_ENABLED)
             return
         }
 
@@ -85,7 +79,7 @@ class HandshakeHandler(override val server: KryptonServer, override val session:
             val data = try {
                 LegacyForwardedData.parse(packet.address)
             } catch (exception: Exception) {
-                disconnect(FAILED_LEGACY_DECODE)
+                connection.disconnect(FAILED_LEGACY_DECODE)
                 LOGGER.error("Failed to decode legacy forwarded handshake data!", exception)
                 return
             }
@@ -95,8 +89,8 @@ class HandshakeHandler(override val server: KryptonServer, override val session:
                 handleStateChange(packet.nextState, data)
             } else {
                 // If the data was null then we weren't sent what we needed
-                disconnect(NO_DIRECT_CONNECT)
-                LOGGER.warn("Attempted direct connection from ${session.connectAddress()} when legacy forwarding is enabled!")
+                connection.disconnect(NO_DIRECT_CONNECT)
+                LOGGER.warn("Attempted direct connection from ${connection.connectAddress()} when legacy forwarding is enabled!")
                 return
             }
         }
@@ -104,7 +98,7 @@ class HandshakeHandler(override val server: KryptonServer, override val session:
             val data = try {
                 TCPShieldForwardedData.parse(packet.address)
             } catch (exception: Exception) {
-                disconnect(FAILED_TCPSHIELD_DECODE)
+                connection.disconnect(FAILED_TCPSHIELD_DECODE)
                 LOGGER.error("Failed to decode TCPShield forwarded handshake data!", exception)
                 return
             }
@@ -114,8 +108,8 @@ class HandshakeHandler(override val server: KryptonServer, override val session:
                 handleStateChange(packet.nextState, data)
             } else {
                 // If the data was null then we weren't sent what we needed
-                disconnect(NO_DIRECT_CONNECT)
-                LOGGER.warn("Attempted direct connection from ${session.connectAddress()} when TCPShield forwarding is enabled!")
+                connection.disconnect(NO_DIRECT_CONNECT)
+                LOGGER.warn("Attempted direct connection from ${connection.connectAddress()} when TCPShield forwarding is enabled!")
                 return
             }
         }
@@ -125,14 +119,10 @@ class HandshakeHandler(override val server: KryptonServer, override val session:
 
     private fun handleStateChange(state: PacketState, data: ForwardedData? = null) {
         when (state) {
-            PacketState.LOGIN -> session.changeState(PacketState.LOGIN, LoginHandler(server, session, data))
-            PacketState.STATUS -> session.changeState(PacketState.STATUS, StatusHandler(server, session))
+            PacketState.LOGIN -> connection.changeState(PacketState.LOGIN, LoginHandler(server, connection, data))
+            PacketState.STATUS -> connection.changeState(PacketState.STATUS, StatusHandler(server, connection))
             else -> throw UnsupportedOperationException("Invalid next login state $state sent in handshake!")
         }
-    }
-
-    private fun disconnect(reason: Component) {
-        session.loginDisconnect(reason)
     }
 
     companion object {

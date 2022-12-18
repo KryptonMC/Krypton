@@ -18,13 +18,12 @@
  */
 package org.kryptonmc.krypton.network.handlers
 
+import net.kyori.adventure.text.Component
 import org.kryptonmc.krypton.KryptonServer
-import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.packet.`in`.status.PacketInPingRequest
-import org.kryptonmc.krypton.packet.`in`.status.PacketInStatusRequest
 import org.kryptonmc.krypton.packet.out.status.PacketOutPingResponse
 import org.kryptonmc.krypton.packet.out.status.PacketOutStatusResponse
-import org.kryptonmc.krypton.network.SessionHandler
+import org.kryptonmc.krypton.network.NettyConnection
 
 /**
  * Handles all inbound packets in the
@@ -36,21 +35,26 @@ import org.kryptonmc.krypton.network.SessionHandler
  * - [Ping][org.kryptonmc.krypton.packet. in.status.PacketInPing] -
  *   pings the server (to calculate latency on its end)
  */
-class StatusHandler(override val server: KryptonServer, override val session: SessionHandler) : PacketHandler {
+class StatusHandler(private val server: KryptonServer, override val connection: NettyConnection) : PacketHandler {
 
-    override fun handle(packet: Packet) {
-        when (packet) {
-            is PacketInStatusRequest -> handleStatusRequest()
-            is PacketInPingRequest -> handlePing(packet)
-            else -> Unit
+    private var requestedStatus = false
+
+    fun handleStatusRequest() {
+        if (requestedStatus) {
+            connection.disconnect(REQUEST_HANDLED)
+            return
         }
+        requestedStatus = true
+        connection.send(PacketOutStatusResponse(server.sessionManager.status()))
     }
 
-    private fun handleStatusRequest() {
-        session.send(PacketOutStatusResponse(server.sessionManager.status()))
+    fun handlePing(packet: PacketInPingRequest) {
+        connection.send(PacketOutPingResponse(packet.payload))
+        connection.disconnect(REQUEST_HANDLED)
     }
 
-    private fun handlePing(packet: PacketInPingRequest) {
-        session.send(PacketOutPingResponse(packet.payload))
+    companion object {
+
+        private val REQUEST_HANDLED = Component.translatable("multiplayer.status.request_handled")
     }
 }

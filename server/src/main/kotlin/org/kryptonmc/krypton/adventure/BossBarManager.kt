@@ -37,7 +37,7 @@ object BossBarManager : BossBar.Listener {
 
     fun addBar(bar: BossBar, player: NetworkPlayer) {
         val holder = getOrCreate(bar)
-        if (holder.subscribers.add(player)) player.session.send(PacketOutBossBar(holder.id, PacketOutBossBar.AddAction(holder.bar)))
+        if (holder.subscribers.add(player)) player.connection.send(PacketOutBossBar(holder.id, PacketOutBossBar.AddAction(holder.bar)))
     }
 
     fun addBar(bar: BossBar, audience: PacketGroupingAudience) {
@@ -50,7 +50,7 @@ object BossBarManager : BossBar.Listener {
 
     fun removeBar(bar: BossBar, player: NetworkPlayer) {
         val holder = bars.get(bar) ?: return
-        if (holder.subscribers.remove(player)) player.session.send(PacketOutBossBar(holder.id, PacketOutBossBar.RemoveAction))
+        if (holder.subscribers.remove(player)) player.connection.send(PacketOutBossBar(holder.id, PacketOutBossBar.RemoveAction))
     }
 
     fun removeBar(bar: BossBar, audience: PacketGroupingAudience) {
@@ -86,7 +86,7 @@ object BossBarManager : BossBar.Listener {
     private fun update(bar: BossBar, action: PacketOutBossBar.Action) {
         val holder = bars.get(bar) ?: return
         val packet = PacketOutBossBar(holder.id, action)
-        holder.subscribers.forEach { it.session.send(packet) }
+        holder.subscribers.forEach { it.connection.send(packet) }
     }
 
     private class BossBarHolder(val bar: BossBar) {

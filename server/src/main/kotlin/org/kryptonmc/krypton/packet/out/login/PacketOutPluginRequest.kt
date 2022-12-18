@@ -27,6 +27,7 @@ import org.kryptonmc.krypton.util.writeString
 import org.kryptonmc.krypton.util.writeVarInt
 
 @JvmRecord
+@Suppress("ArrayInDataClass")
 data class PacketOutPluginRequest(val id: Int, val channel: String, val data: ByteArray) : Packet {
 
     constructor(buf: ByteBuf) : this(buf.readVarInt(), buf.readString(), buf.readAllAvailableBytes())
@@ -35,16 +36,5 @@ data class PacketOutPluginRequest(val id: Int, val channel: String, val data: By
         buf.writeVarInt(id)
         buf.writeString(channel)
         buf.writeBytes(data)
-    }
-
-    override fun equals(other: Any?): Boolean =
-        this === other || other is PacketOutPluginRequest && id == other.id && channel == other.channel && data.contentEquals(other.data)
-
-    override fun hashCode(): Int {
-        var result = 1
-        result = 31 * result + id.hashCode()
-        result = 31 * result + channel.hashCode()
-        result = 31 * result + data.contentHashCode()
-        return result
     }
 }

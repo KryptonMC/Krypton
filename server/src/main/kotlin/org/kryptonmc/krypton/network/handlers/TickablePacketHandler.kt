@@ -16,11 +16,9 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.util
+package org.kryptonmc.krypton.network.handlers
 
-import io.netty.buffer.ByteBuf
+interface TickablePacketHandler : PacketHandler {
 
-fun interface ByteBufWriter<T> {
-
-    fun write(buf: ByteBuf, value: T)
+    fun tick()
 }

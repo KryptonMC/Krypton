@@ -40,7 +40,7 @@ import io.netty.channel.unix.DomainSocketAddress
 import io.netty.handler.timeout.ReadTimeoutHandler
 import net.kyori.adventure.key.Key
 import org.apache.logging.log4j.LogManager
-import org.kryptonmc.krypton.network.SessionHandler
+import org.kryptonmc.krypton.network.NettyConnection
 import org.kryptonmc.krypton.network.netty.ChannelInitializeListener
 import org.kryptonmc.krypton.network.netty.GroupedPacketHandler
 import org.kryptonmc.krypton.network.netty.LegacyQueryHandler
@@ -77,7 +77,7 @@ object NettyProcess {
             .childOption(ChannelOption.SO_KEEPALIVE, true)
             .childHandler(object : ChannelInitializer<SocketChannel>() {
                 override fun initChannel(channel: SocketChannel) {
-                    val handler = SessionHandler(server)
+                    val handler = NettyConnection(server)
                     channel.pipeline()
                         .addLast("timeout", ReadTimeoutHandler(30))
                         .addLast(LegacyQueryHandler.NETTY_NAME, legacyQueryHandler)
@@ -86,8 +86,8 @@ object NettyProcess {
                         .addLast(PacketDecoder.NETTY_NAME, PacketDecoder())
                         .addLast(SizeEncoder.NETTY_NAME, SizeEncoder)
                         .addLast(PacketEncoder.NETTY_NAME, PacketEncoder)
-                        .addLast(SessionHandler.NETTY_NAME, handler)
-                    server.sessionManager.add(handler)
+                        .addLast(NettyConnection.NETTY_NAME, handler)
+                    server.sessionManager.register(handler)
                     if (listeners.isEmpty()) return
                     listeners.values.forEach { it.onInitialize(channel) }
                 }

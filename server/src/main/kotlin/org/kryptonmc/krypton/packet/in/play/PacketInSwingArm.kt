@@ -20,16 +20,21 @@ package org.kryptonmc.krypton.packet.`in`.play
 
 import io.netty.buffer.ByteBuf
 import org.kryptonmc.api.entity.Hand
-import org.kryptonmc.krypton.packet.Packet
+import org.kryptonmc.krypton.network.handlers.PlayHandler
+import org.kryptonmc.krypton.packet.InboundPacket
 import org.kryptonmc.krypton.util.readEnum
 import org.kryptonmc.krypton.util.writeEnum
 
 @JvmRecord
-data class PacketInSwingArm(val hand: Hand) : Packet {
+data class PacketInSwingArm(val hand: Hand) : InboundPacket<PlayHandler> {
 
     constructor(buf: ByteBuf) : this(buf.readEnum<Hand>())
 
     override fun write(buf: ByteBuf) {
         buf.writeEnum(hand)
+    }
+
+    override fun handle(handler: PlayHandler) {
+        handler.handleSwingArm(this)
     }
 }

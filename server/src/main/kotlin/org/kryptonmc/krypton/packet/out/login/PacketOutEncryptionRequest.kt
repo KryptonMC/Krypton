@@ -32,6 +32,7 @@ import org.kryptonmc.krypton.util.writeVarIntByteArray
  * hasn't been tampered with (no hackers listening in).
  */
 @JvmRecord
+@Suppress("ArrayInDataClass")
 data class PacketOutEncryptionRequest(val serverId: String, val publicKey: ByteArray, val verifyToken: ByteArray) : Packet {
 
     constructor(publicKey: ByteArray, verifyToken: ByteArray) : this("", publicKey, verifyToken)
@@ -42,16 +43,6 @@ data class PacketOutEncryptionRequest(val serverId: String, val publicKey: ByteA
         buf.writeString(serverId, MAXIMUM_SERVER_ID_LENGTH)
         buf.writeVarIntByteArray(publicKey)
         buf.writeVarIntByteArray(verifyToken)
-    }
-
-    override fun equals(other: Any?): Boolean = this === other ||
-            other is PacketOutEncryptionRequest && publicKey.contentEquals(other.publicKey) && verifyToken.contentEquals(other.verifyToken)
-
-    override fun hashCode(): Int {
-        var result = 1
-        result = 31 * result + publicKey.contentHashCode()
-        result = 31 * result + verifyToken.contentHashCode()
-        return result
     }
 
     companion object {

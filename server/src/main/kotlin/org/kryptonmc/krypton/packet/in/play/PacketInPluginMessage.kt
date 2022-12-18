@@ -20,14 +20,16 @@ package org.kryptonmc.krypton.packet.`in`.play
 
 import io.netty.buffer.ByteBuf
 import net.kyori.adventure.key.Key
-import org.kryptonmc.krypton.packet.Packet
+import org.kryptonmc.krypton.network.handlers.PlayHandler
+import org.kryptonmc.krypton.packet.InboundPacket
 import org.kryptonmc.krypton.util.readAllAvailableBytes
 import org.kryptonmc.krypton.util.readKey
 import org.kryptonmc.krypton.util.writeKey
 import org.kryptonmc.krypton.util.writeVarIntByteArray
 
 @JvmRecord
-data class PacketInPluginMessage(val channel: Key, val data: ByteArray) : Packet {
+@Suppress("ArrayInDataClass")
+data class PacketInPluginMessage(val channel: Key, val data: ByteArray) : InboundPacket<PlayHandler> {
 
     constructor(buf: ByteBuf) : this(buf.readKey(), buf.readAllAvailableBytes())
 
@@ -36,13 +38,7 @@ data class PacketInPluginMessage(val channel: Key, val data: ByteArray) : Packet
         buf.writeVarIntByteArray(data)
     }
 
-    override fun equals(other: Any?): Boolean =
-        this === other || other is PacketInPluginMessage && channel == other.channel && data.contentEquals(other.data)
-
-    override fun hashCode(): Int {
-        var result = 1
-        result = 31 * result + channel.hashCode()
-        result = 31 * result + data.contentHashCode()
-        return result
+    override fun handle(handler: PlayHandler) {
+        handler.handlePluginMessage(this)
     }
 }

@@ -19,14 +19,16 @@
 package org.kryptonmc.krypton.packet.`in`.login
 
 import io.netty.buffer.ByteBuf
-import org.kryptonmc.krypton.packet.Packet
+import org.kryptonmc.krypton.network.handlers.LoginHandler
+import org.kryptonmc.krypton.packet.InboundPacket
 import org.kryptonmc.krypton.util.readAllAvailableBytes
 import org.kryptonmc.krypton.util.readVarInt
 import org.kryptonmc.krypton.util.writeVarInt
 import org.kryptonmc.krypton.util.writeVarIntByteArray
 
 @JvmRecord
-data class PacketInPluginResponse(val messageId: Int, val data: ByteArray?) : Packet {
+@Suppress("ArrayInDataClass")
+data class PacketInPluginResponse(val messageId: Int, val data: ByteArray?) : InboundPacket<LoginHandler> {
 
     constructor(buf: ByteBuf) : this(buf.readVarInt(), if (buf.readBoolean()) buf.readAllAvailableBytes() else null)
 
@@ -36,13 +38,7 @@ data class PacketInPluginResponse(val messageId: Int, val data: ByteArray?) : Pa
         if (data != null) buf.writeVarIntByteArray(data)
     }
 
-    override fun equals(other: Any?): Boolean =
-        this === other || other is PacketInPluginResponse && messageId == other.messageId && data.contentEquals(other.data)
-
-    override fun hashCode(): Int {
-        var result = 1
-        result = 31 * result + messageId.hashCode()
-        result = 31 * result + data.contentHashCode()
-        return result
+    override fun handle(handler: LoginHandler) {
+        handler.handlePluginResponse(this)
     }
 }

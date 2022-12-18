@@ -27,6 +27,7 @@ import org.kryptonmc.krypton.adventure.KryptonAdventure
 import org.kryptonmc.krypton.network.Writable
 import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.util.readComponent
+import org.kryptonmc.krypton.util.readList
 import org.kryptonmc.krypton.util.readString
 import org.kryptonmc.krypton.util.readVarInt
 import org.kryptonmc.krypton.util.writeCollection
@@ -44,6 +45,10 @@ data class PacketOutUpdateTeams(
     val parameters: Parameters?,
     val members: Collection<Component>
 ) : Packet {
+
+    constructor(buf: ByteBuf) : this(buf, buf.readString(MAX_NAME_LENGTH), Action.fromId(buf.readByte().toInt())!!)
+
+    private constructor(buf: ByteBuf, name: String, action: Action) : this(name, action, readParameters(buf, action), readMembers(buf, action))
 
     override fun write(buf: ByteBuf) {
         buf.writeString(name, MAX_NAME_LENGTH)
@@ -134,6 +139,16 @@ data class PacketOutUpdateTeams(
             if (team.allowFriendlyFire) options = options or FLAG_FRIENDLY_FIRE
             if (team.canSeeInvisibleMembers) options = options or FLAG_SEE_INVISIBLES
             return options
+        }
+
+        @JvmStatic
+        private fun readParameters(buf: ByteBuf, action: Action): Parameters? =
+            if (action == Action.CREATE || action == Action.UPDATE_INFO) Parameters(buf) else null
+
+        @JvmStatic
+        private fun readMembers(buf: ByteBuf, action: Action): Collection<Component> {
+            if (action == Action.REMOVE || action == Action.UPDATE_INFO) return emptyList()
+            return buf.readList { LegacyComponentSerializer.legacySection().deserialize(it.readString()) }
         }
     }
 }

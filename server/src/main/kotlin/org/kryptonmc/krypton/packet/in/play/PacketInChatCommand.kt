@@ -20,7 +20,8 @@ package org.kryptonmc.krypton.packet.`in`.play
 
 import io.netty.buffer.ByteBuf
 import org.kryptonmc.krypton.command.argument.ArgumentSignatures
-import org.kryptonmc.krypton.packet.Packet
+import org.kryptonmc.krypton.network.handlers.PlayHandler
+import org.kryptonmc.krypton.packet.InboundPacket
 import org.kryptonmc.krypton.util.readInstant
 import org.kryptonmc.krypton.util.readString
 import org.kryptonmc.krypton.util.writeInstant
@@ -33,7 +34,7 @@ data class PacketInChatCommand(
     val timestamp: Instant,
     val argumentSignatures: ArgumentSignatures,
     val signedPreview: Boolean
-) : Packet {
+) : InboundPacket<PlayHandler> {
 
     constructor(buf: ByteBuf) : this(buf.readString(), buf.readInstant(), ArgumentSignatures(buf), buf.readBoolean())
 
@@ -42,5 +43,9 @@ data class PacketInChatCommand(
         buf.writeInstant(timestamp)
         argumentSignatures.write(buf)
         buf.writeBoolean(signedPreview)
+    }
+
+    override fun handle(handler: PlayHandler) {
+        handler.handleChatCommand(this)
     }
 }

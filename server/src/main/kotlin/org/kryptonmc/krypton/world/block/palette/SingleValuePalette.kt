@@ -19,8 +19,8 @@
 package org.kryptonmc.krypton.world.block.palette
 
 import io.netty.buffer.ByteBuf
+import org.kryptonmc.krypton.util.ByteBufExtras
 import org.kryptonmc.krypton.util.IntBiMap
-import org.kryptonmc.krypton.util.varIntBytes
 import org.kryptonmc.krypton.util.writeVarInt
 
 class SingleValuePalette<T>(private val registry: IntBiMap<T>, private val resizer: PaletteResizer<T>, entries: List<T>) : Palette<T> {
@@ -53,7 +53,7 @@ class SingleValuePalette<T>(private val registry: IntBiMap<T>, private val resiz
 
     override fun calculateSerializedSize(): Int {
         checkInit()
-        return registry.getId(value!!).varIntBytes()
+        return ByteBufExtras.getVarIntBytes(registry.getId(value!!))
     }
 
     override fun copy(): Palette<T> {

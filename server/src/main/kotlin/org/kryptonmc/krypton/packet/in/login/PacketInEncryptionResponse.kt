@@ -19,12 +19,14 @@
 package org.kryptonmc.krypton.packet.`in`.login
 
 import io.netty.buffer.ByteBuf
-import org.kryptonmc.krypton.packet.Packet
+import org.kryptonmc.krypton.network.handlers.LoginHandler
+import org.kryptonmc.krypton.packet.InboundPacket
 import org.kryptonmc.krypton.util.readVarIntByteArray
 import org.kryptonmc.krypton.util.writeVarIntByteArray
 
 @JvmRecord
-data class PacketInEncryptionResponse(val secret: ByteArray, val verificationData: VerificationData) : Packet {
+@Suppress("ArrayInDataClass")
+data class PacketInEncryptionResponse(val secret: ByteArray, val verificationData: VerificationData) : InboundPacket<LoginHandler> {
 
     constructor(buf: ByteBuf) : this(buf.readVarIntByteArray(), VerificationData.read(buf))
 
@@ -33,13 +35,7 @@ data class PacketInEncryptionResponse(val secret: ByteArray, val verificationDat
         verificationData.write(buf)
     }
 
-    override fun equals(other: Any?): Boolean =
-        this === other || other is PacketInEncryptionResponse && secret.contentEquals(other.secret) && verificationData == other.verificationData
-
-    override fun hashCode(): Int {
-        var result = 1
-        result = 31 * result + secret.contentHashCode()
-        result = 31 * result + verificationData.hashCode()
-        return result
+    override fun handle(handler: LoginHandler) {
+        handler.handleEncryptionResponse(this)
     }
 }

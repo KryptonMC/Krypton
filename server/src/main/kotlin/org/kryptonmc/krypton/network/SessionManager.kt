@@ -33,7 +33,7 @@ import kotlin.math.min
 
 class SessionManager(private val playerManager: PlayerManager, motd: Component, maxPlayers: Int) {
 
-    private val sessions = ConcurrentHashMap.newKeySet<SessionHandler>()
+    private val sessions = ConcurrentHashMap.newKeySet<NettyConnection>()
 
     private val random = RandomSource.create()
     private val status = ServerStatus(motd, ServerStatus.Players(maxPlayers, playerManager.players.size), null)
@@ -43,45 +43,51 @@ class SessionManager(private val playerManager: PlayerManager, motd: Component, 
 
     fun status(): ServerStatus = status
 
-    fun add(session: SessionHandler) {
+    fun register(session: NettyConnection) {
         sessions.add(session)
     }
 
-    fun remove(session: SessionHandler) {
+    fun unregister(session: NettyConnection) {
         sessions.remove(session)
     }
 
-    fun sendGrouped(packet: Packet, predicate: Predicate<KryptonPlayer> = Predicate { true }) {
+    fun sendGrouped(packet: Packet) {
+        sendGrouped(packet, ALWAYS_TRUE)
+    }
+
+    fun sendGrouped(packet: Packet, predicate: Predicate<KryptonPlayer>) {
         sendGrouped(playerManager.players, packet, predicate)
     }
 
-    fun sendGrouped(players: Collection<KryptonPlayer>, packet: Packet, predicate: Predicate<KryptonPlayer> = Predicate { true }) {
+    fun sendGrouped(players: Collection<KryptonPlayer>, packet: Packet) {
+        sendGrouped(players, packet, ALWAYS_TRUE)
+    }
+
+    fun sendGrouped(players: Collection<KryptonPlayer>, packet: Packet, predicate: Predicate<KryptonPlayer>) {
         if (players.isEmpty()) return
         val finalBuffer = PacketFraming.frame(packet)
         val framedPacket = FramedPacket(finalBuffer)
-        players.forEach {
-            if (!it.isOnline || !predicate.test(it)) return@forEach
-            it.session.write(framedPacket)
-        }
+        players.forEach { if (it.isOnline && predicate.test(it)) it.connection.write(framedPacket) }
         finalBuffer.release()
     }
 
     fun tick(time: Long) {
         if (statusInvalidated && time - statusInvalidatedTime > WAIT_AFTER_INVALID_STATUS_TIME || time - lastStatus >= UPDATE_STATUS_INTERVAL) {
-            lastStatus = time
-            statusInvalidated = false
-            statusInvalidatedTime = 0L
-            val playersOnline = playerManager.players.size
-            status.players.online = playersOnline
-            val sampleSize = min(playersOnline, MAXIMUM_SAMPLED_PLAYERS)
-            val playerOffset = Maths.nextInt(random, 0, playersOnline - sampleSize)
-            val sample = Array(sampleSize) { playerManager.players.get(it + playerOffset).profile }.apply { shuffle() }
-            status.players.sample = sample
+            updateStatus(time)
         }
-        sessions.forEach {
-            it.tickHandler()
-            it.flush()
-        }
+        sessions.forEach { it.tick() }
+    }
+
+    private fun updateStatus(time: Long) {
+        lastStatus = time
+        statusInvalidated = false
+        statusInvalidatedTime = 0L
+        val playersOnline = playerManager.players.size
+        status.players.online = playersOnline
+        val sampleSize = min(playersOnline, MAXIMUM_SAMPLED_PLAYERS)
+        val playerOffset = Maths.nextInt(random, 0, playersOnline - sampleSize)
+        val sample = Array(sampleSize) { playerManager.players.get(it + playerOffset).profile }.apply { shuffle() }
+        status.players.sample = sample
     }
 
     fun invalidateStatus() {
@@ -96,5 +102,6 @@ class SessionManager(private val playerManager: PlayerManager, motd: Component, 
         private const val UPDATE_STATUS_INTERVAL = 5000L
         private const val WAIT_AFTER_INVALID_STATUS_TIME = 1000L
         private const val MAXIMUM_SAMPLED_PLAYERS = 12
+        private val ALWAYS_TRUE = Predicate<KryptonPlayer> { true }
     }
 }

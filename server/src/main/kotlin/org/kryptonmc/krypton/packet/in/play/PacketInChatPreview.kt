@@ -19,18 +19,24 @@
 package org.kryptonmc.krypton.packet.`in`.play
 
 import io.netty.buffer.ByteBuf
-import org.kryptonmc.krypton.packet.Packet
+import org.kryptonmc.krypton.network.handlers.PlayHandler
+import org.kryptonmc.krypton.packet.InboundPacket
 import org.kryptonmc.krypton.util.readString
 import org.kryptonmc.krypton.util.writeString
 
 @JvmRecord
-data class PacketInChatPreview(val queryId: Int, val query: String) : Packet {
+data class PacketInChatPreview(val queryId: Int, val query: String) : InboundPacket<PlayHandler> {
 
     constructor(buf: ByteBuf) : this(buf.readInt(), buf.readString(MAXIMUM_QUERY_STRING_LENGTH))
 
     override fun write(buf: ByteBuf) {
         buf.writeInt(queryId)
         buf.writeString(query, MAXIMUM_QUERY_STRING_LENGTH)
+    }
+
+    override fun handle(handler: PlayHandler) {
+        // TODO
+        //handler.handleChatPreview(this)
     }
 
     companion object {

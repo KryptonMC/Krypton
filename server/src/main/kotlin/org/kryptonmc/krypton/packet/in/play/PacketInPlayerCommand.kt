@@ -20,14 +20,15 @@ package org.kryptonmc.krypton.packet.`in`.play
 
 import io.netty.buffer.ByteBuf
 import org.kryptonmc.api.event.player.PerformActionEvent.Action
-import org.kryptonmc.krypton.packet.Packet
+import org.kryptonmc.krypton.network.handlers.PlayHandler
+import org.kryptonmc.krypton.packet.InboundPacket
 import org.kryptonmc.krypton.util.readEnum
 import org.kryptonmc.krypton.util.readVarInt
 import org.kryptonmc.krypton.util.writeEnum
 import org.kryptonmc.krypton.util.writeVarInt
 
 @JvmRecord
-data class PacketInPlayerCommand(val id: Int, val action: Action, val data: Int) : Packet {
+data class PacketInPlayerCommand(val id: Int, val action: Action, val data: Int) : InboundPacket<PlayHandler> {
 
     constructor(buf: ByteBuf) : this(buf.readVarInt(), buf.readEnum<Action>(), buf.readVarInt())
 
@@ -35,5 +36,9 @@ data class PacketInPlayerCommand(val id: Int, val action: Action, val data: Int)
         buf.writeVarInt(id)
         buf.writeEnum(action)
         buf.writeVarInt(data)
+    }
+
+    override fun handle(handler: PlayHandler) {
+        handler.handlePlayerCommand(this)
     }
 }

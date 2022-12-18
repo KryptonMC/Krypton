@@ -71,11 +71,11 @@ class KryptonCooldownTracker(private val player: KryptonPlayer) : CooldownTracke
     }
 
     private fun onCooldownStarted(type: ItemType, ticks: Int) {
-        player.session.send(PacketOutSetCooldown(type.downcast(), ticks))
+        player.connection.send(PacketOutSetCooldown(type.downcast(), ticks))
     }
 
     private fun onCooldownEnded(type: ItemType) {
-        player.session.send(PacketOutSetCooldown(type.downcast(), 0))
+        player.connection.send(PacketOutSetCooldown(type.downcast(), 0))
     }
 
     @JvmRecord

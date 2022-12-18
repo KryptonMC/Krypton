@@ -32,6 +32,7 @@ import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.ImmutableCompoundTag
 
 @JvmRecord
+@Suppress("ArrayInDataClass")
 data class ChunkPacketData(val heightmaps: CompoundTag, val data: ByteArray) : Writable {
 
     constructor(chunk: KryptonChunk) : this(extractHeightmaps(chunk), extractData(chunk))
@@ -44,16 +45,6 @@ data class ChunkPacketData(val heightmaps: CompoundTag, val data: ByteArray) : W
 
         // TODO: When block entities are added, make use of this here
         buf.writeVarInt(0) // Number of block entities
-    }
-
-    override fun equals(other: Any?): Boolean =
-        this === other || other is ChunkPacketData && heightmaps == other.heightmaps && data.contentEquals(other.data)
-
-    override fun hashCode(): Int {
-        var result = 1
-        result = 31 * result + heightmaps.hashCode()
-        result = 31 * result + data.contentHashCode()
-        return result
     }
 
     companion object {

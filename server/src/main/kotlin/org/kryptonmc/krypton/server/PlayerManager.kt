@@ -29,7 +29,7 @@ import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.event.player.KryptonJoinEvent
 import org.kryptonmc.krypton.event.player.KryptonQuitEvent
 import org.kryptonmc.krypton.locale.Messages
-import org.kryptonmc.krypton.network.SessionHandler
+import org.kryptonmc.krypton.network.NettyConnection
 import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.packet.out.play.GameEvent
 import org.kryptonmc.krypton.packet.out.play.PacketOutAbilities
@@ -104,7 +104,7 @@ class PlayerManager(private val server: KryptonServer) {
 
     fun getPlayer(uuid: UUID): KryptonPlayer? = playersByUUID.get(uuid)
 
-    fun add(player: KryptonPlayer, session: SessionHandler): CompletableFuture<Void> = dataManager.load(player, executor).thenAcceptAsync({ nbt ->
+    fun add(player: KryptonPlayer, session: NettyConnection): CompletableFuture<Void> = dataManager.load(player, executor).thenAcceptAsync({ nbt ->
         val profile = player.profile
         val name = server.profileCache.getProfile(profile.uuid)?.name ?: profile.name
         server.profileCache.add(profile)
@@ -170,7 +170,7 @@ class PlayerManager(private val server: KryptonServer) {
         if (!joinResult.isAllowed) {
             // Use default reason if denied without specified reason
             val reason = joinResult.message ?: Messages.Disconnect.KICKED.build()
-            session.playDisconnect(reason)
+            session.disconnect(reason)
             return@thenAcceptAsync
         }
         val defaultJoinMessage = if (joinResult.hasJoinedBefore) Messages.PLAYER_JOINED_RENAMED else Messages.PLAYER_JOINED
@@ -187,7 +187,7 @@ class PlayerManager(private val server: KryptonServer) {
         sendWorldInfo(world, player)
         if (server.config.server.resourcePack.uri.isNotEmpty()) {
             val resourcePack = server.config.server.resourcePack
-            player.session.send(PacketOutResourcePack(resourcePack.uri, resourcePack.hash, resourcePack.forced, resourcePack.prompt))
+            player.connection.send(PacketOutResourcePack(resourcePack.uri, resourcePack.hash, resourcePack.forced, resourcePack.prompt))
         }
 
         // Send inventory data
@@ -211,7 +211,7 @@ class PlayerManager(private val server: KryptonServer) {
             server.sessionManager.invalidateStatus()
             server.sessionManager.sendGrouped(PacketOutPlayerInfo(PacketOutPlayerInfo.Action.REMOVE_PLAYER, player))
             if (event.quitMessage != null) server.sendMessage(event.quitMessage!!)
-            server.sessionManager.remove(player.session)
+            server.sessionManager.unregister(player.connection)
         }, executor)
     }
 
@@ -230,7 +230,7 @@ class PlayerManager(private val server: KryptonServer) {
     }
 
     fun disconnectAll() {
-        players.forEach { it.session.playDisconnect(SHUTDOWN_MESSAGE) }
+        players.forEach { it.disconnect(SHUTDOWN_MESSAGE) }
     }
 
     fun saveAll() {
@@ -245,7 +245,7 @@ class PlayerManager(private val server: KryptonServer) {
     }
 
     private fun sendCommands(player: KryptonPlayer) {
-        player.session.send(PacketOutEntityEvent(player.id, OP_PERMISSION_LEVEL_4))
+        player.connection.send(PacketOutEntityEvent(player.id, OP_PERMISSION_LEVEL_4))
         server.commandManager.updateCommands(player)
     }
 
@@ -255,22 +255,22 @@ class PlayerManager(private val server: KryptonServer) {
     }
 
     private fun sendWorldInfo(world: KryptonWorld, player: KryptonPlayer) {
-        player.session.send(PacketOutInitializeWorldBorder(world.border))
-        player.session.send(PacketOutUpdateTime(world.data.time, world.data.dayTime, world.data.gameRules.get(GameRules.DO_DAYLIGHT_CYCLE)))
-        player.session.send(PacketOutSetDefaultSpawnPosition(world.data.spawnPos(), world.data.spawnAngle))
+        player.connection.send(PacketOutInitializeWorldBorder(world.border))
+        player.connection.send(PacketOutUpdateTime(world.data.time, world.data.dayTime, world.data.gameRules.get(GameRules.DO_DAYLIGHT_CYCLE)))
+        player.connection.send(PacketOutSetDefaultSpawnPosition(world.data.spawnPos(), world.data.spawnAngle))
         if (world.isRaining) {
-            player.session.send(PacketOutGameEvent(GameEvent.BEGIN_RAINING))
-            player.session.send(PacketOutGameEvent(GameEvent.RAIN_LEVEL_CHANGE, world.getRainLevel(1F)))
-            player.session.send(PacketOutGameEvent(GameEvent.THUNDER_LEVEL_CHANGE, world.getThunderLevel(1F)))
+            player.connection.send(PacketOutGameEvent(GameEvent.BEGIN_RAINING))
+            player.connection.send(PacketOutGameEvent(GameEvent.RAIN_LEVEL_CHANGE, world.getRainLevel(1F)))
+            player.connection.send(PacketOutGameEvent(GameEvent.THUNDER_LEVEL_CHANGE, world.getThunderLevel(1F)))
         }
     }
 
     private fun updateScoreboard(scoreboard: KryptonScoreboard, player: KryptonPlayer) {
         val objectives = HashSet<Objective>()
-        scoreboard.teams.forEach { player.session.send(PacketOutUpdateTeams.create(it)) }
+        scoreboard.teams.forEach { player.connection.send(PacketOutUpdateTeams.create(it)) }
         for (objective in scoreboard.displayObjectives()) {
             if (objectives.contains(objective)) continue
-            scoreboard.getStartTrackingPackets(objective).forEach(player.session::send)
+            scoreboard.getStartTrackingPackets(objective).forEach(player.connection::send)
             objectives.add(objective)
         }
     }

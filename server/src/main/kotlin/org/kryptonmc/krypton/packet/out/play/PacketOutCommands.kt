@@ -72,6 +72,7 @@ data class PacketOutCommands(val rootIndex: Int, val nodes: List<Node>) : Packet
     }
 
     @JvmRecord
+    @Suppress("ArrayInDataClass")
     data class Node(val flags: Int, val children: IntArray, val redirectNode: Int, val data: NodeData?) : Writable {
 
         fun canBuild(indices: IntSet): Boolean = if (flags and FLAG_REDIRECT != 0) !indices.contains(redirectNode) else true
@@ -86,18 +87,6 @@ data class PacketOutCommands(val rootIndex: Int, val nodes: List<Node>) : Packet
             buf.writeVarIntArray(children)
             if (flags and FLAG_REDIRECT != 0) buf.writeVarInt(redirectNode)
             data?.write(buf)
-        }
-
-        override fun equals(other: Any?): Boolean = this === other || other is Node &&
-                flags == other.flags && children.contentEquals(other.children) && redirectNode == other.redirectNode && data == other.data
-
-        override fun hashCode(): Int {
-            var result = 1
-            result = 31 * result + flags.hashCode()
-            result = 31 * result + children.contentHashCode()
-            result = 31 * result + redirectNode.hashCode()
-            result = 31 * result + data.hashCode()
-            return result
         }
     }
 

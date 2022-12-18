@@ -61,7 +61,7 @@ import org.kryptonmc.krypton.entity.system.PlayerHungerSystem
 import org.kryptonmc.krypton.inventory.KryptonPlayerInventory
 import org.kryptonmc.krypton.item.KryptonItemStack
 import org.kryptonmc.krypton.item.handler
-import org.kryptonmc.krypton.network.SessionHandler
+import org.kryptonmc.krypton.network.NettyConnection
 import org.kryptonmc.krypton.network.chat.ChatSender
 import org.kryptonmc.krypton.packet.out.play.GameEvent
 import org.kryptonmc.krypton.packet.out.play.PacketOutAbilities
@@ -89,9 +89,8 @@ import java.util.UUID
 import kotlin.math.roundToInt
 import kotlin.math.sqrt
 
-@Suppress("INAPPLICABLE_JVM_NAME")
 class KryptonPlayer(
-    override val session: SessionHandler,
+    override val connection: NettyConnection,
     override val profile: GameProfile,
     world: KryptonWorld,
     override val address: InetSocketAddress,
@@ -129,10 +128,11 @@ class KryptonPlayer(
             val old = field
             field = value
             if (old != field) {
-                session.send(PacketOutSetCamera(field.id))
+                connection.send(PacketOutSetCamera(field.id))
                 teleport(field.position)
             }
         }
+    private var disconnected = false
 
     // Hacks to get around Kotlin not letting us set the value of the property without calling the setter.
     val canUseGameMasterBlocks: Boolean
@@ -158,7 +158,7 @@ class KryptonPlayer(
         get() = super.health
         set(value) {
             super.health = value
-            session.send(PacketOutSetHealth(health, foodLevel, foodSaturationLevel))
+            connection.send(PacketOutSetHealth(health, foodLevel, foodSaturationLevel))
         }
     override var absorption: Float
         get() = data.get(MetadataKeys.Player.ADDITIONAL_HEARTS)
@@ -178,7 +178,7 @@ class KryptonPlayer(
         val event = gameModeSystem.changeGameMode(mode, cause)
         if (event == null || !event.result.isAllowed) return null
 
-        session.send(PacketOutGameEvent(GameEvent.CHANGE_GAMEMODE, mode.ordinal.toFloat()))
+        connection.send(PacketOutGameEvent(GameEvent.CHANGE_GAMEMODE, mode.ordinal.toFloat()))
         if (mode == GameMode.SPECTATOR) {
             stopRiding()
         } else {
@@ -208,7 +208,7 @@ class KryptonPlayer(
         gameModeSystem.tick()
         hungerSystem.tick()
         itemCooldownTracker.tick()
-        if (data.isDirty()) session.send(PacketOutSetEntityMetadata(id, data.collectDirty()))
+        if (data.isDirty()) connection.send(PacketOutSetEntityMetadata(id, data.collectDirty()))
     }
 
     @Suppress("UnusedPrivateMember") // We will use the position later.
@@ -263,9 +263,9 @@ class KryptonPlayer(
         val packet = PacketOutParticle.from(effect, location)
         when (effect.data) {
             // Send multiple packets based on the quantity
-            is DirectionalParticleData, is ColorParticleData, is NoteParticleData -> repeat(effect.quantity) { session.send(packet) }
+            is DirectionalParticleData, is ColorParticleData, is NoteParticleData -> repeat(effect.quantity) { connection.send(packet) }
             // Send particles to player at location
-            else -> session.send(packet)
+            else -> connection.send(packet)
         }
     }
 
@@ -274,9 +274,9 @@ class KryptonPlayer(
         this.position = position
 
         if (Positioning.deltaInMoveRange(oldLocation, this.position)) {
-            session.send(PacketOutTeleportEntity(id, this.position, yaw, pitch, isOnGround))
+            connection.send(PacketOutTeleportEntity(id, this.position, yaw, pitch, isOnGround))
         } else {
-            session.send(PacketOutUpdateEntityPosition(
+            connection.send(PacketOutUpdateEntityPosition(
                 id,
                 Positioning.delta(this.position.x, oldLocation.x),
                 Positioning.delta(this.position.y, oldLocation.y),
@@ -292,19 +292,19 @@ class KryptonPlayer(
     }
 
     override fun sendPluginMessage(channel: Key, message: ByteArray) {
-        session.send(PacketOutPluginMessage(channel, message))
+        connection.send(PacketOutPluginMessage(channel, message))
     }
 
     override fun sendResourcePack(pack: ResourcePack) {
-        session.send(PacketOutResourcePack(pack))
+        connection.send(PacketOutResourcePack(pack))
     }
 
     override fun openBook(item: KryptonItemStack) {
         val slot = inventory.items.size + inventory.heldSlot
         val stateId = inventory.stateId
-        session.send(PacketOutSetContainerSlot(0, stateId, slot, item))
-        session.send(PacketOutOpenBook(hand))
-        session.send(PacketOutSetContainerSlot(0, stateId, slot, inventory.mainHand))
+        connection.send(PacketOutSetContainerSlot(0, stateId, slot, item))
+        connection.send(PacketOutOpenBook(hand))
+        connection.send(PacketOutSetContainerSlot(0, stateId, slot, inventory.mainHand))
     }
 
     override fun pointers(): Pointers {
@@ -321,11 +321,19 @@ class KryptonPlayer(
     }
 
     override fun disconnect(text: Component) {
-        session.disconnect(text)
+        // We always use the play disconnect here because we should be in the play state by the time the player is constructed, and certainly
+        // by the time any plugin is able to access it.
+        connection.playHandler().disconnect(text)
+    }
+
+    fun disconnect() {
+        disconnected = true
+        vehicleSystem.ejectPassengers()
+        // TODO: Stop sleeping if sleeping
     }
 
     override fun onAbilitiesUpdate() {
-        session.send(PacketOutAbilities(abilities))
+        connection.send(PacketOutAbilities(abilities))
         removeEffectParticles()
         isInvisible = gameMode == GameMode.SPECTATOR
     }

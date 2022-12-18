@@ -19,17 +19,22 @@
 package org.kryptonmc.krypton.packet.`in`.play
 
 import io.netty.buffer.ByteBuf
-import org.kryptonmc.krypton.packet.Packet
+import org.kryptonmc.krypton.network.handlers.PlayHandler
+import org.kryptonmc.krypton.packet.InboundPacket
 import org.kryptonmc.krypton.util.readEnum
 import org.kryptonmc.krypton.util.writeEnum
 
 @JvmRecord
-data class PacketInClientCommand(val action: Action) : Packet {
+data class PacketInClientCommand(val action: Action) : InboundPacket<PlayHandler> {
 
     constructor(buf: ByteBuf) : this(buf.readEnum<Action>())
 
     override fun write(buf: ByteBuf) {
         buf.writeEnum(action)
+    }
+
+    override fun handle(handler: PlayHandler) {
+        handler.handleClientCommand(this)
     }
 
     enum class Action {

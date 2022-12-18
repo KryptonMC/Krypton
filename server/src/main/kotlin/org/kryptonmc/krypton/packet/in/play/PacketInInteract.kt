@@ -21,15 +21,15 @@ package org.kryptonmc.krypton.packet.`in`.play
 import io.netty.buffer.ByteBuf
 import org.kryptonmc.api.entity.Hand
 import org.kryptonmc.krypton.network.Writable
-import org.kryptonmc.krypton.packet.Packet
-import org.kryptonmc.krypton.util.ByteBufReader
+import org.kryptonmc.krypton.network.handlers.PlayHandler
+import org.kryptonmc.krypton.packet.InboundPacket
 import org.kryptonmc.krypton.util.readEnum
 import org.kryptonmc.krypton.util.readVarInt
 import org.kryptonmc.krypton.util.writeEnum
 import org.kryptonmc.krypton.util.writeVarInt
 
 @JvmRecord
-data class PacketInInteract(val entityId: Int, val action: Action, val sneaking: Boolean) : Packet {
+data class PacketInInteract(val entityId: Int, val action: Action, val sneaking: Boolean) : InboundPacket<PlayHandler> {
 
     constructor(buf: ByteBuf) : this(buf.readVarInt(), buf.readEnum<ActionType>().read(buf), buf.readBoolean())
 
@@ -38,6 +38,10 @@ data class PacketInInteract(val entityId: Int, val action: Action, val sneaking:
         buf.writeEnum(action.type())
         action.write(buf)
         buf.writeBoolean(sneaking)
+    }
+
+    override fun handle(handler: PlayHandler) {
+        handler.handleInteract(this)
     }
 
     sealed interface Action : Writable {
@@ -104,12 +108,17 @@ data class PacketInInteract(val entityId: Int, val action: Action, val sneaking:
         fun onAttack()
     }
 
-    enum class ActionType(private val reader: ByteBufReader<Action>) {
+    enum class ActionType(private val reader: Reader) {
 
         INTERACT({ InteractAction(it) }),
         ATTACK({ AttackAction }),
         INTERACT_AT({ InteractAtAction(it) });
 
         fun read(buf: ByteBuf): Action = reader.read(buf)
+
+        private fun interface Reader {
+
+            fun read(buf: ByteBuf): Action
+        }
     }
 }

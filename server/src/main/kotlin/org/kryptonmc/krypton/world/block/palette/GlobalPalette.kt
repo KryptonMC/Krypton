@@ -19,8 +19,8 @@
 package org.kryptonmc.krypton.world.block.palette
 
 import io.netty.buffer.ByteBuf
+import org.kryptonmc.krypton.util.ByteBufExtras
 import org.kryptonmc.krypton.util.IntBiMap
-import org.kryptonmc.krypton.util.varIntBytes
 
 class GlobalPalette<T>(private val registry: IntBiMap<T>) : Palette<T> {
 
@@ -39,7 +39,7 @@ class GlobalPalette<T>(private val registry: IntBiMap<T>) : Palette<T> {
         // we are using the global palette if we send the right bits per entry
     }
 
-    override fun calculateSerializedSize(): Int = 0.varIntBytes()
+    override fun calculateSerializedSize(): Int = ByteBufExtras.getVarIntBytes(0)
 
     override fun copy(): Palette<T> = this
 

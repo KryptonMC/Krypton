@@ -19,7 +19,8 @@
 package org.kryptonmc.krypton.packet.`in`.handshake
 
 import io.netty.buffer.ByteBuf
-import org.kryptonmc.krypton.packet.Packet
+import org.kryptonmc.krypton.network.handlers.HandshakeHandler
+import org.kryptonmc.krypton.packet.InboundPacket
 import org.kryptonmc.krypton.packet.PacketState
 import org.kryptonmc.krypton.util.readEnum
 import org.kryptonmc.krypton.util.readString
@@ -29,7 +30,7 @@ import org.kryptonmc.krypton.util.writeString
 import org.kryptonmc.krypton.util.writeVarInt
 
 @JvmRecord
-data class PacketInHandshake(val protocol: Int, val address: String, val port: Int, val nextState: PacketState) : Packet {
+data class PacketInHandshake(val protocol: Int, val address: String, val port: Int, val nextState: PacketState) : InboundPacket<HandshakeHandler> {
 
     constructor(buf: ByteBuf) : this(buf.readVarInt(), buf.readString(), buf.readUnsignedShort(), buf.readEnum())
 
@@ -38,5 +39,9 @@ data class PacketInHandshake(val protocol: Int, val address: String, val port: I
         buf.writeString(address)
         buf.writeShort(port)
         buf.writeEnum(nextState)
+    }
+
+    override fun handle(handler: HandshakeHandler) {
+        handler.handleHandshake(this)
     }
 }

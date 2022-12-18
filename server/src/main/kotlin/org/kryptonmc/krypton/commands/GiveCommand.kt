@@ -61,7 +61,7 @@ object GiveCommand {
         targets.forEach { target ->
             item.createItemStacks(count).forEach(target.inventory::addItem)
             target.playSound(Sound.sound(SoundEvents.ITEM_PICKUP, Sound.Source.PLAYER, PICKUP_VOLUME, PICKUP_PITCH))
-            target.session.send(PacketOutSetContainerContent(target.inventory, target.inventory.mainHand))
+            target.connection.send(PacketOutSetContainerContent(target.inventory, target.inventory.mainHand))
         }
     }
 }

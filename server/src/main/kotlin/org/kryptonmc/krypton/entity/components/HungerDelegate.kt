@@ -30,7 +30,7 @@ interface HungerDelegate : Player, NetworkPlayer {
         get() = hungerSystem.foodLevel
         set(value) {
             hungerSystem.foodLevel = value
-            session.send(PacketOutSetHealth(health, value, foodSaturationLevel))
+            connection.send(PacketOutSetHealth(health, value, foodSaturationLevel))
         }
     override var foodExhaustionLevel: Float
         get() = hungerSystem.exhaustionLevel
@@ -41,6 +41,6 @@ interface HungerDelegate : Player, NetworkPlayer {
         get() = hungerSystem.saturationLevel
         set(value) {
             hungerSystem.saturationLevel = value
-            session.send(PacketOutSetHealth(health, foodLevel, value))
+            connection.send(PacketOutSetHealth(health, foodLevel, value))
         }
 }

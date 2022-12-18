@@ -94,15 +94,15 @@ class PlayerChunkViewingSystem(private val player: KryptonPlayer) {
         val oldX = if (firstLoad) centralX else oldCentralX
         val oldZ = if (firstLoad) centralZ else oldCentralZ
         player.world.chunkManager.addPlayer(player, centralX, centralZ, oldX, oldZ, radius).thenRun {
-            player.session.send(PacketOutSetCenterChunk(centralX, centralZ))
+            player.connection.send(PacketOutSetCenterChunk(centralX, centralZ))
             newChunks.forEach {
                 val chunk = player.world.chunkManager.get(it) ?: return@forEach
-                player.session.write(chunk.cachedPacket)
+                player.connection.write(chunk.cachedPacket)
             }
 
             if (previousChunks == null) return@thenRun
             previousChunks.forEach {
-                player.session.send(PacketOutUnloadChunk(it.toInt(), (it shr 32).toInt()))
+                player.connection.send(PacketOutUnloadChunk(it.toInt(), (it shr 32).toInt()))
                 visibleChunks.remove(it)
             }
             previousChunks.clear()

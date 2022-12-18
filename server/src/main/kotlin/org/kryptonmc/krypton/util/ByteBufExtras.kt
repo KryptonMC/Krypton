@@ -16,13 +16,13 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.entity.components
+package org.kryptonmc.krypton.util
 
-import org.kryptonmc.krypton.entity.player.PlayerPublicKey
-import org.kryptonmc.krypton.network.NetworkConnection
+import kotlin.math.ceil
 
-interface NetworkPlayer {
+object ByteBufExtras {
 
-    val connection: NetworkConnection
-    val publicKey: PlayerPublicKey?
+    private val VARINT_EXACT_BYTE_LENGTHS = IntArray(33) { ceil((31.0 - (it - 1)) / 7.0).toInt() }.apply { this[32] = 1 }
+
+    fun getVarIntBytes(value: Int): Int = VARINT_EXACT_BYTE_LENGTHS[value.countLeadingZeroBits()]
 }

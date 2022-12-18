@@ -25,25 +25,26 @@ import org.junit.jupiter.api.DynamicTest.dynamicTest
 import org.junit.jupiter.api.TestFactory
 import org.junit.jupiter.api.assertDoesNotThrow
 import org.kryptonmc.krypton.network.Writable
+import org.kryptonmc.krypton.packet.`in`.status.PacketInStatusRequest
+import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateRecipes
 import org.kryptonmc.krypton.testutil.ReflectionsFactory
+import java.util.function.Predicate
 import java.util.stream.Stream
 import kotlin.test.assertTrue
 
 class PacketReadWriteTests {
 
-    /* FIXME: Re-enable when the special packets that do not have read constructors are fixed
     @TestFactory
     fun `ensure all packets have read constructors`(): DynamicNode =
-        dynamicContainer("packets", Stream.concat(INBOUND_PACKETS.stream(), OUTBOUND_PACKETS.stream()).filter { !it.isInterface }.map {
+        dynamicContainer("packets", allPackets { !it.isInterface && !IGNORED_PACKETS.contains(it) }.map {
             dynamicTest(it.simpleName) {
                 assertDoesNotThrow { it.getDeclaredConstructor(ByteBuf::class.java) }
             }
         })
-     */
 
     @TestFactory
     fun `ensure all packets implement writable and override write`(): DynamicNode =
-        dynamicContainer("packets", Stream.concat(INBOUND_PACKETS.stream(), OUTBOUND_PACKETS.stream()).filter { !it.isInterface }.map {
+        dynamicContainer("packets", allPackets { !it.isInterface }.map {
             dynamicTest(it.simpleName) {
                 assertTrue(Writable::class.java.isAssignableFrom(it), "Does not implement Writable!")
                 assertDoesNotThrow { it.getDeclaredMethod("write", ByteBuf::class.java) }
@@ -54,9 +55,14 @@ class PacketReadWriteTests {
 
         private val INBOUND_PACKETS = findPackets("in")
         private val OUTBOUND_PACKETS = findPackets("out")
+        private val IGNORED_PACKETS = listOf(PacketInStatusRequest::class.java, PacketOutUpdateRecipes::class.java)
 
         @JvmStatic
         private fun findPackets(subPackage: String): Set<Class<*>> =
             ReflectionsFactory.subTypesIn("org.kryptonmc.krypton.packet.$subPackage").getSubTypesOf(Packet::class.java)
+
+        @JvmStatic
+        private fun allPackets(filter: Predicate<Class<*>>): Stream<Class<*>> =
+            Stream.concat(INBOUND_PACKETS.stream(), OUTBOUND_PACKETS.stream()).filter(filter)
     }
 }

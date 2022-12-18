@@ -16,11 +16,21 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.util
+package org.kryptonmc.krypton.network
 
-import io.netty.buffer.ByteBuf
+import org.kryptonmc.krypton.packet.GenericPacket
+import org.kryptonmc.krypton.packet.Packet
+import java.net.SocketAddress
 
-fun interface ByteBufReader<T> {
+interface NetworkConnection {
 
-    fun read(buf: ByteBuf): T
+    fun connectAddress(): SocketAddress
+
+    fun latency(): Int
+
+    fun send(packet: Packet)
+
+    fun send(packet: Packet, listener: PacketSendListener)
+
+    fun write(packet: GenericPacket)
 }

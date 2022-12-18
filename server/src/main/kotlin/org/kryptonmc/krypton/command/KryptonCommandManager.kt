@@ -156,7 +156,7 @@ class KryptonCommandManager : CommandManager {
         lock.read {
             dispatcher.root.children.forEach { if (it.requirement.test(player.createCommandSourceStack())) node.addChild(it) }
             player.server.eventManager.fireAndForget(KryptonCommandSendEvent(player, node))
-            player.session.send(PacketOutCommands(node))
+            player.connection.send(PacketOutCommands(node))
         }
     }
 

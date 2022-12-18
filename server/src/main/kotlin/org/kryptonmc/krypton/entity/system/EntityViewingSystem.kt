@@ -39,16 +39,16 @@ open class EntityViewingSystem<out T : KryptonEntity> private constructor(protec
 
     open fun addViewer(viewer: KryptonPlayer): Boolean {
         if (!viewers.add(viewer)) return false
-        viewer.session.send(getSpawnPacket())
-        viewer.session.send(PacketOutSetEntityMetadata(entity.id, entity.data.collectAll()))
-        viewer.session.send(PacketOutSetHeadRotation(entity.id, entity.yaw))
-        if (entity is KryptonLivingEntity) viewer.session.send(PacketOutUpdateAttributes(entity.id, entity.attributes.syncable()))
+        viewer.connection.send(getSpawnPacket())
+        viewer.connection.send(PacketOutSetEntityMetadata(entity.id, entity.data.collectAll()))
+        viewer.connection.send(PacketOutSetHeadRotation(entity.id, entity.yaw))
+        if (entity is KryptonLivingEntity) viewer.connection.send(PacketOutUpdateAttributes(entity.id, entity.attributes.syncable()))
         return true
     }
 
     open fun removeViewer(viewer: KryptonPlayer): Boolean {
         if (!viewers.remove(viewer)) return false
-        viewer.session.send(PacketOutRemoveEntities(entity.id))
+        viewer.connection.send(PacketOutRemoveEntities(entity.id))
         return true
     }
 
@@ -65,13 +65,13 @@ open class EntityViewingSystem<out T : KryptonEntity> private constructor(protec
 
         override fun addViewer(viewer: KryptonPlayer): Boolean {
             if (viewer === entity) return false
-            viewer.session.send(PacketOutPlayerInfo(PacketOutPlayerInfo.Action.ADD_PLAYER, entity))
+            viewer.connection.send(PacketOutPlayerInfo(PacketOutPlayerInfo.Action.ADD_PLAYER, entity))
             return super.addViewer(viewer)
         }
 
         override fun removeViewer(viewer: KryptonPlayer): Boolean {
             if (viewer === entity || !super.removeViewer(viewer)) return false
-            viewer.session.send(PacketOutPlayerInfo(PacketOutPlayerInfo.Action.REMOVE_PLAYER, entity))
+            viewer.connection.send(PacketOutPlayerInfo(PacketOutPlayerInfo.Action.REMOVE_PLAYER, entity))
             return true
         }
 

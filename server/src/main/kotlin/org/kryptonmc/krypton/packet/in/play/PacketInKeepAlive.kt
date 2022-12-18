@@ -19,14 +19,19 @@
 package org.kryptonmc.krypton.packet.`in`.play
 
 import io.netty.buffer.ByteBuf
-import org.kryptonmc.krypton.packet.Packet
+import org.kryptonmc.krypton.network.handlers.PlayHandler
+import org.kryptonmc.krypton.packet.InboundPacket
 
 @JvmRecord
-data class PacketInKeepAlive(val id: Long) : Packet {
+data class PacketInKeepAlive(val id: Long) : InboundPacket<PlayHandler> {
 
     constructor(buf: ByteBuf) : this(buf.readLong())
 
     override fun write(buf: ByteBuf) {
         buf.writeLong(id)
+    }
+
+    override fun handle(handler: PlayHandler) {
+        handler.handleKeepAlive(this)
     }
 }

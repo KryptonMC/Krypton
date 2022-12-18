@@ -60,7 +60,6 @@ import java.io.IOException
 import java.security.PublicKey
 import java.time.Instant
 import java.util.UUID
-import kotlin.math.ceil
 import kotlin.math.min
 
 /*
@@ -486,7 +485,3 @@ fun ByteBuf.write3ByteVarInt(startIndex: Int, value: Int) {
     writeMedium(encoded)
     writerIndex(originalIndex)
 }
-
-private val VARINT_EXACT_BYTE_LENGTHS = IntArray(33) { ceil((31.0 - (it - 1)) / 7.0).toInt() }.apply { this[32] = 1 }
-
-fun Int.varIntBytes(): Int = VARINT_EXACT_BYTE_LENGTHS[countLeadingZeroBits()]
