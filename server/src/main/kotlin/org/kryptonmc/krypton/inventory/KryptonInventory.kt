@@ -32,9 +32,10 @@ abstract class KryptonInventory(
     totalItems: Int = size
 ) : Inventory, Writable {
 
-    var stateId: Int = 0
-        private set
+    private var stateId = 0
     final override val items = FixedList(totalItems, KryptonItemStack.EMPTY)
+
+    fun stateId(): Int = stateId
 
     fun incrementStateId(): Int {
         stateId = stateId + 1 and Short.MAX_VALUE.toInt()

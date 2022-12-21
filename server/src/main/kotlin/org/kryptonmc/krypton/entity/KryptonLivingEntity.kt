@@ -53,8 +53,6 @@ abstract class KryptonLivingEntity(world: KryptonWorld) : KryptonEntity(world), 
     final override val maxHealth: Float
         get() = attributes.getValue(KryptonAttributeTypes.MAX_HEALTH).toFloat()
     override var absorption: Float = 0F
-    final override val isAlive: Boolean
-        get() = super.isAlive && health > 0F
     final override var isDead: Boolean = false
     final override var deathTime: Int = 0
     final override var hurtTime: Int = 0
@@ -81,24 +79,6 @@ abstract class KryptonLivingEntity(world: KryptonWorld) : KryptonEntity(world), 
 
     open val isBaby: Boolean
         get() = false
-    open val canBeSeenAsEnemy: Boolean
-        get() = !isInvulnerable && canBeSeenByAnyone
-    open val canBeSeenByAnyone: Boolean
-        get() = isAlive
-    open val soundVolume: Float
-        get() = 1F
-    open val voicePitch: Float
-        get() {
-            val babyFactor = if (isBaby) 1.5F else 1F
-            return (random.nextFloat() - random.nextFloat()) * 0.2F + babyFactor
-        }
-    val killCredit: KryptonLivingEntity?
-        get() {
-            // TODO: Check combat tracker here
-            if (lastHurtByPlayer != null) return lastHurtByPlayer
-            if (lastHurtByMob != null) return lastHurtByMob
-            return null
-        }
 
     final override var isGliding: Boolean
         get() = data.getFlag(MetadataKeys.Entity.FLAGS, FLAG_ENTITY_GLIDING)
@@ -171,7 +151,7 @@ abstract class KryptonLivingEntity(world: KryptonWorld) : KryptonEntity(world), 
 
     fun canAttack(target: KryptonLivingEntity): Boolean {
         if (target is KryptonPlayer && world.difficulty === Difficulty.PEACEFUL) return false
-        return target.canBeSeenAsEnemy
+        return target.canBeSeenAsEnemy()
     }
 
     @Suppress("FunctionOnlyReturningConstant", "UnusedPrivateMember") // This will have logic in the future
@@ -184,6 +164,26 @@ abstract class KryptonLivingEntity(world: KryptonWorld) : KryptonEntity(world), 
     protected fun removeEffectParticles() {
         isPotionEffectAmbient = false
         potionEffectColor = 0
+    }
+
+    final override fun isAlive(): Boolean = super.isAlive() && health > 0F
+
+    open fun canBeSeenAsEnemy(): Boolean = !isInvulnerable && canBeSeenByAnyone()
+
+    open fun canBeSeenByAnyone(): Boolean = isAlive()
+
+    open fun soundVolume(): Float = 1F
+
+    open fun voicePitch(): Float {
+        val babyFactor = if (isBaby) 1.5F else 1F
+        return (random.nextFloat() - random.nextFloat()) * 0.2F + babyFactor
+    }
+
+    fun killCredit(): KryptonLivingEntity? {
+        // TODO: Check combat tracker here
+        if (lastHurtByPlayer != null) return lastHurtByPlayer
+        if (lastHurtByMob != null) return lastHurtByMob
+        return null
     }
 
     companion object {

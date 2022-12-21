@@ -26,9 +26,6 @@ import org.kryptonmc.krypton.world.damage.KryptonDamageSource
 
 abstract class KryptonAquaticAnimal(world: KryptonWorld) : KryptonMob(world), AquaticAnimal {
 
-    final override val isPushedByFluid: Boolean
-        get() = false
-
     override fun tick() {
         val air = airSupply
         super.tick()
@@ -36,7 +33,7 @@ abstract class KryptonAquaticAnimal(world: KryptonWorld) : KryptonMob(world), Aq
     }
 
     protected open fun handleAir(amount: Int) {
-        if (isAlive && !waterPhysicsSystem.isInWaterOrBubbleColumn()) {
+        if (isAlive() && !waterPhysicsSystem.isInWaterOrBubbleColumn()) {
             // Aquatic creatures must be underwater to breathe. If they are out of water, they start to run out of air,
             // and eventually suffocate.
             airSupply = amount - 1
@@ -49,6 +46,8 @@ abstract class KryptonAquaticAnimal(world: KryptonWorld) : KryptonMob(world), Aq
             airSupply = AIR_RESET_AMOUNT
         }
     }
+
+    final override fun isPushedByFluid(): Boolean = false
 
     companion object {
 

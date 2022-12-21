@@ -34,9 +34,6 @@ abstract class KryptonHangingEntity(world: KryptonWorld) : KryptonEntity(world),
     override val serializer: EntitySerializer<out KryptonHangingEntity>
         get() = HangingEntitySerializer
 
-    abstract val width: Int
-    abstract val height: Int
-
     internal var centerPosition: BlockPos? = null
     final override var direction: Direction = Direction.SOUTH
         set(value) {
@@ -48,6 +45,10 @@ abstract class KryptonHangingEntity(world: KryptonWorld) : KryptonEntity(world),
             recalculateBoundingBox()
         }
 
+    abstract fun width(): Int
+
+    abstract fun height(): Int
+
     private fun recalculateBoundingBox() {
         var x = centerPosition!!.x + BLOCK_CENTER_OFFSET
         var y = centerPosition!!.y + BLOCK_CENTER_OFFSET
@@ -57,10 +58,10 @@ abstract class KryptonHangingEntity(world: KryptonWorld) : KryptonEntity(world),
         x -= direction.normalX * ONE_BLOCK_PIXELS
         // for SOUTH, the z becomes centerZ + 1/32, and for NORTH, the z becomes centerZ + 31/32
         z -= direction.normalZ * ONE_BLOCK_PIXELS
-        if (height % TWO_BLOCKS_PICTURE_PIXELS == 0) y += BLOCK_CENTER_OFFSET
+        if (height() % TWO_BLOCKS_PICTURE_PIXELS == 0) y += BLOCK_CENTER_OFFSET
 
         val antiClockwise = Directions.antiClockwise(direction)
-        if (width % TWO_BLOCKS_PICTURE_PIXELS == 0) {
+        if (width() % TWO_BLOCKS_PICTURE_PIXELS == 0) {
             // for direction NORTH (anti clockwise WEST), the x becomes centerX
             // for direction SOUTH (anti clockwise EAST), the x becomes centerX + 1
             x += BLOCK_CENTER_OFFSET * antiClockwise.normalX
@@ -70,9 +71,9 @@ abstract class KryptonHangingEntity(world: KryptonWorld) : KryptonEntity(world),
         }
         position = Vec3dImpl(x, y, z)
 
-        var widthX = width.toDouble()
-        var height = height.toDouble()
-        var widthZ = width.toDouble()
+        var widthX = width().toDouble()
+        var height = height().toDouble()
+        var widthZ = width().toDouble()
         if (direction.axis == Direction.Axis.Z) widthZ = 1.0 else widthX = 1.0
         widthX /= TWO_BLOCKS_PICTURE_PIXELS
         height /= TWO_BLOCKS_PICTURE_PIXELS

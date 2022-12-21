@@ -171,11 +171,8 @@ class FallbackResourceManager(private val namespace: String) : ResourceManager {
         fun isFiltered(location: Key): Boolean = filter != null && filter.test(location)
     }
 
-    private inner class SinglePackResourceThunkSupplier(
-        private val location: Key,
-        private val metadataLocation: Key,
-        private val source: PackResources
-    ) {
+    private inner class SinglePackResourceThunkSupplier(private val location: Key, private val metadataLocation: Key,
+                                                        private val source: PackResources) {
 
         private var shouldGetMetadata = true
 
@@ -207,7 +204,7 @@ class FallbackResourceManager(private val namespace: String) : ResourceManager {
                 if (entry.isFiltered(next.key)) {
                     iterator.remove()
                 } else if (entry.isFiltered(next.value.metadataLocation)) {
-                    next.value.entries.forEach(SinglePackResourceThunkSupplier::ignoreMetadata)
+                    next.value.entries.forEach { it.ignoreMetadata() }
                 }
             }
         }

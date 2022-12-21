@@ -45,9 +45,6 @@ class KryptonCompassMeta(data: CompoundTag) : AbstractItemMeta<KryptonCompassMet
 
     override fun toBuilder(): CompassMeta.Builder = Builder(this)
 
-    override fun toString(): String = "KryptonCompassMeta(${partialToString()}, isTrackingLodestone=$isTrackingLodestone, " +
-            "lodestoneDimension=$lodestoneDimension, lodestonePosition=$lodestonePosition)"
-
     class Builder : KryptonItemMetaBuilder<CompassMeta.Builder, CompassMeta>, CompassMeta.Builder {
 
         private var tracking = false

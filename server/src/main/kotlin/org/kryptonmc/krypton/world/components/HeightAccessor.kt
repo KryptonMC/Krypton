@@ -23,25 +23,25 @@ import org.kryptonmc.krypton.util.SectionPos
 
 interface HeightAccessor {
 
-    val height: Int
-    val minimumBuildHeight: Int
-    val maximumBuildHeight: Int
-        get() = minimumBuildHeight + height
+    fun height(): Int
 
-    val minimumSection: Int
-        get() = SectionPos.blockToSection(minimumBuildHeight)
-    val maximumSection: Int
-        get() = SectionPos.blockToSection(maximumBuildHeight - 1) + 1
-    val sectionCount: Int
-        get() = maximumSection - minimumSection
+    fun minimumBuildHeight(): Int
+
+    fun maximumBuildHeight(): Int = minimumBuildHeight() + height()
+
+    fun minimumSection(): Int = SectionPos.blockToSection(minimumBuildHeight())
+
+    fun maximumSection(): Int = SectionPos.blockToSection(maximumBuildHeight() - 1) + 1
+
+    fun sectionCount(): Int = maximumSection() - minimumSection()
 
     fun getSectionIndex(y: Int): Int = getSectionIndexFromSectionY(SectionPos.blockToSection(y))
 
-    fun getSectionIndexFromSectionY(y: Int): Int = y - minimumSection
+    fun getSectionIndexFromSectionY(y: Int): Int = y - minimumSection()
 
-    fun getSectionYFromSectionIndex(index: Int): Int = index + minimumSection
+    fun getSectionYFromSectionIndex(index: Int): Int = index + minimumSection()
 
     fun isOutsideBuildHeight(pos: BlockPos): Boolean = isOutsideBuildHeight(pos.y)
 
-    fun isOutsideBuildHeight(y: Int): Boolean = y < minimumBuildHeight || y >= maximumBuildHeight
+    fun isOutsideBuildHeight(y: Int): Boolean = y < minimumBuildHeight() || y >= maximumBuildHeight()
 }

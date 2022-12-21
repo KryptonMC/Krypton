@@ -43,8 +43,11 @@ class EnumSerializer<E : Enum<E>>(
     companion object {
 
         @JvmStatic
-        inline fun <reified E : Enum<E>> of(typeName: String, crossinline fromId: (Int) -> E?,
-                                            crossinline fromName: (String) -> E?): EnumSerializer<E> {
+        inline fun <reified E : Enum<E>> of(
+            typeName: String,
+            crossinline fromId: (Int) -> E?,
+            crossinline fromName: (String) -> E?
+        ): EnumSerializer<E> {
             return EnumSerializer(E::class.java, typeName, { fromId(it) }, { fromName(it) })
         }
     }

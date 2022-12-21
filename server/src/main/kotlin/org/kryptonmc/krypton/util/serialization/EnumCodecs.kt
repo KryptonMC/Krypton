@@ -30,11 +30,11 @@ object EnumCodecs {
     private const val PRE_BUILT_LOOKUP_MAP_THRESHOLD = 16
 
     @JvmField
-    val TEMPERATURE_MODIFIER: Codec<TemperatureModifier> = of(TemperatureModifier::values)
+    val TEMPERATURE_MODIFIER: Codec<TemperatureModifier> = of { TemperatureModifier.values() }
     @JvmField
-    val PRECIPITATION: Codec<Precipitation> = of(Precipitation::values)
+    val PRECIPITATION: Codec<Precipitation> = of { Precipitation.values() }
     @JvmField
-    val GRASS_COLOR_MODIFIER: Codec<GrassColorModifier> = of(GrassColorModifier::values)
+    val GRASS_COLOR_MODIFIER: Codec<GrassColorModifier> = of { GrassColorModifier.values() }
 
     @JvmStatic
     fun <E : Enum<E>> of(valueSupplier: Supplier<Array<E>>): EnumCodec<E> = of(valueSupplier) { it.name.lowercase() }

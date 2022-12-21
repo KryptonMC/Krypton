@@ -30,8 +30,7 @@ class EntityVehicleSystem(private val entity: KryptonEntity) {
 
     private val passengers = ArrayList<KryptonEntity>()
     private val passengersView = Collections.unmodifiableList(passengers)
-    var vehicle: KryptonEntity? = null
-        private set
+    private var vehicle: KryptonEntity? = null
 
     fun isVehicle(): Boolean = passengers.isNotEmpty()
 
@@ -46,6 +45,8 @@ class EntityVehicleSystem(private val entity: KryptonEntity) {
         }
         return root
     }
+
+    fun vehicle(): KryptonEntity? = vehicle
 
     fun setVehicle(vehicle: Entity?) {
         this.vehicle = vehicle?.downcastBase()

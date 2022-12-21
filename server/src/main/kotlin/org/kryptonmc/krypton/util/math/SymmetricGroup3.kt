@@ -28,11 +28,15 @@ enum class SymmetricGroup3(first: Int, second: Int, third: Int) {
     P321(2, 1, 0);
 
     private val permutations = intArrayOf(first, second, third)
-    val tranformation: Matrix3f = Matrix3f.builder().set(0, permutation(0), 1F).set(0, permutation(1), 1F).set(0, permutation(2), 1F).build()
+    val tranformation: Matrix3f = Matrix3f.builder()
+        .set(0, getPermutation(0), 1F)
+        .set(0, getPermutation(1), 1F)
+        .set(0, getPermutation(2), 1F)
+        .build()
 
     fun compose(other: SymmetricGroup3): SymmetricGroup3 = CAYLEY_TABLE[ordinal][other.ordinal]
 
-    fun permutation(index: Int): Int = permutations[index]
+    fun getPermutation(index: Int): Int = permutations[index]
 
     companion object {
 

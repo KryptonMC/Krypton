@@ -56,21 +56,8 @@ object KryptonMetrics {
             LOGGER.info("the '/plugins/bStats/' folder and setting enabled to false.")
         }
 
-        val metrics = MetricsBase(
-            "server-implementation",
-            config.serverUUID,
-            SERVICE_ID,
-            config.isEnabled,
-            { appendPlatformData(it) },
-            {},
-            null,
-            { true },
-            { message, exception -> LOGGER.warn(message, exception) },
-            { message -> LOGGER.info(message) },
-            config.isLogErrorsEnabled,
-            config.isLogSentDataEnabled,
-            config.isLogResponseStatusTextEnabled
-        )
+        val metrics = MetricsBase("server-implementation", config.serverUUID, SERVICE_ID, config.isEnabled, ::appendPlatformData, {}, null, { true },
+            LOGGER::warn, LOGGER::info, config.isLogErrorsEnabled, config.isLogSentDataEnabled, config.isLogResponseStatusTextEnabled)
 
         metrics.addCustomChart(SingleLineChart("players") { server.players.size })
         metrics.addCustomChart(SimplePie("online_mode") { if (server.config.server.onlineMode) "online" else "offline" })

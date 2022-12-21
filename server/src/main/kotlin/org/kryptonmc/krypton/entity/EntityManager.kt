@@ -54,14 +54,14 @@ class EntityManager(val world: KryptonWorld) : AutoCloseable {
     private val byUUID = ConcurrentHashMap<UUID, KryptonEntity>()
     private val byChunk = Long2ObjectSyncMap.hashmap<MutableSet<KryptonEntity>>()
     private val regionFileManager = RegionFileManager(world.folder.resolve("entities"), world.server.config.advanced.synchronizeChunkWrites)
-    val entities: MutableCollection<KryptonEntity>
-        get() = byId.values
 
-    fun get(id: Int): KryptonEntity? = byId.get(id)
+    fun entities(): MutableCollection<KryptonEntity> = byId.values
 
-    fun get(uuid: UUID): KryptonEntity? = byUUID.get(uuid)
+    fun getById(id: Int): KryptonEntity? = byId.get(id)
 
-    fun spawn(entity: KryptonEntity) {
+    fun getByUUID(uuid: UUID): KryptonEntity? = byUUID.get(uuid)
+
+    fun spawnEntity(entity: KryptonEntity) {
         if (entity.world != world) return
         if (byUUID.containsKey(entity.uuid)) {
             LOGGER.error("UUID collision! UUID for entity with ID ${entity.id} collided with entity with ID ${byUUID.get(entity.uuid)?.id}!")
@@ -81,7 +81,7 @@ class EntityManager(val world: KryptonWorld) : AutoCloseable {
         }
     }
 
-    fun spawn(player: KryptonPlayer) {
+    fun spawnPlayer(player: KryptonPlayer) {
         if (player.world != world) return
 
         // TODO: World border
@@ -102,7 +102,7 @@ class EntityManager(val world: KryptonWorld) : AutoCloseable {
     private fun getByChunk(location: Long): MutableSet<KryptonEntity> =
         byChunk.computeIfAbsent(location, LongFunction { ConcurrentHashMap.newKeySet() })
 
-    fun remove(entity: KryptonEntity) {
+    fun removeEntity(entity: KryptonEntity) {
         if (entity.world != world) return
         world.server.eventManager.fire(KryptonRemoveEntityEvent(entity, world)).thenAccept { event ->
             if (!event.result.isAllowed) return@thenAccept
@@ -120,7 +120,7 @@ class EntityManager(val world: KryptonWorld) : AutoCloseable {
         }
     }
 
-    fun load(chunk: KryptonChunk) {
+    fun loadAllInChunk(chunk: KryptonChunk) {
         val nbt = regionFileManager.read(chunk.x, chunk.z) ?: return
         val version = nbt.getDataVersion()
         // We won't upgrade data if use of the data converter is disabled.
@@ -140,11 +140,11 @@ class EntityManager(val world: KryptonWorld) : AutoCloseable {
             val type = KryptonRegistries.ENTITY_TYPE.get(key)
             val entity = EntityFactory.create(type, world) ?: return@forEachCompound
             entity.load(it)
-            spawn(entity)
+            spawnEntity(entity)
         }
     }
 
-    fun save(chunk: KryptonChunk) {
+    fun saveAllInChunk(chunk: KryptonChunk) {
         val entities = byChunk.get(chunk.position.pack()) ?: return
         if (entities.isEmpty()) return
         val entityList = ImmutableListTag.builder(CompoundTag.ID)

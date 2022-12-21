@@ -38,6 +38,7 @@ data class PlayerPublicKey(val data: Data) {
     fun createSignatureValidator(): SignatureValidator = SignatureValidator.from(data.key, Encryption.SIGNATURE_ALGORITHM)
 
     @JvmRecord
+    @Suppress("ArrayInDataClass")
     data class Data(val expiryTime: Instant, val key: PublicKey, val signature: ByteArray) : Writable {
 
         constructor(buf: ByteBuf) : this(buf.readInstant(), buf.readPublicKey(), buf.readVarIntByteArray())
@@ -53,17 +54,6 @@ data class PlayerPublicKey(val data: Data) {
             buf.writeInstant(expiryTime)
             buf.writeVarIntByteArray(key.encoded)
             buf.writeVarIntByteArray(signature)
-        }
-
-        override fun equals(other: Any?): Boolean =
-            this === other || other is Data && expiryTime == other.expiryTime && key == other.key && signature.contentEquals(other.signature)
-
-        override fun hashCode(): Int {
-            var result = 1
-            result = 31 * result + expiryTime.hashCode()
-            result = 31 * result + key.hashCode()
-            result = 31 * result + signature.contentHashCode()
-            return result
         }
     }
 

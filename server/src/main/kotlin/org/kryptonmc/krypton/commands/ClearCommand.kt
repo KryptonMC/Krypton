@@ -60,7 +60,7 @@ object ClearCommand {
         } else {
             targets.forEach { target ->
                 target.inventory.items.forEachIndexed { index, item ->
-                    if (predicate.test(item)) target.inventory.set(index, KryptonItemStack.EMPTY)
+                    if (predicate.test(item)) target.inventory.setItem(index, KryptonItemStack.EMPTY)
                 }
                 target.connection.send(PacketOutSetContainerContent(target.inventory, target.inventory.mainHand))
             }

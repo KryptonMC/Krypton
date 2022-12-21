@@ -34,7 +34,7 @@ interface Holder<T> {
 
     fun isBound(): Boolean
 
-    fun value(): T
+    fun value(): T & Any
 
     fun tags(): Stream<TagKey<T>>
 
@@ -65,7 +65,7 @@ interface Holder<T> {
 
         override fun isBound(): Boolean = true
 
-        override fun value(): T = value
+        override fun value(): T & Any = value
 
         override fun tags(): Stream<TagKey<T>> = Stream.empty()
 
@@ -101,7 +101,7 @@ interface Holder<T> {
 
         fun key(): ResourceKey<T> = checkNotNull(key) { "Trying to access unbound value $value from registry $registry!" }
 
-        override fun value(): T = checkNotNull(value) { "Trying to access unbound value $key from registry $registry!" }
+        override fun value(): T & Any = checkNotNull(value) { "Trying to access unbound value $key from registry $registry!" }
 
         override fun tags(): Stream<TagKey<T>> = tags.stream()
 

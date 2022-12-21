@@ -32,8 +32,7 @@ import java.util.stream.Stream
 
 interface BlockGetter : HeightAccessor, BlockContainer, FluidGetter, BlockEntityGetter {
 
-    val maximumLightLevel: Int
-        get() = 15
+    fun maximumLightLevel(): Int = 15
 
     override fun getBlock(x: Int, y: Int, z: Int): KryptonBlockState
 
@@ -62,10 +61,9 @@ interface BlockGetter : HeightAccessor, BlockContainer, FluidGetter, BlockEntity
 
     object Empty : BlockGetter {
 
-        override val height: Int
-            get() = 0
-        override val minimumBuildHeight: Int
-            get() = 0
+        override fun height(): Int = 0
+
+        override fun minimumBuildHeight(): Int = 0
 
         override fun getBlock(x: Int, y: Int, z: Int): KryptonBlockState = KryptonBlocks.AIR.defaultState
 

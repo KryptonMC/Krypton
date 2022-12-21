@@ -19,7 +19,6 @@
 package org.kryptonmc.krypton.world.chunk
 
 import ca.spottedleaf.dataconverter.minecraft.datatypes.MCTypeRegistry
-import it.unimi.dsi.fastutil.longs.Long2ObjectMap
 import org.apache.logging.log4j.LogManager
 import java.util.EnumSet
 import java.util.concurrent.CompletableFuture
@@ -56,7 +55,7 @@ import java.util.function.LongFunction
 @Suppress("StringLiteralDuplication") // TODO: Refactor the serialization out of this class and use constants to fix this issue
 class ChunkManager(private val world: KryptonWorld) : AutoCloseable {
 
-    val chunkMap: Long2ObjectMap<KryptonChunk> = Long2ObjectSyncMap.hashmap()
+    private val chunkMap = Long2ObjectSyncMap.hashmap<KryptonChunk>()
     private val playersByChunk = Long2ObjectSyncMap.hashmap<MutableSet<KryptonPlayer>>()
     private val executor = ThreadPoolBuilder.fixed(2)
         .factory(daemonThreadFactory("Chunk Loader #%d") { setUncaughtExceptionHandler(DefaultPoolUncaughtExceptionHandler(LOGGER)) })
@@ -64,9 +63,15 @@ class ChunkManager(private val world: KryptonWorld) : AutoCloseable {
     private val ticketManager = TicketManager(this)
     private val regionFileManager = RegionFileManager(world.folder.resolve("region"), world.server.config.advanced.synchronizeChunkWrites)
 
-    fun get(x: Int, z: Int): KryptonChunk? = chunkMap.get(ChunkPos.pack(x, z))
+    fun chunks(): Collection<KryptonChunk> = chunkMap.values
 
-    fun get(position: Long): KryptonChunk? = chunkMap.get(position)
+    fun getChunk(x: Int, z: Int): KryptonChunk? = chunkMap.get(ChunkPos.pack(x, z))
+
+    fun getChunk(position: Long): KryptonChunk? = chunkMap.get(position)
+
+    internal fun removeChunk(position: Long) {
+        chunkMap.remove(position)
+    }
 
     fun addStartTicket(centerX: Int, centerZ: Int, onLoad: () -> Unit) {
         ticketManager.addTicket(centerX, centerZ, TicketTypes.START, 22, Unit, onLoad)
@@ -96,9 +101,9 @@ class ChunkManager(private val world: KryptonWorld) : AutoCloseable {
         if (set != null && set.isEmpty()) playersByChunk.remove(pos)
     }
 
-    fun players(position: Long): Set<KryptonPlayer> = playersByChunk.getOrDefault(position, emptySet())
+    private fun getPlayersByChunk(position: Long): Set<KryptonPlayer> = playersByChunk.getOrDefault(position, emptySet())
 
-    fun load(x: Int, z: Int, ticket: Ticket<*>): KryptonChunk? {
+    fun loadChunk(x: Int, z: Int, ticket: Ticket<*>): KryptonChunk? {
         val pos = ChunkPos.pack(x, z)
         if (chunkMap.containsKey(pos)) return chunkMap.get(pos)!!
 
@@ -116,7 +121,7 @@ class ChunkManager(private val world: KryptonWorld) : AutoCloseable {
         val heightmaps = data.getCompound("Heightmaps")
 
         val sectionList = data.getList("sections", CompoundTag.ID)
-        val sections = arrayOfNulls<ChunkSection>(world.sectionCount)
+        val sections = arrayOfNulls<ChunkSection>(world.sectionCount())
         for (i in 0 until sectionList.size()) {
             val sectionData = sectionList.getCompound(i)
             val y = sectionData.getByte("Y").toInt()
@@ -155,36 +160,36 @@ class ChunkManager(private val world: KryptonWorld) : AutoCloseable {
             if (heightmaps.contains(it.name, LongArrayTag.ID)) chunk.setHeightmap(it, heightmaps.getLongArray(it.name)) else noneOf.add(it)
         }
         Heightmap.prime(chunk, noneOf)
-        world.entityManager.load(chunk)
+        world.entityManager.loadAllInChunk(chunk)
         return chunk
     }
 
-    fun unload(x: Int, z: Int, requiredType: TicketType<*>, force: Boolean) {
-        val loaded = get(x, z) ?: return
+    fun unloadChunk(x: Int, z: Int, requiredType: TicketType<*>, force: Boolean) {
+        val loaded = getChunk(x, z) ?: return
         if (!force && loaded.ticket.type !== requiredType) return
-        save(loaded)
+        saveChunk(loaded)
         chunkMap.remove(loaded.position.pack())
     }
 
-    fun saveAll(flush: Boolean) {
-        chunkMap.values.forEach(::save)
+    fun saveAllChunks(flush: Boolean) {
+        chunkMap.values.forEach(::saveChunk)
         if (flush) regionFileManager.flush()
     }
 
-    fun save(chunk: KryptonChunk) {
+    private fun saveChunk(chunk: KryptonChunk) {
         val lastUpdate = world.time
         chunk.lastUpdate = lastUpdate
         regionFileManager.write(chunk.x, chunk.z, serialize(chunk))
-        world.entityManager.save(chunk)
+        world.entityManager.saveAllInChunk(chunk)
     }
 
     @Suppress("UnusedPrivateMember")
     fun tick(hasTimeLeft: BooleanSupplier) {
-        chunkMap.values.forEach { it.tick(players(it.position.pack()).size) }
+        chunkMap.values.forEach { it.tick(getPlayersByChunk(it.position.pack()).size) }
     }
 
     override fun close() {
-        saveAll(true)
+        saveAllChunks(true)
         regionFileManager.close()
     }
 
@@ -216,11 +221,11 @@ class ChunkManager(private val world: KryptonWorld) : AutoCloseable {
             }
 
             val sectionList = ImmutableListTag.builder(CompoundTag.ID)
-            for (i in chunk.minimumLightSection until chunk.maximumLightSection) {
+            for (i in chunk.minimumLightSection() until chunk.maximumLightSection()) {
                 val sectionIndex = chunk.world.getSectionIndexFromSectionY(i)
                 // TODO: Handle light sections below and above the world
-                if (sectionIndex >= 0 && sectionIndex < chunk.sections.size) {
-                    val section = chunk.sections[sectionIndex]
+                if (sectionIndex >= 0 && sectionIndex < chunk.sections().size) {
+                    val section = chunk.sections()[sectionIndex]
                     val sectionData = compound {
                         putByte("Y", i.toByte())
                         // FIXME: Fix this in next update
@@ -235,7 +240,7 @@ class ChunkManager(private val world: KryptonWorld) : AutoCloseable {
             data.put("sections", sectionList.build())
 
             val heightmapData = ImmutableCompoundTag.builder()
-            chunk.heightmaps.forEach { if (it.key in Heightmap.Type.POST_FEATURES) heightmapData.putLongArray(it.key.name, it.value.rawData) }
+            chunk.heightmaps.forEach { if (it.key in Heightmap.Type.POST_FEATURES) heightmapData.putLongArray(it.key.name, it.value.rawData()) }
             data.put("Heightmaps", heightmapData.build())
             return data.build()
         }

@@ -50,9 +50,7 @@ object KryptonAdventure {
         .build()
     // We need to do this because the only other solution, which is to use the NAMES index, doesn't have the guaranteed ordering
     // that we require to map the IDs properly. This internal list has the ordering we need.
-    private val NAMED_TEXT_COLORS = requireNotNull(Reflection.accessField<NamedTextColor, List<NamedTextColor>>("VALUES")) {
-        "Could not access NamedTextColor internal VALUES list! Did internals change on update?"
-    }
+    private val NAMED_TEXT_COLORS = Reflection.accessField<NamedTextColor, List<NamedTextColor>>("VALUES")
     private val NAMED_TEXT_COLOR_ID_MAP = Object2IntArrayMap<NamedTextColor>(NAMED_TEXT_COLORS.size).apply {
         for (i in NAMED_TEXT_COLORS.indices) {
             put(NAMED_TEXT_COLORS.get(i), i)

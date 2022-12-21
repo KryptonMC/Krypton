@@ -34,28 +34,16 @@ object PacketFraming {
     @JvmStatic
     fun frame(packet: Packet): ByteBuf {
         val buffer = Unpooled.directBuffer()
-        writeFramedPacket(buffer, packet, compressionThreshold)
+        writeFramedPacket(buffer, packet)
         return buffer
     }
 
     @JvmStatic
-    fun writeFramedPacket(buf: ByteBuf, packet: Packet, compressionThreshold: Int) {
+    fun writeFramedPacket(buf: ByteBuf, packet: Packet) {
         val packetLengthIndex = buf.write3EmptyBytes()
         val startIndex = buf.writerIndex()
         if (compressionThreshold > 0) {
-            val dataLengthIndex = buf.write3EmptyBytes()
-            val contentIndex = buf.writerIndex()
-            writePacket(buf, packet)
-            val packetSize = buf.writerIndex() - contentIndex
-
-            val uncompressedLength = if (packetSize >= compressionThreshold) packetSize else 0
-            buf.write3ByteVarInt(dataLengthIndex, uncompressedLength)
-            if (uncompressedLength > 0) {
-                val uncompressedCopy = buf.copy(contentIndex, packetSize)
-                buf.writerIndex(contentIndex)
-                COMPRESSOR.get().deflate(uncompressedCopy, buf)
-                uncompressedCopy.release()
-            }
+            writeCompressed(buf, packet)
         } else {
             writePacket(buf, packet)
         }
@@ -64,8 +52,25 @@ object PacketFraming {
     }
 
     @JvmStatic
+    private fun writeCompressed(buf: ByteBuf, packet: Packet) {
+        val dataLengthIndex = buf.write3EmptyBytes()
+        val contentIndex = buf.writerIndex()
+        writePacket(buf, packet)
+        val packetSize = buf.writerIndex() - contentIndex
+
+        val uncompressedLength = if (packetSize >= compressionThreshold) packetSize else 0
+        buf.write3ByteVarInt(dataLengthIndex, uncompressedLength)
+        if (uncompressedLength > 0) {
+            val uncompressedCopy = buf.copy(contentIndex, packetSize)
+            buf.writerIndex(contentIndex)
+            COMPRESSOR.get().deflate(uncompressedCopy, buf)
+            uncompressedCopy.release()
+        }
+    }
+
+    @JvmStatic
     private fun writePacket(buf: ByteBuf, packet: Packet) {
-        buf.writeVarInt(PacketRegistry.lookup(packet.javaClass))
+        buf.writeVarInt(PacketRegistry.getOutboundPacketId(packet.javaClass))
         packet.write(buf)
     }
 

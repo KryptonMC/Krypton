@@ -35,20 +35,19 @@ open class UseOnContext protected constructor(
     protected val hitResult: BlockHitResult
 ) {
 
-    open val clickedPosition: BlockPos
-        get() = hitResult.position
-    val clickedFace: Direction
-        get() = hitResult.direction
-    val clickLocation: Vec3d
-        get() = hitResult.location
-    val isInside: Boolean
-        get() = hitResult.isInside
-    open val horizontalDirection: Direction
-        get() = player?.facing ?: Direction.NORTH
-    open val isSneaking: Boolean
-        get() = player != null && player.isSneaking
-    open val rotation: Float
-        get() = player?.pitch ?: 0F
-
     constructor(player: KryptonPlayer, hand: Hand, hitResult: BlockHitResult) : this(player.world, player, hand, player.getHeldItem(hand), hitResult)
+
+    open fun clickedPosition(): BlockPos = hitResult.position
+
+    fun clickedFace(): Direction = hitResult.direction
+
+    fun clickLocation(): Vec3d = hitResult.location
+
+    fun isInside(): Boolean = hitResult.isInside
+
+    open fun horizontalDirection(): Direction = player?.facing ?: Direction.NORTH
+
+    open fun isSneaking(): Boolean = player != null && player.isSneaking
+
+    open fun rotation(): Float = player?.pitch ?: 0F
 }

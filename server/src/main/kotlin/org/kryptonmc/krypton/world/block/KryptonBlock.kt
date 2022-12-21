@@ -72,7 +72,7 @@ open class KryptonBlock(properties: Properties) : BlockBehaviour(properties), St
     init {
         val builder = StateDefinition.Builder<KryptonBlock, KryptonBlockState>(this)
         createStateDefinition(builder)
-        stateDefinition = builder.build({ it.defaultBlockState }, { owner, values, codec -> KryptonBlockState(owner, values, codec) })
+        stateDefinition = builder.build({ it.defaultBlockState }, ::KryptonBlockState)
         defaultBlockState = stateDefinition.any()
     }
 
@@ -134,7 +134,7 @@ open class KryptonBlock(properties: Properties) : BlockBehaviour(properties), St
 
     fun withPropertiesOf(state: KryptonBlockState): KryptonBlockState {
         var result = defaultBlockState
-        state.block.stateDefinition.properties.forEach { if (result.hasProperty(it)) result = copyProperty(state, result, it) }
+        state.block.stateDefinition.properties().forEach { if (result.hasProperty(it)) result = copyProperty(state, result, it) }
         return result
     }
 

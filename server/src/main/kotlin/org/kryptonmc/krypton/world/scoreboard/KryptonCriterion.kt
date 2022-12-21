@@ -25,4 +25,7 @@ open class KryptonCriterion(
     override val name: String,
     override val isMutable: Boolean,
     override val renderType: ObjectiveRenderType
-) : Criterion
+) : Criterion {
+
+    constructor(name: String) : this(name, false, ObjectiveRenderType.INTEGER)
+}

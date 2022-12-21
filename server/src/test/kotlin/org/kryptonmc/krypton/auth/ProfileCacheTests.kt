@@ -38,7 +38,7 @@ class ProfileCacheTests {
 
     @Test
     fun `test retrieval of profiles`() {
-        val cache = KryptonProfileCache(EMPTY_PATH).apply { add(PROFILE) }
+        val cache = KryptonProfileCache(EMPTY_PATH).apply { addProfile(PROFILE) }
         assertEquals(PROFILE, cache.getProfile(ID))
         assertNull(cache.getProfile(UUID.fromString("aaaabbbb-cccc-dddd-eeee-ffffaaaabbbb")))
         assertEquals(PROFILE, cache.getProfile("Dave"))
@@ -47,7 +47,7 @@ class ProfileCacheTests {
 
     @Test
     fun `test profile collections`() {
-        val cache = KryptonProfileCache(EMPTY_PATH).apply { add(PROFILE) }
+        val cache = KryptonProfileCache(EMPTY_PATH).apply { addProfile(PROFILE) }
         val iterator = cache.iterator()
         assertTrue(iterator.hasNext())
         assertTrue(cache.profiles.isNotEmpty())
@@ -65,8 +65,8 @@ class ProfileCacheTests {
     @Test
     fun `test profile saving`() {
         val cache = createAndInit(OUTPUT_PATH)
-        cache.add(PROFILE)
-        cache.add(KryptonGameProfile.basic(UUID.randomUUID(), "Joe"))
+        cache.addProfile(PROFILE)
+        cache.addProfile(KryptonGameProfile.basic(UUID.randomUUID(), "Joe"))
         cache.save()
         assertTrue(OUTPUT_PATH.readText().isNotBlank())
     }
@@ -74,7 +74,7 @@ class ProfileCacheTests {
     @Test
     fun `ensure add marks dirty`() {
         val cache = spyk(KryptonProfileCache(NULL_PATH))
-        cache.add(KryptonGameProfile.basic(UUID.randomUUID(), "test"))
+        cache.addProfile(KryptonGameProfile.basic(UUID.randomUUID(), "test"))
         cache.saveIfNeeded()
         verify { cache.save() }
     }

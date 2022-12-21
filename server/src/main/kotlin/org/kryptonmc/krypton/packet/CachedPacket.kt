@@ -24,12 +24,13 @@ import java.lang.invoke.MethodHandles
 import java.lang.ref.SoftReference
 import java.util.function.Supplier
 
-@Suppress("UNCHECKED_CAST", "unused")
 class CachedPacket(private val supplier: Supplier<Packet>) : GenericPacket {
 
+    @Suppress("unused") // Used through var handle
     private var packet: SoftReference<FramedPacket>? = null
 
     fun get(): GenericPacket {
+        @Suppress("UNCHECKED_CAST")
         val ref = PACKET.getAcquire(this) as? SoftReference<FramedPacket> ?: return supplier.get()
         return ref.get() ?: supplier.get()
     }
@@ -44,6 +45,7 @@ class CachedPacket(private val supplier: Supplier<Packet>) : GenericPacket {
     }
 
     private fun updatedCache(): FramedPacket? {
+        @Suppress("UNCHECKED_CAST")
         val ref = PACKET.getAcquire(this) as? SoftReference<FramedPacket>
         var cached: FramedPacket? = null
         if (ref?.get() == null) {

@@ -24,13 +24,13 @@ import org.kryptonmc.krypton.entity.system.EntityWaterPhysicsSystem
 interface WaterPushable : Entity {
 
     val waterPhysicsSystem: EntityWaterPhysicsSystem
-    val isPushedByFluid: Boolean
-        get() = true
 
     override val isInWater: Boolean
-        get() = waterPhysicsSystem.isInWater
+        get() = waterPhysicsSystem.isInWater()
     override val isInLava: Boolean
-        get() = waterPhysicsSystem.isInLava
+        get() = waterPhysicsSystem.isInLava()
     override val isUnderwater: Boolean
-        get() = waterPhysicsSystem.isUnderwater
+        get() = waterPhysicsSystem.isUnderwater()
+
+    fun isPushedByFluid(): Boolean = true
 }

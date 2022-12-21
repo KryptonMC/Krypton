@@ -45,8 +45,6 @@ class KryptonBannerMeta(data: CompoundTag) : AbstractItemMeta<KryptonBannerMeta>
 
     override fun toBuilder(): BannerMeta.Builder = Builder()
 
-    override fun toString(): String = "KryptonBannerMeta(${partialToString()}, patterns=$patterns)"
-
     class Builder : KryptonItemMetaBuilder<BannerMeta.Builder, BannerMeta>, BannerMeta.Builder {
 
         private var patterns: MutableCollection<BannerPattern>

@@ -36,6 +36,7 @@ open class EnumProperty<E : Enum<E>>(name: String, type: Class<E>, values: Colle
             require(!names.containsKey(constantName)) { "Multiple values have the same name $constantName!" }
             names.put(constantName, value)
         }
+
         var id = 0
         idLookupTable = IntArray(type.enumConstants.size)
         Arrays.fill(idLookupTable, -1)

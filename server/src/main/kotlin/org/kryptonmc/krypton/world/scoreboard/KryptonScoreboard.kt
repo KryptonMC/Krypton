@@ -138,7 +138,7 @@ class KryptonScoreboard(private val server: KryptonServer) : Scoreboard {
     }
 
     fun onEntityRemoved(entity: KryptonEntity?) {
-        if (entity == null || entity is KryptonPlayer || entity.isAlive) return
+        if (entity == null || entity is KryptonPlayer || entity.isAlive()) return
         resetScore(entity.teamRepresentation, null)
         removeMemberFromTeam(entity.teamRepresentation)
     }
@@ -205,7 +205,7 @@ class KryptonScoreboard(private val server: KryptonServer) : Scoreboard {
         setDisplayObjective(slot, objective)
     }
 
-    fun setDisplayObjective(slot: DisplaySlot, objective: Objective?) {
+    private fun setDisplayObjective(slot: DisplaySlot, objective: Objective?) {
         val existing = displayObjectives.get(slot)
         if (objective != null) displayObjectives.put(slot, objective) else displayObjectives.remove(slot)
         if (existing !== objective && existing != null) {

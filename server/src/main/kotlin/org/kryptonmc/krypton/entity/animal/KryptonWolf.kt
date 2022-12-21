@@ -71,9 +71,6 @@ class KryptonWolf(world: KryptonWorld) : KryptonTamable(world), Wolf, Neutral {
             getAttribute(KryptonAttributeTypes.ATTACK_DAMAGE)?.baseValue = TAME_UPDATE_ATTACK_DAMAGE
         }
 
-    override val soundVolume: Float
-        get() = 0.4F
-
     init {
         isTamed = false
     }
@@ -100,6 +97,8 @@ class KryptonWolf(world: KryptonWorld) : KryptonTamable(world), Wolf, Neutral {
         if (target.isSitting) return false
         return isInLove && target.isInLove
     }
+
+    override fun soundVolume(): Float = 0.4F
 
     companion object {
 

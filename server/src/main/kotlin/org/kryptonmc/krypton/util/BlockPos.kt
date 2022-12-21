@@ -155,7 +155,7 @@ open class BlockPos(x: Int, y: Int, z: Int) : Vec3i {
 
     final override fun hashCode(): Int = (y + z * 31) * 31 + x
 
-    final override fun toString(): String = "${javaClass.simpleName}(x=$x, y=$y, z=$z)"
+    final override fun toString(): String = "BlockPos(x=$x, y=$y, z=$z)"
 
     fun toShortString(): String = "$x, $y, $z"
 

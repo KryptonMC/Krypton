@@ -62,8 +62,7 @@ abstract class JsonResourceReloadListener(private val gson: Gson, private val di
         private const val PATH_SUFFIX_LENGTH = PATH_SUFFIX.length
 
         @JvmStatic
-        @Suppress("NOTHING_TO_INLINE")
-        private inline fun logReadError(location: Key, key: Key, exception: Exception) {
+        private fun logReadError(location: Key, key: Key, exception: Exception) {
             LOGGER.error("Failed to parse data file $location from $key!", exception)
         }
     }

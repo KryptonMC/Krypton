@@ -23,14 +23,9 @@ import java.util.concurrent.CompletableFuture
 import java.util.concurrent.Executor
 import java.util.concurrent.atomic.AtomicInteger
 
-class SimpleReloadInstance<S>(
-    backgroundExecutor: Executor,
-    mainExecutor: Executor,
-    resourceManager: ResourceManager,
-    preparingListeners: List<ReloadListener>,
-    stateFactory: StateFactory<S>,
-    waitingFor: CompletableFuture<Unit>
-) : ReloadInstance {
+class SimpleReloadInstance<S>(backgroundExecutor: Executor, mainExecutor: Executor, resourceManager: ResourceManager,
+                              preparingListeners: List<ReloadListener>, stateFactory: StateFactory<S>,
+                              waitingFor: CompletableFuture<Unit>) : ReloadInstance {
 
     private val allPreparations = CompletableFuture<Unit>()
     private var allDone: CompletableFuture<List<S>>

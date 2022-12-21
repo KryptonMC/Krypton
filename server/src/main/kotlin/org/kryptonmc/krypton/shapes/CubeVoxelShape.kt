@@ -24,7 +24,7 @@ import org.kryptonmc.krypton.util.Maths
 
 class CubeVoxelShape(shape: DiscreteVoxelShape) : VoxelShape(shape) {
 
-    override fun coordinates(axis: Direction.Axis): DoubleList = CubePointRange(shape.size(axis))
+    override fun getCoordinates(axis: Direction.Axis): DoubleList = CubePointRange(shape.size(axis))
 
     override fun findIndex(axis: Direction.Axis, position: Double): Int {
         val size = shape.size(axis).toDouble()

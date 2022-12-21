@@ -45,8 +45,10 @@ abstract class PersistentManager(private val path: Path) {
     protected abstract fun loadData(reader: JsonReader)
 
     fun saveIfNeeded() {
-        if (dirty) save()
-        dirty = false
+        if (dirty) {
+            save()
+            dirty = false
+        }
     }
 
     fun save() {

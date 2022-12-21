@@ -30,8 +30,18 @@ import kotlin.math.max
 class BlockPattern(private val pattern: Array<Array<Array<Predicate<BlockInWorld?>>>>) {
 
     val depth: Int = pattern.size
-    val height: Int = if (depth > 0) pattern[0].size else 0
-    val width: Int = if (depth > 0 && height > 0) pattern[0][0].size else 0
+    val height: Int
+    val width: Int
+
+    init {
+        if (depth > 0) {
+            height = pattern[0].size
+            width = if (height > 0) pattern[0][0].size else 0
+        } else {
+            height = 0
+            width = 0
+        }
+    }
 
     fun find(world: WorldAccessor, position: BlockPos): BlockPatternMatch? {
         val cache = createCache(world, false)

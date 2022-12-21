@@ -21,11 +21,5 @@ package org.kryptonmc.krypton.util.executor
 import com.google.common.util.concurrent.ThreadFactoryBuilder
 import java.util.concurrent.ThreadFactory
 
-@DslMarker
-private annotation class ThreadFactoryDsl
-
-@ThreadFactoryDsl
-inline fun daemonThreadFactory(
-    nameFormat: String,
-    builder: ThreadFactoryBuilder.() -> Unit = {}
-): ThreadFactory = ThreadFactoryBuilder().setNameFormat(nameFormat).setDaemon(true).apply(builder).build()
+inline fun daemonThreadFactory(nameFormat: String, builder: ThreadFactoryBuilder.() -> Unit = {}): ThreadFactory =
+    ThreadFactoryBuilder().setNameFormat(nameFormat).setDaemon(true).apply(builder).build()

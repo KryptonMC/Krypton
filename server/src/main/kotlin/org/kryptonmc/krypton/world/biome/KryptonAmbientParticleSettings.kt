@@ -70,7 +70,7 @@ data class KryptonAmbientParticleSettings(
             instance.group(
                 Codecs.PARTICLE.fieldOf("particle").getting { it.type },
                 Codec.FLOAT.fieldOf("probability").getting { it.probability }
-            ).apply(instance) { particle, probability -> KryptonAmbientParticleSettings(particle, probability) }
+            ).apply(instance, ::KryptonAmbientParticleSettings)
         }
     }
 }

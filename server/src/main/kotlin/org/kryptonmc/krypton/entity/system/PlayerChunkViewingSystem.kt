@@ -96,7 +96,7 @@ class PlayerChunkViewingSystem(private val player: KryptonPlayer) {
         player.world.chunkManager.addPlayer(player, centralX, centralZ, oldX, oldZ, radius).thenRun {
             player.connection.send(PacketOutSetCenterChunk(centralX, centralZ))
             newChunks.forEach {
-                val chunk = player.world.chunkManager.get(it) ?: return@forEach
+                val chunk = player.world.chunkManager.getChunk(it) ?: return@forEach
                 player.connection.write(chunk.cachedPacket)
             }
 

@@ -70,12 +70,12 @@ class PaletteHolder<T> : PaletteResizer<T> {
         return data.palette.get(newId)
     }
 
-    operator fun get(x: Int, y: Int, z: Int): T = data.palette.get(data.storage.get(strategy.indexOf(x, y, z)))
+    fun get(x: Int, y: Int, z: Int): T = data.palette.get(data.storage.get(strategy.indexOf(x, y, z)))
 
-    operator fun get(index: Int): T = data.palette.get(data.storage.get(index))
+    fun get(index: Int): T = data.palette.get(data.storage.get(index))
 
     @Synchronized
-    operator fun set(x: Int, y: Int, z: Int, value: T) {
+    fun set(x: Int, y: Int, z: Int, value: T) {
         data.storage.set(strategy.indexOf(x, y, z), data.palette.get(value))
     }
 

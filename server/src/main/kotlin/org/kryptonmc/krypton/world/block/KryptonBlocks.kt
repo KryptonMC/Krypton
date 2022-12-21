@@ -39,6 +39,10 @@ import org.kryptonmc.krypton.world.material.Materials
 import java.util.function.Function
 import java.util.function.ToIntFunction
 
+/*
+ * The formatting for this class is very weird, but it's this way to reduce the amount of lines,
+ * so analysis of it will finish this side of christmas.
+ */
 // TODO: Add the rest of these when we add the block implementations
 @Suppress("CascadingCallWrapping")
 @Catalogue(KryptonBlock::class)

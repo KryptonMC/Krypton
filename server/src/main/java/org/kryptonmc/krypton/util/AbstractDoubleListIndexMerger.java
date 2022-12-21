@@ -16,17 +16,20 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.util
+package org.kryptonmc.krypton.util;
 
-import java.util.Optional
+import it.unimi.dsi.fastutil.doubles.AbstractDoubleList;
+import org.kryptonmc.krypton.shapes.IndexMerger;
 
-object OptionalBoolean {
+/*
+ * This hacky class allows us to keep size being a method on IndexMerger and avoids us running in to conflicts when implementing
+ * NonOverlappingMerger.
+ *
+ * The problem is that Kotlin makes fake overrides of java's collection methods, specifically the size method becomes a size property,
+ * which conflicts with our size method on IndexMerger.
+ */
+public abstract class AbstractDoubleListIndexMerger extends AbstractDoubleList implements IndexMerger {
 
-    @JvmField
-    val TRUE: Optional<Boolean> = Optional.of(true)
-    @JvmField
-    val FALSE: Optional<Boolean> = Optional.of(false)
-
-    @JvmStatic
-    fun of(value: Boolean): Optional<Boolean> = if (value) TRUE else FALSE
+    @Override
+    public abstract int size();
 }

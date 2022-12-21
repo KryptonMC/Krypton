@@ -53,14 +53,15 @@ class KryptonWorldManager(override val server: KryptonServer, private val worldF
         .keepAlive(Duration.ofSeconds(60))
         .factory(daemonThreadFactory("World Handler #%d") { setUncaughtExceptionHandler(DefaultPoolUncaughtExceptionHandler(LOGGER)) })
         .build()
-    val statsFolder: Path = storageManager.resolve("stats")
-
-    private val name = server.config.world.name
-    private val data = checkNotNull(storageManager.load(server.config.world.name)) { "You must provide an existing world for Krypton!" }
+    private val data = checkNotNull(storageManager.load(name())) { "You must provide an existing world for Krypton!" }
 
     override val worlds: MutableMap<ResourceKey<World>, KryptonWorld> = ConcurrentHashMap()
     override val default: KryptonWorld
         get() = worlds.get(World.OVERWORLD) ?: error("The default world has not yet been loaded!")
+
+    private fun name(): String = server.config.world.name
+
+    fun statsFolder(): Path = storageManager.resolve("stats")
 
     fun init() {
         create()
@@ -79,7 +80,7 @@ class KryptonWorldManager(override val server: KryptonServer, private val worldF
             ?: return failFuture(IllegalStateException("No dimension type found for given key $key!"))
 
         LOGGER.info("Loading world ${key.asString()}...")
-        val folderName = key.storageFolder()
+        val folderName = getStorageFolder(key)
         val isSubWorld = folderName == "DIM-1" || folderName == "DIM1"
 
         return CompletableFuture.supplyAsync({
@@ -111,7 +112,7 @@ class KryptonWorldManager(override val server: KryptonServer, private val worldF
             world.save(flush, world.doNotSave && !forced)
             successful = true
         }
-        storageManager.save(name, data)
+        storageManager.save(name(), data)
         return successful
     }
 
@@ -137,12 +138,13 @@ class KryptonWorldManager(override val server: KryptonServer, private val worldF
 
         @JvmStatic
         private fun <T> failFuture(exception: Exception): CompletableFuture<T> = CompletableFuture.failedFuture(exception)
-    }
-}
 
-private fun Key.storageFolder(): String = when (this) {
-    World.OVERWORLD.location -> ""
-    World.NETHER.location -> "DIM-1"
-    World.END.location -> "DIM1"
-    else -> value()
+        @JvmStatic
+        private fun getStorageFolder(location: Key): String = when (location) {
+            World.OVERWORLD.location -> ""
+            World.NETHER.location -> "DIM-1"
+            World.END.location -> "DIM1"
+            else -> location.value()
+        }
+    }
 }

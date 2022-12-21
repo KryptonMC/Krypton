@@ -34,7 +34,7 @@ import java.util.function.Consumer
 
 object DebugStickHandler : ItemHandler {
 
-    private val TRANSLATION by lazy { ItemTypes.DEBUG_STICK.translationKey() }
+    private val translation by lazy { ItemTypes.DEBUG_STICK.translationKey() }
 
     override fun canAttackBlock(player: KryptonPlayer, world: KryptonWorld, block: KryptonBlockState, pos: BlockPos): Boolean {
         handleInteraction(player, world, block, pos, false, player.getHeldItem(Hand.MAIN)) { player.setHeldItem(Hand.MAIN, it) }
@@ -59,13 +59,13 @@ object DebugStickHandler : ItemHandler {
     @JvmStatic
     private fun handleInteraction(player: KryptonPlayer, world: KryptonWorld, state: KryptonBlockState, pos: BlockPos, isUse: Boolean,
                                   item: KryptonItemStack, setter: Consumer<KryptonItemStack>): Boolean {
-        if (!player.canUseGameMasterBlocks) return false
+        if (!player.canUseGameMasterBlocks()) return false
         val block = state.block
         val definition = block.stateDefinition
-        val properties = definition.properties
+        val properties = definition.properties()
         val key = KryptonRegistries.BLOCK.getKey(block).asString()
         if (properties.isEmpty()) {
-            player.sendActionBar(Component.translatable("$TRANSLATION.empty", Component.text(key)))
+            player.sendActionBar(Component.translatable("$translation.empty", Component.text(key)))
             return false
         }
 
@@ -77,11 +77,11 @@ object DebugStickHandler : ItemHandler {
             if (property == null) property = properties.first()
             val cycled = cycleState(state, property, player.isSneaking)
             world.setBlock(pos, cycled, SetBlockFlag.UPDATE_NEIGHBOUR_SHAPES or SetBlockFlag.NOTIFY_CLIENTS)
-            player.sendActionBar(Component.translatable("$TRANSLATION.update", Component.text(property.name), toString(state, property)))
+            player.sendActionBar(Component.translatable("$translation.update", Component.text(property.name), toString(state, property)))
         } else {
             property = Iterables.findRelative(properties, property, player.isSneaking)!!
             debugProperty = debugProperty.putString(key, property.name)
-            player.sendActionBar(Component.translatable("$TRANSLATION.select", Component.text(property.name), toString(state, property)))
+            player.sendActionBar(Component.translatable("$translation.select", Component.text(property.name), toString(state, property)))
         }
         setter.accept(item.withMeta(item.meta.copy(item.meta.data.put("DebugProperty", debugProperty))))
         return true

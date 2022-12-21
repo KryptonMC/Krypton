@@ -46,9 +46,9 @@ class ChunkSection(
         recount()
     }
 
-    fun get(x: Int, y: Int, z: Int): KryptonBlockState = blocks.get(x, y, z)
+    fun getBlock(x: Int, y: Int, z: Int): KryptonBlockState = blocks.get(x, y, z)
 
-    fun set(x: Int, y: Int, z: Int, block: KryptonBlockState): KryptonBlockState {
+    fun setBlock(x: Int, y: Int, z: Int, block: KryptonBlockState): KryptonBlockState {
         val oldBlock = blocks.getAndSet(x, y, z, block)
         if (!oldBlock.isAir) nonEmptyBlockCount--
         if (!block.isAir) nonEmptyBlockCount++

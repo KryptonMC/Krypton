@@ -49,13 +49,13 @@ object ApiService {
      * Requests the profile with the given [name] from the Mojang API.
      */
     @JvmStatic
-    fun getProfile(name: String): CompletableFuture<GameProfile?> = usernameCache.get(name)
+    fun lookupProfileByName(name: String): CompletableFuture<GameProfile?> = usernameCache.get(name)
 
     /**
      * Requests the profile with the given [uuid] from the Mojang API.
      */
     @JvmStatic
-    fun getProfile(uuid: UUID): CompletableFuture<GameProfile?> = uuidCache.get(uuid)
+    fun lookupProfileById(uuid: UUID): CompletableFuture<GameProfile?> = uuidCache.get(uuid)
 
     @JvmStatic
     private fun loadProfile(url: String, executor: Executor): CompletableFuture<GameProfile?> =

@@ -34,7 +34,7 @@ interface ChunkGetter : HeightAccessor {
     fun hasChunksAt(from: BlockPos, to: BlockPos): Boolean = hasChunksAt(from.x, from.y, from.z, to.x, to.y, to.z)
 
     fun hasChunksAt(x1: Int, y1: Int, z1: Int, x2: Int, y2: Int, z2: Int): Boolean =
-        if (y2 >= minimumBuildHeight && y1 < maximumBuildHeight) hasChunksAt(x1, z1, x2, z2) else false
+        if (y2 >= minimumBuildHeight() && y1 < maximumBuildHeight()) hasChunksAt(x1, z1, x2, z2) else false
 
     fun hasChunksAt(x1: Int, z1: Int, x2: Int, z2: Int): Boolean {
         val fromX = SectionPos.blockToSection(x1)

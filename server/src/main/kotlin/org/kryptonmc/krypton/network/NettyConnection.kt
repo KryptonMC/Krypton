@@ -150,8 +150,6 @@ class NettyConnection(private val server: KryptonServer) : SimpleChannelInboundH
         channel().config().isAutoRead = false
     }
 
-    private fun compressionThreshold(): Int = if (compressionEnabled) server.config.server.compressionThreshold else -1
-
     override fun send(packet: Packet) {
         write(packet)
     }
@@ -165,7 +163,7 @@ class NettyConnection(private val server: KryptonServer) : SimpleChannelInboundH
             is Packet -> {
                 synchronized(tickBufferLock) {
                     if (tickBuffer.refCnt() <= 0) return
-                    PacketFraming.writeFramedPacket(tickBuffer, packet, compressionThreshold())
+                    PacketFraming.writeFramedPacket(tickBuffer, packet)
                 }
             }
             is FramedPacket -> {

@@ -44,11 +44,11 @@ class KryptonConsole(override val server: KryptonServer) : SimpleTerminalConsole
     private var permissionFunction = DEFAULT_PERMISSION_FUNCTION
     private var cachedPointers: Pointers? = null
 
-    override val name: Component = DISPLAY_NAME
+    override val name: Component
+        get() = DISPLAY_NAME
 
     fun setupPermissions() {
-        val event = KryptonSetupPermissionsEvent(this) { DEFAULT_PERMISSION_FUNCTION }
-        permissionFunction = server.eventManager.fireSync(event).createFunction(this)
+        permissionFunction = server.eventManager.fireSync(KryptonSetupPermissionsEvent(this) { DEFAULT_PERMISSION_FUNCTION }).createFunction(this)
     }
 
     fun run() {
@@ -69,8 +69,7 @@ class KryptonConsole(override val server: KryptonServer) : SimpleTerminalConsole
 
     override fun runCommand(command: String) {
         server.eventManager.fire(KryptonCommandExecuteEvent(this, command)).thenAcceptAsync {
-            if (!it.result.isAllowed) return@thenAcceptAsync
-            server.commandManager.dispatch(createCommandSourceStack(), it.result.command ?: command)
+            if (it.result.isAllowed) server.commandManager.dispatch(createCommandSourceStack(), it.result.command ?: command)
         }
     }
 

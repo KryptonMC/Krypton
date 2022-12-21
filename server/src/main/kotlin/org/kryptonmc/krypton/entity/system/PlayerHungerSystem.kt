@@ -41,11 +41,6 @@ class PlayerHungerSystem(private val player: KryptonPlayer) {
     // 5 is the default vanilla food saturation level
     var saturationLevel: Float = 5F
 
-    // This avoids us calling the setter meant for the API
-    private var health: Float
-        get() = player.data.get(MetadataKeys.LivingEntity.HEALTH)
-        set(value) = player.data.set(MetadataKeys.LivingEntity.HEALTH, value)
-
     fun tick() {
         // TODO: More actions for exhaustion, add constants?
         if (player.gameMode != GameMode.SURVIVAL && player.gameMode != GameMode.ADVENTURE) return
@@ -94,12 +89,12 @@ class PlayerHungerSystem(private val player: KryptonPlayer) {
         @Suppress("MagicNumber") // The magic numbers here are all explained above
         when (player.world.difficulty) {
             Difficulty.EASY -> {
-                if (health > 10 && foodLevel == 0 && tickTimer == 80) { // starving
-                    health-- // deduct half a heart
+                if (getHealth() > 10 && foodLevel == 0 && tickTimer == 80) { // starving
+                    setHealth(getHealth() - 1) // deduct half a heart
                 }
             }
-            Difficulty.NORMAL -> if (health > 1 && foodLevel == 0 && tickTimer == 80) health--
-            Difficulty.HARD -> if (foodLevel == 0 && tickTimer == 80) health--
+            Difficulty.NORMAL -> if (getHealth() > 1 && foodLevel == 0 && tickTimer == 80) setHealth(getHealth() - 1)
+            Difficulty.HARD -> if (foodLevel == 0 && tickTimer == 80) setHealth(getHealth() - 1)
             Difficulty.PEACEFUL -> {
                 if (foodLevel < 20 && tickTimer % 20 == 0) {
                     foodLevel++ // increase player food level
@@ -118,9 +113,9 @@ class PlayerHungerSystem(private val player: KryptonPlayer) {
         if (tickTimer == 80) {
             if (foodLevel >= 18) {
                 // Avoid exceeding max health
-                if (player.maxHealth >= health + 1) {
+                if (player.maxHealth >= getHealth() + 1) {
                     // Regenerate health
-                    health++
+                    setHealth(getHealth() + 1)
                     // Once a half-heart has been added, increase the exhaustion by 3,
                     // or if that operation were to exceed the threshold, instead, set it to the
                     // threshold value of 4.
@@ -131,11 +126,17 @@ class PlayerHungerSystem(private val player: KryptonPlayer) {
                     // reaches zero.
                     saturationLevel -= 3
                 } else {
-                    health = player.maxHealth
+                    setHealth(player.maxHealth)
                 }
             }
             tickTimer = 0 // reset tick timer
         }
+    }
+
+    private fun getHealth(): Float = player.data.get(MetadataKeys.LivingEntity.HEALTH)
+
+    private fun setHealth(health: Float) {
+        player.data.set(MetadataKeys.LivingEntity.HEALTH, health)
     }
 
     fun load(data: CompoundTag) {

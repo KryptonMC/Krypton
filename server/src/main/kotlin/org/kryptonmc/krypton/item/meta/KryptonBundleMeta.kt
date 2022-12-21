@@ -43,8 +43,6 @@ class KryptonBundleMeta(data: CompoundTag) : AbstractItemMeta<KryptonBundleMeta>
 
     override fun toBuilder(): BundleMeta.Builder = Builder(this)
 
-    override fun toString(): String = "KryptonBundleMeta(${partialToString()}, items=$items)"
-
     class Builder : KryptonItemMetaBuilder<BundleMeta.Builder, BundleMeta>, BundleMeta.Builder {
 
         private var items: MutableCollection<ItemStack>

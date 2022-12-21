@@ -22,12 +22,13 @@ import net.kyori.adventure.key.Key
 import org.kryptonmc.api.world.rule.GameRule
 import org.kryptonmc.krypton.registry.KryptonRegistries
 
-@JvmRecord
-data class KryptonGameRule<V>(override val name: String, override val defaultValue: V) : GameRule<V> {
+class KryptonGameRule<V>(override val name: String, override val defaultValue: V) : GameRule<V> {
 
     override fun key(): Key = KryptonRegistries.GAME_RULES.getKey(this)!!
 
     override fun translationKey(): String = "gamerule.$name"
+
+    override fun toString(): String = "GameRule(name=$name, defaultValue=$defaultValue)"
 
     object Factory : GameRule.Factory {
 

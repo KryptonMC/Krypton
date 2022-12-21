@@ -72,12 +72,6 @@ class KryptonFox(world: KryptonWorld) : KryptonAnimal(world), Fox {
     override var secondTrusted: UUID?
         get() = data.get(MetadataKeys.Fox.SECOND_TRUSTED)
         set(value) = data.set(MetadataKeys.Fox.SECOND_TRUSTED, value)
-    override var target: KryptonLivingEntity?
-        get() = super.target
-        set(value) {
-            if (isDefending && value == null) isDefending = false
-            super.target = value
-        }
 
     override fun defineData() {
         super.defineData()
@@ -90,6 +84,11 @@ class KryptonFox(world: KryptonWorld) : KryptonAnimal(world), Fox {
     override fun trusts(uuid: UUID): Boolean = uuid == firstTrusted || uuid == secondTrusted
 
     override fun isFood(item: ItemStack): Boolean = item.type.downcast().eq(ItemTags.FOX_FOOD)
+
+    override fun setTarget(target: KryptonLivingEntity?) {
+        if (isDefending && target == null) isDefending = false
+        super.setTarget(target)
+    }
 
     companion object {
 

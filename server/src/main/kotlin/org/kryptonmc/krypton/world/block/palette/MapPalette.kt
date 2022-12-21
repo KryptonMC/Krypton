@@ -41,11 +41,8 @@ data class MapPalette<T>(
         entries.forEach(values::add)
     }
 
-    constructor(
-        registry: IntBiMap<T>,
-        bits: Int,
-        resizer: PaletteResizer<T>
-    ) : this(registry, bits, resizer, IntIdentityHashBiMap.create(1 shl bits))
+    constructor(registry: IntBiMap<T>, bits: Int,
+                resizer: PaletteResizer<T>) : this(registry, bits, resizer, IntIdentityHashBiMap.create(1 shl bits))
 
     override fun get(value: T): Int {
         var id = values.getId(value)

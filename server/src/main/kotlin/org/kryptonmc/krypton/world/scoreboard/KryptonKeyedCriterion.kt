@@ -30,4 +30,6 @@ class KryptonKeyedCriterion(
 ) : KryptonCriterion(name, isMutable, renderType), KeyedCriterion {
 
     override fun key(): Key = key
+
+    override fun toString(): String = "KeyedCriterion(name=$name, isMutable=$isMutable, renderType=$renderType)"
 }

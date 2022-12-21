@@ -92,6 +92,7 @@ object KryptonFactoryProvider : FactoryProvider {
         factories.put(type, factory)
     }
 
+    @JvmStatic
     fun bootstrap() {
         register<AdventureMessage.Factory>(KryptonAdventureMessage.Factory)
         register<GameProfile.Factory>(KryptonGameProfile.Factory)

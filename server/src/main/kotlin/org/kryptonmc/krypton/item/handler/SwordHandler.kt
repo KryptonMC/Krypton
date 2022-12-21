@@ -50,5 +50,7 @@ object SwordHandler : ItemHandler {
     override fun isCorrectTool(block: KryptonBlockState): Boolean = block.eq(KryptonBlocks.COBWEB)
 
     override fun mineBlock(player: KryptonPlayer, item: KryptonItemStack, world: KryptonWorld, block: KryptonBlockState,
-                           pos: BlockPos): Boolean = true
+                           pos: BlockPos): Boolean {
+        return true
+    }
 }

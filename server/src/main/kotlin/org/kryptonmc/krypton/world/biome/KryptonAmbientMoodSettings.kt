@@ -78,7 +78,7 @@ data class KryptonAmbientMoodSettings(
                 Codec.INT.fieldOf("tick_delay").getting { it.tickDelay },
                 Codec.INT.fieldOf("block_search_extent").getting { it.blockSearchExtent },
                 Codec.DOUBLE.fieldOf("offset").getting { it.offset }
-            ).apply(instance) { sound, delay, searchExtent, offset -> KryptonAmbientMoodSettings(sound, delay, searchExtent, offset) }
+            ).apply(instance, ::KryptonAmbientMoodSettings)
         }
     }
 }

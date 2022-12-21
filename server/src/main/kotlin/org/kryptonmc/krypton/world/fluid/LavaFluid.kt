@@ -27,16 +27,16 @@ import org.kryptonmc.krypton.world.block.state.KryptonBlockState
 
 abstract class LavaFluid : FlowingFluid() {
 
-    override val flowing: KryptonFluid
-        get() = KryptonFluids.FLOWING_LAVA
-    override val source: KryptonFluid
-        get() = KryptonFluids.LAVA
     override val bucket: ItemType
         get() = ItemTypes.LAVA_BUCKET
     override val explosionResistance: Double
         get() = 100.0
 
-    override fun isSame(fluid: Fluid): Boolean = fluid === KryptonFluids.LAVA || fluid === KryptonFluids.FLOWING_LAVA
+    override fun flowing(): KryptonFluid = KryptonFluids.FLOWING_LAVA
+
+    override fun source(): KryptonFluid = KryptonFluids.LAVA
+
+    override fun isSame(fluid: Fluid): Boolean = fluid === source() || fluid === flowing()
 
     override fun asBlock(state: KryptonFluidState): KryptonBlockState = KryptonBlocks.LAVA.defaultState.setProperty(LEVEL, calculateBlockLevel(state))
 

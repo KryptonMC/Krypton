@@ -33,7 +33,6 @@ interface Neutral {
     var angerTarget: UUID?
     var lastHurtByMob: KryptonLivingEntity?
     var lastHurtByPlayer: KryptonPlayer?
-    var target: KryptonLivingEntity?
 
     val isAngry: Boolean
         get() = remainingAngerTime > 0
@@ -43,9 +42,11 @@ interface Neutral {
     fun stopBeingAngry() {
         lastHurtByMob = null
         angerTarget = null
-        target = null
+        setTarget(null)
         remainingAngerTime = 0
     }
+
+    fun setTarget(target: KryptonLivingEntity?)
 
     companion object {
 
@@ -61,7 +62,7 @@ interface Neutral {
             }
             val targetId = data.getUUID(ANGRY_AT_TAG)
             entity.angerTarget = targetId
-            val target = entity.world.entityManager.get(targetId)
+            val target = entity.world.entityManager.getByUUID(targetId)
             if (target != null) {
                 if (target is KryptonMob) entity.lastHurtByMob = target
                 if (target.type === EntityTypes.PLAYER) entity.lastHurtByPlayer = target as KryptonPlayer

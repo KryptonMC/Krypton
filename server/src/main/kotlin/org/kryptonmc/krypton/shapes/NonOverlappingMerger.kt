@@ -18,19 +18,19 @@
  */
 package org.kryptonmc.krypton.shapes
 
-import it.unimi.dsi.fastutil.doubles.AbstractDoubleList
 import it.unimi.dsi.fastutil.doubles.DoubleList
+import org.kryptonmc.krypton.util.AbstractDoubleListIndexMerger
 
 class NonOverlappingMerger(
     private val lower: DoubleList,
     private val upper: DoubleList,
     private val swap: Boolean
-) : AbstractDoubleList(), IndexMerger {
+) : AbstractDoubleListIndexMerger() {
 
-    override val list: DoubleList
-        get() = this
     override val size: Int
         get() = lower.size + upper.size
+
+    override fun asList(): DoubleList = this
 
     override fun forMergedIndices(consumer: IndexMerger.IndexConsumer): Boolean {
         if (swap) return forNonSwappedIndices { x, y, z -> consumer.merge(y, x, z) }

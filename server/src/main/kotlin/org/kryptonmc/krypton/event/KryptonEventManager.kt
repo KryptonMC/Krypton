@@ -74,7 +74,6 @@ class KryptonEventManager(private val pluginManager: PluginManager) : EventManag
         Coroutines.registerHandlerAdapter(this)
     }
 
-    @Suppress("UNCHECKED_CAST")
     fun <F : Any> registerHandlerAdapter(
         name: String,
         invokeFunctionType: TypeToken<F>,
@@ -82,6 +81,7 @@ class KryptonEventManager(private val pluginManager: PluginManager) : EventManag
         validator: BiConsumer<Method, MutableList<String>>,
         handlerBuilder: Function<F, BiFunction<Any, Any, EventTask>>
     ) {
+        @Suppress("UNCHECKED_CAST")
         val lambdaType = LambdaType.of(invokeFunctionType.rawType) as LambdaType<F>
         handlerAdapters.add(CustomHandlerAdapter(name, handlerBuilder, filter, validator, lambdaType, LOOKUP))
     }

@@ -52,7 +52,7 @@ class KryptonFishingHook(world: KryptonWorld) : KryptonProjectile(world), Fishin
     override fun onDataUpdate(key: MetadataKey<*>) {
         if (key === MetadataKeys.FishingHook.HOOKED) {
             val id = data.get(MetadataKeys.FishingHook.HOOKED)
-            hooked = if (id > 0) world.entityManager.get(id - 1) else null
+            hooked = if (id > 0) world.entityManager.getById(id - 1) else null
         }
 
         if (key === MetadataKeys.FishingHook.BITING) {

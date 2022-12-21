@@ -115,17 +115,9 @@ class KryptonEntityType<out T : KryptonEntity>(
 
         fun updateInterval(interval: Int): Builder<T> = apply { updateInterval = interval }
 
-        fun build(): KryptonEntityType<T> = KryptonEntityType(
-            category,
-            serializable,
-            summonable,
-            fireImmune,
-            canSpawnFarFromPlayer,
-            immuneTo,
-            width,
-            height,
-            clientTrackingRange,
-            updateInterval
-        )
+        fun build(): KryptonEntityType<T> {
+            return KryptonEntityType(category, serializable, summonable, fireImmune, canSpawnFarFromPlayer, immuneTo, width, height,
+                clientTrackingRange, updateInterval)
+        }
     }
 }

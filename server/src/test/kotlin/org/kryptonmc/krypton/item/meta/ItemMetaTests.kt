@@ -28,7 +28,6 @@ class ItemMetaTests {
     @Test
     fun `verify equals and hash code`() {
         EqualsVerifier.forClass(AbstractItemMeta::class.java)
-            .usingGetClass()
             .withOnlyTheseFields("data")
             .withPrefabValues(
                 CompoundTag::class.java,

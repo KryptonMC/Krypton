@@ -40,8 +40,6 @@ class StateDefinition<O, S : KryptonState<O, S>>(
 
     private val propertiesByName = ImmutableSortedMap.copyOf(propertiesByName)
     val states: ImmutableList<S>
-    val properties: Collection<KryptonProperty<*>>
-        get() = propertiesByName.values
 
     init {
         val defaultSupplier = Supplier { defaultGetter.apply(owner) }
@@ -68,11 +66,13 @@ class StateDefinition<O, S : KryptonState<O, S>>(
         states = ImmutableList.copyOf(stateList)
     }
 
+    fun properties(): Collection<KryptonProperty<*>> = propertiesByName.values
+
     fun any(): S = states.get(0)
 
     fun getProperty(name: String): KryptonProperty<*>? = propertiesByName.get(name)
 
-    override fun toString(): String = "${javaClass.simpleName}(block=$owner, properties=${propertiesByName.values.map { it.name }})"
+    override fun toString(): String = "StateDefinition(block=$owner, properties=${propertiesByName.values.map { it.name }})"
 
     fun interface Factory<O, S> {
 
@@ -111,12 +111,10 @@ class StateDefinition<O, S : KryptonState<O, S>>(
         private val NAME_REGEX = Regex("^[a-z0-9_]+$")
 
         @JvmStatic
-        private fun <S : KryptonState<*, S>, T : Comparable<T>> appendPropertyCodec(
-            codec: MapCodec<S>,
-            supplier: Supplier<S>,
-            key: String,
-            property: KryptonProperty<T>
-        ): MapCodec<S> = MapCodec.pair(codec, property.valueCodec.fieldOf(key).orElseGet { property.value(supplier.get()) })
-            .xmap({ it.first.setProperty(property, it.second.value) }, { Pair.of(it, property.value(it)) })
+        private fun <S : KryptonState<*, S>, T : Comparable<T>> appendPropertyCodec(codec: MapCodec<S>, supplier: Supplier<S>, key: String,
+                                                                                    property: KryptonProperty<T>): MapCodec<S> {
+            return MapCodec.pair(codec, property.valueCodec.fieldOf(key).orElseGet { property.value(supplier.get()) })
+                .xmap({ it.first.setProperty(property, it.second.value) }, { Pair.of(it, property.value(it)) })
+        }
     }
 }

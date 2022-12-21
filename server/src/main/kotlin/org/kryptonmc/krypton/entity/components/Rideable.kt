@@ -35,7 +35,7 @@ interface Rideable : BaseDataHolder {
     override val isVehicle: Boolean
         get() = vehicleSystem.isVehicle()
     override var vehicle: Entity?
-        get() = vehicleSystem.vehicle
+        get() = vehicleSystem.vehicle()
         set(value) = vehicleSystem.setVehicle(value)
 
     fun canAddPassenger(passenger: KryptonEntity): Boolean = vehicleSystem.passengers().isEmpty()
@@ -43,11 +43,11 @@ interface Rideable : BaseDataHolder {
     fun startRiding(vehicle: KryptonEntity): Boolean = startRiding(vehicle, false)
 
     fun startRiding(vehicle: KryptonEntity, force: Boolean): Boolean {
-        if (vehicle === vehicleSystem.vehicle) return false
+        if (vehicle === vehicleSystem.vehicle()) return false
         var rootVehicle = vehicle
-        while (rootVehicle.vehicleSystem.vehicle != null) {
-            if (rootVehicle.vehicleSystem.vehicle === this) return false
-            rootVehicle = rootVehicle.vehicleSystem.vehicle!!
+        while (rootVehicle.vehicleSystem.vehicle() != null) {
+            if (rootVehicle.vehicleSystem.vehicle() === this) return false
+            rootVehicle = rootVehicle.vehicleSystem.vehicle()!!
         }
         if (force || canRide(vehicle) && vehicle.canAddPassenger(this as KryptonEntity)) {
             if (vehicleSystem.isPassenger()) stopRiding()

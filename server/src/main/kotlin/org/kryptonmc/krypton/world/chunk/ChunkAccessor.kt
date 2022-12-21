@@ -40,32 +40,32 @@ abstract class ChunkAccessor(
 
     abstract val status: ChunkStatus
 
-    private val sectionArray = arrayOfNulls<ChunkSection>(heightAccessor.sectionCount)
+    private val sections = arrayOfNulls<ChunkSection>(heightAccessor.sectionCount())
     val heightmaps: MutableMap<Heightmap.Type, Heightmap> = EnumMap(Heightmap.Type::class.java)
-
-    val sections: Array<ChunkSection>
-        @Suppress("UNCHECKED_CAST") get() = sectionArray as Array<ChunkSection>
-    val highestSectionY: Int
-        get() = highestSection()?.bottomBlockY ?: minimumBuildHeight
-    override val height: Int
-        get() = heightAccessor.height
-    override val minimumBuildHeight: Int
-        get() = heightAccessor.minimumBuildHeight
 
     init {
         if (sections != null) {
-            if (this.sectionArray.size == sections.size) {
-                System.arraycopy(sections, 0, this.sectionArray, 0, this.sectionArray.size)
+            if (this.sections.size == sections.size) {
+                System.arraycopy(sections, 0, this.sections, 0, this.sections.size)
             } else {
-                LOGGER.warn("Failed to set chunk sections! Expected array size ${this.sectionArray.size} but got ${sections.size}!")
+                LOGGER.warn("Failed to set chunk sections! Expected array size ${this.sections.size} but got ${sections.size}!")
             }
         }
-        replaceMissingSections(heightAccessor, this.sectionArray)
+        replaceMissingSections(heightAccessor, this.sections)
     }
+
+    override fun height(): Int = heightAccessor.height()
+
+    override fun minimumBuildHeight(): Int = heightAccessor.minimumBuildHeight()
+
+    @Suppress("UNCHECKED_CAST")
+    fun sections(): Array<ChunkSection> = sections as Array<ChunkSection>
+
+    fun highestSectionY(): Int = highestSection()?.bottomBlockY ?: minimumBuildHeight()
 
     abstract fun setBlock(pos: BlockPos, state: KryptonBlockState, moving: Boolean): KryptonBlockState?
 
-    private fun section(index: Int): ChunkSection = sectionArray[index]!!
+    private fun getSection(index: Int): ChunkSection = sections[index]!!
 
     fun getOrCreateHeightmap(type: Heightmap.Type): Heightmap = heightmaps.computeIfAbsent(type) { Heightmap(this, it) }
 
@@ -83,16 +83,16 @@ abstract class ChunkAccessor(
     }
 
     override fun getNoiseBiome(x: Int, y: Int, z: Int): Biome {
-        val minimumQuart = Quart.fromBlock(minimumBuildHeight)
-        val maximumQuart = minimumQuart + Quart.fromBlock(height) - 1
+        val minimumQuart = Quart.fromBlock(minimumBuildHeight())
+        val maximumQuart = minimumQuart + Quart.fromBlock(height()) - 1
         val actualY = Maths.clamp(y, minimumQuart, maximumQuart)
         val sectionIndex = getSectionIndex(Quart.toBlock(actualY))
-        return section(sectionIndex).getNoiseBiome(x and 3, actualY and 3, z and 3)
+        return getSection(sectionIndex).getNoiseBiome(x and 3, actualY and 3, z and 3)
     }
 
     private fun highestSection(): ChunkSection? {
-        for (i in sectionArray.size - 1 downTo 0) {
-            val section = sectionArray[i]
+        for (i in sections.size - 1 downTo 0) {
+            val section = sections[i]
             if (!section!!.hasOnlyAir()) return section
         }
         return null

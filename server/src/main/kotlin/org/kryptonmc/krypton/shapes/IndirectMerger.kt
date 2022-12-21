@@ -30,12 +30,8 @@ class IndirectMerger : IndexMerger {
     private val secondIndices: IntArray
     private val resultLength: Int
 
-    override val list: DoubleList
-        get() = if (resultLength <= 1) EMPTY else DoubleArrayList.wrap(result, resultLength)
-    override val size: Int
-        get() = resultLength
-
     // We use a constructor because you can't return from init blocks
+    @Suppress("ConvertSecondaryConstructorToPrimary")
     constructor(lower: DoubleList, upper: DoubleList, includeFirstOnly: Boolean, includeSecondOnly: Boolean) {
         var value = Double.NaN
         val lowerSize = lower.size
@@ -83,6 +79,10 @@ class IndirectMerger : IndexMerger {
             }
         }
     }
+
+    override fun asList(): DoubleList = if (resultLength <= 1) EMPTY else DoubleArrayList.wrap(result, resultLength)
+
+    override fun size(): Int = resultLength
 
     override fun forMergedIndices(consumer: IndexMerger.IndexConsumer): Boolean {
         val maxIndex = resultLength - 1

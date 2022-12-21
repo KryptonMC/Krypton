@@ -58,16 +58,10 @@ class KryptonAxolotl(world: KryptonWorld) : KryptonAnimal(world), Axolotl, Bucke
         get() = data.get(MetadataKeys.Axolotl.FROM_BUCKET)
         set(value) = data.set(MetadataKeys.Axolotl.FROM_BUCKET, value)
 
-    override val bucketType: ItemType = ItemTypes.AXOLOTL_BUCKET
+    override val bucketType: ItemType
+        get() = ItemTypes.AXOLOTL_BUCKET
     override val bucketPickupSound: SoundEvent
         get() = SoundEvents.BUCKET_FILL_AXOLOTL
-
-    override val maxAirTicks: Int
-        get() = MAX_AIR_TICKS
-    override val isPushedByFluid: Boolean
-        get() = false
-    override val canBeSeenAsEnemy: Boolean
-        get() = !isPlayingDead && super.canBeSeenAsEnemy
 
     override fun defineData() {
         super.defineData()
@@ -105,6 +99,12 @@ class KryptonAxolotl(world: KryptonWorld) : KryptonAnimal(world), Axolotl, Bucke
         remove()
         return asBucket()
     }
+
+    override fun isPushedByFluid(): Boolean = false
+
+    override fun maxAirTicks(): Int = MAX_AIR_TICKS
+
+    override fun canBeSeenAsEnemy(): Boolean = !isPlayingDead && super.canBeSeenAsEnemy()
 
     companion object {
 

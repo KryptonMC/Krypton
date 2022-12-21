@@ -43,7 +43,7 @@ data class EntityQuery(val type: Selector, private val args: List<EntityArgument
     constructor(type: Selector) : this(type, emptyList(), "")
 
     fun getEntities(source: KryptonPlayer): List<KryptonEntity> {
-        val players = source.server.playerManager.players
+        val players = source.server.playerManager.players()
         when (type) {
             Selector.RANDOM_PLAYER -> return listOf(players.random())
             Selector.ALL_PLAYERS -> {

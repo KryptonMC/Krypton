@@ -35,7 +35,6 @@ import java.util.Collections
 import java.util.UUID
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.atomic.AtomicLong
-import kotlin.io.path.exists
 
 class KryptonProfileCache(private val path: Path) : ProfileCache {
 
@@ -47,8 +46,8 @@ class KryptonProfileCache(private val path: Path) : ProfileCache {
     override val profiles: Collection<GameProfile> =
         Collections.unmodifiableCollection(Collections2.transform(profilesByUUID.values) { it.profile })
 
-    fun add(profile: GameProfile) {
-        add(ProfileHolder(profile, ZonedDateTime.now().plusMonths(1)))
+    fun addProfile(profile: GameProfile) {
+        addHolder(ProfileHolder(profile, ZonedDateTime.now().plusMonths(1)))
     }
 
     override fun getProfile(name: String): GameProfile? = profilesByName.get(name)?.updateAndGetProfile(operations)
@@ -57,7 +56,7 @@ class KryptonProfileCache(private val path: Path) : ProfileCache {
 
     override fun iterator(): Iterator<GameProfile> = profiles.iterator()
 
-    private fun add(holder: ProfileHolder) {
+    private fun addHolder(holder: ProfileHolder) {
         val profile = holder.updateAndGetProfile(operations)
         profilesByName.put(profile.name, holder)
         profilesByUUID.put(profile.uuid, holder)
@@ -65,7 +64,7 @@ class KryptonProfileCache(private val path: Path) : ProfileCache {
     }
 
     fun loadAll() {
-        if (!path.exists()) return
+        if (!Files.exists(path)) return
         val holders = ArrayList<ProfileHolder>()
         try {
             path.jsonReader().use { it.readListTo(holders, ProfileHolder::read) }
@@ -75,12 +74,14 @@ class KryptonProfileCache(private val path: Path) : ProfileCache {
             LOGGER.warn("Failed to parse JSON data from $path. You can delete it to force the server to recreate it.", exception)
         }
         if (holders.isEmpty()) return
-        Lists.reverse(holders).forEach(::add)
+        Lists.reverse(holders).forEach(::addHolder)
     }
 
     fun saveIfNeeded() {
-        if (dirty) save()
-        dirty = false
+        if (dirty) {
+            save()
+            dirty = false
+        }
     }
 
     fun save() {

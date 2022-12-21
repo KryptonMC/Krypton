@@ -46,16 +46,9 @@ class ArrayVoxelShape(
         }
     }
 
-    constructor(shape: DiscreteVoxelShape, xs: DoubleArray, ys: DoubleArray, zs: DoubleArray) : this(
-        shape,
-        DoubleArrayList.wrap(xs.copyOf(shape.sizeX() + 1)),
-        DoubleArrayList.wrap(ys.copyOf(shape.sizeY() + 1)),
-        DoubleArrayList.wrap(zs.copyOf(shape.sizeZ() + 1))
-    )
-
     constructor(shape: DiscreteVoxelShape, xs: DoubleList, ys: DoubleList, zs: DoubleList) : this(shape, xs, ys, zs, null, 0.0, 0.0, 0.0)
 
-    override fun coordinates(axis: Direction.Axis): DoubleList = when (axis) {
+    override fun getCoordinates(axis: Direction.Axis): DoubleList = when (axis) {
         Direction.Axis.X -> xs
         Direction.Axis.Y -> ys
         Direction.Axis.Z -> zs
@@ -101,13 +94,10 @@ class ArrayVoxelShape(
 
     private inline fun forBoundingBoxes(action: (Double, Double, Double, Double, Double, Double) -> Unit) {
         boundingBoxesRepresentation.forEach {
-            val minX = it.minimumX + offsetX
-            val minY = it.minimumY + offsetY
-            val minZ = it.minimumZ + offsetZ
-            val maxX = it.maximumX + offsetX
-            val maxY = it.maximumY + offsetY
-            val maxZ = it.maximumZ + offsetZ
-            action(minX, minY, minZ, maxX, maxY, maxZ)
+            action(
+                it.minimumX + offsetX, it.minimumY + offsetY, it.minimumZ + offsetZ,
+                it.maximumX + offsetX, it.maximumY + offsetY, it.maximumZ + offsetZ
+            )
         }
     }
 

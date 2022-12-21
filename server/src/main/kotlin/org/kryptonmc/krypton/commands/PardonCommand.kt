@@ -40,7 +40,7 @@ object PardonCommand {
                     val banManager = context.source.server.playerManager.banManager
                     GameProfileArgument.get(context, TARGETS).forEach {
                         if (!banManager.isBanned(it)) return@forEach
-                        banManager.remove(it)
+                        banManager.removeBan(it)
                         Messages.Commands.PARDON_SUCCESS.send(context.source, it.name)
                     }
                 }

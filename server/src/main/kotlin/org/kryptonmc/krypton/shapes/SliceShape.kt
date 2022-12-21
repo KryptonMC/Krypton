@@ -27,21 +27,17 @@ class SliceShape(
     index: Int
 ) : VoxelShape(makeSlice(delegate.shape, axis, index)) {
 
-    override fun coordinates(axis: Direction.Axis): DoubleList = if (axis == this.axis) SLICE_COORDINATES else delegate.coordinates(axis)
+    override fun getCoordinates(axis: Direction.Axis): DoubleList = if (axis == this.axis) SLICE_COORDINATES else delegate.getCoordinates(axis)
 
     companion object {
 
         private val SLICE_COORDINATES = CubePointRange(1)
 
         @JvmStatic
-        private fun makeSlice(parent: DiscreteVoxelShape, axis: Direction.Axis, index: Int): DiscreteVoxelShape = SliceDiscreteVoxelShape(
-            parent,
-            axis.select(index, 0, 0),
-            axis.select(0, index, 0),
-            axis.select(0, 0, index),
-            axis.select(index + 1, parent.sizeX, parent.sizeX),
-            axis.select(parent.sizeY, index + 1, parent.sizeY),
-            axis.select(parent.sizeZ, parent.sizeZ, index + 1)
-        )
+        private fun makeSlice(parent: DiscreteVoxelShape, axis: Direction.Axis, index: Int): DiscreteVoxelShape {
+            return SliceDiscreteVoxelShape(parent, axis.select(index, 0, 0), axis.select(0, index, 0), axis.select(0, 0, index),
+                axis.select(index + 1, parent.sizeX, parent.sizeX), axis.select(parent.sizeY, index + 1, parent.sizeY),
+                axis.select(parent.sizeZ, parent.sizeZ, index + 1))
+        }
     }
 }

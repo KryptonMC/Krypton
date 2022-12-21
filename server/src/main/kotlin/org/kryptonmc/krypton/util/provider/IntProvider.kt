@@ -36,7 +36,7 @@ abstract class IntProvider {
 
     companion object {
 
-        private val CONSTANT_OR_DISPATCH_CODEC: Codec<Either<Int, IntProvider>> = Codec.either(
+        private val CONSTANT_OR_DISPATCH_CODEC = Codec.either(
             Codec.INT,
             KryptonRegistries.INT_PROVIDER_TYPES.byNameCodec().dispatch({ it.type }, { it.codec() })
         )

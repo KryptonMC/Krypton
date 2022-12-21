@@ -54,16 +54,20 @@ object ArrowLikeSerializer : EntitySerializer<KryptonArrowLike> {
         entity.isInGround = data.getBoolean(IN_GROUND_TAG)
         entity.life = data.getShort(LIFE_TAG).toInt()
 
-        val pickupOrdinal = data.getInt(PICKUP_TAG)
-        val pickupIndex = if (pickupOrdinal in PICKUP_RULES.indices) pickupOrdinal else 0
-        entity.pickupRule = PICKUP_RULES[pickupIndex]
+        entity.pickupRule = getPickupRuleById(data.getInt(PICKUP_TAG))
         entity.piercingLevel = data.getByte(PIERCE_LEVEL_TAG).toInt()
         entity.shakeTime = data.getByte(SHAKE_TAG).toInt() and MAX_SHAKE_TIME
         entity.wasShotFromCrossbow = data.getBoolean(SHOT_FROM_CROSSBOW_TAG)
 
         if (data.contains(SOUND_EVENT_TAG, StringTag.ID)) {
-            entity.sound = KryptonRegistries.SOUND_EVENT.get(Key.key(data.getString(SOUND_EVENT_TAG))) ?: entity.defaultHitGroundSound
+            entity.sound = KryptonRegistries.SOUND_EVENT.get(Key.key(data.getString(SOUND_EVENT_TAG))) ?: entity.defaultHitGroundSound()
         }
+    }
+
+    @JvmStatic
+    private fun getPickupRuleById(id: Int): ArrowLike.PickupRule {
+        val temp = if (id < 0 || id >= PICKUP_RULES.size) 0 else id
+        return PICKUP_RULES[temp]
     }
 
     override fun save(entity: KryptonArrowLike): CompoundTag.Builder = ProjectileSerializer.save(entity).apply {

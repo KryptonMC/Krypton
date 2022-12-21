@@ -29,17 +29,16 @@ import java.io.IOException
 import java.util.function.Function
 import java.util.function.Supplier
 
-@JvmRecord
-data class Pack(
+class Pack(
     val id: String,
-    val resources: Supplier<PackResources>,
+    private val resources: Supplier<PackResources>,
     val title: Component,
     val description: Component,
     val compatibility: PackCompatibility,
     val defaultPosition: Position,
     val required: Boolean,
     val fixedPosition: Boolean,
-    val source: PackSource
+    private val source: PackSource
 ) {
 
     constructor(id: String, title: Component, required: Boolean, resources: Supplier<PackResources>, metadata: PackMetadata,
@@ -50,13 +49,12 @@ data class Pack(
 
     fun open(): PackResources = resources.get()
 
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-        return id == (other as Pack).id
-    }
+    override fun equals(other: Any?): Boolean = this === other || other is Pack && id == other.id
 
     override fun hashCode(): Int = id.hashCode()
+
+    override fun toString(): String = "Pack(id=$id, title=$title, description=$description, compatibility=$compatibility, " +
+            "defaultPosition=$defaultPosition, required=$required, fixedPosition=$fixedPosition)"
 
     fun interface Constructor {
 

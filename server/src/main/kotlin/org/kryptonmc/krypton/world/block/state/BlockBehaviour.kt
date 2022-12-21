@@ -84,23 +84,22 @@ abstract class BlockBehaviour(protected val properties: Properties) : Block {
     protected val hasDynamicShape: Boolean = properties.hasDynamicShape
     protected var drops: Key? = null
 
-    open val maximumHorizontalOffset: Float
-        get() = 0.25F
-    open val maximumVerticalOffset: Float
-        get() = 0.2F
     final override val hasGravity: Boolean
         get() = false // FIXME: When we create all the KryptonBlock implementations, check if is instance of FallingBlock
     final override val hasBlockEntity: Boolean
         get() = false // FIXME: When we create all the KryptonBlock implementations, check if is instance of EntityBlock
 
-    val lootTable: Key
-        get() {
-            if (drops == null) {
-                val registryKey = requireNotNull(KryptonRegistries.BLOCK.getKey(asBlock())) { "Could not find registry key for block ${asBlock()}!" }
-                drops = Key.key(registryKey.namespace(), "blocks/${registryKey.value()}")
-            }
-            return drops!!
+    open fun maximumHorizontalOffset(): Float = 0.25F
+
+    open fun maximumVerticalOffset(): Float = 0.2F
+
+    fun lootTable(): Key {
+        if (drops == null) {
+            val registryKey = requireNotNull(KryptonRegistries.BLOCK.getKey(asBlock())) { "Could not find registry key for block ${asBlock()}!" }
+            drops = Key.key(registryKey.namespace(), "blocks/${registryKey.value()}")
         }
+        return drops!!
+    }
 
     fun defaultMaterialColor(): MaterialColor = properties.material.color
     // TODO: Switch back to below when properly implemented
@@ -117,7 +116,7 @@ abstract class BlockBehaviour(protected val properties: Properties) : Block {
     }
 
     open fun onRemove(state: KryptonBlockState, world: KryptonWorld, pos: BlockPos, new: KryptonBlockState, isMoving: Boolean) {
-        if (state.hasBlockEntity && !state.eq(new.block)) {
+        if (state.hasBlockEntity() && !state.eq(new.block)) {
             // TODO: Remove block entity from world
         }
     }
@@ -150,7 +149,7 @@ abstract class BlockBehaviour(protected val properties: Properties) : Block {
     open fun useShapeForLightOcclusion(state: KryptonBlockState): Boolean = false
 
     open fun getLightBlock(state: KryptonBlockState, world: BlockGetter, pos: BlockPos): Int {
-        if (state.isSolidRender(world, pos)) return world.maximumLightLevel
+        if (state.isSolidRender(world, pos)) return world.maximumLightLevel()
         return if (state.propagatesSkylightDown(world, pos)) 0 else 1
     }
 
@@ -253,7 +252,7 @@ abstract class BlockBehaviour(protected val properties: Properties) : Block {
             get() = owner.properties.lightEmission.applyAsInt(asState())
         val useShapeForLightOcclusion: Boolean = owner.useShapeForLightOcclusion(asState())
         val material: Material = owner.properties.material
-        private val materialColor
+        private val materialColor: MaterialColor
             get() = owner.properties.materialColor.apply(asState())
         private val destroySpeed = owner.properties.destroyTime
         val requiresCorrectTool: Boolean = owner.properties.requiresCorrectTool
@@ -286,20 +285,22 @@ abstract class BlockBehaviour(protected val properties: Properties) : Block {
 
         final override val block: KryptonBlock
             get() = owner
-        val hasBlockEntity: Boolean
-            get() = false // FIXME: When we create all the KryptonBlock implementations, check if is instance of EntityBlock
-        val hasLargeCollisionShape: Boolean
-            get() = cache == null || cache!!.largeCollisionShape
-        val renderShape: RenderShape
-            get() = block.getRenderShape(asState())
-        val isSignalSource: Boolean
-            get() = block.isSignalSource(asState())
-        val hasAnalogOutputSignal: Boolean
-            get() = block.hasAnalogOutputSignal(asState())
-        val soundGroup: BlockSoundGroup
-            get() = block.properties.soundGroup
-        val randomlyTicks: Boolean
-            get() = block.randomlyTicks(asState())
+
+        // FIXME: When we create all the KryptonBlock implementations, check if is instance of EntityBlock
+        @Suppress("FunctionOnlyReturningConstant")
+        fun hasBlockEntity(): Boolean = false
+
+        fun hasLargeCollisionShape(): Boolean = cache == null || cache!!.largeCollisionShape
+
+        fun renderShape(): RenderShape = block.getRenderShape(asState())
+
+        fun isSignalSource(): Boolean = block.isSignalSource(asState())
+
+        fun hasAnalogOutputSignal(): Boolean = block.hasAnalogOutputSignal(asState())
+
+        fun soundGroup(): BlockSoundGroup = block.properties.soundGroup
+
+        fun randomlyTicks(): Boolean = block.randomlyTicks(asState())
 
         fun initCache() {
             if (!block.hasDynamicShape) cache = Cache(asState())
@@ -371,9 +372,9 @@ abstract class BlockBehaviour(protected val properties: Properties) : Block {
         fun getOffset(world: BlockGetter, pos: BlockPos): Vec3d {
             if (offsetType == OffsetType.NONE) return Vec3dImpl.ZERO
             val seed = Maths.getSeed(pos)
-            val maxHorizontalOffset = block.maximumHorizontalOffset.toDouble()
+            val maxHorizontalOffset = block.maximumHorizontalOffset().toDouble()
             val offsetX = Maths.clamp(((seed and 15L) / 15F - 0.5) * 0.5, -maxHorizontalOffset, maxHorizontalOffset)
-            val offsetY = if (offsetType == OffsetType.XYZ) ((seed shr 4 and 15L) / 15F - 1.0) * block.maximumVerticalOffset else 0.0
+            val offsetY = if (offsetType == OffsetType.XYZ) ((seed shr 4 and 15L) / 15F - 1.0) * block.maximumVerticalOffset() else 0.0
             val offsetZ = Maths.clamp(((seed shr 8 and 15) / 15F - 0.5) * 0.5, -maxHorizontalOffset, maxHorizontalOffset)
             return Vec3dImpl(offsetX, offsetY, offsetZ)
         }
@@ -586,7 +587,7 @@ abstract class BlockBehaviour(protected val properties: Properties) : Block {
 
         fun noLootTable(): Properties = apply { drops = EMPTY_LOOT_TABLE_KEY }
 
-        fun dropsLike(block: KryptonBlock): Properties = apply { drops = block.lootTable }
+        fun dropsLike(block: KryptonBlock): Properties = apply { drops = block.lootTable() }
 
         fun air(): Properties = apply { isAir = true }
 

@@ -44,9 +44,6 @@ class KryptonParrot(world: KryptonWorld) : KryptonTamable(world), Parrot {
         get() = TYPES.getOrNull(data.get(MetadataKeys.Parrot.TYPE)) ?: ParrotVariant.RED_AND_BLUE
         set(value) = data.set(MetadataKeys.Parrot.TYPE, value.ordinal)
 
-    override val voicePitch: Float
-        get() = (random.nextFloat() - random.nextFloat()) * 0.2F + 1F
-
     override fun defineData() {
         super.defineData()
         data.define(MetadataKeys.Parrot.TYPE, ParrotVariant.RED_AND_BLUE.ordinal)
@@ -83,6 +80,8 @@ class KryptonParrot(world: KryptonWorld) : KryptonTamable(world), Parrot {
     */
 
     override fun soundSource(): Sound.Source = Sound.Source.NEUTRAL
+
+    override fun voicePitch(): Float = (random.nextFloat() - random.nextFloat()) * 0.2F + 1F
 
     companion object {
 

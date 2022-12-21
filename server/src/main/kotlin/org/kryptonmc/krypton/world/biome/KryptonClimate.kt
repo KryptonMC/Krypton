@@ -81,7 +81,7 @@ data class KryptonClimate(
                 Codec.FLOAT.fieldOf("temperature").getting { it.temperature },
                 Codec.FLOAT.fieldOf("downfall").getting { it.downfall },
                 EnumCodecs.TEMPERATURE_MODIFIER.fieldOf("temperature_modifier").getting { it.temperatureModifier }
-            ).apply(instance) { precipitation, temperature, downfall, modifier -> KryptonClimate(precipitation, temperature, downfall, modifier) }
+            ).apply(instance, ::KryptonClimate)
         }
     }
 }

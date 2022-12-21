@@ -33,7 +33,7 @@ object ArrowSerializer : EntitySerializer<KryptonArrow> {
         ArrowLikeSerializer.load(entity, data)
         if (data.hasNumber(COLOR_TAG)) {
             val rgb = data.getInt(COLOR_TAG)
-            if (rgb in 0..RGB_MAX_VALUE) entity.color = Color.of(rgb)
+            if (rgb >= 0 && rgb <= RGB_MAX_VALUE) entity.color = Color.of(rgb)
         }
     }
 

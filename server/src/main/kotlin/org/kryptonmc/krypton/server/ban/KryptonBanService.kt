@@ -34,10 +34,8 @@ import java.util.Collections
 class KryptonBanService(private val server: KryptonServer) : BanService {
 
     private val banManager = server.playerManager.banManager
-    override val profileBans: Collection<Ban.Profile>
-        get() = Collections.unmodifiableCollection(banManager.profiles())
-    override val ipBans: Collection<Ban.IP>
-        get() = Collections.unmodifiableCollection(banManager.ips())
+    override val profileBans: Collection<Ban.Profile> = Collections.unmodifiableCollection(banManager.profiles())
+    override val ipBans: Collection<Ban.IP> = Collections.unmodifiableCollection(banManager.ips())
 
     override fun createBuilder(): Ban.Builder = KryptonBanBuilder()
 
@@ -47,9 +45,9 @@ class KryptonBanService(private val server: KryptonServer) : BanService {
         else -> error("Unsupported ban type ${ban.type}!")
     }
 
-    override fun getBan(profile: GameProfile): Ban.Profile? = banManager.get(profile)
+    override fun getBan(profile: GameProfile): Ban.Profile? = banManager.getBan(profile)
 
-    override fun getBan(address: InetAddress): Ban.IP? = banManager.get(AddressUtil.asString(address))
+    override fun getBan(address: InetAddress): Ban.IP? = banManager.getBan(AddressUtil.asString(address))
 
     override fun pardon(profile: GameProfile) {
         getBan(profile)?.let(::removeBan)
@@ -60,11 +58,11 @@ class KryptonBanService(private val server: KryptonServer) : BanService {
     }
 
     override fun addBan(ban: Ban) {
-        addOrRemove(ban, ::KryptonBanProfileEvent, ::KryptonBanIpEvent, banManager::add, banManager::add)
+        addOrRemove(ban, ::KryptonBanProfileEvent, ::KryptonBanIpEvent, banManager::addBan, banManager::addBan)
     }
 
     override fun removeBan(ban: Ban) {
-        addOrRemove(ban, ::KryptonPardonProfileEvent, ::KryptonPardonIpEvent, { banManager.remove(it.profile) }, { banManager.remove(it.ip) })
+        addOrRemove(ban, ::KryptonPardonProfileEvent, ::KryptonPardonIpEvent, { banManager.removeBan(it.profile) }, { banManager.removeBan(it.ip) })
     }
 
     private inline fun addOrRemove(

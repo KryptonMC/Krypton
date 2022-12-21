@@ -29,8 +29,8 @@ class KryptonEnderPearl(world: KryptonWorld) : KryptonThrowableProjectile(world)
 
     override val type: KryptonEntityType<KryptonEnderPearl>
         get() = KryptonEntityTypes.ENDER_PEARL
-    override val defaultItem: KryptonItemStack
-        get() = DEFAULT_ITEM
+
+    override fun defaultItem(): KryptonItemStack = DEFAULT_ITEM
 
     companion object {
 

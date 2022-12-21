@@ -36,7 +36,7 @@ class SessionManager(private val playerManager: PlayerManager, motd: Component, 
     private val sessions = ConcurrentHashMap.newKeySet<NettyConnection>()
 
     private val random = RandomSource.create()
-    private val status = ServerStatus(motd, ServerStatus.Players(maxPlayers, playerManager.players.size), null)
+    private val status = ServerStatus(motd, ServerStatus.Players(maxPlayers, playerManager.players().size), null)
     private var statusInvalidated = false
     private var statusInvalidatedTime = 0L
     private var lastStatus = 0L
@@ -56,7 +56,7 @@ class SessionManager(private val playerManager: PlayerManager, motd: Component, 
     }
 
     fun sendGrouped(packet: Packet, predicate: Predicate<KryptonPlayer>) {
-        sendGrouped(playerManager.players, packet, predicate)
+        sendGrouped(playerManager.players(), packet, predicate)
     }
 
     fun sendGrouped(players: Collection<KryptonPlayer>, packet: Packet) {
@@ -82,11 +82,11 @@ class SessionManager(private val playerManager: PlayerManager, motd: Component, 
         lastStatus = time
         statusInvalidated = false
         statusInvalidatedTime = 0L
-        val playersOnline = playerManager.players.size
+        val playersOnline = playerManager.players().size
         status.players.online = playersOnline
         val sampleSize = min(playersOnline, MAXIMUM_SAMPLED_PLAYERS)
         val playerOffset = Maths.nextInt(random, 0, playersOnline - sampleSize)
-        val sample = Array(sampleSize) { playerManager.players.get(it + playerOffset).profile }.apply { shuffle() }
+        val sample = Array(sampleSize) { playerManager.players().get(it + playerOffset).profile }.apply { shuffle() }
         status.players.sample = sample
     }
 

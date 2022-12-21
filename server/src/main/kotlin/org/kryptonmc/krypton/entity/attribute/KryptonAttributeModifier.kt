@@ -40,11 +40,11 @@ open class KryptonAttributeModifier(
 
     constructor(uuid: UUID, name: String, amount: Double, operation: ModifierOperation) : this(uuid, { name }, amount, operation)
 
-    override fun equals(other: Any?): Boolean = this === other || other is KryptonAttributeModifier && uuid == other.uuid
+    final override fun equals(other: Any?): Boolean = this === other || other is KryptonAttributeModifier && uuid == other.uuid
 
-    override fun hashCode(): Int = uuid.hashCode()
+    final override fun hashCode(): Int = uuid.hashCode()
 
-    override fun toString(): String = "AttributeModifier(amount=$amount, operation=$operation, name=${nameGetter.get()}, uuid=$uuid)"
+    override fun toString(): String = "AttributeModifier(uuid=$uuid, name=$name, amount=$amount, operation=$operation)"
 
     object Factory : AttributeModifier.Factory {
 

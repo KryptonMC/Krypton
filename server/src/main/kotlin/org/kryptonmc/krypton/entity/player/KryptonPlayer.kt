@@ -116,7 +116,8 @@ class KryptonPlayer(
     override val inventory: KryptonPlayerInventory = KryptonPlayerInventory(this)
     override var openInventory: Inventory? = null
 
-    override val statisticsTracker: KryptonStatisticsTracker = KryptonStatisticsTracker(this, server.worldManager.statsFolder.resolve("$uuid.json"))
+    override val statisticsTracker: KryptonStatisticsTracker =
+        KryptonStatisticsTracker(this, server.worldManager.statsFolder().resolve("$uuid.json"))
     override val itemCooldownTracker: KryptonCooldownTracker = KryptonCooldownTracker(this)
 
     override var settings: PlayerSettings = KryptonPlayerSettings.DEFAULT
@@ -133,14 +134,6 @@ class KryptonPlayer(
             }
         }
     private var disconnected = false
-
-    // Hacks to get around Kotlin not letting us set the value of the property without calling the setter.
-    val canUseGameMasterBlocks: Boolean
-        get() = abilities.canInstantlyBuild && hasPermission(KryptonPermission.USE_GAME_MASTER_BLOCKS.node)
-    override val canBeSeenByAnyone: Boolean
-        get() = gameMode != GameMode.SPECTATOR && super.canBeSeenByAnyone
-    override val isPushedByFluid: Boolean
-        get() = !isFlying
 
     override val isOnline: Boolean
         get() = server.getPlayer(uuid) === this
@@ -301,7 +294,7 @@ class KryptonPlayer(
 
     override fun openBook(item: KryptonItemStack) {
         val slot = inventory.items.size + inventory.heldSlot
-        val stateId = inventory.stateId
+        val stateId = inventory.stateId()
         connection.send(PacketOutSetContainerSlot(0, stateId, slot, item))
         connection.send(PacketOutOpenBook(hand))
         connection.send(PacketOutSetContainerSlot(0, stateId, slot, inventory.mainHand))
@@ -374,6 +367,12 @@ class KryptonPlayer(
     override fun sendSystemMessage(message: Component) {
         // TODO: Send system message (part of chat update)
     }
+
+    override fun isPushedByFluid(): Boolean = !isFlying
+
+    override fun canBeSeenByAnyone(): Boolean = gameModeSystem.gameMode() != GameMode.SPECTATOR && super.canBeSeenByAnyone()
+
+    fun canUseGameMasterBlocks(): Boolean = abilities.canInstantlyBuild && hasPermission(KryptonPermission.USE_GAME_MASTER_BLOCKS.node)
 
     companion object {
 

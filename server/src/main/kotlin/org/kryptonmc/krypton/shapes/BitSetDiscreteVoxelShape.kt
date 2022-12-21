@@ -129,15 +129,9 @@ class BitSetDiscreteVoxelShape : DiscreteVoxelShape {
 
         @JvmStatic
         @Suppress("MagicNumber")
-        fun join(
-            mainShape: DiscreteVoxelShape,
-            secondaryShape: DiscreteVoxelShape,
-            mergerX: IndexMerger,
-            mergerY: IndexMerger,
-            mergerZ: IndexMerger,
-            operator: BooleanOperator
-        ): BitSetDiscreteVoxelShape {
-            val shape = BitSetDiscreteVoxelShape(mergerX.size - 1, mergerY.size - 1, mergerZ.size - 1)
+        fun join(mainShape: DiscreteVoxelShape, secondaryShape: DiscreteVoxelShape, mergerX: IndexMerger, mergerY: IndexMerger, mergerZ: IndexMerger,
+                 operator: BooleanOperator): BitSetDiscreteVoxelShape {
+            val shape = BitSetDiscreteVoxelShape(mergerX.size() - 1, mergerY.size() - 1, mergerZ.size() - 1)
             // ordered like so: minX, minY, minZ, maxX, maxY, maxZ
             val bounds = intArrayOf(Int.MAX_VALUE, Int.MAX_VALUE, Int.MAX_VALUE, Int.MIN_VALUE, Int.MIN_VALUE, Int.MIN_VALUE)
             mergerX.forMergedIndices { x1, x2, x3 ->

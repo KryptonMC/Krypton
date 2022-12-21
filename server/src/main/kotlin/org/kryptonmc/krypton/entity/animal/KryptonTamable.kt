@@ -40,7 +40,7 @@ abstract class KryptonTamable(world: KryptonWorld) : KryptonAnimal(world), Tamab
         get() = data.getFlag(MetadataKeys.Tamable.FLAGS, FLAG_TAMED)
         set(value) = data.setFlag(MetadataKeys.Tamable.FLAGS, FLAG_TAMED, value)
     final override val owner: KryptonPlayer?
-        get() = data.get(MetadataKeys.Tamable.OWNER)?.let(world.entityManager::get) as? KryptonPlayer
+        get() = data.get(MetadataKeys.Tamable.OWNER)?.let(world.entityManager::getByUUID) as? KryptonPlayer
     final override val team: Team?
         get() = if (isTamed) owner?.team else super.team
 

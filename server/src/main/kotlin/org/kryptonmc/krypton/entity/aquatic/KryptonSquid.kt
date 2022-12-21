@@ -29,8 +29,8 @@ open class KryptonSquid(world: KryptonWorld) : KryptonAquaticAnimal(world) {
 
     override val type: KryptonEntityType<KryptonSquid>
         get() = KryptonEntityTypes.SQUID
-    override val soundVolume: Float
-        get() = SOUND_VOLUME
+
+    override fun soundVolume(): Float = SOUND_VOLUME
 
     companion object {
 

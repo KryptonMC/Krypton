@@ -23,7 +23,7 @@ import org.kryptonmc.krypton.util.BlockPos
 // TODO: Revise when lighting engine is implemented
 interface BrightnessGetter : BlockGetter {
 
-    val skyDarken: Int
+    fun skyDarken(): Int
 
     fun getSkyBrightness(x: Int, y: Int, z: Int): Int = 0
 
@@ -33,7 +33,7 @@ interface BrightnessGetter : BlockGetter {
 
     fun getBlockBrightness(pos: BlockPos): Int = getBlockBrightness(pos.x, pos.y, pos.z)
 
-    fun canSeeSky(x: Int, y: Int, z: Int): Boolean = getSkyBrightness(x, y, z) >= maximumLightLevel
+    fun canSeeSky(x: Int, y: Int, z: Int): Boolean = getSkyBrightness(x, y, z) >= maximumLightLevel()
 
     fun canSeeSky(pos: BlockPos): Boolean = canSeeSky(pos.x, pos.y, pos.z)
 }

@@ -100,7 +100,7 @@ enum class OctahedralGroup(
         if (rotatedDirections == null) {
             rotatedDirections = EnumMap(Direction::class.java)
             Direction.values().forEach {
-                val axis = Direction.Axis.values()[permutation.permutation(it.axis.ordinal)]
+                val axis = Direction.Axis.values()[permutation.getPermutation(it.axis.ordinal)]
                 val axisDirection = if (inverts(axis)) it.axisDirection.opposite else it.axisDirection
                 rotatedDirections!!.put(it, Directions.fromAxisAndDirection(axis, axisDirection))
             }
@@ -139,7 +139,7 @@ enum class OctahedralGroup(
                     val symmetricGroup = column.permutation.compose(row.permutation)
                     val permutations = BooleanArrayList(3)
                     for (i in 0 until 3) {
-                        permutations.add(rowInversions.getBoolean(i) xor columnInversions.getBoolean(row.permutation.permutation(i)))
+                        permutations.add(rowInversions.getBoolean(i) xor columnInversions.getBoolean(row.permutation.getPermutation(i)))
                     }
                     inversions.get(Pair(symmetricGroup, permutations))!!
                 }

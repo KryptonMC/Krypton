@@ -66,7 +66,7 @@ data class LightPacketData(
 
         @JvmStatic
         fun create(chunk: KryptonChunk, trustEdges: Boolean): LightPacketData {
-            val sections = chunk.sections
+            val sections = chunk.sections()
 
             val skyMask = BitSet()
             val blockMask = BitSet()

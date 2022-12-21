@@ -46,7 +46,7 @@ object FoxSerializer : EntitySerializer<KryptonFox> {
         AgeableSerializer.load(entity, data)
         data.getList(TRUSTED_TAG, IntArrayTag.ID).forEachIntArray { addTrustedId(entity, UUIDUtil.fromIntArray(it)) }
         entity.isSleeping = data.getBoolean(SLEEPING_TAG)
-        if (data.contains(TYPE_TAG, StringTag.ID)) entity.variant = TYPE_NAMES.get(data.getString(TYPE_TAG))!!
+        if (data.contains(TYPE_TAG, StringTag.ID)) entity.variant = deserializeType(data.getString(TYPE_TAG))
         entity.isSitting = data.getBoolean(SITTING_TAG)
         entity.isCrouching = data.getBoolean(CROUCHING_TAG)
     }
@@ -66,4 +66,7 @@ object FoxSerializer : EntitySerializer<KryptonFox> {
     private fun addTrustedId(entity: KryptonFox, uuid: UUID?) {
         if (entity.firstTrusted != null) entity.secondTrusted = uuid else entity.firstTrusted = uuid
     }
+
+    @JvmStatic
+    private fun deserializeType(name: String): FoxVariant = TYPE_NAMES.get(name)!!
 }

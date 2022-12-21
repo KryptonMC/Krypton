@@ -26,6 +26,9 @@ import com.mojang.brigadier.exceptions.SimpleCommandExceptionType
 import net.kyori.adventure.text.Component
 import org.kryptonmc.krypton.adventure.KryptonAdventure
 
+/**
+ * Used as an easy way to create command exception types that return a translatable message from their arguments.
+ */
 object CommandExceptions {
 
     @JvmStatic

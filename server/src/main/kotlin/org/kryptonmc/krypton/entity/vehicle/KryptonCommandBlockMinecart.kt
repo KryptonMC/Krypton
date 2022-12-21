@@ -51,10 +51,8 @@ class KryptonCommandBlockMinecart(world: KryptonWorld) : KryptonMinecartLike(wor
         get() = data.get(MetadataKeys.CommandBlockMinecart.LAST_OUTPUT)
         set(value) = data.set(MetadataKeys.CommandBlockMinecart.LAST_OUTPUT, value)
 
-    override val defaultCustomBlock: KryptonBlockState
-        get() = KryptonBlocks.COMMAND_BLOCK.defaultState
-
-    init {
+    override fun defineData() {
+        super.defineData()
         data.define(MetadataKeys.CommandBlockMinecart.COMMAND, "")
         data.define(MetadataKeys.CommandBlockMinecart.LAST_OUTPUT, Component.empty())
     }
@@ -66,6 +64,8 @@ class KryptonCommandBlockMinecart(world: KryptonWorld) : KryptonMinecartLike(wor
             MetadataKeys.CommandBlockMinecart.COMMAND -> commandBlock.command = command
         }
     }
+
+    override fun defaultCustomBlock(): KryptonBlockState = KryptonBlocks.COMMAND_BLOCK.defaultState
 
     inner class Handler : CommandBlockHandler() {
 

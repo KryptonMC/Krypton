@@ -25,20 +25,21 @@ import org.kryptonmc.krypton.world.dimension.KryptonDimensionType
 interface ReadOnlyWorld : ChunkGetter, BlockGetter, BiomeGetter, BrightnessGetter {
 
     val dimensionType: KryptonDimensionType
-    val seaLevel: Int
-    override val height: Int
-        get() = dimensionType.height
-    override val minimumBuildHeight: Int
-        get() = dimensionType.minimumY
+
+    fun seaLevel(): Int
+
+    override fun height(): Int = dimensionType.height
+
+    override fun minimumBuildHeight(): Int = dimensionType.minimumY
 
     fun getHeight(type: Heightmap.Type, x: Int, z: Int): Int
 
     fun getHeightmapPos(type: Heightmap.Type, pos: BlockPos): BlockPos = BlockPos(pos.x, getHeight(type, pos.x, pos.z), pos.z)
 
     fun canSeeSkyFromBelowWater(pos: BlockPos): Boolean {
-        if (pos.y >= seaLevel) return canSeeSky(pos)
-        if (!canSeeSky(pos.x, seaLevel, pos.z)) return false
-        val currentPos = BlockPos.Mutable(pos.x, seaLevel, pos.z)
+        if (pos.y >= seaLevel()) return canSeeSky(pos)
+        if (!canSeeSky(pos.x, seaLevel(), pos.z)) return false
+        val currentPos = BlockPos.Mutable(pos.x, seaLevel(), pos.z)
         while (currentPos.y > pos.y) {
             val state = getBlock(currentPos)
             if (state.getLightBlock(this, currentPos) > 0 && !state.material.liquid) return false

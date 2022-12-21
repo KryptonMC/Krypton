@@ -57,16 +57,16 @@ object Codecs {
     private val FROM_OPTIONAL_LONG = Function<OptionalLong, Optional<Long>> { if (it.isPresent) Optional.of(it.asLong) else Optional.empty() }
 
     @JvmField
-    val COLOR: Codec<Color> = Codec.INT.xmap(Color::of, Color::value)
+    val COLOR: Codec<Color> = Codec.INT.xmap({ Color.of(it) }, { it.value })
     @JvmField
     val UUID: Codec<UUID> = Codec.INT_STREAM.comapFlatMap(
         { fixedSize(it, 4).map(UUIDUtil::fromIntArray) },
         { Arrays.stream(UUIDUtil.toIntArray(it)) }
     )
     @JvmField
-    val KEY: Codec<Key> = Codec.STRING.comapFlatMap(Keys::read, Key::asString).stable()
+    val KEY: Codec<Key> = Codec.STRING.comapFlatMap({ Keys.read(it) }, { it.asString() }).stable()
     @JvmField
-    val SOUND_EVENT: Codec<SoundEvent> = KEY.xmap({ KryptonSoundEvent(it, 16F) }, SoundEvent::key)
+    val SOUND_EVENT: Codec<SoundEvent> = KEY.xmap({ KryptonSoundEvent(it, 16F) }, { it.key() })
     // TODO: Look at the particle type codec, since it's not that great here
     @JvmField
     val PARTICLE: Codec<ParticleType> = KEY.xmap({ KryptonRegistries.PARTICLE_TYPE.get(it)!! }, { KryptonRegistries.PARTICLE_TYPE.getKey(it)!! })
@@ -96,14 +96,8 @@ object Codecs {
     }
 
     @JvmStatic
-    fun <P : Any, I : Any> interval(
-        elementCodec: Codec<P>,
-        firstName: String,
-        secondName: String,
-        mapper: BiFunction<P, P, DataResult<I>>,
-        firstGetter: Function<I, P>,
-        secondGetter: Function<I, P>
-    ): Codec<I> {
+    fun <P : Any, I : Any> interval(elementCodec: Codec<P>, firstName: String, secondName: String, mapper: BiFunction<P, P, DataResult<I>>,
+                                    firstGetter: Function<I, P>, secondGetter: Function<I, P>): Codec<I> {
         val codec = Codec.list(elementCodec).comapFlatMap(
             { input -> fixedSize(input, 2).flatMap { mapper.apply(it[0], it[1]) } },
             { ImmutableList.of(firstGetter.apply(it), secondGetter.apply(it)) }
@@ -113,8 +107,8 @@ object Codecs {
         @Suppress("RemoveExplicitTypeArguments")
         val fieldCodec: Codec<I> = RecordCodecBuilder.create<Pair<P, P>> { instance ->
             instance.group(
-                elementCodec.fieldOf(firstName).getting(Pair<P, P>::first),
-                elementCodec.fieldOf(secondName).getting(Pair<P, P>::second)
+                elementCodec.fieldOf(firstName).getting { it.first },
+                elementCodec.fieldOf(secondName).getting { it.second }
             ).apply(instance, ::Pair)
         }.comapFlatMap({ mapper.apply(it.first, it.second) }, { Pair.of(firstGetter.apply(it), secondGetter.apply(it)) })
         val eitherCodec = EitherCodec(codec, fieldCodec).xmap({ it.map(Function.identity(), Function.identity()) }, { Either.left(it) })
@@ -145,19 +139,17 @@ object Codecs {
     )
 
     @JvmStatic
-    fun <E> overrideLifecycle(
-        codec: Codec<E>,
-        decodeLifecycle: Function<E, Lifecycle>,
-        encodeLifecycle: Function<E, Lifecycle>
-    ): Codec<E> = codec.mapResult(object : Codec.ResultFunction<E> {
-        override fun <T> apply(input: T, ops: DataOps<T>, result: DataResult<Pair<E, T>>): DataResult<Pair<E, T>> =
-            result.result().map { result.withLifecycle(decodeLifecycle.apply(it.first)) }.orElse(result)
+    fun <E> overrideLifecycle(codec: Codec<E>, decodeLifecycle: Function<E, Lifecycle>, encodeLifecycle: Function<E, Lifecycle>): Codec<E> {
+        return codec.mapResult(object : Codec.ResultFunction<E> {
+            override fun <T> apply(input: T, ops: DataOps<T>, result: DataResult<Pair<E, T>>): DataResult<Pair<E, T>> =
+                result.result().map { result.withLifecycle(decodeLifecycle.apply(it.first)) }.orElse(result)
 
-        override fun <T> coApply(input: E, ops: DataOps<T>, result: DataResult<T>): DataResult<T> =
-            result.withLifecycle(encodeLifecycle.apply(input))
+            override fun <T> coApply(input: E, ops: DataOps<T>, result: DataResult<T>): DataResult<T> =
+                result.withLifecycle(encodeLifecycle.apply(input))
 
-        override fun toString(): String = "WithLifecycle[$decodeLifecycle $encodeLifecycle]"
-    })
+            override fun toString(): String = "WithLifecycle[$decodeLifecycle $encodeLifecycle]"
+        })
+    }
 
     @JvmStatic
     fun <A> catchDecoderException(codec: Codec<A>): Codec<A> = Codec.of(codec, object : Decoder<A> {
@@ -182,13 +174,14 @@ object Codecs {
         override fun <T : Any> encode(input: Either<L, R>, ops: DataOps<T>, prefix: T): DataResult<T> =
             input.map({ left.encode(it, ops, prefix) }, { right.encode(it, ops, prefix) })
 
-        override fun equals(other: Any?): Boolean {
-            if (this === other) return true
-            if (other == null || javaClass != other.javaClass) return false
-            return Objects.equals(left, (other as EitherCodec<*, *>).left) && Objects.equals(right, other.right)
-        }
+        override fun equals(other: Any?): Boolean = this === other || other is EitherCodec<*, *> && left == other.left && right == other.right
 
-        override fun hashCode(): Int = Objects.hash(left, right)
+        override fun hashCode(): Int {
+            var result = 1
+            result = 31 * result + left.hashCode()
+            result = 31 * result + right.hashCode()
+            return result
+        }
 
         override fun toString(): String = "EitherCodec[$left, $right]"
     }

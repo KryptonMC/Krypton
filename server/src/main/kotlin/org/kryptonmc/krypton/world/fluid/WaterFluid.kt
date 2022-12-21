@@ -27,16 +27,16 @@ import org.kryptonmc.krypton.world.block.state.KryptonBlockState
 
 abstract class WaterFluid : FlowingFluid() {
 
-    override val flowing: KryptonFluid
-        get() = KryptonFluids.FLOWING_WATER
-    override val source: KryptonFluid
-        get() = KryptonFluids.WATER
     override val bucket: ItemType
         get() = ItemTypes.WATER_BUCKET
     override val explosionResistance: Double
         get() = 100.0
 
-    override fun isSame(fluid: Fluid): Boolean = fluid === KryptonFluids.WATER || fluid === KryptonFluids.FLOWING_WATER
+    override fun flowing(): KryptonFluid = KryptonFluids.FLOWING_WATER
+
+    override fun source(): KryptonFluid = KryptonFluids.WATER
+
+    override fun isSame(fluid: Fluid): Boolean = fluid === source() || fluid === flowing()
 
     override fun asBlock(state: KryptonFluidState): KryptonBlockState =
         KryptonBlocks.WATER.defaultState.setProperty(LEVEL, calculateBlockLevel(state))

@@ -70,7 +70,7 @@ class LegacyQueryHandler(private val server: KryptonServer) : ChannelInboundHand
         val address = ctx.channel().remoteAddress() as InetSocketAddress
         val motd = status.motd.content()
         val maxPlayers = status.maxPlayers
-        val playerCount = server.playerManager.players.size
+        val playerCount = server.playerManager.players().size
         val version = KryptonPlatform.minecraftVersion
 
         when (buf.readableBytes()) {

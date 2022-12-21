@@ -51,9 +51,6 @@ class KryptonDolphin(world: KryptonWorld) : KryptonAquaticAnimal(world), Dolphin
         get() = data.get(MetadataKeys.Dolphin.MOISTURE)
         set(value) = data.set(MetadataKeys.Dolphin.MOISTURE, value)
 
-    override val maxAirTicks: Int
-        get() = MAX_AIR
-
     override fun defineData() {
         super.defineData()
         data.define(MetadataKeys.Dolphin.TREASURE_POSITION, BlockPos.ZERO)
@@ -68,7 +65,7 @@ class KryptonDolphin(world: KryptonWorld) : KryptonAquaticAnimal(world), Dolphin
     override fun tick() {
         super.tick()
         if (!hasAI) {
-            airSupply = maxAirTicks
+            airSupply = maxAirTicks()
             return
         }
         // Dolphins don't immediately start to suffocate out of water, as they can survive out of water for extended periods of time.
@@ -100,6 +97,8 @@ class KryptonDolphin(world: KryptonWorld) : KryptonAquaticAnimal(world), Dolphin
         return InteractionResult.CONSUME
     }
     */
+
+    override fun maxAirTicks(): Int = MAX_AIR
 
     companion object {
 

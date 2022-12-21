@@ -34,10 +34,8 @@ import org.kryptonmc.krypton.world.block.state.KryptonBlockState
 
 class PlayerGameModeSystem(private val player: KryptonPlayer) {
 
-    var gameMode: GameMode = GameMode.SURVIVAL
-        private set
-    var previousGameMode: GameMode? = null
-        private set
+    private var gameMode = GameMode.SURVIVAL
+    private var previousGameMode: GameMode? = null
 
     private var currentTick = 0
     private var isDestroying = false
@@ -47,6 +45,10 @@ class PlayerGameModeSystem(private val player: KryptonPlayer) {
     private var delayedDestroyPos = BlockPos.ZERO
     private var delayedTickStart = 0
     private var lastSentState = -1
+
+    fun gameMode(): GameMode = gameMode
+
+    fun previousGameMode(): GameMode? = previousGameMode
 
     fun tick() {
         currentTick++
@@ -91,7 +93,7 @@ class PlayerGameModeSystem(private val player: KryptonPlayer) {
     }
 
     fun handleBlockBreak(packet: PacketInPlayerAction) {
-        handleBlockBreak(packet.position, packet.action, player.world.maximumBuildHeight)
+        handleBlockBreak(packet.position, packet.action, player.world.maximumBuildHeight())
     }
 
     private fun handleBlockBreak(pos: BlockPos, action: PacketInPlayerAction.Action, maxHeight: Int) {
@@ -208,7 +210,7 @@ class PlayerGameModeSystem(private val player: KryptonPlayer) {
         if (!player.inventory.mainHand.type.handler().canAttackBlock(player, player.world, state, pos)) return false
 
         // Check some conditions first
-        if (!player.canUseGameMasterBlocks) { // FIXME: Check if is instance of GameMasterBlock
+        if (!player.canUseGameMasterBlocks()) { // FIXME: Check if is instance of GameMasterBlock
             player.world.sendBlockUpdated(pos, state, state)
             return false
         }

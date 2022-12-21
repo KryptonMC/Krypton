@@ -32,14 +32,14 @@ import org.kryptonmc.krypton.util.readVarInt
  */
 class PacketDecoder : ByteToMessageDecoder() {
 
-    private var session: NettyConnection? = null // Cache this since the get lookup for classes is a bit expensive
+    private var cachedSession: NettyConnection? = null // Cache this since the get lookup for classes is a bit expensive
 
     override fun decode(ctx: ChannelHandlerContext, buf: ByteBuf, out: MutableList<Any>) {
         if (buf.readableBytes() == 0) return
         val id = buf.readVarInt()
-        val session = session ?: ctx.pipeline().get(NettyConnection::class.java).apply { this@PacketDecoder.session = this }
+        val session = getSession(ctx)
 
-        val packet = PacketRegistry.lookup(session.currentState(), id, buf)
+        val packet = PacketRegistry.getInboundPacket(session.currentState(), id, buf)
         if (packet == null) {
             LOGGER.debug("Skipping packet with state ${session.currentState()} and ID $id because a packet object was not found")
             buf.skipBytes(buf.readableBytes())
@@ -47,8 +47,13 @@ class PacketDecoder : ByteToMessageDecoder() {
         }
         println("Decoded packet ${packet.javaClass.simpleName} with ID $id")
 
-        if (buf.readableBytes() != 0) LOGGER.debug("$packet has more bytes available to read.")
+        if (buf.readableBytes() != 0) LOGGER.debug("$packet has more bytes available to read after fully reading it.")
         out.add(packet)
+    }
+
+    private fun getSession(ctx: ChannelHandlerContext): NettyConnection {
+        if (cachedSession == null) cachedSession = ctx.pipeline().get(NettyConnection::class.java)
+        return cachedSession!!
     }
 
     companion object {

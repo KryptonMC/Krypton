@@ -203,7 +203,7 @@ class LoginHandler(
         connection.enableCompression()
         connection.writeAndFlush(PacketOutLoginSuccess(player.profile))
         connection.changeState(PacketState.PLAY, PlayHandler(server, connection, player))
-        server.playerManager.add(player, connection).whenComplete { _, exception ->
+        server.playerManager.addPlayer(player).whenComplete { _, exception ->
             if (exception == null) return@whenComplete
             LOGGER.error("Disconnecting player ${player.profile.name} due to exception caught whilst attempting to load them in...", exception)
             player.disconnect(Component.text("An unexpected exception occurred. Please contact the system administrator."))
@@ -242,7 +242,7 @@ class LoginHandler(
 
         if (banManager.isBanned(profile)) {
             // They are banned.
-            val ban = banManager.get(profile)!!
+            val ban = banManager.getBan(profile)!!
             // Inform the client that they are banned
             disconnect(Messages.Disconnect.BANNED_MESSAGE.build(ban.reason, ban.expirationDate))
             LOGGER.info("${profile.name} was disconnected as they are banned from this server.")
@@ -254,7 +254,7 @@ class LoginHandler(
             return false
         } else if (banManager.isBanned(addressString)) {
             // Their IP is banned.
-            val ban = banManager.get(addressString)!!
+            val ban = banManager.getBan(addressString)!!
             disconnect(Messages.Disconnect.BANNED_IP_MESSAGE.build(ban.reason, ban.expirationDate))
             LOGGER.info("${profile.name} was disconnected as their IP address is banned from this server.")
             return false

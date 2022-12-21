@@ -54,9 +54,9 @@ interface BaseWorld : World, WorldAccessor, PacketGroupingAudience {
     val entityManager: EntityManager
 
     override val chunks: Collection<KryptonChunk>
-        get() = chunkManager.chunkMap.values
+        get() = chunkManager.chunks()
     override val entities: Collection<KryptonEntity>
-        get() = entityManager.entities
+        get() = entityManager.entities()
 
     override val name: String
         get() = data.name
@@ -93,16 +93,16 @@ interface BaseWorld : World, WorldAccessor, PacketGroupingAudience {
 
     override fun getBlockEntity(x: Int, y: Int, z: Int): KryptonBlockEntity? = null
 
-    override fun getChunkAt(x: Int, z: Int): KryptonChunk? = chunkManager.get(x, z)
+    override fun getChunkAt(x: Int, z: Int): KryptonChunk? = chunkManager.getChunk(x, z)
 
     override fun getChunk(x: Int, y: Int, z: Int): KryptonChunk? = getChunkAt(SectionPos.blockToSection(x), SectionPos.blockToSection(z))
 
     override fun getChunk(position: Vec3i): KryptonChunk? = getChunk(position.x, position.y, position.z)
 
-    override fun loadChunk(x: Int, z: Int): KryptonChunk? = chunkManager.load(x, z, Ticket(TicketTypes.API_LOAD, 31, ChunkPos.pack(x, z)))
+    override fun loadChunk(x: Int, z: Int): KryptonChunk? = chunkManager.loadChunk(x, z, Ticket(TicketTypes.API_LOAD, 31, ChunkPos.pack(x, z)))
 
     override fun unloadChunk(x: Int, z: Int, force: Boolean) {
-        chunkManager.unload(x, z, TicketTypes.API_LOAD, force)
+        chunkManager.unloadChunk(x, z, TicketTypes.API_LOAD, force)
     }
 
     override fun sendGroupedPacket(players: Collection<KryptonPlayer>, packet: Packet) {

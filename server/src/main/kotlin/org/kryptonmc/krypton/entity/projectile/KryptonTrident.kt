@@ -47,14 +47,13 @@ class KryptonTrident(world: KryptonWorld) : KryptonArrowLike(world), Trident {
         get() = data.get(MetadataKeys.Trident.ENCHANTED)
         set(value) = data.set(MetadataKeys.Trident.ENCHANTED, value)
 
-    override val defaultHitGroundSound: SoundEvent
-        get() = SoundEvents.TRIDENT_HIT_GROUND
-
     override fun defineData() {
         super.defineData()
         data.define(MetadataKeys.Trident.LOYALTY_LEVEL, 0)
         data.define(MetadataKeys.Trident.ENCHANTED, false)
     }
+
+    override fun defaultHitGroundSound(): SoundEvent = SoundEvents.TRIDENT_HIT_GROUND
 
     companion object {
 

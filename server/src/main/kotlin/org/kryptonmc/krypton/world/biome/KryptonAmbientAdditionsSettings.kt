@@ -58,7 +58,7 @@ data class KryptonAmbientAdditionsSettings(override val sound: SoundEvent, overr
             instance.group(
                 Codecs.SOUND_EVENT.fieldOf("sound").getting { it.sound },
                 Codec.DOUBLE.fieldOf("probability").getting { it.probability }
-            ).apply(instance) { sound, probability -> KryptonAmbientAdditionsSettings(sound, probability) }
+            ).apply(instance, ::KryptonAmbientAdditionsSettings)
         }
     }
 }

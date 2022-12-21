@@ -115,16 +115,11 @@ abstract class AbstractItemMeta<I : ItemMeta>(val data: CompoundTag) : ItemMeta 
     final override fun withoutAttributeModifier(modifier: ItemAttributeModifier): I =
         copy(data.update(MODIFIERS_TAG, CompoundTag.ID) { it.remove(KryptonItemAttributeModifier.save(modifier)) })
 
-    protected fun partialToString(): String = "damage=$damage, isUnbreakable=$isUnbreakable, customModelData=$customModelData, name=$name, " +
-            "lore=$lore, hideFlags=$hideFlags, canDestroy=$canDestroy, canPlaceOn=$canPlaceOn"
-
-    final override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-        return data == (other as AbstractItemMeta<*>).data
-    }
+    final override fun equals(other: Any?): Boolean = this === other || other is AbstractItemMeta<*> && data == other.data
 
     final override fun hashCode(): Int = data.hashCode()
+
+    final override fun toString(): String = "${javaClass.simpleName}(data=$data)"
 
     companion object {
 

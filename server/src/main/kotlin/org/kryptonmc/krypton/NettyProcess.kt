@@ -114,6 +114,7 @@ object NettyProcess {
      * @param listener the listener to add
      */
     @JvmStatic
+    @Suppress("unused") // Unofficial internal API
     fun addListener(key: Key, listener: ChannelInitializeListener) {
         listeners.put(key, listener)
     }
@@ -128,6 +129,7 @@ object NettyProcess {
      * @param key the key for the channel initialise listener
      */
     @JvmStatic
+    @Suppress("unused") // Unofficial internal API
     fun removeListener(key: Key) {
         listeners.remove(key)
     }

@@ -42,7 +42,7 @@ class PackRepository(private val sources: Set<RepositorySource>, private val con
 
     fun isAvailable(id: String): Boolean = available.containsKey(id)
 
-    fun pack(id: String): Pack? = available.get(id)
+    fun getPackById(id: String): Pack? = available.get(id)
 
     fun openAllSelected(): List<PackResources> = Lists.transform(selected) { it.open() }
 

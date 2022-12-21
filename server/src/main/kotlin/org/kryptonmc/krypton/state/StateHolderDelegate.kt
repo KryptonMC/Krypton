@@ -29,7 +29,7 @@ interface StateHolderDelegate<out S : State<S>, K : KryptonState<*, K>> : StateH
     override val states: List<S>
         @Suppress("UNCHECKED_CAST") get() = stateDefinition.states as List<S>
     override val availableProperties: Collection<KryptonProperty<*>>
-        get() = stateDefinition.properties
+        get() = stateDefinition.properties()
 
     override fun getProperty(name: String): Property<*>? = stateDefinition.getProperty(name)
 }

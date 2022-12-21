@@ -38,7 +38,7 @@ abstract class KryptonArrowLike(world: KryptonWorld) : KryptonProjectile(world),
     final override var isInGround: Boolean = false
     var life: Int = 0
     var shakeTime: Int = 0
-    var sound: SoundEvent = defaultHitGroundSound
+    var sound: SoundEvent = defaultHitGroundSound()
     final override var stuckInBlock: BlockState?
         get() = internalStuckInBlock
         set(value) {
@@ -60,14 +60,13 @@ abstract class KryptonArrowLike(world: KryptonWorld) : KryptonProjectile(world),
         get() = data.get(MetadataKeys.ArrowLike.PIERCING_LEVEL).toInt()
         set(value) = data.set(MetadataKeys.ArrowLike.PIERCING_LEVEL, value.toByte())
 
-    internal open val defaultHitGroundSound: SoundEvent
-        get() = SoundEvents.ARROW_HIT
-
     override fun defineData() {
         super.defineData()
         data.define(MetadataKeys.ArrowLike.FLAGS, 0)
         data.define(MetadataKeys.ArrowLike.PIERCING_LEVEL, 0)
     }
+
+    internal open fun defaultHitGroundSound(): SoundEvent = SoundEvents.ARROW_HIT
 
     companion object {
 

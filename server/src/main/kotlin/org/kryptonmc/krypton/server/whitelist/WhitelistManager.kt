@@ -28,6 +28,7 @@ import org.kryptonmc.krypton.util.array
 import java.io.IOException
 import java.nio.file.Path
 import java.util.UUID
+import java.util.stream.Stream
 
 class WhitelistManager(path: Path) : PersistentManager(path) {
 
@@ -49,33 +50,31 @@ class WhitelistManager(path: Path) : PersistentManager(path) {
 
     fun isWhitelisted(ip: String): Boolean = ips.contains(ip)
 
-    fun add(profile: GameProfile) {
+    fun whitelist(profile: GameProfile) {
         if (isWhitelisted(profile)) return
         profiles.add(profile)
         markDirty()
     }
 
-    fun add(ip: String) {
+    fun whitelist(ip: String) {
         if (isWhitelisted(ip)) return
         ips.add(ip)
         markDirty()
     }
 
-    fun remove(profile: GameProfile) {
+    fun removeWhitelisted(profile: GameProfile) {
         if (!isWhitelisted(profile)) return
         profiles.remove(profile)
         markDirty()
     }
 
-    fun remove(ip: String) {
+    fun removeWhitelisted(ip: String) {
         if (!isWhitelisted(ip)) return
         ips.remove(ip)
         markDirty()
     }
 
-    fun profiles(): List<GameProfile> = profiles
-
-    fun ips(): List<String> = ips
+    fun profiles(): Stream<GameProfile> = profiles.stream()
 
     override fun loadData(reader: JsonReader) {
         if (!reader.hasNext()) return // File is empty. Just use defaults (not enabled, no whitelisted profiles or IPs)

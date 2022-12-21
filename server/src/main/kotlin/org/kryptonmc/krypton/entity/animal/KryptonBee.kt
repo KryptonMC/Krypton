@@ -66,9 +66,6 @@ class KryptonBee(world: KryptonWorld) : KryptonAnimal(world), Bee, Neutral {
         get() = data.get(MetadataKeys.Bee.ANGER_TIME)
         set(value) = data.set(MetadataKeys.Bee.ANGER_TIME, value)
 
-    override val soundVolume: Float
-        get() = 0.4F
-
     override fun defineData() {
         super.defineData()
         data.define(MetadataKeys.Bee.FLAGS, 0)
@@ -80,6 +77,8 @@ class KryptonBee(world: KryptonWorld) : KryptonAnimal(world), Bee, Neutral {
     }
 
     override fun isFood(item: ItemStack): Boolean = item.type.downcast().eq(ItemTags.FLOWERS)
+
+    override fun soundVolume(): Float = 0.4F
 
     companion object {
 

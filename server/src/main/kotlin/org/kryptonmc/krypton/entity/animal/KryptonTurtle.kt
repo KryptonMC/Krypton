@@ -59,8 +59,6 @@ class KryptonTurtle(world: KryptonWorld) : KryptonAnimal(world), Turtle {
         get() = data.get(MetadataKeys.Turtle.DESTINATION)
         set(value) = data.set(MetadataKeys.Turtle.DESTINATION, BlockPos.from(value))
 
-    override val isPushedByFluid: Boolean
-        get() = false
     override val canFallInLove: Boolean
         get() = super.canFallInLove && !hasEgg
 
@@ -75,6 +73,8 @@ class KryptonTurtle(world: KryptonWorld) : KryptonAnimal(world), Turtle {
     }
 
     override fun isFood(item: ItemStack): Boolean = item.type === ItemTypes.SEAGRASS
+
+    override fun isPushedByFluid(): Boolean = false
 
     companion object {
 

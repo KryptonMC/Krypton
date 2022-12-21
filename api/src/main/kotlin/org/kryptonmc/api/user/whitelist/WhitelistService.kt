@@ -17,9 +17,11 @@ import java.net.InetAddress
 public interface WhitelistService {
 
     /**
-     * If the whitelist is currently enabled.
+     * Gets whether the whitelist is currently enabled.
+     *
+     * @return true if enabled, false otherwise
      */
-    public val isEnabled: Boolean
+    public fun isEnabled(): Boolean
 
     /**
      * Checks if the given [profile] is whitelisted on the server.

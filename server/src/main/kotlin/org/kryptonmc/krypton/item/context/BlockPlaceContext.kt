@@ -36,11 +36,9 @@ open class BlockPlaceContext protected constructor(
     private val relativePosition = hitResult.position.relative(hitResult.direction)
     protected var replaceClicked = world.getBlock(hitResult.position).canBeReplaced(this)
 
-    override val clickedPosition: BlockPos
-        get() = if (replaceClicked) super.clickedPosition else relativePosition
-    open val canPlace: Boolean
-        get() = replaceClicked || world.getBlock(clickedPosition).canBeReplaced(this)
-    open val replacingClickedOnBlock: Boolean
-        get() = replaceClicked
+    override fun clickedPosition(): BlockPos = if (replaceClicked) super.clickedPosition() else relativePosition
 
+    open fun canPlace(): Boolean = replaceClicked || world.getBlock(clickedPosition()).canBeReplaced(this)
+
+    open fun replacingClickedOnBlock(): Boolean = replaceClicked
 }

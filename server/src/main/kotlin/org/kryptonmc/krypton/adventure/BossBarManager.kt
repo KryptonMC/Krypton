@@ -81,7 +81,7 @@ object BossBarManager : BossBar.Listener {
         update(bar, PacketOutBossBar.UpdateFlagsAction(bar.flags()))
     }
 
-    private fun getOrCreate(bar: BossBar): BossBarHolder = bars.computeIfAbsent(bar, ::BossBarHolder).register()
+    private fun getOrCreate(bar: BossBar): BossBarHolder = bars.computeIfAbsent(bar) { BossBarHolder(it) }.register()
 
     private fun update(bar: BossBar, action: PacketOutBossBar.Action) {
         val holder = bars.get(bar) ?: return

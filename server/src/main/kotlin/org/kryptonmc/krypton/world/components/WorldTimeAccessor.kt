@@ -23,10 +23,10 @@ import org.kryptonmc.krypton.world.dimension.KryptonDimensionType
 interface WorldTimeAccessor : ReadOnlyWorld {
 
     val dayTime: Long
-    val moonPhase: Int
-        get() = dimensionType.moonPhase(dayTime)
-    val moonBrightness: Float
-        get() = KryptonDimensionType.MOON_BRIGHTNESS_PER_PHASE[moonPhase]
+
+    fun moonPhase(): Int = dimensionType.moonPhase(dayTime)
+
+    fun moonBrightness(): Float = KryptonDimensionType.MOON_BRIGHTNESS_PER_PHASE[moonPhase()]
 
     fun timeOfDay(value: Float): Float = dimensionType.timeOfDay(dayTime)
 }

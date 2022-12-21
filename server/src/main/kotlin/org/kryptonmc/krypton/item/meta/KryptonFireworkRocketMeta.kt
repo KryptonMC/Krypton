@@ -53,8 +53,6 @@ class KryptonFireworkRocketMeta(data: CompoundTag) : AbstractItemMeta<KryptonFir
 
     override fun toBuilder(): FireworkRocketMeta.Builder = Builder(this)
 
-    override fun toString(): String = "KryptonFireworkRocketMeta(${partialToString()}, effects=$effects, flightDuration=$flightDuration)"
-
     class Builder : KryptonItemMetaBuilder<FireworkRocketMeta.Builder, FireworkRocketMeta>, FireworkRocketMeta.Builder {
 
         private var effects: MutableCollection<FireworkEffect>

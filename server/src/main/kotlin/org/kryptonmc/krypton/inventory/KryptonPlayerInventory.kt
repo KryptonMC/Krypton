@@ -80,17 +80,17 @@ class KryptonPlayerInventory(override val owner: KryptonPlayer) : KryptonInvento
     override fun setHeldItem(hand: Hand, item: ItemStack) {
         if (item !is KryptonItemStack) return
         when (hand) {
-            Hand.MAIN -> set(heldSlot + INVENTORY_SIZE, item)
-            Hand.OFF -> set(OFFHAND_SLOT, item)
+            Hand.MAIN -> setItem(heldSlot + INVENTORY_SIZE, item)
+            Hand.OFF -> setItem(OFFHAND_SLOT, item)
         }
     }
 
     override fun setItem(index: Int, item: ItemStack) {
         if (item !is KryptonItemStack) return
-        set(index, item)
+        setItem(index, item)
     }
 
-    fun set(index: Int, item: KryptonItemStack) {
+    fun setItem(index: Int, item: KryptonItemStack) {
         when (index) {
             0 -> crafting.set(CRAFTING_SLOT, item)
             in 1..CRAFTING_GRID_SIZE -> crafting.set(index - 1, item)

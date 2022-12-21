@@ -197,23 +197,11 @@ data class KryptonDimensionType(
 
         override fun monsterSpawnBlockLightLimit(limit: Int): Builder = apply { monsterSpawnBlockLightLimit = limit }
 
-        override fun build(): KryptonDimensionType = KryptonDimensionType(
-            fixedTime,
-            skylight,
-            ceiling,
-            ultrawarm,
-            natural,
-            coordinateScale,
-            beds,
-            respawnAnchors,
-            minimumY,
-            height,
-            logicalHeight,
-            infiniburn,
-            effects,
-            ambientLight,
-            MonsterSettings(piglinSafe, raids, createSpawnLightLevelProvider(), monsterSpawnBlockLightLimit)
-        )
+        override fun build(): KryptonDimensionType {
+            val monsterSettings = MonsterSettings(piglinSafe, raids, createSpawnLightLevelProvider(), monsterSpawnBlockLightLimit)
+            return KryptonDimensionType(fixedTime, skylight, ceiling, ultrawarm, natural, coordinateScale, beds, respawnAnchors, minimumY, height,
+                logicalHeight, infiniburn, effects, ambientLight, monsterSettings)
+        }
 
         private fun createSpawnLightLevelProvider(): IntProvider {
             if (minimumMonsterSpawnLightLevel == maximumMonsterSpawnLightLevel) return ConstantInt.of(minimumMonsterSpawnLightLevel)

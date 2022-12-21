@@ -36,7 +36,7 @@ interface ServerAudience : Server, PacketGroupingAudience {
     val playerManager: PlayerManager
 
     override val players: Collection<KryptonPlayer>
-        get() = Collections.unmodifiableCollection(playerManager.players)
+        get() = Collections.unmodifiableCollection(playerManager.players())
 
     override fun audiences(): Iterable<Audience> = players.asSequence().plus(console).asIterable()
 

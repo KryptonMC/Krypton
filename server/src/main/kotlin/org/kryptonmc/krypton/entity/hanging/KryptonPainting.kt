@@ -34,8 +34,8 @@ class KryptonPainting(world: KryptonWorld) : KryptonHangingEntity(world), Painti
         get() = PaintingSerializer
 
     override var variant: PaintingVariant? = null
-    override val width: Int
-        get() = variant?.width ?: 1
-    override val height: Int
-        get() = variant?.height ?: 1
+
+    override fun width(): Int = variant?.width ?: 1
+
+    override fun height(): Int = variant?.height ?: 1
 }

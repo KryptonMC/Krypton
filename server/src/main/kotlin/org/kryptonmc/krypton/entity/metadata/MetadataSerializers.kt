@@ -90,10 +90,7 @@ object MetadataSerializers {
     val OPTIONAL_UUID: MetadataSerializer<UUID?> = MetadataSerializer.nullable(ByteBuf::readUUID, ByteBuf::writeUUID)
     @JvmField
     val OPTIONAL_BLOCK: MetadataSerializer<KryptonBlockState?> = MetadataSerializer.simple(
-        {
-            val stateId = it.readVarInt()
-            if (stateId == 0) null else KryptonBlock.stateFromId(stateId)
-        },
+        { buf -> buf.readVarInt().let { if (it == 0) null else KryptonBlock.stateFromId(it) } },
         { buf, item -> if (item != null) buf.writeVarInt(KryptonBlock.idOf(item)) else buf.writeVarInt(0) }
     )
     @JvmField
@@ -107,10 +104,7 @@ object MetadataSerializers {
     val VILLAGER_DATA: MetadataSerializer<VillagerData> = MetadataSerializer.simple(::VillagerData) { buf, item -> item.write(buf) }
     @JvmField
     val OPTIONAL_INT: MetadataSerializer<OptionalInt> = MetadataSerializer.simple(
-        {
-            val value = it.readVarInt()
-            if (value == 0) OptionalInt.empty() else OptionalInt.of(value - 1)
-        },
+        { buf -> buf.readVarInt().let { if (it == 0) OptionalInt.empty() else OptionalInt.of(it - 1) } },
         { buf, item -> buf.writeVarInt(item.orElse(-1) + 1) }
     )
     @JvmField

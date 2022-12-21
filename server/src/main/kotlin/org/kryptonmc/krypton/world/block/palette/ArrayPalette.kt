@@ -35,12 +35,8 @@ class ArrayPalette<T> private constructor(
     override var size: Int = size
         private set
 
-    private constructor(
-        registry: IntBiMap<T>,
-        bits: Int,
-        resizer: PaletteResizer<T>,
-        entries: List<T>
-    ) : this(registry, arrayOfNulls<Any>(1 shl bits) as Array<T?>, resizer, bits, entries.size) {
+    private constructor(registry: IntBiMap<T>, bits: Int, resizer: PaletteResizer<T>,
+                        entries: List<T>) : this(registry, arrayOfNulls<Any>(1 shl bits) as Array<T?>, resizer, bits, entries.size) {
         require(entries.size <= values.size) {
             "Failed to initialise array palette with entries $entries! Entries size (${entries.size}) must be < palette size (${1 shl bits})!"
         }

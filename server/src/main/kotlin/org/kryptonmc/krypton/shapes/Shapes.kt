@@ -97,13 +97,14 @@ object Shapes {
             if (firstOnly) return mainShape
             return empty()
         }
-        val mergerX = createIndexMerger(1, mainShape.coordinates(Axis.X), otherShape.coordinates(Axis.X), firstOnly, secondOnly)
-        val mergerY = createIndexMerger(mergerX.size - 1, mainShape.coordinates(Axis.Y), otherShape.coordinates(Axis.Y), firstOnly, secondOnly)
-        val mergerZSize = (mergerX.size - 1) * (mergerY.size - 1)
-        val mergerZ = createIndexMerger(mergerZSize, mainShape.coordinates(Axis.Z), otherShape.coordinates(Axis.Z), firstOnly, secondOnly)
+        val mergerX = createIndexMerger(1, mainShape.getCoordinates(Axis.X), otherShape.getCoordinates(Axis.X), firstOnly, secondOnly)
+        val mergerYLower = mainShape.getCoordinates(Axis.Y)
+        val mergerY = createIndexMerger(mergerX.size() - 1, mergerYLower, otherShape.getCoordinates(Axis.Y), firstOnly, secondOnly)
+        val mergerZSize = (mergerX.size() - 1) * (mergerY.size() - 1)
+        val mergerZ = createIndexMerger(mergerZSize, mainShape.getCoordinates(Axis.Z), otherShape.getCoordinates(Axis.Z), firstOnly, secondOnly)
         val shape = BitSetDiscreteVoxelShape.join(mainShape.shape, otherShape.shape, mergerX, mergerY, mergerZ, operator)
         if (mergerX is DiscreteCubeMerger && mergerY is DiscreteCubeMerger && mergerZ is DiscreteCubeMerger) return CubeVoxelShape(shape)
-        return ArrayVoxelShape(shape, mergerX.list, mergerY.list, mergerZ.list)
+        return ArrayVoxelShape(shape, mergerX.asList(), mergerY.asList(), mergerZ.asList())
     }
 
     @JvmStatic
@@ -131,10 +132,11 @@ object Shapes {
             if (mainShape.max(it) < otherShape.min(it) - EPSILON) return firstOnly || secondOnly
             if (otherShape.max(it) < mainShape.min(it) - EPSILON) return firstOnly || secondOnly
         }
-        val mergerX = createIndexMerger(1, mainShape.coordinates(Axis.X), otherShape.coordinates(Axis.X), firstOnly, secondOnly)
-        val mergerY = createIndexMerger(mergerX.size - 1, mainShape.coordinates(Axis.Y), otherShape.coordinates(Axis.Y), firstOnly, secondOnly)
-        val mergerZSize = (mergerX.size - 1) * (mergerY.size - 1)
-        val mergerZ = createIndexMerger(mergerZSize, mainShape.coordinates(Axis.Z), otherShape.coordinates(Axis.Z), firstOnly, secondOnly)
+        val mergerX = createIndexMerger(1, mainShape.getCoordinates(Axis.X), otherShape.getCoordinates(Axis.X), firstOnly, secondOnly)
+        val mergerYLower = mainShape.getCoordinates(Axis.Y)
+        val mergerY = createIndexMerger(mergerX.size() - 1, mergerYLower, otherShape.getCoordinates(Axis.Y), firstOnly, secondOnly)
+        val mergerZSize = (mergerX.size() - 1) * (mergerY.size() - 1)
+        val mergerZ = createIndexMerger(mergerZSize, mainShape.getCoordinates(Axis.Z), otherShape.getCoordinates(Axis.Z), firstOnly, secondOnly)
         return !mergerX.forMergedIndices { x1, x2, _ ->
             mergerY.forMergedIndices { y1, y2, _ ->
                 mergerZ.forMergedIndices { z1, z2, _ ->

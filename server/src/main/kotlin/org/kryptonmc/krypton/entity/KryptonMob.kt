@@ -42,7 +42,7 @@ abstract class KryptonMob(world: KryptonWorld) : KryptonLivingEntity(world), Mob
 
     final override var canPickUpLoot: Boolean = false
     final override var isPersistent: Boolean = false
-    open var target: KryptonLivingEntity? = null
+    private var target: KryptonLivingEntity? = null
 
     final override var hasAI: Boolean
         get() = !data.getFlag(MetadataKeys.Mob.FLAGS, FLAG_NO_AI)
@@ -54,7 +54,8 @@ abstract class KryptonMob(world: KryptonWorld) : KryptonLivingEntity(world), Mob
         get() = data.getFlag(MetadataKeys.Mob.FLAGS, FLAG_AGGRESSIVE)
         set(value) = data.setFlag(MetadataKeys.Mob.FLAGS, FLAG_AGGRESSIVE, value)
 
-    init {
+    override fun defineData() {
+        super.defineData()
         data.define(MetadataKeys.Mob.FLAGS, 0)
     }
 
@@ -94,6 +95,12 @@ abstract class KryptonMob(world: KryptonWorld) : KryptonLivingEntity(world), Mob
         return InteractionResult.PASS
     }
     */
+
+    protected fun target(): KryptonLivingEntity? = target
+
+    open fun setTarget(target: KryptonLivingEntity?) {
+        this.target = target
+    }
 
     companion object {
 

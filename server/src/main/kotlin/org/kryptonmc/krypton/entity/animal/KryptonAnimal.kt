@@ -39,15 +39,16 @@ abstract class KryptonAnimal(world: KryptonWorld) : KryptonAgeable(world), Anima
         get() = inLoveTime > 0
     override val canFallInLove: Boolean
         get() = inLoveTime <= 0
-    var loveCausePlayer: KryptonPlayer?
-        get() {
-            val cause = loveCause ?: return null
-            return world.entityManager.get(cause) as? KryptonPlayer
-        }
-        set(value) {
-            inLoveTime = DEFAULT_IN_LOVE_TIME
-            loveCause = value?.uuid
-        }
+
+    fun loveCause(): KryptonPlayer? {
+        val cause = loveCause ?: return null
+        return world.entityManager.getByUUID(cause) as? KryptonPlayer
+    }
+
+    fun setLoveCause(cause: KryptonPlayer?) {
+        inLoveTime = DEFAULT_IN_LOVE_TIME
+        if (cause != null) loveCause = cause.uuid
+    }
 
     override fun canMate(target: Animal): Boolean {
         if (target === this) return false

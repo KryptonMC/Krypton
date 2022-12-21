@@ -105,7 +105,7 @@ abstract class KryptonEntity(final override var world: KryptonWorld) : BaseEntit
     //open fun interact(player: KryptonPlayer, hand: Hand): InteractionResult = InteractionResult.PASS
 
     override fun isInvulnerableTo(source: KryptonDamageSource): Boolean =
-        isRemoved || isInvulnerable && source.type !== DamageTypes.VOID && !source.isCreativePlayer
+        isRemoved || isInvulnerable && source.type !== DamageTypes.VOID && !source.isCreativePlayer()
 
     override fun damage(source: KryptonDamageSource, damage: Float): Boolean {
         if (isInvulnerableTo(source)) return false

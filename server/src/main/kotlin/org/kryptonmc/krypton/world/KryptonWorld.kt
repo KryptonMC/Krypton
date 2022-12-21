@@ -92,13 +92,10 @@ class KryptonWorld(
         get() = getRainLevel(1F) > 0.2F
     override val isThundering: Boolean
         get() = if (dimensionType.hasSkylight && !dimensionType.hasCeiling) getThunderLevel(1F) > 0.9F else false
-    override var skyDarken: Int = 0
-        private set
+    private var skyDarken = 0
 
     override val players: MutableSet<KryptonPlayer> = ConcurrentHashMap.newKeySet()
     var doNotSave: Boolean = false
-    override val seaLevel: Int
-        get() = 63
 
     private var oldRainLevel = 0F
     override var rainLevel: Float = 0F
@@ -132,15 +129,15 @@ class KryptonWorld(
     }
 
     fun spawnEntity(entity: KryptonEntity) {
-        entityManager.spawn(entity)
+        entityManager.spawnEntity(entity)
     }
 
     fun spawnPlayer(player: KryptonPlayer) {
-        entityManager.spawn(player)
+        entityManager.spawnPlayer(player)
     }
 
     fun removeEntity(entity: KryptonEntity) {
-        entityManager.remove(entity)
+        entityManager.removeEntity(entity)
     }
 
     override fun worldEvent(pos: BlockPos, event: WorldEvent, data: Int, except: KryptonPlayer?) {
@@ -206,9 +203,9 @@ class KryptonWorld(
             val sectionX = SectionPos.sectionRelative(x)
             val sectionZ = SectionPos.sectionRelative(z)
             if (hasChunk(chunkX, chunkZ)) return getChunk(chunkX, chunkZ)!!.getHeight(type, sectionX, sectionZ) + 1
-            return minimumBuildHeight
+            return minimumBuildHeight()
         }
-        return seaLevel + 1
+        return seaLevel() + 1
     }
 
     override fun setBlock(pos: BlockPos, state: KryptonBlockState, flags: Int, recursionLeft: Int): Boolean {
@@ -225,7 +222,7 @@ class KryptonWorld(
             if (flags and SetBlockFlag.NOTIFY_CLIENTS != 0) sendBlockUpdated(pos, oldState, newState)
             if (flags and SetBlockFlag.UPDATE_NEIGHBOURS != 0) {
                 blockUpdated(pos, oldState.block)
-                if (state.hasAnalogOutputSignal) updateNeighbourForOutputSignal(pos, block)
+                if (state.hasAnalogOutputSignal()) updateNeighbourForOutputSignal(pos, block)
             }
             if (flags and SetBlockFlag.UPDATE_NEIGHBOUR_SHAPES == 0 && recursionLeft > 0) {
                 val maskedFlags = flags and (SetBlockFlag.NEIGHBOUR_DROPS.inv() and SetBlockFlag.UPDATE_NEIGHBOURS.inv())
@@ -394,7 +391,7 @@ class KryptonWorld(
     fun save(flush: Boolean, skipSave: Boolean) {
         if (skipSave) return
         // TODO: Save extra data for maps, raids, etc.
-        chunkManager.saveAll(flush)
+        chunkManager.saveAllChunks(flush)
         if (flush) entityManager.flush()
     }
 
@@ -415,6 +412,10 @@ class KryptonWorld(
     override fun sendGroupedPacket(players: Collection<KryptonPlayer>, packet: Packet) {
         server.sessionManager.sendGrouped(players, packet)
     }
+
+    override fun skyDarken(): Int = skyDarken
+
+    override fun seaLevel(): Int = 63
 
     override fun toString(): String = "KryptonWorld[${data.name}]"
 

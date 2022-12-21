@@ -27,8 +27,6 @@ class KryptonItemMeta(data: CompoundTag) : AbstractItemMeta<KryptonItemMeta>(dat
 
     override fun copy(data: CompoundTag): KryptonItemMeta = KryptonItemMeta(data)
 
-    override fun toString(): String = "KryptonItemMeta(${partialToString()})"
-
     class Builder : KryptonItemMetaBuilder<ItemMeta.Builder, ItemMeta>(), ItemMeta.Builder {
 
         override fun build(): KryptonItemMeta = KryptonItemMeta(buildData().build())

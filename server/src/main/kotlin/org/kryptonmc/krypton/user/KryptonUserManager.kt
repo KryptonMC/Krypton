@@ -58,7 +58,7 @@ class KryptonUserManager(private val server: KryptonServer) : UserManager {
         if (existing != null) return CompletableFuture.completedFuture(existing)
         val cachedProfile = server.profileCache.getProfile(uuid)
         if (cachedProfile != null) return CompletableFuture.supplyAsync({ loadUser(cachedProfile) }, executor)
-        return ApiService.getProfile(uuid).thenApplyAsync({ loadUser(it) }, executor)
+        return ApiService.lookupProfileById(uuid).thenApplyAsync({ loadUser(it) }, executor)
     }
 
     override fun loadUser(name: String): CompletableFuture<User?> {
@@ -66,7 +66,7 @@ class KryptonUserManager(private val server: KryptonServer) : UserManager {
         if (existing != null) return CompletableFuture.completedFuture(existing)
         val cachedProfile = server.profileCache.getProfile(name)
         if (cachedProfile != null) return CompletableFuture.supplyAsync({ loadUser(cachedProfile) }, executor)
-        return ApiService.getProfile(name).thenApplyAsync({ loadUser(it) }, executor)
+        return ApiService.lookupProfileByName(name).thenApplyAsync({ loadUser(it) }, executor)
     }
 
     private fun loadUser(profile: GameProfile?): User? {

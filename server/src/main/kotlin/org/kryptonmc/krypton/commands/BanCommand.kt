@@ -52,7 +52,7 @@ object BanCommand {
         profiles.forEach { profile ->
             if (banManager.isBanned(profile)) return@forEach
             val ban = KryptonProfileBan(profile, reason = LegacyComponentSerializer.legacySection().deserialize(reason))
-            banManager.add(ban)
+            banManager.addBan(ban)
             source.sendSuccess(Messages.Commands.BAN_SUCCESS.build(profile.name, reason), true)
             source.server.getPlayer(profile.uuid)?.disconnect(Messages.Disconnect.BANNED_MESSAGE.build(ban.reason, ban.expirationDate))
         }

@@ -51,12 +51,6 @@ class KryptonStatisticsTracker(private val player: KryptonPlayer, private val fi
 
     override val statistics: Object2IntMap<Statistic<*>> = Object2IntMaps.synchronize(Object2IntOpenHashMap())
     private val pendingUpdate = mutableSetOf<Statistic<*>>()
-    private val pendingUpdating: Set<Statistic<*>>
-        get() {
-            val copy = LinkedHashSet(pendingUpdate)
-            pendingUpdate.clear()
-            return copy
-        }
 
     init {
         statistics.defaultReturnValue(0)
@@ -64,11 +58,17 @@ class KryptonStatisticsTracker(private val player: KryptonPlayer, private val fi
         if (!Files.exists(file)) {
             try {
                 Files.createFile(file)
-            } catch (exception: Exception) {
+            } catch (exception: IOException) {
                 LOGGER.error("Failed to create statistics file ${file.toAbsolutePath()}!", exception)
                 throw exception
             }
         }
+    }
+
+    private fun getAndClearPendingUpdate(): Set<Statistic<*>> {
+        val copy = LinkedHashSet(pendingUpdate)
+        pendingUpdate.clear()
+        return copy
     }
 
     @Suppress("UNCHECKED_CAST")
@@ -93,9 +93,9 @@ class KryptonStatisticsTracker(private val player: KryptonPlayer, private val fi
         }
     }
 
-    fun send() {
+    fun sendUpdated() {
         val map = Object2IntOpenHashMap<Statistic<*>>()
-        pendingUpdating.forEach { map.put(it, getStatistic(it)) }
+        getAndClearPendingUpdate().forEach { map.put(it, getStatistic(it)) }
         player.connection.send(PacketOutAwardStatistics(map))
     }
 
@@ -144,27 +144,7 @@ class KryptonStatisticsTracker(private val player: KryptonPlayer, private val fi
             if (data.get(STATS_KEY).asJsonObject.size() == 0) return
 
             val stats = data.get(STATS_KEY)?.asJsonObject ?: JsonObject()
-            stats.keySet().forEach { key ->
-                if (!stats.get(key).isJsonObject) return@forEach
-                val type = KryptonRegistries.STATISTIC_TYPE.get(Key.key(key))
-                if (type == null) {
-                    LOGGER.warn("Invalid statistic type found in $file! Could not recognise $key!")
-                    return@forEach
-                }
-                val values = stats.get(key).asJsonObject
-                values.keySet().forEach { valueKey ->
-                    if (values.get(valueKey).isJsonPrimitive) {
-                        val statistic = statistic(type, valueKey)
-                        if (statistic != null) {
-                            statistics.put(statistic, values.get(valueKey).asInt)
-                        } else {
-                            LOGGER.warn("Invalid statistic found in $file! Could not recognise key $valueKey!")
-                        }
-                    } else {
-                        LOGGER.warn("Invalid statistic found in $file! Could not recognise value ${values.get(valueKey)} for key $valueKey")
-                    }
-                }
-            }
+            loadStatistics(stats)
         } catch (exception: IOException) {
             LOGGER.error("Failed to load statistics data from $file!", exception)
         } catch (exception: JsonParseException) {
@@ -172,13 +152,31 @@ class KryptonStatisticsTracker(private val player: KryptonPlayer, private val fi
         }
     }
 
-    private fun <T> statistic(type: StatisticType<T>, name: String): Statistic<T>? {
-        val key = try {
-            Key.key(name)
-        } catch (_: InvalidKeyException) {
-            return null
+    private fun loadStatistics(stats: JsonObject) {
+        stats.keySet().forEach { key ->
+            if (!stats.get(key).isJsonObject) return@forEach
+            val type = KryptonRegistries.STATISTIC_TYPE.get(Key.key(key))
+            if (type == null) {
+                LOGGER.warn("Invalid statistic type found in $file! Could not recognise $key!")
+                return@forEach
+            }
+            val values = stats.get(key).asJsonObject
+            values.keySet().forEach { valueKey -> loadStatisticValue(values, valueKey, type) }
         }
-        return type.registry.get(key)?.let(type::getStatistic)
+    }
+
+    private fun loadStatisticValue(values: JsonObject, valueKey: String, type: StatisticType<*>) {
+        val value = values.get(valueKey)
+        if (!value.isJsonPrimitive) {
+            LOGGER.warn("Invalid statistic found in $file! Could not recognise value ${values.get(valueKey)} for key $valueKey")
+            return
+        }
+        val statistic = getStatistic(type, valueKey)
+        if (statistic != null) {
+            statistics.put(statistic, value.asInt)
+        } else {
+            LOGGER.warn("Invalid statistic found in $file! Could not recognise key $valueKey!")
+        }
     }
 
     companion object {
@@ -188,5 +186,15 @@ class KryptonStatisticsTracker(private val player: KryptonPlayer, private val fi
 
         private const val STATS_KEY = "stats"
         private const val DATA_VERSION_KEY = "DataVersion"
+
+        @JvmStatic
+        private fun <T> getStatistic(type: StatisticType<T>, name: String): Statistic<T>? {
+            val key = try {
+                Key.key(name)
+            } catch (_: InvalidKeyException) {
+                return null
+            }
+            return type.registry.get(key)?.let(type::getStatistic)
+        }
     }
 }

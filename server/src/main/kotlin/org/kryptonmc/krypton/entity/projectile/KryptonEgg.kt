@@ -29,8 +29,8 @@ class KryptonEgg(world: KryptonWorld) : KryptonThrowableProjectile(world), Egg {
 
     override val type: KryptonEntityType<KryptonEgg>
         get() = KryptonEntityTypes.EGG
-    override val defaultItem: KryptonItemStack
-        get() = DEFAULT_ITEM
+
+    override fun defaultItem(): KryptonItemStack = DEFAULT_ITEM
 
     companion object {
 

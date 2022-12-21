@@ -134,148 +134,148 @@ object PacketRegistry {
     private val byEncoded = Int2ObjectOpenHashMap<PacketConstructor>()
     private val toId = Reference2IntOpenHashMap<Class<*>>().apply { defaultReturnValue(-1) }
 
-    fun lookup(clazz: Class<*>): Int = toId.getInt(clazz)
+    fun getOutboundPacketId(clazz: Class<*>): Int = toId.getInt(clazz)
 
-    fun lookup(state: PacketState, id: Int, buf: ByteBuf): Packet? {
-        val constructor = byEncoded.get(encode(state, id)) ?: return null
+    fun getInboundPacket(state: PacketState, id: Int, buf: ByteBuf): Packet? {
+        val constructor = byEncoded.get(encodeInboundLookupKey(state, id)) ?: return null
         return constructor.create(buf)
     }
 
     @Suppress("LongMethod", "MagicNumber")
     fun bootstrap() {
         // Handshake
-        register(PacketState.HANDSHAKE, 0x00) { PacketInHandshake(it) }
+        registerInbound(PacketState.HANDSHAKE, 0x00) { PacketInHandshake(it) }
 
         // Status
-        register(PacketState.STATUS, 0x00) { PacketInStatusRequest }
-        register(PacketState.STATUS, 0x01) { PacketInPingRequest(it) }
+        registerInbound(PacketState.STATUS, 0x00) { PacketInStatusRequest }
+        registerInbound(PacketState.STATUS, 0x01) { PacketInPingRequest(it) }
 
-        register<PacketOutStatusResponse>(0x00)
-        register<PacketOutPingResponse>(0x01)
+        registerOutbound<PacketOutStatusResponse>(0x00)
+        registerOutbound<PacketOutPingResponse>(0x01)
 
         // Login
-        register(PacketState.LOGIN, 0x00) { PacketInLoginStart(it) }
-        register(PacketState.LOGIN, 0x01) { PacketInEncryptionResponse(it) }
-        register(PacketState.LOGIN, 0x02) { PacketInPluginResponse(it) }
+        registerInbound(PacketState.LOGIN, 0x00) { PacketInLoginStart(it) }
+        registerInbound(PacketState.LOGIN, 0x01) { PacketInEncryptionResponse(it) }
+        registerInbound(PacketState.LOGIN, 0x02) { PacketInPluginResponse(it) }
 
-        register<PacketOutLoginDisconnect>(0x00)
-        register<PacketOutEncryptionRequest>(0x01)
-        register<PacketOutLoginSuccess>(0x02)
-        register<PacketOutSetCompression>(0x03)
-        register<PacketOutPluginRequest>(0x04)
+        registerOutbound<PacketOutLoginDisconnect>(0x00)
+        registerOutbound<PacketOutEncryptionRequest>(0x01)
+        registerOutbound<PacketOutLoginSuccess>(0x02)
+        registerOutbound<PacketOutSetCompression>(0x03)
+        registerOutbound<PacketOutPluginRequest>(0x04)
 
         // Play
-        register(PacketState.PLAY, 0x00) { PacketInConfirmTeleportation(it) }
-        register(PacketState.PLAY, 0x03) { PacketInChatCommand(it) }
-        register(PacketState.PLAY, 0x04) { PacketInChatMessage(it) }
-        register(PacketState.PLAY, 0x05) { PacketInChatPreview(it) }
-        register(PacketState.PLAY, 0x06) { PacketInClientCommand(it) }
-        register(PacketState.PLAY, 0x07) { PacketInClientInformation(it) }
-        register(PacketState.PLAY, 0x08) { PacketInCommandSuggestionsRequest(it) }
-        register(PacketState.PLAY, 0x0C) { PacketInPluginMessage(it) }
-        register(PacketState.PLAY, 0x0E) { PacketInQueryEntityTag(it) }
-        register(PacketState.PLAY, 0x0F) { PacketInInteract(it) }
-        register(PacketState.PLAY, 0x11) { PacketInKeepAlive(it) }
-        register(PacketState.PLAY, 0x13) { PacketInSetPlayerPosition(it) }
-        register(PacketState.PLAY, 0x14) { PacketInSetPlayerPositionAndRotation(it) }
-        register(PacketState.PLAY, 0x15) { PacketInSetPlayerRotation(it) }
-        register(PacketState.PLAY, 0x16) { PacketInSetPlayerOnGround(it) }
-        register(PacketState.PLAY, 0x1B) { PacketInAbilities(it) }
-        register(PacketState.PLAY, 0x1C) { PacketInPlayerAction(it) }
-        register(PacketState.PLAY, 0x1D) { PacketInPlayerCommand(it) }
-        register(PacketState.PLAY, 0x1E) { PacketInPlayerInput(it) }
-        register(PacketState.PLAY, 0x23) { PacketInResourcePack(it) }
-        register(PacketState.PLAY, 0x27) { PacketInSetHeldItem(it) }
-        register(PacketState.PLAY, 0x2A) { PacketInSetCreativeModeSlot(it) }
-        register(PacketState.PLAY, 0x2E) { PacketInSwingArm(it) }
-        register(PacketState.PLAY, 0x30) { PacketInUseItemOn(it) }
-        register(PacketState.PLAY, 0x31) { PacketInUseItem(it) }
+        registerInbound(PacketState.PLAY, 0x00) { PacketInConfirmTeleportation(it) }
+        registerInbound(PacketState.PLAY, 0x03) { PacketInChatCommand(it) }
+        registerInbound(PacketState.PLAY, 0x04) { PacketInChatMessage(it) }
+        registerInbound(PacketState.PLAY, 0x05) { PacketInChatPreview(it) }
+        registerInbound(PacketState.PLAY, 0x06) { PacketInClientCommand(it) }
+        registerInbound(PacketState.PLAY, 0x07) { PacketInClientInformation(it) }
+        registerInbound(PacketState.PLAY, 0x08) { PacketInCommandSuggestionsRequest(it) }
+        registerInbound(PacketState.PLAY, 0x0C) { PacketInPluginMessage(it) }
+        registerInbound(PacketState.PLAY, 0x0E) { PacketInQueryEntityTag(it) }
+        registerInbound(PacketState.PLAY, 0x0F) { PacketInInteract(it) }
+        registerInbound(PacketState.PLAY, 0x11) { PacketInKeepAlive(it) }
+        registerInbound(PacketState.PLAY, 0x13) { PacketInSetPlayerPosition(it) }
+        registerInbound(PacketState.PLAY, 0x14) { PacketInSetPlayerPositionAndRotation(it) }
+        registerInbound(PacketState.PLAY, 0x15) { PacketInSetPlayerRotation(it) }
+        registerInbound(PacketState.PLAY, 0x16) { PacketInSetPlayerOnGround(it) }
+        registerInbound(PacketState.PLAY, 0x1B) { PacketInAbilities(it) }
+        registerInbound(PacketState.PLAY, 0x1C) { PacketInPlayerAction(it) }
+        registerInbound(PacketState.PLAY, 0x1D) { PacketInPlayerCommand(it) }
+        registerInbound(PacketState.PLAY, 0x1E) { PacketInPlayerInput(it) }
+        registerInbound(PacketState.PLAY, 0x23) { PacketInResourcePack(it) }
+        registerInbound(PacketState.PLAY, 0x27) { PacketInSetHeldItem(it) }
+        registerInbound(PacketState.PLAY, 0x2A) { PacketInSetCreativeModeSlot(it) }
+        registerInbound(PacketState.PLAY, 0x2E) { PacketInSwingArm(it) }
+        registerInbound(PacketState.PLAY, 0x30) { PacketInUseItemOn(it) }
+        registerInbound(PacketState.PLAY, 0x31) { PacketInUseItem(it) }
 
-        register<PacketOutSpawnEntity>(0x00)
-        register<PacketOutSpawnExperienceOrb>(0x01)
-        register<PacketOutSpawnPlayer>(0x02)
-        register<PacketOutAnimation>(0x03)
-        register<PacketOutAwardStatistics>(0x04)
-        register<PacketOutAcknowledgeBlockChange>(0x05)
-        register<PacketOutSetBlockDestroyStage>(0x06)
-        register<PacketOutBlockUpdate>(0x09)
-        register<PacketOutBossBar>(0x0A)
-        register<PacketOutChangeDifficulty>(0x0B)
-        register<PacketOutChatPreview>(0x0C)
-        register<PacketOutClearTitles>(0x0D)
-        register<PacketOutCommandSuggestionsResponse>(0x0E)
-        register<PacketOutCommands>(0x0F)
-        register<PacketOutSetContainerContent>(0x11)
-        register<PacketOutSetContainerSlot>(0x13)
-        register<PacketOutSetCooldown>(0x14)
-        register<PacketOutPluginMessage>(0x15)
-        register<PacketOutCustomSoundEffect>(0x16)
-        register<PacketOutDisconnect>(0x17)
-        register<PacketOutEntityEvent>(0x18)
-        register<PacketOutUnloadChunk>(0x1A)
-        register<PacketOutGameEvent>(0x1B)
-        register<PacketOutInitializeWorldBorder>(0x1D)
-        register<PacketOutKeepAlive>(0x1E)
-        register<PacketOutChunkDataAndLight>(0x1F)
-        register<PacketOutWorldEvent>(0x20)
-        register<PacketOutParticle>(0x21)
-        register<PacketOutUpdateLight>(0x22)
-        register<PacketOutLogin>(0x23)
-        register<PacketOutUpdateEntityPosition>(0x26)
-        register<PacketOutUpdateEntityPositionAndRotation>(0x27)
-        register<PacketOutUpdateEntityRotation>(0x28)
-        register<PacketOutOpenBook>(0x2A)
-        register<PacketOutAbilities>(0x2F)
-        register<PacketOutPlayerChatMessage>(0x30)
-        register<PacketOutPlayerInfo>(0x34)
-        register<PacketOutSynchronizePlayerPosition>(0x36)
-        register<PacketOutUpdateRecipeBook>(0x37)
-        register<PacketOutRemoveEntities>(0x38)
-        register<PacketOutResourcePack>(0x3A)
-        register<PacketOutSetHeadRotation>(0x3C)
-        register<PacketOutSetActionBarText>(0x41)
-        register<PacketOutSetCamera>(0x46)
-        register<PacketOutSetHeldItem>(0x47)
-        register<PacketOutSetCenterChunk>(0x48)
-        register<PacketOutSetDefaultSpawnPosition>(0x4A)
-        register<PacketOutDisplayObjective>(0x4C)
-        register<PacketOutSetEntityMetadata>(0x4D)
-        register<PacketOutSetEntityVelocity>(0x4F)
-        register<PacketOutSetHealth>(0x52)
-        register<PacketOutUpdateObjectives>(0x53)
-        register<PacketOutSetPassengers>(0x54)
-        register<PacketOutUpdateTeams>(0x55)
-        register<PacketOutUpdateScore>(0x56)
-        register<PacketOutSetSubtitleText>(0x58)
-        register<PacketOutUpdateTime>(0x59)
-        register<PacketOutSetTitleText>(0x5A)
-        register<PacketOutSetTitleAnimationTimes>(0x5B)
-        register<PacketOutEntitySoundEffect>(0x5C)
-        register<PacketOutSoundEffect>(0x5D)
-        register<PacketOutStopSound>(0x5E)
-        register<PacketOutSystemChatMessage>(0x5F)
-        register<PacketOutSetTabListHeaderAndFooter>(0x60)
-        register<PacketOutTagQueryResponse>(0x61)
-        register<PacketOutTeleportEntity>(0x63)
-        register<PacketOutUpdateAttributes>(0x65)
-        register<PacketOutUpdateRecipes>(0x67)
-        register<PacketOutUpdateTags>(0x68)
+        registerOutbound<PacketOutSpawnEntity>(0x00)
+        registerOutbound<PacketOutSpawnExperienceOrb>(0x01)
+        registerOutbound<PacketOutSpawnPlayer>(0x02)
+        registerOutbound<PacketOutAnimation>(0x03)
+        registerOutbound<PacketOutAwardStatistics>(0x04)
+        registerOutbound<PacketOutAcknowledgeBlockChange>(0x05)
+        registerOutbound<PacketOutSetBlockDestroyStage>(0x06)
+        registerOutbound<PacketOutBlockUpdate>(0x09)
+        registerOutbound<PacketOutBossBar>(0x0A)
+        registerOutbound<PacketOutChangeDifficulty>(0x0B)
+        registerOutbound<PacketOutChatPreview>(0x0C)
+        registerOutbound<PacketOutClearTitles>(0x0D)
+        registerOutbound<PacketOutCommandSuggestionsResponse>(0x0E)
+        registerOutbound<PacketOutCommands>(0x0F)
+        registerOutbound<PacketOutSetContainerContent>(0x11)
+        registerOutbound<PacketOutSetContainerSlot>(0x13)
+        registerOutbound<PacketOutSetCooldown>(0x14)
+        registerOutbound<PacketOutPluginMessage>(0x15)
+        registerOutbound<PacketOutCustomSoundEffect>(0x16)
+        registerOutbound<PacketOutDisconnect>(0x17)
+        registerOutbound<PacketOutEntityEvent>(0x18)
+        registerOutbound<PacketOutUnloadChunk>(0x1A)
+        registerOutbound<PacketOutGameEvent>(0x1B)
+        registerOutbound<PacketOutInitializeWorldBorder>(0x1D)
+        registerOutbound<PacketOutKeepAlive>(0x1E)
+        registerOutbound<PacketOutChunkDataAndLight>(0x1F)
+        registerOutbound<PacketOutWorldEvent>(0x20)
+        registerOutbound<PacketOutParticle>(0x21)
+        registerOutbound<PacketOutUpdateLight>(0x22)
+        registerOutbound<PacketOutLogin>(0x23)
+        registerOutbound<PacketOutUpdateEntityPosition>(0x26)
+        registerOutbound<PacketOutUpdateEntityPositionAndRotation>(0x27)
+        registerOutbound<PacketOutUpdateEntityRotation>(0x28)
+        registerOutbound<PacketOutOpenBook>(0x2A)
+        registerOutbound<PacketOutAbilities>(0x2F)
+        registerOutbound<PacketOutPlayerChatMessage>(0x30)
+        registerOutbound<PacketOutPlayerInfo>(0x34)
+        registerOutbound<PacketOutSynchronizePlayerPosition>(0x36)
+        registerOutbound<PacketOutUpdateRecipeBook>(0x37)
+        registerOutbound<PacketOutRemoveEntities>(0x38)
+        registerOutbound<PacketOutResourcePack>(0x3A)
+        registerOutbound<PacketOutSetHeadRotation>(0x3C)
+        registerOutbound<PacketOutSetActionBarText>(0x41)
+        registerOutbound<PacketOutSetCamera>(0x46)
+        registerOutbound<PacketOutSetHeldItem>(0x47)
+        registerOutbound<PacketOutSetCenterChunk>(0x48)
+        registerOutbound<PacketOutSetDefaultSpawnPosition>(0x4A)
+        registerOutbound<PacketOutDisplayObjective>(0x4C)
+        registerOutbound<PacketOutSetEntityMetadata>(0x4D)
+        registerOutbound<PacketOutSetEntityVelocity>(0x4F)
+        registerOutbound<PacketOutSetHealth>(0x52)
+        registerOutbound<PacketOutUpdateObjectives>(0x53)
+        registerOutbound<PacketOutSetPassengers>(0x54)
+        registerOutbound<PacketOutUpdateTeams>(0x55)
+        registerOutbound<PacketOutUpdateScore>(0x56)
+        registerOutbound<PacketOutSetSubtitleText>(0x58)
+        registerOutbound<PacketOutUpdateTime>(0x59)
+        registerOutbound<PacketOutSetTitleText>(0x5A)
+        registerOutbound<PacketOutSetTitleAnimationTimes>(0x5B)
+        registerOutbound<PacketOutEntitySoundEffect>(0x5C)
+        registerOutbound<PacketOutSoundEffect>(0x5D)
+        registerOutbound<PacketOutStopSound>(0x5E)
+        registerOutbound<PacketOutSystemChatMessage>(0x5F)
+        registerOutbound<PacketOutSetTabListHeaderAndFooter>(0x60)
+        registerOutbound<PacketOutTagQueryResponse>(0x61)
+        registerOutbound<PacketOutTeleportEntity>(0x63)
+        registerOutbound<PacketOutUpdateAttributes>(0x65)
+        registerOutbound<PacketOutUpdateRecipes>(0x67)
+        registerOutbound<PacketOutUpdateTags>(0x68)
     }
 
     @JvmStatic
-    private fun register(state: PacketState, id: Int, creator: PacketConstructor) {
-        byEncoded.put(encode(state, id), creator)
+    private fun registerInbound(state: PacketState, id: Int, creator: PacketConstructor) {
+        byEncoded.put(encodeInboundLookupKey(state, id), creator)
     }
 
     @JvmStatic
-    private inline fun <reified T> register(id: Int) {
+    private inline fun <reified T> registerOutbound(id: Int) {
         toId.put(T::class.java, id)
     }
 
     // This encoding places the state in the upper 16 bits, and the ID in the lower 16 bits.
     @JvmStatic
     @Suppress("MagicNumber") // Explained above
-    private fun encode(state: PacketState, id: Int): Int = state.ordinal shl 16 or (id and 0xFFFF)
+    private fun encodeInboundLookupKey(state: PacketState, id: Int): Int = state.ordinal shl 16 or (id and 0xFFFF)
 
     private fun interface PacketConstructor {
 

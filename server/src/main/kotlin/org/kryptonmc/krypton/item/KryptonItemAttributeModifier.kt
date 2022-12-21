@@ -44,6 +44,8 @@ class KryptonItemAttributeModifier(
     constructor(type: AttributeType, slot: EquipmentSlot, uuid: UUID, name: String, amount: Double,
                 operation: BasicModifierOperation) : this(type, slot, uuid, { name }, amount, operation)
 
+    override fun toString(): String = "ItemAttributeModifier(type=$type, slot=$slot, uuid=$uuid, name=$name, amount=$amount, operation=$operation)"
+
     object Factory : ItemAttributeModifier.Factory {
 
         override fun of(type: AttributeType, slot: EquipmentSlot, uuid: UUID, name: String, amount: Double,

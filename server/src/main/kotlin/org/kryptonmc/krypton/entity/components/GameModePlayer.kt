@@ -27,7 +27,7 @@ interface GameModePlayer : Player {
 
     val gameModeSystem: PlayerGameModeSystem
     override var gameMode: GameMode
-        get() = gameModeSystem.gameMode
+        get() = gameModeSystem.gameMode()
         set(value) {
             updateGameMode(value, ChangeGameModeEvent.Cause.API)
         }

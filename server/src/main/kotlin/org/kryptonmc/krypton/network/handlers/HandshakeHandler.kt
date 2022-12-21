@@ -50,7 +50,7 @@ class HandshakeHandler(private val server: KryptonServer, override val connectio
         }
 
         // We do this early too to avoid even having to check proxy data if the server is full.
-        if (server.playerManager.players.size >= server.config.status.maxPlayers) {
+        if (server.playerManager.players().size >= server.config.status.maxPlayers) {
             connection.disconnect(Messages.Disconnect.SERVER_FULL.build())
             return
         }

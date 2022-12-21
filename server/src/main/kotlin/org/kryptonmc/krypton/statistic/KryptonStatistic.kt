@@ -18,17 +18,18 @@
  */
 package org.kryptonmc.krypton.statistic
 
-import org.kryptonmc.api.scoreboard.ObjectiveRenderType
+import net.kyori.adventure.key.Key
 import org.kryptonmc.api.statistic.Statistic
 import org.kryptonmc.api.statistic.StatisticFormatter
 import org.kryptonmc.api.statistic.StatisticType
+import org.kryptonmc.krypton.registry.KryptonRegistries
 import org.kryptonmc.krypton.world.scoreboard.KryptonCriterion
 
 class KryptonStatistic<T>(
     override val type: StatisticType<T>,
     override val value: T,
     override val formatter: StatisticFormatter
-) : KryptonCriterion(getCriterionName(type, value), false, ObjectiveRenderType.INTEGER), Statistic<T> {
+) : KryptonCriterion(getCriterionName(type, value)), Statistic<T> {
 
     override fun equals(other: Any?): Boolean = this === other || other is KryptonStatistic<*> && name == other.name
 
@@ -39,10 +40,10 @@ class KryptonStatistic<T>(
     companion object {
 
         @JvmStatic
-        private fun <T> getCriterionName(type: StatisticType<T>, value: T): String {
-            val key = type.key().asString().replace(':', '.')
-            val path = type.registry.getKey(value)?.asString()?.replace(':', '.')
-            return "$key:$path"
-        }
+        private fun <T> getCriterionName(type: StatisticType<T>, value: T): String =
+            locationToKey(KryptonRegistries.STATISTIC_TYPE.getKey(type)) + ":" + locationToKey(type.registry.getKey(value))
+
+        @JvmStatic
+        private fun locationToKey(key: Key?): String = key.toString().replace(':', '.')
     }
 }

@@ -29,8 +29,8 @@ class KryptonExperienceBottle(world: KryptonWorld) : KryptonThrowableProjectile(
 
     override val type: KryptonEntityType<KryptonExperienceBottle>
         get() = KryptonEntityTypes.EXPERIENCE_BOTTLE
-    override val defaultItem: KryptonItemStack
-        get() = DEFAULT_ITEM
+
+    override fun defaultItem(): KryptonItemStack = DEFAULT_ITEM
 
     companion object {
 

@@ -99,11 +99,8 @@ class RegionFile(
         }
     }
 
-    constructor(
-        folder: Path,
-        externalFolder: Path,
-        synchronizeWrites: Boolean
-    ) : this(folder, externalFolder, RegionFileVersion.ZLIB, synchronizeWrites)
+    constructor(folder: Path, externalFolder: Path,
+                synchronizeWrites: Boolean) : this(folder, externalFolder, RegionFileVersion.ZLIB, synchronizeWrites)
 
     /**
      * Gets a [DataInputStream] containing all of the chunk data for a chunk at

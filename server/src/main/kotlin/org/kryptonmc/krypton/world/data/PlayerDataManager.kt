@@ -41,10 +41,10 @@ class PlayerDataManager(val folder: Path, private val serializeData: Boolean) {
 
     fun load(player: KryptonPlayer, executor: Executor): CompletableFuture<CompoundTag?> {
         if (!serializeData) return CompletableFuture.completedFuture(null)
-        return loadData(player, executor)
+        return CompletableFuture.supplyAsync({ loadData(player) }, executor)
     }
 
-    private fun loadData(player: KryptonPlayer, executor: Executor): CompletableFuture<CompoundTag?> = CompletableFuture.supplyAsync({
+    private fun loadData(player: KryptonPlayer): CompoundTag? {
         val playerFile = folder.resolve("${player.uuid}.dat")
         if (!Files.exists(playerFile)) {
             try {
@@ -52,14 +52,14 @@ class PlayerDataManager(val folder: Path, private val serializeData: Boolean) {
             } catch (exception: Exception) {
                 LOGGER.warn("Failed to create player file for player with UUID ${player.uuid}!", exception)
             }
-            return@supplyAsync null
+            return null
         }
 
         val nbt = try {
             TagIO.read(playerFile, TagCompression.GZIP)
         } catch (exception: IOException) {
             LOGGER.warn("Failed to load player data for player ${player.profile.name}!", exception)
-            return@supplyAsync null
+            return null
         }
 
         val version = if (nbt.contains("DataVersion", 99)) nbt.getInt("DataVersion") else -1
@@ -71,8 +71,8 @@ class PlayerDataManager(val folder: Path, private val serializeData: Boolean) {
 
         val data = DataConversion.upgrade(nbt, MCTypeRegistry.PLAYER, version)
         PlayerSerializer.load(player, data)
-        data
-    }, executor)
+        return data
+    }
 
     fun save(player: KryptonPlayer): CompoundTag? {
         if (!serializeData) return null

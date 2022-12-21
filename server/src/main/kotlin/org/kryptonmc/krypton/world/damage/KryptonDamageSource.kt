@@ -28,44 +28,45 @@ import org.kryptonmc.krypton.entity.player.KryptonPlayer
 
 open class KryptonDamageSource(override val type: DamageType) : DamageSource {
 
-    val damagesHelmet: Boolean
-        get() = type.damagesHelmet
-    val bypassesArmor: Boolean
-        get() = type.bypassesArmor
-    val bypassesInvulnerability: Boolean
-        get() = type.bypassesInvulnerability
-    val bypassesMagic: Boolean
-        get() = type.bypassesMagic
-    val exhaustion: Float
-        get() = type.exhaustion
-    val isFire: Boolean
-        get() = type.isFire
-    val isProjectile: Boolean
-        get() = type.isProjectile
-    open val scalesWithDifficulty: Boolean
-        get() = type.scalesWithDifficulty
-    val isMagic: Boolean
-        get() = type.isMagic
-    val isExplosion: Boolean
-        get() = type.isExplosion
-    val isFall: Boolean
-        get() = type.isFall
-    val isThorns: Boolean
-        get() = type.isThorns
-    val aggravatesTarget: Boolean
-        get() = type.aggravatesTarget
+    fun damagesHelmet(): Boolean = type.damagesHelmet
 
-    val isCreativePlayer: Boolean
-        get() = entity() is KryptonPlayer && (entity() as KryptonPlayer).canInstantlyBuild
-    open val sourcePosition: Vec3d?
-        get() = null
+    fun bypassesArmor(): Boolean = type.bypassesArmor
+
+    fun bypassesInvulnerability(): Boolean = type.bypassesInvulnerability
+
+    fun bypassesMagic(): Boolean = type.bypassesMagic
+
+    fun exhaustion(): Float = type.exhaustion
+
+    fun isFire(): Boolean = type.isFire
+
+    fun isProjectile(): Boolean = type.isProjectile
+
+    open fun scalesWithDifficulty(): Boolean = type.scalesWithDifficulty
+
+    fun isMagic(): Boolean = type.isMagic
+
+    fun isExplosion(): Boolean = type.isExplosion
+
+    fun isFall(): Boolean = type.isFall
+
+    fun isThorns(): Boolean = type.isThorns
+
+    fun aggravatesTarget(): Boolean = type.aggravatesTarget
+
+    fun isCreativePlayer(): Boolean {
+        val entity = entity()
+        return entity is KryptonPlayer && entity.abilities.canInstantlyBuild
+    }
+
+    open fun sourcePosition(): Vec3d? = null
 
     open fun directEntity(): KryptonEntity? = entity()
 
     open fun entity(): KryptonEntity? = null
 
     open fun formatDeathMessage(target: KryptonLivingEntity): Component {
-        val killer = target.killCredit
+        val killer = target.killCredit()
         val baseMessage = "death.attack.${type.translationKey()}"
         if (killer != null) return Component.translatable("$baseMessage.player", target.displayName, killer.displayName)
         return Component.translatable(baseMessage, target.displayName)

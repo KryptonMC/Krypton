@@ -93,22 +93,9 @@ data class KryptonDamageType(
 
         fun thorns(): Builder = apply { thorns = true }
 
-        fun build(): KryptonDamageType = KryptonDamageType(
-            key,
-            translationKey,
-            damagesHelmet,
-            bypassesArmor,
-            bypassesInvulnerability,
-            bypassesMagic,
-            exhaustion,
-            fire,
-            projectile,
-            scalesWithDifficulty,
-            magic,
-            explosion,
-            fall,
-            thorns,
-            aggravatesTarget
-        )
+        fun build(): KryptonDamageType {
+            return KryptonDamageType(key, translationKey, damagesHelmet, bypassesArmor, bypassesInvulnerability, bypassesMagic, exhaustion, fire,
+                projectile, scalesWithDifficulty, magic, explosion, fall, thorns, aggravatesTarget)
+        }
     }
 }

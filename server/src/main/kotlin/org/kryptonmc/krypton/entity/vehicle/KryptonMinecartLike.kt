@@ -49,30 +49,19 @@ abstract class KryptonMinecartLike(world: KryptonWorld) : KryptonEntity(world), 
         get() = data.get(MetadataKeys.MinecartLike.SHOW_CUSTOM_BLOCK)
         set(value) = data.set(MetadataKeys.MinecartLike.SHOW_CUSTOM_BLOCK, value)
     override var customBlock: BlockState
-        get() = internalCustomBlock
+        get() = customBlock()
         set(value) {
-            internalCustomBlock = value.downcast()
-        }
-    var internalCustomBlock: KryptonBlockState
-        get() = if (!showCustomBlock) defaultCustomBlock else KryptonBlock.stateFromId(data.get(MetadataKeys.MinecartLike.CUSTOM_BLOCK_ID))
-        set(value) {
-            data.set(MetadataKeys.MinecartLike.CUSTOM_BLOCK_ID, KryptonBlock.idOf(value))
-            showCustomBlock = value !== defaultCustomBlock
+            setCustomBlock(value.downcast())
         }
     override var customBlockOffset: Int
         get() = data.get(MetadataKeys.MinecartLike.CUSTOM_BLOCK_OFFSET)
         set(value) {
             data.set(MetadataKeys.MinecartLike.CUSTOM_BLOCK_OFFSET, value)
-            showCustomBlock = value != defaultCustomBlockOffset
+            showCustomBlock = value != defaultCustomBlockOffset()
         }
     private var hurtDirection: Int
         get() = data.get(MetadataKeys.MinecartLike.HURT_DIRECTION)
         set(value) = data.set(MetadataKeys.MinecartLike.HURT_DIRECTION, value)
-
-    protected open val defaultCustomBlock: KryptonBlockState
-        get() = KryptonBlocks.AIR.defaultState
-    protected open val defaultCustomBlockOffset: Int
-        get() = 0
 
     override fun defineData() {
         super.defineData()
@@ -99,6 +88,20 @@ abstract class KryptonMinecartLike(world: KryptonWorld) : KryptonEntity(world), 
         }
         return true
     }
+
+    fun customBlock(): KryptonBlockState {
+        if (!showCustomBlock) return defaultCustomBlock()
+        return KryptonBlock.stateFromId(data.get(MetadataKeys.MinecartLike.CUSTOM_BLOCK_ID))
+    }
+
+    fun setCustomBlock(block: KryptonBlockState) {
+        data.set(MetadataKeys.MinecartLike.CUSTOM_BLOCK_ID, KryptonBlock.idOf(block))
+        showCustomBlock = block !== defaultCustomBlock()
+    }
+
+    protected open fun defaultCustomBlock(): KryptonBlockState = KryptonBlocks.AIR.defaultState
+
+    protected open fun defaultCustomBlockOffset(): Int = 0
 
     companion object {
 

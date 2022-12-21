@@ -35,6 +35,7 @@ import java.time.Instant
 import java.util.UUID
 
 @JvmRecord
+@Suppress("ArrayInDataClass")
 data class MessageSignature(val timestamp: Instant, val salt: Long, val signature: ByteArray) : Writable {
 
     constructor(buf: ByteBuf) : this(buf.readInstant(), buf.readLong(), buf.readVarIntByteArray())
@@ -49,20 +50,6 @@ data class MessageSignature(val timestamp: Instant, val salt: Long, val signatur
         if (publicKey == null) return true
         if (signature.isEmpty()) return false
         return publicKey.createSignatureValidator().validate(signature) { updateSignature(it, message, uuid, timestamp, salt) }
-    }
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-        return timestamp == (other as MessageSignature).timestamp && salt == other.salt && signature.contentEquals(other.signature)
-    }
-
-    override fun hashCode(): Int {
-        var result = 1
-        result = 31 * result + timestamp.hashCode()
-        result = 31 * result + salt.hashCode()
-        result = 31 * result + signature.contentHashCode()
-        return result
     }
 
     companion object {

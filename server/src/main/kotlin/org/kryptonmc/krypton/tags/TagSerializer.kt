@@ -53,12 +53,12 @@ object TagSerializer {
     @JvmRecord
     data class NetworkPayload(val tags: Map<Key, IntList>) : Writable {
 
-        constructor(buf: ByteBuf) : this(buf.readMap({ it.readKey() }, { it.readIntIdList() }))
+        constructor(buf: ByteBuf) : this(buf.readMap(ByteBuf::readKey, ByteBuf::readIntIdList))
 
         fun isEmpty(): Boolean = tags.isEmpty()
 
         override fun write(buf: ByteBuf) {
-            buf.writeMap(tags, { _, key -> buf.writeKey(key) }, { _, ids -> buf.writeIntIdList(ids) })
+            buf.writeMap(tags, ByteBuf::writeKey, ByteBuf::writeIntIdList)
         }
     }
 }

@@ -63,5 +63,5 @@ interface WorldAccessor : EntityGetter, ReadOnlyWorld, WriteOnlyWorld, WorldTime
         worldEvent(pos, event, data, null)
     }
 
-    override fun hasChunk(x: Int, z: Int): Boolean = chunkManager.get(x, z) != null
+    override fun hasChunk(x: Int, z: Int): Boolean = chunkManager.getChunk(x, z) != null
 }

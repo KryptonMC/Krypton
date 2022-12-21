@@ -45,8 +45,6 @@ abstract class KryptonFluid : Fluid, StateHolderDelegate<FluidState, KryptonFlui
 
     override val isEmpty: Boolean
         get() = false
-    open val pickupSound: SoundEvent?
-        get() = null
 
     init {
         val builder = StateDefinition.Builder<KryptonFluid, KryptonFluidState>(this)
@@ -54,6 +52,8 @@ abstract class KryptonFluid : Fluid, StateHolderDelegate<FluidState, KryptonFlui
         stateDefinition = builder.build({ it.defaultFluidState }, ::KryptonFluidState)
         defaultFluidState = stateDefinition.any()
     }
+
+    open fun pickupSound(): SoundEvent? = null
 
     abstract fun getFlow(world: BlockGetter, pos: BlockPos, state: KryptonFluidState): Vec3d
 

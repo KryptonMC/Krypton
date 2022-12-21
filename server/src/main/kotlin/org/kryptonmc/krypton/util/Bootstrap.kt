@@ -71,7 +71,7 @@ object Bootstrap {
     @JvmStatic
     @VisibleForTesting
     fun preloadFactories() {
-        Reflection.modifyField(kryptonClass, "factoryProvider", KryptonFactoryProvider)
+        Reflection.modifyStaticField(kryptonClass, "factoryProvider", KryptonFactoryProvider)
         KryptonFactoryProvider.bootstrap()
     }
 
@@ -79,7 +79,7 @@ object Bootstrap {
     @JvmStatic
     @VisibleForTesting
     fun preloadRegistries() {
-        Reflection.modifyField(kryptonClass, "registryManager", KryptonRegistries.ManagerImpl)
+        Reflection.modifyStaticField(kryptonClass, "registryManager", KryptonRegistries.ManagerImpl)
         KryptonRegistries.bootstrap()
         Registries
         BlockTags

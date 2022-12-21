@@ -22,8 +22,9 @@ import net.kyori.adventure.key.Key
 import net.kyori.adventure.text.Component
 import org.kryptonmc.api.inventory.InventoryType
 
-@JvmRecord
-data class KryptonInventoryType(private val key: Key, override val size: Int, override val defaultTitle: Component) : InventoryType {
+class KryptonInventoryType(private val key: Key, override val size: Int, override val defaultTitle: Component) : InventoryType {
 
     override fun key(): Key = key
+
+    override fun toString(): String = "KryptonInventoryType(size=$size, defaultTitle=$defaultTitle)"
 }

@@ -29,7 +29,6 @@ import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.event.player.KryptonJoinEvent
 import org.kryptonmc.krypton.event.player.KryptonQuitEvent
 import org.kryptonmc.krypton.locale.Messages
-import org.kryptonmc.krypton.network.NettyConnection
 import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.packet.out.play.GameEvent
 import org.kryptonmc.krypton.packet.out.play.PacketOutAbilities
@@ -74,12 +73,14 @@ class PlayerManager(private val server: KryptonServer) {
 
     private val executor = Executors.newFixedThreadPool(8, daemonThreadFactory("Player Executor #%d"))
     private val dataManager = createDataManager(server)
-    val players: MutableList<KryptonPlayer> = CopyOnWriteArrayList()
+    private val players = CopyOnWriteArrayList<KryptonPlayer>()
     private val playersByName = ConcurrentHashMap<String, KryptonPlayer>()
     private val playersByUUID = ConcurrentHashMap<UUID, KryptonPlayer>()
 
     val banManager: BanManager = BanManager(Path.of("bans.json"))
     val whitelistManager: WhitelistManager = WhitelistManager(Path.of("whitelist.json"))
+
+    fun players(): List<KryptonPlayer> = players
 
     fun dataFolder(): Path = dataManager.folder
 
@@ -104,10 +105,10 @@ class PlayerManager(private val server: KryptonServer) {
 
     fun getPlayer(uuid: UUID): KryptonPlayer? = playersByUUID.get(uuid)
 
-    fun add(player: KryptonPlayer, session: NettyConnection): CompletableFuture<Void> = dataManager.load(player, executor).thenAcceptAsync({ nbt ->
+    fun addPlayer(player: KryptonPlayer): CompletableFuture<Void> = dataManager.load(player, executor).thenAcceptAsync({ nbt ->
         val profile = player.profile
         val name = server.profileCache.getProfile(profile.uuid)?.name ?: profile.name
-        server.profileCache.add(profile)
+        server.profileCache.addProfile(profile)
         val dimension = if (nbt != null) {
             KryptonDimensionType.parseLegacy(Dynamic(NbtOps.INSTANCE, nbt.get("Dimension")))
                 .resultOrPartial { LOGGER.error(it) }
@@ -126,11 +127,11 @@ class PlayerManager(private val server: KryptonServer) {
         // Join the game
         val reducedDebugInfo = world.gameRules.get(GameRules.REDUCED_DEBUG_INFO)
         val doImmediateRespawn = world.gameRules.get(GameRules.DO_IMMEDIATE_RESPAWN)
-        session.send(PacketOutLogin(
+        player.connection.send(PacketOutLogin(
             player.id,
             world.data.isHardcore,
-            player.gameModeSystem.gameMode,
-            player.gameModeSystem.previousGameMode,
+            player.gameModeSystem.gameMode(),
+            player.gameModeSystem.previousGameMode(),
             server.worldManager.worlds.keys,
             PacketOutLogin.createRegistryCodec(),
             KryptonRegistries.DIMENSION_TYPE.getResourceKey(world.dimensionType)!!,
@@ -145,16 +146,16 @@ class PlayerManager(private val server: KryptonServer) {
             false,
             null
         ))
-        session.write(PacketOutPluginMessage(BRAND_KEY, BRAND_MESSAGE))
-        session.send(PacketOutChangeDifficulty(world.difficulty))
+        player.connection.write(PacketOutPluginMessage(BRAND_KEY, BRAND_MESSAGE))
+        player.connection.send(PacketOutChangeDifficulty(world.difficulty))
 
         // Player data stuff
-        session.send(PacketOutAbilities(player.abilities))
-        session.send(PacketOutSetHeldItem(player.inventory.heldSlot))
-        session.write(PacketOutUpdateRecipes.CACHED)
-        session.write(PacketOutUpdateRecipeBook.CACHED_INIT)
-        session.write(PacketOutUpdateTags.CACHED)
-        session.send(PacketOutEntityEvent(player.id, if (reducedDebugInfo) ENABLE_REDUCED_DEBUG_SCREEN else DISABLE_REDUCED_DEBUG_SCREEN))
+        player.connection.send(PacketOutAbilities(player.abilities))
+        player.connection.send(PacketOutSetHeldItem(player.inventory.heldSlot))
+        player.connection.write(PacketOutUpdateRecipes.CACHED)
+        player.connection.write(PacketOutUpdateRecipeBook.CACHED_INIT)
+        player.connection.write(PacketOutUpdateTags.CACHED)
+        player.connection.send(PacketOutEntityEvent(player.id, if (reducedDebugInfo) ENABLE_REDUCED_DEBUG_SCREEN else DISABLE_REDUCED_DEBUG_SCREEN))
         sendCommands(player)
         player.statisticsTracker.invalidate()
         updateScoreboard(world.scoreboard, player)
@@ -170,14 +171,14 @@ class PlayerManager(private val server: KryptonServer) {
         if (!joinResult.isAllowed) {
             // Use default reason if denied without specified reason
             val reason = joinResult.message ?: Messages.Disconnect.KICKED.build()
-            session.disconnect(reason)
+            player.connection.disconnect(reason)
             return@thenAcceptAsync
         }
         val defaultJoinMessage = if (joinResult.hasJoinedBefore) Messages.PLAYER_JOINED_RENAMED else Messages.PLAYER_JOINED
         val joinMessage = joinResult.message ?: defaultJoinMessage.build(player.displayName)
         server.sendMessage(joinMessage)
-        session.send(PacketOutSynchronizePlayerPosition(player))
-        session.send(PacketOutPlayerInfo(PacketOutPlayerInfo.Action.ADD_PLAYER, player))
+        player.connection.send(PacketOutSynchronizePlayerPosition(player))
+        player.connection.send(PacketOutPlayerInfo(PacketOutPlayerInfo.Action.ADD_PLAYER, player))
         world.spawnPlayer(player)
 
         // Send the initial chunk stream
@@ -191,13 +192,13 @@ class PlayerManager(private val server: KryptonServer) {
         }
 
         // Send inventory data
-        session.send(PacketOutSetContainerContent(player.inventory, player.inventory.mainHand))
+        player.connection.send(PacketOutSetContainerContent(player.inventory, player.inventory.mainHand))
     }, executor)
 
-    fun remove(player: KryptonPlayer) {
+    fun removePlayer(player: KryptonPlayer) {
         server.eventManager.fire(KryptonQuitEvent(player)).thenAcceptAsync({ event ->
             player.statisticsTracker.incrementStatistic(CustomStatistics.LEAVE_GAME)
-            save(player)
+            savePlayer(player)
             player.world.chunkManager.removePlayer(player)
 
             // Remove from caches
@@ -234,7 +235,7 @@ class PlayerManager(private val server: KryptonServer) {
     }
 
     fun saveAll() {
-        players.forEach(::save)
+        players.forEach(::savePlayer)
     }
 
     fun tick(time: Long) {
@@ -249,7 +250,7 @@ class PlayerManager(private val server: KryptonServer) {
         server.commandManager.updateCommands(player)
     }
 
-    private fun save(player: KryptonPlayer) {
+    private fun savePlayer(player: KryptonPlayer) {
         dataManager.save(player)?.let { server.userManager.updateUser(player.uuid, it) }
         player.statisticsTracker.save()
     }

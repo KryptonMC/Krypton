@@ -50,8 +50,6 @@ class KryptonCrossbowMeta(data: CompoundTag) : AbstractItemMeta<KryptonCrossbowM
 
     override fun toBuilder(): CrossbowMeta.Builder = Builder(this)
 
-    override fun toString(): String = "KryptonCrossbowMeta(${partialToString()}, isCharged=$isCharged, projectiles=$projectiles)"
-
     class Builder : KryptonItemMetaBuilder<CrossbowMeta.Builder, CrossbowMeta>, CrossbowMeta.Builder {
 
         private var charged = false

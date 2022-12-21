@@ -20,8 +20,7 @@ package org.kryptonmc.krypton.world.material
 
 import org.kryptonmc.api.block.PushReaction
 
-@JvmRecord
-data class Material(
+class Material(
     val color: MaterialColor,
     val pushReaction: PushReaction,
     val blocksMotion: Boolean,
@@ -32,11 +31,8 @@ data class Material(
     val solid: Boolean
 ) {
 
-    // This is what we want here, as we have a limited set of materials that actually exist, and when we do comparisons, we will always
-    // compare it to one of them, so if we somehow provide a material that isn't in the Materials class, we want that to never be equal.
-    override fun equals(other: Any?): Boolean = this === other
-
-    override fun hashCode(): Int = System.identityHashCode(this)
+    override fun toString(): String = "Material(color=$color, pushReaction=$pushReaction, blocksMotion=$blocksMotion, flammable=$flammable, " +
+            "liquid=$liquid, solidBlocking=$solidBlocking, replaceable=$replaceable, solid=$solid)"
 
     class Builder(private val color: MaterialColor) {
 

@@ -58,9 +58,9 @@ abstract class VoxelShape(val shape: DiscreteVoxelShape) {
         return KryptonBoundingBox(min(Axis.X), min(Axis.Y), min(Axis.Z), max(Axis.X), max(Axis.Y), max(Axis.Z))
     }
 
-    abstract fun coordinates(axis: Axis): DoubleList
+    abstract fun getCoordinates(axis: Axis): DoubleList
 
-    protected open fun get(axis: Axis, index: Int): Double = coordinates(axis).getDouble(index)
+    protected open fun get(axis: Axis, index: Int): Double = getCoordinates(axis).getDouble(index)
 
     open fun isEmpty(): Boolean = shape.isEmpty()
 
@@ -68,9 +68,9 @@ abstract class VoxelShape(val shape: DiscreteVoxelShape) {
 
     open fun move(x: Double, y: Double, z: Double): VoxelShape {
         if (isEmpty()) return Shapes.empty()
-        val offsetXs = OffsetDoubleList(coordinates(Axis.X), x)
-        val offsetYs = OffsetDoubleList(coordinates(Axis.Y), y)
-        val offsetZs = OffsetDoubleList(coordinates(Axis.Z), z)
+        val offsetXs = OffsetDoubleList(getCoordinates(Axis.X), x)
+        val offsetYs = OffsetDoubleList(getCoordinates(Axis.Y), y)
+        val offsetZs = OffsetDoubleList(getCoordinates(Axis.Z), z)
         return ArrayVoxelShape(shape, offsetXs, offsetYs, offsetZs)
     }
 
@@ -81,9 +81,9 @@ abstract class VoxelShape(val shape: DiscreteVoxelShape) {
     }
 
     open fun forAllBoxes(consumer: Shapes.DoubleLineConsumer) {
-        val xs = coordinates(Axis.X)
-        val ys = coordinates(Axis.Y)
-        val zs = coordinates(Axis.Z)
+        val xs = getCoordinates(Axis.X)
+        val ys = getCoordinates(Axis.Y)
+        val zs = getCoordinates(Axis.Z)
         shape.forAllBoxes(true) { x1, y1, z1, x2, y2, z2 ->
             consumer.consume(xs.getDouble(x1), ys.getDouble(y1), zs.getDouble(z1), xs.getDouble(x2), ys.getDouble(y2), zs.getDouble(z2))
         }
@@ -103,13 +103,8 @@ abstract class VoxelShape(val shape: DiscreteVoxelShape) {
     fun max(axis: Axis, primaryPosition: Double, secondaryPosition: Double): Double =
         minOrMax(axis, primaryPosition, secondaryPosition, shape::lastFull) { if (it <= 0) Double.NEGATIVE_INFINITY else get(axis, it) }
 
-    private inline fun minOrMax(
-        axis: Axis,
-        primaryPosition: Double,
-        secondaryPosition: Double,
-        fullProvider: (Axis, Int, Int) -> Int,
-        checker: (Int) -> Double
-    ): Double {
+    private inline fun minOrMax(axis: Axis, primaryPosition: Double, secondaryPosition: Double, fullProvider: (Axis, Int, Int) -> Int,
+                                checker: (Int) -> Double): Double {
         val forward = AxisCycle.FORWARD.cycle(axis)
         val backward = AxisCycle.BACKWARD.cycle(axis)
         val forwardIndex = findIndex(forward, primaryPosition)
@@ -134,7 +129,7 @@ abstract class VoxelShape(val shape: DiscreteVoxelShape) {
     }
 
     protected open fun calculateFace(direction: Direction): VoxelShape {
-        val coordinates = coordinates(direction.axis)
+        val coordinates = getCoordinates(direction.axis)
         val firstIsZero = DoubleMath.fuzzyEquals(coordinates.getDouble(0), 0.0, Shapes.EPSILON)
         val secondIsOne = DoubleMath.fuzzyEquals(coordinates.getDouble(1), 1.0, Shapes.EPSILON)
         if (coordinates.size == 2 && firstIsZero && secondIsOne) return this

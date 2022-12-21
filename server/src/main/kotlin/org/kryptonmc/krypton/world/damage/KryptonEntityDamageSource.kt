@@ -30,10 +30,9 @@ import org.kryptonmc.krypton.item.KryptonItemStack
 
 open class KryptonEntityDamageSource(type: DamageType, final override val entity: KryptonEntity) : KryptonDamageSource(type), EntityDamageSource {
 
-    override val sourcePosition: Vec3d?
-        get() = entity.position
-    override val scalesWithDifficulty: Boolean
-        get() = entity is KryptonLivingEntity && entity !is KryptonPlayer
+    override fun scalesWithDifficulty(): Boolean = entity is KryptonLivingEntity && entity !is KryptonPlayer
+
+    override fun sourcePosition(): Vec3d? = entity.position
 
     override fun entity(): KryptonEntity? = entity
 

@@ -26,14 +26,14 @@ import java.util.function.ToIntFunction
 
 object KryptonPropertyFactory : Property.Factory {
 
-    private var PROPERTIES: Map<String, KryptonProperty<*>>? = null
+    private var cachedProperties: Map<String, KryptonProperty<*>>? = null
 
-    override fun forBoolean(name: String): Property<Boolean> = properties().get(name) as BooleanProperty
+    override fun forBoolean(name: String): Property<Boolean> = getAllProperties().get(name) as BooleanProperty
 
-    override fun forInt(name: String): Property<Int> = properties().get(name) as IntProperty
+    override fun forInt(name: String): Property<Int> = getAllProperties().get(name) as IntProperty
 
     @Suppress("UNCHECKED_CAST")
-    override fun <E : Enum<E>> forEnum(name: String): Property<E> = properties().get(name) as EnumProperty<E>
+    override fun <E : Enum<E>> forEnum(name: String): Property<E> = getAllProperties().get(name) as EnumProperty<E>
 
     @JvmStatic
     private fun collectFieldProperties(): MutableMap<KryptonProperty<*>, String> {
@@ -50,8 +50,8 @@ object KryptonPropertyFactory : Property.Factory {
     }
 
     @JvmStatic
-    private fun properties(): Map<String, KryptonProperty<*>> {
-        if (PROPERTIES != null) return PROPERTIES!!
+    private fun getAllProperties(): Map<String, KryptonProperty<*>> {
+        if (cachedProperties != null) return cachedProperties!!
         val builtins = collectFieldProperties()
         val propertyUsages = HashMap<String, KryptonProperty<*>>()
         val propertyCount = Object2IntOpenHashMap<String>()
@@ -64,7 +64,7 @@ object KryptonPropertyFactory : Property.Factory {
                 propertyUsages.put(name, property)
             }
         }
-        PROPERTIES = propertyUsages
+        cachedProperties = propertyUsages
         return propertyUsages
     }
 }

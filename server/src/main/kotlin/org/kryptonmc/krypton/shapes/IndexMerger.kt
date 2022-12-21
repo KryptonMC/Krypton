@@ -22,8 +22,9 @@ import it.unimi.dsi.fastutil.doubles.DoubleList
 
 interface IndexMerger {
 
-    val list: DoubleList
-    val size: Int
+    fun asList(): DoubleList
+
+    fun size(): Int
 
     fun forMergedIndices(consumer: IndexConsumer): Boolean
 

@@ -47,12 +47,6 @@ class KryptonChunk(
 ) : ChunkAccessor(position, world, inhabitedTime, sections), Chunk {
 
     override val status: ChunkStatus = ChunkStatus.FULL
-    override val height: Int = world.height
-    override val minimumBuildHeight: Int = world.minimumBuildHeight
-
-    private val lightSectionCount = sectionCount + 2
-    val minimumLightSection: Int = minimumSection - 1
-    val maximumLightSection: Int = minimumLightSection + lightSectionCount
 
     override val x: Int
         get() = position.x
@@ -69,9 +63,9 @@ class KryptonChunk(
 //            return block ?: KryptonBlocks.AIR.defaultState
 //        }
         val sectionIndex = getSectionIndex(y)
-        if (sectionIndex >= 0 && sectionIndex < sections.size) {
-            val section = sections[sectionIndex]
-            if (!section.hasOnlyAir()) return section.get(x and 15, y and 15, z and 15)
+        if (sectionIndex >= 0 && sectionIndex < sections().size) {
+            val section = sections()[sectionIndex]
+            if (!section.hasOnlyAir()) return section.getBlock(x and 15, y and 15, z and 15)
         }
         return KryptonBlocks.AIR.defaultState
     }
@@ -80,9 +74,9 @@ class KryptonChunk(
 
     override fun getFluid(x: Int, y: Int, z: Int): KryptonFluidState {
         val sectionIndex = getSectionIndex(y)
-        if (sectionIndex >= 0 && sectionIndex < sections.size) {
-            val section = sections[sectionIndex]
-            if (!section.hasOnlyAir()) return section.get(x and 15, y and 15, z and 15).asFluid()
+        if (sectionIndex >= 0 && sectionIndex < sections().size) {
+            val section = sections()[sectionIndex]
+            if (!section.hasOnlyAir()) return section.getBlock(x and 15, y and 15, z and 15).asFluid()
         }
         return KryptonFluids.EMPTY.defaultState
     }
@@ -90,14 +84,14 @@ class KryptonChunk(
     override fun getFluid(position: Vec3i): KryptonFluidState = getFluid(position.x, position.y, position.z)
 
     override fun setBlock(pos: BlockPos, state: KryptonBlockState, moving: Boolean): KryptonBlockState? {
-        val section = sections[getSectionIndex(pos.y)]
+        val section = sections()[getSectionIndex(pos.y)]
         if (section.hasOnlyAir() && state.isAir) return null
 
         // Get the local coordinates and set the new state in the section
         val localX = pos.x and 15
         val localY = pos.y and 15
         val localZ = pos.z and 15
-        val oldState = section.set(localX, localY, localZ, state)
+        val oldState = section.setBlock(localX, localY, localZ, state)
         if (oldState === state) return null
 
         // Update the heightmaps
@@ -118,4 +112,10 @@ class KryptonChunk(
     fun tick(playerCount: Int) {
         inhabitedTime += playerCount
     }
+
+    private fun lightSectionCount(): Int = sectionCount() + 2
+
+    fun minimumLightSection(): Int = minimumSection() - 1
+
+    fun maximumLightSection(): Int = minimumLightSection() + lightSectionCount()
 }

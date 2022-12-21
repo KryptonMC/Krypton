@@ -27,7 +27,7 @@ import java.util.function.Predicate
 object EntityPredicates {
 
     @JvmField
-    val LIVING_ENTITY_STILL_ALIVE: Predicate<KryptonEntity> = Predicate { it.isAlive && it is KryptonLivingEntity }
+    val LIVING_ENTITY_STILL_ALIVE: Predicate<KryptonEntity> = Predicate { it.isAlive() && it is KryptonLivingEntity }
     @JvmField
     val NO_CREATIVE_OR_SPECTATOR: Predicate<KryptonEntity> = Predicate {
         it !is KryptonPlayer || it.gameMode != GameMode.CREATIVE && it.gameMode != GameMode.SPECTATOR

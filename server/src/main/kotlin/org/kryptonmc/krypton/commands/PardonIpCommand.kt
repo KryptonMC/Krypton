@@ -45,7 +45,7 @@ object PardonIpCommand {
                     val target = it.getArgument(TARGET, String::class.java)
                     if (!BanIpCommand.IP_ADDRESS_PATTERN.matcher(target).matches()) throw ERROR_INVALID_IP.create()
                     if (!banManager.isBanned(target)) throw ERROR_ALREADY_UNBANNED.create()
-                    banManager.remove(target)
+                    banManager.removeBan(target)
                     Messages.Commands.PARDON_IP_SUCCESS.send(it.source, target)
                 }
             }

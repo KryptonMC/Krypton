@@ -78,7 +78,7 @@ object BanIpCommand {
     private fun doBan(source: CommandSourceStack, manager: BanManager, ip: String, reason: String): KryptonIpBan {
         if (manager.isBanned(ip)) throw ERROR_ALREADY_BANNED.create()
         val ban = KryptonIpBan(ip, reason = LegacyComponentSerializer.legacySection().deserialize(reason))
-        manager.add(ban)
+        manager.addBan(ban)
         source.sendSuccess(Messages.Commands.BAN_IP_SUCCESS.build(ip, ban.reason), true)
         return ban
     }

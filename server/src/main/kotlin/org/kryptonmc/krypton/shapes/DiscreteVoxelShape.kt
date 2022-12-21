@@ -45,10 +45,7 @@ abstract class DiscreteVoxelShape protected constructor(val sizeX: Int, val size
 
     abstract fun fill(x: Int, y: Int, z: Int)
 
-    open fun isEmpty(): Boolean {
-        AXIS_VALUES.forEach { if (firstFull(it) >= lastFull(it)) return true }
-        return false
-    }
+    open fun isEmpty(): Boolean = AXIS_VALUES.any { firstFull(it) >= lastFull(it) }
 
     abstract fun firstFull(axis: Direction.Axis): Int
 

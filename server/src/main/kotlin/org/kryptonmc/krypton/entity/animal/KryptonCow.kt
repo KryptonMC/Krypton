@@ -31,8 +31,7 @@ open class KryptonCow(world: KryptonWorld) : KryptonAnimal(world), Cow {
     override val type: KryptonEntityType<KryptonCow>
         get() = KryptonEntityTypes.COW
 
-    override val soundVolume: Float
-        get() = 0.4F
+    override fun soundVolume(): Float = 0.4F
 
     companion object {
 

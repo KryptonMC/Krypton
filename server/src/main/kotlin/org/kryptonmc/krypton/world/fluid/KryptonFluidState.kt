@@ -44,8 +44,8 @@ class KryptonFluidState(
         get() = fluid.isSource(this)
     override val level: Int
         get() = fluid.level(this)
-    val ownHeight: Float
-        get() = fluid.getOwnHeight(this)
+
+    fun ownHeight(): Float = fluid.getOwnHeight(this)
 
     fun getHeight(world: BlockGetter, pos: BlockPos): Float = fluid.getHeight(this, world, pos)
 

@@ -49,7 +49,8 @@ abstract class KryptonAgeable(world: KryptonWorld) : KryptonMob(world), Ageable 
     override val canBreedNaturally: Boolean
         get() = false
 
-    init {
+    override fun defineData() {
+        super.defineData()
         data.define(MetadataKeys.Ageable.BABY, false)
     }
 

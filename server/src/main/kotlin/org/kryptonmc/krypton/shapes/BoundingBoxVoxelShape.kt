@@ -44,7 +44,7 @@ class BoundingBoxVoxelShape(val box: BoundingBox) : VoxelShape(Shapes.unoptimize
 
     override fun bounds(): BoundingBox = box
 
-    override fun coordinates(axis: Direction.Axis): DoubleList = when (axis) {
+    override fun getCoordinates(axis: Direction.Axis): DoubleList = when (axis) {
         Direction.Axis.X -> {
             if (cachedXs == null) cachedXs = DoubleArrayList.wrap(doubleArrayOf(box.minimumX, box.maximumX))
             cachedXs!!

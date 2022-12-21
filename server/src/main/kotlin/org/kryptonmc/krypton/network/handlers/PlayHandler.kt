@@ -112,8 +112,6 @@ class PlayHandler(
     private val player: KryptonPlayer
 ) : TickablePacketHandler {
 
-    private val playerManager = server.playerManager
-    private val sessionManager = server.sessionManager
     private var lastKeepAlive = 0L
     private var keepAliveChallenge = 0L
     private var pendingKeepAlive = false
@@ -141,7 +139,7 @@ class PlayHandler(
         val playerNameText = PlainTextComponentSerializer.plainText().serialize(player.name)
         LOGGER.info("$playerNameText was disconnected: ${PlainTextComponentSerializer.plainText().serialize(message)}")
         player.disconnect()
-        playerManager.remove(player)
+        server.playerManager.removePlayer(player)
     }
 
     fun handleSwingArm(packet: PacketInSwingArm) {
@@ -149,7 +147,7 @@ class PlayHandler(
             Hand.MAIN -> EntityAnimation.SWING_MAIN_ARM
             Hand.OFF -> EntityAnimation.SWING_OFFHAND
         }
-        sessionManager.sendGrouped(PacketOutAnimation(player.id, animation)) { it !== player }
+        server.sessionManager.sendGrouped(PacketOutAnimation(player.id, animation)) { it !== player }
     }
 
     fun handleChatCommand(packet: PacketInChatCommand) {
@@ -236,7 +234,7 @@ class PlayHandler(
         val item = packet.clickedItem
         val inValidRange = packet.slot >= 1 && packet.slot < KryptonPlayerInventory.SIZE
         val isValid = item.isEmpty() || item.meta.damage >= 0 && item.amount <= 64 && !item.isEmpty()
-        if (inValidRange && isValid) player.inventory.set(packet.slot, packet.clickedItem)
+        if (inValidRange && isValid) player.inventory.setItem(packet.slot, packet.clickedItem)
     }
 
     fun handlePlayerCommand(packet: PacketInPlayerCommand) {
@@ -267,7 +265,7 @@ class PlayHandler(
         if (pendingKeepAlive && packet.id == keepAliveChallenge) {
             connection.updateLatency(lastKeepAlive)
             pendingKeepAlive = false
-            sessionManager.sendGrouped(PacketOutPlayerInfo(PacketOutPlayerInfo.Action.UPDATE_LATENCY, player))
+            server.sessionManager.sendGrouped(PacketOutPlayerInfo(PacketOutPlayerInfo.Action.UPDATE_LATENCY, player))
             return
         }
         disconnect(Messages.Disconnect.TIMEOUT.build())
@@ -291,7 +289,7 @@ class PlayHandler(
 
         val chunkX = SectionPos.blockToSection(player.position.x)
         val chunkZ = SectionPos.blockToSection(player.position.z)
-        val chunk = world.chunkManager.get(ChunkPos.pack(chunkX, chunkZ)) ?: return
+        val chunk = world.chunkManager.getChunk(ChunkPos.pack(chunkX, chunkZ)) ?: return
         val existingBlock = chunk.getBlock(position)
         if (!existingBlock.eq(KryptonBlocks.AIR)) return
         chunk.setBlock(position, KryptonRegistries.BLOCK.get(player.inventory.mainHand.type.key()).defaultState, false)
@@ -318,7 +316,7 @@ class PlayHandler(
     }
 
     fun handleInteract(packet: PacketInInteract) {
-        val target = player.world.entityManager.get(packet.entityId)
+        val target = player.world.entityManager.getById(packet.entityId)
         player.isSneaking = packet.sneaking
         if (target == null) return
         if (player.position.distanceSquared(target.position) >= INTERACTION_RANGE_SQUARED) return
@@ -331,8 +329,8 @@ class PlayHandler(
 
     fun handlePlayerRotation(packet: PacketInSetPlayerRotation) {
         if (!updateRotation(packet.yaw, packet.pitch)) return
-        sessionManager.sendGrouped(PacketOutUpdateEntityRotation(player.id, packet.yaw, packet.pitch, packet.onGround)) { it !== player }
-        sessionManager.sendGrouped(PacketOutSetHeadRotation(player.id, packet.yaw)) { it !== player }
+        server.sessionManager.sendGrouped(PacketOutUpdateEntityRotation(player.id, packet.yaw, packet.pitch, packet.onGround)) { it !== player }
+        server.sessionManager.sendGrouped(PacketOutSetHeadRotation(player.id, packet.yaw)) { it !== player }
     }
 
     fun handlePlayerPositionAndRotation(packet: PacketInSetPlayerPositionAndRotation) {
@@ -343,7 +341,7 @@ class PlayHandler(
         // However, we're always using the packet's values, which are the updated values, and we'll have to send that packet anyway, so
         // there's no point checking whether the rotation has changed or not beforehand.
         if (updateRotation(packet.yaw, packet.pitch)) {
-            sessionManager.sendGrouped(PacketOutSetHeadRotation(player.id, packet.yaw)) { it !== player }
+            server.sessionManager.sendGrouped(PacketOutSetHeadRotation(player.id, packet.yaw)) { it !== player }
         }
     }
 
@@ -395,13 +393,13 @@ class PlayHandler(
     fun handleClientCommand(packet: PacketInClientCommand) {
         when (packet.action) {
             PacketInClientCommand.Action.PERFORM_RESPAWN -> Unit // TODO
-            PacketInClientCommand.Action.REQUEST_STATS -> player.statisticsTracker.send()
+            PacketInClientCommand.Action.REQUEST_STATS -> player.statisticsTracker.sendUpdated()
         }
     }
 
     fun handleEntityTagQuery(packet: PacketInQueryEntityTag) {
         if (!player.hasPermission(KryptonPermission.ENTITY_QUERY.node)) return
-        val entity = player.world.entityManager.get(packet.entityId) ?: return
+        val entity = player.world.entityManager.getById(packet.entityId) ?: return
         connection.send(PacketOutTagQueryResponse(packet.transactionId, entity.saveWithPassengers().build()))
     }
 

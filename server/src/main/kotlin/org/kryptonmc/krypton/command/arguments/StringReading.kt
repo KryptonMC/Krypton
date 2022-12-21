@@ -22,6 +22,9 @@ import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.StringReader
 import org.kryptonmc.krypton.util.Keys
 
+/**
+ * Some common utilities for StringReader.
+ */
 object StringReading {
 
     @JvmStatic

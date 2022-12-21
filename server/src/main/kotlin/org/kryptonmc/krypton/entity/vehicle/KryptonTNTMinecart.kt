@@ -44,9 +44,6 @@ class KryptonTNTMinecart(world: KryptonWorld) : KryptonMinecartLike(world), TNTM
         get() = fuse > -1
     override var fuse: Int = -1
 
-    override val defaultCustomBlock: KryptonBlockState
-        get() = KryptonBlocks.TNT.defaultState
-
     override fun prime() {
         fuse = PRIMED_FUSE
         if (!isSilent) world.playSound(this, SoundEvents.TNT_PRIMED, Sound.Source.BLOCK, 1F, 1F)
@@ -61,6 +58,8 @@ class KryptonTNTMinecart(world: KryptonWorld) : KryptonMinecartLike(world), TNTM
          */
         return super.damage(source, damage)
     }
+
+    override fun defaultCustomBlock(): KryptonBlockState = KryptonBlocks.TNT.defaultState
 
     companion object {
 

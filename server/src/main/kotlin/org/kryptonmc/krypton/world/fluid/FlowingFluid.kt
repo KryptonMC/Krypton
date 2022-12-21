@@ -37,12 +37,13 @@ abstract class FlowingFluid : KryptonFluid() {
 
     private val shapes = HashMap<KryptonFluidState, VoxelShape>()
 
-    abstract val flowing: KryptonFluid
-    abstract val source: KryptonFluid
+    abstract fun flowing(): KryptonFluid
 
-    fun flowing(level: Int, falling: Boolean): KryptonFluidState = flowing.defaultState.setProperty(LEVEL, level).setProperty(FALLING, falling)
+    abstract fun source(): KryptonFluid
 
-    fun source(falling: Boolean): KryptonFluidState = source.defaultState.setProperty(FALLING, falling)
+    fun getFlowing(level: Int, falling: Boolean): KryptonFluidState = flowing().defaultState.setProperty(LEVEL, level).setProperty(FALLING, falling)
+
+    fun getSource(falling: Boolean): KryptonFluidState = source().defaultState.setProperty(FALLING, falling)
 
     override fun createStateDefinition(builder: StateDefinition.Builder<KryptonFluid, KryptonFluidState>) {
         builder.add(FALLING)
@@ -58,18 +59,18 @@ abstract class FlowingFluid : KryptonFluid() {
             val fluid = world.getFluid(offsetPos)
             if (!affectsFlow(fluid)) return@forEach
 
-            var ownHeight = fluid.ownHeight
+            var ownHeight = fluid.ownHeight()
             var height = 0F
             if (ownHeight == 0F) {
                 if (!world.getBlock(offsetPos).material.blocksMotion) {
                     val below = world.getFluid(offsetPos.below())
                     if (affectsFlow(below)) {
-                        ownHeight = below.ownHeight
-                        if (ownHeight > 0F) height = state.ownHeight - (ownHeight - OWN_HEIGHT_OFFSET)
+                        ownHeight = below.ownHeight()
+                        if (ownHeight > 0F) height = state.ownHeight() - (ownHeight - OWN_HEIGHT_OFFSET)
                     }
                 }
             } else if (ownHeight > 0F) {
-                height = state.ownHeight - ownHeight
+                height = state.ownHeight() - ownHeight
             }
             if (height != 0F) {
                 flowX += (it.normalX * height).toDouble()
@@ -91,7 +92,7 @@ abstract class FlowingFluid : KryptonFluid() {
     }
 
     override fun getHeight(state: KryptonFluidState, world: BlockGetter, pos: BlockPos): Float =
-        if (hasSameAbove(state, world, pos)) 1F else state.ownHeight
+        if (hasSameAbove(state, world, pos)) 1F else state.ownHeight()
 
     override fun getOwnHeight(state: KryptonFluidState): Float = state.level / 9F
 

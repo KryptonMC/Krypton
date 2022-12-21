@@ -31,7 +31,7 @@ abstract class KryptonThrowableProjectile(world: KryptonWorld) : KryptonProjecti
     final override val serializer: EntitySerializer<KryptonThrowableProjectile>
         get() = ThrowableProjectileSerializer
 
-    protected abstract val defaultItem: KryptonItemStack
+    protected abstract fun defaultItem(): KryptonItemStack
 
     override fun defineData() {
         super.defineData()
@@ -40,7 +40,7 @@ abstract class KryptonThrowableProjectile(world: KryptonWorld) : KryptonProjecti
 
     final override fun asItem(): ItemStack {
         val item = data.get(MetadataKeys.ThrowableProjectile.ITEM)
-        if (item.isEmpty()) return defaultItem
+        if (item.isEmpty()) return defaultItem()
         return item
     }
 }

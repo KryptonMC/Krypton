@@ -56,7 +56,7 @@ object WhitelistCommand {
                 argument(TARGETS, GameProfileArgument) {
                     suggests { context, builder ->
                         val playerManager = context.source.server.playerManager
-                        val values = playerManager.players.stream()
+                        val values = playerManager.players().stream()
                             .filter { !playerManager.whitelistManager.isWhitelisted(it.profile) }
                             .map { it.profile.name }
                         CommandSuggestionProvider.suggest(values, builder)
@@ -90,7 +90,7 @@ object WhitelistCommand {
         var count = 0
         profiles.forEach {
             if (whitelistManager.isWhitelisted(it)) return@forEach
-            whitelistManager.add(it)
+            whitelistManager.whitelist(it)
             source.sendSuccess(Messages.Commands.WHITELIST_ADD_SUCCESS.build(it), true)
             ++count
         }
@@ -105,7 +105,7 @@ object WhitelistCommand {
         var count = 0
         profiles.forEach {
             if (!whitelistManager.isWhitelisted(it)) return@forEach
-            whitelistManager.remove(it)
+            whitelistManager.removeWhitelisted(it)
             source.sendSuccess(Messages.Commands.WHITELIST_REMOVE_SUCCESS.build(it), true)
             ++count
         }
@@ -145,11 +145,11 @@ object WhitelistCommand {
 
     @JvmStatic
     private fun getWhitelistNames(server: KryptonServer): Array<String> =
-        server.playerManager.whitelistManager.profiles().stream().map { it.name }.toArray { arrayOfNulls<String>(it) }
+        server.playerManager.whitelistManager.profiles().map { it.name }.toArray { arrayOfNulls<String>(it) }
 
     @JvmStatic
     private fun kickUnlistedPlayers(server: KryptonServer) {
-        server.playerManager.players.forEach {
+        server.playerManager.players().forEach {
             if (!server.playerManager.whitelistManager.isWhitelisted(it.profile)) it.disconnect(Messages.Disconnect.NOT_WHITELISTED.build())
         }
     }

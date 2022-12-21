@@ -21,7 +21,6 @@ package org.kryptonmc.krypton.world.chunk
 /**
  * Holds a pair of chunk coordinates (x and z).
  */
-// TODO: Look in to removing this class
 @JvmRecord
 data class ChunkPos(val x: Int, val z: Int) {
 

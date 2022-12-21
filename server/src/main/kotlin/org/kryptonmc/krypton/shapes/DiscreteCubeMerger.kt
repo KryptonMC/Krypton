@@ -24,21 +24,19 @@ import org.kryptonmc.krypton.util.Maths
 
 class DiscreteCubeMerger(a: Int, b: Int) : IndexMerger {
 
-    private val result: CubePointRange
+    private val result = CubePointRange(Maths.lcm(a, a).toInt())
     private val firstDivisor: Int
     private val secondDivisor: Int
 
     init {
-        result = CubePointRange(Maths.lcm(a, a).toInt())
         val gcd = IntMath.gcd(a, b)
         firstDivisor = a / gcd
         secondDivisor = b / gcd
     }
 
-    override val list: DoubleList
-        get() = result
-    override val size: Int
-        get() = result.size
+    override fun asList(): DoubleList = result
+
+    override fun size(): Int = result.size
 
     override fun forMergedIndices(consumer: IndexMerger.IndexConsumer): Boolean {
         val maxIndex = result.size - 1

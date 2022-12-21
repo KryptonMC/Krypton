@@ -38,14 +38,20 @@ class EntityWaterPhysicsSystem(private val entity: KryptonEntity) {
 
     private val fluidHeights = Object2DoubleArrayMap<TagKey<Fluid>>(2)
     private val fluidOnEyes = HashSet<TagKey<Fluid>>()
-    var isInWater: Boolean = false
-    var isInLava: Boolean = false
-    var isUnderwater: Boolean = false
+    private var inWater = false
+    private var inLava = false
+    private var underwater = false
+
+    fun isInWater(): Boolean = inWater
+
+    fun isInLava(): Boolean = inLava
+
+    fun isUnderwater(): Boolean = underwater
 
     fun isInBubbleColumn(): Boolean =
         entity.world.getBlock(entity.position.floorX(), entity.position.floorY(), entity.position.floorZ()).eq(KryptonBlocks.BUBBLE_COLUMN)
 
-    fun isInWaterOrBubbleColumn(): Boolean = isInWater || isInBubbleColumn()
+    fun isInWaterOrBubbleColumn(): Boolean = inWater || isInBubbleColumn()
 
     fun isUnderFluid(fluid: TagKey<Fluid>): Boolean = fluidOnEyes.contains(fluid)
 
@@ -55,7 +61,7 @@ class EntityWaterPhysicsSystem(private val entity: KryptonEntity) {
         updateSwimming()
     }
 
-    fun updateInWaterState(): Boolean {
+    private fun updateInWaterState(): Boolean {
         fluidHeights.clear()
         updateWaterCurrent()
         val lavaScale = if (entity.world.dimensionType.isUltrawarm) FAST_LAVA_FLOW_SCALE else SLOW_LAVA_FLOW_SCALE
@@ -63,13 +69,13 @@ class EntityWaterPhysicsSystem(private val entity: KryptonEntity) {
         return entity.isInWater || pushedFromLava
     }
 
-    fun updateWaterCurrent() {
-        if (entity.vehicleSystem.vehicle is KryptonBoat || !updateFluidHeightAndFlow(FluidTags.WATER, WATER_FLOW_SCALE)) {
-            isUnderwater = false
+    private fun updateWaterCurrent() {
+        if (entity.vehicleSystem.vehicle() is KryptonBoat || !updateFluidHeightAndFlow(FluidTags.WATER, WATER_FLOW_SCALE)) {
+            underwater = false
             return
         }
         entity.fallDistance = 0F
-        isUnderwater = true
+        underwater = true
         entity.remainingFireTicks = 0
     }
 
@@ -82,7 +88,7 @@ class EntityWaterPhysicsSystem(private val entity: KryptonEntity) {
         val maxZ = Maths.ceil(entity.boundingBox.maximumZ - BOUNDING_BOX_EPSILON)
 
         var amount = 0.0
-        val pushed = entity.isPushedByFluid
+        val pushed = entity.isPushedByFluid()
         var shouldPush = false
         var offset = Vec3dImpl.ZERO
         var pushes = 0
@@ -126,11 +132,11 @@ class EntityWaterPhysicsSystem(private val entity: KryptonEntity) {
     }
 
     private fun updateUnderFluid() {
-        isUnderwater = isUnderFluid(FluidTags.WATER)
+        underwater = isUnderFluid(FluidTags.WATER)
         fluidOnEyes.clear()
 
         val y = entity.position.y + entity.eyeHeight - KryptonEntity.BREATHING_DISTANCE_BELOW_EYES
-        val vehicle = entity.vehicleSystem.vehicle
+        val vehicle = entity.vehicleSystem.vehicle()
         if (vehicle is KryptonBoat && !vehicle.isUnderwater && vehicle.boundingBox.maximumY >= y && vehicle.boundingBox.minimumY <= y) return
 
         val pos = BlockPos(entity.position.x, y, entity.position.z)
@@ -156,9 +162,9 @@ class EntityWaterPhysicsSystem(private val entity: KryptonEntity) {
 
     private fun defaultUpdateSwimming() {
         if (entity.isSwimming) {
-            entity.isSwimming = entity.isSprinting && isInWater && !entity.vehicleSystem.isPassenger()
+            entity.isSwimming = entity.isSprinting && inWater && !entity.vehicleSystem.isPassenger()
         } else {
-            entity.isSwimming = entity.isSprinting && isUnderwater && !entity.vehicleSystem.isPassenger() && fluidAtFeet().eq(FluidTags.WATER)
+            entity.isSwimming = entity.isSprinting && underwater && !entity.vehicleSystem.isPassenger() && fluidAtFeet().eq(FluidTags.WATER)
         }
     }
 

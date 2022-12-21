@@ -30,24 +30,22 @@ class BlockInWorld(val world: WorldAccessor, val position: BlockPos, private val
     private var blockEntity: KryptonBlockEntity? = null
     private var cachedEntity = false
 
-    val state: KryptonBlockState
-        get() {
-            if (blockState == null && (loadChunks || world.hasChunkAt(position))) blockState = world.getBlock(position)
-            return blockState!!
+    fun state(): KryptonBlockState {
+        if (blockState == null && (loadChunks || world.hasChunkAt(position))) blockState = world.getBlock(position)
+        return blockState!!
+    }
+
+    fun entity(): KryptonBlockEntity? {
+        if (blockEntity == null && !cachedEntity) {
+            blockEntity = world.getBlockEntity(position) as? KryptonBlockEntity
+            cachedEntity = true
         }
-    val entity: KryptonBlockEntity?
-        get() {
-            if (blockEntity == null && !cachedEntity) {
-                // FIXME: When we actually store and can retrieve block entities, fix this
-//                blockEntity = world.getBlockEntity(position)
-                cachedEntity = true
-            }
-            return blockEntity
-        }
+        return blockEntity
+    }
 
     companion object {
 
         @JvmStatic
-        fun hasState(predicate: Predicate<KryptonBlockState?>): Predicate<BlockInWorld?> = Predicate { it != null && predicate.test(it.state) }
+        fun hasState(predicate: Predicate<KryptonBlockState?>): Predicate<BlockInWorld?> = Predicate { it != null && predicate.test(it.state()) }
     }
 }

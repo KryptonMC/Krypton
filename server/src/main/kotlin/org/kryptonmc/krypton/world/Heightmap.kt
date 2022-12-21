@@ -33,9 +33,9 @@ import java.util.function.Predicate
 
 class Heightmap(private val chunk: ChunkAccessor, val type: Type) {
 
-    private val data: BitStorage = SimpleBitStorage(Maths.ceillog2(chunk.height + 1), 256)
-    val rawData: LongArray
-        get() = data.data
+    private val data: BitStorage = SimpleBitStorage(Maths.ceillog2(chunk.height() + 1), 256)
+
+    fun rawData(): LongArray = data.data
 
     fun update(x: Int, y: Int, z: Int, block: KryptonBlockState): Boolean {
         val firstAvailable = firstAvailable(x, z)
@@ -47,13 +47,13 @@ class Heightmap(private val chunk: ChunkAccessor, val type: Type) {
                 return true
             }
         } else if (firstAvailable - 1 == y) {
-            for (i in y - 1 downTo chunk.minimumBuildHeight) {
+            for (i in y - 1 downTo chunk.minimumBuildHeight()) {
                 if (type.isOpaque.test(chunk.getBlock(x, i, z))) {
                     set(x, z, i + 1)
                     return true
                 }
             }
-            set(x, z, chunk.minimumBuildHeight)
+            set(x, z, chunk.minimumBuildHeight())
             return true
         }
         return false
@@ -73,12 +73,12 @@ class Heightmap(private val chunk: ChunkAccessor, val type: Type) {
     fun firstAvailable(x: Int, z: Int): Int = firstAvailable(indexOf(x, z))
 
     private fun set(x: Int, z: Int, y: Int) {
-        data.set(indexOf(x, z), y - chunk.minimumBuildHeight)
+        data.set(indexOf(x, z), y - chunk.minimumBuildHeight())
     }
 
     private fun indexOf(x: Int, z: Int): Int = x + z * 16
 
-    private fun firstAvailable(index: Int): Int = data.get(index) + chunk.minimumBuildHeight
+    private fun firstAvailable(index: Int): Int = data.get(index) + chunk.minimumBuildHeight()
 
     enum class Type(private val usage: Usage, val isOpaque: Predicate<KryptonBlockState>) {
 
@@ -119,11 +119,11 @@ class Heightmap(private val chunk: ChunkAccessor, val type: Type) {
             val size = toPrime.size
             val heightmaps = ObjectArrayList<Heightmap>(size)
             val iterator = heightmaps.iterator()
-            val highest = chunk.highestSectionY + 16
+            val highest = chunk.highestSectionY() + 16
             for (x in 0 until 16) {
                 for (z in 0 until 16) {
                     toPrime.forEach { heightmaps.add(chunk.getOrCreateHeightmap(it)) }
-                    for (y in highest - 1 downTo chunk.minimumBuildHeight) {
+                    for (y in highest - 1 downTo chunk.minimumBuildHeight()) {
                         val block = chunk.getBlock(x, y, z)
                         if (!block.eq(KryptonBlocks.AIR)) {
                             while (iterator.hasNext()) {

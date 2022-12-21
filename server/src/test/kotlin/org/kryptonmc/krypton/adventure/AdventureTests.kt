@@ -54,7 +54,7 @@ class AdventureTests {
 
     @Test
     fun `ensure ids do not break on update`() {
-        val values = Reflection.accessField<NamedTextColor, List<NamedTextColor>>("VALUES")!!
+        val values = Reflection.accessField<NamedTextColor, List<NamedTextColor>>("VALUES")
         values.forEachIndexed { index, element -> assertEquals(index, KryptonAdventure.getColorId(element)) }
     }
 

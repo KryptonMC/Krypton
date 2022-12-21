@@ -41,7 +41,8 @@ class KryptonFurnaceMinecart(world: KryptonWorld) : KryptonMinecartLike(world), 
         set(value) = data.set(MetadataKeys.FurnaceMinecart.HAS_FUEL, value)
     override var fuel: Int = 0
 
-    init {
+    override fun defineData() {
+        super.defineData()
         data.define(MetadataKeys.FurnaceMinecart.HAS_FUEL, false)
     }
 }

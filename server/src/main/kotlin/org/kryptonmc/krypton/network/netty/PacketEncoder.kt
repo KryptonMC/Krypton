@@ -39,7 +39,7 @@ object PacketEncoder : MessageToByteEncoder<Packet>() {
     private val LOGGER = LogManager.getLogger()
 
     override fun encode(ctx: ChannelHandlerContext, msg: Packet, out: ByteBuf) {
-        val id = PacketRegistry.lookup(msg.javaClass)
+        val id = PacketRegistry.getOutboundPacketId(msg.javaClass)
         try {
             out.writeVarInt(id)
             msg.write(out)

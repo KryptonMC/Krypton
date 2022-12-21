@@ -18,20 +18,20 @@
  */
 package org.kryptonmc.krypton.util
 
+import java.util.Arrays
 import java.util.function.Predicate
 import kotlin.math.max
 import kotlin.math.min
 
-@Suppress("UNCHECKED_CAST")
 class SortedArraySet<T>(private val comparator: Comparator<T>, initialCapacity: Int) : AbstractMutableSet<T>() {
 
-    private var contents = arrayOfNulls<Any>(initialCapacity) as Array<T?>
+    private var contents = castArray<T>(arrayOfNulls(initialCapacity))
     override var size: Int = 0
+        private set
 
-    val first: T?
-        get() = contents[0]
-    val last: T?
-        get() = contents[size - 1]
+    fun first(): T? = contents[0]
+
+    fun last(): T? = contents[size - 1]
 
     fun get(element: T): T? {
         val index = findIndex(element)
@@ -41,7 +41,7 @@ class SortedArraySet<T>(private val comparator: Comparator<T>, initialCapacity: 
     override fun add(element: T): Boolean {
         val index = findIndex(element)
         if (index >= 0) return false
-        addInternal(element, -index - 1)
+        addInternal(element, computeInsertPosition(index))
         return true
     }
 
@@ -61,7 +61,11 @@ class SortedArraySet<T>(private val comparator: Comparator<T>, initialCapacity: 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other is SortedArraySet<*> && comparator == other.comparator) {
-            return size == other.size && contents.contentEquals((other as SortedArraySet<T>).contents)
+            // This is safe because the equals method below uses `equals`, which doesn't need to care about the type.
+            // Java wouldn't need this cast, but Kotlin doesn't allow Nothing to be used as a type parameter, even if it is fine to do so.
+            @Suppress("UNCHECKED_CAST")
+            other as SortedArraySet<Any>
+            return size == other.size && contents.contentEquals(other.contents)
         }
         return super.equals(other)
     }
@@ -71,7 +75,7 @@ class SortedArraySet<T>(private val comparator: Comparator<T>, initialCapacity: 
     override fun toArray(): Array<T?> = contents.clone()
 
     override fun <U> toArray(a: Array<U?>): Array<U?> {
-        if (a.size < size) return contents.copyOf(size) as Array<U?>
+        if (a.size < size) return Arrays.copyOf(contents, size, a.javaClass)
         System.arraycopy(contents, 0, a, 0, size)
         if (a.size > size) a[size] = null
         return a
@@ -86,27 +90,26 @@ class SortedArraySet<T>(private val comparator: Comparator<T>, initialCapacity: 
         var i = 0
         val len = size
         val backing = contents
-        @Suppress("UnconditionalJumpStatementInLoop") // It's not unconditional, just needs some more complex analysis to realise that.
+
         while (true) {
             if (i >= len) return false
-            if (!filter.test(backing[i]!!)) {
-                ++i
-                continue
-            }
-            break
+            if (filter.test(backing[i]!!)) break
+            ++i
         }
+
         var lastIndex = i
         while (i < len) {
             val curr = backing[i]!!
             if (!filter.test(curr)) backing[lastIndex++] = curr
             ++i
         }
+
         backing.fill(null, lastIndex, len)
         size = lastIndex
         return true
     }
 
-    private fun findIndex(element: T): Int = contents.binarySearch(element, comparator as Comparator<T?>, 0, size)
+    private fun findIndex(element: T): Int = Arrays.binarySearch(contents, 0, size, element, comparator)
 
     private fun addInternal(element: T, index: Int) {
         grow(size + 1)
@@ -118,21 +121,21 @@ class SortedArraySet<T>(private val comparator: Comparator<T>, initialCapacity: 
     private fun removeInternal(index: Int) {
         --size
         if (index != size) System.arraycopy(contents, index + 1, contents, index, size - index)
+        // We null out the existing element to avoid memory leaks, as otherwise, if we kept a reference to it, it would never be GC'd.
         contents[size] = null
     }
 
     private fun grow(minCapacity: Int) {
         if (minCapacity <= contents.size) return
-        val capacity = if (contents.isEmpty()) {
-            max(min(contents.size.toLong() + (contents.size shr 1).toLong(), 2147483639L), minCapacity.toLong()).toInt()
-        } else if (minCapacity < 10) {
-            10
-        } else {
-            minCapacity
-        }
-        val newArray = arrayOfNulls<Any>(capacity)
-        System.arraycopy(contents, 0, newArray, 0, size)
-        contents = newArray as Array<T?>
+        val result = arrayOfNulls<Any>(computeNewCapacity(minCapacity))
+        System.arraycopy(contents, 0, result, 0, size)
+        contents = castArray(result)
+    }
+
+    private fun computeNewCapacity(minCapacity: Int): Int = when {
+        contents.isEmpty() -> max(min(contents.size.toLong() + (contents.size shr 1).toLong(), 2147483639L), minCapacity.toLong()).toInt()
+        minCapacity < 10 -> 10
+        else -> minCapacity
     }
 
     private inner class ArrayIterator : MutableIterator<T> {
@@ -160,5 +163,14 @@ class SortedArraySet<T>(private val comparator: Comparator<T>, initialCapacity: 
 
         @JvmStatic
         fun <T : Comparable<T>> create(initialCapacity: Int): SortedArraySet<T> = SortedArraySet(naturalOrder(), initialCapacity)
+
+        @JvmStatic
+        private fun computeInsertPosition(index: Int): Int = -index - 1
+
+        @JvmStatic
+        private fun <T> castArray(input: Array<Any?>): Array<T?> {
+            @Suppress("UNCHECKED_CAST") // This is safe because this array will always be null
+            return input as Array<T?>
+        }
     }
 }

@@ -71,7 +71,7 @@ class TicketManager(private val chunkManager: ChunkManager) {
             val newTicket = Ticket(ticket.type, calculatedLevel, ticket.key)
             tickets.computeIfAbsent(pos, LongFunction { SortedArraySet.create(4) }).add(newTicket)
             if (calculatedLevel <= PLAYER_TICKET_LEVEL) {
-                val loadedChunk = chunkManager.load(xo, zo, newTicket)
+                val loadedChunk = chunkManager.loadChunk(xo, zo, newTicket)
                 if (loadedChunk != null) onLoad()
             }
             i++
@@ -93,7 +93,7 @@ class TicketManager(private val chunkManager: ChunkManager) {
             if (calculatedLevel > MAXIMUM_TICKET_LEVEL) break
             val ticket = Ticket(TicketTypes.PLAYER, calculatedLevel, uuid)
             tickets.computeIfAbsent(pos, LongFunction { SortedArraySet.create(4) }).add(ticket)
-            if (calculatedLevel <= PLAYER_TICKET_LEVEL) chunkManager.load(xo, zo, ticket)
+            if (calculatedLevel <= PLAYER_TICKET_LEVEL) chunkManager.loadChunk(xo, zo, ticket)
             i++
         }
     }
@@ -105,7 +105,7 @@ class TicketManager(private val chunkManager: ChunkManager) {
             list.removeIf { it.type === type && it.key === key }
             if (list.isEmpty()) {
                 tickets.remove(pos)
-                if (shouldUnload) chunkManager.chunkMap.remove(pos)
+                if (shouldUnload) chunkManager.removeChunk(pos)
             }
         }
     }

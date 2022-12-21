@@ -68,14 +68,14 @@ class KryptonBiome(override val climate: Climate, override val effects: BiomeEff
             instance.group(
                 KryptonClimate.CODEC.getting { it.climate },
                 KryptonBiomeEffects.CODEC.fieldOf("effects").getting { it.effects }
-            ).apply(instance) { climate, effects -> KryptonBiome(climate, effects) }
+            ).apply(instance, ::KryptonBiome)
         }
         @JvmField
         val NETWORK_CODEC: Codec<Biome> = RecordCodecBuilder.create { instance ->
             instance.group(
                 KryptonClimate.CODEC.getting { it.climate },
                 KryptonBiomeEffects.CODEC.fieldOf("effects").getting { it.effects }
-            ).apply(instance) { climate, effects -> KryptonBiome(climate, effects) }
+            ).apply(instance, ::KryptonBiome)
         }
     }
 }

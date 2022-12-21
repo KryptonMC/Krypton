@@ -72,13 +72,19 @@ object ArmorStandSerializer : EntitySerializer<KryptonArmorStand> {
 
         if (data.contains(POSE_TAG, CompoundTag.ID)) {
             val pose = data.getCompound(POSE_TAG)
-            entity.headPose = pose.getPose(HEAD_TAG, DEFAULT_HEAD_ROTATION)
-            entity.bodyPose = pose.getPose(BODY_TAG, DEFAULT_BODY_ROTATION)
-            entity.leftArmPose = pose.getPose(LEFT_ARM_TAG, DEFAULT_LEFT_ARM_ROTATION)
-            entity.rightArmPose = pose.getPose(RIGHT_ARM_TAG, DEFAULT_RIGHT_ARM_ROTATION)
-            entity.leftLegPose = pose.getPose(LEFT_LEG_TAG, DEFAULT_LEFT_LEG_ROTATION)
-            entity.rightLegPose = pose.getPose(RIGHT_LEG_TAG, DEFAULT_RIGHT_LEG_ROTATION)
+            entity.headPose = getPose(pose, HEAD_TAG, DEFAULT_HEAD_ROTATION)
+            entity.bodyPose = getPose(pose, BODY_TAG, DEFAULT_BODY_ROTATION)
+            entity.leftArmPose = getPose(pose, LEFT_ARM_TAG, DEFAULT_LEFT_ARM_ROTATION)
+            entity.rightArmPose = getPose(pose, RIGHT_ARM_TAG, DEFAULT_RIGHT_ARM_ROTATION)
+            entity.leftLegPose = getPose(pose, LEFT_LEG_TAG, DEFAULT_LEFT_LEG_ROTATION)
+            entity.rightLegPose = getPose(pose, RIGHT_LEG_TAG, DEFAULT_RIGHT_LEG_ROTATION)
         }
+    }
+
+    @JvmStatic
+    private fun getPose(data: CompoundTag, name: String, default: Rotations): Rotations {
+        val tag = data.getList(name, FloatTag.ID)
+        return if (tag.isEmpty) default else RotationsImpl(tag.getFloat(0), tag.getFloat(1), tag.getFloat(2))
     }
 
     override fun save(entity: KryptonArmorStand): CompoundTag.Builder = LivingEntitySerializer.save(entity).apply {
@@ -93,26 +99,22 @@ object ArmorStandSerializer : EntitySerializer<KryptonArmorStand> {
         if (entity.isMarker) putBoolean(MARKER_TAG, true)
 
         compound(POSE_TAG) {
-            putPose(HEAD_TAG, entity.headPose, DEFAULT_HEAD_ROTATION)
-            putPose(BODY_TAG, entity.bodyPose, DEFAULT_BODY_ROTATION)
-            putPose(LEFT_ARM_TAG, entity.leftArmPose, DEFAULT_LEFT_ARM_ROTATION)
-            putPose(RIGHT_ARM_TAG, entity.rightArmPose, DEFAULT_RIGHT_ARM_ROTATION)
-            putPose(LEFT_LEG_TAG, entity.leftLegPose, DEFAULT_LEFT_LEG_ROTATION)
-            putPose(RIGHT_LEG_TAG, entity.rightLegPose, DEFAULT_RIGHT_LEG_ROTATION)
+            putPose(this, HEAD_TAG, entity.headPose, DEFAULT_HEAD_ROTATION)
+            putPose(this, BODY_TAG, entity.bodyPose, DEFAULT_BODY_ROTATION)
+            putPose(this, LEFT_ARM_TAG, entity.leftArmPose, DEFAULT_LEFT_ARM_ROTATION)
+            putPose(this, RIGHT_ARM_TAG, entity.rightArmPose, DEFAULT_RIGHT_ARM_ROTATION)
+            putPose(this, LEFT_LEG_TAG, entity.leftLegPose, DEFAULT_LEFT_LEG_ROTATION)
+            putPose(this, RIGHT_LEG_TAG, entity.rightLegPose, DEFAULT_RIGHT_LEG_ROTATION)
         }
     }
-}
 
-private fun CompoundTag.getPose(name: String, default: Rotations): Rotations {
-    val tag = getList(name, FloatTag.ID)
-    return if (tag.isEmpty) default else RotationsImpl(tag.getFloat(0), tag.getFloat(1), tag.getFloat(2))
-}
-
-private fun CompoundTag.Builder.putPose(key: String, pose: Rotations, default: Rotations): CompoundTag.Builder {
-    if (pose == default) return this
-    return list(key) {
-        addFloat(pose.yaw)
-        addFloat(pose.pitch)
-        addFloat(pose.roll)
+    @JvmStatic
+    private fun putPose(data: CompoundTag.Builder, key: String, pose: Rotations, default: Rotations): CompoundTag.Builder {
+        if (pose == default) return data
+        return data.list(key) {
+            addFloat(pose.yaw)
+            addFloat(pose.pitch)
+            addFloat(pose.roll)
+        }
     }
 }
