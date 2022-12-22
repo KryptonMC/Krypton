@@ -23,6 +23,7 @@ import org.kryptonmc.krypton.entity.serializer.EntitySerializer
 import org.kryptonmc.krypton.util.Directions
 import org.kryptonmc.krypton.util.nbt.getUUID
 import org.kryptonmc.krypton.util.nbt.hasNumber
+import org.kryptonmc.krypton.util.nbt.hasUUID
 import org.kryptonmc.krypton.util.nbt.putNullable
 import org.kryptonmc.krypton.util.nbt.putUUID
 import org.kryptonmc.nbt.CompoundTag
@@ -43,7 +44,7 @@ object ShulkerBulletSerializer : EntitySerializer<KryptonShulkerBullet> {
         entity.targetDeltaY = data.getDouble(DELTA_Y_TAG)
         entity.targetDeltaZ = data.getDouble(DELTA_Z_TAG)
         if (data.hasNumber(DIR_TAG)) entity.movingDirection = Directions.of3D(data.getInt(DIR_TAG))
-        entity.targetId = data.getUUID(TARGET_TAG)
+        if (data.hasUUID(TARGET_TAG)) entity.targetId = data.getUUID(TARGET_TAG)
     }
 
     override fun save(entity: KryptonShulkerBullet): CompoundTag.Builder = ProjectileSerializer.save(entity).apply {

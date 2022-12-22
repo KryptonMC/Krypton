@@ -26,6 +26,7 @@ import org.kryptonmc.api.item.ItemAttributeModifier
 import org.kryptonmc.krypton.entity.EquipmentSlots
 import org.kryptonmc.krypton.entity.attribute.KryptonAttributeModifier
 import org.kryptonmc.krypton.registry.KryptonRegistries
+import org.kryptonmc.krypton.util.nbt.getUUID
 import org.kryptonmc.krypton.util.nbt.putUUID
 import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.compound
@@ -64,7 +65,8 @@ class KryptonItemAttributeModifier(
             val type = KryptonRegistries.ATTRIBUTE.get(Key.key(data.getString(ATTRIBUTE_NAME_TAG))) ?: return null
             val slot = EquipmentSlots.fromName(data.getString(SLOT_TAG)) ?: return null
             return try {
-                KryptonItemAttributeModifier(type, slot, getId(data), data.getString(NAME_TAG), data.getDouble(AMOUNT_TAG), getOperation(data))
+                KryptonItemAttributeModifier(type, slot, data.getUUID(UUID_TAG), data.getString(NAME_TAG), data.getDouble(AMOUNT_TAG),
+                    getOperation(data))
             } catch (exception: Exception) {
                 LOGGER.warn("Unable to create attribute!", exception)
                 null

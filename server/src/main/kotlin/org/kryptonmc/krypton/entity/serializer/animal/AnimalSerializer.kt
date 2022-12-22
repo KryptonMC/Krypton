@@ -22,6 +22,7 @@ import org.kryptonmc.krypton.entity.animal.KryptonAnimal
 import org.kryptonmc.krypton.entity.serializer.AgeableSerializer
 import org.kryptonmc.krypton.entity.serializer.EntitySerializer
 import org.kryptonmc.krypton.util.nbt.getUUID
+import org.kryptonmc.krypton.util.nbt.hasUUID
 import org.kryptonmc.krypton.util.nbt.putNullable
 import org.kryptonmc.krypton.util.nbt.putUUID
 import org.kryptonmc.nbt.CompoundTag
@@ -34,7 +35,7 @@ object AnimalSerializer : EntitySerializer<KryptonAnimal> {
     override fun load(entity: KryptonAnimal, data: CompoundTag) {
         AgeableSerializer.load(entity, data)
         entity.inLoveTime = data.getInt(LOVE_TAG)
-        entity.loveCause = data.getUUID(LOVE_CAUSE_TAG)
+        entity.loveCause = if (data.hasUUID(LOVE_CAUSE_TAG)) data.getUUID(LOVE_CAUSE_TAG) else null
     }
 
     override fun save(entity: KryptonAnimal): CompoundTag.Builder = AgeableSerializer.save(entity).apply {

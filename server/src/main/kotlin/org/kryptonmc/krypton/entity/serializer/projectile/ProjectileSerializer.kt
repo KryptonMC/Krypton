@@ -22,6 +22,7 @@ import org.kryptonmc.krypton.entity.projectile.KryptonProjectile
 import org.kryptonmc.krypton.entity.serializer.BaseEntitySerializer
 import org.kryptonmc.krypton.entity.serializer.EntitySerializer
 import org.kryptonmc.krypton.util.nbt.getUUID
+import org.kryptonmc.krypton.util.nbt.hasUUID
 import org.kryptonmc.krypton.util.nbt.putNullable
 import org.kryptonmc.krypton.util.nbt.putUUID
 import org.kryptonmc.nbt.CompoundTag
@@ -34,7 +35,7 @@ object ProjectileSerializer : EntitySerializer<KryptonProjectile> {
 
     override fun load(entity: KryptonProjectile, data: CompoundTag) {
         BaseEntitySerializer.load(entity, data)
-        entity.ownerId = data.getUUID(OWNER_TAG)
+        if (data.hasUUID(OWNER_TAG)) entity.ownerId = data.getUUID(OWNER_TAG)
         entity.hasLeftOwner = data.getBoolean(LEFT_OWNER_TAG)
         entity.hasBeenShot = data.getBoolean(HAS_BEEN_SHOT_TAG)
     }

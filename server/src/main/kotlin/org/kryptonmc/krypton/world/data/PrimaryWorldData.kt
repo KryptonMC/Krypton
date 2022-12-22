@@ -26,6 +26,7 @@ import org.kryptonmc.krypton.util.Difficulties
 import org.kryptonmc.krypton.util.GameModes
 import org.kryptonmc.krypton.util.nbt.getUUID
 import org.kryptonmc.krypton.util.nbt.hasNumber
+import org.kryptonmc.krypton.util.nbt.hasUUID
 import org.kryptonmc.krypton.util.nbt.putDataVersion
 import org.kryptonmc.krypton.util.nbt.putNullable
 import org.kryptonmc.krypton.util.nbt.putUUID
@@ -173,7 +174,7 @@ class PrimaryWorldData(
                 data.getBoolean(INITIALIZED_TAG),
                 data.getInt(TRADER_SPAWN_CHANCE_TAG),
                 data.getInt(TRADER_SPAWN_DELAY_TAG),
-                data.getUUID(TRADER_ID_TAG),
+                if (data.hasUUID(TRADER_ID_TAG)) data.getUUID(TRADER_ID_TAG) else null,
                 data.getCompound(CUSTOM_BOSS_EVENTS_TAG),
                 resolveDragonFightData(data),
                 extractBrands(data)

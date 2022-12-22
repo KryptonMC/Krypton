@@ -71,16 +71,12 @@ open class KryptonAttributeModifier(
         @JvmStatic
         fun load(data: CompoundTag): KryptonAttributeModifier? {
             return try {
-                KryptonAttributeModifier(getId(data), data.getString(NAME_TAG), data.getDouble(AMOUNT_TAG), getOperation(data))
+                KryptonAttributeModifier(data.getUUID(UUID_TAG), data.getString(NAME_TAG), data.getDouble(AMOUNT_TAG), getOperation(data))
             } catch (exception: IllegalArgumentException) {
                 LOGGER.warn("Unable to create attribute!", exception)
                 null
             }
         }
-
-        @JvmStatic
-        protected fun getId(data: CompoundTag): UUID =
-            requireNotNull(data.getUUID(UUID_TAG)) { "Could not deserialize UUID for attribute modifier!" }
 
         @JvmStatic
         protected fun getOperation(data: CompoundTag): BasicModifierOperation = getOperationById(data.getInt(OPERATION_TAG))
