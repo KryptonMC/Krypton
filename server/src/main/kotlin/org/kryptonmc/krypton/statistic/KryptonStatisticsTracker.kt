@@ -105,7 +105,7 @@ class KryptonStatisticsTracker(private val player: KryptonPlayer, private val fi
 
     override fun getStatistic(statistic: Statistic<*>): Int = statistics.getInt(statistic)
 
-    override fun getStatistic(statistic: Key): Int = statistics.getInt(StatisticTypes.CUSTOM.getStatistic(statistic))
+    override fun getStatistic(statistic: Key): Int = statistics.getInt(StatisticTypes.CUSTOM.get().getStatistic(statistic))
 
     override fun setStatistic(statistic: Statistic<*>, value: Int) {
         statistics.put(statistic, value)

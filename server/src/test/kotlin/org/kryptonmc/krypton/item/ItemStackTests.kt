@@ -32,7 +32,7 @@ class ItemStackTests {
     fun `test empty stack serialization`() {
         val stack = KryptonItemStack.EMPTY
         val serialized = ImmutableCompoundTag.builder()
-            .putString("id", KryptonRegistries.ITEM.getKey(ItemTypes.AIR.downcast()).asString())
+            .putString("id", KryptonRegistries.ITEM.getKey(ItemTypes.AIR.get().downcast()).asString())
             .putInt("Count", 1)
             .put("tag", stack.meta.data)
             .build()

@@ -36,7 +36,7 @@ class KryptonPufferfish(world: KryptonWorld) : KryptonFish(world), Pufferfish {
     override val serializer: EntitySerializer<KryptonPufferfish>
         get() = PufferfishSerializer
     override val bucketType: ItemType
-        get() = ItemTypes.PUFFERFISH_BUCKET
+        get() = ItemTypes.PUFFERFISH_BUCKET.get()
 
     // This gets ticked up when the puff goal sets it to 1, and reset when the puff goal is stopped.
     private var inflateCounter = 0
@@ -60,12 +60,12 @@ class KryptonPufferfish(world: KryptonWorld) : KryptonFish(world), Pufferfish {
             if (getPuffState() == STATE_SMALL) {
                 // The pufferfish is the very small, un-inflated version.
                 // This will run the first time the puff goal is triggered.
-                playSound(SoundEvents.PUFFER_FISH_BLOW_UP, soundVolume(), voicePitch())
+                playSound(SoundEvents.PUFFER_FISH_BLOW_UP.get(), soundVolume(), voicePitch())
                 setPuffState(STATE_MEDIUM) // Set it to the medium size, in between
             } else if (inflateCounter > INFLATE_TO_LARGE_THRESHOLD && getPuffState() == STATE_MEDIUM) {
                 // The inflation counter has reached 40 ticks, it takes 2 seconds for the pufferfish to go from medium to large.
                 // This will run on the 40th tick.
-                playSound(SoundEvents.PUFFER_FISH_BLOW_UP, soundVolume(), voicePitch())
+                playSound(SoundEvents.PUFFER_FISH_BLOW_UP.get(), soundVolume(), voicePitch())
                 setPuffState(STATE_LARGE) // Set it to the large size
             }
             inflateCounter++ // Tick this up
@@ -74,11 +74,11 @@ class KryptonPufferfish(world: KryptonWorld) : KryptonFish(world), Pufferfish {
             // the inflate counter to 0.
             if (deflateTimer > DEFLATE_TO_MEDIUM_THRESHOLD && getPuffState() == STATE_LARGE) {
                 // After the puff goal has been cancelled, it takes 3 seconds before a large pufferfish deflates to medium
-                playSound(SoundEvents.PUFFER_FISH_BLOW_OUT, soundVolume(), voicePitch())
+                playSound(SoundEvents.PUFFER_FISH_BLOW_OUT.get(), soundVolume(), voicePitch())
                 setPuffState(STATE_MEDIUM) // Set it to the medium size
             } else if (deflateTimer > DEFLATE_TO_SMALL_THRESHOLD && getPuffState() == STATE_MEDIUM) {
                 // After the pufferfish has deflated to medium, it takes 2 more seconds before it deflates back down to small.
-                playSound(SoundEvents.PUFFER_FISH_BLOW_OUT, soundVolume(), voicePitch())
+                playSound(SoundEvents.PUFFER_FISH_BLOW_OUT.get(), soundVolume(), voicePitch())
                 setPuffState(STATE_SMALL) // Set it to the small size
             }
             deflateTimer++ // Tick this up

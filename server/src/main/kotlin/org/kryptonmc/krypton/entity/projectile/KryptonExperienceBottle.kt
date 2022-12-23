@@ -34,6 +34,6 @@ class KryptonExperienceBottle(world: KryptonWorld) : KryptonThrowableProjectile(
 
     companion object {
 
-        private val DEFAULT_ITEM = KryptonItemStack(ItemTypes.EXPERIENCE_BOTTLE)
+        private val DEFAULT_ITEM = KryptonItemStack(ItemTypes.EXPERIENCE_BOTTLE.get())
     }
 }

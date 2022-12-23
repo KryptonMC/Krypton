@@ -57,6 +57,6 @@ class KryptonFireworkRocket(world: KryptonWorld) : KryptonProjectile(world), Fir
 
     companion object {
 
-        private val DEFAULT_ITEM = KryptonItemStack(ItemTypes.FIREWORK_ROCKET)
+        private val DEFAULT_ITEM = KryptonItemStack(ItemTypes.FIREWORK_ROCKET.get())
     }
 }

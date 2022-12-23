@@ -16,13 +16,25 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.registry
+package org.kryptonmc.krypton.util;
 
-/**
- * A marker interface for registry objects (those designed for storage in registries) that provides the built-in registry
- * holder for the object, which must always use an intrusive reference.
- */
-interface IntrusiveRegistryObject<T> {
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Unmodifiable;
 
-    val builtInRegistryHolder: Holder.Reference<T>
+import java.util.Collection;
+import java.util.Set;
+
+public final class ImmutableSets {
+
+    public static <E> @NotNull @Unmodifiable Set<E> copyOf(Collection<E> collection) {
+        return Set.copyOf(collection);
+    }
+
+    public static <E> @NotNull @Unmodifiable Set<E> of() {
+        return Set.of();
+    }
+
+    private ImmutableSets() {
+        throw new AssertionError("This class cannot be instantiated!");
+    }
 }

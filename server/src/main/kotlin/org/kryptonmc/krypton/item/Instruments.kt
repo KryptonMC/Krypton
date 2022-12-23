@@ -21,6 +21,7 @@ package org.kryptonmc.krypton.item
 import net.kyori.adventure.key.Key
 import org.kryptonmc.api.effect.sound.SoundEvent
 import org.kryptonmc.api.effect.sound.SoundEvents
+import org.kryptonmc.api.registry.RegistryReference
 import org.kryptonmc.krypton.registry.KryptonRegistries
 
 object Instruments {
@@ -44,6 +45,6 @@ object Instruments {
 
     @JvmStatic
     @Suppress("MagicNumber")
-    private fun register(name: String, sound: SoundEvent): Instrument =
-        KryptonRegistries.register(KryptonRegistries.INSTRUMENTS, Key.key(name), Instrument(sound, 140, 256F))
+    private fun register(name: String, sound: RegistryReference<SoundEvent>): Instrument =
+        KryptonRegistries.register(KryptonRegistries.INSTRUMENT, Key.key(name), Instrument(sound.get(), 140, 256F))
 }

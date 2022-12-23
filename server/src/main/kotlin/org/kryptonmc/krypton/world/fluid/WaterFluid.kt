@@ -28,7 +28,7 @@ import org.kryptonmc.krypton.world.block.state.KryptonBlockState
 abstract class WaterFluid : FlowingFluid() {
 
     override val bucket: ItemType
-        get() = ItemTypes.WATER_BUCKET
+        get() = ItemTypes.WATER_BUCKET.get()
     override val explosionResistance: Double
         get() = 100.0
 

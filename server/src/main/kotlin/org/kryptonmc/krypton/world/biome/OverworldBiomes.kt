@@ -73,7 +73,7 @@ object OverworldBiomes {
 
     @JvmStatic
     private fun oldGrowthTaiga(spruce: Boolean): KryptonBiome =
-        createBiome(Precipitation.RAIN, if (spruce) 0.25F else 0.3F, 0.8F, music = SoundEvents.MUSIC_BIOME_OLD_GROWTH_TAIGA)
+        createBiome(Precipitation.RAIN, if (spruce) 0.25F else 0.3F, 0.8F, music = SoundEvents.MUSIC_BIOME_OLD_GROWTH_TAIGA.get())
 
     @JvmStatic
     fun taiga(): KryptonBiome = taiga(false)
@@ -116,7 +116,7 @@ object OverworldBiomes {
 
     @JvmStatic
     private fun baseJungle(downfall: Float, isBamboo: Boolean, isEdge: Boolean, isLight: Boolean): KryptonBiome =
-        createBiome(Precipitation.RAIN, 0.95F, downfall, music = SoundEvents.MUSIC_BIOME_JUNGLE_AND_FOREST)
+        createBiome(Precipitation.RAIN, 0.95F, downfall, music = SoundEvents.MUSIC_BIOME_JUNGLE_AND_FOREST.get())
 
     // ==============================
     // Mesa
@@ -228,7 +228,7 @@ object OverworldBiomes {
 
     @JvmStatic
     private fun forest(birch: Boolean, tall: Boolean, flower: Boolean): KryptonBiome {
-        val music = SoundEvents.MUSIC_BIOME_JUNGLE_AND_FOREST
+        val music = SoundEvents.MUSIC_BIOME_JUNGLE_AND_FOREST.get()
         return createBiome(Precipitation.RAIN, if (birch) 0.6F else 0.7F, if (birch) 0.6F else 0.8F, music = music)
     }
 
@@ -242,7 +242,7 @@ object OverworldBiomes {
             skyColor(calculateSkyColor(0.7F))
             grassColorModifier(GrassColorModifier.DARK_FOREST)
             mood(KryptonAmbientMoodSettings.CAVE)
-            backgroundMusic(KryptonMusic.game(SoundEvents.MUSIC_BIOME_JUNGLE_AND_FOREST))
+            backgroundMusic(KryptonMusic.game(SoundEvents.MUSIC_BIOME_JUNGLE_AND_FOREST.get()))
         }
     }
 
@@ -349,7 +349,7 @@ object OverworldBiomes {
             foliageColor(foliageColor)
             grassColorModifier(GrassColorModifier.SWAMP)
             mood(KryptonAmbientMoodSettings.CAVE)
-            backgroundMusic(KryptonMusic.game(SoundEvents.MUSIC_BIOME_SWAMP))
+            backgroundMusic(KryptonMusic.game(SoundEvents.MUSIC_BIOME_SWAMP.get()))
         }
     }
 
@@ -365,35 +365,35 @@ object OverworldBiomes {
     // ==============================
 
     @JvmStatic
-    fun lushCaves(): KryptonBiome = createBiome(Precipitation.RAIN, 0.5F, 0.5F, music = SoundEvents.MUSIC_BIOME_LUSH_CAVES)
+    fun lushCaves(): KryptonBiome = createBiome(Precipitation.RAIN, 0.5F, 0.5F, music = SoundEvents.MUSIC_BIOME_LUSH_CAVES.get())
 
     @JvmStatic
-    fun dripstoneCaves(): KryptonBiome = createBiome(Precipitation.RAIN, 0.8F, 0.4F, music = SoundEvents.MUSIC_BIOME_DRIPSTONE_CAVES)
+    fun dripstoneCaves(): KryptonBiome = createBiome(Precipitation.RAIN, 0.8F, 0.4F, music = SoundEvents.MUSIC_BIOME_DRIPSTONE_CAVES.get())
 
     // ==============================
     // Mountain
     // ==============================
 
     @JvmStatic
-    fun meadow(): KryptonBiome = createBiome(Precipitation.RAIN, 0.5F, 0.8F, MEADOW_WATER, OVERWORLD_WATER_FOG, SoundEvents.MUSIC_BIOME_MEADOW)
+    fun meadow(): KryptonBiome = createBiome(Precipitation.RAIN, 0.5F, 0.8F, MEADOW_WATER, OVERWORLD_WATER_FOG, SoundEvents.MUSIC_BIOME_MEADOW.get())
 
     @JvmStatic
-    fun frozenPeaks(): KryptonBiome = createBiome(Precipitation.RAIN, -0.7F, 0.9F, music = SoundEvents.MUSIC_BIOME_FROZEN_PEAKS)
+    fun frozenPeaks(): KryptonBiome = createBiome(Precipitation.RAIN, -0.7F, 0.9F, music = SoundEvents.MUSIC_BIOME_FROZEN_PEAKS.get())
 
     @JvmStatic
-    fun jaggedPeaks(): KryptonBiome = createBiome(Precipitation.SNOW, -0.7F, 0.9F, music = SoundEvents.MUSIC_BIOME_JAGGED_PEAKS)
+    fun jaggedPeaks(): KryptonBiome = createBiome(Precipitation.SNOW, -0.7F, 0.9F, music = SoundEvents.MUSIC_BIOME_JAGGED_PEAKS.get())
 
     @JvmStatic
-    fun stonyPeaks(): KryptonBiome = createBiome(Precipitation.RAIN, 1F, 0.3F, music = SoundEvents.MUSIC_BIOME_STONY_PEAKS)
+    fun stonyPeaks(): KryptonBiome = createBiome(Precipitation.RAIN, 1F, 0.3F, music = SoundEvents.MUSIC_BIOME_STONY_PEAKS.get())
 
     @JvmStatic
-    fun snowySlopes(): KryptonBiome = createBiome(Precipitation.SNOW, -0.3F, 0.9F, music = SoundEvents.MUSIC_BIOME_SNOWY_SLOPES)
+    fun snowySlopes(): KryptonBiome = createBiome(Precipitation.SNOW, -0.3F, 0.9F, music = SoundEvents.MUSIC_BIOME_SNOWY_SLOPES.get())
 
     @JvmStatic
-    fun grove(): KryptonBiome = createBiome(Precipitation.SNOW, -0.2F, 0.8F, music = SoundEvents.MUSIC_BIOME_GROVE)
+    fun grove(): KryptonBiome = createBiome(Precipitation.SNOW, -0.2F, 0.8F, music = SoundEvents.MUSIC_BIOME_GROVE.get())
 
     @JvmStatic
-    fun deepDark(): KryptonBiome = createBiome(Precipitation.RAIN, 0.8F, 0.4F, music = SoundEvents.MUSIC_BIOME_DEEP_DARK)
+    fun deepDark(): KryptonBiome = createBiome(Precipitation.RAIN, 0.8F, 0.4F, music = SoundEvents.MUSIC_BIOME_DEEP_DARK.get())
 
     // ******************************
     // Helpers

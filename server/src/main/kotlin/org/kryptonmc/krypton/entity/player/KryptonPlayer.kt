@@ -335,27 +335,27 @@ class KryptonPlayer(
         // TODO: Walking underwater, walking on water, climbing
         if (isSwimming) {
             val value = (sqrt(deltaX * deltaX + deltaY * deltaY + deltaZ * deltaZ) * 100F).roundToInt()
-            if (value > 0) statisticsTracker.incrementStatistic(CustomStatistics.SWIM_ONE_CM, value)
+            if (value > 0) statisticsTracker.incrementStatistic(CustomStatistics.SWIM_ONE_CM.get(), value)
             return
         }
         if (isOnGround) {
             val value = (sqrt(deltaX * deltaX + deltaZ * deltaZ) * 100F).roundToInt()
             if (value > 0) {
                 when {
-                    isSprinting -> statisticsTracker.incrementStatistic(CustomStatistics.SPRINT_ONE_CM, value)
-                    isSneaking -> statisticsTracker.incrementStatistic(CustomStatistics.CROUCH_ONE_CM, value)
-                    else -> statisticsTracker.incrementStatistic(CustomStatistics.WALK_ONE_CM, value)
+                    isSprinting -> statisticsTracker.incrementStatistic(CustomStatistics.SPRINT_ONE_CM.get(), value)
+                    isSneaking -> statisticsTracker.incrementStatistic(CustomStatistics.CROUCH_ONE_CM.get(), value)
+                    else -> statisticsTracker.incrementStatistic(CustomStatistics.WALK_ONE_CM.get(), value)
                 }
             }
             return
         }
         if (isGliding) {
             val value = (sqrt(deltaX * deltaX + deltaY * deltaY + deltaZ * deltaZ) * 100F).roundToInt()
-            statisticsTracker.incrementStatistic(CustomStatistics.AVIATE_ONE_CM, value)
+            statisticsTracker.incrementStatistic(CustomStatistics.AVIATE_ONE_CM.get(), value)
             return
         }
         val value = (sqrt(deltaX * deltaX + deltaZ * deltaZ) * 100F).roundToInt()
-        if (value > FLYING_ACHIEVEMENT_MINIMUM_SPEED) statisticsTracker.incrementStatistic(CustomStatistics.FLY_ONE_CM, value)
+        if (value > FLYING_ACHIEVEMENT_MINIMUM_SPEED) statisticsTracker.incrementStatistic(CustomStatistics.FLY_ONE_CM.get(), value)
     }
 
     fun resetLastActionTime() {

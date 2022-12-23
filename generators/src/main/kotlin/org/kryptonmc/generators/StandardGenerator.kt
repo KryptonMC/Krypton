@@ -40,7 +40,7 @@ open class StandardGenerator(private val output: Path) {
         keyGetter: KeyGetter<T>
     ) {
         val file = FileSpec.catalogueType(name)
-        val outputClass = TypeSpec.catalogueType(name, returnType).registryGetter(returnType, registryName)
+        val outputClass = TypeSpec.catalogueType(name, returnType).registryOfMethod(returnType, registryName)
         collectFields(catalogueType, type).forEach { outputClass.catalogueField(it, returnType, keyGetter) }
         val out = StringBuilder()
         file.addType(outputClass.build()).build().writeTo(out)

@@ -35,8 +35,8 @@ class ItemLoader(registry: KryptonRegistry<KryptonItemType>) : KryptonDataLoader
         val maxDamage = value.get("maxDamage").asInt
         val edible = value.get("edible").asBoolean
         val fireResistant = value.get("fireResistant").asBoolean
-        val eatingSound = KryptonRegistries.SOUND_EVENT.get(Key.key(value.get("eatingSound").asString)) ?: SoundEvents.GENERIC_EAT
-        val drinkingSound = KryptonRegistries.SOUND_EVENT.get(Key.key(value.get("drinkingSound").asString)) ?: SoundEvents.GENERIC_DRINK
+        val eatingSound = KryptonRegistries.SOUND_EVENT.get(Key.key(value.get("eatingSound").asString)) ?: SoundEvents.GENERIC_EAT.get()
+        val drinkingSound = KryptonRegistries.SOUND_EVENT.get(Key.key(value.get("drinkingSound").asString)) ?: SoundEvents.GENERIC_DRINK.get()
         return KryptonItemType(rarity, maxStackSize, maxDamage, edible, fireResistant, eatingSound, drinkingSound)
     }
 }

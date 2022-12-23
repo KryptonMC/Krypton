@@ -10,6 +10,7 @@ package org.kryptonmc.api.entity
 
 import net.kyori.adventure.key.Key
 import org.kryptonmc.api.registry.Registries
+import org.kryptonmc.api.registry.RegistryReference
 import org.kryptonmc.internal.annotations.Catalogue
 
 /**
@@ -19,20 +20,20 @@ import org.kryptonmc.internal.annotations.Catalogue
 public object EntityCategories {
 
     @JvmField
-    public val MONSTER: EntityCategory = get("monster")
+    public val MONSTER: RegistryReference<EntityCategory> = of("monster")
     @JvmField
-    public val CREATURE: EntityCategory = get("creature")
+    public val CREATURE: RegistryReference<EntityCategory> = of("creature")
     @JvmField
-    public val AMBIENT: EntityCategory = get("ambient")
+    public val AMBIENT: RegistryReference<EntityCategory> = of("ambient")
     @JvmField
-    public val UNDERGROUND_WATER_CREATURE: EntityCategory = get("underground_water_creature")
+    public val UNDERGROUND_WATER_CREATURE: RegistryReference<EntityCategory> = of("underground_water_creature")
     @JvmField
-    public val WATER_CREATURE: EntityCategory = get("water_creature")
+    public val WATER_CREATURE: RegistryReference<EntityCategory> = of("water_creature")
     @JvmField
-    public val WATER_AMBIENT: EntityCategory = get("water_ambient")
+    public val WATER_AMBIENT: RegistryReference<EntityCategory> = of("water_ambient")
     @JvmField
-    public val MISC: EntityCategory = get("misc")
+    public val MISC: RegistryReference<EntityCategory> = of("misc")
 
     @JvmStatic
-    private fun get(name: String): EntityCategory = Registries.ENTITY_CATEGORIES.get(Key.key(name))!!
+    private fun of(name: String): RegistryReference<EntityCategory> = RegistryReference.of(Registries.ENTITY_CATEGORIES, Key.key(name))
 }

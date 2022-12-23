@@ -20,44 +20,25 @@ package org.kryptonmc.krypton.registry
 
 import net.kyori.adventure.key.Key
 import org.apache.logging.log4j.LogManager
-import org.kryptonmc.api.block.Blocks
 import org.kryptonmc.api.block.entity.BlockEntityType
-import org.kryptonmc.api.block.entity.BlockEntityTypes
 import org.kryptonmc.api.block.entity.banner.BannerPatternType
-import org.kryptonmc.api.block.entity.banner.BannerPatternTypes
 import org.kryptonmc.api.effect.particle.ParticleType
-import org.kryptonmc.api.effect.particle.ParticleTypes
 import org.kryptonmc.api.effect.sound.SoundEvent
-import org.kryptonmc.api.effect.sound.SoundEvents
-import org.kryptonmc.api.entity.EntityCategories
 import org.kryptonmc.api.entity.EntityCategory
-import org.kryptonmc.api.entity.EntityTypes
 import org.kryptonmc.api.entity.attribute.AttributeType
-import org.kryptonmc.api.entity.attribute.AttributeTypes
 import org.kryptonmc.api.entity.hanging.PaintingVariant
-import org.kryptonmc.api.entity.hanging.PaintingVariants
-import org.kryptonmc.api.fluid.Fluids
 import org.kryptonmc.api.inventory.InventoryType
-import org.kryptonmc.api.inventory.InventoryTypes
-import org.kryptonmc.api.item.ItemTypes
 import org.kryptonmc.api.registry.DefaultedRegistry
 import org.kryptonmc.api.registry.Registry
 import org.kryptonmc.api.registry.RegistryManager
 import org.kryptonmc.api.resource.ResourceKey
 import org.kryptonmc.api.resource.ResourceKeys
-import org.kryptonmc.api.scoreboard.criteria.Criteria
 import org.kryptonmc.api.scoreboard.criteria.KeyedCriterion
-import org.kryptonmc.api.statistic.CustomStatistics
 import org.kryptonmc.api.statistic.StatisticType
-import org.kryptonmc.api.statistic.StatisticTypes
 import org.kryptonmc.api.world.biome.Biome
-import org.kryptonmc.api.world.biome.Biomes
 import org.kryptonmc.api.world.damage.type.DamageType
-import org.kryptonmc.api.world.damage.type.DamageTypes
 import org.kryptonmc.api.world.dimension.DimensionType
-import org.kryptonmc.api.world.dimension.DimensionTypes
 import org.kryptonmc.api.world.rule.GameRule
-import org.kryptonmc.api.world.rule.GameRules
 import org.kryptonmc.krypton.effect.sound.SoundLoader
 import org.kryptonmc.krypton.entity.KryptonEntityType
 import org.kryptonmc.krypton.entity.KryptonEntityTypes
@@ -70,6 +51,8 @@ import org.kryptonmc.krypton.item.ItemLoader
 import org.kryptonmc.krypton.item.KryptonItemType
 import org.kryptonmc.krypton.network.chat.ChatType
 import org.kryptonmc.krypton.network.chat.ChatTypes
+import org.kryptonmc.krypton.registry.loader.RegistryLoader
+import org.kryptonmc.krypton.registry.loader.RegistryLoaders
 import org.kryptonmc.krypton.resource.KryptonResourceKey
 import org.kryptonmc.krypton.resource.KryptonResourceKeys
 import org.kryptonmc.krypton.util.KryptonDataLoader
@@ -83,7 +66,6 @@ import org.kryptonmc.krypton.world.event.GameEvent
 import org.kryptonmc.krypton.world.event.GameEvents
 import org.kryptonmc.krypton.world.fluid.KryptonFluid
 import org.kryptonmc.krypton.world.fluid.KryptonFluids
-import java.util.function.Function
 import java.util.function.Supplier
 
 /**
@@ -93,112 +75,93 @@ import java.util.function.Supplier
 object KryptonRegistries {
 
     private val LOGGER = LogManager.getLogger()
-    private val WRITABLE_PARENT: WritableRegistry<WritableRegistry<*>> = KryptonSimpleRegistry(ImplKeys.PARENT, null)
     private val LOADERS = LinkedHashMap<Key, Runnable>()
+    private val WRITABLE_PARENT: WritableRegistry<WritableRegistry<*>> = KryptonSimpleRegistry.standard(KryptonResourceKeys.PARENT)
 
     /*
      * Built-in vanilla-derived registries
      */
 
     @JvmField
-    val GAME_EVENT: Defaulted<GameEvent> = defaultedIntrusive(ImplKeys.GAME_EVENT, "step") { GameEvents }
+    val GAME_EVENT: KryptonDefaultedRegistry<GameEvent> = defaultedIntrusive(KryptonResourceKeys.GAME_EVENT, "step") { GameEvents }
     @JvmField
-    val SOUND_EVENT: Simple<SoundEvent> = simple(ApiKeys.SOUND_EVENT, dataLoader(::SoundLoader) { SoundEvents })
+    val SOUND_EVENT: KryptonRegistry<SoundEvent> = simple(ResourceKeys.SOUND_EVENT, dataLoader(::SoundLoader))
     @JvmField
-    val FLUID: Defaulted<KryptonFluid> = defaultedIntrusive(ImplKeys.FLUID, "empty") {
-        KryptonFluids
-        Fluids
-    }
+    val FLUID: KryptonDefaultedRegistry<KryptonFluid> = defaultedIntrusive(KryptonResourceKeys.FLUID, "empty") { KryptonFluids }
     @JvmField
-    val BLOCK: Defaulted<KryptonBlock> = defaultedIntrusive(ImplKeys.BLOCK, "air") {
-        KryptonBlocks
-        Blocks
-    }
+    val BLOCK: KryptonDefaultedRegistry<KryptonBlock> = defaultedIntrusive(KryptonResourceKeys.BLOCK, "air") { KryptonBlocks }
     @JvmField
-    val ENTITY_CATEGORIES: Simple<EntityCategory> = simple(ApiKeys.ENTITY_CATEGORIES, loader(Loaders.entityCategory()) { EntityCategories })
+    val ENTITY_CATEGORIES: KryptonRegistry<EntityCategory> = simple(ResourceKeys.ENTITY_CATEGORIES, loader(RegistryLoaders.entityCategory()))
     @JvmField
-    val ENTITY_TYPE: Defaulted<KryptonEntityType<*>> = defaultedIntrusive(ImplKeys.ENTITY_TYPE, "pig") {
-        KryptonEntityTypes
-        EntityTypes
-    }
+    val ENTITY_TYPE: KryptonDefaultedRegistry<KryptonEntityType<*>> =
+        defaultedIntrusive(KryptonResourceKeys.ENTITY_TYPE, "pig") { KryptonEntityTypes }
     @JvmField
-    val ITEM: Defaulted<KryptonItemType> = defaultedIntrusive(ImplKeys.ITEM, "air", dataLoader(::ItemLoader) { ItemTypes })
+    val ITEM: KryptonDefaultedRegistry<KryptonItemType> = defaultedIntrusive(KryptonResourceKeys.ITEM, "air", dataLoader(::ItemLoader))
     @JvmField
-    val PARTICLE_TYPE: Simple<ParticleType> = simple(ApiKeys.PARTICLE_TYPE, loader(Loaders.particleType()) { ParticleTypes })
+    val PARTICLE_TYPE: KryptonRegistry<ParticleType> = simple(ResourceKeys.PARTICLE_TYPE, loader(RegistryLoaders.particleType()))
     @JvmField
-    val BLOCK_ENTITY_TYPE: Simple<BlockEntityType<*>> = simple(ApiKeys.BLOCK_ENTITY_TYPE, loader(Loaders.blockEntityType()) { BlockEntityTypes })
+    val BLOCK_ENTITY_TYPE: KryptonRegistry<BlockEntityType<*>> = simple(ResourceKeys.BLOCK_ENTITY_TYPE, loader(RegistryLoaders.blockEntityType()))
     @JvmField
-    val PAINTING_VARIANT: Defaulted<PaintingVariant> =
-        defaulted(ApiKeys.PAINTING_VARIANT, "kebab", loader(Loaders.paintingVariant()) { PaintingVariants })
+    val PAINTING_VARIANT: KryptonDefaultedRegistry<PaintingVariant> =
+        defaulted(ResourceKeys.PAINTING_VARIANT, "kebab", loader(RegistryLoaders.paintingVariant()))
     @JvmField
-    val INVENTORY_TYPE: Simple<InventoryType> =
-        simple(ResourceKeys.INVENTORY_TYPE, loader(Loaders.inventoryType()) { InventoryTypes })
+    val STATISTIC_TYPE: KryptonRegistry<StatisticType<*>> = simple(ResourceKeys.STATISTIC_TYPE, loader(RegistryLoaders.statisticType()))
     @JvmField
-    val ATTRIBUTE: Simple<AttributeType> = simple(ApiKeys.ATTRIBUTE) {
-        KryptonAttributeTypes
-        AttributeTypes
-    }
+    val CUSTOM_STATISTIC: KryptonRegistry<Key> = simple(ResourceKeys.CUSTOM_STATISTIC, loader(RegistryLoaders.customStatistic()))
     @JvmField
-    val STATISTIC_TYPE: Simple<StatisticType<*>> = simple(ApiKeys.STATISTIC_TYPE, loader(Loaders.statisticType()) { StatisticTypes })
+    val INVENTORY_TYPE: KryptonRegistry<InventoryType> =
+        simple(ResourceKeys.INVENTORY_TYPE, loader(RegistryLoaders.inventoryType()))
     @JvmField
-    val CUSTOM_STATISTIC: Simple<Key> = simple(ApiKeys.CUSTOM_STATISTIC, loader(Loaders.customStatistic()) { CustomStatistics })
+    val ATTRIBUTE: KryptonRegistry<AttributeType> = simple(ResourceKeys.ATTRIBUTE) { KryptonAttributeTypes }
     @JvmField
-    val MEMORIES: Simple<MemoryKey<*>> = simple(ImplKeys.MEMORIES) { MemoryKeys }
+    val MEMORY_KEY: KryptonRegistry<MemoryKey<*>> = simple(KryptonResourceKeys.MEMORIES) { MemoryKeys }
     @JvmField
-    val INT_PROVIDER_TYPES: Simple<IntProviderType<*>> = simple(ImplKeys.INT_PROVIDER_TYPES) { IntProviderTypes }
+    val INT_PROVIDER_TYPE: KryptonRegistry<IntProviderType<*>> = simple(KryptonResourceKeys.INT_PROVIDER_TYPES) { IntProviderTypes }
     @JvmField
-    val BANNER_PATTERN: Simple<BannerPatternType> = simple(ApiKeys.BANNER_PATTERN, loader(Loaders.bannerPatternType()) { BannerPatternTypes })
+    val BANNER_PATTERN: KryptonRegistry<BannerPatternType> = simple(ResourceKeys.BANNER_PATTERN, loader(RegistryLoaders.bannerPatternType()))
     @JvmField
-    val INSTRUMENTS: Simple<Instrument> = simple(ImplKeys.INSTRUMENTS) { Instruments }
+    val INSTRUMENT: KryptonRegistry<Instrument> = simple(KryptonResourceKeys.INSTRUMENTS) { Instruments }
     @JvmField
-    val DIMENSION_TYPE: Simple<DimensionType> = simple(ApiKeys.DIMENSION_TYPE) {
-        KryptonDimensionTypes
-        DimensionTypes
-    }
+    val DIMENSION_TYPE: KryptonRegistry<DimensionType> = simple(ResourceKeys.DIMENSION_TYPE) { KryptonDimensionTypes }
     @JvmField
-    val BIOME: Simple<Biome> = simple(ApiKeys.BIOME) {
-        KryptonBiomeRegistrar.bootstrap()
-        Biomes
-    }
+    val BIOME: KryptonRegistry<Biome> = simple(ResourceKeys.BIOME) { KryptonBiomeRegistrar.bootstrap() }
     @JvmField
-    val CHAT_TYPE: Simple<ChatType> = simple(ImplKeys.CHAT_TYPE) { ChatTypes }
+    val CHAT_TYPE: KryptonRegistry<ChatType> = simple(KryptonResourceKeys.CHAT_TYPE) { ChatTypes }
 
     /*
      * Custom built-in registries
      */
 
     @JvmField
-    val GAME_RULES: Simple<GameRule<*>> = simple(ApiKeys.GAME_RULES, loader(Loaders.gameRule()) { GameRules })
+    val GAME_RULES: KryptonRegistry<GameRule<*>> = simple(ResourceKeys.GAME_RULES, loader(RegistryLoaders.gameRule()))
     @JvmField
-    val CRITERIA: Simple<KeyedCriterion> = simple(ApiKeys.CRITERIA, loader(Loaders.criterion()) { Criteria })
+    val CRITERIA: KryptonRegistry<KeyedCriterion> = simple(ResourceKeys.CRITERIA, loader(RegistryLoaders.criterion()))
     @JvmField
-    val DAMAGE_TYPES: Simple<DamageType> = simple(ApiKeys.DAMAGE_TYPES, loader(Loaders.damageType()) { DamageTypes })
+    val DAMAGE_TYPES: KryptonRegistry<DamageType> = simple(ResourceKeys.DAMAGE_TYPES, loader(RegistryLoaders.damageType()))
 
     /*
      * Registry constructor functions
      */
 
     @JvmStatic
-    private fun <T> simple(key: RegistryKey<T>, bootstrap: Bootstrap<T>): Simple<T> =
-        internalRegister(key, KryptonSimpleRegistry(key, null), bootstrap)
+    private fun <T> simple(key: ResourceKey<out Registry<T>>, bootstrap: Bootstrap<T>): KryptonRegistry<T> =
+        internalRegister(key, KryptonSimpleRegistry.standard(key), bootstrap)
 
     @JvmStatic
-    private fun <T> defaulted(key: RegistryKey<T>, defaultName: String, bootstrap: Bootstrap<T>): Defaulted<T> =
-        defaulted(key, defaultName, null, bootstrap)
+    private fun <T> defaulted(key: ResourceKey<out Registry<T>>, defaultName: String, bootstrap: Bootstrap<T>): KryptonDefaultedRegistry<T> =
+        internalRegister(key, KryptonDefaultedSimpleRegistry.standard(key, Key.key(defaultName)), bootstrap)
 
     @JvmStatic
-    private fun <T : IRO<T>> defaultedIntrusive(key: RegistryKey<T>, defaultName: String, bootstrap: Bootstrap<T>): Defaulted<T> =
-        defaulted(key, defaultName, { it.builtInRegistryHolder }, bootstrap)
-
-    @JvmStatic
-    private fun <T> defaulted(key: RegistryKey<T>, defaultName: String, customHolderProvider: CHP<T>?, bootstrap: Bootstrap<T>): Defaulted<T> =
-        internalRegister(key, KryptonDefaultedRegistry(Key.key(defaultName), key, customHolderProvider), bootstrap)
+    private fun <T> defaultedIntrusive(key: ResourceKey<out Registry<T>>, defaultName: String,
+                                       bootstrap: Bootstrap<T>): KryptonDefaultedRegistry<T> {
+        return internalRegister(key, KryptonDefaultedSimpleRegistry.intrusive(key, Key.key(defaultName)), bootstrap)
+    }
 
     @JvmStatic
     @Suppress("UNCHECKED_CAST")
-    private fun <T, R : WritableRegistry<T>> internalRegister(key: RegistryKey<T>, registry: R, loader: Bootstrap<T>): R {
+    private fun <T, R : WritableRegistry<T>> internalRegister(key: ResourceKey<out Registry<T>>, registry: R, loader: Bootstrap<T>): R {
         LOADERS.put(key.location) { loader.run(registry) }
-        WRITABLE_PARENT.register(key as WritableKey, registry)
+        WRITABLE_PARENT.register(key as ResourceKey<WritableRegistry<*>>, registry)
         return registry
     }
 
@@ -208,10 +171,11 @@ object KryptonRegistries {
      */
 
     @JvmStatic
-    fun <T, V : T> register(registry: Simple<T>, key: Key, value: V): V = register(registry, KryptonResourceKey.of(registry.key, key), value)
+    fun <T, V : T> register(registry: KryptonRegistry<T>, key: Key, value: V): V =
+        register(registry, KryptonResourceKey.of(registry.key, key), value)
 
     @JvmStatic
-    fun <T, V : T> register(registry: Simple<T>, key: ResourceKey<T>, value: V): V {
+    fun <T, V : T> register(registry: KryptonRegistry<T>, key: ResourceKey<T>, value: V): V {
         (registry as WritableRegistry<T>).register(key, value)
         return value
     }
@@ -221,37 +185,42 @@ object KryptonRegistries {
      */
 
     @JvmStatic
-    private inline fun <T> loader(loader: Supplier<RegistryLoader<T>>, crossinline initApiType: () -> Unit): Bootstrap<T> = Bootstrap {
-        loader.get().forEach { key, value -> register(it, key, value) }
-        initApiType()
-    }
+    private fun <T> loader(loader: Supplier<RegistryLoader<T>>): Bootstrap<T> =
+        Bootstrap { loader.get().forEach { key, value -> register(it, key, value) } }
 
     @JvmStatic
-    private inline fun <T> dataLoader(crossinline loader: LoaderProvider<T>, crossinline initApiType: () -> Unit): Bootstrap<T> = Bootstrap {
-        loader(it).init()
-        initApiType()
-    }
+    private inline fun <T> dataLoader(crossinline loader: (KryptonRegistry<T>) -> KryptonDataLoader<T>): Bootstrap<T> =
+        Bootstrap { loader(it).init() }
 
     /*
-     * Bootstrapping function. Used to initialize all the registries at the right time from the Bootstrap class.
+     * Bootstrapping methods. Used to initialize all the registries at the right time from the Bootstrap class.
      */
 
     @JvmStatic
     fun bootstrap() {
-        // Run all of the bootstrapping preload functions
+        WRITABLE_PARENT.freeze()
+        runLoaders()
+        WRITABLE_PARENT.forEach { it.freeze() }
+        validateAll(WRITABLE_PARENT)
+    }
+
+    @JvmStatic
+    private fun runLoaders() {
         LOADERS.forEach { (key, action) ->
             try {
                 action.run()
             } catch (exception: Exception) {
-                LOGGER.error("Failed to bootstrap registry $key!", exception)
                 throw RegistryInitializationException("Failed to bootstrap registry $key!", exception)
             }
+            requireNotNull(WRITABLE_PARENT.get(key)) { "Cannot find registry for key $key in loading!" }.freeze()
         }
-        // Check the parent to ensure every registry has values and all defaulted registries have their defaults
-        // registered
-        WRITABLE_PARENT.forEach { registry ->
+    }
+
+    @JvmStatic
+    private fun <T : Registry<*>> validateAll(parent: Registry<T>) {
+        parent.forEach { registry ->
             if (registry.keys.isEmpty()) LOGGER.error("Registry ${registry.key} was empty after loading!")
-            if (registry is Defaulted<*>) {
+            if (registry is KryptonDefaultedRegistry<*>) {
                 val defaultKey = registry.defaultKey
                 checkNotNull(registry.get(defaultKey)) { "Default value for key $defaultKey in registry ${registry.key} was not loaded!" }
             }
@@ -264,7 +233,7 @@ object KryptonRegistries {
      */
     private fun interface Bootstrap<T> {
 
-        fun run(registry: Simple<T>)
+        fun run(registry: KryptonRegistry<T>)
     }
 
     private class RegistryInitializationException(message: String, cause: Throwable) : RuntimeException(message, cause)
@@ -273,37 +242,14 @@ object KryptonRegistries {
      * The backend registry manager implementation. Moved inside KryptonRegistries as it needs access to internals that would rather
      * not be otherwise published and available to other components.
      */
-    @Suppress("UNCHECKED_CAST")
     object ManagerImpl : RegistryManager {
 
-        override fun <T> getRegistry(key: RegistryKey<T>): Registry<T>? = WRITABLE_PARENT.get(key as WritableKey) as? Registry<T>
+        @Suppress("UNCHECKED_CAST")
+        override fun <T> getRegistry(key: ResourceKey<out Registry<T>>): Registry<T>? =
+            WRITABLE_PARENT.get(key as ResourceKey<WritableRegistry<*>>) as? Registry<T>
 
-        override fun <T> getDefaultedRegistry(key: RegistryKey<T>): DefaultedRegistry<T>? =
-            WRITABLE_PARENT.get(key as WritableKey) as? DefaultedRegistry<T>
-
-        override fun <T> create(key: RegistryKey<T>): Registry<T> = create(key) { KryptonSimpleRegistry(key, null) }
-
-        override fun <T> createDefaulted(key: RegistryKey<T>, defaultKey: Key): DefaultedRegistry<T> =
-            create(key) { KryptonDefaultedRegistry(defaultKey, key, null) }
-
-        @JvmStatic
-        private inline fun <T, R : WritableRegistry<T>> create(key: RegistryKey<T>, creator: () -> R): R {
-            val registry = creator()
-            WRITABLE_PARENT.register(key as WritableKey, registry)
-            return registry
-        }
+        @Suppress("UNCHECKED_CAST")
+        override fun <T> getDefaultedRegistry(key: ResourceKey<out Registry<T>>): DefaultedRegistry<T>? =
+            WRITABLE_PARENT.get(key as ResourceKey<WritableRegistry<*>>) as? DefaultedRegistry<T>
     }
 }
-
-// Some private typealiases that are short and are used to make the types shorter and more readable and avoid wrapping often, which would
-// decrease readability
-private typealias Simple<T> = KryptonRegistry<T>
-private typealias Defaulted<T> = KryptonDefaultedRegistry<T>
-private typealias ApiKeys = ResourceKeys
-private typealias ImplKeys = KryptonResourceKeys
-private typealias Loaders = RegistryLoaders
-private typealias IRO<T> = IntrusiveRegistryObject<T>
-private typealias CHP<T> = Function<T, Holder.Reference<T>>
-private typealias RegistryKey<T> = ResourceKey<out Registry<T>>
-private typealias WritableKey = ResourceKey<WritableRegistry<*>>
-private typealias LoaderProvider<T> = (Simple<T>) -> KryptonDataLoader<T>

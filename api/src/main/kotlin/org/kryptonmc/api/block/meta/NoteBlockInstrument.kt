@@ -10,6 +10,7 @@ package org.kryptonmc.api.block.meta
 
 import org.kryptonmc.api.effect.sound.SoundEvent
 import org.kryptonmc.api.effect.sound.SoundEvents
+import org.kryptonmc.api.registry.RegistryReference
 
 /**
  * Indicates the instrument that a note block this property is applied to will
@@ -20,7 +21,7 @@ public enum class NoteBlockInstrument(
      * The corresponding sound event that will be played when note blocks with
      * this instrument are interacted with.
      */
-    public val sound: SoundEvent
+    public val sound: RegistryReference<SoundEvent>
 ) {
 
     HARP(SoundEvents.NOTE_BLOCK_HARP),

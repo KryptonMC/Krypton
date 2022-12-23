@@ -30,5 +30,5 @@ class KryptonSalmon(world: KryptonWorld) : KryptonSchoolingFish(world), Salmon {
     override val type: KryptonEntityType<KryptonSalmon>
         get() = KryptonEntityTypes.SALMON
     override val bucketType: ItemType
-        get() = ItemTypes.SALMON_BUCKET
+        get() = ItemTypes.SALMON_BUCKET.get()
 }

@@ -10,6 +10,7 @@ package org.kryptonmc.api.world.damage.type
 
 import net.kyori.adventure.key.Key
 import org.kryptonmc.api.registry.Registries
+import org.kryptonmc.api.registry.RegistryReference
 import org.kryptonmc.internal.annotations.Catalogue
 
 /**
@@ -19,90 +20,90 @@ import org.kryptonmc.internal.annotations.Catalogue
 public object DamageTypes {
 
     @JvmField
-    public val IN_FIRE: DamageType = get("in_fire")
+    public val IN_FIRE: RegistryReference<DamageType> = of("in_fire")
     @JvmField
-    public val LIGHTNING_BOLT: DamageType = get("lightning_bolt")
+    public val LIGHTNING_BOLT: RegistryReference<DamageType> = of("lightning_bolt")
     @JvmField
-    public val ON_FIRE: DamageType = get("on_fire")
+    public val ON_FIRE: RegistryReference<DamageType> = of("on_fire")
     @JvmField
-    public val LAVA: DamageType = get("lava")
+    public val LAVA: RegistryReference<DamageType> = of("lava")
     @JvmField
-    public val HOT_FLOOR: DamageType = get("hot_floor")
+    public val HOT_FLOOR: RegistryReference<DamageType> = of("hot_floor")
     @JvmField
-    public val SUFFOCATION: DamageType = get("suffocation")
+    public val SUFFOCATION: RegistryReference<DamageType> = of("suffocation")
     @JvmField
-    public val CRAMMING: DamageType = get("cramming")
+    public val CRAMMING: RegistryReference<DamageType> = of("cramming")
     @JvmField
-    public val DROWNING: DamageType = get("drowning")
+    public val DROWNING: RegistryReference<DamageType> = of("drowning")
     @JvmField
-    public val STARVING: DamageType = get("starving")
+    public val STARVING: RegistryReference<DamageType> = of("starving")
     @JvmField
-    public val CACTUS: DamageType = get("cactus")
+    public val CACTUS: RegistryReference<DamageType> = of("cactus")
     @JvmField
-    public val FALL: DamageType = get("falling")
+    public val FALL: RegistryReference<DamageType> = of("falling")
     @JvmField
-    public val FLY_INTO_WALL: DamageType = get("fly_into_wall")
+    public val FLY_INTO_WALL: RegistryReference<DamageType> = of("fly_into_wall")
     @JvmField
-    public val VOID: DamageType = get("void")
+    public val VOID: RegistryReference<DamageType> = of("void")
     @JvmField
-    public val GENERIC: DamageType = get("generic")
+    public val GENERIC: RegistryReference<DamageType> = of("generic")
     @JvmField
-    public val MAGIC: DamageType = get("magic")
+    public val MAGIC: RegistryReference<DamageType> = of("magic")
     @JvmField
-    public val WITHER: DamageType = get("wither")
+    public val WITHER: RegistryReference<DamageType> = of("wither")
     @JvmField
-    public val ANVIL: DamageType = get("anvil")
+    public val ANVIL: RegistryReference<DamageType> = of("anvil")
     @JvmField
-    public val FALLING_BLOCK: DamageType = get("falling_block")
+    public val FALLING_BLOCK: RegistryReference<DamageType> = of("falling_block")
     @JvmField
-    public val DRAGON_BREATH: DamageType = get("dragon_breath")
+    public val DRAGON_BREATH: RegistryReference<DamageType> = of("dragon_breath")
     @JvmField
-    public val DRY_OUT: DamageType = get("dry_out")
+    public val DRY_OUT: RegistryReference<DamageType> = of("dry_out")
     @JvmField
-    public val SWEET_BERRY_BUSH: DamageType = get("sweet_berry_bush")
+    public val SWEET_BERRY_BUSH: RegistryReference<DamageType> = of("sweet_berry_bush")
     @JvmField
-    public val FREEZING: DamageType = get("freezing")
+    public val FREEZING: RegistryReference<DamageType> = of("freezing")
     @JvmField
-    public val FALLING_STALACTITE: DamageType = get("falling_stalactite")
+    public val FALLING_STALACTITE: RegistryReference<DamageType> = of("falling_stalactite")
     @JvmField
-    public val STALAGMITE: DamageType = get("stalagmite")
+    public val STALAGMITE: RegistryReference<DamageType> = of("stalagmite")
     @JvmField
-    public val STING: DamageType = get("sting")
+    public val STING: RegistryReference<DamageType> = of("sting")
     @JvmField
-    public val GENERIC_MOB_ATTACK: DamageType = get("generic_mob_attack")
+    public val GENERIC_MOB_ATTACK: RegistryReference<DamageType> = of("generic_mob_attack")
     @JvmField
-    public val PASSIVE_MOB_ATTACK: DamageType = get("passive_mob_attack")
+    public val PASSIVE_MOB_ATTACK: RegistryReference<DamageType> = of("passive_mob_attack")
     @JvmField
-    public val PROJECTILE_MOB_ATTACK: DamageType = get("indirect_mob_attack")
+    public val PROJECTILE_MOB_ATTACK: RegistryReference<DamageType> = of("indirect_mob_attack")
     @JvmField
-    public val PLAYER_ATTACK: DamageType = get("player_attack")
+    public val PLAYER_ATTACK: RegistryReference<DamageType> = of("player_attack")
     @JvmField
-    public val ARROW: DamageType = get("arrow")
+    public val ARROW: RegistryReference<DamageType> = of("arrow")
     @JvmField
-    public val TRIDENT: DamageType = get("trident")
+    public val TRIDENT: RegistryReference<DamageType> = of("trident")
     @JvmField
-    public val FIREWORKS: DamageType = get("fireworks")
+    public val FIREWORKS: RegistryReference<DamageType> = of("fireworks")
     @JvmField
-    public val FIREBALL: DamageType = get("fireball")
+    public val FIREBALL: RegistryReference<DamageType> = of("fireball")
     @JvmField
-    public val FIREBALL_ON_FIRE: DamageType = get("fireball_on_fire")
+    public val FIREBALL_ON_FIRE: RegistryReference<DamageType> = of("fireball_on_fire")
     @JvmField
-    public val WITHER_SKULL: DamageType = get("wither_skull")
+    public val WITHER_SKULL: RegistryReference<DamageType> = of("wither_skull")
     @JvmField
-    public val THROWN_PROJECTILE: DamageType = get("thrown_projectile")
+    public val THROWN_PROJECTILE: RegistryReference<DamageType> = of("thrown_projectile")
     @JvmField
-    public val INDIRECT_MAGIC: DamageType = get("indirect_magic")
+    public val INDIRECT_MAGIC: RegistryReference<DamageType> = of("indirect_magic")
     @JvmField
-    public val THORNS: DamageType = get("thorns")
+    public val THORNS: RegistryReference<DamageType> = of("thorns")
     @JvmField
-    public val EXPLOSION: DamageType = get("explosion")
+    public val EXPLOSION: RegistryReference<DamageType> = of("explosion")
     @JvmField
-    public val PLAYER_EXPLOSION: DamageType = get("player_explosion")
+    public val PLAYER_EXPLOSION: RegistryReference<DamageType> = of("player_explosion")
     @JvmField
-    public val SONIC_BOOM: DamageType = get("sonic_boom")
+    public val SONIC_BOOM: RegistryReference<DamageType> = of("sonic_boom")
     @JvmField
-    public val BAD_RESPAWN_POINT: DamageType = get("bad_respawn_point")
+    public val BAD_RESPAWN_POINT: RegistryReference<DamageType> = of("bad_respawn_point")
 
     @JvmStatic
-    private fun get(name: String): DamageType = Registries.DAMAGE_TYPES.get(Key.key(name))!!
+    private fun of(name: String): RegistryReference<DamageType> = RegistryReference.of(Registries.DAMAGE_TYPES, Key.key(name))
 }

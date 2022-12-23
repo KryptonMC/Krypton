@@ -8,6 +8,8 @@
  */
 package org.kryptonmc.api.entity.attribute
 
+import org.kryptonmc.api.registry.RegistryReference
+
 /**
  * A holder of attributes.
  */
@@ -21,4 +23,13 @@ public interface AttributeHolder {
      * @return the attribute, or null if not present
      */
     public fun getAttribute(type: AttributeType): Attribute?
+
+    /**
+     * Gets the attribute for the specified [type], or returns null if there
+     * is no attribute for the given [type].
+     *
+     * @param type the type of the attribute
+     * @return the attribute, or null if not present
+     */
+    public fun getAttribute(type: RegistryReference<AttributeType>): Attribute? = getAttribute(type.get())
 }

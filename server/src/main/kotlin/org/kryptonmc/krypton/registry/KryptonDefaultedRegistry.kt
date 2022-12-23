@@ -18,37 +18,10 @@
  */
 package org.kryptonmc.krypton.registry
 
-import net.kyori.adventure.key.Key
 import org.kryptonmc.api.registry.DefaultedRegistry
-import org.kryptonmc.api.registry.Registry
-import org.kryptonmc.api.resource.ResourceKey
-import java.util.function.Function
 
 /**
- * The defaulted registry implementation that stores a default key to search for when values are registered to store
- * the default value to return if no other value can be found.
+ * This type exists to unify the APIs of KryptonRegistry and DefaultedRegistry, so we can use internal methods on defaulted registries
+ * without having to use the implementation class, which is writable.
  */
-class KryptonDefaultedRegistry<T>(
-    override val defaultKey: Key,
-    key: ResourceKey<out Registry<T>>,
-    customHolderProvider: Function<T, Holder.Reference<T>>?
-) : KryptonSimpleRegistry<T>(key, customHolderProvider), DefaultedRegistry<T> {
-
-    private var defaultValue: Holder<T>? = null
-
-    private fun defaultValue(): T = checkNotNull(defaultValue) { "The default value was not initialized!" }.value()
-
-    override fun register(id: Int, key: ResourceKey<T>, value: T): Holder<T> {
-        val holder = super.register(id, key, value)
-        if (defaultKey == key.location) defaultValue = holder
-        return holder
-    }
-
-    override fun get(key: Key): T = super.get(key) ?: defaultValue()
-
-    override fun get(key: ResourceKey<T>): T = super.get(key) ?: defaultValue()
-
-    override fun get(id: Int): T = super.get(id) ?: defaultValue()
-
-    override fun getKey(value: T): Key = super.getKey(value) ?: defaultKey
-}
+interface KryptonDefaultedRegistry<T> : KryptonRegistry<T>, DefaultedRegistry<T>

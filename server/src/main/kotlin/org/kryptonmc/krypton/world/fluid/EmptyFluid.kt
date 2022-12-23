@@ -32,7 +32,7 @@ import org.kryptonmc.krypton.world.components.BlockGetter
 class EmptyFluid : KryptonFluid() {
 
     override val bucket: ItemType
-        get() = ItemTypes.AIR
+        get() = ItemTypes.AIR.get()
     override val explosionResistance: Double
         get() = 0.0
     override val isEmpty: Boolean

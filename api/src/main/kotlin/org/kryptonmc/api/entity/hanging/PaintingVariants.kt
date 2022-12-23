@@ -10,6 +10,7 @@ package org.kryptonmc.api.entity.hanging
 
 import net.kyori.adventure.key.Key
 import org.kryptonmc.api.registry.Registries
+import org.kryptonmc.api.registry.RegistryReference
 import org.kryptonmc.internal.annotations.Catalogue
 
 /**
@@ -20,59 +21,59 @@ public object PaintingVariants {
 
     // @formatter:off
     @JvmField
-    public val KEBAB: PaintingVariant = get("kebab")
+    public val KEBAB: RegistryReference<PaintingVariant> = get("kebab")
     @JvmField
-    public val AZTEC: PaintingVariant = get("aztec")
+    public val AZTEC: RegistryReference<PaintingVariant> = get("aztec")
     @JvmField
-    public val ALBAN: PaintingVariant = get("alban")
+    public val ALBAN: RegistryReference<PaintingVariant> = get("alban")
     @JvmField
-    public val AZTEC2: PaintingVariant = get("aztec2")
+    public val AZTEC2: RegistryReference<PaintingVariant> = get("aztec2")
     @JvmField
-    public val BOMB: PaintingVariant = get("bomb")
+    public val BOMB: RegistryReference<PaintingVariant> = get("bomb")
     @JvmField
-    public val PLANT: PaintingVariant = get("plant")
+    public val PLANT: RegistryReference<PaintingVariant> = get("plant")
     @JvmField
-    public val WASTELAND: PaintingVariant = get("wasteland")
+    public val WASTELAND: RegistryReference<PaintingVariant> = get("wasteland")
     @JvmField
-    public val POOL: PaintingVariant = get("pool")
+    public val POOL: RegistryReference<PaintingVariant> = get("pool")
     @JvmField
-    public val COURBET: PaintingVariant = get("courbet")
+    public val COURBET: RegistryReference<PaintingVariant> = get("courbet")
     @JvmField
-    public val SEA: PaintingVariant = get("sea")
+    public val SEA: RegistryReference<PaintingVariant> = get("sea")
     @JvmField
-    public val SUNSET: PaintingVariant = get("sunset")
+    public val SUNSET: RegistryReference<PaintingVariant> = get("sunset")
     @JvmField
-    public val CREEBET: PaintingVariant = get("creebet")
+    public val CREEBET: RegistryReference<PaintingVariant> = get("creebet")
     @JvmField
-    public val WANDERER: PaintingVariant = get("wanderer")
+    public val WANDERER: RegistryReference<PaintingVariant> = get("wanderer")
     @JvmField
-    public val GRAHAM: PaintingVariant = get("graham")
+    public val GRAHAM: RegistryReference<PaintingVariant> = get("graham")
     @JvmField
-    public val MATCH: PaintingVariant = get("match")
+    public val MATCH: RegistryReference<PaintingVariant> = get("match")
     @JvmField
-    public val BUST: PaintingVariant = get("bust")
+    public val BUST: RegistryReference<PaintingVariant> = get("bust")
     @JvmField
-    public val STAGE: PaintingVariant = get("stage")
+    public val STAGE: RegistryReference<PaintingVariant> = get("stage")
     @JvmField
-    public val VOID: PaintingVariant = get("void")
+    public val VOID: RegistryReference<PaintingVariant> = get("void")
     @JvmField
-    public val SKULL_AND_ROSES: PaintingVariant = get("skull_and_roses")
+    public val SKULL_AND_ROSES: RegistryReference<PaintingVariant> = get("skull_and_roses")
     @JvmField
-    public val WITHER: PaintingVariant = get("wither")
+    public val WITHER: RegistryReference<PaintingVariant> = get("wither")
     @JvmField
-    public val FIGHTERS: PaintingVariant = get("fighters")
+    public val FIGHTERS: RegistryReference<PaintingVariant> = get("fighters")
     @JvmField
-    public val POINTER: PaintingVariant = get("pointer")
+    public val POINTER: RegistryReference<PaintingVariant> = get("pointer")
     @JvmField
-    public val PIGSCENE: PaintingVariant = get("pigscene")
+    public val PIGSCENE: RegistryReference<PaintingVariant> = get("pigscene")
     @JvmField
-    public val BURNING_SKULL: PaintingVariant = get("burning_skull")
+    public val BURNING_SKULL: RegistryReference<PaintingVariant> = get("burning_skull")
     @JvmField
-    public val SKELETON: PaintingVariant = get("skeleton")
+    public val SKELETON: RegistryReference<PaintingVariant> = get("skeleton")
     @JvmField
-    public val DONKEY_KONG: PaintingVariant = get("donkey_kong")
+    public val DONKEY_KONG: RegistryReference<PaintingVariant> = get("donkey_kong")
 
     // @formatter:on
     @JvmStatic
-    private fun get(name: String): PaintingVariant = Registries.PAINTING_VARIANT.get(Key.key(name))
+    private fun get(name: String): RegistryReference<PaintingVariant> = RegistryReference.of(Registries.PAINTING_VARIANT, Key.key(name))
 }

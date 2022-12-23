@@ -21,8 +21,9 @@ package org.kryptonmc.krypton.world.block.entity.banner
 import net.kyori.adventure.key.Key
 import org.kryptonmc.api.block.entity.banner.BannerPatternType
 
-@JvmRecord
-data class KryptonBannerPatternType(private val key: Key, override val code: String) : BannerPatternType {
+class KryptonBannerPatternType(private val key: Key, override val code: String) : BannerPatternType {
 
     override fun key(): Key = key
+
+    override fun toString(): String = "BannerPatternType(code=$code)"
 }

@@ -38,7 +38,7 @@ abstract class IntProvider {
 
         private val CONSTANT_OR_DISPATCH_CODEC = Codec.either(
             Codec.INT,
-            KryptonRegistries.INT_PROVIDER_TYPES.byNameCodec().dispatch({ it.type }, { it.codec() })
+            KryptonRegistries.INT_PROVIDER_TYPE.byNameCodec().dispatch({ it.type }, { it.codec() })
         )
         @JvmField
         val CODEC: Codec<IntProvider> = CONSTANT_OR_DISPATCH_CODEC.xmap(

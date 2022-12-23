@@ -10,6 +10,7 @@ package org.kryptonmc.api.statistic
 
 import net.kyori.adventure.key.Key
 import org.kryptonmc.api.registry.Registries
+import org.kryptonmc.api.registry.RegistryReference
 import org.kryptonmc.internal.annotations.Catalogue
 import org.kryptonmc.internal.annotations.IgnoreNotCataloguedBy
 
@@ -22,157 +23,157 @@ public object CustomStatistics {
 
     // @formatter:off
     @JvmField
-    public val LEAVE_GAME: Key = get("leave_game")
+    public val LEAVE_GAME: RegistryReference<Key> = of("leave_game")
     @JvmField
-    public val PLAY_TIME: Key = get("play_time")
+    public val PLAY_TIME: RegistryReference<Key> = of("play_time")
     @JvmField
-    public val TOTAL_WORLD_TIME: Key = get("total_world_time")
+    public val TOTAL_WORLD_TIME: RegistryReference<Key> = of("total_world_time")
     @JvmField
-    public val TIME_SINCE_DEATH: Key = get("time_since_death")
+    public val TIME_SINCE_DEATH: RegistryReference<Key> = of("time_since_death")
     @JvmField
-    public val TIME_SINCE_REST: Key = get("time_since_rest")
+    public val TIME_SINCE_REST: RegistryReference<Key> = of("time_since_rest")
     @JvmField
-    public val CROUCH_TIME: Key = get("sneak_time")
+    public val CROUCH_TIME: RegistryReference<Key> = of("sneak_time")
     @JvmField
-    public val WALK_ONE_CM: Key = get("walk_one_cm")
+    public val WALK_ONE_CM: RegistryReference<Key> = of("walk_one_cm")
     @JvmField
-    public val CROUCH_ONE_CM: Key = get("crouch_one_cm")
+    public val CROUCH_ONE_CM: RegistryReference<Key> = of("crouch_one_cm")
     @JvmField
-    public val SPRINT_ONE_CM: Key = get("sprint_one_cm")
+    public val SPRINT_ONE_CM: RegistryReference<Key> = of("sprint_one_cm")
     @JvmField
-    public val WALK_ON_WATER_ONE_CM: Key = get("walk_on_water_one_cm")
+    public val WALK_ON_WATER_ONE_CM: RegistryReference<Key> = of("walk_on_water_one_cm")
     @JvmField
-    public val FALL_ONE_CM: Key = get("fall_one_cm")
+    public val FALL_ONE_CM: RegistryReference<Key> = of("fall_one_cm")
     @JvmField
-    public val CLIMB_ONE_CM: Key = get("climb_one_cm")
+    public val CLIMB_ONE_CM: RegistryReference<Key> = of("climb_one_cm")
     @JvmField
-    public val FLY_ONE_CM: Key = get("fly_one_cm")
+    public val FLY_ONE_CM: RegistryReference<Key> = of("fly_one_cm")
     @JvmField
-    public val WALK_UNDER_WATER_ONE_CM: Key = get("walk_under_water_one_cm")
+    public val WALK_UNDER_WATER_ONE_CM: RegistryReference<Key> = of("walk_under_water_one_cm")
     @JvmField
-    public val MINECART_ONE_CM: Key = get("minecart_one_cm")
+    public val MINECART_ONE_CM: RegistryReference<Key> = of("minecart_one_cm")
     @JvmField
-    public val BOAT_ONE_CM: Key = get("boat_one_cm")
+    public val BOAT_ONE_CM: RegistryReference<Key> = of("boat_one_cm")
     @JvmField
-    public val PIG_ONE_CM: Key = get("pig_one_cm")
+    public val PIG_ONE_CM: RegistryReference<Key> = of("pig_one_cm")
     @JvmField
-    public val HORSE_ONE_CM: Key = get("horse_one_cm")
+    public val HORSE_ONE_CM: RegistryReference<Key> = of("horse_one_cm")
     @JvmField
-    public val AVIATE_ONE_CM: Key = get("aviate_one_cm")
+    public val AVIATE_ONE_CM: RegistryReference<Key> = of("aviate_one_cm")
     @JvmField
-    public val SWIM_ONE_CM: Key = get("swim_one_cm")
+    public val SWIM_ONE_CM: RegistryReference<Key> = of("swim_one_cm")
     @JvmField
-    public val STRIDER_ONE_CM: Key = get("strider_one_cm")
+    public val STRIDER_ONE_CM: RegistryReference<Key> = of("strider_one_cm")
     @JvmField
-    public val JUMP: Key = get("jump")
+    public val JUMP: RegistryReference<Key> = of("jump")
     @JvmField
-    public val DROP: Key = get("drop")
+    public val DROP: RegistryReference<Key> = of("drop")
     @JvmField
-    public val DAMAGE_DEALT: Key = get("damage_dealt")
+    public val DAMAGE_DEALT: RegistryReference<Key> = of("damage_dealt")
     @JvmField
-    public val DAMAGE_DEALT_ABSORBED: Key = get("damage_dealt_absorbed")
+    public val DAMAGE_DEALT_ABSORBED: RegistryReference<Key> = of("damage_dealt_absorbed")
     @JvmField
-    public val DAMAGE_DEALT_RESISTED: Key = get("damage_dealt_resisted")
+    public val DAMAGE_DEALT_RESISTED: RegistryReference<Key> = of("damage_dealt_resisted")
     @JvmField
-    public val DAMAGE_TAKEN: Key = get("damage_taken")
+    public val DAMAGE_TAKEN: RegistryReference<Key> = of("damage_taken")
     @JvmField
-    public val DAMAGE_BLOCKED_BY_SHIELD: Key = get("damage_blocked_by_shield")
+    public val DAMAGE_BLOCKED_BY_SHIELD: RegistryReference<Key> = of("damage_blocked_by_shield")
     @JvmField
-    public val DAMAGE_ABSORBED: Key = get("damage_absorbed")
+    public val DAMAGE_ABSORBED: RegistryReference<Key> = of("damage_absorbed")
     @JvmField
-    public val DAMAGE_RESISTED: Key = get("damage_resisted")
+    public val DAMAGE_RESISTED: RegistryReference<Key> = of("damage_resisted")
     @JvmField
-    public val DEATHS: Key = get("deaths")
+    public val DEATHS: RegistryReference<Key> = of("deaths")
     @JvmField
-    public val MOB_KILLS: Key = get("mob_kills")
+    public val MOB_KILLS: RegistryReference<Key> = of("mob_kills")
     @JvmField
-    public val ANIMALS_BRED: Key = get("animals_bred")
+    public val ANIMALS_BRED: RegistryReference<Key> = of("animals_bred")
     @JvmField
-    public val PLAYER_KILLS: Key = get("player_kills")
+    public val PLAYER_KILLS: RegistryReference<Key> = of("player_kills")
     @JvmField
-    public val FISH_CAUGHT: Key = get("fish_caught")
+    public val FISH_CAUGHT: RegistryReference<Key> = of("fish_caught")
     @JvmField
-    public val TALKED_TO_VILLAGER: Key = get("talked_to_villager")
+    public val TALKED_TO_VILLAGER: RegistryReference<Key> = of("talked_to_villager")
     @JvmField
-    public val TRADED_WITH_VILLAGER: Key = get("traded_with_villager")
+    public val TRADED_WITH_VILLAGER: RegistryReference<Key> = of("traded_with_villager")
     @JvmField
-    public val EAT_CAKE_SLICE: Key = get("eat_cake_slice")
+    public val EAT_CAKE_SLICE: RegistryReference<Key> = of("eat_cake_slice")
     @JvmField
-    public val FILL_CAULDRON: Key = get("fill_cauldron")
+    public val FILL_CAULDRON: RegistryReference<Key> = of("fill_cauldron")
     @JvmField
-    public val USE_CAULDRON: Key = get("use_cauldron")
+    public val USE_CAULDRON: RegistryReference<Key> = of("use_cauldron")
     @JvmField
-    public val CLEAN_ARMOR: Key = get("clean_armor")
+    public val CLEAN_ARMOR: RegistryReference<Key> = of("clean_armor")
     @JvmField
-    public val CLEAN_BANNER: Key = get("clean_banner")
+    public val CLEAN_BANNER: RegistryReference<Key> = of("clean_banner")
     @JvmField
-    public val CLEAN_SHULKER_BOX: Key = get("clean_shulker_box")
+    public val CLEAN_SHULKER_BOX: RegistryReference<Key> = of("clean_shulker_box")
     @JvmField
-    public val INTERACT_WITH_BREWINGSTAND: Key = get("interact_with_brewingstand")
+    public val INTERACT_WITH_BREWINGSTAND: RegistryReference<Key> = of("interact_with_brewingstand")
     @JvmField
-    public val INTERACT_WITH_BEACON: Key = get("interact_with_beacon")
+    public val INTERACT_WITH_BEACON: RegistryReference<Key> = of("interact_with_beacon")
     @JvmField
-    public val INSPECT_DROPPER: Key = get("inspect_dropper")
+    public val INSPECT_DROPPER: RegistryReference<Key> = of("inspect_dropper")
     @JvmField
-    public val INSPECT_HOPPER: Key = get("inspect_hopper")
+    public val INSPECT_HOPPER: RegistryReference<Key> = of("inspect_hopper")
     @JvmField
-    public val INSPECT_DISPENSER: Key = get("inspect_dispenser")
+    public val INSPECT_DISPENSER: RegistryReference<Key> = of("inspect_dispenser")
     @JvmField
-    public val PLAY_NOTEBLOCK: Key = get("play_noteblock")
+    public val PLAY_NOTEBLOCK: RegistryReference<Key> = of("play_noteblock")
     @JvmField
-    public val TUNE_NOTEBLOCK: Key = get("tune_noteblock")
+    public val TUNE_NOTEBLOCK: RegistryReference<Key> = of("tune_noteblock")
     @JvmField
-    public val POT_FLOWER: Key = get("pot_flower")
+    public val POT_FLOWER: RegistryReference<Key> = of("pot_flower")
     @JvmField
-    public val TRIGGER_TRAPPED_CHEST: Key = get("trigger_trapped_chest")
+    public val TRIGGER_TRAPPED_CHEST: RegistryReference<Key> = of("trigger_trapped_chest")
     @JvmField
-    public val OPEN_ENDERCHEST: Key = get("open_enderchest")
+    public val OPEN_ENDERCHEST: RegistryReference<Key> = of("open_enderchest")
     @JvmField
-    public val ENCHANT_ITEM: Key = get("enchant_item")
+    public val ENCHANT_ITEM: RegistryReference<Key> = of("enchant_item")
     @JvmField
-    public val PLAY_RECORD: Key = get("play_record")
+    public val PLAY_RECORD: RegistryReference<Key> = of("play_record")
     @JvmField
-    public val INTERACT_WITH_FURNACE: Key = get("interact_with_furnace")
+    public val INTERACT_WITH_FURNACE: RegistryReference<Key> = of("interact_with_furnace")
     @JvmField
-    public val INTERACT_WITH_CRAFTING_TABLE: Key = get("interact_with_crafting_table")
+    public val INTERACT_WITH_CRAFTING_TABLE: RegistryReference<Key> = of("interact_with_crafting_table")
     @JvmField
-    public val OPEN_CHEST: Key = get("open_chest")
+    public val OPEN_CHEST: RegistryReference<Key> = of("open_chest")
     @JvmField
-    public val SLEEP_IN_BED: Key = get("sleep_in_bed")
+    public val SLEEP_IN_BED: RegistryReference<Key> = of("sleep_in_bed")
     @JvmField
-    public val OPEN_SHULKER_BOX: Key = get("open_shulker_box")
+    public val OPEN_SHULKER_BOX: RegistryReference<Key> = of("open_shulker_box")
     @JvmField
-    public val OPEN_BARREL: Key = get("open_barrel")
+    public val OPEN_BARREL: RegistryReference<Key> = of("open_barrel")
     @JvmField
-    public val INTERACT_WITH_BLAST_FURNACE: Key = get("interact_with_blast_furnace")
+    public val INTERACT_WITH_BLAST_FURNACE: RegistryReference<Key> = of("interact_with_blast_furnace")
     @JvmField
-    public val INTERACT_WITH_SMOKER: Key = get("interact_with_smoker")
+    public val INTERACT_WITH_SMOKER: RegistryReference<Key> = of("interact_with_smoker")
     @JvmField
-    public val INTERACT_WITH_LECTERN: Key = get("interact_with_lectern")
+    public val INTERACT_WITH_LECTERN: RegistryReference<Key> = of("interact_with_lectern")
     @JvmField
-    public val INTERACT_WITH_CAMPFIRE: Key = get("interact_with_campfire")
+    public val INTERACT_WITH_CAMPFIRE: RegistryReference<Key> = of("interact_with_campfire")
     @JvmField
-    public val INTERACT_WITH_CARTOGRAPHY_TABLE: Key = get("interact_with_cartography_table")
+    public val INTERACT_WITH_CARTOGRAPHY_TABLE: RegistryReference<Key> = of("interact_with_cartography_table")
     @JvmField
-    public val INTERACT_WITH_LOOM: Key = get("interact_with_loom")
+    public val INTERACT_WITH_LOOM: RegistryReference<Key> = of("interact_with_loom")
     @JvmField
-    public val INTERACT_WITH_STONECUTTER: Key = get("interact_with_stonecutter")
+    public val INTERACT_WITH_STONECUTTER: RegistryReference<Key> = of("interact_with_stonecutter")
     @JvmField
-    public val BELL_RING: Key = get("bell_ring")
+    public val BELL_RING: RegistryReference<Key> = of("bell_ring")
     @JvmField
-    public val RAID_TRIGGER: Key = get("raid_trigger")
+    public val RAID_TRIGGER: RegistryReference<Key> = of("raid_trigger")
     @JvmField
-    public val RAID_WIN: Key = get("raid_win")
+    public val RAID_WIN: RegistryReference<Key> = of("raid_win")
     @JvmField
-    public val INTERACT_WITH_ANVIL: Key = get("interact_with_anvil")
+    public val INTERACT_WITH_ANVIL: RegistryReference<Key> = of("interact_with_anvil")
     @JvmField
-    public val INTERACT_WITH_GRINDSTONE: Key = get("interact_with_grindstone")
+    public val INTERACT_WITH_GRINDSTONE: RegistryReference<Key> = of("interact_with_grindstone")
     @JvmField
-    public val TARGET_HIT: Key = get("target_hit")
+    public val TARGET_HIT: RegistryReference<Key> = of("target_hit")
     @JvmField
-    public val INTERACT_WITH_SMITHING_TABLE: Key = get("interact_with_smithing_table")
+    public val INTERACT_WITH_SMITHING_TABLE: RegistryReference<Key> = of("interact_with_smithing_table")
 
     // @formatter:on
     @JvmStatic
-    private fun get(key: String): Key = Registries.CUSTOM_STATISTIC.get(Key.key(key))!!
+    private fun of(name: String): RegistryReference<Key> = RegistryReference.of(Registries.CUSTOM_STATISTIC, Key.key(name))
 }

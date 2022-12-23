@@ -10,6 +10,7 @@ package org.kryptonmc.api.entity.attribute
 
 import net.kyori.adventure.key.Key
 import org.kryptonmc.api.registry.Registries
+import org.kryptonmc.api.registry.RegistryReference
 import org.kryptonmc.internal.annotations.Catalogue
 
 /**
@@ -20,33 +21,33 @@ public object AttributeTypes {
 
     // @formatter:off
     @JvmField
-    public val MAX_HEALTH: AttributeType = get("generic.max_health")
+    public val MAX_HEALTH: RegistryReference<AttributeType> = of("generic.max_health")
     @JvmField
-    public val FOLLOW_RANGE: AttributeType = get("generic.follow_range")
+    public val FOLLOW_RANGE: RegistryReference<AttributeType> = of("generic.follow_range")
     @JvmField
-    public val KNOCKBACK_RESISTANCE: AttributeType = get("generic.knockback_resistance")
+    public val KNOCKBACK_RESISTANCE: RegistryReference<AttributeType> = of("generic.knockback_resistance")
     @JvmField
-    public val MOVEMENT_SPEED: AttributeType = get("generic.movement_speed")
+    public val MOVEMENT_SPEED: RegistryReference<AttributeType> = of("generic.movement_speed")
     @JvmField
-    public val FLYING_SPEED: AttributeType = get("generic.flying_speed")
+    public val FLYING_SPEED: RegistryReference<AttributeType> = of("generic.flying_speed")
     @JvmField
-    public val ATTACK_DAMAGE: AttributeType = get("generic.attack_damage")
+    public val ATTACK_DAMAGE: RegistryReference<AttributeType> = of("generic.attack_damage")
     @JvmField
-    public val ATTACK_KNOCKBACK: AttributeType = get("generic.attack_knockback")
+    public val ATTACK_KNOCKBACK: RegistryReference<AttributeType> = of("generic.attack_knockback")
     @JvmField
-    public val ATTACK_SPEED: AttributeType = get("generic.attack_speed")
+    public val ATTACK_SPEED: RegistryReference<AttributeType> = of("generic.attack_speed")
     @JvmField
-    public val ARMOR: AttributeType = get("generic.armor")
+    public val ARMOR: RegistryReference<AttributeType> = of("generic.armor")
     @JvmField
-    public val ARMOR_TOUGHNESS: AttributeType = get("generic.armor_toughness")
+    public val ARMOR_TOUGHNESS: RegistryReference<AttributeType> = of("generic.armor_toughness")
     @JvmField
-    public val LUCK: AttributeType = get("generic.luck")
+    public val LUCK: RegistryReference<AttributeType> = of("generic.luck")
     @JvmField
-    public val SPAWN_REINFORCEMENTS_CHANCE: AttributeType = get("zombie.spawn_reinforcements")
+    public val SPAWN_REINFORCEMENTS_CHANCE: RegistryReference<AttributeType> = of("zombie.spawn_reinforcements")
     @JvmField
-    public val JUMP_STRENGTH: AttributeType = get("horse.jump_strength")
+    public val JUMP_STRENGTH: RegistryReference<AttributeType> = of("horse.jump_strength")
 
     // @formatter:on
     @JvmStatic
-    private fun get(key: String): AttributeType = Registries.ATTRIBUTE.get(Key.key(key))!!
+    private fun of(name: String): RegistryReference<AttributeType> = RegistryReference.of(Registries.ATTRIBUTE, Key.key(name))
 }

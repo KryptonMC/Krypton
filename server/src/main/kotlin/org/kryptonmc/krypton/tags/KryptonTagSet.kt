@@ -18,37 +18,25 @@
  */
 package org.kryptonmc.krypton.tags
 
-import com.google.common.collect.ImmutableList
-import org.kryptonmc.api.registry.Registry
+import com.google.common.collect.Iterators
 import org.kryptonmc.api.tags.TagKey
 import org.kryptonmc.api.tags.TagSet
-import org.kryptonmc.krypton.registry.Holder
-import java.util.Spliterator
+import org.kryptonmc.krypton.registry.KryptonRegistry
+import org.kryptonmc.krypton.registry.holder.HolderSet
 import java.util.stream.Stream
 
-class KryptonTagSet<T>(override val registry: Registry<T>, override val key: TagKey<T>) : TagSet<T> {
+class KryptonTagSet<T>(override val registry: KryptonRegistry<T>, private val delegate: HolderSet.Named<T>) : TagSet<T> {
 
-    private var values = ImmutableList.of<T>()
+    override val key: TagKey<T>
+        get() = delegate.key
     override val size: Int
-        get() = values.size
+        get() = delegate.size()
 
-    fun bind(values: List<T>) {
-        this.values = ImmutableList.copyOf(values)
-    }
+    override fun contains(value: T): Boolean = delegate.contains(registry.wrapAsHolder(value!!))
 
-    fun bindHolders(values: List<Holder<T>>) {
-        val result = ImmutableList.builder<T>()
-        values.forEach { result.add(it.value()) }
-        this.values = result.build()
-    }
+    override fun get(index: Int): T = delegate.get(index).value()
 
-    override fun contains(value: T): Boolean = values.contains(value)
+    override fun iterator(): Iterator<T> = Iterators.transform(delegate.iterator()) { it.value() }
 
-    override fun get(index: Int): T = values.get(index)
-
-    override fun iterator(): Iterator<T> = values.iterator()
-
-    override fun spliterator(): Spliterator<T> = values.spliterator()
-
-    override fun stream(): Stream<T> = values.stream()
+    override fun stream(): Stream<T> = delegate.stream().map { it.value() }
 }

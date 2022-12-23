@@ -45,7 +45,12 @@ class KryptonChicken(world: KryptonWorld) : KryptonAnimal(world), Chicken {
     companion object {
 
         private const val FIVE_MINUTES_TICKS = 6000
-        private val FOOD_ITEMS = setOf(ItemTypes.WHEAT_SEEDS, ItemTypes.MELON_SEEDS, ItemTypes.PUMPKIN_SEEDS, ItemTypes.BEETROOT_SEEDS)
+        private val FOOD_ITEMS = setOf(
+            ItemTypes.WHEAT_SEEDS.get(),
+            ItemTypes.MELON_SEEDS.get(),
+            ItemTypes.PUMPKIN_SEEDS.get(),
+            ItemTypes.BEETROOT_SEEDS.get()
+        )
 
         private const val DEFAULT_MAX_HEALTH = 4.0
         private const val DEFAULT_MOVEMENT_SPEED = 0.25

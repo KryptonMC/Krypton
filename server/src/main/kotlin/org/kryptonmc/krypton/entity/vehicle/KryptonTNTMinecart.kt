@@ -46,7 +46,7 @@ class KryptonTNTMinecart(world: KryptonWorld) : KryptonMinecartLike(world), TNTM
 
     override fun prime() {
         fuse = PRIMED_FUSE
-        if (!isSilent) world.playSound(this, SoundEvents.TNT_PRIMED, Sound.Source.BLOCK, 1F, 1F)
+        if (!isSilent) world.playSound(this, SoundEvents.TNT_PRIMED.get(), Sound.Source.BLOCK, 1F, 1F)
     }
 
     @Suppress("ExpressionBodySyntax") // There will be logic here

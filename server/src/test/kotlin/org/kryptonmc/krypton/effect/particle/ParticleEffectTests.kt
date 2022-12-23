@@ -37,7 +37,7 @@ class ParticleEffectTests {
 
     @Test
     fun `test note disallows values outside of range`() {
-        val note = ParticleTypes.NOTE.builder()
+        val note = ParticleTypes.NOTE.get().builder()
         assertThrows<IllegalArgumentException> { note.note(25) }
         assertThrows<IllegalArgumentException> { note.note(-1) }
     }

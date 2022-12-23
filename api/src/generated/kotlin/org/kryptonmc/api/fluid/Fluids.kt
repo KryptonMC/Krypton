@@ -10,6 +10,7 @@ package org.kryptonmc.api.fluid
 
 import net.kyori.adventure.key.Key
 import org.kryptonmc.api.registry.Registries
+import org.kryptonmc.api.registry.RegistryReference
 import org.kryptonmc.internal.annotations.Catalogue
 
 /**
@@ -20,17 +21,17 @@ public object Fluids {
 
     // @formatter:off
     @JvmField
-    public val EMPTY: Fluid = get("empty")
+    public val EMPTY: RegistryReference<Fluid> = of("empty")
     @JvmField
-    public val FLOWING_WATER: Fluid = get("flowing_water")
+    public val FLOWING_WATER: RegistryReference<Fluid> = of("flowing_water")
     @JvmField
-    public val WATER: Fluid = get("water")
+    public val WATER: RegistryReference<Fluid> = of("water")
     @JvmField
-    public val FLOWING_LAVA: Fluid = get("flowing_lava")
+    public val FLOWING_LAVA: RegistryReference<Fluid> = of("flowing_lava")
     @JvmField
-    public val LAVA: Fluid = get("lava")
+    public val LAVA: RegistryReference<Fluid> = of("lava")
 
     // @formatter:on
     @JvmStatic
-    private fun get(key: String): Fluid = Registries.FLUID.get(Key.key(key))!!
+    private fun of(name: String): RegistryReference<Fluid> = RegistryReference.of(Registries.FLUID, Key.key(name))
 }

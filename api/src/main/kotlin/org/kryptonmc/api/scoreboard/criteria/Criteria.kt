@@ -10,6 +10,7 @@ package org.kryptonmc.api.scoreboard.criteria
 
 import net.kyori.adventure.key.Key
 import org.kryptonmc.api.registry.Registries
+import org.kryptonmc.api.registry.RegistryReference
 import org.kryptonmc.internal.annotations.Catalogue
 
 /**
@@ -20,93 +21,93 @@ public object Criteria {
 
     // @formatter:off
     @JvmField
-    public val DUMMY: KeyedCriterion = get("dummy")
+    public val DUMMY: RegistryReference<KeyedCriterion> = of("dummy")
     @JvmField
-    public val TRIGGER: KeyedCriterion = get("trigger")
+    public val TRIGGER: RegistryReference<KeyedCriterion> = of("trigger")
     @JvmField
-    public val DEATH_COUNT: KeyedCriterion = get("death_count")
+    public val DEATH_COUNT: RegistryReference<KeyedCriterion> = of("death_count")
     @JvmField
-    public val PLAYER_KILL_COUNT: KeyedCriterion = get("player_kill_count")
+    public val PLAYER_KILL_COUNT: RegistryReference<KeyedCriterion> = of("player_kill_count")
     @JvmField
-    public val TOTAL_KILL_COUNT: KeyedCriterion = get("total_kill_count")
+    public val TOTAL_KILL_COUNT: RegistryReference<KeyedCriterion> = of("total_kill_count")
     @JvmField
-    public val HEALTH: KeyedCriterion = get("health")
+    public val HEALTH: RegistryReference<KeyedCriterion> = of("health")
     @JvmField
-    public val FOOD: KeyedCriterion = get("food")
+    public val FOOD: RegistryReference<KeyedCriterion> = of("food")
     @JvmField
-    public val AIR: KeyedCriterion = get("air")
+    public val AIR: RegistryReference<KeyedCriterion> = of("air")
     @JvmField
-    public val ARMOR: KeyedCriterion = get("armor")
+    public val ARMOR: RegistryReference<KeyedCriterion> = of("armor")
     @JvmField
-    public val EXPERIENCE: KeyedCriterion = get("experience")
+    public val EXPERIENCE: RegistryReference<KeyedCriterion> = of("experience")
     @JvmField
-    public val LEVEL: KeyedCriterion = get("level")
+    public val LEVEL: RegistryReference<KeyedCriterion> = of("level")
     @JvmField
-    public val TEAM_KILL_BLACK: KeyedCriterion = get("team_kill_black")
+    public val TEAM_KILL_BLACK: RegistryReference<KeyedCriterion> = of("team_kill_black")
     @JvmField
-    public val TEAM_KILL_DARK_BLUE: KeyedCriterion = get("team_kill_dark_blue")
+    public val TEAM_KILL_DARK_BLUE: RegistryReference<KeyedCriterion> = of("team_kill_dark_blue")
     @JvmField
-    public val TEAM_KILL_DARK_GREEN: KeyedCriterion = get("team_kill_dark_green")
+    public val TEAM_KILL_DARK_GREEN: RegistryReference<KeyedCriterion> = of("team_kill_dark_green")
     @JvmField
-    public val TEAM_KILL_DARK_AQUA: KeyedCriterion = get("team_kill_dark_aqua")
+    public val TEAM_KILL_DARK_AQUA: RegistryReference<KeyedCriterion> = of("team_kill_dark_aqua")
     @JvmField
-    public val TEAM_KILL_DARK_RED: KeyedCriterion = get("team_kill_dark_red")
+    public val TEAM_KILL_DARK_RED: RegistryReference<KeyedCriterion> = of("team_kill_dark_red")
     @JvmField
-    public val TEAM_KILL_DARK_PURPLE: KeyedCriterion = get("team_kill_dark_purple")
+    public val TEAM_KILL_DARK_PURPLE: RegistryReference<KeyedCriterion> = of("team_kill_dark_purple")
     @JvmField
-    public val TEAM_KILL_GOLD: KeyedCriterion = get("team_kill_gold")
+    public val TEAM_KILL_GOLD: RegistryReference<KeyedCriterion> = of("team_kill_gold")
     @JvmField
-    public val TEAM_KILL_GRAY: KeyedCriterion = get("team_kill_gray")
+    public val TEAM_KILL_GRAY: RegistryReference<KeyedCriterion> = of("team_kill_gray")
     @JvmField
-    public val TEAM_KILL_DARK_GRAY: KeyedCriterion = get("team_kill_dark_gray")
+    public val TEAM_KILL_DARK_GRAY: RegistryReference<KeyedCriterion> = of("team_kill_dark_gray")
     @JvmField
-    public val TEAM_KILL_BLUE: KeyedCriterion = get("team_kill_blue")
+    public val TEAM_KILL_BLUE: RegistryReference<KeyedCriterion> = of("team_kill_blue")
     @JvmField
-    public val TEAM_KILL_GREEN: KeyedCriterion = get("team_kill_green")
+    public val TEAM_KILL_GREEN: RegistryReference<KeyedCriterion> = of("team_kill_green")
     @JvmField
-    public val TEAM_KILL_AQUA: KeyedCriterion = get("team_kill_aqua")
+    public val TEAM_KILL_AQUA: RegistryReference<KeyedCriterion> = of("team_kill_aqua")
     @JvmField
-    public val TEAM_KILL_RED: KeyedCriterion = get("team_kill_red")
+    public val TEAM_KILL_RED: RegistryReference<KeyedCriterion> = of("team_kill_red")
     @JvmField
-    public val TEAM_KILL_LIGHT_PURPLE: KeyedCriterion = get("team_kill_light_purple")
+    public val TEAM_KILL_LIGHT_PURPLE: RegistryReference<KeyedCriterion> = of("team_kill_light_purple")
     @JvmField
-    public val TEAM_KILL_YELLOW: KeyedCriterion = get("team_kill_yellow")
+    public val TEAM_KILL_YELLOW: RegistryReference<KeyedCriterion> = of("team_kill_yellow")
     @JvmField
-    public val TEAM_KILL_WHITE: KeyedCriterion = get("team_kill_white")
+    public val TEAM_KILL_WHITE: RegistryReference<KeyedCriterion> = of("team_kill_white")
     @JvmField
-    public val KILLED_BY_TEAM_BLACK: KeyedCriterion = get("killed_by_team_black")
+    public val KILLED_BY_TEAM_BLACK: RegistryReference<KeyedCriterion> = of("killed_by_team_black")
     @JvmField
-    public val KILLED_BY_TEAM_DARK_BLUE: KeyedCriterion = get("killed_by_team_dark_blue")
+    public val KILLED_BY_TEAM_DARK_BLUE: RegistryReference<KeyedCriterion> = of("killed_by_team_dark_blue")
     @JvmField
-    public val KILLED_BY_TEAM_DARK_GREEN: KeyedCriterion = get("killed_by_team_dark_green")
+    public val KILLED_BY_TEAM_DARK_GREEN: RegistryReference<KeyedCriterion> = of("killed_by_team_dark_green")
     @JvmField
-    public val KILLED_BY_TEAM_DARK_AQUA: KeyedCriterion = get("killed_by_team_dark_aqua")
+    public val KILLED_BY_TEAM_DARK_AQUA: RegistryReference<KeyedCriterion> = of("killed_by_team_dark_aqua")
     @JvmField
-    public val KILLED_BY_TEAM_DARK_RED: KeyedCriterion = get("killed_by_team_dark_red")
+    public val KILLED_BY_TEAM_DARK_RED: RegistryReference<KeyedCriterion> = of("killed_by_team_dark_red")
     @JvmField
-    public val KILLED_BY_TEAM_DARK_PURPLE: KeyedCriterion = get("killed_by_team_dark_purple")
+    public val KILLED_BY_TEAM_DARK_PURPLE: RegistryReference<KeyedCriterion> = of("killed_by_team_dark_purple")
     @JvmField
-    public val KILLED_BY_TEAM_GOLD: KeyedCriterion = get("killed_by_team_gold")
+    public val KILLED_BY_TEAM_GOLD: RegistryReference<KeyedCriterion> = of("killed_by_team_gold")
     @JvmField
-    public val KILLED_BY_TEAM_GRAY: KeyedCriterion = get("killed_by_team_gray")
+    public val KILLED_BY_TEAM_GRAY: RegistryReference<KeyedCriterion> = of("killed_by_team_gray")
     @JvmField
-    public val KILLED_BY_TEAM_DARK_GRAY: KeyedCriterion = get("killed_by_team_dark_gray")
+    public val KILLED_BY_TEAM_DARK_GRAY: RegistryReference<KeyedCriterion> = of("killed_by_team_dark_gray")
     @JvmField
-    public val KILLED_BY_TEAM_BLUE: KeyedCriterion = get("killed_by_team_blue")
+    public val KILLED_BY_TEAM_BLUE: RegistryReference<KeyedCriterion> = of("killed_by_team_blue")
     @JvmField
-    public val KILLED_BY_TEAM_GREEN: KeyedCriterion = get("killed_by_team_green")
+    public val KILLED_BY_TEAM_GREEN: RegistryReference<KeyedCriterion> = of("killed_by_team_green")
     @JvmField
-    public val KILLED_BY_TEAM_AQUA: KeyedCriterion = get("killed_by_team_aqua")
+    public val KILLED_BY_TEAM_AQUA: RegistryReference<KeyedCriterion> = of("killed_by_team_aqua")
     @JvmField
-    public val KILLED_BY_TEAM_RED: KeyedCriterion = get("killed_by_team_red")
+    public val KILLED_BY_TEAM_RED: RegistryReference<KeyedCriterion> = of("killed_by_team_red")
     @JvmField
-    public val KILLED_BY_TEAM_LIGHT_PURPLE: KeyedCriterion = get("killed_by_team_light_purple")
+    public val KILLED_BY_TEAM_LIGHT_PURPLE: RegistryReference<KeyedCriterion> = of("killed_by_team_light_purple")
     @JvmField
-    public val KILLED_BY_TEAM_YELLOW: KeyedCriterion = get("killed_by_team_yellow")
+    public val KILLED_BY_TEAM_YELLOW: RegistryReference<KeyedCriterion> = of("killed_by_team_yellow")
     @JvmField
-    public val KILLED_BY_TEAM_WHITE: KeyedCriterion = get("killed_by_team_white")
+    public val KILLED_BY_TEAM_WHITE: RegistryReference<KeyedCriterion> = of("killed_by_team_white")
 
     // @formatter:on
     @JvmStatic
-    private fun get(name: String): KeyedCriterion = Registries.CRITERIA.get(Key.key("krypton", name))!!
+    private fun of(name: String): RegistryReference<KeyedCriterion> = RegistryReference.of(Registries.CRITERIA, Key.key("krypton", name))
 }

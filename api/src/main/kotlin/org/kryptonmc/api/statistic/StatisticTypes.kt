@@ -13,6 +13,7 @@ import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.entity.EntityType
 import org.kryptonmc.api.item.ItemType
 import org.kryptonmc.api.registry.Registries
+import org.kryptonmc.api.registry.RegistryReference
 import org.kryptonmc.internal.annotations.Catalogue
 
 /**
@@ -23,26 +24,25 @@ public object StatisticTypes {
 
     // @formatter:off
     @JvmField
-    public val BLOCK_MINED: StatisticType<Block> = get("mined")
+    public val BLOCK_MINED: RegistryReference<StatisticType<Block>> = get("mined")
     @JvmField
-    public val ITEM_CRAFTED: StatisticType<ItemType> = get("crafted")
+    public val ITEM_CRAFTED: RegistryReference<StatisticType<ItemType>> = get("crafted")
     @JvmField
-    public val ITEM_USED: StatisticType<ItemType> = get("used")
+    public val ITEM_USED: RegistryReference<StatisticType<ItemType>> = get("used")
     @JvmField
-    public val ITEM_BROKEN: StatisticType<ItemType> = get("broken")
+    public val ITEM_BROKEN: RegistryReference<StatisticType<ItemType>> = get("broken")
     @JvmField
-    public val ITEM_PICKED_UP: StatisticType<ItemType> = get("picked_up")
+    public val ITEM_PICKED_UP: RegistryReference<StatisticType<ItemType>> = get("picked_up")
     @JvmField
-    public val ITEM_DROPPED: StatisticType<ItemType> = get("dropped")
+    public val ITEM_DROPPED: RegistryReference<StatisticType<ItemType>> = get("dropped")
     @JvmField
-    public val ENTITY_KILLED: StatisticType<EntityType<*>> = get("killed")
+    public val ENTITY_KILLED: RegistryReference<StatisticType<EntityType<*>>> = get("killed")
     @JvmField
-    public val ENTITY_KILLED_BY: StatisticType<EntityType<*>> = get("killed_by")
+    public val ENTITY_KILLED_BY: RegistryReference<StatisticType<EntityType<*>>> = get("killed_by")
     @JvmField
-    public val CUSTOM: StatisticType<Key> = get("custom")
+    public val CUSTOM: RegistryReference<StatisticType<Key>> = get("custom")
 
     // @formatter:on
     @JvmStatic
-    @Suppress("UNCHECKED_CAST")
-    private fun <T : Any> get(name: String): StatisticType<T> = Registries.STATISTIC_TYPE.get(Key.key(name))!! as StatisticType<T>
+    private fun <T : Any> get(name: String): RegistryReference<StatisticType<T>> = RegistryReference.of(Registries.STATISTIC_TYPE, Key.key(name))
 }

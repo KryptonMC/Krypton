@@ -22,10 +22,10 @@ import net.kyori.adventure.key.Key
 import org.kryptonmc.api.effect.sound.SoundEvent
 import org.kryptonmc.api.fluid.Fluid
 import org.kryptonmc.api.fluid.FluidState
+import org.kryptonmc.api.tags.TagKey
 import org.kryptonmc.api.util.Vec3d
-import org.kryptonmc.krypton.registry.Holder
-import org.kryptonmc.krypton.registry.IntrusiveRegistryObject
 import org.kryptonmc.krypton.registry.KryptonRegistries
+import org.kryptonmc.krypton.registry.holder.Holder
 import org.kryptonmc.krypton.shapes.VoxelShape
 import org.kryptonmc.krypton.state.StateDefinition
 import org.kryptonmc.krypton.state.StateHolderDelegate
@@ -35,11 +35,11 @@ import org.kryptonmc.krypton.world.block.state.KryptonBlockState
 import org.kryptonmc.krypton.world.components.BlockGetter
 
 @Suppress("LeakingThis")
-abstract class KryptonFluid : Fluid, StateHolderDelegate<FluidState, KryptonFluidState>, IntrusiveRegistryObject<KryptonFluid> {
+abstract class KryptonFluid : Fluid, StateHolderDelegate<FluidState, KryptonFluidState> {
 
     final override val stateDefinition: StateDefinition<KryptonFluid, KryptonFluidState>
     private var defaultFluidState: KryptonFluidState
-    override val builtInRegistryHolder: Holder.Reference<KryptonFluid> = KryptonRegistries.FLUID.createIntrusiveHolder(this)
+    val builtInRegistryHolder: Holder.Reference<KryptonFluid> = KryptonRegistries.FLUID.createIntrusiveHolder(this)
     final override val defaultState: KryptonFluidState
         get() = defaultFluidState
 
@@ -72,6 +72,9 @@ abstract class KryptonFluid : Fluid, StateHolderDelegate<FluidState, KryptonFlui
     abstract fun getShape(state: KryptonFluidState, world: BlockGetter, pos: BlockPos): VoxelShape
 
     override fun key(): Key = KryptonRegistries.FLUID.getKey(this)
+
+    @Suppress("UNCHECKED_CAST")
+    fun eq(tag: TagKey<Fluid>): Boolean = builtInRegistryHolder.eq(tag as TagKey<KryptonFluid>)
 
     protected fun registerDefaultState(state: KryptonFluidState) {
         defaultFluidState = state

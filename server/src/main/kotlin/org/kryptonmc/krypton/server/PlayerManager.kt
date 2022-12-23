@@ -197,7 +197,7 @@ class PlayerManager(private val server: KryptonServer) {
 
     fun removePlayer(player: KryptonPlayer) {
         server.eventManager.fire(KryptonQuitEvent(player)).thenAcceptAsync({ event ->
-            player.statisticsTracker.incrementStatistic(CustomStatistics.LEAVE_GAME)
+            player.statisticsTracker.incrementStatistic(CustomStatistics.LEAVE_GAME.get())
             savePlayer(player)
             player.world.chunkManager.removePlayer(player)
 

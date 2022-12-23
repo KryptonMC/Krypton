@@ -31,8 +31,7 @@ import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.item.KryptonItemStack
 import org.kryptonmc.krypton.item.KryptonItemType
 import org.kryptonmc.krypton.item.context.BlockPlaceContext
-import org.kryptonmc.krypton.registry.Holder
-import org.kryptonmc.krypton.registry.IntrusiveRegistryObject
+import org.kryptonmc.krypton.registry.holder.Holder
 import org.kryptonmc.krypton.registry.KryptonRegistries
 import org.kryptonmc.krypton.shapes.BooleanOperator
 import org.kryptonmc.krypton.shapes.Shapes
@@ -55,14 +54,14 @@ import java.util.function.Function
 
 @Suppress("LeakingThis")
 @CataloguedBy(KryptonBlocks::class)
-open class KryptonBlock(properties: Properties) : BlockBehaviour(properties), StateHolderDelegate<BlockState, KryptonBlockState>, IRO {
+open class KryptonBlock(properties: Properties) : BlockBehaviour(properties), StateHolderDelegate<BlockState, KryptonBlockState> {
 
     final override val stateDefinition: StateDefinition<KryptonBlock, KryptonBlockState>
     private var defaultBlockState: KryptonBlockState
     private var descriptionId: String? = null
     private var item: KryptonItemType? = null
     private val defaultItemStack: KryptonItemStack by lazy { KryptonItemStack(this) }
-    override val builtInRegistryHolder: Holder.Reference<KryptonBlock> = KryptonRegistries.BLOCK.createIntrusiveHolder(this)
+    val builtInRegistryHolder: Holder.Reference<KryptonBlock> = KryptonRegistries.BLOCK.createIntrusiveHolder(this)
 
     final override val defaultState: KryptonBlockState
         get() = defaultBlockState
@@ -93,7 +92,7 @@ open class KryptonBlock(properties: Properties) : BlockBehaviour(properties), St
 
     open fun playerDestroy(world: KryptonWorld, player: KryptonPlayer, pos: BlockPos, state: KryptonBlockState, entity: KryptonBlockEntity?,
                            tool: KryptonItemStack) {
-        player.statisticsTracker.incrementStatistic(StatisticTypes.BLOCK_MINED.getStatistic(this))
+        player.statisticsTracker.incrementStatistic(StatisticTypes.BLOCK_MINED.get().getStatistic(this))
         // TODO: Cause exhaustion and drop items
     }
 
@@ -205,5 +204,3 @@ open class KryptonBlock(properties: Properties) : BlockBehaviour(properties), St
         }
     }
 }
-
-private typealias IRO = IntrusiveRegistryObject<KryptonBlock>

@@ -45,6 +45,6 @@ abstract class KryptonFireball(world: KryptonWorld) : KryptonAcceleratingProject
 
     companion object {
 
-        private val DEFAULT_ITEM = KryptonItemStack(ItemTypes.FIRE_CHARGE)
+        private val DEFAULT_ITEM = KryptonItemStack(ItemTypes.FIRE_CHARGE.get())
     }
 }

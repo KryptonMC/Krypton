@@ -81,7 +81,7 @@ data class KryptonItemStack(override val type: KryptonItemType, override val amo
 
     class Builder() : ItemStack.Builder {
 
-        private var type: KryptonItemType = ItemTypes.AIR.downcast()
+        private var type: KryptonItemType = ItemTypes.AIR.get().downcast()
         private var amount = 1
         private var meta: AbstractItemMeta<*> = KryptonItemMeta.DEFAULT
 
@@ -122,7 +122,7 @@ data class KryptonItemStack(override val type: KryptonItemType, override val amo
     companion object {
 
         @JvmField
-        val EMPTY: KryptonItemStack = KryptonItemStack(ItemTypes.AIR)
+        val EMPTY: KryptonItemStack = KryptonItemStack(ItemTypes.AIR.get())
 
         @JvmStatic
         fun from(data: CompoundTag): KryptonItemStack {

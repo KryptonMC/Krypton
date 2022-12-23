@@ -70,5 +70,5 @@ object MemoryKeys {
 
     @JvmStatic
     private fun <T : Any> register(name: String, codec: Codec<T>): MemoryKey<T> =
-        KryptonRegistries.register(KryptonRegistries.MEMORIES, Key.key(name), MemoryKey(codec))
+        KryptonRegistries.register(KryptonRegistries.MEMORY_KEY, Key.key(name), MemoryKey(codec))
 }

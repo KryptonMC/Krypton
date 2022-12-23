@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.registry
+package org.kryptonmc.krypton.registry.loader
 
 import com.google.common.collect.ImmutableSet
 import net.kyori.adventure.key.Key
@@ -86,6 +86,7 @@ import org.kryptonmc.krypton.effect.particle.KryptonVibrationParticleType
 import org.kryptonmc.krypton.entity.KryptonEntityCategory
 import org.kryptonmc.krypton.entity.hanging.KryptonPaintingVariant
 import org.kryptonmc.krypton.inventory.KryptonInventoryType
+import org.kryptonmc.krypton.registry.KryptonRegistries
 import org.kryptonmc.krypton.statistic.KryptonStatisticType
 import org.kryptonmc.krypton.world.block.KryptonBlocks
 import org.kryptonmc.krypton.world.block.entity.KryptonBlockEntityType
@@ -588,7 +589,7 @@ private inline fun RegistryLoader<DamageType>.put(key: String, translationKey: S
 
 private fun RegistryLoader<Key>.add(name: String, formatter: StatisticFormatter) {
     add(Key.key(name)) {
-        StatisticTypes.CUSTOM.getStatistic(it, formatter)
+        StatisticTypes.CUSTOM.get().getStatistic(it, formatter)
         it
     }
 }

@@ -24,8 +24,7 @@ import net.kyori.adventure.text.Component
 import org.kryptonmc.api.block.BlockState
 import org.kryptonmc.api.entity.EntityCategory
 import org.kryptonmc.api.entity.EntityType
-import org.kryptonmc.krypton.registry.Holder
-import org.kryptonmc.krypton.registry.IntrusiveRegistryObject
+import org.kryptonmc.api.tags.TagKey
 import org.kryptonmc.krypton.registry.KryptonRegistries
 import org.kryptonmc.krypton.util.Keys
 import org.kryptonmc.krypton.world.block.KryptonBlock
@@ -47,13 +46,13 @@ class KryptonEntityType<out T : KryptonEntity>(
     override val height: Float,
     override val clientTrackingRange: Int,
     override val updateInterval: Int
-) : EntityType<T>, IntrusiveRegistryObject<KryptonEntityType<*>> {
+) : EntityType<T> {
 
     private var descriptionId: String? = null
     private var description: Component? = null
     private var cachedLootTable: Key? = null
 
-    override val builtInRegistryHolder: Holder.Reference<KryptonEntityType<*>> = KryptonRegistries.ENTITY_TYPE.createIntrusiveHolder(this)
+    private val builtInRegistryHolder = KryptonRegistries.ENTITY_TYPE.createIntrusiveHolder(this)
     override val lootTable: Key
         get() {
             if (cachedLootTable == null) {
@@ -83,6 +82,9 @@ class KryptonEntityType<out T : KryptonEntity>(
         if (description == null) description = Component.translatable(translationKey())
         return description!!
     }
+
+    @Suppress("UNCHECKED_CAST")
+    fun eq(tag: TagKey<EntityType<*>>): Boolean = builtInRegistryHolder.eq(tag as TagKey<KryptonEntityType<*>>)
 
     class Builder<out T : KryptonEntity>(private val category: EntityCategory) {
 

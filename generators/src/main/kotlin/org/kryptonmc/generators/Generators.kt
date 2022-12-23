@@ -38,7 +38,6 @@ import net.minecraft.world.item.Items
 import net.minecraft.world.level.biome.Biomes
 import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.block.Blocks
-import net.minecraft.world.level.block.entity.BlockEntityType
 import net.minecraft.world.level.material.Fluid
 import net.minecraft.world.level.material.Fluids
 import java.nio.file.Path
@@ -54,12 +53,6 @@ fun main() {
     generator.run<Items, Item>(Registry.ITEM, "item.ItemTypes", "item.ItemType", "ITEM")
     generator.run<Biomes, ResourceKey<*>>("world.biome.Biomes", "world.biome.Biome", "BIOME") { it.value.location() }
     generator.run<Attributes, Attribute>(Registry.ATTRIBUTE, "entity.attribute.AttributeTypes", "entity.attribute.AttributeType", "ATTRIBUTE")
-    generator.run<BlockEntityType<*>, BlockEntityType<*>>(
-        Registry.BLOCK_ENTITY_TYPE,
-        "block.entity.BlockEntityTypes",
-        "block.entity.BlockEntityType",
-        "BLOCK_ENTITY_TYPE"
-    )
     val patternType = ClassName("$PACKAGE.block.entity.banner", "BannerPatternType")
     val entityType = ClassName("$PACKAGE.entity", "EntityType").parameterizedBy(STAR)
     val tagGenerator = TagGenerator(output)

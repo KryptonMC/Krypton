@@ -35,7 +35,7 @@ public fun interface StatisticFormatter {
          * Divides the value by ten and formats it to a decimal.
          */
         @JvmField
-        public val DIVIDE_BY_TEN: StatisticFormatter = StatisticFormatter { DECIMAL_FORMAT.format(it * 0.1) }
+        public val DIVIDE_BY_TEN: StatisticFormatter = StatisticFormatter { decimalFormat.format(it * 0.1) }
 
         /**
          * Formats distance amounts in centimetres to distance amounts in other
@@ -52,8 +52,8 @@ public fun interface StatisticFormatter {
             val metres = it / 100.0
             val km = metres / 1000.0
             when {
-                km > 0.5 -> "${DECIMAL_FORMAT.format(km)} km"
-                metres > 0.5 -> "${DECIMAL_FORMAT.format(metres)} m"
+                km > 0.5 -> "${decimalFormat.format(km)} km"
+                metres > 0.5 -> "${decimalFormat.format(metres)} m"
                 else -> "$it cm"
             }
         }
@@ -77,14 +77,14 @@ public fun interface StatisticFormatter {
             val days = hours / 24.0
             val years = days / 365.0
             when {
-                years > 0.5 -> "${DECIMAL_FORMAT.format(years)} y"
-                days > 0.5 -> "${DECIMAL_FORMAT.format(days)} d"
-                hours > 0.5 -> "${DECIMAL_FORMAT.format(hours)} h"
-                minutes > 0.5 -> "${DECIMAL_FORMAT.format(minutes)} m"
+                years > 0.5 -> "${decimalFormat.format(years)} y"
+                days > 0.5 -> "${decimalFormat.format(days)} d"
+                hours > 0.5 -> "${decimalFormat.format(hours)} h"
+                minutes > 0.5 -> "${decimalFormat.format(minutes)} m"
                 else -> "$seconds s"
             }
         }
     }
 }
 
-private val DECIMAL_FORMAT = DecimalFormat("########0.00").apply { decimalFormatSymbols = DecimalFormatSymbols.getInstance(Locale.ROOT) }
+private val decimalFormat = DecimalFormat("########0.00").apply { decimalFormatSymbols = DecimalFormatSymbols.getInstance(Locale.ROOT) }

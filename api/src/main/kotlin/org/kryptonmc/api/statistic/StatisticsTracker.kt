@@ -83,7 +83,7 @@ public interface StatisticsTracker {
      * @param amount the amount
      */
     public fun incrementStatistic(statistic: Key, amount: Int) {
-        incrementStatistic(StatisticTypes.CUSTOM.getStatistic(statistic), amount)
+        incrementStatistic(StatisticTypes.CUSTOM.get().getStatistic(statistic), amount)
     }
 
     /**
@@ -120,7 +120,7 @@ public interface StatisticsTracker {
      * @param amount the amount
      */
     public fun decrementStatistic(statistic: Key, amount: Int) {
-        decrementStatistic(StatisticTypes.CUSTOM.getStatistic(statistic), amount)
+        decrementStatistic(StatisticTypes.CUSTOM.get().getStatistic(statistic), amount)
     }
 
     /**

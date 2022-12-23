@@ -32,15 +32,15 @@ object ItemManager {
 
     @JvmStatic
     fun bootstrap() {
-        register(ItemTypes.WOODEN_SWORD, SwordHandler)
-        register(ItemTypes.STONE_SWORD, SwordHandler)
-        register(ItemTypes.GOLDEN_SWORD, SwordHandler)
-        register(ItemTypes.IRON_SWORD, SwordHandler)
-        register(ItemTypes.DIAMOND_SWORD, SwordHandler)
-        register(ItemTypes.NETHERITE_SWORD, SwordHandler)
-        register(ItemTypes.TRIDENT, TridentHandler)
-        register(ItemTypes.DEBUG_STICK, DebugStickHandler)
-        register(ItemTypes.COOKED_BEEF, FoodHandler)
+        register(ItemTypes.WOODEN_SWORD.get(), SwordHandler)
+        register(ItemTypes.STONE_SWORD.get(), SwordHandler)
+        register(ItemTypes.GOLDEN_SWORD.get(), SwordHandler)
+        register(ItemTypes.IRON_SWORD.get(), SwordHandler)
+        register(ItemTypes.DIAMOND_SWORD.get(), SwordHandler)
+        register(ItemTypes.NETHERITE_SWORD.get(), SwordHandler)
+        register(ItemTypes.TRIDENT.get(), TridentHandler)
+        register(ItemTypes.DEBUG_STICK.get(), DebugStickHandler)
+        register(ItemTypes.COOKED_BEEF.get(), FoodHandler)
     }
 
     @JvmStatic

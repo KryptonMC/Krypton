@@ -28,7 +28,7 @@ import org.kryptonmc.krypton.world.block.state.KryptonBlockState
 abstract class LavaFluid : FlowingFluid() {
 
     override val bucket: ItemType
-        get() = ItemTypes.LAVA_BUCKET
+        get() = ItemTypes.LAVA_BUCKET.get()
     override val explosionResistance: Double
         get() = 100.0
 

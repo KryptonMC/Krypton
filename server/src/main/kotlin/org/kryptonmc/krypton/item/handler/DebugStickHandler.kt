@@ -34,7 +34,7 @@ import java.util.function.Consumer
 
 object DebugStickHandler : ItemHandler {
 
-    private val translation by lazy { ItemTypes.DEBUG_STICK.translationKey() }
+    private val translation by lazy { ItemTypes.DEBUG_STICK.get().translationKey() }
 
     override fun canAttackBlock(player: KryptonPlayer, world: KryptonWorld, block: KryptonBlockState, pos: BlockPos): Boolean {
         handleInteraction(player, world, block, pos, false, player.getHeldItem(Hand.MAIN)) { player.setHeldItem(Hand.MAIN, it) }

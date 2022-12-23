@@ -20,13 +20,14 @@ package org.kryptonmc.krypton.world.event
 
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.key.Keyed
-import org.kryptonmc.krypton.registry.Holder
-import org.kryptonmc.krypton.registry.IntrusiveRegistryObject
+import org.kryptonmc.api.tags.TagKey
 import org.kryptonmc.krypton.registry.KryptonRegistries
 
-class GameEvent(private val key: Key) : Keyed, IntrusiveRegistryObject<GameEvent> {
+class GameEvent(private val key: Key) : Keyed {
 
-    override val builtInRegistryHolder: Holder.Reference<GameEvent> = KryptonRegistries.GAME_EVENT.createIntrusiveHolder(this)
+    private val builtInRegistryHolder = KryptonRegistries.GAME_EVENT.createIntrusiveHolder(this)
 
     override fun key(): Key = key
+
+    fun eq(tag: TagKey<GameEvent>): Boolean = builtInRegistryHolder.eq(tag)
 }

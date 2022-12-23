@@ -66,7 +66,7 @@ abstract class KryptonArrowLike(world: KryptonWorld) : KryptonProjectile(world),
         data.define(MetadataKeys.ArrowLike.PIERCING_LEVEL, 0)
     }
 
-    internal open fun defaultHitGroundSound(): SoundEvent = SoundEvents.ARROW_HIT
+    internal open fun defaultHitGroundSound(): SoundEvent = SoundEvents.ARROW_HIT.get()
 
     companion object {
 

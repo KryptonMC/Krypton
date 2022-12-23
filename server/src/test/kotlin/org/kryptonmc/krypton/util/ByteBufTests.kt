@@ -188,7 +188,7 @@ class ByteBufTests {
         assertEquals(0, buffer.readableBytes())
         buffer.clear()
 
-        val type = ItemTypes.STONE.downcast()
+        val type = ItemTypes.STONE.get().downcast()
         val item = KryptonItemStack.Builder().type(type).amount(3).meta { name(Component.text("Hello World!")) }.build()
         buffer.writeItem(item)
         assertEquals(true, buffer.readBoolean())
@@ -204,7 +204,7 @@ class ByteBufTests {
         assertSame(KryptonItemStack.EMPTY, buffer.readItem())
         buffer.clear()
 
-        val item = KryptonItemStack.Builder().type(ItemTypes.STONE).amount(3).meta { name(Component.text("Hello World!")) }.build()
+        val item = KryptonItemStack.Builder().type(ItemTypes.STONE.get()).amount(3).meta { name(Component.text("Hello World!")) }.build()
         buffer.writeBoolean(true)
         buffer.writeId(KryptonRegistries.ITEM, item.type)
         buffer.writeByte(3)

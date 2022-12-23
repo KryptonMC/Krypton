@@ -11,6 +11,7 @@ package org.kryptonmc.api.effect.particle
 
 import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.effect.particle.builder.BaseParticleEffectBuilder
+import org.kryptonmc.api.registry.RegistryReference
 import org.kryptonmc.internal.annotations.dsl.ParticleDsl
 
 /**
@@ -26,5 +27,24 @@ import org.kryptonmc.internal.annotations.dsl.ParticleDsl
 @ParticleDsl
 @JvmSynthetic
 @Contract("_, _ -> new", pure = true)
-public inline fun <B : BaseParticleEffectBuilder<B>, T : ScopedParticleType<B>> particleEffect(type: T, builder: B.() -> Unit): ParticleEffect =
+public inline fun <B : Base<B>, T : Scoped<B>> particleEffect(type: T, builder: B.() -> Unit): ParticleEffect =
     type.builder().apply(builder).build()
+
+/**
+ * Creates a new particle effect with the given [type] and the result of
+ * applying the given [builder].
+ *
+ * @param B the builder type
+ * @param T the particle type
+ * @param type the type
+ * @param builder the builder to apply
+ * @return a new particle effect
+ */
+@ParticleDsl
+@JvmSynthetic
+@Contract("_, _ -> new", pure = true)
+public inline fun <B : Base<B>, T : Scoped<B>> particleEffect(type: RegistryReference<T>, builder: B.() -> Unit): ParticleEffect =
+    type.get().builder().apply(builder).build()
+
+private typealias Base<B> = BaseParticleEffectBuilder<B>
+private typealias Scoped<B> = ScopedParticleType<B>

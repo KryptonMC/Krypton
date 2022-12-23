@@ -39,5 +39,5 @@ object IntProviderTypes {
 
     @JvmStatic
     private fun <P : IntProvider> register(name: String, codec: Codec<P>): IntProviderType<P> =
-        KryptonRegistries.register(KryptonRegistries.INT_PROVIDER_TYPES, Key.key(name), IntProviderType { codec })
+        KryptonRegistries.register(KryptonRegistries.INT_PROVIDER_TYPE, Key.key(name), IntProviderType { codec })
 }

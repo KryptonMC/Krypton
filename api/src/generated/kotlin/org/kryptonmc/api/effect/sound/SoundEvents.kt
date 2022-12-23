@@ -10,6 +10,7 @@ package org.kryptonmc.api.effect.sound
 
 import net.kyori.adventure.key.Key
 import org.kryptonmc.api.registry.Registries
+import org.kryptonmc.api.registry.RegistryReference
 import org.kryptonmc.internal.annotations.Catalogue
 
 /**
@@ -20,2649 +21,2649 @@ public object SoundEvents {
 
     // @formatter:off
     @JvmField
-    public val ALLAY_AMBIENT_WITH_ITEM: SoundEvent = get("entity.allay.ambient_with_item")
+    public val ALLAY_AMBIENT_WITH_ITEM: RegistryReference<SoundEvent> = of("entity.allay.ambient_with_item")
     @JvmField
-    public val ALLAY_AMBIENT_WITHOUT_ITEM: SoundEvent = get("entity.allay.ambient_without_item")
+    public val ALLAY_AMBIENT_WITHOUT_ITEM: RegistryReference<SoundEvent> = of("entity.allay.ambient_without_item")
     @JvmField
-    public val ALLAY_DEATH: SoundEvent = get("entity.allay.death")
+    public val ALLAY_DEATH: RegistryReference<SoundEvent> = of("entity.allay.death")
     @JvmField
-    public val ALLAY_HURT: SoundEvent = get("entity.allay.hurt")
+    public val ALLAY_HURT: RegistryReference<SoundEvent> = of("entity.allay.hurt")
     @JvmField
-    public val ALLAY_ITEM_GIVEN: SoundEvent = get("entity.allay.item_given")
+    public val ALLAY_ITEM_GIVEN: RegistryReference<SoundEvent> = of("entity.allay.item_given")
     @JvmField
-    public val ALLAY_ITEM_TAKEN: SoundEvent = get("entity.allay.item_taken")
+    public val ALLAY_ITEM_TAKEN: RegistryReference<SoundEvent> = of("entity.allay.item_taken")
     @JvmField
-    public val ALLAY_THROW: SoundEvent = get("entity.allay.item_thrown")
+    public val ALLAY_THROW: RegistryReference<SoundEvent> = of("entity.allay.item_thrown")
     @JvmField
-    public val AMBIENT_CAVE: SoundEvent = get("ambient.cave")
+    public val AMBIENT_CAVE: RegistryReference<SoundEvent> = of("ambient.cave")
     @JvmField
-    public val AMBIENT_BASALT_DELTAS_ADDITIONS: SoundEvent = get("ambient.basalt_deltas.additions")
+    public val AMBIENT_BASALT_DELTAS_ADDITIONS: RegistryReference<SoundEvent> = of("ambient.basalt_deltas.additions")
     @JvmField
-    public val AMBIENT_BASALT_DELTAS_LOOP: SoundEvent = get("ambient.basalt_deltas.loop")
+    public val AMBIENT_BASALT_DELTAS_LOOP: RegistryReference<SoundEvent> = of("ambient.basalt_deltas.loop")
     @JvmField
-    public val AMBIENT_BASALT_DELTAS_MOOD: SoundEvent = get("ambient.basalt_deltas.mood")
+    public val AMBIENT_BASALT_DELTAS_MOOD: RegistryReference<SoundEvent> = of("ambient.basalt_deltas.mood")
     @JvmField
-    public val AMBIENT_CRIMSON_FOREST_ADDITIONS: SoundEvent = get("ambient.crimson_forest.additions")
+    public val AMBIENT_CRIMSON_FOREST_ADDITIONS: RegistryReference<SoundEvent> = of("ambient.crimson_forest.additions")
     @JvmField
-    public val AMBIENT_CRIMSON_FOREST_LOOP: SoundEvent = get("ambient.crimson_forest.loop")
+    public val AMBIENT_CRIMSON_FOREST_LOOP: RegistryReference<SoundEvent> = of("ambient.crimson_forest.loop")
     @JvmField
-    public val AMBIENT_CRIMSON_FOREST_MOOD: SoundEvent = get("ambient.crimson_forest.mood")
+    public val AMBIENT_CRIMSON_FOREST_MOOD: RegistryReference<SoundEvent> = of("ambient.crimson_forest.mood")
     @JvmField
-    public val AMBIENT_NETHER_WASTES_ADDITIONS: SoundEvent = get("ambient.nether_wastes.additions")
+    public val AMBIENT_NETHER_WASTES_ADDITIONS: RegistryReference<SoundEvent> = of("ambient.nether_wastes.additions")
     @JvmField
-    public val AMBIENT_NETHER_WASTES_LOOP: SoundEvent = get("ambient.nether_wastes.loop")
+    public val AMBIENT_NETHER_WASTES_LOOP: RegistryReference<SoundEvent> = of("ambient.nether_wastes.loop")
     @JvmField
-    public val AMBIENT_NETHER_WASTES_MOOD: SoundEvent = get("ambient.nether_wastes.mood")
+    public val AMBIENT_NETHER_WASTES_MOOD: RegistryReference<SoundEvent> = of("ambient.nether_wastes.mood")
     @JvmField
-    public val AMBIENT_SOUL_SAND_VALLEY_ADDITIONS: SoundEvent = get("ambient.soul_sand_valley.additions")
+    public val AMBIENT_SOUL_SAND_VALLEY_ADDITIONS: RegistryReference<SoundEvent> = of("ambient.soul_sand_valley.additions")
     @JvmField
-    public val AMBIENT_SOUL_SAND_VALLEY_LOOP: SoundEvent = get("ambient.soul_sand_valley.loop")
+    public val AMBIENT_SOUL_SAND_VALLEY_LOOP: RegistryReference<SoundEvent> = of("ambient.soul_sand_valley.loop")
     @JvmField
-    public val AMBIENT_SOUL_SAND_VALLEY_MOOD: SoundEvent = get("ambient.soul_sand_valley.mood")
+    public val AMBIENT_SOUL_SAND_VALLEY_MOOD: RegistryReference<SoundEvent> = of("ambient.soul_sand_valley.mood")
     @JvmField
-    public val AMBIENT_WARPED_FOREST_ADDITIONS: SoundEvent = get("ambient.warped_forest.additions")
+    public val AMBIENT_WARPED_FOREST_ADDITIONS: RegistryReference<SoundEvent> = of("ambient.warped_forest.additions")
     @JvmField
-    public val AMBIENT_WARPED_FOREST_LOOP: SoundEvent = get("ambient.warped_forest.loop")
+    public val AMBIENT_WARPED_FOREST_LOOP: RegistryReference<SoundEvent> = of("ambient.warped_forest.loop")
     @JvmField
-    public val AMBIENT_WARPED_FOREST_MOOD: SoundEvent = get("ambient.warped_forest.mood")
+    public val AMBIENT_WARPED_FOREST_MOOD: RegistryReference<SoundEvent> = of("ambient.warped_forest.mood")
     @JvmField
-    public val AMBIENT_UNDERWATER_ENTER: SoundEvent = get("ambient.underwater.enter")
+    public val AMBIENT_UNDERWATER_ENTER: RegistryReference<SoundEvent> = of("ambient.underwater.enter")
     @JvmField
-    public val AMBIENT_UNDERWATER_EXIT: SoundEvent = get("ambient.underwater.exit")
+    public val AMBIENT_UNDERWATER_EXIT: RegistryReference<SoundEvent> = of("ambient.underwater.exit")
     @JvmField
-    public val AMBIENT_UNDERWATER_LOOP: SoundEvent = get("ambient.underwater.loop")
+    public val AMBIENT_UNDERWATER_LOOP: RegistryReference<SoundEvent> = of("ambient.underwater.loop")
     @JvmField
-    public val AMBIENT_UNDERWATER_LOOP_ADDITIONS: SoundEvent = get("ambient.underwater.loop.additions")
+    public val AMBIENT_UNDERWATER_LOOP_ADDITIONS: RegistryReference<SoundEvent> = of("ambient.underwater.loop.additions")
     @JvmField
-    public val AMBIENT_UNDERWATER_LOOP_ADDITIONS_RARE: SoundEvent = get("ambient.underwater.loop.additions.rare")
+    public val AMBIENT_UNDERWATER_LOOP_ADDITIONS_RARE: RegistryReference<SoundEvent> = of("ambient.underwater.loop.additions.rare")
     @JvmField
-    public val AMBIENT_UNDERWATER_LOOP_ADDITIONS_ULTRA_RARE: SoundEvent = get("ambient.underwater.loop.additions.ultra_rare")
+    public val AMBIENT_UNDERWATER_LOOP_ADDITIONS_ULTRA_RARE: RegistryReference<SoundEvent> = of("ambient.underwater.loop.additions.ultra_rare")
     @JvmField
-    public val AMETHYST_BLOCK_BREAK: SoundEvent = get("block.amethyst_block.break")
+    public val AMETHYST_BLOCK_BREAK: RegistryReference<SoundEvent> = of("block.amethyst_block.break")
     @JvmField
-    public val AMETHYST_BLOCK_CHIME: SoundEvent = get("block.amethyst_block.chime")
+    public val AMETHYST_BLOCK_CHIME: RegistryReference<SoundEvent> = of("block.amethyst_block.chime")
     @JvmField
-    public val AMETHYST_BLOCK_FALL: SoundEvent = get("block.amethyst_block.fall")
+    public val AMETHYST_BLOCK_FALL: RegistryReference<SoundEvent> = of("block.amethyst_block.fall")
     @JvmField
-    public val AMETHYST_BLOCK_HIT: SoundEvent = get("block.amethyst_block.hit")
+    public val AMETHYST_BLOCK_HIT: RegistryReference<SoundEvent> = of("block.amethyst_block.hit")
     @JvmField
-    public val AMETHYST_BLOCK_PLACE: SoundEvent = get("block.amethyst_block.place")
+    public val AMETHYST_BLOCK_PLACE: RegistryReference<SoundEvent> = of("block.amethyst_block.place")
     @JvmField
-    public val AMETHYST_BLOCK_STEP: SoundEvent = get("block.amethyst_block.step")
+    public val AMETHYST_BLOCK_STEP: RegistryReference<SoundEvent> = of("block.amethyst_block.step")
     @JvmField
-    public val AMETHYST_CLUSTER_BREAK: SoundEvent = get("block.amethyst_cluster.break")
+    public val AMETHYST_CLUSTER_BREAK: RegistryReference<SoundEvent> = of("block.amethyst_cluster.break")
     @JvmField
-    public val AMETHYST_CLUSTER_FALL: SoundEvent = get("block.amethyst_cluster.fall")
+    public val AMETHYST_CLUSTER_FALL: RegistryReference<SoundEvent> = of("block.amethyst_cluster.fall")
     @JvmField
-    public val AMETHYST_CLUSTER_HIT: SoundEvent = get("block.amethyst_cluster.hit")
+    public val AMETHYST_CLUSTER_HIT: RegistryReference<SoundEvent> = of("block.amethyst_cluster.hit")
     @JvmField
-    public val AMETHYST_CLUSTER_PLACE: SoundEvent = get("block.amethyst_cluster.place")
+    public val AMETHYST_CLUSTER_PLACE: RegistryReference<SoundEvent> = of("block.amethyst_cluster.place")
     @JvmField
-    public val AMETHYST_CLUSTER_STEP: SoundEvent = get("block.amethyst_cluster.step")
+    public val AMETHYST_CLUSTER_STEP: RegistryReference<SoundEvent> = of("block.amethyst_cluster.step")
     @JvmField
-    public val ANCIENT_DEBRIS_BREAK: SoundEvent = get("block.ancient_debris.break")
+    public val ANCIENT_DEBRIS_BREAK: RegistryReference<SoundEvent> = of("block.ancient_debris.break")
     @JvmField
-    public val ANCIENT_DEBRIS_STEP: SoundEvent = get("block.ancient_debris.step")
+    public val ANCIENT_DEBRIS_STEP: RegistryReference<SoundEvent> = of("block.ancient_debris.step")
     @JvmField
-    public val ANCIENT_DEBRIS_PLACE: SoundEvent = get("block.ancient_debris.place")
+    public val ANCIENT_DEBRIS_PLACE: RegistryReference<SoundEvent> = of("block.ancient_debris.place")
     @JvmField
-    public val ANCIENT_DEBRIS_HIT: SoundEvent = get("block.ancient_debris.hit")
+    public val ANCIENT_DEBRIS_HIT: RegistryReference<SoundEvent> = of("block.ancient_debris.hit")
     @JvmField
-    public val ANCIENT_DEBRIS_FALL: SoundEvent = get("block.ancient_debris.fall")
+    public val ANCIENT_DEBRIS_FALL: RegistryReference<SoundEvent> = of("block.ancient_debris.fall")
     @JvmField
-    public val ANVIL_BREAK: SoundEvent = get("block.anvil.break")
+    public val ANVIL_BREAK: RegistryReference<SoundEvent> = of("block.anvil.break")
     @JvmField
-    public val ANVIL_DESTROY: SoundEvent = get("block.anvil.destroy")
+    public val ANVIL_DESTROY: RegistryReference<SoundEvent> = of("block.anvil.destroy")
     @JvmField
-    public val ANVIL_FALL: SoundEvent = get("block.anvil.fall")
+    public val ANVIL_FALL: RegistryReference<SoundEvent> = of("block.anvil.fall")
     @JvmField
-    public val ANVIL_HIT: SoundEvent = get("block.anvil.hit")
+    public val ANVIL_HIT: RegistryReference<SoundEvent> = of("block.anvil.hit")
     @JvmField
-    public val ANVIL_LAND: SoundEvent = get("block.anvil.land")
+    public val ANVIL_LAND: RegistryReference<SoundEvent> = of("block.anvil.land")
     @JvmField
-    public val ANVIL_PLACE: SoundEvent = get("block.anvil.place")
+    public val ANVIL_PLACE: RegistryReference<SoundEvent> = of("block.anvil.place")
     @JvmField
-    public val ANVIL_STEP: SoundEvent = get("block.anvil.step")
+    public val ANVIL_STEP: RegistryReference<SoundEvent> = of("block.anvil.step")
     @JvmField
-    public val ANVIL_USE: SoundEvent = get("block.anvil.use")
+    public val ANVIL_USE: RegistryReference<SoundEvent> = of("block.anvil.use")
     @JvmField
-    public val ARMOR_EQUIP_CHAIN: SoundEvent = get("item.armor.equip_chain")
+    public val ARMOR_EQUIP_CHAIN: RegistryReference<SoundEvent> = of("item.armor.equip_chain")
     @JvmField
-    public val ARMOR_EQUIP_DIAMOND: SoundEvent = get("item.armor.equip_diamond")
+    public val ARMOR_EQUIP_DIAMOND: RegistryReference<SoundEvent> = of("item.armor.equip_diamond")
     @JvmField
-    public val ARMOR_EQUIP_ELYTRA: SoundEvent = get("item.armor.equip_elytra")
+    public val ARMOR_EQUIP_ELYTRA: RegistryReference<SoundEvent> = of("item.armor.equip_elytra")
     @JvmField
-    public val ARMOR_EQUIP_GENERIC: SoundEvent = get("item.armor.equip_generic")
+    public val ARMOR_EQUIP_GENERIC: RegistryReference<SoundEvent> = of("item.armor.equip_generic")
     @JvmField
-    public val ARMOR_EQUIP_GOLD: SoundEvent = get("item.armor.equip_gold")
+    public val ARMOR_EQUIP_GOLD: RegistryReference<SoundEvent> = of("item.armor.equip_gold")
     @JvmField
-    public val ARMOR_EQUIP_IRON: SoundEvent = get("item.armor.equip_iron")
+    public val ARMOR_EQUIP_IRON: RegistryReference<SoundEvent> = of("item.armor.equip_iron")
     @JvmField
-    public val ARMOR_EQUIP_LEATHER: SoundEvent = get("item.armor.equip_leather")
+    public val ARMOR_EQUIP_LEATHER: RegistryReference<SoundEvent> = of("item.armor.equip_leather")
     @JvmField
-    public val ARMOR_EQUIP_NETHERITE: SoundEvent = get("item.armor.equip_netherite")
+    public val ARMOR_EQUIP_NETHERITE: RegistryReference<SoundEvent> = of("item.armor.equip_netherite")
     @JvmField
-    public val ARMOR_EQUIP_TURTLE: SoundEvent = get("item.armor.equip_turtle")
+    public val ARMOR_EQUIP_TURTLE: RegistryReference<SoundEvent> = of("item.armor.equip_turtle")
     @JvmField
-    public val ARMOR_STAND_BREAK: SoundEvent = get("entity.armor_stand.break")
+    public val ARMOR_STAND_BREAK: RegistryReference<SoundEvent> = of("entity.armor_stand.break")
     @JvmField
-    public val ARMOR_STAND_FALL: SoundEvent = get("entity.armor_stand.fall")
+    public val ARMOR_STAND_FALL: RegistryReference<SoundEvent> = of("entity.armor_stand.fall")
     @JvmField
-    public val ARMOR_STAND_HIT: SoundEvent = get("entity.armor_stand.hit")
+    public val ARMOR_STAND_HIT: RegistryReference<SoundEvent> = of("entity.armor_stand.hit")
     @JvmField
-    public val ARMOR_STAND_PLACE: SoundEvent = get("entity.armor_stand.place")
+    public val ARMOR_STAND_PLACE: RegistryReference<SoundEvent> = of("entity.armor_stand.place")
     @JvmField
-    public val ARROW_HIT: SoundEvent = get("entity.arrow.hit")
+    public val ARROW_HIT: RegistryReference<SoundEvent> = of("entity.arrow.hit")
     @JvmField
-    public val ARROW_HIT_PLAYER: SoundEvent = get("entity.arrow.hit_player")
+    public val ARROW_HIT_PLAYER: RegistryReference<SoundEvent> = of("entity.arrow.hit_player")
     @JvmField
-    public val ARROW_SHOOT: SoundEvent = get("entity.arrow.shoot")
+    public val ARROW_SHOOT: RegistryReference<SoundEvent> = of("entity.arrow.shoot")
     @JvmField
-    public val AXE_STRIP: SoundEvent = get("item.axe.strip")
+    public val AXE_STRIP: RegistryReference<SoundEvent> = of("item.axe.strip")
     @JvmField
-    public val AXE_SCRAPE: SoundEvent = get("item.axe.scrape")
+    public val AXE_SCRAPE: RegistryReference<SoundEvent> = of("item.axe.scrape")
     @JvmField
-    public val AXE_WAX_OFF: SoundEvent = get("item.axe.wax_off")
+    public val AXE_WAX_OFF: RegistryReference<SoundEvent> = of("item.axe.wax_off")
     @JvmField
-    public val AXOLOTL_ATTACK: SoundEvent = get("entity.axolotl.attack")
+    public val AXOLOTL_ATTACK: RegistryReference<SoundEvent> = of("entity.axolotl.attack")
     @JvmField
-    public val AXOLOTL_DEATH: SoundEvent = get("entity.axolotl.death")
+    public val AXOLOTL_DEATH: RegistryReference<SoundEvent> = of("entity.axolotl.death")
     @JvmField
-    public val AXOLOTL_HURT: SoundEvent = get("entity.axolotl.hurt")
+    public val AXOLOTL_HURT: RegistryReference<SoundEvent> = of("entity.axolotl.hurt")
     @JvmField
-    public val AXOLOTL_IDLE_AIR: SoundEvent = get("entity.axolotl.idle_air")
+    public val AXOLOTL_IDLE_AIR: RegistryReference<SoundEvent> = of("entity.axolotl.idle_air")
     @JvmField
-    public val AXOLOTL_IDLE_WATER: SoundEvent = get("entity.axolotl.idle_water")
+    public val AXOLOTL_IDLE_WATER: RegistryReference<SoundEvent> = of("entity.axolotl.idle_water")
     @JvmField
-    public val AXOLOTL_SPLASH: SoundEvent = get("entity.axolotl.splash")
+    public val AXOLOTL_SPLASH: RegistryReference<SoundEvent> = of("entity.axolotl.splash")
     @JvmField
-    public val AXOLOTL_SWIM: SoundEvent = get("entity.axolotl.swim")
+    public val AXOLOTL_SWIM: RegistryReference<SoundEvent> = of("entity.axolotl.swim")
     @JvmField
-    public val AZALEA_BREAK: SoundEvent = get("block.azalea.break")
+    public val AZALEA_BREAK: RegistryReference<SoundEvent> = of("block.azalea.break")
     @JvmField
-    public val AZALEA_FALL: SoundEvent = get("block.azalea.fall")
+    public val AZALEA_FALL: RegistryReference<SoundEvent> = of("block.azalea.fall")
     @JvmField
-    public val AZALEA_HIT: SoundEvent = get("block.azalea.hit")
+    public val AZALEA_HIT: RegistryReference<SoundEvent> = of("block.azalea.hit")
     @JvmField
-    public val AZALEA_PLACE: SoundEvent = get("block.azalea.place")
+    public val AZALEA_PLACE: RegistryReference<SoundEvent> = of("block.azalea.place")
     @JvmField
-    public val AZALEA_STEP: SoundEvent = get("block.azalea.step")
+    public val AZALEA_STEP: RegistryReference<SoundEvent> = of("block.azalea.step")
     @JvmField
-    public val AZALEA_LEAVES_BREAK: SoundEvent = get("block.azalea_leaves.break")
+    public val AZALEA_LEAVES_BREAK: RegistryReference<SoundEvent> = of("block.azalea_leaves.break")
     @JvmField
-    public val AZALEA_LEAVES_FALL: SoundEvent = get("block.azalea_leaves.fall")
+    public val AZALEA_LEAVES_FALL: RegistryReference<SoundEvent> = of("block.azalea_leaves.fall")
     @JvmField
-    public val AZALEA_LEAVES_HIT: SoundEvent = get("block.azalea_leaves.hit")
+    public val AZALEA_LEAVES_HIT: RegistryReference<SoundEvent> = of("block.azalea_leaves.hit")
     @JvmField
-    public val AZALEA_LEAVES_PLACE: SoundEvent = get("block.azalea_leaves.place")
+    public val AZALEA_LEAVES_PLACE: RegistryReference<SoundEvent> = of("block.azalea_leaves.place")
     @JvmField
-    public val AZALEA_LEAVES_STEP: SoundEvent = get("block.azalea_leaves.step")
+    public val AZALEA_LEAVES_STEP: RegistryReference<SoundEvent> = of("block.azalea_leaves.step")
     @JvmField
-    public val BAMBOO_BREAK: SoundEvent = get("block.bamboo.break")
+    public val BAMBOO_BREAK: RegistryReference<SoundEvent> = of("block.bamboo.break")
     @JvmField
-    public val BAMBOO_FALL: SoundEvent = get("block.bamboo.fall")
+    public val BAMBOO_FALL: RegistryReference<SoundEvent> = of("block.bamboo.fall")
     @JvmField
-    public val BAMBOO_HIT: SoundEvent = get("block.bamboo.hit")
+    public val BAMBOO_HIT: RegistryReference<SoundEvent> = of("block.bamboo.hit")
     @JvmField
-    public val BAMBOO_PLACE: SoundEvent = get("block.bamboo.place")
+    public val BAMBOO_PLACE: RegistryReference<SoundEvent> = of("block.bamboo.place")
     @JvmField
-    public val BAMBOO_STEP: SoundEvent = get("block.bamboo.step")
+    public val BAMBOO_STEP: RegistryReference<SoundEvent> = of("block.bamboo.step")
     @JvmField
-    public val BAMBOO_SAPLING_BREAK: SoundEvent = get("block.bamboo_sapling.break")
+    public val BAMBOO_SAPLING_BREAK: RegistryReference<SoundEvent> = of("block.bamboo_sapling.break")
     @JvmField
-    public val BAMBOO_SAPLING_HIT: SoundEvent = get("block.bamboo_sapling.hit")
+    public val BAMBOO_SAPLING_HIT: RegistryReference<SoundEvent> = of("block.bamboo_sapling.hit")
     @JvmField
-    public val BAMBOO_SAPLING_PLACE: SoundEvent = get("block.bamboo_sapling.place")
+    public val BAMBOO_SAPLING_PLACE: RegistryReference<SoundEvent> = of("block.bamboo_sapling.place")
     @JvmField
-    public val BARREL_CLOSE: SoundEvent = get("block.barrel.close")
+    public val BARREL_CLOSE: RegistryReference<SoundEvent> = of("block.barrel.close")
     @JvmField
-    public val BARREL_OPEN: SoundEvent = get("block.barrel.open")
+    public val BARREL_OPEN: RegistryReference<SoundEvent> = of("block.barrel.open")
     @JvmField
-    public val BASALT_BREAK: SoundEvent = get("block.basalt.break")
+    public val BASALT_BREAK: RegistryReference<SoundEvent> = of("block.basalt.break")
     @JvmField
-    public val BASALT_STEP: SoundEvent = get("block.basalt.step")
+    public val BASALT_STEP: RegistryReference<SoundEvent> = of("block.basalt.step")
     @JvmField
-    public val BASALT_PLACE: SoundEvent = get("block.basalt.place")
+    public val BASALT_PLACE: RegistryReference<SoundEvent> = of("block.basalt.place")
     @JvmField
-    public val BASALT_HIT: SoundEvent = get("block.basalt.hit")
+    public val BASALT_HIT: RegistryReference<SoundEvent> = of("block.basalt.hit")
     @JvmField
-    public val BASALT_FALL: SoundEvent = get("block.basalt.fall")
+    public val BASALT_FALL: RegistryReference<SoundEvent> = of("block.basalt.fall")
     @JvmField
-    public val BAT_AMBIENT: SoundEvent = get("entity.bat.ambient")
+    public val BAT_AMBIENT: RegistryReference<SoundEvent> = of("entity.bat.ambient")
     @JvmField
-    public val BAT_DEATH: SoundEvent = get("entity.bat.death")
+    public val BAT_DEATH: RegistryReference<SoundEvent> = of("entity.bat.death")
     @JvmField
-    public val BAT_HURT: SoundEvent = get("entity.bat.hurt")
+    public val BAT_HURT: RegistryReference<SoundEvent> = of("entity.bat.hurt")
     @JvmField
-    public val BAT_LOOP: SoundEvent = get("entity.bat.loop")
+    public val BAT_LOOP: RegistryReference<SoundEvent> = of("entity.bat.loop")
     @JvmField
-    public val BAT_TAKEOFF: SoundEvent = get("entity.bat.takeoff")
+    public val BAT_TAKEOFF: RegistryReference<SoundEvent> = of("entity.bat.takeoff")
     @JvmField
-    public val BEACON_ACTIVATE: SoundEvent = get("block.beacon.activate")
+    public val BEACON_ACTIVATE: RegistryReference<SoundEvent> = of("block.beacon.activate")
     @JvmField
-    public val BEACON_AMBIENT: SoundEvent = get("block.beacon.ambient")
+    public val BEACON_AMBIENT: RegistryReference<SoundEvent> = of("block.beacon.ambient")
     @JvmField
-    public val BEACON_DEACTIVATE: SoundEvent = get("block.beacon.deactivate")
+    public val BEACON_DEACTIVATE: RegistryReference<SoundEvent> = of("block.beacon.deactivate")
     @JvmField
-    public val BEACON_POWER_SELECT: SoundEvent = get("block.beacon.power_select")
+    public val BEACON_POWER_SELECT: RegistryReference<SoundEvent> = of("block.beacon.power_select")
     @JvmField
-    public val BEE_DEATH: SoundEvent = get("entity.bee.death")
+    public val BEE_DEATH: RegistryReference<SoundEvent> = of("entity.bee.death")
     @JvmField
-    public val BEE_HURT: SoundEvent = get("entity.bee.hurt")
+    public val BEE_HURT: RegistryReference<SoundEvent> = of("entity.bee.hurt")
     @JvmField
-    public val BEE_LOOP_AGGRESSIVE: SoundEvent = get("entity.bee.loop_aggressive")
+    public val BEE_LOOP_AGGRESSIVE: RegistryReference<SoundEvent> = of("entity.bee.loop_aggressive")
     @JvmField
-    public val BEE_LOOP: SoundEvent = get("entity.bee.loop")
+    public val BEE_LOOP: RegistryReference<SoundEvent> = of("entity.bee.loop")
     @JvmField
-    public val BEE_STING: SoundEvent = get("entity.bee.sting")
+    public val BEE_STING: RegistryReference<SoundEvent> = of("entity.bee.sting")
     @JvmField
-    public val BEE_POLLINATE: SoundEvent = get("entity.bee.pollinate")
+    public val BEE_POLLINATE: RegistryReference<SoundEvent> = of("entity.bee.pollinate")
     @JvmField
-    public val BEEHIVE_DRIP: SoundEvent = get("block.beehive.drip")
+    public val BEEHIVE_DRIP: RegistryReference<SoundEvent> = of("block.beehive.drip")
     @JvmField
-    public val BEEHIVE_ENTER: SoundEvent = get("block.beehive.enter")
+    public val BEEHIVE_ENTER: RegistryReference<SoundEvent> = of("block.beehive.enter")
     @JvmField
-    public val BEEHIVE_EXIT: SoundEvent = get("block.beehive.exit")
+    public val BEEHIVE_EXIT: RegistryReference<SoundEvent> = of("block.beehive.exit")
     @JvmField
-    public val BEEHIVE_SHEAR: SoundEvent = get("block.beehive.shear")
+    public val BEEHIVE_SHEAR: RegistryReference<SoundEvent> = of("block.beehive.shear")
     @JvmField
-    public val BEEHIVE_WORK: SoundEvent = get("block.beehive.work")
+    public val BEEHIVE_WORK: RegistryReference<SoundEvent> = of("block.beehive.work")
     @JvmField
-    public val BELL_BLOCK: SoundEvent = get("block.bell.use")
+    public val BELL_BLOCK: RegistryReference<SoundEvent> = of("block.bell.use")
     @JvmField
-    public val BELL_RESONATE: SoundEvent = get("block.bell.resonate")
+    public val BELL_RESONATE: RegistryReference<SoundEvent> = of("block.bell.resonate")
     @JvmField
-    public val BIG_DRIPLEAF_BREAK: SoundEvent = get("block.big_dripleaf.break")
+    public val BIG_DRIPLEAF_BREAK: RegistryReference<SoundEvent> = of("block.big_dripleaf.break")
     @JvmField
-    public val BIG_DRIPLEAF_FALL: SoundEvent = get("block.big_dripleaf.fall")
+    public val BIG_DRIPLEAF_FALL: RegistryReference<SoundEvent> = of("block.big_dripleaf.fall")
     @JvmField
-    public val BIG_DRIPLEAF_HIT: SoundEvent = get("block.big_dripleaf.hit")
+    public val BIG_DRIPLEAF_HIT: RegistryReference<SoundEvent> = of("block.big_dripleaf.hit")
     @JvmField
-    public val BIG_DRIPLEAF_PLACE: SoundEvent = get("block.big_dripleaf.place")
+    public val BIG_DRIPLEAF_PLACE: RegistryReference<SoundEvent> = of("block.big_dripleaf.place")
     @JvmField
-    public val BIG_DRIPLEAF_STEP: SoundEvent = get("block.big_dripleaf.step")
+    public val BIG_DRIPLEAF_STEP: RegistryReference<SoundEvent> = of("block.big_dripleaf.step")
     @JvmField
-    public val BLAZE_AMBIENT: SoundEvent = get("entity.blaze.ambient")
+    public val BLAZE_AMBIENT: RegistryReference<SoundEvent> = of("entity.blaze.ambient")
     @JvmField
-    public val BLAZE_BURN: SoundEvent = get("entity.blaze.burn")
+    public val BLAZE_BURN: RegistryReference<SoundEvent> = of("entity.blaze.burn")
     @JvmField
-    public val BLAZE_DEATH: SoundEvent = get("entity.blaze.death")
+    public val BLAZE_DEATH: RegistryReference<SoundEvent> = of("entity.blaze.death")
     @JvmField
-    public val BLAZE_HURT: SoundEvent = get("entity.blaze.hurt")
+    public val BLAZE_HURT: RegistryReference<SoundEvent> = of("entity.blaze.hurt")
     @JvmField
-    public val BLAZE_SHOOT: SoundEvent = get("entity.blaze.shoot")
+    public val BLAZE_SHOOT: RegistryReference<SoundEvent> = of("entity.blaze.shoot")
     @JvmField
-    public val BOAT_PADDLE_LAND: SoundEvent = get("entity.boat.paddle_land")
+    public val BOAT_PADDLE_LAND: RegistryReference<SoundEvent> = of("entity.boat.paddle_land")
     @JvmField
-    public val BOAT_PADDLE_WATER: SoundEvent = get("entity.boat.paddle_water")
+    public val BOAT_PADDLE_WATER: RegistryReference<SoundEvent> = of("entity.boat.paddle_water")
     @JvmField
-    public val BONE_BLOCK_BREAK: SoundEvent = get("block.bone_block.break")
+    public val BONE_BLOCK_BREAK: RegistryReference<SoundEvent> = of("block.bone_block.break")
     @JvmField
-    public val BONE_BLOCK_FALL: SoundEvent = get("block.bone_block.fall")
+    public val BONE_BLOCK_FALL: RegistryReference<SoundEvent> = of("block.bone_block.fall")
     @JvmField
-    public val BONE_BLOCK_HIT: SoundEvent = get("block.bone_block.hit")
+    public val BONE_BLOCK_HIT: RegistryReference<SoundEvent> = of("block.bone_block.hit")
     @JvmField
-    public val BONE_BLOCK_PLACE: SoundEvent = get("block.bone_block.place")
+    public val BONE_BLOCK_PLACE: RegistryReference<SoundEvent> = of("block.bone_block.place")
     @JvmField
-    public val BONE_BLOCK_STEP: SoundEvent = get("block.bone_block.step")
+    public val BONE_BLOCK_STEP: RegistryReference<SoundEvent> = of("block.bone_block.step")
     @JvmField
-    public val BONE_MEAL_USE: SoundEvent = get("item.bone_meal.use")
+    public val BONE_MEAL_USE: RegistryReference<SoundEvent> = of("item.bone_meal.use")
     @JvmField
-    public val BOOK_PAGE_TURN: SoundEvent = get("item.book.page_turn")
+    public val BOOK_PAGE_TURN: RegistryReference<SoundEvent> = of("item.book.page_turn")
     @JvmField
-    public val BOOK_PUT: SoundEvent = get("item.book.put")
+    public val BOOK_PUT: RegistryReference<SoundEvent> = of("item.book.put")
     @JvmField
-    public val BLASTFURNACE_FIRE_CRACKLE: SoundEvent = get("block.blastfurnace.fire_crackle")
+    public val BLASTFURNACE_FIRE_CRACKLE: RegistryReference<SoundEvent> = of("block.blastfurnace.fire_crackle")
     @JvmField
-    public val BOTTLE_EMPTY: SoundEvent = get("item.bottle.empty")
+    public val BOTTLE_EMPTY: RegistryReference<SoundEvent> = of("item.bottle.empty")
     @JvmField
-    public val BOTTLE_FILL: SoundEvent = get("item.bottle.fill")
+    public val BOTTLE_FILL: RegistryReference<SoundEvent> = of("item.bottle.fill")
     @JvmField
-    public val BOTTLE_FILL_DRAGONBREATH: SoundEvent = get("item.bottle.fill_dragonbreath")
+    public val BOTTLE_FILL_DRAGONBREATH: RegistryReference<SoundEvent> = of("item.bottle.fill_dragonbreath")
     @JvmField
-    public val BREWING_STAND_BREW: SoundEvent = get("block.brewing_stand.brew")
+    public val BREWING_STAND_BREW: RegistryReference<SoundEvent> = of("block.brewing_stand.brew")
     @JvmField
-    public val BUBBLE_COLUMN_BUBBLE_POP: SoundEvent = get("block.bubble_column.bubble_pop")
+    public val BUBBLE_COLUMN_BUBBLE_POP: RegistryReference<SoundEvent> = of("block.bubble_column.bubble_pop")
     @JvmField
-    public val BUBBLE_COLUMN_UPWARDS_AMBIENT: SoundEvent = get("block.bubble_column.upwards_ambient")
+    public val BUBBLE_COLUMN_UPWARDS_AMBIENT: RegistryReference<SoundEvent> = of("block.bubble_column.upwards_ambient")
     @JvmField
-    public val BUBBLE_COLUMN_UPWARDS_INSIDE: SoundEvent = get("block.bubble_column.upwards_inside")
+    public val BUBBLE_COLUMN_UPWARDS_INSIDE: RegistryReference<SoundEvent> = of("block.bubble_column.upwards_inside")
     @JvmField
-    public val BUBBLE_COLUMN_WHIRLPOOL_AMBIENT: SoundEvent = get("block.bubble_column.whirlpool_ambient")
+    public val BUBBLE_COLUMN_WHIRLPOOL_AMBIENT: RegistryReference<SoundEvent> = of("block.bubble_column.whirlpool_ambient")
     @JvmField
-    public val BUBBLE_COLUMN_WHIRLPOOL_INSIDE: SoundEvent = get("block.bubble_column.whirlpool_inside")
+    public val BUBBLE_COLUMN_WHIRLPOOL_INSIDE: RegistryReference<SoundEvent> = of("block.bubble_column.whirlpool_inside")
     @JvmField
-    public val BUCKET_EMPTY: SoundEvent = get("item.bucket.empty")
+    public val BUCKET_EMPTY: RegistryReference<SoundEvent> = of("item.bucket.empty")
     @JvmField
-    public val BUCKET_EMPTY_AXOLOTL: SoundEvent = get("item.bucket.empty_axolotl")
+    public val BUCKET_EMPTY_AXOLOTL: RegistryReference<SoundEvent> = of("item.bucket.empty_axolotl")
     @JvmField
-    public val BUCKET_EMPTY_FISH: SoundEvent = get("item.bucket.empty_fish")
+    public val BUCKET_EMPTY_FISH: RegistryReference<SoundEvent> = of("item.bucket.empty_fish")
     @JvmField
-    public val BUCKET_EMPTY_LAVA: SoundEvent = get("item.bucket.empty_lava")
+    public val BUCKET_EMPTY_LAVA: RegistryReference<SoundEvent> = of("item.bucket.empty_lava")
     @JvmField
-    public val BUCKET_EMPTY_POWDER_SNOW: SoundEvent = get("item.bucket.empty_powder_snow")
+    public val BUCKET_EMPTY_POWDER_SNOW: RegistryReference<SoundEvent> = of("item.bucket.empty_powder_snow")
     @JvmField
-    public val BUCKET_EMPTY_TADPOLE: SoundEvent = get("item.bucket.empty_tadpole")
+    public val BUCKET_EMPTY_TADPOLE: RegistryReference<SoundEvent> = of("item.bucket.empty_tadpole")
     @JvmField
-    public val BUCKET_FILL: SoundEvent = get("item.bucket.fill")
+    public val BUCKET_FILL: RegistryReference<SoundEvent> = of("item.bucket.fill")
     @JvmField
-    public val BUCKET_FILL_AXOLOTL: SoundEvent = get("item.bucket.fill_axolotl")
+    public val BUCKET_FILL_AXOLOTL: RegistryReference<SoundEvent> = of("item.bucket.fill_axolotl")
     @JvmField
-    public val BUCKET_FILL_FISH: SoundEvent = get("item.bucket.fill_fish")
+    public val BUCKET_FILL_FISH: RegistryReference<SoundEvent> = of("item.bucket.fill_fish")
     @JvmField
-    public val BUCKET_FILL_LAVA: SoundEvent = get("item.bucket.fill_lava")
+    public val BUCKET_FILL_LAVA: RegistryReference<SoundEvent> = of("item.bucket.fill_lava")
     @JvmField
-    public val BUCKET_FILL_POWDER_SNOW: SoundEvent = get("item.bucket.fill_powder_snow")
+    public val BUCKET_FILL_POWDER_SNOW: RegistryReference<SoundEvent> = of("item.bucket.fill_powder_snow")
     @JvmField
-    public val BUCKET_FILL_TADPOLE: SoundEvent = get("item.bucket.fill_tadpole")
+    public val BUCKET_FILL_TADPOLE: RegistryReference<SoundEvent> = of("item.bucket.fill_tadpole")
     @JvmField
-    public val BUNDLE_DROP_CONTENTS: SoundEvent = get("item.bundle.drop_contents")
+    public val BUNDLE_DROP_CONTENTS: RegistryReference<SoundEvent> = of("item.bundle.drop_contents")
     @JvmField
-    public val BUNDLE_INSERT: SoundEvent = get("item.bundle.insert")
+    public val BUNDLE_INSERT: RegistryReference<SoundEvent> = of("item.bundle.insert")
     @JvmField
-    public val BUNDLE_REMOVE_ONE: SoundEvent = get("item.bundle.remove_one")
+    public val BUNDLE_REMOVE_ONE: RegistryReference<SoundEvent> = of("item.bundle.remove_one")
     @JvmField
-    public val CAKE_ADD_CANDLE: SoundEvent = get("block.cake.add_candle")
+    public val CAKE_ADD_CANDLE: RegistryReference<SoundEvent> = of("block.cake.add_candle")
     @JvmField
-    public val CALCITE_BREAK: SoundEvent = get("block.calcite.break")
+    public val CALCITE_BREAK: RegistryReference<SoundEvent> = of("block.calcite.break")
     @JvmField
-    public val CALCITE_STEP: SoundEvent = get("block.calcite.step")
+    public val CALCITE_STEP: RegistryReference<SoundEvent> = of("block.calcite.step")
     @JvmField
-    public val CALCITE_PLACE: SoundEvent = get("block.calcite.place")
+    public val CALCITE_PLACE: RegistryReference<SoundEvent> = of("block.calcite.place")
     @JvmField
-    public val CALCITE_HIT: SoundEvent = get("block.calcite.hit")
+    public val CALCITE_HIT: RegistryReference<SoundEvent> = of("block.calcite.hit")
     @JvmField
-    public val CALCITE_FALL: SoundEvent = get("block.calcite.fall")
+    public val CALCITE_FALL: RegistryReference<SoundEvent> = of("block.calcite.fall")
     @JvmField
-    public val CAMPFIRE_CRACKLE: SoundEvent = get("block.campfire.crackle")
+    public val CAMPFIRE_CRACKLE: RegistryReference<SoundEvent> = of("block.campfire.crackle")
     @JvmField
-    public val CANDLE_AMBIENT: SoundEvent = get("block.candle.ambient")
+    public val CANDLE_AMBIENT: RegistryReference<SoundEvent> = of("block.candle.ambient")
     @JvmField
-    public val CANDLE_BREAK: SoundEvent = get("block.candle.break")
+    public val CANDLE_BREAK: RegistryReference<SoundEvent> = of("block.candle.break")
     @JvmField
-    public val CANDLE_EXTINGUISH: SoundEvent = get("block.candle.extinguish")
+    public val CANDLE_EXTINGUISH: RegistryReference<SoundEvent> = of("block.candle.extinguish")
     @JvmField
-    public val CANDLE_FALL: SoundEvent = get("block.candle.fall")
+    public val CANDLE_FALL: RegistryReference<SoundEvent> = of("block.candle.fall")
     @JvmField
-    public val CANDLE_HIT: SoundEvent = get("block.candle.hit")
+    public val CANDLE_HIT: RegistryReference<SoundEvent> = of("block.candle.hit")
     @JvmField
-    public val CANDLE_PLACE: SoundEvent = get("block.candle.place")
+    public val CANDLE_PLACE: RegistryReference<SoundEvent> = of("block.candle.place")
     @JvmField
-    public val CANDLE_STEP: SoundEvent = get("block.candle.step")
+    public val CANDLE_STEP: RegistryReference<SoundEvent> = of("block.candle.step")
     @JvmField
-    public val CAT_AMBIENT: SoundEvent = get("entity.cat.ambient")
+    public val CAT_AMBIENT: RegistryReference<SoundEvent> = of("entity.cat.ambient")
     @JvmField
-    public val CAT_STRAY_AMBIENT: SoundEvent = get("entity.cat.stray_ambient")
+    public val CAT_STRAY_AMBIENT: RegistryReference<SoundEvent> = of("entity.cat.stray_ambient")
     @JvmField
-    public val CAT_DEATH: SoundEvent = get("entity.cat.death")
+    public val CAT_DEATH: RegistryReference<SoundEvent> = of("entity.cat.death")
     @JvmField
-    public val CAT_EAT: SoundEvent = get("entity.cat.eat")
+    public val CAT_EAT: RegistryReference<SoundEvent> = of("entity.cat.eat")
     @JvmField
-    public val CAT_HISS: SoundEvent = get("entity.cat.hiss")
+    public val CAT_HISS: RegistryReference<SoundEvent> = of("entity.cat.hiss")
     @JvmField
-    public val CAT_BEG_FOR_FOOD: SoundEvent = get("entity.cat.beg_for_food")
+    public val CAT_BEG_FOR_FOOD: RegistryReference<SoundEvent> = of("entity.cat.beg_for_food")
     @JvmField
-    public val CAT_HURT: SoundEvent = get("entity.cat.hurt")
+    public val CAT_HURT: RegistryReference<SoundEvent> = of("entity.cat.hurt")
     @JvmField
-    public val CAT_PURR: SoundEvent = get("entity.cat.purr")
+    public val CAT_PURR: RegistryReference<SoundEvent> = of("entity.cat.purr")
     @JvmField
-    public val CAT_PURREOW: SoundEvent = get("entity.cat.purreow")
+    public val CAT_PURREOW: RegistryReference<SoundEvent> = of("entity.cat.purreow")
     @JvmField
-    public val CAVE_VINES_BREAK: SoundEvent = get("block.cave_vines.break")
+    public val CAVE_VINES_BREAK: RegistryReference<SoundEvent> = of("block.cave_vines.break")
     @JvmField
-    public val CAVE_VINES_FALL: SoundEvent = get("block.cave_vines.fall")
+    public val CAVE_VINES_FALL: RegistryReference<SoundEvent> = of("block.cave_vines.fall")
     @JvmField
-    public val CAVE_VINES_HIT: SoundEvent = get("block.cave_vines.hit")
+    public val CAVE_VINES_HIT: RegistryReference<SoundEvent> = of("block.cave_vines.hit")
     @JvmField
-    public val CAVE_VINES_PLACE: SoundEvent = get("block.cave_vines.place")
+    public val CAVE_VINES_PLACE: RegistryReference<SoundEvent> = of("block.cave_vines.place")
     @JvmField
-    public val CAVE_VINES_STEP: SoundEvent = get("block.cave_vines.step")
+    public val CAVE_VINES_STEP: RegistryReference<SoundEvent> = of("block.cave_vines.step")
     @JvmField
-    public val CAVE_VINES_PICK_BERRIES: SoundEvent = get("block.cave_vines.pick_berries")
+    public val CAVE_VINES_PICK_BERRIES: RegistryReference<SoundEvent> = of("block.cave_vines.pick_berries")
     @JvmField
-    public val CHAIN_BREAK: SoundEvent = get("block.chain.break")
+    public val CHAIN_BREAK: RegistryReference<SoundEvent> = of("block.chain.break")
     @JvmField
-    public val CHAIN_FALL: SoundEvent = get("block.chain.fall")
+    public val CHAIN_FALL: RegistryReference<SoundEvent> = of("block.chain.fall")
     @JvmField
-    public val CHAIN_HIT: SoundEvent = get("block.chain.hit")
+    public val CHAIN_HIT: RegistryReference<SoundEvent> = of("block.chain.hit")
     @JvmField
-    public val CHAIN_PLACE: SoundEvent = get("block.chain.place")
+    public val CHAIN_PLACE: RegistryReference<SoundEvent> = of("block.chain.place")
     @JvmField
-    public val CHAIN_STEP: SoundEvent = get("block.chain.step")
+    public val CHAIN_STEP: RegistryReference<SoundEvent> = of("block.chain.step")
     @JvmField
-    public val CHEST_CLOSE: SoundEvent = get("block.chest.close")
+    public val CHEST_CLOSE: RegistryReference<SoundEvent> = of("block.chest.close")
     @JvmField
-    public val CHEST_LOCKED: SoundEvent = get("block.chest.locked")
+    public val CHEST_LOCKED: RegistryReference<SoundEvent> = of("block.chest.locked")
     @JvmField
-    public val CHEST_OPEN: SoundEvent = get("block.chest.open")
+    public val CHEST_OPEN: RegistryReference<SoundEvent> = of("block.chest.open")
     @JvmField
-    public val CHICKEN_AMBIENT: SoundEvent = get("entity.chicken.ambient")
+    public val CHICKEN_AMBIENT: RegistryReference<SoundEvent> = of("entity.chicken.ambient")
     @JvmField
-    public val CHICKEN_DEATH: SoundEvent = get("entity.chicken.death")
+    public val CHICKEN_DEATH: RegistryReference<SoundEvent> = of("entity.chicken.death")
     @JvmField
-    public val CHICKEN_EGG: SoundEvent = get("entity.chicken.egg")
+    public val CHICKEN_EGG: RegistryReference<SoundEvent> = of("entity.chicken.egg")
     @JvmField
-    public val CHICKEN_HURT: SoundEvent = get("entity.chicken.hurt")
+    public val CHICKEN_HURT: RegistryReference<SoundEvent> = of("entity.chicken.hurt")
     @JvmField
-    public val CHICKEN_STEP: SoundEvent = get("entity.chicken.step")
+    public val CHICKEN_STEP: RegistryReference<SoundEvent> = of("entity.chicken.step")
     @JvmField
-    public val CHORUS_FLOWER_DEATH: SoundEvent = get("block.chorus_flower.death")
+    public val CHORUS_FLOWER_DEATH: RegistryReference<SoundEvent> = of("block.chorus_flower.death")
     @JvmField
-    public val CHORUS_FLOWER_GROW: SoundEvent = get("block.chorus_flower.grow")
+    public val CHORUS_FLOWER_GROW: RegistryReference<SoundEvent> = of("block.chorus_flower.grow")
     @JvmField
-    public val CHORUS_FRUIT_TELEPORT: SoundEvent = get("item.chorus_fruit.teleport")
+    public val CHORUS_FRUIT_TELEPORT: RegistryReference<SoundEvent> = of("item.chorus_fruit.teleport")
     @JvmField
-    public val COD_AMBIENT: SoundEvent = get("entity.cod.ambient")
+    public val COD_AMBIENT: RegistryReference<SoundEvent> = of("entity.cod.ambient")
     @JvmField
-    public val COD_DEATH: SoundEvent = get("entity.cod.death")
+    public val COD_DEATH: RegistryReference<SoundEvent> = of("entity.cod.death")
     @JvmField
-    public val COD_FLOP: SoundEvent = get("entity.cod.flop")
+    public val COD_FLOP: RegistryReference<SoundEvent> = of("entity.cod.flop")
     @JvmField
-    public val COD_HURT: SoundEvent = get("entity.cod.hurt")
+    public val COD_HURT: RegistryReference<SoundEvent> = of("entity.cod.hurt")
     @JvmField
-    public val COMPARATOR_CLICK: SoundEvent = get("block.comparator.click")
+    public val COMPARATOR_CLICK: RegistryReference<SoundEvent> = of("block.comparator.click")
     @JvmField
-    public val COMPOSTER_EMPTY: SoundEvent = get("block.composter.empty")
+    public val COMPOSTER_EMPTY: RegistryReference<SoundEvent> = of("block.composter.empty")
     @JvmField
-    public val COMPOSTER_FILL: SoundEvent = get("block.composter.fill")
+    public val COMPOSTER_FILL: RegistryReference<SoundEvent> = of("block.composter.fill")
     @JvmField
-    public val COMPOSTER_FILL_SUCCESS: SoundEvent = get("block.composter.fill_success")
+    public val COMPOSTER_FILL_SUCCESS: RegistryReference<SoundEvent> = of("block.composter.fill_success")
     @JvmField
-    public val COMPOSTER_READY: SoundEvent = get("block.composter.ready")
+    public val COMPOSTER_READY: RegistryReference<SoundEvent> = of("block.composter.ready")
     @JvmField
-    public val CONDUIT_ACTIVATE: SoundEvent = get("block.conduit.activate")
+    public val CONDUIT_ACTIVATE: RegistryReference<SoundEvent> = of("block.conduit.activate")
     @JvmField
-    public val CONDUIT_AMBIENT: SoundEvent = get("block.conduit.ambient")
+    public val CONDUIT_AMBIENT: RegistryReference<SoundEvent> = of("block.conduit.ambient")
     @JvmField
-    public val CONDUIT_AMBIENT_SHORT: SoundEvent = get("block.conduit.ambient.short")
+    public val CONDUIT_AMBIENT_SHORT: RegistryReference<SoundEvent> = of("block.conduit.ambient.short")
     @JvmField
-    public val CONDUIT_ATTACK_TARGET: SoundEvent = get("block.conduit.attack.target")
+    public val CONDUIT_ATTACK_TARGET: RegistryReference<SoundEvent> = of("block.conduit.attack.target")
     @JvmField
-    public val CONDUIT_DEACTIVATE: SoundEvent = get("block.conduit.deactivate")
+    public val CONDUIT_DEACTIVATE: RegistryReference<SoundEvent> = of("block.conduit.deactivate")
     @JvmField
-    public val COPPER_BREAK: SoundEvent = get("block.copper.break")
+    public val COPPER_BREAK: RegistryReference<SoundEvent> = of("block.copper.break")
     @JvmField
-    public val COPPER_STEP: SoundEvent = get("block.copper.step")
+    public val COPPER_STEP: RegistryReference<SoundEvent> = of("block.copper.step")
     @JvmField
-    public val COPPER_PLACE: SoundEvent = get("block.copper.place")
+    public val COPPER_PLACE: RegistryReference<SoundEvent> = of("block.copper.place")
     @JvmField
-    public val COPPER_HIT: SoundEvent = get("block.copper.hit")
+    public val COPPER_HIT: RegistryReference<SoundEvent> = of("block.copper.hit")
     @JvmField
-    public val COPPER_FALL: SoundEvent = get("block.copper.fall")
+    public val COPPER_FALL: RegistryReference<SoundEvent> = of("block.copper.fall")
     @JvmField
-    public val CORAL_BLOCK_BREAK: SoundEvent = get("block.coral_block.break")
+    public val CORAL_BLOCK_BREAK: RegistryReference<SoundEvent> = of("block.coral_block.break")
     @JvmField
-    public val CORAL_BLOCK_FALL: SoundEvent = get("block.coral_block.fall")
+    public val CORAL_BLOCK_FALL: RegistryReference<SoundEvent> = of("block.coral_block.fall")
     @JvmField
-    public val CORAL_BLOCK_HIT: SoundEvent = get("block.coral_block.hit")
+    public val CORAL_BLOCK_HIT: RegistryReference<SoundEvent> = of("block.coral_block.hit")
     @JvmField
-    public val CORAL_BLOCK_PLACE: SoundEvent = get("block.coral_block.place")
+    public val CORAL_BLOCK_PLACE: RegistryReference<SoundEvent> = of("block.coral_block.place")
     @JvmField
-    public val CORAL_BLOCK_STEP: SoundEvent = get("block.coral_block.step")
+    public val CORAL_BLOCK_STEP: RegistryReference<SoundEvent> = of("block.coral_block.step")
     @JvmField
-    public val COW_AMBIENT: SoundEvent = get("entity.cow.ambient")
+    public val COW_AMBIENT: RegistryReference<SoundEvent> = of("entity.cow.ambient")
     @JvmField
-    public val COW_DEATH: SoundEvent = get("entity.cow.death")
+    public val COW_DEATH: RegistryReference<SoundEvent> = of("entity.cow.death")
     @JvmField
-    public val COW_HURT: SoundEvent = get("entity.cow.hurt")
+    public val COW_HURT: RegistryReference<SoundEvent> = of("entity.cow.hurt")
     @JvmField
-    public val COW_MILK: SoundEvent = get("entity.cow.milk")
+    public val COW_MILK: RegistryReference<SoundEvent> = of("entity.cow.milk")
     @JvmField
-    public val COW_STEP: SoundEvent = get("entity.cow.step")
+    public val COW_STEP: RegistryReference<SoundEvent> = of("entity.cow.step")
     @JvmField
-    public val CREEPER_DEATH: SoundEvent = get("entity.creeper.death")
+    public val CREEPER_DEATH: RegistryReference<SoundEvent> = of("entity.creeper.death")
     @JvmField
-    public val CREEPER_HURT: SoundEvent = get("entity.creeper.hurt")
+    public val CREEPER_HURT: RegistryReference<SoundEvent> = of("entity.creeper.hurt")
     @JvmField
-    public val CREEPER_PRIMED: SoundEvent = get("entity.creeper.primed")
+    public val CREEPER_PRIMED: RegistryReference<SoundEvent> = of("entity.creeper.primed")
     @JvmField
-    public val CROP_BREAK: SoundEvent = get("block.crop.break")
+    public val CROP_BREAK: RegistryReference<SoundEvent> = of("block.crop.break")
     @JvmField
-    public val CROP_PLANTED: SoundEvent = get("item.crop.plant")
+    public val CROP_PLANTED: RegistryReference<SoundEvent> = of("item.crop.plant")
     @JvmField
-    public val CROSSBOW_HIT: SoundEvent = get("item.crossbow.hit")
+    public val CROSSBOW_HIT: RegistryReference<SoundEvent> = of("item.crossbow.hit")
     @JvmField
-    public val CROSSBOW_LOADING_END: SoundEvent = get("item.crossbow.loading_end")
+    public val CROSSBOW_LOADING_END: RegistryReference<SoundEvent> = of("item.crossbow.loading_end")
     @JvmField
-    public val CROSSBOW_LOADING_MIDDLE: SoundEvent = get("item.crossbow.loading_middle")
+    public val CROSSBOW_LOADING_MIDDLE: RegistryReference<SoundEvent> = of("item.crossbow.loading_middle")
     @JvmField
-    public val CROSSBOW_LOADING_START: SoundEvent = get("item.crossbow.loading_start")
+    public val CROSSBOW_LOADING_START: RegistryReference<SoundEvent> = of("item.crossbow.loading_start")
     @JvmField
-    public val CROSSBOW_QUICK_CHARGE_1: SoundEvent = get("item.crossbow.quick_charge_1")
+    public val CROSSBOW_QUICK_CHARGE_1: RegistryReference<SoundEvent> = of("item.crossbow.quick_charge_1")
     @JvmField
-    public val CROSSBOW_QUICK_CHARGE_2: SoundEvent = get("item.crossbow.quick_charge_2")
+    public val CROSSBOW_QUICK_CHARGE_2: RegistryReference<SoundEvent> = of("item.crossbow.quick_charge_2")
     @JvmField
-    public val CROSSBOW_QUICK_CHARGE_3: SoundEvent = get("item.crossbow.quick_charge_3")
+    public val CROSSBOW_QUICK_CHARGE_3: RegistryReference<SoundEvent> = of("item.crossbow.quick_charge_3")
     @JvmField
-    public val CROSSBOW_SHOOT: SoundEvent = get("item.crossbow.shoot")
+    public val CROSSBOW_SHOOT: RegistryReference<SoundEvent> = of("item.crossbow.shoot")
     @JvmField
-    public val DEEPSLATE_BRICKS_BREAK: SoundEvent = get("block.deepslate_bricks.break")
+    public val DEEPSLATE_BRICKS_BREAK: RegistryReference<SoundEvent> = of("block.deepslate_bricks.break")
     @JvmField
-    public val DEEPSLATE_BRICKS_FALL: SoundEvent = get("block.deepslate_bricks.fall")
+    public val DEEPSLATE_BRICKS_FALL: RegistryReference<SoundEvent> = of("block.deepslate_bricks.fall")
     @JvmField
-    public val DEEPSLATE_BRICKS_HIT: SoundEvent = get("block.deepslate_bricks.hit")
+    public val DEEPSLATE_BRICKS_HIT: RegistryReference<SoundEvent> = of("block.deepslate_bricks.hit")
     @JvmField
-    public val DEEPSLATE_BRICKS_PLACE: SoundEvent = get("block.deepslate_bricks.place")
+    public val DEEPSLATE_BRICKS_PLACE: RegistryReference<SoundEvent> = of("block.deepslate_bricks.place")
     @JvmField
-    public val DEEPSLATE_BRICKS_STEP: SoundEvent = get("block.deepslate_bricks.step")
+    public val DEEPSLATE_BRICKS_STEP: RegistryReference<SoundEvent> = of("block.deepslate_bricks.step")
     @JvmField
-    public val DEEPSLATE_BREAK: SoundEvent = get("block.deepslate.break")
+    public val DEEPSLATE_BREAK: RegistryReference<SoundEvent> = of("block.deepslate.break")
     @JvmField
-    public val DEEPSLATE_FALL: SoundEvent = get("block.deepslate.fall")
+    public val DEEPSLATE_FALL: RegistryReference<SoundEvent> = of("block.deepslate.fall")
     @JvmField
-    public val DEEPSLATE_HIT: SoundEvent = get("block.deepslate.hit")
+    public val DEEPSLATE_HIT: RegistryReference<SoundEvent> = of("block.deepslate.hit")
     @JvmField
-    public val DEEPSLATE_PLACE: SoundEvent = get("block.deepslate.place")
+    public val DEEPSLATE_PLACE: RegistryReference<SoundEvent> = of("block.deepslate.place")
     @JvmField
-    public val DEEPSLATE_STEP: SoundEvent = get("block.deepslate.step")
+    public val DEEPSLATE_STEP: RegistryReference<SoundEvent> = of("block.deepslate.step")
     @JvmField
-    public val DEEPSLATE_TILES_BREAK: SoundEvent = get("block.deepslate_tiles.break")
+    public val DEEPSLATE_TILES_BREAK: RegistryReference<SoundEvent> = of("block.deepslate_tiles.break")
     @JvmField
-    public val DEEPSLATE_TILES_FALL: SoundEvent = get("block.deepslate_tiles.fall")
+    public val DEEPSLATE_TILES_FALL: RegistryReference<SoundEvent> = of("block.deepslate_tiles.fall")
     @JvmField
-    public val DEEPSLATE_TILES_HIT: SoundEvent = get("block.deepslate_tiles.hit")
+    public val DEEPSLATE_TILES_HIT: RegistryReference<SoundEvent> = of("block.deepslate_tiles.hit")
     @JvmField
-    public val DEEPSLATE_TILES_PLACE: SoundEvent = get("block.deepslate_tiles.place")
+    public val DEEPSLATE_TILES_PLACE: RegistryReference<SoundEvent> = of("block.deepslate_tiles.place")
     @JvmField
-    public val DEEPSLATE_TILES_STEP: SoundEvent = get("block.deepslate_tiles.step")
+    public val DEEPSLATE_TILES_STEP: RegistryReference<SoundEvent> = of("block.deepslate_tiles.step")
     @JvmField
-    public val DISPENSER_DISPENSE: SoundEvent = get("block.dispenser.dispense")
+    public val DISPENSER_DISPENSE: RegistryReference<SoundEvent> = of("block.dispenser.dispense")
     @JvmField
-    public val DISPENSER_FAIL: SoundEvent = get("block.dispenser.fail")
+    public val DISPENSER_FAIL: RegistryReference<SoundEvent> = of("block.dispenser.fail")
     @JvmField
-    public val DISPENSER_LAUNCH: SoundEvent = get("block.dispenser.launch")
+    public val DISPENSER_LAUNCH: RegistryReference<SoundEvent> = of("block.dispenser.launch")
     @JvmField
-    public val DOLPHIN_AMBIENT: SoundEvent = get("entity.dolphin.ambient")
+    public val DOLPHIN_AMBIENT: RegistryReference<SoundEvent> = of("entity.dolphin.ambient")
     @JvmField
-    public val DOLPHIN_AMBIENT_WATER: SoundEvent = get("entity.dolphin.ambient_water")
+    public val DOLPHIN_AMBIENT_WATER: RegistryReference<SoundEvent> = of("entity.dolphin.ambient_water")
     @JvmField
-    public val DOLPHIN_ATTACK: SoundEvent = get("entity.dolphin.attack")
+    public val DOLPHIN_ATTACK: RegistryReference<SoundEvent> = of("entity.dolphin.attack")
     @JvmField
-    public val DOLPHIN_DEATH: SoundEvent = get("entity.dolphin.death")
+    public val DOLPHIN_DEATH: RegistryReference<SoundEvent> = of("entity.dolphin.death")
     @JvmField
-    public val DOLPHIN_EAT: SoundEvent = get("entity.dolphin.eat")
+    public val DOLPHIN_EAT: RegistryReference<SoundEvent> = of("entity.dolphin.eat")
     @JvmField
-    public val DOLPHIN_HURT: SoundEvent = get("entity.dolphin.hurt")
+    public val DOLPHIN_HURT: RegistryReference<SoundEvent> = of("entity.dolphin.hurt")
     @JvmField
-    public val DOLPHIN_JUMP: SoundEvent = get("entity.dolphin.jump")
+    public val DOLPHIN_JUMP: RegistryReference<SoundEvent> = of("entity.dolphin.jump")
     @JvmField
-    public val DOLPHIN_PLAY: SoundEvent = get("entity.dolphin.play")
+    public val DOLPHIN_PLAY: RegistryReference<SoundEvent> = of("entity.dolphin.play")
     @JvmField
-    public val DOLPHIN_SPLASH: SoundEvent = get("entity.dolphin.splash")
+    public val DOLPHIN_SPLASH: RegistryReference<SoundEvent> = of("entity.dolphin.splash")
     @JvmField
-    public val DOLPHIN_SWIM: SoundEvent = get("entity.dolphin.swim")
+    public val DOLPHIN_SWIM: RegistryReference<SoundEvent> = of("entity.dolphin.swim")
     @JvmField
-    public val DONKEY_AMBIENT: SoundEvent = get("entity.donkey.ambient")
+    public val DONKEY_AMBIENT: RegistryReference<SoundEvent> = of("entity.donkey.ambient")
     @JvmField
-    public val DONKEY_ANGRY: SoundEvent = get("entity.donkey.angry")
+    public val DONKEY_ANGRY: RegistryReference<SoundEvent> = of("entity.donkey.angry")
     @JvmField
-    public val DONKEY_CHEST: SoundEvent = get("entity.donkey.chest")
+    public val DONKEY_CHEST: RegistryReference<SoundEvent> = of("entity.donkey.chest")
     @JvmField
-    public val DONKEY_DEATH: SoundEvent = get("entity.donkey.death")
+    public val DONKEY_DEATH: RegistryReference<SoundEvent> = of("entity.donkey.death")
     @JvmField
-    public val DONKEY_EAT: SoundEvent = get("entity.donkey.eat")
+    public val DONKEY_EAT: RegistryReference<SoundEvent> = of("entity.donkey.eat")
     @JvmField
-    public val DONKEY_HURT: SoundEvent = get("entity.donkey.hurt")
+    public val DONKEY_HURT: RegistryReference<SoundEvent> = of("entity.donkey.hurt")
     @JvmField
-    public val DRIPSTONE_BLOCK_BREAK: SoundEvent = get("block.dripstone_block.break")
+    public val DRIPSTONE_BLOCK_BREAK: RegistryReference<SoundEvent> = of("block.dripstone_block.break")
     @JvmField
-    public val DRIPSTONE_BLOCK_STEP: SoundEvent = get("block.dripstone_block.step")
+    public val DRIPSTONE_BLOCK_STEP: RegistryReference<SoundEvent> = of("block.dripstone_block.step")
     @JvmField
-    public val DRIPSTONE_BLOCK_PLACE: SoundEvent = get("block.dripstone_block.place")
+    public val DRIPSTONE_BLOCK_PLACE: RegistryReference<SoundEvent> = of("block.dripstone_block.place")
     @JvmField
-    public val DRIPSTONE_BLOCK_HIT: SoundEvent = get("block.dripstone_block.hit")
+    public val DRIPSTONE_BLOCK_HIT: RegistryReference<SoundEvent> = of("block.dripstone_block.hit")
     @JvmField
-    public val DRIPSTONE_BLOCK_FALL: SoundEvent = get("block.dripstone_block.fall")
+    public val DRIPSTONE_BLOCK_FALL: RegistryReference<SoundEvent> = of("block.dripstone_block.fall")
     @JvmField
-    public val POINTED_DRIPSTONE_BREAK: SoundEvent = get("block.pointed_dripstone.break")
+    public val POINTED_DRIPSTONE_BREAK: RegistryReference<SoundEvent> = of("block.pointed_dripstone.break")
     @JvmField
-    public val POINTED_DRIPSTONE_STEP: SoundEvent = get("block.pointed_dripstone.step")
+    public val POINTED_DRIPSTONE_STEP: RegistryReference<SoundEvent> = of("block.pointed_dripstone.step")
     @JvmField
-    public val POINTED_DRIPSTONE_PLACE: SoundEvent = get("block.pointed_dripstone.place")
+    public val POINTED_DRIPSTONE_PLACE: RegistryReference<SoundEvent> = of("block.pointed_dripstone.place")
     @JvmField
-    public val POINTED_DRIPSTONE_HIT: SoundEvent = get("block.pointed_dripstone.hit")
+    public val POINTED_DRIPSTONE_HIT: RegistryReference<SoundEvent> = of("block.pointed_dripstone.hit")
     @JvmField
-    public val POINTED_DRIPSTONE_FALL: SoundEvent = get("block.pointed_dripstone.fall")
+    public val POINTED_DRIPSTONE_FALL: RegistryReference<SoundEvent> = of("block.pointed_dripstone.fall")
     @JvmField
-    public val POINTED_DRIPSTONE_LAND: SoundEvent = get("block.pointed_dripstone.land")
+    public val POINTED_DRIPSTONE_LAND: RegistryReference<SoundEvent> = of("block.pointed_dripstone.land")
     @JvmField
-    public val POINTED_DRIPSTONE_DRIP_LAVA: SoundEvent = get("block.pointed_dripstone.drip_lava")
+    public val POINTED_DRIPSTONE_DRIP_LAVA: RegistryReference<SoundEvent> = of("block.pointed_dripstone.drip_lava")
     @JvmField
-    public val POINTED_DRIPSTONE_DRIP_WATER: SoundEvent = get("block.pointed_dripstone.drip_water")
+    public val POINTED_DRIPSTONE_DRIP_WATER: RegistryReference<SoundEvent> = of("block.pointed_dripstone.drip_water")
     @JvmField
-    public val POINTED_DRIPSTONE_DRIP_LAVA_INTO_CAULDRON: SoundEvent = get("block.pointed_dripstone.drip_lava_into_cauldron")
+    public val POINTED_DRIPSTONE_DRIP_LAVA_INTO_CAULDRON: RegistryReference<SoundEvent> = of("block.pointed_dripstone.drip_lava_into_cauldron")
     @JvmField
-    public val POINTED_DRIPSTONE_DRIP_WATER_INTO_CAULDRON: SoundEvent = get("block.pointed_dripstone.drip_water_into_cauldron")
+    public val POINTED_DRIPSTONE_DRIP_WATER_INTO_CAULDRON: RegistryReference<SoundEvent> = of("block.pointed_dripstone.drip_water_into_cauldron")
     @JvmField
-    public val BIG_DRIPLEAF_TILT_DOWN: SoundEvent = get("block.big_dripleaf.tilt_down")
+    public val BIG_DRIPLEAF_TILT_DOWN: RegistryReference<SoundEvent> = of("block.big_dripleaf.tilt_down")
     @JvmField
-    public val BIG_DRIPLEAF_TILT_UP: SoundEvent = get("block.big_dripleaf.tilt_up")
+    public val BIG_DRIPLEAF_TILT_UP: RegistryReference<SoundEvent> = of("block.big_dripleaf.tilt_up")
     @JvmField
-    public val DROWNED_AMBIENT: SoundEvent = get("entity.drowned.ambient")
+    public val DROWNED_AMBIENT: RegistryReference<SoundEvent> = of("entity.drowned.ambient")
     @JvmField
-    public val DROWNED_AMBIENT_WATER: SoundEvent = get("entity.drowned.ambient_water")
+    public val DROWNED_AMBIENT_WATER: RegistryReference<SoundEvent> = of("entity.drowned.ambient_water")
     @JvmField
-    public val DROWNED_DEATH: SoundEvent = get("entity.drowned.death")
+    public val DROWNED_DEATH: RegistryReference<SoundEvent> = of("entity.drowned.death")
     @JvmField
-    public val DROWNED_DEATH_WATER: SoundEvent = get("entity.drowned.death_water")
+    public val DROWNED_DEATH_WATER: RegistryReference<SoundEvent> = of("entity.drowned.death_water")
     @JvmField
-    public val DROWNED_HURT: SoundEvent = get("entity.drowned.hurt")
+    public val DROWNED_HURT: RegistryReference<SoundEvent> = of("entity.drowned.hurt")
     @JvmField
-    public val DROWNED_HURT_WATER: SoundEvent = get("entity.drowned.hurt_water")
+    public val DROWNED_HURT_WATER: RegistryReference<SoundEvent> = of("entity.drowned.hurt_water")
     @JvmField
-    public val DROWNED_SHOOT: SoundEvent = get("entity.drowned.shoot")
+    public val DROWNED_SHOOT: RegistryReference<SoundEvent> = of("entity.drowned.shoot")
     @JvmField
-    public val DROWNED_STEP: SoundEvent = get("entity.drowned.step")
+    public val DROWNED_STEP: RegistryReference<SoundEvent> = of("entity.drowned.step")
     @JvmField
-    public val DROWNED_SWIM: SoundEvent = get("entity.drowned.swim")
+    public val DROWNED_SWIM: RegistryReference<SoundEvent> = of("entity.drowned.swim")
     @JvmField
-    public val DYE_USE: SoundEvent = get("item.dye.use")
+    public val DYE_USE: RegistryReference<SoundEvent> = of("item.dye.use")
     @JvmField
-    public val EGG_THROW: SoundEvent = get("entity.egg.throw")
+    public val EGG_THROW: RegistryReference<SoundEvent> = of("entity.egg.throw")
     @JvmField
-    public val ELDER_GUARDIAN_AMBIENT: SoundEvent = get("entity.elder_guardian.ambient")
+    public val ELDER_GUARDIAN_AMBIENT: RegistryReference<SoundEvent> = of("entity.elder_guardian.ambient")
     @JvmField
-    public val ELDER_GUARDIAN_AMBIENT_LAND: SoundEvent = get("entity.elder_guardian.ambient_land")
+    public val ELDER_GUARDIAN_AMBIENT_LAND: RegistryReference<SoundEvent> = of("entity.elder_guardian.ambient_land")
     @JvmField
-    public val ELDER_GUARDIAN_CURSE: SoundEvent = get("entity.elder_guardian.curse")
+    public val ELDER_GUARDIAN_CURSE: RegistryReference<SoundEvent> = of("entity.elder_guardian.curse")
     @JvmField
-    public val ELDER_GUARDIAN_DEATH: SoundEvent = get("entity.elder_guardian.death")
+    public val ELDER_GUARDIAN_DEATH: RegistryReference<SoundEvent> = of("entity.elder_guardian.death")
     @JvmField
-    public val ELDER_GUARDIAN_DEATH_LAND: SoundEvent = get("entity.elder_guardian.death_land")
+    public val ELDER_GUARDIAN_DEATH_LAND: RegistryReference<SoundEvent> = of("entity.elder_guardian.death_land")
     @JvmField
-    public val ELDER_GUARDIAN_FLOP: SoundEvent = get("entity.elder_guardian.flop")
+    public val ELDER_GUARDIAN_FLOP: RegistryReference<SoundEvent> = of("entity.elder_guardian.flop")
     @JvmField
-    public val ELDER_GUARDIAN_HURT: SoundEvent = get("entity.elder_guardian.hurt")
+    public val ELDER_GUARDIAN_HURT: RegistryReference<SoundEvent> = of("entity.elder_guardian.hurt")
     @JvmField
-    public val ELDER_GUARDIAN_HURT_LAND: SoundEvent = get("entity.elder_guardian.hurt_land")
+    public val ELDER_GUARDIAN_HURT_LAND: RegistryReference<SoundEvent> = of("entity.elder_guardian.hurt_land")
     @JvmField
-    public val ELYTRA_FLYING: SoundEvent = get("item.elytra.flying")
+    public val ELYTRA_FLYING: RegistryReference<SoundEvent> = of("item.elytra.flying")
     @JvmField
-    public val ENCHANTMENT_TABLE_USE: SoundEvent = get("block.enchantment_table.use")
+    public val ENCHANTMENT_TABLE_USE: RegistryReference<SoundEvent> = of("block.enchantment_table.use")
     @JvmField
-    public val ENDER_CHEST_CLOSE: SoundEvent = get("block.ender_chest.close")
+    public val ENDER_CHEST_CLOSE: RegistryReference<SoundEvent> = of("block.ender_chest.close")
     @JvmField
-    public val ENDER_CHEST_OPEN: SoundEvent = get("block.ender_chest.open")
+    public val ENDER_CHEST_OPEN: RegistryReference<SoundEvent> = of("block.ender_chest.open")
     @JvmField
-    public val ENDER_DRAGON_AMBIENT: SoundEvent = get("entity.ender_dragon.ambient")
+    public val ENDER_DRAGON_AMBIENT: RegistryReference<SoundEvent> = of("entity.ender_dragon.ambient")
     @JvmField
-    public val ENDER_DRAGON_DEATH: SoundEvent = get("entity.ender_dragon.death")
+    public val ENDER_DRAGON_DEATH: RegistryReference<SoundEvent> = of("entity.ender_dragon.death")
     @JvmField
-    public val DRAGON_FIREBALL_EXPLODE: SoundEvent = get("entity.dragon_fireball.explode")
+    public val DRAGON_FIREBALL_EXPLODE: RegistryReference<SoundEvent> = of("entity.dragon_fireball.explode")
     @JvmField
-    public val ENDER_DRAGON_FLAP: SoundEvent = get("entity.ender_dragon.flap")
+    public val ENDER_DRAGON_FLAP: RegistryReference<SoundEvent> = of("entity.ender_dragon.flap")
     @JvmField
-    public val ENDER_DRAGON_GROWL: SoundEvent = get("entity.ender_dragon.growl")
+    public val ENDER_DRAGON_GROWL: RegistryReference<SoundEvent> = of("entity.ender_dragon.growl")
     @JvmField
-    public val ENDER_DRAGON_HURT: SoundEvent = get("entity.ender_dragon.hurt")
+    public val ENDER_DRAGON_HURT: RegistryReference<SoundEvent> = of("entity.ender_dragon.hurt")
     @JvmField
-    public val ENDER_DRAGON_SHOOT: SoundEvent = get("entity.ender_dragon.shoot")
+    public val ENDER_DRAGON_SHOOT: RegistryReference<SoundEvent> = of("entity.ender_dragon.shoot")
     @JvmField
-    public val ENDER_EYE_DEATH: SoundEvent = get("entity.ender_eye.death")
+    public val ENDER_EYE_DEATH: RegistryReference<SoundEvent> = of("entity.ender_eye.death")
     @JvmField
-    public val ENDER_EYE_LAUNCH: SoundEvent = get("entity.ender_eye.launch")
+    public val ENDER_EYE_LAUNCH: RegistryReference<SoundEvent> = of("entity.ender_eye.launch")
     @JvmField
-    public val ENDERMAN_AMBIENT: SoundEvent = get("entity.enderman.ambient")
+    public val ENDERMAN_AMBIENT: RegistryReference<SoundEvent> = of("entity.enderman.ambient")
     @JvmField
-    public val ENDERMAN_DEATH: SoundEvent = get("entity.enderman.death")
+    public val ENDERMAN_DEATH: RegistryReference<SoundEvent> = of("entity.enderman.death")
     @JvmField
-    public val ENDERMAN_HURT: SoundEvent = get("entity.enderman.hurt")
+    public val ENDERMAN_HURT: RegistryReference<SoundEvent> = of("entity.enderman.hurt")
     @JvmField
-    public val ENDERMAN_SCREAM: SoundEvent = get("entity.enderman.scream")
+    public val ENDERMAN_SCREAM: RegistryReference<SoundEvent> = of("entity.enderman.scream")
     @JvmField
-    public val ENDERMAN_STARE: SoundEvent = get("entity.enderman.stare")
+    public val ENDERMAN_STARE: RegistryReference<SoundEvent> = of("entity.enderman.stare")
     @JvmField
-    public val ENDERMAN_TELEPORT: SoundEvent = get("entity.enderman.teleport")
+    public val ENDERMAN_TELEPORT: RegistryReference<SoundEvent> = of("entity.enderman.teleport")
     @JvmField
-    public val ENDERMITE_AMBIENT: SoundEvent = get("entity.endermite.ambient")
+    public val ENDERMITE_AMBIENT: RegistryReference<SoundEvent> = of("entity.endermite.ambient")
     @JvmField
-    public val ENDERMITE_DEATH: SoundEvent = get("entity.endermite.death")
+    public val ENDERMITE_DEATH: RegistryReference<SoundEvent> = of("entity.endermite.death")
     @JvmField
-    public val ENDERMITE_HURT: SoundEvent = get("entity.endermite.hurt")
+    public val ENDERMITE_HURT: RegistryReference<SoundEvent> = of("entity.endermite.hurt")
     @JvmField
-    public val ENDERMITE_STEP: SoundEvent = get("entity.endermite.step")
+    public val ENDERMITE_STEP: RegistryReference<SoundEvent> = of("entity.endermite.step")
     @JvmField
-    public val ENDER_PEARL_THROW: SoundEvent = get("entity.ender_pearl.throw")
+    public val ENDER_PEARL_THROW: RegistryReference<SoundEvent> = of("entity.ender_pearl.throw")
     @JvmField
-    public val END_GATEWAY_SPAWN: SoundEvent = get("block.end_gateway.spawn")
+    public val END_GATEWAY_SPAWN: RegistryReference<SoundEvent> = of("block.end_gateway.spawn")
     @JvmField
-    public val END_PORTAL_FRAME_FILL: SoundEvent = get("block.end_portal_frame.fill")
+    public val END_PORTAL_FRAME_FILL: RegistryReference<SoundEvent> = of("block.end_portal_frame.fill")
     @JvmField
-    public val END_PORTAL_SPAWN: SoundEvent = get("block.end_portal.spawn")
+    public val END_PORTAL_SPAWN: RegistryReference<SoundEvent> = of("block.end_portal.spawn")
     @JvmField
-    public val EVOKER_AMBIENT: SoundEvent = get("entity.evoker.ambient")
+    public val EVOKER_AMBIENT: RegistryReference<SoundEvent> = of("entity.evoker.ambient")
     @JvmField
-    public val EVOKER_CAST_SPELL: SoundEvent = get("entity.evoker.cast_spell")
+    public val EVOKER_CAST_SPELL: RegistryReference<SoundEvent> = of("entity.evoker.cast_spell")
     @JvmField
-    public val EVOKER_CELEBRATE: SoundEvent = get("entity.evoker.celebrate")
+    public val EVOKER_CELEBRATE: RegistryReference<SoundEvent> = of("entity.evoker.celebrate")
     @JvmField
-    public val EVOKER_DEATH: SoundEvent = get("entity.evoker.death")
+    public val EVOKER_DEATH: RegistryReference<SoundEvent> = of("entity.evoker.death")
     @JvmField
-    public val EVOKER_FANGS_ATTACK: SoundEvent = get("entity.evoker_fangs.attack")
+    public val EVOKER_FANGS_ATTACK: RegistryReference<SoundEvent> = of("entity.evoker_fangs.attack")
     @JvmField
-    public val EVOKER_HURT: SoundEvent = get("entity.evoker.hurt")
+    public val EVOKER_HURT: RegistryReference<SoundEvent> = of("entity.evoker.hurt")
     @JvmField
-    public val EVOKER_PREPARE_ATTACK: SoundEvent = get("entity.evoker.prepare_attack")
+    public val EVOKER_PREPARE_ATTACK: RegistryReference<SoundEvent> = of("entity.evoker.prepare_attack")
     @JvmField
-    public val EVOKER_PREPARE_SUMMON: SoundEvent = get("entity.evoker.prepare_summon")
+    public val EVOKER_PREPARE_SUMMON: RegistryReference<SoundEvent> = of("entity.evoker.prepare_summon")
     @JvmField
-    public val EVOKER_PREPARE_WOLOLO: SoundEvent = get("entity.evoker.prepare_wololo")
+    public val EVOKER_PREPARE_WOLOLO: RegistryReference<SoundEvent> = of("entity.evoker.prepare_wololo")
     @JvmField
-    public val EXPERIENCE_BOTTLE_THROW: SoundEvent = get("entity.experience_bottle.throw")
+    public val EXPERIENCE_BOTTLE_THROW: RegistryReference<SoundEvent> = of("entity.experience_bottle.throw")
     @JvmField
-    public val EXPERIENCE_ORB_PICKUP: SoundEvent = get("entity.experience_orb.pickup")
+    public val EXPERIENCE_ORB_PICKUP: RegistryReference<SoundEvent> = of("entity.experience_orb.pickup")
     @JvmField
-    public val FENCE_GATE_CLOSE: SoundEvent = get("block.fence_gate.close")
+    public val FENCE_GATE_CLOSE: RegistryReference<SoundEvent> = of("block.fence_gate.close")
     @JvmField
-    public val FENCE_GATE_OPEN: SoundEvent = get("block.fence_gate.open")
+    public val FENCE_GATE_OPEN: RegistryReference<SoundEvent> = of("block.fence_gate.open")
     @JvmField
-    public val FIRECHARGE_USE: SoundEvent = get("item.firecharge.use")
+    public val FIRECHARGE_USE: RegistryReference<SoundEvent> = of("item.firecharge.use")
     @JvmField
-    public val FIREWORK_ROCKET_BLAST: SoundEvent = get("entity.firework_rocket.blast")
+    public val FIREWORK_ROCKET_BLAST: RegistryReference<SoundEvent> = of("entity.firework_rocket.blast")
     @JvmField
-    public val FIREWORK_ROCKET_BLAST_FAR: SoundEvent = get("entity.firework_rocket.blast_far")
+    public val FIREWORK_ROCKET_BLAST_FAR: RegistryReference<SoundEvent> = of("entity.firework_rocket.blast_far")
     @JvmField
-    public val FIREWORK_ROCKET_LARGE_BLAST: SoundEvent = get("entity.firework_rocket.large_blast")
+    public val FIREWORK_ROCKET_LARGE_BLAST: RegistryReference<SoundEvent> = of("entity.firework_rocket.large_blast")
     @JvmField
-    public val FIREWORK_ROCKET_LARGE_BLAST_FAR: SoundEvent = get("entity.firework_rocket.large_blast_far")
+    public val FIREWORK_ROCKET_LARGE_BLAST_FAR: RegistryReference<SoundEvent> = of("entity.firework_rocket.large_blast_far")
     @JvmField
-    public val FIREWORK_ROCKET_LAUNCH: SoundEvent = get("entity.firework_rocket.launch")
+    public val FIREWORK_ROCKET_LAUNCH: RegistryReference<SoundEvent> = of("entity.firework_rocket.launch")
     @JvmField
-    public val FIREWORK_ROCKET_SHOOT: SoundEvent = get("entity.firework_rocket.shoot")
+    public val FIREWORK_ROCKET_SHOOT: RegistryReference<SoundEvent> = of("entity.firework_rocket.shoot")
     @JvmField
-    public val FIREWORK_ROCKET_TWINKLE: SoundEvent = get("entity.firework_rocket.twinkle")
+    public val FIREWORK_ROCKET_TWINKLE: RegistryReference<SoundEvent> = of("entity.firework_rocket.twinkle")
     @JvmField
-    public val FIREWORK_ROCKET_TWINKLE_FAR: SoundEvent = get("entity.firework_rocket.twinkle_far")
+    public val FIREWORK_ROCKET_TWINKLE_FAR: RegistryReference<SoundEvent> = of("entity.firework_rocket.twinkle_far")
     @JvmField
-    public val FIRE_AMBIENT: SoundEvent = get("block.fire.ambient")
+    public val FIRE_AMBIENT: RegistryReference<SoundEvent> = of("block.fire.ambient")
     @JvmField
-    public val FIRE_EXTINGUISH: SoundEvent = get("block.fire.extinguish")
+    public val FIRE_EXTINGUISH: RegistryReference<SoundEvent> = of("block.fire.extinguish")
     @JvmField
-    public val FISH_SWIM: SoundEvent = get("entity.fish.swim")
+    public val FISH_SWIM: RegistryReference<SoundEvent> = of("entity.fish.swim")
     @JvmField
-    public val FISHING_BOBBER_RETRIEVE: SoundEvent = get("entity.fishing_bobber.retrieve")
+    public val FISHING_BOBBER_RETRIEVE: RegistryReference<SoundEvent> = of("entity.fishing_bobber.retrieve")
     @JvmField
-    public val FISHING_BOBBER_SPLASH: SoundEvent = get("entity.fishing_bobber.splash")
+    public val FISHING_BOBBER_SPLASH: RegistryReference<SoundEvent> = of("entity.fishing_bobber.splash")
     @JvmField
-    public val FISHING_BOBBER_THROW: SoundEvent = get("entity.fishing_bobber.throw")
+    public val FISHING_BOBBER_THROW: RegistryReference<SoundEvent> = of("entity.fishing_bobber.throw")
     @JvmField
-    public val FLINTANDSTEEL_USE: SoundEvent = get("item.flintandsteel.use")
+    public val FLINTANDSTEEL_USE: RegistryReference<SoundEvent> = of("item.flintandsteel.use")
     @JvmField
-    public val FLOWERING_AZALEA_BREAK: SoundEvent = get("block.flowering_azalea.break")
+    public val FLOWERING_AZALEA_BREAK: RegistryReference<SoundEvent> = of("block.flowering_azalea.break")
     @JvmField
-    public val FLOWERING_AZALEA_FALL: SoundEvent = get("block.flowering_azalea.fall")
+    public val FLOWERING_AZALEA_FALL: RegistryReference<SoundEvent> = of("block.flowering_azalea.fall")
     @JvmField
-    public val FLOWERING_AZALEA_HIT: SoundEvent = get("block.flowering_azalea.hit")
+    public val FLOWERING_AZALEA_HIT: RegistryReference<SoundEvent> = of("block.flowering_azalea.hit")
     @JvmField
-    public val FLOWERING_AZALEA_PLACE: SoundEvent = get("block.flowering_azalea.place")
+    public val FLOWERING_AZALEA_PLACE: RegistryReference<SoundEvent> = of("block.flowering_azalea.place")
     @JvmField
-    public val FLOWERING_AZALEA_STEP: SoundEvent = get("block.flowering_azalea.step")
+    public val FLOWERING_AZALEA_STEP: RegistryReference<SoundEvent> = of("block.flowering_azalea.step")
     @JvmField
-    public val FOX_AGGRO: SoundEvent = get("entity.fox.aggro")
+    public val FOX_AGGRO: RegistryReference<SoundEvent> = of("entity.fox.aggro")
     @JvmField
-    public val FOX_AMBIENT: SoundEvent = get("entity.fox.ambient")
+    public val FOX_AMBIENT: RegistryReference<SoundEvent> = of("entity.fox.ambient")
     @JvmField
-    public val FOX_BITE: SoundEvent = get("entity.fox.bite")
+    public val FOX_BITE: RegistryReference<SoundEvent> = of("entity.fox.bite")
     @JvmField
-    public val FOX_DEATH: SoundEvent = get("entity.fox.death")
+    public val FOX_DEATH: RegistryReference<SoundEvent> = of("entity.fox.death")
     @JvmField
-    public val FOX_EAT: SoundEvent = get("entity.fox.eat")
+    public val FOX_EAT: RegistryReference<SoundEvent> = of("entity.fox.eat")
     @JvmField
-    public val FOX_HURT: SoundEvent = get("entity.fox.hurt")
+    public val FOX_HURT: RegistryReference<SoundEvent> = of("entity.fox.hurt")
     @JvmField
-    public val FOX_SCREECH: SoundEvent = get("entity.fox.screech")
+    public val FOX_SCREECH: RegistryReference<SoundEvent> = of("entity.fox.screech")
     @JvmField
-    public val FOX_SLEEP: SoundEvent = get("entity.fox.sleep")
+    public val FOX_SLEEP: RegistryReference<SoundEvent> = of("entity.fox.sleep")
     @JvmField
-    public val FOX_SNIFF: SoundEvent = get("entity.fox.sniff")
+    public val FOX_SNIFF: RegistryReference<SoundEvent> = of("entity.fox.sniff")
     @JvmField
-    public val FOX_SPIT: SoundEvent = get("entity.fox.spit")
+    public val FOX_SPIT: RegistryReference<SoundEvent> = of("entity.fox.spit")
     @JvmField
-    public val FOX_TELEPORT: SoundEvent = get("entity.fox.teleport")
+    public val FOX_TELEPORT: RegistryReference<SoundEvent> = of("entity.fox.teleport")
     @JvmField
-    public val FROGLIGHT_BREAK: SoundEvent = get("block.froglight.break")
+    public val FROGLIGHT_BREAK: RegistryReference<SoundEvent> = of("block.froglight.break")
     @JvmField
-    public val FROGLIGHT_FALL: SoundEvent = get("block.froglight.fall")
+    public val FROGLIGHT_FALL: RegistryReference<SoundEvent> = of("block.froglight.fall")
     @JvmField
-    public val FROGLIGHT_HIT: SoundEvent = get("block.froglight.hit")
+    public val FROGLIGHT_HIT: RegistryReference<SoundEvent> = of("block.froglight.hit")
     @JvmField
-    public val FROGLIGHT_PLACE: SoundEvent = get("block.froglight.place")
+    public val FROGLIGHT_PLACE: RegistryReference<SoundEvent> = of("block.froglight.place")
     @JvmField
-    public val FROGLIGHT_STEP: SoundEvent = get("block.froglight.step")
+    public val FROGLIGHT_STEP: RegistryReference<SoundEvent> = of("block.froglight.step")
     @JvmField
-    public val FROGSPAWNSTEP: SoundEvent = get("block.frogspawn.step")
+    public val FROGSPAWNSTEP: RegistryReference<SoundEvent> = of("block.frogspawn.step")
     @JvmField
-    public val FROGSPAWN_BREAK: SoundEvent = get("block.frogspawn.break")
+    public val FROGSPAWN_BREAK: RegistryReference<SoundEvent> = of("block.frogspawn.break")
     @JvmField
-    public val FROGSPAWN_FALL: SoundEvent = get("block.frogspawn.fall")
+    public val FROGSPAWN_FALL: RegistryReference<SoundEvent> = of("block.frogspawn.fall")
     @JvmField
-    public val FROGSPAWN_HATCH: SoundEvent = get("block.frogspawn.hatch")
+    public val FROGSPAWN_HATCH: RegistryReference<SoundEvent> = of("block.frogspawn.hatch")
     @JvmField
-    public val FROGSPAWN_HIT: SoundEvent = get("block.frogspawn.hit")
+    public val FROGSPAWN_HIT: RegistryReference<SoundEvent> = of("block.frogspawn.hit")
     @JvmField
-    public val FROGSPAWN_PLACE: SoundEvent = get("block.frogspawn.place")
+    public val FROGSPAWN_PLACE: RegistryReference<SoundEvent> = of("block.frogspawn.place")
     @JvmField
-    public val FROG_AMBIENT: SoundEvent = get("entity.frog.ambient")
+    public val FROG_AMBIENT: RegistryReference<SoundEvent> = of("entity.frog.ambient")
     @JvmField
-    public val FROG_DEATH: SoundEvent = get("entity.frog.death")
+    public val FROG_DEATH: RegistryReference<SoundEvent> = of("entity.frog.death")
     @JvmField
-    public val FROG_EAT: SoundEvent = get("entity.frog.eat")
+    public val FROG_EAT: RegistryReference<SoundEvent> = of("entity.frog.eat")
     @JvmField
-    public val FROG_HURT: SoundEvent = get("entity.frog.hurt")
+    public val FROG_HURT: RegistryReference<SoundEvent> = of("entity.frog.hurt")
     @JvmField
-    public val FROG_LAY_SPAWN: SoundEvent = get("entity.frog.lay_spawn")
+    public val FROG_LAY_SPAWN: RegistryReference<SoundEvent> = of("entity.frog.lay_spawn")
     @JvmField
-    public val FROG_LONG_JUMP: SoundEvent = get("entity.frog.long_jump")
+    public val FROG_LONG_JUMP: RegistryReference<SoundEvent> = of("entity.frog.long_jump")
     @JvmField
-    public val FROG_STEP: SoundEvent = get("entity.frog.step")
+    public val FROG_STEP: RegistryReference<SoundEvent> = of("entity.frog.step")
     @JvmField
-    public val FROG_TONGUE: SoundEvent = get("entity.frog.tongue")
+    public val FROG_TONGUE: RegistryReference<SoundEvent> = of("entity.frog.tongue")
     @JvmField
-    public val ROOTS_BREAK: SoundEvent = get("block.roots.break")
+    public val ROOTS_BREAK: RegistryReference<SoundEvent> = of("block.roots.break")
     @JvmField
-    public val ROOTS_STEP: SoundEvent = get("block.roots.step")
+    public val ROOTS_STEP: RegistryReference<SoundEvent> = of("block.roots.step")
     @JvmField
-    public val ROOTS_PLACE: SoundEvent = get("block.roots.place")
+    public val ROOTS_PLACE: RegistryReference<SoundEvent> = of("block.roots.place")
     @JvmField
-    public val ROOTS_HIT: SoundEvent = get("block.roots.hit")
+    public val ROOTS_HIT: RegistryReference<SoundEvent> = of("block.roots.hit")
     @JvmField
-    public val ROOTS_FALL: SoundEvent = get("block.roots.fall")
+    public val ROOTS_FALL: RegistryReference<SoundEvent> = of("block.roots.fall")
     @JvmField
-    public val FURNACE_FIRE_CRACKLE: SoundEvent = get("block.furnace.fire_crackle")
+    public val FURNACE_FIRE_CRACKLE: RegistryReference<SoundEvent> = of("block.furnace.fire_crackle")
     @JvmField
-    public val GENERIC_BIG_FALL: SoundEvent = get("entity.generic.big_fall")
+    public val GENERIC_BIG_FALL: RegistryReference<SoundEvent> = of("entity.generic.big_fall")
     @JvmField
-    public val GENERIC_BURN: SoundEvent = get("entity.generic.burn")
+    public val GENERIC_BURN: RegistryReference<SoundEvent> = of("entity.generic.burn")
     @JvmField
-    public val GENERIC_DEATH: SoundEvent = get("entity.generic.death")
+    public val GENERIC_DEATH: RegistryReference<SoundEvent> = of("entity.generic.death")
     @JvmField
-    public val GENERIC_DRINK: SoundEvent = get("entity.generic.drink")
+    public val GENERIC_DRINK: RegistryReference<SoundEvent> = of("entity.generic.drink")
     @JvmField
-    public val GENERIC_EAT: SoundEvent = get("entity.generic.eat")
+    public val GENERIC_EAT: RegistryReference<SoundEvent> = of("entity.generic.eat")
     @JvmField
-    public val GENERIC_EXPLODE: SoundEvent = get("entity.generic.explode")
+    public val GENERIC_EXPLODE: RegistryReference<SoundEvent> = of("entity.generic.explode")
     @JvmField
-    public val GENERIC_EXTINGUISH_FIRE: SoundEvent = get("entity.generic.extinguish_fire")
+    public val GENERIC_EXTINGUISH_FIRE: RegistryReference<SoundEvent> = of("entity.generic.extinguish_fire")
     @JvmField
-    public val GENERIC_HURT: SoundEvent = get("entity.generic.hurt")
+    public val GENERIC_HURT: RegistryReference<SoundEvent> = of("entity.generic.hurt")
     @JvmField
-    public val GENERIC_SMALL_FALL: SoundEvent = get("entity.generic.small_fall")
+    public val GENERIC_SMALL_FALL: RegistryReference<SoundEvent> = of("entity.generic.small_fall")
     @JvmField
-    public val GENERIC_SPLASH: SoundEvent = get("entity.generic.splash")
+    public val GENERIC_SPLASH: RegistryReference<SoundEvent> = of("entity.generic.splash")
     @JvmField
-    public val GENERIC_SWIM: SoundEvent = get("entity.generic.swim")
+    public val GENERIC_SWIM: RegistryReference<SoundEvent> = of("entity.generic.swim")
     @JvmField
-    public val GHAST_AMBIENT: SoundEvent = get("entity.ghast.ambient")
+    public val GHAST_AMBIENT: RegistryReference<SoundEvent> = of("entity.ghast.ambient")
     @JvmField
-    public val GHAST_DEATH: SoundEvent = get("entity.ghast.death")
+    public val GHAST_DEATH: RegistryReference<SoundEvent> = of("entity.ghast.death")
     @JvmField
-    public val GHAST_HURT: SoundEvent = get("entity.ghast.hurt")
+    public val GHAST_HURT: RegistryReference<SoundEvent> = of("entity.ghast.hurt")
     @JvmField
-    public val GHAST_SCREAM: SoundEvent = get("entity.ghast.scream")
+    public val GHAST_SCREAM: RegistryReference<SoundEvent> = of("entity.ghast.scream")
     @JvmField
-    public val GHAST_SHOOT: SoundEvent = get("entity.ghast.shoot")
+    public val GHAST_SHOOT: RegistryReference<SoundEvent> = of("entity.ghast.shoot")
     @JvmField
-    public val GHAST_WARN: SoundEvent = get("entity.ghast.warn")
+    public val GHAST_WARN: RegistryReference<SoundEvent> = of("entity.ghast.warn")
     @JvmField
-    public val GILDED_BLACKSTONE_BREAK: SoundEvent = get("block.gilded_blackstone.break")
+    public val GILDED_BLACKSTONE_BREAK: RegistryReference<SoundEvent> = of("block.gilded_blackstone.break")
     @JvmField
-    public val GILDED_BLACKSTONE_FALL: SoundEvent = get("block.gilded_blackstone.fall")
+    public val GILDED_BLACKSTONE_FALL: RegistryReference<SoundEvent> = of("block.gilded_blackstone.fall")
     @JvmField
-    public val GILDED_BLACKSTONE_HIT: SoundEvent = get("block.gilded_blackstone.hit")
+    public val GILDED_BLACKSTONE_HIT: RegistryReference<SoundEvent> = of("block.gilded_blackstone.hit")
     @JvmField
-    public val GILDED_BLACKSTONE_PLACE: SoundEvent = get("block.gilded_blackstone.place")
+    public val GILDED_BLACKSTONE_PLACE: RegistryReference<SoundEvent> = of("block.gilded_blackstone.place")
     @JvmField
-    public val GILDED_BLACKSTONE_STEP: SoundEvent = get("block.gilded_blackstone.step")
+    public val GILDED_BLACKSTONE_STEP: RegistryReference<SoundEvent> = of("block.gilded_blackstone.step")
     @JvmField
-    public val GLASS_BREAK: SoundEvent = get("block.glass.break")
+    public val GLASS_BREAK: RegistryReference<SoundEvent> = of("block.glass.break")
     @JvmField
-    public val GLASS_FALL: SoundEvent = get("block.glass.fall")
+    public val GLASS_FALL: RegistryReference<SoundEvent> = of("block.glass.fall")
     @JvmField
-    public val GLASS_HIT: SoundEvent = get("block.glass.hit")
+    public val GLASS_HIT: RegistryReference<SoundEvent> = of("block.glass.hit")
     @JvmField
-    public val GLASS_PLACE: SoundEvent = get("block.glass.place")
+    public val GLASS_PLACE: RegistryReference<SoundEvent> = of("block.glass.place")
     @JvmField
-    public val GLASS_STEP: SoundEvent = get("block.glass.step")
+    public val GLASS_STEP: RegistryReference<SoundEvent> = of("block.glass.step")
     @JvmField
-    public val GLOW_INK_SAC_USE: SoundEvent = get("item.glow_ink_sac.use")
+    public val GLOW_INK_SAC_USE: RegistryReference<SoundEvent> = of("item.glow_ink_sac.use")
     @JvmField
-    public val GLOW_ITEM_FRAME_ADD_ITEM: SoundEvent = get("entity.glow_item_frame.add_item")
+    public val GLOW_ITEM_FRAME_ADD_ITEM: RegistryReference<SoundEvent> = of("entity.glow_item_frame.add_item")
     @JvmField
-    public val GLOW_ITEM_FRAME_BREAK: SoundEvent = get("entity.glow_item_frame.break")
+    public val GLOW_ITEM_FRAME_BREAK: RegistryReference<SoundEvent> = of("entity.glow_item_frame.break")
     @JvmField
-    public val GLOW_ITEM_FRAME_PLACE: SoundEvent = get("entity.glow_item_frame.place")
+    public val GLOW_ITEM_FRAME_PLACE: RegistryReference<SoundEvent> = of("entity.glow_item_frame.place")
     @JvmField
-    public val GLOW_ITEM_FRAME_REMOVE_ITEM: SoundEvent = get("entity.glow_item_frame.remove_item")
+    public val GLOW_ITEM_FRAME_REMOVE_ITEM: RegistryReference<SoundEvent> = of("entity.glow_item_frame.remove_item")
     @JvmField
-    public val GLOW_ITEM_FRAME_ROTATE_ITEM: SoundEvent = get("entity.glow_item_frame.rotate_item")
+    public val GLOW_ITEM_FRAME_ROTATE_ITEM: RegistryReference<SoundEvent> = of("entity.glow_item_frame.rotate_item")
     @JvmField
-    public val GLOW_SQUID_AMBIENT: SoundEvent = get("entity.glow_squid.ambient")
+    public val GLOW_SQUID_AMBIENT: RegistryReference<SoundEvent> = of("entity.glow_squid.ambient")
     @JvmField
-    public val GLOW_SQUID_DEATH: SoundEvent = get("entity.glow_squid.death")
+    public val GLOW_SQUID_DEATH: RegistryReference<SoundEvent> = of("entity.glow_squid.death")
     @JvmField
-    public val GLOW_SQUID_HURT: SoundEvent = get("entity.glow_squid.hurt")
+    public val GLOW_SQUID_HURT: RegistryReference<SoundEvent> = of("entity.glow_squid.hurt")
     @JvmField
-    public val GLOW_SQUID_SQUIRT: SoundEvent = get("entity.glow_squid.squirt")
+    public val GLOW_SQUID_SQUIRT: RegistryReference<SoundEvent> = of("entity.glow_squid.squirt")
     @JvmField
-    public val GOAT_AMBIENT: SoundEvent = get("entity.goat.ambient")
+    public val GOAT_AMBIENT: RegistryReference<SoundEvent> = of("entity.goat.ambient")
     @JvmField
-    public val GOAT_DEATH: SoundEvent = get("entity.goat.death")
+    public val GOAT_DEATH: RegistryReference<SoundEvent> = of("entity.goat.death")
     @JvmField
-    public val GOAT_EAT: SoundEvent = get("entity.goat.eat")
+    public val GOAT_EAT: RegistryReference<SoundEvent> = of("entity.goat.eat")
     @JvmField
-    public val GOAT_HURT: SoundEvent = get("entity.goat.hurt")
+    public val GOAT_HURT: RegistryReference<SoundEvent> = of("entity.goat.hurt")
     @JvmField
-    public val GOAT_LONG_JUMP: SoundEvent = get("entity.goat.long_jump")
+    public val GOAT_LONG_JUMP: RegistryReference<SoundEvent> = of("entity.goat.long_jump")
     @JvmField
-    public val GOAT_MILK: SoundEvent = get("entity.goat.milk")
+    public val GOAT_MILK: RegistryReference<SoundEvent> = of("entity.goat.milk")
     @JvmField
-    public val GOAT_PREPARE_RAM: SoundEvent = get("entity.goat.prepare_ram")
+    public val GOAT_PREPARE_RAM: RegistryReference<SoundEvent> = of("entity.goat.prepare_ram")
     @JvmField
-    public val GOAT_RAM_IMPACT: SoundEvent = get("entity.goat.ram_impact")
+    public val GOAT_RAM_IMPACT: RegistryReference<SoundEvent> = of("entity.goat.ram_impact")
     @JvmField
-    public val GOAT_HORN_BREAK: SoundEvent = get("entity.goat.horn_break")
+    public val GOAT_HORN_BREAK: RegistryReference<SoundEvent> = of("entity.goat.horn_break")
     @JvmField
-    public val GOAT_HORN_PLAY: SoundEvent = get("item.goat_horn.play")
+    public val GOAT_HORN_PLAY: RegistryReference<SoundEvent> = of("item.goat_horn.play")
     @JvmField
-    public val GOAT_SCREAMING_AMBIENT: SoundEvent = get("entity.goat.screaming.ambient")
+    public val GOAT_SCREAMING_AMBIENT: RegistryReference<SoundEvent> = of("entity.goat.screaming.ambient")
     @JvmField
-    public val GOAT_SCREAMING_DEATH: SoundEvent = get("entity.goat.screaming.death")
+    public val GOAT_SCREAMING_DEATH: RegistryReference<SoundEvent> = of("entity.goat.screaming.death")
     @JvmField
-    public val GOAT_SCREAMING_EAT: SoundEvent = get("entity.goat.screaming.eat")
+    public val GOAT_SCREAMING_EAT: RegistryReference<SoundEvent> = of("entity.goat.screaming.eat")
     @JvmField
-    public val GOAT_SCREAMING_HURT: SoundEvent = get("entity.goat.screaming.hurt")
+    public val GOAT_SCREAMING_HURT: RegistryReference<SoundEvent> = of("entity.goat.screaming.hurt")
     @JvmField
-    public val GOAT_SCREAMING_LONG_JUMP: SoundEvent = get("entity.goat.screaming.long_jump")
+    public val GOAT_SCREAMING_LONG_JUMP: RegistryReference<SoundEvent> = of("entity.goat.screaming.long_jump")
     @JvmField
-    public val GOAT_SCREAMING_MILK: SoundEvent = get("entity.goat.screaming.milk")
+    public val GOAT_SCREAMING_MILK: RegistryReference<SoundEvent> = of("entity.goat.screaming.milk")
     @JvmField
-    public val GOAT_SCREAMING_PREPARE_RAM: SoundEvent = get("entity.goat.screaming.prepare_ram")
+    public val GOAT_SCREAMING_PREPARE_RAM: RegistryReference<SoundEvent> = of("entity.goat.screaming.prepare_ram")
     @JvmField
-    public val GOAT_SCREAMING_RAM_IMPACT: SoundEvent = get("entity.goat.screaming.ram_impact")
+    public val GOAT_SCREAMING_RAM_IMPACT: RegistryReference<SoundEvent> = of("entity.goat.screaming.ram_impact")
     @JvmField
-    public val GOAT_SCREAMING_HORN_BREAK: SoundEvent = get("entity.goat.screaming.horn_break")
+    public val GOAT_SCREAMING_HORN_BREAK: RegistryReference<SoundEvent> = of("entity.goat.screaming.horn_break")
     @JvmField
-    public val GOAT_STEP: SoundEvent = get("entity.goat.step")
+    public val GOAT_STEP: RegistryReference<SoundEvent> = of("entity.goat.step")
     @JvmField
-    public val GRASS_BREAK: SoundEvent = get("block.grass.break")
+    public val GRASS_BREAK: RegistryReference<SoundEvent> = of("block.grass.break")
     @JvmField
-    public val GRASS_FALL: SoundEvent = get("block.grass.fall")
+    public val GRASS_FALL: RegistryReference<SoundEvent> = of("block.grass.fall")
     @JvmField
-    public val GRASS_HIT: SoundEvent = get("block.grass.hit")
+    public val GRASS_HIT: RegistryReference<SoundEvent> = of("block.grass.hit")
     @JvmField
-    public val GRASS_PLACE: SoundEvent = get("block.grass.place")
+    public val GRASS_PLACE: RegistryReference<SoundEvent> = of("block.grass.place")
     @JvmField
-    public val GRASS_STEP: SoundEvent = get("block.grass.step")
+    public val GRASS_STEP: RegistryReference<SoundEvent> = of("block.grass.step")
     @JvmField
-    public val GRAVEL_BREAK: SoundEvent = get("block.gravel.break")
+    public val GRAVEL_BREAK: RegistryReference<SoundEvent> = of("block.gravel.break")
     @JvmField
-    public val GRAVEL_FALL: SoundEvent = get("block.gravel.fall")
+    public val GRAVEL_FALL: RegistryReference<SoundEvent> = of("block.gravel.fall")
     @JvmField
-    public val GRAVEL_HIT: SoundEvent = get("block.gravel.hit")
+    public val GRAVEL_HIT: RegistryReference<SoundEvent> = of("block.gravel.hit")
     @JvmField
-    public val GRAVEL_PLACE: SoundEvent = get("block.gravel.place")
+    public val GRAVEL_PLACE: RegistryReference<SoundEvent> = of("block.gravel.place")
     @JvmField
-    public val GRAVEL_STEP: SoundEvent = get("block.gravel.step")
+    public val GRAVEL_STEP: RegistryReference<SoundEvent> = of("block.gravel.step")
     @JvmField
-    public val GRINDSTONE_USE: SoundEvent = get("block.grindstone.use")
+    public val GRINDSTONE_USE: RegistryReference<SoundEvent> = of("block.grindstone.use")
     @JvmField
-    public val GROWING_PLANT_CROP: SoundEvent = get("block.growing_plant.crop")
+    public val GROWING_PLANT_CROP: RegistryReference<SoundEvent> = of("block.growing_plant.crop")
     @JvmField
-    public val GUARDIAN_AMBIENT: SoundEvent = get("entity.guardian.ambient")
+    public val GUARDIAN_AMBIENT: RegistryReference<SoundEvent> = of("entity.guardian.ambient")
     @JvmField
-    public val GUARDIAN_AMBIENT_LAND: SoundEvent = get("entity.guardian.ambient_land")
+    public val GUARDIAN_AMBIENT_LAND: RegistryReference<SoundEvent> = of("entity.guardian.ambient_land")
     @JvmField
-    public val GUARDIAN_ATTACK: SoundEvent = get("entity.guardian.attack")
+    public val GUARDIAN_ATTACK: RegistryReference<SoundEvent> = of("entity.guardian.attack")
     @JvmField
-    public val GUARDIAN_DEATH: SoundEvent = get("entity.guardian.death")
+    public val GUARDIAN_DEATH: RegistryReference<SoundEvent> = of("entity.guardian.death")
     @JvmField
-    public val GUARDIAN_DEATH_LAND: SoundEvent = get("entity.guardian.death_land")
+    public val GUARDIAN_DEATH_LAND: RegistryReference<SoundEvent> = of("entity.guardian.death_land")
     @JvmField
-    public val GUARDIAN_FLOP: SoundEvent = get("entity.guardian.flop")
+    public val GUARDIAN_FLOP: RegistryReference<SoundEvent> = of("entity.guardian.flop")
     @JvmField
-    public val GUARDIAN_HURT: SoundEvent = get("entity.guardian.hurt")
+    public val GUARDIAN_HURT: RegistryReference<SoundEvent> = of("entity.guardian.hurt")
     @JvmField
-    public val GUARDIAN_HURT_LAND: SoundEvent = get("entity.guardian.hurt_land")
+    public val GUARDIAN_HURT_LAND: RegistryReference<SoundEvent> = of("entity.guardian.hurt_land")
     @JvmField
-    public val HANGING_ROOTS_BREAK: SoundEvent = get("block.hanging_roots.break")
+    public val HANGING_ROOTS_BREAK: RegistryReference<SoundEvent> = of("block.hanging_roots.break")
     @JvmField
-    public val HANGING_ROOTS_FALL: SoundEvent = get("block.hanging_roots.fall")
+    public val HANGING_ROOTS_FALL: RegistryReference<SoundEvent> = of("block.hanging_roots.fall")
     @JvmField
-    public val HANGING_ROOTS_HIT: SoundEvent = get("block.hanging_roots.hit")
+    public val HANGING_ROOTS_HIT: RegistryReference<SoundEvent> = of("block.hanging_roots.hit")
     @JvmField
-    public val HANGING_ROOTS_PLACE: SoundEvent = get("block.hanging_roots.place")
+    public val HANGING_ROOTS_PLACE: RegistryReference<SoundEvent> = of("block.hanging_roots.place")
     @JvmField
-    public val HANGING_ROOTS_STEP: SoundEvent = get("block.hanging_roots.step")
+    public val HANGING_ROOTS_STEP: RegistryReference<SoundEvent> = of("block.hanging_roots.step")
     @JvmField
-    public val HOE_TILL: SoundEvent = get("item.hoe.till")
+    public val HOE_TILL: RegistryReference<SoundEvent> = of("item.hoe.till")
     @JvmField
-    public val HOGLIN_AMBIENT: SoundEvent = get("entity.hoglin.ambient")
+    public val HOGLIN_AMBIENT: RegistryReference<SoundEvent> = of("entity.hoglin.ambient")
     @JvmField
-    public val HOGLIN_ANGRY: SoundEvent = get("entity.hoglin.angry")
+    public val HOGLIN_ANGRY: RegistryReference<SoundEvent> = of("entity.hoglin.angry")
     @JvmField
-    public val HOGLIN_ATTACK: SoundEvent = get("entity.hoglin.attack")
+    public val HOGLIN_ATTACK: RegistryReference<SoundEvent> = of("entity.hoglin.attack")
     @JvmField
-    public val HOGLIN_CONVERTED_TO_ZOMBIFIED: SoundEvent = get("entity.hoglin.converted_to_zombified")
+    public val HOGLIN_CONVERTED_TO_ZOMBIFIED: RegistryReference<SoundEvent> = of("entity.hoglin.converted_to_zombified")
     @JvmField
-    public val HOGLIN_DEATH: SoundEvent = get("entity.hoglin.death")
+    public val HOGLIN_DEATH: RegistryReference<SoundEvent> = of("entity.hoglin.death")
     @JvmField
-    public val HOGLIN_HURT: SoundEvent = get("entity.hoglin.hurt")
+    public val HOGLIN_HURT: RegistryReference<SoundEvent> = of("entity.hoglin.hurt")
     @JvmField
-    public val HOGLIN_RETREAT: SoundEvent = get("entity.hoglin.retreat")
+    public val HOGLIN_RETREAT: RegistryReference<SoundEvent> = of("entity.hoglin.retreat")
     @JvmField
-    public val HOGLIN_STEP: SoundEvent = get("entity.hoglin.step")
+    public val HOGLIN_STEP: RegistryReference<SoundEvent> = of("entity.hoglin.step")
     @JvmField
-    public val HONEY_BLOCK_BREAK: SoundEvent = get("block.honey_block.break")
+    public val HONEY_BLOCK_BREAK: RegistryReference<SoundEvent> = of("block.honey_block.break")
     @JvmField
-    public val HONEY_BLOCK_FALL: SoundEvent = get("block.honey_block.fall")
+    public val HONEY_BLOCK_FALL: RegistryReference<SoundEvent> = of("block.honey_block.fall")
     @JvmField
-    public val HONEY_BLOCK_HIT: SoundEvent = get("block.honey_block.hit")
+    public val HONEY_BLOCK_HIT: RegistryReference<SoundEvent> = of("block.honey_block.hit")
     @JvmField
-    public val HONEY_BLOCK_PLACE: SoundEvent = get("block.honey_block.place")
+    public val HONEY_BLOCK_PLACE: RegistryReference<SoundEvent> = of("block.honey_block.place")
     @JvmField
-    public val HONEY_BLOCK_SLIDE: SoundEvent = get("block.honey_block.slide")
+    public val HONEY_BLOCK_SLIDE: RegistryReference<SoundEvent> = of("block.honey_block.slide")
     @JvmField
-    public val HONEY_BLOCK_STEP: SoundEvent = get("block.honey_block.step")
+    public val HONEY_BLOCK_STEP: RegistryReference<SoundEvent> = of("block.honey_block.step")
     @JvmField
-    public val HONEYCOMB_WAX_ON: SoundEvent = get("item.honeycomb.wax_on")
+    public val HONEYCOMB_WAX_ON: RegistryReference<SoundEvent> = of("item.honeycomb.wax_on")
     @JvmField
-    public val HONEY_DRINK: SoundEvent = get("item.honey_bottle.drink")
+    public val HONEY_DRINK: RegistryReference<SoundEvent> = of("item.honey_bottle.drink")
     @JvmField
-    public val HORSE_AMBIENT: SoundEvent = get("entity.horse.ambient")
+    public val HORSE_AMBIENT: RegistryReference<SoundEvent> = of("entity.horse.ambient")
     @JvmField
-    public val HORSE_ANGRY: SoundEvent = get("entity.horse.angry")
+    public val HORSE_ANGRY: RegistryReference<SoundEvent> = of("entity.horse.angry")
     @JvmField
-    public val HORSE_ARMOR: SoundEvent = get("entity.horse.armor")
+    public val HORSE_ARMOR: RegistryReference<SoundEvent> = of("entity.horse.armor")
     @JvmField
-    public val HORSE_BREATHE: SoundEvent = get("entity.horse.breathe")
+    public val HORSE_BREATHE: RegistryReference<SoundEvent> = of("entity.horse.breathe")
     @JvmField
-    public val HORSE_DEATH: SoundEvent = get("entity.horse.death")
+    public val HORSE_DEATH: RegistryReference<SoundEvent> = of("entity.horse.death")
     @JvmField
-    public val HORSE_EAT: SoundEvent = get("entity.horse.eat")
+    public val HORSE_EAT: RegistryReference<SoundEvent> = of("entity.horse.eat")
     @JvmField
-    public val HORSE_GALLOP: SoundEvent = get("entity.horse.gallop")
+    public val HORSE_GALLOP: RegistryReference<SoundEvent> = of("entity.horse.gallop")
     @JvmField
-    public val HORSE_HURT: SoundEvent = get("entity.horse.hurt")
+    public val HORSE_HURT: RegistryReference<SoundEvent> = of("entity.horse.hurt")
     @JvmField
-    public val HORSE_JUMP: SoundEvent = get("entity.horse.jump")
+    public val HORSE_JUMP: RegistryReference<SoundEvent> = of("entity.horse.jump")
     @JvmField
-    public val HORSE_LAND: SoundEvent = get("entity.horse.land")
+    public val HORSE_LAND: RegistryReference<SoundEvent> = of("entity.horse.land")
     @JvmField
-    public val HORSE_SADDLE: SoundEvent = get("entity.horse.saddle")
+    public val HORSE_SADDLE: RegistryReference<SoundEvent> = of("entity.horse.saddle")
     @JvmField
-    public val HORSE_STEP: SoundEvent = get("entity.horse.step")
+    public val HORSE_STEP: RegistryReference<SoundEvent> = of("entity.horse.step")
     @JvmField
-    public val HORSE_STEP_WOOD: SoundEvent = get("entity.horse.step_wood")
+    public val HORSE_STEP_WOOD: RegistryReference<SoundEvent> = of("entity.horse.step_wood")
     @JvmField
-    public val HOSTILE_BIG_FALL: SoundEvent = get("entity.hostile.big_fall")
+    public val HOSTILE_BIG_FALL: RegistryReference<SoundEvent> = of("entity.hostile.big_fall")
     @JvmField
-    public val HOSTILE_DEATH: SoundEvent = get("entity.hostile.death")
+    public val HOSTILE_DEATH: RegistryReference<SoundEvent> = of("entity.hostile.death")
     @JvmField
-    public val HOSTILE_HURT: SoundEvent = get("entity.hostile.hurt")
+    public val HOSTILE_HURT: RegistryReference<SoundEvent> = of("entity.hostile.hurt")
     @JvmField
-    public val HOSTILE_SMALL_FALL: SoundEvent = get("entity.hostile.small_fall")
+    public val HOSTILE_SMALL_FALL: RegistryReference<SoundEvent> = of("entity.hostile.small_fall")
     @JvmField
-    public val HOSTILE_SPLASH: SoundEvent = get("entity.hostile.splash")
+    public val HOSTILE_SPLASH: RegistryReference<SoundEvent> = of("entity.hostile.splash")
     @JvmField
-    public val HOSTILE_SWIM: SoundEvent = get("entity.hostile.swim")
+    public val HOSTILE_SWIM: RegistryReference<SoundEvent> = of("entity.hostile.swim")
     @JvmField
-    public val HUSK_AMBIENT: SoundEvent = get("entity.husk.ambient")
+    public val HUSK_AMBIENT: RegistryReference<SoundEvent> = of("entity.husk.ambient")
     @JvmField
-    public val HUSK_CONVERTED_TO_ZOMBIE: SoundEvent = get("entity.husk.converted_to_zombie")
+    public val HUSK_CONVERTED_TO_ZOMBIE: RegistryReference<SoundEvent> = of("entity.husk.converted_to_zombie")
     @JvmField
-    public val HUSK_DEATH: SoundEvent = get("entity.husk.death")
+    public val HUSK_DEATH: RegistryReference<SoundEvent> = of("entity.husk.death")
     @JvmField
-    public val HUSK_HURT: SoundEvent = get("entity.husk.hurt")
+    public val HUSK_HURT: RegistryReference<SoundEvent> = of("entity.husk.hurt")
     @JvmField
-    public val HUSK_STEP: SoundEvent = get("entity.husk.step")
+    public val HUSK_STEP: RegistryReference<SoundEvent> = of("entity.husk.step")
     @JvmField
-    public val ILLUSIONER_AMBIENT: SoundEvent = get("entity.illusioner.ambient")
+    public val ILLUSIONER_AMBIENT: RegistryReference<SoundEvent> = of("entity.illusioner.ambient")
     @JvmField
-    public val ILLUSIONER_CAST_SPELL: SoundEvent = get("entity.illusioner.cast_spell")
+    public val ILLUSIONER_CAST_SPELL: RegistryReference<SoundEvent> = of("entity.illusioner.cast_spell")
     @JvmField
-    public val ILLUSIONER_DEATH: SoundEvent = get("entity.illusioner.death")
+    public val ILLUSIONER_DEATH: RegistryReference<SoundEvent> = of("entity.illusioner.death")
     @JvmField
-    public val ILLUSIONER_HURT: SoundEvent = get("entity.illusioner.hurt")
+    public val ILLUSIONER_HURT: RegistryReference<SoundEvent> = of("entity.illusioner.hurt")
     @JvmField
-    public val ILLUSIONER_MIRROR_MOVE: SoundEvent = get("entity.illusioner.mirror_move")
+    public val ILLUSIONER_MIRROR_MOVE: RegistryReference<SoundEvent> = of("entity.illusioner.mirror_move")
     @JvmField
-    public val ILLUSIONER_PREPARE_BLINDNESS: SoundEvent = get("entity.illusioner.prepare_blindness")
+    public val ILLUSIONER_PREPARE_BLINDNESS: RegistryReference<SoundEvent> = of("entity.illusioner.prepare_blindness")
     @JvmField
-    public val ILLUSIONER_PREPARE_MIRROR: SoundEvent = get("entity.illusioner.prepare_mirror")
+    public val ILLUSIONER_PREPARE_MIRROR: RegistryReference<SoundEvent> = of("entity.illusioner.prepare_mirror")
     @JvmField
-    public val INK_SAC_USE: SoundEvent = get("item.ink_sac.use")
+    public val INK_SAC_USE: RegistryReference<SoundEvent> = of("item.ink_sac.use")
     @JvmField
-    public val IRON_DOOR_CLOSE: SoundEvent = get("block.iron_door.close")
+    public val IRON_DOOR_CLOSE: RegistryReference<SoundEvent> = of("block.iron_door.close")
     @JvmField
-    public val IRON_DOOR_OPEN: SoundEvent = get("block.iron_door.open")
+    public val IRON_DOOR_OPEN: RegistryReference<SoundEvent> = of("block.iron_door.open")
     @JvmField
-    public val IRON_GOLEM_ATTACK: SoundEvent = get("entity.iron_golem.attack")
+    public val IRON_GOLEM_ATTACK: RegistryReference<SoundEvent> = of("entity.iron_golem.attack")
     @JvmField
-    public val IRON_GOLEM_DAMAGE: SoundEvent = get("entity.iron_golem.damage")
+    public val IRON_GOLEM_DAMAGE: RegistryReference<SoundEvent> = of("entity.iron_golem.damage")
     @JvmField
-    public val IRON_GOLEM_DEATH: SoundEvent = get("entity.iron_golem.death")
+    public val IRON_GOLEM_DEATH: RegistryReference<SoundEvent> = of("entity.iron_golem.death")
     @JvmField
-    public val IRON_GOLEM_HURT: SoundEvent = get("entity.iron_golem.hurt")
+    public val IRON_GOLEM_HURT: RegistryReference<SoundEvent> = of("entity.iron_golem.hurt")
     @JvmField
-    public val IRON_GOLEM_REPAIR: SoundEvent = get("entity.iron_golem.repair")
+    public val IRON_GOLEM_REPAIR: RegistryReference<SoundEvent> = of("entity.iron_golem.repair")
     @JvmField
-    public val IRON_GOLEM_STEP: SoundEvent = get("entity.iron_golem.step")
+    public val IRON_GOLEM_STEP: RegistryReference<SoundEvent> = of("entity.iron_golem.step")
     @JvmField
-    public val IRON_TRAPDOOR_CLOSE: SoundEvent = get("block.iron_trapdoor.close")
+    public val IRON_TRAPDOOR_CLOSE: RegistryReference<SoundEvent> = of("block.iron_trapdoor.close")
     @JvmField
-    public val IRON_TRAPDOOR_OPEN: SoundEvent = get("block.iron_trapdoor.open")
+    public val IRON_TRAPDOOR_OPEN: RegistryReference<SoundEvent> = of("block.iron_trapdoor.open")
     @JvmField
-    public val ITEM_FRAME_ADD_ITEM: SoundEvent = get("entity.item_frame.add_item")
+    public val ITEM_FRAME_ADD_ITEM: RegistryReference<SoundEvent> = of("entity.item_frame.add_item")
     @JvmField
-    public val ITEM_FRAME_BREAK: SoundEvent = get("entity.item_frame.break")
+    public val ITEM_FRAME_BREAK: RegistryReference<SoundEvent> = of("entity.item_frame.break")
     @JvmField
-    public val ITEM_FRAME_PLACE: SoundEvent = get("entity.item_frame.place")
+    public val ITEM_FRAME_PLACE: RegistryReference<SoundEvent> = of("entity.item_frame.place")
     @JvmField
-    public val ITEM_FRAME_REMOVE_ITEM: SoundEvent = get("entity.item_frame.remove_item")
+    public val ITEM_FRAME_REMOVE_ITEM: RegistryReference<SoundEvent> = of("entity.item_frame.remove_item")
     @JvmField
-    public val ITEM_FRAME_ROTATE_ITEM: SoundEvent = get("entity.item_frame.rotate_item")
+    public val ITEM_FRAME_ROTATE_ITEM: RegistryReference<SoundEvent> = of("entity.item_frame.rotate_item")
     @JvmField
-    public val ITEM_BREAK: SoundEvent = get("entity.item.break")
+    public val ITEM_BREAK: RegistryReference<SoundEvent> = of("entity.item.break")
     @JvmField
-    public val ITEM_PICKUP: SoundEvent = get("entity.item.pickup")
+    public val ITEM_PICKUP: RegistryReference<SoundEvent> = of("entity.item.pickup")
     @JvmField
-    public val LADDER_BREAK: SoundEvent = get("block.ladder.break")
+    public val LADDER_BREAK: RegistryReference<SoundEvent> = of("block.ladder.break")
     @JvmField
-    public val LADDER_FALL: SoundEvent = get("block.ladder.fall")
+    public val LADDER_FALL: RegistryReference<SoundEvent> = of("block.ladder.fall")
     @JvmField
-    public val LADDER_HIT: SoundEvent = get("block.ladder.hit")
+    public val LADDER_HIT: RegistryReference<SoundEvent> = of("block.ladder.hit")
     @JvmField
-    public val LADDER_PLACE: SoundEvent = get("block.ladder.place")
+    public val LADDER_PLACE: RegistryReference<SoundEvent> = of("block.ladder.place")
     @JvmField
-    public val LADDER_STEP: SoundEvent = get("block.ladder.step")
+    public val LADDER_STEP: RegistryReference<SoundEvent> = of("block.ladder.step")
     @JvmField
-    public val LANTERN_BREAK: SoundEvent = get("block.lantern.break")
+    public val LANTERN_BREAK: RegistryReference<SoundEvent> = of("block.lantern.break")
     @JvmField
-    public val LANTERN_FALL: SoundEvent = get("block.lantern.fall")
+    public val LANTERN_FALL: RegistryReference<SoundEvent> = of("block.lantern.fall")
     @JvmField
-    public val LANTERN_HIT: SoundEvent = get("block.lantern.hit")
+    public val LANTERN_HIT: RegistryReference<SoundEvent> = of("block.lantern.hit")
     @JvmField
-    public val LANTERN_PLACE: SoundEvent = get("block.lantern.place")
+    public val LANTERN_PLACE: RegistryReference<SoundEvent> = of("block.lantern.place")
     @JvmField
-    public val LANTERN_STEP: SoundEvent = get("block.lantern.step")
+    public val LANTERN_STEP: RegistryReference<SoundEvent> = of("block.lantern.step")
     @JvmField
-    public val LARGE_AMETHYST_BUD_BREAK: SoundEvent = get("block.large_amethyst_bud.break")
+    public val LARGE_AMETHYST_BUD_BREAK: RegistryReference<SoundEvent> = of("block.large_amethyst_bud.break")
     @JvmField
-    public val LARGE_AMETHYST_BUD_PLACE: SoundEvent = get("block.large_amethyst_bud.place")
+    public val LARGE_AMETHYST_BUD_PLACE: RegistryReference<SoundEvent> = of("block.large_amethyst_bud.place")
     @JvmField
-    public val LAVA_AMBIENT: SoundEvent = get("block.lava.ambient")
+    public val LAVA_AMBIENT: RegistryReference<SoundEvent> = of("block.lava.ambient")
     @JvmField
-    public val LAVA_EXTINGUISH: SoundEvent = get("block.lava.extinguish")
+    public val LAVA_EXTINGUISH: RegistryReference<SoundEvent> = of("block.lava.extinguish")
     @JvmField
-    public val LAVA_POP: SoundEvent = get("block.lava.pop")
+    public val LAVA_POP: RegistryReference<SoundEvent> = of("block.lava.pop")
     @JvmField
-    public val LEASH_KNOT_BREAK: SoundEvent = get("entity.leash_knot.break")
+    public val LEASH_KNOT_BREAK: RegistryReference<SoundEvent> = of("entity.leash_knot.break")
     @JvmField
-    public val LEASH_KNOT_PLACE: SoundEvent = get("entity.leash_knot.place")
+    public val LEASH_KNOT_PLACE: RegistryReference<SoundEvent> = of("entity.leash_knot.place")
     @JvmField
-    public val LEVER_CLICK: SoundEvent = get("block.lever.click")
+    public val LEVER_CLICK: RegistryReference<SoundEvent> = of("block.lever.click")
     @JvmField
-    public val LIGHTNING_BOLT_IMPACT: SoundEvent = get("entity.lightning_bolt.impact")
+    public val LIGHTNING_BOLT_IMPACT: RegistryReference<SoundEvent> = of("entity.lightning_bolt.impact")
     @JvmField
-    public val LIGHTNING_BOLT_THUNDER: SoundEvent = get("entity.lightning_bolt.thunder")
+    public val LIGHTNING_BOLT_THUNDER: RegistryReference<SoundEvent> = of("entity.lightning_bolt.thunder")
     @JvmField
-    public val LINGERING_POTION_THROW: SoundEvent = get("entity.lingering_potion.throw")
+    public val LINGERING_POTION_THROW: RegistryReference<SoundEvent> = of("entity.lingering_potion.throw")
     @JvmField
-    public val LLAMA_AMBIENT: SoundEvent = get("entity.llama.ambient")
+    public val LLAMA_AMBIENT: RegistryReference<SoundEvent> = of("entity.llama.ambient")
     @JvmField
-    public val LLAMA_ANGRY: SoundEvent = get("entity.llama.angry")
+    public val LLAMA_ANGRY: RegistryReference<SoundEvent> = of("entity.llama.angry")
     @JvmField
-    public val LLAMA_CHEST: SoundEvent = get("entity.llama.chest")
+    public val LLAMA_CHEST: RegistryReference<SoundEvent> = of("entity.llama.chest")
     @JvmField
-    public val LLAMA_DEATH: SoundEvent = get("entity.llama.death")
+    public val LLAMA_DEATH: RegistryReference<SoundEvent> = of("entity.llama.death")
     @JvmField
-    public val LLAMA_EAT: SoundEvent = get("entity.llama.eat")
+    public val LLAMA_EAT: RegistryReference<SoundEvent> = of("entity.llama.eat")
     @JvmField
-    public val LLAMA_HURT: SoundEvent = get("entity.llama.hurt")
+    public val LLAMA_HURT: RegistryReference<SoundEvent> = of("entity.llama.hurt")
     @JvmField
-    public val LLAMA_SPIT: SoundEvent = get("entity.llama.spit")
+    public val LLAMA_SPIT: RegistryReference<SoundEvent> = of("entity.llama.spit")
     @JvmField
-    public val LLAMA_STEP: SoundEvent = get("entity.llama.step")
+    public val LLAMA_STEP: RegistryReference<SoundEvent> = of("entity.llama.step")
     @JvmField
-    public val LLAMA_SWAG: SoundEvent = get("entity.llama.swag")
+    public val LLAMA_SWAG: RegistryReference<SoundEvent> = of("entity.llama.swag")
     @JvmField
-    public val MAGMA_CUBE_DEATH_SMALL: SoundEvent = get("entity.magma_cube.death_small")
+    public val MAGMA_CUBE_DEATH_SMALL: RegistryReference<SoundEvent> = of("entity.magma_cube.death_small")
     @JvmField
-    public val LODESTONE_BREAK: SoundEvent = get("block.lodestone.break")
+    public val LODESTONE_BREAK: RegistryReference<SoundEvent> = of("block.lodestone.break")
     @JvmField
-    public val LODESTONE_STEP: SoundEvent = get("block.lodestone.step")
+    public val LODESTONE_STEP: RegistryReference<SoundEvent> = of("block.lodestone.step")
     @JvmField
-    public val LODESTONE_PLACE: SoundEvent = get("block.lodestone.place")
+    public val LODESTONE_PLACE: RegistryReference<SoundEvent> = of("block.lodestone.place")
     @JvmField
-    public val LODESTONE_HIT: SoundEvent = get("block.lodestone.hit")
+    public val LODESTONE_HIT: RegistryReference<SoundEvent> = of("block.lodestone.hit")
     @JvmField
-    public val LODESTONE_FALL: SoundEvent = get("block.lodestone.fall")
+    public val LODESTONE_FALL: RegistryReference<SoundEvent> = of("block.lodestone.fall")
     @JvmField
-    public val LODESTONE_COMPASS_LOCK: SoundEvent = get("item.lodestone_compass.lock")
+    public val LODESTONE_COMPASS_LOCK: RegistryReference<SoundEvent> = of("item.lodestone_compass.lock")
     @JvmField
-    public val MAGMA_CUBE_DEATH: SoundEvent = get("entity.magma_cube.death")
+    public val MAGMA_CUBE_DEATH: RegistryReference<SoundEvent> = of("entity.magma_cube.death")
     @JvmField
-    public val MAGMA_CUBE_HURT: SoundEvent = get("entity.magma_cube.hurt")
+    public val MAGMA_CUBE_HURT: RegistryReference<SoundEvent> = of("entity.magma_cube.hurt")
     @JvmField
-    public val MAGMA_CUBE_HURT_SMALL: SoundEvent = get("entity.magma_cube.hurt_small")
+    public val MAGMA_CUBE_HURT_SMALL: RegistryReference<SoundEvent> = of("entity.magma_cube.hurt_small")
     @JvmField
-    public val MAGMA_CUBE_JUMP: SoundEvent = get("entity.magma_cube.jump")
+    public val MAGMA_CUBE_JUMP: RegistryReference<SoundEvent> = of("entity.magma_cube.jump")
     @JvmField
-    public val MAGMA_CUBE_SQUISH: SoundEvent = get("entity.magma_cube.squish")
+    public val MAGMA_CUBE_SQUISH: RegistryReference<SoundEvent> = of("entity.magma_cube.squish")
     @JvmField
-    public val MAGMA_CUBE_SQUISH_SMALL: SoundEvent = get("entity.magma_cube.squish_small")
+    public val MAGMA_CUBE_SQUISH_SMALL: RegistryReference<SoundEvent> = of("entity.magma_cube.squish_small")
     @JvmField
-    public val MANGROVE_ROOTS_BREAK: SoundEvent = get("block.mangrove_roots.break")
+    public val MANGROVE_ROOTS_BREAK: RegistryReference<SoundEvent> = of("block.mangrove_roots.break")
     @JvmField
-    public val MANGROVE_ROOTS_FALL: SoundEvent = get("block.mangrove_roots.fall")
+    public val MANGROVE_ROOTS_FALL: RegistryReference<SoundEvent> = of("block.mangrove_roots.fall")
     @JvmField
-    public val MANGROVE_ROOTS_HIT: SoundEvent = get("block.mangrove_roots.hit")
+    public val MANGROVE_ROOTS_HIT: RegistryReference<SoundEvent> = of("block.mangrove_roots.hit")
     @JvmField
-    public val MANGROVE_ROOTS_PLACE: SoundEvent = get("block.mangrove_roots.place")
+    public val MANGROVE_ROOTS_PLACE: RegistryReference<SoundEvent> = of("block.mangrove_roots.place")
     @JvmField
-    public val MANGROVE_ROOTS_STEP: SoundEvent = get("block.mangrove_roots.step")
+    public val MANGROVE_ROOTS_STEP: RegistryReference<SoundEvent> = of("block.mangrove_roots.step")
     @JvmField
-    public val MEDIUM_AMETHYST_BUD_BREAK: SoundEvent = get("block.medium_amethyst_bud.break")
+    public val MEDIUM_AMETHYST_BUD_BREAK: RegistryReference<SoundEvent> = of("block.medium_amethyst_bud.break")
     @JvmField
-    public val MEDIUM_AMETHYST_BUD_PLACE: SoundEvent = get("block.medium_amethyst_bud.place")
+    public val MEDIUM_AMETHYST_BUD_PLACE: RegistryReference<SoundEvent> = of("block.medium_amethyst_bud.place")
     @JvmField
-    public val METAL_BREAK: SoundEvent = get("block.metal.break")
+    public val METAL_BREAK: RegistryReference<SoundEvent> = of("block.metal.break")
     @JvmField
-    public val METAL_FALL: SoundEvent = get("block.metal.fall")
+    public val METAL_FALL: RegistryReference<SoundEvent> = of("block.metal.fall")
     @JvmField
-    public val METAL_HIT: SoundEvent = get("block.metal.hit")
+    public val METAL_HIT: RegistryReference<SoundEvent> = of("block.metal.hit")
     @JvmField
-    public val METAL_PLACE: SoundEvent = get("block.metal.place")
+    public val METAL_PLACE: RegistryReference<SoundEvent> = of("block.metal.place")
     @JvmField
-    public val METAL_PRESSURE_PLATE_CLICK_OFF: SoundEvent = get("block.metal_pressure_plate.click_off")
+    public val METAL_PRESSURE_PLATE_CLICK_OFF: RegistryReference<SoundEvent> = of("block.metal_pressure_plate.click_off")
     @JvmField
-    public val METAL_PRESSURE_PLATE_CLICK_ON: SoundEvent = get("block.metal_pressure_plate.click_on")
+    public val METAL_PRESSURE_PLATE_CLICK_ON: RegistryReference<SoundEvent> = of("block.metal_pressure_plate.click_on")
     @JvmField
-    public val METAL_STEP: SoundEvent = get("block.metal.step")
+    public val METAL_STEP: RegistryReference<SoundEvent> = of("block.metal.step")
     @JvmField
-    public val MINECART_INSIDE_UNDERWATER: SoundEvent = get("entity.minecart.inside.underwater")
+    public val MINECART_INSIDE_UNDERWATER: RegistryReference<SoundEvent> = of("entity.minecart.inside.underwater")
     @JvmField
-    public val MINECART_INSIDE: SoundEvent = get("entity.minecart.inside")
+    public val MINECART_INSIDE: RegistryReference<SoundEvent> = of("entity.minecart.inside")
     @JvmField
-    public val MINECART_RIDING: SoundEvent = get("entity.minecart.riding")
+    public val MINECART_RIDING: RegistryReference<SoundEvent> = of("entity.minecart.riding")
     @JvmField
-    public val MOOSHROOM_CONVERT: SoundEvent = get("entity.mooshroom.convert")
+    public val MOOSHROOM_CONVERT: RegistryReference<SoundEvent> = of("entity.mooshroom.convert")
     @JvmField
-    public val MOOSHROOM_EAT: SoundEvent = get("entity.mooshroom.eat")
+    public val MOOSHROOM_EAT: RegistryReference<SoundEvent> = of("entity.mooshroom.eat")
     @JvmField
-    public val MOOSHROOM_MILK: SoundEvent = get("entity.mooshroom.milk")
+    public val MOOSHROOM_MILK: RegistryReference<SoundEvent> = of("entity.mooshroom.milk")
     @JvmField
-    public val MOOSHROOM_MILK_SUSPICIOUSLY: SoundEvent = get("entity.mooshroom.suspicious_milk")
+    public val MOOSHROOM_MILK_SUSPICIOUSLY: RegistryReference<SoundEvent> = of("entity.mooshroom.suspicious_milk")
     @JvmField
-    public val MOOSHROOM_SHEAR: SoundEvent = get("entity.mooshroom.shear")
+    public val MOOSHROOM_SHEAR: RegistryReference<SoundEvent> = of("entity.mooshroom.shear")
     @JvmField
-    public val MOSS_CARPET_BREAK: SoundEvent = get("block.moss_carpet.break")
+    public val MOSS_CARPET_BREAK: RegistryReference<SoundEvent> = of("block.moss_carpet.break")
     @JvmField
-    public val MOSS_CARPET_FALL: SoundEvent = get("block.moss_carpet.fall")
+    public val MOSS_CARPET_FALL: RegistryReference<SoundEvent> = of("block.moss_carpet.fall")
     @JvmField
-    public val MOSS_CARPET_HIT: SoundEvent = get("block.moss_carpet.hit")
+    public val MOSS_CARPET_HIT: RegistryReference<SoundEvent> = of("block.moss_carpet.hit")
     @JvmField
-    public val MOSS_CARPET_PLACE: SoundEvent = get("block.moss_carpet.place")
+    public val MOSS_CARPET_PLACE: RegistryReference<SoundEvent> = of("block.moss_carpet.place")
     @JvmField
-    public val MOSS_CARPET_STEP: SoundEvent = get("block.moss_carpet.step")
+    public val MOSS_CARPET_STEP: RegistryReference<SoundEvent> = of("block.moss_carpet.step")
     @JvmField
-    public val MOSS_BREAK: SoundEvent = get("block.moss.break")
+    public val MOSS_BREAK: RegistryReference<SoundEvent> = of("block.moss.break")
     @JvmField
-    public val MOSS_FALL: SoundEvent = get("block.moss.fall")
+    public val MOSS_FALL: RegistryReference<SoundEvent> = of("block.moss.fall")
     @JvmField
-    public val MOSS_HIT: SoundEvent = get("block.moss.hit")
+    public val MOSS_HIT: RegistryReference<SoundEvent> = of("block.moss.hit")
     @JvmField
-    public val MOSS_PLACE: SoundEvent = get("block.moss.place")
+    public val MOSS_PLACE: RegistryReference<SoundEvent> = of("block.moss.place")
     @JvmField
-    public val MOSS_STEP: SoundEvent = get("block.moss.step")
+    public val MOSS_STEP: RegistryReference<SoundEvent> = of("block.moss.step")
     @JvmField
-    public val MUD_BREAK: SoundEvent = get("block.mud.break")
+    public val MUD_BREAK: RegistryReference<SoundEvent> = of("block.mud.break")
     @JvmField
-    public val MUD_FALL: SoundEvent = get("block.mud.fall")
+    public val MUD_FALL: RegistryReference<SoundEvent> = of("block.mud.fall")
     @JvmField
-    public val MUD_HIT: SoundEvent = get("block.mud.hit")
+    public val MUD_HIT: RegistryReference<SoundEvent> = of("block.mud.hit")
     @JvmField
-    public val MUD_PLACE: SoundEvent = get("block.mud.place")
+    public val MUD_PLACE: RegistryReference<SoundEvent> = of("block.mud.place")
     @JvmField
-    public val MUD_STEP: SoundEvent = get("block.mud.step")
+    public val MUD_STEP: RegistryReference<SoundEvent> = of("block.mud.step")
     @JvmField
-    public val MUD_BRICKS_BREAK: SoundEvent = get("block.mud_bricks.break")
+    public val MUD_BRICKS_BREAK: RegistryReference<SoundEvent> = of("block.mud_bricks.break")
     @JvmField
-    public val MUD_BRICKS_FALL: SoundEvent = get("block.mud_bricks.fall")
+    public val MUD_BRICKS_FALL: RegistryReference<SoundEvent> = of("block.mud_bricks.fall")
     @JvmField
-    public val MUD_BRICKS_HIT: SoundEvent = get("block.mud_bricks.hit")
+    public val MUD_BRICKS_HIT: RegistryReference<SoundEvent> = of("block.mud_bricks.hit")
     @JvmField
-    public val MUD_BRICKS_PLACE: SoundEvent = get("block.mud_bricks.place")
+    public val MUD_BRICKS_PLACE: RegistryReference<SoundEvent> = of("block.mud_bricks.place")
     @JvmField
-    public val MUD_BRICKS_STEP: SoundEvent = get("block.mud_bricks.step")
+    public val MUD_BRICKS_STEP: RegistryReference<SoundEvent> = of("block.mud_bricks.step")
     @JvmField
-    public val MUDDY_MANGROVE_ROOTS_BREAK: SoundEvent = get("block.muddy_mangrove_roots.break")
+    public val MUDDY_MANGROVE_ROOTS_BREAK: RegistryReference<SoundEvent> = of("block.muddy_mangrove_roots.break")
     @JvmField
-    public val MUDDY_MANGROVE_ROOTS_FALL: SoundEvent = get("block.muddy_mangrove_roots.fall")
+    public val MUDDY_MANGROVE_ROOTS_FALL: RegistryReference<SoundEvent> = of("block.muddy_mangrove_roots.fall")
     @JvmField
-    public val MUDDY_MANGROVE_ROOTS_HIT: SoundEvent = get("block.muddy_mangrove_roots.hit")
+    public val MUDDY_MANGROVE_ROOTS_HIT: RegistryReference<SoundEvent> = of("block.muddy_mangrove_roots.hit")
     @JvmField
-    public val MUDDY_MANGROVE_ROOTS_PLACE: SoundEvent = get("block.muddy_mangrove_roots.place")
+    public val MUDDY_MANGROVE_ROOTS_PLACE: RegistryReference<SoundEvent> = of("block.muddy_mangrove_roots.place")
     @JvmField
-    public val MUDDY_MANGROVE_ROOTS_STEP: SoundEvent = get("block.muddy_mangrove_roots.step")
+    public val MUDDY_MANGROVE_ROOTS_STEP: RegistryReference<SoundEvent> = of("block.muddy_mangrove_roots.step")
     @JvmField
-    public val MULE_AMBIENT: SoundEvent = get("entity.mule.ambient")
+    public val MULE_AMBIENT: RegistryReference<SoundEvent> = of("entity.mule.ambient")
     @JvmField
-    public val MULE_ANGRY: SoundEvent = get("entity.mule.angry")
+    public val MULE_ANGRY: RegistryReference<SoundEvent> = of("entity.mule.angry")
     @JvmField
-    public val MULE_CHEST: SoundEvent = get("entity.mule.chest")
+    public val MULE_CHEST: RegistryReference<SoundEvent> = of("entity.mule.chest")
     @JvmField
-    public val MULE_DEATH: SoundEvent = get("entity.mule.death")
+    public val MULE_DEATH: RegistryReference<SoundEvent> = of("entity.mule.death")
     @JvmField
-    public val MULE_EAT: SoundEvent = get("entity.mule.eat")
+    public val MULE_EAT: RegistryReference<SoundEvent> = of("entity.mule.eat")
     @JvmField
-    public val MULE_HURT: SoundEvent = get("entity.mule.hurt")
+    public val MULE_HURT: RegistryReference<SoundEvent> = of("entity.mule.hurt")
     @JvmField
-    public val MUSIC_CREATIVE: SoundEvent = get("music.creative")
+    public val MUSIC_CREATIVE: RegistryReference<SoundEvent> = of("music.creative")
     @JvmField
-    public val MUSIC_CREDITS: SoundEvent = get("music.credits")
+    public val MUSIC_CREDITS: RegistryReference<SoundEvent> = of("music.credits")
     @JvmField
-    public val MUSIC_DISC_5: SoundEvent = get("music_disc.5")
+    public val MUSIC_DISC_5: RegistryReference<SoundEvent> = of("music_disc.5")
     @JvmField
-    public val MUSIC_DISC_11: SoundEvent = get("music_disc.11")
+    public val MUSIC_DISC_11: RegistryReference<SoundEvent> = of("music_disc.11")
     @JvmField
-    public val MUSIC_DISC_13: SoundEvent = get("music_disc.13")
+    public val MUSIC_DISC_13: RegistryReference<SoundEvent> = of("music_disc.13")
     @JvmField
-    public val MUSIC_DISC_BLOCKS: SoundEvent = get("music_disc.blocks")
+    public val MUSIC_DISC_BLOCKS: RegistryReference<SoundEvent> = of("music_disc.blocks")
     @JvmField
-    public val MUSIC_DISC_CAT: SoundEvent = get("music_disc.cat")
+    public val MUSIC_DISC_CAT: RegistryReference<SoundEvent> = of("music_disc.cat")
     @JvmField
-    public val MUSIC_DISC_CHIRP: SoundEvent = get("music_disc.chirp")
+    public val MUSIC_DISC_CHIRP: RegistryReference<SoundEvent> = of("music_disc.chirp")
     @JvmField
-    public val MUSIC_DISC_FAR: SoundEvent = get("music_disc.far")
+    public val MUSIC_DISC_FAR: RegistryReference<SoundEvent> = of("music_disc.far")
     @JvmField
-    public val MUSIC_DISC_MALL: SoundEvent = get("music_disc.mall")
+    public val MUSIC_DISC_MALL: RegistryReference<SoundEvent> = of("music_disc.mall")
     @JvmField
-    public val MUSIC_DISC_MELLOHI: SoundEvent = get("music_disc.mellohi")
+    public val MUSIC_DISC_MELLOHI: RegistryReference<SoundEvent> = of("music_disc.mellohi")
     @JvmField
-    public val MUSIC_DISC_PIGSTEP: SoundEvent = get("music_disc.pigstep")
+    public val MUSIC_DISC_PIGSTEP: RegistryReference<SoundEvent> = of("music_disc.pigstep")
     @JvmField
-    public val MUSIC_DISC_STAL: SoundEvent = get("music_disc.stal")
+    public val MUSIC_DISC_STAL: RegistryReference<SoundEvent> = of("music_disc.stal")
     @JvmField
-    public val MUSIC_DISC_STRAD: SoundEvent = get("music_disc.strad")
+    public val MUSIC_DISC_STRAD: RegistryReference<SoundEvent> = of("music_disc.strad")
     @JvmField
-    public val MUSIC_DISC_WAIT: SoundEvent = get("music_disc.wait")
+    public val MUSIC_DISC_WAIT: RegistryReference<SoundEvent> = of("music_disc.wait")
     @JvmField
-    public val MUSIC_DISC_WARD: SoundEvent = get("music_disc.ward")
+    public val MUSIC_DISC_WARD: RegistryReference<SoundEvent> = of("music_disc.ward")
     @JvmField
-    public val MUSIC_DISC_OTHERSIDE: SoundEvent = get("music_disc.otherside")
+    public val MUSIC_DISC_OTHERSIDE: RegistryReference<SoundEvent> = of("music_disc.otherside")
     @JvmField
-    public val MUSIC_DRAGON: SoundEvent = get("music.dragon")
+    public val MUSIC_DRAGON: RegistryReference<SoundEvent> = of("music.dragon")
     @JvmField
-    public val MUSIC_END: SoundEvent = get("music.end")
+    public val MUSIC_END: RegistryReference<SoundEvent> = of("music.end")
     @JvmField
-    public val MUSIC_GAME: SoundEvent = get("music.game")
+    public val MUSIC_GAME: RegistryReference<SoundEvent> = of("music.game")
     @JvmField
-    public val MUSIC_MENU: SoundEvent = get("music.menu")
+    public val MUSIC_MENU: RegistryReference<SoundEvent> = of("music.menu")
     @JvmField
-    public val MUSIC_BIOME_BASALT_DELTAS: SoundEvent = get("music.nether.basalt_deltas")
+    public val MUSIC_BIOME_BASALT_DELTAS: RegistryReference<SoundEvent> = of("music.nether.basalt_deltas")
     @JvmField
-    public val MUSIC_BIOME_CRIMSON_FOREST: SoundEvent = get("music.nether.crimson_forest")
+    public val MUSIC_BIOME_CRIMSON_FOREST: RegistryReference<SoundEvent> = of("music.nether.crimson_forest")
     @JvmField
-    public val MUSIC_BIOME_DEEP_DARK: SoundEvent = get("music.overworld.deep_dark")
+    public val MUSIC_BIOME_DEEP_DARK: RegistryReference<SoundEvent> = of("music.overworld.deep_dark")
     @JvmField
-    public val MUSIC_BIOME_DRIPSTONE_CAVES: SoundEvent = get("music.overworld.dripstone_caves")
+    public val MUSIC_BIOME_DRIPSTONE_CAVES: RegistryReference<SoundEvent> = of("music.overworld.dripstone_caves")
     @JvmField
-    public val MUSIC_BIOME_GROVE: SoundEvent = get("music.overworld.grove")
+    public val MUSIC_BIOME_GROVE: RegistryReference<SoundEvent> = of("music.overworld.grove")
     @JvmField
-    public val MUSIC_BIOME_JAGGED_PEAKS: SoundEvent = get("music.overworld.jagged_peaks")
+    public val MUSIC_BIOME_JAGGED_PEAKS: RegistryReference<SoundEvent> = of("music.overworld.jagged_peaks")
     @JvmField
-    public val MUSIC_BIOME_LUSH_CAVES: SoundEvent = get("music.overworld.lush_caves")
+    public val MUSIC_BIOME_LUSH_CAVES: RegistryReference<SoundEvent> = of("music.overworld.lush_caves")
     @JvmField
-    public val MUSIC_BIOME_SWAMP: SoundEvent = get("music.overworld.swamp")
+    public val MUSIC_BIOME_SWAMP: RegistryReference<SoundEvent> = of("music.overworld.swamp")
     @JvmField
-    public val MUSIC_BIOME_JUNGLE_AND_FOREST: SoundEvent = get("music.overworld.jungle_and_forest")
+    public val MUSIC_BIOME_JUNGLE_AND_FOREST: RegistryReference<SoundEvent> = of("music.overworld.jungle_and_forest")
     @JvmField
-    public val MUSIC_BIOME_OLD_GROWTH_TAIGA: SoundEvent = get("music.overworld.old_growth_taiga")
+    public val MUSIC_BIOME_OLD_GROWTH_TAIGA: RegistryReference<SoundEvent> = of("music.overworld.old_growth_taiga")
     @JvmField
-    public val MUSIC_BIOME_MEADOW: SoundEvent = get("music.overworld.meadow")
+    public val MUSIC_BIOME_MEADOW: RegistryReference<SoundEvent> = of("music.overworld.meadow")
     @JvmField
-    public val MUSIC_BIOME_NETHER_WASTES: SoundEvent = get("music.nether.nether_wastes")
+    public val MUSIC_BIOME_NETHER_WASTES: RegistryReference<SoundEvent> = of("music.nether.nether_wastes")
     @JvmField
-    public val MUSIC_BIOME_FROZEN_PEAKS: SoundEvent = get("music.overworld.frozen_peaks")
+    public val MUSIC_BIOME_FROZEN_PEAKS: RegistryReference<SoundEvent> = of("music.overworld.frozen_peaks")
     @JvmField
-    public val MUSIC_BIOME_SNOWY_SLOPES: SoundEvent = get("music.overworld.snowy_slopes")
+    public val MUSIC_BIOME_SNOWY_SLOPES: RegistryReference<SoundEvent> = of("music.overworld.snowy_slopes")
     @JvmField
-    public val MUSIC_BIOME_SOUL_SAND_VALLEY: SoundEvent = get("music.nether.soul_sand_valley")
+    public val MUSIC_BIOME_SOUL_SAND_VALLEY: RegistryReference<SoundEvent> = of("music.nether.soul_sand_valley")
     @JvmField
-    public val MUSIC_BIOME_STONY_PEAKS: SoundEvent = get("music.overworld.stony_peaks")
+    public val MUSIC_BIOME_STONY_PEAKS: RegistryReference<SoundEvent> = of("music.overworld.stony_peaks")
     @JvmField
-    public val MUSIC_BIOME_WARPED_FOREST: SoundEvent = get("music.nether.warped_forest")
+    public val MUSIC_BIOME_WARPED_FOREST: RegistryReference<SoundEvent> = of("music.nether.warped_forest")
     @JvmField
-    public val MUSIC_UNDER_WATER: SoundEvent = get("music.under_water")
+    public val MUSIC_UNDER_WATER: RegistryReference<SoundEvent> = of("music.under_water")
     @JvmField
-    public val NETHER_BRICKS_BREAK: SoundEvent = get("block.nether_bricks.break")
+    public val NETHER_BRICKS_BREAK: RegistryReference<SoundEvent> = of("block.nether_bricks.break")
     @JvmField
-    public val NETHER_BRICKS_STEP: SoundEvent = get("block.nether_bricks.step")
+    public val NETHER_BRICKS_STEP: RegistryReference<SoundEvent> = of("block.nether_bricks.step")
     @JvmField
-    public val NETHER_BRICKS_PLACE: SoundEvent = get("block.nether_bricks.place")
+    public val NETHER_BRICKS_PLACE: RegistryReference<SoundEvent> = of("block.nether_bricks.place")
     @JvmField
-    public val NETHER_BRICKS_HIT: SoundEvent = get("block.nether_bricks.hit")
+    public val NETHER_BRICKS_HIT: RegistryReference<SoundEvent> = of("block.nether_bricks.hit")
     @JvmField
-    public val NETHER_BRICKS_FALL: SoundEvent = get("block.nether_bricks.fall")
+    public val NETHER_BRICKS_FALL: RegistryReference<SoundEvent> = of("block.nether_bricks.fall")
     @JvmField
-    public val NETHER_WART_BREAK: SoundEvent = get("block.nether_wart.break")
+    public val NETHER_WART_BREAK: RegistryReference<SoundEvent> = of("block.nether_wart.break")
     @JvmField
-    public val NETHER_WART_PLANTED: SoundEvent = get("item.nether_wart.plant")
+    public val NETHER_WART_PLANTED: RegistryReference<SoundEvent> = of("item.nether_wart.plant")
     @JvmField
-    public val PACKED_MUD_BREAK: SoundEvent = get("block.packed_mud.break")
+    public val PACKED_MUD_BREAK: RegistryReference<SoundEvent> = of("block.packed_mud.break")
     @JvmField
-    public val PACKED_MUD_FALL: SoundEvent = get("block.packed_mud.fall")
+    public val PACKED_MUD_FALL: RegistryReference<SoundEvent> = of("block.packed_mud.fall")
     @JvmField
-    public val PACKED_MUD_HIT: SoundEvent = get("block.packed_mud.hit")
+    public val PACKED_MUD_HIT: RegistryReference<SoundEvent> = of("block.packed_mud.hit")
     @JvmField
-    public val PACKED_MUD_PLACE: SoundEvent = get("block.packed_mud.place")
+    public val PACKED_MUD_PLACE: RegistryReference<SoundEvent> = of("block.packed_mud.place")
     @JvmField
-    public val PACKED_MUD_STEP: SoundEvent = get("block.packed_mud.step")
+    public val PACKED_MUD_STEP: RegistryReference<SoundEvent> = of("block.packed_mud.step")
     @JvmField
-    public val STEM_BREAK: SoundEvent = get("block.stem.break")
+    public val STEM_BREAK: RegistryReference<SoundEvent> = of("block.stem.break")
     @JvmField
-    public val STEM_STEP: SoundEvent = get("block.stem.step")
+    public val STEM_STEP: RegistryReference<SoundEvent> = of("block.stem.step")
     @JvmField
-    public val STEM_PLACE: SoundEvent = get("block.stem.place")
+    public val STEM_PLACE: RegistryReference<SoundEvent> = of("block.stem.place")
     @JvmField
-    public val STEM_HIT: SoundEvent = get("block.stem.hit")
+    public val STEM_HIT: RegistryReference<SoundEvent> = of("block.stem.hit")
     @JvmField
-    public val STEM_FALL: SoundEvent = get("block.stem.fall")
+    public val STEM_FALL: RegistryReference<SoundEvent> = of("block.stem.fall")
     @JvmField
-    public val NYLIUM_BREAK: SoundEvent = get("block.nylium.break")
+    public val NYLIUM_BREAK: RegistryReference<SoundEvent> = of("block.nylium.break")
     @JvmField
-    public val NYLIUM_STEP: SoundEvent = get("block.nylium.step")
+    public val NYLIUM_STEP: RegistryReference<SoundEvent> = of("block.nylium.step")
     @JvmField
-    public val NYLIUM_PLACE: SoundEvent = get("block.nylium.place")
+    public val NYLIUM_PLACE: RegistryReference<SoundEvent> = of("block.nylium.place")
     @JvmField
-    public val NYLIUM_HIT: SoundEvent = get("block.nylium.hit")
+    public val NYLIUM_HIT: RegistryReference<SoundEvent> = of("block.nylium.hit")
     @JvmField
-    public val NYLIUM_FALL: SoundEvent = get("block.nylium.fall")
+    public val NYLIUM_FALL: RegistryReference<SoundEvent> = of("block.nylium.fall")
     @JvmField
-    public val NETHER_SPROUTS_BREAK: SoundEvent = get("block.nether_sprouts.break")
+    public val NETHER_SPROUTS_BREAK: RegistryReference<SoundEvent> = of("block.nether_sprouts.break")
     @JvmField
-    public val NETHER_SPROUTS_STEP: SoundEvent = get("block.nether_sprouts.step")
+    public val NETHER_SPROUTS_STEP: RegistryReference<SoundEvent> = of("block.nether_sprouts.step")
     @JvmField
-    public val NETHER_SPROUTS_PLACE: SoundEvent = get("block.nether_sprouts.place")
+    public val NETHER_SPROUTS_PLACE: RegistryReference<SoundEvent> = of("block.nether_sprouts.place")
     @JvmField
-    public val NETHER_SPROUTS_HIT: SoundEvent = get("block.nether_sprouts.hit")
+    public val NETHER_SPROUTS_HIT: RegistryReference<SoundEvent> = of("block.nether_sprouts.hit")
     @JvmField
-    public val NETHER_SPROUTS_FALL: SoundEvent = get("block.nether_sprouts.fall")
+    public val NETHER_SPROUTS_FALL: RegistryReference<SoundEvent> = of("block.nether_sprouts.fall")
     @JvmField
-    public val FUNGUS_BREAK: SoundEvent = get("block.fungus.break")
+    public val FUNGUS_BREAK: RegistryReference<SoundEvent> = of("block.fungus.break")
     @JvmField
-    public val FUNGUS_STEP: SoundEvent = get("block.fungus.step")
+    public val FUNGUS_STEP: RegistryReference<SoundEvent> = of("block.fungus.step")
     @JvmField
-    public val FUNGUS_PLACE: SoundEvent = get("block.fungus.place")
+    public val FUNGUS_PLACE: RegistryReference<SoundEvent> = of("block.fungus.place")
     @JvmField
-    public val FUNGUS_HIT: SoundEvent = get("block.fungus.hit")
+    public val FUNGUS_HIT: RegistryReference<SoundEvent> = of("block.fungus.hit")
     @JvmField
-    public val FUNGUS_FALL: SoundEvent = get("block.fungus.fall")
+    public val FUNGUS_FALL: RegistryReference<SoundEvent> = of("block.fungus.fall")
     @JvmField
-    public val WEEPING_VINES_BREAK: SoundEvent = get("block.weeping_vines.break")
+    public val WEEPING_VINES_BREAK: RegistryReference<SoundEvent> = of("block.weeping_vines.break")
     @JvmField
-    public val WEEPING_VINES_STEP: SoundEvent = get("block.weeping_vines.step")
+    public val WEEPING_VINES_STEP: RegistryReference<SoundEvent> = of("block.weeping_vines.step")
     @JvmField
-    public val WEEPING_VINES_PLACE: SoundEvent = get("block.weeping_vines.place")
+    public val WEEPING_VINES_PLACE: RegistryReference<SoundEvent> = of("block.weeping_vines.place")
     @JvmField
-    public val WEEPING_VINES_HIT: SoundEvent = get("block.weeping_vines.hit")
+    public val WEEPING_VINES_HIT: RegistryReference<SoundEvent> = of("block.weeping_vines.hit")
     @JvmField
-    public val WEEPING_VINES_FALL: SoundEvent = get("block.weeping_vines.fall")
+    public val WEEPING_VINES_FALL: RegistryReference<SoundEvent> = of("block.weeping_vines.fall")
     @JvmField
-    public val WART_BLOCK_BREAK: SoundEvent = get("block.wart_block.break")
+    public val WART_BLOCK_BREAK: RegistryReference<SoundEvent> = of("block.wart_block.break")
     @JvmField
-    public val WART_BLOCK_STEP: SoundEvent = get("block.wart_block.step")
+    public val WART_BLOCK_STEP: RegistryReference<SoundEvent> = of("block.wart_block.step")
     @JvmField
-    public val WART_BLOCK_PLACE: SoundEvent = get("block.wart_block.place")
+    public val WART_BLOCK_PLACE: RegistryReference<SoundEvent> = of("block.wart_block.place")
     @JvmField
-    public val WART_BLOCK_HIT: SoundEvent = get("block.wart_block.hit")
+    public val WART_BLOCK_HIT: RegistryReference<SoundEvent> = of("block.wart_block.hit")
     @JvmField
-    public val WART_BLOCK_FALL: SoundEvent = get("block.wart_block.fall")
+    public val WART_BLOCK_FALL: RegistryReference<SoundEvent> = of("block.wart_block.fall")
     @JvmField
-    public val NETHERITE_BLOCK_BREAK: SoundEvent = get("block.netherite_block.break")
+    public val NETHERITE_BLOCK_BREAK: RegistryReference<SoundEvent> = of("block.netherite_block.break")
     @JvmField
-    public val NETHERITE_BLOCK_STEP: SoundEvent = get("block.netherite_block.step")
+    public val NETHERITE_BLOCK_STEP: RegistryReference<SoundEvent> = of("block.netherite_block.step")
     @JvmField
-    public val NETHERITE_BLOCK_PLACE: SoundEvent = get("block.netherite_block.place")
+    public val NETHERITE_BLOCK_PLACE: RegistryReference<SoundEvent> = of("block.netherite_block.place")
     @JvmField
-    public val NETHERITE_BLOCK_HIT: SoundEvent = get("block.netherite_block.hit")
+    public val NETHERITE_BLOCK_HIT: RegistryReference<SoundEvent> = of("block.netherite_block.hit")
     @JvmField
-    public val NETHERITE_BLOCK_FALL: SoundEvent = get("block.netherite_block.fall")
+    public val NETHERITE_BLOCK_FALL: RegistryReference<SoundEvent> = of("block.netherite_block.fall")
     @JvmField
-    public val NETHERRACK_BREAK: SoundEvent = get("block.netherrack.break")
+    public val NETHERRACK_BREAK: RegistryReference<SoundEvent> = of("block.netherrack.break")
     @JvmField
-    public val NETHERRACK_STEP: SoundEvent = get("block.netherrack.step")
+    public val NETHERRACK_STEP: RegistryReference<SoundEvent> = of("block.netherrack.step")
     @JvmField
-    public val NETHERRACK_PLACE: SoundEvent = get("block.netherrack.place")
+    public val NETHERRACK_PLACE: RegistryReference<SoundEvent> = of("block.netherrack.place")
     @JvmField
-    public val NETHERRACK_HIT: SoundEvent = get("block.netherrack.hit")
+    public val NETHERRACK_HIT: RegistryReference<SoundEvent> = of("block.netherrack.hit")
     @JvmField
-    public val NETHERRACK_FALL: SoundEvent = get("block.netherrack.fall")
+    public val NETHERRACK_FALL: RegistryReference<SoundEvent> = of("block.netherrack.fall")
     @JvmField
-    public val NOTE_BLOCK_BASEDRUM: SoundEvent = get("block.note_block.basedrum")
+    public val NOTE_BLOCK_BASEDRUM: RegistryReference<SoundEvent> = of("block.note_block.basedrum")
     @JvmField
-    public val NOTE_BLOCK_BASS: SoundEvent = get("block.note_block.bass")
+    public val NOTE_BLOCK_BASS: RegistryReference<SoundEvent> = of("block.note_block.bass")
     @JvmField
-    public val NOTE_BLOCK_BELL: SoundEvent = get("block.note_block.bell")
+    public val NOTE_BLOCK_BELL: RegistryReference<SoundEvent> = of("block.note_block.bell")
     @JvmField
-    public val NOTE_BLOCK_CHIME: SoundEvent = get("block.note_block.chime")
+    public val NOTE_BLOCK_CHIME: RegistryReference<SoundEvent> = of("block.note_block.chime")
     @JvmField
-    public val NOTE_BLOCK_FLUTE: SoundEvent = get("block.note_block.flute")
+    public val NOTE_BLOCK_FLUTE: RegistryReference<SoundEvent> = of("block.note_block.flute")
     @JvmField
-    public val NOTE_BLOCK_GUITAR: SoundEvent = get("block.note_block.guitar")
+    public val NOTE_BLOCK_GUITAR: RegistryReference<SoundEvent> = of("block.note_block.guitar")
     @JvmField
-    public val NOTE_BLOCK_HARP: SoundEvent = get("block.note_block.harp")
+    public val NOTE_BLOCK_HARP: RegistryReference<SoundEvent> = of("block.note_block.harp")
     @JvmField
-    public val NOTE_BLOCK_HAT: SoundEvent = get("block.note_block.hat")
+    public val NOTE_BLOCK_HAT: RegistryReference<SoundEvent> = of("block.note_block.hat")
     @JvmField
-    public val NOTE_BLOCK_PLING: SoundEvent = get("block.note_block.pling")
+    public val NOTE_BLOCK_PLING: RegistryReference<SoundEvent> = of("block.note_block.pling")
     @JvmField
-    public val NOTE_BLOCK_SNARE: SoundEvent = get("block.note_block.snare")
+    public val NOTE_BLOCK_SNARE: RegistryReference<SoundEvent> = of("block.note_block.snare")
     @JvmField
-    public val NOTE_BLOCK_XYLOPHONE: SoundEvent = get("block.note_block.xylophone")
+    public val NOTE_BLOCK_XYLOPHONE: RegistryReference<SoundEvent> = of("block.note_block.xylophone")
     @JvmField
-    public val NOTE_BLOCK_IRON_XYLOPHONE: SoundEvent = get("block.note_block.iron_xylophone")
+    public val NOTE_BLOCK_IRON_XYLOPHONE: RegistryReference<SoundEvent> = of("block.note_block.iron_xylophone")
     @JvmField
-    public val NOTE_BLOCK_COW_BELL: SoundEvent = get("block.note_block.cow_bell")
+    public val NOTE_BLOCK_COW_BELL: RegistryReference<SoundEvent> = of("block.note_block.cow_bell")
     @JvmField
-    public val NOTE_BLOCK_DIDGERIDOO: SoundEvent = get("block.note_block.didgeridoo")
+    public val NOTE_BLOCK_DIDGERIDOO: RegistryReference<SoundEvent> = of("block.note_block.didgeridoo")
     @JvmField
-    public val NOTE_BLOCK_BIT: SoundEvent = get("block.note_block.bit")
+    public val NOTE_BLOCK_BIT: RegistryReference<SoundEvent> = of("block.note_block.bit")
     @JvmField
-    public val NOTE_BLOCK_BANJO: SoundEvent = get("block.note_block.banjo")
+    public val NOTE_BLOCK_BANJO: RegistryReference<SoundEvent> = of("block.note_block.banjo")
     @JvmField
-    public val OCELOT_HURT: SoundEvent = get("entity.ocelot.hurt")
+    public val OCELOT_HURT: RegistryReference<SoundEvent> = of("entity.ocelot.hurt")
     @JvmField
-    public val OCELOT_AMBIENT: SoundEvent = get("entity.ocelot.ambient")
+    public val OCELOT_AMBIENT: RegistryReference<SoundEvent> = of("entity.ocelot.ambient")
     @JvmField
-    public val OCELOT_DEATH: SoundEvent = get("entity.ocelot.death")
+    public val OCELOT_DEATH: RegistryReference<SoundEvent> = of("entity.ocelot.death")
     @JvmField
-    public val PAINTING_BREAK: SoundEvent = get("entity.painting.break")
+    public val PAINTING_BREAK: RegistryReference<SoundEvent> = of("entity.painting.break")
     @JvmField
-    public val PAINTING_PLACE: SoundEvent = get("entity.painting.place")
+    public val PAINTING_PLACE: RegistryReference<SoundEvent> = of("entity.painting.place")
     @JvmField
-    public val PANDA_PRE_SNEEZE: SoundEvent = get("entity.panda.pre_sneeze")
+    public val PANDA_PRE_SNEEZE: RegistryReference<SoundEvent> = of("entity.panda.pre_sneeze")
     @JvmField
-    public val PANDA_SNEEZE: SoundEvent = get("entity.panda.sneeze")
+    public val PANDA_SNEEZE: RegistryReference<SoundEvent> = of("entity.panda.sneeze")
     @JvmField
-    public val PANDA_AMBIENT: SoundEvent = get("entity.panda.ambient")
+    public val PANDA_AMBIENT: RegistryReference<SoundEvent> = of("entity.panda.ambient")
     @JvmField
-    public val PANDA_DEATH: SoundEvent = get("entity.panda.death")
+    public val PANDA_DEATH: RegistryReference<SoundEvent> = of("entity.panda.death")
     @JvmField
-    public val PANDA_EAT: SoundEvent = get("entity.panda.eat")
+    public val PANDA_EAT: RegistryReference<SoundEvent> = of("entity.panda.eat")
     @JvmField
-    public val PANDA_STEP: SoundEvent = get("entity.panda.step")
+    public val PANDA_STEP: RegistryReference<SoundEvent> = of("entity.panda.step")
     @JvmField
-    public val PANDA_CANT_BREED: SoundEvent = get("entity.panda.cant_breed")
+    public val PANDA_CANT_BREED: RegistryReference<SoundEvent> = of("entity.panda.cant_breed")
     @JvmField
-    public val PANDA_AGGRESSIVE_AMBIENT: SoundEvent = get("entity.panda.aggressive_ambient")
+    public val PANDA_AGGRESSIVE_AMBIENT: RegistryReference<SoundEvent> = of("entity.panda.aggressive_ambient")
     @JvmField
-    public val PANDA_WORRIED_AMBIENT: SoundEvent = get("entity.panda.worried_ambient")
+    public val PANDA_WORRIED_AMBIENT: RegistryReference<SoundEvent> = of("entity.panda.worried_ambient")
     @JvmField
-    public val PANDA_HURT: SoundEvent = get("entity.panda.hurt")
+    public val PANDA_HURT: RegistryReference<SoundEvent> = of("entity.panda.hurt")
     @JvmField
-    public val PANDA_BITE: SoundEvent = get("entity.panda.bite")
+    public val PANDA_BITE: RegistryReference<SoundEvent> = of("entity.panda.bite")
     @JvmField
-    public val PARROT_AMBIENT: SoundEvent = get("entity.parrot.ambient")
+    public val PARROT_AMBIENT: RegistryReference<SoundEvent> = of("entity.parrot.ambient")
     @JvmField
-    public val PARROT_DEATH: SoundEvent = get("entity.parrot.death")
+    public val PARROT_DEATH: RegistryReference<SoundEvent> = of("entity.parrot.death")
     @JvmField
-    public val PARROT_EAT: SoundEvent = get("entity.parrot.eat")
+    public val PARROT_EAT: RegistryReference<SoundEvent> = of("entity.parrot.eat")
     @JvmField
-    public val PARROT_FLY: SoundEvent = get("entity.parrot.fly")
+    public val PARROT_FLY: RegistryReference<SoundEvent> = of("entity.parrot.fly")
     @JvmField
-    public val PARROT_HURT: SoundEvent = get("entity.parrot.hurt")
+    public val PARROT_HURT: RegistryReference<SoundEvent> = of("entity.parrot.hurt")
     @JvmField
-    public val PARROT_IMITATE_BLAZE: SoundEvent = get("entity.parrot.imitate.blaze")
+    public val PARROT_IMITATE_BLAZE: RegistryReference<SoundEvent> = of("entity.parrot.imitate.blaze")
     @JvmField
-    public val PARROT_IMITATE_CREEPER: SoundEvent = get("entity.parrot.imitate.creeper")
+    public val PARROT_IMITATE_CREEPER: RegistryReference<SoundEvent> = of("entity.parrot.imitate.creeper")
     @JvmField
-    public val PARROT_IMITATE_DROWNED: SoundEvent = get("entity.parrot.imitate.drowned")
+    public val PARROT_IMITATE_DROWNED: RegistryReference<SoundEvent> = of("entity.parrot.imitate.drowned")
     @JvmField
-    public val PARROT_IMITATE_ELDER_GUARDIAN: SoundEvent = get("entity.parrot.imitate.elder_guardian")
+    public val PARROT_IMITATE_ELDER_GUARDIAN: RegistryReference<SoundEvent> = of("entity.parrot.imitate.elder_guardian")
     @JvmField
-    public val PARROT_IMITATE_ENDER_DRAGON: SoundEvent = get("entity.parrot.imitate.ender_dragon")
+    public val PARROT_IMITATE_ENDER_DRAGON: RegistryReference<SoundEvent> = of("entity.parrot.imitate.ender_dragon")
     @JvmField
-    public val PARROT_IMITATE_ENDERMITE: SoundEvent = get("entity.parrot.imitate.endermite")
+    public val PARROT_IMITATE_ENDERMITE: RegistryReference<SoundEvent> = of("entity.parrot.imitate.endermite")
     @JvmField
-    public val PARROT_IMITATE_EVOKER: SoundEvent = get("entity.parrot.imitate.evoker")
+    public val PARROT_IMITATE_EVOKER: RegistryReference<SoundEvent> = of("entity.parrot.imitate.evoker")
     @JvmField
-    public val PARROT_IMITATE_GHAST: SoundEvent = get("entity.parrot.imitate.ghast")
+    public val PARROT_IMITATE_GHAST: RegistryReference<SoundEvent> = of("entity.parrot.imitate.ghast")
     @JvmField
-    public val PARROT_IMITATE_GUARDIAN: SoundEvent = get("entity.parrot.imitate.guardian")
+    public val PARROT_IMITATE_GUARDIAN: RegistryReference<SoundEvent> = of("entity.parrot.imitate.guardian")
     @JvmField
-    public val PARROT_IMITATE_HOGLIN: SoundEvent = get("entity.parrot.imitate.hoglin")
+    public val PARROT_IMITATE_HOGLIN: RegistryReference<SoundEvent> = of("entity.parrot.imitate.hoglin")
     @JvmField
-    public val PARROT_IMITATE_HUSK: SoundEvent = get("entity.parrot.imitate.husk")
+    public val PARROT_IMITATE_HUSK: RegistryReference<SoundEvent> = of("entity.parrot.imitate.husk")
     @JvmField
-    public val PARROT_IMITATE_ILLUSIONER: SoundEvent = get("entity.parrot.imitate.illusioner")
+    public val PARROT_IMITATE_ILLUSIONER: RegistryReference<SoundEvent> = of("entity.parrot.imitate.illusioner")
     @JvmField
-    public val PARROT_IMITATE_MAGMA_CUBE: SoundEvent = get("entity.parrot.imitate.magma_cube")
+    public val PARROT_IMITATE_MAGMA_CUBE: RegistryReference<SoundEvent> = of("entity.parrot.imitate.magma_cube")
     @JvmField
-    public val PARROT_IMITATE_PHANTOM: SoundEvent = get("entity.parrot.imitate.phantom")
+    public val PARROT_IMITATE_PHANTOM: RegistryReference<SoundEvent> = of("entity.parrot.imitate.phantom")
     @JvmField
-    public val PARROT_IMITATE_PIGLIN: SoundEvent = get("entity.parrot.imitate.piglin")
+    public val PARROT_IMITATE_PIGLIN: RegistryReference<SoundEvent> = of("entity.parrot.imitate.piglin")
     @JvmField
-    public val PARROT_IMITATE_PIGLIN_BRUTE: SoundEvent = get("entity.parrot.imitate.piglin_brute")
+    public val PARROT_IMITATE_PIGLIN_BRUTE: RegistryReference<SoundEvent> = of("entity.parrot.imitate.piglin_brute")
     @JvmField
-    public val PARROT_IMITATE_PILLAGER: SoundEvent = get("entity.parrot.imitate.pillager")
+    public val PARROT_IMITATE_PILLAGER: RegistryReference<SoundEvent> = of("entity.parrot.imitate.pillager")
     @JvmField
-    public val PARROT_IMITATE_RAVAGER: SoundEvent = get("entity.parrot.imitate.ravager")
+    public val PARROT_IMITATE_RAVAGER: RegistryReference<SoundEvent> = of("entity.parrot.imitate.ravager")
     @JvmField
-    public val PARROT_IMITATE_SHULKER: SoundEvent = get("entity.parrot.imitate.shulker")
+    public val PARROT_IMITATE_SHULKER: RegistryReference<SoundEvent> = of("entity.parrot.imitate.shulker")
     @JvmField
-    public val PARROT_IMITATE_SILVERFISH: SoundEvent = get("entity.parrot.imitate.silverfish")
+    public val PARROT_IMITATE_SILVERFISH: RegistryReference<SoundEvent> = of("entity.parrot.imitate.silverfish")
     @JvmField
-    public val PARROT_IMITATE_SKELETON: SoundEvent = get("entity.parrot.imitate.skeleton")
+    public val PARROT_IMITATE_SKELETON: RegistryReference<SoundEvent> = of("entity.parrot.imitate.skeleton")
     @JvmField
-    public val PARROT_IMITATE_SLIME: SoundEvent = get("entity.parrot.imitate.slime")
+    public val PARROT_IMITATE_SLIME: RegistryReference<SoundEvent> = of("entity.parrot.imitate.slime")
     @JvmField
-    public val PARROT_IMITATE_SPIDER: SoundEvent = get("entity.parrot.imitate.spider")
+    public val PARROT_IMITATE_SPIDER: RegistryReference<SoundEvent> = of("entity.parrot.imitate.spider")
     @JvmField
-    public val PARROT_IMITATE_STRAY: SoundEvent = get("entity.parrot.imitate.stray")
+    public val PARROT_IMITATE_STRAY: RegistryReference<SoundEvent> = of("entity.parrot.imitate.stray")
     @JvmField
-    public val PARROT_IMITATE_VEX: SoundEvent = get("entity.parrot.imitate.vex")
+    public val PARROT_IMITATE_VEX: RegistryReference<SoundEvent> = of("entity.parrot.imitate.vex")
     @JvmField
-    public val PARROT_IMITATE_VINDICATOR: SoundEvent = get("entity.parrot.imitate.vindicator")
+    public val PARROT_IMITATE_VINDICATOR: RegistryReference<SoundEvent> = of("entity.parrot.imitate.vindicator")
     @JvmField
-    public val PARROT_IMITATE_WARDEN: SoundEvent = get("entity.parrot.imitate.warden")
+    public val PARROT_IMITATE_WARDEN: RegistryReference<SoundEvent> = of("entity.parrot.imitate.warden")
     @JvmField
-    public val PARROT_IMITATE_WITCH: SoundEvent = get("entity.parrot.imitate.witch")
+    public val PARROT_IMITATE_WITCH: RegistryReference<SoundEvent> = of("entity.parrot.imitate.witch")
     @JvmField
-    public val PARROT_IMITATE_WITHER: SoundEvent = get("entity.parrot.imitate.wither")
+    public val PARROT_IMITATE_WITHER: RegistryReference<SoundEvent> = of("entity.parrot.imitate.wither")
     @JvmField
-    public val PARROT_IMITATE_WITHER_SKELETON: SoundEvent = get("entity.parrot.imitate.wither_skeleton")
+    public val PARROT_IMITATE_WITHER_SKELETON: RegistryReference<SoundEvent> = of("entity.parrot.imitate.wither_skeleton")
     @JvmField
-    public val PARROT_IMITATE_ZOGLIN: SoundEvent = get("entity.parrot.imitate.zoglin")
+    public val PARROT_IMITATE_ZOGLIN: RegistryReference<SoundEvent> = of("entity.parrot.imitate.zoglin")
     @JvmField
-    public val PARROT_IMITATE_ZOMBIE: SoundEvent = get("entity.parrot.imitate.zombie")
+    public val PARROT_IMITATE_ZOMBIE: RegistryReference<SoundEvent> = of("entity.parrot.imitate.zombie")
     @JvmField
-    public val PARROT_IMITATE_ZOMBIE_VILLAGER: SoundEvent = get("entity.parrot.imitate.zombie_villager")
+    public val PARROT_IMITATE_ZOMBIE_VILLAGER: RegistryReference<SoundEvent> = of("entity.parrot.imitate.zombie_villager")
     @JvmField
-    public val PARROT_STEP: SoundEvent = get("entity.parrot.step")
+    public val PARROT_STEP: RegistryReference<SoundEvent> = of("entity.parrot.step")
     @JvmField
-    public val PHANTOM_AMBIENT: SoundEvent = get("entity.phantom.ambient")
+    public val PHANTOM_AMBIENT: RegistryReference<SoundEvent> = of("entity.phantom.ambient")
     @JvmField
-    public val PHANTOM_BITE: SoundEvent = get("entity.phantom.bite")
+    public val PHANTOM_BITE: RegistryReference<SoundEvent> = of("entity.phantom.bite")
     @JvmField
-    public val PHANTOM_DEATH: SoundEvent = get("entity.phantom.death")
+    public val PHANTOM_DEATH: RegistryReference<SoundEvent> = of("entity.phantom.death")
     @JvmField
-    public val PHANTOM_FLAP: SoundEvent = get("entity.phantom.flap")
+    public val PHANTOM_FLAP: RegistryReference<SoundEvent> = of("entity.phantom.flap")
     @JvmField
-    public val PHANTOM_HURT: SoundEvent = get("entity.phantom.hurt")
+    public val PHANTOM_HURT: RegistryReference<SoundEvent> = of("entity.phantom.hurt")
     @JvmField
-    public val PHANTOM_SWOOP: SoundEvent = get("entity.phantom.swoop")
+    public val PHANTOM_SWOOP: RegistryReference<SoundEvent> = of("entity.phantom.swoop")
     @JvmField
-    public val PIG_AMBIENT: SoundEvent = get("entity.pig.ambient")
+    public val PIG_AMBIENT: RegistryReference<SoundEvent> = of("entity.pig.ambient")
     @JvmField
-    public val PIG_DEATH: SoundEvent = get("entity.pig.death")
+    public val PIG_DEATH: RegistryReference<SoundEvent> = of("entity.pig.death")
     @JvmField
-    public val PIG_HURT: SoundEvent = get("entity.pig.hurt")
+    public val PIG_HURT: RegistryReference<SoundEvent> = of("entity.pig.hurt")
     @JvmField
-    public val PIG_SADDLE: SoundEvent = get("entity.pig.saddle")
+    public val PIG_SADDLE: RegistryReference<SoundEvent> = of("entity.pig.saddle")
     @JvmField
-    public val PIG_STEP: SoundEvent = get("entity.pig.step")
+    public val PIG_STEP: RegistryReference<SoundEvent> = of("entity.pig.step")
     @JvmField
-    public val PIGLIN_ADMIRING_ITEM: SoundEvent = get("entity.piglin.admiring_item")
+    public val PIGLIN_ADMIRING_ITEM: RegistryReference<SoundEvent> = of("entity.piglin.admiring_item")
     @JvmField
-    public val PIGLIN_AMBIENT: SoundEvent = get("entity.piglin.ambient")
+    public val PIGLIN_AMBIENT: RegistryReference<SoundEvent> = of("entity.piglin.ambient")
     @JvmField
-    public val PIGLIN_ANGRY: SoundEvent = get("entity.piglin.angry")
+    public val PIGLIN_ANGRY: RegistryReference<SoundEvent> = of("entity.piglin.angry")
     @JvmField
-    public val PIGLIN_CELEBRATE: SoundEvent = get("entity.piglin.celebrate")
+    public val PIGLIN_CELEBRATE: RegistryReference<SoundEvent> = of("entity.piglin.celebrate")
     @JvmField
-    public val PIGLIN_DEATH: SoundEvent = get("entity.piglin.death")
+    public val PIGLIN_DEATH: RegistryReference<SoundEvent> = of("entity.piglin.death")
     @JvmField
-    public val PIGLIN_JEALOUS: SoundEvent = get("entity.piglin.jealous")
+    public val PIGLIN_JEALOUS: RegistryReference<SoundEvent> = of("entity.piglin.jealous")
     @JvmField
-    public val PIGLIN_HURT: SoundEvent = get("entity.piglin.hurt")
+    public val PIGLIN_HURT: RegistryReference<SoundEvent> = of("entity.piglin.hurt")
     @JvmField
-    public val PIGLIN_RETREAT: SoundEvent = get("entity.piglin.retreat")
+    public val PIGLIN_RETREAT: RegistryReference<SoundEvent> = of("entity.piglin.retreat")
     @JvmField
-    public val PIGLIN_STEP: SoundEvent = get("entity.piglin.step")
+    public val PIGLIN_STEP: RegistryReference<SoundEvent> = of("entity.piglin.step")
     @JvmField
-    public val PIGLIN_CONVERTED_TO_ZOMBIFIED: SoundEvent = get("entity.piglin.converted_to_zombified")
+    public val PIGLIN_CONVERTED_TO_ZOMBIFIED: RegistryReference<SoundEvent> = of("entity.piglin.converted_to_zombified")
     @JvmField
-    public val PIGLIN_BRUTE_AMBIENT: SoundEvent = get("entity.piglin_brute.ambient")
+    public val PIGLIN_BRUTE_AMBIENT: RegistryReference<SoundEvent> = of("entity.piglin_brute.ambient")
     @JvmField
-    public val PIGLIN_BRUTE_ANGRY: SoundEvent = get("entity.piglin_brute.angry")
+    public val PIGLIN_BRUTE_ANGRY: RegistryReference<SoundEvent> = of("entity.piglin_brute.angry")
     @JvmField
-    public val PIGLIN_BRUTE_DEATH: SoundEvent = get("entity.piglin_brute.death")
+    public val PIGLIN_BRUTE_DEATH: RegistryReference<SoundEvent> = of("entity.piglin_brute.death")
     @JvmField
-    public val PIGLIN_BRUTE_HURT: SoundEvent = get("entity.piglin_brute.hurt")
+    public val PIGLIN_BRUTE_HURT: RegistryReference<SoundEvent> = of("entity.piglin_brute.hurt")
     @JvmField
-    public val PIGLIN_BRUTE_STEP: SoundEvent = get("entity.piglin_brute.step")
+    public val PIGLIN_BRUTE_STEP: RegistryReference<SoundEvent> = of("entity.piglin_brute.step")
     @JvmField
-    public val PIGLIN_BRUTE_CONVERTED_TO_ZOMBIFIED: SoundEvent = get("entity.piglin_brute.converted_to_zombified")
+    public val PIGLIN_BRUTE_CONVERTED_TO_ZOMBIFIED: RegistryReference<SoundEvent> = of("entity.piglin_brute.converted_to_zombified")
     @JvmField
-    public val PILLAGER_AMBIENT: SoundEvent = get("entity.pillager.ambient")
+    public val PILLAGER_AMBIENT: RegistryReference<SoundEvent> = of("entity.pillager.ambient")
     @JvmField
-    public val PILLAGER_CELEBRATE: SoundEvent = get("entity.pillager.celebrate")
+    public val PILLAGER_CELEBRATE: RegistryReference<SoundEvent> = of("entity.pillager.celebrate")
     @JvmField
-    public val PILLAGER_DEATH: SoundEvent = get("entity.pillager.death")
+    public val PILLAGER_DEATH: RegistryReference<SoundEvent> = of("entity.pillager.death")
     @JvmField
-    public val PILLAGER_HURT: SoundEvent = get("entity.pillager.hurt")
+    public val PILLAGER_HURT: RegistryReference<SoundEvent> = of("entity.pillager.hurt")
     @JvmField
-    public val PISTON_CONTRACT: SoundEvent = get("block.piston.contract")
+    public val PISTON_CONTRACT: RegistryReference<SoundEvent> = of("block.piston.contract")
     @JvmField
-    public val PISTON_EXTEND: SoundEvent = get("block.piston.extend")
+    public val PISTON_EXTEND: RegistryReference<SoundEvent> = of("block.piston.extend")
     @JvmField
-    public val PLAYER_ATTACK_CRIT: SoundEvent = get("entity.player.attack.crit")
+    public val PLAYER_ATTACK_CRIT: RegistryReference<SoundEvent> = of("entity.player.attack.crit")
     @JvmField
-    public val PLAYER_ATTACK_KNOCKBACK: SoundEvent = get("entity.player.attack.knockback")
+    public val PLAYER_ATTACK_KNOCKBACK: RegistryReference<SoundEvent> = of("entity.player.attack.knockback")
     @JvmField
-    public val PLAYER_ATTACK_NODAMAGE: SoundEvent = get("entity.player.attack.nodamage")
+    public val PLAYER_ATTACK_NODAMAGE: RegistryReference<SoundEvent> = of("entity.player.attack.nodamage")
     @JvmField
-    public val PLAYER_ATTACK_STRONG: SoundEvent = get("entity.player.attack.strong")
+    public val PLAYER_ATTACK_STRONG: RegistryReference<SoundEvent> = of("entity.player.attack.strong")
     @JvmField
-    public val PLAYER_ATTACK_SWEEP: SoundEvent = get("entity.player.attack.sweep")
+    public val PLAYER_ATTACK_SWEEP: RegistryReference<SoundEvent> = of("entity.player.attack.sweep")
     @JvmField
-    public val PLAYER_ATTACK_WEAK: SoundEvent = get("entity.player.attack.weak")
+    public val PLAYER_ATTACK_WEAK: RegistryReference<SoundEvent> = of("entity.player.attack.weak")
     @JvmField
-    public val PLAYER_BIG_FALL: SoundEvent = get("entity.player.big_fall")
+    public val PLAYER_BIG_FALL: RegistryReference<SoundEvent> = of("entity.player.big_fall")
     @JvmField
-    public val PLAYER_BREATH: SoundEvent = get("entity.player.breath")
+    public val PLAYER_BREATH: RegistryReference<SoundEvent> = of("entity.player.breath")
     @JvmField
-    public val PLAYER_BURP: SoundEvent = get("entity.player.burp")
+    public val PLAYER_BURP: RegistryReference<SoundEvent> = of("entity.player.burp")
     @JvmField
-    public val PLAYER_DEATH: SoundEvent = get("entity.player.death")
+    public val PLAYER_DEATH: RegistryReference<SoundEvent> = of("entity.player.death")
     @JvmField
-    public val PLAYER_HURT: SoundEvent = get("entity.player.hurt")
+    public val PLAYER_HURT: RegistryReference<SoundEvent> = of("entity.player.hurt")
     @JvmField
-    public val PLAYER_HURT_DROWN: SoundEvent = get("entity.player.hurt_drown")
+    public val PLAYER_HURT_DROWN: RegistryReference<SoundEvent> = of("entity.player.hurt_drown")
     @JvmField
-    public val PLAYER_HURT_FREEZE: SoundEvent = get("entity.player.hurt_freeze")
+    public val PLAYER_HURT_FREEZE: RegistryReference<SoundEvent> = of("entity.player.hurt_freeze")
     @JvmField
-    public val PLAYER_HURT_ON_FIRE: SoundEvent = get("entity.player.hurt_on_fire")
+    public val PLAYER_HURT_ON_FIRE: RegistryReference<SoundEvent> = of("entity.player.hurt_on_fire")
     @JvmField
-    public val PLAYER_HURT_SWEET_BERRY_BUSH: SoundEvent = get("entity.player.hurt_sweet_berry_bush")
+    public val PLAYER_HURT_SWEET_BERRY_BUSH: RegistryReference<SoundEvent> = of("entity.player.hurt_sweet_berry_bush")
     @JvmField
-    public val PLAYER_LEVELUP: SoundEvent = get("entity.player.levelup")
+    public val PLAYER_LEVELUP: RegistryReference<SoundEvent> = of("entity.player.levelup")
     @JvmField
-    public val PLAYER_SMALL_FALL: SoundEvent = get("entity.player.small_fall")
+    public val PLAYER_SMALL_FALL: RegistryReference<SoundEvent> = of("entity.player.small_fall")
     @JvmField
-    public val PLAYER_SPLASH: SoundEvent = get("entity.player.splash")
+    public val PLAYER_SPLASH: RegistryReference<SoundEvent> = of("entity.player.splash")
     @JvmField
-    public val PLAYER_SPLASH_HIGH_SPEED: SoundEvent = get("entity.player.splash.high_speed")
+    public val PLAYER_SPLASH_HIGH_SPEED: RegistryReference<SoundEvent> = of("entity.player.splash.high_speed")
     @JvmField
-    public val PLAYER_SWIM: SoundEvent = get("entity.player.swim")
+    public val PLAYER_SWIM: RegistryReference<SoundEvent> = of("entity.player.swim")
     @JvmField
-    public val POLAR_BEAR_AMBIENT: SoundEvent = get("entity.polar_bear.ambient")
+    public val POLAR_BEAR_AMBIENT: RegistryReference<SoundEvent> = of("entity.polar_bear.ambient")
     @JvmField
-    public val POLAR_BEAR_AMBIENT_BABY: SoundEvent = get("entity.polar_bear.ambient_baby")
+    public val POLAR_BEAR_AMBIENT_BABY: RegistryReference<SoundEvent> = of("entity.polar_bear.ambient_baby")
     @JvmField
-    public val POLAR_BEAR_DEATH: SoundEvent = get("entity.polar_bear.death")
+    public val POLAR_BEAR_DEATH: RegistryReference<SoundEvent> = of("entity.polar_bear.death")
     @JvmField
-    public val POLAR_BEAR_HURT: SoundEvent = get("entity.polar_bear.hurt")
+    public val POLAR_BEAR_HURT: RegistryReference<SoundEvent> = of("entity.polar_bear.hurt")
     @JvmField
-    public val POLAR_BEAR_STEP: SoundEvent = get("entity.polar_bear.step")
+    public val POLAR_BEAR_STEP: RegistryReference<SoundEvent> = of("entity.polar_bear.step")
     @JvmField
-    public val POLAR_BEAR_WARNING: SoundEvent = get("entity.polar_bear.warning")
+    public val POLAR_BEAR_WARNING: RegistryReference<SoundEvent> = of("entity.polar_bear.warning")
     @JvmField
-    public val POLISHED_DEEPSLATE_BREAK: SoundEvent = get("block.polished_deepslate.break")
+    public val POLISHED_DEEPSLATE_BREAK: RegistryReference<SoundEvent> = of("block.polished_deepslate.break")
     @JvmField
-    public val POLISHED_DEEPSLATE_FALL: SoundEvent = get("block.polished_deepslate.fall")
+    public val POLISHED_DEEPSLATE_FALL: RegistryReference<SoundEvent> = of("block.polished_deepslate.fall")
     @JvmField
-    public val POLISHED_DEEPSLATE_HIT: SoundEvent = get("block.polished_deepslate.hit")
+    public val POLISHED_DEEPSLATE_HIT: RegistryReference<SoundEvent> = of("block.polished_deepslate.hit")
     @JvmField
-    public val POLISHED_DEEPSLATE_PLACE: SoundEvent = get("block.polished_deepslate.place")
+    public val POLISHED_DEEPSLATE_PLACE: RegistryReference<SoundEvent> = of("block.polished_deepslate.place")
     @JvmField
-    public val POLISHED_DEEPSLATE_STEP: SoundEvent = get("block.polished_deepslate.step")
+    public val POLISHED_DEEPSLATE_STEP: RegistryReference<SoundEvent> = of("block.polished_deepslate.step")
     @JvmField
-    public val PORTAL_AMBIENT: SoundEvent = get("block.portal.ambient")
+    public val PORTAL_AMBIENT: RegistryReference<SoundEvent> = of("block.portal.ambient")
     @JvmField
-    public val PORTAL_TRAVEL: SoundEvent = get("block.portal.travel")
+    public val PORTAL_TRAVEL: RegistryReference<SoundEvent> = of("block.portal.travel")
     @JvmField
-    public val PORTAL_TRIGGER: SoundEvent = get("block.portal.trigger")
+    public val PORTAL_TRIGGER: RegistryReference<SoundEvent> = of("block.portal.trigger")
     @JvmField
-    public val POWDER_SNOW_BREAK: SoundEvent = get("block.powder_snow.break")
+    public val POWDER_SNOW_BREAK: RegistryReference<SoundEvent> = of("block.powder_snow.break")
     @JvmField
-    public val POWDER_SNOW_FALL: SoundEvent = get("block.powder_snow.fall")
+    public val POWDER_SNOW_FALL: RegistryReference<SoundEvent> = of("block.powder_snow.fall")
     @JvmField
-    public val POWDER_SNOW_HIT: SoundEvent = get("block.powder_snow.hit")
+    public val POWDER_SNOW_HIT: RegistryReference<SoundEvent> = of("block.powder_snow.hit")
     @JvmField
-    public val POWDER_SNOW_PLACE: SoundEvent = get("block.powder_snow.place")
+    public val POWDER_SNOW_PLACE: RegistryReference<SoundEvent> = of("block.powder_snow.place")
     @JvmField
-    public val POWDER_SNOW_STEP: SoundEvent = get("block.powder_snow.step")
+    public val POWDER_SNOW_STEP: RegistryReference<SoundEvent> = of("block.powder_snow.step")
     @JvmField
-    public val PUFFER_FISH_AMBIENT: SoundEvent = get("entity.puffer_fish.ambient")
+    public val PUFFER_FISH_AMBIENT: RegistryReference<SoundEvent> = of("entity.puffer_fish.ambient")
     @JvmField
-    public val PUFFER_FISH_BLOW_OUT: SoundEvent = get("entity.puffer_fish.blow_out")
+    public val PUFFER_FISH_BLOW_OUT: RegistryReference<SoundEvent> = of("entity.puffer_fish.blow_out")
     @JvmField
-    public val PUFFER_FISH_BLOW_UP: SoundEvent = get("entity.puffer_fish.blow_up")
+    public val PUFFER_FISH_BLOW_UP: RegistryReference<SoundEvent> = of("entity.puffer_fish.blow_up")
     @JvmField
-    public val PUFFER_FISH_DEATH: SoundEvent = get("entity.puffer_fish.death")
+    public val PUFFER_FISH_DEATH: RegistryReference<SoundEvent> = of("entity.puffer_fish.death")
     @JvmField
-    public val PUFFER_FISH_FLOP: SoundEvent = get("entity.puffer_fish.flop")
+    public val PUFFER_FISH_FLOP: RegistryReference<SoundEvent> = of("entity.puffer_fish.flop")
     @JvmField
-    public val PUFFER_FISH_HURT: SoundEvent = get("entity.puffer_fish.hurt")
+    public val PUFFER_FISH_HURT: RegistryReference<SoundEvent> = of("entity.puffer_fish.hurt")
     @JvmField
-    public val PUFFER_FISH_STING: SoundEvent = get("entity.puffer_fish.sting")
+    public val PUFFER_FISH_STING: RegistryReference<SoundEvent> = of("entity.puffer_fish.sting")
     @JvmField
-    public val PUMPKIN_CARVE: SoundEvent = get("block.pumpkin.carve")
+    public val PUMPKIN_CARVE: RegistryReference<SoundEvent> = of("block.pumpkin.carve")
     @JvmField
-    public val RABBIT_AMBIENT: SoundEvent = get("entity.rabbit.ambient")
+    public val RABBIT_AMBIENT: RegistryReference<SoundEvent> = of("entity.rabbit.ambient")
     @JvmField
-    public val RABBIT_ATTACK: SoundEvent = get("entity.rabbit.attack")
+    public val RABBIT_ATTACK: RegistryReference<SoundEvent> = of("entity.rabbit.attack")
     @JvmField
-    public val RABBIT_DEATH: SoundEvent = get("entity.rabbit.death")
+    public val RABBIT_DEATH: RegistryReference<SoundEvent> = of("entity.rabbit.death")
     @JvmField
-    public val RABBIT_HURT: SoundEvent = get("entity.rabbit.hurt")
+    public val RABBIT_HURT: RegistryReference<SoundEvent> = of("entity.rabbit.hurt")
     @JvmField
-    public val RABBIT_JUMP: SoundEvent = get("entity.rabbit.jump")
+    public val RABBIT_JUMP: RegistryReference<SoundEvent> = of("entity.rabbit.jump")
     @JvmField
-    public val RAID_HORN: SoundEvent = get("event.raid.horn")
+    public val RAID_HORN: RegistryReference<SoundEvent> = of("event.raid.horn")
     @JvmField
-    public val RAVAGER_AMBIENT: SoundEvent = get("entity.ravager.ambient")
+    public val RAVAGER_AMBIENT: RegistryReference<SoundEvent> = of("entity.ravager.ambient")
     @JvmField
-    public val RAVAGER_ATTACK: SoundEvent = get("entity.ravager.attack")
+    public val RAVAGER_ATTACK: RegistryReference<SoundEvent> = of("entity.ravager.attack")
     @JvmField
-    public val RAVAGER_CELEBRATE: SoundEvent = get("entity.ravager.celebrate")
+    public val RAVAGER_CELEBRATE: RegistryReference<SoundEvent> = of("entity.ravager.celebrate")
     @JvmField
-    public val RAVAGER_DEATH: SoundEvent = get("entity.ravager.death")
+    public val RAVAGER_DEATH: RegistryReference<SoundEvent> = of("entity.ravager.death")
     @JvmField
-    public val RAVAGER_HURT: SoundEvent = get("entity.ravager.hurt")
+    public val RAVAGER_HURT: RegistryReference<SoundEvent> = of("entity.ravager.hurt")
     @JvmField
-    public val RAVAGER_STEP: SoundEvent = get("entity.ravager.step")
+    public val RAVAGER_STEP: RegistryReference<SoundEvent> = of("entity.ravager.step")
     @JvmField
-    public val RAVAGER_STUNNED: SoundEvent = get("entity.ravager.stunned")
+    public val RAVAGER_STUNNED: RegistryReference<SoundEvent> = of("entity.ravager.stunned")
     @JvmField
-    public val RAVAGER_ROAR: SoundEvent = get("entity.ravager.roar")
+    public val RAVAGER_ROAR: RegistryReference<SoundEvent> = of("entity.ravager.roar")
     @JvmField
-    public val NETHER_GOLD_ORE_BREAK: SoundEvent = get("block.nether_gold_ore.break")
+    public val NETHER_GOLD_ORE_BREAK: RegistryReference<SoundEvent> = of("block.nether_gold_ore.break")
     @JvmField
-    public val NETHER_GOLD_ORE_FALL: SoundEvent = get("block.nether_gold_ore.fall")
+    public val NETHER_GOLD_ORE_FALL: RegistryReference<SoundEvent> = of("block.nether_gold_ore.fall")
     @JvmField
-    public val NETHER_GOLD_ORE_HIT: SoundEvent = get("block.nether_gold_ore.hit")
+    public val NETHER_GOLD_ORE_HIT: RegistryReference<SoundEvent> = of("block.nether_gold_ore.hit")
     @JvmField
-    public val NETHER_GOLD_ORE_PLACE: SoundEvent = get("block.nether_gold_ore.place")
+    public val NETHER_GOLD_ORE_PLACE: RegistryReference<SoundEvent> = of("block.nether_gold_ore.place")
     @JvmField
-    public val NETHER_GOLD_ORE_STEP: SoundEvent = get("block.nether_gold_ore.step")
+    public val NETHER_GOLD_ORE_STEP: RegistryReference<SoundEvent> = of("block.nether_gold_ore.step")
     @JvmField
-    public val NETHER_ORE_BREAK: SoundEvent = get("block.nether_ore.break")
+    public val NETHER_ORE_BREAK: RegistryReference<SoundEvent> = of("block.nether_ore.break")
     @JvmField
-    public val NETHER_ORE_FALL: SoundEvent = get("block.nether_ore.fall")
+    public val NETHER_ORE_FALL: RegistryReference<SoundEvent> = of("block.nether_ore.fall")
     @JvmField
-    public val NETHER_ORE_HIT: SoundEvent = get("block.nether_ore.hit")
+    public val NETHER_ORE_HIT: RegistryReference<SoundEvent> = of("block.nether_ore.hit")
     @JvmField
-    public val NETHER_ORE_PLACE: SoundEvent = get("block.nether_ore.place")
+    public val NETHER_ORE_PLACE: RegistryReference<SoundEvent> = of("block.nether_ore.place")
     @JvmField
-    public val NETHER_ORE_STEP: SoundEvent = get("block.nether_ore.step")
+    public val NETHER_ORE_STEP: RegistryReference<SoundEvent> = of("block.nether_ore.step")
     @JvmField
-    public val REDSTONE_TORCH_BURNOUT: SoundEvent = get("block.redstone_torch.burnout")
+    public val REDSTONE_TORCH_BURNOUT: RegistryReference<SoundEvent> = of("block.redstone_torch.burnout")
     @JvmField
-    public val RESPAWN_ANCHOR_AMBIENT: SoundEvent = get("block.respawn_anchor.ambient")
+    public val RESPAWN_ANCHOR_AMBIENT: RegistryReference<SoundEvent> = of("block.respawn_anchor.ambient")
     @JvmField
-    public val RESPAWN_ANCHOR_CHARGE: SoundEvent = get("block.respawn_anchor.charge")
+    public val RESPAWN_ANCHOR_CHARGE: RegistryReference<SoundEvent> = of("block.respawn_anchor.charge")
     @JvmField
-    public val RESPAWN_ANCHOR_DEPLETE: SoundEvent = get("block.respawn_anchor.deplete")
+    public val RESPAWN_ANCHOR_DEPLETE: RegistryReference<SoundEvent> = of("block.respawn_anchor.deplete")
     @JvmField
-    public val RESPAWN_ANCHOR_SET_SPAWN: SoundEvent = get("block.respawn_anchor.set_spawn")
+    public val RESPAWN_ANCHOR_SET_SPAWN: RegistryReference<SoundEvent> = of("block.respawn_anchor.set_spawn")
     @JvmField
-    public val ROOTED_DIRT_BREAK: SoundEvent = get("block.rooted_dirt.break")
+    public val ROOTED_DIRT_BREAK: RegistryReference<SoundEvent> = of("block.rooted_dirt.break")
     @JvmField
-    public val ROOTED_DIRT_FALL: SoundEvent = get("block.rooted_dirt.fall")
+    public val ROOTED_DIRT_FALL: RegistryReference<SoundEvent> = of("block.rooted_dirt.fall")
     @JvmField
-    public val ROOTED_DIRT_HIT: SoundEvent = get("block.rooted_dirt.hit")
+    public val ROOTED_DIRT_HIT: RegistryReference<SoundEvent> = of("block.rooted_dirt.hit")
     @JvmField
-    public val ROOTED_DIRT_PLACE: SoundEvent = get("block.rooted_dirt.place")
+    public val ROOTED_DIRT_PLACE: RegistryReference<SoundEvent> = of("block.rooted_dirt.place")
     @JvmField
-    public val ROOTED_DIRT_STEP: SoundEvent = get("block.rooted_dirt.step")
+    public val ROOTED_DIRT_STEP: RegistryReference<SoundEvent> = of("block.rooted_dirt.step")
     @JvmField
-    public val SALMON_AMBIENT: SoundEvent = get("entity.salmon.ambient")
+    public val SALMON_AMBIENT: RegistryReference<SoundEvent> = of("entity.salmon.ambient")
     @JvmField
-    public val SALMON_DEATH: SoundEvent = get("entity.salmon.death")
+    public val SALMON_DEATH: RegistryReference<SoundEvent> = of("entity.salmon.death")
     @JvmField
-    public val SALMON_FLOP: SoundEvent = get("entity.salmon.flop")
+    public val SALMON_FLOP: RegistryReference<SoundEvent> = of("entity.salmon.flop")
     @JvmField
-    public val SALMON_HURT: SoundEvent = get("entity.salmon.hurt")
+    public val SALMON_HURT: RegistryReference<SoundEvent> = of("entity.salmon.hurt")
     @JvmField
-    public val SAND_BREAK: SoundEvent = get("block.sand.break")
+    public val SAND_BREAK: RegistryReference<SoundEvent> = of("block.sand.break")
     @JvmField
-    public val SAND_FALL: SoundEvent = get("block.sand.fall")
+    public val SAND_FALL: RegistryReference<SoundEvent> = of("block.sand.fall")
     @JvmField
-    public val SAND_HIT: SoundEvent = get("block.sand.hit")
+    public val SAND_HIT: RegistryReference<SoundEvent> = of("block.sand.hit")
     @JvmField
-    public val SAND_PLACE: SoundEvent = get("block.sand.place")
+    public val SAND_PLACE: RegistryReference<SoundEvent> = of("block.sand.place")
     @JvmField
-    public val SAND_STEP: SoundEvent = get("block.sand.step")
+    public val SAND_STEP: RegistryReference<SoundEvent> = of("block.sand.step")
     @JvmField
-    public val SCAFFOLDING_BREAK: SoundEvent = get("block.scaffolding.break")
+    public val SCAFFOLDING_BREAK: RegistryReference<SoundEvent> = of("block.scaffolding.break")
     @JvmField
-    public val SCAFFOLDING_FALL: SoundEvent = get("block.scaffolding.fall")
+    public val SCAFFOLDING_FALL: RegistryReference<SoundEvent> = of("block.scaffolding.fall")
     @JvmField
-    public val SCAFFOLDING_HIT: SoundEvent = get("block.scaffolding.hit")
+    public val SCAFFOLDING_HIT: RegistryReference<SoundEvent> = of("block.scaffolding.hit")
     @JvmField
-    public val SCAFFOLDING_PLACE: SoundEvent = get("block.scaffolding.place")
+    public val SCAFFOLDING_PLACE: RegistryReference<SoundEvent> = of("block.scaffolding.place")
     @JvmField
-    public val SCAFFOLDING_STEP: SoundEvent = get("block.scaffolding.step")
+    public val SCAFFOLDING_STEP: RegistryReference<SoundEvent> = of("block.scaffolding.step")
     @JvmField
-    public val SCULK_BLOCK_SPREAD: SoundEvent = get("block.sculk.spread")
+    public val SCULK_BLOCK_SPREAD: RegistryReference<SoundEvent> = of("block.sculk.spread")
     @JvmField
-    public val SCULK_BLOCK_CHARGE: SoundEvent = get("block.sculk.charge")
+    public val SCULK_BLOCK_CHARGE: RegistryReference<SoundEvent> = of("block.sculk.charge")
     @JvmField
-    public val SCULK_BLOCK_BREAK: SoundEvent = get("block.sculk.break")
+    public val SCULK_BLOCK_BREAK: RegistryReference<SoundEvent> = of("block.sculk.break")
     @JvmField
-    public val SCULK_BLOCK_FALL: SoundEvent = get("block.sculk.fall")
+    public val SCULK_BLOCK_FALL: RegistryReference<SoundEvent> = of("block.sculk.fall")
     @JvmField
-    public val SCULK_BLOCK_HIT: SoundEvent = get("block.sculk.hit")
+    public val SCULK_BLOCK_HIT: RegistryReference<SoundEvent> = of("block.sculk.hit")
     @JvmField
-    public val SCULK_BLOCK_PLACE: SoundEvent = get("block.sculk.place")
+    public val SCULK_BLOCK_PLACE: RegistryReference<SoundEvent> = of("block.sculk.place")
     @JvmField
-    public val SCULK_BLOCK_STEP: SoundEvent = get("block.sculk.step")
+    public val SCULK_BLOCK_STEP: RegistryReference<SoundEvent> = of("block.sculk.step")
     @JvmField
-    public val SCULK_CATALYST_BLOOM: SoundEvent = get("block.sculk_catalyst.bloom")
+    public val SCULK_CATALYST_BLOOM: RegistryReference<SoundEvent> = of("block.sculk_catalyst.bloom")
     @JvmField
-    public val SCULK_CATALYST_BREAK: SoundEvent = get("block.sculk_catalyst.break")
+    public val SCULK_CATALYST_BREAK: RegistryReference<SoundEvent> = of("block.sculk_catalyst.break")
     @JvmField
-    public val SCULK_CATALYST_FALL: SoundEvent = get("block.sculk_catalyst.fall")
+    public val SCULK_CATALYST_FALL: RegistryReference<SoundEvent> = of("block.sculk_catalyst.fall")
     @JvmField
-    public val SCULK_CATALYST_HIT: SoundEvent = get("block.sculk_catalyst.hit")
+    public val SCULK_CATALYST_HIT: RegistryReference<SoundEvent> = of("block.sculk_catalyst.hit")
     @JvmField
-    public val SCULK_CATALYST_PLACE: SoundEvent = get("block.sculk_catalyst.place")
+    public val SCULK_CATALYST_PLACE: RegistryReference<SoundEvent> = of("block.sculk_catalyst.place")
     @JvmField
-    public val SCULK_CATALYST_STEP: SoundEvent = get("block.sculk_catalyst.step")
+    public val SCULK_CATALYST_STEP: RegistryReference<SoundEvent> = of("block.sculk_catalyst.step")
     @JvmField
-    public val SCULK_CLICKING: SoundEvent = get("block.sculk_sensor.clicking")
+    public val SCULK_CLICKING: RegistryReference<SoundEvent> = of("block.sculk_sensor.clicking")
     @JvmField
-    public val SCULK_CLICKING_STOP: SoundEvent = get("block.sculk_sensor.clicking_stop")
+    public val SCULK_CLICKING_STOP: RegistryReference<SoundEvent> = of("block.sculk_sensor.clicking_stop")
     @JvmField
-    public val SCULK_SENSOR_BREAK: SoundEvent = get("block.sculk_sensor.break")
+    public val SCULK_SENSOR_BREAK: RegistryReference<SoundEvent> = of("block.sculk_sensor.break")
     @JvmField
-    public val SCULK_SENSOR_FALL: SoundEvent = get("block.sculk_sensor.fall")
+    public val SCULK_SENSOR_FALL: RegistryReference<SoundEvent> = of("block.sculk_sensor.fall")
     @JvmField
-    public val SCULK_SENSOR_HIT: SoundEvent = get("block.sculk_sensor.hit")
+    public val SCULK_SENSOR_HIT: RegistryReference<SoundEvent> = of("block.sculk_sensor.hit")
     @JvmField
-    public val SCULK_SENSOR_PLACE: SoundEvent = get("block.sculk_sensor.place")
+    public val SCULK_SENSOR_PLACE: RegistryReference<SoundEvent> = of("block.sculk_sensor.place")
     @JvmField
-    public val SCULK_SENSOR_STEP: SoundEvent = get("block.sculk_sensor.step")
+    public val SCULK_SENSOR_STEP: RegistryReference<SoundEvent> = of("block.sculk_sensor.step")
     @JvmField
-    public val SCULK_SHRIEKER_BREAK: SoundEvent = get("block.sculk_shrieker.break")
+    public val SCULK_SHRIEKER_BREAK: RegistryReference<SoundEvent> = of("block.sculk_shrieker.break")
     @JvmField
-    public val SCULK_SHRIEKER_FALL: SoundEvent = get("block.sculk_shrieker.fall")
+    public val SCULK_SHRIEKER_FALL: RegistryReference<SoundEvent> = of("block.sculk_shrieker.fall")
     @JvmField
-    public val SCULK_SHRIEKER_HIT: SoundEvent = get("block.sculk_shrieker.hit")
+    public val SCULK_SHRIEKER_HIT: RegistryReference<SoundEvent> = of("block.sculk_shrieker.hit")
     @JvmField
-    public val SCULK_SHRIEKER_PLACE: SoundEvent = get("block.sculk_shrieker.place")
+    public val SCULK_SHRIEKER_PLACE: RegistryReference<SoundEvent> = of("block.sculk_shrieker.place")
     @JvmField
-    public val SCULK_SHRIEKER_SHRIEK: SoundEvent = get("block.sculk_shrieker.shriek")
+    public val SCULK_SHRIEKER_SHRIEK: RegistryReference<SoundEvent> = of("block.sculk_shrieker.shriek")
     @JvmField
-    public val SCULK_SHRIEKER_STEP: SoundEvent = get("block.sculk_shrieker.step")
+    public val SCULK_SHRIEKER_STEP: RegistryReference<SoundEvent> = of("block.sculk_shrieker.step")
     @JvmField
-    public val SCULK_VEIN_BREAK: SoundEvent = get("block.sculk_vein.break")
+    public val SCULK_VEIN_BREAK: RegistryReference<SoundEvent> = of("block.sculk_vein.break")
     @JvmField
-    public val SCULK_VEIN_FALL: SoundEvent = get("block.sculk_vein.fall")
+    public val SCULK_VEIN_FALL: RegistryReference<SoundEvent> = of("block.sculk_vein.fall")
     @JvmField
-    public val SCULK_VEIN_HIT: SoundEvent = get("block.sculk_vein.hit")
+    public val SCULK_VEIN_HIT: RegistryReference<SoundEvent> = of("block.sculk_vein.hit")
     @JvmField
-    public val SCULK_VEIN_PLACE: SoundEvent = get("block.sculk_vein.place")
+    public val SCULK_VEIN_PLACE: RegistryReference<SoundEvent> = of("block.sculk_vein.place")
     @JvmField
-    public val SCULK_VEIN_STEP: SoundEvent = get("block.sculk_vein.step")
+    public val SCULK_VEIN_STEP: RegistryReference<SoundEvent> = of("block.sculk_vein.step")
     @JvmField
-    public val SHEEP_AMBIENT: SoundEvent = get("entity.sheep.ambient")
+    public val SHEEP_AMBIENT: RegistryReference<SoundEvent> = of("entity.sheep.ambient")
     @JvmField
-    public val SHEEP_DEATH: SoundEvent = get("entity.sheep.death")
+    public val SHEEP_DEATH: RegistryReference<SoundEvent> = of("entity.sheep.death")
     @JvmField
-    public val SHEEP_HURT: SoundEvent = get("entity.sheep.hurt")
+    public val SHEEP_HURT: RegistryReference<SoundEvent> = of("entity.sheep.hurt")
     @JvmField
-    public val SHEEP_SHEAR: SoundEvent = get("entity.sheep.shear")
+    public val SHEEP_SHEAR: RegistryReference<SoundEvent> = of("entity.sheep.shear")
     @JvmField
-    public val SHEEP_STEP: SoundEvent = get("entity.sheep.step")
+    public val SHEEP_STEP: RegistryReference<SoundEvent> = of("entity.sheep.step")
     @JvmField
-    public val SHIELD_BLOCK: SoundEvent = get("item.shield.block")
+    public val SHIELD_BLOCK: RegistryReference<SoundEvent> = of("item.shield.block")
     @JvmField
-    public val SHIELD_BREAK: SoundEvent = get("item.shield.break")
+    public val SHIELD_BREAK: RegistryReference<SoundEvent> = of("item.shield.break")
     @JvmField
-    public val SHROOMLIGHT_BREAK: SoundEvent = get("block.shroomlight.break")
+    public val SHROOMLIGHT_BREAK: RegistryReference<SoundEvent> = of("block.shroomlight.break")
     @JvmField
-    public val SHROOMLIGHT_STEP: SoundEvent = get("block.shroomlight.step")
+    public val SHROOMLIGHT_STEP: RegistryReference<SoundEvent> = of("block.shroomlight.step")
     @JvmField
-    public val SHROOMLIGHT_PLACE: SoundEvent = get("block.shroomlight.place")
+    public val SHROOMLIGHT_PLACE: RegistryReference<SoundEvent> = of("block.shroomlight.place")
     @JvmField
-    public val SHROOMLIGHT_HIT: SoundEvent = get("block.shroomlight.hit")
+    public val SHROOMLIGHT_HIT: RegistryReference<SoundEvent> = of("block.shroomlight.hit")
     @JvmField
-    public val SHROOMLIGHT_FALL: SoundEvent = get("block.shroomlight.fall")
+    public val SHROOMLIGHT_FALL: RegistryReference<SoundEvent> = of("block.shroomlight.fall")
     @JvmField
-    public val SHOVEL_FLATTEN: SoundEvent = get("item.shovel.flatten")
+    public val SHOVEL_FLATTEN: RegistryReference<SoundEvent> = of("item.shovel.flatten")
     @JvmField
-    public val SHULKER_AMBIENT: SoundEvent = get("entity.shulker.ambient")
+    public val SHULKER_AMBIENT: RegistryReference<SoundEvent> = of("entity.shulker.ambient")
     @JvmField
-    public val SHULKER_BOX_CLOSE: SoundEvent = get("block.shulker_box.close")
+    public val SHULKER_BOX_CLOSE: RegistryReference<SoundEvent> = of("block.shulker_box.close")
     @JvmField
-    public val SHULKER_BOX_OPEN: SoundEvent = get("block.shulker_box.open")
+    public val SHULKER_BOX_OPEN: RegistryReference<SoundEvent> = of("block.shulker_box.open")
     @JvmField
-    public val SHULKER_BULLET_HIT: SoundEvent = get("entity.shulker_bullet.hit")
+    public val SHULKER_BULLET_HIT: RegistryReference<SoundEvent> = of("entity.shulker_bullet.hit")
     @JvmField
-    public val SHULKER_BULLET_HURT: SoundEvent = get("entity.shulker_bullet.hurt")
+    public val SHULKER_BULLET_HURT: RegistryReference<SoundEvent> = of("entity.shulker_bullet.hurt")
     @JvmField
-    public val SHULKER_CLOSE: SoundEvent = get("entity.shulker.close")
+    public val SHULKER_CLOSE: RegistryReference<SoundEvent> = of("entity.shulker.close")
     @JvmField
-    public val SHULKER_DEATH: SoundEvent = get("entity.shulker.death")
+    public val SHULKER_DEATH: RegistryReference<SoundEvent> = of("entity.shulker.death")
     @JvmField
-    public val SHULKER_HURT: SoundEvent = get("entity.shulker.hurt")
+    public val SHULKER_HURT: RegistryReference<SoundEvent> = of("entity.shulker.hurt")
     @JvmField
-    public val SHULKER_HURT_CLOSED: SoundEvent = get("entity.shulker.hurt_closed")
+    public val SHULKER_HURT_CLOSED: RegistryReference<SoundEvent> = of("entity.shulker.hurt_closed")
     @JvmField
-    public val SHULKER_OPEN: SoundEvent = get("entity.shulker.open")
+    public val SHULKER_OPEN: RegistryReference<SoundEvent> = of("entity.shulker.open")
     @JvmField
-    public val SHULKER_SHOOT: SoundEvent = get("entity.shulker.shoot")
+    public val SHULKER_SHOOT: RegistryReference<SoundEvent> = of("entity.shulker.shoot")
     @JvmField
-    public val SHULKER_TELEPORT: SoundEvent = get("entity.shulker.teleport")
+    public val SHULKER_TELEPORT: RegistryReference<SoundEvent> = of("entity.shulker.teleport")
     @JvmField
-    public val SILVERFISH_AMBIENT: SoundEvent = get("entity.silverfish.ambient")
+    public val SILVERFISH_AMBIENT: RegistryReference<SoundEvent> = of("entity.silverfish.ambient")
     @JvmField
-    public val SILVERFISH_DEATH: SoundEvent = get("entity.silverfish.death")
+    public val SILVERFISH_DEATH: RegistryReference<SoundEvent> = of("entity.silverfish.death")
     @JvmField
-    public val SILVERFISH_HURT: SoundEvent = get("entity.silverfish.hurt")
+    public val SILVERFISH_HURT: RegistryReference<SoundEvent> = of("entity.silverfish.hurt")
     @JvmField
-    public val SILVERFISH_STEP: SoundEvent = get("entity.silverfish.step")
+    public val SILVERFISH_STEP: RegistryReference<SoundEvent> = of("entity.silverfish.step")
     @JvmField
-    public val SKELETON_AMBIENT: SoundEvent = get("entity.skeleton.ambient")
+    public val SKELETON_AMBIENT: RegistryReference<SoundEvent> = of("entity.skeleton.ambient")
     @JvmField
-    public val SKELETON_CONVERTED_TO_STRAY: SoundEvent = get("entity.skeleton.converted_to_stray")
+    public val SKELETON_CONVERTED_TO_STRAY: RegistryReference<SoundEvent> = of("entity.skeleton.converted_to_stray")
     @JvmField
-    public val SKELETON_DEATH: SoundEvent = get("entity.skeleton.death")
+    public val SKELETON_DEATH: RegistryReference<SoundEvent> = of("entity.skeleton.death")
     @JvmField
-    public val SKELETON_HORSE_AMBIENT: SoundEvent = get("entity.skeleton_horse.ambient")
+    public val SKELETON_HORSE_AMBIENT: RegistryReference<SoundEvent> = of("entity.skeleton_horse.ambient")
     @JvmField
-    public val SKELETON_HORSE_DEATH: SoundEvent = get("entity.skeleton_horse.death")
+    public val SKELETON_HORSE_DEATH: RegistryReference<SoundEvent> = of("entity.skeleton_horse.death")
     @JvmField
-    public val SKELETON_HORSE_HURT: SoundEvent = get("entity.skeleton_horse.hurt")
+    public val SKELETON_HORSE_HURT: RegistryReference<SoundEvent> = of("entity.skeleton_horse.hurt")
     @JvmField
-    public val SKELETON_HORSE_SWIM: SoundEvent = get("entity.skeleton_horse.swim")
+    public val SKELETON_HORSE_SWIM: RegistryReference<SoundEvent> = of("entity.skeleton_horse.swim")
     @JvmField
-    public val SKELETON_HORSE_AMBIENT_WATER: SoundEvent = get("entity.skeleton_horse.ambient_water")
+    public val SKELETON_HORSE_AMBIENT_WATER: RegistryReference<SoundEvent> = of("entity.skeleton_horse.ambient_water")
     @JvmField
-    public val SKELETON_HORSE_GALLOP_WATER: SoundEvent = get("entity.skeleton_horse.gallop_water")
+    public val SKELETON_HORSE_GALLOP_WATER: RegistryReference<SoundEvent> = of("entity.skeleton_horse.gallop_water")
     @JvmField
-    public val SKELETON_HORSE_JUMP_WATER: SoundEvent = get("entity.skeleton_horse.jump_water")
+    public val SKELETON_HORSE_JUMP_WATER: RegistryReference<SoundEvent> = of("entity.skeleton_horse.jump_water")
     @JvmField
-    public val SKELETON_HORSE_STEP_WATER: SoundEvent = get("entity.skeleton_horse.step_water")
+    public val SKELETON_HORSE_STEP_WATER: RegistryReference<SoundEvent> = of("entity.skeleton_horse.step_water")
     @JvmField
-    public val SKELETON_HURT: SoundEvent = get("entity.skeleton.hurt")
+    public val SKELETON_HURT: RegistryReference<SoundEvent> = of("entity.skeleton.hurt")
     @JvmField
-    public val SKELETON_SHOOT: SoundEvent = get("entity.skeleton.shoot")
+    public val SKELETON_SHOOT: RegistryReference<SoundEvent> = of("entity.skeleton.shoot")
     @JvmField
-    public val SKELETON_STEP: SoundEvent = get("entity.skeleton.step")
+    public val SKELETON_STEP: RegistryReference<SoundEvent> = of("entity.skeleton.step")
     @JvmField
-    public val SLIME_ATTACK: SoundEvent = get("entity.slime.attack")
+    public val SLIME_ATTACK: RegistryReference<SoundEvent> = of("entity.slime.attack")
     @JvmField
-    public val SLIME_DEATH: SoundEvent = get("entity.slime.death")
+    public val SLIME_DEATH: RegistryReference<SoundEvent> = of("entity.slime.death")
     @JvmField
-    public val SLIME_HURT: SoundEvent = get("entity.slime.hurt")
+    public val SLIME_HURT: RegistryReference<SoundEvent> = of("entity.slime.hurt")
     @JvmField
-    public val SLIME_JUMP: SoundEvent = get("entity.slime.jump")
+    public val SLIME_JUMP: RegistryReference<SoundEvent> = of("entity.slime.jump")
     @JvmField
-    public val SLIME_SQUISH: SoundEvent = get("entity.slime.squish")
+    public val SLIME_SQUISH: RegistryReference<SoundEvent> = of("entity.slime.squish")
     @JvmField
-    public val SLIME_BLOCK_BREAK: SoundEvent = get("block.slime_block.break")
+    public val SLIME_BLOCK_BREAK: RegistryReference<SoundEvent> = of("block.slime_block.break")
     @JvmField
-    public val SLIME_BLOCK_FALL: SoundEvent = get("block.slime_block.fall")
+    public val SLIME_BLOCK_FALL: RegistryReference<SoundEvent> = of("block.slime_block.fall")
     @JvmField
-    public val SLIME_BLOCK_HIT: SoundEvent = get("block.slime_block.hit")
+    public val SLIME_BLOCK_HIT: RegistryReference<SoundEvent> = of("block.slime_block.hit")
     @JvmField
-    public val SLIME_BLOCK_PLACE: SoundEvent = get("block.slime_block.place")
+    public val SLIME_BLOCK_PLACE: RegistryReference<SoundEvent> = of("block.slime_block.place")
     @JvmField
-    public val SLIME_BLOCK_STEP: SoundEvent = get("block.slime_block.step")
+    public val SLIME_BLOCK_STEP: RegistryReference<SoundEvent> = of("block.slime_block.step")
     @JvmField
-    public val SMALL_AMETHYST_BUD_BREAK: SoundEvent = get("block.small_amethyst_bud.break")
+    public val SMALL_AMETHYST_BUD_BREAK: RegistryReference<SoundEvent> = of("block.small_amethyst_bud.break")
     @JvmField
-    public val SMALL_AMETHYST_BUD_PLACE: SoundEvent = get("block.small_amethyst_bud.place")
+    public val SMALL_AMETHYST_BUD_PLACE: RegistryReference<SoundEvent> = of("block.small_amethyst_bud.place")
     @JvmField
-    public val SMALL_DRIPLEAF_BREAK: SoundEvent = get("block.small_dripleaf.break")
+    public val SMALL_DRIPLEAF_BREAK: RegistryReference<SoundEvent> = of("block.small_dripleaf.break")
     @JvmField
-    public val SMALL_DRIPLEAF_FALL: SoundEvent = get("block.small_dripleaf.fall")
+    public val SMALL_DRIPLEAF_FALL: RegistryReference<SoundEvent> = of("block.small_dripleaf.fall")
     @JvmField
-    public val SMALL_DRIPLEAF_HIT: SoundEvent = get("block.small_dripleaf.hit")
+    public val SMALL_DRIPLEAF_HIT: RegistryReference<SoundEvent> = of("block.small_dripleaf.hit")
     @JvmField
-    public val SMALL_DRIPLEAF_PLACE: SoundEvent = get("block.small_dripleaf.place")
+    public val SMALL_DRIPLEAF_PLACE: RegistryReference<SoundEvent> = of("block.small_dripleaf.place")
     @JvmField
-    public val SMALL_DRIPLEAF_STEP: SoundEvent = get("block.small_dripleaf.step")
+    public val SMALL_DRIPLEAF_STEP: RegistryReference<SoundEvent> = of("block.small_dripleaf.step")
     @JvmField
-    public val SOUL_SAND_BREAK: SoundEvent = get("block.soul_sand.break")
+    public val SOUL_SAND_BREAK: RegistryReference<SoundEvent> = of("block.soul_sand.break")
     @JvmField
-    public val SOUL_SAND_STEP: SoundEvent = get("block.soul_sand.step")
+    public val SOUL_SAND_STEP: RegistryReference<SoundEvent> = of("block.soul_sand.step")
     @JvmField
-    public val SOUL_SAND_PLACE: SoundEvent = get("block.soul_sand.place")
+    public val SOUL_SAND_PLACE: RegistryReference<SoundEvent> = of("block.soul_sand.place")
     @JvmField
-    public val SOUL_SAND_HIT: SoundEvent = get("block.soul_sand.hit")
+    public val SOUL_SAND_HIT: RegistryReference<SoundEvent> = of("block.soul_sand.hit")
     @JvmField
-    public val SOUL_SAND_FALL: SoundEvent = get("block.soul_sand.fall")
+    public val SOUL_SAND_FALL: RegistryReference<SoundEvent> = of("block.soul_sand.fall")
     @JvmField
-    public val SOUL_SOIL_BREAK: SoundEvent = get("block.soul_soil.break")
+    public val SOUL_SOIL_BREAK: RegistryReference<SoundEvent> = of("block.soul_soil.break")
     @JvmField
-    public val SOUL_SOIL_STEP: SoundEvent = get("block.soul_soil.step")
+    public val SOUL_SOIL_STEP: RegistryReference<SoundEvent> = of("block.soul_soil.step")
     @JvmField
-    public val SOUL_SOIL_PLACE: SoundEvent = get("block.soul_soil.place")
+    public val SOUL_SOIL_PLACE: RegistryReference<SoundEvent> = of("block.soul_soil.place")
     @JvmField
-    public val SOUL_SOIL_HIT: SoundEvent = get("block.soul_soil.hit")
+    public val SOUL_SOIL_HIT: RegistryReference<SoundEvent> = of("block.soul_soil.hit")
     @JvmField
-    public val SOUL_SOIL_FALL: SoundEvent = get("block.soul_soil.fall")
+    public val SOUL_SOIL_FALL: RegistryReference<SoundEvent> = of("block.soul_soil.fall")
     @JvmField
-    public val SOUL_ESCAPE: SoundEvent = get("particle.soul_escape")
+    public val SOUL_ESCAPE: RegistryReference<SoundEvent> = of("particle.soul_escape")
     @JvmField
-    public val SPORE_BLOSSOM_BREAK: SoundEvent = get("block.spore_blossom.break")
+    public val SPORE_BLOSSOM_BREAK: RegistryReference<SoundEvent> = of("block.spore_blossom.break")
     @JvmField
-    public val SPORE_BLOSSOM_FALL: SoundEvent = get("block.spore_blossom.fall")
+    public val SPORE_BLOSSOM_FALL: RegistryReference<SoundEvent> = of("block.spore_blossom.fall")
     @JvmField
-    public val SPORE_BLOSSOM_HIT: SoundEvent = get("block.spore_blossom.hit")
+    public val SPORE_BLOSSOM_HIT: RegistryReference<SoundEvent> = of("block.spore_blossom.hit")
     @JvmField
-    public val SPORE_BLOSSOM_PLACE: SoundEvent = get("block.spore_blossom.place")
+    public val SPORE_BLOSSOM_PLACE: RegistryReference<SoundEvent> = of("block.spore_blossom.place")
     @JvmField
-    public val SPORE_BLOSSOM_STEP: SoundEvent = get("block.spore_blossom.step")
+    public val SPORE_BLOSSOM_STEP: RegistryReference<SoundEvent> = of("block.spore_blossom.step")
     @JvmField
-    public val STRIDER_AMBIENT: SoundEvent = get("entity.strider.ambient")
+    public val STRIDER_AMBIENT: RegistryReference<SoundEvent> = of("entity.strider.ambient")
     @JvmField
-    public val STRIDER_HAPPY: SoundEvent = get("entity.strider.happy")
+    public val STRIDER_HAPPY: RegistryReference<SoundEvent> = of("entity.strider.happy")
     @JvmField
-    public val STRIDER_RETREAT: SoundEvent = get("entity.strider.retreat")
+    public val STRIDER_RETREAT: RegistryReference<SoundEvent> = of("entity.strider.retreat")
     @JvmField
-    public val STRIDER_DEATH: SoundEvent = get("entity.strider.death")
+    public val STRIDER_DEATH: RegistryReference<SoundEvent> = of("entity.strider.death")
     @JvmField
-    public val STRIDER_HURT: SoundEvent = get("entity.strider.hurt")
+    public val STRIDER_HURT: RegistryReference<SoundEvent> = of("entity.strider.hurt")
     @JvmField
-    public val STRIDER_STEP: SoundEvent = get("entity.strider.step")
+    public val STRIDER_STEP: RegistryReference<SoundEvent> = of("entity.strider.step")
     @JvmField
-    public val STRIDER_STEP_LAVA: SoundEvent = get("entity.strider.step_lava")
+    public val STRIDER_STEP_LAVA: RegistryReference<SoundEvent> = of("entity.strider.step_lava")
     @JvmField
-    public val STRIDER_EAT: SoundEvent = get("entity.strider.eat")
+    public val STRIDER_EAT: RegistryReference<SoundEvent> = of("entity.strider.eat")
     @JvmField
-    public val STRIDER_SADDLE: SoundEvent = get("entity.strider.saddle")
+    public val STRIDER_SADDLE: RegistryReference<SoundEvent> = of("entity.strider.saddle")
     @JvmField
-    public val SLIME_DEATH_SMALL: SoundEvent = get("entity.slime.death_small")
+    public val SLIME_DEATH_SMALL: RegistryReference<SoundEvent> = of("entity.slime.death_small")
     @JvmField
-    public val SLIME_HURT_SMALL: SoundEvent = get("entity.slime.hurt_small")
+    public val SLIME_HURT_SMALL: RegistryReference<SoundEvent> = of("entity.slime.hurt_small")
     @JvmField
-    public val SLIME_JUMP_SMALL: SoundEvent = get("entity.slime.jump_small")
+    public val SLIME_JUMP_SMALL: RegistryReference<SoundEvent> = of("entity.slime.jump_small")
     @JvmField
-    public val SLIME_SQUISH_SMALL: SoundEvent = get("entity.slime.squish_small")
+    public val SLIME_SQUISH_SMALL: RegistryReference<SoundEvent> = of("entity.slime.squish_small")
     @JvmField
-    public val SMITHING_TABLE_USE: SoundEvent = get("block.smithing_table.use")
+    public val SMITHING_TABLE_USE: RegistryReference<SoundEvent> = of("block.smithing_table.use")
     @JvmField
-    public val SMOKER_SMOKE: SoundEvent = get("block.smoker.smoke")
+    public val SMOKER_SMOKE: RegistryReference<SoundEvent> = of("block.smoker.smoke")
     @JvmField
-    public val SNOWBALL_THROW: SoundEvent = get("entity.snowball.throw")
+    public val SNOWBALL_THROW: RegistryReference<SoundEvent> = of("entity.snowball.throw")
     @JvmField
-    public val SNOW_BREAK: SoundEvent = get("block.snow.break")
+    public val SNOW_BREAK: RegistryReference<SoundEvent> = of("block.snow.break")
     @JvmField
-    public val SNOW_FALL: SoundEvent = get("block.snow.fall")
+    public val SNOW_FALL: RegistryReference<SoundEvent> = of("block.snow.fall")
     @JvmField
-    public val SNOW_GOLEM_AMBIENT: SoundEvent = get("entity.snow_golem.ambient")
+    public val SNOW_GOLEM_AMBIENT: RegistryReference<SoundEvent> = of("entity.snow_golem.ambient")
     @JvmField
-    public val SNOW_GOLEM_DEATH: SoundEvent = get("entity.snow_golem.death")
+    public val SNOW_GOLEM_DEATH: RegistryReference<SoundEvent> = of("entity.snow_golem.death")
     @JvmField
-    public val SNOW_GOLEM_HURT: SoundEvent = get("entity.snow_golem.hurt")
+    public val SNOW_GOLEM_HURT: RegistryReference<SoundEvent> = of("entity.snow_golem.hurt")
     @JvmField
-    public val SNOW_GOLEM_SHOOT: SoundEvent = get("entity.snow_golem.shoot")
+    public val SNOW_GOLEM_SHOOT: RegistryReference<SoundEvent> = of("entity.snow_golem.shoot")
     @JvmField
-    public val SNOW_GOLEM_SHEAR: SoundEvent = get("entity.snow_golem.shear")
+    public val SNOW_GOLEM_SHEAR: RegistryReference<SoundEvent> = of("entity.snow_golem.shear")
     @JvmField
-    public val SNOW_HIT: SoundEvent = get("block.snow.hit")
+    public val SNOW_HIT: RegistryReference<SoundEvent> = of("block.snow.hit")
     @JvmField
-    public val SNOW_PLACE: SoundEvent = get("block.snow.place")
+    public val SNOW_PLACE: RegistryReference<SoundEvent> = of("block.snow.place")
     @JvmField
-    public val SNOW_STEP: SoundEvent = get("block.snow.step")
+    public val SNOW_STEP: RegistryReference<SoundEvent> = of("block.snow.step")
     @JvmField
-    public val SPIDER_AMBIENT: SoundEvent = get("entity.spider.ambient")
+    public val SPIDER_AMBIENT: RegistryReference<SoundEvent> = of("entity.spider.ambient")
     @JvmField
-    public val SPIDER_DEATH: SoundEvent = get("entity.spider.death")
+    public val SPIDER_DEATH: RegistryReference<SoundEvent> = of("entity.spider.death")
     @JvmField
-    public val SPIDER_HURT: SoundEvent = get("entity.spider.hurt")
+    public val SPIDER_HURT: RegistryReference<SoundEvent> = of("entity.spider.hurt")
     @JvmField
-    public val SPIDER_STEP: SoundEvent = get("entity.spider.step")
+    public val SPIDER_STEP: RegistryReference<SoundEvent> = of("entity.spider.step")
     @JvmField
-    public val SPLASH_POTION_BREAK: SoundEvent = get("entity.splash_potion.break")
+    public val SPLASH_POTION_BREAK: RegistryReference<SoundEvent> = of("entity.splash_potion.break")
     @JvmField
-    public val SPLASH_POTION_THROW: SoundEvent = get("entity.splash_potion.throw")
+    public val SPLASH_POTION_THROW: RegistryReference<SoundEvent> = of("entity.splash_potion.throw")
     @JvmField
-    public val SPYGLASS_USE: SoundEvent = get("item.spyglass.use")
+    public val SPYGLASS_USE: RegistryReference<SoundEvent> = of("item.spyglass.use")
     @JvmField
-    public val SPYGLASS_STOP_USING: SoundEvent = get("item.spyglass.stop_using")
+    public val SPYGLASS_STOP_USING: RegistryReference<SoundEvent> = of("item.spyglass.stop_using")
     @JvmField
-    public val SQUID_AMBIENT: SoundEvent = get("entity.squid.ambient")
+    public val SQUID_AMBIENT: RegistryReference<SoundEvent> = of("entity.squid.ambient")
     @JvmField
-    public val SQUID_DEATH: SoundEvent = get("entity.squid.death")
+    public val SQUID_DEATH: RegistryReference<SoundEvent> = of("entity.squid.death")
     @JvmField
-    public val SQUID_HURT: SoundEvent = get("entity.squid.hurt")
+    public val SQUID_HURT: RegistryReference<SoundEvent> = of("entity.squid.hurt")
     @JvmField
-    public val SQUID_SQUIRT: SoundEvent = get("entity.squid.squirt")
+    public val SQUID_SQUIRT: RegistryReference<SoundEvent> = of("entity.squid.squirt")
     @JvmField
-    public val STONE_BREAK: SoundEvent = get("block.stone.break")
+    public val STONE_BREAK: RegistryReference<SoundEvent> = of("block.stone.break")
     @JvmField
-    public val STONE_BUTTON_CLICK_OFF: SoundEvent = get("block.stone_button.click_off")
+    public val STONE_BUTTON_CLICK_OFF: RegistryReference<SoundEvent> = of("block.stone_button.click_off")
     @JvmField
-    public val STONE_BUTTON_CLICK_ON: SoundEvent = get("block.stone_button.click_on")
+    public val STONE_BUTTON_CLICK_ON: RegistryReference<SoundEvent> = of("block.stone_button.click_on")
     @JvmField
-    public val STONE_FALL: SoundEvent = get("block.stone.fall")
+    public val STONE_FALL: RegistryReference<SoundEvent> = of("block.stone.fall")
     @JvmField
-    public val STONE_HIT: SoundEvent = get("block.stone.hit")
+    public val STONE_HIT: RegistryReference<SoundEvent> = of("block.stone.hit")
     @JvmField
-    public val STONE_PLACE: SoundEvent = get("block.stone.place")
+    public val STONE_PLACE: RegistryReference<SoundEvent> = of("block.stone.place")
     @JvmField
-    public val STONE_PRESSURE_PLATE_CLICK_OFF: SoundEvent = get("block.stone_pressure_plate.click_off")
+    public val STONE_PRESSURE_PLATE_CLICK_OFF: RegistryReference<SoundEvent> = of("block.stone_pressure_plate.click_off")
     @JvmField
-    public val STONE_PRESSURE_PLATE_CLICK_ON: SoundEvent = get("block.stone_pressure_plate.click_on")
+    public val STONE_PRESSURE_PLATE_CLICK_ON: RegistryReference<SoundEvent> = of("block.stone_pressure_plate.click_on")
     @JvmField
-    public val STONE_STEP: SoundEvent = get("block.stone.step")
+    public val STONE_STEP: RegistryReference<SoundEvent> = of("block.stone.step")
     @JvmField
-    public val STRAY_AMBIENT: SoundEvent = get("entity.stray.ambient")
+    public val STRAY_AMBIENT: RegistryReference<SoundEvent> = of("entity.stray.ambient")
     @JvmField
-    public val STRAY_DEATH: SoundEvent = get("entity.stray.death")
+    public val STRAY_DEATH: RegistryReference<SoundEvent> = of("entity.stray.death")
     @JvmField
-    public val STRAY_HURT: SoundEvent = get("entity.stray.hurt")
+    public val STRAY_HURT: RegistryReference<SoundEvent> = of("entity.stray.hurt")
     @JvmField
-    public val STRAY_STEP: SoundEvent = get("entity.stray.step")
+    public val STRAY_STEP: RegistryReference<SoundEvent> = of("entity.stray.step")
     @JvmField
-    public val SWEET_BERRY_BUSH_BREAK: SoundEvent = get("block.sweet_berry_bush.break")
+    public val SWEET_BERRY_BUSH_BREAK: RegistryReference<SoundEvent> = of("block.sweet_berry_bush.break")
     @JvmField
-    public val SWEET_BERRY_BUSH_PLACE: SoundEvent = get("block.sweet_berry_bush.place")
+    public val SWEET_BERRY_BUSH_PLACE: RegistryReference<SoundEvent> = of("block.sweet_berry_bush.place")
     @JvmField
-    public val SWEET_BERRY_BUSH_PICK_BERRIES: SoundEvent = get("block.sweet_berry_bush.pick_berries")
+    public val SWEET_BERRY_BUSH_PICK_BERRIES: RegistryReference<SoundEvent> = of("block.sweet_berry_bush.pick_berries")
     @JvmField
-    public val TADPOLE_DEATH: SoundEvent = get("entity.tadpole.death")
+    public val TADPOLE_DEATH: RegistryReference<SoundEvent> = of("entity.tadpole.death")
     @JvmField
-    public val TADPOLE_FLOP: SoundEvent = get("entity.tadpole.flop")
+    public val TADPOLE_FLOP: RegistryReference<SoundEvent> = of("entity.tadpole.flop")
     @JvmField
-    public val TADPOLE_GROW_UP: SoundEvent = get("entity.tadpole.grow_up")
+    public val TADPOLE_GROW_UP: RegistryReference<SoundEvent> = of("entity.tadpole.grow_up")
     @JvmField
-    public val TADPOLE_HURT: SoundEvent = get("entity.tadpole.hurt")
+    public val TADPOLE_HURT: RegistryReference<SoundEvent> = of("entity.tadpole.hurt")
     @JvmField
-    public val THORNS_HIT: SoundEvent = get("enchant.thorns.hit")
+    public val THORNS_HIT: RegistryReference<SoundEvent> = of("enchant.thorns.hit")
     @JvmField
-    public val TNT_PRIMED: SoundEvent = get("entity.tnt.primed")
+    public val TNT_PRIMED: RegistryReference<SoundEvent> = of("entity.tnt.primed")
     @JvmField
-    public val TOTEM_USE: SoundEvent = get("item.totem.use")
+    public val TOTEM_USE: RegistryReference<SoundEvent> = of("item.totem.use")
     @JvmField
-    public val TRIDENT_HIT: SoundEvent = get("item.trident.hit")
+    public val TRIDENT_HIT: RegistryReference<SoundEvent> = of("item.trident.hit")
     @JvmField
-    public val TRIDENT_HIT_GROUND: SoundEvent = get("item.trident.hit_ground")
+    public val TRIDENT_HIT_GROUND: RegistryReference<SoundEvent> = of("item.trident.hit_ground")
     @JvmField
-    public val TRIDENT_RETURN: SoundEvent = get("item.trident.return")
+    public val TRIDENT_RETURN: RegistryReference<SoundEvent> = of("item.trident.return")
     @JvmField
-    public val TRIDENT_RIPTIDE_1: SoundEvent = get("item.trident.riptide_1")
+    public val TRIDENT_RIPTIDE_1: RegistryReference<SoundEvent> = of("item.trident.riptide_1")
     @JvmField
-    public val TRIDENT_RIPTIDE_2: SoundEvent = get("item.trident.riptide_2")
+    public val TRIDENT_RIPTIDE_2: RegistryReference<SoundEvent> = of("item.trident.riptide_2")
     @JvmField
-    public val TRIDENT_RIPTIDE_3: SoundEvent = get("item.trident.riptide_3")
+    public val TRIDENT_RIPTIDE_3: RegistryReference<SoundEvent> = of("item.trident.riptide_3")
     @JvmField
-    public val TRIDENT_THROW: SoundEvent = get("item.trident.throw")
+    public val TRIDENT_THROW: RegistryReference<SoundEvent> = of("item.trident.throw")
     @JvmField
-    public val TRIDENT_THUNDER: SoundEvent = get("item.trident.thunder")
+    public val TRIDENT_THUNDER: RegistryReference<SoundEvent> = of("item.trident.thunder")
     @JvmField
-    public val TRIPWIRE_ATTACH: SoundEvent = get("block.tripwire.attach")
+    public val TRIPWIRE_ATTACH: RegistryReference<SoundEvent> = of("block.tripwire.attach")
     @JvmField
-    public val TRIPWIRE_CLICK_OFF: SoundEvent = get("block.tripwire.click_off")
+    public val TRIPWIRE_CLICK_OFF: RegistryReference<SoundEvent> = of("block.tripwire.click_off")
     @JvmField
-    public val TRIPWIRE_CLICK_ON: SoundEvent = get("block.tripwire.click_on")
+    public val TRIPWIRE_CLICK_ON: RegistryReference<SoundEvent> = of("block.tripwire.click_on")
     @JvmField
-    public val TRIPWIRE_DETACH: SoundEvent = get("block.tripwire.detach")
+    public val TRIPWIRE_DETACH: RegistryReference<SoundEvent> = of("block.tripwire.detach")
     @JvmField
-    public val TROPICAL_FISH_AMBIENT: SoundEvent = get("entity.tropical_fish.ambient")
+    public val TROPICAL_FISH_AMBIENT: RegistryReference<SoundEvent> = of("entity.tropical_fish.ambient")
     @JvmField
-    public val TROPICAL_FISH_DEATH: SoundEvent = get("entity.tropical_fish.death")
+    public val TROPICAL_FISH_DEATH: RegistryReference<SoundEvent> = of("entity.tropical_fish.death")
     @JvmField
-    public val TROPICAL_FISH_FLOP: SoundEvent = get("entity.tropical_fish.flop")
+    public val TROPICAL_FISH_FLOP: RegistryReference<SoundEvent> = of("entity.tropical_fish.flop")
     @JvmField
-    public val TROPICAL_FISH_HURT: SoundEvent = get("entity.tropical_fish.hurt")
+    public val TROPICAL_FISH_HURT: RegistryReference<SoundEvent> = of("entity.tropical_fish.hurt")
     @JvmField
-    public val TUFF_BREAK: SoundEvent = get("block.tuff.break")
+    public val TUFF_BREAK: RegistryReference<SoundEvent> = of("block.tuff.break")
     @JvmField
-    public val TUFF_STEP: SoundEvent = get("block.tuff.step")
+    public val TUFF_STEP: RegistryReference<SoundEvent> = of("block.tuff.step")
     @JvmField
-    public val TUFF_PLACE: SoundEvent = get("block.tuff.place")
+    public val TUFF_PLACE: RegistryReference<SoundEvent> = of("block.tuff.place")
     @JvmField
-    public val TUFF_HIT: SoundEvent = get("block.tuff.hit")
+    public val TUFF_HIT: RegistryReference<SoundEvent> = of("block.tuff.hit")
     @JvmField
-    public val TUFF_FALL: SoundEvent = get("block.tuff.fall")
+    public val TUFF_FALL: RegistryReference<SoundEvent> = of("block.tuff.fall")
     @JvmField
-    public val TURTLE_AMBIENT_LAND: SoundEvent = get("entity.turtle.ambient_land")
+    public val TURTLE_AMBIENT_LAND: RegistryReference<SoundEvent> = of("entity.turtle.ambient_land")
     @JvmField
-    public val TURTLE_DEATH: SoundEvent = get("entity.turtle.death")
+    public val TURTLE_DEATH: RegistryReference<SoundEvent> = of("entity.turtle.death")
     @JvmField
-    public val TURTLE_DEATH_BABY: SoundEvent = get("entity.turtle.death_baby")
+    public val TURTLE_DEATH_BABY: RegistryReference<SoundEvent> = of("entity.turtle.death_baby")
     @JvmField
-    public val TURTLE_EGG_BREAK: SoundEvent = get("entity.turtle.egg_break")
+    public val TURTLE_EGG_BREAK: RegistryReference<SoundEvent> = of("entity.turtle.egg_break")
     @JvmField
-    public val TURTLE_EGG_CRACK: SoundEvent = get("entity.turtle.egg_crack")
+    public val TURTLE_EGG_CRACK: RegistryReference<SoundEvent> = of("entity.turtle.egg_crack")
     @JvmField
-    public val TURTLE_EGG_HATCH: SoundEvent = get("entity.turtle.egg_hatch")
+    public val TURTLE_EGG_HATCH: RegistryReference<SoundEvent> = of("entity.turtle.egg_hatch")
     @JvmField
-    public val TURTLE_HURT: SoundEvent = get("entity.turtle.hurt")
+    public val TURTLE_HURT: RegistryReference<SoundEvent> = of("entity.turtle.hurt")
     @JvmField
-    public val TURTLE_HURT_BABY: SoundEvent = get("entity.turtle.hurt_baby")
+    public val TURTLE_HURT_BABY: RegistryReference<SoundEvent> = of("entity.turtle.hurt_baby")
     @JvmField
-    public val TURTLE_LAY_EGG: SoundEvent = get("entity.turtle.lay_egg")
+    public val TURTLE_LAY_EGG: RegistryReference<SoundEvent> = of("entity.turtle.lay_egg")
     @JvmField
-    public val TURTLE_SHAMBLE: SoundEvent = get("entity.turtle.shamble")
+    public val TURTLE_SHAMBLE: RegistryReference<SoundEvent> = of("entity.turtle.shamble")
     @JvmField
-    public val TURTLE_SHAMBLE_BABY: SoundEvent = get("entity.turtle.shamble_baby")
+    public val TURTLE_SHAMBLE_BABY: RegistryReference<SoundEvent> = of("entity.turtle.shamble_baby")
     @JvmField
-    public val TURTLE_SWIM: SoundEvent = get("entity.turtle.swim")
+    public val TURTLE_SWIM: RegistryReference<SoundEvent> = of("entity.turtle.swim")
     @JvmField
-    public val UI_BUTTON_CLICK: SoundEvent = get("ui.button.click")
+    public val UI_BUTTON_CLICK: RegistryReference<SoundEvent> = of("ui.button.click")
     @JvmField
-    public val UI_LOOM_SELECT_PATTERN: SoundEvent = get("ui.loom.select_pattern")
+    public val UI_LOOM_SELECT_PATTERN: RegistryReference<SoundEvent> = of("ui.loom.select_pattern")
     @JvmField
-    public val UI_LOOM_TAKE_RESULT: SoundEvent = get("ui.loom.take_result")
+    public val UI_LOOM_TAKE_RESULT: RegistryReference<SoundEvent> = of("ui.loom.take_result")
     @JvmField
-    public val UI_CARTOGRAPHY_TABLE_TAKE_RESULT: SoundEvent = get("ui.cartography_table.take_result")
+    public val UI_CARTOGRAPHY_TABLE_TAKE_RESULT: RegistryReference<SoundEvent> = of("ui.cartography_table.take_result")
     @JvmField
-    public val UI_STONECUTTER_TAKE_RESULT: SoundEvent = get("ui.stonecutter.take_result")
+    public val UI_STONECUTTER_TAKE_RESULT: RegistryReference<SoundEvent> = of("ui.stonecutter.take_result")
     @JvmField
-    public val UI_STONECUTTER_SELECT_RECIPE: SoundEvent = get("ui.stonecutter.select_recipe")
+    public val UI_STONECUTTER_SELECT_RECIPE: RegistryReference<SoundEvent> = of("ui.stonecutter.select_recipe")
     @JvmField
-    public val UI_TOAST_CHALLENGE_COMPLETE: SoundEvent = get("ui.toast.challenge_complete")
+    public val UI_TOAST_CHALLENGE_COMPLETE: RegistryReference<SoundEvent> = of("ui.toast.challenge_complete")
     @JvmField
-    public val UI_TOAST_IN: SoundEvent = get("ui.toast.in")
+    public val UI_TOAST_IN: RegistryReference<SoundEvent> = of("ui.toast.in")
     @JvmField
-    public val UI_TOAST_OUT: SoundEvent = get("ui.toast.out")
+    public val UI_TOAST_OUT: RegistryReference<SoundEvent> = of("ui.toast.out")
     @JvmField
-    public val VEX_AMBIENT: SoundEvent = get("entity.vex.ambient")
+    public val VEX_AMBIENT: RegistryReference<SoundEvent> = of("entity.vex.ambient")
     @JvmField
-    public val VEX_CHARGE: SoundEvent = get("entity.vex.charge")
+    public val VEX_CHARGE: RegistryReference<SoundEvent> = of("entity.vex.charge")
     @JvmField
-    public val VEX_DEATH: SoundEvent = get("entity.vex.death")
+    public val VEX_DEATH: RegistryReference<SoundEvent> = of("entity.vex.death")
     @JvmField
-    public val VEX_HURT: SoundEvent = get("entity.vex.hurt")
+    public val VEX_HURT: RegistryReference<SoundEvent> = of("entity.vex.hurt")
     @JvmField
-    public val VILLAGER_AMBIENT: SoundEvent = get("entity.villager.ambient")
+    public val VILLAGER_AMBIENT: RegistryReference<SoundEvent> = of("entity.villager.ambient")
     @JvmField
-    public val VILLAGER_CELEBRATE: SoundEvent = get("entity.villager.celebrate")
+    public val VILLAGER_CELEBRATE: RegistryReference<SoundEvent> = of("entity.villager.celebrate")
     @JvmField
-    public val VILLAGER_DEATH: SoundEvent = get("entity.villager.death")
+    public val VILLAGER_DEATH: RegistryReference<SoundEvent> = of("entity.villager.death")
     @JvmField
-    public val VILLAGER_HURT: SoundEvent = get("entity.villager.hurt")
+    public val VILLAGER_HURT: RegistryReference<SoundEvent> = of("entity.villager.hurt")
     @JvmField
-    public val VILLAGER_NO: SoundEvent = get("entity.villager.no")
+    public val VILLAGER_NO: RegistryReference<SoundEvent> = of("entity.villager.no")
     @JvmField
-    public val VILLAGER_TRADE: SoundEvent = get("entity.villager.trade")
+    public val VILLAGER_TRADE: RegistryReference<SoundEvent> = of("entity.villager.trade")
     @JvmField
-    public val VILLAGER_YES: SoundEvent = get("entity.villager.yes")
+    public val VILLAGER_YES: RegistryReference<SoundEvent> = of("entity.villager.yes")
     @JvmField
-    public val VILLAGER_WORK_ARMORER: SoundEvent = get("entity.villager.work_armorer")
+    public val VILLAGER_WORK_ARMORER: RegistryReference<SoundEvent> = of("entity.villager.work_armorer")
     @JvmField
-    public val VILLAGER_WORK_BUTCHER: SoundEvent = get("entity.villager.work_butcher")
+    public val VILLAGER_WORK_BUTCHER: RegistryReference<SoundEvent> = of("entity.villager.work_butcher")
     @JvmField
-    public val VILLAGER_WORK_CARTOGRAPHER: SoundEvent = get("entity.villager.work_cartographer")
+    public val VILLAGER_WORK_CARTOGRAPHER: RegistryReference<SoundEvent> = of("entity.villager.work_cartographer")
     @JvmField
-    public val VILLAGER_WORK_CLERIC: SoundEvent = get("entity.villager.work_cleric")
+    public val VILLAGER_WORK_CLERIC: RegistryReference<SoundEvent> = of("entity.villager.work_cleric")
     @JvmField
-    public val VILLAGER_WORK_FARMER: SoundEvent = get("entity.villager.work_farmer")
+    public val VILLAGER_WORK_FARMER: RegistryReference<SoundEvent> = of("entity.villager.work_farmer")
     @JvmField
-    public val VILLAGER_WORK_FISHERMAN: SoundEvent = get("entity.villager.work_fisherman")
+    public val VILLAGER_WORK_FISHERMAN: RegistryReference<SoundEvent> = of("entity.villager.work_fisherman")
     @JvmField
-    public val VILLAGER_WORK_FLETCHER: SoundEvent = get("entity.villager.work_fletcher")
+    public val VILLAGER_WORK_FLETCHER: RegistryReference<SoundEvent> = of("entity.villager.work_fletcher")
     @JvmField
-    public val VILLAGER_WORK_LEATHERWORKER: SoundEvent = get("entity.villager.work_leatherworker")
+    public val VILLAGER_WORK_LEATHERWORKER: RegistryReference<SoundEvent> = of("entity.villager.work_leatherworker")
     @JvmField
-    public val VILLAGER_WORK_LIBRARIAN: SoundEvent = get("entity.villager.work_librarian")
+    public val VILLAGER_WORK_LIBRARIAN: RegistryReference<SoundEvent> = of("entity.villager.work_librarian")
     @JvmField
-    public val VILLAGER_WORK_MASON: SoundEvent = get("entity.villager.work_mason")
+    public val VILLAGER_WORK_MASON: RegistryReference<SoundEvent> = of("entity.villager.work_mason")
     @JvmField
-    public val VILLAGER_WORK_SHEPHERD: SoundEvent = get("entity.villager.work_shepherd")
+    public val VILLAGER_WORK_SHEPHERD: RegistryReference<SoundEvent> = of("entity.villager.work_shepherd")
     @JvmField
-    public val VILLAGER_WORK_TOOLSMITH: SoundEvent = get("entity.villager.work_toolsmith")
+    public val VILLAGER_WORK_TOOLSMITH: RegistryReference<SoundEvent> = of("entity.villager.work_toolsmith")
     @JvmField
-    public val VILLAGER_WORK_WEAPONSMITH: SoundEvent = get("entity.villager.work_weaponsmith")
+    public val VILLAGER_WORK_WEAPONSMITH: RegistryReference<SoundEvent> = of("entity.villager.work_weaponsmith")
     @JvmField
-    public val VINDICATOR_AMBIENT: SoundEvent = get("entity.vindicator.ambient")
+    public val VINDICATOR_AMBIENT: RegistryReference<SoundEvent> = of("entity.vindicator.ambient")
     @JvmField
-    public val VINDICATOR_CELEBRATE: SoundEvent = get("entity.vindicator.celebrate")
+    public val VINDICATOR_CELEBRATE: RegistryReference<SoundEvent> = of("entity.vindicator.celebrate")
     @JvmField
-    public val VINDICATOR_DEATH: SoundEvent = get("entity.vindicator.death")
+    public val VINDICATOR_DEATH: RegistryReference<SoundEvent> = of("entity.vindicator.death")
     @JvmField
-    public val VINDICATOR_HURT: SoundEvent = get("entity.vindicator.hurt")
+    public val VINDICATOR_HURT: RegistryReference<SoundEvent> = of("entity.vindicator.hurt")
     @JvmField
-    public val VINE_BREAK: SoundEvent = get("block.vine.break")
+    public val VINE_BREAK: RegistryReference<SoundEvent> = of("block.vine.break")
     @JvmField
-    public val VINE_FALL: SoundEvent = get("block.vine.fall")
+    public val VINE_FALL: RegistryReference<SoundEvent> = of("block.vine.fall")
     @JvmField
-    public val VINE_HIT: SoundEvent = get("block.vine.hit")
+    public val VINE_HIT: RegistryReference<SoundEvent> = of("block.vine.hit")
     @JvmField
-    public val VINE_PLACE: SoundEvent = get("block.vine.place")
+    public val VINE_PLACE: RegistryReference<SoundEvent> = of("block.vine.place")
     @JvmField
-    public val VINE_STEP: SoundEvent = get("block.vine.step")
+    public val VINE_STEP: RegistryReference<SoundEvent> = of("block.vine.step")
     @JvmField
-    public val LILY_PAD_PLACE: SoundEvent = get("block.lily_pad.place")
+    public val LILY_PAD_PLACE: RegistryReference<SoundEvent> = of("block.lily_pad.place")
     @JvmField
-    public val WANDERING_TRADER_AMBIENT: SoundEvent = get("entity.wandering_trader.ambient")
+    public val WANDERING_TRADER_AMBIENT: RegistryReference<SoundEvent> = of("entity.wandering_trader.ambient")
     @JvmField
-    public val WANDERING_TRADER_DEATH: SoundEvent = get("entity.wandering_trader.death")
+    public val WANDERING_TRADER_DEATH: RegistryReference<SoundEvent> = of("entity.wandering_trader.death")
     @JvmField
-    public val WANDERING_TRADER_DISAPPEARED: SoundEvent = get("entity.wandering_trader.disappeared")
+    public val WANDERING_TRADER_DISAPPEARED: RegistryReference<SoundEvent> = of("entity.wandering_trader.disappeared")
     @JvmField
-    public val WANDERING_TRADER_DRINK_MILK: SoundEvent = get("entity.wandering_trader.drink_milk")
+    public val WANDERING_TRADER_DRINK_MILK: RegistryReference<SoundEvent> = of("entity.wandering_trader.drink_milk")
     @JvmField
-    public val WANDERING_TRADER_DRINK_POTION: SoundEvent = get("entity.wandering_trader.drink_potion")
+    public val WANDERING_TRADER_DRINK_POTION: RegistryReference<SoundEvent> = of("entity.wandering_trader.drink_potion")
     @JvmField
-    public val WANDERING_TRADER_HURT: SoundEvent = get("entity.wandering_trader.hurt")
+    public val WANDERING_TRADER_HURT: RegistryReference<SoundEvent> = of("entity.wandering_trader.hurt")
     @JvmField
-    public val WANDERING_TRADER_NO: SoundEvent = get("entity.wandering_trader.no")
+    public val WANDERING_TRADER_NO: RegistryReference<SoundEvent> = of("entity.wandering_trader.no")
     @JvmField
-    public val WANDERING_TRADER_REAPPEARED: SoundEvent = get("entity.wandering_trader.reappeared")
+    public val WANDERING_TRADER_REAPPEARED: RegistryReference<SoundEvent> = of("entity.wandering_trader.reappeared")
     @JvmField
-    public val WANDERING_TRADER_TRADE: SoundEvent = get("entity.wandering_trader.trade")
+    public val WANDERING_TRADER_TRADE: RegistryReference<SoundEvent> = of("entity.wandering_trader.trade")
     @JvmField
-    public val WANDERING_TRADER_YES: SoundEvent = get("entity.wandering_trader.yes")
+    public val WANDERING_TRADER_YES: RegistryReference<SoundEvent> = of("entity.wandering_trader.yes")
     @JvmField
-    public val WARDEN_AGITATED: SoundEvent = get("entity.warden.agitated")
+    public val WARDEN_AGITATED: RegistryReference<SoundEvent> = of("entity.warden.agitated")
     @JvmField
-    public val WARDEN_AMBIENT: SoundEvent = get("entity.warden.ambient")
+    public val WARDEN_AMBIENT: RegistryReference<SoundEvent> = of("entity.warden.ambient")
     @JvmField
-    public val WARDEN_ANGRY: SoundEvent = get("entity.warden.angry")
+    public val WARDEN_ANGRY: RegistryReference<SoundEvent> = of("entity.warden.angry")
     @JvmField
-    public val WARDEN_ATTACK_IMPACT: SoundEvent = get("entity.warden.attack_impact")
+    public val WARDEN_ATTACK_IMPACT: RegistryReference<SoundEvent> = of("entity.warden.attack_impact")
     @JvmField
-    public val WARDEN_DEATH: SoundEvent = get("entity.warden.death")
+    public val WARDEN_DEATH: RegistryReference<SoundEvent> = of("entity.warden.death")
     @JvmField
-    public val WARDEN_DIG: SoundEvent = get("entity.warden.dig")
+    public val WARDEN_DIG: RegistryReference<SoundEvent> = of("entity.warden.dig")
     @JvmField
-    public val WARDEN_EMERGE: SoundEvent = get("entity.warden.emerge")
+    public val WARDEN_EMERGE: RegistryReference<SoundEvent> = of("entity.warden.emerge")
     @JvmField
-    public val WARDEN_HEARTBEAT: SoundEvent = get("entity.warden.heartbeat")
+    public val WARDEN_HEARTBEAT: RegistryReference<SoundEvent> = of("entity.warden.heartbeat")
     @JvmField
-    public val WARDEN_HURT: SoundEvent = get("entity.warden.hurt")
+    public val WARDEN_HURT: RegistryReference<SoundEvent> = of("entity.warden.hurt")
     @JvmField
-    public val WARDEN_LISTENING: SoundEvent = get("entity.warden.listening")
+    public val WARDEN_LISTENING: RegistryReference<SoundEvent> = of("entity.warden.listening")
     @JvmField
-    public val WARDEN_LISTENING_ANGRY: SoundEvent = get("entity.warden.listening_angry")
+    public val WARDEN_LISTENING_ANGRY: RegistryReference<SoundEvent> = of("entity.warden.listening_angry")
     @JvmField
-    public val WARDEN_NEARBY_CLOSE: SoundEvent = get("entity.warden.nearby_close")
+    public val WARDEN_NEARBY_CLOSE: RegistryReference<SoundEvent> = of("entity.warden.nearby_close")
     @JvmField
-    public val WARDEN_NEARBY_CLOSER: SoundEvent = get("entity.warden.nearby_closer")
+    public val WARDEN_NEARBY_CLOSER: RegistryReference<SoundEvent> = of("entity.warden.nearby_closer")
     @JvmField
-    public val WARDEN_NEARBY_CLOSEST: SoundEvent = get("entity.warden.nearby_closest")
+    public val WARDEN_NEARBY_CLOSEST: RegistryReference<SoundEvent> = of("entity.warden.nearby_closest")
     @JvmField
-    public val WARDEN_ROAR: SoundEvent = get("entity.warden.roar")
+    public val WARDEN_ROAR: RegistryReference<SoundEvent> = of("entity.warden.roar")
     @JvmField
-    public val WARDEN_SNIFF: SoundEvent = get("entity.warden.sniff")
+    public val WARDEN_SNIFF: RegistryReference<SoundEvent> = of("entity.warden.sniff")
     @JvmField
-    public val WARDEN_SONIC_BOOM: SoundEvent = get("entity.warden.sonic_boom")
+    public val WARDEN_SONIC_BOOM: RegistryReference<SoundEvent> = of("entity.warden.sonic_boom")
     @JvmField
-    public val WARDEN_SONIC_CHARGE: SoundEvent = get("entity.warden.sonic_charge")
+    public val WARDEN_SONIC_CHARGE: RegistryReference<SoundEvent> = of("entity.warden.sonic_charge")
     @JvmField
-    public val WARDEN_STEP: SoundEvent = get("entity.warden.step")
+    public val WARDEN_STEP: RegistryReference<SoundEvent> = of("entity.warden.step")
     @JvmField
-    public val WARDEN_TENDRIL_CLICKS: SoundEvent = get("entity.warden.tendril_clicks")
+    public val WARDEN_TENDRIL_CLICKS: RegistryReference<SoundEvent> = of("entity.warden.tendril_clicks")
     @JvmField
-    public val WATER_AMBIENT: SoundEvent = get("block.water.ambient")
+    public val WATER_AMBIENT: RegistryReference<SoundEvent> = of("block.water.ambient")
     @JvmField
-    public val WEATHER_RAIN: SoundEvent = get("weather.rain")
+    public val WEATHER_RAIN: RegistryReference<SoundEvent> = of("weather.rain")
     @JvmField
-    public val WEATHER_RAIN_ABOVE: SoundEvent = get("weather.rain.above")
+    public val WEATHER_RAIN_ABOVE: RegistryReference<SoundEvent> = of("weather.rain.above")
     @JvmField
-    public val WET_GRASS_BREAK: SoundEvent = get("block.wet_grass.break")
+    public val WET_GRASS_BREAK: RegistryReference<SoundEvent> = of("block.wet_grass.break")
     @JvmField
-    public val WET_GRASS_FALL: SoundEvent = get("block.wet_grass.fall")
+    public val WET_GRASS_FALL: RegistryReference<SoundEvent> = of("block.wet_grass.fall")
     @JvmField
-    public val WET_GRASS_HIT: SoundEvent = get("block.wet_grass.hit")
+    public val WET_GRASS_HIT: RegistryReference<SoundEvent> = of("block.wet_grass.hit")
     @JvmField
-    public val WET_GRASS_PLACE: SoundEvent = get("block.wet_grass.place")
+    public val WET_GRASS_PLACE: RegistryReference<SoundEvent> = of("block.wet_grass.place")
     @JvmField
-    public val WET_GRASS_STEP: SoundEvent = get("block.wet_grass.step")
+    public val WET_GRASS_STEP: RegistryReference<SoundEvent> = of("block.wet_grass.step")
     @JvmField
-    public val WITCH_AMBIENT: SoundEvent = get("entity.witch.ambient")
+    public val WITCH_AMBIENT: RegistryReference<SoundEvent> = of("entity.witch.ambient")
     @JvmField
-    public val WITCH_CELEBRATE: SoundEvent = get("entity.witch.celebrate")
+    public val WITCH_CELEBRATE: RegistryReference<SoundEvent> = of("entity.witch.celebrate")
     @JvmField
-    public val WITCH_DEATH: SoundEvent = get("entity.witch.death")
+    public val WITCH_DEATH: RegistryReference<SoundEvent> = of("entity.witch.death")
     @JvmField
-    public val WITCH_DRINK: SoundEvent = get("entity.witch.drink")
+    public val WITCH_DRINK: RegistryReference<SoundEvent> = of("entity.witch.drink")
     @JvmField
-    public val WITCH_HURT: SoundEvent = get("entity.witch.hurt")
+    public val WITCH_HURT: RegistryReference<SoundEvent> = of("entity.witch.hurt")
     @JvmField
-    public val WITCH_THROW: SoundEvent = get("entity.witch.throw")
+    public val WITCH_THROW: RegistryReference<SoundEvent> = of("entity.witch.throw")
     @JvmField
-    public val WITHER_AMBIENT: SoundEvent = get("entity.wither.ambient")
+    public val WITHER_AMBIENT: RegistryReference<SoundEvent> = of("entity.wither.ambient")
     @JvmField
-    public val WITHER_BREAK_BLOCK: SoundEvent = get("entity.wither.break_block")
+    public val WITHER_BREAK_BLOCK: RegistryReference<SoundEvent> = of("entity.wither.break_block")
     @JvmField
-    public val WITHER_DEATH: SoundEvent = get("entity.wither.death")
+    public val WITHER_DEATH: RegistryReference<SoundEvent> = of("entity.wither.death")
     @JvmField
-    public val WITHER_HURT: SoundEvent = get("entity.wither.hurt")
+    public val WITHER_HURT: RegistryReference<SoundEvent> = of("entity.wither.hurt")
     @JvmField
-    public val WITHER_SHOOT: SoundEvent = get("entity.wither.shoot")
+    public val WITHER_SHOOT: RegistryReference<SoundEvent> = of("entity.wither.shoot")
     @JvmField
-    public val WITHER_SKELETON_AMBIENT: SoundEvent = get("entity.wither_skeleton.ambient")
+    public val WITHER_SKELETON_AMBIENT: RegistryReference<SoundEvent> = of("entity.wither_skeleton.ambient")
     @JvmField
-    public val WITHER_SKELETON_DEATH: SoundEvent = get("entity.wither_skeleton.death")
+    public val WITHER_SKELETON_DEATH: RegistryReference<SoundEvent> = of("entity.wither_skeleton.death")
     @JvmField
-    public val WITHER_SKELETON_HURT: SoundEvent = get("entity.wither_skeleton.hurt")
+    public val WITHER_SKELETON_HURT: RegistryReference<SoundEvent> = of("entity.wither_skeleton.hurt")
     @JvmField
-    public val WITHER_SKELETON_STEP: SoundEvent = get("entity.wither_skeleton.step")
+    public val WITHER_SKELETON_STEP: RegistryReference<SoundEvent> = of("entity.wither_skeleton.step")
     @JvmField
-    public val WITHER_SPAWN: SoundEvent = get("entity.wither.spawn")
+    public val WITHER_SPAWN: RegistryReference<SoundEvent> = of("entity.wither.spawn")
     @JvmField
-    public val WOLF_AMBIENT: SoundEvent = get("entity.wolf.ambient")
+    public val WOLF_AMBIENT: RegistryReference<SoundEvent> = of("entity.wolf.ambient")
     @JvmField
-    public val WOLF_DEATH: SoundEvent = get("entity.wolf.death")
+    public val WOLF_DEATH: RegistryReference<SoundEvent> = of("entity.wolf.death")
     @JvmField
-    public val WOLF_GROWL: SoundEvent = get("entity.wolf.growl")
+    public val WOLF_GROWL: RegistryReference<SoundEvent> = of("entity.wolf.growl")
     @JvmField
-    public val WOLF_HOWL: SoundEvent = get("entity.wolf.howl")
+    public val WOLF_HOWL: RegistryReference<SoundEvent> = of("entity.wolf.howl")
     @JvmField
-    public val WOLF_HURT: SoundEvent = get("entity.wolf.hurt")
+    public val WOLF_HURT: RegistryReference<SoundEvent> = of("entity.wolf.hurt")
     @JvmField
-    public val WOLF_PANT: SoundEvent = get("entity.wolf.pant")
+    public val WOLF_PANT: RegistryReference<SoundEvent> = of("entity.wolf.pant")
     @JvmField
-    public val WOLF_SHAKE: SoundEvent = get("entity.wolf.shake")
+    public val WOLF_SHAKE: RegistryReference<SoundEvent> = of("entity.wolf.shake")
     @JvmField
-    public val WOLF_STEP: SoundEvent = get("entity.wolf.step")
+    public val WOLF_STEP: RegistryReference<SoundEvent> = of("entity.wolf.step")
     @JvmField
-    public val WOLF_WHINE: SoundEvent = get("entity.wolf.whine")
+    public val WOLF_WHINE: RegistryReference<SoundEvent> = of("entity.wolf.whine")
     @JvmField
-    public val WOODEN_DOOR_CLOSE: SoundEvent = get("block.wooden_door.close")
+    public val WOODEN_DOOR_CLOSE: RegistryReference<SoundEvent> = of("block.wooden_door.close")
     @JvmField
-    public val WOODEN_DOOR_OPEN: SoundEvent = get("block.wooden_door.open")
+    public val WOODEN_DOOR_OPEN: RegistryReference<SoundEvent> = of("block.wooden_door.open")
     @JvmField
-    public val WOODEN_TRAPDOOR_CLOSE: SoundEvent = get("block.wooden_trapdoor.close")
+    public val WOODEN_TRAPDOOR_CLOSE: RegistryReference<SoundEvent> = of("block.wooden_trapdoor.close")
     @JvmField
-    public val WOODEN_TRAPDOOR_OPEN: SoundEvent = get("block.wooden_trapdoor.open")
+    public val WOODEN_TRAPDOOR_OPEN: RegistryReference<SoundEvent> = of("block.wooden_trapdoor.open")
     @JvmField
-    public val WOOD_BREAK: SoundEvent = get("block.wood.break")
+    public val WOOD_BREAK: RegistryReference<SoundEvent> = of("block.wood.break")
     @JvmField
-    public val WOODEN_BUTTON_CLICK_OFF: SoundEvent = get("block.wooden_button.click_off")
+    public val WOODEN_BUTTON_CLICK_OFF: RegistryReference<SoundEvent> = of("block.wooden_button.click_off")
     @JvmField
-    public val WOODEN_BUTTON_CLICK_ON: SoundEvent = get("block.wooden_button.click_on")
+    public val WOODEN_BUTTON_CLICK_ON: RegistryReference<SoundEvent> = of("block.wooden_button.click_on")
     @JvmField
-    public val WOOD_FALL: SoundEvent = get("block.wood.fall")
+    public val WOOD_FALL: RegistryReference<SoundEvent> = of("block.wood.fall")
     @JvmField
-    public val WOOD_HIT: SoundEvent = get("block.wood.hit")
+    public val WOOD_HIT: RegistryReference<SoundEvent> = of("block.wood.hit")
     @JvmField
-    public val WOOD_PLACE: SoundEvent = get("block.wood.place")
+    public val WOOD_PLACE: RegistryReference<SoundEvent> = of("block.wood.place")
     @JvmField
-    public val WOODEN_PRESSURE_PLATE_CLICK_OFF: SoundEvent = get("block.wooden_pressure_plate.click_off")
+    public val WOODEN_PRESSURE_PLATE_CLICK_OFF: RegistryReference<SoundEvent> = of("block.wooden_pressure_plate.click_off")
     @JvmField
-    public val WOODEN_PRESSURE_PLATE_CLICK_ON: SoundEvent = get("block.wooden_pressure_plate.click_on")
+    public val WOODEN_PRESSURE_PLATE_CLICK_ON: RegistryReference<SoundEvent> = of("block.wooden_pressure_plate.click_on")
     @JvmField
-    public val WOOD_STEP: SoundEvent = get("block.wood.step")
+    public val WOOD_STEP: RegistryReference<SoundEvent> = of("block.wood.step")
     @JvmField
-    public val WOOL_BREAK: SoundEvent = get("block.wool.break")
+    public val WOOL_BREAK: RegistryReference<SoundEvent> = of("block.wool.break")
     @JvmField
-    public val WOOL_FALL: SoundEvent = get("block.wool.fall")
+    public val WOOL_FALL: RegistryReference<SoundEvent> = of("block.wool.fall")
     @JvmField
-    public val WOOL_HIT: SoundEvent = get("block.wool.hit")
+    public val WOOL_HIT: RegistryReference<SoundEvent> = of("block.wool.hit")
     @JvmField
-    public val WOOL_PLACE: SoundEvent = get("block.wool.place")
+    public val WOOL_PLACE: RegistryReference<SoundEvent> = of("block.wool.place")
     @JvmField
-    public val WOOL_STEP: SoundEvent = get("block.wool.step")
+    public val WOOL_STEP: RegistryReference<SoundEvent> = of("block.wool.step")
     @JvmField
-    public val ZOGLIN_AMBIENT: SoundEvent = get("entity.zoglin.ambient")
+    public val ZOGLIN_AMBIENT: RegistryReference<SoundEvent> = of("entity.zoglin.ambient")
     @JvmField
-    public val ZOGLIN_ANGRY: SoundEvent = get("entity.zoglin.angry")
+    public val ZOGLIN_ANGRY: RegistryReference<SoundEvent> = of("entity.zoglin.angry")
     @JvmField
-    public val ZOGLIN_ATTACK: SoundEvent = get("entity.zoglin.attack")
+    public val ZOGLIN_ATTACK: RegistryReference<SoundEvent> = of("entity.zoglin.attack")
     @JvmField
-    public val ZOGLIN_DEATH: SoundEvent = get("entity.zoglin.death")
+    public val ZOGLIN_DEATH: RegistryReference<SoundEvent> = of("entity.zoglin.death")
     @JvmField
-    public val ZOGLIN_HURT: SoundEvent = get("entity.zoglin.hurt")
+    public val ZOGLIN_HURT: RegistryReference<SoundEvent> = of("entity.zoglin.hurt")
     @JvmField
-    public val ZOGLIN_STEP: SoundEvent = get("entity.zoglin.step")
+    public val ZOGLIN_STEP: RegistryReference<SoundEvent> = of("entity.zoglin.step")
     @JvmField
-    public val ZOMBIE_AMBIENT: SoundEvent = get("entity.zombie.ambient")
+    public val ZOMBIE_AMBIENT: RegistryReference<SoundEvent> = of("entity.zombie.ambient")
     @JvmField
-    public val ZOMBIE_ATTACK_WOODEN_DOOR: SoundEvent = get("entity.zombie.attack_wooden_door")
+    public val ZOMBIE_ATTACK_WOODEN_DOOR: RegistryReference<SoundEvent> = of("entity.zombie.attack_wooden_door")
     @JvmField
-    public val ZOMBIE_ATTACK_IRON_DOOR: SoundEvent = get("entity.zombie.attack_iron_door")
+    public val ZOMBIE_ATTACK_IRON_DOOR: RegistryReference<SoundEvent> = of("entity.zombie.attack_iron_door")
     @JvmField
-    public val ZOMBIE_BREAK_WOODEN_DOOR: SoundEvent = get("entity.zombie.break_wooden_door")
+    public val ZOMBIE_BREAK_WOODEN_DOOR: RegistryReference<SoundEvent> = of("entity.zombie.break_wooden_door")
     @JvmField
-    public val ZOMBIE_CONVERTED_TO_DROWNED: SoundEvent = get("entity.zombie.converted_to_drowned")
+    public val ZOMBIE_CONVERTED_TO_DROWNED: RegistryReference<SoundEvent> = of("entity.zombie.converted_to_drowned")
     @JvmField
-    public val ZOMBIE_DEATH: SoundEvent = get("entity.zombie.death")
+    public val ZOMBIE_DEATH: RegistryReference<SoundEvent> = of("entity.zombie.death")
     @JvmField
-    public val ZOMBIE_DESTROY_EGG: SoundEvent = get("entity.zombie.destroy_egg")
+    public val ZOMBIE_DESTROY_EGG: RegistryReference<SoundEvent> = of("entity.zombie.destroy_egg")
     @JvmField
-    public val ZOMBIE_HORSE_AMBIENT: SoundEvent = get("entity.zombie_horse.ambient")
+    public val ZOMBIE_HORSE_AMBIENT: RegistryReference<SoundEvent> = of("entity.zombie_horse.ambient")
     @JvmField
-    public val ZOMBIE_HORSE_DEATH: SoundEvent = get("entity.zombie_horse.death")
+    public val ZOMBIE_HORSE_DEATH: RegistryReference<SoundEvent> = of("entity.zombie_horse.death")
     @JvmField
-    public val ZOMBIE_HORSE_HURT: SoundEvent = get("entity.zombie_horse.hurt")
+    public val ZOMBIE_HORSE_HURT: RegistryReference<SoundEvent> = of("entity.zombie_horse.hurt")
     @JvmField
-    public val ZOMBIE_HURT: SoundEvent = get("entity.zombie.hurt")
+    public val ZOMBIE_HURT: RegistryReference<SoundEvent> = of("entity.zombie.hurt")
     @JvmField
-    public val ZOMBIE_INFECT: SoundEvent = get("entity.zombie.infect")
+    public val ZOMBIE_INFECT: RegistryReference<SoundEvent> = of("entity.zombie.infect")
     @JvmField
-    public val ZOMBIFIED_PIGLIN_AMBIENT: SoundEvent = get("entity.zombified_piglin.ambient")
+    public val ZOMBIFIED_PIGLIN_AMBIENT: RegistryReference<SoundEvent> = of("entity.zombified_piglin.ambient")
     @JvmField
-    public val ZOMBIFIED_PIGLIN_ANGRY: SoundEvent = get("entity.zombified_piglin.angry")
+    public val ZOMBIFIED_PIGLIN_ANGRY: RegistryReference<SoundEvent> = of("entity.zombified_piglin.angry")
     @JvmField
-    public val ZOMBIFIED_PIGLIN_DEATH: SoundEvent = get("entity.zombified_piglin.death")
+    public val ZOMBIFIED_PIGLIN_DEATH: RegistryReference<SoundEvent> = of("entity.zombified_piglin.death")
     @JvmField
-    public val ZOMBIFIED_PIGLIN_HURT: SoundEvent = get("entity.zombified_piglin.hurt")
+    public val ZOMBIFIED_PIGLIN_HURT: RegistryReference<SoundEvent> = of("entity.zombified_piglin.hurt")
     @JvmField
-    public val ZOMBIE_STEP: SoundEvent = get("entity.zombie.step")
+    public val ZOMBIE_STEP: RegistryReference<SoundEvent> = of("entity.zombie.step")
     @JvmField
-    public val ZOMBIE_VILLAGER_AMBIENT: SoundEvent = get("entity.zombie_villager.ambient")
+    public val ZOMBIE_VILLAGER_AMBIENT: RegistryReference<SoundEvent> = of("entity.zombie_villager.ambient")
     @JvmField
-    public val ZOMBIE_VILLAGER_CONVERTED: SoundEvent = get("entity.zombie_villager.converted")
+    public val ZOMBIE_VILLAGER_CONVERTED: RegistryReference<SoundEvent> = of("entity.zombie_villager.converted")
     @JvmField
-    public val ZOMBIE_VILLAGER_CURE: SoundEvent = get("entity.zombie_villager.cure")
+    public val ZOMBIE_VILLAGER_CURE: RegistryReference<SoundEvent> = of("entity.zombie_villager.cure")
     @JvmField
-    public val ZOMBIE_VILLAGER_DEATH: SoundEvent = get("entity.zombie_villager.death")
+    public val ZOMBIE_VILLAGER_DEATH: RegistryReference<SoundEvent> = of("entity.zombie_villager.death")
     @JvmField
-    public val ZOMBIE_VILLAGER_HURT: SoundEvent = get("entity.zombie_villager.hurt")
+    public val ZOMBIE_VILLAGER_HURT: RegistryReference<SoundEvent> = of("entity.zombie_villager.hurt")
     @JvmField
-    public val ZOMBIE_VILLAGER_STEP: SoundEvent = get("entity.zombie_villager.step")
+    public val ZOMBIE_VILLAGER_STEP: RegistryReference<SoundEvent> = of("entity.zombie_villager.step")
     @JvmField
-    public val GOAT_HORN_0: SoundEvent = get("item.goat_horn.sound.0")
+    public val GOAT_HORN_0: RegistryReference<SoundEvent> = of("item.goat_horn.sound.0")
     @JvmField
-    public val GOAT_HORN_1: SoundEvent = get("item.goat_horn.sound.1")
+    public val GOAT_HORN_1: RegistryReference<SoundEvent> = of("item.goat_horn.sound.1")
     @JvmField
-    public val GOAT_HORN_2: SoundEvent = get("item.goat_horn.sound.2")
+    public val GOAT_HORN_2: RegistryReference<SoundEvent> = of("item.goat_horn.sound.2")
     @JvmField
-    public val GOAT_HORN_3: SoundEvent = get("item.goat_horn.sound.3")
+    public val GOAT_HORN_3: RegistryReference<SoundEvent> = of("item.goat_horn.sound.3")
     @JvmField
-    public val GOAT_HORN_4: SoundEvent = get("item.goat_horn.sound.4")
+    public val GOAT_HORN_4: RegistryReference<SoundEvent> = of("item.goat_horn.sound.4")
     @JvmField
-    public val GOAT_HORN_5: SoundEvent = get("item.goat_horn.sound.5")
+    public val GOAT_HORN_5: RegistryReference<SoundEvent> = of("item.goat_horn.sound.5")
     @JvmField
-    public val GOAT_HORN_6: SoundEvent = get("item.goat_horn.sound.6")
+    public val GOAT_HORN_6: RegistryReference<SoundEvent> = of("item.goat_horn.sound.6")
     @JvmField
-    public val GOAT_HORN_7: SoundEvent = get("item.goat_horn.sound.7")
+    public val GOAT_HORN_7: RegistryReference<SoundEvent> = of("item.goat_horn.sound.7")
 
     // @formatter:on
     @JvmStatic
-    private fun get(key: String): SoundEvent = Registries.SOUND_EVENT.get(Key.key(key))!!
+    private fun of(name: String): RegistryReference<SoundEvent> = RegistryReference.of(Registries.SOUND_EVENT, Key.key(name))
 }

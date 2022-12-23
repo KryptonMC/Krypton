@@ -73,7 +73,7 @@ class KryptonRabbit(world: KryptonWorld) : KryptonAnimal(world), Rabbit {
 
         private const val KILLER_TYPE = 99
         private val TYPES = RabbitVariant.values()
-        private val TEMPTING_ITEMS = setOf(ItemTypes.CARROT, ItemTypes.GOLDEN_CARROT, ItemTypes.DANDELION)
+        private val TEMPTING_ITEMS = setOf(ItemTypes.CARROT.get(), ItemTypes.GOLDEN_CARROT.get(), ItemTypes.DANDELION.get())
 
         private const val DEFAULT_MAX_HEALTH = 3.0
         private const val DEFAULT_MOVEMENT_SPEED = 0.3

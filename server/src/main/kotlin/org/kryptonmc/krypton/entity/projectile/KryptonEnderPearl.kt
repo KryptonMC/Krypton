@@ -34,6 +34,6 @@ class KryptonEnderPearl(world: KryptonWorld) : KryptonThrowableProjectile(world)
 
     companion object {
 
-        private val DEFAULT_ITEM = KryptonItemStack(ItemTypes.ENDER_PEARL)
+        private val DEFAULT_ITEM = KryptonItemStack(ItemTypes.ENDER_PEARL.get())
     }
 }

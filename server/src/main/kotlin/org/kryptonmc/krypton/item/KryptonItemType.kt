@@ -25,8 +25,6 @@ import org.kryptonmc.api.item.ItemRarity
 import org.kryptonmc.api.item.ItemType
 import org.kryptonmc.api.item.ItemTypes
 import org.kryptonmc.api.tags.TagKey
-import org.kryptonmc.krypton.registry.Holder
-import org.kryptonmc.krypton.registry.IntrusiveRegistryObject
 import org.kryptonmc.krypton.registry.KryptonRegistries
 import org.kryptonmc.krypton.util.Keys
 import org.kryptonmc.krypton.world.block.KryptonBlock
@@ -40,10 +38,10 @@ open class KryptonItemType(
     override val isFireResistant: Boolean,
     override val eatingSound: SoundEvent,
     override val drinkingSound: SoundEvent
-) : ItemType, IntrusiveRegistryObject<KryptonItemType> {
+) : ItemType {
 
     private var descriptionId: String? = null
-    override val builtInRegistryHolder: Holder.Reference<KryptonItemType> = KryptonRegistries.ITEM.createIntrusiveHolder(this)
+    private val builtInRegistryHolder = KryptonRegistries.ITEM.createIntrusiveHolder(this)
 
     override val canBreak: Boolean
         get() = durability > 0
@@ -68,6 +66,6 @@ open class KryptonItemType(
         val BY_BLOCK: HashMap<KryptonBlock, KryptonItemType> = HashMap()
 
         @JvmStatic
-        fun fromBlock(block: KryptonBlock): KryptonItemType = BY_BLOCK.getOrDefault(block, ItemTypes.AIR.downcast())
+        fun fromBlock(block: KryptonBlock): KryptonItemType = BY_BLOCK.getOrDefault(block, ItemTypes.AIR.get().downcast())
     }
 }

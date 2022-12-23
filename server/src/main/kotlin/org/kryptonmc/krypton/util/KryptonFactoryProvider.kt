@@ -33,6 +33,7 @@ import org.kryptonmc.api.item.ItemAttributeModifier
 import org.kryptonmc.api.item.ItemStack
 import org.kryptonmc.api.item.data.FireworkEffect
 import org.kryptonmc.api.item.meta.ItemMeta
+import org.kryptonmc.api.registry.RegistryReference
 import org.kryptonmc.api.resource.ResourceKey
 import org.kryptonmc.api.resource.ResourcePack
 import org.kryptonmc.api.tags.TagKey
@@ -65,6 +66,7 @@ import org.kryptonmc.krypton.item.KryptonItemAttributeModifier
 import org.kryptonmc.krypton.item.KryptonItemStack
 import org.kryptonmc.krypton.item.data.KryptonFireworkEffect
 import org.kryptonmc.krypton.item.meta.KryptonItemMeta
+import org.kryptonmc.krypton.registry.KryptonRegistryReference
 import org.kryptonmc.krypton.resource.KryptonResourceKey
 import org.kryptonmc.krypton.resource.KryptonResourcePack
 import org.kryptonmc.krypton.world.biome.KryptonAmbientAdditionsSettings
@@ -125,5 +127,6 @@ object KryptonFactoryProvider : FactoryProvider {
         register<DamageSource.Factory>(KryptonDamageSourceFactory)
         register<DimensionType.Factory>(KryptonDimensionType.Factory)
         register<GameRule.Factory>(KryptonGameRule.Factory)
+        register<RegistryReference.Factory>(KryptonRegistryReference.Factory)
     }
 }

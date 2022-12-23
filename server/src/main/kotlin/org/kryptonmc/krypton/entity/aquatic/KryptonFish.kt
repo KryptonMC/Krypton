@@ -41,7 +41,7 @@ abstract class KryptonFish(world: KryptonWorld) : KryptonAquaticAnimal(world), F
         get() = data.get(MetadataKeys.Fish.FROM_BUCKET)
         set(value) = data.set(MetadataKeys.Fish.FROM_BUCKET, value)
     override val bucketPickupSound: SoundEvent
-        get() = SoundEvents.BUCKET_FILL_FISH
+        get() = SoundEvents.BUCKET_FILL_FISH.get()
 
     override fun defineData() {
         super.defineData()

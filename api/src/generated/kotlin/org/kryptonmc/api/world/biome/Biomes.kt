@@ -10,6 +10,7 @@ package org.kryptonmc.api.world.biome
 
 import net.kyori.adventure.key.Key
 import org.kryptonmc.api.registry.Registries
+import org.kryptonmc.api.registry.RegistryReference
 import org.kryptonmc.internal.annotations.Catalogue
 
 /**
@@ -20,133 +21,133 @@ public object Biomes {
 
     // @formatter:off
     @JvmField
-    public val THE_VOID: Biome = get("the_void")
+    public val THE_VOID: RegistryReference<Biome> = of("the_void")
     @JvmField
-    public val PLAINS: Biome = get("plains")
+    public val PLAINS: RegistryReference<Biome> = of("plains")
     @JvmField
-    public val SUNFLOWER_PLAINS: Biome = get("sunflower_plains")
+    public val SUNFLOWER_PLAINS: RegistryReference<Biome> = of("sunflower_plains")
     @JvmField
-    public val SNOWY_PLAINS: Biome = get("snowy_plains")
+    public val SNOWY_PLAINS: RegistryReference<Biome> = of("snowy_plains")
     @JvmField
-    public val ICE_SPIKES: Biome = get("ice_spikes")
+    public val ICE_SPIKES: RegistryReference<Biome> = of("ice_spikes")
     @JvmField
-    public val DESERT: Biome = get("desert")
+    public val DESERT: RegistryReference<Biome> = of("desert")
     @JvmField
-    public val SWAMP: Biome = get("swamp")
+    public val SWAMP: RegistryReference<Biome> = of("swamp")
     @JvmField
-    public val MANGROVE_SWAMP: Biome = get("mangrove_swamp")
+    public val MANGROVE_SWAMP: RegistryReference<Biome> = of("mangrove_swamp")
     @JvmField
-    public val FOREST: Biome = get("forest")
+    public val FOREST: RegistryReference<Biome> = of("forest")
     @JvmField
-    public val FLOWER_FOREST: Biome = get("flower_forest")
+    public val FLOWER_FOREST: RegistryReference<Biome> = of("flower_forest")
     @JvmField
-    public val BIRCH_FOREST: Biome = get("birch_forest")
+    public val BIRCH_FOREST: RegistryReference<Biome> = of("birch_forest")
     @JvmField
-    public val DARK_FOREST: Biome = get("dark_forest")
+    public val DARK_FOREST: RegistryReference<Biome> = of("dark_forest")
     @JvmField
-    public val OLD_GROWTH_BIRCH_FOREST: Biome = get("old_growth_birch_forest")
+    public val OLD_GROWTH_BIRCH_FOREST: RegistryReference<Biome> = of("old_growth_birch_forest")
     @JvmField
-    public val OLD_GROWTH_PINE_TAIGA: Biome = get("old_growth_pine_taiga")
+    public val OLD_GROWTH_PINE_TAIGA: RegistryReference<Biome> = of("old_growth_pine_taiga")
     @JvmField
-    public val OLD_GROWTH_SPRUCE_TAIGA: Biome = get("old_growth_spruce_taiga")
+    public val OLD_GROWTH_SPRUCE_TAIGA: RegistryReference<Biome> = of("old_growth_spruce_taiga")
     @JvmField
-    public val TAIGA: Biome = get("taiga")
+    public val TAIGA: RegistryReference<Biome> = of("taiga")
     @JvmField
-    public val SNOWY_TAIGA: Biome = get("snowy_taiga")
+    public val SNOWY_TAIGA: RegistryReference<Biome> = of("snowy_taiga")
     @JvmField
-    public val SAVANNA: Biome = get("savanna")
+    public val SAVANNA: RegistryReference<Biome> = of("savanna")
     @JvmField
-    public val SAVANNA_PLATEAU: Biome = get("savanna_plateau")
+    public val SAVANNA_PLATEAU: RegistryReference<Biome> = of("savanna_plateau")
     @JvmField
-    public val WINDSWEPT_HILLS: Biome = get("windswept_hills")
+    public val WINDSWEPT_HILLS: RegistryReference<Biome> = of("windswept_hills")
     @JvmField
-    public val WINDSWEPT_GRAVELLY_HILLS: Biome = get("windswept_gravelly_hills")
+    public val WINDSWEPT_GRAVELLY_HILLS: RegistryReference<Biome> = of("windswept_gravelly_hills")
     @JvmField
-    public val WINDSWEPT_FOREST: Biome = get("windswept_forest")
+    public val WINDSWEPT_FOREST: RegistryReference<Biome> = of("windswept_forest")
     @JvmField
-    public val WINDSWEPT_SAVANNA: Biome = get("windswept_savanna")
+    public val WINDSWEPT_SAVANNA: RegistryReference<Biome> = of("windswept_savanna")
     @JvmField
-    public val JUNGLE: Biome = get("jungle")
+    public val JUNGLE: RegistryReference<Biome> = of("jungle")
     @JvmField
-    public val SPARSE_JUNGLE: Biome = get("sparse_jungle")
+    public val SPARSE_JUNGLE: RegistryReference<Biome> = of("sparse_jungle")
     @JvmField
-    public val BAMBOO_JUNGLE: Biome = get("bamboo_jungle")
+    public val BAMBOO_JUNGLE: RegistryReference<Biome> = of("bamboo_jungle")
     @JvmField
-    public val BADLANDS: Biome = get("badlands")
+    public val BADLANDS: RegistryReference<Biome> = of("badlands")
     @JvmField
-    public val ERODED_BADLANDS: Biome = get("eroded_badlands")
+    public val ERODED_BADLANDS: RegistryReference<Biome> = of("eroded_badlands")
     @JvmField
-    public val WOODED_BADLANDS: Biome = get("wooded_badlands")
+    public val WOODED_BADLANDS: RegistryReference<Biome> = of("wooded_badlands")
     @JvmField
-    public val MEADOW: Biome = get("meadow")
+    public val MEADOW: RegistryReference<Biome> = of("meadow")
     @JvmField
-    public val GROVE: Biome = get("grove")
+    public val GROVE: RegistryReference<Biome> = of("grove")
     @JvmField
-    public val SNOWY_SLOPES: Biome = get("snowy_slopes")
+    public val SNOWY_SLOPES: RegistryReference<Biome> = of("snowy_slopes")
     @JvmField
-    public val FROZEN_PEAKS: Biome = get("frozen_peaks")
+    public val FROZEN_PEAKS: RegistryReference<Biome> = of("frozen_peaks")
     @JvmField
-    public val JAGGED_PEAKS: Biome = get("jagged_peaks")
+    public val JAGGED_PEAKS: RegistryReference<Biome> = of("jagged_peaks")
     @JvmField
-    public val STONY_PEAKS: Biome = get("stony_peaks")
+    public val STONY_PEAKS: RegistryReference<Biome> = of("stony_peaks")
     @JvmField
-    public val RIVER: Biome = get("river")
+    public val RIVER: RegistryReference<Biome> = of("river")
     @JvmField
-    public val FROZEN_RIVER: Biome = get("frozen_river")
+    public val FROZEN_RIVER: RegistryReference<Biome> = of("frozen_river")
     @JvmField
-    public val BEACH: Biome = get("beach")
+    public val BEACH: RegistryReference<Biome> = of("beach")
     @JvmField
-    public val SNOWY_BEACH: Biome = get("snowy_beach")
+    public val SNOWY_BEACH: RegistryReference<Biome> = of("snowy_beach")
     @JvmField
-    public val STONY_SHORE: Biome = get("stony_shore")
+    public val STONY_SHORE: RegistryReference<Biome> = of("stony_shore")
     @JvmField
-    public val WARM_OCEAN: Biome = get("warm_ocean")
+    public val WARM_OCEAN: RegistryReference<Biome> = of("warm_ocean")
     @JvmField
-    public val LUKEWARM_OCEAN: Biome = get("lukewarm_ocean")
+    public val LUKEWARM_OCEAN: RegistryReference<Biome> = of("lukewarm_ocean")
     @JvmField
-    public val DEEP_LUKEWARM_OCEAN: Biome = get("deep_lukewarm_ocean")
+    public val DEEP_LUKEWARM_OCEAN: RegistryReference<Biome> = of("deep_lukewarm_ocean")
     @JvmField
-    public val OCEAN: Biome = get("ocean")
+    public val OCEAN: RegistryReference<Biome> = of("ocean")
     @JvmField
-    public val DEEP_OCEAN: Biome = get("deep_ocean")
+    public val DEEP_OCEAN: RegistryReference<Biome> = of("deep_ocean")
     @JvmField
-    public val COLD_OCEAN: Biome = get("cold_ocean")
+    public val COLD_OCEAN: RegistryReference<Biome> = of("cold_ocean")
     @JvmField
-    public val DEEP_COLD_OCEAN: Biome = get("deep_cold_ocean")
+    public val DEEP_COLD_OCEAN: RegistryReference<Biome> = of("deep_cold_ocean")
     @JvmField
-    public val FROZEN_OCEAN: Biome = get("frozen_ocean")
+    public val FROZEN_OCEAN: RegistryReference<Biome> = of("frozen_ocean")
     @JvmField
-    public val DEEP_FROZEN_OCEAN: Biome = get("deep_frozen_ocean")
+    public val DEEP_FROZEN_OCEAN: RegistryReference<Biome> = of("deep_frozen_ocean")
     @JvmField
-    public val MUSHROOM_FIELDS: Biome = get("mushroom_fields")
+    public val MUSHROOM_FIELDS: RegistryReference<Biome> = of("mushroom_fields")
     @JvmField
-    public val DRIPSTONE_CAVES: Biome = get("dripstone_caves")
+    public val DRIPSTONE_CAVES: RegistryReference<Biome> = of("dripstone_caves")
     @JvmField
-    public val LUSH_CAVES: Biome = get("lush_caves")
+    public val LUSH_CAVES: RegistryReference<Biome> = of("lush_caves")
     @JvmField
-    public val DEEP_DARK: Biome = get("deep_dark")
+    public val DEEP_DARK: RegistryReference<Biome> = of("deep_dark")
     @JvmField
-    public val NETHER_WASTES: Biome = get("nether_wastes")
+    public val NETHER_WASTES: RegistryReference<Biome> = of("nether_wastes")
     @JvmField
-    public val WARPED_FOREST: Biome = get("warped_forest")
+    public val WARPED_FOREST: RegistryReference<Biome> = of("warped_forest")
     @JvmField
-    public val CRIMSON_FOREST: Biome = get("crimson_forest")
+    public val CRIMSON_FOREST: RegistryReference<Biome> = of("crimson_forest")
     @JvmField
-    public val SOUL_SAND_VALLEY: Biome = get("soul_sand_valley")
+    public val SOUL_SAND_VALLEY: RegistryReference<Biome> = of("soul_sand_valley")
     @JvmField
-    public val BASALT_DELTAS: Biome = get("basalt_deltas")
+    public val BASALT_DELTAS: RegistryReference<Biome> = of("basalt_deltas")
     @JvmField
-    public val THE_END: Biome = get("the_end")
+    public val THE_END: RegistryReference<Biome> = of("the_end")
     @JvmField
-    public val END_HIGHLANDS: Biome = get("end_highlands")
+    public val END_HIGHLANDS: RegistryReference<Biome> = of("end_highlands")
     @JvmField
-    public val END_MIDLANDS: Biome = get("end_midlands")
+    public val END_MIDLANDS: RegistryReference<Biome> = of("end_midlands")
     @JvmField
-    public val SMALL_END_ISLANDS: Biome = get("small_end_islands")
+    public val SMALL_END_ISLANDS: RegistryReference<Biome> = of("small_end_islands")
     @JvmField
-    public val END_BARRENS: Biome = get("end_barrens")
+    public val END_BARRENS: RegistryReference<Biome> = of("end_barrens")
 
     // @formatter:on
     @JvmStatic
-    private fun get(key: String): Biome = Registries.BIOME.get(Key.key(key))!!
+    private fun of(name: String): RegistryReference<Biome> = RegistryReference.of(Registries.BIOME, Key.key(name))
 }

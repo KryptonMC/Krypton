@@ -292,7 +292,7 @@ class KryptonWorld(
         return setBlock(pos, fluid.asBlock(), SetBlockFlag.UPDATE_NOTIFY, recursionLeft)
     }
 
-    override fun getUncachedNoiseBiome(x: Int, y: Int, z: Int): Biome = Biomes.PLAINS // TODO: Use biome source from chunk generator
+    override fun getUncachedNoiseBiome(x: Int, y: Int, z: Int): Biome = Biomes.PLAINS.get() // TODO: Use biome source from chunk generator
 
     fun tick(hasTimeLeft: BooleanSupplier) {
         tickWeather()

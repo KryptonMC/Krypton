@@ -21,6 +21,7 @@ package org.kryptonmc.krypton.entity
 import net.kyori.adventure.key.Key
 import org.kryptonmc.api.entity.EntityCategories
 import org.kryptonmc.api.entity.EntityCategory
+import org.kryptonmc.api.registry.RegistryReference
 import org.kryptonmc.krypton.entity.ambient.KryptonBat
 import org.kryptonmc.krypton.entity.animal.KryptonAxolotl
 import org.kryptonmc.krypton.entity.animal.KryptonBee
@@ -670,9 +671,9 @@ object KryptonEntityTypes {
     @JvmStatic
     private inline fun <T : KryptonEntity> register(
         name: String,
-        category: EntityCategory,
+        category: RegistryReference<EntityCategory>,
         builder: KryptonEntityType.Builder<T>.() -> Unit = {}
-    ): KryptonEntityType<T> = register(name, KryptonEntityType.Builder<T>(category).apply(builder).build())
+    ): KryptonEntityType<T> = register(name, KryptonEntityType.Builder<T>(category.get()).apply(builder).build())
 
     @JvmStatic
     private fun <T : KryptonEntity> register(name: String, type: KryptonEntityType<T>): KryptonEntityType<T> =

@@ -49,7 +49,7 @@ class KryptonAreaEffectCloud(world: KryptonWorld) : KryptonEntity(world), AreaEf
         data.define(MetadataKeys.AreaEffectCloud.RADIUS, DEFAULT_RADIUS)
         data.define(MetadataKeys.AreaEffectCloud.COLOR, 0)
         data.define(MetadataKeys.AreaEffectCloud.IGNORE_RADIUS, false)
-        data.define(MetadataKeys.AreaEffectCloud.PARTICLE, ParticleOptions(ParticleTypes.EFFECT, null))
+        data.define(MetadataKeys.AreaEffectCloud.PARTICLE, ParticleOptions(ParticleTypes.EFFECT.get(), null))
     }
 
     companion object {

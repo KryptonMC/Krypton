@@ -10,13 +10,14 @@ package org.kryptonmc.api.entity.vehicle
 
 import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.block.Blocks
+import org.kryptonmc.api.registry.RegistryReference
 
 /**
  * A variant of boat.
  *
  * @property planks The type of planks the boat is made out of.
  */
-public enum class BoatVariant(public val planks: Block) {
+public enum class BoatVariant(public val planks: RegistryReference<Block>) {
 
     OAK(Blocks.OAK_PLANKS),
     SPRUCE(Blocks.SPRUCE_PLANKS),

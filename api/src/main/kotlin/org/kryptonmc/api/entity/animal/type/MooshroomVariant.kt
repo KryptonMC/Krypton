@@ -12,6 +12,7 @@ import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.block.Blocks
 import org.kryptonmc.api.item.ItemType
 import org.kryptonmc.api.item.ItemTypes
+import org.kryptonmc.api.registry.RegistryReference
 
 /**
  * A variant of mooshroom, which represents a particular type of mushroom,
@@ -20,7 +21,7 @@ import org.kryptonmc.api.item.ItemTypes
  * @property item The mushroom item this mooshroom variant represents.
  * @property block The mushroom block this mooshroom variant represents.
  */
-public enum class MooshroomVariant(public val item: ItemType, public val block: Block) {
+public enum class MooshroomVariant(public val item: RegistryReference<ItemType>, public val block: RegistryReference<Block>) {
 
     BROWN(ItemTypes.BROWN_MUSHROOM, Blocks.BROWN_MUSHROOM_BLOCK),
     RED(ItemTypes.RED_MUSHROOM, Blocks.RED_MUSHROOM_BLOCK)

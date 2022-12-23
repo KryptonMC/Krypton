@@ -40,34 +40,34 @@ object NetherBiomes {
     private const val CRIMSON_FOG = 3343107 // Red: 51, Green: 3, Blue: 3
     private const val WARPED_FOG = 1705242 // Red: 26, Green: 5, Blue: 26
 
-    private val WASTES_LOOP = SoundEvents.AMBIENT_NETHER_WASTES_LOOP
-    private val VALLEY_LOOP = SoundEvents.AMBIENT_SOUL_SAND_VALLEY_LOOP
-    private val DELTAS_LOOP = SoundEvents.AMBIENT_BASALT_DELTAS_LOOP
-    private val CRIMSON_LOOP = SoundEvents.AMBIENT_CRIMSON_FOREST_LOOP
-    private val WARPED_LOOP = SoundEvents.AMBIENT_WARPED_FOREST_LOOP
+    private val WASTES_LOOP = SoundEvents.AMBIENT_NETHER_WASTES_LOOP.get()
+    private val VALLEY_LOOP = SoundEvents.AMBIENT_SOUL_SAND_VALLEY_LOOP.get()
+    private val DELTAS_LOOP = SoundEvents.AMBIENT_BASALT_DELTAS_LOOP.get()
+    private val CRIMSON_LOOP = SoundEvents.AMBIENT_CRIMSON_FOREST_LOOP.get()
+    private val WARPED_LOOP = SoundEvents.AMBIENT_WARPED_FOREST_LOOP.get()
 
-    private val WASTES_MOOD = SoundEvents.AMBIENT_NETHER_WASTES_MOOD
-    private val VALLEY_MOOD = SoundEvents.AMBIENT_SOUL_SAND_VALLEY_MOOD
-    private val DELTAS_MOOD = SoundEvents.AMBIENT_BASALT_DELTAS_MOOD
-    private val CRIMSON_MOOD = SoundEvents.AMBIENT_CRIMSON_FOREST_MOOD
-    private val WARPED_MOOD = SoundEvents.AMBIENT_WARPED_FOREST_MOOD
+    private val WASTES_MOOD = SoundEvents.AMBIENT_NETHER_WASTES_MOOD.get()
+    private val VALLEY_MOOD = SoundEvents.AMBIENT_SOUL_SAND_VALLEY_MOOD.get()
+    private val DELTAS_MOOD = SoundEvents.AMBIENT_BASALT_DELTAS_MOOD.get()
+    private val CRIMSON_MOOD = SoundEvents.AMBIENT_CRIMSON_FOREST_MOOD.get()
+    private val WARPED_MOOD = SoundEvents.AMBIENT_WARPED_FOREST_MOOD.get()
 
-    private val WASTES_ADDITIONS = SoundEvents.AMBIENT_NETHER_WASTES_ADDITIONS
-    private val VALLEY_ADDITIONS = SoundEvents.AMBIENT_SOUL_SAND_VALLEY_ADDITIONS
-    private val DELTAS_ADDITIONS = SoundEvents.AMBIENT_BASALT_DELTAS_ADDITIONS
-    private val CRIMSON_ADDITIONS = SoundEvents.AMBIENT_CRIMSON_FOREST_ADDITIONS
-    private val WARPED_ADDITIONS = SoundEvents.AMBIENT_WARPED_FOREST_ADDITIONS
+    private val WASTES_ADDITIONS = SoundEvents.AMBIENT_NETHER_WASTES_ADDITIONS.get()
+    private val VALLEY_ADDITIONS = SoundEvents.AMBIENT_SOUL_SAND_VALLEY_ADDITIONS.get()
+    private val DELTAS_ADDITIONS = SoundEvents.AMBIENT_BASALT_DELTAS_ADDITIONS.get()
+    private val CRIMSON_ADDITIONS = SoundEvents.AMBIENT_CRIMSON_FOREST_ADDITIONS.get()
+    private val WARPED_ADDITIONS = SoundEvents.AMBIENT_WARPED_FOREST_ADDITIONS.get()
 
-    private val WASTES_MUSIC = SoundEvents.MUSIC_BIOME_NETHER_WASTES
-    private val VALLEY_MUSIC = SoundEvents.MUSIC_BIOME_SOUL_SAND_VALLEY
-    private val DELTAS_MUSIC = SoundEvents.MUSIC_BIOME_BASALT_DELTAS
-    private val CRIMSON_MUSIC = SoundEvents.MUSIC_BIOME_CRIMSON_FOREST
-    private val WARPED_MUSIC = SoundEvents.MUSIC_BIOME_WARPED_FOREST
+    private val WASTES_MUSIC = SoundEvents.MUSIC_BIOME_NETHER_WASTES.get()
+    private val VALLEY_MUSIC = SoundEvents.MUSIC_BIOME_SOUL_SAND_VALLEY.get()
+    private val DELTAS_MUSIC = SoundEvents.MUSIC_BIOME_BASALT_DELTAS.get()
+    private val CRIMSON_MUSIC = SoundEvents.MUSIC_BIOME_CRIMSON_FOREST.get()
+    private val WARPED_MUSIC = SoundEvents.MUSIC_BIOME_WARPED_FOREST.get()
 
-    private val VALLEY_PARTICLES = AmbientParticleSettings.of(ParticleTypes.ASH, null, 0.00625F)
-    private val DELTAS_PARTICLES = AmbientParticleSettings.of(ParticleTypes.WHITE_ASH, null, 0.118093334F)
-    private val CRIMSON_PARTICLES = AmbientParticleSettings.of(ParticleTypes.CRIMSON_SPORE, null, 0.025F)
-    private val WARPED_PARTICLES = AmbientParticleSettings.of(ParticleTypes.WARPED_SPORE, null, 0.01428F)
+    private val VALLEY_PARTICLES = AmbientParticleSettings.of(ParticleTypes.ASH.get(), null, 0.00625F)
+    private val DELTAS_PARTICLES = AmbientParticleSettings.of(ParticleTypes.WHITE_ASH.get(), null, 0.118093334F)
+    private val CRIMSON_PARTICLES = AmbientParticleSettings.of(ParticleTypes.CRIMSON_SPORE.get(), null, 0.025F)
+    private val WARPED_PARTICLES = AmbientParticleSettings.of(ParticleTypes.WARPED_SPORE.get(), null, 0.01428F)
 
     @JvmStatic
     fun netherWastes(): KryptonBiome = baseNether(WASTES_FOG, WASTES_LOOP, WASTES_MOOD, WASTES_ADDITIONS, WASTES_MUSIC)

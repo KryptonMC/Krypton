@@ -23,12 +23,17 @@ import org.kryptonmc.api.registry.Registry
 import org.kryptonmc.api.resource.ResourceKey
 import org.kryptonmc.api.tags.TagKey
 import org.kryptonmc.api.tags.TagSet
+import org.kryptonmc.krypton.registry.holder.Holder
+import org.kryptonmc.krypton.registry.holder.HolderLookup
+import org.kryptonmc.krypton.registry.holder.HolderOwner
+import org.kryptonmc.krypton.registry.holder.HolderSet
 import org.kryptonmc.krypton.resource.KryptonResourceKey
+import org.kryptonmc.krypton.tags.KryptonTagSet
+import org.kryptonmc.krypton.util.ImmutableLists
 import org.kryptonmc.krypton.util.IntBiMap
 import org.kryptonmc.krypton.util.serialization.Codecs
 import org.kryptonmc.krypton.util.successOrError
 import org.kryptonmc.serialization.Codec
-import org.kryptonmc.serialization.DataResult
 import java.util.Optional
 import java.util.stream.Stream
 import java.util.stream.StreamSupport
@@ -36,55 +41,74 @@ import java.util.stream.StreamSupport
 /**
  * The base registry class that specifies the public API of the backend registries.
  */
-abstract class KryptonRegistry<T>(final override val key: ResourceKey<out Registry<T>>) : Registry<T>, IntBiMap<T> {
+interface KryptonRegistry<T> : Registry<T>, IntBiMap<T> {
 
-    abstract override val keys: Set<Key>
-    abstract override val registryKeys: Set<ResourceKey<T>>
-    abstract override val entries: Set<Map.Entry<ResourceKey<T>, T>>
-    abstract override val tagKeys: Set<TagKey<T>>
-    abstract override val tags: Map<TagKey<T>, TagSet<T>>
+    override val keys: Set<Key>
+    override val registryKeys: Set<ResourceKey<T>>
+    override val entries: Set<Map.Entry<ResourceKey<T>, T>>
+    override val tagKeys: Set<TagKey<T>>
+    override val tags: Map<TagKey<T>, TagSet<T>>
 
-    abstract override fun containsKey(key: Key): Boolean
+    override fun containsKey(key: Key): Boolean
 
-    abstract override fun containsKey(key: ResourceKey<T>): Boolean
+    override fun containsKey(key: ResourceKey<T>): Boolean
 
-    abstract override fun getKey(value: T): Key?
+    override fun getKey(value: T): Key?
 
-    abstract override fun getResourceKey(value: T): ResourceKey<T>?
+    override fun getResourceKey(value: T): ResourceKey<T>?
 
-    abstract override fun getId(value: T): Int
+    override fun getId(value: T): Int
 
-    abstract override fun get(key: Key): T?
+    override fun get(key: Key): T?
 
-    abstract override fun get(key: ResourceKey<T>): T?
+    override fun get(key: ResourceKey<T>): T?
 
     fun getOrThrow(key: ResourceKey<T>): T = checkNotNull(get(key)) { "Could not find key $key in registry ${this.key}!" }
 
-    abstract fun holders(): Stream<Holder.Reference<T>>
+    fun holders(): Stream<Holder.Reference<T>>
 
-    abstract fun getHolder(id: Int): Holder<T>?
+    fun getHolder(id: Int): Holder.Reference<T>?
 
-    abstract fun getHolder(key: ResourceKey<T>): Holder<T>?
+    fun getHolder(key: ResourceKey<T>): Holder.Reference<T>?
 
-    fun getHolderOrThrow(key: ResourceKey<T>): Holder<T> = checkNotNull(getHolder(key)) { "Could not find key $key in registry ${this.key}!" }
+    fun getHolderOrThrow(key: ResourceKey<T>): Holder.Reference<T> =
+        checkNotNull(getHolder(key)) { "Could not find key $key in registry ${this.key}!" }
 
-    abstract fun getOrCreateHolder(key: ResourceKey<T>): DataResult<Holder<T>>
+    fun wrapAsHolder(value: T & Any): Holder<T>
 
-    abstract fun getOrCreateHolderOrThrow(key: ResourceKey<T>): Holder<T>
+    fun createIntrusiveHolder(value: T): Holder.Reference<T>
 
-    abstract fun createIntrusiveHolder(value: T): Holder.Reference<T>
+    fun getTag(key: TagKey<T>): HolderSet.Named<T>?
 
-    abstract override fun getTag(key: TagKey<T>): TagSet<T>?
+    fun getTagOrEmpty(key: TagKey<T>): Iterable<Holder<T>> = getTag(key) ?: ImmutableLists.of()
 
-    abstract fun getOrCreateTag(key: TagKey<T>): TagSet<T>
+    override fun getTagValues(key: TagKey<T>): TagSet<T>? = getTag(key)?.let { KryptonTagSet(this, it) }
 
-    abstract fun isKnownTagKey(key: TagKey<T>): Boolean
+    fun getOrCreateTag(key: TagKey<T>): HolderSet.Named<T>
 
-    abstract fun resetTags()
+    fun isKnownTagKey(key: TagKey<T>): Boolean
 
-    abstract fun bindTags(tags: Map<TagKey<T>, List<Holder<T>>>)
+    fun resetTags()
 
-    abstract fun tagNames(): Stream<TagKey<T>>
+    fun bindTags(tags: Map<TagKey<T>, List<Holder<T>>>)
+
+    fun tags(): Map<TagKey<T>, HolderSet.Named<T>>
+
+    fun tagNames(): Stream<TagKey<T>>
+
+    fun freeze(): KryptonRegistry<T>
+
+    fun holderOwner(): HolderOwner<T>
+
+    fun asLookup(): HolderLookup.ForRegistry<T>
+
+    fun asTagAddingLookup(): HolderLookup.ForRegistry<T> = object : HolderLookup.ForRegistry.Forwarding<T>() {
+        override fun delegate(): HolderLookup.ForRegistry<T> = asLookup()
+
+        override fun get(key: TagKey<T>): HolderSet.Named<T> = getOrThrow(key)
+
+        override fun getOrThrow(key: TagKey<T>): HolderSet.Named<T> = getOrCreateTag(key)
+    }
 
     fun asHolderIdMap(): IntBiMap<Holder<T>> = object : IntBiMap<Holder<T>> {
 
@@ -109,6 +133,4 @@ abstract class KryptonRegistry<T>(final override val key: ResourceKey<out Regist
     )
 
     override fun stream(): Stream<T> = StreamSupport.stream(spliterator(), false)
-
-    override fun toString(): String = "Registry[$key]"
 }

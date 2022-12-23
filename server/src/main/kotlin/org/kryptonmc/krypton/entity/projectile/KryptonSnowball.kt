@@ -34,6 +34,6 @@ class KryptonSnowball(world: KryptonWorld) : KryptonThrowableProjectile(world), 
 
     companion object {
 
-        private val DEFAULT_ITEM = KryptonItemStack(ItemTypes.SNOWBALL)
+        private val DEFAULT_ITEM = KryptonItemStack(ItemTypes.SNOWBALL.get())
     }
 }

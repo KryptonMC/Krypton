@@ -59,9 +59,9 @@ class KryptonAxolotl(world: KryptonWorld) : KryptonAnimal(world), Axolotl, Bucke
         set(value) = data.set(MetadataKeys.Axolotl.FROM_BUCKET, value)
 
     override val bucketType: ItemType
-        get() = ItemTypes.AXOLOTL_BUCKET
+        get() = ItemTypes.AXOLOTL_BUCKET.get()
     override val bucketPickupSound: SoundEvent
-        get() = SoundEvents.BUCKET_FILL_AXOLOTL
+        get() = SoundEvents.BUCKET_FILL_AXOLOTL.get()
 
     override fun defineData() {
         super.defineData()

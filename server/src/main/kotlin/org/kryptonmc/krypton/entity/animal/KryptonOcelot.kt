@@ -51,7 +51,7 @@ class KryptonOcelot(world: KryptonWorld) : KryptonAnimal(world), Ocelot {
 
     companion object {
 
-        private val TEMPT_INGREDIENTS = listOf(ItemTypes.COD, ItemTypes.SALMON)
+        private val TEMPT_INGREDIENTS = setOf(ItemTypes.COD.get(), ItemTypes.SALMON.get())
         private const val DEFAULT_MAX_HEALTH = 10.0
         private const val DEFAULT_MOVEMENT_SPEED = 0.3
         private const val DEFAULT_ATTACK_DAMAGE = 3.0

@@ -9,7 +9,6 @@
 package org.kryptonmc.api.registry
 
 import net.kyori.adventure.key.Key
-import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.Krypton
 import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.block.entity.BlockEntityType
@@ -116,32 +115,4 @@ public object Registries {
     @JvmStatic
     public fun <T> getDefaultedRegistry(key: ResourceKey<out Registry<T>>): DefaultedRegistry<T>? =
         Krypton.registryManager().getDefaultedRegistry(key)
-
-    /**
-     * Creates a new registry with the given registry [key].
-     *
-     * @param T the registry element type
-     * @param key the registry key
-     * @return a registry for the given [key]
-     */
-    @JvmStatic
-    @Contract("_ -> new", pure = true)
-    public fun <T> create(key: ResourceKey<out Registry<T>>): Registry<T> = Krypton.registryManager().create(key)
-
-    /**
-     * Creates a new registry with the given registry [key], with a
-     * [defaultKey].
-     *
-     * The default value for this registry will be the first value registered
-     * that has a key that matches the given [defaultKey].
-     *
-     * @param T the registry element type
-     * @param key the registry key
-     * @param defaultKey the default key
-     * @return a defaulted registry for the given [key]
-     */
-    @JvmStatic
-    @Contract("_, _ -> new", pure = true)
-    public fun <T> createDefaulted(key: ResourceKey<out Registry<T>>, defaultKey: Key): DefaultedRegistry<T> =
-        Krypton.registryManager().createDefaulted(key, defaultKey)
 }

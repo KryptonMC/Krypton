@@ -10,6 +10,7 @@ package org.kryptonmc.api.block.entity.banner
 
 import net.kyori.adventure.key.Key
 import org.kryptonmc.api.registry.Registries
+import org.kryptonmc.api.registry.RegistryReference
 import org.kryptonmc.internal.annotations.Catalogue
 
 /**
@@ -19,88 +20,88 @@ import org.kryptonmc.internal.annotations.Catalogue
 public object BannerPatternTypes {
 
     @JvmField
-    public val BASE: BannerPatternType = get("base")
+    public val BASE: RegistryReference<BannerPatternType> = of("base")
     @JvmField
-    public val BOTTOM_LEFT_SQUARE: BannerPatternType = get("square_bottom_left")
+    public val BOTTOM_LEFT_SQUARE: RegistryReference<BannerPatternType> = of("square_bottom_left")
     @JvmField
-    public val BOTTOM_RIGHT_SQUARE: BannerPatternType = get("square_bottom_right")
+    public val BOTTOM_RIGHT_SQUARE: RegistryReference<BannerPatternType> = of("square_bottom_right")
     @JvmField
-    public val TOP_LEFT_SQUARE: BannerPatternType = get("square_top_left")
+    public val TOP_LEFT_SQUARE: RegistryReference<BannerPatternType> = of("square_top_left")
     @JvmField
-    public val TOP_RIGHT_SQUARE: BannerPatternType = get("square_top_right")
+    public val TOP_RIGHT_SQUARE: RegistryReference<BannerPatternType> = of("square_top_right")
     @JvmField
-    public val BOTTOM_STRIPE: BannerPatternType = get("stripe_bottom")
+    public val BOTTOM_STRIPE: RegistryReference<BannerPatternType> = of("stripe_bottom")
     @JvmField
-    public val TOP_STRIPE: BannerPatternType = get("stripe_top")
+    public val TOP_STRIPE: RegistryReference<BannerPatternType> = of("stripe_top")
     @JvmField
-    public val LEFT_STRIPE: BannerPatternType = get("stripe_left")
+    public val LEFT_STRIPE: RegistryReference<BannerPatternType> = of("stripe_left")
     @JvmField
-    public val RIGHT_STRIPE: BannerPatternType = get("stripe_right")
+    public val RIGHT_STRIPE: RegistryReference<BannerPatternType> = of("stripe_right")
     @JvmField
-    public val CENTER_STRIPE: BannerPatternType = get("stripe_center")
+    public val CENTER_STRIPE: RegistryReference<BannerPatternType> = of("stripe_center")
     @JvmField
-    public val MIDDLE_STRIPE: BannerPatternType = get("stripe_middle")
+    public val MIDDLE_STRIPE: RegistryReference<BannerPatternType> = of("stripe_middle")
     @JvmField
-    public val DOWN_RIGHT_STRIPE: BannerPatternType = get("stripe_downright")
+    public val DOWN_RIGHT_STRIPE: RegistryReference<BannerPatternType> = of("stripe_downright")
     @JvmField
-    public val DOWN_LEFT_STRIPE: BannerPatternType = get("stripe_downleft")
+    public val DOWN_LEFT_STRIPE: RegistryReference<BannerPatternType> = of("stripe_downleft")
     @JvmField
-    public val SMALL_STRIPES: BannerPatternType = get("small_stripes")
+    public val SMALL_STRIPES: RegistryReference<BannerPatternType> = of("small_stripes")
     @JvmField
-    public val CROSS: BannerPatternType = get("cross")
+    public val CROSS: RegistryReference<BannerPatternType> = of("cross")
     @JvmField
-    public val STRAIGHT_CROSS: BannerPatternType = get("straight_cross")
+    public val STRAIGHT_CROSS: RegistryReference<BannerPatternType> = of("straight_cross")
     @JvmField
-    public val BOTTOM_TRIANGLE: BannerPatternType = get("triangle_bottom")
+    public val BOTTOM_TRIANGLE: RegistryReference<BannerPatternType> = of("triangle_bottom")
     @JvmField
-    public val TOP_TRIANGLE: BannerPatternType = get("triangle_top")
+    public val TOP_TRIANGLE: RegistryReference<BannerPatternType> = of("triangle_top")
     @JvmField
-    public val BOTTOM_TRIANGLES: BannerPatternType = get("triangles_bottom")
+    public val BOTTOM_TRIANGLES: RegistryReference<BannerPatternType> = of("triangles_bottom")
     @JvmField
-    public val TOP_TRIANGLES: BannerPatternType = get("triangles_top")
+    public val TOP_TRIANGLES: RegistryReference<BannerPatternType> = of("triangles_top")
     @JvmField
-    public val LEFT_DIAGONAL: BannerPatternType = get("diagonal_left")
+    public val LEFT_DIAGONAL: RegistryReference<BannerPatternType> = of("diagonal_left")
     @JvmField
-    public val RIGHT_DIAGONAL: BannerPatternType = get("diagonal_up_right")
+    public val RIGHT_DIAGONAL: RegistryReference<BannerPatternType> = of("diagonal_up_right")
     @JvmField
-    public val LEFT_REVERSE_DIAGONAL: BannerPatternType = get("diagonal_up_left")
+    public val LEFT_REVERSE_DIAGONAL: RegistryReference<BannerPatternType> = of("diagonal_up_left")
     @JvmField
-    public val RIGHT_REVERSE_DIAGONAL: BannerPatternType = get("diagonal_right")
+    public val RIGHT_REVERSE_DIAGONAL: RegistryReference<BannerPatternType> = of("diagonal_right")
     @JvmField
-    public val MIDDLE_CIRCLE: BannerPatternType = get("circle")
+    public val MIDDLE_CIRCLE: RegistryReference<BannerPatternType> = of("circle")
     @JvmField
-    public val MIDDLE_RHOMBUS: BannerPatternType = get("rhombus")
+    public val MIDDLE_RHOMBUS: RegistryReference<BannerPatternType> = of("rhombus")
     @JvmField
-    public val LEFT_HALF_VERTICAL: BannerPatternType = get("half_vertical")
+    public val LEFT_HALF_VERTICAL: RegistryReference<BannerPatternType> = of("half_vertical")
     @JvmField
-    public val TOP_HALF_HORIZONTAL: BannerPatternType = get("half_horizontal")
+    public val TOP_HALF_HORIZONTAL: RegistryReference<BannerPatternType> = of("half_horizontal")
     @JvmField
-    public val RIGHT_HALF_VERTICAL: BannerPatternType = get("half_vertical_right")
+    public val RIGHT_HALF_VERTICAL: RegistryReference<BannerPatternType> = of("half_vertical_right")
     @JvmField
-    public val BOTTOM_HALF_HORIZONTAL: BannerPatternType = get("half_horizontal_bottom")
+    public val BOTTOM_HALF_HORIZONTAL: RegistryReference<BannerPatternType> = of("half_horizontal_bottom")
     @JvmField
-    public val BORDER: BannerPatternType = get("border")
+    public val BORDER: RegistryReference<BannerPatternType> = of("border")
     @JvmField
-    public val CURLY_BORDER: BannerPatternType = get("curly_border")
+    public val CURLY_BORDER: RegistryReference<BannerPatternType> = of("curly_border")
     @JvmField
-    public val GRADIENT: BannerPatternType = get("gradient")
+    public val GRADIENT: RegistryReference<BannerPatternType> = of("gradient")
     @JvmField
-    public val REVERSE_GRADIENT: BannerPatternType = get("gradient_up")
+    public val REVERSE_GRADIENT: RegistryReference<BannerPatternType> = of("gradient_up")
     @JvmField
-    public val BRICKS: BannerPatternType = get("bricks")
+    public val BRICKS: RegistryReference<BannerPatternType> = of("bricks")
     @JvmField
-    public val GLOBE: BannerPatternType = get("globe")
+    public val GLOBE: RegistryReference<BannerPatternType> = of("globe")
     @JvmField
-    public val CREEPER: BannerPatternType = get("creeper")
+    public val CREEPER: RegistryReference<BannerPatternType> = of("creeper")
     @JvmField
-    public val SKULL: BannerPatternType = get("skull")
+    public val SKULL: RegistryReference<BannerPatternType> = of("skull")
     @JvmField
-    public val FLOWER: BannerPatternType = get("flower")
+    public val FLOWER: RegistryReference<BannerPatternType> = of("flower")
     @JvmField
-    public val MOJANG: BannerPatternType = get("mojang")
+    public val MOJANG: RegistryReference<BannerPatternType> = of("mojang")
     @JvmField
-    public val PIGLIN: BannerPatternType = get("piglin")
+    public val PIGLIN: RegistryReference<BannerPatternType> = of("piglin")
 
     @JvmStatic
-    private fun get(name: String): BannerPatternType = Registries.BANNER_PATTERN.get(Key.key(name))!!
+    private fun of(name: String): RegistryReference<BannerPatternType> = RegistryReference.of(Registries.BANNER_PATTERN, Key.key(name))
 }

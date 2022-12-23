@@ -34,7 +34,7 @@ import org.kryptonmc.krypton.world.block.palette.PaletteHolder
 class ChunkSection(
     y: Int,
     val blocks: PaletteHolder<KryptonBlockState> = PaletteHolder(PaletteHolder.Strategy.BLOCKS, KryptonBlocks.AIR.defaultState),
-    val biomes: PaletteHolder<Biome> = PaletteHolder(PaletteHolder.Strategy.BIOMES, Biomes.PLAINS),
+    val biomes: PaletteHolder<Biome> = PaletteHolder(PaletteHolder.Strategy.BIOMES, Biomes.PLAINS.get()),
     val blockLight: ByteArray = ByteArray(LIGHTS_SIZE),
     val skyLight: ByteArray = ByteArray(LIGHTS_SIZE)
 ) : NoiseBiomeSource {

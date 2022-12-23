@@ -29,4 +29,6 @@ class KryptonBlockEntityType<T : BlockEntity>(private val key: Key, override val
     override fun key(): Key = key
 
     override fun isApplicable(block: Block): Boolean = applicableBlocks.contains(block)
+
+    override fun toString(): String = "BlockEntityType(applicableBlocks=$applicableBlocks)"
 }

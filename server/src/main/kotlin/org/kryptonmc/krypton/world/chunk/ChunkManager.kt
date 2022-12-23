@@ -135,7 +135,7 @@ class ChunkManager(private val world: KryptonWorld) : AutoCloseable {
                 val biomes = if (sectionData.contains("biomes", CompoundTag.ID)) {
                     PaletteHolder.readBiomes(sectionData.getCompound("biomes"))
                 } else {
-                    PaletteHolder(PaletteHolder.Strategy.BIOMES, Biomes.PLAINS)
+                    PaletteHolder(PaletteHolder.Strategy.BIOMES, Biomes.PLAINS.get())
                 }
                 val section = ChunkSection(y, blocks, biomes, sectionData.getByteArray("BlockLight"), sectionData.getByteArray("SkyLight"))
                 sections[index] = section

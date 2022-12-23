@@ -18,8 +18,6 @@
  */
 package org.kryptonmc.krypton.registry
 
-import com.google.common.collect.ImmutableList
-import com.google.common.collect.ImmutableSet
 import com.google.common.collect.Iterators
 import com.google.common.collect.Maps
 import com.google.common.collect.Sets
@@ -31,12 +29,16 @@ import org.kryptonmc.api.registry.Registry
 import org.kryptonmc.api.resource.ResourceKey
 import org.kryptonmc.api.tags.TagKey
 import org.kryptonmc.api.tags.TagSet
+import org.kryptonmc.krypton.registry.holder.Holder
+import org.kryptonmc.krypton.registry.holder.HolderGetter
+import org.kryptonmc.krypton.registry.holder.HolderLookup
+import org.kryptonmc.krypton.registry.holder.HolderOwner
+import org.kryptonmc.krypton.registry.holder.HolderSet
 import org.kryptonmc.krypton.tags.KryptonTagSet
-import org.kryptonmc.serialization.DataResult
+import org.kryptonmc.krypton.util.ImmutableLists
+import org.kryptonmc.krypton.util.ImmutableSets
 import java.util.Collections
 import java.util.IdentityHashMap
-import java.util.OptionalInt
-import java.util.function.Function
 import java.util.stream.Collectors
 import java.util.stream.Stream
 import kotlin.math.max
@@ -44,14 +46,7 @@ import kotlin.math.max
 /**
  * A simple registry implementation that provides all of the required functionality of KryptonRegistry.
  */
-open class KryptonSimpleRegistry<T>(
-    key: ResourceKey<out Registry<T>>,
-    /**
-     * A function that provides a custom holder reference for a value. Used for registries where all the holders
-     * are intrusive.
-     */
-    private val customHolderProvider: Function<T, Holder.Reference<T>>?
-) : WritableRegistry<T>(key) {
+open class KryptonSimpleRegistry<T> protected constructor(override val key: ResourceKey<out Registry<T>>, intrusive: Boolean) : WritableRegistry<T> {
 
     // A map of IDs to holder references. This is an array list because it saves space and is generally faster, as arrays are O(1) to access
     // and they are indexed by integers, so the list doesn't have to store the keys.
@@ -68,10 +63,10 @@ open class KryptonSimpleRegistry<T>(
 
     // The backing map holding the tags in this registry, where a tag is a set of values associated with a tag key.
     @Volatile
-    private var tagMap: MutableMap<TagKey<T>, KryptonTagSet<T>> = IdentityHashMap()
+    private var tagMap: MutableMap<TagKey<T>, HolderSet.Named<T>> = IdentityHashMap()
     // A cache of all the intrusive reference holders, to allow reusing them for identical values.
     // This is lazily initialized as not all registries have intrusive references.
-    private var intrusiveHolderCache: MutableMap<T, Holder.Reference<T>>? = null
+    private var unregisteredIntrusiveHolders: MutableMap<T, Holder.Reference<T>>? = null
     // A cache of the holders in this registry in order of registration. This is lazily initialized as it may not be necessary.
     private var holdersInOrder: List<Holder.Reference<T>>? = null
     // Indicates whether this registry can be written to. This allows us to lock the registry to avoid any changes being made to it, which
@@ -79,6 +74,17 @@ open class KryptonSimpleRegistry<T>(
     private var frozen = false
     // The ID to be used for registering the next value.
     private var nextId = 0
+    private val lookup = object : HolderLookup.ForRegistry<T> {
+        override fun key(): ResourceKey<out Registry<out T>> = key
+
+        override fun get(key: ResourceKey<T>): Holder.Reference<T>? = getHolder(key)
+
+        override fun listElements(): Stream<Holder.Reference<T>> = holders()
+
+        override fun get(key: TagKey<T>): HolderSet.Named<T>? = getTag(key)
+
+        override fun listTags(): Stream<HolderSet.Named<T>> = tags().values.stream()
+    }
 
     /*
      * Base API implementation properties. These are all delegates to internals above, as all collections/maps must be
@@ -86,21 +92,18 @@ open class KryptonSimpleRegistry<T>(
      * which would completely break the API, as it is designed to control when registration can occur.
      */
 
-    override val keys: Set<Key>
-        get() = Collections.unmodifiableSet(byLocation.keys)
-    override val registryKeys: Set<ResourceKey<T>>
-        get() = Collections.unmodifiableSet(byKey.keys)
-    override val entries: Set<Map.Entry<ResourceKey<T>, T>>
-        get() = Collections.unmodifiableSet(Maps.transformValues(byKey) { it.value() }.entries)
-    override val size: Int
+    final override val keys: Set<Key> = Collections.unmodifiableSet(byLocation.keys)
+    final override val registryKeys: Set<ResourceKey<T>> = Collections.unmodifiableSet(byKey.keys)
+    final override val entries: Set<Map.Entry<ResourceKey<T>, T>> =
+        Collections.unmodifiableSet(Maps.transformValues(byKey) { it.value() }.entries)
+    final override val size: Int
         get() = byKey.size
-    override val tagKeys: Set<TagKey<T>>
-        get() = Collections.unmodifiableSet(tags.keys)
-    override val tags: Map<TagKey<T>, TagSet<T>>
-        get() = Collections.unmodifiableMap(tagMap)
+    final override val tags: Map<TagKey<T>, TagSet<T>> =
+        Collections.unmodifiableMap(Maps.transformValues(tagMap) { KryptonTagSet(this, it) })
+    final override val tagKeys: Set<TagKey<T>> = Collections.unmodifiableSet(tags.keys)
 
     init {
-        if (customHolderProvider != null) intrusiveHolderCache = IdentityHashMap()
+        if (intrusive) unregisteredIntrusiveHolders = IdentityHashMap()
     }
 
     /**
@@ -114,6 +117,10 @@ open class KryptonSimpleRegistry<T>(
         return holdersInOrder!!
     }
 
+    private fun validateWrite() {
+        if (frozen) error("Registry is already frozen! Cannot write to it!")
+    }
+
     private fun validateWrite(key: ResourceKey<T>) {
         if (frozen) error("Registry is already frozen! Cannot write to it! Requested key: $key")
     }
@@ -122,51 +129,32 @@ open class KryptonSimpleRegistry<T>(
      * Writable registry API implementation methods.
      */
 
-    override fun register(id: Int, key: ResourceKey<T>, value: T): Holder<T> = register(id, key, value, true)
-
-    override fun register(key: ResourceKey<T>, value: T): Holder<T> = register(nextId, key, value)
-
-    override fun registerOrOverride(id: OptionalInt, key: ResourceKey<T>, value: T): Holder<T> {
+    override fun register(id: Int, key: ResourceKey<T>, value: T): Holder.Reference<T> {
         validateWrite(key)
-        val existing = byKey.get(key)
-        val existingValue = if (existing != null && existing.isBound()) existing.value() else null
-
-        val actualId: Int
-        if (existingValue == null) {
-            actualId = id.orElse(nextId)
-        } else {
-            actualId = toId.getInt(existingValue)
-            if (id.isPresent && id.asInt != actualId) error("ID mismatch! Provided: ${id.asInt}, Expected: $actualId (Registry: ${this.key})")
-            toId.removeInt(existingValue)
-            byValue.remove(existingValue)
-        }
-        return register(actualId, key, value, false)
-    }
-
-    private fun register(id: Int, key: ResourceKey<T>, value: T, logDuplicateKeys: Boolean): Holder<T> {
-        validateWrite(key)
-        byId.size(max(byId.size, id + 1))
-        toId.put(value, id)
-        holdersInOrder = null
-
-        if (logDuplicateKeys && byKey.containsKey(key)) LOGGER.error("Adding duplicate key $key to registry ${this.key}!")
-        if (byValue.containsKey(value)) LOGGER.error("Adding duplicate value $value to registry ${this.key}!")
-        if (nextId <= id) nextId = id + 1
+        if (byLocation.containsKey(key.location)) LOGGER.warn("Adding duplicate key $key to registry ${this.key}")
+        if (byValue.containsKey(value)) LOGGER.warn("Adding duplicate value $value to registry ${this.key}")
 
         val holder: Holder.Reference<T>
-        if (customHolderProvider != null) {
-            holder = customHolderProvider.apply(value)
-            val existing = byKey.put(key, holder)
-            if (existing != null && existing != holder) error("Invalid holder present for key $key in registry ${this.key}!")
+        if (unregisteredIntrusiveHolders != null) {
+            holder = unregisteredIntrusiveHolders!!.remove(value) ?:
+                throw AssertionError("Missing intrusive holder for $key -> $value in registry ${this.key}!")
+            holder.bindKey(key)
         } else {
-            holder = byKey.computeIfAbsent(key) { Holder.Reference.standalone(this, it) }
+            holder = byKey.computeIfAbsent(key) { Holder.Reference.standalone(holderOwner(), it) }
         }
+
+        byKey.put(key, holder)
         byLocation.put(key.location, holder)
         byValue.put(value, holder)
-        holder.bind(key, value)
+        byId.size(max(byId.size, id + 1))
         byId.set(id, holder)
+        toId.put(value, id)
+        if (nextId <= id) nextId = id + 1
+        holdersInOrder = null
         return holder
     }
+
+    override fun register(key: ResourceKey<T>, value: T): Holder.Reference<T> = register(nextId, key, value)
 
     /*
      * Base API implementation methods.
@@ -192,51 +180,46 @@ open class KryptonSimpleRegistry<T>(
     }
 
     /*
-     * Holder API implementation methods.
+     * Holder API.
      */
 
     override fun holders(): Stream<Holder.Reference<T>> = holdersInOrder().stream()
 
-    override fun getHolder(id: Int): Holder<T>? {
+    override fun getHolder(id: Int): Holder.Reference<T>? {
         if (id < 0 || id >= byId.size) return null
         return byId.get(id)
     }
 
-    override fun getHolder(key: ResourceKey<T>): Holder<T>? = byKey.get(key)
-
-    override fun getOrCreateHolder(key: ResourceKey<T>): DataResult<Holder<T>> {
-        var holder = byKey.get(key)
-        if (holder == null) {
-            if (customHolderProvider != null) return DataResult.error("This registry cannot create new holders without a value! Requested key: $key")
-            if (frozen) return DataResult.error("Registry is already frozen! Requested key: $key")
-            holder = Holder.Reference.standalone(this, key)
-            byKey.put(key, holder)
-        }
-        return DataResult.success(holder)
-    }
-
-    override fun getOrCreateHolderOrThrow(key: ResourceKey<T>): Holder<T> = byKey.computeIfAbsent(key) {
-        check(customHolderProvider == null) { "This registry cannot create new holders without a value! Requested key: $key" }
-        validateWrite(it)
-        Holder.Reference.standalone(this, it)
-    }
+    override fun getHolder(key: ResourceKey<T>): Holder.Reference<T>? = byKey.get(key)
 
     override fun createIntrusiveHolder(value: T): Holder.Reference<T> {
-        requireNotNull(customHolderProvider) { "This registry cannot create intrusive holders!" }
-        if (!frozen && intrusiveHolderCache != null) return intrusiveHolderCache!!.computeIfAbsent(value) { Holder.Reference.intrusive(this, it) }
-        error("Registry is already frozen!")
+        val holders = requireNotNull(unregisteredIntrusiveHolders) { "This registry cannot create intrusive holders!" }
+        validateWrite()
+        return holders.computeIfAbsent(value) { Holder.Reference.intrusive(asLookup(), it) }
     }
 
+    private fun getOrCreateHolderOrThrow(key: ResourceKey<T>): Holder.Reference<T> = byKey.computeIfAbsent(key) {
+        if (unregisteredIntrusiveHolders != null) error("This registry cannot create new holders without a value!")
+        validateWrite(key)
+        Holder.Reference.standalone(holderOwner(), it)
+    }
+
+    override fun wrapAsHolder(value: T & Any): Holder<T> = byValue.get(value) ?: Holder.Direct(value)
+
     /*
-     * Tag API implementation methods.
+     * Tag API.
      */
 
-    override fun getTag(key: TagKey<T>): TagSet<T>? = tagMap.get(key)
+    override fun tags(): Map<TagKey<T>, HolderSet.Named<T>> = Collections.unmodifiableMap(tagMap)
 
-    override fun getOrCreateTag(key: TagKey<T>): TagSet<T> {
+    override fun tagNames(): Stream<TagKey<T>> = tagMap.keys.stream()
+
+    override fun getTag(key: TagKey<T>): HolderSet.Named<T>? = tagMap.get(key)
+
+    override fun getOrCreateTag(key: TagKey<T>): HolderSet.Named<T> {
         var tag = tagMap.get(key)
         if (tag == null) {
-            tag = createTagSet(key)
+            tag = createTag(key)
             tagMap = IdentityHashMap(tagMap).apply { put(key, tag) }
         }
         return tag
@@ -244,40 +227,85 @@ open class KryptonSimpleRegistry<T>(
 
     override fun isKnownTagKey(key: TagKey<T>): Boolean = tagMap.containsKey(key)
 
-    override fun resetTags() {
-        tagMap.values.forEach { it.bind(ImmutableList.of()) }
-        byKey.values.forEach { it.bindTags(ImmutableSet.of()) }
-    }
-
     override fun bindTags(tags: Map<TagKey<T>, List<Holder<T>>>) {
         val tagsMap = IdentityHashMap<Holder.Reference<T>, MutableList<TagKey<T>>>()
         byKey.values.forEach { tagsMap.put(it, ArrayList()) }
         tags.forEach { (key, holders) ->
             holders.forEach { holder ->
-                if (!holder.isValidIn(this)) error("Cannot create tag set $key containing value $holder from outside registry $this!")
+                if (!holder.canSerializeIn(asLookup())) error("Cannot create tag set $key containing value $holder from outside registry $this!")
                 if (holder !is Holder.Reference<*>) error("Found direct holder $holder value in tag $key!")
                 tagsMap.get(holder as Holder.Reference<T>)!!.add(key)
             }
         }
+
         val difference = Sets.difference(tagMap.keys, tagsMap.keys)
         if (!difference.isEmpty()) {
             val missing = difference.stream().map { it.location.asString() }.sorted().collect(Collectors.joining(", "))
             LOGGER.warn("Not all defined tags for registry $key are present in data pack: $missing")
         }
+
         val tagsCopy = IdentityHashMap(tagMap)
-        tags.forEach { (key, holders) -> tagsCopy.computeIfAbsent(key) { createTagSet(it) }.bindHolders(holders) }
+        tags.forEach { (key, holders) -> tagsCopy.computeIfAbsent(key) { createTag(it) }.bind(holders) }
         tagsMap.forEach { (key, value) -> key.bindTags(value) }
         tagMap = tagsCopy
     }
 
-    override fun tagNames(): Stream<TagKey<T>> = tagMap.keys.stream()
+    override fun resetTags() {
+        tagMap.values.forEach { it.bind(ImmutableLists.of()) }
+        byKey.values.forEach { it.bindTags(ImmutableSets.of()) }
+    }
 
-    private fun createTagSet(key: TagKey<T>): KryptonTagSet<T> = KryptonTagSet(this, key)
+    private fun createTag(key: TagKey<T>): HolderSet.Named<T> = HolderSet.Named(holderOwner(), key)
+
+    /*
+     * Miscellaneous API.
+     */
+
+    override fun freeze(): KryptonRegistry<T> {
+        if (frozen) return this
+        frozen = true
+        byValue.forEach { (value, holder) -> holder.bindValue(value) }
+        val unbound = byKey.entries.stream().filter { !it.value.isBound() }.map { it.key.location }.sorted().toList()
+        if (unbound.isNotEmpty()) error("Unbound values $unbound in registry $key!")
+        val intrusiveHolders = unregisteredIntrusiveHolders
+        if (intrusiveHolders != null) {
+            if (intrusiveHolders.isNotEmpty()) error("Some intrusive holders were not registered: $intrusiveHolders")
+            unregisteredIntrusiveHolders = null
+        }
+        return this
+    }
+
+    override fun createRegistrationLookup(): HolderGetter<T> {
+        validateWrite()
+        return object : HolderGetter<T> {
+            override fun get(key: ResourceKey<T>): Holder.Reference<T> = getOrThrow(key)
+
+            override fun getOrThrow(key: ResourceKey<T>): Holder.Reference<T> = getOrCreateHolderOrThrow(key)
+
+            override fun get(key: TagKey<T>): HolderSet.Named<T> = getOrThrow(key)
+
+            override fun getOrThrow(key: TagKey<T>): HolderSet.Named<T> = getOrCreateTag(key)
+        }
+    }
+
+    override fun holderOwner(): HolderOwner<T> = lookup
+
+    override fun asLookup(): HolderLookup.ForRegistry<T> = lookup
+
+    override fun isEmpty(): Boolean = byKey.isEmpty()
 
     override fun iterator(): Iterator<T> = Iterators.transform(holdersInOrder().iterator()) { it.value() }
+
+    override fun toString(): String = "SimpleRegistry(key=$key)"
 
     companion object {
 
         private val LOGGER = LogManager.getLogger()
+
+        @JvmStatic
+        fun <T> standard(key: ResourceKey<out Registry<T>>): KryptonSimpleRegistry<T> = KryptonSimpleRegistry(key, false)
+
+        @JvmStatic
+        fun <T> intrusive(key: ResourceKey<out Registry<T>>): KryptonSimpleRegistry<T> = KryptonSimpleRegistry(key, true)
     }
 }

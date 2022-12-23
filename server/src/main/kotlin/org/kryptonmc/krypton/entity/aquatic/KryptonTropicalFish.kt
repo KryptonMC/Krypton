@@ -39,7 +39,7 @@ class KryptonTropicalFish(world: KryptonWorld) : KryptonSchoolingFish(world), Tr
     override val serializer: EntitySerializer<KryptonTropicalFish>
         get() = TropicalFishSerializer
     override val bucketType: ItemType
-        get() = ItemTypes.TROPICAL_FISH_BUCKET
+        get() = ItemTypes.TROPICAL_FISH_BUCKET.get()
 
     override var baseColor: DyeColor
         get() = extractBaseColor(data.get(MetadataKeys.TropicalFish.VARIANT))

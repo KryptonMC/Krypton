@@ -23,6 +23,7 @@ import org.apache.logging.log4j.LogManager
 import org.kryptonmc.api.entity.Entity
 import org.kryptonmc.api.entity.EntityType
 import org.kryptonmc.api.entity.EntityTypes
+import org.kryptonmc.api.registry.RegistryReference
 import org.kryptonmc.krypton.entity.ambient.KryptonBat
 import org.kryptonmc.krypton.entity.animal.KryptonAxolotl
 import org.kryptonmc.krypton.entity.animal.KryptonBee
@@ -157,8 +158,8 @@ object EntityFactory {
     }
 
     @JvmStatic
-    private inline fun entry(type: EntityType<Entity>, crossinline constructor: (KryptonWorld) -> KryptonEntity): Entry =
-        Entry(type, Function { constructor(it) })
+    private inline fun entry(type: RegistryReference<out EntityType<Entity>>, crossinline constructor: (KryptonWorld) -> KryptonEntity): Entry =
+        Entry(type.get(), Function { constructor(it) })
 }
 
 private typealias Entry = Pair<EntityType<Entity>, Function<KryptonWorld, KryptonEntity>?>

@@ -16,18 +16,23 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.registry
+package org.kryptonmc.krypton.registry.holder
 
-import com.google.common.collect.ImmutableSet
 import net.kyori.adventure.key.Key
-import org.kryptonmc.api.registry.Registry
 import org.kryptonmc.api.resource.ResourceKey
 import org.kryptonmc.api.tags.TagKey
+import org.kryptonmc.krypton.util.ImmutableSets
 import org.kryptonmc.util.Either
 import java.util.Optional
 import java.util.function.Predicate
 import java.util.stream.Stream
 
+/**
+ * A holder of a registry value.
+ *
+ * This is used to allow registries to be dynamically repopulated when reloaded and not have the problem
+ * of updating existing references to the new registry values.
+ */
 interface Holder<T> {
 
     fun kind(): Kind
@@ -37,8 +42,6 @@ interface Holder<T> {
     fun value(): T & Any
 
     fun tags(): Stream<TagKey<T>>
-
-    fun isValidIn(registry: Registry<T>): Boolean
 
     fun eq(key: Key): Boolean
 
@@ -51,6 +54,8 @@ interface Holder<T> {
     fun unwrap(): Either<ResourceKey<T>, T>
 
     fun unwrapKey(): Optional<ResourceKey<T>>
+
+    fun canSerializeIn(owner: HolderOwner<T>): Boolean
 
     enum class Kind {
 
@@ -69,8 +74,6 @@ interface Holder<T> {
 
         override fun tags(): Stream<TagKey<T>> = Stream.empty()
 
-        override fun isValidIn(registry: Registry<T>): Boolean = true
-
         override fun eq(key: Key): Boolean = false
 
         override fun eq(key: ResourceKey<T>): Boolean = false
@@ -83,29 +86,29 @@ interface Holder<T> {
 
         override fun unwrapKey(): Optional<ResourceKey<T>> = Optional.empty()
 
-        override fun toString(): String = "Direct($value)"
+        override fun canSerializeIn(owner: HolderOwner<T>): Boolean = true
+
+        override fun toString(): String = "Direct(value=$value)"
     }
 
     class Reference<T> private constructor(
         private val type: Type,
-        private val registry: Registry<T>,
+        private val owner: HolderOwner<T>,
         private var key: ResourceKey<T>?,
         private var value: T?
     ) : Holder<T> {
 
-        private var tags = ImmutableSet.of<TagKey<T>>()
+        private var tags = ImmutableSets.of<TagKey<T>>()
 
         override fun kind(): Kind = Kind.REFERENCE
 
         override fun isBound(): Boolean = key != null && value != null
 
-        fun key(): ResourceKey<T> = checkNotNull(key) { "Trying to access unbound value $value from registry $registry!" }
+        fun key(): ResourceKey<T> = checkNotNull(key) { "Trying to access unbound value $value from registry $owner!" }
 
-        override fun value(): T & Any = checkNotNull(value) { "Trying to access unbound value $key from registry $registry!" }
+        override fun value(): T & Any = checkNotNull(value) { "Trying to access unbound value $key from registry $owner!" }
 
         override fun tags(): Stream<TagKey<T>> = tags.stream()
-
-        override fun isValidIn(registry: Registry<T>): Boolean = this.registry == registry
 
         override fun eq(key: Key): Boolean = key().location == key
 
@@ -119,18 +122,23 @@ interface Holder<T> {
 
         override fun unwrapKey(): Optional<ResourceKey<T>> = Optional.of(key())
 
-        internal fun bind(key: ResourceKey<T>, value: T) {
-            require(this.key == null || key == this.key) { "Cannot modify holder key! Existing: ${this.key}, New: $key" }
-            require(type != Type.INTRUSIVE || this.value == value) { "Cannot modify holder! Existing: ${this.value}, New: $value" }
+        override fun canSerializeIn(owner: HolderOwner<T>): Boolean = this.owner.canSerializeIn(owner)
+
+        internal fun bindKey(key: ResourceKey<T>) {
+            if (this.key != null && key !== this.key) error("Cannot modify holder key! Existing: ${this.key}, New: $key")
             this.key = key
+        }
+
+        internal fun bindValue(value: T) {
+            if (type == Type.INTRUSIVE && this.value !== value) error("Cannot modify intrusive holder value! Existing: ${this.value}, New: $value")
             this.value = value
         }
 
         internal fun bindTags(tags: Collection<TagKey<T>>) {
-            this.tags = ImmutableSet.copyOf(tags)
+            this.tags = ImmutableSets.copyOf(tags)
         }
 
-        override fun toString(): String = "Reference($key=$value)"
+        override fun toString(): String = "Reference(key=$key, value=$value)"
 
         enum class Type {
 
@@ -141,10 +149,10 @@ interface Holder<T> {
         companion object {
 
             @JvmStatic
-            fun <T> standalone(registry: Registry<T>, key: ResourceKey<T>): Reference<T> = Reference(Type.STANDALONE, registry, key, null)
+            fun <T> standalone(owner: HolderOwner<T>, key: ResourceKey<T>): Reference<T> = Reference(Type.STANDALONE, owner, key, null)
 
             @JvmStatic
-            fun <T> intrusive(registry: Registry<T>, value: T): Reference<T> = Reference(Type.INTRUSIVE, registry, null, value)
+            fun <T> intrusive(owner: HolderOwner<T>, value: T): Reference<T> = Reference(Type.INTRUSIVE, owner, null, value)
         }
     }
 }

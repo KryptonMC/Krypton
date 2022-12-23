@@ -19,6 +19,7 @@
 package org.kryptonmc.krypton.world.damage
 
 import net.kyori.adventure.text.Component
+import org.kryptonmc.api.registry.RegistryReference
 import org.kryptonmc.api.util.Vec3d
 import org.kryptonmc.api.world.damage.DamageSource
 import org.kryptonmc.api.world.damage.type.DamageType
@@ -27,6 +28,8 @@ import org.kryptonmc.krypton.entity.KryptonLivingEntity
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 
 open class KryptonDamageSource(override val type: DamageType) : DamageSource {
+
+    constructor(type: RegistryReference<DamageType>) : this(type.get())
 
     fun damagesHelmet(): Boolean = type.damagesHelmet
 

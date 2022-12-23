@@ -68,9 +68,9 @@ object KryptonAdventure {
 
     @JvmStatic
     fun toItemStack(book: Book): KryptonItemStack {
-        if (book is KryptonWrittenBookMeta) return KryptonItemStack(ItemTypes.WRITTEN_BOOK.downcast(), 1, book)
+        if (book is KryptonWrittenBookMeta) return KryptonItemStack(ItemTypes.WRITTEN_BOOK.get().downcast(), 1, book)
         return KryptonItemStack.Builder()
-            .type(ItemTypes.WRITTEN_BOOK)
+            .type(ItemTypes.WRITTEN_BOOK.get())
             .amount(1)
             .meta<_, WrittenBookMeta> {
                 title(book.title())

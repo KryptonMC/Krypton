@@ -34,6 +34,6 @@ class KryptonEgg(world: KryptonWorld) : KryptonThrowableProjectile(world), Egg {
 
     companion object {
 
-        private val DEFAULT_ITEM = KryptonItemStack(ItemTypes.EGG)
+        private val DEFAULT_ITEM = KryptonItemStack(ItemTypes.EGG.get())
     }
 }

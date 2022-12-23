@@ -53,10 +53,10 @@ class KryptonTrident(world: KryptonWorld) : KryptonArrowLike(world), Trident {
         data.define(MetadataKeys.Trident.ENCHANTED, false)
     }
 
-    override fun defaultHitGroundSound(): SoundEvent = SoundEvents.TRIDENT_HIT_GROUND
+    override fun defaultHitGroundSound(): SoundEvent = SoundEvents.TRIDENT_HIT_GROUND.get()
 
     companion object {
 
-        private val DEFAULT_ITEM = KryptonItemStack(ItemTypes.TRIDENT)
+        private val DEFAULT_ITEM = KryptonItemStack(ItemTypes.TRIDENT.get())
     }
 }

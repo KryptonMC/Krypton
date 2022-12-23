@@ -18,19 +18,21 @@
  */
 package org.kryptonmc.krypton.registry
 
-import org.kryptonmc.api.registry.Registry
 import org.kryptonmc.api.resource.ResourceKey
-import java.util.OptionalInt
+import org.kryptonmc.krypton.registry.holder.Holder
+import org.kryptonmc.krypton.registry.holder.HolderGetter
 
 /**
  * A registry that may be written to. This subclass exists to limit the scope of registry writing, as registries must be downcasted
  * to this type in order to access the register methods in this class.
  */
-abstract class WritableRegistry<T>(key: ResourceKey<out Registry<T>>) : KryptonRegistry<T>(key) {
+interface WritableRegistry<T> : KryptonRegistry<T> {
 
-    abstract fun register(id: Int, key: ResourceKey<T>, value: T): Holder<T>
+    fun register(id: Int, key: ResourceKey<T>, value: T): Holder.Reference<T>
 
-    abstract fun register(key: ResourceKey<T>, value: T): Holder<T>
+    fun register(key: ResourceKey<T>, value: T): Holder.Reference<T>
 
-    abstract fun registerOrOverride(id: OptionalInt, key: ResourceKey<T>, value: T): Holder<T>
+    fun isEmpty(): Boolean
+
+    fun createRegistrationLookup(): HolderGetter<T>
 }

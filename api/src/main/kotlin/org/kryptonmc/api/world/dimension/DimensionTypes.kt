@@ -10,6 +10,7 @@ package org.kryptonmc.api.world.dimension
 
 import net.kyori.adventure.key.Key
 import org.kryptonmc.api.registry.Registries
+import org.kryptonmc.api.registry.RegistryReference
 import org.kryptonmc.internal.annotations.Catalogue
 
 /**
@@ -20,15 +21,15 @@ public object DimensionTypes {
 
     // @formatter:off
     @JvmField
-    public val OVERWORLD: DimensionType = get("overworld")
+    public val OVERWORLD: RegistryReference<DimensionType> = of("overworld")
     @JvmField
-    public val OVERWORLD_CAVES: DimensionType = get("overworld_caves")
+    public val OVERWORLD_CAVES: RegistryReference<DimensionType> = of("overworld_caves")
     @JvmField
-    public val THE_NETHER: DimensionType = get("the_nether")
+    public val THE_NETHER: RegistryReference<DimensionType> = of("the_nether")
     @JvmField
-    public val THE_END: DimensionType = get("the_end")
+    public val THE_END: RegistryReference<DimensionType> = of("the_end")
 
     // @formatter:on
     @JvmStatic
-    private fun get(name: String): DimensionType = Registries.DIMENSION_TYPE.get(Key.key(name))!!
+    private fun of(name: String): RegistryReference<DimensionType> = RegistryReference.of(Registries.DIMENSION_TYPE, Key.key(name))
 }

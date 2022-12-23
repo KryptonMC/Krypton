@@ -34,6 +34,6 @@ class KryptonThrownPotion(world: KryptonWorld) : KryptonThrowableProjectile(worl
 
     companion object {
 
-        private val DEFAULT_ITEM = KryptonItemStack(ItemTypes.POTION)
+        private val DEFAULT_ITEM = KryptonItemStack(ItemTypes.POTION.get())
     }
 }

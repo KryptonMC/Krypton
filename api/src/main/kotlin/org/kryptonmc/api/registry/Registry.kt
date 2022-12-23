@@ -122,7 +122,7 @@ public interface Registry<T> : Iterable<T> {
      * @param key the tag key
      * @return the tag set encapsulating the values for the tag
      */
-    public fun getTag(key: TagKey<T>): TagSet<T>?
+    public fun getTagValues(key: TagKey<T>): TagSet<T>?
 
     /**
      * Creates a new stream of the elements in this registry.
