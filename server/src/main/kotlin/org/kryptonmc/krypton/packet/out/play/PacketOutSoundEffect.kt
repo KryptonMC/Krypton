@@ -40,14 +40,8 @@ data class PacketOutSoundEffect(
     val seed: Long
 ) : Packet {
 
-    constructor(event: SoundEvent, source: Sound.Source, x: Double, y: Double, z: Double, volume: Float, pitch: Float,
-                seed: Long) : this(event, source, (x * 8.0).toInt(), (y * 8.0).toInt(), (z * 8.0).toInt(), volume, pitch, seed)
-
-    constructor(sound: Sound, event: SoundEvent, x: Double, y: Double, z: Double,
-                seed: Long) : this(event, sound.source(), x, y, z, sound.volume(), sound.pitch(), seed)
-
-    constructor(buf: ByteBuf) : this(readEvent(buf), buf.readEnum(), buf.readInt(), buf.readInt(), buf.readInt(), buf.readFloat(), buf.readFloat(),
-        buf.readLong())
+    constructor(buf: ByteBuf) : this(buf.readById(KryptonRegistries.SOUND_EVENT)!!, buf.readEnum(), buf.readInt(), buf.readInt(), buf.readInt(),
+        buf.readFloat(), buf.readFloat(), buf.readLong())
 
     override fun write(buf: ByteBuf) {
         buf.writeId(KryptonRegistries.SOUND_EVENT, event)
@@ -63,6 +57,13 @@ data class PacketOutSoundEffect(
     companion object {
 
         @JvmStatic
-        private fun readEvent(buf: ByteBuf): SoundEvent = buf.readById(KryptonRegistries.SOUND_EVENT)!!
+        fun create(event: SoundEvent, source: Sound.Source, x: Double, y: Double, z: Double, volume: Float, pitch: Float,
+                   seed: Long): PacketOutSoundEffect {
+            return PacketOutSoundEffect(event, source, (x * 8.0).toInt(), (y * 8.0).toInt(), (z * 8.0).toInt(), volume, pitch, seed)
+        }
+
+        @JvmStatic
+        fun fromSound(sound: Sound, event: SoundEvent, x: Double, y: Double, z: Double, seed: Long): PacketOutSoundEffect =
+            create(event, sound.source(), x, y, z, sound.volume(), sound.pitch(), seed)
     }
 }

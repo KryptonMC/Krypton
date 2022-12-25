@@ -22,7 +22,9 @@ import io.netty.buffer.ByteBuf
 import org.kryptonmc.krypton.network.handlers.LoginHandler
 import org.kryptonmc.krypton.packet.InboundPacket
 import org.kryptonmc.krypton.util.readAllAvailableBytes
+import org.kryptonmc.krypton.util.readNullable
 import org.kryptonmc.krypton.util.readVarInt
+import org.kryptonmc.krypton.util.writeNullable
 import org.kryptonmc.krypton.util.writeVarInt
 import org.kryptonmc.krypton.util.writeVarIntByteArray
 
@@ -30,12 +32,11 @@ import org.kryptonmc.krypton.util.writeVarIntByteArray
 @Suppress("ArrayInDataClass")
 data class PacketInPluginResponse(val messageId: Int, val data: ByteArray?) : InboundPacket<LoginHandler> {
 
-    constructor(buf: ByteBuf) : this(buf.readVarInt(), if (buf.readBoolean()) buf.readAllAvailableBytes() else null)
+    constructor(buf: ByteBuf) : this(buf.readVarInt(), buf.readNullable(ByteBuf::readAllAvailableBytes))
 
     override fun write(buf: ByteBuf) {
         buf.writeVarInt(messageId)
-        buf.writeBoolean(data != null)
-        if (data != null) buf.writeVarIntByteArray(data)
+        buf.writeNullable(data, ByteBuf::writeVarIntByteArray)
     }
 
     override fun handle(handler: LoginHandler) {

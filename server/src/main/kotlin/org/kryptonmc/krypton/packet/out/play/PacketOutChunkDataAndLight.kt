@@ -27,9 +27,6 @@ import org.kryptonmc.krypton.world.chunk.KryptonChunk
 @JvmRecord
 data class PacketOutChunkDataAndLight(val x: Int, val z: Int, val chunkData: ChunkPacketData, val lightData: LightPacketData) : Packet {
 
-    constructor(chunk: KryptonChunk, trustEdges: Boolean) : this(chunk.position.x, chunk.position.z, ChunkPacketData(chunk),
-        LightPacketData.create(chunk, trustEdges))
-
     constructor(buf: ByteBuf) : this(buf.readInt(), buf.readInt(), ChunkPacketData(buf), LightPacketData(buf))
 
     override fun write(buf: ByteBuf) {
@@ -37,5 +34,14 @@ data class PacketOutChunkDataAndLight(val x: Int, val z: Int, val chunkData: Chu
         buf.writeInt(z)
         chunkData.write(buf)
         lightData.write(buf)
+    }
+
+    companion object {
+
+        @JvmStatic
+        fun fromChunk(chunk: KryptonChunk, trustEdges: Boolean): PacketOutChunkDataAndLight {
+            return PacketOutChunkDataAndLight(chunk.position.x, chunk.position.z, ChunkPacketData.fromChunk(chunk),
+                LightPacketData.fromChunk(chunk, trustEdges))
+        }
     }
 }

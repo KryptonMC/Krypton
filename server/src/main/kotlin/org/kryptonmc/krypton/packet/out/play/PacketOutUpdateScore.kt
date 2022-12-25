@@ -29,42 +29,38 @@ import org.kryptonmc.krypton.util.writeString
 import org.kryptonmc.krypton.util.writeVarInt
 
 @JvmRecord
-data class PacketOutUpdateScore(val name: String, val action: Action, val objectiveName: String?, val score: Int) : Packet {
+data class PacketOutUpdateScore(val name: String, val action: Int, val objectiveName: String?, val score: Int) : Packet {
 
-    constructor(name: Component, action: Action, objectiveName: String?, score: Int) : this(toLegacyString(name), action, objectiveName, score)
+    constructor(buf: ByteBuf) : this(buf, buf.readString(MAX_NAME_LENGTH), buf.readByte().toInt(), buf.readString().ifEmpty { null })
 
-    constructor(action: Action, score: Score) : this(toLegacyString(score.name), action, score.objective?.name, score.score)
-
-    constructor(buf: ByteBuf) : this(buf, buf.readString(MAX_NAME_LENGTH), Action.fromId(buf.readByte().toInt())!!)
-
-    private constructor(buf: ByteBuf, name: String, action: Action) : this(name, action, buf.readString().ifEmpty { null },
-        if (action != Action.REMOVE) buf.readVarInt() else 0)
+    private constructor(buf: ByteBuf, name: String, action: Int, objectiveName: String?) : this(name, action, objectiveName,
+        if (action != Actions.REMOVE) buf.readVarInt() else 0)
 
     override fun write(buf: ByteBuf) {
         buf.writeString(name, MAX_NAME_LENGTH)
-        buf.writeByte(action.ordinal)
+        buf.writeByte(action)
         buf.writeString(objectiveName ?: "", MAX_OBJECTIVE_NAME_LENGTH)
-        if (action != Action.REMOVE) buf.writeVarInt(score)
+        if (action != Actions.REMOVE) buf.writeVarInt(score)
     }
 
-    enum class Action {
+    object Actions {
 
-        CREATE_OR_UPDATE,
-        REMOVE;
-
-        companion object {
-
-            private val BY_ID = values()
-
-            @JvmStatic
-            fun fromId(id: Int): Action? = BY_ID.getOrNull(id)
-        }
+        const val CREATE_OR_UPDATE: Int = 0
+        const val REMOVE: Int = 1
     }
 
     companion object {
 
         private const val MAX_NAME_LENGTH = 40
         private const val MAX_OBJECTIVE_NAME_LENGTH = 16
+
+        @JvmStatic
+        fun createOrUpdate(score: Score): PacketOutUpdateScore =
+            PacketOutUpdateScore(toLegacyString(score.name), Actions.CREATE_OR_UPDATE, score.objective?.name, score.score)
+
+        @JvmStatic
+        fun remove(member: Component, objectiveName: String?, score: Int): PacketOutUpdateScore =
+            PacketOutUpdateScore(toLegacyString(member), Actions.REMOVE, objectiveName, score)
 
         @JvmStatic
         private fun toLegacyString(input: Component): String = LegacyComponentSerializer.legacySection().serialize(input)

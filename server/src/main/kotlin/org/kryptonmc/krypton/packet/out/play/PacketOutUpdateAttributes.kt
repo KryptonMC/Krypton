@@ -40,9 +40,6 @@ import java.util.Collections
 @JvmRecord
 data class PacketOutUpdateAttributes(override val entityId: Int, val attributes: Collection<AttributeSnapshot>) : EntityPacket {
 
-    constructor(id: Int, attributes: Iterable<KryptonAttribute>) : this(id,
-        attributes.mapTo(persistentListOf<AttributeSnapshot>().builder(), AttributeSnapshot::from).build())
-
     constructor(buf: ByteBuf) : this(buf.readVarInt(), buf.readList { _ ->
         val type = buf.readKey().let { requireNotNull(KryptonRegistries.ATTRIBUTE.get(it)) { "Cannot find attribute type with key $it!" } }
         val base = buf.readDouble()
@@ -79,5 +76,12 @@ data class PacketOutUpdateAttributes(override val entityId: Int, val attributes:
             fun from(attribute: KryptonAttribute): AttributeSnapshot =
                 AttributeSnapshot(attribute.type, attribute.baseValue, Collections.unmodifiableCollection(attribute.modifiers))
         }
+    }
+
+    companion object {
+
+        @JvmStatic
+        fun create(id: Int, attributes: Iterable<KryptonAttribute>): PacketOutUpdateAttributes =
+            PacketOutUpdateAttributes(id, attributes.mapTo(persistentListOf<AttributeSnapshot>().builder(), AttributeSnapshot::from).build())
     }
 }

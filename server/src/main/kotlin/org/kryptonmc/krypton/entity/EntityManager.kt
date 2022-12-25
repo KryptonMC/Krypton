@@ -23,7 +23,6 @@ import net.kyori.adventure.key.InvalidKeyException
 import net.kyori.adventure.key.Key
 import org.apache.logging.log4j.LogManager
 import org.kryptonmc.api.util.Vec3d
-import org.kryptonmc.api.world.rule.GameRules
 import org.kryptonmc.krypton.KryptonPlatform
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.event.entity.KryptonRemoveEntityEvent
@@ -85,7 +84,7 @@ class EntityManager(val world: KryptonWorld) : AutoCloseable {
         if (player.world != world) return
 
         // TODO: World border
-        player.connection.send(PacketOutUpdateTime(world.data.time, world.data.dayTime, world.data.gameRules.get(GameRules.DO_DAYLIGHT_CYCLE)))
+        player.connection.send(PacketOutUpdateTime.create(world.data))
         if (!player.isVanished) {
             forEachEntityInRange(player.position, player.settings.viewDistance) {
                 it.addViewer(player)

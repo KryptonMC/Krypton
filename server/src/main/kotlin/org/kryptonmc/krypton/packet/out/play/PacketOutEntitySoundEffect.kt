@@ -21,6 +21,7 @@ package org.kryptonmc.krypton.packet.out.play
 import io.netty.buffer.ByteBuf
 import net.kyori.adventure.sound.Sound
 import org.kryptonmc.api.effect.sound.SoundEvent
+import org.kryptonmc.krypton.entity.KryptonEntity
 import org.kryptonmc.krypton.packet.EntityPacket
 import org.kryptonmc.krypton.registry.KryptonRegistries
 import org.kryptonmc.krypton.util.readById
@@ -42,9 +43,6 @@ data class PacketOutEntitySoundEffect(
 
     constructor(buf: ByteBuf) : this(readEvent(buf), buf.readEnum(), buf.readVarInt(), buf.readFloat(), buf.readFloat(), buf.readLong())
 
-    constructor(sound: Sound, event: SoundEvent, entityId: Int,
-                seed: Long) : this(event, sound.source(), entityId, sound.volume(), sound.pitch(), seed)
-
     override fun write(buf: ByteBuf) {
         buf.writeId(KryptonRegistries.SOUND_EVENT, event)
         buf.writeEnum(source)
@@ -55,6 +53,10 @@ data class PacketOutEntitySoundEffect(
     }
 
     companion object {
+
+        @JvmStatic
+        fun create(source: KryptonEntity, sound: Sound, event: SoundEvent, seed: Long): PacketOutEntitySoundEffect =
+            PacketOutEntitySoundEffect(event, sound.source(), source.id, sound.volume(), sound.pitch(), seed)
 
         @JvmStatic
         private fun readEvent(buf: ByteBuf): SoundEvent = buf.readById(KryptonRegistries.SOUND_EVENT)!!

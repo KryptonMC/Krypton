@@ -44,7 +44,7 @@ import org.kryptonmc.krypton.util.IntHashBiMap
 import org.kryptonmc.krypton.util.Keys
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.krypton.world.components.WorldAccessor
-import org.kryptonmc.krypton.world.WorldEvent
+import org.kryptonmc.krypton.world.WorldEvents
 import org.kryptonmc.krypton.world.block.entity.KryptonBlockEntity
 import org.kryptonmc.krypton.world.block.state.BlockBehaviour
 import org.kryptonmc.krypton.world.block.state.KryptonBlockState
@@ -111,7 +111,7 @@ open class KryptonBlock(properties: Properties) : BlockBehaviour(properties), St
     open fun getItemStack(world: BlockGetter, pos: BlockPos, state: KryptonBlockState): KryptonItemStack = defaultItemStack
 
     open fun spawnDestroyParticles(world: KryptonWorld, player: KryptonPlayer, pos: BlockPos, state: KryptonBlockState) {
-        world.worldEvent(pos, WorldEvent.DESTROY_BLOCK, idOf(state), player)
+        world.worldEvent(pos, WorldEvents.DESTROY_BLOCK, idOf(state), player)
     }
 
     open fun playerWillDestroy(world: KryptonWorld, pos: BlockPos, state: KryptonBlockState, player: KryptonPlayer) {

@@ -52,16 +52,9 @@ import java.util.function.BiPredicate
 import java.util.function.Predicate
 
 @JvmRecord
-data class PacketOutCommands(val rootIndex: Int, val nodes: List<Node>) : Packet {
+data class PacketOutCommands(val nodes: List<Node>, val rootIndex: Int) : Packet {
 
-    constructor(root: RootCommandNode<CommandSourceStack>) : this(root, enumerate(root))
-
-    private constructor(root: RootCommandNode<CommandSourceStack>,
-                        enumerations: Object2IntMap<CommandNode<CommandSourceStack>>) : this(enumerations.getInt(root), createNodes(enumerations))
-
-    constructor(buf: ByteBuf) : this(buf.readList { readNode(it) }, buf.readVarInt())
-
-    private constructor(nodes: List<Node>, rootIndex: Int) : this(rootIndex, nodes) {
+    constructor(buf: ByteBuf) : this(buf.readList(::readNode), buf.readVarInt()) {
         validateEntries(nodes) { node, indices -> node.canBuild(indices) }
         validateEntries(nodes) { node, indices -> node.canResolve(indices) }
     }
@@ -77,10 +70,7 @@ data class PacketOutCommands(val rootIndex: Int, val nodes: List<Node>) : Packet
 
         fun canBuild(indices: IntSet): Boolean = if (flags and FLAG_REDIRECT != 0) !indices.contains(redirectNode) else true
 
-        fun canResolve(indices: IntSet): Boolean {
-            children.forEach { if (indices.contains(it)) return false }
-            return true
-        }
+        fun canResolve(indices: IntSet): Boolean = children.all { !indices.contains(it) }
 
         override fun write(buf: ByteBuf) {
             buf.writeByte(flags)
@@ -120,6 +110,12 @@ data class PacketOutCommands(val rootIndex: Int, val nodes: List<Node>) : Packet
         private const val TYPE_ROOT = 0
         private const val TYPE_LITERAL = 1
         private const val TYPE_ARGUMENT = 2
+
+        @JvmStatic
+        fun createFromRootNode(root: RootCommandNode<CommandSourceStack>): PacketOutCommands {
+            val enumerations = enumerate(root)
+            return PacketOutCommands(createNodes(enumerations), enumerations.getInt(root))
+        }
 
         @JvmStatic
         private fun createNodes(enumerations: Object2IntMap<CommandNode<CommandSourceStack>>): List<Node> {

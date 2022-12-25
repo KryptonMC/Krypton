@@ -41,13 +41,17 @@ import java.util.UUID
 @JvmRecord
 data class PacketOutLoginSuccess(val uuid: UUID, val username: String, val properties: List<ProfileProperty>) : Packet {
 
-    constructor(profile: GameProfile) : this(profile.uuid, profile.name, profile.properties)
-
     constructor(buf: ByteBuf) : this(buf.readUUID(), buf.readString(), buf.readList { it.readProfileProperty() })
 
     override fun write(buf: ByteBuf) {
         buf.writeUUID(uuid)
         buf.writeString(username)
         buf.writeCollection(properties, buf::writeProfileProperty)
+    }
+
+    companion object {
+
+        @JvmStatic
+        fun create(profile: GameProfile): PacketOutLoginSuccess = PacketOutLoginSuccess(profile.uuid, profile.name, profile.properties)
     }
 }

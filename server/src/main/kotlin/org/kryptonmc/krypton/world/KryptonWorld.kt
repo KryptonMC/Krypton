@@ -39,7 +39,7 @@ import org.kryptonmc.krypton.entity.EntityManager
 import org.kryptonmc.krypton.entity.KryptonEntity
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.packet.Packet
-import org.kryptonmc.krypton.packet.out.play.GameEvent
+import org.kryptonmc.krypton.packet.out.play.GameEventTypes
 import org.kryptonmc.krypton.packet.out.play.PacketOutBlockUpdate
 import org.kryptonmc.krypton.packet.out.play.PacketOutEntitySoundEffect
 import org.kryptonmc.krypton.packet.out.play.PacketOutGameEvent
@@ -140,7 +140,7 @@ class KryptonWorld(
         entityManager.removeEntity(entity)
     }
 
-    override fun worldEvent(pos: BlockPos, event: WorldEvent, data: Int, except: KryptonPlayer?) {
+    override fun worldEvent(pos: BlockPos, event: Int, data: Int, except: KryptonPlayer?) {
         server.playerManager.broadcast(PacketOutWorldEvent(event, pos, data, false), this, pos, 64.0, except)
     }
 
@@ -159,7 +159,7 @@ class KryptonWorld(
 
     private fun playSeededSound(x: Double, y: Double, z: Double, event: SoundEvent, source: Sound.Source, volume: Float, pitch: Float, seed: Long,
                                 except: KryptonPlayer?) {
-        val packet = PacketOutSoundEffect(event, source, x, y, z, volume, pitch, seed)
+        val packet = PacketOutSoundEffect.create(event, source, x, y, z, volume, pitch, seed)
         server.playerManager.broadcast(packet, this, x, y, z, KryptonSoundEvent.getRange(event, volume), except)
     }
 
@@ -353,16 +353,16 @@ class KryptonWorld(
         }
 
         if (oldRainLevel != rainLevel) {
-            server.sessionManager.sendGrouped(PacketOutGameEvent(GameEvent.RAIN_LEVEL_CHANGE, rainLevel)) { it.world === this }
+            server.sessionManager.sendGrouped(PacketOutGameEvent(GameEventTypes.RAIN_LEVEL_CHANGE, rainLevel)) { it.world === this }
         }
         if (oldThunderLevel != thunderLevel) {
-            server.sessionManager.sendGrouped(PacketOutGameEvent(GameEvent.THUNDER_LEVEL_CHANGE, thunderLevel)) { it.world === this }
+            server.sessionManager.sendGrouped(PacketOutGameEvent(GameEventTypes.THUNDER_LEVEL_CHANGE, thunderLevel)) { it.world === this }
         }
         if (wasRaining != isRaining) {
-            val newRainState = if (wasRaining) GameEvent.END_RAINING else GameEvent.BEGIN_RAINING
+            val newRainState = if (wasRaining) GameEventTypes.END_RAINING else GameEventTypes.BEGIN_RAINING
             server.sessionManager.sendGrouped(PacketOutGameEvent(newRainState)) { it.world === this }
-            server.sessionManager.sendGrouped(PacketOutGameEvent(GameEvent.RAIN_LEVEL_CHANGE, rainLevel)) { it.world === this }
-            server.sessionManager.sendGrouped(PacketOutGameEvent(GameEvent.THUNDER_LEVEL_CHANGE, thunderLevel)) { it.world === this }
+            server.sessionManager.sendGrouped(PacketOutGameEvent(GameEventTypes.RAIN_LEVEL_CHANGE, rainLevel)) { it.world === this }
+            server.sessionManager.sendGrouped(PacketOutGameEvent(GameEventTypes.THUNDER_LEVEL_CHANGE, thunderLevel)) { it.world === this }
         }
     }
 

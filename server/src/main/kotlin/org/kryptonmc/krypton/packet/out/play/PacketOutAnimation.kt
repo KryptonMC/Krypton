@@ -24,12 +24,12 @@ import org.kryptonmc.krypton.util.readVarInt
 import org.kryptonmc.krypton.util.writeVarInt
 
 @JvmRecord
-data class PacketOutAnimation(override val entityId: Int, val animation: EntityAnimation) : EntityPacket {
+data class PacketOutAnimation(override val entityId: Int, val animation: Int) : EntityPacket {
 
-    constructor(buf: ByteBuf) : this(buf.readVarInt(), EntityAnimation.fromId(buf.readByte().toInt())!!)
+    constructor(buf: ByteBuf) : this(buf.readVarInt(), buf.readByte().toInt())
 
     override fun write(buf: ByteBuf) {
         buf.writeVarInt(entityId)
-        buf.writeByte(animation.ordinal)
+        buf.writeByte(animation)
     }
 }

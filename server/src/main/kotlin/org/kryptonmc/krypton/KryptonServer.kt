@@ -23,7 +23,6 @@ import io.netty.channel.kqueue.KQueue
 import io.netty.channel.unix.DomainSocketAddress
 import org.apache.logging.log4j.LogManager
 import org.kryptonmc.api.world.World
-import org.kryptonmc.api.world.rule.GameRules
 import org.kryptonmc.krypton.auth.KryptonProfileCache
 import org.kryptonmc.krypton.command.KryptonCommandManager
 import org.kryptonmc.krypton.commands.KryptonPermission
@@ -291,8 +290,7 @@ class KryptonServer(
     private fun tickChildren(hasTimeLeft: BooleanSupplier) {
         worldManager.worlds.forEach { (_, world) ->
             if (tickCount % TICKS_PER_SECOND == 0) {
-                val packet = PacketOutUpdateTime(world.data.time, world.data.dayTime, world.data.gameRules.get(GameRules.DO_DAYLIGHT_CYCLE))
-                sessionManager.sendGrouped(packet) { it.world === world }
+                sessionManager.sendGrouped(PacketOutUpdateTime.create(world.data)) { it.world === world }
             }
             world.tick(hasTimeLeft)
         }

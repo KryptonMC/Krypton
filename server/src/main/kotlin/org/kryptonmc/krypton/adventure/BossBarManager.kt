@@ -62,7 +62,7 @@ object BossBarManager : BossBar.Listener {
     }
 
     override fun bossBarNameChanged(bar: BossBar, oldName: Component, newName: Component) {
-        update(bar, PacketOutBossBar.UpdateTitleAction(newName))
+        update(bar, PacketOutBossBar.UpdateNameAction(newName))
     }
 
     override fun bossBarProgressChanged(bar: BossBar, oldProgress: Float, newProgress: Float) {

@@ -19,6 +19,7 @@
 package org.kryptonmc.krypton.packet.out.play
 
 import io.netty.buffer.ByteBuf
+import org.kryptonmc.krypton.entity.KryptonEntity
 import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.util.readVarIntArray
 import org.kryptonmc.krypton.util.writeVarIntArray
@@ -27,11 +28,15 @@ import org.kryptonmc.krypton.util.writeVarIntArray
 @Suppress("ArrayInDataClass")
 data class PacketOutRemoveEntities(val ids: IntArray) : Packet {
 
-    constructor(id: Int) : this(intArrayOf(id))
-
     constructor(buf: ByteBuf) : this(buf.readVarIntArray())
 
     override fun write(buf: ByteBuf) {
         buf.writeVarIntArray(ids)
+    }
+
+    companion object {
+
+        @JvmStatic
+        fun removeSingle(entity: KryptonEntity): PacketOutRemoveEntities = PacketOutRemoveEntities(intArrayOf(entity.id))
     }
 }

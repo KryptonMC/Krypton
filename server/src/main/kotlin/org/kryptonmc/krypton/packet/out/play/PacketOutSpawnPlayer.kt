@@ -43,9 +43,6 @@ data class PacketOutSpawnPlayer(
     val pitch: Float
 ) : EntityPacket {
 
-    constructor(player: KryptonPlayer) : this(player.id, player.uuid, player.position.x, player.position.y, player.position.z,
-        player.yaw, player.pitch)
-
     constructor(buf: ByteBuf) : this(buf.readVarInt(), buf.readUUID(), buf.readDouble(), buf.readDouble(), buf.readDouble(),
         buf.readAngle(), buf.readAngle())
 
@@ -57,5 +54,12 @@ data class PacketOutSpawnPlayer(
         buf.writeDouble(z)
         buf.writeAngle(yaw)
         buf.writeAngle(pitch)
+    }
+
+    companion object {
+
+        @JvmStatic
+        fun create(player: KryptonPlayer): PacketOutSpawnPlayer =
+            PacketOutSpawnPlayer(player.id, player.uuid, player.position.x, player.position.y, player.position.z, player.yaw, player.pitch)
     }
 }

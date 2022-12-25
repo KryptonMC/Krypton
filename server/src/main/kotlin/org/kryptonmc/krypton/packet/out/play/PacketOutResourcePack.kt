@@ -20,7 +20,6 @@ package org.kryptonmc.krypton.packet.out.play
 
 import io.netty.buffer.ByteBuf
 import net.kyori.adventure.text.Component
-import org.kryptonmc.api.resource.ResourcePack
 import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.util.readComponent
 import org.kryptonmc.krypton.util.readNullable
@@ -31,8 +30,6 @@ import org.kryptonmc.krypton.util.writeString
 
 @JvmRecord
 data class PacketOutResourcePack(val uri: String, val hash: String, val forced: Boolean, val prompt: Component?) : Packet {
-
-    constructor(pack: ResourcePack) : this(pack.uri.toString(), pack.hash, pack.isForced, pack.promptMessage)
 
     constructor(buf: ByteBuf) : this(buf.readString(), buf.readString(), buf.readBoolean(), buf.readNullable(ByteBuf::readComponent))
 

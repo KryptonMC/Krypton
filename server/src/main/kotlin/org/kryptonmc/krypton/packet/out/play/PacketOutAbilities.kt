@@ -32,9 +32,6 @@ data class PacketOutAbilities(
     val walkingSpeed: Float
 ) : Packet {
 
-    constructor(abilities: Abilities) : this(abilities.invulnerable, abilities.flying, abilities.canFly, abilities.canInstantlyBuild,
-        abilities.flyingSpeed, abilities.walkingSpeed)
-
     constructor(buf: ByteBuf) : this(buf.readByte().toInt(), buf.readFloat(), buf.readFloat())
 
     private constructor(flags: Int, flyingSpeed: Float, walkingSpeed: Float) : this(flags and FLAG_INVULNERABLE != 0, flags and FLAG_FLYING != 0,
@@ -57,5 +54,11 @@ data class PacketOutAbilities(
         private const val FLAG_FLYING = 0x02
         private const val FLAG_CAN_FLY = 0x04
         private const val FLAG_CAN_INSTANTLY_BUILD = 0x08
+
+        @JvmStatic
+        fun create(abilities: Abilities): PacketOutAbilities {
+            return PacketOutAbilities(abilities.invulnerable, abilities.flying, abilities.canFly, abilities.canInstantlyBuild,
+                abilities.flyingSpeed, abilities.walkingSpeed)
+        }
     }
 }

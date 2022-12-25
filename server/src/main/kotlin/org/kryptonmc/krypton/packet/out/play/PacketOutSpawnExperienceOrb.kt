@@ -19,24 +19,28 @@
 package org.kryptonmc.krypton.packet.out.play
 
 import io.netty.buffer.ByteBuf
-import org.kryptonmc.api.util.Vec3d
 import org.kryptonmc.krypton.entity.KryptonExperienceOrb
 import org.kryptonmc.krypton.packet.EntityPacket
 import org.kryptonmc.krypton.util.readVarInt
-import org.kryptonmc.krypton.util.readVec3d
 import org.kryptonmc.krypton.util.writeVarInt
-import org.kryptonmc.krypton.util.writeVec3d
 
 @JvmRecord
-data class PacketOutSpawnExperienceOrb(override val entityId: Int, val location: Vec3d, val count: Int) : EntityPacket {
+data class PacketOutSpawnExperienceOrb(override val entityId: Int, val x: Double, val y: Double, val z: Double, val count: Int) : EntityPacket {
 
-    constructor(orb: KryptonExperienceOrb) : this(orb.id, orb.position, orb.count)
-
-    constructor(buf: ByteBuf) : this(buf.readVarInt(), buf.readVec3d(), buf.readShort().toInt())
+    constructor(buf: ByteBuf) : this(buf.readVarInt(), buf.readDouble(), buf.readDouble(), buf.readDouble(), buf.readShort().toInt())
 
     override fun write(buf: ByteBuf) {
         buf.writeVarInt(entityId)
-        buf.writeVec3d(location)
+        buf.writeDouble(x)
+        buf.writeDouble(y)
+        buf.writeDouble(z)
         buf.writeShort(count)
+    }
+
+    companion object {
+
+        @JvmStatic
+        fun create(orb: KryptonExperienceOrb): PacketOutSpawnExperienceOrb =
+            PacketOutSpawnExperienceOrb(orb.id, orb.position.x, orb.position.y, orb.position.z, orb.count)
     }
 }

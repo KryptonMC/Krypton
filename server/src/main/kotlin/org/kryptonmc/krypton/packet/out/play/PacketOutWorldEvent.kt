@@ -19,19 +19,18 @@
 package org.kryptonmc.krypton.packet.out.play
 
 import io.netty.buffer.ByteBuf
-import org.kryptonmc.krypton.world.WorldEvent
 import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.util.BlockPos
 import org.kryptonmc.krypton.util.readBlockPos
 import org.kryptonmc.krypton.util.writeBlockPos
 
 @JvmRecord
-data class PacketOutWorldEvent(val event: WorldEvent, val position: BlockPos, val data: Int, val isGlobal: Boolean) : Packet {
+data class PacketOutWorldEvent(val event: Int, val position: BlockPos, val data: Int, val isGlobal: Boolean) : Packet {
 
-    constructor(buf: ByteBuf) : this(WorldEvent.fromId(buf.readInt())!!, buf.readBlockPos(), buf.readInt(), buf.readBoolean())
+    constructor(buf: ByteBuf) : this(buf.readInt(), buf.readBlockPos(), buf.readInt(), buf.readBoolean())
 
     override fun write(buf: ByteBuf) {
-        buf.writeInt(event.id)
+        buf.writeInt(event)
         buf.writeBlockPos(position)
         buf.writeInt(data)
         buf.writeBoolean(isGlobal)

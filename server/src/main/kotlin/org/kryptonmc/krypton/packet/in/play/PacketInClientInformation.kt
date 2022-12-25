@@ -44,7 +44,7 @@ data class PacketInClientInformation(
         buf.readEnum(), buf.readBoolean(), buf.readBoolean())
 
     override fun write(buf: ByteBuf) {
-        buf.writeString(locale)
+        buf.writeString(locale, 16)
         buf.writeByte(viewDistance)
         buf.writeEnum(chatVisibility)
         buf.writeBoolean(chatColors)

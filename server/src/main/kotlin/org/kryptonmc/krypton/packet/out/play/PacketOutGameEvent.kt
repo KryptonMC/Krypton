@@ -22,14 +22,14 @@ import io.netty.buffer.ByteBuf
 import org.kryptonmc.krypton.packet.Packet
 
 @JvmRecord
-data class PacketOutGameEvent(val event: GameEvent, val value: Float) : Packet {
+data class PacketOutGameEvent(val event: Int, val value: Float) : Packet {
 
-    constructor(event: GameEvent) : this(event, 0F)
+    constructor(event: Int) : this(event, 0F)
 
-    constructor(buf: ByteBuf) : this(GameEvent.fromId(buf.readUnsignedByte().toInt())!!, buf.readFloat())
+    constructor(buf: ByteBuf) : this(buf.readUnsignedByte().toInt(), buf.readFloat())
 
     override fun write(buf: ByteBuf) {
-        buf.writeByte(event.ordinal)
+        buf.writeByte(event)
         buf.writeFloat(value)
     }
 }

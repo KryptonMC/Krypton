@@ -52,13 +52,6 @@ data class PacketOutSpawnEntity(
     val velocityZ: Int
 ) : EntityPacket {
 
-    constructor(entity: KryptonEntity) : this(entity, 0F)
-
-    constructor(entity: KryptonLivingEntity) : this(entity, entity.headYaw)
-
-    private constructor(entity: KryptonEntity, headYaw: Float) : this(entity.id, entity.uuid, entity.type, entity.position.x, entity.position.y,
-        entity.position.z, entity.pitch, entity.yaw, headYaw, 0, velocityX(entity), velocityY(entity), velocityZ(entity))
-
     constructor(buf: ByteBuf) : this(buf.readVarInt(), buf.readUUID(), buf.readById(KryptonRegistries.ENTITY_TYPE)!!, buf.readDouble(),
         buf.readDouble(), buf.readDouble(), buf.readAngle(), buf.readAngle(), buf.readAngle(), buf.readInt(), buf.readShort().toInt(),
         buf.readShort().toInt(), buf.readShort().toInt())
@@ -82,12 +75,16 @@ data class PacketOutSpawnEntity(
     companion object {
 
         @JvmStatic
-        private fun velocityX(entity: KryptonEntity): Int = Positioning.encodeVelocity(entity.velocity.x)
+        fun fromEntity(entity: KryptonEntity): PacketOutSpawnEntity = create(entity, 0F)
 
         @JvmStatic
-        private fun velocityY(entity: KryptonEntity): Int = Positioning.encodeVelocity(entity.velocity.y)
+        fun fromLivingEntity(entity: KryptonLivingEntity): PacketOutSpawnEntity = create(entity, entity.headYaw)
 
         @JvmStatic
-        private fun velocityZ(entity: KryptonEntity): Int = Positioning.encodeVelocity(entity.velocity.z)
+        private fun create(entity: KryptonEntity, headYaw: Float): PacketOutSpawnEntity {
+            return PacketOutSpawnEntity(entity.id, entity.uuid, entity.type, entity.position.x, entity.position.y, entity.position.z, entity.yaw,
+                entity.pitch, headYaw, 0, Positioning.encodeVelocity(entity.velocity.x), Positioning.encodeVelocity(entity.velocity.y),
+                Positioning.encodeVelocity(entity.velocity.z))
+        }
     }
 }

@@ -31,8 +31,12 @@ import org.kryptonmc.krypton.util.writeVarInt
 import org.kryptonmc.krypton.util.writeBlockPos
 
 @JvmRecord
-data class PacketInPlayerAction(val action: Action, val position: BlockPos, val direction: Direction,
-                                val sequence: Int) : InboundPacket<PlayHandler> {
+data class PacketInPlayerAction(
+    val action: Action,
+    val position: BlockPos,
+    val direction: Direction,
+    val sequence: Int
+) : InboundPacket<PlayHandler> {
 
     constructor(buf: ByteBuf) : this(buf.readEnum<Action>(), buf.readBlockPos(), buf.readEnum(), buf.readVarInt())
 

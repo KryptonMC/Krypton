@@ -105,7 +105,7 @@ class LoginHandler(
         }
 
         // The server isn't offline and the client wasn't forwarded, enable encryption.
-        connection.send(PacketOutEncryptionRequest(Encryption.publicKey.encoded, verifyToken))
+        connection.send(PacketOutEncryptionRequest.create(Encryption.publicKey.encoded, verifyToken))
     }
 
     private fun processOfflineLogin(name: String) {
@@ -201,7 +201,7 @@ class LoginHandler(
     private fun finishLogin(event: KryptonSetupPermissionsEvent, player: KryptonPlayer) {
         player.permissionFunction = event.createFunction(player)
         connection.enableCompression()
-        connection.writeAndFlush(PacketOutLoginSuccess(player.profile))
+        connection.writeAndFlush(PacketOutLoginSuccess.create(player.profile))
         connection.changeState(PacketState.PLAY, PlayHandler(server, connection, player))
         server.playerManager.addPlayer(player).whenComplete { _, exception ->
             if (exception == null) return@whenComplete

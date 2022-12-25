@@ -19,7 +19,6 @@
 package org.kryptonmc.krypton.packet.out.play
 
 import io.netty.buffer.ByteBuf
-import org.kryptonmc.api.util.Vec3d
 import org.kryptonmc.krypton.entity.KryptonEntity
 import org.kryptonmc.krypton.packet.EntityPacket
 import org.kryptonmc.krypton.util.Positioning
@@ -28,11 +27,6 @@ import org.kryptonmc.krypton.util.writeVarInt
 
 @JvmRecord
 data class PacketOutSetEntityVelocity(override val entityId: Int, val x: Int, val y: Int, val z: Int) : EntityPacket {
-
-    constructor(entityId: Int, velocity: Vec3d) : this(entityId, encode(velocity.x), encode(velocity.y), encode(velocity.z))
-
-    constructor(entity: KryptonEntity,
-                velocity: Vec3d = entity.velocity) : this(entity.id, encode(velocity.x), encode(velocity.y), encode(velocity.z))
 
     constructor(buf: ByteBuf) : this(buf.readVarInt(), buf.readShort().toInt(), buf.readShort().toInt(), buf.readShort().toInt())
 
@@ -44,6 +38,10 @@ data class PacketOutSetEntityVelocity(override val entityId: Int, val x: Int, va
     }
 
     companion object {
+
+        @JvmStatic
+        fun fromEntity(entity: KryptonEntity): PacketOutSetEntityVelocity =
+            PacketOutSetEntityVelocity(entity.id, encode(entity.velocity.x), encode(entity.velocity.y), encode(entity.velocity.z))
 
         @JvmStatic
         private fun encode(value: Double): Int = Positioning.encodeVelocity(value)

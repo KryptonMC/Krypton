@@ -53,7 +53,7 @@ class KryptonChunk(
     override val z: Int
         get() = position.z
 
-    val cachedPacket: CachedPacket = CachedPacket { PacketOutChunkDataAndLight(this, true) }
+    val cachedPacket: CachedPacket = CachedPacket { PacketOutChunkDataAndLight.fromChunk(this, true) }
 
     override fun getBlock(x: Int, y: Int, z: Int): KryptonBlockState {
 //        if (world.isDebug) {

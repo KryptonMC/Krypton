@@ -35,8 +35,6 @@ import org.kryptonmc.krypton.util.writeVarIntByteArray
 @Suppress("ArrayInDataClass")
 data class PacketOutEncryptionRequest(val serverId: String, val publicKey: ByteArray, val verifyToken: ByteArray) : Packet {
 
-    constructor(publicKey: ByteArray, verifyToken: ByteArray) : this("", publicKey, verifyToken)
-
     constructor(buf: ByteBuf) : this(buf.readString(MAXIMUM_SERVER_ID_LENGTH), buf.readVarIntByteArray(), buf.readVarIntByteArray())
 
     override fun write(buf: ByteBuf) {
@@ -48,5 +46,8 @@ data class PacketOutEncryptionRequest(val serverId: String, val publicKey: ByteA
     companion object {
 
         private const val MAXIMUM_SERVER_ID_LENGTH = 20
+
+        @JvmStatic
+        fun create(publicKey: ByteArray, verifyToken: ByteArray): PacketOutEncryptionRequest = PacketOutEncryptionRequest("", publicKey, verifyToken)
     }
 }

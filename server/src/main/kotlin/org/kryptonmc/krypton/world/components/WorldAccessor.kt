@@ -26,7 +26,6 @@ import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.util.BlockPos
 import org.kryptonmc.krypton.util.random.RandomSource
-import org.kryptonmc.krypton.world.WorldEvent
 import org.kryptonmc.krypton.world.block.KryptonBlock
 import org.kryptonmc.krypton.world.block.state.KryptonBlockState
 import org.kryptonmc.krypton.world.chunk.ChunkManager
@@ -57,9 +56,9 @@ interface WorldAccessor : EntityGetter, ReadOnlyWorld, WriteOnlyWorld, WorldTime
         playSound(pos, event, source, volume, pitch, null)
     }
 
-    fun worldEvent(pos: BlockPos, event: WorldEvent, data: Int, except: KryptonPlayer?)
+    fun worldEvent(pos: BlockPos, event: Int, data: Int, except: KryptonPlayer?)
 
-    fun worldEvent(pos: BlockPos, event: WorldEvent, data: Int) {
+    fun worldEvent(pos: BlockPos, event: Int, data: Int) {
         worldEvent(pos, event, data, null)
     }
 

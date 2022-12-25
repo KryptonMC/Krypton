@@ -30,8 +30,6 @@ import org.kryptonmc.krypton.util.writeString
 @JvmRecord
 data class PacketOutStatusResponse(val response: String) : Packet {
 
-    constructor(status: ServerStatus) : this(GSON.toJson(status))
-
     constructor(buf: ByteBuf) : this(buf.readString())
 
     override fun write(buf: ByteBuf) {
@@ -44,5 +42,8 @@ data class PacketOutStatusResponse(val response: String) : Packet {
             .registerTypeAdapter(ServerStatus.Players::class.java, ServerStatus.Players)
             .registerTypeAdapter(ServerStatus::class.java, ServerStatus)
             .create()
+
+        @JvmStatic
+        fun create(status: ServerStatus): PacketOutStatusResponse = PacketOutStatusResponse(GSON.toJson(status))
     }
 }

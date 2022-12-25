@@ -117,16 +117,16 @@ class KryptonScoreboard(private val server: KryptonServer) : Scoreboard {
 
     fun getStartTrackingPackets(objective: Objective): List<Packet> {
         val packets = ArrayList<Packet>()
-        packets.add(PacketOutDisplayObjective(0, objective))
-        displayObjectives.forEach { if (it.value === objective) packets.add(PacketOutDisplayObjective(it.key, it.value)) }
-        getMemberScores(objective).forEach { packets.add(PacketOutUpdateScore(PacketOutUpdateScore.Action.CREATE_OR_UPDATE, it)) }
+        packets.add(PacketOutDisplayObjective.create(DisplaySlot.LIST, objective))
+        displayObjectives.forEach { if (it.value === objective) packets.add(PacketOutDisplayObjective.create(it.key, it.value)) }
+        getMemberScores(objective).forEach { packets.add(PacketOutUpdateScore.createOrUpdate(it)) }
         return packets
     }
 
     private fun getStopTrackingPackets(objective: Objective): List<Packet> {
         val packets = ArrayList<Packet>()
-        packets.add(PacketOutDisplayObjective(1, objective))
-        displayObjectives.forEach { if (it.value === objective) packets.add(PacketOutDisplayObjective(it.key, it.value)) }
+        packets.add(PacketOutDisplayObjective.create(DisplaySlot.SIDEBAR, objective))
+        displayObjectives.forEach { if (it.value === objective) packets.add(PacketOutDisplayObjective.create(it.key, it.value)) }
         return packets
     }
 
@@ -210,14 +210,14 @@ class KryptonScoreboard(private val server: KryptonServer) : Scoreboard {
         if (objective != null) displayObjectives.put(slot, objective) else displayObjectives.remove(slot)
         if (existing !== objective && existing != null) {
             if (getObjectiveSlotCount(existing) > 0) {
-                server.sessionManager.sendGrouped(PacketOutDisplayObjective(slot, objective))
+                server.sessionManager.sendGrouped(PacketOutDisplayObjective.create(slot, objective))
             } else {
                 stopTrackingObjective(existing)
             }
         }
         if (objective != null) {
             if (trackedObjectives.contains(objective)) {
-                server.sessionManager.sendGrouped(PacketOutDisplayObjective(slot, objective))
+                server.sessionManager.sendGrouped(PacketOutDisplayObjective.create(slot, objective))
             } else {
                 startTrackingObjective(objective)
             }
@@ -243,7 +243,7 @@ class KryptonScoreboard(private val server: KryptonServer) : Scoreboard {
 
     fun onObjectiveUpdated(objective: Objective) {
         if (trackedObjectives.contains(objective)) {
-            server.sessionManager.sendGrouped(PacketOutUpdateObjectives(PacketOutUpdateObjectives.Action.UPDATE_TEXT, objective))
+            server.sessionManager.sendGrouped(PacketOutUpdateObjectives.updateText(objective))
         }
         makeDirty()
     }
@@ -255,19 +255,19 @@ class KryptonScoreboard(private val server: KryptonServer) : Scoreboard {
 
     fun onScoreUpdated(score: KryptonScore) {
         if (trackedObjectives.contains(score.objective)) {
-            server.sessionManager.sendGrouped(PacketOutUpdateScore(PacketOutUpdateScore.Action.CREATE_OR_UPDATE, score))
+            server.sessionManager.sendGrouped(PacketOutUpdateScore.createOrUpdate(score))
         }
         makeDirty()
     }
 
     private fun onMemberRemoved(member: Component) {
-        server.sessionManager.sendGrouped(PacketOutUpdateScore(member, PacketOutUpdateScore.Action.REMOVE, null, 0))
+        server.sessionManager.sendGrouped(PacketOutUpdateScore.remove(member, null, 0))
         makeDirty()
     }
 
     private fun onMemberScoreRemoved(member: Component, objective: Objective) {
         if (trackedObjectives.contains(objective)) {
-            server.sessionManager.sendGrouped(PacketOutUpdateScore(member, PacketOutUpdateScore.Action.REMOVE, objective.name, 0))
+            server.sessionManager.sendGrouped(PacketOutUpdateScore.remove(member, objective.name, 0))
         }
         makeDirty()
     }

@@ -78,7 +78,7 @@ data class PacketOutParticle(
         private const val NOTE_TO_FLOAT_FACTOR = 24F
 
         @JvmStatic
-        fun from(effect: ParticleEffect, location: Vec3d): PacketOutParticle {
+        fun fromEffect(effect: ParticleEffect, location: Vec3d): PacketOutParticle {
             val typeId = KryptonRegistries.PARTICLE_TYPE.getId(effect.type)
             var x = location.x
             var y = location.y

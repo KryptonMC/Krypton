@@ -87,6 +87,6 @@ class EntityVehicleSystem(private val entity: KryptonEntity) {
     private fun getIndirectPassengersStream(): Stream<KryptonEntity> = passengers.stream().flatMap { it.vehicleSystem.getSelfAndPassengers() }
 
     private fun updatePassengers() {
-        entity.server.sessionManager.sendGrouped(PacketOutSetPassengers(entity, passengers))
+        entity.server.sessionManager.sendGrouped(PacketOutSetPassengers.fromEntity(entity, passengers))
     }
 }

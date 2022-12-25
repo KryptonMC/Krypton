@@ -50,6 +50,9 @@ data class ChunkPacketData(val heightmaps: CompoundTag, val data: ByteArray) : W
     companion object {
 
         @JvmStatic
+        fun fromChunk(chunk: KryptonChunk): ChunkPacketData = ChunkPacketData(extractHeightmaps(chunk), extractData(chunk))
+
+        @JvmStatic
         private fun extractHeightmaps(chunk: KryptonChunk): CompoundTag {
             if (chunk.heightmaps.isEmpty()) return CompoundTag.EMPTY
             val heightmaps = ImmutableCompoundTag.builder()

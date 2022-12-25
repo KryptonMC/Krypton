@@ -38,14 +38,7 @@ import java.util.UUID
 @JvmRecord
 data class PacketOutBossBar(val uuid: UUID, val action: Action) : Packet {
 
-    constructor(buf: ByteBuf) : this(buf.readUUID(), when (buf.readEnum<ActionType>()) {
-        ActionType.ADD -> AddAction(buf)
-        ActionType.REMOVE -> RemoveAction
-        ActionType.UPDATE_PROGRESS -> UpdateProgressAction(buf.readFloat())
-        ActionType.UPDATE_TITLE -> UpdateTitleAction(buf.readComponent())
-        ActionType.UPDATE_STYLE -> UpdateStyleAction(COLORS[buf.readVarInt()], OVERLAYS[buf.readVarInt()])
-        ActionType.UPDATE_FLAGS -> UpdateFlagsAction(buf.readByte().toInt())
-    })
+    constructor(buf: ByteBuf) : this(buf.readUUID(), buf.readEnum<ActionType>().read(buf))
 
     override fun write(buf: ByteBuf) {
         buf.writeUUID(uuid)
@@ -62,8 +55,6 @@ data class PacketOutBossBar(val uuid: UUID, val action: Action) : Packet {
     data class AddAction(val name: Component, val progress: Float, val color: Color, val overlay: Overlay, val flags: Int) : Action {
 
         constructor(bar: BossBar) : this(bar.name(), bar.progress(), bar.color(), bar.overlay(), encodeFlags(bar))
-
-        constructor(buf: ByteBuf) : this(buf.readComponent(), buf.readFloat(), readColor(buf), readOverlay(buf), buf.readByte().toInt())
 
         override fun type(): ActionType = ActionType.ADD
 
@@ -96,9 +87,9 @@ data class PacketOutBossBar(val uuid: UUID, val action: Action) : Packet {
     }
 
     @JvmRecord
-    data class UpdateTitleAction(val name: Component) : Action {
+    data class UpdateNameAction(val name: Component) : Action {
 
-        override fun type(): ActionType = ActionType.UPDATE_TITLE
+        override fun type(): ActionType = ActionType.UPDATE_NAME
 
         override fun write(buf: ByteBuf) {
             buf.writeComponent(name)
@@ -111,8 +102,8 @@ data class PacketOutBossBar(val uuid: UUID, val action: Action) : Packet {
         override fun type(): ActionType = ActionType.UPDATE_STYLE
 
         override fun write(buf: ByteBuf) {
-            buf.writeVarInt(color.ordinal)
-            buf.writeVarInt(overlay.ordinal)
+            buf.writeEnum(color)
+            buf.writeEnum(overlay)
         }
     }
 
@@ -128,14 +119,21 @@ data class PacketOutBossBar(val uuid: UUID, val action: Action) : Packet {
         }
     }
 
-    enum class ActionType {
+    enum class ActionType(private val reader: Reader) {
 
-        ADD,
-        REMOVE,
-        UPDATE_PROGRESS,
-        UPDATE_TITLE,
-        UPDATE_STYLE,
-        UPDATE_FLAGS
+        ADD({ AddAction(it.readComponent(), it.readFloat(), readColor(it), readOverlay(it), it.readByte().toInt()) }),
+        REMOVE({ RemoveAction }),
+        UPDATE_PROGRESS({ UpdateProgressAction(it.readFloat()) }),
+        UPDATE_NAME({ UpdateNameAction(it.readComponent()) }),
+        UPDATE_STYLE({ UpdateStyleAction(readColor(it), readOverlay(it)) }),
+        UPDATE_FLAGS({ UpdateFlagsAction(it.readByte().toInt()) });
+
+        fun read(buf: ByteBuf): Action = reader.read(buf)
+
+        private fun interface Reader {
+
+            fun read(buf: ByteBuf): Action
+        }
     }
 
     companion object {

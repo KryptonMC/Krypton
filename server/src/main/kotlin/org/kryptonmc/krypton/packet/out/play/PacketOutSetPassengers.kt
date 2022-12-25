@@ -31,8 +31,6 @@ import org.kryptonmc.krypton.util.writeVarIntArray
 @Suppress("ArrayInDataClass")
 data class PacketOutSetPassengers(override val entityId: Int, val passengers: IntArray) : EntityPacket {
 
-    constructor(entity: KryptonEntity, passengers: List<Entity>) : this(entity.id, toIdArray(passengers))
-
     constructor(buf: ByteBuf) : this(buf.readVarInt(), buf.readVarIntArray())
 
     override fun write(buf: ByteBuf) {
@@ -41,6 +39,10 @@ data class PacketOutSetPassengers(override val entityId: Int, val passengers: In
     }
 
     companion object {
+
+        @JvmStatic
+        fun fromEntity(entity: KryptonEntity, passengers: List<Entity>): PacketOutSetPassengers =
+            PacketOutSetPassengers(entity.id, toIdArray(passengers))
 
         @JvmStatic
         private fun toIdArray(entities: List<Entity>): IntArray = IntArray(entities.size) { entities.get(it).id }

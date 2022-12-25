@@ -37,8 +37,6 @@ data class PacketOutSynchronizePlayerPosition(
     val shouldDismount: Boolean = false
 ) : Packet {
 
-    constructor(player: KryptonPlayer) : this(player.position.x, player.position.y, player.position.z, player.yaw, player.pitch)
-
     constructor(buf: ByteBuf) : this(buf.readDouble(), buf.readDouble(), buf.readDouble(), buf.readFloat(), buf.readFloat(), buf.readByte().toInt(),
         buf.readVarInt(), buf.readBoolean())
 
@@ -57,5 +55,9 @@ data class PacketOutSynchronizePlayerPosition(
 
         private val RANDOM = RandomSource.createThreadSafe()
         private const val RANDOM_TELEPORT_ID_UPPER_BOUND = 1000 // A number I chose because it seems sensible enough
+
+        @JvmStatic
+        fun fromPlayer(player: KryptonPlayer): PacketOutSynchronizePlayerPosition =
+            PacketOutSynchronizePlayerPosition(player.position.x, player.position.y, player.position.z, player.yaw, player.pitch)
     }
 }

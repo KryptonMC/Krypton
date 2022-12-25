@@ -71,8 +71,8 @@ data class PacketOutCommandSuggestionsResponse(val id: Int, val suggestions: Sug
             val start = buf.readVarInt()
             val length = buf.readVarInt()
             val range = StringRange.between(start, start + length)
-            return Suggestions(range,
-                buf.readList { Suggestion(range, buf.readString(), buf.readNullable { KryptonAdventure.asMessage(buf.readComponent()) }) })
+            val results = buf.readList { Suggestion(range, buf.readString(), buf.readNullable { KryptonAdventure.asMessage(buf.readComponent()) }) }
+            return Suggestions(range, results)
         }
     }
 }

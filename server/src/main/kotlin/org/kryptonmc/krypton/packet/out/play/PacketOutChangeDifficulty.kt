@@ -26,12 +26,16 @@ import org.kryptonmc.krypton.util.Difficulties
 @JvmRecord
 data class PacketOutChangeDifficulty(val difficulty: Difficulty, val isLocked: Boolean) : Packet {
 
-    constructor(difficulty: Difficulty) : this(difficulty, true)
-
     constructor(buf: ByteBuf) : this(Difficulties.fromId(buf.readByte().toInt())!!, buf.readBoolean())
 
     override fun write(buf: ByteBuf) {
         buf.writeByte(difficulty.ordinal)
         buf.writeBoolean(isLocked)
+    }
+
+    companion object {
+
+        @JvmStatic
+        fun from(difficulty: Difficulty): PacketOutChangeDifficulty = PacketOutChangeDifficulty(difficulty, true)
     }
 }

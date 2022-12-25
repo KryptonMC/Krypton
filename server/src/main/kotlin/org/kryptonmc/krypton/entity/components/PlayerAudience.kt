@@ -86,7 +86,7 @@ interface PlayerAudience : Player, NetworkPlayer, KryptonSender {
     }
 
     override fun showTitle(title: Title) {
-        if (title.times() != null) connection.send(PacketOutSetTitleAnimationTimes(title.times()!!))
+        title.times()?.let { connection.send(PacketOutSetTitleAnimationTimes.fromTimes(it)) }
         connection.send(PacketOutSetSubtitleText(title.subtitle()))
         connection.send(PacketOutSetTitleText(title.title()))
     }
@@ -95,7 +95,7 @@ interface PlayerAudience : Player, NetworkPlayer, KryptonSender {
         val packet = when (part) {
             TitlePart.TITLE -> PacketOutSetTitleText(value as Component)
             TitlePart.SUBTITLE -> PacketOutSetSubtitleText(value as Component)
-            TitlePart.TIMES -> PacketOutSetTitleAnimationTimes(value as Title.Times)
+            TitlePart.TIMES -> PacketOutSetTitleAnimationTimes.fromTimes(value as Title.Times)
             else -> throw IllegalArgumentException("Unknown title part $part!")
         }
         connection.send(packet)
@@ -136,7 +136,11 @@ interface PlayerAudience : Player, NetworkPlayer, KryptonSender {
     override fun playSound(sound: Sound, x: Double, y: Double, z: Double) {
         val type = KryptonRegistries.SOUND_EVENT.get(sound.name())
         val seed = sound.seed().orElseGet { world.generateSoundSeed() }
-        val packet = if (type != null) PacketOutSoundEffect(sound, type, x, y, z, seed) else PacketOutCustomSoundEffect(sound, x, y, z, seed)
+        val packet = if (type != null) {
+            PacketOutSoundEffect.fromSound(sound, type, x, y, z, seed)
+        } else {
+            PacketOutCustomSoundEffect(sound, x, y, z, seed)
+        }
         connection.send(packet)
     }
 
@@ -158,7 +162,7 @@ interface PlayerAudience : Player, NetworkPlayer, KryptonSender {
     }
 
     override fun stopSound(stop: SoundStop) {
-        connection.send(PacketOutStopSound(stop))
+        connection.send(PacketOutStopSound.create(stop))
     }
 
     override fun openBook(book: Book) {

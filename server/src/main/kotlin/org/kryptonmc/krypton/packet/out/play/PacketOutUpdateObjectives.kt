@@ -33,40 +33,37 @@ import org.kryptonmc.krypton.util.writeVarInt
  * Tells the client to perform an action to an objective for a scoreboard.
  */
 @JvmRecord
-data class PacketOutUpdateObjectives(val name: String, val action: Action, val displayName: Component, val renderType: Int) : Packet {
+data class PacketOutUpdateObjectives(val name: String, val action: Int, val displayName: Component, val renderType: Int) : Packet {
 
-    constructor(action: Action, objective: Objective) : this(objective.name, action, objective.displayName, objective.renderType.ordinal)
+    constructor(buf: ByteBuf) : this(buf, buf.readString(), buf.readByte().toInt())
 
-    constructor(buf: ByteBuf) : this(buf, buf.readString(), Action.fromId(buf.readByte().toInt())!!)
-
-    private constructor(buf: ByteBuf, name: String, action: Action) : this(
+    private constructor(buf: ByteBuf, name: String, action: Int) : this(
         name,
         action,
-        if (action != Action.REMOVE) buf.readComponent() else Component.empty(),
-        if (action != Action.REMOVE) buf.readVarInt() else 0
+        if (action != Actions.REMOVE) buf.readComponent() else Component.empty(),
+        if (action != Actions.REMOVE) buf.readVarInt() else 0
     )
 
     override fun write(buf: ByteBuf) {
         buf.writeString(name, 16)
-        buf.writeByte(action.ordinal)
-        if (action != Action.REMOVE) {
+        buf.writeByte(action)
+        if (action != Actions.REMOVE) {
             buf.writeComponent(displayName)
             buf.writeVarInt(renderType)
         }
     }
 
-    enum class Action {
+    object Actions {
 
-        CREATE,
-        REMOVE,
-        UPDATE_TEXT;
+        const val CREATE: Int = 0
+        const val REMOVE: Int = 1
+        const val UPDATE_TEXT: Int = 2
+    }
 
-        companion object {
+    companion object {
 
-            private val BY_ID = values()
-
-            @JvmStatic
-            fun fromId(id: Int): Action? = BY_ID.getOrNull(id)
-        }
+        @JvmStatic
+        fun updateText(objective: Objective): PacketOutUpdateObjectives =
+            PacketOutUpdateObjectives(objective.name, Actions.UPDATE_TEXT, objective.displayName, objective.renderType.ordinal)
     }
 }

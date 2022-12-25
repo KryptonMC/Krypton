@@ -31,8 +31,6 @@ import org.kryptonmc.krypton.util.writeKey
 @JvmRecord
 data class PacketOutStopSound(val source: Sound.Source?, val sound: Key?) : Packet {
 
-    constructor(stop: SoundStop) : this(stop.source(), stop.sound())
-
     constructor(buf: ByteBuf) : this(buf, buf.readByte().toInt())
 
     private constructor(buf: ByteBuf, flags: Int) : this(
@@ -58,5 +56,11 @@ data class PacketOutStopSound(val source: Sound.Source?, val sound: Key?) : Pack
             return
         }
         buf.writeByte(0)
+    }
+
+    companion object {
+
+        @JvmStatic
+        fun create(stop: SoundStop): PacketOutStopSound = PacketOutStopSound(stop.source(), stop.sound())
     }
 }

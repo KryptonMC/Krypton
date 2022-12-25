@@ -38,9 +38,6 @@ data class PacketOutInitializeWorldBorder(
     val warningTime: Int
 ) : Packet {
 
-    constructor(border: KryptonWorldBorder) : this(border.centerX, border.centerZ, border.size, border.size, 0, PORTAL_TELEPORT_BOUNDARY,
-        border.warningBlocks, border.warningTime)
-
     constructor(buf: ByteBuf) : this(buf.readDouble(), buf.readDouble(), buf.readDouble(), buf.readDouble(), buf.readVarLong(), buf.readVarInt(),
         buf.readVarInt(), buf.readVarInt())
 
@@ -58,5 +55,11 @@ data class PacketOutInitializeWorldBorder(
     companion object {
 
         private const val PORTAL_TELEPORT_BOUNDARY = 29999984
+
+        @JvmStatic
+        fun create(border: KryptonWorldBorder): PacketOutInitializeWorldBorder {
+            return PacketOutInitializeWorldBorder(border.centerX, border.centerZ, border.size, border.size, 0, PORTAL_TELEPORT_BOUNDARY,
+                border.warningBlocks, border.warningTime)
+        }
     }
 }

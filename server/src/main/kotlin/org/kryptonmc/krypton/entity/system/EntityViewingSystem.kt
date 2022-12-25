@@ -42,13 +42,13 @@ open class EntityViewingSystem<out T : KryptonEntity> private constructor(protec
         viewer.connection.send(getSpawnPacket())
         viewer.connection.send(PacketOutSetEntityMetadata(entity.id, entity.data.collectAll()))
         viewer.connection.send(PacketOutSetHeadRotation(entity.id, entity.yaw))
-        if (entity is KryptonLivingEntity) viewer.connection.send(PacketOutUpdateAttributes(entity.id, entity.attributes.syncable()))
+        if (entity is KryptonLivingEntity) viewer.connection.send(PacketOutUpdateAttributes.create(entity.id, entity.attributes.syncable()))
         return true
     }
 
     open fun removeViewer(viewer: KryptonPlayer): Boolean {
         if (!viewers.remove(viewer)) return false
-        viewer.connection.send(PacketOutRemoveEntities(entity.id))
+        viewer.connection.send(PacketOutRemoveEntities.removeSingle(entity))
         return true
     }
 
@@ -57,8 +57,8 @@ open class EntityViewingSystem<out T : KryptonEntity> private constructor(protec
     }
 
     protected open fun getSpawnPacket(): Packet {
-        if (entity is KryptonExperienceOrb) return PacketOutSpawnExperienceOrb(entity)
-        return PacketOutSpawnEntity(entity)
+        if (entity is KryptonExperienceOrb) return PacketOutSpawnExperienceOrb.create(entity)
+        return PacketOutSpawnEntity.fromEntity(entity)
     }
 
     private class Player(entity: KryptonPlayer) : EntityViewingSystem<KryptonPlayer>(entity) {
@@ -75,7 +75,7 @@ open class EntityViewingSystem<out T : KryptonEntity> private constructor(protec
             return true
         }
 
-        override fun getSpawnPacket(): Packet = PacketOutSpawnPlayer(entity)
+        override fun getSpawnPacket(): Packet = PacketOutSpawnPlayer.create(entity)
     }
 
     companion object {

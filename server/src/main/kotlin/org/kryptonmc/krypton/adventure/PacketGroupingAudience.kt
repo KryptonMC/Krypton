@@ -90,7 +90,7 @@ interface PacketGroupingAudience : ForwardingAudience {
     override fun <T : Any> sendTitlePart(part: TitlePart<T>, value: T) {
         if (part === TitlePart.TITLE) sendGroupedPacket(PacketOutSetTitleText(value as Component))
         if (part === TitlePart.SUBTITLE) sendGroupedPacket(PacketOutSetSubtitleText(value as Component))
-        if (part === TitlePart.TIMES) sendGroupedPacket(PacketOutSetTitleAnimationTimes(value as Title.Times))
+        if (part === TitlePart.TIMES) sendGroupedPacket(PacketOutSetTitleAnimationTimes.fromTimes(value as Title.Times))
         throw IllegalArgumentException("Unknown TitlePart")
     }
 
@@ -113,7 +113,11 @@ interface PacketGroupingAudience : ForwardingAudience {
     override fun playSound(sound: Sound, x: Double, y: Double, z: Double) {
         val type = KryptonRegistries.SOUND_EVENT.get(sound.name())
         val seed = sound.seed().orElseGet { generateSoundSeed() }
-        val packet = if (type != null) PacketOutSoundEffect(sound, type, x, y, z, seed) else PacketOutCustomSoundEffect(sound, x, y, z, seed)
+        val packet = if (type != null) {
+            PacketOutSoundEffect.fromSound(sound, type, x, y, z, seed)
+        } else {
+            PacketOutCustomSoundEffect(sound, x, y, z, seed)
+        }
         sendGroupedPacket(packet)
     }
 
@@ -123,7 +127,7 @@ interface PacketGroupingAudience : ForwardingAudience {
             val event = KryptonRegistries.SOUND_EVENT.get(sound.name())
             val seed = sound.seed().orElseGet { generateSoundSeed() }
             val packet = if (event != null) {
-                PacketOutEntitySoundEffect(sound, event, entity.id, seed)
+                PacketOutEntitySoundEffect.create(entity, sound, event, seed)
             } else {
                 PacketOutCustomSoundEffect(sound, entity.position.x, entity.position.y, entity.position.z, seed)
             }
@@ -135,7 +139,7 @@ interface PacketGroupingAudience : ForwardingAudience {
     }
 
     override fun stopSound(stop: SoundStop) {
-        sendGroupedPacket(PacketOutStopSound(stop))
+        sendGroupedPacket(PacketOutStopSound.create(stop))
     }
 
     override fun openBook(book: Book) {

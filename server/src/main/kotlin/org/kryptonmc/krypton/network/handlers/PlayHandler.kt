@@ -73,7 +73,7 @@ import org.kryptonmc.krypton.packet.`in`.play.PacketInSetPlayerRotation
 import org.kryptonmc.krypton.packet.`in`.play.PacketInSwingArm
 import org.kryptonmc.krypton.packet.`in`.play.PacketInUseItem
 import org.kryptonmc.krypton.packet.`in`.play.PacketInUseItemOn
-import org.kryptonmc.krypton.packet.out.play.EntityAnimation
+import org.kryptonmc.krypton.packet.out.play.EntityAnimations
 import org.kryptonmc.krypton.packet.out.play.PacketOutAnimation
 import org.kryptonmc.krypton.packet.out.play.PacketOutCommandSuggestionsResponse
 import org.kryptonmc.krypton.packet.out.play.PacketOutDisconnect
@@ -144,8 +144,8 @@ class PlayHandler(
 
     fun handleSwingArm(packet: PacketInSwingArm) {
         val animation = when (packet.hand) {
-            Hand.MAIN -> EntityAnimation.SWING_MAIN_ARM
-            Hand.OFF -> EntityAnimation.SWING_OFFHAND
+            Hand.MAIN -> EntityAnimations.SWING_MAIN_ARM
+            Hand.OFF -> EntityAnimations.SWING_OFFHAND
         }
         server.sessionManager.sendGrouped(PacketOutAnimation(player.id, animation)) { it !== player }
     }

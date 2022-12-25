@@ -63,7 +63,7 @@ import org.kryptonmc.krypton.item.KryptonItemStack
 import org.kryptonmc.krypton.item.handler
 import org.kryptonmc.krypton.network.NettyConnection
 import org.kryptonmc.krypton.network.chat.ChatSender
-import org.kryptonmc.krypton.packet.out.play.GameEvent
+import org.kryptonmc.krypton.packet.out.play.GameEventTypes
 import org.kryptonmc.krypton.packet.out.play.PacketOutAbilities
 import org.kryptonmc.krypton.packet.out.play.PacketOutGameEvent
 import org.kryptonmc.krypton.packet.out.play.PacketOutOpenBook
@@ -171,7 +171,7 @@ class KryptonPlayer(
         val event = gameModeSystem.changeGameMode(mode, cause)
         if (event == null || !event.result.isAllowed) return null
 
-        connection.send(PacketOutGameEvent(GameEvent.CHANGE_GAMEMODE, mode.ordinal.toFloat()))
+        connection.send(PacketOutGameEvent(GameEventTypes.CHANGE_GAMEMODE, mode.ordinal.toFloat()))
         if (mode == GameMode.SPECTATOR) {
             stopRiding()
         } else {
@@ -253,7 +253,7 @@ class KryptonPlayer(
     }
 
     override fun spawnParticles(effect: ParticleEffect, location: Vec3d) {
-        val packet = PacketOutParticle.from(effect, location)
+        val packet = PacketOutParticle.fromEffect(effect, location)
         when (effect.data) {
             // Send multiple packets based on the quantity
             is DirectionalParticleData, is ColorParticleData, is NoteParticleData -> repeat(effect.quantity) { connection.send(packet) }
@@ -267,7 +267,7 @@ class KryptonPlayer(
         this.position = position
 
         if (Positioning.deltaInMoveRange(oldLocation, this.position)) {
-            connection.send(PacketOutTeleportEntity(id, this.position, yaw, pitch, isOnGround))
+            connection.send(PacketOutTeleportEntity.create(this))
         } else {
             connection.send(PacketOutUpdateEntityPosition(
                 id,
@@ -289,7 +289,7 @@ class KryptonPlayer(
     }
 
     override fun sendResourcePack(pack: ResourcePack) {
-        connection.send(PacketOutResourcePack(pack))
+        connection.send(PacketOutResourcePack(pack.uri.toString(), pack.hash, pack.isForced, pack.promptMessage))
     }
 
     override fun openBook(item: KryptonItemStack) {
@@ -326,7 +326,7 @@ class KryptonPlayer(
     }
 
     override fun onAbilitiesUpdate() {
-        connection.send(PacketOutAbilities(abilities))
+        connection.send(PacketOutAbilities.create(abilities))
         removeEffectParticles()
         isInvisible = gameMode == GameMode.SPECTATOR
     }

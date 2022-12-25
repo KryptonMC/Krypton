@@ -56,13 +56,13 @@ object ClearCommand {
             val target = targets.get(0)
             clear(target, predicate, maxCount)
             source.sendSuccess(Messages.Commands.CLEAR_SINGLE_SUCCESS.build(amount, target.displayName), true)
-            target.connection.send(PacketOutSetContainerContent(target.inventory, target.inventory.mainHand))
+            target.connection.send(PacketOutSetContainerContent.fromPlayerInventory(target.inventory))
         } else {
             targets.forEach { target ->
                 target.inventory.items.forEachIndexed { index, item ->
                     if (predicate.test(item)) target.inventory.setItem(index, KryptonItemStack.EMPTY)
                 }
-                target.connection.send(PacketOutSetContainerContent(target.inventory, target.inventory.mainHand))
+                target.connection.send(PacketOutSetContainerContent.fromPlayerInventory(target.inventory))
             }
             source.sendSuccess(Messages.Commands.CLEAR_MULTIPLE_SUCCESS.build(amount, targets.size), true)
         }

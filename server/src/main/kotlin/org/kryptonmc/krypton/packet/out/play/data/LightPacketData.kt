@@ -65,7 +65,7 @@ data class LightPacketData(
     companion object {
 
         @JvmStatic
-        fun create(chunk: KryptonChunk, trustEdges: Boolean): LightPacketData {
+        fun fromChunk(chunk: KryptonChunk, trustEdges: Boolean): LightPacketData {
             val sections = chunk.sections()
 
             val skyMask = BitSet()

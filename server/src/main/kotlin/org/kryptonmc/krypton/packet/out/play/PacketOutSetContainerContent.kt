@@ -19,7 +19,7 @@
 package org.kryptonmc.krypton.packet.out.play
 
 import io.netty.buffer.ByteBuf
-import org.kryptonmc.krypton.inventory.KryptonInventory
+import org.kryptonmc.krypton.inventory.KryptonPlayerInventory
 import org.kryptonmc.krypton.item.KryptonItemStack
 import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.util.readItem
@@ -32,15 +32,19 @@ import org.kryptonmc.krypton.util.writeVarInt
 @JvmRecord
 data class PacketOutSetContainerContent(val id: Int, val stateId: Int, val items: List<KryptonItemStack>, val heldItem: KryptonItemStack) : Packet {
 
-    constructor(inventory: KryptonInventory,
-                heldItem: KryptonItemStack) : this(inventory.id, inventory.incrementStateId(), inventory.items, heldItem)
-
-    constructor(buf: ByteBuf) : this(buf.readByte().toInt(), buf.readVarInt(), buf.readList { it.readItem() }, buf.readItem())
+    constructor(buf: ByteBuf) : this(buf.readByte().toInt(), buf.readVarInt(), buf.readList(ByteBuf::readItem), buf.readItem())
 
     override fun write(buf: ByteBuf) {
         buf.writeByte(id)
         buf.writeVarInt(stateId)
         buf.writeCollection(items, buf::writeItem)
         buf.writeItem(heldItem)
+    }
+
+    companion object {
+
+        @JvmStatic
+        fun fromPlayerInventory(inventory: KryptonPlayerInventory): PacketOutSetContainerContent =
+            PacketOutSetContainerContent(inventory.id, inventory.incrementStateId(), inventory.items, inventory.mainHand)
     }
 }
