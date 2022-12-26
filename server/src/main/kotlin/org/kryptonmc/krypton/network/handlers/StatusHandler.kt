@@ -45,11 +45,11 @@ class StatusHandler(private val server: KryptonServer, override val connection: 
             return
         }
         requestedStatus = true
-        connection.send(PacketOutStatusResponse.create(server.sessionManager.status()))
+        connection.writeAndFlush(PacketOutStatusResponse.create(server.sessionManager.status()))
     }
 
     fun handlePing(packet: PacketInPingRequest) {
-        connection.send(PacketOutPingResponse(packet.payload))
+        connection.writeAndFlush(PacketOutPingResponse(packet.payload))
         connection.disconnect(REQUEST_HANDLED)
     }
 
