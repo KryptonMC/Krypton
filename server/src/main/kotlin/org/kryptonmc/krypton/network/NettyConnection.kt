@@ -52,6 +52,7 @@ import org.kryptonmc.krypton.packet.out.login.PacketOutSetCompression
 import org.kryptonmc.krypton.packet.out.play.PacketOutDisconnect
 import org.kryptonmc.krypton.util.PacketFraming
 import java.net.SocketAddress
+import java.nio.channels.ClosedChannelException
 import java.util.concurrent.Executor
 import java.util.concurrent.RejectedExecutionException
 import javax.crypto.SecretKey
@@ -199,11 +200,11 @@ class NettyConnection(private val server: KryptonServer) : SimpleChannelInboundH
                     listener.onSuccess()
                 } else {
                     val failPacket = listener.onFailure()
-                    if (failPacket != null) channel.writeAndFlush(failPacket).addListener(ChannelFutureListener.FIRE_EXCEPTION_ON_FAILURE)
+                    if (failPacket != null) channel.writeAndFlush(failPacket).addListener(FIRE_EXCEPTION_ON_FAILURE_UNLESS_CLOSED)
                 }
             }
         }
-        future.addListener(ChannelFutureListener.FIRE_EXCEPTION_ON_FAILURE)
+        future.addListener(FIRE_EXCEPTION_ON_FAILURE_UNLESS_CLOSED)
     }
 
     private fun flush() {
@@ -265,7 +266,7 @@ class NettyConnection(private val server: KryptonServer) : SimpleChannelInboundH
         if (noExistingFault) {
             LOGGER.debug("Failed to send packet or received invalid packet!", cause)
             val packet = if (currentState() == PacketState.LOGIN) PacketOutLoginDisconnect(reason) else PacketOutDisconnect(reason)
-            send(packet, PacketSendListener.thenRun { disconnect(reason) })
+            writeAndFlush(packet, PacketSendListener.thenRun { disconnect(reason) })
             setReadOnly()
         } else {
             LOGGER.debug("Double fault!", cause)
@@ -289,6 +290,14 @@ class NettyConnection(private val server: KryptonServer) : SimpleChannelInboundH
         const val NETTY_NAME: String = "handler"
         @JvmField
         val PACKET_STATE_ATTRIBUTE: AttributeKey<PacketState> = AttributeKey.valueOf("state")
+        // Took this from Netty's ChannelFutureListener.FIRE_EXCEPTION_ON_FAILURE
+        // The reason why we don't use that is because if it tries to fire an exception when the channel has been closed, we will get console spam
+        // because there won't be a handler in the pipeline to handle the exception.
+        private val FIRE_EXCEPTION_ON_FAILURE_UNLESS_CLOSED = ChannelFutureListener {
+            // If the channel is closed, we will get an endless stream of exceptions.
+            if (!it.channel().isOpen) return@ChannelFutureListener
+            if (!it.isSuccess) it.channel().pipeline().fireExceptionCaught(it.cause())
+        }
 
         private val LOGGER = LogManager.getLogger()
         private val END_OF_STREAM = Messages.Disconnect.END_OF_STREAM.build()
