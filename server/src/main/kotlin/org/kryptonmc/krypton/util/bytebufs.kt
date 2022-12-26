@@ -47,7 +47,7 @@ import org.kryptonmc.krypton.auth.KryptonProfileProperty
 import org.kryptonmc.krypton.item.ItemFactory
 import org.kryptonmc.krypton.item.KryptonItemStack
 import org.kryptonmc.krypton.registry.KryptonRegistries
-import org.kryptonmc.krypton.registry.KryptonRegistry
+import org.kryptonmc.krypton.registry.holder.Holder
 import org.kryptonmc.krypton.util.crypto.Crypto
 import org.kryptonmc.krypton.util.hit.BlockHitResult
 import org.kryptonmc.nbt.CompoundTag
@@ -402,11 +402,33 @@ fun ByteBuf.writeProfileProperty(property: ProfileProperty) {
 
 fun ByteBuf.readProfileProperty(): ProfileProperty = KryptonProfileProperty(readString(), readString(), readNullable(ByteBuf::readString))
 
-fun <T> ByteBuf.writeId(registry: KryptonRegistry<T>, value: T) {
-    writeVarInt(registry.getId(value))
+fun <T> ByteBuf.writeId(registry: IntBiMap<T>, value: T) {
+    val id = registry.getId(value)
+    require(id != -1) { "Cannot find ID for value $value in registry $registry!" }
+    writeVarInt(id)
 }
 
-fun <T> ByteBuf.readById(registry: KryptonRegistry<T>): T? = registry.get(readVarInt())
+fun <T> ByteBuf.readById(registry: IntBiMap<T>): T? = registry.get(readVarInt())
+
+inline fun <T> ByteBuf.writeId(registry: IntBiMap<Holder<T>>, entry: Holder<T>, writer: (ByteBuf, T) -> Unit) {
+    when (entry.kind()) {
+        Holder.Kind.REFERENCE -> {
+            val id = registry.getId(entry)
+            require(id != -1) { "Cannot find ID for value ${entry.value()} in registry $registry!" }
+            writeVarInt(id + 1)
+        }
+        Holder.Kind.DIRECT -> {
+            writeVarInt(0)
+            writer(this, entry.value())
+        }
+    }
+}
+
+inline fun <T : Any> ByteBuf.readById(registry: IntBiMap<Holder<T>>, reader: (ByteBuf) -> T): Holder<T> {
+    val id = readVarInt()
+    if (id == 0) return Holder.Direct(reader(this))
+    return requireNotNull(registry.get(id - 1)) { "Cannot find registry element with id $id!" }
+}
 
 fun ByteBuf.writeVarIntArray(array: IntArray) {
     writeVarInt(array.size)

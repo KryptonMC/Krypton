@@ -25,8 +25,8 @@ import org.kryptonmc.krypton.util.readAllAvailableBytes
 import org.kryptonmc.krypton.util.readKey
 import org.kryptonmc.krypton.util.writeKey
 
-@Suppress("ArrayInDataClass")
 @JvmRecord
+@Suppress("ArrayInDataClass")
 data class PacketOutPluginMessage(val channel: Key, val content: ByteArray) : Packet {
 
     constructor(buf: ByteBuf) : this(buf.readKey(), buf.readAllAvailableBytes())

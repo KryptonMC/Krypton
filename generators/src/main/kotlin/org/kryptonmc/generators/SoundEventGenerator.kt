@@ -18,7 +18,7 @@
  */
 package org.kryptonmc.generators
 
-import net.minecraft.core.Registry
+import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.sounds.SoundEvent
 import net.minecraft.sounds.SoundEvents
 import java.nio.file.Path
@@ -26,7 +26,7 @@ import java.nio.file.Path
 class SoundEventGenerator(path: Path) : StandardGenerator(path) {
 
     fun run() {
-        run<SoundEvents, SoundEvent>(Registry.SOUND_EVENT, "effect.sound.SoundEvents", "effect.sound.SoundEvent", "SOUND_EVENT")
+        run<SoundEvents, SoundEvent>(BuiltInRegistries.SOUND_EVENT, "effect.sound.SoundEvents", "effect.sound.SoundEvent", "SOUND_EVENT")
     }
 
     override fun <S, T> collectFields(catalogueType: Class<S>, type: Class<T>): Sequence<CollectedField<T>> {

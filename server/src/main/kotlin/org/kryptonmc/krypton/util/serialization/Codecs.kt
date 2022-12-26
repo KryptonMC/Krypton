@@ -21,12 +21,10 @@ package org.kryptonmc.krypton.util.serialization
 import com.google.common.collect.ImmutableList
 import net.kyori.adventure.key.Key
 import org.kryptonmc.api.effect.particle.ParticleType
-import org.kryptonmc.api.effect.sound.SoundEvent
 import org.kryptonmc.api.resource.ResourceKey
 import org.kryptonmc.api.resource.ResourceKeys
 import org.kryptonmc.api.util.Color
 import org.kryptonmc.api.world.World
-import org.kryptonmc.krypton.effect.sound.KryptonSoundEvent
 import org.kryptonmc.krypton.registry.KryptonRegistries
 import org.kryptonmc.krypton.resource.KryptonResourceKey
 import org.kryptonmc.krypton.util.Keys
@@ -65,8 +63,6 @@ object Codecs {
     )
     @JvmField
     val KEY: Codec<Key> = Codec.STRING.comapFlatMap({ Keys.read(it) }, { it.asString() }).stable()
-    @JvmField
-    val SOUND_EVENT: Codec<SoundEvent> = KEY.xmap({ KryptonSoundEvent(it, 16F) }, { it.key() })
     // TODO: Look at the particle type codec, since it's not that great here
     @JvmField
     val PARTICLE: Codec<ParticleType> = KEY.xmap({ KryptonRegistries.PARTICLE_TYPE.get(it)!! }, { KryptonRegistries.PARTICLE_TYPE.getKey(it)!! })

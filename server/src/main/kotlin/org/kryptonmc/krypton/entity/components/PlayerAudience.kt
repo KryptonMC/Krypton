@@ -27,18 +27,19 @@ import net.kyori.adventure.sound.SoundStop
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.title.Title
 import net.kyori.adventure.title.TitlePart
+import org.kryptonmc.api.effect.sound.SoundEvent
 import org.kryptonmc.api.entity.player.ChatVisibility
 import org.kryptonmc.api.entity.player.Player
 import org.kryptonmc.krypton.adventure.BossBarManager
 import org.kryptonmc.krypton.adventure.KryptonAdventure
 import org.kryptonmc.krypton.command.KryptonSender
+import org.kryptonmc.krypton.effect.sound.KryptonSoundEvent
 import org.kryptonmc.krypton.entity.KryptonEntity
 import org.kryptonmc.krypton.item.KryptonItemStack
 import org.kryptonmc.krypton.network.chat.ChatSender
 import org.kryptonmc.krypton.network.chat.ChatType
 import org.kryptonmc.krypton.network.chat.MessageSignature
 import org.kryptonmc.krypton.packet.out.play.PacketOutClearTitles
-import org.kryptonmc.krypton.packet.out.play.PacketOutCustomSoundEffect
 import org.kryptonmc.krypton.packet.out.play.PacketOutEntitySoundEffect
 import org.kryptonmc.krypton.packet.out.play.PacketOutSetActionBarText
 import org.kryptonmc.krypton.packet.out.play.PacketOutSetSubtitleText
@@ -48,6 +49,7 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutSetTitleText
 import org.kryptonmc.krypton.packet.out.play.PacketOutSoundEffect
 import org.kryptonmc.krypton.packet.out.play.PacketOutStopSound
 import org.kryptonmc.krypton.registry.KryptonRegistries
+import org.kryptonmc.krypton.registry.holder.Holder
 import org.kryptonmc.krypton.world.KryptonWorld
 
 interface PlayerAudience : Player, NetworkPlayer, KryptonSender {
@@ -134,31 +136,27 @@ interface PlayerAudience : Player, NetworkPlayer, KryptonSender {
     }
 
     override fun playSound(sound: Sound, x: Double, y: Double, z: Double) {
-        val type = KryptonRegistries.SOUND_EVENT.get(sound.name())
         val seed = sound.seed().orElseGet { world.generateSoundSeed() }
-        val packet = if (type != null) {
-            PacketOutSoundEffect.fromSound(sound, type, x, y, z, seed)
-        } else {
-            PacketOutCustomSoundEffect(sound, x, y, z, seed)
-        }
-        connection.send(packet)
+        val event = getSoundEventHolder(sound)
+        connection.send(PacketOutSoundEffect.create(event, sound.source(), x, y, z, sound.volume(), sound.pitch(), seed))
     }
 
     override fun playSound(sound: Sound, emitter: Sound.Emitter) {
         val entity = when {
-            emitter === Sound.Emitter.self() -> this
+            emitter === Sound.Emitter.self() -> this as KryptonEntity
             emitter is KryptonEntity -> emitter
             else -> error("Sound emitter must be an entity or self(), was $emitter")
         }
 
-        val event = KryptonRegistries.SOUND_EVENT.get(sound.name())
         val seed = sound.seed().orElseGet { world.generateSoundSeed() }
-        val packet = if (event != null) {
-            PacketOutEntitySoundEffect(event, sound.source(), entity.id, sound.volume(), sound.pitch(), seed)
-        } else {
-            PacketOutCustomSoundEffect(sound, entity.position.x, entity.position.y, entity.position.z, seed)
-        }
-        connection.send(packet)
+        val event = getSoundEventHolder(sound)
+        connection.send(PacketOutEntitySoundEffect.create(entity, sound, event, seed))
+    }
+
+    private fun getSoundEventHolder(sound: Sound): Holder<SoundEvent> {
+        val name = sound.name()
+        val event = KryptonRegistries.SOUND_EVENT.get(name)
+        return if (event != null) KryptonRegistries.SOUND_EVENT.wrapAsHolder(event) else Holder.Direct(KryptonSoundEvent.createVariableRange(name))
     }
 
     override fun stopSound(stop: SoundStop) {

@@ -19,22 +19,24 @@
 package org.kryptonmc.krypton.packet.`in`.login
 
 import io.netty.buffer.ByteBuf
-import org.kryptonmc.krypton.entity.player.PlayerPublicKey
 import org.kryptonmc.krypton.network.handlers.LoginHandler
 import org.kryptonmc.krypton.packet.InboundPacket
 import org.kryptonmc.krypton.util.readNullable
 import org.kryptonmc.krypton.util.readString
+import org.kryptonmc.krypton.util.readUUID
 import org.kryptonmc.krypton.util.writeNullable
 import org.kryptonmc.krypton.util.writeString
+import org.kryptonmc.krypton.util.writeUUID
+import java.util.UUID
 
 @JvmRecord
-data class PacketInLoginStart(val name: String, val publicKey: PlayerPublicKey.Data?) : InboundPacket<LoginHandler> {
+data class PacketInLoginStart(val name: String, val profileId: UUID?) : InboundPacket<LoginHandler> {
 
-    constructor(buf: ByteBuf) : this(buf.readString(16), buf.readNullable(PlayerPublicKey::Data))
+    constructor(buf: ByteBuf) : this(buf.readString(16), buf.readNullable(ByteBuf::readUUID))
 
     override fun write(buf: ByteBuf) {
         buf.writeString(name, 16)
-        buf.writeNullable(publicKey) { _, key -> key.write(buf) }
+        buf.writeNullable(profileId, ByteBuf::writeUUID)
     }
 
     override fun handle(handler: LoginHandler) {

@@ -52,7 +52,6 @@ import org.kryptonmc.krypton.packet.out.login.PacketOutSetCompression
 import org.kryptonmc.krypton.packet.out.play.PacketOutDisconnect
 import org.kryptonmc.krypton.util.PacketFraming
 import java.net.SocketAddress
-import java.nio.channels.ClosedChannelException
 import java.util.concurrent.Executor
 import java.util.concurrent.RejectedExecutionException
 import javax.crypto.SecretKey

@@ -16,25 +16,9 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.packet.out.play
+package org.kryptonmc.krypton.effect.sound
 
-import io.netty.buffer.ByteBuf
-import net.kyori.adventure.text.Component
-import org.kryptonmc.krypton.packet.Packet
-import org.kryptonmc.krypton.util.readComponent
-import org.kryptonmc.krypton.util.readNullable
-import org.kryptonmc.krypton.util.readVarInt
-import org.kryptonmc.krypton.util.writeComponent
-import org.kryptonmc.krypton.util.writeNullable
-import org.kryptonmc.krypton.util.writeVarInt
+import org.kryptonmc.api.effect.sound.SoundEvent
+import org.kryptonmc.krypton.util.downcastApiType
 
-@JvmRecord
-data class PacketOutChatPreview(val queryId: Int, val previewMessage: Component?) : Packet {
-
-    constructor(buf: ByteBuf) : this(buf.readVarInt(), buf.readNullable(ByteBuf::readComponent))
-
-    override fun write(buf: ByteBuf) {
-        buf.writeVarInt(queryId)
-        buf.writeNullable(previewMessage, ByteBuf::writeComponent)
-    }
-}
+fun SoundEvent.downcast(): KryptonSoundEvent = downcastApiType("SoundEvent")

@@ -26,6 +26,9 @@ import org.kryptonmc.krypton.util.KryptonDataLoader
 
 class SoundLoader(registry: KryptonRegistry<SoundEvent>) : KryptonDataLoader<SoundEvent>("sounds", registry) {
 
-    override fun create(key: Key, value: JsonObject): SoundEvent =
-        KryptonSoundEvent(key, value.get("range")?.asFloat ?: KryptonSoundEvent.DEFAULT_RANGE)
+    override fun create(key: Key, value: JsonObject): SoundEvent {
+        val range = value.get("range")
+        val newSystem = range != null
+        return KryptonSoundEvent(key, if (newSystem) range.asFloat else KryptonSoundEvent.DEFAULT_RANGE, newSystem)
+    }
 }

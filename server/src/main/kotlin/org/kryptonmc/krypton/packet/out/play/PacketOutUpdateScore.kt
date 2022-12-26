@@ -31,14 +31,14 @@ import org.kryptonmc.krypton.util.writeVarInt
 @JvmRecord
 data class PacketOutUpdateScore(val name: String, val action: Int, val objectiveName: String?, val score: Int) : Packet {
 
-    constructor(buf: ByteBuf) : this(buf, buf.readString(MAX_NAME_LENGTH), buf.readByte().toInt(), buf.readString().ifEmpty { null })
+    constructor(buf: ByteBuf) : this(buf, buf.readString(MAX_NAME_LENGTH), buf.readVarInt(), buf.readString().ifEmpty { null })
 
     private constructor(buf: ByteBuf, name: String, action: Int, objectiveName: String?) : this(name, action, objectiveName,
         if (action != Actions.REMOVE) buf.readVarInt() else 0)
 
     override fun write(buf: ByteBuf) {
         buf.writeString(name, MAX_NAME_LENGTH)
-        buf.writeByte(action)
+        buf.writeVarInt(action)
         buf.writeString(objectiveName ?: "", MAX_OBJECTIVE_NAME_LENGTH)
         if (action != Actions.REMOVE) buf.writeVarInt(score)
     }

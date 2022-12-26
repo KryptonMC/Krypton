@@ -21,9 +21,11 @@ package org.kryptonmc.krypton.packet.out.play
 import io.netty.buffer.ByteBuf
 import net.kyori.adventure.sound.Sound
 import org.kryptonmc.api.effect.sound.SoundEvent
+import org.kryptonmc.krypton.effect.sound.KryptonSoundEvent
 import org.kryptonmc.krypton.entity.KryptonEntity
 import org.kryptonmc.krypton.packet.EntityPacket
 import org.kryptonmc.krypton.registry.KryptonRegistries
+import org.kryptonmc.krypton.registry.holder.Holder
 import org.kryptonmc.krypton.util.readById
 import org.kryptonmc.krypton.util.readEnum
 import org.kryptonmc.krypton.util.readVarInt
@@ -33,7 +35,7 @@ import org.kryptonmc.krypton.util.writeVarInt
 
 @JvmRecord
 data class PacketOutEntitySoundEffect(
-    val event: SoundEvent,
+    val event: Holder<SoundEvent>,
     val source: Sound.Source,
     override val entityId: Int,
     val volume: Float,
@@ -41,10 +43,11 @@ data class PacketOutEntitySoundEffect(
     val seed: Long
 ) : EntityPacket {
 
-    constructor(buf: ByteBuf) : this(readEvent(buf), buf.readEnum(), buf.readVarInt(), buf.readFloat(), buf.readFloat(), buf.readLong())
+    constructor(buf: ByteBuf) : this(buf.readById(KryptonRegistries.SOUND_EVENT.asHolderIdMap(), KryptonSoundEvent::read), buf.readEnum(),
+        buf.readVarInt(), buf.readFloat(), buf.readFloat(), buf.readLong())
 
     override fun write(buf: ByteBuf) {
-        buf.writeId(KryptonRegistries.SOUND_EVENT, event)
+        buf.writeId(KryptonRegistries.SOUND_EVENT.asHolderIdMap(), event, KryptonSoundEvent::write)
         buf.writeEnum(source)
         buf.writeVarInt(entityId)
         buf.writeFloat(volume)
@@ -55,10 +58,7 @@ data class PacketOutEntitySoundEffect(
     companion object {
 
         @JvmStatic
-        fun create(source: KryptonEntity, sound: Sound, event: SoundEvent, seed: Long): PacketOutEntitySoundEffect =
+        fun create(source: KryptonEntity, sound: Sound, event: Holder<SoundEvent>, seed: Long): PacketOutEntitySoundEffect =
             PacketOutEntitySoundEffect(event, sound.source(), source.id, sound.volume(), sound.pitch(), seed)
-
-        @JvmStatic
-        private fun readEvent(buf: ByteBuf): SoundEvent = buf.readById(KryptonRegistries.SOUND_EVENT)!!
     }
 }

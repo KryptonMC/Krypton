@@ -30,7 +30,6 @@ import org.kryptonmc.krypton.auth.KryptonGameProfile
 import org.kryptonmc.krypton.auth.requests.SessionService
 import org.kryptonmc.krypton.config.category.ProxyCategory
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
-import org.kryptonmc.krypton.entity.player.PlayerPublicKey
 import org.kryptonmc.krypton.event.auth.KryptonAuthenticationEvent
 import org.kryptonmc.krypton.event.player.KryptonLoginEvent
 import org.kryptonmc.krypton.event.server.KryptonSetupPermissionsEvent
@@ -42,17 +41,13 @@ import org.kryptonmc.krypton.packet.PacketState
 import org.kryptonmc.krypton.packet.`in`.login.PacketInEncryptionResponse
 import org.kryptonmc.krypton.packet.`in`.login.PacketInLoginStart
 import org.kryptonmc.krypton.packet.`in`.login.PacketInPluginResponse
-import org.kryptonmc.krypton.packet.`in`.login.VerificationData
 import org.kryptonmc.krypton.packet.out.login.PacketOutEncryptionRequest
 import org.kryptonmc.krypton.packet.out.login.PacketOutLoginDisconnect
 import org.kryptonmc.krypton.packet.out.login.PacketOutLoginSuccess
 import org.kryptonmc.krypton.packet.out.login.PacketOutPluginRequest
 import org.kryptonmc.krypton.util.AddressUtil
-import org.kryptonmc.krypton.util.ComponentException
 import org.kryptonmc.krypton.util.UUIDUtil
 import org.kryptonmc.krypton.util.crypto.Encryption
-import org.kryptonmc.krypton.util.crypto.InsecurePublicKeyException
-import org.kryptonmc.krypton.util.crypto.SignatureValidator
 import org.kryptonmc.krypton.util.random.RandomSource
 import org.kryptonmc.krypton.util.readVarInt
 import java.net.InetSocketAddress
@@ -81,17 +76,9 @@ class LoginHandler(
 
     private var name = "" // We cache the name here to avoid late initialization of the KryptonPlayer object.
     private val verifyToken = generateVerifyToken()
-    private var publicKey: PlayerPublicKey? = null
 
     fun handleLoginStart(packet: PacketInLoginStart) {
         name = packet.name
-        try {
-            publicKey = validatePublicKey(packet.publicKey, server.config.advanced.enforceSecureProfiles)
-        } catch (exception: PublicKeyParseException) {
-            LOGGER.error(exception.message, exception.cause)
-            disconnect(exception.asComponent())
-            return
-        }
 
         // Ignore online mode if we want proxy forwarding
         if (!server.config.isOnline || server.config.proxy.mode.authenticatesUsers) {
@@ -119,14 +106,14 @@ class LoginHandler(
         if (!canJoin(profile, address) || !callLoginEvent(profile)) return
 
         // Initialize the player and setup their permissions.
-        val player = KryptonPlayer(connection, profile, server.worldManager.default, address, publicKey)
+        val player = KryptonPlayer(connection, profile, server.worldManager.default, address, null)
         server.eventManager.fire(KryptonSetupPermissionsEvent(player, KryptonPlayer.DEFAULT_PERMISSIONS))
             .thenApplyAsync({ finishLogin(it, player) }, connection.executor())
     }
 
     fun handleEncryptionResponse(packet: PacketInEncryptionResponse) {
         // Check that the token we sent them is what they sent back to us.
-        if (!verifyToken(packet.verificationData)) return
+        if (!verifyToken.contentEquals(Encryption.decrypt(packet.verifyToken))) return
 
         // We decrypt the shared secret with the server's private key and then create a new AES streaming
         // cipher to use for encryption and decryption (see https://wiki.vg/Protocol_Encryption).
@@ -144,7 +131,7 @@ class LoginHandler(
             }
             if (!canJoin(profile, address) || !callLoginEvent(profile)) return@thenApplyAsync null
             // Check the profile from the event and construct the player.
-            KryptonPlayer(connection, it.result.profile ?: profile, server.worldManager.default, address, publicKey)
+            KryptonPlayer(connection, it.result.profile ?: profile, server.worldManager.default, address, null)
         }, connection.executor()).thenApplyAsync({
             if (it != null) finishLogin(server.eventManager.fireSync(KryptonSetupPermissionsEvent(it, KryptonPlayer.DEFAULT_PERMISSIONS)), it)
         }, connection.executor())
@@ -179,19 +166,10 @@ class LoginHandler(
         val data = VelocityProxy.readData(buffer)
         val address = connection.connectAddress() as InetSocketAddress
 
-        if (version >= VelocityProxy.MODERN_FORWARDING_WITH_KEY && publicKey == null) {
-            try {
-                publicKey = PlayerPublicKey.create(SignatureValidator.YGGDRASIL, data.key)
-            } catch (_: Exception) {
-                disconnect(Component.text("Could not validate public key forwarded from Velocity!"))
-                return
-            }
-        }
-
         // All good to go, let's construct our stuff
         LOGGER.debug("Detected Velocity login for ${data.uuid}")
         val profile = KryptonGameProfile.full(data.uuid, data.username, data.properties)
-        val player = KryptonPlayer(connection, profile, server.worldManager.default, InetSocketAddress(data.remoteAddress, address.port), publicKey)
+        val player = KryptonPlayer(connection, profile, server.worldManager.default, InetSocketAddress(data.remoteAddress, address.port), null)
 
         // Setup permissions for the player
         server.eventManager.fire(KryptonSetupPermissionsEvent(player, KryptonPlayer.DEFAULT_PERMISSIONS))
@@ -209,21 +187,6 @@ class LoginHandler(
             LOGGER.error("Disconnecting player ${player.profile.name} due to exception caught whilst attempting to load them in...", exception)
             player.disconnect(Component.text("An unexpected exception occurred. Please contact the system administrator."))
         }
-    }
-
-    private fun verifyToken(verificationData: VerificationData): Boolean {
-        if (publicKey != null && !verificationData.isSignatureValid(verifyToken, publicKey!!)) {
-            LOGGER.error("Signature for public key was invalid for $name! Their connection may have been intercepted.")
-            val message = "Signature for public key was invalid! Your connection may have been intercepted."
-            disconnect(Messages.Disconnect.LOGIN_FAILED_INFO.build(message))
-            return false
-        }
-        if (publicKey == null && !verificationData.isTokenValid(verifyToken)) {
-            LOGGER.error("Verify tokens for $name did not match! Their connection may have been intercepted.")
-            disconnect(Messages.Disconnect.LOGIN_FAILED_INFO.build("Verify tokens did not match! Your connection may have been intercepted."))
-            return false
-        }
-        return true
     }
 
     private fun callLoginEvent(profile: GameProfile): Boolean {
@@ -285,8 +248,6 @@ class LoginHandler(
 
     private fun formatName(): String = "$name (${connection.connectAddress()})"
 
-    class PublicKeyParseException(message: Component, cause: Throwable? = null) : ComponentException(message, cause)
-
     companion object {
 
         private const val VELOCITY_CHANNEL_ID = "velocity:player_info"
@@ -295,22 +256,5 @@ class LoginHandler(
 
         @JvmStatic
         private fun generateVerifyToken(): ByteArray = Ints.toByteArray(RANDOM.nextInt())
-
-        @JvmStatic
-        private fun validatePublicKey(keyData: PlayerPublicKey.Data?, requireValid: Boolean): PlayerPublicKey? {
-            try {
-                if (keyData == null) {
-                    if (requireValid) throw PublicKeyParseException(Messages.Disconnect.MISSING_PUBLIC_KEY.build())
-                    return null
-                }
-                return PlayerPublicKey.create(SignatureValidator.YGGDRASIL, keyData)
-            } catch (exception: InsecurePublicKeyException.Missing) {
-                if (requireValid) throw PublicKeyParseException(Messages.Disconnect.INVALID_SIGNATURE.build(), exception) else return null
-            } catch (exception: InsecurePublicKeyException.Invalid) {
-                throw PublicKeyParseException(Messages.Disconnect.INVALID_PUBLIC_KEY.build(), exception)
-            } catch (exception: Exception) {
-                throw PublicKeyParseException(Messages.Disconnect.INVALID_SIGNATURE.build(), exception)
-            }
-        }
     }
 }

@@ -36,10 +36,11 @@ import org.kryptonmc.krypton.util.writeVarInt
 @JvmRecord
 data class PacketOutAwardStatistics(val statistics: Object2IntMap<Statistic<*>>) : Packet {
 
-    constructor(buf: ByteBuf) : this(buf.readMap(::Object2IntOpenHashMap, { readStatistic(it) }, { it.readVarInt() }))
+    constructor(buf: ByteBuf) : this(buf.readMap(::Object2IntOpenHashMap, ::readStatistic, ByteBuf::readVarInt))
 
     override fun write(buf: ByteBuf) {
-        buf.writeMap(statistics, { buffer, key -> writeStatistic(buffer, key) }, { _, value -> buf.writeVarInt(value) })
+        // The second argument can't be a method reference because of type inference.
+        buf.writeMap(statistics, { buffer, key -> writeStatistic(buffer, key) }, ByteBuf::writeVarInt)
     }
 
     companion object {

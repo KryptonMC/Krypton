@@ -20,7 +20,7 @@ package org.kryptonmc.krypton.world.biome
 
 import org.kryptonmc.api.effect.sound.SoundEvent
 import org.kryptonmc.api.world.biome.AmbientAdditionsSettings
-import org.kryptonmc.krypton.util.serialization.Codecs
+import org.kryptonmc.krypton.effect.sound.KryptonSoundEvent
 import org.kryptonmc.serialization.Codec
 import org.kryptonmc.serialization.codecs.RecordCodecBuilder
 
@@ -56,7 +56,7 @@ data class KryptonAmbientAdditionsSettings(override val sound: SoundEvent, overr
         @JvmField
         val CODEC: Codec<AmbientAdditionsSettings> = RecordCodecBuilder.create { instance ->
             instance.group(
-                Codecs.SOUND_EVENT.fieldOf("sound").getting { it.sound },
+                KryptonSoundEvent.DIRECT_CODEC.fieldOf("sound").getting { it.sound },
                 Codec.DOUBLE.fieldOf("probability").getting { it.probability }
             ).apply(instance, ::KryptonAmbientAdditionsSettings)
         }

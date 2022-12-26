@@ -21,8 +21,10 @@ package org.kryptonmc.krypton.packet.out.play
 import io.netty.buffer.ByteBuf
 import net.kyori.adventure.sound.Sound
 import org.kryptonmc.api.effect.sound.SoundEvent
+import org.kryptonmc.krypton.effect.sound.KryptonSoundEvent
 import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.registry.KryptonRegistries
+import org.kryptonmc.krypton.registry.holder.Holder
 import org.kryptonmc.krypton.util.readById
 import org.kryptonmc.krypton.util.readEnum
 import org.kryptonmc.krypton.util.writeEnum
@@ -30,7 +32,7 @@ import org.kryptonmc.krypton.util.writeId
 
 @JvmRecord
 data class PacketOutSoundEffect(
-    val event: SoundEvent,
+    val event: Holder<SoundEvent>,
     val source: Sound.Source,
     val x: Int,
     val y: Int,
@@ -40,11 +42,11 @@ data class PacketOutSoundEffect(
     val seed: Long
 ) : Packet {
 
-    constructor(buf: ByteBuf) : this(buf.readById(KryptonRegistries.SOUND_EVENT)!!, buf.readEnum(), buf.readInt(), buf.readInt(), buf.readInt(),
-        buf.readFloat(), buf.readFloat(), buf.readLong())
+    constructor(buf: ByteBuf) : this(buf.readById(KryptonRegistries.SOUND_EVENT.asHolderIdMap(), KryptonSoundEvent::read), buf.readEnum(),
+        buf.readInt(), buf.readInt(), buf.readInt(), buf.readFloat(), buf.readFloat(), buf.readLong())
 
     override fun write(buf: ByteBuf) {
-        buf.writeId(KryptonRegistries.SOUND_EVENT, event)
+        buf.writeId(KryptonRegistries.SOUND_EVENT.asHolderIdMap(), event, KryptonSoundEvent::write)
         buf.writeEnum(source)
         buf.writeInt(x)
         buf.writeInt(y)
@@ -57,13 +59,9 @@ data class PacketOutSoundEffect(
     companion object {
 
         @JvmStatic
-        fun create(event: SoundEvent, source: Sound.Source, x: Double, y: Double, z: Double, volume: Float, pitch: Float,
+        fun create(event: Holder<SoundEvent>, source: Sound.Source, x: Double, y: Double, z: Double, volume: Float, pitch: Float,
                    seed: Long): PacketOutSoundEffect {
             return PacketOutSoundEffect(event, source, (x * 8.0).toInt(), (y * 8.0).toInt(), (z * 8.0).toInt(), volume, pitch, seed)
         }
-
-        @JvmStatic
-        fun fromSound(sound: Sound, event: SoundEvent, x: Double, y: Double, z: Double, seed: Long): PacketOutSoundEffect =
-            create(event, sound.source(), x, y, z, sound.volume(), sound.pitch(), seed)
     }
 }

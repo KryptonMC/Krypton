@@ -29,7 +29,6 @@ import org.kryptonmc.krypton.packet.`in`.play.PacketInAbilities
 import org.kryptonmc.krypton.packet.`in`.play.PacketInSwingArm
 import org.kryptonmc.krypton.packet.`in`.play.PacketInSetHeldItem
 import org.kryptonmc.krypton.packet.`in`.play.PacketInChatMessage
-import org.kryptonmc.krypton.packet.`in`.play.PacketInChatPreview
 import org.kryptonmc.krypton.packet.`in`.play.PacketInClientInformation
 import org.kryptonmc.krypton.packet.`in`.play.PacketInClientCommand
 import org.kryptonmc.krypton.packet.`in`.play.PacketInChatCommand
@@ -66,12 +65,10 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutAwardStatistics
 import org.kryptonmc.krypton.packet.out.play.PacketOutBlockUpdate
 import org.kryptonmc.krypton.packet.out.play.PacketOutBossBar
 import org.kryptonmc.krypton.packet.out.play.PacketOutChangeDifficulty
-import org.kryptonmc.krypton.packet.out.play.PacketOutChatPreview
 import org.kryptonmc.krypton.packet.out.play.PacketOutChunkDataAndLight
 import org.kryptonmc.krypton.packet.out.play.PacketOutClearTitles
 import org.kryptonmc.krypton.packet.out.play.PacketOutCommandSuggestionsResponse
 import org.kryptonmc.krypton.packet.out.play.PacketOutCommands
-import org.kryptonmc.krypton.packet.out.play.PacketOutCustomSoundEffect
 import org.kryptonmc.krypton.packet.out.play.PacketOutRemoveEntities
 import org.kryptonmc.krypton.packet.out.play.PacketOutDisconnect
 import org.kryptonmc.krypton.packet.out.play.PacketOutDisplayObjective
@@ -166,9 +163,8 @@ object PacketRegistry {
 
         // Play
         registerInbound(PacketState.PLAY, 0x00) { PacketInConfirmTeleportation(it) }
-        registerInbound(PacketState.PLAY, 0x03) { PacketInChatCommand(it) }
-        registerInbound(PacketState.PLAY, 0x04) { PacketInChatMessage(it) }
-        registerInbound(PacketState.PLAY, 0x05) { PacketInChatPreview(it) }
+        registerInbound(PacketState.PLAY, 0x04) { PacketInChatCommand(it) }
+        registerInbound(PacketState.PLAY, 0x05) { PacketInChatMessage(it) }
         registerInbound(PacketState.PLAY, 0x06) { PacketInClientCommand(it) }
         registerInbound(PacketState.PLAY, 0x07) { PacketInClientInformation(it) }
         registerInbound(PacketState.PLAY, 0x08) { PacketInCommandSuggestionsRequest(it) }
@@ -184,12 +180,12 @@ object PacketRegistry {
         registerInbound(PacketState.PLAY, 0x1C) { PacketInPlayerAction(it) }
         registerInbound(PacketState.PLAY, 0x1D) { PacketInPlayerCommand(it) }
         registerInbound(PacketState.PLAY, 0x1E) { PacketInPlayerInput(it) }
-        registerInbound(PacketState.PLAY, 0x23) { PacketInResourcePack(it) }
-        registerInbound(PacketState.PLAY, 0x27) { PacketInSetHeldItem(it) }
-        registerInbound(PacketState.PLAY, 0x2A) { PacketInSetCreativeModeSlot(it) }
-        registerInbound(PacketState.PLAY, 0x2E) { PacketInSwingArm(it) }
-        registerInbound(PacketState.PLAY, 0x30) { PacketInUseItemOn(it) }
-        registerInbound(PacketState.PLAY, 0x31) { PacketInUseItem(it) }
+        registerInbound(PacketState.PLAY, 0x24) { PacketInResourcePack(it) }
+        registerInbound(PacketState.PLAY, 0x28) { PacketInSetHeldItem(it) }
+        registerInbound(PacketState.PLAY, 0x2B) { PacketInSetCreativeModeSlot(it) }
+        registerInbound(PacketState.PLAY, 0x2F) { PacketInSwingArm(it) }
+        registerInbound(PacketState.PLAY, 0x31) { PacketInUseItemOn(it) }
+        registerInbound(PacketState.PLAY, 0x32) { PacketInUseItem(it) }
 
         registerOutbound<PacketOutSpawnEntity>(0x00)
         registerOutbound<PacketOutSpawnExperienceOrb>(0x01)
@@ -201,65 +197,63 @@ object PacketRegistry {
         registerOutbound<PacketOutBlockUpdate>(0x09)
         registerOutbound<PacketOutBossBar>(0x0A)
         registerOutbound<PacketOutChangeDifficulty>(0x0B)
-        registerOutbound<PacketOutChatPreview>(0x0C)
-        registerOutbound<PacketOutClearTitles>(0x0D)
-        registerOutbound<PacketOutCommandSuggestionsResponse>(0x0E)
-        registerOutbound<PacketOutCommands>(0x0F)
-        registerOutbound<PacketOutSetContainerContent>(0x11)
-        registerOutbound<PacketOutSetContainerSlot>(0x13)
-        registerOutbound<PacketOutSetCooldown>(0x14)
+        registerOutbound<PacketOutClearTitles>(0x0C)
+        registerOutbound<PacketOutCommandSuggestionsResponse>(0x0D)
+        registerOutbound<PacketOutCommands>(0x0E)
+        registerOutbound<PacketOutSetContainerContent>(0x10)
+        registerOutbound<PacketOutSetContainerSlot>(0x12)
+        registerOutbound<PacketOutSetCooldown>(0x13)
         registerOutbound<PacketOutPluginMessage>(0x15)
-        registerOutbound<PacketOutCustomSoundEffect>(0x16)
         registerOutbound<PacketOutDisconnect>(0x17)
-        registerOutbound<PacketOutEntityEvent>(0x18)
-        registerOutbound<PacketOutUnloadChunk>(0x1A)
-        registerOutbound<PacketOutGameEvent>(0x1B)
-        registerOutbound<PacketOutInitializeWorldBorder>(0x1D)
-        registerOutbound<PacketOutKeepAlive>(0x1E)
-        registerOutbound<PacketOutChunkDataAndLight>(0x1F)
-        registerOutbound<PacketOutWorldEvent>(0x20)
-        registerOutbound<PacketOutParticle>(0x21)
-        registerOutbound<PacketOutUpdateLight>(0x22)
-        registerOutbound<PacketOutLogin>(0x23)
-        registerOutbound<PacketOutUpdateEntityPosition>(0x26)
-        registerOutbound<PacketOutUpdateEntityPositionAndRotation>(0x27)
-        registerOutbound<PacketOutUpdateEntityRotation>(0x28)
-        registerOutbound<PacketOutOpenBook>(0x2A)
-        registerOutbound<PacketOutAbilities>(0x2F)
-        registerOutbound<PacketOutPlayerChatMessage>(0x30)
-        registerOutbound<PacketOutPlayerInfo>(0x34)
-        registerOutbound<PacketOutSynchronizePlayerPosition>(0x36)
-        registerOutbound<PacketOutUpdateRecipeBook>(0x37)
-        registerOutbound<PacketOutRemoveEntities>(0x38)
-        registerOutbound<PacketOutResourcePack>(0x3A)
-        registerOutbound<PacketOutSetHeadRotation>(0x3C)
-        registerOutbound<PacketOutSetActionBarText>(0x41)
-        registerOutbound<PacketOutSetCamera>(0x46)
-        registerOutbound<PacketOutSetHeldItem>(0x47)
-        registerOutbound<PacketOutSetCenterChunk>(0x48)
-        registerOutbound<PacketOutSetDefaultSpawnPosition>(0x4A)
-        registerOutbound<PacketOutDisplayObjective>(0x4C)
-        registerOutbound<PacketOutSetEntityMetadata>(0x4D)
-        registerOutbound<PacketOutSetEntityVelocity>(0x4F)
-        registerOutbound<PacketOutSetHealth>(0x52)
-        registerOutbound<PacketOutUpdateObjectives>(0x53)
-        registerOutbound<PacketOutSetPassengers>(0x54)
-        registerOutbound<PacketOutUpdateTeams>(0x55)
-        registerOutbound<PacketOutUpdateScore>(0x56)
-        registerOutbound<PacketOutSetSubtitleText>(0x58)
-        registerOutbound<PacketOutUpdateTime>(0x59)
-        registerOutbound<PacketOutSetTitleText>(0x5A)
-        registerOutbound<PacketOutSetTitleAnimationTimes>(0x5B)
-        registerOutbound<PacketOutEntitySoundEffect>(0x5C)
-        registerOutbound<PacketOutSoundEffect>(0x5D)
-        registerOutbound<PacketOutStopSound>(0x5E)
-        registerOutbound<PacketOutSystemChatMessage>(0x5F)
-        registerOutbound<PacketOutSetTabListHeaderAndFooter>(0x60)
-        registerOutbound<PacketOutTagQueryResponse>(0x61)
-        registerOutbound<PacketOutTeleportEntity>(0x63)
-        registerOutbound<PacketOutUpdateAttributes>(0x65)
-        registerOutbound<PacketOutUpdateRecipes>(0x67)
-        registerOutbound<PacketOutUpdateTags>(0x68)
+        registerOutbound<PacketOutEntityEvent>(0x19)
+        registerOutbound<PacketOutUnloadChunk>(0x1B)
+        registerOutbound<PacketOutGameEvent>(0x1C)
+        registerOutbound<PacketOutInitializeWorldBorder>(0x1E)
+        registerOutbound<PacketOutKeepAlive>(0x1F)
+        registerOutbound<PacketOutChunkDataAndLight>(0x20)
+        registerOutbound<PacketOutWorldEvent>(0x21)
+        registerOutbound<PacketOutParticle>(0x22)
+        registerOutbound<PacketOutUpdateLight>(0x23)
+        registerOutbound<PacketOutLogin>(0x24)
+        registerOutbound<PacketOutUpdateEntityPosition>(0x27)
+        registerOutbound<PacketOutUpdateEntityPositionAndRotation>(0x28)
+        registerOutbound<PacketOutUpdateEntityRotation>(0x29)
+        registerOutbound<PacketOutOpenBook>(0x2B)
+        registerOutbound<PacketOutAbilities>(0x30)
+        registerOutbound<PacketOutPlayerChatMessage>(0x31)
+        registerOutbound<PacketOutPlayerInfo>(0x36)
+        registerOutbound<PacketOutSynchronizePlayerPosition>(0x38)
+        registerOutbound<PacketOutUpdateRecipeBook>(0x39)
+        registerOutbound<PacketOutRemoveEntities>(0x3A)
+        registerOutbound<PacketOutResourcePack>(0x3C)
+        registerOutbound<PacketOutSetHeadRotation>(0x3E)
+        registerOutbound<PacketOutSetActionBarText>(0x42)
+        registerOutbound<PacketOutSetCamera>(0x48)
+        registerOutbound<PacketOutSetHeldItem>(0x49)
+        registerOutbound<PacketOutSetCenterChunk>(0x4A)
+        registerOutbound<PacketOutSetDefaultSpawnPosition>(0x4C)
+        registerOutbound<PacketOutDisplayObjective>(0x4D)
+        registerOutbound<PacketOutSetEntityMetadata>(0x4E)
+        registerOutbound<PacketOutSetEntityVelocity>(0x50)
+        registerOutbound<PacketOutSetHealth>(0x53)
+        registerOutbound<PacketOutUpdateObjectives>(0x54)
+        registerOutbound<PacketOutSetPassengers>(0x55)
+        registerOutbound<PacketOutUpdateTeams>(0x56)
+        registerOutbound<PacketOutUpdateScore>(0x57)
+        registerOutbound<PacketOutSetSubtitleText>(0x59)
+        registerOutbound<PacketOutUpdateTime>(0x5A)
+        registerOutbound<PacketOutSetTitleText>(0x5B)
+        registerOutbound<PacketOutSetTitleAnimationTimes>(0x5C)
+        registerOutbound<PacketOutEntitySoundEffect>(0x5D)
+        registerOutbound<PacketOutSoundEffect>(0x5E)
+        registerOutbound<PacketOutStopSound>(0x5F)
+        registerOutbound<PacketOutSystemChatMessage>(0x60)
+        registerOutbound<PacketOutSetTabListHeaderAndFooter>(0x61)
+        registerOutbound<PacketOutTagQueryResponse>(0x62)
+        registerOutbound<PacketOutTeleportEntity>(0x64)
+        registerOutbound<PacketOutUpdateAttributes>(0x66)
+        registerOutbound<PacketOutUpdateRecipes>(0x69)
+        registerOutbound<PacketOutUpdateTags>(0x6A)
     }
 
     @JvmStatic

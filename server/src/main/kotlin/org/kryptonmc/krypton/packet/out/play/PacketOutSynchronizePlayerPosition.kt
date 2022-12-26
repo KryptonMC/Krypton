@@ -24,6 +24,7 @@ import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.util.random.RandomSource
 import org.kryptonmc.krypton.util.readVarInt
 import org.kryptonmc.krypton.util.writeVarInt
+import java.util.EnumSet
 
 @JvmRecord
 data class PacketOutSynchronizePlayerPosition(
@@ -32,13 +33,13 @@ data class PacketOutSynchronizePlayerPosition(
     val z: Double,
     val yaw: Float,
     val pitch: Float,
-    val flags: Int = 0,
+    val relativeArguments: Set<RelativeArgument> = emptySet(),
     val teleportId: Int = RANDOM.nextInt(RANDOM_TELEPORT_ID_UPPER_BOUND),
     val shouldDismount: Boolean = false
 ) : Packet {
 
-    constructor(buf: ByteBuf) : this(buf.readDouble(), buf.readDouble(), buf.readDouble(), buf.readFloat(), buf.readFloat(), buf.readByte().toInt(),
-        buf.readVarInt(), buf.readBoolean())
+    constructor(buf: ByteBuf) : this(buf.readDouble(), buf.readDouble(), buf.readDouble(), buf.readFloat(), buf.readFloat(),
+        RelativeArgument.unpack(buf.readUnsignedByte().toInt()), buf.readVarInt(), buf.readBoolean())
 
     override fun write(buf: ByteBuf) {
         buf.writeDouble(x)
@@ -46,9 +47,41 @@ data class PacketOutSynchronizePlayerPosition(
         buf.writeDouble(z)
         buf.writeFloat(yaw)
         buf.writeFloat(pitch)
-        buf.writeByte(flags)
+        buf.writeByte(RelativeArgument.pack(relativeArguments))
         buf.writeVarInt(teleportId)
         buf.writeBoolean(shouldDismount)
+    }
+
+    enum class RelativeArgument(private val bit: Int) {
+
+        X(0),
+        Y(1),
+        Z(2),
+        PITCH(3),
+        YAW(4);
+
+        private fun mask(): Int = 1 shl bit
+
+        private fun isSet(flags: Int): Boolean = flags and mask() == mask()
+
+        companion object {
+
+            private val VALUES = values()
+
+            @JvmStatic
+            fun unpack(flags: Int): Set<RelativeArgument> {
+                val result = EnumSet.noneOf(RelativeArgument::class.java)
+                VALUES.forEach { if (it.isSet(flags)) result.add(it) }
+                return result
+            }
+
+            @JvmStatic
+            fun pack(arguments: Set<RelativeArgument>): Int {
+                var result = 0
+                arguments.forEach { result = result or it.mask() }
+                return result
+            }
+        }
     }
 
     companion object {

@@ -96,7 +96,7 @@ data class PacketOutLogin(
         buf.writeVarInt(viewDistance)
         buf.writeVarInt(simulationDistance)
         buf.writeBoolean(reducedDebugInfo)
-        buf.writeBoolean(!enableRespawnScreen)
+        buf.writeBoolean(enableRespawnScreen)
         buf.writeBoolean(isDebug)
         buf.writeBoolean(isFlat)
         buf.writeNullable(deathLocation) { _, pos -> pos.write(buf) }

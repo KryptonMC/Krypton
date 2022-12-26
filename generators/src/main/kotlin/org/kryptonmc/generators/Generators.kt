@@ -22,7 +22,7 @@ import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.STAR
 import net.minecraft.SharedConstants
-import net.minecraft.core.Registry
+import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.resources.ResourceKey
 import net.minecraft.server.Bootstrap
 import net.minecraft.tags.BannerPatternTags
@@ -47,12 +47,13 @@ fun main() {
     Bootstrap.bootStrap()
     val output = Path.of("api/src/generated/kotlin")
     val generator = StandardGenerator(output)
-    generator.run<Blocks, Block>(Registry.BLOCK, "block.Blocks", "block.Block", "BLOCK")
+    generator.run<Blocks, Block>(BuiltInRegistries.BLOCK, "block.Blocks", "block.Block", "BLOCK")
     SoundEventGenerator(output).run()
-    generator.run<Fluids, Fluid>(Registry.FLUID, "fluid.Fluids", "fluid.Fluid", "FLUID")
-    generator.run<Items, Item>(Registry.ITEM, "item.ItemTypes", "item.ItemType", "ITEM")
+    generator.run<Fluids, Fluid>(BuiltInRegistries.FLUID, "fluid.Fluids", "fluid.Fluid", "FLUID")
+    generator.run<Items, Item>(BuiltInRegistries.ITEM, "item.ItemTypes", "item.ItemType", "ITEM")
     generator.run<Biomes, ResourceKey<*>>("world.biome.Biomes", "world.biome.Biome", "BIOME") { it.value.location() }
-    generator.run<Attributes, Attribute>(Registry.ATTRIBUTE, "entity.attribute.AttributeTypes", "entity.attribute.AttributeType", "ATTRIBUTE")
+    generator.run<Attributes, Attribute>(BuiltInRegistries.ATTRIBUTE, "entity.attribute.AttributeTypes",
+        "entity.attribute.AttributeType", "ATTRIBUTE")
     val patternType = ClassName("$PACKAGE.block.entity.banner", "BannerPatternType")
     val entityType = ClassName("$PACKAGE.entity", "EntityType").parameterizedBy(STAR)
     val tagGenerator = TagGenerator(output)

@@ -33,7 +33,7 @@ import org.kryptonmc.api.world.biome.Biome
 import org.kryptonmc.api.world.biome.Biomes
 import org.kryptonmc.api.world.rule.GameRules
 import org.kryptonmc.krypton.KryptonServer
-import org.kryptonmc.krypton.effect.sound.KryptonSoundEvent
+import org.kryptonmc.krypton.effect.sound.downcast
 import org.kryptonmc.krypton.entity.EntityFactory
 import org.kryptonmc.krypton.entity.EntityManager
 import org.kryptonmc.krypton.entity.KryptonEntity
@@ -46,6 +46,8 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutGameEvent
 import org.kryptonmc.krypton.packet.out.play.PacketOutSetBlockDestroyStage
 import org.kryptonmc.krypton.packet.out.play.PacketOutSoundEffect
 import org.kryptonmc.krypton.packet.out.play.PacketOutWorldEvent
+import org.kryptonmc.krypton.registry.KryptonRegistries
+import org.kryptonmc.krypton.registry.holder.Holder
 import org.kryptonmc.krypton.util.BlockPos
 import org.kryptonmc.krypton.util.Directions
 import org.kryptonmc.krypton.util.Maths
@@ -149,24 +151,24 @@ class KryptonWorld(
     }
 
     fun playSound(entity: KryptonEntity, event: SoundEvent, source: Sound.Source, volume: Float, pitch: Float, except: KryptonPlayer? = null) {
-        playSeededSound(entity, event, source, volume, pitch, threadSafeRandom.nextLong(), except)
+        playSeededSound(entity, KryptonRegistries.SOUND_EVENT.wrapAsHolder(event), source, volume, pitch, threadSafeRandom.nextLong(), except)
     }
 
     fun playSound(x: Double, y: Double, z: Double, event: SoundEvent, source: Sound.Source, volume: Float, pitch: Float,
                   except: KryptonPlayer? = null) {
-        playSeededSound(x, y, z, event, source, volume, pitch, threadSafeRandom.nextLong(), except)
+        playSeededSound(x, y, z, KryptonRegistries.SOUND_EVENT.wrapAsHolder(event), source, volume, pitch, threadSafeRandom.nextLong(), except)
     }
 
-    private fun playSeededSound(x: Double, y: Double, z: Double, event: SoundEvent, source: Sound.Source, volume: Float, pitch: Float, seed: Long,
-                                except: KryptonPlayer?) {
+    private fun playSeededSound(x: Double, y: Double, z: Double, event: Holder<SoundEvent>, source: Sound.Source, volume: Float, pitch: Float,
+                                seed: Long, except: KryptonPlayer?) {
         val packet = PacketOutSoundEffect.create(event, source, x, y, z, volume, pitch, seed)
-        server.playerManager.broadcast(packet, this, x, y, z, KryptonSoundEvent.getRange(event, volume), except)
+        server.playerManager.broadcast(packet, this, x, y, z, event.value().downcast().getRange(volume).toDouble(), except)
     }
 
-    private fun playSeededSound(entity: KryptonEntity, event: SoundEvent, source: Sound.Source, volume: Float, pitch: Float, seed: Long,
+    private fun playSeededSound(entity: KryptonEntity, event: Holder<SoundEvent>, source: Sound.Source, volume: Float, pitch: Float, seed: Long,
                                 except: KryptonPlayer?) {
         val packet = PacketOutEntitySoundEffect(event, source, entity.id, volume, pitch, seed)
-        val range = KryptonSoundEvent.getRange(event, volume)
+        val range = event.value().downcast().getRange(volume).toDouble()
         server.playerManager.broadcast(packet, this, entity.position.x, entity.position.y, entity.position.z, range, except)
     }
 

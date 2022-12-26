@@ -22,8 +22,9 @@ import io.netty.buffer.ByteBuf
 import org.kryptonmc.krypton.inventory.KryptonPlayerInventory
 import org.kryptonmc.krypton.item.KryptonItemStack
 import org.kryptonmc.krypton.packet.Packet
+import org.kryptonmc.krypton.util.FixedList
+import org.kryptonmc.krypton.util.readCollection
 import org.kryptonmc.krypton.util.readItem
-import org.kryptonmc.krypton.util.readList
 import org.kryptonmc.krypton.util.readVarInt
 import org.kryptonmc.krypton.util.writeCollection
 import org.kryptonmc.krypton.util.writeItem
@@ -32,7 +33,8 @@ import org.kryptonmc.krypton.util.writeVarInt
 @JvmRecord
 data class PacketOutSetContainerContent(val id: Int, val stateId: Int, val items: List<KryptonItemStack>, val heldItem: KryptonItemStack) : Packet {
 
-    constructor(buf: ByteBuf) : this(buf.readByte().toInt(), buf.readVarInt(), buf.readList(ByteBuf::readItem), buf.readItem())
+    constructor(buf: ByteBuf) : this(buf.readUnsignedByte().toInt(), buf.readVarInt(),
+        buf.readCollection({ FixedList(it, KryptonItemStack.EMPTY) }, ByteBuf::readItem), buf.readItem())
 
     override fun write(buf: ByteBuf) {
         buf.writeByte(id)

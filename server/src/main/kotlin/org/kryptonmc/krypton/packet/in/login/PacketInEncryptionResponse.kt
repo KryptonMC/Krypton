@@ -26,13 +26,13 @@ import org.kryptonmc.krypton.util.writeVarIntByteArray
 
 @JvmRecord
 @Suppress("ArrayInDataClass")
-data class PacketInEncryptionResponse(val secret: ByteArray, val verificationData: VerificationData) : InboundPacket<LoginHandler> {
+data class PacketInEncryptionResponse(val secret: ByteArray, val verifyToken: ByteArray) : InboundPacket<LoginHandler> {
 
-    constructor(buf: ByteBuf) : this(buf.readVarIntByteArray(), VerificationData.read(buf))
+    constructor(buf: ByteBuf) : this(buf.readVarIntByteArray(), buf.readVarIntByteArray())
 
     override fun write(buf: ByteBuf) {
         buf.writeVarIntByteArray(secret)
-        verificationData.write(buf)
+        buf.writeVarIntByteArray(verifyToken)
     }
 
     override fun handle(handler: LoginHandler) {

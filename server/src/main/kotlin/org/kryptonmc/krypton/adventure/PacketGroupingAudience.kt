@@ -29,13 +29,14 @@ import net.kyori.adventure.sound.SoundStop
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.title.Title
 import net.kyori.adventure.title.TitlePart
+import org.kryptonmc.api.effect.sound.SoundEvent
+import org.kryptonmc.krypton.effect.sound.KryptonSoundEvent
 import org.kryptonmc.krypton.entity.KryptonEntity
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.packet.out.play.PacketOutSetActionBarText
 import org.kryptonmc.krypton.packet.out.play.PacketOutClearTitles
 import org.kryptonmc.krypton.packet.out.play.PacketOutEntitySoundEffect
-import org.kryptonmc.krypton.packet.out.play.PacketOutCustomSoundEffect
 import org.kryptonmc.krypton.packet.out.play.PacketOutSetTabListHeaderAndFooter
 import org.kryptonmc.krypton.packet.out.play.PacketOutSoundEffect
 import org.kryptonmc.krypton.packet.out.play.PacketOutStopSound
@@ -43,6 +44,7 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutSetSubtitleText
 import org.kryptonmc.krypton.packet.out.play.PacketOutSetTitleText
 import org.kryptonmc.krypton.packet.out.play.PacketOutSetTitleAnimationTimes
 import org.kryptonmc.krypton.registry.KryptonRegistries
+import org.kryptonmc.krypton.registry.holder.Holder
 
 interface PacketGroupingAudience : ForwardingAudience {
 
@@ -111,31 +113,28 @@ interface PacketGroupingAudience : ForwardingAudience {
     }
 
     override fun playSound(sound: Sound, x: Double, y: Double, z: Double) {
-        val type = KryptonRegistries.SOUND_EVENT.get(sound.name())
         val seed = sound.seed().orElseGet { generateSoundSeed() }
-        val packet = if (type != null) {
-            PacketOutSoundEffect.fromSound(sound, type, x, y, z, seed)
-        } else {
-            PacketOutCustomSoundEffect(sound, x, y, z, seed)
-        }
+        val event = getSoundEventHolder(sound)
+        val packet = PacketOutSoundEffect.create(event, sound.source(), x, y, z, sound.volume(), sound.pitch(), seed)
         sendGroupedPacket(packet)
     }
 
     override fun playSound(sound: Sound, emitter: Sound.Emitter) {
         if (emitter !== Sound.Emitter.self()) {
             val entity = if (emitter is KryptonEntity) emitter else error("Sound emitter must be an entity or self(), was $emitter!")
-            val event = KryptonRegistries.SOUND_EVENT.get(sound.name())
             val seed = sound.seed().orElseGet { generateSoundSeed() }
-            val packet = if (event != null) {
-                PacketOutEntitySoundEffect.create(entity, sound, event, seed)
-            } else {
-                PacketOutCustomSoundEffect(sound, entity.position.x, entity.position.y, entity.position.z, seed)
-            }
-            sendGroupedPacket(packet)
+            val event = getSoundEventHolder(sound)
+            sendGroupedPacket(PacketOutEntitySoundEffect(event, sound.source(), entity.id, sound.volume(), sound.pitch(), seed))
             return
         }
         // If we're playing on self, we need to delegate to each audience member
         super.playSound(sound, emitter)
+    }
+
+    private fun getSoundEventHolder(sound: Sound): Holder<SoundEvent> {
+        val name = sound.name()
+        val event = KryptonRegistries.SOUND_EVENT.get(name)
+        return if (event != null) KryptonRegistries.SOUND_EVENT.wrapAsHolder(event) else Holder.Direct(KryptonSoundEvent.createVariableRange(name))
     }
 
     override fun stopSound(stop: SoundStop) {

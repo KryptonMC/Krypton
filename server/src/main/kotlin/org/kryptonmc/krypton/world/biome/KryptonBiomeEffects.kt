@@ -27,6 +27,7 @@ import org.kryptonmc.api.world.biome.AmbientMoodSettings
 import org.kryptonmc.api.world.biome.AmbientParticleSettings
 import org.kryptonmc.api.world.biome.BiomeEffects
 import org.kryptonmc.api.world.biome.GrassColorModifier
+import org.kryptonmc.krypton.effect.sound.KryptonSoundEvent
 import org.kryptonmc.krypton.util.serialization.Codecs
 import org.kryptonmc.krypton.util.serialization.EnumCodecs
 import org.kryptonmc.serialization.Codec
@@ -129,7 +130,7 @@ data class KryptonBiomeEffects(
                 Codecs.COLOR.optionalFieldOf("foliage_color").getting { Optional.ofNullable(it.foliageColor) },
                 Codecs.COLOR.optionalFieldOf("grass_color").getting { Optional.ofNullable(it.grassColor) },
                 KryptonAmbientParticleSettings.CODEC.optionalFieldOf("particle").getting { Optional.ofNullable(it.ambientParticleSettings) },
-                Codecs.SOUND_EVENT.optionalFieldOf("ambient_sound").getting { Optional.ofNullable(it.ambientLoopSound) },
+                KryptonSoundEvent.DIRECT_CODEC.optionalFieldOf("ambient_sound").getting { Optional.ofNullable(it.ambientLoopSound) },
                 KryptonAmbientMoodSettings.CODEC.optionalFieldOf("mood_sound").getting { Optional.ofNullable(it.ambientMoodSettings) },
                 KryptonAmbientAdditionsSettings.CODEC.optionalFieldOf("additions_sound").getting { Optional.ofNullable(it.ambientAdditionsSettings) },
                 KryptonMusic.CODEC.optionalFieldOf("music").getting { Optional.ofNullable(it.backgroundMusic) }

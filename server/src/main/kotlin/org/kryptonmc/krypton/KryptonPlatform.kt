@@ -31,7 +31,7 @@ object KryptonPlatform : Platform {
     override val minecraftVersion: String = versions.getProperty("minecraft")
     const val isStableMinecraft: Boolean = true
     override val worldVersion: Int = 3105
-    override val protocolVersion: Int = 759
+    override val protocolVersion: Int = 761
     override val dataPackVersion: Int = 10
     @JvmField
     val dataVersionPrefix: String = versions.getProperty("data")

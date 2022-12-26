@@ -21,7 +21,7 @@ package org.kryptonmc.krypton.world.biome
 import org.kryptonmc.api.effect.sound.SoundEvent
 import org.kryptonmc.api.effect.sound.SoundEvents
 import org.kryptonmc.api.world.biome.AmbientMoodSettings
-import org.kryptonmc.krypton.util.serialization.Codecs
+import org.kryptonmc.krypton.effect.sound.KryptonSoundEvent
 import org.kryptonmc.serialization.Codec
 import org.kryptonmc.serialization.codecs.RecordCodecBuilder
 
@@ -74,7 +74,7 @@ data class KryptonAmbientMoodSettings(
         @JvmField
         val CODEC: Codec<AmbientMoodSettings> = RecordCodecBuilder.create { instance ->
             instance.group(
-                Codecs.SOUND_EVENT.fieldOf("sound").getting { it.sound },
+                KryptonSoundEvent.DIRECT_CODEC.fieldOf("sound").getting { it.sound },
                 Codec.INT.fieldOf("tick_delay").getting { it.tickDelay },
                 Codec.INT.fieldOf("block_search_extent").getting { it.blockSearchExtent },
                 Codec.DOUBLE.fieldOf("offset").getting { it.offset }

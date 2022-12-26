@@ -141,7 +141,7 @@ class PlayerManager(private val server: KryptonServer) {
             server.config.world.viewDistance,
             server.config.world.simulationDistance,
             reducedDebugInfo,
-            doImmediateRespawn,
+            !doImmediateRespawn,
             false,
             false,
             null
