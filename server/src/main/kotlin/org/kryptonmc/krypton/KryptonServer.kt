@@ -113,9 +113,6 @@ class KryptonServer(
     // The order of loading here is pretty important, as some things depend on
     // others to function properly.
     private fun initialize(): Boolean {
-        LOGGER.debug("Starting console handler...")
-        console.run()
-
         LOGGER.info("Starting Krypton server on ${config.server.ip}:${config.server.port}...")
         val startTime = System.nanoTime()
 
@@ -146,6 +143,11 @@ class KryptonServer(
 
         LOGGER.info("Preparing world ${config.world.name}...")
         worldManager.init()
+
+        // Load the console after the world. This ensures we don't get errors from trying to use the default world before it's ready.
+        // TODO: See if there is something we can do better than this, like trying to accept the world when it's null.
+        LOGGER.debug("Starting console handler...")
+        console.run()
 
         // Load plugins here because most of everything they need is available now.
         LOGGER.debug("Loading built-in services...")
