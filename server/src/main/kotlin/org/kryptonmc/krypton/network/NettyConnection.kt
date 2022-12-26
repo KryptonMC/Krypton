@@ -26,11 +26,11 @@ import io.netty.channel.ChannelFutureListener
 import io.netty.channel.ChannelHandlerContext
 import io.netty.channel.SimpleChannelInboundHandler
 import io.netty.handler.timeout.TimeoutException
+import io.netty.util.AttributeKey
 import net.kyori.adventure.text.Component
 import org.apache.logging.log4j.LogManager
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.locale.Messages
-import org.kryptonmc.krypton.network.handlers.HandshakeHandler
 import org.kryptonmc.krypton.network.handlers.PacketHandler
 import org.kryptonmc.krypton.network.handlers.PlayHandler
 import org.kryptonmc.krypton.network.handlers.TickablePacketHandler
@@ -51,7 +51,6 @@ import org.kryptonmc.krypton.packet.out.login.PacketOutLoginDisconnect
 import org.kryptonmc.krypton.packet.out.login.PacketOutSetCompression
 import org.kryptonmc.krypton.packet.out.play.PacketOutDisconnect
 import org.kryptonmc.krypton.util.PacketFraming
-import java.net.InetSocketAddress
 import java.net.SocketAddress
 import java.util.concurrent.Executor
 import java.util.concurrent.RejectedExecutionException
@@ -64,10 +63,11 @@ import javax.crypto.SecretKey
  */
 class NettyConnection(private val server: KryptonServer) : SimpleChannelInboundHandler<Packet>(), NetworkConnection {
 
-    private var channel: Channel? = null
+    // Lateinit is perfect here, since most of the time this will be non-null, we want to throw an exception if it isn't initialized when we need
+    // it to be, and we want the clean usage of lateinit and not the old way of doing things
+    @Suppress("LateinitUsage")
+    private lateinit var channel: Channel
     private var latency = 0
-    @Volatile
-    private var currentState = PacketState.HANDSHAKE
     @Volatile
     private var handler: PacketHandler? = null
     @Volatile
@@ -78,24 +78,26 @@ class NettyConnection(private val server: KryptonServer) : SimpleChannelInboundH
     private var tickBuffer = Unpooled.directBuffer()
     private val tickBufferLock = Any()
 
-    private fun channel(): Channel = checkNotNull(channel) { "Cannot call channel before it is initialized!" }
+    fun executor(): Executor = channel.eventLoop()
 
-    fun executor(): Executor = channel().eventLoop()
+    override fun connectAddress(): SocketAddress = channel.remoteAddress()
 
-    override fun connectAddress(): SocketAddress = channel().remoteAddress()
+    private fun currentState(): PacketState = channel.attr(PACKET_STATE_ATTRIBUTE).get()
 
-    fun currentState(): PacketState = currentState
+    fun setState(newState: PacketState) {
+        channel.attr(PACKET_STATE_ATTRIBUTE).set(newState)
+        channel.config().isAutoRead = true
+        LOGGER.debug("Enabled auto-read because state changed to $newState.")
+    }
 
     override fun latency(): Int = latency
 
     fun enableCompression() {
-        val channel = channel()
-        val pipeline = channel.pipeline()
         val threshold = server.config.server.compressionThreshold
 
         // Check for existing encoders and decoders
-        var encoder = pipeline.get(PacketCompressor.NETTY_NAME) as? PacketCompressor
-        var decoder = pipeline.get(PacketDecompressor.NETTY_NAME) as? PacketDecompressor
+        var encoder = channel.pipeline().get(PacketCompressor.NETTY_NAME) as? PacketCompressor
+        var decoder = channel.pipeline().get(PacketDecompressor.NETTY_NAME) as? PacketDecompressor
         if (encoder != null && decoder != null) {
             encoder.threshold = threshold
             decoder.threshold = threshold
@@ -110,8 +112,8 @@ class NettyConnection(private val server: KryptonServer) : SimpleChannelInboundH
         decoder = PacketDecompressor(compressor, threshold)
 
         // Add the compressor and decompressor to our pipeline
-        pipeline.addBefore(PacketDecoder.NETTY_NAME, PacketDecompressor.NETTY_NAME, decoder)
-        pipeline.addBefore(PacketEncoder.NETTY_NAME, PacketCompressor.NETTY_NAME, encoder)
+        channel.pipeline().addBefore(PacketDecoder.NETTY_NAME, PacketDecompressor.NETTY_NAME, decoder)
+        channel.pipeline().addBefore(PacketEncoder.NETTY_NAME, PacketCompressor.NETTY_NAME, encoder)
     }
 
     /**
@@ -123,9 +125,8 @@ class NettyConnection(private val server: KryptonServer) : SimpleChannelInboundH
         val cipher = Natives.cipher.get()
         val encrypter = PacketEncrypter(cipher.forEncryption(key))
         val decrypter = PacketDecrypter(cipher.forDecryption(key))
-        val pipeline = channel().pipeline()
-        pipeline.addBefore(GroupedPacketHandler.NETTY_NAME, PacketDecrypter.NETTY_NAME, decrypter)
-        pipeline.addBefore(GroupedPacketHandler.NETTY_NAME, PacketEncrypter.NETTY_NAME, encrypter)
+        channel.pipeline().addBefore(GroupedPacketHandler.NETTY_NAME, PacketDecrypter.NETTY_NAME, decrypter)
+        channel.pipeline().addBefore(GroupedPacketHandler.NETTY_NAME, PacketEncrypter.NETTY_NAME, encrypter)
     }
 
     fun playHandler(): PlayHandler =
@@ -137,9 +138,8 @@ class NettyConnection(private val server: KryptonServer) : SimpleChannelInboundH
         flush()
     }
 
-    fun changeState(newState: PacketState, newHandler: PacketHandler) {
-        currentState = newState
-        handler = newHandler
+    fun setHandler(handler: PacketHandler) {
+        this.handler = handler
     }
 
     fun updateLatency(lastKeepAlive: Long) {
@@ -147,11 +147,11 @@ class NettyConnection(private val server: KryptonServer) : SimpleChannelInboundH
     }
 
     fun setReadOnly() {
-        channel().config().isAutoRead = false
+        channel.config().isAutoRead = false
     }
 
     override fun send(packet: Packet) {
-        write(packet)
+        writePacket(packet)
     }
 
     override fun send(packet: Packet, listener: PacketSendListener) {
@@ -160,12 +160,7 @@ class NettyConnection(private val server: KryptonServer) : SimpleChannelInboundH
 
     override fun write(packet: GenericPacket) {
         when (packet) {
-            is Packet -> {
-                synchronized(tickBufferLock) {
-                    if (tickBuffer.refCnt() <= 0) return
-                    PacketFraming.writeFramedPacket(tickBuffer, packet)
-                }
-            }
+            is Packet -> writePacket(packet)
             is FramedPacket -> {
                 synchronized(tickBufferLock) {
                     if (tickBuffer.refCnt() <= 0) return
@@ -185,13 +180,18 @@ class NettyConnection(private val server: KryptonServer) : SimpleChannelInboundH
         }
     }
 
+    private fun writePacket(packet: Packet) {
+        synchronized(tickBufferLock) {
+            if (tickBuffer.refCnt() > 0) PacketFraming.writeFramedPacket(tickBuffer, packet)
+        }
+    }
+
     fun writeAndFlush(packet: Packet) {
         writeAndFlush(packet, null)
     }
 
     private fun writeAndFlush(packet: Packet, listener: PacketSendListener?) {
         writeWaitingPackets()
-        val channel = channel()
         val future = channel.writeAndFlush(packet)
         if (listener != null) {
             future.addListener {
@@ -207,7 +207,6 @@ class NettyConnection(private val server: KryptonServer) : SimpleChannelInboundH
     }
 
     private fun flush() {
-        val channel = channel ?: return
         val bufferSize = tickBuffer.writerIndex()
         if (bufferSize <= 0 || !channel.isActive) return
         writeWaitingPackets()
@@ -215,7 +214,6 @@ class NettyConnection(private val server: KryptonServer) : SimpleChannelInboundH
     }
 
     fun disconnect(message: Component) {
-        val channel = channel()
         if (channel.isOpen) {
             channel.close().awaitUninterruptibly()
             handler?.onDisconnect(message)
@@ -225,8 +223,11 @@ class NettyConnection(private val server: KryptonServer) : SimpleChannelInboundH
     override fun channelActive(ctx: ChannelHandlerContext) {
         super.channelActive(ctx)
         channel = ctx.channel()
-        changeState(PacketState.HANDSHAKE, HandshakeHandler(server, this))
-        ctx.channel().config().isAutoRead = true
+        try {
+            setState(PacketState.HANDSHAKE)
+        } catch (exception: Throwable) {
+            LOGGER.error("Failed to change packet state to handshake!", exception)
+        }
     }
 
     override fun channelInactive(ctx: ChannelHandlerContext) {
@@ -236,7 +237,7 @@ class NettyConnection(private val server: KryptonServer) : SimpleChannelInboundH
 
     override fun channelRead0(ctx: ChannelHandlerContext, msg: Packet) {
         if (msg !is InboundPacket<*>) error("Received outbound packet $msg! This is a bug!")
-        if (!channel().isOpen) return
+        if (!channel.isOpen) return
         try {
             handleCap(msg, handler!!)
         } catch (_: RejectedExecutionException) {
@@ -245,20 +246,17 @@ class NettyConnection(private val server: KryptonServer) : SimpleChannelInboundH
             // We could possibly throw and catch a different exception, however it's cleaner in the client code if we just try to do a generic
             // cast to the handler type and catch that if it fails.
             LOGGER.error("Received invalid packet from ${connectAddress()}!")
-            LOGGER.debug("Invalid packet $msg from ${connectAddress()} in state $currentState with handler $handler")
             disconnect(Component.translatable("multiplayer.disconnect.invalid_packet"))
         }
     }
 
     override fun exceptionCaught(ctx: ChannelHandlerContext, cause: Throwable) {
-        val channel = channel()
         val noExistingFault = !handlingFault
         handlingFault = true
         if (!channel.isOpen) return
 
         if (cause is TimeoutException) {
-            val address = channel.remoteAddress() as InetSocketAddress
-            LOGGER.debug("Connection from ${address.address}:${address.port} timed out!", cause)
+            LOGGER.debug("Connection from ${channel.remoteAddress()} timed out!", cause)
             disconnect(TIMEOUT)
             return
         }
@@ -266,7 +264,7 @@ class NettyConnection(private val server: KryptonServer) : SimpleChannelInboundH
         val reason = Component.translatable("disconnect.genericReason", Component.text("Internal Exception: $cause"))
         if (noExistingFault) {
             LOGGER.debug("Failed to send packet or received invalid packet!", cause)
-            val packet = if (currentState == PacketState.LOGIN) PacketOutLoginDisconnect(reason) else PacketOutDisconnect(reason)
+            val packet = if (currentState() == PacketState.LOGIN) PacketOutLoginDisconnect(reason) else PacketOutDisconnect(reason)
             send(packet, PacketSendListener.thenRun { disconnect(reason) })
             setReadOnly()
         } else {
@@ -283,12 +281,15 @@ class NettyConnection(private val server: KryptonServer) : SimpleChannelInboundH
             copy = tickBuffer
             tickBuffer = tickBuffer.alloc().buffer(tickBuffer.writerIndex())
         }
-        channel().write(FramedPacket(copy)).addListener { copy.release() }
+        channel.write(FramedPacket(copy)).addListener { copy.release() }
     }
 
     companion object {
 
         const val NETTY_NAME: String = "handler"
+        @JvmField
+        val PACKET_STATE_ATTRIBUTE: AttributeKey<PacketState> = AttributeKey.valueOf("state")
+
         private val LOGGER = LogManager.getLogger()
         private val END_OF_STREAM = Messages.Disconnect.END_OF_STREAM.build()
         private val TIMEOUT = Messages.Disconnect.TIMEOUT.build()

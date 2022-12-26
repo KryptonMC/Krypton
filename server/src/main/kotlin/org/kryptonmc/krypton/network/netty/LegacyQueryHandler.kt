@@ -59,7 +59,7 @@ class LegacyQueryHandler(private val server: KryptonServer) : ChannelInboundHand
                 failed = false
                 return
             }
-        } catch (exception: RuntimeException) {
+        } catch (_: RuntimeException) {
             return
         } finally {
             if (failed) {

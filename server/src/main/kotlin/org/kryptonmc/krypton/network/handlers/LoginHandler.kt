@@ -202,7 +202,8 @@ class LoginHandler(
         player.permissionFunction = event.createFunction(player)
         connection.enableCompression()
         connection.writeAndFlush(PacketOutLoginSuccess.create(player.profile))
-        connection.changeState(PacketState.PLAY, PlayHandler(server, connection, player))
+        connection.setState(PacketState.PLAY)
+        connection.setHandler(PlayHandler(server, connection, player))
         server.playerManager.addPlayer(player).whenComplete { _, exception ->
             if (exception == null) return@whenComplete
             LOGGER.error("Disconnecting player ${player.profile.name} due to exception caught whilst attempting to load them in...", exception)

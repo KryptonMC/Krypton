@@ -25,6 +25,7 @@ import org.apache.logging.log4j.LogManager
 import org.kryptonmc.krypton.network.NettyConnection
 import org.kryptonmc.krypton.packet.PacketRegistry
 import org.kryptonmc.krypton.util.readVarInt
+import java.io.IOException
 
 /**
  * Decodes packet data into readable packets and reads the data in by instantiating the packet with the
@@ -32,16 +33,14 @@ import org.kryptonmc.krypton.util.readVarInt
  */
 class PacketDecoder : ByteToMessageDecoder() {
 
-    private var cachedSession: NettyConnection? = null // Cache this since the get lookup for classes is a bit expensive
-
     override fun decode(ctx: ChannelHandlerContext, buf: ByteBuf, out: MutableList<Any>) {
         if (buf.readableBytes() == 0) return
         val id = buf.readVarInt()
-        val session = getSession(ctx)
+        val packetState = ctx.channel().attr(NettyConnection.PACKET_STATE_ATTRIBUTE).get() ?: throw IOException("No packet state set!")
 
-        val packet = PacketRegistry.getInboundPacket(session.currentState(), id, buf)
+        val packet = PacketRegistry.getInboundPacket(packetState, id, buf)
         if (packet == null) {
-            LOGGER.debug("Skipping packet with state ${session.currentState()} and ID $id because a packet object was not found")
+            LOGGER.debug("Skipping packet with state $packetState and ID $id because a packet object was not found")
             buf.skipBytes(buf.readableBytes())
             return
         }
@@ -49,11 +48,6 @@ class PacketDecoder : ByteToMessageDecoder() {
 
         if (buf.readableBytes() != 0) LOGGER.debug("$packet has more bytes available to read after fully reading it.")
         out.add(packet)
-    }
-
-    private fun getSession(ctx: ChannelHandlerContext): NettyConnection {
-        if (cachedSession == null) cachedSession = ctx.pipeline().get(NettyConnection::class.java)
-        return cachedSession!!
     }
 
     companion object {
