@@ -53,10 +53,14 @@ class LegacyQueryHandler(private val server: KryptonServer) : ChannelInboundHand
 
         var failed = true
         try {
-            if (msg.readUnsignedByte() != LEGACY_PING_PACKET_ID) return
-            handlePing(ctx, msg)
-            msg.release()
-            failed = false
+            if (msg.readUnsignedByte() == LEGACY_PING_PACKET_ID) {
+                handlePing(ctx, msg)
+                msg.release()
+                failed = false
+                return
+            }
+        } catch (exception: RuntimeException) {
+            return
         } finally {
             if (failed) {
                 msg.resetReaderIndex()
@@ -76,12 +80,12 @@ class LegacyQueryHandler(private val server: KryptonServer) : ChannelInboundHand
         when (buf.readableBytes()) {
             0 -> {
                 LOGGER.debug("Legacy server list ping (versions <=1.3.x) received from ${address.address}:${address.port}")
-                reply(ctx, "§", motd, playerCount, maxPlayers)
+                sendFlushAndClose(ctx, encodeResponse("$motd§$playerCount§$maxPlayers"))
             }
             1 -> {
                 if (buf.readUnsignedByte() != 1.toShort()) return
                 LOGGER.debug("Legacy server list ping (versions 1.4.x-1.5.x) received from ${address.address}:${address.port}")
-                reply(ctx, "\u0000", "§1", "127", version, motd, playerCount, maxPlayers)
+                sendFlushAndClose(ctx, encodeResponse("§1\u0000127\u0000$version\u0000$motd\u0000$playerCount\u0000$maxPlayers"))
             }
             else -> {
                 var isValid = buf.readUnsignedByte() == PAYLOAD_1_6
@@ -95,7 +99,12 @@ class LegacyQueryHandler(private val server: KryptonServer) : ChannelInboundHand
                 if (!isValid) return
 
                 LOGGER.debug("Legacy server list ping (version 1.6.x) received from ${address.address}:${address.port}")
-                reply(ctx, "\u0000", "§1", "127", version, motd, playerCount, maxPlayers)
+                val response = encodeResponse("§1\u0000127\u0000$version\u0000$motd\u0000$playerCount\u0000$maxPlayers")
+                try {
+                    sendFlushAndClose(ctx, response)
+                } finally {
+                    response.release()
+                }
             }
         }
     }
@@ -124,17 +133,19 @@ class LegacyQueryHandler(private val server: KryptonServer) : ChannelInboundHand
         }
 
         @JvmStatic
-        private fun reply(ctx: ChannelHandlerContext, separator: String, vararg parts: Any) {
-            reply(ctx, parts.joinToString(separator))
+        private fun encodeResponse(response: String): ByteBuf {
+            val buf = Unpooled.buffer().writeByte(255)
+            val chars = response.toCharArray()
+            buf.writeShort(chars.size)
+            for (char in chars) {
+                buf.writeChar(char.code)
+            }
+            return buf
         }
 
         @JvmStatic
-        private fun reply(ctx: ChannelHandlerContext, message: String) {
-            val buffer = Unpooled.buffer().writeByte(255)
-            val chars = message.toCharArray()
-            buffer.writeShort(chars.size)
-            chars.forEach { buffer.writeChar(it.code) }
-            ctx.pipeline().firstContext().writeAndFlush(buffer).addListener(ChannelFutureListener.CLOSE).addListener { buffer.release() }
+        private fun sendFlushAndClose(ctx: ChannelHandlerContext, response: ByteBuf) {
+            ctx.pipeline().firstContext().writeAndFlush(response).addListener(ChannelFutureListener.CLOSE)
         }
     }
 }
