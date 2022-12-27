@@ -19,71 +19,99 @@
 package org.kryptonmc.krypton.pack
 
 import com.google.common.base.Splitter
-import kotlinx.collections.immutable.persistentSetOf
 import net.kyori.adventure.key.Key
 import org.apache.logging.log4j.LogManager
+import org.kryptonmc.krypton.util.ImmutableSets
 import org.kryptonmc.krypton.util.Keys
+import java.io.File
 import java.io.IOException
 import java.io.InputStream
-import java.nio.file.Path
-import java.util.function.Predicate
+import java.util.function.Supplier
 import java.util.zip.ZipFile
 
-class FilePackResources(path: Path) : AbstractPackResources(path) {
+class FilePackResources(name: String, private val file: File, builtin: Boolean) : AbstractPackResources(name, builtin) {
 
     private var zipFile: ZipFile? = null
-    override val namespaces: Set<String> by lazy { collectNamespaces(this) }
+    private var failedToLoad = false
 
-    override fun hasResource(path: String): Boolean {
-        return try {
-            getOrCreateZipFile().getEntry(path) != null
-        } catch (_: IOException) {
-            false
-        }
-    }
-
-    override fun getResource(path: String): InputStream {
-        val file = getOrCreateZipFile()
-        val entry = file.getEntry(path) ?: throw ResourcePackFileNotFoundException(this.path, path)
-        return file.getInputStream(entry)
-    }
-
-    override fun getResources(namespace: String, path: String, predicate: Predicate<Key>): Collection<Key> {
-        val file = try {
-            getOrCreateZipFile()
-        } catch (_: IOException) {
-            return persistentSetOf()
-        }
-        val entries = file.entries()
-        val result = persistentSetOf<Key>().builder()
-        val namespacedPrefix = "${PackResources.DATA_FOLDER_NAME}/$namespace/"
-        val prefix = "$namespacedPrefix$path/"
-        while (entries.hasMoreElements()) {
-            val entry = entries.nextElement()
-            if (entry.isDirectory || entry.name.endsWith(PackResources.METADATA_EXTENSION) || !entry.name.startsWith(prefix)) continue
-            val name = entry.name.substring(namespacedPrefix.length)
-            val key = Keys.create(namespace, name)
-            if (key == null) {
-                LOGGER.warn("Invalid path in data pack: $namespace:$name, ignoring...")
-            } else if (predicate.test(key)) {
-                result.add(key)
+    private fun getOrCreateZipFile(): ZipFile? {
+        if (failedToLoad) return null
+        if (zipFile == null) {
+            try {
+                zipFile = ZipFile(file)
+            } catch (exception: IOException) {
+                LOGGER.error("Failed to open pack $file!", exception)
+                failedToLoad = true
+                return null
             }
         }
-        return result.build()
+        return zipFile!!
+    }
+
+    override fun getRootResource(vararg path: String): Supplier<InputStream>? = getResource(path.joinToString("/"))
+
+    override fun getResource(packType: PackType, location: Key): Supplier<InputStream>? = getResource(getPathFromLocation(packType, location))
+
+    private fun getResource(path: String): Supplier<InputStream>? {
+        val zip = getOrCreateZipFile() ?: return null
+        return zip.getEntry(path)?.let { Supplier { zip.getInputStream(it) } }
+    }
+
+    override fun namespaces(packType: PackType): Set<String> {
+        val zip = getOrCreateZipFile() ?: return ImmutableSets.of()
+        val entries = zip.entries()
+        val namespaces = HashSet<String>()
+
+        while (entries.hasMoreElements()) {
+            val entry = entries.nextElement()
+            val name = entry.name
+            if (!name.startsWith("${packType.directory}/")) continue
+            val parts = SPLITTER.splitToList(name)
+            if (parts.size <= 1) continue
+            val namespace = parts.get(1)
+            if (namespace == namespace.lowercase()) {
+                namespaces.add(namespace)
+            } else {
+                LOGGER.warn("Ignored non-lowercase namespace $namespace in $file.")
+            }
+        }
+        return namespaces
+    }
+
+    @Suppress("ProtectedMemberInFinalClass")
+    protected fun finalize() {
+        close()
     }
 
     override fun close() {
+        val zip = zipFile ?: return
         try {
-            zipFile?.close()
-        } catch (ignored: Exception) {
-            // Just ignore
+            zip.close()
+        } catch (_: IOException) {
+            // Do nothing - we're closing anyway
         }
         zipFile = null
     }
 
-    private fun getOrCreateZipFile(): ZipFile {
-        if (zipFile == null) zipFile = ZipFile(path.toFile())
-        return zipFile!!
+    override fun listResources(packType: PackType, namespace: String, path: String, output: PackResources.ResourceOutput) {
+        val zip = getOrCreateZipFile() ?: return
+        val entries = zip.entries()
+        val namespaceFolder = "${packType.directory}/$namespace/"
+        val pathFolder = "$namespaceFolder$path/"
+
+        while (entries.hasMoreElements()) {
+            val entry = entries.nextElement()
+            if (entry.isDirectory) continue
+            val name = entry.name
+            if (!name.startsWith(pathFolder)) continue
+            val relativePath = name.substring(namespaceFolder.length)
+            val key = Keys.create(namespace, relativePath)
+            if (key != null) {
+                output.accept(key, Supplier { zip.getInputStream(entry) })
+            } else {
+                LOGGER.warn("Invalid path in data pack: $namespace:$relativePath! Ignoring...")
+            }
+        }
     }
 
     companion object {
@@ -92,23 +120,7 @@ class FilePackResources(path: Path) : AbstractPackResources(path) {
         private val SPLITTER = Splitter.on("/").omitEmptyStrings().limit(3)
 
         @JvmStatic
-        private fun collectNamespaces(resources: FilePackResources): Set<String> {
-            val zipFile = try {
-                resources.getOrCreateZipFile()
-            } catch (_: IOException) {
-                return emptySet()
-            }
-            val entries = zipFile.entries()
-            val namespaces = persistentSetOf<String>().builder()
-            while (entries.hasMoreElements()) {
-                val entry = entries.nextElement()
-                if (!entry.name.startsWith("${PackResources.DATA_FOLDER_NAME}/")) continue
-                val parts = SPLITTER.split(entry.name).toList()
-                if (parts.size <= 1) continue
-                val namespace = parts.get(1)
-                if (namespace == namespace.lowercase()) namespaces.add(namespace) else resources.logWarning(namespace)
-            }
-            return namespaces.build()
-        }
+        private fun getPathFromLocation(packType: PackType, location: Key): String =
+            "${packType.directory}/${location.namespace()}/${location.value()}"
     }
 }

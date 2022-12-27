@@ -23,6 +23,9 @@ import com.google.common.collect.UnmodifiableIterator;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Module;
+
+import java.nio.file.FileSystem;
+import java.nio.file.Path;
 import java.util.concurrent.CompletableFuture;
 
 /**
@@ -48,5 +51,10 @@ public final class NoSpread {
     // Wrapper for java.util.concurrent.CompletableFuture#allOf
     public static CompletableFuture<Void> completableFutureAllOf(final CompletableFuture<?>[] cfs) {
         return CompletableFuture.allOf(cfs);
+    }
+
+    // Wrapper for java.nio.file.FileSystem#getPath
+    public static Path fileSystemGetPath(final FileSystem system, final String first, final String[] more) {
+        return system.getPath(first, more);
     }
 }

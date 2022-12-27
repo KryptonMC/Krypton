@@ -18,56 +18,64 @@
  */
 package org.kryptonmc.krypton.pack.repository
 
+import com.google.common.collect.ImmutableList
+import com.google.common.collect.ImmutableMap
+import com.google.common.collect.ImmutableSet
 import com.google.common.collect.Lists
-import kotlinx.collections.immutable.persistentListOf
-import kotlinx.collections.immutable.persistentMapOf
-import kotlinx.collections.immutable.toImmutableList
-import kotlinx.collections.immutable.toImmutableMap
 import org.kryptonmc.krypton.pack.PackResources
+import org.kryptonmc.krypton.world.flag.FeatureFlagSet
 import java.util.TreeMap
 import java.util.function.Function
+import java.util.stream.Collectors
+import java.util.stream.Stream
 
-class PackRepository(private val sources: Set<RepositorySource>, private val constructor: Pack.Constructor) {
+class PackRepository(vararg sources: RepositorySource) {
 
-    private var available: Map<String, Pack> = persistentMapOf()
-    private var selected: List<Pack> = persistentListOf()
-
-    fun availableIds(): Collection<String> = available.keys
-
-    fun availablePacks(): Collection<Pack> = available.values
-
-    fun selectedIds(): Collection<String> = Lists.transform(selected) { it.id }
-
-    fun selectedPacks(): Collection<Pack> = selected
-
-    fun isAvailable(id: String): Boolean = available.containsKey(id)
-
-    fun getPackById(id: String): Pack? = available.get(id)
-
-    fun openAllSelected(): List<PackResources> = Lists.transform(selected) { it.open() }
+    private val sources = ImmutableSet.copyOf(sources)
+    private var available: Map<String, Pack> = ImmutableMap.of()
+    private var selected: List<Pack> = ImmutableList.of()
 
     fun reload() {
+        val currentSelected = selected.stream().map { it.id() }.collect(ImmutableList.toImmutableList())
         available = discoverAvailable()
-        selected = rebuildSelected(selected.mapTo(HashSet(), Pack::id))
+        selected = rebuildSelected(currentSelected)
+    }
+
+    private fun discoverAvailable(): Map<String, Pack> {
+        val available = TreeMap<String, Pack>()
+        sources.forEach { source -> source.loadPacks { available.put(it.id(), it) } }
+        return ImmutableMap.copyOf(available)
     }
 
     fun setSelected(ids: Collection<String>) {
         selected = rebuildSelected(ids)
     }
 
-    private fun discoverAvailable(): Map<String, Pack> {
-        val available = TreeMap<String, Pack>()
-        sources.forEach { source -> source.loadPacks(constructor) { available.put(it.id, it) } }
-        return available.toImmutableMap()
-    }
-
     private fun rebuildSelected(ids: Collection<String>): List<Pack> {
-        val packs = getAvailablePacks(ids).toMutableList()
+        val packs = getAvailablePacks(ids).collect(Collectors.toList())
         available.values.forEach {
-            if (it.required && !packs.contains(it)) it.defaultPosition.insert(packs, it, false, Function.identity())
+            if (it.isRequired() && !packs.contains(it)) it.defaultPosition().insert(packs, it, false, Function.identity())
         }
-        return packs.toImmutableList()
+        return ImmutableList.copyOf(packs)
     }
 
-    private fun getAvailablePacks(ids: Collection<String>): Sequence<Pack> = ids.asSequence().map(available::get).filterNotNull()
+    @Suppress("UNCHECKED_CAST")
+    private fun getAvailablePacks(ids: Collection<String>): Stream<Pack> = ids.stream().map(available::get).filter { it != null } as Stream<Pack>
+
+    fun availableIds(): Collection<String> = available.keys
+
+    fun availablePacks(): Collection<Pack> = available.values
+
+    fun selectedIds(): Collection<String> = Lists.transform(selected) { it.id() }
+
+    fun requestedFeatureFlags(): FeatureFlagSet =
+        selectedPacks().stream().map { it.requestedFeatures() }.reduce(FeatureFlagSet::join).orElse(FeatureFlagSet.of())
+
+    fun selectedPacks(): Collection<Pack> = selected
+
+    fun getPackById(id: String): Pack? = available.get(id)
+
+    fun isAvailable(id: String): Boolean = available.containsKey(id)
+
+    fun openAllSelected(): List<PackResources> = Lists.transform(selected) { it.open() }
 }

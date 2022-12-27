@@ -18,32 +18,33 @@
  */
 package org.kryptonmc.krypton.pack.resources
 
-import org.kryptonmc.krypton.pack.metadata.MetadataSerializer
+import org.kryptonmc.krypton.pack.metadata.MetadataSectionSerializer
 import org.kryptonmc.krypton.util.gson.GsonHelper
 import java.io.BufferedReader
 import java.io.InputStream
 import java.io.InputStreamReader
+import java.util.function.Supplier
 
 interface ResourceMetadata {
 
-    fun <T> getMetadata(serializer: MetadataSerializer<T>): T?
+    fun <T> getSection(serializer: MetadataSectionSerializer<T>): T?
 
     companion object {
 
         @JvmField
         val EMPTY: ResourceMetadata = object : ResourceMetadata {
-
-            override fun <T> getMetadata(serializer: MetadataSerializer<T>): T? = null
+            override fun <T> getSection(serializer: MetadataSectionSerializer<T>): T? = null
         }
+        @JvmField
+        val EMPTY_SUPPLIER: Supplier<ResourceMetadata> = Supplier { EMPTY }
 
         @JvmStatic
         fun fromJsonStream(input: InputStream): ResourceMetadata = BufferedReader(InputStreamReader(input, Charsets.UTF_8)).use {
             val json = GsonHelper.parse(it)
             object : ResourceMetadata {
-
-                override fun <T> getMetadata(serializer: MetadataSerializer<T>): T? {
-                    if (json.has(serializer.name())) return serializer.fromJson(json.getAsJsonObject(serializer.name()))
-                    return null
+                override fun <T> getSection(serializer: MetadataSectionSerializer<T>): T? {
+                    val name = serializer.metadataSectionName()
+                    return if (json.has(name)) serializer.fromJson(json.getAsJsonObject(name)) else null
                 }
             }
         }

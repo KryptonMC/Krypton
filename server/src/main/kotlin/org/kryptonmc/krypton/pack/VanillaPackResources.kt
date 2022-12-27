@@ -18,166 +18,113 @@
  */
 package org.kryptonmc.krypton.pack
 
-import kotlinx.collections.immutable.persistentSetOf
-import kotlinx.collections.immutable.toImmutableSet
 import net.kyori.adventure.key.Key
 import org.apache.logging.log4j.LogManager
-import org.kryptonmc.krypton.pack.metadata.MetadataSerializer
-import org.kryptonmc.krypton.pack.metadata.PackMetadata
-import org.kryptonmc.krypton.util.Keys
-import java.io.FileNotFoundException
+import org.kryptonmc.krypton.pack.metadata.MetadataSectionSerializer
+import org.kryptonmc.krypton.util.FileUtil
+import org.kryptonmc.krypton.util.ImmutableLists
 import java.io.IOException
 import java.io.InputStream
-import java.net.URI
-import java.net.URL
-import java.nio.file.FileSystemAlreadyExistsException
-import java.nio.file.FileSystemNotFoundException
-import java.nio.file.FileSystems
 import java.nio.file.Files
-import java.nio.file.NoSuchFileException
 import java.nio.file.Path
-import java.util.function.BiConsumer
 import java.util.function.Consumer
-import java.util.function.Predicate
-import kotlin.contracts.ExperimentalContracts
-import kotlin.contracts.contract
+import java.util.function.Supplier
 
-class VanillaPackResources(val metadata: PackMetadata, vararg namespaces: String) : PackResources {
+class VanillaPackResources(
+    private val metadata: BuiltInMetadata,
+    private val namespaces: Set<String>,
+    private val rootPaths: List<Path>,
+    private val pathsForType: Map<PackType, List<Path>>
+) : PackResources {
 
-    override val namespaces: Set<String> = namespaces.asIterable().toImmutableSet()
-
-    override fun name(): String = "Default"
-
-    override fun hasResource(location: Key): Boolean {
-        val path = createPath(location)
-        return try {
-            isResourceUrlValid(path, VanillaPackResources::class.java.getResource(path))
-        } catch (ignored: IOException) {
-            false
+    override fun getRootResource(vararg path: String): Supplier<InputStream>? {
+        FileUtil.validatePath(path)
+        val segments = ImmutableLists.ofArray(path)
+        rootPaths.forEach { rootPath ->
+            val relative = FileUtil.resolvePath(rootPath, segments)
+            if (Files.exists(relative)) return Supplier { Files.newInputStream(relative) }
         }
+        return null
     }
 
-    override fun getRootResource(fileName: String): InputStream? {
-        require(!fileName.contains("/") && !fileName.contains("\\")) { "Root resources can only be file names, not paths!" }
-        return VanillaPackResources::class.java.getResourceAsStream("/$fileName")
-    }
-
-    override fun getResource(location: Key): InputStream = getResourceAsStream(location) ?: throw FileNotFoundException(location.value())
-
-    override fun getResources(namespace: String, path: String, predicate: Predicate<Key>): Collection<Key> {
-        val result = persistentSetOf<Key>().builder()
-        try {
-            if (ROOT_DIRECTORY != null) {
-                getResources(result, namespace, ROOT_DIRECTORY, name(), predicate)
-            } else {
-                LOGGER.error("Cannot access vanilla data pack root directory!")
+    fun listRawPaths(packType: PackType, location: Key, action: Consumer<Path>) {
+        FileUtil.decomposePath(location.value()).get()
+            .ifLeft { segments ->
+                pathsForType.get(packType)!!.forEach { action.accept(FileUtil.resolvePath(it.resolve(location.namespace()), segments)) }
             }
-        } catch (_: NoSuchFileException) {
-        } catch (_: FileNotFoundException) {
-        } catch (exception: IOException) {
-            LOGGER.error("Failed to get a list of all vanilla resources!", exception)
-        }
-        return result.build()
+            .ifRight { LOGGER.error("Invalid path $location! ${it.message}") }
     }
+
+    override fun listResources(packType: PackType, namespace: String, path: String, output: PackResources.ResourceOutput) {
+        FileUtil.decomposePath(path).get()
+            .ifLeft { segments ->
+                val paths = pathsForType.get(packType)!!
+                val pathCount = paths.size
+                if (pathCount == 1) {
+                    getResources(output, namespace, paths.get(0), segments)
+                    return@ifLeft
+                }
+                val streams = HashMap<Key, Supplier<InputStream>>()
+                for (i in 0 until pathCount - 1) {
+                    getResources(streams::putIfAbsent, namespace, paths.get(i), segments)
+                }
+                val lastPath = paths.get(pathCount - 1)
+                if (streams.isEmpty()) {
+                    getResources(output, namespace, lastPath, segments)
+                } else {
+                    getResources(streams::putIfAbsent, namespace, lastPath, segments)
+                    streams.forEach(output)
+                }
+            }
+            .ifRight { LOGGER.error("Invalid path $path! ${it.message}") }
+    }
+
+    override fun getResource(packType: PackType, location: Key): Supplier<InputStream> {
+        return FileUtil.decomposePath(location.value()).get().map(
+            { segments ->
+                pathsForType.get(packType)!!.forEach { path ->
+                    val relative = FileUtil.resolvePath(path.resolve(location.namespace()), segments)
+                    if (Files.exists(relative)) return@map Supplier { Files.newInputStream(relative) }
+                }
+                null
+            },
+            {
+                LOGGER.error("Invalid path $location! ${it.message}")
+                null
+            }
+        )
+    }
+
+    override fun namespaces(packType: PackType): Set<String> = namespaces
 
     @Suppress("UNCHECKED_CAST")
-    override fun <T> getMetadata(serializer: MetadataSerializer<T>): T? {
-        return try {
-            getRootResource(PackResources.PACK_META).use {
-                if (it != null) {
-                    val metadata = AbstractPackResources.getMetadataFromStream(serializer, it)
-                    if (metadata != null) return metadata
-                }
-                if (serializer === PackMetadata.Serializer) metadata as T else null
+    override fun <T> getMetadataSection(serializer: MetadataSectionSerializer<T>): T? {
+        val resource = getRootResource(PackResources.PACK_META)
+        if (resource != null) {
+            try {
+                val result = resource.get().use { stream -> AbstractPackResources.getMetadataFromStream(serializer, stream) }
+                return result ?: metadata.get(serializer)
+            } catch (_: IOException) {
             }
-        } catch (ignored: FileNotFoundException) {
-            if (serializer === PackMetadata.Serializer) metadata as T else null
-        } catch (ignored: RuntimeException) {
-            if (serializer === PackMetadata.Serializer) metadata as T else null
         }
+        return metadata.get(serializer)
     }
+
+    override fun packId(): String = "vanilla"
+
+    override fun isBuiltin(): Boolean = true
 
     override fun close() {
         // Nothing to close
     }
 
-    private fun getResourceAsStream(location: Key): InputStream? {
-        val path = createPath(location)
-        return try {
-            val url = VanillaPackResources::class.java.getResource(path)
-            if (isResourceUrlValid(path, url)) url.openStream() else null
-        } catch (_: IOException) {
-            VanillaPackResources::class.java.getResourceAsStream(path)
-        }
-    }
-
     companion object {
 
         private val LOGGER = LogManager.getLogger()
-        private val ROOT_DIRECTORY = resolveRootDirectory()
 
         @JvmStatic
-        private fun resolveRootDirectory(): Path? = synchronized(VanillaPackResources::class.java) {
-            val verificationFile = VanillaPackResources::class.java.getResource("/${PackResources.DATA_FOLDER_NAME}/.mcassetsroot")
-            if (verificationFile == null) {
-                LOGGER.error("Failed to find vanilla data pack verification file (.mcassetsroot) in classpath!")
-                return null
-            }
-            try {
-                val uri = verificationFile.toURI()
-                if (uri.scheme != "jar" && uri.scheme != "file") LOGGER.warn("Vanilla data pack URL $uri uses unexpected schema")
-                return safeGetPath(uri).parent
-            } catch (exception: Exception) {
-                LOGGER.error("Failed to resolve path to vanilla assets!", exception)
-            }
-            return null
-        }
-
-        @JvmStatic
-        private fun safeGetPath(uri: URI): Path {
-            try {
-                return Path.of(uri)
-            } catch (_: FileSystemNotFoundException) {
-                // Ignore, fall through, since we will try and create one later
-            } catch (exception: Throwable) {
-                LOGGER.warn("Unable to get path for $uri!", exception)
-            }
-            try {
-                FileSystems.newFileSystem(uri, emptyMap<String, Any>())
-            } catch (_: FileSystemAlreadyExistsException) {
-                // Ignore, fall through
-            }
-            return Path.of(uri)
-        }
-
-        @JvmStatic
-        private fun createPath(location: Key): String = "/${PackResources.DATA_FOLDER_NAME}/${location.namespace()}/${location.value()}"
-
-        @JvmStatic
-        @OptIn(ExperimentalContracts::class)
-        private fun isResourceUrlValid(path: String, url: URL?): Boolean {
-            contract { returns(true) implies (url != null) }
-            return url != null && (url.protocol == "jar" || FolderPackResources.validatePath(Path.of(url.toURI()), path))
-        }
-
-        @JvmStatic
-        private fun getResources(output: MutableCollection<Key>, namespace: String, path: Path, name: String, predicate: Predicate<Key>) {
-            val folder = path.resolve(namespace)
-            Files.walk(folder.resolve(name)).use { files ->
-                val mapper = BiConsumer<Path, Consumer<Key>> { value, consumer ->
-                    val fileName = folder.relativize(value).toString().replace("\\\\", "/")
-                    val key = Keys.create(namespace, fileName)
-                    if (key == null) {
-                        LOGGER.error("Invalid path in data pack: $namespace:$fileName!")
-                    } else {
-                        consumer.accept(key)
-                    }
-                }
-                files.filter { !it.endsWith(PackResources.METADATA_EXTENSION) && Files.isRegularFile(it) }
-                    .mapMulti(mapper)
-                    .filter(predicate)
-                    .forEach { output.add(it) }
-            }
+        private fun getResources(output: PackResources.ResourceOutput, namespace: String, path: Path, segments: List<String>) {
+            PathPackResources.listPath(namespace, path.resolve(namespace), segments, output)
         }
     }
 }

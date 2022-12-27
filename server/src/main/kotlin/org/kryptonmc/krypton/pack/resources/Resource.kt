@@ -18,18 +18,29 @@
  */
 package org.kryptonmc.krypton.pack.resources
 
+import org.kryptonmc.krypton.pack.PackResources
 import java.io.BufferedReader
 import java.io.InputStream
 import java.io.InputStreamReader
 import java.util.function.Supplier
 
-class Resource(val packId: String, private val streamSupplier: Supplier<InputStream>, private val metadataSupplier: Supplier<ResourceMetadata>) {
+class Resource(
+    private val source: PackResources,
+    private val streamSupplier: Supplier<InputStream>,
+    private val metadataSupplier: Supplier<ResourceMetadata>
+) {
 
     private var cachedMetadata: ResourceMetadata? = null
 
-    constructor(packId: String, streamSupplier: Supplier<InputStream>) : this(packId, streamSupplier, { ResourceMetadata.EMPTY }) {
+    constructor(source: PackResources, streamSupplier: Supplier<InputStream>) : this(source, streamSupplier, ResourceMetadata.EMPTY_SUPPLIER) {
         cachedMetadata = ResourceMetadata.EMPTY
     }
+
+    fun source(): PackResources = source
+
+    fun sourcePackId(): String = source.packId()
+
+    fun isBuiltin(): Boolean = source.isBuiltin()
 
     fun open(): InputStream = streamSupplier.get()
 

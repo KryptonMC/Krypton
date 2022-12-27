@@ -24,30 +24,46 @@ import net.kyori.adventure.text.event.HoverEvent
 import net.kyori.adventure.text.format.NamedTextColor
 import org.apache.logging.log4j.LogManager
 import org.kryptonmc.krypton.pack.PackResources
-import org.kryptonmc.krypton.pack.metadata.PackMetadata
-import java.io.IOException
+import org.kryptonmc.krypton.pack.PackType
+import org.kryptonmc.krypton.pack.metadata.FeatureFlagsMetadataSection
+import org.kryptonmc.krypton.pack.metadata.PackMetadataSection
+import org.kryptonmc.krypton.world.flag.FeatureFlagSet
 import java.util.function.Function
-import java.util.function.Supplier
 
 class Pack(
-    val id: String,
-    private val resources: Supplier<PackResources>,
-    val title: Component,
-    val description: Component,
-    val compatibility: PackCompatibility,
-    val defaultPosition: Position,
-    val required: Boolean,
-    val fixedPosition: Boolean,
+    private val id: String,
+    private val required: Boolean,
+    private val resources: ResourcesSupplier,
+    private val title: Component,
+    info: Info,
+    private val compatibility: PackCompatibility,
+    private val defaultPosition: Position,
+    private val fixedPosition: Boolean,
     private val source: PackSource
 ) {
 
-    constructor(id: String, title: Component, required: Boolean, resources: Supplier<PackResources>, metadata: PackMetadata,
-                defaultPosition: Position, source: PackSource) : this(id, resources, title, metadata.description,
-        PackCompatibility.forMetadata(metadata), defaultPosition, required, false, source)
+    private val description = info.description
+    private val requestedFeatures = info.requestedFeatures
 
-    fun getChatLink(green: Boolean): Component = createChatLink(this, green)
+    fun id(): String = id
 
-    fun open(): PackResources = resources.get()
+    fun defaultPosition(): Position = defaultPosition
+
+    fun isRequired(): Boolean = required
+
+    fun isFixedPosition(): Boolean = fixedPosition
+
+    fun requestedFeatures(): FeatureFlagSet = requestedFeatures
+
+    fun getChatLink(green: Boolean): Component = Component.translatable().key("chat.square_brackets").args(source.decorate(Component.text(id)))
+        .style {
+            it.color(if (green) NamedTextColor.GREEN else NamedTextColor.RED)
+            it.insertion(StringArgumentType.escapeIfRequired(id))
+            it.hoverEvent(HoverEvent.showText(Component.text().append(title).appendNewline().append(description)))
+        }
+        .build()
+
+    fun open(): PackResources = resources.open(id)
 
     override fun equals(other: Any?): Boolean = this === other || other is Pack && id == other.id
 
@@ -56,10 +72,10 @@ class Pack(
     override fun toString(): String = "Pack(id=$id, title=$title, description=$description, compatibility=$compatibility, " +
             "defaultPosition=$defaultPosition, required=$required, fixedPosition=$fixedPosition)"
 
-    fun interface Constructor {
+    @JvmRecord
+    data class Info(val description: Component, val format: Int, val requestedFeatures: FeatureFlagSet) {
 
-        fun create(id: String, title: Component, required: Boolean, resources: Supplier<PackResources>, metadata: PackMetadata,
-                   defaultPosition: Position, source: PackSource): Pack
+        fun compatibility(type: PackType): PackCompatibility = PackCompatibility.forFormat(format, type)
     }
 
     enum class Position {
@@ -73,7 +89,7 @@ class Pack(
                 var index = 0
                 while (index < list.size) {
                     val pack = converter.apply(list.get(index))
-                    if (!pack.fixedPosition || pack.defaultPosition != this) break
+                    if (!pack.isFixedPosition() || pack.defaultPosition != this) break
                     ++index
                 }
                 list.add(index, value)
@@ -82,7 +98,7 @@ class Pack(
             var index = list.size - 1
             while (index >= 0) {
                 val pack = converter.apply(list.get(index))
-                if (!pack.fixedPosition || pack.defaultPosition != this) break
+                if (!pack.isFixedPosition() || pack.defaultPosition != this) break
                 --index
             }
             list.add(index + 1, value)
@@ -92,34 +108,45 @@ class Pack(
         private fun opposite(): Position = if (this == TOP) BOTTOM else TOP
     }
 
+    fun interface ResourcesSupplier {
+
+        fun open(packId: String): PackResources
+    }
+
     companion object {
 
         private val LOGGER = LogManager.getLogger()
 
         @JvmStatic
-        fun create(id: String, required: Boolean, resourceSupplier: Supplier<PackResources>, factory: Constructor, defaultPosition: Position,
-                   source: PackSource): Pack? {
-            try {
-                resourceSupplier.get().use {
-                    val metadata = it.getMetadata(PackMetadata.Serializer)
-                    if (metadata != null) {
-                        return factory.create(id, Component.text(it.name()), required, resourceSupplier, metadata, defaultPosition, source)
-                    }
-                }
-                return null
-            } catch (exception: IOException) {
-                LOGGER.warn("Failed to get pack information for ID $id!", exception)
-                return null
-            }
+        fun readMetaAndCreate(id: String, title: Component, required: Boolean, resources: ResourcesSupplier, type: PackType,
+                              defaultPosition: Position, source: PackSource): Pack? {
+            val info = readPackInfo(id, resources)
+            return if (info != null) create(id, title, required, resources, info, type, defaultPosition, false, source) else null
         }
 
         @JvmStatic
-        private fun createChatLink(pack: Pack, green: Boolean): Component = Component.translatable()
-            .key("chat.square_brackets")
-            .args(pack.source.decorate(Component.text(pack.id)))
-            .color(if (green) NamedTextColor.GREEN else NamedTextColor.RED)
-            .insertion(StringArgumentType.escapeIfRequired(pack.id))
-            .hoverEvent(HoverEvent.showText(Component.text().append(pack.title).append(Component.newline()).append(pack.description)))
-            .build()
+        private fun create(id: String, title: Component, required: Boolean, resources: ResourcesSupplier, info: Info, type: PackType,
+                           defaultPosition: Position, fixedPosition: Boolean, source: PackSource): Pack {
+            return Pack(id, required, resources, title, info, info.compatibility(type), defaultPosition, fixedPosition, source)
+        }
+
+        @JvmStatic
+        fun readPackInfo(id: String, resourcesSupplier: ResourcesSupplier): Info? {
+            try {
+                resourcesSupplier.open(id).use { resources ->
+                    val metadata = resources.getMetadataSection(PackMetadataSection.Serializer)
+                    if (metadata == null) {
+                        LOGGER.warn("Missing metadata in pack $id. Ignoring...")
+                        return null
+                    }
+                    val featureFlagSection = resources.getMetadataSection(FeatureFlagsMetadataSection.SERIALIZER)
+                    val featureFlags = featureFlagSection?.flags ?: FeatureFlagSet.of()
+                    return Info(metadata.description, metadata.format, featureFlags)
+                }
+            } catch (exception: Exception) {
+                LOGGER.warn("Failed to read pack metadata!", exception)
+                return null
+            }
+        }
     }
 }

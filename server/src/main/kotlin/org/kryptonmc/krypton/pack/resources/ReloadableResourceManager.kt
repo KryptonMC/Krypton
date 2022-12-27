@@ -23,37 +23,40 @@ import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.util.Supplier
 import org.kryptonmc.krypton.pack.PackResources
 import org.kryptonmc.krypton.pack.resources.reload.ReloadInstance
-import org.kryptonmc.krypton.pack.resources.reload.ReloadListener
+import org.kryptonmc.krypton.pack.resources.reload.PreparableReloadListener
 import org.kryptonmc.krypton.pack.resources.reload.SimpleReloadInstance
+import org.kryptonmc.krypton.pack.PackType
+import org.kryptonmc.krypton.util.ImmutableLists
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.Executor
 import java.util.function.Predicate
 
-class ReloadableResourceManager : ResourceManager, AutoCloseable {
+class ReloadableResourceManager(private val type: PackType) : ResourceManager, AutoCloseable {
 
-    private var manager = MultiPackResourceManager(emptyList())
-    private val listeners = ArrayList<ReloadListener>()
+    private var resources: CloseableResourceManager = MultiPackResourceManager(type, ImmutableLists.of())
+    private val listeners = ArrayList<PreparableReloadListener>()
 
-    fun registerListener(listener: ReloadListener) {
+    override fun close() {
+        resources.close()
+    }
+
+    fun registerListener(listener: PreparableReloadListener) {
         listeners.add(listener)
     }
 
     fun createReload(background: Executor, main: Executor, waitingFor: CompletableFuture<Unit>, packs: List<PackResources>): ReloadInstance {
-        LOGGER.info(Supplier { "Reloading resource manager: ${packs.joinToString(", ") { it.name() }}" })
-        manager.close()
-        manager = MultiPackResourceManager(packs)
-        return SimpleReloadInstance.of(manager, listeners, background, main, waitingFor)
+        LOGGER.info(Supplier { "Reloading resource manager: ${packs.joinToString(", ") { it.packId() }}" })
+        resources.close()
+        resources = MultiPackResourceManager(type, packs)
+        return SimpleReloadInstance.create(resources, listeners, background, main, waitingFor)
     }
 
-    override fun getResource(location: Key): Resource? = manager.getResource(location)
+    override fun getResource(location: Key): Resource? = resources.getResource(location)
 
-    override fun listResources(path: String, predicate: Predicate<Key>): Map<Key, Resource> = manager.listResources(path, predicate)
+    override fun listResources(path: String, predicate: Predicate<Key>): Map<Key, Resource> = resources.listResources(path, predicate)
 
-    override fun listResourceStacks(path: String, predicate: Predicate<Key>): Map<Key, List<Resource>> = manager.listResourceStacks(path, predicate)
-
-    override fun close() {
-        manager.close()
-    }
+    override fun listResourceStacks(path: String, predicate: Predicate<Key>): Map<Key, List<Resource>> =
+        resources.listResourceStacks(path, predicate)
 
     companion object {
 

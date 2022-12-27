@@ -16,20 +16,25 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.pack.resources.reload
+package org.kryptonmc.krypton.pack.metadata
 
-import org.kryptonmc.krypton.pack.resources.ResourceManager
-import java.util.concurrent.CompletableFuture
-import java.util.concurrent.Executor
+import com.google.gson.JsonObject
+import org.kryptonmc.serialization.Codec
+import org.kryptonmc.serialization.gson.GsonOps
 
-fun interface ReloadListener {
+interface MetadataSectionSerializer<T> {
 
-    fun name(): String = javaClass.simpleName
+    fun metadataSectionName(): String
 
-    fun reload(barrier: PreparationBarrier, manager: ResourceManager, backgroundExecutor: Executor, mainExecutor: Executor): CompletableFuture<Void>
+    fun fromJson(json: JsonObject): T
 
-    interface PreparationBarrier {
+    companion object {
 
-        fun <T> wait(backgroundResult: T): CompletableFuture<T>
+        @JvmStatic
+        fun <T> fromCodec(name: String, codec: Codec<T>): MetadataSectionSerializer<T> = object : MetadataSectionSerializer<T> {
+            override fun metadataSectionName(): String = name
+
+            override fun fromJson(json: JsonObject): T = codec.read(json, GsonOps.INSTANCE).getOrThrow(false) {}
+        }
     }
 }
