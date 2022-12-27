@@ -75,17 +75,17 @@ object MetadataKeys {
         @JvmField
         val FLAGS: MetadataKey<Byte> = MetadataKey(15, MetadataSerializers.BYTE)
         @JvmField
-        val HEAD_ROTATION: MetadataKey<Rotations> = MetadataKey(16, MetadataSerializers.ROTATION)
+        val HEAD_ROTATION: MetadataKey<Rotations> = MetadataKey(16, MetadataSerializers.ROTATIONS)
         @JvmField
-        val BODY_ROTATION: MetadataKey<Rotations> = MetadataKey(17, MetadataSerializers.ROTATION)
+        val BODY_ROTATION: MetadataKey<Rotations> = MetadataKey(17, MetadataSerializers.ROTATIONS)
         @JvmField
-        val LEFT_ARM_ROTATION: MetadataKey<Rotations> = MetadataKey(18, MetadataSerializers.ROTATION)
+        val LEFT_ARM_ROTATION: MetadataKey<Rotations> = MetadataKey(18, MetadataSerializers.ROTATIONS)
         @JvmField
-        val RIGHT_ARM_ROTATION: MetadataKey<Rotations> = MetadataKey(19, MetadataSerializers.ROTATION)
+        val RIGHT_ARM_ROTATION: MetadataKey<Rotations> = MetadataKey(19, MetadataSerializers.ROTATIONS)
         @JvmField
-        val LEFT_LEG_ROTATION: MetadataKey<Rotations> = MetadataKey(20, MetadataSerializers.ROTATION)
+        val LEFT_LEG_ROTATION: MetadataKey<Rotations> = MetadataKey(20, MetadataSerializers.ROTATIONS)
         @JvmField
-        val RIGHT_LEG_ROTATION: MetadataKey<Rotations> = MetadataKey(21, MetadataSerializers.ROTATION)
+        val RIGHT_LEG_ROTATION: MetadataKey<Rotations> = MetadataKey(21, MetadataSerializers.ROTATIONS)
     }
 
     object ArrowLike {
@@ -121,7 +121,7 @@ object MetadataKeys {
         @JvmField
         val ITEM: MetadataKey<KryptonItemStack> = MetadataKey(8, MetadataSerializers.ITEM_STACK)
         @JvmField
-        val ATTACHED: MetadataKey<OptionalInt> = MetadataKey(9, MetadataSerializers.OPTIONAL_INT)
+        val ATTACHED: MetadataKey<OptionalInt> = MetadataKey(9, MetadataSerializers.OPTIONAL_UNSIGNED_INT)
         @JvmField
         val SHOT_AT_ANGLE: MetadataKey<Boolean> = MetadataKey(10, MetadataSerializers.BOOLEAN)
     }
@@ -211,9 +211,9 @@ object MetadataKeys {
         @JvmField
         val MAIN_HAND: MetadataKey<Byte> = MetadataKey(18, MetadataSerializers.BYTE)
         @JvmField
-        val LEFT_SHOULDER: MetadataKey<CompoundTag> = MetadataKey(19, MetadataSerializers.NBT)
+        val LEFT_SHOULDER: MetadataKey<CompoundTag> = MetadataKey(19, MetadataSerializers.COMPOUND_TAG)
         @JvmField
-        val RIGHT_SHOULDER: MetadataKey<CompoundTag> = MetadataKey(20, MetadataSerializers.NBT)
+        val RIGHT_SHOULDER: MetadataKey<CompoundTag> = MetadataKey(20, MetadataSerializers.COMPOUND_TAG)
     }
 
     object AreaEffectCloud {

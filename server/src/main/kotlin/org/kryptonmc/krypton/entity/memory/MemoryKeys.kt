@@ -21,7 +21,7 @@ package org.kryptonmc.krypton.entity.memory
 import net.kyori.adventure.key.Key
 import org.kryptonmc.internal.annotations.Catalogue
 import org.kryptonmc.krypton.registry.KryptonRegistries
-import org.kryptonmc.krypton.util.GlobalPosition
+import org.kryptonmc.krypton.util.GlobalPos
 import org.kryptonmc.krypton.util.serialization.Codecs
 import org.kryptonmc.serialization.Codec
 import java.util.UUID
@@ -40,13 +40,13 @@ object MemoryKeys {
     @JvmField
     val HAS_HUNTING_COOLDOWN: MemoryKey<Boolean> = register("has_hunting_cooldown", Codec.BOOLEAN)
     @JvmField
-    val HOME: MemoryKey<GlobalPosition> = register("home", GlobalPosition.CODEC)
+    val HOME: MemoryKey<GlobalPos> = register("home", GlobalPos.CODEC)
     @JvmField
     val HUNTED_RECENTLY: MemoryKey<Boolean> = register("hunted_recently", Codec.BOOLEAN)
     @JvmField
     val IS_TEMPTED: MemoryKey<Boolean> = register("is_tempted", Codec.BOOLEAN)
     @JvmField
-    val JOB_SITE: MemoryKey<GlobalPosition> = register("job_site", GlobalPosition.CODEC)
+    val JOB_SITE: MemoryKey<GlobalPos> = register("job_site", GlobalPos.CODEC)
     @JvmField
     val LAST_SLEPT: MemoryKey<Long> = register("last_slept", Codec.LONG)
     @JvmField
@@ -56,11 +56,11 @@ object MemoryKeys {
     @JvmField
     val LONG_JUMP_COOLING_DOWN: MemoryKey<Int> = register("long_jump_cooling_down", Codec.INT)
     @JvmField
-    val MEETING_POINT: MemoryKey<GlobalPosition> = register("meeting_point", GlobalPosition.CODEC)
+    val MEETING_POINT: MemoryKey<GlobalPos> = register("meeting_point", GlobalPos.CODEC)
     @JvmField
     val PLAY_DEAD_TICKS: MemoryKey<Int> = register("play_dead_ticks", Codec.INT)
     @JvmField
-    val POTENTIAL_JOB_SITE: MemoryKey<GlobalPosition> = register("potential_job_site", GlobalPosition.CODEC)
+    val POTENTIAL_JOB_SITE: MemoryKey<GlobalPos> = register("potential_job_site", GlobalPos.CODEC)
     @JvmField
     val RAM_COOLDOWN_TICKS: MemoryKey<Int> = register("ram_cooldown_ticks", Codec.INT)
     @JvmField

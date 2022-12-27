@@ -28,7 +28,7 @@ import org.kryptonmc.serialization.Codec
 import org.kryptonmc.serialization.codecs.RecordCodecBuilder
 
 @JvmRecord
-data class GlobalPosition(val dimension: ResourceKey<World>, val position: BlockPos) : Writable {
+data class GlobalPos(val dimension: ResourceKey<World>, val position: BlockPos) : Writable {
 
     constructor(buf: ByteBuf) : this(ResourceKey.of(ResourceKeys.DIMENSION, buf.readKey()), buf.readBlockPos())
 
@@ -40,11 +40,11 @@ data class GlobalPosition(val dimension: ResourceKey<World>, val position: Block
     companion object {
 
         @JvmField
-        val CODEC: Codec<GlobalPosition> = RecordCodecBuilder.create { instance ->
+        val CODEC: Codec<GlobalPos> = RecordCodecBuilder.create { instance ->
             instance.group(
                 Codecs.DIMENSION.fieldOf("dimension").getting { it.dimension },
                 BlockPos.CODEC.fieldOf("pos").getting { it.position }
-            ).apply(instance) { dimension, pos -> GlobalPosition(dimension, pos) }
+            ).apply(instance) { dimension, pos -> GlobalPos(dimension, pos) }
         }
     }
 }

@@ -32,7 +32,7 @@ import org.kryptonmc.krypton.entity.data.VillagerData
 import org.kryptonmc.krypton.item.KryptonItemStack
 import org.kryptonmc.krypton.registry.KryptonRegistries
 import org.kryptonmc.krypton.util.BlockPos
-import org.kryptonmc.krypton.util.GlobalPosition
+import org.kryptonmc.krypton.util.GlobalPos
 import org.kryptonmc.krypton.util.IntIdentityHashBiMap
 import org.kryptonmc.krypton.util.readComponent
 import org.kryptonmc.krypton.util.readItem
@@ -42,6 +42,7 @@ import org.kryptonmc.krypton.util.readUUID
 import org.kryptonmc.krypton.util.readVarInt
 import org.kryptonmc.krypton.util.readBlockPos
 import org.kryptonmc.krypton.util.readRotations
+import org.kryptonmc.krypton.util.readVarLong
 import org.kryptonmc.krypton.util.writeComponent
 import org.kryptonmc.krypton.util.writeId
 import org.kryptonmc.krypton.util.writeItem
@@ -51,6 +52,7 @@ import org.kryptonmc.krypton.util.writeUUID
 import org.kryptonmc.krypton.util.writeVarInt
 import org.kryptonmc.krypton.util.writeBlockPos
 import org.kryptonmc.krypton.util.writeRotations
+import org.kryptonmc.krypton.util.writeVarLong
 import org.kryptonmc.krypton.world.block.KryptonBlock
 import org.kryptonmc.krypton.world.block.state.KryptonBlockState
 import org.kryptonmc.nbt.CompoundTag
@@ -67,6 +69,8 @@ object MetadataSerializers {
     @JvmField
     val INT: MetadataSerializer<Int> = MetadataSerializer.simple(ByteBuf::readVarInt, ByteBuf::writeVarInt)
     @JvmField
+    val LONG: MetadataSerializer<Long> = MetadataSerializer.simple(ByteBuf::readVarLong, ByteBuf::writeVarLong)
+    @JvmField
     val FLOAT: MetadataSerializer<Float> = MetadataSerializer.simple(ByteBuf::readFloat, ByteBuf::writeFloat)
     @JvmField
     val STRING: MetadataSerializer<String> = MetadataSerializer.simple(ByteBuf::readString, ByteBuf::writeString)
@@ -77,9 +81,19 @@ object MetadataSerializers {
     @JvmField
     val ITEM_STACK: MetadataSerializer<KryptonItemStack> = MetadataSerializer.simple(ByteBuf::readItem, ByteBuf::writeItem)
     @JvmField
+    val BLOCK_STATE: MetadataSerializer<KryptonBlockState?> = MetadataSerializer.simple(
+        { buf -> buf.readVarInt().let { if (it == 0) null else KryptonBlock.stateFromId(it) } },
+        { buf, block -> if (block != null) buf.writeVarInt(KryptonBlock.idOf(block)) else buf.writeVarInt(0) }
+    )
+    @JvmField
     val BOOLEAN: MetadataSerializer<Boolean> = MetadataSerializer.simple(ByteBuf::readBoolean, ByteBuf::writeBoolean)
     @JvmField
-    val ROTATION: MetadataSerializer<Rotations> = MetadataSerializer.simple(ByteBuf::readRotations, ByteBuf::writeRotations)
+    val PARTICLE: MetadataSerializer<ParticleOptions> = MetadataSerializer.simple(::ParticleOptions) { buf, item ->
+        buf.writeId(KryptonRegistries.PARTICLE_TYPE, item.type)
+        item.write(buf)
+    }
+    @JvmField
+    val ROTATIONS: MetadataSerializer<Rotations> = MetadataSerializer.simple(ByteBuf::readRotations, ByteBuf::writeRotations)
     @JvmField
     val BLOCK_POS: MetadataSerializer<BlockPos> = MetadataSerializer.simple(ByteBuf::readBlockPos, ByteBuf::writeBlockPos)
     @JvmField
@@ -89,21 +103,15 @@ object MetadataSerializers {
     @JvmField
     val OPTIONAL_UUID: MetadataSerializer<UUID?> = MetadataSerializer.nullable(ByteBuf::readUUID, ByteBuf::writeUUID)
     @JvmField
-    val OPTIONAL_BLOCK: MetadataSerializer<KryptonBlockState?> = MetadataSerializer.simple(
-        { buf -> buf.readVarInt().let { if (it == 0) null else KryptonBlock.stateFromId(it) } },
-        { buf, item -> if (item != null) buf.writeVarInt(KryptonBlock.idOf(item)) else buf.writeVarInt(0) }
-    )
-    @JvmField
-    val NBT: MetadataSerializer<CompoundTag> = MetadataSerializer.simple(ByteBuf::readNBT, ByteBuf::writeNBT)
-    @JvmField
-    val PARTICLE: MetadataSerializer<ParticleOptions> = MetadataSerializer.simple(::ParticleOptions) { buf, item ->
-        buf.writeId(KryptonRegistries.PARTICLE_TYPE, item.type)
-        item.write(buf)
+    val OPTIONAL_GLOBAL_POS: MetadataSerializer<GlobalPos?> = MetadataSerializer.nullable(::GlobalPos) { buf, position ->
+        position.write(buf)
     }
+    @JvmField
+    val COMPOUND_TAG: MetadataSerializer<CompoundTag> = MetadataSerializer.simple(ByteBuf::readNBT, ByteBuf::writeNBT)
     @JvmField
     val VILLAGER_DATA: MetadataSerializer<VillagerData> = MetadataSerializer.simple(::VillagerData) { buf, item -> item.write(buf) }
     @JvmField
-    val OPTIONAL_INT: MetadataSerializer<OptionalInt> = MetadataSerializer.simple(
+    val OPTIONAL_UNSIGNED_INT: MetadataSerializer<OptionalInt> = MetadataSerializer.simple(
         { buf -> buf.readVarInt().let { if (it == 0) OptionalInt.empty() else OptionalInt.of(it - 1) } },
         { buf, item -> buf.writeVarInt(item.orElse(-1) + 1) }
     )
@@ -114,35 +122,32 @@ object MetadataSerializers {
     @JvmField
     val FROG_VARIANT: MetadataSerializer<FrogVariant> = MetadataSerializer.simpleEnum()
     @JvmField
-    val OPTIONAL_GLOBAL_POSITION: MetadataSerializer<GlobalPosition?> = MetadataSerializer.nullable(::GlobalPosition) { buf, position ->
-        position.write(buf)
-    }
-    @JvmField
     val PAINTING_VARIANT: MetadataSerializer<PaintingVariant> = MetadataSerializer.simpleId(KryptonRegistries.PAINTING_VARIANT)
 
     init {
         SERIALIZERS.add(BYTE)
         SERIALIZERS.add(INT)
+        SERIALIZERS.add(LONG)
         SERIALIZERS.add(FLOAT)
         SERIALIZERS.add(STRING)
         SERIALIZERS.add(COMPONENT)
         SERIALIZERS.add(OPTIONAL_COMPONENT)
         SERIALIZERS.add(ITEM_STACK)
         SERIALIZERS.add(BOOLEAN)
-        SERIALIZERS.add(ROTATION)
+        SERIALIZERS.add(ROTATIONS)
         SERIALIZERS.add(BLOCK_POS)
         SERIALIZERS.add(OPTIONAL_BLOCK_POS)
         SERIALIZERS.add(DIRECTION)
         SERIALIZERS.add(OPTIONAL_UUID)
-        SERIALIZERS.add(OPTIONAL_BLOCK)
-        SERIALIZERS.add(NBT)
+        SERIALIZERS.add(BLOCK_STATE)
+        SERIALIZERS.add(COMPOUND_TAG)
         SERIALIZERS.add(PARTICLE)
         SERIALIZERS.add(VILLAGER_DATA)
-        SERIALIZERS.add(OPTIONAL_INT)
+        SERIALIZERS.add(OPTIONAL_UNSIGNED_INT)
         SERIALIZERS.add(POSE)
         SERIALIZERS.add(CAT_VARIANT)
         SERIALIZERS.add(FROG_VARIANT)
-        SERIALIZERS.add(OPTIONAL_GLOBAL_POSITION)
+        SERIALIZERS.add(OPTIONAL_GLOBAL_POS)
         SERIALIZERS.add(PAINTING_VARIANT)
     }
 

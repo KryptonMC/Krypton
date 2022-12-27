@@ -27,7 +27,7 @@ import org.kryptonmc.api.world.World
 import org.kryptonmc.api.world.dimension.DimensionType
 import org.kryptonmc.krypton.packet.EntityPacket
 import org.kryptonmc.krypton.util.GameModes
-import org.kryptonmc.krypton.util.GlobalPosition
+import org.kryptonmc.krypton.util.GlobalPos
 import org.kryptonmc.krypton.util.readCollection
 import org.kryptonmc.krypton.util.readKey
 import org.kryptonmc.krypton.util.readNBT
@@ -59,7 +59,7 @@ data class PacketOutLogin(
     val enableRespawnScreen: Boolean,
     val isDebug: Boolean,
     val isFlat: Boolean,
-    val deathLocation: GlobalPosition?
+    val deathLocation: GlobalPos?
 ) : EntityPacket {
 
     constructor(buf: ByteBuf) : this(
@@ -79,7 +79,7 @@ data class PacketOutLogin(
         buf.readBoolean(),
         buf.readBoolean(),
         buf.readBoolean(),
-        buf.readNullable { GlobalPosition(it) }
+        buf.readNullable { GlobalPos(it) }
     )
 
     override fun write(buf: ByteBuf) {
