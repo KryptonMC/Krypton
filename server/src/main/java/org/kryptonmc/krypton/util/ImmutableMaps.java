@@ -33,6 +33,14 @@ public final class ImmutableMaps {
         return Map.of();
     }
 
+    public static <K, V> @NotNull @Unmodifiable Map<K, V> of(K k1, V v1) {
+        return Map.of(k1, v1);
+    }
+
+    public static <K, V> @NotNull @Unmodifiable Map<K, V> of(K k1, V v1, K k2, V v2) {
+        return Map.of(k1, v1, k2, v2);
+    }
+
     private ImmutableMaps() {
         throw new AssertionError("This class cannot be instantiated!");
     }

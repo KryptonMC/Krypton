@@ -18,37 +18,22 @@
  */
 package org.kryptonmc.krypton.pack
 
-import net.kyori.adventure.key.Key
 import org.apache.logging.log4j.LogManager
-import org.kryptonmc.krypton.pack.metadata.MetadataSerializer
+import org.kryptonmc.krypton.pack.metadata.MetadataSectionSerializer
 import org.kryptonmc.krypton.util.gson.GsonHelper
 import java.io.BufferedReader
 import java.io.InputStream
 import java.io.InputStreamReader
-import java.nio.file.Path
 
-abstract class AbstractPackResources(protected val path: Path) : PackResources {
+abstract class AbstractPackResources protected constructor(private val name: String, private val builtin: Boolean) : PackResources {
 
-    final override fun name(): String = path.fileName.toString()
+    final override fun packId(): String = name
 
-    protected abstract fun hasResource(path: String): Boolean
+    final override fun isBuiltin(): Boolean = builtin
 
-    protected abstract fun getResource(path: String): InputStream
-
-    final override fun hasResource(location: Key): Boolean = hasResource(convertPath(location))
-
-    final override fun getRootResource(fileName: String): InputStream {
-        require(!fileName.contains("/") && !fileName.contains("\\")) { "Root resources can only be file names, not paths!" }
-        return getResource(fileName)
-    }
-
-    final override fun getResource(location: Key): InputStream = getResource(convertPath(location))
-
-    final override fun <T> getMetadata(serializer: MetadataSerializer<T>): T? =
-        getResource(PackResources.PACK_META).use { getMetadataFromStream(serializer, it) }
-
-    protected fun logWarning(namespace: String) {
-        LOGGER.warn("Ignoring non-lowercase namespace $namespace for data pack at ${path.fileName}")
+    final override fun <T> getMetadataSection(serializer: MetadataSectionSerializer<T>): T? {
+        val resource = getRootResource(PackResources.PACK_META) ?: return null
+        return resource.get().use { getMetadataFromStream(serializer, it) }
     }
 
     companion object {
@@ -56,26 +41,20 @@ abstract class AbstractPackResources(protected val path: Path) : PackResources {
         private val LOGGER = LogManager.getLogger()
 
         @JvmStatic
-        fun <T> getMetadataFromStream(serializer: MetadataSerializer<T>, input: InputStream): T? {
+        fun <T> getMetadataFromStream(serializer: MetadataSectionSerializer<T>, input: InputStream): T? {
             val json = try {
                 BufferedReader(InputStreamReader(input, Charsets.UTF_8)).use(GsonHelper::parse)
             } catch (exception: Exception) {
-                LOGGER.error("Failed to load ${serializer.name()} metadata!", exception)
+                LOGGER.error("Failed to load ${serializer.metadataSectionName()} metadata!", exception)
                 return null
             }
-            if (!json.has(serializer.name())) return null
+            if (!json.has(serializer.metadataSectionName())) return null
             return try {
-                serializer.fromJson(json.getAsJsonObject(serializer.name()))
+                serializer.fromJson(json.getAsJsonObject(serializer.metadataSectionName()))
             } catch (exception: Exception) {
-                LOGGER.error("Failed to load ${serializer.name()} metadata!", exception)
+                LOGGER.error("Failed to load ${serializer.metadataSectionName()} metadata!", exception)
                 null
             }
         }
-
-        @JvmStatic
-        private fun convertPath(location: Key): String = "${PackResources.DATA_FOLDER_NAME}/${location.namespace()}/${location.key()}"
-
-        @JvmStatic
-        protected fun relativizePath(first: Path, second: Path): String = first.toUri().relativize(second.toUri()).path
     }
 }

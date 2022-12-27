@@ -16,20 +16,14 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.pack.metadata
+package org.kryptonmc.krypton.pack
 
-import com.google.gson.JsonObject
-import net.kyori.adventure.text.Component
-import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer
+import org.kryptonmc.krypton.KryptonPlatform
 
-@JvmRecord
-data class PackMetadata(val description: Component, val format: Int) {
+enum class PackType(val directory: String) {
 
-    object Serializer : MetadataSerializer<PackMetadata> {
+    CLIENT_RESOURCES("assets"),
+    SERVER_DATA("data");
 
-        override fun name(): String = "pack"
-
-        override fun fromJson(json: JsonObject): PackMetadata =
-            PackMetadata(GsonComponentSerializer.gson().deserialize(json.get("description").asString), json.get("pack_format").asInt)
-    }
+    fun version(): Int = if (this == SERVER_DATA) KryptonPlatform.dataPackVersion else KryptonPlatform.resourcePackVersion
 }

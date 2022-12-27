@@ -18,11 +18,20 @@
  */
 package org.kryptonmc.krypton.pack.metadata
 
-import com.google.gson.JsonObject
+import org.kryptonmc.krypton.world.flag.FeatureFlagSet
+import org.kryptonmc.krypton.world.flag.FeatureFlags
+import org.kryptonmc.serialization.Codec
+import org.kryptonmc.serialization.codecs.RecordCodecBuilder
 
-interface MetadataSerializer<T> {
+@JvmRecord
+data class FeatureFlagsMetadataSection(val flags: FeatureFlagSet) {
 
-    fun name(): String
+    companion object {
 
-    fun fromJson(json: JsonObject): T
+        private val CODEC: Codec<FeatureFlagsMetadataSection> = RecordCodecBuilder.create { instance ->
+            instance.group(FeatureFlags.CODEC.fieldOf("enabled").getting { it.flags }).apply(instance, ::FeatureFlagsMetadataSection)
+        }
+        @JvmField
+        val SERIALIZER: MetadataSectionSerializer<FeatureFlagsMetadataSection> = MetadataSectionSerializer.fromCodec("features", CODEC)
+    }
 }

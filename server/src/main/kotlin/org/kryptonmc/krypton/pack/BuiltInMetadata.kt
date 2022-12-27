@@ -18,33 +18,26 @@
  */
 package org.kryptonmc.krypton.pack
 
-import net.kyori.adventure.key.Key
 import org.kryptonmc.krypton.pack.metadata.MetadataSectionSerializer
-import java.io.InputStream
-import java.util.function.BiConsumer
-import java.util.function.Supplier
+import org.kryptonmc.krypton.util.ImmutableMaps
 
-interface PackResources : AutoCloseable {
+class BuiltInMetadata private constructor(private val values: Map<MetadataSectionSerializer<*>, *>) {
 
-    fun packId(): String
-
-    fun namespaces(packType: PackType): Set<String>
-
-    fun isBuiltin(): Boolean = false
-
-    fun getRootResource(vararg path: String): Supplier<InputStream>?
-
-    fun getResource(packType: PackType, location: Key): Supplier<InputStream>?
-
-    fun listResources(packType: PackType, namespace: String, path: String, output: ResourceOutput)
-
-    fun <T> getMetadataSection(serializer: MetadataSectionSerializer<T>): T?
-
-    fun interface ResourceOutput : BiConsumer<Key, Supplier<InputStream>>
+    @Suppress("UNCHECKED_CAST")
+    fun <T> get(serializer: MetadataSectionSerializer<T>): T = values.get(serializer) as T
 
     companion object {
 
-        const val METADATA_EXTENSION: String = ".mcmeta"
-        const val PACK_META: String = "pack$METADATA_EXTENSION"
+        private val EMPTY = BuiltInMetadata(ImmutableMaps.of<_, Any>())
+
+        @JvmStatic
+        fun of(): BuiltInMetadata = EMPTY
+
+        @JvmStatic
+        fun <T> of(serializer: MetadataSectionSerializer<T>, value: T): BuiltInMetadata = BuiltInMetadata(ImmutableMaps.of(serializer, value))
+
+        @JvmStatic
+        fun <T1, T2> of(s1: MetadataSectionSerializer<T1>, v1: T1, s2: MetadataSectionSerializer<T2>, v2: T2): BuiltInMetadata =
+            BuiltInMetadata(ImmutableMaps.of(s1, v1, s2, v2))
     }
 }

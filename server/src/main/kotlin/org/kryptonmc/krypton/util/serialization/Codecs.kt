@@ -34,10 +34,23 @@ import org.kryptonmc.util.Pair
 import java.util.Arrays
 import java.util.Optional
 import java.util.function.Function
+import java.util.regex.Pattern
+import java.util.regex.PatternSyntaxException
 import java.util.stream.IntStream
 
 object Codecs {
 
+    @JvmField
+    val PATTERN: Codec<Pattern> = Codec.STRING.comapFlatMap(
+        {
+            try {
+                DataResult.success(Pattern.compile(it))
+            } catch (exception: PatternSyntaxException) {
+                DataResult.error("Invalid regex pattern $it: ${exception.message}")
+            }
+        },
+        { it.pattern() }
+    )
     // TODO: Look at the particle type codec, since it's not that great here
     @JvmField
     val PARTICLE: Codec<ParticleType> = Keys.CODEC.xmap(

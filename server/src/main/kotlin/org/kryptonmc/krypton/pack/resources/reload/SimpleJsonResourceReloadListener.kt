@@ -27,7 +27,10 @@ import org.apache.logging.log4j.LogManager
 import org.kryptonmc.krypton.pack.resources.ResourceManager
 import java.io.IOException
 
-abstract class JsonResourceReloadListener(private val gson: Gson, private val directory: String) : SimpleReloadListener<Map<Key, JsonElement>>() {
+abstract class SimpleJsonResourceReloadListener(
+    private val gson: Gson,
+    private val directory: String
+) : SimplePreparableReloadListener<Map<Key, JsonElement>>() {
 
     override fun prepare(manager: ResourceManager): Map<Key, JsonElement> {
         val result = HashMap<Key, JsonElement>()

@@ -16,27 +16,19 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.pack.repository
+package org.kryptonmc.krypton.pack.metadata
 
+import com.google.gson.JsonObject
 import net.kyori.adventure.text.Component
-import org.kryptonmc.krypton.KryptonPlatform
-import org.kryptonmc.krypton.pack.VanillaPackResources
-import org.kryptonmc.krypton.pack.metadata.PackMetadata
-import java.util.function.Consumer
+import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer
 
-class ServerRepositorySource : RepositorySource {
+class PackMetadataSection(val description: Component, val format: Int) {
 
-    private val vanillaPack = VanillaPackResources(BUILT_IN_METADATA, "minecraft")
+    object Serializer : MetadataSectionSerializer<PackMetadataSection> {
 
-    override fun loadPacks(factory: Pack.Constructor, consumer: Consumer<Pack>) {
-        val pack = Pack.create(VANILLA_ID, false, { vanillaPack }, factory, Pack.Position.BOTTOM, PackSource.BUILT_IN)
-        if (pack != null) consumer.accept(pack)
-    }
+        override fun metadataSectionName(): String = "pack"
 
-    companion object {
-
-        @JvmField
-        val BUILT_IN_METADATA: PackMetadata = PackMetadata(Component.translatable("dataPack.vanilla.description"), KryptonPlatform.dataPackVersion)
-        const val VANILLA_ID: String = "vanilla"
+        override fun fromJson(json: JsonObject): PackMetadataSection =
+            PackMetadataSection(GsonComponentSerializer.gson().deserialize(json.get("description").asString), json.get("pack_format").asInt)
     }
 }

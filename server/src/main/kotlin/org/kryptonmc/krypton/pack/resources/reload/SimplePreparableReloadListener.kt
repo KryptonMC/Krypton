@@ -18,18 +18,21 @@
  */
 package org.kryptonmc.krypton.pack.resources.reload
 
+import org.kryptonmc.krypton.pack.resources.ResourceManager
+import org.kryptonmc.krypton.pack.resources.reload.PreparableReloadListener.PreparationBarrier
 import java.util.concurrent.CompletableFuture
+import java.util.concurrent.Executor
 
-interface ReloadInstance {
+abstract class SimplePreparableReloadListener<T> : PreparableReloadListener {
 
-    fun done(): CompletableFuture<*>
+    protected abstract fun prepare(manager: ResourceManager): T
 
-    fun actualProgress(): Float
+    protected abstract fun apply(prepared: T, manager: ResourceManager)
 
-    fun isDone(): Boolean = done().isDone
-
-    fun checkExceptions() {
-        val done = done()
-        if (done.isCompletedExceptionally) done.join()
+    override fun reload(barrier: PreparationBarrier, manager: ResourceManager, backgroundExecutor: Executor,
+                        mainExecutor: Executor): CompletableFuture<Void> {
+        return CompletableFuture.supplyAsync({ prepare(manager) }, backgroundExecutor)
+            .thenCompose { barrier.wait(it) }
+            .thenAcceptAsync({ apply(it, manager) }, mainExecutor)
     }
 }

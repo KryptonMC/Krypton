@@ -22,5 +22,5 @@ import java.util.function.Consumer
 
 interface RepositorySource {
 
-    fun loadPacks(factory: Pack.Constructor, consumer: Consumer<Pack>)
+    fun loadPacks(action: Consumer<Pack>)
 }

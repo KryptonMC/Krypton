@@ -18,30 +18,29 @@
  */
 package org.kryptonmc.krypton.pack.resources
 
-import it.unimi.dsi.fastutil.objects.Object2IntMaps
-import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap
+import it.unimi.dsi.fastutil.objects.Object2ObjectArrayMap
 import net.kyori.adventure.key.Key
 import org.apache.logging.log4j.LogManager
 import org.kryptonmc.krypton.pack.PackResources
-import java.io.ByteArrayOutputStream
+import org.kryptonmc.krypton.pack.PackType
 import java.io.FilterInputStream
 import java.io.InputStream
-import java.io.OutputStream
-import java.io.PrintStream
+import java.io.PrintWriter
+import java.io.StringWriter
 import java.util.TreeMap
 import java.util.function.Predicate
 import java.util.function.Supplier
 
-class FallbackResourceManager(private val namespace: String) : ResourceManager {
+class FallbackResourceManager(private val type: PackType, private val namespace: String) : ResourceManager {
 
     private val fallbacks = ArrayList<PackEntry>()
 
     fun push(resources: PackResources) {
-        pushInternal(resources.name(), resources, null)
+        pushInternal(resources.packId(), resources, null)
     }
 
     fun push(resources: PackResources, predicate: Predicate<Key>) {
-        pushInternal(resources.name(), resources, predicate)
+        pushInternal(resources.packId(), resources, predicate)
     }
 
     fun pushFilterOnly(name: String, predicate: Predicate<Key>) {
@@ -53,15 +52,15 @@ class FallbackResourceManager(private val namespace: String) : ResourceManager {
     }
 
     override fun getResource(location: Key): Resource? {
-        if (!isValidLocation(location)) return null
         for (i in fallbacks.size - 1 downTo 0) {
             val entry = fallbacks.get(i)
             val resources = entry.resources
-            if (resources != null && resources.hasResource(location)) {
-                return Resource(resources.name(), createResourceGetter(location, resources), createStackMetadataFinder(location, i))
+            if (resources != null) {
+                val stream = resources.getResource(type, location)
+                if (stream != null) return createResource(resources, location, stream, createStackMetadataFinder(location, i))
             }
             if (entry.isFiltered(location)) {
-                LOGGER.warn("Resource $location not found, but was filtered by pack ${entry.name}")
+                LOGGER.warn("Resource $location not found, but was filtered by pack ${entry.name}.")
                 return null
             }
         }
@@ -69,23 +68,64 @@ class FallbackResourceManager(private val namespace: String) : ResourceManager {
     }
 
     override fun listResources(path: String, predicate: Predicate<Key>): Map<Key, Resource> {
-        val resourceIds = Object2IntOpenHashMap<Key>()
-        val fallbackSize = fallbacks.size
-        for (i in 0 until fallbackSize) {
+        val resourceData = HashMap<Key, ResourceWithSourceAndIndex>()
+        val metadata = HashMap<Key, ResourceWithSourceAndIndex>()
+        val fallbackCount = fallbacks.size
+
+        for (i in 0 until fallbackCount) {
             val entry = fallbacks.get(i)
-            entry.filterAll(resourceIds.keys)
-            if (entry.resources != null) {
-                entry.resources.getResources(namespace, path, predicate).forEach { resourceIds.put(it, i) }
+            entry.filterAll(resourceData.keys)
+            entry.filterAll(metadata.keys)
+            val resources = entry.resources ?: continue
+            resources.listResources(type, namespace, path) { key, stream ->
+                if (isMetadata(key)) {
+                    if (predicate.test(getResourceLocationFromMetadata(key))) metadata.put(key, ResourceWithSourceAndIndex(resources, stream, i))
+                } else if (predicate.test(key)) {
+                    resourceData.put(key, ResourceWithSourceAndIndex(resources, stream, i))
+                }
             }
         }
-        val resources = TreeMap<Key, Resource>()
-        Object2IntMaps.fastForEach(resourceIds) {
-            val id = it.intValue
-            val key = it.key
-            val packResources = fallbacks.get(id).resources!!
-            resources.put(key, Resource(packResources.name(), createResourceGetter(key, packResources), createStackMetadataFinder(key, id)))
+
+        val result = TreeMap<Key, Resource>()
+        resourceData.forEach { (key, data) ->
+            val location = getMetadataLocation(key)
+            val meta = metadata.get(location)
+            val metadataSupplier = if (meta != null && meta.packIndex >= data.packIndex) {
+                convertToMetadata(meta.resource)
+            } else {
+                ResourceMetadata.EMPTY_SUPPLIER
+            }
+            result.put(key, createResource(data.source, key, data.resource, metadataSupplier))
         }
-        return resources
+        return result
+    }
+
+    private fun createStackMetadataFinder(location: Key, index: Int): Supplier<ResourceMetadata> = Supplier {
+        val metadataLocation = getMetadataLocation(location)
+        for (i in fallbacks.size - 1 downTo index) {
+            val entry = fallbacks.get(i)
+            val resources = entry.resources
+            if (resources != null) {
+                val stream = resources.getResource(type, metadataLocation)
+                if (stream != null) return@Supplier parseMetadata(stream)
+            }
+            if (entry.isFiltered(metadataLocation)) break
+        }
+        ResourceMetadata.EMPTY
+    }
+
+    private fun listPackResources(entry: PackEntry, path: String, predicate: Predicate<Key>, output: MutableMap<Key, EntryStack>) {
+        val resources = entry.resources ?: return
+        resources.listResources(type, namespace, path) { key, stream ->
+            if (isMetadata(key)) {
+                val metadataLocation = getResourceLocationFromMetadata(key)
+                if (!predicate.test(metadataLocation)) return@listResources
+                output.computeIfAbsent(metadataLocation) { EntryStack(metadataLocation) }.metaSources.put(resources, stream)
+            } else {
+                if (!predicate.test(key)) return@listResources
+                output.computeIfAbsent(key) { EntryStack(key) }.fileSources.add(ResourceWithSource(resources, stream))
+            }
+        }
     }
 
     override fun listResourceStacks(path: String, predicate: Predicate<Key>): Map<Key, List<Resource>> {
@@ -94,50 +134,42 @@ class FallbackResourceManager(private val namespace: String) : ResourceManager {
             applyPackFiltersToExistingResources(it, entries)
             listPackResources(it, path, predicate, entries)
         }
+
         val result = TreeMap<Key, List<Resource>>()
-        entries.forEach { result.put(it.key, it.value.createThunks()) }
+        entries.values.forEach { stack ->
+            if (stack.fileSources.isEmpty()) return@forEach
+            val resources = ArrayList<Resource>()
+            stack.fileSources.forEach {
+                val source = it.source
+                val metaStream = stack.metaSources.get(source)
+                val meta = if (metaStream != null) convertToMetadata(metaStream) else ResourceMetadata.EMPTY_SUPPLIER
+                resources.add(createResource(source, stack.fileLocation, it.resource, meta))
+            }
+            result.put(stack.fileLocation, resources)
+        }
         return result
     }
 
-    private fun listPackResources(entry: PackEntry, path: String, predicate: Predicate<Key>, output: MutableMap<Key, EntryStack>) {
-        val resources = entry.resources ?: return
-        resources.getResources(namespace, path, predicate).forEach {
-            val metadataLocation = getMetadataLocation(it)
-            val thunkSupplier = SinglePackResourceThunkSupplier(it, metadataLocation, resources)
-            output.computeIfAbsent(it) { EntryStack(metadataLocation, ArrayList()) }.entries.add(thunkSupplier)
-        }
-    }
-
-    private fun createResourceGetter(location: Key, resources: PackResources): Supplier<InputStream> {
-        if (!LOGGER.isDebugEnabled) return Supplier { resources.getResource(location) }
-        return Supplier { LeakedResourceWarningInputStream(resources.getResource(location), location, resources.name()) }
-    }
-
-    private fun createStackMetadataFinder(location: Key, index: Int): Supplier<ResourceMetadata> = Supplier {
-        val metadataLocation = getMetadataLocation(location)
-        for (i in fallbacks.size - 1 downTo index) {
-            val entry = fallbacks.get(i)
-            val resources = entry.resources
-            if (resources != null && resources.hasResource(metadataLocation)) {
-                return@Supplier resources.getResource(location).use(ResourceMetadata::fromJsonStream)
-            }
-            if (entry.isFiltered(metadataLocation)) break
-        }
-        ResourceMetadata.EMPTY
-    }
-
-    private fun isValidLocation(location: Key): Boolean = !location.value().contains("..")
-
     @JvmRecord
-    private data class EntryStack(val metadataLocation: Key, val entries: MutableList<SinglePackResourceThunkSupplier>) {
+    private data class EntryStack(val fileLocation: Key, val metadataLocation: Key, val fileSources: MutableList<ResourceWithSource>,
+                                  val metaSources: MutableMap<PackResources, Supplier<InputStream>>) {
 
-        fun createThunks(): List<Resource> = entries.map(SinglePackResourceThunkSupplier::create)
+        constructor(fileLocation: Key) : this(fileLocation, getMetadataLocation(fileLocation), ArrayList(), Object2ObjectArrayMap())
     }
 
     private class LeakedResourceWarningInputStream(input: InputStream, location: Key, packId: String) : FilterInputStream(input) {
 
-        private val message = "Leaked resource $location loaded from pack $packId\n${generateStackTrace()}"
+        private val message: Supplier<String>
         private var closed = false
+
+        init {
+            val exception = Exception("Stacktrace")
+            message = Supplier {
+                val writer = StringWriter()
+                exception.printStackTrace(PrintWriter(writer))
+                "Leaked resource $location loaded from pack $packId\n$writer"
+            }
+        }
 
         override fun close() {
             super.close()
@@ -146,18 +178,7 @@ class FallbackResourceManager(private val namespace: String) : ResourceManager {
 
         @Suppress("ProtectedMemberInFinalClass")
         protected fun finalize() {
-            if (!closed) LOGGER.warn(message)
-        }
-
-        companion object {
-
-            @JvmStatic
-            private fun generateStackTrace(): OutputStream {
-                val output = ByteArrayOutputStream()
-                @Suppress("ThrowingExceptionsWithoutMessageOrCause")
-                Exception().printStackTrace(PrintStream(output))
-                return output
-            }
+            if (!closed) LOGGER.warn(message.get())
         }
     }
 
@@ -171,40 +192,51 @@ class FallbackResourceManager(private val namespace: String) : ResourceManager {
         fun isFiltered(location: Key): Boolean = filter != null && filter.test(location)
     }
 
-    private inner class SinglePackResourceThunkSupplier(private val location: Key, private val metadataLocation: Key,
-                                                        private val source: PackResources) {
+    @JvmRecord
+    private data class ResourceWithSource(val source: PackResources, val resource: Supplier<InputStream>)
 
-        private var shouldGetMetadata = true
-
-        fun ignoreMetadata() {
-            shouldGetMetadata = false
-        }
-
-        fun create(): Resource {
-            if (!shouldGetMetadata) return Resource(source.name(), createResourceGetter(location, source))
-            return Resource(source.name(), createResourceGetter(location, source)) {
-                if (!source.hasResource(metadataLocation)) return@Resource ResourceMetadata.EMPTY
-                source.getResource(metadataLocation).use(ResourceMetadata::fromJsonStream)
-            }
-        }
-    }
+    @JvmRecord
+    private data class ResourceWithSourceAndIndex(val source: PackResources, val resource: Supplier<InputStream>, val packIndex: Int)
 
     companion object {
 
         private val LOGGER = LogManager.getLogger()
 
         @JvmStatic
+        private fun createResource(resources: PackResources, location: Key, stream: Supplier<InputStream>,
+                                   metadata: Supplier<ResourceMetadata>): Resource {
+            return Resource(resources, wrapForDebug(location, resources, stream), metadata)
+        }
+
+        @JvmStatic
+        private fun wrapForDebug(location: Key, resources: PackResources, stream: Supplier<InputStream>): Supplier<InputStream> {
+            if (LOGGER.isDebugEnabled) return Supplier { LeakedResourceWarningInputStream(stream.get(), location, resources.packId()) }
+            return stream
+        }
+
+        @JvmStatic
+        private fun isMetadata(location: Key): Boolean = location.value().endsWith(PackResources.METADATA_EXTENSION)
+
+        @JvmStatic
+        private fun getResourceLocationFromMetadata(location: Key): Key =
+            Key.key(location.namespace(), location.value().substring(0, location.value().length - PackResources.METADATA_EXTENSION.length))
+
+        @JvmStatic
         private fun getMetadataLocation(location: Key): Key = Key.key(location.namespace(), location.value() + PackResources.METADATA_EXTENSION)
 
         @JvmStatic
+        private fun convertToMetadata(stream: Supplier<InputStream>): Supplier<ResourceMetadata> = Supplier { parseMetadata(stream) }
+
+        @JvmStatic
+        private fun parseMetadata(supplier: Supplier<InputStream>): ResourceMetadata = supplier.get().use { ResourceMetadata.fromJsonStream(it) }
+
+        @JvmStatic
         private fun applyPackFiltersToExistingResources(entry: PackEntry, output: MutableMap<Key, EntryStack>) {
-            val iterator = output.entries.iterator()
-            while (iterator.hasNext()) {
-                val next = iterator.next()
-                if (entry.isFiltered(next.key)) {
-                    iterator.remove()
-                } else if (entry.isFiltered(next.value.metadataLocation)) {
-                    next.value.entries.forEach { it.ignoreMetadata() }
+            output.values.forEach { stack ->
+                if (entry.isFiltered(stack.fileLocation)) {
+                    stack.fileSources.clear()
+                } else if (entry.isFiltered(stack.metadataLocation)) {
+                    stack.metaSources.clear()
                 }
             }
         }

@@ -20,8 +20,7 @@ package org.kryptonmc.krypton.pack.repository
 
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
-import org.kryptonmc.krypton.KryptonPlatform
-import org.kryptonmc.krypton.pack.metadata.PackMetadata
+import org.kryptonmc.krypton.pack.PackType
 
 enum class PackCompatibility(type: String) {
 
@@ -29,18 +28,25 @@ enum class PackCompatibility(type: String) {
     TOO_NEW("new"),
     COMPATIBLE("compatible");
 
-    val description: Component = Component.translatable("pack.incompatible.$type", NamedTextColor.GRAY)
-    val confirmation: Component = Component.translatable("pack.incompatible.confirm.$type")
+    private val description = Component.translatable("pack.incompatible.$type", NamedTextColor.GRAY)
+    private val confirmation = Component.translatable("pack.incompatible.confirm.$type")
+
+    fun description(): Component = description
+
+    fun confirmation(): Component = confirmation
 
     fun isCompatible(): Boolean = this == COMPATIBLE
 
     companion object {
 
         @JvmStatic
-        fun forMetadata(metadata: PackMetadata): PackCompatibility {
-            if (metadata.format < KryptonPlatform.dataPackVersion) return TOO_OLD
-            if (metadata.format > KryptonPlatform.dataPackVersion) return TOO_NEW
-            return COMPATIBLE
+        fun forFormat(format: Int, type: PackType): PackCompatibility {
+            val version = type.version()
+            return when {
+                format < version -> TOO_OLD
+                format > version -> TOO_NEW
+                else -> COMPATIBLE
+            }
         }
     }
 }

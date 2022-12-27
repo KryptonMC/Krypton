@@ -33,6 +33,7 @@ object KryptonPlatform : Platform {
     override val worldVersion: Int = 3105
     override val protocolVersion: Int = 761
     override val dataPackVersion: Int = 10
+    const val resourcePackVersion: Int = 12
     @JvmField
     val dataVersionPrefix: String = versions.getProperty("data")
 }
