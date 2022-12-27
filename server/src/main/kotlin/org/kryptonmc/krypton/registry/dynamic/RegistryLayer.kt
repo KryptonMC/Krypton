@@ -16,24 +16,24 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.util;
+package org.kryptonmc.krypton.registry.dynamic
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Unmodifiable;
+import org.kryptonmc.krypton.registry.KryptonRegistries
+import org.kryptonmc.krypton.util.ImmutableLists
 
-import java.util.Map;
+enum class RegistryLayer {
 
-public final class ImmutableMaps {
+    STATIC,
+    WORLD_GENERATION,
+    DIMENSIONS,
+    DYNAMIC;
 
-    public static <K, V> @NotNull @Unmodifiable Map<K, V> copyOf(Map<? extends K, ? extends V> map) {
-        return Map.copyOf(map);
-    }
+    companion object {
 
-    public static <K, V> @NotNull @Unmodifiable Map<K, V> of() {
-        return Map.of();
-    }
+        private val VALUES = ImmutableLists.ofArray(values())
+        private val STATIC_ACCESS = RegistryAccess.fromRegistryOfRegistries(KryptonRegistries.PARENT)
 
-    private ImmutableMaps() {
-        throw new AssertionError("This class cannot be instantiated!");
+        @JvmStatic
+        fun createRegistryAccess(): LayeredRegistryAccess<RegistryLayer> = LayeredRegistryAccess(VALUES).replaceFrom(STATIC, STATIC_ACCESS)
     }
 }
