@@ -53,7 +53,7 @@ data class PacketOutSpawnEntity(
 ) : EntityPacket {
 
     constructor(buf: ByteBuf) : this(buf.readVarInt(), buf.readUUID(), buf.readById(KryptonRegistries.ENTITY_TYPE)!!, buf.readDouble(),
-        buf.readDouble(), buf.readDouble(), buf.readAngle(), buf.readAngle(), buf.readAngle(), buf.readInt(), buf.readShort().toInt(),
+        buf.readDouble(), buf.readDouble(), buf.readAngle(), buf.readAngle(), buf.readAngle(), buf.readVarInt(), buf.readShort().toInt(),
         buf.readShort().toInt(), buf.readShort().toInt())
 
     override fun write(buf: ByteBuf) {
@@ -66,7 +66,7 @@ data class PacketOutSpawnEntity(
         buf.writeAngle(yaw)
         buf.writeAngle(pitch)
         buf.writeAngle(headYaw)
-        buf.writeInt(data)
+        buf.writeVarInt(data)
         buf.writeShort(velocityX)
         buf.writeShort(velocityY)
         buf.writeShort(velocityZ)
