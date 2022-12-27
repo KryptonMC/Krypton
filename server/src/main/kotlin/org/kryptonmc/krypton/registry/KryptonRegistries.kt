@@ -76,6 +76,8 @@ object KryptonRegistries {
     private val LOGGER = LogManager.getLogger()
     private val LOADERS = LinkedHashMap<Key, Runnable>()
     private val WRITABLE_PARENT: WritableRegistry<WritableRegistry<*>> = KryptonSimpleRegistry.standard(KryptonResourceKeys.PARENT)
+    @JvmField
+    val PARENT: KryptonRegistry<out KryptonRegistry<*>> = WRITABLE_PARENT
 
     /*
      * Built-in vanilla-derived registries
