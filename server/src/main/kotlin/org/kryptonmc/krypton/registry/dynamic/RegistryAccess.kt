@@ -67,7 +67,7 @@ interface RegistryAccess : HolderLookup.Provider {
     }
 
     @JvmRecord
-    data class RegistryEntry<T>(val key: ResourceKey<out Registry<out T>>, val value: KryptonRegistry<T>) {
+    data class RegistryEntry<T>(val key: ResourceKey<out Registry<T>>, val value: KryptonRegistry<T>) {
 
         fun freeze(): RegistryEntry<T> = RegistryEntry(key, value.freeze())
 
@@ -76,7 +76,7 @@ interface RegistryAccess : HolderLookup.Provider {
             @JvmStatic
             @Suppress("UNCHECKED_CAST")
             fun <T, R : KryptonRegistry<out T>> fromMapEntry(entry: Map.Entry<RegistryKey<*>, R>): RegistryEntry<T> =
-                RegistryEntry(entry.key as RegistryKey<out T>, entry.value as KryptonRegistry<T>)
+                RegistryEntry(entry.key as RegistryKey<T>, entry.value as KryptonRegistry<T>)
         }
     }
 

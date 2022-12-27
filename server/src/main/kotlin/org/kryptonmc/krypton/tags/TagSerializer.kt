@@ -19,36 +19,47 @@
 package org.kryptonmc.krypton.tags
 
 import io.netty.buffer.ByteBuf
+import it.unimi.dsi.fastutil.ints.IntArrayList
 import it.unimi.dsi.fastutil.ints.IntList
 import net.kyori.adventure.key.Key
 import org.kryptonmc.api.registry.Registry
 import org.kryptonmc.api.resource.ResourceKey
 import org.kryptonmc.krypton.network.Writable
+import org.kryptonmc.krypton.registry.KryptonRegistry
+import org.kryptonmc.krypton.registry.dynamic.LayeredRegistryAccess
+import org.kryptonmc.krypton.registry.dynamic.RegistryLayer
+import org.kryptonmc.krypton.registry.holder.Holder
+import org.kryptonmc.krypton.registry.network.RegistrySerialization
 import org.kryptonmc.krypton.util.readIntIdList
 import org.kryptonmc.krypton.util.readKey
 import org.kryptonmc.krypton.util.readMap
 import org.kryptonmc.krypton.util.writeIntIdList
 import org.kryptonmc.krypton.util.writeKey
 import org.kryptonmc.krypton.util.writeMap
+import java.util.stream.Collectors
 
 object TagSerializer {
 
-    // FIXME: When we implement the registry access system, properly implement this
     @JvmStatic
-    fun serialize(): Map<ResourceKey<out Registry<*>>, NetworkPayload> = emptyMap()
+    fun serializeTagsToNetwork(access: LayeredRegistryAccess<RegistryLayer>): Map<ResourceKey<out Registry<*>>, NetworkPayload> =
+        RegistrySerialization.networkSafeRegistries(access)
+            .map { Pair(it.key, serializeToNetwork(it.value)) }
+            .filter { !it.second.isEmpty() }
+            .collect(Collectors.toMap({ it.first }, { it.second }))
 
-    /* FIXME: When we fix the above, uncomment this
     @JvmStatic
-    private fun <T : Any> serializeTags(registry: KryptonRegistry<T>): NetworkPayload {
-        val result = HashMap<Key, IntList>()
-        registry.tags.forEach { (key, values) ->
-            val ids = IntArrayList(values.size)
-            values.forEach { ids.add(registry.getId(it)) }
-            result.put(key.location, ids)
+    private fun <T> serializeToNetwork(registry: KryptonRegistry<T>): NetworkPayload {
+        val tags = HashMap<Key, IntList>()
+        registry.tags().forEach { (key, set) ->
+            val ids = IntArrayList(set.size())
+            set.forEach {
+                if (it.kind() != Holder.Kind.REFERENCE) error("Cannot serialize unregistered tag value $it!")
+                ids.add(registry.getId(it.value()))
+            }
+            tags.put(key.location, ids)
         }
-        return NetworkPayload(result)
+        return NetworkPayload(tags)
     }
-     */
 
     @JvmRecord
     data class NetworkPayload(val tags: Map<Key, IntList>) : Writable {

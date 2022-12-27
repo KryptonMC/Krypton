@@ -47,7 +47,6 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutSynchronizePlayerPosition
 import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateEnabledFeatures
 import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateRecipeBook
 import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateRecipes
-import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateTags
 import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateTeams
 import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateTime
 import org.kryptonmc.krypton.registry.KryptonRegistries
@@ -148,7 +147,8 @@ class PlayerManager(private val server: KryptonServer) {
         player.connection.send(PacketOutAbilities.create(player.abilities))
         player.connection.send(PacketOutSetHeldItem(player.inventory.heldSlot))
         player.connection.write(PacketOutUpdateRecipes.CACHED)
-        player.connection.write(PacketOutUpdateTags.CACHED)
+        // TODO: Uncomment when we add the registry access to the world.
+//        player.connection.write(PacketOutUpdateTags(TagSerializer.serializeTagsToNetwork()))
         player.connection.send(PacketOutEntityEvent(player.id, if (reducedDebugInfo) ENABLE_REDUCED_DEBUG_SCREEN else DISABLE_REDUCED_DEBUG_SCREEN))
         sendCommands(player)
         player.statisticsTracker.invalidate()
