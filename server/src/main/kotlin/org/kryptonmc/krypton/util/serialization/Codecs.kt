@@ -18,6 +18,7 @@
  */
 package org.kryptonmc.krypton.util.serialization
 
+import net.kyori.adventure.key.Key
 import org.kryptonmc.api.effect.particle.ParticleType
 import org.kryptonmc.api.resource.ResourceKey
 import org.kryptonmc.api.world.World
@@ -59,6 +60,17 @@ object Codecs {
     )
     @JvmField
     val DIMENSION: Codec<ResourceKey<World>> = KryptonResourceKey.codec(KryptonResourceKeys.WORLD)
+    @JvmField
+    val TAG_OR_ELEMENT_ID: Codec<TagOrElementLocation> = Codec.STRING.comapFlatMap(
+        { input ->
+            if (input.startsWith('#')) {
+                Keys.read(input.substring(1)).map { TagOrElementLocation(it, true) }
+            } else {
+                Keys.read(input).map { TagOrElementLocation(it, false) }
+            }
+        },
+        { it.decoratedId() }
+    )
 
     @JvmStatic
     fun fixedSize(stream: IntStream, size: Int): DataResult<IntArray> {
@@ -86,4 +98,12 @@ object Codecs {
             }
         }
     })
+
+    @JvmRecord
+    data class TagOrElementLocation(val id: Key, val tag: Boolean) {
+
+        fun decoratedId(): String = if (tag) "#${id.asString()}" else id.asString()
+
+        override fun toString(): String = decoratedId()
+    }
 }

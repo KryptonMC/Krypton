@@ -21,7 +21,6 @@ package org.kryptonmc.krypton.packet.out.play
 import io.netty.buffer.ByteBuf
 import org.kryptonmc.api.registry.Registry
 import org.kryptonmc.api.resource.ResourceKey
-import org.kryptonmc.krypton.packet.CachedPacket
 import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.resource.KryptonResourceKeys
 import org.kryptonmc.krypton.tags.TagSerializer
@@ -37,11 +36,5 @@ data class PacketOutUpdateTags(val tags: Map<ResourceKey<out Registry<*>>, TagSe
 
     override fun write(buf: ByteBuf) {
         buf.writeMap(tags, ByteBuf::writeResourceKey) { _, payload -> payload.write(buf) }
-    }
-
-    companion object {
-
-        @JvmField
-        val CACHED: CachedPacket = CachedPacket { PacketOutUpdateTags(TagSerializer.serialize()) }
     }
 }
