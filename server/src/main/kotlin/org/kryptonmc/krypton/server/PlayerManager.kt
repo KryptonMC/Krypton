@@ -153,11 +153,11 @@ class PlayerManager(private val server: KryptonServer) {
         player.connection.send(PacketOutAbilities.create(player.abilities))
         player.connection.send(PacketOutSetHeldItem(player.inventory.heldSlot))
         player.connection.write(PacketOutUpdateRecipes.CACHED)
-        player.connection.write(PacketOutUpdateRecipeBook.CACHED_INIT)
         player.connection.write(PacketOutUpdateTags.CACHED)
         player.connection.send(PacketOutEntityEvent(player.id, if (reducedDebugInfo) ENABLE_REDUCED_DEBUG_SCREEN else DISABLE_REDUCED_DEBUG_SCREEN))
         sendCommands(player)
         player.statisticsTracker.invalidate()
+        player.connection.write(PacketOutUpdateRecipeBook.CACHED_INIT)
         updateScoreboard(world.scoreboard, player)
         server.sessionManager.invalidateStatus()
 
@@ -210,9 +210,8 @@ class PlayerManager(private val server: KryptonServer) {
 
             // Send info and quit message
             server.sessionManager.invalidateStatus()
-            server.sessionManager.sendGrouped(PacketOutPlayerInfo(PacketOutPlayerInfo.Action.REMOVE_PLAYER, player))
+            server.sessionManager.sendGrouped(PacketOutPlayerInfoRemove(player))
             if (event.quitMessage != null) server.sendMessage(event.quitMessage!!)
-            server.sessionManager.unregister(player.connection)
         }, executor)
     }
 

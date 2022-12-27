@@ -22,6 +22,7 @@ import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer
 import org.apache.logging.log4j.LogManager
 import org.kryptonmc.krypton.entity.KryptonLivingEntity
 import org.kryptonmc.krypton.entity.Pose
+import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.util.nbt.getBlockPos
 import org.kryptonmc.krypton.util.nbt.hasBlockPos
 import org.kryptonmc.krypton.util.nbt.hasNumber
@@ -51,7 +52,7 @@ object LivingEntitySerializer : EntitySerializer<KryptonLivingEntity> {
         if (data.contains(BRAIN_TAG, CompoundTag.ID)) entity.brain.load(data.getCompound(BRAIN_TAG))
 
         // Values
-        if (data.hasNumber(HEALTH_TAG)) entity.health = data.getFloat(HEALTH_TAG)
+        if (data.hasNumber(HEALTH_TAG)) entity.data.set(MetadataKeys.LivingEntity.HEALTH, data.getFloat(HEALTH_TAG))
         if (data.getBoolean(GLIDING_TAG)) entity.isGliding = true
         entity.absorption = data.getFloat(ABSORPTION_TAG).coerceAtLeast(0F)
         entity.deathTime = data.getShort(DEATH_TIME).toInt()

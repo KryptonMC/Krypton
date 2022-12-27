@@ -89,7 +89,6 @@ object NettyProcess {
                         .addLast(PacketEncoder.NETTY_NAME, PacketEncoder)
                         .addLast(NettyConnection.NETTY_NAME, connection)
                     connection.setHandler(HandshakeHandler(server, connection))
-                    server.sessionManager.register(connection)
                     if (listeners.isEmpty()) return
                     listeners.values.forEach { it.onInitialize(channel) }
                 }

@@ -223,6 +223,7 @@ class NettyConnection(private val server: KryptonServer) : SimpleChannelInboundH
     override fun channelActive(ctx: ChannelHandlerContext) {
         super.channelActive(ctx)
         channel = ctx.channel()
+        server.sessionManager.register(this)
         try {
             setState(PacketState.HANDSHAKE)
         } catch (exception: Throwable) {
@@ -233,6 +234,7 @@ class NettyConnection(private val server: KryptonServer) : SimpleChannelInboundH
     override fun channelInactive(ctx: ChannelHandlerContext) {
         disconnect(END_OF_STREAM)
         synchronized(tickBufferLock) { tickBuffer.release() }
+        server.sessionManager.unregister(this)
     }
 
     override fun channelRead0(ctx: ChannelHandlerContext, msg: Packet) {
