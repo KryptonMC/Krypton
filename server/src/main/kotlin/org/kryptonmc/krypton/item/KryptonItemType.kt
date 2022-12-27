@@ -28,6 +28,9 @@ import org.kryptonmc.api.tags.TagKey
 import org.kryptonmc.krypton.registry.KryptonRegistries
 import org.kryptonmc.krypton.util.Keys
 import org.kryptonmc.krypton.world.block.KryptonBlock
+import org.kryptonmc.krypton.world.flag.FeatureElement
+import org.kryptonmc.krypton.world.flag.FeatureFlagSet
+import org.kryptonmc.krypton.world.flag.FeatureFlags
 
 @Suppress("LeakingThis") // The 'leak' doesn't need any of the data that wouldn't be initialized, it's just used as a key, so it's fine.
 open class KryptonItemType(
@@ -38,10 +41,11 @@ open class KryptonItemType(
     override val isFireResistant: Boolean,
     override val eatingSound: SoundEvent,
     override val drinkingSound: SoundEvent
-) : ItemType {
+) : ItemType, FeatureElement {
 
     private var descriptionId: String? = null
     private val builtInRegistryHolder = KryptonRegistries.ITEM.createIntrusiveHolder(this)
+    private val requiredFeatures = FeatureFlags.VANILLA_SET
 
     override val canBreak: Boolean
         get() = durability > 0
@@ -59,6 +63,8 @@ open class KryptonItemType(
 
     @Suppress("UNCHECKED_CAST")
     fun eq(tag: TagKey<ItemType>): Boolean = builtInRegistryHolder.eq(tag as TagKey<KryptonItemType>)
+
+    override fun requiredFeatures(): FeatureFlagSet = requiredFeatures
 
     companion object {
 

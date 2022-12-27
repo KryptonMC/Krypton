@@ -59,6 +59,10 @@ import org.kryptonmc.krypton.world.block.SupportType
 import org.kryptonmc.krypton.world.block.state.BlockBehaviour.StateArgumentPredicate
 import org.kryptonmc.krypton.world.block.state.BlockBehaviour.StatePredicate
 import org.kryptonmc.krypton.world.components.BlockGetter
+import org.kryptonmc.krypton.world.flag.FeatureElement
+import org.kryptonmc.krypton.world.flag.FeatureFlag
+import org.kryptonmc.krypton.world.flag.FeatureFlagSet
+import org.kryptonmc.krypton.world.flag.FeatureFlags
 import org.kryptonmc.krypton.world.fluid.KryptonFluid
 import org.kryptonmc.krypton.world.fluid.KryptonFluidState
 import org.kryptonmc.krypton.world.fluid.KryptonFluids
@@ -71,7 +75,7 @@ import java.util.function.ToIntFunction
 import kotlin.math.max
 
 @Suppress("UnusedPrivateMember")
-abstract class BlockBehaviour(protected val properties: Properties) : Block {
+abstract class BlockBehaviour(protected val properties: Properties) : Block, FeatureElement {
 
     protected val material: Material = properties.material
     protected val hasCollision: Boolean = properties.hasCollision
@@ -82,6 +86,7 @@ abstract class BlockBehaviour(protected val properties: Properties) : Block {
     val speedFactor: Float = properties.speedFactor
     val jumpFactor: Float = properties.jumpFactor
     protected val hasDynamicShape: Boolean = properties.hasDynamicShape
+    protected val requiredFeatures: FeatureFlagSet = properties.requiredFeatures
     protected var drops: Key? = null
 
     final override val hasGravity: Boolean
@@ -106,6 +111,8 @@ abstract class BlockBehaviour(protected val properties: Properties) : Block {
 //    fun defaultMaterialColor(): MaterialColor = properties.materialColor.apply(asBlock().defaultState)
 
     fun defaultDestroyTime(): Float = properties.destroyTime
+
+    override fun requiredFeatures(): FeatureFlagSet = requiredFeatures
 
     // ==============================
     // Block interaction
@@ -555,6 +562,8 @@ abstract class BlockBehaviour(protected val properties: Properties) : Block {
             private set
         var hasDynamicShape: Boolean = false
             private set
+        var requiredFeatures: FeatureFlagSet = FeatureFlags.VANILLA_SET
+            private set
         var offsetType: Function<KryptonBlockState, OffsetType> = Function { OffsetType.NONE }
             private set
 
@@ -610,6 +619,8 @@ abstract class BlockBehaviour(protected val properties: Properties) : Block {
         fun offsetType(type: OffsetType): Properties = offsetType { type }
 
         fun offsetType(getter: Function<KryptonBlockState, OffsetType>): Properties = apply { offsetType = getter }
+
+        fun requiredFeatures(vararg flags: FeatureFlag): Properties = apply { FeatureFlags.REGISTRY.subset(flags) }
 
         companion object {
 

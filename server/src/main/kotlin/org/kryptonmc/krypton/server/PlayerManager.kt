@@ -44,6 +44,7 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutSetContainerContent
 import org.kryptonmc.krypton.packet.out.play.PacketOutSetDefaultSpawnPosition
 import org.kryptonmc.krypton.packet.out.play.PacketOutSetHeldItem
 import org.kryptonmc.krypton.packet.out.play.PacketOutSynchronizePlayerPosition
+import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateEnabledFeatures
 import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateRecipeBook
 import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateRecipes
 import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateTags
@@ -58,6 +59,7 @@ import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.krypton.world.biome.BiomeManager
 import org.kryptonmc.krypton.world.data.PlayerDataManager
 import org.kryptonmc.krypton.world.dimension.KryptonDimensionType
+import org.kryptonmc.krypton.world.flag.FeatureFlags
 import org.kryptonmc.krypton.world.scoreboard.KryptonScoreboard
 import org.kryptonmc.serialization.Dynamic
 import org.kryptonmc.serialization.nbt.NbtOps
@@ -146,6 +148,7 @@ class PlayerManager(private val server: KryptonServer) {
             false,
             null
         ))
+        player.connection.send(PacketOutUpdateEnabledFeatures(FeatureFlags.REGISTRY.toNames(world.enabledFeatures())))
         player.connection.write(PacketOutPluginMessage(BRAND_KEY, BRAND_MESSAGE))
         player.connection.send(PacketOutChangeDifficulty.from(world.difficulty))
 

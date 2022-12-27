@@ -16,29 +16,35 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.util;
+package org.kryptonmc.krypton.world.flag
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Unmodifiable;
+import org.kryptonmc.serialization.Codec
 
-import java.util.Collection;
-import java.util.Set;
+object FeatureFlags {
 
-public final class ImmutableSets {
+    @JvmField
+    val VANILLA: FeatureFlag
+    @JvmField
+    val BUNDLE: FeatureFlag
+    @JvmField
+    val UPDATE_1_20: FeatureFlag
+    @JvmField
+    val REGISTRY: FeatureFlagRegistry
+    @JvmField
+    val CODEC: Codec<FeatureFlagSet>
+    @JvmField
+    val VANILLA_SET: FeatureFlagSet
+    @JvmField
+    val DEFAULT_FLAGS: FeatureFlagSet
 
-    public static <E> @NotNull @Unmodifiable Set<E> copyOf(Collection<E> collection) {
-        return Set.copyOf(collection);
-    }
-
-    public static <E> @NotNull @Unmodifiable Set<E> of() {
-        return Set.of();
-    }
-
-    public static <E> @NotNull @Unmodifiable Set<E> of(E e1, E e2, E e3) {
-        return Set.of(e1, e2, e3);
-    }
-
-    private ImmutableSets() {
-        throw new AssertionError("This class cannot be instantiated!");
+    init {
+        val registry = FeatureFlagRegistry.Builder("main")
+        VANILLA = registry.createVanilla("vanilla")
+        BUNDLE = registry.createVanilla("bundle")
+        UPDATE_1_20 = registry.createVanilla("update_1_20")
+        REGISTRY = registry.build()
+        CODEC = REGISTRY.codec()
+        VANILLA_SET = FeatureFlagSet.of(VANILLA)
+        DEFAULT_FLAGS = VANILLA_SET
     }
 }

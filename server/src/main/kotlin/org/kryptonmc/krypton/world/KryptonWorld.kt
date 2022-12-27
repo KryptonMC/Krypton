@@ -64,6 +64,7 @@ import org.kryptonmc.krypton.world.chunk.SetBlockFlag
 import org.kryptonmc.krypton.world.components.BaseWorld
 import org.kryptonmc.krypton.world.data.WorldData
 import org.kryptonmc.krypton.world.dimension.KryptonDimensionType
+import org.kryptonmc.krypton.world.flag.FeatureFlagSet
 import org.kryptonmc.krypton.world.fluid.KryptonFluidState
 import org.kryptonmc.krypton.world.fluid.KryptonFluids
 import org.kryptonmc.krypton.world.redstone.BatchingNeighbourUpdater
@@ -418,6 +419,8 @@ class KryptonWorld(
     override fun skyDarken(): Int = skyDarken
 
     override fun seaLevel(): Int = 63
+
+    override fun enabledFeatures(): FeatureFlagSet = data.enabledFeatures()
 
     override fun toString(): String = "KryptonWorld[${data.name}]"
 

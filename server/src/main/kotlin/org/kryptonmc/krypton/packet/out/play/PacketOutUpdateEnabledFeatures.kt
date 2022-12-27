@@ -16,29 +16,22 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.util;
+package org.kryptonmc.krypton.packet.out.play
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Unmodifiable;
+import io.netty.buffer.ByteBuf
+import net.kyori.adventure.key.Key
+import org.kryptonmc.krypton.packet.Packet
+import org.kryptonmc.krypton.util.readCollection
+import org.kryptonmc.krypton.util.readKey
+import org.kryptonmc.krypton.util.writeCollection
+import org.kryptonmc.krypton.util.writeKey
 
-import java.util.Collection;
-import java.util.Set;
+@JvmRecord
+data class PacketOutUpdateEnabledFeatures(val features: Set<Key>) : Packet {
 
-public final class ImmutableSets {
+    constructor(buf: ByteBuf) : this(buf.readCollection(::HashSet, ByteBuf::readKey))
 
-    public static <E> @NotNull @Unmodifiable Set<E> copyOf(Collection<E> collection) {
-        return Set.copyOf(collection);
-    }
-
-    public static <E> @NotNull @Unmodifiable Set<E> of() {
-        return Set.of();
-    }
-
-    public static <E> @NotNull @Unmodifiable Set<E> of(E e1, E e2, E e3) {
-        return Set.of(e1, e2, e3);
-    }
-
-    private ImmutableSets() {
-        throw new AssertionError("This class cannot be instantiated!");
+    override fun write(buf: ByteBuf) {
+        buf.writeCollection(features, buf::writeKey)
     }
 }

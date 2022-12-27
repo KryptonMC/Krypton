@@ -16,29 +16,26 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.util;
+package org.kryptonmc.krypton.world.flag
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Unmodifiable;
+import org.kryptonmc.api.registry.Registry
+import org.kryptonmc.api.resource.ResourceKey
+import org.kryptonmc.krypton.resource.KryptonResourceKeys
+import org.kryptonmc.krypton.util.ImmutableSets
 
-import java.util.Collection;
-import java.util.Set;
+/**
+ * An object that has a required set of features needed for it to work properly.
+ */
+interface FeatureElement {
 
-public final class ImmutableSets {
+    fun requiredFeatures(): FeatureFlagSet
 
-    public static <E> @NotNull @Unmodifiable Set<E> copyOf(Collection<E> collection) {
-        return Set.copyOf(collection);
-    }
+    fun isEnabled(flags: FeatureFlagSet): Boolean = requiredFeatures().isSubsetOf(flags)
 
-    public static <E> @NotNull @Unmodifiable Set<E> of() {
-        return Set.of();
-    }
+    companion object {
 
-    public static <E> @NotNull @Unmodifiable Set<E> of(E e1, E e2, E e3) {
-        return Set.of(e1, e2, e3);
-    }
-
-    private ImmutableSets() {
-        throw new AssertionError("This class cannot be instantiated!");
+        @JvmField
+        val FILTERED_REGISTRIES: Set<ResourceKey<out Registry<out FeatureElement>>> =
+            ImmutableSets.of(KryptonResourceKeys.ITEM, KryptonResourceKeys.BLOCK, KryptonResourceKeys.ENTITY_TYPE)
     }
 }

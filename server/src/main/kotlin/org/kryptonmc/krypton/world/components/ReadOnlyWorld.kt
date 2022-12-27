@@ -21,12 +21,15 @@ package org.kryptonmc.krypton.world.components
 import org.kryptonmc.krypton.util.BlockPos
 import org.kryptonmc.krypton.world.Heightmap
 import org.kryptonmc.krypton.world.dimension.KryptonDimensionType
+import org.kryptonmc.krypton.world.flag.FeatureFlagSet
 
 interface ReadOnlyWorld : ChunkGetter, BlockGetter, BiomeGetter, BrightnessGetter {
 
     val dimensionType: KryptonDimensionType
 
     fun seaLevel(): Int
+
+    fun enabledFeatures(): FeatureFlagSet
 
     override fun height(): Int = dimensionType.height
 

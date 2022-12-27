@@ -21,6 +21,8 @@ package org.kryptonmc.krypton.registry.holder
 import org.kryptonmc.api.registry.Registry
 import org.kryptonmc.api.resource.ResourceKey
 import org.kryptonmc.api.tags.TagKey
+import org.kryptonmc.krypton.world.flag.FeatureElement
+import org.kryptonmc.krypton.world.flag.FeatureFlagSet
 import java.util.function.Predicate
 import java.util.stream.Collectors
 import java.util.stream.Stream
@@ -62,6 +64,12 @@ interface HolderLookup<T> : HolderGetter<T> {
     interface ForRegistry<T> : HolderLookup<T>, HolderOwner<T> {
 
         fun key(): ResourceKey<out Registry<out T>>
+
+        fun filterFeatures(flags: FeatureFlagSet): HolderLookup<T> {
+            val key = key() as ResourceKey<out Registry<out Any?>>
+            if (!FeatureElement.FILTERED_REGISTRIES.contains(key)) return this
+            return filterElements { (it as FeatureElement).isEnabled(flags) }
+        }
 
         abstract class Forwarding<T> : HolderLookup.Forwarding<T>(), ForRegistry<T> {
 
