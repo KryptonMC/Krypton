@@ -21,6 +21,9 @@ package org.kryptonmc.krypton.effect.sound
 import io.netty.buffer.ByteBuf
 import net.kyori.adventure.key.Key
 import org.kryptonmc.api.effect.sound.SoundEvent
+import org.kryptonmc.api.resource.ResourceKeys
+import org.kryptonmc.krypton.registry.holder.Holder
+import org.kryptonmc.krypton.registry.network.RegistryFileCodec
 import org.kryptonmc.krypton.util.Keys
 import org.kryptonmc.krypton.util.readKey
 import org.kryptonmc.krypton.util.writeKey
@@ -42,7 +45,7 @@ data class KryptonSoundEvent(private val key: Key, override val range: Float, pr
 
     companion object {
 
-        // TODO: Replace most usages of this with a new registry file codec.
+        // TODO: Replace most usages of this with the registry file codec.
         @JvmField
         val DIRECT_CODEC: Codec<SoundEvent> = RecordCodecBuilder.create { instance ->
             instance.group(
@@ -50,6 +53,8 @@ data class KryptonSoundEvent(private val key: Key, override val range: Float, pr
                 Codec.FLOAT.optionalFieldOf("range").getting { it.downcast().fixedRange() }
             ).apply(instance) { id, range -> if (range.isPresent) KryptonSoundEvent(id, range.get(), true) else createVariableRange(id) }
         }
+        @JvmField
+        val CODEC: Codec<Holder<SoundEvent>> = RegistryFileCodec.create(ResourceKeys.SOUND_EVENT, DIRECT_CODEC)
         // This is the default range that sounds travel (from vanilla) that the majority of sounds have from before ranged sounds were added.
         const val DEFAULT_RANGE: Float = 16F
 

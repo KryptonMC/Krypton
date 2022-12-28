@@ -27,6 +27,8 @@ import org.kryptonmc.api.tags.TagKey
 import org.kryptonmc.api.world.World
 import org.kryptonmc.api.world.dimension.DimensionType
 import org.kryptonmc.krypton.registry.KryptonRegistries
+import org.kryptonmc.krypton.registry.holder.Holder
+import org.kryptonmc.krypton.registry.network.RegistryFileCodec
 import org.kryptonmc.krypton.tags.KryptonTagKey
 import org.kryptonmc.krypton.util.Keys
 import org.kryptonmc.krypton.util.math.Maths
@@ -248,6 +250,8 @@ data class KryptonDimensionType(
                 MonsterSettings.CODEC.getting { (it as KryptonDimensionType).monsterSettings }
             ).apply(instance, ::KryptonDimensionType)
         })
+        @JvmField
+        val CODEC: Codec<Holder<DimensionType>> = RegistryFileCodec.create(ResourceKeys.DIMENSION_TYPE, DIRECT_CODEC)
         @JvmField
         val MOON_BRIGHTNESS_PER_PHASE: FloatArray = floatArrayOf(1F, 0.75F, 0.5F, 0.25F, 0F, 0.25F, 0.5F, 0.75F)
 
