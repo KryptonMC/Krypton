@@ -19,10 +19,15 @@
 package org.kryptonmc.krypton.world.biome
 
 import net.kyori.adventure.key.Key
+import org.kryptonmc.api.resource.ResourceKeys
 import org.kryptonmc.api.world.biome.Biome
 import org.kryptonmc.api.world.biome.BiomeEffects
 import org.kryptonmc.api.world.biome.Climate
 import org.kryptonmc.krypton.registry.KryptonRegistries
+import org.kryptonmc.krypton.registry.holder.Holder
+import org.kryptonmc.krypton.registry.holder.HolderSet
+import org.kryptonmc.krypton.registry.network.RegistryCodecs
+import org.kryptonmc.krypton.registry.network.RegistryFileCodec
 import org.kryptonmc.krypton.world.biome.data.KryptonBiomeEffects
 import org.kryptonmc.krypton.world.biome.data.KryptonClimate
 import org.kryptonmc.serialization.Codec
@@ -79,5 +84,9 @@ class KryptonBiome(override val climate: Climate, override val effects: BiomeEff
                 KryptonBiomeEffects.CODEC.fieldOf("effects").getting { it.effects }
             ).apply(instance, ::KryptonBiome)
         }
+        @JvmField
+        val CODEC: Codec<Holder<Biome>> = RegistryFileCodec.create(ResourceKeys.BIOME, DIRECT_CODEC)
+        @JvmField
+        val LIST_CODEC: Codec<HolderSet<Biome>> = RegistryCodecs.homogenousList(ResourceKeys.BIOME, DIRECT_CODEC)
     }
 }

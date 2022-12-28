@@ -31,6 +31,9 @@ import org.kryptonmc.serialization.Codec
 import org.kryptonmc.serialization.DataOps
 import org.kryptonmc.serialization.DataResult
 import org.kryptonmc.serialization.Decoder
+import org.kryptonmc.serialization.MapCodec
+import org.kryptonmc.serialization.MapLike
+import org.kryptonmc.serialization.RecordBuilder
 import org.kryptonmc.util.Pair
 import java.util.Arrays
 import java.util.Optional
@@ -98,6 +101,34 @@ object Codecs {
             }
         }
     })
+
+    @JvmStatic
+    fun <E> retrieveContext(function: Function<DataOps<*>, DataResult<E>>): MapCodec<E> {
+        class ContextRetrievalCodec : MapCodec<E> {
+            override fun <T> encode(input: E, ops: DataOps<T>, prefix: RecordBuilder<T>): RecordBuilder<T> = prefix
+
+            override fun <T> decode(input: MapLike<T>, ops: DataOps<T>): DataResult<E> = function.apply(ops)
+
+            override fun toString(): String = "ContextRetrievalCodec[$function]"
+        }
+        return ContextRetrievalCodec()
+    }
+
+    @JvmStatic
+    fun <E, L : Collection<E>, T> ensureHomogenous(toType: Function<E, T>): Function<L, DataResult<L>> = Function { values ->
+        val iterator = values.iterator()
+        if (iterator.hasNext()) {
+            val firstType = toType.apply(iterator.next())
+            while (iterator.hasNext()) {
+                val next = iterator.next()
+                val nextType = toType.apply(next)
+                if (nextType !== firstType) {
+                    return@Function DataResult.error("Mixed type list! Element $next had type $nextType, but list is of type $firstType!")
+                }
+            }
+        }
+        DataResult.success(values)
+    }
 
     @JvmRecord
     data class TagOrElementLocation(val id: Key, val tag: Boolean) {

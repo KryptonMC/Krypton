@@ -42,6 +42,11 @@ public final class ImmutableLists {
         return List.of(e1, e2);
     }
 
+    @SafeVarargs
+    public static <E> @NotNull @Unmodifiable List<E> of(E... elements) {
+        return List.of(elements);
+    }
+
     public static <E> @NotNull @Unmodifiable List<E> ofArray(E[] elements) {
         return List.of(elements);
     }
