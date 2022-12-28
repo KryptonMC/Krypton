@@ -80,7 +80,7 @@ import org.kryptonmc.krypton.state.property.KryptonPropertyFactory
 import org.kryptonmc.krypton.tags.KryptonTagKey
 import org.kryptonmc.krypton.world.damage.KryptonDamageSourceFactory
 import org.kryptonmc.krypton.world.dimension.KryptonDimensionType
-import org.kryptonmc.krypton.world.rule.KryptonGameRule
+import org.kryptonmc.krypton.world.rule.GameRuleKeys
 
 object KryptonFactoryProvider : FactoryProvider {
 
@@ -126,7 +126,7 @@ object KryptonFactoryProvider : FactoryProvider {
         register<Climate.Factory>(KryptonClimate.Factory)
         register<DamageSource.Factory>(KryptonDamageSourceFactory)
         register<DimensionType.Factory>(KryptonDimensionType.Factory)
-        register<GameRule.Factory>(KryptonGameRule.Factory)
+        register<GameRule.Factory>(GameRuleKeys.Factory)
         register<RegistryReference.Factory>(KryptonRegistryReference.Factory)
     }
 }

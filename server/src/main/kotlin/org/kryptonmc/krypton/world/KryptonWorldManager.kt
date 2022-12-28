@@ -36,7 +36,7 @@ import org.kryptonmc.krypton.world.data.PrimaryWorldData
 import org.kryptonmc.krypton.world.data.WorldDataManager
 import org.kryptonmc.krypton.world.dimension.KryptonDimensionType
 import org.kryptonmc.krypton.world.dimension.KryptonDimensionTypes
-import org.kryptonmc.krypton.world.rule.KryptonGameRuleHolder
+import org.kryptonmc.krypton.world.rule.WorldGameRules
 import java.io.File
 import java.nio.file.Path
 import java.time.Duration
@@ -91,7 +91,7 @@ class KryptonWorldManager(override val server: KryptonServer, private val worldF
                 server.config.world.gameMode,
                 server.config.world.difficulty,
                 server.config.world.hardcore,
-                KryptonGameRuleHolder(),
+                WorldGameRules(),
                 data.generationSettings
             )
             KryptonWorld(server, worldData, resourceKey, dimensionType, data.generationSettings.seed, true)

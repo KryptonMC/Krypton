@@ -8,10 +8,8 @@
  */
 package org.kryptonmc.api.world.rule
 
-import net.kyori.adventure.key.Keyed
 import net.kyori.adventure.translation.Translatable
 import org.jetbrains.annotations.ApiStatus
-import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.Krypton
 import org.kryptonmc.internal.annotations.CataloguedBy
 import org.kryptonmc.internal.annotations.ImmutableType
@@ -25,7 +23,7 @@ import org.kryptonmc.internal.annotations.TypeFactory
 @Suppress("INAPPLICABLE_JVM_NAME")
 @CataloguedBy(GameRules::class)
 @ImmutableType
-public interface GameRule<V> : Translatable, Keyed {
+public interface GameRule<V> : Translatable {
 
     /**
      * The name of this rule.
@@ -43,21 +41,12 @@ public interface GameRule<V> : Translatable, Keyed {
     @TypeFactory
     public interface Factory {
 
-        public fun <V> of(name: String, defaultValue: V): GameRule<V>
+        public fun <V> of(name: String): GameRule<V>
     }
 
     public companion object {
 
-        /**
-         * Creates a new game rule with the given values.
-         *
-         * @param V the game rule value type
-         * @param name the name
-         * @param defaultValue the default value
-         * @return a new game rule
-         */
-        @JvmStatic
-        @Contract("_, _, _, _ -> new", pure = true)
-        public fun <V> of(name: String, defaultValue: V): GameRule<V> = Krypton.factory<Factory>().of(name, defaultValue)
+        @JvmSynthetic
+        internal fun <V> of(name: String): GameRule<V> = Krypton.factory<Factory>().of(name)
     }
 }

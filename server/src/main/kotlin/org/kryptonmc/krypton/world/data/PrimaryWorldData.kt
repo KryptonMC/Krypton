@@ -31,12 +31,14 @@ import org.kryptonmc.krypton.util.nbt.putDataVersion
 import org.kryptonmc.krypton.util.nbt.putNullable
 import org.kryptonmc.krypton.util.nbt.putUUID
 import org.kryptonmc.krypton.world.generation.WorldGenerationSettings
-import org.kryptonmc.krypton.world.rule.KryptonGameRuleHolder
+import org.kryptonmc.krypton.world.rule.WorldGameRules
 import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.ListTag
 import org.kryptonmc.nbt.StringTag
 import org.kryptonmc.nbt.compound
 import org.kryptonmc.nbt.list
+import org.kryptonmc.serialization.Dynamic
+import org.kryptonmc.serialization.nbt.NbtOps
 import java.nio.file.Path
 import java.time.Instant
 import java.util.UUID
@@ -48,7 +50,7 @@ class PrimaryWorldData(
     override var gameMode: GameMode,
     override var difficulty: Difficulty,
     override var isHardcore: Boolean,
-    override var gameRules: KryptonGameRuleHolder,
+    override var gameRules: WorldGameRules,
     override val generationSettings: WorldGenerationSettings,
     override var spawnX: Int = 0,
     override var spawnY: Int = 0,
@@ -158,7 +160,8 @@ class PrimaryWorldData(
                 GameModes.fromId(data.getInt(GAME_TYPE_TAG, 0)) ?: GameMode.SURVIVAL,
                 resolveDifficulty(data),
                 data.getBoolean(HARDCORE_TAG, false),
-                KryptonGameRuleHolder.from(data.getCompound(GAME_RULES_TAG)),
+                // TODO: Rewrite this when the data is a Dynamic
+                WorldGameRules(Dynamic(NbtOps.INSTANCE, data.getCompound(GAME_RULES_TAG))),
                 generationSettings,
                 data.getInt(SPAWN_X_TAG),
                 data.getInt(SPAWN_Y_TAG),

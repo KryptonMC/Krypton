@@ -72,7 +72,6 @@ import org.kryptonmc.api.statistic.StatisticFormatter
 import org.kryptonmc.api.statistic.StatisticType
 import org.kryptonmc.api.statistic.StatisticTypes
 import org.kryptonmc.api.world.damage.type.DamageType
-import org.kryptonmc.api.world.rule.GameRule
 import org.kryptonmc.krypton.adventure.KryptonAdventure
 import org.kryptonmc.krypton.effect.particle.KryptonBlockParticleType
 import org.kryptonmc.krypton.effect.particle.KryptonColorParticleType
@@ -92,7 +91,6 @@ import org.kryptonmc.krypton.world.block.KryptonBlocks
 import org.kryptonmc.krypton.world.block.entity.KryptonBlockEntityType
 import org.kryptonmc.krypton.world.block.entity.banner.KryptonBannerPatternType
 import org.kryptonmc.krypton.world.damage.type.KryptonDamageType
-import org.kryptonmc.krypton.world.rule.KryptonGameRule
 import org.kryptonmc.krypton.world.scoreboard.KryptonKeyedCriterion
 import java.util.function.Supplier
 
@@ -365,43 +363,6 @@ object RegistryLoaders {
         add(Key.key("water_creature")) { KryptonEntityCategory(it, 5, true, false, despawn, noDespawn) }
         add(Key.key("water_ambient")) { KryptonEntityCategory(it, 20, true, false, 64, noDespawn) }
         add(Key.key("misc")) { KryptonEntityCategory(it, -1, true, true, despawn, noDespawn) }
-    }
-
-    @JvmStatic
-    fun gameRule(): RegistryLoaderProvider<GameRule<*>> = loader {
-        add(Key.key("announce_advancements")) { KryptonGameRule("announceAdvancements", true) }
-        add(Key.key("command_block_output")) { KryptonGameRule("commandBlockOutput", true) }
-        add(Key.key("disable_elytra_movement_check")) { KryptonGameRule("disableElytraMovementCheck", false) }
-        add(Key.key("disable_raids")) { KryptonGameRule("disableRaids", false) }
-        add(Key.key("do_daylight_cycle")) { KryptonGameRule("doDaylightCycle", true) }
-        add(Key.key("do_entity_drops")) { KryptonGameRule("doEntityDrops", true) }
-        add(Key.key("do_fire_tick")) { KryptonGameRule("doFireTick", true) }
-        add(Key.key("do_insomnia")) { KryptonGameRule("doInsomnia", true) }
-        add(Key.key("do_immediate_respawn")) { KryptonGameRule("doImmediateRespawn", false) }
-        add(Key.key("do_limited_crafting")) { KryptonGameRule("doLimitedCrafting", false) }
-        add(Key.key("do_mob_loot")) { KryptonGameRule("doMobLoot", true) }
-        add(Key.key("do_mob_spawning")) { KryptonGameRule("doMobSpawning", true) }
-        add(Key.key("do_patrol_spawning")) { KryptonGameRule("doPatrolSpawning", true) }
-        add(Key.key("do_tile_drops")) { KryptonGameRule("doTileDrops", true) }
-        add(Key.key("do_trader_spawning")) { KryptonGameRule("doTraderSpawning", true) }
-        add(Key.key("do_weather_cycle")) { KryptonGameRule("doWeatherCycle", true) }
-        add(Key.key("drowning_damage")) { KryptonGameRule("drowningDamage", true) }
-        add(Key.key("fall_damage")) { KryptonGameRule("fallDamage", true) }
-        add(Key.key("fire_damage")) { KryptonGameRule("fireDamage", true) }
-        add(Key.key("forgive_dead_players")) { KryptonGameRule("forgiveDeadPlayers", true) }
-        add(Key.key("keep_inventory")) { KryptonGameRule("keepInventory", false) }
-        add(Key.key("log_admin_commands")) { KryptonGameRule("logAdminCommands", true) }
-        add(Key.key("max_command_chain_length")) { KryptonGameRule("maxCommandChainLength", 65536) }
-        add(Key.key("max_entity_cramming")) { KryptonGameRule("maxEntityCramming", 24) }
-        add(Key.key("mob_griefing")) { KryptonGameRule("mobGriefing", true) }
-        add(Key.key("natural_regeneration")) { KryptonGameRule("naturalRegeneration", true) }
-        add(Key.key("random_tick_speed")) { KryptonGameRule("randomTickSpeed", 3) }
-        add(Key.key("reduced_debug_info")) { KryptonGameRule("reducedDebugInfo", false) }
-        add(Key.key("send_command_feedback")) { KryptonGameRule("sendCommandFeedback", true) }
-        add(Key.key("show_death_messages")) { KryptonGameRule("showDeathMessages", true) }
-        add(Key.key("spawn_radius")) { KryptonGameRule("spawnRadius", 10) }
-        add(Key.key("spectators_generate_chunks")) { KryptonGameRule("spectatorsGenerateChunks", true) }
-        add(Key.key("universal_anger")) { KryptonGameRule("universalAnger", false) }
     }
 
     @JvmStatic

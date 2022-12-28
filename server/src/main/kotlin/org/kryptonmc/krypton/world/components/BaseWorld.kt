@@ -24,6 +24,7 @@ import org.kryptonmc.api.world.Difficulty
 import org.kryptonmc.api.world.GameMode
 import org.kryptonmc.api.world.World
 import org.kryptonmc.api.world.chunk.BlockChangeFlags
+import org.kryptonmc.api.world.rule.GameRule
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.adventure.PacketGroupingAudience
 import org.kryptonmc.krypton.entity.EntityManager
@@ -42,7 +43,7 @@ import org.kryptonmc.krypton.world.chunk.ticket.Ticket
 import org.kryptonmc.krypton.world.chunk.ticket.TicketTypes
 import org.kryptonmc.krypton.world.dimension.KryptonDimensionType
 import org.kryptonmc.krypton.world.fluid.KryptonFluidState
-import org.kryptonmc.krypton.world.rule.KryptonGameRuleHolder
+import org.kryptonmc.krypton.world.rule.WorldGameRules
 import org.kryptonmc.krypton.world.scoreboard.KryptonScoreboard
 import java.nio.file.Path
 
@@ -72,10 +73,18 @@ interface BaseWorld : World, WorldAccessor, PacketGroupingAudience {
         get() = data.isHardcore
     override val time: Long
         get() = data.time
-    override val gameRules: KryptonGameRuleHolder
-        get() = data.gameRules
     override val scoreboard: KryptonScoreboard
         get() = server.scoreboard
+
+    @Suppress("UNCHECKED_CAST")
+    override fun <V> getGameRule(rule: GameRule<V>): V = (rule as WorldGameRules.Key<*>).get(data.gameRules.getRule(rule)) as V
+
+    override fun <V> setGameRule(rule: GameRule<V>, value: V & Any) {
+        when (val ruleValue = data.gameRules.getRule(rule as WorldGameRules.Key<*>)) {
+            is WorldGameRules.BooleanValue -> ruleValue.set(value as Boolean, server)
+            is WorldGameRules.IntegerValue -> ruleValue.set(value as Int, server)
+        }
+    }
 
     override fun getBlock(x: Int, y: Int, z: Int): KryptonBlockState
 

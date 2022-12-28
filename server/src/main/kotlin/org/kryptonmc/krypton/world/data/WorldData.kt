@@ -24,7 +24,7 @@ import org.kryptonmc.krypton.util.BlockPos
 import org.kryptonmc.krypton.world.flag.FeatureFlagSet
 import org.kryptonmc.krypton.world.flag.FeatureFlags
 import org.kryptonmc.krypton.world.generation.WorldGenerationSettings
-import org.kryptonmc.krypton.world.rule.KryptonGameRuleHolder
+import org.kryptonmc.krypton.world.rule.WorldGameRules
 import java.nio.file.Path
 import java.util.UUID
 
@@ -36,7 +36,7 @@ interface WorldData {
     var gameMode: GameMode
     var difficulty: Difficulty
     var isHardcore: Boolean
-    var gameRules: KryptonGameRuleHolder
+    var gameRules: WorldGameRules
     var isInitialized: Boolean
     val generationSettings: WorldGenerationSettings
 

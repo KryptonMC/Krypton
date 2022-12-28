@@ -38,7 +38,6 @@ import org.kryptonmc.api.statistic.StatisticType
 import org.kryptonmc.api.world.biome.Biome
 import org.kryptonmc.api.world.damage.type.DamageType
 import org.kryptonmc.api.world.dimension.DimensionType
-import org.kryptonmc.api.world.rule.GameRule
 import org.kryptonmc.krypton.effect.sound.SoundLoader
 import org.kryptonmc.krypton.entity.KryptonEntityType
 import org.kryptonmc.krypton.entity.KryptonEntityTypes
@@ -132,8 +131,6 @@ object KryptonRegistries {
      * Custom built-in registries
      */
 
-    @JvmField
-    val GAME_RULES: KryptonRegistry<GameRule<*>> = simple(ResourceKeys.GAME_RULES, loader(RegistryLoaders.gameRule()))
     @JvmField
     val CRITERIA: KryptonRegistry<KeyedCriterion> = simple(ResourceKeys.CRITERIA, loader(RegistryLoaders.criterion()))
     @JvmField

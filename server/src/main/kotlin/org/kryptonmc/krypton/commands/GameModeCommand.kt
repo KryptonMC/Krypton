@@ -25,13 +25,13 @@ import com.mojang.brigadier.exceptions.DynamicCommandExceptionType
 import net.kyori.adventure.text.Component
 import org.kryptonmc.api.event.player.ChangeGameModeEvent
 import org.kryptonmc.api.world.GameMode
-import org.kryptonmc.api.world.rule.GameRules
 import org.kryptonmc.krypton.adventure.KryptonAdventure
 import org.kryptonmc.krypton.command.CommandSourceStack
 import org.kryptonmc.krypton.command.arguments.entities.EntityArgumentType
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.locale.Messages
 import org.kryptonmc.krypton.util.GameModes
+import org.kryptonmc.krypton.world.rule.GameRuleKeys
 
 object GameModeCommand {
 
@@ -88,7 +88,9 @@ object GameModeCommand {
             source.sendSuccess(Messages.Commands.GAME_MODE_SUCCESS_SELF.build(mode), true)
             return
         }
-        if (source.world.gameRules.get(GameRules.SEND_COMMAND_FEEDBACK)) source.sendSystemMessage(Messages.GAME_MODE_CHANGED.build(mode))
+        if (source.world.gameRules().getBoolean(GameRuleKeys.SEND_COMMAND_FEEDBACK)) {
+            source.sendSystemMessage(Messages.GAME_MODE_CHANGED.build(mode))
+        }
         source.sendSuccess(Messages.Commands.GAME_MODE_SUCCESS_OTHER.build(player.displayName, mode), true)
     }
 }

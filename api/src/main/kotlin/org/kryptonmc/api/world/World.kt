@@ -36,7 +36,7 @@ import java.nio.file.Path
 /**
  * Represents a loaded world.
  */
-public interface World : BlockContainer, FluidContainer, BiomeContainer, BlockEntityContainer, ForwardingAudience {
+public interface World : BlockContainer, FluidContainer, BiomeContainer, BlockEntityContainer, ForwardingAudience, GameRuleHolder {
 
     /**
      * The server this world was loaded on.
@@ -133,11 +133,6 @@ public interface World : BlockContainer, FluidContainer, BiomeContainer, BlockEn
      * The level of the current rain.
      */
     public var rainLevel: Float
-
-    /**
-     * The game rules for this world.
-     */
-    public val gameRules: GameRuleHolder
 
     /**
      * The scoreboard for this world.

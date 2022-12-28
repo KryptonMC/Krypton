@@ -19,14 +19,11 @@
 package org.kryptonmc.krypton.commands
 
 import com.mojang.brigadier.CommandDispatcher
-import com.mojang.brigadier.arguments.ArgumentType
-import com.mojang.brigadier.arguments.BoolArgumentType
-import com.mojang.brigadier.arguments.IntegerArgumentType
-import com.mojang.brigadier.builder.ArgumentBuilder
-import org.kryptonmc.api.world.rule.GameRule
+import com.mojang.brigadier.context.CommandContext
+import net.kyori.adventure.text.Component
 import org.kryptonmc.krypton.command.CommandSourceStack
-import org.kryptonmc.krypton.locale.Messages
-import org.kryptonmc.krypton.registry.KryptonRegistries
+import org.kryptonmc.krypton.world.rule.GameRuleKeys
+import org.kryptonmc.krypton.world.rule.WorldGameRules
 
 object GameRuleCommand {
 
@@ -35,30 +32,29 @@ object GameRuleCommand {
     @JvmStatic
     fun register(dispatcher: CommandDispatcher<CommandSourceStack>) {
         val command = literal("gamerule") { requiresPermission(KryptonPermission.GAME_RULE) }
-        KryptonRegistries.GAME_RULES.forEach { rule ->
-            val gameRule = literal(rule.name) {
-                runs { it.source.sendSuccess(Messages.Commands.GAMERULE_QUERY.build(rule.name, it.source.world.gameRules.get(rule)!!), false) }
+        GameRuleKeys.visitTypes(object : WorldGameRules.TypeVisitor {
+            override fun <T : WorldGameRules.Value<T>> visit(key: WorldGameRules.Key<T>, type: WorldGameRules.Type<T>) {
+                command.then(literal(key.id) {
+                    executes { queryRule(it.source, key) }
+                    then(type.createArgument(VALUE).executes { setRule(it, key) })
+                })
             }
-            @Suppress("UNCHECKED_CAST")
-            if (rule.defaultValue is Boolean) {
-                gameRule.then(gameRuleArgument(BoolArgumentType.bool(), rule as GameRule<Boolean>))
-            } else if (rule.defaultValue is Int) {
-                gameRule.then(gameRuleArgument(IntegerArgumentType.integer(), rule as GameRule<Int>))
-            }
-            command.then(gameRule)
-        }
+        })
         dispatcher.register(command)
     }
 
     @JvmStatic
-    private inline fun <reified V : Any> gameRuleArgument(
-        argument: ArgumentType<V>,
-        rule: GameRule<V>
-    ): ArgumentBuilder<CommandSourceStack, *> = argument(VALUE, argument) {
-        runs {
-            val value = it.getArgument(VALUE, V::class.java)
-            it.source.world.gameRules.set(rule, value)
-            it.source.sendSuccess(Messages.Commands.GAMERULE_SET.build(rule.name, value), true)
-        }
+    private fun <T : WorldGameRules.Value<T>> setRule(context: CommandContext<CommandSourceStack>, key: WorldGameRules.Key<T>): Int {
+        val value = context.source.server.worldManager.default.gameRules().getRule(key)
+        value.setFromArgument(context, VALUE)
+        context.source.sendSuccess(Component.translatable("commands.gamerule.set", Component.text(key.id), Component.text(value.toString())), true)
+        return value.commandResult()
+    }
+
+    @JvmStatic
+    private fun <T : WorldGameRules.Value<T>> queryRule(source: CommandSourceStack, key: WorldGameRules.Key<T>): Int {
+        val value = source.server.worldManager.default.gameRules().getRule(key)
+        source.sendSuccess(Component.translatable("commands.gamerule.query", Component.text(key.id), Component.text(value.toString())), false)
+        return value.commandResult()
     }
 }

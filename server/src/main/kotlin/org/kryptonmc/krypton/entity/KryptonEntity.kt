@@ -28,7 +28,6 @@ import org.kryptonmc.api.effect.sound.SoundEvent
 import org.kryptonmc.api.util.BoundingBox
 import org.kryptonmc.api.util.Vec3d
 import org.kryptonmc.api.world.damage.type.DamageTypes
-import org.kryptonmc.api.world.rule.GameRules
 import org.kryptonmc.krypton.command.CommandSourceStack
 import org.kryptonmc.krypton.command.KryptonSender
 import org.kryptonmc.krypton.entity.components.BaseEntity
@@ -47,6 +46,7 @@ import org.kryptonmc.krypton.util.Vec3dImpl
 import org.kryptonmc.krypton.util.random.RandomSource
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.krypton.world.damage.KryptonDamageSource
+import org.kryptonmc.krypton.world.rule.GameRuleKeys
 import java.util.UUID
 import java.util.concurrent.atomic.AtomicInteger
 
@@ -144,7 +144,7 @@ abstract class KryptonEntity(final override var world: KryptonWorld) : BaseEntit
         // Do nothing by default
     }
 
-    override fun acceptsSuccess(): Boolean = world.gameRules.get(GameRules.SEND_COMMAND_FEEDBACK)
+    override fun acceptsSuccess(): Boolean = world.gameRules().getBoolean(GameRuleKeys.SEND_COMMAND_FEEDBACK)
 
     override fun acceptsFailure(): Boolean = true
 

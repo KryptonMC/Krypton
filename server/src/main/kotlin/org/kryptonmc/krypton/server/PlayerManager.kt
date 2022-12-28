@@ -23,7 +23,6 @@ import org.apache.logging.log4j.LogManager
 import org.kryptonmc.api.scoreboard.Objective
 import org.kryptonmc.api.statistic.CustomStatistics
 import org.kryptonmc.api.world.World
-import org.kryptonmc.api.world.rule.GameRules
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.event.player.KryptonJoinEvent
@@ -60,6 +59,7 @@ import org.kryptonmc.krypton.world.biome.BiomeManager
 import org.kryptonmc.krypton.world.data.PlayerDataManager
 import org.kryptonmc.krypton.world.dimension.KryptonDimensionType
 import org.kryptonmc.krypton.world.flag.FeatureFlags
+import org.kryptonmc.krypton.world.rule.GameRuleKeys
 import org.kryptonmc.krypton.world.scoreboard.KryptonScoreboard
 import org.kryptonmc.serialization.Dynamic
 import org.kryptonmc.serialization.nbt.NbtOps
@@ -127,8 +127,8 @@ class PlayerManager(private val server: KryptonServer) {
         LOGGER.info("Player ${profile.name} logged in with entity ID ${player.id} at $location")
 
         // Join the game
-        val reducedDebugInfo = world.gameRules.get(GameRules.REDUCED_DEBUG_INFO)
-        val doImmediateRespawn = world.gameRules.get(GameRules.DO_IMMEDIATE_RESPAWN)
+        val reducedDebugInfo = world.gameRules().getBoolean(GameRuleKeys.REDUCED_DEBUG_INFO)
+        val doImmediateRespawn = world.gameRules().getBoolean(GameRuleKeys.DO_IMMEDIATE_RESPAWN)
         player.connection.send(PacketOutLogin(
             player.id,
             world.data.isHardcore,
@@ -213,7 +213,7 @@ class PlayerManager(private val server: KryptonServer) {
 
             // Send info and quit message
             server.sessionManager.invalidateStatus()
-            server.sessionManager.sendGrouped(PacketOutPlayerInfoRemove(player))
+//            server.sessionManager.sendGrouped(PacketOutPlayerInfoRemove(player))
             if (event.quitMessage != null) server.sendMessage(event.quitMessage!!)
         }, executor)
     }

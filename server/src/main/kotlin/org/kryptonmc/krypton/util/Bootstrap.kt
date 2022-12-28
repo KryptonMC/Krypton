@@ -35,6 +35,8 @@ import org.kryptonmc.krypton.item.ItemManager
 import org.kryptonmc.krypton.registry.KryptonRegistries
 import org.kryptonmc.krypton.tags.GameEventTags
 import org.kryptonmc.krypton.util.crypto.Encryption
+import org.kryptonmc.krypton.world.rule.GameRuleKeys
+import org.kryptonmc.krypton.world.rule.WorldGameRules
 import java.util.TreeSet
 import java.util.function.Function
 
@@ -116,7 +118,11 @@ object Bootstrap {
         checkTranslations(KryptonRegistries.ITEM, { it.translationKey() }, missing)
         checkTranslations(KryptonRegistries.BLOCK, { it.translationKey() }, missing)
         checkTranslations(KryptonRegistries.CUSTOM_STATISTIC, { "stat.${it.asString().replace(':', '.')}" }, missing)
-        checkTranslations(KryptonRegistries.GAME_RULES, { it.translationKey() }, missing)
+        GameRuleKeys.visitTypes(object : WorldGameRules.TypeVisitor {
+            override fun <T : WorldGameRules.Value<T>> visit(key: WorldGameRules.Key<T>, type: WorldGameRules.Type<T>) {
+                if (!TranslationBootstrap.REGISTRY.contains(key.translationKey())) missing.add(key.id)
+            }
+        })
         return missing
     }
 

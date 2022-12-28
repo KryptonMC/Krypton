@@ -22,10 +22,10 @@ import com.mojang.brigadier.ResultConsumer
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer
 import net.kyori.adventure.util.TriState
-import org.kryptonmc.api.world.rule.GameRules
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.command.CommandSourceStack
 import org.kryptonmc.krypton.command.KryptonSender
+import org.kryptonmc.krypton.world.rule.GameRuleKeys
 import org.kryptonmc.nbt.ByteTag
 import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.StringTag
@@ -109,11 +109,11 @@ abstract class CommandBlockHandler : KryptonSender {
 
     override fun getPermissionValue(permission: String): TriState = TriState.TRUE
 
-    override fun acceptsSuccess(): Boolean = world().gameRules.get(GameRules.SEND_COMMAND_FEEDBACK) && trackOutput
+    override fun acceptsSuccess(): Boolean = world().gameRules().getBoolean(GameRuleKeys.SEND_COMMAND_FEEDBACK) && trackOutput
 
     override fun acceptsFailure(): Boolean = trackOutput
 
-    override fun shouldInformAdmins(): Boolean = world().gameRules.get(GameRules.COMMAND_BLOCK_OUTPUT)
+    override fun shouldInformAdmins(): Boolean = world().gameRules().getBoolean(GameRuleKeys.COMMAND_BLOCK_OUTPUT)
 
     companion object {
 

@@ -31,7 +31,6 @@ import org.kryptonmc.api.world.Difficulty
 import org.kryptonmc.api.world.World
 import org.kryptonmc.api.world.biome.Biome
 import org.kryptonmc.api.world.biome.Biomes
-import org.kryptonmc.api.world.rule.GameRules
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.effect.sound.downcast
 import org.kryptonmc.krypton.entity.EntityFactory
@@ -68,6 +67,8 @@ import org.kryptonmc.krypton.world.flag.FeatureFlagSet
 import org.kryptonmc.krypton.world.fluid.KryptonFluidState
 import org.kryptonmc.krypton.world.fluid.KryptonFluids
 import org.kryptonmc.krypton.world.redstone.BatchingNeighbourUpdater
+import org.kryptonmc.krypton.world.rule.GameRuleKeys
+import org.kryptonmc.krypton.world.rule.WorldGameRules
 import java.util.concurrent.ConcurrentHashMap
 import java.util.function.BooleanSupplier
 
@@ -122,6 +123,8 @@ class KryptonWorld(
         updateSkyBrightness()
         prepareWeather()
     }
+
+    fun gameRules(): WorldGameRules = data.gameRules
 
     @Suppress("UNCHECKED_CAST")
     override fun <T : Entity> spawnEntity(type: EntityType<T>, location: Vec3d): T? {
@@ -311,7 +314,7 @@ class KryptonWorld(
     private fun tickWeather() {
         val wasRaining = isRaining
         if (dimensionType.hasSkylight) {
-            if (gameRules.get(GameRules.DO_WEATHER_CYCLE)) {
+            if (gameRules().getBoolean(GameRuleKeys.DO_WEATHER_CYCLE)) {
                 var clearWeatherTime = data.clearWeatherTime
                 var thunderTime = data.thunderTime
                 var rainTime = data.rainTime
@@ -372,7 +375,7 @@ class KryptonWorld(
     private fun tickTime() {
         if (!tickTime) return
         data.time++
-        if (data.gameRules.get(GameRules.DO_DAYLIGHT_CYCLE)) data.dayTime++
+        if (gameRules().getBoolean(GameRuleKeys.DO_DAYLIGHT_CYCLE)) data.dayTime++
     }
 
     private fun updateSkyBrightness() {

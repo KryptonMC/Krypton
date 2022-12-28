@@ -29,7 +29,6 @@ import org.kryptonmc.api.statistic.StatisticType
 import org.kryptonmc.api.world.biome.Biome
 import org.kryptonmc.api.world.damage.type.DamageType
 import org.kryptonmc.api.world.dimension.DimensionType
-import org.kryptonmc.api.world.rule.GameRule
 import org.kryptonmc.internal.annotations.Catalogue
 
 /**
@@ -75,8 +74,6 @@ public object Registries {
     /**
      * Custom built-in registries.
      */
-    @JvmField
-    public val GAME_RULES: Registry<GameRule<*>> = builtin(ResourceKeys.GAME_RULES)
     @JvmField
     public val CRITERIA: Registry<KeyedCriterion> = builtin(ResourceKeys.CRITERIA)
     @JvmField

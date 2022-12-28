@@ -8,53 +8,26 @@
  */
 package org.kryptonmc.api.world.rule
 
-import org.kryptonmc.api.registry.RegistryReference
-
 /**
  * A holder of game rules. Used to get and set game rule values.
  */
 public interface GameRuleHolder {
 
     /**
-     * All the rules this holder is holding.
-     */
-    public val rules: Map<GameRule<*>, *>
-
-    /**
-     * Gets the value of the provided [rule].
+     * Gets the value of the given [rule] in this holder.
      *
      * @param V the value type
      * @param rule the rule
      * @return the value
      */
-    public fun <V> get(rule: GameRule<V>): V
+    public fun <V> getGameRule(rule: GameRule<V>): V
 
     /**
-     * Gets the value of the provided [rule].
-     *
-     * @param V the value type
-     * @param rule the rule
-     * @return the value
-     */
-    public fun <V> get(rule: RegistryReference<GameRule<V>>): V = get(rule.get())
-
-    /**
-     * Sets the value of the given [rule] to the given [value].
+     * Sets the value of the given [rule] to the given [value] in this holder.
      *
      * @param V the value type
      * @param rule the rule
      * @param value the new value
      */
-    public fun <V> set(rule: GameRule<V>, value: V & Any)
-
-    /**
-     * Sets the value of the given [rule] to the given [value].
-     *
-     * @param V the value type
-     * @param rule the rule
-     * @param value the new value
-     */
-    public fun <V> set(rule: RegistryReference<GameRule<V>>, value: V & Any) {
-        set(rule.get(), value)
-    }
+    public fun <V> setGameRule(rule: GameRule<V>, value: V & Any)
 }

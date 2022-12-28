@@ -23,7 +23,6 @@ import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
 import org.kryptonmc.api.command.CommandExecutionContext
 import org.kryptonmc.api.util.Vec3d
-import org.kryptonmc.api.world.rule.GameRules
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.command.arguments.CommandExceptions
 import org.kryptonmc.krypton.commands.KryptonPermission
@@ -32,6 +31,7 @@ import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.locale.Messages
 import org.kryptonmc.krypton.network.chat.ChatSender
 import org.kryptonmc.krypton.world.KryptonWorld
+import org.kryptonmc.krypton.world.rule.GameRuleKeys
 
 class CommandSourceStack(
     override val sender: KryptonSender,
@@ -76,12 +76,12 @@ class CommandSourceStack(
 
     fun broadcastToAdmins(message: Component) {
         val broadcast = Messages.CHAT_TYPE_ADMIN.build(displayName, message)
-        if (world.gameRules.get(GameRules.SEND_COMMAND_FEEDBACK)) {
+        if (world.gameRules().getBoolean(GameRuleKeys.SEND_COMMAND_FEEDBACK)) {
             server.players.forEach { player ->
                 if (player !== this.sender && player.hasPermission(KryptonPermission.BROADCAST_ADMIN.node)) player.sendSystemMessage(broadcast)
             }
         }
-        if (sender !== server.console && world.gameRules.get(GameRules.LOG_ADMIN_COMMANDS)) server.console.sendSystemMessage(broadcast)
+        if (sender !== server.console && world.gameRules().getBoolean(GameRuleKeys.LOG_ADMIN_COMMANDS)) server.console.sendSystemMessage(broadcast)
     }
 
     companion object {
