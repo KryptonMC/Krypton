@@ -85,6 +85,8 @@ class ArrayVoxelShape(
     }
 
     override fun forAllBoxes(consumer: Shapes.DoubleLineConsumer) {
+        @Suppress("SENSELESS_COMPARISON") // Due to class initialization, this may actually be null.
+        if (boundingBoxesRepresentation == null) return super.forAllBoxes(consumer)
         forBoundingBoxes { minX, minY, minZ, maxX, maxY, maxZ -> consumer.consume(minX, minY, minZ, maxX, maxY, maxZ) }
     }
 
