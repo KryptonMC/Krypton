@@ -88,7 +88,11 @@ class ArrayVoxelShape(
         forBoundingBoxes { minX, minY, minZ, maxX, maxY, maxZ -> consumer.consume(minX, minY, minZ, maxX, maxY, maxZ) }
     }
 
-    override fun toBoundingBoxes(): List<BoundingBox> = boundingBoxesRepresentation.mapTo(ArrayList()) { it.move(offsetX, offsetY, offsetZ) }
+    override fun toBoundingBoxes(): List<BoundingBox> {
+        @Suppress("SENSELESS_COMPARISON") // Due to class initialization, this may actually be null.
+        if (boundingBoxesRepresentation == null) return super.toBoundingBoxes()
+        return boundingBoxesRepresentation.map { it.move(offsetX, offsetY, offsetZ) }
+    }
 
     override fun toString(): String = "ArrayVoxelShape(shape=$shape, xs=$xs, ys=$ys, zs=$zs)"
 
