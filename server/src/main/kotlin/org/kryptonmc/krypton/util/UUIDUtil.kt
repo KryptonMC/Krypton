@@ -45,7 +45,7 @@ object UUIDUtil {
 
     @JvmStatic
     fun loadUUID(tag: Tag): UUID {
-        require(tag.id() == IntArrayTag.ID) { "Expected UUID tag to be of type ${IntArrayTag.TYPE.name}, was ${tag.type().name}!" }
+        require(tag.id() == IntArrayTag.ID) { "Expected UUID tag to be of type ${IntArrayTag.TYPE.prettyName()}, was ${tag.type().prettyName()}!" }
         val array = (tag as IntArrayTag).data
         require(array.size == 4) { "Expected UUID array to be of length 4, was ${array.size}!" }
         return fromIntArray(array)
