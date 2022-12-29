@@ -2637,6 +2637,22 @@ object KryptonBlocks {
         DummyBlock(Properties.of(Materials.STONE, MaterialColors.DEEPSLATE).sounds(BlockSoundGroups.DEEPSLATE).strength(55.0F, 1200.0F)))
 
     @JvmStatic
+    fun initializeStates() {
+        KryptonRegistries.BLOCK.forEach { block ->
+            block.stateDefinition.states.forEach { state ->
+                KryptonBlock.STATES.add(state)
+                state.initCache()
+            }
+            block.lootTable()
+        }
+    }
+
+    @JvmStatic
+    fun rebuildCaches() {
+        KryptonBlock.STATES.forEach { it.initCache() }
+    }
+
+    @JvmStatic
     private fun litBlockEmission(lightValue: Int): ToIntFunction<KryptonBlockState> =
         ToIntFunction { if (it.requireProperty(KryptonProperties.LIT)) lightValue else 0 }
 

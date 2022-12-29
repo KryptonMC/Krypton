@@ -35,6 +35,7 @@ import org.kryptonmc.krypton.item.ItemManager
 import org.kryptonmc.krypton.registry.KryptonRegistries
 import org.kryptonmc.krypton.tags.GameEventTags
 import org.kryptonmc.krypton.util.crypto.Encryption
+import org.kryptonmc.krypton.world.block.KryptonBlocks
 import org.kryptonmc.krypton.world.rule.GameRuleKeys
 import org.kryptonmc.krypton.world.rule.WorldGameRules
 import java.util.TreeSet
@@ -83,6 +84,7 @@ object Bootstrap {
     fun preloadRegistries() {
         Reflection.modifyStaticField(kryptonClass, "registryManager", KryptonRegistries.ManagerImpl)
         KryptonRegistries.bootstrap()
+        KryptonBlocks.initializeStates()
         Registries
         BlockTags
         EntityTypeTags
