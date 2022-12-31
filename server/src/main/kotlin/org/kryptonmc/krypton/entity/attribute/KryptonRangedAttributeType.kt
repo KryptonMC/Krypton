@@ -19,7 +19,7 @@
 package org.kryptonmc.krypton.entity.attribute
 
 import org.kryptonmc.api.entity.attribute.RangedAttributeType
-import org.kryptonmc.krypton.util.Maths
+import org.kryptonmc.krypton.util.math.Maths
 
 class KryptonRangedAttributeType(
     defaultValue: Double,

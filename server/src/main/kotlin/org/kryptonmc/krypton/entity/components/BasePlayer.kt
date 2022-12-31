@@ -22,8 +22,7 @@ import net.kyori.adventure.text.Component
 import net.kyori.adventure.util.TriState
 import org.kryptonmc.api.permission.PermissionFunction
 import org.kryptonmc.api.util.Direction
-import org.kryptonmc.krypton.entity.KryptonEquipable
-import org.kryptonmc.krypton.util.Directions
+import org.kryptonmc.krypton.util.enumhelper.Directions
 import org.kryptonmc.krypton.world.scoreboard.KryptonScoreboard
 
 interface BasePlayer : BaseEntity, KryptonEquipable, Vanishable, HungerDelegate, AbilitiesDelegate, PlayerAudience, Glider, GameModePlayer {

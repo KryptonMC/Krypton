@@ -19,12 +19,12 @@
 package org.kryptonmc.krypton.packet.`in`.play
 
 import io.netty.buffer.ByteBuf
-import org.kryptonmc.krypton.network.handlers.PlayHandler
+import org.kryptonmc.krypton.network.handlers.PlayPacketHandler
 import org.kryptonmc.krypton.packet.InboundPacket
 import org.kryptonmc.krypton.packet.MovementPacket
 
 @JvmRecord
-data class PacketInSetPlayerOnGround(override val onGround: Boolean) : MovementPacket, InboundPacket<PlayHandler> {
+data class PacketInSetPlayerOnGround(override val onGround: Boolean) : MovementPacket, InboundPacket<PlayPacketHandler> {
 
     constructor(buf: ByteBuf) : this(buf.readBoolean())
 
@@ -32,7 +32,7 @@ data class PacketInSetPlayerOnGround(override val onGround: Boolean) : MovementP
         buf.writeBoolean(onGround)
     }
 
-    override fun handle(handler: PlayHandler) {
+    override fun handle(handler: PlayPacketHandler) {
         // TODO
         //handler.handlePlayerOnGround(this)
     }

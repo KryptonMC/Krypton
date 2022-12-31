@@ -27,7 +27,7 @@ import org.kryptonmc.krypton.registry.KryptonRegistries
 import org.kryptonmc.krypton.state.KryptonState
 import org.kryptonmc.krypton.state.StateDelegate
 import org.kryptonmc.krypton.state.property.KryptonProperty
-import org.kryptonmc.krypton.util.BlockPos
+import org.kryptonmc.krypton.coordinate.BlockPos
 import org.kryptonmc.krypton.world.block.state.KryptonBlockState
 import org.kryptonmc.krypton.world.components.BlockGetter
 import org.kryptonmc.serialization.Codec

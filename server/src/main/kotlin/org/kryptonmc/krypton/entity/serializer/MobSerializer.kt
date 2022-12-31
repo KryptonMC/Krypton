@@ -19,7 +19,7 @@
 package org.kryptonmc.krypton.entity.serializer
 
 import org.kryptonmc.api.entity.MainHand
-import org.kryptonmc.krypton.entity.KryptonEquipable
+import org.kryptonmc.krypton.entity.components.KryptonEquipable
 import org.kryptonmc.krypton.entity.KryptonMob
 import org.kryptonmc.nbt.ByteTag
 import org.kryptonmc.nbt.CompoundTag

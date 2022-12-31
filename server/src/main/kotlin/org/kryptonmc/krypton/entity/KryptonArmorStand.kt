@@ -21,11 +21,13 @@ package org.kryptonmc.krypton.entity
 import org.kryptonmc.api.entity.ArmorStand
 import org.kryptonmc.api.entity.EquipmentSlot
 import org.kryptonmc.api.util.Rotations
+import org.kryptonmc.krypton.entity.components.KryptonEquipable
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.entity.serializer.ArmorStandSerializer
 import org.kryptonmc.krypton.entity.serializer.EntitySerializer
+import org.kryptonmc.krypton.entity.util.EquipmentSlots
 import org.kryptonmc.krypton.item.KryptonItemStack
-import org.kryptonmc.krypton.util.FixedList
+import org.kryptonmc.krypton.util.collection.FixedList
 import org.kryptonmc.krypton.world.KryptonWorld
 
 class KryptonArmorStand(world: KryptonWorld) : KryptonLivingEntity(world), ArmorStand, KryptonEquipable {

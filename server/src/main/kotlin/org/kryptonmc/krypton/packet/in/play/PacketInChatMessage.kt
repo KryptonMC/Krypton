@@ -20,13 +20,13 @@ package org.kryptonmc.krypton.packet.`in`.play
 
 import io.netty.buffer.ByteBuf
 import org.kryptonmc.krypton.network.chat.MessageSignature
-import org.kryptonmc.krypton.network.handlers.PlayHandler
+import org.kryptonmc.krypton.network.handlers.PlayPacketHandler
 import org.kryptonmc.krypton.packet.InboundPacket
 import org.kryptonmc.krypton.util.readString
 import org.kryptonmc.krypton.util.writeString
 
 @JvmRecord
-data class PacketInChatMessage(val message: String, val signature: MessageSignature, val signedPreview: Boolean) : InboundPacket<PlayHandler> {
+data class PacketInChatMessage(val message: String, val signature: MessageSignature, val signedPreview: Boolean) : InboundPacket<PlayPacketHandler> {
 
     constructor(buf: ByteBuf) : this(buf.readString(), MessageSignature(buf), buf.readBoolean())
 
@@ -36,7 +36,7 @@ data class PacketInChatMessage(val message: String, val signature: MessageSignat
         buf.writeBoolean(signedPreview)
     }
 
-    override fun handle(handler: PlayHandler) {
+    override fun handle(handler: PlayPacketHandler) {
         handler.handleChatMessage(this)
     }
 }

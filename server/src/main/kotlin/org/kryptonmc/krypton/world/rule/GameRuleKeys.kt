@@ -57,7 +57,7 @@ object GameRuleKeys {
     val DO_INSOMNIA: Key<BooleanValue> = register("doInsomnia", Category.SPAWNING, BooleanValue.create(true))
     @JvmField
     val DO_IMMEDIATE_RESPAWN: Key<BooleanValue> = register("doImmediateRespawn", Category.PLAYER, BooleanValue.create(false) { server, value ->
-        server.sessionManager.sendGrouped(PacketOutGameEvent(GameEventTypes.ENABLE_RESPAWN_SCREEN, if (value.get()) 1F else 0F))
+        server.connectionManager.sendGroupedPacket(PacketOutGameEvent(GameEventTypes.ENABLE_RESPAWN_SCREEN, if (value.get()) 1F else 0F))
     })
     @JvmField
     val DO_LIMITED_CRAFTING: Key<BooleanValue> = register("doLimitedCrafting", Category.PLAYER, BooleanValue.create(false))

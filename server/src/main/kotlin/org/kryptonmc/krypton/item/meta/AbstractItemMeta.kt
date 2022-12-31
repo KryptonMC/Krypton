@@ -28,7 +28,7 @@ import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.item.ItemAttributeModifier
 import org.kryptonmc.api.item.data.ItemFlag
 import org.kryptonmc.api.item.meta.ItemMeta
-import org.kryptonmc.krypton.item.KryptonItemAttributeModifier
+import org.kryptonmc.krypton.item.data.KryptonItemAttributeModifier
 import org.kryptonmc.krypton.item.mask
 import org.kryptonmc.krypton.registry.KryptonRegistries
 import org.kryptonmc.nbt.CompoundTag

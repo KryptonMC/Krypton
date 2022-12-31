@@ -31,9 +31,9 @@ import org.kryptonmc.api.item.meta.WrittenBookMeta
 import org.kryptonmc.krypton.item.KryptonItemStack
 import org.kryptonmc.krypton.item.downcast
 import org.kryptonmc.krypton.item.meta.KryptonWrittenBookMeta
-import org.kryptonmc.krypton.util.GsonHelper
+import org.kryptonmc.krypton.util.gson.GsonHelper
 import org.kryptonmc.krypton.util.Reflection
-import org.kryptonmc.krypton.util.TranslationBootstrap
+import org.kryptonmc.krypton.locale.MinecraftTranslationManager
 
 /**
  * Various things used by Krypton for supporting Adventure.
@@ -46,7 +46,7 @@ object KryptonAdventure {
      */
     @JvmField
     val FLATTENER: ComponentFlattener = ComponentFlattener.basic().toBuilder()
-        .complexMapper(TranslatableComponent::class.java) { translatable, mapper -> mapper.accept(TranslationBootstrap.render(translatable)) }
+        .complexMapper(TranslatableComponent::class.java) { translatable, mapper -> mapper.accept(MinecraftTranslationManager.render(translatable)) }
         .build()
     // We need to do this because the only other solution, which is to use the NAMES index, doesn't have the guaranteed ordering
     // that we require to map the IDs properly. This internal list has the ordering we need.

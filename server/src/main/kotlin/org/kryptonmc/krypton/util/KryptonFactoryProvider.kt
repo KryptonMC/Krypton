@@ -59,22 +59,25 @@ import org.kryptonmc.krypton.auth.KryptonGameProfile
 import org.kryptonmc.krypton.auth.KryptonProfileProperty
 import org.kryptonmc.krypton.command.KryptonBrigadierCommand
 import org.kryptonmc.krypton.command.KryptonCommandMeta
+import org.kryptonmc.krypton.coordinate.BlockPos
+import org.kryptonmc.krypton.coordinate.KryptonRotations
+import org.kryptonmc.krypton.coordinate.KryptonVec3d
 import org.kryptonmc.krypton.effect.KryptonMusic
 import org.kryptonmc.krypton.effect.particle.data.KryptonParticleDataFactory
 import org.kryptonmc.krypton.entity.attribute.KryptonAttributeModifier
-import org.kryptonmc.krypton.item.KryptonItemAttributeModifier
+import org.kryptonmc.krypton.item.data.KryptonItemAttributeModifier
 import org.kryptonmc.krypton.item.KryptonItemStack
 import org.kryptonmc.krypton.item.data.KryptonFireworkEffect
 import org.kryptonmc.krypton.item.meta.KryptonItemMeta
 import org.kryptonmc.krypton.registry.KryptonRegistryReference
 import org.kryptonmc.krypton.resource.KryptonResourceKey
 import org.kryptonmc.krypton.resource.KryptonResourcePack
-import org.kryptonmc.krypton.world.biome.KryptonAmbientAdditionsSettings
-import org.kryptonmc.krypton.world.biome.KryptonAmbientMoodSettings
-import org.kryptonmc.krypton.world.biome.KryptonAmbientParticleSettings
+import org.kryptonmc.krypton.world.biome.data.KryptonAmbientAdditionsSettings
+import org.kryptonmc.krypton.world.biome.data.KryptonAmbientMoodSettings
+import org.kryptonmc.krypton.world.biome.data.KryptonAmbientParticleSettings
 import org.kryptonmc.krypton.world.biome.KryptonBiome
-import org.kryptonmc.krypton.world.biome.KryptonBiomeEffects
-import org.kryptonmc.krypton.world.biome.KryptonClimate
+import org.kryptonmc.krypton.world.biome.data.KryptonBiomeEffects
+import org.kryptonmc.krypton.world.biome.data.KryptonClimate
 import org.kryptonmc.krypton.world.block.entity.banner.KryptonBannerPattern
 import org.kryptonmc.krypton.state.property.KryptonPropertyFactory
 import org.kryptonmc.krypton.tags.KryptonTagKey
@@ -115,8 +118,8 @@ object KryptonFactoryProvider : FactoryProvider {
         register<TagKey.Factory>(KryptonTagKey.Factory)
         register<BoundingBox.Factory>(KryptonBoundingBox.Factory)
         register<Color.Factory>(KryptonColor.Factory)
-        register<Rotations.Factory>(RotationsImpl.Factory)
-        register<Vec3d.Factory>(Vec3dImpl.Factory)
+        register<Rotations.Factory>(KryptonRotations.Factory)
+        register<Vec3d.Factory>(KryptonVec3d.Factory)
         register<Vec3i.Factory>(BlockPos.Factory)
         register<AmbientAdditionsSettings.Factory>(KryptonAmbientAdditionsSettings.Factory)
         register<AmbientMoodSettings.Factory>(KryptonAmbientMoodSettings.Factory)

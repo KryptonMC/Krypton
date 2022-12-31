@@ -23,10 +23,10 @@ import org.kryptonmc.api.util.Direction
 import org.kryptonmc.krypton.entity.KryptonEntity
 import org.kryptonmc.krypton.entity.serializer.EntitySerializer
 import org.kryptonmc.krypton.entity.serializer.hanging.HangingEntitySerializer
-import org.kryptonmc.krypton.util.BlockPos
-import org.kryptonmc.krypton.util.Directions
+import org.kryptonmc.krypton.coordinate.BlockPos
+import org.kryptonmc.krypton.util.enumhelper.Directions
 import org.kryptonmc.krypton.util.KryptonBoundingBox
-import org.kryptonmc.krypton.util.Vec3dImpl
+import org.kryptonmc.krypton.coordinate.KryptonVec3d
 import org.kryptonmc.krypton.world.KryptonWorld
 
 abstract class KryptonHangingEntity(world: KryptonWorld) : KryptonEntity(world), HangingEntity {
@@ -69,7 +69,7 @@ abstract class KryptonHangingEntity(world: KryptonWorld) : KryptonEntity(world),
             // for direction WEST (anti clockwise SOUTH), the z becomes centerZ + 1
             z += BLOCK_CENTER_OFFSET * antiClockwise.normalZ
         }
-        position = Vec3dImpl(x, y, z)
+        position = KryptonVec3d(x, y, z)
 
         var widthX = width().toDouble()
         var height = height().toDouble()

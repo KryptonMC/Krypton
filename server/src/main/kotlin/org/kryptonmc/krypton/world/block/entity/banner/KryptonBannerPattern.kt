@@ -22,7 +22,7 @@ import org.kryptonmc.api.block.entity.banner.BannerPattern
 import org.kryptonmc.api.block.entity.banner.BannerPatternType
 import org.kryptonmc.api.item.data.DyeColor
 import org.kryptonmc.krypton.registry.KryptonRegistries
-import org.kryptonmc.krypton.util.DyeColors
+import org.kryptonmc.krypton.util.enumhelper.DyeColors
 import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.compound
 

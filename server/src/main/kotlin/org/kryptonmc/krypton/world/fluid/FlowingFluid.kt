@@ -26,9 +26,9 @@ import org.kryptonmc.krypton.shapes.VoxelShape
 import org.kryptonmc.krypton.state.StateDefinition
 import org.kryptonmc.krypton.state.property.KryptonProperties
 import org.kryptonmc.krypton.state.property.KryptonProperty
-import org.kryptonmc.krypton.util.BlockPos
-import org.kryptonmc.krypton.util.Directions
-import org.kryptonmc.krypton.util.Vec3dImpl
+import org.kryptonmc.krypton.coordinate.BlockPos
+import org.kryptonmc.krypton.util.enumhelper.Directions
+import org.kryptonmc.krypton.coordinate.KryptonVec3d
 import org.kryptonmc.krypton.world.components.BlockGetter
 import org.kryptonmc.krypton.world.material.Materials
 import kotlin.math.min
@@ -78,7 +78,7 @@ abstract class FlowingFluid : KryptonFluid() {
             }
         }
 
-        var flow: Vec3d = Vec3dImpl(flowX, 0.0, flowZ)
+        var flow: Vec3d = KryptonVec3d(flowX, 0.0, flowZ)
         if (state.requireProperty(FALLING)) {
             for (direction in Directions.Plane.HORIZONTAL.iterator()) {
                 offsetPos.setWithOffset(pos, direction)

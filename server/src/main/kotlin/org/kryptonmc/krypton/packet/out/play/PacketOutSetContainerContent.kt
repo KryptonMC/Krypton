@@ -22,7 +22,7 @@ import io.netty.buffer.ByteBuf
 import org.kryptonmc.krypton.inventory.KryptonPlayerInventory
 import org.kryptonmc.krypton.item.KryptonItemStack
 import org.kryptonmc.krypton.packet.Packet
-import org.kryptonmc.krypton.util.FixedList
+import org.kryptonmc.krypton.util.collection.FixedList
 import org.kryptonmc.krypton.util.readCollection
 import org.kryptonmc.krypton.util.readItem
 import org.kryptonmc.krypton.util.readVarInt

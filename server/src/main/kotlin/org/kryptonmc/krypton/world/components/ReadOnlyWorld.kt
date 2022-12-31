@@ -18,8 +18,8 @@
  */
 package org.kryptonmc.krypton.world.components
 
-import org.kryptonmc.krypton.util.BlockPos
-import org.kryptonmc.krypton.world.Heightmap
+import org.kryptonmc.krypton.coordinate.BlockPos
+import org.kryptonmc.krypton.world.chunk.data.Heightmap
 import org.kryptonmc.krypton.world.dimension.KryptonDimensionType
 import org.kryptonmc.krypton.world.flag.FeatureFlagSet
 

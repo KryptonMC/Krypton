@@ -22,7 +22,7 @@ import com.google.common.collect.ImmutableList
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer
 import org.kryptonmc.api.item.meta.WritableBookMeta
-import org.kryptonmc.krypton.util.BuilderCollection
+import org.kryptonmc.krypton.util.collection.BuilderCollection
 import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.StringTag
 import org.kryptonmc.nbt.list

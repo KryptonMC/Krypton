@@ -21,7 +21,7 @@ package org.kryptonmc.krypton.packet.out.play
 import io.netty.buffer.ByteBuf
 import org.kryptonmc.api.world.Difficulty
 import org.kryptonmc.krypton.packet.Packet
-import org.kryptonmc.krypton.util.Difficulties
+import org.kryptonmc.krypton.util.enumhelper.Difficulties
 
 @JvmRecord
 data class PacketOutChangeDifficulty(val difficulty: Difficulty, val isLocked: Boolean) : Packet {

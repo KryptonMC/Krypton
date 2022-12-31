@@ -23,12 +23,15 @@ import org.kryptonmc.api.world.biome.Biome
 import org.kryptonmc.api.world.chunk.Chunk
 import org.kryptonmc.krypton.packet.CachedPacket
 import org.kryptonmc.krypton.packet.out.play.PacketOutChunkDataAndLight
-import org.kryptonmc.krypton.util.BlockPos
-import org.kryptonmc.krypton.world.Heightmap
+import org.kryptonmc.krypton.coordinate.BlockPos
+import org.kryptonmc.krypton.coordinate.ChunkPos
+import org.kryptonmc.krypton.world.chunk.data.Heightmap
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.krypton.world.block.KryptonBlocks
 import org.kryptonmc.krypton.world.block.entity.KryptonBlockEntity
 import org.kryptonmc.krypton.world.block.state.KryptonBlockState
+import org.kryptonmc.krypton.world.chunk.data.ChunkSection
+import org.kryptonmc.krypton.world.chunk.data.ChunkStatus
 import org.kryptonmc.krypton.world.chunk.ticket.Ticket
 import org.kryptonmc.krypton.world.fluid.KryptonFluidState
 import org.kryptonmc.krypton.world.fluid.KryptonFluids

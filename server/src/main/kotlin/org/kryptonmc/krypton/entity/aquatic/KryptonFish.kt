@@ -21,7 +21,7 @@ package org.kryptonmc.krypton.entity.aquatic
 import org.kryptonmc.api.effect.sound.SoundEvent
 import org.kryptonmc.api.effect.sound.SoundEvents
 import org.kryptonmc.api.entity.aquatic.Fish
-import org.kryptonmc.krypton.entity.BucketStorable
+import org.kryptonmc.krypton.entity.components.BucketStorable
 import org.kryptonmc.krypton.entity.KryptonMob
 import org.kryptonmc.krypton.entity.attribute.AttributeSupplier
 import org.kryptonmc.krypton.entity.attribute.KryptonAttributeTypes

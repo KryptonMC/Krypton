@@ -25,14 +25,14 @@ import net.kyori.adventure.text.Component
 import org.kryptonmc.api.Server
 import org.kryptonmc.krypton.adventure.PacketGroupingAudience
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
-import org.kryptonmc.krypton.network.SessionManager
+import org.kryptonmc.krypton.network.ConnectionManager
 import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.server.PlayerManager
 import java.util.Collections
 
 interface ServerAudience : Server, PacketGroupingAudience {
 
-    val sessionManager: SessionManager
+    val connectionManager: ConnectionManager
     val playerManager: PlayerManager
 
     override val players: Collection<KryptonPlayer>
@@ -61,6 +61,6 @@ interface ServerAudience : Server, PacketGroupingAudience {
     }
 
     override fun sendGroupedPacket(players: Collection<KryptonPlayer>, packet: Packet) {
-        sessionManager.sendGrouped(players, packet)
+        connectionManager.sendGroupedPacket(players, packet)
     }
 }

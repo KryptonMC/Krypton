@@ -21,7 +21,7 @@ package org.kryptonmc.krypton.tags
 import net.kyori.adventure.key.Key
 import org.kryptonmc.api.tags.TagKey
 import org.kryptonmc.krypton.resource.KryptonResourceKeys
-import org.kryptonmc.krypton.world.event.GameEvent
+import org.kryptonmc.krypton.world.gameevent.GameEvent
 
 object GameEventTags {
 

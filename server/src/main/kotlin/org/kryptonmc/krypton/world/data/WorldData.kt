@@ -20,7 +20,7 @@ package org.kryptonmc.krypton.world.data
 
 import org.kryptonmc.api.world.Difficulty
 import org.kryptonmc.api.world.GameMode
-import org.kryptonmc.krypton.util.BlockPos
+import org.kryptonmc.krypton.coordinate.BlockPos
 import org.kryptonmc.krypton.world.flag.FeatureFlagSet
 import org.kryptonmc.krypton.world.flag.FeatureFlags
 import org.kryptonmc.krypton.world.generation.WorldGenerationSettings

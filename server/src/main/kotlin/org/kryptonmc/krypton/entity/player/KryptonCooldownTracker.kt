@@ -23,7 +23,7 @@ import org.kryptonmc.api.item.ItemType
 import org.kryptonmc.krypton.event.player.KryptonCooldownEvent
 import org.kryptonmc.krypton.item.downcast
 import org.kryptonmc.krypton.packet.out.play.PacketOutSetCooldown
-import org.kryptonmc.krypton.util.Maths
+import org.kryptonmc.krypton.util.math.Maths
 import java.util.concurrent.ConcurrentHashMap
 
 class KryptonCooldownTracker(private val player: KryptonPlayer) : CooldownTracker {

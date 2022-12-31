@@ -24,12 +24,12 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 import net.kyori.adventure.key.Key
 import org.kryptonmc.api.world.biome.Biome
 import org.kryptonmc.krypton.registry.KryptonRegistries
-import org.kryptonmc.krypton.util.BitStorage
+import org.kryptonmc.krypton.util.bits.BitStorage
 import org.kryptonmc.krypton.util.ByteBufExtras
-import org.kryptonmc.krypton.util.IntBiMap
-import org.kryptonmc.krypton.util.Maths
-import org.kryptonmc.krypton.util.SimpleBitStorage
-import org.kryptonmc.krypton.util.ZeroBitStorage
+import org.kryptonmc.krypton.util.map.IntBiMap
+import org.kryptonmc.krypton.util.math.Maths
+import org.kryptonmc.krypton.util.bits.SimpleBitStorage
+import org.kryptonmc.krypton.util.bits.ZeroBitStorage
 import org.kryptonmc.krypton.util.writeLongArray
 import org.kryptonmc.krypton.world.block.BlockStateSerialization
 import org.kryptonmc.krypton.world.block.KryptonBlock

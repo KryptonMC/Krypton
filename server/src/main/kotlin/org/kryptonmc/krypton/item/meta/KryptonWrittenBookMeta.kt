@@ -24,7 +24,7 @@ import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer
 import org.kryptonmc.api.item.data.WrittenBookGeneration
 import org.kryptonmc.api.item.meta.WrittenBookMeta
-import org.kryptonmc.krypton.util.BuilderCollection
+import org.kryptonmc.krypton.util.collection.BuilderCollection
 import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.StringTag
 import org.kryptonmc.nbt.list

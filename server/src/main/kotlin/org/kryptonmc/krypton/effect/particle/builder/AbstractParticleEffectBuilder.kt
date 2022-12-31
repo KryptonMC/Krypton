@@ -24,13 +24,13 @@ import org.kryptonmc.api.effect.particle.builder.BaseParticleEffectBuilder
 import org.kryptonmc.api.effect.particle.data.ParticleData
 import org.kryptonmc.api.util.Vec3d
 import org.kryptonmc.krypton.effect.particle.KryptonParticleEffect
-import org.kryptonmc.krypton.util.Vec3dImpl
+import org.kryptonmc.krypton.coordinate.KryptonVec3d
 
 @Suppress("UNCHECKED_CAST")
 abstract class AbstractParticleEffectBuilder<B : BaseParticleEffectBuilder<B>>(protected val type: ParticleType) : BaseParticleEffectBuilder<B> {
 
     private var quantity = 1
-    private var offset: Vec3d = Vec3dImpl.ZERO
+    private var offset: Vec3d = KryptonVec3d.ZERO
     private var longDistance = false
 
     abstract fun buildData(): ParticleData?

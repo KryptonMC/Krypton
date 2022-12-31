@@ -23,11 +23,11 @@ import org.kryptonmc.api.effect.particle.builder.VibrationParticleEffectBuilder
 import org.kryptonmc.api.effect.particle.data.ParticleData
 import org.kryptonmc.api.util.Vec3d
 import org.kryptonmc.krypton.effect.particle.data.KryptonVibrationParticleData
-import org.kryptonmc.krypton.util.Vec3dImpl
+import org.kryptonmc.krypton.coordinate.KryptonVec3d
 
 class KryptonVibrationParticleEffectBuilder(type: VibrationParticleType) : AbstractParticleEffectBuilder<ApiVibration>(type), ApiVibration {
 
-    private var destination: Vec3d = Vec3dImpl.ZERO
+    private var destination: Vec3d = KryptonVec3d.ZERO
     private var ticks = 0
 
     override fun destination(position: Vec3d): ApiVibration = apply { destination = position }

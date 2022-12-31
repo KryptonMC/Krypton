@@ -21,8 +21,9 @@ package org.kryptonmc.krypton.util
 import io.mockk.every
 import io.mockk.mockk
 import org.junit.jupiter.api.Test
+import org.kryptonmc.krypton.util.math.Maths
 import org.kryptonmc.krypton.util.random.RandomSource
-import org.kryptonmc.krypton.world.chunk.ChunkPos
+import org.kryptonmc.krypton.coordinate.ChunkPos
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue

@@ -24,7 +24,7 @@ import org.kryptonmc.internal.annotations.Catalogue
 import org.kryptonmc.krypton.effect.particle.ParticleOptions
 import org.kryptonmc.krypton.entity.Pose
 import org.kryptonmc.krypton.item.KryptonItemStack
-import org.kryptonmc.krypton.util.BlockPos
+import org.kryptonmc.krypton.coordinate.BlockPos
 import org.kryptonmc.nbt.CompoundTag
 import java.util.OptionalInt
 import java.util.UUID

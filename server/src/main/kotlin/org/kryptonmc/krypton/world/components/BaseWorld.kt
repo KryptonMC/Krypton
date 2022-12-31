@@ -31,13 +31,13 @@ import org.kryptonmc.krypton.entity.EntityManager
 import org.kryptonmc.krypton.entity.KryptonEntity
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.packet.Packet
-import org.kryptonmc.krypton.util.BlockPos
-import org.kryptonmc.krypton.util.SectionPos
+import org.kryptonmc.krypton.coordinate.BlockPos
+import org.kryptonmc.krypton.coordinate.SectionPos
 import org.kryptonmc.krypton.world.KryptonWorldBorder
 import org.kryptonmc.krypton.world.block.entity.KryptonBlockEntity
 import org.kryptonmc.krypton.world.block.state.KryptonBlockState
 import org.kryptonmc.krypton.world.block.state.downcast
-import org.kryptonmc.krypton.world.chunk.ChunkPos
+import org.kryptonmc.krypton.coordinate.ChunkPos
 import org.kryptonmc.krypton.world.chunk.KryptonChunk
 import org.kryptonmc.krypton.world.chunk.ticket.Ticket
 import org.kryptonmc.krypton.world.chunk.ticket.TicketTypes
@@ -115,6 +115,6 @@ interface BaseWorld : World, WorldAccessor, PacketGroupingAudience {
     }
 
     override fun sendGroupedPacket(players: Collection<KryptonPlayer>, packet: Packet) {
-        server.sessionManager.sendGrouped(players, packet)
+        server.connectionManager.sendGroupedPacket(players, packet)
     }
 }

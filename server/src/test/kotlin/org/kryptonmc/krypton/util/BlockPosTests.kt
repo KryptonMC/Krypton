@@ -22,6 +22,7 @@ import nl.jqno.equalsverifier.EqualsVerifier
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import org.kryptonmc.api.util.Direction
+import org.kryptonmc.krypton.coordinate.BlockPos
 import org.kryptonmc.krypton.testutil.Bootstrapping
 import kotlin.math.sqrt
 import kotlin.test.assertEquals

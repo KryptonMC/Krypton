@@ -24,8 +24,17 @@ import it.unimi.dsi.fastutil.doubles.DoubleList
 import org.kryptonmc.api.util.BoundingBox
 import org.kryptonmc.api.util.Direction
 import org.kryptonmc.api.util.Direction.Axis
+import org.kryptonmc.krypton.shapes.collision.Collisions
+import org.kryptonmc.krypton.shapes.discrete.BitSetDiscreteVoxelShape
+import org.kryptonmc.krypton.shapes.merger.DiscreteCubeMerger
+import org.kryptonmc.krypton.shapes.merger.IdenticalMerger
+import org.kryptonmc.krypton.shapes.merger.IndexMerger
+import org.kryptonmc.krypton.shapes.merger.IndirectMerger
+import org.kryptonmc.krypton.shapes.merger.NonOverlappingMerger
+import org.kryptonmc.krypton.shapes.util.BooleanOperator
+import org.kryptonmc.krypton.shapes.util.CubePointRange
 import org.kryptonmc.krypton.util.KryptonBoundingBox
-import org.kryptonmc.krypton.util.Maths
+import org.kryptonmc.krypton.util.math.Maths
 import org.kryptonmc.krypton.util.math.AxisCycle
 import java.util.Objects
 

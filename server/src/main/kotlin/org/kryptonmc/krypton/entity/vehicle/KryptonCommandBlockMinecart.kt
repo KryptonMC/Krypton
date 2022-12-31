@@ -29,7 +29,7 @@ import org.kryptonmc.krypton.entity.metadata.MetadataKey
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.entity.serializer.EntitySerializer
 import org.kryptonmc.krypton.entity.serializer.vehicle.CommandBlockMinecartSerializer
-import org.kryptonmc.krypton.world.CommandBlockHandler
+import org.kryptonmc.krypton.world.command.CommandBlockHandler
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.krypton.world.block.KryptonBlocks
 import org.kryptonmc.krypton.world.block.state.KryptonBlockState

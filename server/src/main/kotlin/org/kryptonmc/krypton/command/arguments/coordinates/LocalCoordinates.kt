@@ -23,8 +23,8 @@ import org.kryptonmc.api.util.Vec3d
 import org.kryptonmc.krypton.command.CommandSourceStack
 import org.kryptonmc.krypton.command.arguments.CommandExceptions
 import org.kryptonmc.krypton.command.arguments.StringReading
-import org.kryptonmc.krypton.util.Maths
-import org.kryptonmc.krypton.util.Vec3dImpl
+import org.kryptonmc.krypton.util.math.Maths
+import org.kryptonmc.krypton.coordinate.KryptonVec3d
 
 /**
  * Coordinates that are local to not only a player's position, but also their
@@ -50,8 +50,8 @@ data class LocalCoordinates(private val left: Double, private val up: Double, pr
         val yaw3 = Maths.cos(Maths.toRadians(-yaw + 90F))
         val yaw4 = Maths.sin(Maths.toRadians(-yaw + 90F))
 
-        val someVector = Vec3dImpl((pitch1 * yaw1).toDouble(), yaw2.toDouble(), (pitch2 * yaw1).toDouble())
-        val someOtherVector = Vec3dImpl((pitch1 * yaw3).toDouble(), yaw4.toDouble(), (pitch2 * yaw3).toDouble())
+        val someVector = KryptonVec3d((pitch1 * yaw1).toDouble(), yaw2.toDouble(), (pitch2 * yaw1).toDouble())
+        val someOtherVector = KryptonVec3d((pitch1 * yaw3).toDouble(), yaw4.toDouble(), (pitch2 * yaw3).toDouble())
         val crossed = someVector.cross(someOtherVector).negate()
 
         val offsetX = someVector.x * forwards + someOtherVector.x * up + crossed.x * left

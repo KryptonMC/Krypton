@@ -33,14 +33,14 @@ import org.kryptonmc.krypton.item.KryptonItemType
 import org.kryptonmc.krypton.item.context.BlockPlaceContext
 import org.kryptonmc.krypton.registry.holder.Holder
 import org.kryptonmc.krypton.registry.KryptonRegistries
-import org.kryptonmc.krypton.shapes.BooleanOperator
+import org.kryptonmc.krypton.shapes.util.BooleanOperator
 import org.kryptonmc.krypton.shapes.Shapes
 import org.kryptonmc.krypton.shapes.VoxelShape
 import org.kryptonmc.krypton.state.StateDefinition
 import org.kryptonmc.krypton.state.StateHolderDelegate
 import org.kryptonmc.krypton.state.property.KryptonProperty
-import org.kryptonmc.krypton.util.BlockPos
-import org.kryptonmc.krypton.util.IntHashBiMap
+import org.kryptonmc.krypton.coordinate.BlockPos
+import org.kryptonmc.krypton.util.map.IntHashBiMap
 import org.kryptonmc.krypton.util.Keys
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.krypton.world.components.WorldAccessor
@@ -48,7 +48,7 @@ import org.kryptonmc.krypton.world.WorldEvents
 import org.kryptonmc.krypton.world.block.entity.KryptonBlockEntity
 import org.kryptonmc.krypton.world.block.state.BlockBehaviour
 import org.kryptonmc.krypton.world.block.state.KryptonBlockState
-import org.kryptonmc.krypton.world.chunk.SetBlockFlag
+import org.kryptonmc.krypton.world.chunk.flag.SetBlockFlag
 import org.kryptonmc.krypton.world.components.BlockGetter
 import java.util.function.Function
 

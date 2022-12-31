@@ -24,7 +24,7 @@ import com.google.gson.stream.JsonWriter
 import org.kryptonmc.api.auth.GameProfile
 import org.kryptonmc.krypton.auth.KryptonGameProfile
 import org.kryptonmc.krypton.server.PersistentManager
-import org.kryptonmc.krypton.util.array
+import org.kryptonmc.krypton.util.gson.array
 import java.io.IOException
 import java.nio.file.Path
 import java.util.UUID

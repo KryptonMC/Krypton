@@ -28,7 +28,7 @@ import org.kryptonmc.api.world.World
 import org.kryptonmc.krypton.registry.KryptonRegistries
 import org.kryptonmc.krypton.resource.KryptonResourceKey
 import org.kryptonmc.krypton.util.Keys
-import org.kryptonmc.krypton.util.UUIDUtil
+import org.kryptonmc.krypton.util.uuid.UUIDUtil
 import org.kryptonmc.krypton.util.successOrError
 import org.kryptonmc.serialization.Codec
 import org.kryptonmc.serialization.DataOps

@@ -29,8 +29,8 @@ import org.kryptonmc.krypton.registry.holder.Holder
 import org.kryptonmc.krypton.shapes.VoxelShape
 import org.kryptonmc.krypton.state.StateDefinition
 import org.kryptonmc.krypton.state.StateHolderDelegate
-import org.kryptonmc.krypton.util.BlockPos
-import org.kryptonmc.krypton.util.IntHashBiMap
+import org.kryptonmc.krypton.coordinate.BlockPos
+import org.kryptonmc.krypton.util.map.IntHashBiMap
 import org.kryptonmc.krypton.world.block.state.KryptonBlockState
 import org.kryptonmc.krypton.world.components.BlockGetter
 

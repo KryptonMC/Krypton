@@ -26,13 +26,13 @@ import org.kryptonmc.api.item.ItemStack
 import org.kryptonmc.api.item.ItemTypes
 import org.kryptonmc.api.item.ItemType
 import org.kryptonmc.api.tags.ItemTags
-import org.kryptonmc.krypton.entity.BucketStorable
+import org.kryptonmc.krypton.entity.components.BucketStorable
 import org.kryptonmc.krypton.entity.KryptonEntityType
 import org.kryptonmc.krypton.entity.KryptonEntityTypes
 import org.kryptonmc.krypton.entity.KryptonMob
 import org.kryptonmc.krypton.entity.attribute.AttributeSupplier
 import org.kryptonmc.krypton.entity.attribute.KryptonAttributeTypes
-import org.kryptonmc.krypton.entity.memory.MemoryKeys
+import org.kryptonmc.krypton.entity.ai.memory.MemoryKeys
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.entity.serializer.EntitySerializer
 import org.kryptonmc.krypton.entity.serializer.animal.AxolotlSerializer

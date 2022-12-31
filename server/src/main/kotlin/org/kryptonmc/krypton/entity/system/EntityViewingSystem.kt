@@ -53,7 +53,7 @@ open class EntityViewingSystem<out T : KryptonEntity> private constructor(protec
     }
 
     fun sendToViewers(packet: Packet) {
-        entity.server.sessionManager.sendGrouped(viewers, packet)
+        entity.server.connectionManager.sendGroupedPacket(viewers, packet)
     }
 
     protected open fun getSpawnPacket(): Packet {

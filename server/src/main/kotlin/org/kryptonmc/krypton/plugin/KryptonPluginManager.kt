@@ -28,9 +28,9 @@ import org.kryptonmc.api.plugin.PluginContainer
 import org.kryptonmc.api.plugin.PluginDescription
 import org.kryptonmc.api.plugin.PluginManager
 import org.kryptonmc.krypton.KryptonServer
-import org.kryptonmc.krypton.module.GlobalModule
-import org.kryptonmc.krypton.module.PluginModule
 import org.kryptonmc.krypton.plugin.loader.PluginLoader
+import org.kryptonmc.krypton.plugin.module.GlobalModule
+import org.kryptonmc.krypton.plugin.module.PluginModule
 import java.nio.file.Files
 import java.nio.file.Path
 import java.util.Collections

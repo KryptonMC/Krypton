@@ -35,8 +35,8 @@ import org.kryptonmc.krypton.command.CommandSourceStack
 import org.kryptonmc.krypton.command.KryptonSender
 import org.kryptonmc.krypton.event.command.KryptonCommandExecuteEvent
 import org.kryptonmc.krypton.event.server.KryptonSetupPermissionsEvent
-import org.kryptonmc.krypton.util.TranslationBootstrap
-import org.kryptonmc.krypton.util.Vec3dImpl
+import org.kryptonmc.krypton.locale.MinecraftTranslationManager
+import org.kryptonmc.krypton.coordinate.KryptonVec3d
 
 class KryptonConsole(override val server: KryptonServer) : SimpleTerminalConsole(), KryptonSender, ConsoleSender {
 
@@ -60,7 +60,7 @@ class KryptonConsole(override val server: KryptonServer) : SimpleTerminalConsole
     }
 
     override fun sendSystemMessage(message: Component) {
-        LOGGER.info(LegacyComponentSerializer.legacySection().serialize(TranslationBootstrap.render(message)))
+        LOGGER.info(LegacyComponentSerializer.legacySection().serialize(MinecraftTranslationManager.render(message)))
     }
 
     override fun getPermissionValue(permission: String): TriState = permissionFunction.getPermissionValue(permission)
@@ -102,7 +102,7 @@ class KryptonConsole(override val server: KryptonServer) : SimpleTerminalConsole
     override fun shouldInformAdmins(): Boolean = server.config.server.broadcastConsoleToAdmins
 
     override fun createCommandSourceStack(): CommandSourceStack =
-        CommandSourceStack(this, Vec3dImpl.ZERO, 0F, 0F, server.worldManager.default, NAME, DISPLAY_NAME, server, null)
+        CommandSourceStack(this, KryptonVec3d.ZERO, 0F, 0F, server.worldManager.default, NAME, DISPLAY_NAME, server, null)
 
     companion object {
 

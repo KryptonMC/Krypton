@@ -21,8 +21,8 @@ package org.kryptonmc.krypton.world.components
 import org.kryptonmc.api.block.BlockContainer
 import org.kryptonmc.api.util.BoundingBox
 import org.kryptonmc.api.util.Vec3i
-import org.kryptonmc.krypton.util.BlockPos
-import org.kryptonmc.krypton.util.Maths
+import org.kryptonmc.krypton.coordinate.BlockPos
+import org.kryptonmc.krypton.util.math.Maths
 import org.kryptonmc.krypton.world.block.KryptonBlocks
 import org.kryptonmc.krypton.world.block.entity.KryptonBlockEntity
 import org.kryptonmc.krypton.world.block.state.KryptonBlockState

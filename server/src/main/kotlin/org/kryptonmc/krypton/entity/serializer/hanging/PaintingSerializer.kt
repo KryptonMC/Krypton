@@ -23,7 +23,7 @@ import org.kryptonmc.krypton.entity.hanging.KryptonPainting
 import org.kryptonmc.krypton.entity.serializer.BaseEntitySerializer
 import org.kryptonmc.krypton.entity.serializer.EntitySerializer
 import org.kryptonmc.krypton.registry.KryptonRegistries
-import org.kryptonmc.krypton.util.Directions
+import org.kryptonmc.krypton.util.enumhelper.Directions
 import org.kryptonmc.krypton.util.nbt.putNullable
 import org.kryptonmc.krypton.util.nbt.putKeyed
 import org.kryptonmc.nbt.CompoundTag

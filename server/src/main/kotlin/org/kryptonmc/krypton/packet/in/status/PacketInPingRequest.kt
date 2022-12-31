@@ -19,14 +19,14 @@
 package org.kryptonmc.krypton.packet.`in`.status
 
 import io.netty.buffer.ByteBuf
-import org.kryptonmc.krypton.network.handlers.StatusHandler
+import org.kryptonmc.krypton.network.handlers.StatusPacketHandler
 import org.kryptonmc.krypton.packet.InboundPacket
 
 /**
  * Sent when the client pings the server.
  */
 @JvmRecord
-data class PacketInPingRequest(val payload: Long) : InboundPacket<StatusHandler> {
+data class PacketInPingRequest(val payload: Long) : InboundPacket<StatusPacketHandler> {
 
     constructor(buf: ByteBuf) : this(buf.readLong())
 
@@ -34,7 +34,7 @@ data class PacketInPingRequest(val payload: Long) : InboundPacket<StatusHandler>
         buf.writeLong(payload)
     }
 
-    override fun handle(handler: StatusHandler) {
+    override fun handle(handler: StatusPacketHandler) {
         handler.handlePing(this)
     }
 }

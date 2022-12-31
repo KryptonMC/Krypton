@@ -47,10 +47,10 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutSoundEffect
 import org.kryptonmc.krypton.packet.out.play.PacketOutWorldEvent
 import org.kryptonmc.krypton.registry.KryptonRegistries
 import org.kryptonmc.krypton.registry.holder.Holder
-import org.kryptonmc.krypton.util.BlockPos
-import org.kryptonmc.krypton.util.Directions
-import org.kryptonmc.krypton.util.Maths
-import org.kryptonmc.krypton.util.SectionPos
+import org.kryptonmc.krypton.coordinate.BlockPos
+import org.kryptonmc.krypton.util.enumhelper.Directions
+import org.kryptonmc.krypton.util.math.Maths
+import org.kryptonmc.krypton.coordinate.SectionPos
 import org.kryptonmc.krypton.util.random.RandomSource
 import org.kryptonmc.krypton.world.biome.BiomeManager
 import org.kryptonmc.krypton.world.block.KryptonBlock
@@ -58,8 +58,9 @@ import org.kryptonmc.krypton.world.block.KryptonBlocks
 import org.kryptonmc.krypton.world.block.state.KryptonBlockState
 import org.kryptonmc.krypton.world.chunk.ChunkAccessor
 import org.kryptonmc.krypton.world.chunk.ChunkManager
-import org.kryptonmc.krypton.world.chunk.ChunkStatus
-import org.kryptonmc.krypton.world.chunk.SetBlockFlag
+import org.kryptonmc.krypton.world.chunk.data.ChunkStatus
+import org.kryptonmc.krypton.world.chunk.flag.SetBlockFlag
+import org.kryptonmc.krypton.world.chunk.data.Heightmap
 import org.kryptonmc.krypton.world.components.BaseWorld
 import org.kryptonmc.krypton.world.data.WorldData
 import org.kryptonmc.krypton.world.dimension.KryptonDimensionType
@@ -181,8 +182,8 @@ class KryptonWorld(
 
     fun broadcastBlockDestroyProgress(sourceId: Int, position: BlockPos, state: Int) {
         val packet = PacketOutSetBlockDestroyStage(sourceId, position, state)
-        server.sessionManager.sendGrouped(packet) {
-            if (it.world !== this || it.id == sourceId) return@sendGrouped false
+        server.connectionManager.sendGroupedPacket(packet) {
+            if (it.world !== this || it.id == sourceId) return@sendGroupedPacket false
             val dx = position.x - it.position.x
             val dy = position.y - it.position.y
             val dz = position.z - it.position.z
@@ -248,7 +249,7 @@ class KryptonWorld(
 
     @Suppress("UnusedPrivateMember")
     fun sendBlockUpdated(pos: BlockPos, oldState: KryptonBlockState, newState: KryptonBlockState) {
-        server.sessionManager.sendGrouped(players, PacketOutBlockUpdate(pos, newState))
+        server.connectionManager.sendGroupedPacket(players, PacketOutBlockUpdate(pos, newState))
         // TODO: Update pathfinding mobs
     }
 
@@ -359,16 +360,16 @@ class KryptonWorld(
         }
 
         if (oldRainLevel != rainLevel) {
-            server.sessionManager.sendGrouped(PacketOutGameEvent(GameEventTypes.RAIN_LEVEL_CHANGE, rainLevel)) { it.world === this }
+            server.connectionManager.sendGroupedPacket(PacketOutGameEvent(GameEventTypes.RAIN_LEVEL_CHANGE, rainLevel)) { it.world === this }
         }
         if (oldThunderLevel != thunderLevel) {
-            server.sessionManager.sendGrouped(PacketOutGameEvent(GameEventTypes.THUNDER_LEVEL_CHANGE, thunderLevel)) { it.world === this }
+            server.connectionManager.sendGroupedPacket(PacketOutGameEvent(GameEventTypes.THUNDER_LEVEL_CHANGE, thunderLevel)) { it.world === this }
         }
         if (wasRaining != isRaining) {
             val newRainState = if (wasRaining) GameEventTypes.END_RAINING else GameEventTypes.BEGIN_RAINING
-            server.sessionManager.sendGrouped(PacketOutGameEvent(newRainState)) { it.world === this }
-            server.sessionManager.sendGrouped(PacketOutGameEvent(GameEventTypes.RAIN_LEVEL_CHANGE, rainLevel)) { it.world === this }
-            server.sessionManager.sendGrouped(PacketOutGameEvent(GameEventTypes.THUNDER_LEVEL_CHANGE, thunderLevel)) { it.world === this }
+            server.connectionManager.sendGroupedPacket(PacketOutGameEvent(newRainState)) { it.world === this }
+            server.connectionManager.sendGroupedPacket(PacketOutGameEvent(GameEventTypes.RAIN_LEVEL_CHANGE, rainLevel)) { it.world === this }
+            server.connectionManager.sendGroupedPacket(PacketOutGameEvent(GameEventTypes.THUNDER_LEVEL_CHANGE, thunderLevel)) { it.world === this }
         }
     }
 
@@ -416,7 +417,7 @@ class KryptonWorld(
     }
 
     override fun sendGroupedPacket(players: Collection<KryptonPlayer>, packet: Packet) {
-        server.sessionManager.sendGrouped(players, packet)
+        server.connectionManager.sendGroupedPacket(players, packet)
     }
 
     override fun skyDarken(): Int = skyDarken

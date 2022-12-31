@@ -26,12 +26,12 @@ import org.kryptonmc.api.world.World
 import org.kryptonmc.api.world.WorldManager
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.registry.KryptonRegistries
-import org.kryptonmc.krypton.util.ChunkProgressListener
-import org.kryptonmc.krypton.util.SectionPos
+import org.kryptonmc.krypton.world.util.ChunkProgressListener
+import org.kryptonmc.krypton.coordinate.SectionPos
 import org.kryptonmc.krypton.util.executor.DefaultPoolUncaughtExceptionHandler
 import org.kryptonmc.krypton.util.executor.ThreadPoolBuilder
 import org.kryptonmc.krypton.util.executor.daemonThreadFactory
-import org.kryptonmc.krypton.world.chunk.ChunkStatus
+import org.kryptonmc.krypton.world.chunk.data.ChunkStatus
 import org.kryptonmc.krypton.world.data.PrimaryWorldData
 import org.kryptonmc.krypton.world.data.WorldDataManager
 import org.kryptonmc.krypton.world.dimension.KryptonDimensionType

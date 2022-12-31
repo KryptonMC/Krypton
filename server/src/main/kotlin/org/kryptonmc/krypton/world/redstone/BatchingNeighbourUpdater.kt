@@ -20,7 +20,7 @@ package org.kryptonmc.krypton.world.redstone
 
 import org.apache.logging.log4j.LogManager
 import org.kryptonmc.api.util.Direction
-import org.kryptonmc.krypton.util.BlockPos
+import org.kryptonmc.krypton.coordinate.BlockPos
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.krypton.world.block.KryptonBlock
 import org.kryptonmc.krypton.world.block.state.KryptonBlockState
@@ -127,7 +127,8 @@ class BatchingNeighbourUpdater(private val world: KryptonWorld, private val maxC
     }
 
     private class SimpleNeighbourUpdate(private val pos: BlockPos, private val block: KryptonBlock,
-                                        private val neighbourPos: BlockPos) : NeighbourUpdates {
+                                        private val neighbourPos: BlockPos
+    ) : NeighbourUpdates {
 
         override fun runNext(world: KryptonWorld): Boolean {
             NeighbourUpdater.executeUpdate(world, world.getBlock(pos), pos, block, neighbourPos, false)

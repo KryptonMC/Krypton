@@ -23,7 +23,7 @@ import org.kryptonmc.api.item.ItemStack
 import org.kryptonmc.api.item.meta.BundleMeta
 import org.kryptonmc.krypton.item.KryptonItemStack
 import org.kryptonmc.krypton.item.downcast
-import org.kryptonmc.krypton.util.BuilderCollection
+import org.kryptonmc.krypton.util.collection.BuilderCollection
 import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.list
 

@@ -24,7 +24,7 @@ import org.kryptonmc.api.util.Vec3d
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.item.KryptonItemStack
 import org.kryptonmc.krypton.util.hit.BlockHitResult
-import org.kryptonmc.krypton.util.BlockPos
+import org.kryptonmc.krypton.coordinate.BlockPos
 import org.kryptonmc.krypton.world.KryptonWorld
 
 open class UseOnContext protected constructor(

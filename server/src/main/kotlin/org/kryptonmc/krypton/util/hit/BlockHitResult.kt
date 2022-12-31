@@ -20,7 +20,7 @@ package org.kryptonmc.krypton.util.hit
 
 import org.kryptonmc.api.util.Direction
 import org.kryptonmc.api.util.Vec3d
-import org.kryptonmc.krypton.util.BlockPos
+import org.kryptonmc.krypton.coordinate.BlockPos
 
 class BlockHitResult private constructor(
     location: Vec3d,

@@ -20,7 +20,7 @@ package org.kryptonmc.krypton.world.block.palette
 
 import io.netty.buffer.ByteBuf
 import org.kryptonmc.krypton.util.ByteBufExtras
-import org.kryptonmc.krypton.util.IntBiMap
+import org.kryptonmc.krypton.util.map.IntBiMap
 
 class GlobalPalette<T>(private val registry: IntBiMap<T>) : Palette<T> {
 

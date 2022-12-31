@@ -26,7 +26,6 @@ import java.time.format.DateTimeFormatter
 import java.time.format.DateTimeParseException
 import java.util.UUID
 import org.kryptonmc.api.auth.GameProfile
-import java.util.concurrent.atomic.AtomicLong
 
 /**
  * This holds a game profile and other information that we need when storing
@@ -41,9 +40,8 @@ class ProfileHolder(val profile: GameProfile, val expiryDate: ZonedDateTime) : C
     @Volatile
     private var lastAccess = 0L
 
-    fun updateAndGetProfile(operations: AtomicLong): GameProfile {
-        lastAccess = operations.incrementAndGet()
-        return profile
+    fun setLastAccess(value: Long) {
+        lastAccess = value
     }
 
     override fun compareTo(other: ProfileHolder): Int = other.lastAccess.compareTo(lastAccess)
@@ -60,7 +58,7 @@ class ProfileHolder(val profile: GameProfile, val expiryDate: ZonedDateTime) : C
 
     override fun toString(): String = "ProfileHolder(profile=$profile, expiryDate=$expiryDate)"
 
-    companion object : TypeAdapter<ProfileHolder>() {
+    object Adapter : TypeAdapter<ProfileHolder>() {
 
         private val DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss Z")
 

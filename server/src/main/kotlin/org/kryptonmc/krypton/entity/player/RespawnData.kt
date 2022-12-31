@@ -21,7 +21,7 @@ package org.kryptonmc.krypton.entity.player
 import org.apache.logging.log4j.Logger
 import org.kryptonmc.api.resource.ResourceKey
 import org.kryptonmc.api.world.World
-import org.kryptonmc.krypton.util.BlockPos
+import org.kryptonmc.krypton.coordinate.BlockPos
 import org.kryptonmc.krypton.util.nbt.getBlockPos
 import org.kryptonmc.krypton.util.nbt.hasBlockPos
 import org.kryptonmc.krypton.util.nbt.putBlockPosParts

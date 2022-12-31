@@ -19,7 +19,7 @@
 package org.kryptonmc.krypton.pack.resources
 
 import org.kryptonmc.krypton.pack.metadata.MetadataSerializer
-import org.kryptonmc.krypton.util.GsonHelper
+import org.kryptonmc.krypton.util.gson.GsonHelper
 import java.io.BufferedReader
 import java.io.InputStream
 import java.io.InputStreamReader

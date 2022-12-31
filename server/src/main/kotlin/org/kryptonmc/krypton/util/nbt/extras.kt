@@ -21,7 +21,7 @@ package org.kryptonmc.krypton.util.nbt
 import net.kyori.adventure.key.Keyed
 import org.kryptonmc.api.util.Vec3i
 import org.kryptonmc.krypton.KryptonPlatform
-import org.kryptonmc.krypton.util.BlockPos
+import org.kryptonmc.krypton.coordinate.BlockPos
 import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.ImmutableCompoundTag
 import org.kryptonmc.nbt.IntTag

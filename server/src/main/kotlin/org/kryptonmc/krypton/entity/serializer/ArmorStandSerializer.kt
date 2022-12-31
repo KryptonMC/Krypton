@@ -20,8 +20,8 @@ package org.kryptonmc.krypton.entity.serializer
 
 import org.kryptonmc.api.util.Rotations
 import org.kryptonmc.krypton.entity.KryptonArmorStand
-import org.kryptonmc.krypton.entity.KryptonEquipable
-import org.kryptonmc.krypton.util.RotationsImpl
+import org.kryptonmc.krypton.entity.components.KryptonEquipable
+import org.kryptonmc.krypton.coordinate.KryptonRotations
 import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.FloatTag
 import org.kryptonmc.nbt.compound
@@ -46,17 +46,17 @@ object ArmorStandSerializer : EntitySerializer<KryptonArmorStand> {
     private const val RIGHT_LEG_TAG = "RightLeg"
 
     @JvmField
-    val DEFAULT_HEAD_ROTATION: Rotations = RotationsImpl.ZERO
+    val DEFAULT_HEAD_ROTATION: Rotations = KryptonRotations.ZERO
     @JvmField
-    val DEFAULT_BODY_ROTATION: Rotations = RotationsImpl.ZERO
+    val DEFAULT_BODY_ROTATION: Rotations = KryptonRotations.ZERO
     @JvmField
-    val DEFAULT_LEFT_ARM_ROTATION: Rotations = RotationsImpl(-10F, 0F, -10F)
+    val DEFAULT_LEFT_ARM_ROTATION: Rotations = KryptonRotations(-10F, 0F, -10F)
     @JvmField
-    val DEFAULT_RIGHT_ARM_ROTATION: Rotations = RotationsImpl(-15F, 0F, 10F)
+    val DEFAULT_RIGHT_ARM_ROTATION: Rotations = KryptonRotations(-15F, 0F, 10F)
     @JvmField
-    val DEFAULT_LEFT_LEG_ROTATION: Rotations = RotationsImpl(-1F, 0F, -1F)
+    val DEFAULT_LEFT_LEG_ROTATION: Rotations = KryptonRotations(-1F, 0F, -1F)
     @JvmField
-    val DEFAULT_RIGHT_LEG_ROTATION: Rotations = RotationsImpl(1F, 0F, 1F)
+    val DEFAULT_RIGHT_LEG_ROTATION: Rotations = KryptonRotations(1F, 0F, 1F)
 
     override fun load(entity: KryptonArmorStand, data: CompoundTag) {
         LivingEntitySerializer.load(entity, data)
@@ -84,7 +84,7 @@ object ArmorStandSerializer : EntitySerializer<KryptonArmorStand> {
     @JvmStatic
     private fun getPose(data: CompoundTag, name: String, default: Rotations): Rotations {
         val tag = data.getList(name, FloatTag.ID)
-        return if (tag.isEmpty) default else RotationsImpl(tag.getFloat(0), tag.getFloat(1), tag.getFloat(2))
+        return if (tag.isEmpty) default else KryptonRotations(tag.getFloat(0), tag.getFloat(1), tag.getFloat(2))
     }
 
     override fun save(entity: KryptonArmorStand): CompoundTag.Builder = LivingEntitySerializer.save(entity).apply {

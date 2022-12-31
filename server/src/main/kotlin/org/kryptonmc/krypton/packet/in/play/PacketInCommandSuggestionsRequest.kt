@@ -19,7 +19,7 @@
 package org.kryptonmc.krypton.packet.`in`.play
 
 import io.netty.buffer.ByteBuf
-import org.kryptonmc.krypton.network.handlers.PlayHandler
+import org.kryptonmc.krypton.network.handlers.PlayPacketHandler
 import org.kryptonmc.krypton.packet.InboundPacket
 import org.kryptonmc.krypton.util.readString
 import org.kryptonmc.krypton.util.readVarInt
@@ -27,7 +27,7 @@ import org.kryptonmc.krypton.util.writeString
 import org.kryptonmc.krypton.util.writeVarInt
 
 @JvmRecord
-data class PacketInCommandSuggestionsRequest(val id: Int, val command: String) : InboundPacket<PlayHandler> {
+data class PacketInCommandSuggestionsRequest(val id: Int, val command: String) : InboundPacket<PlayPacketHandler> {
 
     constructor(buf: ByteBuf) : this(buf.readVarInt(), buf.readString(COMMAND_MAX_LENGTH))
 
@@ -36,7 +36,7 @@ data class PacketInCommandSuggestionsRequest(val id: Int, val command: String) :
         buf.writeString(command, COMMAND_MAX_LENGTH)
     }
 
-    override fun handle(handler: PlayHandler) {
+    override fun handle(handler: PlayPacketHandler) {
         handler.handleCommandSuggestionsRequest(this)
     }
 

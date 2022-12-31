@@ -30,7 +30,7 @@ import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.item.KryptonItemStack
 import org.kryptonmc.krypton.item.handler
 import org.kryptonmc.krypton.packet.out.play.PacketOutSetContainerSlot
-import org.kryptonmc.krypton.util.FixedList
+import org.kryptonmc.krypton.util.collection.FixedList
 import org.kryptonmc.krypton.util.writeItem
 import org.kryptonmc.krypton.util.writeVarInt
 import org.kryptonmc.krypton.world.block.state.KryptonBlockState

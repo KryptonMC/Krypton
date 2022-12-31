@@ -26,8 +26,9 @@ import org.kryptonmc.krypton.entity.attribute.KryptonAttributeTypes
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.entity.serializer.EntitySerializer
 import org.kryptonmc.krypton.entity.serializer.MobSerializer
+import org.kryptonmc.krypton.entity.util.EquipmentSlots
 import org.kryptonmc.krypton.item.KryptonItemStack
-import org.kryptonmc.krypton.util.FixedList
+import org.kryptonmc.krypton.util.collection.FixedList
 import org.kryptonmc.krypton.world.KryptonWorld
 
 abstract class KryptonMob(world: KryptonWorld) : KryptonLivingEntity(world), Mob {

@@ -52,7 +52,7 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateTime
 import org.kryptonmc.krypton.registry.KryptonRegistries
 import org.kryptonmc.krypton.server.ban.BanManager
 import org.kryptonmc.krypton.server.whitelist.WhitelistManager
-import org.kryptonmc.krypton.util.BlockPos
+import org.kryptonmc.krypton.coordinate.BlockPos
 import org.kryptonmc.krypton.util.executor.daemonThreadFactory
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.krypton.world.biome.BiomeManager
@@ -162,7 +162,7 @@ class PlayerManager(private val server: KryptonServer) {
         player.statisticsTracker.invalidate()
         player.connection.write(PacketOutUpdateRecipeBook.CACHED_INIT)
         updateScoreboard(world.scoreboard, player)
-        server.sessionManager.invalidateStatus()
+        server.connectionManager.invalidateStatus()
 
         // Add the player to the list and cache maps
         players.add(player)
@@ -212,15 +212,15 @@ class PlayerManager(private val server: KryptonServer) {
             playersByUUID.remove(player.uuid)
 
             // Send info and quit message
-            server.sessionManager.invalidateStatus()
+            server.connectionManager.invalidateStatus()
 //            server.sessionManager.sendGrouped(PacketOutPlayerInfoRemove(player))
             if (event.quitMessage != null) server.sendMessage(event.quitMessage!!)
         }, executor)
     }
 
     fun broadcast(packet: Packet, world: KryptonWorld, x: Double, y: Double, z: Double, radius: Double, except: KryptonPlayer?) {
-        server.sessionManager.sendGrouped(packet) {
-            if (it === except || it.world !== world) return@sendGrouped false
+        server.connectionManager.sendGroupedPacket(packet) {
+            if (it === except || it.world !== world) return@sendGroupedPacket false
             val dx = x - it.position.x
             val dy = y - it.position.y
             val dz = z - it.position.z

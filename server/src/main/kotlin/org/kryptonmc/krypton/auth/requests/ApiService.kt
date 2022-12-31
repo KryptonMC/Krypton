@@ -22,7 +22,7 @@ import com.github.benmanes.caffeine.cache.AsyncLoadingCache
 import com.github.benmanes.caffeine.cache.Caffeine
 import org.kryptonmc.api.auth.GameProfile
 import org.kryptonmc.krypton.auth.KryptonGameProfile
-import org.kryptonmc.krypton.util.MojangUUIDTypeAdapter
+import org.kryptonmc.krypton.util.uuid.MojangUUIDTypeAdapter
 import java.net.URI
 import java.net.http.HttpClient
 import java.net.http.HttpRequest

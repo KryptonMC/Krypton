@@ -28,6 +28,7 @@ import org.kryptonmc.krypton.entity.KryptonEntityType
 import org.kryptonmc.krypton.entity.KryptonEntityTypes
 import org.kryptonmc.krypton.registry.KryptonRegistries
 import org.kryptonmc.krypton.state.property.KryptonProperties
+import org.kryptonmc.krypton.world.block.data.BlockSoundGroups
 import org.kryptonmc.krypton.world.block.state.BlockBehaviour
 import org.kryptonmc.krypton.world.block.state.BlockBehaviour.OffsetType
 import org.kryptonmc.krypton.world.block.state.BlockBehaviour.Properties

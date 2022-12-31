@@ -23,6 +23,9 @@ import it.unimi.dsi.fastutil.doubles.DoubleArrayList
 import it.unimi.dsi.fastutil.doubles.DoubleList
 import org.kryptonmc.api.util.BoundingBox
 import org.kryptonmc.api.util.Direction
+import org.kryptonmc.krypton.shapes.collision.Collisions
+import org.kryptonmc.krypton.shapes.discrete.DiscreteVoxelShape
+import org.kryptonmc.krypton.shapes.util.BooleanOperator
 
 class ArrayVoxelShape(
     shape: DiscreteVoxelShape,

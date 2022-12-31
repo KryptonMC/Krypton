@@ -20,7 +20,9 @@ package org.kryptonmc.krypton.shapes
 
 import it.unimi.dsi.fastutil.doubles.DoubleList
 import org.kryptonmc.api.util.Direction
-import org.kryptonmc.krypton.util.Maths
+import org.kryptonmc.krypton.shapes.discrete.DiscreteVoxelShape
+import org.kryptonmc.krypton.shapes.util.CubePointRange
+import org.kryptonmc.krypton.util.math.Maths
 
 class CubeVoxelShape(shape: DiscreteVoxelShape) : VoxelShape(shape) {
 

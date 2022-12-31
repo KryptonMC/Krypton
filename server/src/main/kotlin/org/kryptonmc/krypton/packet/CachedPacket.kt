@@ -19,7 +19,7 @@
 package org.kryptonmc.krypton.packet
 
 import io.netty.buffer.ByteBuf
-import org.kryptonmc.krypton.util.PacketFraming
+import org.kryptonmc.krypton.network.PacketFraming
 import java.lang.invoke.MethodHandles
 import java.lang.ref.SoftReference
 import java.util.function.Supplier

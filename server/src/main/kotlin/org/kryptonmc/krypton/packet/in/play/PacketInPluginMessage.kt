@@ -20,7 +20,7 @@ package org.kryptonmc.krypton.packet.`in`.play
 
 import io.netty.buffer.ByteBuf
 import net.kyori.adventure.key.Key
-import org.kryptonmc.krypton.network.handlers.PlayHandler
+import org.kryptonmc.krypton.network.handlers.PlayPacketHandler
 import org.kryptonmc.krypton.packet.InboundPacket
 import org.kryptonmc.krypton.util.readAllAvailableBytes
 import org.kryptonmc.krypton.util.readKey
@@ -29,7 +29,7 @@ import org.kryptonmc.krypton.util.writeVarIntByteArray
 
 @JvmRecord
 @Suppress("ArrayInDataClass")
-data class PacketInPluginMessage(val channel: Key, val data: ByteArray) : InboundPacket<PlayHandler> {
+data class PacketInPluginMessage(val channel: Key, val data: ByteArray) : InboundPacket<PlayPacketHandler> {
 
     constructor(buf: ByteBuf) : this(buf.readKey(), buf.readAllAvailableBytes())
 
@@ -38,7 +38,7 @@ data class PacketInPluginMessage(val channel: Key, val data: ByteArray) : Inboun
         buf.writeVarIntByteArray(data)
     }
 
-    override fun handle(handler: PlayHandler) {
+    override fun handle(handler: PlayPacketHandler) {
         handler.handlePluginMessage(this)
     }
 }

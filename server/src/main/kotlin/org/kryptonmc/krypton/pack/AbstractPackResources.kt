@@ -21,7 +21,7 @@ package org.kryptonmc.krypton.pack
 import net.kyori.adventure.key.Key
 import org.apache.logging.log4j.LogManager
 import org.kryptonmc.krypton.pack.metadata.MetadataSerializer
-import org.kryptonmc.krypton.util.GsonHelper
+import org.kryptonmc.krypton.util.gson.GsonHelper
 import java.io.BufferedReader
 import java.io.InputStream
 import java.io.InputStreamReader

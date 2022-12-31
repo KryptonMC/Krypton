@@ -19,7 +19,7 @@
 package org.kryptonmc.krypton.world.region
 
 import it.unimi.dsi.fastutil.longs.Long2ObjectLinkedOpenHashMap
-import org.kryptonmc.krypton.world.chunk.ChunkPos
+import org.kryptonmc.krypton.coordinate.ChunkPos
 import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.io.TagCompression
 import org.kryptonmc.nbt.io.TagIO

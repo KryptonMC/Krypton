@@ -23,7 +23,7 @@ import org.kryptonmc.api.item.ItemStack
 import org.kryptonmc.krypton.entity.KryptonEntityType
 import org.kryptonmc.krypton.entity.KryptonEntityTypes
 import org.kryptonmc.krypton.entity.KryptonMob
-import org.kryptonmc.krypton.entity.Neutral
+import org.kryptonmc.krypton.entity.components.Neutral
 import org.kryptonmc.krypton.entity.attribute.AttributeSupplier
 import org.kryptonmc.krypton.entity.attribute.KryptonAttributeTypes
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys

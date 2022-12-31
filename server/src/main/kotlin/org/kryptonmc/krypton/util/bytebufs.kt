@@ -44,12 +44,16 @@ import org.kryptonmc.api.util.Rotations
 import org.kryptonmc.api.util.Vec3d
 import org.kryptonmc.krypton.auth.KryptonGameProfile
 import org.kryptonmc.krypton.auth.KryptonProfileProperty
+import org.kryptonmc.krypton.coordinate.BlockPos
+import org.kryptonmc.krypton.coordinate.KryptonRotations
+import org.kryptonmc.krypton.coordinate.KryptonVec3d
 import org.kryptonmc.krypton.item.ItemFactory
 import org.kryptonmc.krypton.item.KryptonItemStack
 import org.kryptonmc.krypton.registry.KryptonRegistries
 import org.kryptonmc.krypton.registry.holder.Holder
 import org.kryptonmc.krypton.util.crypto.Crypto
 import org.kryptonmc.krypton.util.hit.BlockHitResult
+import org.kryptonmc.krypton.util.map.IntBiMap
 import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.EndTag
 import org.kryptonmc.nbt.io.TagCompression
@@ -299,7 +303,7 @@ fun ByteBuf.writeRotations(rotations: Rotations) {
     writeFloat(rotations.roll)
 }
 
-fun ByteBuf.readRotations(): Rotations = RotationsImpl(readFloat(), readFloat(), readFloat())
+fun ByteBuf.readRotations(): Rotations = KryptonRotations(readFloat(), readFloat(), readFloat())
 
 fun ByteBuf.writeVec3d(vector: Vec3d) {
     writeDouble(vector.x)
@@ -307,7 +311,7 @@ fun ByteBuf.writeVec3d(vector: Vec3d) {
     writeDouble(vector.z)
 }
 
-fun ByteBuf.readVec3d(): Vec3d = Vec3dImpl(readDouble(), readDouble(), readDouble())
+fun ByteBuf.readVec3d(): Vec3d = KryptonVec3d(readDouble(), readDouble(), readDouble())
 
 private const val MAX_BYTE_ANGLE = 256F
 private const val MAX_DEGREE_ANGLE = 360F
@@ -480,7 +484,7 @@ fun ByteBuf.readBlockHitResult(): BlockHitResult {
     val cursorY = readFloat().toDouble()
     val cursorZ = readFloat().toDouble()
     val isInside = readBoolean()
-    return BlockHitResult(Vec3dImpl(position.x + cursorX, position.y + cursorY, position.z + cursorZ), direction, position, isInside)
+    return BlockHitResult(KryptonVec3d(position.x + cursorX, position.y + cursorY, position.z + cursorZ), direction, position, isInside)
 }
 
 fun ByteBuf.writeBlockHitResult(hitResult: BlockHitResult) {

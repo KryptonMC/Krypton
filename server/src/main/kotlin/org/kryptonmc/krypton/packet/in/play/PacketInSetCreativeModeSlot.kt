@@ -20,13 +20,13 @@ package org.kryptonmc.krypton.packet.`in`.play
 
 import io.netty.buffer.ByteBuf
 import org.kryptonmc.krypton.item.KryptonItemStack
-import org.kryptonmc.krypton.network.handlers.PlayHandler
+import org.kryptonmc.krypton.network.handlers.PlayPacketHandler
 import org.kryptonmc.krypton.packet.InboundPacket
 import org.kryptonmc.krypton.util.readItem
 import org.kryptonmc.krypton.util.writeItem
 
 @JvmRecord
-data class PacketInSetCreativeModeSlot(val slot: Int, val clickedItem: KryptonItemStack) : InboundPacket<PlayHandler> {
+data class PacketInSetCreativeModeSlot(val slot: Int, val clickedItem: KryptonItemStack) : InboundPacket<PlayPacketHandler> {
 
     constructor(buf: ByteBuf) : this(buf.readShort().toInt(), buf.readItem())
 
@@ -35,7 +35,7 @@ data class PacketInSetCreativeModeSlot(val slot: Int, val clickedItem: KryptonIt
         buf.writeItem(clickedItem)
     }
 
-    override fun handle(handler: PlayHandler) {
+    override fun handle(handler: PlayPacketHandler) {
         handler.handleSetCreativeModeSlot(this)
     }
 }

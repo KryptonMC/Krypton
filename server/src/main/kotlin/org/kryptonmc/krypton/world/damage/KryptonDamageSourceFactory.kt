@@ -23,7 +23,7 @@ import org.kryptonmc.api.world.damage.DamageSource
 import org.kryptonmc.api.world.damage.EntityDamageSource
 import org.kryptonmc.api.world.damage.IndirectEntityDamageSource
 import org.kryptonmc.api.world.damage.type.DamageType
-import org.kryptonmc.krypton.entity.downcast
+import org.kryptonmc.krypton.entity.util.downcast
 
 object KryptonDamageSourceFactory : DamageSource.Factory {
 

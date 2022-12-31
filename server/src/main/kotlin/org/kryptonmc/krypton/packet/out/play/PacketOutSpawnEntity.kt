@@ -24,7 +24,7 @@ import org.kryptonmc.krypton.entity.KryptonEntityType
 import org.kryptonmc.krypton.entity.KryptonLivingEntity
 import org.kryptonmc.krypton.packet.EntityPacket
 import org.kryptonmc.krypton.registry.KryptonRegistries
-import org.kryptonmc.krypton.util.Positioning
+import org.kryptonmc.krypton.coordinate.Positioning
 import org.kryptonmc.krypton.util.readAngle
 import org.kryptonmc.krypton.util.readById
 import org.kryptonmc.krypton.util.readUUID

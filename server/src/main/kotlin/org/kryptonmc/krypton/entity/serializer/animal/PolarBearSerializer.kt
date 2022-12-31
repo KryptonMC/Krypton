@@ -18,7 +18,7 @@
  */
 package org.kryptonmc.krypton.entity.serializer.animal
 
-import org.kryptonmc.krypton.entity.Neutral
+import org.kryptonmc.krypton.entity.components.Neutral
 import org.kryptonmc.krypton.entity.animal.KryptonPolarBear
 import org.kryptonmc.krypton.entity.serializer.AgeableSerializer
 import org.kryptonmc.krypton.entity.serializer.EntitySerializer

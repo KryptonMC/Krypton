@@ -44,7 +44,7 @@ import org.kryptonmc.api.tags.FluidTags
 import org.kryptonmc.api.util.Vec3d
 import org.kryptonmc.api.world.GameMode
 import org.kryptonmc.krypton.commands.KryptonPermission
-import org.kryptonmc.krypton.entity.EquipmentSlots
+import org.kryptonmc.krypton.entity.util.EquipmentSlots
 import org.kryptonmc.krypton.entity.KryptonEntity
 import org.kryptonmc.krypton.entity.KryptonEntityType
 import org.kryptonmc.krypton.entity.KryptonEntityTypes
@@ -77,9 +77,9 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutSetHealth
 import org.kryptonmc.krypton.packet.out.play.PacketOutTeleportEntity
 import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateEntityPosition
 import org.kryptonmc.krypton.statistic.KryptonStatisticsTracker
-import org.kryptonmc.krypton.util.BlockPos
+import org.kryptonmc.krypton.coordinate.BlockPos
 import org.kryptonmc.krypton.util.InteractionResult
-import org.kryptonmc.krypton.util.Positioning
+import org.kryptonmc.krypton.coordinate.Positioning
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.krypton.world.block.state.KryptonBlockState
 import org.kryptonmc.nbt.CompoundTag
@@ -266,14 +266,14 @@ class KryptonPlayer(
         val oldLocation = this.position
         this.position = position
 
-        if (Positioning.deltaInMoveRange(oldLocation, this.position)) {
+        if (Positioning.isDeltaInMoveRange(oldLocation, this.position)) {
             connection.send(PacketOutTeleportEntity.create(this))
         } else {
             connection.send(PacketOutUpdateEntityPosition(
                 id,
-                Positioning.delta(this.position.x, oldLocation.x),
-                Positioning.delta(this.position.y, oldLocation.y),
-                Positioning.delta(this.position.z, oldLocation.z),
+                Positioning.calculateDelta(this.position.x, oldLocation.x),
+                Positioning.calculateDelta(this.position.y, oldLocation.y),
+                Positioning.calculateDelta(this.position.z, oldLocation.z),
                 isOnGround
             ))
         }

@@ -26,7 +26,7 @@ import org.kryptonmc.krypton.auth.KryptonGameProfile
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.entity.player.PlayerPublicKey
 import org.kryptonmc.krypton.packet.Packet
-import org.kryptonmc.krypton.util.GameModes
+import org.kryptonmc.krypton.util.enumhelper.GameModes
 import org.kryptonmc.krypton.util.readComponent
 import org.kryptonmc.krypton.util.readEnum
 import org.kryptonmc.krypton.util.readGameProfile

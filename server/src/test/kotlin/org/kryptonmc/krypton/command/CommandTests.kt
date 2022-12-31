@@ -35,7 +35,7 @@ import org.kryptonmc.krypton.commands.argument
 import org.kryptonmc.krypton.commands.literal
 import org.kryptonmc.krypton.commands.runs
 import org.kryptonmc.krypton.testutil.Bootstrapping
-import org.kryptonmc.krypton.util.Vec3dImpl
+import org.kryptonmc.krypton.coordinate.KryptonVec3d
 import java.util.concurrent.locks.ReentrantLock
 import kotlin.test.assertEquals
 
@@ -46,7 +46,7 @@ class CommandTests {
         val dispatcher = CommandDispatcher<CommandSourceStack>()
         val node = LiteralArgumentBuilder.literal<CommandSourceStack>("test").runs { println("Hello World!") }.build()
         dispatcher.root.addChild(node)
-        val source = CommandSourceStack(mockk(), Vec3dImpl.ZERO, 0F, 0F, mockk(), "", Component.empty(), mockk(), null)
+        val source = CommandSourceStack(mockk(), KryptonVec3d.ZERO, 0F, 0F, mockk(), "", Component.empty(), mockk(), null)
         dispatcher.execute("test", source)
     }
 

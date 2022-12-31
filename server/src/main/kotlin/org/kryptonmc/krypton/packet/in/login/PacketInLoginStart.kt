@@ -19,7 +19,7 @@
 package org.kryptonmc.krypton.packet.`in`.login
 
 import io.netty.buffer.ByteBuf
-import org.kryptonmc.krypton.network.handlers.LoginHandler
+import org.kryptonmc.krypton.network.handlers.LoginPacketHandler
 import org.kryptonmc.krypton.packet.InboundPacket
 import org.kryptonmc.krypton.util.readNullable
 import org.kryptonmc.krypton.util.readString
@@ -30,7 +30,7 @@ import org.kryptonmc.krypton.util.writeUUID
 import java.util.UUID
 
 @JvmRecord
-data class PacketInLoginStart(val name: String, val profileId: UUID?) : InboundPacket<LoginHandler> {
+data class PacketInLoginStart(val name: String, val profileId: UUID?) : InboundPacket<LoginPacketHandler> {
 
     constructor(buf: ByteBuf) : this(buf.readString(16), buf.readNullable(ByteBuf::readUUID))
 
@@ -39,7 +39,7 @@ data class PacketInLoginStart(val name: String, val profileId: UUID?) : InboundP
         buf.writeNullable(profileId, ByteBuf::writeUUID)
     }
 
-    override fun handle(handler: LoginHandler) {
+    override fun handle(handler: LoginPacketHandler) {
         handler.handleLoginStart(this)
     }
 }

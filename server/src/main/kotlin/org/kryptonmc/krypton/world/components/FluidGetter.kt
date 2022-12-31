@@ -21,7 +21,7 @@ package org.kryptonmc.krypton.world.components
 import org.kryptonmc.api.fluid.FluidContainer
 import org.kryptonmc.api.tags.FluidTags
 import org.kryptonmc.api.util.Vec3i
-import org.kryptonmc.krypton.util.BlockPos
+import org.kryptonmc.krypton.coordinate.BlockPos
 import org.kryptonmc.krypton.world.fluid.KryptonFluidState
 
 interface FluidGetter : FluidContainer {

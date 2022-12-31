@@ -24,8 +24,11 @@ import kotlinx.collections.immutable.persistentListOf
 import org.kryptonmc.api.util.BoundingBox
 import org.kryptonmc.api.util.Direction
 import org.kryptonmc.api.util.Direction.Axis
+import org.kryptonmc.krypton.shapes.discrete.DiscreteVoxelShape
+import org.kryptonmc.krypton.shapes.util.BooleanOperator
+import org.kryptonmc.krypton.shapes.util.OffsetDoubleList
 import org.kryptonmc.krypton.util.KryptonBoundingBox
-import org.kryptonmc.krypton.util.Maths
+import org.kryptonmc.krypton.util.math.Maths
 import org.kryptonmc.krypton.util.math.AxisCycle
 import kotlin.math.abs
 

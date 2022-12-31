@@ -23,7 +23,7 @@ import com.google.gson.stream.JsonReader
 import com.google.gson.stream.JsonWriter
 import org.kryptonmc.api.auth.GameProfile
 import org.kryptonmc.krypton.server.PersistentManager
-import org.kryptonmc.krypton.util.array
+import org.kryptonmc.krypton.util.gson.array
 import java.nio.file.Path
 import java.util.Collections
 

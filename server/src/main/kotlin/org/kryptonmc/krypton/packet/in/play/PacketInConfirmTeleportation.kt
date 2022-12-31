@@ -19,13 +19,13 @@
 package org.kryptonmc.krypton.packet.`in`.play
 
 import io.netty.buffer.ByteBuf
-import org.kryptonmc.krypton.network.handlers.PlayHandler
+import org.kryptonmc.krypton.network.handlers.PlayPacketHandler
 import org.kryptonmc.krypton.packet.InboundPacket
 import org.kryptonmc.krypton.util.readVarInt
 import org.kryptonmc.krypton.util.writeVarInt
 
 @JvmRecord
-data class PacketInConfirmTeleportation(val id: Int) : InboundPacket<PlayHandler> {
+data class PacketInConfirmTeleportation(val id: Int) : InboundPacket<PlayPacketHandler> {
 
     constructor(buf: ByteBuf) : this(buf.readVarInt())
 
@@ -33,7 +33,7 @@ data class PacketInConfirmTeleportation(val id: Int) : InboundPacket<PlayHandler
         buf.writeVarInt(id)
     }
 
-    override fun handle(handler: PlayHandler) {
+    override fun handle(handler: PlayPacketHandler) {
         // TODO
         //handler.handleTeleportConfirm(this)
     }

@@ -34,13 +34,15 @@ import org.kryptonmc.krypton.entity.attribute.KryptonAttribute
 import org.kryptonmc.krypton.entity.attribute.KryptonAttributeType
 import org.kryptonmc.krypton.entity.attribute.KryptonAttributeTypes
 import org.kryptonmc.krypton.entity.attribute.downcast
-import org.kryptonmc.krypton.entity.memory.Brain
+import org.kryptonmc.krypton.entity.ai.memory.Brain
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.entity.serializer.EntitySerializer
 import org.kryptonmc.krypton.entity.serializer.LivingEntitySerializer
 import org.kryptonmc.krypton.item.KryptonItemStack
-import org.kryptonmc.krypton.util.BlockPos
+import org.kryptonmc.krypton.coordinate.BlockPos
+import org.kryptonmc.krypton.entity.components.KryptonEquipable
+import org.kryptonmc.krypton.entity.util.EquipmentSlots
 import org.kryptonmc.krypton.world.KryptonWorld
 
 @Suppress("LeakingThis")

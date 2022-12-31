@@ -30,7 +30,7 @@ import org.kryptonmc.krypton.command.CommandSourceStack
 import org.kryptonmc.krypton.command.arguments.entities.EntityArgumentType
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.locale.Messages
-import org.kryptonmc.krypton.util.GameModes
+import org.kryptonmc.krypton.util.enumhelper.GameModes
 import org.kryptonmc.krypton.world.rule.GameRuleKeys
 
 object GameModeCommand {

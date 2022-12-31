@@ -20,7 +20,7 @@ package org.kryptonmc.krypton.entity.serializer.projectile
 
 import org.kryptonmc.krypton.entity.projectile.KryptonShulkerBullet
 import org.kryptonmc.krypton.entity.serializer.EntitySerializer
-import org.kryptonmc.krypton.util.Directions
+import org.kryptonmc.krypton.util.enumhelper.Directions
 import org.kryptonmc.krypton.util.nbt.getUUID
 import org.kryptonmc.krypton.util.nbt.hasNumber
 import org.kryptonmc.krypton.util.nbt.hasUUID

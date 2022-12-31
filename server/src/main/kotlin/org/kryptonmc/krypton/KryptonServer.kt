@@ -35,7 +35,8 @@ import org.kryptonmc.krypton.event.server.KryptonServerStartEvent
 import org.kryptonmc.krypton.event.server.KryptonServerStopEvent
 import org.kryptonmc.krypton.event.server.KryptonTickEndEvent
 import org.kryptonmc.krypton.event.server.KryptonTickStartEvent
-import org.kryptonmc.krypton.network.SessionManager
+import org.kryptonmc.krypton.network.ConnectionManager
+import org.kryptonmc.krypton.network.ConnectionInitializer
 import org.kryptonmc.krypton.packet.PacketRegistry
 import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateTime
 import org.kryptonmc.krypton.plugin.KryptonPluginManager
@@ -43,7 +44,7 @@ import org.kryptonmc.krypton.scheduling.KryptonScheduler
 import org.kryptonmc.krypton.server.PlayerManager
 import org.kryptonmc.krypton.service.KryptonServicesManager
 import org.kryptonmc.krypton.user.KryptonUserManager
-import org.kryptonmc.krypton.util.PacketFraming
+import org.kryptonmc.krypton.network.PacketFraming
 import org.kryptonmc.krypton.util.crypto.YggdrasilSessionKey
 import org.kryptonmc.krypton.util.executor.ReentrantBlockableEventLoop
 import org.kryptonmc.krypton.util.random.RandomSource
@@ -75,7 +76,7 @@ class KryptonServer(
 ) : ReentrantBlockableEventLoop<TickTask>("Server"), BaseServer {
 
     override val playerManager: PlayerManager = PlayerManager(this)
-    override val sessionManager: SessionManager = SessionManager(playerManager, config.status.motd, config.status.maxPlayers)
+    override val connectionManager: ConnectionManager = ConnectionManager(playerManager, config.status.motd, config.status.maxPlayers)
 
     override val console: KryptonConsole = KryptonConsole(this)
     override val scoreboard: KryptonScoreboard = KryptonScoreboard(this)
@@ -183,7 +184,7 @@ class KryptonServer(
         // Start accepting connections
         LOGGER.debug("Starting Netty...")
         try {
-            NettyProcess.run(this, bindAddress)
+            ConnectionInitializer.run(this, bindAddress)
         } catch (exception: IOException) {
             LOGGER.error("FAILED TO BIND TO PORT ${config.server.port}!", exception)
             return false
@@ -274,7 +275,7 @@ class KryptonServer(
 
         ++tickCount
         tickChildren(hasTimeLeft)
-        sessionManager.tick(startTime)
+        connectionManager.tick(startTime)
         playerManager.tick(startTime)
 
         if (config.world.autosaveInterval > 0 && tickCount % config.world.autosaveInterval == 0) {
@@ -292,7 +293,7 @@ class KryptonServer(
     private fun tickChildren(hasTimeLeft: BooleanSupplier) {
         worldManager.worlds.forEach { (_, world) ->
             if (tickCount % TICKS_PER_SECOND == 0) {
-                sessionManager.sendGrouped(PacketOutUpdateTime.create(world.data)) { it.world === world }
+                connectionManager.sendGroupedPacket(PacketOutUpdateTime.create(world.data)) { it.world === world }
             }
             world.tick(hasTimeLeft)
         }
@@ -350,7 +351,7 @@ class KryptonServer(
         // Stop server and shut down session manager (disconnecting all players)
         LOGGER.info("Starting shutdown for Krypton version ${KryptonPlatform.version}...")
         running = false
-        NettyProcess.shutdown()
+        ConnectionInitializer.shutdown()
 
         // Save data
         LOGGER.info("Saving and disconnecting players...")

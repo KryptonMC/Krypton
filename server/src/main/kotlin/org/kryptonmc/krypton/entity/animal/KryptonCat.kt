@@ -34,7 +34,7 @@ import org.kryptonmc.krypton.entity.attribute.KryptonAttributeTypes
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.entity.serializer.EntitySerializer
 import org.kryptonmc.krypton.entity.serializer.animal.CatSerializer
-import org.kryptonmc.krypton.util.DyeColors
+import org.kryptonmc.krypton.util.enumhelper.DyeColors
 import org.kryptonmc.krypton.world.KryptonWorld
 
 class KryptonCat(world: KryptonWorld) : KryptonTamable(world), Cat {

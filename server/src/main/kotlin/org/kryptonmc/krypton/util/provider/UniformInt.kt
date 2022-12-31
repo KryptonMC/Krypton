@@ -18,7 +18,7 @@
  */
 package org.kryptonmc.krypton.util.provider
 
-import org.kryptonmc.krypton.util.Maths
+import org.kryptonmc.krypton.util.math.Maths
 import org.kryptonmc.krypton.util.random.RandomSource
 import org.kryptonmc.serialization.Codec
 import org.kryptonmc.serialization.codecs.RecordCodecBuilder

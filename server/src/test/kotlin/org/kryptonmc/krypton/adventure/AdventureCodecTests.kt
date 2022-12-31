@@ -26,6 +26,8 @@ import net.kyori.adventure.text.format.TextDecoration
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
+import org.kryptonmc.krypton.adventure.network.AdventureCodecs
+import org.kryptonmc.krypton.adventure.network.TextColorSerialization
 import org.kryptonmc.krypton.commands.krypton.KryptonColors
 import org.kryptonmc.krypton.testutil.Bootstrapping
 import org.kryptonmc.serialization.gson.GsonOps

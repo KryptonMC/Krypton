@@ -28,12 +28,12 @@ import org.kryptonmc.api.util.Rotations
 import org.kryptonmc.internal.annotations.Catalogue
 import org.kryptonmc.krypton.effect.particle.ParticleOptions
 import org.kryptonmc.krypton.entity.Pose
-import org.kryptonmc.krypton.entity.data.VillagerData
+import org.kryptonmc.krypton.entity.villagerdata.VillagerData
 import org.kryptonmc.krypton.item.KryptonItemStack
 import org.kryptonmc.krypton.registry.KryptonRegistries
-import org.kryptonmc.krypton.util.BlockPos
-import org.kryptonmc.krypton.util.GlobalPos
-import org.kryptonmc.krypton.util.IntIdentityHashBiMap
+import org.kryptonmc.krypton.coordinate.BlockPos
+import org.kryptonmc.krypton.coordinate.GlobalPos
+import org.kryptonmc.krypton.util.map.IntIdentityHashBiMap
 import org.kryptonmc.krypton.util.readComponent
 import org.kryptonmc.krypton.util.readItem
 import org.kryptonmc.krypton.util.readNBT

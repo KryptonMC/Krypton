@@ -23,7 +23,7 @@ import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.text.format.Style
 import net.kyori.adventure.text.format.TextDecoration
 import net.kyori.adventure.translation.Translatable
-import org.kryptonmc.krypton.adventure.AdventureCodecs
+import org.kryptonmc.krypton.adventure.network.AdventureCodecs
 import org.kryptonmc.krypton.util.serialization.EnumCodecs
 import org.kryptonmc.serialization.Codec
 import org.kryptonmc.serialization.codecs.RecordCodecBuilder

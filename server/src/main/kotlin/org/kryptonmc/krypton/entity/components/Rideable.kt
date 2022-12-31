@@ -21,7 +21,7 @@ package org.kryptonmc.krypton.entity.components
 import org.kryptonmc.api.entity.Entity
 import org.kryptonmc.krypton.entity.KryptonEntity
 import org.kryptonmc.krypton.entity.Pose
-import org.kryptonmc.krypton.entity.downcastBase
+import org.kryptonmc.krypton.entity.util.downcastBase
 import org.kryptonmc.krypton.entity.system.EntityVehicleSystem
 
 interface Rideable : BaseDataHolder {

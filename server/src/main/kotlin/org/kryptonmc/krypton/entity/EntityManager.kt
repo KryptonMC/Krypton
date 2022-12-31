@@ -30,11 +30,11 @@ import org.kryptonmc.krypton.event.entity.KryptonSpawnEntityEvent
 import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateTime
 import org.kryptonmc.krypton.registry.KryptonRegistries
 import org.kryptonmc.krypton.util.DataConversion
-import org.kryptonmc.krypton.util.SectionPos
+import org.kryptonmc.krypton.coordinate.SectionPos
 import org.kryptonmc.krypton.util.nbt.getDataVersion
 import org.kryptonmc.krypton.util.nbt.putDataVersion
 import org.kryptonmc.krypton.world.KryptonWorld
-import org.kryptonmc.krypton.world.chunk.ChunkPos
+import org.kryptonmc.krypton.coordinate.ChunkPos
 import org.kryptonmc.krypton.world.chunk.KryptonChunk
 import org.kryptonmc.krypton.world.region.RegionFileManager
 import org.kryptonmc.nbt.CompoundTag

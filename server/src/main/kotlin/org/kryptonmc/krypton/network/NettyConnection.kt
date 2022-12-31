@@ -32,7 +32,7 @@ import org.apache.logging.log4j.LogManager
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.locale.Messages
 import org.kryptonmc.krypton.network.handlers.PacketHandler
-import org.kryptonmc.krypton.network.handlers.PlayHandler
+import org.kryptonmc.krypton.network.handlers.PlayPacketHandler
 import org.kryptonmc.krypton.network.handlers.TickablePacketHandler
 import org.kryptonmc.krypton.network.netty.GroupedPacketHandler
 import org.kryptonmc.krypton.network.netty.PacketCompressor
@@ -50,7 +50,6 @@ import org.kryptonmc.krypton.packet.PacketState
 import org.kryptonmc.krypton.packet.out.login.PacketOutLoginDisconnect
 import org.kryptonmc.krypton.packet.out.login.PacketOutSetCompression
 import org.kryptonmc.krypton.packet.out.play.PacketOutDisconnect
-import org.kryptonmc.krypton.util.PacketFraming
 import java.net.SocketAddress
 import java.util.concurrent.Executor
 import java.util.concurrent.RejectedExecutionException
@@ -129,8 +128,8 @@ class NettyConnection(private val server: KryptonServer) : SimpleChannelInboundH
         channel.pipeline().addBefore(GroupedPacketHandler.NETTY_NAME, PacketEncrypter.NETTY_NAME, encrypter)
     }
 
-    fun playHandler(): PlayHandler =
-        checkNotNull(handler as? PlayHandler) { "Attempted to use handler as play handler before the handler was changed! This is a bug!" }
+    fun playHandler(): PlayPacketHandler =
+        checkNotNull(handler as? PlayPacketHandler) { "Attempted to use handler as play handler before the handler was changed! This is a bug!" }
 
     fun tick() {
         val handler = handler
@@ -223,7 +222,7 @@ class NettyConnection(private val server: KryptonServer) : SimpleChannelInboundH
     override fun channelActive(ctx: ChannelHandlerContext) {
         super.channelActive(ctx)
         channel = ctx.channel()
-        server.sessionManager.register(this)
+        server.connectionManager.register(this)
         try {
             setState(PacketState.HANDSHAKE)
         } catch (exception: Throwable) {
@@ -234,7 +233,7 @@ class NettyConnection(private val server: KryptonServer) : SimpleChannelInboundH
     override fun channelInactive(ctx: ChannelHandlerContext) {
         disconnect(END_OF_STREAM)
         synchronized(tickBufferLock) { tickBuffer.release() }
-        server.sessionManager.unregister(this)
+        server.connectionManager.unregister(this)
     }
 
     override fun channelRead0(ctx: ChannelHandlerContext, msg: Packet) {

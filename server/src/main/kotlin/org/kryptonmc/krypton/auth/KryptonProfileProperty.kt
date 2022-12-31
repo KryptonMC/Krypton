@@ -25,7 +25,7 @@ import com.google.gson.stream.JsonWriter
 import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.persistentListOf
 import org.kryptonmc.api.auth.ProfileProperty
-import org.kryptonmc.krypton.util.readPersistentList
+import org.kryptonmc.krypton.util.gson.readPersistentList
 import java.io.StringReader
 
 @JvmRecord
@@ -40,10 +40,10 @@ data class KryptonProfileProperty(override val name: String, override val value:
         override fun of(name: String, value: String, signature: String?): ProfileProperty = KryptonProfileProperty(name, value, signature)
     }
 
-    companion object : TypeAdapter<ProfileProperty>() {
+    object Adapter : TypeAdapter<ProfileProperty>() {
 
         @JvmStatic
-        fun fromJsonList(json: String): PersistentList<ProfileProperty> = readList(JsonReader(StringReader(json)))
+        fun readJsonList(json: String): PersistentList<ProfileProperty> = readList(JsonReader(StringReader(json)))
 
         @JvmStatic
         fun readList(reader: JsonReader): PersistentList<ProfileProperty> {

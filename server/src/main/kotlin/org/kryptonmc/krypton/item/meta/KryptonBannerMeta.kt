@@ -21,7 +21,7 @@ package org.kryptonmc.krypton.item.meta
 import com.google.common.collect.ImmutableList
 import org.kryptonmc.api.block.entity.banner.BannerPattern
 import org.kryptonmc.api.item.meta.BannerMeta
-import org.kryptonmc.krypton.util.BuilderCollection
+import org.kryptonmc.krypton.util.collection.BuilderCollection
 import org.kryptonmc.krypton.world.block.entity.banner.KryptonBannerPattern
 import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.list

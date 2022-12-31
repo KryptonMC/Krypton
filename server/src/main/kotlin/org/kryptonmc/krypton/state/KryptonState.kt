@@ -22,7 +22,7 @@ import com.google.common.collect.ArrayTable
 import com.google.common.collect.HashBasedTable
 import com.google.common.collect.ImmutableMap
 import com.google.common.collect.Table
-import org.kryptonmc.krypton.util.ZeroCollidingReferenceStateTable
+import org.kryptonmc.krypton.util.collection.ZeroCollidingReferenceStateTable
 import org.kryptonmc.krypton.state.property.KryptonProperty
 import org.kryptonmc.serialization.Codec
 import org.kryptonmc.serialization.MapCodec

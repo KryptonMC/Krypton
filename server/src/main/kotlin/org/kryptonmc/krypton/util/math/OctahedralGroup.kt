@@ -21,7 +21,7 @@ package org.kryptonmc.krypton.util.math
 import it.unimi.dsi.fastutil.booleans.BooleanArrayList
 import it.unimi.dsi.fastutil.booleans.BooleanList
 import org.kryptonmc.api.util.Direction
-import org.kryptonmc.krypton.util.Directions
+import org.kryptonmc.krypton.util.enumhelper.Directions
 import java.util.Arrays
 import java.util.EnumMap
 

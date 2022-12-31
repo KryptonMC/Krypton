@@ -30,8 +30,8 @@ import org.kryptonmc.krypton.command.CommandSourceStack
 import org.kryptonmc.krypton.command.arguments.CommandExceptions
 import org.kryptonmc.krypton.entity.KryptonEntity
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
-import org.kryptonmc.krypton.util.DowncastingList
-import org.kryptonmc.krypton.util.GameModes
+import org.kryptonmc.krypton.util.collection.DowncastingList
+import org.kryptonmc.krypton.util.enumhelper.GameModes
 
 @JvmRecord
 data class EntityQuery(val type: Selector, private val args: List<EntityArgument>, private val playerName: String) {

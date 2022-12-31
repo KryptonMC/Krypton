@@ -23,7 +23,7 @@ import net.kyori.adventure.key.Key
 import org.apache.logging.log4j.LogManager
 import org.kryptonmc.api.entity.attribute.AttributeModifier
 import org.kryptonmc.krypton.registry.KryptonRegistries
-import org.kryptonmc.krypton.util.nullableComputeIfAbsent
+import org.kryptonmc.krypton.util.map.nullableComputeIfAbsent
 import org.kryptonmc.nbt.ListTag
 import org.kryptonmc.nbt.list
 import java.util.UUID

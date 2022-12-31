@@ -23,10 +23,10 @@ import com.google.common.collect.Lists
 import org.apache.logging.log4j.LogManager
 import org.kryptonmc.api.auth.GameProfile
 import org.kryptonmc.api.auth.ProfileCache
-import org.kryptonmc.krypton.util.array
-import org.kryptonmc.krypton.util.jsonReader
-import org.kryptonmc.krypton.util.jsonWriter
-import org.kryptonmc.krypton.util.readListTo
+import org.kryptonmc.krypton.util.gson.array
+import org.kryptonmc.krypton.util.gson.jsonReader
+import org.kryptonmc.krypton.util.gson.jsonWriter
+import org.kryptonmc.krypton.util.gson.readListTo
 import java.io.IOException
 import java.nio.file.Files
 import java.nio.file.Path
@@ -50,16 +50,22 @@ class KryptonProfileCache(private val path: Path) : ProfileCache {
         addHolder(ProfileHolder(profile, ZonedDateTime.now().plusMonths(1)))
     }
 
-    override fun getProfile(name: String): GameProfile? = profilesByName.get(name)?.updateAndGetProfile(operations)
+    override fun getProfile(name: String): GameProfile? = updateAndGetProfile(profilesByName.get(name))
 
-    override fun getProfile(uuid: UUID): GameProfile? = profilesByUUID.get(uuid)?.updateAndGetProfile(operations)
+    override fun getProfile(uuid: UUID): GameProfile? = updateAndGetProfile(profilesByUUID.get(uuid))
+
+    private fun updateAndGetProfile(holder: ProfileHolder?): GameProfile? {
+        if (holder == null) return null
+        holder.setLastAccess(operations.incrementAndGet())
+        return holder.profile
+    }
 
     override fun iterator(): Iterator<GameProfile> = profiles.iterator()
 
     private fun addHolder(holder: ProfileHolder) {
-        val profile = holder.updateAndGetProfile(operations)
-        profilesByName.put(profile.name, holder)
-        profilesByUUID.put(profile.uuid, holder)
+        holder.setLastAccess(operations.incrementAndGet())
+        profilesByName.put(holder.profile.name, holder)
+        profilesByUUID.put(holder.profile.uuid, holder)
         markDirty()
     }
 
@@ -67,7 +73,7 @@ class KryptonProfileCache(private val path: Path) : ProfileCache {
         if (!Files.exists(path)) return
         val holders = ArrayList<ProfileHolder>()
         try {
-            path.jsonReader().use { it.readListTo(holders, ProfileHolder::read) }
+            path.jsonReader().use { it.readListTo(holders, ProfileHolder.Adapter::read) }
         } catch (exception: IOException) {
             LOGGER.warn("Failed to read $path. You can delete it to force the server to recreate it.", exception)
         } catch (exception: IllegalStateException) {
@@ -94,7 +100,7 @@ class KryptonProfileCache(private val path: Path) : ProfileCache {
             }
         }
         try {
-            path.jsonWriter().use { it.array(profilesByUUID.values.stream().sorted().limit(MRU_LIMIT), ProfileHolder::write) }
+            path.jsonWriter().use { it.array(profilesByUUID.values.stream().sorted().limit(MRU_LIMIT), ProfileHolder.Adapter::write) }
         } catch (exception: IOException) {
             LOGGER.error("Error writing user cache file!", exception)
         }

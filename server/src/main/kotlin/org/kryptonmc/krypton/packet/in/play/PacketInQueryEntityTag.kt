@@ -19,13 +19,13 @@
 package org.kryptonmc.krypton.packet.`in`.play
 
 import io.netty.buffer.ByteBuf
-import org.kryptonmc.krypton.network.handlers.PlayHandler
+import org.kryptonmc.krypton.network.handlers.PlayPacketHandler
 import org.kryptonmc.krypton.packet.InboundPacket
 import org.kryptonmc.krypton.util.readVarInt
 import org.kryptonmc.krypton.util.writeVarInt
 
 @JvmRecord
-data class PacketInQueryEntityTag(val transactionId: Int, val entityId: Int) : InboundPacket<PlayHandler> {
+data class PacketInQueryEntityTag(val transactionId: Int, val entityId: Int) : InboundPacket<PlayPacketHandler> {
 
     constructor(buf: ByteBuf) : this(buf.readVarInt(), buf.readVarInt())
 
@@ -34,7 +34,7 @@ data class PacketInQueryEntityTag(val transactionId: Int, val entityId: Int) : I
         buf.writeVarInt(entityId)
     }
 
-    override fun handle(handler: PlayHandler) {
+    override fun handle(handler: PlayPacketHandler) {
         handler.handleEntityTagQuery(this)
     }
 }

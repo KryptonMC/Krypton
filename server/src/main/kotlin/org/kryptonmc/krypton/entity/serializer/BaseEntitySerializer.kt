@@ -21,7 +21,7 @@ package org.kryptonmc.krypton.entity.serializer
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer
 import org.kryptonmc.krypton.entity.KryptonEntity
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
-import org.kryptonmc.krypton.util.Vec3dImpl
+import org.kryptonmc.krypton.coordinate.KryptonVec3d
 import org.kryptonmc.krypton.util.nbt.getUUID
 import org.kryptonmc.krypton.util.nbt.hasUUID
 import org.kryptonmc.krypton.util.nbt.putUUID
@@ -66,14 +66,14 @@ object BaseEntitySerializer : EntitySerializer<KryptonEntity> {
         entity.isInvulnerable = data.getBoolean(INVULNERABLE_TAG)
 
         val motion = data.getList(MOTION_TAG, DoubleTag.ID)
-        entity.velocity = Vec3dImpl(getMotionValue(motion, 0), getMotionValue(motion, 1), getMotionValue(motion, 2))
+        entity.velocity = KryptonVec3d(getMotionValue(motion, 0), getMotionValue(motion, 1), getMotionValue(motion, 2))
 
         entity.hasGravity = !data.getBoolean(NO_GRAVITY_TAG)
         entity.isOnGround = data.getBoolean(ON_GROUND_TAG)
 
         val location = data.getList(POSITION_TAG, DoubleTag.ID)
         val rotation = data.getList(ROTATION_TAG, FloatTag.ID)
-        entity.position = Vec3dImpl(location.getDouble(0), location.getDouble(1), location.getDouble(2))
+        entity.position = KryptonVec3d(location.getDouble(0), location.getDouble(1), location.getDouble(2))
         entity.yaw = rotation.getFloat(0)
         entity.pitch = rotation.getFloat(1)
 

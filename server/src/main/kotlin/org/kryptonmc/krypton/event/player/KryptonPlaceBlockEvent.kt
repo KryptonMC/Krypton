@@ -24,7 +24,7 @@ import org.kryptonmc.api.entity.player.Player
 import org.kryptonmc.api.event.GenericResult
 import org.kryptonmc.api.event.player.PlaceBlockEvent
 import org.kryptonmc.api.util.Direction
-import org.kryptonmc.krypton.util.BlockPos
+import org.kryptonmc.krypton.coordinate.BlockPos
 
 class KryptonPlaceBlockEvent(
     override val player: Player,

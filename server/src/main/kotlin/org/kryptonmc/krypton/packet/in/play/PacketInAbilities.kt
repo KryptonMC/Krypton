@@ -19,11 +19,11 @@
 package org.kryptonmc.krypton.packet.`in`.play
 
 import io.netty.buffer.ByteBuf
-import org.kryptonmc.krypton.network.handlers.PlayHandler
+import org.kryptonmc.krypton.network.handlers.PlayPacketHandler
 import org.kryptonmc.krypton.packet.InboundPacket
 
 @JvmRecord
-data class PacketInAbilities(val isFlying: Boolean) : InboundPacket<PlayHandler> {
+data class PacketInAbilities(val isFlying: Boolean) : InboundPacket<PlayPacketHandler> {
 
     constructor(buf: ByteBuf) : this(buf.readByte().toInt() and 2 != 0)
 
@@ -33,7 +33,7 @@ data class PacketInAbilities(val isFlying: Boolean) : InboundPacket<PlayHandler>
         buf.writeByte(flags)
     }
 
-    override fun handle(handler: PlayHandler) {
+    override fun handle(handler: PlayPacketHandler) {
         handler.handleAbilities(this)
     }
 }

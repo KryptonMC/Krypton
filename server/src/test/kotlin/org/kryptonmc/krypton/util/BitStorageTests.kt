@@ -21,6 +21,8 @@ package org.kryptonmc.krypton.util
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertDoesNotThrow
 import org.junit.jupiter.api.assertThrows
+import org.kryptonmc.krypton.util.bits.BitStorage
+import org.kryptonmc.krypton.util.bits.SimpleBitStorage
 import kotlin.test.assertContentEquals
 import kotlin.test.assertEquals
 import kotlin.test.assertNotEquals

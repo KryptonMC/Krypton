@@ -20,7 +20,7 @@ package org.kryptonmc.krypton.world.block
 
 import org.kryptonmc.krypton.state.property.IntProperty
 import org.kryptonmc.krypton.state.property.KryptonProperties
-import org.kryptonmc.krypton.util.Maths
+import org.kryptonmc.krypton.util.math.Maths
 import org.kryptonmc.krypton.world.block.state.KryptonBlockState
 
 class RespawnAnchorBlock(properties: Properties) : KryptonBlock(properties) {

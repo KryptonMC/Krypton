@@ -28,8 +28,10 @@ import org.kryptonmc.api.user.ban.BanService
 import org.kryptonmc.api.user.whitelist.WhitelistService
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.plugin.server.ServerPluginContainer
-import org.kryptonmc.krypton.server.ban.KryptonBanService
-import org.kryptonmc.krypton.server.whitelist.KryptonWhitelistService
+import org.kryptonmc.krypton.service.builtin.KryptonBanService
+import org.kryptonmc.krypton.service.builtin.KryptonWhitelistService
+import org.kryptonmc.krypton.service.builtin.KryptonAFKService
+import org.kryptonmc.krypton.service.builtin.KryptonVanishService
 import java.util.concurrent.ConcurrentHashMap
 
 class KryptonServicesManager(private val server: KryptonServer) : ServicesManager {

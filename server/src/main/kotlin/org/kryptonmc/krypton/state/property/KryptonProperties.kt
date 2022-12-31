@@ -40,7 +40,7 @@ import org.kryptonmc.api.block.meta.StructureMode
 import org.kryptonmc.api.block.meta.Tilt
 import org.kryptonmc.api.block.meta.WallSide
 import org.kryptonmc.api.util.Direction
-import org.kryptonmc.krypton.util.Directions
+import org.kryptonmc.krypton.util.enumhelper.Directions
 
 @Suppress("StringLiteralDuplication")
 object KryptonProperties {

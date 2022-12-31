@@ -23,7 +23,7 @@ import org.kryptonmc.api.inventory.InventoryType
 import org.kryptonmc.api.item.ItemStack
 import org.kryptonmc.krypton.item.KryptonItemStack
 import org.kryptonmc.krypton.network.Writable
-import org.kryptonmc.krypton.util.FixedList
+import org.kryptonmc.krypton.util.collection.FixedList
 
 abstract class KryptonInventory(
     val id: Int,

@@ -22,7 +22,7 @@ import org.kryptonmc.api.entity.projectile.AcceleratingProjectile
 import org.kryptonmc.api.util.Vec3d
 import org.kryptonmc.krypton.entity.serializer.EntitySerializer
 import org.kryptonmc.krypton.entity.serializer.projectile.AcceleratingProjectileSerializer
-import org.kryptonmc.krypton.util.Vec3dImpl
+import org.kryptonmc.krypton.coordinate.KryptonVec3d
 import org.kryptonmc.krypton.world.KryptonWorld
 
 abstract class KryptonAcceleratingProjectile(world: KryptonWorld) : KryptonProjectile(world), AcceleratingProjectile {
@@ -30,5 +30,5 @@ abstract class KryptonAcceleratingProjectile(world: KryptonWorld) : KryptonProje
     override val serializer: EntitySerializer<out KryptonAcceleratingProjectile>
         get() = AcceleratingProjectileSerializer
 
-    final override var acceleration: Vec3d = Vec3dImpl.ZERO
+    final override var acceleration: Vec3d = KryptonVec3d.ZERO
 }

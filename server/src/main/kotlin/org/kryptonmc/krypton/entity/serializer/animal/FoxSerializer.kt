@@ -22,7 +22,7 @@ import org.kryptonmc.api.entity.animal.type.FoxVariant
 import org.kryptonmc.krypton.entity.animal.KryptonFox
 import org.kryptonmc.krypton.entity.serializer.AgeableSerializer
 import org.kryptonmc.krypton.entity.serializer.EntitySerializer
-import org.kryptonmc.krypton.util.UUIDUtil
+import org.kryptonmc.krypton.util.uuid.UUIDUtil
 import org.kryptonmc.krypton.util.nbt.addNullable
 import org.kryptonmc.krypton.util.nbt.addUUID
 import org.kryptonmc.krypton.util.nbt.putStringEnum

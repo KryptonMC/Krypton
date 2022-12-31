@@ -26,7 +26,7 @@ import org.kryptonmc.krypton.util.readVarIntByteArray
 import org.kryptonmc.krypton.util.writeNBT
 import org.kryptonmc.krypton.util.writeVarInt
 import org.kryptonmc.krypton.util.writeVarIntByteArray
-import org.kryptonmc.krypton.world.chunk.ChunkSection
+import org.kryptonmc.krypton.world.chunk.data.ChunkSection
 import org.kryptonmc.krypton.world.chunk.KryptonChunk
 import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.ImmutableCompoundTag

@@ -26,7 +26,6 @@ import java.time.ZoneOffset
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 import java.util.UUID
-import java.util.concurrent.atomic.AtomicLong
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
 
@@ -55,7 +54,7 @@ class ProfileHolderTests {
         val time = ZonedDateTime.now()
         val holder1 = ProfileHolder(PROFILE, time)
         val holder2 = ProfileHolder(PROFILE, time)
-        holder1.updateAndGetProfile(AtomicLong())
+        holder1.setLastAccess(1L)
         assertEquals(-1, holder1.compareTo(holder2))
         assertEquals(1, holder2.compareTo(holder1))
     }
@@ -65,7 +64,7 @@ class ProfileHolderTests {
         val time = ZonedDateTime.now()
         val holder1 = ProfileHolder(PROFILE, time)
         val holder2 = ProfileHolder(PROFILE, time)
-        holder2.updateAndGetProfile(AtomicLong())
+        holder2.setLastAccess(1L)
         assertEquals(1, holder1.compareTo(holder2))
         assertEquals(-1, holder2.compareTo(holder1))
     }
@@ -78,23 +77,24 @@ class ProfileHolderTests {
 
     @Test
     fun `test reading empty object with no properties`() {
-        assertNull(ProfileHolder.read(JsonReader(StringReader("{}"))))
+        assertNull(ProfileHolder.Adapter.read(JsonReader(StringReader("{}"))))
     }
 
     @Test
     fun `test reading object with all properties`() {
-        assertEquals(ProfileHolder(PROFILE, TIME), ProfileHolder.read(JsonReader(StringReader(formatToJsonString(ID, NAME, TIME_FORMATTED)))))
+        assertEquals(ProfileHolder(PROFILE, TIME),
+            ProfileHolder.Adapter.read(JsonReader(StringReader(formatToJsonString(ID, NAME, TIME_FORMATTED)))))
     }
 
     @Test
     fun `test profile holder serialization`() {
-        assertEquals(formatToJsonString(ID, NAME, TIME_FORMATTED), ProfileHolder.toJson(ProfileHolder(PROFILE, TIME)))
+        assertEquals(formatToJsonString(ID, NAME, TIME_FORMATTED), ProfileHolder.Adapter.toJson(ProfileHolder(PROFILE, TIME)))
     }
 
     @Test
     fun `test profile holder deserialization`() {
-        assertEquals(ProfileHolder(PROFILE, TIME), ProfileHolder.fromJson(formatToJsonString(ID, NAME, TIME_FORMATTED)))
-        assertNull(ProfileHolder.fromJson(formatToJsonString(ID, NAME, "adacdgadsgdgdstgas")))
+        assertEquals(ProfileHolder(PROFILE, TIME), ProfileHolder.Adapter.fromJson(formatToJsonString(ID, NAME, TIME_FORMATTED)))
+        assertNull(ProfileHolder.Adapter.fromJson(formatToJsonString(ID, NAME, "adacdgadsgdgdstgas")))
     }
 
     companion object {

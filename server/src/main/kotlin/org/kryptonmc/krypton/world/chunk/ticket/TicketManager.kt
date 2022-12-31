@@ -18,10 +18,10 @@
  */
 package org.kryptonmc.krypton.world.chunk.ticket
 
-import org.kryptonmc.krypton.util.Maths
-import org.kryptonmc.krypton.util.SortedArraySet
+import org.kryptonmc.krypton.util.math.Maths
+import org.kryptonmc.krypton.util.collection.SortedArraySet
 import org.kryptonmc.krypton.world.chunk.ChunkManager
-import org.kryptonmc.krypton.world.chunk.ChunkPos
+import org.kryptonmc.krypton.coordinate.ChunkPos
 import space.vectrix.flare.fastutil.Long2ObjectSyncMap
 import java.util.UUID
 import java.util.function.LongFunction

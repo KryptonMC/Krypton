@@ -20,6 +20,9 @@ package org.kryptonmc.krypton.shapes
 
 import it.unimi.dsi.fastutil.doubles.DoubleList
 import org.kryptonmc.api.util.Direction
+import org.kryptonmc.krypton.shapes.discrete.DiscreteVoxelShape
+import org.kryptonmc.krypton.shapes.discrete.SliceDiscreteVoxelShape
+import org.kryptonmc.krypton.shapes.util.CubePointRange
 
 class SliceShape(
     private val delegate: VoxelShape,

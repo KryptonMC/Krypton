@@ -26,8 +26,8 @@ import org.kryptonmc.api.world.GameMode
 import org.kryptonmc.api.world.World
 import org.kryptonmc.api.world.dimension.DimensionType
 import org.kryptonmc.krypton.packet.EntityPacket
-import org.kryptonmc.krypton.util.GameModes
-import org.kryptonmc.krypton.util.GlobalPos
+import org.kryptonmc.krypton.util.enumhelper.GameModes
+import org.kryptonmc.krypton.coordinate.GlobalPos
 import org.kryptonmc.krypton.util.readCollection
 import org.kryptonmc.krypton.util.readKey
 import org.kryptonmc.krypton.util.readNBT

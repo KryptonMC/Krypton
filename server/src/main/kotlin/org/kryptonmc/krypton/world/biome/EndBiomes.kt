@@ -21,6 +21,8 @@ package org.kryptonmc.krypton.world.biome
 import org.kryptonmc.api.util.Color
 import org.kryptonmc.api.world.biome.Precipitation
 import org.kryptonmc.api.world.biome.TemperatureModifier
+import org.kryptonmc.krypton.world.biome.data.KryptonAmbientMoodSettings
+import org.kryptonmc.krypton.world.biome.data.KryptonClimate
 
 object EndBiomes {
 

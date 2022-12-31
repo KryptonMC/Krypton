@@ -22,7 +22,7 @@ import com.google.common.collect.ImmutableList
 import org.kryptonmc.api.item.data.FireworkEffect
 import org.kryptonmc.api.item.meta.FireworkRocketMeta
 import org.kryptonmc.krypton.item.data.KryptonFireworkEffect
-import org.kryptonmc.krypton.util.BuilderCollection
+import org.kryptonmc.krypton.util.collection.BuilderCollection
 import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.ListTag
 import org.kryptonmc.nbt.compound

@@ -18,10 +18,11 @@
  */
 package org.kryptonmc.krypton.world.block
 
-import org.kryptonmc.krypton.shapes.CollisionContext
+import org.kryptonmc.krypton.shapes.collision.CollisionContext
 import org.kryptonmc.krypton.shapes.Shapes
 import org.kryptonmc.krypton.shapes.VoxelShape
-import org.kryptonmc.krypton.util.BlockPos
+import org.kryptonmc.krypton.coordinate.BlockPos
+import org.kryptonmc.krypton.world.block.data.RenderShape
 import org.kryptonmc.krypton.world.block.state.KryptonBlockState
 import org.kryptonmc.krypton.world.components.BlockGetter
 

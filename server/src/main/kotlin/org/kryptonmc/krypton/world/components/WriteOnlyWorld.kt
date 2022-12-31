@@ -19,7 +19,7 @@
 package org.kryptonmc.krypton.world.components
 
 import org.kryptonmc.krypton.entity.KryptonEntity
-import org.kryptonmc.krypton.util.BlockPos
+import org.kryptonmc.krypton.coordinate.BlockPos
 import org.kryptonmc.krypton.world.block.state.KryptonBlockState
 
 interface WriteOnlyWorld {

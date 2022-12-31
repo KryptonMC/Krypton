@@ -18,7 +18,7 @@
  */
 package org.kryptonmc.krypton.world.components
 
-import org.kryptonmc.krypton.util.BlockPos
+import org.kryptonmc.krypton.coordinate.BlockPos
 
 // TODO: Revise when lighting engine is implemented
 interface BrightnessGetter : BlockGetter {

@@ -28,7 +28,7 @@ import org.kryptonmc.krypton.entity.attribute.KryptonAttributeTypes
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.entity.serializer.EntitySerializer
 import org.kryptonmc.krypton.entity.serializer.animal.SheepSerializer
-import org.kryptonmc.krypton.util.DyeColors
+import org.kryptonmc.krypton.util.enumhelper.DyeColors
 import org.kryptonmc.krypton.world.KryptonWorld
 
 class KryptonSheep(world: KryptonWorld) : KryptonAnimal(world), Sheep {

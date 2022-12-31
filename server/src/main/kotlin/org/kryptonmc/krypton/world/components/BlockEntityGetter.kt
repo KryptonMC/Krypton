@@ -20,7 +20,7 @@ package org.kryptonmc.krypton.world.components
 
 import org.kryptonmc.api.block.entity.BlockEntityContainer
 import org.kryptonmc.api.block.entity.BlockEntityType
-import org.kryptonmc.krypton.util.BlockPos
+import org.kryptonmc.krypton.coordinate.BlockPos
 import org.kryptonmc.krypton.world.block.entity.KryptonBlockEntity
 
 interface BlockEntityGetter : BlockEntityContainer {

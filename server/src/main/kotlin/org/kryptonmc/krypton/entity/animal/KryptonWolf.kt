@@ -25,13 +25,13 @@ import org.kryptonmc.api.item.data.DyeColor
 import org.kryptonmc.krypton.entity.KryptonEntityType
 import org.kryptonmc.krypton.entity.KryptonEntityTypes
 import org.kryptonmc.krypton.entity.KryptonMob
-import org.kryptonmc.krypton.entity.Neutral
+import org.kryptonmc.krypton.entity.components.Neutral
 import org.kryptonmc.krypton.entity.attribute.AttributeSupplier
 import org.kryptonmc.krypton.entity.attribute.KryptonAttributeTypes
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.entity.serializer.EntitySerializer
 import org.kryptonmc.krypton.entity.serializer.animal.WolfSerializer
-import org.kryptonmc.krypton.util.DyeColors
+import org.kryptonmc.krypton.util.enumhelper.DyeColors
 import org.kryptonmc.krypton.util.provider.UniformInt
 import org.kryptonmc.krypton.world.KryptonWorld
 import java.util.UUID

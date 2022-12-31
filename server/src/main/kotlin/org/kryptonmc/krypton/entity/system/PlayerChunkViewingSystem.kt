@@ -24,8 +24,8 @@ import it.unimi.dsi.fastutil.longs.LongSet
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.packet.out.play.PacketOutSetCenterChunk
 import org.kryptonmc.krypton.packet.out.play.PacketOutUnloadChunk
-import org.kryptonmc.krypton.util.SectionPos
-import org.kryptonmc.krypton.world.chunk.ChunkPos
+import org.kryptonmc.krypton.coordinate.SectionPos
+import org.kryptonmc.krypton.coordinate.ChunkPos
 import kotlin.math.abs
 
 class PlayerChunkViewingSystem(private val player: KryptonPlayer) {

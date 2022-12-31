@@ -28,7 +28,7 @@ import org.kryptonmc.krypton.entity.KryptonEntityTypes
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.entity.serializer.EntitySerializer
 import org.kryptonmc.krypton.entity.serializer.aquatic.TropicalFishSerializer
-import org.kryptonmc.krypton.util.DyeColors
+import org.kryptonmc.krypton.util.enumhelper.DyeColors
 import org.kryptonmc.krypton.world.KryptonWorld
 import kotlin.math.min
 

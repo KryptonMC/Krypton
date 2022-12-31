@@ -22,7 +22,7 @@ import org.kryptonmc.api.entity.Hand
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.item.KryptonItemStack
 import org.kryptonmc.krypton.util.hit.BlockHitResult
-import org.kryptonmc.krypton.util.BlockPos
+import org.kryptonmc.krypton.coordinate.BlockPos
 import org.kryptonmc.krypton.world.KryptonWorld
 
 open class BlockPlaceContext protected constructor(

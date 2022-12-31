@@ -33,6 +33,7 @@ import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.kryptonmc.api.item.meta.WrittenBookMeta
+import org.kryptonmc.krypton.adventure.provider.NBTLegacyHoverEventSerializer
 import org.kryptonmc.krypton.commands.krypton.KryptonColors
 import org.kryptonmc.krypton.item.meta.KryptonWrittenBookMeta
 import org.kryptonmc.krypton.testutil.Bootstrapping

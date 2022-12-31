@@ -22,6 +22,9 @@ import net.kyori.adventure.key.Key
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.util.Supplier
 import org.kryptonmc.krypton.pack.PackResources
+import org.kryptonmc.krypton.pack.resources.reload.ReloadInstance
+import org.kryptonmc.krypton.pack.resources.reload.ReloadListener
+import org.kryptonmc.krypton.pack.resources.reload.SimpleReloadInstance
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.Executor
 import java.util.function.Predicate

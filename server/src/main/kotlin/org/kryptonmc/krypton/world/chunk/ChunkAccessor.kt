@@ -20,13 +20,16 @@ package org.kryptonmc.krypton.world.chunk
 
 import org.apache.logging.log4j.LogManager
 import org.kryptonmc.api.world.biome.Biome
-import org.kryptonmc.krypton.util.BlockPos
-import org.kryptonmc.krypton.util.Maths
-import org.kryptonmc.krypton.util.Quart
+import org.kryptonmc.krypton.coordinate.BlockPos
+import org.kryptonmc.krypton.coordinate.ChunkPos
+import org.kryptonmc.krypton.util.math.Maths
+import org.kryptonmc.krypton.coordinate.QuartPos
 import org.kryptonmc.krypton.world.components.HeightAccessor
-import org.kryptonmc.krypton.world.Heightmap
+import org.kryptonmc.krypton.world.chunk.data.Heightmap
 import org.kryptonmc.krypton.world.biome.NoiseBiomeSource
 import org.kryptonmc.krypton.world.block.state.KryptonBlockState
+import org.kryptonmc.krypton.world.chunk.data.ChunkSection
+import org.kryptonmc.krypton.world.chunk.data.ChunkStatus
 import org.kryptonmc.krypton.world.components.BlockGetter
 import java.util.EnumMap
 import java.util.EnumSet
@@ -83,10 +86,10 @@ abstract class ChunkAccessor(
     }
 
     override fun getNoiseBiome(x: Int, y: Int, z: Int): Biome {
-        val minimumQuart = Quart.fromBlock(minimumBuildHeight())
-        val maximumQuart = minimumQuart + Quart.fromBlock(height()) - 1
+        val minimumQuart = QuartPos.fromBlock(minimumBuildHeight())
+        val maximumQuart = minimumQuart + QuartPos.fromBlock(height()) - 1
         val actualY = Maths.clamp(y, minimumQuart, maximumQuart)
-        val sectionIndex = getSectionIndex(Quart.toBlock(actualY))
+        val sectionIndex = getSectionIndex(QuartPos.toBlock(actualY))
         return getSection(sectionIndex).getNoiseBiome(x and 3, actualY and 3, z and 3)
     }
 

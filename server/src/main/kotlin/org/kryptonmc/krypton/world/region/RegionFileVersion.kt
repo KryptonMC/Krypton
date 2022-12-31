@@ -19,6 +19,7 @@
 package org.kryptonmc.krypton.world.region
 
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
+import org.kryptonmc.krypton.util.FastBufferedInputStream
 import java.io.BufferedOutputStream
 import java.io.InputStream
 import java.io.OutputStream

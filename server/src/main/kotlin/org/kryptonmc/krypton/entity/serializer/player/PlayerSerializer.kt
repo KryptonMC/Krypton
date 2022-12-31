@@ -27,7 +27,7 @@ import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.entity.player.RespawnData
 import org.kryptonmc.krypton.entity.serializer.EntitySerializer
 import org.kryptonmc.krypton.entity.serializer.LivingEntitySerializer
-import org.kryptonmc.krypton.service.KryptonVanishService
+import org.kryptonmc.krypton.service.builtin.KryptonVanishService
 import org.kryptonmc.krypton.util.nbt.putDataVersion
 import org.kryptonmc.krypton.util.nbt.putUUID
 import org.kryptonmc.nbt.CompoundTag

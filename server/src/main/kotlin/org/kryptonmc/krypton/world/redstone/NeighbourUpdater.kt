@@ -19,7 +19,7 @@
 package org.kryptonmc.krypton.world.redstone
 
 import org.kryptonmc.api.util.Direction
-import org.kryptonmc.krypton.util.BlockPos
+import org.kryptonmc.krypton.coordinate.BlockPos
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.krypton.world.block.KryptonBlock
 import org.kryptonmc.krypton.world.block.state.KryptonBlockState

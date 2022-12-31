@@ -30,7 +30,7 @@ import org.kryptonmc.krypton.registry.holder.HolderSet
 import org.kryptonmc.krypton.resource.KryptonResourceKey
 import org.kryptonmc.krypton.tags.KryptonTagSet
 import org.kryptonmc.krypton.util.ImmutableLists
-import org.kryptonmc.krypton.util.IntBiMap
+import org.kryptonmc.krypton.util.map.IntBiMap
 import org.kryptonmc.krypton.util.serialization.Codecs
 import org.kryptonmc.krypton.util.successOrError
 import org.kryptonmc.serialization.Codec

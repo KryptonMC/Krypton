@@ -21,10 +21,10 @@ package org.kryptonmc.krypton.world.components
 import org.kryptonmc.api.util.Vec3i
 import org.kryptonmc.api.world.biome.Biome
 import org.kryptonmc.api.world.biome.BiomeContainer
-import org.kryptonmc.krypton.util.Quart
+import org.kryptonmc.krypton.coordinate.QuartPos
 import org.kryptonmc.krypton.world.biome.BiomeManager
 import org.kryptonmc.krypton.world.biome.NoiseBiomeSource
-import org.kryptonmc.krypton.world.chunk.ChunkStatus
+import org.kryptonmc.krypton.world.chunk.data.ChunkStatus
 
 interface BiomeGetter : ChunkGetter, BiomeContainer, NoiseBiomeSource {
 
@@ -33,7 +33,7 @@ interface BiomeGetter : ChunkGetter, BiomeContainer, NoiseBiomeSource {
     fun getUncachedNoiseBiome(x: Int, y: Int, z: Int): Biome
 
     override fun getNoiseBiome(x: Int, y: Int, z: Int): Biome =
-        getChunk(Quart.toSection(x), Quart.toSection(z), ChunkStatus.BIOMES, false)?.getNoiseBiome(x, y, z) ?: getUncachedNoiseBiome(x, y, z)
+        getChunk(QuartPos.toSection(x), QuartPos.toSection(z), ChunkStatus.BIOMES, false)?.getNoiseBiome(x, y, z) ?: getUncachedNoiseBiome(x, y, z)
 
     override fun getBiome(x: Int, y: Int, z: Int): Biome = biomeManager.getBiome(x, y, z)
 

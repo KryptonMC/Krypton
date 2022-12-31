@@ -18,7 +18,7 @@
  */
 package org.kryptonmc.krypton.testutil
 
-import org.kryptonmc.krypton.util.Bootstrap
+import org.kryptonmc.krypton.server.Bootstrap
 import java.util.concurrent.atomic.AtomicBoolean
 
 /**

@@ -27,10 +27,10 @@ import org.kryptonmc.krypton.config.category.ProxyCategory
 import org.kryptonmc.krypton.config.category.ServerCategory
 import org.kryptonmc.krypton.config.category.StatusCategory
 import org.kryptonmc.krypton.config.category.WorldCategory
-import org.kryptonmc.krypton.config.serializer.EnumSerializer
+import org.kryptonmc.krypton.config.serializer.EnumTypeSerializer
 import org.kryptonmc.krypton.config.serializer.LocaleTypeSerializer
-import org.kryptonmc.krypton.util.Difficulties
-import org.kryptonmc.krypton.util.GameModes
+import org.kryptonmc.krypton.util.enumhelper.Difficulties
+import org.kryptonmc.krypton.util.enumhelper.GameModes
 import org.spongepowered.configurate.ConfigurationOptions
 import org.spongepowered.configurate.hocon.HoconConfigurationLoader
 import org.spongepowered.configurate.kotlin.extensions.get
@@ -88,8 +88,8 @@ data class KryptonConfig(
                     .outputStringComponents(true)
                     .build()
                     .serializers())
-                builder.register(EnumSerializer.of("difficulty", Difficulties::fromId, Difficulties::fromName))
-                builder.register(EnumSerializer.of("game mode", GameModes::fromId, GameModes::fromName))
+                builder.register(EnumTypeSerializer.of("difficulty", Difficulties::fromId, Difficulties::fromName))
+                builder.register(EnumTypeSerializer.of("game mode", GameModes::fromId, GameModes::fromName))
                 builder.register(LocaleTypeSerializer)
                 builder.registerAnnotatedObjects(objectMapperFactory())
             }

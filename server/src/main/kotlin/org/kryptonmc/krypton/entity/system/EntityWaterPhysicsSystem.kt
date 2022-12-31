@@ -26,9 +26,9 @@ import org.kryptonmc.krypton.entity.KryptonEntity
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.entity.vehicle.KryptonBoat
 import org.kryptonmc.krypton.packet.out.play.PacketOutSetEntityVelocity
-import org.kryptonmc.krypton.util.BlockPos
-import org.kryptonmc.krypton.util.Maths
-import org.kryptonmc.krypton.util.Vec3dImpl
+import org.kryptonmc.krypton.coordinate.BlockPos
+import org.kryptonmc.krypton.util.math.Maths
+import org.kryptonmc.krypton.coordinate.KryptonVec3d
 import org.kryptonmc.krypton.world.block.KryptonBlocks
 import org.kryptonmc.krypton.world.fluid.KryptonFluidState
 import kotlin.math.abs
@@ -90,7 +90,7 @@ class EntityWaterPhysicsSystem(private val entity: KryptonEntity) {
         var amount = 0.0
         val pushed = entity.isPushedByFluid()
         var shouldPush = false
-        var offset = Vec3dImpl.ZERO
+        var offset = KryptonVec3d.ZERO
         var pushes = 0
         val pos = BlockPos.Mutable()
 

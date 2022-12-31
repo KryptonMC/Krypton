@@ -20,7 +20,7 @@ package org.kryptonmc.krypton.packet.out.play
 
 import io.netty.buffer.ByteBuf
 import org.kryptonmc.krypton.packet.Packet
-import org.kryptonmc.krypton.util.BlockPos
+import org.kryptonmc.krypton.coordinate.BlockPos
 import org.kryptonmc.krypton.util.readBlockPos
 import org.kryptonmc.krypton.util.writeBlockPos
 

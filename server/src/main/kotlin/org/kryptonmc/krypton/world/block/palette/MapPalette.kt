@@ -20,8 +20,8 @@ package org.kryptonmc.krypton.world.block.palette
 
 import io.netty.buffer.ByteBuf
 import org.kryptonmc.krypton.util.ByteBufExtras
-import org.kryptonmc.krypton.util.IntBiMap
-import org.kryptonmc.krypton.util.IntIdentityHashBiMap
+import org.kryptonmc.krypton.util.map.IntBiMap
+import org.kryptonmc.krypton.util.map.IntIdentityHashBiMap
 import org.kryptonmc.krypton.util.writeVarInt
 
 @JvmRecord

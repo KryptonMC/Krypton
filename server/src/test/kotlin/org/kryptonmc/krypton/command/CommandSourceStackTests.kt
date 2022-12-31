@@ -38,7 +38,7 @@ import org.kryptonmc.krypton.entity.KryptonEntity
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.testutil.Bootstrapping
 import org.kryptonmc.krypton.testutil.TestCommandSender
-import org.kryptonmc.krypton.util.Vec3dImpl
+import org.kryptonmc.krypton.coordinate.KryptonVec3d
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertNull
@@ -189,7 +189,7 @@ class CommandSourceStackTests {
 
         @JvmStatic
         private fun createSource(sender: TestCommandSender, entity: KryptonEntity?): CommandSourceStack =
-            CommandSourceStack(sender, Vec3dImpl.ZERO, 0F, 0F, mockk(), "", Component.empty(), SERVER, entity)
+            CommandSourceStack(sender, KryptonVec3d.ZERO, 0F, 0F, mockk(), "", Component.empty(), SERVER, entity)
 
         @JvmStatic
         private fun createDefaultSource(entity: KryptonEntity?): CommandSourceStack = createSource(createDefaultSender(), entity)

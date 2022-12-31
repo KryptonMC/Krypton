@@ -23,8 +23,8 @@ import org.kryptonmc.api.item.ItemTypes
 import org.kryptonmc.api.util.Vec3d
 import org.kryptonmc.krypton.shapes.Shapes
 import org.kryptonmc.krypton.shapes.VoxelShape
-import org.kryptonmc.krypton.util.BlockPos
-import org.kryptonmc.krypton.util.Vec3dImpl
+import org.kryptonmc.krypton.coordinate.BlockPos
+import org.kryptonmc.krypton.coordinate.KryptonVec3d
 import org.kryptonmc.krypton.world.block.KryptonBlocks
 import org.kryptonmc.krypton.world.block.state.KryptonBlockState
 import org.kryptonmc.krypton.world.components.BlockGetter
@@ -38,7 +38,7 @@ class EmptyFluid : KryptonFluid() {
     override val isEmpty: Boolean
         get() = true
 
-    override fun getFlow(world: BlockGetter, pos: BlockPos, state: KryptonFluidState): Vec3d = Vec3dImpl.ZERO
+    override fun getFlow(world: BlockGetter, pos: BlockPos, state: KryptonFluidState): Vec3d = KryptonVec3d.ZERO
 
     override fun getHeight(state: KryptonFluidState, world: BlockGetter, pos: BlockPos): Float = 0F
 

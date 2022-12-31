@@ -23,6 +23,8 @@ import org.kryptonmc.api.world.biome.Biome
 import org.kryptonmc.api.world.biome.BiomeEffects
 import org.kryptonmc.api.world.biome.Climate
 import org.kryptonmc.krypton.registry.KryptonRegistries
+import org.kryptonmc.krypton.world.biome.data.KryptonBiomeEffects
+import org.kryptonmc.krypton.world.biome.data.KryptonClimate
 import org.kryptonmc.serialization.Codec
 import org.kryptonmc.serialization.codecs.RecordCodecBuilder
 

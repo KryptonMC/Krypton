@@ -22,7 +22,7 @@ import kotlinx.collections.immutable.persistentListOf
 import org.junit.jupiter.api.Test
 import org.kryptonmc.api.auth.GameProfile
 import org.kryptonmc.api.auth.ProfileProperty
-import org.kryptonmc.krypton.util.MojangUUIDTypeAdapter
+import org.kryptonmc.krypton.util.uuid.MojangUUIDTypeAdapter
 import java.util.UUID
 import kotlin.test.assertEquals
 
@@ -42,12 +42,12 @@ class GameProfileJsonTests {
 
     @Test
     fun `test property serialization`() {
-        assertEquals(propertyToJsonString(PROPERTY_1), KryptonProfileProperty.toJson(PROPERTY_1))
+        assertEquals(propertyToJsonString(PROPERTY_1), KryptonProfileProperty.Adapter.toJson(PROPERTY_1))
     }
 
     @Test
     fun `test property deserialization`() {
-        assertEquals(PROPERTY_1, KryptonProfileProperty.fromJson(propertyToJsonString(PROPERTY_1)))
+        assertEquals(PROPERTY_1, KryptonProfileProperty.Adapter.fromJson(propertyToJsonString(PROPERTY_1)))
     }
 
     companion object {

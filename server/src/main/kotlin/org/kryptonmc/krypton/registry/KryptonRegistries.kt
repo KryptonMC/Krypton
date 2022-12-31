@@ -42,10 +42,10 @@ import org.kryptonmc.krypton.effect.sound.SoundLoader
 import org.kryptonmc.krypton.entity.KryptonEntityType
 import org.kryptonmc.krypton.entity.KryptonEntityTypes
 import org.kryptonmc.krypton.entity.attribute.KryptonAttributeTypes
-import org.kryptonmc.krypton.entity.memory.MemoryKey
-import org.kryptonmc.krypton.entity.memory.MemoryKeys
-import org.kryptonmc.krypton.item.Instrument
-import org.kryptonmc.krypton.item.Instruments
+import org.kryptonmc.krypton.entity.ai.memory.MemoryKey
+import org.kryptonmc.krypton.entity.ai.memory.MemoryKeys
+import org.kryptonmc.krypton.item.data.Instrument
+import org.kryptonmc.krypton.item.data.Instruments
 import org.kryptonmc.krypton.item.ItemLoader
 import org.kryptonmc.krypton.item.KryptonItemType
 import org.kryptonmc.krypton.network.chat.ChatType
@@ -61,8 +61,8 @@ import org.kryptonmc.krypton.world.biome.KryptonBiomeRegistrar
 import org.kryptonmc.krypton.world.block.KryptonBlock
 import org.kryptonmc.krypton.world.block.KryptonBlocks
 import org.kryptonmc.krypton.world.dimension.KryptonDimensionTypes
-import org.kryptonmc.krypton.world.event.GameEvent
-import org.kryptonmc.krypton.world.event.GameEvents
+import org.kryptonmc.krypton.world.gameevent.GameEvent
+import org.kryptonmc.krypton.world.gameevent.GameEvents
 import org.kryptonmc.krypton.world.fluid.KryptonFluid
 import org.kryptonmc.krypton.world.fluid.KryptonFluids
 import java.util.function.Supplier

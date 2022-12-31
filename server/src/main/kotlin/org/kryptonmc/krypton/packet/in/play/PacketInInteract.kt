@@ -21,7 +21,7 @@ package org.kryptonmc.krypton.packet.`in`.play
 import io.netty.buffer.ByteBuf
 import org.kryptonmc.api.entity.Hand
 import org.kryptonmc.krypton.network.Writable
-import org.kryptonmc.krypton.network.handlers.PlayHandler
+import org.kryptonmc.krypton.network.handlers.PlayPacketHandler
 import org.kryptonmc.krypton.packet.InboundPacket
 import org.kryptonmc.krypton.util.readEnum
 import org.kryptonmc.krypton.util.readVarInt
@@ -29,7 +29,7 @@ import org.kryptonmc.krypton.util.writeEnum
 import org.kryptonmc.krypton.util.writeVarInt
 
 @JvmRecord
-data class PacketInInteract(val entityId: Int, val action: Action, val sneaking: Boolean) : InboundPacket<PlayHandler> {
+data class PacketInInteract(val entityId: Int, val action: Action, val sneaking: Boolean) : InboundPacket<PlayPacketHandler> {
 
     constructor(buf: ByteBuf) : this(buf.readVarInt(), buf.readEnum<ActionType>().read(buf), buf.readBoolean())
 
@@ -40,7 +40,7 @@ data class PacketInInteract(val entityId: Int, val action: Action, val sneaking:
         buf.writeBoolean(sneaking)
     }
 
-    override fun handle(handler: PlayHandler) {
+    override fun handle(handler: PlayPacketHandler) {
         handler.handleInteract(this)
     }
 

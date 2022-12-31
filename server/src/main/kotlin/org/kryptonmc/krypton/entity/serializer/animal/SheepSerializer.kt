@@ -21,7 +21,7 @@ package org.kryptonmc.krypton.entity.serializer.animal
 import org.kryptonmc.krypton.entity.animal.KryptonSheep
 import org.kryptonmc.krypton.entity.serializer.AgeableSerializer
 import org.kryptonmc.krypton.entity.serializer.EntitySerializer
-import org.kryptonmc.krypton.util.DyeColors
+import org.kryptonmc.krypton.util.enumhelper.DyeColors
 import org.kryptonmc.nbt.CompoundTag
 
 object SheepSerializer : EntitySerializer<KryptonSheep> {

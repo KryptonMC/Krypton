@@ -27,7 +27,7 @@ import com.github.ajalt.clikt.parameters.types.path
 import org.apache.logging.log4j.LogManager
 import org.kryptonmc.krypton.auth.KryptonProfileCache
 import org.kryptonmc.krypton.config.KryptonConfig
-import org.kryptonmc.krypton.util.Bootstrap
+import org.kryptonmc.krypton.server.Bootstrap
 import org.kryptonmc.krypton.util.executor.DefaultUncaughtExceptionHandler
 import java.nio.file.Path
 

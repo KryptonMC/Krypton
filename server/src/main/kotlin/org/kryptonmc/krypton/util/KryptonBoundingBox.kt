@@ -19,6 +19,7 @@
 package org.kryptonmc.krypton.util
 
 import org.kryptonmc.api.util.BoundingBox
+import org.kryptonmc.krypton.util.math.Maths
 import kotlin.math.max
 import kotlin.math.min
 

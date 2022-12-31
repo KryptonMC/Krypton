@@ -19,7 +19,7 @@
 package org.kryptonmc.krypton.util.math
 
 import org.kryptonmc.api.util.Direction
-import org.kryptonmc.krypton.util.Directions
+import org.kryptonmc.krypton.util.enumhelper.Directions
 import org.kryptonmc.krypton.util.serialization.EnumCodecs
 import org.kryptonmc.serialization.Codec
 

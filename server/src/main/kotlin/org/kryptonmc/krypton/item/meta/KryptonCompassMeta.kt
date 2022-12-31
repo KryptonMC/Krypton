@@ -22,7 +22,7 @@ import org.kryptonmc.api.item.meta.CompassMeta
 import org.kryptonmc.api.resource.ResourceKey
 import org.kryptonmc.api.util.Vec3i
 import org.kryptonmc.api.world.World
-import org.kryptonmc.krypton.util.BlockPos
+import org.kryptonmc.krypton.coordinate.BlockPos
 import org.kryptonmc.krypton.util.nbt.getBlockPos
 import org.kryptonmc.krypton.util.nbt.getNullableCompound
 import org.kryptonmc.krypton.util.nbt.putBlockPos

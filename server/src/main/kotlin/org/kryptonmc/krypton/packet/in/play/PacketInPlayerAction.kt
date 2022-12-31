@@ -20,9 +20,9 @@ package org.kryptonmc.krypton.packet.`in`.play
 
 import io.netty.buffer.ByteBuf
 import org.kryptonmc.api.util.Direction
-import org.kryptonmc.krypton.network.handlers.PlayHandler
+import org.kryptonmc.krypton.network.handlers.PlayPacketHandler
 import org.kryptonmc.krypton.packet.InboundPacket
-import org.kryptonmc.krypton.util.BlockPos
+import org.kryptonmc.krypton.coordinate.BlockPos
 import org.kryptonmc.krypton.util.readEnum
 import org.kryptonmc.krypton.util.readVarInt
 import org.kryptonmc.krypton.util.readBlockPos
@@ -36,7 +36,7 @@ data class PacketInPlayerAction(
     val position: BlockPos,
     val direction: Direction,
     val sequence: Int
-) : InboundPacket<PlayHandler> {
+) : InboundPacket<PlayPacketHandler> {
 
     constructor(buf: ByteBuf) : this(buf.readEnum<Action>(), buf.readBlockPos(), buf.readEnum(), buf.readVarInt())
 
@@ -47,7 +47,7 @@ data class PacketInPlayerAction(
         buf.writeVarInt(sequence)
     }
 
-    override fun handle(handler: PlayHandler) {
+    override fun handle(handler: PlayPacketHandler) {
         handler.handlePlayerAction(this)
     }
 

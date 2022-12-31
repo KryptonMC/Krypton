@@ -28,7 +28,7 @@ import org.kryptonmc.api.world.World
 import org.kryptonmc.api.world.dimension.DimensionType
 import org.kryptonmc.krypton.registry.KryptonRegistries
 import org.kryptonmc.krypton.tags.KryptonTagKey
-import org.kryptonmc.krypton.util.Maths
+import org.kryptonmc.krypton.util.math.Maths
 import org.kryptonmc.krypton.util.provider.ConstantInt
 import org.kryptonmc.krypton.util.provider.IntProvider
 import org.kryptonmc.krypton.util.provider.UniformInt

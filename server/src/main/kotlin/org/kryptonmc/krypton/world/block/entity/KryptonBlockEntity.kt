@@ -22,7 +22,7 @@ import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.block.entity.BlockEntity
 import org.kryptonmc.api.block.entity.BlockEntityType
 import org.kryptonmc.api.world.World
-import org.kryptonmc.krypton.util.BlockPos
+import org.kryptonmc.krypton.coordinate.BlockPos
 
 abstract class KryptonBlockEntity(
     override val type: BlockEntityType<*>,

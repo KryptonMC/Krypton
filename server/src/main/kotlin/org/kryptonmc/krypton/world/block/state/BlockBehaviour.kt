@@ -37,25 +37,25 @@ import org.kryptonmc.krypton.item.KryptonItemStack
 import org.kryptonmc.krypton.item.KryptonItemType
 import org.kryptonmc.krypton.item.context.BlockPlaceContext
 import org.kryptonmc.krypton.registry.KryptonRegistries
-import org.kryptonmc.krypton.shapes.CollisionContext
+import org.kryptonmc.krypton.shapes.collision.CollisionContext
 import org.kryptonmc.krypton.shapes.Shapes
 import org.kryptonmc.krypton.shapes.VoxelShape
 import org.kryptonmc.krypton.state.KryptonState
 import org.kryptonmc.krypton.state.StateDelegate
 import org.kryptonmc.krypton.state.property.KryptonProperty
 import org.kryptonmc.krypton.util.hit.BlockHitResult
-import org.kryptonmc.krypton.util.BlockPos
+import org.kryptonmc.krypton.coordinate.BlockPos
 import org.kryptonmc.krypton.util.InteractionResult
-import org.kryptonmc.krypton.util.Maths
-import org.kryptonmc.krypton.util.Vec3dImpl
+import org.kryptonmc.krypton.util.math.Maths
+import org.kryptonmc.krypton.coordinate.KryptonVec3d
 import org.kryptonmc.krypton.util.math.Mirror
 import org.kryptonmc.krypton.util.math.Rotation
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.krypton.world.components.WorldAccessor
-import org.kryptonmc.krypton.world.block.BlockSoundGroups
+import org.kryptonmc.krypton.world.block.data.BlockSoundGroups
 import org.kryptonmc.krypton.world.block.KryptonBlock
-import org.kryptonmc.krypton.world.block.RenderShape
-import org.kryptonmc.krypton.world.block.SupportType
+import org.kryptonmc.krypton.world.block.data.RenderShape
+import org.kryptonmc.krypton.world.block.data.SupportType
 import org.kryptonmc.krypton.world.block.state.BlockBehaviour.StateArgumentPredicate
 import org.kryptonmc.krypton.world.block.state.BlockBehaviour.StatePredicate
 import org.kryptonmc.krypton.world.components.BlockGetter
@@ -190,7 +190,8 @@ abstract class BlockBehaviour(protected val properties: Properties) : Block, Fea
     }
 
     open fun updateShape(state: KryptonBlockState, direction: Direction, neighbour: KryptonBlockState, world: BlockGetter,
-                         currentPos: BlockPos, neighbourPos: BlockPos): KryptonBlockState = state
+                         currentPos: BlockPos, neighbourPos: BlockPos
+    ): KryptonBlockState = state
 
     // ==============================
     // Redstone stuff
@@ -377,13 +378,13 @@ abstract class BlockBehaviour(protected val properties: Properties) : Block, Fea
             KryptonBlock.isFaceFull(getCollisionShape(world, pos, CollisionContext.of(entity)), face)
 
         fun getOffset(world: BlockGetter, pos: BlockPos): Vec3d {
-            if (offsetType == OffsetType.NONE) return Vec3dImpl.ZERO
+            if (offsetType == OffsetType.NONE) return KryptonVec3d.ZERO
             val seed = Maths.getSeed(pos)
             val maxHorizontalOffset = block.maximumHorizontalOffset().toDouble()
             val offsetX = Maths.clamp(((seed and 15L) / 15F - 0.5) * 0.5, -maxHorizontalOffset, maxHorizontalOffset)
             val offsetY = if (offsetType == OffsetType.XYZ) ((seed shr 4 and 15L) / 15F - 1.0) * block.maximumVerticalOffset() else 0.0
             val offsetZ = Maths.clamp(((seed shr 8 and 15) / 15F - 0.5) * 0.5, -maxHorizontalOffset, maxHorizontalOffset)
-            return Vec3dImpl(offsetX, offsetY, offsetZ)
+            return KryptonVec3d(offsetX, offsetY, offsetZ)
         }
 
         fun triggerEvent(world: KryptonWorld, pos: BlockPos, id: Int, parameter: Int): Boolean =
@@ -439,7 +440,8 @@ abstract class BlockBehaviour(protected val properties: Properties) : Block, Fea
         fun isSuffocating(world: BlockGetter, pos: BlockPos): Boolean = isSuffocating.test(asState(), world, pos)
 
         fun updateShape(direction: Direction, neighbour: KryptonBlockState, world: BlockGetter,
-                        currentPos: BlockPos, neighbourPos: BlockPos): KryptonBlockState {
+                        currentPos: BlockPos, neighbourPos: BlockPos
+        ): KryptonBlockState {
             return block.updateShape(asState(), direction, neighbour, world, currentPos, neighbourPos)
         }
 

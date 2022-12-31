@@ -18,7 +18,7 @@
  */
 package org.kryptonmc.krypton.util.nbt
 
-import org.kryptonmc.krypton.util.UUIDUtil
+import org.kryptonmc.krypton.util.uuid.UUIDUtil
 import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.IntArrayTag
 import org.kryptonmc.nbt.ListTag

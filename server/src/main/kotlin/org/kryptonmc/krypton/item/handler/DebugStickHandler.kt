@@ -25,11 +25,11 @@ import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.item.KryptonItemStack
 import org.kryptonmc.krypton.registry.KryptonRegistries
 import org.kryptonmc.krypton.state.property.KryptonProperty
-import org.kryptonmc.krypton.util.BlockPos
-import org.kryptonmc.krypton.util.Iterables
+import org.kryptonmc.krypton.coordinate.BlockPos
+import org.kryptonmc.krypton.util.collection.Iterables
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.krypton.world.block.state.KryptonBlockState
-import org.kryptonmc.krypton.world.chunk.SetBlockFlag
+import org.kryptonmc.krypton.world.chunk.flag.SetBlockFlag
 import java.util.function.Consumer
 
 object DebugStickHandler : ItemHandler {

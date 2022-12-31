@@ -18,8 +18,8 @@
  */
 package org.kryptonmc.krypton.world.components
 
-import org.kryptonmc.krypton.util.BlockPos
-import org.kryptonmc.krypton.util.SectionPos
+import org.kryptonmc.krypton.coordinate.BlockPos
+import org.kryptonmc.krypton.coordinate.SectionPos
 
 interface HeightAccessor {
 

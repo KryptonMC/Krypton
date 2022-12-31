@@ -23,14 +23,14 @@ import org.kryptonmc.api.registry.Registry
 import org.kryptonmc.api.registry.RegistryRoots
 import org.kryptonmc.api.resource.ResourceKey
 import org.kryptonmc.krypton.entity.KryptonEntityType
-import org.kryptonmc.krypton.entity.memory.MemoryKey
-import org.kryptonmc.krypton.item.Instrument
+import org.kryptonmc.krypton.entity.ai.memory.MemoryKey
+import org.kryptonmc.krypton.item.data.Instrument
 import org.kryptonmc.krypton.item.KryptonItemType
 import org.kryptonmc.krypton.network.chat.ChatType
 import org.kryptonmc.krypton.registry.WritableRegistry
 import org.kryptonmc.krypton.util.provider.IntProviderType
 import org.kryptonmc.krypton.world.block.KryptonBlock
-import org.kryptonmc.krypton.world.event.GameEvent
+import org.kryptonmc.krypton.world.gameevent.GameEvent
 import org.kryptonmc.krypton.world.fluid.KryptonFluid
 
 object KryptonResourceKeys {

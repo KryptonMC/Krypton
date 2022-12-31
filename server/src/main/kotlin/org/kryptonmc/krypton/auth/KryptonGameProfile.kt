@@ -26,10 +26,10 @@ import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toPersistentList
 import org.kryptonmc.api.auth.GameProfile
 import org.kryptonmc.api.auth.ProfileProperty
-import org.kryptonmc.krypton.util.MojangUUIDTypeAdapter
-import org.kryptonmc.krypton.util.UUIDUtil
-import org.kryptonmc.krypton.util.array
-import org.kryptonmc.krypton.util.readListTo
+import org.kryptonmc.krypton.util.uuid.MojangUUIDTypeAdapter
+import org.kryptonmc.krypton.util.uuid.UUIDUtil
+import org.kryptonmc.krypton.util.gson.array
+import org.kryptonmc.krypton.util.gson.readListTo
 import java.util.UUID
 
 class KryptonGameProfile private constructor(
@@ -76,7 +76,7 @@ class KryptonGameProfile private constructor(
                 when (reader.nextName()) {
                     "id" -> uuid = MojangUUIDTypeAdapter.read(reader)
                     "name" -> name = reader.nextString()
-                    "properties" -> reader.readListTo(properties, KryptonProfileProperty::read)
+                    "properties" -> reader.readListTo(properties, KryptonProfileProperty.Adapter::read)
                 }
             }
 
@@ -94,7 +94,7 @@ class KryptonGameProfile private constructor(
 
             if (value.properties.isNotEmpty()) {
                 writer.name("properties")
-                writer.array(value.properties, KryptonProfileProperty::write)
+                writer.array(value.properties, KryptonProfileProperty.Adapter::write)
             }
             writer.endObject()
         }
@@ -103,10 +103,10 @@ class KryptonGameProfile private constructor(
     companion object {
 
         @JvmStatic
-        fun partial(name: String): GameProfile = KryptonGameProfile(UUIDUtil.NIL_UUID, name, persistentListOf())
+        fun partial(name: String): GameProfile = basic(UUIDUtil.NIL_UUID, name)
 
         @JvmStatic
-        fun partial(uuid: UUID): GameProfile = KryptonGameProfile(uuid, "", persistentListOf())
+        fun partial(uuid: UUID): GameProfile = basic(uuid, "")
 
         @JvmStatic
         fun basic(uuid: UUID, name: String): GameProfile = KryptonGameProfile(uuid, name, persistentListOf())
