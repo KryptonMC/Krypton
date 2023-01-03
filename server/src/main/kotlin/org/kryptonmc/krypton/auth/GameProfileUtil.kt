@@ -68,10 +68,8 @@ object GameProfileUtil {
         if (profile == null) data else data.put(key, serialize(profile))
 
     @JvmStatic
-    fun putProfile(data: CompoundTag.Builder, key: String, profile: GameProfile?): CompoundTag.Builder {
-        if (profile != null) data.put(key, serialize(profile))
-        return data
-    }
+    fun putProfile(data: CompoundTag.Builder, key: String, profile: GameProfile?): CompoundTag.Builder =
+        if (profile == null) data else data.put(key, serialize(profile))
 
     @JvmStatic
     fun serialize(profile: GameProfile): CompoundTag {

@@ -16,34 +16,38 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.auth
+package org.kryptonmc.krypton.entity.attribute
 
-import kotlinx.collections.immutable.persistentListOf
-import nl.jqno.equalsverifier.EqualsVerifier
 import org.junit.jupiter.api.Test
+import org.kryptonmc.api.entity.attribute.BasicModifierOperation
+import org.kryptonmc.api.entity.attribute.ModifierOperation
 import java.util.UUID
 import kotlin.test.assertEquals
 
-class GameProfileTests {
+class AttributeTest {
 
     @Test
-    fun `verify equals and hash code`() {
-        EqualsVerifier.forClass(KryptonGameProfile::class.java).verify()
+    fun `ensure add produces correct result`() {
+        assertEquals(9.0, BasicModifierOperation.ADDITION.apply(BASE, MODIFIERS))
     }
 
     @Test
-    fun `verify to string consistency`() {
-        assertEquals("GameProfile(uuid=$ID, name=$NAME, properties=$PROPERTIES)", PROFILE.toString())
+    fun `ensure multiply base produces correct result`() {
+        assertEquals(21.0, BasicModifierOperation.MULTIPLY_BASE.apply(BASE, MODIFIERS))
+    }
+
+    @Test
+    fun `ensure multiply total produces correct result`() {
+        assertEquals(45.0, BasicModifierOperation.MULTIPLY_TOTAL.apply(BASE, MODIFIERS))
     }
 
     companion object {
 
-        private val ID = UUID.fromString("12345678-1234-1234-1234-123456789012")
-        private const val NAME = "Dave"
-        private val PROPERTIES = persistentListOf(
-            KryptonProfileProperty("Hello", "World", "aaaabbbbccccdddd"),
-            KryptonProfileProperty("World", "Hello", "ddddccccbbbbaaaa"),
+        private const val BASE = 3.0
+        private val OPERATION = ModifierOperation { _, _ -> 0.0 }
+        private val MODIFIERS = setOf(
+            KryptonAttributeModifier(UUID.randomUUID(), "1", 2.0, OPERATION),
+            KryptonAttributeModifier(UUID.randomUUID(), "2", 4.0, OPERATION)
         )
-        private val PROFILE = KryptonGameProfile.full(ID, NAME, PROPERTIES)
     }
 }

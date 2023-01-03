@@ -28,14 +28,14 @@ import org.kryptonmc.api.event.EventManager
 import org.kryptonmc.api.event.EventTask
 import org.kryptonmc.api.event.Listener
 import org.kryptonmc.api.event.registerHandler
-import org.kryptonmc.krypton.event.RegistrationTests.EventGenerator
-import org.kryptonmc.krypton.event.RegistrationTests.TestFunction
+import org.kryptonmc.krypton.event.RegistrationTest.EventGenerator
+import org.kryptonmc.krypton.event.RegistrationTest.TestFunction
 import org.kryptonmc.krypton.testutil.MockPluginManager
 import kotlin.properties.Delegates
 import kotlin.test.assertEquals
 import kotlin.test.assertSame
 
-class RegistrationTests {
+class RegistrationTest {
 
     private var eventManager: EventManager by Delegates.notNull()
 

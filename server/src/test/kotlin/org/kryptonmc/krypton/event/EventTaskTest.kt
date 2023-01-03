@@ -27,24 +27,24 @@ import java.util.concurrent.atomic.AtomicIntegerFieldUpdater
 import java.util.function.Consumer
 import kotlin.test.assertTrue
 
-class EventTaskTests {
+class EventTaskTest {
 
     @Test
-    fun `test resume when complete normal`() {
+    fun `ensure resume when complete normal`() {
         val continuation = WitnessContinuation()
         EventTask.resumeWhenComplete(CompletableFuture.completedFuture(null)).execute(continuation)
         assertTrue(continuation.completedSuccessfully(), "Completed future did not complete successfully!")
     }
 
     @Test
-    fun `test resume when complete exception`() {
+    fun `ensure resume when complete exception`() {
         val continuation = WitnessContinuation()
         EventTask.resumeWhenComplete(CompletableFuture.failedFuture<Void>(Throwable())).execute(continuation)
         assertTrue(continuation.completedWithError(), "Failed future completed successfully!")
     }
 
     @Test
-    fun `test resume when complete from other thread`() {
+    fun `ensure resume when complete from other thread`() {
         val latch = CountDownLatch(1)
         val continuation = WitnessContinuation { latch.countDown() }
         EventTask.resumeWhenComplete(CompletableFuture.supplyAsync<Void> { null }).execute(continuation)
@@ -53,7 +53,7 @@ class EventTaskTests {
     }
 
     @Test
-    fun `test resume when failed from other thread`() {
+    fun `ensure resume when failed from other thread`() {
         val latch = CountDownLatch(1)
         val continuation = WitnessContinuation { latch.countDown() }
         EventTask.resumeWhenComplete(CompletableFuture.supplyAsync<Void> { throw RuntimeException() }).execute(continuation)
@@ -62,7 +62,7 @@ class EventTaskTests {
     }
 
     @Test
-    fun `test resume when complex chain failed from other thread`() {
+    fun `ensure resume when complex chain failed from other thread`() {
         val latch = CountDownLatch(1)
         val continuation = WitnessContinuation { latch.countDown() }
         val async = CompletableFuture.supplyAsync<Void> { null }

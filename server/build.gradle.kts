@@ -69,6 +69,7 @@ dependencies {
     testImplementation(projects.internalAnnotations)
     testImplementation(libs.equalsVerifier)
     pitest(libs.arcmutateKotlin)
+    testImplementation(libs.jsonassert)
 }
 
 license {

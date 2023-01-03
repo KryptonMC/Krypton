@@ -26,20 +26,50 @@ import org.kryptonmc.api.effect.particle.ParticleTypes
 import org.kryptonmc.krypton.effect.particle.data.KryptonNoteParticleData
 import org.kryptonmc.krypton.testutil.Bootstrapping
 
-class ParticleEffectTests {
+class NoteParticleDataTest {
 
     @Test
-    fun `test bounds`() {
-        assertThrows<IllegalArgumentException> { KryptonNoteParticleData(100) }
+    fun `ensure creating note particle data with note over 24 fails`() {
+        assertThrows<IllegalArgumentException> { KryptonNoteParticleData(25) }
+    }
+
+    @Test
+    fun `ensure creating note particle data with note under 0 fails`() {
+        assertThrows<IllegalArgumentException> { KryptonNoteParticleData(-1) }
+    }
+
+    @Test
+    fun `ensure creating note particle data with note of 0 succeeds`() {
         assertDoesNotThrow { KryptonNoteParticleData(0) }
+    }
+
+    @Test
+    fun `ensure creating note particle data with note of 24 succeeds`() {
         assertDoesNotThrow { KryptonNoteParticleData(24) }
     }
 
     @Test
-    fun `test note disallows values outside of range`() {
+    fun `ensure setting note of particle builder with note over 24 fails`() {
         val note = ParticleTypes.NOTE.get().builder()
         assertThrows<IllegalArgumentException> { note.note(25) }
+    }
+
+    @Test
+    fun `ensure setting note of particle builder with note under 0 fails`() {
+        val note = ParticleTypes.NOTE.get().builder()
         assertThrows<IllegalArgumentException> { note.note(-1) }
+    }
+
+    @Test
+    fun `ensure setting note of particle builder with note of 0 succeeds`() {
+        val note = ParticleTypes.NOTE.get().builder()
+        assertDoesNotThrow { note.note(0) }
+    }
+
+    @Test
+    fun `ensure setting note of particle builder with note of 24 succeeds`() {
+        val note = ParticleTypes.NOTE.get().builder()
+        assertDoesNotThrow { note.note(24) }
     }
 
     companion object {

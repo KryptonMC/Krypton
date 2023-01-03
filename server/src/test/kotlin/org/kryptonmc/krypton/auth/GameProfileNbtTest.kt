@@ -27,30 +27,38 @@ import java.util.UUID
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertNull
-import kotlin.test.assertTrue
+import kotlin.test.assertSame
 
-class GameProfileNbtTests {
+class GameProfileNbtTest {
 
     @Test
-    fun `test compound tag to profile is null when no name and id`() {
+    fun `ensure empty compound tag deserializes to null`() {
         assertNull(GameProfileUtil.deserialize(CompoundTag.EMPTY))
-        val nameNoId = ImmutableCompoundTag.builder().putString("Name", NAME).build()
-        assertNull(GameProfileUtil.deserialize(nameNoId))
-        val idNoName = ImmutableCompoundTag.builder().putUUID("Id", ID).build()
-        assertNull(GameProfileUtil.deserialize(idNoName))
     }
 
     @Test
-    fun `test compound tag to profile without properties`() {
+    fun `ensure compound tag with no id deserializes to null`() {
+        assertNull(GameProfileUtil.deserialize(ImmutableCompoundTag.builder().putString("Name", NAME).build()))
+    }
+
+    @Test
+    fun `ensure compound tag with no name deserializes to null`() {
+        assertNull(GameProfileUtil.deserialize(ImmutableCompoundTag.builder().putUUID("Id", ID).build()))
+    }
+
+    @Test
+    fun `ensure compound tag with no properties deserializes to non null`() {
+        assertNotNull(GameProfileUtil.deserialize(ImmutableCompoundTag.builder().putUUID("Id", ID).putString("Name", NAME).build()))
+    }
+
+    @Test
+    fun `ensure compound tag with no properties deserializes correctly`() {
         val input = ImmutableCompoundTag.builder().putUUID("Id", ID).putString("Name", NAME).build()
-        val profile = assertNotNull(GameProfileUtil.deserialize(input))
-        assertEquals(NAME, profile.name)
-        assertEquals(ID, profile.uuid)
-        assertTrue(profile.properties.isEmpty())
+        assertEquals(KryptonGameProfile.basic(ID, NAME), GameProfileUtil.deserialize(input))
     }
 
     @Test
-    fun `test compound tag to profile with properties`() {
+    fun `ensure compound tag with properties deserializes to non null`() {
         val input = ImmutableCompoundTag.builder()
             .putUUID("Id", ID)
             .putString("Name", NAME)
@@ -60,37 +68,47 @@ class GameProfileNbtTests {
                 }
             }
             .build()
-        val profile = assertNotNull(GameProfileUtil.deserialize(input))
-        assertEquals(NAME, profile.name)
-        assertEquals(ID, profile.uuid)
-        assertEquals(1, profile.properties.size)
-        val property = profile.properties.get(0)
-        assertEquals("textures", property.name)
-        assertEquals(TEXTURE_VALUE, property.value)
-        assertEquals(TEXTURE_SIGNATURE, property.signature)
+        assertNotNull(GameProfileUtil.deserialize(input))
     }
 
     @Test
-    fun `test put with null profile returns input compound tag`() {
-        assertEquals(CompoundTag.EMPTY, GameProfileUtil.putProfile(CompoundTag.EMPTY, "does_not_matter", null))
+    fun `ensure compound tag with properties deserializes correctly`() {
+        val input = ImmutableCompoundTag.builder()
+            .putUUID("Id", ID)
+            .putString("Name", NAME)
+            .putCompound("Properties") { properties ->
+                properties.putList("textures") { textures ->
+                    textures.add(createTextureCompound())
+                }
+            }
+            .build()
+        assertEquals(KryptonGameProfile.full(ID, NAME, persistentListOf(TEXTURE_PROPERTY)), GameProfileUtil.deserialize(input))
+    }
+
+    @Test
+    fun `ensure put with empty compound and null profile always returns empty compound`() {
+        assertSame(CompoundTag.EMPTY, GameProfileUtil.putProfile(CompoundTag.EMPTY, "does_not_matter", null))
+    }
+
+    @Test
+    fun `ensure put with non empty compound and null profile always returns input`() {
         val input = ImmutableCompoundTag.builder().putString("does_not_matter", "does_not_matter").build()
-        assertEquals(input, GameProfileUtil.putProfile(input, "does_not_matter", null))
+        assertSame(input, GameProfileUtil.putProfile(input, "does_not_matter", null))
     }
 
     @Test
-    fun `test put with profile no properties`() {
-        val profile = KryptonGameProfile.basic(ID, NAME)
+    fun `ensure put with basic profile outputs correct nbt`() {
         val output = ImmutableCompoundTag.builder()
             .put("profile", ImmutableCompoundTag.builder()
                 .putUUID("Id", ID)
                 .putString("Name", NAME)
                 .build())
             .build()
-        assertEquals(output, GameProfileUtil.putProfile(CompoundTag.EMPTY, "profile", profile))
+        assertEquals(output, GameProfileUtil.putProfile(CompoundTag.EMPTY, "profile", KryptonGameProfile.basic(ID, NAME)))
     }
 
     @Test
-    fun `test put with profile with properties`() {
+    fun `ensure put with full profile outputs correct nbt`() {
         val profile = KryptonGameProfile.full(ID, NAME, persistentListOf(KryptonProfileProperty("textures", TEXTURE_VALUE, TEXTURE_SIGNATURE)))
         val output = ImmutableCompoundTag.builder()
             .put("profile", ImmutableCompoundTag.builder()
@@ -106,12 +124,19 @@ class GameProfileNbtTests {
         assertEquals(output, GameProfileUtil.putProfile(CompoundTag.EMPTY, "profile", profile))
     }
 
+    @Test
+    fun `ensure get with legacy string name deserializes correctly`() {
+        val input = ImmutableCompoundTag.builder().putString("profile", NAME).build()
+        assertEquals(KryptonGameProfile.partial(NAME), GameProfileUtil.getProfile(input, "profile"))
+    }
+
     companion object {
 
         private val ID = UUID.randomUUID()
         private const val NAME = "BomBardyGamer"
         private const val TEXTURE_VALUE = "aaaabbbbccccddddeeeeffffgggghhhh"
         private const val TEXTURE_SIGNATURE = "9a0417016f345c934a1a88f55ca17c05014eeeba" // above text in SHA-1
+        private val TEXTURE_PROPERTY = KryptonProfileProperty("textures", TEXTURE_VALUE, TEXTURE_SIGNATURE)
 
         @JvmStatic
         private fun createTextureCompound(): CompoundTag = ImmutableCompoundTag.builder()

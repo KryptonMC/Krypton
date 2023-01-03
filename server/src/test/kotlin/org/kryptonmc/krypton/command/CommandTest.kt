@@ -39,7 +39,7 @@ import org.kryptonmc.krypton.coordinate.KryptonVec3d
 import java.util.concurrent.locks.ReentrantLock
 import kotlin.test.assertEquals
 
-class CommandTests {
+class CommandTest {
 
     @Test
     fun `test api command nodes work with implementation types`() {

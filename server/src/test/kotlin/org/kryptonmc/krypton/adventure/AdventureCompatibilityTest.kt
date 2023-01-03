@@ -16,38 +16,23 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.entity.attribute
+package org.kryptonmc.krypton.adventure
 
+import net.kyori.adventure.text.format.NamedTextColor
 import org.junit.jupiter.api.Test
-import org.kryptonmc.api.entity.attribute.BasicModifierOperation
-import org.kryptonmc.api.entity.attribute.ModifierOperation
-import java.util.UUID
+import org.kryptonmc.krypton.util.Reflection
 import kotlin.test.assertEquals
 
-class AttributeTests {
+/*
+ * The tests in this class ensure things in the internals do not break, to avoid us becoming incompatible after an update.
+ */
+class AdventureCompatibilityTest {
 
     @Test
-    fun add() {
-        assertEquals(9.0, BasicModifierOperation.ADDITION.apply(BASE, MODIFIERS))
-    }
-
-    @Test
-    fun `multiply base`() {
-        assertEquals(21.0, BasicModifierOperation.MULTIPLY_BASE.apply(BASE, MODIFIERS))
-    }
-
-    @Test
-    fun `multiply total`() {
-        assertEquals(45.0, BasicModifierOperation.MULTIPLY_TOTAL.apply(BASE, MODIFIERS))
-    }
-
-    companion object {
-
-        private const val BASE = 3.0
-        private val OPERATION = ModifierOperation { _, _ -> 0.0 }
-        private val MODIFIERS = setOf(
-            KryptonAttributeModifier(UUID.randomUUID(), "1", 2.0, OPERATION),
-            KryptonAttributeModifier(UUID.randomUUID(), "2", 4.0, OPERATION)
-        )
+    fun `verify ids do not break on update`() {
+        // TODO: Change the internals of `getColorId` to stop using reflection, so this test actually means something.
+        // The problem with this test is that the internals use this values list, so we won't end up testing anything.
+        val values = Reflection.accessField<NamedTextColor, List<NamedTextColor>>("VALUES")
+        values.forEachIndexed { index, element -> assertEquals(index, KryptonAdventure.getColorId(element)) }
     }
 }

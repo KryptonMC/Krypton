@@ -23,7 +23,7 @@ import org.junit.jupiter.api.Test
 import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.ImmutableCompoundTag
 
-class ItemMetaTests {
+class ItemMetaTest {
 
     @Test
     fun `verify equals and hash code`() {

@@ -16,31 +16,34 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.util
+package org.kryptonmc.krypton.adventure
 
+import net.kyori.adventure.text.Component
+import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
+import org.kryptonmc.krypton.testutil.Bootstrapping
 import kotlin.test.assertEquals
 
-class BoundingBoxTests {
+class TranslatableFlatteningTest {
 
     @Test
-    fun `test size of box calculations`() {
-        val box = KryptonBoundingBox(-3.0, -3.0, -3.0, 3.0, 3.0, 3.0)
-        assertEquals(6.0, box.size)
+    fun `ensure translates language name using Minecraft translations`() {
+        var called = false
+        KryptonAdventure.FLATTENER.flatten(Component.translatable("language.name")) {
+            called = true
+            assertEquals("English", it)
+        }
+        // This just verifies that the assertion is called, and ensures the test fails when the assertion isn't called, as that means we have a
+        // broken test.
+        check(called) { "Flattener listener was not called! This is an error with the test!" }
     }
 
-    @Test
-    fun `test volume calculation`() {
-        val box = KryptonBoundingBox(-3.0, -3.0, -3.0, 3.0, 3.0, 3.0)
-        val expectedVolume = 6.0 * 6.0 * 6.0 // size.x * size.y * size.z
-        assertEquals(expectedVolume, box.volume)
-    }
+    companion object {
 
-    @Test
-    fun `test center calculation`() {
-        val box = KryptonBoundingBox(-3.0, -3.0, -3.0, 3.0, 3.0, 3.0)
-        assertEquals(0.0, box.centerX)
-        assertEquals(0.0, box.centerY)
-        assertEquals(0.0, box.centerZ)
+        @JvmStatic
+        @BeforeAll
+        fun `load translations and factories`() {
+            Bootstrapping.loadTranslations()
+        }
     }
 }

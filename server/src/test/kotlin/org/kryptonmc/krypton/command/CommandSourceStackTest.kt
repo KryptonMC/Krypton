@@ -27,13 +27,11 @@ import io.mockk.spyk
 import io.mockk.verify
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
-import net.kyori.adventure.util.TriState
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.kryptonmc.api.permission.PermissionFunction
 import org.kryptonmc.krypton.KryptonServer
-import org.kryptonmc.krypton.commands.KryptonPermission
 import org.kryptonmc.krypton.entity.KryptonEntity
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.testutil.Bootstrapping
@@ -44,7 +42,7 @@ import kotlin.test.assertFalse
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
-class CommandSourceStackTests {
+class CommandSourceStackTest {
 
     @Test
     fun `ensure to entity throws when entity is null`() {
@@ -53,39 +51,45 @@ class CommandSourceStackTests {
     }
 
     @Test
-    fun `test player conversions when entity is not player`() {
+    fun `ensure is player returns false when entity is not player`() {
         val source = createDefaultSource(mockk())
         assertFalse(source.isPlayer())
+    }
+
+    @Test
+    fun `ensure get player returns null when entity is not player`() {
+        val source = createDefaultSource(mockk())
         assertNull(source.getPlayer())
+    }
+
+    @Test
+    fun `ensure get player or error throws error when entity is not player`() {
+        val source = createDefaultSource(mockk())
         assertThrows<CommandSyntaxException> { source.getPlayerOrError() }
     }
 
     @Test
-    fun `test player conversions with player entity`() {
+    fun `ensure is player returns true when entity is player`() {
+        val source = createDefaultSource(mockk<KryptonPlayer>())
+        assertTrue(source.isPlayer())
+    }
+
+    @Test
+    fun `ensure get player returns player when entity is player`() {
         val player = mockk<KryptonPlayer>()
         val source = createDefaultSource(player)
-        assertTrue(source.isPlayer())
         assertEquals(player, source.getPlayer())
+    }
+
+    @Test
+    fun `ensure get player or error returns player when entity is player`() {
+        val player = mockk<KryptonPlayer>()
+        val source = createDefaultSource(player)
         assertEquals(player, source.getPlayerOrError())
     }
 
     @Test
-    fun `test permission checks delegate properly`() {
-        val permissions = PermissionFunction {
-            when (it) {
-                KryptonPermission.GAME_MODE.node -> TriState.TRUE
-                KryptonPermission.BROADCAST_ADMIN.node -> TriState.FALSE
-                else -> TriState.NOT_SET
-            }
-        }
-        val source = createSource(createSender(true, true, true, permissions), null)
-        assertTrue(source.hasPermission(KryptonPermission.GAME_MODE))
-        assertFalse(source.hasPermission(KryptonPermission.BROADCAST_ADMIN))
-        assertFalse(source.hasPermission(KryptonPermission.BAN))
-    }
-
-    @Test
-    fun `test system messages send to sender if player is null`() {
+    fun `ensure system messages send to sender if player is null`() {
         val sender = createDefaultSender()
         val source = createSource(sender, null)
         val message = Component.text("Hello World!")
@@ -94,7 +98,7 @@ class CommandSourceStackTests {
     }
 
     @Test
-    fun `test system messages send to player if not null`() {
+    fun `ensure system messages send to player if not null`() {
         var sentMessage: Component? = null
         val player = mockk<KryptonPlayer> {
             every { sendSystemMessage(any()) } answers { sentMessage = arg(0) }
@@ -106,7 +110,7 @@ class CommandSourceStackTests {
     }
 
     @Test
-    fun `test success sent to sender if accepts`() {
+    fun `ensure success sent to sender if accepts`() {
         val sender = createSender(true, false, false, PermissionFunction.ALWAYS_TRUE)
         val source = createSource(sender, null)
         val message = Component.text("Hello World!")
@@ -115,7 +119,7 @@ class CommandSourceStackTests {
     }
 
     @Test
-    fun `test success not sent to sender if not accepts`() {
+    fun `ensure success not sent to sender if not accepts`() {
         val sender = createSender(false, false, false, PermissionFunction.ALWAYS_TRUE)
         val source = createSource(sender, null)
         val message = Component.text("Hello World!")
@@ -124,7 +128,7 @@ class CommandSourceStackTests {
     }
 
     @Test
-    fun `test success sent to admins if logging and inform`() {
+    fun `ensure success sent to admins if logging and inform`() {
         val source = createSendSuccessToAdminsSource(true)
         val message = Component.text("Hello World!")
         source.sendSuccess(message, true)
@@ -132,7 +136,7 @@ class CommandSourceStackTests {
     }
 
     @Test
-    fun `test success not sent to admins if not logging or inform`() {
+    fun `ensure success not sent to admins if not logging or inform`() {
         val message = Component.text("Hello World!")
 
         val informSource = createSendSuccessToAdminsSource(true)
@@ -152,7 +156,7 @@ class CommandSourceStackTests {
     }
 
     @Test
-    fun `test failure sent to sender if accepts`() {
+    fun `ensure failure sent to sender if accepts`() {
         val sender = createSender(false, true, false, PermissionFunction.ALWAYS_TRUE)
         val source = createSource(sender, null)
         val message = Component.text("Hello World!")
@@ -161,7 +165,7 @@ class CommandSourceStackTests {
     }
 
     @Test
-    fun `test failure not sent to sender if not accepts`() {
+    fun `ensure failure not sent to sender if not accepts`() {
         val sender = createSender(false, false, false, PermissionFunction.ALWAYS_TRUE)
         val source = createSource(sender, null)
         val message = Component.text("Hello World!")

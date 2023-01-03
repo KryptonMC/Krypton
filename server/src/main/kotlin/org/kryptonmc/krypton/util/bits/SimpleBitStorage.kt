@@ -155,11 +155,8 @@ class SimpleBitStorage(override val bits: Int, size: Int, data: LongArray? = nul
 
     fun isNotEmpty(): Boolean = !isEmpty()
 
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-        return bits == (other as SimpleBitStorage).bits && size == other.size && data.contentEquals(other.data)
-    }
+    override fun equals(other: Any?): Boolean =
+        this === other || other is SimpleBitStorage && bits == other.bits && size == other.size && data.contentEquals(other.data)
 
     override fun hashCode(): Int {
         var result = 1

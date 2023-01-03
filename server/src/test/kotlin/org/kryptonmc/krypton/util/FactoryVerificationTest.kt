@@ -16,36 +16,40 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.item
+package org.kryptonmc.krypton.util
 
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
-import org.kryptonmc.api.item.ItemTypes
-import org.kryptonmc.krypton.registry.KryptonRegistries
+import org.junit.jupiter.api.assertDoesNotThrow
+import org.kryptonmc.internal.annotations.TypeFactory
 import org.kryptonmc.krypton.testutil.Bootstrapping
-import org.kryptonmc.nbt.ImmutableCompoundTag
+import org.reflections.Reflections
+import org.reflections.scanners.Scanners
+import org.reflections.util.ConfigurationBuilder
 import kotlin.test.assertEquals
 
-class ItemStackTests {
+class FactoryVerificationTest {
 
     @Test
-    fun `test empty stack serialization`() {
-        val stack = KryptonItemStack.EMPTY
-        val serialized = ImmutableCompoundTag.builder()
-            .putString("id", KryptonRegistries.ITEM.getKey(ItemTypes.AIR.get().downcast()).asString())
-            .putInt("Count", 1)
-            .put("tag", stack.meta.data)
-            .build()
-        assertEquals(serialized, stack.save())
+    fun `verify all factories are registered`() {
+        REFLECTIONS.getTypesAnnotatedWith(TypeFactory::class.java).forEach {
+            if (!it.isInterface) return // Skip subtypes that are not directly annotated
+            val implementations = REFLECTIONS.getSubTypesOf(it)
+            assertEquals(1, implementations.size, "Type ${it.canonicalName} has ${implementations.size} implementations!")
+            assertDoesNotThrow { KryptonFactoryProvider.provide(it) }
+        }
     }
 
     companion object {
 
+        private val CONFIG = ConfigurationBuilder().forPackages("org.kryptonmc.api", "org.kryptonmc.krypton")
+            .addScanners(Scanners.TypesAnnotated, Scanners.SubTypes)
+        private val REFLECTIONS = Reflections(CONFIG)
+
         @JvmStatic
         @BeforeAll
-        fun `load factories and registries`() {
+        fun `load factory provider`() {
             Bootstrapping.loadFactories()
-            Bootstrapping.loadRegistries()
         }
     }
 }

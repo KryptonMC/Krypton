@@ -40,7 +40,7 @@ import kotlin.test.assertTrue
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @Suppress("UnusedPrivateMember")
-class EventTests {
+class EventTest {
 
     private val eventManager = KryptonEventManager(MockPluginManager())
 

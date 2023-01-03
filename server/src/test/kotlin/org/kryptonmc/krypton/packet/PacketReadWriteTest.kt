@@ -32,7 +32,7 @@ import java.util.function.Predicate
 import java.util.stream.Stream
 import kotlin.test.assertTrue
 
-class PacketReadWriteTests {
+class PacketReadWriteTest {
 
     @TestFactory
     fun `ensure all packets have read constructors`(): DynamicNode =
