@@ -116,7 +116,7 @@ class KryptonCommandManager : CommandManager {
             // information that we may want for exception messages thrown by commands.
             val rawMessage = exception.rawMessage
             val message = if (rawMessage is AdventureMessage) rawMessage.asComponent() else Component.text(exception.message.orEmpty())
-            source.sender.sendMessage(message.color(NamedTextColor.RED))
+            source.sendFailure(message.color(NamedTextColor.RED))
 
             // This will process extra stuff that we want for proper error reporting to clients.
             if (exception.input != null && exception.cursor >= 0) {
@@ -136,7 +136,7 @@ class KryptonCommandManager : CommandManager {
 
                 // Append the "[HERE]" text (locale-specific) to the end, just like vanilla.
                 errorMessage.append(Component.translatable("command.context.here", NamedTextColor.RED, TextDecoration.ITALIC))
-                source.sender.sendMessage(Component.text().append(errorMessage).color(NamedTextColor.RED).build())
+                source.sendFailure(Component.text().append(errorMessage).color(NamedTextColor.RED).build())
             }
             false
         } catch (naughty: Throwable) { // We catch Throwable because plugins like to do stupid things sometimes.
