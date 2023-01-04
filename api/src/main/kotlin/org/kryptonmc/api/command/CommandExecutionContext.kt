@@ -8,7 +8,9 @@
  */
 package org.kryptonmc.api.command
 
+import net.kyori.adventure.text.Component
 import org.kryptonmc.api.Server
+import org.kryptonmc.api.entity.player.Player
 import org.kryptonmc.api.util.Vec3d
 import org.kryptonmc.api.world.World
 import org.kryptonmc.internal.annotations.ImmutableType
@@ -33,6 +35,18 @@ public interface CommandExecutionContext {
     public val position: Vec3d
 
     /**
+     * The plain text name of the sender.
+     */
+    @get:JvmName("textName")
+    public val textName: String
+
+    /**
+     * The display name of the sender.
+     */
+    @get:JvmName("displayName")
+    public val displayName: Component
+
+    /**
      * The world the sender is in.
      */
     @get:JvmName("world")
@@ -43,4 +57,34 @@ public interface CommandExecutionContext {
      */
     @get:JvmName("server")
     public val server: Server
+
+    /**
+     * Checks if the sender is a player entity.
+     *
+     * If this returns true, [asPlayer] is guaranteed to return non-null.
+     *
+     * @return true if the sender is a player
+     */
+    public fun isPlayer(): Boolean
+
+    /**
+     * Gets the sender of the command as a player.
+     *
+     * @return the sender as a player
+     */
+    public fun asPlayer(): Player?
+
+    /**
+     * Sends the given [message] as a success message to the sender.
+     *
+     * @param message the message to send
+     */
+    public fun sendSuccessMessage(message: Component)
+
+    /**
+     * Sends the given [message] as a failure message to the sender.
+     *
+     * @param message the message to send
+     */
+    public fun sendFailureMessage(message: Component)
 }

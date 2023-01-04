@@ -23,6 +23,7 @@ import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.text.format.TextDecoration
 import org.kryptonmc.api.command.CommandExecutionContext
+import org.kryptonmc.api.entity.player.Player
 import org.kryptonmc.api.util.Vec3d
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.command.arguments.CommandExceptions
@@ -39,8 +40,8 @@ class CommandSourceStack(
     val yaw: Float,
     val pitch: Float,
     override val world: KryptonWorld,
-    val textName: String,
-    val displayName: Component,
+    override val textName: String,
+    override val displayName: Component,
     override val server: KryptonServer,
     val entity: KryptonEntity?
 ) : CommandExecutionContext, CommandSuggestionProvider, Audience by sender {
@@ -49,7 +50,7 @@ class CommandSourceStack(
 
     fun getEntityOrError(): KryptonEntity = entity ?: throw ERROR_NOT_ENTITY.create()
 
-    fun isPlayer(): Boolean = entity is KryptonPlayer
+    override fun isPlayer(): Boolean = entity is KryptonPlayer
 
     fun getPlayer(): KryptonPlayer? = entity as? KryptonPlayer
 
@@ -57,6 +58,8 @@ class CommandSourceStack(
         if (entity is KryptonPlayer) return entity
         throw ERROR_NOT_PLAYER.create()
     }
+
+    override fun asPlayer(): Player? = getPlayer()
 
     fun hasPermission(permission: KryptonPermission): Boolean = sender.hasPermission(permission.node)
 
@@ -72,6 +75,14 @@ class CommandSourceStack(
 
     fun sendFailure(message: Component) {
         if (sender.acceptsFailure()) sender.sendSystemMessage(Component.text().color(NamedTextColor.RED).append(message).build())
+    }
+
+    override fun sendSuccessMessage(message: Component) {
+        sendSuccess(message, true)
+    }
+
+    override fun sendFailureMessage(message: Component) {
+        sendFailure(message)
     }
 
     fun broadcastToAdmins(message: Component) {
