@@ -19,11 +19,11 @@
 package org.kryptonmc.krypton.event.player
 
 import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.format.NamedTextColor
 import org.kryptonmc.api.entity.player.Player
 import org.kryptonmc.api.event.player.QuitEvent
-import org.kryptonmc.krypton.locale.Messages
 
 class KryptonQuitEvent(override val player: Player) : QuitEvent {
 
-    override var quitMessage: Component? = Messages.PLAYER_TEXT.build(player.displayName)
+    override var quitMessage: Component? = Component.translatable("multiplayer.player.text", NamedTextColor.YELLOW, player.displayName)
 }

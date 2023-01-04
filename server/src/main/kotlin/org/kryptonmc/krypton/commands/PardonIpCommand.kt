@@ -23,7 +23,7 @@ import com.mojang.brigadier.arguments.StringArgumentType
 import org.kryptonmc.krypton.command.CommandSourceStack
 import org.kryptonmc.krypton.command.CommandSuggestionProvider
 import org.kryptonmc.krypton.command.arguments.CommandExceptions
-import org.kryptonmc.krypton.locale.Messages
+import org.kryptonmc.krypton.locale.CommandMessages
 
 object PardonIpCommand {
 
@@ -43,10 +43,10 @@ object PardonIpCommand {
                 runs {
                     val banManager = it.source.server.playerManager.banManager
                     val target = it.getArgument(TARGET, String::class.java)
-                    if (!BanIpCommand.IP_ADDRESS_PATTERN.matcher(target).matches()) throw ERROR_INVALID_IP.create()
+                    if (!BanCommandUtil.IP_ADDRESS_PATTERN.matcher(target).matches()) throw ERROR_INVALID_IP.create()
                     if (!banManager.isBanned(target)) throw ERROR_ALREADY_UNBANNED.create()
                     banManager.removeBan(target)
-                    Messages.Commands.PARDON_IP_SUCCESS.send(it.source, target)
+                    CommandMessages.PARDON_IP.sendSuccess(it.source, target, true)
                 }
             }
         })

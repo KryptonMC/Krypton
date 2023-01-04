@@ -28,7 +28,7 @@ import org.kryptonmc.krypton.command.arguments.SummonEntityArgument
 import org.kryptonmc.krypton.command.arguments.VectorArgument
 import org.kryptonmc.krypton.entity.EntityFactory
 import org.kryptonmc.krypton.command.arguments.CommandExceptions
-import org.kryptonmc.krypton.locale.Messages
+import org.kryptonmc.krypton.locale.CommandMessages
 import org.kryptonmc.krypton.util.Worlds
 import org.kryptonmc.nbt.CompoundTag
 
@@ -65,6 +65,6 @@ object SummonCommand {
         if (!Worlds.isInSpawnableBounds(position)) throw ERROR_INVALID_POSITION.create()
         val entity = EntityFactory.create(source.world, type.asString(), nbt)?.apply { this.position = position } ?: throw ERROR_FAILED.create()
         source.world.spawnEntity(entity)
-        source.sendSuccess(Messages.Commands.SUMMON_SUCCESS.build(entity.displayName), true)
+        CommandMessages.SUMMON.sendSuccess(source, entity.displayName, true)
     }
 }

@@ -20,8 +20,8 @@ package org.kryptonmc.krypton.commands
 
 import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.arguments.StringArgumentType
+import net.kyori.adventure.text.Component
 import org.kryptonmc.krypton.command.CommandSourceStack
-import org.kryptonmc.krypton.locale.Messages
 
 object SayCommand {
 
@@ -32,7 +32,11 @@ object SayCommand {
         dispatcher.register(literal("say") {
             requiresPermission(KryptonPermission.SAY)
             argument(MESSAGE, StringArgumentType.string()) {
-                runs { Messages.CHAT_TYPE_ANNOUNCEMENT.send(it.source.server, it.source.displayName, it.getArgument(MESSAGE)) }
+                runs {
+                    // TODO: Update when new chat changes are implemented
+                    val messageText = Component.text(it.getArgument(MESSAGE, String::class.java))
+                    it.source.server.sendMessage(Component.translatable("chat.type.announcement", it.source.displayName, messageText))
+                }
             }
         })
     }

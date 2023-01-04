@@ -20,8 +20,8 @@ package org.kryptonmc.krypton.commands
 
 import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.context.CommandContext
-import net.kyori.adventure.text.Component
 import org.kryptonmc.krypton.command.CommandSourceStack
+import org.kryptonmc.krypton.locale.CommandMessages
 import org.kryptonmc.krypton.world.rule.GameRuleKeys
 import org.kryptonmc.krypton.world.rule.WorldGameRules
 
@@ -47,14 +47,14 @@ object GameRuleCommand {
     private fun <T : WorldGameRules.Value<T>> setRule(context: CommandContext<CommandSourceStack>, key: WorldGameRules.Key<T>): Int {
         val value = context.source.server.worldManager.default.gameRules().getRule(key)
         value.setFromArgument(context, VALUE)
-        context.source.sendSuccess(Component.translatable("commands.gamerule.set", Component.text(key.id), Component.text(value.toString())), true)
+        CommandMessages.GAME_RULE_SET.sendSuccess(context.source, key.id, value.toString(), true)
         return value.commandResult()
     }
 
     @JvmStatic
     private fun <T : WorldGameRules.Value<T>> queryRule(source: CommandSourceStack, key: WorldGameRules.Key<T>): Int {
         val value = source.server.worldManager.default.gameRules().getRule(key)
-        source.sendSuccess(Component.translatable("commands.gamerule.query", Component.text(key.id), Component.text(value.toString())), false)
+        CommandMessages.GAME_RULE_QUERY.sendSuccess(source, key.id, value.toString(), false)
         return value.commandResult()
     }
 }

@@ -30,7 +30,7 @@ import io.netty.util.AttributeKey
 import net.kyori.adventure.text.Component
 import org.apache.logging.log4j.LogManager
 import org.kryptonmc.krypton.KryptonServer
-import org.kryptonmc.krypton.locale.Messages
+import org.kryptonmc.krypton.locale.DisconnectMessages
 import org.kryptonmc.krypton.network.handlers.PacketHandler
 import org.kryptonmc.krypton.network.handlers.PlayPacketHandler
 import org.kryptonmc.krypton.network.handlers.TickablePacketHandler
@@ -231,7 +231,7 @@ class NettyConnection(private val server: KryptonServer) : SimpleChannelInboundH
     }
 
     override fun channelInactive(ctx: ChannelHandlerContext) {
-        disconnect(END_OF_STREAM)
+        disconnect(DisconnectMessages.END_OF_STREAM)
         synchronized(tickBufferLock) { tickBuffer.release() }
         server.connectionManager.unregister(this)
     }
@@ -258,7 +258,7 @@ class NettyConnection(private val server: KryptonServer) : SimpleChannelInboundH
 
         if (cause is TimeoutException) {
             LOGGER.debug("Connection from ${channel.remoteAddress()} timed out!", cause)
-            disconnect(TIMEOUT)
+            disconnect(DisconnectMessages.TIMEOUT)
             return
         }
 
@@ -300,8 +300,6 @@ class NettyConnection(private val server: KryptonServer) : SimpleChannelInboundH
         }
 
         private val LOGGER = LogManager.getLogger()
-        private val END_OF_STREAM = Messages.Disconnect.END_OF_STREAM.build()
-        private val TIMEOUT = Messages.Disconnect.TIMEOUT.build()
 
         @JvmStatic
         private fun <H : PacketHandler> handleCap(packet: InboundPacket<H>, handler: PacketHandler) {

@@ -21,6 +21,7 @@ package org.kryptonmc.krypton.network.handlers
 import com.mojang.brigadier.StringReader
 import net.kyori.adventure.chat.ChatType
 import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.event.ClickEvent
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer
 import net.kyori.adventure.translation.Translator
 import org.apache.logging.log4j.LogManager
@@ -45,7 +46,6 @@ import org.kryptonmc.krypton.event.player.KryptonRotateEvent
 import org.kryptonmc.krypton.inventory.KryptonPlayerInventory
 import org.kryptonmc.krypton.item.handler
 import org.kryptonmc.krypton.item.handler.ItemTimedHandler
-import org.kryptonmc.krypton.locale.Messages
 import org.kryptonmc.krypton.network.NettyConnection
 import org.kryptonmc.krypton.network.PacketSendListener
 import org.kryptonmc.krypton.network.chat.Chat
@@ -91,6 +91,7 @@ import org.kryptonmc.krypton.coordinate.SectionPos
 import org.kryptonmc.krypton.coordinate.KryptonVec3d
 import org.kryptonmc.krypton.world.block.KryptonBlocks
 import org.kryptonmc.krypton.coordinate.ChunkPos
+import org.kryptonmc.krypton.locale.DisconnectMessages
 import java.time.Duration
 import java.time.Instant
 import java.util.concurrent.atomic.AtomicReference
@@ -121,7 +122,7 @@ class PlayPacketHandler(
         val time = System.currentTimeMillis()
         if (time - lastKeepAlive < KEEP_ALIVE_INTERVAL) return
         if (pendingKeepAlive) {
-            disconnect(Messages.Disconnect.TIMEOUT.build())
+            disconnect(DisconnectMessages.TIMEOUT)
             return
         }
         pendingKeepAlive = true
@@ -151,7 +152,7 @@ class PlayPacketHandler(
     }
 
     fun handleChatCommand(packet: PacketInChatCommand) {
-        if (!Chat.isValidMessage(packet.command)) disconnect(ILLEGAL_CHAT_CHARACTERS_MESSAGE)
+        if (!Chat.isValidMessage(packet.command)) disconnect(DisconnectMessages.ILLEGAL_CHARACTERS)
         if (!verifyChatMessage(packet.command, packet.timestamp)) return
         server.eventManager.fire(KryptonCommandExecuteEvent(player, packet.command)).thenAcceptAsync({
             if (it.result.isAllowed) {
@@ -162,7 +163,7 @@ class PlayPacketHandler(
 
     fun handleChatMessage(packet: PacketInChatMessage) {
         // Sanity check message content
-        if (!Chat.isValidMessage(packet.message)) disconnect(ILLEGAL_CHAT_CHARACTERS_MESSAGE)
+        if (!Chat.isValidMessage(packet.message)) disconnect(DisconnectMessages.ILLEGAL_CHARACTERS)
         // Fire the chat event
         server.eventManager.fire(KryptonChatEvent(player, packet.message))
             .thenAcceptAsync({ event -> processChatEvent(event, packet) }, connection.executor())
@@ -172,7 +173,7 @@ class PlayPacketHandler(
         if (!event.result.isAllowed) return
         if (!verifyChatMessage(packet.message, packet.signature.timestamp)) return
 
-        val message = event.result.reason ?: Messages.CHAT_TYPE_TEXT.build(player, packet.message)
+        val message = event.result.reason ?: createChatMessage(player, packet.message)
         if (!packet.signature.verify(player.publicKey, message, player.uuid)) {
             LOGGER.warn("Chat message ${packet.message} with invalid signature sent by ${player.name}! Ignoring...")
             return
@@ -187,7 +188,7 @@ class PlayPacketHandler(
     private fun verifyChatMessage(message: String, timestamp: Instant): Boolean {
         if (!updateChatOrder(timestamp)) {
             LOGGER.warn("Out of order chat message $message received from ${player.profile.name}. Disconnecting...")
-            disconnect(Messages.Disconnect.OUT_OF_ORDER_CHAT.build())
+            disconnect(DisconnectMessages.OUT_OF_ORDER_CHAT)
             return false
         }
         if (isChatExpired(timestamp)) {
@@ -268,7 +269,7 @@ class PlayPacketHandler(
             server.connectionManager.sendGroupedPacket(PacketOutPlayerInfo(PacketOutPlayerInfo.Action.UPDATE_LATENCY, player))
             return
         }
-        disconnect(Messages.Disconnect.TIMEOUT.build())
+        disconnect(DisconnectMessages.TIMEOUT)
     }
 
     fun handleAbilities(packet: PacketInAbilities) {
@@ -407,7 +408,7 @@ class PlayPacketHandler(
 
     fun handleResourcePack(packet: PacketInResourcePack) {
         if (packet.status == ResourcePack.Status.DECLINED && server.config.server.resourcePack.forced) {
-            disconnect(Messages.Disconnect.REQUIRED_TEXTURE_PROMPT.build())
+            disconnect(DisconnectMessages.REQUIRED_TEXTURE_PROMPT)
             return
         }
         server.eventManager.fireAndForget(KryptonResourcePackStatusEvent(player, packet.status))
@@ -444,8 +445,13 @@ class PlayPacketHandler(
         private const val INTERACTION_RANGE_SQUARED = 6.0 * 6.0
         private const val KEEP_ALIVE_INTERVAL = 15000L
         private val LOGGER = LogManager.getLogger()
-
         private val CHAT_EXPIRE_DURATION = Duration.ofMinutes(5)
-        private val ILLEGAL_CHAT_CHARACTERS_MESSAGE = Messages.Disconnect.ILLEGAL_CHARACTERS.build()
+
+        @JvmStatic
+        private fun createChatMessage(player: KryptonPlayer, message: String): Component {
+            val name = player.profile.name
+            val displayName = player.displayName.style { it.insertion(name).clickEvent(ClickEvent.suggestCommand("/msg $name")).hoverEvent(player) }
+            return Component.translatable("chat.type.text", displayName, Component.text(message))
+        }
     }
 }

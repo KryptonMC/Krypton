@@ -25,7 +25,7 @@ import org.kryptonmc.krypton.command.arguments.item.ItemStackPredicate
 import org.kryptonmc.krypton.command.arguments.item.ItemStackPredicateArgument
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.item.KryptonItemStack
-import org.kryptonmc.krypton.locale.Messages
+import org.kryptonmc.krypton.locale.CommandMessages
 import org.kryptonmc.krypton.packet.out.play.PacketOutSetContainerContent
 import java.util.function.Consumer
 
@@ -55,7 +55,7 @@ object ClearCommand {
         if (targets.size == 1) {
             val target = targets.get(0)
             clear(target, predicate, maxCount)
-            source.sendSuccess(Messages.Commands.CLEAR_SINGLE_SUCCESS.build(amount, target.displayName), true)
+            CommandMessages.CLEAR_SINGLE.sendSuccess(source, amount, target.displayName, true)
             target.connection.send(PacketOutSetContainerContent.fromPlayerInventory(target.inventory))
         } else {
             targets.forEach { target ->
@@ -64,7 +64,7 @@ object ClearCommand {
                 }
                 target.connection.send(PacketOutSetContainerContent.fromPlayerInventory(target.inventory))
             }
-            source.sendSuccess(Messages.Commands.CLEAR_MULTIPLE_SUCCESS.build(amount, targets.size), true)
+            CommandMessages.CLEAR_MULTIPLE.sendSuccess(source, amount, targets.size, true)
         }
     }
 

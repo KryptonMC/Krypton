@@ -23,7 +23,7 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder
 import org.kryptonmc.krypton.command.CommandSourceStack
 import org.kryptonmc.krypton.command.arguments.VectorArgument
 import org.kryptonmc.krypton.command.arguments.entities.EntityArgumentType
-import org.kryptonmc.krypton.locale.Messages
+import org.kryptonmc.krypton.locale.CommandMessages
 
 object TeleportCommand {
 
@@ -44,7 +44,7 @@ object TeleportCommand {
                     if (players.size == 1) {
                         val player = players.get(0)
                         player.teleport(player.position)
-                        it.source.sendSuccess(Messages.Commands.TELEPORT_SINGLE_ENTITY.build(it.source.displayName, player.displayName), true)
+                        CommandMessages.TELEPORT_SINGLE.sendSuccess(it.source, it.source.displayName, player.displayName, true)
                     }
                 }
                 argument(TARGET, EntityArgumentType.players()) {
@@ -52,7 +52,7 @@ object TeleportCommand {
                         val players = EntityArgumentType.getPlayers(context, PLAYERS)
                         val target = EntityArgumentType.getPlayers(context, TARGET).get(0)
                         players.forEach { it.teleport(target.position) }
-                        context.source.sendSuccess(Messages.Commands.TELEPORT_MULTIPLE_ENTITIES.build(players.size, target.displayName), true)
+                        CommandMessages.TELEPORT_ENTITY_MULTIPLE.sendSuccess(context.source, players.size, target.displayName, true)
                     }
                 }
                 argument(LOCATION, VectorArgument.normal()) {
@@ -60,7 +60,7 @@ object TeleportCommand {
                         val players = EntityArgumentType.getPlayers(context, PLAYERS)
                         val location = VectorArgument.get(context, LOCATION)
                         players.forEach { it.teleport(location) }
-                        context.source.sendSuccess(Messages.Commands.TELEPORT_MULTIPLE_LOCATIONS.build(players.size, location), true)
+                        CommandMessages.TELEPORT_LOCATION_MULTIPLE.sendSuccess(context.source, players.size, location, true)
                     }
                 }
             }

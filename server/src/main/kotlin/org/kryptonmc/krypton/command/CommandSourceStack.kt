@@ -21,6 +21,7 @@ package org.kryptonmc.krypton.command
 import net.kyori.adventure.audience.Audience
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
+import net.kyori.adventure.text.format.TextDecoration
 import org.kryptonmc.api.command.CommandExecutionContext
 import org.kryptonmc.api.util.Vec3d
 import org.kryptonmc.krypton.KryptonServer
@@ -28,7 +29,6 @@ import org.kryptonmc.krypton.command.arguments.CommandExceptions
 import org.kryptonmc.krypton.commands.KryptonPermission
 import org.kryptonmc.krypton.entity.KryptonEntity
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
-import org.kryptonmc.krypton.locale.Messages
 import org.kryptonmc.krypton.network.chat.ChatSender
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.krypton.world.rule.GameRuleKeys
@@ -75,7 +75,7 @@ class CommandSourceStack(
     }
 
     fun broadcastToAdmins(message: Component) {
-        val broadcast = Messages.CHAT_TYPE_ADMIN.build(displayName, message)
+        val broadcast = Component.translatable("chat.type.admin", NamedTextColor.GRAY, setOf(TextDecoration.ITALIC), displayName, message)
         if (world.gameRules().getBoolean(GameRuleKeys.SEND_COMMAND_FEEDBACK)) {
             server.players.forEach { player ->
                 if (player !== this.sender && player.hasPermission(KryptonPermission.BROADCAST_ADMIN.node)) player.sendSystemMessage(broadcast)

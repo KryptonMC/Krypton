@@ -22,7 +22,7 @@ import com.mojang.brigadier.CommandDispatcher
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer
 import org.kryptonmc.krypton.command.CommandSourceStack
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
-import org.kryptonmc.krypton.locale.Messages
+import org.kryptonmc.krypton.locale.CommandMessages
 
 object ListCommand {
 
@@ -42,6 +42,6 @@ object ListCommand {
     @JvmStatic
     private inline fun sendNames(source: CommandSourceStack, nameGetter: (KryptonPlayer) -> String) {
         val names = source.server.players.map(nameGetter)
-        Messages.Commands.LIST_PLAYERS.send(source.server, names.size, source.server.config.status.maxPlayers, names.joinToString("\n"))
+        CommandMessages.LIST_PLAYERS.sendSuccess(source, source.server.config.status.maxPlayers, names, false)
     }
 }

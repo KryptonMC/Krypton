@@ -29,7 +29,7 @@ import org.kryptonmc.krypton.adventure.KryptonAdventure
 import org.kryptonmc.krypton.command.CommandSourceStack
 import org.kryptonmc.krypton.command.arguments.entities.EntityArgumentType
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
-import org.kryptonmc.krypton.locale.Messages
+import org.kryptonmc.krypton.locale.CommandMessages
 import org.kryptonmc.krypton.util.enumhelper.GameModes
 import org.kryptonmc.krypton.world.rule.GameRuleKeys
 
@@ -85,12 +85,12 @@ object GameModeCommand {
     @JvmStatic
     private fun notifyGameModeChanged(source: CommandSourceStack, player: KryptonPlayer, mode: GameMode) {
         if (source.entity === player) {
-            source.sendSuccess(Messages.Commands.GAME_MODE_SUCCESS_SELF.build(mode), true)
+            CommandMessages.GAME_MODE_SELF.sendSuccess(source, mode, true)
             return
         }
         if (source.world.gameRules().getBoolean(GameRuleKeys.SEND_COMMAND_FEEDBACK)) {
-            source.sendSystemMessage(Messages.GAME_MODE_CHANGED.build(mode))
+            source.sendSystemMessage(Component.translatable("gameMode.changed", Component.translatable(mode)))
         }
-        source.sendSuccess(Messages.Commands.GAME_MODE_SUCCESS_OTHER.build(player.displayName, mode), true)
+        CommandMessages.GAME_MODE_OTHER.sendSuccess(source, player.displayName, mode, true)
     }
 }

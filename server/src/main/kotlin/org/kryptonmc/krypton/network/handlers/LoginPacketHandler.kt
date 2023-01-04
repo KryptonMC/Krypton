@@ -28,12 +28,13 @@ import org.kryptonmc.api.auth.GameProfile
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.auth.KryptonGameProfile
 import org.kryptonmc.krypton.auth.requests.SessionService
+import org.kryptonmc.krypton.commands.BanCommandUtil
 import org.kryptonmc.krypton.config.category.ProxyCategory
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.event.auth.KryptonAuthenticationEvent
 import org.kryptonmc.krypton.event.player.KryptonLoginEvent
 import org.kryptonmc.krypton.event.server.KryptonSetupPermissionsEvent
-import org.kryptonmc.krypton.locale.Messages
+import org.kryptonmc.krypton.locale.DisconnectMessages
 import org.kryptonmc.krypton.network.NettyConnection
 import org.kryptonmc.krypton.network.forwarding.ProxyForwardedData
 import org.kryptonmc.krypton.network.forwarding.VelocityProxy
@@ -126,7 +127,7 @@ class LoginPacketHandler(
             if (!it.result.isAllowed) return@thenApplyAsync null
             val profile = SessionService.hasJoined(name, sharedSecret, server.config.server.ip)
             if (profile == null) {
-                disconnect(Messages.Disconnect.UNVERIFIED_USERNAME.build())
+                disconnect(DisconnectMessages.UNVERIFIED_USERNAME)
                 return@thenApplyAsync null
             }
             if (!canJoin(profile, address) || !callLoginEvent(profile)) return@thenApplyAsync null
@@ -139,7 +140,7 @@ class LoginPacketHandler(
 
     fun handlePluginResponse(packet: PacketInPluginResponse) {
         if (packet.messageId != velocityMessageId || server.config.proxy.mode != ProxyCategory.Mode.MODERN) {
-            disconnect(Messages.Disconnect.UNEXPECTED_QUERY_RESPONSE.build())
+            disconnect(DisconnectMessages.UNEXPECTED_QUERY_RESPONSE)
             return
         }
         if (packet.data == null) {
@@ -193,7 +194,7 @@ class LoginPacketHandler(
         val event = KryptonLoginEvent(profile.name, profile.uuid, connection.connectAddress() as InetSocketAddress)
         val result = server.eventManager.fireSync(event).result
         if (!result.isAllowed) {
-            disconnect(result.reason ?: Messages.Disconnect.KICKED.build())
+            disconnect(result.reason ?: DisconnectMessages.KICKED)
             return false
         }
         return true
@@ -208,18 +209,18 @@ class LoginPacketHandler(
             // They are banned.
             val ban = banManager.getBan(profile)!!
             // Inform the client that they are banned
-            disconnect(Messages.Disconnect.BANNED_MESSAGE.build(ban.reason, ban.expirationDate))
+            disconnect(BanCommandUtil.createBanMessage("banned", ban.reason, ban.expirationDate))
             LOGGER.info("${profile.name} was disconnected as they are banned from this server.")
             return false
         } else if (whitelist.isEnabled() && !whitelist.isWhitelisted(profile) && !whitelist.isWhitelisted(addressString)) {
             // They are not whitelisted.
-            disconnect(Messages.Disconnect.NOT_WHITELISTED.build())
+            disconnect(DisconnectMessages.NOT_WHITELISTED)
             LOGGER.info("${profile.name} was disconnected as this server is whitelisted and they are not on the whitelist.")
             return false
         } else if (banManager.isBanned(addressString)) {
             // Their IP is banned.
             val ban = banManager.getBan(addressString)!!
-            disconnect(Messages.Disconnect.BANNED_IP_MESSAGE.build(ban.reason, ban.expirationDate))
+            disconnect(BanCommandUtil.createBanMessage("banned_ip", ban.reason, ban.expirationDate))
             LOGGER.info("${profile.name} was disconnected as their IP address is banned from this server.")
             return false
         }

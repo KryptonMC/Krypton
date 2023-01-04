@@ -19,6 +19,8 @@
 package org.kryptonmc.krypton.server
 
 import net.kyori.adventure.key.Key
+import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.format.NamedTextColor
 import org.apache.logging.log4j.LogManager
 import org.kryptonmc.api.scoreboard.Objective
 import org.kryptonmc.api.statistic.CustomStatistics
@@ -27,7 +29,6 @@ import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.event.player.KryptonJoinEvent
 import org.kryptonmc.krypton.event.player.KryptonQuitEvent
-import org.kryptonmc.krypton.locale.Messages
 import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.packet.out.play.GameEventTypes
 import org.kryptonmc.krypton.packet.out.play.PacketOutAbilities
@@ -53,6 +54,7 @@ import org.kryptonmc.krypton.registry.KryptonRegistries
 import org.kryptonmc.krypton.server.ban.BanManager
 import org.kryptonmc.krypton.server.whitelist.WhitelistManager
 import org.kryptonmc.krypton.coordinate.BlockPos
+import org.kryptonmc.krypton.locale.DisconnectMessages
 import org.kryptonmc.krypton.util.executor.daemonThreadFactory
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.krypton.world.biome.BiomeManager
@@ -173,12 +175,11 @@ class PlayerManager(private val server: KryptonServer) {
         val joinResult = server.eventManager.fireSync(KryptonJoinEvent(player, !profile.name.equals(name, true))).result
         if (!joinResult.isAllowed) {
             // Use default reason if denied without specified reason
-            val reason = joinResult.message ?: Messages.Disconnect.KICKED.build()
+            val reason = joinResult.message ?: DisconnectMessages.KICKED
             player.connection.disconnect(reason)
             return@thenAcceptAsync
         }
-        val defaultJoinMessage = if (joinResult.hasJoinedBefore) Messages.PLAYER_JOINED_RENAMED else Messages.PLAYER_JOINED
-        val joinMessage = joinResult.message ?: defaultJoinMessage.build(player.displayName)
+        val joinMessage = joinResult.message ?: getDefaultJoinMessage(player, joinResult.hasJoinedBefore)
         server.sendMessage(joinMessage)
         player.connection.send(PacketOutSynchronizePlayerPosition.fromPlayer(player))
         player.connection.send(PacketOutPlayerInfo(PacketOutPlayerInfo.Action.ADD_PLAYER, player))
@@ -233,7 +234,7 @@ class PlayerManager(private val server: KryptonServer) {
     }
 
     fun disconnectAll() {
-        players.forEach { it.disconnect(SHUTDOWN_MESSAGE) }
+        players.forEach { it.disconnect(DisconnectMessages.SERVER_SHUTDOWN) }
     }
 
     fun saveAll() {
@@ -284,11 +285,16 @@ class PlayerManager(private val server: KryptonServer) {
         private val BRAND_KEY = Key.key("brand")
         // The word "Krypton" encoded in to UTF-8 and then prefixed with the length, which in this case is 7.
         private val BRAND_MESSAGE = byteArrayOf(7, 75, 114, 121, 112, 116, 111, 110)
-        private val SHUTDOWN_MESSAGE = Messages.Disconnect.SERVER_SHUTDOWN.build()
 
         private const val ENABLE_REDUCED_DEBUG_SCREEN = 22
         private const val DISABLE_REDUCED_DEBUG_SCREEN = 23
         private const val OP_PERMISSION_LEVEL_4 = 28
         private const val BAN_WHITELIST_SAVE_INTERVAL = 600
+
+        @JvmStatic
+        private fun getDefaultJoinMessage(player: KryptonPlayer, joinedBefore: Boolean): Component {
+            val key = if (joinedBefore) "multiplayer.player.joined.renamed" else "multiplayer.player.joined"
+            return Component.translatable(key, NamedTextColor.YELLOW, player.displayName)
+        }
     }
 }

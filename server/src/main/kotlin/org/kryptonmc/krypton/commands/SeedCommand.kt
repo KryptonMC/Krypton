@@ -20,7 +20,7 @@ package org.kryptonmc.krypton.commands
 
 import com.mojang.brigadier.CommandDispatcher
 import org.kryptonmc.krypton.command.CommandSourceStack
-import org.kryptonmc.krypton.locale.Messages
+import org.kryptonmc.krypton.locale.CommandMessages
 
 object SeedCommand {
 
@@ -28,7 +28,7 @@ object SeedCommand {
     fun register(dispatcher: CommandDispatcher<CommandSourceStack>) {
         dispatcher.register(literal("seed") {
             requiresPermission(KryptonPermission.SEED)
-            runs { it.source.sendSuccess(Messages.Commands.SEED_SUCCESS.build(it.source.world.seed), true) }
+            runs { CommandMessages.SEED.sendSuccess(it.source, it.source.world.seed.toString(), true) }
         })
     }
 }

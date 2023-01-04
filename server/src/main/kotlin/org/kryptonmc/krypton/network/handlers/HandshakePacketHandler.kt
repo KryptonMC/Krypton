@@ -23,6 +23,7 @@ import org.apache.logging.log4j.LogManager
 import org.kryptonmc.krypton.KryptonPlatform
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.config.category.ProxyCategory
+import org.kryptonmc.krypton.locale.DisconnectMessages
 import org.kryptonmc.krypton.network.NettyConnection
 import org.kryptonmc.krypton.network.forwarding.LegacyForwardedData
 import org.kryptonmc.krypton.network.forwarding.TCPShieldForwardedData
@@ -50,14 +51,14 @@ class HandshakePacketHandler(private val server: KryptonServer, override val con
         // This method of determining what to send is from vanilla Minecraft.
         // We do this first so that we don't have to deal with legacy clients.
         if (packet.protocol != KryptonPlatform.protocolVersion) {
-            val translationKey = if (packet.protocol < 754) "multiplayer.disconnect.outdated_client" else "multiplayer.disconnect.incompatible"
-            disconnect(Component.translatable(translationKey, Component.text(KryptonPlatform.minecraftVersion)))
+            val message = if (packet.protocol < 754) DisconnectMessages.OUTDATED_CLIENT else DisconnectMessages.INCOMPATIBLE
+            disconnect(message)
             return
         }
 
         // We do this early too to avoid even having to check proxy data if the server is full.
         if (server.playerManager.players().size >= server.config.status.maxPlayers) {
-            disconnect(SERVER_FULL)
+            disconnect(DisconnectMessages.SERVER_FULL)
             return
         }
 
@@ -68,7 +69,7 @@ class HandshakePacketHandler(private val server: KryptonServer, override val con
                     "or Velocity), but this server is not configured to use legacy forwarding!")
             LOGGER.info("If you wish to enable legacy forwarding, please do so in the configuration file by setting \"mode\" to \"LEGACY\" " +
                     "under the \"proxy\" section.")
-            disconnect(LEGACY_FORWARDING_NOT_ENABLED)
+            disconnect(DisconnectMessages.LEGACY_FORWARDING_NOT_ENABLED)
             return
         }
         // This split here is checking for a triple slash split list of strings, which will be sent by TCPShield
@@ -77,7 +78,7 @@ class HandshakePacketHandler(private val server: KryptonServer, override val con
             LOGGER.error("User attempted TCPShield forwarded connection, but this server is not configured to use TCPShield forwarding!")
             LOGGER.info("If you wish to enable TCPShield forwarding, please do so in the configuration file by setting \"mode\" to \"TCPSHIELD\" " +
                     "under the \"proxy\" section.")
-            disconnect(TCPSHIELD_FORWARDING_NOT_ENABLED)
+            disconnect(DisconnectMessages.TCPSHIELD_FORWARDING_NOT_ENABLED)
             return
         }
 
@@ -85,7 +86,7 @@ class HandshakePacketHandler(private val server: KryptonServer, override val con
             val data = try {
                 LegacyForwardedData.parse(packet.address)
             } catch (exception: Exception) {
-                disconnect(FAILED_LEGACY_DECODE)
+                disconnect(DisconnectMessages.FAILED_LEGACY_DECODE)
                 LOGGER.error("Failed to decode legacy forwarded handshake data!", exception)
                 return
             }
@@ -95,7 +96,7 @@ class HandshakePacketHandler(private val server: KryptonServer, override val con
                 connection.setHandler(LoginPacketHandler(server, connection, data))
             } else {
                 // If the data was null then we weren't sent what we needed
-                disconnect(NO_DIRECT_CONNECT)
+                disconnect(DisconnectMessages.NO_DIRECT_CONNECT)
                 LOGGER.warn("Attempted direct connection from ${connection.connectAddress()} when legacy forwarding is enabled!")
                 return
             }
@@ -104,7 +105,7 @@ class HandshakePacketHandler(private val server: KryptonServer, override val con
             val data = try {
                 TCPShieldForwardedData.parse(packet.address)
             } catch (exception: Exception) {
-                disconnect(FAILED_TCPSHIELD_DECODE)
+                disconnect(DisconnectMessages.FAILED_TCPSHIELD_DECODE)
                 LOGGER.error("Failed to decode TCPShield forwarded handshake data!", exception)
                 return
             }
@@ -114,7 +115,7 @@ class HandshakePacketHandler(private val server: KryptonServer, override val con
                 connection.setHandler(LoginPacketHandler(server, connection, data))
             } else {
                 // If the data was null then we weren't sent what we needed
-                disconnect(NO_DIRECT_CONNECT)
+                disconnect(DisconnectMessages.NO_DIRECT_CONNECT)
                 LOGGER.warn("Attempted direct connection from ${connection.connectAddress()} when TCPShield forwarding is enabled!")
                 return
             }
@@ -135,20 +136,5 @@ class HandshakePacketHandler(private val server: KryptonServer, override val con
     companion object {
 
         private val LOGGER = LogManager.getLogger()
-
-        private val LEGACY_FORWARDING_NOT_ENABLED = Component.text()
-            .content("It appears that you have been forwarded using legacy forwarding by a proxy, but this server is not configured")
-            .append(Component.newline())
-            .append(Component.text("to support legacy forwarding. Please contact a server administrator."))
-            .build()
-        private val TCPSHIELD_FORWARDING_NOT_ENABLED = Component.text()
-            .content("It appears that you have been forwarded from TCPShield, but this server is not configured to support TCPShield forwarding.")
-            .append(Component.newline())
-            .append(Component.text("Please contact a server administrator."))
-            .build()
-        private val FAILED_LEGACY_DECODE = Component.text("Failed to decode legacy data! Please report this to an administrator!")
-        private val FAILED_TCPSHIELD_DECODE = Component.text("Failed to decode TCPShield data! Please report this to an administrator!")
-        private val NO_DIRECT_CONNECT = Component.text("This server cannot be direct connected to whilst it has forwarding enabled.")
-        private val SERVER_FULL = Component.translatable("multiplayer.disconnect.server_full")
     }
 }

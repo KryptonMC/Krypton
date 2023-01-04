@@ -24,7 +24,6 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder
 import net.kyori.adventure.text.Component
 import org.kryptonmc.krypton.command.CommandSourceStack
 import org.kryptonmc.krypton.command.arguments.entities.EntityArgumentType
-import org.kryptonmc.krypton.locale.Messages
 
 object MessageCommand {
 
@@ -38,10 +37,11 @@ object MessageCommand {
             argument(PLAYER, EntityArgumentType.players()) {
                 argument(MESSAGE, StringArgumentType.string()) {
                     runs {
+                        // TODO: Update when new chat changes are implemented
                         val player = EntityArgumentType.getPlayers(it, PLAYER).get(0)
                         val message = Component.text(it.getArgument(MESSAGE, String::class.java))
-                        Messages.Commands.OUTGOING_MESSAGE.send(it.source, player.displayName, message)
-                        Messages.Commands.INCOMING_MESSAGE.send(player, it.source.displayName, message)
+                        it.source.sendSystemMessage(Component.translatable("commands.message.display.outgoing", player.displayName, message))
+                        player.sendSystemMessage(Component.translatable("commands.message.display.incoming", it.source.displayName, message))
                     }
                 }
             }

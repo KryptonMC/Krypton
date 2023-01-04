@@ -26,7 +26,8 @@ import org.kryptonmc.krypton.command.CommandSourceStack
 import org.kryptonmc.krypton.command.CommandSuggestionProvider
 import org.kryptonmc.krypton.command.arguments.CommandExceptions
 import org.kryptonmc.krypton.command.arguments.GameProfileArgument
-import org.kryptonmc.krypton.locale.Messages
+import org.kryptonmc.krypton.locale.CommandMessages
+import org.kryptonmc.krypton.locale.DisconnectMessages
 import java.io.IOException
 
 object WhitelistCommand {
@@ -79,7 +80,7 @@ object WhitelistCommand {
     @JvmStatic
     private fun reload(source: CommandSourceStack) {
         reloadWhitelist(source.server)
-        source.sendSuccess(Messages.Commands.WHITELIST_RELOADED.build(), true)
+        source.sendSuccess(CommandMessages.WHITELIST_RELOADED, true)
         kickUnlistedPlayers(source.server)
     }
 
@@ -91,7 +92,7 @@ object WhitelistCommand {
         profiles.forEach {
             if (whitelistManager.isWhitelisted(it)) return@forEach
             whitelistManager.whitelist(it)
-            source.sendSuccess(Messages.Commands.WHITELIST_ADD_SUCCESS.build(it), true)
+            CommandMessages.WHITELIST_ADD.sendSuccess(source, it, true)
             ++count
         }
         if (count == 0) throw ERROR_ALREADY_WHITELISTED.create()
@@ -106,7 +107,7 @@ object WhitelistCommand {
         profiles.forEach {
             if (!whitelistManager.isWhitelisted(it)) return@forEach
             whitelistManager.removeWhitelisted(it)
-            source.sendSuccess(Messages.Commands.WHITELIST_REMOVE_SUCCESS.build(it), true)
+            CommandMessages.WHITELIST_REMOVE.sendSuccess(source, it, true)
             ++count
         }
 
@@ -120,7 +121,7 @@ object WhitelistCommand {
         val whitelistManager = source.server.playerManager.whitelistManager
         if (whitelistManager.isEnabled()) throw ERROR_ALREADY_ENABLED.create()
         whitelistManager.enable()
-        source.sendSuccess(Messages.Commands.WHITELIST_ENABLED.build(), true)
+        source.sendSuccess(CommandMessages.WHITELIST_ENABLED, true)
         kickUnlistedPlayers(source.server)
     }
 
@@ -129,16 +130,16 @@ object WhitelistCommand {
         val whitelistManager = source.server.playerManager.whitelistManager
         if (!whitelistManager.isEnabled()) throw ERROR_ALREADY_DISABLED.create()
         whitelistManager.disable()
-        source.sendSuccess(Messages.Commands.WHITELIST_DISABLED.build(), true)
+        source.sendSuccess(CommandMessages.WHITELIST_DISABLED, true)
     }
 
     @JvmStatic
     private fun showList(source: CommandSourceStack): Int {
         val names = getWhitelistNames(source.server)
         if (names.isEmpty()) {
-            source.sendSuccess(Messages.Commands.WHITELIST_NONE.build(), false)
+            source.sendSuccess(CommandMessages.WHITELIST_NONE, false)
         } else {
-            source.sendSuccess(Messages.Commands.WHITELIST_LIST.build(names), false)
+            CommandMessages.WHITELIST_LIST.sendSuccess(source, names, false)
         }
         return names.size
     }
@@ -150,7 +151,7 @@ object WhitelistCommand {
     @JvmStatic
     private fun kickUnlistedPlayers(server: KryptonServer) {
         server.playerManager.players().forEach {
-            if (!server.playerManager.whitelistManager.isWhitelisted(it.profile)) it.disconnect(Messages.Disconnect.NOT_WHITELISTED.build())
+            if (!server.playerManager.whitelistManager.isWhitelisted(it.profile)) it.disconnect(DisconnectMessages.NOT_WHITELISTED)
         }
     }
 

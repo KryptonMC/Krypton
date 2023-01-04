@@ -20,7 +20,7 @@ package org.kryptonmc.krypton.commands
 
 import com.mojang.brigadier.CommandDispatcher
 import org.kryptonmc.krypton.command.CommandSourceStack
-import org.kryptonmc.krypton.locale.Messages
+import org.kryptonmc.krypton.locale.CommandMessages
 
 object StopCommand {
 
@@ -29,7 +29,7 @@ object StopCommand {
         dispatcher.register(literal("stop") {
             requiresPermission(KryptonPermission.STOP)
             runs {
-                it.source.sendSuccess(Messages.Commands.STOP_STOPPING.build(), true)
+                it.source.sendSuccess(CommandMessages.STOP, true)
                 it.source.server.stop(false)
             }
         })

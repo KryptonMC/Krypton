@@ -24,7 +24,7 @@ import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer
 import org.kryptonmc.api.auth.GameProfile
 import org.kryptonmc.krypton.command.CommandSourceStack
 import org.kryptonmc.krypton.command.arguments.GameProfileArgument
-import org.kryptonmc.krypton.locale.Messages
+import org.kryptonmc.krypton.locale.CommandMessages
 import org.kryptonmc.krypton.server.ban.KryptonProfileBan
 
 object BanCommand {
@@ -53,8 +53,8 @@ object BanCommand {
             if (banManager.isBanned(profile)) return@forEach
             val ban = KryptonProfileBan(profile, reason = LegacyComponentSerializer.legacySection().deserialize(reason))
             banManager.addBan(ban)
-            source.sendSuccess(Messages.Commands.BAN_SUCCESS.build(profile.name, reason), true)
-            source.server.getPlayer(profile.uuid)?.disconnect(Messages.Disconnect.BANNED_MESSAGE.build(ban.reason, ban.expirationDate))
+            CommandMessages.BAN.sendSuccess(source, profile.name, ban.reason, true)
+            source.server.getPlayer(profile.uuid)?.disconnect(BanCommandUtil.createBanMessage("banned", ban.reason, ban.expirationDate))
         }
     }
 }

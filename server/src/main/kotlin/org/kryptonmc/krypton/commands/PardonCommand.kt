@@ -22,7 +22,7 @@ import com.mojang.brigadier.CommandDispatcher
 import org.kryptonmc.krypton.command.CommandSourceStack
 import org.kryptonmc.krypton.command.CommandSuggestionProvider
 import org.kryptonmc.krypton.command.arguments.GameProfileArgument
-import org.kryptonmc.krypton.locale.Messages
+import org.kryptonmc.krypton.locale.CommandMessages
 
 object PardonCommand {
 
@@ -41,7 +41,7 @@ object PardonCommand {
                     GameProfileArgument.get(context, TARGETS).forEach {
                         if (!banManager.isBanned(it)) return@forEach
                         banManager.removeBan(it)
-                        Messages.Commands.PARDON_SUCCESS.send(context.source, it.name)
+                        CommandMessages.PARDON.sendSuccess(context.source, it.name, true)
                     }
                 }
             }
