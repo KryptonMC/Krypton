@@ -18,7 +18,6 @@
  */
 package org.kryptonmc.krypton.plugin
 
-import kotlinx.collections.immutable.persistentMapOf
 import org.kryptonmc.api.plugin.PluginDependency
 import org.kryptonmc.api.plugin.PluginDescription
 import org.kryptonmc.krypton.KryptonPlatform
@@ -30,15 +29,11 @@ open class KryptonPluginDescription(
     final override val version: String,
     final override val description: String,
     final override val authors: Collection<String>,
-    dependencies: Collection<PluginDependency>,
+    final override val dependencies: Collection<PluginDependency>,
     override val source: Path?
 ) : PluginDescription {
 
-    private val dependencyMap = dependencies.associateByTo(persistentMapOf<String, PluginDependency>().builder()) { it.id }.build()
-    final override val dependencies: Collection<PluginDependency>
-        get() = dependencyMap.values
-
-    final override fun getDependency(id: String): PluginDependency? = dependencyMap.get(id)
+    final override fun getDependency(id: String): PluginDependency? = dependencies.firstOrNull { it.id == id }
 
     companion object {
 

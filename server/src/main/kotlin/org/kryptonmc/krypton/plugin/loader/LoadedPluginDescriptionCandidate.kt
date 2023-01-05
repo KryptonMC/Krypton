@@ -22,21 +22,31 @@
  */
 package org.kryptonmc.krypton.plugin.loader
 
+import com.google.common.collect.ImmutableList
 import org.kryptonmc.api.plugin.PluginDependency
+import org.kryptonmc.krypton.plugin.KryptonPluginDependency
 import org.kryptonmc.krypton.plugin.KryptonPluginDescription
+import org.kryptonmc.processor.SerializedPluginDescription
 import java.nio.file.Path
 
 class LoadedPluginDescriptionCandidate(
-    id: String,
-    name: String,
-    version: String,
-    description: String,
-    authors: Collection<String>,
-    dependencies: Collection<PluginDependency>,
+    from: SerializedPluginDescription,
     override val source: Path,
     val mainClass: String
-) : KryptonPluginDescription(id, name, version, description, authors, dependencies, source) {
+) : KryptonPluginDescription(from.id, from.name, from.version, from.description, convertAuthors(from), convertDependencies(from), source) {
 
-    fun toFull(mainClass: Class<*>): LoadedPluginDescription =
-        LoadedPluginDescription(id, name, version, description, authors, dependencies, source, mainClass)
+    fun toFull(mainClass: Class<*>): LoadedPluginDescription = LoadedPluginDescription(this, source, mainClass)
+
+    companion object {
+
+        @JvmStatic
+        private fun convertAuthors(from: SerializedPluginDescription): List<String> = ImmutableList.copyOf(from.authors)
+
+        @JvmStatic
+        private fun convertDependencies(from: SerializedPluginDescription): Collection<PluginDependency> {
+            val result = ImmutableList.builder<PluginDependency>()
+            from.dependencies.forEach { result.add(KryptonPluginDependency(it.id, it.optional)) }
+            return result.build()
+        }
+    }
 }
