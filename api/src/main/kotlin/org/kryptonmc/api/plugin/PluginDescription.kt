@@ -62,10 +62,11 @@ public interface PluginDescription {
     public val dependencies: Collection<PluginDependency>
 
     /**
-     * The source path that this plugin was loaded from.
+     * The source path that this plugin was loaded from, or null if this plugin
+     * was not loaded from a file.
      */
     @get:JvmName("source")
-    public val source: Path
+    public val source: Path?
 
     /**
      * Gets the plugin dependency with the given [id], or returns null if there

@@ -33,7 +33,7 @@ class LoadedPluginDescriptionCandidate(
     description: String,
     authors: Collection<String>,
     dependencies: Collection<PluginDependency>,
-    source: Path,
+    override val source: Path,
     val mainClass: String
 ) : KryptonPluginDescription(id, name, version, description, authors, dependencies, source) {
 
