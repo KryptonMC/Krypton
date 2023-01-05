@@ -35,6 +35,7 @@ import org.kryptonmc.krypton.plugin.KryptonPluginDependency
 import org.kryptonmc.krypton.plugin.PluginClassLoader
 import org.kryptonmc.krypton.util.NoSpread
 import org.kryptonmc.processor.SerializedPluginDescription
+import java.io.InputStreamReader
 import java.nio.file.Files
 import java.nio.file.Path
 import java.util.jar.JarInputStream
@@ -73,15 +74,10 @@ object PluginLoader {
 
     @JvmStatic
     private fun findMetadata(path: Path): SerializedPluginDescription? = JarInputStream(Files.newInputStream(path)).use { input ->
-        var foundBungeeBukkitPluginFile = false
-        generateSequence { input.nextJarEntry }.forEach { entry ->
-            if (entry.name == "plugin.yml" || entry.name == "bungee.yml") foundBungeeBukkitPluginFile = true
-            if (entry.name == "krypton-plugin-meta.json") return JsonReader(input.reader()).use(SerializedPluginDescription::read)
-        }
-
-        if (foundBungeeBukkitPluginFile) {
-            throw InvalidPluginException("The plugin file ${path.fileName} appears to be a Bukkit or BungeeCord plugin. Krypton does not support" +
-                    "Bukkit or BungeeCord plugins.")
+        var entry = input.nextJarEntry
+        while (entry != null) {
+            if (entry.name == "krypton-plugin-meta.json") return JsonReader(InputStreamReader(input)).use(SerializedPluginDescription::read)
+            entry = input.nextJarEntry
         }
         return null
     }
