@@ -30,7 +30,7 @@ open class KryptonPluginDescription(
     final override val description: String,
     final override val authors: Collection<String>,
     final override val dependencies: Collection<PluginDependency>,
-    override val source: Path?
+    final override val source: Path?
 ) : PluginDescription {
 
     final override fun getDependency(id: String): PluginDependency? = dependencies.firstOrNull { it.id == id }

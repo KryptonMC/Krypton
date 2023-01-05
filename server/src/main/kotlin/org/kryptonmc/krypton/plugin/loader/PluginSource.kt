@@ -16,28 +16,27 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.plugin.module
+package org.kryptonmc.krypton.plugin.loader
 
-import com.google.inject.Scopes
-import dev.misfitlabs.kotlinguice4.KotlinModule
-import org.apache.logging.log4j.LogManager
-import org.apache.logging.log4j.Logger
+import com.google.inject.Module
 import org.kryptonmc.api.plugin.PluginContainer
 import org.kryptonmc.api.plugin.PluginDescription
-import org.kryptonmc.api.plugin.annotation.DataFolder
-import java.nio.file.Path
 
-class PluginModule(
-    private val container: PluginContainer,
-    private val mainClass: Class<*>,
-    private val basePath: Path
-) : KotlinModule() {
+interface PluginSource {
 
-    override fun configure() {
-        bind(mainClass).`in`(Scopes.SINGLETON)
-        bind<Logger>().toInstance(LogManager.getLogger(container.description.id))
-        bind<Path>().annotatedWith<DataFolder>().toInstance(basePath.resolve(container.description.id))
-        bind<PluginDescription>().toInstance(container.description)
-        bind<PluginContainer>().toInstance(container)
+    fun loadDescriptions(): Collection<PluginDescription>
+
+    fun loadPlugin(candidate: PluginDescription): PluginDescription
+
+    fun createModule(container: PluginContainer): Module
+
+    fun createPlugin(container: PluginContainer, vararg modules: Module)
+
+    fun onPluginLoaded(container: PluginContainer) {
+        // Do nothing by default
+    }
+
+    fun onPluginsLoaded(containers: Collection<PluginContainer>) {
+        // Do nothing by default
     }
 }
