@@ -31,7 +31,7 @@ open class KryptonPluginDescription(
     final override val description: String,
     final override val authors: Collection<String>,
     dependencies: Collection<PluginDependency>,
-    final override val source: Path
+    override val source: Path?
 ) : PluginDescription {
 
     private val dependencyMap = dependencies.associateByTo(persistentMapOf<String, PluginDependency>().builder()) { it.id }.build()

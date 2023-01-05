@@ -33,6 +33,6 @@ class LoadedPluginDescription(
     description: String,
     authors: Collection<String>,
     dependencies: Collection<PluginDependency>,
-    source: Path,
+    override val source: Path,
     val mainClass: Class<*>
 ) : KryptonPluginDescription(id, name, version, description, authors, dependencies, source)

@@ -64,8 +64,8 @@ class MockPluginManager : PluginManager {
             get() = emptySet()
         override val dependencies: Collection<PluginDependency>
             get() = emptySet()
-        override val source: Path
-            get() = Path.of("")
+        override val source: Path?
+            get() = null
 
         override fun getDependency(id: String): PluginDependency? = null
     }
