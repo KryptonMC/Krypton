@@ -22,17 +22,11 @@
  */
 package org.kryptonmc.krypton.plugin.loader
 
-import org.kryptonmc.api.plugin.PluginDependency
 import org.kryptonmc.krypton.plugin.KryptonPluginDescription
 import java.nio.file.Path
 
 class LoadedPluginDescription(
-    id: String,
-    name: String,
-    version: String,
-    description: String,
-    authors: Collection<String>,
-    dependencies: Collection<PluginDependency>,
+    from: LoadedPluginDescriptionCandidate,
     override val source: Path,
     val mainClass: Class<*>
-) : KryptonPluginDescription(id, name, version, description, authors, dependencies, source)
+) : KryptonPluginDescription(from.id, from.name, from.version, from.description, from.authors, from.dependencies, source)

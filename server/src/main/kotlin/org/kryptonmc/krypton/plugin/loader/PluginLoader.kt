@@ -25,13 +25,10 @@ package org.kryptonmc.krypton.plugin.loader
 
 import com.google.gson.stream.JsonReader
 import com.google.inject.Module
-import kotlinx.collections.immutable.persistentListOf
-import kotlinx.collections.immutable.toImmutableList
 import org.kryptonmc.api.plugin.InvalidPluginException
 import org.kryptonmc.api.plugin.PluginContainer
 import org.kryptonmc.api.plugin.PluginDescription
 import org.kryptonmc.krypton.plugin.KryptonPluginContainer
-import org.kryptonmc.krypton.plugin.KryptonPluginDependency
 import org.kryptonmc.krypton.plugin.PluginClassLoader
 import org.kryptonmc.krypton.util.NoSpread
 import org.kryptonmc.processor.SerializedPluginDescription
@@ -49,7 +46,7 @@ object PluginLoader {
     fun loadDescription(source: Path): LoadedPluginDescriptionCandidate {
         val serialized = findMetadata(source) ?: throw InvalidPluginException("Could not find a valid krypton-plugin-meta.json file!")
         if (!serialized.id.matches(SerializedPluginDescription.ID_REGEX)) throw InvalidPluginException("Plugin ID ${serialized.id} is invalid!")
-        return toCandidate(serialized, source)
+        return serializedToCandidate(serialized, source)
     }
 
     @JvmStatic
@@ -83,10 +80,6 @@ object PluginLoader {
     }
 
     @JvmStatic
-    private fun toCandidate(description: SerializedPluginDescription, source: Path): LoadedPluginDescriptionCandidate {
-        val dependencies = description.dependencies
-            .mapTo(persistentListOf<KryptonPluginDependency>().builder()) { KryptonPluginDependency(it.id, it.optional) }
-        return LoadedPluginDescriptionCandidate(description.id, description.name, description.version, description.description,
-            description.authors.toImmutableList(), dependencies, source, description.main)
-    }
+    private fun serializedToCandidate(description: SerializedPluginDescription, source: Path): LoadedPluginDescriptionCandidate =
+        LoadedPluginDescriptionCandidate(description, source, description.main)
 }
