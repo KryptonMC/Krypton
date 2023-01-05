@@ -45,6 +45,7 @@ import org.kryptonmc.krypton.server.PlayerManager
 import org.kryptonmc.krypton.service.KryptonServicesManager
 import org.kryptonmc.krypton.user.KryptonUserManager
 import org.kryptonmc.krypton.network.PacketFraming
+import org.kryptonmc.krypton.plugin.loader.PluginLoader
 import org.kryptonmc.krypton.util.crypto.YggdrasilSessionKey
 import org.kryptonmc.krypton.util.executor.ReentrantBlockableEventLoop
 import org.kryptonmc.krypton.util.random.RandomSource
@@ -54,7 +55,6 @@ import org.kryptonmc.krypton.world.scoreboard.KryptonScoreboard
 import java.io.IOException
 import java.net.InetAddress
 import java.net.InetSocketAddress
-import java.nio.file.Files
 import java.nio.file.Path
 import java.util.Locale
 import java.util.concurrent.RejectedExecutionException
@@ -234,25 +234,11 @@ class KryptonServer(
     }
 
     private fun loadPlugins() {
-        LOGGER.info("Loading plugins...")
+        LOGGER.info("Loading modules and plugins...")
         try {
-            val pluginPath = Path.of("plugins")
-            if (!Files.exists(pluginPath)) {
-                try {
-                    Files.createDirectory(pluginPath)
-                } catch (exception: Exception) {
-                    LOGGER.warn("Failed to create the plugins directory! Plugins will not be loaded!", exception)
-                    return
-                }
-            }
-            if (!Files.isDirectory(pluginPath)) {
-                LOGGER.warn("Plugin path $pluginPath is not a directory! Plugins will not be loaded!")
-                return
-            }
-
-            pluginManager.loadPlugins(pluginPath, this)
+            PluginLoader.createDefault(this).loadPlugins(this)
         } catch (exception: Exception) {
-            LOGGER.error("Failed to load plugins!", exception)
+            LOGGER.error("Failed to load plugins and modules!", exception)
         }
 
         // Register all of the plugin instances as event listeners, so that plugins can listen for events such as

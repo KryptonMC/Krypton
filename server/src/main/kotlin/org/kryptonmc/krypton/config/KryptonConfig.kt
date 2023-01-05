@@ -23,6 +23,7 @@ import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer
 import org.kryptonmc.api.ServerConfig
 import org.kryptonmc.krypton.config.category.AdvancedCategory
+import org.kryptonmc.krypton.config.category.ModulesCategory
 import org.kryptonmc.krypton.config.category.ProxyCategory
 import org.kryptonmc.krypton.config.category.ServerCategory
 import org.kryptonmc.krypton.config.category.StatusCategory
@@ -52,7 +53,9 @@ data class KryptonConfig(
     @Comment("Advanced settings. Don't touch these unless you know what you're doing.")
     val advanced: AdvancedCategory = AdvancedCategory(),
     @Comment("Proxy IP forwarding settings.")
-    val proxy: ProxyCategory = ProxyCategory()
+    val proxy: ProxyCategory = ProxyCategory(),
+    @Comment("Module settings.")
+    val modules: ModulesCategory = ModulesCategory()
 ) : ServerConfig {
 
     override val isOnline: Boolean
