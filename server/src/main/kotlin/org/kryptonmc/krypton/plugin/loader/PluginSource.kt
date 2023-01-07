@@ -28,6 +28,8 @@ interface PluginSource {
 
     fun loadPlugin(candidate: PluginDescription): PluginDescription
 
+    fun createPluginContainer(description: PluginDescription): PluginContainer
+
     fun createModule(container: PluginContainer): Module
 
     fun createPlugin(container: PluginContainer, vararg modules: Module)

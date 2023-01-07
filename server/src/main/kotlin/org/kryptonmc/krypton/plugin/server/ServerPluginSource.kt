@@ -76,6 +76,8 @@ class ServerPluginSource(private val modulesDirectory: Path, private val modules
         return candidate.toFull(mainClass)
     }
 
+    override fun createPluginContainer(description: PluginDescription): PluginContainer = KryptonPluginContainer(description, true)
+
     override fun createModule(container: PluginContainer): Module {
         val description = container.description
         require(description is LoadedDescription) { "Description for provided container isn't compatible with this loader!" }
