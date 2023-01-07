@@ -27,6 +27,7 @@ import net.kyori.adventure.text.format.TextDecoration
 import org.kryptonmc.krypton.command.CommandSourceStack
 import org.kryptonmc.krypton.commands.literal
 import org.kryptonmc.krypton.commands.runs
+import org.kryptonmc.krypton.plugin.KryptonPluginContainer
 import java.util.stream.Stream
 
 object PluginsCommand : KryptonSubCommand {
@@ -58,6 +59,9 @@ object PluginsCommand : KryptonSubCommand {
             }
 
             val message = foldToMessage(plugins) { pluginIndex, builder, plugin ->
+                // Don't include modules in the plugin list.
+                if (plugin is KryptonPluginContainer && plugin.isModule) return@foldToMessage
+
                 val pluginMessage = Component.text()
                     .append(ID)
                     .append(Component.text(plugin.description.id, KryptonColors.VIVID_SKY_BLUE))
@@ -75,6 +79,7 @@ object PluginsCommand : KryptonSubCommand {
                     .append(Component.text(plugin.description.authors.joinToString(", "), NamedTextColor.YELLOW))
                     .appendNewline()
                     .append(DEPENDENCIES)
+
                 val dependencies = plugin.description.dependencies
                 if (dependencies.isNotEmpty()) {
                     pluginMessage.appendNewline().append(foldToMessage(dependencies) { index, dependencyMessage, dependency ->
@@ -89,6 +94,7 @@ object PluginsCommand : KryptonSubCommand {
                 } else {
                     pluginMessage.append(Component.text("None", NamedTextColor.RED))
                 }
+
                 builder.append(Component.text()
                     .append(Component.text(plugin.description.id, KryptonColors.LIGHTER_PURPLE))
                     .append(OPEN_BRACKET)
@@ -97,6 +103,7 @@ object PluginsCommand : KryptonSubCommand {
                     .hoverEvent(HoverEvent.showText(pluginMessage)))
                 if (pluginIndex < plugins.size - 1) builder.append(SEPARATOR)
             }
+
             context.source.sendSystemMessage(Component.text()
                 .append(PREFIX)
                 .append(OPEN_BRACKET)

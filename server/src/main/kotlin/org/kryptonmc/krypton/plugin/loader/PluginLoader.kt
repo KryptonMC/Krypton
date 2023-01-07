@@ -5,7 +5,6 @@ import org.apache.logging.log4j.LogManager
 import org.kryptonmc.api.plugin.PluginContainer
 import org.kryptonmc.api.plugin.PluginDescription
 import org.kryptonmc.krypton.KryptonServer
-import org.kryptonmc.krypton.plugin.KryptonPluginContainer
 import org.kryptonmc.krypton.plugin.KryptonPluginManager
 import org.kryptonmc.krypton.plugin.PluginDependencies
 import org.kryptonmc.krypton.plugin.module.GlobalModule
@@ -42,7 +41,7 @@ class PluginLoader(private val pluginManager: KryptonPluginManager, private val 
             val source = sourceByPluginId.get(candidate.id) ?: error("No source for candidate $candidate! This is a bug!")
             try {
                 val description = source.loadPlugin(candidate)
-                val container = KryptonPluginContainer(description)
+                val container = source.createPluginContainer(description)
                 val pluginModule = source.createModule(container)
                 pluginContainers.put(container, pluginModule)
                 loadedPluginsById.add(description.id)
