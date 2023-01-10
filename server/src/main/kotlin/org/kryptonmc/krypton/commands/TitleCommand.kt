@@ -23,6 +23,9 @@ import com.mojang.brigadier.arguments.IntegerArgumentType
 import com.mojang.brigadier.arguments.StringArgumentType
 import com.mojang.brigadier.builder.LiteralArgumentBuilder
 import net.kyori.adventure.text.Component
+import org.kryptonmc.api.command.argument
+import org.kryptonmc.api.command.literal
+import org.kryptonmc.api.command.literalCommand
 import org.kryptonmc.api.entity.player.Player
 import org.kryptonmc.krypton.command.CommandSourceStack
 import org.kryptonmc.krypton.command.arguments.entities.EntityArgumentType
@@ -37,15 +40,15 @@ object TitleCommand {
 
     @JvmStatic
     fun register(dispatcher: CommandDispatcher<CommandSourceStack>) {
-        dispatcher.register(literal("title") {
+        dispatcher.register(literalCommand("title") {
             requiresPermission(KryptonPermission.TITLE)
             argument(TARGETS, EntityArgumentType.players()) {
-                title(this@literal, "actionbar", KryptonPlayer::sendActionBar)
-                title(this@literal, "title", KryptonPlayer::sendTitle)
-                title(this@literal, "subtitle", KryptonPlayer::sendSubtitle)
-                clearOrReset(this@literal, "clear", "cleared", Player::clearTitle)
-                clearOrReset(this@literal, "reset", "reset", Player::resetTitle)
-                times(this@literal)
+                title(this@literalCommand, "actionbar", KryptonPlayer::sendActionBar)
+                title(this@literalCommand, "title", KryptonPlayer::sendTitle)
+                title(this@literalCommand, "subtitle", KryptonPlayer::sendSubtitle)
+                clearOrReset(this@literalCommand, "clear", "cleared", Player::clearTitle)
+                clearOrReset(this@literalCommand, "reset", "reset", Player::resetTitle)
+                times(this@literalCommand)
             }
         })
     }

@@ -23,6 +23,8 @@ import com.mojang.brigadier.arguments.StringArgumentType
 import com.mojang.brigadier.context.CommandContext
 import com.mojang.brigadier.exceptions.DynamicCommandExceptionType
 import net.kyori.adventure.text.Component
+import org.kryptonmc.api.command.argument
+import org.kryptonmc.api.command.literalCommand
 import org.kryptonmc.api.event.player.ChangeGameModeEvent
 import org.kryptonmc.api.world.GameMode
 import org.kryptonmc.krypton.adventure.KryptonAdventure
@@ -42,9 +44,9 @@ object GameModeCommand {
 
     @JvmStatic
     fun register(dispatcher: CommandDispatcher<CommandSourceStack>) {
-        val command = literal("gamemode") { requiresPermission(KryptonPermission.GAME_MODE) }
+        val command = literalCommand("gamemode") { requiresPermission(KryptonPermission.GAME_MODE) }
         GameModes.VALUES.forEach { mode ->
-            command.then(literal(mode.name.lowercase()) {
+            command.then(literalCommand(mode.name.lowercase()) {
                 runs { setMode(it.source, listOf(it.source.getPlayerOrError()), mode) }
                 argument(TARGETS, EntityArgumentType.players()) {
                     runs { setMode(it.source, EntityArgumentType.getPlayers(it, TARGETS), mode) }
@@ -52,12 +54,12 @@ object GameModeCommand {
             })
         }
 
-        command.then(argument(GAME_MODE, StringArgumentType.string()) {
+        command.argument(GAME_MODE, StringArgumentType.string()) {
             runs { setMode(it.source, listOf(it.source.getPlayerOrError()), getGameMode(it)) }
             argument(TARGETS, EntityArgumentType.players()) {
                 runs { setMode(it.source, EntityArgumentType.getPlayers(it, TARGETS), getGameMode(it)) }
             }
-        })
+        }
         dispatcher.register(command)
     }
 

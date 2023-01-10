@@ -20,6 +20,8 @@ package org.kryptonmc.krypton.commands
 
 import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.arguments.StringArgumentType
+import org.kryptonmc.api.command.argument
+import org.kryptonmc.api.command.literalCommand
 import org.kryptonmc.krypton.command.CommandSourceStack
 import org.kryptonmc.krypton.command.CommandSuggestionProvider
 import org.kryptonmc.krypton.command.arguments.CommandExceptions
@@ -34,7 +36,7 @@ object PardonIpCommand {
 
     @JvmStatic
     fun register(dispatcher: CommandDispatcher<CommandSourceStack>) {
-        dispatcher.register(literal("pardon-ip") {
+        dispatcher.register(literalCommand("pardon-ip") {
             requiresPermission(KryptonPermission.PARDON_IP)
             argument(TARGET, StringArgumentType.string()) {
                 suggests { context, builder ->

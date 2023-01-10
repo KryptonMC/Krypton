@@ -20,6 +20,8 @@ package org.kryptonmc.krypton.commands
 
 import com.mojang.brigadier.CommandDispatcher
 import net.kyori.adventure.key.Key
+import org.kryptonmc.api.command.argument
+import org.kryptonmc.api.command.literalCommand
 import org.kryptonmc.api.util.Vec3d
 import org.kryptonmc.krypton.command.CommandSourceStack
 import org.kryptonmc.krypton.command.SuggestionProviders
@@ -43,7 +45,7 @@ object SummonCommand {
 
     @JvmStatic
     fun register(dispatcher: CommandDispatcher<CommandSourceStack>) {
-        dispatcher.register(literal("summon") {
+        dispatcher.register(literalCommand("summon") {
             requiresPermission(KryptonPermission.SUMMON)
             argument(ENTITY, SummonEntityArgument) {
                 suggests(SuggestionProviders.SUMMONABLE_ENTITIES)

@@ -20,14 +20,14 @@ package org.kryptonmc.krypton.commands.krypton
 
 import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.builder.LiteralArgumentBuilder
+import org.kryptonmc.api.command.literalCommand
 import org.kryptonmc.krypton.command.CommandSourceStack
-import org.kryptonmc.krypton.commands.literal
 
 object KryptonCommand {
 
     @JvmStatic
     fun register(dispatcher: CommandDispatcher<CommandSourceStack>) {
-        dispatcher.register(literal("krypton") {
+        dispatcher.register(literalCommand("krypton") {
             registerSubCommand(this, PluginsCommand)
             registerSubCommand(this, InfoCommand)
         })

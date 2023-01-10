@@ -21,6 +21,8 @@ package org.kryptonmc.krypton.commands
 import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.arguments.StringArgumentType
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer
+import org.kryptonmc.api.command.argument
+import org.kryptonmc.api.command.literalCommand
 import org.kryptonmc.krypton.command.CommandSourceStack
 import org.kryptonmc.krypton.command.arguments.CommandExceptions
 import org.kryptonmc.krypton.locale.CommandMessages
@@ -39,7 +41,7 @@ object BanIpCommand {
 
     @JvmStatic
     fun register(dispatcher: CommandDispatcher<CommandSourceStack>) {
-        dispatcher.register(literal("ban-ip") {
+        dispatcher.register(literalCommand("ban-ip") {
             requiresPermission(KryptonPermission.BAN_IP)
             argument(TARGET, StringArgumentType.string()) {
                 runs { banIp(it.source, it.getArgument(TARGET), DEFAULT_REASON) }

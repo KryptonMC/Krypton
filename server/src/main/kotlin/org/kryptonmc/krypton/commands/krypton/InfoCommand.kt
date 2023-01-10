@@ -23,9 +23,9 @@ import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.event.ClickEvent
 import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.text.format.TextDecoration
+import org.kryptonmc.api.command.literalCommand
 import org.kryptonmc.krypton.KryptonPlatform
 import org.kryptonmc.krypton.command.CommandSourceStack
-import org.kryptonmc.krypton.commands.literal
 import org.kryptonmc.krypton.commands.runs
 import java.util.stream.Stream
 
@@ -45,7 +45,7 @@ object InfoCommand : KryptonSubCommand {
 
     override fun aliases(): Stream<String> = Stream.of("about", "version")
 
-    override fun register(): LiteralArgumentBuilder<CommandSourceStack> = literal("info") {
+    override fun register(): LiteralArgumentBuilder<CommandSourceStack> = literalCommand("info") {
         runs { it.source.sendSystemMessage(MESSAGE) }
     }
 }

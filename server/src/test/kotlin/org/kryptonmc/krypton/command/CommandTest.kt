@@ -30,9 +30,9 @@ import net.kyori.adventure.text.Component
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import org.kryptonmc.api.command.CommandExecutionContext
+import org.kryptonmc.api.command.argument
+import org.kryptonmc.api.command.literalCommand
 import org.kryptonmc.krypton.command.registrar.BrigadierCommandRegistrar
-import org.kryptonmc.krypton.commands.argument
-import org.kryptonmc.krypton.commands.literal
 import org.kryptonmc.krypton.commands.runs
 import org.kryptonmc.krypton.testutil.Bootstrapping
 import org.kryptonmc.krypton.coordinate.KryptonVec3d
@@ -54,7 +54,7 @@ class CommandTest {
     @Suppress("UNCHECKED_CAST")
     fun `test brigadier command registrar`() {
         val root = RootCommandNode<CommandSourceStack>()
-        val node = literal("test") {
+        val node = literalCommand<CommandSourceStack>("test") {
             runs { println("Hello World!") }
             argument("hello", IntegerArgumentType.integer()) {
                 argument("world", StringArgumentType.string()) {}

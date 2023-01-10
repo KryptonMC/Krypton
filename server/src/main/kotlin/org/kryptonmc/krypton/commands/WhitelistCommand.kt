@@ -21,6 +21,9 @@ package org.kryptonmc.krypton.commands
 import com.mojang.brigadier.CommandDispatcher
 import org.apache.logging.log4j.LogManager
 import org.kryptonmc.api.auth.GameProfile
+import org.kryptonmc.api.command.argument
+import org.kryptonmc.api.command.literal
+import org.kryptonmc.api.command.literalCommand
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.command.CommandSourceStack
 import org.kryptonmc.krypton.command.CommandSuggestionProvider
@@ -42,7 +45,7 @@ object WhitelistCommand {
 
     @JvmStatic
     fun register(dispatcher: CommandDispatcher<CommandSourceStack>) {
-        dispatcher.register(literal("whitelist") {
+        dispatcher.register(literalCommand("whitelist") {
             requiresPermission(KryptonPermission.WHITELIST)
             literal("on") {
                 runs { enableWhitelist(it.source) }

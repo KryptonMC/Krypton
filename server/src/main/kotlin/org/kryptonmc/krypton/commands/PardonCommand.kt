@@ -19,6 +19,8 @@
 package org.kryptonmc.krypton.commands
 
 import com.mojang.brigadier.CommandDispatcher
+import org.kryptonmc.api.command.argument
+import org.kryptonmc.api.command.literalCommand
 import org.kryptonmc.krypton.command.CommandSourceStack
 import org.kryptonmc.krypton.command.CommandSuggestionProvider
 import org.kryptonmc.krypton.command.arguments.GameProfileArgument
@@ -30,7 +32,7 @@ object PardonCommand {
 
     @JvmStatic
     fun register(dispatcher: CommandDispatcher<CommandSourceStack>) {
-        dispatcher.register(literal("pardon") {
+        dispatcher.register(literalCommand("pardon") {
             requiresPermission(KryptonPermission.PARDON)
             argument(TARGETS, GameProfileArgument) {
                 suggests { context, builder ->

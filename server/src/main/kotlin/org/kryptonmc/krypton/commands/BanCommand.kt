@@ -22,6 +22,8 @@ import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.arguments.StringArgumentType
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer
 import org.kryptonmc.api.auth.GameProfile
+import org.kryptonmc.api.command.argument
+import org.kryptonmc.api.command.literalCommand
 import org.kryptonmc.krypton.command.CommandSourceStack
 import org.kryptonmc.krypton.command.arguments.GameProfileArgument
 import org.kryptonmc.krypton.locale.CommandMessages
@@ -35,7 +37,7 @@ object BanCommand {
 
     @JvmStatic
     fun register(dispatcher: CommandDispatcher<CommandSourceStack>) {
-        dispatcher.register(literal("ban") {
+        dispatcher.register(literalCommand("ban") {
             requiresPermission(KryptonPermission.BAN)
             argument(TARGETS, GameProfileArgument) {
                 runs { ban(it.source, GameProfileArgument.get(it, TARGETS), DEFAULT_REASON) }
