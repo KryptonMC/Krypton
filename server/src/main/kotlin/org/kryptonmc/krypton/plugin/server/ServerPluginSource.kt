@@ -39,17 +39,17 @@ import java.nio.file.Path
 class ServerPluginSource(private val modulesDirectory: Path, private val modules: ServerModules) : PluginSource {
 
     override fun loadDescriptions(): Collection<PluginDescription> {
-        val classpath = getClasspathAsPath()
+        val moduleInfoFolder = ServerPluginSource::class.java.classLoader.getResources("krypton-modules")
         val result = ArrayList<PluginDescription>()
-        Files.newDirectoryStream(classpath) { Files.isRegularFile(it) && it.toString().endsWith(MODULE_FILE_SUFFIX) }.use { stream ->
-            stream.forEach { path ->
-                try {
-                    val description = loadDescription(path)
-                    if (!modules.isEnabled(description.id)) return@forEach // Don't load disabled modules
-                    result.add(loadDescription(path))
-                } catch (exception: Exception) {
-                    LOGGER.error("Failed to load internal module at $path!", exception)
-                }
+
+        moduleInfoFolder.asIterator().forEach { url ->
+            val path = Path.of(url.toURI())
+            val moduleName = getModuleNameFromPath(path)
+            if (!modules.isEnabled(moduleName)) return@forEach
+            try {
+                result.add(loadDescription(path))
+            } catch (exception: Exception) {
+                LOGGER.error("Failed to load internal module $moduleName!", exception)
             }
         }
         if (result.isEmpty()) LOGGER.warn("No internal modules found on classpath.")
@@ -59,9 +59,6 @@ class ServerPluginSource(private val modulesDirectory: Path, private val modules
     private fun loadDescription(source: Path): LoadedCandidateDescription {
         val serialized = findMetadata(source) ?: throw InvalidModuleException("Module ${getModuleNameFromPath(source)} has invalid metadata!")
         if (!serialized.id.matches(SerializedPluginDescription.ID_REGEX)) throw InvalidModuleException("Module ID ${serialized.id} is invalid!")
-        if (!serialized.id.endsWith("-module")) {
-            throw InvalidModuleException("Internal modules must have an ID ending with '-module', but ${serialized.id} does not!")
-        }
         return serializedToCandidate(serialized)
     }
 
@@ -144,18 +141,15 @@ class ServerPluginSource(private val modulesDirectory: Path, private val modules
 
     companion object {
 
-        private const val MODULE_FILE_SUFFIX = ".krypton-module.json"
+        private const val JSON_SUFFIX = ".json"
         private val LOGGER = LogManager.getLogger()
 
         @JvmStatic
         private fun getModuleNameFromPath(path: Path): String {
             val pathName = path.toString()
-            val lengthOfModuleName = pathName.length - MODULE_FILE_SUFFIX.length
+            val lengthOfModuleName = pathName.length - JSON_SUFFIX.length
             return pathName.substring(0, lengthOfModuleName)
         }
-
-        @JvmStatic
-        private fun getClasspathAsPath(): Path = Path.of(ServerPluginSource::class.java.protectionDomain.codeSource.location.toURI())
 
         @JvmStatic
         private fun serializedToCandidate(description: SerializedPluginDescription): LoadedCandidateDescription =
