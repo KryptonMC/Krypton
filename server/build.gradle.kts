@@ -1,9 +1,6 @@
-import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
-import com.github.jengelman.gradle.plugins.shadow.transformers.Log4j2PluginsCacheFileTransformer
 import org.apache.tools.ant.filters.ReplaceTokens
 
 plugins {
-    id("com.github.johnrengelman.shadow")
     id("io.gitlab.arturbosch.detekt")
     id("info.solidsoft.pitest")
     id("com.google.devtools.ksp")
@@ -104,18 +101,6 @@ pitest {
 }
 
 tasks {
-    build {
-        dependsOn(shadowJar)
-    }
-    withType<ShadowJar> {
-        val buildNumber = System.getenv("BUILD_NUMBER")?.let { "-$it" }.orEmpty()
-        archiveFileName.set("Krypton-${project.version}$buildNumber.jar")
-        transform<Log4j2PluginsCacheFileTransformer>()
-
-        fastutilExclusions("booleans", "bytes", "chars", "floats", "io", "shorts")
-
-        relocate("org.bstats", "org.kryptonmc.krypton.bstats")
-    }
     withType<ProcessResources> {
         filesMatching("**/versions.properties") {
             val minecraftVersion = global.versions.minecraft.get()
@@ -128,8 +113,4 @@ tasks {
     }
 }
 
-applyImplJarMetadata("org.kryptonmc.server", "Krypton") {
-    put("Main-Class", "org.kryptonmc.krypton.KryptonKt")
-    put("Multi-Release", "true")
-}
 setupDetekt()

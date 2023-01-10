@@ -32,6 +32,7 @@ include("api")
 include("server")
 include("generators")
 include("annotation-processor")
+include("jar")
 
 internalProject("annotations")
 internalProject("ap")
