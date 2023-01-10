@@ -21,6 +21,8 @@ package org.kryptonmc.krypton.commands
 import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.arguments.IntegerArgumentType
 import net.kyori.adventure.sound.Sound
+import org.kryptonmc.api.command.argument
+import org.kryptonmc.api.command.literalCommand
 import org.kryptonmc.api.effect.sound.SoundEvents
 import org.kryptonmc.krypton.command.CommandSourceStack
 import org.kryptonmc.krypton.command.arguments.entities.EntityArgumentType
@@ -41,7 +43,7 @@ object GiveCommand {
 
     @JvmStatic
     fun register(dispatcher: CommandDispatcher<CommandSourceStack>) {
-        dispatcher.register(literal("give") {
+        dispatcher.register(literalCommand("give") {
             requiresPermission(KryptonPermission.GIVE)
             argument(TARGETS, EntityArgumentType.players()) {
                 argument(ITEM, ItemStackArgumentType) {

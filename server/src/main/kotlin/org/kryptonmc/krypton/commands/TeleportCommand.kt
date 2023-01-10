@@ -20,6 +20,8 @@ package org.kryptonmc.krypton.commands
 
 import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.builder.LiteralArgumentBuilder
+import org.kryptonmc.api.command.argument
+import org.kryptonmc.api.command.literalCommand
 import org.kryptonmc.krypton.command.CommandSourceStack
 import org.kryptonmc.krypton.command.arguments.VectorArgument
 import org.kryptonmc.krypton.command.arguments.entities.EntityArgumentType
@@ -33,7 +35,7 @@ object TeleportCommand {
 
     @JvmStatic
     fun register(dispatcher: CommandDispatcher<CommandSourceStack>) {
-        val node = dispatcher.register(literal("teleport") {
+        val node = dispatcher.register(literalCommand("teleport") {
             requiresPermission(KryptonPermission.TELEPORT)
             argument(LOCATION, VectorArgument.normal()) {
                 runs { it.source.getPlayerOrError().teleport(VectorArgument.get(it, LOCATION)) }

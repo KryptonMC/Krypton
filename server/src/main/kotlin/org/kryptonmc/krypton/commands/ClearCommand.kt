@@ -19,6 +19,8 @@
 package org.kryptonmc.krypton.commands
 
 import com.mojang.brigadier.CommandDispatcher
+import org.kryptonmc.api.command.argument
+import org.kryptonmc.api.command.literalCommand
 import org.kryptonmc.krypton.command.CommandSourceStack
 import org.kryptonmc.krypton.command.arguments.entities.EntityArgumentType
 import org.kryptonmc.krypton.command.arguments.item.ItemStackPredicate
@@ -36,7 +38,7 @@ object ClearCommand {
 
     @JvmStatic
     fun register(dispatcher: CommandDispatcher<CommandSourceStack>) {
-        dispatcher.register(literal("clear") {
+        dispatcher.register(literalCommand("clear") {
             requiresPermission(KryptonPermission.CLEAR)
             runs { clear(it.source, listOf(it.source.getPlayerOrError()), { true }, -1) }
             argument(TARGETS, EntityArgumentType.players()) {

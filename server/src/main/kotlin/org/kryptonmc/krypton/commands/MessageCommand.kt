@@ -22,6 +22,8 @@ import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.arguments.StringArgumentType
 import com.mojang.brigadier.builder.LiteralArgumentBuilder
 import net.kyori.adventure.text.Component
+import org.kryptonmc.api.command.argument
+import org.kryptonmc.api.command.literalCommand
 import org.kryptonmc.krypton.command.CommandSourceStack
 import org.kryptonmc.krypton.command.arguments.entities.EntityArgumentType
 
@@ -32,7 +34,7 @@ object MessageCommand {
 
     @JvmStatic
     fun register(dispatcher: CommandDispatcher<CommandSourceStack>) {
-        val messageCommand = dispatcher.register(literal("msg") {
+        val messageCommand = dispatcher.register(literalCommand("msg") {
             requiresPermission(KryptonPermission.MESSAGE)
             argument(PLAYER, EntityArgumentType.players()) {
                 argument(MESSAGE, StringArgumentType.string()) {

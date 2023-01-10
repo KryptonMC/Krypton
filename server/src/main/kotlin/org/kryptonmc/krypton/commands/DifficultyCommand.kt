@@ -19,6 +19,7 @@
 package org.kryptonmc.krypton.commands
 
 import com.mojang.brigadier.CommandDispatcher
+import org.kryptonmc.api.command.literalCommand
 import org.kryptonmc.api.world.Difficulty
 import org.kryptonmc.krypton.command.CommandSourceStack
 import org.kryptonmc.krypton.command.arguments.CommandExceptions
@@ -30,12 +31,12 @@ object DifficultyCommand {
 
     @JvmStatic
     fun register(dispatcher: CommandDispatcher<CommandSourceStack>) {
-        val command = literal("difficulty") {
+        val command = literalCommand<CommandSourceStack>("difficulty") {
             requiresPermission(KryptonPermission.DIFFICULTY)
             runs { CommandMessages.DIFFICULTY_QUERY.sendSuccess(it.source, it.source.world.difficulty, false) }
         }
         Difficulty.values().forEach { difficulty ->
-            command.then(literal(difficulty.name.lowercase()) {
+            command.then(literalCommand(difficulty.name.lowercase()) {
                 runs {
                     if (it.source.world.difficulty == difficulty) throw ERROR_ALREADY_DIFFICULT.create(difficulty.name.lowercase())
                     it.source.world.difficulty = difficulty

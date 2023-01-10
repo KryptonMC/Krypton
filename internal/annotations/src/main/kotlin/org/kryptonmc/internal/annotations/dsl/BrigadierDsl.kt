@@ -16,20 +16,12 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.commands
+package org.kryptonmc.internal.annotations.dsl
 
-import com.mojang.brigadier.CommandDispatcher
-import org.kryptonmc.api.command.literalCommand
-import org.kryptonmc.krypton.command.CommandSourceStack
-import org.kryptonmc.krypton.locale.CommandMessages
-
-object SeedCommand {
-
-    @JvmStatic
-    fun register(dispatcher: CommandDispatcher<CommandSourceStack>) {
-        dispatcher.register(literalCommand("seed") {
-            requiresPermission(KryptonPermission.SEED)
-            runs { CommandMessages.SEED.sendSuccess(it.source, it.source.world.seed.toString(), true) }
-        })
-    }
-}
+/**
+ * Indicates the annotated element is part of the built-in DSL for Brigadier.
+ */
+@Target(AnnotationTarget.CLASS, AnnotationTarget.FUNCTION)
+@Retention(AnnotationRetention.SOURCE)
+@DslMarker
+public annotation class BrigadierDsl

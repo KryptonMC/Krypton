@@ -21,6 +21,8 @@ package org.kryptonmc.krypton.commands
 import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.arguments.StringArgumentType
 import net.kyori.adventure.text.Component
+import org.kryptonmc.api.command.argument
+import org.kryptonmc.api.command.literalCommand
 import org.kryptonmc.krypton.command.CommandSourceStack
 
 object SayCommand {
@@ -29,7 +31,7 @@ object SayCommand {
 
     @JvmStatic
     fun register(dispatcher: CommandDispatcher<CommandSourceStack>) {
-        dispatcher.register(literal("say") {
+        dispatcher.register(literalCommand("say") {
             requiresPermission(KryptonPermission.SAY)
             argument(MESSAGE, StringArgumentType.string()) {
                 runs {

@@ -20,6 +20,7 @@ package org.kryptonmc.krypton.commands
 
 import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.context.CommandContext
+import org.kryptonmc.api.command.literalCommand
 import org.kryptonmc.krypton.command.CommandSourceStack
 import org.kryptonmc.krypton.locale.CommandMessages
 import org.kryptonmc.krypton.world.rule.GameRuleKeys
@@ -31,10 +32,10 @@ object GameRuleCommand {
 
     @JvmStatic
     fun register(dispatcher: CommandDispatcher<CommandSourceStack>) {
-        val command = literal("gamerule") { requiresPermission(KryptonPermission.GAME_RULE) }
+        val command = literalCommand("gamerule") { requiresPermission(KryptonPermission.GAME_RULE) }
         GameRuleKeys.visitTypes(object : WorldGameRules.TypeVisitor {
             override fun <T : WorldGameRules.Value<T>> visit(key: WorldGameRules.Key<T>, type: WorldGameRules.Type<T>) {
-                command.then(literal(key.id) {
+                command.then(literalCommand(key.id) {
                     executes { queryRule(it.source, key) }
                     then(type.createArgument(VALUE).executes { setRule(it, key) })
                 })

@@ -24,8 +24,8 @@ import net.kyori.adventure.text.ComponentBuilder
 import net.kyori.adventure.text.event.HoverEvent
 import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.text.format.TextDecoration
+import org.kryptonmc.api.command.literalCommand
 import org.kryptonmc.krypton.command.CommandSourceStack
-import org.kryptonmc.krypton.commands.literal
 import org.kryptonmc.krypton.commands.runs
 import org.kryptonmc.krypton.plugin.KryptonPluginContainer
 import java.util.stream.Stream
@@ -50,7 +50,7 @@ object PluginsCommand : KryptonSubCommand {
 
     override fun aliases(): Stream<String> = Stream.of("pl")
 
-    override fun register(): LiteralArgumentBuilder<CommandSourceStack> = literal("plugins") {
+    override fun register(): LiteralArgumentBuilder<CommandSourceStack> = literalCommand("plugins") {
         runs { context ->
             val plugins = context.source.server.pluginManager.plugins
             if (plugins.isEmpty()) {

@@ -19,6 +19,7 @@
 package org.kryptonmc.krypton.commands
 
 import com.mojang.brigadier.CommandDispatcher
+import org.kryptonmc.api.command.literalCommand
 import org.kryptonmc.krypton.command.CommandSourceStack
 import org.kryptonmc.krypton.locale.CommandMessages
 
@@ -26,7 +27,7 @@ object StopCommand {
 
     @JvmStatic
     fun register(dispatcher: CommandDispatcher<CommandSourceStack>) {
-        dispatcher.register(literal("stop") {
+        dispatcher.register(literalCommand("stop") {
             requiresPermission(KryptonPermission.STOP)
             runs {
                 it.source.sendSuccess(CommandMessages.STOP, true)
