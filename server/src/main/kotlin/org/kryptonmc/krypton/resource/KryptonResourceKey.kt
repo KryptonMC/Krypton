@@ -21,7 +21,7 @@ package org.kryptonmc.krypton.resource
 import net.kyori.adventure.key.Key
 import org.kryptonmc.api.registry.Registry
 import org.kryptonmc.api.resource.ResourceKey
-import org.kryptonmc.krypton.util.serialization.Codecs
+import org.kryptonmc.krypton.util.Keys
 import org.kryptonmc.serialization.Codec
 import java.util.Collections
 import java.util.IdentityHashMap
@@ -50,6 +50,6 @@ class KryptonResourceKey<T> private constructor(override val registry: Key, over
         fun <T> of(parent: ResourceKey<out Registry<T>>, location: Key): ResourceKey<T> = of(parent.location, location)
 
         @JvmStatic
-        fun <T> codec(key: ResourceKey<out Registry<T>>): Codec<ResourceKey<T>> = Codecs.KEY.xmap({ of(key, it) }, { it.location })
+        fun <T> codec(key: ResourceKey<out Registry<T>>): Codec<ResourceKey<T>> = Keys.CODEC.xmap({ of(key, it) }, { it.location })
     }
 }

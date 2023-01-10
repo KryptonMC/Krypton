@@ -23,10 +23,8 @@ import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.text.format.Style
 import net.kyori.adventure.text.format.TextDecoration
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer
-import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import org.kryptonmc.krypton.adventure.network.AdventureCodecs
-import org.kryptonmc.krypton.testutil.Bootstrapping
 import org.kryptonmc.serialization.gson.GsonOps
 import kotlin.test.assertEquals
 
@@ -83,17 +81,5 @@ class StyleFormattingCodecTest {
             .build()
         val complexJson = GsonComponentSerializer.gson().serializer().toJsonTree(complex, Style::class.java)
         assertEquals(complexJson, AdventureCodecs.STYLE_FORMATTING.encodeStart(complex, GsonOps.INSTANCE).result().orElseThrow())
-    }
-
-    companion object {
-
-        @JvmStatic
-        @BeforeAll
-        fun `load factories for color`() {
-            // TODO: See if we can eventually not need to do this.
-            // The reason we currently need to do this is because the codec uses a Key codec from Codecs, which also has a Color codec in it,
-            // which loads the Color interface.
-            Bootstrapping.loadFactories()
-        }
     }
 }

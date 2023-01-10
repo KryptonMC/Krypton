@@ -22,6 +22,7 @@ import org.apache.logging.log4j.Logger
 import org.kryptonmc.api.resource.ResourceKey
 import org.kryptonmc.api.world.World
 import org.kryptonmc.krypton.coordinate.BlockPos
+import org.kryptonmc.krypton.util.Keys
 import org.kryptonmc.krypton.util.nbt.getBlockPos
 import org.kryptonmc.krypton.util.nbt.hasBlockPos
 import org.kryptonmc.krypton.util.nbt.putBlockPosParts
@@ -37,7 +38,7 @@ data class RespawnData(val position: BlockPos, val dimension: ResourceKey<World>
         putBlockPosParts(position, XYZ_PREFIX)
         putFloat(ANGLE_TAG, angle)
         putBoolean(FORCED_TAG, forced)
-        Codecs.KEY.encodeStart(dimension.location, NbtOps.INSTANCE).resultOrPartial { logger.error(it) }.ifPresent { put(DIMENSION_TAG, it) }
+        Keys.CODEC.encodeStart(dimension.location, NbtOps.INSTANCE).resultOrPartial { logger.error(it) }.ifPresent { put(DIMENSION_TAG, it) }
     }
 
     companion object {

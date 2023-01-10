@@ -180,7 +180,6 @@ class CommandSourceStackTest {
         @JvmStatic
         @BeforeAll
         fun `load translations and factories for vec3d`() {
-            Bootstrapping.loadTranslations()
             Bootstrapping.loadFactories()
         }
 

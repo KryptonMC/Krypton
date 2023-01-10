@@ -18,14 +18,22 @@
  */
 package org.kryptonmc.krypton.util.uuid
 
+import org.kryptonmc.krypton.util.serialization.Codecs
 import org.kryptonmc.nbt.IntArrayTag
 import org.kryptonmc.nbt.Tag
+import org.kryptonmc.serialization.Codec
+import java.util.Arrays
 import java.util.UUID
 
 object UUIDUtil {
 
     @JvmField
     val NIL_UUID: UUID = UUID(0L, 0L)
+    @JvmField
+    val CODEC: Codec<UUID> = Codec.INT_STREAM.comapFlatMap(
+        { input -> Codecs.fixedSize(input, 4).map { fromIntArray(it) } },
+        { Arrays.stream(toIntArray(it)) }
+    )
 
     @JvmStatic
     fun fromIntArray(data: IntArray): UUID = UUID(

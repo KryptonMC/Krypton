@@ -28,7 +28,7 @@ import org.kryptonmc.api.world.biome.AmbientParticleSettings
 import org.kryptonmc.api.world.biome.BiomeEffects
 import org.kryptonmc.api.world.biome.GrassColorModifier
 import org.kryptonmc.krypton.effect.sound.KryptonSoundEvent
-import org.kryptonmc.krypton.util.serialization.Codecs
+import org.kryptonmc.krypton.util.KryptonColor
 import org.kryptonmc.krypton.util.serialization.EnumCodecs
 import org.kryptonmc.serialization.Codec
 import org.kryptonmc.serialization.codecs.RecordCodecBuilder
@@ -122,13 +122,13 @@ data class KryptonBiomeEffects(
         @JvmField
         val CODEC: Codec<BiomeEffects> = RecordCodecBuilder.create { instance ->
             instance.group(
-                Codecs.COLOR.fieldOf("fog_color").getting { it.fogColor },
-                Codecs.COLOR.fieldOf("water_color").getting { it.waterColor },
-                Codecs.COLOR.fieldOf("water_fog_color").getting { it.waterFogColor },
-                Codecs.COLOR.fieldOf("sky_color").getting { it.skyColor },
+                KryptonColor.CODEC.fieldOf("fog_color").getting { it.fogColor },
+                KryptonColor.CODEC.fieldOf("water_color").getting { it.waterColor },
+                KryptonColor.CODEC.fieldOf("water_fog_color").getting { it.waterFogColor },
+                KryptonColor.CODEC.fieldOf("sky_color").getting { it.skyColor },
                 EnumCodecs.GRASS_COLOR_MODIFIER.fieldOf("grass_color_modifier").getting { it.grassColorModifier },
-                Codecs.COLOR.optionalFieldOf("foliage_color").getting { Optional.ofNullable(it.foliageColor) },
-                Codecs.COLOR.optionalFieldOf("grass_color").getting { Optional.ofNullable(it.grassColor) },
+                KryptonColor.CODEC.optionalFieldOf("foliage_color").getting { Optional.ofNullable(it.foliageColor) },
+                KryptonColor.CODEC.optionalFieldOf("grass_color").getting { Optional.ofNullable(it.grassColor) },
                 KryptonAmbientParticleSettings.CODEC.optionalFieldOf("particle").getting { Optional.ofNullable(it.ambientParticleSettings) },
                 KryptonSoundEvent.DIRECT_CODEC.optionalFieldOf("ambient_sound").getting { Optional.ofNullable(it.ambientLoopSound) },
                 KryptonAmbientMoodSettings.CODEC.optionalFieldOf("mood_sound").getting { Optional.ofNullable(it.ambientMoodSettings) },

@@ -22,7 +22,7 @@ import net.kyori.adventure.key.Key
 import org.apache.logging.log4j.LogManager
 import org.kryptonmc.krypton.util.ImmutableLists
 import org.kryptonmc.krypton.util.ImmutableMaps
-import org.kryptonmc.krypton.util.serialization.Codecs
+import org.kryptonmc.krypton.util.Keys
 import org.kryptonmc.serialization.Codec
 import org.kryptonmc.serialization.DataResult
 import java.util.Collections
@@ -56,7 +56,7 @@ class FeatureFlagRegistry(private val universe: FeatureFlagUniverse, private val
     }
 
     fun codec(): Codec<FeatureFlagSet> {
-        return Codecs.KEY.listOf().comapFlatMap({ names ->
+        return Keys.CODEC.listOf().comapFlatMap({ names ->
             val missing = HashSet<Key>()
             val set = fromNames(names) { missing.add(it) }
             if (missing.isNotEmpty()) DataResult.error("Unknown feature IDs: $missing", set) else DataResult.success(set)

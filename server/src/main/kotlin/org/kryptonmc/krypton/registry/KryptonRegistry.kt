@@ -30,8 +30,8 @@ import org.kryptonmc.krypton.registry.holder.HolderSet
 import org.kryptonmc.krypton.resource.KryptonResourceKey
 import org.kryptonmc.krypton.tags.KryptonTagSet
 import org.kryptonmc.krypton.util.ImmutableLists
+import org.kryptonmc.krypton.util.Keys
 import org.kryptonmc.krypton.util.map.IntBiMap
-import org.kryptonmc.krypton.util.serialization.Codecs
 import org.kryptonmc.krypton.util.successOrError
 import org.kryptonmc.serialization.Codec
 import java.util.Optional
@@ -122,12 +122,12 @@ interface KryptonRegistry<T> : Registry<T>, IntBiMap<T> {
         override fun iterator(): Iterator<Holder<T>> = holders().iterator()
     }
 
-    fun byNameCodec(): Codec<T> = Codecs.KEY.flatXmap(
+    fun byNameCodec(): Codec<T> = Keys.CODEC.flatXmap(
         { Optional.ofNullable(get(it)).successOrError { "Unknown registry key $it in $key!" } },
         { value -> Optional.ofNullable(getResourceKey(value)).map { it.location }.successOrError { "Unknown registry element $value in $key!" } }
     )
 
-    fun holderByNameCodec(): Codec<Holder<T>> = Codecs.KEY.flatXmap(
+    fun holderByNameCodec(): Codec<Holder<T>> = Keys.CODEC.flatXmap(
         { Optional.ofNullable(getHolder(KryptonResourceKey.of(key, it))).successOrError { "Unknown registry key $it in $key!" } },
         { holder -> holder.unwrapKey().map { it.location }.successOrError { "Unknown registry element $holder in $key!" } }
     )
