@@ -21,8 +21,8 @@ package org.kryptonmc.krypton.effect.sound
 import io.netty.buffer.ByteBuf
 import net.kyori.adventure.key.Key
 import org.kryptonmc.api.effect.sound.SoundEvent
+import org.kryptonmc.krypton.util.Keys
 import org.kryptonmc.krypton.util.readKey
-import org.kryptonmc.krypton.util.serialization.Codecs
 import org.kryptonmc.krypton.util.writeKey
 import org.kryptonmc.serialization.Codec
 import org.kryptonmc.serialization.codecs.RecordCodecBuilder
@@ -46,7 +46,7 @@ data class KryptonSoundEvent(private val key: Key, override val range: Float, pr
         @JvmField
         val DIRECT_CODEC: Codec<SoundEvent> = RecordCodecBuilder.create { instance ->
             instance.group(
-                Codecs.KEY.fieldOf("sound_id").getting { it.key() },
+                Keys.CODEC.fieldOf("sound_id").getting { it.key() },
                 Codec.FLOAT.optionalFieldOf("range").getting { it.downcast().fixedRange() }
             ).apply(instance) { id, range -> if (range.isPresent) KryptonSoundEvent(id, range.get(), true) else createVariableRange(id) }
         }

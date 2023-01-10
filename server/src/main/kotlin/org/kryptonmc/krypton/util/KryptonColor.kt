@@ -21,6 +21,7 @@ package org.kryptonmc.krypton.util
 import net.kyori.adventure.util.HSVLike
 import net.kyori.adventure.util.RGBLike
 import org.kryptonmc.api.util.Color
+import org.kryptonmc.serialization.Codec
 
 @JvmRecord
 data class KryptonColor(override val value: Int) : Color {
@@ -56,5 +57,8 @@ data class KryptonColor(override val value: Int) : Color {
         private const val CACHED_VALUE_COUNT = CACHE_BOUND * 2
         // Caches some small values
         private val CACHE = Array(CACHED_VALUE_COUNT) { KryptonColor(it - CACHE_BOUND) }
+
+        @JvmField
+        val CODEC: Codec<Color> = Codec.INT.xmap({ Color.of(it) }, { it.value })
     }
 }

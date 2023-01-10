@@ -22,7 +22,7 @@ import net.kyori.adventure.key.Key
 import org.kryptonmc.internal.annotations.Catalogue
 import org.kryptonmc.krypton.registry.KryptonRegistries
 import org.kryptonmc.krypton.coordinate.GlobalPos
-import org.kryptonmc.krypton.util.serialization.Codecs
+import org.kryptonmc.krypton.util.uuid.UUIDUtil
 import org.kryptonmc.serialization.Codec
 import java.util.UUID
 
@@ -34,7 +34,7 @@ object MemoryKeys {
     @JvmField
     val ADMIRING_ITEM: MemoryKey<Boolean> = register("admiring_item", Codec.BOOLEAN)
     @JvmField
-    val ANGRY_AT: MemoryKey<UUID> = register("angry_at", Codecs.UUID)
+    val ANGRY_AT: MemoryKey<UUID> = register("angry_at", UUIDUtil.CODEC)
     @JvmField
     val GOLEM_DETECTED_RECENTLY: MemoryKey<Boolean> = register("golem_detected_recently", Codec.BOOLEAN)
     @JvmField

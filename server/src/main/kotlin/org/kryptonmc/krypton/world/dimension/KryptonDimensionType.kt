@@ -28,6 +28,7 @@ import org.kryptonmc.api.world.World
 import org.kryptonmc.api.world.dimension.DimensionType
 import org.kryptonmc.krypton.registry.KryptonRegistries
 import org.kryptonmc.krypton.tags.KryptonTagKey
+import org.kryptonmc.krypton.util.Keys
 import org.kryptonmc.krypton.util.math.Maths
 import org.kryptonmc.krypton.util.provider.ConstantInt
 import org.kryptonmc.krypton.util.provider.IntProvider
@@ -38,6 +39,7 @@ import org.kryptonmc.serialization.DataResult
 import org.kryptonmc.serialization.Dynamic
 import org.kryptonmc.serialization.MapCodec
 import org.kryptonmc.serialization.codecs.RecordCodecBuilder
+import java.util.Optional
 import java.util.OptionalLong
 import kotlin.math.cos
 
@@ -229,7 +231,7 @@ data class KryptonDimensionType(
         @JvmField
         val DIRECT_CODEC: Codec<DimensionType> = Codecs.catchDecoderException(RecordCodecBuilder.create { instance ->
             instance.group(
-                Codecs.asOptionalLong(Codec.LONG.optionalFieldOf("fixed_time")).getting { it.fixedTime },
+                unboxOptionalLongCodec(Codec.LONG.optionalFieldOf("fixed_time")).getting { it.fixedTime },
                 Codec.BOOLEAN.fieldOf("has_skylight").getting { it.hasSkylight },
                 Codec.BOOLEAN.fieldOf("has_ceiling").getting { it.hasCeiling },
                 Codec.BOOLEAN.fieldOf("ultrawarm").getting { it.isUltrawarm },
@@ -241,7 +243,7 @@ data class KryptonDimensionType(
                 Codec.intRange(MINIMUM_HEIGHT, Y_SIZE).fieldOf("height").getting { it.height },
                 Codec.intRange(0, Y_SIZE).fieldOf("logical_height").getting { it.logicalHeight },
                 KryptonTagKey.hashedCodec(ResourceKeys.BLOCK).fieldOf("infiniburn").getting { it.infiniburn },
-                Codecs.KEY.fieldOf("effects").orElse(KryptonDimensionTypes.OVERWORLD_EFFECTS).getting { it.effects },
+                Keys.CODEC.fieldOf("effects").orElse(KryptonDimensionTypes.OVERWORLD_EFFECTS).getting { it.effects },
                 Codec.FLOAT.fieldOf("ambient_light").getting { it.ambientLight },
                 MonsterSettings.CODEC.getting { (it as KryptonDimensionType).monsterSettings }
             ).apply(instance, ::KryptonDimensionType)
@@ -261,5 +263,11 @@ data class KryptonDimensionType(
             }
             return Codecs.DIMENSION.read(data)
         }
+
+        @JvmStatic
+        private fun unboxOptionalLongCodec(codec: MapCodec<Optional<Long>>): MapCodec<OptionalLong> = codec.xmap(
+            { if (it.isPresent) OptionalLong.of(it.get()) else OptionalLong.empty() },
+            { if (it.isPresent) Optional.of(it.asLong) else Optional.empty() }
+        )
     }
 }

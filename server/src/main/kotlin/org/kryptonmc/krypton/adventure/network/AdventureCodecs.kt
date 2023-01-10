@@ -22,8 +22,8 @@ import net.kyori.adventure.text.format.Style
 import net.kyori.adventure.text.format.TextColor
 import net.kyori.adventure.text.format.TextDecoration
 import net.kyori.adventure.text.format.TextDecoration.State as DecorationState
+import org.kryptonmc.krypton.util.Keys
 import org.kryptonmc.krypton.util.OptionalBoolean
-import org.kryptonmc.krypton.util.serialization.Codecs
 import org.kryptonmc.serialization.Codec
 import org.kryptonmc.serialization.MapCodec
 import org.kryptonmc.serialization.codecs.RecordCodecBuilder
@@ -43,7 +43,7 @@ object AdventureCodecs {
             decorationStateCodec("strikethrough").getting { it.decoration(TextDecoration.STRIKETHROUGH) },
             decorationStateCodec("obfuscated").getting { it.decoration(TextDecoration.OBFUSCATED) },
             Codec.STRING.optionalFieldOf("insertion").getting { Optional.ofNullable(it.insertion()) },
-            Codecs.KEY.optionalFieldOf("font").getting { Optional.ofNullable(it.font()) }
+            Keys.CODEC.optionalFieldOf("font").getting { Optional.ofNullable(it.font()) }
         ).apply(instance) { color, bold, italic, underlined, strikethrough, obfuscated, insertion, font ->
             Style.style()
                 .color(color.orElse(null))

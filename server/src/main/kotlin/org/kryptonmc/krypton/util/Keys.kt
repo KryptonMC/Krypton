@@ -20,9 +20,13 @@ package org.kryptonmc.krypton.util
 
 import net.kyori.adventure.key.InvalidKeyException
 import net.kyori.adventure.key.Key
+import org.kryptonmc.serialization.Codec
 import org.kryptonmc.serialization.DataResult
 
 object Keys {
+
+    @JvmField
+    val CODEC: Codec<Key> = Codec.STRING.comapFlatMap({ Keys.read(it) }, { it.asString() }).stable()
 
     @JvmStatic
     fun isValidCharacter(char: Char): Boolean = Key.allowedInValue(char) || char == ':'

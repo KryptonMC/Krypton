@@ -22,6 +22,7 @@ import net.kyori.adventure.key.Key
 import org.kryptonmc.api.registry.Registry
 import org.kryptonmc.api.registry.RegistryRoots
 import org.kryptonmc.api.resource.ResourceKey
+import org.kryptonmc.api.world.World
 import org.kryptonmc.krypton.entity.KryptonEntityType
 import org.kryptonmc.krypton.entity.ai.memory.MemoryKey
 import org.kryptonmc.krypton.item.data.Instrument
@@ -55,6 +56,8 @@ object KryptonResourceKeys {
     val INSTRUMENTS: ResourceKey<out Registry<Instrument>> = minecraft("instrument")
     @JvmField
     val CHAT_TYPE: ResourceKey<out Registry<ChatType>> = minecraft("chat_type")
+    @JvmField
+    val WORLD: ResourceKey<out Registry<World>> = minecraft("dimension")
 
     @JvmStatic
     private fun <T> minecraft(key: String): ResourceKey<out Registry<T>> = KryptonResourceKey.of(RegistryRoots.MINECRAFT, Key.key(key))

@@ -42,7 +42,7 @@ class TranslatableFlatteningTest {
 
         @JvmStatic
         @BeforeAll
-        fun `load translations and factories`() {
+        fun `load translations`() {
             Bootstrapping.loadTranslations()
         }
     }
