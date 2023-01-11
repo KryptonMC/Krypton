@@ -36,16 +36,19 @@ import java.io.InputStreamReader
 import java.nio.file.Files
 import java.nio.file.Path
 
-class ServerPluginSource(private val modulesDirectory: Path, private val modules: ServerModules) : PluginSource {
+class ServerPluginSource(
+    private val moduleDiscoverer: ModuleDiscoverer,
+    private val modulesDirectory: Path,
+    private val modules: ServerModules
+) : PluginSource {
 
     override fun loadDescriptions(): Collection<PluginDescription> {
-        val moduleInfoFolder = ServerPluginSource::class.java.classLoader.getResources("krypton-modules")
+        val moduleInfoFiles = moduleDiscoverer.discover()
         val result = ArrayList<PluginDescription>()
-
-        moduleInfoFolder.asIterator().forEach { url ->
-            val path = Path.of(url.toURI())
+        moduleInfoFiles.forEach { path ->
             val moduleName = getModuleNameFromPath(path)
             if (!modules.isEnabled(moduleName)) return@forEach
+
             try {
                 result.add(loadDescription(path))
             } catch (exception: Exception) {
@@ -147,8 +150,13 @@ class ServerPluginSource(private val modulesDirectory: Path, private val modules
         @JvmStatic
         private fun getModuleNameFromPath(path: Path): String {
             val pathName = path.toString()
-            val lengthOfModuleName = pathName.length - JSON_SUFFIX.length
-            return pathName.substring(0, lengthOfModuleName)
+            val lastSeparator = pathName.lastIndexOf('/')
+
+            val lastPart = pathName.substring(lastSeparator + 1)
+            if (!lastPart.endsWith(JSON_SUFFIX)) error("Module metadata file should end with '$JSON_SUFFIX'! Was $lastPart.")
+
+            val lengthOfModuleName = lastPart.length - JSON_SUFFIX.length
+            return lastPart.substring(0, lengthOfModuleName)
         }
 
         @JvmStatic

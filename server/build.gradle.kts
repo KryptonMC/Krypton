@@ -54,6 +54,7 @@ dependencies {
     implementation(libs.kotlinx.collections.immutable)
     compileOnly(projects.internalAnnotations)
     ksp(projects.internalAp)
+    implementation(libs.reflections)
 
     testImplementation(libs.junit.api)
     testImplementation(libs.junit.engine)
@@ -62,7 +63,6 @@ dependencies {
     testImplementation(libs.mockk)
     testImplementation(libs.jimfs)
     testRuntimeOnly(libs.bytebuddy)
-    testImplementation(libs.reflections)
     testImplementation(projects.internalAnnotations)
     testImplementation(libs.equalsVerifier)
     pitest(libs.arcmutateKotlin)

@@ -18,16 +18,9 @@
  */
 package org.kryptonmc.krypton.plugin.server
 
-class ServerModules(val all: Set<String>, val enabled: Set<String>) {
+import java.nio.file.Path
 
-    fun isEnabled(moduleName: String): Boolean = enabled.contains(moduleName)
+interface ModuleDiscoverer {
 
-    companion object {
-
-        @JvmField
-        val ALL_MODULES: Set<String> = setOf("bans", "whitelist")
-
-        @JvmStatic
-        fun createDefault(enabled: Set<String>): ServerModules = ServerModules(ALL_MODULES, enabled)
-    }
+    fun discover(): Collection<Path>
 }
