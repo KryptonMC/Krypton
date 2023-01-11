@@ -355,9 +355,8 @@ class KryptonServer(
             }
         }
 
-        // Save bans and whitelist
-        LOGGER.info("Saving ban list and whitelist...")
-        playerManager.banManager.saveIfNeeded()
+        // Save whitelist
+        LOGGER.info("Saving  whitelist...")
         playerManager.whitelistManager.saveIfNeeded()
 
         // Shut down plugins and unregister listeners

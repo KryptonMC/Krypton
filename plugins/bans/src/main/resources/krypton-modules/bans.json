@@ -1,0 +1,5 @@
+{
+  "id": "bans-module",
+  "description": "An internal module for vanilla bans.",
+  "main": "org.kryptonmc.plugins.bans.BansPlugin"
+}

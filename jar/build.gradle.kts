@@ -8,6 +8,7 @@ plugins {
 
 dependencies {
     implementation(projects.server)
+    implementation(projects.bansPlugin)
 }
 
 tasks {

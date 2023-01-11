@@ -22,6 +22,7 @@ import com.mojang.brigadier.StringReader
 import com.mojang.brigadier.arguments.ArgumentType
 import com.mojang.brigadier.context.CommandContext
 import org.kryptonmc.api.auth.GameProfile
+import org.kryptonmc.api.command.CommandExecutionContext
 import org.kryptonmc.krypton.command.CommandSourceStack
 import org.kryptonmc.krypton.command.arguments.entities.EntityArgumentParser
 import org.kryptonmc.krypton.command.arguments.entities.EntityQuery
@@ -40,6 +41,6 @@ object GameProfileArgument : ArgumentType<EntityQuery> {
     }
 
     @JvmStatic
-    fun get(context: CommandContext<CommandSourceStack>, name: String): List<GameProfile> =
-        context.getArgument(name, EntityQuery::class.java).getProfiles(context.source)
+    fun <S : CommandExecutionContext> get(context: CommandContext<S>, name: String): List<GameProfile> =
+        context.getArgument(name, EntityQuery::class.java).getProfiles(context.source as CommandSourceStack)
 }
