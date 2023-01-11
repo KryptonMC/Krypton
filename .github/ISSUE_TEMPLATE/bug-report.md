@@ -1,8 +1,8 @@
 ---
 name: 🐛 Bug report
-about: If you find a bug (quite likely in the early stages) with Krypton, you can report it like
-this title: ''
-labels: 'type: issue'
+about: If you find a bug (quite likely in the early stages) with Krypton, you can report it like this.
+title: ''
+labels: 'bug'
 assignees: ''
 ---
 
