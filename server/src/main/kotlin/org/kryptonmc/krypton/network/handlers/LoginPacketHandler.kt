@@ -28,7 +28,6 @@ import org.kryptonmc.api.auth.GameProfile
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.auth.KryptonGameProfile
 import org.kryptonmc.krypton.auth.requests.SessionService
-import org.kryptonmc.krypton.commands.BanCommandUtil
 import org.kryptonmc.krypton.config.category.ProxyCategory
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.event.auth.KryptonAuthenticationEvent
@@ -202,26 +201,12 @@ class LoginPacketHandler(
 
     private fun canJoin(profile: GameProfile, address: SocketAddress): Boolean {
         val whitelist = server.playerManager.whitelistManager
-        val banManager = server.playerManager.banManager
         val addressString = AddressUtil.asString(address)
 
-        if (banManager.isBanned(profile)) {
-            // They are banned.
-            val ban = banManager.getBan(profile)!!
-            // Inform the client that they are banned
-            disconnect(BanCommandUtil.createBanMessage("banned", ban.reason, ban.expirationDate))
-            LOGGER.info("${profile.name} was disconnected as they are banned from this server.")
-            return false
-        } else if (whitelist.isEnabled() && !whitelist.isWhitelisted(profile) && !whitelist.isWhitelisted(addressString)) {
+        if (whitelist.isEnabled() && !whitelist.isWhitelisted(profile) && !whitelist.isWhitelisted(addressString)) {
             // They are not whitelisted.
             disconnect(DisconnectMessages.NOT_WHITELISTED)
             LOGGER.info("${profile.name} was disconnected as this server is whitelisted and they are not on the whitelist.")
-            return false
-        } else if (banManager.isBanned(addressString)) {
-            // Their IP is banned.
-            val ban = banManager.getBan(addressString)!!
-            disconnect(BanCommandUtil.createBanMessage("banned_ip", ban.reason, ban.expirationDate))
-            LOGGER.info("${profile.name} was disconnected as their IP address is banned from this server.")
             return false
         }
         return true

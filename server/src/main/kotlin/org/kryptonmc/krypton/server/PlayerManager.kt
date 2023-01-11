@@ -51,7 +51,6 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateTags
 import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateTeams
 import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateTime
 import org.kryptonmc.krypton.registry.KryptonRegistries
-import org.kryptonmc.krypton.server.ban.BanManager
 import org.kryptonmc.krypton.server.whitelist.WhitelistManager
 import org.kryptonmc.krypton.coordinate.BlockPos
 import org.kryptonmc.krypton.locale.DisconnectMessages
@@ -81,7 +80,6 @@ class PlayerManager(private val server: KryptonServer) {
     private val playersByName = ConcurrentHashMap<String, KryptonPlayer>()
     private val playersByUUID = ConcurrentHashMap<UUID, KryptonPlayer>()
 
-    val banManager: BanManager = BanManager(Path.of("bans.json"))
     val whitelistManager: WhitelistManager = WhitelistManager(Path.of("whitelist.json"))
 
     fun players(): List<KryptonPlayer> = players
@@ -89,7 +87,6 @@ class PlayerManager(private val server: KryptonServer) {
     fun dataFolder(): Path = dataManager.folder
 
     fun load() {
-        banManager.load()
         whitelistManager.load()
     }
 
@@ -243,7 +240,6 @@ class PlayerManager(private val server: KryptonServer) {
 
     fun tick(time: Long) {
         if (time % BAN_WHITELIST_SAVE_INTERVAL == 0L) {
-            banManager.saveIfNeeded()
             whitelistManager.saveIfNeeded()
         }
     }

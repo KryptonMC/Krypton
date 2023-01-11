@@ -37,7 +37,14 @@ include("jar")
 internalProject("annotations")
 internalProject("ap")
 
+pluginProject("bans")
+
 fun internalProject(name: String) {
     include("internal-$name")
     project(":internal-$name").projectDir = file("internal/$name")
+}
+
+fun pluginProject(name: String) {
+    include("$name-plugin")
+    project(":$name-plugin").projectDir = file("plugins/$name")
 }
