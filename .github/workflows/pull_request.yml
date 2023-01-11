@@ -1,6 +1,6 @@
 name: "Pull Request Build"
 
-on: [pull_request]
+on: pull_request
 
 jobs:
   build:
@@ -22,7 +22,7 @@ jobs:
           key: "${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}"
           restore-keys: |
             ${{ runner.os }}-gradle-
-      - name: "build"
+      - name: "Build & Test"
         run: "./gradlew build"
       - name: "Cleanup Gradle cache"
         run: |
