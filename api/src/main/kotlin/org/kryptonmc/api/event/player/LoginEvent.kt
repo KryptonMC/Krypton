@@ -8,10 +8,10 @@
  */
 package org.kryptonmc.api.event.player
 
+import org.kryptonmc.api.auth.GameProfile
 import org.kryptonmc.api.event.ComponentResult
 import org.kryptonmc.api.event.ResultedEvent
 import java.net.InetSocketAddress
-import java.util.UUID
 
 /**
  * Called when a player has been authenticated, but they have not yet had
@@ -20,14 +20,9 @@ import java.util.UUID
 public interface LoginEvent : ResultedEvent<ComponentResult> {
 
     /**
-     * The username of the player logging in.
+     * The game profile of the player logging in.
      */
-    public val username: String
-
-    /**
-     * The unique ID of the player logging in.
-     */
-    public val uuid: UUID
+    public val profile: GameProfile
 
     /**
      * The address that the player is logging in from.
