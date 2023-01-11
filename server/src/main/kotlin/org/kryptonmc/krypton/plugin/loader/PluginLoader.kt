@@ -8,6 +8,7 @@ import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.plugin.KryptonPluginManager
 import org.kryptonmc.krypton.plugin.PluginDependencies
 import org.kryptonmc.krypton.plugin.module.GlobalModule
+import org.kryptonmc.krypton.plugin.server.ClasspathModuleDiscoverer
 import org.kryptonmc.krypton.plugin.server.ServerModules
 import org.kryptonmc.krypton.plugin.server.ServerPluginSource
 import java.nio.file.Files
@@ -111,7 +112,7 @@ class PluginLoader(private val pluginManager: KryptonPluginManager, private val 
                 LOGGER.warn("Modules path $path is not a directory! Modules will not be loaded!")
                 return null
             }
-            return ServerPluginSource(path, modules)
+            return ServerPluginSource(ClasspathModuleDiscoverer.createDefault(), path, modules)
         }
     }
 }
