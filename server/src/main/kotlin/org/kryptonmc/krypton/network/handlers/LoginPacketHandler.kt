@@ -191,7 +191,7 @@ class LoginPacketHandler(
     }
 
     private fun callLoginEvent(profile: GameProfile): Boolean {
-        val event = KryptonLoginEvent(profile.name, profile.uuid, connection.connectAddress() as InetSocketAddress)
+        val event = KryptonLoginEvent(profile, connection.connectAddress() as InetSocketAddress)
         val result = server.eventManager.fireSync(event).result
         if (!result.isAllowed) {
             disconnect(result.reason ?: DisconnectMessages.KICKED)
