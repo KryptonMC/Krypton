@@ -57,6 +57,7 @@ class BansPlugin @Inject constructor(
         manager.load()
         setupAutoSave()
         registerCommands()
+        server.eventManager.registerListener(this, BanListener(logger, manager))
         server.servicesManager.register(this, BanManager::class.java, manager)
     }
 

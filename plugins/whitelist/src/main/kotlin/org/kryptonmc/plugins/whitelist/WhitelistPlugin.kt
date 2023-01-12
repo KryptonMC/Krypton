@@ -55,6 +55,7 @@ class WhitelistPlugin @Inject constructor(
         manager.load()
         setupAutoSave()
         registerCommands()
+        server.eventManager.registerListener(this, WhitelistListener(logger, storage))
         server.servicesManager.register(this, WhitelistManager::class.java, manager)
     }
 
