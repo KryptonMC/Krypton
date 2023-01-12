@@ -51,7 +51,6 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateTags
 import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateTeams
 import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateTime
 import org.kryptonmc.krypton.registry.KryptonRegistries
-import org.kryptonmc.krypton.server.whitelist.WhitelistManager
 import org.kryptonmc.krypton.coordinate.BlockPos
 import org.kryptonmc.krypton.locale.DisconnectMessages
 import org.kryptonmc.krypton.util.executor.daemonThreadFactory
@@ -80,15 +79,9 @@ class PlayerManager(private val server: KryptonServer) {
     private val playersByName = ConcurrentHashMap<String, KryptonPlayer>()
     private val playersByUUID = ConcurrentHashMap<UUID, KryptonPlayer>()
 
-    val whitelistManager: WhitelistManager = WhitelistManager(Path.of("whitelist.json"))
-
     fun players(): List<KryptonPlayer> = players
 
     fun dataFolder(): Path = dataManager.folder
-
-    fun load() {
-        whitelistManager.load()
-    }
 
     private fun createDataManager(server: KryptonServer): PlayerDataManager {
         val playerDataFolder = Path.of(server.config.world.name).resolve("playerdata")
@@ -238,12 +231,6 @@ class PlayerManager(private val server: KryptonServer) {
         players.forEach(::savePlayer)
     }
 
-    fun tick(time: Long) {
-        if (time % BAN_WHITELIST_SAVE_INTERVAL == 0L) {
-            whitelistManager.saveIfNeeded()
-        }
-    }
-
     private fun sendCommands(player: KryptonPlayer) {
         player.connection.send(PacketOutEntityEvent(player.id, OP_PERMISSION_LEVEL_4))
         server.commandManager.updateCommands(player)
@@ -285,7 +272,6 @@ class PlayerManager(private val server: KryptonServer) {
         private const val ENABLE_REDUCED_DEBUG_SCREEN = 22
         private const val DISABLE_REDUCED_DEBUG_SCREEN = 23
         private const val OP_PERMISSION_LEVEL_4 = 28
-        private const val BAN_WHITELIST_SAVE_INTERVAL = 600
 
         @JvmStatic
         private fun getDefaultJoinMessage(player: KryptonPlayer, joinedBefore: Boolean): Component {

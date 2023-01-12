@@ -45,13 +45,11 @@ import org.kryptonmc.krypton.packet.out.login.PacketOutEncryptionRequest
 import org.kryptonmc.krypton.packet.out.login.PacketOutLoginDisconnect
 import org.kryptonmc.krypton.packet.out.login.PacketOutLoginSuccess
 import org.kryptonmc.krypton.packet.out.login.PacketOutPluginRequest
-import org.kryptonmc.krypton.util.AddressUtil
 import org.kryptonmc.krypton.util.uuid.UUIDUtil
 import org.kryptonmc.krypton.util.crypto.Encryption
 import org.kryptonmc.krypton.util.random.RandomSource
 import org.kryptonmc.krypton.util.readVarInt
 import java.net.InetSocketAddress
-import java.net.SocketAddress
 import javax.crypto.spec.SecretKeySpec
 
 /**
@@ -103,7 +101,7 @@ class LoginPacketHandler(
         val profile = KryptonGameProfile.full(uuid, name, proxyForwardedData?.properties ?: persistentListOf())
 
         // Check the player can join and the login event was not cancelled.
-        if (!canJoin(profile, address) || !callLoginEvent(profile)) return
+        if (!callLoginEvent(profile)) return
 
         // Initialize the player and setup their permissions.
         val player = KryptonPlayer(connection, profile, server.worldManager.default, address, null)
@@ -129,7 +127,7 @@ class LoginPacketHandler(
                 disconnect(DisconnectMessages.UNVERIFIED_USERNAME)
                 return@thenApplyAsync null
             }
-            if (!canJoin(profile, address) || !callLoginEvent(profile)) return@thenApplyAsync null
+            if (!callLoginEvent(profile)) return@thenApplyAsync null
             // Check the profile from the event and construct the player.
             KryptonPlayer(connection, it.result.profile ?: profile, server.worldManager.default, address, null)
         }, connection.executor()).thenApplyAsync({
@@ -194,19 +192,6 @@ class LoginPacketHandler(
         val result = server.eventManager.fireSync(event).result
         if (!result.isAllowed) {
             disconnect(result.reason ?: DisconnectMessages.KICKED)
-            return false
-        }
-        return true
-    }
-
-    private fun canJoin(profile: GameProfile, address: SocketAddress): Boolean {
-        val whitelist = server.playerManager.whitelistManager
-        val addressString = AddressUtil.asString(address)
-
-        if (whitelist.isEnabled() && !whitelist.isWhitelisted(profile) && !whitelist.isWhitelisted(addressString)) {
-            // They are not whitelisted.
-            disconnect(DisconnectMessages.NOT_WHITELISTED)
-            LOGGER.info("${profile.name} was disconnected as this server is whitelisted and they are not on the whitelist.")
             return false
         }
         return true

@@ -38,6 +38,7 @@ internalProject("annotations")
 internalProject("ap")
 
 pluginProject("bans")
+pluginProject("whitelist")
 
 fun internalProject(name: String) {
     include("internal-$name")

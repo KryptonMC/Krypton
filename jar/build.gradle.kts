@@ -9,6 +9,7 @@ plugins {
 dependencies {
     implementation(projects.server)
     implementation(projects.bansPlugin)
+    implementation(projects.whitelistPlugin)
 }
 
 tasks {

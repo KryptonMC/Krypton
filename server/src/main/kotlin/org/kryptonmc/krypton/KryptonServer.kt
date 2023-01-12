@@ -122,10 +122,6 @@ class KryptonServer(
         LOGGER.debug("Registering commands...")
         commandManager.registerBuiltins()
 
-        // Load bans and whitelists here before we allow any players in.
-        LOGGER.debug("Loading ban list and whitelist...")
-        playerManager.load()
-
         // Start the metrics system.
         LOGGER.debug("Starting bStats metrics")
         KryptonMetrics.initialize(this, config.advanced.metrics)
@@ -262,7 +258,6 @@ class KryptonServer(
         ++tickCount
         tickChildren(hasTimeLeft)
         connectionManager.tick(startTime)
-        playerManager.tick(startTime)
 
         if (config.world.autosaveInterval > 0 && tickCount % config.world.autosaveInterval == 0) {
             LOGGER.info("Auto save started.")
@@ -354,10 +349,6 @@ class KryptonServer(
                 LOGGER.error("Error whilst trying to close world ${it.data.name}!", exception)
             }
         }
-
-        // Save whitelist
-        LOGGER.info("Saving  whitelist...")
-        playerManager.whitelistManager.saveIfNeeded()
 
         // Shut down plugins and unregister listeners
         LOGGER.info("Shutting down plugins and unregistering listeners...")
