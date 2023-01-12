@@ -122,6 +122,7 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateLight
 import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateRecipes
 import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateScore
 import org.kryptonmc.krypton.packet.out.play.PacketOutSetCenterChunk
+import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateEnabledFeatures
 import org.kryptonmc.krypton.packet.out.play.PacketOutWorldEvent
 import org.kryptonmc.krypton.packet.out.status.PacketOutPingResponse
 import org.kryptonmc.krypton.packet.out.status.PacketOutStatusResponse
@@ -252,6 +253,7 @@ object PacketRegistry {
         registerOutbound<PacketOutTagQueryResponse>(0x62)
         registerOutbound<PacketOutTeleportEntity>(0x64)
         registerOutbound<PacketOutUpdateAttributes>(0x66)
+        registerOutbound<PacketOutUpdateEnabledFeatures>(0x67)
         registerOutbound<PacketOutUpdateRecipes>(0x69)
         registerOutbound<PacketOutUpdateTags>(0x6A)
     }
