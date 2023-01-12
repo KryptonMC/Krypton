@@ -29,7 +29,7 @@ import java.net.InetSocketAddress
  * A player that is connected to the server and playing the game.
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
-public interface Player : LivingEntity, Equipable, PluginMessageRecipient, BaseUser, VanishingPlayer {
+public interface Player : LivingEntity, Equipable, PluginMessageRecipient, BaseUser {
 
     /**
      * The address that the player is currently connected from.
@@ -73,11 +73,6 @@ public interface Player : LivingEntity, Equipable, PluginMessageRecipient, BaseU
      * The settings for the player.
      */
     public val settings: PlayerSettings
-
-    /**
-     * If this player is currently AFK, meaning they are not doing anything.
-     */
-    public var isAfk: Boolean
 
     /**
      * This player's current game mode.

@@ -20,14 +20,11 @@ package org.kryptonmc.krypton.entity.serializer.player
 
 import org.apache.logging.log4j.LogManager
 import org.kryptonmc.api.entity.attribute.AttributeTypes
-import org.kryptonmc.api.service.VanishService
-import org.kryptonmc.api.service.provide
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.entity.player.RespawnData
 import org.kryptonmc.krypton.entity.serializer.EntitySerializer
 import org.kryptonmc.krypton.entity.serializer.LivingEntitySerializer
-import org.kryptonmc.krypton.service.builtin.KryptonVanishService
 import org.kryptonmc.krypton.util.nbt.putDataVersion
 import org.kryptonmc.krypton.util.nbt.putUUID
 import org.kryptonmc.nbt.CompoundTag
@@ -53,7 +50,6 @@ object PlayerSerializer : EntitySerializer<KryptonPlayer> {
 
     // Custom krypton-only tags
     private const val KRYPTON_TAG = "krypton"
-    private const val VANISHED_TAG = "vanished"
     private const val FIRST_JOINED_TAG = "firstJoined"
     private const val LAST_JOINED_TAG = "lastJoined"
 
@@ -81,8 +77,6 @@ object PlayerSerializer : EntitySerializer<KryptonPlayer> {
         if (data.contains(KRYPTON_TAG, CompoundTag.ID)) {
             entity.hasJoinedBefore = true
             val kryptonData = data.getCompound(KRYPTON_TAG)
-            val vanishService = entity.server.servicesManager.provide<VanishService>()!!
-            if (vanishService is KryptonVanishService && kryptonData.getBoolean(VANISHED_TAG)) vanishService.vanish(entity)
             entity.firstJoined = Instant.ofEpochMilli(kryptonData.getLong(FIRST_JOINED_TAG))
             entity.lastJoined = Instant.ofEpochMilli(kryptonData.getLong(LAST_JOINED_TAG))
         }
@@ -117,8 +111,6 @@ object PlayerSerializer : EntitySerializer<KryptonPlayer> {
         }
 
         compound(KRYPTON_TAG) {
-            val vanishService = entity.server.servicesManager.provide<VanishService>()!!
-            if (vanishService is KryptonVanishService) putBoolean(VANISHED_TAG, entity.isVanished)
             putLong(FIRST_JOINED_TAG, entity.firstJoined.toEpochMilli())
             putLong(LAST_JOINED_TAG, entity.lastJoined.toEpochMilli())
         }

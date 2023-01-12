@@ -42,9 +42,4 @@ public interface BaseUser {
      * The latest time when this user last joined the server.
      */
     public val lastJoined: Instant
-
-    /**
-     * If this user is vanished, meaning they cannot be seen by other players.
-     */
-    public val isVanished: Boolean
 }
