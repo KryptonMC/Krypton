@@ -147,8 +147,6 @@ class KryptonServer(
         console.run()
 
         // Load plugins here because most of everything they need is available now.
-        LOGGER.debug("Loading built-in services...")
-        servicesManager.bootstrap()
         loadPlugins()
 
         // Fire the event that signals the server starting. We fire it here so that plugins can listen to it as part of their lifecycle,

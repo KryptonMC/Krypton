@@ -37,8 +37,6 @@ import org.kryptonmc.api.inventory.Inventory
 import org.kryptonmc.api.permission.PermissionFunction
 import org.kryptonmc.api.permission.PermissionProvider
 import org.kryptonmc.api.resource.ResourcePack
-import org.kryptonmc.api.service.AFKService
-import org.kryptonmc.api.service.provide
 import org.kryptonmc.api.statistic.CustomStatistics
 import org.kryptonmc.api.tags.FluidTags
 import org.kryptonmc.api.util.Vec3d
@@ -140,10 +138,6 @@ class KryptonPlayer(
     override var hasJoinedBefore: Boolean = false
     override var firstJoined: Instant = Instant.EPOCH
     override var lastJoined: Instant = Instant.now()
-
-    override var isAfk: Boolean
-        get() = server.servicesManager.provide<AFKService>()!!.isAfk(this)
-        set(value) = server.servicesManager.provide<AFKService>()!!.setAfk(this, value)
 
     internal var respawnData: RespawnData? = null
 
