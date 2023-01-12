@@ -1,0 +1,5 @@
+{
+  "id": "whitelist-module",
+  "description": "An internal module for the vanilla whitelist.",
+  "main": "org.kryptonmc.plugins.whitelist.WhitelistPlugin"
+}

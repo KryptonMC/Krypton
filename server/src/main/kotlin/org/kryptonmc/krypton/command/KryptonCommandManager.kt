@@ -54,7 +54,6 @@ import org.kryptonmc.krypton.commands.StopCommand
 import org.kryptonmc.krypton.commands.SummonCommand
 import org.kryptonmc.krypton.commands.TeleportCommand
 import org.kryptonmc.krypton.commands.TitleCommand
-import org.kryptonmc.krypton.commands.WhitelistCommand
 import org.kryptonmc.krypton.command.registrar.BrigadierCommandRegistrar
 import org.kryptonmc.krypton.command.registrar.RawCommandRegistrar
 import org.kryptonmc.krypton.command.registrar.SimpleCommandRegistrar
@@ -170,7 +169,6 @@ class KryptonCommandManager : CommandManager {
         DifficultyCommand.register(dispatcher)
         GameRuleCommand.register(dispatcher)
         KickCommand.register(dispatcher)
-        WhitelistCommand.register(dispatcher)
         GiveCommand.register(dispatcher)
         ClearCommand.register(dispatcher)
         KryptonCommand.register(dispatcher)

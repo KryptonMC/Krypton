@@ -24,10 +24,8 @@ import org.kryptonmc.api.service.ServiceProvider
 import org.kryptonmc.api.service.ServicesManager
 import org.kryptonmc.api.service.VanishService
 import org.kryptonmc.api.service.register
-import org.kryptonmc.api.user.whitelist.WhitelistService
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.plugin.server.ServerPluginContainer
-import org.kryptonmc.krypton.service.builtin.KryptonWhitelistService
 import org.kryptonmc.krypton.service.builtin.KryptonAFKService
 import org.kryptonmc.krypton.service.builtin.KryptonVanishService
 import java.util.concurrent.ConcurrentHashMap
@@ -39,7 +37,6 @@ class KryptonServicesManager(private val server: KryptonServer) : ServicesManage
     fun bootstrap() {
         register<VanishService>(ServerPluginContainer, KryptonVanishService())
         register<AFKService>(ServerPluginContainer, KryptonAFKService())
-        register<WhitelistService>(ServerPluginContainer, KryptonWhitelistService(server))
     }
 
     override fun <T> register(plugin: Any, type: Class<T>, service: T): ServiceProvider<T> {
