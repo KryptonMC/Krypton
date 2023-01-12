@@ -48,7 +48,7 @@ object RegistryDataLoader {
     private val LOGGER = LogManager.getLogger()
     @JvmField
     val WORLD_GENERATION_REGISTRIES: List<RegistryData<*>> = ImmutableLists.of(
-        RegistryData(ResourceKeys.DIMENSION_TYPE, KryptonDimensionType.DIRECT_CODEC),
+        RegistryData(KryptonResourceKeys.DIMENSION_TYPE, KryptonDimensionType.DIRECT_CODEC),
         RegistryData(ResourceKeys.BIOME, KryptonBiome.DIRECT_CODEC),
         RegistryData(KryptonResourceKeys.CHAT_TYPE, ChatType.CODEC)
     )

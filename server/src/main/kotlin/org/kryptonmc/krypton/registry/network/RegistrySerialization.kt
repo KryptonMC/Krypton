@@ -30,8 +30,8 @@ import org.kryptonmc.krypton.registry.dynamic.RegistryAccess
 import org.kryptonmc.krypton.registry.dynamic.RegistryLayer
 import org.kryptonmc.krypton.resource.KryptonResourceKey
 import org.kryptonmc.krypton.resource.KryptonResourceKeys
+import org.kryptonmc.krypton.util.Keys
 import org.kryptonmc.krypton.util.resultOrError
-import org.kryptonmc.krypton.util.serialization.Codecs
 import org.kryptonmc.krypton.world.biome.KryptonBiome
 import org.kryptonmc.krypton.world.dimension.KryptonDimensionType
 import org.kryptonmc.serialization.Codec
@@ -44,7 +44,7 @@ object RegistrySerialization {
     private val NETWORKABLE_REGISTRIES = ImmutableMap.builder<ResourceKey<out Registry<*>>, NetworkedRegistryData<*>>().apply {
         put(this, ResourceKeys.BIOME, KryptonBiome.NETWORK_CODEC)
         put(this, KryptonResourceKeys.CHAT_TYPE, ChatType.CODEC)
-        put(this, ResourceKeys.DIMENSION_TYPE, KryptonDimensionType.DIRECT_CODEC)
+        put(this, KryptonResourceKeys.DIMENSION_TYPE, KryptonDimensionType.DIRECT_CODEC)
     }.build()
     @JvmField
     val NETWORK_CODEC: Codec<RegistryAccess> = createNetworkCodec<Any>()
@@ -66,7 +66,7 @@ object RegistrySerialization {
 
     @JvmStatic
     private fun <E> createNetworkCodec(): Codec<RegistryAccess> {
-        val keyCodec: Codec<ResourceKey<out Registry<E>>> = Codecs.KEY.xmap({ KryptonResourceKey.of(RegistryRoots.MINECRAFT, it) }, { it.location })
+        val keyCodec: Codec<ResourceKey<out Registry<E>>> = Keys.CODEC.xmap({ KryptonResourceKey.of(RegistryRoots.MINECRAFT, it) }, { it.location })
         val registryCodec: Codec<KryptonRegistry<E>> = keyCodec.partialDispatch(
             "type",
             { DataResult.success(it.key) },

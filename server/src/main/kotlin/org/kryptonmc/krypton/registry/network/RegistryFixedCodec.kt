@@ -22,8 +22,8 @@ import org.kryptonmc.api.registry.Registry
 import org.kryptonmc.api.resource.ResourceKey
 import org.kryptonmc.krypton.registry.holder.Holder
 import org.kryptonmc.krypton.resource.KryptonResourceKey
+import org.kryptonmc.krypton.util.Keys
 import org.kryptonmc.krypton.util.resultOrError
-import org.kryptonmc.krypton.util.serialization.Codecs
 import org.kryptonmc.serialization.Codec
 import org.kryptonmc.serialization.DataOps
 import org.kryptonmc.serialization.DataResult
@@ -38,7 +38,7 @@ class RegistryFixedCodec<E> private constructor(private val registryKey: Resourc
             if (owner != null) {
                 if (!input.canSerializeIn(owner)) return DataResult.error("Element $input is not valid in current registry set!")
                 return input.unwrap().map(
-                    { Codecs.KEY.encode(it.location, ops, prefix) },
+                    { Keys.CODEC.encode(it.location, ops, prefix) },
                     { DataResult.error("Elements from registry $registryKey cannot be serialized to a value") }
                 )
             }
@@ -50,7 +50,7 @@ class RegistryFixedCodec<E> private constructor(private val registryKey: Resourc
         if (ops is RegistryOps<T>) {
             val getter = ops.getter(registryKey)
             if (getter != null) {
-                return Codecs.KEY.decode(input, ops).flatMap { pair ->
+                return Keys.CODEC.decode(input, ops).flatMap { pair ->
                     @Suppress("UNCHECKED_CAST")
                     getter.get(KryptonResourceKey.of(registryKey, pair.first))
                         .resultOrError { "Failed to get element ${pair.first}!" }

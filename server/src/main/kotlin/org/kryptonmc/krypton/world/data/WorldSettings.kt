@@ -20,8 +20,8 @@ package org.kryptonmc.krypton.world.data
 
 import org.kryptonmc.api.world.Difficulty
 import org.kryptonmc.api.world.GameMode
-import org.kryptonmc.krypton.util.Difficulties
-import org.kryptonmc.krypton.util.GameModes
+import org.kryptonmc.krypton.util.enumhelper.Difficulties
+import org.kryptonmc.krypton.util.enumhelper.GameModes
 import org.kryptonmc.krypton.world.rule.WorldGameRules
 import org.kryptonmc.serialization.Dynamic
 

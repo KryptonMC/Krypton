@@ -19,9 +19,9 @@
 package org.kryptonmc.krypton.server
 
 import org.kryptonmc.api.tags.TagKey
-import org.kryptonmc.krypton.pack.resources.PreparableReloadListener
 import org.kryptonmc.krypton.pack.resources.ResourceManager
-import org.kryptonmc.krypton.pack.resources.SimpleReloadInstance
+import org.kryptonmc.krypton.pack.resources.reload.PreparableReloadListener
+import org.kryptonmc.krypton.pack.resources.reload.SimpleReloadInstance
 import org.kryptonmc.krypton.registry.dynamic.RegistryAccess
 import org.kryptonmc.krypton.registry.holder.Holder
 import org.kryptonmc.krypton.tags.KryptonTagKey

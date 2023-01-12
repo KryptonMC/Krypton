@@ -26,7 +26,7 @@ import org.kryptonmc.serialization.DataResult
 object Keys {
 
     @JvmField
-    val CODEC: Codec<Key> = Codec.STRING.comapFlatMap({ Keys.read(it) }, { it.asString() }).stable()
+    val CODEC: Codec<Key> = Codec.STRING.comapFlatMap({ read(it) }, { it.asString() }).stable()
 
     @JvmStatic
     fun isValidCharacter(char: Char): Boolean = Key.allowedInValue(char) || char == ':'
@@ -35,6 +35,15 @@ object Keys {
     fun create(namespace: String, path: String): Key? {
         return try {
             Key.key(namespace, path)
+        } catch (_: InvalidKeyException) {
+            null
+        }
+    }
+
+    @JvmStatic
+    fun create(input: String): Key? {
+        return try {
+            Key.key(input)
         } catch (_: InvalidKeyException) {
             null
         }
