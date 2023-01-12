@@ -28,12 +28,16 @@ import com.google.gson.stream.JsonReader
 import com.google.gson.stream.JsonWriter
 import java.io.IOException
 import java.io.Reader
+import java.io.StringReader
 import java.io.StringWriter
 
 object GsonHelper {
 
     @JvmField
     val GSON: Gson = GsonBuilder().create()
+
+    @JvmStatic
+    fun parse(json: String): JsonObject = parse(StringReader(json), false)
 
     @JvmStatic
     fun parse(reader: Reader): JsonObject = parse(reader, false)

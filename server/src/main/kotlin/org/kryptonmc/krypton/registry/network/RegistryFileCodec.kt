@@ -22,8 +22,8 @@ import org.kryptonmc.api.registry.Registry
 import org.kryptonmc.api.resource.ResourceKey
 import org.kryptonmc.krypton.registry.holder.Holder
 import org.kryptonmc.krypton.resource.KryptonResourceKey
+import org.kryptonmc.krypton.util.Keys
 import org.kryptonmc.krypton.util.resultOrError
-import org.kryptonmc.krypton.util.serialization.Codecs
 import org.kryptonmc.serialization.Codec
 import org.kryptonmc.serialization.DataOps
 import org.kryptonmc.serialization.DataResult
@@ -41,7 +41,7 @@ class RegistryFileCodec<E> private constructor(
             val owner = ops.owner(registryKey)
             if (owner != null) {
                 if (!input.canSerializeIn(owner)) return DataResult.error("Element $input is not valid in current registry set!")
-                return input.unwrap().map({ Codecs.KEY.encode(it.location, ops, prefix) }, { elementCodec.encode(it, ops, prefix) })
+                return input.unwrap().map({ Keys.CODEC.encode(it.location, ops, prefix) }, { elementCodec.encode(it, ops, prefix) })
             }
         }
         return elementCodec.encode(input.value(), ops, prefix)
@@ -50,7 +50,7 @@ class RegistryFileCodec<E> private constructor(
     override fun <T> decode(input: T, ops: DataOps<T>): DataResult<Pair<Holder<E>, T>> {
         if (ops is RegistryOps<T>) {
             val getter = ops.getter(registryKey) ?: return DataResult.error("Registry does not exist: $registryKey")
-            val keyDecode = Codecs.KEY.decode(input, ops)
+            val keyDecode = Keys.CODEC.decode(input, ops)
             if (keyDecode.result().isEmpty) {
                 if (!allowInline) return DataResult.error("Inline definitions not allowed here!")
                 return elementCodec.decode(input, ops).map { pair -> pair.mapFirst { Holder.Direct(it!!) } }

@@ -29,6 +29,7 @@ import org.kryptonmc.api.world.dimension.DimensionType
 import org.kryptonmc.krypton.registry.KryptonRegistries
 import org.kryptonmc.krypton.registry.holder.Holder
 import org.kryptonmc.krypton.registry.network.RegistryFileCodec
+import org.kryptonmc.krypton.resource.KryptonResourceKeys
 import org.kryptonmc.krypton.tags.KryptonTagKey
 import org.kryptonmc.krypton.util.Keys
 import org.kryptonmc.krypton.util.math.Maths
@@ -231,7 +232,7 @@ data class KryptonDimensionType(
         private const val MAX_Y = (Y_SIZE shr 1) - 1
         private const val MIN_Y = MAX_Y - Y_SIZE + 1
         @JvmField
-        val DIRECT_CODEC: Codec<DimensionType> = Codecs.catchDecoderException(RecordCodecBuilder.create { instance ->
+        val DIRECT_CODEC: Codec<KryptonDimensionType> = Codecs.catchDecoderException(RecordCodecBuilder.create { instance ->
             instance.group(
                 unboxOptionalLongCodec(Codec.LONG.optionalFieldOf("fixed_time")).getting { it.fixedTime },
                 Codec.BOOLEAN.fieldOf("has_skylight").getting { it.hasSkylight },
@@ -247,11 +248,11 @@ data class KryptonDimensionType(
                 KryptonTagKey.hashedCodec(ResourceKeys.BLOCK).fieldOf("infiniburn").getting { it.infiniburn },
                 Keys.CODEC.fieldOf("effects").orElse(KryptonDimensionTypes.OVERWORLD_EFFECTS).getting { it.effects },
                 Codec.FLOAT.fieldOf("ambient_light").getting { it.ambientLight },
-                MonsterSettings.CODEC.getting { (it as KryptonDimensionType).monsterSettings }
+                MonsterSettings.CODEC.getting { it.monsterSettings }
             ).apply(instance, ::KryptonDimensionType)
         })
         @JvmField
-        val CODEC: Codec<Holder<DimensionType>> = RegistryFileCodec.create(ResourceKeys.DIMENSION_TYPE, DIRECT_CODEC)
+        val CODEC: Codec<Holder<KryptonDimensionType>> = RegistryFileCodec.create(KryptonResourceKeys.DIMENSION_TYPE, DIRECT_CODEC)
         @JvmField
         val MOON_BRIGHTNESS_PER_PHASE: FloatArray = floatArrayOf(1F, 0.75F, 0.5F, 0.25F, 0F, 0.25F, 0.5F, 0.75F)
 

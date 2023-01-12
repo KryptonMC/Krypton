@@ -21,8 +21,8 @@ package org.kryptonmc.krypton.tags
 import net.kyori.adventure.key.Key
 import org.kryptonmc.api.registry.Registry
 import org.kryptonmc.api.resource.ResourceKey
-import org.kryptonmc.krypton.pack.resources.PreparableReloadListener
 import org.kryptonmc.krypton.pack.resources.ResourceManager
+import org.kryptonmc.krypton.pack.resources.reload.PreparableReloadListener
 import org.kryptonmc.krypton.registry.dynamic.RegistryAccess
 import org.kryptonmc.krypton.registry.holder.Holder
 import org.kryptonmc.krypton.resource.KryptonResourceKey
