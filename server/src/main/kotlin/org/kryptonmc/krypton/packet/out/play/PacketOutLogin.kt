@@ -28,18 +28,18 @@ import org.kryptonmc.api.world.dimension.DimensionType
 import org.kryptonmc.krypton.packet.EntityPacket
 import org.kryptonmc.krypton.util.enumhelper.GameModes
 import org.kryptonmc.krypton.coordinate.GlobalPos
+import org.kryptonmc.krypton.registry.dynamic.RegistryAccess
+import org.kryptonmc.krypton.registry.network.RegistrySerialization
+import org.kryptonmc.krypton.util.decode
+import org.kryptonmc.krypton.util.encode
 import org.kryptonmc.krypton.util.readCollection
 import org.kryptonmc.krypton.util.readKey
-import org.kryptonmc.krypton.util.readNBT
 import org.kryptonmc.krypton.util.readVarInt
 import org.kryptonmc.krypton.util.readNullable
 import org.kryptonmc.krypton.util.writeCollection
-import org.kryptonmc.krypton.util.writeNBT
 import org.kryptonmc.krypton.util.writeNullable
 import org.kryptonmc.krypton.util.writeResourceKey
 import org.kryptonmc.krypton.util.writeVarInt
-import org.kryptonmc.nbt.CompoundTag
-import org.kryptonmc.nbt.compound
 
 @JvmRecord
 data class PacketOutLogin(
@@ -48,7 +48,7 @@ data class PacketOutLogin(
     val gameMode: GameMode,
     val oldGameMode: GameMode?,
     val dimensions: Set<ResourceKey<World>>,
-    val registryCodec: CompoundTag,
+    val registryHolder: RegistryAccess.Frozen,
     val dimensionType: ResourceKey<DimensionType>,
     val dimension: ResourceKey<World>,
     val seed: Long,
@@ -68,7 +68,7 @@ data class PacketOutLogin(
         GameModes.fromId(buf.readByte().toInt())!!,
         GameModes.fromId(buf.readByte().toInt())!!,
         buf.readCollection({ Sets.newHashSetWithExpectedSize(it) }) { ResourceKey.of(ResourceKeys.DIMENSION, buf.readKey()) },
-        buf.readNBT(),
+        buf.decode(RegistrySerialization.NETWORK_CODEC).freeze(),
         ResourceKey.of(ResourceKeys.DIMENSION_TYPE, buf.readKey()),
         ResourceKey.of(ResourceKeys.DIMENSION, buf.readKey()),
         buf.readLong(),
@@ -88,7 +88,7 @@ data class PacketOutLogin(
         buf.writeByte(gameMode.ordinal)
         buf.writeByte(oldGameMode?.ordinal ?: -1)
         buf.writeCollection(dimensions, buf::writeResourceKey)
-        buf.writeNBT(registryCodec)
+        buf.encode(RegistrySerialization.NETWORK_CODEC, registryHolder)
         buf.writeResourceKey(dimensionType)
         buf.writeResourceKey(dimension)
         buf.writeLong(seed)
@@ -100,16 +100,5 @@ data class PacketOutLogin(
         buf.writeBoolean(isDebug)
         buf.writeBoolean(isFlat)
         buf.writeNullable(deathLocation) { _, pos -> pos.write(buf) }
-    }
-
-    companion object {
-
-        @JvmStatic
-        fun createRegistryCodec(): CompoundTag = compound {
-            /* FIXME: We need to rewrite this based on RegistryAccess
-            put(ResourceKeys.DIMENSION_TYPE.location.asString(), KryptonRegistries.DIMENSION_TYPE.encode(KryptonDimensionType.DIRECT_CODEC))
-            put(ResourceKeys.BIOME.location.asString(), KryptonRegistries.BIOME.encode(KryptonBiome.DIRECT_CODEC))
-             */
-        }
     }
 }

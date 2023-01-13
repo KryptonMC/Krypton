@@ -52,6 +52,12 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateTime
 import org.kryptonmc.krypton.registry.KryptonRegistries
 import org.kryptonmc.krypton.coordinate.BlockPos
 import org.kryptonmc.krypton.locale.DisconnectMessages
+import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateTags
+import org.kryptonmc.krypton.registry.dynamic.LayeredRegistryAccess
+import org.kryptonmc.krypton.registry.dynamic.RegistryAccess
+import org.kryptonmc.krypton.registry.dynamic.RegistryLayer
+import org.kryptonmc.krypton.registry.network.RegistrySerialization
+import org.kryptonmc.krypton.tags.TagSerializer
 import org.kryptonmc.krypton.util.executor.daemonThreadFactory
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.krypton.world.biome.BiomeManager
@@ -70,13 +76,17 @@ import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.CopyOnWriteArrayList
 import java.util.concurrent.Executors
 
-class PlayerManager(private val server: KryptonServer) {
+class PlayerManager(
+    private val server: KryptonServer,
+    private val registries: LayeredRegistryAccess<RegistryLayer>
+) {
 
     private val executor = Executors.newFixedThreadPool(8, daemonThreadFactory("Player Executor #%d"))
     private val dataManager = createDataManager(server)
     private val players = CopyOnWriteArrayList<KryptonPlayer>()
     private val playersByName = ConcurrentHashMap<String, KryptonPlayer>()
     private val playersByUUID = ConcurrentHashMap<UUID, KryptonPlayer>()
+    private val synchronizedRegistries = RegistryAccess.ImmutableImpl(RegistrySerialization.networkedRegistries(registries)).freeze()
 
     fun players(): List<KryptonPlayer> = players
 
@@ -126,7 +136,7 @@ class PlayerManager(private val server: KryptonServer) {
             player.gameModeSystem.gameMode(),
             player.gameModeSystem.previousGameMode(),
             server.worldManager.worlds.keys,
-            PacketOutLogin.createRegistryCodec(),
+            synchronizedRegistries,
             KryptonRegistries.DIMENSION_TYPE.getResourceKey(world.dimensionType)!!,
             world.dimension,
             BiomeManager.obfuscateSeed(world.seed),
@@ -147,8 +157,7 @@ class PlayerManager(private val server: KryptonServer) {
         player.connection.send(PacketOutAbilities.create(player.abilities))
         player.connection.send(PacketOutSetHeldItem(player.inventory.heldSlot))
         player.connection.write(PacketOutUpdateRecipes.CACHED)
-        // TODO: Uncomment when we add the registry access to the world.
-//        player.connection.write(PacketOutUpdateTags(TagSerializer.serializeTagsToNetwork()))
+        player.connection.write(PacketOutUpdateTags(TagSerializer.serializeTagsToNetwork(registries)))
         player.connection.send(PacketOutEntityEvent(player.id, if (reducedDebugInfo) ENABLE_REDUCED_DEBUG_SCREEN else DISABLE_REDUCED_DEBUG_SCREEN))
         sendCommands(player)
         player.statisticsTracker.invalidate()
