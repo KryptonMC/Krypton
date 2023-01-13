@@ -58,6 +58,7 @@ import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.EndTag
 import org.kryptonmc.nbt.io.TagCompression
 import org.kryptonmc.nbt.io.TagIO
+import org.kryptonmc.serialization.Decoder
 import org.kryptonmc.serialization.Encoder
 import org.kryptonmc.serialization.nbt.NbtOps
 import java.io.IOException
@@ -461,6 +462,13 @@ fun <T> ByteBuf.encode(encoder: Encoder<T>, value: T) {
     val result = encoder.encodeStart(value, NbtOps.INSTANCE)
     result.error().ifPresent { throw EncoderException("Failed to encode: ${it.message} $value") }
     writeNBT(result.result().get() as? CompoundTag)
+}
+
+fun <T> ByteBuf.decode(decoder: Decoder<T>): T {
+    val nbt = readNBT()
+    val result = decoder.read(nbt, NbtOps.INSTANCE)
+    result.error().ifPresent { throw DecoderException("Failed to decode: ${it.message} $nbt") }
+    return result.result().get()
 }
 
 fun ByteBuf.readInstant(): Instant = Instant.ofEpochMilli(readLong())

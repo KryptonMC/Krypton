@@ -46,6 +46,7 @@ import org.kryptonmc.krypton.service.KryptonServicesManager
 import org.kryptonmc.krypton.user.KryptonUserManager
 import org.kryptonmc.krypton.network.PacketFraming
 import org.kryptonmc.krypton.plugin.loader.PluginLoader
+import org.kryptonmc.krypton.registry.dynamic.RegistryLayer
 import org.kryptonmc.krypton.util.crypto.YggdrasilSessionKey
 import org.kryptonmc.krypton.util.executor.ReentrantBlockableEventLoop
 import org.kryptonmc.krypton.util.random.RandomSource
@@ -75,7 +76,8 @@ class KryptonServer(
     worldFolder: Path
 ) : ReentrantBlockableEventLoop<TickTask>("Server"), BaseServer {
 
-    override val playerManager: PlayerManager = PlayerManager(this)
+    // TODO: Use a better registry access that is dynamically populated from data packs.
+    override val playerManager: PlayerManager = PlayerManager(this, RegistryLayer.createRegistryAccess())
     override val connectionManager: ConnectionManager = ConnectionManager(playerManager, config.status.motd, config.status.maxPlayers)
 
     override val console: KryptonConsole = KryptonConsole(this)
