@@ -32,6 +32,7 @@ import org.kryptonmc.api.world.biome.BiomeContainer
 import org.kryptonmc.api.world.chunk.BlockChangeFlags
 import org.kryptonmc.api.world.chunk.Chunk
 import org.kryptonmc.api.world.dimension.DimensionType
+import org.kryptonmc.api.world.generation.ChunkGenerator
 import org.kryptonmc.api.world.rule.GameRuleHolder
 import java.nio.file.Path
 
@@ -69,6 +70,11 @@ public interface World : BlockContainer, FluidContainer, BiomeContainer, BlockEn
      * The spawn location of this world.
      */
     public val spawnLocation: Vec3i
+
+    /**
+     * The chunk generator for the world.
+     */
+    public val chunkGenerator: ChunkGenerator
 
     /**
      * All of the chunks currently loaded in this world.
