@@ -36,6 +36,7 @@ import org.kryptonmc.serialization.MapLike
 import org.kryptonmc.serialization.RecordBuilder
 import org.kryptonmc.util.Pair
 import java.util.Arrays
+import java.util.BitSet
 import java.util.Optional
 import java.util.function.Function
 import java.util.regex.Pattern
@@ -74,6 +75,8 @@ object Codecs {
         },
         { it.decoratedId() }
     )
+    @JvmField
+    val BIT_SET: Codec<BitSet> = Codec.LONG_STREAM.xmap({ BitSet.valueOf(it.toArray()) }, { Arrays.stream(it.toLongArray()) })
 
     @JvmStatic
     fun fixedSize(stream: IntStream, size: Int): DataResult<IntArray> {

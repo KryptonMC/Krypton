@@ -16,30 +16,33 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.entity.player
+package org.kryptonmc.krypton.util
 
-import org.kryptonmc.api.entity.MainHand
-import org.kryptonmc.api.entity.player.ChatVisibility
-import org.kryptonmc.api.entity.player.PlayerSettings
-import org.kryptonmc.api.entity.player.SkinParts
-import java.util.Locale
+import org.apache.logging.log4j.LogManager
+import org.apache.logging.log4j.Logger
+import java.util.concurrent.CompletableFuture
+import java.util.concurrent.Executor
 
-@JvmRecord
-data class KryptonPlayerSettings(
-    override val locale: Locale?,
-    override val viewDistance: Int,
-    override val chatVisibility: ChatVisibility,
-    override val hasChatColors: Boolean,
-    override val skinParts: SkinParts,
-    override val mainHand: MainHand,
-    val filterText: Boolean,
-    override val allowsServerListing: Boolean
-) : PlayerSettings {
+fun interface TaskChainer {
+
+    fun append(task: DelayedTask)
+
+    fun interface DelayedTask {
+
+        fun submit(executor: Executor): CompletableFuture<*>
+    }
 
     companion object {
 
         @JvmField
-        val DEFAULT: KryptonPlayerSettings =
-            KryptonPlayerSettings(null, 10, ChatVisibility.FULL, true, KryptonSkinParts.ALL, MainHand.RIGHT, false, true)
+        val LOGGER: Logger = LogManager.getLogger()
+
+        @JvmStatic
+        fun immediate(executor: Executor): TaskChainer = TaskChainer { task ->
+            task.submit(executor).exceptionally {
+                LOGGER.error("Task failed", it)
+                null
+            }
+        }
     }
 }

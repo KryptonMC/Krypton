@@ -76,6 +76,8 @@ object DisconnectMessages {
     @JvmField
     val OUT_OF_ORDER_CHAT: Component = translatable("multiplayer.disconnect.out_of_order_chat")
     @JvmField
+    val CHAT_VALIDATION_FAILED: Component = translatable("multiplayer.disconnect.chat_validation_failed")
+    @JvmField
     val REQUIRED_TEXTURE_PROMPT: Component = translatable("multiplayer.requiredTexturePrompt.disconnect")
     @JvmField
     val SERVER_SHUTDOWN: Component = translatable("multiplayer.disconnect.server_shutdown")

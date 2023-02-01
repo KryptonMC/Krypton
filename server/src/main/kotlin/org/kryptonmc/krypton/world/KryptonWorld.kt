@@ -32,6 +32,8 @@ import org.kryptonmc.api.world.World
 import org.kryptonmc.api.world.biome.Biome
 import org.kryptonmc.api.world.biome.Biomes
 import org.kryptonmc.krypton.KryptonServer
+import org.kryptonmc.krypton.coordinate.BlockPos
+import org.kryptonmc.krypton.coordinate.SectionPos
 import org.kryptonmc.krypton.effect.sound.downcast
 import org.kryptonmc.krypton.entity.EntityFactory
 import org.kryptonmc.krypton.entity.EntityManager
@@ -47,10 +49,8 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutSoundEffect
 import org.kryptonmc.krypton.packet.out.play.PacketOutWorldEvent
 import org.kryptonmc.krypton.registry.KryptonRegistries
 import org.kryptonmc.krypton.registry.holder.Holder
-import org.kryptonmc.krypton.coordinate.BlockPos
 import org.kryptonmc.krypton.util.enumhelper.Directions
 import org.kryptonmc.krypton.util.math.Maths
-import org.kryptonmc.krypton.coordinate.SectionPos
 import org.kryptonmc.krypton.util.random.RandomSource
 import org.kryptonmc.krypton.world.biome.BiomeManager
 import org.kryptonmc.krypton.world.block.KryptonBlock

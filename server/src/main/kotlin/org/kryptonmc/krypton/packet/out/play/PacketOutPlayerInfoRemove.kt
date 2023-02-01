@@ -16,30 +16,26 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.entity.player
+package org.kryptonmc.krypton.packet.out.play
 
-import org.kryptonmc.api.entity.MainHand
-import org.kryptonmc.api.entity.player.ChatVisibility
-import org.kryptonmc.api.entity.player.PlayerSettings
-import org.kryptonmc.api.entity.player.SkinParts
-import java.util.Locale
+import io.netty.buffer.ByteBuf
+import org.kryptonmc.krypton.entity.player.KryptonPlayer
+import org.kryptonmc.krypton.packet.Packet
+import org.kryptonmc.krypton.util.ImmutableLists
+import org.kryptonmc.krypton.util.readList
+import org.kryptonmc.krypton.util.readUUID
+import org.kryptonmc.krypton.util.writeCollection
+import org.kryptonmc.krypton.util.writeUUID
+import java.util.UUID
 
 @JvmRecord
-data class KryptonPlayerSettings(
-    override val locale: Locale?,
-    override val viewDistance: Int,
-    override val chatVisibility: ChatVisibility,
-    override val hasChatColors: Boolean,
-    override val skinParts: SkinParts,
-    override val mainHand: MainHand,
-    val filterText: Boolean,
-    override val allowsServerListing: Boolean
-) : PlayerSettings {
+data class PacketOutPlayerInfoRemove(val profileIds: List<UUID>) : Packet {
 
-    companion object {
+    constructor(player: KryptonPlayer) : this(ImmutableLists.of(player.uuid))
 
-        @JvmField
-        val DEFAULT: KryptonPlayerSettings =
-            KryptonPlayerSettings(null, 10, ChatVisibility.FULL, true, KryptonSkinParts.ALL, MainHand.RIGHT, false, true)
+    constructor(buf: ByteBuf) : this(buf.readList(ByteBuf::readUUID))
+
+    override fun write(buf: ByteBuf) {
+        buf.writeCollection(profileIds, buf::writeUUID)
     }
 }

@@ -18,6 +18,8 @@
  */
 package org.kryptonmc.krypton.command
 
+import com.mojang.brigadier.ResultConsumer
+import com.mojang.brigadier.context.CommandContext
 import net.kyori.adventure.audience.Audience
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
@@ -30,11 +32,14 @@ import org.kryptonmc.krypton.command.arguments.CommandExceptions
 import org.kryptonmc.krypton.commands.KryptonPermission
 import org.kryptonmc.krypton.entity.KryptonEntity
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
-import org.kryptonmc.krypton.network.chat.ChatSender
+import org.kryptonmc.krypton.network.chat.RichChatType
+import org.kryptonmc.krypton.network.chat.OutgoingChatMessage
+import org.kryptonmc.krypton.util.TaskChainer
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.krypton.world.rule.GameRuleKeys
 
-class CommandSourceStack(
+@Suppress("LongParameterList")
+class CommandSourceStack private constructor(
     override val sender: KryptonSender,
     override val position: Vec3d,
     val yaw: Float,
@@ -43,10 +48,28 @@ class CommandSourceStack(
     override val textName: String,
     override val displayName: Component,
     override val server: KryptonServer,
-    val entity: KryptonEntity?
+    val entity: KryptonEntity?,
+    private val silent: Boolean,
+    private val consumer: ResultConsumer<CommandSourceStack>?,
+    val signingContext: CommandSigningContext,
+    val chatMessageChainer: TaskChainer
 ) : CommandExecutionContext, CommandSuggestionProvider, Audience by sender {
 
-    fun asChatSender(): ChatSender = entity?.asChatSender() ?: ChatSender.SYSTEM
+    constructor(sender: KryptonSender, position: Vec3d, yaw: Float, pitch: Float, world: KryptonWorld, textName: String, displayName: Component,
+                server: KryptonServer, entity: KryptonEntity?) : this(sender, position, yaw, pitch, world, textName, displayName, server, entity,
+        false, { _, _, _ -> }, CommandSigningContext.ANONYMOUS, TaskChainer.immediate(server))
+
+    fun withCallback(consumer: ResultConsumer<CommandSourceStack>?): CommandSourceStack {
+        if (this.consumer == consumer) return this
+        return CommandSourceStack(sender, position, yaw, pitch, world, textName, displayName, server, entity, silent, consumer, signingContext,
+            chatMessageChainer)
+    }
+
+    fun withSigningContext(context: CommandSigningContext): CommandSourceStack {
+        if (context === signingContext) return this
+        return CommandSourceStack(sender, position, yaw, pitch, world, textName, displayName, server, entity, silent, consumer, context,
+            chatMessageChainer)
+    }
 
     fun getEntityOrError(): KryptonEntity = entity ?: throw ERROR_NOT_ENTITY.create()
 
@@ -62,6 +85,17 @@ class CommandSourceStack(
     override fun asPlayer(): Player? = getPlayer()
 
     fun hasPermission(permission: KryptonPermission): Boolean = sender.hasPermission(permission.node)
+
+    fun shouldFilterMessageTo(target: KryptonPlayer): Boolean {
+        val player = getPlayer()
+        if (target === player) return false
+        return player != null && player.settings.filterText || target.settings.filterText
+    }
+
+    fun sendChatMessage(message: OutgoingChatMessage, filter: Boolean, type: RichChatType.Bound) {
+        val player = getPlayer()
+        if (player != null) player.sendChatMessage(message, filter, type) else sender.sendSystemMessage(type.decorate(message.content()))
+    }
 
     fun sendSystemMessage(message: Component) {
         val player = getPlayer()
@@ -83,6 +117,10 @@ class CommandSourceStack(
 
     override fun sendFailureMessage(message: Component) {
         sendFailure(message)
+    }
+
+    fun onCommandComplete(context: CommandContext<CommandSourceStack>, success: Boolean, result: Int) {
+        consumer?.onCommandComplete(context, success, result)
     }
 
     fun broadcastToAdmins(message: Component) {

@@ -16,26 +16,9 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.command
+package org.kryptonmc.krypton.util.crypto
 
-import net.kyori.adventure.text.Component
-import org.kryptonmc.api.command.Sender
-
-interface KryptonSender : Sender {
-
-    fun acceptsSuccess(): Boolean
-
-    fun acceptsFailure(): Boolean
-
-    fun shouldInformAdmins(): Boolean
-
-    fun alwaysAccepts(): Boolean = false
-
-    fun sendSystemMessage(message: Component)
-
-    override fun sendMessage(message: Component) {
-        sendSystemMessage(message)
-    }
-
-    fun createCommandSourceStack(): CommandSourceStack
-}
+/**
+ * A general exception signalling an error with one of the cryptography functions. This always wraps other exceptions.
+ */
+class CryptException(cause: Throwable?) : Exception(cause)

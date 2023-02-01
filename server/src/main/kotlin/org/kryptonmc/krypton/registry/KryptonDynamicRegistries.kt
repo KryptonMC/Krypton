@@ -24,8 +24,8 @@ import org.kryptonmc.api.resource.ResourceKey
 import org.kryptonmc.api.resource.ResourceKeys
 import org.kryptonmc.api.world.biome.Biome
 import org.kryptonmc.api.world.dimension.DimensionType
-import org.kryptonmc.krypton.network.chat.ChatType
 import org.kryptonmc.krypton.network.chat.ChatTypes
+import org.kryptonmc.krypton.network.chat.RichChatType
 import org.kryptonmc.krypton.resource.KryptonResourceKeys
 import org.kryptonmc.krypton.world.biome.KryptonBiomeRegistrar
 import org.kryptonmc.krypton.world.dimension.KryptonDimensionTypes
@@ -42,7 +42,7 @@ object KryptonDynamicRegistries {
     @JvmField
     val BIOME: KryptonRegistry<Biome> = register(ResourceKeys.BIOME) { KryptonBiomeRegistrar.bootstrap() }
     @JvmField
-    val CHAT_TYPE: KryptonRegistry<ChatType> = register(KryptonResourceKeys.CHAT_TYPE) { ChatTypes }
+    val CHAT_TYPE: KryptonRegistry<RichChatType> = register(KryptonResourceKeys.CHAT_TYPE, ChatTypes::bootstrap)
 
     @JvmStatic
     @Suppress("UNCHECKED_CAST")

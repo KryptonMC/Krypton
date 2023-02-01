@@ -23,6 +23,7 @@ import net.kyori.adventure.permission.PermissionChecker
 import net.kyori.adventure.pointer.Pointers
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer
 import net.kyori.adventure.util.TriState
 import net.minecrell.terminalconsole.SimpleTerminalConsole
 import org.apache.logging.log4j.LogManager
@@ -37,6 +38,7 @@ import org.kryptonmc.krypton.event.command.KryptonCommandExecuteEvent
 import org.kryptonmc.krypton.event.server.KryptonSetupPermissionsEvent
 import org.kryptonmc.krypton.locale.MinecraftTranslationManager
 import org.kryptonmc.krypton.coordinate.KryptonVec3d
+import org.kryptonmc.krypton.network.chat.RichChatType
 
 class KryptonConsole(override val server: KryptonServer) : SimpleTerminalConsole(), KryptonSender, ConsoleSender {
 
@@ -61,6 +63,11 @@ class KryptonConsole(override val server: KryptonServer) : SimpleTerminalConsole
 
     override fun sendSystemMessage(message: Component) {
         LOGGER.info(LegacyComponentSerializer.legacySection().serialize(MinecraftTranslationManager.render(message)))
+    }
+
+    fun logChatMessage(message: Component, type: RichChatType.Bound, prefix: String?) {
+        val messageText = PlainTextComponentSerializer.plainText().serialize(type.decorate(message))
+        if (prefix != null) LOGGER.info("[$prefix] $messageText") else LOGGER.info(messageText)
     }
 
     override fun getPermissionValue(permission: String): TriState = permissionFunction.getPermissionValue(permission)

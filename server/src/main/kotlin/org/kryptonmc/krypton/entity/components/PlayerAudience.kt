@@ -18,9 +18,9 @@
  */
 package org.kryptonmc.krypton.entity.components
 
-import net.kyori.adventure.audience.MessageType
 import net.kyori.adventure.bossbar.BossBar
-import net.kyori.adventure.identity.Identity
+import net.kyori.adventure.chat.ChatType
+import net.kyori.adventure.chat.SignedMessage
 import net.kyori.adventure.inventory.Book
 import net.kyori.adventure.sound.Sound
 import net.kyori.adventure.sound.SoundStop
@@ -28,7 +28,6 @@ import net.kyori.adventure.text.Component
 import net.kyori.adventure.title.Title
 import net.kyori.adventure.title.TitlePart
 import org.kryptonmc.api.effect.sound.SoundEvent
-import org.kryptonmc.api.entity.player.ChatVisibility
 import org.kryptonmc.api.entity.player.Player
 import org.kryptonmc.krypton.adventure.BossBarManager
 import org.kryptonmc.krypton.adventure.KryptonAdventure
@@ -36,10 +35,11 @@ import org.kryptonmc.krypton.command.KryptonSender
 import org.kryptonmc.krypton.effect.sound.KryptonSoundEvent
 import org.kryptonmc.krypton.entity.KryptonEntity
 import org.kryptonmc.krypton.item.KryptonItemStack
-import org.kryptonmc.krypton.network.chat.ChatSender
-import org.kryptonmc.krypton.network.chat.ChatType
+import org.kryptonmc.krypton.network.chat.RichChatType
 import org.kryptonmc.krypton.network.chat.MessageSignature
 import org.kryptonmc.krypton.packet.out.play.PacketOutClearTitles
+import org.kryptonmc.krypton.packet.out.play.PacketOutDeleteChat
+import org.kryptonmc.krypton.packet.out.play.PacketOutDisguisedChat
 import org.kryptonmc.krypton.packet.out.play.PacketOutEntitySoundEffect
 import org.kryptonmc.krypton.packet.out.play.PacketOutSetActionBarText
 import org.kryptonmc.krypton.packet.out.play.PacketOutSetSubtitleText
@@ -58,25 +58,21 @@ interface PlayerAudience : Player, NetworkPlayer, KryptonSender {
 
     fun openBook(item: KryptonItemStack)
 
-    override fun sendMessage(source: Identity, message: Component, type: MessageType) {
-        // TODO: Update this when Adventure updates - still a few things wrong here, the sender's name is always empty.
-//        val chatType = when (type) {
-//            MessageType.CHAT -> ChatTypes.CHAT
-//            MessageType.SYSTEM -> ChatTypes.SYSTEM
-//        }
-//        sendMessage(message, MessageSignature.unsigned(), ChatSender.fromIdentity(source), chatType)
+    override fun deleteMessage(signature: SignedMessage.Signature) {
+        connection.send(PacketOutDeleteChat(MessageSignature.Packed(MessageSignature(signature.bytes()))))
     }
 
-    fun sendMessage(message: Component, signature: MessageSignature, sender: ChatSender, type: ChatType) {
-        if (settings.chatVisibility != ChatVisibility.FULL) return
-        // TODO: Fix chat (again)
-//        val typeId = InternalRegistries.CHAT_TYPE.idOf(type)
-//        val packet = when (type) {
-//            ChatTypes.SYSTEM -> PacketOutSystemChatMessage(message, typeId)
-//            ChatTypes.CHAT, ChatTypes.GAME_INFO -> PacketOutPlayerChatMessage(message, null, typeId, sender, signature)
-//            else -> throw IllegalArgumentException("Chat type $type is not a message type!")
-//        }
-//        session.send(packet)
+    override fun sendMessage(signedMessage: SignedMessage, boundChatType: ChatType.Bound) {
+        val message = signedMessage.unsignedContent() ?: Component.text(signedMessage.message())
+        if (signedMessage.isSystem) {
+            sendMessage(message, boundChatType)
+            return
+        }
+        // TODO: Add support for signed player messages
+    }
+
+    override fun sendMessage(message: Component, boundChatType: ChatType.Bound) {
+        connection.send(PacketOutDisguisedChat(message, RichChatType.Bound.from(boundChatType).toNetwork()))
     }
 
     override fun sendActionBar(message: Component) {

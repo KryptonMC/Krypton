@@ -18,20 +18,19 @@
  */
 package org.kryptonmc.krypton.network.chat
 
-import org.kryptonmc.serialization.Codec
-import org.kryptonmc.serialization.codecs.RecordCodecBuilder
+object ChatUtil {
 
-@JvmRecord
-data class ChatType(val chat: ChatTypeDecoration, val narration: ChatTypeDecoration) {
+    private const val SECTION_SIGN = '§'
+    private const val DELETE_CHAR = '\u007F'
 
-    companion object {
-
-        @JvmField
-        val CODEC: Codec<ChatType> = RecordCodecBuilder.create { instance ->
-            instance.group(
-                ChatTypeDecoration.CODEC.fieldOf("chat").getting { it.chat },
-                ChatTypeDecoration.CODEC.fieldOf("narration").getting { it.narration }
-            ).apply(instance, ::ChatType)
+    @JvmStatic
+    fun isValidMessage(message: String): Boolean {
+        for (i in message.indices) {
+            if (!isValidCharacter(message[i])) return false
         }
+        return true
     }
+
+    @JvmStatic
+    fun isValidCharacter(char: Char): Boolean = char != SECTION_SIGN && char >= ' ' && char != DELETE_CHAR
 }

@@ -20,6 +20,7 @@ package org.kryptonmc.krypton.util.crypto
 
 import java.security.KeyFactory
 import java.security.PublicKey
+import java.security.SecureRandom
 import java.security.spec.X509EncodedKeySpec
 import java.util.Base64
 
@@ -37,5 +38,19 @@ object Crypto {
     }
 
     @JvmStatic
-    fun bytesToRsaPublicKey(bytes: ByteArray): PublicKey = RSA_KEY_FACTORY.generatePublic(X509EncodedKeySpec(bytes))
+    fun bytesToRsaPublicKey(bytes: ByteArray): PublicKey {
+        try {
+            return RSA_KEY_FACTORY.generatePublic(X509EncodedKeySpec(bytes))
+        } catch (exception: Exception) {
+            throw CryptException(exception)
+        }
+    }
+
+    object SaltSupplier {
+
+        private val secureRandom = SecureRandom()
+
+        @JvmStatic
+        fun getLong(): Long = secureRandom.nextLong()
+    }
 }

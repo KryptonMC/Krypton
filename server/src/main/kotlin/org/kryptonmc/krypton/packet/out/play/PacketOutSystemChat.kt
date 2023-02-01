@@ -20,40 +20,17 @@ package org.kryptonmc.krypton.packet.out.play
 
 import io.netty.buffer.ByteBuf
 import net.kyori.adventure.text.Component
-import org.kryptonmc.krypton.network.chat.ChatSender
-import org.kryptonmc.krypton.network.chat.MessageSignature
 import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.util.readComponent
-import org.kryptonmc.krypton.util.readNullable
-import org.kryptonmc.krypton.util.readVarInt
 import org.kryptonmc.krypton.util.writeComponent
-import org.kryptonmc.krypton.util.writeNullable
-import org.kryptonmc.krypton.util.writeVarInt
 
 @JvmRecord
-data class PacketOutPlayerChatMessage(
-    val signedMessage: Component,
-    val unsignedMessage: Component?,
-    val typeId: Int,
-    val sender: ChatSender,
-    val signature: MessageSignature
-) : Packet {
+data class PacketOutSystemChat(val message: Component, val overlay: Boolean) : Packet {
 
-    constructor(buf: ByteBuf) : this(
-        buf.readComponent(),
-        buf.readNullable(ByteBuf::readComponent),
-        buf.readVarInt(),
-        // FIXME: When we fix chat, this needs to be sorted
-        ChatSender.SYSTEM,
-        MessageSignature(buf)
-    )
+    constructor(buf: ByteBuf) : this(buf.readComponent(), buf.readBoolean())
 
     override fun write(buf: ByteBuf) {
-        buf.writeComponent(signedMessage)
-        buf.writeNullable(unsignedMessage, ByteBuf::writeComponent)
-        buf.writeVarInt(typeId)
-        // FIXME: When we fix chat, this needs to be sorted
-        //sender.write(buf)
-        signature.write(buf)
+        buf.writeComponent(message)
+        buf.writeBoolean(overlay)
     }
 }

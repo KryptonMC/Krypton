@@ -22,6 +22,8 @@ import org.kryptonmc.krypton.util.serialization.Codecs
 import org.kryptonmc.nbt.IntArrayTag
 import org.kryptonmc.nbt.Tag
 import org.kryptonmc.serialization.Codec
+import java.nio.ByteBuffer
+import java.nio.ByteOrder
 import java.util.Arrays
 import java.util.UUID
 
@@ -34,6 +36,13 @@ object UUIDUtil {
         { input -> Codecs.fixedSize(input, 4).map { fromIntArray(it) } },
         { Arrays.stream(toIntArray(it)) }
     )
+
+    @JvmStatic
+    fun toByteArray(uuid: UUID): ByteArray {
+        val result = ByteArray(16)
+        ByteBuffer.wrap(result).order(ByteOrder.BIG_ENDIAN).putLong(uuid.mostSignificantBits).putLong(uuid.leastSignificantBits)
+        return result
+    }
 
     @JvmStatic
     fun fromIntArray(data: IntArray): UUID = UUID(

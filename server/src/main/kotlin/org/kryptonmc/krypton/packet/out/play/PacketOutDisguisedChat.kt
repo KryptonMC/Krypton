@@ -16,13 +16,22 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.testutil
+package org.kryptonmc.krypton.packet.out.play
 
-import org.kryptonmc.krypton.entity.components.NetworkPlayer
-import org.kryptonmc.krypton.entity.player.PlayerPublicKey
+import io.netty.buffer.ByteBuf
+import net.kyori.adventure.text.Component
+import org.kryptonmc.krypton.network.chat.RichChatType
+import org.kryptonmc.krypton.packet.Packet
+import org.kryptonmc.krypton.util.readComponent
+import org.kryptonmc.krypton.util.writeComponent
 
-class TestNetworkPlayer(override val connection: TestConnection) : NetworkPlayer {
+@JvmRecord
+data class PacketOutDisguisedChat(val message: Component, val chatType: RichChatType.BoundNetwork) : Packet {
 
-    override val publicKey: PlayerPublicKey?
-        get() = null
+    constructor(buf: ByteBuf) : this(buf.readComponent(), RichChatType.BoundNetwork(buf))
+
+    override fun write(buf: ByteBuf) {
+        buf.writeComponent(message)
+        chatType.write(buf)
+    }
 }

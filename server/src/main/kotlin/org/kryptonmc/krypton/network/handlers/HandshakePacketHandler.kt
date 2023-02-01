@@ -124,7 +124,7 @@ class HandshakePacketHandler(private val server: KryptonServer, override val con
     }
 
     private fun disconnect(reason: Component) {
-        connection.send(PacketOutLoginDisconnect(reason))
+        connection.writeAndFlush(PacketOutLoginDisconnect(reason))
         connection.disconnect(reason)
     }
 

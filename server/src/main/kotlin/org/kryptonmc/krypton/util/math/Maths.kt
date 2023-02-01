@@ -157,6 +157,9 @@ object Maths {
     }
 
     @JvmStatic
+    fun positiveCeilDivide(x: Int, y: Int): Int = -Math.floorDiv(-x, y)
+
+    @JvmStatic
     @Suppress("MagicNumber")
     fun ceillog2(value: Int): Int {
         val temp = if (isPowerOfTwo(value)) value else roundUpPow2(value)

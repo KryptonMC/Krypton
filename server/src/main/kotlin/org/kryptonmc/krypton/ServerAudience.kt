@@ -29,6 +29,7 @@ import org.kryptonmc.krypton.network.ConnectionManager
 import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.server.PlayerManager
 import java.util.Collections
+import java.util.function.Predicate
 
 interface ServerAudience : Server, PacketGroupingAudience {
 
@@ -62,5 +63,9 @@ interface ServerAudience : Server, PacketGroupingAudience {
 
     override fun sendGroupedPacket(players: Collection<KryptonPlayer>, packet: Packet) {
         connectionManager.sendGroupedPacket(players, packet)
+    }
+
+    override fun sendGroupedPacket(packet: Packet, filter: Predicate<KryptonPlayer>) {
+        connectionManager.sendGroupedPacket(players, packet, filter)
     }
 }

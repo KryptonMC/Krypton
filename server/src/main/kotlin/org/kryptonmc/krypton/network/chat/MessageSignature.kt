@@ -19,53 +19,74 @@
 package org.kryptonmc.krypton.network.chat
 
 import io.netty.buffer.ByteBuf
-import it.unimi.dsi.fastutil.bytes.ByteArrays
-import net.kyori.adventure.text.Component
-import org.kryptonmc.krypton.adventure.KryptonAdventure
-import org.kryptonmc.krypton.entity.player.PlayerPublicKey
 import org.kryptonmc.krypton.network.Writable
 import org.kryptonmc.krypton.util.crypto.SignatureUpdater
-import org.kryptonmc.krypton.util.readInstant
-import org.kryptonmc.krypton.util.readVarIntByteArray
-import org.kryptonmc.krypton.util.writeInstant
-import org.kryptonmc.krypton.util.writeVarIntByteArray
+import org.kryptonmc.krypton.util.crypto.SignatureValidator
+import org.kryptonmc.krypton.util.readVarInt
+import org.kryptonmc.krypton.util.writeVarInt
 import java.nio.ByteBuffer
-import java.nio.ByteOrder
-import java.time.Instant
-import java.util.UUID
+import java.util.Base64
 
 @JvmRecord
-@Suppress("ArrayInDataClass")
-data class MessageSignature(val timestamp: Instant, val salt: Long, val signature: ByteArray) : Writable {
+data class MessageSignature(val bytes: ByteArray) {
 
-    constructor(buf: ByteBuf) : this(buf.readInstant(), buf.readLong(), buf.readVarIntByteArray())
-
-    override fun write(buf: ByteBuf) {
-        buf.writeInstant(timestamp)
-        buf.writeLong(salt)
-        buf.writeVarIntByteArray(signature)
+    init {
+        check(bytes.size == BYTES) { "Invalid message signature size! Expected $BYTES size, got ${bytes.size}!" }
     }
 
-    fun verify(publicKey: PlayerPublicKey?, message: Component, uuid: UUID): Boolean {
-        if (publicKey == null) return true
-        if (signature.isEmpty()) return false
-        return publicKey.createSignatureValidator().validate(signature) { updateSignature(it, message, uuid, timestamp, salt) }
+    fun verify(validator: SignatureValidator, updater: SignatureUpdater): Boolean = validator.validate(bytes, updater)
+
+    fun asByteBuffer(): ByteBuffer? = ByteBuffer.wrap(bytes)
+
+    fun pack(signatureCache: MessageSignatureCache): Packed {
+        val packedId = signatureCache.pack(this)
+        return if (packedId != Packed.FULL_SIGNATURE_ID) Packed(packedId) else Packed(this)
+    }
+
+    override fun equals(other: Any?): Boolean = this === other || other is MessageSignature && bytes.contentEquals(other.bytes)
+
+    override fun hashCode(): Int = bytes.contentHashCode()
+
+    override fun toString(): String = Base64.getEncoder().encodeToString(bytes)
+
+    @JvmRecord
+    data class Packed(val id: Int, val fullSignature: MessageSignature?) : Writable {
+
+        constructor(fullSignature: MessageSignature) : this(FULL_SIGNATURE_ID, fullSignature)
+
+        constructor(id: Int) : this(id, null)
+
+        override fun write(buf: ByteBuf) {
+            buf.writeVarInt(id + 1)
+            fullSignature?.let { write(buf, it) }
+        }
+
+        companion object {
+
+            const val FULL_SIGNATURE_ID: Int = -1
+
+            @JvmStatic
+            fun read(buf: ByteBuf): Packed {
+                val id = buf.readVarInt() - 1
+                return if (id == FULL_SIGNATURE_ID) Packed(MessageSignature.read(buf)) else Packed(id)
+            }
+        }
     }
 
     companion object {
 
-        @JvmStatic
-        fun unsigned(): MessageSignature = MessageSignature(Instant.now(), 0, ByteArrays.EMPTY_ARRAY)
+        private const val BYTES = 256
 
         @JvmStatic
-        private fun updateSignature(output: SignatureUpdater.Output, message: Component, uuid: UUID, timestamp: Instant, salt: Long) {
-            val bytes = ByteArray(32)
-            val buffer = ByteBuffer.wrap(bytes).order(ByteOrder.BIG_ENDIAN)
-            buffer.putLong(salt)
-            buffer.putLong(uuid.mostSignificantBits).putLong(uuid.leastSignificantBits)
-            buffer.putLong(timestamp.epochSecond)
-            output.update(bytes)
-            output.update(KryptonAdventure.toStableJson(message).toByteArray())
+        fun read(buf: ByteBuf): MessageSignature {
+            val bytes = ByteArray(BYTES)
+            buf.readBytes(bytes)
+            return MessageSignature(bytes)
+        }
+
+        @JvmStatic
+        fun write(buf: ByteBuf, signature: MessageSignature) {
+            buf.writeBytes(signature.bytes)
         }
     }
 }

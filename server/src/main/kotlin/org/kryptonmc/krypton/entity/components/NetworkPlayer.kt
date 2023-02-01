@@ -18,11 +18,9 @@
  */
 package org.kryptonmc.krypton.entity.components
 
-import org.kryptonmc.krypton.entity.player.PlayerPublicKey
 import org.kryptonmc.krypton.network.NetworkConnection
 
 interface NetworkPlayer {
 
     val connection: NetworkConnection
-    val publicKey: PlayerPublicKey?
 }

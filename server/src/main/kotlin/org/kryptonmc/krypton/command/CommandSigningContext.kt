@@ -16,30 +16,23 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.entity.player
+package org.kryptonmc.krypton.command
 
-import org.kryptonmc.api.entity.MainHand
-import org.kryptonmc.api.entity.player.ChatVisibility
-import org.kryptonmc.api.entity.player.PlayerSettings
-import org.kryptonmc.api.entity.player.SkinParts
-import java.util.Locale
+import org.kryptonmc.krypton.network.chat.PlayerChatMessage
 
-@JvmRecord
-data class KryptonPlayerSettings(
-    override val locale: Locale?,
-    override val viewDistance: Int,
-    override val chatVisibility: ChatVisibility,
-    override val hasChatColors: Boolean,
-    override val skinParts: SkinParts,
-    override val mainHand: MainHand,
-    val filterText: Boolean,
-    override val allowsServerListing: Boolean
-) : PlayerSettings {
+fun interface CommandSigningContext {
+
+    fun getArgument(name: String): PlayerChatMessage?
+
+    @JvmRecord
+    data class SignedArguments(val arguments: Map<String, PlayerChatMessage>) : CommandSigningContext {
+
+        override fun getArgument(name: String): PlayerChatMessage? = arguments.get(name)
+    }
 
     companion object {
 
         @JvmField
-        val DEFAULT: KryptonPlayerSettings =
-            KryptonPlayerSettings(null, 10, ChatVisibility.FULL, true, KryptonSkinParts.ALL, MainHand.RIGHT, false, true)
+        val ANONYMOUS: CommandSigningContext = CommandSigningContext { null }
     }
 }

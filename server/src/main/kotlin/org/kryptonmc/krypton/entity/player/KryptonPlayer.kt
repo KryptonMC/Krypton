@@ -23,6 +23,7 @@ import net.kyori.adventure.key.Key
 import net.kyori.adventure.permission.PermissionChecker
 import net.kyori.adventure.pointer.Pointers
 import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.format.NamedTextColor
 import org.kryptonmc.api.auth.GameProfile
 import org.kryptonmc.api.effect.particle.ParticleEffect
 import org.kryptonmc.api.effect.particle.data.ColorParticleData
@@ -30,8 +31,8 @@ import org.kryptonmc.api.effect.particle.data.DirectionalParticleData
 import org.kryptonmc.api.effect.particle.data.NoteParticleData
 import org.kryptonmc.api.entity.EquipmentSlot
 import org.kryptonmc.api.entity.Hand
+import org.kryptonmc.api.entity.player.ChatVisibility
 import org.kryptonmc.api.entity.player.Player
-import org.kryptonmc.api.entity.player.PlayerSettings
 import org.kryptonmc.api.event.player.ChangeGameModeEvent
 import org.kryptonmc.api.inventory.Inventory
 import org.kryptonmc.api.permission.PermissionFunction
@@ -41,6 +42,7 @@ import org.kryptonmc.api.statistic.CustomStatistics
 import org.kryptonmc.api.tags.FluidTags
 import org.kryptonmc.api.util.Vec3d
 import org.kryptonmc.api.world.GameMode
+import org.kryptonmc.krypton.adventure.KryptonAdventure
 import org.kryptonmc.krypton.commands.KryptonPermission
 import org.kryptonmc.krypton.entity.util.EquipmentSlots
 import org.kryptonmc.krypton.entity.KryptonEntity
@@ -60,8 +62,11 @@ import org.kryptonmc.krypton.inventory.KryptonPlayerInventory
 import org.kryptonmc.krypton.item.KryptonItemStack
 import org.kryptonmc.krypton.item.handler
 import org.kryptonmc.krypton.network.NettyConnection
-import org.kryptonmc.krypton.network.chat.ChatSender
 import org.kryptonmc.krypton.packet.out.play.GameEventTypes
+import org.kryptonmc.krypton.network.PacketSendListener
+import org.kryptonmc.krypton.network.chat.RichChatType
+import org.kryptonmc.krypton.network.chat.OutgoingChatMessage
+import org.kryptonmc.krypton.network.chat.RemoteChatSession
 import org.kryptonmc.krypton.packet.out.play.PacketOutAbilities
 import org.kryptonmc.krypton.packet.out.play.PacketOutGameEvent
 import org.kryptonmc.krypton.packet.out.play.PacketOutOpenBook
@@ -72,6 +77,7 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutSetCamera
 import org.kryptonmc.krypton.packet.out.play.PacketOutSetContainerSlot
 import org.kryptonmc.krypton.packet.out.play.PacketOutSetEntityMetadata
 import org.kryptonmc.krypton.packet.out.play.PacketOutSetHealth
+import org.kryptonmc.krypton.packet.out.play.PacketOutSystemChat
 import org.kryptonmc.krypton.packet.out.play.PacketOutTeleportEntity
 import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateEntityPosition
 import org.kryptonmc.krypton.statistic.KryptonStatisticsTracker
@@ -91,8 +97,7 @@ class KryptonPlayer(
     override val connection: NettyConnection,
     override val profile: GameProfile,
     world: KryptonWorld,
-    override val address: InetSocketAddress,
-    override val publicKey: PlayerPublicKey?
+    override val address: InetSocketAddress
 ) : KryptonLivingEntity(world), BasePlayer {
 
     override val type: KryptonEntityType<KryptonPlayer>
@@ -118,9 +123,9 @@ class KryptonPlayer(
         KryptonStatisticsTracker(this, server.worldManager.statsFolder().resolve("$uuid.json"))
     override val itemCooldownTracker: KryptonCooldownTracker = KryptonCooldownTracker(this)
 
-    override var settings: PlayerSettings = KryptonPlayerSettings.DEFAULT
-    private val chatSender = ChatSender(uuid, publicKey)
+    override var settings: KryptonPlayerSettings = KryptonPlayerSettings.DEFAULT
     private var lastActionTime = System.currentTimeMillis()
+    private var chatSession: RemoteChatSession? = null
 
     private var camera: KryptonEntity = this
         set(value) {
@@ -320,7 +325,7 @@ class KryptonPlayer(
     }
 
     override fun onAbilitiesUpdate() {
-        connection.send(PacketOutAbilities.create(abilities))
+        if (connection.inPlayState()) connection.send(PacketOutAbilities.create(abilities))
         removeEffectParticles()
         isInvisible = gameMode == GameMode.SPECTATOR
     }
@@ -356,10 +361,8 @@ class KryptonPlayer(
         lastActionTime = System.currentTimeMillis()
     }
 
-    override fun asChatSender(): ChatSender = chatSender
-
     override fun sendSystemMessage(message: Component) {
-        // TODO: Send system message (part of chat update)
+        sendSystemMessage(message, false)
     }
 
     override fun isPushedByFluid(): Boolean = !isFlying
@@ -367,6 +370,37 @@ class KryptonPlayer(
     override fun canBeSeenByAnyone(): Boolean = gameModeSystem.gameMode() != GameMode.SPECTATOR && super.canBeSeenByAnyone()
 
     fun canUseGameMasterBlocks(): Boolean = abilities.canInstantlyBuild && hasPermission(KryptonPermission.USE_GAME_MASTER_BLOCKS.node)
+
+    fun sendSystemMessage(message: Component, overlay: Boolean) {
+        if (!acceptsSystemMessages(overlay)) return
+        connection.send(PacketOutSystemChat(message, overlay), PacketSendListener.sendOnFailure {
+            if (acceptsSystemMessages(false)) {
+                val notDelivered = Component.text(KryptonAdventure.toPlainText(message, 256), NamedTextColor.YELLOW)
+                PacketOutSystemChat(Component.translatable("multiplayer.message_not_delivered", NamedTextColor.RED, notDelivered), false)
+            } else {
+                null
+            }
+        })
+    }
+
+    fun sendChatMessage(message: OutgoingChatMessage, filter: Boolean, type: RichChatType.Bound) {
+        if (acceptsChatMessages()) message.sendToPlayer(this, filter, type)
+    }
+
+    fun shouldFilterMessageTo(target: KryptonPlayer): Boolean {
+        if (target === this) return false
+        return settings.filterText || target.settings.filterText
+    }
+
+    private fun acceptsSystemMessages(overlay: Boolean): Boolean = if (settings.chatVisibility == ChatVisibility.HIDDEN) overlay else true
+
+    fun acceptsChatMessages(): Boolean = settings.chatVisibility == ChatVisibility.FULL
+
+    fun chatSession(): RemoteChatSession? = chatSession
+
+    fun setChatSession(session: RemoteChatSession) {
+        chatSession = session
+    }
 
     companion object {
 

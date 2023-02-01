@@ -33,10 +33,14 @@ import org.kryptonmc.api.effect.sound.SoundEvent
 import org.kryptonmc.krypton.effect.sound.KryptonSoundEvent
 import org.kryptonmc.krypton.entity.KryptonEntity
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
+import org.kryptonmc.krypton.network.chat.MessageSignature
+import org.kryptonmc.krypton.network.chat.RichChatType
 import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.packet.out.play.PacketOutSetActionBarText
 import org.kryptonmc.krypton.packet.out.play.PacketOutClearTitles
 import org.kryptonmc.krypton.packet.out.play.PacketOutEntitySoundEffect
+import org.kryptonmc.krypton.packet.out.play.PacketOutDeleteChat
+import org.kryptonmc.krypton.packet.out.play.PacketOutDisguisedChat
 import org.kryptonmc.krypton.packet.out.play.PacketOutSetTabListHeaderAndFooter
 import org.kryptonmc.krypton.packet.out.play.PacketOutSoundEffect
 import org.kryptonmc.krypton.packet.out.play.PacketOutStopSound
@@ -45,6 +49,7 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutSetTitleText
 import org.kryptonmc.krypton.packet.out.play.PacketOutSetTitleAnimationTimes
 import org.kryptonmc.krypton.registry.KryptonRegistries
 import org.kryptonmc.krypton.registry.holder.Holder
+import java.util.function.Predicate
 
 interface PacketGroupingAudience : ForwardingAudience {
 
@@ -52,25 +57,29 @@ interface PacketGroupingAudience : ForwardingAudience {
 
     fun sendGroupedPacket(players: Collection<KryptonPlayer>, packet: Packet)
 
+    fun sendGroupedPacket(packet: Packet, filter: Predicate<KryptonPlayer>)
+
     fun generateSoundSeed(): Long
 
     private fun sendGroupedPacket(packet: Packet) {
         sendGroupedPacket(players, packet)
     }
 
+    override fun deleteMessage(signature: SignedMessage.Signature) {
+        sendGroupedPacket(PacketOutDeleteChat(MessageSignature.Packed(MessageSignature(signature.bytes()))))
+    }
+
     override fun sendMessage(signedMessage: SignedMessage, boundChatType: ChatType.Bound) {
-        // TODO: Fix chat (again)
-//        val chatType = when (type) {
-//            MessageType.CHAT -> ChatTypes.CHAT
-//            MessageType.SYSTEM -> ChatTypes.SYSTEM
-//        }
-//        val typeId = InternalRegistries.CHAT_TYPE.idOf(chatType)
-//        val packet = when (chatType) {
-//            ChatTypes.SYSTEM -> PacketOutSystemChatMessage(message, typeId)
-//            ChatTypes.CHAT -> PacketOutPlayerChatMessage(message, null, typeId, ChatSender.fromIdentity(source), MessageSignature.unsigned())
-//            else -> throw IllegalArgumentException("Somehow chat type is not supported, this should be impossible! Type was $chatType.")
-//        }
-//        sessionManager.sendGrouped(players, packet) { it.acceptsChatType(chatType) }
+        val message = signedMessage.unsignedContent() ?: Component.text(signedMessage.message())
+        if (signedMessage.isSystem) {
+            sendMessage(message, boundChatType)
+            return
+        }
+        // TODO: Add support for signed player messages
+    }
+
+    override fun sendMessage(message: Component, boundChatType: ChatType.Bound) {
+        sendGroupedPacket(PacketOutDisguisedChat(message, RichChatType.Bound.from(boundChatType).toNetwork())) { it.acceptsChatMessages() }
     }
 
     override fun sendActionBar(message: Component) {

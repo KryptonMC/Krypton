@@ -85,4 +85,15 @@ object KryptonAdventure {
 
     @JvmStatic
     fun asMessage(component: Component): Message = KryptonAdventureMessage(component)
+
+    @JvmStatic
+    fun toPlainText(input: Component, maximumLength: Int): String {
+        val result = StringBuilder()
+        FLATTENER.flatten(input) {
+            val remaining = maximumLength - result.length
+            if (remaining <= 0) return@flatten
+            result.append(if (it.length <= remaining) it else it.substring(0, remaining))
+        }
+        return result.toString()
+    }
 }

@@ -23,7 +23,7 @@ import org.kryptonmc.api.registry.Registry
 import org.kryptonmc.api.registry.RegistryRoots
 import org.kryptonmc.api.resource.ResourceKey
 import org.kryptonmc.api.resource.ResourceKeys
-import org.kryptonmc.krypton.network.chat.ChatType
+import org.kryptonmc.krypton.network.chat.RichChatType
 import org.kryptonmc.krypton.registry.KryptonRegistry
 import org.kryptonmc.krypton.registry.dynamic.LayeredRegistryAccess
 import org.kryptonmc.krypton.registry.dynamic.RegistryAccess
@@ -43,7 +43,7 @@ object RegistrySerialization {
 
     private val NETWORKABLE_REGISTRIES = ImmutableMap.builder<ResourceKey<out Registry<*>>, NetworkedRegistryData<*>>().apply {
         put(this, ResourceKeys.BIOME, KryptonBiome.NETWORK_CODEC)
-        put(this, KryptonResourceKeys.CHAT_TYPE, ChatType.CODEC)
+        put(this, KryptonResourceKeys.CHAT_TYPE, RichChatType.CODEC)
         put(this, KryptonResourceKeys.DIMENSION_TYPE, KryptonDimensionType.DIRECT_CODEC)
     }.build()
     @JvmField

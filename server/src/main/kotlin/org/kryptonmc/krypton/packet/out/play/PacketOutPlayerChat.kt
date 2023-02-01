@@ -20,19 +20,42 @@ package org.kryptonmc.krypton.packet.out.play
 
 import io.netty.buffer.ByteBuf
 import net.kyori.adventure.text.Component
+import org.kryptonmc.krypton.network.chat.FilterMask
+import org.kryptonmc.krypton.network.chat.MessageSignature
+import org.kryptonmc.krypton.network.chat.RichChatType
+import org.kryptonmc.krypton.network.chat.SignedMessageBody
 import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.util.readComponent
+import org.kryptonmc.krypton.util.readNullable
+import org.kryptonmc.krypton.util.readUUID
 import org.kryptonmc.krypton.util.readVarInt
 import org.kryptonmc.krypton.util.writeComponent
+import org.kryptonmc.krypton.util.writeNullable
+import org.kryptonmc.krypton.util.writeUUID
 import org.kryptonmc.krypton.util.writeVarInt
+import java.util.UUID
 
 @JvmRecord
-data class PacketOutSystemChatMessage(val message: Component, val typeId: Int) : Packet {
+data class PacketOutPlayerChat(
+    val sender: UUID,
+    val index: Int,
+    val signature: MessageSignature?,
+    val body: SignedMessageBody.Packed,
+    val unsignedContent: Component?,
+    val filterMask: FilterMask,
+    val chatType: RichChatType.BoundNetwork
+) : Packet {
 
-    constructor(buf: ByteBuf) : this(buf.readComponent(), buf.readVarInt())
+    constructor(buf: ByteBuf) : this(buf.readUUID(), buf.readVarInt(), buf.readNullable(MessageSignature::read), SignedMessageBody.Packed(buf),
+        buf.readNullable(ByteBuf::readComponent), FilterMask.read(buf), RichChatType.BoundNetwork(buf))
 
     override fun write(buf: ByteBuf) {
-        buf.writeComponent(message)
-        buf.writeVarInt(typeId)
+        buf.writeUUID(sender)
+        buf.writeVarInt(index)
+        buf.writeNullable(signature, MessageSignature::write)
+        body.write(buf)
+        buf.writeNullable(unsignedContent, ByteBuf::writeComponent)
+        FilterMask.write(buf, filterMask)
+        chatType.write(buf)
     }
 }

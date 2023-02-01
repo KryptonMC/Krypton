@@ -44,6 +44,7 @@ import org.kryptonmc.krypton.world.fluid.KryptonFluidState
 import org.kryptonmc.krypton.world.rule.WorldGameRules
 import org.kryptonmc.krypton.world.scoreboard.KryptonScoreboard
 import java.nio.file.Path
+import java.util.function.Predicate
 
 interface BaseWorld : World, WorldAccessor, PacketGroupingAudience {
 
@@ -114,5 +115,9 @@ interface BaseWorld : World, WorldAccessor, PacketGroupingAudience {
 
     override fun sendGroupedPacket(players: Collection<KryptonPlayer>, packet: Packet) {
         server.connectionManager.sendGroupedPacket(players, packet)
+    }
+
+    override fun sendGroupedPacket(packet: Packet, filter: Predicate<KryptonPlayer>) {
+        server.connectionManager.sendGroupedPacket(players, packet, filter)
     }
 }

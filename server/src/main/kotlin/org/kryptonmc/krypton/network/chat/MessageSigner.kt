@@ -16,45 +16,38 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.packet.`in`.play
+package org.kryptonmc.krypton.network.chat
 
 import io.netty.buffer.ByteBuf
-import org.kryptonmc.krypton.command.argument.ArgumentSignatures
-import org.kryptonmc.krypton.network.handlers.PlayPacketHandler
-import org.kryptonmc.krypton.network.chat.LastSeenMessages
-import org.kryptonmc.krypton.packet.InboundPacket
+import org.kryptonmc.krypton.network.Writable
+import org.kryptonmc.krypton.util.crypto.Crypto
 import org.kryptonmc.krypton.util.readInstant
-import org.kryptonmc.krypton.util.readString
+import org.kryptonmc.krypton.util.readUUID
+import org.kryptonmc.krypton.util.uuid.UUIDUtil
 import org.kryptonmc.krypton.util.writeInstant
-import org.kryptonmc.krypton.util.writeString
+import org.kryptonmc.krypton.util.writeUUID
 import java.time.Instant
+import java.util.UUID
 
 @JvmRecord
-data class PacketInChatCommand(
-    val command: String,
-    val timestamp: Instant,
-    val salt: Long,
-    val argumentSignatures: ArgumentSignatures,
-    val lastSeenMessages: LastSeenMessages.Update
-) : InboundPacket<PlayPacketHandler> {
+data class MessageSigner(val profileId: UUID, val timestamp: Instant, val salt: Long) : Writable {
 
-    constructor(buf: ByteBuf) : this(buf.readString(MAX_COMMAND_LENGTH), buf.readInstant(), buf.readLong(), ArgumentSignatures(buf),
-        LastSeenMessages.Update(buf))
+    constructor(buf: ByteBuf) : this(buf.readUUID(), buf.readInstant(), buf.readLong())
 
     override fun write(buf: ByteBuf) {
-        buf.writeString(command, MAX_COMMAND_LENGTH)
+        buf.writeUUID(profileId)
         buf.writeInstant(timestamp)
         buf.writeLong(salt)
-        argumentSignatures.write(buf)
-        lastSeenMessages.write(buf)
     }
 
-    override fun handle(handler: PlayPacketHandler) {
-        handler.handleChatCommand(this)
-    }
+    fun isSystem(): Boolean = profileId == UUIDUtil.NIL_UUID
 
     companion object {
 
-        private const val MAX_COMMAND_LENGTH = 256
+        @JvmStatic
+        fun create(profileId: UUID): MessageSigner = MessageSigner(profileId, Instant.now(), Crypto.SaltSupplier.getLong())
+
+        @JvmStatic
+        fun system(): MessageSigner = create(UUIDUtil.NIL_UUID)
     }
 }

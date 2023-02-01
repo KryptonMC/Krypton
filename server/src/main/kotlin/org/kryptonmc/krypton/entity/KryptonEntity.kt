@@ -38,7 +38,6 @@ import org.kryptonmc.krypton.entity.serializer.BaseEntitySerializer
 import org.kryptonmc.krypton.entity.serializer.EntitySerializer
 import org.kryptonmc.krypton.entity.system.EntityViewingSystem
 import org.kryptonmc.krypton.entity.system.EntityWaterPhysicsSystem
-import org.kryptonmc.krypton.network.chat.ChatSender
 import org.kryptonmc.krypton.packet.out.play.PacketOutSetEntityMetadata
 import org.kryptonmc.krypton.packet.out.play.PacketOutSetEntityVelocity
 import org.kryptonmc.krypton.util.math.Maths
@@ -135,8 +134,6 @@ abstract class KryptonEntity(final override var world: KryptonWorld) : BaseEntit
         }
         return cachedPointers!!
     }
-
-    open fun asChatSender(): ChatSender = ChatSender.SYSTEM
 
     override fun soundSource(): Sound.Source = Sound.Source.NEUTRAL
 

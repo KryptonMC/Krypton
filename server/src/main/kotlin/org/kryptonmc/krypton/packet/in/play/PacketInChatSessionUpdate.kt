@@ -16,30 +16,23 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.entity.player
+package org.kryptonmc.krypton.packet.`in`.play
 
-import org.kryptonmc.api.entity.MainHand
-import org.kryptonmc.api.entity.player.ChatVisibility
-import org.kryptonmc.api.entity.player.PlayerSettings
-import org.kryptonmc.api.entity.player.SkinParts
-import java.util.Locale
+import io.netty.buffer.ByteBuf
+import org.kryptonmc.krypton.network.handlers.PlayPacketHandler
+import org.kryptonmc.krypton.network.chat.RemoteChatSession
+import org.kryptonmc.krypton.packet.InboundPacket
 
 @JvmRecord
-data class KryptonPlayerSettings(
-    override val locale: Locale?,
-    override val viewDistance: Int,
-    override val chatVisibility: ChatVisibility,
-    override val hasChatColors: Boolean,
-    override val skinParts: SkinParts,
-    override val mainHand: MainHand,
-    val filterText: Boolean,
-    override val allowsServerListing: Boolean
-) : PlayerSettings {
+data class PacketInChatSessionUpdate(val chatSession: RemoteChatSession.Data) : InboundPacket<PlayPacketHandler> {
 
-    companion object {
+    constructor(buf: ByteBuf) : this(RemoteChatSession.Data.read(buf))
 
-        @JvmField
-        val DEFAULT: KryptonPlayerSettings =
-            KryptonPlayerSettings(null, 10, ChatVisibility.FULL, true, KryptonSkinParts.ALL, MainHand.RIGHT, false, true)
+    override fun write(buf: ByteBuf) {
+        RemoteChatSession.Data.write(buf, chatSession)
+    }
+
+    override fun handle(handler: PlayPacketHandler) {
+        handler.handleChatSessionUpdate(this)
     }
 }

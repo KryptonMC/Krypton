@@ -20,11 +20,11 @@ package org.kryptonmc.krypton.packet.out.play.data
 
 import io.netty.buffer.ByteBuf
 import org.kryptonmc.krypton.network.Writable
+import org.kryptonmc.krypton.util.readBitSet
 import org.kryptonmc.krypton.util.readList
-import org.kryptonmc.krypton.util.readLongArray
 import org.kryptonmc.krypton.util.readVarIntByteArray
+import org.kryptonmc.krypton.util.writeBitSet
 import org.kryptonmc.krypton.util.writeCollection
-import org.kryptonmc.krypton.util.writeLongArray
 import org.kryptonmc.krypton.util.writeVarIntByteArray
 import org.kryptonmc.krypton.world.chunk.KryptonChunk
 import java.util.BitSet
@@ -42,21 +42,21 @@ data class LightPacketData(
 
     constructor(buf: ByteBuf) : this(
         buf.readBoolean(),
-        BitSet.valueOf(buf.readLongArray()),
-        BitSet.valueOf(buf.readLongArray()),
-        BitSet.valueOf(buf.readLongArray()),
-        BitSet.valueOf(buf.readLongArray()),
-        buf.readList { it.readVarIntByteArray() },
-        buf.readList { it.readVarIntByteArray() }
+        buf.readBitSet(),
+        buf.readBitSet(),
+        buf.readBitSet(),
+        buf.readBitSet(),
+        buf.readList(ByteBuf::readVarIntByteArray),
+        buf.readList(ByteBuf::readVarIntByteArray)
     )
 
     override fun write(buf: ByteBuf) {
         buf.writeBoolean(trustEdges)
 
-        buf.writeLongArray(skyMask.toLongArray())
-        buf.writeLongArray(blockMask.toLongArray())
-        buf.writeLongArray(emptySkyMask.toLongArray())
-        buf.writeLongArray(emptyBlockMask.toLongArray())
+        buf.writeBitSet(skyMask)
+        buf.writeBitSet(blockMask)
+        buf.writeBitSet(emptySkyMask)
+        buf.writeBitSet(emptyBlockMask)
 
         buf.writeCollection(skyLights, buf::writeVarIntByteArray)
         buf.writeCollection(blockLights, buf::writeVarIntByteArray)

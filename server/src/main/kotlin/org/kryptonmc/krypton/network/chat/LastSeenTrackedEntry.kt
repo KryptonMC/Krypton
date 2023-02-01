@@ -16,30 +16,10 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.entity.player
-
-import org.kryptonmc.api.entity.MainHand
-import org.kryptonmc.api.entity.player.ChatVisibility
-import org.kryptonmc.api.entity.player.PlayerSettings
-import org.kryptonmc.api.entity.player.SkinParts
-import java.util.Locale
+package org.kryptonmc.krypton.network.chat
 
 @JvmRecord
-data class KryptonPlayerSettings(
-    override val locale: Locale?,
-    override val viewDistance: Int,
-    override val chatVisibility: ChatVisibility,
-    override val hasChatColors: Boolean,
-    override val skinParts: SkinParts,
-    override val mainHand: MainHand,
-    val filterText: Boolean,
-    override val allowsServerListing: Boolean
-) : PlayerSettings {
+data class LastSeenTrackedEntry(val signature: MessageSignature, val pending: Boolean) {
 
-    companion object {
-
-        @JvmField
-        val DEFAULT: KryptonPlayerSettings =
-            KryptonPlayerSettings(null, 10, ChatVisibility.FULL, true, KryptonSkinParts.ALL, MainHand.RIGHT, false, true)
-    }
+    fun acknowledge(): LastSeenTrackedEntry = if (pending) LastSeenTrackedEntry(signature, false) else this
 }

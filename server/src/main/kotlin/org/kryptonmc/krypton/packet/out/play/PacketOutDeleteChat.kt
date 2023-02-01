@@ -16,27 +16,18 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.packet.`in`.play
+package org.kryptonmc.krypton.packet.out.play
 
 import io.netty.buffer.ByteBuf
 import org.kryptonmc.krypton.network.chat.MessageSignature
-import org.kryptonmc.krypton.network.handlers.PlayPacketHandler
-import org.kryptonmc.krypton.packet.InboundPacket
-import org.kryptonmc.krypton.util.readString
-import org.kryptonmc.krypton.util.writeString
+import org.kryptonmc.krypton.packet.Packet
 
 @JvmRecord
-data class PacketInChatMessage(val message: String, val signature: MessageSignature, val signedPreview: Boolean) : InboundPacket<PlayPacketHandler> {
+data class PacketOutDeleteChat(val messageSignature: MessageSignature.Packed) : Packet {
 
-    constructor(buf: ByteBuf) : this(buf.readString(), MessageSignature(buf), buf.readBoolean())
+    constructor(buf: ByteBuf) : this(MessageSignature.Packed.read(buf))
 
     override fun write(buf: ByteBuf) {
-        buf.writeString(message)
-        signature.write(buf)
-        buf.writeBoolean(signedPreview)
-    }
-
-    override fun handle(handler: PlayPacketHandler) {
-        handler.handleChatMessage(this)
+        messageSignature.write(buf)
     }
 }

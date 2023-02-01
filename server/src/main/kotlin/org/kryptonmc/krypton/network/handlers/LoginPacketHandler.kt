@@ -82,7 +82,7 @@ class LoginPacketHandler(
         if (!server.config.isOnline || server.config.proxy.mode.authenticatesUsers) {
             if (server.config.proxy.mode == ProxyCategory.Mode.MODERN) {
                 // Try to establish Velocity connection.
-                connection.send(PacketOutPluginRequest(velocityMessageId, VELOCITY_CHANNEL_ID, ByteArray(0)))
+                connection.writeAndFlush(PacketOutPluginRequest(velocityMessageId, VELOCITY_CHANNEL_ID, ByteArray(0)))
             } else {
                 processOfflineLogin(packet.name)
             }
@@ -90,7 +90,7 @@ class LoginPacketHandler(
         }
 
         // The server isn't offline and the client wasn't forwarded, enable encryption.
-        connection.send(PacketOutEncryptionRequest.create(Encryption.publicKey.encoded, verifyToken))
+        connection.writeAndFlush(PacketOutEncryptionRequest.create(Encryption.publicKey.encoded, verifyToken))
     }
 
     private fun processOfflineLogin(name: String) {
@@ -104,7 +104,7 @@ class LoginPacketHandler(
         if (!callLoginEvent(profile)) return
 
         // Initialize the player and setup their permissions.
-        val player = KryptonPlayer(connection, profile, server.worldManager.default, address, null)
+        val player = KryptonPlayer(connection, profile, server.worldManager.default, address)
         server.eventManager.fire(KryptonSetupPermissionsEvent(player, KryptonPlayer.DEFAULT_PERMISSIONS))
             .thenApplyAsync({ finishLogin(it, player) }, connection.executor())
     }
@@ -129,7 +129,7 @@ class LoginPacketHandler(
             }
             if (!callLoginEvent(profile)) return@thenApplyAsync null
             // Check the profile from the event and construct the player.
-            KryptonPlayer(connection, it.result.profile ?: profile, server.worldManager.default, address, null)
+            KryptonPlayer(connection, it.result.profile ?: profile, server.worldManager.default, address)
         }, connection.executor()).thenApplyAsync({
             if (it != null) finishLogin(server.eventManager.fireSync(KryptonSetupPermissionsEvent(it, KryptonPlayer.DEFAULT_PERMISSIONS)), it)
         }, connection.executor())
@@ -167,7 +167,7 @@ class LoginPacketHandler(
         // All good to go, let's construct our stuff
         LOGGER.debug("Detected Velocity login for ${data.uuid}")
         val profile = KryptonGameProfile.full(data.uuid, data.username, data.properties)
-        val player = KryptonPlayer(connection, profile, server.worldManager.default, InetSocketAddress(data.remoteAddress, address.port), null)
+        val player = KryptonPlayer(connection, profile, server.worldManager.default, InetSocketAddress(data.remoteAddress, address.port))
 
         // Setup permissions for the player
         server.eventManager.fire(KryptonSetupPermissionsEvent(player, KryptonPlayer.DEFAULT_PERMISSIONS))
@@ -209,7 +209,7 @@ class LoginPacketHandler(
 
     private fun disconnect(reason: Component) {
         LOGGER.info("Disconnecting ${formatName()}: ${PlainTextComponentSerializer.plainText().serialize(reason)}")
-        connection.send(PacketOutLoginDisconnect(reason))
+        connection.writeAndFlush(PacketOutLoginDisconnect(reason))
         connection.disconnect(reason)
     }
 

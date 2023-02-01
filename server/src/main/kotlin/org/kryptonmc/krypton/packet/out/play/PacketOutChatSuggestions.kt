@@ -16,20 +16,31 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.network.chat
+package org.kryptonmc.krypton.packet.out.play
 
-import net.kyori.adventure.identity.Identity
-import org.kryptonmc.krypton.entity.player.PlayerPublicKey
-import java.util.UUID
+import io.netty.buffer.ByteBuf
+import org.kryptonmc.krypton.packet.Packet
+import org.kryptonmc.krypton.util.readEnum
+import org.kryptonmc.krypton.util.readList
+import org.kryptonmc.krypton.util.readString
+import org.kryptonmc.krypton.util.writeCollection
+import org.kryptonmc.krypton.util.writeEnum
+import org.kryptonmc.krypton.util.writeString
 
 @JvmRecord
-data class ChatSender(val id: UUID, val publicKey: PlayerPublicKey?) {
+data class PacketOutChatSuggestions(val action: Action, val entries: List<String>) : Packet {
 
-    fun isSystem(): Boolean = this == SYSTEM
+    constructor(buf: ByteBuf) : this(buf.readEnum(), buf.readList(ByteBuf::readString))
 
-    companion object {
+    override fun write(buf: ByteBuf) {
+        buf.writeEnum(action)
+        buf.writeCollection(entries, buf::writeString)
+    }
 
-        @JvmField
-        val SYSTEM: ChatSender = ChatSender(Identity.nil().uuid(), null)
+    enum class Action {
+
+        ADD,
+        REMOVE,
+        SET
     }
 }

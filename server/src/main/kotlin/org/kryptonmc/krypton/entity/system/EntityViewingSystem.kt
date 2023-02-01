@@ -23,7 +23,8 @@ import org.kryptonmc.krypton.entity.KryptonExperienceOrb
 import org.kryptonmc.krypton.entity.KryptonLivingEntity
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.packet.Packet
-import org.kryptonmc.krypton.packet.out.play.PacketOutPlayerInfo
+import org.kryptonmc.krypton.packet.out.play.PacketOutPlayerInfoUpdate
+import org.kryptonmc.krypton.packet.out.play.PacketOutPlayerInfoRemove
 import org.kryptonmc.krypton.packet.out.play.PacketOutRemoveEntities
 import org.kryptonmc.krypton.packet.out.play.PacketOutSetEntityMetadata
 import org.kryptonmc.krypton.packet.out.play.PacketOutSetHeadRotation
@@ -31,6 +32,7 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutSpawnEntity
 import org.kryptonmc.krypton.packet.out.play.PacketOutSpawnExperienceOrb
 import org.kryptonmc.krypton.packet.out.play.PacketOutSpawnPlayer
 import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateAttributes
+import org.kryptonmc.krypton.util.ImmutableLists
 import java.util.concurrent.ConcurrentHashMap
 
 open class EntityViewingSystem<out T : KryptonEntity> private constructor(protected val entity: T) {
@@ -65,13 +67,13 @@ open class EntityViewingSystem<out T : KryptonEntity> private constructor(protec
 
         override fun addViewer(viewer: KryptonPlayer): Boolean {
             if (viewer === entity) return false
-            viewer.connection.send(PacketOutPlayerInfo(PacketOutPlayerInfo.Action.ADD_PLAYER, entity))
+            viewer.connection.send(PacketOutPlayerInfoUpdate.createPlayerInitializing(ImmutableLists.of(entity)))
             return super.addViewer(viewer)
         }
 
         override fun removeViewer(viewer: KryptonPlayer): Boolean {
             if (viewer === entity || !super.removeViewer(viewer)) return false
-            viewer.connection.send(PacketOutPlayerInfo(PacketOutPlayerInfo.Action.REMOVE_PLAYER, entity))
+            viewer.connection.send(PacketOutPlayerInfoRemove(entity))
             return true
         }
 

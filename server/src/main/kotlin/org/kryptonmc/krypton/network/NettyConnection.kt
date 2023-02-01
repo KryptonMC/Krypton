@@ -128,6 +128,8 @@ class NettyConnection(private val server: KryptonServer) : SimpleChannelInboundH
         channel.pipeline().addBefore(GroupedPacketHandler.NETTY_NAME, PacketEncrypter.NETTY_NAME, encrypter)
     }
 
+    fun inPlayState(): Boolean = handler is PlayPacketHandler
+
     fun playHandler(): PlayPacketHandler =
         checkNotNull(handler as? PlayPacketHandler) { "Attempted to use handler as play handler before the handler was changed! This is a bug!" }
 

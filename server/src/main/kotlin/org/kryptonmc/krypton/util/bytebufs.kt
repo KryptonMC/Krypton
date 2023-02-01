@@ -54,6 +54,7 @@ import org.kryptonmc.krypton.registry.holder.Holder
 import org.kryptonmc.krypton.util.crypto.Crypto
 import org.kryptonmc.krypton.util.hit.BlockHitResult
 import org.kryptonmc.krypton.util.map.IntBiMap
+import org.kryptonmc.krypton.util.math.Maths
 import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.EndTag
 import org.kryptonmc.nbt.io.TagCompression
@@ -64,6 +65,9 @@ import org.kryptonmc.serialization.nbt.NbtOps
 import java.io.IOException
 import java.security.PublicKey
 import java.time.Instant
+import java.util.Arrays
+import java.util.BitSet
+import java.util.EnumSet
 import java.util.UUID
 import kotlin.math.min
 
@@ -205,9 +209,15 @@ fun ByteBuf.writeString(value: String) {
 
 fun ByteBuf.readVarIntByteArray(): ByteArray = readAvailableBytes(readVarInt())
 
+fun ByteBuf.readVarIntByteArray(max: Int): ByteArray {
+    val length = readVarInt()
+    if (length > max) throw DecoderException("Byte array too long! Expected maximum length of $max, got length of $length!")
+    return readAvailableBytes(length)
+}
+
 fun ByteBuf.readAvailableBytes(length: Int): ByteArray {
     val bytes = ByteArray(length)
-    readBytes(bytes, 0, length)
+    readBytes(bytes)
     return bytes
 }
 
@@ -346,6 +356,49 @@ fun ByteBuf.writeEnum(enum: Enum<*>) {
     writeVarInt(enum.ordinal)
 }
 
+fun <E : Enum<E>> ByteBuf.readEnumSet(type: Class<E>): EnumSet<E> {
+    val constants = type.enumConstants
+    val bits = readFixedBitSet(constants.size)
+
+    val result = EnumSet.noneOf(type)
+    for (i in constants.indices) {
+        if (bits.get(i)) result.add(constants[i])
+    }
+    return result
+}
+
+fun <E : Enum<E>> ByteBuf.writeEnumSet(set: EnumSet<E>, type: Class<E>) {
+    val constants = type.enumConstants
+    val bits = BitSet(constants.size)
+    for (i in constants.indices) {
+        bits.set(i, set.contains(constants[i]))
+    }
+    writeFixedBitSet(bits, constants.size)
+}
+
+inline fun <reified E : Enum<E>> ByteBuf.readEnumSet(): EnumSet<E> = readEnumSet(E::class.java)
+
+inline fun <reified E : Enum<E>> ByteBuf.writeEnumSet(set: EnumSet<E>) {
+    writeEnumSet(set, E::class.java)
+}
+
+fun ByteBuf.readBitSet(): BitSet = BitSet.valueOf(readLongArray())
+
+fun ByteBuf.readFixedBitSet(fixedBits: Int): BitSet {
+    val bytes = ByteArray(Maths.positiveCeilDivide(fixedBits, 8))
+    readBytes(bytes)
+    return BitSet.valueOf(bytes)
+}
+
+fun ByteBuf.writeBitSet(set: BitSet) {
+    writeLongArray(set.toLongArray())
+}
+
+fun ByteBuf.writeFixedBitSet(set: BitSet, fixedBits: Int) {
+    if (set.length() > fixedBits) throw EncoderException("BitSet $set is larger than expected fixed bit size $fixedBits!")
+    writeBytes(Arrays.copyOf(set.toByteArray(), Maths.positiveCeilDivide(fixedBits, 8)))
+}
+
 inline fun <E> ByteBuf.writeCollection(collection: Collection<E>, action: (E) -> Unit) {
     writeVarInt(collection.size)
     collection.forEach(action)
@@ -398,6 +451,12 @@ fun ByteBuf.writeGameProfile(profile: GameProfile) {
 }
 
 fun ByteBuf.readGameProfile(): GameProfile = KryptonGameProfile.full(readUUID(), readString(), readPersistentList(ByteBuf::readProfileProperty))
+
+fun ByteBuf.writeProfileProperties(properties: Collection<ProfileProperty>) {
+    writeCollection(properties, ::writeProfileProperty)
+}
+
+fun ByteBuf.readProfileProperties(): List<ProfileProperty> = readList(ByteBuf::readProfileProperty)
 
 fun ByteBuf.writeProfileProperty(property: ProfileProperty) {
     writeString(property.name)
@@ -483,6 +542,10 @@ fun ByteBuf.readPublicKey(): PublicKey {
     } catch (exception: Exception) {
         throw DecoderException("Failed to decode public key!", exception)
     }
+}
+
+fun ByteBuf.writePublicKey(key: PublicKey) {
+    writeVarIntByteArray(key.encoded)
 }
 
 fun ByteBuf.readBlockHitResult(): BlockHitResult {

@@ -24,7 +24,7 @@ import org.apache.logging.log4j.LogManager
 import org.kryptonmc.api.registry.Registry
 import org.kryptonmc.api.resource.ResourceKey
 import org.kryptonmc.api.resource.ResourceKeys
-import org.kryptonmc.krypton.network.chat.ChatType
+import org.kryptonmc.krypton.network.chat.RichChatType
 import org.kryptonmc.krypton.pack.resources.ResourceManager
 import org.kryptonmc.krypton.registry.KryptonRegistry
 import org.kryptonmc.krypton.registry.KryptonSimpleRegistry
@@ -50,7 +50,7 @@ object RegistryDataLoader {
     val WORLD_GENERATION_REGISTRIES: List<RegistryData<*>> = ImmutableLists.of(
         RegistryData(KryptonResourceKeys.DIMENSION_TYPE, KryptonDimensionType.DIRECT_CODEC),
         RegistryData(ResourceKeys.BIOME, KryptonBiome.DIRECT_CODEC),
-        RegistryData(KryptonResourceKeys.CHAT_TYPE, ChatType.CODEC)
+        RegistryData(KryptonResourceKeys.CHAT_TYPE, RichChatType.CODEC)
     )
     // TODO: Uncomment this when WorldDimension exists
 //    @JvmField

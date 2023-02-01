@@ -20,28 +20,39 @@ package org.kryptonmc.krypton.command.argument
 
 import io.netty.buffer.ByteBuf
 import org.kryptonmc.krypton.network.Writable
-import org.kryptonmc.krypton.util.readMap
+import org.kryptonmc.krypton.network.chat.MessageSignature
+import org.kryptonmc.krypton.util.ByteBufExtras
+import org.kryptonmc.krypton.util.readCollection
 import org.kryptonmc.krypton.util.readString
-import org.kryptonmc.krypton.util.readVarIntByteArray
-import org.kryptonmc.krypton.util.writeMap
+import org.kryptonmc.krypton.util.writeCollection
 import org.kryptonmc.krypton.util.writeString
-import org.kryptonmc.krypton.util.writeVarIntByteArray
 
 @JvmRecord
-data class ArgumentSignatures(val salt: Long, val signatures: Map<String, ByteArray>) : Writable {
+data class ArgumentSignatures(val entries: List<Entry>) : Writable {
 
-    constructor(buf: ByteBuf) : this(buf.readLong(), buf.readMap({ buf.readString(MAX_ARGUMENT_NAME_LENGTH) }, ByteBuf::readVarIntByteArray))
+    constructor(buf: ByteBuf) : this(buf.readCollection(ByteBufExtras.limitValue(::ArrayList, MAX_ARGUMENT_COUNT), ::Entry))
 
-    fun get(argument: String): ByteArray? = signatures.get(argument)
+    fun get(name: String): MessageSignature? = entries.firstOrNull { it.name == name }?.signature
 
     override fun write(buf: ByteBuf) {
-        buf.writeLong(salt)
-        buf.writeMap(signatures, { _, value -> buf.writeString(value, MAX_ARGUMENT_NAME_LENGTH) }, ByteBuf::writeVarIntByteArray)
+        buf.writeCollection(entries) { it.write(buf) }
+    }
+
+    @JvmRecord
+    data class Entry(val name: String, val signature: MessageSignature) : Writable {
+
+        constructor(buf: ByteBuf) : this(buf.readString(MAX_ARGUMENT_NAME_LENGTH), MessageSignature.read(buf))
+
+        override fun write(buf: ByteBuf) {
+            buf.writeString(name, MAX_ARGUMENT_NAME_LENGTH)
+            MessageSignature.write(buf, signature)
+        }
     }
 
     companion object {
 
         // This is from vanilla
+        private const val MAX_ARGUMENT_COUNT = 8
         private const val MAX_ARGUMENT_NAME_LENGTH = 16
     }
 }

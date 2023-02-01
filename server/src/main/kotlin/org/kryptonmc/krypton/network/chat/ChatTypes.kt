@@ -19,35 +19,47 @@
 package org.kryptonmc.krypton.network.chat
 
 import net.kyori.adventure.key.Key
-import org.kryptonmc.krypton.registry.KryptonDynamicRegistries
+import org.kryptonmc.api.resource.ResourceKey
 import org.kryptonmc.krypton.registry.KryptonRegistries
+import org.kryptonmc.krypton.registry.KryptonRegistry
+import org.kryptonmc.krypton.resource.KryptonResourceKey
+import org.kryptonmc.krypton.resource.KryptonResourceKeys
 
 object ChatTypes {
 
-    private val DEFAULT_DECORATION = ChatTypeDecoration.withSender("chat.type.text")
-    private val DEFAULT_NARRATION = ChatTypeDecoration.withSender("chat.type.text.narrate")
-
     @JvmField
-    val CHAT: ChatType = register("chat", DEFAULT_DECORATION, DEFAULT_NARRATION)
+    val CHAT: ResourceKey<RichChatType> = create("chat")
     @JvmField
-    val SAY_COMMAND: ChatType = register("say_command", ChatTypeDecoration.withSender("chat.type.announcement"), DEFAULT_NARRATION)
+    val SAY_COMMAND: ResourceKey<RichChatType> = create("say_command")
     @JvmField
-    val INCOMING_MESSAGE_COMMAND: ChatType =
-        register("msg_command_incoming", ChatTypeDecoration.incomingDirectMessage("commands.message.display.incoming"), DEFAULT_NARRATION)
+    val MESSAGE_COMMAND_INCOMING: ResourceKey<RichChatType> = create("msg_command_incoming")
     @JvmField
-    val OUTGOING_MESSAGE_COMMAND: ChatType =
-        register("msg_command_outgoing", ChatTypeDecoration.outgoingDirectMessage("commands.message.display.outgoing"), DEFAULT_NARRATION)
+    val MESSAGE_COMMAND_OUTGOING: ResourceKey<RichChatType> = create("msg_command_outgoing")
     @JvmField
-    val INCOMING_TEAM_MESSAGE_COMMAND: ChatType =
-        register("team_msg_command_incoming", ChatTypeDecoration.teamMessage("chat.type.team.text"), DEFAULT_NARRATION)
+    val TEAM_MESSAGE_COMMAND_INCOMING: ResourceKey<RichChatType> = create("team_msg_command_incoming")
     @JvmField
-    val OUTGOING_TEAM_MESSAGE_COMMAND: ChatType =
-        register("team_msg_command_outgoing", ChatTypeDecoration.teamMessage("chat.type.team.sent"), DEFAULT_NARRATION)
+    val TEAM_MESSAGE_COMMAND_OUTGOING: ResourceKey<RichChatType> = create("team_msg_command_outgoing")
     @JvmField
-    val EMOTE_COMMAND: ChatType =
-        register("emote_command", ChatTypeDecoration.withSender("chat.type.emote"), ChatTypeDecoration.withSender("chat.type.emote"))
+    val EMOTE_COMMAND: ResourceKey<RichChatType> = create("emote_command")
 
     @JvmStatic
-    private fun register(name: String, chat: ChatTypeDecoration, narration: ChatTypeDecoration): ChatType =
-        KryptonRegistries.register(KryptonDynamicRegistries.CHAT_TYPE, Key.key(name), ChatType(chat, narration))
+    private fun create(key: String): ResourceKey<RichChatType> = KryptonResourceKey.of(KryptonResourceKeys.CHAT_TYPE, Key.key(key))
+
+    @JvmStatic
+    fun bootstrap(registry: KryptonRegistry<RichChatType>) {
+        val defaultDecoration = ChatTypeDecoration.withSender("chat.type.text")
+        val defaultNarration = ChatTypeDecoration.withSender("chat.type.text.narrate")
+        KryptonRegistries.register(registry, CHAT, RichChatType(defaultDecoration, defaultNarration))
+        KryptonRegistries.register(registry, SAY_COMMAND, RichChatType(ChatTypeDecoration.withSender("chat.type.announcement"), defaultNarration))
+        KryptonRegistries.register(registry, MESSAGE_COMMAND_INCOMING,
+            RichChatType(ChatTypeDecoration.incomingDirectMessage("commands.message.display.incoming"), defaultNarration))
+        KryptonRegistries.register(registry, MESSAGE_COMMAND_OUTGOING,
+            RichChatType(ChatTypeDecoration.outgoingDirectMessage("commands.message.display.outgoing"), defaultNarration))
+        KryptonRegistries.register(registry, TEAM_MESSAGE_COMMAND_INCOMING,
+            RichChatType(ChatTypeDecoration.teamMessage("chat.type.team.text"), defaultNarration))
+        KryptonRegistries.register(registry, TEAM_MESSAGE_COMMAND_OUTGOING,
+            RichChatType(ChatTypeDecoration.teamMessage("chat.type.team.sent"), defaultNarration))
+        KryptonRegistries.register(registry, EMOTE_COMMAND,
+            RichChatType(ChatTypeDecoration.withSender("chat.type.emote"), ChatTypeDecoration.withSender("chat.type.emote")))
+    }
 }

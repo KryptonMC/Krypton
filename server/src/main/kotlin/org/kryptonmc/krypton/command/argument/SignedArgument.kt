@@ -16,21 +16,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.network.chat
+package org.kryptonmc.krypton.command.argument
 
-object Chat {
+import com.mojang.brigadier.arguments.ArgumentType
 
-    private const val SECTION_SIGN = '§'
-    private const val DELETE_CHAR = '\u007F'
-
-    @JvmStatic
-    fun isValidMessage(message: String): Boolean {
-        for (i in message.indices) {
-            if (!isValidCharacter(message[i])) return false
-        }
-        return true
-    }
-
-    @JvmStatic
-    fun isValidCharacter(char: Char): Boolean = char != SECTION_SIGN && char >= ' ' && char != DELETE_CHAR
-}
+interface SignedArgument<T> : ArgumentType<T>

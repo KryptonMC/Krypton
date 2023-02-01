@@ -28,10 +28,15 @@ import org.kryptonmc.krypton.packet.`in`.login.PacketInPluginResponse
 import org.kryptonmc.krypton.packet.`in`.play.PacketInAbilities
 import org.kryptonmc.krypton.packet.`in`.play.PacketInSwingArm
 import org.kryptonmc.krypton.packet.`in`.play.PacketInSetHeldItem
-import org.kryptonmc.krypton.packet.`in`.play.PacketInChatMessage
+import org.kryptonmc.krypton.packet.out.play.PacketOutChatSuggestions
+import org.kryptonmc.krypton.packet.out.play.PacketOutDeleteChat
+import org.kryptonmc.krypton.packet.out.play.PacketOutDisguisedChat
+import org.kryptonmc.krypton.packet.out.play.PacketOutPlayerInfoRemove
+import org.kryptonmc.krypton.packet.`in`.play.PacketInChat
 import org.kryptonmc.krypton.packet.`in`.play.PacketInClientInformation
 import org.kryptonmc.krypton.packet.`in`.play.PacketInClientCommand
 import org.kryptonmc.krypton.packet.`in`.play.PacketInChatCommand
+import org.kryptonmc.krypton.packet.`in`.play.PacketInChatSessionUpdate
 import org.kryptonmc.krypton.packet.`in`.play.PacketInSetCreativeModeSlot
 import org.kryptonmc.krypton.packet.`in`.play.PacketInPlayerCommand
 import org.kryptonmc.krypton.packet.`in`.play.PacketInQueryEntityTag
@@ -84,8 +89,8 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutTagQueryResponse
 import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateObjectives
 import org.kryptonmc.krypton.packet.out.play.PacketOutOpenBook
 import org.kryptonmc.krypton.packet.out.play.PacketOutParticle
-import org.kryptonmc.krypton.packet.out.play.PacketOutPlayerChatMessage
-import org.kryptonmc.krypton.packet.out.play.PacketOutPlayerInfo
+import org.kryptonmc.krypton.packet.out.play.PacketOutPlayerChat
+import org.kryptonmc.krypton.packet.out.play.PacketOutPlayerInfoUpdate
 import org.kryptonmc.krypton.packet.out.play.PacketOutSetTabListHeaderAndFooter
 import org.kryptonmc.krypton.packet.out.play.PacketOutSynchronizePlayerPosition
 import org.kryptonmc.krypton.packet.out.play.PacketOutPluginMessage
@@ -105,7 +110,7 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutSpawnPlayer
 import org.kryptonmc.krypton.packet.out.play.PacketOutSetDefaultSpawnPosition
 import org.kryptonmc.krypton.packet.out.play.PacketOutStopSound
 import org.kryptonmc.krypton.packet.out.play.PacketOutSetSubtitleText
-import org.kryptonmc.krypton.packet.out.play.PacketOutSystemChatMessage
+import org.kryptonmc.krypton.packet.out.play.PacketOutSystemChat
 import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateTags
 import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateTeams
 import org.kryptonmc.krypton.packet.out.play.PacketOutTeleportEntity
@@ -165,7 +170,7 @@ object PacketRegistry {
         // Play
         registerInbound(PacketState.PLAY, 0x00) { PacketInConfirmTeleportation(it) }
         registerInbound(PacketState.PLAY, 0x04) { PacketInChatCommand(it) }
-        registerInbound(PacketState.PLAY, 0x05) { PacketInChatMessage(it) }
+        registerInbound(PacketState.PLAY, 0x05) { PacketInChat(it) }
         registerInbound(PacketState.PLAY, 0x06) { PacketInClientCommand(it) }
         registerInbound(PacketState.PLAY, 0x07) { PacketInClientInformation(it) }
         registerInbound(PacketState.PLAY, 0x08) { PacketInCommandSuggestionsRequest(it) }
@@ -181,6 +186,7 @@ object PacketRegistry {
         registerInbound(PacketState.PLAY, 0x1C) { PacketInPlayerAction(it) }
         registerInbound(PacketState.PLAY, 0x1D) { PacketInPlayerCommand(it) }
         registerInbound(PacketState.PLAY, 0x1E) { PacketInPlayerInput(it) }
+        registerInbound(PacketState.PLAY, 0x20) { PacketInChatSessionUpdate(it) }
         registerInbound(PacketState.PLAY, 0x24) { PacketInResourcePack(it) }
         registerInbound(PacketState.PLAY, 0x28) { PacketInSetHeldItem(it) }
         registerInbound(PacketState.PLAY, 0x2B) { PacketInSetCreativeModeSlot(it) }
@@ -204,8 +210,11 @@ object PacketRegistry {
         registerOutbound<PacketOutSetContainerContent>(0x10)
         registerOutbound<PacketOutSetContainerSlot>(0x12)
         registerOutbound<PacketOutSetCooldown>(0x13)
+        registerOutbound<PacketOutChatSuggestions>(0x14)
         registerOutbound<PacketOutPluginMessage>(0x15)
+        registerOutbound<PacketOutDeleteChat>(0x16)
         registerOutbound<PacketOutDisconnect>(0x17)
+        registerOutbound<PacketOutDisguisedChat>(0x18)
         registerOutbound<PacketOutEntityEvent>(0x19)
         registerOutbound<PacketOutUnloadChunk>(0x1B)
         registerOutbound<PacketOutGameEvent>(0x1C)
@@ -221,8 +230,9 @@ object PacketRegistry {
         registerOutbound<PacketOutUpdateEntityRotation>(0x29)
         registerOutbound<PacketOutOpenBook>(0x2B)
         registerOutbound<PacketOutAbilities>(0x30)
-        registerOutbound<PacketOutPlayerChatMessage>(0x31)
-        registerOutbound<PacketOutPlayerInfo>(0x36)
+        registerOutbound<PacketOutPlayerChat>(0x31)
+        registerOutbound<PacketOutPlayerInfoRemove>(0x35)
+        registerOutbound<PacketOutPlayerInfoUpdate>(0x36)
         registerOutbound<PacketOutSynchronizePlayerPosition>(0x38)
         registerOutbound<PacketOutUpdateRecipeBook>(0x39)
         registerOutbound<PacketOutRemoveEntities>(0x3A)
@@ -248,7 +258,7 @@ object PacketRegistry {
         registerOutbound<PacketOutEntitySoundEffect>(0x5D)
         registerOutbound<PacketOutSoundEffect>(0x5E)
         registerOutbound<PacketOutStopSound>(0x5F)
-        registerOutbound<PacketOutSystemChatMessage>(0x60)
+        registerOutbound<PacketOutSystemChat>(0x60)
         registerOutbound<PacketOutSetTabListHeaderAndFooter>(0x61)
         registerOutbound<PacketOutTagQueryResponse>(0x62)
         registerOutbound<PacketOutTeleportEntity>(0x64)

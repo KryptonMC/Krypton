@@ -26,9 +26,13 @@ import org.kryptonmc.api.scoreboard.Objective
 import org.kryptonmc.api.statistic.CustomStatistics
 import org.kryptonmc.api.world.World
 import org.kryptonmc.krypton.KryptonServer
+import org.kryptonmc.krypton.command.CommandSourceStack
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.event.player.KryptonJoinEvent
 import org.kryptonmc.krypton.event.player.KryptonQuitEvent
+import org.kryptonmc.krypton.network.chat.RichChatType
+import org.kryptonmc.krypton.network.chat.OutgoingChatMessage
+import org.kryptonmc.krypton.network.chat.PlayerChatMessage
 import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.packet.out.play.GameEventTypes
 import org.kryptonmc.krypton.packet.out.play.PacketOutAbilities
@@ -37,7 +41,7 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutEntityEvent
 import org.kryptonmc.krypton.packet.out.play.PacketOutGameEvent
 import org.kryptonmc.krypton.packet.out.play.PacketOutInitializeWorldBorder
 import org.kryptonmc.krypton.packet.out.play.PacketOutLogin
-import org.kryptonmc.krypton.packet.out.play.PacketOutPlayerInfo
+import org.kryptonmc.krypton.packet.out.play.PacketOutPlayerInfoUpdate
 import org.kryptonmc.krypton.packet.out.play.PacketOutPluginMessage
 import org.kryptonmc.krypton.packet.out.play.PacketOutResourcePack
 import org.kryptonmc.krypton.packet.out.play.PacketOutSetContainerContent
@@ -59,6 +63,7 @@ import org.kryptonmc.krypton.registry.dynamic.RegistryAccess
 import org.kryptonmc.krypton.registry.dynamic.RegistryLayer
 import org.kryptonmc.krypton.registry.network.RegistrySerialization
 import org.kryptonmc.krypton.tags.TagSerializer
+import org.kryptonmc.krypton.util.ImmutableLists
 import org.kryptonmc.krypton.util.executor.daemonThreadFactory
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.krypton.world.biome.BiomeManager
@@ -71,11 +76,14 @@ import org.kryptonmc.serialization.Dynamic
 import org.kryptonmc.serialization.nbt.NbtOps
 import java.nio.file.Files
 import java.nio.file.Path
+import java.time.Instant
 import java.util.UUID
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.CopyOnWriteArrayList
 import java.util.concurrent.Executors
+import java.util.function.Function
+import java.util.function.Predicate
 
 class PlayerManager(
     private val server: KryptonServer,
@@ -180,9 +188,10 @@ class PlayerManager(
             return@thenAcceptAsync
         }
         val joinMessage = joinResult.message ?: getDefaultJoinMessage(player, joinResult.hasJoinedBefore)
-        server.sendMessage(joinMessage)
+        broadcastSystemMessage(joinMessage, false)
         player.connection.send(PacketOutSynchronizePlayerPosition.fromPlayer(player))
-        player.connection.send(PacketOutPlayerInfo(PacketOutPlayerInfo.Action.ADD_PLAYER, player))
+        player.connection.send(PacketOutPlayerInfoUpdate.createPlayerInitializing(players))
+        server.connectionManager.sendGroupedPacket(players, PacketOutPlayerInfoUpdate.createPlayerInitializing(ImmutableLists.of(player)))
         world.spawnPlayer(player)
 
         // Send the initial chunk stream
@@ -233,6 +242,43 @@ class PlayerManager(
         broadcast(packet, world, pos.x.toDouble(), pos.y.toDouble(), pos.z.toDouble(), radius, except)
     }
 
+    fun broadcastSystemMessage(message: Component, overlay: Boolean) {
+        broadcastSystemMessage(message, { message }, overlay)
+    }
+
+    fun broadcastSystemMessage(message: Component, messageExtractor: Function<KryptonPlayer, Component?>, overlay: Boolean) {
+        server.console.sendSystemMessage(message)
+        players.forEach { player ->
+            messageExtractor.apply(player)?.let { player.sendSystemMessage(it, overlay) }
+        }
+    }
+
+    fun broadcastChatMessage(message: PlayerChatMessage, source: CommandSourceStack, type: RichChatType.Bound) {
+        broadcastChatMessage(message, { source.shouldFilterMessageTo(it) }, source.getPlayer(), type)
+    }
+
+    fun broadcastChatMessage(message: PlayerChatMessage, source: KryptonPlayer, type: RichChatType.Bound) {
+        broadcastChatMessage(message, { source.shouldFilterMessageTo(it) }, source, type)
+    }
+
+    private fun broadcastChatMessage(message: PlayerChatMessage, filterPredicate: Predicate<KryptonPlayer>, source: KryptonPlayer?,
+                                     type: RichChatType.Bound) {
+        val trusted = verifyChatTrusted(message)
+        server.console.logChatMessage(message.decoratedContent(), type, if (trusted) null else "Not Secure")
+        val outgoingMessage = OutgoingChatMessage.create(message)
+
+        var fullyFiltered = false
+        players.forEach {
+            val filter = filterPredicate.test(it)
+            it.sendChatMessage(outgoingMessage, filter, type)
+            fullyFiltered = fullyFiltered or (filter && message.isFullyFiltered())
+        }
+
+        if (fullyFiltered && source != null) source.sendSystemMessage(CHAT_FILTERED_FULL)
+    }
+
+    private fun verifyChatTrusted(message: PlayerChatMessage): Boolean = message.hasSignature() && !message.hasExpired(Instant.now())
+
     fun disconnectAll() {
         players.forEach { it.disconnect(DisconnectMessages.SERVER_SHUTDOWN) }
     }
@@ -278,6 +324,7 @@ class PlayerManager(
         private val BRAND_KEY = Key.key("brand")
         // The word "Krypton" encoded in to UTF-8 and then prefixed with the length, which in this case is 7.
         private val BRAND_MESSAGE = byteArrayOf(7, 75, 114, 121, 112, 116, 111, 110)
+        private val CHAT_FILTERED_FULL = Component.translatable("chat.filtered_full")
 
         private const val ENABLE_REDUCED_DEBUG_SCREEN = 22
         private const val DISABLE_REDUCED_DEBUG_SCREEN = 23

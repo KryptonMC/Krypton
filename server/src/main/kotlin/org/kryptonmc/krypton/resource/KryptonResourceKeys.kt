@@ -27,7 +27,7 @@ import org.kryptonmc.krypton.entity.KryptonEntityType
 import org.kryptonmc.krypton.entity.ai.memory.MemoryKey
 import org.kryptonmc.krypton.item.data.Instrument
 import org.kryptonmc.krypton.item.KryptonItemType
-import org.kryptonmc.krypton.network.chat.ChatType
+import org.kryptonmc.krypton.network.chat.RichChatType
 import org.kryptonmc.krypton.registry.WritableRegistry
 import org.kryptonmc.krypton.util.provider.IntProviderType
 import org.kryptonmc.krypton.world.block.KryptonBlock
@@ -58,7 +58,7 @@ object KryptonResourceKeys {
     @JvmField
     val INSTRUMENTS: ResourceKey<out Registry<Instrument>> = minecraft("instrument")
     @JvmField
-    val CHAT_TYPE: ResourceKey<out Registry<ChatType>> = minecraft("chat_type")
+    val CHAT_TYPE: ResourceKey<out Registry<RichChatType>> = minecraft("chat_type")
     @JvmField
     val WORLD: ResourceKey<out Registry<World>> = minecraft("dimension")
     @JvmField
