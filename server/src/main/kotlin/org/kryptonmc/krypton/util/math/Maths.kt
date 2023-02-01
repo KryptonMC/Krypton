@@ -60,9 +60,9 @@ object Maths {
      * @return a [ChunkPos] containing the calculated position in the spiral.
      */
     @JvmStatic
-    fun chunkInSpiral(id: Int, xOffset: Int = 0, zOffset: Int = 0): Long {
+    fun chunkInSpiral(id: Int, xOffset: Int = 0, zOffset: Int = 0): ChunkPos {
         // if the id is 0 then we know we're in the centre
-        if (id == 0) return ChunkPos.pack(0 + xOffset, 0 + zOffset)
+        if (id == 0) return ChunkPos(0 + xOffset, 0 + zOffset)
 
         val index = id - 1
 
@@ -81,11 +81,11 @@ object Maths {
 
         return when (a / (radius * 2)) {
             // find the face (0 = top, 1 = right, 2 = bottom, 3 = left)
-            0 -> ChunkPos.pack(a - radius + xOffset, -radius + zOffset)
-            1 -> ChunkPos.pack(radius + xOffset, a % en - radius + zOffset)
-            2 -> ChunkPos.pack(radius - a % en + xOffset, radius + zOffset)
-            3 -> ChunkPos.pack(-radius + xOffset, radius - a % en + zOffset)
-            else -> ChunkPos.ZERO.pack()
+            0 -> ChunkPos(a - radius + xOffset, -radius + zOffset)
+            1 -> ChunkPos(radius + xOffset, a % en - radius + zOffset)
+            2 -> ChunkPos(radius - a % en + xOffset, radius + zOffset)
+            3 -> ChunkPos(-radius + xOffset, radius - a % en + zOffset)
+            else -> ChunkPos.ZERO
         }
     }
 

@@ -24,14 +24,12 @@ import it.unimi.dsi.fastutil.longs.LongSet
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.packet.out.play.PacketOutSetCenterChunk
 import org.kryptonmc.krypton.packet.out.play.PacketOutUnloadChunk
-import org.kryptonmc.krypton.coordinate.SectionPos
 import org.kryptonmc.krypton.coordinate.ChunkPos
 import kotlin.math.abs
 
 class PlayerChunkViewingSystem(private val player: KryptonPlayer) {
 
-    private var previousCentralX = 0
-    private var previousCentralZ = 0
+    private var previousCenter = ChunkPos.ZERO
     private val visibleChunks = LongArraySet()
 
     fun loadInitialChunks() {
@@ -46,29 +44,28 @@ class PlayerChunkViewingSystem(private val player: KryptonPlayer) {
         var previousChunks: LongSet? = null
         val newChunks = LongArrayList()
 
-        val oldCentralX = previousCentralX
-        val oldCentralZ = previousCentralZ
-        val centralX = SectionPos.blockToSection(player.position.x)
-        val centralZ = SectionPos.blockToSection(player.position.z)
+        val oldCenter = previousCenter
+        val newCenter = ChunkPos.forEntityPosition(player.position)
+        previousCenter = newCenter
         val radius = player.server.config.world.viewDistance
 
         if (firstLoad) {
-            for (x in centralX - radius..centralX + radius) {
-                for (z in centralZ - radius..centralZ + radius) {
+            for (x in newCenter.x - radius..newCenter.x + radius) {
+                for (z in newCenter.z - radius..newCenter.z + radius) {
                     newChunks.add(ChunkPos.pack(x, z))
                 }
             }
-        } else if (abs(centralX - previousCentralX) > radius || abs(centralZ - previousCentralZ) > radius) {
+        } else if (abs(newCenter.x - oldCenter.x) > radius || abs(newCenter.z - oldCenter.z) > radius) {
             visibleChunks.clear()
-            for (x in centralX - radius..centralX + radius) {
-                for (z in centralZ - radius..centralZ + radius) {
+            for (x in newCenter.x - radius..newCenter.x + radius) {
+                for (z in newCenter.z - radius..newCenter.z + radius) {
                     newChunks.add(ChunkPos.pack(x, z))
                 }
             }
-        } else if (previousCentralX != centralX || previousCentralZ != centralZ) {
+        } else if (oldCenter.x != newCenter.x || oldCenter.z != newCenter.z) {
             previousChunks = LongArraySet(visibleChunks)
-            for (x in centralX - radius..centralX + radius) {
-                for (z in centralZ - radius..centralZ + radius) {
+            for (x in newCenter.x - radius..newCenter.x + radius) {
+                for (z in newCenter.z - radius..newCenter.z + radius) {
                     val pos = ChunkPos.pack(x, z)
                     if (visibleChunks.contains(pos)) previousChunks.remove(pos) else newChunks.add(pos)
                 }
@@ -76,9 +73,6 @@ class PlayerChunkViewingSystem(private val player: KryptonPlayer) {
         } else {
             return
         }
-
-        previousCentralX = centralX
-        previousCentralZ = centralZ
 
         newChunks.sortWith { a, b ->
             var dx = 16 * a.toInt() + 8 - player.position.x
@@ -91,21 +85,21 @@ class PlayerChunkViewingSystem(private val player: KryptonPlayer) {
         }
 
         visibleChunks.addAll(newChunks)
-        val oldX = if (firstLoad) centralX else oldCentralX
-        val oldZ = if (firstLoad) centralZ else oldCentralZ
-        player.world.chunkManager.addPlayer(player, centralX, centralZ, oldX, oldZ, radius).thenRun {
-            player.connection.send(PacketOutSetCenterChunk(centralX, centralZ))
-            newChunks.forEach {
-                val chunk = player.world.chunkManager.getChunk(it) ?: return@forEach
-                player.connection.write(chunk.cachedPacket)
-            }
+        val oldPosForPlayer = if (firstLoad) newCenter else oldCenter
 
-            if (previousChunks == null) return@thenRun
-            previousChunks.forEach {
-                player.connection.send(PacketOutUnloadChunk(it.toInt(), (it shr 32).toInt()))
-                visibleChunks.remove(it)
-            }
-            previousChunks.clear()
+        player.world.chunkManager.updatePlayerPosition(player, oldPosForPlayer, newCenter, radius)
+
+        player.connection.send(PacketOutSetCenterChunk(newCenter.x, newCenter.z))
+        newChunks.forEach {
+            val chunk = player.world.chunkManager.getChunk(ChunkPos.unpackX(it), ChunkPos.unpackZ(it)) ?: return@forEach
+            player.connection.write(chunk.cachedPacket)
         }
+
+        if (previousChunks == null) return
+        previousChunks.forEach {
+            player.connection.send(PacketOutUnloadChunk(it.toInt(), (it shr 32).toInt()))
+            visibleChunks.remove(it)
+        }
+        previousChunks.clear()
     }
 }

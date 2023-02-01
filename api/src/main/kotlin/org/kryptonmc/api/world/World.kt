@@ -283,17 +283,12 @@ public interface World : BlockContainer, FluidContainer, BiomeContainer, BlockEn
      * a chunk loaded. If there is no chunk loaded at the coordinates, this
      * function simply returns.
      *
-     * If [force] is set to false and this chunk was not loaded using
-     * [loadChunk], this will also simply return. If it is set to true,
-     * however, the chunk will always be unloaded.
-     *
      * Like [loadChunk], these coordinates are **chunk** coordinates.
      *
      * @param x the X coordinate
      * @param z the Z coordinate
-     * @param force whether to force unload the chunk or not
      */
-    public fun unloadChunk(x: Int, z: Int, force: Boolean)
+    public fun unloadChunk(x: Int, z: Int)
 
     /**
      * Spawns an entity with the given [type] in this world at the given

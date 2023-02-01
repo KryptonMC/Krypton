@@ -126,7 +126,7 @@ class KryptonWorldManager(override val server: KryptonServer, private val worldF
         val listener = ChunkProgressListener(9)
         LOGGER.info("Preparing start region for dimension ${default.dimension.location}...")
         listener.tick()
-        default.chunkManager.addStartTicket(SectionPos.blockToSection(default.data.spawnX), SectionPos.blockToSection(default.data.spawnZ)) {
+        default.chunkManager.loadStartingArea(SectionPos.blockToSection(default.data.spawnX), SectionPos.blockToSection(default.data.spawnZ)) {
             listener.updateStatus(ChunkStatus.FULL)
         }
         listener.stop()

@@ -39,8 +39,6 @@ import org.kryptonmc.krypton.world.block.state.KryptonBlockState
 import org.kryptonmc.krypton.world.block.state.downcast
 import org.kryptonmc.krypton.coordinate.ChunkPos
 import org.kryptonmc.krypton.world.chunk.KryptonChunk
-import org.kryptonmc.krypton.world.chunk.ticket.Ticket
-import org.kryptonmc.krypton.world.chunk.ticket.TicketTypes
 import org.kryptonmc.krypton.world.dimension.KryptonDimensionType
 import org.kryptonmc.krypton.world.fluid.KryptonFluidState
 import org.kryptonmc.krypton.world.rule.WorldGameRules
@@ -108,10 +106,10 @@ interface BaseWorld : World, WorldAccessor, PacketGroupingAudience {
 
     override fun getChunk(position: Vec3i): KryptonChunk? = getChunk(position.x, position.y, position.z)
 
-    override fun loadChunk(x: Int, z: Int): KryptonChunk? = chunkManager.loadChunk(x, z, Ticket(TicketTypes.API_LOAD, 31, ChunkPos.pack(x, z)))
+    override fun loadChunk(x: Int, z: Int): KryptonChunk? = chunkManager.loadChunk(ChunkPos(x, z))
 
-    override fun unloadChunk(x: Int, z: Int, force: Boolean) {
-        chunkManager.unloadChunk(x, z, TicketTypes.API_LOAD, force)
+    override fun unloadChunk(x: Int, z: Int) {
+        chunkManager.unloadChunk(x, z)
     }
 
     override fun sendGroupedPacket(players: Collection<KryptonPlayer>, packet: Packet) {

@@ -18,6 +18,8 @@
  */
 package org.kryptonmc.krypton.coordinate
 
+import org.kryptonmc.api.util.Vec3d
+
 /**
  * Holds a pair of chunk coordinates (x and z).
  */
@@ -25,6 +27,8 @@ package org.kryptonmc.krypton.coordinate
 data class ChunkPos(val x: Int, val z: Int) {
 
     fun pack(): Long = pack(x, z)
+
+    override fun toString(): String = "($x, $z)"
 
     companion object {
 
@@ -39,5 +43,8 @@ data class ChunkPos(val x: Int, val z: Int) {
 
         @JvmStatic
         fun unpackZ(encoded: Long): Int = (encoded ushr 32 and 0xFFFFFFFFL).toInt()
+
+        @JvmStatic
+        fun forEntityPosition(position: Vec3d): ChunkPos = ChunkPos(SectionPos.blockToSection(position.x), SectionPos.blockToSection(position.z))
     }
 }

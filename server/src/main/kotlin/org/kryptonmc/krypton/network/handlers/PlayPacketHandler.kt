@@ -288,9 +288,7 @@ class PlayPacketHandler(
         val event = server.eventManager.fireSync(KryptonPlaceBlockEvent(player, state, packet.hand, position, face, isInside))
         if (!event.result.isAllowed) return
 
-        val chunkX = SectionPos.blockToSection(player.position.x)
-        val chunkZ = SectionPos.blockToSection(player.position.z)
-        val chunk = world.chunkManager.getChunk(ChunkPos.pack(chunkX, chunkZ)) ?: return
+        val chunk = world.chunkManager.getChunk(ChunkPos.forEntityPosition(player.position)) ?: return
         val existingBlock = chunk.getBlock(position)
         if (!existingBlock.eq(KryptonBlocks.AIR)) return
         chunk.setBlock(position, KryptonRegistries.BLOCK.get(player.inventory.mainHand.type.key()).defaultState, false)

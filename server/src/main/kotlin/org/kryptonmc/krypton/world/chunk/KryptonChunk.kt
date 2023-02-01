@@ -32,7 +32,6 @@ import org.kryptonmc.krypton.world.block.entity.KryptonBlockEntity
 import org.kryptonmc.krypton.world.block.state.KryptonBlockState
 import org.kryptonmc.krypton.world.chunk.data.ChunkSection
 import org.kryptonmc.krypton.world.chunk.data.ChunkStatus
-import org.kryptonmc.krypton.world.chunk.ticket.Ticket
 import org.kryptonmc.krypton.world.fluid.KryptonFluidState
 import org.kryptonmc.krypton.world.fluid.KryptonFluids
 import org.kryptonmc.nbt.CompoundTag
@@ -44,7 +43,6 @@ class KryptonChunk(
     sections: Array<ChunkSection?>,
     override var lastUpdate: Long,
     inhabitedTime: Long,
-    val ticket: Ticket<*>,
     val carvingMasks: Pair<ByteArray, ByteArray>,
     val structures: CompoundTag
 ) : ChunkAccessor(position, world, inhabitedTime, sections), Chunk {

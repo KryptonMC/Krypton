@@ -21,7 +21,6 @@ package org.kryptonmc.krypton.world.chunk
 import ca.spottedleaf.dataconverter.minecraft.datatypes.MCTypeRegistry
 import org.apache.logging.log4j.LogManager
 import java.util.EnumSet
-import java.util.concurrent.CompletableFuture
 import java.util.concurrent.ConcurrentHashMap
 import org.kryptonmc.api.world.biome.Biomes
 import org.kryptonmc.krypton.KryptonPlatform
@@ -32,15 +31,12 @@ import org.kryptonmc.krypton.coordinate.SectionPos
 import org.kryptonmc.krypton.util.executor.DefaultPoolUncaughtExceptionHandler
 import org.kryptonmc.krypton.util.executor.ThreadPoolBuilder
 import org.kryptonmc.krypton.util.executor.daemonThreadFactory
+import org.kryptonmc.krypton.util.math.Maths
 import org.kryptonmc.krypton.world.chunk.data.Heightmap
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.krypton.world.block.KryptonBlocks
 import org.kryptonmc.krypton.world.block.palette.PaletteHolder
 import org.kryptonmc.krypton.world.chunk.data.ChunkSection
-import org.kryptonmc.krypton.world.chunk.ticket.Ticket
-import org.kryptonmc.krypton.world.chunk.ticket.TicketManager
-import org.kryptonmc.krypton.world.chunk.ticket.TicketType
-import org.kryptonmc.krypton.world.chunk.ticket.TicketTypes
 import org.kryptonmc.krypton.world.region.RegionFileManager
 import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.ImmutableCompoundTag
@@ -52,6 +48,7 @@ import org.kryptonmc.nbt.buildCompound
 import org.kryptonmc.nbt.compound
 import space.vectrix.flare.fastutil.Long2ObjectSyncMap
 import java.util.function.BooleanSupplier
+import java.util.function.Consumer
 import java.util.function.LongFunction
 
 @Suppress("StringLiteralDuplication") // TODO: Refactor the serialization out of this class and use constants to fix this issue
@@ -59,62 +56,90 @@ class ChunkManager(private val world: KryptonWorld) : AutoCloseable {
 
     private val chunkMap = Long2ObjectSyncMap.hashmap<KryptonChunk>()
     private val playersByChunk = Long2ObjectSyncMap.hashmap<MutableSet<KryptonPlayer>>()
-    private val executor = ThreadPoolBuilder.fixed(2)
-        .factory(daemonThreadFactory("Chunk Loader #%d") { setUncaughtExceptionHandler(DefaultPoolUncaughtExceptionHandler(LOGGER)) })
-        .build()
-    private val ticketManager = TicketManager(this)
     private val regionFileManager = RegionFileManager(world.folder.resolve("region"), world.server.config.advanced.synchronizeChunkWrites)
 
     fun chunks(): Collection<KryptonChunk> = chunkMap.values
 
     fun getChunk(x: Int, z: Int): KryptonChunk? = chunkMap.get(ChunkPos.pack(x, z))
 
-    fun getChunk(position: Long): KryptonChunk? = chunkMap.get(position)
+    fun getChunk(position: ChunkPos): KryptonChunk? = chunkMap.get(position.pack())
 
-    internal fun removeChunk(position: Long) {
-        chunkMap.remove(position)
-    }
-
-    fun addStartTicket(centerX: Int, centerZ: Int, onLoad: () -> Unit) {
-        ticketManager.addTicket(centerX, centerZ, TicketTypes.START, 22, Unit, onLoad)
-    }
-
-    fun addPlayer(player: KryptonPlayer, x: Int, z: Int, oldX: Int, oldZ: Int, viewDistance: Int): CompletableFuture<Unit> = execute {
-        ticketManager.addPlayer(x, z, oldX, oldZ, player.uuid, viewDistance)
-        val pos = ChunkPos.pack(x, z)
-        val oldPos = ChunkPos.pack(oldX, oldZ)
-        if (pos == oldPos) {
-            if (!playersByChunk.containsKey(pos)) playersByChunk.computeIfAbsent(pos, LongFunction { ConcurrentHashMap.newKeySet() }).add(player)
-            return@execute // They haven't changed chunks
+    fun loadStartingArea(centerX: Int, centerZ: Int, onLoad: Consumer<KryptonChunk>) {
+        for (i in 0 until STARTING_AREA_SIZE) {
+            val pos = Maths.chunkInSpiral(i, centerX, centerZ)
+            val chunk = loadChunk(pos)
+            if (chunk != null) onLoad.accept(chunk)
         }
-        val oldSet = playersByChunk.get(oldPos)?.apply { remove(player) }
-        if (oldSet != null && oldSet.isEmpty()) playersByChunk.remove(oldPos)
-        playersByChunk.computeIfAbsent(pos, LongFunction { ConcurrentHashMap.newKeySet() }).add(player)
     }
 
-    private inline fun execute(crossinline action: () -> Unit): CompletableFuture<Unit> = CompletableFuture.supplyAsync({ action() }, executor)
+    fun updatePlayerPosition(player: KryptonPlayer, oldPos: ChunkPos, newPos: ChunkPos, viewDistance: Int) {
+        val chunksInRange = (viewDistance * 2 + 1) * (viewDistance * 2 + 1)
+        for (i in 0 until chunksInRange) {
+            val pos = Maths.chunkInSpiral(i, newPos.x, newPos.z)
+            if (getChunk(pos) != null) continue
+            loadChunk(pos)
+        }
 
-    fun removePlayer(player: KryptonPlayer, viewDistance: Int = world.server.config.world.viewDistance) {
-        val x = SectionPos.blockToSection(player.position.x)
-        val z = SectionPos.blockToSection(player.position.z)
-        ticketManager.removePlayer(x, z, player.uuid, viewDistance)
-        val pos = ChunkPos.pack(x, z)
-        val set = playersByChunk.get(pos)?.apply { remove(player) }
-        if (set != null && set.isEmpty()) playersByChunk.remove(pos)
+        if (oldPos == newPos) {
+            if (playersByChunk.containsKey(newPos.pack())) return
+            playersByChunk.computeIfAbsent(newPos.pack(), LongFunction { ConcurrentHashMap.newKeySet() }).add(player)
+            return
+        }
+
+        val oldSet = playersByChunk.get(oldPos.pack())
+        if (oldSet != null) {
+            oldSet.remove(player)
+            if (oldSet.isEmpty()) playersByChunk.remove(oldPos.pack())
+        }
+        playersByChunk.computeIfAbsent(newPos.pack(), LongFunction { ConcurrentHashMap.newKeySet() }).add(player)
+    }
+
+    fun removePlayer(player: KryptonPlayer) {
+        val viewDistance = world.server.config.world.viewDistance
+        val chunkPos = ChunkPos(SectionPos.blockToSection(player.position.x), SectionPos.blockToSection(player.position.z))
+        val packedPos = chunkPos.pack()
+
+        val chunksInRange = (viewDistance * 2 + 1) * (viewDistance * 2 + 1)
+        for (i in 0 until chunksInRange) {
+            val pos = Maths.chunkInSpiral(i, chunkPos.x, chunkPos.z)
+            val chunk = getChunk(pos)
+            if (chunk == null) {
+                LOGGER.warn("Chunk at $pos is not loaded, but player ${player.name} is in it!")
+                continue
+            }
+
+            val playerSet = playersByChunk.get(pos.pack()) ?: continue
+            if (playerSet.isEmpty()) {
+                // Since there's no players in this chunk, we're safe to unload it
+                unloadChunk(chunkPos.x, chunkPos.z)
+            }
+        }
+
+        val playerSet = playersByChunk.get(packedPos)
+        if (playerSet == null) {
+            LOGGER.warn("Chunk at $chunkPos, which disconnecting player ${player.name} is in, does not have any players registered in it!")
+            return
+        }
+
+        playerSet.remove(player)
+        if (playerSet.isEmpty()) {
+            playersByChunk.remove(packedPos)
+            // This will likely have been skipped earlier in the main loop, so we'll just make sure this chunk gets unloaded if it needs to be.
+            unloadChunk(chunkPos.x, chunkPos.z)
+        }
     }
 
     private fun getPlayersByChunk(position: Long): Set<KryptonPlayer> = playersByChunk.getOrDefault(position, emptySet())
 
-    fun loadChunk(x: Int, z: Int, ticket: Ticket<*>): KryptonChunk? {
-        val pos = ChunkPos.pack(x, z)
-        if (chunkMap.containsKey(pos)) return chunkMap.get(pos)!!
+    fun loadChunk(pos: ChunkPos): KryptonChunk? {
+        val packed = pos.pack()
+        if (chunkMap.containsKey(packed)) return chunkMap.get(packed)!!
 
-        val position = ChunkPos(x, z)
-        val nbt = regionFileManager.read(x, z) ?: return null
+        val nbt = regionFileManager.read(pos.x, pos.z) ?: return null
         val version = if (nbt.contains("DataVersion", 99)) nbt.getInt("DataVersion") else -1
         // We won't upgrade data if use of the data converter is disabled.
         if (version < KryptonPlatform.worldVersion && !world.server.config.advanced.useDataConverter) {
-            DataConversion.sendWarning(LOGGER, "chunk at $x, $z")
+            DataConversion.sendWarning(LOGGER, "chunk at $pos")
             error("Tried to load old chunk from version $version when data conversion is disabled!")
         }
 
@@ -147,15 +172,14 @@ class ChunkManager(private val world: KryptonWorld) : AutoCloseable {
         val carvingMasks = data.getCompound("CarvingMasks").let { it.getByteArray("AIR") to it.getByteArray("LIQUID") }
         val chunk =  KryptonChunk(
             world,
-            position,
+            pos,
             sections,
             data.getLong("LastUpdate"),
             data.getLong("inhabitedTime"),
-            ticket,
             carvingMasks,
             data.getCompound("Structures")
         )
-        chunkMap.put(position.pack(), chunk)
+        chunkMap.put(packed, chunk)
 
         val noneOf = EnumSet.noneOf(Heightmap.Type::class.java)
         Heightmap.Type.POST_FEATURES.forEach {
@@ -166,9 +190,8 @@ class ChunkManager(private val world: KryptonWorld) : AutoCloseable {
         return chunk
     }
 
-    fun unloadChunk(x: Int, z: Int, requiredType: TicketType<*>, force: Boolean) {
+    fun unloadChunk(x: Int, z: Int) {
         val loaded = getChunk(x, z) ?: return
-        if (!force && loaded.ticket.type !== requiredType) return
         saveChunk(loaded)
         chunkMap.remove(loaded.position.pack())
     }
@@ -197,6 +220,8 @@ class ChunkManager(private val world: KryptonWorld) : AutoCloseable {
 
     companion object {
 
+        private const val STARTING_AREA_RADIUS = 12
+        private const val STARTING_AREA_SIZE = (STARTING_AREA_RADIUS * 2 + 1) * (STARTING_AREA_RADIUS * 2 + 1)
         private val LOGGER = LogManager.getLogger()
 
         @JvmStatic
