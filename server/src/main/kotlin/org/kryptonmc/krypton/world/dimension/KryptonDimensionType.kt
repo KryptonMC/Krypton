@@ -26,6 +26,7 @@ import org.kryptonmc.api.tags.BlockTags
 import org.kryptonmc.api.tags.TagKey
 import org.kryptonmc.api.world.World
 import org.kryptonmc.api.world.dimension.DimensionType
+import org.kryptonmc.krypton.registry.KryptonDynamicRegistries
 import org.kryptonmc.krypton.registry.KryptonRegistries
 import org.kryptonmc.krypton.registry.holder.Holder
 import org.kryptonmc.krypton.registry.network.RegistryFileCodec
@@ -92,7 +93,7 @@ data class KryptonDimensionType(
 
     fun moonPhase(dayTime: Long): Int = (dayTime / 24000L % 8L + 8L).toInt() % 8
 
-    override fun key(): Key = KryptonRegistries.DIMENSION_TYPE.getKey(this) ?: UNREGISTERED_KEY
+    override fun key(): Key = KryptonDynamicRegistries.DIMENSION_TYPE.getKey(this) ?: UNREGISTERED_KEY
 
     override fun toBuilder(): Builder = Builder(this)
 

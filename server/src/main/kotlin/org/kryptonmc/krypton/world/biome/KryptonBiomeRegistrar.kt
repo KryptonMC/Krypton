@@ -20,6 +20,7 @@ package org.kryptonmc.krypton.world.biome
 
 import org.kryptonmc.api.resource.ResourceKey
 import org.kryptonmc.api.world.biome.Biome
+import org.kryptonmc.krypton.registry.KryptonDynamicRegistries
 import org.kryptonmc.krypton.registry.KryptonRegistries
 
 object KryptonBiomeRegistrar {
@@ -93,5 +94,5 @@ object KryptonBiomeRegistrar {
 
     @JvmStatic
     private fun register(key: ResourceKey<Biome>, biome: KryptonBiome): KryptonBiome =
-        KryptonRegistries.register(KryptonRegistries.BIOME, key, biome)
+        KryptonRegistries.register(KryptonDynamicRegistries.BIOME, key, biome)
 }

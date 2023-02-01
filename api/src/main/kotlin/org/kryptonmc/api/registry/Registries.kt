@@ -26,9 +26,7 @@ import org.kryptonmc.api.resource.ResourceKey
 import org.kryptonmc.api.resource.ResourceKeys
 import org.kryptonmc.api.scoreboard.criteria.KeyedCriterion
 import org.kryptonmc.api.statistic.StatisticType
-import org.kryptonmc.api.world.biome.Biome
 import org.kryptonmc.api.world.damage.type.DamageType
-import org.kryptonmc.api.world.dimension.DimensionType
 import org.kryptonmc.internal.annotations.Catalogue
 
 /**
@@ -66,10 +64,6 @@ public object Registries {
     public val STATISTIC_TYPE: Registry<StatisticType<*>> = builtin(ResourceKeys.STATISTIC_TYPE)
     @JvmField
     public val BANNER_PATTERN: Registry<BannerPatternType> = builtin(ResourceKeys.BANNER_PATTERN)
-    @JvmField
-    public val DIMENSION_TYPE: Registry<DimensionType> = builtin(ResourceKeys.DIMENSION_TYPE)
-    @JvmField
-    public val BIOME: Registry<Biome> = builtin(ResourceKeys.BIOME)
 
     /**
      * Custom built-in registries.

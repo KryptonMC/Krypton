@@ -28,6 +28,7 @@ import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.registry.KryptonRegistries
 import org.kryptonmc.krypton.world.util.ChunkProgressListener
 import org.kryptonmc.krypton.coordinate.SectionPos
+import org.kryptonmc.krypton.registry.KryptonDynamicRegistries
 import org.kryptonmc.krypton.util.executor.DefaultPoolUncaughtExceptionHandler
 import org.kryptonmc.krypton.util.executor.ThreadPoolBuilder
 import org.kryptonmc.krypton.util.executor.daemonThreadFactory
@@ -76,7 +77,7 @@ class KryptonWorldManager(override val server: KryptonServer, private val worldF
         val loaded = worlds.get(resourceKey)
         if (loaded != null) return CompletableFuture.completedFuture(loaded)
 
-        val dimensionType = KryptonRegistries.DIMENSION_TYPE.get(key) as? KryptonDimensionType
+        val dimensionType = KryptonDynamicRegistries.DIMENSION_TYPE.get(key) as? KryptonDimensionType
             ?: return failFuture(IllegalStateException("No dimension type found for given key $key!"))
 
         LOGGER.info("Loading world ${key.asString()}...")

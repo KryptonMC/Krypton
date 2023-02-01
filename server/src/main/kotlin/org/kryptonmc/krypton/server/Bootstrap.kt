@@ -37,6 +37,7 @@ import org.kryptonmc.krypton.tags.GameEventTags
 import org.kryptonmc.krypton.util.KryptonFactoryProvider
 import org.kryptonmc.krypton.util.Reflection
 import org.kryptonmc.krypton.locale.MinecraftTranslationManager
+import org.kryptonmc.krypton.registry.KryptonDynamicRegistries
 import org.kryptonmc.krypton.util.crypto.Encryption
 import org.kryptonmc.krypton.world.block.KryptonBlocks
 import org.kryptonmc.krypton.world.rule.GameRuleKeys
@@ -87,6 +88,7 @@ object Bootstrap {
     fun preloadRegistries() {
         Reflection.modifyStaticField(kryptonClass, "registryManager", KryptonRegistries.ManagerImpl)
         KryptonRegistries.bootstrap()
+        KryptonDynamicRegistries.bootstrap()
         KryptonBlocks.initializeStates()
         Registries
         BlockTags

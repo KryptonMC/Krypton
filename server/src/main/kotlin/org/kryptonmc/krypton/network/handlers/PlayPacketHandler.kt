@@ -91,6 +91,7 @@ import org.kryptonmc.krypton.coordinate.KryptonVec3d
 import org.kryptonmc.krypton.world.block.KryptonBlocks
 import org.kryptonmc.krypton.coordinate.ChunkPos
 import org.kryptonmc.krypton.locale.DisconnectMessages
+import org.kryptonmc.krypton.registry.KryptonDynamicRegistries
 import java.time.Duration
 import java.time.Instant
 import java.util.concurrent.atomic.AtomicReference
@@ -177,7 +178,7 @@ class PlayPacketHandler(
             LOGGER.warn("Chat message ${packet.message} with invalid signature sent by ${player.name}! Ignoring...")
             return
         }
-        val typeId = KryptonRegistries.CHAT_TYPE.getId(ChatTypes.CHAT)
+        val typeId = KryptonDynamicRegistries.CHAT_TYPE.getId(ChatTypes.CHAT)
         val outPacket = PacketOutPlayerChatMessage(Component.text(packet.message), message, typeId, player.asChatSender(), packet.signature)
         server.connectionManager.sendGroupedPacket(outPacket) { it !== player }
         // TODO: Review whether this is actually correct

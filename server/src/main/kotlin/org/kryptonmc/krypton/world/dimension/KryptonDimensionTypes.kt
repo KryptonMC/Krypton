@@ -20,6 +20,7 @@ package org.kryptonmc.krypton.world.dimension
 
 import net.kyori.adventure.key.Key
 import org.kryptonmc.api.tags.BlockTags
+import org.kryptonmc.krypton.registry.KryptonDynamicRegistries
 import org.kryptonmc.krypton.registry.KryptonRegistries
 import org.kryptonmc.krypton.util.provider.ConstantInt
 import org.kryptonmc.krypton.util.provider.UniformInt
@@ -49,5 +50,5 @@ object KryptonDimensionTypes {
 
     @JvmStatic
     private fun register(key: String, type: KryptonDimensionType): KryptonDimensionType =
-        KryptonRegistries.register(KryptonRegistries.DIMENSION_TYPE, Key.key(key), type)
+        KryptonRegistries.register(KryptonDynamicRegistries.DIMENSION_TYPE, Key.key(key), type)
 }

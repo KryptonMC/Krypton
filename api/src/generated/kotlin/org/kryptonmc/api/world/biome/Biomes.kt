@@ -9,6 +9,7 @@
 package org.kryptonmc.api.world.biome
 
 import net.kyori.adventure.key.Key
+import org.kryptonmc.api.registry.DynamicRegistries
 import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.api.registry.RegistryReference
 import org.kryptonmc.internal.annotations.Catalogue
@@ -149,5 +150,5 @@ public object Biomes {
 
     // @formatter:on
     @JvmStatic
-    private fun of(name: String): RegistryReference<Biome> = RegistryReference.of(Registries.BIOME, Key.key(name))
+    private fun of(name: String): RegistryReference<Biome> = RegistryReference.of(DynamicRegistries.BIOME, Key.key(name))
 }

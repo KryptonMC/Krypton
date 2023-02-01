@@ -18,14 +18,14 @@
  */
 package org.kryptonmc.krypton.registry.dynamic
 
+import org.kryptonmc.krypton.registry.KryptonDynamicRegistries
 import org.kryptonmc.krypton.registry.KryptonRegistries
 import org.kryptonmc.krypton.util.ImmutableLists
 
 enum class RegistryLayer {
 
     STATIC,
-    WORLD_GENERATION,
-    DIMENSIONS,
+    NETWORK,
     DYNAMIC;
 
     companion object {
@@ -34,6 +34,11 @@ enum class RegistryLayer {
         private val STATIC_ACCESS = RegistryAccess.fromRegistryOfRegistries(KryptonRegistries.PARENT)
 
         @JvmStatic
-        fun createRegistryAccess(): LayeredRegistryAccess<RegistryLayer> = LayeredRegistryAccess(VALUES).replaceFrom(STATIC, STATIC_ACCESS)
+        fun createRegistryAccess(): LayeredRegistryAccess<RegistryLayer> {
+            val baseAccess = LayeredRegistryAccess(VALUES)
+            val withStatic = baseAccess.replaceFrom(STATIC, STATIC_ACCESS)
+            val networkRegistries = RegistryAccess.fromRegistryOfRegistries(KryptonDynamicRegistries.PARENT)
+            return withStatic.replaceFrom(NETWORK, networkRegistries)
+        }
     }
 }

@@ -89,7 +89,7 @@ object RegistrySerialization {
 
     @JvmStatic
     fun networkedRegistries(access: LayeredRegistryAccess<RegistryLayer>): Stream<RegistryAccess.RegistryEntry<*>> =
-        ownedNetworkableRegistries(access.getAccessFrom(RegistryLayer.WORLD_GENERATION))
+        ownedNetworkableRegistries(access.getAccessFrom(RegistryLayer.NETWORK))
 
     @JvmStatic
     fun networkSafeRegistries(access: LayeredRegistryAccess<RegistryLayer>): Stream<RegistryAccess.RegistryEntry<*>> {

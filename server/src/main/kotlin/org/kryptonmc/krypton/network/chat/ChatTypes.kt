@@ -19,6 +19,7 @@
 package org.kryptonmc.krypton.network.chat
 
 import net.kyori.adventure.key.Key
+import org.kryptonmc.krypton.registry.KryptonDynamicRegistries
 import org.kryptonmc.krypton.registry.KryptonRegistries
 
 object ChatTypes {
@@ -48,5 +49,5 @@ object ChatTypes {
 
     @JvmStatic
     private fun register(name: String, chat: ChatTypeDecoration, narration: ChatTypeDecoration): ChatType =
-        KryptonRegistries.register(KryptonRegistries.CHAT_TYPE, Key.key(name), ChatType(chat, narration))
+        KryptonRegistries.register(KryptonDynamicRegistries.CHAT_TYPE, Key.key(name), ChatType(chat, narration))
 }

@@ -23,7 +23,7 @@ import org.kryptonmc.api.resource.ResourceKeys
 import org.kryptonmc.api.world.biome.Biome
 import org.kryptonmc.api.world.biome.BiomeEffects
 import org.kryptonmc.api.world.biome.Climate
-import org.kryptonmc.krypton.registry.KryptonRegistries
+import org.kryptonmc.krypton.registry.KryptonDynamicRegistries
 import org.kryptonmc.krypton.registry.holder.Holder
 import org.kryptonmc.krypton.registry.holder.HolderSet
 import org.kryptonmc.krypton.registry.network.RegistryCodecs
@@ -35,7 +35,7 @@ import org.kryptonmc.serialization.codecs.RecordCodecBuilder
 
 class KryptonBiome(override val climate: Climate, override val effects: BiomeEffects) : Biome {
 
-    override fun key(): Key = KryptonRegistries.BIOME.getKey(this) ?: UNREGISTERED_KEY
+    override fun key(): Key = KryptonDynamicRegistries.BIOME.getKey(this) ?: UNREGISTERED_KEY
 
     override fun toBuilder(): Biome.Builder = Builder(this)
 

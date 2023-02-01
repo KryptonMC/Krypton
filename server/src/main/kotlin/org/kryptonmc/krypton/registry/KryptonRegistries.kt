@@ -35,21 +35,18 @@ import org.kryptonmc.api.resource.ResourceKey
 import org.kryptonmc.api.resource.ResourceKeys
 import org.kryptonmc.api.scoreboard.criteria.KeyedCriterion
 import org.kryptonmc.api.statistic.StatisticType
-import org.kryptonmc.api.world.biome.Biome
 import org.kryptonmc.api.world.damage.type.DamageType
-import org.kryptonmc.api.world.dimension.DimensionType
 import org.kryptonmc.krypton.effect.sound.SoundLoader
 import org.kryptonmc.krypton.entity.KryptonEntityType
 import org.kryptonmc.krypton.entity.KryptonEntityTypes
-import org.kryptonmc.krypton.entity.attribute.KryptonAttributeTypes
 import org.kryptonmc.krypton.entity.ai.memory.MemoryKey
 import org.kryptonmc.krypton.entity.ai.memory.MemoryKeys
-import org.kryptonmc.krypton.item.data.Instrument
-import org.kryptonmc.krypton.item.data.Instruments
+import org.kryptonmc.krypton.entity.attribute.KryptonAttributeTypes
 import org.kryptonmc.krypton.item.ItemLoader
 import org.kryptonmc.krypton.item.KryptonItemType
-import org.kryptonmc.krypton.network.chat.ChatType
-import org.kryptonmc.krypton.network.chat.ChatTypes
+import org.kryptonmc.krypton.item.data.Instrument
+import org.kryptonmc.krypton.item.data.Instruments
+import org.kryptonmc.krypton.registry.KryptonRegistries.Bootstrap
 import org.kryptonmc.krypton.registry.loader.RegistryLoader
 import org.kryptonmc.krypton.registry.loader.RegistryLoaders
 import org.kryptonmc.krypton.resource.KryptonResourceKey
@@ -57,14 +54,12 @@ import org.kryptonmc.krypton.resource.KryptonResourceKeys
 import org.kryptonmc.krypton.util.KryptonDataLoader
 import org.kryptonmc.krypton.util.provider.IntProviderType
 import org.kryptonmc.krypton.util.provider.IntProviderTypes
-import org.kryptonmc.krypton.world.biome.KryptonBiomeRegistrar
 import org.kryptonmc.krypton.world.block.KryptonBlock
 import org.kryptonmc.krypton.world.block.KryptonBlocks
-import org.kryptonmc.krypton.world.dimension.KryptonDimensionTypes
-import org.kryptonmc.krypton.world.gameevent.GameEvent
-import org.kryptonmc.krypton.world.gameevent.GameEvents
 import org.kryptonmc.krypton.world.fluid.KryptonFluid
 import org.kryptonmc.krypton.world.fluid.KryptonFluids
+import org.kryptonmc.krypton.world.gameevent.GameEvent
+import org.kryptonmc.krypton.world.gameevent.GameEvents
 import java.util.function.Supplier
 
 /**
@@ -122,12 +117,6 @@ object KryptonRegistries {
     val BANNER_PATTERN: KryptonRegistry<BannerPatternType> = simple(ResourceKeys.BANNER_PATTERN, loader(RegistryLoaders.bannerPatternType()))
     @JvmField
     val INSTRUMENT: KryptonRegistry<Instrument> = simple(KryptonResourceKeys.INSTRUMENTS) { Instruments }
-    @JvmField
-    val DIMENSION_TYPE: KryptonRegistry<DimensionType> = simple(ResourceKeys.DIMENSION_TYPE) { KryptonDimensionTypes }
-    @JvmField
-    val BIOME: KryptonRegistry<Biome> = simple(ResourceKeys.BIOME) { KryptonBiomeRegistrar.bootstrap() }
-    @JvmField
-    val CHAT_TYPE: KryptonRegistry<ChatType> = simple(KryptonResourceKeys.CHAT_TYPE) { ChatTypes }
 
     /*
      * Custom built-in registries
@@ -216,7 +205,7 @@ object KryptonRegistries {
     }
 
     @JvmStatic
-    private fun <T : Registry<*>> validateAll(parent: Registry<T>) {
+    fun <T : Registry<*>> validateAll(parent: Registry<T>) {
         parent.forEach { registry ->
             if (registry.keys.isEmpty()) LOGGER.error("Registry ${registry.key} was empty after loading!")
             if (registry is KryptonDefaultedRegistry<*>) {
@@ -244,8 +233,11 @@ object KryptonRegistries {
     object ManagerImpl : RegistryManager {
 
         @Suppress("UNCHECKED_CAST")
-        override fun <T> getRegistry(key: ResourceKey<out Registry<T>>): Registry<T>? =
-            WRITABLE_PARENT.get(key as ResourceKey<WritableRegistry<*>>) as? Registry<T>
+        override fun <T> getRegistry(key: ResourceKey<out Registry<T>>): Registry<T>? {
+            var registry = WRITABLE_PARENT.get(key as ResourceKey<WritableRegistry<*>>) as? Registry<T>
+            if (registry == null) registry = KryptonDynamicRegistries.getRegistry(key as ResourceKey<out Registry<T>>)
+            return registry
+        }
 
         @Suppress("UNCHECKED_CAST")
         override fun <T> getDefaultedRegistry(key: ResourceKey<out Registry<T>>): DefaultedRegistry<T>? =

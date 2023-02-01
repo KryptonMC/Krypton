@@ -9,7 +9,7 @@
 package org.kryptonmc.api.world.dimension
 
 import net.kyori.adventure.key.Key
-import org.kryptonmc.api.registry.Registries
+import org.kryptonmc.api.registry.DynamicRegistries
 import org.kryptonmc.api.registry.RegistryReference
 import org.kryptonmc.internal.annotations.Catalogue
 
@@ -31,5 +31,5 @@ public object DimensionTypes {
 
     // @formatter:on
     @JvmStatic
-    private fun of(name: String): RegistryReference<DimensionType> = RegistryReference.of(Registries.DIMENSION_TYPE, Key.key(name))
+    private fun of(name: String): RegistryReference<DimensionType> = RegistryReference.of(DynamicRegistries.DIMENSION_TYPE, Key.key(name))
 }

@@ -23,6 +23,7 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectFunction
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 import net.kyori.adventure.key.Key
 import org.kryptonmc.api.world.biome.Biome
+import org.kryptonmc.krypton.registry.KryptonDynamicRegistries
 import org.kryptonmc.krypton.registry.KryptonRegistries
 import org.kryptonmc.krypton.util.bits.BitStorage
 import org.kryptonmc.krypton.util.ByteBufExtras
@@ -189,7 +190,7 @@ class PaletteHolder<T> : PaletteResizer<T> {
                 }
             }
             @JvmField
-            val BIOMES: Strategy<Biome> = object : Strategy<Biome>(KryptonRegistries.BIOME, 2) {
+            val BIOMES: Strategy<Biome> = object : Strategy<Biome>(KryptonDynamicRegistries.BIOME, 2) {
 
                 override fun createConfiguration(bits: Int): Configuration<Biome> = when (bits) {
                     0 -> Configuration(SingleValuePalette.Factory, bits)
@@ -222,7 +223,8 @@ class PaletteHolder<T> : PaletteResizer<T> {
         fun readBiomes(data: CompoundTag): PaletteHolder<Biome> {
             val entries = ArrayList<Biome>()
             data.getList(PALETTE_TAG, StringTag.ID).forEachString {
-                entries.add(checkNotNull(KryptonRegistries.BIOME.get(Key.key(it))) { "Invalid palette data! Failed to find biome with key $it!" })
+                val biome = KryptonDynamicRegistries.BIOME.get(Key.key(it))
+                entries.add(checkNotNull(biome) { "Invalid palette data! Failed to find biome with key $it!" })
             }
             return read(Strategy.BIOMES, entries, data.getLongArray(DATA_TAG))
         }

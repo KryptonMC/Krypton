@@ -53,6 +53,7 @@ import org.kryptonmc.krypton.registry.KryptonRegistries
 import org.kryptonmc.krypton.coordinate.BlockPos
 import org.kryptonmc.krypton.locale.DisconnectMessages
 import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateTags
+import org.kryptonmc.krypton.registry.KryptonDynamicRegistries
 import org.kryptonmc.krypton.registry.dynamic.LayeredRegistryAccess
 import org.kryptonmc.krypton.registry.dynamic.RegistryAccess
 import org.kryptonmc.krypton.registry.dynamic.RegistryLayer
@@ -137,7 +138,7 @@ class PlayerManager(
             player.gameModeSystem.previousGameMode(),
             server.worldManager.worlds.keys,
             synchronizedRegistries,
-            KryptonRegistries.DIMENSION_TYPE.getResourceKey(world.dimensionType)!!,
+            KryptonDynamicRegistries.DIMENSION_TYPE.getResourceKey(world.dimensionType)!!,
             world.dimension,
             BiomeManager.obfuscateSeed(world.seed),
             server.config.status.maxPlayers,
