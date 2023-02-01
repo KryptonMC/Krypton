@@ -87,7 +87,6 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateEntityPositionAndRot
 import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateEntityRotation
 import org.kryptonmc.krypton.registry.KryptonRegistries
 import org.kryptonmc.krypton.coordinate.Positioning
-import org.kryptonmc.krypton.coordinate.SectionPos
 import org.kryptonmc.krypton.coordinate.KryptonVec3d
 import org.kryptonmc.krypton.world.block.KryptonBlocks
 import org.kryptonmc.krypton.coordinate.ChunkPos

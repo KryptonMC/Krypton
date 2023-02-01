@@ -18,40 +18,19 @@
  */
 package org.kryptonmc.krypton.world.chunk
 
-import ca.spottedleaf.dataconverter.minecraft.datatypes.MCTypeRegistry
 import org.apache.logging.log4j.LogManager
-import java.util.EnumSet
 import java.util.concurrent.ConcurrentHashMap
-import org.kryptonmc.api.world.biome.Biomes
-import org.kryptonmc.krypton.KryptonPlatform
 import org.kryptonmc.krypton.coordinate.ChunkPos
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
-import org.kryptonmc.krypton.util.DataConversion
 import org.kryptonmc.krypton.coordinate.SectionPos
-import org.kryptonmc.krypton.util.executor.DefaultPoolUncaughtExceptionHandler
-import org.kryptonmc.krypton.util.executor.ThreadPoolBuilder
-import org.kryptonmc.krypton.util.executor.daemonThreadFactory
 import org.kryptonmc.krypton.util.math.Maths
-import org.kryptonmc.krypton.world.chunk.data.Heightmap
 import org.kryptonmc.krypton.world.KryptonWorld
-import org.kryptonmc.krypton.world.block.KryptonBlocks
-import org.kryptonmc.krypton.world.block.palette.PaletteHolder
-import org.kryptonmc.krypton.world.chunk.data.ChunkSection
 import org.kryptonmc.krypton.world.region.RegionFileManager
-import org.kryptonmc.nbt.CompoundTag
-import org.kryptonmc.nbt.ImmutableCompoundTag
-import org.kryptonmc.nbt.ImmutableListTag
-import org.kryptonmc.nbt.ListTag
-import org.kryptonmc.nbt.LongArrayTag
-import org.kryptonmc.nbt.StringTag
-import org.kryptonmc.nbt.buildCompound
-import org.kryptonmc.nbt.compound
 import space.vectrix.flare.fastutil.Long2ObjectSyncMap
 import java.util.function.BooleanSupplier
 import java.util.function.Consumer
 import java.util.function.LongFunction
 
-@Suppress("StringLiteralDuplication") // TODO: Refactor the serialization out of this class and use constants to fix this issue
 class ChunkManager(private val world: KryptonWorld) : AutoCloseable {
 
     private val chunkMap = Long2ObjectSyncMap.hashmap<KryptonChunk>()
@@ -104,7 +83,7 @@ class ChunkManager(private val world: KryptonWorld) : AutoCloseable {
             val pos = Maths.chunkInSpiral(i, chunkPos.x, chunkPos.z)
             val chunk = getChunk(pos)
             if (chunk == null) {
-                LOGGER.warn("Chunk at $pos is not loaded, but player ${player.name} is in it!")
+                LOGGER.warn("Chunk at $pos is not loaded, but player ${player.name} is in range of it!")
                 continue
             }
 
@@ -136,56 +115,9 @@ class ChunkManager(private val world: KryptonWorld) : AutoCloseable {
         if (chunkMap.containsKey(packed)) return chunkMap.get(packed)!!
 
         val nbt = regionFileManager.read(pos.x, pos.z) ?: return null
-        val version = if (nbt.contains("DataVersion", 99)) nbt.getInt("DataVersion") else -1
-        // We won't upgrade data if use of the data converter is disabled.
-        if (version < KryptonPlatform.worldVersion && !world.server.config.advanced.useDataConverter) {
-            DataConversion.sendWarning(LOGGER, "chunk at $pos")
-            error("Tried to load old chunk from version $version when data conversion is disabled!")
-        }
+        val chunk = ChunkSerialization.read(world, pos, nbt)
 
-        // Don't upgrade if the version is not older than our version.
-        val data = DataConversion.upgrade(nbt, MCTypeRegistry.CHUNK, version, true)
-        val heightmaps = data.getCompound("Heightmaps")
-
-        val sectionList = data.getList("sections", CompoundTag.ID)
-        val sections = arrayOfNulls<ChunkSection>(world.sectionCount())
-        for (i in 0 until sectionList.size()) {
-            val sectionData = sectionList.getCompound(i)
-            val y = sectionData.getByte("Y").toInt()
-            val index = world.getSectionIndexFromSectionY(y)
-            if (index >= 0 && index < sections.size) {
-                val blocks = if (sectionData.contains("block_states", CompoundTag.ID)) {
-                    PaletteHolder.readBlocks(sectionData.getCompound("block_states"))
-                } else {
-                    PaletteHolder(PaletteHolder.Strategy.BLOCKS, KryptonBlocks.AIR.defaultState)
-                }
-                val biomes = if (sectionData.contains("biomes", CompoundTag.ID)) {
-                    PaletteHolder.readBiomes(sectionData.getCompound("biomes"))
-                } else {
-                    PaletteHolder(PaletteHolder.Strategy.BIOMES, Biomes.PLAINS.get())
-                }
-                val section = ChunkSection(y, blocks, biomes, sectionData.getByteArray("BlockLight"), sectionData.getByteArray("SkyLight"))
-                sections[index] = section
-            }
-        }
-
-        val carvingMasks = data.getCompound("CarvingMasks").let { it.getByteArray("AIR") to it.getByteArray("LIQUID") }
-        val chunk =  KryptonChunk(
-            world,
-            pos,
-            sections,
-            data.getLong("LastUpdate"),
-            data.getLong("inhabitedTime"),
-            carvingMasks,
-            data.getCompound("Structures")
-        )
         chunkMap.put(packed, chunk)
-
-        val noneOf = EnumSet.noneOf(Heightmap.Type::class.java)
-        Heightmap.Type.POST_FEATURES.forEach {
-            if (heightmaps.contains(it.name, LongArrayTag.ID)) chunk.setHeightmap(it, heightmaps.getLongArray(it.name)) else noneOf.add(it)
-        }
-        Heightmap.prime(chunk, noneOf)
         world.entityManager.loadAllInChunk(chunk)
         return chunk
     }
@@ -204,7 +136,7 @@ class ChunkManager(private val world: KryptonWorld) : AutoCloseable {
     private fun saveChunk(chunk: KryptonChunk) {
         val lastUpdate = world.time
         chunk.lastUpdate = lastUpdate
-        regionFileManager.write(chunk.x, chunk.z, serialize(chunk))
+        regionFileManager.write(chunk.x, chunk.z, ChunkSerialization.write(chunk))
         world.entityManager.saveAllInChunk(chunk)
     }
 
@@ -223,53 +155,5 @@ class ChunkManager(private val world: KryptonWorld) : AutoCloseable {
         private const val STARTING_AREA_RADIUS = 12
         private const val STARTING_AREA_SIZE = (STARTING_AREA_RADIUS * 2 + 1) * (STARTING_AREA_RADIUS * 2 + 1)
         private val LOGGER = LogManager.getLogger()
-
-        @JvmStatic
-        private fun serialize(chunk: KryptonChunk): CompoundTag {
-            val data = buildCompound {
-                putInt("DataVersion", KryptonPlatform.worldVersion)
-                compound("CarvingMasks") {
-                    putByteArray("AIR", chunk.carvingMasks.first)
-                    putByteArray("LIQUID", chunk.carvingMasks.second)
-                }
-                putLong("LastUpdate", chunk.lastUpdate)
-                putList("Lights", ListTag.ID)
-                putList("LiquidsToBeTicked", ListTag.ID)
-                putList("LiquidTicks", ListTag.ID)
-                putLong("InhabitedTime", chunk.inhabitedTime)
-                putList("PostProcessing", ListTag.ID)
-                putString("Status", "full")
-                putList("TileEntities", CompoundTag.ID)
-                putList("TileTicks", CompoundTag.ID)
-                putList("ToBeTicked", ListTag.ID)
-                put("Structures", chunk.structures)
-                putInt("xPos", chunk.position.x)
-                putInt("zPos", chunk.position.z)
-            }
-
-            val sectionList = ImmutableListTag.builder(CompoundTag.ID)
-            for (i in chunk.minimumLightSection() until chunk.maximumLightSection()) {
-                val sectionIndex = chunk.world.getSectionIndexFromSectionY(i)
-                // TODO: Handle light sections below and above the world
-                if (sectionIndex >= 0 && sectionIndex < chunk.sections().size) {
-                    val section = chunk.sections()[sectionIndex]
-                    val sectionData = compound {
-                        putByte("Y", i.toByte())
-                        // FIXME: Fix this in next update
-//                        put("block_states", section.blocks.write(KryptonBlockState.CODEC::encode))
-                        put("biomes", section.biomes.write { StringTag.of(it.key().asString()) })
-                        if (section.blockLight.isNotEmpty()) putByteArray("BlockLight", section.blockLight)
-                        if (section.skyLight.isNotEmpty()) putByteArray("SkyLight", section.skyLight)
-                    }
-                    sectionList.add(sectionData)
-                }
-            }
-            data.put("sections", sectionList.build())
-
-            val heightmapData = ImmutableCompoundTag.builder()
-            chunk.heightmaps.forEach { if (it.key in Heightmap.Type.POST_FEATURES) heightmapData.putLongArray(it.key.name, it.value.rawData()) }
-            data.put("Heightmaps", heightmapData.build())
-            return data.build()
-        }
     }
 }
