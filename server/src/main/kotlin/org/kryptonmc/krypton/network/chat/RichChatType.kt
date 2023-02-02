@@ -26,7 +26,6 @@ import org.kryptonmc.krypton.command.CommandSourceStack
 import org.kryptonmc.krypton.entity.KryptonEntity
 import org.kryptonmc.krypton.network.Writable
 import org.kryptonmc.krypton.registry.KryptonDynamicRegistries
-import org.kryptonmc.krypton.registry.KryptonRegistries
 import org.kryptonmc.krypton.util.readComponent
 import org.kryptonmc.krypton.util.readNullable
 import org.kryptonmc.krypton.util.readVarInt

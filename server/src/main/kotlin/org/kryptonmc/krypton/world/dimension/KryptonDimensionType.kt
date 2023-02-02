@@ -27,7 +27,6 @@ import org.kryptonmc.api.tags.TagKey
 import org.kryptonmc.api.world.World
 import org.kryptonmc.api.world.dimension.DimensionType
 import org.kryptonmc.krypton.registry.KryptonDynamicRegistries
-import org.kryptonmc.krypton.registry.KryptonRegistries
 import org.kryptonmc.krypton.registry.holder.Holder
 import org.kryptonmc.krypton.registry.network.RegistryFileCodec
 import org.kryptonmc.krypton.resource.KryptonResourceKeys

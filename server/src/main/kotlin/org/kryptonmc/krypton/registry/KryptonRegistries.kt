@@ -56,7 +56,6 @@ import org.kryptonmc.krypton.util.provider.IntProviderType
 import org.kryptonmc.krypton.util.provider.IntProviderTypes
 import org.kryptonmc.krypton.world.block.BlockLoader
 import org.kryptonmc.krypton.world.block.KryptonBlock
-import org.kryptonmc.krypton.world.block.KryptonBlocks
 import org.kryptonmc.krypton.world.fluid.KryptonFluid
 import org.kryptonmc.krypton.world.fluid.KryptonFluids
 import org.kryptonmc.krypton.world.gameevent.GameEvent

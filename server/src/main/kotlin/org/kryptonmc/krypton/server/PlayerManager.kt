@@ -53,7 +53,6 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateRecipeBook
 import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateRecipes
 import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateTeams
 import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateTime
-import org.kryptonmc.krypton.registry.KryptonRegistries
 import org.kryptonmc.krypton.coordinate.BlockPos
 import org.kryptonmc.krypton.locale.DisconnectMessages
 import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateTags

@@ -107,7 +107,6 @@ import org.kryptonmc.krypton.util.crypto.SignatureValidator
 import org.kryptonmc.krypton.world.block.KryptonBlocks
 import org.kryptonmc.krypton.coordinate.ChunkPos
 import org.kryptonmc.krypton.locale.DisconnectMessages
-import org.kryptonmc.krypton.registry.KryptonDynamicRegistries
 import java.time.Duration
 import java.time.Instant
 import java.util.concurrent.CompletableFuture

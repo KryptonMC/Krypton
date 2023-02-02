@@ -25,7 +25,6 @@ import org.kryptonmc.api.resource.ResourceKeys
 import org.kryptonmc.api.world.World
 import org.kryptonmc.api.world.WorldManager
 import org.kryptonmc.krypton.KryptonServer
-import org.kryptonmc.krypton.registry.KryptonRegistries
 import org.kryptonmc.krypton.world.util.ChunkProgressListener
 import org.kryptonmc.krypton.coordinate.SectionPos
 import org.kryptonmc.krypton.registry.KryptonDynamicRegistries

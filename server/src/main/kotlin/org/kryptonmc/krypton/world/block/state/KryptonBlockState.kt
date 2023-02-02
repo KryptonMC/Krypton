@@ -62,6 +62,7 @@ import org.kryptonmc.serialization.Codec
 import org.kryptonmc.serialization.MapCodec
 import java.util.function.Predicate
 
+@Suppress("UnusedPrivateMember")
 class KryptonBlockState(
     owner: KryptonBlock,
     values: ImmutableMap<KryptonProperty<*>, Comparable<*>>,
@@ -79,7 +80,7 @@ class KryptonBlockState(
     val canOcclude: Boolean = owner.properties.canOcclude
     val offsetType: BlockOffsetType
         get() = owner.propertiesProvider.getOffsetType(asState())
-    protected var cache: Cache? = null
+    private var cache: Cache? = null
 
     override val isAir: Boolean
         get() = block.properties.isAir
@@ -219,7 +220,7 @@ class KryptonBlockState(
 
         val offsetX = Maths.clamp(((seed and 15L) / 15F - 0.5) * 0.5, -maxHorizontalOffset, maxHorizontalOffset)
         val offsetY = if (offsetType == BlockOffsetType.XYZ) {
-            val seededPart = (seed shr 4 and 15L)
+            val seededPart = seed shr 4 and 15L
             (seededPart / 15F - 1.0) * block.propertiesProvider.maximumVerticalOffset()
         } else {
             0.0
@@ -315,7 +316,7 @@ class KryptonBlockState(
 
     override fun asState(): KryptonBlockState = this
 
-    protected class Cache(state: KryptonBlockState) {
+    private class Cache(state: KryptonBlockState) {
 
         val solidRender: Boolean = state.isSolidRender(BlockGetter.Empty, BlockPos.ZERO)
         val propagatesSkylightDown: Boolean = state.block.propertiesProvider.propagatesSkylightDown(state, BlockGetter.Empty, BlockPos.ZERO)

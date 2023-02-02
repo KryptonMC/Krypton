@@ -20,7 +20,6 @@ package org.kryptonmc.krypton.world.block
 
 import com.google.gson.JsonObject
 import net.kyori.adventure.key.Key
-import org.apache.logging.log4j.LogManager
 import org.kryptonmc.api.block.BlockSoundGroup
 import org.kryptonmc.krypton.registry.KryptonRegistry
 import org.kryptonmc.krypton.state.property.KryptonPropertyFactory
@@ -67,10 +66,5 @@ class BlockLoader(registry: KryptonRegistry<KryptonBlock>) : KryptonDataLoader<K
 
         // TODO: Update this to get the handlers from somewhere
         return KryptonBlock(properties, DefaultBlockHandler, DefaultBlockHandler, DefaultBlockHandler, DefaultBlockHandler, stateProperties)
-    }
-
-    companion object {
-
-        private val LOGGER = LogManager.getLogger()
     }
 }
