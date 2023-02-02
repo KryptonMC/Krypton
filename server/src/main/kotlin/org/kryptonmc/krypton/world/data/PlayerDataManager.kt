@@ -31,20 +31,13 @@ import java.io.IOException
 import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.StandardCopyOption
-import java.util.concurrent.CompletableFuture
-import java.util.concurrent.Executor
 
 /**
  * Responsible for loading and saving player data files.
  */
 class PlayerDataManager(val folder: Path, private val serializeData: Boolean) {
 
-    fun load(player: KryptonPlayer, executor: Executor): CompletableFuture<CompoundTag?> {
-        if (!serializeData) return CompletableFuture.completedFuture(null)
-        return CompletableFuture.supplyAsync({ loadData(player) }, executor)
-    }
-
-    private fun loadData(player: KryptonPlayer): CompoundTag? {
+    fun load(player: KryptonPlayer): CompoundTag? {
         val playerFile = folder.resolve("${player.uuid}.dat")
         if (!Files.exists(playerFile)) {
             try {

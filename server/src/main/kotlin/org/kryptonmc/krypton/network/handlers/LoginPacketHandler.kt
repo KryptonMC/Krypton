@@ -180,8 +180,10 @@ class LoginPacketHandler(
         connection.writeAndFlush(PacketOutLoginSuccess.create(player.profile))
         connection.setState(PacketState.PLAY)
         connection.setHandler(PlayPacketHandler(server, connection, player))
-        server.playerManager.addPlayer(player).whenComplete { _, exception ->
-            if (exception == null) return@whenComplete
+
+        try {
+            server.playerManager.addPlayer(player)
+        } catch (exception: Exception) {
             LOGGER.error("Disconnecting player ${player.profile.name} due to exception caught whilst attempting to load them in...", exception)
             player.disconnect(Component.text("An unexpected exception occurred. Please contact the system administrator."))
         }

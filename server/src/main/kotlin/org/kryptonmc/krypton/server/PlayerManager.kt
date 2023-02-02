@@ -89,7 +89,6 @@ class PlayerManager(
     private val registries: LayeredRegistryAccess<RegistryLayer>
 ) {
 
-    private val executor = Executors.newFixedThreadPool(8, daemonThreadFactory("Player Executor #%d"))
     private val dataManager = createDataManager(server)
     private val players = CopyOnWriteArrayList<KryptonPlayer>()
     private val playersByName = ConcurrentHashMap<String, KryptonPlayer>()
@@ -116,7 +115,8 @@ class PlayerManager(
 
     fun getPlayer(uuid: UUID): KryptonPlayer? = playersByUUID.get(uuid)
 
-    fun addPlayer(player: KryptonPlayer): CompletableFuture<Void> = dataManager.load(player, executor).thenAcceptAsync({ nbt ->
+    fun addPlayer(player: KryptonPlayer) {
+        val nbt = dataManager.load(player)
         val profile = player.profile
         val name = server.profileCache.getProfile(profile.uuid)?.name ?: profile.name
         server.profileCache.addProfile(profile)
@@ -184,7 +184,7 @@ class PlayerManager(
             // Use default reason if denied without specified reason
             val reason = joinResult.message ?: DisconnectMessages.KICKED
             player.connection.disconnect(reason)
-            return@thenAcceptAsync
+            return
         }
         val joinMessage = joinResult.message ?: getDefaultJoinMessage(player, joinResult.hasJoinedBefore)
         broadcastSystemMessage(joinMessage, false)
@@ -205,10 +205,10 @@ class PlayerManager(
 
         // Send inventory data
         player.connection.send(PacketOutSetContainerContent.fromPlayerInventory(player.inventory))
-    }, executor)
+    }
 
     fun removePlayer(player: KryptonPlayer) {
-        server.eventManager.fire(KryptonQuitEvent(player)).thenAcceptAsync({ event ->
+        server.eventManager.fire(KryptonQuitEvent(player)).thenAccept { event ->
             player.statisticsTracker.incrementStatistic(CustomStatistics.LEAVE_GAME.get())
             savePlayer(player)
             player.world.chunkManager.removePlayer(player)
@@ -224,7 +224,7 @@ class PlayerManager(
             server.connectionManager.invalidateStatus()
 //            server.sessionManager.sendGrouped(PacketOutPlayerInfoRemove(player))
             if (event.quitMessage != null) server.sendMessage(event.quitMessage!!)
-        }, executor)
+        }
     }
 
     fun broadcast(packet: Packet, world: KryptonWorld, x: Double, y: Double, z: Double, radius: Double, except: KryptonPlayer?) {
