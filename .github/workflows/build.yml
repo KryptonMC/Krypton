@@ -1,34 +1,33 @@
 name: "Build"
 
-on: push
+on: [push, pull_request]
 
 jobs:
   build:
     runs-on: "ubuntu-latest"
     steps:
       - name: "Checkout repository"
-        uses: "actions/checkout@v2"
+        uses: "actions/checkout@v3.3.0"
       - name: "Set up JDK 17"
-        uses: "actions/setup-java@v1"
+        uses: "actions/setup-java@v3.9.0"
         with:
           java-version: "17"
           distribution: "temurin"
-      - name: "Cache Gradle"
-        uses: "actions/cache@v2"
-        with:
-          path: |
-            ~/.gradle/caches
-            ~/.gradle/wrapper
-          key: "${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}"
-          restore-keys: |
-            ${{ runner.os }}-gradle-
+      - name: "Validate Gradle Wrapper"
+        uses: "gradle/wrapper-validation-action@v1.0.5"
       - name: "Build & Test"
-        run: "./gradlew build"
-      - name: "Cleanup Gradle cache"
-        run: |
-          rm -f ~/.gradle/caches/modules-2/modules-2.lock
-          rm -f ~/.gradle/caches/modules-2/gc.properties
-      - name: "Upload JAR"
-        uses: "actions/upload-artifact@v2"
+        uses: "gradle/gradle-build-action@v2.3.3"
         with:
+          arguments: "build"
+      - name: "Archive Test Results"
+        uses: "actions/upload-artifact@v3.1.2"
+        with:
+          name: "test-results"
+          path: |
+            build/reports/
+            */build/reports/
+      - name: "Upload JAR"
+        uses: "actions/upload-artifact@v3.1.2"
+        with:
+          name: "jar"
           path: "jar/build/libs/Krypton-*.jar"
