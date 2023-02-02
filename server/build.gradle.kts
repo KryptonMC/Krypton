@@ -101,12 +101,6 @@ pitest {
 }
 
 tasks {
-    build {
-        dependsOn(project.projects.internalDataGen.dependencyProject.tasks.getByName("run"))
-    }
-    test {
-        dependsOn(project.projects.internalDataGen.dependencyProject.tasks.getByName("run"))
-    }
     withType<ProcessResources> {
         filesMatching("**/versions.properties") {
             val minecraftVersion = global.versions.minecraft.get()

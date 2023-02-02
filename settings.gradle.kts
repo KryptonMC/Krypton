@@ -36,7 +36,6 @@ include("jar")
 
 internalProject("annotations")
 internalProject("ap")
-internalProject("data-gen")
 
 pluginProject("bans")
 pluginProject("whitelist")
