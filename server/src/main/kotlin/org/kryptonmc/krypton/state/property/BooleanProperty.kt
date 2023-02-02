@@ -20,7 +20,7 @@ package org.kryptonmc.krypton.state.property
 
 import com.google.common.collect.ImmutableSet
 
-class BooleanProperty(name: String) : KryptonProperty<Boolean>(name, Boolean::class.java) {
+class BooleanProperty(name: String) : KryptonProperty<Boolean>(name, Boolean::class.javaObjectType) {
 
     override val values: Collection<Boolean>
         get() = VALUES

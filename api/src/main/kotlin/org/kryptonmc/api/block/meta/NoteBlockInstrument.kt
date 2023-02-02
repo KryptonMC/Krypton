@@ -21,23 +21,44 @@ public enum class NoteBlockInstrument(
      * The corresponding sound event that will be played when note blocks with
      * this instrument are interacted with.
      */
-    public val sound: RegistryReference<SoundEvent>
+    public val sound: RegistryReference<SoundEvent>,
+    /**
+     * The type of instrument this instrument is.
+     */
+    public val type: Type
 ) {
 
-    HARP(SoundEvents.NOTE_BLOCK_HARP),
-    BASEDRUM(SoundEvents.NOTE_BLOCK_BASEDRUM),
-    SNARE(SoundEvents.NOTE_BLOCK_SNARE),
-    HAT(SoundEvents.NOTE_BLOCK_HAT),
-    BASS(SoundEvents.NOTE_BLOCK_BASS),
-    FLUTE(SoundEvents.NOTE_BLOCK_FLUTE),
-    BELL(SoundEvents.NOTE_BLOCK_BELL),
-    GUITAR(SoundEvents.NOTE_BLOCK_GUITAR),
-    CHIME(SoundEvents.NOTE_BLOCK_CHIME),
-    XYLOPHONE(SoundEvents.NOTE_BLOCK_XYLOPHONE),
-    IRON_XYLOPHONE(SoundEvents.NOTE_BLOCK_IRON_XYLOPHONE),
-    COW_BELL(SoundEvents.NOTE_BLOCK_COW_BELL),
-    DIDGERIDOO(SoundEvents.NOTE_BLOCK_DIDGERIDOO),
-    BIT(SoundEvents.NOTE_BLOCK_BIT),
-    BANJO(SoundEvents.NOTE_BLOCK_BANJO),
-    PLING(SoundEvents.NOTE_BLOCK_PLING)
+    HARP(SoundEvents.NOTE_BLOCK_HARP, Type.BLOCK),
+    BASEDRUM(SoundEvents.NOTE_BLOCK_BASEDRUM, Type.BLOCK),
+    SNARE(SoundEvents.NOTE_BLOCK_SNARE, Type.BLOCK),
+    HAT(SoundEvents.NOTE_BLOCK_HAT, Type.BLOCK),
+    BASS(SoundEvents.NOTE_BLOCK_BASS, Type.BLOCK),
+    FLUTE(SoundEvents.NOTE_BLOCK_FLUTE, Type.BLOCK),
+    BELL(SoundEvents.NOTE_BLOCK_BELL, Type.BLOCK),
+    GUITAR(SoundEvents.NOTE_BLOCK_GUITAR, Type.BLOCK),
+    CHIME(SoundEvents.NOTE_BLOCK_CHIME, Type.BLOCK),
+    XYLOPHONE(SoundEvents.NOTE_BLOCK_XYLOPHONE, Type.BLOCK),
+    IRON_XYLOPHONE(SoundEvents.NOTE_BLOCK_IRON_XYLOPHONE, Type.BLOCK),
+    COW_BELL(SoundEvents.NOTE_BLOCK_COW_BELL, Type.BLOCK),
+    DIDGERIDOO(SoundEvents.NOTE_BLOCK_DIDGERIDOO, Type.BLOCK),
+    BIT(SoundEvents.NOTE_BLOCK_BIT, Type.BLOCK),
+    BANJO(SoundEvents.NOTE_BLOCK_BANJO, Type.BLOCK),
+    PLING(SoundEvents.NOTE_BLOCK_PLING, Type.BLOCK),
+    ZOMBIE(SoundEvents.NOTE_BLOCK_IMITATE_ZOMBIE, Type.MOB_HEAD),
+    SKELETON(SoundEvents.NOTE_BLOCK_IMITATE_SKELETON, Type.MOB_HEAD),
+    CREEPER(SoundEvents.NOTE_BLOCK_IMITATE_CREEPER, Type.MOB_HEAD),
+    DRAGON(SoundEvents.NOTE_BLOCK_IMITATE_ENDER_DRAGON, Type.MOB_HEAD),
+    WITHER_SKELETON(SoundEvents.NOTE_BLOCK_IMITATE_WITHER_SKELETON, Type.MOB_HEAD),
+    PIGLIN(SoundEvents.NOTE_BLOCK_IMITATE_PIGLIN, Type.MOB_HEAD),
+    CUSTOM_HEAD(SoundEvents.UI_BUTTON_CLICK, Type.CUSTOM);
+
+    /**
+     * The type of note block instrument.
+     */
+    public enum class Type {
+
+        BLOCK,
+        MOB_HEAD,
+        CUSTOM
+    }
 }

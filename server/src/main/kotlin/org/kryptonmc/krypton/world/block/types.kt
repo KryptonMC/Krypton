@@ -19,7 +19,15 @@
 package org.kryptonmc.krypton.world.block
 
 import org.kryptonmc.api.tags.BlockTags
+import org.kryptonmc.krypton.state.property.KryptonProperties
 import org.kryptonmc.krypton.world.block.state.KryptonBlockState
 
-fun KryptonBlockState.isBurning(): Boolean =
-    eq(BlockTags.FIRE) || eq(KryptonBlocks.LAVA) || eq(KryptonBlocks.MAGMA_BLOCK) || CampfireBlock.isLit(this) || eq(KryptonBlocks.LAVA_CAULDRON)
+fun KryptonBlockState.isBurning(): Boolean = eq(BlockTags.FIRE) ||
+        eq(KryptonBlocks.LAVA) ||
+        eq(KryptonBlocks.MAGMA_BLOCK) ||
+        isLit() ||
+        eq(KryptonBlocks.LAVA_CAULDRON)
+
+private fun KryptonBlockState.isLit(): Boolean = hasProperty(KryptonProperties.LIT) &&
+        eq(BlockTags.CAMPFIRES) &&
+        requireProperty(KryptonProperties.LIT)

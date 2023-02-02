@@ -60,6 +60,18 @@ object KryptonProperties {
     @JvmField
     val CAN_SUMMON: BooleanProperty = BooleanProperty("can_summon")
     @JvmField
+    val CHISELED_BOOKSHELF_FIRST_SLOT_OCCUPIED: BooleanProperty = BooleanProperty("slot_0_occupied")
+    @JvmField
+    val CHISELED_BOOKSHELF_SECOND_SLOT_OCCUPIED: BooleanProperty = BooleanProperty("slot_1_occupied")
+    @JvmField
+    val CHISELED_BOOKSHELF_THIRD_SLOT_OCCUPIED: BooleanProperty = BooleanProperty("slot_2_occupied")
+    @JvmField
+    val CHISELED_BOOKSHELF_FOURTH_SLOT_OCCUPIED: BooleanProperty = BooleanProperty("slot_3_occupied")
+    @JvmField
+    val CHISELED_BOOKSHELF_FIFTH_SLOT_OCCUPIED: BooleanProperty = BooleanProperty("slot_4_occupied")
+    @JvmField
+    val CHISELED_BOOKSHELF_SIXTH_SLOT_OCCUPIED: BooleanProperty = BooleanProperty("slot_5_occupied")
+    @JvmField
     val CONDITIONAL: BooleanProperty = BooleanProperty("conditional")
     @JvmField
     val DISARMED: BooleanProperty = BooleanProperty("disarmed")
@@ -155,7 +167,7 @@ object KryptonProperties {
     @JvmField
     val CANDLES: IntProperty = IntProperty("candles", 1, 4)
     @JvmField
-    val CAULDRON_LEVEL: IntProperty = IntProperty("level", 0, 3)
+    val CAULDRON_LEVEL: IntProperty = IntProperty("level", 1, 3)
     @JvmField
     val COMPOSTER_LEVEL: IntProperty = IntProperty("level", 0, 8)
     @JvmField

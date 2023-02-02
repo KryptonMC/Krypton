@@ -54,6 +54,7 @@ import org.kryptonmc.krypton.resource.KryptonResourceKeys
 import org.kryptonmc.krypton.util.KryptonDataLoader
 import org.kryptonmc.krypton.util.provider.IntProviderType
 import org.kryptonmc.krypton.util.provider.IntProviderTypes
+import org.kryptonmc.krypton.world.block.BlockLoader
 import org.kryptonmc.krypton.world.block.KryptonBlock
 import org.kryptonmc.krypton.world.block.KryptonBlocks
 import org.kryptonmc.krypton.world.fluid.KryptonFluid
@@ -85,7 +86,7 @@ object KryptonRegistries {
     @JvmField
     val FLUID: KryptonDefaultedRegistry<KryptonFluid> = defaultedIntrusive(KryptonResourceKeys.FLUID, "empty") { KryptonFluids }
     @JvmField
-    val BLOCK: KryptonDefaultedRegistry<KryptonBlock> = defaultedIntrusive(KryptonResourceKeys.BLOCK, "air") { KryptonBlocks }
+    val BLOCK: KryptonDefaultedRegistry<KryptonBlock> = defaultedIntrusive(KryptonResourceKeys.BLOCK, "air", dataLoader(::BlockLoader))
     @JvmField
     val ENTITY_CATEGORIES: KryptonRegistry<EntityCategory> = simple(ResourceKeys.ENTITY_CATEGORIES, loader(RegistryLoaders.entityCategory()))
     @JvmField

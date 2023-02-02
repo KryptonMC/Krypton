@@ -16,21 +16,13 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.world.block.type
+package org.kryptonmc.datagen
 
-import org.kryptonmc.krypton.state.property.BooleanProperty
-import org.kryptonmc.krypton.state.property.KryptonProperties
-import org.kryptonmc.krypton.world.block.state.KryptonBlockState
-import java.util.function.ToIntFunction
+import com.google.gson.JsonElement
 
-interface CaveVines {
+interface DataGenerator {
 
-    companion object {
+    fun name(): String
 
-        @JvmField
-        val BERRIES: BooleanProperty = KryptonProperties.BERRIES
-
-        @JvmStatic
-        fun emission(value: Int): ToIntFunction<KryptonBlockState> = ToIntFunction { if (it.requireProperty(BERRIES)) value else 0 }
-    }
+    fun generate(): JsonElement
 }

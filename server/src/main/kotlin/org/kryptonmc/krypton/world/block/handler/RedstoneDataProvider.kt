@@ -16,20 +16,35 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.world.block
+package org.kryptonmc.krypton.world.block.handler
 
-import org.kryptonmc.krypton.state.property.IntProperty
-import org.kryptonmc.krypton.state.property.KryptonProperties
+import org.kryptonmc.api.util.Direction
+import org.kryptonmc.krypton.coordinate.BlockPos
+import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.krypton.world.block.state.KryptonBlockState
-import java.util.function.ToIntFunction
+import org.kryptonmc.krypton.world.components.BlockGetter
 
-class LightBlock(properties: Properties) : KryptonBlock(properties) {
+interface RedstoneDataProvider {
 
-    companion object {
+    fun isApplicableBlockType(name: String): Boolean
 
-        @JvmField
-        val LEVEL: IntProperty = KryptonProperties.LEVEL
-        @JvmField
-        val LIGHT_EMISSION: ToIntFunction<KryptonBlockState> = ToIntFunction { it.requireProperty(LEVEL) }
+    fun isSignalSource(state: KryptonBlockState): Boolean {
+        return false
+    }
+
+    fun hasAnalogOutputSignal(state: KryptonBlockState): Boolean {
+        return false
+    }
+
+    fun getAnalogOutputSignal(state: KryptonBlockState, world: KryptonWorld, pos: BlockPos): Int {
+        return 0
+    }
+
+    fun getSignal(state: KryptonBlockState, world: BlockGetter, pos: BlockPos, direction: Direction): Int {
+        return 0
+    }
+
+    fun getDirectSignal(state: KryptonBlockState, world: BlockGetter, pos: BlockPos, direction: Direction): Int {
+        return 0
     }
 }

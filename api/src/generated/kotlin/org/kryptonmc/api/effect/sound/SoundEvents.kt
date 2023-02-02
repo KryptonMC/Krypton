@@ -1,17 +1,9 @@
-/*
- * This file is part of the Krypton API, licensed under the MIT license.
- *
- * Copyright (C) 2021-2022 KryptonMC and the contributors to the Krypton project.
- *
- * This project is licensed under the terms of the MIT license.
- * For more details, please reference the LICENSE file in the api top-level directory.
- */
 package org.kryptonmc.api.effect.sound
 
 import net.kyori.adventure.key.Key
+import org.kryptonmc.internal.annotations.Catalogue
 import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.api.registry.RegistryReference
-import org.kryptonmc.internal.annotations.Catalogue
 
 /**
  * This file is auto-generated. Do not edit this manually!
@@ -215,6 +207,36 @@ public object SoundEvents {
     @JvmField
     public val BAMBOO_SAPLING_PLACE: RegistryReference<SoundEvent> = of("block.bamboo_sapling.place")
     @JvmField
+    public val BAMBOO_WOOD_BREAK: RegistryReference<SoundEvent> = of("block.bamboo_wood.break")
+    @JvmField
+    public val BAMBOO_WOOD_FALL: RegistryReference<SoundEvent> = of("block.bamboo_wood.fall")
+    @JvmField
+    public val BAMBOO_WOOD_HIT: RegistryReference<SoundEvent> = of("block.bamboo_wood.hit")
+    @JvmField
+    public val BAMBOO_WOOD_PLACE: RegistryReference<SoundEvent> = of("block.bamboo_wood.place")
+    @JvmField
+    public val BAMBOO_WOOD_STEP: RegistryReference<SoundEvent> = of("block.bamboo_wood.step")
+    @JvmField
+    public val BAMBOO_WOOD_DOOR_CLOSE: RegistryReference<SoundEvent> = of("block.bamboo_wood_door.close")
+    @JvmField
+    public val BAMBOO_WOOD_DOOR_OPEN: RegistryReference<SoundEvent> = of("block.bamboo_wood_door.open")
+    @JvmField
+    public val BAMBOO_WOOD_TRAPDOOR_CLOSE: RegistryReference<SoundEvent> = of("block.bamboo_wood_trapdoor.close")
+    @JvmField
+    public val BAMBOO_WOOD_TRAPDOOR_OPEN: RegistryReference<SoundEvent> = of("block.bamboo_wood_trapdoor.open")
+    @JvmField
+    public val BAMBOO_WOOD_BUTTON_CLICK_OFF: RegistryReference<SoundEvent> = of("block.bamboo_wood_button.click_off")
+    @JvmField
+    public val BAMBOO_WOOD_BUTTON_CLICK_ON: RegistryReference<SoundEvent> = of("block.bamboo_wood_button.click_on")
+    @JvmField
+    public val BAMBOO_WOOD_PRESSURE_PLATE_CLICK_OFF: RegistryReference<SoundEvent> = of("block.bamboo_wood_pressure_plate.click_off")
+    @JvmField
+    public val BAMBOO_WOOD_PRESSURE_PLATE_CLICK_ON: RegistryReference<SoundEvent> = of("block.bamboo_wood_pressure_plate.click_on")
+    @JvmField
+    public val BAMBOO_WOOD_FENCE_GATE_CLOSE: RegistryReference<SoundEvent> = of("block.bamboo_wood_fence_gate.close")
+    @JvmField
+    public val BAMBOO_WOOD_FENCE_GATE_OPEN: RegistryReference<SoundEvent> = of("block.bamboo_wood_fence_gate.open")
+    @JvmField
     public val BARREL_CLOSE: RegistryReference<SoundEvent> = of("block.barrel.close")
     @JvmField
     public val BARREL_OPEN: RegistryReference<SoundEvent> = of("block.barrel.open")
@@ -375,6 +397,28 @@ public object SoundEvents {
     @JvmField
     public val CALCITE_FALL: RegistryReference<SoundEvent> = of("block.calcite.fall")
     @JvmField
+    public val CAMEL_AMBIENT: RegistryReference<SoundEvent> = of("entity.camel.ambient")
+    @JvmField
+    public val CAMEL_DASH: RegistryReference<SoundEvent> = of("entity.camel.dash")
+    @JvmField
+    public val CAMEL_DASH_READY: RegistryReference<SoundEvent> = of("entity.camel.dash_ready")
+    @JvmField
+    public val CAMEL_DEATH: RegistryReference<SoundEvent> = of("entity.camel.death")
+    @JvmField
+    public val CAMEL_EAT: RegistryReference<SoundEvent> = of("entity.camel.eat")
+    @JvmField
+    public val CAMEL_HURT: RegistryReference<SoundEvent> = of("entity.camel.hurt")
+    @JvmField
+    public val CAMEL_SADDLE: RegistryReference<SoundEvent> = of("entity.camel.saddle")
+    @JvmField
+    public val CAMEL_SIT: RegistryReference<SoundEvent> = of("entity.camel.sit")
+    @JvmField
+    public val CAMEL_STAND: RegistryReference<SoundEvent> = of("entity.camel.stand")
+    @JvmField
+    public val CAMEL_STEP: RegistryReference<SoundEvent> = of("entity.camel.step")
+    @JvmField
+    public val CAMEL_STEP_SAND: RegistryReference<SoundEvent> = of("entity.camel.step_sand")
+    @JvmField
     public val CAMPFIRE_CRACKLE: RegistryReference<SoundEvent> = of("block.campfire.crackle")
     @JvmField
     public val CANDLE_AMBIENT: RegistryReference<SoundEvent> = of("block.candle.ambient")
@@ -446,6 +490,24 @@ public object SoundEvents {
     public val CHICKEN_HURT: RegistryReference<SoundEvent> = of("entity.chicken.hurt")
     @JvmField
     public val CHICKEN_STEP: RegistryReference<SoundEvent> = of("entity.chicken.step")
+    @JvmField
+    public val CHISELED_BOOKSHELF_BREAK: RegistryReference<SoundEvent> = of("block.chiseled_bookshelf.break")
+    @JvmField
+    public val CHISELED_BOOKSHELF_FALL: RegistryReference<SoundEvent> = of("block.chiseled_bookshelf.fall")
+    @JvmField
+    public val CHISELED_BOOKSHELF_HIT: RegistryReference<SoundEvent> = of("block.chiseled_bookshelf.hit")
+    @JvmField
+    public val CHISELED_BOOKSHELF_INSERT: RegistryReference<SoundEvent> = of("block.chiseled_bookshelf.insert")
+    @JvmField
+    public val CHISELED_BOOKSHELF_INSERT_ENCHANTED: RegistryReference<SoundEvent> = of("block.chiseled_bookshelf.insert.enchanted")
+    @JvmField
+    public val CHISELED_BOOKSHELF_STEP: RegistryReference<SoundEvent> = of("block.chiseled_bookshelf.step")
+    @JvmField
+    public val CHISELED_BOOKSHELF_PICKUP: RegistryReference<SoundEvent> = of("block.chiseled_bookshelf.pickup")
+    @JvmField
+    public val CHISELED_BOOKSHELF_PICKUP_ENCHANTED: RegistryReference<SoundEvent> = of("block.chiseled_bookshelf.pickup.enchanted")
+    @JvmField
+    public val CHISELED_BOOKSHELF_PLACE: RegistryReference<SoundEvent> = of("block.chiseled_bookshelf.place")
     @JvmField
     public val CHORUS_FLOWER_DEATH: RegistryReference<SoundEvent> = of("block.chorus_flower.death")
     @JvmField
@@ -1035,6 +1097,36 @@ public object SoundEvents {
     @JvmField
     public val HANGING_ROOTS_STEP: RegistryReference<SoundEvent> = of("block.hanging_roots.step")
     @JvmField
+    public val HANGING_SIGN_STEP: RegistryReference<SoundEvent> = of("block.hanging_sign.step")
+    @JvmField
+    public val HANGING_SIGN_BREAK: RegistryReference<SoundEvent> = of("block.hanging_sign.break")
+    @JvmField
+    public val HANGING_SIGN_FALL: RegistryReference<SoundEvent> = of("block.hanging_sign.fall")
+    @JvmField
+    public val HANGING_SIGN_HIT: RegistryReference<SoundEvent> = of("block.hanging_sign.hit")
+    @JvmField
+    public val HANGING_SIGN_PLACE: RegistryReference<SoundEvent> = of("block.hanging_sign.place")
+    @JvmField
+    public val NETHER_WOOD_HANGING_SIGN_STEP: RegistryReference<SoundEvent> = of("block.nether_wood_hanging_sign.step")
+    @JvmField
+    public val NETHER_WOOD_HANGING_SIGN_BREAK: RegistryReference<SoundEvent> = of("block.nether_wood_hanging_sign.break")
+    @JvmField
+    public val NETHER_WOOD_HANGING_SIGN_FALL: RegistryReference<SoundEvent> = of("block.nether_wood_hanging_sign.fall")
+    @JvmField
+    public val NETHER_WOOD_HANGING_SIGN_HIT: RegistryReference<SoundEvent> = of("block.nether_wood_hanging_sign.hit")
+    @JvmField
+    public val NETHER_WOOD_HANGING_SIGN_PLACE: RegistryReference<SoundEvent> = of("block.nether_wood_hanging_sign.place")
+    @JvmField
+    public val BAMBOO_WOOD_HANGING_SIGN_STEP: RegistryReference<SoundEvent> = of("block.bamboo_wood_hanging_sign.step")
+    @JvmField
+    public val BAMBOO_WOOD_HANGING_SIGN_BREAK: RegistryReference<SoundEvent> = of("block.bamboo_wood_hanging_sign.break")
+    @JvmField
+    public val BAMBOO_WOOD_HANGING_SIGN_FALL: RegistryReference<SoundEvent> = of("block.bamboo_wood_hanging_sign.fall")
+    @JvmField
+    public val BAMBOO_WOOD_HANGING_SIGN_HIT: RegistryReference<SoundEvent> = of("block.bamboo_wood_hanging_sign.hit")
+    @JvmField
+    public val BAMBOO_WOOD_HANGING_SIGN_PLACE: RegistryReference<SoundEvent> = of("block.bamboo_wood_hanging_sign.place")
+    @JvmField
     public val HOE_TILL: RegistryReference<SoundEvent> = of("item.hoe.till")
     @JvmField
     public val HOGLIN_AMBIENT: RegistryReference<SoundEvent> = of("entity.hoglin.ambient")
@@ -1451,6 +1543,36 @@ public object SoundEvents {
     @JvmField
     public val NETHER_WART_PLANTED: RegistryReference<SoundEvent> = of("item.nether_wart.plant")
     @JvmField
+    public val NETHER_WOOD_BREAK: RegistryReference<SoundEvent> = of("block.nether_wood.break")
+    @JvmField
+    public val NETHER_WOOD_FALL: RegistryReference<SoundEvent> = of("block.nether_wood.fall")
+    @JvmField
+    public val NETHER_WOOD_HIT: RegistryReference<SoundEvent> = of("block.nether_wood.hit")
+    @JvmField
+    public val NETHER_WOOD_PLACE: RegistryReference<SoundEvent> = of("block.nether_wood.place")
+    @JvmField
+    public val NETHER_WOOD_STEP: RegistryReference<SoundEvent> = of("block.nether_wood.step")
+    @JvmField
+    public val NETHER_WOOD_DOOR_CLOSE: RegistryReference<SoundEvent> = of("block.nether_wood_door.close")
+    @JvmField
+    public val NETHER_WOOD_DOOR_OPEN: RegistryReference<SoundEvent> = of("block.nether_wood_door.open")
+    @JvmField
+    public val NETHER_WOOD_TRAPDOOR_CLOSE: RegistryReference<SoundEvent> = of("block.nether_wood_trapdoor.close")
+    @JvmField
+    public val NETHER_WOOD_TRAPDOOR_OPEN: RegistryReference<SoundEvent> = of("block.nether_wood_trapdoor.open")
+    @JvmField
+    public val NETHER_WOOD_BUTTON_CLICK_OFF: RegistryReference<SoundEvent> = of("block.nether_wood_button.click_off")
+    @JvmField
+    public val NETHER_WOOD_BUTTON_CLICK_ON: RegistryReference<SoundEvent> = of("block.nether_wood_button.click_on")
+    @JvmField
+    public val NETHER_WOOD_PRESSURE_PLATE_CLICK_OFF: RegistryReference<SoundEvent> = of("block.nether_wood_pressure_plate.click_off")
+    @JvmField
+    public val NETHER_WOOD_PRESSURE_PLATE_CLICK_ON: RegistryReference<SoundEvent> = of("block.nether_wood_pressure_plate.click_on")
+    @JvmField
+    public val NETHER_WOOD_FENCE_GATE_CLOSE: RegistryReference<SoundEvent> = of("block.nether_wood_fence_gate.close")
+    @JvmField
+    public val NETHER_WOOD_FENCE_GATE_OPEN: RegistryReference<SoundEvent> = of("block.nether_wood_fence_gate.open")
+    @JvmField
     public val PACKED_MUD_BREAK: RegistryReference<SoundEvent> = of("block.packed_mud.break")
     @JvmField
     public val PACKED_MUD_FALL: RegistryReference<SoundEvent> = of("block.packed_mud.fall")
@@ -1572,6 +1694,18 @@ public object SoundEvents {
     public val NOTE_BLOCK_BIT: RegistryReference<SoundEvent> = of("block.note_block.bit")
     @JvmField
     public val NOTE_BLOCK_BANJO: RegistryReference<SoundEvent> = of("block.note_block.banjo")
+    @JvmField
+    public val NOTE_BLOCK_IMITATE_ZOMBIE: RegistryReference<SoundEvent> = of("block.note_block.imitate.zombie")
+    @JvmField
+    public val NOTE_BLOCK_IMITATE_SKELETON: RegistryReference<SoundEvent> = of("block.note_block.imitate.skeleton")
+    @JvmField
+    public val NOTE_BLOCK_IMITATE_CREEPER: RegistryReference<SoundEvent> = of("block.note_block.imitate.creeper")
+    @JvmField
+    public val NOTE_BLOCK_IMITATE_ENDER_DRAGON: RegistryReference<SoundEvent> = of("block.note_block.imitate.ender_dragon")
+    @JvmField
+    public val NOTE_BLOCK_IMITATE_WITHER_SKELETON: RegistryReference<SoundEvent> = of("block.note_block.imitate.wither_skeleton")
+    @JvmField
+    public val NOTE_BLOCK_IMITATE_PIGLIN: RegistryReference<SoundEvent> = of("block.note_block.imitate.piglin")
     @JvmField
     public val OCELOT_HURT: RegistryReference<SoundEvent> = of("entity.ocelot.hurt")
     @JvmField

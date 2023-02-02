@@ -18,30 +18,29 @@
  */
 package org.kryptonmc.krypton.state.property
 
-import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap
 import org.kryptonmc.api.state.Property
-import org.kryptonmc.krypton.registry.KryptonRegistries
-import java.util.IdentityHashMap
-import java.util.function.ToIntFunction
 
 object KryptonPropertyFactory : Property.Factory {
 
     private var cachedProperties: Map<String, KryptonProperty<*>>? = null
 
-    override fun forBoolean(name: String): Property<Boolean> = getAllProperties().get(name) as BooleanProperty
+    @JvmStatic
+    fun findByName(name: String): KryptonProperty<*> = getAllProperties().get(name)!!
 
-    override fun forInt(name: String): Property<Int> = getAllProperties().get(name) as IntProperty
+    override fun forBoolean(name: String): Property<Boolean> = findByName(name) as BooleanProperty
+
+    override fun forInt(name: String): Property<Int> = findByName(name) as IntProperty
 
     @Suppress("UNCHECKED_CAST")
-    override fun <E : Enum<E>> forEnum(name: String): Property<E> = getAllProperties().get(name) as EnumProperty<E>
+    override fun <E : Enum<E>> forEnum(name: String): Property<E> = findByName(name) as EnumProperty<E>
 
     @JvmStatic
-    private fun collectFieldProperties(): MutableMap<KryptonProperty<*>, String> {
-        val map = IdentityHashMap<KryptonProperty<*>, String>()
+    private fun collectFieldProperties(): Map<String, KryptonProperty<*>> {
+        val map = HashMap<String, KryptonProperty<*>>()
         KryptonProperties::class.java.declaredFields.forEach { field ->
             try {
                 val property = field.get(null)
-                if (property is KryptonProperty<*>) map.put(property, field.name)
+                if (property is KryptonProperty<*>) map.put(field.name, property)
             } catch (exception: IllegalAccessException) {
                 exception.printStackTrace()
             }
@@ -53,18 +52,7 @@ object KryptonPropertyFactory : Property.Factory {
     private fun getAllProperties(): Map<String, KryptonProperty<*>> {
         if (cachedProperties != null) return cachedProperties!!
         val builtins = collectFieldProperties()
-        val propertyUsages = HashMap<String, KryptonProperty<*>>()
-        val propertyCount = Object2IntOpenHashMap<String>()
-        KryptonRegistries.BLOCK.forEach { block ->
-            block.defaultState.availableProperties.forEach { property ->
-                val name = builtins.computeIfAbsent(property) {
-                    val count = propertyCount.computeIfAbsent(property.name, ToIntFunction { 0 }) + 1
-                    "${property.name}_$count"
-                }
-                propertyUsages.put(name, property)
-            }
-        }
-        cachedProperties = propertyUsages
-        return propertyUsages
+        cachedProperties = builtins
+        return builtins
     }
 }

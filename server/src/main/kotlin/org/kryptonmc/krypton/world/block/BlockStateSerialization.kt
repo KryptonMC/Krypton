@@ -67,7 +67,7 @@ object BlockStateSerialization {
     @JvmStatic
     private fun <S : KryptonState<*, S>, T : Comparable<T>> set(state: S, property: KryptonProperty<T>, name: String, propertiesTag: CompoundTag,
                                                                 blockStateTag: CompoundTag): S {
-        val value = property.fromString(name)
+        val value = property.fromString(propertiesTag.getString(name))
         if (value != null) return state.setProperty(property, value)
         LOGGER.warn("Unable to read property $name with value ${propertiesTag.getString(name)} for block state $blockStateTag!")
         return state

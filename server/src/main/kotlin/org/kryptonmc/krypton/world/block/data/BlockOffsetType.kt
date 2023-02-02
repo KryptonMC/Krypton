@@ -16,23 +16,11 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.world.block
+package org.kryptonmc.krypton.world.block.data
 
-import org.kryptonmc.krypton.state.property.BooleanProperty
-import org.kryptonmc.krypton.state.property.IntProperty
-import org.kryptonmc.krypton.state.property.KryptonProperties
-import org.kryptonmc.krypton.world.block.state.KryptonBlockState
-import java.util.function.ToIntFunction
+enum class BlockOffsetType {
 
-class CandleBlock(properties: Properties) : KryptonBlock(properties) {
-
-    companion object {
-
-        @JvmField
-        val CANDLES: IntProperty = KryptonProperties.CANDLES
-        @JvmField
-        val LIT: BooleanProperty = KryptonProperties.LIT
-        @JvmField
-        val LIGHT_EMISSION: ToIntFunction<KryptonBlockState> = ToIntFunction { if (it.requireProperty(LIT)) 3 * it.requireProperty(CANDLES) else 0 }
-    }
+    NONE,
+    XZ,
+    XYZ
 }

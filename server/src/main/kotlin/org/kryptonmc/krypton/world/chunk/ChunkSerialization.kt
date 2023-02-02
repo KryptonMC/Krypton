@@ -28,6 +28,7 @@ import org.kryptonmc.krypton.util.nbt.getDataVersion
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.krypton.world.block.KryptonBlocks
 import org.kryptonmc.krypton.world.block.palette.PaletteHolder
+import org.kryptonmc.krypton.world.block.state.KryptonBlockState
 import org.kryptonmc.krypton.world.chunk.data.ChunkSection
 import org.kryptonmc.krypton.world.chunk.data.Heightmap
 import org.kryptonmc.nbt.CompoundTag
@@ -38,6 +39,7 @@ import org.kryptonmc.nbt.LongArrayTag
 import org.kryptonmc.nbt.StringTag
 import org.kryptonmc.nbt.buildCompound
 import org.kryptonmc.nbt.compound
+import org.kryptonmc.serialization.nbt.NbtOps
 import java.util.EnumSet
 
 @Suppress("StringLiteralDuplication")
@@ -132,8 +134,7 @@ object ChunkSerialization {
                 val section = chunk.sections()[sectionIndex]
                 val sectionData = compound {
                     putByte("Y", i.toByte())
-                    // FIXME: Fix this in next update
-//                        put("block_states", section.blocks.write(KryptonBlockState.CODEC::encode))
+                    put("block_states", section.blocks.write { KryptonBlockState.CODEC.encodeStart(it, NbtOps.INSTANCE).result().get() })
                     put("biomes", section.biomes.write { StringTag.of(it.key().asString()) })
                     if (section.blockLight.isNotEmpty()) putByteArray("BlockLight", section.blockLight)
                     if (section.skyLight.isNotEmpty()) putByteArray("SkyLight", section.skyLight)

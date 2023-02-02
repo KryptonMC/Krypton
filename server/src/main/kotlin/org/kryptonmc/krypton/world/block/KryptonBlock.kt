@@ -20,17 +20,12 @@ package org.kryptonmc.krypton.world.block
 
 import com.github.benmanes.caffeine.cache.Caffeine
 import net.kyori.adventure.key.Key
+import org.kryptonmc.api.block.Block
+import org.kryptonmc.api.block.BlockSoundGroup
 import org.kryptonmc.api.block.BlockState
-import org.kryptonmc.api.statistic.StatisticTypes
 import org.kryptonmc.api.util.Direction
-import org.kryptonmc.api.world.biome.Precipitation
 import org.kryptonmc.internal.annotations.CataloguedBy
-import org.kryptonmc.krypton.entity.KryptonEntity
-import org.kryptonmc.krypton.entity.KryptonLivingEntity
-import org.kryptonmc.krypton.entity.player.KryptonPlayer
-import org.kryptonmc.krypton.item.KryptonItemStack
 import org.kryptonmc.krypton.item.KryptonItemType
-import org.kryptonmc.krypton.item.context.BlockPlaceContext
 import org.kryptonmc.krypton.registry.holder.Holder
 import org.kryptonmc.krypton.registry.KryptonRegistries
 import org.kryptonmc.krypton.shapes.util.BooleanOperator
@@ -42,93 +37,58 @@ import org.kryptonmc.krypton.state.property.KryptonProperty
 import org.kryptonmc.krypton.coordinate.BlockPos
 import org.kryptonmc.krypton.util.map.IntHashBiMap
 import org.kryptonmc.krypton.util.Keys
-import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.krypton.world.components.WorldAccessor
-import org.kryptonmc.krypton.world.WorldEvents
-import org.kryptonmc.krypton.world.block.entity.KryptonBlockEntity
-import org.kryptonmc.krypton.world.block.state.BlockBehaviour
+import org.kryptonmc.krypton.world.block.handler.BlockHandler
+import org.kryptonmc.krypton.world.block.handler.BlockPropertiesProvider
+import org.kryptonmc.krypton.world.block.handler.RedstoneDataProvider
+import org.kryptonmc.krypton.world.block.handler.BlockShapesProvider
 import org.kryptonmc.krypton.world.block.state.KryptonBlockState
 import org.kryptonmc.krypton.world.chunk.flag.SetBlockFlag
-import org.kryptonmc.krypton.world.components.BlockGetter
-import java.util.function.Function
+import org.kryptonmc.krypton.world.flag.FeatureElement
+import org.kryptonmc.krypton.world.flag.FeatureFlagSet
 
 @Suppress("LeakingThis")
 @CataloguedBy(KryptonBlocks::class)
-open class KryptonBlock(properties: Properties) : BlockBehaviour(properties), StateHolderDelegate<BlockState, KryptonBlockState> {
+class KryptonBlock(
+    val properties: BlockProperties,
+    val handler: BlockHandler,
+    val propertiesProvider: BlockPropertiesProvider,
+    val redstoneDataProvider: RedstoneDataProvider,
+    val shapesProvider: BlockShapesProvider,
+    stateProperties: Collection<KryptonProperty<*>>
+) : Block, FeatureElement, StateHolderDelegate<BlockState, KryptonBlockState> {
 
-    final override val stateDefinition: StateDefinition<KryptonBlock, KryptonBlockState>
-    private var defaultBlockState: KryptonBlockState
-    private var descriptionId: String? = null
-    private var item: KryptonItemType? = null
-    private val defaultItemStack: KryptonItemStack by lazy { KryptonItemStack(this) }
+    override val stateDefinition: StateDefinition<KryptonBlock, KryptonBlockState>
+
     val builtInRegistryHolder: Holder.Reference<KryptonBlock> = KryptonRegistries.BLOCK.createIntrusiveHolder(this)
 
-    final override val defaultState: KryptonBlockState
+    override val explosionResistance: Double
+        get() = properties.explosionResistance.toDouble()
+    override val soundGroup: BlockSoundGroup
+        get() = properties.soundGroup
+    override val friction: Double
+        get() = properties.friction.toDouble()
+
+    override val hasGravity: Boolean
+        get() = propertiesProvider.hasGravity()
+    override val hasBlockEntity: Boolean
+        get() = propertiesProvider.hasBlockEntity()
+
+    override val defaultState: KryptonBlockState
         get() = defaultBlockState
     override val canRespawnIn: Boolean
-        get() = !material.solid && !material.liquid
+        get() = !properties.material.solid && !properties.material.liquid
+
+    private val defaultBlockState: KryptonBlockState
+    private var descriptionId: String? = null
+    private var item: KryptonItemType? = null
+    private var drops: Key? = null
 
     init {
         val builder = StateDefinition.Builder<KryptonBlock, KryptonBlockState>(this)
-        createStateDefinition(builder)
+        builder.add(stateProperties)
         stateDefinition = builder.build({ it.defaultBlockState }, ::KryptonBlockState)
         defaultBlockState = stateDefinition.any()
-    }
-
-    open fun randomlyTicks(state: KryptonBlockState): Boolean = randomlyTicks
-
-    open fun propagatesSkylightDown(state: KryptonBlockState, world: BlockGetter, pos: BlockPos): Boolean =
-        !isShapeFullBlock(state.getShape(world, pos)) && state.asFluid().isEmpty
-
-    open fun destroy(world: WorldAccessor, pos: BlockPos, state: KryptonBlockState) {
-        // Do nothing by default
-    }
-
-    open fun stepOn(world: KryptonWorld, pos: BlockPos, state: KryptonBlockState, entity: KryptonEntity) {
-        // Do nothing by default
-    }
-
-    open fun getPlacementState(context: BlockPlaceContext): KryptonBlockState? = defaultBlockState
-
-    open fun playerDestroy(world: KryptonWorld, player: KryptonPlayer, pos: BlockPos, state: KryptonBlockState, entity: KryptonBlockEntity?,
-                           tool: KryptonItemStack) {
-        player.statisticsTracker.incrementStatistic(StatisticTypes.BLOCK_MINED.get().getStatistic(this))
-        // TODO: Cause exhaustion and drop items
-    }
-
-    open fun setPlacedBy(world: KryptonWorld, pos: BlockPos, state: KryptonBlockState, entity: KryptonLivingEntity?, stack: KryptonItemStack) {
-        // Do nothing by default
-    }
-
-    open fun fallOn(world: KryptonWorld, state: KryptonBlockState, pos: BlockPos, entity: KryptonEntity, fallDistance: Float) {
-        // TODO: Cause fall damage to entity
-    }
-
-    open fun updateEntityAfterFallOn(world: BlockGetter, entity: KryptonEntity) {
-        entity.velocity = entity.velocity.multiply(1.0, 0.0, 1.0)
-    }
-
-    open fun getItemStack(world: BlockGetter, pos: BlockPos, state: KryptonBlockState): KryptonItemStack = defaultItemStack
-
-    open fun spawnDestroyParticles(world: KryptonWorld, player: KryptonPlayer, pos: BlockPos, state: KryptonBlockState) {
-        world.worldEvent(pos, WorldEvents.DESTROY_BLOCK, idOf(state), player)
-    }
-
-    open fun playerWillDestroy(world: KryptonWorld, pos: BlockPos, state: KryptonBlockState, player: KryptonPlayer) {
-        spawnDestroyParticles(world, player, pos, state)
-        // TODO: Anger nearby piglins if state is guarded by piglins and trigger game event for sculk sensors
-    }
-
-    open fun handlePrecipitation(state: KryptonBlockState, world: KryptonWorld, pos: BlockPos, precipitation: Precipitation) {
-        // Do nothing by default
-    }
-
-    protected open fun createStateDefinition(builder: StateDefinition.Builder<KryptonBlock, KryptonBlockState>) {
-        // Do nothing by default
-    }
-
-    protected fun registerDefaultState(state: KryptonBlockState) {
-        defaultBlockState = state
     }
 
     fun withPropertiesOf(state: KryptonBlockState): KryptonBlockState {
@@ -136,9 +96,6 @@ open class KryptonBlock(properties: Properties) : BlockBehaviour(properties), St
         state.block.stateDefinition.properties().forEach { if (result.hasProperty(it)) result = copyProperty(state, result, it) }
         return result
     }
-
-    protected fun getShapeForEachState(mapper: Function<KryptonBlockState, VoxelShape>): Map<KryptonBlockState, VoxelShape> =
-        stateDefinition.states.associateWith(mapper::apply)
 
     override fun asItem(): KryptonItemType {
         if (item == null) item = KryptonItemType.fromBlock(this)
@@ -153,6 +110,16 @@ open class KryptonBlock(properties: Properties) : BlockBehaviour(properties), St
         if (descriptionId == null) descriptionId = Keys.translation("block", key())
         return descriptionId!!
     }
+
+    fun lootTable(): Key {
+        if (drops == null) {
+            val registryKey = requireNotNull(KryptonRegistries.BLOCK.getKey(this)) { "Could not find registry key for block $this!" }
+            drops = Key.key(registryKey.namespace(), "blocks/${registryKey.value()}")
+        }
+        return drops!!
+    }
+
+    override fun requiredFeatures(): FeatureFlagSet = propertiesProvider.requiredFeatures()
 
     override fun toString(): String = "KryptonBlock(${key()})"
 

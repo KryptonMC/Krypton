@@ -18,17 +18,23 @@
  */
 package org.kryptonmc.krypton.world.block
 
-import org.kryptonmc.krypton.shapes.collision.CollisionContext
-import org.kryptonmc.krypton.shapes.Shapes
-import org.kryptonmc.krypton.shapes.VoxelShape
-import org.kryptonmc.krypton.coordinate.BlockPos
-import org.kryptonmc.krypton.world.block.data.RenderShape
-import org.kryptonmc.krypton.world.block.state.KryptonBlockState
-import org.kryptonmc.krypton.world.components.BlockGetter
+import net.kyori.adventure.key.Key
+import org.kryptonmc.api.block.BlockSoundGroup
+import org.kryptonmc.krypton.world.material.Material
 
-class AirBlock(properties: Properties) : KryptonBlock(properties) {
-
-    override fun getRenderShape(state: KryptonBlockState): RenderShape = RenderShape.INVISIBLE
-
-    override fun getShape(state: KryptonBlockState, world: BlockGetter, pos: BlockPos, context: CollisionContext): VoxelShape = Shapes.empty()
-}
+@JvmRecord
+data class BlockProperties(
+    val material: Material,
+    val hasCollision: Boolean,
+    val soundGroup: BlockSoundGroup,
+    val explosionResistance: Float,
+    val destroyTime: Float,
+    val requiresCorrectTool: Boolean,
+    val friction: Float,
+    val speedFactor: Float,
+    val jumpFactor: Float,
+    val drops: Key?,
+    val canOcclude: Boolean,
+    val isAir: Boolean,
+    val hasDynamicShape: Boolean
+)

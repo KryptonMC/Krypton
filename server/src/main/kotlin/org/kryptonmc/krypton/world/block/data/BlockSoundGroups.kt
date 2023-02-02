@@ -291,6 +291,26 @@ object BlockSoundGroups {
     @JvmField
     val PACKED_MUD: KryptonBlockSoundGroup = create(1.0F, 1.0F, SoundEvents.PACKED_MUD_BREAK, SoundEvents.PACKED_MUD_STEP,
         SoundEvents.PACKED_MUD_PLACE, SoundEvents.PACKED_MUD_HIT, SoundEvents.PACKED_MUD_FALL)
+    @JvmField
+    val HANGING_SIGN: KryptonBlockSoundGroup = create(1.0F, 1.0F, SoundEvents.HANGING_SIGN_BREAK, SoundEvents.HANGING_SIGN_STEP,
+        SoundEvents.HANGING_SIGN_PLACE, SoundEvents.HANGING_SIGN_HIT, SoundEvents.HANGING_SIGN_FALL)
+    @JvmField
+    val NETHER_WOOD_HANGING_SIGN: KryptonBlockSoundGroup = create(1.0F, 1.0F, SoundEvents.NETHER_WOOD_HANGING_SIGN_BREAK,
+        SoundEvents.NETHER_WOOD_HANGING_SIGN_STEP, SoundEvents.NETHER_WOOD_HANGING_SIGN_PLACE, SoundEvents.NETHER_WOOD_HANGING_SIGN_HIT,
+        SoundEvents.NETHER_WOOD_HANGING_SIGN_FALL)
+    @JvmField
+    val BAMBOO_WOOD_HANGING_SIGN: KryptonBlockSoundGroup = create(1.0F, 1.0F, SoundEvents.BAMBOO_WOOD_HANGING_SIGN_BREAK,
+        SoundEvents.BAMBOO_WOOD_HANGING_SIGN_STEP, SoundEvents.BAMBOO_WOOD_HANGING_SIGN_PLACE, SoundEvents.BAMBOO_WOOD_HANGING_SIGN_HIT,
+        SoundEvents.BAMBOO_WOOD_HANGING_SIGN_FALL)
+    @JvmField
+    val BAMBOO_WOOD: KryptonBlockSoundGroup = create(1.0F, 1.0F, SoundEvents.BAMBOO_WOOD_BREAK, SoundEvents.BAMBOO_WOOD_STEP,
+        SoundEvents.BAMBOO_WOOD_PLACE, SoundEvents.BAMBOO_WOOD_HIT, SoundEvents.BAMBOO_WOOD_FALL)
+    @JvmField
+    val NETHER_WOOD: KryptonBlockSoundGroup = create(1.0F, 1.0F, SoundEvents.NETHER_WOOD_BREAK, SoundEvents.NETHER_WOOD_STEP,
+        SoundEvents.NETHER_WOOD_PLACE, SoundEvents.NETHER_WOOD_HIT, SoundEvents.NETHER_WOOD_FALL)
+    @JvmField
+    val CHISELED_BOOKSHELF: KryptonBlockSoundGroup = create(1.0F, 1.0F, SoundEvents.CHISELED_BOOKSHELF_BREAK, SoundEvents.CHISELED_BOOKSHELF_STEP,
+        SoundEvents.CHISELED_BOOKSHELF_PLACE, SoundEvents.CHISELED_BOOKSHELF_HIT, SoundEvents.CHISELED_BOOKSHELF_FALL)
 
     @JvmStatic
     private fun create(volume: Float, pitch: Float, breakSound: Event, step: Event, place: Event, hit: Event, fall: Event): KryptonBlockSoundGroup =

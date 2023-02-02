@@ -16,23 +16,14 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.world.block
+package org.kryptonmc.krypton.world.block.handlers
 
-import org.kryptonmc.krypton.state.property.BooleanProperty
-import org.kryptonmc.krypton.state.property.IntProperty
-import org.kryptonmc.krypton.state.property.KryptonProperties
-import org.kryptonmc.krypton.world.block.state.KryptonBlockState
+import org.kryptonmc.krypton.world.block.handler.BlockHandler
+import org.kryptonmc.krypton.world.block.handler.BlockPropertiesProvider
+import org.kryptonmc.krypton.world.block.handler.BlockShapesProvider
+import org.kryptonmc.krypton.world.block.handler.RedstoneDataProvider
 
-class SeaPickleBlock(properties: Properties) : KryptonBlock(properties) {
+object DefaultBlockHandler : BlockHandler, BlockPropertiesProvider, BlockShapesProvider, RedstoneDataProvider {
 
-    companion object {
-
-        @JvmField
-        val PICKLES: IntProperty = KryptonProperties.PICKLES
-        @JvmField
-        val WATERLOGGED: BooleanProperty = KryptonProperties.WATERLOGGED
-
-        @JvmStatic
-        fun isDead(state: KryptonBlockState): Boolean = !state.requireProperty(WATERLOGGED)
-    }
+    override fun isApplicableBlockType(name: String): Boolean = true
 }

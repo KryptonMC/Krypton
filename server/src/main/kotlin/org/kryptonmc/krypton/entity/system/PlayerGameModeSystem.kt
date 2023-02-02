@@ -217,15 +217,15 @@ class PlayerGameModeSystem(private val player: KryptonPlayer) {
         if (player.isBlockActionRestricted(pos)) return false
 
         // Call pre-destroy, try and remove the block, and if we changed the block, call destroy
-        block.playerWillDestroy(player.world, pos, state, player)
+        block.handler.playerWillDestroy(player.world, pos, state, player)
         val hasChanged = player.world.removeBlock(pos, false)
-        if (hasChanged) block.destroy(player.world, pos, state)
+        if (hasChanged) block.handler.destroy(player.world, pos, state)
 
         if (player.gameMode == GameMode.CREATIVE) return true // We're done, since the bit after this is for mining, which doesn't happen in creative
         val item = player.inventory.mainHand
         val hasCorrectTool = player.hasCorrectTool(state)
         item.type.handler().mineBlock(player, item, player.world, state, pos)
-        if (hasChanged && hasCorrectTool) block.playerDestroy(player.world, player, pos, state, null, item)
+        if (hasChanged && hasCorrectTool) block.handler.playerDestroy(player.world, state, pos, null, player, item)
         return true
     }
 

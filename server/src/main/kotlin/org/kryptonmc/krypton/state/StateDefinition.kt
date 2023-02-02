@@ -83,7 +83,9 @@ class StateDefinition<O, S : KryptonState<O, S>>(
 
         private val properties = HashMap<String, KryptonProperty<*>>()
 
-        fun add(vararg properties: KryptonProperty<*>): Builder<O, S> = apply {
+        fun add(vararg properties: KryptonProperty<*>): Builder<O, S> = add(properties.asList())
+
+        fun add(properties: Collection<KryptonProperty<*>>): Builder<O, S> = apply {
             properties.forEach {
                 validateProperty(it)
                 this.properties.put(it.name, it)
