@@ -31,13 +31,14 @@ private val logger = LogManager.getLogger("Generator")
 private val gson = GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create()
 
 fun main() {
-    val outputPath = Path.of("server/build/resources/main")
-    if (!Files.exists(outputPath)) {
-        try {
-            Files.createDirectories(outputPath)
-        } catch (exception: IOException) {
-            throw ExceptionInInitializerError(exception)
-        }
+    val mainResources = Path.of("../../server/build/resources/main")
+    val testResources = Path.of("../../server/build/resources/test")
+
+    try {
+        Files.createDirectories(mainResources)
+        Files.createDirectories(testResources)
+    } catch (exception: IOException) {
+        throw ExceptionInInitializerError(exception)
     }
 
     SharedConstants.tryDetectVersion()
@@ -45,7 +46,8 @@ fun main() {
 
     val generators = setOf<DataGenerator>(BlockDataGenerator)
     for (generator in generators) {
-        generateData(generator, outputPath)
+        generateData(generator, mainResources)
+        generateData(generator, testResources)
     }
 }
 
