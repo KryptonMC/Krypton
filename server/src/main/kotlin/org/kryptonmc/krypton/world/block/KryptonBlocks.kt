@@ -1905,7 +1905,6 @@ object KryptonBlocks {
                 state.initCache()
             }
             block.lootTable()
-            println("State count for ${block.key()}: ${block.stateDefinition.states.size}")
         }
     }
 
