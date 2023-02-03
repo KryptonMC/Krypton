@@ -81,11 +81,7 @@ class ChunkManager(private val world: KryptonWorld) : AutoCloseable {
         val chunksInRange = (viewDistance * 2 + 1) * (viewDistance * 2 + 1)
         for (i in 0 until chunksInRange) {
             val pos = Maths.chunkInSpiral(i, chunkPos.x, chunkPos.z)
-            val chunk = getChunk(pos)
-            if (chunk == null) {
-                LOGGER.warn("Chunk at $pos is not loaded, but player ${player.name} is in range of it!")
-                continue
-            }
+            if (getChunk(pos) == null) continue // Not loaded, no need to unload it
 
             val playerSet = playersByChunk.get(pos.pack()) ?: continue
             if (playerSet.isEmpty()) {
