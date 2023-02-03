@@ -19,7 +19,6 @@
 package org.kryptonmc.krypton.adventure.provider
 
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer
-import org.kryptonmc.krypton.adventure.KryptonAdventure
 import java.util.function.Consumer
 
 class KryptonLegacyComponentSerializerProvider : LegacyComponentSerializer.Provider {
@@ -33,6 +32,5 @@ class KryptonLegacyComponentSerializerProvider : LegacyComponentSerializer.Provi
     private fun createSerializer(char: Char): LegacyComponentSerializer = LegacyComponentSerializer.builder()
         .character(char)
         .hexCharacter(LegacyComponentSerializer.HEX_CHAR)
-        .flattener(KryptonAdventure.FLATTENER)
         .build()
 }

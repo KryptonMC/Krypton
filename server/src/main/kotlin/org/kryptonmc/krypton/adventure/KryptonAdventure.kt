@@ -22,7 +22,6 @@ import com.mojang.brigadier.Message
 import it.unimi.dsi.fastutil.objects.Object2IntArrayMap
 import net.kyori.adventure.inventory.Book
 import net.kyori.adventure.text.Component
-import net.kyori.adventure.text.TranslatableComponent
 import net.kyori.adventure.text.flattener.ComponentFlattener
 import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer
@@ -33,21 +32,12 @@ import org.kryptonmc.krypton.item.downcast
 import org.kryptonmc.krypton.item.meta.KryptonWrittenBookMeta
 import org.kryptonmc.krypton.util.gson.GsonHelper
 import org.kryptonmc.krypton.util.Reflection
-import org.kryptonmc.krypton.locale.MinecraftTranslationManager
 
 /**
  * Various things used by Krypton for supporting Adventure.
  */
 object KryptonAdventure {
 
-    /**
-     * This flattener adds the use of the official Minecraft translations from en_us.json
-     * to render translatable components when they are flattened.
-     */
-    @JvmField
-    val FLATTENER: ComponentFlattener = ComponentFlattener.basic().toBuilder()
-        .complexMapper(TranslatableComponent::class.java) { translatable, mapper -> mapper.accept(MinecraftTranslationManager.render(translatable)) }
-        .build()
     // We need to do this because the only other solution, which is to use the NAMES index, doesn't have the guaranteed ordering
     // that we require to map the IDs properly. This internal list has the ordering we need.
     private val NAMED_TEXT_COLORS = Reflection.accessField<NamedTextColor, List<NamedTextColor>>("VALUES")
@@ -89,7 +79,7 @@ object KryptonAdventure {
     @JvmStatic
     fun toPlainText(input: Component, maximumLength: Int): String {
         val result = StringBuilder()
-        FLATTENER.flatten(input) {
+        ComponentFlattener.basic().flatten(input) {
             val remaining = maximumLength - result.length
             if (remaining <= 0) return@flatten
             result.append(if (it.length <= remaining) it else it.substring(0, remaining))

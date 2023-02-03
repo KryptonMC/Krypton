@@ -25,5 +25,5 @@ import org.kryptonmc.api.event.player.QuitEvent
 
 class KryptonQuitEvent(override val player: Player) : QuitEvent {
 
-    override var quitMessage: Component? = Component.translatable("multiplayer.player.text", NamedTextColor.YELLOW, player.displayName)
+    override var quitMessage: Component? = Component.translatable("multiplayer.player.left", NamedTextColor.YELLOW, player.displayName)
 }

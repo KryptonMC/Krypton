@@ -19,13 +19,11 @@
 package org.kryptonmc.krypton.adventure.provider
 
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer
-import org.kryptonmc.krypton.adventure.KryptonAdventure
 import java.util.function.Consumer
 
 class KryptonPlainTextComponentSerializerProvider : PlainTextComponentSerializer.Provider {
 
-    override fun plainTextSimple(): PlainTextComponentSerializer =
-        PlainTextComponentSerializer.builder().flattener(KryptonAdventure.FLATTENER).build()
+    override fun plainTextSimple(): PlainTextComponentSerializer = PlainTextComponentSerializer.builder().build()
 
     override fun plainText(): Consumer<PlainTextComponentSerializer.Builder> = Consumer {}
 }

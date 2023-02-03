@@ -23,7 +23,6 @@ import net.kyori.adventure.permission.PermissionChecker
 import net.kyori.adventure.pointer.Pointers
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer
-import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer
 import net.kyori.adventure.util.TriState
 import net.minecrell.terminalconsole.SimpleTerminalConsole
 import org.apache.logging.log4j.LogManager
@@ -66,7 +65,7 @@ class KryptonConsole(override val server: KryptonServer) : SimpleTerminalConsole
     }
 
     fun logChatMessage(message: Component, type: RichChatType.Bound, prefix: String?) {
-        val messageText = PlainTextComponentSerializer.plainText().serialize(type.decorate(message))
+        val messageText = LegacyComponentSerializer.legacySection().serialize(type.decorate(MinecraftTranslationManager.render(message)))
         if (prefix != null) LOGGER.info("[$prefix] $messageText") else LOGGER.info(messageText)
     }
 
