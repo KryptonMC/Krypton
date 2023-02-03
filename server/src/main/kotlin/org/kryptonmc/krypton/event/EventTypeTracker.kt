@@ -24,7 +24,6 @@ package org.kryptonmc.krypton.event
 
 import com.google.common.collect.HashMultimap
 import com.google.common.reflect.TypeToken
-import kotlinx.collections.immutable.toImmutableSet
 
 /**
  * This is a fix that Velocity implemented that solves the issue of the handlers

@@ -19,7 +19,6 @@
 package org.kryptonmc.krypton.world.chunk
 
 import ca.spottedleaf.dataconverter.minecraft.datatypes.MCTypeRegistry
-import org.apache.logging.log4j.LogManager
 import org.kryptonmc.api.world.biome.Biomes
 import org.kryptonmc.krypton.KryptonPlatform
 import org.kryptonmc.krypton.coordinate.ChunkPos
@@ -45,20 +44,12 @@ import java.util.EnumSet
 @Suppress("StringLiteralDuplication")
 object ChunkSerialization {
 
-    private val LOGGER = LogManager.getLogger()
-
     @JvmStatic
     fun read(world: KryptonWorld, pos: ChunkPos, data: CompoundTag): KryptonChunk {
         val dataVersion = data.getDataVersion()
 
-        // We won't upgrade data if use of the data converter is disabled.
-        if (dataVersion < KryptonPlatform.worldVersion && !world.server.config.advanced.useDataConverter) {
-            DataConversion.sendWarning(LOGGER, "chunk at $pos")
-            error("Tried to load old chunk from version $dataVersion when data conversion is disabled!")
-        }
-
         // Don't upgrade if the version is not older than our version.
-        val newData = DataConversion.upgrade(data, MCTypeRegistry.CHUNK, dataVersion, true)
+        val newData = if (dataVersion < KryptonPlatform.worldVersion) DataConversion.upgrade(data, MCTypeRegistry.CHUNK, dataVersion, true) else data
         val heightmaps = newData.getCompound("Heightmaps")
 
         val sectionList = newData.getList("sections", CompoundTag.ID)

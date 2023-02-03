@@ -46,7 +46,7 @@ import kotlin.math.max
 
 class KryptonWorldManager(override val server: KryptonServer, private val worldFolder: Path) : WorldManager {
 
-    private val storageManager = WorldDataManager(worldFolder, server.config.advanced.useDataConverter)
+    private val storageManager = WorldDataManager(worldFolder)
     private val worldExecutor = ThreadPoolBuilder.create()
         .coreSize(0)
         .maximumSize(max(1, Runtime.getRuntime().availableProcessors() / 2))

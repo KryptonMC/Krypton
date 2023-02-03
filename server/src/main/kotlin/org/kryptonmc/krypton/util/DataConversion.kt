@@ -21,7 +21,6 @@ package org.kryptonmc.krypton.util
 import ca.spottedleaf.dataconverter.minecraft.MCDataConverter
 import ca.spottedleaf.dataconverter.minecraft.datatypes.MCDataType
 import com.google.gson.JsonObject
-import org.apache.logging.log4j.Logger
 import org.kryptonmc.krypton.KryptonPlatform
 import org.kryptonmc.nbt.CompoundTag
 
@@ -42,14 +41,5 @@ object DataConversion {
             return MCDataConverter.convertJson(type, data, false, fromVersion, KryptonPlatform.worldVersion)
         }
         return data
-    }
-
-    @JvmStatic
-    fun sendWarning(logger: Logger, information: String) {
-        logger.error("The server attempted to load $information from a earlier version of Minecraft when data conversion is disabled!")
-        logger.info("If you would like to use data conversion, provide the --upgrade-data or --use-data-converter flag(s) to the JAR on startup.")
-        logger.warn("While this tool should be mostly stable, it may corrupt your world in some cases. It is recommended to back up your world " +
-                "to avoid this.")
-        logger.warn("If your world corrupts whilst using this tool that is YOUR responsibility.")
     }
 }

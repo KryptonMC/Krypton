@@ -28,8 +28,6 @@ data class AdvancedCategory(
     val synchronizeChunkWrites: Boolean = true,
     @Comment("Whether the server should load and save player data to and from files")
     val serializePlayerData: Boolean = true,
-    @Comment("If worlds from previous versions should be upgraded to the current version.")
-    val useDataConverter: Boolean = true,
     @Comment("If the server should enforce that all game profiles have properties with valid signatures.")
     val enforceSecureProfiles: Boolean = true,
     @Comment("The maximum number of updates to block neighbours that may be executed in bulk.")

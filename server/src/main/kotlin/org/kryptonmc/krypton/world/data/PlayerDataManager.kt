@@ -58,13 +58,8 @@ class PlayerDataManager(val folder: Path, private val serializeData: Boolean) {
         }
 
         val version = if (nbt.contains("DataVersion", 99)) nbt.getInt("DataVersion") else -1
-        // We won't upgrade data if use of the data converter is disabled.
-        if (version < KryptonPlatform.worldVersion && !player.server.config.advanced.useDataConverter) {
-            DataConversion.sendWarning(LOGGER, "data for player with UUID ${player.uuid}")
-            error("Tried to load old player data from version $version when data conversion is disabled!")
-        }
+        val data = if (version < KryptonPlatform.worldVersion) DataConversion.upgrade(nbt, MCTypeRegistry.PLAYER, version) else nbt
 
-        val data = DataConversion.upgrade(nbt, MCTypeRegistry.PLAYER, version)
         PlayerSerializer.load(player, data)
         return data
     }

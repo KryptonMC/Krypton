@@ -28,7 +28,7 @@ import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.StandardCopyOption
 
-class WorldDataManager(private val folder: Path, private val useDataConverter: Boolean) {
+class WorldDataManager(private val folder: Path) {
 
     fun load(name: String): PrimaryWorldData? {
         val path = folder.resolve(name)
@@ -78,14 +78,11 @@ class WorldDataManager(private val folder: Path, private val useDataConverter: B
     private fun read(folder: Path, path: Path): PrimaryWorldData? {
         return try {
             val data = TagIO.read(path, TagCompression.GZIP).getCompound("Data")
-            val version = if (data.contains("DataVersion", 99)) data.getInt("DataVersion") else -1
-            // We won't upgrade data if use of the data converter is disabled.
-            if (version < KryptonPlatform.worldVersion && !useDataConverter) {
-                DataConversion.sendWarning(LOGGER, "data for world at ${path.toAbsolutePath()}")
-                error("Attempted to load old world data from version $version when data conversion is disabled!")
-            }
 
-            PrimaryWorldData.parse(folder, DataConversion.upgrade(data, MCTypeRegistry.LEVEL, version))
+            val version = if (data.contains("DataVersion", 99)) data.getInt("DataVersion") else -1
+            val newData = if (version < KryptonPlatform.worldVersion) DataConversion.upgrade(data, MCTypeRegistry.LEVEL, version) else data
+
+            PrimaryWorldData.parse(folder, newData)
         } catch (exception: Exception) {
             LOGGER.error("Error whilst trying to read world at $folder!", exception)
             null

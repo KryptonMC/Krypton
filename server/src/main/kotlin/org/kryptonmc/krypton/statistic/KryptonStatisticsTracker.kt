@@ -133,14 +133,12 @@ class KryptonStatisticsTracker(private val player: KryptonPlayer, private val fi
             json as JsonObject
             if (!json.has(DATA_VERSION_KEY) || !json.get(DATA_VERSION_KEY).isJsonPrimitive) json.addProperty(DATA_VERSION_KEY, OLD_VERSION)
             val version = json.get(DATA_VERSION_KEY).asInt
-            // We won't upgrade data if use of the data converter is disabled.
-            if (version < KryptonPlatform.worldVersion && !player.server.config.advanced.useDataConverter) {
-                DataConversion.sendWarning(LOGGER, "statistics data for player with UUID ${player.uuid}")
-                error("Tried to load old statistics from version $version when data conversion is disabled!")
-            }
 
-            // Don't use data converter if the version isn't older than our version.
-            val data = DataConversion.upgrade(json, MCTypeRegistry.STATS, json.get("DataVersion").asInt)
+            val data = if (version < KryptonPlatform.worldVersion) {
+                DataConversion.upgrade(json, MCTypeRegistry.STATS, json.get("DataVersion").asInt)
+            } else {
+                json
+            }
             if (data.get(STATS_KEY).asJsonObject.size() == 0) return
 
             val stats = data.get(STATS_KEY)?.asJsonObject ?: JsonObject()
