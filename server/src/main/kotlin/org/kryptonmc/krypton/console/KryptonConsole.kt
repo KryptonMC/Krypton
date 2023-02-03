@@ -65,6 +65,8 @@ class KryptonConsole(override val server: KryptonServer) : SimpleTerminalConsole
     }
 
     fun logChatMessage(message: Component, type: RichChatType.Bound, prefix: String?) {
+        if (!server.config.advanced.logPlayerChatMessages) return
+
         val messageText = LegacyComponentSerializer.legacySection().serialize(MinecraftTranslationManager.render(type.decorate(message)))
         if (prefix != null) LOGGER.info("[$prefix] $messageText") else LOGGER.info(messageText)
     }

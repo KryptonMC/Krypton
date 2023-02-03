@@ -37,5 +37,7 @@ data class AdvancedCategory(
     @Comment("If we should enable bStats metrics for the server")
     val metrics: Boolean = true,
     @Comment("The duration (in seconds) a single tick must take before the single tick profiler reports it.")
-    val saveThreshold: Int = 5
+    val saveThreshold: Int = 5,
+    @Comment("Whether player chat messages should be sent to the console. Disable if you have a lot of players sending a lot of messages.")
+    val logPlayerChatMessages: Boolean = true
 )
