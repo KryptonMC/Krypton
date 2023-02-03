@@ -56,7 +56,7 @@ class EventTypeTracker {
     private val friends = HashMultimap.create<Class<*>, Class<*>>()
 
     fun getFriendsOf(eventType: Class<*>): Collection<Class<*>> {
-        if (friends.containsKey(eventType)) return friends.get(eventType).toImmutableSet()
+        if (friends.containsKey(eventType)) return friends.get(eventType)
         val types = getEventTypes(eventType)
         types.forEach {
             if (it === eventType) return@forEach

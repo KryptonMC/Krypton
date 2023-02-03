@@ -129,14 +129,18 @@ class KryptonEventManager(private val pluginManager: PluginManager) : EventManag
 
     override fun <E> fire(event: E): CompletableFuture<E> {
         requireNotNull(event) { "Attempted to fire a null event!" } // Required to access event's class
-        val handlersCache = handlersCache.get(event.javaClass) ?: return CompletableFuture.completedFuture(event) // Optimisation: nobody's listening
+
+        val handlersCache = handlersCache.get(event.javaClass)
+        if (!handlersCache.hasListeners()) return CompletableFuture.completedFuture(event) // Optimisation: nobody's listening
+
         val future = CompletableFuture<E>()
         fire(future, event, handlersCache)
         return future
     }
 
     override fun fireAndForget(event: Any) {
-        val handlersCache = handlersCache.get(event.javaClass) ?: return // Optimisation: nobody's listening
+        val handlersCache = handlersCache.get(event.javaClass)
+        if (!handlersCache.hasListeners()) return // Optimisation: nobody's listening
         fire(null, event, handlersCache)
     }
 
@@ -147,13 +151,17 @@ class KryptonEventManager(private val pluginManager: PluginManager) : EventManag
     // TODO: Review the way we implement always synchronous event firing
     fun <E> fireSync(event: E): E {
         requireNotNull(event) { "Attempted to fire a null event!" } // Required to access event's class
-        val handlersCache = handlersCache.get(event.javaClass) ?: return event // Optimisation: nobody's listening
+
+        val handlersCache = handlersCache.get(event.javaClass)
+        if (!handlersCache.hasListeners()) return event // Optimisation: nobody's listening
+
         fire(null, event, handlersCache, true)
         return event
     }
 
     fun fireAndForgetSync(event: Any) {
-        val handlersCache = handlersCache.get(event.javaClass) ?: return
+        val handlersCache = handlersCache.get(event.javaClass)
+        if (!handlersCache.hasListeners()) return // Optimisation: nobody's listening
         fire(null, event, handlersCache, true)
     }
 
@@ -236,13 +244,13 @@ class KryptonEventManager(private val pluginManager: PluginManager) : EventManag
         return LambdaFactory.create(type.defineClassesWith(lookup), lookup.unreflect(method))
     }
 
-    private fun bakeHandlers(eventType: Class<*>): HandlersCache? {
+    private fun bakeHandlers(eventType: Class<*>): HandlersCache {
         val baked = ArrayList<HandlerRegistration>()
 
         val types = eventTypeTracker.getFriendsOf(eventType)
         lock.read { types.forEach { baked.addAll(handlersByType.get(it)) } }
 
-        if (baked.isEmpty()) return null
+        if (baked.isEmpty()) return HandlersCache(AsyncType.NEVER, emptyArray())
         baked.sortWith(HANDLER_COMPARATOR)
 
         val asyncType = when {
@@ -328,7 +336,10 @@ class KryptonEventManager(private val pluginManager: PluginManager) : EventManag
         val instance: Any
     )
 
-    private class HandlersCache(val asyncType: AsyncType, val handlers: Array<HandlerRegistration>)
+    private class HandlersCache(val asyncType: AsyncType, val handlers: Array<HandlerRegistration>) {
+
+        fun hasListeners(): Boolean = handlers.isNotEmpty()
+    }
 
     private enum class AsyncType {
 
