@@ -47,6 +47,7 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutStopSound
 import org.kryptonmc.krypton.packet.out.play.PacketOutSetSubtitleText
 import org.kryptonmc.krypton.packet.out.play.PacketOutSetTitleText
 import org.kryptonmc.krypton.packet.out.play.PacketOutSetTitleAnimationTimes
+import org.kryptonmc.krypton.packet.out.play.PacketOutSystemChat
 import org.kryptonmc.krypton.registry.KryptonRegistries
 import org.kryptonmc.krypton.registry.holder.Holder
 import java.util.function.Predicate
@@ -76,6 +77,10 @@ interface PacketGroupingAudience : ForwardingAudience {
             return
         }
         // TODO: Add support for signed player messages
+    }
+
+    override fun sendMessage(message: Component) {
+        sendGroupedPacket(PacketOutSystemChat(message, false))
     }
 
     override fun sendMessage(message: Component, boundChatType: ChatType.Bound) {

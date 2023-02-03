@@ -107,6 +107,7 @@ import org.kryptonmc.krypton.util.crypto.SignatureValidator
 import org.kryptonmc.krypton.world.block.KryptonBlocks
 import org.kryptonmc.krypton.coordinate.ChunkPos
 import org.kryptonmc.krypton.locale.DisconnectMessages
+import org.kryptonmc.krypton.locale.MinecraftTranslationManager
 import java.time.Duration
 import java.time.Instant
 import java.util.concurrent.CompletableFuture
@@ -165,7 +166,8 @@ class PlayPacketHandler(
     override fun onDisconnect(message: Component) {
         chatMessageChain.close()
         val playerNameText = PlainTextComponentSerializer.plainText().serialize(player.name)
-        LOGGER.info("$playerNameText was disconnected: ${PlainTextComponentSerializer.plainText().serialize(message)}")
+        val translated = MinecraftTranslationManager.render(message)
+        LOGGER.info("$playerNameText was disconnected: ${PlainTextComponentSerializer.plainText().serialize(translated)}")
         player.disconnect()
         server.playerManager.removePlayer(player)
     }

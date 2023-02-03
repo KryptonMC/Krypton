@@ -34,6 +34,7 @@ import org.kryptonmc.krypton.event.auth.KryptonAuthenticationEvent
 import org.kryptonmc.krypton.event.player.KryptonLoginEvent
 import org.kryptonmc.krypton.event.server.KryptonSetupPermissionsEvent
 import org.kryptonmc.krypton.locale.DisconnectMessages
+import org.kryptonmc.krypton.locale.MinecraftTranslationManager
 import org.kryptonmc.krypton.network.NettyConnection
 import org.kryptonmc.krypton.network.forwarding.ProxyForwardedData
 import org.kryptonmc.krypton.network.forwarding.VelocityProxy
@@ -210,13 +211,15 @@ class LoginPacketHandler(
     }
 
     private fun disconnect(reason: Component) {
-        LOGGER.info("Disconnecting ${formatName()}: ${PlainTextComponentSerializer.plainText().serialize(reason)}")
+        val translated = MinecraftTranslationManager.render(reason)
+        LOGGER.info("Disconnecting ${formatName()}: ${PlainTextComponentSerializer.plainText().serialize(translated)}")
         connection.writeAndFlush(PacketOutLoginDisconnect(reason))
         connection.disconnect(reason)
     }
 
     override fun onDisconnect(message: Component) {
-        LOGGER.info("${formatName()} was disconnected: ${PlainTextComponentSerializer.plainText().serialize(message)}")
+        val translated = MinecraftTranslationManager.render(message)
+        LOGGER.info("${formatName()} was disconnected: ${PlainTextComponentSerializer.plainText().serialize(translated)}")
     }
 
     private fun formatName(): String = "$name (${connection.connectAddress()})"
