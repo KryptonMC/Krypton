@@ -173,8 +173,11 @@ class NettyConnection(private val server: KryptonServer) : SimpleChannelInboundH
                 synchronized(tickBufferLock) {
                     if (tickBuffer.refCnt() <= 0) return
                     val body = packet.body()
-                    tickBuffer.writeBytes(body, body.readerIndex(), body.readableBytes())
-                    body.release()
+                    if (body != null) {
+                        tickBuffer.writeBytes(body, body.readerIndex(), body.readableBytes())
+                    } else {
+                        writePacket(packet.packet())
+                    }
                 }
             }
             else -> throw UnsupportedOperationException("Unsupported message type $packet!")

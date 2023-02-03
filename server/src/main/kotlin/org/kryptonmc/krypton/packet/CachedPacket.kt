@@ -20,44 +20,38 @@ package org.kryptonmc.krypton.packet
 
 import io.netty.buffer.ByteBuf
 import org.kryptonmc.krypton.network.PacketFraming
-import java.lang.invoke.MethodHandles
 import java.lang.ref.SoftReference
 import java.util.function.Supplier
 
 class CachedPacket(private val supplier: Supplier<Packet>) : GenericPacket {
 
-    @Suppress("unused") // Used through var handle
-    private var packet: SoftReference<FramedPacket>? = null
+    private var packet: SoftReference<CachedFramedPacket>? = null
 
-    fun get(): GenericPacket {
-        @Suppress("UNCHECKED_CAST")
-        val ref = PACKET.getAcquire(this) as? SoftReference<FramedPacket> ?: return supplier.get()
-        return ref.get() ?: supplier.get()
+    fun packet(): Packet {
+        val cache = updatedCache()
+        return cache?.packet ?: supplier.get()
     }
 
-    fun body(): ByteBuf {
+    fun body(): ByteBuf? {
         val cache = updatedCache()
-        return cache?.body ?: PacketFraming.frame(supplier.get())
+        return cache?.body
     }
 
     fun invalidate() {
-        PACKET.setRelease(this, null)
+        packet = null
     }
 
-    private fun updatedCache(): FramedPacket? {
-        @Suppress("UNCHECKED_CAST")
-        val ref = PACKET.getAcquire(this) as? SoftReference<FramedPacket>
-        var cached: FramedPacket? = null
-        if (ref?.get() == null) {
-            cached = FramedPacket(PacketFraming.frame(supplier.get()))
-            PACKET.setRelease(this, SoftReference(cached))
+    private fun updatedCache(): CachedFramedPacket? {
+        val ref = packet
+        var cached: CachedFramedPacket? = null
+        if (ref == null || ref.get().also { cached = it } == null) {
+            val updatedPacket = supplier.get()
+            cached = CachedFramedPacket(updatedPacket, PacketFraming.frame(updatedPacket))
+            packet = SoftReference(cached)
         }
         return cached
     }
 
-    companion object {
-
-        @JvmStatic
-        private val PACKET = MethodHandles.lookup().findVarHandle(CachedPacket::class.java, "packet", SoftReference::class.java)
-    }
+    @JvmRecord
+    private data class CachedFramedPacket(val packet: Packet, val body: ByteBuf)
 }
