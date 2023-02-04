@@ -1,0 +1,282 @@
+<!doctype html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>PacketSizeEncoder</title>
+<link href="../../../images/logo-icon.svg" rel="icon" type="image/svg"><script>var pathToRoot = "../../../";</script>    <script>const storage = localStorage.getItem("dokka-dark-mode")
+    if (storage == null) {
+        const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+        if (osDarkSchemePreferred === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    } else {
+        const savedDarkMode = JSON.parse(storage)
+        if(savedDarkMode === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    }
+    </script>
+<script type="text/javascript" src="../../../scripts/sourceset_dependencies.js" async></script>
+<link href="../../../styles/style.css" rel="Stylesheet">
+<link href="../../../styles/jetbrains-mono.css" rel="Stylesheet">
+<link href="../../../styles/main.css" rel="Stylesheet">
+<link href="../../../styles/prism.css" rel="Stylesheet">
+<link href="../../../styles/logo-styles.css" rel="Stylesheet">
+<script type="text/javascript" src="../../../scripts/clipboard.js" async></script>
+<script type="text/javascript" src="../../../scripts/navigation-loader.js" async></script>
+<script type="text/javascript" src="../../../scripts/platform-content-handler.js" async></script>
+<script type="text/javascript" src="../../../scripts/main.js" defer></script>
+<script type="text/javascript" src="../../../scripts/prism.js" async></script>
+<script type="text/javascript" src="../../../scripts/symbol-parameters-wrapper_deferred.js" defer></script></head>
+<body>
+<div class="navigation-wrapper" id="navigation-wrapper">
+    <div id="leftToggler"><span class="icon-toggler"></span></div>
+    <div class="library-name">
+<a href="../../../index.html">
+<span>krypton</span>            </a>    </div>
+    <div>6a98d9dec7
+    </div>
+    <div class="pull-right d-flex">
+        <button id="theme-toggle-button"><span id="theme-toggle"></span></button>
+        <div id="searchBar"></div>
+    </div>
+</div>
+<div id="container">
+    <div id="leftColumn">
+        <div id="sideMenu"></div>
+    </div>
+    <div id="main">
+<div class="main-content" id="content" pageids="server::org.kryptonmc.krypton.network.netty/PacketSizeEncoder///PointingToDeclaration//791161957">
+  <div class="breadcrumbs"><a href="../../index.html">server</a><span class="delimiter">/</span><a href="../index.html">org.kryptonmc.krypton.network.netty</a><span class="delimiter">/</span><span class="current">PacketSizeEncoder</span></div>
+  <div class="cover ">
+    <h1 class="cover"><span>Packet</span><wbr><span>Size</span><wbr><span><span>Encoder</span></span></h1>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":server:dokkaHtmlPartial/main"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><span data-unresolved-link="io.netty.channel/ChannelHandler.Sharable///PointingToDeclaration/"><span class="token annotation builtin">ChannelHandler.Sharable</span></span></div></div><span class="token keyword">object </span><a href="index.html">PacketSizeEncoder</a> : <span data-unresolved-link="io.netty.handler.codec/MessageToByteEncoder///PointingToDeclaration/">MessageToByteEncoder</span><span class="token operator">&lt;</span><span class="token keyword"></span><span data-unresolved-link="io.netty.buffer/ByteBuf///PointingToDeclaration/">ByteBuf</span><span class="token operator">&gt; </span></div><p class="paragraph">Writes a packet size in an appropriate VarInt before the data is written.</p></div></div>
+  </div>
+  <div class="tabbedcontent">
+    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="Functions">Functions</button><button class="section-tab" data-togglable="Properties">Properties</button></div>
+    <div class="tabs-section-body">
+      <h2 class="">Functions</h2>
+      <div class="table" data-togglable="Functions"><a data-name="765203771%2FFunctions%2F791161957" anchor-label="acceptOutboundMessage" id="765203771%2FFunctions%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="index.html#765203771%2FFunctions%2F791161957"><span>accept</span><wbr><span>Outbound</span><wbr><span><span>Message</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="765203771%2FFunctions%2F791161957"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":server:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="index.html#765203771%2FFunctions%2F791161957"><span class="token function">acceptOutboundMessage</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">p0<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-1759502297%2FFunctions%2F791161957" anchor-label="bind" id="-1759502297%2FFunctions%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="index.html#-1759502297%2FFunctions%2F791161957"><span><span>bind</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1759502297%2FFunctions%2F791161957"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":server:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="index.html#-1759502297%2FFunctions%2F791161957"><span class="token function">bind</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">p0<span class="token operator">: </span><span data-unresolved-link="io.netty.channel/ChannelHandlerContext///PointingToDeclaration/">ChannelHandlerContext</span><span class="token punctuation">, </span></span><span class="parameter ">p1<span class="token operator">: </span><a href="https://docs.oracle.com/javase/8/docs/api/java/net/SocketAddress.html">SocketAddress</a><span class="token punctuation">, </span></span><span class="parameter ">p2<span class="token operator">: </span><span data-unresolved-link="io.netty.channel/ChannelPromise///PointingToDeclaration/">ChannelPromise</span></span></span><span class="token punctuation">)</span></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-1382849249%2FFunctions%2F791161957" anchor-label="close" id="-1382849249%2FFunctions%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="index.html#-1382849249%2FFunctions%2F791161957"><span><span>close</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1382849249%2FFunctions%2F791161957"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":server:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="index.html#-1382849249%2FFunctions%2F791161957"><span class="token function">close</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">p0<span class="token operator">: </span><span data-unresolved-link="io.netty.channel/ChannelHandlerContext///PointingToDeclaration/">ChannelHandlerContext</span><span class="token punctuation">, </span></span><span class="parameter ">p1<span class="token operator">: </span><span data-unresolved-link="io.netty.channel/ChannelPromise///PointingToDeclaration/">ChannelPromise</span></span></span><span class="token punctuation">)</span></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="399560205%2FFunctions%2F791161957" anchor-label="connect" id="399560205%2FFunctions%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="index.html#399560205%2FFunctions%2F791161957"><span><span>connect</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="399560205%2FFunctions%2F791161957"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":server:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="index.html#399560205%2FFunctions%2F791161957"><span class="token function">connect</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">p0<span class="token operator">: </span><span data-unresolved-link="io.netty.channel/ChannelHandlerContext///PointingToDeclaration/">ChannelHandlerContext</span><span class="token punctuation">, </span></span><span class="parameter ">p1<span class="token operator">: </span><a href="https://docs.oracle.com/javase/8/docs/api/java/net/SocketAddress.html">SocketAddress</a><span class="token punctuation">, </span></span><span class="parameter ">p2<span class="token operator">: </span><a href="https://docs.oracle.com/javase/8/docs/api/java/net/SocketAddress.html">SocketAddress</a><span class="token punctuation">, </span></span><span class="parameter ">p3<span class="token operator">: </span><span data-unresolved-link="io.netty.channel/ChannelPromise///PointingToDeclaration/">ChannelPromise</span></span></span><span class="token punctuation">)</span></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="1735991717%2FFunctions%2F791161957" anchor-label="deregister" id="1735991717%2FFunctions%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="index.html#1735991717%2FFunctions%2F791161957"><span><span>deregister</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1735991717%2FFunctions%2F791161957"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":server:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="index.html#1735991717%2FFunctions%2F791161957"><span class="token function">deregister</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">p0<span class="token operator">: </span><span data-unresolved-link="io.netty.channel/ChannelHandlerContext///PointingToDeclaration/">ChannelHandlerContext</span><span class="token punctuation">, </span></span><span class="parameter ">p1<span class="token operator">: </span><span data-unresolved-link="io.netty.channel/ChannelPromise///PointingToDeclaration/">ChannelPromise</span></span></span><span class="token punctuation">)</span></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="1057481773%2FFunctions%2F791161957" anchor-label="disconnect" id="1057481773%2FFunctions%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="index.html#1057481773%2FFunctions%2F791161957"><span><span>disconnect</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1057481773%2FFunctions%2F791161957"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":server:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="index.html#1057481773%2FFunctions%2F791161957"><span class="token function">disconnect</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">p0<span class="token operator">: </span><span data-unresolved-link="io.netty.channel/ChannelHandlerContext///PointingToDeclaration/">ChannelHandlerContext</span><span class="token punctuation">, </span></span><span class="parameter ">p1<span class="token operator">: </span><span data-unresolved-link="io.netty.channel/ChannelPromise///PointingToDeclaration/">ChannelPromise</span></span></span><span class="token punctuation">)</span></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-1302831364%2FFunctions%2F791161957" anchor-label="exceptionCaught" id="-1302831364%2FFunctions%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="index.html#-1302831364%2FFunctions%2F791161957"><span>exception</span><wbr><span><span>Caught</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1302831364%2FFunctions%2F791161957"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":server:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="index.html#-1302831364%2FFunctions%2F791161957"><span class="token function"><strike>exceptionCaught</strike></span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">p0<span class="token operator">: </span><span data-unresolved-link="io.netty.channel/ChannelHandlerContext///PointingToDeclaration/">ChannelHandlerContext</span><span class="token punctuation">, </span></span><span class="parameter ">p1<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-throwable/index.html">Throwable</a></span></span><span class="token punctuation">)</span></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="1297884647%2FFunctions%2F791161957" anchor-label="flush" id="1297884647%2FFunctions%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="index.html#1297884647%2FFunctions%2F791161957"><span><span>flush</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1297884647%2FFunctions%2F791161957"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":server:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="index.html#1297884647%2FFunctions%2F791161957"><span class="token function">flush</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">p0<span class="token operator">: </span><span data-unresolved-link="io.netty.channel/ChannelHandlerContext///PointingToDeclaration/">ChannelHandlerContext</span></span></span><span class="token punctuation">)</span></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="178607799%2FFunctions%2F791161957" anchor-label="handlerAdded" id="178607799%2FFunctions%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="index.html#178607799%2FFunctions%2F791161957"><span>handler</span><wbr><span><span>Added</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="178607799%2FFunctions%2F791161957"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":server:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="index.html#178607799%2FFunctions%2F791161957"><span class="token function">handlerAdded</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">p0<span class="token operator">: </span><span data-unresolved-link="io.netty.channel/ChannelHandlerContext///PointingToDeclaration/">ChannelHandlerContext</span></span></span><span class="token punctuation">)</span></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="1272817303%2FFunctions%2F791161957" anchor-label="handlerRemoved" id="1272817303%2FFunctions%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="index.html#1272817303%2FFunctions%2F791161957"><span>handler</span><wbr><span><span>Removed</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1272817303%2FFunctions%2F791161957"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":server:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="index.html#1272817303%2FFunctions%2F791161957"><span class="token function">handlerRemoved</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">p0<span class="token operator">: </span><span data-unresolved-link="io.netty.channel/ChannelHandlerContext///PointingToDeclaration/">ChannelHandlerContext</span></span></span><span class="token punctuation">)</span></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-723883764%2FFunctions%2F791161957" anchor-label="isSharable" id="-723883764%2FFunctions%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="index.html#-723883764%2FFunctions%2F791161957"><span>is</span><wbr><span><span>Sharable</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-723883764%2FFunctions%2F791161957"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":server:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="index.html#-723883764%2FFunctions%2F791161957"><span class="token function">isSharable</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-1251959289%2FFunctions%2F791161957" anchor-label="read" id="-1251959289%2FFunctions%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="index.html#-1251959289%2FFunctions%2F791161957"><span><span>read</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1251959289%2FFunctions%2F791161957"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":server:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="index.html#-1251959289%2FFunctions%2F791161957"><span class="token function">read</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">p0<span class="token operator">: </span><span data-unresolved-link="io.netty.channel/ChannelHandlerContext///PointingToDeclaration/">ChannelHandlerContext</span></span></span><span class="token punctuation">)</span></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-1822678197%2FFunctions%2F791161957" anchor-label="write" id="-1822678197%2FFunctions%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="index.html#-1822678197%2FFunctions%2F791161957"><span><span>write</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1822678197%2FFunctions%2F791161957"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":server:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="index.html#-1822678197%2FFunctions%2F791161957"><span class="token function">write</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">p0<span class="token operator">: </span><span data-unresolved-link="io.netty.channel/ChannelHandlerContext///PointingToDeclaration/">ChannelHandlerContext</span><span class="token punctuation">, </span></span><span class="parameter ">p1<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a><span class="token punctuation">, </span></span><span class="parameter ">p2<span class="token operator">: </span><span data-unresolved-link="io.netty.channel/ChannelPromise///PointingToDeclaration/">ChannelPromise</span></span></span><span class="token punctuation">)</span></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <h2 class="">Properties</h2>
+      <div class="table" data-togglable="Properties"><a data-name="1583110470%2FProperties%2F791161957" anchor-label="NETTY_NAME" id="1583110470%2FProperties%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="-n-e-t-t-y_-n-a-m-e.html"><span><span>NETTY_NAME</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1583110470%2FProperties%2F791161957"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-dependent-content" data-active="" data-togglable=":server:dokkaHtmlPartial/main"><a data-name="1583110470%2FProperties%2F791161957" anchor-label="NETTY_NAME" id="1583110470%2FProperties%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a><div class="symbol monospace"><span class="token keyword">const </span><span class="token keyword">val </span><a href="-n-e-t-t-y_-n-a-m-e.html">NETTY_NAME</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      <div class="footer">
+        <span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>© 2023 Copyright</span><span class="pull-right"><span>Generated by </span><a href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span>
+      </div>
+    </div>
+</div>
+
+</body></html>
+

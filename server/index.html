@@ -4,10 +4,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
     <title>server</title>
 <link href="../images/logo-icon.svg" rel="icon" type="image/svg"><script>var pathToRoot = "../";</script>    <script>const storage = localStorage.getItem("dokka-dark-mode")
-const savedDarkMode = storage ? JSON.parse(storage) : false
-if(savedDarkMode === true){
-    document.getElementsByTagName("html")[0].classList.add("theme-dark")
-}</script>
+    if (storage == null) {
+        const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+        if (osDarkSchemePreferred === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    } else {
+        const savedDarkMode = JSON.parse(storage)
+        if(savedDarkMode === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    }
+    </script>
 <script type="text/javascript" src="../scripts/sourceset_dependencies.js" async></script>
 <link href="../styles/style.css" rel="Stylesheet">
 <link href="../styles/jetbrains-mono.css" rel="Stylesheet">
@@ -18,14 +26,15 @@ if(savedDarkMode === true){
 <script type="text/javascript" src="../scripts/navigation-loader.js" async></script>
 <script type="text/javascript" src="../scripts/platform-content-handler.js" async></script>
 <script type="text/javascript" src="../scripts/main.js" defer></script>
-<script type="text/javascript" src="../scripts/prism.js" async></script></head>
+<script type="text/javascript" src="../scripts/prism.js" async></script>
+<script type="text/javascript" src="../scripts/symbol-parameters-wrapper_deferred.js" defer></script></head>
 <body>
 <div class="navigation-wrapper" id="navigation-wrapper">
     <div id="leftToggler"><span class="icon-toggler"></span></div>
     <div class="library-name">
 <a href="../index.html">
 <span>krypton</span>            </a>    </div>
-    <div>0.66.4
+    <div>6a98d9dec7
     </div>
     <div class="pull-right d-flex">
         <button id="theme-toggle-button"><span id="theme-toggle"></span></button>
@@ -64,6 +73,34 @@ if(savedDarkMode === true){
           <div class=""><span class="inline-flex">
               <div><a href="org.kryptonmc.krypton.adventure/index.html">org.kryptonmc.krypton.adventure</a></div>
 <span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-787096180%2FPackages%2F791161957"></span>
+                <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+              </span></span></div>
+          <div class="pull-right"></div>
+        </div>
+        <div></div>
+      </div>
+    </div>
+<a data-name="231648716%2FPackages%2F791161957" anchor-label="org.kryptonmc.krypton.adventure.network" id="231648716%2FPackages%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+    <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
+      <div>
+        <div class="main-subrow ">
+          <div class=""><span class="inline-flex">
+              <div><a href="org.kryptonmc.krypton.adventure.network/index.html">org.kryptonmc.krypton.adventure.network</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="231648716%2FPackages%2F791161957"></span>
+                <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+              </span></span></div>
+          <div class="pull-right"></div>
+        </div>
+        <div></div>
+      </div>
+    </div>
+<a data-name="1589113559%2FPackages%2F791161957" anchor-label="org.kryptonmc.krypton.adventure.provider" id="1589113559%2FPackages%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+    <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
+      <div>
+        <div class="main-subrow ">
+          <div class=""><span class="inline-flex">
+              <div><a href="org.kryptonmc.krypton.adventure.provider/index.html">org.kryptonmc.krypton.adventure.provider</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1589113559%2FPackages%2F791161957"></span>
                 <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
               </span></span></div>
           <div class="pull-right"></div>
@@ -197,13 +234,13 @@ if(savedDarkMode === true){
         <div></div>
       </div>
     </div>
-<a data-name="-89205296%2FPackages%2F791161957" anchor-label="org.kryptonmc.krypton.command.meta" id="-89205296%2FPackages%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+<a data-name="-1396742594%2FPackages%2F791161957" anchor-label="org.kryptonmc.krypton.command.brigadier" id="-1396742594%2FPackages%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
     <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
       <div>
         <div class="main-subrow ">
           <div class=""><span class="inline-flex">
-              <div><a href="org.kryptonmc.krypton.command.meta/index.html">org.kryptonmc.krypton.command.meta</a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-89205296%2FPackages%2F791161957"></span>
+              <div><a href="org.kryptonmc.krypton.command.brigadier/index.html">org.kryptonmc.krypton.command.brigadier</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1396742594%2FPackages%2F791161957"></span>
                 <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
               </span></span></div>
           <div class="pull-right"></div>
@@ -309,6 +346,20 @@ if(savedDarkMode === true){
         <div></div>
       </div>
     </div>
+<a data-name="325704192%2FPackages%2F791161957" anchor-label="org.kryptonmc.krypton.coordinate" id="325704192%2FPackages%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+    <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
+      <div>
+        <div class="main-subrow ">
+          <div class=""><span class="inline-flex">
+              <div><a href="org.kryptonmc.krypton.coordinate/index.html">org.kryptonmc.krypton.coordinate</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="325704192%2FPackages%2F791161957"></span>
+                <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+              </span></span></div>
+          <div class="pull-right"></div>
+        </div>
+        <div></div>
+      </div>
+    </div>
 <a data-name="-775322663%2FPackages%2F791161957" anchor-label="org.kryptonmc.krypton.effect" id="-775322663%2FPackages%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
     <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
       <div>
@@ -393,6 +444,20 @@ if(savedDarkMode === true){
         <div></div>
       </div>
     </div>
+<a data-name="595260484%2FPackages%2F791161957" anchor-label="org.kryptonmc.krypton.entity.ai.memory" id="595260484%2FPackages%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+    <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
+      <div>
+        <div class="main-subrow ">
+          <div class=""><span class="inline-flex">
+              <div><a href="org.kryptonmc.krypton.entity.ai.memory/index.html">org.kryptonmc.krypton.entity.ai.memory</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="595260484%2FPackages%2F791161957"></span>
+                <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+              </span></span></div>
+          <div class="pull-right"></div>
+        </div>
+        <div></div>
+      </div>
+    </div>
 <a data-name="1189106901%2FPackages%2F791161957" anchor-label="org.kryptonmc.krypton.entity.ambient" id="1189106901%2FPackages%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
     <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
       <div>
@@ -449,13 +514,13 @@ if(savedDarkMode === true){
         <div></div>
       </div>
     </div>
-<a data-name="-873838959%2FPackages%2F791161957" anchor-label="org.kryptonmc.krypton.entity.data" id="-873838959%2FPackages%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+<a data-name="-545295555%2FPackages%2F791161957" anchor-label="org.kryptonmc.krypton.entity.components" id="-545295555%2FPackages%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
     <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
       <div>
         <div class="main-subrow ">
           <div class=""><span class="inline-flex">
-              <div><a href="org.kryptonmc.krypton.entity.data/index.html">org.kryptonmc.krypton.entity.data</a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-873838959%2FPackages%2F791161957"></span>
+              <div><a href="org.kryptonmc.krypton.entity.components/index.html">org.kryptonmc.krypton.entity.components</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-545295555%2FPackages%2F791161957"></span>
                 <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
               </span></span></div>
           <div class="pull-right"></div>
@@ -470,20 +535,6 @@ if(savedDarkMode === true){
           <div class=""><span class="inline-flex">
               <div><a href="org.kryptonmc.krypton.entity.hanging/index.html">org.kryptonmc.krypton.entity.hanging</a></div>
 <span class="anchor-wrapper"><span class="anchor-icon" pointing-to="188038765%2FPackages%2F791161957"></span>
-                <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-              </span></span></div>
-          <div class="pull-right"></div>
-        </div>
-        <div></div>
-      </div>
-    </div>
-<a data-name="462878696%2FPackages%2F791161957" anchor-label="org.kryptonmc.krypton.entity.memory" id="462878696%2FPackages%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
-    <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
-      <div>
-        <div class="main-subrow ">
-          <div class=""><span class="inline-flex">
-              <div><a href="org.kryptonmc.krypton.entity.memory/index.html">org.kryptonmc.krypton.entity.memory</a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="462878696%2FPackages%2F791161957"></span>
                 <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
               </span></span></div>
           <div class="pull-right"></div>
@@ -673,6 +724,34 @@ if(savedDarkMode === true){
         <div></div>
       </div>
     </div>
+<a data-name="-686198890%2FPackages%2F791161957" anchor-label="org.kryptonmc.krypton.entity.system" id="-686198890%2FPackages%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+    <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
+      <div>
+        <div class="main-subrow ">
+          <div class=""><span class="inline-flex">
+              <div><a href="org.kryptonmc.krypton.entity.system/index.html">org.kryptonmc.krypton.entity.system</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-686198890%2FPackages%2F791161957"></span>
+                <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+              </span></span></div>
+          <div class="pull-right"></div>
+        </div>
+        <div></div>
+      </div>
+    </div>
+<a data-name="97519849%2FPackages%2F791161957" anchor-label="org.kryptonmc.krypton.entity.util" id="97519849%2FPackages%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+    <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
+      <div>
+        <div class="main-subrow ">
+          <div class=""><span class="inline-flex">
+              <div><a href="org.kryptonmc.krypton.entity.util/index.html">org.kryptonmc.krypton.entity.util</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="97519849%2FPackages%2F791161957"></span>
+                <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+              </span></span></div>
+          <div class="pull-right"></div>
+        </div>
+        <div></div>
+      </div>
+    </div>
 <a data-name="1166254185%2FPackages%2F791161957" anchor-label="org.kryptonmc.krypton.entity.vehicle" id="1166254185%2FPackages%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
     <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
       <div>
@@ -687,6 +766,20 @@ if(savedDarkMode === true){
         <div></div>
       </div>
     </div>
+<a data-name="298378327%2FPackages%2F791161957" anchor-label="org.kryptonmc.krypton.entity.villagerdata" id="298378327%2FPackages%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+    <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
+      <div>
+        <div class="main-subrow ">
+          <div class=""><span class="inline-flex">
+              <div><a href="org.kryptonmc.krypton.entity.villagerdata/index.html">org.kryptonmc.krypton.entity.villagerdata</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="298378327%2FPackages%2F791161957"></span>
+                <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+              </span></span></div>
+          <div class="pull-right"></div>
+        </div>
+        <div></div>
+      </div>
+    </div>
 <a data-name="-1159758442%2FPackages%2F791161957" anchor-label="org.kryptonmc.krypton.event" id="-1159758442%2FPackages%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
     <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
       <div>
@@ -694,6 +787,76 @@ if(savedDarkMode === true){
           <div class=""><span class="inline-flex">
               <div><a href="org.kryptonmc.krypton.event/index.html">org.kryptonmc.krypton.event</a></div>
 <span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1159758442%2FPackages%2F791161957"></span>
+                <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+              </span></span></div>
+          <div class="pull-right"></div>
+        </div>
+        <div></div>
+      </div>
+    </div>
+<a data-name="203780%2FPackages%2F791161957" anchor-label="org.kryptonmc.krypton.event.auth" id="203780%2FPackages%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+    <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
+      <div>
+        <div class="main-subrow ">
+          <div class=""><span class="inline-flex">
+              <div><a href="org.kryptonmc.krypton.event.auth/index.html">org.kryptonmc.krypton.event.auth</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="203780%2FPackages%2F791161957"></span>
+                <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+              </span></span></div>
+          <div class="pull-right"></div>
+        </div>
+        <div></div>
+      </div>
+    </div>
+<a data-name="1749798579%2FPackages%2F791161957" anchor-label="org.kryptonmc.krypton.event.command" id="1749798579%2FPackages%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+    <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
+      <div>
+        <div class="main-subrow ">
+          <div class=""><span class="inline-flex">
+              <div><a href="org.kryptonmc.krypton.event.command/index.html">org.kryptonmc.krypton.event.command</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1749798579%2FPackages%2F791161957"></span>
+                <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+              </span></span></div>
+          <div class="pull-right"></div>
+        </div>
+        <div></div>
+      </div>
+    </div>
+<a data-name="-349534209%2FPackages%2F791161957" anchor-label="org.kryptonmc.krypton.event.entity" id="-349534209%2FPackages%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+    <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
+      <div>
+        <div class="main-subrow ">
+          <div class=""><span class="inline-flex">
+              <div><a href="org.kryptonmc.krypton.event.entity/index.html">org.kryptonmc.krypton.event.entity</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-349534209%2FPackages%2F791161957"></span>
+                <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+              </span></span></div>
+          <div class="pull-right"></div>
+        </div>
+        <div></div>
+      </div>
+    </div>
+<a data-name="1981963645%2FPackages%2F791161957" anchor-label="org.kryptonmc.krypton.event.player" id="1981963645%2FPackages%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+    <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
+      <div>
+        <div class="main-subrow ">
+          <div class=""><span class="inline-flex">
+              <div><a href="org.kryptonmc.krypton.event.player/index.html">org.kryptonmc.krypton.event.player</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1981963645%2FPackages%2F791161957"></span>
+                <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+              </span></span></div>
+          <div class="pull-right"></div>
+        </div>
+        <div></div>
+      </div>
+    </div>
+<a data-name="199056223%2FPackages%2F791161957" anchor-label="org.kryptonmc.krypton.event.server" id="199056223%2FPackages%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+    <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
+      <div>
+        <div class="main-subrow ">
+          <div class=""><span class="inline-flex">
+              <div><a href="org.kryptonmc.krypton.event.server/index.html">org.kryptonmc.krypton.event.server</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="199056223%2FPackages%2F791161957"></span>
                 <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
               </span></span></div>
           <div class="pull-right"></div>
@@ -722,6 +885,20 @@ if(savedDarkMode === true){
           <div class=""><span class="inline-flex">
               <div><a href="org.kryptonmc.krypton.item/index.html">org.kryptonmc.krypton.item</a></div>
 <span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1409316955%2FPackages%2F791161957"></span>
+                <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+              </span></span></div>
+          <div class="pull-right"></div>
+        </div>
+        <div></div>
+      </div>
+    </div>
+<a data-name="-1969711652%2FPackages%2F791161957" anchor-label="org.kryptonmc.krypton.item.context" id="-1969711652%2FPackages%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+    <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
+      <div>
+        <div class="main-subrow ">
+          <div class=""><span class="inline-flex">
+              <div><a href="org.kryptonmc.krypton.item.context/index.html">org.kryptonmc.krypton.item.context</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1969711652%2FPackages%2F791161957"></span>
                 <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
               </span></span></div>
           <div class="pull-right"></div>
@@ -771,13 +948,13 @@ if(savedDarkMode === true){
         <div></div>
       </div>
     </div>
-<a data-name="2126038260%2FPackages%2F791161957" anchor-label="org.kryptonmc.krypton.module" id="2126038260%2FPackages%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+<a data-name="-1147273374%2FPackages%2F791161957" anchor-label="org.kryptonmc.krypton.locale" id="-1147273374%2FPackages%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
     <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
       <div>
         <div class="main-subrow ">
           <div class=""><span class="inline-flex">
-              <div><a href="org.kryptonmc.krypton.module/index.html">org.kryptonmc.krypton.module</a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="2126038260%2FPackages%2F791161957"></span>
+              <div><a href="org.kryptonmc.krypton.locale/index.html">org.kryptonmc.krypton.locale</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1147273374%2FPackages%2F791161957"></span>
                 <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
               </span></span></div>
           <div class="pull-right"></div>
@@ -799,13 +976,27 @@ if(savedDarkMode === true){
         <div></div>
       </div>
     </div>
-<a data-name="-201645070%2FPackages%2F791161957" anchor-label="org.kryptonmc.krypton.network.data" id="-201645070%2FPackages%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+<a data-name="1979607584%2FPackages%2F791161957" anchor-label="org.kryptonmc.krypton.network.chat" id="1979607584%2FPackages%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
     <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
       <div>
         <div class="main-subrow ">
           <div class=""><span class="inline-flex">
-              <div><a href="org.kryptonmc.krypton.network.data/index.html">org.kryptonmc.krypton.network.data</a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-201645070%2FPackages%2F791161957"></span>
+              <div><a href="org.kryptonmc.krypton.network.chat/index.html">org.kryptonmc.krypton.network.chat</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1979607584%2FPackages%2F791161957"></span>
+                <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+              </span></span></div>
+          <div class="pull-right"></div>
+        </div>
+        <div></div>
+      </div>
+    </div>
+<a data-name="1145450757%2FPackages%2F791161957" anchor-label="org.kryptonmc.krypton.network.forwarding" id="1145450757%2FPackages%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+    <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
+      <div>
+        <div class="main-subrow ">
+          <div class=""><span class="inline-flex">
+              <div><a href="org.kryptonmc.krypton.network.forwarding/index.html">org.kryptonmc.krypton.network.forwarding</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1145450757%2FPackages%2F791161957"></span>
                 <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
               </span></span></div>
           <div class="pull-right"></div>
@@ -834,6 +1025,76 @@ if(savedDarkMode === true){
           <div class=""><span class="inline-flex">
               <div><a href="org.kryptonmc.krypton.network.netty/index.html">org.kryptonmc.krypton.network.netty</a></div>
 <span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1301702686%2FPackages%2F791161957"></span>
+                <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+              </span></span></div>
+          <div class="pull-right"></div>
+        </div>
+        <div></div>
+      </div>
+    </div>
+<a data-name="-209255455%2FPackages%2F791161957" anchor-label="org.kryptonmc.krypton.pack" id="-209255455%2FPackages%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+    <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
+      <div>
+        <div class="main-subrow ">
+          <div class=""><span class="inline-flex">
+              <div><a href="org.kryptonmc.krypton.pack/index.html">org.kryptonmc.krypton.pack</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-209255455%2FPackages%2F791161957"></span>
+                <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+              </span></span></div>
+          <div class="pull-right"></div>
+        </div>
+        <div></div>
+      </div>
+    </div>
+<a data-name="329736160%2FPackages%2F791161957" anchor-label="org.kryptonmc.krypton.pack.metadata" id="329736160%2FPackages%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+    <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
+      <div>
+        <div class="main-subrow ">
+          <div class=""><span class="inline-flex">
+              <div><a href="org.kryptonmc.krypton.pack.metadata/index.html">org.kryptonmc.krypton.pack.metadata</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="329736160%2FPackages%2F791161957"></span>
+                <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+              </span></span></div>
+          <div class="pull-right"></div>
+        </div>
+        <div></div>
+      </div>
+    </div>
+<a data-name="611949691%2FPackages%2F791161957" anchor-label="org.kryptonmc.krypton.pack.repository" id="611949691%2FPackages%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+    <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
+      <div>
+        <div class="main-subrow ">
+          <div class=""><span class="inline-flex">
+              <div><a href="org.kryptonmc.krypton.pack.repository/index.html">org.kryptonmc.krypton.pack.repository</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="611949691%2FPackages%2F791161957"></span>
+                <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+              </span></span></div>
+          <div class="pull-right"></div>
+        </div>
+        <div></div>
+      </div>
+    </div>
+<a data-name="-2094572520%2FPackages%2F791161957" anchor-label="org.kryptonmc.krypton.pack.resources" id="-2094572520%2FPackages%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+    <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
+      <div>
+        <div class="main-subrow ">
+          <div class=""><span class="inline-flex">
+              <div><a href="org.kryptonmc.krypton.pack.resources/index.html">org.kryptonmc.krypton.pack.resources</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-2094572520%2FPackages%2F791161957"></span>
+                <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+              </span></span></div>
+          <div class="pull-right"></div>
+        </div>
+        <div></div>
+      </div>
+    </div>
+<a data-name="668596595%2FPackages%2F791161957" anchor-label="org.kryptonmc.krypton.pack.resources.reload" id="668596595%2FPackages%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+    <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
+      <div>
+        <div class="main-subrow ">
+          <div class=""><span class="inline-flex">
+              <div><a href="org.kryptonmc.krypton.pack.resources.reload/index.html">org.kryptonmc.krypton.pack.resources.reload</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="668596595%2FPackages%2F791161957"></span>
                 <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
               </span></span></div>
           <div class="pull-right"></div>
@@ -995,6 +1256,20 @@ if(savedDarkMode === true){
         <div></div>
       </div>
     </div>
+<a data-name="-1088307133%2FPackages%2F791161957" anchor-label="org.kryptonmc.krypton.plugin.module" id="-1088307133%2FPackages%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+    <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
+      <div>
+        <div class="main-subrow ">
+          <div class=""><span class="inline-flex">
+              <div><a href="org.kryptonmc.krypton.plugin.module/index.html">org.kryptonmc.krypton.plugin.module</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1088307133%2FPackages%2F791161957"></span>
+                <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+              </span></span></div>
+          <div class="pull-right"></div>
+        </div>
+        <div></div>
+      </div>
+    </div>
 <a data-name="-1521264038%2FPackages%2F791161957" anchor-label="org.kryptonmc.krypton.plugin.server" id="-1521264038%2FPackages%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
     <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
       <div>
@@ -1016,6 +1291,62 @@ if(savedDarkMode === true){
           <div class=""><span class="inline-flex">
               <div><a href="org.kryptonmc.krypton.registry/index.html">org.kryptonmc.krypton.registry</a></div>
 <span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1325672965%2FPackages%2F791161957"></span>
+                <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+              </span></span></div>
+          <div class="pull-right"></div>
+        </div>
+        <div></div>
+      </div>
+    </div>
+<a data-name="-1147923434%2FPackages%2F791161957" anchor-label="org.kryptonmc.krypton.registry.dynamic" id="-1147923434%2FPackages%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+    <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
+      <div>
+        <div class="main-subrow ">
+          <div class=""><span class="inline-flex">
+              <div><a href="org.kryptonmc.krypton.registry.dynamic/index.html">org.kryptonmc.krypton.registry.dynamic</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1147923434%2FPackages%2F791161957"></span>
+                <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+              </span></span></div>
+          <div class="pull-right"></div>
+        </div>
+        <div></div>
+      </div>
+    </div>
+<a data-name="-1487101639%2FPackages%2F791161957" anchor-label="org.kryptonmc.krypton.registry.holder" id="-1487101639%2FPackages%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+    <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
+      <div>
+        <div class="main-subrow ">
+          <div class=""><span class="inline-flex">
+              <div><a href="org.kryptonmc.krypton.registry.holder/index.html">org.kryptonmc.krypton.registry.holder</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1487101639%2FPackages%2F791161957"></span>
+                <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+              </span></span></div>
+          <div class="pull-right"></div>
+        </div>
+        <div></div>
+      </div>
+    </div>
+<a data-name="-1062059808%2FPackages%2F791161957" anchor-label="org.kryptonmc.krypton.registry.loader" id="-1062059808%2FPackages%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+    <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
+      <div>
+        <div class="main-subrow ">
+          <div class=""><span class="inline-flex">
+              <div><a href="org.kryptonmc.krypton.registry.loader/index.html">org.kryptonmc.krypton.registry.loader</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1062059808%2FPackages%2F791161957"></span>
+                <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+              </span></span></div>
+          <div class="pull-right"></div>
+        </div>
+        <div></div>
+      </div>
+    </div>
+<a data-name="587821381%2FPackages%2F791161957" anchor-label="org.kryptonmc.krypton.registry.network" id="587821381%2FPackages%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+    <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
+      <div>
+        <div class="main-subrow ">
+          <div class=""><span class="inline-flex">
+              <div><a href="org.kryptonmc.krypton.registry.network/index.html">org.kryptonmc.krypton.registry.network</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="587821381%2FPackages%2F791161957"></span>
                 <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
               </span></span></div>
           <div class="pull-right"></div>
@@ -1065,34 +1396,6 @@ if(savedDarkMode === true){
         <div></div>
       </div>
     </div>
-<a data-name="1753116780%2FPackages%2F791161957" anchor-label="org.kryptonmc.krypton.server.ban" id="1753116780%2FPackages%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
-    <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
-      <div>
-        <div class="main-subrow ">
-          <div class=""><span class="inline-flex">
-              <div><a href="org.kryptonmc.krypton.server.ban/index.html">org.kryptonmc.krypton.server.ban</a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1753116780%2FPackages%2F791161957"></span>
-                <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-              </span></span></div>
-          <div class="pull-right"></div>
-        </div>
-        <div></div>
-      </div>
-    </div>
-<a data-name="268404324%2FPackages%2F791161957" anchor-label="org.kryptonmc.krypton.server.whitelist" id="268404324%2FPackages%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
-    <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
-      <div>
-        <div class="main-subrow ">
-          <div class=""><span class="inline-flex">
-              <div><a href="org.kryptonmc.krypton.server.whitelist/index.html">org.kryptonmc.krypton.server.whitelist</a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="268404324%2FPackages%2F791161957"></span>
-                <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-              </span></span></div>
-          <div class="pull-right"></div>
-        </div>
-        <div></div>
-      </div>
-    </div>
 <a data-name="1441486705%2FPackages%2F791161957" anchor-label="org.kryptonmc.krypton.service" id="1441486705%2FPackages%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
     <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
       <div>
@@ -1100,6 +1403,104 @@ if(savedDarkMode === true){
           <div class=""><span class="inline-flex">
               <div><a href="org.kryptonmc.krypton.service/index.html">org.kryptonmc.krypton.service</a></div>
 <span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1441486705%2FPackages%2F791161957"></span>
+                <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+              </span></span></div>
+          <div class="pull-right"></div>
+        </div>
+        <div></div>
+      </div>
+    </div>
+<a data-name="-643889158%2FPackages%2F791161957" anchor-label="org.kryptonmc.krypton.shapes" id="-643889158%2FPackages%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+    <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
+      <div>
+        <div class="main-subrow ">
+          <div class=""><span class="inline-flex">
+              <div><a href="org.kryptonmc.krypton.shapes/index.html">org.kryptonmc.krypton.shapes</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-643889158%2FPackages%2F791161957"></span>
+                <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+              </span></span></div>
+          <div class="pull-right"></div>
+        </div>
+        <div></div>
+      </div>
+    </div>
+<a data-name="1655371710%2FPackages%2F791161957" anchor-label="org.kryptonmc.krypton.shapes.collision" id="1655371710%2FPackages%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+    <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
+      <div>
+        <div class="main-subrow ">
+          <div class=""><span class="inline-flex">
+              <div><a href="org.kryptonmc.krypton.shapes.collision/index.html">org.kryptonmc.krypton.shapes.collision</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1655371710%2FPackages%2F791161957"></span>
+                <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+              </span></span></div>
+          <div class="pull-right"></div>
+        </div>
+        <div></div>
+      </div>
+    </div>
+<a data-name="-1873315023%2FPackages%2F791161957" anchor-label="org.kryptonmc.krypton.shapes.discrete" id="-1873315023%2FPackages%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+    <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
+      <div>
+        <div class="main-subrow ">
+          <div class=""><span class="inline-flex">
+              <div><a href="org.kryptonmc.krypton.shapes.discrete/index.html">org.kryptonmc.krypton.shapes.discrete</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1873315023%2FPackages%2F791161957"></span>
+                <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+              </span></span></div>
+          <div class="pull-right"></div>
+        </div>
+        <div></div>
+      </div>
+    </div>
+<a data-name="26490290%2FPackages%2F791161957" anchor-label="org.kryptonmc.krypton.shapes.merger" id="26490290%2FPackages%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+    <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
+      <div>
+        <div class="main-subrow ">
+          <div class=""><span class="inline-flex">
+              <div><a href="org.kryptonmc.krypton.shapes.merger/index.html">org.kryptonmc.krypton.shapes.merger</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="26490290%2FPackages%2F791161957"></span>
+                <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+              </span></span></div>
+          <div class="pull-right"></div>
+        </div>
+        <div></div>
+      </div>
+    </div>
+<a data-name="-662379014%2FPackages%2F791161957" anchor-label="org.kryptonmc.krypton.shapes.util" id="-662379014%2FPackages%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+    <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
+      <div>
+        <div class="main-subrow ">
+          <div class=""><span class="inline-flex">
+              <div><a href="org.kryptonmc.krypton.shapes.util/index.html">org.kryptonmc.krypton.shapes.util</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-662379014%2FPackages%2F791161957"></span>
+                <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+              </span></span></div>
+          <div class="pull-right"></div>
+        </div>
+        <div></div>
+      </div>
+    </div>
+<a data-name="-2111326003%2FPackages%2F791161957" anchor-label="org.kryptonmc.krypton.state" id="-2111326003%2FPackages%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+    <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
+      <div>
+        <div class="main-subrow ">
+          <div class=""><span class="inline-flex">
+              <div><a href="org.kryptonmc.krypton.state/index.html">org.kryptonmc.krypton.state</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-2111326003%2FPackages%2F791161957"></span>
+                <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+              </span></span></div>
+          <div class="pull-right"></div>
+        </div>
+        <div></div>
+      </div>
+    </div>
+<a data-name="-1696582758%2FPackages%2F791161957" anchor-label="org.kryptonmc.krypton.state.property" id="-1696582758%2FPackages%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+    <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
+      <div>
+        <div class="main-subrow ">
+          <div class=""><span class="inline-flex">
+              <div><a href="org.kryptonmc.krypton.state.property/index.html">org.kryptonmc.krypton.state.property</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1696582758%2FPackages%2F791161957"></span>
                 <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
               </span></span></div>
           <div class="pull-right"></div>
@@ -1163,6 +1564,132 @@ if(savedDarkMode === true){
         <div></div>
       </div>
     </div>
+<a data-name="-816156818%2FPackages%2F791161957" anchor-label="org.kryptonmc.krypton.util.bits" id="-816156818%2FPackages%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+    <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
+      <div>
+        <div class="main-subrow ">
+          <div class=""><span class="inline-flex">
+              <div><a href="org.kryptonmc.krypton.util.bits/index.html">org.kryptonmc.krypton.util.bits</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-816156818%2FPackages%2F791161957"></span>
+                <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+              </span></span></div>
+          <div class="pull-right"></div>
+        </div>
+        <div></div>
+      </div>
+    </div>
+<a data-name="134368902%2FPackages%2F791161957" anchor-label="org.kryptonmc.krypton.util.collection" id="134368902%2FPackages%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+    <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
+      <div>
+        <div class="main-subrow ">
+          <div class=""><span class="inline-flex">
+              <div><a href="org.kryptonmc.krypton.util.collection/index.html">org.kryptonmc.krypton.util.collection</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="134368902%2FPackages%2F791161957"></span>
+                <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+              </span></span></div>
+          <div class="pull-right"></div>
+        </div>
+        <div></div>
+      </div>
+    </div>
+<a data-name="418090473%2FPackages%2F791161957" anchor-label="org.kryptonmc.krypton.util.crypto" id="418090473%2FPackages%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+    <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
+      <div>
+        <div class="main-subrow ">
+          <div class=""><span class="inline-flex">
+              <div><a href="org.kryptonmc.krypton.util.crypto/index.html">org.kryptonmc.krypton.util.crypto</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="418090473%2FPackages%2F791161957"></span>
+                <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+              </span></span></div>
+          <div class="pull-right"></div>
+        </div>
+        <div></div>
+      </div>
+    </div>
+<a data-name="-1998336873%2FPackages%2F791161957" anchor-label="org.kryptonmc.krypton.util.enumhelper" id="-1998336873%2FPackages%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+    <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
+      <div>
+        <div class="main-subrow ">
+          <div class=""><span class="inline-flex">
+              <div><a href="org.kryptonmc.krypton.util.enumhelper/index.html">org.kryptonmc.krypton.util.enumhelper</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1998336873%2FPackages%2F791161957"></span>
+                <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+              </span></span></div>
+          <div class="pull-right"></div>
+        </div>
+        <div></div>
+      </div>
+    </div>
+<a data-name="-139396613%2FPackages%2F791161957" anchor-label="org.kryptonmc.krypton.util.executor" id="-139396613%2FPackages%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+    <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
+      <div>
+        <div class="main-subrow ">
+          <div class=""><span class="inline-flex">
+              <div><a href="org.kryptonmc.krypton.util.executor/index.html">org.kryptonmc.krypton.util.executor</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-139396613%2FPackages%2F791161957"></span>
+                <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+              </span></span></div>
+          <div class="pull-right"></div>
+        </div>
+        <div></div>
+      </div>
+    </div>
+<a data-name="-1657913869%2FPackages%2F791161957" anchor-label="org.kryptonmc.krypton.util.gson" id="-1657913869%2FPackages%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+    <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
+      <div>
+        <div class="main-subrow ">
+          <div class=""><span class="inline-flex">
+              <div><a href="org.kryptonmc.krypton.util.gson/index.html">org.kryptonmc.krypton.util.gson</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1657913869%2FPackages%2F791161957"></span>
+                <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+              </span></span></div>
+          <div class="pull-right"></div>
+        </div>
+        <div></div>
+      </div>
+    </div>
+<a data-name="15385839%2FPackages%2F791161957" anchor-label="org.kryptonmc.krypton.util.hit" id="15385839%2FPackages%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+    <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
+      <div>
+        <div class="main-subrow ">
+          <div class=""><span class="inline-flex">
+              <div><a href="org.kryptonmc.krypton.util.hit/index.html">org.kryptonmc.krypton.util.hit</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="15385839%2FPackages%2F791161957"></span>
+                <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+              </span></span></div>
+          <div class="pull-right"></div>
+        </div>
+        <div></div>
+      </div>
+    </div>
+<a data-name="1672330616%2FPackages%2F791161957" anchor-label="org.kryptonmc.krypton.util.map" id="1672330616%2FPackages%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+    <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
+      <div>
+        <div class="main-subrow ">
+          <div class=""><span class="inline-flex">
+              <div><a href="org.kryptonmc.krypton.util.map/index.html">org.kryptonmc.krypton.util.map</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1672330616%2FPackages%2F791161957"></span>
+                <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+              </span></span></div>
+          <div class="pull-right"></div>
+        </div>
+        <div></div>
+      </div>
+    </div>
+<a data-name="365622000%2FPackages%2F791161957" anchor-label="org.kryptonmc.krypton.util.math" id="365622000%2FPackages%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+    <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
+      <div>
+        <div class="main-subrow ">
+          <div class=""><span class="inline-flex">
+              <div><a href="org.kryptonmc.krypton.util.math/index.html">org.kryptonmc.krypton.util.math</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="365622000%2FPackages%2F791161957"></span>
+                <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+              </span></span></div>
+          <div class="pull-right"></div>
+        </div>
+        <div></div>
+      </div>
+    </div>
 <a data-name="1662184540%2FPackages%2F791161957" anchor-label="org.kryptonmc.krypton.util.nbt" id="1662184540%2FPackages%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
     <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
       <div>
@@ -1177,13 +1704,27 @@ if(savedDarkMode === true){
         <div></div>
       </div>
     </div>
-<a data-name="-1956736252%2FPackages%2F791161957" anchor-label="org.kryptonmc.krypton.util.pool" id="-1956736252%2FPackages%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+<a data-name="2129182105%2FPackages%2F791161957" anchor-label="org.kryptonmc.krypton.util.provider" id="2129182105%2FPackages%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
     <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
       <div>
         <div class="main-subrow ">
           <div class=""><span class="inline-flex">
-              <div><a href="org.kryptonmc.krypton.util.pool/index.html">org.kryptonmc.krypton.util.pool</a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1956736252%2FPackages%2F791161957"></span>
+              <div><a href="org.kryptonmc.krypton.util.provider/index.html">org.kryptonmc.krypton.util.provider</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="2129182105%2FPackages%2F791161957"></span>
+                <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+              </span></span></div>
+          <div class="pull-right"></div>
+        </div>
+        <div></div>
+      </div>
+    </div>
+<a data-name="-1838636181%2FPackages%2F791161957" anchor-label="org.kryptonmc.krypton.util.random" id="-1838636181%2FPackages%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+    <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
+      <div>
+        <div class="main-subrow ">
+          <div class=""><span class="inline-flex">
+              <div><a href="org.kryptonmc.krypton.util.random/index.html">org.kryptonmc.krypton.util.random</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1838636181%2FPackages%2F791161957"></span>
                 <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
               </span></span></div>
           <div class="pull-right"></div>
@@ -1205,13 +1746,13 @@ if(savedDarkMode === true){
         <div></div>
       </div>
     </div>
-<a data-name="1859294521%2FPackages%2F791161957" anchor-label="org.kryptonmc.krypton.util.spark" id="1859294521%2FPackages%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+<a data-name="1586409643%2FPackages%2F791161957" anchor-label="org.kryptonmc.krypton.util.serialization.visitors" id="1586409643%2FPackages%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
     <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
       <div>
         <div class="main-subrow ">
           <div class=""><span class="inline-flex">
-              <div><a href="org.kryptonmc.krypton.util.spark/index.html">org.kryptonmc.krypton.util.spark</a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1859294521%2FPackages%2F791161957"></span>
+              <div><a href="org.kryptonmc.krypton.util.serialization.visitors/index.html">org.kryptonmc.krypton.util.serialization.visitors</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1586409643%2FPackages%2F791161957"></span>
                 <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
               </span></span></div>
           <div class="pull-right"></div>
@@ -1219,13 +1760,13 @@ if(savedDarkMode === true){
         <div></div>
       </div>
     </div>
-<a data-name="1425915056%2FPackages%2F791161957" anchor-label="org.kryptonmc.krypton.util.spark.ticking" id="1425915056%2FPackages%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+<a data-name="388928995%2FPackages%2F791161957" anchor-label="org.kryptonmc.krypton.util.uuid" id="388928995%2FPackages%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
     <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
       <div>
         <div class="main-subrow ">
           <div class=""><span class="inline-flex">
-              <div><a href="org.kryptonmc.krypton.util.spark.ticking/index.html">org.kryptonmc.krypton.util.spark.ticking</a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1425915056%2FPackages%2F791161957"></span>
+              <div><a href="org.kryptonmc.krypton.util.uuid/index.html">org.kryptonmc.krypton.util.uuid</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="388928995%2FPackages%2F791161957"></span>
                 <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
               </span></span></div>
           <div class="pull-right"></div>
@@ -1261,6 +1802,20 @@ if(savedDarkMode === true){
         <div></div>
       </div>
     </div>
+<a data-name="-1087283940%2FPackages%2F791161957" anchor-label="org.kryptonmc.krypton.world.biome.data" id="-1087283940%2FPackages%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+    <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
+      <div>
+        <div class="main-subrow ">
+          <div class=""><span class="inline-flex">
+              <div><a href="org.kryptonmc.krypton.world.biome.data/index.html">org.kryptonmc.krypton.world.biome.data</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1087283940%2FPackages%2F791161957"></span>
+                <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+              </span></span></div>
+          <div class="pull-right"></div>
+        </div>
+        <div></div>
+      </div>
+    </div>
 <a data-name="-1906612243%2FPackages%2F791161957" anchor-label="org.kryptonmc.krypton.world.block" id="-1906612243%2FPackages%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
     <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
       <div>
@@ -1268,6 +1823,20 @@ if(savedDarkMode === true){
           <div class=""><span class="inline-flex">
               <div><a href="org.kryptonmc.krypton.world.block/index.html">org.kryptonmc.krypton.world.block</a></div>
 <span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1906612243%2FPackages%2F791161957"></span>
+                <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+              </span></span></div>
+          <div class="pull-right"></div>
+        </div>
+        <div></div>
+      </div>
+    </div>
+<a data-name="980403087%2FPackages%2F791161957" anchor-label="org.kryptonmc.krypton.world.block.data" id="980403087%2FPackages%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+    <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
+      <div>
+        <div class="main-subrow ">
+          <div class=""><span class="inline-flex">
+              <div><a href="org.kryptonmc.krypton.world.block.data/index.html">org.kryptonmc.krypton.world.block.data</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="980403087%2FPackages%2F791161957"></span>
                 <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
               </span></span></div>
           <div class="pull-right"></div>
@@ -1317,6 +1886,20 @@ if(savedDarkMode === true){
         <div></div>
       </div>
     </div>
+<a data-name="1078324238%2FPackages%2F791161957" anchor-label="org.kryptonmc.krypton.world.block.handlers" id="1078324238%2FPackages%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+    <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
+      <div>
+        <div class="main-subrow ">
+          <div class=""><span class="inline-flex">
+              <div><a href="org.kryptonmc.krypton.world.block.handlers/index.html">org.kryptonmc.krypton.world.block.handlers</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1078324238%2FPackages%2F791161957"></span>
+                <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+              </span></span></div>
+          <div class="pull-right"></div>
+        </div>
+        <div></div>
+      </div>
+    </div>
 <a data-name="1202163002%2FPackages%2F791161957" anchor-label="org.kryptonmc.krypton.world.block.palette" id="1202163002%2FPackages%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
     <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
       <div>
@@ -1331,13 +1914,41 @@ if(savedDarkMode === true){
         <div></div>
       </div>
     </div>
-<a data-name="1435469946%2FPackages%2F791161957" anchor-label="org.kryptonmc.krypton.world.block.property" id="1435469946%2FPackages%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+<a data-name="-1349189105%2FPackages%2F791161957" anchor-label="org.kryptonmc.krypton.world.block.pattern" id="-1349189105%2FPackages%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
     <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
       <div>
         <div class="main-subrow ">
           <div class=""><span class="inline-flex">
-              <div><a href="org.kryptonmc.krypton.world.block.property/index.html">org.kryptonmc.krypton.world.block.property</a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1435469946%2FPackages%2F791161957"></span>
+              <div><a href="org.kryptonmc.krypton.world.block.pattern/index.html">org.kryptonmc.krypton.world.block.pattern</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1349189105%2FPackages%2F791161957"></span>
+                <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+              </span></span></div>
+          <div class="pull-right"></div>
+        </div>
+        <div></div>
+      </div>
+    </div>
+<a data-name="683465270%2FPackages%2F791161957" anchor-label="org.kryptonmc.krypton.world.block.predicate" id="683465270%2FPackages%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+    <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
+      <div>
+        <div class="main-subrow ">
+          <div class=""><span class="inline-flex">
+              <div><a href="org.kryptonmc.krypton.world.block.predicate/index.html">org.kryptonmc.krypton.world.block.predicate</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="683465270%2FPackages%2F791161957"></span>
+                <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+              </span></span></div>
+          <div class="pull-right"></div>
+        </div>
+        <div></div>
+      </div>
+    </div>
+<a data-name="-1122210032%2FPackages%2F791161957" anchor-label="org.kryptonmc.krypton.world.block.state" id="-1122210032%2FPackages%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+    <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
+      <div>
+        <div class="main-subrow ">
+          <div class=""><span class="inline-flex">
+              <div><a href="org.kryptonmc.krypton.world.block.state/index.html">org.kryptonmc.krypton.world.block.state</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1122210032%2FPackages%2F791161957"></span>
                 <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
               </span></span></div>
           <div class="pull-right"></div>
@@ -1359,13 +1970,55 @@ if(savedDarkMode === true){
         <div></div>
       </div>
     </div>
-<a data-name="1039397329%2FPackages%2F791161957" anchor-label="org.kryptonmc.krypton.world.chunk.ticket" id="1039397329%2FPackages%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+<a data-name="-363877969%2FPackages%2F791161957" anchor-label="org.kryptonmc.krypton.world.chunk.data" id="-363877969%2FPackages%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
     <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
       <div>
         <div class="main-subrow ">
           <div class=""><span class="inline-flex">
-              <div><a href="org.kryptonmc.krypton.world.chunk.ticket/index.html">org.kryptonmc.krypton.world.chunk.ticket</a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1039397329%2FPackages%2F791161957"></span>
+              <div><a href="org.kryptonmc.krypton.world.chunk.data/index.html">org.kryptonmc.krypton.world.chunk.data</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-363877969%2FPackages%2F791161957"></span>
+                <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+              </span></span></div>
+          <div class="pull-right"></div>
+        </div>
+        <div></div>
+      </div>
+    </div>
+<a data-name="712682225%2FPackages%2F791161957" anchor-label="org.kryptonmc.krypton.world.chunk.flag" id="712682225%2FPackages%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+    <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
+      <div>
+        <div class="main-subrow ">
+          <div class=""><span class="inline-flex">
+              <div><a href="org.kryptonmc.krypton.world.chunk.flag/index.html">org.kryptonmc.krypton.world.chunk.flag</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="712682225%2FPackages%2F791161957"></span>
+                <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+              </span></span></div>
+          <div class="pull-right"></div>
+        </div>
+        <div></div>
+      </div>
+    </div>
+<a data-name="-1969866325%2FPackages%2F791161957" anchor-label="org.kryptonmc.krypton.world.command" id="-1969866325%2FPackages%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+    <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
+      <div>
+        <div class="main-subrow ">
+          <div class=""><span class="inline-flex">
+              <div><a href="org.kryptonmc.krypton.world.command/index.html">org.kryptonmc.krypton.world.command</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1969866325%2FPackages%2F791161957"></span>
+                <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+              </span></span></div>
+          <div class="pull-right"></div>
+        </div>
+        <div></div>
+      </div>
+    </div>
+<a data-name="1229963898%2FPackages%2F791161957" anchor-label="org.kryptonmc.krypton.world.components" id="1229963898%2FPackages%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+    <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
+      <div>
+        <div class="main-subrow ">
+          <div class=""><span class="inline-flex">
+              <div><a href="org.kryptonmc.krypton.world.components/index.html">org.kryptonmc.krypton.world.components</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1229963898%2FPackages%2F791161957"></span>
                 <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
               </span></span></div>
           <div class="pull-right"></div>
@@ -1429,13 +2082,27 @@ if(savedDarkMode === true){
         <div></div>
       </div>
     </div>
-<a data-name="-1819643974%2FPackages%2F791161957" anchor-label="org.kryptonmc.krypton.world.event" id="-1819643974%2FPackages%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+<a data-name="-2132091385%2FPackages%2F791161957" anchor-label="org.kryptonmc.krypton.world.entity" id="-2132091385%2FPackages%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
     <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
       <div>
         <div class="main-subrow ">
           <div class=""><span class="inline-flex">
-              <div><a href="org.kryptonmc.krypton.world.event/index.html">org.kryptonmc.krypton.world.event</a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1819643974%2FPackages%2F791161957"></span>
+              <div><a href="org.kryptonmc.krypton.world.entity/index.html">org.kryptonmc.krypton.world.entity</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-2132091385%2FPackages%2F791161957"></span>
+                <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+              </span></span></div>
+          <div class="pull-right"></div>
+        </div>
+        <div></div>
+      </div>
+    </div>
+<a data-name="1865222352%2FPackages%2F791161957" anchor-label="org.kryptonmc.krypton.world.flag" id="1865222352%2FPackages%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+    <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
+      <div>
+        <div class="main-subrow ">
+          <div class=""><span class="inline-flex">
+              <div><a href="org.kryptonmc.krypton.world.flag/index.html">org.kryptonmc.krypton.world.flag</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1865222352%2FPackages%2F791161957"></span>
                 <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
               </span></span></div>
           <div class="pull-right"></div>
@@ -1457,13 +2124,13 @@ if(savedDarkMode === true){
         <div></div>
       </div>
     </div>
-<a data-name="-2014396602%2FPackages%2F791161957" anchor-label="org.kryptonmc.krypton.world.fluid.handler" id="-2014396602%2FPackages%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+<a data-name="649762440%2FPackages%2F791161957" anchor-label="org.kryptonmc.krypton.world.gameevent" id="649762440%2FPackages%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
     <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
       <div>
         <div class="main-subrow ">
           <div class=""><span class="inline-flex">
-              <div><a href="org.kryptonmc.krypton.world.fluid.handler/index.html">org.kryptonmc.krypton.world.fluid.handler</a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-2014396602%2FPackages%2F791161957"></span>
+              <div><a href="org.kryptonmc.krypton.world.gameevent/index.html">org.kryptonmc.krypton.world.gameevent</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="649762440%2FPackages%2F791161957"></span>
                 <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
               </span></span></div>
           <div class="pull-right"></div>
@@ -1478,6 +2145,48 @@ if(savedDarkMode === true){
           <div class=""><span class="inline-flex">
               <div><a href="org.kryptonmc.krypton.world.generation/index.html">org.kryptonmc.krypton.world.generation</a></div>
 <span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-598570500%2FPackages%2F791161957"></span>
+                <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+              </span></span></div>
+          <div class="pull-right"></div>
+        </div>
+        <div></div>
+      </div>
+    </div>
+<a data-name="1242290389%2FPackages%2F791161957" anchor-label="org.kryptonmc.krypton.world.generation.preset" id="1242290389%2FPackages%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+    <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
+      <div>
+        <div class="main-subrow ">
+          <div class=""><span class="inline-flex">
+              <div><a href="org.kryptonmc.krypton.world.generation.preset/index.html">org.kryptonmc.krypton.world.generation.preset</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1242290389%2FPackages%2F791161957"></span>
+                <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+              </span></span></div>
+          <div class="pull-right"></div>
+        </div>
+        <div></div>
+      </div>
+    </div>
+<a data-name="-337389109%2FPackages%2F791161957" anchor-label="org.kryptonmc.krypton.world.material" id="-337389109%2FPackages%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+    <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
+      <div>
+        <div class="main-subrow ">
+          <div class=""><span class="inline-flex">
+              <div><a href="org.kryptonmc.krypton.world.material/index.html">org.kryptonmc.krypton.world.material</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-337389109%2FPackages%2F791161957"></span>
+                <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+              </span></span></div>
+          <div class="pull-right"></div>
+        </div>
+        <div></div>
+      </div>
+    </div>
+<a data-name="1496789208%2FPackages%2F791161957" anchor-label="org.kryptonmc.krypton.world.redstone" id="1496789208%2FPackages%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+    <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
+      <div>
+        <div class="main-subrow ">
+          <div class=""><span class="inline-flex">
+              <div><a href="org.kryptonmc.krypton.world.redstone/index.html">org.kryptonmc.krypton.world.redstone</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1496789208%2FPackages%2F791161957"></span>
                 <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
               </span></span></div>
           <div class="pull-right"></div>
@@ -1527,10 +2236,24 @@ if(savedDarkMode === true){
         <div></div>
       </div>
     </div>
+<a data-name="1760020966%2FPackages%2F791161957" anchor-label="org.kryptonmc.krypton.world.util" id="1760020966%2FPackages%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+    <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
+      <div>
+        <div class="main-subrow ">
+          <div class=""><span class="inline-flex">
+              <div><a href="org.kryptonmc.krypton.world.util/index.html">org.kryptonmc.krypton.world.util</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1760020966%2FPackages%2F791161957"></span>
+                <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+              </span></span></div>
+          <div class="pull-right"></div>
+        </div>
+        <div></div>
+      </div>
+    </div>
   </div>
 </div>
       <div class="footer">
-        <span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>© 2022 Copyright</span><span class="pull-right"><span>Generated by </span><a href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span>
+        <span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>© 2023 Copyright</span><span class="pull-right"><span>Generated by </span><a href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span>
       </div>
     </div>
 </div>

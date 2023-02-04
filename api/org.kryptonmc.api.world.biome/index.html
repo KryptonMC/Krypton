@@ -4,10 +4,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
     <title>org.kryptonmc.api.world.biome</title>
 <link href="../../images/logo-icon.svg" rel="icon" type="image/svg"><script>var pathToRoot = "../../";</script>    <script>const storage = localStorage.getItem("dokka-dark-mode")
-const savedDarkMode = storage ? JSON.parse(storage) : false
-if(savedDarkMode === true){
-    document.getElementsByTagName("html")[0].classList.add("theme-dark")
-}</script>
+    if (storage == null) {
+        const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+        if (osDarkSchemePreferred === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    } else {
+        const savedDarkMode = JSON.parse(storage)
+        if(savedDarkMode === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    }
+    </script>
 <script type="text/javascript" src="../../scripts/sourceset_dependencies.js" async></script>
 <link href="../../styles/style.css" rel="Stylesheet">
 <link href="../../styles/jetbrains-mono.css" rel="Stylesheet">
@@ -18,14 +26,15 @@ if(savedDarkMode === true){
 <script type="text/javascript" src="../../scripts/navigation-loader.js" async></script>
 <script type="text/javascript" src="../../scripts/platform-content-handler.js" async></script>
 <script type="text/javascript" src="../../scripts/main.js" defer></script>
-<script type="text/javascript" src="../../scripts/prism.js" async></script></head>
+<script type="text/javascript" src="../../scripts/prism.js" async></script>
+<script type="text/javascript" src="../../scripts/symbol-parameters-wrapper_deferred.js" defer></script></head>
 <body>
 <div class="navigation-wrapper" id="navigation-wrapper">
     <div id="leftToggler"><span class="icon-toggler"></span></div>
     <div class="library-name">
 <a href="../../index.html">
 <span>krypton</span>            </a>    </div>
-    <div>0.66.4
+    <div>6a98d9dec7
     </div>
     <div class="pull-right d-flex">
         <button id="theme-toggle-button"><span id="theme-toggle"></span></button>
@@ -38,9 +47,9 @@ if(savedDarkMode === true){
     </div>
     <div id="main">
 <div class="main-content" id="content" pageids="api::org.kryptonmc.api.world.biome////PointingToDeclaration//-1197683648">
-  <div class="breadcrumbs"><a href="../index.html">api</a><span class="delimiter">/</span><a href="index.html">org.kryptonmc.api.world.biome</a></div>
+  <div class="breadcrumbs"><a href="../index.html">api</a><span class="delimiter">/</span><span class="current">org.kryptonmc.api.world.biome</span></div>
   <div class="cover ">
-    <h1 class="cover"><span><span>Package</span></span> <span>org.</span><wbr><span>kryptonmc.</span><wbr><span>api.</span><wbr><span>world.</span><wbr><span>biome</span></h1>
+    <h1 class="cover"><span><span>Package-level</span></span> <span><span>declarations</span></span></h1>
   </div>
   <div class="tabbedcontent">
     <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="Types">Types</button><button class="section-tab" data-togglable="Functions">Functions</button></div>
@@ -56,7 +65,7 @@ if(savedDarkMode === true){
                 </span></span></div>
             <div>
               <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":api:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">interface </span><a href="-ambient-additions-settings/index.html">AmbientAdditionsSettings</a> : <span data-unresolved-link="net.kyori.adventure.util/Buildable///PointingToDeclaration/">Buildable</span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-ambient-additions-settings/index.html">AmbientAdditionsSettings</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="-ambient-additions-settings/-builder/index.html">AmbientAdditionsSettings.Builder</a><span class="token operator">&gt; </span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><p class="paragraph">Settings for ambient sounds that may play randomly when in the biome, with a fixed chance.</p></div></div></div>
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">interface </span><a href="-ambient-additions-settings/index.html">AmbientAdditionsSettings</a> : <a href="../org.kryptonmc.api.util/-buildable/index.html">Buildable</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-ambient-additions-settings/-builder/index.html">AmbientAdditionsSettings.Builder</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="-ambient-additions-settings/index.html">AmbientAdditionsSettings</a><span class="token operator">&gt; </span></div><div class="brief "><p class="paragraph">Settings for ambient sounds that may play randomly when in the biome, with a fixed chance.</p></div></div></div>
               </div>
             </div>
           </div>
@@ -71,7 +80,7 @@ if(savedDarkMode === true){
                 </span></span></div>
             <div>
               <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":api:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">interface </span><a href="-ambient-mood-settings/index.html">AmbientMoodSettings</a> : <span data-unresolved-link="net.kyori.adventure.util/Buildable///PointingToDeclaration/">Buildable</span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-ambient-mood-settings/index.html">AmbientMoodSettings</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="-ambient-mood-settings/-builder/index.html">AmbientMoodSettings.Builder</a><span class="token operator">&gt; </span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><p class="paragraph">Settings for ambient mood sounds that will play whilst in certain biomes.</p></div></div></div>
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">interface </span><a href="-ambient-mood-settings/index.html">AmbientMoodSettings</a> : <a href="../org.kryptonmc.api.util/-buildable/index.html">Buildable</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-ambient-mood-settings/-builder/index.html">AmbientMoodSettings.Builder</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="-ambient-mood-settings/index.html">AmbientMoodSettings</a><span class="token operator">&gt; </span></div><div class="brief "><p class="paragraph">Settings for ambient mood sounds that will play whilst in certain biomes.</p></div></div></div>
               </div>
             </div>
           </div>
@@ -86,7 +95,7 @@ if(savedDarkMode === true){
                 </span></span></div>
             <div>
               <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":api:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">interface </span><a href="-ambient-particle-settings/index.html">AmbientParticleSettings</a> : <span data-unresolved-link="net.kyori.adventure.util/Buildable///PointingToDeclaration/">Buildable</span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-ambient-particle-settings/index.html">AmbientParticleSettings</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="-ambient-particle-settings/-builder/index.html">AmbientParticleSettings.Builder</a><span class="token operator">&gt; </span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><p class="paragraph">Settings for ambient particles in biomes.</p></div></div></div>
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">interface </span><a href="-ambient-particle-settings/index.html">AmbientParticleSettings</a> : <a href="../org.kryptonmc.api.util/-buildable/index.html">Buildable</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-ambient-particle-settings/-builder/index.html">AmbientParticleSettings.Builder</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="-ambient-particle-settings/index.html">AmbientParticleSettings</a><span class="token operator">&gt; </span></div><div class="brief "><p class="paragraph">Settings for ambient particles in biomes.</p></div></div></div>
               </div>
             </div>
           </div>
@@ -101,37 +110,7 @@ if(savedDarkMode === true){
                 </span></span></div>
             <div>
               <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":api:dokkaHtmlPartial/main"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation">@</span><a href="../org.kryptonmc.api.util/-catalogued-by/index.html"><span class="token annotation">CataloguedBy</span></a><span class="token punctuation">(</span><span>catalogue<span class="token operator"> = </span><a href="-biomes/index.html">Biomes::class</a></span><wbr><span class="token punctuation">)</span></div></div><span class="token keyword">interface </span><a href="-biome/index.html">Biome</a> : <span data-unresolved-link="net.kyori.adventure.util/Buildable///PointingToDeclaration/">Buildable</span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-biome/index.html">Biome</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="-biome/-builder/index.html">Biome.Builder</a><span class="token operator">&gt; </span>, <span data-unresolved-link="net.kyori.adventure.key/Keyed///PointingToDeclaration/">Keyed</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><p class="paragraph">A biome is a region in a world with distinct geographical features.</p></div></div></div>
-              </div>
-            </div>
-          </div>
-        </div>
-<a data-name="464484961%2FClasslikes%2F-1197683648" anchor-label="BiomeCategories" id="464484961%2FClasslikes%2F-1197683648" data-filterable-set=":api:dokkaHtmlPartial/main"></a>
-        <div class="table-row" data-filterable-current=":api:dokkaHtmlPartial/main" data-filterable-set=":api:dokkaHtmlPartial/main">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="-biome-categories/index.html"><span>Biome</span><wbr><span><span>Categories</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="464484961%2FClasslikes%2F-1197683648"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div>
-              <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":api:dokkaHtmlPartial/main"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation">@</span><a href="../org.kryptonmc.api.util/-catalogue/index.html"><span class="token annotation">Catalogue</span></a><span class="token punctuation">(</span><span>type<span class="token operator"> = </span><span class="token punctuation">[</span><span><a href="-biome-category/index.html">BiomeCategory::class</a></span><wbr><span class="token punctuation">]</span></span><wbr><span class="token punctuation">)</span></div></div><span class="token keyword">object </span><a href="-biome-categories/index.html">BiomeCategories</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><p class="paragraph">All the built-in vanilla biome categories.</p></div></div></div>
-              </div>
-            </div>
-          </div>
-        </div>
-<a data-name="1675520191%2FClasslikes%2F-1197683648" anchor-label="BiomeCategory" id="1675520191%2FClasslikes%2F-1197683648" data-filterable-set=":api:dokkaHtmlPartial/main"></a>
-        <div class="table-row" data-filterable-current=":api:dokkaHtmlPartial/main" data-filterable-set=":api:dokkaHtmlPartial/main">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="-biome-category/index.html"><span>Biome</span><wbr><span><span>Category</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1675520191%2FClasslikes%2F-1197683648"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div>
-              <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":api:dokkaHtmlPartial/main"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation">@</span><a href="../org.kryptonmc.api.util/-catalogued-by/index.html"><span class="token annotation">CataloguedBy</span></a><span class="token punctuation">(</span><span>catalogue<span class="token operator"> = </span><a href="-biome-categories/index.html">BiomeCategories::class</a></span><wbr><span class="token punctuation">)</span></div></div><span class="token keyword">interface </span><a href="-biome-category/index.html">BiomeCategory</a> : <span data-unresolved-link="net.kyori.adventure.key/Keyed///PointingToDeclaration/">Keyed</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><p class="paragraph">A category for a biome.</p></div></div></div>
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtmlPartial/main"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="../../internal-annotations/org.kryptonmc.internal.annotations/-catalogued-by/index.html"><span class="token annotation builtin">CataloguedBy</span></a><span class="token punctuation">(</span><span>catalogue<span class="token operator"> = </span><a href="-biomes/index.html">Biomes::class</a></span><wbr><span class="token punctuation">)</span></div></div><span class="token keyword">interface </span><a href="-biome/index.html">Biome</a> : <a href="../org.kryptonmc.api.util/-buildable/index.html">Buildable</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-biome/-builder/index.html">Biome.Builder</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="-biome/index.html">Biome</a><span class="token operator">&gt; </span>, <span data-unresolved-link="net.kyori.adventure.key/Keyed///PointingToDeclaration/">Keyed</span></div><div class="brief "><p class="paragraph">A biome is a region in a world with distinct geographical features.</p></div></div></div>
               </div>
             </div>
           </div>
@@ -146,7 +125,7 @@ if(savedDarkMode === true){
                 </span></span></div>
             <div>
               <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":api:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">interface </span><a href="-biome-container/index.html">BiomeContainer</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><p class="paragraph">Something that contains biomes.</p></div></div></div>
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">interface </span><a href="-biome-container/index.html">BiomeContainer</a></div><div class="brief "><p class="paragraph">Something that contains biomes.</p></div></div></div>
               </div>
             </div>
           </div>
@@ -161,7 +140,7 @@ if(savedDarkMode === true){
                 </span></span></div>
             <div>
               <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":api:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">interface </span><a href="-biome-effects/index.html">BiomeEffects</a> : <span data-unresolved-link="net.kyori.adventure.util/Buildable///PointingToDeclaration/">Buildable</span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-biome-effects/index.html">BiomeEffects</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="-biome-effects/-builder/index.html">BiomeEffects.Builder</a><span class="token operator">&gt; </span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><p class="paragraph">The effects for a biome. These control various things, including colouring, ambient particles, sounds, and music.</p></div></div></div>
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">interface </span><a href="-biome-effects/index.html">BiomeEffects</a> : <a href="../org.kryptonmc.api.util/-buildable/index.html">Buildable</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-biome-effects/-builder/index.html">BiomeEffects.Builder</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="-biome-effects/index.html">BiomeEffects</a><span class="token operator">&gt; </span></div><div class="brief "><p class="paragraph">The effects for a biome. These control various things, including colouring, ambient particles, sounds, and music.</p></div></div></div>
               </div>
             </div>
           </div>
@@ -176,7 +155,7 @@ if(savedDarkMode === true){
                 </span></span></div>
             <div>
               <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":api:dokkaHtmlPartial/main"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation">@</span><a href="../org.kryptonmc.api.util/-catalogue/index.html"><span class="token annotation">Catalogue</span></a><span class="token punctuation">(</span><span>type<span class="token operator"> = </span><span class="token punctuation">[</span><span><a href="-biome/index.html">Biome::class</a></span><wbr><span class="token punctuation">]</span></span><wbr><span class="token punctuation">)</span></div></div><span class="token keyword">object </span><a href="-biomes/index.html">Biomes</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><p class="paragraph">This file is auto-generated. Do not edit this manually!</p></div></div></div>
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtmlPartial/main"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="../../internal-annotations/org.kryptonmc.internal.annotations/-catalogue/index.html"><span class="token annotation builtin">Catalogue</span></a><span class="token punctuation">(</span><span>type<span class="token operator"> = </span><a href="-biome/index.html">Biome::class</a></span><wbr><span class="token punctuation">)</span></div></div><span class="token keyword">object </span><a href="-biomes/index.html">Biomes</a></div><div class="brief "><p class="paragraph">This file is auto-generated. Do not edit this manually!</p></div></div></div>
               </div>
             </div>
           </div>
@@ -191,7 +170,7 @@ if(savedDarkMode === true){
                 </span></span></div>
             <div>
               <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":api:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">interface </span><a href="-climate/index.html">Climate</a> : <span data-unresolved-link="net.kyori.adventure.util/Buildable///PointingToDeclaration/">Buildable</span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-climate/index.html">Climate</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="-climate/-builder/index.html">Climate.Builder</a><span class="token operator">&gt; </span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><p class="paragraph">The climate for a biome.</p></div></div></div>
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">interface </span><a href="-climate/index.html">Climate</a> : <a href="../org.kryptonmc.api.util/-buildable/index.html">Buildable</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-climate/-builder/index.html">Climate.Builder</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="-climate/index.html">Climate</a><span class="token operator">&gt; </span></div><div class="brief "><p class="paragraph">The climate for a biome.</p></div></div></div>
               </div>
             </div>
           </div>
@@ -206,7 +185,7 @@ if(savedDarkMode === true){
                 </span></span></div>
             <div>
               <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":api:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">enum </span><a href="-grass-color-modifier/index.html">GrassColorModifier</a> : <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-enum/index.html">Enum</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-grass-color-modifier/index.html">GrassColorModifier</a><span class="token operator">&gt; </span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><p class="paragraph">A modifier for the colouring of grass within a biome.</p></div></div></div>
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">enum </span><a href="-grass-color-modifier/index.html">GrassColorModifier</a> : <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-enum/index.html">Enum</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-grass-color-modifier/index.html">GrassColorModifier</a><span class="token operator">&gt; </span></div><div class="brief "><p class="paragraph">A modifier for the colouring of grass within a biome.</p></div></div></div>
               </div>
             </div>
           </div>
@@ -221,7 +200,7 @@ if(savedDarkMode === true){
                 </span></span></div>
             <div>
               <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":api:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">enum </span><a href="-precipitation/index.html">Precipitation</a> : <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-enum/index.html">Enum</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-precipitation/index.html">Precipitation</a><span class="token operator">&gt; </span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><p class="paragraph">A form of precipitation that applies in a climate.</p></div></div></div>
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">enum </span><a href="-precipitation/index.html">Precipitation</a> : <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-enum/index.html">Enum</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-precipitation/index.html">Precipitation</a><span class="token operator">&gt; </span></div><div class="brief "><p class="paragraph">A form of precipitation that applies in a climate.</p></div></div></div>
               </div>
             </div>
           </div>
@@ -236,24 +215,99 @@ if(savedDarkMode === true){
                 </span></span></div>
             <div>
               <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":api:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">enum </span><a href="-temperature-modifier/index.html">TemperatureModifier</a> : <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-enum/index.html">Enum</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-temperature-modifier/index.html">TemperatureModifier</a><span class="token operator">&gt; </span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><p class="paragraph">A modifier for temperature in a climate.</p></div></div></div>
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">enum </span><a href="-temperature-modifier/index.html">TemperatureModifier</a> : <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-enum/index.html">Enum</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-temperature-modifier/index.html">TemperatureModifier</a><span class="token operator">&gt; </span></div><div class="brief "><p class="paragraph">A modifier for temperature in a climate.</p></div></div></div>
               </div>
             </div>
           </div>
         </div>
       </div>
       <h2 class="">Functions</h2>
-      <div class="table" data-togglable="Functions"><a data-name="213779381%2FFunctions%2F-1197683648" anchor-label="biome" id="213779381%2FFunctions%2F-1197683648" data-filterable-set=":api:dokkaHtmlPartial/main"></a>
+      <div class="table" data-togglable="Functions"><a data-name="1114983927%2FFunctions%2F-1197683648" anchor-label="additions" id="1114983927%2FFunctions%2F-1197683648" data-filterable-set=":api:dokkaHtmlPartial/main"></a>
         <div class="table-row" data-filterable-current=":api:dokkaHtmlPartial/main" data-filterable-set=":api:dokkaHtmlPartial/main">
           <div class="main-subrow keyValue ">
             <div class=""><span class="inline-flex">
-                <div><a href="biome.html"><span><span>biome</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="213779381%2FFunctions%2F-1197683648"></span>
+                <div><a href="additions.html"><span><span>additions</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1114983927%2FFunctions%2F-1197683648"></span>
                   <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                 </span></span></div>
             <div>
               <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":api:dokkaHtmlPartial/main"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation">@</span><span data-unresolved-link="org.jetbrains.annotations/Contract///PointingToDeclaration/"><span class="token annotation">Contract</span></span><span class="token punctuation">(</span><span>value<span class="token operator"> = </span><span class="breakable-word"><span class="token string">"_ -&gt; new"</span></span><span class="token punctuation">, </span></span><wbr><span>pure<span class="token operator"> = </span><span class="breakable-word"><span class="token boolean">true</span></span></span><wbr><span class="token punctuation">)</span></div></div><span class="token keyword">inline </span><span class="token keyword">fun </span><a href="biome.html"><span class="token function">biome</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">key<span class="token operator">: </span><span data-unresolved-link="net.kyori.adventure.key/Key///PointingToDeclaration/">Key</span><span class="token punctuation">, </span></span><span class="parameter ">builder<span class="token operator">: </span><span class="token keyword"></span><a href="-biome/-builder/index.html">Biome.Builder</a><span class="token punctuation">.</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="-biome/index.html">Biome</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><p class="paragraph">Creates a new biome with the given <a href="biome.html">key</a> and applies the given <a href="biome.html">builder</a> to a new builder, then builds the result.</p></div></div></div>
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtmlPartial/main"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><span data-unresolved-link="org.jetbrains.annotations/Contract///PointingToDeclaration/"><span class="token annotation builtin">Contract</span></span><span class="token punctuation">(</span><span>value<span class="token operator"> = </span><span class="breakable-word"><span class="token string">"_, _ -&gt; this"</span></span><span class="token punctuation">, </span></span><wbr><span>mutates<span class="token operator"> = </span><span class="breakable-word"><span class="token string">"this"</span></span></span><wbr><span class="token punctuation">)</span></div></div><span class="token keyword">inline </span><span class="token keyword">fun </span><a href="-biome-effects/-builder/index.html">BiomeEffects.Builder</a><span class="token punctuation">.</span><a href="additions.html"><span class="token function">additions</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">sound<span class="token operator">: </span><a href="../org.kryptonmc.api.effect.sound/-sound-event/index.html">SoundEvent</a><span class="token punctuation">, </span></span><span class="parameter ">builder<span class="token operator">: </span><span class="token keyword"></span><a href="-ambient-additions-settings/-builder/index.html">AmbientAdditionsSettings.Builder</a><span class="token punctuation">.</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="-biome-effects/-builder/index.html">BiomeEffects.Builder</a></div><div class="brief "><p class="paragraph">Applies the given <a href="additions.html">builder</a> to an ambient additions settings builder, builds the result, and sets the ambient additions settings to the built result.</p></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-1518690307%2FFunctions%2F-1197683648" anchor-label="biome" id="-1518690307%2FFunctions%2F-1197683648" data-filterable-set=":api:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":api:dokkaHtmlPartial/main" data-filterable-set=":api:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="biome.html"><span><span>biome</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1518690307%2FFunctions%2F-1197683648"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtmlPartial/main"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><span data-unresolved-link="org.jetbrains.annotations/Contract///PointingToDeclaration/"><span class="token annotation builtin">Contract</span></span><span class="token punctuation">(</span><span>value<span class="token operator"> = </span><span class="breakable-word"><span class="token string">"_ -&gt; new"</span></span><span class="token punctuation">, </span></span><wbr><span>pure<span class="token operator"> = </span><span class="breakable-word"><span class="token boolean">true</span></span></span><wbr><span class="token punctuation">)</span></div></div><span class="token keyword">inline </span><span class="token keyword">fun </span><a href="biome.html"><span class="token function">biome</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">builder<span class="token operator">: </span><span class="token keyword"></span><a href="-biome/-builder/index.html">Biome.Builder</a><span class="token punctuation">.</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="-biome/index.html">Biome</a></div><div class="brief "><p class="paragraph">Creates a new biome by applying the given <a href="biome.html">builder</a> to a new builder, then building the result.</p></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="456318591%2FFunctions%2F-1197683648" anchor-label="climate" id="456318591%2FFunctions%2F-1197683648" data-filterable-set=":api:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":api:dokkaHtmlPartial/main" data-filterable-set=":api:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="climate.html"><span><span>climate</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="456318591%2FFunctions%2F-1197683648"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtmlPartial/main"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><span data-unresolved-link="org.jetbrains.annotations/Contract///PointingToDeclaration/"><span class="token annotation builtin">Contract</span></span><span class="token punctuation">(</span><span>value<span class="token operator"> = </span><span class="breakable-word"><span class="token string">"_ -&gt; this"</span></span><span class="token punctuation">, </span></span><wbr><span>mutates<span class="token operator"> = </span><span class="breakable-word"><span class="token string">"this"</span></span></span><wbr><span class="token punctuation">)</span></div></div><span class="token keyword">inline </span><span class="token keyword">fun </span><a href="-biome/-builder/index.html">Biome.Builder</a><span class="token punctuation">.</span><a href="climate.html"><span class="token function">climate</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">builder<span class="token operator">: </span><span class="token keyword"></span><a href="-climate/-builder/index.html">Climate.Builder</a><span class="token punctuation">.</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="-biome/-builder/index.html">Biome.Builder</a></div><div class="brief "><p class="paragraph">Applies the given <a href="climate.html">builder</a> to a new climate builder and sets the climate to the built instance.</p></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="30136337%2FFunctions%2F-1197683648" anchor-label="effects" id="30136337%2FFunctions%2F-1197683648" data-filterable-set=":api:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":api:dokkaHtmlPartial/main" data-filterable-set=":api:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="effects.html"><span><span>effects</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="30136337%2FFunctions%2F-1197683648"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtmlPartial/main"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><span data-unresolved-link="org.jetbrains.annotations/Contract///PointingToDeclaration/"><span class="token annotation builtin">Contract</span></span><span class="token punctuation">(</span><span>value<span class="token operator"> = </span><span class="breakable-word"><span class="token string">"_ -&gt; this"</span></span><span class="token punctuation">, </span></span><wbr><span>mutates<span class="token operator"> = </span><span class="breakable-word"><span class="token string">"this"</span></span></span><wbr><span class="token punctuation">)</span></div></div><span class="token keyword">inline </span><span class="token keyword">fun </span><a href="-biome/-builder/index.html">Biome.Builder</a><span class="token punctuation">.</span><a href="effects.html"><span class="token function">effects</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">builder<span class="token operator">: </span><span class="token keyword"></span><a href="-biome-effects/-builder/index.html">BiomeEffects.Builder</a><span class="token punctuation">.</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="-biome/-builder/index.html">Biome.Builder</a></div><div class="brief "><p class="paragraph">Applies the given <a href="effects.html">builder</a> to a new effects settings builder and sets the effects settings to the built instance.</p></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="1750536335%2FFunctions%2F-1197683648" anchor-label="mood" id="1750536335%2FFunctions%2F-1197683648" data-filterable-set=":api:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":api:dokkaHtmlPartial/main" data-filterable-set=":api:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="mood.html"><span><span>mood</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1750536335%2FFunctions%2F-1197683648"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtmlPartial/main"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><span data-unresolved-link="org.jetbrains.annotations/Contract///PointingToDeclaration/"><span class="token annotation builtin">Contract</span></span><span class="token punctuation">(</span><span>value<span class="token operator"> = </span><span class="breakable-word"><span class="token string">"_, _ -&gt; this"</span></span><span class="token punctuation">, </span></span><wbr><span>mutates<span class="token operator"> = </span><span class="breakable-word"><span class="token string">"this"</span></span></span><wbr><span class="token punctuation">)</span></div></div><span class="token keyword">inline </span><span class="token keyword">fun </span><a href="-biome-effects/-builder/index.html">BiomeEffects.Builder</a><span class="token punctuation">.</span><a href="mood.html"><span class="token function">mood</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">sound<span class="token operator">: </span><a href="../org.kryptonmc.api.effect.sound/-sound-event/index.html">SoundEvent</a><span class="token punctuation">, </span></span><span class="parameter ">builder<span class="token operator">: </span><span class="token keyword"></span><a href="-ambient-mood-settings/-builder/index.html">AmbientMoodSettings.Builder</a><span class="token punctuation">.</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="-biome-effects/-builder/index.html">BiomeEffects.Builder</a></div><div class="brief "><p class="paragraph">Applies the given <a href="mood.html">builder</a> to an ambient mood settings builder, builds the result, and sets the ambient mood settings to the built result.</p></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="1425680096%2FFunctions%2F-1197683648" anchor-label="particles" id="1425680096%2FFunctions%2F-1197683648" data-filterable-set=":api:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":api:dokkaHtmlPartial/main" data-filterable-set=":api:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="particles.html"><span><span>particles</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1425680096%2FFunctions%2F-1197683648"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtmlPartial/main"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><span data-unresolved-link="org.jetbrains.annotations/Contract///PointingToDeclaration/"><span class="token annotation builtin">Contract</span></span><span class="token punctuation">(</span><span>value<span class="token operator"> = </span><span class="breakable-word"><span class="token string">"_, _ -&gt; this"</span></span><span class="token punctuation">, </span></span><wbr><span>mutates<span class="token operator"> = </span><span class="breakable-word"><span class="token string">"this"</span></span></span><wbr><span class="token punctuation">)</span></div></div><span class="token keyword">inline </span><span class="token keyword">fun </span><a href="-biome-effects/-builder/index.html">BiomeEffects.Builder</a><span class="token punctuation">.</span><a href="particles.html"><span class="token function">particles</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">type<span class="token operator">: </span><a href="../org.kryptonmc.api.effect.particle/-particle-type/index.html">ParticleType</a><span class="token punctuation">, </span></span><span class="parameter ">builder<span class="token operator">: </span><span class="token keyword"></span><a href="-ambient-particle-settings/-builder/index.html">AmbientParticleSettings.Builder</a><span class="token punctuation">.</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="-biome-effects/-builder/index.html">BiomeEffects.Builder</a></div><div class="brief "><p class="paragraph">Applies the given <a href="particles.html">builder</a> to an ambient particle settings builder, builds the result, and sets the ambient particle settings to the built result.</p></div></div></div>
               </div>
             </div>
           </div>
@@ -263,7 +317,7 @@ if(savedDarkMode === true){
   </div>
 </div>
       <div class="footer">
-        <span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>© 2022 Copyright</span><span class="pull-right"><span>Generated by </span><a href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span>
+        <span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>© 2023 Copyright</span><span class="pull-right"><span>Generated by </span><a href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span>
       </div>
     </div>
 </div>

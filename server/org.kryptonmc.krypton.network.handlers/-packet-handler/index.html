@@ -4,10 +4,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
     <title>PacketHandler</title>
 <link href="../../../images/logo-icon.svg" rel="icon" type="image/svg"><script>var pathToRoot = "../../../";</script>    <script>const storage = localStorage.getItem("dokka-dark-mode")
-const savedDarkMode = storage ? JSON.parse(storage) : false
-if(savedDarkMode === true){
-    document.getElementsByTagName("html")[0].classList.add("theme-dark")
-}</script>
+    if (storage == null) {
+        const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+        if (osDarkSchemePreferred === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    } else {
+        const savedDarkMode = JSON.parse(storage)
+        if(savedDarkMode === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    }
+    </script>
 <script type="text/javascript" src="../../../scripts/sourceset_dependencies.js" async></script>
 <link href="../../../styles/style.css" rel="Stylesheet">
 <link href="../../../styles/jetbrains-mono.css" rel="Stylesheet">
@@ -18,14 +26,15 @@ if(savedDarkMode === true){
 <script type="text/javascript" src="../../../scripts/navigation-loader.js" async></script>
 <script type="text/javascript" src="../../../scripts/platform-content-handler.js" async></script>
 <script type="text/javascript" src="../../../scripts/main.js" defer></script>
-<script type="text/javascript" src="../../../scripts/prism.js" async></script></head>
+<script type="text/javascript" src="../../../scripts/prism.js" async></script>
+<script type="text/javascript" src="../../../scripts/symbol-parameters-wrapper_deferred.js" defer></script></head>
 <body>
 <div class="navigation-wrapper" id="navigation-wrapper">
     <div id="leftToggler"><span class="icon-toggler"></span></div>
     <div class="library-name">
 <a href="../../../index.html">
 <span>krypton</span>            </a>    </div>
-    <div>0.66.4
+    <div>6a98d9dec7
     </div>
     <div class="pull-right d-flex">
         <button id="theme-toggle-button"><span id="theme-toggle"></span></button>
@@ -38,118 +47,88 @@ if(savedDarkMode === true){
     </div>
     <div id="main">
 <div class="main-content" id="content" pageids="server::org.kryptonmc.krypton.network.handlers/PacketHandler///PointingToDeclaration//791161957">
-  <div class="breadcrumbs"><a href="../../index.html">server</a><span class="delimiter">/</span><a href="../index.html">org.kryptonmc.krypton.network.handlers</a><span class="delimiter">/</span><a href="index.html">PacketHandler</a></div>
+  <div class="breadcrumbs"><a href="../../index.html">server</a><span class="delimiter">/</span><a href="../index.html">org.kryptonmc.krypton.network.handlers</a><span class="delimiter">/</span><span class="current">PacketHandler</span></div>
   <div class="cover ">
     <h1 class="cover"><span>Packet</span><wbr><span><span>Handler</span></span></h1>
-    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":server:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">interface </span><a href="index.html">PacketHandler</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><p class="paragraph">The base interface for packet handlers. This exists primarily to avoid having one handler for all, which is what we used to have before this system.</p></div></div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":server:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">interface </span><a href="index.html">PacketHandler</a></div><p class="paragraph">The base interface for packet handlers. This exists primarily to avoid having one handler for all, which is what we used to have before this system.</p></div></div>
   </div>
   <div class="tabbedcontent">
     <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="Functions">Functions</button><button class="section-tab" data-togglable="Properties">Properties</button><button class="section-tab" data-togglable="Inheritors">Inheritors</button></div>
     <div class="tabs-section-body">
       <h2 class="">Functions</h2>
-      <div class="table" data-togglable="Functions"><a data-name="-2041068782%2FFunctions%2F791161957" anchor-label="handle" id="-2041068782%2FFunctions%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
-        <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="handle.html"><span><span>handle</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-2041068782%2FFunctions%2F791161957"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div>
-              <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":server:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="handle.html"><span class="token function">handle</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">packet<span class="token operator">: </span><a href="../../org.kryptonmc.krypton.packet/-packet/index.html">Packet</a></span></span><span class="token punctuation">)</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
-              </div>
-            </div>
-          </div>
-        </div>
-<a data-name="-1394262475%2FFunctions%2F791161957" anchor-label="onDisconnect" id="-1394262475%2FFunctions%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+      <div class="table" data-togglable="Functions"><a data-name="-1347717324%2FFunctions%2F791161957" anchor-label="onDisconnect" id="-1347717324%2FFunctions%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
         <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
           <div class="main-subrow keyValue ">
             <div class=""><span class="inline-flex">
                 <div><a href="on-disconnect.html"><span>on</span><wbr><span><span>Disconnect</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1394262475%2FFunctions%2F791161957"></span>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1347717324%2FFunctions%2F791161957"></span>
                   <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                 </span></span></div>
             <div>
               <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":server:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="on-disconnect.html"><span class="token function">onDisconnect</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":server:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="on-disconnect.html"><span class="token function">onDisconnect</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">message<span class="token operator">: </span><span data-unresolved-link="net.kyori.adventure.text/Component///PointingToDeclaration/">Component</span></span></span><span class="token punctuation">)</span></div></div></div>
               </div>
             </div>
           </div>
         </div>
       </div>
       <h2 class="">Properties</h2>
-      <div class="table" data-togglable="Properties"><a data-name="-1886151155%2FProperties%2F791161957" anchor-label="server" id="-1886151155%2FProperties%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+      <div class="table" data-togglable="Properties"><a data-name="-677891758%2FProperties%2F791161957" anchor-label="connection" id="-677891758%2FProperties%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
         <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
           <div class="main-subrow keyValue ">
             <div class=""><span class="inline-flex">
-                <div><a href="server.html"><span><span>server</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1886151155%2FProperties%2F791161957"></span>
+                <div><a href="connection.html"><span><span>connection</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-677891758%2FProperties%2F791161957"></span>
                   <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                 </span></span></div>
             <div>
               <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":server:dokkaHtmlPartial/main"><a data-name="-1886151155%2FProperties%2F791161957" anchor-label="server" id="-1886151155%2FProperties%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">val </span><a href="server.html">server</a><span class="token operator">: </span><a href="../../org.kryptonmc.krypton/-krypton-server/index.html">KryptonServer</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
-              </div>
-            </div>
-          </div>
-        </div>
-<a data-name="1393202196%2FProperties%2F791161957" anchor-label="session" id="1393202196%2FProperties%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
-        <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="session.html"><span><span>session</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1393202196%2FProperties%2F791161957"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div>
-              <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":server:dokkaHtmlPartial/main"><a data-name="1393202196%2FProperties%2F791161957" anchor-label="session" id="1393202196%2FProperties%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">val </span><a href="session.html">session</a><span class="token operator">: </span><a href="../../org.kryptonmc.krypton.network/-session-handler/index.html">SessionHandler</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-dependent-content" data-active="" data-togglable=":server:dokkaHtmlPartial/main"><a data-name="-677891758%2FProperties%2F791161957" anchor-label="connection" id="-677891758%2FProperties%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">val </span><a href="connection.html">connection</a><span class="token operator">: </span><a href="../../org.kryptonmc.krypton.network/-netty-connection/index.html">NettyConnection</a></div></div></div>
               </div>
             </div>
           </div>
         </div>
       </div>
       <h2 class="">Inheritors</h2>
-      <div class="table" data-togglable="Inheritors"><a data-name="1177351902%2FInheritors%2F791161957" anchor-label="HandshakeHandler" id="1177351902%2FInheritors%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+      <div class="table" data-togglable="Inheritors"><a data-name="-897744314%2FInheritors%2F791161957" anchor-label="HandshakePacketHandler" id="-897744314%2FInheritors%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
         <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
           <div class="main-subrow keyValue ">
             <div class=""><span class="inline-flex">
-                <div><a href="../-handshake-handler/index.html">HandshakeHandler</a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1177351902%2FInheritors%2F791161957"></span>
+                <div><a href="../-handshake-packet-handler/index.html">HandshakePacketHandler</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-897744314%2FInheritors%2F791161957"></span>
                   <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                 </span></span></div>
             <div></div>
           </div>
         </div>
-<a data-name="1416720976%2FInheritors%2F791161957" anchor-label="LoginHandler" id="1416720976%2FInheritors%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+<a data-name="1119887416%2FInheritors%2F791161957" anchor-label="LoginPacketHandler" id="1119887416%2FInheritors%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
         <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
           <div class="main-subrow keyValue ">
             <div class=""><span class="inline-flex">
-                <div><a href="../-login-handler/index.html">LoginHandler</a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1416720976%2FInheritors%2F791161957"></span>
+                <div><a href="../-login-packet-handler/index.html">LoginPacketHandler</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1119887416%2FInheritors%2F791161957"></span>
                   <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                 </span></span></div>
             <div></div>
           </div>
         </div>
-<a data-name="-833678117%2FInheritors%2F791161957" anchor-label="PlayHandler" id="-833678117%2FInheritors%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+<a data-name="-627057471%2FInheritors%2F791161957" anchor-label="StatusPacketHandler" id="-627057471%2FInheritors%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
         <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
           <div class="main-subrow keyValue ">
             <div class=""><span class="inline-flex">
-                <div><a href="../-play-handler/index.html">PlayHandler</a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-833678117%2FInheritors%2F791161957"></span>
+                <div><a href="../-status-packet-handler/index.html">StatusPacketHandler</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-627057471%2FInheritors%2F791161957"></span>
                   <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                 </span></span></div>
             <div></div>
           </div>
         </div>
-<a data-name="-875066983%2FInheritors%2F791161957" anchor-label="StatusHandler" id="-875066983%2FInheritors%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+<a data-name="-1140590202%2FInheritors%2F791161957" anchor-label="TickablePacketHandler" id="-1140590202%2FInheritors%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
         <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
           <div class="main-subrow keyValue ">
             <div class=""><span class="inline-flex">
-                <div><a href="../-status-handler/index.html">StatusHandler</a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-875066983%2FInheritors%2F791161957"></span>
+                <div><a href="../-tickable-packet-handler/index.html">TickablePacketHandler</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1140590202%2FInheritors%2F791161957"></span>
                   <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                 </span></span></div>
             <div></div>
@@ -160,7 +139,7 @@ if(savedDarkMode === true){
   </div>
 </div>
       <div class="footer">
-        <span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>© 2022 Copyright</span><span class="pull-right"><span>Generated by </span><a href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span>
+        <span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>© 2023 Copyright</span><span class="pull-right"><span>Generated by </span><a href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span>
       </div>
     </div>
 </div>

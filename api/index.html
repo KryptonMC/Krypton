@@ -4,10 +4,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
     <title>api</title>
 <link href="../images/logo-icon.svg" rel="icon" type="image/svg"><script>var pathToRoot = "../";</script>    <script>const storage = localStorage.getItem("dokka-dark-mode")
-const savedDarkMode = storage ? JSON.parse(storage) : false
-if(savedDarkMode === true){
-    document.getElementsByTagName("html")[0].classList.add("theme-dark")
-}</script>
+    if (storage == null) {
+        const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+        if (osDarkSchemePreferred === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    } else {
+        const savedDarkMode = JSON.parse(storage)
+        if(savedDarkMode === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    }
+    </script>
 <script type="text/javascript" src="../scripts/sourceset_dependencies.js" async></script>
 <link href="../styles/style.css" rel="Stylesheet">
 <link href="../styles/jetbrains-mono.css" rel="Stylesheet">
@@ -18,14 +26,15 @@ if(savedDarkMode === true){
 <script type="text/javascript" src="../scripts/navigation-loader.js" async></script>
 <script type="text/javascript" src="../scripts/platform-content-handler.js" async></script>
 <script type="text/javascript" src="../scripts/main.js" defer></script>
-<script type="text/javascript" src="../scripts/prism.js" async></script></head>
+<script type="text/javascript" src="../scripts/prism.js" async></script>
+<script type="text/javascript" src="../scripts/symbol-parameters-wrapper_deferred.js" defer></script></head>
 <body>
 <div class="navigation-wrapper" id="navigation-wrapper">
     <div id="leftToggler"><span class="icon-toggler"></span></div>
     <div class="library-name">
 <a href="../index.html">
 <span>krypton</span>            </a>    </div>
-    <div>0.66.4
+    <div>6a98d9dec7
     </div>
     <div class="pull-right d-flex">
         <button id="theme-toggle-button"><span id="theme-toggle"></span></button>
@@ -127,6 +136,20 @@ if(savedDarkMode === true){
         <div></div>
       </div>
     </div>
+<a data-name="1311909658%2FPackages%2F-1197683648" anchor-label="org.kryptonmc.api.block.entity.container" id="1311909658%2FPackages%2F-1197683648" data-filterable-set=":api:dokkaHtmlPartial/main"></a>
+    <div class="table-row" data-filterable-current=":api:dokkaHtmlPartial/main" data-filterable-set=":api:dokkaHtmlPartial/main">
+      <div>
+        <div class="main-subrow ">
+          <div class=""><span class="inline-flex">
+              <div><a href="org.kryptonmc.api.block.entity.container/index.html">org.kryptonmc.api.block.entity.container</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1311909658%2FPackages%2F-1197683648"></span>
+                <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+              </span></span></div>
+          <div class="pull-right"></div>
+        </div>
+        <div></div>
+      </div>
+    </div>
 <a data-name="-70846679%2FPackages%2F-1197683648" anchor-label="org.kryptonmc.api.block.meta" id="-70846679%2FPackages%2F-1197683648" data-filterable-set=":api:dokkaHtmlPartial/main"></a>
     <div class="table-row" data-filterable-current=":api:dokkaHtmlPartial/main" data-filterable-set=":api:dokkaHtmlPartial/main">
       <div>
@@ -141,20 +164,6 @@ if(savedDarkMode === true){
         <div></div>
       </div>
     </div>
-<a data-name="1293060601%2FPackages%2F-1197683648" anchor-label="org.kryptonmc.api.block.property" id="1293060601%2FPackages%2F-1197683648" data-filterable-set=":api:dokkaHtmlPartial/main"></a>
-    <div class="table-row" data-filterable-current=":api:dokkaHtmlPartial/main" data-filterable-set=":api:dokkaHtmlPartial/main">
-      <div>
-        <div class="main-subrow ">
-          <div class=""><span class="inline-flex">
-              <div><a href="org.kryptonmc.api.block.property/index.html">org.kryptonmc.api.block.property</a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1293060601%2FPackages%2F-1197683648"></span>
-                <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-              </span></span></div>
-          <div class="pull-right"></div>
-        </div>
-        <div></div>
-      </div>
-    </div>
 <a data-name="1779718412%2FPackages%2F-1197683648" anchor-label="org.kryptonmc.api.command" id="1779718412%2FPackages%2F-1197683648" data-filterable-set=":api:dokkaHtmlPartial/main"></a>
     <div class="table-row" data-filterable-current=":api:dokkaHtmlPartial/main" data-filterable-set=":api:dokkaHtmlPartial/main">
       <div>
@@ -162,20 +171,6 @@ if(savedDarkMode === true){
           <div class=""><span class="inline-flex">
               <div><a href="org.kryptonmc.api.command/index.html">org.kryptonmc.api.command</a></div>
 <span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1779718412%2FPackages%2F-1197683648"></span>
-                <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-              </span></span></div>
-          <div class="pull-right"></div>
-        </div>
-        <div></div>
-      </div>
-    </div>
-<a data-name="299714667%2FPackages%2F-1197683648" anchor-label="org.kryptonmc.api.command.meta" id="299714667%2FPackages%2F-1197683648" data-filterable-set=":api:dokkaHtmlPartial/main"></a>
-    <div class="table-row" data-filterable-current=":api:dokkaHtmlPartial/main" data-filterable-set=":api:dokkaHtmlPartial/main">
-      <div>
-        <div class="main-subrow ">
-          <div class=""><span class="inline-flex">
-              <div><a href="org.kryptonmc.api.command.meta/index.html">org.kryptonmc.api.command.meta</a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="299714667%2FPackages%2F-1197683648"></span>
                 <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
               </span></span></div>
           <div class="pull-right"></div>
@@ -421,13 +416,13 @@ if(savedDarkMode === true){
         <div></div>
       </div>
     </div>
-<a data-name="1238595935%2FPackages%2F-1197683648" anchor-label="org.kryptonmc.api.event.auth" id="1238595935%2FPackages%2F-1197683648" data-filterable-set=":api:dokkaHtmlPartial/main"></a>
+<a data-name="1750820966%2FPackages%2F-1197683648" anchor-label="org.kryptonmc.api.event.annotation" id="1750820966%2FPackages%2F-1197683648" data-filterable-set=":api:dokkaHtmlPartial/main"></a>
     <div class="table-row" data-filterable-current=":api:dokkaHtmlPartial/main" data-filterable-set=":api:dokkaHtmlPartial/main">
       <div>
         <div class="main-subrow ">
           <div class=""><span class="inline-flex">
-              <div><a href="org.kryptonmc.api.event.auth/index.html">org.kryptonmc.api.event.auth</a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1238595935%2FPackages%2F-1197683648"></span>
+              <div><a href="org.kryptonmc.api.event.annotation/index.html">org.kryptonmc.api.event.annotation</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1750820966%2FPackages%2F-1197683648"></span>
                 <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
               </span></span></div>
           <div class="pull-right"></div>
@@ -435,13 +430,13 @@ if(savedDarkMode === true){
         <div></div>
       </div>
     </div>
-<a data-name="1765666042%2FPackages%2F-1197683648" anchor-label="org.kryptonmc.api.event.block" id="1765666042%2FPackages%2F-1197683648" data-filterable-set=":api:dokkaHtmlPartial/main"></a>
+<a data-name="1238595935%2FPackages%2F-1197683648" anchor-label="org.kryptonmc.api.event.auth" id="1238595935%2FPackages%2F-1197683648" data-filterable-set=":api:dokkaHtmlPartial/main"></a>
     <div class="table-row" data-filterable-current=":api:dokkaHtmlPartial/main" data-filterable-set=":api:dokkaHtmlPartial/main">
       <div>
         <div class="main-subrow ">
           <div class=""><span class="inline-flex">
-              <div><a href="org.kryptonmc.api.event.block/index.html">org.kryptonmc.api.event.block</a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1765666042%2FPackages%2F-1197683648"></span>
+              <div><a href="org.kryptonmc.api.event.auth/index.html">org.kryptonmc.api.event.auth</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1238595935%2FPackages%2F-1197683648"></span>
                 <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
               </span></span></div>
           <div class="pull-right"></div>
@@ -498,34 +493,6 @@ if(savedDarkMode === true){
           <div class=""><span class="inline-flex">
               <div><a href="org.kryptonmc.api.event.server/index.html">org.kryptonmc.api.event.server</a></div>
 <span class="anchor-wrapper"><span class="anchor-icon" pointing-to="587976186%2FPackages%2F-1197683648"></span>
-                <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-              </span></span></div>
-          <div class="pull-right"></div>
-        </div>
-        <div></div>
-      </div>
-    </div>
-<a data-name="-990236765%2FPackages%2F-1197683648" anchor-label="org.kryptonmc.api.event.user.ban" id="-990236765%2FPackages%2F-1197683648" data-filterable-set=":api:dokkaHtmlPartial/main"></a>
-    <div class="table-row" data-filterable-current=":api:dokkaHtmlPartial/main" data-filterable-set=":api:dokkaHtmlPartial/main">
-      <div>
-        <div class="main-subrow ">
-          <div class=""><span class="inline-flex">
-              <div><a href="org.kryptonmc.api.event.user.ban/index.html">org.kryptonmc.api.event.user.ban</a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-990236765%2FPackages%2F-1197683648"></span>
-                <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-              </span></span></div>
-          <div class="pull-right"></div>
-        </div>
-        <div></div>
-      </div>
-    </div>
-<a data-name="132563035%2FPackages%2F-1197683648" anchor-label="org.kryptonmc.api.event.user.whitelist" id="132563035%2FPackages%2F-1197683648" data-filterable-set=":api:dokkaHtmlPartial/main"></a>
-    <div class="table-row" data-filterable-current=":api:dokkaHtmlPartial/main" data-filterable-set=":api:dokkaHtmlPartial/main">
-      <div>
-        <div class="main-subrow ">
-          <div class=""><span class="inline-flex">
-              <div><a href="org.kryptonmc.api.event.user.whitelist/index.html">org.kryptonmc.api.event.user.whitelist</a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="132563035%2FPackages%2F-1197683648"></span>
                 <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
               </span></span></div>
           <div class="pull-right"></div>
@@ -729,6 +696,20 @@ if(savedDarkMode === true){
         <div></div>
       </div>
     </div>
+<a data-name="1550003858%2FPackages%2F-1197683648" anchor-label="org.kryptonmc.api.state" id="1550003858%2FPackages%2F-1197683648" data-filterable-set=":api:dokkaHtmlPartial/main"></a>
+    <div class="table-row" data-filterable-current=":api:dokkaHtmlPartial/main" data-filterable-set=":api:dokkaHtmlPartial/main">
+      <div>
+        <div class="main-subrow ">
+          <div class=""><span class="inline-flex">
+              <div><a href="org.kryptonmc.api.state/index.html">org.kryptonmc.api.state</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1550003858%2FPackages%2F-1197683648"></span>
+                <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+              </span></span></div>
+          <div class="pull-right"></div>
+        </div>
+        <div></div>
+      </div>
+    </div>
 <a data-name="-901899503%2FPackages%2F-1197683648" anchor-label="org.kryptonmc.api.statistic" id="-901899503%2FPackages%2F-1197683648" data-filterable-set=":api:dokkaHtmlPartial/main"></a>
     <div class="table-row" data-filterable-current=":api:dokkaHtmlPartial/main" data-filterable-set=":api:dokkaHtmlPartial/main">
       <div>
@@ -764,34 +745,6 @@ if(savedDarkMode === true){
           <div class=""><span class="inline-flex">
               <div><a href="org.kryptonmc.api.user/index.html">org.kryptonmc.api.user</a></div>
 <span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1621766318%2FPackages%2F-1197683648"></span>
-                <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-              </span></span></div>
-          <div class="pull-right"></div>
-        </div>
-        <div></div>
-      </div>
-    </div>
-<a data-name="-152651633%2FPackages%2F-1197683648" anchor-label="org.kryptonmc.api.user.ban" id="-152651633%2FPackages%2F-1197683648" data-filterable-set=":api:dokkaHtmlPartial/main"></a>
-    <div class="table-row" data-filterable-current=":api:dokkaHtmlPartial/main" data-filterable-set=":api:dokkaHtmlPartial/main">
-      <div>
-        <div class="main-subrow ">
-          <div class=""><span class="inline-flex">
-              <div><a href="org.kryptonmc.api.user.ban/index.html">org.kryptonmc.api.user.ban</a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-152651633%2FPackages%2F-1197683648"></span>
-                <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-              </span></span></div>
-          <div class="pull-right"></div>
-        </div>
-        <div></div>
-      </div>
-    </div>
-<a data-name="747366471%2FPackages%2F-1197683648" anchor-label="org.kryptonmc.api.user.whitelist" id="747366471%2FPackages%2F-1197683648" data-filterable-set=":api:dokkaHtmlPartial/main"></a>
-    <div class="table-row" data-filterable-current=":api:dokkaHtmlPartial/main" data-filterable-set=":api:dokkaHtmlPartial/main">
-      <div>
-        <div class="main-subrow ">
-          <div class=""><span class="inline-flex">
-              <div><a href="org.kryptonmc.api.user.whitelist/index.html">org.kryptonmc.api.user.whitelist</a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="747366471%2FPackages%2F-1197683648"></span>
                 <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
               </span></span></div>
           <div class="pull-right"></div>
@@ -914,7 +867,7 @@ if(savedDarkMode === true){
   </div>
 </div>
       <div class="footer">
-        <span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>© 2022 Copyright</span><span class="pull-right"><span>Generated by </span><a href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span>
+        <span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>© 2023 Copyright</span><span class="pull-right"><span>Generated by </span><a href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span>
       </div>
     </div>
 </div>

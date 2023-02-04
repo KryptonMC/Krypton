@@ -4,10 +4,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
     <title>org.kryptonmc.api.world</title>
 <link href="../../images/logo-icon.svg" rel="icon" type="image/svg"><script>var pathToRoot = "../../";</script>    <script>const storage = localStorage.getItem("dokka-dark-mode")
-const savedDarkMode = storage ? JSON.parse(storage) : false
-if(savedDarkMode === true){
-    document.getElementsByTagName("html")[0].classList.add("theme-dark")
-}</script>
+    if (storage == null) {
+        const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+        if (osDarkSchemePreferred === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    } else {
+        const savedDarkMode = JSON.parse(storage)
+        if(savedDarkMode === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    }
+    </script>
 <script type="text/javascript" src="../../scripts/sourceset_dependencies.js" async></script>
 <link href="../../styles/style.css" rel="Stylesheet">
 <link href="../../styles/jetbrains-mono.css" rel="Stylesheet">
@@ -18,14 +26,15 @@ if(savedDarkMode === true){
 <script type="text/javascript" src="../../scripts/navigation-loader.js" async></script>
 <script type="text/javascript" src="../../scripts/platform-content-handler.js" async></script>
 <script type="text/javascript" src="../../scripts/main.js" defer></script>
-<script type="text/javascript" src="../../scripts/prism.js" async></script></head>
+<script type="text/javascript" src="../../scripts/prism.js" async></script>
+<script type="text/javascript" src="../../scripts/symbol-parameters-wrapper_deferred.js" defer></script></head>
 <body>
 <div class="navigation-wrapper" id="navigation-wrapper">
     <div id="leftToggler"><span class="icon-toggler"></span></div>
     <div class="library-name">
 <a href="../../index.html">
 <span>krypton</span>            </a>    </div>
-    <div>0.66.4
+    <div>6a98d9dec7
     </div>
     <div class="pull-right d-flex">
         <button id="theme-toggle-button"><span id="theme-toggle"></span></button>
@@ -38,9 +47,9 @@ if(savedDarkMode === true){
     </div>
     <div id="main">
 <div class="main-content" id="content" pageids="api::org.kryptonmc.api.world////PointingToDeclaration//-1197683648">
-  <div class="breadcrumbs"><a href="../index.html">api</a><span class="delimiter">/</span><a href="index.html">org.kryptonmc.api.world</a></div>
+  <div class="breadcrumbs"><a href="../index.html">api</a><span class="delimiter">/</span><span class="current">org.kryptonmc.api.world</span></div>
   <div class="cover ">
-    <h1 class="cover"><span><span>Package</span></span> <span>org.</span><wbr><span>kryptonmc.</span><wbr><span>api.</span><wbr><span>world</span></h1>
+    <h1 class="cover"><span><span>Package-level</span></span> <span><span>declarations</span></span></h1>
   </div>
   <div class="tabbedcontent">
     <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="Types">Types</button></div>
@@ -56,7 +65,7 @@ if(savedDarkMode === true){
                 </span></span></div>
             <div>
               <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":api:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">enum </span><a href="-difficulty/index.html">Difficulty</a> : <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-enum/index.html">Enum</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-difficulty/index.html">Difficulty</a><span class="token operator">&gt; </span>, <a href="../org.kryptonmc.api.util/-translation-holder/index.html">TranslationHolder</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><p class="paragraph">Represents the difficulty of a world. That being a measure of how difficult it is to play the game (though this is not always accurate).</p></div></div></div>
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">enum </span><a href="-difficulty/index.html">Difficulty</a> : <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-enum/index.html">Enum</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-difficulty/index.html">Difficulty</a><span class="token operator">&gt; </span>, <span data-unresolved-link="net.kyori.adventure.translation/Translatable///PointingToDeclaration/">Translatable</span></div><div class="brief "><p class="paragraph">Represents the difficulty of a world. That being a measure of how difficult it is to play the game (though this is not always accurate).</p></div></div></div>
               </div>
             </div>
           </div>
@@ -71,7 +80,22 @@ if(savedDarkMode === true){
                 </span></span></div>
             <div>
               <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":api:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">enum </span><a href="-game-mode/index.html">GameMode</a> : <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-enum/index.html">Enum</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-game-mode/index.html">GameMode</a><span class="token operator">&gt; </span>, <a href="../org.kryptonmc.api.util/-translation-holder/index.html">TranslationHolder</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><p class="paragraph">A game mode that a player may be in that determines specific things to do with what the player is able to do, such as being able to build, fly, not take damage, or fly through walls.</p></div></div></div>
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">enum </span><a href="-game-mode/index.html">GameMode</a> : <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-enum/index.html">Enum</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-game-mode/index.html">GameMode</a><span class="token operator">&gt; </span>, <span data-unresolved-link="net.kyori.adventure.translation/Translatable///PointingToDeclaration/">Translatable</span></div><div class="brief "><p class="paragraph">A game mode that a player may be in that determines specific things to do with what the player is able to do, such as being able to build, fly, not take damage, or fly through walls.</p></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="1049700231%2FClasslikes%2F-1197683648" anchor-label="Spawner" id="1049700231%2FClasslikes%2F-1197683648" data-filterable-set=":api:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":api:dokkaHtmlPartial/main" data-filterable-set=":api:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="-spawner/index.html"><span><span>Spawner</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1049700231%2FClasslikes%2F-1197683648"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">interface </span><a href="-spawner/index.html">Spawner</a></div><div class="brief "><p class="paragraph">An object that can spawn entities.</p></div></div></div>
               </div>
             </div>
           </div>
@@ -86,7 +110,7 @@ if(savedDarkMode === true){
                 </span></span></div>
             <div>
               <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":api:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">interface </span><a href="-world/index.html">World</a> : <a href="../org.kryptonmc.api.block/-block-container/index.html">BlockContainer</a>, <a href="../org.kryptonmc.api.fluid/-fluid-container/index.html">FluidContainer</a>, <a href="../org.kryptonmc.api.world.biome/-biome-container/index.html">BiomeContainer</a>, <span data-unresolved-link="net.kyori.adventure.audience/ForwardingAudience///PointingToDeclaration/">ForwardingAudience</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><p class="paragraph">Represents a loaded world.</p></div></div></div>
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">interface </span><a href="-world/index.html">World</a> : <a href="../org.kryptonmc.api.block/-block-container/index.html">BlockContainer</a>, <a href="../org.kryptonmc.api.fluid/-fluid-container/index.html">FluidContainer</a>, <a href="../org.kryptonmc.api.world.biome/-biome-container/index.html">BiomeContainer</a>, <a href="../org.kryptonmc.api.block.entity/-block-entity-container/index.html">BlockEntityContainer</a>, <span data-unresolved-link="net.kyori.adventure.audience/ForwardingAudience///PointingToDeclaration/">ForwardingAudience</span>, <a href="../org.kryptonmc.api.world.rule/-game-rule-holder/index.html">GameRuleHolder</a></div><div class="brief "><p class="paragraph">Represents a loaded world.</p></div></div></div>
               </div>
             </div>
           </div>
@@ -101,7 +125,7 @@ if(savedDarkMode === true){
                 </span></span></div>
             <div>
               <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":api:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">interface </span><a href="-world-border/index.html">WorldBorder</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><p class="paragraph">The area around a world that prevents players from venturing too far into the wilderness.</p></div></div></div>
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">interface </span><a href="-world-border/index.html">WorldBorder</a></div><div class="brief "><p class="paragraph">The area around a world that prevents players from venturing too far into the wilderness.</p></div></div></div>
               </div>
             </div>
           </div>
@@ -116,7 +140,7 @@ if(savedDarkMode === true){
                 </span></span></div>
             <div>
               <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":api:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">interface </span><a href="-world-manager/index.html">WorldManager</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><p class="paragraph">The world manager for this server. Can be used to retrieve loaded worlds, or to load, save and update existing worlds.</p></div></div></div>
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">interface </span><a href="-world-manager/index.html">WorldManager</a></div><div class="brief "><p class="paragraph">The world manager for this server. Can be used to retrieve loaded worlds, or to load, save and update existing worlds.</p></div></div></div>
               </div>
             </div>
           </div>
@@ -126,7 +150,7 @@ if(savedDarkMode === true){
   </div>
 </div>
       <div class="footer">
-        <span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>© 2022 Copyright</span><span class="pull-right"><span>Generated by </span><a href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span>
+        <span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>© 2023 Copyright</span><span class="pull-right"><span>Generated by </span><a href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span>
       </div>
     </div>
 </div>

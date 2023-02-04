@@ -4,10 +4,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
     <title>ResultedEvent</title>
 <link href="../../../images/logo-icon.svg" rel="icon" type="image/svg"><script>var pathToRoot = "../../../";</script>    <script>const storage = localStorage.getItem("dokka-dark-mode")
-const savedDarkMode = storage ? JSON.parse(storage) : false
-if(savedDarkMode === true){
-    document.getElementsByTagName("html")[0].classList.add("theme-dark")
-}</script>
+    if (storage == null) {
+        const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+        if (osDarkSchemePreferred === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    } else {
+        const savedDarkMode = JSON.parse(storage)
+        if(savedDarkMode === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    }
+    </script>
 <script type="text/javascript" src="../../../scripts/sourceset_dependencies.js" async></script>
 <link href="../../../styles/style.css" rel="Stylesheet">
 <link href="../../../styles/jetbrains-mono.css" rel="Stylesheet">
@@ -18,14 +26,15 @@ if(savedDarkMode === true){
 <script type="text/javascript" src="../../../scripts/navigation-loader.js" async></script>
 <script type="text/javascript" src="../../../scripts/platform-content-handler.js" async></script>
 <script type="text/javascript" src="../../../scripts/main.js" defer></script>
-<script type="text/javascript" src="../../../scripts/prism.js" async></script></head>
+<script type="text/javascript" src="../../../scripts/prism.js" async></script>
+<script type="text/javascript" src="../../../scripts/symbol-parameters-wrapper_deferred.js" defer></script></head>
 <body>
 <div class="navigation-wrapper" id="navigation-wrapper">
     <div id="leftToggler"><span class="icon-toggler"></span></div>
     <div class="library-name">
 <a href="../../../index.html">
 <span>krypton</span>            </a>    </div>
-    <div>0.66.4
+    <div>6a98d9dec7
     </div>
     <div class="pull-right d-flex">
         <button id="theme-toggle-button"><span id="theme-toggle"></span></button>
@@ -38,17 +47,17 @@ if(savedDarkMode === true){
     </div>
     <div id="main">
 <div class="main-content" id="content" pageids="api::org.kryptonmc.api.event/ResultedEvent///PointingToDeclaration//-1197683648">
-  <div class="breadcrumbs"><a href="../../index.html">api</a><span class="delimiter">/</span><a href="../index.html">org.kryptonmc.api.event</a><span class="delimiter">/</span><a href="index.html">ResultedEvent</a></div>
+  <div class="breadcrumbs"><a href="../../index.html">api</a><span class="delimiter">/</span><a href="../index.html">org.kryptonmc.api.event</a><span class="delimiter">/</span><span class="current">ResultedEvent</span></div>
   <div class="cover ">
     <h1 class="cover"><span>Resulted</span><wbr><span><span>Event</span></span></h1>
-    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":api:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">interface </span><a href="index.html">ResultedEvent</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="index.html">R</a><span class="token operator"> : </span><a href="-result/index.html">ResultedEvent.Result</a><span class="token operator">&gt;</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><p class="paragraph">An event that can return a result from its execution.</p></div></div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">interface </span><a href="index.html">ResultedEvent</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="index.html">R</a><span class="token operator"> : </span><a href="-result/index.html">ResultedEvent.Result</a><span class="token operator">&gt;</span></div><p class="paragraph">An event that can return a result from its execution.</p></div></div>
   </div>
   <div class="tabbedcontent">
     <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="Types">Types</button><button class="section-tab" data-togglable="Properties">Properties</button><button class="section-tab" data-togglable="Parameters">Parameters</button><button class="section-tab" data-togglable="Inheritors">Inheritors</button></div>
     <div class="tabs-section-body">
-      <h2 class="">Parameters</h2>
+      <h4 class="">Parameters</h4>
       <div data-togglable="Parameters">
-        <div class="platform-hinted WithExtraAttributes" data-platform-hinted="data-platform-hinted" data-togglable="Parameters"><div class="content sourceset-depenent-content" data-active="" data-togglable=":api:dokkaHtmlPartial/main"><div data-togglable="Parameters"><div class="table" data-togglable="Parameters"><div class="table-row" data-filterable-current=":api:dokkaHtmlPartial/main" data-filterable-set=":api:dokkaHtmlPartial/main"><div class="main-subrow keyValue WithExtraAttributes"><div class=""><span class="inline-flex"><div><span><span>R</span></span></div></span></div><div><div class="title"><div data-togglable="Parameters"><p class="paragraph">the type of the result</p></div></div></div></div></div></div></div></div></div>
+        <div class="platform-hinted WithExtraAttributes" data-platform-hinted="data-platform-hinted" data-togglable="Parameters"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtmlPartial/main"><div data-togglable="Parameters"><div class="table" data-togglable="Parameters"><div class="table-row" data-filterable-current=":api:dokkaHtmlPartial/main" data-filterable-set=":api:dokkaHtmlPartial/main"><div class="main-subrow keyValue WithExtraAttributes"><div class=""><span class="inline-flex"><div><u><span><span>R</span></span></u></div></span></div><div><div class="title"><div data-togglable="Parameters"><p class="paragraph">the type of the result</p></div></div></div></div></div></div></div></div></div>
       </div>
       <h2 class="">Types</h2>
       <div class="table" data-togglable="Types"><a data-name="-1196042962%2FClasslikes%2F-1197683648" anchor-label="Result" id="-1196042962%2FClasslikes%2F-1197683648" data-filterable-set=":api:dokkaHtmlPartial/main"></a>
@@ -61,7 +70,7 @@ if(savedDarkMode === true){
                 </span></span></div>
             <div>
               <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":api:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">interface </span><a href="-result/index.html">Result</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><p class="paragraph">Represents the result of a resulted event.</p></div></div></div>
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">interface </span><a href="-result/index.html">Result</a></div><div class="brief "><p class="paragraph">Represents the result of a resulted event.</p></div></div></div>
               </div>
             </div>
           </div>
@@ -78,7 +87,7 @@ if(savedDarkMode === true){
                 </span></span></div>
             <div>
               <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":api:dokkaHtmlPartial/main"><a data-name="233597625%2FProperties%2F-1197683648" anchor-label="result" id="233597625%2FProperties%2F-1197683648" data-filterable-set=":api:dokkaHtmlPartial/main"></a><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation">@get:</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.jvm/-jvm-name/index.html"><span class="token annotation">JvmName</span></a><span class="token punctuation">(</span><span>name<span class="token operator"> = </span><span class="breakable-word"><span class="token string">"result"</span></span></span><wbr><span class="token punctuation">)</span></div></div><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">var </span><a href="result.html">result</a><span class="token operator">: </span><a href="index.html">R</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><a data-name="233597625%2FProperties%2F-1197683648" anchor-label="result" id="233597625%2FProperties%2F-1197683648" data-filterable-set=":api:dokkaHtmlPartial/main"></a><p class="paragraph">The result of firing this event.</p></div></div></div>
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtmlPartial/main"><a data-name="233597625%2FProperties%2F-1197683648" anchor-label="result" id="233597625%2FProperties%2F-1197683648" data-filterable-set=":api:dokkaHtmlPartial/main"></a><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">var </span><a href="result.html">result</a><span class="token operator">: </span><a href="index.html">R</a></div><div class="brief "><a data-name="233597625%2FProperties%2F-1197683648" anchor-label="result" id="233597625%2FProperties%2F-1197683648" data-filterable-set=":api:dokkaHtmlPartial/main"></a><p class="paragraph">The result of firing this event.</p></div></div></div>
               </div>
             </div>
           </div>
@@ -96,17 +105,6 @@ if(savedDarkMode === true){
             <div></div>
           </div>
         </div>
-<a data-name="-1867085060%2FInheritors%2F-1197683648" anchor-label="BlockDamageEvent" id="-1867085060%2FInheritors%2F-1197683648" data-filterable-set=":api:dokkaHtmlPartial/main"></a>
-        <div class="table-row" data-filterable-current=":api:dokkaHtmlPartial/main" data-filterable-set=":api:dokkaHtmlPartial/main">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="../../org.kryptonmc.api.event.block/-block-damage-event/index.html">BlockDamageEvent</a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1867085060%2FInheritors%2F-1197683648"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div></div>
-          </div>
-        </div>
 <a data-name="1751068826%2FInheritors%2F-1197683648" anchor-label="CommandExecuteEvent" id="1751068826%2FInheritors%2F-1197683648" data-filterable-set=":api:dokkaHtmlPartial/main"></a>
         <div class="table-row" data-filterable-current=":api:dokkaHtmlPartial/main" data-filterable-set=":api:dokkaHtmlPartial/main">
           <div class="main-subrow keyValue ">
@@ -118,23 +116,34 @@ if(savedDarkMode === true){
             <div></div>
           </div>
         </div>
-<a data-name="2043528149%2FInheritors%2F-1197683648" anchor-label="EntityRemoveEvent" id="2043528149%2FInheritors%2F-1197683648" data-filterable-set=":api:dokkaHtmlPartial/main"></a>
+<a data-name="1997854485%2FInheritors%2F-1197683648" anchor-label="RemoveEntityEvent" id="1997854485%2FInheritors%2F-1197683648" data-filterable-set=":api:dokkaHtmlPartial/main"></a>
         <div class="table-row" data-filterable-current=":api:dokkaHtmlPartial/main" data-filterable-set=":api:dokkaHtmlPartial/main">
           <div class="main-subrow keyValue ">
             <div class=""><span class="inline-flex">
-                <div><a href="../../org.kryptonmc.api.event.entity/-entity-remove-event/index.html">EntityRemoveEvent</a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="2043528149%2FInheritors%2F-1197683648"></span>
+                <div><a href="../../org.kryptonmc.api.event.entity/-remove-entity-event/index.html">RemoveEntityEvent</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1997854485%2FInheritors%2F-1197683648"></span>
                   <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                 </span></span></div>
             <div></div>
           </div>
         </div>
-<a data-name="1074278040%2FInheritors%2F-1197683648" anchor-label="EntitySpawnEvent" id="1074278040%2FInheritors%2F-1197683648" data-filterable-set=":api:dokkaHtmlPartial/main"></a>
+<a data-name="-46449154%2FInheritors%2F-1197683648" anchor-label="SpawnEntityEvent" id="-46449154%2FInheritors%2F-1197683648" data-filterable-set=":api:dokkaHtmlPartial/main"></a>
         <div class="table-row" data-filterable-current=":api:dokkaHtmlPartial/main" data-filterable-set=":api:dokkaHtmlPartial/main">
           <div class="main-subrow keyValue ">
             <div class=""><span class="inline-flex">
-                <div><a href="../../org.kryptonmc.api.event.entity/-entity-spawn-event/index.html">EntitySpawnEvent</a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1074278040%2FInheritors%2F-1197683648"></span>
+                <div><a href="../../org.kryptonmc.api.event.entity/-spawn-entity-event/index.html">SpawnEntityEvent</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-46449154%2FInheritors%2F-1197683648"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div></div>
+          </div>
+        </div>
+<a data-name="1686860314%2FInheritors%2F-1197683648" anchor-label="BlockDamageEvent" id="1686860314%2FInheritors%2F-1197683648" data-filterable-set=":api:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":api:dokkaHtmlPartial/main" data-filterable-set=":api:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="../../org.kryptonmc.api.event.player/-block-damage-event/index.html">BlockDamageEvent</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1686860314%2FInheritors%2F-1197683648"></span>
                   <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                 </span></span></div>
             <div></div>
@@ -217,111 +226,12 @@ if(savedDarkMode === true){
             <div></div>
           </div>
         </div>
-<a data-name="1360024863%2FInheritors%2F-1197683648" anchor-label="QuitEvent" id="1360024863%2FInheritors%2F-1197683648" data-filterable-set=":api:dokkaHtmlPartial/main"></a>
-        <div class="table-row" data-filterable-current=":api:dokkaHtmlPartial/main" data-filterable-set=":api:dokkaHtmlPartial/main">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="../../org.kryptonmc.api.event.player/-quit-event/index.html">QuitEvent</a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1360024863%2FInheritors%2F-1197683648"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div></div>
-          </div>
-        </div>
-<a data-name="368197343%2FInheritors%2F-1197683648" anchor-label="BanIpEvent" id="368197343%2FInheritors%2F-1197683648" data-filterable-set=":api:dokkaHtmlPartial/main"></a>
-        <div class="table-row" data-filterable-current=":api:dokkaHtmlPartial/main" data-filterable-set=":api:dokkaHtmlPartial/main">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="../../org.kryptonmc.api.event.user.ban/-ban-ip-event/index.html">BanIpEvent</a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="368197343%2FInheritors%2F-1197683648"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div></div>
-          </div>
-        </div>
-<a data-name="-1482283393%2FInheritors%2F-1197683648" anchor-label="BanProfileEvent" id="-1482283393%2FInheritors%2F-1197683648" data-filterable-set=":api:dokkaHtmlPartial/main"></a>
-        <div class="table-row" data-filterable-current=":api:dokkaHtmlPartial/main" data-filterable-set=":api:dokkaHtmlPartial/main">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="../../org.kryptonmc.api.event.user.ban/-ban-profile-event/index.html">BanProfileEvent</a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1482283393%2FInheritors%2F-1197683648"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div></div>
-          </div>
-        </div>
-<a data-name="-212337426%2FInheritors%2F-1197683648" anchor-label="PardonIpEvent" id="-212337426%2FInheritors%2F-1197683648" data-filterable-set=":api:dokkaHtmlPartial/main"></a>
-        <div class="table-row" data-filterable-current=":api:dokkaHtmlPartial/main" data-filterable-set=":api:dokkaHtmlPartial/main">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="../../org.kryptonmc.api.event.user.ban/-pardon-ip-event/index.html">PardonIpEvent</a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-212337426%2FInheritors%2F-1197683648"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div></div>
-          </div>
-        </div>
-<a data-name="-1279272496%2FInheritors%2F-1197683648" anchor-label="PardonProfileEvent" id="-1279272496%2FInheritors%2F-1197683648" data-filterable-set=":api:dokkaHtmlPartial/main"></a>
-        <div class="table-row" data-filterable-current=":api:dokkaHtmlPartial/main" data-filterable-set=":api:dokkaHtmlPartial/main">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="../../org.kryptonmc.api.event.user.ban/-pardon-profile-event/index.html">PardonProfileEvent</a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1279272496%2FInheritors%2F-1197683648"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div></div>
-          </div>
-        </div>
-<a data-name="214569994%2FInheritors%2F-1197683648" anchor-label="RemoveWhitelistedIpEvent" id="214569994%2FInheritors%2F-1197683648" data-filterable-set=":api:dokkaHtmlPartial/main"></a>
-        <div class="table-row" data-filterable-current=":api:dokkaHtmlPartial/main" data-filterable-set=":api:dokkaHtmlPartial/main">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="../../org.kryptonmc.api.event.user.whitelist/-remove-whitelisted-ip-event/index.html">RemoveWhitelistedIpEvent</a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="214569994%2FInheritors%2F-1197683648"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div></div>
-          </div>
-        </div>
-<a data-name="550229044%2FInheritors%2F-1197683648" anchor-label="RemoveWhitelistedProfileEvent" id="550229044%2FInheritors%2F-1197683648" data-filterable-set=":api:dokkaHtmlPartial/main"></a>
-        <div class="table-row" data-filterable-current=":api:dokkaHtmlPartial/main" data-filterable-set=":api:dokkaHtmlPartial/main">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="../../org.kryptonmc.api.event.user.whitelist/-remove-whitelisted-profile-event/index.html">RemoveWhitelistedProfileEvent</a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="550229044%2FInheritors%2F-1197683648"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div></div>
-          </div>
-        </div>
-<a data-name="-5546417%2FInheritors%2F-1197683648" anchor-label="WhitelistIpEvent" id="-5546417%2FInheritors%2F-1197683648" data-filterable-set=":api:dokkaHtmlPartial/main"></a>
-        <div class="table-row" data-filterable-current=":api:dokkaHtmlPartial/main" data-filterable-set=":api:dokkaHtmlPartial/main">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="../../org.kryptonmc.api.event.user.whitelist/-whitelist-ip-event/index.html">WhitelistIpEvent</a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-5546417%2FInheritors%2F-1197683648"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div></div>
-          </div>
-        </div>
-<a data-name="-1897452273%2FInheritors%2F-1197683648" anchor-label="WhitelistProfileEvent" id="-1897452273%2FInheritors%2F-1197683648" data-filterable-set=":api:dokkaHtmlPartial/main"></a>
-        <div class="table-row" data-filterable-current=":api:dokkaHtmlPartial/main" data-filterable-set=":api:dokkaHtmlPartial/main">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="../../org.kryptonmc.api.event.user.whitelist/-whitelist-profile-event/index.html">WhitelistProfileEvent</a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1897452273%2FInheritors%2F-1197683648"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div></div>
-          </div>
-        </div>
       </div>
     </div>
   </div>
 </div>
       <div class="footer">
-        <span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>© 2022 Copyright</span><span class="pull-right"><span>Generated by </span><a href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span>
+        <span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>© 2023 Copyright</span><span class="pull-right"><span>Generated by </span><a href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span>
       </div>
     </div>
 </div>

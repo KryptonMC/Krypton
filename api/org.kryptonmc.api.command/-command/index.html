@@ -4,10 +4,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
     <title>Command</title>
 <link href="../../../images/logo-icon.svg" rel="icon" type="image/svg"><script>var pathToRoot = "../../../";</script>    <script>const storage = localStorage.getItem("dokka-dark-mode")
-const savedDarkMode = storage ? JSON.parse(storage) : false
-if(savedDarkMode === true){
-    document.getElementsByTagName("html")[0].classList.add("theme-dark")
-}</script>
+    if (storage == null) {
+        const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+        if (osDarkSchemePreferred === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    } else {
+        const savedDarkMode = JSON.parse(storage)
+        if(savedDarkMode === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    }
+    </script>
 <script type="text/javascript" src="../../../scripts/sourceset_dependencies.js" async></script>
 <link href="../../../styles/style.css" rel="Stylesheet">
 <link href="../../../styles/jetbrains-mono.css" rel="Stylesheet">
@@ -18,14 +26,15 @@ if(savedDarkMode === true){
 <script type="text/javascript" src="../../../scripts/navigation-loader.js" async></script>
 <script type="text/javascript" src="../../../scripts/platform-content-handler.js" async></script>
 <script type="text/javascript" src="../../../scripts/main.js" defer></script>
-<script type="text/javascript" src="../../../scripts/prism.js" async></script></head>
+<script type="text/javascript" src="../../../scripts/prism.js" async></script>
+<script type="text/javascript" src="../../../scripts/symbol-parameters-wrapper_deferred.js" defer></script></head>
 <body>
 <div class="navigation-wrapper" id="navigation-wrapper">
     <div id="leftToggler"><span class="icon-toggler"></span></div>
     <div class="library-name">
 <a href="../../../index.html">
 <span>krypton</span>            </a>    </div>
-    <div>0.66.4
+    <div>6a98d9dec7
     </div>
     <div class="pull-right d-flex">
         <button id="theme-toggle-button"><span id="theme-toggle"></span></button>
@@ -38,10 +47,10 @@ if(savedDarkMode === true){
     </div>
     <div id="main">
 <div class="main-content" id="content" pageids="api::org.kryptonmc.api.command/Command///PointingToDeclaration//-1197683648">
-  <div class="breadcrumbs"><a href="../../index.html">api</a><span class="delimiter">/</span><a href="../index.html">org.kryptonmc.api.command</a><span class="delimiter">/</span><a href="index.html">Command</a></div>
+  <div class="breadcrumbs"><a href="../../index.html">api</a><span class="delimiter">/</span><a href="../index.html">org.kryptonmc.api.command</a><span class="delimiter">/</span><span class="current">Command</span></div>
   <div class="cover ">
     <h1 class="cover"><span><span>Command</span></span></h1>
-    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":api:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">interface </span><a href="index.html">Command</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><p class="paragraph">A command that can be sent by a <a href="../-sender/index.html">Sender</a>, such as a <a href="../../org.kryptonmc.api.entity.player/-player/index.html">player</a> or the <a href="../-console-sender/index.html">ConsoleSender</a>.</p><p class="paragraph">There are three built-in types that inherit from this base interface:</p><ul><li><p class="paragraph"><a href="../-brigadier-command/index.html">BrigadierCommand</a> - the more modern type of command, backed by Brigadier's <span data-unresolved-link="com.mojang.brigadier.tree/LiteralCommandNode///PointingToDeclaration/">com.mojang.brigadier.tree.LiteralCommandNode</span></p></li><li><p class="paragraph"><a href="../-simple-command/index.html">SimpleCommand</a> - the older style of command, mainly popularised by Bukkit and BungeeCord.</p></li><li><p class="paragraph"><a href="../-raw-command/index.html">RawCommand</a> - provides everything as-is, so it can be processed by external frameworks.</p></li></ul><p class="paragraph">You can also create your own command types and register them using your own <a href="../-command-registrar/index.html">CommandRegistrar</a>, for even more control over how commands are converted to nodes in the Brigadier tree.</p></div></div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">interface </span><a href="index.html">Command</a></div><p class="paragraph">A command that can be sent by a <a href="../-sender/index.html">Sender</a>, such as a <a href="../../org.kryptonmc.api.entity.player/-player/index.html">player</a> or the <a href="../-console-sender/index.html">ConsoleSender</a>.</p><p class="paragraph">There are three built-in types that inherit from this base interface:</p><ul><li><p class="paragraph"><a href="../-brigadier-command/index.html">BrigadierCommand</a> - the more modern type of command, backed by Brigadier's <span data-unresolved-link="com.mojang.brigadier.tree/LiteralCommandNode///PointingToDeclaration/">com.mojang.brigadier.tree.LiteralCommandNode</span></p></li><li><p class="paragraph"><a href="../-simple-command/index.html">SimpleCommand</a> - the older style of command, mainly popularised by Bukkit and BungeeCord.</p></li><li><p class="paragraph"><a href="../-raw-command/index.html">RawCommand</a> - provides everything as-is, so it can be processed by external frameworks.</p></li></ul></div></div>
   </div>
   <div class="tabbedcontent">
     <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="Inheritors">Inheritors</button></div>
@@ -74,7 +83,7 @@ if(savedDarkMode === true){
   </div>
 </div>
       <div class="footer">
-        <span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>© 2022 Copyright</span><span class="pull-right"><span>Generated by </span><a href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span>
+        <span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>© 2023 Copyright</span><span class="pull-right"><span>Generated by </span><a href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span>
       </div>
     </div>
 </div>

@@ -4,10 +4,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
     <title>Criteria</title>
 <link href="../../../images/logo-icon.svg" rel="icon" type="image/svg"><script>var pathToRoot = "../../../";</script>    <script>const storage = localStorage.getItem("dokka-dark-mode")
-const savedDarkMode = storage ? JSON.parse(storage) : false
-if(savedDarkMode === true){
-    document.getElementsByTagName("html")[0].classList.add("theme-dark")
-}</script>
+    if (storage == null) {
+        const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+        if (osDarkSchemePreferred === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    } else {
+        const savedDarkMode = JSON.parse(storage)
+        if(savedDarkMode === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    }
+    </script>
 <script type="text/javascript" src="../../../scripts/sourceset_dependencies.js" async></script>
 <link href="../../../styles/style.css" rel="Stylesheet">
 <link href="../../../styles/jetbrains-mono.css" rel="Stylesheet">
@@ -18,14 +26,15 @@ if(savedDarkMode === true){
 <script type="text/javascript" src="../../../scripts/navigation-loader.js" async></script>
 <script type="text/javascript" src="../../../scripts/platform-content-handler.js" async></script>
 <script type="text/javascript" src="../../../scripts/main.js" defer></script>
-<script type="text/javascript" src="../../../scripts/prism.js" async></script></head>
+<script type="text/javascript" src="../../../scripts/prism.js" async></script>
+<script type="text/javascript" src="../../../scripts/symbol-parameters-wrapper_deferred.js" defer></script></head>
 <body>
 <div class="navigation-wrapper" id="navigation-wrapper">
     <div id="leftToggler"><span class="icon-toggler"></span></div>
     <div class="library-name">
 <a href="../../../index.html">
 <span>krypton</span>            </a>    </div>
-    <div>0.66.4
+    <div>6a98d9dec7
     </div>
     <div class="pull-right d-flex">
         <button id="theme-toggle-button"><span id="theme-toggle"></span></button>
@@ -38,10 +47,10 @@ if(savedDarkMode === true){
     </div>
     <div id="main">
 <div class="main-content" id="content" pageids="api::org.kryptonmc.api.scoreboard.criteria/Criteria///PointingToDeclaration//-1197683648">
-  <div class="breadcrumbs"><a href="../../index.html">api</a><span class="delimiter">/</span><a href="../index.html">org.kryptonmc.api.scoreboard.criteria</a><span class="delimiter">/</span><a href="index.html">Criteria</a></div>
+  <div class="breadcrumbs"><a href="../../index.html">api</a><span class="delimiter">/</span><a href="../index.html">org.kryptonmc.api.scoreboard.criteria</a><span class="delimiter">/</span><span class="current">Criteria</span></div>
   <div class="cover ">
     <h1 class="cover"><span><span>Criteria</span></span></h1>
-    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":api:dokkaHtmlPartial/main"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation">@</span><a href="../../org.kryptonmc.api.util/-catalogue/index.html"><span class="token annotation">Catalogue</span></a><span class="token punctuation">(</span><span>type<span class="token operator"> = </span><span class="token punctuation">[</span><span><a href="../-criterion/index.html">Criterion::class</a><span class="token punctuation">, </span></span><wbr><span><a href="../-compound-criterion/index.html">CompoundCriterion::class</a></span><wbr><span class="token punctuation">]</span></span><wbr><span class="token punctuation">)</span></div></div><span class="token keyword">object </span><a href="index.html">Criteria</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><p class="paragraph">All of the built-in criteria for scoreboards.</p></div></div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtmlPartial/main"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="../../../internal-annotations/org.kryptonmc.internal.annotations/-catalogue/index.html"><span class="token annotation builtin">Catalogue</span></a><span class="token punctuation">(</span><span>type<span class="token operator"> = </span><a href="../-keyed-criterion/index.html">KeyedCriterion::class</a></span><wbr><span class="token punctuation">)</span></div></div><span class="token keyword">object </span><a href="index.html">Criteria</a></div><p class="paragraph">All of the built-in criteria for scoreboards.</p></div></div>
   </div>
   <div class="tabbedcontent">
     <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="Properties">Properties</button></div>
@@ -57,7 +66,7 @@ if(savedDarkMode === true){
                 </span></span></div>
             <div>
               <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":api:dokkaHtmlPartial/main"><a data-name="-1058118420%2FProperties%2F-1197683648" anchor-label="AIR" id="-1058118420%2FProperties%2F-1197683648" data-filterable-set=":api:dokkaHtmlPartial/main"></a><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation">@</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.jvm/-jvm-field/index.html"><span class="token annotation">JvmField</span></a></div></div><span class="token keyword"></span><span class="token keyword">val </span><a href="-a-i-r.html">AIR</a><span class="token operator">: </span><a href="../-criterion/index.html">Criterion</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtmlPartial/main"><a data-name="-1058118420%2FProperties%2F-1197683648" anchor-label="AIR" id="-1058118420%2FProperties%2F-1197683648" data-filterable-set=":api:dokkaHtmlPartial/main"></a><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.jvm/-jvm-field/index.html"><span class="token annotation builtin">JvmField</span></a></div></div><span class="token keyword"></span><span class="token keyword">val </span><a href="-a-i-r.html">AIR</a><span class="token operator">: </span><a href="../../org.kryptonmc.api.registry/-registry-reference/index.html">RegistryReference</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../-keyed-criterion/index.html">KeyedCriterion</a><span class="token operator">&gt;</span></div></div></div>
               </div>
             </div>
           </div>
@@ -72,7 +81,7 @@ if(savedDarkMode === true){
                 </span></span></div>
             <div>
               <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":api:dokkaHtmlPartial/main"><a data-name="1570604119%2FProperties%2F-1197683648" anchor-label="ARMOR" id="1570604119%2FProperties%2F-1197683648" data-filterable-set=":api:dokkaHtmlPartial/main"></a><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation">@</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.jvm/-jvm-field/index.html"><span class="token annotation">JvmField</span></a></div></div><span class="token keyword"></span><span class="token keyword">val </span><a href="-a-r-m-o-r.html">ARMOR</a><span class="token operator">: </span><a href="../-criterion/index.html">Criterion</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtmlPartial/main"><a data-name="1570604119%2FProperties%2F-1197683648" anchor-label="ARMOR" id="1570604119%2FProperties%2F-1197683648" data-filterable-set=":api:dokkaHtmlPartial/main"></a><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.jvm/-jvm-field/index.html"><span class="token annotation builtin">JvmField</span></a></div></div><span class="token keyword"></span><span class="token keyword">val </span><a href="-a-r-m-o-r.html">ARMOR</a><span class="token operator">: </span><a href="../../org.kryptonmc.api.registry/-registry-reference/index.html">RegistryReference</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../-keyed-criterion/index.html">KeyedCriterion</a><span class="token operator">&gt;</span></div></div></div>
               </div>
             </div>
           </div>
@@ -87,7 +96,7 @@ if(savedDarkMode === true){
                 </span></span></div>
             <div>
               <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":api:dokkaHtmlPartial/main"><a data-name="476881682%2FProperties%2F-1197683648" anchor-label="DEATH_COUNT" id="476881682%2FProperties%2F-1197683648" data-filterable-set=":api:dokkaHtmlPartial/main"></a><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation">@</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.jvm/-jvm-field/index.html"><span class="token annotation">JvmField</span></a></div></div><span class="token keyword"></span><span class="token keyword">val </span><a href="-d-e-a-t-h_-c-o-u-n-t.html">DEATH_COUNT</a><span class="token operator">: </span><a href="../-criterion/index.html">Criterion</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtmlPartial/main"><a data-name="476881682%2FProperties%2F-1197683648" anchor-label="DEATH_COUNT" id="476881682%2FProperties%2F-1197683648" data-filterable-set=":api:dokkaHtmlPartial/main"></a><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.jvm/-jvm-field/index.html"><span class="token annotation builtin">JvmField</span></a></div></div><span class="token keyword"></span><span class="token keyword">val </span><a href="-d-e-a-t-h_-c-o-u-n-t.html">DEATH_COUNT</a><span class="token operator">: </span><a href="../../org.kryptonmc.api.registry/-registry-reference/index.html">RegistryReference</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../-keyed-criterion/index.html">KeyedCriterion</a><span class="token operator">&gt;</span></div></div></div>
               </div>
             </div>
           </div>
@@ -102,7 +111,7 @@ if(savedDarkMode === true){
                 </span></span></div>
             <div>
               <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":api:dokkaHtmlPartial/main"><a data-name="1977768206%2FProperties%2F-1197683648" anchor-label="DUMMY" id="1977768206%2FProperties%2F-1197683648" data-filterable-set=":api:dokkaHtmlPartial/main"></a><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation">@</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.jvm/-jvm-field/index.html"><span class="token annotation">JvmField</span></a></div></div><span class="token keyword"></span><span class="token keyword">val </span><a href="-d-u-m-m-y.html">DUMMY</a><span class="token operator">: </span><a href="../-criterion/index.html">Criterion</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtmlPartial/main"><a data-name="1977768206%2FProperties%2F-1197683648" anchor-label="DUMMY" id="1977768206%2FProperties%2F-1197683648" data-filterable-set=":api:dokkaHtmlPartial/main"></a><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.jvm/-jvm-field/index.html"><span class="token annotation builtin">JvmField</span></a></div></div><span class="token keyword"></span><span class="token keyword">val </span><a href="-d-u-m-m-y.html">DUMMY</a><span class="token operator">: </span><a href="../../org.kryptonmc.api.registry/-registry-reference/index.html">RegistryReference</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../-keyed-criterion/index.html">KeyedCriterion</a><span class="token operator">&gt;</span></div></div></div>
               </div>
             </div>
           </div>
@@ -117,7 +126,7 @@ if(savedDarkMode === true){
                 </span></span></div>
             <div>
               <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":api:dokkaHtmlPartial/main"><a data-name="-1567690662%2FProperties%2F-1197683648" anchor-label="EXPERIENCE" id="-1567690662%2FProperties%2F-1197683648" data-filterable-set=":api:dokkaHtmlPartial/main"></a><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation">@</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.jvm/-jvm-field/index.html"><span class="token annotation">JvmField</span></a></div></div><span class="token keyword"></span><span class="token keyword">val </span><a href="-e-x-p-e-r-i-e-n-c-e.html">EXPERIENCE</a><span class="token operator">: </span><a href="../-criterion/index.html">Criterion</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtmlPartial/main"><a data-name="-1567690662%2FProperties%2F-1197683648" anchor-label="EXPERIENCE" id="-1567690662%2FProperties%2F-1197683648" data-filterable-set=":api:dokkaHtmlPartial/main"></a><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.jvm/-jvm-field/index.html"><span class="token annotation builtin">JvmField</span></a></div></div><span class="token keyword"></span><span class="token keyword">val </span><a href="-e-x-p-e-r-i-e-n-c-e.html">EXPERIENCE</a><span class="token operator">: </span><a href="../../org.kryptonmc.api.registry/-registry-reference/index.html">RegistryReference</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../-keyed-criterion/index.html">KeyedCriterion</a><span class="token operator">&gt;</span></div></div></div>
               </div>
             </div>
           </div>
@@ -132,7 +141,7 @@ if(savedDarkMode === true){
                 </span></span></div>
             <div>
               <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":api:dokkaHtmlPartial/main"><a data-name="718638374%2FProperties%2F-1197683648" anchor-label="FOOD" id="718638374%2FProperties%2F-1197683648" data-filterable-set=":api:dokkaHtmlPartial/main"></a><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation">@</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.jvm/-jvm-field/index.html"><span class="token annotation">JvmField</span></a></div></div><span class="token keyword"></span><span class="token keyword">val </span><a href="-f-o-o-d.html">FOOD</a><span class="token operator">: </span><a href="../-criterion/index.html">Criterion</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtmlPartial/main"><a data-name="718638374%2FProperties%2F-1197683648" anchor-label="FOOD" id="718638374%2FProperties%2F-1197683648" data-filterable-set=":api:dokkaHtmlPartial/main"></a><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.jvm/-jvm-field/index.html"><span class="token annotation builtin">JvmField</span></a></div></div><span class="token keyword"></span><span class="token keyword">val </span><a href="-f-o-o-d.html">FOOD</a><span class="token operator">: </span><a href="../../org.kryptonmc.api.registry/-registry-reference/index.html">RegistryReference</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../-keyed-criterion/index.html">KeyedCriterion</a><span class="token operator">&gt;</span></div></div></div>
               </div>
             </div>
           </div>
@@ -147,22 +156,247 @@ if(savedDarkMode === true){
                 </span></span></div>
             <div>
               <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":api:dokkaHtmlPartial/main"><a data-name="-1644802264%2FProperties%2F-1197683648" anchor-label="HEALTH" id="-1644802264%2FProperties%2F-1197683648" data-filterable-set=":api:dokkaHtmlPartial/main"></a><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation">@</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.jvm/-jvm-field/index.html"><span class="token annotation">JvmField</span></a></div></div><span class="token keyword"></span><span class="token keyword">val </span><a href="-h-e-a-l-t-h.html">HEALTH</a><span class="token operator">: </span><a href="../-criterion/index.html">Criterion</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtmlPartial/main"><a data-name="-1644802264%2FProperties%2F-1197683648" anchor-label="HEALTH" id="-1644802264%2FProperties%2F-1197683648" data-filterable-set=":api:dokkaHtmlPartial/main"></a><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.jvm/-jvm-field/index.html"><span class="token annotation builtin">JvmField</span></a></div></div><span class="token keyword"></span><span class="token keyword">val </span><a href="-h-e-a-l-t-h.html">HEALTH</a><span class="token operator">: </span><a href="../../org.kryptonmc.api.registry/-registry-reference/index.html">RegistryReference</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../-keyed-criterion/index.html">KeyedCriterion</a><span class="token operator">&gt;</span></div></div></div>
               </div>
             </div>
           </div>
         </div>
-<a data-name="-217540383%2FProperties%2F-1197683648" anchor-label="KILLED_BY_TEAM" id="-217540383%2FProperties%2F-1197683648" data-filterable-set=":api:dokkaHtmlPartial/main"></a>
+<a data-name="-822150690%2FProperties%2F-1197683648" anchor-label="KILLED_BY_TEAM_AQUA" id="-822150690%2FProperties%2F-1197683648" data-filterable-set=":api:dokkaHtmlPartial/main"></a>
         <div class="table-row" data-filterable-current=":api:dokkaHtmlPartial/main" data-filterable-set=":api:dokkaHtmlPartial/main">
           <div class="main-subrow keyValue ">
             <div class=""><span class="inline-flex">
-                <div><a href="-k-i-l-l-e-d_-b-y_-t-e-a-m.html"><span><span>KILLED_BY_TEAM</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-217540383%2FProperties%2F-1197683648"></span>
+                <div><a href="-k-i-l-l-e-d_-b-y_-t-e-a-m_-a-q-u-a.html"><span><span>KILLED_BY_TEAM_AQUA</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-822150690%2FProperties%2F-1197683648"></span>
                   <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                 </span></span></div>
             <div>
               <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":api:dokkaHtmlPartial/main"><a data-name="-217540383%2FProperties%2F-1197683648" anchor-label="KILLED_BY_TEAM" id="-217540383%2FProperties%2F-1197683648" data-filterable-set=":api:dokkaHtmlPartial/main"></a><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation">@</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.jvm/-jvm-field/index.html"><span class="token annotation">JvmField</span></a></div></div><span class="token keyword"></span><span class="token keyword">val </span><a href="-k-i-l-l-e-d_-b-y_-t-e-a-m.html">KILLED_BY_TEAM</a><span class="token operator">: </span><a href="../-compound-criterion/index.html">CompoundCriterion</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtmlPartial/main"><a data-name="-822150690%2FProperties%2F-1197683648" anchor-label="KILLED_BY_TEAM_AQUA" id="-822150690%2FProperties%2F-1197683648" data-filterable-set=":api:dokkaHtmlPartial/main"></a><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.jvm/-jvm-field/index.html"><span class="token annotation builtin">JvmField</span></a></div></div><span class="token keyword"></span><span class="token keyword">val </span><a href="-k-i-l-l-e-d_-b-y_-t-e-a-m_-a-q-u-a.html">KILLED_BY_TEAM_AQUA</a><span class="token operator">: </span><a href="../../org.kryptonmc.api.registry/-registry-reference/index.html">RegistryReference</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../-keyed-criterion/index.html">KeyedCriterion</a><span class="token operator">&gt;</span></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-122605823%2FProperties%2F-1197683648" anchor-label="KILLED_BY_TEAM_BLACK" id="-122605823%2FProperties%2F-1197683648" data-filterable-set=":api:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":api:dokkaHtmlPartial/main" data-filterable-set=":api:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="-k-i-l-l-e-d_-b-y_-t-e-a-m_-b-l-a-c-k.html"><span><span>KILLED_BY_TEAM_BLACK</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-122605823%2FProperties%2F-1197683648"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtmlPartial/main"><a data-name="-122605823%2FProperties%2F-1197683648" anchor-label="KILLED_BY_TEAM_BLACK" id="-122605823%2FProperties%2F-1197683648" data-filterable-set=":api:dokkaHtmlPartial/main"></a><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.jvm/-jvm-field/index.html"><span class="token annotation builtin">JvmField</span></a></div></div><span class="token keyword"></span><span class="token keyword">val </span><a href="-k-i-l-l-e-d_-b-y_-t-e-a-m_-b-l-a-c-k.html">KILLED_BY_TEAM_BLACK</a><span class="token operator">: </span><a href="../../org.kryptonmc.api.registry/-registry-reference/index.html">RegistryReference</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../-keyed-criterion/index.html">KeyedCriterion</a><span class="token operator">&gt;</span></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="1268712960%2FProperties%2F-1197683648" anchor-label="KILLED_BY_TEAM_BLUE" id="1268712960%2FProperties%2F-1197683648" data-filterable-set=":api:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":api:dokkaHtmlPartial/main" data-filterable-set=":api:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="-k-i-l-l-e-d_-b-y_-t-e-a-m_-b-l-u-e.html"><span><span>KILLED_BY_TEAM_BLUE</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1268712960%2FProperties%2F-1197683648"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtmlPartial/main"><a data-name="1268712960%2FProperties%2F-1197683648" anchor-label="KILLED_BY_TEAM_BLUE" id="1268712960%2FProperties%2F-1197683648" data-filterable-set=":api:dokkaHtmlPartial/main"></a><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.jvm/-jvm-field/index.html"><span class="token annotation builtin">JvmField</span></a></div></div><span class="token keyword"></span><span class="token keyword">val </span><a href="-k-i-l-l-e-d_-b-y_-t-e-a-m_-b-l-u-e.html">KILLED_BY_TEAM_BLUE</a><span class="token operator">: </span><a href="../../org.kryptonmc.api.registry/-registry-reference/index.html">RegistryReference</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../-keyed-criterion/index.html">KeyedCriterion</a><span class="token operator">&gt;</span></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-1876341189%2FProperties%2F-1197683648" anchor-label="KILLED_BY_TEAM_DARK_AQUA" id="-1876341189%2FProperties%2F-1197683648" data-filterable-set=":api:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":api:dokkaHtmlPartial/main" data-filterable-set=":api:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="-k-i-l-l-e-d_-b-y_-t-e-a-m_-d-a-r-k_-a-q-u-a.html"><span><span>KILLED_BY_TEAM_DARK_AQUA</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1876341189%2FProperties%2F-1197683648"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtmlPartial/main"><a data-name="-1876341189%2FProperties%2F-1197683648" anchor-label="KILLED_BY_TEAM_DARK_AQUA" id="-1876341189%2FProperties%2F-1197683648" data-filterable-set=":api:dokkaHtmlPartial/main"></a><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.jvm/-jvm-field/index.html"><span class="token annotation builtin">JvmField</span></a></div></div><span class="token keyword"></span><span class="token keyword">val </span><a href="-k-i-l-l-e-d_-b-y_-t-e-a-m_-d-a-r-k_-a-q-u-a.html">KILLED_BY_TEAM_DARK_AQUA</a><span class="token operator">: </span><a href="../../org.kryptonmc.api.registry/-registry-reference/index.html">RegistryReference</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../-keyed-criterion/index.html">KeyedCriterion</a><span class="token operator">&gt;</span></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="214522461%2FProperties%2F-1197683648" anchor-label="KILLED_BY_TEAM_DARK_BLUE" id="214522461%2FProperties%2F-1197683648" data-filterable-set=":api:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":api:dokkaHtmlPartial/main" data-filterable-set=":api:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="-k-i-l-l-e-d_-b-y_-t-e-a-m_-d-a-r-k_-b-l-u-e.html"><span><span>KILLED_BY_TEAM_DARK_BLUE</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="214522461%2FProperties%2F-1197683648"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtmlPartial/main"><a data-name="214522461%2FProperties%2F-1197683648" anchor-label="KILLED_BY_TEAM_DARK_BLUE" id="214522461%2FProperties%2F-1197683648" data-filterable-set=":api:dokkaHtmlPartial/main"></a><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.jvm/-jvm-field/index.html"><span class="token annotation builtin">JvmField</span></a></div></div><span class="token keyword"></span><span class="token keyword">val </span><a href="-k-i-l-l-e-d_-b-y_-t-e-a-m_-d-a-r-k_-b-l-u-e.html">KILLED_BY_TEAM_DARK_BLUE</a><span class="token operator">: </span><a href="../../org.kryptonmc.api.registry/-registry-reference/index.html">RegistryReference</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../-keyed-criterion/index.html">KeyedCriterion</a><span class="token operator">&gt;</span></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="719596660%2FProperties%2F-1197683648" anchor-label="KILLED_BY_TEAM_DARK_GRAY" id="719596660%2FProperties%2F-1197683648" data-filterable-set=":api:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":api:dokkaHtmlPartial/main" data-filterable-set=":api:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="-k-i-l-l-e-d_-b-y_-t-e-a-m_-d-a-r-k_-g-r-a-y.html"><span><span>KILLED_BY_TEAM_DARK_GRAY</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="719596660%2FProperties%2F-1197683648"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtmlPartial/main"><a data-name="719596660%2FProperties%2F-1197683648" anchor-label="KILLED_BY_TEAM_DARK_GRAY" id="719596660%2FProperties%2F-1197683648" data-filterable-set=":api:dokkaHtmlPartial/main"></a><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.jvm/-jvm-field/index.html"><span class="token annotation builtin">JvmField</span></a></div></div><span class="token keyword"></span><span class="token keyword">val </span><a href="-k-i-l-l-e-d_-b-y_-t-e-a-m_-d-a-r-k_-g-r-a-y.html">KILLED_BY_TEAM_DARK_GRAY</a><span class="token operator">: </span><a href="../../org.kryptonmc.api.registry/-registry-reference/index.html">RegistryReference</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../-keyed-criterion/index.html">KeyedCriterion</a><span class="token operator">&gt;</span></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-1820175424%2FProperties%2F-1197683648" anchor-label="KILLED_BY_TEAM_DARK_GREEN" id="-1820175424%2FProperties%2F-1197683648" data-filterable-set=":api:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":api:dokkaHtmlPartial/main" data-filterable-set=":api:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="-k-i-l-l-e-d_-b-y_-t-e-a-m_-d-a-r-k_-g-r-e-e-n.html"><span><span>KILLED_BY_TEAM_DARK_GREEN</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1820175424%2FProperties%2F-1197683648"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtmlPartial/main"><a data-name="-1820175424%2FProperties%2F-1197683648" anchor-label="KILLED_BY_TEAM_DARK_GREEN" id="-1820175424%2FProperties%2F-1197683648" data-filterable-set=":api:dokkaHtmlPartial/main"></a><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.jvm/-jvm-field/index.html"><span class="token annotation builtin">JvmField</span></a></div></div><span class="token keyword"></span><span class="token keyword">val </span><a href="-k-i-l-l-e-d_-b-y_-t-e-a-m_-d-a-r-k_-g-r-e-e-n.html">KILLED_BY_TEAM_DARK_GREEN</a><span class="token operator">: </span><a href="../../org.kryptonmc.api.registry/-registry-reference/index.html">RegistryReference</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../-keyed-criterion/index.html">KeyedCriterion</a><span class="token operator">&gt;</span></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-1565314373%2FProperties%2F-1197683648" anchor-label="KILLED_BY_TEAM_DARK_PURPLE" id="-1565314373%2FProperties%2F-1197683648" data-filterable-set=":api:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":api:dokkaHtmlPartial/main" data-filterable-set=":api:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="-k-i-l-l-e-d_-b-y_-t-e-a-m_-d-a-r-k_-p-u-r-p-l-e.html"><span><span>KILLED_BY_TEAM_DARK_PURPLE</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1565314373%2FProperties%2F-1197683648"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtmlPartial/main"><a data-name="-1565314373%2FProperties%2F-1197683648" anchor-label="KILLED_BY_TEAM_DARK_PURPLE" id="-1565314373%2FProperties%2F-1197683648" data-filterable-set=":api:dokkaHtmlPartial/main"></a><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.jvm/-jvm-field/index.html"><span class="token annotation builtin">JvmField</span></a></div></div><span class="token keyword"></span><span class="token keyword">val </span><a href="-k-i-l-l-e-d_-b-y_-t-e-a-m_-d-a-r-k_-p-u-r-p-l-e.html">KILLED_BY_TEAM_DARK_PURPLE</a><span class="token operator">: </span><a href="../../org.kryptonmc.api.registry/-registry-reference/index.html">RegistryReference</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../-keyed-criterion/index.html">KeyedCriterion</a><span class="token operator">&gt;</span></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-940944526%2FProperties%2F-1197683648" anchor-label="KILLED_BY_TEAM_DARK_RED" id="-940944526%2FProperties%2F-1197683648" data-filterable-set=":api:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":api:dokkaHtmlPartial/main" data-filterable-set=":api:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="-k-i-l-l-e-d_-b-y_-t-e-a-m_-d-a-r-k_-r-e-d.html"><span><span>KILLED_BY_TEAM_DARK_RED</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-940944526%2FProperties%2F-1197683648"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtmlPartial/main"><a data-name="-940944526%2FProperties%2F-1197683648" anchor-label="KILLED_BY_TEAM_DARK_RED" id="-940944526%2FProperties%2F-1197683648" data-filterable-set=":api:dokkaHtmlPartial/main"></a><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.jvm/-jvm-field/index.html"><span class="token annotation builtin">JvmField</span></a></div></div><span class="token keyword"></span><span class="token keyword">val </span><a href="-k-i-l-l-e-d_-b-y_-t-e-a-m_-d-a-r-k_-r-e-d.html">KILLED_BY_TEAM_DARK_RED</a><span class="token operator">: </span><a href="../../org.kryptonmc.api.registry/-registry-reference/index.html">RegistryReference</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../-keyed-criterion/index.html">KeyedCriterion</a><span class="token operator">&gt;</span></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-420566854%2FProperties%2F-1197683648" anchor-label="KILLED_BY_TEAM_GOLD" id="-420566854%2FProperties%2F-1197683648" data-filterable-set=":api:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":api:dokkaHtmlPartial/main" data-filterable-set=":api:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="-k-i-l-l-e-d_-b-y_-t-e-a-m_-g-o-l-d.html"><span><span>KILLED_BY_TEAM_GOLD</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-420566854%2FProperties%2F-1197683648"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtmlPartial/main"><a data-name="-420566854%2FProperties%2F-1197683648" anchor-label="KILLED_BY_TEAM_GOLD" id="-420566854%2FProperties%2F-1197683648" data-filterable-set=":api:dokkaHtmlPartial/main"></a><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.jvm/-jvm-field/index.html"><span class="token annotation builtin">JvmField</span></a></div></div><span class="token keyword"></span><span class="token keyword">val </span><a href="-k-i-l-l-e-d_-b-y_-t-e-a-m_-g-o-l-d.html">KILLED_BY_TEAM_GOLD</a><span class="token operator">: </span><a href="../../org.kryptonmc.api.registry/-registry-reference/index.html">RegistryReference</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../-keyed-criterion/index.html">KeyedCriterion</a><span class="token operator">&gt;</span></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="1773787159%2FProperties%2F-1197683648" anchor-label="KILLED_BY_TEAM_GRAY" id="1773787159%2FProperties%2F-1197683648" data-filterable-set=":api:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":api:dokkaHtmlPartial/main" data-filterable-set=":api:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="-k-i-l-l-e-d_-b-y_-t-e-a-m_-g-r-a-y.html"><span><span>KILLED_BY_TEAM_GRAY</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1773787159%2FProperties%2F-1197683648"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtmlPartial/main"><a data-name="1773787159%2FProperties%2F-1197683648" anchor-label="KILLED_BY_TEAM_GRAY" id="1773787159%2FProperties%2F-1197683648" data-filterable-set=":api:dokkaHtmlPartial/main"></a><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.jvm/-jvm-field/index.html"><span class="token annotation builtin">JvmField</span></a></div></div><span class="token keyword"></span><span class="token keyword">val </span><a href="-k-i-l-l-e-d_-b-y_-t-e-a-m_-g-r-a-y.html">KILLED_BY_TEAM_GRAY</a><span class="token operator">: </span><a href="../../org.kryptonmc.api.registry/-registry-reference/index.html">RegistryReference</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../-keyed-criterion/index.html">KeyedCriterion</a><span class="token operator">&gt;</span></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="794958973%2FProperties%2F-1197683648" anchor-label="KILLED_BY_TEAM_GREEN" id="794958973%2FProperties%2F-1197683648" data-filterable-set=":api:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":api:dokkaHtmlPartial/main" data-filterable-set=":api:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="-k-i-l-l-e-d_-b-y_-t-e-a-m_-g-r-e-e-n.html"><span><span>KILLED_BY_TEAM_GREEN</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="794958973%2FProperties%2F-1197683648"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtmlPartial/main"><a data-name="794958973%2FProperties%2F-1197683648" anchor-label="KILLED_BY_TEAM_GREEN" id="794958973%2FProperties%2F-1197683648" data-filterable-set=":api:dokkaHtmlPartial/main"></a><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.jvm/-jvm-field/index.html"><span class="token annotation builtin">JvmField</span></a></div></div><span class="token keyword"></span><span class="token keyword">val </span><a href="-k-i-l-l-e-d_-b-y_-t-e-a-m_-g-r-e-e-n.html">KILLED_BY_TEAM_GREEN</a><span class="token operator">: </span><a href="../../org.kryptonmc.api.registry/-registry-reference/index.html">RegistryReference</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../-keyed-criterion/index.html">KeyedCriterion</a><span class="token operator">&gt;</span></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-1414639467%2FProperties%2F-1197683648" anchor-label="KILLED_BY_TEAM_LIGHT_PURPLE" id="-1414639467%2FProperties%2F-1197683648" data-filterable-set=":api:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":api:dokkaHtmlPartial/main" data-filterable-set=":api:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="-k-i-l-l-e-d_-b-y_-t-e-a-m_-l-i-g-h-t_-p-u-r-p-l-e.html"><span><span>KILLED_BY_TEAM_LIGHT_PURPLE</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1414639467%2FProperties%2F-1197683648"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtmlPartial/main"><a data-name="-1414639467%2FProperties%2F-1197683648" anchor-label="KILLED_BY_TEAM_LIGHT_PURPLE" id="-1414639467%2FProperties%2F-1197683648" data-filterable-set=":api:dokkaHtmlPartial/main"></a><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.jvm/-jvm-field/index.html"><span class="token annotation builtin">JvmField</span></a></div></div><span class="token keyword"></span><span class="token keyword">val </span><a href="-k-i-l-l-e-d_-b-y_-t-e-a-m_-l-i-g-h-t_-p-u-r-p-l-e.html">KILLED_BY_TEAM_LIGHT_PURPLE</a><span class="token operator">: </span><a href="../../org.kryptonmc.api.registry/-registry-reference/index.html">RegistryReference</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../-keyed-criterion/index.html">KeyedCriterion</a><span class="token operator">&gt;</span></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-1045485713%2FProperties%2F-1197683648" anchor-label="KILLED_BY_TEAM_RED" id="-1045485713%2FProperties%2F-1197683648" data-filterable-set=":api:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":api:dokkaHtmlPartial/main" data-filterable-set=":api:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="-k-i-l-l-e-d_-b-y_-t-e-a-m_-r-e-d.html"><span><span>KILLED_BY_TEAM_RED</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1045485713%2FProperties%2F-1197683648"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtmlPartial/main"><a data-name="-1045485713%2FProperties%2F-1197683648" anchor-label="KILLED_BY_TEAM_RED" id="-1045485713%2FProperties%2F-1197683648" data-filterable-set=":api:dokkaHtmlPartial/main"></a><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.jvm/-jvm-field/index.html"><span class="token annotation builtin">JvmField</span></a></div></div><span class="token keyword"></span><span class="token keyword">val </span><a href="-k-i-l-l-e-d_-b-y_-t-e-a-m_-r-e-d.html">KILLED_BY_TEAM_RED</a><span class="token operator">: </span><a href="../../org.kryptonmc.api.registry/-registry-reference/index.html">RegistryReference</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../-keyed-criterion/index.html">KeyedCriterion</a><span class="token operator">&gt;</span></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-1418848745%2FProperties%2F-1197683648" anchor-label="KILLED_BY_TEAM_WHITE" id="-1418848745%2FProperties%2F-1197683648" data-filterable-set=":api:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":api:dokkaHtmlPartial/main" data-filterable-set=":api:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="-k-i-l-l-e-d_-b-y_-t-e-a-m_-w-h-i-t-e.html"><span><span>KILLED_BY_TEAM_WHITE</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1418848745%2FProperties%2F-1197683648"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtmlPartial/main"><a data-name="-1418848745%2FProperties%2F-1197683648" anchor-label="KILLED_BY_TEAM_WHITE" id="-1418848745%2FProperties%2F-1197683648" data-filterable-set=":api:dokkaHtmlPartial/main"></a><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.jvm/-jvm-field/index.html"><span class="token annotation builtin">JvmField</span></a></div></div><span class="token keyword"></span><span class="token keyword">val </span><a href="-k-i-l-l-e-d_-b-y_-t-e-a-m_-w-h-i-t-e.html">KILLED_BY_TEAM_WHITE</a><span class="token operator">: </span><a href="../../org.kryptonmc.api.registry/-registry-reference/index.html">RegistryReference</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../-keyed-criterion/index.html">KeyedCriterion</a><span class="token operator">&gt;</span></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="1179149286%2FProperties%2F-1197683648" anchor-label="KILLED_BY_TEAM_YELLOW" id="1179149286%2FProperties%2F-1197683648" data-filterable-set=":api:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":api:dokkaHtmlPartial/main" data-filterable-set=":api:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="-k-i-l-l-e-d_-b-y_-t-e-a-m_-y-e-l-l-o-w.html"><span><span>KILLED_BY_TEAM_YELLOW</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1179149286%2FProperties%2F-1197683648"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtmlPartial/main"><a data-name="1179149286%2FProperties%2F-1197683648" anchor-label="KILLED_BY_TEAM_YELLOW" id="1179149286%2FProperties%2F-1197683648" data-filterable-set=":api:dokkaHtmlPartial/main"></a><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.jvm/-jvm-field/index.html"><span class="token annotation builtin">JvmField</span></a></div></div><span class="token keyword"></span><span class="token keyword">val </span><a href="-k-i-l-l-e-d_-b-y_-t-e-a-m_-y-e-l-l-o-w.html">KILLED_BY_TEAM_YELLOW</a><span class="token operator">: </span><a href="../../org.kryptonmc.api.registry/-registry-reference/index.html">RegistryReference</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../-keyed-criterion/index.html">KeyedCriterion</a><span class="token operator">&gt;</span></div></div></div>
               </div>
             </div>
           </div>
@@ -177,7 +411,7 @@ if(savedDarkMode === true){
                 </span></span></div>
             <div>
               <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":api:dokkaHtmlPartial/main"><a data-name="2064708018%2FProperties%2F-1197683648" anchor-label="LEVEL" id="2064708018%2FProperties%2F-1197683648" data-filterable-set=":api:dokkaHtmlPartial/main"></a><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation">@</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.jvm/-jvm-field/index.html"><span class="token annotation">JvmField</span></a></div></div><span class="token keyword"></span><span class="token keyword">val </span><a href="-l-e-v-e-l.html">LEVEL</a><span class="token operator">: </span><a href="../-criterion/index.html">Criterion</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtmlPartial/main"><a data-name="2064708018%2FProperties%2F-1197683648" anchor-label="LEVEL" id="2064708018%2FProperties%2F-1197683648" data-filterable-set=":api:dokkaHtmlPartial/main"></a><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.jvm/-jvm-field/index.html"><span class="token annotation builtin">JvmField</span></a></div></div><span class="token keyword"></span><span class="token keyword">val </span><a href="-l-e-v-e-l.html">LEVEL</a><span class="token operator">: </span><a href="../../org.kryptonmc.api.registry/-registry-reference/index.html">RegistryReference</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../-keyed-criterion/index.html">KeyedCriterion</a><span class="token operator">&gt;</span></div></div></div>
               </div>
             </div>
           </div>
@@ -192,22 +426,247 @@ if(savedDarkMode === true){
                 </span></span></div>
             <div>
               <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":api:dokkaHtmlPartial/main"><a data-name="1963397034%2FProperties%2F-1197683648" anchor-label="PLAYER_KILL_COUNT" id="1963397034%2FProperties%2F-1197683648" data-filterable-set=":api:dokkaHtmlPartial/main"></a><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation">@</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.jvm/-jvm-field/index.html"><span class="token annotation">JvmField</span></a></div></div><span class="token keyword"></span><span class="token keyword">val </span><a href="-p-l-a-y-e-r_-k-i-l-l_-c-o-u-n-t.html">PLAYER_KILL_COUNT</a><span class="token operator">: </span><a href="../-criterion/index.html">Criterion</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtmlPartial/main"><a data-name="1963397034%2FProperties%2F-1197683648" anchor-label="PLAYER_KILL_COUNT" id="1963397034%2FProperties%2F-1197683648" data-filterable-set=":api:dokkaHtmlPartial/main"></a><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.jvm/-jvm-field/index.html"><span class="token annotation builtin">JvmField</span></a></div></div><span class="token keyword"></span><span class="token keyword">val </span><a href="-p-l-a-y-e-r_-k-i-l-l_-c-o-u-n-t.html">PLAYER_KILL_COUNT</a><span class="token operator">: </span><a href="../../org.kryptonmc.api.registry/-registry-reference/index.html">RegistryReference</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../-keyed-criterion/index.html">KeyedCriterion</a><span class="token operator">&gt;</span></div></div></div>
               </div>
             </div>
           </div>
         </div>
-<a data-name="1222083606%2FProperties%2F-1197683648" anchor-label="TEAM_KILL" id="1222083606%2FProperties%2F-1197683648" data-filterable-set=":api:dokkaHtmlPartial/main"></a>
+<a data-name="1195100105%2FProperties%2F-1197683648" anchor-label="TEAM_KILL_AQUA" id="1195100105%2FProperties%2F-1197683648" data-filterable-set=":api:dokkaHtmlPartial/main"></a>
         <div class="table-row" data-filterable-current=":api:dokkaHtmlPartial/main" data-filterable-set=":api:dokkaHtmlPartial/main">
           <div class="main-subrow keyValue ">
             <div class=""><span class="inline-flex">
-                <div><a href="-t-e-a-m_-k-i-l-l.html"><span><span>TEAM_KILL</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1222083606%2FProperties%2F-1197683648"></span>
+                <div><a href="-t-e-a-m_-k-i-l-l_-a-q-u-a.html"><span><span>TEAM_KILL_AQUA</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1195100105%2FProperties%2F-1197683648"></span>
                   <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                 </span></span></div>
             <div>
               <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":api:dokkaHtmlPartial/main"><a data-name="1222083606%2FProperties%2F-1197683648" anchor-label="TEAM_KILL" id="1222083606%2FProperties%2F-1197683648" data-filterable-set=":api:dokkaHtmlPartial/main"></a><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation">@</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.jvm/-jvm-field/index.html"><span class="token annotation">JvmField</span></a></div></div><span class="token keyword"></span><span class="token keyword">val </span><a href="-t-e-a-m_-k-i-l-l.html">TEAM_KILL</a><span class="token operator">: </span><a href="../-compound-criterion/index.html">CompoundCriterion</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtmlPartial/main"><a data-name="1195100105%2FProperties%2F-1197683648" anchor-label="TEAM_KILL_AQUA" id="1195100105%2FProperties%2F-1197683648" data-filterable-set=":api:dokkaHtmlPartial/main"></a><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.jvm/-jvm-field/index.html"><span class="token annotation builtin">JvmField</span></a></div></div><span class="token keyword"></span><span class="token keyword">val </span><a href="-t-e-a-m_-k-i-l-l_-a-q-u-a.html">TEAM_KILL_AQUA</a><span class="token operator">: </span><a href="../../org.kryptonmc.api.registry/-registry-reference/index.html">RegistryReference</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../-keyed-criterion/index.html">KeyedCriterion</a><span class="token operator">&gt;</span></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-2012340618%2FProperties%2F-1197683648" anchor-label="TEAM_KILL_BLACK" id="-2012340618%2FProperties%2F-1197683648" data-filterable-set=":api:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":api:dokkaHtmlPartial/main" data-filterable-set=":api:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="-t-e-a-m_-k-i-l-l_-b-l-a-c-k.html"><span><span>TEAM_KILL_BLACK</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-2012340618%2FProperties%2F-1197683648"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtmlPartial/main"><a data-name="-2012340618%2FProperties%2F-1197683648" anchor-label="TEAM_KILL_BLACK" id="-2012340618%2FProperties%2F-1197683648" data-filterable-set=":api:dokkaHtmlPartial/main"></a><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.jvm/-jvm-field/index.html"><span class="token annotation builtin">JvmField</span></a></div></div><span class="token keyword"></span><span class="token keyword">val </span><a href="-t-e-a-m_-k-i-l-l_-b-l-a-c-k.html">TEAM_KILL_BLACK</a><span class="token operator">: </span><a href="../../org.kryptonmc.api.registry/-registry-reference/index.html">RegistryReference</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../-keyed-criterion/index.html">KeyedCriterion</a><span class="token operator">&gt;</span></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-1009003541%2FProperties%2F-1197683648" anchor-label="TEAM_KILL_BLUE" id="-1009003541%2FProperties%2F-1197683648" data-filterable-set=":api:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":api:dokkaHtmlPartial/main" data-filterable-set=":api:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="-t-e-a-m_-k-i-l-l_-b-l-u-e.html"><span><span>TEAM_KILL_BLUE</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1009003541%2FProperties%2F-1197683648"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtmlPartial/main"><a data-name="-1009003541%2FProperties%2F-1197683648" anchor-label="TEAM_KILL_BLUE" id="-1009003541%2FProperties%2F-1197683648" data-filterable-set=":api:dokkaHtmlPartial/main"></a><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.jvm/-jvm-field/index.html"><span class="token annotation builtin">JvmField</span></a></div></div><span class="token keyword"></span><span class="token keyword">val </span><a href="-t-e-a-m_-k-i-l-l_-b-l-u-e.html">TEAM_KILL_BLUE</a><span class="token operator">: </span><a href="../../org.kryptonmc.api.registry/-registry-reference/index.html">RegistryReference</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../-keyed-criterion/index.html">KeyedCriterion</a><span class="token operator">&gt;</span></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="1072134960%2FProperties%2F-1197683648" anchor-label="TEAM_KILL_DARK_AQUA" id="1072134960%2FProperties%2F-1197683648" data-filterable-set=":api:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":api:dokkaHtmlPartial/main" data-filterable-set=":api:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="-t-e-a-m_-k-i-l-l_-d-a-r-k_-a-q-u-a.html"><span><span>TEAM_KILL_DARK_AQUA</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1072134960%2FProperties%2F-1197683648"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtmlPartial/main"><a data-name="1072134960%2FProperties%2F-1197683648" anchor-label="TEAM_KILL_DARK_AQUA" id="1072134960%2FProperties%2F-1197683648" data-filterable-set=":api:dokkaHtmlPartial/main"></a><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.jvm/-jvm-field/index.html"><span class="token annotation builtin">JvmField</span></a></div></div><span class="token keyword"></span><span class="token keyword">val </span><a href="-t-e-a-m_-k-i-l-l_-d-a-r-k_-a-q-u-a.html">TEAM_KILL_DARK_AQUA</a><span class="token operator">: </span><a href="../../org.kryptonmc.api.registry/-registry-reference/index.html">RegistryReference</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../-keyed-criterion/index.html">KeyedCriterion</a><span class="token operator">&gt;</span></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-1131968686%2FProperties%2F-1197683648" anchor-label="TEAM_KILL_DARK_BLUE" id="-1131968686%2FProperties%2F-1197683648" data-filterable-set=":api:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":api:dokkaHtmlPartial/main" data-filterable-set=":api:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="-t-e-a-m_-k-i-l-l_-d-a-r-k_-b-l-u-e.html"><span><span>TEAM_KILL_DARK_BLUE</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1131968686%2FProperties%2F-1197683648"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtmlPartial/main"><a data-name="-1131968686%2FProperties%2F-1197683648" anchor-label="TEAM_KILL_DARK_BLUE" id="-1131968686%2FProperties%2F-1197683648" data-filterable-set=":api:dokkaHtmlPartial/main"></a><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.jvm/-jvm-field/index.html"><span class="token annotation builtin">JvmField</span></a></div></div><span class="token keyword"></span><span class="token keyword">val </span><a href="-t-e-a-m_-k-i-l-l_-d-a-r-k_-b-l-u-e.html">TEAM_KILL_DARK_BLUE</a><span class="token operator">: </span><a href="../../org.kryptonmc.api.registry/-registry-reference/index.html">RegistryReference</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../-keyed-criterion/index.html">KeyedCriterion</a><span class="token operator">&gt;</span></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-626894487%2FProperties%2F-1197683648" anchor-label="TEAM_KILL_DARK_GRAY" id="-626894487%2FProperties%2F-1197683648" data-filterable-set=":api:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":api:dokkaHtmlPartial/main" data-filterable-set=":api:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="-t-e-a-m_-k-i-l-l_-d-a-r-k_-g-r-a-y.html"><span><span>TEAM_KILL_DARK_GRAY</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-626894487%2FProperties%2F-1197683648"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtmlPartial/main"><a data-name="-626894487%2FProperties%2F-1197683648" anchor-label="TEAM_KILL_DARK_GRAY" id="-626894487%2FProperties%2F-1197683648" data-filterable-set=":api:dokkaHtmlPartial/main"></a><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.jvm/-jvm-field/index.html"><span class="token annotation builtin">JvmField</span></a></div></div><span class="token keyword"></span><span class="token keyword">val </span><a href="-t-e-a-m_-k-i-l-l_-d-a-r-k_-g-r-a-y.html">TEAM_KILL_DARK_GRAY</a><span class="token operator">: </span><a href="../../org.kryptonmc.api.registry/-registry-reference/index.html">RegistryReference</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../-keyed-criterion/index.html">KeyedCriterion</a><span class="token operator">&gt;</span></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-611728021%2FProperties%2F-1197683648" anchor-label="TEAM_KILL_DARK_GREEN" id="-611728021%2FProperties%2F-1197683648" data-filterable-set=":api:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":api:dokkaHtmlPartial/main" data-filterable-set=":api:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="-t-e-a-m_-k-i-l-l_-d-a-r-k_-g-r-e-e-n.html"><span><span>TEAM_KILL_DARK_GREEN</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-611728021%2FProperties%2F-1197683648"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtmlPartial/main"><a data-name="-611728021%2FProperties%2F-1197683648" anchor-label="TEAM_KILL_DARK_GREEN" id="-611728021%2FProperties%2F-1197683648" data-filterable-set=":api:dokkaHtmlPartial/main"></a><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.jvm/-jvm-field/index.html"><span class="token annotation builtin">JvmField</span></a></div></div><span class="token keyword"></span><span class="token keyword">val </span><a href="-t-e-a-m_-k-i-l-l_-d-a-r-k_-g-r-e-e-n.html">TEAM_KILL_DARK_GREEN</a><span class="token operator">: </span><a href="../../org.kryptonmc.api.registry/-registry-reference/index.html">RegistryReference</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../-keyed-criterion/index.html">KeyedCriterion</a><span class="token operator">&gt;</span></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="1536816752%2FProperties%2F-1197683648" anchor-label="TEAM_KILL_DARK_PURPLE" id="1536816752%2FProperties%2F-1197683648" data-filterable-set=":api:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":api:dokkaHtmlPartial/main" data-filterable-set=":api:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="-t-e-a-m_-k-i-l-l_-d-a-r-k_-p-u-r-p-l-e.html"><span><span>TEAM_KILL_DARK_PURPLE</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1536816752%2FProperties%2F-1197683648"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtmlPartial/main"><a data-name="1536816752%2FProperties%2F-1197683648" anchor-label="TEAM_KILL_DARK_PURPLE" id="1536816752%2FProperties%2F-1197683648" data-filterable-set=":api:dokkaHtmlPartial/main"></a><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.jvm/-jvm-field/index.html"><span class="token annotation builtin">JvmField</span></a></div></div><span class="token keyword"></span><span class="token keyword">val </span><a href="-t-e-a-m_-k-i-l-l_-d-a-r-k_-p-u-r-p-l-e.html">TEAM_KILL_DARK_PURPLE</a><span class="token operator">: </span><a href="../../org.kryptonmc.api.registry/-registry-reference/index.html">RegistryReference</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../-keyed-criterion/index.html">KeyedCriterion</a><span class="token operator">&gt;</span></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="401093597%2FProperties%2F-1197683648" anchor-label="TEAM_KILL_DARK_RED" id="401093597%2FProperties%2F-1197683648" data-filterable-set=":api:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":api:dokkaHtmlPartial/main" data-filterable-set=":api:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="-t-e-a-m_-k-i-l-l_-d-a-r-k_-r-e-d.html"><span><span>TEAM_KILL_DARK_RED</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="401093597%2FProperties%2F-1197683648"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtmlPartial/main"><a data-name="401093597%2FProperties%2F-1197683648" anchor-label="TEAM_KILL_DARK_RED" id="401093597%2FProperties%2F-1197683648" data-filterable-set=":api:dokkaHtmlPartial/main"></a><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.jvm/-jvm-field/index.html"><span class="token annotation builtin">JvmField</span></a></div></div><span class="token keyword"></span><span class="token keyword">val </span><a href="-t-e-a-m_-k-i-l-l_-d-a-r-k_-r-e-d.html">TEAM_KILL_DARK_RED</a><span class="token operator">: </span><a href="../../org.kryptonmc.api.registry/-registry-reference/index.html">RegistryReference</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../-keyed-criterion/index.html">KeyedCriterion</a><span class="token operator">&gt;</span></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="1596683941%2FProperties%2F-1197683648" anchor-label="TEAM_KILL_GOLD" id="1596683941%2FProperties%2F-1197683648" data-filterable-set=":api:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":api:dokkaHtmlPartial/main" data-filterable-set=":api:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="-t-e-a-m_-k-i-l-l_-g-o-l-d.html"><span><span>TEAM_KILL_GOLD</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1596683941%2FProperties%2F-1197683648"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtmlPartial/main"><a data-name="1596683941%2FProperties%2F-1197683648" anchor-label="TEAM_KILL_GOLD" id="1596683941%2FProperties%2F-1197683648" data-filterable-set=":api:dokkaHtmlPartial/main"></a><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.jvm/-jvm-field/index.html"><span class="token annotation builtin">JvmField</span></a></div></div><span class="token keyword"></span><span class="token keyword">val </span><a href="-t-e-a-m_-k-i-l-l_-g-o-l-d.html">TEAM_KILL_GOLD</a><span class="token operator">: </span><a href="../../org.kryptonmc.api.registry/-registry-reference/index.html">RegistryReference</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../-keyed-criterion/index.html">KeyedCriterion</a><span class="token operator">&gt;</span></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-503929342%2FProperties%2F-1197683648" anchor-label="TEAM_KILL_GRAY" id="-503929342%2FProperties%2F-1197683648" data-filterable-set=":api:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":api:dokkaHtmlPartial/main" data-filterable-set=":api:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="-t-e-a-m_-k-i-l-l_-g-r-a-y.html"><span><span>TEAM_KILL_GRAY</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-503929342%2FProperties%2F-1197683648"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtmlPartial/main"><a data-name="-503929342%2FProperties%2F-1197683648" anchor-label="TEAM_KILL_GRAY" id="-503929342%2FProperties%2F-1197683648" data-filterable-set=":api:dokkaHtmlPartial/main"></a><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.jvm/-jvm-field/index.html"><span class="token annotation builtin">JvmField</span></a></div></div><span class="token keyword"></span><span class="token keyword">val </span><a href="-t-e-a-m_-k-i-l-l_-g-r-a-y.html">TEAM_KILL_GRAY</a><span class="token operator">: </span><a href="../../org.kryptonmc.api.registry/-registry-reference/index.html">RegistryReference</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../-keyed-criterion/index.html">KeyedCriterion</a><span class="token operator">&gt;</span></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-1094775822%2FProperties%2F-1197683648" anchor-label="TEAM_KILL_GREEN" id="-1094775822%2FProperties%2F-1197683648" data-filterable-set=":api:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":api:dokkaHtmlPartial/main" data-filterable-set=":api:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="-t-e-a-m_-k-i-l-l_-g-r-e-e-n.html"><span><span>TEAM_KILL_GREEN</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1094775822%2FProperties%2F-1197683648"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtmlPartial/main"><a data-name="-1094775822%2FProperties%2F-1197683648" anchor-label="TEAM_KILL_GREEN" id="-1094775822%2FProperties%2F-1197683648" data-filterable-set=":api:dokkaHtmlPartial/main"></a><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.jvm/-jvm-field/index.html"><span class="token annotation builtin">JvmField</span></a></div></div><span class="token keyword"></span><span class="token keyword">val </span><a href="-t-e-a-m_-k-i-l-l_-g-r-e-e-n.html">TEAM_KILL_GREEN</a><span class="token operator">: </span><a href="../../org.kryptonmc.api.registry/-registry-reference/index.html">RegistryReference</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../-keyed-criterion/index.html">KeyedCriterion</a><span class="token operator">&gt;</span></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="262144896%2FProperties%2F-1197683648" anchor-label="TEAM_KILL_LIGHT_PURPLE" id="262144896%2FProperties%2F-1197683648" data-filterable-set=":api:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":api:dokkaHtmlPartial/main" data-filterable-set=":api:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="-t-e-a-m_-k-i-l-l_-l-i-g-h-t_-p-u-r-p-l-e.html"><span><span>TEAM_KILL_LIGHT_PURPLE</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="262144896%2FProperties%2F-1197683648"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtmlPartial/main"><a data-name="262144896%2FProperties%2F-1197683648" anchor-label="TEAM_KILL_LIGHT_PURPLE" id="262144896%2FProperties%2F-1197683648" data-filterable-set=":api:dokkaHtmlPartial/main"></a><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.jvm/-jvm-field/index.html"><span class="token annotation builtin">JvmField</span></a></div></div><span class="token keyword"></span><span class="token keyword">val </span><a href="-t-e-a-m_-k-i-l-l_-l-i-g-h-t_-p-u-r-p-l-e.html">TEAM_KILL_LIGHT_PURPLE</a><span class="token operator">: </span><a href="../../org.kryptonmc.api.registry/-registry-reference/index.html">RegistryReference</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../-keyed-criterion/index.html">KeyedCriterion</a><span class="token operator">&gt;</span></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="1929080868%2FProperties%2F-1197683648" anchor-label="TEAM_KILL_RED" id="1929080868%2FProperties%2F-1197683648" data-filterable-set=":api:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":api:dokkaHtmlPartial/main" data-filterable-set=":api:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="-t-e-a-m_-k-i-l-l_-r-e-d.html"><span><span>TEAM_KILL_RED</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1929080868%2FProperties%2F-1197683648"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtmlPartial/main"><a data-name="1929080868%2FProperties%2F-1197683648" anchor-label="TEAM_KILL_RED" id="1929080868%2FProperties%2F-1197683648" data-filterable-set=":api:dokkaHtmlPartial/main"></a><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.jvm/-jvm-field/index.html"><span class="token annotation builtin">JvmField</span></a></div></div><span class="token keyword"></span><span class="token keyword">val </span><a href="-t-e-a-m_-k-i-l-l_-r-e-d.html">TEAM_KILL_RED</a><span class="token operator">: </span><a href="../../org.kryptonmc.api.registry/-registry-reference/index.html">RegistryReference</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../-keyed-criterion/index.html">KeyedCriterion</a><span class="token operator">&gt;</span></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="986383756%2FProperties%2F-1197683648" anchor-label="TEAM_KILL_WHITE" id="986383756%2FProperties%2F-1197683648" data-filterable-set=":api:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":api:dokkaHtmlPartial/main" data-filterable-set=":api:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="-t-e-a-m_-k-i-l-l_-w-h-i-t-e.html"><span><span>TEAM_KILL_WHITE</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="986383756%2FProperties%2F-1197683648"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtmlPartial/main"><a data-name="986383756%2FProperties%2F-1197683648" anchor-label="TEAM_KILL_WHITE" id="986383756%2FProperties%2F-1197683648" data-filterable-set=":api:dokkaHtmlPartial/main"></a><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.jvm/-jvm-field/index.html"><span class="token annotation builtin">JvmField</span></a></div></div><span class="token keyword"></span><span class="token keyword">val </span><a href="-t-e-a-m_-k-i-l-l_-w-h-i-t-e.html">TEAM_KILL_WHITE</a><span class="token operator">: </span><a href="../../org.kryptonmc.api.registry/-registry-reference/index.html">RegistryReference</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../-keyed-criterion/index.html">KeyedCriterion</a><span class="token operator">&gt;</span></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-1568054511%2FProperties%2F-1197683648" anchor-label="TEAM_KILL_YELLOW" id="-1568054511%2FProperties%2F-1197683648" data-filterable-set=":api:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":api:dokkaHtmlPartial/main" data-filterable-set=":api:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="-t-e-a-m_-k-i-l-l_-y-e-l-l-o-w.html"><span><span>TEAM_KILL_YELLOW</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1568054511%2FProperties%2F-1197683648"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtmlPartial/main"><a data-name="-1568054511%2FProperties%2F-1197683648" anchor-label="TEAM_KILL_YELLOW" id="-1568054511%2FProperties%2F-1197683648" data-filterable-set=":api:dokkaHtmlPartial/main"></a><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.jvm/-jvm-field/index.html"><span class="token annotation builtin">JvmField</span></a></div></div><span class="token keyword"></span><span class="token keyword">val </span><a href="-t-e-a-m_-k-i-l-l_-y-e-l-l-o-w.html">TEAM_KILL_YELLOW</a><span class="token operator">: </span><a href="../../org.kryptonmc.api.registry/-registry-reference/index.html">RegistryReference</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../-keyed-criterion/index.html">KeyedCriterion</a><span class="token operator">&gt;</span></div></div></div>
               </div>
             </div>
           </div>
@@ -222,7 +681,7 @@ if(savedDarkMode === true){
                 </span></span></div>
             <div>
               <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":api:dokkaHtmlPartial/main"><a data-name="799553691%2FProperties%2F-1197683648" anchor-label="TOTAL_KILL_COUNT" id="799553691%2FProperties%2F-1197683648" data-filterable-set=":api:dokkaHtmlPartial/main"></a><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation">@</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.jvm/-jvm-field/index.html"><span class="token annotation">JvmField</span></a></div></div><span class="token keyword"></span><span class="token keyword">val </span><a href="-t-o-t-a-l_-k-i-l-l_-c-o-u-n-t.html">TOTAL_KILL_COUNT</a><span class="token operator">: </span><a href="../-criterion/index.html">Criterion</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtmlPartial/main"><a data-name="799553691%2FProperties%2F-1197683648" anchor-label="TOTAL_KILL_COUNT" id="799553691%2FProperties%2F-1197683648" data-filterable-set=":api:dokkaHtmlPartial/main"></a><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.jvm/-jvm-field/index.html"><span class="token annotation builtin">JvmField</span></a></div></div><span class="token keyword"></span><span class="token keyword">val </span><a href="-t-o-t-a-l_-k-i-l-l_-c-o-u-n-t.html">TOTAL_KILL_COUNT</a><span class="token operator">: </span><a href="../../org.kryptonmc.api.registry/-registry-reference/index.html">RegistryReference</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../-keyed-criterion/index.html">KeyedCriterion</a><span class="token operator">&gt;</span></div></div></div>
               </div>
             </div>
           </div>
@@ -237,7 +696,7 @@ if(savedDarkMode === true){
                 </span></span></div>
             <div>
               <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":api:dokkaHtmlPartial/main"><a data-name="59081662%2FProperties%2F-1197683648" anchor-label="TRIGGER" id="59081662%2FProperties%2F-1197683648" data-filterable-set=":api:dokkaHtmlPartial/main"></a><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation">@</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.jvm/-jvm-field/index.html"><span class="token annotation">JvmField</span></a></div></div><span class="token keyword"></span><span class="token keyword">val </span><a href="-t-r-i-g-g-e-r.html">TRIGGER</a><span class="token operator">: </span><a href="../-criterion/index.html">Criterion</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtmlPartial/main"><a data-name="59081662%2FProperties%2F-1197683648" anchor-label="TRIGGER" id="59081662%2FProperties%2F-1197683648" data-filterable-set=":api:dokkaHtmlPartial/main"></a><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.jvm/-jvm-field/index.html"><span class="token annotation builtin">JvmField</span></a></div></div><span class="token keyword"></span><span class="token keyword">val </span><a href="-t-r-i-g-g-e-r.html">TRIGGER</a><span class="token operator">: </span><a href="../../org.kryptonmc.api.registry/-registry-reference/index.html">RegistryReference</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../-keyed-criterion/index.html">KeyedCriterion</a><span class="token operator">&gt;</span></div></div></div>
               </div>
             </div>
           </div>
@@ -247,7 +706,7 @@ if(savedDarkMode === true){
   </div>
 </div>
       <div class="footer">
-        <span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>© 2022 Copyright</span><span class="pull-right"><span>Generated by </span><a href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span>
+        <span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>© 2023 Copyright</span><span class="pull-right"><span>Generated by </span><a href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span>
       </div>
     </div>
 </div>

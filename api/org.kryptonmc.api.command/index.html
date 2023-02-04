@@ -4,10 +4,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
     <title>org.kryptonmc.api.command</title>
 <link href="../../images/logo-icon.svg" rel="icon" type="image/svg"><script>var pathToRoot = "../../";</script>    <script>const storage = localStorage.getItem("dokka-dark-mode")
-const savedDarkMode = storage ? JSON.parse(storage) : false
-if(savedDarkMode === true){
-    document.getElementsByTagName("html")[0].classList.add("theme-dark")
-}</script>
+    if (storage == null) {
+        const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+        if (osDarkSchemePreferred === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    } else {
+        const savedDarkMode = JSON.parse(storage)
+        if(savedDarkMode === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    }
+    </script>
 <script type="text/javascript" src="../../scripts/sourceset_dependencies.js" async></script>
 <link href="../../styles/style.css" rel="Stylesheet">
 <link href="../../styles/jetbrains-mono.css" rel="Stylesheet">
@@ -18,14 +26,15 @@ if(savedDarkMode === true){
 <script type="text/javascript" src="../../scripts/navigation-loader.js" async></script>
 <script type="text/javascript" src="../../scripts/platform-content-handler.js" async></script>
 <script type="text/javascript" src="../../scripts/main.js" defer></script>
-<script type="text/javascript" src="../../scripts/prism.js" async></script></head>
+<script type="text/javascript" src="../../scripts/prism.js" async></script>
+<script type="text/javascript" src="../../scripts/symbol-parameters-wrapper_deferred.js" defer></script></head>
 <body>
 <div class="navigation-wrapper" id="navigation-wrapper">
     <div id="leftToggler"><span class="icon-toggler"></span></div>
     <div class="library-name">
 <a href="../../index.html">
 <span>krypton</span>            </a>    </div>
-    <div>0.66.4
+    <div>6a98d9dec7
     </div>
     <div class="pull-right d-flex">
         <button id="theme-toggle-button"><span id="theme-toggle"></span></button>
@@ -38,9 +47,9 @@ if(savedDarkMode === true){
     </div>
     <div id="main">
 <div class="main-content" id="content" pageids="api::org.kryptonmc.api.command////PointingToDeclaration//-1197683648">
-  <div class="breadcrumbs"><a href="../index.html">api</a><span class="delimiter">/</span><a href="index.html">org.kryptonmc.api.command</a></div>
+  <div class="breadcrumbs"><a href="../index.html">api</a><span class="delimiter">/</span><span class="current">org.kryptonmc.api.command</span></div>
   <div class="cover ">
-    <h1 class="cover"><span><span>Package</span></span> <span>org.</span><wbr><span>kryptonmc.</span><wbr><span>api.</span><wbr><span>command</span></h1>
+    <h1 class="cover"><span><span>Package-level</span></span> <span><span>declarations</span></span></h1>
   </div>
   <div class="tabbedcontent">
     <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="Types">Types</button><button class="section-tab" data-togglable="Functions">Functions</button></div>
@@ -56,7 +65,7 @@ if(savedDarkMode === true){
                 </span></span></div>
             <div>
               <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":api:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">interface </span><a href="-brigadier-command/index.html">BrigadierCommand</a> : <a href="-command/index.html">Command</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><p class="paragraph">A command that is backed by a Brigadier <span data-unresolved-link="com.mojang.brigadier.tree/LiteralCommandNode///PointingToDeclaration/">LiteralCommandNode</span>.</p></div></div></div>
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">interface </span><a href="-brigadier-command/index.html">BrigadierCommand</a> : <a href="-command/index.html">Command</a></div><div class="brief "><p class="paragraph">A command that is backed by a Brigadier <span data-unresolved-link="com.mojang.brigadier.tree/LiteralCommandNode///PointingToDeclaration/">LiteralCommandNode</span>.</p></div></div></div>
               </div>
             </div>
           </div>
@@ -71,7 +80,22 @@ if(savedDarkMode === true){
                 </span></span></div>
             <div>
               <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":api:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">interface </span><a href="-command/index.html">Command</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><p class="paragraph">A command that can be sent by a <a href="-sender/index.html">Sender</a>, such as a <a href="../org.kryptonmc.api.entity.player/-player/index.html">player</a> or the <a href="-console-sender/index.html">ConsoleSender</a>.</p></div></div></div>
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">interface </span><a href="-command/index.html">Command</a></div><div class="brief "><p class="paragraph">A command that can be sent by a <a href="-sender/index.html">Sender</a>, such as a <a href="../org.kryptonmc.api.entity.player/-player/index.html">player</a> or the <a href="-console-sender/index.html">ConsoleSender</a>.</p></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-1448202636%2FClasslikes%2F-1197683648" anchor-label="CommandExecutionContext" id="-1448202636%2FClasslikes%2F-1197683648" data-filterable-set=":api:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":api:dokkaHtmlPartial/main" data-filterable-set=":api:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="-command-execution-context/index.html"><span>Command</span><wbr><span>Execution</span><wbr><span><span>Context</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1448202636%2FClasslikes%2F-1197683648"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">interface </span><a href="-command-execution-context/index.html">CommandExecutionContext</a></div><div class="brief "><p class="paragraph">The context of a command execution.</p></div></div></div>
               </div>
             </div>
           </div>
@@ -86,22 +110,22 @@ if(savedDarkMode === true){
                 </span></span></div>
             <div>
               <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":api:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">interface </span><a href="-command-manager/index.html">CommandManager</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><p class="paragraph">The command manager is responsible for registering, unregistering, and keeping track of <a href="-command/index.html">Command</a>s</p></div></div></div>
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">interface </span><a href="-command-manager/index.html">CommandManager</a></div><div class="brief "><p class="paragraph">The command manager is responsible for registering, unregistering, and keeping track of commands.</p></div></div></div>
               </div>
             </div>
           </div>
         </div>
-<a data-name="-1114617014%2FClasslikes%2F-1197683648" anchor-label="CommandRegistrar" id="-1114617014%2FClasslikes%2F-1197683648" data-filterable-set=":api:dokkaHtmlPartial/main"></a>
+<a data-name="-1459551578%2FClasslikes%2F-1197683648" anchor-label="CommandMeta" id="-1459551578%2FClasslikes%2F-1197683648" data-filterable-set=":api:dokkaHtmlPartial/main"></a>
         <div class="table-row" data-filterable-current=":api:dokkaHtmlPartial/main" data-filterable-set=":api:dokkaHtmlPartial/main">
           <div class="main-subrow keyValue ">
             <div class=""><span class="inline-flex">
-                <div><a href="-command-registrar/index.html"><span>Command</span><wbr><span><span>Registrar</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1114617014%2FClasslikes%2F-1197683648"></span>
+                <div><a href="-command-meta/index.html"><span>Command</span><wbr><span><span>Meta</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1459551578%2FClasslikes%2F-1197683648"></span>
                   <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                 </span></span></div>
             <div>
               <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":api:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">fun </span><span class="token keyword">interface </span><a href="-command-registrar/index.html">CommandRegistrar</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-command-registrar/index.html">C</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="-command-registrar/index.html">M</a><span class="token operator">&gt;</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><p class="paragraph">A registrar of commands. Implement this to define how the server should register commands of type <a href="-command-registrar/index.html">C</a> with metadata of type <a href="-command-registrar/index.html">M</a>.</p></div></div></div>
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">interface </span><a href="-command-meta/index.html">CommandMeta</a></div><div class="brief "><p class="paragraph">Holds metadata for a <a href="-command/index.html">Command</a>.</p></div></div></div>
               </div>
             </div>
           </div>
@@ -116,7 +140,7 @@ if(savedDarkMode === true){
                 </span></span></div>
             <div>
               <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":api:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">interface </span><a href="-console-sender/index.html">ConsoleSender</a> : <a href="-sender/index.html">Sender</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><p class="paragraph">The sender for the <a href="../org.kryptonmc.api/-server/index.html">org.kryptonmc.api.Server</a>. This is the sender that is used by the console.</p></div></div></div>
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">interface </span><a href="-console-sender/index.html">ConsoleSender</a> : <a href="-sender/index.html">Sender</a></div><div class="brief "><p class="paragraph">The sender for the <a href="../org.kryptonmc.api/-server/index.html">org.kryptonmc.api.Server</a>. This is the sender that is used by the console.</p></div></div></div>
               </div>
             </div>
           </div>
@@ -131,7 +155,7 @@ if(savedDarkMode === true){
                 </span></span></div>
             <div>
               <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":api:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">fun </span><span class="token keyword">interface </span><a href="-invocable-command/index.html">InvocableCommand</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-invocable-command/index.html">A</a><span class="token operator">&gt;</span> : <a href="-command/index.html">Command</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><p class="paragraph">A command that may be invoked with arbitrary arguments.</p></div></div></div>
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">interface </span><a href="-invocable-command/index.html">InvocableCommand</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-invocable-command/index.html">A</a><span class="token operator">&gt;</span> : <a href="-command/index.html">Command</a></div><div class="brief "><p class="paragraph">A command that may be invoked with arbitrary arguments.</p></div></div></div>
               </div>
             </div>
           </div>
@@ -146,7 +170,7 @@ if(savedDarkMode === true){
                 </span></span></div>
             <div>
               <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":api:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">fun </span><span class="token keyword">interface </span><a href="-raw-command/index.html">RawCommand</a> : <a href="-invocable-command/index.html">InvocableCommand</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">&gt; </span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><p class="paragraph">A command that passes its arguments as a single string, without processing the input.</p></div></div></div>
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">fun </span><span class="token keyword">interface </span><a href="-raw-command/index.html">RawCommand</a> : <a href="-invocable-command/index.html">InvocableCommand</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">&gt; </span></div><div class="brief "><p class="paragraph">A command that passes its arguments as a single string, without processing the input.</p></div></div></div>
               </div>
             </div>
           </div>
@@ -161,7 +185,7 @@ if(savedDarkMode === true){
                 </span></span></div>
             <div>
               <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":api:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">interface </span><a href="-sender/index.html">Sender</a> : <span data-unresolved-link="net.kyori.adventure.audience/Audience///PointingToDeclaration/">Audience</span>, <a href="../org.kryptonmc.api.permission/-subject/index.html">Subject</a>, <span data-unresolved-link="net.kyori.adventure.identity/Identified///PointingToDeclaration/">Identified</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><p class="paragraph">A sender is an interface representing the sender of a command.</p></div></div></div>
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">interface </span><a href="-sender/index.html">Sender</a> : <span data-unresolved-link="net.kyori.adventure.audience/Audience///PointingToDeclaration/">Audience</span>, <a href="../org.kryptonmc.api.permission/-subject/index.html">Subject</a></div><div class="brief "><p class="paragraph">A sender is an interface representing the sender of a command.</p></div></div></div>
               </div>
             </div>
           </div>
@@ -176,24 +200,54 @@ if(savedDarkMode === true){
                 </span></span></div>
             <div>
               <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":api:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">fun </span><span class="token keyword">interface </span><a href="-simple-command/index.html">SimpleCommand</a> : <a href="-invocable-command/index.html">InvocableCommand</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-array/index.html">Array</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">&gt;</span><span class="token operator">&gt; </span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><p class="paragraph">A command styled after the convention popularised by Bukkit and BungeeCord.</p></div></div></div>
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">fun </span><span class="token keyword">interface </span><a href="-simple-command/index.html">SimpleCommand</a> : <a href="-invocable-command/index.html">InvocableCommand</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-array/index.html">Array</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">&gt;</span><span class="token operator">&gt; </span></div><div class="brief "><p class="paragraph">A command styled after the convention popularised by Bukkit and BungeeCord.</p></div></div></div>
               </div>
             </div>
           </div>
         </div>
       </div>
       <h2 class="">Functions</h2>
-      <div class="table" data-togglable="Functions"><a data-name="-1807388074%2FFunctions%2F-1197683648" anchor-label="brigadierCommand" id="-1807388074%2FFunctions%2F-1197683648" data-filterable-set=":api:dokkaHtmlPartial/main"></a>
+      <div class="table" data-togglable="Functions"><a data-name="-831382070%2FFunctions%2F-1197683648" anchor-label="argument" id="-831382070%2FFunctions%2F-1197683648" data-filterable-set=":api:dokkaHtmlPartial/main"></a>
         <div class="table-row" data-filterable-current=":api:dokkaHtmlPartial/main" data-filterable-set=":api:dokkaHtmlPartial/main">
           <div class="main-subrow keyValue ">
             <div class=""><span class="inline-flex">
-                <div><a href="brigadier-command.html"><span>brigadier</span><wbr><span><span>Command</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1807388074%2FFunctions%2F-1197683648"></span>
+                <div><a href="argument.html"><span><span>argument</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-831382070%2FFunctions%2F-1197683648"></span>
                   <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                 </span></span></div>
             <div>
               <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":api:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">inline </span><span class="token keyword">fun </span><a href="brigadier-command.html"><span class="token function">brigadierCommand</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">literal<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter ">builder<span class="token operator">: </span><span class="token keyword"></span><span data-unresolved-link="com.mojang.brigadier.builder/LiteralArgumentBuilder///PointingToDeclaration/">LiteralArgumentBuilder</span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-sender/index.html">Sender</a><span class="token operator">&gt;</span><span class="token punctuation">.</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="-brigadier-command/index.html">BrigadierCommand</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><p class="paragraph">Builds a command backed by a Brigadier <span data-unresolved-link="com.mojang.brigadier.tree/LiteralCommandNode///PointingToDeclaration/">LiteralCommandNode</span>.</p></div></div></div>
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtmlPartial/main"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><span data-unresolved-link="org.jetbrains.annotations/Contract///PointingToDeclaration/"><span class="token annotation builtin">Contract</span></span><span class="token punctuation">(</span><span>value<span class="token operator"> = </span><span class="breakable-word"><span class="token string">"_, _, _ -&gt; this"</span></span><span class="token punctuation">, </span></span><wbr><span>mutates<span class="token operator"> = </span><span class="breakable-word"><span class="token string">"this"</span></span></span><wbr><span class="token punctuation">)</span></div></div><span class="token keyword">inline </span><span class="token keyword">fun </span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="argument.html">S</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="argument.html">T</a><span class="token operator">&gt; </span><span data-unresolved-link="com.mojang.brigadier.builder/LiteralArgumentBuilder///PointingToDeclaration/">LiteralArgumentBuilder</span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="argument.html">S</a><span class="token operator">&gt;</span><span class="token punctuation">.</span><a href="argument.html"><span class="token function">argument</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">name<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter ">type<span class="token operator">: </span><span data-unresolved-link="com.mojang.brigadier.arguments/ArgumentType///PointingToDeclaration/">ArgumentType</span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="argument.html">T</a><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter ">builder<span class="token operator">: </span><span class="token keyword"></span><span data-unresolved-link="com.mojang.brigadier.builder/RequiredArgumentBuilder///PointingToDeclaration/">RequiredArgumentBuilder</span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="argument.html">S</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="argument.html">T</a><span class="token operator">&gt;</span><span class="token punctuation">.</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><span data-unresolved-link="com.mojang.brigadier.builder/LiteralArgumentBuilder///PointingToDeclaration/">LiteralArgumentBuilder</span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="argument.html">S</a><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Adds a new argument command node with the given <a href="argument.html">name</a> and <a href="argument.html">type</a> to this literal, applying the given <a href="argument.html">builder</a> to the node and returning this builder as the result.</p></div><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><span data-unresolved-link="org.jetbrains.annotations/Contract///PointingToDeclaration/"><span class="token annotation builtin">Contract</span></span><span class="token punctuation">(</span><span>value<span class="token operator"> = </span><span class="breakable-word"><span class="token string">"_, _, _ -&gt; this"</span></span><span class="token punctuation">, </span></span><wbr><span>mutates<span class="token operator"> = </span><span class="breakable-word"><span class="token string">"this"</span></span></span><wbr><span class="token punctuation">)</span></div></div><span class="token keyword">inline </span><span class="token keyword">fun </span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="argument.html">S</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="argument.html">T</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="argument.html">T1</a><span class="token operator">&gt; </span><span data-unresolved-link="com.mojang.brigadier.builder/RequiredArgumentBuilder///PointingToDeclaration/">RequiredArgumentBuilder</span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="argument.html">S</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="argument.html">T</a><span class="token operator">&gt;</span><span class="token punctuation">.</span><a href="argument.html"><span class="token function">argument</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">name<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter ">type<span class="token operator">: </span><span data-unresolved-link="com.mojang.brigadier.arguments/ArgumentType///PointingToDeclaration/">ArgumentType</span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="argument.html">T1</a><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter ">builder<span class="token operator">: </span><span class="token keyword"></span><span data-unresolved-link="com.mojang.brigadier.builder/RequiredArgumentBuilder///PointingToDeclaration/">RequiredArgumentBuilder</span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="argument.html">S</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="argument.html">T1</a><span class="token operator">&gt;</span><span class="token punctuation">.</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><span data-unresolved-link="com.mojang.brigadier.builder/RequiredArgumentBuilder///PointingToDeclaration/">RequiredArgumentBuilder</span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="argument.html">S</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="argument.html">T</a><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Adds a new argument command node with the given <a href="argument.html">name</a> and <a href="argument.html">type</a> to this argument, applying the given <a href="argument.html">builder</a> to the node and returning this builder as the result.</p></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="771775806%2FFunctions%2F-1197683648" anchor-label="literal" id="771775806%2FFunctions%2F-1197683648" data-filterable-set=":api:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":api:dokkaHtmlPartial/main" data-filterable-set=":api:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="literal.html"><span><span>literal</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="771775806%2FFunctions%2F-1197683648"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtmlPartial/main"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><span data-unresolved-link="org.jetbrains.annotations/Contract///PointingToDeclaration/"><span class="token annotation builtin">Contract</span></span><span class="token punctuation">(</span><span>value<span class="token operator"> = </span><span class="breakable-word"><span class="token string">"_, _ -&gt; this"</span></span><span class="token punctuation">, </span></span><wbr><span>mutates<span class="token operator"> = </span><span class="breakable-word"><span class="token string">"this"</span></span></span><wbr><span class="token punctuation">)</span></div></div><span class="token keyword">inline </span><span class="token keyword">fun </span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="literal.html">S</a><span class="token operator">&gt; </span><span data-unresolved-link="com.mojang.brigadier.builder/LiteralArgumentBuilder///PointingToDeclaration/">LiteralArgumentBuilder</span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="literal.html">S</a><span class="token operator">&gt;</span><span class="token punctuation">.</span><a href="literal.html"><span class="token function">literal</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">name<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter ">builder<span class="token operator">: </span><span class="token keyword"></span><span data-unresolved-link="com.mojang.brigadier.builder/LiteralArgumentBuilder///PointingToDeclaration/">LiteralArgumentBuilder</span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="literal.html">S</a><span class="token operator">&gt;</span><span class="token punctuation">.</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><span data-unresolved-link="com.mojang.brigadier.builder/LiteralArgumentBuilder///PointingToDeclaration/">LiteralArgumentBuilder</span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="literal.html">S</a><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Adds a new literal command node with the given name to this literal, applying the given <a href="literal.html">builder</a> to the node and returning this builder as the result.</p></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="1064790339%2FFunctions%2F-1197683648" anchor-label="literalCommand" id="1064790339%2FFunctions%2F-1197683648" data-filterable-set=":api:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":api:dokkaHtmlPartial/main" data-filterable-set=":api:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="literal-command.html"><span>literal</span><wbr><span><span>Command</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1064790339%2FFunctions%2F-1197683648"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtmlPartial/main"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><span data-unresolved-link="org.jetbrains.annotations/Contract///PointingToDeclaration/"><span class="token annotation builtin">Contract</span></span><span class="token punctuation">(</span><span>value<span class="token operator"> = </span><span class="breakable-word"><span class="token string">"_, _ -&gt; new"</span></span><span class="token punctuation">, </span></span><wbr><span>pure<span class="token operator"> = </span><span class="breakable-word"><span class="token boolean">true</span></span></span><wbr><span class="token punctuation">)</span></div></div><span class="token keyword">inline </span><span class="token keyword">fun </span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="literal-command.html">S</a><span class="token operator">&gt; </span><a href="literal-command.html"><span class="token function">literalCommand</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">name<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter ">builder<span class="token operator">: </span><span class="token keyword"></span><span data-unresolved-link="com.mojang.brigadier.builder/LiteralArgumentBuilder///PointingToDeclaration/">LiteralArgumentBuilder</span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="literal-command.html">S</a><span class="token operator">&gt;</span><span class="token punctuation">.</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><span data-unresolved-link="com.mojang.brigadier.builder/LiteralArgumentBuilder///PointingToDeclaration/">LiteralArgumentBuilder</span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="literal-command.html">S</a><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Creates a new Brigadier literal argument builder with the given <a href="literal-command.html">name</a>, applying the given <a href="literal-command.html">builder</a> to it and returning the result.</p></div></div></div>
               </div>
             </div>
           </div>
@@ -203,7 +257,7 @@ if(savedDarkMode === true){
   </div>
 </div>
       <div class="footer">
-        <span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>© 2022 Copyright</span><span class="pull-right"><span>Generated by </span><a href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span>
+        <span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>© 2023 Copyright</span><span class="pull-right"><span>Generated by </span><a href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span>
       </div>
     </div>
 </div>

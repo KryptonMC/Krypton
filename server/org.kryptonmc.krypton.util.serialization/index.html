@@ -4,10 +4,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
     <title>org.kryptonmc.krypton.util.serialization</title>
 <link href="../../images/logo-icon.svg" rel="icon" type="image/svg"><script>var pathToRoot = "../../";</script>    <script>const storage = localStorage.getItem("dokka-dark-mode")
-const savedDarkMode = storage ? JSON.parse(storage) : false
-if(savedDarkMode === true){
-    document.getElementsByTagName("html")[0].classList.add("theme-dark")
-}</script>
+    if (storage == null) {
+        const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+        if (osDarkSchemePreferred === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    } else {
+        const savedDarkMode = JSON.parse(storage)
+        if(savedDarkMode === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    }
+    </script>
 <script type="text/javascript" src="../../scripts/sourceset_dependencies.js" async></script>
 <link href="../../styles/style.css" rel="Stylesheet">
 <link href="../../styles/jetbrains-mono.css" rel="Stylesheet">
@@ -18,14 +26,15 @@ if(savedDarkMode === true){
 <script type="text/javascript" src="../../scripts/navigation-loader.js" async></script>
 <script type="text/javascript" src="../../scripts/platform-content-handler.js" async></script>
 <script type="text/javascript" src="../../scripts/main.js" defer></script>
-<script type="text/javascript" src="../../scripts/prism.js" async></script></head>
+<script type="text/javascript" src="../../scripts/prism.js" async></script>
+<script type="text/javascript" src="../../scripts/symbol-parameters-wrapper_deferred.js" defer></script></head>
 <body>
 <div class="navigation-wrapper" id="navigation-wrapper">
     <div id="leftToggler"><span class="icon-toggler"></span></div>
     <div class="library-name">
 <a href="../../index.html">
 <span>krypton</span>            </a>    </div>
-    <div>0.66.4
+    <div>6a98d9dec7
     </div>
     <div class="pull-right d-flex">
         <button id="theme-toggle-button"><span id="theme-toggle"></span></button>
@@ -38,30 +47,15 @@ if(savedDarkMode === true){
     </div>
     <div id="main">
 <div class="main-content" id="content" pageids="server::org.kryptonmc.krypton.util.serialization////PointingToDeclaration//791161957">
-  <div class="breadcrumbs"><a href="../index.html">server</a><span class="delimiter">/</span><a href="index.html">org.kryptonmc.krypton.util.serialization</a></div>
+  <div class="breadcrumbs"><a href="../index.html">server</a><span class="delimiter">/</span><span class="current">org.kryptonmc.krypton.util.serialization</span></div>
   <div class="cover ">
-    <h1 class="cover"><span><span>Package</span></span> <span>org.</span><wbr><span>kryptonmc.</span><wbr><span>krypton.</span><wbr><span>util.</span><wbr><span><span>serialization</span></span></h1>
+    <h1 class="cover"><span><span>Package-level</span></span> <span><span>declarations</span></span></h1>
   </div>
   <div class="tabbedcontent">
-    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="Types">Types</button><button class="section-tab" data-togglable="Functions">Functions</button></div>
+    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="Types">Types</button></div>
     <div class="tabs-section-body">
       <h2 class="">Types</h2>
-      <div class="table" data-togglable="Types"><a data-name="1803197312%2FClasslikes%2F791161957" anchor-label="Codec" id="1803197312%2FClasslikes%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
-        <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="-codec/index.html"><span><span>Codec</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1803197312%2FClasslikes%2F791161957"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div>
-              <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":server:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">interface </span><a href="-codec/index.html">Codec</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-codec/index.html">T</a><span class="token operator"> : </span><span data-unresolved-link="org.kryptonmc.nbt/Tag///PointingToDeclaration/">Tag</span><span class="token punctuation">, </span><span class="token keyword"></span><a href="-codec/index.html">U</a><span class="token operator">&gt;</span> : <a href="-encoder/index.html">Encoder</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-codec/index.html">U</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="-codec/index.html">T</a><span class="token operator">&gt; </span>, <a href="-decoder/index.html">Decoder</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-codec/index.html">T</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="-codec/index.html">U</a><span class="token operator">&gt; </span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
-              </div>
-            </div>
-          </div>
-        </div>
-<a data-name="-16576081%2FClasslikes%2F791161957" anchor-label="Codecs" id="-16576081%2FClasslikes%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+      <div class="table" data-togglable="Types"><a data-name="-16576081%2FClasslikes%2F791161957" anchor-label="Codecs" id="-16576081%2FClasslikes%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
         <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
           <div class="main-subrow keyValue ">
             <div class=""><span class="inline-flex">
@@ -71,82 +65,37 @@ if(savedDarkMode === true){
                 </span></span></div>
             <div>
               <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":server:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">object </span><a href="-codecs/index.html">Codecs</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":server:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">object </span><a href="-codecs/index.html">Codecs</a></div></div></div>
               </div>
             </div>
           </div>
         </div>
-<a data-name="491749131%2FClasslikes%2F791161957" anchor-label="CompoundCodec" id="491749131%2FClasslikes%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+<a data-name="1539701126%2FClasslikes%2F791161957" anchor-label="DelegatingOps" id="1539701126%2FClasslikes%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
         <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
           <div class="main-subrow keyValue ">
             <div class=""><span class="inline-flex">
-                <div><a href="-compound-codec/index.html"><span>Compound</span><wbr><span><span>Codec</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="491749131%2FClasslikes%2F791161957"></span>
+                <div><a href="-delegating-ops/index.html"><span>Delegating</span><wbr><span><span>Ops</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1539701126%2FClasslikes%2F791161957"></span>
                   <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                 </span></span></div>
             <div>
               <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":server:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">interface </span><a href="-compound-codec/index.html">CompoundCodec</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-compound-codec/index.html">T</a><span class="token operator">&gt;</span> : <a href="-codec/index.html">Codec</a><span class="token operator">&lt;</span><span class="token keyword"></span><span data-unresolved-link="org.kryptonmc.nbt/CompoundTag///PointingToDeclaration/">CompoundTag</span><span class="token punctuation">, </span><span class="token keyword"></span><a href="-compound-codec/index.html">T</a><span class="token operator">&gt; </span>, <a href="-compound-encoder/index.html">CompoundEncoder</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-compound-codec/index.html">T</a><span class="token operator">&gt; </span>, <a href="-compound-decoder/index.html">CompoundDecoder</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-compound-codec/index.html">T</a><span class="token operator">&gt; </span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":server:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword">class </span><a href="-delegating-ops/index.html">DelegatingOps</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-delegating-ops/index.html">T</a><span class="token operator">&gt;</span> : <span data-unresolved-link="org.kryptonmc.serialization/DataOps///PointingToDeclaration/">DataOps</span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-delegating-ops/index.html">T</a><span class="token operator">&gt; </span></div></div></div>
               </div>
             </div>
           </div>
         </div>
-<a data-name="-1933113699%2FClasslikes%2F791161957" anchor-label="CompoundDecoder" id="-1933113699%2FClasslikes%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+<a data-name="-590878111%2FClasslikes%2F791161957" anchor-label="EnumCodec" id="-590878111%2FClasslikes%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
         <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
           <div class="main-subrow keyValue ">
             <div class=""><span class="inline-flex">
-                <div><a href="-compound-decoder/index.html"><span>Compound</span><wbr><span><span>Decoder</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1933113699%2FClasslikes%2F791161957"></span>
+                <div><a href="-enum-codec/index.html"><span>Enum</span><wbr><span><span>Codec</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-590878111%2FClasslikes%2F791161957"></span>
                   <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                 </span></span></div>
             <div>
               <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":server:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">fun </span><span class="token keyword">interface </span><a href="-compound-decoder/index.html">CompoundDecoder</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-compound-decoder/index.html">T</a><span class="token operator">&gt;</span> : <a href="-decoder/index.html">Decoder</a><span class="token operator">&lt;</span><span class="token keyword"></span><span data-unresolved-link="org.kryptonmc.nbt/CompoundTag///PointingToDeclaration/">CompoundTag</span><span class="token punctuation">, </span><span class="token keyword"></span><a href="-compound-decoder/index.html">T</a><span class="token operator">&gt; </span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
-              </div>
-            </div>
-          </div>
-        </div>
-<a data-name="-786018107%2FClasslikes%2F791161957" anchor-label="CompoundEncoder" id="-786018107%2FClasslikes%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
-        <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="-compound-encoder/index.html"><span>Compound</span><wbr><span><span>Encoder</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-786018107%2FClasslikes%2F791161957"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div>
-              <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":server:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">fun </span><span class="token keyword">interface </span><a href="-compound-encoder/index.html">CompoundEncoder</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-compound-encoder/index.html">T</a><span class="token operator">&gt;</span> : <a href="-encoder/index.html">Encoder</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-compound-encoder/index.html">T</a><span class="token punctuation">, </span><span class="token keyword"></span><span data-unresolved-link="org.kryptonmc.nbt/CompoundTag///PointingToDeclaration/">CompoundTag</span><span class="token operator">&gt; </span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
-              </div>
-            </div>
-          </div>
-        </div>
-<a data-name="-56829486%2FClasslikes%2F791161957" anchor-label="Decoder" id="-56829486%2FClasslikes%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
-        <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="-decoder/index.html"><span><span>Decoder</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-56829486%2FClasslikes%2F791161957"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div>
-              <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":server:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">fun </span><span class="token keyword">interface </span><a href="-decoder/index.html">Decoder</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-decoder/index.html">I</a><span class="token operator"> : </span><span data-unresolved-link="org.kryptonmc.nbt/Tag///PointingToDeclaration/">Tag</span><span class="token punctuation">, </span><span class="token keyword"></span><a href="-decoder/index.html">O</a><span class="token operator">&gt;</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
-              </div>
-            </div>
-          </div>
-        </div>
-<a data-name="1090266106%2FClasslikes%2F791161957" anchor-label="Encoder" id="1090266106%2FClasslikes%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
-        <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="-encoder/index.html"><span><span>Encoder</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1090266106%2FClasslikes%2F791161957"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div>
-              <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":server:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">fun </span><span class="token keyword">interface </span><a href="-encoder/index.html">Encoder</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-encoder/index.html">I</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="-encoder/index.html">O</a><span class="token operator"> : </span><span data-unresolved-link="org.kryptonmc.nbt/Tag///PointingToDeclaration/">Tag</span><span class="token operator">&gt;</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":server:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">class </span><a href="-enum-codec/index.html">EnumCodec</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-enum-codec/index.html">E</a><span class="token operator"> : </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-enum/index.html">Enum</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-enum-codec/index.html">E</a><span class="token operator">&gt;</span><span class="token operator">&gt;</span><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">resolver<span class="token operator">: </span><a href="https://docs.oracle.com/javase/8/docs/api/java/util/function/Function.html">Function</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="-enum-codec/index.html">E</a><span class="token operator">?</span><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span> : <span data-unresolved-link="org.kryptonmc.serialization/Codec///PointingToDeclaration/">Codec</span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-enum-codec/index.html">E</a><span class="token operator">&gt; </span></div></div></div>
               </div>
             </div>
           </div>
@@ -161,219 +110,22 @@ if(savedDarkMode === true){
                 </span></span></div>
             <div>
               <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":server:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">object </span><a href="-enum-codecs/index.html">EnumCodecs</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":server:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">object </span><a href="-enum-codecs/index.html">EnumCodecs</a></div></div></div>
               </div>
             </div>
           </div>
         </div>
-<a data-name="-1476135734%2FClasslikes%2F791161957" anchor-label="IntArrayCodec" id="-1476135734%2FClasslikes%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+<a data-name="1042813875%2FClasslikes%2F791161957" anchor-label="TagIOExtras" id="1042813875%2FClasslikes%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
         <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
           <div class="main-subrow keyValue ">
             <div class=""><span class="inline-flex">
-                <div><a href="-int-array-codec/index.html"><span>Int</span><wbr><span>Array</span><wbr><span><span>Codec</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1476135734%2FClasslikes%2F791161957"></span>
+                <div><a href="-tag-i-o-extras/index.html"><span>Tag</span><wbr><span><span>IOExtras</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1042813875%2FClasslikes%2F791161957"></span>
                   <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                 </span></span></div>
             <div>
               <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":server:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">interface </span><a href="-int-array-codec/index.html">IntArrayCodec</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-int-array-codec/index.html">T</a><span class="token operator">&gt;</span> : <a href="-codec/index.html">Codec</a><span class="token operator">&lt;</span><span class="token keyword"></span><span data-unresolved-link="org.kryptonmc.nbt/IntArrayTag///PointingToDeclaration/">IntArrayTag</span><span class="token punctuation">, </span><span class="token keyword"></span><a href="-int-array-codec/index.html">T</a><span class="token operator">&gt; </span>, <a href="-int-array-encoder/index.html">IntArrayEncoder</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-int-array-codec/index.html">T</a><span class="token operator">&gt; </span>, <a href="-int-array-decoder/index.html">IntArrayDecoder</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-int-array-codec/index.html">T</a><span class="token operator">&gt; </span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
-              </div>
-            </div>
-          </div>
-        </div>
-<a data-name="1010108572%2FClasslikes%2F791161957" anchor-label="IntArrayDecoder" id="1010108572%2FClasslikes%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
-        <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="-int-array-decoder/index.html"><span>Int</span><wbr><span>Array</span><wbr><span><span>Decoder</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1010108572%2FClasslikes%2F791161957"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div>
-              <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":server:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">fun </span><span class="token keyword">interface </span><a href="-int-array-decoder/index.html">IntArrayDecoder</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-int-array-decoder/index.html">O</a><span class="token operator">&gt;</span> : <a href="-decoder/index.html">Decoder</a><span class="token operator">&lt;</span><span class="token keyword"></span><span data-unresolved-link="org.kryptonmc.nbt/IntArrayTag///PointingToDeclaration/">IntArrayTag</span><span class="token punctuation">, </span><span class="token keyword"></span><a href="-int-array-decoder/index.html">O</a><span class="token operator">&gt; </span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
-              </div>
-            </div>
-          </div>
-        </div>
-<a data-name="-2137763132%2FClasslikes%2F791161957" anchor-label="IntArrayEncoder" id="-2137763132%2FClasslikes%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
-        <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="-int-array-encoder/index.html"><span>Int</span><wbr><span>Array</span><wbr><span><span>Encoder</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-2137763132%2FClasslikes%2F791161957"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div>
-              <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":server:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">fun </span><span class="token keyword">interface </span><a href="-int-array-encoder/index.html">IntArrayEncoder</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-int-array-encoder/index.html">I</a><span class="token operator">&gt;</span> : <a href="-encoder/index.html">Encoder</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-int-array-encoder/index.html">I</a><span class="token punctuation">, </span><span class="token keyword"></span><span data-unresolved-link="org.kryptonmc.nbt/IntArrayTag///PointingToDeclaration/">IntArrayTag</span><span class="token operator">&gt; </span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
-              </div>
-            </div>
-          </div>
-        </div>
-<a data-name="-440134683%2FClasslikes%2F791161957" anchor-label="IntCodec" id="-440134683%2FClasslikes%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
-        <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="-int-codec/index.html"><span>Int</span><wbr><span><span>Codec</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-440134683%2FClasslikes%2F791161957"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div>
-              <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":server:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">interface </span><a href="-int-codec/index.html">IntCodec</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-int-codec/index.html">T</a><span class="token operator">&gt;</span> : <a href="-codec/index.html">Codec</a><span class="token operator">&lt;</span><span class="token keyword"></span><span data-unresolved-link="org.kryptonmc.nbt/IntTag///PointingToDeclaration/">IntTag</span><span class="token punctuation">, </span><span class="token keyword"></span><a href="-int-codec/index.html">T</a><span class="token operator">&gt; </span>, <a href="-int-encoder/index.html">IntEncoder</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-int-codec/index.html">T</a><span class="token operator">&gt; </span>, <a href="-int-decoder/index.html">IntDecoder</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-int-codec/index.html">T</a><span class="token operator">&gt; </span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
-              </div>
-            </div>
-          </div>
-        </div>
-<a data-name="174705911%2FClasslikes%2F791161957" anchor-label="IntDecoder" id="174705911%2FClasslikes%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
-        <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="-int-decoder/index.html"><span>Int</span><wbr><span><span>Decoder</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="174705911%2FClasslikes%2F791161957"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div>
-              <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":server:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">fun </span><span class="token keyword">interface </span><a href="-int-decoder/index.html">IntDecoder</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-int-decoder/index.html">O</a><span class="token operator">&gt;</span> : <a href="-decoder/index.html">Decoder</a><span class="token operator">&lt;</span><span class="token keyword"></span><span data-unresolved-link="org.kryptonmc.nbt/IntTag///PointingToDeclaration/">IntTag</span><span class="token punctuation">, </span><span class="token keyword"></span><a href="-int-decoder/index.html">O</a><span class="token operator">&gt; </span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
-              </div>
-            </div>
-          </div>
-        </div>
-<a data-name="1321801503%2FClasslikes%2F791161957" anchor-label="IntEncoder" id="1321801503%2FClasslikes%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
-        <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="-int-encoder/index.html"><span>Int</span><wbr><span><span>Encoder</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1321801503%2FClasslikes%2F791161957"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div>
-              <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":server:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">fun </span><span class="token keyword">interface </span><a href="-int-encoder/index.html">IntEncoder</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-int-encoder/index.html">I</a><span class="token operator">&gt;</span> : <a href="-encoder/index.html">Encoder</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-int-encoder/index.html">I</a><span class="token punctuation">, </span><span class="token keyword"></span><span data-unresolved-link="org.kryptonmc.nbt/IntTag///PointingToDeclaration/">IntTag</span><span class="token operator">&gt; </span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
-              </div>
-            </div>
-          </div>
-        </div>
-<a data-name="-1788046018%2FClasslikes%2F791161957" anchor-label="ListCodec" id="-1788046018%2FClasslikes%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
-        <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="-list-codec/index.html"><span>List</span><wbr><span><span>Codec</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1788046018%2FClasslikes%2F791161957"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div>
-              <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":server:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">class </span><a href="-list-codec/index.html">ListCodec</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-list-codec/index.html">T</a><span class="token operator">&gt;</span><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">elementCodec<span class="token operator">: </span><a href="-codec/index.html">Codec</a><span class="token operator">&lt;</span><span class="token keyword"></span><span data-unresolved-link="org.kryptonmc.nbt/Tag///PointingToDeclaration/">Tag</span><span class="token punctuation">, </span><span class="token keyword"></span><a href="-list-codec/index.html">T</a><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span> : <a href="-codec/index.html">Codec</a><span class="token operator">&lt;</span><span class="token keyword"></span><span data-unresolved-link="org.kryptonmc.nbt/ListTag///PointingToDeclaration/">ListTag</span><span class="token punctuation">, </span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-list-codec/index.html">T</a><span class="token operator">&gt;</span><span class="token operator">&gt; </span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
-              </div>
-            </div>
-          </div>
-        </div>
-<a data-name="-1626561390%2FClasslikes%2F791161957" anchor-label="MapCodec" id="-1626561390%2FClasslikes%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
-        <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="-map-codec/index.html"><span>Map</span><wbr><span><span>Codec</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1626561390%2FClasslikes%2F791161957"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div>
-              <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":server:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">class </span><a href="-map-codec/index.html">MapCodec</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-map-codec/index.html">K</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="-map-codec/index.html">V</a><span class="token operator">&gt;</span><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">keyCodec<span class="token operator">: </span><a href="-string-codec/index.html">StringCodec</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-map-codec/index.html">K</a><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter ">valueCodec<span class="token operator">: </span><a href="-codec/index.html">Codec</a><span class="token operator">&lt;</span><span class="token keyword"></span><span data-unresolved-link="org.kryptonmc.nbt/Tag///PointingToDeclaration/">Tag</span><span class="token punctuation">, </span><span class="token keyword"></span><a href="-map-codec/index.html">V</a><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span> : <a href="-compound-codec/index.html">CompoundCodec</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/index.html">Map</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-map-codec/index.html">K</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="-map-codec/index.html">V</a><span class="token operator">&gt;</span><span class="token operator">&gt; </span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
-              </div>
-            </div>
-          </div>
-        </div>
-<a data-name="-1240988623%2FClasslikes%2F791161957" anchor-label="StringCodec" id="-1240988623%2FClasslikes%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
-        <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="-string-codec/index.html"><span>String</span><wbr><span><span>Codec</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1240988623%2FClasslikes%2F791161957"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div>
-              <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":server:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">interface </span><a href="-string-codec/index.html">StringCodec</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-string-codec/index.html">T</a><span class="token operator">&gt;</span> : <a href="-codec/index.html">Codec</a><span class="token operator">&lt;</span><span class="token keyword"></span><span data-unresolved-link="org.kryptonmc.nbt/StringTag///PointingToDeclaration/">StringTag</span><span class="token punctuation">, </span><span class="token keyword"></span><a href="-string-codec/index.html">T</a><span class="token operator">&gt; </span>, <a href="-string-encoder/index.html">StringEncoder</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-string-codec/index.html">T</a><span class="token operator">&gt; </span>, <a href="-string-decoder/index.html">StringDecoder</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-string-codec/index.html">T</a><span class="token operator">&gt; </span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
-              </div>
-            </div>
-          </div>
-        </div>
-<a data-name="-646784445%2FClasslikes%2F791161957" anchor-label="StringDecoder" id="-646784445%2FClasslikes%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
-        <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="-string-decoder/index.html"><span>String</span><wbr><span><span>Decoder</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-646784445%2FClasslikes%2F791161957"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div>
-              <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":server:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">fun </span><span class="token keyword">interface </span><a href="-string-decoder/index.html">StringDecoder</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-string-decoder/index.html">T</a><span class="token operator">&gt;</span> : <a href="-decoder/index.html">Decoder</a><span class="token operator">&lt;</span><span class="token keyword"></span><span data-unresolved-link="org.kryptonmc.nbt/StringTag///PointingToDeclaration/">StringTag</span><span class="token punctuation">, </span><span class="token keyword"></span><a href="-string-decoder/index.html">T</a><span class="token operator">&gt; </span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
-              </div>
-            </div>
-          </div>
-        </div>
-<a data-name="500311147%2FClasslikes%2F791161957" anchor-label="StringEncoder" id="500311147%2FClasslikes%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
-        <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="-string-encoder/index.html"><span>String</span><wbr><span><span>Encoder</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="500311147%2FClasslikes%2F791161957"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div>
-              <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":server:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">fun </span><span class="token keyword">interface </span><a href="-string-encoder/index.html">StringEncoder</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-string-encoder/index.html">T</a><span class="token operator">&gt;</span> : <a href="-encoder/index.html">Encoder</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-string-encoder/index.html">T</a><span class="token punctuation">, </span><span class="token keyword"></span><span data-unresolved-link="org.kryptonmc.nbt/StringTag///PointingToDeclaration/">StringTag</span><span class="token operator">&gt; </span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
-              </div>
-            </div>
-          </div>
-        </div>
-<a data-name="-623760746%2FClasslikes%2F791161957" anchor-label="TransformingCodec" id="-623760746%2FClasslikes%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
-        <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="-transforming-codec/index.html"><span>Transforming</span><wbr><span><span>Codec</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-623760746%2FClasslikes%2F791161957"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div>
-              <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":server:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">class </span><a href="-transforming-codec/index.html">TransformingCodec</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-transforming-codec/index.html">T</a><span class="token operator"> : </span><span data-unresolved-link="org.kryptonmc.nbt/Tag///PointingToDeclaration/">Tag</span><span class="token punctuation">, </span><span class="token keyword"></span><a href="-transforming-codec/index.html">U</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="-transforming-codec/index.html">V</a><span class="token operator">&gt;</span><span class="token punctuation">(</span><span class="parameters wrapped"><span class="parameter indented">&nbsp;&nbsp;&nbsp;&nbsp;backing<span class="token operator">: </span><a href="-codec/index.html">Codec</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-transforming-codec/index.html">T</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="-transforming-codec/index.html">U</a><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter indented">&nbsp;&nbsp;&nbsp;&nbsp;encodeTransformer<span class="token operator">: </span><span class="token punctuation">(</span><span class="token keyword"></span><a href="-transforming-codec/index.html">V</a><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><span class="token keyword"></span><a href="-transforming-codec/index.html">U</a><span class="token punctuation">, </span></span><span class="parameter indented">&nbsp;&nbsp;&nbsp;&nbsp;decodeTransformer<span class="token operator">: </span><span class="token punctuation">(</span><span class="token keyword"></span><a href="-transforming-codec/index.html">U</a><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><span class="token keyword"></span><a href="-transforming-codec/index.html">V</a></span></span><span class="token punctuation">)</span> : <a href="-codec/index.html">Codec</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-transforming-codec/index.html">T</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="-transforming-codec/index.html">V</a><span class="token operator">&gt; </span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <h2 class="">Functions</h2>
-      <div class="table" data-togglable="Functions"><a data-name="-870300101%2FFunctions%2F791161957" anchor-label="decode" id="-870300101%2FFunctions%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
-        <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="decode.html"><span><span>decode</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-870300101%2FFunctions%2F791161957"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div>
-              <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":server:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="decode.html">T</a><span class="token operator">&gt; </span><span data-unresolved-link="org.kryptonmc.nbt/CompoundTag///PointingToDeclaration/">CompoundTag</span><span class="token punctuation">.</span><a href="decode.html"><span class="token function">decode</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">decoder<span class="token operator">: </span><a href="-decoder/index.html">Decoder</a><span class="token operator">&lt;</span><span class="token keyword">out </span><span data-unresolved-link="org.kryptonmc.nbt/Tag///PointingToDeclaration/">Tag</span><span class="token punctuation">, </span><span class="token keyword"></span><a href="decode.html">T</a><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter ">name<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="decode.html">T</a><span class="token operator">?</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
-              </div>
-            </div>
-          </div>
-        </div>
-<a data-name="-1377306685%2FFunctions%2F791161957" anchor-label="encode" id="-1377306685%2FFunctions%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
-        <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="encode.html"><span><span>encode</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1377306685%2FFunctions%2F791161957"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div>
-              <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":server:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="encode.html">T</a><span class="token operator">&gt; </span><span data-unresolved-link="org.kryptonmc.nbt/CompoundTag.Builder///PointingToDeclaration/">CompoundTag.Builder</span><span class="token punctuation">.</span><a href="encode.html"><span class="token function">encode</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">encoder<span class="token operator">: </span><a href="-compound-encoder/index.html">CompoundEncoder</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="encode.html">T</a><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter ">value<span class="token operator">: </span><a href="encode.html">T</a><span class="token operator">?</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><span data-unresolved-link="org.kryptonmc.nbt/CompoundTag.Builder///PointingToDeclaration/">CompoundTag.Builder</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="encode.html">T</a><span class="token operator">&gt; </span><span data-unresolved-link="org.kryptonmc.nbt/CompoundTag.Builder///PointingToDeclaration/">CompoundTag.Builder</span><span class="token punctuation">.</span><a href="encode.html"><span class="token function">encode</span></a><span class="token punctuation">(</span><span class="parameters wrapped"><span class="parameter indented">&nbsp;&nbsp;&nbsp;&nbsp;encoder<span class="token operator">: </span><a href="-encoder/index.html">Encoder</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="encode.html">T</a><span class="token punctuation">, </span><span class="token keyword">out </span><span data-unresolved-link="org.kryptonmc.nbt/Tag///PointingToDeclaration/">Tag</span><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter indented">&nbsp;&nbsp;&nbsp;&nbsp;name<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter indented">&nbsp;&nbsp;&nbsp;&nbsp;value<span class="token operator">: </span><a href="encode.html">T</a><span class="token operator">?</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><span data-unresolved-link="org.kryptonmc.nbt/CompoundTag.Builder///PointingToDeclaration/">CompoundTag.Builder</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":server:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">object </span><a href="-tag-i-o-extras/index.html">TagIOExtras</a></div></div></div>
               </div>
             </div>
           </div>
@@ -383,7 +135,7 @@ if(savedDarkMode === true){
   </div>
 </div>
       <div class="footer">
-        <span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>© 2022 Copyright</span><span class="pull-right"><span>Generated by </span><a href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span>
+        <span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>© 2023 Copyright</span><span class="pull-right"><span>Generated by </span><a href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span>
       </div>
     </div>
 </div>

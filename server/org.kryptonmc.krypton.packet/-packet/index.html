@@ -4,10 +4,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
     <title>Packet</title>
 <link href="../../../images/logo-icon.svg" rel="icon" type="image/svg"><script>var pathToRoot = "../../../";</script>    <script>const storage = localStorage.getItem("dokka-dark-mode")
-const savedDarkMode = storage ? JSON.parse(storage) : false
-if(savedDarkMode === true){
-    document.getElementsByTagName("html")[0].classList.add("theme-dark")
-}</script>
+    if (storage == null) {
+        const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+        if (osDarkSchemePreferred === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    } else {
+        const savedDarkMode = JSON.parse(storage)
+        if(savedDarkMode === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    }
+    </script>
 <script type="text/javascript" src="../../../scripts/sourceset_dependencies.js" async></script>
 <link href="../../../styles/style.css" rel="Stylesheet">
 <link href="../../../styles/jetbrains-mono.css" rel="Stylesheet">
@@ -18,14 +26,15 @@ if(savedDarkMode === true){
 <script type="text/javascript" src="../../../scripts/navigation-loader.js" async></script>
 <script type="text/javascript" src="../../../scripts/platform-content-handler.js" async></script>
 <script type="text/javascript" src="../../../scripts/main.js" defer></script>
-<script type="text/javascript" src="../../../scripts/prism.js" async></script></head>
+<script type="text/javascript" src="../../../scripts/prism.js" async></script>
+<script type="text/javascript" src="../../../scripts/symbol-parameters-wrapper_deferred.js" defer></script></head>
 <body>
 <div class="navigation-wrapper" id="navigation-wrapper">
     <div id="leftToggler"><span class="icon-toggler"></span></div>
     <div class="library-name">
 <a href="../../../index.html">
 <span>krypton</span>            </a>    </div>
-    <div>0.66.4
+    <div>6a98d9dec7
     </div>
     <div class="pull-right d-flex">
         <button id="theme-toggle-button"><span id="theme-toggle"></span></button>
@@ -38,13 +47,13 @@ if(savedDarkMode === true){
     </div>
     <div id="main">
 <div class="main-content" id="content" pageids="server::org.kryptonmc.krypton.packet/Packet///PointingToDeclaration//791161957">
-  <div class="breadcrumbs"><a href="../../index.html">server</a><span class="delimiter">/</span><a href="../index.html">org.kryptonmc.krypton.packet</a><span class="delimiter">/</span><a href="index.html">Packet</a></div>
+  <div class="breadcrumbs"><a href="../../index.html">server</a><span class="delimiter">/</span><a href="../index.html">org.kryptonmc.krypton.packet</a><span class="delimiter">/</span><span class="current">Packet</span></div>
   <div class="cover ">
     <h1 class="cover"><span><span>Packet</span></span></h1>
-    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":server:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">interface </span><a href="index.html">Packet</a> : <a href="../-generic-packet/index.html">GenericPacket</a>, <a href="../../org.kryptonmc.krypton.network/-writable/index.html">Writable</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><p class="paragraph">Super interface for all inbound and outbound packets.</p></div></div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":server:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">interface </span><a href="index.html">Packet</a> : <a href="../-generic-packet/index.html">GenericPacket</a>, <a href="../../org.kryptonmc.krypton.network/-writable/index.html">Writable</a></div><p class="paragraph">Super interface for all inbound and outbound packets.</p></div></div>
   </div>
   <div class="tabbedcontent">
-    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="Functions">Functions</button><button class="section-tab" data-togglable="Extensions">Extensions</button><button class="section-tab" data-togglable="Inheritors">Inheritors</button></div>
+    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="Functions">Functions</button><button class="section-tab" data-togglable="Inheritors">Inheritors</button></div>
     <div class="tabs-section-body">
       <h2 class="">Functions</h2>
       <div class="table" data-togglable="Functions"><a data-name="-459349525%2FFunctions%2F791161957" anchor-label="write" id="-459349525%2FFunctions%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
@@ -57,7 +66,7 @@ if(savedDarkMode === true){
                 </span></span></div>
             <div>
               <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":server:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="../../org.kryptonmc.krypton.network/-writable/write.html"><span class="token function">write</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">buf<span class="token operator">: </span><span data-unresolved-link="io.netty.buffer/ByteBuf///PointingToDeclaration/">ByteBuf</span></span></span><span class="token punctuation">)</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><p class="paragraph">Writes the data contained within this writable to the given <a href="../../org.kryptonmc.krypton.network/-writable/write.html">buf</a>.</p></div></div></div>
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":server:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="../../org.kryptonmc.krypton.network/-writable/write.html"><span class="token function">write</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">buf<span class="token operator">: </span><span data-unresolved-link="io.netty.buffer/ByteBuf///PointingToDeclaration/">ByteBuf</span></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Writes the data contained within this writable to the given <a href="../../org.kryptonmc.krypton.network/-writable/write.html">buf</a>.</p></div></div></div>
               </div>
             </div>
           </div>
@@ -75,287 +84,23 @@ if(savedDarkMode === true){
             <div></div>
           </div>
         </div>
+<a data-name="-1789057903%2FInheritors%2F791161957" anchor-label="InboundPacket" id="-1789057903%2FInheritors%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="../-inbound-packet/index.html">InboundPacket</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1789057903%2FInheritors%2F791161957"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div></div>
+          </div>
+        </div>
 <a data-name="-445602951%2FInheritors%2F791161957" anchor-label="MovementPacket" id="-445602951%2FInheritors%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
         <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
           <div class="main-subrow keyValue ">
             <div class=""><span class="inline-flex">
                 <div><a href="../-movement-packet/index.html">MovementPacket</a></div>
 <span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-445602951%2FInheritors%2F791161957"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div></div>
-          </div>
-        </div>
-<a data-name="1371740136%2FInheritors%2F791161957" anchor-label="PacketInHandshake" id="1371740136%2FInheritors%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
-        <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="../../org.kryptonmc.krypton.packet.in.handshake/-packet-in-handshake/index.html">PacketInHandshake</a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1371740136%2FInheritors%2F791161957"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div></div>
-          </div>
-        </div>
-<a data-name="-1114981967%2FInheritors%2F791161957" anchor-label="PacketInEncryptionResponse" id="-1114981967%2FInheritors%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
-        <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="../../org.kryptonmc.krypton.packet.in.login/-packet-in-encryption-response/index.html">PacketInEncryptionResponse</a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1114981967%2FInheritors%2F791161957"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div></div>
-          </div>
-        </div>
-<a data-name="-1480682052%2FInheritors%2F791161957" anchor-label="PacketInLoginStart" id="-1480682052%2FInheritors%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
-        <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="../../org.kryptonmc.krypton.packet.in.login/-packet-in-login-start/index.html">PacketInLoginStart</a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1480682052%2FInheritors%2F791161957"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div></div>
-          </div>
-        </div>
-<a data-name="301244929%2FInheritors%2F791161957" anchor-label="PacketInPluginResponse" id="301244929%2FInheritors%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
-        <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="../../org.kryptonmc.krypton.packet.in.login/-packet-in-plugin-response/index.html">PacketInPluginResponse</a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="301244929%2FInheritors%2F791161957"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div></div>
-          </div>
-        </div>
-<a data-name="483124456%2FInheritors%2F791161957" anchor-label="PacketInAbilities" id="483124456%2FInheritors%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
-        <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="../../org.kryptonmc.krypton.packet.in.play/-packet-in-abilities/index.html">PacketInAbilities</a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="483124456%2FInheritors%2F791161957"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div></div>
-          </div>
-        </div>
-<a data-name="1180182572%2FInheritors%2F791161957" anchor-label="PacketInAnimation" id="1180182572%2FInheritors%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
-        <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="../../org.kryptonmc.krypton.packet.in.play/-packet-in-animation/index.html">PacketInAnimation</a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1180182572%2FInheritors%2F791161957"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div></div>
-          </div>
-        </div>
-<a data-name="-66738214%2FInheritors%2F791161957" anchor-label="PacketInChangeHeldItem" id="-66738214%2FInheritors%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
-        <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="../../org.kryptonmc.krypton.packet.in.play/-packet-in-change-held-item/index.html">PacketInChangeHeldItem</a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-66738214%2FInheritors%2F791161957"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div></div>
-          </div>
-        </div>
-<a data-name="-1236614%2FInheritors%2F791161957" anchor-label="PacketInChat" id="-1236614%2FInheritors%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
-        <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="../../org.kryptonmc.krypton.packet.in.play/-packet-in-chat/index.html">PacketInChat</a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1236614%2FInheritors%2F791161957"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div></div>
-          </div>
-        </div>
-<a data-name="-1975124156%2FInheritors%2F791161957" anchor-label="PacketInClientSettings" id="-1975124156%2FInheritors%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
-        <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="../../org.kryptonmc.krypton.packet.in.play/-packet-in-client-settings/index.html">PacketInClientSettings</a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1975124156%2FInheritors%2F791161957"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div></div>
-          </div>
-        </div>
-<a data-name="-2025029675%2FInheritors%2F791161957" anchor-label="PacketInClientStatus" id="-2025029675%2FInheritors%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
-        <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="../../org.kryptonmc.krypton.packet.in.play/-packet-in-client-status/index.html">PacketInClientStatus</a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-2025029675%2FInheritors%2F791161957"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div></div>
-          </div>
-        </div>
-<a data-name="-202566835%2FInheritors%2F791161957" anchor-label="PacketInCreativeInventoryAction" id="-202566835%2FInheritors%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
-        <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="../../org.kryptonmc.krypton.packet.in.play/-packet-in-creative-inventory-action/index.html">PacketInCreativeInventoryAction</a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-202566835%2FInheritors%2F791161957"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div></div>
-          </div>
-        </div>
-<a data-name="1709290233%2FInheritors%2F791161957" anchor-label="PacketInEntityAction" id="1709290233%2FInheritors%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
-        <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="../../org.kryptonmc.krypton.packet.in.play/-packet-in-entity-action/index.html">PacketInEntityAction</a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1709290233%2FInheritors%2F791161957"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div></div>
-          </div>
-        </div>
-<a data-name="1414048391%2FInheritors%2F791161957" anchor-label="PacketInEntityNBTQuery" id="1414048391%2FInheritors%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
-        <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="../../org.kryptonmc.krypton.packet.in.play/-packet-in-entity-n-b-t-query/index.html">PacketInEntityNBTQuery</a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1414048391%2FInheritors%2F791161957"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div></div>
-          </div>
-        </div>
-<a data-name="-1400390692%2FInheritors%2F791161957" anchor-label="PacketInInteract" id="-1400390692%2FInheritors%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
-        <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="../../org.kryptonmc.krypton.packet.in.play/-packet-in-interact/index.html">PacketInInteract</a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1400390692%2FInheritors%2F791161957"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div></div>
-          </div>
-        </div>
-<a data-name="2071494632%2FInheritors%2F791161957" anchor-label="PacketInKeepAlive" id="2071494632%2FInheritors%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
-        <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="../../org.kryptonmc.krypton.packet.in.play/-packet-in-keep-alive/index.html">PacketInKeepAlive</a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="2071494632%2FInheritors%2F791161957"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div></div>
-          </div>
-        </div>
-<a data-name="-197302260%2FInheritors%2F791161957" anchor-label="PacketInPlaceBlock" id="-197302260%2FInheritors%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
-        <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="../../org.kryptonmc.krypton.packet.in.play/-packet-in-place-block/index.html">PacketInPlaceBlock</a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-197302260%2FInheritors%2F791161957"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div></div>
-          </div>
-        </div>
-<a data-name="526321588%2FInheritors%2F791161957" anchor-label="PacketInPlayerDigging" id="526321588%2FInheritors%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
-        <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="../../org.kryptonmc.krypton.packet.in.play/-packet-in-player-digging/index.html">PacketInPlayerDigging</a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="526321588%2FInheritors%2F791161957"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div></div>
-          </div>
-        </div>
-<a data-name="-2094094665%2FInheritors%2F791161957" anchor-label="PacketInPlayerUseItem" id="-2094094665%2FInheritors%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
-        <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="../../org.kryptonmc.krypton.packet.in.play/-packet-in-player-use-item/index.html">PacketInPlayerUseItem</a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-2094094665%2FInheritors%2F791161957"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div></div>
-          </div>
-        </div>
-<a data-name="1218813148%2FInheritors%2F791161957" anchor-label="PacketInPluginMessage" id="1218813148%2FInheritors%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
-        <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="../../org.kryptonmc.krypton.packet.in.play/-packet-in-plugin-message/index.html">PacketInPluginMessage</a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1218813148%2FInheritors%2F791161957"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div></div>
-          </div>
-        </div>
-<a data-name="-362585063%2FInheritors%2F791161957" anchor-label="PacketInResourcePackStatus" id="-362585063%2FInheritors%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
-        <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="../../org.kryptonmc.krypton.packet.in.play/-packet-in-resource-pack-status/index.html">PacketInResourcePackStatus</a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-362585063%2FInheritors%2F791161957"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div></div>
-          </div>
-        </div>
-<a data-name="1765768471%2FInheritors%2F791161957" anchor-label="PacketInSteerVehicle" id="1765768471%2FInheritors%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
-        <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="../../org.kryptonmc.krypton.packet.in.play/-packet-in-steer-vehicle/index.html">PacketInSteerVehicle</a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1765768471%2FInheritors%2F791161957"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div></div>
-          </div>
-        </div>
-<a data-name="-1647903934%2FInheritors%2F791161957" anchor-label="PacketInTabComplete" id="-1647903934%2FInheritors%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
-        <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="../../org.kryptonmc.krypton.packet.in.play/-packet-in-tab-complete/index.html">PacketInTabComplete</a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1647903934%2FInheritors%2F791161957"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div></div>
-          </div>
-        </div>
-<a data-name="-1331508101%2FInheritors%2F791161957" anchor-label="PacketInTeleportConfirm" id="-1331508101%2FInheritors%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
-        <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="../../org.kryptonmc.krypton.packet.in.play/-packet-in-teleport-confirm/index.html">PacketInTeleportConfirm</a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1331508101%2FInheritors%2F791161957"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div></div>
-          </div>
-        </div>
-<a data-name="1405158558%2FInheritors%2F791161957" anchor-label="PacketInPing" id="1405158558%2FInheritors%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
-        <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="../../org.kryptonmc.krypton.packet.in.status/-packet-in-ping/index.html">PacketInPing</a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1405158558%2FInheritors%2F791161957"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div></div>
-          </div>
-        </div>
-<a data-name="432485845%2FInheritors%2F791161957" anchor-label="PacketInStatusRequest" id="432485845%2FInheritors%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
-        <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="../../org.kryptonmc.krypton.packet.in.status/-packet-in-status-request/index.html">PacketInStatusRequest</a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="432485845%2FInheritors%2F791161957"></span>
                   <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                 </span></span></div>
             <div></div>
@@ -427,23 +172,34 @@ if(savedDarkMode === true){
             <div></div>
           </div>
         </div>
-<a data-name="1990349951%2FInheritors%2F791161957" anchor-label="PacketOutActionBar" id="1990349951%2FInheritors%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+<a data-name="-2021808347%2FInheritors%2F791161957" anchor-label="PacketOutAcknowledgeBlockChange" id="-2021808347%2FInheritors%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
         <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
           <div class="main-subrow keyValue ">
             <div class=""><span class="inline-flex">
-                <div><a href="../../org.kryptonmc.krypton.packet.out.play/-packet-out-action-bar/index.html">PacketOutActionBar</a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1990349951%2FInheritors%2F791161957"></span>
+                <div><a href="../../org.kryptonmc.krypton.packet.out.play/-packet-out-acknowledge-block-change/index.html">PacketOutAcknowledgeBlockChange</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-2021808347%2FInheritors%2F791161957"></span>
                   <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                 </span></span></div>
             <div></div>
           </div>
         </div>
-<a data-name="-1834289889%2FInheritors%2F791161957" anchor-label="PacketOutBlockChange" id="-1834289889%2FInheritors%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+<a data-name="287295548%2FInheritors%2F791161957" anchor-label="PacketOutAwardStatistics" id="287295548%2FInheritors%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
         <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
           <div class="main-subrow keyValue ">
             <div class=""><span class="inline-flex">
-                <div><a href="../../org.kryptonmc.krypton.packet.out.play/-packet-out-block-change/index.html">PacketOutBlockChange</a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1834289889%2FInheritors%2F791161957"></span>
+                <div><a href="../../org.kryptonmc.krypton.packet.out.play/-packet-out-award-statistics/index.html">PacketOutAwardStatistics</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="287295548%2FInheritors%2F791161957"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div></div>
+          </div>
+        </div>
+<a data-name="987663910%2FInheritors%2F791161957" anchor-label="PacketOutBlockUpdate" id="987663910%2FInheritors%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="../../org.kryptonmc.krypton.packet.out.play/-packet-out-block-update/index.html">PacketOutBlockUpdate</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="987663910%2FInheritors%2F791161957"></span>
                   <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                 </span></span></div>
             <div></div>
@@ -460,34 +216,23 @@ if(savedDarkMode === true){
             <div></div>
           </div>
         </div>
-<a data-name="-1904178035%2FInheritors%2F791161957" anchor-label="PacketOutChangeGameState" id="-1904178035%2FInheritors%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+<a data-name="-477061893%2FInheritors%2F791161957" anchor-label="PacketOutChangeDifficulty" id="-477061893%2FInheritors%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
         <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
           <div class="main-subrow keyValue ">
             <div class=""><span class="inline-flex">
-                <div><a href="../../org.kryptonmc.krypton.packet.out.play/-packet-out-change-game-state/index.html">PacketOutChangeGameState</a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1904178035%2FInheritors%2F791161957"></span>
+                <div><a href="../../org.kryptonmc.krypton.packet.out.play/-packet-out-change-difficulty/index.html">PacketOutChangeDifficulty</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-477061893%2FInheritors%2F791161957"></span>
                   <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                 </span></span></div>
             <div></div>
           </div>
         </div>
-<a data-name="1307499182%2FInheritors%2F791161957" anchor-label="PacketOutChangeHeldItem" id="1307499182%2FInheritors%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+<a data-name="344511237%2FInheritors%2F791161957" anchor-label="PacketOutChatSuggestions" id="344511237%2FInheritors%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
         <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
           <div class="main-subrow keyValue ">
             <div class=""><span class="inline-flex">
-                <div><a href="../../org.kryptonmc.krypton.packet.out.play/-packet-out-change-held-item/index.html">PacketOutChangeHeldItem</a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1307499182%2FInheritors%2F791161957"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div></div>
-          </div>
-        </div>
-<a data-name="635178318%2FInheritors%2F791161957" anchor-label="PacketOutChat" id="635178318%2FInheritors%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
-        <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="../../org.kryptonmc.krypton.packet.out.play/-packet-out-chat/index.html">PacketOutChat</a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="635178318%2FInheritors%2F791161957"></span>
+                <div><a href="../../org.kryptonmc.krypton.packet.out.play/-packet-out-chat-suggestions/index.html">PacketOutChatSuggestions</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="344511237%2FInheritors%2F791161957"></span>
                   <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                 </span></span></div>
             <div></div>
@@ -515,56 +260,34 @@ if(savedDarkMode === true){
             <div></div>
           </div>
         </div>
-<a data-name="-2019974710%2FInheritors%2F791161957" anchor-label="PacketOutDeclareCommands" id="-2019974710%2FInheritors%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+<a data-name="-1523511167%2FInheritors%2F791161957" anchor-label="PacketOutCommandSuggestionsResponse" id="-1523511167%2FInheritors%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
         <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
           <div class="main-subrow keyValue ">
             <div class=""><span class="inline-flex">
-                <div><a href="../../org.kryptonmc.krypton.packet.out.play/-packet-out-declare-commands/index.html">PacketOutDeclareCommands</a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-2019974710%2FInheritors%2F791161957"></span>
+                <div><a href="../../org.kryptonmc.krypton.packet.out.play/-packet-out-command-suggestions-response/index.html">PacketOutCommandSuggestionsResponse</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1523511167%2FInheritors%2F791161957"></span>
                   <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                 </span></span></div>
             <div></div>
           </div>
         </div>
-<a data-name="-403474453%2FInheritors%2F791161957" anchor-label="PacketOutDeclareRecipes" id="-403474453%2FInheritors%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+<a data-name="-492484194%2FInheritors%2F791161957" anchor-label="PacketOutCommands" id="-492484194%2FInheritors%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
         <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
           <div class="main-subrow keyValue ">
             <div class=""><span class="inline-flex">
-                <div><a href="../../org.kryptonmc.krypton.packet.out.play/-packet-out-declare-recipes/index.html">PacketOutDeclareRecipes</a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-403474453%2FInheritors%2F791161957"></span>
+                <div><a href="../../org.kryptonmc.krypton.packet.out.play/-packet-out-commands/index.html">PacketOutCommands</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-492484194%2FInheritors%2F791161957"></span>
                   <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                 </span></span></div>
             <div></div>
           </div>
         </div>
-<a data-name="494517793%2FInheritors%2F791161957" anchor-label="PacketOutDestroyEntities" id="494517793%2FInheritors%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+<a data-name="1293258659%2FInheritors%2F791161957" anchor-label="PacketOutDeleteChat" id="1293258659%2FInheritors%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
         <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
           <div class="main-subrow keyValue ">
             <div class=""><span class="inline-flex">
-                <div><a href="../../org.kryptonmc.krypton.packet.out.play/-packet-out-destroy-entities/index.html">PacketOutDestroyEntities</a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="494517793%2FInheritors%2F791161957"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div></div>
-          </div>
-        </div>
-<a data-name="243147403%2FInheritors%2F791161957" anchor-label="PacketOutDifficulty" id="243147403%2FInheritors%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
-        <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="../../org.kryptonmc.krypton.packet.out.play/-packet-out-difficulty/index.html">PacketOutDifficulty</a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="243147403%2FInheritors%2F791161957"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div></div>
-          </div>
-        </div>
-<a data-name="1626293342%2FInheritors%2F791161957" anchor-label="PacketOutDiggingResponse" id="1626293342%2FInheritors%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
-        <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="../../org.kryptonmc.krypton.packet.out.play/-packet-out-digging-response/index.html">PacketOutDiggingResponse</a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1626293342%2FInheritors%2F791161957"></span>
+                <div><a href="../../org.kryptonmc.krypton.packet.out.play/-packet-out-delete-chat/index.html">PacketOutDeleteChat</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1293258659%2FInheritors%2F791161957"></span>
                   <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                 </span></span></div>
             <div></div>
@@ -581,6 +304,17 @@ if(savedDarkMode === true){
             <div></div>
           </div>
         </div>
+<a data-name="581911743%2FInheritors%2F791161957" anchor-label="PacketOutDisguisedChat" id="581911743%2FInheritors%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="../../org.kryptonmc.krypton.packet.out.play/-packet-out-disguised-chat/index.html">PacketOutDisguisedChat</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="581911743%2FInheritors%2F791161957"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div></div>
+          </div>
+        </div>
 <a data-name="2056844143%2FInheritors%2F791161957" anchor-label="PacketOutDisplayObjective" id="2056844143%2FInheritors%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
         <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
           <div class="main-subrow keyValue ">
@@ -592,12 +326,12 @@ if(savedDarkMode === true){
             <div></div>
           </div>
         </div>
-<a data-name="-874110987%2FInheritors%2F791161957" anchor-label="PacketOutEffect" id="-874110987%2FInheritors%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+<a data-name="-464776428%2FInheritors%2F791161957" anchor-label="PacketOutGameEvent" id="-464776428%2FInheritors%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
         <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
           <div class="main-subrow keyValue ">
             <div class=""><span class="inline-flex">
-                <div><a href="../../org.kryptonmc.krypton.packet.out.play/-packet-out-effect/index.html">PacketOutEffect</a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-874110987%2FInheritors%2F791161957"></span>
+                <div><a href="../../org.kryptonmc.krypton.packet.out.play/-packet-out-game-event/index.html">PacketOutGameEvent</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-464776428%2FInheritors%2F791161957"></span>
                   <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                 </span></span></div>
             <div></div>
@@ -625,39 +359,6 @@ if(savedDarkMode === true){
             <div></div>
           </div>
         </div>
-<a data-name="754806397%2FInheritors%2F791161957" anchor-label="PacketOutNBTQueryResponse" id="754806397%2FInheritors%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
-        <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="../../org.kryptonmc.krypton.packet.out.play/-packet-out-n-b-t-query-response/index.html">PacketOutNBTQueryResponse</a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="754806397%2FInheritors%2F791161957"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div></div>
-          </div>
-        </div>
-<a data-name="1608634751%2FInheritors%2F791161957" anchor-label="PacketOutNamedSoundEffect" id="1608634751%2FInheritors%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
-        <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="../../org.kryptonmc.krypton.packet.out.play/-packet-out-named-sound-effect/index.html">PacketOutNamedSoundEffect</a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1608634751%2FInheritors%2F791161957"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div></div>
-          </div>
-        </div>
-<a data-name="-432125757%2FInheritors%2F791161957" anchor-label="PacketOutObjective" id="-432125757%2FInheritors%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
-        <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="../../org.kryptonmc.krypton.packet.out.play/-packet-out-objective/index.html">PacketOutObjective</a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-432125757%2FInheritors%2F791161957"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div></div>
-          </div>
-        </div>
 <a data-name="36585011%2FInheritors%2F791161957" anchor-label="PacketOutOpenBook" id="36585011%2FInheritors%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
         <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
           <div class="main-subrow keyValue ">
@@ -680,34 +381,34 @@ if(savedDarkMode === true){
             <div></div>
           </div>
         </div>
-<a data-name="-2015753833%2FInheritors%2F791161957" anchor-label="PacketOutPlayerInfo" id="-2015753833%2FInheritors%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+<a data-name="-708981203%2FInheritors%2F791161957" anchor-label="PacketOutPlayerChat" id="-708981203%2FInheritors%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
         <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
           <div class="main-subrow keyValue ">
             <div class=""><span class="inline-flex">
-                <div><a href="../../org.kryptonmc.krypton.packet.out.play/-packet-out-player-info/index.html">PacketOutPlayerInfo</a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-2015753833%2FInheritors%2F791161957"></span>
+                <div><a href="../../org.kryptonmc.krypton.packet.out.play/-packet-out-player-chat/index.html">PacketOutPlayerChat</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-708981203%2FInheritors%2F791161957"></span>
                   <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                 </span></span></div>
             <div></div>
           </div>
         </div>
-<a data-name="-805741313%2FInheritors%2F791161957" anchor-label="PacketOutPlayerListHeaderFooter" id="-805741313%2FInheritors%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+<a data-name="1177895155%2FInheritors%2F791161957" anchor-label="PacketOutPlayerInfoRemove" id="1177895155%2FInheritors%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
         <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
           <div class="main-subrow keyValue ">
             <div class=""><span class="inline-flex">
-                <div><a href="../../org.kryptonmc.krypton.packet.out.play/-packet-out-player-list-header-footer/index.html">PacketOutPlayerListHeaderFooter</a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-805741313%2FInheritors%2F791161957"></span>
+                <div><a href="../../org.kryptonmc.krypton.packet.out.play/-packet-out-player-info-remove/index.html">PacketOutPlayerInfoRemove</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1177895155%2FInheritors%2F791161957"></span>
                   <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                 </span></span></div>
             <div></div>
           </div>
         </div>
-<a data-name="-1624338864%2FInheritors%2F791161957" anchor-label="PacketOutPlayerPositionAndLook" id="-1624338864%2FInheritors%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+<a data-name="2054907982%2FInheritors%2F791161957" anchor-label="PacketOutPlayerInfoUpdate" id="2054907982%2FInheritors%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
         <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
           <div class="main-subrow keyValue ">
             <div class=""><span class="inline-flex">
-                <div><a href="../../org.kryptonmc.krypton.packet.out.play/-packet-out-player-position-and-look/index.html">PacketOutPlayerPositionAndLook</a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1624338864%2FInheritors%2F791161957"></span>
+                <div><a href="../../org.kryptonmc.krypton.packet.out.play/-packet-out-player-info-update/index.html">PacketOutPlayerInfoUpdate</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="2054907982%2FInheritors%2F791161957"></span>
                   <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                 </span></span></div>
             <div></div>
@@ -724,12 +425,67 @@ if(savedDarkMode === true){
             <div></div>
           </div>
         </div>
+<a data-name="-181499231%2FInheritors%2F791161957" anchor-label="PacketOutRemoveEntities" id="-181499231%2FInheritors%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="../../org.kryptonmc.krypton.packet.out.play/-packet-out-remove-entities/index.html">PacketOutRemoveEntities</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-181499231%2FInheritors%2F791161957"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div></div>
+          </div>
+        </div>
 <a data-name="-884935873%2FInheritors%2F791161957" anchor-label="PacketOutResourcePack" id="-884935873%2FInheritors%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
         <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
           <div class="main-subrow keyValue ">
             <div class=""><span class="inline-flex">
                 <div><a href="../../org.kryptonmc.krypton.packet.out.play/-packet-out-resource-pack/index.html">PacketOutResourcePack</a></div>
 <span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-884935873%2FInheritors%2F791161957"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div></div>
+          </div>
+        </div>
+<a data-name="1656506270%2FInheritors%2F791161957" anchor-label="PacketOutSetActionBarText" id="1656506270%2FInheritors%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="../../org.kryptonmc.krypton.packet.out.play/-packet-out-set-action-bar-text/index.html">PacketOutSetActionBarText</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1656506270%2FInheritors%2F791161957"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div></div>
+          </div>
+        </div>
+<a data-name="-80437552%2FInheritors%2F791161957" anchor-label="PacketOutSetCenterChunk" id="-80437552%2FInheritors%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="../../org.kryptonmc.krypton.packet.out.play/-packet-out-set-center-chunk/index.html">PacketOutSetCenterChunk</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-80437552%2FInheritors%2F791161957"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div></div>
+          </div>
+        </div>
+<a data-name="-1700208094%2FInheritors%2F791161957" anchor-label="PacketOutSetContainerContent" id="-1700208094%2FInheritors%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="../../org.kryptonmc.krypton.packet.out.play/-packet-out-set-container-content/index.html">PacketOutSetContainerContent</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1700208094%2FInheritors%2F791161957"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div></div>
+          </div>
+        </div>
+<a data-name="446481385%2FInheritors%2F791161957" anchor-label="PacketOutSetContainerSlot" id="446481385%2FInheritors%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="../../org.kryptonmc.krypton.packet.out.play/-packet-out-set-container-slot/index.html">PacketOutSetContainerSlot</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="446481385%2FInheritors%2F791161957"></span>
                   <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                 </span></span></div>
             <div></div>
@@ -746,12 +502,78 @@ if(savedDarkMode === true){
             <div></div>
           </div>
         </div>
-<a data-name="-2043452132%2FInheritors%2F791161957" anchor-label="PacketOutSetSlot" id="-2043452132%2FInheritors%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+<a data-name="-1180906569%2FInheritors%2F791161957" anchor-label="PacketOutSetDefaultSpawnPosition" id="-1180906569%2FInheritors%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
         <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
           <div class="main-subrow keyValue ">
             <div class=""><span class="inline-flex">
-                <div><a href="../../org.kryptonmc.krypton.packet.out.play/-packet-out-set-slot/index.html">PacketOutSetSlot</a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-2043452132%2FInheritors%2F791161957"></span>
+                <div><a href="../../org.kryptonmc.krypton.packet.out.play/-packet-out-set-default-spawn-position/index.html">PacketOutSetDefaultSpawnPosition</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1180906569%2FInheritors%2F791161957"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div></div>
+          </div>
+        </div>
+<a data-name="-1651463106%2FInheritors%2F791161957" anchor-label="PacketOutSetHealth" id="-1651463106%2FInheritors%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="../../org.kryptonmc.krypton.packet.out.play/-packet-out-set-health/index.html">PacketOutSetHealth</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1651463106%2FInheritors%2F791161957"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div></div>
+          </div>
+        </div>
+<a data-name="-304901646%2FInheritors%2F791161957" anchor-label="PacketOutSetHeldItem" id="-304901646%2FInheritors%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="../../org.kryptonmc.krypton.packet.out.play/-packet-out-set-held-item/index.html">PacketOutSetHeldItem</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-304901646%2FInheritors%2F791161957"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div></div>
+          </div>
+        </div>
+<a data-name="-1843122539%2FInheritors%2F791161957" anchor-label="PacketOutSetSubtitleText" id="-1843122539%2FInheritors%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="../../org.kryptonmc.krypton.packet.out.play/-packet-out-set-subtitle-text/index.html">PacketOutSetSubtitleText</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1843122539%2FInheritors%2F791161957"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div></div>
+          </div>
+        </div>
+<a data-name="238076264%2FInheritors%2F791161957" anchor-label="PacketOutSetTabListHeaderAndFooter" id="238076264%2FInheritors%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="../../org.kryptonmc.krypton.packet.out.play/-packet-out-set-tab-list-header-and-footer/index.html">PacketOutSetTabListHeaderAndFooter</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="238076264%2FInheritors%2F791161957"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div></div>
+          </div>
+        </div>
+<a data-name="-1091150194%2FInheritors%2F791161957" anchor-label="PacketOutSetTitleAnimationTimes" id="-1091150194%2FInheritors%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="../../org.kryptonmc.krypton.packet.out.play/-packet-out-set-title-animation-times/index.html">PacketOutSetTitleAnimationTimes</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1091150194%2FInheritors%2F791161957"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div></div>
+          </div>
+        </div>
+<a data-name="-425161565%2FInheritors%2F791161957" anchor-label="PacketOutSetTitleText" id="-425161565%2FInheritors%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="../../org.kryptonmc.krypton.packet.out.play/-packet-out-set-title-text/index.html">PacketOutSetTitleText</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-425161565%2FInheritors%2F791161957"></span>
                   <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                 </span></span></div>
             <div></div>
@@ -768,28 +590,6 @@ if(savedDarkMode === true){
             <div></div>
           </div>
         </div>
-<a data-name="-1558998760%2FInheritors%2F791161957" anchor-label="PacketOutSpawnPosition" id="-1558998760%2FInheritors%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
-        <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="../../org.kryptonmc.krypton.packet.out.play/-packet-out-spawn-position/index.html">PacketOutSpawnPosition</a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1558998760%2FInheritors%2F791161957"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div></div>
-          </div>
-        </div>
-<a data-name="-393654749%2FInheritors%2F791161957" anchor-label="PacketOutStatistics" id="-393654749%2FInheritors%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
-        <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="../../org.kryptonmc.krypton.packet.out.play/-packet-out-statistics/index.html">PacketOutStatistics</a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-393654749%2FInheritors%2F791161957"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div></div>
-          </div>
-        </div>
 <a data-name="-420824497%2FInheritors%2F791161957" anchor-label="PacketOutStopSound" id="-420824497%2FInheritors%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
         <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
           <div class="main-subrow keyValue ">
@@ -801,78 +601,34 @@ if(savedDarkMode === true){
             <div></div>
           </div>
         </div>
-<a data-name="-1703905746%2FInheritors%2F791161957" anchor-label="PacketOutSubTitle" id="-1703905746%2FInheritors%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+<a data-name="-1107517822%2FInheritors%2F791161957" anchor-label="PacketOutSynchronizePlayerPosition" id="-1107517822%2FInheritors%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
         <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
           <div class="main-subrow keyValue ">
             <div class=""><span class="inline-flex">
-                <div><a href="../../org.kryptonmc.krypton.packet.out.play/-packet-out-sub-title/index.html">PacketOutSubTitle</a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1703905746%2FInheritors%2F791161957"></span>
+                <div><a href="../../org.kryptonmc.krypton.packet.out.play/-packet-out-synchronize-player-position/index.html">PacketOutSynchronizePlayerPosition</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1107517822%2FInheritors%2F791161957"></span>
                   <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                 </span></span></div>
             <div></div>
           </div>
         </div>
-<a data-name="1254283502%2FInheritors%2F791161957" anchor-label="PacketOutTabComplete" id="1254283502%2FInheritors%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+<a data-name="1371513247%2FInheritors%2F791161957" anchor-label="PacketOutSystemChat" id="1371513247%2FInheritors%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
         <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
           <div class="main-subrow keyValue ">
             <div class=""><span class="inline-flex">
-                <div><a href="../../org.kryptonmc.krypton.packet.out.play/-packet-out-tab-complete/index.html">PacketOutTabComplete</a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1254283502%2FInheritors%2F791161957"></span>
+                <div><a href="../../org.kryptonmc.krypton.packet.out.play/-packet-out-system-chat/index.html">PacketOutSystemChat</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1371513247%2FInheritors%2F791161957"></span>
                   <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                 </span></span></div>
             <div></div>
           </div>
         </div>
-<a data-name="-1535109203%2FInheritors%2F791161957" anchor-label="PacketOutTags" id="-1535109203%2FInheritors%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+<a data-name="-261032617%2FInheritors%2F791161957" anchor-label="PacketOutTagQueryResponse" id="-261032617%2FInheritors%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
         <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
           <div class="main-subrow keyValue ">
             <div class=""><span class="inline-flex">
-                <div><a href="../../org.kryptonmc.krypton.packet.out.play/-packet-out-tags/index.html">PacketOutTags</a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1535109203%2FInheritors%2F791161957"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div></div>
-          </div>
-        </div>
-<a data-name="80076265%2FInheritors%2F791161957" anchor-label="PacketOutTeam" id="80076265%2FInheritors%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
-        <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="../../org.kryptonmc.krypton.packet.out.play/-packet-out-team/index.html">PacketOutTeam</a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="80076265%2FInheritors%2F791161957"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div></div>
-          </div>
-        </div>
-<a data-name="-1894704976%2FInheritors%2F791161957" anchor-label="PacketOutTimeUpdate" id="-1894704976%2FInheritors%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
-        <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="../../org.kryptonmc.krypton.packet.out.play/-packet-out-time-update/index.html">PacketOutTimeUpdate</a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1894704976%2FInheritors%2F791161957"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div></div>
-          </div>
-        </div>
-<a data-name="-1062232572%2FInheritors%2F791161957" anchor-label="PacketOutTitle" id="-1062232572%2FInheritors%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
-        <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="../../org.kryptonmc.krypton.packet.out.play/-packet-out-title/index.html">PacketOutTitle</a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1062232572%2FInheritors%2F791161957"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div></div>
-          </div>
-        </div>
-<a data-name="-881780264%2FInheritors%2F791161957" anchor-label="PacketOutTitleTimes" id="-881780264%2FInheritors%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
-        <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="../../org.kryptonmc.krypton.packet.out.play/-packet-out-title-times/index.html">PacketOutTitleTimes</a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-881780264%2FInheritors%2F791161957"></span>
+                <div><a href="../../org.kryptonmc.krypton.packet.out.play/-packet-out-tag-query-response/index.html">PacketOutTagQueryResponse</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-261032617%2FInheritors%2F791161957"></span>
                   <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                 </span></span></div>
             <div></div>
@@ -889,23 +645,12 @@ if(savedDarkMode === true){
             <div></div>
           </div>
         </div>
-<a data-name="-1327752005%2FInheritors%2F791161957" anchor-label="PacketOutUnlockRecipes" id="-1327752005%2FInheritors%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+<a data-name="-1309236633%2FInheritors%2F791161957" anchor-label="PacketOutUpdateEnabledFeatures" id="-1309236633%2FInheritors%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
         <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
           <div class="main-subrow keyValue ">
             <div class=""><span class="inline-flex">
-                <div><a href="../../org.kryptonmc.krypton.packet.out.play/-packet-out-unlock-recipes/index.html">PacketOutUnlockRecipes</a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1327752005%2FInheritors%2F791161957"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div></div>
-          </div>
-        </div>
-<a data-name="-372806719%2FInheritors%2F791161957" anchor-label="PacketOutUpdateHealth" id="-372806719%2FInheritors%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
-        <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="../../org.kryptonmc.krypton.packet.out.play/-packet-out-update-health/index.html">PacketOutUpdateHealth</a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-372806719%2FInheritors%2F791161957"></span>
+                <div><a href="../../org.kryptonmc.krypton.packet.out.play/-packet-out-update-enabled-features/index.html">PacketOutUpdateEnabledFeatures</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1309236633%2FInheritors%2F791161957"></span>
                   <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                 </span></span></div>
             <div></div>
@@ -922,6 +667,39 @@ if(savedDarkMode === true){
             <div></div>
           </div>
         </div>
+<a data-name="-1219443837%2FInheritors%2F791161957" anchor-label="PacketOutUpdateObjectives" id="-1219443837%2FInheritors%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="../../org.kryptonmc.krypton.packet.out.play/-packet-out-update-objectives/index.html">PacketOutUpdateObjectives</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1219443837%2FInheritors%2F791161957"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div></div>
+          </div>
+        </div>
+<a data-name="-1505340698%2FInheritors%2F791161957" anchor-label="PacketOutUpdateRecipeBook" id="-1505340698%2FInheritors%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="../../org.kryptonmc.krypton.packet.out.play/-packet-out-update-recipe-book/index.html">PacketOutUpdateRecipeBook</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1505340698%2FInheritors%2F791161957"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div></div>
+          </div>
+        </div>
+<a data-name="-1301994944%2FInheritors%2F791161957" anchor-label="PacketOutUpdateRecipes" id="-1301994944%2FInheritors%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="../../org.kryptonmc.krypton.packet.out.play/-packet-out-update-recipes/index.html">PacketOutUpdateRecipes</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1301994944%2FInheritors%2F791161957"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div></div>
+          </div>
+        </div>
 <a data-name="1863420403%2FInheritors%2F791161957" anchor-label="PacketOutUpdateScore" id="1863420403%2FInheritors%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
         <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
           <div class="main-subrow keyValue ">
@@ -933,34 +711,56 @@ if(savedDarkMode === true){
             <div></div>
           </div>
         </div>
-<a data-name="1780945519%2FInheritors%2F791161957" anchor-label="PacketOutUpdateViewPosition" id="1780945519%2FInheritors%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+<a data-name="821879716%2FInheritors%2F791161957" anchor-label="PacketOutUpdateTags" id="821879716%2FInheritors%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
         <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
           <div class="main-subrow keyValue ">
             <div class=""><span class="inline-flex">
-                <div><a href="../../org.kryptonmc.krypton.packet.out.play/-packet-out-update-view-position/index.html">PacketOutUpdateViewPosition</a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1780945519%2FInheritors%2F791161957"></span>
+                <div><a href="../../org.kryptonmc.krypton.packet.out.play/-packet-out-update-tags/index.html">PacketOutUpdateTags</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="821879716%2FInheritors%2F791161957"></span>
                   <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                 </span></span></div>
             <div></div>
           </div>
         </div>
-<a data-name="2122765676%2FInheritors%2F791161957" anchor-label="PacketOutWindowItems" id="2122765676%2FInheritors%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+<a data-name="-1841508529%2FInheritors%2F791161957" anchor-label="PacketOutUpdateTeams" id="-1841508529%2FInheritors%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
         <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
           <div class="main-subrow keyValue ">
             <div class=""><span class="inline-flex">
-                <div><a href="../../org.kryptonmc.krypton.packet.out.play/-packet-out-window-items/index.html">PacketOutWindowItems</a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="2122765676%2FInheritors%2F791161957"></span>
+                <div><a href="../../org.kryptonmc.krypton.packet.out.play/-packet-out-update-teams/index.html">PacketOutUpdateTeams</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1841508529%2FInheritors%2F791161957"></span>
                   <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                 </span></span></div>
             <div></div>
           </div>
         </div>
-<a data-name="1742206512%2FInheritors%2F791161957" anchor-label="PacketOutPong" id="1742206512%2FInheritors%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+<a data-name="-175573136%2FInheritors%2F791161957" anchor-label="PacketOutUpdateTime" id="-175573136%2FInheritors%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
         <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
           <div class="main-subrow keyValue ">
             <div class=""><span class="inline-flex">
-                <div><a href="../../org.kryptonmc.krypton.packet.out.status/-packet-out-pong/index.html">PacketOutPong</a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1742206512%2FInheritors%2F791161957"></span>
+                <div><a href="../../org.kryptonmc.krypton.packet.out.play/-packet-out-update-time/index.html">PacketOutUpdateTime</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-175573136%2FInheritors%2F791161957"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div></div>
+          </div>
+        </div>
+<a data-name="-331551554%2FInheritors%2F791161957" anchor-label="PacketOutWorldEvent" id="-331551554%2FInheritors%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="../../org.kryptonmc.krypton.packet.out.play/-packet-out-world-event/index.html">PacketOutWorldEvent</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-331551554%2FInheritors%2F791161957"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div></div>
+          </div>
+        </div>
+<a data-name="978729909%2FInheritors%2F791161957" anchor-label="PacketOutPingResponse" id="978729909%2FInheritors%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="../../org.kryptonmc.krypton.packet.out.status/-packet-out-ping-response/index.html">PacketOutPingResponse</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="978729909%2FInheritors%2F791161957"></span>
                   <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                 </span></span></div>
             <div></div>
@@ -978,28 +778,11 @@ if(savedDarkMode === true){
           </div>
         </div>
       </div>
-      <h2 class="tabbedcontent">Extensions</h2>
-      <div class="table" data-togglable="Extensions"><a data-name="-1186614196%2FExtensions%2F791161957" anchor-label="frame" id="-1186614196%2FExtensions%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
-        <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="../../org.kryptonmc.krypton.util/frame.html"><span><span>frame</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1186614196%2FExtensions%2F791161957"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div>
-              <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":server:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="index.html">Packet</a><span class="token punctuation">.</span><a href="../../org.kryptonmc.krypton.util/frame.html"><span class="token function">frame</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><span data-unresolved-link="io.netty.buffer/ByteBuf///PointingToDeclaration/">ByteBuf</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
     </div>
   </div>
 </div>
       <div class="footer">
-        <span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>© 2022 Copyright</span><span class="pull-right"><span>Generated by </span><a href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span>
+        <span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>© 2023 Copyright</span><span class="pull-right"><span>Generated by </span><a href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span>
       </div>
     </div>
 </div>

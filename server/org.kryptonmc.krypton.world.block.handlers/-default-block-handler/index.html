@@ -1,0 +1,970 @@
+<!doctype html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>DefaultBlockHandler</title>
+<link href="../../../images/logo-icon.svg" rel="icon" type="image/svg"><script>var pathToRoot = "../../../";</script>    <script>const storage = localStorage.getItem("dokka-dark-mode")
+    if (storage == null) {
+        const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+        if (osDarkSchemePreferred === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    } else {
+        const savedDarkMode = JSON.parse(storage)
+        if(savedDarkMode === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    }
+    </script>
+<script type="text/javascript" src="../../../scripts/sourceset_dependencies.js" async></script>
+<link href="../../../styles/style.css" rel="Stylesheet">
+<link href="../../../styles/jetbrains-mono.css" rel="Stylesheet">
+<link href="../../../styles/main.css" rel="Stylesheet">
+<link href="../../../styles/prism.css" rel="Stylesheet">
+<link href="../../../styles/logo-styles.css" rel="Stylesheet">
+<script type="text/javascript" src="../../../scripts/clipboard.js" async></script>
+<script type="text/javascript" src="../../../scripts/navigation-loader.js" async></script>
+<script type="text/javascript" src="../../../scripts/platform-content-handler.js" async></script>
+<script type="text/javascript" src="../../../scripts/main.js" defer></script>
+<script type="text/javascript" src="../../../scripts/prism.js" async></script>
+<script type="text/javascript" src="../../../scripts/symbol-parameters-wrapper_deferred.js" defer></script></head>
+<body>
+<div class="navigation-wrapper" id="navigation-wrapper">
+    <div id="leftToggler"><span class="icon-toggler"></span></div>
+    <div class="library-name">
+<a href="../../../index.html">
+<span>krypton</span>            </a>    </div>
+    <div>6a98d9dec7
+    </div>
+    <div class="pull-right d-flex">
+        <button id="theme-toggle-button"><span id="theme-toggle"></span></button>
+        <div id="searchBar"></div>
+    </div>
+</div>
+<div id="container">
+    <div id="leftColumn">
+        <div id="sideMenu"></div>
+    </div>
+    <div id="main">
+<div class="main-content" id="content" pageids="server::org.kryptonmc.krypton.world.block.handlers/DefaultBlockHandler///PointingToDeclaration//791161957">
+  <div class="breadcrumbs"><a href="../../index.html">server</a><span class="delimiter">/</span><a href="../index.html">org.kryptonmc.krypton.world.block.handlers</a><span class="delimiter">/</span><span class="current">DefaultBlockHandler</span></div>
+  <div class="cover ">
+    <h1 class="cover"><span>Default</span><wbr><span>Block</span><wbr><span><span>Handler</span></span></h1>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":server:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">object </span><a href="index.html">DefaultBlockHandler</a> : <a href="../../org.kryptonmc.krypton.world.block.handler/-block-handler/index.html">BlockHandler</a>, <a href="../../org.kryptonmc.krypton.world.block.handler/-block-properties-provider/index.html">BlockPropertiesProvider</a>, <a href="../../org.kryptonmc.krypton.world.block.handler/-block-shapes-provider/index.html">BlockShapesProvider</a>, <a href="../../org.kryptonmc.krypton.world.block.handler/-redstone-data-provider/index.html">RedstoneDataProvider</a></div></div></div>
+  </div>
+  <div class="tabbedcontent">
+    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="Functions">Functions</button></div>
+    <div class="tabs-section-body">
+      <h2 class="">Functions</h2>
+      <div class="table" data-togglable="Functions"><a data-name="-1191384893%2FFunctions%2F791161957" anchor-label="attack" id="-1191384893%2FFunctions%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="../../org.kryptonmc.krypton.world.block.handler/-block-handler/attack.html"><span><span>attack</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1191384893%2FFunctions%2F791161957"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":server:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="../../org.kryptonmc.krypton.world.block.handler/-block-handler/attack.html"><span class="token function">attack</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">state<span class="token operator">: </span><a href="../../org.kryptonmc.krypton.world.block.state/-krypton-block-state/index.html">KryptonBlockState</a><span class="token punctuation">, </span></span><span class="parameter ">world<span class="token operator">: </span><a href="../../org.kryptonmc.krypton.world/-krypton-world/index.html">KryptonWorld</a><span class="token punctuation">, </span></span><span class="parameter ">pos<span class="token operator">: </span><a href="../../org.kryptonmc.krypton.coordinate/-block-pos/index.html">BlockPos</a><span class="token punctuation">, </span></span><span class="parameter ">player<span class="token operator">: </span><a href="../../org.kryptonmc.krypton.entity.player/-krypton-player/index.html">KryptonPlayer</a></span></span><span class="token punctuation">)</span></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="242542500%2FFunctions%2F791161957" anchor-label="canBeReplaced" id="242542500%2FFunctions%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="../../org.kryptonmc.krypton.world.block.handler/-block-properties-provider/can-be-replaced.html"><span>can</span><wbr><span>Be</span><wbr><span><span>Replaced</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="242542500%2FFunctions%2F791161957"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":server:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="../../org.kryptonmc.krypton.world.block.handler/-block-properties-provider/can-be-replaced.html"><span class="token function">canBeReplaced</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">state<span class="token operator">: </span><a href="../../org.kryptonmc.krypton.world.block.state/-krypton-block-state/index.html">KryptonBlockState</a><span class="token punctuation">, </span></span><span class="parameter ">context<span class="token operator">: </span><a href="../../org.kryptonmc.krypton.item.context/-block-place-context/index.html">BlockPlaceContext</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a></div><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="../../org.kryptonmc.krypton.world.block.handler/-block-properties-provider/can-be-replaced.html"><span class="token function">canBeReplaced</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">state<span class="token operator">: </span><a href="../../org.kryptonmc.krypton.world.block.state/-krypton-block-state/index.html">KryptonBlockState</a><span class="token punctuation">, </span></span><span class="parameter ">fluid<span class="token operator">: </span><a href="../../org.kryptonmc.krypton.world.fluid/-krypton-fluid/index.html">KryptonFluid</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-1014056587%2FFunctions%2F791161957" anchor-label="canSurvive" id="-1014056587%2FFunctions%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="../../org.kryptonmc.krypton.world.block.handler/-block-properties-provider/can-survive.html"><span>can</span><wbr><span><span>Survive</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1014056587%2FFunctions%2F791161957"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":server:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="../../org.kryptonmc.krypton.world.block.handler/-block-properties-provider/can-survive.html"><span class="token function">canSurvive</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">state<span class="token operator">: </span><a href="../../org.kryptonmc.krypton.world.block.state/-krypton-block-state/index.html">KryptonBlockState</a><span class="token punctuation">, </span></span><span class="parameter ">world<span class="token operator">: </span><a href="../../org.kryptonmc.krypton.world.components/-block-getter/index.html">BlockGetter</a><span class="token punctuation">, </span></span><span class="parameter ">pos<span class="token operator">: </span><a href="../../org.kryptonmc.krypton.coordinate/-block-pos/index.html">BlockPos</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="341152736%2FFunctions%2F791161957" anchor-label="destroy" id="341152736%2FFunctions%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="../../org.kryptonmc.krypton.world.block.handler/-block-handler/destroy.html"><span><span>destroy</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="341152736%2FFunctions%2F791161957"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":server:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="../../org.kryptonmc.krypton.world.block.handler/-block-handler/destroy.html"><span class="token function">destroy</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">world<span class="token operator">: </span><a href="../../org.kryptonmc.krypton.world.components/-world-accessor/index.html">WorldAccessor</a><span class="token punctuation">, </span></span><span class="parameter ">pos<span class="token operator">: </span><a href="../../org.kryptonmc.krypton.coordinate/-block-pos/index.html">BlockPos</a><span class="token punctuation">, </span></span><span class="parameter ">state<span class="token operator">: </span><a href="../../org.kryptonmc.krypton.world.block.state/-krypton-block-state/index.html">KryptonBlockState</a></span></span><span class="token punctuation">)</span></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-523689483%2FFunctions%2F791161957" anchor-label="entityInside" id="-523689483%2FFunctions%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="../../org.kryptonmc.krypton.world.block.handler/-block-handler/entity-inside.html"><span>entity</span><wbr><span><span>Inside</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-523689483%2FFunctions%2F791161957"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":server:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="../../org.kryptonmc.krypton.world.block.handler/-block-handler/entity-inside.html"><span class="token function">entityInside</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">state<span class="token operator">: </span><a href="../../org.kryptonmc.krypton.world.block.state/-krypton-block-state/index.html">KryptonBlockState</a><span class="token punctuation">, </span></span><span class="parameter ">world<span class="token operator">: </span><a href="../../org.kryptonmc.krypton.world/-krypton-world/index.html">KryptonWorld</a><span class="token punctuation">, </span></span><span class="parameter ">pos<span class="token operator">: </span><a href="../../org.kryptonmc.krypton.coordinate/-block-pos/index.html">BlockPos</a><span class="token punctuation">, </span></span><span class="parameter ">entity<span class="token operator">: </span><a href="../../org.kryptonmc.krypton.entity/-krypton-entity/index.html">KryptonEntity</a></span></span><span class="token punctuation">)</span></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="2110826164%2FFunctions%2F791161957" anchor-label="fallOn" id="2110826164%2FFunctions%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="../../org.kryptonmc.krypton.world.block.handler/-block-handler/fall-on.html"><span>fall</span><wbr><span><span>On</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="2110826164%2FFunctions%2F791161957"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":server:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="../../org.kryptonmc.krypton.world.block.handler/-block-handler/fall-on.html"><span class="token function">fallOn</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">world<span class="token operator">: </span><a href="../../org.kryptonmc.krypton.world/-krypton-world/index.html">KryptonWorld</a><span class="token punctuation">, </span></span><span class="parameter ">state<span class="token operator">: </span><a href="../../org.kryptonmc.krypton.world.block.state/-krypton-block-state/index.html">KryptonBlockState</a><span class="token punctuation">, </span></span><span class="parameter ">pos<span class="token operator">: </span><a href="../../org.kryptonmc.krypton.coordinate/-block-pos/index.html">BlockPos</a><span class="token punctuation">, </span></span><span class="parameter ">entity<span class="token operator">: </span><a href="../../org.kryptonmc.krypton.entity/-krypton-entity/index.html">KryptonEntity</a><span class="token punctuation">, </span></span><span class="parameter ">fallDistance<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-float/index.html">Float</a></span></span><span class="token punctuation">)</span></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-108410775%2FFunctions%2F791161957" anchor-label="getAnalogOutputSignal" id="-108410775%2FFunctions%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="../../org.kryptonmc.krypton.world.block.handler/-redstone-data-provider/get-analog-output-signal.html"><span>get</span><wbr><span>Analog</span><wbr><span>Output</span><wbr><span><span>Signal</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-108410775%2FFunctions%2F791161957"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":server:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="../../org.kryptonmc.krypton.world.block.handler/-redstone-data-provider/get-analog-output-signal.html"><span class="token function">getAnalogOutputSignal</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">state<span class="token operator">: </span><a href="../../org.kryptonmc.krypton.world.block.state/-krypton-block-state/index.html">KryptonBlockState</a><span class="token punctuation">, </span></span><span class="parameter ">world<span class="token operator">: </span><a href="../../org.kryptonmc.krypton.world/-krypton-world/index.html">KryptonWorld</a><span class="token punctuation">, </span></span><span class="parameter ">pos<span class="token operator">: </span><a href="../../org.kryptonmc.krypton.coordinate/-block-pos/index.html">BlockPos</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-2132880051%2FFunctions%2F791161957" anchor-label="getBlockSupportShape" id="-2132880051%2FFunctions%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="../../org.kryptonmc.krypton.world.block.handler/-block-shapes-provider/get-block-support-shape.html"><span>get</span><wbr><span>Block</span><wbr><span>Support</span><wbr><span><span>Shape</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-2132880051%2FFunctions%2F791161957"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":server:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="../../org.kryptonmc.krypton.world.block.handler/-block-shapes-provider/get-block-support-shape.html"><span class="token function">getBlockSupportShape</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">state<span class="token operator">: </span><a href="../../org.kryptonmc.krypton.world.block.state/-krypton-block-state/index.html">KryptonBlockState</a><span class="token punctuation">, </span></span><span class="parameter ">world<span class="token operator">: </span><a href="../../org.kryptonmc.krypton.world.components/-block-getter/index.html">BlockGetter</a><span class="token punctuation">, </span></span><span class="parameter ">pos<span class="token operator">: </span><a href="../../org.kryptonmc.krypton.coordinate/-block-pos/index.html">BlockPos</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../../org.kryptonmc.krypton.shapes/-voxel-shape/index.html">VoxelShape</a></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="1213315763%2FFunctions%2F791161957" anchor-label="getCollisionShape" id="1213315763%2FFunctions%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="../../org.kryptonmc.krypton.world.block.handler/-block-shapes-provider/get-collision-shape.html"><span>get</span><wbr><span>Collision</span><wbr><span><span>Shape</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1213315763%2FFunctions%2F791161957"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":server:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="../../org.kryptonmc.krypton.world.block.handler/-block-shapes-provider/get-collision-shape.html"><span class="token function">getCollisionShape</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">state<span class="token operator">: </span><a href="../../org.kryptonmc.krypton.world.block.state/-krypton-block-state/index.html">KryptonBlockState</a><span class="token punctuation">, </span></span><span class="parameter ">world<span class="token operator">: </span><a href="../../org.kryptonmc.krypton.world.components/-block-getter/index.html">BlockGetter</a><span class="token punctuation">, </span></span><span class="parameter ">pos<span class="token operator">: </span><a href="../../org.kryptonmc.krypton.coordinate/-block-pos/index.html">BlockPos</a><span class="token punctuation">, </span></span><span class="parameter ">context<span class="token operator">: </span><a href="../../org.kryptonmc.krypton.shapes.collision/-collision-context/index.html">CollisionContext</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../../org.kryptonmc.krypton.shapes/-voxel-shape/index.html">VoxelShape</a></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-857039731%2FFunctions%2F791161957" anchor-label="getDestroyProgress" id="-857039731%2FFunctions%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="../../org.kryptonmc.krypton.world.block.handler/-block-handler/get-destroy-progress.html"><span>get</span><wbr><span>Destroy</span><wbr><span><span>Progress</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-857039731%2FFunctions%2F791161957"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":server:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="../../org.kryptonmc.krypton.world.block.handler/-block-handler/get-destroy-progress.html"><span class="token function">getDestroyProgress</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">state<span class="token operator">: </span><a href="../../org.kryptonmc.krypton.world.block.state/-krypton-block-state/index.html">KryptonBlockState</a><span class="token punctuation">, </span></span><span class="parameter ">player<span class="token operator">: </span><a href="../../org.kryptonmc.krypton.entity.player/-krypton-player/index.html">KryptonPlayer</a><span class="token punctuation">, </span></span><span class="parameter ">world<span class="token operator">: </span><a href="../../org.kryptonmc.krypton.world.components/-block-getter/index.html">BlockGetter</a><span class="token punctuation">, </span></span><span class="parameter ">position<span class="token operator">: </span><a href="../../org.kryptonmc.krypton.coordinate/-block-pos/index.html">BlockPos</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-float/index.html">Float</a></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="70311293%2FFunctions%2F791161957" anchor-label="getDirectSignal" id="70311293%2FFunctions%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="../../org.kryptonmc.krypton.world.block.handler/-redstone-data-provider/get-direct-signal.html"><span>get</span><wbr><span>Direct</span><wbr><span><span>Signal</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="70311293%2FFunctions%2F791161957"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":server:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="../../org.kryptonmc.krypton.world.block.handler/-redstone-data-provider/get-direct-signal.html"><span class="token function">getDirectSignal</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">state<span class="token operator">: </span><a href="../../org.kryptonmc.krypton.world.block.state/-krypton-block-state/index.html">KryptonBlockState</a><span class="token punctuation">, </span></span><span class="parameter ">world<span class="token operator">: </span><a href="../../org.kryptonmc.krypton.world.components/-block-getter/index.html">BlockGetter</a><span class="token punctuation">, </span></span><span class="parameter ">pos<span class="token operator">: </span><a href="../../org.kryptonmc.krypton.coordinate/-block-pos/index.html">BlockPos</a><span class="token punctuation">, </span></span><span class="parameter ">direction<span class="token operator">: </span><a href="../../../api/org.kryptonmc.api.util/-direction/index.html">Direction</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-557329757%2FFunctions%2F791161957" anchor-label="getFluidState" id="-557329757%2FFunctions%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="../../org.kryptonmc.krypton.world.block.handler/-block-properties-provider/get-fluid-state.html"><span>get</span><wbr><span>Fluid</span><wbr><span><span>State</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-557329757%2FFunctions%2F791161957"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":server:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="../../org.kryptonmc.krypton.world.block.handler/-block-properties-provider/get-fluid-state.html"><span class="token function">getFluidState</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">state<span class="token operator">: </span><a href="../../org.kryptonmc.krypton.world.block.state/-krypton-block-state/index.html">KryptonBlockState</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../../org.kryptonmc.krypton.world.fluid/-krypton-fluid-state/index.html">KryptonFluidState</a></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="1014583647%2FFunctions%2F791161957" anchor-label="getInteractionShape" id="1014583647%2FFunctions%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="../../org.kryptonmc.krypton.world.block.handler/-block-shapes-provider/get-interaction-shape.html"><span>get</span><wbr><span>Interaction</span><wbr><span><span>Shape</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1014583647%2FFunctions%2F791161957"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":server:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="../../org.kryptonmc.krypton.world.block.handler/-block-shapes-provider/get-interaction-shape.html"><span class="token function">getInteractionShape</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">state<span class="token operator">: </span><a href="../../org.kryptonmc.krypton.world.block.state/-krypton-block-state/index.html">KryptonBlockState</a><span class="token punctuation">, </span></span><span class="parameter ">world<span class="token operator">: </span><a href="../../org.kryptonmc.krypton.world.components/-block-getter/index.html">BlockGetter</a><span class="token punctuation">, </span></span><span class="parameter ">pos<span class="token operator">: </span><a href="../../org.kryptonmc.krypton.coordinate/-block-pos/index.html">BlockPos</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../../org.kryptonmc.krypton.shapes/-voxel-shape/index.html">VoxelShape</a></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-2033480660%2FFunctions%2F791161957" anchor-label="getItemStack" id="-2033480660%2FFunctions%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="../../org.kryptonmc.krypton.world.block.handler/-block-properties-provider/get-item-stack.html"><span>get</span><wbr><span>Item</span><wbr><span><span>Stack</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-2033480660%2FFunctions%2F791161957"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":server:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="../../org.kryptonmc.krypton.world.block.handler/-block-properties-provider/get-item-stack.html"><span class="token function">getItemStack</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">world<span class="token operator">: </span><a href="../../org.kryptonmc.krypton.world.components/-block-getter/index.html">BlockGetter</a><span class="token punctuation">, </span></span><span class="parameter ">pos<span class="token operator">: </span><a href="../../org.kryptonmc.krypton.coordinate/-block-pos/index.html">BlockPos</a><span class="token punctuation">, </span></span><span class="parameter ">state<span class="token operator">: </span><a href="../../org.kryptonmc.krypton.world.block.state/-krypton-block-state/index.html">KryptonBlockState</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../../org.kryptonmc.krypton.item/-krypton-item-stack/index.html">KryptonItemStack</a></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="1977610134%2FFunctions%2F791161957" anchor-label="getLightBlock" id="1977610134%2FFunctions%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="../../org.kryptonmc.krypton.world.block.handler/-block-properties-provider/get-light-block.html"><span>get</span><wbr><span>Light</span><wbr><span><span>Block</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1977610134%2FFunctions%2F791161957"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":server:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="../../org.kryptonmc.krypton.world.block.handler/-block-properties-provider/get-light-block.html"><span class="token function">getLightBlock</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">state<span class="token operator">: </span><a href="../../org.kryptonmc.krypton.world.block.state/-krypton-block-state/index.html">KryptonBlockState</a><span class="token punctuation">, </span></span><span class="parameter ">world<span class="token operator">: </span><a href="../../org.kryptonmc.krypton.world.components/-block-getter/index.html">BlockGetter</a><span class="token punctuation">, </span></span><span class="parameter ">pos<span class="token operator">: </span><a href="../../org.kryptonmc.krypton.coordinate/-block-pos/index.html">BlockPos</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="1547705561%2FFunctions%2F791161957" anchor-label="getLightEmission" id="1547705561%2FFunctions%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="../../org.kryptonmc.krypton.world.block.handler/-block-properties-provider/get-light-emission.html"><span>get</span><wbr><span>Light</span><wbr><span><span>Emission</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1547705561%2FFunctions%2F791161957"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":server:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="../../org.kryptonmc.krypton.world.block.handler/-block-properties-provider/get-light-emission.html"><span class="token function">getLightEmission</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">state<span class="token operator">: </span><a href="../../org.kryptonmc.krypton.world.block.state/-krypton-block-state/index.html">KryptonBlockState</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="887026904%2FFunctions%2F791161957" anchor-label="getMaterialColor" id="887026904%2FFunctions%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="../../org.kryptonmc.krypton.world.block.handler/-block-properties-provider/get-material-color.html"><span>get</span><wbr><span>Material</span><wbr><span><span>Color</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="887026904%2FFunctions%2F791161957"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":server:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="../../org.kryptonmc.krypton.world.block.handler/-block-properties-provider/get-material-color.html"><span class="token function">getMaterialColor</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">state<span class="token operator">: </span><a href="../../org.kryptonmc.krypton.world.block.state/-krypton-block-state/index.html">KryptonBlockState</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../../org.kryptonmc.krypton.world.material/-material-color/index.html">MaterialColor</a></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="1079517594%2FFunctions%2F791161957" anchor-label="getOcclusionShape" id="1079517594%2FFunctions%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="../../org.kryptonmc.krypton.world.block.handler/-block-shapes-provider/get-occlusion-shape.html"><span>get</span><wbr><span>Occlusion</span><wbr><span><span>Shape</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1079517594%2FFunctions%2F791161957"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":server:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="../../org.kryptonmc.krypton.world.block.handler/-block-shapes-provider/get-occlusion-shape.html"><span class="token function">getOcclusionShape</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">state<span class="token operator">: </span><a href="../../org.kryptonmc.krypton.world.block.state/-krypton-block-state/index.html">KryptonBlockState</a><span class="token punctuation">, </span></span><span class="parameter ">world<span class="token operator">: </span><a href="../../org.kryptonmc.krypton.world.components/-block-getter/index.html">BlockGetter</a><span class="token punctuation">, </span></span><span class="parameter ">pos<span class="token operator">: </span><a href="../../org.kryptonmc.krypton.coordinate/-block-pos/index.html">BlockPos</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../../org.kryptonmc.krypton.shapes/-voxel-shape/index.html">VoxelShape</a></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="287132329%2FFunctions%2F791161957" anchor-label="getOffsetType" id="287132329%2FFunctions%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="../../org.kryptonmc.krypton.world.block.handler/-block-properties-provider/get-offset-type.html"><span>get</span><wbr><span>Offset</span><wbr><span><span>Type</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="287132329%2FFunctions%2F791161957"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":server:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="../../org.kryptonmc.krypton.world.block.handler/-block-properties-provider/get-offset-type.html"><span class="token function">getOffsetType</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">state<span class="token operator">: </span><a href="../../org.kryptonmc.krypton.world.block.state/-krypton-block-state/index.html">KryptonBlockState</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../../org.kryptonmc.krypton.world.block.data/-block-offset-type/index.html">BlockOffsetType</a></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-366887904%2FFunctions%2F791161957" anchor-label="getPlacementState" id="-366887904%2FFunctions%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="../../org.kryptonmc.krypton.world.block.handler/-block-properties-provider/get-placement-state.html"><span>get</span><wbr><span>Placement</span><wbr><span><span>State</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-366887904%2FFunctions%2F791161957"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":server:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="../../org.kryptonmc.krypton.world.block.handler/-block-properties-provider/get-placement-state.html"><span class="token function">getPlacementState</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">context<span class="token operator">: </span><a href="../../org.kryptonmc.krypton.item.context/-block-place-context/index.html">BlockPlaceContext</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../../org.kryptonmc.krypton.world.block.state/-krypton-block-state/index.html">KryptonBlockState</a><span class="token operator">?</span></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="863556127%2FFunctions%2F791161957" anchor-label="getPushReaction" id="863556127%2FFunctions%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="../../org.kryptonmc.krypton.world.block.handler/-block-properties-provider/get-push-reaction.html"><span>get</span><wbr><span>Push</span><wbr><span><span>Reaction</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="863556127%2FFunctions%2F791161957"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":server:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="../../org.kryptonmc.krypton.world.block.handler/-block-properties-provider/get-push-reaction.html"><span class="token function">getPushReaction</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">state<span class="token operator">: </span><a href="../../org.kryptonmc.krypton.world.block.state/-krypton-block-state/index.html">KryptonBlockState</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../../../api/org.kryptonmc.api.block/-push-reaction/index.html">PushReaction</a></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-1142039481%2FFunctions%2F791161957" anchor-label="getRenderShape" id="-1142039481%2FFunctions%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="../../org.kryptonmc.krypton.world.block.handler/-block-properties-provider/get-render-shape.html"><span>get</span><wbr><span>Render</span><wbr><span><span>Shape</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1142039481%2FFunctions%2F791161957"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":server:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="../../org.kryptonmc.krypton.world.block.handler/-block-properties-provider/get-render-shape.html"><span class="token function">getRenderShape</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">state<span class="token operator">: </span><a href="../../org.kryptonmc.krypton.world.block.state/-krypton-block-state/index.html">KryptonBlockState</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../../org.kryptonmc.krypton.world.block.data/-render-shape/index.html">RenderShape</a></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-2128609761%2FFunctions%2F791161957" anchor-label="getShape" id="-2128609761%2FFunctions%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="../../org.kryptonmc.krypton.world.block.handler/-block-shapes-provider/get-shape.html"><span>get</span><wbr><span><span>Shape</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-2128609761%2FFunctions%2F791161957"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":server:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="../../org.kryptonmc.krypton.world.block.handler/-block-shapes-provider/get-shape.html"><span class="token function">getShape</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">state<span class="token operator">: </span><a href="../../org.kryptonmc.krypton.world.block.state/-krypton-block-state/index.html">KryptonBlockState</a><span class="token punctuation">, </span></span><span class="parameter ">world<span class="token operator">: </span><a href="../../org.kryptonmc.krypton.world.components/-block-getter/index.html">BlockGetter</a><span class="token punctuation">, </span></span><span class="parameter ">pos<span class="token operator">: </span><a href="../../org.kryptonmc.krypton.coordinate/-block-pos/index.html">BlockPos</a><span class="token punctuation">, </span></span><span class="parameter ">context<span class="token operator">: </span><a href="../../org.kryptonmc.krypton.shapes.collision/-collision-context/index.html">CollisionContext</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../../org.kryptonmc.krypton.shapes/-voxel-shape/index.html">VoxelShape</a></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="407509172%2FFunctions%2F791161957" anchor-label="getSignal" id="407509172%2FFunctions%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="../../org.kryptonmc.krypton.world.block.handler/-redstone-data-provider/get-signal.html"><span>get</span><wbr><span><span>Signal</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="407509172%2FFunctions%2F791161957"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":server:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="../../org.kryptonmc.krypton.world.block.handler/-redstone-data-provider/get-signal.html"><span class="token function">getSignal</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">state<span class="token operator">: </span><a href="../../org.kryptonmc.krypton.world.block.state/-krypton-block-state/index.html">KryptonBlockState</a><span class="token punctuation">, </span></span><span class="parameter ">world<span class="token operator">: </span><a href="../../org.kryptonmc.krypton.world.components/-block-getter/index.html">BlockGetter</a><span class="token punctuation">, </span></span><span class="parameter ">pos<span class="token operator">: </span><a href="../../org.kryptonmc.krypton.coordinate/-block-pos/index.html">BlockPos</a><span class="token punctuation">, </span></span><span class="parameter ">direction<span class="token operator">: </span><a href="../../../api/org.kryptonmc.api.util/-direction/index.html">Direction</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-1382923713%2FFunctions%2F791161957" anchor-label="getVisualShape" id="-1382923713%2FFunctions%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="../../org.kryptonmc.krypton.world.block.handler/-block-shapes-provider/get-visual-shape.html"><span>get</span><wbr><span>Visual</span><wbr><span><span>Shape</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1382923713%2FFunctions%2F791161957"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":server:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="../../org.kryptonmc.krypton.world.block.handler/-block-shapes-provider/get-visual-shape.html"><span class="token function">getVisualShape</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">state<span class="token operator">: </span><a href="../../org.kryptonmc.krypton.world.block.state/-krypton-block-state/index.html">KryptonBlockState</a><span class="token punctuation">, </span></span><span class="parameter ">world<span class="token operator">: </span><a href="../../org.kryptonmc.krypton.world.components/-block-getter/index.html">BlockGetter</a><span class="token punctuation">, </span></span><span class="parameter ">pos<span class="token operator">: </span><a href="../../org.kryptonmc.krypton.coordinate/-block-pos/index.html">BlockPos</a><span class="token punctuation">, </span></span><span class="parameter ">context<span class="token operator">: </span><a href="../../org.kryptonmc.krypton.shapes.collision/-collision-context/index.html">CollisionContext</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../../org.kryptonmc.krypton.shapes/-voxel-shape/index.html">VoxelShape</a></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="1274433882%2FFunctions%2F791161957" anchor-label="handlePrecipitation" id="1274433882%2FFunctions%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="../../org.kryptonmc.krypton.world.block.handler/-block-handler/handle-precipitation.html"><span>handle</span><wbr><span><span>Precipitation</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1274433882%2FFunctions%2F791161957"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":server:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="../../org.kryptonmc.krypton.world.block.handler/-block-handler/handle-precipitation.html"><span class="token function">handlePrecipitation</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">state<span class="token operator">: </span><a href="../../org.kryptonmc.krypton.world.block.state/-krypton-block-state/index.html">KryptonBlockState</a><span class="token punctuation">, </span></span><span class="parameter ">world<span class="token operator">: </span><a href="../../org.kryptonmc.krypton.world/-krypton-world/index.html">KryptonWorld</a><span class="token punctuation">, </span></span><span class="parameter ">pos<span class="token operator">: </span><a href="../../org.kryptonmc.krypton.coordinate/-block-pos/index.html">BlockPos</a><span class="token punctuation">, </span></span><span class="parameter ">precipitation<span class="token operator">: </span><a href="../../../api/org.kryptonmc.api.world.biome/-precipitation/index.html">Precipitation</a></span></span><span class="token punctuation">)</span></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-2075214265%2FFunctions%2F791161957" anchor-label="hasAnalogOutputSignal" id="-2075214265%2FFunctions%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="../../org.kryptonmc.krypton.world.block.handler/-redstone-data-provider/has-analog-output-signal.html"><span>has</span><wbr><span>Analog</span><wbr><span>Output</span><wbr><span><span>Signal</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-2075214265%2FFunctions%2F791161957"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":server:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="../../org.kryptonmc.krypton.world.block.handler/-redstone-data-provider/has-analog-output-signal.html"><span class="token function">hasAnalogOutputSignal</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">state<span class="token operator">: </span><a href="../../org.kryptonmc.krypton.world.block.state/-krypton-block-state/index.html">KryptonBlockState</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="1801306433%2FFunctions%2F791161957" anchor-label="hasBlockEntity" id="1801306433%2FFunctions%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="../../org.kryptonmc.krypton.world.block.handler/-block-properties-provider/has-block-entity.html"><span>has</span><wbr><span>Block</span><wbr><span><span>Entity</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1801306433%2FFunctions%2F791161957"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":server:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="../../org.kryptonmc.krypton.world.block.handler/-block-properties-provider/has-block-entity.html"><span class="token function">hasBlockEntity</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="188029315%2FFunctions%2F791161957" anchor-label="hasGravity" id="188029315%2FFunctions%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="../../org.kryptonmc.krypton.world.block.handler/-block-properties-provider/has-gravity.html"><span>has</span><wbr><span><span>Gravity</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="188029315%2FFunctions%2F791161957"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":server:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="../../org.kryptonmc.krypton.world.block.handler/-block-properties-provider/has-gravity.html"><span class="token function">hasGravity</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="1089462882%2FFunctions%2F791161957" anchor-label="hasPostProcess" id="1089462882%2FFunctions%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="../../org.kryptonmc.krypton.world.block.handler/-block-properties-provider/has-post-process.html"><span>has</span><wbr><span>Post</span><wbr><span><span>Process</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1089462882%2FFunctions%2F791161957"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":server:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="../../org.kryptonmc.krypton.world.block.handler/-block-properties-provider/has-post-process.html"><span class="token function">hasPostProcess</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">state<span class="token operator">: </span><a href="../../org.kryptonmc.krypton.world.block.state/-krypton-block-state/index.html">KryptonBlockState</a><span class="token punctuation">, </span></span><span class="parameter ">world<span class="token operator">: </span><a href="../../org.kryptonmc.krypton.world.components/-block-getter/index.html">BlockGetter</a><span class="token punctuation">, </span></span><span class="parameter ">pos<span class="token operator">: </span><a href="../../org.kryptonmc.krypton.coordinate/-block-pos/index.html">BlockPos</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-1611626703%2FFunctions%2F791161957" anchor-label="isApplicableBlockType" id="-1611626703%2FFunctions%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="is-applicable-block-type.html"><span>is</span><wbr><span>Applicable</span><wbr><span>Block</span><wbr><span><span>Type</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1611626703%2FFunctions%2F791161957"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":server:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="is-applicable-block-type.html"><span class="token function">isApplicableBlockType</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">name<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-389196705%2FFunctions%2F791161957" anchor-label="isCollisionShapeFullBlock" id="-389196705%2FFunctions%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="../../org.kryptonmc.krypton.world.block.handler/-block-shapes-provider/is-collision-shape-full-block.html"><span>is</span><wbr><span>Collision</span><wbr><span>Shape</span><wbr><span>Full</span><wbr><span><span>Block</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-389196705%2FFunctions%2F791161957"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":server:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="../../org.kryptonmc.krypton.world.block.handler/-block-shapes-provider/is-collision-shape-full-block.html"><span class="token function">isCollisionShapeFullBlock</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">state<span class="token operator">: </span><a href="../../org.kryptonmc.krypton.world.block.state/-krypton-block-state/index.html">KryptonBlockState</a><span class="token punctuation">, </span></span><span class="parameter ">world<span class="token operator">: </span><a href="../../org.kryptonmc.krypton.world.components/-block-getter/index.html">BlockGetter</a><span class="token punctuation">, </span></span><span class="parameter ">pos<span class="token operator">: </span><a href="../../org.kryptonmc.krypton.coordinate/-block-pos/index.html">BlockPos</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="471749604%2FFunctions%2F791161957" anchor-label="isOcclusionShapeFullBlock" id="471749604%2FFunctions%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="../../org.kryptonmc.krypton.world.block.handler/-block-shapes-provider/is-occlusion-shape-full-block.html"><span>is</span><wbr><span>Occlusion</span><wbr><span>Shape</span><wbr><span>Full</span><wbr><span><span>Block</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="471749604%2FFunctions%2F791161957"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":server:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="../../org.kryptonmc.krypton.world.block.handler/-block-shapes-provider/is-occlusion-shape-full-block.html"><span class="token function">isOcclusionShapeFullBlock</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">state<span class="token operator">: </span><a href="../../org.kryptonmc.krypton.world.block.state/-krypton-block-state/index.html">KryptonBlockState</a><span class="token punctuation">, </span></span><span class="parameter ">world<span class="token operator">: </span><a href="../../org.kryptonmc.krypton.world.components/-block-getter/index.html">BlockGetter</a><span class="token punctuation">, </span></span><span class="parameter ">pos<span class="token operator">: </span><a href="../../org.kryptonmc.krypton.coordinate/-block-pos/index.html">BlockPos</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-1412745574%2FFunctions%2F791161957" anchor-label="isRedstoneConductor" id="-1412745574%2FFunctions%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="../../org.kryptonmc.krypton.world.block.handler/-block-properties-provider/is-redstone-conductor.html"><span>is</span><wbr><span>Redstone</span><wbr><span><span>Conductor</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1412745574%2FFunctions%2F791161957"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":server:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="../../org.kryptonmc.krypton.world.block.handler/-block-properties-provider/is-redstone-conductor.html"><span class="token function">isRedstoneConductor</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">state<span class="token operator">: </span><a href="../../org.kryptonmc.krypton.world.block.state/-krypton-block-state/index.html">KryptonBlockState</a><span class="token punctuation">, </span></span><span class="parameter ">world<span class="token operator">: </span><a href="../../org.kryptonmc.krypton.world.components/-block-getter/index.html">BlockGetter</a><span class="token punctuation">, </span></span><span class="parameter ">pos<span class="token operator">: </span><a href="../../org.kryptonmc.krypton.coordinate/-block-pos/index.html">BlockPos</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-1791941871%2FFunctions%2F791161957" anchor-label="isSignalSource" id="-1791941871%2FFunctions%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="../../org.kryptonmc.krypton.world.block.handler/-redstone-data-provider/is-signal-source.html"><span>is</span><wbr><span>Signal</span><wbr><span><span>Source</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1791941871%2FFunctions%2F791161957"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":server:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="../../org.kryptonmc.krypton.world.block.handler/-redstone-data-provider/is-signal-source.html"><span class="token function">isSignalSource</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">state<span class="token operator">: </span><a href="../../org.kryptonmc.krypton.world.block.state/-krypton-block-state/index.html">KryptonBlockState</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-1275035820%2FFunctions%2F791161957" anchor-label="isSuffocating" id="-1275035820%2FFunctions%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="../../org.kryptonmc.krypton.world.block.handler/-block-properties-provider/is-suffocating.html"><span>is</span><wbr><span><span>Suffocating</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1275035820%2FFunctions%2F791161957"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":server:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="../../org.kryptonmc.krypton.world.block.handler/-block-properties-provider/is-suffocating.html"><span class="token function">isSuffocating</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">state<span class="token operator">: </span><a href="../../org.kryptonmc.krypton.world.block.state/-krypton-block-state/index.html">KryptonBlockState</a><span class="token punctuation">, </span></span><span class="parameter ">world<span class="token operator">: </span><a href="../../org.kryptonmc.krypton.world.components/-block-getter/index.html">BlockGetter</a><span class="token punctuation">, </span></span><span class="parameter ">pos<span class="token operator">: </span><a href="../../org.kryptonmc.krypton.coordinate/-block-pos/index.html">BlockPos</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-57940752%2FFunctions%2F791161957" anchor-label="isValidSpawn" id="-57940752%2FFunctions%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="../../org.kryptonmc.krypton.world.block.handler/-block-properties-provider/is-valid-spawn.html"><span>is</span><wbr><span>Valid</span><wbr><span><span>Spawn</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-57940752%2FFunctions%2F791161957"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":server:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="../../org.kryptonmc.krypton.world.block.handler/-block-properties-provider/is-valid-spawn.html"><span class="token function">isValidSpawn</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">state<span class="token operator">: </span><a href="../../org.kryptonmc.krypton.world.block.state/-krypton-block-state/index.html">KryptonBlockState</a><span class="token punctuation">, </span></span><span class="parameter ">world<span class="token operator">: </span><a href="../../org.kryptonmc.krypton.world.components/-block-getter/index.html">BlockGetter</a><span class="token punctuation">, </span></span><span class="parameter ">pos<span class="token operator">: </span><a href="../../org.kryptonmc.krypton.coordinate/-block-pos/index.html">BlockPos</a><span class="token punctuation">, </span></span><span class="parameter ">type<span class="token operator">: </span><a href="../../org.kryptonmc.krypton.entity/-krypton-entity-type/index.html">KryptonEntityType</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-78220244%2FFunctions%2F791161957" anchor-label="maximumHorizontalOffset" id="-78220244%2FFunctions%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="../../org.kryptonmc.krypton.world.block.handler/-block-properties-provider/maximum-horizontal-offset.html"><span>maximum</span><wbr><span>Horizontal</span><wbr><span><span>Offset</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-78220244%2FFunctions%2F791161957"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":server:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="../../org.kryptonmc.krypton.world.block.handler/-block-properties-provider/maximum-horizontal-offset.html"><span class="token function">maximumHorizontalOffset</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-float/index.html">Float</a></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="1102450714%2FFunctions%2F791161957" anchor-label="maximumVerticalOffset" id="1102450714%2FFunctions%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="../../org.kryptonmc.krypton.world.block.handler/-block-properties-provider/maximum-vertical-offset.html"><span>maximum</span><wbr><span>Vertical</span><wbr><span><span>Offset</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1102450714%2FFunctions%2F791161957"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":server:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="../../org.kryptonmc.krypton.world.block.handler/-block-properties-provider/maximum-vertical-offset.html"><span class="token function">maximumVerticalOffset</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-float/index.html">Float</a></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="1464851467%2FFunctions%2F791161957" anchor-label="mirror" id="1464851467%2FFunctions%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="../../org.kryptonmc.krypton.world.block.handler/-block-handler/mirror.html"><span><span>mirror</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1464851467%2FFunctions%2F791161957"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":server:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="../../org.kryptonmc.krypton.world.block.handler/-block-handler/mirror.html"><span class="token function">mirror</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">state<span class="token operator">: </span><a href="../../org.kryptonmc.krypton.world.block.state/-krypton-block-state/index.html">KryptonBlockState</a><span class="token punctuation">, </span></span><span class="parameter ">mirror<span class="token operator">: </span><a href="../../org.kryptonmc.krypton.util.math/-mirror/index.html">Mirror</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../../org.kryptonmc.krypton.world.block.state/-krypton-block-state/index.html">KryptonBlockState</a></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-1575537453%2FFunctions%2F791161957" anchor-label="neighbourChanged" id="-1575537453%2FFunctions%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="../../org.kryptonmc.krypton.world.block.handler/-block-handler/neighbour-changed.html"><span>neighbour</span><wbr><span><span>Changed</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1575537453%2FFunctions%2F791161957"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":server:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="../../org.kryptonmc.krypton.world.block.handler/-block-handler/neighbour-changed.html"><span class="token function">neighbourChanged</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">state<span class="token operator">: </span><a href="../../org.kryptonmc.krypton.world.block.state/-krypton-block-state/index.html">KryptonBlockState</a><span class="token punctuation">, </span></span><span class="parameter ">world<span class="token operator">: </span><a href="../../org.kryptonmc.krypton.world/-krypton-world/index.html">KryptonWorld</a><span class="token punctuation">, </span></span><span class="parameter ">pos<span class="token operator">: </span><a href="../../org.kryptonmc.krypton.coordinate/-block-pos/index.html">BlockPos</a><span class="token punctuation">, </span></span><span class="parameter ">block<span class="token operator">: </span><a href="../../org.kryptonmc.krypton.world.block/-krypton-block/index.html">KryptonBlock</a><span class="token punctuation">, </span></span><span class="parameter ">neighbourPos<span class="token operator">: </span><a href="../../org.kryptonmc.krypton.coordinate/-block-pos/index.html">BlockPos</a><span class="token punctuation">, </span></span><span class="parameter ">moving<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a></span></span><span class="token punctuation">)</span></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-1109176872%2FFunctions%2F791161957" anchor-label="onPlace" id="-1109176872%2FFunctions%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="../../org.kryptonmc.krypton.world.block.handler/-block-handler/on-place.html"><span>on</span><wbr><span><span>Place</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1109176872%2FFunctions%2F791161957"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":server:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="../../org.kryptonmc.krypton.world.block.handler/-block-handler/on-place.html"><span class="token function">onPlace</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">state<span class="token operator">: </span><a href="../../org.kryptonmc.krypton.world.block.state/-krypton-block-state/index.html">KryptonBlockState</a><span class="token punctuation">, </span></span><span class="parameter ">world<span class="token operator">: </span><a href="../../org.kryptonmc.krypton.world/-krypton-world/index.html">KryptonWorld</a><span class="token punctuation">, </span></span><span class="parameter ">pos<span class="token operator">: </span><a href="../../org.kryptonmc.krypton.coordinate/-block-pos/index.html">BlockPos</a><span class="token punctuation">, </span></span><span class="parameter ">oldState<span class="token operator">: </span><a href="../../org.kryptonmc.krypton.world.block.state/-krypton-block-state/index.html">KryptonBlockState</a><span class="token punctuation">, </span></span><span class="parameter ">isMoving<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a></span></span><span class="token punctuation">)</span></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-489168277%2FFunctions%2F791161957" anchor-label="onProjectileHit" id="-489168277%2FFunctions%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="../../org.kryptonmc.krypton.world.block.handler/-block-handler/on-projectile-hit.html"><span>on</span><wbr><span>Projectile</span><wbr><span><span>Hit</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-489168277%2FFunctions%2F791161957"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":server:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="../../org.kryptonmc.krypton.world.block.handler/-block-handler/on-projectile-hit.html"><span class="token function">onProjectileHit</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">world<span class="token operator">: </span><a href="../../org.kryptonmc.krypton.world/-krypton-world/index.html">KryptonWorld</a><span class="token punctuation">, </span></span><span class="parameter ">state<span class="token operator">: </span><a href="../../org.kryptonmc.krypton.world.block.state/-krypton-block-state/index.html">KryptonBlockState</a><span class="token punctuation">, </span></span><span class="parameter ">hitResult<span class="token operator">: </span><a href="../../org.kryptonmc.krypton.util.hit/-block-hit-result/index.html">BlockHitResult</a><span class="token punctuation">, </span></span><span class="parameter ">projectile<span class="token operator">: </span><a href="../../org.kryptonmc.krypton.entity.projectile/-krypton-projectile/index.html">KryptonProjectile</a></span></span><span class="token punctuation">)</span></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="2056192839%2FFunctions%2F791161957" anchor-label="onRemove" id="2056192839%2FFunctions%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="../../org.kryptonmc.krypton.world.block.handler/-block-handler/on-remove.html"><span>on</span><wbr><span><span>Remove</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="2056192839%2FFunctions%2F791161957"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":server:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="../../org.kryptonmc.krypton.world.block.handler/-block-handler/on-remove.html"><span class="token function">onRemove</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">state<span class="token operator">: </span><a href="../../org.kryptonmc.krypton.world.block.state/-krypton-block-state/index.html">KryptonBlockState</a><span class="token punctuation">, </span></span><span class="parameter ">world<span class="token operator">: </span><a href="../../org.kryptonmc.krypton.world/-krypton-world/index.html">KryptonWorld</a><span class="token punctuation">, </span></span><span class="parameter ">pos<span class="token operator">: </span><a href="../../org.kryptonmc.krypton.coordinate/-block-pos/index.html">BlockPos</a><span class="token punctuation">, </span></span><span class="parameter ">newState<span class="token operator">: </span><a href="../../org.kryptonmc.krypton.world.block.state/-krypton-block-state/index.html">KryptonBlockState</a><span class="token punctuation">, </span></span><span class="parameter ">isMoving<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a></span></span><span class="token punctuation">)</span></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-234008639%2FFunctions%2F791161957" anchor-label="playerDestroy" id="-234008639%2FFunctions%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="../../org.kryptonmc.krypton.world.block.handler/-block-handler/player-destroy.html"><span>player</span><wbr><span><span>Destroy</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-234008639%2FFunctions%2F791161957"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":server:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="../../org.kryptonmc.krypton.world.block.handler/-block-handler/player-destroy.html"><span class="token function">playerDestroy</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">world<span class="token operator">: </span><a href="../../org.kryptonmc.krypton.world/-krypton-world/index.html">KryptonWorld</a><span class="token punctuation">, </span></span><span class="parameter ">state<span class="token operator">: </span><a href="../../org.kryptonmc.krypton.world.block.state/-krypton-block-state/index.html">KryptonBlockState</a><span class="token punctuation">, </span></span><span class="parameter ">pos<span class="token operator">: </span><a href="../../org.kryptonmc.krypton.coordinate/-block-pos/index.html">BlockPos</a><span class="token punctuation">, </span></span><span class="parameter ">blockEntity<span class="token operator">: </span><a href="../../org.kryptonmc.krypton.world.block.entity/-krypton-block-entity/index.html">KryptonBlockEntity</a><span class="token operator">?</span><span class="token punctuation">, </span></span><span class="parameter ">destroyer<span class="token operator">: </span><a href="../../org.kryptonmc.krypton.entity.player/-krypton-player/index.html">KryptonPlayer</a><span class="token punctuation">, </span></span><span class="parameter ">heldItem<span class="token operator">: </span><a href="../../org.kryptonmc.krypton.item/-krypton-item-stack/index.html">KryptonItemStack</a></span></span><span class="token punctuation">)</span></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-605607572%2FFunctions%2F791161957" anchor-label="playerWillDestroy" id="-605607572%2FFunctions%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="../../org.kryptonmc.krypton.world.block.handler/-block-handler/player-will-destroy.html"><span>player</span><wbr><span>Will</span><wbr><span><span>Destroy</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-605607572%2FFunctions%2F791161957"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":server:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="../../org.kryptonmc.krypton.world.block.handler/-block-handler/player-will-destroy.html"><span class="token function">playerWillDestroy</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">world<span class="token operator">: </span><a href="../../org.kryptonmc.krypton.world/-krypton-world/index.html">KryptonWorld</a><span class="token punctuation">, </span></span><span class="parameter ">pos<span class="token operator">: </span><a href="../../org.kryptonmc.krypton.coordinate/-block-pos/index.html">BlockPos</a><span class="token punctuation">, </span></span><span class="parameter ">state<span class="token operator">: </span><a href="../../org.kryptonmc.krypton.world.block.state/-krypton-block-state/index.html">KryptonBlockState</a><span class="token punctuation">, </span></span><span class="parameter ">player<span class="token operator">: </span><a href="../../org.kryptonmc.krypton.entity.player/-krypton-player/index.html">KryptonPlayer</a></span></span><span class="token punctuation">)</span></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="1191986998%2FFunctions%2F791161957" anchor-label="propagatesSkylightDown" id="1191986998%2FFunctions%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="../../org.kryptonmc.krypton.world.block.handler/-block-properties-provider/propagates-skylight-down.html"><span>propagates</span><wbr><span>Skylight</span><wbr><span><span>Down</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1191986998%2FFunctions%2F791161957"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":server:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="../../org.kryptonmc.krypton.world.block.handler/-block-properties-provider/propagates-skylight-down.html"><span class="token function">propagatesSkylightDown</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">state<span class="token operator">: </span><a href="../../org.kryptonmc.krypton.world.block.state/-krypton-block-state/index.html">KryptonBlockState</a><span class="token punctuation">, </span></span><span class="parameter ">world<span class="token operator">: </span><a href="../../org.kryptonmc.krypton.world.components/-block-getter/index.html">BlockGetter</a><span class="token punctuation">, </span></span><span class="parameter ">pos<span class="token operator">: </span><a href="../../org.kryptonmc.krypton.coordinate/-block-pos/index.html">BlockPos</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-1072496564%2FFunctions%2F791161957" anchor-label="randomlyTicks" id="-1072496564%2FFunctions%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="../../org.kryptonmc.krypton.world.block.handler/-block-properties-provider/randomly-ticks.html"><span>randomly</span><wbr><span><span>Ticks</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1072496564%2FFunctions%2F791161957"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":server:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="../../org.kryptonmc.krypton.world.block.handler/-block-properties-provider/randomly-ticks.html"><span class="token function">randomlyTicks</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">state<span class="token operator">: </span><a href="../../org.kryptonmc.krypton.world.block.state/-krypton-block-state/index.html">KryptonBlockState</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="1167137883%2FFunctions%2F791161957" anchor-label="requiredFeatures" id="1167137883%2FFunctions%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="../../org.kryptonmc.krypton.world.block.handler/-block-properties-provider/required-features.html"><span>required</span><wbr><span><span>Features</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1167137883%2FFunctions%2F791161957"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":server:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="../../org.kryptonmc.krypton.world.block.handler/-block-properties-provider/required-features.html"><span class="token function">requiredFeatures</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../../org.kryptonmc.krypton.world.flag/-feature-flag-set/index.html">FeatureFlagSet</a></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-1035342832%2FFunctions%2F791161957" anchor-label="rotate" id="-1035342832%2FFunctions%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="../../org.kryptonmc.krypton.world.block.handler/-block-handler/rotate.html"><span><span>rotate</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1035342832%2FFunctions%2F791161957"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":server:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="../../org.kryptonmc.krypton.world.block.handler/-block-handler/rotate.html"><span class="token function">rotate</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">state<span class="token operator">: </span><a href="../../org.kryptonmc.krypton.world.block.state/-krypton-block-state/index.html">KryptonBlockState</a><span class="token punctuation">, </span></span><span class="parameter ">rotation<span class="token operator">: </span><a href="../../org.kryptonmc.krypton.util.math/-rotation/index.html">Rotation</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../../org.kryptonmc.krypton.world.block.state/-krypton-block-state/index.html">KryptonBlockState</a></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="1246048470%2FFunctions%2F791161957" anchor-label="setPlacedBy" id="1246048470%2FFunctions%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="../../org.kryptonmc.krypton.world.block.handler/-block-handler/set-placed-by.html"><span>set</span><wbr><span>Placed</span><wbr><span><span>By</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1246048470%2FFunctions%2F791161957"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":server:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="../../org.kryptonmc.krypton.world.block.handler/-block-handler/set-placed-by.html"><span class="token function">setPlacedBy</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">world<span class="token operator">: </span><a href="../../org.kryptonmc.krypton.world/-krypton-world/index.html">KryptonWorld</a><span class="token punctuation">, </span></span><span class="parameter ">pos<span class="token operator">: </span><a href="../../org.kryptonmc.krypton.coordinate/-block-pos/index.html">BlockPos</a><span class="token punctuation">, </span></span><span class="parameter ">state<span class="token operator">: </span><a href="../../org.kryptonmc.krypton.world.block.state/-krypton-block-state/index.html">KryptonBlockState</a><span class="token punctuation">, </span></span><span class="parameter ">placer<span class="token operator">: </span><a href="../../org.kryptonmc.krypton.entity/-krypton-living-entity/index.html">KryptonLivingEntity</a><span class="token operator">?</span><span class="token punctuation">, </span></span><span class="parameter ">heldItem<span class="token operator">: </span><a href="../../org.kryptonmc.krypton.item/-krypton-item-stack/index.html">KryptonItemStack</a></span></span><span class="token punctuation">)</span></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="1021677889%2FFunctions%2F791161957" anchor-label="shouldSkipRendering" id="1021677889%2FFunctions%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="../../org.kryptonmc.krypton.world.block.handler/-block-properties-provider/should-skip-rendering.html"><span>should</span><wbr><span>Skip</span><wbr><span><span>Rendering</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1021677889%2FFunctions%2F791161957"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":server:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="../../org.kryptonmc.krypton.world.block.handler/-block-properties-provider/should-skip-rendering.html"><span class="token function">shouldSkipRendering</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">state<span class="token operator">: </span><a href="../../org.kryptonmc.krypton.world.block.state/-krypton-block-state/index.html">KryptonBlockState</a><span class="token punctuation">, </span></span><span class="parameter ">adjacent<span class="token operator">: </span><a href="../../org.kryptonmc.krypton.world.block.state/-krypton-block-state/index.html">KryptonBlockState</a><span class="token punctuation">, </span></span><span class="parameter ">face<span class="token operator">: </span><a href="../../../api/org.kryptonmc.api.util/-direction/index.html">Direction</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-1683982326%2FFunctions%2F791161957" anchor-label="spawnAfterBreak" id="-1683982326%2FFunctions%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="../../org.kryptonmc.krypton.world.block.handler/-block-handler/spawn-after-break.html"><span>spawn</span><wbr><span>After</span><wbr><span><span>Break</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1683982326%2FFunctions%2F791161957"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":server:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="../../org.kryptonmc.krypton.world.block.handler/-block-handler/spawn-after-break.html"><span class="token function">spawnAfterBreak</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">state<span class="token operator">: </span><a href="../../org.kryptonmc.krypton.world.block.state/-krypton-block-state/index.html">KryptonBlockState</a><span class="token punctuation">, </span></span><span class="parameter ">world<span class="token operator">: </span><a href="../../org.kryptonmc.krypton.world/-krypton-world/index.html">KryptonWorld</a><span class="token punctuation">, </span></span><span class="parameter ">pos<span class="token operator">: </span><a href="../../org.kryptonmc.krypton.coordinate/-block-pos/index.html">BlockPos</a><span class="token punctuation">, </span></span><span class="parameter ">item<span class="token operator">: </span><a href="../../org.kryptonmc.krypton.item/-krypton-item-stack/index.html">KryptonItemStack</a><span class="token punctuation">, </span></span><span class="parameter ">dropItems<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a></span></span><span class="token punctuation">)</span></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-186841019%2FFunctions%2F791161957" anchor-label="spawnDestroyParticles" id="-186841019%2FFunctions%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="../../org.kryptonmc.krypton.world.block.handler/-block-handler/spawn-destroy-particles.html"><span>spawn</span><wbr><span>Destroy</span><wbr><span><span>Particles</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-186841019%2FFunctions%2F791161957"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":server:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="../../org.kryptonmc.krypton.world.block.handler/-block-handler/spawn-destroy-particles.html"><span class="token function">spawnDestroyParticles</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">world<span class="token operator">: </span><a href="../../org.kryptonmc.krypton.world/-krypton-world/index.html">KryptonWorld</a><span class="token punctuation">, </span></span><span class="parameter ">player<span class="token operator">: </span><a href="../../org.kryptonmc.krypton.entity.player/-krypton-player/index.html">KryptonPlayer</a><span class="token punctuation">, </span></span><span class="parameter ">pos<span class="token operator">: </span><a href="../../org.kryptonmc.krypton.coordinate/-block-pos/index.html">BlockPos</a><span class="token punctuation">, </span></span><span class="parameter ">state<span class="token operator">: </span><a href="../../org.kryptonmc.krypton.world.block.state/-krypton-block-state/index.html">KryptonBlockState</a></span></span><span class="token punctuation">)</span></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="696054765%2FFunctions%2F791161957" anchor-label="stepOn" id="696054765%2FFunctions%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="../../org.kryptonmc.krypton.world.block.handler/-block-handler/step-on.html"><span>step</span><wbr><span><span>On</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="696054765%2FFunctions%2F791161957"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":server:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="../../org.kryptonmc.krypton.world.block.handler/-block-handler/step-on.html"><span class="token function">stepOn</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">world<span class="token operator">: </span><a href="../../org.kryptonmc.krypton.world/-krypton-world/index.html">KryptonWorld</a><span class="token punctuation">, </span></span><span class="parameter ">pos<span class="token operator">: </span><a href="../../org.kryptonmc.krypton.coordinate/-block-pos/index.html">BlockPos</a><span class="token punctuation">, </span></span><span class="parameter ">state<span class="token operator">: </span><a href="../../org.kryptonmc.krypton.world.block.state/-krypton-block-state/index.html">KryptonBlockState</a><span class="token punctuation">, </span></span><span class="parameter ">entity<span class="token operator">: </span><a href="../../org.kryptonmc.krypton.entity/-krypton-entity/index.html">KryptonEntity</a></span></span><span class="token punctuation">)</span></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="1921135924%2FFunctions%2F791161957" anchor-label="triggerEvent" id="1921135924%2FFunctions%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="../../org.kryptonmc.krypton.world.block.handler/-block-handler/trigger-event.html"><span>trigger</span><wbr><span><span>Event</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1921135924%2FFunctions%2F791161957"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":server:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="../../org.kryptonmc.krypton.world.block.handler/-block-handler/trigger-event.html"><span class="token function">triggerEvent</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">state<span class="token operator">: </span><a href="../../org.kryptonmc.krypton.world.block.state/-krypton-block-state/index.html">KryptonBlockState</a><span class="token punctuation">, </span></span><span class="parameter ">world<span class="token operator">: </span><a href="../../org.kryptonmc.krypton.world/-krypton-world/index.html">KryptonWorld</a><span class="token punctuation">, </span></span><span class="parameter ">pos<span class="token operator">: </span><a href="../../org.kryptonmc.krypton.coordinate/-block-pos/index.html">BlockPos</a><span class="token punctuation">, </span></span><span class="parameter ">id<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a><span class="token punctuation">, </span></span><span class="parameter ">parameter<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-898919217%2FFunctions%2F791161957" anchor-label="updateIndirectNeighbourShapes" id="-898919217%2FFunctions%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="../../org.kryptonmc.krypton.world.block.handler/-block-handler/update-indirect-neighbour-shapes.html"><span>update</span><wbr><span>Indirect</span><wbr><span>Neighbour</span><wbr><span><span>Shapes</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-898919217%2FFunctions%2F791161957"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":server:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="../../org.kryptonmc.krypton.world.block.handler/-block-handler/update-indirect-neighbour-shapes.html"><span class="token function">updateIndirectNeighbourShapes</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">state<span class="token operator">: </span><a href="../../org.kryptonmc.krypton.world.block.state/-krypton-block-state/index.html">KryptonBlockState</a><span class="token punctuation">, </span></span><span class="parameter ">world<span class="token operator">: </span><a href="../../org.kryptonmc.krypton.world.components/-block-getter/index.html">BlockGetter</a><span class="token punctuation">, </span></span><span class="parameter ">pos<span class="token operator">: </span><a href="../../org.kryptonmc.krypton.coordinate/-block-pos/index.html">BlockPos</a><span class="token punctuation">, </span></span><span class="parameter ">flags<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a><span class="token punctuation">, </span></span><span class="parameter ">recursionLeft<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a></span></span><span class="token punctuation">)</span></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-348067566%2FFunctions%2F791161957" anchor-label="updateShape" id="-348067566%2FFunctions%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="../../org.kryptonmc.krypton.world.block.handler/-block-handler/update-shape.html"><span>update</span><wbr><span><span>Shape</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-348067566%2FFunctions%2F791161957"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":server:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="../../org.kryptonmc.krypton.world.block.handler/-block-handler/update-shape.html"><span class="token function">updateShape</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">world<span class="token operator">: </span><a href="../../org.kryptonmc.krypton.world.components/-block-getter/index.html">BlockGetter</a><span class="token punctuation">, </span></span><span class="parameter ">state<span class="token operator">: </span><a href="../../org.kryptonmc.krypton.world.block.state/-krypton-block-state/index.html">KryptonBlockState</a><span class="token punctuation">, </span></span><span class="parameter ">currentPos<span class="token operator">: </span><a href="../../org.kryptonmc.krypton.coordinate/-block-pos/index.html">BlockPos</a><span class="token punctuation">, </span></span><span class="parameter ">neighbour<span class="token operator">: </span><a href="../../org.kryptonmc.krypton.world.block.state/-krypton-block-state/index.html">KryptonBlockState</a><span class="token punctuation">, </span></span><span class="parameter ">neighbourPos<span class="token operator">: </span><a href="../../org.kryptonmc.krypton.coordinate/-block-pos/index.html">BlockPos</a><span class="token punctuation">, </span></span><span class="parameter ">direction<span class="token operator">: </span><a href="../../../api/org.kryptonmc.api.util/-direction/index.html">Direction</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../../org.kryptonmc.krypton.world.block.state/-krypton-block-state/index.html">KryptonBlockState</a></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-396226338%2FFunctions%2F791161957" anchor-label="use" id="-396226338%2FFunctions%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="../../org.kryptonmc.krypton.world.block.handler/-block-handler/use.html"><span><span>use</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-396226338%2FFunctions%2F791161957"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":server:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="../../org.kryptonmc.krypton.world.block.handler/-block-handler/use.html"><span class="token function">use</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">state<span class="token operator">: </span><a href="../../org.kryptonmc.krypton.world.block.state/-krypton-block-state/index.html">KryptonBlockState</a><span class="token punctuation">, </span></span><span class="parameter ">world<span class="token operator">: </span><a href="../../org.kryptonmc.krypton.world.components/-block-getter/index.html">BlockGetter</a><span class="token punctuation">, </span></span><span class="parameter ">pos<span class="token operator">: </span><a href="../../org.kryptonmc.krypton.coordinate/-block-pos/index.html">BlockPos</a><span class="token punctuation">, </span></span><span class="parameter ">user<span class="token operator">: </span><a href="../../org.kryptonmc.krypton.entity.player/-krypton-player/index.html">KryptonPlayer</a><span class="token punctuation">, </span></span><span class="parameter ">usedHand<span class="token operator">: </span><a href="../../../api/org.kryptonmc.api.entity/-hand/index.html">Hand</a><span class="token punctuation">, </span></span><span class="parameter ">hitResult<span class="token operator">: </span><a href="../../org.kryptonmc.krypton.util.hit/-block-hit-result/index.html">BlockHitResult</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../../org.kryptonmc.krypton.util/-interaction-result/index.html">InteractionResult</a></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="786051468%2FFunctions%2F791161957" anchor-label="useShapeForLightOcclusion" id="786051468%2FFunctions%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="../../org.kryptonmc.krypton.world.block.handler/-block-properties-provider/use-shape-for-light-occlusion.html"><span>use</span><wbr><span>Shape</span><wbr><span>For</span><wbr><span>Light</span><wbr><span><span>Occlusion</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="786051468%2FFunctions%2F791161957"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":server:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="../../org.kryptonmc.krypton.world.block.handler/-block-properties-provider/use-shape-for-light-occlusion.html"><span class="token function">useShapeForLightOcclusion</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">state<span class="token operator">: </span><a href="../../org.kryptonmc.krypton.world.block.state/-krypton-block-state/index.html">KryptonBlockState</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      <div class="footer">
+        <span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>© 2023 Copyright</span><span class="pull-right"><span>Generated by </span><a href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span>
+      </div>
+    </div>
+</div>
+
+</body></html>
+

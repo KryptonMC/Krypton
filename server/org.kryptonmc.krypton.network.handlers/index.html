@@ -4,10 +4,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
     <title>org.kryptonmc.krypton.network.handlers</title>
 <link href="../../images/logo-icon.svg" rel="icon" type="image/svg"><script>var pathToRoot = "../../";</script>    <script>const storage = localStorage.getItem("dokka-dark-mode")
-const savedDarkMode = storage ? JSON.parse(storage) : false
-if(savedDarkMode === true){
-    document.getElementsByTagName("html")[0].classList.add("theme-dark")
-}</script>
+    if (storage == null) {
+        const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+        if (osDarkSchemePreferred === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    } else {
+        const savedDarkMode = JSON.parse(storage)
+        if(savedDarkMode === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    }
+    </script>
 <script type="text/javascript" src="../../scripts/sourceset_dependencies.js" async></script>
 <link href="../../styles/style.css" rel="Stylesheet">
 <link href="../../styles/jetbrains-mono.css" rel="Stylesheet">
@@ -18,14 +26,15 @@ if(savedDarkMode === true){
 <script type="text/javascript" src="../../scripts/navigation-loader.js" async></script>
 <script type="text/javascript" src="../../scripts/platform-content-handler.js" async></script>
 <script type="text/javascript" src="../../scripts/main.js" defer></script>
-<script type="text/javascript" src="../../scripts/prism.js" async></script></head>
+<script type="text/javascript" src="../../scripts/prism.js" async></script>
+<script type="text/javascript" src="../../scripts/symbol-parameters-wrapper_deferred.js" defer></script></head>
 <body>
 <div class="navigation-wrapper" id="navigation-wrapper">
     <div id="leftToggler"><span class="icon-toggler"></span></div>
     <div class="library-name">
 <a href="../../index.html">
 <span>krypton</span>            </a>    </div>
-    <div>0.66.4
+    <div>6a98d9dec7
     </div>
     <div class="pull-right d-flex">
         <button id="theme-toggle-button"><span id="theme-toggle"></span></button>
@@ -38,40 +47,40 @@ if(savedDarkMode === true){
     </div>
     <div id="main">
 <div class="main-content" id="content" pageids="server::org.kryptonmc.krypton.network.handlers////PointingToDeclaration//791161957">
-  <div class="breadcrumbs"><a href="../index.html">server</a><span class="delimiter">/</span><a href="index.html">org.kryptonmc.krypton.network.handlers</a></div>
+  <div class="breadcrumbs"><a href="../index.html">server</a><span class="delimiter">/</span><span class="current">org.kryptonmc.krypton.network.handlers</span></div>
   <div class="cover ">
-    <h1 class="cover"><span><span>Package</span></span> <span>org.</span><wbr><span>kryptonmc.</span><wbr><span>krypton.</span><wbr><span>network.</span><wbr><span>handlers</span></h1>
+    <h1 class="cover"><span><span>Package-level</span></span> <span><span>declarations</span></span></h1>
   </div>
   <div class="tabbedcontent">
     <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="Types">Types</button></div>
     <div class="tabs-section-body">
       <h2 class="">Types</h2>
-      <div class="table" data-togglable="Types"><a data-name="1177351902%2FClasslikes%2F791161957" anchor-label="HandshakeHandler" id="1177351902%2FClasslikes%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+      <div class="table" data-togglable="Types"><a data-name="-897744314%2FClasslikes%2F791161957" anchor-label="HandshakePacketHandler" id="-897744314%2FClasslikes%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
         <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
           <div class="main-subrow keyValue ">
             <div class=""><span class="inline-flex">
-                <div><a href="-handshake-handler/index.html"><span>Handshake</span><wbr><span><span>Handler</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1177351902%2FClasslikes%2F791161957"></span>
+                <div><a href="-handshake-packet-handler/index.html"><span>Handshake</span><wbr><span>Packet</span><wbr><span><span>Handler</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-897744314%2FClasslikes%2F791161957"></span>
                   <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                 </span></span></div>
             <div>
               <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":server:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">class </span><a href="-handshake-handler/index.html">HandshakeHandler</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>server<span class="token operator">: </span><a href="../org.kryptonmc.krypton/-krypton-server/index.html">KryptonServer</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>session<span class="token operator">: </span><a href="../org.kryptonmc.krypton.network/-session-handler/index.html">SessionHandler</a></span></span><span class="token punctuation">)</span> : <a href="-packet-handler/index.html">PacketHandler</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><p class="paragraph">Handles all inbound packets in the <a href="../org.kryptonmc.krypton.packet/-packet-state/-h-a-n-d-s-h-a-k-e/index.html">Handshake</a> state. Contrary to the other handlers and states, there is only one packet in this state, so this is directly handled by the <a href="-handshake-handler/handle.html">handle</a> function, instead of delegating to another function.</p></div></div></div>
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":server:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">class </span><a href="-handshake-packet-handler/index.html">HandshakePacketHandler</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">server<span class="token operator">: </span><a href="../org.kryptonmc.krypton/-krypton-server/index.html">KryptonServer</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>connection<span class="token operator">: </span><a href="../org.kryptonmc.krypton.network/-netty-connection/index.html">NettyConnection</a></span></span><span class="token punctuation">)</span> : <a href="-packet-handler/index.html">PacketHandler</a></div><div class="brief "><p class="paragraph">Handles all inbound packets in the <a href="../org.kryptonmc.krypton.packet/-packet-state/-h-a-n-d-s-h-a-k-e/index.html">Handshake</a> state.</p></div></div></div>
               </div>
             </div>
           </div>
         </div>
-<a data-name="1416720976%2FClasslikes%2F791161957" anchor-label="LoginHandler" id="1416720976%2FClasslikes%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+<a data-name="1119887416%2FClasslikes%2F791161957" anchor-label="LoginPacketHandler" id="1119887416%2FClasslikes%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
         <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
           <div class="main-subrow keyValue ">
             <div class=""><span class="inline-flex">
-                <div><a href="-login-handler/index.html"><span>Login</span><wbr><span><span>Handler</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1416720976%2FClasslikes%2F791161957"></span>
+                <div><a href="-login-packet-handler/index.html"><span>Login</span><wbr><span>Packet</span><wbr><span><span>Handler</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1119887416%2FClasslikes%2F791161957"></span>
                   <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                 </span></span></div>
             <div>
               <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":server:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">class </span><a href="-login-handler/index.html">LoginHandler</a><span class="token punctuation">(</span><span class="parameters wrapped"><span class="parameter indented">&nbsp;&nbsp;&nbsp;&nbsp;<span class="token keyword">val </span>server<span class="token operator">: </span><a href="../org.kryptonmc.krypton/-krypton-server/index.html">KryptonServer</a><span class="token punctuation">, </span></span><span class="parameter indented">&nbsp;&nbsp;&nbsp;&nbsp;<span class="token keyword">val </span>session<span class="token operator">: </span><a href="../org.kryptonmc.krypton.network/-session-handler/index.html">SessionHandler</a><span class="token punctuation">, </span></span><span class="parameter indented">&nbsp;&nbsp;&nbsp;&nbsp;proxyForwardedData<span class="token operator">: </span><a href="../org.kryptonmc.krypton.network.data/-forwarded-data/index.html">ForwardedData</a><span class="token operator">?</span></span></span><span class="token punctuation">)</span> : <a href="-packet-handler/index.html">PacketHandler</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><p class="paragraph">Handles all inbound packets in the <a href="../org.kryptonmc.krypton.packet/-packet-state/-l-o-g-i-n/index.html">Login</a> state.</p></div></div></div>
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":server:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">class </span><a href="-login-packet-handler/index.html">LoginPacketHandler</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">server<span class="token operator">: </span><a href="../org.kryptonmc.krypton/-krypton-server/index.html">KryptonServer</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>connection<span class="token operator">: </span><a href="../org.kryptonmc.krypton.network/-netty-connection/index.html">NettyConnection</a><span class="token punctuation">, </span></span><span class="parameter ">proxyForwardedData<span class="token operator">: </span><a href="../org.kryptonmc.krypton.network.forwarding/-proxy-forwarded-data/index.html">ProxyForwardedData</a><span class="token operator">?</span></span></span><span class="token punctuation">)</span> : <a href="-packet-handler/index.html">PacketHandler</a></div><div class="brief "><p class="paragraph">Handles all inbound packets in the <a href="../org.kryptonmc.krypton.packet/-packet-state/-l-o-g-i-n/index.html">Login</a> state.</p></div></div></div>
               </div>
             </div>
           </div>
@@ -86,37 +95,52 @@ if(savedDarkMode === true){
                 </span></span></div>
             <div>
               <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":server:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">interface </span><a href="-packet-handler/index.html">PacketHandler</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><p class="paragraph">The base interface for packet handlers. This exists primarily to avoid having one handler for all, which is what we used to have before this system.</p></div></div></div>
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":server:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">interface </span><a href="-packet-handler/index.html">PacketHandler</a></div><div class="brief "><p class="paragraph">The base interface for packet handlers. This exists primarily to avoid having one handler for all, which is what we used to have before this system.</p></div></div></div>
               </div>
             </div>
           </div>
         </div>
-<a data-name="-833678117%2FClasslikes%2F791161957" anchor-label="PlayHandler" id="-833678117%2FClasslikes%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+<a data-name="-1923191165%2FClasslikes%2F791161957" anchor-label="PlayPacketHandler" id="-1923191165%2FClasslikes%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
         <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
           <div class="main-subrow keyValue ">
             <div class=""><span class="inline-flex">
-                <div><a href="-play-handler/index.html"><span>Play</span><wbr><span><span>Handler</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-833678117%2FClasslikes%2F791161957"></span>
+                <div><a href="-play-packet-handler/index.html"><span>Play</span><wbr><span>Packet</span><wbr><span><span>Handler</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1923191165%2FClasslikes%2F791161957"></span>
                   <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                 </span></span></div>
             <div>
               <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":server:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">class </span><a href="-play-handler/index.html">PlayHandler</a><span class="token punctuation">(</span><span class="parameters wrapped"><span class="parameter indented">&nbsp;&nbsp;&nbsp;&nbsp;<span class="token keyword">val </span>server<span class="token operator">: </span><a href="../org.kryptonmc.krypton/-krypton-server/index.html">KryptonServer</a><span class="token punctuation">, </span></span><span class="parameter indented">&nbsp;&nbsp;&nbsp;&nbsp;<span class="token keyword">val </span>session<span class="token operator">: </span><a href="../org.kryptonmc.krypton.network/-session-handler/index.html">SessionHandler</a><span class="token punctuation">, </span></span><span class="parameter indented">&nbsp;&nbsp;&nbsp;&nbsp;player<span class="token operator">: </span><a href="../org.kryptonmc.krypton.entity.player/-krypton-player/index.html">KryptonPlayer</a></span></span><span class="token punctuation">)</span> : <a href="-packet-handler/index.html">PacketHandler</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><p class="paragraph">This is the largest and most important of the four packet handlers, as the play state is where the vast majority of packets reside.</p></div></div></div>
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":server:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">class </span><a href="-play-packet-handler/index.html">PlayPacketHandler</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">server<span class="token operator">: </span><a href="../org.kryptonmc.krypton/-krypton-server/index.html">KryptonServer</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>connection<span class="token operator">: </span><a href="../org.kryptonmc.krypton.network/-netty-connection/index.html">NettyConnection</a><span class="token punctuation">, </span></span><span class="parameter ">player<span class="token operator">: </span><a href="../org.kryptonmc.krypton.entity.player/-krypton-player/index.html">KryptonPlayer</a></span></span><span class="token punctuation">)</span> : <a href="-tickable-packet-handler/index.html">TickablePacketHandler</a></div><div class="brief "><p class="paragraph">This is the largest and most important of the four packet handlers, as the play state is where the vast majority of packets reside.</p></div></div></div>
               </div>
             </div>
           </div>
         </div>
-<a data-name="-875066983%2FClasslikes%2F791161957" anchor-label="StatusHandler" id="-875066983%2FClasslikes%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+<a data-name="-627057471%2FClasslikes%2F791161957" anchor-label="StatusPacketHandler" id="-627057471%2FClasslikes%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
         <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
           <div class="main-subrow keyValue ">
             <div class=""><span class="inline-flex">
-                <div><a href="-status-handler/index.html"><span>Status</span><wbr><span><span>Handler</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-875066983%2FClasslikes%2F791161957"></span>
+                <div><a href="-status-packet-handler/index.html"><span>Status</span><wbr><span>Packet</span><wbr><span><span>Handler</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-627057471%2FClasslikes%2F791161957"></span>
                   <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                 </span></span></div>
             <div>
               <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":server:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">class </span><a href="-status-handler/index.html">StatusHandler</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>server<span class="token operator">: </span><a href="../org.kryptonmc.krypton/-krypton-server/index.html">KryptonServer</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>session<span class="token operator">: </span><a href="../org.kryptonmc.krypton.network/-session-handler/index.html">SessionHandler</a></span></span><span class="token punctuation">)</span> : <a href="-packet-handler/index.html">PacketHandler</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><p class="paragraph">Handles all inbound packets in the <a href="../org.kryptonmc.krypton.packet/-packet-state/-s-t-a-t-u-s/index.html">Status</a> state.</p></div></div></div>
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":server:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">class </span><a href="-status-packet-handler/index.html">StatusPacketHandler</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">server<span class="token operator">: </span><a href="../org.kryptonmc.krypton/-krypton-server/index.html">KryptonServer</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>connection<span class="token operator">: </span><a href="../org.kryptonmc.krypton.network/-netty-connection/index.html">NettyConnection</a></span></span><span class="token punctuation">)</span> : <a href="-packet-handler/index.html">PacketHandler</a></div><div class="brief "><p class="paragraph">Handles all inbound packets in the <a href="../org.kryptonmc.krypton.packet/-packet-state/-s-t-a-t-u-s/index.html">Status</a> state.</p></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-1140590202%2FClasslikes%2F791161957" anchor-label="TickablePacketHandler" id="-1140590202%2FClasslikes%2F791161957" data-filterable-set=":server:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":server:dokkaHtmlPartial/main" data-filterable-set=":server:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="-tickable-packet-handler/index.html"><span>Tickable</span><wbr><span>Packet</span><wbr><span><span>Handler</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1140590202%2FClasslikes%2F791161957"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":server:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">interface </span><a href="-tickable-packet-handler/index.html">TickablePacketHandler</a> : <a href="-packet-handler/index.html">PacketHandler</a></div></div></div>
               </div>
             </div>
           </div>
@@ -126,7 +150,7 @@ if(savedDarkMode === true){
   </div>
 </div>
       <div class="footer">
-        <span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>© 2022 Copyright</span><span class="pull-right"><span>Generated by </span><a href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span>
+        <span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>© 2023 Copyright</span><span class="pull-right"><span>Generated by </span><a href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span>
       </div>
     </div>
 </div>

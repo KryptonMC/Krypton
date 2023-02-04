@@ -4,10 +4,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
     <title>org.kryptonmc.api.entity</title>
 <link href="../../images/logo-icon.svg" rel="icon" type="image/svg"><script>var pathToRoot = "../../";</script>    <script>const storage = localStorage.getItem("dokka-dark-mode")
-const savedDarkMode = storage ? JSON.parse(storage) : false
-if(savedDarkMode === true){
-    document.getElementsByTagName("html")[0].classList.add("theme-dark")
-}</script>
+    if (storage == null) {
+        const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+        if (osDarkSchemePreferred === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    } else {
+        const savedDarkMode = JSON.parse(storage)
+        if(savedDarkMode === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    }
+    </script>
 <script type="text/javascript" src="../../scripts/sourceset_dependencies.js" async></script>
 <link href="../../styles/style.css" rel="Stylesheet">
 <link href="../../styles/jetbrains-mono.css" rel="Stylesheet">
@@ -18,14 +26,15 @@ if(savedDarkMode === true){
 <script type="text/javascript" src="../../scripts/navigation-loader.js" async></script>
 <script type="text/javascript" src="../../scripts/platform-content-handler.js" async></script>
 <script type="text/javascript" src="../../scripts/main.js" defer></script>
-<script type="text/javascript" src="../../scripts/prism.js" async></script></head>
+<script type="text/javascript" src="../../scripts/prism.js" async></script>
+<script type="text/javascript" src="../../scripts/symbol-parameters-wrapper_deferred.js" defer></script></head>
 <body>
 <div class="navigation-wrapper" id="navigation-wrapper">
     <div id="leftToggler"><span class="icon-toggler"></span></div>
     <div class="library-name">
 <a href="../../index.html">
 <span>krypton</span>            </a>    </div>
-    <div>0.66.4
+    <div>6a98d9dec7
     </div>
     <div class="pull-right d-flex">
         <button id="theme-toggle-button"><span id="theme-toggle"></span></button>
@@ -38,12 +47,12 @@ if(savedDarkMode === true){
     </div>
     <div id="main">
 <div class="main-content" id="content" pageids="api::org.kryptonmc.api.entity////PointingToDeclaration//-1197683648">
-  <div class="breadcrumbs"><a href="../index.html">api</a><span class="delimiter">/</span><a href="index.html">org.kryptonmc.api.entity</a></div>
+  <div class="breadcrumbs"><a href="../index.html">api</a><span class="delimiter">/</span><span class="current">org.kryptonmc.api.entity</span></div>
   <div class="cover ">
-    <h1 class="cover"><span><span>Package</span></span> <span>org.</span><wbr><span>kryptonmc.</span><wbr><span>api.</span><wbr><span>entity</span></h1>
+    <h1 class="cover"><span><span>Package-level</span></span> <span><span>declarations</span></span></h1>
   </div>
   <div class="tabbedcontent">
-    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="Types">Types</button><button class="section-tab" data-togglable="Functions">Functions</button></div>
+    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="Types">Types</button></div>
     <div class="tabs-section-body">
       <h2 class="">Types</h2>
       <div class="table" data-togglable="Types"><a data-name="1333430179%2FClasslikes%2F-1197683648" anchor-label="Ageable" id="1333430179%2FClasslikes%2F-1197683648" data-filterable-set=":api:dokkaHtmlPartial/main"></a>
@@ -56,7 +65,7 @@ if(savedDarkMode === true){
                 </span></span></div>
             <div>
               <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":api:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">interface </span><a href="-ageable/index.html">Ageable</a> : <a href="-mob/index.html">Mob</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><p class="paragraph">A mob that has an age, meaning it also has a baby form.</p></div></div></div>
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">interface </span><a href="-ageable/index.html">Ageable</a> : <a href="-mob/index.html">Mob</a></div><div class="brief "><p class="paragraph">A mob that has an age, meaning it also has a baby form.</p></div></div></div>
               </div>
             </div>
           </div>
@@ -71,7 +80,7 @@ if(savedDarkMode === true){
                 </span></span></div>
             <div>
               <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":api:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">interface </span><a href="-area-effect-cloud/index.html">AreaEffectCloud</a> : <a href="-entity/index.html">Entity</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><p class="paragraph">Represents an area effect cloud, such as that of the lingering effect that appears when a lingering potion is thrown.</p></div></div></div>
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">interface </span><a href="-area-effect-cloud/index.html">AreaEffectCloud</a> : <a href="-entity/index.html">Entity</a></div><div class="brief "><p class="paragraph">Represents an area effect cloud, such as that of the lingering effect that appears when a lingering potion is thrown.</p></div></div></div>
               </div>
             </div>
           </div>
@@ -86,7 +95,7 @@ if(savedDarkMode === true){
                 </span></span></div>
             <div>
               <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":api:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">enum </span><a href="-armor-slot/index.html">ArmorSlot</a> : <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-enum/index.html">Enum</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-armor-slot/index.html">ArmorSlot</a><span class="token operator">&gt; </span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><p class="paragraph">Represents possible slots for armor pieces in an entity's inventory.</p></div></div></div>
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">enum </span><a href="-armor-slot/index.html">ArmorSlot</a> : <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-enum/index.html">Enum</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-armor-slot/index.html">ArmorSlot</a><span class="token operator">&gt; </span></div><div class="brief "><p class="paragraph">Represents possible slots for armor pieces in an entity's inventory.</p></div></div></div>
               </div>
             </div>
           </div>
@@ -101,7 +110,7 @@ if(savedDarkMode === true){
                 </span></span></div>
             <div>
               <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":api:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">interface </span><a href="-armor-stand/index.html">ArmorStand</a> : <a href="-living-entity/index.html">LivingEntity</a>, <a href="-equipable/index.html">Equipable</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><p class="paragraph">An armor stand.</p></div></div></div>
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">interface </span><a href="-armor-stand/index.html">ArmorStand</a> : <a href="-living-entity/index.html">LivingEntity</a>, <a href="-equipable/index.html">Equipable</a></div><div class="brief "><p class="paragraph">An armor stand.</p></div></div></div>
               </div>
             </div>
           </div>
@@ -116,7 +125,7 @@ if(savedDarkMode === true){
                 </span></span></div>
             <div>
               <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":api:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">interface </span><a href="-bucketable/index.html">Bucketable</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><p class="paragraph">An entity that can be picked up in a bucket.</p></div></div></div>
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">interface </span><a href="-bucketable/index.html">Bucketable</a></div><div class="brief "><p class="paragraph">An entity that can be picked up in a bucket.</p></div></div></div>
               </div>
             </div>
           </div>
@@ -131,7 +140,7 @@ if(savedDarkMode === true){
                 </span></span></div>
             <div>
               <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":api:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">interface </span><a href="-entity/index.html">Entity</a> : <a href="../org.kryptonmc.api.command/-sender/index.html">Sender</a>, <span data-unresolved-link="net.kyori.adventure.text.event/HoverEventSource///PointingToDeclaration/">HoverEventSource</span><span class="token operator">&lt;</span><span class="token keyword"></span><span data-unresolved-link="net.kyori.adventure.text.event/HoverEvent.ShowEntity///PointingToDeclaration/">HoverEvent.ShowEntity</span><span class="token operator">&gt; </span>, <span data-unresolved-link="net.kyori.adventure.sound/Sound.Emitter///PointingToDeclaration/">Sound.Emitter</span>, <a href="../org.kryptonmc.api.scoreboard/-team-member/index.html">TeamMember</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><p class="paragraph">An entity somewhere in a world.</p></div></div></div>
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">interface </span><a href="-entity/index.html">Entity</a> : <a href="../org.kryptonmc.api.command/-sender/index.html">Sender</a>, <span data-unresolved-link="net.kyori.adventure.text.event/HoverEventSource///PointingToDeclaration/">HoverEventSource</span><span class="token operator">&lt;</span><span class="token keyword"></span><span data-unresolved-link="net.kyori.adventure.text.event/HoverEvent.ShowEntity///PointingToDeclaration/">HoverEvent.ShowEntity</span><span class="token operator">&gt; </span>, <span data-unresolved-link="net.kyori.adventure.sound/Sound.Emitter///PointingToDeclaration/">Sound.Emitter</span>, <span data-unresolved-link="net.kyori.adventure.sound/Sound.Source.Provider///PointingToDeclaration/">Sound.Source.Provider</span>, <a href="../org.kryptonmc.api.scoreboard/-team-member/index.html">TeamMember</a>, <span data-unresolved-link="net.kyori.adventure.identity/Identified///PointingToDeclaration/">Identified</span></div><div class="brief "><p class="paragraph">An entity somewhere in a world.</p></div></div></div>
               </div>
             </div>
           </div>
@@ -146,7 +155,7 @@ if(savedDarkMode === true){
                 </span></span></div>
             <div>
               <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":api:dokkaHtmlPartial/main"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation">@</span><a href="../org.kryptonmc.api.util/-catalogue/index.html"><span class="token annotation">Catalogue</span></a><span class="token punctuation">(</span><span>type<span class="token operator"> = </span><span class="token punctuation">[</span><span><a href="-entity-category/index.html">EntityCategory::class</a></span><wbr><span class="token punctuation">]</span></span><wbr><span class="token punctuation">)</span></div></div><span class="token keyword">object </span><a href="-entity-categories/index.html">EntityCategories</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><p class="paragraph">All of the built-in vanilla mob categories.</p></div></div></div>
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtmlPartial/main"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="../../internal-annotations/org.kryptonmc.internal.annotations/-catalogue/index.html"><span class="token annotation builtin">Catalogue</span></a><span class="token punctuation">(</span><span>type<span class="token operator"> = </span><a href="-entity-category/index.html">EntityCategory::class</a></span><wbr><span class="token punctuation">)</span></div></div><span class="token keyword">object </span><a href="-entity-categories/index.html">EntityCategories</a></div><div class="brief "><p class="paragraph">All of the built-in vanilla mob categories.</p></div></div></div>
               </div>
             </div>
           </div>
@@ -161,22 +170,7 @@ if(savedDarkMode === true){
                 </span></span></div>
             <div>
               <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":api:dokkaHtmlPartial/main"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation">@</span><a href="../org.kryptonmc.api.util/-catalogued-by/index.html"><span class="token annotation">CataloguedBy</span></a><span class="token punctuation">(</span><span>catalogue<span class="token operator"> = </span><a href="-entity-categories/index.html">EntityCategories::class</a></span><wbr><span class="token punctuation">)</span></div></div><span class="token keyword">interface </span><a href="-entity-category/index.html">EntityCategory</a> : <span data-unresolved-link="net.kyori.adventure.key/Keyed///PointingToDeclaration/">Keyed</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><p class="paragraph">A category of entity that applies certain spawning mechanics and behaviours.</p></div></div></div>
-              </div>
-            </div>
-          </div>
-        </div>
-<a data-name="404526678%2FClasslikes%2F-1197683648" anchor-label="EntityDimensions" id="404526678%2FClasslikes%2F-1197683648" data-filterable-set=":api:dokkaHtmlPartial/main"></a>
-        <div class="table-row" data-filterable-current=":api:dokkaHtmlPartial/main" data-filterable-set=":api:dokkaHtmlPartial/main">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="-entity-dimensions/index.html"><span>Entity</span><wbr><span><span>Dimensions</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="404526678%2FClasslikes%2F-1197683648"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div>
-              <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":api:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">interface </span><a href="-entity-dimensions/index.html">EntityDimensions</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><p class="paragraph">Holder class for dimensions for an <a href="-entity/index.html">Entity</a>.</p></div></div></div>
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtmlPartial/main"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="../../internal-annotations/org.kryptonmc.internal.annotations/-catalogued-by/index.html"><span class="token annotation builtin">CataloguedBy</span></a><span class="token punctuation">(</span><span>catalogue<span class="token operator"> = </span><a href="-entity-categories/index.html">EntityCategories::class</a></span><wbr><span class="token punctuation">)</span></div></div><span class="token keyword">interface </span><a href="-entity-category/index.html">EntityCategory</a> : <span data-unresolved-link="net.kyori.adventure.key/Keyed///PointingToDeclaration/">Keyed</span></div><div class="brief "><p class="paragraph">A category of entity that applies certain spawning mechanics and behaviours.</p></div></div></div>
               </div>
             </div>
           </div>
@@ -191,7 +185,7 @@ if(savedDarkMode === true){
                 </span></span></div>
             <div>
               <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":api:dokkaHtmlPartial/main"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation">@</span><a href="../org.kryptonmc.api.util/-catalogued-by/index.html"><span class="token annotation">CataloguedBy</span></a><span class="token punctuation">(</span><span>catalogue<span class="token operator"> = </span><a href="-entity-types/index.html">EntityTypes::class</a></span><wbr><span class="token punctuation">)</span></div></div><span class="token keyword">interface </span><a href="-entity-type/index.html">EntityType</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-entity-type/index.html">T</a><span class="token operator"> : </span><a href="-entity/index.html">Entity</a><span class="token operator">&gt;</span> : <span data-unresolved-link="net.kyori.adventure.key/Keyed///PointingToDeclaration/">Keyed</span>, <a href="../org.kryptonmc.api.util/-translation-holder/index.html">TranslationHolder</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><p class="paragraph">A type of entity.</p></div></div></div>
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtmlPartial/main"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="../../internal-annotations/org.kryptonmc.internal.annotations/-catalogued-by/index.html"><span class="token annotation builtin">CataloguedBy</span></a><span class="token punctuation">(</span><span>catalogue<span class="token operator"> = </span><a href="-entity-types/index.html">EntityTypes::class</a></span><wbr><span class="token punctuation">)</span></div></div><span class="token keyword">interface </span><a href="-entity-type/index.html">EntityType</a><span class="token operator">&lt;</span><span class="token keyword">out </span><a href="-entity-type/index.html">T</a><span class="token operator"> : </span><a href="-entity/index.html">Entity</a><span class="token operator">&gt;</span> : <span data-unresolved-link="net.kyori.adventure.key/Keyed///PointingToDeclaration/">Keyed</span>, <span data-unresolved-link="net.kyori.adventure.translation/Translatable///PointingToDeclaration/">Translatable</span></div><div class="brief "><p class="paragraph">A type of entity.</p></div></div></div>
               </div>
             </div>
           </div>
@@ -206,7 +200,7 @@ if(savedDarkMode === true){
                 </span></span></div>
             <div>
               <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":api:dokkaHtmlPartial/main"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation">@</span><a href="../org.kryptonmc.api.util/-catalogue/index.html"><span class="token annotation">Catalogue</span></a><span class="token punctuation">(</span><span>type<span class="token operator"> = </span><span class="token punctuation">[</span><span><a href="-entity-type/index.html">EntityType::class</a></span><wbr><span class="token punctuation">]</span></span><wbr><span class="token punctuation">)</span></div></div><span class="token keyword">object </span><a href="-entity-types/index.html">EntityTypes</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><p class="paragraph">All the types of entities in the game.</p></div></div></div>
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtmlPartial/main"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="../../internal-annotations/org.kryptonmc.internal.annotations/-catalogue/index.html"><span class="token annotation builtin">Catalogue</span></a><span class="token punctuation">(</span><span>type<span class="token operator"> = </span><a href="-entity-type/index.html">EntityType::class</a></span><wbr><span class="token punctuation">)</span></div></div><span class="token keyword">object </span><a href="-entity-types/index.html">EntityTypes</a></div><div class="brief "><p class="paragraph">All the types of entities in the game.</p></div></div></div>
               </div>
             </div>
           </div>
@@ -221,7 +215,7 @@ if(savedDarkMode === true){
                 </span></span></div>
             <div>
               <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":api:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">interface </span><a href="-equipable/index.html">Equipable</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><p class="paragraph">Something that can be equipped with hand and armour items.</p></div></div></div>
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">interface </span><a href="-equipable/index.html">Equipable</a></div><div class="brief "><p class="paragraph">Something that can be equipped with hand and armour items.</p></div></div></div>
               </div>
             </div>
           </div>
@@ -236,7 +230,7 @@ if(savedDarkMode === true){
                 </span></span></div>
             <div>
               <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":api:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">enum </span><a href="-equipment-slot/index.html">EquipmentSlot</a> : <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-enum/index.html">Enum</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-equipment-slot/index.html">EquipmentSlot</a><span class="token operator">&gt; </span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><p class="paragraph">A slot that a piece of equipment may be in.</p></div></div></div>
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">enum </span><a href="-equipment-slot/index.html">EquipmentSlot</a> : <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-enum/index.html">Enum</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-equipment-slot/index.html">EquipmentSlot</a><span class="token operator">&gt; </span></div><div class="brief "><p class="paragraph">A slot that a piece of equipment may be in.</p></div></div></div>
               </div>
             </div>
           </div>
@@ -251,7 +245,7 @@ if(savedDarkMode === true){
                 </span></span></div>
             <div>
               <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":api:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">interface </span><a href="-experience-orb/index.html">ExperienceOrb</a> : <a href="-entity/index.html">Entity</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><p class="paragraph">An orb of experience.</p></div></div></div>
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">interface </span><a href="-experience-orb/index.html">ExperienceOrb</a> : <a href="-entity/index.html">Entity</a></div><div class="brief "><p class="paragraph">An orb of experience.</p></div></div></div>
               </div>
             </div>
           </div>
@@ -266,7 +260,7 @@ if(savedDarkMode === true){
                 </span></span></div>
             <div>
               <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":api:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">enum </span><a href="-hand/index.html">Hand</a> : <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-enum/index.html">Enum</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-hand/index.html">Hand</a><span class="token operator">&gt; </span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><p class="paragraph">Represents values for the current hand of some object (e.g. a player).</p></div></div></div>
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">enum </span><a href="-hand/index.html">Hand</a> : <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-enum/index.html">Enum</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-hand/index.html">Hand</a><span class="token operator">&gt; </span></div><div class="brief "><p class="paragraph">Represents values for the current hand of some object (e.g. a player).</p></div></div></div>
               </div>
             </div>
           </div>
@@ -281,7 +275,7 @@ if(savedDarkMode === true){
                 </span></span></div>
             <div>
               <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":api:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">interface </span><a href="-living-entity/index.html">LivingEntity</a> : <a href="-entity/index.html">Entity</a>, <a href="../org.kryptonmc.api.entity.attribute/-attribute-holder/index.html">AttributeHolder</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><p class="paragraph">Represents an entity that lives in a world.</p></div></div></div>
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">interface </span><a href="-living-entity/index.html">LivingEntity</a> : <a href="-entity/index.html">Entity</a>, <a href="../org.kryptonmc.api.entity.attribute/-attribute-holder/index.html">AttributeHolder</a></div><div class="brief "><p class="paragraph">Represents an entity that lives in a world.</p></div></div></div>
               </div>
             </div>
           </div>
@@ -296,7 +290,7 @@ if(savedDarkMode === true){
                 </span></span></div>
             <div>
               <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":api:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">enum </span><a href="-main-hand/index.html">MainHand</a> : <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-enum/index.html">Enum</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-main-hand/index.html">MainHand</a><span class="token operator">&gt; </span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><p class="paragraph">Represents values for the primary hand of some object (e.g. a player).</p></div></div></div>
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">enum </span><a href="-main-hand/index.html">MainHand</a> : <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-enum/index.html">Enum</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-main-hand/index.html">MainHand</a><span class="token operator">&gt; </span></div><div class="brief "><p class="paragraph">Represents values for the primary hand of some object (e.g. a player).</p></div></div></div>
               </div>
             </div>
           </div>
@@ -311,24 +305,7 @@ if(savedDarkMode === true){
                 </span></span></div>
             <div>
               <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":api:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">interface </span><a href="-mob/index.html">Mob</a> : <a href="-living-entity/index.html">LivingEntity</a>, <a href="-equipable/index.html">Equipable</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><p class="paragraph">An entity with a simple artificial intelligence that can drop items.</p></div></div></div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <h2 class="">Functions</h2>
-      <div class="table" data-togglable="Functions"><a data-name="-1764644234%2FFunctions%2F-1197683648" anchor-label="entityType" id="-1764644234%2FFunctions%2F-1197683648" data-filterable-set=":api:dokkaHtmlPartial/main"></a>
-        <div class="table-row" data-filterable-current=":api:dokkaHtmlPartial/main" data-filterable-set=":api:dokkaHtmlPartial/main">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="entity-type.html"><span>entity</span><wbr><span><span>Type</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1764644234%2FFunctions%2F-1197683648"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div>
-              <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":api:dokkaHtmlPartial/main"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation">@</span><span data-unresolved-link="org.jetbrains.annotations/Contract///PointingToDeclaration/"><span class="token annotation">Contract</span></span><span class="token punctuation">(</span><span>value<span class="token operator"> = </span><span class="breakable-word"><span class="token string">"_ -&gt; new"</span></span><span class="token punctuation">, </span></span><wbr><span>pure<span class="token operator"> = </span><span class="breakable-word"><span class="token boolean">true</span></span></span><wbr><span class="token punctuation">)</span></div></div><span class="token keyword">inline </span><span class="token keyword">fun </span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="entity-type.html">T</a><span class="token operator"> : </span><a href="-entity/index.html">Entity</a><span class="token operator">&gt; </span><a href="entity-type.html"><span class="token function">entityType</span></a><span class="token punctuation">(</span><span class="parameters wrapped"><span class="parameter indented">&nbsp;&nbsp;&nbsp;&nbsp;key<span class="token operator">: </span><span data-unresolved-link="net.kyori.adventure.key/Key///PointingToDeclaration/">Key</span><span class="token punctuation">, </span></span><span class="parameter indented">&nbsp;&nbsp;&nbsp;&nbsp;category<span class="token operator">: </span><a href="-entity-category/index.html">EntityCategory</a><span class="token punctuation">, </span></span><span class="parameter indented">&nbsp;&nbsp;&nbsp;&nbsp;builder<span class="token operator">: </span><span class="token keyword"></span><a href="-entity-type/-builder/index.html">EntityType.Builder</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="entity-type.html">T</a><span class="token operator">&gt;</span><span class="token punctuation">.</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="-entity-type/index.html">EntityType</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="entity-type.html">T</a><span class="token operator">&gt;</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><p class="paragraph">Creates a new entity type with the given <a href="entity-type.html">key</a>, <a href="entity-type.html">category</a>, and the result of applying the given <a href="entity-type.html">builder</a> function.</p></div></div></div>
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":api:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">interface </span><a href="-mob/index.html">Mob</a> : <a href="-living-entity/index.html">LivingEntity</a>, <a href="-equipable/index.html">Equipable</a></div><div class="brief "><p class="paragraph">An entity with a simple artificial intelligence that can drop items.</p></div></div></div>
               </div>
             </div>
           </div>
@@ -338,7 +315,7 @@ if(savedDarkMode === true){
   </div>
 </div>
       <div class="footer">
-        <span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>© 2022 Copyright</span><span class="pull-right"><span>Generated by </span><a href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span>
+        <span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>© 2023 Copyright</span><span class="pull-right"><span>Generated by </span><a href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span>
       </div>
     </div>
 </div>
