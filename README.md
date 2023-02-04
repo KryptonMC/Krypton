@@ -1,5 +1,6 @@
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
-[![Build Status](https://img.shields.io/jenkins/build?jobUrl=https%3A%2F%2Fci.kryptonmc.org%2Fjob%2FKrypton)](https://ci.kryptonmc.org/job/Krypton)
+[![Build Status](https://img.shields.io/github/actions/workflow/status/KryptonMC/Krypton/build.yml)](https://github.com/KryptonMC/Krypton/actions/workflows/build.yml)
+[![Latest API Version](https://img.shields.io/maven-metadata/v?metadataUrl=https%3A%2F%2Frepo.kryptonmc.org%2Freleases%2Forg%2Fkryptonmc%2Fkrypton-api%2Fmaven-metadata.xml)](https://repo.kryptonmc.org/#/releases/org/kryptonmc/krypton-api)
 [![Discord](https://img.shields.io/discord/815157416563834881?color=%237289da&label=discord)](https://discord.gg/4QuwYACDRX)
 
 # Krypton

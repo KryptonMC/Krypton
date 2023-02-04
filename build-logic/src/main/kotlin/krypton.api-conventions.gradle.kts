@@ -1,6 +1,6 @@
 plugins {
     id("krypton.common-conventions")
-    id("net.kyori.indra.publishing")
+    `maven-publish`
 }
 
 tasks {
@@ -12,35 +12,54 @@ tasks {
     }
 }
 
-indra {
-    publishReleasesTo("krypton", "https://repo.kryptonmc.org/releases")
-    publishSnapshotsTo("krypton", "https://repo.kryptonmc.org/snapshots")
-    configurePublications {
-        artifactId = "krypton-${project.name}"
-        pom {
-            name.set("Krypton")
-            description.set(rootProject.description)
-            url.set("https://www.kryptonmc.org")
-            inceptionYear.set("2021")
+publishing {
+    repositories {
+        maven {
+            name = "krypton"
+            url = uri("https://repo.kryptonmc.org/releases")
 
-            organization {
-                name.set("KryptonMC")
-                url.set("https://github.com/KryptonMC")
+            if (System.getenv("PUBLISH_USERNAME") != null) {
+                // If this env variable is present, we're running in CI, and we want to use the credentials from the secrets
+                credentials {
+                    username = System.getenv("PUBLISH_USERNAME")
+                    password = System.getenv("PUBLISH_PASSWORD")
+                }
+            } else {
+                // If the env variable isn't present, we're running locally, and we want to use the credentials from gradle.properties
+                credentials(PasswordCredentials::class)
             }
+        }
+    }
+    publications {
+        create<MavenPublication>("maven") {
+            artifactId = "krypton-${project.name}"
+            from(components["kotlin"])
 
-            developers {
-                developer("bombardygamer", "Callum Seabrook", "callum.seabrook@prevarinite.com", "Europe/London", "Lead Developer")
-                developer("therealjan", "Jan", "jan.m.tennert@gmail.com", "Europe/Berlin", "Developer")
-            }
+            pom {
+                name.set("Krypton")
+                description.set(rootProject.description)
+                url.set("https://www.kryptonmc.org")
+                inceptionYear.set("2021")
 
-            contributors {
-                contributor("Brandon Li", "brandonli2006ma@gmail.com", "America/New_York")
-                contributor("Nicole Barningham", "esophose@gmail.com", "America/Boise")
-                contributor("Alex Wood", "alexljwood24@hotmail.co.uk", "Europe/London")
-            }
+                organization {
+                    name.set("KryptonMC")
+                    url.set("https://github.com/KryptonMC")
+                }
 
-            distributionManagement {
-                downloadUrl.set("https://ci.kryptonmc.org/job/Krypton/lastSuccessfulBuild/Krypton")
+                developers {
+                    developer("bombardygamer", "Callum Seabrook", "callum.seabrook@prevarinite.com", "Europe/London", "Lead Developer")
+                    developer("therealjan", "Jan", "jan.m.tennert@gmail.com", "Europe/Berlin", "Developer")
+                }
+
+                contributors {
+                    contributor("Brandon Li", "brandonli2006ma@gmail.com", "America/New_York")
+                    contributor("Nicole Barningham", "esophose@gmail.com", "America/Boise")
+                    contributor("Alex Wood", "alexljwood24@hotmail.co.uk", "Europe/London")
+                }
+
+                distributionManagement {
+                    downloadUrl.set("https://ci.kryptonmc.org/job/Krypton/lastSuccessfulBuild/Krypton")
+                }
             }
         }
     }
