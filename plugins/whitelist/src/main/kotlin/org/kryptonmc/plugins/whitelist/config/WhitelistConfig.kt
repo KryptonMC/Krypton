@@ -29,7 +29,7 @@ data class WhitelistConfig(
     val enforce: Boolean = true,
     @Comment("The time, in ticks, between automatic ban list saves.")
     @Setting("autosave-interval")
-    val autoSaveInterval: Long = 600,
+    val autoSaveInterval: Int = 600,
     @Comment("Whether the auto save starting and finishing messages should be logged.")
     @Setting("log-autosave")
     val logAutoSave: Boolean = false

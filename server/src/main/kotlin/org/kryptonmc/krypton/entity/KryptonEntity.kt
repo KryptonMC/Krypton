@@ -42,6 +42,7 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutSetEntityMetadata
 import org.kryptonmc.krypton.packet.out.play.PacketOutSetEntityVelocity
 import org.kryptonmc.krypton.util.math.Maths
 import org.kryptonmc.krypton.coordinate.KryptonVec3d
+import org.kryptonmc.krypton.scheduling.KryptonScheduler
 import org.kryptonmc.krypton.util.random.RandomSource
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.krypton.world.damage.KryptonDamageSource
@@ -82,6 +83,8 @@ abstract class KryptonEntity(final override var world: KryptonWorld) : BaseEntit
 
     protected var cachedPointers: Pointers? = null
 
+    override val scheduler: KryptonScheduler = KryptonScheduler()
+
     init {
         defineData()
     }
@@ -93,6 +96,7 @@ abstract class KryptonEntity(final override var world: KryptonWorld) : BaseEntit
 
     open fun tick() {
         waterPhysicsSystem.tick()
+        scheduler.process()
         if (data.isDirty()) viewingSystem.sendToViewers(PacketOutSetEntityMetadata(id, data.collectDirty()))
         if (wasDamaged) {
             viewingSystem.sendToViewers(PacketOutSetEntityVelocity.fromEntity(this))

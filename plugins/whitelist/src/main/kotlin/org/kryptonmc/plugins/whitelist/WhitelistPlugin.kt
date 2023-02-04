@@ -28,6 +28,7 @@ import org.kryptonmc.api.event.server.ServerStartEvent
 import org.kryptonmc.api.event.server.ServerStopEvent
 import org.kryptonmc.api.plugin.annotation.DataFolder
 import org.kryptonmc.api.scheduling.Task
+import org.kryptonmc.api.scheduling.TaskTime
 import org.kryptonmc.plugins.whitelist.api.WhitelistManager
 import org.kryptonmc.plugins.whitelist.commands.WhitelistCommand
 import org.kryptonmc.plugins.whitelist.config.WhitelistConfig
@@ -35,7 +36,6 @@ import org.kryptonmc.plugins.whitelist.storage.KryptonWhitelistManager
 import org.kryptonmc.plugins.whitelist.storage.WhitelistStorage
 import org.spongepowered.configurate.hocon.HoconConfigurationLoader
 import java.nio.file.Path
-import java.util.concurrent.TimeUnit
 
 class WhitelistPlugin @Inject constructor(
     private val server: Server,
@@ -75,21 +75,15 @@ class WhitelistPlugin @Inject constructor(
     }
 
     private fun setupAutoSave() {
-        val interval = config.autoSaveInterval * MILLISECONDS_PER_TICK
-        autoSaveTask = server.scheduler.schedule(this, interval, interval, TimeUnit.MILLISECONDS) {
+        autoSaveTask = server.scheduler.buildTask {
             if (config.logAutoSave) logger.info("Starting whitelist auto save...")
             manager.save()
             if (config.logAutoSave) logger.info("Whitelist auto save complete.")
-        }
+        }.delay(TaskTime.ticks(config.autoSaveInterval)).period(TaskTime.ticks(config.autoSaveInterval)).schedule()
     }
 
     private fun registerCommands() {
         val whitelistCommand = BrigadierCommand.of(WhitelistCommand(config, storage).create())
         server.commandManager.register(whitelistCommand, CommandMeta.builder("whitelist").build())
-    }
-
-    companion object {
-
-        private const val MILLISECONDS_PER_TICK = 50
     }
 }

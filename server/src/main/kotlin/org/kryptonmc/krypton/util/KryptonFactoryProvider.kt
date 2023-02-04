@@ -36,6 +36,8 @@ import org.kryptonmc.api.item.meta.ItemMeta
 import org.kryptonmc.api.registry.RegistryReference
 import org.kryptonmc.api.resource.ResourceKey
 import org.kryptonmc.api.resource.ResourcePack
+import org.kryptonmc.api.scheduling.TaskAction
+import org.kryptonmc.api.scheduling.TaskTime
 import org.kryptonmc.api.tags.TagKey
 import org.kryptonmc.api.util.BoundingBox
 import org.kryptonmc.api.util.Color
@@ -72,6 +74,8 @@ import org.kryptonmc.krypton.item.meta.KryptonItemMeta
 import org.kryptonmc.krypton.registry.KryptonRegistryReference
 import org.kryptonmc.krypton.resource.KryptonResourceKey
 import org.kryptonmc.krypton.resource.KryptonResourcePack
+import org.kryptonmc.krypton.scheduling.KryptonTaskAction
+import org.kryptonmc.krypton.scheduling.KryptonTaskTime
 import org.kryptonmc.krypton.world.biome.data.KryptonAmbientAdditionsSettings
 import org.kryptonmc.krypton.world.biome.data.KryptonAmbientMoodSettings
 import org.kryptonmc.krypton.world.biome.data.KryptonAmbientParticleSettings
@@ -131,5 +135,7 @@ object KryptonFactoryProvider : FactoryProvider {
         register<DimensionType.Factory>(KryptonDimensionType.Factory)
         register<GameRule.Factory>(GameRuleKeys.Factory)
         register<RegistryReference.Factory>(KryptonRegistryReference.Factory)
+        register<TaskTime.Factory>(KryptonTaskTime.Factory)
+        register<TaskAction.Factory>(KryptonTaskAction.Factory)
     }
 }

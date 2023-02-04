@@ -28,6 +28,7 @@ import org.kryptonmc.api.event.server.ServerStartEvent
 import org.kryptonmc.api.event.server.ServerStopEvent
 import org.kryptonmc.api.plugin.annotation.DataFolder
 import org.kryptonmc.api.scheduling.Task
+import org.kryptonmc.api.scheduling.TaskTime
 import org.kryptonmc.plugins.bans.api.BanManager
 import org.kryptonmc.plugins.bans.commands.BanCommand
 import org.kryptonmc.plugins.bans.commands.BanIpCommand
@@ -38,7 +39,6 @@ import org.kryptonmc.plugins.bans.storage.BanStorage
 import org.kryptonmc.plugins.bans.storage.KryptonBanManager
 import org.spongepowered.configurate.hocon.HoconConfigurationLoader
 import java.nio.file.Path
-import java.util.concurrent.TimeUnit
 
 class BansPlugin @Inject constructor(
     private val server: Server,
@@ -77,12 +77,11 @@ class BansPlugin @Inject constructor(
     }
 
     private fun setupAutoSave() {
-        val interval = config.autoSaveInterval * MILLISECONDS_PER_TICK
-        autoSaveTask = server.scheduler.schedule(this, interval, interval, TimeUnit.MILLISECONDS) {
+        autoSaveTask = server.scheduler.buildTask {
             if (config.logAutoSave) logger.info("Starting ban list auto save...")
             manager.save()
             if (config.logAutoSave) logger.info("Ban list auto save complete.")
-        }
+        }.delay(TaskTime.ticks(config.autoSaveInterval)).period(TaskTime.ticks(config.autoSaveInterval)).schedule()
     }
 
     private fun registerCommands() {
@@ -94,10 +93,5 @@ class BansPlugin @Inject constructor(
         val pardonIpCommand = BrigadierCommand.of(PardonIpCommand(manager).create())
         server.commandManager.register(pardonCommand, CommandMeta.builder("pardon").build())
         server.commandManager.register(pardonIpCommand, CommandMeta.builder("pardon-ip").build())
-    }
-
-    companion object {
-
-        private const val MILLISECONDS_PER_TICK = 50
     }
 }

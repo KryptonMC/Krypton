@@ -47,6 +47,7 @@ dependencies {
     implementation(libs.fastutil)
     implementation(libs.flare.fastutil)
     implementation(libs.caffeine)
+    implementation(libs.jctools)
 
     // Miscellaneous
     implementation(libs.clikt)
@@ -86,7 +87,6 @@ license {
         "**/plugin/loader/LoadedPluginDescription.kt",
         "**/plugin/loader/LoadedPluginDescriptionCandidate.kt",
         "**/plugin/loader/PluginLoader.kt",
-        "**/scheduling/KryptonScheduler.kt",
         "**/util/bytebufs.kt",
         // Sponge derivatives, with a special header
         "**/console/BrigadierCompleter.kt",

@@ -88,7 +88,7 @@ class KryptonServer(
     override val pluginManager: KryptonPluginManager = KryptonPluginManager()
     override val eventManager: KryptonEventManager = KryptonEventManager(pluginManager)
     override val servicesManager: KryptonServicesManager = KryptonServicesManager(this)
-    override val scheduler: KryptonScheduler = KryptonScheduler(pluginManager)
+    override val scheduler: KryptonScheduler = KryptonScheduler()
     override val userManager: KryptonUserManager = KryptonUserManager(this)
     private val random = RandomSource.create()
 
@@ -258,6 +258,7 @@ class KryptonServer(
         ++tickCount
         tickChildren(hasTimeLeft)
         connectionManager.tick(startTime)
+        scheduler.process()
 
         if (config.world.autosaveInterval > 0 && tickCount % config.world.autosaveInterval == 0) {
             LOGGER.info("Auto save started.")
@@ -356,7 +357,6 @@ class KryptonServer(
         eventManager.shutdown()
 
         // Shut down scheduler
-        scheduler.shutdown()
         LOGGER.info("Goodbye")
 
         // Manually shut down Log4J 2 here so it doesn't shut down before we've finished logging

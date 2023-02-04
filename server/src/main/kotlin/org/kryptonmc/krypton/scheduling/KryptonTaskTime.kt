@@ -16,19 +16,28 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.plugins.bans.config
+package org.kryptonmc.krypton.scheduling
 
-import org.spongepowered.configurate.objectmapping.ConfigSerializable
-import org.spongepowered.configurate.objectmapping.meta.Comment
-import org.spongepowered.configurate.objectmapping.meta.Setting
+import org.kryptonmc.api.scheduling.TaskTime
+import java.time.Duration
 
-@ConfigSerializable
-@JvmRecord
-data class BansConfig(
-    @Comment("The time, in ticks, between automatic ban list saves.")
-    @Setting("autosave-interval")
-    val autoSaveInterval: Int = 600,
-    @Comment("Whether the auto save starting and finishing messages should be logged.")
-    @Setting("log-autosave")
-    val logAutoSave: Boolean = false
-)
+sealed interface KryptonTaskTime : TaskTime {
+
+    object Zero : KryptonTaskTime
+
+    // Would be named "Duration", but that would annoyingly conflict with java.time.Duration.
+    @JvmRecord
+    data class DurationTime(val duration: Duration) : KryptonTaskTime
+
+    @JvmRecord
+    data class Ticks(val ticks: Int) : KryptonTaskTime
+
+    object Factory : TaskTime.Factory {
+
+        override fun zero(): TaskTime = Zero
+
+        override fun duration(duration: Duration): TaskTime = DurationTime(duration)
+
+        override fun ticks(ticks: Int): TaskTime = Ticks(ticks)
+    }
+}

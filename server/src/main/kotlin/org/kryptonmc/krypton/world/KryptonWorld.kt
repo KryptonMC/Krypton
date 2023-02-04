@@ -49,6 +49,7 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutSoundEffect
 import org.kryptonmc.krypton.packet.out.play.PacketOutWorldEvent
 import org.kryptonmc.krypton.registry.KryptonRegistries
 import org.kryptonmc.krypton.registry.holder.Holder
+import org.kryptonmc.krypton.scheduling.KryptonScheduler
 import org.kryptonmc.krypton.util.enumhelper.Directions
 import org.kryptonmc.krypton.util.math.Maths
 import org.kryptonmc.krypton.util.random.RandomSource
@@ -81,6 +82,8 @@ class KryptonWorld(
     override val seed: Long,
     private val tickTime: Boolean
 ) : BaseWorld, AutoCloseable {
+
+    override val scheduler: KryptonScheduler = KryptonScheduler()
 
     override val chunkManager: ChunkManager = ChunkManager(this)
     override val entityManager: EntityManager = EntityManager(this)
@@ -306,6 +309,7 @@ class KryptonWorld(
         updateSkyBrightness()
         tickTime()
         chunkManager.tick(hasTimeLeft)
+        scheduler.process()
 
         if (players.isNotEmpty()) {
             entities.forEach { if (!it.isRemoved) it.tick() }

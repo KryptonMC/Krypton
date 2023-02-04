@@ -14,6 +14,7 @@ import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.event.HoverEvent
 import net.kyori.adventure.text.event.HoverEventSource
 import org.kryptonmc.api.command.Sender
+import org.kryptonmc.api.scheduling.Scheduler
 import org.kryptonmc.api.scoreboard.TeamMember
 import org.kryptonmc.api.util.BoundingBox
 import org.kryptonmc.api.util.Vec3d
@@ -253,6 +254,15 @@ public interface Entity : Sender, HoverEventSource<HoverEvent.ShowEntity>, Sound
      * entire hitbox must be under water.
      */
     public val isUnderwater: Boolean
+
+    /**
+     * The scheduler for this entity.
+     *
+     * Useful for scheduling tasks that should only exist for the lifetime of
+     * the entity, as all tasks that are scheduler with this scheduler will
+     * stop running after the entity is removed.
+     */
+    public val scheduler: Scheduler
 
     /**
      * Adds the given [entity] as a passenger of this entity.

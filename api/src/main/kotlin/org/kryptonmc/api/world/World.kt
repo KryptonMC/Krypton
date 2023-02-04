@@ -23,6 +23,7 @@ import org.kryptonmc.api.fluid.FluidState
 import org.kryptonmc.api.fluid.Fluids
 import org.kryptonmc.api.resource.ResourceKey
 import org.kryptonmc.api.resource.ResourceKeys
+import org.kryptonmc.api.scheduling.Scheduler
 import org.kryptonmc.api.scoreboard.Scoreboard
 import org.kryptonmc.api.util.Vec3d
 import org.kryptonmc.api.util.Vec3i
@@ -138,6 +139,15 @@ public interface World : BlockContainer, FluidContainer, BiomeContainer, BlockEn
      * The scoreboard for this world.
      */
     public val scoreboard: Scoreboard
+
+    /**
+     * The scheduler for this world.
+     *
+     * Useful for scheduling tasks that should only exist for the lifetime of
+     * the world, as all tasks that are scheduler with this scheduler will
+     * stop running after the world is removed.
+     */
+    public val scheduler: Scheduler
 
     /**
      * Gets the block at the given coordinates.

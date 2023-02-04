@@ -8,47 +8,93 @@
  */
 package org.kryptonmc.api.scheduling
 
-import java.util.concurrent.TimeUnit
+import java.util.function.Supplier
 import javax.annotation.concurrent.ThreadSafe
 
 /**
- * The scheduler. This can be used to run or schedule tasks asynchronously.
+ * A scheduler that will execute tasks with a precision dependent on the tick
+ * rate of the server.
+ *
+ * This does not necessarily mean that task execution times are dependent on
+ * the server's tick rate, only that the scheduler will attempt to execute
+ * tasks at the same rate as the server's tick rate.
  */
 @ThreadSafe
 public interface Scheduler {
 
     /**
-     * Runs the given [task] asynchronously once with no delay.
+     * Submits a task to be executed by the scheduler.
      *
-     * @param plugin the plugin that requested to run the task
-     * @param task the task to be ran
-     * @return a scheduled [Task] that can be [cancelled][Task.cancel]
+     * This is the primitive method for scheduling tasks. The task's execution
+     * depends entirely on the action returned by the given [task] supplier.
+     *
+     * This is designed to allow much more fine-grained control over the
+     * execution of a task, and it is recommended that, if you wish to specify
+     * a standard delay and period, as you would with many other schedulers,
+     * that you use the provided [buildTask] or [scheduleTask] methods.
+     *
+     * @param task the task to submit
+     * @param executionType the execution type of the task
+     * @return the scheduled task
      */
-    public fun run(plugin: Any, task: TaskRunnable): Task
+    public fun submitTask(task: Supplier<TaskAction>, executionType: ExecutionType): Task
 
     /**
-     * Schedules the given [task] asynchronously once with the given [delay]
-     * in the given [unit] of time.
+     * Submits a task to be executed by the scheduler.
      *
-     * @param plugin the plugin that requested to run the task
-     * @param delay the delay before this task is ran
-     * @param unit the time unit for the [delay]
-     * @param task the task to be ran
-     * @return a scheduled task that can be [cancelled][Task.cancel]
+     * This is equivalent to [submitTask], except that the execution type will
+     * be chosen by the implementation.
+     *
+     * @param task the task to submit
+     * @return the scheduled task
      */
-    public fun schedule(plugin: Any, delay: Long, unit: TimeUnit, task: TaskRunnable): Task
+    public fun submitTask(task: Supplier<TaskAction>): Task
 
     /**
-     * Schedules the given [task] asynchronously repeatedly, with a [period] in
-     * between each execution of the task, and starting after the given
-     * [delay], both in the given [unit] of time.
+     * Creates a new task builder that will execute the given [task].
      *
-     * @param plugin the plugin requesting to schedule the task
-     * @param delay the delay before this task is ran
-     * @param period the period of time between running this task
-     * @param unit the unit of time for the [delay] and [period]
-     * @param task the task to be ran
-     * @return a scheduled task that can be [cancelled][Task.cancel]
+     * This is the recommended method for scheduling tasks, as it is easier to
+     * use, and provides a more conventional way of scheduling tasks that
+     * should be more familiar to most users.
+     *
+     * If more fine-grained control over the scheduling of a task is required,
+     * the [submitTask] method should be used instead.
+     *
+     * @param task the task to execute
+     * @return a new task builder
      */
-    public fun schedule(plugin: Any, delay: Long, period: Long, unit: TimeUnit, task: TaskRunnable): Task
+    public fun buildTask(task: Runnable): Task.Builder
+
+    /**
+     * Schedules the given [task] to be executed by the scheduler after the
+     * given [delay], with a period between executions of [period], and with
+     * the given [executionType].
+     *
+     * This is a shortcut to building a task with [buildTask].
+     *
+     * @param task the task to execute
+     * @param delay the initial delay before execution
+     * @param period the delay between subsequent executions
+     * @param executionType the execution type of the task
+     * @return the scheduled task
+     */
+    public fun scheduleTask(task: Runnable, delay: TaskTime, period: TaskTime, executionType: ExecutionType): Task {
+        return buildTask(task).delay(delay).period(period).executionType(executionType).schedule()
+    }
+
+    /**
+     * Schedules the given [task] to be executed by the scheduler after the
+     * given [delay], with a period between executions of [period].
+     *
+     * This is equivalent to [scheduleTask], except that the execution type
+     * is chosen by the implementation.
+     *
+     * @param task the task to execute
+     * @param delay the initial delay before execution
+     * @param period the delay between subsequent executions
+     * @return the scheduled task
+     */
+    public fun scheduleTask(task: Runnable, delay: TaskTime, period: TaskTime): Task {
+        return buildTask(task).delay(delay).period(period).schedule()
+    }
 }
