@@ -14,10 +14,13 @@ jobs:
         uses: "actions/setup-java@v3.9.0"
         with:
           java-version: 17
+          distribution: "temurin"
       - name: "Generate documentation"
-        run: "./gradlew clean dokkaHtmlMultiModule"
+        uses: "gradle/gradle-build-action@v2.3.3"
+        with:
+          arguments: "clean dokkaHtmlMultiModule"
       - name: "Deploy to pages"
-        uses: "JamesIves/github-pages-deploy-action@4.4.1"
+        uses: "JamesIves/github-pages-deploy-action@v4.4.1"
         with:
           branch: "docs"
           folder: "build/dokka/htmlMultiModule"

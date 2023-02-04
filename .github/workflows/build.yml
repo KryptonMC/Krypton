@@ -31,7 +31,7 @@ jobs:
         with:
           name: "jar"
           path: "jar/build/libs/Krypton-*.jar"
-      - name: "Publish JAR"
+      - name: "Publish to Maven"
         if: "github.event_name == 'push' && github.ref == 'refs/heads/master'"
         run: "./gradlew publish"
         env:
