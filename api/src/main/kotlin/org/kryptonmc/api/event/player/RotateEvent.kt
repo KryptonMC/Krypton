@@ -43,6 +43,9 @@ public interface RotateEvent : PlayerEvent, DeniableEventWithResult<RotateEvent.
      * The result of a rotate event.
      *
      * This allows plugins to modify the rotation that players will rotate to.
+     *
+     * @property newYaw The new yaw to rotate the player to.
+     * @param newPitch The new pitch to rotate the player to.
      */
     @JvmRecord
     @ImmutableType

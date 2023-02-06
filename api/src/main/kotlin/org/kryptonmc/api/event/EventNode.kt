@@ -86,6 +86,7 @@ public interface EventNode<T : Event> {
      * Due to the nature of event nodes, this method will propagate the event
      * to any nodes that are registered children of this event node.
      *
+     * @param E the event type
      * @param event the event to fire
      */
     public fun <E : T> fire(event: E): E
@@ -193,6 +194,8 @@ public interface EventNode<T : Event> {
          * val playerNode = EventNode.forType("abc", EventFilter.PLAYER)
          * ```
          *
+         * @param T the event type
+         * @param V the value type
          * @param name the name of the node
          * @param filter the event filter
          * @return a new event node
@@ -222,7 +225,8 @@ public interface EventNode<T : Event> {
          * ```kotlin
          * val playerInCreative = EventNode.filteredForType("abc", EventFilter.PLAYER) { event, player -> player.gameMode == GameMode.CREATIVE }
          * ```
-         *
+         * @param T the event type
+         * @param V the value type
          * @param name the name of the node
          * @param filter the event filter
          * @param predicate the predicate to test
@@ -240,6 +244,8 @@ public interface EventNode<T : Event> {
          * This functions identically to [filteredForType], except that the
          * predicate does not provide the handle object.
          *
+         * @param T the event type
+         * @param V the value type
          * @param name the name of the node
          * @param filter the event filter
          * @param predicate the predicate to test
@@ -257,6 +263,8 @@ public interface EventNode<T : Event> {
          * This functions identically to [filteredForType], except that the
          * predicate only provides the handle object.
          *
+         * @param T the event type
+         * @param V the value type
          * @param name the name of the node
          * @param filter the event filter
          * @param predicate the predicate to test

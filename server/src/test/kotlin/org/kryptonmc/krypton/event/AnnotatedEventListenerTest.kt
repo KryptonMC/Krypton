@@ -31,6 +31,7 @@ import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 import kotlin.test.fail
 
+@Suppress("UnusedPrivateMember")
 class AnnotatedEventListenerTest {
 
     @Test

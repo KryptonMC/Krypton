@@ -39,6 +39,8 @@ public interface MoveEvent : PlayerEvent, DeniableEventWithResult<MoveEvent.Resu
      * The result of a move event.
      *
      * This allows plugins to modify the location that players will move to.
+     *
+     * @property newLocation The new location to move the player to.
      */
     @JvmRecord
     @ImmutableType
