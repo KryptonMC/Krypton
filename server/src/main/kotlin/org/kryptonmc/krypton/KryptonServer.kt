@@ -22,6 +22,7 @@ import io.netty.channel.epoll.Epoll
 import io.netty.channel.kqueue.KQueue
 import io.netty.channel.unix.DomainSocketAddress
 import org.apache.logging.log4j.LogManager
+import org.kryptonmc.api.event.GlobalEventNode
 import org.kryptonmc.api.world.World
 import org.kryptonmc.krypton.auth.KryptonProfileCache
 import org.kryptonmc.krypton.command.KryptonCommandManager
@@ -30,7 +31,7 @@ import org.kryptonmc.krypton.config.KryptonConfig
 import org.kryptonmc.krypton.config.category.ProxyCategory
 import org.kryptonmc.krypton.console.KryptonConsole
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
-import org.kryptonmc.krypton.event.KryptonEventManager
+import org.kryptonmc.krypton.event.KryptonGlobalEventNode
 import org.kryptonmc.krypton.event.server.KryptonServerStartEvent
 import org.kryptonmc.krypton.event.server.KryptonServerStopEvent
 import org.kryptonmc.krypton.event.server.KryptonTickEndEvent
@@ -86,7 +87,7 @@ class KryptonServer(
     override val worldManager: KryptonWorldManager = KryptonWorldManager(this, worldFolder)
     override val commandManager: KryptonCommandManager = KryptonCommandManager()
     override val pluginManager: KryptonPluginManager = KryptonPluginManager()
-    override val eventManager: KryptonEventManager = KryptonEventManager(pluginManager)
+    override val eventNode: GlobalEventNode = KryptonGlobalEventNode
     override val servicesManager: KryptonServicesManager = KryptonServicesManager(this)
     override val scheduler: KryptonScheduler = KryptonScheduler()
     override val userManager: KryptonUserManager = KryptonUserManager(this)
@@ -154,7 +155,7 @@ class KryptonServer(
         // Fire the event that signals the server starting. We fire it here so that plugins can listen to it as part of their lifecycle,
         // and we call it sync so plugins can finish initialising before we do.
         LOGGER.debug("Notifying plugins that the server is ready")
-        eventManager.fireAndForgetSync(KryptonServerStartEvent)
+        eventNode.fire(KryptonServerStartEvent)
 
         // Initialize console permissions after plugins are loaded. We do this here so plugins have had a chance to register their listeners
         // so they can actually catch this event and set up their own permission providers for the console.
@@ -241,8 +242,9 @@ class KryptonServer(
         // ServerStartEvent and ServerStopEvent in their main class.
         for (container in pluginManager.plugins) {
             val instance = container.instance ?: continue
+            val eventNode = pluginManager.getEventNode(container)
             try {
-                eventManager.registerUnchecked(container, instance)
+                eventNode.registerListeners(instance)
             } catch (exception: Exception) {
                 LOGGER.error("Unable to register plugin listener for plugin ${container.description.name}!", exception)
             }
@@ -253,7 +255,7 @@ class KryptonServer(
 
     private fun tick(hasTimeLeft: BooleanSupplier) {
         val startTime = System.currentTimeMillis()
-        eventManager.fireAndForgetSync(KryptonTickStartEvent(tickCount + 1))
+        eventNode.fire(KryptonTickStartEvent(tickCount + 1))
 
         ++tickCount
         tickChildren(hasTimeLeft)
@@ -269,7 +271,7 @@ class KryptonServer(
 
         val endTime = System.nanoTime()
         val remaining = NORMAL_TICK_TIME_NANOS - (endTime - lastTick)
-        eventManager.fireAndForgetSync(KryptonTickEndEvent(tickCount, (endTime - lastTick) / NANOS_TO_MILLIS, remaining))
+        eventNode.fire(KryptonTickEndEvent(tickCount, (endTime - lastTick) / NANOS_TO_MILLIS, remaining))
     }
 
     private fun tickChildren(hasTimeLeft: BooleanSupplier) {
@@ -353,8 +355,7 @@ class KryptonServer(
 
         // Shut down plugins and unregister listeners
         LOGGER.info("Shutting down plugins and unregistering listeners...")
-        eventManager.fireAndForgetSync(KryptonServerStopEvent)
-        eventManager.shutdown()
+        eventNode.fire(KryptonServerStopEvent)
 
         // Shut down scheduler
         LOGGER.info("Goodbye")

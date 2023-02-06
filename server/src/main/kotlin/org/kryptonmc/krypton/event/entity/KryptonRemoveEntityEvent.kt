@@ -19,11 +19,8 @@
 package org.kryptonmc.krypton.event.entity
 
 import org.kryptonmc.api.entity.Entity
-import org.kryptonmc.api.event.GenericResult
 import org.kryptonmc.api.event.entity.RemoveEntityEvent
+import org.kryptonmc.api.event.type.AbstractDeniableEvent
 import org.kryptonmc.api.world.World
 
-class KryptonRemoveEntityEvent(override val entity: Entity, override val world: World) : RemoveEntityEvent {
-
-    override var result: GenericResult = GenericResult.allowed()
-}
+class KryptonRemoveEntityEvent(override val entity: Entity, override val world: World) : AbstractDeniableEvent(), RemoveEntityEvent

@@ -29,7 +29,6 @@ import org.kryptonmc.plugins.bans.event.BanProfileEvent
 import org.kryptonmc.plugins.bans.event.PardonIpEvent
 import org.kryptonmc.plugins.bans.event.PardonProfileEvent
 import java.util.Collections
-import java.util.concurrent.CompletableFuture
 
 class KryptonBanManager(private val server: Server, private val storage: BanStorage) : BanManager {
 
@@ -54,22 +53,20 @@ class KryptonBanManager(private val server: Server, private val storage: BanStor
         storage.addBan(ban)
     }
 
-    override fun banProfile(ban: ProfileBan): CompletableFuture<Boolean> {
-        if (isBanned(ban.profile)) return CompletableFuture.completedFuture(false)
-        return server.eventManager.fire(BanProfileEvent(ban)).thenApply {
-            if (!it.result.isAllowed) return@thenApply false
-            storage.addBan(ban)
-            true
-        }
+    override fun banProfile(ban: ProfileBan): Boolean {
+        if (isBanned(ban.profile)) return false
+        val event = server.eventNode.fire(BanProfileEvent(ban))
+        if (!event.isAllowed()) return false
+        storage.addBan(ban)
+        return true
     }
 
-    override fun banIp(ban: IpBan): CompletableFuture<Boolean> {
-        if (isBanned(ban.ip)) return CompletableFuture.completedFuture(false)
-        return server.eventManager.fire(BanIpEvent(ban)).thenApply {
-            if (!it.result.isAllowed) return@thenApply false
-            storage.addBan(ban)
-            true
-        }
+    override fun banIp(ban: IpBan): Boolean {
+        if (isBanned(ban.ip)) return false
+        val event = server.eventNode.fire(BanIpEvent(ban))
+        if (!event.isAllowed()) return false
+        storage.addBan(ban)
+        return true
     }
 
     fun removeBan(profile: GameProfile) {
@@ -82,22 +79,20 @@ class KryptonBanManager(private val server: Server, private val storage: BanStor
         storage.removeBan(ip)
     }
 
-    override fun pardonProfile(profile: GameProfile): CompletableFuture<Boolean> {
-        if (!isBanned(profile)) return CompletableFuture.completedFuture(false)
-        return server.eventManager.fire(PardonProfileEvent(storage.getBan(profile)!!)).thenApply {
-            if (!it.result.isAllowed) return@thenApply false
-            storage.removeBan(profile)
-            true
-        }
+    override fun pardonProfile(profile: GameProfile): Boolean {
+        if (!isBanned(profile)) return false
+        val event = server.eventNode.fire(PardonProfileEvent(storage.getBan(profile)!!))
+        if (!event.isAllowed()) return false
+        storage.removeBan(profile)
+        return true
     }
 
-    override fun pardonIp(ip: String): CompletableFuture<Boolean> {
-        if (!isBanned(ip)) return CompletableFuture.completedFuture(false)
-        return server.eventManager.fire(PardonIpEvent(storage.getBan(ip)!!)).thenApply {
-            if (!it.result.isAllowed) return@thenApply false
-            storage.removeBan(ip)
-            true
-        }
+    override fun pardonIp(ip: String): Boolean {
+        if (!isBanned(ip)) return false
+        val event = server.eventNode.fire(PardonIpEvent(storage.getBan(ip)!!))
+        if (!event.isAllowed()) return false
+        storage.removeBan(ip)
+        return true
     }
 
     override fun allProfileBans(): Collection<ProfileBan> = Collections.unmodifiableCollection(storage.profileBans())

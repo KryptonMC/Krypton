@@ -20,8 +20,9 @@ package org.kryptonmc.krypton.event.command
 
 import org.kryptonmc.api.command.Sender
 import org.kryptonmc.api.event.command.CommandExecuteEvent
+import org.kryptonmc.api.event.type.AbstractDeniableEventWithResult
 
-class KryptonCommandExecuteEvent(override val sender: Sender, override val command: String) : CommandExecuteEvent {
-
-    override var result: CommandExecuteEvent.Result = CommandExecuteEvent.Result.allowed()
-}
+class KryptonCommandExecuteEvent(
+    override val sender: Sender,
+    override val command: String
+) : AbstractDeniableEventWithResult<CommandExecuteEvent.Result>(), CommandExecuteEvent

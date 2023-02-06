@@ -9,19 +9,19 @@
 package org.kryptonmc.api.event.entity
 
 import org.kryptonmc.api.entity.Entity
-import org.kryptonmc.api.event.GenericResult
-import org.kryptonmc.api.event.ResultedEvent
+import org.kryptonmc.api.event.type.DeniableEvent
+import org.kryptonmc.api.event.type.EntityEvent
 import org.kryptonmc.api.world.World
 
 /**
  * Called when the given [entity] is removed from the given [world].
  */
-public interface RemoveEntityEvent : ResultedEvent<GenericResult> {
+public interface RemoveEntityEvent : EntityEvent, DeniableEvent {
 
     /**
      * The entity that was removed from the world.
      */
-    public val entity: Entity
+    override val entity: Entity
 
     /**
      * The world that the entity was removed from.

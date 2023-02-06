@@ -9,13 +9,13 @@
 package org.kryptonmc.api.event.player
 
 import org.kryptonmc.api.block.Block
-import org.kryptonmc.api.event.GenericResult
-import org.kryptonmc.api.event.ResultedEvent
+import org.kryptonmc.api.event.type.DeniableEvent
+import org.kryptonmc.api.event.type.PlayerEvent
 
 /**
  * Called when a block is damaged.
  */
-public interface BlockDamageEvent : PlayerEvent, ResultedEvent<GenericResult> {
+public interface BlockDamageEvent : PlayerEvent, DeniableEvent {
 
     /**
      * The block that is being broken by the player.

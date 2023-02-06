@@ -19,11 +19,11 @@
 package org.kryptonmc.krypton.event.player
 
 import org.kryptonmc.api.auth.GameProfile
-import org.kryptonmc.api.event.ComponentResult
 import org.kryptonmc.api.event.player.LoginEvent
+import org.kryptonmc.api.event.type.AbstractDeniableEventWithResult
 import java.net.InetSocketAddress
 
-class KryptonLoginEvent(override val profile: GameProfile, override val address: InetSocketAddress) : LoginEvent {
-
-    override var result: ComponentResult = ComponentResult.allowed()
-}
+class KryptonLoginEvent(
+    override val profile: GameProfile,
+    override val address: InetSocketAddress
+) : AbstractDeniableEventWithResult<LoginEvent.Result>(), LoginEvent

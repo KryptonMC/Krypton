@@ -8,15 +8,14 @@
  */
 package org.kryptonmc.api.event.command
 
-import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.command.Sender
-import org.kryptonmc.api.event.ResultedEvent
+import org.kryptonmc.api.event.type.DeniableEventWithResult
 import org.kryptonmc.internal.annotations.ImmutableType
 
 /**
  * Called when the given [command] is executed by the given [sender].
  */
-public interface CommandExecuteEvent : ResultedEvent<CommandExecuteEvent.Result> {
+public interface CommandExecuteEvent : DeniableEventWithResult<CommandExecuteEvent.Result> {
 
     /**
      * The sender that executed the command.
@@ -29,51 +28,14 @@ public interface CommandExecuteEvent : ResultedEvent<CommandExecuteEvent.Result>
     public val command: String
 
     /**
-     * The result of a [CommandExecuteEvent].
+     * The result of a command's execution.
      *
-     * @property isAllowed Whether the command is allowed to be executed.
-     * @property command The replacement command to execute, or null, if the
-     * original command should be executed.
+     * This can be used to completely replace the command that the player
+     * executed, which can be useful for redirecting commands to others.
+     *
+     * @property command The replacement command to execute.
      */
     @JvmRecord
     @ImmutableType
-    public data class Result(override val isAllowed: Boolean, public val command: String?) : ResultedEvent.Result {
-
-        public companion object {
-
-            private val ALLOWED = Result(true, null)
-            private val DENIED = Result(false, null)
-
-            /**
-             * Gets the result that allows the command to be executed without
-             * any modifications.
-             *
-             * @return the allowed result
-             */
-            @JvmStatic
-            @Contract(pure = true)
-            public fun allowed(): Result = ALLOWED
-
-            /**
-             * Gets the result that denies the command from being executed by
-             * the server.
-             *
-             * @return the denied result
-             */
-            @JvmStatic
-            @Contract(pure = true)
-            public fun denied(): Result = DENIED
-
-            /**
-             * Creates a new result that allows the command to be executed, but
-             * silently replaces it with the given [newCommand].
-             *
-             * @param newCommand the replacement command
-             * @return a new allowed result
-             */
-            @JvmStatic
-            @Contract("_ -> new", pure = true)
-            public fun command(newCommand: String): Result = Result(true, newCommand)
-        }
-    }
+    public data class Result(public val command: String)
 }

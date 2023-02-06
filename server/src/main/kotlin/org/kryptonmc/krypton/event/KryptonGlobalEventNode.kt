@@ -18,10 +18,8 @@
  */
 package org.kryptonmc.krypton.event
 
-/**
- * A function that represents an event listener using coroutines.
- */
-fun interface CoroutineEventFunction {
+import org.kryptonmc.api.event.Event
+import org.kryptonmc.api.event.EventFilter
+import org.kryptonmc.api.event.GlobalEventNode
 
-    suspend fun execute(instance: Any, event: Any)
-}
+object KryptonGlobalEventNode : KryptonEventNode<Event>("global", EventFilter.ALL, null), GlobalEventNode

@@ -18,13 +18,13 @@
  */
 package org.kryptonmc.krypton
 
+import org.kryptonmc.api.event.GlobalEventNode
 import org.kryptonmc.api.registry.RegistryManager
 import org.kryptonmc.api.util.FactoryProvider
 import org.kryptonmc.krypton.auth.KryptonProfileCache
 import org.kryptonmc.krypton.command.KryptonCommandManager
 import org.kryptonmc.krypton.console.KryptonConsole
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
-import org.kryptonmc.krypton.event.KryptonEventManager
 import org.kryptonmc.krypton.plugin.KryptonPluginManager
 import org.kryptonmc.krypton.registry.KryptonRegistries
 import org.kryptonmc.krypton.scheduling.KryptonScheduler
@@ -44,7 +44,7 @@ interface BaseServer : ServerAudience {
     override val worldManager: KryptonWorldManager
     override val commandManager: KryptonCommandManager
     override val pluginManager: KryptonPluginManager
-    override val eventManager: KryptonEventManager
+    override val eventNode: GlobalEventNode
     override val servicesManager: KryptonServicesManager
     override val scheduler: KryptonScheduler
     override val userManager: KryptonUserManager

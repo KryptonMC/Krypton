@@ -19,10 +19,10 @@
 package org.kryptonmc.krypton.event.player
 
 import org.kryptonmc.api.entity.player.Player
-import org.kryptonmc.api.event.GenericResult
 import org.kryptonmc.api.event.player.PerformActionEvent
+import org.kryptonmc.api.event.type.AbstractDeniableEvent
 
-class KryptonPerformActionEvent(override val player: Player, override val action: PerformActionEvent.Action) : PerformActionEvent {
-
-    override var result: GenericResult = GenericResult.allowed()
-}
+class KryptonPerformActionEvent(
+    override val player: Player,
+    override val action: PerformActionEvent.Action
+) : AbstractDeniableEvent(), PerformActionEvent

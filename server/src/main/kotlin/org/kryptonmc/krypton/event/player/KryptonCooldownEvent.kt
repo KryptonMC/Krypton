@@ -20,9 +20,11 @@ package org.kryptonmc.krypton.event.player
 
 import org.kryptonmc.api.entity.player.Player
 import org.kryptonmc.api.event.player.CooldownEvent
+import org.kryptonmc.api.event.type.AbstractDeniableEventWithResult
 import org.kryptonmc.api.item.ItemType
 
-class KryptonCooldownEvent(override val player: Player, override val item: ItemType, override val cooldown: Int) : CooldownEvent {
-
-    override var result: CooldownEvent.Result = CooldownEvent.Result.allowed()
-}
+class KryptonCooldownEvent(
+    override val player: Player,
+    override val item: ItemType,
+    override val cooldown: Int
+) : AbstractDeniableEventWithResult<CooldownEvent.Result>(), CooldownEvent

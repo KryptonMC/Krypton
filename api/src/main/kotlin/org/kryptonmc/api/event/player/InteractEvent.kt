@@ -8,14 +8,14 @@
  */
 package org.kryptonmc.api.event.player
 
-import org.kryptonmc.api.event.GenericResult
-import org.kryptonmc.api.event.ResultedEvent
+import org.kryptonmc.api.event.type.DeniableEvent
+import org.kryptonmc.api.event.type.PlayerEvent
 
 /**
  * The superclass for all events involving a player's interaction with
  * something in a world.
  */
-public sealed interface InteractEvent : PlayerEvent, ResultedEvent<GenericResult> {
+public sealed interface InteractEvent : PlayerEvent, DeniableEvent {
 
     /**
      * The type of interaction that the player performed.

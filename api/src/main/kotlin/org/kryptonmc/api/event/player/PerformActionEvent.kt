@@ -8,13 +8,13 @@
  */
 package org.kryptonmc.api.event.player
 
-import org.kryptonmc.api.event.GenericResult
-import org.kryptonmc.api.event.ResultedEvent
+import org.kryptonmc.api.event.type.DeniableEvent
+import org.kryptonmc.api.event.type.PlayerEvent
 
 /**
  * Called when the given [player] performs the given [action].
  */
-public interface PerformActionEvent : PlayerEvent, ResultedEvent<GenericResult> {
+public interface PerformActionEvent : PlayerEvent, DeniableEvent {
 
     /**
      * The action that is being performed by the player.

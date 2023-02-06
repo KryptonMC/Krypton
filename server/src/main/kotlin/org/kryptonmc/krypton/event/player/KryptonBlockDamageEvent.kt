@@ -20,10 +20,7 @@ package org.kryptonmc.krypton.event.player
 
 import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.entity.player.Player
-import org.kryptonmc.api.event.GenericResult
 import org.kryptonmc.api.event.player.BlockDamageEvent
+import org.kryptonmc.api.event.type.AbstractDeniableEvent
 
-class KryptonBlockDamageEvent(override val player: Player, override val block: Block) : BlockDamageEvent {
-
-    override var result: GenericResult = GenericResult.allowed()
-}
+class KryptonBlockDamageEvent(override val player: Player, override val block: Block) : AbstractDeniableEvent(), BlockDamageEvent

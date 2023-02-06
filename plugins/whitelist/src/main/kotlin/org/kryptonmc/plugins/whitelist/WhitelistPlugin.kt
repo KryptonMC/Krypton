@@ -23,6 +23,8 @@ import org.apache.logging.log4j.Logger
 import org.kryptonmc.api.Server
 import org.kryptonmc.api.command.BrigadierCommand
 import org.kryptonmc.api.command.CommandMeta
+import org.kryptonmc.api.event.Event
+import org.kryptonmc.api.event.EventNode
 import org.kryptonmc.api.event.Listener
 import org.kryptonmc.api.event.server.ServerStartEvent
 import org.kryptonmc.api.event.server.ServerStopEvent
@@ -40,6 +42,7 @@ import java.nio.file.Path
 class WhitelistPlugin @Inject constructor(
     private val server: Server,
     private val logger: Logger,
+    private val eventNode: EventNode<Event>,
     @DataFolder
     private val dataFolder: Path
 ) {
@@ -55,7 +58,7 @@ class WhitelistPlugin @Inject constructor(
         manager.load()
         setupAutoSave()
         registerCommands()
-        server.eventManager.registerListener(this, WhitelistListener(logger, storage))
+        eventNode.registerListeners(WhitelistListener(logger, storage))
         server.servicesManager.register(this, WhitelistManager::class.java, manager)
     }
 

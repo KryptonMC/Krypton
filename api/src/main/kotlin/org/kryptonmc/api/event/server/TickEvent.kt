@@ -8,13 +8,15 @@
  */
 package org.kryptonmc.api.event.server
 
+import org.kryptonmc.api.event.Event
+
 /**
  * An event that is called when the server starts or ends a tick.
  *
  * These events are called incredibly frequently. On a server with a normal
  * tick speed, these events will be called 20 times per second.
  */
-public sealed interface TickEvent {
+public sealed interface TickEvent : Event {
 
     /**
      * The number of the tick that has started. This will start from 0, which

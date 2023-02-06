@@ -176,15 +176,17 @@ class PlayerManager(
         playersByUUID.put(player.uuid, player)
 
         // Fire join event and send result message
-        val joinResult = server.eventManager.fireSync(KryptonJoinEvent(player, !profile.name.equals(name, true))).result
-        if (!joinResult.isAllowed) {
+        val joinEvent = server.eventNode.fire(KryptonJoinEvent(player, !profile.name.equals(name, true)))
+        if (!joinEvent.isAllowed()) {
             // Use default reason if denied without specified reason
-            val reason = joinResult.message ?: DisconnectMessages.KICKED
+            val reason = joinEvent.result?.message ?: DisconnectMessages.KICKED
             player.connection.disconnect(reason)
             return
         }
-        val joinMessage = joinResult.message ?: getDefaultJoinMessage(player, joinResult.hasJoinedBefore)
+
+        val joinMessage = joinEvent.result?.message ?: getDefaultJoinMessage(player, joinEvent.hasJoinedBefore)
         broadcastSystemMessage(joinMessage, false)
+
         player.connection.send(PacketOutSynchronizePlayerPosition.fromPlayer(player))
         player.connection.send(PacketOutPlayerInfoUpdate.createPlayerInitializing(players))
         server.connectionManager.sendGroupedPacket(players, PacketOutPlayerInfoUpdate.createPlayerInitializing(ImmutableLists.of(player)))
@@ -205,23 +207,23 @@ class PlayerManager(
     }
 
     fun removePlayer(player: KryptonPlayer) {
-        server.eventManager.fire(KryptonQuitEvent(player)).thenAccept { event ->
-            player.statisticsTracker.incrementStatistic(CustomStatistics.LEAVE_GAME.get())
-            savePlayer(player)
-            player.world.chunkManager.removePlayer(player)
+        val event = server.eventNode.fire(KryptonQuitEvent(player))
 
-            // Remove from caches
-            player.world.removeEntity(player)
-            player.world.players.remove(player)
-            players.remove(player)
-            playersByName.remove(player.profile.name)
-            playersByUUID.remove(player.uuid)
+        player.statisticsTracker.incrementStatistic(CustomStatistics.LEAVE_GAME.get())
+        savePlayer(player)
+        player.world.chunkManager.removePlayer(player)
 
-            // Send info and quit message
-            server.connectionManager.invalidateStatus()
-//            server.sessionManager.sendGrouped(PacketOutPlayerInfoRemove(player))
-            if (event.quitMessage != null) server.sendMessage(event.quitMessage!!)
-        }
+        // Remove from caches
+        player.world.removeEntity(player)
+        player.world.players.remove(player)
+        players.remove(player)
+        playersByName.remove(player.profile.name)
+        playersByUUID.remove(player.uuid)
+
+        // Send info and quit message
+        server.connectionManager.invalidateStatus()
+//        server.sessionManager.sendGrouped(PacketOutPlayerInfoRemove(player))
+        event.quitMessage?.let { server.sendMessage(it) }
     }
 
     fun broadcast(packet: Packet, world: KryptonWorld, x: Double, y: Double, z: Double, radius: Double, except: KryptonPlayer?) {

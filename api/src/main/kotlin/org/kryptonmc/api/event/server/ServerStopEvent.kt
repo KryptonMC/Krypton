@@ -8,7 +8,9 @@
  */
 package org.kryptonmc.api.event.server
 
+import org.kryptonmc.api.event.Event
+
 /**
  * Fired by the server when it is shutting down.
  */
-public interface ServerStopEvent
+public interface ServerStopEvent : Event

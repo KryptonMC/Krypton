@@ -23,6 +23,8 @@ import org.apache.logging.log4j.Logger
 import org.kryptonmc.api.Server
 import org.kryptonmc.api.command.BrigadierCommand
 import org.kryptonmc.api.command.CommandMeta
+import org.kryptonmc.api.event.Event
+import org.kryptonmc.api.event.EventNode
 import org.kryptonmc.api.event.Listener
 import org.kryptonmc.api.event.server.ServerStartEvent
 import org.kryptonmc.api.event.server.ServerStopEvent
@@ -43,6 +45,7 @@ import java.nio.file.Path
 class BansPlugin @Inject constructor(
     private val server: Server,
     private val logger: Logger,
+    private val eventNode: EventNode<Event>,
     @DataFolder
     private val dataFolder: Path
 ) {
@@ -57,7 +60,7 @@ class BansPlugin @Inject constructor(
         manager.load()
         setupAutoSave()
         registerCommands()
-        server.eventManager.registerListener(this, BanListener(logger, manager))
+        eventNode.registerListeners(BanListener(logger, manager))
         server.servicesManager.register(this, BanManager::class.java, manager)
     }
 

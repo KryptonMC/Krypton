@@ -20,8 +20,9 @@ package org.kryptonmc.krypton.event.player
 
 import org.kryptonmc.api.entity.player.Player
 import org.kryptonmc.api.event.player.JoinEvent
+import org.kryptonmc.api.event.type.AbstractDeniableEventWithResult
 
-class KryptonJoinEvent(override val player: Player, override val hasJoinedBefore: Boolean) : JoinEvent {
-
-    override var result: JoinEvent.Result = JoinEvent.Result.allowed(hasJoinedBefore)
-}
+class KryptonJoinEvent(
+    override val player: Player,
+    override val hasJoinedBefore: Boolean
+) : AbstractDeniableEventWithResult<JoinEvent.Result>(), JoinEvent

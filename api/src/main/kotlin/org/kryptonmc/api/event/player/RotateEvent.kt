@@ -9,12 +9,15 @@
 package org.kryptonmc.api.event.player
 
 import org.kryptonmc.api.event.annotation.PerformanceSensitive
+import org.kryptonmc.api.event.type.DeniableEventWithResult
+import org.kryptonmc.api.event.type.PlayerEvent
+import org.kryptonmc.internal.annotations.ImmutableType
 
 /**
  * Called when a player rotates their head.
  */
 @PerformanceSensitive
-public interface RotateEvent : PlayerEvent {
+public interface RotateEvent : PlayerEvent, DeniableEventWithResult<RotateEvent.Result> {
 
     /**
      * The yaw of the player before the change in rotation.
@@ -35,4 +38,13 @@ public interface RotateEvent : PlayerEvent {
      * The pitch of the player after the change in rotation.
      */
     public val newPitch: Float
+
+    /**
+     * The result of a rotate event.
+     *
+     * This allows plugins to modify the rotation that players will rotate to.
+     */
+    @JvmRecord
+    @ImmutableType
+    public data class Result(public val newYaw: Float, public val newPitch: Float)
 }

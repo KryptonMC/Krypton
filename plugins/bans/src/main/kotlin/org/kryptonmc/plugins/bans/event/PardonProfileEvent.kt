@@ -18,11 +18,7 @@
  */
 package org.kryptonmc.plugins.bans.event
 
-import org.kryptonmc.api.event.GenericResult
-import org.kryptonmc.api.event.ResultedEvent
+import org.kryptonmc.api.event.type.AbstractDeniableEvent
 import org.kryptonmc.plugins.bans.api.ProfileBan
 
-class PardonProfileEvent(val ban: ProfileBan) : ResultedEvent<GenericResult> {
-
-    override var result: GenericResult = GenericResult.allowed()
-}
+class PardonProfileEvent(val ban: ProfileBan) : AbstractDeniableEvent()

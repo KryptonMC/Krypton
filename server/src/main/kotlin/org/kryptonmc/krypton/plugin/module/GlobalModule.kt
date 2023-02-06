@@ -25,7 +25,7 @@ import org.kryptonmc.api.Server
 import org.kryptonmc.api.auth.ProfileCache
 import org.kryptonmc.api.command.CommandManager
 import org.kryptonmc.api.command.ConsoleSender
-import org.kryptonmc.api.event.EventManager
+import org.kryptonmc.api.event.GlobalEventNode
 import org.kryptonmc.api.plugin.PluginContainer
 import org.kryptonmc.api.plugin.PluginManager
 import org.kryptonmc.api.registry.RegistryManager
@@ -46,7 +46,7 @@ class GlobalModule(private val server: KryptonServer, private val pluginContaine
         bind<CommandManager>().toInstance(server.commandManager)
         bind<PluginManager>().toInstance(server.pluginManager)
         bind<ServicesManager>().toInstance(server.servicesManager)
-        bind<EventManager>().toInstance(server.eventManager)
+        bind<GlobalEventNode>().toInstance(server.eventNode)
         bind<RegistryManager>().toInstance(server.registryManager)
         bind<FactoryProvider>().toInstance(server.factoryProvider)
         bind<ProfileCache>().toInstance(server.profileCache)

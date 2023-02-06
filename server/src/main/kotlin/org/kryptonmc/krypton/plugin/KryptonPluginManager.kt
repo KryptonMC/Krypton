@@ -22,8 +22,11 @@
  */
 package org.kryptonmc.krypton.plugin
 
+import org.kryptonmc.api.event.Event
+import org.kryptonmc.api.event.EventNode
 import org.kryptonmc.api.plugin.PluginContainer
 import org.kryptonmc.api.plugin.PluginManager
+import org.kryptonmc.krypton.event.KryptonGlobalEventNode
 import java.nio.file.Path
 import java.util.Collections
 import java.util.IdentityHashMap
@@ -32,11 +35,27 @@ class KryptonPluginManager : PluginManager {
 
     private val pluginMap = LinkedHashMap<String, PluginContainer>()
     private val pluginInstances = IdentityHashMap<Any, PluginContainer>()
+    private val parentEventNode = createPluginsEventNode()
+    private val pluginEventNodes = HashMap<PluginContainer, EventNode<Event>>()
+
     override val plugins: Collection<PluginContainer> = Collections.unmodifiableCollection(pluginMap.values)
 
-    fun registerPlugin(plugin: PluginContainer) {
+    private fun createPluginsEventNode(): EventNode<Event> {
+        val node = EventNode.all("plugins")
+        KryptonGlobalEventNode.addChild(node)
+        return node
+    }
+
+    fun registerPlugin(plugin: PluginContainer, eventNode: EventNode<Event>) {
         pluginMap.put(plugin.description.id, plugin)
         plugin.instance?.let { pluginInstances.put(it, plugin) }
+
+        parentEventNode.addChild(eventNode)
+        pluginEventNodes.put(plugin, eventNode)
+    }
+
+    fun getEventNode(plugin: PluginContainer): EventNode<Event> {
+        return checkNotNull(pluginEventNodes.get(plugin)) { "No event node found for plugin $plugin! This is a bug!" }
     }
 
     override fun fromInstance(instance: Any): PluginContainer? {

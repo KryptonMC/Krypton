@@ -14,7 +14,7 @@ import org.kryptonmc.api.command.CommandManager
 import org.kryptonmc.api.command.ConsoleSender
 import org.kryptonmc.api.command.Sender
 import org.kryptonmc.api.entity.player.Player
-import org.kryptonmc.api.event.EventManager
+import org.kryptonmc.api.event.GlobalEventNode
 import org.kryptonmc.api.plugin.PluginManager
 import org.kryptonmc.api.registry.RegistryManager
 import org.kryptonmc.api.scheduling.Scheduler
@@ -68,12 +68,19 @@ public interface Server : ForwardingAudience {
     public val servicesManager: ServicesManager
 
     /**
-     * The event manager for this server.
+     * The global event node for the server.
      *
-     * This is used to register/unregister listeners/handlers for specific
-     * events that may be fired, and also to fire said events.
+     * This is the root of the event tree. All other event nodes should be
+     * registered with this node, or they will not receive any events from
+     * the server.
+     *
+     * You should not register any event listeners to this node. It is
+     * designed for calling events and registering child nodes.
+     *
+     * If you wish to register listeners, use the event node that is provided
+     * with your plugin, which can be injected in to your plugin's main class.
      */
-    public val eventManager: EventManager
+    public val eventNode: GlobalEventNode
 
     /**
      * The registry manager for this server.

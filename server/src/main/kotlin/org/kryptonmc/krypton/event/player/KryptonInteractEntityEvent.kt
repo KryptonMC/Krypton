@@ -21,10 +21,11 @@ package org.kryptonmc.krypton.event.player
 import org.kryptonmc.api.entity.Entity
 import org.kryptonmc.api.entity.Hand
 import org.kryptonmc.api.entity.player.Player
-import org.kryptonmc.api.event.GenericResult
 import org.kryptonmc.api.event.player.InteractEntityEvent
+import org.kryptonmc.api.event.type.AbstractDeniableEvent
 
-class KryptonInteractEntityEvent(override val player: Player, override val target: Entity, override val hand: Hand) : InteractEntityEvent {
-
-    override var result: GenericResult = GenericResult.allowed()
-}
+class KryptonInteractEntityEvent(
+    override val player: Player,
+    override val target: Entity,
+    override val hand: Hand
+) : AbstractDeniableEvent(), InteractEntityEvent

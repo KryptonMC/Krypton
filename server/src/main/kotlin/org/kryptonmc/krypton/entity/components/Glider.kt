@@ -20,7 +20,6 @@ package org.kryptonmc.krypton.entity.components
 
 import org.kryptonmc.api.entity.ArmorSlot
 import org.kryptonmc.api.entity.player.Player
-import org.kryptonmc.api.event.player.PerformActionEvent
 import org.kryptonmc.api.event.player.PerformActionEvent.Action
 import org.kryptonmc.api.item.ItemTypes
 import org.kryptonmc.krypton.event.player.KryptonPerformActionEvent
@@ -42,7 +41,7 @@ interface Glider : BaseEntity, Player {
     }
 
     override fun startGliding(): Boolean {
-        if (fireEvent(Action.START_FLYING_WITH_ELYTRA).result.isAllowed) {
+        if (fireEvent(Action.START_FLYING_WITH_ELYTRA)) {
             isGliding = true
             return true
         }
@@ -54,12 +53,14 @@ interface Glider : BaseEntity, Player {
     }
 
     override fun stopGliding(): Boolean {
-        if (!fireEvent(Action.STOP_FLYING_WITH_ELYTRA).result.isAllowed) return false
+        if (!fireEvent(Action.STOP_FLYING_WITH_ELYTRA)) return false
         // This is a vanilla thing
         isGliding = true
         isGliding = false
         return true
     }
 
-    private fun fireEvent(action: Action): PerformActionEvent = server.eventManager.fireSync(KryptonPerformActionEvent(this, action))
+    private fun fireEvent(action: Action): Boolean {
+        return server.eventNode.fire(KryptonPerformActionEvent(this, action)).isAllowed()
+    }
 }

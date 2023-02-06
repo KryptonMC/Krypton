@@ -12,6 +12,7 @@
  */
 package org.kryptonmc.api.event.server
 
+import org.kryptonmc.api.event.Event
 import org.kryptonmc.api.permission.PermissionFunction
 import org.kryptonmc.api.permission.PermissionProvider
 import org.kryptonmc.api.permission.Subject
@@ -19,7 +20,7 @@ import org.kryptonmc.api.permission.Subject
 /**
  * Called when the given [subject]'s permissions are initially being set up.
  */
-public interface SetupPermissionsEvent {
+public interface SetupPermissionsEvent : Event {
 
     /**
      * The subject that is having their permissions set up.

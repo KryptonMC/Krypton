@@ -19,6 +19,8 @@
 package org.kryptonmc.krypton.plugin.loader
 
 import com.google.inject.Module
+import org.kryptonmc.api.event.Event
+import org.kryptonmc.api.event.EventNode
 import org.kryptonmc.api.plugin.PluginContainer
 import org.kryptonmc.api.plugin.PluginDescription
 
@@ -33,6 +35,10 @@ interface PluginSource {
     fun createModule(container: PluginContainer): Module
 
     fun createPlugin(container: PluginContainer, vararg modules: Module)
+
+    fun createEventNode(container: PluginContainer): EventNode<Event> {
+        return EventNode.all(container.description.id)
+    }
 
     fun onPluginLoaded(container: PluginContainer) {
         // Do nothing by default

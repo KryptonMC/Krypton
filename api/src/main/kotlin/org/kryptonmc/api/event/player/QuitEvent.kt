@@ -9,6 +9,7 @@
 package org.kryptonmc.api.event.player
 
 import net.kyori.adventure.text.Component
+import org.kryptonmc.api.event.type.PlayerEvent
 
 /**
  * Called when the connection to a player is lost.

@@ -22,9 +22,12 @@ import com.google.inject.Scopes
 import dev.misfitlabs.kotlinguice4.KotlinModule
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
+import org.kryptonmc.api.event.Event
+import org.kryptonmc.api.event.EventNode
 import org.kryptonmc.api.plugin.PluginContainer
 import org.kryptonmc.api.plugin.PluginDescription
 import org.kryptonmc.api.plugin.annotation.DataFolder
+import org.kryptonmc.krypton.event.KryptonGlobalEventNode
 import java.nio.file.Path
 
 class PluginModule(
@@ -39,5 +42,24 @@ class PluginModule(
         bind<Path>().annotatedWith<DataFolder>().toInstance(basePath.resolve(container.description.id))
         bind<PluginDescription>().toInstance(container.description)
         bind<PluginContainer>().toInstance(container)
+        bindEventNode()
+    }
+
+    private fun bindEventNode() {
+        val node = EventNode.all(container.description.id)
+        bind<EventNode<Event>>().toInstance(node)
+        PLUGINS_EVENT_NODE.addChild(node)
+    }
+
+    companion object {
+
+        private val PLUGINS_EVENT_NODE = createPluginsEventNode()
+
+        @JvmStatic
+        private fun createPluginsEventNode(): EventNode<Event> {
+            val node = EventNode.all("plugins")
+            KryptonGlobalEventNode.addChild(node)
+            return node
+        }
     }
 }

@@ -8,7 +8,9 @@
  */
 package org.kryptonmc.api.event.server
 
+import org.kryptonmc.api.event.Event
+
 /**
  * Fired by the server when it is starting up.
  */
-public interface ServerStartEvent
+public interface ServerStartEvent : Event

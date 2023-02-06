@@ -106,8 +106,9 @@ class LoginPacketHandler(
 
         // Initialize the player and setup their permissions.
         val player = KryptonPlayer(connection, profile, server.worldManager.default, address)
-        server.eventManager.fire(KryptonSetupPermissionsEvent(player, KryptonPlayer.DEFAULT_PERMISSIONS))
-            .thenApplyAsync({ finishLogin(it, player) }, connection.executor())
+        val event = server.eventNode.fire(KryptonSetupPermissionsEvent(player, KryptonPlayer.DEFAULT_PERMISSIONS))
+        player.permissionFunction = event.createFunction(player)
+        finishLogin(player)
     }
 
     fun handleEncryptionResponse(packet: PacketInEncryptionResponse) {
@@ -120,20 +121,23 @@ class LoginPacketHandler(
         connection.enableEncryption(SecretKeySpec(sharedSecret, Encryption.SYMMETRIC_ALGORITHM))
 
         val address = createAddress()
+
         // Fire the authentication event.
-        server.eventManager.fire(KryptonAuthenticationEvent(name)).thenApplyAsync({
-            if (!it.result.isAllowed) return@thenApplyAsync null
-            val profile = SessionService.hasJoined(name, sharedSecret, server.config.server.ip)
-            if (profile == null) {
-                disconnect(DisconnectMessages.UNVERIFIED_USERNAME)
-                return@thenApplyAsync null
-            }
-            if (!callLoginEvent(profile)) return@thenApplyAsync null
-            // Check the profile from the event and construct the player.
-            KryptonPlayer(connection, it.result.profile ?: profile, server.worldManager.default, address)
-        }, connection.executor()).thenApplyAsync({
-            if (it != null) finishLogin(server.eventManager.fireSync(KryptonSetupPermissionsEvent(it, KryptonPlayer.DEFAULT_PERMISSIONS)), it)
-        }, connection.executor())
+        val authEvent = KryptonAuthenticationEvent(name)
+        if (!authEvent.isAllowed()) return
+
+        val profile = authEvent.result?.profile ?: SessionService.hasJoined(name, sharedSecret, server.config.server.ip)
+        if (profile == null) {
+            disconnect(DisconnectMessages.UNVERIFIED_USERNAME)
+            return
+        }
+
+        if (!callLoginEvent(profile)) return
+        val player = KryptonPlayer(connection, profile, server.worldManager.default, address)
+
+        val permissionsEvent = server.eventNode.fire(KryptonSetupPermissionsEvent(player, KryptonPlayer.DEFAULT_PERMISSIONS))
+        player.permissionFunction = permissionsEvent.createFunction(player)
+        finishLogin(player)
     }
 
     fun handlePluginResponse(packet: PacketInPluginResponse) {
@@ -171,12 +175,12 @@ class LoginPacketHandler(
         val player = KryptonPlayer(connection, profile, server.worldManager.default, InetSocketAddress(data.remoteAddress, address.port))
 
         // Setup permissions for the player
-        server.eventManager.fire(KryptonSetupPermissionsEvent(player, KryptonPlayer.DEFAULT_PERMISSIONS))
-            .thenApplyAsync({ finishLogin(it, player) }, connection.executor())
+        val permissionsEvent = server.eventNode.fire(KryptonSetupPermissionsEvent(player, KryptonPlayer.DEFAULT_PERMISSIONS))
+        player.permissionFunction = permissionsEvent.createFunction(player)
+        finishLogin(player)
     }
 
-    private fun finishLogin(event: KryptonSetupPermissionsEvent, player: KryptonPlayer) {
-        player.permissionFunction = event.createFunction(player)
+    private fun finishLogin(player: KryptonPlayer) {
         connection.enableCompression()
         connection.writeAndFlush(PacketOutLoginSuccess.create(player.profile))
         connection.setState(PacketState.PLAY)
@@ -191,10 +195,9 @@ class LoginPacketHandler(
     }
 
     private fun callLoginEvent(profile: GameProfile): Boolean {
-        val event = KryptonLoginEvent(profile, connection.connectAddress() as InetSocketAddress)
-        val result = server.eventManager.fireSync(event).result
-        if (!result.isAllowed) {
-            disconnect(result.reason ?: DisconnectMessages.KICKED)
+        val event = server.eventNode.fire(KryptonLoginEvent(profile, connection.connectAddress() as InetSocketAddress))
+        if (!event.isAllowed()) {
+            disconnect(event.result?.reason ?: DisconnectMessages.KICKED)
             return false
         }
         return true

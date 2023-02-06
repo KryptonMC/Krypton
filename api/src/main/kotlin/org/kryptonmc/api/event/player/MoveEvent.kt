@@ -9,7 +9,10 @@
 package org.kryptonmc.api.event.player
 
 import org.kryptonmc.api.event.annotation.PerformanceSensitive
+import org.kryptonmc.api.event.type.DeniableEventWithResult
+import org.kryptonmc.api.event.type.PlayerEvent
 import org.kryptonmc.api.util.Vec3d
+import org.kryptonmc.internal.annotations.ImmutableType
 
 /**
  * Called when a player moves.
@@ -20,7 +23,7 @@ import org.kryptonmc.api.util.Vec3d
  * second, or even more.
  */
 @PerformanceSensitive
-public interface MoveEvent : PlayerEvent {
+public interface MoveEvent : PlayerEvent, DeniableEventWithResult<MoveEvent.Result> {
 
     /**
      * The location of the player before they moved.
@@ -31,4 +34,13 @@ public interface MoveEvent : PlayerEvent {
      * The location of the player after they moved.
      */
     public val newLocation: Vec3d
+
+    /**
+     * The result of a move event.
+     *
+     * This allows plugins to modify the location that players will move to.
+     */
+    @JvmRecord
+    @ImmutableType
+    public data class Result(public val newLocation: Vec3d)
 }

@@ -59,10 +59,12 @@ class KryptonCooldownTracker(private val player: KryptonPlayer) : CooldownTracke
 
     override fun setCooldown(item: ItemType, ticks: Int) {
         if (ticks < 0) return
-        val result = player.server.eventManager.fireSync(KryptonCooldownEvent(player, item, ticks)).result
-        if (!result.isAllowed) return
-        val cooldownAmount = if (result.cooldown > 0) result.cooldown else ticks
-        cooldowns.put(item, Cooldown(tickCount, cooldownAmount))
+
+        val event = player.server.eventNode.fire(KryptonCooldownEvent(player, item, ticks))
+        if (!event.isAllowed()) return
+
+        val result = event.result
+        cooldowns.put(item, Cooldown(tickCount, result?.cooldown ?: ticks))
         onCooldownStarted(item, ticks)
     }
 

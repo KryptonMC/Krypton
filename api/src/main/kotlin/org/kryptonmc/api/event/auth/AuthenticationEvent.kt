@@ -8,16 +8,15 @@
  */
 package org.kryptonmc.api.event.auth
 
-import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.auth.GameProfile
-import org.kryptonmc.api.event.ResultedEvent
+import org.kryptonmc.api.event.type.DeniableEventWithResult
 import org.kryptonmc.internal.annotations.ImmutableType
 
 /**
  * An event that is called when a request is made to authenticate a player with
  * the given [username].
  */
-public interface AuthenticationEvent : ResultedEvent<AuthenticationEvent.Result> {
+public interface AuthenticationEvent : DeniableEventWithResult<AuthenticationEvent.Result> {
 
     /**
      * The username of the player that is being authenticated.
@@ -27,50 +26,12 @@ public interface AuthenticationEvent : ResultedEvent<AuthenticationEvent.Result>
     /**
      * The result of a request to authenticate a player.
      *
-     * @property isAllowed Whether the player is allowed to continue
-     * authenticating.
-     * @property profile The optional profile for a successful result.
+     * This allows for the authenticated profile to be provided to the server,
+     * to allow plugins to replace the authentication process with their own.
+     *
+     * @property profile The replacement authenticated profile to use.
      */
     @JvmRecord
     @ImmutableType
-    public data class Result(override val isAllowed: Boolean, public val profile: GameProfile?) : ResultedEvent.Result {
-
-        public companion object {
-
-            private val ALLOWED = Result(true, null)
-            private val DENIED = Result(false, null)
-
-            /**
-             * Gets the result that allows the authenticating player to join the
-             * server as normal.
-             *
-             * @return the allowed result
-             */
-            @JvmStatic
-            @Contract(pure = true)
-            public fun allowed(): Result = ALLOWED
-
-            /**
-             * Creates a new result that allows the authenticating player to join
-             * the server as normal, but silently replaces their authenticated
-             * profile with the given [profile].
-             *
-             * @param profile the profile to replace with
-             * @return a new allowed result
-             */
-            @JvmStatic
-            @Contract("_ -> new", pure = true)
-            public fun allowed(profile: GameProfile): Result = Result(true, profile)
-
-            /**
-             * Gets the result that denies the authenticating player from joining
-             * the server.
-             *
-             * @return the denied result
-             */
-            @JvmStatic
-            @Contract(pure = true)
-            public fun denied(): Result = DENIED
-        }
-    }
+    public data class Result(public val profile: GameProfile)
 }

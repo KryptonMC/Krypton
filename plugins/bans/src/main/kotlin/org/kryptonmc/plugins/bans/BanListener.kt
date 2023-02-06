@@ -19,7 +19,6 @@
 package org.kryptonmc.plugins.bans
 
 import org.apache.logging.log4j.Logger
-import org.kryptonmc.api.event.ComponentResult
 import org.kryptonmc.api.event.Listener
 import org.kryptonmc.api.event.player.LoginEvent
 import org.kryptonmc.plugins.bans.commands.BanCommandUtil
@@ -30,16 +29,17 @@ class BanListener(private val logger: Logger, private val banManager: KryptonBan
 
     @Listener
     fun onLogin(event: LoginEvent) {
+        println("Login event called")
         if (banManager.isBanned(event.profile)) {
             val ban = banManager.getBan(event.profile)!!
-            event.result = ComponentResult.denied(BanCommandUtil.createBanMessage("banned", ban.reason, ban.expirationDate))
+            event.denyWithResult(LoginEvent.Result(BanCommandUtil.createBanMessage("banned", ban.reason, ban.expirationDate)))
             logger.info("${event.profile.name} was disconnected as they are banned from this server.")
             return
         }
         val ip = AddressConverter.asString(event.address)
         if (banManager.isBanned(ip)) {
             val ban = banManager.getBan(ip)!!
-            event.result = ComponentResult.denied(BanCommandUtil.createBanMessage("banned_ip", ban.reason, ban.expirationDate))
+            event.denyWithResult(LoginEvent.Result(BanCommandUtil.createBanMessage("banned_ip", ban.reason, ban.expirationDate)))
             logger.info("${event.profile.name} was disconnected as their IP address is banned from this server.")
         }
     }

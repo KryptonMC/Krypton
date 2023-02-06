@@ -20,7 +20,6 @@ package org.kryptonmc.plugins.whitelist
 
 import net.kyori.adventure.text.Component
 import org.apache.logging.log4j.Logger
-import org.kryptonmc.api.event.ComponentResult
 import org.kryptonmc.api.event.Listener
 import org.kryptonmc.api.event.player.LoginEvent
 import org.kryptonmc.plugins.whitelist.storage.WhitelistStorage
@@ -40,7 +39,7 @@ class WhitelistListener(private val logger: Logger, private val storage: Whiteli
         if (storage.isWhitelisted(address)) return
 
         // Not whitelisted, throw them out
-        event.result = ComponentResult.allowed(Component.translatable("multiplayer.disconnect.not_whitelisted"))
+        event.denyWithResult(LoginEvent.Result(Component.translatable("multiplayer.disconnect.not_whitelisted")))
         logger.info("${event.profile.name} was disconnected as this server is whitelisted and they are not on the whitelist.")
     }
 }

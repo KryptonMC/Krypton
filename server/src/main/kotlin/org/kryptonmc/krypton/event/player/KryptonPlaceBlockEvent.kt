@@ -21,8 +21,8 @@ package org.kryptonmc.krypton.event.player
 import org.kryptonmc.api.block.BlockState
 import org.kryptonmc.api.entity.Hand
 import org.kryptonmc.api.entity.player.Player
-import org.kryptonmc.api.event.GenericResult
 import org.kryptonmc.api.event.player.PlaceBlockEvent
+import org.kryptonmc.api.event.type.AbstractDeniableEvent
 import org.kryptonmc.api.util.Direction
 import org.kryptonmc.krypton.coordinate.BlockPos
 
@@ -33,7 +33,4 @@ class KryptonPlaceBlockEvent(
     override val position: BlockPos,
     override val face: Direction,
     override val isInsideBlock: Boolean
-) : PlaceBlockEvent {
-
-    override var result: GenericResult = GenericResult.allowed()
-}
+) : AbstractDeniableEvent(), PlaceBlockEvent

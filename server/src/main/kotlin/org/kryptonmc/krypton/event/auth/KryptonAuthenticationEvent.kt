@@ -19,8 +19,6 @@
 package org.kryptonmc.krypton.event.auth
 
 import org.kryptonmc.api.event.auth.AuthenticationEvent
+import org.kryptonmc.api.event.type.AbstractDeniableEventWithResult
 
-class KryptonAuthenticationEvent(override val username: String) : AuthenticationEvent {
-
-    override var result: AuthenticationEvent.Result = AuthenticationEvent.Result.allowed()
-}
+class KryptonAuthenticationEvent(override val username: String) : AbstractDeniableEventWithResult<AuthenticationEvent.Result>(), AuthenticationEvent

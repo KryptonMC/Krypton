@@ -8,16 +8,17 @@
  */
 package org.kryptonmc.api.event.player
 
+import net.kyori.adventure.text.Component
 import org.kryptonmc.api.auth.GameProfile
-import org.kryptonmc.api.event.ComponentResult
-import org.kryptonmc.api.event.ResultedEvent
+import org.kryptonmc.api.event.type.DeniableEventWithResult
+import org.kryptonmc.internal.annotations.ImmutableType
 import java.net.InetSocketAddress
 
 /**
  * Called when a player has been authenticated, but they have not yet had
  * a player object constructed for them.
  */
-public interface LoginEvent : ResultedEvent<ComponentResult> {
+public interface LoginEvent : DeniableEventWithResult<LoginEvent.Result> {
 
     /**
      * The game profile of the player logging in.
@@ -28,4 +29,15 @@ public interface LoginEvent : ResultedEvent<ComponentResult> {
      * The address that the player is logging in from.
      */
     public val address: InetSocketAddress
+
+    /**
+     * The result of a login event.
+     *
+     * This allows plugins to specify a reason for a player to be kicked.
+     *
+     * @property reason The reason for the player to be kicked.
+     */
+    @JvmRecord
+    @ImmutableType
+    public data class Result(public val reason: Component)
 }

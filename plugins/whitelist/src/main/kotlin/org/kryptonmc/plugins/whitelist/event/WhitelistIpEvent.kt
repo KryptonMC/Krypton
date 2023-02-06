@@ -18,10 +18,6 @@
  */
 package org.kryptonmc.plugins.whitelist.event
 
-import org.kryptonmc.api.event.GenericResult
-import org.kryptonmc.api.event.ResultedEvent
+import org.kryptonmc.api.event.type.AbstractDeniableEvent
 
-class WhitelistIpEvent(val ip: String) : ResultedEvent<GenericResult> {
-
-    override var result: GenericResult = GenericResult.allowed()
-}
+class WhitelistIpEvent(val ip: String) : AbstractDeniableEvent()

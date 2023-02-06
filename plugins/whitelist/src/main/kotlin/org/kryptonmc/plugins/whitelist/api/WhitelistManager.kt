@@ -51,7 +51,7 @@ interface WhitelistManager {
      * @param profile the profile
      * @return the result of the whitelist
      */
-    fun whitelistProfile(profile: GameProfile): CompletableFuture<Boolean>
+    fun whitelistProfile(profile: GameProfile): Boolean
 
     /**
      * Adds the given [ip] to the whitelist.
@@ -64,7 +64,7 @@ interface WhitelistManager {
      * @param ip the IP
      * @return the result of the whitelist
      */
-    fun whitelistIp(ip: String): CompletableFuture<Boolean>
+    fun whitelistIp(ip: String): Boolean
 
     /**
      * Removes the given [profile] from the whitelist.
@@ -77,7 +77,7 @@ interface WhitelistManager {
      * @param profile the profile to remove from the whitelist
      * @return the result of the whitelist removal
      */
-    fun removeWhitelistedProfile(profile: GameProfile): CompletableFuture<Boolean>
+    fun removeWhitelistedProfile(profile: GameProfile): Boolean
 
     /**
      * Removes the given [ip] address from the whitelist.
@@ -90,7 +90,7 @@ interface WhitelistManager {
      * @param ip the IP to remove from the whitelist
      * @return the result of the whitelist removal
      */
-    fun removeWhitelistedIp(ip: String): CompletableFuture<Boolean>
+    fun removeWhitelistedIp(ip: String): Boolean
 
     /**
      * Gets all the registered profile bans.

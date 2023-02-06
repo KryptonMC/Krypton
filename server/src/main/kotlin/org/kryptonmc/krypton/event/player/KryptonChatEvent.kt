@@ -19,10 +19,7 @@
 package org.kryptonmc.krypton.event.player
 
 import org.kryptonmc.api.entity.player.Player
-import org.kryptonmc.api.event.ComponentResult
 import org.kryptonmc.api.event.player.ChatEvent
+import org.kryptonmc.api.event.type.AbstractDeniableEventWithResult
 
-class KryptonChatEvent(override val player: Player, override val message: String) : ChatEvent {
-
-    override var result: ComponentResult = ComponentResult.allowed()
-}
+class KryptonChatEvent(override val player: Player, override val message: String) : AbstractDeniableEventWithResult<ChatEvent.Result>(), ChatEvent

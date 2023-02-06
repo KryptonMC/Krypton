@@ -8,6 +8,7 @@
  */
 package org.kryptonmc.api.event.player
 
+import org.kryptonmc.api.event.type.PlayerEvent
 import org.kryptonmc.api.resource.ResourcePack
 
 /**

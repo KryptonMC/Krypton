@@ -182,13 +182,11 @@ class PlayPacketHandler(
 
     fun handleChatCommand(packet: PacketInChatCommand) {
         if (!ChatUtil.isValidMessage(packet.command)) disconnect(DisconnectMessages.ILLEGAL_CHARACTERS)
-        server.eventManager.fire(KryptonCommandExecuteEvent(player, packet.command))
-            .thenAcceptAsync({ processCommandEvent(it, packet) }, connection.executor())
-    }
 
-    private fun processCommandEvent(event: KryptonCommandExecuteEvent, packet: PacketInChatCommand) {
-        if (!event.result.isAllowed) return
-        val command = event.result.command ?: packet.command
+        val event = server.eventNode.fire(KryptonCommandExecuteEvent(player, packet.command))
+        if (!event.isAllowed()) return
+
+        val command = event.result?.command ?: packet.command
         val lastSeen = tryHandleChat(command, packet.timestamp, packet.lastSeenMessages) ?: return
 
         val source = player.createCommandSourceStack()
@@ -217,13 +215,11 @@ class PlayPacketHandler(
     fun handleChat(packet: PacketInChat) {
         // Sanity check message content
         if (!ChatUtil.isValidMessage(packet.message)) disconnect(DisconnectMessages.ILLEGAL_CHARACTERS)
-        // Fire the chat event
-        server.eventManager.fire(KryptonChatEvent(player, packet.message))
-            .thenAcceptAsync({ processChatEvent(it, packet) }, connection.executor())
-    }
 
-    private fun processChatEvent(event: KryptonChatEvent, packet: PacketInChat) {
-        if (!event.result.isAllowed) return
+        // Fire the chat event
+        val event = server.eventNode.fire(KryptonChatEvent(player, packet.message))
+        if (!event.isAllowed()) return
+
         val lastSeen = tryHandleChat(packet.message, packet.timestamp, packet.lastSeenMessages) ?: return
         val message = try {
             getSignedMessage(packet, lastSeen)
@@ -232,7 +228,7 @@ class PlayPacketHandler(
             return
         }
 
-        val unsignedContent = event.result.reason ?: message.decoratedContent()
+        val unsignedContent = event.result?.message ?: message.decoratedContent()
         chatMessageChain.append {
             CompletableFuture.supplyAsync({ broadcastChatMessage(message.withUnsignedContent(unsignedContent)) }, it)
         }
@@ -355,19 +351,20 @@ class PlayPacketHandler(
     }
 
     fun handlePlayerCommand(packet: PacketInPlayerCommand) {
-        server.eventManager.fire(KryptonPerformActionEvent(player, packet.action)).thenAcceptAsync({
-            if (!it.result.isAllowed) return@thenAcceptAsync
-            when (it.action) {
-                EntityAction.START_SNEAKING -> player.isSneaking = true
-                EntityAction.STOP_SNEAKING -> player.isSneaking = false
-                EntityAction.START_SPRINTING -> player.isSprinting = true
-                EntityAction.STOP_SPRINTING -> player.isSprinting = false
-                EntityAction.LEAVE_BED -> Unit // TODO: Sleeping
-                EntityAction.START_JUMP_WITH_HORSE, EntityAction.STOP_JUMP_WITH_HORSE, EntityAction.OPEN_HORSE_INVENTORY -> Unit // TODO: Horses
-                EntityAction.START_FLYING_WITH_ELYTRA -> if (!player.tryStartGliding()) player.stopGliding()
-                else -> error("This should be impossible! Action for player command was not a valid action! Action: ${it.action}")
-            }
-        }, connection.executor())
+        val action = packet.action
+        val event = server.eventNode.fire(KryptonPerformActionEvent(player, action))
+        if (!event.isAllowed()) return
+
+        when (action) {
+            EntityAction.START_SNEAKING -> player.isSneaking = true
+            EntityAction.STOP_SNEAKING -> player.isSneaking = false
+            EntityAction.START_SPRINTING -> player.isSprinting = true
+            EntityAction.STOP_SPRINTING -> player.isSprinting = false
+            EntityAction.LEAVE_BED -> Unit // TODO: Sleeping
+            EntityAction.START_JUMP_WITH_HORSE, EntityAction.STOP_JUMP_WITH_HORSE, EntityAction.OPEN_HORSE_INVENTORY -> Unit // TODO: Horses
+            EntityAction.START_FLYING_WITH_ELYTRA -> if (!player.tryStartGliding()) player.stopGliding()
+            else -> error("This should be impossible! Action for player command was not a valid action! Action: $action")
+        }
     }
 
     fun handleSetHeldItem(packet: PacketInSetHeldItem) {
@@ -401,8 +398,8 @@ class PlayPacketHandler(
         val state = world.getBlock(position)
         val face = packet.hitResult.direction
         val isInside = packet.hitResult.isInside
-        val event = server.eventManager.fireSync(KryptonPlaceBlockEvent(player, state, packet.hand, position, face, isInside))
-        if (!event.result.isAllowed) return
+        val event = server.eventNode.fire(KryptonPlaceBlockEvent(player, state, packet.hand, position, face, isInside))
+        if (!event.isAllowed()) return
 
         val chunk = world.chunkManager.getChunk(ChunkPos.forEntityPosition(player.position)) ?: return
         val existingBlock = chunk.getBlock(position)
@@ -470,15 +467,18 @@ class PlayPacketHandler(
             return
         }
 
-        val newPosition = KryptonVec3d(x, y, z)
+        val position = KryptonVec3d(x, y, z)
+        val event = server.eventNode.fire(KryptonMoveEvent(player, oldPosition, position))
+        if (!event.isAllowed()) return
+
+        val newPosition = event.result?.newLocation ?: position
         player.position = newPosition
-        server.eventManager.fireAndForget(KryptonMoveEvent(player, oldPosition, newPosition))
 
         val dx = Positioning.calculateDelta(x, oldPosition.x)
         val dy = Positioning.calculateDelta(y, oldPosition.y)
         val dz = Positioning.calculateDelta(z, oldPosition.z)
         player.viewingSystem.sendToViewers(updatePacket.get(dx, dy, dz))
-        onMove(newPosition, oldPosition)
+        onMove(position, oldPosition)
     }
 
     private fun updateRotation(yaw: Float, pitch: Float): Boolean {
@@ -489,14 +489,20 @@ class PlayPacketHandler(
             return false
         }
 
-        player.yaw = yaw
-        player.pitch = pitch
-        server.eventManager.fireAndForget(KryptonRotateEvent(player, oldYaw, oldPitch, yaw, pitch))
+        val event = server.eventNode.fire(KryptonRotateEvent(player, oldYaw, oldPitch, yaw, pitch))
+        if (!event.isAllowed()) return false
+
+        val result = event.result
+        val newYaw = result?.newYaw ?: yaw
+        val newPitch = result?.newPitch ?: pitch
+
+        player.yaw = newYaw
+        player.pitch = newPitch
         return true
     }
 
     fun handlePluginMessage(packet: PacketInPluginMessage) {
-        server.eventManager.fireAndForget(KryptonPluginMessageEvent(player, packet.channel, packet.data))
+        server.eventNode.fire(KryptonPluginMessageEvent(player, packet.channel, packet.data))
     }
 
     fun handleCommandSuggestionsRequest(packet: PacketInCommandSuggestionsRequest) {
@@ -525,7 +531,7 @@ class PlayPacketHandler(
             disconnect(DisconnectMessages.REQUIRED_TEXTURE_PROMPT)
             return
         }
-        server.eventManager.fireAndForget(KryptonResourcePackStatusEvent(player, packet.status))
+        server.eventNode.fire(KryptonResourcePackStatusEvent(player, packet.status))
     }
 
     private fun onMove(new: Vec3d, old: Vec3d) {

@@ -6,17 +6,13 @@
  * This project is licensed under the terms of the MIT license.
  * For more details, please reference the LICENSE file in the api top-level directory.
  */
-package org.kryptonmc.api.event.player
-
-import org.kryptonmc.api.entity.player.Player
+package org.kryptonmc.api.event
 
 /**
- * An event that involves a player.
+ * The root node of the server's event node tree.
+ *
+ * This is used to distinguish it from regular event nodes, to allow it to be
+ * injected in to plugins that want to inject it in the same way as the event
+ * manager could be injected.
  */
-public sealed interface PlayerEvent {
-
-    /**
-     * The player involved in this event.
-     */
-    public val player: Player
-}
+public interface GlobalEventNode : EventNode<Event>

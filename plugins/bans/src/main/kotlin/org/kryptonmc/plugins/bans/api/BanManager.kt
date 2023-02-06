@@ -19,7 +19,6 @@
 package org.kryptonmc.plugins.bans.api
 
 import org.kryptonmc.api.auth.GameProfile
-import java.util.concurrent.CompletableFuture
 
 /**
  * The manager of the vanilla ban system.
@@ -69,7 +68,7 @@ interface BanManager {
      * @param ban the ban
      * @return the result of the ban
      */
-    fun banProfile(ban: ProfileBan): CompletableFuture<Boolean>
+    fun banProfile(ban: ProfileBan): Boolean
 
     /**
      * Bans the IP in the given [ban] from the server, kicking any associated
@@ -82,7 +81,7 @@ interface BanManager {
      * @param ban the ban
      * @return the result of the ban
      */
-    fun banIp(ban: IpBan): CompletableFuture<Boolean>
+    fun banIp(ban: IpBan): Boolean
 
     /**
      * Pardons the given [profile] if it is banned.
@@ -94,7 +93,7 @@ interface BanManager {
      * @param profile the profile to pardon
      * @return the result of the pardon
      */
-    fun pardonProfile(profile: GameProfile): CompletableFuture<Boolean>
+    fun pardonProfile(profile: GameProfile): Boolean
 
     /**
      * Pardons the given [ip] if it is banned.
@@ -106,7 +105,7 @@ interface BanManager {
      * @param ip the IP to pardon
      * @return the result of the pardon
      */
-    fun pardonIp(ip: String): CompletableFuture<Boolean>
+    fun pardonIp(ip: String): Boolean
 
     /**
      * Gets all the registered profile bans.

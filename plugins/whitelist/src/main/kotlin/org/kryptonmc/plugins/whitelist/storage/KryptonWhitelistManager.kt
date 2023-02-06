@@ -26,7 +26,6 @@ import org.kryptonmc.plugins.whitelist.event.RemoveWhitelistedProfileEvent
 import org.kryptonmc.plugins.whitelist.event.WhitelistIpEvent
 import org.kryptonmc.plugins.whitelist.event.WhitelistProfileEvent
 import java.util.Collections
-import java.util.concurrent.CompletableFuture
 
 class KryptonWhitelistManager(private val server: Server, private val storage: WhitelistStorage) : WhitelistManager {
 
@@ -34,40 +33,36 @@ class KryptonWhitelistManager(private val server: Server, private val storage: W
 
     override fun isWhitelisted(ip: String): Boolean = storage.isWhitelisted(ip)
 
-    override fun whitelistProfile(profile: GameProfile): CompletableFuture<Boolean> {
-        if (isWhitelisted(profile)) return CompletableFuture.completedFuture(false)
-        return server.eventManager.fire(WhitelistProfileEvent(profile)).thenApply {
-            if (!it.result.isAllowed) return@thenApply false
-            storage.whitelist(profile)
-            true
-        }
+    override fun whitelistProfile(profile: GameProfile): Boolean {
+        if (isWhitelisted(profile)) return false
+        val event = server.eventNode.fire(WhitelistProfileEvent(profile))
+        if (!event.isAllowed()) return false
+        storage.whitelist(profile)
+        return true
     }
 
-    override fun whitelistIp(ip: String): CompletableFuture<Boolean> {
-        if (isWhitelisted(ip)) return CompletableFuture.completedFuture(false)
-        return server.eventManager.fire(WhitelistIpEvent(ip)).thenApply {
-            if (!it.result.isAllowed) return@thenApply false
-            storage.whitelist(ip)
-            true
-        }
+    override fun whitelistIp(ip: String): Boolean {
+        if (isWhitelisted(ip)) return false
+        val event = server.eventNode.fire(WhitelistIpEvent(ip))
+        if (!event.isAllowed()) return false
+        storage.whitelist(ip)
+        return true
     }
 
-    override fun removeWhitelistedProfile(profile: GameProfile): CompletableFuture<Boolean> {
-        if (!isWhitelisted(profile)) return CompletableFuture.completedFuture(false)
-        return server.eventManager.fire(RemoveWhitelistedProfileEvent(profile)).thenApply {
-            if (!it.result.isAllowed) return@thenApply false
-            storage.removeWhitelisted(profile)
-            true
-        }
+    override fun removeWhitelistedProfile(profile: GameProfile): Boolean {
+        if (!isWhitelisted(profile)) return false
+        val event = server.eventNode.fire(RemoveWhitelistedProfileEvent(profile))
+        if (!event.isAllowed()) return false
+        storage.removeWhitelisted(profile)
+        return true
     }
 
-    override fun removeWhitelistedIp(ip: String): CompletableFuture<Boolean> {
-        if (!isWhitelisted(ip)) return CompletableFuture.completedFuture(false)
-        return server.eventManager.fire(RemoveWhitelistedIpEvent(ip)).thenApply {
-            if (!it.result.isAllowed) return@thenApply false
-            storage.removeWhitelisted(ip)
-            true
-        }
+    override fun removeWhitelistedIp(ip: String): Boolean {
+        if (!isWhitelisted(ip)) return false
+        val event = server.eventNode.fire(RemoveWhitelistedIpEvent(ip))
+        if (!event.isAllowed()) return false
+        storage.removeWhitelisted(ip)
+        return true
     }
 
     override fun allWhitelistedProfiles(): Collection<GameProfile> = Collections.unmodifiableCollection(storage.whitelistedProfiles())

@@ -29,6 +29,8 @@ import org.kryptonmc.api.command.CommandMeta
 import org.kryptonmc.api.effect.Music
 import org.kryptonmc.api.effect.particle.data.ParticleData
 import org.kryptonmc.api.entity.attribute.AttributeModifier
+import org.kryptonmc.api.event.EventListener
+import org.kryptonmc.api.event.EventNode
 import org.kryptonmc.api.item.ItemAttributeModifier
 import org.kryptonmc.api.item.ItemStack
 import org.kryptonmc.api.item.data.FireworkEffect
@@ -67,6 +69,8 @@ import org.kryptonmc.krypton.coordinate.KryptonVec3d
 import org.kryptonmc.krypton.effect.KryptonMusic
 import org.kryptonmc.krypton.effect.particle.data.KryptonParticleDataFactory
 import org.kryptonmc.krypton.entity.attribute.KryptonAttributeModifier
+import org.kryptonmc.krypton.event.KryptonEventListener
+import org.kryptonmc.krypton.event.KryptonEventNode
 import org.kryptonmc.krypton.item.data.KryptonItemAttributeModifier
 import org.kryptonmc.krypton.item.KryptonItemStack
 import org.kryptonmc.krypton.item.data.KryptonFireworkEffect
@@ -137,5 +141,7 @@ object KryptonFactoryProvider : FactoryProvider {
         register<RegistryReference.Factory>(KryptonRegistryReference.Factory)
         register<TaskTime.Factory>(KryptonTaskTime.Factory)
         register<TaskAction.Factory>(KryptonTaskAction.Factory)
+        register<EventNode.Factory>(KryptonEventNode.Factory)
+        register<EventListener.Factory>(KryptonEventListener.Factory)
     }
 }

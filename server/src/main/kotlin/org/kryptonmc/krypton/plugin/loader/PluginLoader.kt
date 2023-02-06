@@ -2,6 +2,8 @@ package org.kryptonmc.krypton.plugin.loader
 
 import com.google.inject.Module
 import org.apache.logging.log4j.LogManager
+import org.kryptonmc.api.event.Event
+import org.kryptonmc.api.event.EventNode
 import org.kryptonmc.api.plugin.PluginContainer
 import org.kryptonmc.api.plugin.PluginDescription
 import org.kryptonmc.krypton.KryptonServer
@@ -28,13 +30,13 @@ class PluginLoader(private val pluginManager: KryptonPluginManager, private val 
         if (found.isEmpty()) return // no plugins
 
         val sortedPlugins = PluginDependencies.sortCandidates(found)
-        val loadedPluginsById = HashSet<String>()
-        val pluginContainers = LinkedHashMap<PluginContainer, Module>()
+        val loadedPluginIds = HashSet<String>()
+        val loadedPlugins = ArrayList<LoadedPlugin>()
 
         // Load the plugins!
         sortedPlugins.forEach pluginLoad@{ candidate ->
             candidate.dependencies.forEach {
-                if (it.isOptional || loadedPluginsById.contains(it.id)) return@forEach
+                if (it.isOptional || loadedPluginIds.contains(it.id)) return@forEach
                 LOGGER.error("Failed to load plugin ${candidate.id} due to missing dependency on plugin ${it.id}!")
                 return@pluginLoad
             }
@@ -44,15 +46,18 @@ class PluginLoader(private val pluginManager: KryptonPluginManager, private val 
                 val description = source.loadPlugin(candidate)
                 val container = source.createPluginContainer(description)
                 val pluginModule = source.createModule(container)
-                pluginContainers.put(container, pluginModule)
-                loadedPluginsById.add(description.id)
+                val eventNode = source.createEventNode(container)
+                loadedPlugins.add(LoadedPlugin(container, pluginModule, eventNode))
+                loadedPluginIds.add(description.id)
             } catch (exception: Exception) {
                 LOGGER.error("Failed to create Guice module for plugin ${candidate.id}!", exception)
             }
         }
 
-        val commonModule = GlobalModule(server, pluginContainers.keys)
-        pluginContainers.forEach { (container, module) ->
+        val containers = loadedPlugins.map { it.container }
+        val commonModule = GlobalModule(server, containers)
+
+        loadedPlugins.forEach { (container, module, eventNode) ->
             val description = container.description
             val source = sourceByPluginId.get(description.id) ?: error("No source for container plugin ${description.id}! This is a bug!")
 
@@ -64,10 +69,13 @@ class PluginLoader(private val pluginManager: KryptonPluginManager, private val 
             }
 
             source.onPluginLoaded(container)
-            pluginManager.registerPlugin(container)
+            pluginManager.registerPlugin(container, eventNode)
         }
-        sources.forEach { source -> source.onPluginsLoaded(pluginContainers.keys) }
+        sources.forEach { source -> source.onPluginsLoaded(containers) }
     }
+
+    @JvmRecord
+    private data class LoadedPlugin(val container: PluginContainer, val module: Module, val eventNode: EventNode<Event>)
 
     companion object {
 

@@ -10,11 +10,12 @@ package org.kryptonmc.api.event.command
 
 import com.mojang.brigadier.tree.RootCommandNode
 import org.kryptonmc.api.entity.player.Player
+import org.kryptonmc.api.event.Event
 
 /**
  * Called when the given [rootNode] is sent to the given [player].
  */
-public interface CommandSendEvent {
+public interface CommandSendEvent : Event {
 
     /**
      * The player the commands are being sent to.

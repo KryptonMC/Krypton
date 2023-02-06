@@ -168,7 +168,7 @@ class KryptonPlayer(
 
     override fun updateGameMode(mode: GameMode, cause: ChangeGameModeEvent.Cause): ChangeGameModeEvent? {
         val event = gameModeSystem.changeGameMode(mode, cause)
-        if (event == null || !event.result.isAllowed) return null
+        if (event == null || !event.isAllowed()) return null
 
         connection.send(PacketOutGameEvent(GameEventTypes.CHANGE_GAMEMODE, mode.ordinal.toFloat()))
         if (mode == GameMode.SPECTATOR) {

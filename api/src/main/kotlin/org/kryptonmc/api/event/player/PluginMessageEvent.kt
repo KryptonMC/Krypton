@@ -9,6 +9,7 @@
 package org.kryptonmc.api.event.player
 
 import net.kyori.adventure.key.Key
+import org.kryptonmc.api.event.type.PlayerEvent
 
 /**
  * Called when a plugin message is received from a client.

@@ -20,6 +20,12 @@ package org.kryptonmc.krypton.event.player
 
 import org.kryptonmc.api.entity.player.Player
 import org.kryptonmc.api.event.player.RotateEvent
+import org.kryptonmc.api.event.type.AbstractDeniableEventWithResult
 
-class KryptonRotateEvent(override val player: Player, override val oldYaw: Float, override val oldPitch: Float, override val newYaw: Float,
-                         override val newPitch: Float) : RotateEvent
+class KryptonRotateEvent(
+    override val player: Player,
+    override val oldYaw: Float,
+    override val oldPitch: Float,
+    override val newYaw: Float,
+    override val newPitch: Float
+) : AbstractDeniableEventWithResult<RotateEvent.Result>(), RotateEvent

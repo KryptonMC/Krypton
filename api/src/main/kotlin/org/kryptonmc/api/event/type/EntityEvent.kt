@@ -6,18 +6,18 @@
  * This project is licensed under the terms of the MIT license.
  * For more details, please reference the LICENSE file in the api top-level directory.
  */
-package org.kryptonmc.api.event
+package org.kryptonmc.api.event.type
+
+import org.kryptonmc.api.entity.Entity
+import org.kryptonmc.api.event.Event
 
 /**
- * Represents priorities of a listener.
+ * An event for an entity.
  */
-public enum class ListenerPriority {
+public interface EntityEvent : Event {
 
-    MAXIMUM,
-    VERY_HIGH,
-    HIGH,
-    MEDIUM,
-    LOW,
-    VERY_LOW,
-    NONE
+    /**
+     * The entity that the event is for.
+     */
+    public val entity: Entity
 }

@@ -19,10 +19,6 @@
 package org.kryptonmc.plugins.whitelist.event
 
 import org.kryptonmc.api.auth.GameProfile
-import org.kryptonmc.api.event.GenericResult
-import org.kryptonmc.api.event.ResultedEvent
+import org.kryptonmc.api.event.type.AbstractDeniableEvent
 
-class RemoveWhitelistedProfileEvent(val profile: GameProfile) : ResultedEvent<GenericResult> {
-
-    override var result: GenericResult = GenericResult.allowed()
-}
+class RemoveWhitelistedProfileEvent(val profile: GameProfile) : AbstractDeniableEvent()

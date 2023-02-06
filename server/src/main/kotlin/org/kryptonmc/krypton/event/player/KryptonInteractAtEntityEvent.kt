@@ -21,8 +21,8 @@ package org.kryptonmc.krypton.event.player
 import org.kryptonmc.api.entity.Entity
 import org.kryptonmc.api.entity.Hand
 import org.kryptonmc.api.entity.player.Player
-import org.kryptonmc.api.event.GenericResult
 import org.kryptonmc.api.event.player.InteractAtEntityEvent
+import org.kryptonmc.api.event.type.AbstractDeniableEvent
 import org.kryptonmc.api.util.Vec3d
 
 class KryptonInteractAtEntityEvent(
@@ -30,7 +30,4 @@ class KryptonInteractAtEntityEvent(
     override val target: Entity,
     override val hand: Hand,
     override val clickedPosition: Vec3d
-) : InteractAtEntityEvent {
-
-    override var result: GenericResult = GenericResult.allowed()
-}
+) : AbstractDeniableEvent(), InteractAtEntityEvent

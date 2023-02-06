@@ -8,16 +8,30 @@
  */
 package org.kryptonmc.api.event.player
 
-import org.kryptonmc.api.event.ComponentResult
-import org.kryptonmc.api.event.ResultedEvent
+import net.kyori.adventure.text.Component
+import org.kryptonmc.api.event.type.DeniableEventWithResult
+import org.kryptonmc.api.event.type.PlayerEvent
+import org.kryptonmc.internal.annotations.ImmutableType
 
 /**
  * Called when a player sends a chat message (not a command).
  */
-public interface ChatEvent : PlayerEvent, ResultedEvent<ComponentResult> {
+public interface ChatEvent : PlayerEvent, DeniableEventWithResult<ChatEvent.Result> {
 
     /**
      * The message that the player has sent.
      */
     public val message: String
+
+    /**
+     * The result of a chat event.
+     *
+     * This allows you to modify the message that was sent by the player.
+     * For example, you could replace bad words with asterisks.
+     *
+     * @property message The message that will be sent by the player.
+     */
+    @JvmRecord
+    @ImmutableType
+    public data class Result(public val message: Component)
 }
