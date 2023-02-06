@@ -29,7 +29,6 @@ class BanListener(private val logger: Logger, private val banManager: KryptonBan
 
     @Listener
     fun onLogin(event: LoginEvent) {
-        println("Login event called")
         if (banManager.isBanned(event.profile)) {
             val ban = banManager.getBan(event.profile)!!
             event.denyWithResult(LoginEvent.Result(BanCommandUtil.createBanMessage("banned", ban.reason, ban.expirationDate)))

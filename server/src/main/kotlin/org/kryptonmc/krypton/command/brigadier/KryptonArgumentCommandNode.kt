@@ -40,13 +40,13 @@ import java.util.function.Predicate
 
 @Suppress("LongParameterList")
 class KryptonArgumentCommandNode<S, T>(
-    name: String,
+    name: String?,
     private val richType: ArgumentType<T>,
-    command: Command<S>,
-    requirement: Predicate<S>,
-    contextRequirement: BiPredicate<CommandContextBuilder<S>, ImmutableStringReader>,
-    redirect: CommandNode<S>,
-    modifier: RedirectModifier<S>,
+    command: Command<S>?,
+    requirement: Predicate<S>?,
+    contextRequirement: BiPredicate<CommandContextBuilder<S>, ImmutableStringReader>?,
+    redirect: CommandNode<S>?,
+    modifier: RedirectModifier<S>?,
     forks: Boolean,
     customSuggestions: SuggestionProvider<S>?
 ) : ArgumentCommandNode<S, String>(name, greedyString(), command, requirement, contextRequirement, redirect, modifier, forks, customSuggestions) {
