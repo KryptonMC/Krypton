@@ -36,6 +36,7 @@ org.kryptonmc.api.event.command
 org.kryptonmc.api.event.entity
 org.kryptonmc.api.event.player
 org.kryptonmc.api.event.server
+org.kryptonmc.api.event.type
 org.kryptonmc.api.fluid
 org.kryptonmc.api.inventory
 org.kryptonmc.api.item
