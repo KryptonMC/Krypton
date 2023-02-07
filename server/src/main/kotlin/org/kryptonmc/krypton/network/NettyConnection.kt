@@ -218,10 +218,8 @@ class NettyConnection(private val server: KryptonServer) : SimpleChannelInboundH
     }
 
     fun disconnect(message: Component) {
-        if (channel.isOpen) {
-            channel.close().awaitUninterruptibly()
-            handler?.onDisconnect(message)
-        }
+        if (channel.isOpen) channel.close().awaitUninterruptibly()
+        handler?.onDisconnect(message)
     }
 
     override fun channelActive(ctx: ChannelHandlerContext) {

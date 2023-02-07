@@ -150,9 +150,9 @@ class KryptonCommandManager : CommandManager {
         val node = RootCommandNode<CommandSourceStack>()
         lock.read {
             dispatcher.root.children.forEach { if (it.requirement.test(player.createCommandSourceStack())) node.addChild(it) }
-            player.server.eventNode.fire(KryptonCommandSendEvent(player, node))
-            player.connection.send(PacketOutCommands.createFromRootNode(node))
         }
+        player.server.eventNode.fire(KryptonCommandSendEvent(player, node))
+        player.connection.send(PacketOutCommands.createFromRootNode(node))
     }
 
     fun registerBuiltins() {

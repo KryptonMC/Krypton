@@ -130,7 +130,7 @@ class PlayPacketHandler(
     private val player: KryptonPlayer
 ) : TickablePacketHandler {
 
-    private var lastKeepAlive = 0L
+    private var lastKeepAlive = System.currentTimeMillis()
     private var keepAliveChallenge = 0L
     private var pendingKeepAlive = false
 

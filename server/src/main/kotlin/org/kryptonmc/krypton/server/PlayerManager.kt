@@ -54,6 +54,7 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateRecipes
 import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateTeams
 import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateTime
 import org.kryptonmc.krypton.coordinate.BlockPos
+import org.kryptonmc.krypton.entity.player.RecipeBookSettings
 import org.kryptonmc.krypton.locale.DisconnectMessages
 import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateTags
 import org.kryptonmc.krypton.registry.KryptonDynamicRegistries
@@ -155,18 +156,18 @@ class PlayerManager(
             null
         ))
         player.connection.send(PacketOutUpdateEnabledFeatures(FeatureFlags.REGISTRY.toNames(world.enabledFeatures())))
-        player.connection.write(PacketOutPluginMessage(BRAND_KEY, BRAND_MESSAGE))
+        player.connection.send(PacketOutPluginMessage(BRAND_KEY, BRAND_MESSAGE))
         player.connection.send(PacketOutChangeDifficulty.from(world.difficulty))
 
         // Player data stuff
         player.connection.send(PacketOutAbilities.create(player.abilities))
         player.connection.send(PacketOutSetHeldItem(player.inventory.heldSlot))
-        player.connection.write(PacketOutUpdateRecipes.CACHED)
-        player.connection.write(PacketOutUpdateTags(TagSerializer.serializeTagsToNetwork(registries)))
+        player.connection.send(PacketOutUpdateRecipes)
+        player.connection.send(PacketOutUpdateTags(TagSerializer.serializeTagsToNetwork(registries)))
         player.connection.send(PacketOutEntityEvent(player.id, if (reducedDebugInfo) ENABLE_REDUCED_DEBUG_SCREEN else DISABLE_REDUCED_DEBUG_SCREEN))
         sendCommands(player)
         player.statisticsTracker.invalidate()
-        player.connection.write(PacketOutUpdateRecipeBook.CACHED_INIT)
+        player.connection.send(PacketOutUpdateRecipeBook(PacketOutUpdateRecipeBook.Action.INIT, emptyList(), emptyList(), RecipeBookSettings()))
         updateScoreboard(world.scoreboard, player)
         server.connectionManager.invalidateStatus()
 
@@ -189,7 +190,6 @@ class PlayerManager(
 
         player.connection.send(PacketOutSynchronizePlayerPosition.fromPlayer(player))
         player.connection.send(PacketOutPlayerInfoUpdate.createPlayerInitializing(players))
-        server.connectionManager.sendGroupedPacket(players, PacketOutPlayerInfoUpdate.createPlayerInitializing(ImmutableLists.of(player)))
         world.spawnPlayer(player)
 
         // Send the initial chunk stream

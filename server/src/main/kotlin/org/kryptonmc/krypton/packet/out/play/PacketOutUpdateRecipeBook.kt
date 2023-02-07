@@ -21,7 +21,6 @@ package org.kryptonmc.krypton.packet.out.play
 import io.netty.buffer.ByteBuf
 import net.kyori.adventure.key.Key
 import org.kryptonmc.krypton.entity.player.RecipeBookSettings
-import org.kryptonmc.krypton.packet.CachedPacket
 import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.util.readEnum
 import org.kryptonmc.krypton.util.readKey
@@ -55,12 +54,5 @@ data class PacketOutUpdateRecipeBook(
         INIT,
         ADD,
         REMOVE
-    }
-
-    companion object {
-
-        // TODO: Remove this when we actually bother with the recipe book
-        @JvmField
-        val CACHED_INIT: CachedPacket = CachedPacket { PacketOutUpdateRecipeBook(Action.INIT, emptyList(), emptyList(), RecipeBookSettings()) }
     }
 }

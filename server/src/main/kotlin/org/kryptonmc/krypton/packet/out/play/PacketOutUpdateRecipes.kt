@@ -19,15 +19,11 @@
 package org.kryptonmc.krypton.packet.out.play
 
 import io.netty.buffer.ByteBuf
-import org.kryptonmc.krypton.packet.CachedPacket
 import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.util.writeVarInt
 
 // TODO: Add some recipes here
 object PacketOutUpdateRecipes : Packet {
-
-    @JvmField
-    val CACHED: CachedPacket = CachedPacket { PacketOutUpdateRecipes }
 
     override fun write(buf: ByteBuf) {
         buf.writeVarInt(0)

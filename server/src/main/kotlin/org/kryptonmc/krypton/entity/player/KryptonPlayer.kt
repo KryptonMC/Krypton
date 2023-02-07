@@ -136,7 +136,6 @@ class KryptonPlayer(
                 teleport(field.position)
             }
         }
-    private var disconnected = false
 
     override val isOnline: Boolean
         get() = server.getPlayer(uuid) === this
@@ -265,17 +264,19 @@ class KryptonPlayer(
         val oldLocation = this.position
         this.position = position
 
-        if (Positioning.isDeltaInMoveRange(oldLocation, this.position)) {
-            connection.send(PacketOutTeleportEntity.create(this))
+        val packet = if (Positioning.isDeltaInMoveRange(oldLocation, this.position)) {
+            PacketOutTeleportEntity.create(this)
         } else {
-            connection.send(PacketOutUpdateEntityPosition(
+            PacketOutUpdateEntityPosition(
                 id,
                 Positioning.calculateDelta(this.position.x, oldLocation.x),
                 Positioning.calculateDelta(this.position.y, oldLocation.y),
                 Positioning.calculateDelta(this.position.z, oldLocation.z),
                 isOnGround
-            ))
+            )
         }
+        connection.send(packet)
+        viewingSystem.sendToViewers(packet)
         chunkViewingSystem.updateChunks()
     }
 
@@ -319,7 +320,6 @@ class KryptonPlayer(
     }
 
     fun disconnect() {
-        disconnected = true
         vehicleSystem.ejectPassengers()
         // TODO: Stop sleeping if sleeping
     }
