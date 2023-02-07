@@ -58,13 +58,16 @@ class KryptonArgumentCommandNode<S, T>(
             throw CommandSyntaxException.BUILT_IN_EXCEPTIONS.dispatcherParseException()
                 .createWithContext(reader, "Expected greedy ArgumentType to parse all input!")
         }
+
         val parsed = ParsedArgument<S, T>(start, reader.cursor, result)
         contextBuilder.withArgument(name, parsed)
         contextBuilder.withNode(this, parsed.range)
     }
 
-    override fun listSuggestions(context: CommandContext<S>, builder: SuggestionsBuilder): CompletableFuture<Suggestions> =
-        customSuggestions?.getSuggestions(context, builder) ?: Suggestions.empty()
+    override fun listSuggestions(context: CommandContext<S>, builder: SuggestionsBuilder): CompletableFuture<Suggestions> {
+        if (customSuggestions == null) return Suggestions.empty()
+        return customSuggestions.getSuggestions(context, builder)
+    }
 
     override fun createBuilder(): RequiredArgumentBuilder<S, String> {
         throw UnsupportedOperationException()
@@ -83,6 +86,8 @@ class KryptonArgumentCommandNode<S, T>(
     }
 
     override fun hashCode(): Int = 31 * super.hashCode() + richType.hashCode()
+
+    override fun getExamples(): MutableCollection<String> = richType.examples
 
     override fun toString(): String = "<argument $name:$richType>"
 }

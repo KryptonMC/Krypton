@@ -39,6 +39,20 @@ abstract class AbstractCommandRegistrar<C : Command>(private val lock: Lock) {
     }
 
     protected fun register(root: RootCommandNode<CommandSourceStack>, node: LiteralCommandNode<CommandSourceStack>, alias: String) {
-        register(root, LiteralArgumentBuilder.literal<CommandSourceStack>(alias).redirect(node).build())
+        register(root, copyRedirect(node, alias))
+    }
+
+    companion object {
+
+        @JvmStatic
+        private fun copyRedirect(source: LiteralCommandNode<CommandSourceStack>, redirectAlias: String): LiteralCommandNode<CommandSourceStack> {
+            val builder = LiteralArgumentBuilder.literal<CommandSourceStack>(redirectAlias)
+                .requires(source.requirement)
+                .requiresWithContext(source.contextRequirement)
+                .forward(source.redirect, source.redirectModifier, source.isFork)
+                .executes(source.command)
+            source.children.forEach { builder.then(it) }
+            return builder.build()
+        }
     }
 }
