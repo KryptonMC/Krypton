@@ -79,11 +79,9 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutSetEntityMetadata
 import org.kryptonmc.krypton.packet.out.play.PacketOutSetHealth
 import org.kryptonmc.krypton.packet.out.play.PacketOutSystemChat
 import org.kryptonmc.krypton.packet.out.play.PacketOutTeleportEntity
-import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateEntityPosition
 import org.kryptonmc.krypton.statistic.KryptonStatisticsTracker
 import org.kryptonmc.krypton.coordinate.BlockPos
 import org.kryptonmc.krypton.util.InteractionResult
-import org.kryptonmc.krypton.coordinate.Positioning
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.krypton.world.block.state.KryptonBlockState
 import org.kryptonmc.nbt.CompoundTag
@@ -261,20 +259,8 @@ class KryptonPlayer(
     }
 
     override fun teleport(position: Vec3d) {
-        val oldLocation = this.position
         this.position = position
-
-        val packet = if (Positioning.isDeltaInMoveRange(oldLocation, this.position)) {
-            PacketOutTeleportEntity.create(this)
-        } else {
-            PacketOutUpdateEntityPosition(
-                id,
-                Positioning.calculateDelta(this.position.x, oldLocation.x),
-                Positioning.calculateDelta(this.position.y, oldLocation.y),
-                Positioning.calculateDelta(this.position.z, oldLocation.z),
-                isOnGround
-            )
-        }
+        val packet = PacketOutTeleportEntity.create(this)
         connection.send(packet)
         viewingSystem.sendToViewers(packet)
         chunkViewingSystem.updateChunks()

@@ -18,9 +18,7 @@
  */
 package org.kryptonmc.krypton.coordinate
 
-import org.kryptonmc.api.util.Vec3d
 import org.kryptonmc.krypton.util.math.Maths
-import kotlin.math.abs
 
 object Positioning {
 
@@ -40,17 +38,4 @@ object Positioning {
      */
     @JvmStatic
     fun encodeVelocity(velocity: Double): Int = (Maths.clamp(velocity, -3.9, 3.9) * 8000.0).toInt()
-
-    /**
-     * Checks if the change between the old and the new is within the range
-     * allowed by the entity move packet.
-     *
-     * The entity move packet allows at most 8 blocks in any direction, because
-     * it calculates the delta as shown in [calculateDelta], the range of a short is
-     * -32768 to 32767, and 32768 / (128 * 32) = 8.
-     *
-     * See [here](https://wiki.vg/Protocol#Entity_Position)
-     */
-    @JvmStatic
-    fun isDeltaInMoveRange(old: Vec3d, new: Vec3d): Boolean = abs(new.x - old.x) > 8 || abs(new.y - old.y) > 8 || abs(new.z - old.z) > 8
 }

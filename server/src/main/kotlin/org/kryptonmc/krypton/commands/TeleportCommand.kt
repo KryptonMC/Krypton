@@ -42,11 +42,12 @@ object TeleportCommand {
             }
             argument(PLAYERS, EntityArgumentType.players()) {
                 runs {
-                    val players = EntityArgumentType.getPlayers(it, PLAYERS)
-                    if (players.size == 1) {
-                        val player = players.get(0)
-                        player.teleport(player.position)
-                        CommandMessages.TELEPORT_SINGLE.sendSuccess(it.source, it.source.displayName, player.displayName, true)
+                    val player = it.source.getPlayerOrError()
+                    val targets = EntityArgumentType.getPlayers(it, PLAYERS)
+                    if (targets.size == 1) {
+                        val target = targets.get(0)
+                        player.teleport(target.position)
+                        CommandMessages.TELEPORT_SINGLE.sendSuccess(it.source, it.source.displayName, target.displayName, true)
                     }
                 }
                 argument(TARGET, EntityArgumentType.players()) {
