@@ -283,6 +283,13 @@ public interface Vec3d : Comparable<Vec3d> {
     public fun normalize(): Vec3d
 
     /**
+     * Converts this double vector to an integer vector.
+     *
+     * @return the converted vector
+     */
+    public fun toVec3i(): Vec3i = Vec3i.of(floorX(), floorY(), floorZ())
+
+    /**
      * Part of the destructuring declaration. Gets the X component.
      *
      * @return the X component

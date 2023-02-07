@@ -252,6 +252,13 @@ public interface Vec3i : Comparable<Vec3i> {
     public fun length(): Float
 
     /**
+     * Converts this integer vector to a double vector.
+     *
+     * @return the converted vector
+     */
+    public fun toVec3d(): Vec3d = Vec3d.of(x.toDouble(), y.toDouble(), z.toDouble())
+
+    /**
      * Part of the destructuring declaration. Gets the X component.
      *
      * @return the X component

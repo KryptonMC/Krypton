@@ -153,6 +153,10 @@ class KryptonPlayer(
         get() = data.get(MetadataKeys.Player.ADDITIONAL_HEARTS)
         set(value) = data.set(MetadataKeys.Player.ADDITIONAL_HEARTS, value)
 
+    init {
+        position = world.data.spawnPos().toVec3d()
+    }
+
     override fun defineData() {
         super<KryptonLivingEntity>.defineData()
         data.define(MetadataKeys.Player.ADDITIONAL_HEARTS, 0F)
