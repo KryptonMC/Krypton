@@ -386,7 +386,7 @@ class PlayPacketHandler(
     }
 
     fun handleAbilities(packet: PacketInAbilities) {
-        player.isGliding = packet.isFlying && player.abilities.canFly
+        player.abilities.flying = packet.isFlying && player.abilities.canFly
     }
 
     // TODO: This entire thing needs to be rewritten

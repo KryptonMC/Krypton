@@ -83,6 +83,12 @@ object KryptonEntityTypes {
 
     // TODO: Make each of these be of their respective entity types when they exist
     @JvmField
+    val ALLAY: KryptonEntityType<KryptonEntity> = register("allay", EntityCategories.CREATURE) {
+        size(0.35F, 0.6F)
+        clientTrackingRange(8)
+        updateInterval(2)
+    }
+    @JvmField
     val AREA_EFFECT_CLOUD: KryptonEntityType<KryptonAreaEffectCloud> = register("area_effect_cloud", EntityCategories.MISC) {
         fireImmune()
         size(6F, 0.5F)
