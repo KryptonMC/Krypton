@@ -18,11 +18,12 @@
  */
 package org.kryptonmc.krypton.event.player
 
-import org.kryptonmc.api.entity.player.Player
-import org.kryptonmc.api.event.player.PlayerJoinEvent
+import org.kryptonmc.api.auth.GameProfile
+import org.kryptonmc.api.event.player.PlayerLoginEvent
 import org.kryptonmc.api.event.type.AbstractDeniableEventWithResult
+import java.net.InetSocketAddress
 
-class KryptonJoinEvent(
-    override val player: Player,
-    override val hasJoinedBefore: Boolean
-) : AbstractDeniableEventWithResult<PlayerJoinEvent.Result>(), PlayerJoinEvent
+class KryptonPlayerLoginEvent(
+    override val profile: GameProfile,
+    override val address: InetSocketAddress
+) : AbstractDeniableEventWithResult<PlayerLoginEvent.Result>(), PlayerLoginEvent

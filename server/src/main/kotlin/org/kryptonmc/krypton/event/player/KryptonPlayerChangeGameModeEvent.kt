@@ -19,10 +19,13 @@
 package org.kryptonmc.krypton.event.player
 
 import org.kryptonmc.api.entity.player.Player
-import org.kryptonmc.api.event.player.PlayerJoinEvent
+import org.kryptonmc.api.event.player.PlayerChangeGameModeEvent
 import org.kryptonmc.api.event.type.AbstractDeniableEventWithResult
+import org.kryptonmc.api.world.GameMode
 
-class KryptonJoinEvent(
+class KryptonPlayerChangeGameModeEvent(
     override val player: Player,
-    override val hasJoinedBefore: Boolean
-) : AbstractDeniableEventWithResult<PlayerJoinEvent.Result>(), PlayerJoinEvent
+    override val oldGameMode: GameMode,
+    override val newGameMode: GameMode,
+    override val cause: PlayerChangeGameModeEvent.Cause
+) : AbstractDeniableEventWithResult<PlayerChangeGameModeEvent.Result>(), PlayerChangeGameModeEvent

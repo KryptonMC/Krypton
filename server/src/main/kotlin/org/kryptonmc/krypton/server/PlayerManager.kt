@@ -30,7 +30,7 @@ import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.command.CommandSourceStack
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.event.player.KryptonJoinEvent
-import org.kryptonmc.krypton.event.player.KryptonQuitEvent
+import org.kryptonmc.krypton.event.player.KryptonPlayerQuitEvent
 import org.kryptonmc.krypton.network.chat.RichChatType
 import org.kryptonmc.krypton.network.chat.OutgoingChatMessage
 import org.kryptonmc.krypton.network.chat.PlayerChatMessage
@@ -206,7 +206,7 @@ class PlayerManager(
     }
 
     fun removePlayer(player: KryptonPlayer) {
-        val event = server.eventNode.fire(KryptonQuitEvent(player))
+        val event = server.eventNode.fire(KryptonPlayerQuitEvent(player))
 
         player.statisticsTracker.incrementStatistic(CustomStatistics.LEAVE_GAME.get())
         savePlayer(player)

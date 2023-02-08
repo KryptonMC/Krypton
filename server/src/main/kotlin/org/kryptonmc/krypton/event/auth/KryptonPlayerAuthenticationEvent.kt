@@ -16,13 +16,11 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.event.player
+package org.kryptonmc.krypton.event.auth
 
-import org.kryptonmc.api.entity.player.Player
-import org.kryptonmc.api.event.player.PlayerJoinEvent
+import org.kryptonmc.api.event.player.PlayerAuthenticationEvent
 import org.kryptonmc.api.event.type.AbstractDeniableEventWithResult
 
-class KryptonJoinEvent(
-    override val player: Player,
-    override val hasJoinedBefore: Boolean
-) : AbstractDeniableEventWithResult<PlayerJoinEvent.Result>(), PlayerJoinEvent
+class KryptonPlayerAuthenticationEvent(
+    override val username: String
+) : AbstractDeniableEventWithResult<PlayerAuthenticationEvent.Result>(), PlayerAuthenticationEvent

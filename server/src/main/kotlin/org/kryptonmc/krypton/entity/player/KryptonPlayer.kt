@@ -33,7 +33,7 @@ import org.kryptonmc.api.entity.EquipmentSlot
 import org.kryptonmc.api.entity.Hand
 import org.kryptonmc.api.entity.player.ChatVisibility
 import org.kryptonmc.api.entity.player.Player
-import org.kryptonmc.api.event.player.ChangeGameModeEvent
+import org.kryptonmc.api.event.player.PlayerChangeGameModeEvent
 import org.kryptonmc.api.inventory.Inventory
 import org.kryptonmc.api.permission.PermissionFunction
 import org.kryptonmc.api.permission.PermissionProvider
@@ -167,7 +167,7 @@ class KryptonPlayer(
         data.define(MetadataKeys.Player.RIGHT_SHOULDER, CompoundTag.EMPTY)
     }
 
-    override fun updateGameMode(mode: GameMode, cause: ChangeGameModeEvent.Cause): ChangeGameModeEvent? {
+    override fun updateGameMode(mode: GameMode, cause: PlayerChangeGameModeEvent.Cause): PlayerChangeGameModeEvent? {
         val event = gameModeSystem.changeGameMode(mode, cause)
         if (event == null || !event.isAllowed()) return null
 

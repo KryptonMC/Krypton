@@ -20,9 +20,9 @@ package org.kryptonmc.krypton.entity.components
 
 import org.kryptonmc.api.entity.ArmorSlot
 import org.kryptonmc.api.entity.player.Player
-import org.kryptonmc.api.event.player.PerformActionEvent.Action
 import org.kryptonmc.api.item.ItemTypes
-import org.kryptonmc.krypton.event.player.KryptonPerformActionEvent
+import org.kryptonmc.krypton.event.player.action.KryptonPlayerStartGlidingEvent
+import org.kryptonmc.krypton.event.player.action.KryptonPlayerStopGlidingEvent
 
 interface Glider : BaseEntity, Player {
 
@@ -41,10 +41,11 @@ interface Glider : BaseEntity, Player {
     }
 
     override fun startGliding(): Boolean {
-        if (fireEvent(Action.START_FLYING_WITH_ELYTRA)) {
+        if (server.eventNode.fire(KryptonPlayerStartGlidingEvent(this)).isAllowed()) {
             isGliding = true
             return true
         }
+
         // Took this from Spigot. It seems like it's taken from the vanilla thing below, but if we don't have this,
         // it can cause issues like https://hub.spigotmc.org/jira/browse/SPIGOT-5542.
         isGliding = true
@@ -53,14 +54,11 @@ interface Glider : BaseEntity, Player {
     }
 
     override fun stopGliding(): Boolean {
-        if (!fireEvent(Action.STOP_FLYING_WITH_ELYTRA)) return false
+        if (!server.eventNode.fire(KryptonPlayerStopGlidingEvent(this)).isAllowed()) return false
+
         // This is a vanilla thing
         isGliding = true
         isGliding = false
         return true
-    }
-
-    private fun fireEvent(action: Action): Boolean {
-        return server.eventNode.fire(KryptonPerformActionEvent(this, action)).isAllowed()
     }
 }

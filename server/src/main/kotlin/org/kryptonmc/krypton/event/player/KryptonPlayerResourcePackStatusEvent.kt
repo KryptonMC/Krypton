@@ -19,10 +19,7 @@
 package org.kryptonmc.krypton.event.player
 
 import org.kryptonmc.api.entity.player.Player
-import org.kryptonmc.api.event.player.PlayerJoinEvent
-import org.kryptonmc.api.event.type.AbstractDeniableEventWithResult
+import org.kryptonmc.api.event.player.PlayerResourcePackStatusEvent
+import org.kryptonmc.api.resource.ResourcePack
 
-class KryptonJoinEvent(
-    override val player: Player,
-    override val hasJoinedBefore: Boolean
-) : AbstractDeniableEventWithResult<PlayerJoinEvent.Result>(), PlayerJoinEvent
+class KryptonPlayerResourcePackStatusEvent(override val player: Player, override val status: ResourcePack.Status) : PlayerResourcePackStatusEvent

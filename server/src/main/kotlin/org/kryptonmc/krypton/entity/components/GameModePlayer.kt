@@ -19,7 +19,7 @@
 package org.kryptonmc.krypton.entity.components
 
 import org.kryptonmc.api.entity.player.Player
-import org.kryptonmc.api.event.player.ChangeGameModeEvent
+import org.kryptonmc.api.event.player.PlayerChangeGameModeEvent
 import org.kryptonmc.api.world.GameMode
 import org.kryptonmc.krypton.entity.system.PlayerGameModeSystem
 
@@ -29,8 +29,8 @@ interface GameModePlayer : Player {
     override var gameMode: GameMode
         get() = gameModeSystem.gameMode()
         set(value) {
-            updateGameMode(value, ChangeGameModeEvent.Cause.API)
+            updateGameMode(value, PlayerChangeGameModeEvent.Cause.API)
         }
 
-    fun updateGameMode(mode: GameMode, cause: ChangeGameModeEvent.Cause): ChangeGameModeEvent?
+    fun updateGameMode(mode: GameMode, cause: PlayerChangeGameModeEvent.Cause): PlayerChangeGameModeEvent?
 }

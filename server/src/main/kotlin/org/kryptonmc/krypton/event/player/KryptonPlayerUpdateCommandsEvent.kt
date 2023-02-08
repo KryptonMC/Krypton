@@ -18,11 +18,8 @@
  */
 package org.kryptonmc.krypton.event.player
 
+import com.mojang.brigadier.tree.RootCommandNode
 import org.kryptonmc.api.entity.player.Player
-import org.kryptonmc.api.event.player.PlayerJoinEvent
-import org.kryptonmc.api.event.type.AbstractDeniableEventWithResult
+import org.kryptonmc.api.event.player.PlayerUpdateCommandsEvent
 
-class KryptonJoinEvent(
-    override val player: Player,
-    override val hasJoinedBefore: Boolean
-) : AbstractDeniableEventWithResult<PlayerJoinEvent.Result>(), PlayerJoinEvent
+class KryptonPlayerUpdateCommandsEvent(override val player: Player, override val rootNode: RootCommandNode<*>) : PlayerUpdateCommandsEvent

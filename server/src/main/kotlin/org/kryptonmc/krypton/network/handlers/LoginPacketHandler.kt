@@ -30,8 +30,8 @@ import org.kryptonmc.krypton.auth.KryptonGameProfile
 import org.kryptonmc.krypton.auth.requests.SessionService
 import org.kryptonmc.krypton.config.category.ProxyCategory
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
-import org.kryptonmc.krypton.event.auth.KryptonAuthenticationEvent
-import org.kryptonmc.krypton.event.player.KryptonLoginEvent
+import org.kryptonmc.krypton.event.auth.KryptonPlayerAuthenticationEvent
+import org.kryptonmc.krypton.event.player.KryptonPlayerLoginEvent
 import org.kryptonmc.krypton.event.server.KryptonSetupPermissionsEvent
 import org.kryptonmc.krypton.locale.DisconnectMessages
 import org.kryptonmc.krypton.locale.MinecraftTranslationManager
@@ -123,7 +123,7 @@ class LoginPacketHandler(
         val address = createAddress()
 
         // Fire the authentication event.
-        val authEvent = KryptonAuthenticationEvent(name)
+        val authEvent = KryptonPlayerAuthenticationEvent(name)
         if (!authEvent.isAllowed()) return
 
         val profile = authEvent.result?.profile ?: SessionService.hasJoined(name, sharedSecret, server.config.server.ip)
@@ -195,7 +195,7 @@ class LoginPacketHandler(
     }
 
     private fun callLoginEvent(profile: GameProfile): Boolean {
-        val event = server.eventNode.fire(KryptonLoginEvent(profile, connection.connectAddress() as InetSocketAddress))
+        val event = server.eventNode.fire(KryptonPlayerLoginEvent(profile, connection.connectAddress() as InetSocketAddress))
         if (!event.isAllowed()) {
             disconnect(event.result?.reason ?: DisconnectMessages.KICKED)
             return false

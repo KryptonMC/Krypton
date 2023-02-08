@@ -19,11 +19,11 @@
 package org.kryptonmc.krypton.entity.system
 
 import org.apache.logging.log4j.LogManager
-import org.kryptonmc.api.event.player.ChangeGameModeEvent
+import org.kryptonmc.api.event.player.PlayerChangeGameModeEvent
 import org.kryptonmc.api.util.Vec3i
 import org.kryptonmc.api.world.GameMode
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
-import org.kryptonmc.krypton.event.player.KryptonChangeGameModeEvent
+import org.kryptonmc.krypton.event.player.KryptonPlayerChangeGameModeEvent
 import org.kryptonmc.krypton.item.handler
 import org.kryptonmc.krypton.packet.`in`.play.PacketInPlayerAction
 import org.kryptonmc.krypton.packet.out.play.PacketOutBlockUpdate
@@ -76,10 +76,10 @@ class PlayerGameModeSystem(private val player: KryptonPlayer) {
         }
     }
 
-    fun changeGameMode(mode: GameMode, cause: ChangeGameModeEvent.Cause): ChangeGameModeEvent? {
+    fun changeGameMode(mode: GameMode, cause: PlayerChangeGameModeEvent.Cause): PlayerChangeGameModeEvent? {
         if (mode == gameMode) return null
 
-        val event = player.server.eventNode.fire(KryptonChangeGameModeEvent(player, gameMode, mode, cause))
+        val event = player.server.eventNode.fire(KryptonPlayerChangeGameModeEvent(player, gameMode, mode, cause))
         if (!event.isAllowed()) return event
 
         setGameMode(mode, event.result?.newGameMode ?: gameMode)

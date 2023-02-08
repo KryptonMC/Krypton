@@ -16,13 +16,21 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.event.player
+package org.kryptonmc.krypton.event.player.interact
 
+import org.kryptonmc.api.block.BlockState
+import org.kryptonmc.api.entity.Hand
 import org.kryptonmc.api.entity.player.Player
-import org.kryptonmc.api.event.player.PlayerJoinEvent
-import org.kryptonmc.api.event.type.AbstractDeniableEventWithResult
+import org.kryptonmc.api.event.player.interact.PlayerPlaceBlockEvent
+import org.kryptonmc.api.event.type.AbstractDeniableEvent
+import org.kryptonmc.api.util.Direction
+import org.kryptonmc.api.util.Vec3i
 
-class KryptonJoinEvent(
+class KryptonPlayerPlaceBlockEvent(
     override val player: Player,
-    override val hasJoinedBefore: Boolean
-) : AbstractDeniableEventWithResult<PlayerJoinEvent.Result>(), PlayerJoinEvent
+    override val block: BlockState,
+    override val hand: Hand,
+    override val position: Vec3i,
+    override val face: Direction,
+    override val isInsideBlock: Boolean
+) : AbstractDeniableEvent(), PlayerPlaceBlockEvent

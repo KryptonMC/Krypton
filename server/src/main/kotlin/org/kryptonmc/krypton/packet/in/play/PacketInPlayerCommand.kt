@@ -19,7 +19,6 @@
 package org.kryptonmc.krypton.packet.`in`.play
 
 import io.netty.buffer.ByteBuf
-import org.kryptonmc.api.event.player.PerformActionEvent.Action
 import org.kryptonmc.krypton.network.handlers.PlayPacketHandler
 import org.kryptonmc.krypton.packet.InboundPacket
 import org.kryptonmc.krypton.util.readEnum
@@ -40,5 +39,18 @@ data class PacketInPlayerCommand(val id: Int, val action: Action, val data: Int)
 
     override fun handle(handler: PlayPacketHandler) {
         handler.handlePlayerCommand(this)
+    }
+
+    enum class Action {
+
+        START_SNEAKING,
+        STOP_SNEAKING,
+        STOP_SLEEPING,
+        START_SPRINTING,
+        STOP_SPRINTING,
+        START_HORSE_JUMP,
+        STOP_HORSE_JUMP,
+        OPEN_INVENTORY,
+        START_GLIDING
     }
 }

@@ -14,7 +14,7 @@ package org.kryptonmc.api.event.annotation
  * of these events, it should be done asynchronously.
  *
  * These events could be sensitive for a number of reasons. For example, an
- * event like [org.kryptonmc.api.event.player.MoveEvent] is sensitive because
+ * event like [org.kryptonmc.api.event.player.PlayerMoveEvent] is sensitive because
  * it is fired very frequently, even if the server only has a couple of
  * players. Tick start and tick end events are also called a lot, and your
  * processing could severely limit the TPS capability of the server.

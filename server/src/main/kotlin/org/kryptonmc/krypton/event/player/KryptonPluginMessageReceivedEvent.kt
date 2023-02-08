@@ -18,11 +18,12 @@
  */
 package org.kryptonmc.krypton.event.player
 
+import net.kyori.adventure.key.Key
 import org.kryptonmc.api.entity.player.Player
-import org.kryptonmc.api.event.player.PlayerJoinEvent
-import org.kryptonmc.api.event.type.AbstractDeniableEventWithResult
+import org.kryptonmc.api.event.player.PluginMessageReceivedEvent
 
-class KryptonJoinEvent(
+class KryptonPluginMessageReceivedEvent(
     override val player: Player,
-    override val hasJoinedBefore: Boolean
-) : AbstractDeniableEventWithResult<PlayerJoinEvent.Result>(), PlayerJoinEvent
+    override val channel: Key,
+    override val message: ByteArray
+) : PluginMessageReceivedEvent

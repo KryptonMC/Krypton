@@ -38,13 +38,12 @@ import org.kryptonmc.krypton.entity.player.KryptonPlayerSettings
 import org.kryptonmc.krypton.entity.player.KryptonSkinParts
 import org.kryptonmc.krypton.entity.player.PlayerPublicKey
 import org.kryptonmc.krypton.event.command.KryptonCommandExecuteEvent
-import org.kryptonmc.krypton.event.player.KryptonChatEvent
-import org.kryptonmc.krypton.event.player.KryptonMoveEvent
-import org.kryptonmc.krypton.event.player.KryptonPerformActionEvent
-import org.kryptonmc.krypton.event.player.KryptonPlaceBlockEvent
-import org.kryptonmc.krypton.event.player.KryptonPluginMessageEvent
-import org.kryptonmc.krypton.event.player.KryptonResourcePackStatusEvent
-import org.kryptonmc.krypton.event.player.KryptonRotateEvent
+import org.kryptonmc.krypton.event.player.KryptonPlayerChatEvent
+import org.kryptonmc.krypton.event.player.KryptonPlayerMoveEvent
+import org.kryptonmc.krypton.event.player.interact.KryptonPlayerPlaceBlockEvent
+import org.kryptonmc.krypton.event.player.KryptonPluginMessageReceivedEvent
+import org.kryptonmc.krypton.event.player.KryptonPlayerResourcePackStatusEvent
+import org.kryptonmc.krypton.event.player.KryptonPlayerRotateEvent
 import org.kryptonmc.krypton.inventory.KryptonPlayerInventory
 import org.kryptonmc.krypton.item.handler
 import org.kryptonmc.krypton.item.handler.ItemTimedHandler
@@ -72,7 +71,9 @@ import org.kryptonmc.krypton.packet.`in`.play.PacketInCommandSuggestionsRequest
 import org.kryptonmc.krypton.packet.`in`.play.PacketInInteract
 import org.kryptonmc.krypton.packet.`in`.play.PacketInKeepAlive
 import org.kryptonmc.krypton.packet.`in`.play.PacketInPlayerAction
+import org.kryptonmc.krypton.packet.`in`.play.PacketInPlayerAction.Action as PlayerAction
 import org.kryptonmc.krypton.packet.`in`.play.PacketInPlayerCommand
+import org.kryptonmc.krypton.packet.`in`.play.PacketInPlayerCommand.Action as EntityAction
 import org.kryptonmc.krypton.packet.`in`.play.PacketInPlayerInput
 import org.kryptonmc.krypton.packet.`in`.play.PacketInPluginMessage
 import org.kryptonmc.krypton.packet.`in`.play.PacketInQueryEntityTag
@@ -105,14 +106,16 @@ import org.kryptonmc.krypton.util.FutureChain
 import org.kryptonmc.krypton.util.crypto.SignatureValidator
 import org.kryptonmc.krypton.world.block.KryptonBlocks
 import org.kryptonmc.krypton.coordinate.ChunkPos
+import org.kryptonmc.krypton.event.player.action.KryptonPlayerStartSneakingEvent
+import org.kryptonmc.krypton.event.player.action.KryptonPlayerStartSprintingEvent
+import org.kryptonmc.krypton.event.player.action.KryptonPlayerStopSneakingEvent
+import org.kryptonmc.krypton.event.player.action.KryptonPlayerStopSprintingEvent
 import org.kryptonmc.krypton.locale.DisconnectMessages
 import org.kryptonmc.krypton.locale.MinecraftTranslationManager
 import java.time.Duration
 import java.time.Instant
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.atomic.AtomicReference
-import org.kryptonmc.api.event.player.PerformActionEvent.Action as EntityAction
-import org.kryptonmc.krypton.packet.`in`.play.PacketInPlayerAction.Action as PlayerAction
 
 /**
  * This is the largest and most important of the four packet handlers, as the
@@ -216,7 +219,7 @@ class PlayPacketHandler(
         if (!ChatUtil.isValidMessage(packet.message)) disconnect(DisconnectMessages.ILLEGAL_CHARACTERS)
 
         // Fire the chat event
-        val event = server.eventNode.fire(KryptonChatEvent(player, packet.message))
+        val event = server.eventNode.fire(KryptonPlayerChatEvent(player, packet.message))
         if (!event.isAllowed()) return
 
         val lastSeen = tryHandleChat(packet.message, packet.timestamp, packet.lastSeenMessages) ?: return
@@ -350,19 +353,27 @@ class PlayPacketHandler(
     }
 
     fun handlePlayerCommand(packet: PacketInPlayerCommand) {
-        val action = packet.action
-        val event = server.eventNode.fire(KryptonPerformActionEvent(player, action))
-        if (!event.isAllowed()) return
-
-        when (action) {
-            EntityAction.START_SNEAKING -> player.isSneaking = true
-            EntityAction.STOP_SNEAKING -> player.isSneaking = false
-            EntityAction.START_SPRINTING -> player.isSprinting = true
-            EntityAction.STOP_SPRINTING -> player.isSprinting = false
-            EntityAction.LEAVE_BED -> Unit // TODO: Sleeping
-            EntityAction.START_JUMP_WITH_HORSE, EntityAction.STOP_JUMP_WITH_HORSE, EntityAction.OPEN_HORSE_INVENTORY -> Unit // TODO: Horses
-            EntityAction.START_FLYING_WITH_ELYTRA -> if (!player.tryStartGliding()) player.stopGliding()
-            else -> error("This should be impossible! Action for player command was not a valid action! Action: $action")
+        when (packet.action) {
+            EntityAction.START_SNEAKING -> {
+                if (!server.eventNode.fire(KryptonPlayerStartSneakingEvent(player)).isAllowed()) return
+                player.isSneaking = true
+            }
+            EntityAction.STOP_SNEAKING -> {
+                if (!server.eventNode.fire(KryptonPlayerStopSneakingEvent(player)).isAllowed()) return
+                player.isSneaking = false
+            }
+            EntityAction.START_SPRINTING -> {
+                if (!server.eventNode.fire(KryptonPlayerStartSprintingEvent(player)).isAllowed()) return
+                player.isSprinting = true
+            }
+            EntityAction.STOP_SPRINTING -> {
+                if (!server.eventNode.fire(KryptonPlayerStopSprintingEvent(player)).isAllowed()) return
+                player.isSprinting = false
+            }
+            EntityAction.STOP_SLEEPING -> Unit // TODO: Sleeping
+            EntityAction.START_HORSE_JUMP, EntityAction.STOP_HORSE_JUMP -> Unit // TODO: Horse jumping
+            EntityAction.OPEN_INVENTORY -> Unit // TODO: Open vehicle inventory
+            EntityAction.START_GLIDING -> if (!player.tryStartGliding()) player.stopGliding()
         }
     }
 
@@ -397,7 +408,7 @@ class PlayPacketHandler(
         val state = world.getBlock(position)
         val face = packet.hitResult.direction
         val isInside = packet.hitResult.isInside
-        val event = server.eventNode.fire(KryptonPlaceBlockEvent(player, state, packet.hand, position, face, isInside))
+        val event = server.eventNode.fire(KryptonPlayerPlaceBlockEvent(player, state, packet.hand, position, face, isInside))
         if (!event.isAllowed()) return
 
         val chunk = world.chunkManager.getChunk(ChunkPos.forEntityPosition(player.position)) ?: return
@@ -467,7 +478,7 @@ class PlayPacketHandler(
         }
 
         val position = Vec3d(x, y, z)
-        val event = server.eventNode.fire(KryptonMoveEvent(player, oldPosition, position))
+        val event = server.eventNode.fire(KryptonPlayerMoveEvent(player, oldPosition, position))
         if (!event.isAllowed()) return
 
         val newPosition = event.result?.newLocation ?: position
@@ -488,7 +499,7 @@ class PlayPacketHandler(
             return false
         }
 
-        val event = server.eventNode.fire(KryptonRotateEvent(player, oldYaw, oldPitch, yaw, pitch))
+        val event = server.eventNode.fire(KryptonPlayerRotateEvent(player, oldYaw, oldPitch, yaw, pitch))
         if (!event.isAllowed()) return false
 
         val result = event.result
@@ -501,7 +512,7 @@ class PlayPacketHandler(
     }
 
     fun handlePluginMessage(packet: PacketInPluginMessage) {
-        server.eventNode.fire(KryptonPluginMessageEvent(player, packet.channel, packet.data))
+        server.eventNode.fire(KryptonPluginMessageReceivedEvent(player, packet.channel, packet.data))
     }
 
     fun handleCommandSuggestionsRequest(packet: PacketInCommandSuggestionsRequest) {
@@ -530,7 +541,7 @@ class PlayPacketHandler(
             disconnect(DisconnectMessages.REQUIRED_TEXTURE_PROMPT)
             return
         }
-        server.eventNode.fire(KryptonResourcePackStatusEvent(player, packet.status))
+        server.eventNode.fire(KryptonPlayerResourcePackStatusEvent(player, packet.status))
     }
 
     private fun onMove(new: Vec3d, old: Vec3d) {

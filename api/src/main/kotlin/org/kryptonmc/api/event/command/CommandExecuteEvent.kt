@@ -13,7 +13,7 @@ import org.kryptonmc.api.event.type.DeniableEventWithResult
 import org.kryptonmc.internal.annotations.ImmutableType
 
 /**
- * Called when the given [command] is executed by the given [sender].
+ * Called when a command is executed by any sender.
  */
 public interface CommandExecuteEvent : DeniableEventWithResult<CommandExecuteEvent.Result> {
 

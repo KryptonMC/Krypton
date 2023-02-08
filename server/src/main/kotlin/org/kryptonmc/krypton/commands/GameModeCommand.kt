@@ -25,7 +25,7 @@ import com.mojang.brigadier.exceptions.DynamicCommandExceptionType
 import net.kyori.adventure.text.Component
 import org.kryptonmc.api.command.argument
 import org.kryptonmc.api.command.literalCommand
-import org.kryptonmc.api.event.player.ChangeGameModeEvent
+import org.kryptonmc.api.event.player.PlayerChangeGameModeEvent
 import org.kryptonmc.api.world.GameMode
 import org.kryptonmc.krypton.adventure.KryptonAdventure
 import org.kryptonmc.krypton.command.CommandSourceStack
@@ -77,7 +77,7 @@ object GameModeCommand {
     private fun setMode(source: CommandSourceStack, targets: List<KryptonPlayer>, mode: GameMode): Int {
         var count = 0
         targets.forEach {
-            it.updateGameMode(mode, ChangeGameModeEvent.Cause.COMMAND)
+            it.updateGameMode(mode, PlayerChangeGameModeEvent.Cause.COMMAND)
             notifyGameModeChanged(source, it, mode)
             ++count
         }

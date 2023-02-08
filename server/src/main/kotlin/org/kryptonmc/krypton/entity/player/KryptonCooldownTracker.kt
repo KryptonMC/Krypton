@@ -20,7 +20,7 @@ package org.kryptonmc.krypton.entity.player
 
 import org.kryptonmc.api.entity.player.CooldownTracker
 import org.kryptonmc.api.item.ItemType
-import org.kryptonmc.krypton.event.player.KryptonCooldownEvent
+import org.kryptonmc.krypton.event.player.KryptonPlayerItemCooldownEvent
 import org.kryptonmc.krypton.item.downcast
 import org.kryptonmc.krypton.packet.out.play.PacketOutSetCooldown
 import org.kryptonmc.krypton.util.math.Maths
@@ -60,7 +60,7 @@ class KryptonCooldownTracker(private val player: KryptonPlayer) : CooldownTracke
     override fun setCooldown(item: ItemType, ticks: Int) {
         if (ticks < 0) return
 
-        val event = player.server.eventNode.fire(KryptonCooldownEvent(player, item, ticks))
+        val event = player.server.eventNode.fire(KryptonPlayerItemCooldownEvent(player, item, ticks))
         if (!event.isAllowed()) return
 
         val result = event.result

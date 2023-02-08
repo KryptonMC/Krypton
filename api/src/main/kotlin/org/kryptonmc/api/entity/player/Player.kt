@@ -12,7 +12,8 @@ import net.kyori.adventure.text.Component
 import org.kryptonmc.api.effect.particle.ParticleEffect
 import org.kryptonmc.api.entity.Equipable
 import org.kryptonmc.api.entity.LivingEntity
-import org.kryptonmc.api.event.player.PerformActionEvent
+import org.kryptonmc.api.event.player.action.PlayerStartGlidingEvent
+import org.kryptonmc.api.event.player.action.PlayerStopGlidingEvent
 import org.kryptonmc.api.inventory.Inventory
 import org.kryptonmc.api.inventory.PlayerInventory
 import org.kryptonmc.api.plugin.PluginMessageRecipient
@@ -156,24 +157,24 @@ public interface Player : LivingEntity, Equipable, PluginMessageRecipient, BaseU
     /**
      * Makes this player start gliding (elytra flying).
      *
-     * This should call the [PerformActionEvent], which may cause this action
-     * to get cancelled, meaning the player will keep its previous gliding
-     * status.
+     * This may fire the [PlayerStartGlidingEvent], which may cause this
+     * action to get denied, meaning the player will keep their previous
+     * gliding status.
      *
      * @return whether the request to start gliding was approved, or it was
-     * cancelled by the result of calling the event
+     * denied by the result of calling the event
      */
     public fun startGliding(): Boolean
 
     /**
      * Makes this player stop gliding (elytra flying).
      *
-     * This should call the [PerformActionEvent], which may cause this action
-     * to get cancelled, meaning the player will keep their previous gliding
+     * This may fire the [PlayerStopGlidingEvent], which may cause this action
+     * to get denied, meaning the player will keep their previous gliding
      * status.
      *
      * @return whether the request to stop gliding was approved, or it was
-     * cancelled by the result of calling the event
+     * denied by the result of calling the event
      */
     public fun stopGliding(): Boolean
 

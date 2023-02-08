@@ -19,10 +19,13 @@
 package org.kryptonmc.krypton.event.player
 
 import org.kryptonmc.api.entity.player.Player
-import org.kryptonmc.api.event.player.PlayerJoinEvent
+import org.kryptonmc.api.event.player.PlayerRotateEvent
 import org.kryptonmc.api.event.type.AbstractDeniableEventWithResult
 
-class KryptonJoinEvent(
+class KryptonPlayerRotateEvent(
     override val player: Player,
-    override val hasJoinedBefore: Boolean
-) : AbstractDeniableEventWithResult<PlayerJoinEvent.Result>(), PlayerJoinEvent
+    override val oldYaw: Float,
+    override val oldPitch: Float,
+    override val newYaw: Float,
+    override val newPitch: Float
+) : AbstractDeniableEventWithResult<PlayerRotateEvent.Result>(), PlayerRotateEvent

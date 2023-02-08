@@ -18,11 +18,12 @@
  */
 package org.kryptonmc.krypton.event.player
 
+import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.format.NamedTextColor
 import org.kryptonmc.api.entity.player.Player
-import org.kryptonmc.api.event.player.PlayerJoinEvent
-import org.kryptonmc.api.event.type.AbstractDeniableEventWithResult
+import org.kryptonmc.api.event.player.PlayerQuitEvent
 
-class KryptonJoinEvent(
-    override val player: Player,
-    override val hasJoinedBefore: Boolean
-) : AbstractDeniableEventWithResult<PlayerJoinEvent.Result>(), PlayerJoinEvent
+class KryptonPlayerQuitEvent(override val player: Player) : PlayerQuitEvent {
+
+    override var quitMessage: Component? = Component.translatable("multiplayer.player.left", NamedTextColor.YELLOW, player.displayName)
+}
