@@ -11,7 +11,7 @@ package org.kryptonmc.api.command
 import net.kyori.adventure.text.Component
 import org.kryptonmc.api.Server
 import org.kryptonmc.api.entity.player.Player
-import org.kryptonmc.api.util.Vec3d
+import org.kryptonmc.api.util.Position
 import org.kryptonmc.api.world.World
 import org.kryptonmc.internal.annotations.ImmutableType
 
@@ -32,7 +32,7 @@ public interface CommandExecutionContext {
      * The position of the sender.
      */
     @get:JvmName("position")
-    public val position: Vec3d
+    public val position: Position
 
     /**
      * The plain text name of the sender.

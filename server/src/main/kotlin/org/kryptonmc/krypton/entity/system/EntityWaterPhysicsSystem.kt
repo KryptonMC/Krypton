@@ -48,8 +48,7 @@ class EntityWaterPhysicsSystem(private val entity: KryptonEntity) {
 
     fun isUnderwater(): Boolean = underwater
 
-    fun isInBubbleColumn(): Boolean =
-        entity.world.getBlock(entity.position.floorX(), entity.position.floorY(), entity.position.floorZ()).eq(KryptonBlocks.BUBBLE_COLUMN)
+    fun isInBubbleColumn(): Boolean = entity.world.getBlock(entity.position.asVec3i()).eq(KryptonBlocks.BUBBLE_COLUMN)
 
     fun isInWaterOrBubbleColumn(): Boolean = inWater || isInBubbleColumn()
 
@@ -167,8 +166,7 @@ class EntityWaterPhysicsSystem(private val entity: KryptonEntity) {
         }
     }
 
-    private fun fluidAtFeet(): KryptonFluidState =
-        entity.world.getFluid(entity.position.floorX(), entity.position.floorY(), entity.position.floorZ())
+    private fun fluidAtFeet(): KryptonFluidState = entity.world.getFluid(entity.position.asVec3i())
 
     companion object {
 

@@ -19,14 +19,15 @@
 package org.kryptonmc.krypton.command.arguments.coordinates
 
 import com.mojang.brigadier.StringReader
-import org.kryptonmc.api.util.Vec3d
+import org.kryptonmc.api.util.Position
 import org.kryptonmc.krypton.command.CommandSourceStack
 
 @JvmRecord
 data class WorldCoordinates(val x: WorldCoordinate, val y: WorldCoordinate, val z: WorldCoordinate) : Coordinates {
 
-    override fun calculatePosition(source: CommandSourceStack): Vec3d =
-        Vec3d(x.get(source.position.x), y.get(source.position.y), z.get(source.position.z))
+    override fun calculatePosition(source: CommandSourceStack): Position {
+        return Position(x.get(source.position.x), y.get(source.position.y), z.get(source.position.z))
+    }
 
     companion object {
 

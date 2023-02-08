@@ -24,7 +24,7 @@ import com.mojang.brigadier.context.CommandContext
 import com.mojang.brigadier.exceptions.CommandSyntaxException
 import com.mojang.brigadier.suggestion.Suggestions
 import com.mojang.brigadier.suggestion.SuggestionsBuilder
-import org.kryptonmc.api.util.Vec3d
+import org.kryptonmc.api.util.Position
 import org.kryptonmc.krypton.command.CommandSourceStack
 import org.kryptonmc.krypton.command.CommandSuggestionProvider
 import org.kryptonmc.krypton.command.arguments.coordinates.Coordinates
@@ -75,7 +75,7 @@ class VectorArgument private constructor(private val correctCenter: Boolean = tr
         fun normal(): VectorArgument = NORMAL
 
         @JvmStatic
-        fun get(context: CommandContext<CommandSourceStack>, name: String): Vec3d =
+        fun get(context: CommandContext<CommandSourceStack>, name: String): Position =
             context.getArgument(name, Coordinates::class.java).calculatePosition(context.source)
     }
 }

@@ -22,7 +22,7 @@ import ca.spottedleaf.dataconverter.minecraft.datatypes.MCTypeRegistry
 import net.kyori.adventure.key.InvalidKeyException
 import net.kyori.adventure.key.Key
 import org.apache.logging.log4j.LogManager
-import org.kryptonmc.api.util.Vec3d
+import org.kryptonmc.api.util.Position
 import org.kryptonmc.krypton.KryptonPlatform
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.event.entity.KryptonRemoveEntityEvent
@@ -160,8 +160,8 @@ class EntityManager(val world: KryptonWorld) : AutoCloseable {
         regionFileManager.close()
     }
 
-    private inline fun forEachEntityInRange(location: Vec3d, viewDistance: Int, callback: (KryptonEntity) -> Unit) {
-        chunksInRange(location, viewDistance).forEach {
+    private inline fun forEachEntityInRange(position: Position, viewDistance: Int, callback: (KryptonEntity) -> Unit) {
+        chunksInRange(position, viewDistance).forEach {
             val chunk = world.getChunk(ChunkPos.unpackX(it), ChunkPos.unpackZ(it)) ?: return@forEach
             getByChunk(chunk.position.pack()).forEach(callback)
         }
@@ -175,7 +175,7 @@ class EntityManager(val world: KryptonWorld) : AutoCloseable {
         private val LOGGER = LogManager.getLogger()
 
         @JvmStatic
-        private fun chunksInRange(location: Vec3d, range: Int): LongArray {
+        private fun chunksInRange(position: Position, range: Int): LongArray {
             val area = (range * 2 + 1) * (range * 2 + 1)
             val visible = LongArray(area)
             var dx = 0
@@ -186,8 +186,8 @@ class EntityManager(val world: KryptonWorld) : AutoCloseable {
             var corner = 0
 
             for (i in 0 until area) {
-                val chunkX = SectionPos.blockToSection(SectionPos.sectionToBlock(dx) + location.x)
-                val chunkZ = SectionPos.blockToSection(SectionPos.sectionToBlock(dz) + location.z)
+                val chunkX = SectionPos.blockToSection(SectionPos.sectionToBlock(dx) + position.x)
+                val chunkZ = SectionPos.blockToSection(SectionPos.sectionToBlock(dz) + position.z)
                 visible[i] = ChunkPos.pack(chunkX, chunkZ)
 
                 if (corner % 2 == 0) {

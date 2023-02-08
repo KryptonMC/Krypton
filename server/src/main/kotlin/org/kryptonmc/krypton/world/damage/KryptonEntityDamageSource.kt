@@ -20,7 +20,7 @@ package org.kryptonmc.krypton.world.damage
 
 import net.kyori.adventure.text.Component
 import org.kryptonmc.api.entity.Hand
-import org.kryptonmc.api.util.Vec3d
+import org.kryptonmc.api.util.Position
 import org.kryptonmc.api.world.damage.EntityDamageSource
 import org.kryptonmc.api.world.damage.type.DamageType
 import org.kryptonmc.krypton.entity.KryptonEntity
@@ -32,7 +32,7 @@ open class KryptonEntityDamageSource(type: DamageType, final override val entity
 
     override fun scalesWithDifficulty(): Boolean = entity is KryptonLivingEntity && entity !is KryptonPlayer
 
-    override fun sourcePosition(): Vec3d? = entity.position
+    override fun sourcePosition(): Position? = entity.position
 
     override fun entity(): KryptonEntity? = entity
 

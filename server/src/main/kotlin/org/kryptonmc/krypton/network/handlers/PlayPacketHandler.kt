@@ -28,7 +28,7 @@ import org.apache.logging.log4j.LogManager
 import org.kryptonmc.api.entity.Hand
 import org.kryptonmc.api.entity.player.ChatVisibility
 import org.kryptonmc.api.resource.ResourcePack
-import org.kryptonmc.api.util.Vec3d
+import org.kryptonmc.api.util.Position
 import org.kryptonmc.api.world.GameMode
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.command.CommandSigningContext
@@ -43,7 +43,6 @@ import org.kryptonmc.krypton.event.player.KryptonPlayerMoveEvent
 import org.kryptonmc.krypton.event.player.interact.KryptonPlayerPlaceBlockEvent
 import org.kryptonmc.krypton.event.player.KryptonPluginMessageReceivedEvent
 import org.kryptonmc.krypton.event.player.KryptonPlayerResourcePackStatusEvent
-import org.kryptonmc.krypton.event.player.KryptonPlayerRotateEvent
 import org.kryptonmc.krypton.inventory.KryptonPlayerInventory
 import org.kryptonmc.krypton.item.handler
 import org.kryptonmc.krypton.item.handler.ItemTimedHandler
@@ -477,37 +476,31 @@ class PlayPacketHandler(
             return
         }
 
-        val position = Vec3d(x, y, z)
-        val event = server.eventNode.fire(KryptonPlayerMoveEvent(player, oldPosition, position))
+        val newPosition = oldPosition.withCoordinates(x, y, z)
+        val event = server.eventNode.fire(KryptonPlayerMoveEvent(player, oldPosition, newPosition))
         if (!event.isAllowed()) return
 
-        val newPosition = event.result?.newLocation ?: position
-        player.position = newPosition
+        player.position = event.result?.newPosition ?: newPosition
 
         val dx = Positioning.calculateDelta(x, oldPosition.x)
         val dy = Positioning.calculateDelta(y, oldPosition.y)
         val dz = Positioning.calculateDelta(z, oldPosition.z)
         player.viewingSystem.sendToViewers(updatePacket.get(dx, dy, dz))
-        onMove(position, oldPosition)
+        onMove(newPosition, oldPosition)
     }
 
     private fun updateRotation(yaw: Float, pitch: Float): Boolean {
-        val oldYaw = player.yaw
-        val oldPitch = player.pitch
-        if (oldYaw == yaw && oldPitch == pitch) {
+        val oldPosition = player.position
+        if (oldPosition.yaw == yaw && oldPosition.pitch == pitch) {
             // We haven't rotated at all. We can avoid calling the event and just fast nope out.
             return false
         }
 
-        val event = server.eventNode.fire(KryptonPlayerRotateEvent(player, oldYaw, oldPitch, yaw, pitch))
+        val newPosition = oldPosition.withRotation(yaw, pitch)
+        val event = server.eventNode.fire(KryptonPlayerMoveEvent(player, oldPosition, newPosition))
         if (!event.isAllowed()) return false
 
-        val result = event.result
-        val newYaw = result?.newYaw ?: yaw
-        val newPitch = result?.newPitch ?: pitch
-
-        player.yaw = newYaw
-        player.pitch = newPitch
+        player.position = event.result?.newPosition ?: newPosition
         return true
     }
 
@@ -544,7 +537,7 @@ class PlayPacketHandler(
         server.eventNode.fire(KryptonPlayerResourcePackStatusEvent(player, packet.status))
     }
 
-    private fun onMove(new: Vec3d, old: Vec3d) {
+    private fun onMove(new: Position, old: Position) {
         player.chunkViewingSystem.updateChunks()
         player.updateMovementStatistics(new.x - old.x, new.y - old.y, new.z - old.z)
         player.hungerSystem.updateMovementExhaustion(new.x - old.x, new.y - old.y, new.z - old.z)

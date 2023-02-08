@@ -43,7 +43,7 @@ open class EntityViewingSystem<out T : KryptonEntity> private constructor(protec
         if (!viewers.add(viewer)) return false
         viewer.connection.send(getSpawnPacket())
         viewer.connection.send(PacketOutSetEntityMetadata(entity.id, entity.data.collectAll()))
-        viewer.connection.send(PacketOutSetHeadRotation(entity.id, entity.yaw))
+        viewer.connection.send(PacketOutSetHeadRotation(entity.id, entity.position.yaw))
         if (entity is KryptonLivingEntity) viewer.connection.send(PacketOutUpdateAttributes.create(entity.id, entity.attributes.syncable()))
         return true
     }

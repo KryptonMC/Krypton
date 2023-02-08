@@ -26,7 +26,7 @@ import org.kryptonmc.api.entity.Entity
 import org.kryptonmc.api.entity.EntityType
 import org.kryptonmc.api.entity.EntityTypes
 import org.kryptonmc.api.resource.ResourceKey
-import org.kryptonmc.api.util.Vec3d
+import org.kryptonmc.api.util.Position
 import org.kryptonmc.api.util.Vec3i
 import org.kryptonmc.api.world.Difficulty
 import org.kryptonmc.api.world.World
@@ -131,9 +131,9 @@ class KryptonWorld(
     fun gameRules(): WorldGameRules = data.gameRules
 
     @Suppress("UNCHECKED_CAST")
-    override fun <T : Entity> spawnEntity(type: EntityType<T>, location: Vec3d): T? {
+    override fun <T : Entity> spawnEntity(type: EntityType<T>, position: Position): T? {
         if (!type.isSummonable || type === EntityTypes.PLAYER) return null
-        val entity = EntityFactory.create(type, this)?.apply { this.position = location } ?: return null
+        val entity = EntityFactory.create(type, this)?.apply { this.position = position } ?: return null
         spawnEntity(entity)
         return entity as? T
     }

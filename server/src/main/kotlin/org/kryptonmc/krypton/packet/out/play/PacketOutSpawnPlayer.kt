@@ -59,7 +59,9 @@ data class PacketOutSpawnPlayer(
     companion object {
 
         @JvmStatic
-        fun create(player: KryptonPlayer): PacketOutSpawnPlayer =
-            PacketOutSpawnPlayer(player.id, player.uuid, player.position.x, player.position.y, player.position.z, player.yaw, player.pitch)
+        fun create(player: KryptonPlayer): PacketOutSpawnPlayer {
+            return PacketOutSpawnPlayer(player.id, player.uuid, player.position.x, player.position.y, player.position.z, player.position.yaw,
+                player.position.pitch)
+        }
     }
 }

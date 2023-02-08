@@ -82,9 +82,9 @@ data class PacketOutSpawnEntity(
 
         @JvmStatic
         private fun create(entity: KryptonEntity, headYaw: Float): PacketOutSpawnEntity {
-            return PacketOutSpawnEntity(entity.id, entity.uuid, entity.type, entity.position.x, entity.position.y, entity.position.z, entity.yaw,
-                entity.pitch, headYaw, 0, Positioning.encodeVelocity(entity.velocity.x), Positioning.encodeVelocity(entity.velocity.y),
-                Positioning.encodeVelocity(entity.velocity.z))
+            return PacketOutSpawnEntity(entity.id, entity.uuid, entity.type, entity.position.x, entity.position.y, entity.position.z,
+                entity.position.yaw, entity.position.pitch, headYaw, 0, Positioning.encodeVelocity(entity.velocity.x),
+                Positioning.encodeVelocity(entity.velocity.y), Positioning.encodeVelocity(entity.velocity.z))
         }
     }
 }

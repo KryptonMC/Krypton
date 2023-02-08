@@ -49,5 +49,8 @@ open class UseOnContext protected constructor(
 
     open fun isSneaking(): Boolean = player != null && player.isSneaking
 
-    open fun rotation(): Float = player?.pitch ?: 0F
+    open fun rotation(): Float {
+        val position = player?.position ?: return 0F
+        return position.pitch
+    }
 }

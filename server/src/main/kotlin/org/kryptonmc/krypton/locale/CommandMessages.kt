@@ -26,7 +26,7 @@ import net.kyori.adventure.text.event.HoverEvent
 import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.text.format.Style
 import org.kryptonmc.api.auth.GameProfile
-import org.kryptonmc.api.util.Vec3d
+import org.kryptonmc.api.util.Position
 import org.kryptonmc.api.world.Difficulty
 import org.kryptonmc.api.world.GameMode
 import org.kryptonmc.krypton.adventure.Components
@@ -91,8 +91,8 @@ object CommandMessages {
     val TELEPORT_ENTITY_MULTIPLE: Args2<Int, Component> =
         Args2 { a, b -> translatable("commands.teleport.success.entity.multiple", text(a.toString()), b) }
     @JvmField
-    val TELEPORT_LOCATION_MULTIPLE: Args2<Int, Vec3d> = Args2 { a, b ->
-        translatable("commands.teleport.success.location.multiple", text(a), text(b.floorX()), text(b.floorY()), text(b.floorZ()))
+    val TELEPORT_LOCATION_MULTIPLE: Args2<Int, Position> = Args2 { a, b ->
+        translatable("commands.teleport.success.location.multiple", text(a), text(b.blockX()), text(b.blockY()), text(b.blockZ()))
     }
 
     @JvmField

@@ -61,7 +61,7 @@ abstract class KryptonLivingEntity(world: KryptonWorld) : KryptonEntity(world), 
     private var tickCount = 0
     val attributes: AttributeMap = AttributeMap(DefaultAttributes.get(type))
     open val brain: Brain<*> = Brain<KryptonLivingEntity>()
-    var headYaw: Float = yaw
+    var headYaw: Float = position.yaw
 
     @Suppress("MemberVisibilityCanBePrivate")
     var lastHurtByMob: KryptonLivingEntity? = null

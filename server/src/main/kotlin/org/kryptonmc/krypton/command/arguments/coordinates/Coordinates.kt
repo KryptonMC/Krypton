@@ -18,7 +18,7 @@
  */
 package org.kryptonmc.krypton.command.arguments.coordinates
 
-import org.kryptonmc.api.util.Vec3d
+import org.kryptonmc.api.util.Position
 import org.kryptonmc.krypton.command.CommandSourceStack
 
 /**
@@ -33,5 +33,5 @@ sealed interface Coordinates {
      * This is where all the magic happens, in terms of actual movement
      * calculation.
      */
-    fun calculatePosition(source: CommandSourceStack): Vec3d
+    fun calculatePosition(source: CommandSourceStack): Position
 }

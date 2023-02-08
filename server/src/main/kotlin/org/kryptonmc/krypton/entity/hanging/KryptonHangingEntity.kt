@@ -20,7 +20,6 @@ package org.kryptonmc.krypton.entity.hanging
 
 import org.kryptonmc.api.entity.hanging.HangingEntity
 import org.kryptonmc.api.util.Direction
-import org.kryptonmc.api.util.Vec3d
 import org.kryptonmc.api.util.Vec3i
 import org.kryptonmc.krypton.entity.KryptonEntity
 import org.kryptonmc.krypton.entity.serializer.EntitySerializer
@@ -41,7 +40,7 @@ abstract class KryptonHangingEntity(world: KryptonWorld) : KryptonEntity(world),
             field = value
             // Each horizontal direction is a half turn (90 degrees) away from each other.
             // The 2D data value is 0 = south, 1 = west, 2 = north, 3 = east.
-            pitch = Directions.data2D(value) * HALF_TURN_DEGREES
+            position = position.withPitch(Directions.data2D(value) * HALF_TURN_DEGREES)
             recalculateBoundingBox()
         }
 
@@ -69,7 +68,7 @@ abstract class KryptonHangingEntity(world: KryptonWorld) : KryptonEntity(world),
             // for direction WEST (anti clockwise SOUTH), the z becomes centerZ + 1
             z += BLOCK_CENTER_OFFSET * antiClockwise.normalZ
         }
-        position = Vec3d(x, y, z)
+        position = position.withCoordinates(x, y, z)
 
         var widthX = width().toDouble()
         var height = height().toDouble()

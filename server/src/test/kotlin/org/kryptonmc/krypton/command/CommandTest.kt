@@ -31,7 +31,7 @@ import org.junit.jupiter.api.Test
 import org.kryptonmc.api.command.CommandExecutionContext
 import org.kryptonmc.api.command.argument
 import org.kryptonmc.api.command.literalCommand
-import org.kryptonmc.api.util.Vec3d
+import org.kryptonmc.api.util.Position
 import org.kryptonmc.krypton.command.registrar.BrigadierCommandRegistrar
 import org.kryptonmc.krypton.commands.runs
 import java.util.concurrent.locks.ReentrantLock
@@ -44,7 +44,7 @@ class CommandTest {
         val dispatcher = CommandDispatcher<CommandSourceStack>()
         val node = LiteralArgumentBuilder.literal<CommandSourceStack>("test").runs { println("Hello World!") }.build()
         dispatcher.root.addChild(node)
-        val source = CommandSourceStack(mockk(), Vec3d.ZERO, 0F, 0F, mockk(), "", Component.empty(), mockk(), null)
+        val source = CommandSourceStack(mockk(), Position.ZERO, mockk(), "", Component.empty(), mockk(), null)
         dispatcher.execute("test", source)
     }
 

@@ -22,7 +22,7 @@ import com.mojang.brigadier.CommandDispatcher
 import net.kyori.adventure.key.Key
 import org.kryptonmc.api.command.argument
 import org.kryptonmc.api.command.literalCommand
-import org.kryptonmc.api.util.Vec3d
+import org.kryptonmc.api.util.Position
 import org.kryptonmc.krypton.command.CommandSourceStack
 import org.kryptonmc.krypton.command.SuggestionProviders
 import org.kryptonmc.krypton.command.arguments.NBTCompoundArgument
@@ -63,7 +63,7 @@ object SummonCommand {
     }
 
     @JvmStatic
-    private fun spawnEntity(source: CommandSourceStack, type: Key, position: Vec3d, nbt: CompoundTag) {
+    private fun spawnEntity(source: CommandSourceStack, type: Key, position: Position, nbt: CompoundTag) {
         if (!Worlds.isInSpawnableBounds(position)) throw ERROR_INVALID_POSITION.create()
         val entity = EntityFactory.create(source.world, type.asString(), nbt)?.apply { this.position = position } ?: throw ERROR_FAILED.create()
         source.world.spawnEntity(entity)

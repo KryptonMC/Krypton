@@ -17,6 +17,7 @@ import org.kryptonmc.api.command.Sender
 import org.kryptonmc.api.scheduling.Scheduler
 import org.kryptonmc.api.scoreboard.TeamMember
 import org.kryptonmc.api.util.BoundingBox
+import org.kryptonmc.api.util.Position
 import org.kryptonmc.api.util.Vec3d
 import org.kryptonmc.api.world.World
 import org.kryptonmc.api.world.damage.DamageSource
@@ -75,17 +76,7 @@ public interface Entity : Sender, HoverEventSource<HoverEvent.ShowEntity>, Sound
     /**
      * The current position of this entity.
      */
-    public val position: Vec3d
-
-    /**
-     * The current yaw of this entity.
-     */
-    public val yaw: Float
-
-    /**
-     * The current pitch of this entity.
-     */
-    public val pitch: Float
+    public val position: Position
 
     /**
      * The current delta X, Y, and Z values of this entity, in metres per tick.

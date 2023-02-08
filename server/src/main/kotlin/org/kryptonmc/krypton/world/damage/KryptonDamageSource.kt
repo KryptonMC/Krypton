@@ -20,7 +20,7 @@ package org.kryptonmc.krypton.world.damage
 
 import net.kyori.adventure.text.Component
 import org.kryptonmc.api.registry.RegistryReference
-import org.kryptonmc.api.util.Vec3d
+import org.kryptonmc.api.util.Position
 import org.kryptonmc.api.world.damage.DamageSource
 import org.kryptonmc.api.world.damage.type.DamageType
 import org.kryptonmc.krypton.entity.KryptonEntity
@@ -62,7 +62,7 @@ open class KryptonDamageSource(override val type: DamageType) : DamageSource {
         return entity is KryptonPlayer && entity.abilities.canInstantlyBuild
     }
 
-    open fun sourcePosition(): Vec3d? = null
+    open fun sourcePosition(): Position? = null
 
     open fun directEntity(): KryptonEntity? = entity()
 

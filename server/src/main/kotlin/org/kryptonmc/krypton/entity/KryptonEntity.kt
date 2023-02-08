@@ -26,6 +26,7 @@ import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer
 import org.kryptonmc.api.effect.sound.SoundEvent
 import org.kryptonmc.api.util.BoundingBox
+import org.kryptonmc.api.util.Position
 import org.kryptonmc.api.util.Vec3d
 import org.kryptonmc.api.world.damage.type.DamageTypes
 import org.kryptonmc.krypton.command.CommandSourceStack
@@ -69,9 +70,7 @@ abstract class KryptonEntity(final override var world: KryptonWorld) : BaseEntit
     final override var isRemoved: Boolean = false
         private set
     private var wasDamaged = false
-    final override var position: Vec3d = Vec3d.ZERO
-    final override var yaw: Float = 0F
-    final override var pitch: Float = 0F
+    final override var position: Position = Position.ZERO
     final override var velocity: Vec3d = Vec3d.ZERO
     final override var boundingBox: BoundingBox = BoundingBox.zero()
     final override var isOnGround: Boolean = true
@@ -151,7 +150,7 @@ abstract class KryptonEntity(final override var world: KryptonWorld) : BaseEntit
     override fun shouldInformAdmins(): Boolean = true
 
     final override fun createCommandSourceStack(): CommandSourceStack =
-        CommandSourceStack(this, position, yaw, pitch, world, PlainTextComponentSerializer.plainText().serialize(name), displayName, server, this)
+        CommandSourceStack(this, position, world, PlainTextComponentSerializer.plainText().serialize(name), displayName, server, this)
 
     companion object {
 

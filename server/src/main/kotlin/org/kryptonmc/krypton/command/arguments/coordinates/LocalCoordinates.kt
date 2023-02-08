@@ -19,6 +19,7 @@
 package org.kryptonmc.krypton.command.arguments.coordinates
 
 import com.mojang.brigadier.StringReader
+import org.kryptonmc.api.util.Position
 import org.kryptonmc.api.util.Vec3d
 import org.kryptonmc.krypton.command.CommandSourceStack
 import org.kryptonmc.krypton.command.arguments.CommandExceptions
@@ -35,13 +36,13 @@ import org.kryptonmc.krypton.util.math.Maths
 @JvmRecord
 data class LocalCoordinates(private val left: Double, private val up: Double, private val forwards: Double) : Coordinates {
 
-    override fun calculatePosition(source: CommandSourceStack): Vec3d {
+    override fun calculatePosition(source: CommandSourceStack): Position {
         // All of this is some slightly complicated linear algebra that I don't really understand.
         // What this does is determine absolute coordinates from the local forwards, up, and left components, which are relative
         // to the direction that a player is facing.
         // TODO: Document all this in detail
-        val yaw = source.yaw
-        val pitch = source.pitch
+        val yaw = source.position.yaw
+        val pitch = source.position.pitch
         val pitch1 = Maths.cos(Maths.toRadians(pitch + 90F))
         val pitch2 = Maths.sin(Maths.toRadians(pitch + 90F))
         val yaw1 = Maths.cos(Maths.toRadians(-yaw))

@@ -18,7 +18,7 @@
  */
 package org.kryptonmc.krypton.util
 
-import org.kryptonmc.api.util.Vec3d
+import org.kryptonmc.api.util.Position
 
 object Worlds {
 
@@ -27,13 +27,13 @@ object Worlds {
      * height **and** inside the maximum world bounds.
      */
     @JvmStatic
-    fun isInSpawnableBounds(pos: Vec3d): Boolean = !isOutsideSpawnableHeight(pos.y) && isInHorizontalWorldBounds(pos)
+    fun isInSpawnableBounds(pos: Position): Boolean = !isOutsideSpawnableHeight(pos.y) && isInHorizontalWorldBounds(pos)
 
     @JvmStatic
     private fun isOutsideSpawnableHeight(y: Double): Boolean = y < -20000000 || y >= 20000000
 
     @JvmStatic
-    private fun isInHorizontalWorldBounds(pos: Vec3d): Boolean {
+    private fun isInHorizontalWorldBounds(pos: Position): Boolean {
         return pos.x >= -30000000 && pos.z >= -30000000 && pos.x < 30000000 && pos.z < 30000000
     }
 }

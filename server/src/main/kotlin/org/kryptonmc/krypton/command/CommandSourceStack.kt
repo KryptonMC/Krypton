@@ -26,7 +26,7 @@ import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.text.format.TextDecoration
 import org.kryptonmc.api.command.CommandExecutionContext
 import org.kryptonmc.api.entity.player.Player
-import org.kryptonmc.api.util.Vec3d
+import org.kryptonmc.api.util.Position
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.command.arguments.CommandExceptions
 import org.kryptonmc.krypton.commands.KryptonPermission
@@ -41,9 +41,7 @@ import org.kryptonmc.krypton.world.rule.GameRuleKeys
 @Suppress("LongParameterList")
 class CommandSourceStack private constructor(
     override val sender: KryptonSender,
-    override val position: Vec3d,
-    val yaw: Float,
-    val pitch: Float,
+    override val position: Position,
     override val world: KryptonWorld,
     override val textName: String,
     override val displayName: Component,
@@ -55,19 +53,19 @@ class CommandSourceStack private constructor(
     val chatMessageChainer: TaskChainer
 ) : CommandExecutionContext, CommandSuggestionProvider, Audience by sender {
 
-    constructor(sender: KryptonSender, position: Vec3d, yaw: Float, pitch: Float, world: KryptonWorld, textName: String, displayName: Component,
-                server: KryptonServer, entity: KryptonEntity?) : this(sender, position, yaw, pitch, world, textName, displayName, server, entity,
-        false, { _, _, _ -> }, CommandSigningContext.ANONYMOUS, TaskChainer.immediate(server))
+    constructor(sender: KryptonSender, position: Position, world: KryptonWorld, textName: String, displayName: Component, server: KryptonServer,
+                entity: KryptonEntity?) : this(sender, position, world, textName, displayName, server, entity, false, { _, _, _ -> },
+        CommandSigningContext.ANONYMOUS, TaskChainer.immediate(server))
 
     fun withCallback(consumer: ResultConsumer<CommandSourceStack>?): CommandSourceStack {
         if (this.consumer == consumer) return this
-        return CommandSourceStack(sender, position, yaw, pitch, world, textName, displayName, server, entity, silent, consumer, signingContext,
+        return CommandSourceStack(sender, position, world, textName, displayName, server, entity, silent, consumer, signingContext,
             chatMessageChainer)
     }
 
     fun withSigningContext(context: CommandSigningContext): CommandSourceStack {
         if (context === signingContext) return this
-        return CommandSourceStack(sender, position, yaw, pitch, world, textName, displayName, server, entity, silent, consumer, context,
+        return CommandSourceStack(sender, position, world, textName, displayName, server, entity, silent, consumer, context,
             chatMessageChainer)
     }
 

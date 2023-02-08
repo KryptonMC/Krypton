@@ -30,7 +30,7 @@ import net.kyori.adventure.text.format.NamedTextColor
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.kryptonmc.api.permission.PermissionFunction
-import org.kryptonmc.api.util.Vec3d
+import org.kryptonmc.api.util.Position
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.entity.KryptonEntity
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
@@ -184,7 +184,7 @@ class CommandSourceStackTest {
 
         @JvmStatic
         private fun createSource(sender: TestCommandSender, entity: KryptonEntity?): CommandSourceStack =
-            CommandSourceStack(sender, Vec3d.ZERO, 0F, 0F, mockk(), "", Component.empty(), SERVER, entity)
+            CommandSourceStack(sender, Position.ZERO, mockk(), "", Component.empty(), SERVER, entity)
 
         @JvmStatic
         private fun createDefaultSource(entity: KryptonEntity?): CommandSourceStack = createSource(createDefaultSender(), entity)

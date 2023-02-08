@@ -40,6 +40,7 @@ import org.kryptonmc.api.permission.PermissionProvider
 import org.kryptonmc.api.resource.ResourcePack
 import org.kryptonmc.api.statistic.CustomStatistics
 import org.kryptonmc.api.tags.FluidTags
+import org.kryptonmc.api.util.Position
 import org.kryptonmc.api.util.Vec3d
 import org.kryptonmc.api.util.Vec3i
 import org.kryptonmc.api.world.GameMode
@@ -154,7 +155,7 @@ class KryptonPlayer(
         set(value) = data.set(MetadataKeys.Player.ADDITIONAL_HEARTS, value)
 
     init {
-        position = world.data.spawnPos().asCenteredVec3d()
+        position = world.data.spawnPos().asPosition()
     }
 
     override fun defineData() {
@@ -262,7 +263,7 @@ class KryptonPlayer(
         }
     }
 
-    override fun teleport(position: Vec3d) {
+    override fun teleport(position: Position) {
         this.position = position
         val packet = PacketOutTeleportEntity.create(this)
         connection.send(packet)

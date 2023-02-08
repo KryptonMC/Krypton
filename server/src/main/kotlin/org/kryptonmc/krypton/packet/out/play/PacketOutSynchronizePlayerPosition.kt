@@ -90,7 +90,9 @@ data class PacketOutSynchronizePlayerPosition(
         private const val RANDOM_TELEPORT_ID_UPPER_BOUND = 1000 // A number I chose because it seems sensible enough
 
         @JvmStatic
-        fun fromPlayer(player: KryptonPlayer): PacketOutSynchronizePlayerPosition =
-            PacketOutSynchronizePlayerPosition(player.position.x, player.position.y, player.position.z, player.yaw, player.pitch)
+        fun fromPlayer(player: KryptonPlayer): PacketOutSynchronizePlayerPosition {
+            return PacketOutSynchronizePlayerPosition(player.position.x, player.position.y, player.position.z, player.position.yaw,
+                player.position.pitch)
+        }
     }
 }

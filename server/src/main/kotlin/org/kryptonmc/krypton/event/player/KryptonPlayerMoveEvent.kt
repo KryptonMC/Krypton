@@ -21,10 +21,10 @@ package org.kryptonmc.krypton.event.player
 import org.kryptonmc.api.entity.player.Player
 import org.kryptonmc.api.event.player.PlayerMoveEvent
 import org.kryptonmc.api.event.type.AbstractDeniableEventWithResult
-import org.kryptonmc.api.util.Vec3d
+import org.kryptonmc.api.util.Position
 
 class KryptonPlayerMoveEvent(
     override val player: Player,
-    override val oldLocation: Vec3d,
-    override val newLocation: Vec3d
+    override val oldPosition: Position,
+    override val newPosition: Position
 ) : AbstractDeniableEventWithResult<PlayerMoveEvent.Result>(), PlayerMoveEvent

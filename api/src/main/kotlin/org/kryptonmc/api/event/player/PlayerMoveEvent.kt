@@ -11,7 +11,7 @@ package org.kryptonmc.api.event.player
 import org.kryptonmc.api.event.annotation.PerformanceSensitive
 import org.kryptonmc.api.event.type.DeniableEventWithResult
 import org.kryptonmc.api.event.type.PlayerEvent
-import org.kryptonmc.api.util.Vec3d
+import org.kryptonmc.api.util.Position
 import org.kryptonmc.internal.annotations.ImmutableType
 
 /**
@@ -26,23 +26,23 @@ import org.kryptonmc.internal.annotations.ImmutableType
 public interface PlayerMoveEvent : PlayerEvent, DeniableEventWithResult<PlayerMoveEvent.Result> {
 
     /**
-     * The location of the player before they moved.
+     * The position of the player before they moved.
      */
-    public val oldLocation: Vec3d
+    public val oldPosition: Position
 
     /**
-     * The location of the player after they moved.
+     * The position of the player after they moved.
      */
-    public val newLocation: Vec3d
+    public val newPosition: Position
 
     /**
      * The result of a move event.
      *
-     * This allows plugins to modify the location that players will move to.
+     * This allows plugins to modify the position that players will move to.
      *
-     * @property newLocation The new location to move the player to.
+     * @property newPosition The new position to move the player to.
      */
     @JvmRecord
     @ImmutableType
-    public data class Result(public val newLocation: Vec3d)
+    public data class Result(public val newPosition: Position)
 }

@@ -54,7 +54,9 @@ data class PacketOutTeleportEntity(
     companion object {
 
         @JvmStatic
-        fun create(entity: KryptonEntity): PacketOutTeleportEntity =
-            PacketOutTeleportEntity(entity.id, entity.position.x, entity.position.y, entity.position.z, entity.yaw, entity.pitch, entity.isOnGround)
+        fun create(entity: KryptonEntity): PacketOutTeleportEntity {
+            return PacketOutTeleportEntity(entity.id, entity.position.x, entity.position.y, entity.position.z, entity.position.yaw,
+                entity.position.pitch, entity.isOnGround)
+        }
     }
 }

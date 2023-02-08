@@ -19,6 +19,7 @@
 package org.kryptonmc.krypton.entity.serializer
 
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer
+import org.kryptonmc.api.util.Position
 import org.kryptonmc.api.util.Vec3d
 import org.kryptonmc.krypton.entity.KryptonEntity
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
@@ -73,9 +74,7 @@ object BaseEntitySerializer : EntitySerializer<KryptonEntity> {
 
         val location = data.getList(POSITION_TAG, DoubleTag.ID)
         val rotation = data.getList(ROTATION_TAG, FloatTag.ID)
-        entity.position = Vec3d(location.getDouble(0), location.getDouble(1), location.getDouble(2))
-        entity.yaw = rotation.getFloat(0)
-        entity.pitch = rotation.getFloat(1)
+        entity.position = Position(location.getDouble(0), location.getDouble(1), location.getDouble(2), rotation.getFloat(0), rotation.getFloat(1))
 
         entity.isSilent = data.getBoolean(SILENT_TAG)
         entity.frozenTicks = data.getInt(FROZEN_TICKS_TAG)
@@ -97,7 +96,7 @@ object BaseEntitySerializer : EntitySerializer<KryptonEntity> {
         // Positioning
         putList(MOTION_TAG, DoubleTag.ID, DoubleTag.of(entity.velocity.x), DoubleTag.of(entity.velocity.y), DoubleTag.of(entity.velocity.z))
         putList(POSITION_TAG, DoubleTag.ID, DoubleTag.of(entity.position.x), DoubleTag.of(entity.position.y), DoubleTag.of(entity.position.z))
-        putList(ROTATION_TAG, FloatTag.ID, FloatTag.of(entity.yaw), FloatTag.of(entity.pitch))
+        putList(ROTATION_TAG, FloatTag.ID, FloatTag.of(entity.position.yaw), FloatTag.of(entity.position.pitch))
 
         // Identification
         if (entity !is KryptonPlayer) putString(ID_TAG, entity.type.key().asString())

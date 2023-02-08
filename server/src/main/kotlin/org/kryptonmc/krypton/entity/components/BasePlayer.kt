@@ -34,7 +34,7 @@ interface BasePlayer : BaseEntity, KryptonEquipable, HungerDelegate, AbilitiesDe
     override val teamRepresentation: Component
         get() = name
     override val facing: Direction
-        get() = Directions.ofPitch(pitch.toDouble())
+        get() = Directions.ofPitch(position.pitch.toDouble())
 
     override fun getPermissionValue(permission: String): TriState = permissionFunction.getPermissionValue(permission)
 }

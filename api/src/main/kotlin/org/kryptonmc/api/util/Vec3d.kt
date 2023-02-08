@@ -45,20 +45,6 @@ public data class Vec3d(public val x: Double, public val y: Double, public val z
     public fun floorZ(): Int = floor(z).toInt()
 
     /**
-     * Gets the chunk X coordinate of this vector.
-     *
-     * @return the chunk X
-     */
-    public fun chunkX(): Int = floorX() shr 4
-
-    /**
-     * Gets the chunk Z coordinate of this vector.
-     *
-     * @return the chunk Z
-     */
-    public fun chunkZ(): Int = floorZ() shr 4
-
-    /**
      * Creates a new vector with the given [x] component.
      *
      * @param x the new X component
@@ -94,6 +80,14 @@ public data class Vec3d(public val x: Double, public val y: Double, public val z
     public fun add(x: Double, y: Double, z: Double): Vec3d = Vec3d(this.x + x, this.y + y, this.z + z)
 
     /**
+     * Adds the given [amount] to this vector and returns the result.
+     *
+     * @param amount the amount to add
+     * @return the resulting vector
+     */
+    public fun add(amount: Double): Vec3d = add(amount, amount, amount)
+
+    /**
      * Adds the given [other] vector to this vector and returns the result.
      *
      * @param other the vector to add
@@ -119,6 +113,14 @@ public data class Vec3d(public val x: Double, public val y: Double, public val z
      * @return the resulting vector
      */
     public fun subtract(x: Double, y: Double, z: Double): Vec3d = Vec3d(this.x - x, this.y - y, this.z - z)
+
+    /**
+     * Subtracts the given [amount] from this vector and returns the result.
+     *
+     * @param amount the amount to subtract
+     * @return the resulting vector
+     */
+    public fun subtract(amount: Double): Vec3d = subtract(amount, amount, amount)
 
     /**
      * Subtracts the given [other] vector from this vector and returns the
@@ -153,7 +155,7 @@ public data class Vec3d(public val x: Double, public val y: Double, public val z
      * Multiplies this vector by the given [other] vector and returns the
      * result.
      *
-     * @param other the other vector
+     * @param other the vector to multiply by
      * @return the resulting vector
      */
     public fun multiply(other: Vec3d): Vec3d = multiply(other.x, other.y, other.z)
@@ -162,7 +164,7 @@ public data class Vec3d(public val x: Double, public val y: Double, public val z
      * Multiplies this vector by the given [other] vector and returns the
      * result.
      *
-     * @param other the other vector
+     * @param other the vector to multiply by
      * @return the resulting vector
      */
     public fun multiply(other: Vec3i): Vec3d = multiply(other.x.toDouble(), other.y.toDouble(), other.z.toDouble())
@@ -173,7 +175,7 @@ public data class Vec3d(public val x: Double, public val y: Double, public val z
      * This is equivalent to calling [multiply] with the same factor for each
      * component.
      *
-     * @param factor the factor to multiply each component by
+     * @param factor the factor to multiply by
      * @return the resulting vector
      */
     public fun multiply(factor: Double): Vec3d = multiply(factor, factor, factor)
@@ -192,7 +194,7 @@ public data class Vec3d(public val x: Double, public val y: Double, public val z
     /**
      * Divides this vector by the given [other] vector and returns the result.
      *
-     * @param other the other vector
+     * @param other the vector to divide by
      * @return the resulting vector
      */
     public fun divide(other: Vec3d): Vec3d = divide(other.x, other.y, other.z)
@@ -200,7 +202,7 @@ public data class Vec3d(public val x: Double, public val y: Double, public val z
     /**
      * Divides this vector by the given [other] vector and returns the result.
      *
-     * @param other the other vector
+     * @param other the vector to divide by
      * @return the resulting vector
      */
     public fun divide(other: Vec3i): Vec3d = divide(other.x.toDouble(), other.y.toDouble(), other.z.toDouble())
@@ -211,7 +213,7 @@ public data class Vec3d(public val x: Double, public val y: Double, public val z
      * This is equivalent to calling [divide] with the same factor for each
      * component.
      *
-     * @param factor the factor to divide each component by
+     * @param factor the factor to divide by
      * @return the resulting vector
      */
     public fun divide(factor: Double): Vec3d = divide(factor, factor, factor)
@@ -303,7 +305,7 @@ public data class Vec3d(public val x: Double, public val y: Double, public val z
      * @param z the Z distance
      * @return the distance
      */
-    public fun distance(x: Double, y: Double, z: Double): Double = sqrt(distanceSquared(x, y, z).toDouble())
+    public fun distance(x: Double, y: Double, z: Double): Double = sqrt(distanceSquared(x, y, z))
 
     /**
      * Calculates the distance between this vector and the given [other]
@@ -343,6 +345,13 @@ public data class Vec3d(public val x: Double, public val y: Double, public val z
      * @return the converted vector
      */
     public fun asVec3i(): Vec3i = Vec3i(floorX(), floorY(), floorZ())
+
+    /**
+     * Converts this double vector to an equivalent position.
+     *
+     * @return the converted position
+     */
+    public fun asPosition(): Position = Position(x, y, z)
 
     override fun compareTo(other: Vec3d): Int = lengthSquared().compareTo(other.lengthSquared())
 

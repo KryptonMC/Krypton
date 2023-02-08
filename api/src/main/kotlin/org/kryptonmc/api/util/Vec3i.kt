@@ -75,6 +75,14 @@ public data class Vec3i(public val x: Int, public val y: Int, public val z: Int)
     public fun add(x: Int, y: Int, z: Int): Vec3i = Vec3i(this.x + x, this.y + y, this.z + z)
 
     /**
+     * Adds the given [amount] to this vector and returns the result.
+     *
+     * @param amount the amount to add
+     * @return the resulting vector
+     */
+    public fun add(amount: Int): Vec3i = add(amount, amount, amount)
+
+    /**
      * Adds the given [other] vector to this vector and returns the result.
      *
      * @param other the vector to add
@@ -100,6 +108,14 @@ public data class Vec3i(public val x: Int, public val y: Int, public val z: Int)
      * @return the resulting vector
      */
     public fun subtract(x: Int, y: Int, z: Int): Vec3i = Vec3i(this.x - x, this.y - y, this.z - z)
+
+    /**
+     * Subtracts the given [amount] from this vector and returns the result.
+     *
+     * @param amount the amount to subtract
+     * @return the resulting vector
+     */
+    public fun subtract(amount: Int): Vec3i = subtract(amount, amount, amount)
 
     /**
      * Subtracts the given [other] vector from this vector and returns the
@@ -134,7 +150,7 @@ public data class Vec3i(public val x: Int, public val y: Int, public val z: Int)
      * Multiplies this vector by the given [other] vector and returns the
      * result.
      *
-     * @param other the other vector
+     * @param other the vector to multiply by
      * @return the resulting vector
      */
     public fun multiply(other: Vec3i): Vec3i = multiply(other.x, other.y, other.z)
@@ -143,7 +159,7 @@ public data class Vec3i(public val x: Int, public val y: Int, public val z: Int)
      * Multiplies this vector by the given [other] vector and returns the
      * result.
      *
-     * @param other the other vector
+     * @param other the vector to multiply by
      * @return the resulting vector
      */
     public fun multiply(other: Vec3d): Vec3i = multiply(other.floorX(), other.floorY(), other.floorZ())
@@ -154,7 +170,7 @@ public data class Vec3i(public val x: Int, public val y: Int, public val z: Int)
      * This is equivalent to calling [multiply] with the same factor for each
      * component.
      *
-     * @param factor the factor to multiply each component by
+     * @param factor the factor to multiply by
      * @return the resulting vector
      */
     public fun multiply(factor: Int): Vec3i = multiply(factor, factor, factor)
@@ -173,7 +189,7 @@ public data class Vec3i(public val x: Int, public val y: Int, public val z: Int)
     /**
      * Divides this vector by the given [other] vector and returns the result.
      *
-     * @param other the other vector
+     * @param other the vector to divide by
      * @return the resulting vector
      */
     public fun divide(other: Vec3i): Vec3i = divide(other.x, other.y, other.z)
@@ -181,7 +197,7 @@ public data class Vec3i(public val x: Int, public val y: Int, public val z: Int)
     /**
      * Divides this vector by the given [other] vector and returns the result.
      *
-     * @param other the other vector
+     * @param other the vector to divide by
      * @return the resulting vector
      */
     public fun divide(other: Vec3d): Vec3i = divide(other.floorX(), other.floorY(), other.floorZ())
@@ -192,7 +208,7 @@ public data class Vec3i(public val x: Int, public val y: Int, public val z: Int)
      * This is equivalent to calling [divide] with the same factor for each
      * component.
      *
-     * @param factor the factor to divide each component by
+     * @param factor the factor to divide by
      * @return the resulting vector
      */
     public fun divide(factor: Int): Vec3i = divide(factor, factor, factor)
@@ -330,6 +346,13 @@ public data class Vec3i(public val x: Int, public val y: Int, public val z: Int)
      * @return the converted centered vector
      */
     public fun asCenteredVec3d(): Vec3d = Vec3d(x + 0.5, y + 0.5, z + 0.5)
+
+    /**
+     * Converts this integer vector to an equivalent position.
+     *
+     * @return the converted position
+     */
+    public fun asPosition(): Position = Position(x.toDouble(), y.toDouble(), z.toDouble())
 
     override fun compareTo(other: Vec3i): Int = lengthSquared().compareTo(other.lengthSquared())
 

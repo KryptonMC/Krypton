@@ -25,7 +25,7 @@ import org.kryptonmc.api.resource.ResourceKey
 import org.kryptonmc.api.resource.ResourceKeys
 import org.kryptonmc.api.scheduling.Scheduler
 import org.kryptonmc.api.scoreboard.Scoreboard
-import org.kryptonmc.api.util.Vec3d
+import org.kryptonmc.api.util.Position
 import org.kryptonmc.api.util.Vec3i
 import org.kryptonmc.api.world.biome.BiomeContainer
 import org.kryptonmc.api.world.chunk.BlockChangeFlags
@@ -271,14 +271,14 @@ public interface World : BlockContainer, FluidContainer, BiomeContainer, BlockEn
     public fun unloadChunk(x: Int, z: Int)
 
     /**
-     * Spawns an entity with the given [type] in this world at the given
-     * [location].
+     * Spawns an entity with the given [type] in this world at the
+     * given [position].
      *
      * @param T the entity type
      * @param type the type of the entity
-     * @param location the location to spawn the entity at
+     * @param position the position to spawn the entity at
      */
-    public fun <T : Entity> spawnEntity(type: EntityType<T>, location: Vec3d): T?
+    public fun <T : Entity> spawnEntity(type: EntityType<T>, position: Position): T?
 
     public companion object {
 

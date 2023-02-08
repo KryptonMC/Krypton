@@ -112,15 +112,15 @@ data class EntityQuery(val type: Selector, private val args: List<EntityArgument
                 }
                 "x" -> {
                     checkInt(value.toString())
-                    entities = entities.filter { applyDifference(differenceX, value, it.position.floorX()) }
+                    entities = entities.filter { applyDifference(differenceX, value, it.position.blockX()) }
                 }
                 "y" -> {
                     checkInt(value.toString())
-                    entities = entities.filter { applyDifference(differenceY, value, it.position.floorY()) }
+                    entities = entities.filter { applyDifference(differenceY, value, it.position.blockY()) }
                 }
                 "z" -> {
                     checkInt(value.toString())
-                    entities = entities.filter { applyDifference(differenceZ, value, it.position.floorZ()) }
+                    entities = entities.filter { applyDifference(differenceZ, value, it.position.blockZ()) }
                 }
                 "distance" -> entities = applyDifferenceArgument(source, entities, value)
                 "scores" -> notImplemented("scores")
@@ -129,8 +129,8 @@ data class EntityQuery(val type: Selector, private val args: List<EntityArgument
                 "level" -> notImplemented("level")
                 "gamemode" -> entities = applyGameModeArgument(entities, value, exclude)
                 "name" -> entities = applyNameArgument(entities, value, exclude)
-                "x_rotation" -> entities = applyRotationArgument(entities, value) { it.yaw }
-                "y_rotation" -> entities = applyRotationArgument(entities, value) { it.pitch }
+                "x_rotation" -> entities = applyRotationArgument(entities, value) { it.position.yaw }
+                "y_rotation" -> entities = applyRotationArgument(entities, value) { it.position.pitch }
                 "type" -> notImplemented("type")
                 "nbt" -> notImplemented("nbt")
                 "advancements" -> notImplemented("advancements")
