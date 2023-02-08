@@ -41,8 +41,8 @@ class KryptonAreaEffectCloud(world: KryptonWorld) : KryptonEntity(world), AreaEf
         get() = data.get(MetadataKeys.AreaEffectCloud.RADIUS)
         set(value) = data.set(MetadataKeys.AreaEffectCloud.RADIUS, value)
     override var color: Color
-        get() = Color.of(data.get(MetadataKeys.AreaEffectCloud.COLOR))
-        set(value) = data.set(MetadataKeys.AreaEffectCloud.COLOR, value.value)
+        get() = Color(data.get(MetadataKeys.AreaEffectCloud.COLOR))
+        set(value) = data.set(MetadataKeys.AreaEffectCloud.COLOR, value.encode())
 
     override fun defineData() {
         super.defineData()

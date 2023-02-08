@@ -8,191 +8,152 @@
  */
 package org.kryptonmc.api.util
 
-import java.awt.Color as AwtColor
-import net.kyori.adventure.text.format.TextColor
 import net.kyori.adventure.util.HSVLike
 import net.kyori.adventure.util.RGBLike
-import org.jetbrains.annotations.ApiStatus
-import org.kryptonmc.api.Krypton
-import org.kryptonmc.internal.annotations.ImmutableType
-import org.kryptonmc.internal.annotations.TypeFactory
+import kotlin.math.floor
 
 /**
- * A standard colour encoded in RGBA (red, green, blue, alpha) format.
+ * A standard colour in RGB format, with a red, green, and blue component.
+ *
+ * @property red The red component.
+ * @property green The green component.
+ * @property blue The blue component.
  */
-@Suppress("INAPPLICABLE_JVM_NAME")
-@ImmutableType
-public interface Color {
-
-    /**
-     * The encoded RGBA value of this colour.
-     *
-     * The encoding here follows the same as that used in [java.awt.Color],
-     * which is the [ARGB32 model](https://en.wikipedia.org/wiki/RGBA_color_model#ARGB32).
-     */
-    @get:JvmName("value")
-    public val value: Int
-
-    /**
-     * The red component of this colour.
-     */
-    @get:JvmName("red")
-    public val red: Int
-        get() = value shr 16 and 0xFF
-
-    /**
-     * The green component of this colour.
-     */
-    @get:JvmName("green")
-    public val green: Int
-        get() = value shr 8 and 0xFF
-
-    /**
-     * The blue component of this colour.
-     */
-    @get:JvmName("blue")
+@JvmRecord
+@Suppress("MagicNumber")
+public data class Color(
+    @JvmSynthetic
+    @get:JvmName("red-impl")
+    public val red: Int,
+    @JvmSynthetic
+    @get:JvmName("green-impl")
+    public val green: Int,
+    @JvmSynthetic
+    @get:JvmName("blue-impl")
     public val blue: Int
-        get() = value and 0xFF
+) : RGBLike {
 
-    /**
-     * The alpha component of this colour.
-     */
-    @get:JvmName("alpha")
-    public val alpha: Int
-        get() = value shr 24 and 0xFF
-
-    /**
-     * Converts this colour to an Adventure RGBLike object.
-     *
-     * @return the converted RGBLike object
-     */
-    public fun asRGBLike(): RGBLike
-
-    /**
-     * Converts this colour to an Adventure HSVLike object.
-     *
-     * @return the converted HSVLike object
-     */
-    public fun asHSVLike(): HSVLike
-
-    /**
-     * Converts this colour to an Adventure text colour.
-     *
-     * @return the converted text colour
-     */
-    public fun asTextColor(): TextColor = TextColor.color(value)
-
-    /**
-     * Converts this colour to a Java AWT colour.
-     *
-     * @return the converted AWT colour
-     * @return a new AWT colour
-     */
-    public fun asAwtColor(): AwtColor = AwtColor(value, true)
-
-    @ApiStatus.Internal
-    @TypeFactory
-    public interface Factory {
-
-        public fun of(value: Int): Color
-
-        public fun of(hue: Float, saturation: Float, brightness: Float): Color
+    init {
+        require(red >= 0 && red <= 255) { "Red must be between 0 and 255, was $red!" }
+        require(green >= 0 && green <= 255) { "Green must be between 0 and 255, was $green!" }
+        require(blue >= 0 && blue <= 255) { "Blue must be between 0 and 255, was $blue!" }
     }
 
-    @Suppress("UndocumentedPublicProperty", "MethodOverloading")
+    /**
+     * Creates a new colour from the given encoded RGB [value].
+     *
+     * @param value the encoded RGB value
+     */
+    public constructor(value: Int) : this(value shr 16 and 0xFF, value shr 8 and 0xFF, value and 0xFF)
+
+    /**
+     * Gets this colour in encoded RGB form.
+     *
+     * The encoded form of an RGB colour is defined as follows:
+     * - Bits 0-7 are the blue component
+     * - Bits 8-15 are the green component
+     * - Bits 16-23 are the red component
+     * - Bits 24-31 are unused
+     *
+     * @return the encoded RGB value
+     */
+    public fun encode(): Int {
+        return (red shl 16) or (green shl 8) or (blue shl 0)
+    }
+
+    /**
+     * Creates a new colour with the given new [red] value.
+     *
+     * @param red the new red value
+     * @return the new colour
+     */
+    public fun withRed(red: Int): Color = Color(red, this.green, this.blue)
+
+    /**
+     * Creates a new colour with the given new [green] value.
+     *
+     * @param green the new green value
+     * @return the new colour
+     */
+    public fun withGreen(green: Int): Color = Color(this.red, green, this.blue)
+
+    /**
+     * Creates a new colour with the given new [blue] value.
+     *
+     * @param blue the new blue value
+     * @return the new colour
+     */
+    public fun withBlue(blue: Int): Color = Color(this.red, this.green, blue)
+
+    override fun red(): Int = red
+
+    override fun green(): Int = green
+
+    override fun blue(): Int = blue
+
+    @Suppress("UndocumentedPublicProperty")
     public companion object {
 
         @JvmField
-        public val BLACK: Color = of(0, 0, 0)
+        public val BLACK: Color = Color(0, 0, 0)
         @JvmField
-        public val WHITE: Color = of(255, 255, 255)
+        public val WHITE: Color = Color(255, 255, 255)
         @JvmField
-        public val RED: Color = of(255, 0, 0)
+        public val RED: Color = Color(255, 0, 0)
         @JvmField
-        public val GREEN: Color = of(0, 255, 0)
+        public val GREEN: Color = Color(0, 255, 0)
         @JvmField
-        public val BLUE: Color = of(0, 0, 255)
+        public val BLUE: Color = Color(0, 0, 255)
         @JvmField
-        public val YELLOW: Color = of(255, 255, 0)
+        public val YELLOW: Color = Color(255, 255, 0)
         @JvmField
-        public val MAGENTA: Color = of(255, 0, 255)
+        public val MAGENTA: Color = Color(255, 0, 255)
         @JvmField
-        public val CYAN: Color = of(0, 255, 255)
+        public val CYAN: Color = Color(0, 255, 255)
         @JvmField
-        public val GRAY: Color = of(128, 128, 128)
+        public val GRAY: Color = Color(128, 128, 128)
 
         /**
-         * Creates a new colour with the given [value].
+         * Creates a new colour from the given [hue], [saturation],
+         * and [value] components.
          *
-         * @param value the RGB value
-         * @return a new colour
+         * @param hue the hue, between 0 and 1
+         * @param saturation the saturation, between 0 and 1
+         * @param value the value, between 0 and 1
+         * @return the new colour
          */
         @JvmStatic
-        public fun of(value: Int): Color = Krypton.factory<Factory>().of(value)
+        public fun fromHsv(hue: Float, saturation: Float, value: Float): Color {
+            // This is taken from java.awt.Color#HSBtoRGB
+            if (saturation == 0F) {
+                val result = (value * 255F + 0.5F).toInt()
+                return Color(result, result, result)
+            }
+
+            val h = (hue - floor(hue)) * 6F
+            val f = h - floor(h)
+            val p = value * (1F - saturation)
+            val q = value * (1F - saturation * f)
+            val t = value * (1F - (saturation * (1F - f)))
+
+            return when (h.toInt()) {
+                0 -> Color((value * 255F + 0.5F).toInt(), (t * 255F + 0.5F).toInt(), (p * 255F + 0.5F).toInt())
+                1 -> Color((q * 255F + 0.5F).toInt(), (value * 255F + 0.5F).toInt(), (p * 255F + 0.5F).toInt())
+                2 -> Color((p * 255F + 0.5F).toInt(), (value * 255F + 0.5F).toInt(), (t * 255F + 0.5F).toInt())
+                3 -> Color((p * 255F + 0.5F).toInt(), (q * 255F + 0.5F).toInt(), (value * 255F + 0.5F).toInt())
+                4 -> Color((t * 255F + 0.5F).toInt(), (p * 255F + 0.5F).toInt(), (value * 255F + 0.5F).toInt())
+                5 -> Color((value * 255F + 0.5F).toInt(), (p * 255F + 0.5F).toInt(), (q * 255F + 0.5F).toInt())
+                else -> Color(0, 0, 0)
+            }
+        }
 
         /**
-         * Creates a new colour with the given [red], [green], and [blue] RGB
-         * components.
+         * Creates a new colour from the given [hsv] colour.
          *
-         * @param red the red component
-         * @param green the green component
-         * @param blue the blue component
-         * @return a new colour
+         * @param hsv the hsv colour
+         * @return the new colour
          */
         @JvmStatic
-        @Suppress("MagicNumber")
-        public fun of(red: Int, green: Int, blue: Int): Color = of(red, green, blue, 0xFF)
-
-        /**
-         * Creates a new colour with the given [red], [green], [blue], and
-         * [alpha] ARGB components.
-         *
-         * @param red the red component
-         * @param green the green component
-         * @param blue the blue component
-         * @param alpha the alpha component
-         * @return a new colour
-         */
-        @JvmStatic
-        @Suppress("MagicNumber")
-        public fun of(red: Int, green: Int, blue: Int, alpha: Int): Color = of(
-            alpha and 0xFF shl 24 or
-            (red and 0xFF shl 16) or
-            (green and 0xFF shl 8) or
-            (blue and 0xFF)
-        )
-
-        /**
-         * Creates a new colour from the given [rgb] like object, or returns
-         * the given [rgb] like object if it is already a colour.
-         *
-         * @param rgb the RGB like object
-         * @return a new colour, or the given object if it is already a colour
-         */
-        @JvmStatic
-        public fun of(rgb: RGBLike): Color = of(rgb.red(), rgb.green(), rgb.blue())
-
-        /**
-         * Creates a new colour from the given [hue], [saturation], and
-         * [brightness] components.
-         *
-         * @param hue the hue component
-         * @param saturation the saturation component
-         * @param brightness the brightness component
-         * @return a new colour
-         * @throws IllegalArgumentException if hue, saturation, and brightness
-         * are not between 0 and 1
-         */
-        @JvmStatic
-        public fun of(hue: Float, saturation: Float, brightness: Float): Color = Krypton.factory<Factory>().of(hue, saturation, brightness)
-
-        /**
-         * Creates a new colour from the given [hsv] like object.
-         *
-         * @param hsv the HSV like object
-         * @return a new colour
-         */
-        @JvmStatic
-        public fun of(hsv: HSVLike): Color = of(hsv.h(), hsv.s(), hsv.v())
+        public fun fromHsv(hsv: HSVLike): Color = fromHsv(hsv.h(), hsv.s(), hsv.v())
     }
 }

@@ -181,8 +181,6 @@ style:
     active: true
   UnnecessaryLet:
     active: true
-  UnnecessaryParentheses:
-    active: true
   UntilInsteadOfRangeTo:
     active: true
   UnusedImports:

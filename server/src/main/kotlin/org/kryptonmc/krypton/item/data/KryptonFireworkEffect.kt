@@ -81,12 +81,12 @@ data class KryptonFireworkEffect(
             putByte(TYPE_TAG, effect.type.ordinal.toByte())
             putBoolean(FLICKER_TAG, effect.hasFlicker)
             putBoolean(TRAIL_TAG, effect.hasTrail)
-            putIntArray(COLORS_TAG, ListExtras.toIntArray(effect.colors, Color::value))
-            putIntArray(FADE_COLORS_TAG, ListExtras.toIntArray(effect.fadeColors, Color::value))
+            putIntArray(COLORS_TAG, ListExtras.toIntArray(effect.colors, Color::encode))
+            putIntArray(FADE_COLORS_TAG, ListExtras.toIntArray(effect.fadeColors, Color::encode))
         }
 
         @JvmStatic
         private fun getColors(data: CompoundTag, name: String): ImmutableList<Color> =
-            Arrays.stream(data.getIntArray(name)).mapToObj { Color.of(it) }.collect(ImmutableList.toImmutableList())
+            Arrays.stream(data.getIntArray(name)).mapToObj { Color(it) }.collect(ImmutableList.toImmutableList())
     }
 }

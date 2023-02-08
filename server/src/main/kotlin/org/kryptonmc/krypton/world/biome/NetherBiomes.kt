@@ -97,7 +97,7 @@ object NetherBiomes {
         effects {
             waterColor(OverworldBiomes.OVERWORLD_WATER)
             waterFogColor(OverworldBiomes.OVERWORLD_WATER_FOG)
-            fogColor(Color.of(fog))
+            fogColor(Color(fog))
             skyColor(SKY_COLOR)
             particles(particles)
             loopSound(loop)

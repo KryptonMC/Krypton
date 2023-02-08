@@ -16,18 +16,13 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.effect.particle.builder
+package org.kryptonmc.krypton.util
 
-import org.kryptonmc.api.effect.particle.ParticleType
-import org.kryptonmc.api.effect.particle.builder.BaseColorParticleEffectBuilder
 import org.kryptonmc.api.util.Color
+import org.kryptonmc.serialization.Codec
 
-@Suppress("UNCHECKED_CAST")
-abstract class AbstractColorParticleEffectBuilder<B : BaseColor<B>>(type: ParticleType) : AbstractParticleEffectBuilder<B>(type), BaseColor<B> {
+object ColorUtil {
 
-    protected var color = Color.BLACK
-
-    override fun color(color: Color): B = apply { this.color = color } as B
+    @JvmField
+    val CODEC: Codec<Color> = Codec.INT.xmap({ Color(it) }, { it.encode() })
 }
-
-private typealias BaseColor<B> = BaseColorParticleEffectBuilder<B>

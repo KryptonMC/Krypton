@@ -35,8 +35,8 @@ class KryptonArrow(world: KryptonWorld) : KryptonArrowLike(world), Arrow {
         get() = ArrowSerializer
 
     override var color: Color
-        get() = Color.of(data.get(MetadataKeys.Arrow.COLOR))
-        set(value) = data.set(MetadataKeys.Arrow.COLOR, value.value)
+        get() = Color(data.get(MetadataKeys.Arrow.COLOR))
+        set(value) = data.set(MetadataKeys.Arrow.COLOR, value.encode())
 
     override fun defineData() {
         super.defineData()

@@ -34,13 +34,13 @@ object AreaEffectCloudSerializer : EntitySerializer<KryptonAreaEffectCloud> {
         entity.age = data.getInt(AGE_TAG)
         entity.duration = data.getInt(DURATION_TAG)
         entity.radius = data.getFloat(RADIUS_TAG)
-        entity.color = Color.of(data.getInt(COLOR_TAG))
+        entity.color = Color(data.getInt(COLOR_TAG))
     }
 
     override fun save(entity: KryptonAreaEffectCloud): CompoundTag.Builder = BaseEntitySerializer.save(entity).apply {
         putInt(AGE_TAG, entity.age)
         putInt(DURATION_TAG, entity.duration)
         putFloat(RADIUS_TAG, entity.radius)
-        putInt(COLOR_TAG, entity.color.value)
+        putInt(COLOR_TAG, entity.color.encode())
     }
 }

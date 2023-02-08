@@ -25,7 +25,7 @@ import org.kryptonmc.api.util.Color
 // and vice versa.
 private const val COLOR_ENCODING_VALUE = 255F
 
-internal fun ByteBuf.readParticleColor(): Color = Color.of(readColorValue(), readColorValue(), readColorValue())
+internal fun ByteBuf.readParticleColor(): Color = Color(readColorValue(), readColorValue(), readColorValue())
 
 private fun ByteBuf.readColorValue(): Int = (readFloat() * COLOR_ENCODING_VALUE).toInt()
 

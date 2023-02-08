@@ -25,12 +25,12 @@ import org.kryptonmc.nbt.IntTag
 
 class KryptonLeatherArmorMeta(data: CompoundTag) : AbstractItemMeta<KryptonLeatherArmorMeta>(data), LeatherArmorMeta {
 
-    override val color: Color? = getDisplay<IntTag, _>(data, COLOR_TAG, IntTag.ID, null) { Color.of(it.value()) }
+    override val color: Color? = getDisplay<IntTag, _>(data, COLOR_TAG, IntTag.ID, null) { Color(it.value()) }
 
     override fun copy(data: CompoundTag): KryptonLeatherArmorMeta = KryptonLeatherArmorMeta(data)
 
     override fun withColor(color: Color?): KryptonLeatherArmorMeta {
-        val newData = if (color == null) data.remove(COLOR_TAG) else data.putInt(COLOR_TAG, color.value)
+        val newData = if (color == null) data.remove(COLOR_TAG) else data.putInt(COLOR_TAG, color.encode())
         return KryptonLeatherArmorMeta(newData)
     }
 
@@ -49,7 +49,7 @@ class KryptonLeatherArmorMeta(data: CompoundTag) : AbstractItemMeta<KryptonLeath
         override fun color(color: Color?): LeatherArmorMeta.Builder = apply { this.color = color }
 
         override fun buildData(): CompoundTag.Builder = super.buildData().apply {
-            if (color != null) putInt(COLOR_TAG, color!!.value)
+            if (color != null) putInt(COLOR_TAG, color!!.encode())
         }
 
         override fun build(): KryptonLeatherArmorMeta = KryptonLeatherArmorMeta(buildData().build())

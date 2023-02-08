@@ -28,7 +28,7 @@ object EndBiomes {
 
     private const val TEMPERATURE = 0.5F
     private const val DOWNFALL = 0.5F
-    private val FOG = Color.of(160, 128, 160)
+    private val FOG = Color(160, 128, 160)
 
     @JvmStatic
     fun endBarrens(): KryptonBiome = baseEnd()
