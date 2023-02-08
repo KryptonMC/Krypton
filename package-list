@@ -31,10 +31,11 @@ org.kryptonmc.api.entity.projectile
 org.kryptonmc.api.entity.vehicle
 org.kryptonmc.api.event
 org.kryptonmc.api.event.annotation
-org.kryptonmc.api.event.auth
 org.kryptonmc.api.event.command
 org.kryptonmc.api.event.entity
 org.kryptonmc.api.event.player
+org.kryptonmc.api.event.player.action
+org.kryptonmc.api.event.player.interact
 org.kryptonmc.api.event.server
 org.kryptonmc.api.event.type
 org.kryptonmc.api.fluid
@@ -140,6 +141,8 @@ org.kryptonmc.krypton.event.auth
 org.kryptonmc.krypton.event.command
 org.kryptonmc.krypton.event.entity
 org.kryptonmc.krypton.event.player
+org.kryptonmc.krypton.event.player.action
+org.kryptonmc.krypton.event.player.interact
 org.kryptonmc.krypton.event.server
 org.kryptonmc.krypton.inventory
 org.kryptonmc.krypton.item
