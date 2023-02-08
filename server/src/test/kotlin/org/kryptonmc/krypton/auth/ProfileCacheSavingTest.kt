@@ -29,7 +29,7 @@ class ProfileCacheSavingTest {
     @Test
     fun `ensure save with full profile saves correct data`() {
         val path = FS.getPath("output_full")
-        val cache = KryptonProfileCache(path)
+        val cache = GameProfileCache(path)
         val uuid = UUID.randomUUID()
         cache.addProfile(KryptonGameProfile.basic(uuid, "Dave"))
         cache.save()
@@ -39,7 +39,7 @@ class ProfileCacheSavingTest {
     @Test
     fun `ensure add marks dirty`() {
         val path = FS.getPath("output_dirty")
-        val cache = KryptonProfileCache(path)
+        val cache = GameProfileCache(path)
         val uuid = UUID.randomUUID()
         cache.addProfile(KryptonGameProfile.basic(uuid, "Steve"))
         cache.saveIfNeeded()

@@ -26,7 +26,7 @@ import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 import java.util.UUID
 import kotlin.test.assertEquals
-import kotlin.test.assertTrue
+import kotlin.test.assertFalse
 
 class ProfileCacheLoadingTest {
 
@@ -34,7 +34,7 @@ class ProfileCacheLoadingTest {
     fun `ensure single path loads to single profile`() {
         val path = FS.getPath("single")
         Files.newBufferedWriter(path).use { it.append("""[{"name":"$NAME","uuid":"$ID","expiresOn":"$TIME_FORMATTED"}]""") }
-        val cache = KryptonProfileCache(path)
+        val cache = GameProfileCache(path)
         cache.loadAll()
         assertEquals(KryptonGameProfile.basic(ID, NAME), cache.getProfile(ID))
     }
@@ -43,34 +43,34 @@ class ProfileCacheLoadingTest {
     fun `ensure empty path loads no profiles`() {
         val path = FS.getPath("empty")
         Files.newBufferedWriter(path).use { it.append("[]") }
-        val cache = KryptonProfileCache(path)
+        val cache = GameProfileCache(path)
         cache.loadAll()
-        assertTrue(cache.profiles.isEmpty())
+        assertFalse(cache.iterator().hasNext())
     }
 
     @Test
     fun `ensure no quotes data does not load due to error`() {
         val path = FS.getPath("no_quotes")
         Files.newBufferedWriter(path).use { it.append("[{name:$NAME,uuid:$ID,expiresOn:$TIME_FORMATTED}]") }
-        val cache = KryptonProfileCache(path)
+        val cache = GameProfileCache(path)
         cache.loadAll()
-        assertTrue(cache.profiles.isEmpty())
+        assertFalse(cache.iterator().hasNext())
     }
 
     @Test
     fun `ensure data with no array does not load due to error`() {
         val path = FS.getPath("no_array")
         Files.newBufferedWriter(path).use { it.append("""{"name":"$NAME","uuid":"$ID","expiresOn":"$TIME_FORMATTED"}""") }
-        val cache = KryptonProfileCache(path)
+        val cache = GameProfileCache(path)
         cache.loadAll()
-        assertTrue(cache.profiles.isEmpty())
+        assertFalse(cache.iterator().hasNext())
     }
 
     @Test
     fun `ensure no data path loads no profiles`() {
-        val cache = KryptonProfileCache(FS.getPath("bogus"))
+        val cache = GameProfileCache(FS.getPath("bogus"))
         cache.loadAll()
-        assertTrue(cache.profiles.isEmpty())
+        assertFalse(cache.iterator().hasNext())
     }
 
     companion object {

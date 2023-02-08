@@ -32,7 +32,7 @@ import org.kryptonmc.api.auth.GameProfile
  * it, such as the expiry date, and the last time it was accessed.
  *
  * The reason why we store the last access time is so we can order profiles by
- * it, because we only store the [KryptonProfileCache.MRU_LIMIT] most recent
+ * it, because we only store the [GameProfileCache.MRU_LIMIT] most recent
  * profiles to disk.
  */
 class ProfileHolder(val profile: GameProfile, val expiryDate: ZonedDateTime) : Comparable<ProfileHolder> {

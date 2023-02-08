@@ -22,7 +22,6 @@ import com.google.inject.name.Names
 import dev.misfitlabs.kotlinguice4.KotlinModule
 import org.kryptonmc.api.Platform
 import org.kryptonmc.api.Server
-import org.kryptonmc.api.auth.ProfileCache
 import org.kryptonmc.api.command.CommandManager
 import org.kryptonmc.api.command.ConsoleSender
 import org.kryptonmc.api.event.GlobalEventNode
@@ -49,7 +48,6 @@ class GlobalModule(private val server: KryptonServer, private val pluginContaine
         bind<GlobalEventNode>().toInstance(server.eventNode)
         bind<RegistryManager>().toInstance(server.registryManager)
         bind<FactoryProvider>().toInstance(server.factoryProvider)
-        bind<ProfileCache>().toInstance(server.profileCache)
         bind<UserManager>().toInstance(server.userManager)
         bind<Scheduler>().toInstance(server.scheduler)
         bind<ConsoleSender>().toInstance(server.console)

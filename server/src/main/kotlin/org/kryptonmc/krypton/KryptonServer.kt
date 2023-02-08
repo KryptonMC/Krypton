@@ -24,7 +24,7 @@ import io.netty.channel.unix.DomainSocketAddress
 import org.apache.logging.log4j.LogManager
 import org.kryptonmc.api.event.GlobalEventNode
 import org.kryptonmc.api.world.World
-import org.kryptonmc.krypton.auth.KryptonProfileCache
+import org.kryptonmc.krypton.auth.GameProfileCache
 import org.kryptonmc.krypton.command.KryptonCommandManager
 import org.kryptonmc.krypton.commands.KryptonPermission
 import org.kryptonmc.krypton.config.KryptonConfig
@@ -73,7 +73,7 @@ import kotlin.math.max
 class KryptonServer(
     private val serverThread: Thread,
     override val config: KryptonConfig,
-    override val profileCache: KryptonProfileCache,
+    val profileCache: GameProfileCache,
     worldFolder: Path
 ) : ReentrantBlockableEventLoop<TickTask>("Server"), BaseServer {
 

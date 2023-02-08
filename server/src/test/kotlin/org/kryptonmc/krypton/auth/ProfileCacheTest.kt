@@ -30,31 +30,30 @@ class ProfileCacheTest {
 
     @Test
     fun `ensure add profile makes profile available by id`() {
-        val cache = KryptonProfileCache(DUMMY_PATH)
+        val cache = GameProfileCache(DUMMY_PATH)
         cache.addProfile(PROFILE)
         assertEquals(PROFILE, cache.getProfile(ID))
     }
 
     @Test
     fun `ensure add profile makes profile available by name`() {
-        val cache = KryptonProfileCache(DUMMY_PATH)
+        val cache = GameProfileCache(DUMMY_PATH)
         cache.addProfile(PROFILE)
         assertEquals(PROFILE, cache.getProfile(NAME))
     }
 
     @Test
     fun `ensure get profile by name is case sensitive`() {
-        val cache = KryptonProfileCache(DUMMY_PATH)
+        val cache = GameProfileCache(DUMMY_PATH)
         cache.addProfile(PROFILE)
         assertNull(cache.getProfile("dave"))
     }
 
     @Test
     fun `ensure add profile appears in iterator`() {
-        val cache = KryptonProfileCache(DUMMY_PATH)
+        val cache = GameProfileCache(DUMMY_PATH)
         cache.addProfile(PROFILE)
-        val iterator = cache.iterator()
-        assertTrue(iterator.hasNext())
+        assertTrue(cache.iterator().hasNext())
     }
 
     companion object {

@@ -22,7 +22,6 @@ import com.google.common.collect.Collections2
 import com.google.common.collect.Lists
 import org.apache.logging.log4j.LogManager
 import org.kryptonmc.api.auth.GameProfile
-import org.kryptonmc.api.auth.ProfileCache
 import org.kryptonmc.krypton.util.gson.array
 import org.kryptonmc.krypton.util.gson.jsonReader
 import org.kryptonmc.krypton.util.gson.jsonWriter
@@ -31,28 +30,24 @@ import java.io.IOException
 import java.nio.file.Files
 import java.nio.file.Path
 import java.time.ZonedDateTime
-import java.util.Collections
 import java.util.UUID
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.atomic.AtomicLong
 
-class KryptonProfileCache(private val path: Path) : ProfileCache {
+class GameProfileCache(private val path: Path) : Iterable<GameProfile> {
 
     private val profilesByName = ConcurrentHashMap<String, ProfileHolder>()
     private val profilesByUUID = ConcurrentHashMap<UUID, ProfileHolder>()
     private val operations = AtomicLong()
     private var dirty = false
 
-    override val profiles: Collection<GameProfile> =
-        Collections.unmodifiableCollection(Collections2.transform(profilesByUUID.values) { it.profile })
-
     fun addProfile(profile: GameProfile) {
         addHolder(ProfileHolder(profile, ZonedDateTime.now().plusMonths(1)))
     }
 
-    override fun getProfile(name: String): GameProfile? = updateAndGetProfile(profilesByName.get(name))
+    fun getProfile(name: String): GameProfile? = updateAndGetProfile(profilesByName.get(name))
 
-    override fun getProfile(uuid: UUID): GameProfile? = updateAndGetProfile(profilesByUUID.get(uuid))
+    fun getProfile(uuid: UUID): GameProfile? = updateAndGetProfile(profilesByUUID.get(uuid))
 
     private fun updateAndGetProfile(holder: ProfileHolder?): GameProfile? {
         if (holder == null) return null
@@ -60,7 +55,9 @@ class KryptonProfileCache(private val path: Path) : ProfileCache {
         return holder.profile
     }
 
-    override fun iterator(): Iterator<GameProfile> = profiles.iterator()
+    override fun iterator(): Iterator<GameProfile> {
+        return Collections2.transform(profilesByUUID.values) { it.profile }.iterator()
+    }
 
     private fun addHolder(holder: ProfileHolder) {
         holder.setLastAccess(operations.incrementAndGet())

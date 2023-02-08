@@ -25,7 +25,7 @@ import com.github.ajalt.clikt.parameters.options.help
 import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.clikt.parameters.types.path
 import org.apache.logging.log4j.LogManager
-import org.kryptonmc.krypton.auth.KryptonProfileCache
+import org.kryptonmc.krypton.auth.GameProfileCache
 import org.kryptonmc.krypton.config.KryptonConfig
 import org.kryptonmc.krypton.server.Bootstrap
 import org.kryptonmc.krypton.util.executor.DefaultUncaughtExceptionHandler
@@ -84,7 +84,7 @@ private class KryptonCLI : CliktCommand(
             return
         }
 
-        val cache = KryptonProfileCache(userCacheFile)
+        val cache = GameProfileCache(userCacheFile)
         cache.loadAll()
 
         val server = KryptonServer.createAndRun { KryptonServer(it, config, cache, worldFolder) }

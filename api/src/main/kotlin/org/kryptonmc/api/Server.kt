@@ -9,7 +9,6 @@
 package org.kryptonmc.api
 
 import net.kyori.adventure.audience.ForwardingAudience
-import org.kryptonmc.api.auth.ProfileCache
 import org.kryptonmc.api.command.CommandManager
 import org.kryptonmc.api.command.ConsoleSender
 import org.kryptonmc.api.command.Sender
@@ -96,11 +95,6 @@ public interface Server : ForwardingAudience {
      * construct certain things, like an object, or a builder.
      */
     public val factoryProvider: FactoryProvider
-
-    /**
-     * The cache of [org.kryptonmc.api.auth.GameProfile]s.
-     */
-    public val profileCache: ProfileCache
 
     /**
      * The user manager for this server.

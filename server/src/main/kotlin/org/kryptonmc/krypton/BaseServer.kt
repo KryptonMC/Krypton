@@ -21,7 +21,6 @@ package org.kryptonmc.krypton
 import org.kryptonmc.api.event.GlobalEventNode
 import org.kryptonmc.api.registry.RegistryManager
 import org.kryptonmc.api.util.FactoryProvider
-import org.kryptonmc.krypton.auth.KryptonProfileCache
 import org.kryptonmc.krypton.command.KryptonCommandManager
 import org.kryptonmc.krypton.console.KryptonConsole
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
@@ -40,7 +39,6 @@ interface BaseServer : ServerAudience {
     override val console: KryptonConsole
     override val scoreboard: KryptonScoreboard
 
-    override val profileCache: KryptonProfileCache
     override val worldManager: KryptonWorldManager
     override val commandManager: KryptonCommandManager
     override val pluginManager: KryptonPluginManager
