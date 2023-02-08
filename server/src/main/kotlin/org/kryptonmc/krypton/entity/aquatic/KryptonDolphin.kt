@@ -29,7 +29,6 @@ import org.kryptonmc.krypton.entity.attribute.KryptonAttributeTypes
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.entity.serializer.EntitySerializer
 import org.kryptonmc.krypton.entity.serializer.aquatic.DolphinSerializer
-import org.kryptonmc.krypton.coordinate.BlockPos
 import org.kryptonmc.krypton.util.random.RandomSource
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.krypton.world.damage.KryptonDamageSource
@@ -43,7 +42,7 @@ class KryptonDolphin(world: KryptonWorld) : KryptonAquaticAnimal(world), Dolphin
 
     override var treasurePosition: Vec3i
         get() = data.get(MetadataKeys.Dolphin.TREASURE_POSITION)
-        set(value) = data.set(MetadataKeys.Dolphin.TREASURE_POSITION, BlockPos.from(value))
+        set(value) = data.set(MetadataKeys.Dolphin.TREASURE_POSITION, value)
     override var hasGotFish: Boolean
         get() = data.get(MetadataKeys.Dolphin.GOT_FISH)
         set(value) = data.set(MetadataKeys.Dolphin.GOT_FISH, value)
@@ -53,7 +52,7 @@ class KryptonDolphin(world: KryptonWorld) : KryptonAquaticAnimal(world), Dolphin
 
     override fun defineData() {
         super.defineData()
-        data.define(MetadataKeys.Dolphin.TREASURE_POSITION, BlockPos.ZERO)
+        data.define(MetadataKeys.Dolphin.TREASURE_POSITION, Vec3i.ZERO)
         data.define(MetadataKeys.Dolphin.GOT_FISH, false)
         data.define(MetadataKeys.Dolphin.MOISTURE, FULL_SKIN_MOISTURE)
     }

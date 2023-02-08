@@ -30,7 +30,6 @@ import org.kryptonmc.krypton.entity.attribute.KryptonAttributeTypes
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.entity.serializer.EntitySerializer
 import org.kryptonmc.krypton.entity.serializer.animal.TurtleSerializer
-import org.kryptonmc.krypton.coordinate.BlockPos
 import org.kryptonmc.krypton.world.KryptonWorld
 
 class KryptonTurtle(world: KryptonWorld) : KryptonAnimal(world), Turtle {
@@ -54,20 +53,20 @@ class KryptonTurtle(world: KryptonWorld) : KryptonAnimal(world), Turtle {
         set(value) = data.set(MetadataKeys.Turtle.TRAVELLING, value)
     override var home: Vec3i
         get() = data.get(MetadataKeys.Turtle.HOME)
-        set(value) = data.set(MetadataKeys.Turtle.HOME, BlockPos.from(value))
+        set(value) = data.set(MetadataKeys.Turtle.HOME, value)
     override var destination: Vec3i
         get() = data.get(MetadataKeys.Turtle.DESTINATION)
-        set(value) = data.set(MetadataKeys.Turtle.DESTINATION, BlockPos.from(value))
+        set(value) = data.set(MetadataKeys.Turtle.DESTINATION, value)
 
     override val canFallInLove: Boolean
         get() = super.canFallInLove && !hasEgg
 
     override fun defineData() {
         super.defineData()
-        data.define(MetadataKeys.Turtle.HOME, BlockPos.ZERO)
+        data.define(MetadataKeys.Turtle.HOME, Vec3i.ZERO)
         data.define(MetadataKeys.Turtle.HAS_EGG, false)
         data.define(MetadataKeys.Turtle.LAYING_EGG, false)
-        data.define(MetadataKeys.Turtle.DESTINATION, BlockPos.ZERO)
+        data.define(MetadataKeys.Turtle.DESTINATION, Vec3i.ZERO)
         data.define(MetadataKeys.Turtle.GOING_HOME, false)
         data.define(MetadataKeys.Turtle.TRAVELLING, false)
     }

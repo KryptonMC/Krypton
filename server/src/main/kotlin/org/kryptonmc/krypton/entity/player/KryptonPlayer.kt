@@ -41,6 +41,7 @@ import org.kryptonmc.api.resource.ResourcePack
 import org.kryptonmc.api.statistic.CustomStatistics
 import org.kryptonmc.api.tags.FluidTags
 import org.kryptonmc.api.util.Vec3d
+import org.kryptonmc.api.util.Vec3i
 import org.kryptonmc.api.world.GameMode
 import org.kryptonmc.krypton.adventure.KryptonAdventure
 import org.kryptonmc.krypton.commands.KryptonPermission
@@ -80,7 +81,6 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutSetHealth
 import org.kryptonmc.krypton.packet.out.play.PacketOutSystemChat
 import org.kryptonmc.krypton.packet.out.play.PacketOutTeleportEntity
 import org.kryptonmc.krypton.statistic.KryptonStatisticsTracker
-import org.kryptonmc.krypton.coordinate.BlockPos
 import org.kryptonmc.krypton.util.InteractionResult
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.krypton.world.block.state.KryptonBlockState
@@ -154,7 +154,7 @@ class KryptonPlayer(
         set(value) = data.set(MetadataKeys.Player.ADDITIONAL_HEARTS, value)
 
     init {
-        position = world.data.spawnPos().toVec3d()
+        position = world.data.spawnPos().asCenteredVec3d()
     }
 
     override fun defineData() {
@@ -205,7 +205,7 @@ class KryptonPlayer(
     }
 
     @Suppress("UnusedPrivateMember") // We will use the position later.
-    fun isBlockActionRestricted(position: BlockPos): Boolean {
+    fun isBlockActionRestricted(position: Vec3i): Boolean {
         if (gameMode != GameMode.ADVENTURE && gameMode != GameMode.SPECTATOR) return false
         if (gameMode == GameMode.SPECTATOR) return true
         if (canBuild) return false

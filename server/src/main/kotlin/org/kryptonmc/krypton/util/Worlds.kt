@@ -33,5 +33,7 @@ object Worlds {
     private fun isOutsideSpawnableHeight(y: Double): Boolean = y < -20000000 || y >= 20000000
 
     @JvmStatic
-    private fun isInHorizontalWorldBounds(pos: Vec3d): Boolean = pos.x >= -30000000 && pos.z >= -30000000 && pos.x < 30000000 && pos.z < 30000000
+    private fun isInHorizontalWorldBounds(pos: Vec3d): Boolean {
+        return pos.x >= -30000000 && pos.z >= -30000000 && pos.x < 30000000 && pos.z < 30000000
+    }
 }

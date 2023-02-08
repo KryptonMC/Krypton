@@ -24,14 +24,14 @@ import org.kryptonmc.api.entity.animal.type.CatVariant
 import org.kryptonmc.api.entity.animal.type.FrogVariant
 import org.kryptonmc.api.entity.hanging.PaintingVariant
 import org.kryptonmc.api.util.Direction
-import org.kryptonmc.api.util.Rotations
+import org.kryptonmc.api.util.Rotation
+import org.kryptonmc.api.util.Vec3i
 import org.kryptonmc.internal.annotations.Catalogue
 import org.kryptonmc.krypton.effect.particle.ParticleOptions
 import org.kryptonmc.krypton.entity.Pose
 import org.kryptonmc.krypton.entity.villagerdata.VillagerData
 import org.kryptonmc.krypton.item.KryptonItemStack
 import org.kryptonmc.krypton.registry.KryptonRegistries
-import org.kryptonmc.krypton.coordinate.BlockPos
 import org.kryptonmc.krypton.coordinate.GlobalPos
 import org.kryptonmc.krypton.util.map.IntIdentityHashBiMap
 import org.kryptonmc.krypton.util.readComponent
@@ -41,7 +41,8 @@ import org.kryptonmc.krypton.util.readString
 import org.kryptonmc.krypton.util.readUUID
 import org.kryptonmc.krypton.util.readVarInt
 import org.kryptonmc.krypton.util.readBlockPos
-import org.kryptonmc.krypton.util.readRotations
+import org.kryptonmc.krypton.util.readRotation
+import org.kryptonmc.krypton.util.writeRotation
 import org.kryptonmc.krypton.util.readVarLong
 import org.kryptonmc.krypton.util.writeComponent
 import org.kryptonmc.krypton.util.writeId
@@ -51,7 +52,6 @@ import org.kryptonmc.krypton.util.writeString
 import org.kryptonmc.krypton.util.writeUUID
 import org.kryptonmc.krypton.util.writeVarInt
 import org.kryptonmc.krypton.util.writeBlockPos
-import org.kryptonmc.krypton.util.writeRotations
 import org.kryptonmc.krypton.util.writeVarLong
 import org.kryptonmc.krypton.world.block.KryptonBlock
 import org.kryptonmc.krypton.world.block.state.KryptonBlockState
@@ -93,11 +93,11 @@ object MetadataSerializers {
         item.write(buf)
     }
     @JvmField
-    val ROTATIONS: MetadataSerializer<Rotations> = MetadataSerializer.simple(ByteBuf::readRotations, ByteBuf::writeRotations)
+    val ROTATION: MetadataSerializer<Rotation> = MetadataSerializer.simple(ByteBuf::readRotation, ByteBuf::writeRotation)
     @JvmField
-    val BLOCK_POS: MetadataSerializer<BlockPos> = MetadataSerializer.simple(ByteBuf::readBlockPos, ByteBuf::writeBlockPos)
+    val BLOCK_POS: MetadataSerializer<Vec3i> = MetadataSerializer.simple(ByteBuf::readBlockPos, ByteBuf::writeBlockPos)
     @JvmField
-    val OPTIONAL_BLOCK_POS: MetadataSerializer<BlockPos?> = MetadataSerializer.nullable(ByteBuf::readBlockPos, ByteBuf::writeBlockPos)
+    val OPTIONAL_BLOCK_POS: MetadataSerializer<Vec3i?> = MetadataSerializer.nullable(ByteBuf::readBlockPos, ByteBuf::writeBlockPos)
     @JvmField
     val DIRECTION: MetadataSerializer<Direction> = MetadataSerializer.simpleEnum()
     @JvmField
@@ -134,7 +134,7 @@ object MetadataSerializers {
         SERIALIZERS.add(OPTIONAL_COMPONENT)
         SERIALIZERS.add(ITEM_STACK)
         SERIALIZERS.add(BOOLEAN)
-        SERIALIZERS.add(ROTATIONS)
+        SERIALIZERS.add(ROTATION)
         SERIALIZERS.add(BLOCK_POS)
         SERIALIZERS.add(OPTIONAL_BLOCK_POS)
         SERIALIZERS.add(DIRECTION)

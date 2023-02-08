@@ -74,7 +74,8 @@ class EntityManager(val world: KryptonWorld) : AutoCloseable {
         forEachEntityInRange(entity.position, world.server.config.world.viewDistance) {
             if (it is KryptonPlayer) entity.addViewer(it)
         }
-        val chunk = world.getChunk(entity.position.floorX(), entity.position.floorY(), entity.position.floorZ()) ?: return
+
+        val chunk = world.getChunk(entity.position.chunkX(), entity.position.chunkZ()) ?: return
         byId.put(entity.id, entity)
         byUUID.put(entity.uuid, entity)
         getByChunk(chunk.position.pack()).add(entity)
@@ -90,7 +91,7 @@ class EntityManager(val world: KryptonWorld) : AutoCloseable {
             if (it is KryptonPlayer) player.addViewer(it)
         }
 
-        val chunk = world.getChunk(player.position.floorX(), player.position.floorY(), player.position.floorZ()) ?: return
+        val chunk = world.getChunk(player.position.chunkX(), player.position.chunkZ()) ?: return
         byId.put(player.id, player)
         byUUID.put(player.uuid, player)
         getByChunk(chunk.position.pack()).add(player)
@@ -110,7 +111,7 @@ class EntityManager(val world: KryptonWorld) : AutoCloseable {
             if (entity is KryptonPlayer) it.removeViewer(entity)
         }
 
-        val chunk = world.getChunk(entity.position.floorX(), entity.position.floorY(), entity.position.floorZ()) ?: return
+        val chunk = world.getChunk(entity.position.chunkX(), entity.position.chunkZ()) ?: return
         byId.remove(entity.id)
         byUUID.remove(entity.uuid)
         val entitiesByChunk = byChunk.get(chunk.position.pack()).apply { remove(entity) }
@@ -161,7 +162,7 @@ class EntityManager(val world: KryptonWorld) : AutoCloseable {
 
     private inline fun forEachEntityInRange(location: Vec3d, viewDistance: Int, callback: (KryptonEntity) -> Unit) {
         chunksInRange(location, viewDistance).forEach {
-            val chunk = world.getChunkAt(ChunkPos.unpackX(it), ChunkPos.unpackZ(it)) ?: return@forEach
+            val chunk = world.getChunk(ChunkPos.unpackX(it), ChunkPos.unpackZ(it)) ?: return@forEach
             getByChunk(chunk.position.pack()).forEach(callback)
         }
     }

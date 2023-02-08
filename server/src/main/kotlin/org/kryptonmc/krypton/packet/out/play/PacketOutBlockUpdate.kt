@@ -19,8 +19,8 @@
 package org.kryptonmc.krypton.packet.out.play
 
 import io.netty.buffer.ByteBuf
+import org.kryptonmc.api.util.Vec3i
 import org.kryptonmc.krypton.packet.Packet
-import org.kryptonmc.krypton.coordinate.BlockPos
 import org.kryptonmc.krypton.util.readBlockPos
 import org.kryptonmc.krypton.util.readVarInt
 import org.kryptonmc.krypton.util.writeVarInt
@@ -29,7 +29,7 @@ import org.kryptonmc.krypton.world.block.KryptonBlock
 import org.kryptonmc.krypton.world.block.state.KryptonBlockState
 
 @JvmRecord
-data class PacketOutBlockUpdate(val position: BlockPos, val block: KryptonBlockState) : Packet {
+data class PacketOutBlockUpdate(val position: Vec3i, val block: KryptonBlockState) : Packet {
 
     constructor(buf: ByteBuf) : this(buf.readBlockPos(), KryptonBlock.stateFromId(buf.readVarInt()))
 

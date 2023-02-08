@@ -19,9 +19,9 @@
 package org.kryptonmc.krypton.entity.serializer.projectile
 
 import org.apache.logging.log4j.LogManager
+import org.kryptonmc.api.util.Vec3d
 import org.kryptonmc.krypton.entity.projectile.KryptonAcceleratingProjectile
 import org.kryptonmc.krypton.entity.serializer.EntitySerializer
-import org.kryptonmc.krypton.coordinate.KryptonVec3d
 import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.DoubleTag
 import org.kryptonmc.nbt.ListTag
@@ -41,7 +41,7 @@ object AcceleratingProjectileSerializer : EntitySerializer<KryptonAcceleratingPr
             LOGGER.warn("Found invalid accelerating projectile power array of length ${power.size()}! Expected length of $POWER_SIZE! Skipping...")
             return
         }
-        entity.acceleration = KryptonVec3d(power.getDouble(0), power.getDouble(1), power.getDouble(2))
+        entity.acceleration = Vec3d(power.getDouble(0), power.getDouble(1), power.getDouble(2))
     }
 
     override fun save(entity: KryptonAcceleratingProjectile): CompoundTag.Builder = ProjectileSerializer.save(entity).apply {

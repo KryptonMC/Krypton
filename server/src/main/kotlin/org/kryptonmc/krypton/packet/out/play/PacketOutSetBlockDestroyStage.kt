@@ -19,15 +19,15 @@
 package org.kryptonmc.krypton.packet.out.play
 
 import io.netty.buffer.ByteBuf
+import org.kryptonmc.api.util.Vec3i
 import org.kryptonmc.krypton.packet.EntityPacket
-import org.kryptonmc.krypton.coordinate.BlockPos
 import org.kryptonmc.krypton.util.readBlockPos
 import org.kryptonmc.krypton.util.readVarInt
 import org.kryptonmc.krypton.util.writeVarInt
 import org.kryptonmc.krypton.util.writeBlockPos
 
 @JvmRecord
-data class PacketOutSetBlockDestroyStage(override val entityId: Int, val position: BlockPos, val destroyStage: Int) : EntityPacket {
+data class PacketOutSetBlockDestroyStage(override val entityId: Int, val position: Vec3i, val destroyStage: Int) : EntityPacket {
 
     constructor(buf: ByteBuf) : this(buf.readVarInt(), buf.readBlockPos(), buf.readByte().toInt())
 

@@ -41,7 +41,6 @@ import org.kryptonmc.krypton.entity.system.EntityWaterPhysicsSystem
 import org.kryptonmc.krypton.packet.out.play.PacketOutSetEntityMetadata
 import org.kryptonmc.krypton.packet.out.play.PacketOutSetEntityVelocity
 import org.kryptonmc.krypton.util.math.Maths
-import org.kryptonmc.krypton.coordinate.KryptonVec3d
 import org.kryptonmc.krypton.scheduling.KryptonScheduler
 import org.kryptonmc.krypton.util.random.RandomSource
 import org.kryptonmc.krypton.world.KryptonWorld
@@ -70,10 +69,10 @@ abstract class KryptonEntity(final override var world: KryptonWorld) : BaseEntit
     final override var isRemoved: Boolean = false
         private set
     private var wasDamaged = false
-    final override var position: Vec3d = KryptonVec3d.ZERO
+    final override var position: Vec3d = Vec3d.ZERO
     final override var yaw: Float = 0F
     final override var pitch: Float = 0F
-    final override var velocity: Vec3d = KryptonVec3d.ZERO
+    final override var velocity: Vec3d = Vec3d.ZERO
     final override var boundingBox: BoundingBox = BoundingBox.zero()
     final override var isOnGround: Boolean = true
     final override var ticksExisted: Int = 0

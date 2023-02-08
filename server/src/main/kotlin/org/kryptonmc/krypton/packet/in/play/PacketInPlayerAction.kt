@@ -20,9 +20,9 @@ package org.kryptonmc.krypton.packet.`in`.play
 
 import io.netty.buffer.ByteBuf
 import org.kryptonmc.api.util.Direction
+import org.kryptonmc.api.util.Vec3i
 import org.kryptonmc.krypton.network.handlers.PlayPacketHandler
 import org.kryptonmc.krypton.packet.InboundPacket
-import org.kryptonmc.krypton.coordinate.BlockPos
 import org.kryptonmc.krypton.util.readEnum
 import org.kryptonmc.krypton.util.readVarInt
 import org.kryptonmc.krypton.util.readBlockPos
@@ -33,7 +33,7 @@ import org.kryptonmc.krypton.util.writeBlockPos
 @JvmRecord
 data class PacketInPlayerAction(
     val action: Action,
-    val position: BlockPos,
+    val position: Vec3i,
     val direction: Direction,
     val sequence: Int
 ) : InboundPacket<PlayPacketHandler> {

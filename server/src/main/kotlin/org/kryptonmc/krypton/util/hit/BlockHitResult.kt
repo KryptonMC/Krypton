@@ -20,12 +20,12 @@ package org.kryptonmc.krypton.util.hit
 
 import org.kryptonmc.api.util.Direction
 import org.kryptonmc.api.util.Vec3d
-import org.kryptonmc.krypton.coordinate.BlockPos
+import org.kryptonmc.api.util.Vec3i
 
 class BlockHitResult private constructor(
     location: Vec3d,
     val direction: Direction,
-    val position: BlockPos,
+    val position: Vec3i,
     private val miss: Boolean,
     val isInside: Boolean
 ) : HitResult(location) {
@@ -33,16 +33,18 @@ class BlockHitResult private constructor(
     override val type: Type
         get() = if (miss) Type.MISS else Type.BLOCK
 
-    constructor(location: Vec3d, direction: Direction, position: BlockPos, inside: Boolean) : this(location, direction, position, false, inside)
+    constructor(location: Vec3d, direction: Direction, position: Vec3i,
+                inside: Boolean) : this(location, direction, position, false, inside)
 
     fun withDirection(direction: Direction): BlockHitResult = BlockHitResult(location, direction, position, miss, isInside)
 
-    fun withPosition(position: BlockPos): BlockHitResult = BlockHitResult(location, direction, position, miss, isInside)
+    fun withPosition(position: Vec3i): BlockHitResult = BlockHitResult(location, direction, position, miss, isInside)
 
     companion object {
 
         @JvmStatic
-        fun miss(location: Vec3d, direction: Direction, position: BlockPos): BlockHitResult =
-            BlockHitResult(location, direction, position, true, false)
+        fun miss(location: Vec3d, direction: Direction, position: Vec3i): BlockHitResult {
+            return BlockHitResult(location, direction, position, true, false)
+        }
     }
 }

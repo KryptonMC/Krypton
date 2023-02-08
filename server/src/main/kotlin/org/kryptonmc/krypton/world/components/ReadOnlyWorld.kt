@@ -18,7 +18,7 @@
  */
 package org.kryptonmc.krypton.world.components
 
-import org.kryptonmc.krypton.coordinate.BlockPos
+import org.kryptonmc.api.util.Vec3i
 import org.kryptonmc.krypton.world.chunk.data.Heightmap
 import org.kryptonmc.krypton.world.dimension.KryptonDimensionType
 import org.kryptonmc.krypton.world.flag.FeatureFlagSet
@@ -37,16 +37,17 @@ interface ReadOnlyWorld : ChunkGetter, BlockGetter, BiomeGetter, BrightnessGette
 
     fun getHeight(type: Heightmap.Type, x: Int, z: Int): Int
 
-    fun getHeightmapPos(type: Heightmap.Type, pos: BlockPos): BlockPos = BlockPos(pos.x, getHeight(type, pos.x, pos.z), pos.z)
+    fun getHeightmapPos(type: Heightmap.Type, pos: Vec3i): Vec3i = Vec3i(pos.x, getHeight(type, pos.x, pos.z), pos.z)
 
-    fun canSeeSkyFromBelowWater(pos: BlockPos): Boolean {
+    fun canSeeSkyFromBelowWater(pos: Vec3i): Boolean {
         if (pos.y >= seaLevel()) return canSeeSky(pos)
         if (!canSeeSky(pos.x, seaLevel(), pos.z)) return false
-        val currentPos = BlockPos.Mutable(pos.x, seaLevel(), pos.z)
-        while (currentPos.y > pos.y) {
+        var currentY = seaLevel()
+        while (currentY > pos.y) {
+            val currentPos = Vec3i(pos.x, currentY, pos.z)
             val state = getBlock(currentPos)
             if (state.getLightBlock(this, currentPos) > 0 && !state.material.liquid) return false
-            currentPos.setY(currentPos.y - 1)
+            currentY--
         }
         return true
     }

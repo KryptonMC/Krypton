@@ -8,142 +8,213 @@
  */
 package org.kryptonmc.api.util
 
-import org.jetbrains.annotations.ApiStatus
-import org.kryptonmc.api.Krypton
-import org.kryptonmc.internal.annotations.ImmutableType
-import org.kryptonmc.internal.annotations.TypeFactory
+import kotlin.math.abs
+import kotlin.math.floor
+import kotlin.math.sqrt
 
 /**
- * A vector with 3 double components.
+ * A double vector with an X, Y, and Z component.
+ *
+ * @property x The X component of this vector.
+ * @property y The Y component of this vector.
+ * @property z The Z component of this vector.
  */
-@Suppress("INAPPLICABLE_JVM_NAME")
-@ImmutableType
-public interface Vec3d : Comparable<Vec3d> {
+@JvmRecord
+@Suppress("TooManyFunctions")
+public data class Vec3d(public val x: Double, public val y: Double, public val z: Double) : Comparable<Vec3d> {
 
     /**
-     * The X component of this vector.
+     * Gets the floored X component of this vector.
+     *
+     * @return the floored X component
      */
-    @get:JvmName("x")
-    public val x: Double
+    public fun floorX(): Int = floor(x).toInt()
 
     /**
-     * The Y component of this vector.
+     * Gets the floored Y component of this vector.
+     *
+     * @return the floored Y component
      */
-    @get:JvmName("y")
-    public val y: Double
+    public fun floorY(): Int = floor(y).toInt()
 
     /**
-     * The Z component of this vector.
+     * Gets the floored Z component of this vector.
+     *
+     * @return the floored Z component
      */
-    @get:JvmName("z")
-    public val z: Double
+    public fun floorZ(): Int = floor(z).toInt()
 
     /**
-     * Adds the given [x], [y], and [z] values to the respective components of
-     * this vector and returns the result.
+     * Gets the chunk X coordinate of this vector.
+     *
+     * @return the chunk X
+     */
+    public fun chunkX(): Int = floorX() shr 4
+
+    /**
+     * Gets the chunk Z coordinate of this vector.
+     *
+     * @return the chunk Z
+     */
+    public fun chunkZ(): Int = floorZ() shr 4
+
+    /**
+     * Creates a new vector with the given [x] component.
+     *
+     * @param x the new X component
+     * @return the new vector
+     */
+    public fun withX(x: Double): Vec3d = Vec3d(x, this.y, this.z)
+
+    /**
+     * Creates a new vector with the given [y] component.
+     *
+     * @param y the new Y component
+     * @return the new vector
+     */
+    public fun withY(y: Double): Vec3d = Vec3d(this.x, y, this.z)
+
+    /**
+     * Creates a new vector with the given [z] component.
+     *
+     * @param z the new Z component
+     * @return the new vector
+     */
+    public fun withZ(z: Double): Vec3d = Vec3d(this.x, this.y, z)
+
+    /**
+     * Adds the given [x], [y], and [z] values to this vector and returns the
+     * result.
      *
      * @param x the X amount to add
      * @param y the Y amount to add
      * @param z the Z amount to add
      * @return the resulting vector
      */
-    public fun add(x: Double, y: Double, z: Double): Vec3d
+    public fun add(x: Double, y: Double, z: Double): Vec3d = Vec3d(this.x + x, this.y + y, this.z + z)
 
     /**
      * Adds the given [other] vector to this vector and returns the result.
      *
-     * @param other the other vector to add
+     * @param other the vector to add
      * @return the resulting vector
      */
     public fun add(other: Vec3d): Vec3d = add(other.x, other.y, other.z)
 
     /**
-     * Subtracts the given [x], [y], and [z] values from the respective
-     * components of this vector and returns the result.
+     * Adds the given [other] vector to this vector and returns the result.
+     *
+     * @param other the vector to add
+     * @return the resulting vector
+     */
+    public fun add(other: Vec3i): Vec3d = add(other.x.toDouble(), other.y.toDouble(), other.z.toDouble())
+
+    /**
+     * Subtracts the given [x], [y], and [z] values from this vector and
+     * returns the result.
      *
      * @param x the X amount to subtract
      * @param y the Y amount to subtract
      * @param z the Z amount to subtract
      * @return the resulting vector
      */
-    public fun subtract(x: Double, y: Double, z: Double): Vec3d
+    public fun subtract(x: Double, y: Double, z: Double): Vec3d = Vec3d(this.x - x, this.y - y, this.z - z)
 
     /**
      * Subtracts the given [other] vector from this vector and returns the
      * result.
      *
-     * @param other the other vector to subtract
+     * @param other the vector to subtract
      * @return the resulting vector
      */
     public fun subtract(other: Vec3d): Vec3d = subtract(other.x, other.y, other.z)
 
     /**
-     * Multiplies the components of this vector by the given [x], [y], and [z]
-     * values and returns the result.
+     * Subtracts the given [other] vector from this vector and returns the
+     * result.
      *
-     * @param x the X amount to multiply by
-     * @param y the Y amount to multiply by
-     * @param z the Z amount to multiply by
+     * @param other the vector to subtract
      * @return the resulting vector
      */
-    public fun multiply(x: Double, y: Double, z: Double): Vec3d
+    public fun subtract(other: Vec3i): Vec3d = subtract(other.x.toDouble(), other.y.toDouble(), other.z.toDouble())
+
+    /**
+     * Multiplies this vector by the given [x], [y], and [z] values and
+     * returns the result.
+     *
+     * @param x the X amount
+     * @param y the Y amount
+     * @param z the Z amount
+     * @return the resulting vector
+     */
+    public fun multiply(x: Double, y: Double, z: Double): Vec3d = Vec3d(this.x * x, this.y * y, this.z * z)
 
     /**
      * Multiplies this vector by the given [other] vector and returns the
      * result.
      *
-     * @param other the other vector to multiply by
+     * @param other the other vector
      * @return the resulting vector
      */
     public fun multiply(other: Vec3d): Vec3d = multiply(other.x, other.y, other.z)
 
     /**
-     * Multiplies the components of this vector by the given [factor] and
-     * returns the result.
+     * Multiplies this vector by the given [other] vector and returns the
+     * result.
      *
-     * @param factor the factor to multiply by
+     * @param other the other vector
      * @return the resulting vector
      */
-    public fun multiply(factor: Double): Vec3d
+    public fun multiply(other: Vec3i): Vec3d = multiply(other.x.toDouble(), other.y.toDouble(), other.z.toDouble())
 
     /**
-     * Divides the components of this vector by the given [x], [y], and [z]
-     * values and returns the result.
+     * Multiplies this vector by the given [factor] and returns the result.
      *
-     * @param x the X amount to divide by
-     * @param y the Y amount to divide by
-     * @param z the Z amount to divide by
+     * This is equivalent to calling [multiply] with the same factor for each
+     * component.
+     *
+     * @param factor the factor to multiply each component by
      * @return the resulting vector
      */
-    public fun divide(x: Double, y: Double, z: Double): Vec3d
+    public fun multiply(factor: Double): Vec3d = multiply(factor, factor, factor)
+
+    /**
+     * Divides this vector by the given [x], [y], and [z] values and returns
+     * the result.
+     *
+     * @param x the X amount
+     * @param y the Y amount
+     * @param z the Z amount
+     * @return the resulting vector
+     */
+    public fun divide(x: Double, y: Double, z: Double): Vec3d = Vec3d(this.x / x, this.y / y, this.z / z)
 
     /**
      * Divides this vector by the given [other] vector and returns the result.
      *
-     * @param other the other vector to divide by
+     * @param other the other vector
      * @return the resulting vector
      */
     public fun divide(other: Vec3d): Vec3d = divide(other.x, other.y, other.z)
 
     /**
-     * Divides the components of this vector by the given [factor] and returns
-     * the result.
+     * Divides this vector by the given [other] vector and returns the result.
      *
-     * @param factor the factor to divide by
+     * @param other the other vector
      * @return the resulting vector
      */
-    public fun divide(factor: Double): Vec3d
+    public fun divide(other: Vec3i): Vec3d = divide(other.x.toDouble(), other.y.toDouble(), other.z.toDouble())
 
     /**
-     * Calculates the dot product of this vector and the given [x], [y], and
-     * [z] components.
+     * Divides this vector by the given [factor] and returns the result.
      *
-     * @param x the X component
-     * @param y the Y component
-     * @param z the Z component
-     * @return the dot product
+     * This is equivalent to calling [divide] with the same factor for each
+     * component.
+     *
+     * @param factor the factor to divide each component by
+     * @return the resulting vector
      */
-    public fun dot(x: Double, y: Double, z: Double): Double
+    public fun divide(factor: Double): Vec3d = divide(factor, factor, factor)
 
     /**
      * Calculates the dot product of this vector and the given [other] vector.
@@ -151,209 +222,138 @@ public interface Vec3d : Comparable<Vec3d> {
      * @param other the other vector
      * @return the dot product
      */
-    public fun dot(other: Vec3d): Double = dot(other.x, other.y, other.z)
+    public fun dot(other: Vec3d): Double = x * other.x + y * other.y + z * other.z
 
     /**
-     * Calculates the cross product of this vector and the given [x], [y], and
-     * [z] components and returns the result as a vector.
-     *
-     * @param x the X component
-     * @param y the Y component
-     * @param z the Z component
-     * @return the cross product
-     */
-    public fun cross(x: Double, y: Double, z: Double): Vec3d
-
-    /**
-     * Calculates the cross product of this vector and the given [other] vector
-     * and returns the result as a vector.
+     * Calculates the cross product of this vector and the given [other]
+     * vector.
      *
      * @param other the other vector
      * @return the cross product
      */
-    public fun cross(other: Vec3d): Vec3d = cross(other.x, other.y, other.z)
+    public fun cross(other: Vec3d): Vec3d = Vec3d(y * other.z - z * other.y, z * other.x - x * other.z, x * other.y - y * other.x)
 
     /**
-     * Raises the components of this vector to the given [power] and returns
-     * the resulting vector.
+     * Returns a vector with the absolute values of the components of this
+     * vector.
      *
-     * @param power the power to raise the components to
-     * @return the resulting vector
+     * @return an absolute vector
      */
-    public fun pow(power: Double): Vec3d
+    public fun abs(): Vec3d = Vec3d(abs(x), abs(y), abs(z))
 
     /**
-     * Returns the vector with the absolute value of each component.
+     * Returns a vector with the components of this vector negated.
      *
-     * @return the absolute vector
+     * @return a negated vector
      */
-    public fun abs(): Vec3d
+    public fun negate(): Vec3d = Vec3d(-x, -y, -z)
 
     /**
-     * Returns the vector with the components of this vector negated, i.e.
-     * positive becomes negative and negative becomes positive.
+     * Returns a normalized version of this vector.
      *
-     * @return the negated vector
-     */
-    public fun negate(): Vec3d
-
-    /**
-     * Calculates the squared distance between this vector and the vector with
-     * the given [x], [y], and [z] components.
+     * A normalized vector is defined as a vector with a length of 1.
      *
-     * @param x the X component
-     * @param y the Y component
-     * @param z the Z component
-     * @return the squared distance to the components
+     * @return a normalized vector
      */
-    public fun distanceSquared(x: Double, y: Double, z: Double): Double
+    public fun normalize(): Vec3d {
+        val length = length()
+        return Vec3d(x / length, y / length, z / length)
+    }
 
     /**
-     * Calculates the squared distance between this vector and the given
-     * [other] vector.
+     * Calculates the squared distance between this vector and the given [x],
+     * [y], and [z] values.
+     *
+     * @param x the X distance
+     * @param y the Y distance
+     * @param z the Z distance
+     * @return the squared distance
+     */
+    public fun distanceSquared(x: Double, y: Double, z: Double): Double {
+        val dx = this.x - x
+        val dy = this.y - y
+        val dz = this.z - z
+        return dx * dx + dy * dy + dz * dz
+    }
+
+    /**
+     * Calculates the squared distance between this vector and the
+     * given [other] vector.
      *
      * @param other the other vector
-     * @return the squared distance to the other vector
+     * @return the squared distance
      */
     public fun distanceSquared(other: Vec3d): Double = distanceSquared(other.x, other.y, other.z)
 
     /**
-     * Calculates the distance between this vector and the vector with the
-     * given [x], [y], and [z] components.
+     * Calculates the squared distance between this vector and the
+     * given [other] vector.
      *
-     * @param x the X component
-     * @param y the Y component
-     * @param z the Z component
-     * @return the distance to the components
+     * @param other the other vector
+     * @return the squared distance
      */
-    public fun distance(x: Double, y: Double, z: Double): Double
+    public fun distanceSquared(other: Vec3i): Double = distanceSquared(other.x.toDouble(), other.y.toDouble(), other.z.toDouble())
+
+    /**
+     * Calculates the distance between this vector and the given [x], [y],
+     * and [z] values.
+     *
+     * @param x the X distance
+     * @param y the Y distance
+     * @param z the Z distance
+     * @return the distance
+     */
+    public fun distance(x: Double, y: Double, z: Double): Double = sqrt(distanceSquared(x, y, z).toDouble())
 
     /**
      * Calculates the distance between this vector and the given [other]
      * vector.
      *
      * @param other the other vector
-     * @return the distance to the other vector
+     * @return the distance
      */
     public fun distance(other: Vec3d): Double = distance(other.x, other.y, other.z)
 
     /**
-     * Gets the X component of this vector as an integer using the floor
-     * function to always round the value down.
+     * Calculates the distance between this vector and the given [other]
+     * vector.
      *
-     * @return the floored X component
+     * @param other the other vector
+     * @return the distance
      */
-    public fun floorX(): Int
+    public fun distance(other: Vec3i): Double = distance(other.x.toDouble(), other.y.toDouble(), other.z.toDouble())
 
     /**
-     * Gets the Y component of this vector as an integer using the floor
-     * function to always round the value down.
+     * Computes the length of this vector.
      *
-     * @return the floored Y component
+     * @return the length
      */
-    public fun floorY(): Int
-
-    /**
-     * Gets the Z component of this vector as an integer using the floor
-     * function to always round the value down.
-     *
-     * @return the floored Z component
-     */
-    public fun floorZ(): Int
-
-    /**
-     * Calculates the squared length of this vector.
-     *
-     * @return the squared length
-     */
-    public fun lengthSquared(): Double
+    public fun lengthSquared(): Double = x * x + y * y + z * z
 
     /**
      * Calculates the length of this vector.
      *
      * @return the length
      */
-    public fun length(): Double
+    public fun length(): Double = sqrt(lengthSquared())
 
     /**
-     * Normalizes this vector to have length 1.
-     *
-     * @return the normalized vector
-     */
-    public fun normalize(): Vec3d
-
-    /**
-     * Converts this double vector to an integer vector.
+     * Converts this double vector to an equivalent integer vector.
      *
      * @return the converted vector
      */
-    public fun toVec3i(): Vec3i = Vec3i.of(floorX(), floorY(), floorZ())
+    public fun asVec3i(): Vec3i = Vec3i(floorX(), floorY(), floorZ())
 
-    /**
-     * Part of the destructuring declaration. Gets the X component.
-     *
-     * @return the X component
-     */
-    public operator fun component1(): Double = x
+    override fun compareTo(other: Vec3d): Int = lengthSquared().compareTo(other.lengthSquared())
 
-    /**
-     * Part of the destructuring declaration. Gets the Y component.
-     *
-     * @return the Y component
-     */
-    public operator fun component2(): Double = y
-
-    /**
-     * Part of the destructuring declaration. Gets the Z component.
-     *
-     * @return the Z component
-     */
-    public operator fun component3(): Double = z
-
-    /**
-     * An operation that may be applied to an input vector to produce an output
-     * vector.
-     */
-    public fun interface Operation {
-
-        /**
-         * Applies this operation to the given [input] vector, with the given
-         * [x], [y], and [z] components as inputs, and returns the result.
-         *
-         * @param input the input vector
-         * @param x the X component
-         * @param y the Y component
-         * @param z the Z component
-         * @return the resulting vector
-         */
-        public fun apply(input: Vec3d, x: Double, y: Double, z: Double): Vec3i
-    }
-
-    @ApiStatus.Internal
-    @TypeFactory
-    public interface Factory {
-
-        public fun of(x: Double, y: Double, z: Double): Vec3d
-    }
+    override fun toString(): String = "($x, $y, $z)"
 
     public companion object {
 
         /**
-         * The vector with all its components set to zero.
+         * The zero vector.
          */
         @JvmField
-        public val ZERO: Vec3d = of(0.0, 0.0, 0.0)
-
-        /**
-         * Creates a new double vector from the given [x], [y], and [z]
-         * components.
-         *
-         * @param x the X component
-         * @param y the Y component
-         * @param z the Z component
-         * @return a new vector
-         */
-        @JvmStatic
-        public fun of(x: Double, y: Double, z: Double): Vec3d = Krypton.factory<Factory>().of(x, y, z)
+        public val ZERO: Vec3d = Vec3d(0.0, 0.0, 0.0)
     }
 }

@@ -19,12 +19,12 @@
 package org.kryptonmc.krypton.entity.metadata
 
 import net.kyori.adventure.text.Component
-import org.kryptonmc.api.util.Rotations
+import org.kryptonmc.api.util.Rotation
+import org.kryptonmc.api.util.Vec3i
 import org.kryptonmc.internal.annotations.Catalogue
 import org.kryptonmc.krypton.effect.particle.ParticleOptions
 import org.kryptonmc.krypton.entity.Pose
 import org.kryptonmc.krypton.item.KryptonItemStack
-import org.kryptonmc.krypton.coordinate.BlockPos
 import org.kryptonmc.nbt.CompoundTag
 import java.util.OptionalInt
 import java.util.UUID
@@ -67,7 +67,7 @@ object MetadataKeys {
         @JvmField
         val STINGERS: MetadataKey<Int> = MetadataKey(13, MetadataSerializers.INT)
         @JvmField
-        val BED_LOCATION: MetadataKey<BlockPos?> = MetadataKey(14, MetadataSerializers.OPTIONAL_BLOCK_POS)
+        val BED_LOCATION: MetadataKey<Vec3i?> = MetadataKey(14, MetadataSerializers.OPTIONAL_BLOCK_POS)
     }
 
     object ArmorStand {
@@ -75,17 +75,17 @@ object MetadataKeys {
         @JvmField
         val FLAGS: MetadataKey<Byte> = MetadataKey(15, MetadataSerializers.BYTE)
         @JvmField
-        val HEAD_ROTATION: MetadataKey<Rotations> = MetadataKey(16, MetadataSerializers.ROTATIONS)
+        val HEAD_ROTATION: MetadataKey<Rotation> = MetadataKey(16, MetadataSerializers.ROTATION)
         @JvmField
-        val BODY_ROTATION: MetadataKey<Rotations> = MetadataKey(17, MetadataSerializers.ROTATIONS)
+        val BODY_ROTATION: MetadataKey<Rotation> = MetadataKey(17, MetadataSerializers.ROTATION)
         @JvmField
-        val LEFT_ARM_ROTATION: MetadataKey<Rotations> = MetadataKey(18, MetadataSerializers.ROTATIONS)
+        val LEFT_ARM_ROTATION: MetadataKey<Rotation> = MetadataKey(18, MetadataSerializers.ROTATION)
         @JvmField
-        val RIGHT_ARM_ROTATION: MetadataKey<Rotations> = MetadataKey(19, MetadataSerializers.ROTATIONS)
+        val RIGHT_ARM_ROTATION: MetadataKey<Rotation> = MetadataKey(19, MetadataSerializers.ROTATION)
         @JvmField
-        val LEFT_LEG_ROTATION: MetadataKey<Rotations> = MetadataKey(20, MetadataSerializers.ROTATIONS)
+        val LEFT_LEG_ROTATION: MetadataKey<Rotation> = MetadataKey(20, MetadataSerializers.ROTATION)
         @JvmField
-        val RIGHT_LEG_ROTATION: MetadataKey<Rotations> = MetadataKey(21, MetadataSerializers.ROTATIONS)
+        val RIGHT_LEG_ROTATION: MetadataKey<Rotation> = MetadataKey(21, MetadataSerializers.ROTATION)
     }
 
     object ArrowLike {
@@ -377,13 +377,13 @@ object MetadataKeys {
     object Turtle {
 
         @JvmField
-        val HOME: MetadataKey<BlockPos> = MetadataKey(17, MetadataSerializers.BLOCK_POS)
+        val HOME: MetadataKey<Vec3i> = MetadataKey(17, MetadataSerializers.BLOCK_POS)
         @JvmField
         val HAS_EGG: MetadataKey<Boolean> = MetadataKey(18, MetadataSerializers.BOOLEAN)
         @JvmField
         val LAYING_EGG: MetadataKey<Boolean> = MetadataKey(19, MetadataSerializers.BOOLEAN)
         @JvmField
-        val DESTINATION: MetadataKey<BlockPos> = MetadataKey(20, MetadataSerializers.BLOCK_POS)
+        val DESTINATION: MetadataKey<Vec3i> = MetadataKey(20, MetadataSerializers.BLOCK_POS)
         @JvmField
         val GOING_HOME: MetadataKey<Boolean> = MetadataKey(21, MetadataSerializers.BOOLEAN)
         @JvmField
@@ -409,7 +409,7 @@ object MetadataKeys {
     object Dolphin {
 
         @JvmField
-        val TREASURE_POSITION: MetadataKey<BlockPos> = MetadataKey(16, MetadataSerializers.BLOCK_POS)
+        val TREASURE_POSITION: MetadataKey<Vec3i> = MetadataKey(16, MetadataSerializers.BLOCK_POS)
         @JvmField
         val GOT_FISH: MetadataKey<Boolean> = MetadataKey(17, MetadataSerializers.BOOLEAN)
         @JvmField

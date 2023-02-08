@@ -20,7 +20,7 @@ package org.kryptonmc.krypton.world.block.handler
 
 import org.kryptonmc.api.block.PushReaction
 import org.kryptonmc.api.util.Direction
-import org.kryptonmc.krypton.coordinate.BlockPos
+import org.kryptonmc.api.util.Vec3i
 import org.kryptonmc.krypton.entity.KryptonEntityType
 import org.kryptonmc.krypton.item.KryptonItemStack
 import org.kryptonmc.krypton.item.context.BlockPlaceContext
@@ -50,7 +50,7 @@ interface BlockPropertiesProvider {
 
     fun getFluidState(state: KryptonBlockState): KryptonFluidState = KryptonFluids.EMPTY.defaultState
 
-    fun getItemStack(world: BlockGetter, pos: BlockPos, state: KryptonBlockState): KryptonItemStack {
+    fun getItemStack(world: BlockGetter, pos: Vec3i, state: KryptonBlockState): KryptonItemStack {
         return KryptonItemStack.EMPTY
     }
 
@@ -58,7 +58,7 @@ interface BlockPropertiesProvider {
         return false
     }
 
-    fun getLightBlock(state: KryptonBlockState, world: BlockGetter, pos: BlockPos): Int {
+    fun getLightBlock(state: KryptonBlockState, world: BlockGetter, pos: Vec3i): Int {
         if (state.isSolidRender(world, pos)) return world.maximumLightLevel()
         return if (state.propagatesSkylightDown(world, pos)) 0 else 1
     }
@@ -71,7 +71,7 @@ interface BlockPropertiesProvider {
         return state.material.replaceable || !state.material.solid
     }
 
-    fun canSurvive(state: KryptonBlockState, world: BlockGetter, pos: BlockPos): Boolean {
+    fun canSurvive(state: KryptonBlockState, world: BlockGetter, pos: Vec3i): Boolean {
         return true
     }
 
@@ -91,19 +91,19 @@ interface BlockPropertiesProvider {
         return BlockOffsetType.NONE
     }
 
-    fun isValidSpawn(state: KryptonBlockState, world: BlockGetter, pos: BlockPos, type: KryptonEntityType<*>): Boolean {
+    fun isValidSpawn(state: KryptonBlockState, world: BlockGetter, pos: Vec3i, type: KryptonEntityType<*>): Boolean {
         return state.isFaceSturdy(world, pos, Direction.UP) && getLightEmission(state) < 14
     }
 
-    fun isRedstoneConductor(state: KryptonBlockState, world: BlockGetter, pos: BlockPos): Boolean {
+    fun isRedstoneConductor(state: KryptonBlockState, world: BlockGetter, pos: Vec3i): Boolean {
         return state.material.solidBlocking && state.isCollisionShapeFullBlock(world, pos)
     }
 
-    fun hasPostProcess(state: KryptonBlockState, world: BlockGetter, pos: BlockPos): Boolean {
+    fun hasPostProcess(state: KryptonBlockState, world: BlockGetter, pos: Vec3i): Boolean {
         return false
     }
 
-    fun isSuffocating(state: KryptonBlockState, world: BlockGetter, pos: BlockPos): Boolean {
+    fun isSuffocating(state: KryptonBlockState, world: BlockGetter, pos: Vec3i): Boolean {
         return state.material.blocksMotion && state.isCollisionShapeFullBlock(world, pos)
     }
 
@@ -127,7 +127,7 @@ interface BlockPropertiesProvider {
         return false
     }
 
-    fun propagatesSkylightDown(state: KryptonBlockState, world: BlockGetter, pos: BlockPos): Boolean {
+    fun propagatesSkylightDown(state: KryptonBlockState, world: BlockGetter, pos: Vec3i): Boolean {
         return false
     }
 

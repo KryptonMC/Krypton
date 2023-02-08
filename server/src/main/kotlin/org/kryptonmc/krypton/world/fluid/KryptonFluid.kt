@@ -24,12 +24,12 @@ import org.kryptonmc.api.fluid.Fluid
 import org.kryptonmc.api.fluid.FluidState
 import org.kryptonmc.api.tags.TagKey
 import org.kryptonmc.api.util.Vec3d
+import org.kryptonmc.api.util.Vec3i
 import org.kryptonmc.krypton.registry.KryptonRegistries
 import org.kryptonmc.krypton.registry.holder.Holder
 import org.kryptonmc.krypton.shapes.VoxelShape
 import org.kryptonmc.krypton.state.StateDefinition
 import org.kryptonmc.krypton.state.StateHolderDelegate
-import org.kryptonmc.krypton.coordinate.BlockPos
 import org.kryptonmc.krypton.util.map.IntHashBiMap
 import org.kryptonmc.krypton.world.block.state.KryptonBlockState
 import org.kryptonmc.krypton.world.components.BlockGetter
@@ -55,9 +55,9 @@ abstract class KryptonFluid : Fluid, StateHolderDelegate<FluidState, KryptonFlui
 
     open fun pickupSound(): SoundEvent? = null
 
-    abstract fun getFlow(world: BlockGetter, pos: BlockPos, state: KryptonFluidState): Vec3d
+    abstract fun getFlow(world: BlockGetter, pos: Vec3i, state: KryptonFluidState): Vec3d
 
-    abstract fun getHeight(state: KryptonFluidState, world: BlockGetter, pos: BlockPos): Float
+    abstract fun getHeight(state: KryptonFluidState, world: BlockGetter, pos: Vec3i): Float
 
     abstract fun getOwnHeight(state: KryptonFluidState): Float
 
@@ -69,7 +69,7 @@ abstract class KryptonFluid : Fluid, StateHolderDelegate<FluidState, KryptonFlui
 
     open fun isSame(fluid: Fluid): Boolean = fluid === this
 
-    abstract fun getShape(state: KryptonFluidState, world: BlockGetter, pos: BlockPos): VoxelShape
+    abstract fun getShape(state: KryptonFluidState, world: BlockGetter, pos: Vec3i): VoxelShape
 
     override fun key(): Key = KryptonRegistries.FLUID.getKey(this)
 

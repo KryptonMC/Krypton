@@ -152,10 +152,10 @@ public interface World : BlockContainer, FluidContainer, BiomeContainer, BlockEn
     /**
      * Gets the block at the given coordinates.
      *
-     * This function will return the following in specific cases:
+     * This method will return the following in specific cases:
      * - If the given [y] coordinate is greater than the maximum height of this
      * world, this will return the default state of [Blocks.VOID_AIR].
-     * - If there is no chunk loaded at the given coordinates ([getChunkAt] was
+     * - If there is no chunk loaded at the given coordinates ([getChunk] was
      * null), this will return the default state of [Blocks.AIR].
      * - Else it will return the block at the given coordinates.
      *
@@ -169,12 +169,8 @@ public interface World : BlockContainer, FluidContainer, BiomeContainer, BlockEn
     /**
      * Gets the block at the given [position].
      *
-     * This function will return the following in specific cases:
-     * - If the given [position]'s [Vec3i.y] coordinate is greater than the
-     * maximum height of this world, this will return [Blocks.VOID_AIR].
-     * - If there is no chunk loaded at the given [position] ([getChunkAt] was
-     * null), this will return [Blocks.AIR].
-     * - Else it will return the block at the given [position].
+     * This method has semantics identical to that of [getBlock] with
+     * individual components (X, Y, and Z values).
      *
      * @param position the position
      * @return see above
@@ -206,10 +202,10 @@ public interface World : BlockContainer, FluidContainer, BiomeContainer, BlockEn
     /**
      * Gets the fluid at the given coordinates.
      *
-     * This function will return the following in specific cases:
+     * This method will return the following in specific cases:
      * - If the given [y] coordinate is greater than the maximum height of this
      * world, or there is no chunk loaded at the given coordinates
-     * ([getChunkAt] was null), this will return [Fluids.EMPTY].
+     * ([getChunk] was null), this will return [Fluids.EMPTY].
      * - Else it will return the fluid at the given coordinates.
      *
      * @param x the X coordinate
@@ -222,12 +218,8 @@ public interface World : BlockContainer, FluidContainer, BiomeContainer, BlockEn
     /**
      * Gets the fluid at the given [position].
      *
-     * This function will return the following in specific cases:
-     * - If the given [position]'s [Vec3i.y] coordinate is greater than the
-     * maximum height of this world,  or if there is no chunk loaded at the
-     * given [position] ([getChunkAt] returns null), this will return
-     * [Fluids.EMPTY].
-     * - Else it will return the fluid at the given [position].
+     * This method has semantics identical to that of [getFluid] with
+     * individual components (X, Y, and Z values).
      *
      * @param position the position
      * @return see above
@@ -247,29 +239,7 @@ public interface World : BlockContainer, FluidContainer, BiomeContainer, BlockEn
      * @return the chunk at the given coordinates, or null if there isn't one
      * loaded
      */
-    public fun getChunkAt(x: Int, z: Int): Chunk?
-
-    /**
-     * Gets a chunk from its **block** coordinates, or returns null if there is
-     * no chunk **loaded** at the given coordinates.
-     *
-     * @param x the block X coordinate
-     * @param y the block Y coordinate
-     * @param z the block Z coordinate
-     * @return the chunk at the given coordinates, or null if there isn't one
-     * loaded
-     */
-    public fun getChunk(x: Int, y: Int, z: Int): Chunk?
-
-    /**
-     * Gets a chunk from its **block** coordinates, or returns null if there is
-     * no chunk **loaded** at the given coordinates.
-     *
-     * @param position the block position
-     * @return the chunk at the given coordinates, or null if there isn't one
-     * loaded
-     */
-    public fun getChunk(position: Vec3i): Chunk?
+    public fun getChunk(x: Int, z: Int): Chunk?
 
     /**
      * Gets or loads the chunk at the given **chunk** coordinates, or returns

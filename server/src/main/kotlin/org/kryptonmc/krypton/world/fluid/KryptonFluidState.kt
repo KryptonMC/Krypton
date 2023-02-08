@@ -23,11 +23,11 @@ import org.kryptonmc.api.fluid.Fluid
 import org.kryptonmc.api.fluid.FluidState
 import org.kryptonmc.api.tags.TagKey
 import org.kryptonmc.api.util.Vec3d
+import org.kryptonmc.api.util.Vec3i
 import org.kryptonmc.krypton.registry.KryptonRegistries
 import org.kryptonmc.krypton.state.KryptonState
 import org.kryptonmc.krypton.state.StateDelegate
 import org.kryptonmc.krypton.state.property.KryptonProperty
-import org.kryptonmc.krypton.coordinate.BlockPos
 import org.kryptonmc.krypton.world.block.state.KryptonBlockState
 import org.kryptonmc.krypton.world.components.BlockGetter
 import org.kryptonmc.serialization.Codec
@@ -47,9 +47,9 @@ class KryptonFluidState(
 
     fun ownHeight(): Float = fluid.getOwnHeight(this)
 
-    fun getHeight(world: BlockGetter, pos: BlockPos): Float = fluid.getHeight(this, world, pos)
+    fun getHeight(world: BlockGetter, pos: Vec3i): Float = fluid.getHeight(this, world, pos)
 
-    fun getFlow(world: BlockGetter, pos: BlockPos): Vec3d = fluid.getFlow(world, pos, this)
+    fun getFlow(world: BlockGetter, pos: Vec3i): Vec3d = fluid.getFlow(world, pos, this)
 
     @Suppress("UNCHECKED_CAST")
     fun eq(tag: TagKey<Fluid>): Boolean = fluid.builtInRegistryHolder.eq(tag as TagKey<KryptonFluid>)

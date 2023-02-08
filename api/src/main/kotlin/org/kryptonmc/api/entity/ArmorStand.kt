@@ -8,7 +8,7 @@
  */
 package org.kryptonmc.api.entity
 
-import org.kryptonmc.api.util.Rotations
+import org.kryptonmc.api.util.Rotation
 
 /**
  * An armor stand.
@@ -41,30 +41,30 @@ public interface ArmorStand : LivingEntity, Equipable {
     /**
      * The pose this stand's head is currently making.
      */
-    public var headPose: Rotations
+    public var headPose: Rotation
 
     /**
      * The pose this stand's body is currently making.
      */
-    public var bodyPose: Rotations
+    public var bodyPose: Rotation
 
     /**
      * The pose this stand's left arm is currently making.
      */
-    public var leftArmPose: Rotations
+    public var leftArmPose: Rotation
 
     /**
      * The pose this stand's right arm is currently making.
      */
-    public var rightArmPose: Rotations
+    public var rightArmPose: Rotation
 
     /**
      * The pose this stand's left leg is currently making.
      */
-    public var leftLegPose: Rotations
+    public var leftLegPose: Rotation
 
     /**
      * The pose this stand's right leg is currently making.
      */
-    public var rightLegPose: Rotations
+    public var rightLegPose: Rotation
 }

@@ -18,14 +18,14 @@
  */
 package org.kryptonmc.krypton.item.handler
 
+import org.kryptonmc.api.util.Vec3i
 import org.kryptonmc.api.world.GameMode
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
-import org.kryptonmc.krypton.coordinate.BlockPos
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.krypton.world.block.state.KryptonBlockState
 
 object TridentHandler : ItemHandler {
 
-    override fun canAttackBlock(player: KryptonPlayer, world: KryptonWorld, block: KryptonBlockState, pos: BlockPos): Boolean =
+    override fun canAttackBlock(player: KryptonPlayer, world: KryptonWorld, block: KryptonBlockState, pos: Vec3i): Boolean =
         player.gameMode != GameMode.CREATIVE
 }

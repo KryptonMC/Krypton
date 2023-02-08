@@ -27,15 +27,13 @@ import com.mojang.brigadier.tree.LiteralCommandNode
 import com.mojang.brigadier.tree.RootCommandNode
 import io.mockk.mockk
 import net.kyori.adventure.text.Component
-import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import org.kryptonmc.api.command.CommandExecutionContext
 import org.kryptonmc.api.command.argument
 import org.kryptonmc.api.command.literalCommand
+import org.kryptonmc.api.util.Vec3d
 import org.kryptonmc.krypton.command.registrar.BrigadierCommandRegistrar
 import org.kryptonmc.krypton.commands.runs
-import org.kryptonmc.krypton.testutil.Bootstrapping
-import org.kryptonmc.krypton.coordinate.KryptonVec3d
 import java.util.concurrent.locks.ReentrantLock
 import kotlin.test.assertEquals
 
@@ -46,7 +44,7 @@ class CommandTest {
         val dispatcher = CommandDispatcher<CommandSourceStack>()
         val node = LiteralArgumentBuilder.literal<CommandSourceStack>("test").runs { println("Hello World!") }.build()
         dispatcher.root.addChild(node)
-        val source = CommandSourceStack(mockk(), KryptonVec3d.ZERO, 0F, 0F, mockk(), "", Component.empty(), mockk(), null)
+        val source = CommandSourceStack(mockk(), Vec3d.ZERO, 0F, 0F, mockk(), "", Component.empty(), mockk(), null)
         dispatcher.execute("test", source)
     }
 
@@ -62,14 +60,5 @@ class CommandTest {
         }.build() as LiteralCommandNode<CommandExecutionContext>
         BrigadierCommandRegistrar(ReentrantLock()).register(root, KryptonBrigadierCommand(node), KryptonCommandMeta.Builder("test").build())
         assertEquals(node, root.getChild("test") as CommandNode<CommandExecutionContext>)
-    }
-
-    companion object {
-
-        @JvmStatic
-        @BeforeAll
-        fun `load factories for vec3d`() {
-            Bootstrapping.loadFactories()
-        }
     }
 }

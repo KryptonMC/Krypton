@@ -24,6 +24,7 @@ import net.kyori.adventure.text.format.NamedTextColor
 import org.apache.logging.log4j.LogManager
 import org.kryptonmc.api.scoreboard.Objective
 import org.kryptonmc.api.statistic.CustomStatistics
+import org.kryptonmc.api.util.Vec3i
 import org.kryptonmc.api.world.World
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.command.CommandSourceStack
@@ -53,7 +54,6 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateRecipeBook
 import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateRecipes
 import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateTeams
 import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateTime
-import org.kryptonmc.krypton.coordinate.BlockPos
 import org.kryptonmc.krypton.entity.player.RecipeBookSettings
 import org.kryptonmc.krypton.locale.DisconnectMessages
 import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateTags
@@ -63,7 +63,6 @@ import org.kryptonmc.krypton.registry.dynamic.RegistryAccess
 import org.kryptonmc.krypton.registry.dynamic.RegistryLayer
 import org.kryptonmc.krypton.registry.network.RegistrySerialization
 import org.kryptonmc.krypton.tags.TagSerializer
-import org.kryptonmc.krypton.util.ImmutableLists
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.krypton.world.biome.BiomeManager
 import org.kryptonmc.krypton.world.data.PlayerDataManager
@@ -236,7 +235,7 @@ class PlayerManager(
         }
     }
 
-    fun broadcast(packet: Packet, world: KryptonWorld, pos: BlockPos, radius: Double, except: KryptonPlayer?) {
+    fun broadcast(packet: Packet, world: KryptonWorld, pos: Vec3i, radius: Double, except: KryptonPlayer?) {
         broadcast(packet, world, pos.x.toDouble(), pos.y.toDouble(), pos.z.toDouble(), radius, except)
     }
 

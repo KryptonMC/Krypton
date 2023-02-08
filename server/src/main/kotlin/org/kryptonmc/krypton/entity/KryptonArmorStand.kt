@@ -20,7 +20,7 @@ package org.kryptonmc.krypton.entity
 
 import org.kryptonmc.api.entity.ArmorStand
 import org.kryptonmc.api.entity.EquipmentSlot
-import org.kryptonmc.api.util.Rotations
+import org.kryptonmc.api.util.Rotation
 import org.kryptonmc.krypton.entity.components.KryptonEquipable
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.entity.serializer.ArmorStandSerializer
@@ -53,22 +53,22 @@ class KryptonArmorStand(world: KryptonWorld) : KryptonLivingEntity(world), Armor
     override var isMarker: Boolean
         get() = data.getFlag(MetadataKeys.ArmorStand.FLAGS, FLAG_MARKER)
         set(value) = data.setFlag(MetadataKeys.ArmorStand.FLAGS, FLAG_MARKER, value)
-    override var headPose: Rotations
+    override var headPose: Rotation
         get() = data.get(MetadataKeys.ArmorStand.HEAD_ROTATION)
         set(value) = data.set(MetadataKeys.ArmorStand.HEAD_ROTATION, value)
-    override var bodyPose: Rotations
+    override var bodyPose: Rotation
         get() = data.get(MetadataKeys.ArmorStand.BODY_ROTATION)
         set(value) = data.set(MetadataKeys.ArmorStand.BODY_ROTATION, value)
-    override var leftArmPose: Rotations
+    override var leftArmPose: Rotation
         get() = data.get(MetadataKeys.ArmorStand.LEFT_ARM_ROTATION)
         set(value) = data.set(MetadataKeys.ArmorStand.LEFT_ARM_ROTATION, value)
-    override var rightArmPose: Rotations
+    override var rightArmPose: Rotation
         get() = data.get(MetadataKeys.ArmorStand.RIGHT_ARM_ROTATION)
         set(value) = data.set(MetadataKeys.ArmorStand.RIGHT_ARM_ROTATION, value)
-    override var leftLegPose: Rotations
+    override var leftLegPose: Rotation
         get() = data.get(MetadataKeys.ArmorStand.LEFT_LEG_ROTATION)
         set(value) = data.set(MetadataKeys.ArmorStand.LEFT_LEG_ROTATION, value)
-    override var rightLegPose: Rotations
+    override var rightLegPose: Rotation
         get() = data.get(MetadataKeys.ArmorStand.RIGHT_LEG_ROTATION)
         set(value) = data.set(MetadataKeys.ArmorStand.RIGHT_LEG_ROTATION, value)
 

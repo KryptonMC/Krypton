@@ -21,6 +21,7 @@ package org.kryptonmc.krypton.coordinate
 import io.netty.buffer.ByteBuf
 import org.kryptonmc.api.resource.ResourceKey
 import org.kryptonmc.api.resource.ResourceKeys
+import org.kryptonmc.api.util.Vec3i
 import org.kryptonmc.api.world.World
 import org.kryptonmc.krypton.network.Writable
 import org.kryptonmc.krypton.util.readBlockPos
@@ -32,7 +33,7 @@ import org.kryptonmc.serialization.Codec
 import org.kryptonmc.serialization.codecs.RecordCodecBuilder
 
 @JvmRecord
-data class GlobalPos(val dimension: ResourceKey<World>, val position: BlockPos) : Writable {
+data class GlobalPos(val dimension: ResourceKey<World>, val position: Vec3i) : Writable {
 
     constructor(buf: ByteBuf) : this(ResourceKey.of(ResourceKeys.DIMENSION, buf.readKey()), buf.readBlockPos())
 

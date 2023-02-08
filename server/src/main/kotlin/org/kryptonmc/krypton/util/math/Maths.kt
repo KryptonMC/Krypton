@@ -19,7 +19,7 @@
 package org.kryptonmc.krypton.util.math
 
 import com.google.common.math.IntMath
-import org.kryptonmc.krypton.coordinate.BlockPos
+import org.kryptonmc.api.util.Vec3i
 import org.kryptonmc.krypton.util.random.RandomSource
 import org.kryptonmc.krypton.coordinate.ChunkPos
 import java.util.UUID
@@ -122,7 +122,7 @@ object Maths {
     }
 
     @JvmStatic
-    fun getSeed(position: BlockPos): Long = getSeed(position.x, position.y, position.z)
+    fun getSeed(position: Vec3i): Long = getSeed(position.x, position.y, position.z)
 
     @JvmStatic
     @Suppress("MagicNumber")

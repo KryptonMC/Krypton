@@ -19,7 +19,7 @@
 package org.kryptonmc.krypton.world.redstone
 
 import org.kryptonmc.api.util.Direction
-import org.kryptonmc.krypton.coordinate.BlockPos
+import org.kryptonmc.api.util.Vec3i
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.krypton.world.block.KryptonBlock
 import org.kryptonmc.krypton.world.block.state.KryptonBlockState
@@ -30,13 +30,13 @@ import org.kryptonmc.krypton.world.components.WorldAccessor
  */
 interface NeighbourUpdater {
 
-    fun shapeUpdate(direction: Direction, state: KryptonBlockState, pos: BlockPos, neighbourPos: BlockPos, flags: Int, recursionLeft: Int)
+    fun shapeUpdate(direction: Direction, state: KryptonBlockState, pos: Vec3i, neighbourPos: Vec3i, flags: Int, recursionLeft: Int)
 
-    fun neighbourChanged(pos: BlockPos, block: KryptonBlock, neighbourPos: BlockPos)
+    fun neighbourChanged(pos: Vec3i, block: KryptonBlock, neighbourPos: Vec3i)
 
-    fun neighbourChanged(state: KryptonBlockState, pos: BlockPos, block: KryptonBlock, neighbourPos: BlockPos, moving: Boolean)
+    fun neighbourChanged(state: KryptonBlockState, pos: Vec3i, block: KryptonBlock, neighbourPos: Vec3i, moving: Boolean)
 
-    fun updateNeighboursAtExceptFromFacing(pos: BlockPos, block: KryptonBlock, except: Direction?) {
+    fun updateNeighboursAtExceptFromFacing(pos: Vec3i, block: KryptonBlock, except: Direction?) {
         UPDATE_ORDER.forEach { if (it != except) neighbourChanged(pos.relative(it), block, pos) }
     }
 
@@ -46,7 +46,7 @@ interface NeighbourUpdater {
         val UPDATE_ORDER: Array<Direction> = arrayOf(Direction.WEST, Direction.EAST, Direction.DOWN, Direction.UP, Direction.NORTH, Direction.SOUTH)
 
         @JvmStatic
-        fun executeShapeUpdate(world: WorldAccessor, direction: Direction, state: KryptonBlockState, pos: BlockPos, neighbourPos: BlockPos,
+        fun executeShapeUpdate(world: WorldAccessor, direction: Direction, state: KryptonBlockState, pos: Vec3i, neighbourPos: Vec3i,
                                flags: Int, recursionLeft: Int) {
             val oldState = world.getBlock(pos)
             val newState = oldState.updateShape(direction, state, world, pos, neighbourPos)
@@ -54,7 +54,7 @@ interface NeighbourUpdater {
         }
 
         @JvmStatic
-        fun executeUpdate(world: KryptonWorld, state: KryptonBlockState, pos: BlockPos, block: KryptonBlock, neighbourPos: BlockPos,
+        fun executeUpdate(world: KryptonWorld, state: KryptonBlockState, pos: Vec3i, block: KryptonBlock, neighbourPos: Vec3i,
                           moving: Boolean) {
             state.neighbourChanged(world, pos, block, neighbourPos, moving)
         }

@@ -30,13 +30,13 @@ import org.jline.reader.LineReader
 import org.jline.reader.LineReaderBuilder
 import org.kryptonmc.api.command.ConsoleSender
 import org.kryptonmc.api.permission.PermissionFunction
+import org.kryptonmc.api.util.Vec3d
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.command.CommandSourceStack
 import org.kryptonmc.krypton.command.KryptonSender
 import org.kryptonmc.krypton.event.command.KryptonCommandExecuteEvent
 import org.kryptonmc.krypton.event.server.KryptonSetupPermissionsEvent
 import org.kryptonmc.krypton.locale.MinecraftTranslationManager
-import org.kryptonmc.krypton.coordinate.KryptonVec3d
 import org.kryptonmc.krypton.network.chat.RichChatType
 
 class KryptonConsole(override val server: KryptonServer) : SimpleTerminalConsole(), KryptonSender, ConsoleSender {
@@ -109,7 +109,7 @@ class KryptonConsole(override val server: KryptonServer) : SimpleTerminalConsole
     override fun shouldInformAdmins(): Boolean = server.config.server.broadcastConsoleToAdmins
 
     override fun createCommandSourceStack(): CommandSourceStack =
-        CommandSourceStack(this, KryptonVec3d.ZERO, 0F, 0F, server.worldManager.default, NAME, DISPLAY_NAME, server, null)
+        CommandSourceStack(this, Vec3d.ZERO, 0F, 0F, server.worldManager.default, NAME, DISPLAY_NAME, server, null)
 
     companion object {
 

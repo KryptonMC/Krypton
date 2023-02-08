@@ -19,10 +19,10 @@
 package org.kryptonmc.krypton.item.context
 
 import org.kryptonmc.api.entity.Hand
+import org.kryptonmc.api.util.Vec3i
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.item.KryptonItemStack
 import org.kryptonmc.krypton.util.hit.BlockHitResult
-import org.kryptonmc.krypton.coordinate.BlockPos
 import org.kryptonmc.krypton.world.KryptonWorld
 
 open class BlockPlaceContext protected constructor(
@@ -36,7 +36,7 @@ open class BlockPlaceContext protected constructor(
     private val relativePosition = hitResult.position.relative(hitResult.direction)
     protected var replaceClicked = world.getBlock(hitResult.position).canBeReplaced(this)
 
-    override fun clickedPosition(): BlockPos = if (replaceClicked) super.clickedPosition() else relativePosition
+    override fun clickedPosition(): Vec3i = if (replaceClicked) super.clickedPosition() else relativePosition
 
     open fun canPlace(): Boolean = replaceClicked || world.getBlock(clickedPosition()).canBeReplaced(this)
 

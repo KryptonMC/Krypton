@@ -27,16 +27,14 @@ import io.mockk.spyk
 import io.mockk.verify
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
-import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.kryptonmc.api.permission.PermissionFunction
+import org.kryptonmc.api.util.Vec3d
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.entity.KryptonEntity
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
-import org.kryptonmc.krypton.testutil.Bootstrapping
 import org.kryptonmc.krypton.testutil.TestCommandSender
-import org.kryptonmc.krypton.coordinate.KryptonVec3d
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertNull
@@ -178,12 +176,6 @@ class CommandSourceStackTest {
         private val SERVER = mockk<KryptonServer>()
 
         @JvmStatic
-        @BeforeAll
-        fun `load translations and factories for vec3d`() {
-            Bootstrapping.loadFactories()
-        }
-
-        @JvmStatic
         private fun createSender(success: Boolean, failure: Boolean, inform: Boolean, permissions: PermissionFunction): TestCommandSender =
             TestCommandSender(Component.empty(), SERVER, permissions, success, failure, inform)
 
@@ -192,7 +184,7 @@ class CommandSourceStackTest {
 
         @JvmStatic
         private fun createSource(sender: TestCommandSender, entity: KryptonEntity?): CommandSourceStack =
-            CommandSourceStack(sender, KryptonVec3d.ZERO, 0F, 0F, mockk(), "", Component.empty(), SERVER, entity)
+            CommandSourceStack(sender, Vec3d.ZERO, 0F, 0F, mockk(), "", Component.empty(), SERVER, entity)
 
         @JvmStatic
         private fun createDefaultSource(entity: KryptonEntity?): CommandSourceStack = createSource(createDefaultSender(), entity)

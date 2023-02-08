@@ -22,13 +22,13 @@ import it.unimi.dsi.fastutil.objects.Object2DoubleArrayMap
 import org.kryptonmc.api.fluid.Fluid
 import org.kryptonmc.api.tags.FluidTags
 import org.kryptonmc.api.tags.TagKey
+import org.kryptonmc.api.util.Vec3d
+import org.kryptonmc.api.util.Vec3i
 import org.kryptonmc.krypton.entity.KryptonEntity
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.entity.vehicle.KryptonBoat
 import org.kryptonmc.krypton.packet.out.play.PacketOutSetEntityVelocity
-import org.kryptonmc.krypton.coordinate.BlockPos
 import org.kryptonmc.krypton.util.math.Maths
-import org.kryptonmc.krypton.coordinate.KryptonVec3d
 import org.kryptonmc.krypton.world.block.KryptonBlocks
 import org.kryptonmc.krypton.world.fluid.KryptonFluidState
 import kotlin.math.abs
@@ -90,14 +90,13 @@ class EntityWaterPhysicsSystem(private val entity: KryptonEntity) {
         var amount = 0.0
         val pushed = entity.isPushedByFluid()
         var shouldPush = false
-        var offset = KryptonVec3d.ZERO
+        var offset = Vec3d.ZERO
         var pushes = 0
-        val pos = BlockPos.Mutable()
 
         for (x in minX..maxX) {
             for (y in minY..maxY) {
                 for (z in minZ..maxZ) {
-                    pos.set(x, y, z)
+                    val pos = Vec3i(x, y, z)
                     val fluid = entity.world.getFluid(pos)
                     if (!fluid.eq(tag)) continue
                     val height = (y.toFloat() + fluid.getHeight(entity.world, pos)).toDouble()
@@ -139,7 +138,7 @@ class EntityWaterPhysicsSystem(private val entity: KryptonEntity) {
         val vehicle = entity.vehicleSystem.vehicle()
         if (vehicle is KryptonBoat && !vehicle.isUnderwater && vehicle.boundingBox.maximumY >= y && vehicle.boundingBox.minimumY <= y) return
 
-        val pos = BlockPos(entity.position.x, y, entity.position.z)
+        val pos = entity.position.withY(y).asVec3i()
         val fluid = entity.world.getFluid(pos)
         val height = (pos.y.toFloat() + fluid.getHeight(entity.world, pos)).toDouble()
         if (height > y) {

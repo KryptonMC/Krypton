@@ -20,8 +20,8 @@ package org.kryptonmc.krypton.entity.player
 
 import org.apache.logging.log4j.Logger
 import org.kryptonmc.api.resource.ResourceKey
+import org.kryptonmc.api.util.Vec3i
 import org.kryptonmc.api.world.World
-import org.kryptonmc.krypton.coordinate.BlockPos
 import org.kryptonmc.krypton.util.Keys
 import org.kryptonmc.krypton.util.nbt.getBlockPos
 import org.kryptonmc.krypton.util.nbt.hasBlockPos
@@ -32,7 +32,7 @@ import org.kryptonmc.nbt.StringTag
 import org.kryptonmc.serialization.nbt.NbtOps
 
 @JvmRecord
-data class RespawnData(val position: BlockPos, val dimension: ResourceKey<World>, val angle: Float, val forced: Boolean) {
+data class RespawnData(val position: Vec3i, val dimension: ResourceKey<World>, val angle: Float, val forced: Boolean) {
 
     fun save(data: CompoundTag.Builder, logger: Logger): CompoundTag.Builder = data.apply {
         putBlockPosParts(position, XYZ_PREFIX)

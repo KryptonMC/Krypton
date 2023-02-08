@@ -18,21 +18,21 @@
  */
 package org.kryptonmc.krypton.world.components
 
+import org.kryptonmc.api.util.Vec3i
 import org.kryptonmc.krypton.entity.KryptonEntity
-import org.kryptonmc.krypton.coordinate.BlockPos
 import org.kryptonmc.krypton.world.block.state.KryptonBlockState
 
 interface WriteOnlyWorld {
 
-    fun setBlock(pos: BlockPos, state: KryptonBlockState, flags: Int, recursionLeft: Int): Boolean
+    fun setBlock(pos: Vec3i, state: KryptonBlockState, flags: Int, recursionLeft: Int): Boolean
 
-    fun setBlock(pos: BlockPos, state: KryptonBlockState, flags: Int): Boolean = setBlock(pos, state, flags, 512)
+    fun setBlock(pos: Vec3i, state: KryptonBlockState, flags: Int): Boolean = setBlock(pos, state, flags, 512)
 
-    fun removeBlock(pos: BlockPos, moving: Boolean): Boolean
+    fun removeBlock(pos: Vec3i, moving: Boolean): Boolean
 
-    fun destroyBlock(pos: BlockPos, drop: Boolean, entity: KryptonEntity?, recursionLeft: Int): Boolean
+    fun destroyBlock(pos: Vec3i, drop: Boolean, entity: KryptonEntity?, recursionLeft: Int): Boolean
 
-    fun destroyBlock(pos: BlockPos, drop: Boolean, entity: KryptonEntity?): Boolean = destroyBlock(pos, drop, entity, 512)
+    fun destroyBlock(pos: Vec3i, drop: Boolean, entity: KryptonEntity?): Boolean = destroyBlock(pos, drop, entity, 512)
 
-    fun destroyBlock(pos: BlockPos, drop: Boolean): Boolean = destroyBlock(pos, drop, null)
+    fun destroyBlock(pos: Vec3i, drop: Boolean): Boolean = destroyBlock(pos, drop, null)
 }

@@ -20,13 +20,13 @@ package org.kryptonmc.krypton.entity.hanging
 
 import org.kryptonmc.api.entity.hanging.HangingEntity
 import org.kryptonmc.api.util.Direction
+import org.kryptonmc.api.util.Vec3d
+import org.kryptonmc.api.util.Vec3i
 import org.kryptonmc.krypton.entity.KryptonEntity
 import org.kryptonmc.krypton.entity.serializer.EntitySerializer
 import org.kryptonmc.krypton.entity.serializer.hanging.HangingEntitySerializer
-import org.kryptonmc.krypton.coordinate.BlockPos
 import org.kryptonmc.krypton.util.enumhelper.Directions
 import org.kryptonmc.krypton.util.KryptonBoundingBox
-import org.kryptonmc.krypton.coordinate.KryptonVec3d
 import org.kryptonmc.krypton.world.KryptonWorld
 
 abstract class KryptonHangingEntity(world: KryptonWorld) : KryptonEntity(world), HangingEntity {
@@ -34,7 +34,7 @@ abstract class KryptonHangingEntity(world: KryptonWorld) : KryptonEntity(world),
     override val serializer: EntitySerializer<out KryptonHangingEntity>
         get() = HangingEntitySerializer
 
-    internal var centerPosition: BlockPos? = null
+    internal var centerPosition: Vec3i? = null
     final override var direction: Direction = Direction.SOUTH
         set(value) {
             require(value.axis.isHorizontal())
@@ -69,7 +69,7 @@ abstract class KryptonHangingEntity(world: KryptonWorld) : KryptonEntity(world),
             // for direction WEST (anti clockwise SOUTH), the z becomes centerZ + 1
             z += BLOCK_CENTER_OFFSET * antiClockwise.normalZ
         }
-        position = KryptonVec3d(x, y, z)
+        position = Vec3d(x, y, z)
 
         var widthX = width().toDouble()
         var height = height().toDouble()

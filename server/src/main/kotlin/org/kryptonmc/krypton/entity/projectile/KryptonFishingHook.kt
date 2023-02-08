@@ -26,7 +26,6 @@ import org.kryptonmc.krypton.entity.KryptonEntityTypes
 import org.kryptonmc.krypton.entity.metadata.MetadataKey
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.util.math.Maths
-import org.kryptonmc.krypton.coordinate.KryptonVec3d
 import org.kryptonmc.krypton.util.random.RandomSource
 import org.kryptonmc.krypton.world.KryptonWorld
 
@@ -72,7 +71,7 @@ class KryptonFishingHook(world: KryptonWorld) : KryptonProjectile(world), Fishin
         private fun randomizeBitingVelocity(random: RandomSource, existing: Vec3d): Vec3d {
             // This always comes out to be a number between -0.4 and -0.24. These numbers are from vanilla.
             val randomY = BITING_VELOCITY_MULTIPLIER * Maths.nextFloat(random, BITING_VELOCITY_RANDOMNESS_MIN, 1F)
-            return KryptonVec3d(existing.x, randomY.toDouble(), existing.z)
+            return Vec3d(existing.x, randomY.toDouble(), existing.z)
         }
     }
 }

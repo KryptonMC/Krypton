@@ -18,7 +18,7 @@
  */
 package org.kryptonmc.krypton.world.components
 
-import org.kryptonmc.krypton.coordinate.BlockPos
+import org.kryptonmc.api.util.Vec3i
 
 // TODO: Revise when lighting engine is implemented
 interface BrightnessGetter : BlockGetter {
@@ -27,13 +27,13 @@ interface BrightnessGetter : BlockGetter {
 
     fun getSkyBrightness(x: Int, y: Int, z: Int): Int = 0
 
-    fun getSkyBrightness(pos: BlockPos): Int = getSkyBrightness(pos.x, pos.y, pos.z)
+    fun getSkyBrightness(pos: Vec3i): Int = getSkyBrightness(pos.x, pos.y, pos.z)
 
     fun getBlockBrightness(x: Int, y: Int, z: Int): Int = 0
 
-    fun getBlockBrightness(pos: BlockPos): Int = getBlockBrightness(pos.x, pos.y, pos.z)
+    fun getBlockBrightness(pos: Vec3i): Int = getBlockBrightness(pos.x, pos.y, pos.z)
 
     fun canSeeSky(x: Int, y: Int, z: Int): Boolean = getSkyBrightness(x, y, z) >= maximumLightLevel()
 
-    fun canSeeSky(pos: BlockPos): Boolean = canSeeSky(pos.x, pos.y, pos.z)
+    fun canSeeSky(pos: Vec3i): Boolean = canSeeSky(pos.x, pos.y, pos.z)
 }

@@ -19,7 +19,7 @@
 package org.kryptonmc.krypton.world.block.data
 
 import org.kryptonmc.api.util.Direction
-import org.kryptonmc.krypton.coordinate.BlockPos
+import org.kryptonmc.api.util.Vec3i
 import org.kryptonmc.krypton.shapes.Shapes
 import org.kryptonmc.krypton.shapes.util.BooleanOperator
 import org.kryptonmc.krypton.world.block.KryptonBlock
@@ -30,23 +30,23 @@ enum class SupportType {
 
     FULL {
 
-        override fun isSupporting(state: KryptonBlockState, world: BlockGetter, pos: BlockPos, face: Direction): Boolean =
+        override fun isSupporting(state: KryptonBlockState, world: BlockGetter, pos: Vec3i, face: Direction): Boolean =
             KryptonBlock.isFaceFull(state.getBlockSupportShape(world, pos), face)
     },
     CENTER {
 
         private val supportShape = KryptonBlock.box(7.0, 0.0, 7.0, 9.0, 10.0, 9.0)
 
-        override fun isSupporting(state: KryptonBlockState, world: BlockGetter, pos: BlockPos, face: Direction): Boolean =
+        override fun isSupporting(state: KryptonBlockState, world: BlockGetter, pos: Vec3i, face: Direction): Boolean =
             !Shapes.joinIsNotEmpty(state.getBlockSupportShape(world, pos).getFaceShape(face), supportShape, BooleanOperator.ONLY_SECOND)
     },
     RIGID {
 
         private val supportShape = Shapes.join(Shapes.block(), KryptonBlock.box(2.0, 0.0, 2.0, 14.0, 16.0, 14.0), BooleanOperator.ONLY_FIRST)
 
-        override fun isSupporting(state: KryptonBlockState, world: BlockGetter, pos: BlockPos, face: Direction): Boolean =
+        override fun isSupporting(state: KryptonBlockState, world: BlockGetter, pos: Vec3i, face: Direction): Boolean =
             !Shapes.joinIsNotEmpty(state.getBlockSupportShape(world, pos).getFaceShape(face), supportShape, BooleanOperator.ONLY_FIRST)
     };
 
-    abstract fun isSupporting(state: KryptonBlockState, world: BlockGetter, pos: BlockPos, face: Direction): Boolean
+    abstract fun isSupporting(state: KryptonBlockState, world: BlockGetter, pos: Vec3i, face: Direction): Boolean
 }

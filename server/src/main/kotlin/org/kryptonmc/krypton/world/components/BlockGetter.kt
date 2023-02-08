@@ -40,7 +40,7 @@ interface BlockGetter : HeightAccessor, BlockContainer, FluidGetter, BlockEntity
 
     fun getBlockStates(area: BoundingBox): Stream<KryptonBlockState> = BlockPos.betweenClosedStream(area).map(::getBlock)
 
-    fun isEmptyBlock(pos: BlockPos): Boolean = getBlock(pos).isAir
+    fun isEmptyBlock(pos: Vec3i): Boolean = getBlock(pos).isAir
 
     fun containsAnyLiquid(area: BoundingBox): Boolean {
         val minX = Maths.floor(area.minimumX)

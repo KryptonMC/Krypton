@@ -19,13 +19,13 @@
 package org.kryptonmc.krypton.packet.out.play
 
 import io.netty.buffer.ByteBuf
+import org.kryptonmc.api.util.Vec3i
 import org.kryptonmc.krypton.packet.Packet
-import org.kryptonmc.krypton.coordinate.BlockPos
 import org.kryptonmc.krypton.util.readBlockPos
 import org.kryptonmc.krypton.util.writeBlockPos
 
 @JvmRecord
-data class PacketOutSetDefaultSpawnPosition(val position: BlockPos, val angle: Float) : Packet {
+data class PacketOutSetDefaultSpawnPosition(val position: Vec3i, val angle: Float) : Packet {
 
     constructor(buf: ByteBuf) : this(buf.readBlockPos(), buf.readFloat())
 

@@ -22,6 +22,7 @@ import com.github.benmanes.caffeine.cache.CacheLoader
 import com.github.benmanes.caffeine.cache.Caffeine
 import com.github.benmanes.caffeine.cache.LoadingCache
 import org.kryptonmc.api.util.Direction
+import org.kryptonmc.api.util.Vec3i
 import org.kryptonmc.krypton.coordinate.BlockPos
 import org.kryptonmc.krypton.world.components.WorldAccessor
 import java.util.function.Predicate
@@ -43,7 +44,7 @@ class BlockPattern(private val pattern: Array<Array<Array<Predicate<BlockInWorld
         }
     }
 
-    fun find(world: WorldAccessor, position: BlockPos): BlockPatternMatch? {
+    fun find(world: WorldAccessor, position: Vec3i): BlockPatternMatch? {
         val cache = createCache(world, false)
         val max = max(max(width, height), depth)
         BlockPos.betweenClosed(position, position.add(max - 1, max - 1, max - 1)).forEach { pos ->
@@ -58,7 +59,7 @@ class BlockPattern(private val pattern: Array<Array<Array<Predicate<BlockInWorld
         return null
     }
 
-    private fun matches(position: BlockPos, forwards: Direction, up: Direction, cache: LoadingCache<BlockPos, BlockInWorld>): BlockPatternMatch? {
+    private fun matches(position: Vec3i, forwards: Direction, up: Direction, cache: LoadingCache<Vec3i, BlockInWorld>): BlockPatternMatch? {
         for (x in 0 until width) {
             for (y in 0 until height) {
                 for (z in 0 until depth) {
@@ -69,16 +70,16 @@ class BlockPattern(private val pattern: Array<Array<Array<Predicate<BlockInWorld
         return BlockPatternMatch(position, forwards, up, cache, width, height, depth)
     }
 
-    private class BlockCacheLoader(private val world: WorldAccessor, private val loadChunks: Boolean) : CacheLoader<BlockPos, BlockInWorld> {
+    private class BlockCacheLoader(private val world: WorldAccessor, private val loadChunks: Boolean) : CacheLoader<Vec3i, BlockInWorld> {
 
-        override fun load(key: BlockPos): BlockInWorld = BlockInWorld(world, key, loadChunks)
+        override fun load(key: Vec3i): BlockInWorld = BlockInWorld(world, key, loadChunks)
     }
 
     class BlockPatternMatch(
-        val frontTopLeft: BlockPos,
+        val frontTopLeft: Vec3i,
         val forwards: Direction,
         val up: Direction,
-        private val cache: LoadingCache<BlockPos, BlockInWorld>,
+        private val cache: LoadingCache<Vec3i, BlockInWorld>,
         val width: Int,
         val height: Int,
         val depth: Int
@@ -92,7 +93,7 @@ class BlockPattern(private val pattern: Array<Array<Array<Predicate<BlockInWorld
     companion object {
 
         @JvmStatic
-        private fun translateAndRotate(position: BlockPos, forwards: Direction, up: Direction, x: Int, y: Int, z: Int): BlockPos {
+        private fun translateAndRotate(position: Vec3i, forwards: Direction, up: Direction, x: Int, y: Int, z: Int): Vec3i {
             require(forwards != up && forwards != up.opposite) { "Invalid forwards and up combination!" }
             val crossed = forwards.normal.cross(up.normal)
             return position.add(
@@ -103,7 +104,7 @@ class BlockPattern(private val pattern: Array<Array<Array<Predicate<BlockInWorld
         }
 
         @JvmStatic
-        private fun createCache(world: WorldAccessor, loadChunks: Boolean): LoadingCache<BlockPos, BlockInWorld> =
+        private fun createCache(world: WorldAccessor, loadChunks: Boolean): LoadingCache<Vec3i, BlockInWorld> =
             Caffeine.newBuilder().build(BlockCacheLoader(world, loadChunks))
     }
 }

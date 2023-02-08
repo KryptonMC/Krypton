@@ -21,7 +21,6 @@ package org.kryptonmc.krypton.world.components
 import org.kryptonmc.api.fluid.FluidContainer
 import org.kryptonmc.api.tags.FluidTags
 import org.kryptonmc.api.util.Vec3i
-import org.kryptonmc.krypton.coordinate.BlockPos
 import org.kryptonmc.krypton.world.fluid.KryptonFluidState
 
 interface FluidGetter : FluidContainer {
@@ -30,5 +29,5 @@ interface FluidGetter : FluidContainer {
 
     override fun getFluid(position: Vec3i): KryptonFluidState = getFluid(position.x, position.y, position.z)
 
-    fun isWaterAt(pos: BlockPos): Boolean = getFluid(pos).eq(FluidTags.WATER)
+    fun isWaterAt(pos: Vec3i): Boolean = getFluid(pos).eq(FluidTags.WATER)
 }

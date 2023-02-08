@@ -31,8 +31,6 @@ import org.kryptonmc.krypton.entity.EntityManager
 import org.kryptonmc.krypton.entity.KryptonEntity
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.packet.Packet
-import org.kryptonmc.krypton.coordinate.BlockPos
-import org.kryptonmc.krypton.coordinate.SectionPos
 import org.kryptonmc.krypton.world.KryptonWorldBorder
 import org.kryptonmc.krypton.world.block.entity.KryptonBlockEntity
 import org.kryptonmc.krypton.world.block.state.KryptonBlockState
@@ -62,8 +60,8 @@ interface BaseWorld : World, WorldAccessor, PacketGroupingAudience {
         get() = data.name
     override val folder: Path
         get() = data.folder
-    override val spawnLocation: BlockPos
-        get() = BlockPos(data.spawnX, data.spawnY, data.spawnZ)
+    override val spawnLocation: Vec3i
+        get() = Vec3i(data.spawnX, data.spawnY, data.spawnZ)
     override val difficulty: Difficulty
         get() = data.difficulty
     override val gameMode: GameMode
@@ -89,11 +87,13 @@ interface BaseWorld : World, WorldAccessor, PacketGroupingAudience {
 
     override fun getBlock(position: Vec3i): KryptonBlockState = getBlock(position.x, position.y, position.z)
 
-    override fun setBlock(x: Int, y: Int, z: Int, block: BlockState, flags: BlockChangeFlags): Boolean =
-        setBlock(BlockPos(x, y, z), block.downcast(), flags.raw)
+    override fun setBlock(x: Int, y: Int, z: Int, block: BlockState, flags: BlockChangeFlags): Boolean {
+        return setBlock(Vec3i(x, y, z), block.downcast(), flags.raw)
+    }
 
-    override fun setBlock(position: Vec3i, block: BlockState, flags: BlockChangeFlags): Boolean =
-        setBlock(BlockPos.from(position), block.downcast(), flags.raw)
+    override fun setBlock(position: Vec3i, block: BlockState, flags: BlockChangeFlags): Boolean {
+        return setBlock(position, block.downcast(), flags.raw)
+    }
 
     override fun getFluid(x: Int, y: Int, z: Int): KryptonFluidState
 
@@ -101,11 +101,7 @@ interface BaseWorld : World, WorldAccessor, PacketGroupingAudience {
 
     override fun getBlockEntity(x: Int, y: Int, z: Int): KryptonBlockEntity? = null
 
-    override fun getChunkAt(x: Int, z: Int): KryptonChunk? = chunkManager.getChunk(x, z)
-
-    override fun getChunk(x: Int, y: Int, z: Int): KryptonChunk? = getChunkAt(SectionPos.blockToSection(x), SectionPos.blockToSection(z))
-
-    override fun getChunk(position: Vec3i): KryptonChunk? = getChunk(position.x, position.y, position.z)
+    override fun getChunk(x: Int, z: Int): KryptonChunk? = chunkManager.getChunk(x, z)
 
     override fun loadChunk(x: Int, z: Int): KryptonChunk? = chunkManager.loadChunk(ChunkPos(x, z))
 

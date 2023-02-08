@@ -27,12 +27,12 @@ import org.kryptonmc.api.entity.EntityType
 import org.kryptonmc.api.entity.EntityTypes
 import org.kryptonmc.api.resource.ResourceKey
 import org.kryptonmc.api.util.Vec3d
+import org.kryptonmc.api.util.Vec3i
 import org.kryptonmc.api.world.Difficulty
 import org.kryptonmc.api.world.World
 import org.kryptonmc.api.world.biome.Biome
 import org.kryptonmc.api.world.biome.Biomes
 import org.kryptonmc.krypton.KryptonServer
-import org.kryptonmc.krypton.coordinate.BlockPos
 import org.kryptonmc.krypton.coordinate.SectionPos
 import org.kryptonmc.krypton.effect.sound.downcast
 import org.kryptonmc.krypton.entity.EntityFactory
@@ -150,11 +150,11 @@ class KryptonWorld(
         entityManager.removeEntity(entity)
     }
 
-    override fun worldEvent(pos: BlockPos, event: Int, data: Int, except: KryptonPlayer?) {
+    override fun worldEvent(pos: Vec3i, event: Int, data: Int, except: KryptonPlayer?) {
         server.playerManager.broadcast(PacketOutWorldEvent(event, pos, data, false), this, pos, 64.0, except)
     }
 
-    override fun playSound(pos: BlockPos, event: SoundEvent, source: Sound.Source, volume: Float, pitch: Float, except: KryptonPlayer?) {
+    override fun playSound(pos: Vec3i, event: SoundEvent, source: Sound.Source, volume: Float, pitch: Float, except: KryptonPlayer?) {
         playSound(pos.x + 0.5, pos.y + 0.5, pos.z + 0.5, event, source, volume, pitch, except)
     }
 
@@ -183,7 +183,7 @@ class KryptonWorld(
     // TODO: Check world border bounds
     fun canInteract(player: KryptonPlayer, x: Int, z: Int): Boolean = !server.isProtected(this, x, z, player)
 
-    fun broadcastBlockDestroyProgress(sourceId: Int, position: BlockPos, state: Int) {
+    fun broadcastBlockDestroyProgress(sourceId: Int, position: Vec3i, state: Int) {
         val packet = PacketOutSetBlockDestroyStage(sourceId, position, state)
         server.connectionManager.sendGroupedPacket(packet) {
             if (it.world !== this || it.id == sourceId) return@sendGroupedPacket false
@@ -196,12 +196,12 @@ class KryptonWorld(
 
     override fun getBlock(x: Int, y: Int, z: Int): KryptonBlockState {
         if (isOutsideBuildHeight(y)) return KryptonBlocks.VOID_AIR.defaultState
-        return getChunkAt(SectionPos.blockToSection(x), SectionPos.blockToSection(z))?.getBlock(x, y, z) ?: KryptonBlocks.AIR.defaultState
+        return getChunk(SectionPos.blockToSection(x), SectionPos.blockToSection(z))?.getBlock(x, y, z) ?: KryptonBlocks.AIR.defaultState
     }
 
     override fun getFluid(x: Int, y: Int, z: Int): KryptonFluidState {
         if (isOutsideBuildHeight(y)) return KryptonFluids.EMPTY.defaultState
-        return getChunkAt(SectionPos.blockToSection(x), SectionPos.blockToSection(z))?.getFluid(x, y, z) ?: KryptonFluids.EMPTY.defaultState
+        return getChunk(SectionPos.blockToSection(x), SectionPos.blockToSection(z))?.getFluid(x, y, z) ?: KryptonFluids.EMPTY.defaultState
     }
 
     override fun getChunk(x: Int, z: Int, requiredStatus: ChunkStatus, shouldCreate: Boolean): ChunkAccessor? = null // FIXME
@@ -218,10 +218,10 @@ class KryptonWorld(
         return seaLevel() + 1
     }
 
-    override fun setBlock(pos: BlockPos, state: KryptonBlockState, flags: Int, recursionLeft: Int): Boolean {
+    override fun setBlock(pos: Vec3i, state: KryptonBlockState, flags: Int, recursionLeft: Int): Boolean {
         if (isOutsideBuildHeight(pos)) return false
 //        if (isDebug) return false
-        val chunk = getChunk(pos) ?: return false
+        val chunk = getChunk(pos.chunkX(), pos.chunkZ()) ?: return false
         val block = state.block
         val oldState = chunk.setBlock(pos, state, flags and SetBlockFlag.BLOCK_MOVING != 0) ?: return false
         val newState = getBlock(pos)
@@ -245,18 +245,18 @@ class KryptonWorld(
         return true
     }
 
-    private fun canUpdateLighting(pos: BlockPos, oldState: KryptonBlockState, newState: KryptonBlockState): Boolean =
+    private fun canUpdateLighting(pos: Vec3i, oldState: KryptonBlockState, newState: KryptonBlockState): Boolean =
         newState.getLightBlock(this, pos) != oldState.getLightBlock(this, pos) ||
                 newState.lightEmission != oldState.lightEmission ||
                 newState.useShapeForLightOcclusion != oldState.useShapeForLightOcclusion
 
     @Suppress("UnusedPrivateMember")
-    fun sendBlockUpdated(pos: BlockPos, oldState: KryptonBlockState, newState: KryptonBlockState) {
+    fun sendBlockUpdated(pos: Vec3i, oldState: KryptonBlockState, newState: KryptonBlockState) {
         server.connectionManager.sendGroupedPacket(players, PacketOutBlockUpdate(pos, newState))
         // TODO: Update pathfinding mobs
     }
 
-    private fun updateNeighbourForOutputSignal(pos: BlockPos, block: KryptonBlock) {
+    private fun updateNeighbourForOutputSignal(pos: Vec3i, block: KryptonBlock) {
         Directions.Plane.HORIZONTAL.forEach { direction ->
             var neighbourPos = pos.relative(direction)
             if (!hasChunkAt(neighbourPos)) return@forEach
@@ -271,27 +271,27 @@ class KryptonWorld(
         }
     }
 
-    private fun updateNeighboursAt(pos: BlockPos, block: KryptonBlock) {
+    private fun updateNeighboursAt(pos: Vec3i, block: KryptonBlock) {
         neighbourUpdater.updateNeighboursAtExceptFromFacing(pos, block, null)
     }
 
-    private fun neighbourChanged(state: KryptonBlockState, pos: BlockPos, block: KryptonBlock, neighbourPos: BlockPos, moving: Boolean) {
+    private fun neighbourChanged(state: KryptonBlockState, pos: Vec3i, block: KryptonBlock, neighbourPos: Vec3i, moving: Boolean) {
         neighbourUpdater.neighbourChanged(state, pos, block, neighbourPos, moving)
     }
 
     @Suppress("UnusedPrivateMember")
-    private fun onBlockStateChange(pos: BlockPos, oldState: KryptonBlockState, newState: KryptonBlockState) {
+    private fun onBlockStateChange(pos: Vec3i, oldState: KryptonBlockState, newState: KryptonBlockState) {
         // TODO: Do POI updates
     }
 
-    override fun blockUpdated(pos: BlockPos, block: KryptonBlock) {
+    override fun blockUpdated(pos: Vec3i, block: KryptonBlock) {
         updateNeighboursAt(pos, block)
     }
 
-    override fun removeBlock(pos: BlockPos, moving: Boolean): Boolean =
+    override fun removeBlock(pos: Vec3i, moving: Boolean): Boolean =
         setBlock(pos, getFluid(pos).asBlock(), SetBlockFlag.UPDATE_NOTIFY or if (moving) SetBlockFlag.BLOCK_MOVING else 0)
 
-    override fun destroyBlock(pos: BlockPos, drop: Boolean, entity: KryptonEntity?, recursionLeft: Int): Boolean {
+    override fun destroyBlock(pos: Vec3i, drop: Boolean, entity: KryptonEntity?, recursionLeft: Int): Boolean {
         val state = getBlock(pos)
         if (state.isAir) return false
         val fluid = getFluid(pos)

@@ -19,10 +19,10 @@
 package org.kryptonmc.krypton.item.handler
 
 import org.kryptonmc.api.tags.BlockTags
+import org.kryptonmc.api.util.Vec3i
 import org.kryptonmc.api.world.GameMode
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.item.KryptonItemStack
-import org.kryptonmc.krypton.coordinate.BlockPos
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.krypton.world.block.KryptonBlocks
 import org.kryptonmc.krypton.world.block.state.KryptonBlockState
@@ -34,7 +34,7 @@ object SwordHandler : ItemHandler {
     private const val PLANT_LEAVES_VEGETABLE_DESTROY_SPEED = 1.5F
     private const val DEFAULT_DESTROY_SPEED = 1F
 
-    override fun canAttackBlock(player: KryptonPlayer, world: KryptonWorld, block: KryptonBlockState, pos: BlockPos): Boolean =
+    override fun canAttackBlock(player: KryptonPlayer, world: KryptonWorld, block: KryptonBlockState, pos: Vec3i): Boolean =
         player.gameMode != GameMode.CREATIVE
 
     override fun destroySpeed(item: KryptonItemStack, block: KryptonBlockState): Float {
@@ -49,9 +49,7 @@ object SwordHandler : ItemHandler {
 
     override fun isCorrectTool(block: KryptonBlockState): Boolean = block.eq(KryptonBlocks.COBWEB)
 
-    override fun mineBlock(player: KryptonPlayer, item: KryptonItemStack, world: KryptonWorld, block: KryptonBlockState,
-                           pos: BlockPos
-    ): Boolean {
+    override fun mineBlock(player: KryptonPlayer, item: KryptonItemStack, world: KryptonWorld, block: KryptonBlockState, pos: Vec3i): Boolean {
         return true
     }
 }

@@ -20,7 +20,7 @@ package org.kryptonmc.krypton.world.redstone
 
 import org.apache.logging.log4j.LogManager
 import org.kryptonmc.api.util.Direction
-import org.kryptonmc.krypton.coordinate.BlockPos
+import org.kryptonmc.api.util.Vec3i
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.krypton.world.block.KryptonBlock
 import org.kryptonmc.krypton.world.block.state.KryptonBlockState
@@ -35,30 +35,31 @@ class BatchingNeighbourUpdater(private val world: KryptonWorld, private val maxC
     private val addedThisLayer = ArrayList<NeighbourUpdates>()
     private var count = 0
 
-    override fun shapeUpdate(direction: Direction, state: KryptonBlockState, pos: BlockPos, neighbourPos: BlockPos, flags: Int, recursionLeft: Int) {
-        addAndRun(pos, ShapeUpdate(direction, state, pos.immutable(), neighbourPos.immutable(), flags))
+    override fun shapeUpdate(direction: Direction, state: KryptonBlockState, pos: Vec3i, neighbourPos: Vec3i, flags: Int,
+                             recursionLeft: Int) {
+        addAndRun(pos, ShapeUpdate(direction, state, pos, neighbourPos, flags))
     }
 
-    override fun neighbourChanged(pos: BlockPos, block: KryptonBlock, neighbourPos: BlockPos) {
+    override fun neighbourChanged(pos: Vec3i, block: KryptonBlock, neighbourPos: Vec3i) {
         addAndRun(pos, SimpleNeighbourUpdate(pos, block, neighbourPos))
     }
 
-    override fun neighbourChanged(state: KryptonBlockState, pos: BlockPos, block: KryptonBlock, neighbourPos: BlockPos, moving: Boolean) {
-        addAndRun(pos, FullNeighbourUpdate(state, pos.immutable(), block, neighbourPos.immutable(), moving))
+    override fun neighbourChanged(state: KryptonBlockState, pos: Vec3i, block: KryptonBlock, neighbourPos: Vec3i, moving: Boolean) {
+        addAndRun(pos, FullNeighbourUpdate(state, pos, block, neighbourPos, moving))
     }
 
-    override fun updateNeighboursAtExceptFromFacing(pos: BlockPos, block: KryptonBlock, except: Direction?) {
-        addAndRun(pos, MultiNeighbourUpdate(pos.immutable(), block, except))
+    override fun updateNeighboursAtExceptFromFacing(pos: Vec3i, block: KryptonBlock, except: Direction?) {
+        addAndRun(pos, MultiNeighbourUpdate(pos, block, except))
     }
 
-    private fun addAndRun(pos: BlockPos, updates: NeighbourUpdates) {
+    private fun addAndRun(pos: Vec3i, updates: NeighbourUpdates) {
         val haveUpdates = count > 0
         val tooManyUpdates = maxChainedUpdates >= 0 && count >= maxChainedUpdates
         ++count
         if (!tooManyUpdates) {
             if (haveUpdates) addedThisLayer.add(updates) else stack.push(updates)
         } else if (count - 1 == maxChainedUpdates) {
-            LOGGER.error("Too many chained neighbour updates! Skipping the rest. First skipped position: ${pos.toShortString()}")
+            LOGGER.error("Too many chained neighbour updates! Skipping the rest. First skipped position: $pos")
         }
         if (!haveUpdates) runUpdates()
     }
@@ -90,8 +91,8 @@ class BatchingNeighbourUpdater(private val world: KryptonWorld, private val maxC
         fun runNext(world: KryptonWorld): Boolean
     }
 
-    private class FullNeighbourUpdate(private val state: KryptonBlockState, private val pos: BlockPos, private val block: KryptonBlock,
-                                      private val neighbourPos: BlockPos, private val movedByPiston: Boolean) : NeighbourUpdates {
+    private class FullNeighbourUpdate(private val state: KryptonBlockState, private val pos: Vec3i, private val block: KryptonBlock,
+                                      private val neighbourPos: Vec3i, private val movedByPiston: Boolean) : NeighbourUpdates {
 
         override fun runNext(world: KryptonWorld): Boolean {
             NeighbourUpdater.executeUpdate(world, state, pos, block, neighbourPos, movedByPiston)
@@ -99,7 +100,7 @@ class BatchingNeighbourUpdater(private val world: KryptonWorld, private val maxC
         }
     }
 
-    private class MultiNeighbourUpdate(private val sourcePos: BlockPos, private val sourceBlock: KryptonBlock,
+    private class MultiNeighbourUpdate(private val sourcePos: Vec3i, private val sourceBlock: KryptonBlock,
                                        private val skipDirection: Direction?) : NeighbourUpdates {
 
         private var index = 0
@@ -117,8 +118,8 @@ class BatchingNeighbourUpdater(private val world: KryptonWorld, private val maxC
         }
     }
 
-    private class ShapeUpdate(private val direction: Direction, private val state: KryptonBlockState, private val pos: BlockPos,
-                              private val neighbourPos: BlockPos, private val updateFlags: Int) : NeighbourUpdates {
+    private class ShapeUpdate(private val direction: Direction, private val state: KryptonBlockState, private val pos: Vec3i,
+                              private val neighbourPos: Vec3i, private val updateFlags: Int) : NeighbourUpdates {
 
         override fun runNext(world: KryptonWorld): Boolean {
             NeighbourUpdater.executeShapeUpdate(world, direction, state, pos, neighbourPos, updateFlags, 512)
@@ -126,9 +127,8 @@ class BatchingNeighbourUpdater(private val world: KryptonWorld, private val maxC
         }
     }
 
-    private class SimpleNeighbourUpdate(private val pos: BlockPos, private val block: KryptonBlock,
-                                        private val neighbourPos: BlockPos
-    ) : NeighbourUpdates {
+    private class SimpleNeighbourUpdate(private val pos: Vec3i, private val block: KryptonBlock,
+                                        private val neighbourPos: Vec3i) : NeighbourUpdates {
 
         override fun runNext(world: KryptonWorld): Boolean {
             NeighbourUpdater.executeUpdate(world, world.getBlock(pos), pos, block, neighbourPos, false)

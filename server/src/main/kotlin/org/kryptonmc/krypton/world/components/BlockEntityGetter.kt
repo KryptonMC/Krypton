@@ -20,7 +20,7 @@ package org.kryptonmc.krypton.world.components
 
 import org.kryptonmc.api.block.entity.BlockEntityContainer
 import org.kryptonmc.api.block.entity.BlockEntityType
-import org.kryptonmc.krypton.coordinate.BlockPos
+import org.kryptonmc.api.util.Vec3i
 import org.kryptonmc.krypton.world.block.entity.KryptonBlockEntity
 
 interface BlockEntityGetter : BlockEntityContainer {
@@ -28,7 +28,7 @@ interface BlockEntityGetter : BlockEntityContainer {
     override fun getBlockEntity(x: Int, y: Int, z: Int): KryptonBlockEntity?
 
     @Suppress("UNCHECKED_CAST")
-    fun <T : KryptonBlockEntity> getBlockEntity(pos: BlockPos, type: BlockEntityType<T>): T? {
+    fun <T : KryptonBlockEntity> getBlockEntity(pos: Vec3i, type: BlockEntityType<T>): T? {
         val entity = getBlockEntity(pos)
         return if (entity != null && entity.type === type) entity as T else null
     }

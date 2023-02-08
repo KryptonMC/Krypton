@@ -19,8 +19,8 @@
 package org.kryptonmc.krypton.world.chunk
 
 import org.apache.logging.log4j.LogManager
+import org.kryptonmc.api.util.Vec3i
 import org.kryptonmc.api.world.biome.Biome
-import org.kryptonmc.krypton.coordinate.BlockPos
 import org.kryptonmc.krypton.coordinate.ChunkPos
 import org.kryptonmc.krypton.util.math.Maths
 import org.kryptonmc.krypton.coordinate.QuartPos
@@ -66,7 +66,7 @@ abstract class ChunkAccessor(
 
     fun highestSectionY(): Int = highestSection()?.bottomBlockY ?: minimumBuildHeight()
 
-    abstract fun setBlock(pos: BlockPos, state: KryptonBlockState, moving: Boolean): KryptonBlockState?
+    abstract fun setBlock(pos: Vec3i, state: KryptonBlockState, moving: Boolean): KryptonBlockState?
 
     private fun getSection(index: Int): ChunkSection = sections[index]!!
 

@@ -24,6 +24,7 @@ import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.block.BlockSoundGroup
 import org.kryptonmc.api.block.BlockState
 import org.kryptonmc.api.util.Direction
+import org.kryptonmc.api.util.Vec3i
 import org.kryptonmc.internal.annotations.CataloguedBy
 import org.kryptonmc.krypton.item.KryptonItemType
 import org.kryptonmc.krypton.registry.holder.Holder
@@ -34,7 +35,6 @@ import org.kryptonmc.krypton.shapes.VoxelShape
 import org.kryptonmc.krypton.state.StateDefinition
 import org.kryptonmc.krypton.state.StateHolderDelegate
 import org.kryptonmc.krypton.state.property.KryptonProperty
-import org.kryptonmc.krypton.coordinate.BlockPos
 import org.kryptonmc.krypton.util.map.IntHashBiMap
 import org.kryptonmc.krypton.util.Keys
 import org.kryptonmc.krypton.world.components.WorldAccessor
@@ -154,7 +154,7 @@ class KryptonBlock(
         fun isShapeFullBlock(shape: VoxelShape): Boolean = SHAPE_FULL_BLOCK_CACHE.get(shape)
 
         @JvmStatic
-        fun updateOrDestroy(oldState: KryptonBlockState, newState: KryptonBlockState, world: WorldAccessor, pos: BlockPos, flags: Int,
+        fun updateOrDestroy(oldState: KryptonBlockState, newState: KryptonBlockState, world: WorldAccessor, pos: Vec3i, flags: Int,
                             recursionLeft: Int) {
             if (oldState === newState) return
             if (oldState.isAir) {

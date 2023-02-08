@@ -21,11 +21,11 @@ package org.kryptonmc.krypton.item.handler
 import net.kyori.adventure.text.Component
 import org.kryptonmc.api.entity.Hand
 import org.kryptonmc.api.item.ItemTypes
+import org.kryptonmc.api.util.Vec3i
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.item.KryptonItemStack
 import org.kryptonmc.krypton.registry.KryptonRegistries
 import org.kryptonmc.krypton.state.property.KryptonProperty
-import org.kryptonmc.krypton.coordinate.BlockPos
 import org.kryptonmc.krypton.util.collection.Iterables
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.krypton.world.block.state.KryptonBlockState
@@ -36,7 +36,7 @@ object DebugStickHandler : ItemHandler {
 
     private val translation by lazy { ItemTypes.DEBUG_STICK.get().translationKey() }
 
-    override fun canAttackBlock(player: KryptonPlayer, world: KryptonWorld, block: KryptonBlockState, pos: BlockPos): Boolean {
+    override fun canAttackBlock(player: KryptonPlayer, world: KryptonWorld, block: KryptonBlockState, pos: Vec3i): Boolean {
         handleInteraction(player, world, block, pos, false, player.getHeldItem(Hand.MAIN)) { player.setHeldItem(Hand.MAIN, it) }
         return false
     }
@@ -57,7 +57,7 @@ object DebugStickHandler : ItemHandler {
     // TODO: We need to get information about where the item was so we can replace it with a copy that has the modified metadata,
     //  as all item stacks are immutable, so we can't just simply modify the data on the item like vanilla does.
     @JvmStatic
-    private fun handleInteraction(player: KryptonPlayer, world: KryptonWorld, state: KryptonBlockState, pos: BlockPos, isUse: Boolean,
+    private fun handleInteraction(player: KryptonPlayer, world: KryptonWorld, state: KryptonBlockState, pos: Vec3i, isUse: Boolean,
                                   item: KryptonItemStack, setter: Consumer<KryptonItemStack>): Boolean {
         if (!player.canUseGameMasterBlocks()) return false
         val block = state.block

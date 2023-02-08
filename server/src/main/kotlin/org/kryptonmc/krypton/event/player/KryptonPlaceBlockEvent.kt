@@ -24,13 +24,13 @@ import org.kryptonmc.api.entity.player.Player
 import org.kryptonmc.api.event.player.PlaceBlockEvent
 import org.kryptonmc.api.event.type.AbstractDeniableEvent
 import org.kryptonmc.api.util.Direction
-import org.kryptonmc.krypton.coordinate.BlockPos
+import org.kryptonmc.api.util.Vec3i
 
 class KryptonPlaceBlockEvent(
     override val player: Player,
     override val block: BlockState,
     override val hand: Hand,
-    override val position: BlockPos,
+    override val position: Vec3i,
     override val face: Direction,
     override val isInsideBlock: Boolean
 ) : AbstractDeniableEvent(), PlaceBlockEvent

@@ -28,12 +28,12 @@ public enum class Direction(
     public val normal: Vec3i
 ) {
 
-    DOWN(1, Axis.Y, AxisDirection.NEGATIVE, Vec3i.of(0, -1, 0)),
-    UP(0, Axis.Y, AxisDirection.POSITIVE, Vec3i.of(0, 1, 0)),
-    NORTH(3, Axis.Z, AxisDirection.NEGATIVE, Vec3i.of(0, 0, -1)),
-    SOUTH(2, Axis.Z, AxisDirection.POSITIVE, Vec3i.of(0, 0, 1)),
-    WEST(5, Axis.X, AxisDirection.NEGATIVE, Vec3i.of(-1, 0, 0)),
-    EAST(4, Axis.X, AxisDirection.POSITIVE, Vec3i.of(1, 0, 0));
+    DOWN(1, Axis.Y, AxisDirection.NEGATIVE, Vec3i(0, -1, 0)),
+    UP(0, Axis.Y, AxisDirection.POSITIVE, Vec3i(0, 1, 0)),
+    NORTH(3, Axis.Z, AxisDirection.NEGATIVE, Vec3i(0, 0, -1)),
+    SOUTH(2, Axis.Z, AxisDirection.POSITIVE, Vec3i(0, 0, 1)),
+    WEST(5, Axis.X, AxisDirection.NEGATIVE, Vec3i(-1, 0, 0)),
+    EAST(4, Axis.X, AxisDirection.POSITIVE, Vec3i(1, 0, 0));
 
     /**
      * The normal on the X axis.

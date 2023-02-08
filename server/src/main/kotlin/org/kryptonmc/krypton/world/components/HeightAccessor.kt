@@ -18,7 +18,7 @@
  */
 package org.kryptonmc.krypton.world.components
 
-import org.kryptonmc.krypton.coordinate.BlockPos
+import org.kryptonmc.api.util.Vec3i
 import org.kryptonmc.krypton.coordinate.SectionPos
 
 interface HeightAccessor {
@@ -41,7 +41,7 @@ interface HeightAccessor {
 
     fun getSectionYFromSectionIndex(index: Int): Int = index + minimumSection()
 
-    fun isOutsideBuildHeight(pos: BlockPos): Boolean = isOutsideBuildHeight(pos.y)
+    fun isOutsideBuildHeight(pos: Vec3i): Boolean = isOutsideBuildHeight(pos.y)
 
     fun isOutsideBuildHeight(y: Int): Boolean = y < minimumBuildHeight() || y >= maximumBuildHeight()
 }

@@ -27,8 +27,7 @@ import org.kryptonmc.api.entity.Hand
 import org.kryptonmc.api.tags.TagKey
 import org.kryptonmc.api.util.Direction
 import org.kryptonmc.api.util.Vec3d
-import org.kryptonmc.krypton.coordinate.BlockPos
-import org.kryptonmc.krypton.coordinate.KryptonVec3d
+import org.kryptonmc.api.util.Vec3i
 import org.kryptonmc.krypton.entity.KryptonEntity
 import org.kryptonmc.krypton.entity.KryptonEntityType
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
@@ -124,44 +123,44 @@ class KryptonBlockState(
         if (!block.properties.hasDynamicShape) cache = Cache(asState())
     }
 
-    fun isValidSpawn(world: BlockGetter, pos: BlockPos, type: KryptonEntityType<*>): Boolean =
+    fun isValidSpawn(world: BlockGetter, pos: Vec3i, type: KryptonEntityType<*>): Boolean =
         block.propertiesProvider.isValidSpawn(asState(), world, pos, type)
 
-    fun propagatesSkylightDown(world: BlockGetter, pos: BlockPos): Boolean {
+    fun propagatesSkylightDown(world: BlockGetter, pos: Vec3i): Boolean {
         return cache?.propagatesSkylightDown ?: block.propertiesProvider.propagatesSkylightDown(asState(), world, pos)
     }
 
-    fun getLightBlock(world: BlockGetter, pos: BlockPos): Int {
+    fun getLightBlock(world: BlockGetter, pos: Vec3i): Int {
         return cache?.lightBlock ?: block.propertiesProvider.getLightBlock(asState(), world, pos)
     }
 
-    fun getMapColor(world: BlockGetter, pos: BlockPos): MaterialColor = materialColor
+    fun getMapColor(world: BlockGetter, pos: Vec3i): MaterialColor = materialColor
 
     fun rotate(rotation: Rotation): KryptonBlockState = block.handler.rotate(asState(), rotation)
 
     fun mirror(mirror: Mirror): KryptonBlockState = block.handler.mirror(asState(), mirror)
 
-    fun isRedstoneConductor(world: BlockGetter, pos: BlockPos): Boolean = block.propertiesProvider.isRedstoneConductor(asState(), world, pos)
+    fun isRedstoneConductor(world: BlockGetter, pos: Vec3i): Boolean = block.propertiesProvider.isRedstoneConductor(asState(), world, pos)
 
-    fun getSignal(world: BlockGetter, pos: BlockPos, direction: Direction): Int {
+    fun getSignal(world: BlockGetter, pos: Vec3i, direction: Direction): Int {
         return block.redstoneDataProvider.getSignal(asState(), world, pos, direction)
     }
 
-    fun getDirectSignal(world: BlockGetter, pos: BlockPos, direction: Direction): Int {
+    fun getDirectSignal(world: BlockGetter, pos: Vec3i, direction: Direction): Int {
         return block.redstoneDataProvider.getDirectSignal(asState(), world, pos, direction)
     }
 
-    fun getAnalogOutputSignal(world: KryptonWorld, pos: BlockPos): Int {
+    fun getAnalogOutputSignal(world: KryptonWorld, pos: Vec3i): Int {
         return block.redstoneDataProvider.getAnalogOutputSignal(asState(), world, pos)
     }
 
-    fun getDestroySpeed(world: BlockGetter, pos: BlockPos): Float = destroySpeed
+    fun getDestroySpeed(world: BlockGetter, pos: Vec3i): Float = destroySpeed
 
-    fun getDestroyProgress(player: KryptonPlayer, world: BlockGetter, pos: BlockPos): Float {
+    fun getDestroyProgress(player: KryptonPlayer, world: BlockGetter, pos: Vec3i): Float {
         return block.handler.getDestroyProgress(asState(), player, world, pos)
     }
 
-    fun isSolidRender(world: BlockGetter, pos: BlockPos): Boolean {
+    fun isSolidRender(world: BlockGetter, pos: Vec3i): Boolean {
         if (cache != null) return cache!!.solidRender
         val state = asState()
         return if (state.canOcclude) KryptonBlock.isShapeFullBlock(state.getOcclusionShape(world, pos)) else false
@@ -171,49 +170,49 @@ class KryptonBlockState(
         return block.propertiesProvider.shouldSkipRendering(asState(), state, face)
     }
 
-    fun getShape(world: BlockGetter, pos: BlockPos): VoxelShape = getShape(world, pos, CollisionContext.empty())
+    fun getShape(world: BlockGetter, pos: Vec3i): VoxelShape = getShape(world, pos, CollisionContext.empty())
 
-    fun getShape(world: BlockGetter, pos: BlockPos, context: CollisionContext): VoxelShape {
+    fun getShape(world: BlockGetter, pos: Vec3i, context: CollisionContext): VoxelShape {
         return block.shapesProvider.getShape(asState(), world, pos, context)
     }
 
-    fun getFaceOcclusionShape(world: BlockGetter, pos: BlockPos, face: Direction): VoxelShape =
+    fun getFaceOcclusionShape(world: BlockGetter, pos: Vec3i, face: Direction): VoxelShape =
         cache?.occlusionShapes?.get(face.ordinal) ?: Shapes.faceShape(getOcclusionShape(world, pos), face)
 
-    fun getOcclusionShape(world: BlockGetter, pos: BlockPos): VoxelShape {
+    fun getOcclusionShape(world: BlockGetter, pos: Vec3i): VoxelShape {
         return block.shapesProvider.getOcclusionShape(asState(), world, pos)
     }
 
-    fun getCollisionShape(world: BlockGetter, pos: BlockPos): VoxelShape {
+    fun getCollisionShape(world: BlockGetter, pos: Vec3i): VoxelShape {
         return cache?.collisionShape ?: getCollisionShape(world, pos, CollisionContext.empty())
     }
 
-    fun getCollisionShape(world: BlockGetter, pos: BlockPos, context: CollisionContext): VoxelShape {
+    fun getCollisionShape(world: BlockGetter, pos: Vec3i, context: CollisionContext): VoxelShape {
         return block.shapesProvider.getCollisionShape(asState(), world, pos, context)
     }
 
-    fun getBlockSupportShape(world: BlockGetter, pos: BlockPos): VoxelShape {
+    fun getBlockSupportShape(world: BlockGetter, pos: Vec3i): VoxelShape {
         return block.shapesProvider.getBlockSupportShape(asState(), world, pos)
     }
 
-    fun getVisualShape(world: BlockGetter, pos: BlockPos, context: CollisionContext): VoxelShape {
+    fun getVisualShape(world: BlockGetter, pos: Vec3i, context: CollisionContext): VoxelShape {
         return block.shapesProvider.getVisualShape(asState(), world, pos, context)
     }
 
-    fun getInteractionShape(world: BlockGetter, pos: BlockPos): VoxelShape {
+    fun getInteractionShape(world: BlockGetter, pos: Vec3i): VoxelShape {
         return block.shapesProvider.getInteractionShape(asState(), world, pos)
     }
 
-    fun entityCanStandOn(world: BlockGetter, pos: BlockPos, entity: KryptonEntity): Boolean {
+    fun entityCanStandOn(world: BlockGetter, pos: Vec3i, entity: KryptonEntity): Boolean {
         return entityCanStandOnFace(world, pos, entity, Direction.UP)
     }
 
-    fun entityCanStandOnFace(world: BlockGetter, pos: BlockPos, entity: KryptonEntity, face: Direction): Boolean {
+    fun entityCanStandOnFace(world: BlockGetter, pos: Vec3i, entity: KryptonEntity, face: Direction): Boolean {
         return KryptonBlock.isFaceFull(getCollisionShape(world, pos, CollisionContext.of(entity)), face)
     }
 
-    fun getOffset(world: BlockGetter, pos: BlockPos): Vec3d {
-        if (offsetType == BlockOffsetType.NONE) return KryptonVec3d.ZERO
+    fun getOffset(world: BlockGetter, pos: Vec3i): Vec3d {
+        if (offsetType == BlockOffsetType.NONE) return Vec3d.ZERO
 
         val seed = Maths.getSeed(pos)
         val maxHorizontalOffset = block.propertiesProvider.maximumHorizontalOffset().toDouble()
@@ -226,64 +225,63 @@ class KryptonBlockState(
             0.0
         }
         val offsetZ = Maths.clamp(((seed shr 8 and 15) / 15F - 0.5) * 0.5, -maxHorizontalOffset, maxHorizontalOffset)
-        return KryptonVec3d(offsetX, offsetY, offsetZ)
+        return Vec3d(offsetX, offsetY, offsetZ)
     }
 
-    fun triggerEvent(world: KryptonWorld, pos: BlockPos, id: Int, parameter: Int): Boolean {
+    fun triggerEvent(world: KryptonWorld, pos: Vec3i, id: Int, parameter: Int): Boolean {
         return block.handler.triggerEvent(asState(), world, pos, id, parameter)
     }
 
-    fun neighbourChanged(world: KryptonWorld, pos: BlockPos, block: KryptonBlock, neighbourPos: BlockPos, moving: Boolean) {
+    fun neighbourChanged(world: KryptonWorld, pos: Vec3i, block: KryptonBlock, neighbourPos: Vec3i, moving: Boolean) {
         block.handler.neighbourChanged(asState(), world, pos, block, neighbourPos, moving)
     }
 
-    fun updateNeighbourShapes(world: WorldAccessor, pos: BlockPos, flags: Int) {
+    fun updateNeighbourShapes(world: WorldAccessor, pos: Vec3i, flags: Int) {
         updateNeighbourShapes(world, pos, flags, 512)
     }
 
-    fun updateNeighbourShapes(world: WorldAccessor, pos: BlockPos, flags: Int, recursionLeft: Int) {
-        val currentPos = BlockPos.Mutable()
+    fun updateNeighbourShapes(world: WorldAccessor, pos: Vec3i, flags: Int, recursionLeft: Int) {
         UPDATE_SHAPE_ORDER.forEach {
-            currentPos.setWithOffset(pos, it)
+            val currentPos = Vec3i(pos.x + it.normalX, pos.y + it.normalY, pos.z + it.normalZ)
             world.neighbourShapeChanged(it.opposite, asState(), currentPos, pos, flags, recursionLeft)
         }
     }
 
-    fun updateIndirectNeighbourShapes(world: WorldAccessor, pos: BlockPos, flags: Int) {
+    fun updateIndirectNeighbourShapes(world: WorldAccessor, pos: Vec3i, flags: Int) {
         updateIndirectNeighbourShapes(world, pos, flags, 512)
     }
 
-    fun updateIndirectNeighbourShapes(world: WorldAccessor, pos: BlockPos, flags: Int, recursionLeft: Int) {
+    fun updateIndirectNeighbourShapes(world: WorldAccessor, pos: Vec3i, flags: Int, recursionLeft: Int) {
         block.handler.updateIndirectNeighbourShapes(asState(), world, pos, flags, recursionLeft)
     }
 
-    fun onPlace(world: KryptonWorld, pos: BlockPos, old: KryptonBlockState, isMoving: Boolean) {
+    fun onPlace(world: KryptonWorld, pos: Vec3i, old: KryptonBlockState, isMoving: Boolean) {
         block.handler.onPlace(asState(), world, pos, old, isMoving)
     }
 
-    fun onRemove(world: KryptonWorld, pos: BlockPos, new: KryptonBlockState, isMoving: Boolean) {
+    fun onRemove(world: KryptonWorld, pos: Vec3i, new: KryptonBlockState, isMoving: Boolean) {
         block.handler.onRemove(asState(), world, pos, new, isMoving)
     }
 
-    fun entityInside(world: KryptonWorld, pos: BlockPos, entity: KryptonEntity) {
+    fun entityInside(world: KryptonWorld, pos: Vec3i, entity: KryptonEntity) {
         block.handler.entityInside(asState(), world, pos, entity)
     }
 
-    fun spawnAfterBreak(world: KryptonWorld, pos: BlockPos, item: KryptonItemStack, dropItems: Boolean) {
+    fun spawnAfterBreak(world: KryptonWorld, pos: Vec3i, item: KryptonItemStack, dropItems: Boolean) {
         block.handler.spawnAfterBreak(asState(), world, pos, item, dropItems)
     }
 
     fun use(world: KryptonWorld, player: KryptonPlayer, hand: Hand, hit: BlockHitResult): InteractionResult =
         block.handler.use(asState(), world, hit.position, player, hand, hit)
 
-    fun attack(world: KryptonWorld, pos: BlockPos, player: KryptonPlayer) {
+    fun attack(world: KryptonWorld, pos: Vec3i, player: KryptonPlayer) {
         block.handler.attack(asState(), world, pos, player)
     }
 
-    fun isSuffocating(world: BlockGetter, pos: BlockPos): Boolean = block.propertiesProvider.isSuffocating(asState(), world, pos)
+    fun isSuffocating(world: BlockGetter, pos: Vec3i): Boolean = block.propertiesProvider.isSuffocating(asState(), world, pos)
 
     fun updateShape(direction: Direction, neighbour: KryptonBlockState, world: BlockGetter,
-                    currentPos: BlockPos, neighbourPos: BlockPos): KryptonBlockState {
+                    currentPos: Vec3i, neighbourPos: Vec3i): KryptonBlockState {
         return block.handler.updateShape(world, asState(), currentPos, neighbour, neighbourPos, direction)
     }
 
@@ -295,13 +293,13 @@ class KryptonBlockState(
         block.handler.onProjectileHit(world, state, hit, projectile)
     }
 
-    fun isFaceSturdy(world: BlockGetter, pos: BlockPos, face: Direction): Boolean = isFaceSturdy(world, pos, face, SupportType.FULL)
+    fun isFaceSturdy(world: BlockGetter, pos: Vec3i, face: Direction): Boolean = isFaceSturdy(world, pos, face, SupportType.FULL)
 
-    fun isFaceSturdy(world: BlockGetter, pos: BlockPos, face: Direction, type: SupportType): Boolean {
+    fun isFaceSturdy(world: BlockGetter, pos: Vec3i, face: Direction, type: SupportType): Boolean {
         return cache?.isFaceSturdy(face, type) ?: type.isSupporting(asState(), world, pos, face)
     }
 
-    fun isCollisionShapeFullBlock(world: BlockGetter, pos: BlockPos): Boolean {
+    fun isCollisionShapeFullBlock(world: BlockGetter, pos: Vec3i): Boolean {
         return cache?.isCollisionShapeFullBlock ?: block.shapesProvider.isCollisionShapeFullBlock(asState(), world, pos)
     }
 
@@ -318,12 +316,12 @@ class KryptonBlockState(
 
     private class Cache(state: KryptonBlockState) {
 
-        val solidRender: Boolean = state.isSolidRender(BlockGetter.Empty, BlockPos.ZERO)
-        val propagatesSkylightDown: Boolean = state.block.propertiesProvider.propagatesSkylightDown(state, BlockGetter.Empty, BlockPos.ZERO)
-        val lightBlock: Int = state.block.propertiesProvider.getLightBlock(state, BlockGetter.Empty, BlockPos.ZERO)
+        val solidRender: Boolean = state.isSolidRender(BlockGetter.Empty, Vec3i.ZERO)
+        val propagatesSkylightDown: Boolean = state.block.propertiesProvider.propagatesSkylightDown(state, BlockGetter.Empty, Vec3i.ZERO)
+        val lightBlock: Int = state.block.propertiesProvider.getLightBlock(state, BlockGetter.Empty, Vec3i.ZERO)
         val occlusionShapes: Array<VoxelShape>? = createOcclusionShapes(state)
         val collisionShape: VoxelShape =
-            state.block.shapesProvider.getCollisionShape(state, BlockGetter.Empty, BlockPos.ZERO, CollisionContext.empty())
+            state.block.shapesProvider.getCollisionShape(state, BlockGetter.Empty, Vec3i.ZERO, CollisionContext.empty())
         val largeCollisionShape: Boolean
         private val faceSturdy = BooleanArray(DIRECTIONS.size * SUPPORT_TYPES.size)
         val isCollisionShapeFullBlock: Boolean
@@ -336,10 +334,10 @@ class KryptonBlockState(
             largeCollisionShape = Direction.Axis.values().any { collisionShape.min(it) < 0.0 || collisionShape.max(it) > 1.0 }
             DIRECTIONS.forEach { direction ->
                 SUPPORT_TYPES.forEach {
-                    faceSturdy[getFaceSupportIndex(direction, it)] = it.isSupporting(state, BlockGetter.Empty, BlockPos.ZERO, direction)
+                    faceSturdy[getFaceSupportIndex(direction, it)] = it.isSupporting(state, BlockGetter.Empty, Vec3i.ZERO, direction)
                 }
             }
-            isCollisionShapeFullBlock = KryptonBlock.isShapeFullBlock(state.getCollisionShape(BlockGetter.Empty, BlockPos.ZERO))
+            isCollisionShapeFullBlock = KryptonBlock.isShapeFullBlock(state.getCollisionShape(BlockGetter.Empty, Vec3i.ZERO))
         }
 
         fun isFaceSturdy(direction: Direction, type: SupportType): Boolean = faceSturdy[getFaceSupportIndex(direction, type)]
@@ -355,7 +353,7 @@ class KryptonBlockState(
                 if (!state.canOcclude) return null
 
                 val result = arrayOfNulls<VoxelShape>(DIRECTIONS.size)
-                val shape = state.block.shapesProvider.getOcclusionShape(state, BlockGetter.Empty, BlockPos.ZERO)
+                val shape = state.block.shapesProvider.getOcclusionShape(state, BlockGetter.Empty, Vec3i.ZERO)
 
                 DIRECTIONS.forEach { result[it.ordinal] = Shapes.faceShape(shape, it) }
                 return result as Array<VoxelShape>

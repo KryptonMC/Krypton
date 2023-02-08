@@ -21,10 +21,10 @@ package org.kryptonmc.krypton.item.context
 import org.kryptonmc.api.entity.Hand
 import org.kryptonmc.api.util.Direction
 import org.kryptonmc.api.util.Vec3d
+import org.kryptonmc.api.util.Vec3i
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.item.KryptonItemStack
 import org.kryptonmc.krypton.util.hit.BlockHitResult
-import org.kryptonmc.krypton.coordinate.BlockPos
 import org.kryptonmc.krypton.world.KryptonWorld
 
 open class UseOnContext protected constructor(
@@ -37,7 +37,7 @@ open class UseOnContext protected constructor(
 
     constructor(player: KryptonPlayer, hand: Hand, hitResult: BlockHitResult) : this(player.world, player, hand, player.getHeldItem(hand), hitResult)
 
-    open fun clickedPosition(): BlockPos = hitResult.position
+    open fun clickedPosition(): Vec3i = hitResult.position
 
     fun clickedFace(): Direction = hitResult.direction
 

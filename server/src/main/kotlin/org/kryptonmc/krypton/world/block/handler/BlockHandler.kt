@@ -21,8 +21,8 @@ package org.kryptonmc.krypton.world.block.handler
 import org.kryptonmc.api.entity.Hand
 import org.kryptonmc.api.statistic.StatisticTypes
 import org.kryptonmc.api.util.Direction
+import org.kryptonmc.api.util.Vec3i
 import org.kryptonmc.api.world.biome.Precipitation
-import org.kryptonmc.krypton.coordinate.BlockPos
 import org.kryptonmc.krypton.entity.KryptonEntity
 import org.kryptonmc.krypton.entity.KryptonLivingEntity
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
@@ -45,73 +45,73 @@ interface BlockHandler {
 
     fun isApplicableBlockType(name: String): Boolean
 
-    fun getDestroyProgress(state: KryptonBlockState, player: KryptonPlayer, world: BlockGetter, position: BlockPos): Float {
+    fun getDestroyProgress(state: KryptonBlockState, player: KryptonPlayer, world: BlockGetter, position: Vec3i): Float {
         val speed = state.block.properties.destroyTime
         if (speed == -1F) return 0F
         val correctToolBonus = if (player.hasCorrectTool(state)) 30 else 100
         return player.getDestroySpeed(state) / speed / correctToolBonus
     }
 
-    fun onPlace(state: KryptonBlockState, world: KryptonWorld, pos: BlockPos, oldState: KryptonBlockState, isMoving: Boolean) {
+    fun onPlace(state: KryptonBlockState, world: KryptonWorld, pos: Vec3i, oldState: KryptonBlockState, isMoving: Boolean) {
         // Do nothing by default
     }
 
-    fun setPlacedBy(world: KryptonWorld, pos: BlockPos, state: KryptonBlockState, placer: KryptonLivingEntity?, heldItem: KryptonItemStack) {
+    fun setPlacedBy(world: KryptonWorld, pos: Vec3i, state: KryptonBlockState, placer: KryptonLivingEntity?, heldItem: KryptonItemStack) {
         // Do nothing by default
     }
 
-    fun destroy(world: WorldAccessor, pos: BlockPos, state: KryptonBlockState) {
+    fun destroy(world: WorldAccessor, pos: Vec3i, state: KryptonBlockState) {
         // Do nothing by default
     }
 
-    fun playerWillDestroy(world: KryptonWorld, pos: BlockPos, state: KryptonBlockState, player: KryptonPlayer) {
+    fun playerWillDestroy(world: KryptonWorld, pos: Vec3i, state: KryptonBlockState, player: KryptonPlayer) {
         spawnDestroyParticles(world, player, pos, state)
         // TODO: Anger nearby piglins if state is guarded by piglins and trigger game event for sculk sensors
     }
 
-    fun playerDestroy(world: KryptonWorld, state: KryptonBlockState, pos: BlockPos, blockEntity: KryptonBlockEntity?, destroyer: KryptonPlayer,
+    fun playerDestroy(world: KryptonWorld, state: KryptonBlockState, pos: Vec3i, blockEntity: KryptonBlockEntity?, destroyer: KryptonPlayer,
                       heldItem: KryptonItemStack) {
         destroyer.statisticsTracker.incrementStatistic(StatisticTypes.BLOCK_MINED.get().getStatistic(state.block))
         // TODO: Cause exhaustion and drop items
     }
 
-    fun spawnDestroyParticles(world: KryptonWorld, player: KryptonPlayer, pos: BlockPos, state: KryptonBlockState) {
+    fun spawnDestroyParticles(world: KryptonWorld, player: KryptonPlayer, pos: Vec3i, state: KryptonBlockState) {
         world.worldEvent(pos, WorldEvents.DESTROY_BLOCK, KryptonBlock.idOf(state), player)
     }
 
-    fun onRemove(state: KryptonBlockState, world: KryptonWorld, pos: BlockPos, newState: KryptonBlockState, isMoving: Boolean) {
+    fun onRemove(state: KryptonBlockState, world: KryptonWorld, pos: Vec3i, newState: KryptonBlockState, isMoving: Boolean) {
         if (state.hasBlockEntity() && !state.eq(newState.block)) {
             // TODO: Remove block entity from world
         }
     }
 
-    fun spawnAfterBreak(state: KryptonBlockState, world: KryptonWorld, pos: BlockPos, item: KryptonItemStack, dropItems: Boolean) {
+    fun spawnAfterBreak(state: KryptonBlockState, world: KryptonWorld, pos: Vec3i, item: KryptonItemStack, dropItems: Boolean) {
         // Do nothing by default
     }
 
-    fun use(state: KryptonBlockState, world: BlockGetter, pos: BlockPos, user: KryptonPlayer, usedHand: Hand,
+    fun use(state: KryptonBlockState, world: BlockGetter, pos: Vec3i, user: KryptonPlayer, usedHand: Hand,
             hitResult: BlockHitResult): InteractionResult {
         return InteractionResult.PASS
     }
 
-    fun attack(state: KryptonBlockState, world: KryptonWorld, pos: BlockPos, player: KryptonPlayer) {
+    fun attack(state: KryptonBlockState, world: KryptonWorld, pos: Vec3i, player: KryptonPlayer) {
         // Do nothing by default
     }
 
-    fun triggerEvent(state: KryptonBlockState, world: KryptonWorld, pos: BlockPos, id: Int, parameter: Int): Boolean {
+    fun triggerEvent(state: KryptonBlockState, world: KryptonWorld, pos: Vec3i, id: Int, parameter: Int): Boolean {
         return false
     }
 
-    fun updateIndirectNeighbourShapes(state: KryptonBlockState, world: BlockGetter, pos: BlockPos, flags: Int, recursionLeft: Int) {
+    fun updateIndirectNeighbourShapes(state: KryptonBlockState, world: BlockGetter, pos: Vec3i, flags: Int, recursionLeft: Int) {
         // Do nothing by default
     }
 
-    fun updateShape(world: BlockGetter, state: KryptonBlockState, currentPos: BlockPos, neighbour: KryptonBlockState, neighbourPos: BlockPos,
+    fun updateShape(world: BlockGetter, state: KryptonBlockState, currentPos: Vec3i, neighbour: KryptonBlockState, neighbourPos: Vec3i,
                     direction: Direction): KryptonBlockState {
         return state
     }
 
-    fun entityInside(state: KryptonBlockState, world: KryptonWorld, pos: BlockPos, entity: KryptonEntity) {
+    fun entityInside(state: KryptonBlockState, world: KryptonWorld, pos: Vec3i, entity: KryptonEntity) {
         // Do nothing by default
     }
 
@@ -127,20 +127,20 @@ interface BlockHandler {
         return state
     }
 
-    fun neighbourChanged(state: KryptonBlockState, world: KryptonWorld, pos: BlockPos, block: KryptonBlock, neighbourPos: BlockPos,
+    fun neighbourChanged(state: KryptonBlockState, world: KryptonWorld, pos: Vec3i, block: KryptonBlock, neighbourPos: Vec3i,
                          moving: Boolean) {
         // Do nothing by default
     }
 
-    fun stepOn(world: KryptonWorld, pos: BlockPos, state: KryptonBlockState, entity: KryptonEntity) {
+    fun stepOn(world: KryptonWorld, pos: Vec3i, state: KryptonBlockState, entity: KryptonEntity) {
         // Do nothing by default
     }
 
-    fun fallOn(world: KryptonWorld, state: KryptonBlockState, pos: BlockPos, entity: KryptonEntity, fallDistance: Float) {
+    fun fallOn(world: KryptonWorld, state: KryptonBlockState, pos: Vec3i, entity: KryptonEntity, fallDistance: Float) {
         // TODO: Cause fall damage to entity
     }
 
-    fun handlePrecipitation(state: KryptonBlockState, world: KryptonWorld, pos: BlockPos, precipitation: Precipitation) {
+    fun handlePrecipitation(state: KryptonBlockState, world: KryptonWorld, pos: Vec3i, precipitation: Precipitation) {
         // Do nothing by default
     }
 }

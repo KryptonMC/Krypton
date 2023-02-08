@@ -19,12 +19,12 @@
 package org.kryptonmc.krypton.item.handler
 
 import org.kryptonmc.api.entity.Hand
+import org.kryptonmc.api.util.Vec3i
 import org.kryptonmc.krypton.util.InteractionResult
 import org.kryptonmc.krypton.entity.KryptonLivingEntity
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.item.KryptonItemStack
 import org.kryptonmc.krypton.item.UseItemResult
-import org.kryptonmc.krypton.coordinate.BlockPos
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.krypton.world.block.state.KryptonBlockState
 
@@ -51,7 +51,7 @@ interface ItemHandler {
      * Checks if the given [player] can attack the given [block] at the given
      * [pos] in the given [world].
      */
-    fun canAttackBlock(player: KryptonPlayer, world: KryptonWorld, block: KryptonBlockState, pos: BlockPos): Boolean = true
+    fun canAttackBlock(player: KryptonPlayer, world: KryptonWorld, block: KryptonBlockState, pos: Vec3i): Boolean = true
 
     fun interactEntity(item: KryptonItemStack, player: KryptonPlayer, entity: KryptonLivingEntity, hand: Hand): InteractionResult =
         InteractionResult.PASS
@@ -67,5 +67,5 @@ interface ItemHandler {
      * the given [pos] in the given [world], using the given [item] to
      * destroy it.
      */
-    fun mineBlock(player: KryptonPlayer, item: KryptonItemStack, world: KryptonWorld, block: KryptonBlockState, pos: BlockPos): Boolean = false
+    fun mineBlock(player: KryptonPlayer, item: KryptonItemStack, world: KryptonWorld, block: KryptonBlockState, pos: Vec3i): Boolean = false
 }

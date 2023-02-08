@@ -23,7 +23,6 @@ import org.kryptonmc.api.world.biome.Biome
 import org.kryptonmc.api.world.chunk.Chunk
 import org.kryptonmc.krypton.packet.CachedPacket
 import org.kryptonmc.krypton.packet.out.play.PacketOutChunkDataAndLight
-import org.kryptonmc.krypton.coordinate.BlockPos
 import org.kryptonmc.krypton.coordinate.ChunkPos
 import org.kryptonmc.krypton.world.chunk.data.Heightmap
 import org.kryptonmc.krypton.world.KryptonWorld
@@ -84,7 +83,7 @@ class KryptonChunk(
 
     override fun getFluid(position: Vec3i): KryptonFluidState = getFluid(position.x, position.y, position.z)
 
-    override fun setBlock(pos: BlockPos, state: KryptonBlockState, moving: Boolean): KryptonBlockState? {
+    override fun setBlock(pos: Vec3i, state: KryptonBlockState, moving: Boolean): KryptonBlockState? {
         val section = sections()[getSectionIndex(pos.y)]
         if (section.hasOnlyAir() && state.isAir) return null
 

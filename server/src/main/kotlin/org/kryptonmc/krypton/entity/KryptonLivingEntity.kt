@@ -40,7 +40,6 @@ import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.entity.serializer.EntitySerializer
 import org.kryptonmc.krypton.entity.serializer.LivingEntitySerializer
 import org.kryptonmc.krypton.item.KryptonItemStack
-import org.kryptonmc.krypton.coordinate.BlockPos
 import org.kryptonmc.krypton.entity.components.KryptonEquipable
 import org.kryptonmc.krypton.entity.util.EquipmentSlots
 import org.kryptonmc.krypton.world.KryptonWorld
@@ -111,7 +110,7 @@ abstract class KryptonLivingEntity(world: KryptonWorld) : KryptonEntity(world), 
         set(value) = data.set(MetadataKeys.LivingEntity.STINGERS, value)
     final override var sleepingPosition: Vec3i?
         get() = data.get(MetadataKeys.LivingEntity.BED_LOCATION)
-        set(value) = data.set(MetadataKeys.LivingEntity.BED_LOCATION, value?.let(BlockPos::from))
+        set(value) = data.set(MetadataKeys.LivingEntity.BED_LOCATION, value)
 
     init {
         data.set(MetadataKeys.LivingEntity.HEALTH, maxHealth)

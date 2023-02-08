@@ -19,7 +19,7 @@
 package org.kryptonmc.krypton.world.block.handler
 
 import org.kryptonmc.api.util.Direction
-import org.kryptonmc.krypton.coordinate.BlockPos
+import org.kryptonmc.api.util.Vec3i
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.krypton.world.block.state.KryptonBlockState
 import org.kryptonmc.krypton.world.components.BlockGetter
@@ -36,15 +36,15 @@ interface RedstoneDataProvider {
         return false
     }
 
-    fun getAnalogOutputSignal(state: KryptonBlockState, world: KryptonWorld, pos: BlockPos): Int {
+    fun getAnalogOutputSignal(state: KryptonBlockState, world: KryptonWorld, pos: Vec3i): Int {
         return 0
     }
 
-    fun getSignal(state: KryptonBlockState, world: BlockGetter, pos: BlockPos, direction: Direction): Int {
+    fun getSignal(state: KryptonBlockState, world: BlockGetter, pos: Vec3i, direction: Direction): Int {
         return 0
     }
 
-    fun getDirectSignal(state: KryptonBlockState, world: BlockGetter, pos: BlockPos, direction: Direction): Int {
+    fun getDirectSignal(state: KryptonBlockState, world: BlockGetter, pos: Vec3i, direction: Direction): Int {
         return 0
     }
 }

@@ -22,7 +22,6 @@ import org.kryptonmc.api.item.meta.CompassMeta
 import org.kryptonmc.api.resource.ResourceKey
 import org.kryptonmc.api.util.Vec3i
 import org.kryptonmc.api.world.World
-import org.kryptonmc.krypton.coordinate.BlockPos
 import org.kryptonmc.krypton.util.nbt.getBlockPos
 import org.kryptonmc.krypton.util.nbt.getNullableCompound
 import org.kryptonmc.krypton.util.nbt.putBlockPos
@@ -34,7 +33,7 @@ class KryptonCompassMeta(data: CompoundTag) : AbstractItemMeta<KryptonCompassMet
 
     override val isTrackingLodestone: Boolean = data.getBoolean(TRACKED_TAG)
     override val lodestoneDimension: ResourceKey<World>? = Codecs.DIMENSION.read(data.get(DIMENSION_TAG), NbtOps.INSTANCE).result().orElse(null)
-    override val lodestonePosition: BlockPos? = data.getNullableCompound(POS_TAG)?.getBlockPos()
+    override val lodestonePosition: Vec3i? = data.getNullableCompound(POS_TAG)?.getBlockPos()
 
     override fun copy(data: CompoundTag): KryptonCompassMeta = KryptonCompassMeta(data)
 

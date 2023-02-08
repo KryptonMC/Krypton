@@ -21,7 +21,6 @@ package org.kryptonmc.krypton.util.nbt
 import net.kyori.adventure.key.Keyed
 import org.kryptonmc.api.util.Vec3i
 import org.kryptonmc.krypton.KryptonPlatform
-import org.kryptonmc.krypton.coordinate.BlockPos
 import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.ImmutableCompoundTag
 import org.kryptonmc.nbt.IntTag
@@ -47,7 +46,7 @@ fun CompoundTag.getNullableCompound(name: String): CompoundTag? = getNullable(na
 
 fun CompoundTag.hasBlockPos(prefix: String = ""): Boolean = hasNumber(prefix + 'X') && hasNumber(prefix + 'Y') && hasNumber(prefix + 'Z')
 
-fun CompoundTag.getBlockPos(prefix: String = ""): BlockPos = BlockPos(getInt(prefix + 'X'), getInt(prefix + 'Y'), getInt(prefix + 'Z'))
+fun CompoundTag.getBlockPos(prefix: String = ""): Vec3i = Vec3i(getInt(prefix + 'X'), getInt(prefix + 'Y'), getInt(prefix + 'Z'))
 
 fun CompoundTag.putBlockPos(key: String, pos: Vec3i): CompoundTag = put(key, ImmutableCompoundTag.builder().putBlockPosParts(pos).build())
 

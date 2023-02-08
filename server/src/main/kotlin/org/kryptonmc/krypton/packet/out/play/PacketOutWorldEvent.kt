@@ -19,13 +19,13 @@
 package org.kryptonmc.krypton.packet.out.play
 
 import io.netty.buffer.ByteBuf
+import org.kryptonmc.api.util.Vec3i
 import org.kryptonmc.krypton.packet.Packet
-import org.kryptonmc.krypton.coordinate.BlockPos
 import org.kryptonmc.krypton.util.readBlockPos
 import org.kryptonmc.krypton.util.writeBlockPos
 
 @JvmRecord
-data class PacketOutWorldEvent(val event: Int, val position: BlockPos, val data: Int, val isGlobal: Boolean) : Packet {
+data class PacketOutWorldEvent(val event: Int, val position: Vec3i, val data: Int, val isGlobal: Boolean) : Packet {
 
     constructor(buf: ByteBuf) : this(buf.readInt(), buf.readBlockPos(), buf.readInt(), buf.readBoolean())
 

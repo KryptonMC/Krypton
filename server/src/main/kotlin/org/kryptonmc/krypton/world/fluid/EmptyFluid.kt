@@ -21,10 +21,9 @@ package org.kryptonmc.krypton.world.fluid
 import org.kryptonmc.api.item.ItemType
 import org.kryptonmc.api.item.ItemTypes
 import org.kryptonmc.api.util.Vec3d
+import org.kryptonmc.api.util.Vec3i
 import org.kryptonmc.krypton.shapes.Shapes
 import org.kryptonmc.krypton.shapes.VoxelShape
-import org.kryptonmc.krypton.coordinate.BlockPos
-import org.kryptonmc.krypton.coordinate.KryptonVec3d
 import org.kryptonmc.krypton.world.block.KryptonBlocks
 import org.kryptonmc.krypton.world.block.state.KryptonBlockState
 import org.kryptonmc.krypton.world.components.BlockGetter
@@ -38,9 +37,9 @@ class EmptyFluid : KryptonFluid() {
     override val isEmpty: Boolean
         get() = true
 
-    override fun getFlow(world: BlockGetter, pos: BlockPos, state: KryptonFluidState): Vec3d = KryptonVec3d.ZERO
+    override fun getFlow(world: BlockGetter, pos: Vec3i, state: KryptonFluidState): Vec3d = Vec3d.ZERO
 
-    override fun getHeight(state: KryptonFluidState, world: BlockGetter, pos: BlockPos): Float = 0F
+    override fun getHeight(state: KryptonFluidState, world: BlockGetter, pos: Vec3i): Float = 0F
 
     override fun getOwnHeight(state: KryptonFluidState): Float = 0F
 
@@ -50,5 +49,5 @@ class EmptyFluid : KryptonFluid() {
 
     override fun level(state: KryptonFluidState): Int = 0
 
-    override fun getShape(state: KryptonFluidState, world: BlockGetter, pos: BlockPos): VoxelShape = Shapes.empty()
+    override fun getShape(state: KryptonFluidState, world: BlockGetter, pos: Vec3i): VoxelShape = Shapes.empty()
 }

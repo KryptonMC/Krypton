@@ -18,7 +18,7 @@
  */
 package org.kryptonmc.krypton.world.block.handler
 
-import org.kryptonmc.krypton.coordinate.BlockPos
+import org.kryptonmc.api.util.Vec3i
 import org.kryptonmc.krypton.shapes.Shapes
 import org.kryptonmc.krypton.shapes.VoxelShape
 import org.kryptonmc.krypton.shapes.collision.CollisionContext
@@ -30,36 +30,36 @@ interface BlockShapesProvider {
 
     fun isApplicableBlockType(name: String): Boolean
 
-    fun getShape(state: KryptonBlockState, world: BlockGetter, pos: BlockPos, context: CollisionContext): VoxelShape {
+    fun getShape(state: KryptonBlockState, world: BlockGetter, pos: Vec3i, context: CollisionContext): VoxelShape {
         return Shapes.block()
     }
 
-    fun getOcclusionShape(state: KryptonBlockState, world: BlockGetter, pos: BlockPos): VoxelShape {
+    fun getOcclusionShape(state: KryptonBlockState, world: BlockGetter, pos: Vec3i): VoxelShape {
         return state.getShape(world, pos)
     }
 
-    fun getCollisionShape(state: KryptonBlockState, world: BlockGetter, pos: BlockPos, context: CollisionContext): VoxelShape {
+    fun getCollisionShape(state: KryptonBlockState, world: BlockGetter, pos: Vec3i, context: CollisionContext): VoxelShape {
         if (state.block.properties.hasCollision) return state.getShape(world, pos)
         return Shapes.empty()
     }
 
-    fun getVisualShape(state: KryptonBlockState, world: BlockGetter, pos: BlockPos, context: CollisionContext): VoxelShape {
+    fun getVisualShape(state: KryptonBlockState, world: BlockGetter, pos: Vec3i, context: CollisionContext): VoxelShape {
         return getCollisionShape(state, world, pos, context)
     }
 
-    fun getInteractionShape(state: KryptonBlockState, world: BlockGetter, pos: BlockPos): VoxelShape {
+    fun getInteractionShape(state: KryptonBlockState, world: BlockGetter, pos: Vec3i): VoxelShape {
         return Shapes.empty()
     }
 
-    fun getBlockSupportShape(state: KryptonBlockState, world: BlockGetter, pos: BlockPos): VoxelShape {
+    fun getBlockSupportShape(state: KryptonBlockState, world: BlockGetter, pos: Vec3i): VoxelShape {
         return getCollisionShape(state, world, pos, CollisionContext.empty())
     }
 
-    fun isCollisionShapeFullBlock(state: KryptonBlockState, world: BlockGetter, pos: BlockPos): Boolean {
+    fun isCollisionShapeFullBlock(state: KryptonBlockState, world: BlockGetter, pos: Vec3i): Boolean {
         return KryptonBlock.isShapeFullBlock(state.getCollisionShape(world, pos))
     }
 
-    fun isOcclusionShapeFullBlock(state: KryptonBlockState, world: BlockGetter, pos: BlockPos): Boolean {
+    fun isOcclusionShapeFullBlock(state: KryptonBlockState, world: BlockGetter, pos: Vec3i): Boolean {
         return KryptonBlock.isShapeFullBlock(state.getOcclusionShape(world, pos))
     }
 }

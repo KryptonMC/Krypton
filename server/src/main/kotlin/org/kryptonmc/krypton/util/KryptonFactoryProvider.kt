@@ -45,9 +45,6 @@ import org.kryptonmc.api.util.BoundingBox
 import org.kryptonmc.api.util.Color
 import org.kryptonmc.api.util.TypeNotFoundException
 import org.kryptonmc.api.util.FactoryProvider
-import org.kryptonmc.api.util.Rotations
-import org.kryptonmc.api.util.Vec3d
-import org.kryptonmc.api.util.Vec3i
 import org.kryptonmc.api.util.register
 import org.kryptonmc.api.world.biome.AmbientAdditionsSettings
 import org.kryptonmc.api.world.biome.AmbientMoodSettings
@@ -63,9 +60,6 @@ import org.kryptonmc.krypton.auth.KryptonGameProfile
 import org.kryptonmc.krypton.auth.KryptonProfileProperty
 import org.kryptonmc.krypton.command.KryptonBrigadierCommand
 import org.kryptonmc.krypton.command.KryptonCommandMeta
-import org.kryptonmc.krypton.coordinate.BlockPos
-import org.kryptonmc.krypton.coordinate.KryptonRotations
-import org.kryptonmc.krypton.coordinate.KryptonVec3d
 import org.kryptonmc.krypton.effect.KryptonMusic
 import org.kryptonmc.krypton.effect.particle.data.KryptonParticleDataFactory
 import org.kryptonmc.krypton.entity.attribute.KryptonAttributeModifier
@@ -126,9 +120,6 @@ object KryptonFactoryProvider : FactoryProvider {
         register<TagKey.Factory>(KryptonTagKey.Factory)
         register<BoundingBox.Factory>(KryptonBoundingBox.Factory)
         register<Color.Factory>(KryptonColor.Factory)
-        register<Rotations.Factory>(KryptonRotations.Factory)
-        register<Vec3d.Factory>(KryptonVec3d.Factory)
-        register<Vec3i.Factory>(BlockPos.Factory)
         register<AmbientAdditionsSettings.Factory>(KryptonAmbientAdditionsSettings.Factory)
         register<AmbientMoodSettings.Factory>(KryptonAmbientMoodSettings.Factory)
         register<AmbientParticleSettings.Factory>(KryptonAmbientParticleSettings.Factory)

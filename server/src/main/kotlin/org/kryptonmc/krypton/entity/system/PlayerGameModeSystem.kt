@@ -20,13 +20,13 @@ package org.kryptonmc.krypton.entity.system
 
 import org.apache.logging.log4j.LogManager
 import org.kryptonmc.api.event.player.ChangeGameModeEvent
+import org.kryptonmc.api.util.Vec3i
 import org.kryptonmc.api.world.GameMode
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.event.player.KryptonChangeGameModeEvent
 import org.kryptonmc.krypton.item.handler
 import org.kryptonmc.krypton.packet.`in`.play.PacketInPlayerAction
 import org.kryptonmc.krypton.packet.out.play.PacketOutBlockUpdate
-import org.kryptonmc.krypton.coordinate.BlockPos
 import org.kryptonmc.krypton.packet.out.play.PacketOutPlayerInfoUpdate
 import org.kryptonmc.krypton.packet.out.play.PacketOutPlayerInfoUpdate.Action
 import org.kryptonmc.krypton.util.enumhelper.GameModes
@@ -40,9 +40,9 @@ class PlayerGameModeSystem(private val player: KryptonPlayer) {
     private var currentTick = 0
     private var isDestroying = false
     private var startDestroyProgress = 0
-    private var destroyPos = BlockPos.ZERO
+    private var destroyPos = Vec3i.ZERO
     private var hasDelayedDestroy = false
-    private var delayedDestroyPos = BlockPos.ZERO
+    private var delayedDestroyPos = Vec3i.ZERO
     private var delayedTickStart = 0
     private var lastSentState = -1
 
@@ -98,7 +98,7 @@ class PlayerGameModeSystem(private val player: KryptonPlayer) {
         handleBlockBreak(packet.position, packet.action, player.world.maximumBuildHeight())
     }
 
-    private fun handleBlockBreak(pos: BlockPos, action: PacketInPlayerAction.Action, maxHeight: Int) {
+    private fun handleBlockBreak(pos: Vec3i, action: PacketInPlayerAction.Action, maxHeight: Int) {
         val dx = player.position.x - (pos.x.toDouble() + 0.5)
         val dy = player.position.y - (pos.y.toDouble() + 0.5) + 1.5
         val dz = player.position.z - (pos.z.toDouble() + 0.5)
@@ -145,7 +145,7 @@ class PlayerGameModeSystem(private val player: KryptonPlayer) {
                     logBlockBreakUpdate(pos, false, reason)
                 }
                 isDestroying = true
-                destroyPos = pos.immutable()
+                destroyPos = pos
                 val state = (destroyProgress * 10F).toInt()
                 player.world.broadcastBlockDestroyProgress(player.id, pos, state)
                 logBlockBreakUpdate(pos, true, "started breaking block")
@@ -189,7 +189,7 @@ class PlayerGameModeSystem(private val player: KryptonPlayer) {
         if (player.server.config.world.sendSpawnProtectionMessage) player.sendActionBar(player.server.config.world.spawnProtectionMessage)
     }
 
-    private fun incrementDestroyProgress(block: KryptonBlockState, pos: BlockPos, startTick: Int): Float {
+    private fun incrementDestroyProgress(block: KryptonBlockState, pos: Vec3i, startTick: Int): Float {
         val tickDifference = currentTick - startTick
         val progress = block.getDestroyProgress(player, player.world, pos) * (tickDifference + 1).toFloat()
         val state = (progress * 10F).toInt()
@@ -200,13 +200,13 @@ class PlayerGameModeSystem(private val player: KryptonPlayer) {
         return progress
     }
 
-    private fun destroyAndAcknowledge(pos: BlockPos, message: String) {
+    private fun destroyAndAcknowledge(pos: Vec3i, message: String) {
         val success = destroyBlock(pos)
         logBlockBreakUpdate(pos, success, message)
         if (success) player.connection.send(PacketOutBlockUpdate(pos, player.world.getBlock(pos)))
     }
 
-    private fun destroyBlock(pos: BlockPos): Boolean {
+    private fun destroyBlock(pos: Vec3i): Boolean {
         val state = player.world.getBlock(pos)
         val block = state.block
         if (!player.inventory.mainHand.type.handler().canAttackBlock(player, player.world, state, pos)) return false
@@ -231,7 +231,7 @@ class PlayerGameModeSystem(private val player: KryptonPlayer) {
         return true
     }
 
-    private fun logBlockBreakUpdate(position: BlockPos, success: Boolean, message: String) {
+    private fun logBlockBreakUpdate(position: Vec3i, success: Boolean, message: String) {
         if (success) {
             LOGGER.debug("Player ${player.profile.name} updated block break progress at $position: $message")
         } else {

@@ -101,7 +101,6 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateEntityPositionAndRot
 import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateEntityRotation
 import org.kryptonmc.krypton.registry.KryptonRegistries
 import org.kryptonmc.krypton.coordinate.Positioning
-import org.kryptonmc.krypton.coordinate.KryptonVec3d
 import org.kryptonmc.krypton.util.FutureChain
 import org.kryptonmc.krypton.util.crypto.SignatureValidator
 import org.kryptonmc.krypton.world.block.KryptonBlocks
@@ -467,7 +466,7 @@ class PlayPacketHandler(
             return
         }
 
-        val position = KryptonVec3d(x, y, z)
+        val position = Vec3d(x, y, z)
         val event = server.eventNode.fire(KryptonMoveEvent(player, oldPosition, position))
         if (!event.isAllowed()) return
 

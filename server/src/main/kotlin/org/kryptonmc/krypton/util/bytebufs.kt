@@ -40,13 +40,12 @@ import org.kryptonmc.api.auth.GameProfile
 import org.kryptonmc.api.auth.ProfileProperty
 import org.kryptonmc.api.resource.ResourceKey
 import org.kryptonmc.api.util.Direction
-import org.kryptonmc.api.util.Rotations
+import org.kryptonmc.api.util.Rotation
 import org.kryptonmc.api.util.Vec3d
+import org.kryptonmc.api.util.Vec3i
 import org.kryptonmc.krypton.auth.KryptonGameProfile
 import org.kryptonmc.krypton.auth.KryptonProfileProperty
 import org.kryptonmc.krypton.coordinate.BlockPos
-import org.kryptonmc.krypton.coordinate.KryptonRotations
-import org.kryptonmc.krypton.coordinate.KryptonVec3d
 import org.kryptonmc.krypton.item.ItemFactory
 import org.kryptonmc.krypton.item.KryptonItemStack
 import org.kryptonmc.krypton.registry.KryptonRegistries
@@ -302,19 +301,19 @@ fun ByteBuf.writeItem(item: KryptonItemStack) {
     writeNBT(item.meta.data)
 }
 
-fun ByteBuf.writeBlockPos(pos: BlockPos) {
-    writeLong(pos.pack())
+fun ByteBuf.writeBlockPos(pos: Vec3i) {
+    writeLong(BlockPos.pack(pos))
 }
 
-fun ByteBuf.readBlockPos(): BlockPos = BlockPos.unpack(readLong())
+fun ByteBuf.readBlockPos(): Vec3i = BlockPos.unpack(readLong())
 
-fun ByteBuf.writeRotations(rotations: Rotations) {
-    writeFloat(rotations.yaw)
-    writeFloat(rotations.pitch)
-    writeFloat(rotations.roll)
+fun ByteBuf.writeRotation(rotation: Rotation) {
+    writeFloat(rotation.x)
+    writeFloat(rotation.y)
+    writeFloat(rotation.z)
 }
 
-fun ByteBuf.readRotations(): Rotations = KryptonRotations(readFloat(), readFloat(), readFloat())
+fun ByteBuf.readRotation(): Rotation = Rotation(readFloat(), readFloat(), readFloat())
 
 fun ByteBuf.writeVec3d(vector: Vec3d) {
     writeDouble(vector.x)
@@ -322,7 +321,7 @@ fun ByteBuf.writeVec3d(vector: Vec3d) {
     writeDouble(vector.z)
 }
 
-fun ByteBuf.readVec3d(): Vec3d = KryptonVec3d(readDouble(), readDouble(), readDouble())
+fun ByteBuf.readVec3d(): Vec3d = Vec3d(readDouble(), readDouble(), readDouble())
 
 private const val MAX_BYTE_ANGLE = 256F
 private const val MAX_DEGREE_ANGLE = 360F
@@ -555,7 +554,7 @@ fun ByteBuf.readBlockHitResult(): BlockHitResult {
     val cursorY = readFloat().toDouble()
     val cursorZ = readFloat().toDouble()
     val isInside = readBoolean()
-    return BlockHitResult(KryptonVec3d(position.x + cursorX, position.y + cursorY, position.z + cursorZ), direction, position, isInside)
+    return BlockHitResult(Vec3d(position.x + cursorX, position.y + cursorY, position.z + cursorZ), direction, position, isInside)
 }
 
 fun ByteBuf.writeBlockHitResult(hitResult: BlockHitResult) {

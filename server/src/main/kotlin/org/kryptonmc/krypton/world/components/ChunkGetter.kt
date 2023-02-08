@@ -18,7 +18,7 @@
  */
 package org.kryptonmc.krypton.world.components
 
-import org.kryptonmc.krypton.coordinate.BlockPos
+import org.kryptonmc.api.util.Vec3i
 import org.kryptonmc.krypton.coordinate.SectionPos
 import org.kryptonmc.krypton.world.chunk.ChunkAccessor
 import org.kryptonmc.krypton.world.chunk.data.ChunkStatus
@@ -29,9 +29,9 @@ interface ChunkGetter : HeightAccessor {
 
     fun hasChunkAt(x: Int, z: Int): Boolean = hasChunk(SectionPos.blockToSection(x), SectionPos.blockToSection(z))
 
-    fun hasChunkAt(pos: BlockPos): Boolean = hasChunkAt(pos.x, pos.z)
+    fun hasChunkAt(pos: Vec3i): Boolean = hasChunkAt(pos.x, pos.z)
 
-    fun hasChunksAt(from: BlockPos, to: BlockPos): Boolean = hasChunksAt(from.x, from.y, from.z, to.x, to.y, to.z)
+    fun hasChunksAt(from: Vec3i, to: Vec3i): Boolean = hasChunksAt(from.x, from.y, from.z, to.x, to.y, to.z)
 
     fun hasChunksAt(x1: Int, y1: Int, z1: Int, x2: Int, y2: Int, z2: Int): Boolean =
         if (y2 >= minimumBuildHeight() && y1 < maximumBuildHeight()) hasChunksAt(x1, z1, x2, z2) else false
@@ -54,6 +54,4 @@ interface ChunkGetter : HeightAccessor {
     fun getChunk(x: Int, z: Int, requiredStatus: ChunkStatus): ChunkAccessor? = getChunk(x, z, requiredStatus, true)
 
     fun getChunk(x: Int, z: Int): ChunkAccessor? = getChunk(x, z, ChunkStatus.FULL, true)
-
-    fun getChunk(pos: BlockPos): ChunkAccessor? = getChunk(SectionPos.blockToSection(pos.x), SectionPos.blockToSection(pos.z))
 }
