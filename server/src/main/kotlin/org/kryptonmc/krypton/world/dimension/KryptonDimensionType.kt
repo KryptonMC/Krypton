@@ -94,8 +94,6 @@ data class KryptonDimensionType(
 
     override fun key(): Key = KryptonDynamicRegistries.DIMENSION_TYPE.getKey(this) ?: UNREGISTERED_KEY
 
-    override fun toBuilder(): Builder = Builder(this)
-
     @JvmRecord
     data class MonsterSettings(
         val piglinSafe: Boolean,
@@ -118,7 +116,7 @@ data class KryptonDimensionType(
         }
     }
 
-    class Builder() : DimensionType.Builder {
+    class Builder : DimensionType.Builder {
 
         private var piglinSafe = false
         private var natural = false
@@ -139,25 +137,6 @@ data class KryptonDimensionType(
         private var minimumMonsterSpawnLightLevel = 0
         private var maximumMonsterSpawnLightLevel = 0
         private var monsterSpawnBlockLightLimit = 0
-
-        constructor(type: DimensionType) : this() {
-            piglinSafe = type.isPiglinSafe
-            natural = type.isNatural
-            ultrawarm = type.isUltrawarm
-            skylight = type.hasSkylight
-            ceiling = type.hasCeiling
-            raids = type.hasRaids
-            beds = type.allowBeds
-            respawnAnchors = type.allowRespawnAnchors
-            ambientLight = type.ambientLight
-            fixedTime = type.fixedTime
-            infiniburn = type.infiniburn
-            minimumY = type.minimumY
-            height = type.height
-            logicalHeight = type.logicalHeight
-            coordinateScale = type.coordinateScale
-            effects = type.effects
-        }
 
         override fun piglinSafe(): Builder = apply { piglinSafe = true }
 

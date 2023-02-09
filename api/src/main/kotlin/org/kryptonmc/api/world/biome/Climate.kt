@@ -12,7 +12,6 @@ import net.kyori.adventure.builder.AbstractBuilder
 import org.jetbrains.annotations.ApiStatus
 import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.Krypton
-import org.kryptonmc.api.util.Buildable
 import org.kryptonmc.internal.annotations.ImmutableType
 import org.kryptonmc.internal.annotations.TypeFactory
 import org.kryptonmc.internal.annotations.dsl.BiomeDsl
@@ -22,7 +21,7 @@ import org.kryptonmc.internal.annotations.dsl.BiomeDsl
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
 @ImmutableType
-public interface Climate : Buildable<Climate.Builder, Climate> {
+public interface Climate {
 
     /**
      * The precipitation settings for this climate.
@@ -107,8 +106,6 @@ public interface Climate : Buildable<Climate.Builder, Climate> {
     @TypeFactory
     public interface Factory {
 
-        public fun of(precipitation: Precipitation, temperature: Float, downfall: Float, temperatureModifier: TemperatureModifier): Climate
-
         public fun builder(): Builder
     }
 
@@ -125,8 +122,14 @@ public interface Climate : Buildable<Climate.Builder, Climate> {
          */
         @JvmStatic
         @Contract("_, _, _, _ -> new", pure = true)
-        public fun of(precipitation: Precipitation, temperature: Float, downfall: Float, temperatureModifier: TemperatureModifier): Climate =
-            Krypton.factory<Factory>().of(precipitation, temperature, downfall, temperatureModifier)
+        public fun of(precipitation: Precipitation, temperature: Float, downfall: Float, temperatureModifier: TemperatureModifier): Climate {
+            return builder()
+                .precipitation(precipitation)
+                .temperature(temperature)
+                .downfall(downfall)
+                .temperatureModifier(temperatureModifier)
+                .build()
+        }
 
         /**
          * Creates a new builder for climates.

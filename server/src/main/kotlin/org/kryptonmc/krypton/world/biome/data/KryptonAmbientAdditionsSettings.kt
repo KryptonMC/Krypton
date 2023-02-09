@@ -27,15 +27,9 @@ import org.kryptonmc.serialization.codecs.RecordCodecBuilder
 @JvmRecord
 data class KryptonAmbientAdditionsSettings(override val sound: SoundEvent, override val probability: Double) : AmbientAdditionsSettings {
 
-    override fun toBuilder(): AmbientAdditionsSettings.Builder = Builder(this)
-
     class Builder(private var sound: SoundEvent) : AmbientAdditionsSettings.Builder {
 
         private var probability = 0.0
-
-        constructor(settings: AmbientAdditionsSettings) : this(settings.sound) {
-            probability = settings.probability
-        }
 
         override fun sound(sound: SoundEvent): AmbientAdditionsSettings.Builder = apply { this.sound = sound }
 

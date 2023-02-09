@@ -14,7 +14,6 @@ import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.Krypton
 import org.kryptonmc.api.effect.particle.ParticleType
 import org.kryptonmc.api.effect.particle.data.ParticleData
-import org.kryptonmc.api.util.Buildable
 import org.kryptonmc.internal.annotations.ImmutableType
 import org.kryptonmc.internal.annotations.TypeFactory
 import org.kryptonmc.internal.annotations.dsl.BiomeDsl
@@ -24,7 +23,7 @@ import org.kryptonmc.internal.annotations.dsl.BiomeDsl
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
 @ImmutableType
-public interface AmbientParticleSettings : Buildable<AmbientParticleSettings.Builder, AmbientParticleSettings> {
+public interface AmbientParticleSettings {
 
     /**
      * The type of the particle for these settings.

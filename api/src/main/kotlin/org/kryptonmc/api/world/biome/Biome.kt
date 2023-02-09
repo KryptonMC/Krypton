@@ -13,7 +13,6 @@ import net.kyori.adventure.key.Keyed
 import org.jetbrains.annotations.ApiStatus
 import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.Krypton
-import org.kryptonmc.api.util.Buildable
 import org.kryptonmc.internal.annotations.CataloguedBy
 import org.kryptonmc.internal.annotations.ImmutableType
 import org.kryptonmc.internal.annotations.TypeFactory
@@ -26,7 +25,7 @@ import java.util.function.Consumer
 @Suppress("INAPPLICABLE_JVM_NAME")
 @CataloguedBy(Biomes::class)
 @ImmutableType
-public interface Biome : Buildable<Biome.Builder, Biome>, Keyed {
+public interface Biome : Keyed {
 
     /**
      * The climate of this biome.

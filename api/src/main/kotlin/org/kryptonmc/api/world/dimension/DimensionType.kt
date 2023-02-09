@@ -16,7 +16,6 @@ import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.Krypton
 import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.tags.TagKey
-import org.kryptonmc.api.util.Buildable
 import org.kryptonmc.internal.annotations.CataloguedBy
 import org.kryptonmc.internal.annotations.ImmutableType
 import org.kryptonmc.internal.annotations.TypeFactory
@@ -29,7 +28,7 @@ import java.util.OptionalLong
 @Suppress("INAPPLICABLE_JVM_NAME")
 @CataloguedBy(DimensionTypes::class)
 @ImmutableType
-public interface DimensionType : Buildable<DimensionType.Builder, DimensionType>, Keyed {
+public interface DimensionType : Keyed {
 
     /**
      * If piglins will transform in to zombified piglins over time.

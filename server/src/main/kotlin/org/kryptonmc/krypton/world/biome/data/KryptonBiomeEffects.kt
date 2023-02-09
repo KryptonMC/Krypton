@@ -50,9 +50,7 @@ data class KryptonBiomeEffects(
     override val backgroundMusic: Music? = null
 ) : BiomeEffects {
 
-    override fun toBuilder(): BiomeEffects.Builder = Builder(this)
-
-    class Builder() : BiomeEffects.Builder {
+    class Builder : BiomeEffects.Builder {
 
         private var fog = Color.BLACK
         private var water = Color.BLACK
@@ -66,21 +64,6 @@ data class KryptonBiomeEffects(
         private var mood: AmbientMoodSettings? = null
         private var additions: AmbientAdditionsSettings? = null
         private var backgroundMusic: Music? = null
-
-        constructor(effects: BiomeEffects) : this() {
-            fog = effects.fogColor
-            water = effects.waterColor
-            waterFog = effects.waterFogColor
-            sky = effects.skyColor
-            grassModifier = effects.grassColorModifier
-            foliage = effects.foliageColor
-            grass = effects.grassColor
-            particles = effects.ambientParticleSettings
-            loopSound = effects.ambientLoopSound
-            mood = effects.ambientMoodSettings
-            additions = effects.ambientAdditionsSettings
-            backgroundMusic = effects.backgroundMusic
-        }
 
         override fun fogColor(color: Color): BiomeEffects.Builder = apply { fog = color }
 

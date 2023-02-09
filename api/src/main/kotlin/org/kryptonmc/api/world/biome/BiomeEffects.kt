@@ -15,7 +15,6 @@ import org.kryptonmc.api.Krypton
 import org.kryptonmc.api.effect.Music
 import org.kryptonmc.api.effect.particle.ParticleType
 import org.kryptonmc.api.effect.sound.SoundEvent
-import org.kryptonmc.api.util.Buildable
 import org.kryptonmc.api.util.Color
 import org.kryptonmc.internal.annotations.ImmutableType
 import org.kryptonmc.internal.annotations.TypeFactory
@@ -28,7 +27,7 @@ import java.util.function.Consumer
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
 @ImmutableType
-public interface BiomeEffects : Buildable<BiomeEffects.Builder, BiomeEffects> {
+public interface BiomeEffects {
 
     /**
      * The colour that fog will appear when in the biome.

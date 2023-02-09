@@ -37,17 +37,10 @@ class KryptonBiome(override val climate: Climate, override val effects: BiomeEff
 
     override fun key(): Key = KryptonDynamicRegistries.BIOME.getKey(this) ?: UNREGISTERED_KEY
 
-    override fun toBuilder(): Biome.Builder = Builder(this)
-
-    class Builder() : Biome.Builder {
+    class Builder : Biome.Builder {
 
         private var climate = KryptonClimate.DEFAULT
         private var effects = KryptonBiomeEffects.DEFAULT
-
-        constructor(biome: Biome) : this() {
-            climate = biome.climate
-            effects = biome.effects
-        }
 
         override fun climate(climate: Climate): Builder = apply { this.climate = climate }
 

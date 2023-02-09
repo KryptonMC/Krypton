@@ -33,19 +33,11 @@ data class KryptonAmbientMoodSettings(
     override val offset: Double
 ) : AmbientMoodSettings {
 
-    override fun toBuilder(): AmbientMoodSettings.Builder = Builder(this)
-
     class Builder(private var sound: SoundEvent) : AmbientMoodSettings.Builder {
 
         private var tickDelay = 0
         private var searchExtent = 0
         private var offset = 0.0
-
-        constructor(settings: AmbientMoodSettings) : this(settings.sound) {
-            tickDelay = settings.tickDelay
-            searchExtent = settings.blockSearchExtent
-            offset = settings.offset
-        }
 
         override fun sound(sound: SoundEvent): AmbientMoodSettings.Builder = apply { this.sound = sound }
 

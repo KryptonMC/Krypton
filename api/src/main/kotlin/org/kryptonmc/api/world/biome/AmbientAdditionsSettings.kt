@@ -13,7 +13,6 @@ import org.jetbrains.annotations.ApiStatus
 import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.Krypton
 import org.kryptonmc.api.effect.sound.SoundEvent
-import org.kryptonmc.api.util.Buildable
 import org.kryptonmc.internal.annotations.ImmutableType
 import org.kryptonmc.internal.annotations.TypeFactory
 import org.kryptonmc.internal.annotations.dsl.BiomeDsl
@@ -24,7 +23,7 @@ import org.kryptonmc.internal.annotations.dsl.BiomeDsl
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
 @ImmutableType
-public interface AmbientAdditionsSettings : Buildable<AmbientAdditionsSettings.Builder, AmbientAdditionsSettings> {
+public interface AmbientAdditionsSettings {
 
     /**
      * The sound that might be played.

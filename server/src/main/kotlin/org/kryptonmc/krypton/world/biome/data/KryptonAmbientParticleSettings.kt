@@ -34,17 +34,10 @@ data class KryptonAmbientParticleSettings(
 
     constructor(type: ParticleType, probability: Float) : this(type, null, probability)
 
-    override fun toBuilder(): AmbientParticleSettings.Builder = Builder(this)
-
     class Builder(private var type: ParticleType) : AmbientParticleSettings.Builder {
 
         private var data: ParticleData? = null
         private var probability = 0F
-
-        constructor(settings: AmbientParticleSettings) : this(settings.type) {
-            data = settings.data
-            probability = settings.probability
-        }
 
         override fun type(type: ParticleType): AmbientParticleSettings.Builder = apply { this.type = type }
 

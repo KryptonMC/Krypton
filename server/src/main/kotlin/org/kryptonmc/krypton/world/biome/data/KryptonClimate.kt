@@ -34,21 +34,12 @@ data class KryptonClimate(
     override val temperatureModifier: TemperatureModifier = TemperatureModifier.NONE
 ) : Climate {
 
-    override fun toBuilder(): Climate.Builder = Builder(this)
-
-    class Builder() : Climate.Builder {
+    class Builder : Climate.Builder {
 
         private var precipitation = Precipitation.NONE
         private var temperature = 0F
         private var downfall = 0F
         private var temperatureModifier = TemperatureModifier.NONE
-
-        constructor(climate: Climate) : this() {
-            precipitation = climate.precipitation
-            temperature = climate.temperature
-            downfall = climate.downfall
-            temperatureModifier = climate.temperatureModifier
-        }
 
         override fun precipitation(precipitation: Precipitation): Climate.Builder = apply { this.precipitation = precipitation }
 
@@ -62,9 +53,6 @@ data class KryptonClimate(
     }
 
     object Factory : Climate.Factory {
-
-        override fun of(precipitation: Precipitation, temperature: Float, downfall: Float, temperatureModifier: TemperatureModifier): Climate =
-            KryptonClimate(precipitation, temperature, downfall, temperatureModifier)
 
         override fun builder(): Climate.Builder = Builder()
     }
