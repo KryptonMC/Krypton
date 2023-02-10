@@ -1,6 +1,7 @@
 plugins {
     id("krypton.common-conventions")
     `maven-publish`
+    signing
 }
 
 tasks {
@@ -39,6 +40,8 @@ publishing {
         create<MavenPublication>("maven") {
             artifactId = "krypton-${project.name}"
             from(components["kotlin"])
+            artifact(tasks["sourcesJar"])
+            artifact(tasks["javadocJar"])
 
             pom {
                 name.set("Krypton")
@@ -68,4 +71,8 @@ publishing {
             }
         }
     }
+}
+
+signing {
+    sign(publishing.publications["maven"])
 }
