@@ -18,6 +18,7 @@
  */
 package org.kryptonmc.krypton.event
 
+import org.apache.logging.log4j.LogManager
 import org.kryptonmc.api.event.Event
 import org.kryptonmc.api.event.EventFilter
 import org.kryptonmc.api.event.EventListener
@@ -54,7 +55,12 @@ open class KryptonEventNode<T : Event>(
     override fun hasListener(type: Class<out T>): Boolean = getHandle(type).hasListener()
 
     override fun <E : T> fire(event: E): E {
-        getHandle(event.javaClass).call(event)
+        val handle = getHandle(event.javaClass)
+        try {
+            handle.call(event)
+        } catch (exception: Throwable) {
+            LOGGER.error("An error occurred while dispatching event $event!", exception)
+        }
         return event
     }
 
@@ -260,6 +266,7 @@ open class KryptonEventNode<T : Event>(
 
     companion object {
 
+        private val LOGGER = LogManager.getLogger()
         private val GLOBAL_CHILD_LOCK = Any()
 
         @JvmStatic
