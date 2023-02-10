@@ -40,10 +40,10 @@ class KryptonFluidState(
     propertiesCodec: MapCodec<KryptonFluidState>
 ) : KryptonState<KryptonFluid, KryptonFluidState>(fluid, values, propertiesCodec), FluidState, StateDelegate<FluidState, KryptonFluidState> {
 
-    override val isSource: Boolean
-        get() = fluid.isSource(this)
     override val level: Int
         get() = fluid.level(this)
+
+    override fun isSource(): Boolean = fluid.isSource(this)
 
     fun ownHeight(): Float = fluid.getOwnHeight(this)
 

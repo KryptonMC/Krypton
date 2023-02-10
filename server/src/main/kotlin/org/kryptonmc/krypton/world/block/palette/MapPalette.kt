@@ -32,17 +32,16 @@ data class MapPalette<T>(
     private val values: IntIdentityHashBiMap<T>
 ) : Palette<T> {
 
-    val entries: Sequence<T>
-        get() = values.asSequence()
-    override val size: Int
-        get() = values.size
-
     constructor(registry: IntBiMap<T>, bits: Int, resizer: PaletteResizer<T>, entries: List<T>) : this(registry, bits, resizer) {
         entries.forEach(values::add)
     }
 
     constructor(registry: IntBiMap<T>, bits: Int,
                 resizer: PaletteResizer<T>) : this(registry, bits, resizer, IntIdentityHashBiMap.create(1 shl bits))
+
+    fun entries(): Sequence<T> = values.asSequence()
+
+    override fun size(): Int = values.size()
 
     override fun get(value: T): Int {
         var id = values.getId(value)
@@ -56,7 +55,7 @@ data class MapPalette<T>(
     override fun get(id: Int): T = values.get(id) ?: throw MissingPaletteEntryException(id)
 
     override fun write(buf: ByteBuf) {
-        val size = size
+        val size = size()
         buf.writeVarInt(size)
         for (i in 0 until size) {
             buf.writeVarInt(registry.getId(values.get(i)!!))
@@ -64,8 +63,8 @@ data class MapPalette<T>(
     }
 
     override fun calculateSerializedSize(): Int {
-        var size = ByteBufExtras.getVarIntBytes(size)
-        for (i in 0 until this.size) {
+        var size = ByteBufExtras.getVarIntBytes(size())
+        for (i in 0 until size()) {
             size += ByteBufExtras.getVarIntBytes(registry.getId(values.get(i)!!))
         }
         return size

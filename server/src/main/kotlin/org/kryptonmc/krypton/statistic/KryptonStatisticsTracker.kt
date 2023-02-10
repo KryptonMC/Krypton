@@ -23,7 +23,6 @@ import com.google.gson.JsonObject
 import com.google.gson.JsonParseException
 import com.google.gson.internal.Streams
 import com.google.gson.stream.JsonReader
-import it.unimi.dsi.fastutil.objects.Object2IntMap
 import it.unimi.dsi.fastutil.objects.Object2IntMaps
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap
 import net.kyori.adventure.key.InvalidKeyException
@@ -44,12 +43,13 @@ import java.io.Reader
 import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.StandardOpenOption
+import java.util.Collections
 import kotlin.math.max
 import kotlin.math.min
 
 class KryptonStatisticsTracker(private val player: KryptonPlayer, private val file: Path) : StatisticsTracker {
 
-    override val statistics: Object2IntMap<Statistic<*>> = Object2IntMaps.synchronize(Object2IntOpenHashMap())
+    private val statistics = Object2IntMaps.synchronize<Statistic<*>>(Object2IntOpenHashMap())
     private val pendingUpdate = mutableSetOf<Statistic<*>>()
 
     init {
@@ -64,6 +64,8 @@ class KryptonStatisticsTracker(private val player: KryptonPlayer, private val fi
             }
         }
     }
+
+    override fun statistics(): Set<Statistic<*>> = Collections.unmodifiableSet(statistics.keys)
 
     private fun getAndClearPendingUpdate(): Set<Statistic<*>> {
         val copy = LinkedHashSet(pendingUpdate)

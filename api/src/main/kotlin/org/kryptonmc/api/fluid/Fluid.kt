@@ -32,13 +32,15 @@ public interface Fluid : StateHolder<FluidState>, Keyed {
     public val bucket: ItemType
 
     /**
-     * If this fluid is an empty fluid.
-     */
-    public val isEmpty: Boolean
-
-    /**
      * The value for this fluid's resistance to explosions.
      */
     @get:JvmName("explosionResistance")
     public val explosionResistance: Double
+
+    /**
+     * If this fluid is an empty fluid.
+     *
+     * @return true if this fluid is empty
+     */
+    public fun isEmpty(): Boolean
 }

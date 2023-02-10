@@ -54,9 +54,6 @@ class KryptonAxolotl(world: KryptonWorld) : KryptonAnimal(world), Axolotl, Bucke
     override var isPlayingDead: Boolean
         get() = data.get(MetadataKeys.Axolotl.PLAYING_DEAD)
         set(value) = data.set(MetadataKeys.Axolotl.PLAYING_DEAD, value)
-    override var wasSpawnedFromBucket: Boolean
-        get() = data.get(MetadataKeys.Axolotl.FROM_BUCKET)
-        set(value) = data.set(MetadataKeys.Axolotl.FROM_BUCKET, value)
 
     override val bucketType: ItemType
         get() = ItemTypes.AXOLOTL_BUCKET.get()
@@ -68,6 +65,12 @@ class KryptonAxolotl(world: KryptonWorld) : KryptonAnimal(world), Axolotl, Bucke
         data.define(MetadataKeys.Axolotl.VARIANT, AxolotlVariant.LUCY.ordinal)
         data.define(MetadataKeys.Axolotl.PLAYING_DEAD, false)
         data.define(MetadataKeys.Axolotl.FROM_BUCKET, false)
+    }
+
+    override fun wasSpawnedFromBucket(): Boolean = data.get(MetadataKeys.Axolotl.FROM_BUCKET)
+
+    override fun setSpawnedFromBucket(value: Boolean) {
+        data.set(MetadataKeys.Axolotl.FROM_BUCKET, value)
     }
 
     override fun isFood(item: ItemStack): Boolean = item.type.downcast().eq(ItemTags.AXOLOTL_TEMPT_ITEMS)

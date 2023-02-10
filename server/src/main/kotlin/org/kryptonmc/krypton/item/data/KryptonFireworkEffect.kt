@@ -40,18 +40,18 @@ data class KryptonFireworkEffect(
 
         private var flicker = false
         private var trail = false
-        private var colors = ImmutableList.of<Color>()
-        private var fadeColors = ImmutableList.of<Color>()
+        private val colors = ImmutableList.builder<Color>()
+        private val fadeColors = ImmutableList.builder<Color>()
 
         override fun flickers(): Builder = apply { flicker = true }
 
         override fun trail(): Builder = apply { trail = true }
 
-        override fun colors(colors: Collection<Color>): Builder = apply { this.colors = ImmutableList.copyOf(colors) }
+        override fun addColor(color: Color): Builder = apply { colors.add(color) }
 
-        override fun fadeColors(colors: Collection<Color>): Builder = apply { fadeColors = ImmutableList.copyOf(colors) }
+        override fun addFadeColor(color: Color): Builder = apply { fadeColors.add(color) }
 
-        override fun build(): KryptonFireworkEffect = KryptonFireworkEffect(type, flicker, trail, colors, fadeColors)
+        override fun build(): KryptonFireworkEffect = KryptonFireworkEffect(type, flicker, trail, colors.build(), fadeColors.build())
     }
 
     object Factory : FireworkEffect.Factory {

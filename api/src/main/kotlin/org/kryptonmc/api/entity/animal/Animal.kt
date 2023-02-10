@@ -27,18 +27,6 @@ import java.util.UUID
 public interface Animal : Ageable {
 
     /**
-     * If this animal can fall in love.
-     */
-    @get:JvmName("canFallInLove")
-    public val canFallInLove: Boolean
-
-    /**
-     * Whether this animal is currently in love, meaning it is looking for a
-     * mate.
-     */
-    public val isInLove: Boolean
-
-    /**
      * The time remaining that this animal will be in love for.
      */
     public val inLoveTime: Int
@@ -49,6 +37,21 @@ public interface Animal : Ageable {
      * If it is not in love, this will always be null.
      */
     public var loveCause: UUID?
+
+    /**
+     * If this animal can fall in love.
+     *
+     * @return true if this animal can fall in love
+     */
+    public fun canFallInLove(): Boolean
+
+    /**
+     * Whether this animal is currently in love, meaning it is looking for a
+     * mate.
+     *
+     * @return true if this animal is in love
+     */
+    public fun isInLove(): Boolean
 
     /**
      * Returns true if this animal is eligible to mate with the given [target]

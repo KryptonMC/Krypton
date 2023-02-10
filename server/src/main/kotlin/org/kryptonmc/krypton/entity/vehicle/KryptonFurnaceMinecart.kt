@@ -36,13 +36,39 @@ class KryptonFurnaceMinecart(world: KryptonWorld) : KryptonMinecartLike(world), 
 
     override val variant: MinecartVariant
         get() = MinecartVariant.FURNACE
-    override var hasFuel: Boolean
-        get() = data.get(MetadataKeys.FurnaceMinecart.HAS_FUEL)
-        set(value) = data.set(MetadataKeys.FurnaceMinecart.HAS_FUEL, value)
-    override var fuel: Int = 0
+    private var remainingFuel = 0
+
+    override val fuel: Int
+        get() = remainingFuel
 
     override fun defineData() {
         super.defineData()
         data.define(MetadataKeys.FurnaceMinecart.HAS_FUEL, false)
+    }
+
+    override fun hasFuel(): Boolean = data.get(MetadataKeys.FurnaceMinecart.HAS_FUEL)
+
+    private fun setHasFuel(has: Boolean) {
+        data.set(MetadataKeys.FurnaceMinecart.HAS_FUEL, has)
+    }
+
+    fun setFuel(fuel: Int) {
+        remainingFuel = fuel
+        if (fuel != 0) setHasFuel(true)
+    }
+
+    override fun addFuel(amount: Int) {
+        remainingFuel += amount
+        if (amount != 0) setHasFuel(true)
+    }
+
+    override fun removeFuel(amount: Int) {
+        remainingFuel -= amount
+        if (remainingFuel <= 0) resetFuel()
+    }
+
+    override fun resetFuel() {
+        remainingFuel = 0
+        setHasFuel(false)
     }
 }

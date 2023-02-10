@@ -99,7 +99,7 @@ abstract class FlowingFluid : KryptonFluid() {
         return shapes.computeIfAbsent(state) { Shapes.box(0.0, 0.0, 0.0, 1.0, it.getHeight(world, pos).toDouble(), 1.0) }
     }
 
-    private fun affectsFlow(state: KryptonFluidState): Boolean = state.isEmpty || state.fluid.isSame(this)
+    private fun affectsFlow(state: KryptonFluidState): Boolean = state.isEmpty() || state.fluid.isSame(this)
 
     protected fun isSolidFace(world: BlockGetter, pos: Vec3i, side: Direction): Boolean {
         val block = world.getBlock(pos)
@@ -121,7 +121,7 @@ abstract class FlowingFluid : KryptonFluid() {
 
         @JvmStatic
         protected fun calculateBlockLevel(state: KryptonFluidState): Int {
-            if (state.isSource) return 0
+            if (state.isSource()) return 0
             val fallingBonus = if (state.requireProperty(FALLING)) MAX_LEVEL else 0
             return MAX_LEVEL - min(state.level, MAX_LEVEL) + fallingBonus
         }

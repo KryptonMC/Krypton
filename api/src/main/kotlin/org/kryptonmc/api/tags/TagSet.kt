@@ -32,10 +32,11 @@ public interface TagSet<T> : Iterable<T> {
     public val registry: Registry<T>
 
     /**
-     * The size of this tag set.
+     * Gets the size of this tag set.
+     *
+     * @return the size of this tag set
      */
-    @get:JvmName("size")
-    public val size: Int
+    public fun size(): Int
 
     /**
      * Checks if this tag set contains the given [value].

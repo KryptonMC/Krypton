@@ -65,7 +65,7 @@ class EntityWaterPhysicsSystem(private val entity: KryptonEntity) {
         updateWaterCurrent()
         val lavaScale = if (entity.world.dimensionType.isUltrawarm) FAST_LAVA_FLOW_SCALE else SLOW_LAVA_FLOW_SCALE
         val pushedFromLava = updateFluidHeightAndFlow(FluidTags.LAVA, lavaScale)
-        return entity.isInWater || pushedFromLava
+        return entity.isInWater() || pushedFromLava
     }
 
     private fun updateWaterCurrent() {
@@ -135,7 +135,7 @@ class EntityWaterPhysicsSystem(private val entity: KryptonEntity) {
 
         val y = entity.position.y + entity.eyeHeight - KryptonEntity.BREATHING_DISTANCE_BELOW_EYES
         val vehicle = entity.vehicleSystem.vehicle()
-        if (vehicle is KryptonBoat && !vehicle.isUnderwater && vehicle.boundingBox.maximumY >= y && vehicle.boundingBox.minimumY <= y) return
+        if (vehicle is KryptonBoat && !vehicle.isUnderwater() && vehicle.boundingBox.maximumY >= y && vehicle.boundingBox.minimumY <= y) return
 
         val pos = entity.position.withY(y).asVec3i()
         val fluid = entity.world.getFluid(pos)

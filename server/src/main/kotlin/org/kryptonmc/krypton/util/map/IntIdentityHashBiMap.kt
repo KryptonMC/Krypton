@@ -38,8 +38,7 @@ class IntIdentityHashBiMap<K> : IntBiMap<K> {
     private var byId: Array<K?>
 
     private var nextId = 0
-    override var size: Int = 0
-        private set
+    private var size = 0
 
     private constructor(initialCapacity: Int) {
         keys = newArray(initialCapacity)
@@ -54,6 +53,8 @@ class IntIdentityHashBiMap<K> : IntBiMap<K> {
         this.nextId = nextId
         this.size = size
     }
+
+    override fun size(): Int = size
 
     fun add(key: K): Int {
         val id = nextId()

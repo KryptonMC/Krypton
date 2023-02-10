@@ -66,12 +66,12 @@ interface BaseWorld : World, WorldAccessor, PacketGroupingAudience {
         get() = data.difficulty
     override val gameMode: GameMode
         get() = data.gameMode
-    override val isHardcore: Boolean
-        get() = data.isHardcore
     override val time: Long
         get() = data.time
     override val scoreboard: KryptonScoreboard
         get() = server.scoreboard
+
+    override fun isHardcore(): Boolean = data.isHardcore
 
     @Suppress("UNCHECKED_CAST")
     override fun <V> getGameRule(rule: GameRule<V>): V = (rule as WorldGameRules.Key<*>).get(data.gameRules.getRule(rule)) as V

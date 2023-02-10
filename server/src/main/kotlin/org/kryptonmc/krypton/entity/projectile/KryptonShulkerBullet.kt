@@ -21,6 +21,7 @@ package org.kryptonmc.krypton.entity.projectile
 import org.kryptonmc.api.entity.Entity
 import org.kryptonmc.api.entity.projectile.ShulkerBullet
 import org.kryptonmc.api.util.Direction
+import org.kryptonmc.api.util.Vec3d
 import org.kryptonmc.krypton.entity.KryptonEntityType
 import org.kryptonmc.krypton.entity.KryptonEntityTypes
 import org.kryptonmc.krypton.entity.serializer.EntitySerializer
@@ -35,11 +36,15 @@ class KryptonShulkerBullet(world: KryptonWorld) : KryptonProjectile(world), Shul
     override val serializer: EntitySerializer<KryptonShulkerBullet>
         get() = ShulkerBulletSerializer
 
-    internal var targetId: UUID? = null
+    private var targetId: UUID? = null
     override var steps: Int = 0
-    override var movingDirection: Direction? = null
     override var target: Entity? = null
-    override var targetDeltaX: Double = 0.0
-    override var targetDeltaY: Double = 0.0
-    override var targetDeltaZ: Double = 0.0
+    override var targetDelta: Vec3d = Vec3d.ZERO
+    override var movingDirection: Direction? = null
+
+    fun targetId(): UUID? = targetId
+
+    fun setTargetId(id: UUID) {
+        targetId = id
+    }
 }

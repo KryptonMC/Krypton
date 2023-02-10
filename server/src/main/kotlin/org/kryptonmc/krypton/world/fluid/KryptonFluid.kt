@@ -43,15 +43,14 @@ abstract class KryptonFluid : Fluid, StateHolderDelegate<FluidState, KryptonFlui
     final override val defaultState: KryptonFluidState
         get() = defaultFluidState
 
-    override val isEmpty: Boolean
-        get() = false
-
     init {
         val builder = StateDefinition.Builder<KryptonFluid, KryptonFluidState>(this)
         createStateDefinition(builder)
         stateDefinition = builder.build({ it.defaultFluidState }, ::KryptonFluidState)
         defaultFluidState = stateDefinition.any()
     }
+
+    override fun isEmpty(): Boolean = false
 
     open fun pickupSound(): SoundEvent? = null
 

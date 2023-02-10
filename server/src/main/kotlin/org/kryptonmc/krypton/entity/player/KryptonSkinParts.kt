@@ -22,20 +22,19 @@ import org.kryptonmc.api.entity.player.SkinParts
 
 class KryptonSkinParts(private val raw: Int) : SkinParts {
 
-    override val hasCape: Boolean
-        get() = raw and FLAG_CAPE != 0
-    override val hasJacket: Boolean
-        get() = raw and FLAG_JACKET != 0
-    override val hasLeftSleeve: Boolean
-        get() = raw and FLAG_LEFT_SLEEVE != 0
-    override val hasRightSleeve: Boolean
-        get() = raw and FLAG_RIGHT_SLEEVE != 0
-    override val hasLeftPants: Boolean
-        get() = raw and FLAG_LEFT_PANTS != 0
-    override val hasRightPants: Boolean
-        get() = raw and FLAG_RIGHT_PANTS != 0
-    override val hasHat: Boolean
-        get() = raw and FLAG_HAT != 0
+    override fun hasCape(): Boolean = raw and FLAG_CAPE != 0
+
+    override fun hasJacket(): Boolean = raw and FLAG_JACKET != 0
+
+    override fun hasLeftSleeve(): Boolean = raw and FLAG_LEFT_SLEEVE != 0
+
+    override fun hasRightSleeve(): Boolean = raw and FLAG_RIGHT_SLEEVE != 0
+
+    override fun hasLeftPants(): Boolean = raw and FLAG_LEFT_PANTS != 0
+
+    override fun hasRightPants(): Boolean = raw and FLAG_RIGHT_PANTS != 0
+
+    override fun hasHat(): Boolean = raw and FLAG_HAT != 0
 
     override fun equals(other: Any?): Boolean = this === other || other is KryptonSkinParts && raw == other.raw
 

@@ -34,8 +34,8 @@ class EmptyFluid : KryptonFluid() {
         get() = ItemTypes.AIR.get()
     override val explosionResistance: Double
         get() = 0.0
-    override val isEmpty: Boolean
-        get() = true
+
+    override fun isEmpty(): Boolean = true
 
     override fun getFlow(world: BlockGetter, pos: Vec3i, state: KryptonFluidState): Vec3d = Vec3d.ZERO
 

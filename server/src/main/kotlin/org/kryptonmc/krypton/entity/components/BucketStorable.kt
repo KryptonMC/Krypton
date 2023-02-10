@@ -28,6 +28,8 @@ interface BucketStorable : Bucketable {
 
     fun loadFromBucket(tag: CompoundTag)
 
+    fun setSpawnedFromBucket(value: Boolean)
+
     companion object {
 
         fun loadDefaultsFromBucket(mob: KryptonMob, tag: CompoundTag) {

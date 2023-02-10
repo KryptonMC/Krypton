@@ -10,6 +10,7 @@ package org.kryptonmc.api.entity.projectile
 
 import org.kryptonmc.api.entity.Entity
 import org.kryptonmc.api.util.Direction
+import org.kryptonmc.api.util.Vec3d
 
 /**
  * A bullet fired from a [Shulker].
@@ -34,23 +35,13 @@ public interface ShulkerBullet : Projectile {
     public val target: Entity?
 
     /**
+     * The offset of the target from the location of this bullet.
+     */
+    public val targetDelta: Vec3d
+
+    /**
      * The current direction that this bullet is moving, or null if this bullet
      * is not moving.
      */
     public val movingDirection: Direction?
-
-    /**
-     * The X offset of the target from the location of this bullet.
-     */
-    public val targetDeltaX: Double
-
-    /**
-     * The Y offset of the target from the location of this bullet.
-     */
-    public val targetDeltaY: Double
-
-    /**
-     * The Z offset of the target from the location of this bullet.
-     */
-    public val targetDeltaZ: Double
 }

@@ -69,15 +69,8 @@ class KryptonBlock(
     override val friction: Double
         get() = properties.friction.toDouble()
 
-    override val hasGravity: Boolean
-        get() = propertiesProvider.hasGravity()
-    override val hasBlockEntity: Boolean
-        get() = propertiesProvider.hasBlockEntity()
-
     override val defaultState: KryptonBlockState
         get() = defaultBlockState
-    override val canRespawnIn: Boolean
-        get() = !properties.material.solid && !properties.material.liquid
 
     private val defaultBlockState: KryptonBlockState
     private var descriptionId: String? = null
@@ -90,6 +83,12 @@ class KryptonBlock(
         stateDefinition = builder.build({ it.defaultBlockState }, ::KryptonBlockState)
         defaultBlockState = stateDefinition.any()
     }
+
+    override fun hasGravity(): Boolean = propertiesProvider.hasGravity()
+
+    override fun hasBlockEntity(): Boolean = propertiesProvider.hasBlockEntity()
+
+    override fun canRespawnIn(): Boolean = !properties.material.solid && !properties.material.liquid
 
     fun withPropertiesOf(state: KryptonBlockState): KryptonBlockState {
         var result = defaultBlockState
@@ -157,7 +156,7 @@ class KryptonBlock(
         fun updateOrDestroy(oldState: KryptonBlockState, newState: KryptonBlockState, world: WorldAccessor, pos: Vec3i, flags: Int,
                             recursionLeft: Int) {
             if (oldState === newState) return
-            if (oldState.isAir) {
+            if (oldState.isAir()) {
                 world.destroyBlock(pos, flags and SetBlockFlag.NEIGHBOUR_DROPS == 0, null, recursionLeft)
             } else {
                 world.setBlock(pos, newState, flags and SetBlockFlag.NO_NEIGHBOUR_DROPS, recursionLeft)

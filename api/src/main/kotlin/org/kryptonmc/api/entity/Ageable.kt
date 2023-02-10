@@ -26,14 +26,15 @@ public interface Ageable : Mob {
 
     /**
      * Whether this ageable mob can naturally breed with others of its kind.
+     *
+     * @return true if this mob can breed naturally
      */
-    @get:JvmName("canBreedNaturally")
-    public val canBreedNaturally: Boolean
+    public fun canBreedNaturally(): Boolean
 
     /**
      * Increases the age of this mob by the given [amount].
      *
      * @param amount the amount
      */
-    public fun age(amount: Int)
+    public fun increaseAge(amount: Int)
 }

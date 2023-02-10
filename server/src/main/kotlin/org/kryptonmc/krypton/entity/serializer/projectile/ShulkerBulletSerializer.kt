@@ -18,6 +18,7 @@
  */
 package org.kryptonmc.krypton.entity.serializer.projectile
 
+import org.kryptonmc.api.util.Vec3d
 import org.kryptonmc.krypton.entity.projectile.KryptonShulkerBullet
 import org.kryptonmc.krypton.entity.serializer.EntitySerializer
 import org.kryptonmc.krypton.util.enumhelper.Directions
@@ -40,19 +41,17 @@ object ShulkerBulletSerializer : EntitySerializer<KryptonShulkerBullet> {
     override fun load(entity: KryptonShulkerBullet, data: CompoundTag) {
         ProjectileSerializer.load(entity, data)
         entity.steps = data.getInt(STEPS_TAG)
-        entity.targetDeltaX = data.getDouble(DELTA_X_TAG)
-        entity.targetDeltaY = data.getDouble(DELTA_Y_TAG)
-        entity.targetDeltaZ = data.getDouble(DELTA_Z_TAG)
+        entity.targetDelta = Vec3d(data.getDouble(DELTA_X_TAG), data.getDouble(DELTA_Y_TAG), data.getDouble(DELTA_Z_TAG))
         if (data.hasNumber(DIR_TAG)) entity.movingDirection = Directions.of3D(data.getInt(DIR_TAG))
-        if (data.hasUUID(TARGET_TAG)) entity.targetId = data.getUUID(TARGET_TAG)
+        if (data.hasUUID(TARGET_TAG)) entity.setTargetId(data.getUUID(TARGET_TAG))
     }
 
     override fun save(entity: KryptonShulkerBullet): CompoundTag.Builder = ProjectileSerializer.save(entity).apply {
         putInt(STEPS_TAG, entity.steps)
-        putDouble(DELTA_X_TAG, entity.targetDeltaX)
-        putDouble(DELTA_Y_TAG, entity.targetDeltaY)
-        putDouble(DELTA_Z_TAG, entity.targetDeltaZ)
+        putDouble(DELTA_X_TAG, entity.targetDelta.x)
+        putDouble(DELTA_Y_TAG, entity.targetDelta.y)
+        putDouble(DELTA_Z_TAG, entity.targetDelta.z)
         putNullable(DIR_TAG, entity.movingDirection) { name, value -> putInt(name, value.ordinal) }
-        putNullable(TARGET_TAG, entity.targetId, CompoundTag.Builder::putUUID)
+        putNullable(TARGET_TAG, entity.targetId(), CompoundTag.Builder::putUUID)
     }
 }

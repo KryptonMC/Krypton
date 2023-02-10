@@ -24,13 +24,15 @@ public interface Projectile : Entity {
 
     /**
      * If this projectile has left its owner's hitbox.
+     *
+     * @return true if this projectile has left its owner
      */
-    @get:JvmName("hasLeftOwner")
-    public val hasLeftOwner: Boolean
+    public fun hasLeftOwner(): Boolean
 
     /**
      * If this projectile has been shot.
+     *
+     * @return true if this projectile has been shot
      */
-    @get:JvmName("hasBeenShot")
-    public val hasBeenShot: Boolean
+    public fun hasBeenShot(): Boolean
 }

@@ -85,7 +85,7 @@ class KryptonChunk(
 
     override fun setBlock(pos: Vec3i, state: KryptonBlockState, moving: Boolean): KryptonBlockState? {
         val section = sections()[getSectionIndex(pos.y)]
-        if (section.hasOnlyAir() && state.isAir) return null
+        if (section.hasOnlyAir() && state.isAir()) return null
 
         // Get the local coordinates and set the new state in the section
         val localX = pos.x and 15

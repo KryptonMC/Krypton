@@ -35,14 +35,14 @@ class KryptonUser(override val profile: GameProfile, var data: CompoundTag, priv
         get() = profile.name
     override val uuid: UUID
         get() = profile.uuid
-    override val isOnline: Boolean
-        get() = asPlayer() != null
     override val hasJoinedBefore: Boolean
         get() = asPlayer()?.hasJoinedBefore ?: !data.isEmpty
     override val firstJoined: Instant
         get() = asPlayer()?.firstJoined ?: getAndUpdateJoined("firstJoined", firstJoinedCached) { firstJoinedCached = it }
     override val lastJoined: Instant
         get() = asPlayer()?.lastJoined ?: getAndUpdateJoined("lastJoined", lastJoinedCached) { lastJoinedCached = it }
+
+    override fun isOnline(): Boolean = asPlayer() != null
 
     override fun asPlayer(): Player? = server.getPlayer(uuid)
 

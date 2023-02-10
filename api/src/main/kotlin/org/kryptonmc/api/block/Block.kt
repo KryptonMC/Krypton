@@ -43,31 +43,36 @@ public interface Block : StateHolder<BlockState>, BlockLike, ItemLike, Translata
     public val friction: Double
 
     /**
-     * If this block has gravity, meaning that, when placed with one or more
-     * air blocks beneath it, it will become a falling block entity, and fall
-     * down towards the ground until it reaches a solid block, in which it will
-     * stop falling and become a normal block.
-     */
-    @get:JvmName("hasGravity")
-    public val hasGravity: Boolean
-
-    /**
-     * If this block can be respawned inside of.
-     */
-    @get:JvmName("canRespawnIn")
-    public val canRespawnIn: Boolean
-
-    /**
-     * If this block has an associated block entity.
-     */
-    @get:JvmName("hasBlockEntity")
-    public val hasBlockEntity: Boolean
-
-    /**
      * The group of sounds for this block.
      */
     @get:JvmName("soundGroup")
     public val soundGroup: BlockSoundGroup
+
+    /**
+     * If this block has gravity.
+     *
+     * If a block has gravity, and it is placed with one or more air blocks
+     * beneath it, it will become a falling block entity, and fall down
+     * towards the ground with an acceleration of ~9.8 m/s^2 until it reaches
+     * a solid block, in which it will stop falling and become a normal block.
+     *
+     * @return true if this block has gravity
+     */
+    public fun hasGravity(): Boolean
+
+    /**
+     * If this block can be respawned inside of.
+     *
+     * @return true if this block can be respawned in
+     */
+    public fun canRespawnIn(): Boolean
+
+    /**
+     * If this block has an associated block entity.
+     *
+     * @return true if this block has a block entity
+     */
+    public fun hasBlockEntity(): Boolean
 
     override fun asBlock(): Block = this
 }

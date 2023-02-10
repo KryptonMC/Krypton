@@ -86,9 +86,9 @@ class Heightmap(private val chunk: ChunkAccessor, val type: Type) {
         WORLD_SURFACE(Usage.CLIENT, NOT_AIR),
         OCEAN_FLOOR_WG(Usage.WORLD_GENERATION, BLOCKS_MOTION),
         OCEAN_FLOOR(Usage.LIVE_WORLD, BLOCKS_MOTION),
-        MOTION_BLOCKING(Usage.CLIENT, { it.blocksMotion || !it.asFluid().isEmpty }),
+        MOTION_BLOCKING(Usage.CLIENT, { it.blocksMotion() || !it.asFluid().isEmpty() }),
         // FIXME: Check if block not instance of LeavesBlock
-        MOTION_BLOCKING_NO_LEAVES(Usage.LIVE_WORLD, { it.blocksMotion || !it.asFluid().isEmpty });
+        MOTION_BLOCKING_NO_LEAVES(Usage.LIVE_WORLD, { it.blocksMotion() || !it.asFluid().isEmpty() });
 
         fun sendToClient(): Boolean = usage == Usage.CLIENT
 
@@ -110,8 +110,8 @@ class Heightmap(private val chunk: ChunkAccessor, val type: Type) {
 
     companion object {
 
-        private val NOT_AIR: Predicate<KryptonBlockState> = Predicate { !it.isAir }
-        private val BLOCKS_MOTION: Predicate<KryptonBlockState> = Predicate { it.blocksMotion }
+        private val NOT_AIR: Predicate<KryptonBlockState> = Predicate { !it.isAir() }
+        private val BLOCKS_MOTION: Predicate<KryptonBlockState> = Predicate { it.blocksMotion() }
         private val LOGGER = LogManager.getLogger()
 
         @JvmStatic

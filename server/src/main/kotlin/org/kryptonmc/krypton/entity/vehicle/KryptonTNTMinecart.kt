@@ -40,9 +40,9 @@ class KryptonTNTMinecart(world: KryptonWorld) : KryptonMinecartLike(world), TNTM
 
     override val variant: MinecartVariant
         get() = MinecartVariant.TNT
-    override val isPrimed: Boolean
-        get() = fuse > -1
     override var fuse: Int = -1
+
+    override fun isPrimed(): Boolean = fuse > -1
 
     override fun prime() {
         fuse = PRIMED_FUSE

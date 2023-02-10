@@ -96,10 +96,6 @@ class KryptonWorld(
         set(value) {
             data.difficulty = value
         }
-    override val isRaining: Boolean
-        get() = getRainLevel(1F) > 0.2F
-    override val isThundering: Boolean
-        get() = if (dimensionType.hasSkylight && !dimensionType.hasCeiling) getThunderLevel(1F) > 0.9F else false
     private var skyDarken = 0
 
     override val players: MutableSet<KryptonPlayer> = ConcurrentHashMap.newKeySet()
@@ -126,6 +122,13 @@ class KryptonWorld(
     init {
         updateSkyBrightness()
         prepareWeather()
+    }
+
+    override fun isRaining(): Boolean = getRainLevel(1F) > 0.2F
+
+    override fun isThundering(): Boolean {
+        if (dimensionType.hasSkylight && !dimensionType.hasCeiling) return getThunderLevel(1F) > 0.9F
+        return false
     }
 
     fun gameRules(): WorldGameRules = data.gameRules
@@ -293,7 +296,7 @@ class KryptonWorld(
 
     override fun destroyBlock(pos: Vec3i, drop: Boolean, entity: KryptonEntity?, recursionLeft: Int): Boolean {
         val state = getBlock(pos)
-        if (state.isAir) return false
+        if (state.isAir()) return false
         val fluid = getFluid(pos)
 //        if (state.block !is BaseFireBlock) worldEvent(pos, WorldEvent.DESTROY_BLOCK, KryptonBlock.idOf(state)) TODO
         if (drop) {
@@ -317,7 +320,7 @@ class KryptonWorld(
     }
 
     private fun tickWeather() {
-        val wasRaining = isRaining
+        val wasRaining = isRaining()
         if (dimensionType.hasSkylight) {
             if (gameRules().getBoolean(GameRuleKeys.DO_WEATHER_CYCLE)) {
                 var clearWeatherTime = data.clearWeatherTime
@@ -369,7 +372,7 @@ class KryptonWorld(
         if (oldThunderLevel != thunderLevel) {
             server.connectionManager.sendGroupedPacket(PacketOutGameEvent(GameEventTypes.THUNDER_LEVEL_CHANGE, thunderLevel)) { it.world === this }
         }
-        if (wasRaining != isRaining) {
+        if (wasRaining != isRaining()) {
             val newRainState = if (wasRaining) GameEventTypes.END_RAINING else GameEventTypes.BEGIN_RAINING
             server.connectionManager.sendGroupedPacket(PacketOutGameEvent(newRainState)) { it.world === this }
             server.connectionManager.sendGroupedPacket(PacketOutGameEvent(GameEventTypes.RAIN_LEVEL_CHANGE, rainLevel)) { it.world === this }

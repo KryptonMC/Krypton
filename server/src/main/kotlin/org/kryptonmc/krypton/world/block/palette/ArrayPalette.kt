@@ -29,11 +29,8 @@ class ArrayPalette<T> private constructor(
     private val values: Array<T?>,
     private val resizer: PaletteResizer<T>,
     private val bits: Int,
-    size: Int
+    private var size: Int
 ) : Palette<T> {
-
-    override var size: Int = size
-        private set
 
     private constructor(registry: IntBiMap<T>, bits: Int, resizer: PaletteResizer<T>,
                         entries: List<T>) : this(registry, arrayOfNulls<Any>(1 shl bits) as Array<T?>, resizer, bits, entries.size) {
@@ -44,6 +41,8 @@ class ArrayPalette<T> private constructor(
             values[i] = entries.get(i)
         }
     }
+
+    override fun size(): Int = size
 
     override fun get(value: T): Int {
         for (i in 0 until size) {
@@ -69,7 +68,7 @@ class ArrayPalette<T> private constructor(
     }
 
     override fun calculateSerializedSize(): Int {
-        var size = ByteBufExtras.getVarIntBytes(size)
+        var size = ByteBufExtras.getVarIntBytes(size())
         for (i in 0 until this.size) {
             size += ByteBufExtras.getVarIntBytes(registry.getId(values[i]!!))
         }

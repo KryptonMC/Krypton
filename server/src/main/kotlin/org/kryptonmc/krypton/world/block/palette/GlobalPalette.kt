@@ -24,8 +24,7 @@ import org.kryptonmc.krypton.util.map.IntBiMap
 
 class GlobalPalette<T>(private val registry: IntBiMap<T>) : Palette<T> {
 
-    override val size: Int
-        get() = registry.size
+    override fun size(): Int = registry.size()
 
     override fun get(value: T): Int {
         val id = registry.getId(value)

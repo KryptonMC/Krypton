@@ -46,8 +46,6 @@ abstract class KryptonAgeable(world: KryptonWorld) : KryptonMob(world), Ageable 
 
     internal var forcedAge = 0
     private var forcedAgeTimer = 0
-    override val canBreedNaturally: Boolean
-        get() = false
 
     override fun defineData() {
         super.defineData()
@@ -58,7 +56,7 @@ abstract class KryptonAgeable(world: KryptonWorld) : KryptonMob(world), Ageable 
         // nothing to do by default
     }
 
-    private fun age(amount: Int, forced: Boolean) {
+    private fun increaseAge(amount: Int, forced: Boolean) {
         val old = age
         var newAge = old + amount * 20
         if (newAge > 0) newAge = 0
@@ -72,9 +70,11 @@ abstract class KryptonAgeable(world: KryptonWorld) : KryptonMob(world), Ageable 
         if (age == 0) age = forcedAge
     }
 
-    override fun age(amount: Int) {
-        age(amount, false)
+    override fun increaseAge(amount: Int) {
+        increaseAge(amount, false)
     }
+
+    override fun canBreedNaturally(): Boolean = false
 
     companion object {
 

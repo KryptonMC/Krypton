@@ -18,13 +18,33 @@ package org.kryptonmc.api.entity.vehicle
 public interface FurnaceMinecart : MinecartLike {
 
     /**
-     * If this furnace minecart currently has fuel.
-     */
-    @get:JvmName("hasFuel")
-    public var hasFuel: Boolean
-
-    /**
      * The fuel this furnace minecart currently has.
      */
-    public var fuel: Int
+    public val fuel: Int
+
+    /**
+     * If this furnace minecart currently has fuel.
+     *
+     * @return true if this furnace minecart has fuel
+     */
+    public fun hasFuel(): Boolean
+
+    /**
+     * Adds the given [amount] of fuel to this furnace minecart.
+     *
+     * @param amount the amount of fuel to add
+     */
+    public fun addFuel(amount: Int)
+
+    /**
+     * Removes the given [amount] of fuel from this furnace minecart.
+     *
+     * @param amount the amount of fuel to remove
+     */
+    public fun removeFuel(amount: Int)
+
+    /**
+     * Resets the amount of fuel in this furnace minecart back to 0.
+     */
+    public fun resetFuel()
 }

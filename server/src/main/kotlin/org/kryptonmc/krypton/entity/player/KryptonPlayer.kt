@@ -136,8 +136,6 @@ class KryptonPlayer(
             }
         }
 
-    override val isOnline: Boolean
-        get() = server.getPlayer(uuid) === this
     override var hasJoinedBefore: Boolean = false
     override var firstJoined: Instant = Instant.EPOCH
     override var lastJoined: Instant = Instant.now()
@@ -392,6 +390,8 @@ class KryptonPlayer(
     fun setChatSession(session: RemoteChatSession) {
         chatSession = session
     }
+
+    override fun isOnline(): Boolean = server.getPlayer(uuid) === this
 
     companion object {
 

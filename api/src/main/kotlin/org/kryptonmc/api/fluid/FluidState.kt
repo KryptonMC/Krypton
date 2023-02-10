@@ -26,17 +26,6 @@ public interface FluidState : State<FluidState> {
     public val fluid: Fluid
 
     /**
-     * If this fluid state is empty.
-     */
-    public val isEmpty: Boolean
-        get() = fluid.isEmpty
-
-    /**
-     * If this fluid state is a source fluid.
-     */
-    public val isSource: Boolean
-
-    /**
      * The level of this fluid state.
      *
      * Should be either a constant value, such as 0 for the empty fluid, or 8
@@ -46,6 +35,20 @@ public interface FluidState : State<FluidState> {
      */
     @get:JvmName("level")
     public val level: Int
+
+    /**
+     * If this fluid state is empty.
+     *
+     * @return true if this fluid state is empty
+     */
+    public fun isEmpty(): Boolean = fluid.isEmpty()
+
+    /**
+     * If this fluid state is a source fluid.
+     *
+     * @return true if this fluid state is a source fluid
+     */
+    public fun isSource(): Boolean
 
     /**
      * Converts this fluid state in to its corresponding block state.

@@ -35,10 +35,10 @@ abstract class KryptonAnimal(world: KryptonWorld) : KryptonAgeable(world), Anima
 
     final override var loveCause: UUID? = null
     final override var inLoveTime: Int = 0
-    final override val isInLove: Boolean
-        get() = inLoveTime > 0
-    override val canFallInLove: Boolean
-        get() = inLoveTime <= 0
+
+    override fun isInLove(): Boolean = inLoveTime > 0
+
+    override fun canFallInLove(): Boolean = inLoveTime <= 0
 
     fun loveCause(): KryptonPlayer? {
         val cause = loveCause ?: return null
@@ -53,7 +53,7 @@ abstract class KryptonAnimal(world: KryptonWorld) : KryptonAgeable(world), Anima
     override fun canMate(target: Animal): Boolean {
         if (target === this) return false
         if (target.javaClass != javaClass) return false
-        return isInLove && target.isInLove
+        return isInLove() && target.isInLove()
     }
 
     override fun isFood(item: ItemStack): Boolean = item.type === ItemTypes.WHEAT

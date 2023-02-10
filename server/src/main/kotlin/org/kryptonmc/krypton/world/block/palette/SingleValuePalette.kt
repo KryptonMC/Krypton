@@ -26,7 +26,6 @@ import org.kryptonmc.krypton.util.writeVarInt
 class SingleValuePalette<T>(private val registry: IntBiMap<T>, private val resizer: PaletteResizer<T>, entries: List<T>) : Palette<T> {
 
     private var value: T? = null
-    override val size: Int = 1
 
     init {
         if (entries.isNotEmpty()) {
@@ -34,6 +33,8 @@ class SingleValuePalette<T>(private val registry: IntBiMap<T>, private val resiz
             value = entries.first()
         }
     }
+
+    override fun size(): Int = 1
 
     override fun get(value: T): Int {
         if (this.value != null && this.value != value) return resizer.onResize(1, value)

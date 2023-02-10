@@ -18,44 +18,51 @@ import org.kryptonmc.internal.annotations.ImmutableType
 public interface SkinParts {
 
     /**
-     * If the cape is shown.
+     * Whether the cape is shown.
+     *
+     * @return true if the cape is shown
      */
-    @get:JvmName("hasCape")
-    public val hasCape: Boolean
+    public fun hasCape(): Boolean
 
     /**
-     * If the jacket is shown.
+     * Whether the jacket is shown.
+     *
+     * @return true if the jacket is shown
      */
-    @get:JvmName("hasJacket")
-    public val hasJacket: Boolean
+    public fun hasJacket(): Boolean
 
     /**
-     * If the left sleeve is shown.
+     * Whether the left sleeve is shown.
+     *
+     * @return true if the left sleeve is shown
      */
-    @get:JvmName("hasLeftSleeve")
-    public val hasLeftSleeve: Boolean
+    public fun hasLeftSleeve(): Boolean
 
     /**
-     * If the right sleeve is shown.
+     * Whether the right sleeve is shown.
+     *
+     * @return true if the right sleeve is shown
      */
-    @get:JvmName("hasRightSleeve")
-    public val hasRightSleeve: Boolean
+    public fun hasRightSleeve(): Boolean
 
     /**
-     * If the left half of the pants is shown.
+     * Whether the left half of the pants is shown.
+     *
+     * @return true if the left pants are shown
      */
-    @get:JvmName("hasLeftPants")
-    public val hasLeftPants: Boolean
+    public fun hasLeftPants(): Boolean
 
     /**
-     * If the right half of the pants is shown.
+     * Whether the right half of the pants is shown.
+     *
+     * @return true if the right pants are shown
      */
-    @get:JvmName("hasRightPants")
-    public val hasRightPants: Boolean
+    public fun hasRightPants(): Boolean
 
     /**
-     * If the hat is shown.
+     * Whether the hat is shown.
+     *
+     * @return true if the hat is shown
      */
-    @get:JvmName("hasHat")
-    public val hasHat: Boolean
+    public fun hasHat(): Boolean
 }

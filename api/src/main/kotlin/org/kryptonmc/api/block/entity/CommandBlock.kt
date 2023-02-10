@@ -27,14 +27,18 @@ public interface CommandBlock : BlockEntity {
 
     /**
      * Whether this command block is powered.
+     *
+     * @return true if this command block is powered
      */
-    public val isPowered: Boolean
+    public fun isPowered(): Boolean
 
     /**
      * Whether this command block executes automatically, not requiring a
      * redstone signal.
+     *
+     * @return true if this command block executes automatically
      */
-    public val isAutomatic: Boolean
+    public fun isAutomatic(): Boolean
 
     /**
      * Executes this command block.

@@ -70,7 +70,7 @@ class KryptonDolphin(world: KryptonWorld) : KryptonAquaticAnimal(world), Dolphin
         // Dolphins don't immediately start to suffocate out of water, as they can survive out of water for extended periods of time.
         // In real life, dolphins can't breathe underwater, so they have to resurface. In Minecraft, this behaviour isn't
         // simulated, but what is simulated is the ability for dolphins to survive for extended periods of time out of water.
-        if (isInWater || waterPhysicsSystem.isInBubbleColumn()) { // TODO: Also check for being in rain
+        if (isInWater() || waterPhysicsSystem.isInBubbleColumn()) { // TODO: Also check for being in rain
             // If the dolphin is in water, rain, or a bubble column then it has full moisture.
             skinMoisture = FULL_SKIN_MOISTURE
             return

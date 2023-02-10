@@ -14,14 +14,16 @@ package org.kryptonmc.api.entity.vehicle
 public interface TNTMinecart : MinecartLike {
 
     /**
-     * If this TNT minecart is primed for explosion.
-     */
-    public val isPrimed: Boolean
-
-    /**
      * The fuse of this TNT minecart.
      */
     public var fuse: Int
+
+    /**
+     * If this TNT minecart is primed for explosion.
+     *
+     * @return true if this TNT is primed
+     */
+    public fun isPrimed(): Boolean
 
     /**
      * Primes this TNT minecart for explosion.

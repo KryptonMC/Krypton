@@ -207,7 +207,7 @@ object KryptonRegistries {
     @JvmStatic
     fun <T : Registry<*>> validateAll(parent: Registry<T>) {
         parent.forEach { registry ->
-            if (registry.keys.isEmpty()) LOGGER.error("Registry ${registry.key} was empty after loading!")
+            if (registry.keys().isEmpty()) LOGGER.error("Registry ${registry.key} was empty after loading!")
             if (registry is KryptonDefaultedRegistry<*>) {
                 val defaultKey = registry.defaultKey
                 checkNotNull(registry.get(defaultKey)) { "Default value for key $defaultKey in registry ${registry.key} was not loaded!" }

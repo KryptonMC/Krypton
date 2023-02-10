@@ -31,7 +31,7 @@ abstract class KryptonProjectile(world: KryptonWorld) : KryptonEntity(world), Pr
     override val serializer: EntitySerializer<out KryptonProjectile>
         get() = ProjectileSerializer
 
-    internal var ownerId: UUID? = null
+    private var ownerId: UUID? = null
     final override var owner: Entity? = null
         get() {
             if (field != null) return field
@@ -46,6 +46,24 @@ abstract class KryptonProjectile(world: KryptonWorld) : KryptonEntity(world), Pr
             ownerId = value.uuid
             field = value
         }
-    final override var hasLeftOwner: Boolean = false
-    final override var hasBeenShot: Boolean = false
+    private var leftOwner = false
+    private var beenShot = false
+
+    fun ownerId(): UUID? = ownerId
+
+    fun setOwnerId(id: UUID) {
+        ownerId = id
+    }
+
+    override fun hasLeftOwner(): Boolean = leftOwner
+
+    fun setLeftOwner(left: Boolean) {
+        leftOwner = left
+    }
+
+    override fun hasBeenShot(): Boolean = beenShot
+
+    fun setBeenShot(shot: Boolean) {
+        beenShot = shot
+    }
 }

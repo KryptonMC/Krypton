@@ -54,7 +54,7 @@ class PlayerGameModeSystem(private val player: KryptonPlayer) {
         currentTick++
         if (hasDelayedDestroy) {
             val block = player.world.getBlock(delayedDestroyPos)
-            if (block.isAir) {
+            if (block.isAir()) {
                 hasDelayedDestroy = false
                 return
             }
@@ -66,7 +66,7 @@ class PlayerGameModeSystem(private val player: KryptonPlayer) {
         }
         if (isDestroying) {
             val block = player.world.getBlock(destroyPos)
-            if (!block.isAir) {
+            if (!block.isAir()) {
                 incrementDestroyProgress(block, destroyPos, startDestroyProgress)
                 return
             }
@@ -130,12 +130,12 @@ class PlayerGameModeSystem(private val player: KryptonPlayer) {
                 startDestroyProgress = currentTick
                 var destroyProgress = 1F
                 val block = player.world.getBlock(pos)
-                if (!block.isAir) {
+                if (!block.isAir()) {
                     block.attack(player.world, pos, player)
                     destroyProgress = block.getDestroyProgress(player, player.world, pos)
                 }
 
-                if (!block.isAir && destroyProgress >= 1F) {
+                if (!block.isAir() && destroyProgress >= 1F) {
                     destroyAndAcknowledge(pos, "instant mine")
                     return
                 }
@@ -155,7 +155,7 @@ class PlayerGameModeSystem(private val player: KryptonPlayer) {
                 if (pos != destroyPos) return
                 val tickDifference = currentTick - startDestroyProgress
                 val block = player.world.getBlock(pos)
-                if (block.isAir) return
+                if (block.isAir()) return
                 val destroyProgress = block.getDestroyProgress(player, player.world, pos) * (tickDifference + 1).toFloat()
                 if (destroyProgress >= MAXIMUM_DESTROY_PROGRESS) {
                     isDestroying = false

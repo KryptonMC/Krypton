@@ -66,7 +66,7 @@ class ConnectionManager(private val playerManager: PlayerManager, motd: Componen
         if (players.isEmpty()) return
         val finalBuffer = PacketFraming.frame(packet)
         val framedPacket = FramedPacket(finalBuffer)
-        players.forEach { if (it.isOnline && predicate.test(it)) it.connection.write(framedPacket) }
+        players.forEach { if (it.isOnline() && predicate.test(it)) it.connection.write(framedPacket) }
         finalBuffer.release()
     }
 

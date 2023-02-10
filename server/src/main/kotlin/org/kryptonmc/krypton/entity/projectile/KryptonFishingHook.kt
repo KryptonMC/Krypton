@@ -40,7 +40,7 @@ class KryptonFishingHook(world: KryptonWorld) : KryptonProjectile(world), Fishin
             data.set(MetadataKeys.FishingHook.HOOKED, if (value != null) value.id + 1 else 0)
         }
     override var state: FishingHook.State = FishingHook.State.FLYING
-    override var isBiting: Boolean = false
+    private var biting = false
 
     override fun defineData() {
         super.defineData()
@@ -55,12 +55,14 @@ class KryptonFishingHook(world: KryptonWorld) : KryptonProjectile(world), Fishin
         }
 
         if (key === MetadataKeys.FishingHook.BITING) {
-            isBiting = data.get(MetadataKeys.FishingHook.BITING)
-            if (isBiting) velocity = randomizeBitingVelocity(random, velocity)
+            biting = data.get(MetadataKeys.FishingHook.BITING)
+            if (biting) velocity = randomizeBitingVelocity(random, velocity)
         }
 
         super.onDataUpdate(key)
     }
+
+    override fun isBiting(): Boolean = biting
 
     companion object {
 

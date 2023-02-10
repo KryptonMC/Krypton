@@ -63,7 +63,7 @@ open class KryptonSimpleRegistry<T> protected constructor(override val key: Reso
 
     // The backing map holding the tags in this registry, where a tag is a set of values associated with a tag key.
     @Volatile
-    private var tagMap: MutableMap<TagKey<T>, HolderSet.Named<T>> = IdentityHashMap()
+    private var tags: MutableMap<TagKey<T>, HolderSet.Named<T>> = IdentityHashMap()
     // A cache of all the intrusive reference holders, to allow reusing them for identical values.
     // This is lazily initialized as not all registries have intrusive references.
     private var unregisteredIntrusiveHolders: MutableMap<T, Holder.Reference<T>>? = null
@@ -83,24 +83,8 @@ open class KryptonSimpleRegistry<T> protected constructor(override val key: Reso
 
         override fun get(key: TagKey<T>): HolderSet.Named<T>? = getTag(key)
 
-        override fun listTags(): Stream<HolderSet.Named<T>> = tags().values.stream()
+        override fun listTags(): Stream<HolderSet.Named<T>> = tagEntries().values.stream()
     }
-
-    /*
-     * Base API implementation properties. These are all delegates to internals above, as all collections/maps must be
-     * unmodifiable to avoid the client doing a sneaky and downcasting the types to mutable types then mutating them,
-     * which would completely break the API, as it is designed to control when registration can occur.
-     */
-
-    final override val keys: Set<Key> = Collections.unmodifiableSet(byLocation.keys)
-    final override val registryKeys: Set<ResourceKey<T>> = Collections.unmodifiableSet(byKey.keys)
-    final override val entries: Set<Map.Entry<ResourceKey<T>, T>> =
-        Collections.unmodifiableSet(Maps.transformValues(byKey) { it.value() }.entries)
-    final override val size: Int
-        get() = byKey.size
-    final override val tags: Map<TagKey<T>, TagSet<T>> =
-        Collections.unmodifiableMap(Maps.transformValues(tagMap) { KryptonTagSet(this, it) })
-    final override val tagKeys: Set<TagKey<T>> = Collections.unmodifiableSet(tags.keys)
 
     init {
         if (intrusive) unregisteredIntrusiveHolders = IdentityHashMap()
@@ -160,6 +144,14 @@ open class KryptonSimpleRegistry<T> protected constructor(override val key: Reso
      * Base API implementation methods.
      */
 
+    override fun keys(): Set<Key> = Collections.unmodifiableSet(byLocation.keys)
+
+    override fun registryKeys(): Set<ResourceKey<T>> = Collections.unmodifiableSet(byKey.keys)
+
+    override fun entries(): Set<Map.Entry<ResourceKey<T>, T>> = Collections.unmodifiableSet(Maps.transformValues(byKey) { it.value() }.entries)
+
+    override fun size(): Int = byKey.size
+
     override fun containsKey(key: Key): Boolean = byLocation.containsKey(key)
 
     override fun containsKey(key: ResourceKey<T>): Boolean = byKey.containsKey(key)
@@ -210,22 +202,29 @@ open class KryptonSimpleRegistry<T> protected constructor(override val key: Reso
      * Tag API.
      */
 
-    override fun tags(): Map<TagKey<T>, HolderSet.Named<T>> = Collections.unmodifiableMap(tagMap)
+    override fun tagKeys(): Set<TagKey<T>> = Collections.unmodifiableSet(tagEntries().keys)
 
-    override fun tagNames(): Stream<TagKey<T>> = tagMap.keys.stream()
+    override fun tags(): Collection<TagSet<T>> {
+        val transformed = Maps.transformValues(tags) { KryptonTagSet(this, it) }
+        return Collections.unmodifiableCollection(transformed.values)
+    }
 
-    override fun getTag(key: TagKey<T>): HolderSet.Named<T>? = tagMap.get(key)
+    override fun tagEntries(): Map<TagKey<T>, HolderSet.Named<T>> = Collections.unmodifiableMap(tags)
+
+    override fun tagNames(): Stream<TagKey<T>> = tags.keys.stream()
+
+    override fun getTag(key: TagKey<T>): HolderSet.Named<T>? = tags.get(key)
 
     override fun getOrCreateTag(key: TagKey<T>): HolderSet.Named<T> {
-        var tag = tagMap.get(key)
+        var tag = tags.get(key)
         if (tag == null) {
             tag = createTag(key)
-            tagMap = IdentityHashMap(tagMap).apply { put(key, tag) }
+            tags = IdentityHashMap(tags).apply { put(key, tag) }
         }
         return tag
     }
 
-    override fun isKnownTagKey(key: TagKey<T>): Boolean = tagMap.containsKey(key)
+    override fun isKnownTagKey(key: TagKey<T>): Boolean = tags.containsKey(key)
 
     override fun bindTags(tags: Map<TagKey<T>, List<Holder<T>>>) {
         val tagsMap = IdentityHashMap<Holder.Reference<T>, MutableList<TagKey<T>>>()
@@ -238,20 +237,20 @@ open class KryptonSimpleRegistry<T> protected constructor(override val key: Reso
             }
         }
 
-        val difference = Sets.difference(tagMap.keys, tagsMap.keys)
+        val difference = Sets.difference(this.tags.keys, tagsMap.keys)
         if (!difference.isEmpty()) {
             val missing = difference.stream().map { it.location.asString() }.sorted().collect(Collectors.joining(", "))
             LOGGER.warn("Not all defined tags for registry $key are present in data pack: $missing")
         }
 
-        val tagsCopy = IdentityHashMap(tagMap)
+        val tagsCopy = IdentityHashMap(this.tags)
         tags.forEach { (key, holders) -> tagsCopy.computeIfAbsent(key) { createTag(it) }.bind(holders) }
         tagsMap.forEach { (key, value) -> key.bindTags(value) }
-        tagMap = tagsCopy
+        this.tags = tagsCopy
     }
 
     override fun resetTags() {
-        tagMap.values.forEach { it.bind(ImmutableLists.of()) }
+        tags.values.forEach { it.bind(ImmutableLists.of()) }
         byKey.values.forEach { it.bindTags(ImmutableSets.of()) }
     }
 

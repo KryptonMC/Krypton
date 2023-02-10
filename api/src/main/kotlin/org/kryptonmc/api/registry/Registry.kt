@@ -30,38 +30,42 @@ public interface Registry<T> : Iterable<T> {
     public val key: ResourceKey<out Registry<T>>
 
     /**
-     * All the keys in this registry.
+     * Gets the set of keys registered in this registry.
+     *
+     * The returned set is unmodifiable, meaning it will be updated by changes
+     * in the registry, but cannot be modified directly.
+     *
+     * @return the registered key set
      */
-    @get:JvmName("keySet")
-    public val keys: Set<Key>
+    public fun keys(): Set<Key>
 
     /**
-     * All the registry keys in this registry.
+     * Gets the set of registry keys registered in this registry.
+     *
+     * The returned set is unmodifiable, meaning it will be updated by changes
+     * in the registry, but cannot be modified directly.
+     *
+     * @return the registered registry key set
      */
-    @get:JvmName("registryKeySet")
-    public val registryKeys: Set<ResourceKey<T>>
+    public fun registryKeys(): Set<ResourceKey<T>>
 
     /**
-     * All the entries in this registry.
+     * Gets the set of entries registered in this registry.
+     *
+     * The returned set is unmodifiable, meaning it will be updated by changes
+     * in the registry, but cannot be modified directly.
+     *
+     * @return the registered entry set
      */
-    @get:JvmName("entrySet")
-    public val entries: Set<Map.Entry<ResourceKey<T>, T>>
+    public fun entries(): Set<Map.Entry<ResourceKey<T>, T>>
 
     /**
-     * The size of this registry.
+     * Gets the size of this registry, which is the number of registered
+     * elements.
+     *
+     * @return the size of this registry
      */
-    @get:JvmName("size")
-    public val size: Int
-
-    /**
-     * All the tag keys in this registry.
-     */
-    public val tagKeys: Set<TagKey<T>>
-
-    /**
-     * All the tags in this registry.
-     */
-    public val tags: Map<TagKey<T>, TagSet<T>>
+    public fun size(): Int
 
     /**
      * Checks if the given [key] has a registered value in this registry.
@@ -114,6 +118,26 @@ public interface Registry<T> : Iterable<T> {
      * @return the resource key, or null if not present
      */
     public fun getResourceKey(value: T): ResourceKey<T>?
+
+    /**
+     * Gets the set of keys for all the registered tags in this registry.
+     *
+     * The returned set is unmodifiable, meaning it will be updated by changes
+     * in the registry, but cannot be modified directly.
+     *
+     * @return the registered tag key set
+     */
+    public fun tagKeys(): Set<TagKey<T>>
+
+    /**
+     * Gets the set of keys for all the registered tags in this registry.
+     *
+     * The returned set is unmodifiable, meaning it will be updated by changes
+     * in the registry, but cannot be modified directly.
+     *
+     * @return the registered tag key set
+     */
+    public fun tags(): Collection<TagSet<T>>
 
     /**
      * Gets the tag values for the given [key], or returns null if there are no

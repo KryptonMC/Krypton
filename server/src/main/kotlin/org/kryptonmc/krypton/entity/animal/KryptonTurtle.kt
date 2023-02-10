@@ -58,9 +58,6 @@ class KryptonTurtle(world: KryptonWorld) : KryptonAnimal(world), Turtle {
         get() = data.get(MetadataKeys.Turtle.DESTINATION)
         set(value) = data.set(MetadataKeys.Turtle.DESTINATION, value)
 
-    override val canFallInLove: Boolean
-        get() = super.canFallInLove && !hasEgg
-
     override fun defineData() {
         super.defineData()
         data.define(MetadataKeys.Turtle.HOME, Vec3i.ZERO)
@@ -70,6 +67,8 @@ class KryptonTurtle(world: KryptonWorld) : KryptonAnimal(world), Turtle {
         data.define(MetadataKeys.Turtle.GOING_HOME, false)
         data.define(MetadataKeys.Turtle.TRAVELLING, false)
     }
+
+    override fun canFallInLove(): Boolean = super.canFallInLove() && !hasEgg
 
     override fun isFood(item: ItemStack): Boolean = item.type === ItemTypes.SEAGRASS
 

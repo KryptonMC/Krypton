@@ -28,7 +28,7 @@ object FurnaceMinecartSerializer : EntitySerializer<KryptonFurnaceMinecart> {
 
     override fun load(entity: KryptonFurnaceMinecart, data: CompoundTag) {
         MinecartLikeSerializer.load(entity, data)
-        entity.fuel = data.getShort(FUEL_TAG).toInt()
+        entity.setFuel(data.getShort(FUEL_TAG).toInt())
     }
 
     override fun save(entity: KryptonFurnaceMinecart): CompoundTag.Builder = MinecartLikeSerializer.save(entity).apply {

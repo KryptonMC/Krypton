@@ -50,7 +50,7 @@ object TagSerializer {
     @JvmStatic
     private fun <T> serializeToNetwork(registry: KryptonRegistry<T>): NetworkPayload {
         val tags = HashMap<Key, IntList>()
-        registry.tags().forEach { (key, set) ->
+        registry.tagEntries().forEach { (key, set) ->
             val ids = IntArrayList(set.size())
             set.forEach {
                 if (it.kind() != Holder.Kind.REFERENCE) error("Cannot serialize unregistered tag value $it!")

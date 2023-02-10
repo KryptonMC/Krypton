@@ -29,8 +29,8 @@ class KryptonTagSet<T>(override val registry: KryptonRegistry<T>, private val de
 
     override val key: TagKey<T>
         get() = delegate.key
-    override val size: Int
-        get() = delegate.size()
+
+    override fun size(): Int = delegate.size()
 
     override fun contains(value: T): Boolean = delegate.contains(registry.wrapAsHolder(value!!))
 

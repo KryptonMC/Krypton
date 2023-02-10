@@ -23,7 +23,7 @@ import org.kryptonmc.krypton.util.map.IntBiMap
 
 interface Palette<T> {
 
-    val size: Int
+    fun size(): Int
 
     fun get(value: T): Int
 

@@ -43,12 +43,6 @@ import java.util.stream.StreamSupport
  */
 interface KryptonRegistry<T> : Registry<T>, IntBiMap<T> {
 
-    override val keys: Set<Key>
-    override val registryKeys: Set<ResourceKey<T>>
-    override val entries: Set<Map.Entry<ResourceKey<T>, T>>
-    override val tagKeys: Set<TagKey<T>>
-    override val tags: Map<TagKey<T>, TagSet<T>>
-
     override fun containsKey(key: Key): Boolean
 
     override fun containsKey(key: ResourceKey<T>): Boolean
@@ -92,7 +86,7 @@ interface KryptonRegistry<T> : Registry<T>, IntBiMap<T> {
 
     fun bindTags(tags: Map<TagKey<T>, List<Holder<T>>>)
 
-    fun tags(): Map<TagKey<T>, HolderSet.Named<T>>
+    fun tagEntries(): Map<TagKey<T>, HolderSet.Named<T>>
 
     fun tagNames(): Stream<TagKey<T>>
 
@@ -112,8 +106,7 @@ interface KryptonRegistry<T> : Registry<T>, IntBiMap<T> {
 
     fun asHolderIdMap(): IntBiMap<Holder<T>> = object : IntBiMap<Holder<T>> {
 
-        override val size: Int
-            get() = this@KryptonRegistry.size
+        override fun size(): Int = this@KryptonRegistry.size()
 
         override fun get(id: Int): Holder<T>? = getHolder(id)
 

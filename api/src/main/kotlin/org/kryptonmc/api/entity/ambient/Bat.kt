@@ -16,5 +16,5 @@ public interface Bat : AmbientCreature {
     /**
      * If this bat is currently resting (hanging from the ceiling).
      */
-    public val isResting: Boolean
+    public var isResting: Boolean
 }

@@ -35,7 +35,7 @@ interface SerializableEntity : BaseEntity {
     fun save(): CompoundTag.Builder = serializer().save(this as KryptonEntity)
 
     fun saveWithPassengers(): CompoundTag.Builder = save().apply {
-        if (isVehicle) {
+        if (isVehicle()) {
             val passengerList = MutableListTag.of(ArrayList(), EndTag.ID)
             passengers.forEach {
                 if (it !is KryptonEntity) return@forEach

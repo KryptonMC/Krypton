@@ -35,14 +35,14 @@ object ProjectileSerializer : EntitySerializer<KryptonProjectile> {
 
     override fun load(entity: KryptonProjectile, data: CompoundTag) {
         BaseEntitySerializer.load(entity, data)
-        if (data.hasUUID(OWNER_TAG)) entity.ownerId = data.getUUID(OWNER_TAG)
-        entity.hasLeftOwner = data.getBoolean(LEFT_OWNER_TAG)
-        entity.hasBeenShot = data.getBoolean(HAS_BEEN_SHOT_TAG)
+        if (data.hasUUID(OWNER_TAG)) entity.setOwnerId(data.getUUID(OWNER_TAG))
+        entity.setLeftOwner(data.getBoolean(LEFT_OWNER_TAG))
+        entity.setBeenShot(data.getBoolean(HAS_BEEN_SHOT_TAG))
     }
 
     override fun save(entity: KryptonProjectile): CompoundTag.Builder = BaseEntitySerializer.save(entity).apply {
-        putNullable(OWNER_TAG, entity.ownerId, CompoundTag.Builder::putUUID)
-        if (entity.hasLeftOwner) putBoolean(LEFT_OWNER_TAG, true)
-        putBoolean(HAS_BEEN_SHOT_TAG, entity.hasBeenShot)
+        putNullable(OWNER_TAG, entity.ownerId(), CompoundTag.Builder::putUUID)
+        if (entity.hasLeftOwner()) putBoolean(LEFT_OWNER_TAG, true)
+        putBoolean(HAS_BEEN_SHOT_TAG, entity.hasBeenShot())
     }
 }

@@ -93,7 +93,7 @@ interface RegistryAccess : HolderLookup.Provider {
                 return temp.get(key as ResourceKey<KryptonRegistry<E>>)
             }
 
-            override fun registries(): Stream<RegistryEntry<*>> = registry.entries.stream().map { RegistryEntry.fromMapEntry(it) }
+            override fun registries(): Stream<RegistryEntry<*>> = registry.entries().stream().map { RegistryEntry.fromMapEntry(it) }
 
             override fun freeze(): Frozen = this
         }

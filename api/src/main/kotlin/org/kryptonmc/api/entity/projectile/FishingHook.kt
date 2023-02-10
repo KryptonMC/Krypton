@@ -22,14 +22,16 @@ public interface FishingHook : Projectile {
     public val hooked: Entity?
 
     /**
-     * If the hooked entity is biting the hook, meaning it can be caught.
-     */
-    public val isBiting: Boolean
-
-    /**
      * The current state of this hook.
      */
     public val state: State
+
+    /**
+     * If the hooked entity is biting the hook, meaning it can be caught.
+     *
+     * @return true if the hooked entity is biting the hook
+     */
+    public fun isBiting(): Boolean
 
     /**
      * The current state of a fishing hook.

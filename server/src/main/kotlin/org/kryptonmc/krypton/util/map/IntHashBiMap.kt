@@ -31,10 +31,10 @@ class IntHashBiMap<T>(expectedSize: Int) : IntBiMap<T> {
     private val idByValue = Reference2IntOpenHashMap<T>(expectedSize).apply { defaultReturnValue(-1) }
     private val valueById = Lists.newArrayListWithExpectedSize<T?>(expectedSize)
     private var nextId = 0
-    override val size: Int
-        get() = idByValue.size
 
     constructor() : this(DEFAULT_EXPECTED_SIZE)
+
+    override fun size(): Int = idByValue.size
 
     fun set(key: T, value: Int) {
         idByValue.put(key, value)

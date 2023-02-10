@@ -23,7 +23,7 @@ package org.kryptonmc.krypton.util.map
  */
 interface IntBiMap<T> : Iterable<T> {
 
-    val size: Int
+    fun size(): Int
 
     fun get(id: Int): T?
 

@@ -37,15 +37,18 @@ abstract class KryptonFish(world: KryptonWorld) : KryptonAquaticAnimal(world), F
     override val serializer: EntitySerializer<out KryptonFish>
         get() = FishSerializer
 
-    override var wasSpawnedFromBucket: Boolean
-        get() = data.get(MetadataKeys.Fish.FROM_BUCKET)
-        set(value) = data.set(MetadataKeys.Fish.FROM_BUCKET, value)
     override val bucketPickupSound: SoundEvent
         get() = SoundEvents.BUCKET_FILL_FISH.get()
 
     override fun defineData() {
         super.defineData()
         data.define(MetadataKeys.Fish.FROM_BUCKET, false)
+    }
+
+    override fun wasSpawnedFromBucket(): Boolean = data.get(MetadataKeys.Fish.FROM_BUCKET)
+
+    override fun setSpawnedFromBucket(value: Boolean) {
+        data.set(MetadataKeys.Fish.FROM_BUCKET, value)
     }
 
     override fun loadFromBucket(tag: CompoundTag) {

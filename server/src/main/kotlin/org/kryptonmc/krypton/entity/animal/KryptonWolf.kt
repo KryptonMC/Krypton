@@ -95,7 +95,7 @@ class KryptonWolf(world: KryptonWorld) : KryptonTamable(world), Wolf, Neutral {
         if (target !is Wolf) return false
         if (!target.isTamed) return false
         if (target.isSitting) return false
-        return isInLove && target.isInLove
+        return isInLove() && target.isInLove()
     }
 
     override fun soundVolume(): Float = 0.4F

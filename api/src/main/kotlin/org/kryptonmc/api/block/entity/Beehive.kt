@@ -17,13 +17,15 @@ import org.kryptonmc.api.util.Vec3i
 public interface Beehive : EntityStorageBlockEntity<Bee> {
 
     /**
-     * Whether this beehive is sedated due to a campfire underneath it.
-     */
-    public val isSedated: Boolean
-
-    /**
      * The position of a flower that one of the bees has found, so that other
      * bees in the beehive can find it.
      */
     public var flower: Vec3i?
+
+    /**
+     * Whether this beehive is sedated due to a campfire underneath it.
+     *
+     * @return true if this beehive is sedated
+     */
+    public fun isSedated(): Boolean
 }

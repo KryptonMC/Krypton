@@ -8,7 +8,6 @@
  */
 package org.kryptonmc.api.item.data
 
-import com.google.common.collect.ImmutableList
 import net.kyori.adventure.builder.AbstractBuilder
 import org.jetbrains.annotations.ApiStatus
 import org.jetbrains.annotations.Contract
@@ -76,40 +75,24 @@ public interface FireworkEffect {
         public fun trail(): Builder
 
         /**
-         * Sets the colours of the firework effect to the given [colors].
+         * Adds the given [color] to the list of colours displayed by the
+         * firework effect when it explodes.
          *
-         * @param colors the colours
+         * @param color the colour to add
          * @return this builder
          */
         @Contract("_ -> this", mutates = "this")
-        public fun colors(colors: Collection<Color>): Builder
+        public fun addColor(color: Color): Builder
 
         /**
-         * Sets the colours of the firework effect to the given [colors].
+         * Adds the given [color] to the list of colours displayed by the
+         * firework effect when it fades out after exploding.
          *
-         * @param colors the colours
+         * @param color the colour to add
          * @return this builder
          */
         @Contract("_ -> this", mutates = "this")
-        public fun colors(vararg colors: Color): Builder = colors(ImmutableList.copyOf(colors))
-
-        /**
-         * Sets the fade colours of the firework effect to the given [colors].
-         *
-         * @param colors the fade colours
-         * @return this builder
-         */
-        @Contract("_ -> this", mutates = "this")
-        public fun fadeColors(colors: Collection<Color>): Builder
-
-        /**
-         * Sets the fade colours of the firework effect to the given [colors].
-         *
-         * @param colors the fade colours
-         * @return this builder
-         */
-        @Contract("_ -> this", mutates = "this")
-        public fun fadeColors(vararg colors: Color): Builder = fadeColors(ImmutableList.copyOf(colors))
+        public fun addFadeColor(color: Color): Builder
     }
 
     @ApiStatus.Internal

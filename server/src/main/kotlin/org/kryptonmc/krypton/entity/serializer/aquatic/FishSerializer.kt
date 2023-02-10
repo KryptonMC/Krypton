@@ -29,10 +29,10 @@ object FishSerializer : EntitySerializer<KryptonFish> {
 
     override fun load(entity: KryptonFish, data: CompoundTag) {
         MobSerializer.load(entity, data)
-        entity.wasSpawnedFromBucket = data.getBoolean(FROM_BUCKET_TAG)
+        entity.setSpawnedFromBucket(data.getBoolean(FROM_BUCKET_TAG))
     }
 
     override fun save(entity: KryptonFish): CompoundTag.Builder = MobSerializer.save(entity).apply {
-        putBoolean(FROM_BUCKET_TAG, entity.wasSpawnedFromBucket)
+        putBoolean(FROM_BUCKET_TAG, entity.wasSpawnedFromBucket())
     }
 }

@@ -29,7 +29,7 @@ class BlockMaterialPredicate private constructor(private val material: Material)
 
     companion object {
 
-        private val AIR = Predicate<KryptonBlockState?> { it != null && it.isAir }
+        private val AIR = Predicate<KryptonBlockState?> { it != null && it.isAir() }
 
         @JvmStatic
         fun of(material: Material): Predicate<KryptonBlockState?> = if (material === Materials.AIR) AIR else BlockMaterialPredicate(material)

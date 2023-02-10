@@ -25,12 +25,11 @@ interface WaterPushable : Entity {
 
     val waterPhysicsSystem: EntityWaterPhysicsSystem
 
-    override val isInWater: Boolean
-        get() = waterPhysicsSystem.isInWater()
-    override val isInLava: Boolean
-        get() = waterPhysicsSystem.isInLava()
-    override val isUnderwater: Boolean
-        get() = waterPhysicsSystem.isUnderwater()
+    override fun isInWater(): Boolean = waterPhysicsSystem.isInWater()
+
+    override fun isInLava(): Boolean = waterPhysicsSystem.isInLava()
+
+    override fun isUnderwater(): Boolean = waterPhysicsSystem.isUnderwater()
 
     fun isPushedByFluid(): Boolean = true
 }

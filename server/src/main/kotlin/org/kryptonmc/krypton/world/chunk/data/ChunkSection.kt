@@ -50,8 +50,8 @@ class ChunkSection(
 
     fun setBlock(x: Int, y: Int, z: Int, block: KryptonBlockState): KryptonBlockState {
         val oldBlock = blocks.getAndSet(x, y, z, block)
-        if (!oldBlock.isAir) nonEmptyBlockCount--
-        if (!block.isAir) nonEmptyBlockCount++
+        if (!oldBlock.isAir()) nonEmptyBlockCount--
+        if (!block.isAir()) nonEmptyBlockCount++
         return oldBlock
     }
 
@@ -63,8 +63,8 @@ class ChunkSection(
         nonEmptyBlockCount = 0
         blocks.forEachLocation { block, _ ->
             val fluid = block.asFluid()
-            if (!block.isAir) nonEmptyBlockCount++
-            if (!fluid.isEmpty) nonEmptyBlockCount++
+            if (!block.isAir()) nonEmptyBlockCount++
+            if (!fluid.isEmpty()) nonEmptyBlockCount++
         }
     }
 

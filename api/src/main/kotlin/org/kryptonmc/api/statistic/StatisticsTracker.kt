@@ -17,9 +17,11 @@ import org.kryptonmc.api.registry.Registries
 public interface StatisticsTracker {
 
     /**
-     * All of the statistics being tracked by this tracker.
+     * Gets all the statistics that are being tracked by this tracker.
+     *
+     * @return the tracked statistics
      */
-    public val statistics: Map<Statistic<*>, Int>
+    public fun statistics(): Set<Statistic<*>>
 
     /**
      * Gets the value for the given [statistic].

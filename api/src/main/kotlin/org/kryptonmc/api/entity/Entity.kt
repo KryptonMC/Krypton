@@ -90,21 +90,11 @@ public interface Entity : Sender, HoverEventSource<HoverEvent.ShowEntity>, Sound
     public val boundingBox: BoundingBox
 
     /**
-     * If this entity is a passenger of another entity.
-     */
-    public val isPassenger: Boolean
-
-    /**
      * The passengers this entity currently has.
      *
      * Will be empty if the entity has no passengers.
      */
     public val passengers: List<Entity>
-
-    /**
-     * If this entity is a vehicle for another entity.
-     */
-    public val isVehicle: Boolean
 
     /**
      * The entity that this entity is a passenger of.
@@ -231,22 +221,6 @@ public interface Entity : Sender, HoverEventSource<HoverEvent.ShowEntity>, Sound
     public val fallDistance: Float
 
     /**
-     * If this entity is currently touching water.
-     */
-    public val isInWater: Boolean
-
-    /**
-     * If this entity is currently touching lava.
-     */
-    public val isInLava: Boolean
-
-    /**
-     * If this entity is currently fully submerged under water, meaning its
-     * entire hitbox must be under water.
-     */
-    public val isUnderwater: Boolean
-
-    /**
      * The scheduler for this entity.
      *
      * Useful for scheduling tasks that should only exist for the lifetime of
@@ -254,6 +228,16 @@ public interface Entity : Sender, HoverEventSource<HoverEvent.ShowEntity>, Sound
      * stop running after the entity is removed.
      */
     public val scheduler: Scheduler
+
+    /**
+     * If this entity is a passenger of another entity.
+     */
+    public fun isPassenger(): Boolean
+
+    /**
+     * If this entity is a vehicle for another entity.
+     */
+    public fun isVehicle(): Boolean
 
     /**
      * Adds the given [entity] as a passenger of this entity.
@@ -278,6 +262,22 @@ public interface Entity : Sender, HoverEventSource<HoverEvent.ShowEntity>, Sound
      * Ejects this entity from it's vehicle.
      */
     public fun ejectVehicle()
+
+    /**
+     * If this entity is currently touching water.
+     */
+    public fun isInWater(): Boolean
+
+    /**
+     * If this entity is currently touching lava.
+     */
+    public fun isInLava(): Boolean
+
+    /**
+     * If this entity is currently fully submerged under water, meaning its
+     * entire hitbox must be under water.
+     */
+    public fun isUnderwater(): Boolean
 
     /**
      * Damages this entity with the given [source].

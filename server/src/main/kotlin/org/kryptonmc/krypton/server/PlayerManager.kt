@@ -298,7 +298,7 @@ class PlayerManager(
         player.connection.send(PacketOutInitializeWorldBorder.create(world.border))
         player.connection.send(PacketOutUpdateTime.create(world.data))
         player.connection.send(PacketOutSetDefaultSpawnPosition(world.data.spawnPos(), world.data.spawnAngle))
-        if (world.isRaining) {
+        if (world.isRaining()) {
             player.connection.send(PacketOutGameEvent(GameEventTypes.BEGIN_RAINING))
             player.connection.send(PacketOutGameEvent(GameEventTypes.RAIN_LEVEL_CHANGE, world.getRainLevel(1F)))
             player.connection.send(PacketOutGameEvent(GameEventTypes.THUNDER_LEVEL_CHANGE, world.getThunderLevel(1F)))

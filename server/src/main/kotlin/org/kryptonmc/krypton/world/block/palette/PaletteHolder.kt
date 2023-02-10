@@ -91,10 +91,10 @@ class PaletteHolder<T> : PaletteResizer<T> {
         val ids = IntArray(size)
         data.storage.unpack(ids)
         swapPalette(ids) { palette.get(data.palette.get(it)) }
-        val bits = strategy.calculateSerializationBits(palette.size)
+        val bits = strategy.calculateSerializationBits(palette.size())
         val data = if (bits != 0) SimpleBitStorage(bits, size, ids).data else LongArray(0)
         return compound {
-            list(PALETTE_TAG) { palette.entries.forEach { add(encoder.encode(it)) } }
+            list(PALETTE_TAG) { palette.entries().forEach { add(encoder.encode(it)) } }
             putLongArray(DATA_TAG, data)
         }
     }
@@ -185,7 +185,7 @@ class PaletteHolder<T> : PaletteResizer<T> {
                     0 -> Configuration(SingleValuePalette.Factory, bits)
                     in 1..4 -> Configuration(ArrayPalette.Factory, 4)
                     in 5..8 -> Configuration(MapPalette.Factory, bits)
-                    else -> Configuration(GlobalPalette.Factory, Maths.ceillog2(registry.size))
+                    else -> Configuration(GlobalPalette.Factory, Maths.ceillog2(registry.size()))
                 }
             }
             @JvmField
@@ -194,7 +194,7 @@ class PaletteHolder<T> : PaletteResizer<T> {
                 override fun createConfiguration(bits: Int): Configuration<Biome> = when (bits) {
                     0 -> Configuration(SingleValuePalette.Factory, bits)
                     in 1..3 -> Configuration(ArrayPalette.Factory, bits)
-                    else -> Configuration(GlobalPalette.Factory, Maths.ceillog2(registry.size))
+                    else -> Configuration(GlobalPalette.Factory, Maths.ceillog2(registry.size()))
                 }
             }
         }

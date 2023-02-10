@@ -28,15 +28,15 @@ interface Rideable : BaseDataHolder {
 
     val vehicleSystem: EntityVehicleSystem
 
-    override val isPassenger: Boolean
-        get() = vehicleSystem.isPassenger()
     override val passengers: List<Entity>
         get() = vehicleSystem.passengers()
-    override val isVehicle: Boolean
-        get() = vehicleSystem.isVehicle()
     override var vehicle: Entity?
         get() = vehicleSystem.vehicle()
         set(value) = vehicleSystem.setVehicle(value)
+
+    override fun isPassenger(): Boolean = vehicleSystem.isPassenger()
+
+    override fun isVehicle(): Boolean = vehicleSystem.isVehicle()
 
     fun canAddPassenger(passenger: KryptonEntity): Boolean = vehicleSystem.passengers().isEmpty()
 

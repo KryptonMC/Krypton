@@ -38,54 +38,67 @@ public interface BlockState : State<BlockState> {
     public val hardness: Double
 
     /**
-     * If this block state is air.
+     * How this block reacts to being pushed or pulled by pistons.
      */
-    public val isAir: Boolean
+    @get:JvmName("pushReaction")
+    public val pushReaction: PushReaction
 
     /**
-     * If this block state is a solid object with collision, meaning entities
-     * cannot pass through it.
+     * If this block state is air.
+     *
+     * @return true if this block state is air
      */
-    public val isSolid: Boolean
+    public fun isAir(): Boolean
+
+    /**
+     * If this block state is a solid object with collision, meaning
+     * entities cannot pass through it.
+     *
+     * @return true if this block state is solid
+     */
+    public fun isSolid(): Boolean
 
     /**
      * If this block state represents a liquid rather than a solid object.
      *
      * All block states that are liquids are also fluid states.
+     *
+     * @return true if this block state is a liquid
      */
-    public val isLiquid: Boolean
+    public fun isLiquid(): Boolean
 
     /**
      * If this block state can be set on fire.
+     *
+     * @return true if this block state is flammable
      */
-    public val isFlammable: Boolean
+    public fun isFlammable(): Boolean
 
     /**
-     * If this block state can be replaced with another block state when
-     * attempting to place a block on this block.
+     * If this block state can be replaced with another block state
+     * when attempting to place a block on this block.
      *
-     * For example, when a player places a block on grass, instead of the block
-     * being placed on the side in which the player clicked, the target grass
-     * will be replaced with the block the player was placing.
+     * For example, when a player places a block on grass, instead of the
+     * block being placed on the side in which the player clicked, the target
+     * grass will be replaced with the block the player was placing.
+     *
+     * @return true if this block state is replaceable
      */
-    public val isReplaceable: Boolean
+    public fun isReplaceable(): Boolean
 
     /**
      * If this block state is opaque, meaning no light can pass through it.
+     *
+     * @return true if this block state is opaque
      */
-    public val isOpaque: Boolean
+    public fun isOpaque(): Boolean
 
     /**
-     * Whether this block can be moved through.
+     * If this block can be moved through.
+     *
+     * @return true if this block state blocks motion
      */
-    @get:JvmName("blocksMotion")
-    public val blocksMotion: Boolean
-
-    /**
-     * How this block reacts to being pushed or pulled by pistons.
-     */
-    @get:JvmName("pushReaction")
-    public val pushReaction: PushReaction
+    public fun blocksMotion(): Boolean
 
     /**
      * Converts this block state in to its corresponding fluid state.

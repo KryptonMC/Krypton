@@ -63,7 +63,7 @@ object RegistryCodecs {
             val registry = KryptonSimpleRegistry.standard(key)
             elements.forEach { (key, value) -> registry.register(key, value) }
             registry.freeze()
-        }, { ImmutableMap.copyOf(it.entries) })
+        }, { ImmutableMap.copyOf(it.entries()) })
     }
 
     @JvmStatic

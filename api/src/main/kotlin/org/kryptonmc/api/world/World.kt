@@ -100,11 +100,6 @@ public interface World : BlockContainer, FluidContainer, BiomeContainer, BlockEn
     public val gameMode: GameMode
 
     /**
-     * If the world is a hardcore world.
-     */
-    public val isHardcore: Boolean
-
-    /**
      * The seed of this world.
      */
     public val seed: Long
@@ -115,25 +110,15 @@ public interface World : BlockContainer, FluidContainer, BiomeContainer, BlockEn
     public val time: Long
 
     /**
-     * If this world is currently thundering (has an ongoing thunderstorm).
+     * The level of the current rain.
      */
-    public val isThundering: Boolean
+    public var rainLevel: Float
 
     /**
      * The level of the current thunderstorm (0 if there is no thunderstorm
      * going on).
      */
     public var thunderLevel: Float
-
-    /**
-     * If this world is currently raining.
-     */
-    public val isRaining: Boolean
-
-    /**
-     * The level of the current rain.
-     */
-    public var rainLevel: Float
 
     /**
      * The scoreboard for this world.
@@ -148,6 +133,27 @@ public interface World : BlockContainer, FluidContainer, BiomeContainer, BlockEn
      * stop running after the world is removed.
      */
     public val scheduler: Scheduler
+
+    /**
+     * If the world is a hardcore world.
+     *
+     * @return true if this world is hardcore
+     */
+    public fun isHardcore(): Boolean
+
+    /**
+     * If this world is currently raining.
+     *
+     * @return true if it is raining in this world
+     */
+    public fun isRaining(): Boolean
+
+    /**
+     * If this world is currently thundering (has an ongoing thunderstorm).
+     *
+     * @return true if it is thundering in this world
+     */
+    public fun isThundering(): Boolean
 
     /**
      * Gets the block at the given coordinates.

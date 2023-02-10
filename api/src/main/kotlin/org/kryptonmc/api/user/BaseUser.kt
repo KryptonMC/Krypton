@@ -23,11 +23,6 @@ public interface BaseUser {
     public val profile: GameProfile
 
     /**
-     * If this user is online or not.
-     */
-    public val isOnline: Boolean
-
-    /**
      * If this user has joined this server before.
      */
     @get:JvmName("hasJoinedBefore")
@@ -42,4 +37,11 @@ public interface BaseUser {
      * The latest time when this user last joined the server.
      */
     public val lastJoined: Instant
+
+    /**
+     * If this user is online or not.
+     *
+     * @return true if this user is online
+     */
+    public fun isOnline(): Boolean
 }

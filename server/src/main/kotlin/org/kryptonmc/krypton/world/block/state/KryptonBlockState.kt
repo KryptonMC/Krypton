@@ -81,27 +81,27 @@ class KryptonBlockState(
         get() = owner.propertiesProvider.getOffsetType(asState())
     private var cache: Cache? = null
 
-    override val isAir: Boolean
-        get() = block.properties.isAir
     override val hardness: Double
         get() = owner.properties.destroyTime.toDouble()
-    override val isOpaque: Boolean
-        get() = canOcclude
-    override val isSolid: Boolean
-        get() = material.solid
-    override val blocksMotion: Boolean
-        get() = material.blocksMotion
-    override val isFlammable: Boolean
-        get() = material.flammable
-    override val isLiquid: Boolean
-        get() = material.liquid
-    override val isReplaceable: Boolean
-        get() = material.replaceable
     override val pushReaction: PushReaction
         get() = owner.propertiesProvider.getPushReaction(asState())
 
     override val block: KryptonBlock
         get() = owner
+
+    override fun isAir(): Boolean = block.properties.isAir
+
+    override fun isSolid(): Boolean = material.solid
+
+    override fun isLiquid(): Boolean = material.liquid
+
+    override fun isFlammable(): Boolean = material.flammable
+
+    override fun isReplaceable(): Boolean = material.replaceable
+
+    override fun isOpaque(): Boolean = canOcclude
+
+    override fun blocksMotion(): Boolean = material.blocksMotion
 
     // FIXME: When we create all the KryptonBlock implementations, check if is instance of EntityBlock
     @Suppress("FunctionOnlyReturningConstant")
