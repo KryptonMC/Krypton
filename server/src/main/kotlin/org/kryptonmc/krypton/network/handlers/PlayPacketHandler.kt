@@ -29,6 +29,7 @@ import org.kryptonmc.api.entity.Hand
 import org.kryptonmc.api.entity.player.ChatVisibility
 import org.kryptonmc.api.resource.ResourcePack
 import org.kryptonmc.api.util.Position
+import org.kryptonmc.api.util.Vec3d
 import org.kryptonmc.api.world.GameMode
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.command.CommandSigningContext
@@ -105,10 +106,14 @@ import org.kryptonmc.krypton.util.FutureChain
 import org.kryptonmc.krypton.util.crypto.SignatureValidator
 import org.kryptonmc.krypton.world.block.KryptonBlocks
 import org.kryptonmc.krypton.coordinate.ChunkPos
+import org.kryptonmc.krypton.entity.KryptonEntity
 import org.kryptonmc.krypton.event.player.action.KryptonPlayerStartSneakingEvent
 import org.kryptonmc.krypton.event.player.action.KryptonPlayerStartSprintingEvent
 import org.kryptonmc.krypton.event.player.action.KryptonPlayerStopSneakingEvent
 import org.kryptonmc.krypton.event.player.action.KryptonPlayerStopSprintingEvent
+import org.kryptonmc.krypton.event.player.interact.KryptonPlayerAttackEntityEvent
+import org.kryptonmc.krypton.event.player.interact.KryptonPlayerInteractAtEntityEvent
+import org.kryptonmc.krypton.event.player.interact.KryptonPlayerInteractWithEntityEvent
 import org.kryptonmc.krypton.locale.DisconnectMessages
 import org.kryptonmc.krypton.locale.MinecraftTranslationManager
 import java.time.Duration
@@ -437,11 +442,36 @@ class PlayPacketHandler(
     }
 
     fun handleInteract(packet: PacketInInteract) {
-        val target = player.world.entityManager.getById(packet.entityId)
-        player.isSneaking = packet.sneaking
-        if (target == null) return
+        val target = player.world.entityManager.getById(packet.entityId) ?: return
         if (player.position.distanceSquared(target.position) >= INTERACTION_RANGE_SQUARED) return
-        packet.action.handle(InteractionHandler())
+
+        when (packet.action) {
+            is PacketInInteract.InteractAction -> onInteract(target, packet.action.hand)
+            is PacketInInteract.AttackAction -> onAttack(target)
+            is PacketInInteract.InteractAtAction -> onInteractAt(target, packet.action.hand, packet.action.x, packet.action.y, packet.action.z)
+        }
+    }
+
+    private fun onInteract(target: KryptonEntity, hand: Hand) {
+        val event = server.eventNode.fire(KryptonPlayerInteractWithEntityEvent(player, target, hand))
+        if (!event.isAllowed()) return
+
+        // TODO: Re-implement interactions and call a handler here
+    }
+
+    private fun onInteractAt(target: KryptonEntity, hand: Hand, x: Float, y: Float, z: Float) {
+        val clickedPosition = Vec3d(x.toDouble(), y.toDouble(), z.toDouble())
+        val event = server.eventNode.fire(KryptonPlayerInteractAtEntityEvent(player, target, hand, clickedPosition))
+        if (!event.isAllowed()) return
+
+        // TODO: Re-implement interactions and call a handler here
+    }
+
+    private fun onAttack(target: KryptonEntity) {
+        val event = server.eventNode.fire(KryptonPlayerAttackEntityEvent(player, target))
+        if (!event.isAllowed()) return
+
+        // TODO: Re-implement interactions and call a handler here
     }
 
     fun handlePlayerPosition(packet: PacketInSetPlayerPosition) {
@@ -541,21 +571,6 @@ class PlayPacketHandler(
         player.chunkViewingSystem.updateChunks()
         player.updateMovementStatistics(new.x - old.x, new.y - old.y, new.z - old.z)
         player.hungerSystem.updateMovementExhaustion(new.x - old.x, new.y - old.y, new.z - old.z)
-    }
-
-    private inner class InteractionHandler : PacketInInteract.Handler {
-
-        override fun onInteract(hand: Hand) {
-            // TODO: Re-implement interactions and call a handler here
-        }
-
-        override fun onInteractAt(hand: Hand, x: Float, y: Float, z: Float) {
-            // TODO: Re-implement interactions and call a handler here
-        }
-
-        override fun onAttack() {
-            // TODO: Re-implement interactions and call a handler here
-        }
     }
 
     private fun interface MovementPacketSupplier {

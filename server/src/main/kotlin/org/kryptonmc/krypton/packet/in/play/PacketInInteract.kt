@@ -47,8 +47,6 @@ data class PacketInInteract(val entityId: Int, val action: Action, val sneaking:
     sealed interface Action : Writable {
 
         fun type(): ActionType
-
-        fun handle(handler: Handler)
     }
 
     @JvmRecord
@@ -58,10 +56,6 @@ data class PacketInInteract(val entityId: Int, val action: Action, val sneaking:
 
         override fun type(): ActionType = ActionType.INTERACT
 
-        override fun handle(handler: Handler) {
-            handler.onInteract(hand)
-        }
-
         override fun write(buf: ByteBuf) {
             buf.writeEnum(hand)
         }
@@ -70,10 +64,6 @@ data class PacketInInteract(val entityId: Int, val action: Action, val sneaking:
     object AttackAction : Action {
 
         override fun type(): ActionType = ActionType.ATTACK
-
-        override fun handle(handler: Handler) {
-            handler.onAttack()
-        }
 
         override fun write(buf: ByteBuf) {
             // Nothing to write for the attack action
@@ -87,25 +77,12 @@ data class PacketInInteract(val entityId: Int, val action: Action, val sneaking:
 
         override fun type(): ActionType = ActionType.INTERACT_AT
 
-        override fun handle(handler: Handler) {
-            handler.onInteractAt(hand, x, y, z)
-        }
-
         override fun write(buf: ByteBuf) {
             buf.writeFloat(x)
             buf.writeFloat(y)
             buf.writeFloat(z)
             buf.writeEnum(hand)
         }
-    }
-
-    interface Handler {
-
-        fun onInteract(hand: Hand)
-
-        fun onInteractAt(hand: Hand, x: Float, y: Float, z: Float)
-
-        fun onAttack()
     }
 
     enum class ActionType(private val reader: Reader) {
